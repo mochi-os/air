@@ -25,6 +25,7 @@ export function startGame({
   framerate,
   config = {},
   onExit,
+  translate = (s) => s,
 }: {
   stage: HTMLCanvasElement
   hud: HTMLCanvasElement
@@ -33,6 +34,7 @@ export function startGame({
   framerate?: HTMLElement
   config?: GameConfig
   onExit?: () => void
+  translate?: (text: string) => string
 }): GameHandle {
   const __ac = new AbortController()
   const signal = __ac.signal
@@ -818,8 +820,8 @@ function draw_map(){ const W=innerWidth,H=innerHeight; mctx.clearRect(0,0,W,H);
 	const cxp=W/2, cyp=H/2, worldR=70000, s=Math.min(W,H)*0.46/worldR;
 	const X=x=>cxp+x*s, Y=z=>cyp+z*s;                          // north up: +x→east(right), +z→south(down)
 	// frame + title
-	mctx.fillStyle=GR; mctx.font="14px monospace"; mctx.textAlign="left"; mctx.fillText("TACTICAL MAP",24,30);
-	mctx.fillStyle="#7fcfa6"; mctx.font="11px monospace"; mctx.fillText("M to close",24,48);
+	mctx.fillStyle=GR; mctx.font="14px monospace"; mctx.textAlign="left"; mctx.fillText(translate("TACTICAL MAP"),24,30);
+	mctx.fillStyle="#7fcfa6"; mctx.font="11px monospace"; mctx.fillText(translate("M to close"),24,48);
 	// range rings around the player (every 20 km)
 	const px=X(ownship.pos.x), py=Y(ownship.pos.z);
 	mctx.strokeStyle="rgba(95,200,150,0.18)"; mctx.lineWidth=1; mctx.textAlign="left";
@@ -845,7 +847,7 @@ function draw_map(){ const W=innerWidth,H=innerHeight; mctx.clearRect(0,0,W,H);
 	const hx=ownship.fwd.x, hz=ownship.fwd.z, hl=Math.hypot(hx,hz)||1; const ux=hx/hl, uz=hz/hl, rxv=-uz, rzv=ux;
 	mctx.fillStyle="#ffffff"; mctx.beginPath();
 	mctx.moveTo(px+ux*12,py+uz*12); mctx.lineTo(px-ux*8+rxv*7,py-uz*8+rzv*7); mctx.lineTo(px-ux*8-rxv*7,py-uz*8-rzv*7); mctx.closePath(); mctx.fill();
-	mctx.fillStyle="#ffffff"; mctx.font="10px monospace"; mctx.fillText("YOU",px,py+24);
+	mctx.fillStyle="#ffffff"; mctx.font="10px monospace"; mctx.fillText(translate("YOU"),px,py+24);
 	// compass N
 	mctx.fillStyle=GR; mctx.font="13px monospace"; mctx.textAlign="center"; mctx.fillText("N",W-40,40); mctx.fillText("\u2191",W-40,26);
 }
@@ -857,14 +859,13 @@ function draw_hud(dt){
 	hctx.clearRect(0,0,HW,HH);
 	const cx=HW/2, cy=HH/2;
 	// ---- carrier / deck-align overlay: shown in every view (incl. chase) ----
-	if(ownship.on_cat){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="20px monospace"; hctx.fillText("PRESS SPACE TO LAUNCH",cx,cy+130);
-		hctx.fillStyle=GR; hctx.font="12px monospace"; hctx.fillText("CAT 2 · THROTTLE UP WITH SHIFT",cx,cy+154);
+	if(ownship.on_cat){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="20px monospace"; hctx.fillText(translate("PRESS SPACE TO LAUNCH"),cx,cy+180);
 		if(deck_edit){ hctx.save(); hctx.strokeStyle="rgba(255,193,77,0.55)"; hctx.lineWidth=1; hctx.setLineDash([6,6]);
 			hctx.beginPath(); hctx.moveTo(cx,0); hctx.lineTo(cx,HH); hctx.stroke(); hctx.restore();
 			hctx.fillStyle=AM; hctx.font="13px monospace"; hctx.fillText("DECK ALIGN  I/K fore-aft · J/L port-stbd · [ ] height · U/O rotate · G save",cx,cy+182);
 			hctx.fillStyle=GR; hctx.fillText("x="+cfg.cat_x.toFixed(2)+"  z="+cfg.cat_z.toFixed(2)+"  height="+cfg.cat_dy.toFixed(2)+"  hdg="+cfg.cat_h.toFixed(1)+"\u00b0    (camera: Shift+\u2190\u2192 orbit · ,/. tilt · \u2212/= zoom)",cx,cy+200); } }
-	else if(ownship.launching){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="22px monospace"; hctx.fillText("LAUNCH",cx,cy+130); }
-	if(cat_saved_t>0){ cat_saved_t-=dt; hctx.textAlign="center"; hctx.fillStyle=GR; hctx.font="14px monospace"; hctx.fillText("DECK POSITION SAVED",cx,cy+182); }
+	else if(ownship.launching){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="22px monospace"; hctx.fillText(translate("LAUNCH"),cx,cy+130); }
+	if(cat_saved_t>0){ cat_saved_t-=dt; hctx.textAlign="center"; hctx.fillStyle=GR; hctx.font="14px monospace"; hctx.fillText(translate("DECK POSITION SAVED"),cx,cy+182); }
 	if(cfg.view!=="hud"){ return; }
 	hctx.lineWidth=1.5; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.font="13px "+getComputedStyle(document.body).fontFamily;
 	hctx.textAlign="center"; hctx.textBaseline="middle";
@@ -973,8 +974,8 @@ function draw_hud(dt){
 
 	// ---- weapon legend (bottom-left) ----
 	hctx.textAlign="left"; hctx.font="13px monospace"; hctx.fillStyle=input.guns?AM:GR;
-	hctx.fillText("GUN  "+ownship.rounds,40,HH-88); hctx.fillStyle=GR;
-	hctx.fillText("AIM  x"+ownship.msl,40,HH-70); hctx.fillText("CM   x"+ownship.cm,40,HH-52);
+	hctx.fillText(translate("GUN")+"  "+ownship.rounds,40,HH-88); hctx.fillStyle=GR;
+	hctx.fillText("IR  "+ownship.msl,40,HH-70); hctx.fillText(translate("FLARES")+"  "+ownship.cm,40,HH-52);
 
 	// ---- catapult prompt ----
 }
@@ -1040,8 +1041,8 @@ function frame(){ const dt=Math.min(clock.getDelta(),0.05);
 	refresh_perf(dt); dynamic_res(dt);
 	__raf = requestAnimationFrame(frame); }
 function draw_pause_banner(){ hctx.save(); hctx.textAlign="center"; hctx.fillStyle="rgba(3,12,9,0.45)"; hctx.fillRect(HW/2-150,HH/2-44,300,88);
-	hctx.fillStyle=AM; hctx.font="34px monospace"; hctx.fillText("PAUSED",HW/2,HH/2-2);
-	hctx.fillStyle=GR; hctx.font="12px monospace"; hctx.fillText("P to resume \u00b7 M map \u00b7 Esc menu",HW/2,HH/2+24); hctx.restore(); }
+	hctx.fillStyle=AM; hctx.font="34px monospace"; hctx.fillText(translate("PAUSED"),HW/2,HH/2-2);
+	hctx.fillStyle=GR; hctx.font="12px monospace"; hctx.fillText(translate("P to resume \u00b7 M map \u00b7 Esc menu"),HW/2,HH/2+24); hctx.restore(); }
 start_mission();
 __raf = requestAnimationFrame(frame);
 init_external_model();

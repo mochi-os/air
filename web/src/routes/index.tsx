@@ -5,10 +5,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { useShellImmersive, useShellStorage } from '@mochi/web'
+import { useShellImmersive } from '@mochi/web'
 import { GameCanvas } from '../components/GameCanvas'
 import { MissionSetup } from '../components/MissionSetup'
-import { DEFAULT_CONFIG, type MissionConfig } from '../lib/config'
+import { useMissionConfig } from '../lib/config-store'
 import { type GameHandle } from '../game/engine'
 
 function enterFullscreen() {
@@ -24,7 +24,7 @@ function exitFullscreen() {
 // alive; Escape pauses it and overlays the menu (Resume / Restart). "In flight"
 // (game running, menu hidden) hides the Mochi shell chrome and goes fullscreen.
 function Index() {
-  const [config, setConfig] = useShellStorage<MissionConfig>('furball.config', DEFAULT_CONFIG)
+  const [config, setConfig] = useMissionConfig()
   const [started, setStarted] = useState(false)
   const [menuOpen, setMenuOpen] = useState(true)
   const [gameKey, setGameKey] = useState(0)
