@@ -1,0 +1,19 @@
+// Mochi Furball app
+
+{
+	"version": "0.1",
+	"label": "app.name",
+	"paths": ["furball"],
+
+	"architecture": {"engine": "starlark", "version": 4},
+	"execute": ["furball.star"],
+
+	"database": {
+		"file": "furball.db",
+		"schema": 1,
+		"create": {"function": "database_create"},
+		"upgrade": {"function": "database_upgrade"}
+	},
+
+	"actions": {}
+}
