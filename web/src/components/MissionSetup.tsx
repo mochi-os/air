@@ -6,13 +6,6 @@
 import { useId, type ReactNode } from 'react'
 import { Trans } from '@lingui/react/macro'
 import { Play, RotateCcw } from 'lucide-react'
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@mochi/web/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
 import { Button } from '@mochi/web/components/ui/button'
 import { Slider } from '@mochi/web/components/ui/slider'
@@ -244,12 +237,10 @@ export function MissionSetup({
     onChange({ ...config, [key]: value })
 
   return (
-    <div className='bg-background fixed inset-0 z-50 flex items-center justify-center overflow-auto p-4'>
-      <Card className='w-full max-w-2xl'>
-        <CardHeader>
-          <CardTitle className='text-2xl tracking-tight'>Furball</CardTitle>
-        </CardHeader>
-        <CardContent>
+    <div className='bg-background fixed inset-0 z-50 flex items-center justify-center overflow-auto p-6'>
+      <div className='w-full max-w-2xl'>
+        <h1 className='mb-6 text-3xl font-semibold tracking-tight'>Furball</h1>
+        <div>
           <Tabs variant='underline' defaultValue='mission'>
             <TabsList>
               <TabsTrigger value='mission'>
@@ -267,7 +258,8 @@ export function MissionSetup({
             </TabsList>
 
             {/* Fixed-height area so the card doesn't resize when switching tabs */}
-            <div className='min-h-[26rem] pt-4'>
+            {/* Fixed height so the layout never shifts when switching tabs (Graphics is the tallest). */}
+            <div className='h-[30rem] overflow-y-auto pt-4'>
               <TabsContent value='mission'>
                 <SectionLabel>
                   <Trans>Task</Trans>
@@ -537,11 +529,11 @@ export function MissionSetup({
               </Button>
             )}
           </div>
-        </CardContent>
-        <CardFooter className='justify-center pt-0'>
+        </div>
+        <div className='mt-4 flex justify-center'>
           <CreditsDialog />
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }
