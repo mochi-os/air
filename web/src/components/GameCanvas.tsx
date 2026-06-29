@@ -4,9 +4,30 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { useEffect, useRef } from 'react'
+import { useLingui } from '@lingui/react'
+import { msg } from '@lingui/core/macro'
+import { type MessageDescriptor } from '@lingui/core'
 import { startGame, type GameHandle } from '../game/engine'
 import { type MissionConfig } from '../lib/config'
 import '../game/game.css'
+
+// Player-facing HUD strings the engine draws on the 2D canvas. Declared here (in a
+// React module) so the Lingui macro extracts them; the engine is framework-agnostic
+// and receives a `translate` that resolves these against the active locale.
+// Aviation unit/instrument tokens (KCAS, FT, NM, kt, IR, G, M, α, THR, CV) are left
+// untranslated on purpose — they're standard on real HUDs regardless of language.
+const HUD_MESSAGES: Record<string, MessageDescriptor> = {
+  GUN: msg`GUN`,
+  FLARES: msg`FLARES`,
+  LAUNCH: msg`LAUNCH`,
+  YOU: msg`YOU`,
+  PAUSED: msg`PAUSED`,
+  'PRESS SPACE TO LAUNCH': msg`PRESS SPACE TO LAUNCH`,
+  'DECK POSITION SAVED': msg`DECK POSITION SAVED`,
+  'TACTICAL MAP': msg`TACTICAL MAP`,
+  'M to close': msg`M to close`,
+  'P to resume · M map · Esc menu': msg`P to resume · M map · Esc menu`,
+}
 
 // Mounts the imperative Three.js engine onto its canvases and tears it down on
 // unmount. The engine owns the render loop; React owns the surrounding DOM.
@@ -27,7 +48,17 @@ export function GameCanvas({
   const helpRef = useRef<HTMLDivElement>(null)
   const framerateRef = useRef<HTMLDivElement>(null)
 
+  // Keep the active i18n in a ref so the (mount-once) engine always resolves HUD
+  // text against the current locale without remounting.
+  const { i18n } = useLingui()
+  const i18nRef = useRef(i18n)
+  i18nRef.current = i18n
+
   useEffect(() => {
+    const translate = (text: string) => {
+      const descriptor = HUD_MESSAGES[text]
+      return descriptor ? i18nRef.current._(descriptor) : text
+    }
     const game = startGame({
       stage: stageRef.current!,
       hud: hudRef.current!,
@@ -36,6 +67,7 @@ export function GameCanvas({
       framerate: framerateRef.current!,
       config,
       onExit,
+      translate,
     })
     onReady?.(game)
     return () => game.stop()
