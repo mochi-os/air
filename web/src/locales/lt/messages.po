@@ -21,16 +21,8 @@ msgstr "12 valandų"
 msgid "24 hours"
 msgstr "24 valandos"
 
-#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:169
 msgid "A browser-based multiplayer jet-combat prototype — a shared flight model with server-authoritative netcode (work in progress), rendered with Three.js on WebGL2."
-msgstr ""
-
-#: src/components/MissionSetup.tsx:188
-msgid "A joust pits you against an evasive bandit. An on-carrier start places you on the bow catapult — press Space to launch."
-msgstr ""
-
-#: src/components/MissionSetup.tsx:159
-msgid "About"
 msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:51
@@ -107,7 +99,7 @@ msgstr "Pridėti rodinį"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Koreguokite išvaizdą ir išdėstymą pagal savo pageidavimus."
 
-#: src/components/MissionSetup.tsx:328
+#: src/components/MissionSetup.tsx:479
 msgid "Afterburner"
 msgstr ""
 
@@ -115,11 +107,11 @@ msgstr ""
 msgid "AI"
 msgstr "DI"
 
-#: src/components/MissionSetup.tsx:394
+#: src/components/MissionSetup.tsx:199
 msgid "Aircraft carrier <0>“Gerald Ford Aircraft Carrier”</0> by <1>Usman Zia (Uxxman)</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline, texture downscaled."
 msgstr ""
 
-#: src/components/MissionSetup.tsx:370
+#: src/components/MissionSetup.tsx:175
 msgid "Aircraft model <0>“Modern Jet Fighter — Low Poly (Game Ready)”</0> by <1>3Dima</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented nose +X, texture downscaled."
 msgstr ""
 
@@ -178,10 +170,6 @@ msgstr "Padidinti susidomėjimą"
 msgid "Cancel"
 msgstr "Atšaukti"
 
-#: src/components/MissionSetup.tsx:143
-msgid "Carrier air combat — mission setup"
-msgstr ""
-
 #: ../../../lib/web/src/components/notification-category-button.tsx:144
 msgid "Category for this notification"
 msgstr "Šio pranešimo kategorija"
@@ -190,6 +178,10 @@ msgstr "Šio pranešimo kategorija"
 #: ../../../lib/web/src/components/notification-category-button.tsx:136
 msgid "Change notification category"
 msgstr "Pakeisti pranešimo kategoriją"
+
+#: src/components/MissionSetup.tsx:369
+msgid "Chase view"
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:328
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
@@ -259,7 +251,7 @@ msgstr "Uždaryti skydelį"
 msgid "Close search"
 msgstr "Uždaryti paiešką"
 
-#: src/components/MissionSetup.tsx:209
+#: src/components/MissionSetup.tsx:311
 msgid "Clouds"
 msgstr ""
 
@@ -308,6 +300,10 @@ msgstr "Tęsti"
 msgid "Continue with {label}"
 msgstr "Tęsti su {label}"
 
+#: src/components/MissionSetup.tsx:262
+msgid "Controls"
+msgstr ""
+
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
 msgstr "Kopijuoti"
@@ -328,13 +324,22 @@ msgstr "Nepavyko pradėti pakartotinio tapatybės patvirtinimo. Bandykite dar ka
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Nepavyko patvirtinti su ta paskyra. Bandykite dar kartą."
 
-#: src/components/MissionSetup.tsx:216
+#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:164
+msgid "Credits"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:318
 msgid "Cumulus"
 msgstr ""
 
 #: ../../../lib/web/src/components/colour-picker.tsx:260
 msgid "Custom"
 msgstr "Pasirinktinis"
+
+#: src/components/MissionSetup.tsx:363
+msgid "Cycle view"
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
 #: ../../../lib/web/src/lib/preference-utils.ts:20
@@ -349,7 +354,7 @@ msgstr "Tamsus"
 msgid "Dark mode"
 msgstr "Tamsus režimas"
 
-#: src/components/MissionSetup.tsx:203
+#: src/components/MissionSetup.tsx:305
 msgid "Day"
 msgstr ""
 
@@ -401,7 +406,11 @@ msgstr "Atmesti"
 msgid "Displays the mobile sidebar."
 msgstr "Rodo mobiliąją šoninę juostą."
 
-#: src/components/MissionSetup.tsx:316
+#: src/components/MissionSetup.tsx:378
+msgid "Distance"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:467
 msgid "Distance LOD"
 msgstr ""
 
@@ -412,13 +421,13 @@ msgstr "Atsisiųsti"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:68
 msgid "Download failed"
-msgstr ""
+msgstr "Atsisiųsti nepavyko"
 
-#: src/components/MissionSetup.tsx:204
+#: src/components/MissionSetup.tsx:306
 msgid "Dusk"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:310
+#: src/components/MissionSetup.tsx:461
 msgid "Dynamic resolution"
 msgstr ""
 
@@ -453,11 +462,11 @@ msgstr "Išskleisti"
 msgid "Expand sidebar"
 msgstr "Išskleisti šoninę juostą"
 
-#: src/components/MissionSetup.tsx:273
+#: src/components/MissionSetup.tsx:424
 msgid "Exterior detail"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:298
+#: src/components/MissionSetup.tsx:449
 msgid "Extra aircraft"
 msgstr ""
 
@@ -485,11 +494,12 @@ msgstr "Nepavyko atnaujinti kategorijos"
 msgid "Finish moving your account"
 msgstr "Užbaikite paskyros perkėlimą"
 
-#: src/components/MissionSetup.tsx:289
+#: src/components/MissionSetup.tsx:440
 msgid "Fire rate"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:346
+#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:497
 msgid "Flares"
 msgstr ""
 
@@ -501,7 +511,11 @@ msgstr "Plokščia"
 msgid "Floating"
 msgstr "Plaukiojantis"
 
-#: src/components/MissionSetup.tsx:171
+#: src/components/MissionSetup.tsx:503
+msgid "Framerate"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:279
 msgid "Free flight"
 msgstr ""
 
@@ -552,7 +566,7 @@ msgstr "Eiti į puslapį {pageNumber}"
 msgid "Go to previous page"
 msgstr "Eiti į ankstesnį puslapį"
 
-#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:265
 msgid "Graphics"
 msgstr ""
 
@@ -568,11 +582,11 @@ msgstr "Slėpti"
 msgid "Hide password"
 msgstr "Slėpti slaptažodį"
 
-#: src/components/MissionSetup.tsx:243
+#: src/components/MissionSetup.tsx:404
 msgid "High"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:217
+#: src/components/MissionSetup.tsx:319
 msgid "High stratus"
 msgstr ""
 
@@ -591,8 +605,12 @@ msgstr "Karšta"
 msgid "Imperial"
 msgstr "Imperinė"
 
-#: src/components/MissionSetup.tsx:182
+#: src/components/MissionSetup.tsx:290
 msgid "In air"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:327
+msgid "Input"
 msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:252
@@ -607,18 +625,26 @@ msgstr "Pomėgiai"
 msgid "Invalid verification code"
 msgstr "Netinkamas patvirtinimo kodas"
 
-#: src/components/MissionSetup.tsx:352
+#: src/components/MissionSetup.tsx:342
 msgid "Invert pitch"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:172
+#: src/components/MissionSetup.tsx:280
 msgid "Joust"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:349
+msgid "Keys"
 msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:108
 #: ../../../lib/web/src/lib/preference-utils.ts:135
 msgid "Large"
 msgstr "Didelis"
+
+#: src/components/MissionSetup.tsx:359
+msgid "Launch / guns"
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:286
 msgid "Layout"
@@ -673,12 +699,16 @@ msgstr "Sėkmingai atsijungta"
 msgid "Logging out…"
 msgstr "Atsijungiama…"
 
-#: src/components/MissionSetup.tsx:239
+#: src/components/MissionSetup.tsx:400
 msgid "Low"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:218
+#: src/components/MissionSetup.tsx:320
 msgid "Low stratus"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:364
+msgid "Map"
 msgstr ""
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:92
@@ -688,7 +718,7 @@ msgid "Mark all as read"
 msgstr "Pažymėti visus kaip skaitytus"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:241
+#: src/components/MissionSetup.tsx:402
 msgid "Medium"
 msgstr "Vidutinis"
 
@@ -700,16 +730,16 @@ msgstr "Meniu"
 msgid "Metric"
 msgstr "Metrinė"
 
-#: src/components/MissionSetup.tsx:340
+#: src/components/MissionSetup.tsx:360
+msgid "Missile"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:491
 msgid "Missiles"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:150
+#: src/components/MissionSetup.tsx:256
 msgid "Mission"
-msgstr ""
-
-#: src/components/MissionSetup.tsx:367
-msgid "Model attribution"
 msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:59
@@ -729,7 +759,7 @@ msgstr "Naujas"
 msgid "Next image"
 msgstr "Kitas paveikslėlis"
 
-#: src/components/MissionSetup.tsx:205
+#: src/components/MissionSetup.tsx:307
 msgid "Night"
 msgstr ""
 
@@ -773,7 +803,7 @@ msgstr "Vartotojų nerasta"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:215
+#: src/components/MissionSetup.tsx:317
 msgid "None"
 msgstr "Nėra"
 
@@ -793,15 +823,15 @@ msgstr "Nenustatyta"
 msgid "Notifications"
 msgstr "Pranešimai"
 
-#: src/components/MissionSetup.tsx:281
+#: src/components/MissionSetup.tsx:432
 msgid "Ocean detail"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:292
 msgid "On carrier"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:183
+#: src/components/MissionSetup.tsx:291
 msgid "On runway"
 msgstr ""
 
@@ -834,6 +864,10 @@ msgstr "Atidaryti naršymo meniu"
 msgid "Open theme settings"
 msgstr "Atidaryti temos nustatymus"
 
+#: src/components/MissionSetup.tsx:373
+msgid "Orbit"
+msgstr ""
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:166
 msgid "Other"
 msgstr "Kita"
@@ -854,11 +888,19 @@ msgstr "Slaptarakčio patvirtinimas nepavyko. Bandykite dar kartą."
 msgid "Passkeys"
 msgstr "Slaptarakčiai"
 
+#: src/components/MissionSetup.tsx:365
+msgid "Pause"
+msgstr "Pristabdyti"
+
+#: src/components/MissionSetup.tsx:352
+msgid "Pitch"
+msgstr ""
+
 #: ../../../lib/web/src/lib/api-client.ts:301
 msgid "Please check your internet connection and try again."
 msgstr "Patikrinkite interneto ryšį ir bandykite dar kartą."
 
-#: src/components/MissionSetup.tsx:226
+#: src/components/MissionSetup.tsx:387
 msgid "Preset"
 msgstr ""
 
@@ -888,6 +930,10 @@ msgstr "Iš naujo susiekite paskyras šiame serveryje"
 #: ../../../lib/web/src/components/restore-banner.tsx:129
 msgid "Re-register your passkeys on this server"
 msgstr "Iš naujo užregistruokite prieigos raktus šiame serveryje"
+
+#: src/components/MissionSetup.tsx:362
+msgid "Rearm"
+msgstr ""
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:219
 #: ../../../lib/web/src/components/search-entity-page.tsx:194
@@ -936,7 +982,7 @@ msgstr "Siųsti el. laišką dar kartą"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:520
 msgid "Reset"
 msgstr "Atstatyti"
 
@@ -944,13 +990,29 @@ msgstr "Atstatyti"
 msgid "Reset all settings to default values"
 msgstr "Atstatyti visus nustatymus į numatytąsias reikšmes"
 
-#: src/components/MissionSetup.tsx:253
+#: src/components/MissionSetup.tsx:414
 msgid "Resolution"
 msgstr "Sprendimas"
+
+#: src/components/MissionSetup.tsx:526
+msgid "Restart"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:530
+msgid "Resume"
+msgstr "Tęsti"
+
+#: src/components/MissionSetup.tsx:366
+msgid "Return to menu"
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:361
 msgid "Right to Left"
 msgstr "Iš dešinės į kairę"
+
+#: src/components/MissionSetup.tsx:353
+msgid "Roll"
+msgstr ""
 
 #: ../../../lib/web/src/components/data-table/pagination.tsx:63
 msgid "Rows per page"
@@ -1035,7 +1097,7 @@ msgstr "Siųsti dar kartą"
 msgid "Send email"
 msgstr "Siųsti el. laišką"
 
-#: src/components/MissionSetup.tsx:263
+#: src/components/MissionSetup.tsx:331
 msgid "Sensitivity"
 msgstr ""
 
@@ -1069,7 +1131,7 @@ msgstr "Nustatyti pradžią ir paskirties vietą"
 msgid "Settings"
 msgstr "Nustatymai"
 
-#: src/components/MissionSetup.tsx:322
+#: src/components/MissionSetup.tsx:473
 msgid "Shadows"
 msgstr ""
 
@@ -1109,12 +1171,9 @@ msgstr "Mažas"
 msgid "Spacious"
 msgstr "Erdvus"
 
-#: src/components/MissionSetup.tsx:176
+#: src/components/MissionSetup.tsx:284
+#: src/components/MissionSetup.tsx:536
 msgid "Start"
-msgstr ""
-
-#: src/components/MissionSetup.tsx:432
-msgid "Start mission"
 msgstr ""
 
 #: ../../../lib/web/src/components/coming-soon.tsx:15
@@ -1144,7 +1203,7 @@ msgstr "Žyma"
 msgid "Tags"
 msgstr "Žymos"
 
-#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:273
 msgid "Task"
 msgstr ""
 
@@ -1169,11 +1228,19 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Temos nustatymai"
 
+#: src/components/MissionSetup.tsx:356
+msgid "Throttle"
+msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:62
 msgid "Thursday"
 msgstr "Ketvirtadienis"
 
-#: src/components/MissionSetup.tsx:197
+#: src/components/MissionSetup.tsx:376
+msgid "Tilt"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:299
 msgid "Time of day"
 msgstr ""
 
@@ -1212,7 +1279,7 @@ msgstr "Perjungti temą"
 msgid "Top"
 msgstr "Viršus"
 
-#: src/components/MissionSetup.tsx:334
+#: src/components/MissionSetup.tsx:485
 msgid "Tracers"
 msgstr ""
 
@@ -1247,7 +1314,7 @@ msgstr "Įveskite, kad surastumėte vartotojus"
 msgid "Type to search..."
 msgstr "Įveskite, kad ieškotumėte..."
 
-#: src/components/MissionSetup.tsx:245
+#: src/components/MissionSetup.tsx:406
 msgid "Ultra"
 msgstr ""
 
@@ -1327,7 +1394,7 @@ msgstr "Peržiūrėti visus pranešimus"
 msgid "We'll be back online shortly."
 msgstr "Netrukus vėl būsime prisijungę."
 
-#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:259
 msgid "Weather"
 msgstr ""
 
@@ -1338,6 +1405,10 @@ msgstr "Svetainė atnaujinama!"
 #: ../../../lib/web/src/lib/preference-utils.ts:61
 msgid "Wednesday"
 msgstr "Trečiadienis"
+
+#: src/components/MissionSetup.tsx:354
+msgid "Yaw"
+msgstr ""
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

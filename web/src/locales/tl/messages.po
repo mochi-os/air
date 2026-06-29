@@ -21,16 +21,8 @@ msgstr "12 oras"
 msgid "24 hours"
 msgstr "24 oras"
 
-#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:169
 msgid "A browser-based multiplayer jet-combat prototype — a shared flight model with server-authoritative netcode (work in progress), rendered with Three.js on WebGL2."
-msgstr ""
-
-#: src/components/MissionSetup.tsx:188
-msgid "A joust pits you against an evasive bandit. An on-carrier start places you on the bow catapult — press Space to launch."
-msgstr ""
-
-#: src/components/MissionSetup.tsx:159
-msgid "About"
 msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:51
@@ -107,7 +99,7 @@ msgstr "Magdagdag ng view"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Ayusin ang hitsura at layout ayon sa iyong kagustuhan."
 
-#: src/components/MissionSetup.tsx:328
+#: src/components/MissionSetup.tsx:479
 msgid "Afterburner"
 msgstr ""
 
@@ -115,11 +107,11 @@ msgstr ""
 msgid "AI"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:394
+#: src/components/MissionSetup.tsx:199
 msgid "Aircraft carrier <0>“Gerald Ford Aircraft Carrier”</0> by <1>Usman Zia (Uxxman)</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline, texture downscaled."
 msgstr ""
 
-#: src/components/MissionSetup.tsx:370
+#: src/components/MissionSetup.tsx:175
 msgid "Aircraft model <0>“Modern Jet Fighter — Low Poly (Game Ready)”</0> by <1>3Dima</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented nose +X, texture downscaled."
 msgstr ""
 
@@ -178,10 +170,6 @@ msgstr "Palakasin ang interes"
 msgid "Cancel"
 msgstr "Kanselahin"
 
-#: src/components/MissionSetup.tsx:143
-msgid "Carrier air combat — mission setup"
-msgstr ""
-
 #: ../../../lib/web/src/components/notification-category-button.tsx:144
 msgid "Category for this notification"
 msgstr "Category para sa notification na ito"
@@ -190,6 +178,10 @@ msgstr "Category para sa notification na ito"
 #: ../../../lib/web/src/components/notification-category-button.tsx:136
 msgid "Change notification category"
 msgstr "Baguhin ang category ng notification"
+
+#: src/components/MissionSetup.tsx:369
+msgid "Chase view"
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:328
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
@@ -259,7 +251,7 @@ msgstr "Isara ang panel"
 msgid "Close search"
 msgstr "Isara ang paghahanap"
 
-#: src/components/MissionSetup.tsx:209
+#: src/components/MissionSetup.tsx:311
 msgid "Clouds"
 msgstr ""
 
@@ -308,6 +300,10 @@ msgstr "Magpatuloy"
 msgid "Continue with {label}"
 msgstr "Magpatuloy gamit ang {label}"
 
+#: src/components/MissionSetup.tsx:262
+msgid "Controls"
+msgstr ""
+
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
 msgstr "Kopyahin"
@@ -328,13 +324,22 @@ msgstr "Hindi masimulan ang muling pagpapatunay. Pakisubukang muli."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Hindi ma-verify gamit ang account na iyon. Pakisubukang muli."
 
-#: src/components/MissionSetup.tsx:216
+#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:164
+msgid "Credits"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:318
 msgid "Cumulus"
 msgstr ""
 
 #: ../../../lib/web/src/components/colour-picker.tsx:260
 msgid "Custom"
 msgstr "Pasadya"
+
+#: src/components/MissionSetup.tsx:363
+msgid "Cycle view"
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
 #: ../../../lib/web/src/lib/preference-utils.ts:20
@@ -349,7 +354,7 @@ msgstr "Madilim"
 msgid "Dark mode"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:203
+#: src/components/MissionSetup.tsx:305
 msgid "Day"
 msgstr ""
 
@@ -401,7 +406,11 @@ msgstr "I-dismiss"
 msgid "Displays the mobile sidebar."
 msgstr "Ipinapakita ang mobile sidebar."
 
-#: src/components/MissionSetup.tsx:316
+#: src/components/MissionSetup.tsx:378
+msgid "Distance"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:467
 msgid "Distance LOD"
 msgstr ""
 
@@ -412,13 +421,13 @@ msgstr "I-download"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:68
 msgid "Download failed"
-msgstr ""
+msgstr "Nabigo ang pag-download"
 
-#: src/components/MissionSetup.tsx:204
+#: src/components/MissionSetup.tsx:306
 msgid "Dusk"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:310
+#: src/components/MissionSetup.tsx:461
 msgid "Dynamic resolution"
 msgstr ""
 
@@ -453,11 +462,11 @@ msgstr "Palawakin"
 msgid "Expand sidebar"
 msgstr "I-expand ang sidebar"
 
-#: src/components/MissionSetup.tsx:273
+#: src/components/MissionSetup.tsx:424
 msgid "Exterior detail"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:298
+#: src/components/MissionSetup.tsx:449
 msgid "Extra aircraft"
 msgstr ""
 
@@ -485,11 +494,12 @@ msgstr "Nabigong i-update ang category"
 msgid "Finish moving your account"
 msgstr "Tapusin ang paglipat ng iyong account"
 
-#: src/components/MissionSetup.tsx:289
+#: src/components/MissionSetup.tsx:440
 msgid "Fire rate"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:346
+#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:497
 msgid "Flares"
 msgstr ""
 
@@ -501,7 +511,11 @@ msgstr "Patag"
 msgid "Floating"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:171
+#: src/components/MissionSetup.tsx:503
+msgid "Framerate"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:279
 msgid "Free flight"
 msgstr ""
 
@@ -552,7 +566,7 @@ msgstr "Pumunta sa pahina {pageNumber}"
 msgid "Go to previous page"
 msgstr "Pumunta sa previous page"
 
-#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:265
 msgid "Graphics"
 msgstr ""
 
@@ -568,11 +582,11 @@ msgstr "Itago"
 msgid "Hide password"
 msgstr "Itago ang password"
 
-#: src/components/MissionSetup.tsx:243
+#: src/components/MissionSetup.tsx:404
 msgid "High"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:217
+#: src/components/MissionSetup.tsx:319
 msgid "High stratus"
 msgstr ""
 
@@ -591,8 +605,12 @@ msgstr ""
 msgid "Imperial"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:182
+#: src/components/MissionSetup.tsx:290
 msgid "In air"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:327
+msgid "Input"
 msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:252
@@ -607,18 +625,26 @@ msgstr "Mga interest"
 msgid "Invalid verification code"
 msgstr "Invalid na verification code"
 
-#: src/components/MissionSetup.tsx:352
+#: src/components/MissionSetup.tsx:342
 msgid "Invert pitch"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:172
+#: src/components/MissionSetup.tsx:280
 msgid "Joust"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:349
+msgid "Keys"
 msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:108
 #: ../../../lib/web/src/lib/preference-utils.ts:135
 msgid "Large"
 msgstr "Malaki"
+
+#: src/components/MissionSetup.tsx:359
+msgid "Launch / guns"
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:286
 msgid "Layout"
@@ -673,12 +699,16 @@ msgstr "Matagumpay na nag-log out"
 msgid "Logging out…"
 msgstr "Nagla-log out…"
 
-#: src/components/MissionSetup.tsx:239
+#: src/components/MissionSetup.tsx:400
 msgid "Low"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:218
+#: src/components/MissionSetup.tsx:320
 msgid "Low stratus"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:364
+msgid "Map"
 msgstr ""
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:92
@@ -688,7 +718,7 @@ msgid "Mark all as read"
 msgstr "Markahan lahat bilang nabasa"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:241
+#: src/components/MissionSetup.tsx:402
 msgid "Medium"
 msgstr "Katamtaman"
 
@@ -700,16 +730,16 @@ msgstr ""
 msgid "Metric"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:340
+#: src/components/MissionSetup.tsx:360
+msgid "Missile"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:491
 msgid "Missiles"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:150
+#: src/components/MissionSetup.tsx:256
 msgid "Mission"
-msgstr ""
-
-#: src/components/MissionSetup.tsx:367
-msgid "Model attribution"
 msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:59
@@ -729,7 +759,7 @@ msgstr "Bago"
 msgid "Next image"
 msgstr "Susunod na imahe"
 
-#: src/components/MissionSetup.tsx:205
+#: src/components/MissionSetup.tsx:307
 msgid "Night"
 msgstr ""
 
@@ -773,7 +803,7 @@ msgstr "Walang nakitang user"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:215
+#: src/components/MissionSetup.tsx:317
 msgid "None"
 msgstr "Wala"
 
@@ -793,15 +823,15 @@ msgstr "Hindi naka-set"
 msgid "Notifications"
 msgstr "Mga Notification"
 
-#: src/components/MissionSetup.tsx:281
+#: src/components/MissionSetup.tsx:432
 msgid "Ocean detail"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:292
 msgid "On carrier"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:183
+#: src/components/MissionSetup.tsx:291
 msgid "On runway"
 msgstr ""
 
@@ -834,6 +864,10 @@ msgstr "Buksan ang navigation menu"
 msgid "Open theme settings"
 msgstr "Buksan ang mga setting ng theme"
 
+#: src/components/MissionSetup.tsx:373
+msgid "Orbit"
+msgstr ""
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:166
 msgid "Other"
 msgstr "Iba pa"
@@ -854,11 +888,19 @@ msgstr "Nabigo ang pag-verify ng passkey. Pakisubukang muli."
 msgid "Passkeys"
 msgstr "Mga Passkey"
 
+#: src/components/MissionSetup.tsx:365
+msgid "Pause"
+msgstr "I-pause"
+
+#: src/components/MissionSetup.tsx:352
+msgid "Pitch"
+msgstr ""
+
 #: ../../../lib/web/src/lib/api-client.ts:301
 msgid "Please check your internet connection and try again."
 msgstr "Pakitingnan ang iyong koneksyon sa internet at subukang muli."
 
-#: src/components/MissionSetup.tsx:226
+#: src/components/MissionSetup.tsx:387
 msgid "Preset"
 msgstr ""
 
@@ -888,6 +930,10 @@ msgstr "I-relink ang iyong mga account sa server na ito"
 #: ../../../lib/web/src/components/restore-banner.tsx:129
 msgid "Re-register your passkeys on this server"
 msgstr "Muling irehistro ang iyong mga passkey sa server na ito"
+
+#: src/components/MissionSetup.tsx:362
+msgid "Rearm"
+msgstr ""
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:219
 #: ../../../lib/web/src/components/search-entity-page.tsx:194
@@ -936,7 +982,7 @@ msgstr "Muling ipadala ang email"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:520
 msgid "Reset"
 msgstr "I-reset"
 
@@ -944,13 +990,29 @@ msgstr "I-reset"
 msgid "Reset all settings to default values"
 msgstr "I-reset ang lahat ng setting sa mga default na halaga"
 
-#: src/components/MissionSetup.tsx:253
+#: src/components/MissionSetup.tsx:414
 msgid "Resolution"
 msgstr "Resolusyon"
+
+#: src/components/MissionSetup.tsx:526
+msgid "Restart"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:530
+msgid "Resume"
+msgstr "Ipagpatuloy"
+
+#: src/components/MissionSetup.tsx:366
+msgid "Return to menu"
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:361
 msgid "Right to Left"
 msgstr "Kanan papuntang Kaliwa"
+
+#: src/components/MissionSetup.tsx:353
+msgid "Roll"
+msgstr ""
 
 #: ../../../lib/web/src/components/data-table/pagination.tsx:63
 msgid "Rows per page"
@@ -1035,7 +1097,7 @@ msgstr "Ipadala muli"
 msgid "Send email"
 msgstr "Magpadala ng email"
 
-#: src/components/MissionSetup.tsx:263
+#: src/components/MissionSetup.tsx:331
 msgid "Sensitivity"
 msgstr ""
 
@@ -1069,7 +1131,7 @@ msgstr "Itakda ang origin at destination"
 msgid "Settings"
 msgstr "Mga setting"
 
-#: src/components/MissionSetup.tsx:322
+#: src/components/MissionSetup.tsx:473
 msgid "Shadows"
 msgstr ""
 
@@ -1109,12 +1171,9 @@ msgstr "Maliit"
 msgid "Spacious"
 msgstr "Maluwag"
 
-#: src/components/MissionSetup.tsx:176
+#: src/components/MissionSetup.tsx:284
+#: src/components/MissionSetup.tsx:536
 msgid "Start"
-msgstr ""
-
-#: src/components/MissionSetup.tsx:432
-msgid "Start mission"
 msgstr ""
 
 #: ../../../lib/web/src/components/coming-soon.tsx:15
@@ -1144,7 +1203,7 @@ msgstr ""
 msgid "Tags"
 msgstr "Mga tag"
 
-#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:273
 msgid "Task"
 msgstr ""
 
@@ -1169,11 +1228,19 @@ msgstr ""
 msgid "Theme Settings"
 msgstr "Mga Setting ng Theme"
 
+#: src/components/MissionSetup.tsx:356
+msgid "Throttle"
+msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:62
 msgid "Thursday"
 msgstr "Huwebes"
 
-#: src/components/MissionSetup.tsx:197
+#: src/components/MissionSetup.tsx:376
+msgid "Tilt"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:299
 msgid "Time of day"
 msgstr ""
 
@@ -1212,7 +1279,7 @@ msgstr "I-toggle ang theme"
 msgid "Top"
 msgstr "Itaas"
 
-#: src/components/MissionSetup.tsx:334
+#: src/components/MissionSetup.tsx:485
 msgid "Tracers"
 msgstr ""
 
@@ -1247,7 +1314,7 @@ msgstr "Mag-type para maghanap ng user"
 msgid "Type to search..."
 msgstr "Mag-type para maghanap..."
 
-#: src/components/MissionSetup.tsx:245
+#: src/components/MissionSetup.tsx:406
 msgid "Ultra"
 msgstr ""
 
@@ -1327,7 +1394,7 @@ msgstr "Tingnan lahat ng notification"
 msgid "We'll be back online shortly."
 msgstr "Babalik kami online sa lalong madaling panahon."
 
-#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:259
 msgid "Weather"
 msgstr ""
 
@@ -1338,6 +1405,10 @@ msgstr "Nasa ilalim ng maintenance ang website!"
 #: ../../../lib/web/src/lib/preference-utils.ts:61
 msgid "Wednesday"
 msgstr "Miyerkules"
+
+#: src/components/MissionSetup.tsx:354
+msgid "Yaw"
+msgstr ""
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
