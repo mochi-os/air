@@ -70,7 +70,7 @@ const col_sundisc=new THREE.Color(0xfff3da), col_deep=new THREE.Color(0x0a2a3a),
 
 // ============================================================================ renderer/scene
 const canvas = stage;
-const renderer = new THREE.WebGLRenderer({ canvas, antialias:false, powerPreference:"high-performance" });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, powerPreference:"high-performance" });
 renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 const scene = new THREE.Scene(); scene.fog=new THREE.FogExp2(fog_colour,0.000042);
@@ -249,16 +249,16 @@ function build_exterior_low(){ const parts=[];
 	for(const side of [1,-1]){ const wing=new THREE.BoxGeometry(5.2,0.18,4.6); wing.translate(-0.6,-0.1,side*3.4); wing.rotateY(side*0.34); parts.push(wing);
 		const vt=new THREE.BoxGeometry(2.0,1.8,0.14); vt.translate(-4.2,1.1,side*0.8); vt.rotateX(side*0.28); parts.push(vt); }
 	return merge_geometries(parts); }
-const ab_geo=new THREE.ConeGeometry(0.4,2.6,12); ab_geo.rotateZ(Math.PI/2);
+const ab_geo=new THREE.ConeGeometry(0.3,2.6,12); ab_geo.rotateZ(Math.PI/2);
 const ab_mat=new THREE.MeshBasicMaterial({color:0xffaa44,transparent:true,opacity:0.8,blending:THREE.AdditiveBlending,depthWrite:false,fog:false});
 function make_jet(tint){ const g=new THREE.Group(); g.userData.tint=tint;   // afterburner cones only — the airframe is the loaded GLB (no procedural fallback)
-	for(const side of [1,-1]){ const ab=new THREE.Mesh(ab_geo,ab_mat); ab.position.set(-6.7,0,side*0.55); ab.userData.ab=true; g.add(ab); } return g; }
+	for(const side of [1,-1]){ const ab=new THREE.Mesh(ab_geo,ab_mat); ab.position.set(-9.3,-0.95,side*0.48); ab.userData.ab=true; g.add(ab); } return g; }   // at the Hornet's twin nozzles (computed from engine-mesh bbox)
 
 // ============================================================================ optional external GLB model (cosmetic only)
 // Drop a downloaded glTF/GLB next to this file named "fighter.glb" to replace the procedural airframe.
 // Source must be UNCOMPRESSED glTF/GLB (no Draco/Meshopt) — Sketchfab's plain "glTF" download works.
 // If the file is missing or the loader CDN is blocked, the procedural jet is used automatically.
-const MODEL = { url:"models/fighter.glb", length:15.5, yaw:0, pitch:0, roll:0 };  // length in world units (nose-tail); rot in degrees
+const MODEL = { url:"models/fighter.glb", length:18.3, yaw:0, pitch:0, roll:0 };  // length in world units (nose-tail); rot in degrees
 // This asset is already nose +X / up +Y, so all rotations are 0. If you swap in a DIFFERENT model and it looks wrong:
 // flies BACKWARDS -> yaw 180; on its SIDE / wings vertical -> roll 90 or -90; nose pitched up/down -> pitch 90 or -90; upside down -> roll 180.
 const D2R=Math.PI/180;
@@ -289,30 +289,39 @@ function glb_repack(json,bin){ const js=new TextEncoder().encode(JSON.stringify(
 	out.set(js,20); for(let i=20+js.length;i<20+jsonLen;i++) out[i]=0x20;
 	if(bin){ const bo=20+jsonLen; dv.setUint32(bo,binLen,true); dv.setUint32(bo+4,0x004E4942,true); out.set(bin,bo+8); }
 	return out.buffer; }
-function set_proto_map(tex){ if(!jet_proto) return; jet_proto.traverse(o=>{ if(o.isMesh&&o.material){ const set=mm=>{ mm.map=tex; mm.needsUpdate=true; }; Array.isArray(o.material)?o.material.forEach(set):set(o.material); } }); }
+// Map each material's baseColor image (keyed by material name) so we can re-attach per-material
+// textures after parse: the loader's own texture path builds blob: URLs the sandbox rejects, so we
+// strip textures, parse, then decode each in-process and assign. Solid-colour materials (no
+// baseColorTexture) keep their baseColorFactor, so a multi-material model renders its full livery.
+function model_textures(parts){ const out={}; const images=parts.json.images||[], textures=parts.json.textures||[], bvs=parts.json.bufferViews||[];
+	(parts.json.materials||[]).forEach(m=>{ const bct=m.pbrMetallicRoughness&&m.pbrMetallicRoughness.baseColorTexture;
+		if(!bct||!m.name||!textures[bct.index]) return; const im=images[textures[bct.index].source]; if(!im||im.bufferView==null||!parts.bin) return;
+		const bv=bvs[im.bufferView]; out[m.name]={ bytes:parts.bin.slice(bv.byteOffset||0,(bv.byteOffset||0)+bv.byteLength), mime:im.mimeType||"image/jpeg" }; });
+	return out; }
 async function init_external_model(){
 	const tag=MODEL.url.startsWith("data:")?"embedded model":MODEL.url;
-	try{ 
+	try{
 		// Fetch/decode the GLB bytes ourselves (the loader's .load() builds a Request that sandboxed iframes can't clone).
 		let abuf;
 		if(MODEL.url.startsWith("data:")){ const b64=MODEL.url.slice(MODEL.url.indexOf(",")+1); const bin=atob(b64);
 			const u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); abuf=u.buffer; }
 		else { const resp=await fetch(MODEL.url); if(!resp.ok) throw new Error("HTTP "+resp.status); abuf=await resp.arrayBuffer(); }
-		// Pull the embedded texture out, then strip texture refs so parse() never makes a blob: URL (which the sandbox rejects).
-		const parts=glb_split(abuf); let tex_src=null;
-		try{ if(parts.bin && parts.json.images && parts.json.images.length){ const iv=parts.json.bufferViews[parts.json.images[0].bufferView];
-			tex_src={ bytes:parts.bin.slice(iv.byteOffset||0,(iv.byteOffset||0)+iv.byteLength), mime:parts.json.images[0].mimeType||"image/jpeg" }; } }catch(e){}
+		// Capture per-material baseColor images, then strip texture refs so parse() never makes a blob: URL (which the sandbox rejects).
+		const parts=glb_split(abuf); const tex_by_material=model_textures(parts);
 		(parts.json.materials||[]).forEach(m=>{ if(m.pbrMetallicRoughness){ delete m.pbrMetallicRoughness.baseColorTexture; delete m.pbrMetallicRoughness.metallicRoughnessTexture; } delete m.normalTexture; delete m.occlusionTexture; delete m.emissiveTexture; });
 		delete parts.json.textures; delete parts.json.images; delete parts.json.samplers;
 		const clean=glb_repack(parts.json, parts.bin);
 		new GLTFLoader().parse(clean, "",
 			async gltf=>{ try{
 				jet_proto=normalise_model(gltf.scene);
-				if(tex_src && typeof createImageBitmap==="function"){ try{
-					const bmp=await createImageBitmap(new Blob([tex_src.bytes],{type:tex_src.mime}));   // decodes in-process, no URL/fetch
-					const tex=new THREE.Texture(bmp); tex.flipY=false; tex.colorSpace=THREE.SRGBColorSpace;
-					tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.anisotropy=4; tex.needsUpdate=true; set_proto_map(tex);
-				}catch(te){ console.warn("[model] texture decode failed — untextured airframe.",te&&te.message||te); } }
+				if(typeof createImageBitmap==="function"){
+					const decoded={};   // material name -> THREE.Texture (decoded in-process, no URL/fetch)
+					await Promise.all(Object.keys(tex_by_material).map(async name=>{ try{
+						const src=tex_by_material[name]; const bmp=await createImageBitmap(new Blob([src.bytes],{type:src.mime}));
+						const tex=new THREE.Texture(bmp); tex.flipY=false; tex.colorSpace=THREE.SRGBColorSpace; tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.anisotropy=4; tex.needsUpdate=true; decoded[name]=tex;
+					}catch(te){ console.warn("[model] texture decode failed for "+name,te&&te.message||te); } }));
+					jet_proto.traverse(o=>{ if(o.isMesh&&o.material){ (Array.isArray(o.material)?o.material:[o.material]).forEach(mm=>{ if(decoded[mm.name]){ mm.map=decoded[mm.name]; mm.needsUpdate=true; } }); } });
+				}
 				model_active=true; apply_model_all();
 			}catch(e){ throw new Error("fighter model: failed to process "+tag+": "+(e&&e.message||e)); } },
 			err=>{ throw new Error("fighter model: parse failed for "+tag+" ("+((err&&err.message)||"bad glTF")+") — ensure uncompressed glTF/GLB (no Draco)"); });
@@ -990,7 +999,7 @@ function refresh_perf(dt){ ft_ring[ft_i]=dt*1000; ft_i=(ft_i+1)%ft_ring.length; 
 	framerate.textContent=Math.round(1000/avg)+" fps · "+Math.round(1000/low)+" 1% low"; }
 
 // ============================================================================ sizing
-function apply_size(){ const w=innerWidth,h=innerHeight,sc=THREE.MathUtils.clamp(cfg.render_scale,0.3,2.0);
+function apply_size(){ const w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,2),sc=THREE.MathUtils.clamp(cfg.render_scale,0.3,2.0)*dpr;
 	renderer.setSize(Math.round(w*sc),Math.round(h*sc),false); canvas.style.width=w+"px"; canvas.style.height=h+"px";
 	camera.aspect=w/h; camera.updateProjectionMatrix(); hud_resize(); if(cloud_active()||rt) size_rt(); }
 addEventListener("resize",apply_size,{ signal });
