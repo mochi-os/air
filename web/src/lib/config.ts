@@ -26,6 +26,7 @@ export interface MissionConfig {
   missiles: boolean
   flares: boolean
   invert: boolean
+  framerate: boolean
   [key: string]: string | number | boolean
 }
 
@@ -49,6 +50,7 @@ export const DEFAULT_CONFIG: MissionConfig = {
   missiles: true,
   flares: true,
   invert: false,
+  framerate: false,
 }
 
 export type GraphicsPreset = 'low' | 'med' | 'high' | 'ultra'

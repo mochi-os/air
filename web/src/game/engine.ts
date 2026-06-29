@@ -14,6 +14,7 @@ export type GameConfig = Record<string, unknown>
 
 export interface GameHandle {
   stop: () => void
+  resume: (config?: GameConfig) => void
 }
 
 export function startGame({
@@ -21,6 +22,7 @@ export function startGame({
   hud,
   map,
   help,
+  framerate,
   config = {},
   onExit,
 }: {
@@ -28,6 +30,7 @@ export function startGame({
   hud: HTMLCanvasElement
   map: HTMLCanvasElement
   help: HTMLElement
+  framerate?: HTMLElement
   config?: GameConfig
   onExit?: () => void
 }): GameHandle {
@@ -38,8 +41,8 @@ export function startGame({
 // ============================================================================ config
 const cfg = { render_scale:1.0, dyn_res:false, ocean_segments:256, exterior_detail:3, lod:true, extra_aircraft:0,
 	tracers:true, fire_rate:3, missiles:true, flares:true, shadows:false, clouds:"none", afterburner:true,
-	view:"hud", invert:false, sens:1.0,
-	task:"joust", start:"carrier", tod:"day", help:true,
+	view:"hud", invert:false, framerate:false, sens:1.0,
+	task:"joust", start:"carrier", tod:"day", help:false,
 	cat_x:49.31, cat_z:-0.58, cat_h:1.6, cat_dy:2.26 };   // carrier spawn = #2 (port bow) catapult, tuned: x toward bow, z to port, heading deg (0=+X), dy = height above deck
 const SAVE_KEY="joust_cfg_v1";
 const CAT_KEYS=["cat_x","cat_z","cat_h","cat_dy"];
@@ -54,6 +57,7 @@ function enter_align(){ try{ const prev=JSON.parse(localStorage.getItem(SAVE_KEY
 load_cfg();
 Object.assign(cfg, config);   // mission-setup menu overrides saved/defaults
 cfg.view="hud";   // always start in HUD view (V still cycles during play)
+cfg.help=false;   // keys-help overlay hidden by default and not persisted (H toggles it for the session only)
 let running=false, has_enemy=true;
 const MULTIPLAYER=false;             // single-player today; map/P pause only when this is false
 let pause_toggle=false, game_paused=false;
@@ -669,7 +673,7 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(k==="KeyV"){ const order=["hud","chase","padlock","action"]; cfg.view=order[(order.indexOf(cfg.view)+1)%order.length]; }
 		if(k==="KeyM"){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on) map_resize(); }
 		if(k==="KeyP" && !MULTIPLAYER){ pause_toggle=!pause_toggle; }
-		if(k==="KeyH"){ cfg.help=!cfg.help; help_el.style.display=cfg.help?"":"none"; save_cfg(); }
+		if(k==="KeyH"){ cfg.help=!cfg.help; help_el.style.display=cfg.help?"":"none"; }
 		// G key disabled. Alignment mode (deck_edit / edit_cat / overlay) is retained for future use — e.g. marking arrestor cable positions. To re-enable: if(k==="KeyG" && cfg.start==="carrier"){ deck_edit=!deck_edit; if(deck_edit){ enter_align(); } else { save_cfg(); cat_saved_t=1.8; } }
 		if(k==="Escape" && running){ running=false; if(onExit) onExit(); } }
 	keys.add(k); }, { signal });
@@ -976,8 +980,13 @@ function draw_hud(dt){
 }
 
 // ============================================================================ perf
-const ft_ring=new Array(180).fill(16.7); let ft_i=0;
-function refresh_perf(dt){ ft_ring[ft_i]=dt*1000; ft_i=(ft_i+1)%ft_ring.length; }
+const ft_ring=new Array(180).fill(16.7); let ft_i=0, accumulator=0;
+function refresh_perf(dt){ ft_ring[ft_i]=dt*1000; ft_i=(ft_i+1)%ft_ring.length;   // frame-time ring (dynamic_res reads it)
+	accumulator+=dt; if(accumulator<0.25 || !framerate) return; accumulator=0;        // fps + 1% low readout, ~4 Hz
+	if(!cfg.framerate){ framerate.style.display="none"; return; }                     // gated by the graphics setting (default off)
+	framerate.style.display="block";
+	const s=[...ft_ring].sort((a,b)=>a-b), avg=s.reduce((x,v)=>x+v,0)/s.length, low=s[Math.floor(s.length*0.99)];
+	framerate.textContent=Math.round(1000/avg)+" fps · "+Math.round(1000/low)+" 1% low"; }
 
 // ============================================================================ sizing
 function apply_size(){ const w=innerWidth,h=innerHeight,sc=THREE.MathUtils.clamp(cfg.render_scale,0.3,2.0);
@@ -1043,5 +1052,19 @@ init_carrier_model();
     cancelAnimationFrame(__raf)
     try { renderer.dispose() } catch (e) {}
   }
-  return { stop }
+  // Re-enter a game paused by Esc (running was set false; state is preserved).
+  // Re-applies any settings changed in the menu that take effect live — sensitivity,
+  // invert, render scale, shadows, time of day. Mission, start, clouds and ocean
+  // detail only take effect on a Restart (a fresh start_mission).
+  function resume(updated) {
+    if (updated) {
+      Object.assign(cfg, updated)
+      apply_size()
+      apply_effects()
+      apply_time_of_day(cfg.tod)
+    }
+    running = true
+    try { stage.focus() } catch (e) {}
+  }
+  return { stop, resume }
 }

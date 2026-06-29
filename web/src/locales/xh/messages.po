@@ -21,16 +21,8 @@ msgstr "iiyure ezili-12"
 msgid "24 hours"
 msgstr "iiyure ezingama-24"
 
-#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:169
 msgid "A browser-based multiplayer jet-combat prototype — a shared flight model with server-authoritative netcode (work in progress), rendered with Three.js on WebGL2."
-msgstr ""
-
-#: src/components/MissionSetup.tsx:188
-msgid "A joust pits you against an evasive bandit. An on-carrier start places you on the bow catapult — press Space to launch."
-msgstr ""
-
-#: src/components/MissionSetup.tsx:159
-msgid "About"
 msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:51
@@ -107,7 +99,7 @@ msgstr "Yongeza imbono"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Lungelelanisa imbonakalo nesakhiwo ukuze sihambelane neminqweno yakho."
 
-#: src/components/MissionSetup.tsx:328
+#: src/components/MissionSetup.tsx:479
 msgid "Afterburner"
 msgstr ""
 
@@ -115,11 +107,11 @@ msgstr ""
 msgid "AI"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:394
+#: src/components/MissionSetup.tsx:199
 msgid "Aircraft carrier <0>“Gerald Ford Aircraft Carrier”</0> by <1>Usman Zia (Uxxman)</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline, texture downscaled."
 msgstr ""
 
-#: src/components/MissionSetup.tsx:370
+#: src/components/MissionSetup.tsx:175
 msgid "Aircraft model <0>“Modern Jet Fighter — Low Poly (Game Ready)”</0> by <1>3Dima</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented nose +X, texture downscaled."
 msgstr ""
 
@@ -178,10 +170,6 @@ msgstr "Khulisa umdla"
 msgid "Cancel"
 msgstr "Rhoxisa"
 
-#: src/components/MissionSetup.tsx:143
-msgid "Carrier air combat — mission setup"
-msgstr ""
-
 #: ../../../lib/web/src/components/notification-category-button.tsx:144
 msgid "Category for this notification"
 msgstr "Udidi lwesi saziso"
@@ -190,6 +178,10 @@ msgstr "Udidi lwesi saziso"
 #: ../../../lib/web/src/components/notification-category-button.tsx:136
 msgid "Change notification category"
 msgstr "Tshintsha udidi lwesaziso"
+
+#: src/components/MissionSetup.tsx:369
+msgid "Chase view"
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:328
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
@@ -259,7 +251,7 @@ msgstr "Vala iphaneli"
 msgid "Close search"
 msgstr "Vala ukukhangela"
 
-#: src/components/MissionSetup.tsx:209
+#: src/components/MissionSetup.tsx:311
 msgid "Clouds"
 msgstr ""
 
@@ -308,6 +300,10 @@ msgstr "Qhubeka"
 msgid "Continue with {label}"
 msgstr "Qhubeka nge-{label}"
 
+#: src/components/MissionSetup.tsx:262
+msgid "Controls"
+msgstr ""
+
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
 msgstr "Kotshela"
@@ -328,13 +324,22 @@ msgstr "Ayikwazanga ukuqalisa ukuqinisekiswa kwakhona. Nceda uzame kwakhona."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Akukwazekanga ukuqinisekisa ngaloo akhawunti. Nceda uzame kwakhona."
 
-#: src/components/MissionSetup.tsx:216
+#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:164
+msgid "Credits"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:318
 msgid "Cumulus"
 msgstr ""
 
 #: ../../../lib/web/src/components/colour-picker.tsx:260
 msgid "Custom"
 msgstr "Ngokwesiqhelo"
+
+#: src/components/MissionSetup.tsx:363
+msgid "Cycle view"
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
 #: ../../../lib/web/src/lib/preference-utils.ts:20
@@ -349,7 +354,7 @@ msgstr "Mnyama"
 msgid "Dark mode"
 msgstr "Imodi emnyama"
 
-#: src/components/MissionSetup.tsx:203
+#: src/components/MissionSetup.tsx:305
 msgid "Day"
 msgstr ""
 
@@ -401,7 +406,11 @@ msgstr "Yikhabe"
 msgid "Displays the mobile sidebar."
 msgstr "Ibonisa ibara lecala leselula."
 
-#: src/components/MissionSetup.tsx:316
+#: src/components/MissionSetup.tsx:378
+msgid "Distance"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:467
 msgid "Distance LOD"
 msgstr ""
 
@@ -412,13 +421,13 @@ msgstr "Khuphela"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:68
 msgid "Download failed"
-msgstr ""
+msgstr "Ukukhuphela akuphumelelanga"
 
-#: src/components/MissionSetup.tsx:204
+#: src/components/MissionSetup.tsx:306
 msgid "Dusk"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:310
+#: src/components/MissionSetup.tsx:461
 msgid "Dynamic resolution"
 msgstr ""
 
@@ -453,11 +462,11 @@ msgstr "Yandisa"
 msgid "Expand sidebar"
 msgstr "Yandisa ibara lecala"
 
-#: src/components/MissionSetup.tsx:273
+#: src/components/MissionSetup.tsx:424
 msgid "Exterior detail"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:298
+#: src/components/MissionSetup.tsx:449
 msgid "Extra aircraft"
 msgstr ""
 
@@ -485,11 +494,12 @@ msgstr "Ayiphumelelanga ukuhlaziya udidi"
 msgid "Finish moving your account"
 msgstr "Gqiba ukufudusa i-akhawunti yakho"
 
-#: src/components/MissionSetup.tsx:289
+#: src/components/MissionSetup.tsx:440
 msgid "Fire rate"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:346
+#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:497
 msgid "Flares"
 msgstr ""
 
@@ -501,7 +511,11 @@ msgstr "Isicaba"
 msgid "Floating"
 msgstr "Idadayo"
 
-#: src/components/MissionSetup.tsx:171
+#: src/components/MissionSetup.tsx:503
+msgid "Framerate"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:279
 msgid "Free flight"
 msgstr ""
 
@@ -552,7 +566,7 @@ msgstr "Yiya kwiphepha {pageNumber}"
 msgid "Go to previous page"
 msgstr "Yiya kwiphepha elidlulileyo"
 
-#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:265
 msgid "Graphics"
 msgstr ""
 
@@ -568,11 +582,11 @@ msgstr "Fihla"
 msgid "Hide password"
 msgstr "Fihla iphasiwedi"
 
-#: src/components/MissionSetup.tsx:243
+#: src/components/MissionSetup.tsx:404
 msgid "High"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:217
+#: src/components/MissionSetup.tsx:319
 msgid "High stratus"
 msgstr ""
 
@@ -591,8 +605,12 @@ msgstr "Ishushu"
 msgid "Imperial"
 msgstr "I-Imperial"
 
-#: src/components/MissionSetup.tsx:182
+#: src/components/MissionSetup.tsx:290
 msgid "In air"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:327
+msgid "Input"
 msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:252
@@ -607,18 +625,26 @@ msgstr "Imidla"
 msgid "Invalid verification code"
 msgstr "Ikhowudi yokuqinisekisa engasebenziyo"
 
-#: src/components/MissionSetup.tsx:352
+#: src/components/MissionSetup.tsx:342
 msgid "Invert pitch"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:172
+#: src/components/MissionSetup.tsx:280
 msgid "Joust"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:349
+msgid "Keys"
 msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:108
 #: ../../../lib/web/src/lib/preference-utils.ts:135
 msgid "Large"
 msgstr "Inkulu"
+
+#: src/components/MissionSetup.tsx:359
+msgid "Launch / guns"
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:286
 msgid "Layout"
@@ -673,12 +699,16 @@ msgstr "Uphume ngempumelelo"
 msgid "Logging out…"
 msgstr "Iyaphuma…"
 
-#: src/components/MissionSetup.tsx:239
+#: src/components/MissionSetup.tsx:400
 msgid "Low"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:218
+#: src/components/MissionSetup.tsx:320
 msgid "Low stratus"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:364
+msgid "Map"
 msgstr ""
 
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:92
@@ -688,7 +718,7 @@ msgid "Mark all as read"
 msgstr "Phawula konke njengokufundiwe"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:241
+#: src/components/MissionSetup.tsx:402
 msgid "Medium"
 msgstr "Ephakathi"
 
@@ -700,16 +730,16 @@ msgstr "Imenyu"
 msgid "Metric"
 msgstr "I-Metric"
 
-#: src/components/MissionSetup.tsx:340
+#: src/components/MissionSetup.tsx:360
+msgid "Missile"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:491
 msgid "Missiles"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:150
+#: src/components/MissionSetup.tsx:256
 msgid "Mission"
-msgstr ""
-
-#: src/components/MissionSetup.tsx:367
-msgid "Model attribution"
 msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:59
@@ -729,7 +759,7 @@ msgstr "Entsha"
 msgid "Next image"
 msgstr "Umfanekiso olandelayo"
 
-#: src/components/MissionSetup.tsx:205
+#: src/components/MissionSetup.tsx:307
 msgid "Night"
 msgstr ""
 
@@ -773,7 +803,7 @@ msgstr "Akukho basebenzisi bafumanekileyo"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:215
+#: src/components/MissionSetup.tsx:317
 msgid "None"
 msgstr "Akukho nanye"
 
@@ -793,15 +823,15 @@ msgstr "Akumiselwanga"
 msgid "Notifications"
 msgstr "Izaziso"
 
-#: src/components/MissionSetup.tsx:281
+#: src/components/MissionSetup.tsx:432
 msgid "Ocean detail"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:292
 msgid "On carrier"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:183
+#: src/components/MissionSetup.tsx:291
 msgid "On runway"
 msgstr ""
 
@@ -834,6 +864,10 @@ msgstr "Vula imenyu yojikelo"
 msgid "Open theme settings"
 msgstr "Vula iisetingi zomxholo"
 
+#: src/components/MissionSetup.tsx:373
+msgid "Orbit"
+msgstr ""
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:166
 msgid "Other"
 msgstr "Okunye"
@@ -854,11 +888,19 @@ msgstr "Ukuqinisekiswa kwe-passkey akuphumelelanga. Nceda uzame kwakhona."
 msgid "Passkeys"
 msgstr "Ii-passkey"
 
+#: src/components/MissionSetup.tsx:365
+msgid "Pause"
+msgstr "Misa"
+
+#: src/components/MissionSetup.tsx:352
+msgid "Pitch"
+msgstr ""
+
 #: ../../../lib/web/src/lib/api-client.ts:301
 msgid "Please check your internet connection and try again."
 msgstr "Nceda ukhangele uqhagamshelwano lwakho lwe-intanethi uze uzame kwakhona."
 
-#: src/components/MissionSetup.tsx:226
+#: src/components/MissionSetup.tsx:387
 msgid "Preset"
 msgstr ""
 
@@ -888,6 +930,10 @@ msgstr "Phinda udibanise iiakhawunti zakho kwiseva yesi"
 #: ../../../lib/web/src/components/restore-banner.tsx:129
 msgid "Re-register your passkeys on this server"
 msgstr "Phinda ubhalise izitshixo zakho zokufikelela kule seva"
+
+#: src/components/MissionSetup.tsx:362
+msgid "Rearm"
+msgstr ""
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:219
 #: ../../../lib/web/src/components/search-entity-page.tsx:194
@@ -936,7 +982,7 @@ msgstr "Thumela kwakhona i-imeyile"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:520
 msgid "Reset"
 msgstr "Buyisela"
 
@@ -944,13 +990,29 @@ msgstr "Buyisela"
 msgid "Reset all settings to default values"
 msgstr "Buyisela zonke iisetingi kumaxabiso amiselweyo"
 
-#: src/components/MissionSetup.tsx:253
+#: src/components/MissionSetup.tsx:414
 msgid "Resolution"
 msgstr "Isisombululo"
+
+#: src/components/MissionSetup.tsx:526
+msgid "Restart"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:530
+msgid "Resume"
+msgstr "Qhubeka"
+
+#: src/components/MissionSetup.tsx:366
+msgid "Return to menu"
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:361
 msgid "Right to Left"
 msgstr "Ekunene ukuya Ekhohlo"
+
+#: src/components/MissionSetup.tsx:353
+msgid "Roll"
+msgstr ""
 
 #: ../../../lib/web/src/components/data-table/pagination.tsx:63
 msgid "Rows per page"
@@ -1035,7 +1097,7 @@ msgstr "Thumela kwakhona"
 msgid "Send email"
 msgstr "Thumela i-imeyile"
 
-#: src/components/MissionSetup.tsx:263
+#: src/components/MissionSetup.tsx:331
 msgid "Sensitivity"
 msgstr ""
 
@@ -1069,7 +1131,7 @@ msgstr "Misa indawo yokuqala neyokugqibela"
 msgid "Settings"
 msgstr "Iisetingi"
 
-#: src/components/MissionSetup.tsx:322
+#: src/components/MissionSetup.tsx:473
 msgid "Shadows"
 msgstr ""
 
@@ -1109,12 +1171,9 @@ msgstr "Encinci"
 msgid "Spacious"
 msgstr "Banzi"
 
-#: src/components/MissionSetup.tsx:176
+#: src/components/MissionSetup.tsx:284
+#: src/components/MissionSetup.tsx:536
 msgid "Start"
-msgstr ""
-
-#: src/components/MissionSetup.tsx:432
-msgid "Start mission"
 msgstr ""
 
 #: ../../../lib/web/src/components/coming-soon.tsx:15
@@ -1144,7 +1203,7 @@ msgstr "Iletile"
 msgid "Tags"
 msgstr "Iiletile"
 
-#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:273
 msgid "Task"
 msgstr ""
 
@@ -1169,11 +1228,19 @@ msgstr "Itimu"
 msgid "Theme Settings"
 msgstr "Iisetingi zetimu"
 
+#: src/components/MissionSetup.tsx:356
+msgid "Throttle"
+msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:62
 msgid "Thursday"
 msgstr "Ulwesine"
 
-#: src/components/MissionSetup.tsx:197
+#: src/components/MissionSetup.tsx:376
+msgid "Tilt"
+msgstr ""
+
+#: src/components/MissionSetup.tsx:299
 msgid "Time of day"
 msgstr ""
 
@@ -1212,7 +1279,7 @@ msgstr "Tshintsha itimu"
 msgid "Top"
 msgstr "Phezulu"
 
-#: src/components/MissionSetup.tsx:334
+#: src/components/MissionSetup.tsx:485
 msgid "Tracers"
 msgstr ""
 
@@ -1247,7 +1314,7 @@ msgstr "Bhala ukukhangela abasebenzisi"
 msgid "Type to search..."
 msgstr "Bhala ukukhangela..."
 
-#: src/components/MissionSetup.tsx:245
+#: src/components/MissionSetup.tsx:406
 msgid "Ultra"
 msgstr ""
 
@@ -1327,7 +1394,7 @@ msgstr "Bonisa zonke izaziso"
 msgid "We'll be back online shortly."
 msgstr "Sizakubuyela kungekudala."
 
-#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:259
 msgid "Weather"
 msgstr ""
 
@@ -1338,6 +1405,10 @@ msgstr "Iwebhusayithi iphantsi kogcino!"
 #: ../../../lib/web/src/lib/preference-utils.ts:61
 msgid "Wednesday"
 msgstr "Ulwesithathu"
+
+#: src/components/MissionSetup.tsx:354
+msgid "Yaw"
+msgstr ""
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
