@@ -166,13 +166,38 @@ function CreditsDialog() {
           </p>
           <p className='leading-relaxed'>
             <Trans>
-              Aircraft model <b>“Modern Jet Fighter — Low Poly (Game Ready)”</b> by <b>3Dima</b>{' '}
+              Aircraft model <b>“Boeing F/A-18E/F Super Hornet”</b> by <b>andertan</b>{' '}
               (Sketchfab), licensed under <b>CC BY 4.0</b>. Modified: rescaled, reoriented nose +X,
-              texture downscaled.
+              weapons and pylons removed, markings removed, landing gear added, converted to
+              metal-rough.
             </Trans>{' '}
             <a
               className='text-primary hover:underline'
-              href='https://sketchfab.com/3d-models/modern-jet-fighter-low-poly-game-ready-free-cd2bd715dcd14dc4b47ebaeb2403fb89'
+              href='https://sketchfab.com/3d-models/boeing-fa-18ef-super-hornet-f71e9fea01e24fea9b1b380161d21d38'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              Sketchfab
+            </a>{' '}
+            ·{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://creativecommons.org/licenses/by/4.0/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              CC BY 4.0
+            </a>
+          </p>
+          <p className='leading-relaxed'>
+            <Trans>
+              Landing-gear wheels from <b>“F/A-18F Super Hornet Fighter Jet”</b> by{' '}
+              <b>Muhamad Mirza Arrafi</b> (Sketchfab), licensed under <b>CC BY 4.0</b>. Modified:
+              wheels extracted and mounted on procedural struts.
+            </Trans>{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://sketchfab.com/3d-models/fa-18f-super-hornet-fighter-jet-af08dc9320d14a1094476e0a34bd6750'
               target='_blank'
               rel='noopener noreferrer'
             >

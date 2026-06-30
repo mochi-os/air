@@ -252,7 +252,7 @@ function build_exterior_low(){ const parts=[];
 const ab_geo=new THREE.ConeGeometry(0.3,2.6,12); ab_geo.rotateZ(Math.PI/2);
 const ab_mat=new THREE.MeshBasicMaterial({color:0xffaa44,transparent:true,opacity:0.8,blending:THREE.AdditiveBlending,depthWrite:false,fog:false});
 function make_jet(tint){ const g=new THREE.Group(); g.userData.tint=tint;   // afterburner cones only — the airframe is the loaded GLB (no procedural fallback)
-	for(const side of [1,-1]){ const ab=new THREE.Mesh(ab_geo,ab_mat); ab.position.set(-9.3,-0.95,side*0.48); ab.userData.ab=true; g.add(ab); } return g; }   // at the Hornet's twin nozzles (computed from engine-mesh bbox)
+	for(const side of [1,-1]){ const ab=new THREE.Mesh(ab_geo,ab_mat); ab.position.set(-9.3,-0.37,side*0.48); ab.userData.ab=true; g.add(ab); } return g; }   // at the Hornet's twin nozzles (Y raised from -0.95 after the gear extended the model bbox, shifting normalise's centre up ~0.58)
 
 // ============================================================================ optional external GLB model (cosmetic only)
 // Drop a downloaded glTF/GLB next to this file named "fighter.glb" to replace the procedural airframe.
@@ -263,6 +263,7 @@ const MODEL = { url:"models/fighter.glb", length:18.3, yaw:0, pitch:0, roll:0 };
 // flies BACKWARDS -> yaw 180; on its SIDE / wings vertical -> roll 90 or -90; nose pitched up/down -> pitch 90 or -90; upside down -> roll 180.
 const D2R=Math.PI/180;
 let model_active=false, jet_proto=null;
+let gear_clips=[]; const GEAR_RATE=0.5;   // landing-gear fold clips baked into fighter.glb; GEAR_RATE = retract/extend speed of the 0..1 progress (~2s cycle)
 function model_tint(hex){ return hex===0xb04a3a?0xff9a86 : hex===0x7f8a96?0xdde3ea : 0xffffff; }   // light team tints (white = untouched)
 function normalise_model(scene){ scene.updateMatrixWorld(true);
 	const box=new THREE.Box3().setFromObject(scene), size=box.getSize(new THREE.Vector3()), ctr=box.getCenter(new THREE.Vector3());
@@ -275,7 +276,9 @@ function apply_model_to(g){ if(!jet_proto||g.userData.hasModel) return; g.userDa
 	const m=jet_proto.clone(true); m.userData.model=true; const tint=model_tint(g.userData.tint||0xffffff);
 	m.traverse(o=>{ if(o.isMesh){ o.userData.modelmesh=true; o.castShadow=cfg.shadows;
 		if(tint!==0xffffff && o.material && o.material.color){ o.material=o.material.clone(); o.material.color=o.material.color.clone().multiply(new THREE.Color(tint)); } } });
-	g.add(m); }
+	g.add(m);
+	if(gear_clips.length){ const mixer=new THREE.AnimationMixer(m); g.userData.gearMixer=mixer;   // per-aircraft gear fold; scrubbed by progress in update_gear()
+		g.userData.gearActions=gear_clips.map(c=>{ const a=mixer.clipAction(c); a.play(); return { action:a, dur:c.duration||1 }; }); } }
 function apply_model_all(){ apply_model_to(ownship.group); apply_model_to(bandit.group); extras.forEach(s=>apply_model_to(s.group)); }
 // --- minimal GLB container surgery (so we never trigger the loader's blob-URL texture path) ---
 function glb_split(ab){ const dv=new DataView(ab); if(dv.getUint32(0,true)!==0x46546C67) throw new Error("not a GLB");
@@ -313,7 +316,7 @@ async function init_external_model(){
 		const clean=glb_repack(parts.json, parts.bin);
 		new GLTFLoader().parse(clean, "",
 			async gltf=>{ try{
-				jet_proto=normalise_model(gltf.scene);
+				jet_proto=normalise_model(gltf.scene); gear_clips=gltf.animations||[];   // capture the baked gear-fold clips
 				if(typeof createImageBitmap==="function"){
 					const decoded={};   // material name -> THREE.Texture (decoded in-process, no URL/fetch)
 					await Promise.all(Object.keys(tex_by_material).map(async name=>{ try{
@@ -459,7 +462,7 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active) continue; 
 // ============================================================================ flight
 const world_up=new THREE.Vector3(0,1,0);
 function make_state(pos,fwd,speed){ return { pos:pos.clone(), fwd:fwd.clone().normalize(), speed, bank:0, group:null,
-	break_t:0, break_dir:new THREE.Vector3(1,0,0), circle_phase:Math.random()*Math.PI*2, circle_radius:1500+Math.random()*2500, circle_alt:1600+Math.random()*2200, velx:0,vely:0,velz:0 }; }
+	break_t:0, break_dir:new THREE.Vector3(1,0,0), circle_phase:Math.random()*Math.PI*2, circle_radius:1500+Math.random()*2500, circle_alt:1600+Math.random()*2200, velx:0,vely:0,velz:0, gear:1, gearTarget:1 }; }   // gear 0=down 1=up (default up for airborne bandits/extras)
 function steer(st,desired,dt,max_rate,max_bank){ desired.normalize(); let ang=st.fwd.angleTo(desired); const max=max_rate*dt;
 	if(ang>1e-4){ const axis=new THREE.Vector3().crossVectors(st.fwd,desired).normalize(); st.fwd.applyAxisAngle(axis,Math.min(ang,max)).normalize(); }
 	const horiz=new THREE.Vector3(desired.x-st.fwd.x,0,desired.z-st.fwd.z); const side=new THREE.Vector3().crossVectors(world_up,st.fwd);
@@ -685,7 +688,7 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(k==="KeyM"){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on) map_resize(); }
 		if(k==="KeyP" && !MULTIPLAYER){ pause_toggle=!pause_toggle; }
 		if(k==="KeyH"){ cfg.help=!cfg.help; help_el.style.display=cfg.help?"":"none"; }
-		// G key disabled. Alignment mode (deck_edit / edit_cat / overlay) is retained for future use — e.g. marking arrestor cable positions. To re-enable: if(k==="KeyG" && cfg.start==="carrier"){ deck_edit=!deck_edit; if(deck_edit){ enter_align(); } else { save_cfg(); cat_saved_t=1.8; } }
+		if(k==="KeyG"){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; }   // landing gear up/down. (Was a disabled deck-alignment toggle: — e.g. marking arrestor cable positions. To re-enable: if(k==="KeyG" && cfg.start==="carrier"){ deck_edit=!deck_edit; if(deck_edit){ enter_align(); } else { save_cfg(); cat_saved_t=1.8; } }
 		if(k==="Escape" && running){ running=false; if(onExit) onExit(); } }
 	keys.add(k); }, { signal });
 addEventListener("keyup",e=>keys.delete(e.code),{ signal });
@@ -722,7 +725,7 @@ function fly_player(dt){
 		ownship.velx=ownship.fwd.x*ownship.speed; ownship.vely=ownship.fwd.y*ownship.speed; ownship.velz=ownship.fwd.z*ownship.speed;
 		ownship.pos.addScaledVector(ownship.fwd,ownship.speed*dt); ownship.launch_dist+=ownship.speed*dt; ownship.aoa=0; ownship.gload=1;
 		ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
-		if(ownship.launch_dist>85) ownship.launching=false; return;
+		if(ownship.launch_dist>85){ ownship.launching=false; ownship.gearTarget=1; } return;   // retract gear after the catapult shot
 	}
 	const s=cfg.sens; const roll_rate=3.0*s, pitch_rate=1.3*s, yaw_rate=0.6*s;
 	_q.setFromAxisAngle(ownship.right, input.pitch*pitch_rate*dt); ownship.q.premultiply(_q);
@@ -757,6 +760,10 @@ function fly_bandit(dt){
 	// bandit guns at ownship
 	fire_gun(bandit,ownship,"bandit",dt);
 }
+function apply_gear(st){ const g=st.group; if(!g||!g.userData.gearActions) return;   // scrub the baked fold clips to st.gear (0=down, 1=up)
+	const t=THREE.MathUtils.clamp(st.gear,0,1); for(const a of g.userData.gearActions) a.action.time=t*a.dur; g.userData.gearMixer.update(0); }
+function update_gear(dt){ for(const st of [ownship,bandit,...extras]){ const tgt=st.gearTarget??1;
+	if(st.gear===undefined) st.gear=tgt; const d=tgt-st.gear; if(Math.abs(d)>1e-4) st.gear+=Math.sign(d)*Math.min(Math.abs(d),GEAR_RATE*dt); apply_gear(st); } }
 function step_world(dt){ sim_time+=dt;
 	fly_player(dt); if(has_enemy) fly_bandit(dt);
 	for(const st of extras){ st.circle_phase+=dt*(st.speed/st.circle_radius);
@@ -770,6 +777,7 @@ function step_world(dt){ sim_time+=dt;
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96);
 	live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts);
 	tr_pts.visible=cfg.tracers; fl_pts.visible=cfg.flares;
+	update_gear(dt);
 	update_papi(ownship.pos);
 }
 
@@ -782,6 +790,7 @@ function reset_ownship(){
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
 	else { ownship.pos.set(-700,1400,200); ownship.speed=220; ownship.throttle=0.8; }
+	{ const down=(cfg.start==="carrier"||cfg.start==="runway"); ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway, up for an air start
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
 	bandit.pos.set(3000,2400,-1000); bandit.fwd.set(-0.3,0,1).normalize(); bandit.break_t=0; bandit.speed=195;
 }
