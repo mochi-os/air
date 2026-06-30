@@ -454,15 +454,6 @@ export function MissionSetup({
                     onChange={(v) => set('ocean_segments', v)}
                   />
                   <SliderRow
-                    label={<Trans>Fire rate</Trans>}
-                    value={config.fire_rate}
-                    min={1}
-                    max={10}
-                    step={1}
-                    suffix='×'
-                    onChange={(v) => set('fire_rate', v)}
-                  />
-                  <SliderRow
                     label={<Trans>Extra aircraft</Trans>}
                     value={config.extra_aircraft}
                     min={0}
