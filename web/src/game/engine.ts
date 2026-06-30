@@ -327,7 +327,7 @@ async function init_external_model(){
 					}catch(te){ console.warn("[model] texture decode failed for "+name,te&&te.message||te); } }));
 					jet_proto.traverse(o=>{ if(o.isMesh&&o.material){ (Array.isArray(o.material)?o.material:[o.material]).forEach(mm=>{
 						if(decoded[mm.name]){ mm.map=decoded[mm.name]; }
-						if(mm.metalness!==undefined && !/glass|screen|oleo/i.test(mm.name||"")){ mm.metalness=0.0; mm.roughness=0.88; }   // matte low-vis tactical paint; keep canopy glass + chrome oleo glossy
+						if(mm.metalness!==undefined && !/glass|screen|oleo|gear/i.test(mm.name||"")){ mm.metalness=0.0; mm.roughness=0.88; }   // matte low-vis tactical paint; keep canopy glass, chrome oleo, and the gear (semi-gloss, matching the donor) untouched
 						mm.needsUpdate=true;
 					}); } });
 				}
