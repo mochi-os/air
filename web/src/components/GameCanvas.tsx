@@ -87,7 +87,7 @@ export function GameCanvas({
         <Trans>roll</Trans> · <b>Q/E</b> <Trans>yaw</Trans> · <b>Shift/Ctrl</b>{' '}
         <Trans>throttle</Trans> · <b>Space</b> <Trans>launch / guns</Trans> ·{' '}
         <b>R</b> <Trans>missile</Trans> · <b>F</b> <Trans>flares</Trans> · <b>X</b>{' '}
-        <Trans>rearm</Trans> · <b>V</b> <Trans>view</Trans> · <b>M</b>{' '}
+        <Trans>rearm</Trans> · <b>G</b> <Trans>gear</Trans> · <b>V</b> <Trans>view</Trans> · <b>M</b>{' '}
         <Trans>map</Trans> · <b>P</b> <Trans>pause</Trans> · <b>H</b>{' '}
         <Trans>help</Trans> · <b>Esc</b> <Trans>menu</Trans>
         <br />
