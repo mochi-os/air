@@ -20,7 +20,6 @@ import '../game/game.css'
 const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   GUN: msg`GUN`,
   FLARES: msg`FLARES`,
-  LAUNCH: msg`LAUNCH`,
   YOU: msg`YOU`,
   PAUSED: msg`PAUSED`,
   'PRESS SPACE TO LAUNCH': msg`PRESS SPACE TO LAUNCH`,
