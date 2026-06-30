@@ -42,7 +42,7 @@ export function startGame({
 
 // ============================================================================ config
 const cfg = { render_scale:1.0, dyn_res:false, ocean_segments:256, exterior_detail:3, lod:true, extra_aircraft:0,
-	tracers:true, fire_rate:3, missiles:true, flares:true, shadows:false, clouds:"none", afterburner:true,
+	tracers:true, missiles:true, flares:true, shadows:false, clouds:"none", afterburner:true,
 	view:"hud", invert:false, framerate:false, sens:1.0,
 	task:"joust", start:"carrier", tod:"day", help:false,
 	cat_x:48.43, cat_z:-0.58, cat_h:1.6, cat_dy:2.43 };   // carrier spawn = #2 (port bow) catapult, tuned: x toward bow, z to port, heading deg (0=+X), dy = height above deck
@@ -420,7 +420,7 @@ function pool(max){ return { px:new Float32Array(max),py:new Float32Array(max),p
 function pool_spawn(p){ for(let i=0;i<p.max;i++){ const k=(p.next+i)%p.max; if(!p.active[k]){ p.next=(k+1)%p.max; p.active[k]=1; return k; } } return -1; }
 const TR_MAX=4000,FL_MAX=2500,SM_MAX=3000;
 const tracers=pool(TR_MAX),flares=pool(FL_MAX),smoke=pool(SM_MAX);
-const tr_pts=make_points(TR_MAX,7,true,glow), fl_pts=make_points(FL_MAX,26,true,glow), sm_pts=make_points(SM_MAX,70,false,soft);
+const tr_pts=make_points(TR_MAX,4,false,glow), fl_pts=make_points(FL_MAX,26,true,glow), sm_pts=make_points(SM_MAX,70,false,soft);   // tracers: small + NORMAL blend (additive blew the colour out to white against bright sky)
 function flush_points(p,pts){ const pos=pts.geometry.attributes.position.array,col=pts.geometry.attributes.color.array; let n=0;
 	for(let i=0;i<p.max;i++){ if(!p.active[i]) continue; const o=n*3; pos[o]=p.px[i];pos[o+1]=p.py[i];pos[o+2]=p.pz[i];
 		const f=Math.max(0,p.life[i]/p.ttl[i]); col[o]=p.r[i]*f;col[o+1]=p.g[i]*f;col[o+2]=p.b[i]*f; n++; }
@@ -436,15 +436,17 @@ function fire_gun(st,target,key,dt,force){
 	if(force!==undefined) active=force;
 	else { const to=target.pos.clone().sub(st.pos); const rng=to.length(); active=(rng<2500 && st.fwd.dot(to.normalize())>0.985); }
 	if(!active) return; if(st.rounds!==undefined && st.rounds<=0) return; if(!cfg.tracers && st===ownship) {} // tracers toggle only affects render
-	const rps=100*cfg.fire_rate; gun[key]=(gun[key]||0)+rps*dt;
+	const rps=100; gun[key]=(gun[key]||0)+rps*dt;   // M61 Vulcan: 6000 rpm = 100 rounds/sec
 	while(gun[key]>=1){ gun[key]-=1; if(st.rounds!==undefined){ if(st.rounds<=0) break; st.rounds--; }
-		const k=pool_spawn(tracers); if(k<0) break; const sp=body_offset(st,6.5,0.0,1.2);
+		const tr=(Math.floor(gun[key+"_n"]||0)%5)===0; gun[key+"_n"]=(gun[key+"_n"]||0)+1;
+		if(!tr) continue;   // only 1 in 5 rounds is a visible tracer; the rest fire invisibly
+		const k=pool_spawn(tracers); if(k<0) break; const sp=body_offset(st,6.0,0.35,0.0);   // gun port: nose-top centreline (forward of the windscreen)
 		tracers.px[k]=sp.x;tracers.py[k]=sp.y;tracers.pz[k]=sp.z; const spread=0.004;
 		tracers.vx[k]=st.fwd.x*muzzle+(Math.random()-0.5)*spread*muzzle+st.velx;
 		tracers.vy[k]=st.fwd.y*muzzle+(Math.random()-0.5)*spread*muzzle+st.vely;
 		tracers.vz[k]=st.fwd.z*muzzle+(Math.random()-0.5)*spread*muzzle+st.velz;
-		const tr=(Math.floor(gun[key+"_n"]||0)%4)===0; gun[key+"_n"]=(gun[key+"_n"]||0)+1; tracers.ttl[k]=tracers.life[k]=2.4;
-		if(tr){tracers.r[k]=1.6;tracers.g[k]=0.9;tracers.b[k]=0.3;} else {tracers.r[k]=0.5;tracers.g[k]=0.35;tracers.b[k]=0.2;} } }
+		tracers.ttl[k]=tracers.life[k]=1.8;   // ~1.8s @1050m/s -> ~1900m burnout (real 20mm tracer range; no drag in this sim)
+		tracers.r[k]=1.3;tracers.g[k]=0.42;tracers.b[k]=0.1; } }   // red-orange; normal-blended (see tr_pts) so the colour reads instead of blowing out white
 const flare_timer={bandit:4.5};
 function dispense_flares(st){ for(let i=0;i<36;i++){ const k=pool_spawn(flares); if(k<0) break; const sp=local_offset(st,-2,-0.3,0);
 	flares.px[k]=sp.x;flares.py[k]=sp.y;flares.pz[k]=sp.z; flares.vx[k]=st.velx*0.5+(Math.random()-0.5)*40; flares.vy[k]=st.vely*0.5-Math.random()*25; flares.vz[k]=st.velz*0.5+(Math.random()-0.5)*40;
@@ -489,7 +491,7 @@ function body_offset(st,x,y,z){ const up=st.up||world_up; const right=st.right||
 // ownship = player
 const ownship=make_state(new THREE.Vector3(70,CARRIER.deckY+1.8,-6),new THREE.Vector3(1,0,0),0);
 ownship.player=true; ownship.q=new THREE.Quaternion(); ownship.up=new THREE.Vector3(0,1,0); ownship.right=new THREE.Vector3(0,0,1);
-ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.rounds=600; ownship.msl=4; ownship.cm=60; ownship.aoa=0; ownship.gload=1;
+ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.rounds=578; ownship.msl=4; ownship.cm=60; ownship.aoa=0; ownship.gload=1;
 ownship.on_cat=true; ownship.launching=false; ownship.launch_dist=0;
 // init quaternion from initial fwd
 (()=>{ const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
@@ -696,7 +698,7 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(k==="Space" && ownship.on_cat){ start_launch(); }
 		if(k==="KeyR" && !ownship.on_cat && !ownship.launching && cfg.missiles && ownship.msl>0){ if(launch_missile(ownship,has_enemy?bandit:null)) ownship.msl--; }
 		if(k==="KeyF" && cfg.flares && ownship.cm>0){ dispense_flares(ownship); ownship.cm--; }
-		if(k==="KeyX"){ ownship.rounds=600; ownship.msl=4; ownship.cm=60; }
+		if(k==="KeyX"){ ownship.rounds=578; ownship.msl=4; ownship.cm=60; }
 		if(k==="KeyV"){ const order=["hud","chase","padlock","action"]; cfg.view=order[(order.indexOf(cfg.view)+1)%order.length]; }
 		if(k==="KeyM"){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on) map_resize(); }
 		if(k==="KeyP" && !MULTIPLAYER){ pause_toggle=!pause_toggle; }
@@ -803,7 +805,7 @@ function step_world(dt){ sim_time+=dt;
 
 function reset_ownship(){
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
-	ownship.rounds=600; ownship.msl=4; ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.launch_dist=0; ownship.on_cat=false;
+	ownship.rounds=578; ownship.msl=4; ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.launch_dist=0; ownship.on_cat=false;
 	if(cfg.start==="carrier"){ ownship.speed=0; ownship.throttle=0.85; ownship.on_cat=true; place_on_cat(); }
 	else if(cfg.start==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
 		ownship.pos.set(ap.start.x,ap.start.y,ap.start.z); ownship.fwd.copy(ap.dir).normalize(); ownship.speed=0; ownship.throttle=0.85;
@@ -942,7 +944,7 @@ function draw_hud(dt){
 			hctx.fillText((rng/1852).toFixed(1)+" NM",tb[0]+28,tb[1]-8); hctx.fillText((closure>0?"+":"")+Math.round(closure)+" kt",tb[0]+28,tb[1]+8); } }
 
 	// ---- lead-computing gun pipper ----
-	const t=Math.min(rng,2000)/muzzle; const muz=body_offset(ownship,6.5,0.0,1.2);
+	const t=Math.min(rng,2000)/muzzle; const muz=body_offset(ownship,6.0,0.35,0.0);   // match the gun port used in fire_gun
 	const impact=muz.clone().addScaledVector(ownship.fwd,muzzle*t).addScaledVector(ownship.vel_dir,ownship.speed*t); impact.y-=0.5*9.8*t*t;
 	const pip=proj_point(impact);
 	if(pip){ hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.beginPath(); hctx.arc(pip[0],pip[1],4,0,Math.PI*2); hctx.fill();

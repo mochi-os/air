@@ -16,7 +16,6 @@ export interface MissionConfig {
   sens: number
   exterior_detail: number
   ocean_segments: number
-  fire_rate: number
   extra_aircraft: number
   dyn_res: boolean
   lod: boolean
@@ -40,7 +39,6 @@ export const DEFAULT_CONFIG: MissionConfig = {
   sens: 1.0,
   exterior_detail: 3,
   ocean_segments: 256,
-  fire_rate: 3,
   extra_aircraft: 0,
   dyn_res: false,
   lod: true,
@@ -59,12 +57,12 @@ export type GraphicsPreset = 'low' | 'med' | 'high' | 'ultra'
 // MissionConfig stays a MissionConfig.
 type GraphicsPatch = Pick<
   MissionConfig,
-  'render_scale' | 'ocean_segments' | 'exterior_detail' | 'shadows' | 'fire_rate'
+  'render_scale' | 'ocean_segments' | 'exterior_detail' | 'shadows'
 >
 
 export const GRAPHICS_PRESETS: Record<GraphicsPreset, GraphicsPatch> = {
-  low: { render_scale: 0.6, ocean_segments: 96, exterior_detail: 1, shadows: false, fire_rate: 2 },
-  med: { render_scale: 1.0, ocean_segments: 192, exterior_detail: 3, shadows: false, fire_rate: 3 },
-  high: { render_scale: 1.0, ocean_segments: 320, exterior_detail: 4, shadows: true, fire_rate: 5 },
-  ultra: { render_scale: 1.5, ocean_segments: 512, exterior_detail: 5, shadows: true, fire_rate: 7 },
+  low: { render_scale: 0.6, ocean_segments: 96, exterior_detail: 1, shadows: false },
+  med: { render_scale: 1.0, ocean_segments: 192, exterior_detail: 3, shadows: false },
+  high: { render_scale: 1.0, ocean_segments: 320, exterior_detail: 4, shadows: true },
+  ultra: { render_scale: 1.5, ocean_segments: 512, exterior_detail: 5, shadows: true },
 }
