@@ -100,7 +100,6 @@ stars.frustumCulled=false; scene.add(stars);
 // time-of-day presets + apply
 const TOD={
 	day:  { sun:[0.45,0.42,-0.32], sunCol:0xfff4e0, sunI:2.4,  disc:0xfff3da, hor:0xbfd8e8, zen:0x2a5a8c, fog:0xc4d6e2, deep:0x0a2a3a, shal:0x1d6e86, hs:0xbcd6ec, hg:0x35506a, hi:0.9,  ac:0x405060, ai:0.4,  exp:1.05, stars:0.0 },
-	dusk: { sun:[0.96,0.10,-0.26], sunCol:0xffb060, sunI:1.7,  disc:0xffd49a, hor:0xf3a064, zen:0x39376e, fog:0xd7a585, deep:0x10202e, shal:0x39555f, hs:0xc89a82, hg:0x402f3a, hi:0.6,  ac:0x40303a, ai:0.34, exp:1.0,  stars:0.18 },
 	night:{ sun:[0.30,0.55,-0.40], sunCol:0x9fb6e0, sunI:0.32, disc:0xcdd8f0, hor:0x0f1626, zen:0x05080f, fog:0x0a111c, deep:0x030810, shal:0x0a2030, hs:0x1a2742, hg:0x05060a, hi:0.32, ac:0x0a0e18, ai:0.22, exp:1.18, stars:0.95 },
 };
 function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
@@ -450,7 +449,7 @@ function fire_gun(st,target,key,dt,force){
 const flare_timer={bandit:4.5};
 function dispense_flares(st){ for(let i=0;i<36;i++){ const k=pool_spawn(flares); if(k<0) break; const sp=local_offset(st,-2,-0.3,0);
 	flares.px[k]=sp.x;flares.py[k]=sp.y;flares.pz[k]=sp.z; flares.vx[k]=st.velx*0.5+(Math.random()-0.5)*40; flares.vy[k]=st.vely*0.5-Math.random()*25; flares.vz[k]=st.velz*0.5+(Math.random()-0.5)*40;
-	flares.ttl[k]=flares.life[k]=3.5+Math.random()*1.5; flares.r[k]=2.0;flares.g[k]=1.2;flares.b[k]=0.5; } }
+	flares.ttl[k]=flares.life[k]=3.5+Math.random()*1.5; flares.r[k]=2.6;flares.g[k]=2.3;flares.b[k]=1.2; } }   // brilliant white-hot with a warm tinge (burning magnesium), not orange
 const MSL_MAX=8;
 const missile_geo=(()=>{ const parts=[]; const b=new THREE.CylinderGeometry(0.12,0.12,2.4,12); b.rotateZ(-Math.PI/2); parts.push(b);
 	const n=new THREE.ConeGeometry(0.12,0.5,12); n.rotateZ(-Math.PI/2); n.translate(1.45,0,0); parts.push(n);

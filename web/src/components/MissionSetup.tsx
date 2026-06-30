@@ -246,6 +246,8 @@ function CreditsDialog() {
 export function MissionSetup({
   config,
   onChange,
+  tab,
+  onTabChange,
   gameInProgress,
   onStart,
   onResume,
@@ -253,6 +255,8 @@ export function MissionSetup({
 }: {
   config: MissionConfig
   onChange: (config: MissionConfig) => void
+  tab: string
+  onTabChange: (tab: string) => void
   gameInProgress: boolean
   onStart: () => void
   onResume: () => void
@@ -266,7 +270,7 @@ export function MissionSetup({
       <div className='w-full max-w-2xl'>
         <h1 className='mb-6 text-3xl font-semibold tracking-tight'>Furball</h1>
         <div>
-          <Tabs variant='underline' defaultValue='mission'>
+          <Tabs variant='underline' value={tab} onValueChange={onTabChange}>
             <TabsList>
               <TabsTrigger value='mission'>
                 <Trans>Mission</Trans>
@@ -320,7 +324,6 @@ export function MissionSetup({
                   onChange={(v) => set('tod', v)}
                   options={[
                     { value: 'day', label: <Trans>Day</Trans> },
-                    { value: 'dusk', label: <Trans>Dusk</Trans> },
                     { value: 'night', label: <Trans>Night</Trans> },
                   ]}
                 />
