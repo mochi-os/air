@@ -346,7 +346,11 @@ function glb_image(p,ti){ if(ti==null||!p.bin||!p.json.textures) return null; co
 	const im=p.json.images&&p.json.images[t.source]; if(!im||im.bufferView==null) return null; const bv=p.json.bufferViews[im.bufferView];
 	return { bytes:p.bin.slice(bv.byteOffset||0,(bv.byteOffset||0)+bv.byteLength), mime:im.mimeType||"image/png" }; }
 async function make_tex(src,srgb){ const bmp=await createImageBitmap(new Blob([src.bytes],{type:src.mime}));
-	const t=new THREE.Texture(bmp); t.flipY=false; t.colorSpace=srgb?THREE.SRGBColorSpace:THREE.LinearSRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=4; t.needsUpdate=true; return t; }
+	const t=new THREE.Texture(bmp); t.flipY=false; t.colorSpace=srgb?THREE.SRGBColorSpace:THREE.LinearSRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping;
+	// trilinear mipmapping + max anisotropy: the carrier deck is a big flat surface viewed at grazing
+	// angles from altitude, where thin painted markings (landing strip, centreline) alias badly without it.
+	t.magFilter=THREE.LinearFilter; t.minFilter=THREE.LinearMipmapLinearFilter; t.generateMipmaps=true;
+	t.anisotropy=renderer.capabilities.getMaxAnisotropy(); t.needsUpdate=true; return t; }
 function model_y_stats(grp){ grp.updateMatrixWorld(true); const v=new THREE.Vector3(); let mn=Infinity,mx=-Infinity; const ys=[];
 	grp.traverse(o=>{ if(o.isMesh&&o.geometry&&o.geometry.attributes.position){ const pa=o.geometry.attributes.position; o.updateWorldMatrix(true,false);
 		for(let i=0;i<pa.count;i++){ v.fromBufferAttribute(pa,i).applyMatrix4(o.matrixWorld); if(v.y<mn)mn=v.y; if(v.y>mx)mx=v.y; ys.push(v.y); } } });
@@ -1024,7 +1028,13 @@ function refresh_perf(dt){ ft_ring[ft_i]=dt*1000; ft_i=(ft_i+1)%ft_ring.length; 
 	framerate.textContent=Math.round(1000/avg)+" fps · "+Math.round(1000/low)+" 1% low"; }
 
 // ============================================================================ sizing
-function apply_size(){ const w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,2),sc=THREE.MathUtils.clamp(cfg.render_scale,0.3,2.0)*dpr;
+// Supersample: render the scene at SUPERSAMPLE× the device resolution and let the blit downscale (SSAA).
+// This is the only thing that smooths *texture-baked* detail like the carrier deck markings at grazing
+// angles — anisotropy already maxed, but the lines are inside the texture so MSAA can't touch them.
+// Kept separate from render_scale (the dyn-res perf knob, capped at 1.0) so it isn't scaled away or
+// clobbered by a saved cfg. 1.5 = ~2.25× pixels; raise toward 2.0 for crisper, lower if a client struggles.
+const SUPERSAMPLE=1.5;
+function apply_size(){ const w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,2),sc=THREE.MathUtils.clamp(cfg.render_scale,0.3,2.0)*dpr*SUPERSAMPLE;
 	renderer.setSize(Math.round(w*sc),Math.round(h*sc),false); canvas.style.width=w+"px"; canvas.style.height=h+"px";
 	camera.aspect=w/h; camera.updateProjectionMatrix(); hud_resize(); if(cloud_active()||rt) size_rt(); }
 addEventListener("resize",apply_size,{ signal });
