@@ -12,6 +12,9 @@ import {
   createQueryClient,
   getRouterBasepath,
   I18nProvider,
+  installShellNavigationSync,
+  installShellLinkInterceptor,
+  installShellClipboardProxy,
   type Catalogs,
 } from '@mochi/web'
 // Generated Routes
@@ -131,6 +134,32 @@ const catalogs: Catalogs = {
 }
 
 const queryClient = createQueryClient()
+
+// Shell integration that AuthenticatedLayout normally installs — this fullscreen
+// game doesn't use that layout, so wire it up by hand. All three self-guard
+// (no-op outside the Mochi shell / if already installed):
+//  - navigation sync: inside the iframe history.pushState is a silent no-op, so
+//    relay the router's URL changes (e.g. ?tab=) up to the parent address bar;
+//  - link interceptor: route in-app/cross-app link clicks through the shell;
+//  - clipboard proxy: clipboard APIs are blocked in the sandboxed iframe.
+installShellNavigationSync()
+installShellLinkInterceptor()
+installShellClipboardProxy()
+
+// The shell appends ?_shell=1 to the iframe document URL so the server serves
+// the app (not the shell wrapper) for that load. The server has consumed it by
+// the time this SPA runs, so drop it from the client URL — otherwise the
+// navigation sync above relays it into the visible top-window address bar, and
+// it gets merged into ?tab= navigations. Replacing it here (post-sync) also
+// pushes the cleaned URL up to the shell. Re-loads come from the shell, which
+// re-adds the marker, so removing it client-side is safe.
+{
+  const u = new URL(window.location.href)
+  if (u.searchParams.has('_shell')) {
+    u.searchParams.delete('_shell')
+    history.replaceState(history.state, '', u.pathname + u.search + u.hash)
+  }
+}
 
 const router = createRouter({
   routeTree,

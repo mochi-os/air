@@ -10,7 +10,7 @@
 export interface MissionConfig {
   task: 'free' | 'joust'
   start: 'air' | 'runway' | 'carrier'
-  tod: 'day' | 'dusk' | 'night'
+  tod: 'day' | 'night'
   clouds: 'none' | 'cumulus' | 'high_stratus' | 'low_stratus'
   render_scale: number
   sens: number

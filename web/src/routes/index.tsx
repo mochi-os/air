@@ -11,6 +11,11 @@ import { MissionSetup } from '../components/MissionSetup'
 import { useMissionConfig } from '../lib/config-store'
 import { type GameHandle } from '../game/engine'
 
+// Mission-setup tabs are mirrored in the URL (?tab=…) so the address bar tracks
+// the active tab and it's shareable / back-navigable, like other Mochi apps.
+type SetupTab = 'mission' | 'weather' | 'controls' | 'graphics'
+const SETUP_TABS: SetupTab[] = ['mission', 'weather', 'controls', 'graphics']
+
 function enterFullscreen() {
   // Requires the shell to grant the iframe allow="fullscreen"; a no-op (caught)
   // if the browser declines. Must be called from a user gesture.
@@ -29,6 +34,11 @@ function Index() {
   const [menuOpen, setMenuOpen] = useState(true)
   const [gameKey, setGameKey] = useState(0)
   const gameRef = useRef<GameHandle | null>(null)
+
+  const { tab = 'mission' } = Route.useSearch()
+  const navigate = Route.useNavigate()
+  const setTab = (t: string) =>
+    navigate({ search: (prev) => ({ ...prev, tab: t as SetupTab }) })
 
   const inFlight = started && !menuOpen
 
@@ -70,6 +80,8 @@ function Index() {
         <MissionSetup
           config={config}
           onChange={setConfig}
+          tab={tab}
+          onTabChange={setTab}
           gameInProgress={started}
           onStart={() => {
             setStarted(true)
@@ -89,4 +101,10 @@ function Index() {
   )
 }
 
-export const Route = createFileRoute('/')({ component: Index })
+export const Route = createFileRoute('/')({
+  component: Index,
+  // tab is optional so navigations to '/' (e.g. shared error pages) needn't supply it;
+  // it's defaulted to 'mission' on read.
+  validateSearch: (search: Record<string, unknown>): { tab?: SetupTab } =>
+    SETUP_TABS.includes(search.tab as SetupTab) ? { tab: search.tab as SetupTab } : {},
+})
