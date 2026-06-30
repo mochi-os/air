@@ -899,7 +899,6 @@ function draw_hud(dt){
 			hctx.beginPath(); hctx.moveTo(cx,0); hctx.lineTo(cx,HH); hctx.stroke(); hctx.restore();
 			hctx.fillStyle=AM; hctx.font="13px monospace"; hctx.fillText("DECK ALIGN  I/K fore-aft · J/L port-stbd · [ ] height · U/O rotate · G save",cx,cy+182);
 			hctx.fillStyle=GR; hctx.fillText("x="+cfg.cat_x.toFixed(2)+"  z="+cfg.cat_z.toFixed(2)+"  height="+cfg.cat_dy.toFixed(2)+"  hdg="+cfg.cat_h.toFixed(1)+"\u00b0    (camera: Shift+\u2190\u2192 orbit · ,/. tilt · \u2212/= zoom)",cx,cy+200); } }
-	else if(ownship.launching){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="22px monospace"; hctx.fillText(translate("LAUNCH"),cx,cy+130); }
 	if(cat_saved_t>0){ cat_saved_t-=dt; hctx.textAlign="center"; hctx.fillStyle=GR; hctx.font="14px monospace"; hctx.fillText(translate("DECK POSITION SAVED"),cx,cy+182); }
 	if(cfg.view!=="hud"){ return; }
 	hctx.lineWidth=1.5; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.font="13px "+getComputedStyle(document.body).fontFamily;
