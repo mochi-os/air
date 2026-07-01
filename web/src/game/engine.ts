@@ -59,9 +59,9 @@ function enter_align(){ try{ const prev=JSON.parse(localStorage.getItem(SAVE_KEY
 load_cfg();
 Object.assign(cfg, config);   // mission-setup menu overrides saved/defaults
 cfg.view="hud";   // start in HUD (view 2); 1-5 select views, V swaps cockpit/HUD
-cfg.help=false;   // keys-help overlay hidden by default and not persisted (H toggles it for the session only)
 let running=false, has_enemy=true;
 const MULTIPLAYER=false;             // single-player today; map/P pause only when this is false
+const DECK_ALIGN=false;              // dev-only catapult/deck alignment tool (Shift+G) — code kept, unreachable in player builds (keys.md §4)
 let pause_toggle=false, game_paused=false;
 const sun_dir = new THREE.Vector3(0.45,0.42,-0.32).normalize();
 const CARRIER={ x:0, z:0, deckY:19 };   // heading +X, bow at +x
@@ -685,7 +685,7 @@ function sync_extras(n){ while(extras.length<n){ const a=Math.random()*Math.PI*2
 	while(extras.length>n){ const st=extras.pop(); scene.remove(st.group); st.group.traverse(o=>{ if(o.isMesh&&o.material&&o.material.dispose)o.material.dispose(); }); } }
 
 // ---- input ----
-const input={ pitch:0, roll:0, yaw:0, guns:false };
+const input={ pitch:0, roll:0, yaw:0, guns:false, brake:false };
 const keys=new Set();
 let cam_az=0, cam_el=0.22, cam_dist=24;   // chase view: orbit around the aircraft
 let flyby_pos=null, flyby_side=1;          // flypast view: fixed world point the jet flies past, re-seeded ahead as it recedes
@@ -693,7 +693,7 @@ let cat_saved_t=0;                              // "deck position saved" flash t
 // True while the aircraft is sitting/rolling on the deck or runway (not yet airborne) — gear can't retract then.
 function takeoff_surface(){ if(cfg.start==="carrier") return CARRIER.deckY; if(cfg.start==="runway"&&airports.length) return airports[0].start.y; return 8; }
 function on_ground(){ return ownship.on_cat||ownship.launching||ownship.pos.y<takeoff_surface()+12; }
-addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key)) e.preventDefault();
+addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown"].includes(e.key)) e.preventDefault();
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
 		if(k==="Space" && ownship.on_cat){ start_launch(); }
 		if(k==="KeyR" && !ownship.on_cat && !ownship.launching && cfg.missiles && ownship.msl>0){ if(launch_missile(ownship,has_enemy?bandit:null)) ownship.msl--; }
@@ -707,10 +707,9 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(k==="KeyV") set_view(cfg.view==="cockpit"?"hud":"cockpit");   // V: Cockpit↔HUD fast-swap (any other view → Cockpit)
 		if(k==="KeyM"){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on) map_resize(); }
 		if(k==="KeyP" && !MULTIPLAYER){ pause_toggle=!pause_toggle; }
-		if(k==="Slash"){ cfg.help=!cfg.help; help_el.style.display=cfg.help?"":"none"; }   // help overlay (moved off H, which now toggles the hook)
 		if(k==="KeyH"){ ownship.hookTarget = ownship.hookTarget>0.5?0:1; }   // arrestor hook deploy/stow
 		if(k==="KeyG"){
-			if(e.shiftKey){ if(ownship.on_cat){ deck_edit=!deck_edit; if(deck_edit){ enter_align(); } else { save_cfg(); cat_saved_t=1.8; } } }   // Shift+G: catapult/deck alignment (on the deck only)
+			if(e.shiftKey){ if(DECK_ALIGN && ownship.on_cat){ deck_edit=!deck_edit; if(deck_edit){ enter_align(); } else { save_cfg(); cat_saved_t=1.8; } } }   // Shift+G: dev-only deck alignment, gated by DECK_ALIGN (on the deck only)
 			else if(!on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; } }   // G: landing gear up/down — only once airborne, never on deck/runway
 		if(k==="Escape" && running){ running=false; if(onExit) onExit(); } }
 	keys.add(k); }, { signal });
@@ -732,19 +731,21 @@ function end_drag(e){ if(!dragging) return; dragging=false; try{ stage.releasePo
 stage.addEventListener("pointerup",end_drag,{ signal });
 stage.addEventListener("pointercancel",end_drag,{ signal });
 function read_input(dt){
-	let pitch=0,roll=0,yaw=0;
-	const shift=keys.has("ShiftLeft")||keys.has("ShiftRight");
-	const camOrbit=cfg.view==="chase"&&shift&&(keys.has("ArrowLeft")||keys.has("ArrowRight"));   // Shift+←/→ orbit camera
-	if(keys.has("KeyS")||keys.has("ArrowDown")) pitch+=1;   // pull / nose up
-	if(keys.has("KeyW")||keys.has("ArrowUp")) pitch-=1;
-	if(keys.has("KeyD")||(!camOrbit&&keys.has("ArrowRight"))) roll+=1;
-	if(keys.has("KeyA")||(!camOrbit&&keys.has("ArrowLeft"))) roll-=1;
-	if(keys.has("KeyE")) yaw+=1; if(keys.has("KeyQ")) yaw-=1;
-	input.pitch=THREE.MathUtils.clamp(pitch,-1,1)*(cfg.invert?-1:1);
-	input.roll=THREE.MathUtils.clamp(roll,-1,1); input.yaw=THREE.MathUtils.clamp(yaw,-1,1);
-	input.guns=keys.has("Space");
-	if(shift && !camOrbit) ownship.throttle=Math.min(1,ownship.throttle+dt*0.5);
-	if(keys.has("ControlLeft")||keys.has("ControlRight")) ownship.throttle=Math.max(0,ownship.throttle-dt*0.5);
+	let tp=0,tr=0,ty=0;   // target axis deflections from the held keys (flight is W/S/A/D/Q/E only — arrows look/orbit, keys.md §2/§5)
+	if(keys.has("KeyS")) tp+=1;   // pull / nose up
+	if(keys.has("KeyW")) tp-=1;   // nose down
+	if(keys.has("KeyD")) tr+=1;   // roll right
+	if(keys.has("KeyA")) tr-=1;   // roll left
+	if(keys.has("KeyE")) ty+=1; if(keys.has("KeyQ")) ty-=1;   // rudder / yaw
+	tp=THREE.MathUtils.clamp(tp,-1,1)*(cfg.invert?-1:1); tr=THREE.MathUtils.clamp(tr,-1,1); ty=THREE.MathUtils.clamp(ty,-1,1);
+	// ramp toward full deflection while held, decay to centre on release (~0.25s) — keys.md §2, so digital keys don't fly bang-bang
+	const R=4.0*dt;
+	input.pitch+=THREE.MathUtils.clamp(tp-input.pitch,-R,R);
+	input.roll+=THREE.MathUtils.clamp(tr-input.roll,-R,R);
+	input.yaw+=THREE.MathUtils.clamp(ty-input.yaw,-R,R);
+	input.guns=keys.has("Space"); input.brake=keys.has("KeyB");   // B: wheel brakes, held (both mains together)
+	if(keys.has("PageUp")) ownship.throttle=Math.min(1,ownship.throttle+dt*0.5);      // throttle up (PgUp, held & ramped)
+	if(keys.has("PageDown")) ownship.throttle=Math.max(0,ownship.throttle-dt*0.5);    // throttle down (PgDn)
 }
 
 let sim_time=0;
@@ -777,7 +778,8 @@ function fly_player(dt){
 	_q.setFromAxisAngle(world_up,-omega*dt); ownship.q.premultiply(_q); ownship.q.normalize();
 	ownship.fwd.set(1,0,0).applyQuaternion(ownship.q); ownship.up.set(0,1,0).applyQuaternion(ownship.q); ownship.right.set(0,0,1).applyQuaternion(ownship.q);
 	const target=120+ownship.throttle*200; const pitch_ang=Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1));
-	ownship.speed+=(target-ownship.speed)*Math.min(1,dt*0.5); ownship.speed-=9.81*Math.sin(pitch_ang)*dt*1.6; ownship.speed=THREE.MathUtils.clamp(ownship.speed,55,360);
+	if(input.brake && on_ground()){ ownship.speed=Math.max(0,ownship.speed-55*dt); }   // wheel brakes: roll out below the airborne floor, down to a stop
+	else { ownship.speed+=(target-ownship.speed)*Math.min(1,dt*0.5); ownship.speed-=9.81*Math.sin(pitch_ang)*dt*1.6; ownship.speed=THREE.MathUtils.clamp(ownship.speed,55,360); }
 	ownship.vel_dir.lerp(ownship.fwd,Math.min(1,dt*2.5)).normalize();
 	ownship.velx=ownship.vel_dir.x*ownship.speed; ownship.vely=ownship.vel_dir.y*ownship.speed; ownship.velz=ownship.vel_dir.z*ownship.speed;
 	ownship.aoa=THREE.MathUtils.radToDeg(ownship.fwd.angleTo(ownship.vel_dir));
@@ -812,7 +814,7 @@ function step_world(dt){ sim_time+=dt;
 		const tgt=new THREE.Vector3(Math.cos(st.circle_phase)*st.circle_radius,st.circle_alt+Math.sin(st.circle_phase*0.5)*200,Math.sin(st.circle_phase)*st.circle_radius);
 		steer(st,tgt.sub(st.pos),dt,0.3,1.0); apply_orientation(st); }
 	const flick=0.6+Math.random()*0.4; const set_ab=(g,on)=>g.children.forEach(c=>{ if(c.userData.ab){ c.visible=on; c.scale.z=flick; c.material.opacity=on?0.55+Math.random()*0.35:0; } });
-	set_ab(ownship.group,cfg.afterburner&&ownship.throttle>0.6); set_ab(bandit.group,cfg.afterburner); extras.forEach(st=>set_ab(st.group,cfg.afterburner));
+	set_ab(ownship.group,cfg.afterburner&&ownship.throttle>=0.98); set_ab(bandit.group,cfg.afterburner); extras.forEach(st=>set_ab(st.group,cfg.afterburner));   // reheat = throttle at max (keys.md §3: no detent, full throttle is burner)
 	// player guns
 	fire_gun(ownship,bandit,"own",dt,input.guns&&!ownship.on_cat&&!ownship.launching);
 	update_pool_ballistic(tracers,dt,9.8,0); update_missiles(dt);
@@ -843,12 +845,10 @@ function update_camera(dt){
 	const editing = deck_edit && ownship.on_cat;
 	const firstPerson = (cfg.view==="hud"||cfg.view==="cockpit");   // cockpit ≡ HUD eye-point until cockpit art exists
 	ownship.group.visible=(!firstPerson) || editing;
-	if(cfg.view==="chase"){   // orbit input around the aircraft
-		const shift=keys.has("ShiftLeft")||keys.has("ShiftRight"); const ar=dt*0.9, zr=dt*40;
-		const da=(keys.has("ArrowRight")?1:0)-(keys.has("ArrowLeft")?1:0);   // Shift+←/→ azimuth
-		if(shift) cam_az+=da*ar;
-		const de=(keys.has("Period")?1:0)-(keys.has("Comma")?1:0);          // . up / , down  (no shift)
-		cam_el=THREE.MathUtils.clamp(cam_el+de*ar,-1.2,1.45);
+	if(cfg.view==="chase"){   // keyboard orbit (shares cam_az/el with the mouse drag): ←→ azimuth, ↑↓ elevation, −/= zoom — keys.md §5
+		const ar=dt*0.9, zr=dt*40;
+		cam_az+=((keys.has("ArrowRight")?1:0)-(keys.has("ArrowLeft")?1:0))*ar;           // ←/→ orbit
+		cam_el=THREE.MathUtils.clamp(cam_el+((keys.has("ArrowUp")?1:0)-(keys.has("ArrowDown")?1:0))*ar,-1.2,1.45);   // ↑/↓ tilt
 		if(keys.has("Minus")) cam_dist=Math.min(140,cam_dist+zr);           // - back
 		if(keys.has("Equal")) cam_dist=Math.max(8,cam_dist-zr);             // = in
 	}
@@ -1108,7 +1108,7 @@ function start_mission(){
 
 // ============================================================================ boot
 apply_time_of_day(cfg.tod); apply_effects(); apply_size();
-help_el.style.display=cfg.help?"":"none";
+help_el.style.display="none";   // controls list lives in the pause window now (shown while paused via P)
 addEventListener("pointerdown",()=>{ try{ window.focus(); }catch(e){} },{ signal });
 
 function menu_backdrop(){ const a=performance.now()*0.00007; const r=440;
@@ -1126,6 +1126,7 @@ function frame(){ const dt=Math.min(clock.getDelta(),0.05);
 	if(ocean){ ocean.position.x=camera.position.x; ocean.position.z=camera.position.z; }
 	sky.position.copy(camera.position); stars.position.copy(camera.position);
 	render_frame();
+	help_el.style.display=(running && pause_toggle && !map_on)?"":"none";   // pause window: controls list appears while paused via P
 	if(running){ draw_hud(dt); if(game_paused && !map_on) draw_pause_banner(); } else hctx.clearRect(0,0,HW,HH);
 	if(map_on) draw_map();
 	refresh_perf(dt); dynamic_res(dt);
