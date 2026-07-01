@@ -1011,6 +1011,13 @@ function draw_hud(dt){
 	hctx.font="11px monospace"; hctx.fillStyle=GR; hctx.fillText("THR",tgx,tgcy-tgh/2-9);
 	hctx.font="15px monospace"; hctx.fillText(Math.round(ownship.throttle*100)+"%",tgx,tgcy+tgh/2+15);
 
+	// ---- gear / hook status (bottom-left, above the stores) ----
+	// Shown only while deployed (like the SPD BK convention): green = down & locked,
+	// amber = in transit; nothing drawn in the clean configuration (gear up, hook stowed).
+	hctx.textAlign="left"; hctx.font="13px monospace";
+	if(ownship.gear<0.99){ hctx.fillStyle=ownship.gear<0.02?GR:AM; hctx.fillText(translate("GEAR"),40,HH-124); }
+	if((ownship.hook??0)>0.01){ hctx.fillStyle=(ownship.hook??0)>0.98?GR:AM; hctx.fillText(translate("HOOK"),40,HH-106); }
+
 	// ---- weapon legend (bottom-left) ----
 	hctx.textAlign="left"; hctx.font="13px monospace"; hctx.fillStyle=input.guns?AM:GR;
 	hctx.fillText(translate("GUN")+"  "+ownship.rounds,40,HH-88); hctx.fillStyle=GR;
