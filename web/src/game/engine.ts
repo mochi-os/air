@@ -342,7 +342,7 @@ async function init_external_model(){
 }
 
 // ============================================================================ optional external carrier model
-const CARRIER_MODEL = { url:"models/carrier.glb", length:300, yaw:90, draft_frac:0.375 };
+const CARRIER_MODEL = { url:"models/carrier.glb", length:300, yaw:110, draft_frac:0.375 };   // yaw 110 → bow heading ~070°T (into the ENE trades, toward Midway); heading = 180 − yaw, so 90 was due-east
 // Placed so bow -> +X (yaw 90; flip to -90 or +180 if reversed) and the waterline sits at y=0.
 // draft_frac = fraction of the keel->deck height kept BELOW water; raise it to sit the hull deeper.
 let carrier_model=null; const _ray=new THREE.Raycaster();
@@ -363,8 +363,13 @@ function model_y_stats(grp){ grp.updateMatrixWorld(true); const v=new THREE.Vect
 function deck_y_at(grp,x,z,fallback){ _ray.set(new THREE.Vector3(x,5000,z), new THREE.Vector3(0,-1,0)); const hits=_ray.intersectObject(grp,true); return hits.length?hits[0].point.y:fallback; }
 // Place ownship on the configured catapult (deck height found by raycast when a model carrier is present).
 let deck_edit=false;
-function place_on_cat(){ const hd=cfg.cat_h*D2R; const fwd=new THREE.Vector3(Math.cos(hd),0,-Math.sin(hd));
-	const wx=CARRIER.x+cfg.cat_x, wz=CARRIER.z+cfg.cat_z;   // cat pose is carrier-relative; the carrier sits at CARRIER.x/z
+function place_on_cat(){
+	// The cat pose (cat_x/cat_z offset, cat_h launch heading) was tuned at yaw 90; rotate it by the
+	// carrier's yaw delta so it tracks the ship when the heading changes. R_y: x'=x·c+z·s, z'=−x·s+z·c.
+	const yaw_delta=(CARRIER_MODEL.yaw-90)*D2R, c=Math.cos(yaw_delta), s=Math.sin(yaw_delta);
+	const wx=CARRIER.x+(cfg.cat_x*c+cfg.cat_z*s), wz=CARRIER.z+(-cfg.cat_x*s+cfg.cat_z*c);
+	const hd=cfg.cat_h*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
+	const fwd=new THREE.Vector3(fx*c+fz*s,0,-fx*s+fz*c);
 	const dy=carrier_model?deck_y_at(carrier_model,wx,wz,CARRIER.deckY):CARRIER.deckY;
 	ownship.pos.set(wx, dy+cfg.cat_dy, wz); ownship.fwd.copy(fwd); ownship.vel_dir.copy(fwd);
 	const r=new THREE.Vector3().crossVectors(fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,fwd).normalize();
@@ -403,7 +408,8 @@ async function init_carrier_model(){
 			grp.traverse(o=>{ if(o.isMesh&&o.material){ const mm=o.material; if(baseTex)mm.map=baseTex; if(normTex)mm.normalMap=normTex; mm.metalness=0.0; mm.roughness=0.9; mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; } });
 			carrier_model=grp; scene.add(grp);
 			/* procedural carrier removed; nothing to hide */
-			CARRIER.deckY=deck_y_at(grp, CARRIER.x+70, CARRIER.z-6, st.deckY-waterline);                 // deck height at the catapult spot (carrier-relative)
+			const yd=(CARRIER_MODEL.yaw-90)*D2R, dc=Math.cos(yd), ds=Math.sin(yd);                        // rotate the sample spot with the carrier heading
+			CARRIER.deckY=deck_y_at(grp, CARRIER.x+(70*dc-6*ds), CARRIER.z+(-70*ds-6*dc), st.deckY-waterline);   // deck height near the catapult spot (carrier-relative)
 			if(ownship.on_cat){ place_on_cat(); }
 		}catch(e){ throw new Error("carrier model: failed to process "+tag+": "+(e&&e.message||e)); } },
 		err=>{ throw new Error("carrier model: parse failed for "+tag+" ("+((err&&err.message)||"bad glTF")+")"); });

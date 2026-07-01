@@ -25,7 +25,7 @@ NCEI integrated DEM.
 
 ## Run
 
-    python3 -m venv venv && ./venv/bin/pip install pyshp pyproj numpy Pillow
+    python3 -m venv venv && ./venv/bin/pip install pyshp pyproj numpy Pillow rasterio
     ./venv/bin/python prep.py
 
 ## Outputs → `../web/public/maps/midway/`

@@ -16,6 +16,9 @@
 # World frame (furball.md / midway.md): 1 unit = 1 m, x = east, z = south,
 # atoll centred on the origin.
 import os, json, shapefile
+import numpy as np, rasterio
+from rasterio.warp import reproject, Resampling
+from rasterio.transform import Affine
 from pyproj import Transformer
 from PIL import Image, ImageDraw
 
@@ -64,6 +67,21 @@ def tier(hc):
     if "sand" in h or "unconsolidated" in h: return SAND
     return REEF                               # pavement/coral/reef/hardbottom/algae/…
 
+def load_depth():
+    """Resample midway_bathy_4m.tif onto the water-map grid → depth in [0,1] (0 = shore/shallow,
+    1 = deep). Source is 0..~45 m over the reef/lagoon shallows with ~255 flagging deep water; the
+    same 255 fills anything outside the raster (open ocean), so both read as fully deep."""
+    aeqd = f"+proj=aeqd +lat_0={ORIGIN_LAT} +lon_0={ORIGIN_LON} +datum=WGS84 +units=m +no_defs"
+    pixel = 2 * REGION_HALF / TEX
+    dst_transform = Affine(pixel, 0, -REGION_HALF, 0, -pixel, REGION_HALF)   # px (0,0) = NW = (-half, +half)
+    depth = np.full((TEX, TEX), 255.0, dtype="float32")
+    with rasterio.open(os.path.join(DATA, "midway_bathy_4m.tif")) as src:
+        reproject(source=rasterio.band(src, 1), destination=depth,
+                  src_transform=src.transform, src_crs=src.crs,
+                  dst_transform=dst_transform, dst_crs=aeqd,
+                  resampling=Resampling.bilinear, dst_nodata=255)
+    return np.clip(depth / 45.0, 0.0, 1.0)
+
 def build():
     os.makedirs(OUT, exist_ok=True)
     # ---- coastline (land polygons) from the cover layer ----
@@ -92,12 +110,24 @@ def build():
             if len(ring) >= 3:
                 polys.append((t[0], t[1], [to_px(*to_world(lo, la)) for lo, la in ring]))
     polys.sort(key=lambda p: p[0])   # draw deep first, surf/land last
+    depth = load_depth()             # bathymetry, resampled onto the grid
+    # phase 1 — water zones (deep/reef/sand), then darken toward deep by depth for a smooth gradient
     img = Image.new("RGB", (TEX, TEX), DEEP[1])
-    d = ImageDraw.Draw(img)
-    for _, rgb, px in polys:
-        d.polygon(px, fill=rgb)
+    draw = ImageDraw.Draw(img)
+    for pri, rgb, px in polys:
+        if pri <= 2:
+            draw.polygon(px, fill=rgb)
+    arr = np.asarray(img).astype("float32")
+    blend = (depth * 0.65)[:, :, None]
+    arr = arr * (1.0 - blend) + np.array(DEEP[1], dtype="float32") * blend
+    img = Image.fromarray(np.clip(arr, 0, 255).astype("uint8"), "RGB")
+    # phase 2 — reef-crest foam + island footprints drawn crisp, on top (no depth shading)
+    draw = ImageDraw.Draw(img)
+    for pri, rgb, px in polys:
+        if pri >= 3:
+            draw.polygon(px, fill=rgb)
     img.save(os.path.join(OUT, "water.png"))
-    print(f"water.png: {TEX}x{TEX}, {len(polys)} habitat polygons rasterised")
+    print(f"water.png: {TEX}x{TEX}, {len(polys)} habitat polygons + bathymetry depth")
 
     # map.json — generic per-map metadata (same format for future maps). wrap = toroidal
     # world size in metres; the engine treats it as optional (omit / 0 → no wrap).
