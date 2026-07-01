@@ -631,6 +631,9 @@ async function generate_world(){
 const ISLAND_H=3.5;   // island top; the airfield surfaces + runway sit ~1.5 m above it (floating read fine for runway/taxiways; coplanar z-fought worse). Runway height tuned to the y=8 aircraft floor.
 const AIRFIELD_FLOAT=1.46;   // how far the airfield ground floats above the island top
 function pip(px,pz,poly){ let inside=false; for(let i=0,j=poly.length-1;i<poly.length;j=i++){ const xi=poly[i][0],zi=poly[i][1],xj=poly[j][0],zj=poly[j][1]; if(((zi>pz)!==(zj>pz)) && px<(xj-xi)*(pz-zi)/(zj-zi)+xi) inside=!inside; } return inside; }
+// Crash-collision registry, populated as the world builds: island terrain, buildings, small structures
+// (PAPI/windsock), and the runway rectangle (the one place the arcade landing floor still applies).
+const obstacles={ islands:[], buildings:[], posts:[], aprons:[], runway:null };   // aprons/islands/… stay [] until the async airfield loads, so the ground checks never iterate undefined
 function build_islands(polygons, ground, half){
 	island_polygons=polygons.filter(polygon=>polygon.length>=30);   // Sand / Eastern / Spit; skip tiny reef rocks
 	const material=new THREE.MeshStandardMaterial({map:ground,roughness:0.96,metalness:0.0});   // Sentinel-2 imagery, planar-mapped by world position
@@ -641,6 +644,8 @@ function build_islands(polygons, ground, half){
 		for(let i=0;i<pos.count;i++){ uv[i*2]=(pos.getX(i)+half)/(2*half); uv[i*2+1]=(pos.getZ(i)+half)/(2*half); }
 		geometry.setAttribute("uv", new THREE.BufferAttribute(uv,2));
 		const mesh=new THREE.Mesh(geometry,material); mesh.receiveShadow=true; mesh.castShadow=true; scene.add(mesh);
+		let minx=1e9,maxx=-1e9,minz=1e9,maxz=-1e9; for(const p of polygon){ minx=Math.min(minx,p[0]); maxx=Math.max(maxx,p[0]); minz=Math.min(minz,p[1]); maxz=Math.max(maxz,p[1]); }
+		obstacles.islands.push({pts:polygon,minx,maxx,minz,maxz});
 	}
 }
 const ASPHALT_TILE=22;   // metres per asphalt-texture tile
@@ -678,6 +683,7 @@ function merge_uv(geos){   // merge_geometries drops uv; this keeps position+nor
 	const out=new THREE.BufferGeometry(); out.setAttribute("position",new THREE.BufferAttribute(pos,3)); out.setAttribute("normal",new THREE.BufferAttribute(nor,3)); out.setAttribute("uv",new THREE.BufferAttribute(uv,2)); out.computeBoundingSphere(); return out;
 }
 function build_airfield(af){
+	obstacles.aprons=(af.aprons||[]).map(a=>a.points);   // apron polygons double as a landing surface at apron height
 	const tex=asphalt_texture();
 	const asphalt=new THREE.MeshStandardMaterial({map:tex,roughness:0.96,metalness:0.0,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
 	// all ground surfaces (aprons + taxiways + stopways) merged into ONE mesh at ONE height. Floats ~1.5 m above the
@@ -689,6 +695,7 @@ function build_airfield(af){
 	const cx=(a[0]+b[0])/2, cz=(a[1]+b[1])/2, dx=b[0]-a[0], dz=b[1]-a[1];
 	const L=Math.hypot(dx,dz), H=Math.atan2(dx,-dz);   // runway centre, true length, heading a→b (fwd=(sinH,0,-cosH))
 	const parts=rw.ref.split("/").map(s=>parseInt(s,10));   // painted magnetic numbers (06/24) from the OSM ref
+	obstacles.runway={x:cx,z:cz,fx:Math.sin(H),fz:-Math.cos(H),hl:L/2+45,hw:rw.width/2+12};   // landing floor applies only inside this rectangle
 	build_airport({x:cx,z:cz,h:ISLAND_H,hd:H}, parts[0], parts[1], false, L, rw.width);
 }
 const WALL_TILE=3.6, ROOF_TILE=2.2;
@@ -758,8 +765,11 @@ function build_buildings(af){   // OSM footprints → textured walls + gable/fla
 		const gy=apron?ISLAND_H+AIRFIELD_FLOAT:ISLAND_H, eaveY=gy+b.height;   // buildings on the apron stand on it, not half-buried under it
 		walls.push(building_walls(pts, gy, eaveY));
 		// The gable spans the footprint's oriented bounding box, so it overhangs non-rectangular footprints — those get a flat cap instead.
-		if(b.roof==="gable" && rectangularity(pts)>=0.8){ const g=gable_roof(pts, eaveY); (b.kind==="hangar"?hroofs:roofs).push(g.slopes); walls.push(g.ends); }
+		const gabled=b.roof==="gable" && rectangularity(pts)>=0.8;
+		if(gabled){ const g=gable_roof(pts, eaveY); (b.kind==="hangar"?hroofs:roofs).push(g.slopes); walls.push(g.ends); }
 		else roofs.push(flat_cap(pts, eaveY));
+		let minx=1e9,maxx=-1e9,minz=1e9,maxz=-1e9; for(const p of pts){ minx=Math.min(minx,p[0]); maxx=Math.max(maxx,p[0]); minz=Math.min(minz,p[1]); maxz=Math.max(maxz,p[1]); }
+		obstacles.buildings.push({pts,minx:minx-3,maxx:maxx+3,minz:minz-3,maxz:maxz+3,topY:eaveY+(gabled?5:0)});
 	}
 	const add=(geos,mat)=>{ if(geos.length){ const m=new THREE.Mesh(merge_uv(geos),mat); m.castShadow=true; m.receiveShadow=true; scene.add(m); } };
 	add(walls,wallMat); add(roofs,roofMat); add(hroofs,hangarMat);
@@ -814,7 +824,8 @@ function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
 		for(let i=0;i<4;i++){ const p=tdz.clone().addScaledVector(leftVec,(W/2+15)+i*9);   // 4 units, 9 m apart, inner unit 15 m from the runway edge
 			const post=new THREE.Mesh(new THREE.BoxGeometry(0.4,0.7,0.4),new THREE.MeshStandardMaterial({color:0x2a2d31})); post.position.set(p.x,y+0.35,p.z); scene.add(post);
 			const m=new THREE.Mesh(new THREE.BoxGeometry(1.2,0.55,0.7),new THREE.MeshBasicMaterial({color:0x23262b})); m.position.set(p.x,y+0.75,p.z); scene.add(m);   // ~0.6 m light box, low on frangible legs
-			gpos.push(p.x,y+0.75,p.z); gcol.push(1,1,1); papi.push({mesh:m,x:p.x,y:y+0.75,z:p.z,set:setAng[i]}); }
+			gpos.push(p.x,y+0.75,p.z); gcol.push(1,1,1); papi.push({mesh:m,x:p.x,y:y+0.75,z:p.z,set:setAng[i]});
+			obstacles.posts.push({x:p.x,z:p.z,r:2.2,y1:y+1.6}); }
 		const pg=new THREE.BufferGeometry(); pg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(gpos),3)); pg.setAttribute("color",new THREE.BufferAttribute(new Float32Array(gcol),3));
 		const papiPts=new THREE.Points(pg,new THREE.PointsMaterial({size:13,map:light_dot,vertexColors:true,transparent:true,blending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:true})); papiPts.frustumCulled=false; papiPts.visible=false; scene.add(papiPts);   // base: normal-blended so the red reads red in daylight (additive washed it pale-orange)
 		const wg=new THREE.BufferGeometry(); wg.setAttribute("position",pg.getAttribute("position")); wg.setAttribute("color",new THREE.BufferAttribute(new Float32Array(gcol.length),3));
@@ -841,7 +852,8 @@ function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
 		// wind from ~070° (ENE trades) → the sock streams downwind (~250°); at a light ~10 kt it droops ~25° rather than standing full
 		const wd=250*D2R, droop=25*D2R, axis=new THREE.Vector3(Math.sin(wd)*Math.cos(droop),-Math.sin(droop),-Math.cos(wd)*Math.cos(droop)).normalize();
 		const h=3.4, sock=new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.5,h,12,1,true),new THREE.MeshStandardMaterial({map:windsock_texture(),side:THREE.DoubleSide,roughness:0.9,metalness:0.0}));   // banded orange/white, mouth (wide) at the pole, narrow tail downwind
-		sock.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),axis); sock.position.set(ws.x,y+6,ws.z).addScaledVector(axis,h/2); sock.castShadow=true; scene.add(sock); }
+		sock.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),axis); sock.position.set(ws.x,y+6,ws.z).addScaledVector(axis,h/2); sock.castShadow=true; scene.add(sock);
+		obstacles.posts.push({x:ws.x,z:ws.z,r:2.0,y1:y+9}); }
 	const takeoff=thrP.clone().addScaledVector(fwd,55);                       // at the start of the runway, before the numbers, rolling toward +fwd
 	airports.push({x:o.x,z:o.z,papis,dir:fwd,sy:o.h+2.2,start:{x:takeoff.x,y:o.h+2.2,z:takeoff.z}});
 }
@@ -936,8 +948,48 @@ function read_input(dt){
 
 let sim_time=0;
 const _q=new THREE.Quaternion(), _fwd=new THREE.Vector3(), _up=new THREE.Vector3(), _right=new THREE.Vector3();
-function start_launch(){ if(!ownship.on_cat) return; ownship.on_cat=false; ownship.launching=true; ownship.launch_dist=0; ownship.throttle=Math.max(ownship.throttle,0.9); }
+function start_launch(){ if(!ownship.on_cat) return; ownship.on_cat=false; ownship.launching=true; ownship.launch_dist=0; ownship.trapped=false; ownship.throttle=Math.max(ownship.throttle,0.9); }
+let crash_t=0;   // >0 = crashed; counts down to the respawn
+function explosion_at(x,y,z){ for(let i=0;i<64;i++){ const k=pool_spawn(smoke); if(k<0) break;
+	const fire=i<28, a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=fire?(9+Math.random()*40):(3+Math.random()*15);
+	smoke.px[k]=x; smoke.py[k]=y+1; smoke.pz[k]=z;
+	smoke.vx[k]=Math.cos(a)*Math.cos(e)*sp; smoke.vy[k]=Math.abs(Math.sin(e))*sp*0.8+6; smoke.vz[k]=Math.sin(a)*Math.cos(e)*sp;
+	smoke.ttl[k]=smoke.life[k]=fire?(0.5+Math.random()*0.7):(2.6+Math.random()*2.6);
+	if(fire){ smoke.r[k]=1.0; smoke.g[k]=0.42+Math.random()*0.25; smoke.b[k]=0.08; } else { smoke.r[k]=0.30; smoke.g[k]=0.30; smoke.b[k]=0.32; } } }
+function crash_ownship(){ if(crash_t>0) return; crash_t=3.0; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z); ownship.group.visible=false; ownship.speed=0; }
+function over_runway(p){ const r=obstacles.runway; if(!r) return false; const dx=p.x-r.x, dz=p.z-r.z;
+	return Math.abs(dx*r.fx+dz*r.fz)<r.hl && Math.abs(dx*r.fz-dz*r.fx)<r.hw; }
+const GEAR=3;   // the aircraft origin rests this far above whatever surface is beneath it
+const CARRIER_YD=(CARRIER_MODEL.yaw-90)*D2R, CARRIER_C=Math.cos(CARRIER_YD), CARRIER_S=Math.sin(CARRIER_YD);   // same yaw-delta frame as place_on_cat
+function carrier_fore_aft(x,z){ return (x-CARRIER.x)*CARRIER_C-(z-CARRIER.z)*CARRIER_S; }   // carrier-local fore/aft: + toward the bow (catapult ≈ +48), the arrestor wires are aft (≈ −50)
+const WIRES=[-70,-58,-46,-34];   // carrier-local fore-aft of arrestor wires 1..4 (aft → forward, ~12 m apart); wire 3 is the target
+function ground_height(x,z){   // top of the solid surface under (x,z): carrier deck / runway / apron / island; -inf = open sea (no landing)
+	if(carrier_model && Math.abs(x-CARRIER.x)<160 && Math.abs(z-CARRIER.z)<160){
+		const h=deck_y_at(carrier_model,x,z,-1e9);
+		if(h>-1e8 && h<CARRIER.deckY+4) return h;   // the flat flight deck; taller hits are the island superstructure — a solid obstacle, see check_collisions
+	}
+	if(obstacles.runway && over_runway({x,z})) return ISLAND_H+1.5;
+	for(const a of obstacles.aprons){ if(pip(x,z,a)) return ISLAND_H+AIRFIELD_FLOAT; }
+	for(const is of obstacles.islands){ if(x>is.minx&&x<is.maxx&&z>is.minz&&z<is.maxz&&pip(x,z,is.pts)) return ISLAND_H; }
+	return -1e9;
+}
+function check_collisions(){   // ownship vs sea / buildings / structures / carrier / other aircraft (land landings handled by the ground floor in fly_player)
+	if(crash_t>0) return; const p=ownship.pos;
+	if(p.y<3.4) return crash_ownship();   // the sea — over land the ground floor stops the descent higher, so this only reaches open water
+	if(p.y<45){
+		for(const b of obstacles.buildings){ if(p.y<b.topY+2 && p.x>b.minx&&p.x<b.maxx&&p.z>b.minz&&p.z<b.maxz && pip(p.x,p.z,b.pts)) return crash_ownship(); }
+		for(const s of obstacles.posts){ if(p.y<s.y1 && Math.hypot(p.x-s.x,p.z-s.z)<s.r+4) return crash_ownship(); }
+	}
+	if(carrier_model && p.y<80 && Math.abs(p.x-CARRIER.x)<160 && Math.abs(p.z-CARRIER.z)<160){
+		const h=deck_y_at(carrier_model,p.x,p.z,-1e9);   // the flat deck is a landing surface (ground floor); only the taller island superstructure is an obstacle here
+		if(h>CARRIER.deckY+4 && p.y<h) return crash_ownship();   // flew into the island superstructure
+	}
+	if(has_enemy && wrap_distance(p,bandit.pos)<14){ explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z); bandit.pos.set(3000,2400,-1000); return crash_ownship(); }
+	for(const ex of extras){ if(wrap_distance(p,ex.pos)<14){ explosion_at(ex.pos.x,ex.pos.y,ex.pos.z);
+		const a=Math.random()*Math.PI*2, r=3000+Math.random()*4000; ex.pos.set(Math.cos(a)*r,1600+Math.random()*2400,Math.sin(a)*r); return crash_ownship(); } }
+}
 function fly_player(dt){
+	if(crash_t>0){ crash_t-=dt; if(crash_t<=0){ crash_t=0; ownship.group.visible=true; reset_ownship(); } return; }   // hold through the fireball, then respawn
 	read_input(dt);
 	ownship.fwd.set(1,0,0).applyQuaternion(ownship.q); ownship.up.set(0,1,0).applyQuaternion(ownship.q); ownship.right.set(0,0,1).applyQuaternion(ownship.q);
 	if(ownship.on_cat){
@@ -964,15 +1016,33 @@ function fly_player(dt){
 	_q.setFromAxisAngle(world_up,-omega*dt); ownship.q.premultiply(_q); ownship.q.normalize();
 	ownship.fwd.set(1,0,0).applyQuaternion(ownship.q); ownship.up.set(0,1,0).applyQuaternion(ownship.q); ownship.right.set(0,0,1).applyQuaternion(ownship.q);
 	const target=70+ownship.throttle*290-(ownship.speedbrake??0)*90; const pitch_ang=Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1));   // idle ~70 → full/AB ~360 m/s; speed brake bleeds up to ~90 m/s (rough; refined in the flight-model phase)
-	if(input.brake && on_ground()){ ownship.speed=Math.max(0,ownship.speed-55*dt); }   // wheel brakes: roll out below the airborne floor, down to a stop
-	else { ownship.speed+=(target-ownship.speed)*Math.min(1,dt*0.5); ownship.speed-=9.81*Math.sin(pitch_ang)*dt*1.6; ownship.speed=THREE.MathUtils.clamp(ownship.speed,55,360); }
+	if(ownship.trapped && (ownship.hook??0)>=0.5){ ownship.speed=Math.max(0,ownship.speed-50*dt); }   // caught in the arrestor wire — hauled to a stop; raise the hook (H) to release
+	else { ownship.trapped=false;
+		if(input.brake && on_ground()){ ownship.speed=Math.max(0,ownship.speed-55*dt); }   // wheel brakes: roll out below the airborne floor, down to a stop
+		else { ownship.speed+=(target-ownship.speed)*Math.min(1,dt*0.5); ownship.speed-=9.81*Math.sin(pitch_ang)*dt*1.6; ownship.speed=THREE.MathUtils.clamp(ownship.speed,55,360); } }
 	ownship.vel_dir.lerp(ownship.fwd,Math.min(1,dt*2.5)).normalize();
 	ownship.velx=ownship.vel_dir.x*ownship.speed; ownship.vely=ownship.vel_dir.y*ownship.speed; ownship.velz=ownship.vel_dir.z*ownship.speed;
 	ownship.aoa=THREE.MathUtils.radToDeg(ownship.fwd.angleTo(ownship.vel_dir));
 	ownship.gload=1+Math.abs(input.pitch)*(ownship.speed/90);
 	ownship.pos.addScaledVector(ownship.vel_dir,ownship.speed*dt); wrap_position(ownship.pos);   // toroidal world (map.json wrap)
-	if(ownship.pos.y<8){ ownship.pos.y=8; if(ownship.vel_dir.y<0){ ownship.vel_dir.y=0; ownship.vel_dir.normalize(); } }
+	// ground floor over land (runway / apron / grass): a soft, roughly level touchdown lands; a hard or steep or
+	// badly-banked one crashes. Over open sea there's no floor — check_collisions handles the water impact.
+	const g=ground_height(ownship.pos.x,ownship.pos.z);
+	if(g>-1e8){
+		if(ownship.pos.y<g-4){ ownship.group.position.copy(ownship.pos); return crash_ownship(); }   // well below the surface = flew into the side of it (e.g. the carrier hull below the flight deck)
+		else if(ownship.pos.y<g+GEAR){
+			if(ownship.vely<-13 || ownship.up.y<0.85){ ownship.group.position.copy(ownship.pos); return crash_ownship(); }   // too much sink rate, or wings not roughly level / inverted
+			ownship.pos.y=g+GEAR; if(ownship.vel_dir.y<0){ ownship.vel_dir.y=0; ownship.vel_dir.normalize(); }
+			// carrier arrestor: touching down with the hook deployed in the aft landing zone catches a wire (land long or hook up = bolter)
+			if(carrier_model && (ownship.hook??0)>0.5 && Math.abs(ownship.pos.x-CARRIER.x)<160 && Math.abs(ownship.pos.z-CARRIER.z)<160){
+				const fa=carrier_fore_aft(ownship.pos.x,ownship.pos.z);
+				let wire=0; for(let i=0;i<4;i++){ if(WIRES[i]>=fa){ wire=i+1; break; } }   // hook drags forward from the touchdown point onto the first wire ahead of it
+				if(wire>0 && fa>-95){ ownship.trapped=true; ownship.wire=wire; }
+			}
+		}
+	}
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
+	check_collisions();
 }
 function fly_bandit(dt){
 	bandit.break_t-=dt;
@@ -1015,7 +1085,7 @@ function step_world(dt){ sim_time+=dt;
 
 function reset_ownship(){
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
-	ownship.rounds=578; ownship.msl=4; ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.launch_dist=0; ownship.on_cat=false;
+	ownship.rounds=578; ownship.msl=4; ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.launch_dist=0; ownship.on_cat=false; ownship.trapped=false; ownship.wire=0;
 	if(cfg.start==="carrier"){ ownship.speed=0; ownship.throttle=0.85; ownship.on_cat=true; place_on_cat(); }
 	else if(cfg.start==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
 		ownship.pos.set(ap.start.x,ap.start.y,ap.start.z); ownship.fwd.copy(ap.dir).normalize(); ownship.speed=0; ownship.throttle=0.85;
@@ -1124,6 +1194,8 @@ function dir_at(headFwd, rightH, yawRad, pitchRad){ const d=headFwd.clone().appl
 function draw_hud(dt){
 	hctx.clearRect(0,0,HW,HH);
 	const cx=HW/2, cy=HH/2;
+	if(crash_t>0){ hctx.textAlign="center"; hctx.fillStyle="#ff5040"; hctx.font="bold 36px monospace"; hctx.fillText(translate("CRASHED"),cx,cy-60); return; }
+	if(ownship.trapped && ownship.wire){ hctx.textAlign="center"; hctx.fillStyle=GR; hctx.font="bold 72px monospace"; hctx.fillText(String(ownship.wire),cx,cy-110); }   // which arrestor wire the hook caught (1 aft … 4 forward)
 	// ---- carrier / deck-align overlay: shown in every view (incl. chase) ----
 	if(ownship.on_cat){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="20px monospace"; hctx.fillText(translate("PRESS SPACE TO LAUNCH"),cx,cy+180);
 		if(deck_edit){ hctx.save(); hctx.strokeStyle="rgba(255,193,77,0.55)"; hctx.lineWidth=1; hctx.setLineDash([6,6]);
