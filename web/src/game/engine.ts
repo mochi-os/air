@@ -58,7 +58,7 @@ function save_cfg(){ try{ const cur={...cfg};
 function enter_align(){ try{ const prev=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}"); for(const k of CAT_KEYS) if(k in prev) cfg[k]=prev[k]; }catch(e){} place_on_cat(); }   // alignment mode resumes from the last saved catapult position
 load_cfg();
 Object.assign(cfg, config);   // mission-setup menu overrides saved/defaults
-cfg.view="hud";   // always start in HUD view (V still cycles during play)
+cfg.view="hud";   // start in HUD (view 2); 1-5 select views, V swaps cockpit/HUD
 cfg.help=false;   // keys-help overlay hidden by default and not persisted (H toggles it for the session only)
 let running=false, has_enemy=true;
 const MULTIPLAYER=false;             // single-player today; map/P pause only when this is false
@@ -688,6 +688,7 @@ function sync_extras(n){ while(extras.length<n){ const a=Math.random()*Math.PI*2
 const input={ pitch:0, roll:0, yaw:0, guns:false };
 const keys=new Set();
 let cam_az=0, cam_el=0.22, cam_dist=24;   // chase view: orbit around the aircraft
+let flyby_pos=null, flyby_side=1;          // flypast view: fixed world point the jet flies past, re-seeded ahead as it recedes
 let cat_saved_t=0;                              // "deck position saved" flash timer
 // True while the aircraft is sitting/rolling on the deck or runway (not yet airborne) — gear can't retract then.
 function takeoff_surface(){ if(cfg.start==="carrier") return CARRIER.deckY; if(cfg.start==="runway"&&airports.length) return airports[0].start.y; return 8; }
@@ -698,7 +699,12 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(k==="KeyR" && !ownship.on_cat && !ownship.launching && cfg.missiles && ownship.msl>0){ if(launch_missile(ownship,has_enemy?bandit:null)) ownship.msl--; }
 		if(k==="KeyF" && cfg.flares && ownship.cm>0){ dispense_flares(ownship); ownship.cm--; }
 		if(k==="KeyX"){ ownship.rounds=578; ownship.msl=4; ownship.cm=60; }
-		if(k==="KeyV"){ const order=["hud","chase","padlock","action"]; cfg.view=order[(order.indexOf(cfg.view)+1)%order.length]; }
+		if(k==="Digit1") set_view("cockpit");   // 1 Cockpit — pending art, resolves to the HUD eye-point for now (not a dead key)
+		if(k==="Digit2") set_view("hud");        // 2 HUD (default start view)
+		if(k==="Digit3") set_view("chase");      // 3 Chase
+		if(k==="Digit4") set_view("flypast");    // 4 Flypast
+		if(k==="Digit5") set_view("padlock");    // 5 Padlock
+		if(k==="KeyV") set_view(cfg.view==="cockpit"?"hud":"cockpit");   // V: Cockpit↔HUD fast-swap (any other view → Cockpit)
 		if(k==="KeyM"){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on) map_resize(); }
 		if(k==="KeyP" && !MULTIPLAYER){ pause_toggle=!pause_toggle; }
 		if(k==="Slash"){ cfg.help=!cfg.help; help_el.style.display=cfg.help?"":"none"; }   // help overlay (moved off H, which now toggles the hook)
@@ -820,7 +826,8 @@ function reset_ownship(){
 // ============================================================================ camera
 function update_camera(dt){
 	const editing = deck_edit && ownship.on_cat;
-	ownship.group.visible=(cfg.view!=="hud") || editing;
+	const firstPerson = (cfg.view==="hud"||cfg.view==="cockpit");   // cockpit ≡ HUD eye-point until cockpit art exists
+	ownship.group.visible=(!firstPerson) || editing;
 	if(cfg.view==="chase"){   // orbit input around the aircraft
 		const shift=keys.has("ShiftLeft")||keys.has("ShiftRight"); const ar=dt*0.9, zr=dt*40;
 		const da=(keys.has("ArrowRight")?1:0)-(keys.has("ArrowLeft")?1:0);   // Shift+←/→ azimuth
@@ -830,16 +837,28 @@ function update_camera(dt){
 		if(keys.has("Minus")) cam_dist=Math.min(140,cam_dist+zr);           // - back
 		if(keys.has("Equal")) cam_dist=Math.max(8,cam_dist-zr);             // = in
 	}
-	if(cfg.view==="hud"){ const eye=body_offset(ownship,3.0,0.6,0); camera.position.copy(eye); camera.up.copy(ownship.up);
+	if(firstPerson){ const eye=body_offset(ownship,3.0,0.6,0); camera.position.copy(eye); camera.up.copy(ownship.up);
 		camera.lookAt(eye.clone().addScaledVector(ownship.fwd,200)); }
-	else if(cfg.view==="padlock"){ const eye=body_offset(ownship,-12,4,0); camera.position.copy(eye); camera.up.set(0,1,0); camera.lookAt(bandit.pos); }
-	else if(cfg.view==="chase"){   // orbit around the aircraft
-		const ce=Math.cos(cam_el),se=Math.sin(cam_el),ca=Math.cos(cam_az),sa=Math.sin(cam_az);
-		const tgt=ownship.pos.clone().addScaledVector(ownship.up,1.2);
-		const off=ownship.fwd.clone().multiplyScalar(-ce*ca).addScaledVector(ownship.right,ce*sa).addScaledVector(ownship.up,se).multiplyScalar(cam_dist);
+	else if(cfg.view==="padlock"){ const eye=body_offset(ownship,-12,4,0); camera.position.copy(eye); camera.up.set(0,1,0);
+		camera.lookAt(has_enemy?bandit.pos:eye.clone().addScaledVector(ownship.fwd,200)); }   // lock on the bandit; look ahead when solo
+	else if(cfg.view==="chase"){   // earth-referenced orbit: world-up + heading-follow, ignores roll/pitch (keys.md §5)
+		const psi=Math.atan2(ownship.fwd.x,ownship.fwd.z), ang=psi+cam_az, ce=Math.cos(cam_el), se=Math.sin(cam_el);
+		const tgt=ownship.pos.clone(); tgt.y+=1.2;
+		const off=new THREE.Vector3(-Math.sin(ang)*ce,se,-Math.cos(ang)*ce).multiplyScalar(cam_dist);
 		camera.position.lerp(tgt.clone().add(off),Math.min(1,dt*6)); camera.up.set(0,1,0); camera.lookAt(tgt); }
-	else { const mid=ownship.pos.clone().add(bandit.pos).multiplyScalar(0.5); const r=Math.max(ownship.pos.distanceTo(bandit.pos)*1.3,600); const a=sim_time*0.15;
-		camera.position.set(mid.x+Math.cos(a)*r,mid.y+r*0.35,mid.z+Math.sin(a)*r); camera.up.set(0,1,0); camera.lookAt(mid); }
+	else if(cfg.view==="flypast"){ update_flypast(dt); }
+}
+
+function update_flypast(dt){   // fixed-ground flyby: the jet flies past a stationary camera; re-seed ahead once it recedes
+	if(!flyby_pos || ownship.pos.distanceTo(flyby_pos)>380){
+		flyby_side*=-1;
+		const fwdH=new THREE.Vector3(ownship.fwd.x,0,ownship.fwd.z); if(fwdH.lengthSq()<1e-4) fwdH.set(0,0,1); fwdH.normalize();
+		const rightH=new THREE.Vector3().crossVectors(new THREE.Vector3(0,1,0),fwdH).normalize();
+		const ahead=170+Math.random()*80, side=(45+Math.random()*40)*flyby_side, up=12.5+Math.random()*27.5;
+		flyby_pos=ownship.pos.clone().addScaledVector(fwdH,ahead).addScaledVector(rightH,side); flyby_pos.y+=up;
+		const floor=takeoff_surface()+6; if(flyby_pos.y<floor) flyby_pos.y=floor;   // keep the camera above the sea/deck
+	}
+	camera.position.copy(flyby_pos); camera.up.set(0,1,0); camera.lookAt(ownship.pos);
 }
 
 // ============================================================================ HUD (2D canvas overlay)
@@ -905,7 +924,7 @@ function draw_hud(dt){
 			hctx.fillStyle=AM; hctx.font="13px monospace"; hctx.fillText("DECK ALIGN  I/K fore-aft · J/L port-stbd · [ ] height · U/O rotate · G save",cx,cy+182);
 			hctx.fillStyle=GR; hctx.fillText("x="+cfg.cat_x.toFixed(2)+"  z="+cfg.cat_z.toFixed(2)+"  height="+cfg.cat_dy.toFixed(2)+"  hdg="+cfg.cat_h.toFixed(1)+"\u00b0    (camera: Shift+\u2190\u2192 orbit · ,/. tilt · \u2212/= zoom)",cx,cy+200); } }
 	if(cat_saved_t>0){ cat_saved_t-=dt; hctx.textAlign="center"; hctx.fillStyle=GR; hctx.font="14px monospace"; hctx.fillText(translate("DECK POSITION SAVED"),cx,cy+182); }
-	if(cfg.view!=="hud"){ return; }
+	if(cfg.view!=="hud" && cfg.view!=="cockpit"){ return; }
 	hctx.lineWidth=1.5; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.font="13px "+getComputedStyle(document.body).fontFamily;
 	hctx.textAlign="center"; hctx.textBaseline="middle";
 
@@ -1011,12 +1030,12 @@ function draw_hud(dt){
 	hctx.font="11px monospace"; hctx.fillStyle=GR; hctx.fillText("THR",tgx,tgcy-tgh/2-9);
 	hctx.font="15px monospace"; hctx.fillText(Math.round(ownship.throttle*100)+"%",tgx,tgcy+tgh/2+15);
 
-	// ---- gear / hook status (bottom-left, above the stores) ----
+	// ---- gear / hook status (bottom-right) ----
 	// Shown only while deployed (like the SPD BK convention): green = down & locked,
 	// amber = in transit; nothing drawn in the clean configuration (gear up, hook stowed).
-	hctx.textAlign="left"; hctx.font="13px monospace";
-	if(ownship.gear<0.99){ hctx.fillStyle=ownship.gear<0.02?GR:AM; hctx.fillText(translate("GEAR"),40,HH-124); }
-	if((ownship.hook??0)>0.01){ hctx.fillStyle=(ownship.hook??0)>0.98?GR:AM; hctx.fillText(translate("HOOK"),40,HH-106); }
+	hctx.textAlign="right"; hctx.font="13px monospace";
+	if(ownship.gear<0.99){ hctx.fillStyle=ownship.gear<0.02?GR:AM; hctx.fillText(translate("GEAR"),HW-40,HH-70); }
+	if((ownship.hook??0)>0.01){ hctx.fillStyle=(ownship.hook??0)>0.98?GR:AM; hctx.fillText(translate("HOOK"),HW-40,HH-52); }
 
 	// ---- weapon legend (bottom-left) ----
 	hctx.textAlign="left"; hctx.font="13px monospace"; hctx.fillStyle=input.guns?AM:GR;
@@ -1052,7 +1071,11 @@ function dynamic_res(dt){ if(!cfg.dyn_res) return; dyn_cd-=dt; if(dyn_cd>0) retu
 	else if(recent<14&&cfg.render_scale<1.0){ cfg.render_scale=Math.min(1.0,cfg.render_scale+0.05); apply_size(); } }
 
 // ============================================================================ UI / menu
-function set_view(v){ cfg.view=v; }
+function set_view(v){
+	if(v==="chase" && cfg.view==="chase"){ cam_az=0; cam_el=0.22; cam_dist=24; }   // re-press recentres the orbit (keys.md §4)
+	if(v==="flypast") flyby_pos=null;   // (re)seed a fresh flyby each time it's selected
+	cfg.view=v;
+}
 function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow=cfg.shadows;
 	const setc=g=>g.traverse(c=>{ if(c.isMesh&&(c.userData.body||c.userData.modelmesh))c.castShadow=cfg.shadows; }); setc(ownship.group); setc(bandit.group); extras.forEach(s=>setc(s.group)); }
 

@@ -380,7 +380,10 @@ export function MissionSetup({
                   <ControlRow action={<Trans>Missile</Trans>} keys={<Key>R</Key>} />
                   <ControlRow action={<Trans>Flares</Trans>} keys={<Key>F</Key>} />
                   <ControlRow action={<Trans>Rearm</Trans>} keys={<Key>X</Key>} />
-                  <ControlRow action={<Trans>Cycle view</Trans>} keys={<Key>V</Key>} />
+                  <ControlRow
+                    action={<Trans>Cycle view</Trans>}
+                    keys={<><Key>1</Key>–<Key>5</Key><Key>V</Key></>}
+                  />
                   <ControlRow action={<Trans>Map</Trans>} keys={<Key>M</Key>} />
                   <ControlRow action={<Trans>Pause</Trans>} keys={<Key>P</Key>} />
                   <ControlRow action={<Trans>Return to menu</Trans>} keys={<Key>Esc</Key>} />
