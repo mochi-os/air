@@ -374,9 +374,10 @@ export function MissionSetup({
                   <ControlRow action={<Trans>Yaw</Trans>} keys={<><Key>Q</Key><Key>E</Key></>} />
                   <ControlRow
                     action={<Trans>Throttle</Trans>}
-                    keys={<><Key>Shift</Key><Key>Ctrl</Key></>}
+                    keys={<><Key>PgUp</Key><Key>PgDn</Key></>}
                   />
                   <ControlRow action={<Trans>Launch / guns</Trans>} keys={<Key>Space</Key>} />
+                  <ControlRow action={<Trans>Wheel brakes</Trans>} keys={<Key>B</Key>} />
                   <ControlRow action={<Trans>Missile</Trans>} keys={<Key>R</Key>} />
                   <ControlRow action={<Trans>Flares</Trans>} keys={<Key>F</Key>} />
                   <ControlRow action={<Trans>Rearm</Trans>} keys={<Key>X</Key>} />
@@ -394,9 +395,9 @@ export function MissionSetup({
                 <div className='grid gap-x-8 text-sm sm:grid-cols-2'>
                   <ControlRow
                     action={<Trans>Orbit</Trans>}
-                    keys={<><Key>Drag</Key><Key>Shift</Key>+<Key>←</Key><Key>→</Key></>}
+                    keys={<><Key>Drag</Key><Key>←</Key><Key>→</Key></>}
                   />
-                  <ControlRow action={<Trans>Tilt</Trans>} keys={<><Key>,</Key><Key>.</Key></>} />
+                  <ControlRow action={<Trans>Tilt</Trans>} keys={<><Key>↑</Key><Key>↓</Key></>} />
                   <ControlRow
                     action={<Trans>Distance</Trans>}
                     keys={<><Key>−</Key><Key>=</Key></>}

@@ -84,20 +84,19 @@ export function GameCanvas({
       <canvas id='map' ref={mapRef} />
       <div className='panel' id='framerate' ref={framerateRef} />
       <div className='panel' id='help' ref={helpRef}>
-        <b>W/S</b> <Trans>or</Trans> <b>↑/↓</b> <Trans>pitch</Trans> · <b>A/D</b>{' '}
-        <Trans>roll</Trans> · <b>Q/E</b> <Trans>yaw</Trans> · <b>Shift/Ctrl</b>{' '}
+        <b>W/S</b> <Trans>pitch</Trans> · <b>A/D</b>{' '}
+        <Trans>roll</Trans> · <b>Q/E</b> <Trans>yaw</Trans> · <b>PgUp/PgDn</b>{' '}
         <Trans>throttle</Trans> · <b>Space</b> <Trans>launch / guns</Trans> ·{' '}
         <b>R</b> <Trans>missile</Trans> · <b>F</b> <Trans>flares</Trans> · <b>X</b>{' '}
         <Trans>rearm</Trans> · <b>G</b> <Trans>gear</Trans> · <b>H</b> <Trans>hook</Trans> ·{' '}
-        <b>Shift</b>+<b>G</b> <Trans>align</Trans> · <b>1</b>–<b>5</b>/<b>V</b>{' '}
-        <Trans>view</Trans> · <b>M</b>{' '}
-        <Trans>map</Trans> · <b>P</b> <Trans>pause</Trans> · <b>/</b>{' '}
-        <Trans>help</Trans> · <b>Esc</b> <Trans>menu</Trans>
+        <b>B</b> <Trans>brakes</Trans> · <b>1</b>–<b>5</b>/<b>V</b> <Trans>view</Trans> ·{' '}
+        <b>M</b> <Trans>map</Trans> ·{' '}
+        <b>P</b> <Trans>pause</Trans> · <b>Esc</b> <Trans>menu</Trans>
         <br />
         <b>
           <Trans>Chase view:</Trans>
         </b>{' '}
-        <b>Drag</b> <Trans>or</Trans> <b>Shift</b>+<b>←→</b> <Trans>orbit</Trans> · <b>,</b>/<b>.</b>{' '}
+        <b>Drag</b> <Trans>or</Trans> <b>←→</b> <Trans>orbit</Trans> · <b>↑↓</b>{' '}
         <Trans>tilt</Trans> · <b>−</b> <Trans>back</Trans> · <b>=</b>{' '}
         <Trans>closer</Trans>
       </div>
