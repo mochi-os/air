@@ -114,12 +114,12 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 
 const ocean_mat = new THREE.ShaderMaterial({ fog:false,
 	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_shallow:{value:col_shallow}, u_sky:{value:sky_horizon}, u_fog:{value:sky_horizon}, u_fog_density:{value:0.000075},
-		u_water:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)} },   // Midway reef/lagoon colour map (web/public/maps/midway/water.png), see map.json region_half
-	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform sampler2D u_water; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
+		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)} },   // Midway imagery (maps/midway/map.jpg) + atoll-interior calm mask (lagoon.png), see map.json region_half
+	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		const vec4 W0=vec4(1.0,0.3,420.0,90.0); const vec4 W1=vec4(-0.7,0.7,230.0,60.0); const vec4 W2=vec4(0.4,-0.9,110.0,38.0); const vec4 W3=vec4(-0.2,0.5,55.0,24.0);
 		float wave(vec2 p,vec4 w,float amp,out vec2 grad){ vec2 dir=normalize(w.xy); float k=6.2831853/w.z; float ph=dot(dir,p)*k+u_time*(w.w/w.z); grad=dir*(k*amp*cos(ph)); return amp*sin(ph); }
 		void main(){ vec4 wp=modelMatrix*vec4(position,1.0); vec2 xz=wp.xz; vec2 g,gt=vec2(0.0); float h=0.0;
-		float calm=0.0; if(u_water_on>0.5){ vec2 wuv=clamp((xz+u_water_half)/(2.0*u_water_half),0.0,1.0); calm=smoothstep(0.30,0.55,texture2D(u_water,wuv).g); }   // shallow reef/lagoon (green) = calm
+		float calm=0.0; if(u_water_on>0.5){ vec2 wuv=clamp((xz+u_water_half)/(2.0*u_water_half),0.0,1.0); calm=texture2D(u_lagoon,wuv).r; }   // atoll interior (reef flat + lagoon incl. the deep basin) = calm
 		v_calm=calm; float ws=mix(1.0,0.12,calm);   // damp wave amplitude inside the reef
 		h+=wave(xz,W0,2.0,g);gt+=g; h+=wave(xz,W1,1.1,g);gt+=g; h+=wave(xz,W2,0.5,g);gt+=g; h+=wave(xz,W3,0.25,g);gt+=g;
 		h*=ws; gt*=ws;
@@ -606,6 +606,11 @@ async function generate_world(){
 		texture.magFilter=THREE.LinearFilter; texture.minFilter=THREE.LinearMipmapLinearFilter; texture.generateMipmaps=true;
 		texture.anisotropy=renderer.capabilities.getMaxAnisotropy();
 		ocean_mat.uniforms.u_water.value=texture; ocean_mat.uniforms.u_water_half.value=map.region_half; ocean_mat.uniforms.u_water_on.value=1.0;
+		// --- atoll-interior calm mask: damps waves inside the reef (incl. the deep lagoon basin) ---
+		const lagoon=await new THREE.TextureLoader().loadAsync(base+"lagoon.png");
+		lagoon.flipY=false; lagoon.wrapS=lagoon.wrapT=THREE.ClampToEdgeWrapping; lagoon.colorSpace=THREE.NoColorSpace;
+		lagoon.magFilter=THREE.LinearFilter; lagoon.minFilter=THREE.LinearMipmapLinearFilter; lagoon.generateMipmaps=true;
+		ocean_mat.uniforms.u_lagoon.value=lagoon;
 		// --- islands + runway from the real coastline (same texture, planar-mapped by world position) ---
 		const coast=await (await fetch(base+"coastline.json")).json();
 		build_islands(coast.polygons||[], texture, map.region_half);
