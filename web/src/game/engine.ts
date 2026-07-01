@@ -64,7 +64,7 @@ const MULTIPLAYER=false;             // single-player today; map/P pause only wh
 const DECK_ALIGN=false;              // dev-only catapult/deck alignment tool (Shift+G) — code kept, unreachable in player builds (keys.md §4)
 let pause_toggle=false, game_paused=false;
 const sun_dir = new THREE.Vector3(0.45,0.42,-0.32).normalize();
-const CARRIER={ x:0, z:0, deckY:19 };   // heading +X, bow at +x
+const CARRIER={ x:-18500, z:7500, deckY:19 };   // ~20 km WSW of Midway (leeward deep water); heading +X, bow at +x
 const sky_horizon=new THREE.Color(0xbfd8e8), sky_zenith=new THREE.Color(0x2a5a8c), fog_colour=new THREE.Color(0xc4d6e2);
 const col_sundisc=new THREE.Color(0xfff3da), col_deep=new THREE.Color(0x0a2a3a), col_shallow=new THREE.Color(0x1d6e86);
 
@@ -99,8 +99,8 @@ stars.frustumCulled=false; scene.add(stars);
 
 // time-of-day presets + apply
 const TOD={
-	day:  { sun:[0.45,0.42,-0.32], sunCol:0xfff4e0, sunI:2.4,  disc:0xfff3da, hor:0xbfd8e8, zen:0x2a5a8c, fog:0xc4d6e2, deep:0x0a2a3a, shal:0x1d6e86, hs:0xbcd6ec, hg:0x35506a, hi:0.9,  ac:0x405060, ai:0.4,  exp:1.05, stars:0.0 },
-	night:{ sun:[0.30,0.55,-0.40], sunCol:0x9fb6e0, sunI:0.32, disc:0xcdd8f0, hor:0x0f1626, zen:0x05080f, fog:0x0a111c, deep:0x030810, shal:0x0a2030, hs:0x1a2742, hg:0x05060a, hi:0.32, ac:0x0a0e18, ai:0.22, exp:1.18, stars:0.95 },
+	day:  { sun:[0.45,0.42,-0.32], sunCol:0xfff4e0, sunI:2.4,  disc:0xfff3da, hor:0xbfd8e8, zen:0x2a5a8c, fog:0xc4d6e2, deep:0x0a2a3a, shal:0x1d6e86, hs:0xbcd6ec, hg:0x35506a, hi:0.9,  ac:0x405060, ai:0.4,  exp:1.05, stars:0.0,  water:[1.0,1.0,1.0] },
+	night:{ sun:[0.30,0.55,-0.40], sunCol:0x9fb6e0, sunI:0.32, disc:0xcdd8f0, hor:0x0f1626, zen:0x05080f, fog:0x0a111c, deep:0x030810, shal:0x0a2030, hs:0x1a2742, hg:0x05060a, hi:0.32, ac:0x0a0e18, ai:0.22, exp:1.18, stars:0.95, water:[0.30,0.36,0.50] },
 };
 function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	sun_dir.set(p.sun[0],p.sun[1],p.sun[2]).normalize(); sun.position.copy(sun_dir).multiplyScalar(4000); sun.target.position.set(0,0,0);
@@ -109,17 +109,19 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	scene.fog.color.setHex(p.fog); fog_colour.setHex(p.fog);
 	hemi.color.setHex(p.hs); hemi.groundColor.setHex(p.hg); hemi.intensity=p.hi; amb.color.setHex(p.ac); amb.intensity=p.ai;
 	renderer.toneMappingExposure=p.exp; stars.material.opacity=p.stars;
+	if(p.water) ocean_mat.uniforms.u_water_tint.value.setRGB(p.water[0],p.water[1],p.water[2]);   // darken the reef/lagoon colour map at night
 }
 
 const ocean_mat = new THREE.ShaderMaterial({ fog:false,
-	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_shallow:{value:col_shallow}, u_sky:{value:sky_horizon}, u_fog:{value:sky_horizon}, u_fog_density:{value:0.000075} },
+	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_shallow:{value:col_shallow}, u_sky:{value:sky_horizon}, u_fog:{value:sky_horizon}, u_fog_density:{value:0.000075},
+		u_water:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)} },   // Midway reef/lagoon colour map (web/public/maps/midway/water.png), see map.json region_half
 	vertexShader:`uniform float u_time; varying vec3 v_world; varying vec3 v_normal; varying float v_height;
 		const vec4 W0=vec4(1.0,0.3,420.0,90.0); const vec4 W1=vec4(-0.7,0.7,230.0,60.0); const vec4 W2=vec4(0.4,-0.9,110.0,38.0); const vec4 W3=vec4(-0.2,0.5,55.0,24.0);
 		float wave(vec2 p,vec4 w,float amp,out vec2 grad){ vec2 dir=normalize(w.xy); float k=6.2831853/w.z; float ph=dot(dir,p)*k+u_time*(w.w/w.z); grad=dir*(k*amp*cos(ph)); return amp*sin(ph); }
 		void main(){ vec4 wp=modelMatrix*vec4(position,1.0); vec2 xz=wp.xz; vec2 g,gt=vec2(0.0); float h=0.0;
 		h+=wave(xz,W0,2.0,g);gt+=g; h+=wave(xz,W1,1.1,g);gt+=g; h+=wave(xz,W2,0.5,g);gt+=g; h+=wave(xz,W3,0.25,g);gt+=g;
 		wp.y+=h; v_height=h; v_normal=normalize(vec3(-gt.x,1.0,-gt.y)); v_world=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }`,
-	fragmentShader:`uniform vec3 u_sun,u_deep,u_shallow,u_sky,u_fog; uniform float u_fog_density,u_time; varying vec3 v_world; varying vec3 v_normal; varying float v_height;
+	fragmentShader:`uniform vec3 u_sun,u_deep,u_shallow,u_sky,u_fog,u_water_tint; uniform float u_fog_density,u_time,u_water_half,u_water_on; uniform sampler2D u_water; varying vec3 v_world; varying vec3 v_normal; varying float v_height;
 		vec2 ripple(vec2 p,vec2 dir,float wl,float amp,float spd){ dir=normalize(dir); float k=6.2831853/wl; float ph=dot(dir,p)*k+u_time*spd; return dir*(k*amp*cos(ph)); }
 		float hash2(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
 		vec3 sky_at(vec3 d){ d=normalize(d); float t=clamp(d.y*1.2,0.0,1.0); vec3 col=mix(u_sky, u_sky*0.55+vec3(0.04,0.10,0.22), pow(t,0.65));
@@ -129,9 +131,12 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false,
 			g+=ripple(xz,vec2(1.0,0.4),26.0,0.06,1.2); g+=ripple(xz,vec2(-0.6,1.0),15.0,0.04,1.7); g+=ripple(xz,vec2(0.8,-0.7),8.0,0.025,2.2);
 			vec3 N=normalize(v_normal+vec3(-g.x,0.0,-g.y));
 			float fres=0.02+0.98*pow(1.0-max(dot(N,V),0.0),5.0);
-			float diff=max(dot(N,L),0.0); vec3 body=mix(u_deep,u_shallow,diff*0.8+0.2);
+			float diff=max(dot(N,L),0.0); vec3 body;
+			if(u_water_on>0.5){ vec2 wuv=clamp((v_world.xz+u_water_half)/(2.0*u_water_half),0.0,1.0); body=texture2D(u_water,wuv).rgb*u_water_tint*(0.7+0.3*diff); }
+			else { body=mix(u_deep,u_shallow,diff*0.8+0.2); }
+			float shallow=clamp((body.g-0.25)*2.2,0.0,1.0);   // turquoise/foam → damp the sky reflection so the colour shows
 			vec3 refl=sky_at(reflect(-V,N));
-			vec3 col=mix(body,refl,fres);
+			vec3 col=mix(body,refl,fres*mix(1.0,0.35,shallow));
 			vec3 H=normalize(L+V); float spec=pow(max(dot(N,H),0.0),220.0); col+=vec3(1.0,0.95,0.8)*spec*2.2;
 			float foam=smoothstep(1.5,2.6,v_height)*(0.55+0.45*hash2(floor(xz*0.6))); foam*=smoothstep(0.15,0.55,1.0-N.y);
 			col=mix(col,vec3(0.92,0.96,1.0),clamp(foam,0.0,0.85));
@@ -359,8 +364,9 @@ function deck_y_at(grp,x,z,fallback){ _ray.set(new THREE.Vector3(x,5000,z), new 
 // Place ownship on the configured catapult (deck height found by raycast when a model carrier is present).
 let deck_edit=false;
 function place_on_cat(){ const hd=cfg.cat_h*D2R; const fwd=new THREE.Vector3(Math.cos(hd),0,-Math.sin(hd));
-	const dy=carrier_model?deck_y_at(carrier_model,cfg.cat_x,cfg.cat_z,CARRIER.deckY):CARRIER.deckY;
-	ownship.pos.set(cfg.cat_x, dy+cfg.cat_dy, cfg.cat_z); ownship.fwd.copy(fwd); ownship.vel_dir.copy(fwd);
+	const wx=CARRIER.x+cfg.cat_x, wz=CARRIER.z+cfg.cat_z;   // cat pose is carrier-relative; the carrier sits at CARRIER.x/z
+	const dy=carrier_model?deck_y_at(carrier_model,wx,wz,CARRIER.deckY):CARRIER.deckY;
+	ownship.pos.set(wx, dy+cfg.cat_dy, wz); ownship.fwd.copy(fwd); ownship.vel_dir.copy(fwd);
 	const r=new THREE.Vector3().crossVectors(fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,fwd).normalize();
 	ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(fwd,u,r)); }
 function edit_cat(dt){ const mv=dt*1.2, rot=dt*2.5; let ch=false;   // 10x finer positional nudges + heading for precise alignment
@@ -397,7 +403,7 @@ async function init_carrier_model(){
 			grp.traverse(o=>{ if(o.isMesh&&o.material){ const mm=o.material; if(baseTex)mm.map=baseTex; if(normTex)mm.normalMap=normTex; mm.metalness=0.0; mm.roughness=0.9; mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; } });
 			carrier_model=grp; scene.add(grp);
 			/* procedural carrier removed; nothing to hide */
-			CARRIER.deckY=deck_y_at(grp, 70, -6, st.deckY-waterline);                                   // deck height at the catapult spot
+			CARRIER.deckY=deck_y_at(grp, CARRIER.x+70, CARRIER.z-6, st.deckY-waterline);                 // deck height at the catapult spot (carrier-relative)
 			if(ownship.on_cat){ place_on_cat(); }
 		}catch(e){ throw new Error("carrier model: failed to process "+tag+": "+(e&&e.message||e)); } },
 		err=>{ throw new Error("carrier model: parse failed for "+tag+" ("+((err&&err.message)||"bad glTF")+")"); });
@@ -488,7 +494,7 @@ function body_offset(st,x,y,z){ const up=st.up||world_up; const right=st.right||
 	return st.pos.clone().addScaledVector(st.fwd,x).addScaledVector(up,y).addScaledVector(right,z); }
 
 // ownship = player
-const ownship=make_state(new THREE.Vector3(70,CARRIER.deckY+1.8,-6),new THREE.Vector3(1,0,0),0);
+const ownship=make_state(new THREE.Vector3(CARRIER.x+70,CARRIER.deckY+1.8,CARRIER.z-6),new THREE.Vector3(1,0,0),0);
 ownship.player=true; ownship.q=new THREE.Quaternion(); ownship.up=new THREE.Vector3(0,1,0); ownship.right=new THREE.Vector3(0,0,1);
 ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.rounds=578; ownship.msl=4; ownship.cm=60; ownship.aoa=0; ownship.gload=1;
 ownship.on_cat=true; ownship.launching=false; ownship.launch_dist=0;
@@ -577,48 +583,44 @@ const carrier_proc=null;   // procedural carrier removed — the carrier is the 
 
 // ============================================================================ procedural world (fixed seed → deterministic, no stored map)
 function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
-const airports=[]; const map_islands=[];
-function generate_world(){
-	const rng=mulberry32(1337);
-	const islands=[];
-	const far=(x,z,min,r,sep)=>{ if(Math.hypot(x,z)<min) return false; for(const o of islands){ if(Math.hypot(x-o.x,z-o.z)<o.r+r+sep) return false; } return true; };
-	const mk=(x,z,r,flat,h)=>({x,z,r,h,flat,a1:(flat?0.10:0.12)+rng()*0.08,a2:(flat?0.08:0.10)+rng()*0.06,a3:0.05+rng()*0.05,p1:rng()*6.28,p2:rng()*6.28,p3:rng()*6.28,hd:rng()*Math.PI});
-	// airport islands: compact, tall plateaus (mesas) that clearly rise from the sea, flat-topped for the runway
-	const big=[];
-	{ const ang=rng()*6.28, dist=10000+rng()*4000, r=2600+rng()*900; const o=mk(Math.cos(ang)*dist,Math.sin(ang)*dist,r,true,210); big.push(o); islands.push(o); }
-	let tries=0; while(big.length<4 && tries++<800){ const x=(rng()*2-1)*46000, z=(rng()*2-1)*46000, r=2600+rng()*1400;
-		if(!far(x,z,14000,r,5000)) continue; const o=mk(x,z,r,true,210); big.push(o); islands.push(o); }
-	// scattered green islands: spread proportionally, no overlaps
-	for(let i=0;i<40;i++){ let placed=false,t=0; while(!placed&&t++<80){ const x=(rng()*2-1)*60000, z=(rng()*2-1)*60000, r=1200+rng()*4800;
-		if(!far(x,z,8000,r,3000)) continue; islands.push(mk(x,z,r,false,120+rng()*700)); placed=true; } }
-
-	// build merged island geometry (flat-shaded, vertex-coloured)
-	const P=[],N=[],C=[];
-	const coastR=(o,ang)=>o.r*THREE.MathUtils.clamp(0.72+o.a1*Math.sin(ang*2+o.p1)+o.a2*Math.sin(ang*3+o.p2)+o.a3*Math.sin(ang*5+o.p3),0.5,1.25);
-	const hgt=(d,cr,o)=>{ if(d>=cr) return Math.max(-6,-6*(d-cr)/(0.12*cr)); const t=d/cr;
-		return o.flat ? (t<0.80 ? o.h : o.h*Math.pow(1-(t-0.80)/0.20,1.4)) : o.h*Math.pow(Math.cos(t*Math.PI/2),1.3); };
-	const colf=(h,o)=>{ if(h<2.5) return [0.82,0.74,0.55]; const g=THREE.MathUtils.clamp((h-2.5)/Math.max(8,o.h*0.6),0,1); return [0.16+0.16*g,0.40+0.15*g,0.15+0.10*g]; };
-	const pushv=(p,n,c)=>{ P.push(p[0],p[1],p[2]); N.push(n[0],n[1],n[2]); C.push(c[0],c[1],c[2]); };
-	const tri=(a,b,c,ca,cb,cc)=>{ const ux=b[0]-a[0],uy=b[1]-a[1],uz=b[2]-a[2],vx=c[0]-a[0],vy=c[1]-a[1],vz=c[2]-a[2];
-		let nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx; const l=Math.hypot(nx,ny,nz)||1; nx/=l;ny/=l;nz/=l; if(ny<0){nx=-nx;ny=-ny;nz=-nz;}
-		pushv(a,[nx,ny,nz],ca); pushv(b,[nx,ny,nz],cb); pushv(c,[nx,ny,nz],cc); };
-	const NS=28,NR=8;
-	for(const o of islands){ const grid=[];
-		for(let i=0;i<=NR;i++){ const row=[]; for(let j=0;j<=NS;j++){ const ang=j/NS*Math.PI*2; const cr=coastR(o,ang); const d=(i/NR)*cr*1.1; const h=hgt(d,cr,o);
-			row.push({p:[o.x+Math.cos(ang)*d,h,o.z+Math.sin(ang)*d],c:colf(h,o)}); } grid.push(row); }
-		for(let i=0;i<NR;i++) for(let j=0;j<NS;j++){ const a=grid[i][j],b=grid[i+1][j],c=grid[i+1][j+1],e=grid[i][j+1];
-			tri(a.p,b.p,c.p,a.c,b.c,c.c); tri(a.p,c.p,e.p,a.c,c.c,e.c); } }
-	const geo=new THREE.BufferGeometry();
-	geo.setAttribute("position",new THREE.BufferAttribute(new Float32Array(P),3));
-	geo.setAttribute("normal",new THREE.BufferAttribute(new Float32Array(N),3));
-	geo.setAttribute("color",new THREE.BufferAttribute(new Float32Array(C),3));
-	const islMesh=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({vertexColors:true,roughness:0.95,metalness:0.0,flatShading:true,side:THREE.DoubleSide}));
-	islMesh.receiveShadow=true; scene.add(islMesh);
-
-	// airports on the big islands
-	for(const o of big) build_airport(o);
-	for(const o of islands) map_islands.push({x:o.x,z:o.z,r:o.r,flat:o.flat,a1:o.a1,a2:o.a2,a3:o.a3,p1:o.p1,p2:o.p2,p3:o.p3});
+const airports=[]; let island_polygons=[]; let WORLD_WRAP=0;   // 2D-map island outlines; toroidal world size (m, 0 = no wrap) — both set from map.json
+// Midway: load the baked map assets (midway-prep, per midway.md) and build the world.
+async function generate_world(){
+	try{
+		const base=new URL("maps/midway/",location.href).href;   // web/public/maps/<name>/ (served via the app.json "maps" route)
+		const map=await (await fetch(base+"map.json")).json();
+		WORLD_WRAP=map.wrap||0;
+		// --- ocean reef/lagoon colour map ---
+		const texture=await new THREE.TextureLoader().loadAsync(base+"water.png");
+		texture.flipY=false; texture.wrapS=texture.wrapT=THREE.ClampToEdgeWrapping; texture.colorSpace=THREE.SRGBColorSpace;
+		texture.magFilter=THREE.LinearFilter; texture.minFilter=THREE.LinearMipmapLinearFilter; texture.generateMipmaps=true;
+		texture.anisotropy=renderer.capabilities.getMaxAnisotropy();
+		ocean_mat.uniforms.u_water.value=texture; ocean_mat.uniforms.u_water_half.value=map.region_half; ocean_mat.uniforms.u_water_on.value=1.0;
+		// --- islands + runway from the real coastline ---
+		const coast=await (await fetch(base+"coastline.json")).json();
+		build_islands(coast.polygons||[]);
+	}catch(error){ console.error("midway map load failed",error); }
 }
+function build_islands(polygons){
+	const field=3.5;   // Midway is flat (no heightmap); islands sit ~4 m above the sea
+	island_polygons=polygons.filter(polygon=>polygon.length>=30);   // Sand / Eastern / Spit; skip tiny reef rocks
+	const geometries=[]; let sand=null, sand_area=0;
+	for(const polygon of island_polygons){
+		let area=0; for(let i=0;i<polygon.length;i++){ const here=polygon[i], next=polygon[(i+1)%polygon.length]; area+=here[0]*next[1]-next[0]*here[1]; } area=Math.abs(area)/2;
+		const shape=new THREE.Shape(); shape.moveTo(polygon[0][0],-polygon[0][1]); for(let i=1;i<polygon.length;i++) shape.lineTo(polygon[i][0],-polygon[i][1]);   // shape (x,-z): after rotateX the island rises +y, z un-mirrored
+		const geometry=new THREE.ExtrudeGeometry(shape,{depth:field,bevelEnabled:false,steps:1}); geometry.rotateX(-Math.PI/2);
+		geometries.push(geometry);
+		const x=polygon.reduce((total,point)=>total+point[0],0)/polygon.length, z=polygon.reduce((total,point)=>total+point[1],0)/polygon.length;
+		if(area>sand_area){ sand_area=area; sand={x,z}; }
+	}
+	if(geometries.length){ const mesh=new THREE.Mesh(merge_geometries(geometries),new THREE.MeshStandardMaterial({color:0xc3b892,roughness:0.96,metalness:0.0}));
+		mesh.receiveShadow=true; mesh.castShadow=true; scene.add(mesh); }
+	if(sand) build_airport({x:sand.x,z:sand.z,h:field,hd:69*D2R},6,24,false);   // Henderson Field RWY 06/24 (~069°T) on Sand Island, no control tower (midway.md §2)
+}
+// Toroidal world wrap — WORLD_WRAP (m) from map.json, 0 = no wrap. Minimum-image for relative quantities.
+function wrap_axis(value){ return WORLD_WRAP>0 ? value-WORLD_WRAP*Math.round(value/WORLD_WRAP) : value; }
+function wrap_position(position){ if(WORLD_WRAP>0){ position.x=wrap_axis(position.x); position.z=wrap_axis(position.z); } }
+function wrap_distance(from,to){ return Math.hypot(wrap_axis(to.x-from.x), to.y-from.y, wrap_axis(to.z-from.z)); }
 function runway_texture(nTop,nBottom){ const c=document.createElement("canvas"); c.width=128; c.height=1024; const x=c.getContext("2d");
 	x.fillStyle="#26282b"; x.fillRect(0,0,128,1024);
 	x.fillStyle="#d8d8d8"; x.fillRect(8,0,4,1024); x.fillRect(116,0,4,1024);                         // side stripes
@@ -631,24 +633,26 @@ function runway_texture(nTop,nBottom){ const c=document.createElement("canvas");
 	x.save(); x.translate(64,92);  x.rotate(Math.PI); x.fillText(String(nTop).padStart(2,"0"),0,0); x.restore();      // +y end
 	x.save(); x.translate(64,932);                    x.fillText(String(nBottom).padStart(2,"0"),0,0); x.restore();   // -y end
 	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=4; return t; }
-function build_airport(o){
+function build_airport(o, number_plus, number_minus, tower=true){
 	const L=2400, W=60, y=o.h+1.5, H=o.hd;                                   // H = compass heading (rad) you fly taking off / landing in +fwd
 	const up=new THREE.Vector3(0,1,0);
 	const fwd=new THREE.Vector3(Math.sin(H),0,-Math.cos(H));                 // world dir whose compass heading is H
 	const right=new THREE.Vector3().crossVectors(fwd,up);                    // to the right of the landing direction
 	const hdeg=((H*180/Math.PI)%360+360)%360;
-	const nPlus=Math.round(hdeg/10)%36||36;                                  // shown to aircraft landing/​departing on heading H
-	const nMinus=Math.round(((hdeg+180)%360)/10)%36||36;                     // the reciprocal end
+	const nPlus=number_plus??(Math.round(hdeg/10)%36||36);                   // painted number for heading H (override for magnetic-based names, e.g. Midway 06/24)
+	const nMinus=number_minus??(Math.round(((hdeg+180)%360)/10)%36||36);     // the reciprocal end
 	// runway surface (local +y == fwd == the +y/canvas-top end; nMinus is painted there, nPlus at the -y end)
 	const rmesh=new THREE.Mesh(new THREE.PlaneGeometry(W,L),new THREE.MeshStandardMaterial({map:runway_texture(nMinus,nPlus),roughness:0.95,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));
 	rmesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(right,fwd,up));
 	rmesh.position.set(o.x,y,o.z); rmesh.receiveShadow=true; scene.add(rmesh);
 	// control tower (concrete base + glass cab + roof), offset to the side near midfield
+	if(tower){
 	const tp=new THREE.Vector3(o.x,0,o.z).addScaledVector(right,110).addScaledVector(fwd,150);
 	const tg=[]; tg.push(new THREE.CylinderGeometry(6,8,34,12).translate(tp.x,o.h+17,tp.z));
-	const tower=new THREE.Mesh(merge_geometries(tg),new THREE.MeshStandardMaterial({color:0xbfc4c8,roughness:0.8})); tower.castShadow=true; scene.add(tower);
+	const base=new THREE.Mesh(merge_geometries(tg),new THREE.MeshStandardMaterial({color:0xbfc4c8,roughness:0.8})); base.castShadow=true; scene.add(base);
 	const cab=new THREE.Mesh(new THREE.CylinderGeometry(9,7.5,7,12),new THREE.MeshStandardMaterial({color:0x1c2024,metalness:0.4,roughness:0.4})); cab.position.set(tp.x,o.h+37,tp.z); scene.add(cab);
 	const roof=new THREE.Mesh(new THREE.CylinderGeometry(10,10,1.5,12),new THREE.MeshStandardMaterial({color:0x44494e})); roof.position.set(tp.x,o.h+41,tp.z); scene.add(roof);
+	}
 	// PAPI on BOTH ends, on the left as seen by the approaching aircraft, each visible only within its approach beam
 	const setAng=[3.5,3.167,2.833,2.5];
 	function build_papi(tdz,leftVec,beam){ const papi=[],gpos=[],gcol=[];
@@ -785,7 +789,7 @@ function fly_player(dt){
 	ownship.velx=ownship.vel_dir.x*ownship.speed; ownship.vely=ownship.vel_dir.y*ownship.speed; ownship.velz=ownship.vel_dir.z*ownship.speed;
 	ownship.aoa=THREE.MathUtils.radToDeg(ownship.fwd.angleTo(ownship.vel_dir));
 	ownship.gload=1+Math.abs(input.pitch)*(ownship.speed/90);
-	ownship.pos.addScaledVector(ownship.vel_dir,ownship.speed*dt);
+	ownship.pos.addScaledVector(ownship.vel_dir,ownship.speed*dt); wrap_position(ownship.pos);   // toroidal world (map.json wrap)
 	if(ownship.pos.y<8){ ownship.pos.y=8; if(ownship.vel_dir.y<0){ ownship.vel_dir.y=0; ownship.vel_dir.normalize(); } }
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
 }
@@ -904,13 +908,11 @@ function draw_map(){ const W=innerWidth,H=innerHeight; mctx.clearRect(0,0,W,H);
 	mctx.strokeStyle="rgba(95,200,150,0.18)"; mctx.lineWidth=1; mctx.textAlign="left";
 	for(let km=20;km<=120;km+=20){ const rr=km*1000*s; mctx.beginPath(); mctx.arc(px,py,rr,0,Math.PI*2); mctx.stroke();
 		mctx.fillStyle="rgba(127,207,166,0.4)"; mctx.font="9px monospace"; mctx.fillText(km+"km",px+4,py-rr+12); }
-	// islands — actual coastline outline (same harmonics as the 3-D geometry)
-	const coastr=(o,a)=>o.r*Math.max(0.5,Math.min(1.25,0.72+o.a1*Math.sin(a*2+o.p1)+o.a2*Math.sin(a*3+o.p2)+o.a3*Math.sin(a*5+o.p3)));
-	for(const o of map_islands){ mctx.beginPath();
-		for(let k=0;k<=48;k++){ const a=k/48*Math.PI*2, rr=coastr(o,a); const sx=X(o.x+Math.cos(a)*rr), sy=Y(o.z+Math.sin(a)*rr); if(k===0) mctx.moveTo(sx,sy); else mctx.lineTo(sx,sy); }
-		mctx.closePath();
-		if(o.flat){ mctx.fillStyle="#3c6b4a"; mctx.fill(); mctx.strokeStyle="#7adf9f"; mctx.lineWidth=1.5; mctx.stroke(); }
-		else { mctx.fillStyle="#2c6a44"; mctx.fill(); } }
+	// islands — the real Midway coastline polygons (Sand / Eastern / Spit)
+	mctx.fillStyle="#c3b892"; mctx.strokeStyle="#e8e0c0"; mctx.lineWidth=1.2;
+	for(const polygon of island_polygons){ mctx.beginPath();
+		for(let k=0;k<polygon.length;k++){ const sx=X(polygon[k][0]), sy=Y(polygon[k][1]); if(k===0) mctx.moveTo(sx,sy); else mctx.lineTo(sx,sy); }
+		mctx.closePath(); mctx.fill(); mctx.stroke(); }
 	// airports: runway line + marker on their islands
 	mctx.font="10px monospace"; mctx.textAlign="center";
 	for(const ap of airports){ const ax=X(ap.x), ay=Y(ap.z); const dx=ap.dir.x, dz=ap.dir.z; const len=Math.max(8,1300*s);
@@ -972,7 +974,7 @@ function draw_hud(dt){
 		hctx.moveTo(fpm[0]-6,fpm[1]); hctx.lineTo(fpm[0]-14,fpm[1]); hctx.moveTo(fpm[0]+6,fpm[1]); hctx.lineTo(fpm[0]+14,fpm[1]); hctx.moveTo(fpm[0],fpm[1]-6); hctx.lineTo(fpm[0],fpm[1]-12); hctx.stroke(); }
 
 	// ---- target box + range/closure (joust only) ----
-	const rng = has_enemy ? ownship.pos.distanceTo(bandit.pos) : 1500;
+	const rng = has_enemy ? wrap_distance(ownship.pos,bandit.pos) : 1500;   // minimum-image across the toroidal wrap
 	if(has_enemy){ const closure=dt>0?(last_range-rng)/dt*1.94384:0; last_range=rng;
 		const tb=proj_point(bandit.pos);
 		if(tb){ hctx.strokeStyle=AM; hctx.fillStyle=AM; hctx.strokeRect(tb[0]-22,tb[1]-22,44,44);
