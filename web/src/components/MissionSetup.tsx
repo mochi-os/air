@@ -237,6 +237,40 @@ function CreditsDialog() {
               CC BY 4.0
             </a>
           </p>
+          <p className='leading-relaxed'>
+            <Trans>
+              Midway Atoll map — imagery contains modified <b>Copernicus Sentinel-2</b> data (2026);
+              airfield geometry (runway, taxiways, aprons) © <b>OpenStreetMap</b> contributors,
+              licensed under <b>ODbL</b>; coastline and reef data from <b>NOAA NCCOS</b> (public
+              domain).
+            </Trans>{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://dataspace.copernicus.eu/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              Copernicus
+            </a>{' '}
+            ·{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://www.openstreetmap.org/copyright'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              OpenStreetMap
+            </a>{' '}
+            ·{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://coastalscience.noaa.gov/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              NOAA NCCOS
+            </a>
+          </p>
         </div>
       </DialogContent>
     </Dialog>
@@ -525,16 +559,7 @@ export function MissionSetup({
             </div>
           </Tabs>
 
-          <div className='mt-6 flex items-center justify-between gap-3'>
-            <Button
-              type='button'
-              variant='ghost'
-              size='sm'
-              className='text-muted-foreground'
-              onClick={() => onChange({ ...DEFAULT_CONFIG })}
-            >
-              <Trans>Reset</Trans>
-            </Button>
+          <div className='mt-6 flex items-center justify-end gap-3'>
             {gameInProgress ? (
               <div className='flex gap-2'>
                 <Button type='button' variant='outline' onClick={onRestart}>
@@ -554,7 +579,16 @@ export function MissionSetup({
             )}
           </div>
         </div>
-        <div className='mt-4 flex justify-center'>
+        <div className='text-muted-foreground/60 mt-4 flex items-center justify-between border-t pt-3'>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            className='text-muted-foreground'
+            onClick={() => onChange({ ...DEFAULT_CONFIG })}
+          >
+            <Trans>Reset</Trans>
+          </Button>
           <CreditsDialog />
         </div>
       </div>

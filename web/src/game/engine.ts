@@ -74,7 +74,7 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, powerPreferen
 renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 const scene = new THREE.Scene(); scene.fog=new THREE.FogExp2(fog_colour,0.000042);
-const camera = new THREE.PerspectiveCamera(62,1,3.0,42000);
+const camera = new THREE.PerspectiveCamera(45,1,3.0,42000);   // 45° ≈ HUD-like 1:1 so a 3° glideslope reads right (was 62°, too wide → approaches felt low)
 
 const sun = new THREE.DirectionalLight(0xfff4e0,2.4); sun.position.copy(sun_dir).multiplyScalar(4000); sun.castShadow=true;
 sun.shadow.mapSize.set(1024,1024); sun.shadow.camera.near=100; sun.shadow.camera.far=8000;
@@ -430,6 +430,10 @@ function make_points(max,size,additive,tex){ const geo=new THREE.BufferGeometry(
 	const mat=new THREE.PointsMaterial({size,map:tex,vertexColors:true,transparent:true,blending:additive?THREE.AdditiveBlending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:true,fog:!additive});
 	const pts=new THREE.Points(geo,mat); pts.frustumCulled=false; scene.add(pts); return pts; }
 const glow=glow_texture(false), soft=glow_texture(true);
+function light_dot_texture(){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d"); const g=x.createRadialGradient(32,32,0,32,32,32);   // crisp light point (solid core, quick falloff) — no big halo, unlike the soft `glow`
+	g.addColorStop(0,"rgba(255,255,255,1)"); g.addColorStop(0.36,"rgba(255,255,255,1)"); g.addColorStop(0.6,"rgba(255,255,255,0.3)"); g.addColorStop(1,"rgba(255,255,255,0)");   // solid opaque core → bright + crisp
+	x.fillStyle=g; x.fillRect(0,0,64,64); return new THREE.CanvasTexture(c); }
+const light_dot=light_dot_texture();
 function pool(max){ return { px:new Float32Array(max),py:new Float32Array(max),pz:new Float32Array(max), vx:new Float32Array(max),vy:new Float32Array(max),vz:new Float32Array(max),
 	life:new Float32Array(max),ttl:new Float32Array(max), r:new Float32Array(max),g:new Float32Array(max),b:new Float32Array(max), active:new Uint8Array(max), max, next:0 }; }
 function pool_spawn(p){ for(let i=0;i<p.max;i++){ const k=(p.next+i)%p.max; if(!p.active[k]){ p.next=(k+1)%p.max; p.active[k]=1; return k; } } return -1; }
@@ -699,6 +703,13 @@ function runway_texture(nTop,nBottom){ const c=document.createElement("canvas");
 	x.save(); x.translate(64,92);  x.rotate(Math.PI); x.fillText(String(nTop).padStart(2,"0"),0,0); x.restore();      // +y end
 	x.save(); x.translate(64,932);                    x.fillText(String(nBottom).padStart(2,"0"),0,0); x.restore();   // -y end
 	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=4; return t; }
+function glow_points(pts, color, size){   // additive glowing point-lights (runway edge / threshold / REIL)
+	const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(new Float32Array(pts),3));
+	const p=new THREE.Points(g,new THREE.PointsMaterial({size,map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true})); p.frustumCulled=false; scene.add(p); return p;
+}
+const night_lights=[];   // runway lights that are lit only when it's dark (edge lights; bidirectional)
+const dir_lights=[];     // directional + night-only lights (green threshold / red end / REIL) — shown only from their facing side
+function dir_glow(pts,color,size,x,z,fx,fz,flash){ const p=glow_points(pts,color,size); dir_lights.push({mesh:p,x,z,fx,fz,flash}); return p; }
 function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
 	const y=o.h+1.5, H=o.hd;                                                 // H = compass heading (rad) you fly taking off / landing in +fwd
 	const up=new THREE.Vector3(0,1,0);
@@ -722,30 +733,54 @@ function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
 	// PAPI on BOTH ends, on the left as seen by the approaching aircraft, each visible only within its approach beam
 	const setAng=[3.5,3.167,2.833,2.5];
 	function build_papi(tdz,leftVec,beam){ const papi=[],gpos=[],gcol=[];
-		for(let i=0;i<4;i++){ const p=tdz.clone().addScaledVector(leftVec,(W/2+25)+i*22);
-			const post=new THREE.Mesh(new THREE.BoxGeometry(2,7,2),new THREE.MeshStandardMaterial({color:0x2a2d31})); post.position.set(p.x,o.h+3.5,p.z); scene.add(post);
-			const m=new THREE.Mesh(new THREE.BoxGeometry(14,7,8),new THREE.MeshBasicMaterial({color:0x23262b})); m.position.set(p.x,o.h+9,p.z); scene.add(m);
-			gpos.push(p.x,o.h+9,p.z); gcol.push(1,1,1); papi.push({mesh:m,x:p.x,y:o.h+9,z:p.z,set:setAng[i]}); }
+		for(let i=0;i<4;i++){ const p=tdz.clone().addScaledVector(leftVec,(W/2+15)+i*9);   // 4 units, 9 m apart, inner unit 15 m from the runway edge
+			const post=new THREE.Mesh(new THREE.BoxGeometry(0.4,0.7,0.4),new THREE.MeshStandardMaterial({color:0x2a2d31})); post.position.set(p.x,y+0.35,p.z); scene.add(post);
+			const m=new THREE.Mesh(new THREE.BoxGeometry(1.2,0.55,0.7),new THREE.MeshBasicMaterial({color:0x23262b})); m.position.set(p.x,y+0.75,p.z); scene.add(m);   // ~0.6 m light box, low on frangible legs
+			gpos.push(p.x,y+0.75,p.z); gcol.push(1,1,1); papi.push({mesh:m,x:p.x,y:y+0.75,z:p.z,set:setAng[i]}); }
 		const pg=new THREE.BufferGeometry(); pg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(gpos),3)); pg.setAttribute("color",new THREE.BufferAttribute(new Float32Array(gcol),3));
-		const papiPts=new THREE.Points(pg,new THREE.PointsMaterial({size:120,map:glow,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true})); papiPts.frustumCulled=false; papiPts.visible=false; scene.add(papiPts);
-		return {papi,papiPts,cx:tdz.x,cz:tdz.z,bx:beam.x,bz:beam.z}; }
+		const papiPts=new THREE.Points(pg,new THREE.PointsMaterial({size:13,map:light_dot,vertexColors:true,transparent:true,blending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:true})); papiPts.frustumCulled=false; papiPts.visible=false; scene.add(papiPts);   // base: normal-blended so the red reads red in daylight (additive washed it pale-orange)
+		const wg=new THREE.BufferGeometry(); wg.setAttribute("position",pg.getAttribute("position")); wg.setAttribute("color",new THREE.BufferAttribute(new Float32Array(gcol.length),3));
+		const papiWhite=new THREE.Points(wg,new THREE.PointsMaterial({size:13,map:light_dot,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true})); papiWhite.frustumCulled=false; papiWhite.visible=false; scene.add(papiWhite);   // additive boost lit ONLY on the white units, so they punch through bright daylight (red units stay normal-blended)
+		return {papi,papiPts,papiWhite,cx:tdz.x,cz:tdz.z,bx:beam.x,bz:beam.z}; }
 	const thrP=new THREE.Vector3(o.x,y,o.z).addScaledVector(fwd,-L/2);        // -y end: approach for heading H, fly +fwd, left=-right, beam back along -fwd
 	const thrM=new THREE.Vector3(o.x,y,o.z).addScaledVector(fwd, L/2);        // +y end: approach for heading H+180, fly -fwd, left=+right, beam along +fwd
 	const papis=[ build_papi(thrP.clone().addScaledVector(fwd,320), right.clone().multiplyScalar(-1), fwd.clone().multiplyScalar(-1)),
 	              build_papi(thrM.clone().addScaledVector(fwd,-320), right.clone(),                    fwd.clone()) ];
+	// --- runway lighting (small, night-only except the always-on PAPI): MIRL edge, directional green/red thresholds, REIL ---
+	const edge=[]; const m0=35, span=L-2*m0, segs=Math.max(2,Math.round(span/60));   // inset 35 m from the thresholds so the last edge light doesn't sit on the threshold/end lights
+	for(let i=0;i<=segs;i++){ const c=new THREE.Vector3(o.x,y+0.3,o.z).addScaledVector(fwd,-L/2+m0+i*(span/segs));
+		const l=c.clone().addScaledVector(right,W/2), r=c.clone().addScaledVector(right,-W/2); edge.push(l.x,l.y,l.z, r.x,r.y,r.z); }
+	night_lights.push(glow_points(edge,0xf0e2b0,8));                          // MIRL runway edge lights (warm white, bidirectional)
+	for(const [thr,appr] of [[thrP,fwd.clone().negate()],[thrM,fwd.clone()]]){   // appr = direction the approach comes from (outward from the threshold)
+		const gp=[],rp=[]; for(let k=-2;k<=2;k++){ const b=thr.clone().addScaledVector(right,k*(W/4));
+			gp.push(b.x,y+0.3,b.z); const e=b.clone().addScaledVector(appr,-4); rp.push(e.x,y+0.3,e.z); }
+		dir_glow(gp,0x66ff8a,13,thr.x,thr.z, appr.x,appr.z,false);              // green threshold — seen only from the approach side
+		dir_glow(rp,0xff4030,18,thr.x,thr.z,-appr.x,-appr.z,false);             // red runway-end — seen only from the runway side
+		const rl=[]; for(const s of [1,-1]){ const q=thr.clone().addScaledVector(right,(W/2+9)*s); rl.push(q.x,y+0.6,q.z); }
+		dir_glow(rl,0xffffff,10,thr.x,thr.z, appr.x,appr.z,true); }             // REIL — approach side, ~2 Hz flash
+	{ const ws=new THREE.Vector3(o.x,0,o.z).addScaledVector(right,W/2+25);    // windsock beside the runway
+		const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.15,0.15,6,6),new THREE.MeshStandardMaterial({color:0xd8d8d8,metalness:0.3,roughness:0.6})); pole.position.set(ws.x,y+3,ws.z); pole.castShadow=true; scene.add(pole);
+		const sock=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.95,4,10,1,true),new THREE.MeshStandardMaterial({color:0xff6a00,side:THREE.DoubleSide,roughness:0.9}));
+		sock.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),fwd); sock.position.copy(ws).setY(y+5.7).addScaledVector(fwd,2); scene.add(sock); }
 	const takeoff=thrP.clone().addScaledVector(fwd,55);                       // at the start of the runway, before the numbers, rolling toward +fwd
 	airports.push({x:o.x,z:o.z,papis,dir:fwd,sy:o.h+2.2,start:{x:takeoff.x,y:o.h+2.2,z:takeoff.z}});
 }
-function update_papi(p){ for(const ap of airports){ for(const set of ap.papis){
+function update_papi(p){ const flash=(performance.now()%520)<90;   // REIL: ~2 Hz synchronized white flash
+	const dark=cfg.tod!=="day";                                     // edge/threshold/REIL lit only when dark; PAPI is always on
+	for(const m of night_lights) m.visible=dark;
+	for(const d of dir_lights){ const facing=((p.x-d.x)*d.fx+(p.z-d.z)*d.fz)>0; d.mesh.visible=dark&&facing&&(!d.flash||flash); }
+	for(const ap of airports){
+	for(const set of ap.papis){
 	const dx=p.x-set.cx, dz=p.z-set.cz; const horiz=Math.hypot(dx,dz);
 	// realistic beam: visible only ahead of the lights, within ~±18° azimuth and out to ~16 km
 	const vis = horiz>30 && horiz<16000 && (dx*set.bx+dz*set.bz)/horiz > 0.95;
-	set.papiPts.visible=vis; const col=set.papiPts.geometry.attributes.color;
+	set.papiPts.visible=vis; set.papiWhite.visible=vis; const col=set.papiPts.geometry.attributes.color, wcol=set.papiWhite.geometry.attributes.color;
 	for(let i=0;i<set.papi.length;i++){ const L=set.papi[i];
 		if(!vis){ L.mesh.material.color.setHex(0x23262b); continue; }
 		const h2=Math.hypot(p.x-L.x,p.z-L.z)||1; const white=(Math.atan2(p.y-L.y,h2)*180/Math.PI)>=L.set;
-		L.mesh.material.color.setHex(white?0xffffff:0xff2200); col.array[i*3]=1; col.array[i*3+1]=white?1:0.12; col.array[i*3+2]=white?1:0.03; }
-	if(vis) col.needsUpdate=true;
+		L.mesh.material.color.setHex(white?0xffffff:0xff0000); col.array[i*3]=1; col.array[i*3+1]=white?1:0; col.array[i*3+2]=white?1:0;   // base (normal): pure red so it doesn't read orange
+			const w=white?1:0; wcol.array[i*3]=w; wcol.array[i*3+1]=w; wcol.array[i*3+2]=w; }   // additive white boost — white units only
+	if(vis){ col.needsUpdate=true; wcol.needsUpdate=true; }
 } } }
 generate_world();
 const extras=[];
