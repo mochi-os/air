@@ -473,7 +473,7 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active) continue; 
 // ============================================================================ flight
 const world_up=new THREE.Vector3(0,1,0);
 function make_state(pos,fwd,speed){ return { pos:pos.clone(), fwd:fwd.clone().normalize(), speed, bank:0, group:null,
-	break_t:0, break_dir:new THREE.Vector3(1,0,0), circle_phase:Math.random()*Math.PI*2, circle_radius:1500+Math.random()*2500, circle_alt:1600+Math.random()*2200, velx:0,vely:0,velz:0, gear:1, gearTarget:1, hook:0, hookTarget:0 }; }   // gear 0=down 1=up, hook 0=stowed 1=deployed (default up/stowed for airborne bandits/extras)
+	break_t:0, break_dir:new THREE.Vector3(1,0,0), circle_phase:Math.random()*Math.PI*2, circle_radius:1500+Math.random()*2500, circle_alt:1600+Math.random()*2200, velx:0,vely:0,velz:0, gear:1, gearTarget:1, hook:0, hookTarget:0, speedbrake:0, speedbrakeTarget:0 }; }   // gear 0=down 1=up, hook 0=stowed 1=deployed, speedbrake 0=stowed 1=deployed (default clean for bandits/extras)
 function steer(st,desired,dt,max_rate,max_bank){ desired.normalize(); let ang=st.fwd.angleTo(desired); const max=max_rate*dt;
 	if(ang>1e-4){ const axis=new THREE.Vector3().crossVectors(st.fwd,desired).normalize(); st.fwd.applyAxisAngle(axis,Math.min(ang,max)).normalize(); }
 	const horiz=new THREE.Vector3(desired.x-st.fwd.x,0,desired.z-st.fwd.z); const side=new THREE.Vector3().crossVectors(world_up,st.fwd);
@@ -693,7 +693,7 @@ let cat_saved_t=0;                              // "deck position saved" flash t
 // True while the aircraft is sitting/rolling on the deck or runway (not yet airborne) — gear can't retract then.
 function takeoff_surface(){ if(cfg.start==="carrier") return CARRIER.deckY; if(cfg.start==="runway"&&airports.length) return airports[0].start.y; return 8; }
 function on_ground(){ return ownship.on_cat||ownship.launching||ownship.pos.y<takeoff_surface()+12; }
-addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown"].includes(e.key)) e.preventDefault();
+addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown","/"].includes(e.key)) e.preventDefault();
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
 		if(k==="Space" && ownship.on_cat){ start_launch(); }
 		if(k==="KeyR" && !ownship.on_cat && !ownship.launching && cfg.missiles && ownship.msl>0){ if(launch_missile(ownship,has_enemy?bandit:null)) ownship.msl--; }
@@ -708,6 +708,7 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(k==="KeyM"){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on) map_resize(); }
 		if(k==="KeyP" && !MULTIPLAYER){ pause_toggle=!pause_toggle; }
 		if(k==="KeyH"){ ownship.hookTarget = ownship.hookTarget>0.5?0:1; }   // arrestor hook deploy/stow
+		if(k==="Slash"){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
 		if(k==="KeyG"){
 			if(e.shiftKey){ if(DECK_ALIGN && ownship.on_cat){ deck_edit=!deck_edit; if(deck_edit){ enter_align(); } else { save_cfg(); cat_saved_t=1.8; } } }   // Shift+G: dev-only deck alignment, gated by DECK_ALIGN (on the deck only)
 			else if(!on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; } }   // G: landing gear up/down — only once airborne, never on deck/runway
@@ -777,7 +778,7 @@ function fly_player(dt){
 	const omega=THREE.MathUtils.clamp(9.81*Math.tan(THREE.MathUtils.clamp(bank,-1.3,1.3))/Math.max(ownship.speed,70),-0.7,0.7);
 	_q.setFromAxisAngle(world_up,-omega*dt); ownship.q.premultiply(_q); ownship.q.normalize();
 	ownship.fwd.set(1,0,0).applyQuaternion(ownship.q); ownship.up.set(0,1,0).applyQuaternion(ownship.q); ownship.right.set(0,0,1).applyQuaternion(ownship.q);
-	const target=120+ownship.throttle*200; const pitch_ang=Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1));
+	const target=70+ownship.throttle*290-(ownship.speedbrake??0)*90; const pitch_ang=Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1));   // idle ~70 → full/AB ~360 m/s; speed brake bleeds up to ~90 m/s (rough; refined in the flight-model phase)
 	if(input.brake && on_ground()){ ownship.speed=Math.max(0,ownship.speed-55*dt); }   // wheel brakes: roll out below the airborne floor, down to a stop
 	else { ownship.speed+=(target-ownship.speed)*Math.min(1,dt*0.5); ownship.speed-=9.81*Math.sin(pitch_ang)*dt*1.6; ownship.speed=THREE.MathUtils.clamp(ownship.speed,55,360); }
 	ownship.vel_dir.lerp(ownship.fwd,Math.min(1,dt*2.5)).normalize();
@@ -807,7 +808,9 @@ function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer) return;
 function ease_to(cur,tgt,dt){ const d=tgt-cur; return Math.abs(d)>1e-4 ? cur+Math.sign(d)*Math.min(Math.abs(d),GEAR_RATE*dt) : tgt; }
 function update_anim(dt){ for(const st of [ownship,bandit,...extras]){
 	if(st.gear===undefined) st.gear=st.gearTarget??1; st.gear=ease_to(st.gear,st.gearTarget??1,dt);
-	if(st.hook===undefined) st.hook=st.hookTarget??0; st.hook=ease_to(st.hook,st.hookTarget??0,dt); apply_anim(st); } }
+	if(st.hook===undefined) st.hook=st.hookTarget??0; st.hook=ease_to(st.hook,st.hookTarget??0,dt);
+	if(st.speedbrake===undefined) st.speedbrake=st.speedbrakeTarget??0; st.speedbrake+=THREE.MathUtils.clamp((st.speedbrakeTarget??0)-st.speedbrake,-1.5*dt,1.5*dt);   // air-brake state eases in ~0.7s — drives the HUD + drag; visible surface deferred to the full model
+	apply_anim(st); } }
 function step_world(dt){ sim_time+=dt;
 	fly_player(dt); if(has_enemy) fly_bandit(dt);
 	for(const st of extras){ st.circle_phase+=dt*(st.speed/st.circle_radius);
@@ -1049,6 +1052,7 @@ function draw_hud(dt){
 	// Shown only while deployed (like the SPD BK convention): green = down & locked,
 	// amber = in transit; nothing drawn in the clean configuration (gear up, hook stowed).
 	hctx.textAlign="right"; hctx.font="13px monospace";
+	if((ownship.speedbrake??0)>0.02){ hctx.fillStyle=AM; hctx.fillText(translate("SPD BK"),HW-40,HH-88); }   // amber whenever the air brake is out (keys.md §3)
 	if(ownship.gear<0.99){ hctx.fillStyle=ownship.gear<0.02?GR:AM; hctx.fillText(translate("GEAR"),HW-40,HH-70); }
 	if((ownship.hook??0)>0.01){ hctx.fillStyle=(ownship.hook??0)>0.98?GR:AM; hctx.fillText(translate("HOOK"),HW-40,HH-52); }
 

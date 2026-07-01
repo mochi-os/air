@@ -22,6 +22,7 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   FLARES: msg`FLARES`,
   GEAR: msg`GEAR`,
   HOOK: msg`HOOK`,
+  'SPD BK': msg`SPD BK`,
   YOU: msg`YOU`,
   PAUSED: msg`PAUSED`,
   'PRESS SPACE TO LAUNCH': msg`PRESS SPACE TO LAUNCH`,
@@ -89,8 +90,8 @@ export function GameCanvas({
         <Trans>throttle</Trans> · <b>Space</b> <Trans>launch / guns</Trans> ·{' '}
         <b>R</b> <Trans>missile</Trans> · <b>F</b> <Trans>flares</Trans> · <b>X</b>{' '}
         <Trans>rearm</Trans> · <b>G</b> <Trans>gear</Trans> · <b>H</b> <Trans>hook</Trans> ·{' '}
-        <b>B</b> <Trans>brakes</Trans> · <b>1</b>–<b>5</b>/<b>V</b> <Trans>view</Trans> ·{' '}
-        <b>M</b> <Trans>map</Trans> ·{' '}
+        <b>B</b> <Trans>brakes</Trans> · <b>/</b> <Trans>speed brake</Trans> ·{' '}
+        <b>1</b>–<b>5</b>/<b>V</b> <Trans>view</Trans> · <b>M</b> <Trans>map</Trans> ·{' '}
         <b>P</b> <Trans>pause</Trans> · <b>Esc</b> <Trans>menu</Trans>
         <br />
         <b>

@@ -378,6 +378,7 @@ export function MissionSetup({
                   />
                   <ControlRow action={<Trans>Launch / guns</Trans>} keys={<Key>Space</Key>} />
                   <ControlRow action={<Trans>Wheel brakes</Trans>} keys={<Key>B</Key>} />
+                  <ControlRow action={<Trans>Speed brake</Trans>} keys={<Key>/</Key>} />
                   <ControlRow action={<Trans>Missile</Trans>} keys={<Key>R</Key>} />
                   <ControlRow action={<Trans>Flares</Trans>} keys={<Key>F</Key>} />
                   <ControlRow action={<Trans>Rearm</Trans>} keys={<Key>X</Key>} />
