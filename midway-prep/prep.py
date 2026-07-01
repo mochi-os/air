@@ -38,7 +38,7 @@ os.environ.setdefault("CPL_VSIL_CURL_ALLOWED_EXTENSIONS", ".tif")
 
 # OpenStreetMap airfield vectors (ODbL, © OpenStreetMap contributors) via Overpass.
 OVERPASS = "https://overpass-api.de/api/interpreter"
-OSM_QUERY = '[out:json][timeout:60];(way["aeroway"](28.17,-177.42,28.26,-177.33););out geom;'
+OSM_QUERY = '[out:json][timeout:60];(way["aeroway"](28.17,-177.42,28.26,-177.33);way["building"](28.17,-177.42,28.26,-177.33););out geom;'
 
 _to_local = Transformer.from_crs(
     "EPSG:4326",
@@ -128,7 +128,16 @@ def save_airfield(half):
     the vectors drawn on the map texture to confirm they sit on the photo. One airfield per file."""
     osm = load_osm()
     def world(geom): return [[round(x, 1), round(z, 1)] for x, z in (to_world(p["lon"], p["lat"]) for p in geom)]
-    runway = None; taxiways = []; aprons = []; stopways = []; info = {}
+    runway = None; taxiways = []; aprons = []; stopways = []; buildings = []; info = {}
+    def bheight(tg, hangar):   # metres from height / building:levels tags, else a category default
+        for k in ("height", "building:height"):
+            if k in tg:
+                try: return float(str(tg[k]).split()[0])
+                except ValueError: pass
+        if "building:levels" in tg:
+            try: return float(tg["building:levels"]) * 3.2
+            except ValueError: pass
+        return 11.0 if hangar else 5.0
     for e in osm["elements"]:
         t = e.get("tags", {}); aw = t.get("aeroway"); g = e.get("geometry")
         if aw == "aerodrome":
@@ -143,11 +152,17 @@ def save_airfield(half):
             aprons.append({"points": world(g)})
         elif aw == "stopway":
             stopways.append({"points": world(g), "width": 45.0})
+        elif t.get("building") or aw == "hangar":
+            hangar = aw == "hangar" or t.get("building") == "hangar"
+            flat = t.get("building") in ("industrial", "service", "greenhouse", "roof", "bunker")   # utility/industrial = flat roof (Google view: most others are gabled)
+            buildings.append({"points": world(g), "height": round(bheight(t, hangar), 1),
+                              "kind": "hangar" if hangar else "building",
+                              "roof": "gable" if (hangar or not flat) else "flat"})
     icao = (info.get("icao") or info.get("iata") or "airfield").lower()   # lowercase filenames
     json.dump({"icao": icao, "name": info.get("name", ""),
-               "runway": runway, "taxiways": taxiways, "aprons": aprons, "stopways": stopways},
+               "runway": runway, "taxiways": taxiways, "aprons": aprons, "stopways": stopways, "buildings": buildings},
               open(os.path.join(OUT, f"{icao}.json"), "w"))
-    print(f"{icao}.json: runway {runway['ref']}, {len(taxiways)} taxiways, {len(aprons)} aprons, {len(stopways)} stopways")
+    print(f"{icao}.json: runway {runway['ref']}, {len(taxiways)} taxiways, {len(aprons)} aprons, {len(stopways)} stopways, {len(buildings)} buildings")
 
     # ---- erase the airfield footprint from the imagery so no photo runway/taxiway pokes out past the
     #      3-D geometry: blend the surrounding terrain (heavy blur) over the footprint. The 3-D strips

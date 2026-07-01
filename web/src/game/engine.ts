@@ -434,6 +434,9 @@ function light_dot_texture(){ const c=document.createElement("canvas"); c.width=
 	g.addColorStop(0,"rgba(255,255,255,1)"); g.addColorStop(0.36,"rgba(255,255,255,1)"); g.addColorStop(0.6,"rgba(255,255,255,0.3)"); g.addColorStop(1,"rgba(255,255,255,0)");   // solid opaque core → bright + crisp
 	x.fillStyle=g; x.fillRect(0,0,64,64); return new THREE.CanvasTexture(c); }
 const light_dot=light_dot_texture();
+function windsock_texture(){ const c=document.createElement("canvas"); c.width=8; c.height=160; const x=c.getContext("2d");   // 5 alternating orange/white bands along the length (standard windsock)
+	const cols=["#e8531a","#f2f2f2"]; for(let i=0;i<5;i++){ x.fillStyle=cols[i%2]; x.fillRect(0,i*32,8,32); }
+	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; }
 function pool(max){ return { px:new Float32Array(max),py:new Float32Array(max),pz:new Float32Array(max), vx:new Float32Array(max),vy:new Float32Array(max),vz:new Float32Array(max),
 	life:new Float32Array(max),ttl:new Float32Array(max), r:new Float32Array(max),g:new Float32Array(max),b:new Float32Array(max), active:new Uint8Array(max), max, next:0 }; }
 function pool_spawn(p){ for(let i=0;i<p.max;i++){ const k=(p.next+i)%p.max; if(!p.active[k]){ p.next=(k+1)%p.max; p.active[k]=1; return k; } } return -1; }
@@ -619,13 +622,15 @@ async function generate_world(){
 		const coast=await (await fetch(base+"coastline.json")).json();
 		build_islands(coast.polygons||[], texture, map.region_half);
 		// --- airfields (runway / taxiways / aprons) from OpenStreetMap, per map.json ---
-		for(const code of map.airfields||[]){ const af=await (await fetch(base+code+".json")).json(); build_airfield(af); }
+		for(const code of map.airfields||[]){ const af=await (await fetch(base+code+".json")).json(); build_airfield(af); build_buildings(af); }
 		// The runway loads async, after the initial reset_ownship — a runway start would otherwise fall
 		// through to an air start; re-place on the runway now that it exists.
 		if(cfg.start==="runway" && running && airports.length) reset_ownship();
 	}catch(error){ console.error("midway map load failed",error); }
 }
 const ISLAND_H=3.5;   // island top; the airfield surfaces + runway sit ~1.5 m above it (floating read fine for runway/taxiways; coplanar z-fought worse). Runway height tuned to the y=8 aircraft floor.
+const AIRFIELD_FLOAT=1.46;   // how far the airfield ground floats above the island top
+function pip(px,pz,poly){ let inside=false; for(let i=0,j=poly.length-1;i<poly.length;j=i++){ const xi=poly[i][0],zi=poly[i][1],xj=poly[j][0],zj=poly[j][1]; if(((zi>pz)!==(zj>pz)) && px<(xj-xi)*(pz-zi)/(zj-zi)+xi) inside=!inside; } return inside; }
 function build_islands(polygons, ground, half){
 	island_polygons=polygons.filter(polygon=>polygon.length>=30);   // Sand / Eastern / Spit; skip tiny reef rocks
 	const material=new THREE.MeshStandardMaterial({map:ground,roughness:0.96,metalness:0.0});   // Sentinel-2 imagery, planar-mapped by world position
@@ -677,7 +682,7 @@ function build_airfield(af){
 	const asphalt=new THREE.MeshStandardMaterial({map:tex,roughness:0.96,metalness:0.0,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
 	// all ground surfaces (aprons + taxiways + stopways) merged into ONE mesh at ONE height. Floats ~1.5 m above the
 	// island: read fine for the runway/taxiways; the apron area keeps some z-fighting we accept (buildings cover it, #49).
-	const gy=ISLAND_H+1.46;
+	const gy=ISLAND_H+AIRFIELD_FLOAT;
 	const ground=[...af.aprons.map(a=>fill_polygon(a.points,gy)), ...af.taxiways.map(t=>ribbon(t.points,t.width,gy)), ...af.stopways.map(s=>ribbon(s.points,s.width,gy))];
 	if(ground.length){ const m=new THREE.Mesh(merge_uv(ground),asphalt); m.receiveShadow=true; scene.add(m); }
 	const rw=af.runway, a=rw.points[0], b=rw.points[rw.points.length-1];   // a = first end (06), b = last end (24)
@@ -685,6 +690,79 @@ function build_airfield(af){
 	const L=Math.hypot(dx,dz), H=Math.atan2(dx,-dz);   // runway centre, true length, heading a→b (fwd=(sinH,0,-cosH))
 	const parts=rw.ref.split("/").map(s=>parseInt(s,10));   // painted magnetic numbers (06/24) from the OSM ref
 	build_airport({x:cx,z:cz,h:ISLAND_H,hd:H}, parts[0], parts[1], false, L, rw.width);
+}
+const WALL_TILE=3.6, ROOF_TILE=2.2;
+function wall_texture(){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d");
+	x.fillStyle="#cec7b7"; x.fillRect(0,0,64,64);                                                 // pale painted wall
+	x.fillStyle="#b7b1a1"; x.fillRect(15,13,34,34); x.fillStyle="#3f464d"; x.fillRect(18,16,28,28);   // one window (frame + glass) per tile
+	x.fillStyle="#565d64"; x.fillRect(31,16,2,28); x.fillRect(18,29,28,2);                         // mullions
+	const im=x.getImageData(0,0,64,64),d=im.data; for(let i=0;i<d.length;i+=4){ const n=(Math.random()-0.5)*12; d[i]+=n; d[i+1]+=n; d[i+2]+=n; } x.putImageData(im,0,0);
+	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=4; return t; }
+function roof_texture(dark){ const c=document.createElement("canvas"); c.width=c.height=32; const x=c.getContext("2d");
+	x.fillStyle=dark?"#4a4f56":"#a8adb3"; x.fillRect(0,0,32,32);
+	x.strokeStyle=dark?"#3b3f45":"#8d9299"; x.lineWidth=1; for(let i=1;i<32;i+=4){ x.beginPath(); x.moveTo(i,0); x.lineTo(i,32); x.stroke(); }   // corrugation ribs
+	const im=x.getImageData(0,0,32,32),d=im.data; for(let i=0;i<d.length;i+=4){ const n=(Math.random()-0.5)*10; d[i]+=n; d[i+1]+=n; d[i+2]+=n; } x.putImageData(im,0,0);
+	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=4; return t; }
+function facenorm(a,b,c){ const ux=b[0]-a[0],uy=b[1]-a[1],uz=b[2]-a[2], vx=c[0]-a[0],vy=c[1]-a[1],vz=c[2]-a[2];
+	const nx=uy*vz-uz*vy, ny=uz*vx-ux*vz, nz=ux*vy-uy*vx, l=Math.hypot(nx,ny,nz)||1; return [nx/l,ny/l,nz/l]; }
+function pushtri(pos,nor,uv, a,b,c, ta,tb,tc, want){   // emit a triangle, flipping winding so its face normal points toward `want`
+	let n=facenorm(a,b,c); if(n[0]*want[0]+n[1]*want[1]+n[2]*want[2]<0){ const t=b; b=c; c=t; const u=tb; tb=tc; tc=u; n=facenorm(a,b,c); }
+	pos.push(a[0],a[1],a[2], b[0],b[1],b[2], c[0],c[1],c[2]); nor.push(n[0],n[1],n[2], n[0],n[1],n[2], n[0],n[1],n[2]); uv.push(ta[0],ta[1], tb[0],tb[1], tc[0],tc[1]); }
+function geom_from(pos,nor,uv){ const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(new Float32Array(pos),3)); g.setAttribute("normal",new THREE.BufferAttribute(new Float32Array(nor),3)); g.setAttribute("uv",new THREE.BufferAttribute(new Float32Array(uv),2)); return g; }
+function building_walls(pts, gy, topY){   // textured vertical walls per footprint edge (windows tile by world size)
+	const pos=[],nor=[],uv=[], h=topY-gy; let cx=0,cz=0; for(const p of pts){ cx+=p[0]; cz+=p[1]; } cx/=pts.length; cz/=pts.length;
+	let cum=0;
+	for(let i=0;i<pts.length;i++){ const a=pts[i], b=pts[(i+1)%pts.length], dx=b[0]-a[0], dz=b[1]-a[1], len=Math.hypot(dx,dz)||1;
+		let nx=dz/len, nz=-dx/len; if(((a[0]+b[0])/2-cx)*nx+((a[1]+b[1])/2-cz)*nz<0){ nx=-nx; nz=-nz; }   // outward
+		const want=[nx,0,nz], u0=cum/WALL_TILE, u1=(cum+len)/WALL_TILE, v1=h/WALL_TILE;
+		const aB=[a[0],gy,a[1]], bB=[b[0],gy,b[1]], bT=[b[0],topY,b[1]], aT=[a[0],topY,a[1]];
+		pushtri(pos,nor,uv, aB,bB,bT, [u0,0],[u1,0],[u1,v1], want); pushtri(pos,nor,uv, aB,bT,aT, [u0,0],[u1,v1],[u0,v1], want);
+		cum+=len; }
+	return geom_from(pos,nor,uv); }
+function gable_roof(pts, eaveY){   // two sloped roof planes over the footprint's oriented bounding box; returns {slopes, ends}
+	let cx=0,cz=0; for(const p of pts){ cx+=p[0]; cz+=p[1]; } cx/=pts.length; cz/=pts.length;
+	let sxx=0,szz=0,sxz=0; for(const p of pts){ const dx=p[0]-cx, dz=p[1]-cz; sxx+=dx*dx; szz+=dz*dz; sxz+=dx*dz; }
+	const ang=0.5*Math.atan2(2*sxz, sxx-szz); let ux=Math.cos(ang), uz=Math.sin(ang), vx=-Math.sin(ang), vz=Math.cos(ang);
+	let uMin=1e9,uMax=-1e9,vMin=1e9,vMax=-1e9; for(const p of pts){ const du=(p[0]-cx)*ux+(p[1]-cz)*uz, dv=(p[0]-cx)*vx+(p[1]-cz)*vz; uMin=Math.min(uMin,du); uMax=Math.max(uMax,du); vMin=Math.min(vMin,dv); vMax=Math.max(vMax,dv); }
+	if(uMax-uMin<vMax-vMin){ [ux,uz,vx,vz]=[vx,vz,-ux,-uz]; [uMin,uMax,vMin,vMax]=[vMin,vMax,-uMax,-uMin]; }   // u = long axis (ridge runs along it)
+	const rise=Math.max(1.2,Math.min(5,(vMax-vMin)*0.18)), ry=eaveY+rise, vMid=(vMin+vMax)/2;
+	const W=(u,v,yy)=>[cx+u*ux+v*vx, yy, cz+u*uz+v*vz], puv=(p)=>[p[0]/ROOF_TILE, p[2]/ROOF_TILE];
+	const A=W(uMin,vMin,eaveY), B=W(uMax,vMin,eaveY), C=W(uMax,vMax,eaveY), D=W(uMin,vMax,eaveY), R0=W(uMin,vMid,ry), R1=W(uMax,vMid,ry);
+	const sp=[],sn=[],su=[]; pushtri(sp,sn,su, A,B,R1, puv(A),puv(B),puv(R1), [0,1,0]); pushtri(sp,sn,su, A,R1,R0, puv(A),puv(R1),puv(R0), [0,1,0]);
+	pushtri(sp,sn,su, D,C,R1, puv(D),puv(C),puv(R1), [0,1,0]); pushtri(sp,sn,su, D,R1,R0, puv(D),puv(R1),puv(R0), [0,1,0]);
+	const ep=[],en=[],eu=[]; pushtri(ep,en,eu, A,D,R0, puv(A),puv(D),puv(R0), [-ux,0,-uz]); pushtri(ep,en,eu, B,C,R1, puv(B),puv(C),puv(R1), [ux,0,uz]);
+	return {slopes: geom_from(sp,sn,su), ends: geom_from(ep,en,eu)}; }
+function flat_cap(pts, topY){   // flat roof cap at topY
+	const shape=new THREE.Shape(); shape.moveTo(pts[0][0],-pts[0][1]); for(let i=1;i<pts.length;i++) shape.lineTo(pts[i][0],-pts[i][1]);
+	const g=new THREE.ShapeGeometry(shape); g.rotateX(-Math.PI/2); const pos=g.attributes.position, uv=new Float32Array(pos.count*2);
+	for(let i=0;i<pos.count;i++){ pos.setY(i,topY); uv[i*2]=pos.getX(i)/ROOF_TILE; uv[i*2+1]=pos.getZ(i)/ROOF_TILE; }
+	g.setAttribute("uv", new THREE.BufferAttribute(uv,2)); return g; }
+function rectangularity(pts){   // footprint area / oriented-bounding-box area (1 = perfect rectangle)
+	let area=0; for(let i=0;i<pts.length;i++){ const a=pts[i], b=pts[(i+1)%pts.length]; area+=a[0]*b[1]-b[0]*a[1]; } area=Math.abs(area)/2;
+	let cx=0,cz=0; for(const p of pts){ cx+=p[0]; cz+=p[1]; } cx/=pts.length; cz/=pts.length;
+	let sxx=0,szz=0,sxz=0; for(const p of pts){ const dx=p[0]-cx, dz=p[1]-cz; sxx+=dx*dx; szz+=dz*dz; sxz+=dx*dz; }
+	const ang=0.5*Math.atan2(2*sxz, sxx-szz), ux=Math.cos(ang), uz=Math.sin(ang);
+	let uMin=1e9,uMax=-1e9,vMin=1e9,vMax=-1e9; for(const p of pts){ const du=(p[0]-cx)*ux+(p[1]-cz)*uz, dv=-(p[0]-cx)*uz+(p[1]-cz)*ux; uMin=Math.min(uMin,du); uMax=Math.max(uMax,du); vMin=Math.min(vMin,dv); vMax=Math.max(vMax,dv); }
+	const obb=(uMax-uMin)*(vMax-vMin); return obb>0?area/obb:0; }
+function build_buildings(af){   // OSM footprints → textured walls + gable/flat roofs on the island
+	if(!af.buildings || !af.buildings.length) return;
+	const wallMat=new THREE.MeshStandardMaterial({map:wall_texture(),roughness:0.9,metalness:0.05});
+	const roofMat=new THREE.MeshStandardMaterial({map:roof_texture(false),roughness:0.7,metalness:0.3});     // light metal roof
+	const hangarMat=new THREE.MeshStandardMaterial({map:roof_texture(true),roughness:0.65,metalness:0.35});  // dark metal (hangar)
+	const walls=[], roofs=[], hroofs=[];
+	for(const b of af.buildings){
+		let pts=b.points; if(pts.length>3 && pts[0][0]===pts[pts.length-1][0] && pts[0][1]===pts[pts.length-1][1]) pts=pts.slice(0,-1);
+		if(pts.length<3) continue;
+		let cx=0,cz=0; for(const p of pts){ cx+=p[0]; cz+=p[1]; } cx/=pts.length; cz/=pts.length;
+		const apron=(af.aprons||[]).some(a=>pip(cx,cz,a.points));
+		const gy=apron?ISLAND_H+AIRFIELD_FLOAT:ISLAND_H, eaveY=gy+b.height;   // buildings on the apron stand on it, not half-buried under it
+		walls.push(building_walls(pts, gy, eaveY));
+		// The gable spans the footprint's oriented bounding box, so it overhangs non-rectangular footprints — those get a flat cap instead.
+		if(b.roof==="gable" && rectangularity(pts)>=0.8){ const g=gable_roof(pts, eaveY); (b.kind==="hangar"?hroofs:roofs).push(g.slopes); walls.push(g.ends); }
+		else roofs.push(flat_cap(pts, eaveY));
+	}
+	const add=(geos,mat)=>{ if(geos.length){ const m=new THREE.Mesh(merge_uv(geos),mat); m.castShadow=true; m.receiveShadow=true; scene.add(m); } };
+	add(walls,wallMat); add(roofs,roofMat); add(hroofs,hangarMat);
 }
 // Toroidal world wrap — WORLD_WRAP (m) from map.json, 0 = no wrap. Minimum-image for relative quantities.
 function wrap_axis(value){ return WORLD_WRAP>0 ? value-WORLD_WRAP*Math.round(value/WORLD_WRAP) : value; }
@@ -700,8 +778,8 @@ function runway_texture(nTop,nBottom){ const c=document.createElement("canvas");
 	x.fillStyle="#eaeaea"; x.fillRect(40,150,12,60); x.fillRect(76,150,12,60); x.fillRect(40,814,12,60); x.fillRect(76,814,12,60); // aiming points
 	// each number reads upright to the aircraft approaching that end (glyph top points down-runway toward the centre)
 	x.fillStyle="#f2f2f2"; x.font="bold 52px sans-serif"; x.textAlign="center"; x.textBaseline="middle";
-	x.save(); x.translate(64,92);  x.rotate(Math.PI); x.fillText(String(nTop).padStart(2,"0"),0,0); x.restore();      // +y end
-	x.save(); x.translate(64,932);                    x.fillText(String(nBottom).padStart(2,"0"),0,0); x.restore();   // -y end
+	x.save(); x.translate(64,92);  x.rotate(Math.PI); x.fillText(String(nTop),0,0); x.restore();      // +y end (US: single-digit runways painted without a leading zero, e.g. "6" not "06")
+	x.save(); x.translate(64,932);                    x.fillText(String(nBottom),0,0); x.restore();   // -y end
 	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=4; return t; }
 function glow_points(pts, color, size){   // additive glowing point-lights (runway edge / threshold / REIL)
 	const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(new Float32Array(pts),3));
@@ -759,9 +837,11 @@ function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
 		const rl=[]; for(const s of [1,-1]){ const q=thr.clone().addScaledVector(right,(W/2+9)*s); rl.push(q.x,y+0.6,q.z); }
 		dir_glow(rl,0xffffff,10,thr.x,thr.z, appr.x,appr.z,true); }             // REIL — approach side, ~2 Hz flash
 	{ const ws=new THREE.Vector3(o.x,0,o.z).addScaledVector(right,W/2+25);    // windsock beside the runway
-		const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.15,0.15,6,6),new THREE.MeshStandardMaterial({color:0xd8d8d8,metalness:0.3,roughness:0.6})); pole.position.set(ws.x,y+3,ws.z); pole.castShadow=true; scene.add(pole);
-		const sock=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.95,4,10,1,true),new THREE.MeshStandardMaterial({color:0xff6a00,side:THREE.DoubleSide,roughness:0.9}));
-		sock.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),fwd); sock.position.copy(ws).setY(y+5.7).addScaledVector(fwd,2); scene.add(sock); }
+		const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.12,6,6),new THREE.MeshStandardMaterial({color:0xd0d0d0,metalness:0.3,roughness:0.6})); pole.position.set(ws.x,y+3,ws.z); pole.castShadow=true; scene.add(pole);
+		// wind from ~070° (ENE trades) → the sock streams downwind (~250°); at a light ~10 kt it droops ~25° rather than standing full
+		const wd=250*D2R, droop=25*D2R, axis=new THREE.Vector3(Math.sin(wd)*Math.cos(droop),-Math.sin(droop),-Math.cos(wd)*Math.cos(droop)).normalize();
+		const h=3.4, sock=new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.5,h,12,1,true),new THREE.MeshStandardMaterial({map:windsock_texture(),side:THREE.DoubleSide,roughness:0.9,metalness:0.0}));   // banded orange/white, mouth (wide) at the pole, narrow tail downwind
+		sock.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),axis); sock.position.set(ws.x,y+6,ws.z).addScaledVector(axis,h/2); sock.castShadow=true; scene.add(sock); }
 	const takeoff=thrP.clone().addScaledVector(fwd,55);                       // at the start of the runway, before the numbers, rolling toward +fwd
 	airports.push({x:o.x,z:o.z,papis,dir:fwd,sy:o.h+2.2,start:{x:takeoff.x,y:o.h+2.2,z:takeoff.z}});
 }
