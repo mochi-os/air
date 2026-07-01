@@ -20,7 +20,7 @@ import numpy as np, rasterio
 from rasterio.warp import reproject, Resampling
 from rasterio.transform import Affine
 from pyproj import Transformer
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFilter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
@@ -80,12 +80,29 @@ def save_map():
     reach = max(np.percentile(np.abs(xs - 512), 99), np.percentile(np.abs(ys - 512), 99)) * per_px
     half = float(np.ceil((reach + 700) / 250) * 250)   # + margin, rounded to 250 m
     # 2) final crop at full resolution + deep-ocean clean
-    sen = np.clip(reproject_sentinel(0.0, 0.0, half, MAPTEX).astype("float32") * 1.25, 0.0, 255.0)
+    sen = np.clip(reproject_sentinel(0.0, 0.0, half, MAPTEX).astype("float32") * 1.12, 0.0, 255.0)
     lm = sen.mean(axis=2)
-    t = np.clip((62.0 - lm) / 40.0, 0.0, 1.0)[:, :, None]           # dark (deep-ocean) pixels → blue
+    t = np.clip((60.0 - lm) / 40.0, 0.0, 1.0)[:, :, None]           # dark (deep-ocean) pixels → blue
     out = sen * (1.0 - t) + np.array([12, 52, 96], dtype="float32") * t
-    Image.fromarray(out.astype("uint8"), "RGB").save(os.path.join(OUT, "map.jpg"), quality=85, optimize=True)
+    gray = (out * np.array([0.2126, 0.7152, 0.0722], dtype="float32")).sum(axis=2, keepdims=True)
+    out = out * 0.87 + gray * 0.13                                  # slightly duller / less vibrant
+    Image.fromarray(np.clip(out, 0, 255).astype("uint8"), "RGB").save(os.path.join(OUT, "map.jpg"), quality=85, optimize=True)
     print(f"map.jpg: Sentinel-2 water+islands, cropped to ±{half:.0f} m ({MAPTEX}px, {2*half/MAPTEX:.1f} m/px)")
+
+    # lagoon/calm mask: the whole atoll interior (reef flat + lagoon incl. the deep basin) is protected
+    # water. Seal narrow reef channels (morphological closing), flood-fill the open ocean in from the
+    # border, and mark everything the reef encloses as calm. Drives the ocean shader's wave damping —
+    # the deep lagoon basin looks like open ocean by colour, so it can't be told apart pixel-wise.
+    MASK = 1024
+    lm_small = np.asarray(Image.fromarray(lm.astype("uint8")).resize((MASK, MASK), Image.BILINEAR))
+    atoll = Image.fromarray(((lm_small > 60) * 255).astype("uint8"))                     # reef flat / lagoon shallow / land
+    atoll = atoll.filter(ImageFilter.MaxFilter(31)).filter(ImageFilter.MinFilter(31))    # close reef channels ≲ 350 m
+    ocean = atoll.point(lambda v: 0 if v > 127 else 255)                                 # deep water = not-atoll
+    for corner in ((0, 0), (MASK - 1, 0), (0, MASK - 1), (MASK - 1, MASK - 1)):
+        ImageDraw.floodfill(ocean, corner, 128, thresh=50)                               # flood the open ocean
+    calm = (np.asarray(ocean) != 128).astype("uint8") * 255                              # everything the reef encloses
+    Image.fromarray(calm).filter(ImageFilter.GaussianBlur(6)).save(os.path.join(OUT, "lagoon.png"))
+    print("lagoon.png: atoll-interior calm mask (1024px)")
     return half
 
 def build():
