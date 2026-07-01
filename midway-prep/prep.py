@@ -36,6 +36,10 @@ SENTINEL_TCI = "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a
 os.environ.setdefault("GDAL_DISABLE_READDIR_ON_OPEN", "EMPTY_DIR")   # efficient /vsicurl windowed reads
 os.environ.setdefault("CPL_VSIL_CURL_ALLOWED_EXTENSIONS", ".tif")
 
+# OpenStreetMap airfield vectors (ODbL, © OpenStreetMap contributors) via Overpass.
+OVERPASS = "https://overpass-api.de/api/interpreter"
+OSM_QUERY = '[out:json][timeout:60];(way["aeroway"](28.17,-177.42,28.26,-177.33););out geom;'
+
 _to_local = Transformer.from_crs(
     "EPSG:4326",
     f"+proj=aeqd +lat_0={ORIGIN_LAT} +lon_0={ORIGIN_LON} +datum=WGS84 +units=m +no_defs",
@@ -105,6 +109,75 @@ def save_map():
     print("lagoon.png: atoll-interior calm mask (1024px)")
     return half
 
+def load_osm():
+    """Fetch the Midway airfield vectors from Overpass (cached in data/, git-ignored). ODbL."""
+    cache = os.path.join(DATA, "midway_osm.json")
+    if not os.path.exists(cache):
+        import urllib.request, urllib.parse
+        os.makedirs(DATA, exist_ok=True)
+        body = urllib.parse.urlencode({"data": OSM_QUERY}).encode()
+        req = urllib.request.Request(OVERPASS, data=body, headers={"User-Agent": "furball-midway-prep/1.0"})
+        with urllib.request.urlopen(req, timeout=120) as r:
+            open(cache, "wb").write(r.read())
+    return json.load(open(cache))
+
+def save_airfield(half):
+    """Runway / taxiways / aprons / stopways from OpenStreetMap → <ICAO>.json (world metres, e.g.
+    PMDY.json), which the engine extrudes into 3-D airfield geometry aligned to the imagery. Returns
+    the ICAO code (map.json references it). Also writes a debug overlay (data/airfield-check.png) with
+    the vectors drawn on the map texture to confirm they sit on the photo. One airfield per file."""
+    osm = load_osm()
+    def world(geom): return [[round(x, 1), round(z, 1)] for x, z in (to_world(p["lon"], p["lat"]) for p in geom)]
+    runway = None; taxiways = []; aprons = []; stopways = []; info = {}
+    for e in osm["elements"]:
+        t = e.get("tags", {}); aw = t.get("aeroway"); g = e.get("geometry")
+        if aw == "aerodrome":
+            info = t
+        if not g:
+            continue
+        if aw == "runway":
+            runway = {"points": world(g), "width": float(t.get("width", 45)), "ref": t.get("ref", "")}
+        elif aw == "taxiway":
+            taxiways.append({"points": world(g), "width": float(t.get("width", 18))})
+        elif aw == "apron":
+            aprons.append({"points": world(g)})
+        elif aw == "stopway":
+            stopways.append({"points": world(g), "width": 45.0})
+    icao = (info.get("icao") or info.get("iata") or "airfield").lower()   # lowercase filenames
+    json.dump({"icao": icao, "name": info.get("name", ""),
+               "runway": runway, "taxiways": taxiways, "aprons": aprons, "stopways": stopways},
+              open(os.path.join(OUT, f"{icao}.json"), "w"))
+    print(f"{icao}.json: runway {runway['ref']}, {len(taxiways)} taxiways, {len(aprons)} aprons, {len(stopways)} stopways")
+
+    # ---- erase the airfield footprint from the imagery so no photo runway/taxiway pokes out past the
+    #      3-D geometry: blend the surrounding terrain (heavy blur) over the footprint. The 3-D strips
+    #      render on top, so only the edges show, and they now read as terrain rather than fresh asphalt.
+    def px(p): return ((p[0] + half) / (2 * half) * MAPTEX, (p[1] + half) / (2 * half) * MAPTEX)
+    mpp = 2 * half / MAPTEX
+    def wpx(w): return max(2, int(round(w / mpp)))
+    foot = Image.new("L", (MAPTEX, MAPTEX), 0)
+    fd = ImageDraw.Draw(foot)
+    for a in aprons: fd.polygon([px(p) for p in a["points"]], fill=255)
+    for t in taxiways: fd.line([px(p) for p in t["points"]], fill=255, width=wpx(t["width"]), joint="curve")
+    for s in stopways: fd.line([px(p) for p in s["points"]], fill=255, width=wpx(s["width"]), joint="curve")
+    fd.line([px(p) for p in runway["points"]], fill=255, width=wpx(runway["width"]), joint="curve")
+    foot = foot.filter(ImageFilter.MaxFilter(9))                                        # cover a little past the paint
+    soft = np.asarray(foot.filter(ImageFilter.GaussianBlur(4))).astype("float32")[:, :, None] / 255.0
+    base = Image.open(os.path.join(OUT, "map.jpg")).convert("RGB")
+    ground = np.asarray(base.filter(ImageFilter.GaussianBlur(40))).astype("float32")    # surrounding terrain averaged in
+    out = np.asarray(base).astype("float32") * (1 - soft) + ground * soft
+    Image.fromarray(np.clip(out, 0, 255).astype("uint8"), "RGB").save(os.path.join(OUT, "map.jpg"), quality=85, optimize=True)
+
+    # debug overlay — eyeball the vectors against the (cleaned) imagery
+    img = Image.open(os.path.join(OUT, "map.jpg")).convert("RGB")
+    draw = ImageDraw.Draw(img)
+    for a in aprons: draw.polygon([px(p) for p in a["points"]], outline=(255, 140, 0))
+    for tx in taxiways: draw.line([px(p) for p in tx["points"]], fill=(255, 255, 0), width=3)
+    for sw in stopways: draw.line([px(p) for p in sw["points"]], fill=(255, 0, 255), width=4)
+    draw.line([px(p) for p in runway["points"]], fill=(255, 0, 0), width=6)
+    img.save(os.path.join(DATA, "airfield-check.png"))   # debug only (git-ignored), not shipped
+    return icao
+
 def build():
     os.makedirs(OUT, exist_ok=True)
     # ---- coastline (land polygons) from the cover layer ----
@@ -126,10 +199,14 @@ def build():
     # ---- single Sentinel-2 texture for the ocean AND the islands, cropped to the atoll ----
     half = save_map()
 
+    # ---- airfield vectors (runway / taxiways / aprons) from OpenStreetMap ----
+    icao = save_airfield(half)
+
     # map.json — generic per-map metadata (same format for future maps). region_half is the texture's
-    # half-extent (world m); wrap = toroidal world size in metres (engine treats it as optional, 0 = off).
+    # half-extent (world m); wrap = toroidal world size in metres (engine treats it as optional, 0 = off);
+    # airfields lists the <ICAO>.json files carrying each airfield's runway/taxiway/apron geometry.
     json.dump({"name": "Midway Atoll", "origin": [ORIGIN_LAT, ORIGIN_LON],
-               "region_half": round(half, 1), "texture_size": MAPTEX, "wrap": 250000},
+               "region_half": round(half, 1), "texture_size": MAPTEX, "wrap": 250000, "airfields": [icao]},
               open(os.path.join(OUT, "map.json"), "w"))
     print("map.json written")
 
