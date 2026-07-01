@@ -614,35 +614,81 @@ async function generate_world(){
 		// --- islands + runway from the real coastline (same texture, planar-mapped by world position) ---
 		const coast=await (await fetch(base+"coastline.json")).json();
 		build_islands(coast.polygons||[], texture, map.region_half);
+		// --- airfields (runway / taxiways / aprons) from OpenStreetMap, per map.json ---
+		for(const code of map.airfields||[]){ const af=await (await fetch(base+code+".json")).json(); build_airfield(af); }
+		// The runway loads async, after the initial reset_ownship — a runway start would otherwise fall
+		// through to an air start; re-place on the runway now that it exists.
+		if(cfg.start==="runway" && running && airports.length) reset_ownship();
 	}catch(error){ console.error("midway map load failed",error); }
 }
+const ISLAND_H=3.5;   // island top; the airfield surfaces + runway sit ~1.5 m above it (floating read fine for runway/taxiways; coplanar z-fought worse). Runway height tuned to the y=8 aircraft floor.
 function build_islands(polygons, ground, half){
-	const field=3.5;   // Midway is flat (no heightmap); islands sit ~4 m above the sea
 	island_polygons=polygons.filter(polygon=>polygon.length>=30);   // Sand / Eastern / Spit; skip tiny reef rocks
 	const material=new THREE.MeshStandardMaterial({map:ground,roughness:0.96,metalness:0.0});   // Sentinel-2 imagery, planar-mapped by world position
-	let sand=null, sand_area=0;
 	for(const polygon of island_polygons){
-		let area=0; for(let i=0;i<polygon.length;i++){ const here=polygon[i], next=polygon[(i+1)%polygon.length]; area+=here[0]*next[1]-next[0]*here[1]; } area=Math.abs(area)/2;
 		const shape=new THREE.Shape(); shape.moveTo(polygon[0][0],-polygon[0][1]); for(let i=1;i<polygon.length;i++) shape.lineTo(polygon[i][0],-polygon[i][1]);   // shape (x,-z): after rotateX the island rises +y, z un-mirrored
-		const geometry=new THREE.ExtrudeGeometry(shape,{depth:field,bevelEnabled:false,steps:1}); geometry.rotateX(-Math.PI/2);
-		const pos=geometry.attributes.position, uv=new Float32Array(pos.count*2);   // planar UVs → sample ground.jpg over the cropped island region
+		const geometry=new THREE.ExtrudeGeometry(shape,{depth:ISLAND_H,bevelEnabled:false,steps:1}); geometry.rotateX(-Math.PI/2);
+		const pos=geometry.attributes.position, uv=new Float32Array(pos.count*2);   // planar UVs → sample the map texture by world position
 		for(let i=0;i<pos.count;i++){ uv[i*2]=(pos.getX(i)+half)/(2*half); uv[i*2+1]=(pos.getZ(i)+half)/(2*half); }
 		geometry.setAttribute("uv", new THREE.BufferAttribute(uv,2));
 		const mesh=new THREE.Mesh(geometry,material); mesh.receiveShadow=true; mesh.castShadow=true; scene.add(mesh);
-		const x=polygon.reduce((total,point)=>total+point[0],0)/polygon.length, z=polygon.reduce((total,point)=>total+point[1],0)/polygon.length;
-		if(area>sand_area){ sand_area=area; sand={x,z}; }
 	}
-	if(sand) build_airport({x:sand.x,z:sand.z,h:field,hd:69*D2R},6,24,false);   // Henderson Field RWY 06/24 (~069°T) on Sand Island, no control tower (midway.md §2)
-	// The map (hence the runway) loads async, after the initial reset_ownship — so a runway start would
-	// otherwise fall through to an air start. Re-place on the runway now that the airport exists.
-	if(cfg.start==="runway" && running && airports.length) reset_ownship();
+}
+const ASPHALT_TILE=22;   // metres per asphalt-texture tile
+function asphalt_texture(){ const c=document.createElement("canvas"); c.width=c.height=256; const x=c.getContext("2d");
+	x.fillStyle="#565a5e"; x.fillRect(0,0,256,256);                                                   // weathered grey base (not fresh-black)
+	for(let i=0;i<70;i++){ const r=18+Math.random()*46, gx=Math.random()*256, gy=Math.random()*256, s=Math.random()<0.5?0:235, a=0.03+Math.random()*0.05;   // low-freq weathering patches
+		const g=x.createRadialGradient(gx,gy,0,gx,gy,r); g.addColorStop(0,`rgba(${s},${s},${s},${a})`); g.addColorStop(1,`rgba(${s},${s},${s},0)`); x.fillStyle=g; x.fillRect(gx-r,gy-r,2*r,2*r); }
+	const im=x.getImageData(0,0,256,256),d=im.data; for(let i=0;i<d.length;i+=4){ const n=(Math.random()-0.5)*20; d[i]+=n; d[i+1]+=n; d[i+2]+=n; } x.putImageData(im,0,0);   // fine speckle
+	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=4; return t; }
+function ribbon(points, width, y){   // asphalt strip of `width` (m) along a world-space polyline at height y
+	const hw=width/2, pos=[], uvs=[];
+	const off=points.map((p,i)=>{ const a=points[Math.max(0,i-1)], b=points[Math.min(points.length-1,i+1)];
+		let dx=b[0]-a[0], dz=b[1]-a[1]; const l=Math.hypot(dx,dz)||1; return [-dz/l*hw, dx/l*hw]; });   // perpendicular (left) offset
+	for(let i=0;i<points.length-1;i++){ const p=points[i], q=points[i+1], u=off[i], v=off[i+1];
+		const pl=[p[0]+u[0],p[1]+u[1]], pr=[p[0]-u[0],p[1]-u[1]], ql=[q[0]+v[0],q[1]+v[1]], qr=[q[0]-v[0],q[1]-v[1]];
+		const ny=(pr[1]-pl[1])*(qr[0]-pl[0])-(pr[0]-pl[0])*(qr[1]-pl[1]);   // wind the top face upward regardless of strip direction (else it back-faces and shades black)
+		const quad=ny>=0?[pl,pr,qr,pl,qr,ql]:[pl,qr,pr,pl,ql,qr];
+		for(const w of quad){ pos.push(w[0],y,w[1]); uvs.push(w[0]/ASPHALT_TILE, w[1]/ASPHALT_TILE); } }
+	const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(new Float32Array(pos),3));
+	const n=new Float32Array(pos.length); for(let i=1;i<n.length;i+=3) n[i]=1; g.setAttribute("normal",new THREE.BufferAttribute(n,3));
+	g.setAttribute("uv",new THREE.BufferAttribute(new Float32Array(uvs),2)); return g;
+}
+function fill_polygon(points, y){   // filled world-space polygon (apron) at height y
+	let pts=points; if(pts.length>3 && pts[0][0]===pts[pts.length-1][0] && pts[0][1]===pts[pts.length-1][1]) pts=pts.slice(0,-1);   // drop OSM's duplicate closing node (else earcut tears)
+	const shape=new THREE.Shape(); shape.moveTo(pts[0][0],-pts[0][1]); for(let i=1;i<pts.length;i++) shape.lineTo(pts[i][0],-pts[i][1]);
+	const g=new THREE.ShapeGeometry(shape); g.rotateX(-Math.PI/2); const pos=g.attributes.position;
+	const uv=new Float32Array(pos.count*2);
+	for(let i=0;i<pos.count;i++){ pos.setY(i,y); uv[i*2]=pos.getX(i)/ASPHALT_TILE; uv[i*2+1]=pos.getZ(i)/ASPHALT_TILE; }
+	g.setAttribute("uv",new THREE.BufferAttribute(uv,2)); return g;
+}
+function merge_uv(geos){   // merge_geometries drops uv; this keeps position+normal+uv (converts indexed → non-indexed)
+	const parts=geos.map(g=>g.index?g.toNonIndexed():g); let total=0; parts.forEach(g=>total+=g.attributes.position.count);
+	const pos=new Float32Array(total*3), nor=new Float32Array(total*3), uv=new Float32Array(total*2); let a=0,b=0;
+	for(const g of parts){ pos.set(g.attributes.position.array,a); nor.set(g.attributes.normal.array,a); uv.set(g.attributes.uv.array,b); a+=g.attributes.position.count*3; b+=g.attributes.position.count*2; }
+	const out=new THREE.BufferGeometry(); out.setAttribute("position",new THREE.BufferAttribute(pos,3)); out.setAttribute("normal",new THREE.BufferAttribute(nor,3)); out.setAttribute("uv",new THREE.BufferAttribute(uv,2)); out.computeBoundingSphere(); return out;
+}
+function build_airfield(af){
+	const tex=asphalt_texture();
+	const asphalt=new THREE.MeshStandardMaterial({map:tex,roughness:0.96,metalness:0.0,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
+	// all ground surfaces (aprons + taxiways + stopways) merged into ONE mesh at ONE height. Floats ~1.5 m above the
+	// island: read fine for the runway/taxiways; the apron area keeps some z-fighting we accept (buildings cover it, #49).
+	const gy=ISLAND_H+1.46;
+	const ground=[...af.aprons.map(a=>fill_polygon(a.points,gy)), ...af.taxiways.map(t=>ribbon(t.points,t.width,gy)), ...af.stopways.map(s=>ribbon(s.points,s.width,gy))];
+	if(ground.length){ const m=new THREE.Mesh(merge_uv(ground),asphalt); m.receiveShadow=true; scene.add(m); }
+	const rw=af.runway, a=rw.points[0], b=rw.points[rw.points.length-1];   // a = first end (06), b = last end (24)
+	const cx=(a[0]+b[0])/2, cz=(a[1]+b[1])/2, dx=b[0]-a[0], dz=b[1]-a[1];
+	const L=Math.hypot(dx,dz), H=Math.atan2(dx,-dz);   // runway centre, true length, heading a→b (fwd=(sinH,0,-cosH))
+	const parts=rw.ref.split("/").map(s=>parseInt(s,10));   // painted magnetic numbers (06/24) from the OSM ref
+	build_airport({x:cx,z:cz,h:ISLAND_H,hd:H}, parts[0], parts[1], false, L, rw.width);
 }
 // Toroidal world wrap — WORLD_WRAP (m) from map.json, 0 = no wrap. Minimum-image for relative quantities.
 function wrap_axis(value){ return WORLD_WRAP>0 ? value-WORLD_WRAP*Math.round(value/WORLD_WRAP) : value; }
 function wrap_position(position){ if(WORLD_WRAP>0){ position.x=wrap_axis(position.x); position.z=wrap_axis(position.z); } }
 function wrap_distance(from,to){ return Math.hypot(wrap_axis(to.x-from.x), to.y-from.y, wrap_axis(to.z-from.z)); }
 function runway_texture(nTop,nBottom){ const c=document.createElement("canvas"); c.width=128; c.height=1024; const x=c.getContext("2d");
-	x.fillStyle="#26282b"; x.fillRect(0,0,128,1024);
+	x.fillStyle="#4a4c50"; x.fillRect(0,0,128,1024);                                                  // weathered grey asphalt (not fresh-black)
+	{ const im=x.getImageData(0,0,128,1024),d=im.data; for(let i=0;i<d.length;i+=4){ const n=(Math.random()-0.5)*22; d[i]+=n; d[i+1]+=n; d[i+2]+=n; } x.putImageData(im,0,0); }   // fine weathering speckle
 	x.fillStyle="#d8d8d8"; x.fillRect(8,0,4,1024); x.fillRect(116,0,4,1024);                         // side stripes
 	x.fillStyle="#eaeaea"; for(let y=120;y<1024-120;y+=56){ x.fillRect(62,y,4,30); }                 // centreline dashes
 	const keys=(yc,dir)=>{ x.fillStyle="#eaeaea"; for(let k=-3;k<=3;k++){ x.fillRect(64+k*9-3,yc,6,46*dir); } };
@@ -653,8 +699,8 @@ function runway_texture(nTop,nBottom){ const c=document.createElement("canvas");
 	x.save(); x.translate(64,92);  x.rotate(Math.PI); x.fillText(String(nTop).padStart(2,"0"),0,0); x.restore();      // +y end
 	x.save(); x.translate(64,932);                    x.fillText(String(nBottom).padStart(2,"0"),0,0); x.restore();   // -y end
 	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=4; return t; }
-function build_airport(o, number_plus, number_minus, tower=true){
-	const L=2400, W=60, y=o.h+1.5, H=o.hd;                                   // H = compass heading (rad) you fly taking off / landing in +fwd
+function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
+	const y=o.h+1.5, H=o.hd;                                                 // H = compass heading (rad) you fly taking off / landing in +fwd
 	const up=new THREE.Vector3(0,1,0);
 	const fwd=new THREE.Vector3(Math.sin(H),0,-Math.cos(H));                 // world dir whose compass heading is H
 	const right=new THREE.Vector3().crossVectors(fwd,up);                    // to the right of the landing direction
