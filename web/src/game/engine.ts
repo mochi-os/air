@@ -716,6 +716,21 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 	keys.add(k); }, { signal });
 addEventListener("keyup",e=>keys.delete(e.code),{ signal });
 addEventListener("blur",()=>keys.clear(),{ signal });
+
+// ---- mouse look / orbit (keys.md §5): left-drag orbits the chase camera, sharing
+// cam_az/cam_el with the keyboard orbit and holding on release (no spring-back). Left
+// button only (fire stays Space); never in HUD. Pointer capture — not pointer lock, which
+// the sandboxed shell iframe can block. Zoom stays on -/= (not the wheel), so no wheel handler.
+let dragging=false, drag_x=0, drag_y=0;
+stage.addEventListener("pointerdown",e=>{ if(e.button!==0 || cfg.view!=="chase") return;
+	dragging=true; drag_x=e.clientX; drag_y=e.clientY; try{ stage.setPointerCapture(e.pointerId); }catch(_){} e.preventDefault(); }, { signal });
+stage.addEventListener("pointermove",e=>{ if(!dragging) return;
+	const dx=e.clientX-drag_x, dy=e.clientY-drag_y; drag_x=e.clientX; drag_y=e.clientY;
+	const f=0.005*(cfg.sens||1);   // radians per pixel, scaled by the control-sensitivity setting
+	cam_az-=dx*f; cam_el=THREE.MathUtils.clamp(cam_el+dy*f,-1.2,1.45); }, { signal });   // both axes reversed (grab-the-world feel): drag right = orbit left, drag up = camera lowers
+function end_drag(e){ if(!dragging) return; dragging=false; try{ stage.releasePointerCapture(e.pointerId); }catch(_){} }
+stage.addEventListener("pointerup",end_drag,{ signal });
+stage.addEventListener("pointercancel",end_drag,{ signal });
 function read_input(dt){
 	let pitch=0,roll=0,yaw=0;
 	const shift=keys.has("ShiftLeft")||keys.has("ShiftRight");

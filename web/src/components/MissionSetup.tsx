@@ -394,7 +394,7 @@ export function MissionSetup({
                 <div className='grid gap-x-8 text-sm sm:grid-cols-2'>
                   <ControlRow
                     action={<Trans>Orbit</Trans>}
-                    keys={<><Key>Shift</Key>+<Key>←</Key><Key>→</Key></>}
+                    keys={<><Key>Drag</Key><Key>Shift</Key>+<Key>←</Key><Key>→</Key></>}
                   />
                   <ControlRow action={<Trans>Tilt</Trans>} keys={<><Key>,</Key><Key>.</Key></>} />
                   <ControlRow
