@@ -97,7 +97,7 @@ export function GameCanvas({
         <b>
           <Trans>Chase view:</Trans>
         </b>{' '}
-        <b>Shift</b>+<b>←→</b> <Trans>orbit</Trans> · <b>,</b>/<b>.</b>{' '}
+        <b>Drag</b> <Trans>or</Trans> <b>Shift</b>+<b>←→</b> <Trans>orbit</Trans> · <b>,</b>/<b>.</b>{' '}
         <Trans>tilt</Trans> · <b>−</b> <Trans>back</Trans> · <b>=</b>{' '}
         <Trans>closer</Trans>
       </div>
