@@ -3,15 +3,15 @@
 # data into game-ready assets for the furball client (per midway.md §5).
 #
 # Outputs (to web/public/maps/midway/):
-#   map.json           metadata: world origin, texture region half-extent, size
+#   map.json           metadata: world origin, texture region half-extent, size, ground region
 #   coastline.json     island outlines (Sand/Eastern/Spit) in world metres
-#   water.png          RGBA reef/lagoon/deep map: RGB = base water colour
-#                      (deep blue -> turquoise -> shallow), A = reef-crest foam mask
+#   water.jpg          ocean base colour: Sentinel-2 true colour over the atoll (real reef/lagoon
+#                      and breakers), deep ocean cleaned toward a proper deep blue
+#   ground.jpg         Sentinel-2 imagery cropped to the islands (island surface texture)
 #
-# Source data (public domain, NOAA NCCOS), unzipped under data/:
-#   midway_cover_geog.shp   aggregated habitat cover (HABCOVER, has 'land')
-#   midway_class_geog.shp   detailed habitat class (HABCLASS, has 'surf' reef crest)
-#   midway_bathy_4m.tif     IKONOS-estimated bathymetry (metres) — folded in later
+# Source data:
+#   NOAA NCCOS midway_cover_geog.shp (public domain), unzipped under data/ — coastline only
+#   Sentinel-2 L2A TCI (public sentinel-cogs bucket) — read remotely, see SENTINEL_TCI
 #
 # World frame (furball.md / midway.md): 1 unit = 1 m, x = east, z = south,
 # atoll centred on the origin.
@@ -20,15 +20,21 @@ import numpy as np, rasterio
 from rasterio.warp import reproject, Resampling
 from rasterio.transform import Affine
 from pyproj import Transformer
-from PIL import Image, ImageDraw
+from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 OUT = os.path.abspath(os.path.join(HERE, "..", "web", "public", "maps", "midway"))
 
 ORIGIN_LAT, ORIGIN_LON = 28.2334, -177.3668   # atoll centre -> world origin
-REGION_HALF = 12000                            # metres; water map covers ±12 km (24 km square)
-TEX = 2048                                     # water map size (px) → ~11.7 m/px
+REGION_HALF = 12000                            # metres; coarse search area for the atoll extent
+MAPTEX = 4096                                   # single water+island texture size (px)
+
+# Sentinel-2 L2A true-colour COG for the island ground texture (public sentinel-cogs bucket, no auth).
+# Picked via the Earth Search STAC API (bbox over Midway, lowest cloud): MGRS 1RDM, 2026-01-26, 0% cloud.
+SENTINEL_TCI = "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/1/R/DM/2026/1/S2C_1RDM_20260126_0_L2A/TCI.tif"
+os.environ.setdefault("GDAL_DISABLE_READDIR_ON_OPEN", "EMPTY_DIR")   # efficient /vsicurl windowed reads
+os.environ.setdefault("CPL_VSIL_CURL_ALLOWED_EXTENSIONS", ".tif")
 
 _to_local = Transformer.from_crs(
     "EPSG:4326",
@@ -40,10 +46,6 @@ def to_world(lon, lat):
     e, n = _to_local(lon, lat)
     return e, -n            # x east, z south
 
-def to_px(x, z):
-    return ((x + REGION_HALF) / (2 * REGION_HALF) * TEX,
-            (z + REGION_HALF) / (2 * REGION_HALF) * TEX)   # north up (z south -> py down)
-
 def rings(shape):
     parts = list(shape.parts) + [len(shape.points)]
     for i in range(len(parts) - 1):
@@ -52,35 +54,39 @@ def rings(shape):
 def load(name):
     return shapefile.Reader(os.path.join(DATA, name))
 
-# --- habitat class -> (draw priority, opaque base RGB) ------------------------
-# priority: deep(0) < reef flat(1) < sand/shallow(2) < surf/foam(3) < land(4, on top)
-DEEP  = (0, (9, 46, 88))       # deep ocean blue
-REEF  = (1, (30, 120, 132))    # reef flat (hardbottom/coral/pavement) — teal
-SAND  = (2, (104, 198, 188))   # lagoon sand / shallows — turquoise
-SURF  = (3, (210, 240, 234))   # reef crest breakers — pale foam band
-LAND  = (4, (200, 188, 150))   # island footprint (occluded by geometry, kept crisp)
-def tier(hc):
-    h = hc.lower()
-    if "deep water" in h or "no data" in h: return DEEP
-    if h == "surf":                          return SURF
-    if h == "land":                          return LAND
-    if "sand" in h or "unconsolidated" in h: return SAND
-    return REEF                               # pavement/coral/reef/hardbottom/algae/…
-
-def load_depth():
-    """Resample midway_bathy_4m.tif onto the water-map grid → depth in [0,1] (0 = shore/shallow,
-    1 = deep). Source is 0..~45 m over the reef/lagoon shallows with ~255 flagging deep water; the
-    same 255 fills anything outside the raster (open ocean), so both read as fully deep."""
+def reproject_sentinel(cx, cz, gh, size):
+    """Reproject the Sentinel-2 TCI onto a square region (centre cx,cz, half gh, world m) → (size,size,3)
+    uint8 RGB. Reads only that window from the remote COG."""
     aeqd = f"+proj=aeqd +lat_0={ORIGIN_LAT} +lon_0={ORIGIN_LON} +datum=WGS84 +units=m +no_defs"
-    pixel = 2 * REGION_HALF / TEX
-    dst_transform = Affine(pixel, 0, -REGION_HALF, 0, -pixel, REGION_HALF)   # px (0,0) = NW = (-half, +half)
-    depth = np.full((TEX, TEX), 255.0, dtype="float32")
-    with rasterio.open(os.path.join(DATA, "midway_bathy_4m.tif")) as src:
-        reproject(source=rasterio.band(src, 1), destination=depth,
-                  src_transform=src.transform, src_crs=src.crs,
-                  dst_transform=dst_transform, dst_crs=aeqd,
-                  resampling=Resampling.bilinear, dst_nodata=255)
-    return np.clip(depth / 45.0, 0.0, 1.0)
+    pixel = 2 * gh / size
+    dst_transform = Affine(pixel, 0, cx - gh, 0, -pixel, gh - cz)   # world x=east, z=south; aeqd northing = −z
+    rgb = np.zeros((3, size, size), dtype="uint8")
+    with rasterio.open("/vsicurl/" + SENTINEL_TCI) as src:
+        for b in range(3):
+            reproject(source=rasterio.band(src, b + 1), destination=rgb[b],
+                      src_transform=src.transform, src_crs=src.crs,
+                      dst_transform=dst_transform, dst_crs=aeqd, resampling=Resampling.bilinear)
+    return np.transpose(rgb, (1, 2, 0))
+
+def save_map():
+    """Single Sentinel-2 texture for BOTH the ocean and the islands, cropped to the atoll extent (so no
+    pixels are wasted on open ocean and the islands keep their resolution), with the near-black deep
+    ocean cleaned toward a proper deep blue. The ocean shader and the island meshes sample it; beyond
+    the crop the ocean clamps to the deep-blue edge. Returns the crop half-extent (world m). JPEG."""
+    # 1) coarse pass: find the atoll's half-extent from origin (bright reef/lagoon/land vs deep ocean)
+    lum = reproject_sentinel(0.0, 0.0, REGION_HALF, 1024).astype("float32").mean(axis=2)
+    ys, xs = np.where(lum > 55)
+    per_px = 2 * REGION_HALF / 1024
+    reach = max(np.percentile(np.abs(xs - 512), 99), np.percentile(np.abs(ys - 512), 99)) * per_px
+    half = float(np.ceil((reach + 700) / 250) * 250)   # + margin, rounded to 250 m
+    # 2) final crop at full resolution + deep-ocean clean
+    sen = np.clip(reproject_sentinel(0.0, 0.0, half, MAPTEX).astype("float32") * 1.25, 0.0, 255.0)
+    lm = sen.mean(axis=2)
+    t = np.clip((62.0 - lm) / 40.0, 0.0, 1.0)[:, :, None]           # dark (deep-ocean) pixels → blue
+    out = sen * (1.0 - t) + np.array([12, 52, 96], dtype="float32") * t
+    Image.fromarray(out.astype("uint8"), "RGB").save(os.path.join(OUT, "map.jpg"), quality=85, optimize=True)
+    print(f"map.jpg: Sentinel-2 water+islands, cropped to ±{half:.0f} m ({MAPTEX}px, {2*half/MAPTEX:.1f} m/px)")
+    return half
 
 def build():
     os.makedirs(OUT, exist_ok=True)
@@ -100,39 +106,13 @@ def build():
               open(os.path.join(OUT, "coastline.json"), "w"))
     print(f"coastline.json: {len(coast)} island polygons")
 
-    # ---- water colour + foam map from the detailed class layer ----
-    cls = load("midway_class_geog")
-    hi = [f[0] for f in cls.fields[1:]].index("HABCLASS")
-    polys = []
-    for sr in cls.shapeRecords():
-        t = tier(sr.record[hi])
-        for ring in rings(sr.shape):
-            if len(ring) >= 3:
-                polys.append((t[0], t[1], [to_px(*to_world(lo, la)) for lo, la in ring]))
-    polys.sort(key=lambda p: p[0])   # draw deep first, surf/land last
-    depth = load_depth()             # bathymetry, resampled onto the grid
-    # phase 1 — water zones (deep/reef/sand), then darken toward deep by depth for a smooth gradient
-    img = Image.new("RGB", (TEX, TEX), DEEP[1])
-    draw = ImageDraw.Draw(img)
-    for pri, rgb, px in polys:
-        if pri <= 2:
-            draw.polygon(px, fill=rgb)
-    arr = np.asarray(img).astype("float32")
-    blend = (depth * 0.65)[:, :, None]
-    arr = arr * (1.0 - blend) + np.array(DEEP[1], dtype="float32") * blend
-    img = Image.fromarray(np.clip(arr, 0, 255).astype("uint8"), "RGB")
-    # phase 2 — reef-crest foam + island footprints drawn crisp, on top (no depth shading)
-    draw = ImageDraw.Draw(img)
-    for pri, rgb, px in polys:
-        if pri >= 3:
-            draw.polygon(px, fill=rgb)
-    img.save(os.path.join(OUT, "water.png"))
-    print(f"water.png: {TEX}x{TEX}, {len(polys)} habitat polygons + bathymetry depth")
+    # ---- single Sentinel-2 texture for the ocean AND the islands, cropped to the atoll ----
+    half = save_map()
 
-    # map.json — generic per-map metadata (same format for future maps). wrap = toroidal
-    # world size in metres; the engine treats it as optional (omit / 0 → no wrap).
+    # map.json — generic per-map metadata (same format for future maps). region_half is the texture's
+    # half-extent (world m); wrap = toroidal world size in metres (engine treats it as optional, 0 = off).
     json.dump({"name": "Midway Atoll", "origin": [ORIGIN_LAT, ORIGIN_LON],
-               "region_half": REGION_HALF, "texture_size": TEX, "wrap": 250000},
+               "region_half": round(half, 1), "texture_size": MAPTEX, "wrap": 250000},
               open(os.path.join(OUT, "map.json"), "w"))
     print("map.json written")
 

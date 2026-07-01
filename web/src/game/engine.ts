@@ -115,13 +115,16 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 const ocean_mat = new THREE.ShaderMaterial({ fog:false,
 	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_shallow:{value:col_shallow}, u_sky:{value:sky_horizon}, u_fog:{value:sky_horizon}, u_fog_density:{value:0.000075},
 		u_water:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)} },   // Midway reef/lagoon colour map (web/public/maps/midway/water.png), see map.json region_half
-	vertexShader:`uniform float u_time; varying vec3 v_world; varying vec3 v_normal; varying float v_height;
+	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform sampler2D u_water; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		const vec4 W0=vec4(1.0,0.3,420.0,90.0); const vec4 W1=vec4(-0.7,0.7,230.0,60.0); const vec4 W2=vec4(0.4,-0.9,110.0,38.0); const vec4 W3=vec4(-0.2,0.5,55.0,24.0);
 		float wave(vec2 p,vec4 w,float amp,out vec2 grad){ vec2 dir=normalize(w.xy); float k=6.2831853/w.z; float ph=dot(dir,p)*k+u_time*(w.w/w.z); grad=dir*(k*amp*cos(ph)); return amp*sin(ph); }
 		void main(){ vec4 wp=modelMatrix*vec4(position,1.0); vec2 xz=wp.xz; vec2 g,gt=vec2(0.0); float h=0.0;
+		float calm=0.0; if(u_water_on>0.5){ vec2 wuv=clamp((xz+u_water_half)/(2.0*u_water_half),0.0,1.0); calm=smoothstep(0.30,0.55,texture2D(u_water,wuv).g); }   // shallow reef/lagoon (green) = calm
+		v_calm=calm; float ws=mix(1.0,0.12,calm);   // damp wave amplitude inside the reef
 		h+=wave(xz,W0,2.0,g);gt+=g; h+=wave(xz,W1,1.1,g);gt+=g; h+=wave(xz,W2,0.5,g);gt+=g; h+=wave(xz,W3,0.25,g);gt+=g;
+		h*=ws; gt*=ws;
 		wp.y+=h; v_height=h; v_normal=normalize(vec3(-gt.x,1.0,-gt.y)); v_world=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }`,
-	fragmentShader:`uniform vec3 u_sun,u_deep,u_shallow,u_sky,u_fog,u_water_tint; uniform float u_fog_density,u_time,u_water_half,u_water_on; uniform sampler2D u_water; varying vec3 v_world; varying vec3 v_normal; varying float v_height;
+	fragmentShader:`uniform vec3 u_sun,u_deep,u_shallow,u_sky,u_fog,u_water_tint; uniform float u_fog_density,u_time,u_water_half,u_water_on; uniform sampler2D u_water; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		vec2 ripple(vec2 p,vec2 dir,float wl,float amp,float spd){ dir=normalize(dir); float k=6.2831853/wl; float ph=dot(dir,p)*k+u_time*spd; return dir*(k*amp*cos(ph)); }
 		float hash2(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
 		vec3 sky_at(vec3 d){ d=normalize(d); float t=clamp(d.y*1.2,0.0,1.0); vec3 col=mix(u_sky, u_sky*0.55+vec3(0.04,0.10,0.22), pow(t,0.65));
@@ -129,6 +132,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false,
 		void main(){ vec3 V=normalize(cameraPosition-v_world); vec3 L=normalize(u_sun);
 			vec2 xz=v_world.xz; vec2 g=vec2(0.0);
 			g+=ripple(xz,vec2(1.0,0.4),26.0,0.06,1.2); g+=ripple(xz,vec2(-0.6,1.0),15.0,0.04,1.7); g+=ripple(xz,vec2(0.8,-0.7),8.0,0.025,2.2);
+				g*=(1.0-0.8*v_calm);   // calm lagoon: damp surface ripples too
 			vec3 N=normalize(v_normal+vec3(-g.x,0.0,-g.y));
 			float fres=0.02+0.98*pow(1.0-max(dot(N,V),0.0),5.0);
 			float diff=max(dot(N,L),0.0); vec3 body;
@@ -596,32 +600,37 @@ async function generate_world(){
 		const base=new URL("maps/midway/",location.href).href;   // web/public/maps/<name>/ (served via the app.json "maps" route)
 		const map=await (await fetch(base+"map.json")).json();
 		WORLD_WRAP=map.wrap||0;
-		// --- ocean reef/lagoon colour map ---
-		const texture=await new THREE.TextureLoader().loadAsync(base+"water.png");
+		// --- single Sentinel-2 texture for the ocean AND the islands (reef/lagoon/breakers + land) ---
+		const texture=await new THREE.TextureLoader().loadAsync(base+"map.jpg");
 		texture.flipY=false; texture.wrapS=texture.wrapT=THREE.ClampToEdgeWrapping; texture.colorSpace=THREE.SRGBColorSpace;
 		texture.magFilter=THREE.LinearFilter; texture.minFilter=THREE.LinearMipmapLinearFilter; texture.generateMipmaps=true;
 		texture.anisotropy=renderer.capabilities.getMaxAnisotropy();
 		ocean_mat.uniforms.u_water.value=texture; ocean_mat.uniforms.u_water_half.value=map.region_half; ocean_mat.uniforms.u_water_on.value=1.0;
-		// --- islands + runway from the real coastline ---
+		// --- islands + runway from the real coastline (same texture, planar-mapped by world position) ---
 		const coast=await (await fetch(base+"coastline.json")).json();
-		build_islands(coast.polygons||[]);
+		build_islands(coast.polygons||[], texture, map.region_half);
 	}catch(error){ console.error("midway map load failed",error); }
 }
-function build_islands(polygons){
+function build_islands(polygons, ground, half){
 	const field=3.5;   // Midway is flat (no heightmap); islands sit ~4 m above the sea
 	island_polygons=polygons.filter(polygon=>polygon.length>=30);   // Sand / Eastern / Spit; skip tiny reef rocks
-	const geometries=[]; let sand=null, sand_area=0;
+	const material=new THREE.MeshStandardMaterial({map:ground,roughness:0.96,metalness:0.0});   // Sentinel-2 imagery, planar-mapped by world position
+	let sand=null, sand_area=0;
 	for(const polygon of island_polygons){
 		let area=0; for(let i=0;i<polygon.length;i++){ const here=polygon[i], next=polygon[(i+1)%polygon.length]; area+=here[0]*next[1]-next[0]*here[1]; } area=Math.abs(area)/2;
 		const shape=new THREE.Shape(); shape.moveTo(polygon[0][0],-polygon[0][1]); for(let i=1;i<polygon.length;i++) shape.lineTo(polygon[i][0],-polygon[i][1]);   // shape (x,-z): after rotateX the island rises +y, z un-mirrored
 		const geometry=new THREE.ExtrudeGeometry(shape,{depth:field,bevelEnabled:false,steps:1}); geometry.rotateX(-Math.PI/2);
-		geometries.push(geometry);
+		const pos=geometry.attributes.position, uv=new Float32Array(pos.count*2);   // planar UVs → sample ground.jpg over the cropped island region
+		for(let i=0;i<pos.count;i++){ uv[i*2]=(pos.getX(i)+half)/(2*half); uv[i*2+1]=(pos.getZ(i)+half)/(2*half); }
+		geometry.setAttribute("uv", new THREE.BufferAttribute(uv,2));
+		const mesh=new THREE.Mesh(geometry,material); mesh.receiveShadow=true; mesh.castShadow=true; scene.add(mesh);
 		const x=polygon.reduce((total,point)=>total+point[0],0)/polygon.length, z=polygon.reduce((total,point)=>total+point[1],0)/polygon.length;
 		if(area>sand_area){ sand_area=area; sand={x,z}; }
 	}
-	if(geometries.length){ const mesh=new THREE.Mesh(merge_geometries(geometries),new THREE.MeshStandardMaterial({color:0xc3b892,roughness:0.96,metalness:0.0}));
-		mesh.receiveShadow=true; mesh.castShadow=true; scene.add(mesh); }
 	if(sand) build_airport({x:sand.x,z:sand.z,h:field,hd:69*D2R},6,24,false);   // Henderson Field RWY 06/24 (~069°T) on Sand Island, no control tower (midway.md §2)
+	// The map (hence the runway) loads async, after the initial reset_ownship — so a runway start would
+	// otherwise fall through to an air start. Re-place on the runway now that the airport exists.
+	if(cfg.start==="runway" && running && airports.length) reset_ownship();
 }
 // Toroidal world wrap — WORLD_WRAP (m) from map.json, 0 = no wrap. Minimum-image for relative quantities.
 function wrap_axis(value){ return WORLD_WRAP>0 ? value-WORLD_WRAP*Math.round(value/WORLD_WRAP) : value; }
@@ -846,7 +855,13 @@ function reset_ownship(){
 		ownship.pos.set(ap.start.x,ap.start.y,ap.start.z); ownship.fwd.copy(ap.dir).normalize(); ownship.speed=0; ownship.throttle=0.85;
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
-	else { ownship.pos.set(-700,1400,200); ownship.speed=220; ownship.throttle=0.8; }
+	else {   // air start: ~15 km ENE of the runway at 5000 ft, heading at the carrier
+		const rwy=airports.length?airports[0]:{x:-1125,z:2898};   // Sand Island runway (fallback = its known centroid, since the map loads async)
+		const b=68*D2R;   // ENE
+		ownship.pos.set(rwy.x+Math.sin(b)*15000, 1524, rwy.z-Math.cos(b)*15000);   // 5000 ft = 1524 m
+		ownship.fwd.set(CARRIER.x-ownship.pos.x,0,CARRIER.z-ownship.pos.z).normalize(); ownship.speed=220; ownship.throttle=0.85;
+		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
+		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
 	{ const down=(cfg.start==="carrier"||cfg.start==="runway"); ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway, up for an air start
 	ownship.hookTarget=0; ownship.hook=0;   // hook stowed at start (deploy manually with H)
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
@@ -904,8 +919,8 @@ const map_el=map; const mctx=map_el.getContext("2d"); let map_on=false;
 const help_el=help;
 function map_resize(){ const dpr=Math.min(devicePixelRatio||1,2); map_el.width=innerWidth*dpr; map_el.height=innerHeight*dpr; map_el.style.width=innerWidth+"px"; map_el.style.height=innerHeight+"px"; mctx.setTransform(dpr,0,0,dpr,0,0); }
 function draw_map(){ const W=innerWidth,H=innerHeight; mctx.clearRect(0,0,W,H);
-	const cxp=W/2, cyp=H/2, worldR=70000, s=Math.min(W,H)*0.46/worldR;
-	const X=x=>cxp+x*s, Y=z=>cyp+z*s;                          // north up: +x→east(right), +z→south(down)
+	const cxp=W/2, cyp=H/2, worldR=40000, s=Math.min(W,H)*0.46/worldR;
+	const X=x=>cxp+wrap_axis(x-ownship.pos.x)*s, Y=z=>cyp+wrap_axis(z-ownship.pos.z)*s;   // centred on own aircraft, north up (+x→east, +z→south); min-image across the wrap
 	// frame + title
 	mctx.fillStyle=GR; mctx.font="14px monospace"; mctx.textAlign="left"; mctx.fillText(translate("TACTICAL MAP"),24,30);
 	mctx.fillStyle="#7fcfa6"; mctx.font="11px monospace"; mctx.fillText(translate("M to close"),24,48);

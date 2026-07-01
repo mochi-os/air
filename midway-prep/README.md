@@ -1,27 +1,32 @@
 # midway-prep
 
-Offline build tool that turns public-domain NOAA/NCEI Midway Atoll data into
-game-ready assets for the furball client. See `midway.md` §5.
+Offline build tool that turns public-domain Midway Atoll data into game-ready
+assets for the furball client. See `midway.md` §5.
 
 World frame (furball.md / midway.md): 1 unit = 1 m, x = east, z = south, atoll
 centred on the world origin.
 
-## Source data (public domain, NOAA NCCOS + NCEI)
+## Source data
 
-Downloaded to `data/` (git-ignored; re-fetch any time):
+The **coastline** comes from the NOAA NCCOS habitat cover shapefile (public
+domain), downloaded to `data/` (git-ignored; re-fetch any time):
 
     mkdir -p data && cd data
-    for f in midway_cover_shapes.zip midway_class_shapes.zip midway_bathy_4m.zip; do
-      curl -O "https://cdn.coastalscience.noaa.gov/datasets/e98/data/$f"
-    done
-    for z in *.zip; do unzip -o "$z"; done
+    curl -O https://cdn.coastalscience.noaa.gov/datasets/e98/data/midway_cover_shapes.zip
+    unzip -o midway_cover_shapes.zip
 
-- `midway_cover_geog.shp` — aggregated habitat cover (`HABCOVER`, incl. `land`).
-- `midway_class_geog.shp` — detailed habitat class (`HABCLASS`, incl. `surf` reef crest).
-- `midway_bathy_4m.tif` — IKONOS-estimated bathymetry, metres (folded into the depth tint later).
+- `midway_cover_geog.shp` — aggregated habitat cover (`HABCOVER`, incl. `land`); the `land` rings become the island outlines.
 
-Still to add (midway.md §3): Sentinel-2 ground texture, OSM runway/taxiway vectors,
-NCEI integrated DEM.
+Everything visible (water + islands) is **Sentinel-2** true-colour imagery, read
+remotely (windowed) from the public `sentinel-cogs` bucket — no download needed;
+see `SENTINEL_TCI` in `prep.py`. The scene (MGRS 1RDM, 2026-01-26, 0% cloud) was
+picked via the Earth Search STAC API:
+
+    curl -X POST -H 'Content-Type: application/json' \
+      -d '{"collections":["sentinel-2-l2a"],"bbox":[-177.43,28.13,-177.31,28.28],"query":{"eo:cloud_cover":{"lt":15}},"sortby":[{"field":"properties.eo:cloud_cover","direction":"asc"}]}' \
+      https://earth-search.aws.element84.com/v1/search
+
+Still to add (midway.md §3): OSM runway/taxiway vectors, NCEI integrated DEM.
 
 ## Run
 
@@ -30,8 +35,10 @@ NCEI integrated DEM.
 
 ## Outputs → `../web/public/maps/midway/`
 
-- `map.json` — world origin (lat/lon), water-map region half-extent (m), texture size.
+- `map.json` — world origin (lat/lon), region half-extent (m), texture size, wrap, ground region.
 - `coastline.json` — Sand / Eastern / Spit island outlines as world-metre polygons.
-- `water.png` — opaque reef/lagoon/deep colour map (deep blue → teal reef flat →
-  turquoise lagoon → pale foam at the reef crest → sand island footprints), sampled
-  by the ocean shader for base water colour.
+- `water.jpg` — ocean base colour: Sentinel-2 true colour over the atoll (real reef,
+  lagoon, and breakers), with the near-black deep ocean cleaned toward a proper deep
+  blue; sampled by the ocean shader. The reef-crest surf is the real breakers in the photo.
+- `ground.jpg` — Sentinel-2 imagery cropped to the islands (JPEG); planar-mapped onto
+  the island meshes (real airfield / roads / vegetation).
