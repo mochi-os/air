@@ -1261,8 +1261,8 @@ function reset_ownship(){
 	else if(cfg.start==="landing"){   // carrier landing: on the ICLS ~5 NM astern, a touch low and left, configured to trap
 		const A=carrier_world(STRIP_A.fa,STRIP_A.lat), B=carrier_world(STRIP_B.fa,STRIP_B.lat);   // landing centreline, A (aft) → B (forward, toward the rollout)
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;           // unit landing direction (the way the aircraft rolls out)
-		const td=carrier_world(-86.8,strip_lat(-86.8)), dist=5*1852, gs=3.5*D2R;                    // touchdown ≈ the 2-wire; 5 NM back on the 3.5° glideslope
-		ownship.pos.set(td.x-ldx*dist+ldz*170, CARRIER.deckY+dist*Math.tan(gs)+HOOK_DROP-80, td.z-ldz*dist-ldx*170);   // 5 NM astern, +170 m left of centre, ~80 m low — a deliberate off-glideslope, off-centre intercept
+		const td=carrier_world(-86.8,strip_lat(-86.8)), dist=3*1852, gs=3.5*D2R;                    // touchdown ≈ the 2-wire; 3 NM back on the 3.5° glideslope
+		ownship.pos.set(td.x-ldx*dist+ldz*100, CARRIER.deckY+dist*Math.tan(gs)+HOOK_DROP-50, td.z-ldz*dist-ldx*100);   // 3 NM astern, 100 m left of centre, 50 m low — a deliberate off-glideslope, off-centre intercept
 		ownship.speed=70; ownship.throttle=0;   // ~135 kt approach speed
 		const yaw=5*D2R, cy=Math.cos(yaw), sy=Math.sin(yaw); ownship.fwd.set(ldx*cy-ldz*sy,0,ldz*cy+ldx*sy).normalize();   // level flight, heading ~5° to starboard of the centreline — pilot rolls out onto the ICLS and pushes over onto the glideslope from below
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
