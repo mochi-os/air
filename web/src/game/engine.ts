@@ -1005,7 +1005,7 @@ function position_aircraft_lights(){   // pin the lights to the real airframe: c
 }
 function update_aircraft_lights(){
 	if(!aircraft_lights) return; const on=!!ownship.lights, strobe=on && (performance.now()%1100)<70;   // ~1 Hz strobe flash
-	const geardown=(ownship.gear??0)<0.5, land=on && geardown;   // the landing light rides the nose gear strut — gear up, no landing light
+	const geardown=(ownship.gear??0)<0.02, land=on && geardown;   // the landing light rides the nose gear strut: on when the extend animation finishes (down & locked, the HUD's green GEAR threshold), dark the moment retraction starts
 	for(const p of aircraft_lights.pos) p.visible=on; for(const p of aircraft_lights.landing) p.visible=land; for(const p of aircraft_lights.strobe) p.visible=strobe;
 	const spot=aircraft_lights.spot; spot.visible=land;   // the landing-light beam lights whatever it points at (kept in the scene so it works in first-person, where the aircraft group is hidden)
 	if(land){ const n=aircraft_lights.nose; spot.position.copy(ownship.pos).addScaledVector(ownship.fwd,n.x).addScaledVector(ownship.up,n.y);   // at the strut
@@ -1039,7 +1039,7 @@ function sync_extras(n){ while(extras.length<n){ const a=Math.random()*Math.PI*2
 // ---- input ----
 const input={ pitch:0, roll:0, yaw:0, guns:false, brake:false };
 const keys=new Set();
-let cam_az=0, cam_el=0.22, cam_dist=24;   // chase view: orbit around the aircraft
+let cam_az=0, cam_el=0.22, cam_dist=24, cam_psi=0;   // chase view: orbit around the aircraft; cam_psi = smoothed heading the orbit is referenced to
 let flyby_pos=null, flyby_side=1;          // flypast view: fixed world point the jet flies past, re-seeded ahead as it recedes
 let cat_saved_t=0;                              // "deck position saved" flash timer
 // True while the aircraft is sitting/rolling on the deck or runway (not yet airborne) — gear can't retract then.
@@ -1321,7 +1321,7 @@ function fly_player(dt){
 	const g=ground_height(ownship.pos.x,ownship.pos.z), gkind=ground_kind;
 	if(g>-1e8){
 		if(ownship.pos.y<g-4){ ownship.group.position.copy(ownship.pos); return crash_ownship(); }   // well below the surface = flew into the side of it (e.g. the carrier hull below the flight deck)
-		else if(ownship.pos.y<g+GEAR){
+		else if(ownship.pos.y<g+GEAR+0.01){   // same bound as the grounded flag below — a frame landing between the two must NOT mark grounded without passing the gates (that let a tail-strike slip through)
 			if(!ownship.grounded){ if(touchdown(gkind,g)) return; }   // touchdown gates: crash / bounce / land
 			else { ownship.pos.y=g+GEAR; if(ownship.vel_dir.y<0){ ownship.vel_dir.y=0; ownship.vel_dir.normalize(); } }
 		}
@@ -1403,7 +1403,8 @@ function reset_ownship(){
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
 	ownship.rounds=578; ownship.msl=4; ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.launch_dist=0; ownship.trapped=false; ownship.wire=0; ownship.lights=(cfg.tod!=="day");   // lights default on at night, off by day
 	ownship.grounded=false; ownship.touch=null; ownship.pass={gs:0,az:0,n:0}; ownship.pass_t=0; ownship.grade=""; ownship.waved=false;   // landing / LSO pass state
-	if(cfg.start==="carrier"){ ownship.speed=0; ownship.throttle=0; place_on_cat(); }   // spotted on the cat at idle — free to run up + launch, or taxi off
+	test_active=null;   // a test scenario must not keep driving across a crash respawn (it would fly the fresh spawn straight into the deck, forever)
+	if(cfg.start==="carrier"){ ownship.speed=0; ownship.throttle=1; place_on_cat(); }   // spotted on the cat at launch power (holdback holds it) — Enter fires the shot; throttle back to taxi off instead
 	else if(cfg.start==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
 		ownship.pos.set(ap.start.x,ap.start.y,ap.start.z); ownship.fwd.copy(ap.dir).normalize(); ownship.speed=0; ownship.throttle=0;
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
@@ -1446,11 +1447,14 @@ function update_camera(dt){
 		camera.lookAt(eye.clone().addScaledVector(ownship.fwd,200)); }
 	else if(cfg.view==="padlock"){ const eye=body_offset(ownship,-12,4,0); camera.position.copy(eye); camera.up.set(0,1,0);
 		camera.lookAt(has_enemy?bandit.pos:eye.clone().addScaledVector(ownship.fwd,200)); }   // lock on the bandit; look ahead when solo
-	else if(cfg.view==="chase"){   // earth-referenced orbit: world-up + heading-follow, ignores roll/pitch (keys.md §5)
-		const psi=Math.atan2(ownship.fwd.x,ownship.fwd.z), ang=psi+cam_az, ce=Math.cos(cam_el), se=Math.sin(cam_el);
+	else if(cfg.view==="chase"){   // earth-referenced orbit: world-up + smoothed heading-follow, ignores roll/pitch (keys.md §5)
+		const psi=Math.atan2(ownship.fwd.x,ownship.fwd.z);
+		let dpsi=psi-cam_psi; if(dpsi>Math.PI)dpsi-=2*Math.PI; if(dpsi<-Math.PI)dpsi+=2*Math.PI;
+		cam_psi+=dpsi*Math.min(1,dt*4); if(cam_psi>Math.PI)cam_psi-=2*Math.PI; if(cam_psi<-Math.PI)cam_psi+=2*Math.PI;   // the smoothing lives in the ANGLE, not the position
+		const ang=cam_psi+cam_az, ce=Math.cos(cam_el), se=Math.sin(cam_el);
 		const tgt=ownship.pos.clone(); tgt.y+=1.2;
 		const off=new THREE.Vector3(-Math.sin(ang)*ce,se,-Math.cos(ang)*ce).multiplyScalar(cam_dist);
-		camera.position.lerp(tgt.clone().add(off),Math.min(1,dt*6)); camera.up.set(0,1,0); camera.lookAt(tgt); }
+		camera.position.copy(tgt).add(off); camera.up.set(0,1,0); camera.lookAt(tgt); }   // rigid offset — a world-space position lerp against a 70-300 m/s target lags v/6 m and drags the camera behind the tail, defeating the orbit
 	else if(cfg.view==="flypast"){ update_flypast(dt); }
 }
 
@@ -1694,6 +1698,7 @@ function dynamic_res(dt){ if(!cfg.dyn_res) return; dyn_cd-=dt; if(dyn_cd>0) retu
 
 // ============================================================================ UI / menu
 function set_view(v){
+	if(v==="chase" && cfg.view!=="chase") cam_psi=Math.atan2(ownship.fwd.x,ownship.fwd.z);   // entering chase: reference the orbit to the current heading (no half-compass ease-in)
 	if(v==="chase" && cfg.view==="chase"){ cam_az=0; cam_el=0.22; cam_dist=24; }   // re-press recentres the orbit (keys.md §4)
 	if(v==="flypast") flyby_pos=null;   // (re)seed a fresh flyby each time it's selected
 	cfg.view=v;
