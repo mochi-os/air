@@ -9,7 +9,7 @@
 // their precise types for the menu.
 export interface MissionConfig {
   task: 'free' | 'joust'
-  start: 'air' | 'runway' | 'carrier'
+  start: 'air' | 'runway' | 'carrier' | 'landing'
   tod: 'day' | 'night'
   clouds: 'none' | 'cumulus' | 'high_stratus' | 'low_stratus'
   render_scale: number
