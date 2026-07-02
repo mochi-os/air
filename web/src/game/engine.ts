@@ -72,7 +72,9 @@ Object.assign(cfg, config);   // mission-setup menu overrides saved/defaults
 cfg.view="hud";   // start in HUD (view 2); 1-5 select views, V swaps cockpit/HUD
 let running=false, has_enemy=true;
 const MULTIPLAYER=false;             // single-player today; map/P pause only when this is false
-let cat_idx=1;                       // selected catapult (0-based; default = #2 port bow, the carrier-start spawn); 1-4 select in align mode (key 0)
+const DECK_ALIGN=false;              // dev-only catapult/deck alignment tool (key 0) — code kept, unreachable in player builds; flip on to retune the cat poses
+const TEST_SCENARIOS=true;           // dev-only landing/trap test autopilot (Shift+1..0 fly scripted hands-off approaches) — flip off before release
+let cat_idx=1;                       // selected catapult (0-based; default = #2 port bow, the carrier-start spawn); Shift+1-4 select in align mode (key 0)
 let pause_toggle=false, game_paused=false;
 const sun_dir = new THREE.Vector3(0.45,0.42,-0.32).normalize();
 const CARRIER={ x:-18500, z:7500, deckY:19 };   // ~20 km WSW of Midway (leeward deep water); heading +X, bow at +x
@@ -299,7 +301,7 @@ function apply_model_to(g){ if(!jet_proto||g.userData.hasModel) return; g.userDa
 	if(gear_clips.length||hook_clips.length){ const mixer=new THREE.AnimationMixer(m); g.userData.gearMixer=mixer;   // per-aircraft gear+hook fold; scrubbed by progress in update_anim()
 		g.userData.gearActions=gear_clips.map(c=>{ const a=mixer.clipAction(c); a.play(); return { action:a, dur:c.duration||1 }; });
 		g.userData.hookActions=hook_clips.map(c=>{ const a=mixer.clipAction(c); a.play(); return { action:a, dur:c.duration||1 }; }); } }
-function apply_model_all(){ apply_model_to(ownship.group); apply_model_to(bandit.group); extras.forEach(s=>apply_model_to(s.group)); }
+function apply_model_all(){ apply_model_to(ownship.group); apply_model_to(bandit.group); extras.forEach(s=>apply_model_to(s.group)); position_aircraft_lights(); }   // re-pin the ownship lights to the real airframe
 // --- minimal GLB container surgery (so we never trigger the loader's blob-URL texture path) ---
 function glb_split(ab){ const dv=new DataView(ab); if(dv.getUint32(0,true)!==0x46546C67) throw new Error("not a GLB");
 	let o=12; const jsonLen=dv.getUint32(o,true); o+=8; const json=JSON.parse(new TextDecoder().decode(new Uint8Array(ab,o,jsonLen))); o+=jsonLen;
@@ -973,15 +975,40 @@ function build_aircraft_lights(){   // nav position lights (red port / green stb
 	const spot=new THREE.SpotLight(0xfff2d8,200,500,0.34,0.5,1); spot.castShadow=false;   // decay 1 (not inverse-square) so the beam still reaches the deck from up the approach; tuned so it lights a pool ahead without flooding the whole transom
 	const st=new THREE.Object3D(); scene.add(spot,st); spot.target=st;   // in the SCENE, not the aircraft group (hidden in first-person) — positioned each frame to follow the nose
 	aircraft_lights={
-		pos:[ mk(0xff2020,0,0,-6,1.3), mk(0x20ff20,0,0,6,1.3), mk(0xffffff,-8.4,0.4,0,1.1) ],           // red left wing, green right wing, white tail
+		pos:[ mk(0xff2020,0,0,-6,1.3), mk(0x20ff20,0,0,6,1.3), mk(0xffffff,-8.4,0.4,0,1.1) ],           // red left wing, green right wing, white tail (guesses; re-pinned to the airframe once the GLB loads)
 		strobe:[ mk(0xffffff,0,-0.15,-6,1.9), mk(0xffffff,0,-0.15,6,1.9), mk(0xffffff,-7.6,1.0,0,1.9) ], // anti-collision strobes
-		landing:[ mk(0xfff4d8,4.6,-1.2,0,2.6) ], spot, spotTarget:st };                                  // forward landing light: the nose glow (in the group) + the spotlight beam (in the scene)
+		landing:[ mk(0xfff4d8,4.6,-1.2,0,2.6) ], spot, spotTarget:st, nose:{x:4.6,y:-1.2} };             // forward landing light: the nose glow (in the group) + the spotlight beam (in the scene)
+	position_aircraft_lights();
+}
+function position_aircraft_lights(){   // pin the lights to the real airframe: cluster the loaded model's extreme vertices for the wingtips (full span) and the tail/nose (centreline only, so a swept stabilator tip or missile fin can't win). The hardcoded offsets are only a pre-load fallback.
+	if(!aircraft_lights) return; const m=ownship.group.children.find(c=>c.userData.model); if(!m) return;
+	ownship.group.updateMatrixWorld(true);
+	const inv=new THREE.Matrix4().copy(ownship.group.matrixWorld).invert(), v=new THREE.Vector3();
+	const each=f=>m.traverse(o=>{ if(!o.isMesh) return; const p=o.geometry&&o.geometry.getAttribute("position"); if(!p) return;
+		for(let i=0;i<p.count;i++){ f(v.fromBufferAttribute(p,i).applyMatrix4(o.matrixWorld).applyMatrix4(inv)); } });
+	let zmin=1e9,zmax=-1e9,xmin=1e9,xmax=-1e9;   // aircraft-local: +x nose, +y up, +z starboard; tail/nose restricted to |z|<0.9 (centreline)
+	each(p=>{ if(p.z<zmin)zmin=p.z; if(p.z>zmax)zmax=p.z; if(Math.abs(p.z)<0.9){ if(p.x<xmin)xmin=p.x; if(p.x>xmax)xmax=p.x; } });
+	if(zmin>1e8||xmin>1e8) return;
+	const acc={port:[0,0,0,0],stbd:[0,0,0,0],tail:[0,0,0,0],nose:[0,0,0,0]}, add=(a,p)=>{ a[0]+=p.x; a[1]+=p.y; a[2]+=p.z; a[3]++; };
+	each(p=>{ if(p.z-zmin<0.3) add(acc.port,p); if(zmax-p.z<0.3) add(acc.stbd,p);
+		if(Math.abs(p.z)<0.9){ if(p.x-xmin<0.4) add(acc.tail,p); if(xmax-p.x<0.4) add(acc.nose,p); } });
+	const mean=a=>({x:a[0]/a[3], y:a[1]/a[3], z:a[2]/a[3]});
+	const port=mean(acc.port), stbd=mean(acc.stbd), tail=mean(acc.tail), nose=mean(acc.nose);
+	const set=(pts,x,y,z)=>{ const a=pts.geometry.getAttribute("position"); a.setXYZ(0,x,y,z); a.needsUpdate=true; };
+	const L=aircraft_lights;
+	set(L.pos[0], port.x, port.y, zmin); set(L.pos[1], stbd.x, stbd.y, zmax); set(L.pos[2], xmin+0.5, tail.y, tail.z);   // nav lights on the wingtip extremities + the stern, tucked against the tail
+	set(L.strobe[0], port.x, port.y-0.12, zmin); set(L.strobe[1], stbd.x, stbd.y-0.12, zmax); set(L.strobe[2], xmin+0.6, tail.y+0.25, tail.z);   // strobes beside them
+	let gn=null; m.traverse(o=>{ if(o.name==="gear_nose") gn=o; });   // the nose-gear strut node in the GLB (bind pose = gear down)
+	if(gn){ const p=new THREE.Vector3(); gn.getWorldPosition(p); p.applyMatrix4(inv); L.nose={x:p.x+0.15, y:p.y-1.1}; }   // partway down the strut from the hinge
+	else L.nose={x:xmax-3.5, y:-1.2};
+	set(L.landing[0], L.nose.x, L.nose.y, nose.z);   // landing light on the nose gear strut (as on the real Hornet), so it exists only with the gear down
 }
 function update_aircraft_lights(){
 	if(!aircraft_lights) return; const on=!!ownship.lights, strobe=on && (performance.now()%1100)<70;   // ~1 Hz strobe flash
-	for(const p of aircraft_lights.pos) p.visible=on; for(const p of aircraft_lights.landing) p.visible=on; for(const p of aircraft_lights.strobe) p.visible=strobe;
-	const spot=aircraft_lights.spot; spot.visible=on;   // the landing-light beam lights whatever it points at (kept in the scene so it works in first-person, where the aircraft group is hidden)
-	if(on){ spot.position.copy(ownship.pos).addScaledVector(ownship.fwd,4.6).addScaledVector(ownship.up,-1.2);   // at the nose
+	const geardown=(ownship.gear??0)<0.5, land=on && geardown;   // the landing light rides the nose gear strut — gear up, no landing light
+	for(const p of aircraft_lights.pos) p.visible=on; for(const p of aircraft_lights.landing) p.visible=land; for(const p of aircraft_lights.strobe) p.visible=strobe;
+	const spot=aircraft_lights.spot; spot.visible=land;   // the landing-light beam lights whatever it points at (kept in the scene so it works in first-person, where the aircraft group is hidden)
+	if(land){ const n=aircraft_lights.nose; spot.position.copy(ownship.pos).addScaledVector(ownship.fwd,n.x).addScaledVector(ownship.up,n.y);   // at the strut
 		aircraft_lights.spotTarget.position.copy(ownship.pos).addScaledVector(ownship.fwd,70).addScaledVector(ownship.up,-15); }   // aim forward + ~12° down
 }
 function meatball_state(p){   // 2D OLS: shown in an approach cone aft of the carrier with gear + hook down; returns the glideslope deviation
@@ -1024,8 +1051,9 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(k==="KeyR" && !ownship.launching && cfg.missiles && ownship.msl>0){ if(launch_missile(ownship,has_enemy?bandit:null)) ownship.msl--; }
 		if(k==="KeyF" && cfg.flares && ownship.cm>0){ dispense_flares(ownship); ownship.cm--; }
 		if(k==="KeyX"){ ownship.rounds=578; ownship.msl=4; ownship.cm=60; }
-		if(k==="Digit0" && carrier_model){ deck_edit=!deck_edit; if(deck_edit){ enter_align(); } else { save_cfg(); copy_cats(); cat_saved_t=1.8; } }   // 0: deck-alignment tool (unadvertised dev key) — exit saves + copies the poses to the clipboard
-		if(deck_edit && e.shiftKey && (k==="Digit1"||k==="Digit2"||k==="Digit3"||k==="Digit4")){ cat_idx=+k.slice(5)-1; place_on_cat(cat_idx); }   // in align mode, Shift+1-4 select the catapult being aligned (plain 1-5 stay views)
+		if(k==="Digit0" && DECK_ALIGN && carrier_model){ deck_edit=!deck_edit; if(deck_edit){ enter_align(); } else { save_cfg(); copy_cats(); cat_saved_t=1.8; } }   // 0: deck-alignment tool, gated by DECK_ALIGN (dev-only) — exit saves + copies the poses to the clipboard
+		if(TEST_SCENARIOS && !deck_edit && e.shiftKey && /^Digit\d$/.test(k)){ start_test((+k.slice(5)+9)%10); }   // Shift+1..0: scripted landing test scenarios (dev-only)
+		else if(deck_edit && e.shiftKey && (k==="Digit1"||k==="Digit2"||k==="Digit3"||k==="Digit4")){ cat_idx=+k.slice(5)-1; place_on_cat(cat_idx); }   // in align mode, Shift+1-4 select the catapult being aligned (plain 1-5 stay views)
 		else { if(k==="Digit1") set_view("cockpit");   // 1 Cockpit — pending art, resolves to the HUD eye-point for now (not a dead key)
 			if(k==="Digit2") set_view("hud");        // 2 HUD (default start view)
 			if(k==="Digit3") set_view("chase");      // 3 Chase
@@ -1191,6 +1219,50 @@ function lso_grade(){   // LSO pass grade from the in-close deviations and the t
 	if(gs<0.7 && az<1.8) return "FAIR";
 	return "NO-GRADE";
 }
+// ---- landing test scenarios (dev-only, TEST_SCENARIOS + Shift+1..0): scripted hands-off approaches with exact
+// touchdown parameters, because a keyboard pilot can't reliably hit "sink 11 m/s, wings level" to test the gates.
+// The autopilot prescribes attitude + track to the touchdown; the outcome (land / bounce / crash / trap / bolter)
+// then unfolds through the ordinary physics and shows via the ordinary banners.
+const TESTS=[
+	{name:"1 runway - soft touchdown (lands)",              V:70,  S:2.5, pitch:4},
+	{name:"2 runway - firm 11 m/s (bounces)",               V:70,  S:11,  pitch:4},
+	{name:"3 runway - hard 16 m/s (crashes)",               V:70,  S:16,  pitch:4},
+	{name:"4 runway - banked 12 deg (wingtip strike)",      V:70,  S:2.5, pitch:2, bank:12},
+	{name:"5 runway - nose-high 17 deg (tail strike)",      V:70,  S:2.5, pitch:17},
+	{name:"6 runway - overspeed 115 m/s (tire failure)",    V:115, S:2.5, pitch:2},
+	{name:"7 runway - gentle belly landing (slides)",       V:70,  S:1.2, pitch:2, gearup:true},
+	{name:"8 runway - hard belly landing (crashes)",        V:70,  S:4,   pitch:2, gearup:true},
+	{name:"9 carrier - on glideslope (traps)",              V:70,  S:4.3, pitch:4, carrier:true, hook:true},
+	{name:"0 carrier - flat and floaty (hook skip, bolter)",V:75,  S:0.8, pitch:2, carrier:true, hook:true, short:18},
+];
+let test_active=null;
+function start_test(i){ const sc=TESTS[i]; if(!sc || crash_t>0) return;
+	let T,d;
+	if(sc.carrier){ if(!carrier_ols) return; const o=carrier_ols;
+		d=new THREE.Vector3(-o.apx,0,-o.apz).normalize(); T=new THREE.Vector3(o.tdx,0,o.tdz);   // fly the approach axis toward the 2-wire touchdown
+		if(sc.short) T.addScaledVector(d,-sc.short); }                                          // aim short of the wires (the floaty hook-skip case)
+	else { if(!airports.length) return; const ap=airports[0];
+		d=new THREE.Vector3(ap.dir.x,0,ap.dir.z).normalize(); T=new THREE.Vector3(ap.start.x+d.x*500,0,ap.start.z+d.z*500); }   // 500 m past the threshold
+	const g=ground_height(T.x,T.z); T.y=(g>-1e8?g:0)+GEAR;
+	const V=sc.V, S=sc.S, Vh=Math.sqrt(Math.max(V*V-S*S,1)), D=Math.max(500,V*9);   // ~9 s of approach
+	ownship.pos.set(T.x-d.x*D, T.y+S*(D/Vh), T.z-d.z*D);
+	const fwd0=d.clone(), right0=new THREE.Vector3().crossVectors(fwd0,world_up).normalize(), up0=new THREE.Vector3().crossVectors(right0,fwd0).normalize();
+	const q=new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(fwd0,up0,right0));
+	q.premultiply(new THREE.Quaternion().setFromAxisAngle(right0,(sc.pitch||0)*D2R)); q.premultiply(new THREE.Quaternion().setFromAxisAngle(fwd0,(sc.bank||0)*D2R));
+	const vd=new THREE.Vector3(d.x*Vh,-S,d.z*Vh).normalize();
+	ownship.q.copy(q); ownship.vel_dir.copy(vd); ownship.speed=V; ownship.throttle=0;
+	ownship.gearTarget=sc.gearup?1:0; ownship.gear=ownship.gearTarget; ownship.hookTarget=sc.hook?1:0; ownship.hook=ownship.hookTarget;
+	ownship.launching=false; ownship.trapped=false; ownship.wire=0; ownship.touch=null; ownship.grounded=false;
+	ownship.pass={gs:0,az:0,n:0}; ownship.waved=false; ownship.pass_t=0;
+	test_active={ name:sc.name, q:q.clone(), vd:vd.clone(), V, t0:sim_time };
+}
+function test_drive(){   // hold the prescribed approach exactly; hand control back the moment the outcome is decided
+	const t=test_active;
+	if(crash_t>0 || ownship.trapped || (ownship.touch && ownship.touch.t>=t.t0)){ test_active=null; return; }
+	ownship.q.copy(t.q);
+	ownship.fwd.set(1,0,0).applyQuaternion(t.q); ownship.up.set(0,1,0).applyQuaternion(t.q); ownship.right.set(0,0,1).applyQuaternion(t.q);
+	ownship.speed=t.V; ownship.vel_dir.copy(t.vd);
+}
 function fly_player(dt){
 	if(crash_t>0){ crash_t-=dt; if(crash_t<=0){ crash_t=0; ownship.group.visible=true; reset_ownship(); } return; }   // hold through the fireball, then respawn
 	read_input(dt);
@@ -1207,6 +1279,8 @@ function fly_player(dt){
 		ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
 		if(ownship.launch_dist>85){ ownship.launching=false; } return;   // end of the catapult stroke (gear stays down — the pilot raises it with G)
 	}
+	if(test_active) test_drive();   // scripted test approach: prescribes attitude + track exactly (clears itself once the outcome is in)
+	if(!test_active){
 	const s=cfg.sens; const roll_rate=3.0*s, pitch_rate=1.3*s, yaw_rate=0.6*s;
 	_q.setFromAxisAngle(ownship.right, input.pitch*pitch_rate*dt); ownship.q.premultiply(_q);
 	_q.setFromAxisAngle(ownship.up, -input.yaw*yaw_rate*dt); ownship.q.premultiply(_q);
@@ -1237,6 +1311,7 @@ function fly_player(dt){
 				ownship.speed=Math.max(0,ns); } }   // on pavement/deck: throttle rolls you, brakes stop you, idle sits still — NO airborne stall floor (so you can taxi / sit on the deck)
 		else { ownship.speed+=(target-ownship.speed)*Math.min(1,dt*0.5); ownship.speed-=9.81*Math.sin(pitch_ang)*dt*1.6; ownship.speed=THREE.MathUtils.clamp(ownship.speed,0,360); } }   // airborne (no stall floor yet — proper stalls come in the flight-model phase)
 	ownship.vel_dir.lerp(ownship.fwd,Math.min(1,dt*2.5)).normalize();
+	}   // end manual-control section (skipped while a test scenario drives)
 	ownship.velx=ownship.vel_dir.x*ownship.speed; ownship.vely=ownship.vel_dir.y*ownship.speed; ownship.velz=ownship.vel_dir.z*ownship.speed;
 	ownship.aoa=THREE.MathUtils.radToDeg(ownship.fwd.angleTo(ownship.vel_dir));
 	ownship.gload=1+Math.abs(input.pitch)*(ownship.speed/90);
@@ -1319,7 +1394,7 @@ function step_world(dt){ sim_time+=dt;
 		else if(!ownship.grounded && s.dist<1852 && s.along>40){
 			const p=ownship.pass||(ownship.pass={gs:0,az:0,n:0});
 			p.gs+=Math.abs(s.dev); p.az+=Math.abs(Math.atan2(s.lat,Math.max(s.along,1)))*180/Math.PI; p.n++;
-			if(s.dev<-0.7){ ownship.waved=true; ownship.waving=true; }   // dangerously low in close — the LSO waves it off (same threshold as the OLS waveoff lights)
+			if(s.dev<-0.7 && s.dist>250){ ownship.waved=true; ownship.waving=true; }   // dangerously low in close — the LSO waves it off (same threshold as the OLS waveoff lights); inside ~250 m the call is over (and hook-geometry makes a good pass read falsely low there)
 		}
 	} else ownship.waving=false;
 }
@@ -1450,6 +1525,7 @@ function draw_hud(dt){
 	if(crash_t<=0 && ownship.pass_t>0){ ownship.pass_t-=dt;   // LSO debrief: grade + wire (or BOLTER), held for a few seconds after the pass
 		hud_message(ownship.grade==="BOLTER"?translate("BOLTER"):translate(ownship.grade)+", "+translate(ownship.wire+" WIRE")); }
 	else if(crash_t<=0 && ownship.waving && (performance.now()%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call while dangerously low in close (matches the OLS waveoff lights)
+	if(test_active){ hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="13px monospace"; hctx.fillText("TEST  "+test_active.name, 14, 28); }   // dev test-scenario label (untranslated, like the align overlay)
 	if(deck_edit && carrier_model){   // carrier-frame position + centreline — only in the dev deck-alignment mode (key 0)
 		hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="14px monospace";
 		hctx.fillText("deck  fa="+carrier_fore_aft(ownship.pos.x,ownship.pos.z).toFixed(1)+"  lat="+carrier_lateral(ownship.pos.x,ownship.pos.z).toFixed(1)+"  h="+(ownship.pos.y-CARRIER.deckY).toFixed(1), 14, 28);
