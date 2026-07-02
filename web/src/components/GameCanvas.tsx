@@ -25,6 +25,7 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'SPD BK': msg`SPD BK`,
   YOU: msg`YOU`,
   PAUSED: msg`PAUSED`,
+  LOADING: msg`LOADING`,
   CRASHED: msg`CRASHED`,
   'PRESS ENTER TO LAUNCH': msg`PRESS ENTER TO LAUNCH`,
   LIGHTS: msg`LIGHTS`,
