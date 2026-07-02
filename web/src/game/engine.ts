@@ -76,6 +76,7 @@ const DECK_ALIGN=false;              // dev-only catapult/deck alignment tool (k
 const TEST_SCENARIOS=true;           // dev-only landing/trap test autopilot (Shift+1..0 fly scripted hands-off approaches) — flip off before release
 let cat_idx=1;                       // selected catapult (0-based; default = #2 port bow, the carrier-start spawn); Shift+1-4 select in align mode (key 0)
 let pause_toggle=false, game_paused=false;
+let loading=false, loading_t0=0;   // flight-start LOADING screen: the sim + render hold until assets_ready() (20 s cap so a failed load can't hang the game)
 const sun_dir = new THREE.Vector3(0.45,0.42,-0.32).normalize();
 const CARRIER={ x:-18500, z:7500, deckY:19 };   // ~20 km WSW of Midway (leeward deep water); heading +X, bow at +x
 const sky_horizon=new THREE.Color(0xbfd8e8), sky_zenith=new THREE.Color(0x2a5a8c), fog_colour=new THREE.Color(0xc4d6e2);
@@ -1650,7 +1651,6 @@ function draw_hud(dt){
 	const tgx=cx-262, tgcy=cy, tgh=140; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.lineWidth=1.5;
 	hctx.strokeRect(tgx-8,tgcy-tgh/2,16,tgh);
 	const fh=tgh*ownship.throttle; hctx.fillRect(tgx-8,tgcy+tgh/2-fh,16,fh);
-	const aby=tgcy+tgh/2-tgh*0.6; hctx.strokeStyle=AM; hctx.beginPath(); hctx.moveTo(tgx-11,aby); hctx.lineTo(tgx+11,aby); hctx.stroke(); hctx.strokeStyle=GR;
 	hctx.font="11px monospace"; hctx.fillStyle=GR; hctx.fillText("THR",tgx,tgcy-tgh/2-9);
 	hctx.font="15px monospace"; hctx.fillText(Math.round(ownship.throttle*100)+"%",tgx,tgcy+tgh/2+15);
 
@@ -1714,9 +1714,11 @@ function start_mission(){
 	sync_extras(cfg.extra_aircraft);
 	reset_ownship(); apply_size(); save_cfg();
 	pause_toggle=false; map_on=false; map_el.style.display="none";
+	loading=!assets_ready(); loading_t0=performance.now();   // hold the LOADING screen until every async asset is in — no piecemeal pop-in of carrier/airfield/airframe
 	running=true;
 	try{ window.focus(); stage.focus(); }catch(e){}
 }
+function assets_ready(){ return !!carrier_model && model_active && airports.length>0; }   // the three async loads: carrier GLB (+deck aids), fighter GLB, map/airfield
 
 // ============================================================================ boot
 apply_time_of_day(cfg.tod); apply_effects(); apply_size();
@@ -1730,6 +1732,10 @@ function menu_backdrop(){ const a=performance.now()*0.00007; const r=440;
 
 const clock=new THREE.Clock();
 function frame(){ const dt=Math.min(clock.getDelta(),0.05);
+	if(running && loading){   // hold on a black LOADING screen, then jump straight to the fully rendered scene (no piecemeal pop-in)
+		if(assets_ready() || performance.now()-loading_t0>20000){ loading=false; }
+		else { draw_loading(); __raf=requestAnimationFrame(frame); return; }
+	}
 	game_paused = running && !MULTIPLAYER && (map_on || pause_toggle);
 	if(running){
 		if(!game_paused){ ocean_mat.uniforms.u_time.value+=dt; step_world(dt); }   // frozen world stops advancing
@@ -1744,6 +1750,9 @@ function frame(){ const dt=Math.min(clock.getDelta(),0.05);
 	if(map_on) draw_map();
 	refresh_perf(dt); dynamic_res(dt);
 	__raf = requestAnimationFrame(frame); }
+function draw_loading(){ hctx.clearRect(0,0,HW,HH); hctx.fillStyle="#000"; hctx.fillRect(0,0,HW,HH);   // opaque: covers the half-built 3D scene beneath
+	hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="22px monospace";
+	hctx.fillText(translate("LOADING")+".".repeat(1+Math.floor(performance.now()/400)%3), HW/2, HH/2); }
 function draw_pause_banner(){ hctx.save(); hctx.textAlign="center"; hctx.fillStyle="rgba(3,12,9,0.45)"; hctx.fillRect(HW/2-150,HH/2-44,300,88);
 	hctx.fillStyle=AM; hctx.font="34px monospace"; hctx.fillText(translate("PAUSED"),HW/2,HH/2-2);
 	hctx.fillStyle=GR; hctx.font="12px monospace"; hctx.fillText(translate("P to resume \u00b7 M map \u00b7 Esc menu"),HW/2,HH/2+24); hctx.restore(); }
