@@ -1115,7 +1115,7 @@ function ground_height(x,z){   // top of the solid surface under (x,z): carrier 
 	if(Math.abs(x-CARRIER.x)<160 && Math.abs(z-CARRIER.z)<160){
 		if(!carrier_model){ ground_kind="deck"; return CARRIER.deckY; }   // GLB still loading — treat the deck box as solid at the known height so a carrier start doesn't fall through to the flight model
 		const h=deck_y_at(carrier_model,x,z,-1e9);
-		if(h>-1e8 && h<CARRIER.deckY+4){ ground_kind="deck"; return h; }   // the flat flight deck; taller hits are the island superstructure — a solid obstacle, see check_collisions
+		if(h>-1e8 && h<CARRIER.deckY+4){ ground_kind="deck"; return h>CARRIER.deckY-2.5?CARRIER.deckY:h; }   // the flight deck is one horizontal plane — the GLB models it as two flat layers 1.72 m apart (gaps in the top layer expose the lower), so near-deck hits snap to the measured plane; genuinely lower hits (catwalks/sponsons off the edge) stay real. Taller hits are the island superstructure — see check_collisions
 	}
 	if(obstacles.runway && over_runway({x,z})){ ground_kind="runway"; return ISLAND_H+1.5; }
 	for(const a of obstacles.aprons){ if(pip(x,z,a)){ ground_kind="apron"; return ISLAND_H+AIRFIELD_FLOAT; } }
