@@ -1071,7 +1071,7 @@ let cat_saved_t=0;                              // "deck position saved" flash t
 // True while the aircraft is sitting/rolling on the deck or runway (not yet airborne) — gear can't retract then.
 function mission_start(){ return cfg.task==="joust"?"joust":cfg.start; }   // joust always starts at the merge; the Start selector applies to free flight only
 function takeoff_surface(){ const st=mission_start(); if(st==="carrier") return CARRIER.deckY; if(st==="runway"&&airports.length) return airports[0].start.y; return 8; }
-function on_ground(){ return deck_edit||ownship.launching||ownship.pos.y<takeoff_surface()+12; }
+function on_ground(){ return deck_edit||ownship.launching||!!ownship.grounded; }   // the real resting flag, not an altitude guess — off the cat you fly level at deck height, where a +12 m heuristic left G dead
 addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown","/"].includes(e.key)) e.preventDefault();
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
 		if(k==="Enter" && launch_status()===2){ start_launch(); }   // only when spotted on the cat, lined up, at full power
