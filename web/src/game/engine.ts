@@ -652,9 +652,13 @@ function pip(px,pz,poly){ let inside=false; for(let i=0,j=poly.length-1;i<poly.l
 // Crash-collision registry, populated as the world builds: island terrain, buildings, small structures
 // (PAPI/windsock), and the runway rectangle (the one place the arcade landing floor still applies).
 const obstacles={ islands:[], buildings:[], posts:[], aprons:[], runway:null };   // aprons/islands/… stay [] until the async airfield loads, so the ground checks never iterate undefined
+const SKIRT=26, SKIRT_DROP=0.8;   // beach skirt: real Midway shores are gently sloping sand, not cliffs — slope the last ~26 m from ground level to just below the waterline
+const HARBOUR={minx:140,maxx:720,minz:2430,maxz:2725}, QUAY=2.0, QUAY_APRON=5;   // the SE harbour basin on Sand Island: deep water meets the land at a smooth man-made wall, its top (quay) 2 m above the sea at the end of a short apron down from ground level
+function in_harbour(x,z){ return x>HARBOUR.minx&&x<HARBOUR.maxx&&z>HARBOUR.minz&&z<HARBOUR.maxz; }
 function build_islands(polygons, ground, half){
 	island_polygons=polygons.filter(polygon=>polygon.length>=30);   // Sand / Eastern / Spit; skip tiny reef rocks
 	const material=new THREE.MeshStandardMaterial({map:ground,roughness:0.96,metalness:0.0});   // Sentinel-2 imagery, planar-mapped by world position
+	const skirtMat=new THREE.MeshStandardMaterial({map:ground,roughness:0.96,metalness:0.0,side:THREE.DoubleSide});   // the same imagery flows down the beach (its surf/shallow pixels land on the slope)
 	for(const polygon of island_polygons){
 		const shape=new THREE.Shape(); shape.moveTo(polygon[0][0],-polygon[0][1]); for(let i=1;i<polygon.length;i++) shape.lineTo(polygon[i][0],-polygon[i][1]);   // shape (x,-z): after rotateX the island rises +y, z un-mirrored
 		const geometry=new THREE.ExtrudeGeometry(shape,{depth:ISLAND_H,bevelEnabled:false,steps:1}); geometry.rotateX(-Math.PI/2);
@@ -662,10 +666,40 @@ function build_islands(polygons, ground, half){
 		for(let i=0;i<pos.count;i++){ uv[i*2]=(pos.getX(i)+half)/(2*half); uv[i*2+1]=(pos.getZ(i)+half)/(2*half); }
 		geometry.setAttribute("uv", new THREE.BufferAttribute(uv,2));
 		const mesh=new THREE.Mesh(geometry,material); mesh.receiveShadow=true; mesh.castShadow=true; scene.add(mesh);
+		// shore skirt: a continuous two-band ribbon from the coastline at ground level, hiding the extrusion cliff.
+		// Beach profile: slope ~26 m out and down to below the waterline. Harbour profile: short apron down to the
+		// quay at 2 m, then a smooth vertical wall into the deep water.
+		{ const n=polygon.length, vn=[];
+			for(let i=0;i<n;i++){ const p0=polygon[(i-1+n)%n], p1=polygon[i], p2=polygon[(i+1)%n];
+				let nx=(p1[1]-p0[1])+(p2[1]-p1[1]), nz=-((p1[0]-p0[0])+(p2[0]-p1[0])); const l=Math.hypot(nx,nz)||1; vn.push([nx/l,nz/l]); }   // per-vertex normal (adjacent edges averaged) → gap-free ribbon at corners
+			if(pip(polygon[0][0]+vn[0][0]*2, polygon[0][1]+vn[0][1]*2, polygon)){ for(const v of vn){ v[0]=-v[0]; v[1]=-v[1]; } }   // orient outward (winding-agnostic)
+			const prof=polygon.map(a=>in_harbour(a[0],a[1])?{o1:QUAY_APRON,h1:QUAY,o2:QUAY_APRON,h2:-1.5}:{o1:SKIRT,h1:-SKIRT_DROP,o2:SKIRT+1,h2:-SKIRT_DROP-0.2});   // per-vertex profile; shared vertices blend the two continuously
+			const r1=polygon.map((a,i)=>[a[0]+vn[i][0]*prof[i].o1, a[1]+vn[i][1]*prof[i].o1, prof[i].h1]);
+			const r2=polygon.map((a,i)=>[a[0]+vn[i][0]*prof[i].o2, a[1]+vn[i][1]*prof[i].o2, prof[i].h2]);
+			for(let pass=0;pass<4;pass++) for(const r of [r1,r2]){   // smooth the offset rings — the raw coastline is dense and noisy, and offsetting it 26 m amplifies every kink into a jagged waterline
+				const prev=r.map(v=>v.slice());
+				for(let i=0;i<n;i++){ const p0=prev[(i-1+n)%n], p1=prev[i], p2=prev[(i+1)%n];
+					r[i][0]=(p0[0]+2*p1[0]+p2[0])/4; r[i][1]=(p0[1]+2*p1[1]+p2[1])/4; r[i][2]=(p0[2]+2*p1[2]+p2[2])/4; } }
+			const spos=[], suv=[];
+			const push=(x,y,z,ux,uz)=>{ spos.push(x,y,z); suv.push((ux+half)/(2*half),(uz+half)/(2*half)); };   // uv from the COASTLINE point, not the offset one — the skirt stretches the shore's own beach pixels outward instead of sampling the photo's water (which read as blue land)
+			for(let i=0;i<n;i++){ const j=(i+1)%n, a=polygon[i], b=polygon[j];
+				const tri=(v1,v2,v3)=>{ push(...v1); push(...v2); push(...v3); };
+				const A=[a[0],ISLAND_H,a[1],a[0],a[1]], B=[b[0],ISLAND_H,b[1],b[0],b[1]];
+				const A1=[r1[i][0],r1[i][2],r1[i][1],a[0],a[1]], B1=[r1[j][0],r1[j][2],r1[j][1],b[0],b[1]];
+				const A2=[r2[i][0],r2[i][2],r2[i][1],a[0],a[1]], B2=[r2[j][0],r2[j][2],r2[j][1],b[0],b[1]];
+				tri(A,B,B1); tri(A,B1,A1);   // land edge → beach toe / quay top
+				tri(A1,B1,B2); tri(A1,B2,A2); }   // beach run-out / harbour wall face
+			const sg=new THREE.BufferGeometry(); sg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(spos),3)); sg.setAttribute("uv",new THREE.BufferAttribute(new Float32Array(suv),2)); sg.computeVertexNormals();
+			const sm=new THREE.Mesh(sg,skirtMat); sm.receiveShadow=true; scene.add(sm); }
 		let minx=1e9,maxx=-1e9,minz=1e9,maxz=-1e9; for(const p of polygon){ minx=Math.min(minx,p[0]); maxx=Math.max(maxx,p[0]); minz=Math.min(minz,p[1]); maxz=Math.max(maxz,p[1]); }
 		obstacles.islands.push({pts:polygon,minx,maxx,minz,maxz});
 	}
 }
+function edge_distance(x,z,pts){ let best=1e18;   // distance from (x,z) to the nearest polygon edge
+	for(let i=0;i<pts.length;i++){ const a=pts[i], b=pts[(i+1)%pts.length];
+		const dx=b[0]-a[0], dz=b[1]-a[1], t=THREE.MathUtils.clamp(((x-a[0])*dx+(z-a[1])*dz)/((dx*dx+dz*dz)||1),0,1);
+		const ex=a[0]+dx*t-x, ez=a[1]+dz*t-z, d=ex*ex+ez*ez; if(d<best) best=d; }
+	return Math.sqrt(best); }
 const ASPHALT_TILE=22;   // metres per asphalt-texture tile
 function asphalt_texture(){ const c=document.createElement("canvas"); c.width=c.height=256; const x=c.getContext("2d");
 	x.fillStyle="#565a5e"; x.fillRect(0,0,256,256);                                                   // weathered grey base (not fresh-black)
@@ -1188,12 +1222,16 @@ function ground_height(x,z){   // top of the solid surface under (x,z): carrier 
 	}
 	if(obstacles.runway && over_runway({x,z})){ ground_kind="runway"; return ISLAND_H+1.5; }
 	for(const a of obstacles.aprons){ if(pip(x,z,a)){ ground_kind="apron"; return ISLAND_H+AIRFIELD_FLOAT; } }
-	for(const is of obstacles.islands){ if(x>is.minx&&x<is.maxx&&z>is.minz&&z<is.maxz&&pip(x,z,is.pts)){ ground_kind="ground"; return ISLAND_H; } }
+	for(const is of obstacles.islands){ if(x>is.minx-SKIRT&&x<is.maxx+SKIRT&&z>is.minz-SKIRT&&z<is.maxz+SKIRT){
+		if(pip(x,z,is.pts)){ ground_kind="ground"; return ISLAND_H; }
+		if(in_harbour(x,z)){ const d=edge_distance(x,z,is.pts); if(d<QUAY_APRON){ ground_kind="ground"; return ISLAND_H-(ISLAND_H-QUAY)*(d/QUAY_APRON); } }   // harbour: short apron to the quay edge, then the wall drops into deep water
+		else { const d=edge_distance(x,z,is.pts); if(d<SKIRT){ ground_kind="ground"; return ISLAND_H-(ISLAND_H+SKIRT_DROP)*(d/SKIRT); } }   // the beach skirt is a real sloped surface (sand → soft-field rules)
+	} }
 	return -1e9;
 }
 function check_collisions(){   // ownship vs sea / buildings / structures / carrier / other aircraft (land landings handled by the ground floor in fly_player)
 	if(crash_t>0) return; const p=ownship.pos;
-	if(p.y<3.4) return crash_ownship();   // the sea — over land the ground floor stops the descent higher, so this only reaches open water
+	if(p.y<3.4 && ground_height(p.x,p.z)<-1e8) return crash_ownship();   // the sea — but not the beach skirt, which slopes below this line down to the waterline
 	if(p.y<45){
 		for(const b of obstacles.buildings){ if(p.y<b.topY+2 && p.x>b.minx&&p.x<b.maxx&&p.z>b.minz&&p.z<b.maxz && pip(p.x,p.z,b.pts)) return crash_ownship(); }
 		for(const s of obstacles.posts){ if(p.y<s.y1 && Math.hypot(p.x-s.x,p.z-s.z)<s.r+4) return crash_ownship(); }
