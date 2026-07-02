@@ -1061,7 +1061,7 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 			if(k==="Digit4") set_view("flypast");    // 4 Flypast
 			if(k==="Digit5") set_view("padlock"); }  // 5 Padlock
 		if(k==="KeyV") set_view(cfg.view==="cockpit"?"hud":"cockpit");   // V: Cockpit↔HUD fast-swap (any other view → Cockpit)
-		if(k==="KeyM"){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on) map_resize(); }
+		if(k==="KeyM"){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on){ map_px=0; map_pz=0; map_resize(); } }   // reopening always returns centred on own aircraft
 		if(k==="KeyP" && !MULTIPLAYER){ pause_toggle=!pause_toggle; }
 		if(k==="KeyH"){ ownship.hookTarget = ownship.hookTarget>0.5?0:1; }   // arrestor hook deploy/stow
 		if(k==="KeyL"){ ownship.lights=!ownship.lights; }   // aircraft position/strobe/landing lights
@@ -1437,7 +1437,7 @@ function update_camera(dt){
 	const editing = deck_edit;
 	const firstPerson = (cfg.view==="hud"||cfg.view==="cockpit");   // cockpit ≡ HUD eye-point until cockpit art exists
 	ownship.group.visible=(!firstPerson) || editing;
-	if(cfg.view==="chase"){   // keyboard orbit (shares cam_az/el with the mouse drag): ←→ azimuth, ↑↓ elevation, −/= zoom — keys.md §5
+	if(cfg.view==="chase" && !map_on){   // keyboard orbit (shares cam_az/el with the mouse drag): ←→ azimuth, ↑↓ elevation, −/= zoom — keys.md §5; with the map up, −/= zoom the map instead
 		const ar=dt*0.9, zr=dt*40;
 		cam_az+=((keys.has("ArrowRight")?1:0)-(keys.has("ArrowLeft")?1:0))*ar;           // ←/→ orbit
 		cam_el=THREE.MathUtils.clamp(cam_el+((keys.has("ArrowUp")?1:0)-(keys.has("ArrowDown")?1:0))*ar,-1.2,1.45);   // ↑/↓ tilt
@@ -1479,23 +1479,26 @@ function hud_resize(){ HW=innerWidth; HH=innerHeight; const dpr=Math.min(deviceP
 const _p=new THREE.Vector3();
 function proj_point(v){ _p.copy(v).project(camera); if(_p.z>1) return null; return [(_p.x*0.5+0.5)*HW,(-_p.y*0.5+0.5)*HH]; }
 function proj_dir(d){ _p.copy(camera.position).addScaledVector(d,1000).project(camera); if(_p.z>1) return null; return [(_p.x*0.5+0.5)*HW,(-_p.y*0.5+0.5)*HH]; }
-const GR="#15b85f", AM="#ffc14d";
+let GR="#15b85f"; const AM="#ffc14d";   // GR switches to a brighter daytime green in draw_hud (real HUDs have a brightness knob)
 
 // ---- full-screen map (M) — aircraft, islands, airports, carrier; never bandits ----
 const map_el=map; const mctx=map_el.getContext("2d"); let map_on=false;
 const help_el=help;
 function map_resize(){ const dpr=Math.min(devicePixelRatio||1,2); map_el.width=innerWidth*dpr; map_el.height=innerHeight*dpr; map_el.style.width=innerWidth+"px"; map_el.style.height=innerHeight+"px"; mctx.setTransform(dpr,0,0,dpr,0,0); }
+const NM=1852;
+let map_range=40000; const MAP_RANGE_MIN=5*NM, MAP_RANGE_MAX=100*NM;   // half-width of the map view in metres; − / = / mouse wheel zoom
+let map_px=0, map_pz=0;   // arrow-key pan offset from own aircraft (world metres); cleared on map open so it reopens centred
 function draw_map(){ const W=innerWidth,H=innerHeight; mctx.clearRect(0,0,W,H);
-	const cxp=W/2, cyp=H/2, worldR=40000, s=Math.min(W,H)*0.46/worldR;
-	const X=x=>cxp+wrap_axis(x-ownship.pos.x)*s, Y=z=>cyp+wrap_axis(z-ownship.pos.z)*s;   // centred on own aircraft, north up (+x→east, +z→south); min-image across the wrap
+	const cxp=W/2, cyp=H/2, s=Math.min(W,H)*0.46/map_range;
+	const X=x=>cxp+wrap_axis(x-ownship.pos.x-map_px)*s, Y=z=>cyp+wrap_axis(z-ownship.pos.z-map_pz)*s;   // centred on own aircraft (+ pan), north up (+x→east, +z→south); min-image across the wrap
 	// frame + title
 	mctx.fillStyle=GR; mctx.font="14px monospace"; mctx.textAlign="left"; mctx.fillText(translate("TACTICAL MAP"),24,30);
 	mctx.fillStyle="#7fcfa6"; mctx.font="11px monospace"; mctx.fillText(translate("M to close"),24,48);
-	// range rings around the player (every 20 km)
+	// range rings around the player, every 10 NM
 	const px=X(ownship.pos.x), py=Y(ownship.pos.z);
 	mctx.strokeStyle="rgba(95,200,150,0.18)"; mctx.lineWidth=1; mctx.textAlign="left";
-	for(let km=20;km<=120;km+=20){ const rr=km*1000*s; mctx.beginPath(); mctx.arc(px,py,rr,0,Math.PI*2); mctx.stroke();
-		mctx.fillStyle="rgba(127,207,166,0.4)"; mctx.font="9px monospace"; mctx.fillText(km+"km",px+4,py-rr+12); }
+	for(let nm=10;nm<=160 && nm*NM*s<Math.hypot(W,H)*0.75;nm+=10){ const rr=nm*NM*s; mctx.beginPath(); mctx.arc(px,py,rr,0,Math.PI*2); mctx.stroke();
+		mctx.fillStyle="rgba(127,207,166,0.4)"; mctx.font="9px monospace"; mctx.fillText(nm+"NM",px+4,py-rr+12); }
 	// islands — the real Midway coastline polygons (Sand / Eastern / Spit)
 	mctx.fillStyle="#c3b892"; mctx.strokeStyle="#e8e0c0"; mctx.lineWidth=1.2;
 	for(const polygon of island_polygons){ mctx.beginPath();
@@ -1515,16 +1518,17 @@ function draw_map(){ const W=innerWidth,H=innerHeight; mctx.clearRect(0,0,W,H);
 	mctx.fillStyle="#ffffff"; mctx.beginPath();
 	mctx.moveTo(px+ux*12,py+uz*12); mctx.lineTo(px-ux*8+rxv*7,py-uz*8+rzv*7); mctx.lineTo(px-ux*8-rxv*7,py-uz*8-rzv*7); mctx.closePath(); mctx.fill();
 	mctx.fillStyle="#ffffff"; mctx.font="10px monospace"; mctx.fillText(translate("YOU"),px,py+24);
-	// compass N
-	mctx.fillStyle=GR; mctx.font="13px monospace"; mctx.textAlign="center"; mctx.fillText("N",W-40,40); mctx.fillText("\u2191",W-40,26);
 }
 addEventListener("resize",()=>{ if(map_on) map_resize(); },{ signal });
+map_el.addEventListener("wheel",e=>{ e.preventDefault(); map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,Math.sign(e.deltaY)),MAP_RANGE_MIN,MAP_RANGE_MAX); },{ signal, passive:false });   // wheel down = zoom out (map only — chase zoom deliberately stays on −/=)
 
 let last_range=0;
 function dir_at(headFwd, rightH, yawRad, pitchRad){ const d=headFwd.clone().applyAxisAngle(world_up,yawRad); d.applyAxisAngle(rightH,pitchRad); return d; }
 function hud_message(text){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="20px monospace"; hctx.fillText(text, HW/2, HH/2+180); }   // shared centre banner for important messages (RUN UP ENGINE / PRESS SPACE TO LAUNCH / N WIRE)
 function draw_hud(dt){
 	hctx.clearRect(0,0,HW,HH);
+	GR=cfg.tod==="day"?"#23e57d":"#15b85f";   // daytime brightness up — the muted night green washes out against a sunlit sea/sky
+	hctx.shadowColor="rgba(0,0,0,0.85)"; hctx.shadowBlur=3; hctx.shadowOffsetX=0; hctx.shadowOffsetY=0;   // dark halo behind every HUD glyph/line so it stays readable over any background
 	const cx=HW/2, cy=HH/2;
 	if(crash_t>0){ hctx.textAlign="center"; hctx.fillStyle="#ff5040"; hctx.font="bold 36px monospace"; hctx.fillText(translate("CRASHED"),cx,cy-60); return; }
 	if(crash_t<=0 && ownship.pass_t>0){ ownship.pass_t-=dt;   // LSO debrief: grade + wire (or BOLTER), held for a few seconds after the pass
@@ -1747,7 +1751,12 @@ function frame(){ const dt=Math.min(clock.getDelta(),0.05);
 	stage.style.cursor=(running && !game_paused)?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused
 	help_el.style.display=(running && pause_toggle && !map_on)?"":"none";   // pause window: controls list appears while paused via P
 	if(running){ draw_hud(dt); if(game_paused && !map_on) draw_pause_banner(); } else hctx.clearRect(0,0,HW,HH);
-	if(map_on) draw_map();
+	if(map_on){ const zf=Math.pow(2.2,dt), pr=map_range*dt*0.9;   // held − zooms out, = zooms in (smooth; wheel does notches); arrows pan, scaled to the zoom
+		if(keys.has("Minus")) map_range=Math.min(MAP_RANGE_MAX,map_range*zf);
+		if(keys.has("Equal")) map_range=Math.max(MAP_RANGE_MIN,map_range/zf);
+		if(keys.has("ArrowLeft")) map_px-=pr; if(keys.has("ArrowRight")) map_px+=pr;
+		if(keys.has("ArrowUp")) map_pz-=pr; if(keys.has("ArrowDown")) map_pz+=pr;
+		draw_map(); }
 	refresh_perf(dt); dynamic_res(dt);
 	__raf = requestAnimationFrame(frame); }
 function draw_loading(){ hctx.clearRect(0,0,HW,HH); hctx.fillStyle="#000"; hctx.fillRect(0,0,HW,HH);   // opaque: covers the half-built 3D scene beneath
