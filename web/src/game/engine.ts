@@ -45,7 +45,7 @@ const cfg = { render_scale:1.0, dyn_res:false, ocean_segments:256, exterior_deta
 	tracers:true, missiles:true, flares:true, shadows:false, clouds:"none", afterburner:true,
 	view:"hud", invert:false, framerate:false, sens:1.0,
 	task:"joust", start:"carrier", tod:"day", help:false,
-	cat_dy:2.43,                                        // aircraft rest height above the deck plane (shared by all cats)
+	cat_dy:2.46,                                        // aircraft rest height above the deck plane (shared by all cats; = measured wheel-bottom drop, keep equal to GEAR)
 	cats:[ {x:48.06, z:18.62, h:5.18},                  // 1: starboard bow — x toward bow, z + starboard, heading deg (0=+X); all four aligned with the deck tool (key 0)
 	       {x:48.43, z:-0.58, h:1.60},                  // 2: port bow (the carrier-start spawn)
 	       {x:-36.06, z:-15.32, h:4.54},                // 3: starboard waist, down the angled deck
@@ -559,7 +559,7 @@ function deck_texture(){ const c=document.createElement("canvas"); c.width=1024;
 	x.moveTo(700,120); x.lineTo(1010,96); x.moveTo(700,176); x.lineTo(1010,176); x.stroke();
 	// JBD / foul lines
 	x.strokeStyle="#d9b430"; x.lineWidth=5; x.beginPath(); x.moveTo(660,60); x.lineTo(1010,46); x.moveTo(640,300); x.lineTo(420,210); x.stroke();
-	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=4; return t; }
+	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=renderer.capabilities.getMaxAnisotropy(); return t; }
 function build_carrier(){
 	const g=new THREE.Group();
 	const hullMat=new THREE.MeshStandardMaterial({color:0x474c52,metalness:0.45,roughness:0.72,flatShading:true});
@@ -671,7 +671,7 @@ function asphalt_texture(){ const c=document.createElement("canvas"); c.width=c.
 	for(let i=0;i<70;i++){ const r=18+Math.random()*46, gx=Math.random()*256, gy=Math.random()*256, s=Math.random()<0.5?0:235, a=0.03+Math.random()*0.05;   // low-freq weathering patches
 		const g=x.createRadialGradient(gx,gy,0,gx,gy,r); g.addColorStop(0,`rgba(${s},${s},${s},${a})`); g.addColorStop(1,`rgba(${s},${s},${s},0)`); x.fillStyle=g; x.fillRect(gx-r,gy-r,2*r,2*r); }
 	const im=x.getImageData(0,0,256,256),d=im.data; for(let i=0;i<d.length;i+=4){ const n=(Math.random()-0.5)*20; d[i]+=n; d[i+1]+=n; d[i+2]+=n; } x.putImageData(im,0,0);   // fine speckle
-	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=4; return t; }
+	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=renderer.capabilities.getMaxAnisotropy(); return t; }
 function ribbon(points, width, y){   // asphalt strip of `width` (m) along a world-space polyline at height y
 	const hw=width/2, pos=[], uvs=[];
 	const off=points.map((p,i)=>{ const a=points[Math.max(0,i-1)], b=points[Math.min(points.length-1,i+1)];
@@ -721,12 +721,12 @@ function wall_texture(){ const c=document.createElement("canvas"); c.width=c.hei
 	x.fillStyle="#b7b1a1"; x.fillRect(15,13,34,34); x.fillStyle="#3f464d"; x.fillRect(18,16,28,28);   // one window (frame + glass) per tile
 	x.fillStyle="#565d64"; x.fillRect(31,16,2,28); x.fillRect(18,29,28,2);                         // mullions
 	const im=x.getImageData(0,0,64,64),d=im.data; for(let i=0;i<d.length;i+=4){ const n=(Math.random()-0.5)*12; d[i]+=n; d[i+1]+=n; d[i+2]+=n; } x.putImageData(im,0,0);
-	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=4; return t; }
+	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=renderer.capabilities.getMaxAnisotropy(); return t; }
 function roof_texture(dark){ const c=document.createElement("canvas"); c.width=c.height=32; const x=c.getContext("2d");
 	x.fillStyle=dark?"#4a4f56":"#a8adb3"; x.fillRect(0,0,32,32);
 	x.strokeStyle=dark?"#3b3f45":"#8d9299"; x.lineWidth=1; for(let i=1;i<32;i+=4){ x.beginPath(); x.moveTo(i,0); x.lineTo(i,32); x.stroke(); }   // corrugation ribs
 	const im=x.getImageData(0,0,32,32),d=im.data; for(let i=0;i<d.length;i+=4){ const n=(Math.random()-0.5)*10; d[i]+=n; d[i+1]+=n; d[i+2]+=n; } x.putImageData(im,0,0);
-	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=4; return t; }
+	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=renderer.capabilities.getMaxAnisotropy(); return t; }
 function facenorm(a,b,c){ const ux=b[0]-a[0],uy=b[1]-a[1],uz=b[2]-a[2], vx=c[0]-a[0],vy=c[1]-a[1],vz=c[2]-a[2];
 	const nx=uy*vz-uz*vy, ny=uz*vx-ux*vz, nz=ux*vy-uy*vx, l=Math.hypot(nx,ny,nz)||1; return [nx/l,ny/l,nz/l]; }
 function pushtri(pos,nor,uv, a,b,c, ta,tb,tc, want){   // emit a triangle, flipping winding so its face normal points toward `want`
@@ -807,7 +807,7 @@ function runway_texture(nTop,nBottom){ const c=document.createElement("canvas");
 	x.fillStyle="#f2f2f2"; x.font="bold 52px sans-serif"; x.textAlign="center"; x.textBaseline="middle";
 	x.save(); x.translate(64,92);  x.rotate(Math.PI); x.fillText(String(nTop),0,0); x.restore();      // +y end (US: single-digit runways painted without a leading zero, e.g. "6" not "06")
 	x.save(); x.translate(64,932);                    x.fillText(String(nBottom),0,0); x.restore();   // -y end
-	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=4; return t; }
+	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=renderer.capabilities.getMaxAnisotropy(); return t; }
 function glow_points(pts, color, size){   // additive glowing point-lights (runway edge / threshold / REIL)
 	const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(new Float32Array(pts),3));
 	const p=new THREE.Points(g,new THREE.PointsMaterial({size,map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true})); p.frustumCulled=false; scene.add(p); return p;
@@ -1118,7 +1118,7 @@ function explosion_at(x,y,z){ for(let i=0;i<64;i++){ const k=pool_spawn(smoke); 
 function crash_ownship(){ if(crash_t>0) return; crash_t=3.0; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z); ownship.group.visible=false; ownship.speed=0; }
 function over_runway(p){ const r=obstacles.runway; if(!r) return false; const dx=p.x-r.x, dz=p.z-r.z;
 	return Math.abs(dx*r.fx+dz*r.fz)<r.hl && Math.abs(dx*r.fz-dz*r.fx)<r.hw; }
-const GEAR=2.43;   // the aircraft origin rests this far above whatever surface is beneath it — measured with the deck-align tool (keep equal to cfg.cat_dy, the tuned wheels-on-deck height; lower buries the wheels)
+const GEAR=2.46;   // the aircraft origin rests this far above whatever surface is beneath it — the model's wheel bottoms measure 2.457 m below the (bbox-centred) origin in the gear-down pose; keep equal to cfg.cat_dy. Lower buries the wheels
 const HOOK_DECK_CAP=0.88;   // max hook-deploy progress while resting on a surface — stops the claw at deck level instead of rotating through it
 const CARRIER_YD=(CARRIER_MODEL.yaw-90)*D2R, CARRIER_C=Math.cos(CARRIER_YD), CARRIER_S=Math.sin(CARRIER_YD);   // same yaw-delta frame as place_on_cat
 function carrier_fore_aft(x,z){ return (x-CARRIER.x)*CARRIER_C-(z-CARRIER.z)*CARRIER_S; }   // carrier-local fore/aft: + toward the bow (catapult ≈ +48), the arrestor wires are aft (≈ −50)
@@ -1446,17 +1446,25 @@ function update_camera(dt){
 	}
 	if(firstPerson){ const eye=body_offset(ownship,3.0,0.6,0); camera.position.copy(eye); camera.up.copy(ownship.up);
 		camera.lookAt(eye.clone().addScaledVector(ownship.fwd,200)); }
-	else if(cfg.view==="padlock"){ const eye=body_offset(ownship,-12,4,0); camera.position.copy(eye); camera.up.set(0,1,0);
+	else if(cfg.view==="padlock"){ const eye=camera_floor(body_offset(ownship,-12,4,0)); camera.position.copy(eye); camera.up.set(0,1,0);
 		camera.lookAt(has_enemy?bandit.pos:eye.clone().addScaledVector(ownship.fwd,200)); }   // lock on the bandit; look ahead when solo
 	else if(cfg.view==="chase"){   // earth-referenced orbit: world-up + smoothed heading-follow, ignores roll/pitch (keys.md §5)
 		const psi=Math.atan2(ownship.fwd.x,ownship.fwd.z);
 		let dpsi=psi-cam_psi; if(dpsi>Math.PI)dpsi-=2*Math.PI; if(dpsi<-Math.PI)dpsi+=2*Math.PI;
 		cam_psi+=dpsi*Math.min(1,dt*4); if(cam_psi>Math.PI)cam_psi-=2*Math.PI; if(cam_psi<-Math.PI)cam_psi+=2*Math.PI;   // the smoothing lives in the ANGLE, not the position
-		const ang=cam_psi+cam_az, ce=Math.cos(cam_el), se=Math.sin(cam_el);
-		const tgt=ownship.pos.clone(); tgt.y+=1.2;
-		const off=new THREE.Vector3(-Math.sin(ang)*ce,se,-Math.cos(ang)*ce).multiplyScalar(cam_dist);
-		camera.position.copy(tgt).add(off); camera.up.set(0,1,0); camera.lookAt(tgt); }   // rigid offset — a world-space position lerp against a 70-300 m/s target lags v/6 m and drags the camera behind the tail, defeating the orbit
+		const ang=cam_psi+cam_az, tgt=ownship.pos.clone(); tgt.y+=1.2;
+		let ce=Math.cos(cam_el), se=Math.sin(cam_el);
+		const p=new THREE.Vector3(tgt.x-Math.sin(ang)*ce*cam_dist, tgt.y+se*cam_dist, tgt.z-Math.cos(ang)*ce*cam_dist);
+		const g=ground_height(p.x,p.z), floor=(g>-1e8?g:0.4)+1.5;   // deck / runway / island under the camera, or the sea surface; margin > the near plane's ~1.24 m reach below the camera (near 3.0, 45° fov), else the near plane slices the ground open
+		if(p.y<floor){   // clamp the ELEVATION at the floor (not just y) — otherwise holding down keeps shrinking cos(el), sliding the camera in toward the aircraft
+			cam_el=Math.asin(THREE.MathUtils.clamp((floor-tgt.y)/cam_dist,-1,1)); ce=Math.cos(cam_el); se=Math.sin(cam_el);
+			p.set(tgt.x-Math.sin(ang)*ce*cam_dist, tgt.y+se*cam_dist, tgt.z-Math.cos(ang)*ce*cam_dist); }
+		camera.position.copy(p); camera.up.set(0,1,0); camera.lookAt(tgt); }   // rigid offset — a world-space position lerp against a 70-300 m/s target lags v/6 m and drags the camera behind the tail, defeating the orbit
 	else if(cfg.view==="flypast"){ update_flypast(dt); }
+}
+function camera_floor(p){   // keep an external camera above whatever's beneath it: carrier deck / runway / island, or the sea surface
+	const g=ground_height(p.x,p.z), f=(g>-1e8?g:0.4)+1.5;   // margin > the near plane's reach below the camera (see the chase clamp)
+	if(p.y<f) p.y=f; return p;
 }
 
 function update_flypast(dt){   // fixed-ground flyby: the jet flies past a stationary camera; re-seed ahead once it recedes
