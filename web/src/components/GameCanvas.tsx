@@ -27,6 +27,7 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   PAUSED: msg`PAUSED`,
   CRASHED: msg`CRASHED`,
   'PRESS SPACE TO LAUNCH': msg`PRESS SPACE TO LAUNCH`,
+  'RUN UP ENGINE': msg`RUN UP ENGINE`,
   'DECK POSITION SAVED': msg`DECK POSITION SAVED`,
   'TACTICAL MAP': msg`TACTICAL MAP`,
   'M to close': msg`M to close`,
