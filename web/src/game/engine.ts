@@ -77,6 +77,7 @@ const TEST_SCENARIOS=true;           // dev-only landing/trap test autopilot (Sh
 let cat_idx=1;                       // selected catapult (0-based; default = #2 port bow, the carrier-start spawn); Shift+1-4 select in align mode (key 0)
 let pause_toggle=false, game_paused=false;
 let loading=false, loading_t0=0;   // flight-start LOADING screen: the sim + render hold until assets_ready() (20 s cap so a failed load can't hang the game)
+let joust_side=1;   // which end of the merge the player drew this round (+1 = start west heading east); coin-flipped per joust start
 const sun_dir = new THREE.Vector3(0.45,0.42,-0.32).normalize();
 const CARRIER={ x:-18500, z:7500, deckY:19 };   // ~20 km WSW of Midway (leeward deep water); heading +X, bow at +x
 const sky_horizon=new THREE.Color(0xbfd8e8), sky_zenith=new THREE.Color(0x2a5a8c), fog_colour=new THREE.Color(0xc4d6e2);
@@ -113,8 +114,8 @@ stars.frustumCulled=false; scene.add(stars);
 
 // time-of-day presets + apply
 const TOD={
-	day:  { sun:[0.45,0.42,-0.32], sunCol:0xfff4e0, sunI:2.4,  disc:0xfff3da, hor:0xbfd8e8, zen:0x2a5a8c, fog:0xc4d6e2, deep:0x0a2a3a, shal:0x1d6e86, hs:0xbcd6ec, hg:0x35506a, hi:0.9,  ac:0x405060, ai:0.4,  exp:1.05, stars:0.0,  water:[1.0,1.0,1.0] },
-	night:{ sun:[0.30,0.55,-0.40], sunCol:0x9fb6e0, sunI:0.32, disc:0xcdd8f0, hor:0x0f1626, zen:0x05080f, fog:0x0a111c, deep:0x030810, shal:0x0a2030, hs:0x1a2742, hg:0x05060a, hi:0.32, ac:0x0a0e18, ai:0.22, exp:1.18, stars:0.95, water:[0.30,0.36,0.50] },
+	day:  { sun:[0,0.866,0.5], sunCol:0xfff4e0, sunI:2.4,  disc:0xfff3da, hor:0xbfd8e8, zen:0x2a5a8c, fog:0xc4d6e2, deep:0x0a2a3a, shal:0x1d6e86, hs:0xbcd6ec, hg:0x35506a, hi:0.9,  ac:0x405060, ai:0.4,  exp:1.05, stars:0.0,  water:[1.0,1.0,1.0] },   // sun due south at 60° — high and exactly abeam an east-west joust merge, so neither pilot starts up-sun (fair by mirror symmetry; realistic for 28°N)
+	night:{ sun:[0,0.866,0.5], sunCol:0x9fb6e0, sunI:0.32, disc:0xcdd8f0, hor:0x0f1626, zen:0x05080f, fog:0x0a111c, deep:0x030810, shal:0x0a2030, hs:0x1a2742, hg:0x05060a, hi:0.32, ac:0x0a0e18, ai:0.22, exp:1.18, stars:0.95, water:[0.30,0.36,0.50] },   // the moon takes the same slot at night — same fairness geometry, and no low glitter path on the sea
 };
 function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	sun_dir.set(p.sun[0],p.sun[1],p.sun[2]).normalize(); sun.position.copy(sun_dir).multiplyScalar(4000); sun.target.position.set(0,0,0);
@@ -429,7 +430,7 @@ async function init_carrier_model(){
 			const yd=(CARRIER_MODEL.yaw-90)*D2R, dc=Math.cos(yd), ds=Math.sin(yd);                        // rotate the sample spot with the carrier heading
 			CARRIER.deckY=deck_y_at(grp, CARRIER.x+(70*dc-6*ds), CARRIER.z+(-70*ds-6*dc), st.deckY-waterline);   // deck height near the catapult spot (carrier-relative)
 			build_carrier_deck_aids();   // wires + OLS, now that the deck height is known
-			if(cfg.start==="carrier" && !ownship.launching && ownship.speed<5){ place_on_cat(); }   // re-spot on the cat at the now-known deck height, unless already taxiing / launched
+			if(mission_start()==="carrier" && !ownship.launching && ownship.speed<5){ place_on_cat(); }   // re-spot on the cat at the now-known deck height, unless already taxiing / launched
 		}catch(e){ throw new Error("carrier model: failed to process "+tag+": "+(e&&e.message||e)); } },
 		err=>{ throw new Error("carrier model: parse failed for "+tag+" ("+((err&&err.message)||"bad glTF")+")"); });
 	}catch(e){ throw new Error("carrier model: not loaded "+tag+" ("+((e&&e.message)||e)+")"); }
@@ -642,7 +643,7 @@ async function generate_world(){
 		for(const code of map.airfields||[]){ const af=await (await fetch(base+code+".json")).json(); build_airfield(af); build_buildings(af); }
 		// The runway loads async, after the initial reset_ownship — a runway start would otherwise fall
 		// through to an air start; re-place on the runway now that it exists.
-		if(cfg.start==="runway" && running && airports.length) reset_ownship();
+		if(mission_start()==="runway" && running && airports.length) reset_ownship();
 	}catch(error){ console.error("midway map load failed",error); }
 }
 const ISLAND_H=3.5;   // island top; the airfield surfaces + runway sit ~1.5 m above it (floating read fine for runway/taxiways; coplanar z-fought worse). Runway height tuned to the y=8 aircraft floor.
@@ -1044,7 +1045,8 @@ let cam_az=0, cam_el=0.22, cam_dist=24, cam_psi=0;   // chase view: orbit around
 let flyby_pos=null, flyby_side=1;          // flypast view: fixed world point the jet flies past, re-seeded ahead as it recedes
 let cat_saved_t=0;                              // "deck position saved" flash timer
 // True while the aircraft is sitting/rolling on the deck or runway (not yet airborne) — gear can't retract then.
-function takeoff_surface(){ if(cfg.start==="carrier") return CARRIER.deckY; if(cfg.start==="runway"&&airports.length) return airports[0].start.y; return 8; }
+function mission_start(){ return cfg.task==="joust"?"joust":cfg.start; }   // joust always starts at the merge; the Start selector applies to free flight only
+function takeoff_surface(){ const st=mission_start(); if(st==="carrier") return CARRIER.deckY; if(st==="runway"&&airports.length) return airports[0].start.y; return 8; }
 function on_ground(){ return deck_edit||ownship.launching||ownship.pos.y<takeoff_surface()+12; }
 addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown","/"].includes(e.key)) e.preventDefault();
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
@@ -1352,6 +1354,10 @@ function fly_player(dt){
 function fly_bandit(dt){
 	bandit.break_t-=dt;
 	const to_own=ownship.pos.clone().sub(bandit.pos); const rng=to_own.length();
+	if(bandit.merging){   // joust run-in: pure pursuit straight at the player — no weaving — until the pass, then the fight is on
+		if(rng<500 || to_own.dot(bandit.fwd)<0){ bandit.merging=false; }
+		else { steer(bandit,to_own.clone(),dt,0.3,1.0); apply_orientation(bandit); fire_gun(bandit,ownship,"bandit",dt); return; }
+	}
 	const threatened = rng<1800 && ownship.fwd.dot(to_own.clone().multiplyScalar(-1).normalize())>0.5; // ownship pointing at bandit from behind-ish
 	if(bandit.break_t<=0){ const a=Math.random()*Math.PI*2; bandit.break_dir.set(Math.cos(a),0,Math.sin(a)); bandit.break_t=threatened?(2+Math.random()*2):(5+Math.random()*5);
 		if(threatened && cfg.flares) dispense_flares(bandit); }
@@ -1405,12 +1411,13 @@ function reset_ownship(){
 	ownship.rounds=578; ownship.msl=4; ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.launch_dist=0; ownship.trapped=false; ownship.wire=0; ownship.lights=(cfg.tod!=="day");   // lights default on at night, off by day
 	ownship.grounded=false; ownship.touch=null; ownship.pass={gs:0,az:0,n:0}; ownship.pass_t=0; ownship.grade=""; ownship.waved=false;   // landing / LSO pass state
 	test_active=null;   // a test scenario must not keep driving across a crash respawn (it would fly the fresh spawn straight into the deck, forever)
-	if(cfg.start==="carrier"){ ownship.speed=0; ownship.throttle=1; place_on_cat(); }   // spotted on the cat at launch power (holdback holds it) — Enter fires the shot; throttle back to taxi off instead
-	else if(cfg.start==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
+	const st=mission_start();
+	if(st==="carrier"){ ownship.speed=0; ownship.throttle=1; place_on_cat(); }   // spotted on the cat at launch power (holdback holds it) — Enter fires the shot; throttle back to taxi off instead
+	else if(st==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
 		ownship.pos.set(ap.start.x,ap.start.y,ap.start.z); ownship.fwd.copy(ap.dir).normalize(); ownship.speed=0; ownship.throttle=0;
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
-	else if(cfg.start==="landing"){   // carrier landing: on the ICLS ~5 NM astern, a touch low and left, configured to trap
+	else if(st==="landing"){   // carrier landing: on the ICLS ~5 NM astern, a touch low and left, configured to trap
 		const A=carrier_world(STRIP_A.fa,STRIP_A.lat), B=carrier_world(STRIP_B.fa,STRIP_B.lat);   // landing centreline, A (aft) → B (forward, toward the rollout)
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;           // unit landing direction (the way the aircraft rolls out)
 		const td=carrier_world(-86.8,strip_lat(-86.8)), dist=3*1852, gs=3.5*D2R;                    // touchdown ≈ the 2-wire; 3 NM back on the 3.5° glideslope
@@ -1419,17 +1426,24 @@ function reset_ownship(){
 		const yaw=5*D2R, cy=Math.cos(yaw), sy=Math.sin(yaw); ownship.fwd.set(ldx*cy-ldz*sy,0,ldz*cy+ldx*sy).normalize();   // level flight, heading ~5° to starboard of the centreline — pilot rolls out onto the ICLS and pushes over onto the glideslope from below
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
-	else {   // air start: ~15 km ENE of the runway at 5000 ft, heading at the carrier
+	else if(st==="joust"){   // 1v1 merge: head-on east-west directly over the atoll at 15,000 ft, 1 NM either side, equal AIRSPEED — symmetric in every respect (island below both at all fight orientations, sun/moon abeam both noses); the side is a coin flip so the sun-left/sun-right mirror can't systematically favour one player
+		joust_side=Math.random()<0.5?1:-1;
+		ownship.pos.set(-joust_side*1.5*NM, 4572, 0); ownship.fwd.set(joust_side,0,0); ownship.speed=220; ownship.throttle=0.85;   // 15,000 ft = 4572 m; 1.5 NM either side = 3 NM head-on
+		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
+		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
+	else {   // air start (free flight): ~15 km ENE of the runway at 5000 ft, heading at the carrier
 		const rwy=airports.length?airports[0]:{x:-1125,z:2898};   // Sand Island runway (fallback = its known centroid, since the map loads async)
 		const b=68*D2R;   // ENE
 		ownship.pos.set(rwy.x+Math.sin(b)*15000, 1524, rwy.z-Math.cos(b)*15000);   // 5000 ft = 1524 m
 		ownship.fwd.set(CARRIER.x-ownship.pos.x,0,CARRIER.z-ownship.pos.z).normalize(); ownship.speed=220; ownship.throttle=0.85;
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
-	{ const down=(cfg.start==="carrier"||cfg.start==="runway"||cfg.start==="landing"); ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway/landing, up for an air start
-	{ const hk=(cfg.start==="landing")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }   // hook down for a carrier-landing start, else stowed (deploy manually with H)
+	{ const down=(st==="carrier"||st==="runway"||st==="landing"); ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway/landing, up for an air start
+	{ const hk=(st==="landing")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }   // hook down for a carrier-landing start, else stowed (deploy manually with H)
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
-	bandit.pos.set(3000,2400,-1000); bandit.fwd.set(-0.3,0,1).normalize(); bandit.break_t=0; bandit.speed=195;
+	if(st==="joust"){ bandit.pos.set(joust_side*1.5*NM,4572,0); bandit.fwd.set(-joust_side,0,0); bandit.speed=220; bandit.merging=true; }   // merging: the bandit flies straight at the player until the pass, so the merge can be timed   // the other end of the merge, same airspeed (equal TAS is the fair condition once wind exists)
+	else { bandit.pos.set(3000,2400,-1000); bandit.fwd.set(-0.3,0,1).normalize(); bandit.speed=195; bandit.merging=false; }   // ground/deck starts: the bandit orbits near Midway as before
+	bandit.break_t=0;
 }
 
 // ============================================================================ camera

@@ -335,19 +335,24 @@ export function MissionSetup({
                     { value: 'joust', label: <Trans>Joust</Trans> },
                   ]}
                 />
-                <SectionLabel>
-                  <Trans>Start</Trans>
-                </SectionLabel>
-                <Choice
-                  value={config.start}
-                  onChange={(v) => set('start', v)}
-                  options={[
-                    { value: 'air', label: <Trans>In air</Trans> },
-                    { value: 'runway', label: <Trans>On runway</Trans> },
-                    { value: 'carrier', label: <Trans>On carrier</Trans> },
-                    { value: 'landing', label: <Trans>Carrier landing</Trans> },
-                  ]}
-                />
+                {config.task === 'free' && (
+                  <>
+                    {/* joust always starts at the symmetric merge, so the start choice applies to free flight only */}
+                    <SectionLabel>
+                      <Trans>Start</Trans>
+                    </SectionLabel>
+                    <Choice
+                      value={config.start}
+                      onChange={(v) => set('start', v)}
+                      options={[
+                        { value: 'air', label: <Trans>In air</Trans> },
+                        { value: 'runway', label: <Trans>On runway</Trans> },
+                        { value: 'carrier', label: <Trans>On carrier</Trans> },
+                        { value: 'landing', label: <Trans>Carrier landing</Trans> },
+                      ]}
+                    />
+                  </>
+                )}
               </TabsContent>
 
               <TabsContent value='weather'>
