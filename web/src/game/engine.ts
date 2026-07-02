@@ -1109,15 +1109,17 @@ function strip_lat(fa){ return STRIP_A.lat+(fa-STRIP_A.fa)*STRIP_SLOPE; }   // l
 const _slen=Math.hypot(STRIP_B.fa-STRIP_A.fa,STRIP_B.lat-STRIP_A.lat), STRIP_UFA=(STRIP_B.fa-STRIP_A.fa)/_slen, STRIP_ULAT=(STRIP_B.lat-STRIP_A.lat)/_slen;   // unit vector along the landing line (toward +fa = the rollout)
 const WIRES=[-96.6,-86.8,-71.6];   // arrestor wires 1..3 (aft→forward, increasing fore-aft; touchdown ≈ 1-wire, roll toward +fa); the 2-wire (−86.8) is the target
 const WIRE_HALFSPAN=14;            // each wire stretches this far each side of the landing centreline (drawn span == trap span)
+let ground_kind="";   // surface kind under the last ground_height() hit: deck / runway / apron / ground / "" (sea) — read right after the call
 function ground_height(x,z){   // top of the solid surface under (x,z): carrier deck / runway / apron / island; -inf = open sea (no landing)
+	ground_kind="";
 	if(Math.abs(x-CARRIER.x)<160 && Math.abs(z-CARRIER.z)<160){
-		if(!carrier_model) return CARRIER.deckY;   // GLB still loading — treat the deck box as solid at the known height so a carrier start doesn't fall through to the flight model
+		if(!carrier_model){ ground_kind="deck"; return CARRIER.deckY; }   // GLB still loading — treat the deck box as solid at the known height so a carrier start doesn't fall through to the flight model
 		const h=deck_y_at(carrier_model,x,z,-1e9);
-		if(h>-1e8 && h<CARRIER.deckY+4) return h;   // the flat flight deck; taller hits are the island superstructure — a solid obstacle, see check_collisions
+		if(h>-1e8 && h<CARRIER.deckY+4){ ground_kind="deck"; return h; }   // the flat flight deck; taller hits are the island superstructure — a solid obstacle, see check_collisions
 	}
-	if(obstacles.runway && over_runway({x,z})) return ISLAND_H+1.5;
-	for(const a of obstacles.aprons){ if(pip(x,z,a)) return ISLAND_H+AIRFIELD_FLOAT; }
-	for(const is of obstacles.islands){ if(x>is.minx&&x<is.maxx&&z>is.minz&&z<is.maxz&&pip(x,z,is.pts)) return ISLAND_H; }
+	if(obstacles.runway && over_runway({x,z})){ ground_kind="runway"; return ISLAND_H+1.5; }
+	for(const a of obstacles.aprons){ if(pip(x,z,a)){ ground_kind="apron"; return ISLAND_H+AIRFIELD_FLOAT; } }
+	for(const is of obstacles.islands){ if(x>is.minx&&x<is.maxx&&z>is.minz&&z<is.maxz&&pip(x,z,is.pts)){ ground_kind="ground"; return ISLAND_H; } }
 	return -1e9;
 }
 function check_collisions(){   // ownship vs sea / buildings / structures / carrier / other aircraft (land landings handled by the ground floor in fly_player)
@@ -1143,6 +1145,37 @@ function conform_to_surface(dt){   // sit the airframe on its gear: wings level,
 	const nose=flat.clone().applyAxisAngle(right,pitch), up=new THREE.Vector3().crossVectors(right,nose).normalize();
 	ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(nose,up,right)); ownship.q.normalize();
 	ownship.fwd.copy(nose); ownship.up.copy(up); ownship.right.copy(right);
+}
+function touchdown(kind,g){   // first surface contact of a pass: gate on gear, sink rate, attitude, and speed — land, bounce, or crash. Returns true when it crashed.
+	const sink=Math.max(0,-ownship.vely);   // m/s down
+	const bank=Math.abs(Math.asin(THREE.MathUtils.clamp(ownship.right.y,-1,1)));
+	const pitch=Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1));
+	ownship.touch={ sink, bank, t:sim_time, deck:kind==="deck", fa:kind==="deck"?carrier_fore_aft(ownship.pos.x,ownship.pos.z):0 };
+	const die=()=>{ ownship.group.position.copy(ownship.pos); crash_ownship(); return true; };
+	if(kind==="deck" && ownship.touch.fa<-134) return die();          // ramp strike: caught the round-down at the stern
+	if((ownship.gear??0)>0.5){                                        // belly landing: survivable only when feather-soft and level
+		if(sink>2 || bank>0.09 || pitch>0.21 || pitch<-0.04) return die();
+	} else {
+		if(ownship.speed>105) return die();                           // touched down far above the tire limits (~200 kt)
+		if(bank>0.17) return die();                                   // wingtip strike (~10° of bank at touchdown)
+		if(pitch>0.26) return die();                                  // tail strike (~15° nose-up)
+		const firm=kind==="ground"?4:9;                               // structural sink limit is the aircraft's (naval gear, ~no-flare rated) — same deck or runway; soft ground digs in sooner
+		if(sink>firm*1.6) return die();
+		if(kind==="ground" && ownship.speed>55) return die();         // fast touchdown off-pavement digs the wheels in
+		if(sink>firm || (pitch<-0.04 && sink>1.5)){                   // slightly over the limit, or nosewheel-first: bounce back into the air (recoverable porpoise)
+			ownship.pos.y=g+GEAR+0.02; ownship.vel_dir.y=Math.abs(ownship.vel_dir.y)*0.45; ownship.vel_dir.normalize(); return false;
+		}
+	}
+	ownship.pos.y=g+GEAR; if(ownship.vel_dir.y<0){ ownship.vel_dir.y=0; ownship.vel_dir.normalize(); }   // down and rolling
+	return false;
+}
+function lso_grade(){   // LSO pass grade from the in-close deviations and the touchdown: OK / FAIR / NO-GRADE / CUT
+	const p=ownship.pass||{gs:0,az:0,n:0}, t=ownship.touch||{sink:0,bank:0,fa:0};
+	const gs=p.n?p.gs/p.n:9, az=p.n?p.az/p.n:9;   // no in-close data (e.g. a taxi engagement) can't grade OK
+	if(t.sink>7 || t.fa<-120 || t.bank>0.14 || ownship.waved) return "CUT";   // dangerously hard, ramp-close, a wing down at the deck, or trapped through a waveoff
+	if((ownship.wire===2||ownship.wire===3) && gs<0.35 && az<0.9 && t.sink<6) return "OK";
+	if(gs<0.7 && az<1.8) return "FAIR";
+	return "NO-GRADE";
 }
 function fly_player(dt){
 	if(crash_t>0){ crash_t-=dt; if(crash_t<=0){ crash_t=0; ownship.group.visible=true; reset_ownship(); } return; }   // hold through the fireball, then respawn
@@ -1173,37 +1206,54 @@ function fly_player(dt){
 	ownship.fwd.set(1,0,0).applyQuaternion(ownship.q); ownship.up.set(0,1,0).applyQuaternion(ownship.q); ownship.right.set(0,0,1).applyQuaternion(ownship.q);
 	const target=70+ownship.throttle*290-(ownship.speedbrake??0)*90; const pitch_ang=Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1));   // idle ~70 → full/AB ~360 m/s; speed brake bleeds up to ~90 m/s (rough; refined in the flight-model phase)
 	const groundNow=ground_height(ownship.pos.x,ownship.pos.z); const onDeck=groundNow>-1e8 && ownship.pos.y<=groundNow+GEAR+1.0;   // actually resting on a surface right now (deck/runway/grass), unlike the stale takeoff_surface() guess
+	const kindNow=ground_kind;   // surface kind under the groundNow call above
 	if(on_cat_spot()){ ownship.speed=Math.max(0,ownship.speed-60*dt); }   // catapult holdback: held while spotted + lined up, so running the engine up doesn't roll you off the bow — Space launches; yaw off the cat heading to taxi away
-	else if(ownship.trapped && (ownship.hook??0)>=0.5){ ownship.speed=Math.max(0,ownship.speed-50*dt); }   // caught in the arrestor wire — hauled to a stop; raise the hook (H) to release
+	else if(ownship.trapped && (ownship.hook??0)>=0.5){ ownship.speed=Math.max(0,ownship.speed-50*dt);   // caught in the arrestor wire — hauled to a stop; raise the hook (H) to release
+		const fa=carrier_fore_aft(ownship.pos.x,ownship.pos.z), dl=strip_lat(fa)-carrier_lateral(ownship.pos.x,ownship.pos.z), pk=Math.min(1,dt*1.2);   // the wire pulls the runout toward the landing centreline
+		ownship.pos.x+=CARRIER_S*dl*pk; ownship.pos.z+=CARRIER_C*dl*pk;
+		const wdx=STRIP_UFA*CARRIER_C+STRIP_ULAT*CARRIER_S, wdz=-STRIP_UFA*CARRIER_S+STRIP_ULAT*CARRIER_C;   // strip direction in world (same frame as carrier_world)
+		let dh=Math.atan2(wdz,wdx)-Math.atan2(ownship.fwd.z,ownship.fwd.x); if(dh>Math.PI)dh-=2*Math.PI; if(dh<-Math.PI)dh+=2*Math.PI;
+		_q.setFromAxisAngle(world_up,-THREE.MathUtils.clamp(dh,-1,1)*Math.min(1,dt*2)); ownship.q.premultiply(_q); ownship.q.normalize();   // ...and yaws the nose down the strip
+		ownship.fwd.set(1,0,0).applyQuaternion(ownship.q); ownship.up.set(0,1,0).applyQuaternion(ownship.q); ownship.right.set(0,0,1).applyQuaternion(ownship.q); }
 	else { ownship.trapped=false;
-		if(onDeck){ const gt=input.brake?0:ownship.throttle*300; ownship.speed+=(gt-ownship.speed)*Math.min(1,dt*(input.brake?1.4:0.5)); ownship.speed=Math.max(0,ownship.speed); }   // on the ground: throttle rolls you, brakes stop you, idle sits still — NO airborne stall floor (so you can taxi / sit on the deck)
+		if(onDeck){
+			if((ownship.gear??0)>0.5){ ownship.speed=Math.max(0,ownship.speed-(6+ownship.speed*0.08)*dt); }   // belly slide: no wheels — grinds to a stop, throttle can't taxi
+			else { const cap=kindNow==="ground"?28:300, gt=input.brake?0:Math.min(ownship.throttle*300,cap);   // soft field: wheels sink in — heavy rolling drag, walking-pace taxi only
+				let ns=ownship.speed+(gt-ownship.speed)*Math.min(1,dt*(input.brake?1.4:0.5)); if(kindNow==="ground") ns-=ns*0.35*dt;
+				ownship.speed=Math.max(0,ns); } }   // on pavement/deck: throttle rolls you, brakes stop you, idle sits still — NO airborne stall floor (so you can taxi / sit on the deck)
 		else { ownship.speed+=(target-ownship.speed)*Math.min(1,dt*0.5); ownship.speed-=9.81*Math.sin(pitch_ang)*dt*1.6; ownship.speed=THREE.MathUtils.clamp(ownship.speed,0,360); } }   // airborne (no stall floor yet — proper stalls come in the flight-model phase)
 	ownship.vel_dir.lerp(ownship.fwd,Math.min(1,dt*2.5)).normalize();
 	ownship.velx=ownship.vel_dir.x*ownship.speed; ownship.vely=ownship.vel_dir.y*ownship.speed; ownship.velz=ownship.vel_dir.z*ownship.speed;
 	ownship.aoa=THREE.MathUtils.radToDeg(ownship.fwd.angleTo(ownship.vel_dir));
 	ownship.gload=1+Math.abs(input.pitch)*(ownship.speed/90);
 	ownship.pos.addScaledVector(ownship.vel_dir,ownship.speed*dt); wrap_position(ownship.pos);   // toroidal world (map.json wrap)
-	// ground floor over land (runway / apron / grass): a soft, roughly level touchdown lands; a hard or steep or
-	// badly-banked one crashes. Over open sea there's no floor — check_collisions handles the water impact.
-	const g=ground_height(ownship.pos.x,ownship.pos.z);
+	// ground floor: on the first surface contact of a pass the landing gates run once (touchdown() — land, bounce, or
+	// crash); after that the aircraft is glued and rolls. Over open sea there's no floor — check_collisions handles the water impact.
+	const g=ground_height(ownship.pos.x,ownship.pos.z), gkind=ground_kind;
 	if(g>-1e8){
 		if(ownship.pos.y<g-4){ ownship.group.position.copy(ownship.pos); return crash_ownship(); }   // well below the surface = flew into the side of it (e.g. the carrier hull below the flight deck)
 		else if(ownship.pos.y<g+GEAR){
-			if(ownship.vely<-13 || ownship.up.y<0.85){ ownship.group.position.copy(ownship.pos); return crash_ownship(); }   // too much sink rate, or wings not roughly level / inverted
-			ownship.pos.y=g+GEAR; if(ownship.vel_dir.y<0){ ownship.vel_dir.y=0; ownship.vel_dir.normalize(); }
+			if(!ownship.grounded){ if(touchdown(gkind,g)) return; }   // touchdown gates: crash / bounce / land
+			else { ownship.pos.y=g+GEAR; if(ownship.vel_dir.y<0){ ownship.vel_dir.y=0; ownship.vel_dir.normalize(); } }
 		}
-		else if(ownship.pos.y<g+GEAR+1.2 && ownship.fwd.y<0.06){ ownship.pos.y=g+GEAR; if(ownship.vel_dir.y>0){ ownship.vel_dir.y=0; ownship.vel_dir.normalize(); } }   // rolling level on a surface → stay glued; a shallow taxi climb angle mustn't drift us into "airborne" (nose up past ~3.5° releases it for takeoff)
+		else if(ownship.pos.y<g+GEAR+1.2 && ownship.fwd.y<0.06){   // shallow, nose-level float just above the surface
+			if(!ownship.grounded){ if(touchdown(gkind,g)) return; }   // a flat, floaty touchdown — lands softly, but on the deck this is the hook-skip case
+			else { ownship.pos.y=g+GEAR; if(ownship.vel_dir.y>0){ ownship.vel_dir.y=0; ownship.vel_dir.normalize(); } }   // rolling level → stay glued; a shallow taxi climb angle mustn't drift us into "airborne" (nose up past ~3.5° releases it for takeoff)
+		}
 	}
+	ownship.grounded = g>-1e8 && ownship.pos.y<=g+GEAR+0.01;   // resting on a surface (bounces leave the aircraft just above this)
 	// carrier arrestor: the tailhook point sweeps a path across the deck each frame; it catches a wire only when that swept path actually crosses the wire's own line segment — real geometry (fore-aft, cross-deck span, and swept so a fast rollout can't tunnel between frames). Speed-gated so a taxi over a wire doesn't catch.
 	const hook_on_deck = carrier_model && carrier_ols && (ownship.hook??0)>0.5 && g>-1e8 && ownship.pos.y<=g+GEAR+0.5 && Math.abs(ownship.pos.x-CARRIER.x)<160 && Math.abs(ownship.pos.z-CARRIER.z)<160;
 	if(hook_on_deck){
 		const hx=ownship.pos.x-ownship.fwd.x*6.5, hz=ownship.pos.z-ownship.fwd.z*6.5;   // the tailhook point (~6.5 m aft of the CG, matching the drawn V apex), on the deck plane
-		if(!ownship.trapped && ownship.speed>30 && ownship.hook_px!==undefined){
+		const skip=ownship.touch && ownship.touch.deck && (sim_time-ownship.touch.t)<2 && ownship.touch.sink<1.2;   // flat, floaty touchdown: the hook bounces and skips the wires — fly it on to catch; after ~2 s rolling it settles and can engage
+		if(!ownship.trapped && ownship.speed>30 && !skip && ownship.hook_px!==undefined){
 			for(let i=0;i<carrier_ols.wires.length;i++){ const w=carrier_ols.wires[i];
-				if(seg_cross(ownship.hook_px,ownship.hook_pz,hx,hz, w.ax,w.az,w.bx,w.bz)){ ownship.trapped=true; ownship.wire=i+1; break; } }   // hook path crossed this wire's segment
+				if(seg_cross(ownship.hook_px,ownship.hook_pz,hx,hz, w.ax,w.az,w.bx,w.bz)){ ownship.trapped=true; ownship.wire=i+1; ownship.grade=lso_grade(); ownship.pass_t=10; break; } }   // hook path crossed this wire's segment
 		}
 		ownship.hook_px=hx; ownship.hook_pz=hz;   // remember the hook point for next frame's swept segment
-	} else ownship.hook_px=undefined;   // airborne / hook up → break the trail so an over-flight (approach pass, bolter climb-out) isn't counted as a crossing
+	} else { if(ownship.hook_px!==undefined && !ownship.trapped && ownship.speed>30 && ownship.touch && ownship.touch.deck && (sim_time-ownship.touch.t)<8){ ownship.grade="BOLTER"; ownship.pass_t=6; }   // touched the deck with the hook but left the wires behind (long, skipped, or missed) — bolter
+		ownship.hook_px=undefined; }   // airborne / hook up → break the trail so an over-flight (approach pass, bolter climb-out) isn't counted as a crossing
 	if(g>-1e8 && ownship.pos.y<=g+GEAR+0.01) conform_to_surface(dt);   // resting on a surface → sit the airframe level on its gear (no nose-down / wing-dig)
 	if(on_cat_spot() && ownship.speed<3 && Math.abs(input.yaw)<0.15 && Math.abs(input.roll)<0.15) ease_onto_cat(dt);   // parked, spotted, not steering → glide onto the exact launch pose (releases the moment you roll or turn)
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
@@ -1248,11 +1298,22 @@ function step_world(dt){ sim_time+=dt;
 	tr_pts.visible=cfg.tracers; fl_pts.visible=cfg.flares;
 	update_anim(dt);
 	update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights();
+	if(carrier_ols && !ownship.trapped && (ownship.hook??0)>0.5){   // LSO watch: accumulate glideslope/lineup deviation through the in-close portion of a pass, and call the waveoff
+		const s=ols_dev(ownship.pos,carrier_ols);
+		ownship.waving=false;   // current waveoff call (drives the flashing banner); waved is sticky for the pass grade
+		if(s.along>2500 || s.along<0){ ownship.pass={gs:0,az:0,n:0}; ownship.waved=false; }   // outside the pass (or past the ship) → fresh slate for the next one
+		else if(!ownship.grounded && s.dist<1852 && s.along>40){
+			const p=ownship.pass||(ownship.pass={gs:0,az:0,n:0});
+			p.gs+=Math.abs(s.dev); p.az+=Math.abs(Math.atan2(s.lat,Math.max(s.along,1)))*180/Math.PI; p.n++;
+			if(s.dev<-0.7){ ownship.waved=true; ownship.waving=true; }   // dangerously low in close — the LSO waves it off (same threshold as the OLS waveoff lights)
+		}
+	} else ownship.waving=false;
 }
 
 function reset_ownship(){
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
 	ownship.rounds=578; ownship.msl=4; ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.launch_dist=0; ownship.trapped=false; ownship.wire=0; ownship.lights=(cfg.tod!=="day");   // lights default on at night, off by day
+	ownship.grounded=false; ownship.touch=null; ownship.pass={gs:0,az:0,n:0}; ownship.pass_t=0; ownship.grade=""; ownship.waved=false;   // landing / LSO pass state
 	if(cfg.start==="carrier"){ ownship.speed=0; ownship.throttle=0; place_on_cat(); }   // spotted on the cat at idle — free to run up + launch, or taxi off
 	else if(cfg.start==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
 		ownship.pos.set(ap.start.x,ap.start.y,ap.start.z); ownship.fwd.copy(ap.dir).normalize(); ownship.speed=0; ownship.throttle=0;
@@ -1372,7 +1433,9 @@ function draw_hud(dt){
 	hctx.clearRect(0,0,HW,HH);
 	const cx=HW/2, cy=HH/2;
 	if(crash_t>0){ hctx.textAlign="center"; hctx.fillStyle="#ff5040"; hctx.font="bold 36px monospace"; hctx.fillText(translate("CRASHED"),cx,cy-60); return; }
-	if(ownship.trapped && ownship.wire){ hud_message(translate(ownship.wire+" WIRE")); }   // which arrestor wire the hook caught (1 aft … 3 forward)
+	if(crash_t<=0 && ownship.pass_t>0){ ownship.pass_t-=dt;   // LSO debrief: grade + wire (or BOLTER), held for a few seconds after the pass
+		hud_message(ownship.grade==="BOLTER"?translate("BOLTER"):translate(ownship.grade)+", "+translate(ownship.wire+" WIRE")); }
+	else if(crash_t<=0 && ownship.waving && (performance.now()%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call while dangerously low in close (matches the OLS waveoff lights)
 	if(deck_edit && carrier_model){   // carrier-frame position + centreline — only in the dev deck-alignment mode (DECK_ALIGN / Shift+G)
 		hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="14px monospace";
 		hctx.fillText("deck  fa="+carrier_fore_aft(ownship.pos.x,ownship.pos.z).toFixed(1)+"  lat="+carrier_lateral(ownship.pos.x,ownship.pos.z).toFixed(1)+"  h="+(ownship.pos.y-CARRIER.deckY).toFixed(1), 14, 28);
