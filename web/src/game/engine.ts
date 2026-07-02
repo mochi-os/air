@@ -723,6 +723,18 @@ function wall_texture(){ const c=document.createElement("canvas"); c.width=c.hei
 	x.fillStyle="#565d64"; x.fillRect(31,16,2,28); x.fillRect(18,29,28,2);                         // mullions
 	const im=x.getImageData(0,0,64,64),d=im.data; for(let i=0;i<d.length;i+=4){ const n=(Math.random()-0.5)*12; d[i]+=n; d[i+1]+=n; d[i+2]+=n; } x.putImageData(im,0,0);
 	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=renderer.capabilities.getMaxAnisotropy(); return t; }
+function wall_emissive(full){   // night companion to wall_texture: the same window layout with a random subset of panes lit (or every pane, for the fully-lit buildings) — real lit windows rather than glow points
+	const c=document.createElement("canvas"); c.width=c.height=1024; const x=c.getContext("2d");   // 16x16 tiles: the pattern repeats only every ~58 m of wall
+	x.fillStyle="#000"; x.fillRect(0,0,1024,1024);
+	const bias=[]; for(let i=0;i<16;i++) bias.push(0.45+(Math.random()-0.5)*0.5);   // per-block occupancy varies, so some stretches are busy and others asleep — less uniform than a flat coin flip
+	for(let ty=0;ty<16;ty++) for(let tx=0;tx<16;tx++){ if(!full && Math.random()>=bias[(ty>>2)*4+(tx>>2)]) continue;
+		const warm=Math.random()<0.8, br=0.7+Math.random()*0.3;
+		x.fillStyle=warm?`rgb(${Math.round(255*br)},${Math.round(196*br)},${Math.round(120*br)})`:`rgb(${Math.round(190*br)},${Math.round(214*br)},${Math.round(255*br)})`;
+		x.fillRect(tx*64+18,ty*64+16,28,28);
+		x.fillStyle="#000"; x.fillRect(tx*64+31,ty*64+16,2,28); x.fillRect(tx*64+18,ty*64+29,28,2);   // keep the mullions dark
+	}
+	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(1/16,1/16); t.anisotropy=renderer.capabilities.getMaxAnisotropy(); return t; }
+const window_mats=[];   // wall materials whose lit windows switch on at night (emissiveIntensity toggled in update_papi)
 function roof_texture(dark){ const c=document.createElement("canvas"); c.width=c.height=32; const x=c.getContext("2d");
 	x.fillStyle=dark?"#4a4f56":"#a8adb3"; x.fillRect(0,0,32,32);
 	x.strokeStyle=dark?"#3b3f45":"#8d9299"; x.lineWidth=1; for(let i=1;i<32;i+=4){ x.beginPath(); x.moveTo(i,0); x.lineTo(i,32); x.stroke(); }   // corrugation ribs
@@ -771,26 +783,33 @@ function rectangularity(pts){   // footprint area / oriented-bounding-box area (
 	const obb=(uMax-uMin)*(vMax-vMin); return obb>0?area/obb:0; }
 function build_buildings(af){   // OSM footprints → textured walls + gable/flat roofs on the island
 	if(!af.buildings || !af.buildings.length) return;
-	const wallMat=new THREE.MeshStandardMaterial({map:wall_texture(),roughness:0.9,metalness:0.05});
+	const wallTex=wall_texture();
+	const litMat=em=>{ const m=new THREE.MeshStandardMaterial({map:wallTex,roughness:0.9,metalness:0.05,emissive:0xffffff,emissiveIntensity:0,emissiveMap:em}); window_mats.push(m); return m; };   // lit windows appear at night (emissiveIntensity toggled in update_papi)
+	const wallMat=litMat(wall_emissive(false)), fullMat=litMat(wall_emissive(true));   // most buildings: a random scatter of lit windows; a few: every window lit
+	const darkMat=new THREE.MeshStandardMaterial({map:wallTex,roughness:0.9,metalness:0.05});   // ~a quarter of buildings are completely dark
+	const tankMat=new THREE.MeshStandardMaterial({map:roof_texture(false),roughness:0.6,metalness:0.4});   // storage tanks: bare corrugated metal, no windows, never lit
 	const roofMat=new THREE.MeshStandardMaterial({map:roof_texture(false),roughness:0.7,metalness:0.3});     // light metal roof
 	const hangarMat=new THREE.MeshStandardMaterial({map:roof_texture(true),roughness:0.65,metalness:0.35});  // dark metal (hangar)
-	const walls=[], roofs=[], hroofs=[];
+	const walls=[], fulls=[], darks=[], tanks=[], roofs=[], hroofs=[];
 	for(const b of af.buildings){
 		let pts=b.points; if(pts.length>3 && pts[0][0]===pts[pts.length-1][0] && pts[0][1]===pts[pts.length-1][1]) pts=pts.slice(0,-1);
 		if(pts.length<3) continue;
 		let cx=0,cz=0; for(const p of pts){ cx+=p[0]; cz+=p[1]; } cx/=pts.length; cz/=pts.length;
 		const apron=(af.aprons||[]).some(a=>pip(cx,cz,a.points));
 		const gy=apron?ISLAND_H+AIRFIELD_FLOAT:ISLAND_H, eaveY=gy+b.height;   // buildings on the apron stand on it, not half-buried under it
-		walls.push(building_walls(pts, gy, eaveY));
+		let rmin=1e9,rmax=0; for(const p of pts){ const d=Math.hypot(p[0]-cx,p[1]-cz); rmin=Math.min(rmin,d); rmax=Math.max(rmax,d); }
+		const tank=pts.length>=8 && rmax/Math.max(rmin,0.01)<1.2;   // near-circular footprint = oil/water storage tank, not a building
+		const rl=Math.random(), bucket=tank?tanks:(rl<0.25?darks:(rl<0.33?fulls:walls));   // tanks: windowless; ~1/4 of buildings fully dark, ~1/12 every window lit, the rest a random scatter
+		bucket.push(building_walls(pts, gy, eaveY));
 		// The gable spans the footprint's oriented bounding box, so it overhangs non-rectangular footprints — those get a flat cap instead.
 		const gabled=b.roof==="gable" && rectangularity(pts)>=0.8;
-		if(gabled){ const g=gable_roof(pts, eaveY); (b.kind==="hangar"?hroofs:roofs).push(g.slopes); walls.push(g.ends); }
+		if(gabled){ const g=gable_roof(pts, eaveY); (b.kind==="hangar"?hroofs:roofs).push(g.slopes); bucket.push(g.ends); }
 		else roofs.push(flat_cap(pts, eaveY));
 		let minx=1e9,maxx=-1e9,minz=1e9,maxz=-1e9; for(const p of pts){ minx=Math.min(minx,p[0]); maxx=Math.max(maxx,p[0]); minz=Math.min(minz,p[1]); maxz=Math.max(maxz,p[1]); }
 		obstacles.buildings.push({pts,minx:minx-3,maxx:maxx+3,minz:minz-3,maxz:maxz+3,topY:eaveY+(gabled?5:0)});
 	}
 	const add=(geos,mat)=>{ if(geos.length){ const m=new THREE.Mesh(merge_uv(geos),mat); m.castShadow=true; m.receiveShadow=true; scene.add(m); } };
-	add(walls,wallMat); add(roofs,roofMat); add(hroofs,hangarMat);
+	add(walls,wallMat); add(fulls,fullMat); add(darks,darkMat); add(tanks,tankMat); add(roofs,roofMat); add(hroofs,hangarMat);
 }
 // Toroidal world wrap — WORLD_WRAP (m) from map.json, 0 = no wrap. Minimum-image for relative quantities.
 function wrap_axis(value){ return WORLD_WRAP>0 ? value-WORLD_WRAP*Math.round(value/WORLD_WRAP) : value; }
@@ -814,6 +833,7 @@ function glow_points(pts, color, size){   // additive glowing point-lights (runw
 	const p=new THREE.Points(g,new THREE.PointsMaterial({size,map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true})); p.frustumCulled=false; scene.add(p); return p;
 }
 const night_lights=[];   // runway lights that are lit only when it's dark (edge lights; bidirectional)
+const beacon_lights=[];  // aerodrome beacon on the tower: alternating white/green flash at night (userData.phase 0/1)
 const dir_lights=[];     // directional + night-only lights (green threshold / red end / REIL) — shown only from their facing side
 function dir_glow(pts,color,size,x,z,fx,fz,flash){ const p=glow_points(pts,color,size); dir_lights.push({mesh:p,x,z,fx,fz,flash}); return p; }
 function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
@@ -835,6 +855,7 @@ function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
 	const base=new THREE.Mesh(merge_geometries(tg),new THREE.MeshStandardMaterial({color:0xbfc4c8,roughness:0.8})); base.castShadow=true; scene.add(base);
 	const cab=new THREE.Mesh(new THREE.CylinderGeometry(9,7.5,7,12),new THREE.MeshStandardMaterial({color:0x1c2024,metalness:0.4,roughness:0.4})); cab.position.set(tp.x,o.h+37,tp.z); scene.add(cab);
 	const roof=new THREE.Mesh(new THREE.CylinderGeometry(10,10,1.5,12),new THREE.MeshStandardMaterial({color:0x44494e})); roof.position.set(tp.x,o.h+41,tp.z); scene.add(roof);
+	for(const [phase,col] of [[0,0xffffff],[1,0x28ff40]]){ const b=glow_points([tp.x,o.h+42.6,tp.z],col,9); b.userData.phase=phase; b.visible=false; beacon_lights.push(b); }   // aerodrome beacon on the cab roof: alternating white/green at night
 	}
 	// PAPI on BOTH ends, on the left as seen by the approaching aircraft, each visible only within its approach beam
 	const setAng=[3.5,3.167,2.833,2.5];
@@ -878,6 +899,9 @@ function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
 function update_papi(p){ const flash=(performance.now()%520)<90;   // REIL: ~2 Hz synchronized white flash
 	const dark=cfg.tod!=="day";                                     // edge/threshold/REIL lit only when dark; PAPI is always on
 	for(const m of night_lights) m.visible=dark;
+	const bph=(performance.now()%3000)<1500;                        // aerodrome beacon: white / green alternating ~1.5 s each
+	for(const m of beacon_lights) m.visible=dark && ((m.userData.phase===0)===bph);
+	for(const m of window_mats) m.emissiveIntensity=dark?1.15:0;    // building windows light up after dark
 	for(const d of dir_lights){ const facing=((p.x-d.x)*d.fx+(p.z-d.z)*d.fz)>0; d.mesh.visible=dark&&facing&&(!d.flash||flash); }
 	for(const ap of airports){
 	for(const set of ap.papis){
