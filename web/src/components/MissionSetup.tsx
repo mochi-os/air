@@ -408,11 +408,15 @@ export function MissionSetup({
                   <ControlRow action={<Trans>Yaw</Trans>} keys={<><Key>Q</Key><Key>E</Key></>} />
                   <ControlRow
                     action={<Trans>Throttle</Trans>}
-                    keys={<><Key>PgUp</Key><Key>PgDn</Key></>}
+                    keys={<><Key>[</Key><Key>]</Key></>}
                   />
-                  <ControlRow action={<Trans>Launch / guns</Trans>} keys={<Key>Space</Key>} />
+                  <ControlRow action={<Trans>Guns</Trans>} keys={<Key>Space</Key>} />
+                  <ControlRow action={<Trans>Launch (catapult)</Trans>} keys={<Key>Enter</Key>} />
                   <ControlRow action={<Trans>Wheel brakes</Trans>} keys={<Key>B</Key>} />
                   <ControlRow action={<Trans>Speed brake</Trans>} keys={<Key>/</Key>} />
+                  <ControlRow action={<Trans>Landing gear</Trans>} keys={<Key>G</Key>} />
+                  <ControlRow action={<Trans>Arrestor hook</Trans>} keys={<Key>H</Key>} />
+                  <ControlRow action={<Trans>Lights</Trans>} keys={<Key>L</Key>} />
                   <ControlRow action={<Trans>Missile</Trans>} keys={<Key>R</Key>} />
                   <ControlRow action={<Trans>Flares</Trans>} keys={<Key>F</Key>} />
                   <ControlRow action={<Trans>Rearm</Trans>} keys={<Key>X</Key>} />

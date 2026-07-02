@@ -26,8 +26,12 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   YOU: msg`YOU`,
   PAUSED: msg`PAUSED`,
   CRASHED: msg`CRASHED`,
-  'PRESS SPACE TO LAUNCH': msg`PRESS SPACE TO LAUNCH`,
+  'PRESS ENTER TO LAUNCH': msg`PRESS ENTER TO LAUNCH`,
+  LIGHTS: msg`LIGHTS`,
   'RUN UP ENGINE': msg`RUN UP ENGINE`,
+  '1 WIRE': msg`1 WIRE`,
+  '2 WIRE': msg`2 WIRE`,
+  '3 WIRE': msg`3 WIRE`,
   'DECK POSITION SAVED': msg`DECK POSITION SAVED`,
   'TACTICAL MAP': msg`TACTICAL MAP`,
   'M to close': msg`M to close`,
@@ -88,10 +92,10 @@ export function GameCanvas({
       <div className='panel' id='framerate' ref={framerateRef} />
       <div className='panel' id='help' ref={helpRef}>
         <b>W/S</b> <Trans>pitch</Trans> · <b>A/D</b>{' '}
-        <Trans>roll</Trans> · <b>Q/E</b> <Trans>yaw</Trans> · <b>PgUp/PgDn</b>{' '}
-        <Trans>throttle</Trans> · <b>Space</b> <Trans>launch / guns</Trans> ·{' '}
-        <b>R</b> <Trans>missile</Trans> · <b>F</b> <Trans>flares</Trans> · <b>X</b>{' '}
-        <Trans>rearm</Trans> · <b>G</b> <Trans>gear</Trans> · <b>H</b> <Trans>hook</Trans> ·{' '}
+        <Trans>roll</Trans> · <b>Q/E</b> <Trans>yaw</Trans> · <b>[/]</b>{' '}
+        <Trans>throttle</Trans> · <b>Space</b> <Trans>guns</Trans> · <b>Enter</b>{' '}
+        <Trans>launch</Trans> · <b>R</b> <Trans>missile</Trans> · <b>F</b> <Trans>flares</Trans> · <b>X</b>{' '}
+        <Trans>rearm</Trans> · <b>G</b> <Trans>gear</Trans> · <b>H</b> <Trans>hook</Trans> · <b>L</b> <Trans>lights</Trans> ·{' '}
         <b>B</b> <Trans>brakes</Trans> · <b>/</b> <Trans>speed brake</Trans> ·{' '}
         <b>1</b>–<b>5</b>/<b>V</b> <Trans>view</Trans> · <b>M</b> <Trans>map</Trans> ·{' '}
         <b>P</b> <Trans>pause</Trans> · <b>Esc</b> <Trans>menu</Trans>
