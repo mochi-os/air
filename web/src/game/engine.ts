@@ -123,7 +123,7 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	col_sundisc.setHex(p.disc); sky_horizon.setHex(p.hor); sky_zenith.setHex(p.zen); col_deep.setHex(p.deep); col_shallow.setHex(p.shal);
 	scene.fog.color.setHex(p.fog); fog_colour.setHex(p.fog);
 	hemi.color.setHex(p.hs); hemi.groundColor.setHex(p.hg); hemi.intensity=p.hi; amb.color.setHex(p.ac); amb.intensity=p.ai;
-	renderer.toneMappingExposure=p.exp; stars.material.opacity=p.stars;
+	renderer.toneMappingExposure=p.exp; cloud_mat.uniforms.uExposure.value=p.exp; stars.material.opacity=p.stars;   // the cloud composite uses the same exposure as the scene
 	if(p.water) ocean_mat.uniforms.u_water_tint.value.setRGB(p.water[0],p.water[1],p.water[2]);   // darken the reef/lagoon colour map at night
 }
 
@@ -168,78 +168,180 @@ function build_ocean(seg){ if(ocean){scene.remove(ocean);ocean.geometry.dispose(
 build_ocean(cfg.ocean_segments);
 
 // cloud layer types (rendered by the raymarch pass below)
-const CLOUDS={
-	cumulus:      { base:1400, top:2900, cover:0.50, density:1.05, flat:0.0 },   // broken puffy mid-level
-	high_stratus: { base:6000, top:6700, cover:0.30, density:0.45, flat:1.0 },   // thin widespread cirrostratus
-	low_stratus:  { base:600,  top:1150, cover:0.18, density:1.35, flat:1.0 },   // low grey overcast
+const CLOUDS={   // cover: higher = more cloud (coverage remap). Trade-wind cumulus: low bases (~2,000 ft), most tops at the inversion, a few towers.
+	cumulus:      { base:600,  top:2400, high:5000, cover:0.42, density:1.0,  flat:0.0 },   // the dense fuzzy broken sky (user-preferred over the scattered/eroded variants)
+	high_stratus: { base:6000, top:6700, high:6700, cover:0.55, density:0.45, flat:1.0 },   // thin widespread cirrostratus
+	low_stratus:  { base:600,  top:1150, high:1150, cover:0.80, density:1.2,  flat:1.0 },   // low grey overcast
 };
 function apply_clouds(){ const p=CLOUDS[cfg.clouds]; if(!p) return;
-	cloud_mat.uniforms.uBase.value=p.base; cloud_mat.uniforms.uTop.value=p.top;
+	cloud_mat.uniforms.uBase.value=p.base; cloud_mat.uniforms.uTop.value=p.top; cloud_mat.uniforms.uHigh.value=p.high;
 	cloud_mat.uniforms.uCoverage.value=p.cover; cloud_mat.uniforms.uDensity.value=p.density; cloud_mat.uniforms.uFlat.value=p.flat; }
 const cloud_active=()=>cfg.clouds&&cfg.clouds!=="none";
 
 // ---- volumetric clouds: raymarched, composited against scene depth ----
 // scene renders to an offscreen target (with depth); a fullscreen pass marches a
 // cloud slab and composites over it, stopping at the scene surface for occlusion.
-let rt=null; const invVP=new THREE.Matrix4(); const _buf=new THREE.Vector2();
+let rt=null, rt_cloud=null, rt_blur=null; const invVP=new THREE.Matrix4(); const _buf=new THREE.Vector2();
 function size_rt(){ renderer.getDrawingBufferSize(_buf); const w=Math.max(2,_buf.x|0),h=Math.max(2,_buf.y|0);
-	if(!rt){ rt=new THREE.WebGLRenderTarget(w,h,{depthBuffer:true}); rt.depthTexture=new THREE.DepthTexture(w,h);
+	const hw=Math.max(2,w>>1), hh=Math.max(2,h>>1);   // clouds are soft: everything cloud-related runs at half resolution
+	if(!rt){ rt=new THREE.WebGLRenderTarget(hw,hh,{depthBuffer:true}); rt.depthTexture=new THREE.DepthTexture(hw,hh);   // depth-source pass only — the scene the player SEES renders directly to the canvas, exactly like the no-clouds path (the full-res RT detour alone cost ~40% frame time and lost MSAA)
+		rt_cloud=new THREE.WebGLRenderTarget(hw,hh);   // marched cloud light + transmittance
+		rt_blur=new THREE.WebGLRenderTarget(hw,hh);    // gaussian-smoothed copy — the low-pass that kills the march dither grain ("fizzy edges")
 		rt.texture.minFilter=THREE.LinearFilter; rt.texture.magFilter=THREE.LinearFilter; }
-	else if(rt.width!==w||rt.height!==h){ rt.setSize(w,h); } }
+	else if(rt.width!==hw||rt.height!==hh){ rt.setSize(hw,hh); rt_cloud.setSize(hw,hh); rt_blur.setSize(hw,hh); } }
 const fs_scene=new THREE.Scene(); const fs_cam=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
-const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,
-	uniforms:{ tScene:{value:null}, tDepth:{value:null}, uCamPos:{value:new THREE.Vector3()}, uInvVP:{value:new THREE.Matrix4()},
-		uTime:{value:0}, uSun:{value:sun_dir}, uSunCol:{value:col_sundisc}, uSky:{value:sky_horizon},
-		uBase:{value:1400.0}, uTop:{value:3200.0}, uCoverage:{value:0.46}, uDensity:{value:1.0}, uFlat:{value:0.0}, uExposure:{value:1.05} },
+const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,   // NOTE: no glslVersion:GLSL3 — three compiles ShaderMaterial as 300 es on WebGL2 anyway (sampler3D works), and the GLSL3 flag REMOVES the gl_FragColor compatibility define
+	uniforms:{ tDepth:{value:null}, tNoise:{value:null}, tDetail:{value:null}, uCamPos:{value:new THREE.Vector3()}, uInvVP:{value:new THREE.Matrix4()},
+		uTime:{value:0}, uSun:{value:sun_dir}, uSunCol:{value:col_sundisc}, uSky:{value:sky_horizon}, uDebug:{value:0.0},
+		uBase:{value:600.0}, uTop:{value:2400.0}, uHigh:{value:5000.0}, uCoverage:{value:0.42}, uDensity:{value:1.0}, uFlat:{value:0.0}, uExposure:{value:1.05} },
 	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
-	fragmentShader:`precision highp float; varying vec2 vUv;
-		uniform sampler2D tScene,tDepth; uniform vec3 uCamPos,uSun,uSunCol,uSky; uniform mat4 uInvVP;
-		uniform float uTime,uBase,uTop,uCoverage,uDensity,uFlat,uExposure;
+	fragmentShader:`varying vec2 vUv;
+		uniform sampler2D tDepth; uniform highp sampler3D tNoise,tDetail;
+		uniform vec3 uCamPos,uSun,uSunCol,uSky; uniform mat4 uInvVP;
+		uniform float uTime,uBase,uTop,uHigh,uCoverage,uDensity,uFlat,uExposure,uDebug;
 		float hash(vec3 p){ p=fract(p*0.3183099+vec3(0.1,0.2,0.3)); p*=17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
-		float vnoise(vec3 x){ vec3 i=floor(x),f=fract(x); f=f*f*(3.0-2.0*f);
-			return mix(mix(mix(hash(i),hash(i+vec3(1.,0.,0.)),f.x),mix(hash(i+vec3(0.,1.,0.)),hash(i+vec3(1.,1.,0.)),f.x),f.y),
-			           mix(mix(hash(i+vec3(0.,0.,1.)),hash(i+vec3(1.,0.,1.)),f.x),mix(hash(i+vec3(0.,1.,1.)),hash(i+vec3(1.,1.,1.)),f.x),f.y),f.z); }
-		float fbm(vec3 p){ float s=0.0,a=0.5; for(int i=0;i<4;i++){ s+=a*vnoise(p); p=p*2.02+vec3(11.3,7.7,3.1); a*=0.5; } return s; }
-		float dens(vec3 p){ float h=clamp((p.y-uBase)/(uTop-uBase),0.0,1.0);
-			// flat layers vary mostly horizontally; cumulus has full 3-D billows
-			vec3 wp=p*mix(0.0006,0.00035,uFlat); wp.y*=mix(1.0,0.25,uFlat); wp.x+=uTime*0.015; wp.z+=uTime*0.01;
-			float n=fbm(wp);
-			float hf=mix( smoothstep(0.0,0.15,h)*smoothstep(1.0,0.55,h),   // cumulus: rounded vertical profile
-			              smoothstep(0.0,0.25,h)*smoothstep(1.0,0.7,h),    // stratus: thin even slab
-			              uFlat );
-			return clamp(n*hf-uCoverage,0.0,1.0)*uDensity; }
-		vec3 aces(vec3 x){ return clamp((x*(2.51*x+0.03))/(x*(2.43*x+0.59)+0.14),0.0,1.0); }
+		float remap(float v,float a,float b,float c,float d){ return c+clamp((v-a)/(b-a),0.0,1.0)*(d-c); }
+		float hg(float c,float g){ float g2=g*g; return (1.0-g2)/pow(1.0+g2-2.0*g*c,1.5); }
+		// Trade-wind cumulus field: flat bases at uBase, most cells capped by the inversion at uTop, a minority of
+		// vigorous cells towering to uHigh (per-cell vigour from low-frequency noise). Density: Perlin-Worley base
+		// remapped by coverage, eroded at the edges by high-frequency Worley — the cauliflower billows.
+		float vigour(vec2 xz){ return texture(tNoise, vec3(xz*2.0833e-5, 0.37)).g; }   // ~8 km cells
+		float top_at(float vig){ return mix(mix(uTop,uHigh,smoothstep(0.62,0.95,vig)), uTop, uFlat); }
+		float dens(vec3 p, float lod){   // lod 0 = near (full erosion detail) … 1 = far (soft stable masses — fine detail undersamples at long range and reads as clouds bubbling in and out)
+			float vig=vigour(p.xz), top=top_at(vig);
+			float h=(p.y-uBase)/(top-uBase); if(h<0.0||h>1.0) return 0.0;
+			float prof=mix( smoothstep(0.02,0.12,h)*smoothstep(1.0,0.5,h),    // cumulus: flat defined base, domed top
+			                smoothstep(0.0,0.25,h)*smoothstep(1.0,0.7,h), uFlat );   // stratus: thin even slab
+			vec3 sp=p+vec3(uTime*8.0,0.0,uTime*3.0);                          // slow drift
+			vec4 n=texture(tNoise, sp*1.6667e-4);                             // base field, ~6 km period
+			float wf=n.g*0.625+n.b*0.25+n.a*0.125;
+			float base=remap(n.r, wf-1.0, 1.0, 0.0, 1.0)*prof;
+			float cov=uCoverage*mix(0.75+0.5*vig, 1.0, uFlat);                // vigorous cells run denser
+			float d=remap(base, 1.0-cov, 1.0, 0.0, 1.0)*cov;
+			if(d<=0.0) return 0.0;
+			float hb=clamp(h*4.0,0.0,1.0), estr=mix(0.35,0.15,uFlat);
+			float coarse=mix(n.b, 1.0-n.b, hb);                               // coarse erosion from the base sample: keeps far cells SEPARATE at zero cost and zero shimmer (fading erosion out entirely merged the horizon into a solid wall)
+			float er=coarse;
+			if(lod<0.7){
+				vec3 dn=texture(tDetail, sp*8.333e-4).rgb;                    // fine erosion detail, ~1.2 km period (near field only — it undersamples and shimmers at range)
+				float det=dn.r*0.625+dn.g*0.25+dn.b*0.125;
+				er=mix(mix(det, 1.0-det, hb), coarse, smoothstep(0.25,0.7,lod));
+			}
+			d=remap(d, er*estr, 1.0, 0.0, 1.0);   // soft uniform erosion — the fuzzy look
+			return clamp(d,0.0,1.0)*uDensity;
+		}
+		// The blend layer expects display-encoded premultiplied light; reproduce three's exact ACESFilmic + sRGB.
+		vec3 rrtodt(vec3 v){ vec3 a=v*(v+0.0245786)-0.000090537; vec3 b=v*(0.983729*v+0.4329510)+0.238081; return a/b; }
+		vec3 aces(vec3 color){
+			const mat3 inm=mat3(0.59719,0.07600,0.02840, 0.35458,0.90834,0.13383, 0.04823,0.01566,0.83777);
+			const mat3 outm=mat3(1.60475,-0.10208,-0.00327, -0.53108,1.10813,-0.07276, -0.07367,-0.00605,1.07602);
+			color*=uExposure/0.6; return clamp(outm*rrtodt(inm*color),0.0,1.0); }
+		vec3 srgb(vec3 c){ return mix(c*12.92, 1.055*pow(c,vec3(1.0/2.4))-0.055, step(vec3(0.0031308),c)); }
 		void main(){
-			float depth=texture2D(tDepth,vUv).r; vec3 scene=texture2D(tScene,vUv).rgb;
+			float depth=texture(tDepth,vUv).r;
 			vec4 fp=uInvVP*vec4(vUv*2.0-1.0,1.0,1.0); vec3 ray=normalize(fp.xyz/fp.w-uCamPos);
 			float sceneDist=1.0e9;
 			if(depth<1.0){ vec4 wp=uInvVP*vec4(vUv*2.0-1.0,depth*2.0-1.0,1.0); sceneDist=length(wp.xyz/wp.w-uCamPos); }
-			vec3 outc=scene;
-			if(abs(ray.y)>1.0e-4){
-				float ta=(uBase-uCamPos.y)/ray.y, tb=(uTop-uCamPos.y)/ray.y;
-				float cfar=mix(14000.0,60000.0,uFlat);
+			vec3 cloudc=vec3(0.0); float ctr=1.0;
+			if(uDebug<0.5 && abs(ray.y)>1.0e-4){   // uDebug=1: full RT path, zero cloud contribution (A/B against the no-clouds path)
+				float slabTop=mix(uHigh,uTop,uFlat);
+				float ta=(uBase-uCamPos.y)/ray.y, tb=(slabTop-uCamPos.y)/ray.y;
+				float cfar=mix(24000.0,60000.0,uFlat);
 				float t0=max(min(ta,tb),0.0), t1=min(max(ta,tb),min(sceneDist,cfar));
-				if(t1>t0){ float dt=(t1-t0)/40.0; float t=t0+hash(vec3(vUv*999.0,uTime))*dt; float tr=1.0; vec3 col=vec3(0.0);
-					for(int i=0;i<40;i++){ if(t>t1||tr<0.04) break; vec3 pos=uCamPos+ray*t; float d=dens(pos);
-						if(d>0.02){ float ld=0.0; vec3 lp=pos; for(int j=0;j<4;j++){ lp+=uSun*90.0; ld+=dens(lp); }
-							float light=exp(-ld*1.1); float a=1.0-exp(-d*0.06*dt);
-							vec3 shadowC=uSky*0.6+vec3(0.03,0.05,0.08); vec3 sunC=uSunCol*1.25;
-							float hfrac=clamp((pos.y-uBase)/(uTop-uBase),0.0,1.0);
-							vec3 lit=mix(shadowC,sunC,light)*(0.55+0.45*hfrac);
+				if(t1>t0){ float dt=min((t1-t0)/56.0,180.0);   // cap the step: long skimming rays otherwise decide a whole puff from 1-2 jittered samples per pixel (full-body stipple)
+					float ign=fract(52.9829189*fract(0.06711056*gl_FragCoord.x+0.00583715*gl_FragCoord.y));   // interleaved gradient noise: structured, so the blur pass removes it cleanly (white-noise hash read as fizz)
+					float t=t0+ign*dt; float tr=1.0; vec3 col=vec3(0.0);   // FULL-step jitter: anything less leaves the march shells visible as horizontal banding across cloud faces
+					float cosT=dot(ray,uSun); float ph=mix(hg(cosT,0.55), hg(cosT,-0.2), 0.35);   // two-lobe Henyey-Greenstein: forward silver lining + soft backscatter
+					for(int i=0;i<96;i++){ if(t>t1||tr<0.03) break; vec3 pos=uCamPos+ray*t;
+						float lod=clamp(t/12000.0,0.0,1.0); float d=dens(pos,lod);
+						if(d>0.01){
+							float ld=0.0; vec3 lp=pos; float ls=90.0;                       // optical depth toward the sun (metres-weighted)
+							for(int j=0;j<5;j++){ lp+=uSun*ls; ld+=dens(lp,lod)*ls; ls*=1.35; }
+							float beer=exp(-ld*0.010);
+							float powder=1.0-exp(-ld*0.028);                                // Beer-powder: darkened crinkles on sun-facing billows
+							float vig=vigour(pos.xz); float hcur=clamp((pos.y-uBase)/(top_at(vig)-uBase),0.0,1.0);
+							vec3 ambient=mix(uSky*0.35, uSky*0.85+vec3(0.06), hcur);       // sky-lit tops, dimmer bases
+							vec3 lit=uSunCol*beer*(0.35+0.65*powder)*ph*3.6 + ambient*0.62;
+							float a=(1.0-exp(-d*0.09*dt))*smoothstep(cfar,cfar*0.65,t);   // fade the farthest field out instead of letting it pop at the range cap
 							col+=tr*a*lit; tr*=1.0-a; }
 						t+=dt; }
-					outc=scene*tr+col; } }
-			outc=aces(outc*uExposure); outc=pow(outc,vec3(1.0/2.2));   // match the off-path tonemap+sRGB
-			gl_FragColor=vec4(outc,1.0);
+					cloudc=srgb(aces(col)); ctr=tr; } }   // display-encoded premultiplied cloud light + transmittance for the blend layer
+			gl_FragColor=vec4(cloudc,ctr);
 		}` });
 fs_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),cloud_mat));
+// One-time GPU bake of the tiling 3D cloud noise (Perlin-Worley base + Worley erosion detail), rendered
+// slice by slice into 3D textures. Sampling these is ~10x cheaper than the old in-loop fbm, which is what
+// pays for the richer lighting and step count above.
+function build_cloud_noise(){
+	const gen_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,
+		uniforms:{ uZ:{value:0}, uMode:{value:0} },
+		vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
+		fragmentShader:`varying vec2 vUv; uniform float uZ,uMode;
+			vec3 h3(vec3 p){ p=vec3(dot(p,vec3(127.1,311.7,74.7)),dot(p,vec3(269.5,183.3,246.1)),dot(p,vec3(113.5,271.9,124.6))); return fract(sin(p)*43758.5453); }
+			float worley(vec3 p,float freq){ p*=freq; vec3 id=floor(p), f=fract(p); float m=8.0;
+				for(int x=-1;x<=1;x++)for(int y=-1;y<=1;y++)for(int z=-1;z<=1;z++){ vec3 o=vec3(float(x),float(y),float(z));
+					vec3 c=h3(mod(id+o,freq))*0.85+0.075+o; vec3 d=c-f; m=min(m,dot(d,d)); }
+				return clamp(1.0-sqrt(m),0.0,1.0); }
+			float pnoise(vec3 p,float freq){ p*=freq; vec3 id=floor(p), f=fract(p); vec3 u=f*f*(3.0-2.0*f); float v=0.0;
+				for(int x=0;x<=1;x++)for(int y=0;y<=1;y++)for(int z=0;z<=1;z++){ vec3 c=vec3(float(x),float(y),float(z));
+					vec3 g=h3(mod(id+c,freq))*2.0-1.0;
+					float w=mix(1.0-u.x,u.x,c.x)*mix(1.0-u.y,u.y,c.y)*mix(1.0-u.z,u.z,c.z);
+					v+=w*dot(normalize(g+1.0e-4),f-c); }
+				return clamp(v*0.75+0.5,0.0,1.0); }
+			float remap(float v,float a,float b,float c,float d){ return c+clamp((v-a)/(b-a),0.0,1.0)*(d-c); }
+			void main(){ vec3 p=vec3(vUv,uZ);
+				if(uMode<0.5){
+					float pf=pnoise(p,4.0)*0.55+pnoise(p,8.0)*0.3+pnoise(p,16.0)*0.15;
+					float w1=worley(p,6.0), w2=worley(p,12.0), w3=worley(p,24.0);
+					float wf=w1*0.625+w2*0.25+w3*0.125;
+					gl_FragColor=vec4(remap(pf,wf-1.0,1.0,0.0,1.0), w1,w2,w3);   // R: perlin-worley; GBA: worley fbm octaves
+				} else {
+					gl_FragColor=vec4(worley(p,4.0),worley(p,8.0),worley(p,16.0),1.0);   // erosion detail octaves
+				} }` });
+	const gs=new THREE.Scene(); gs.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),gen_mat));
+	const mk=(size,mode)=>{ const t3=new THREE.WebGL3DRenderTarget(size,size,size);
+		t3.texture.wrapS=t3.texture.wrapT=t3.texture.wrapR=THREE.RepeatWrapping; t3.texture.minFilter=THREE.LinearFilter; t3.texture.magFilter=THREE.LinearFilter;
+		gen_mat.uniforms.uMode.value=mode;
+		for(let z=0;z<size;z++){ gen_mat.uniforms.uZ.value=(z+0.5)/size; renderer.setRenderTarget(t3,z); renderer.render(gs,fs_cam); }
+		renderer.setRenderTarget(null); return t3.texture; };
+	cloud_mat.uniforms.tNoise.value=mk(128,0);
+	cloud_mat.uniforms.tDetail.value=mk(64,1);
+}
+build_cloud_noise();
+const comp_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, transparent:true,
+	blending:THREE.CustomBlending, blendSrc:THREE.OneFactor, blendDst:THREE.OneMinusSrcAlphaFactor,   // canvas = cloud.rgb + canvas*tr — the same premultiplied maths the RT composite used, done by the blender over the DIRECT scene render
+	uniforms:{ tCloud:{value:null}, uTexel:{value:new THREE.Vector2(1/512,1/512)} },
+	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
+	fragmentShader:`varying vec2 vUv; uniform sampler2D tCloud; uniform vec2 uTexel;
+		void main(){   // 4-tap tent upsample of the half-res cloud layer: averages the dither grain away (clouds are soft, so no visible detail is lost)
+			vec4 cl=( texture2D(tCloud,vUv+uTexel*vec2(-0.75,-0.75)) + texture2D(tCloud,vUv+uTexel*vec2(0.75,-0.75))
+			        + texture2D(tCloud,vUv+uTexel*vec2(-0.75,0.75))  + texture2D(tCloud,vUv+uTexel*vec2(0.75,0.75)) )*0.25;
+			gl_FragColor=vec4(cl.rgb,1.0-cl.a); }` });
+const comp_scene=new THREE.Scene(); comp_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),comp_mat));
+const depth_override=new THREE.MeshBasicMaterial({colorWrite:false});   // depth-only scene pass for the cloud raymarch
+const blur_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,
+	uniforms:{ tSrc:{value:null}, uTexel:{value:new THREE.Vector2(1/512,1/512)} },
+	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
+	fragmentShader:`varying vec2 vUv; uniform sampler2D tSrc; uniform vec2 uTexel;
+		void main(){   // 3x3 gaussian at ±1.2 texels: clouds are soft, so this only removes the dither grain
+			vec2 o=uTexel*1.5;
+			vec4 c=texture2D(tSrc,vUv)*0.25;
+			c+=(texture2D(tSrc,vUv+vec2(o.x,0.0))+texture2D(tSrc,vUv-vec2(o.x,0.0))+texture2D(tSrc,vUv+vec2(0.0,o.y))+texture2D(tSrc,vUv-vec2(0.0,o.y)))*0.125;
+			c+=(texture2D(tSrc,vUv+o)+texture2D(tSrc,vUv-o)+texture2D(tSrc,vUv+vec2(o.x,-o.y))+texture2D(tSrc,vUv+vec2(-o.x,o.y)))*0.0625;
+			gl_FragColor=c; }` });
+const blur_scene=new THREE.Scene(); blur_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),blur_mat));
 function render_frame(){
 	if(cloud_active()){ size_rt();
-		renderer.setRenderTarget(rt); renderer.render(scene,camera); renderer.setRenderTarget(null);
+		scene.overrideMaterial=depth_override; renderer.setRenderTarget(rt); renderer.render(scene,camera); scene.overrideMaterial=null;   // half-res pass, used only for scene DEPTH (cloud occlusion) — cheap flat shading, no lighting or textures
 		invVP.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse).invert();
-		cloud_mat.uniforms.tScene.value=rt.texture; cloud_mat.uniforms.tDepth.value=rt.depthTexture;
+		cloud_mat.uniforms.tDepth.value=rt.depthTexture;
 		cloud_mat.uniforms.uCamPos.value.copy(camera.position); cloud_mat.uniforms.uInvVP.value.copy(invVP); cloud_mat.uniforms.uTime.value=sim_time;
-		renderer.render(fs_scene,fs_cam);
+		renderer.setRenderTarget(rt_cloud); renderer.render(fs_scene,fs_cam);   // half-res raymarch
+		blur_mat.uniforms.tSrc.value=rt_cloud.texture; blur_mat.uniforms.uTexel.value.set(1/rt_cloud.width,1/rt_cloud.height);
+		renderer.setRenderTarget(rt_blur); renderer.render(blur_scene,fs_cam);   // low-pass the cloud layer (kills dither grain)
+		renderer.setRenderTarget(null); renderer.render(scene,camera);   // the player-visible scene: the EXACT no-clouds path (canvas MSAA and all)
+		comp_mat.uniforms.tCloud.value=rt_blur.texture; comp_mat.uniforms.uTexel.value.set(1/rt_blur.width,1/rt_blur.height);
+		renderer.autoClear=false; renderer.render(comp_scene,fs_cam); renderer.autoClear=true;   // blend the cloud layer over it
 	} else { renderer.render(scene,camera); }
 }
 
@@ -1109,11 +1211,12 @@ function on_ground(){ return deck_edit||ownship.launching||!!ownship.grounded; }
 addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown","/"].includes(e.key)) e.preventDefault();
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
 		if(k==="Enter" && launch_status()===2){ start_launch(); }   // only when spotted on the cat, lined up, at full power
-		if(k==="KeyR" && !ownship.launching && cfg.missiles && ownship.msl>0){ if(launch_missile(ownship,has_enemy?bandit:null)) ownship.msl--; }
+		if(k==="KeyR" && !ownship.launching && (ownship.gear??0)>0.98 && cfg.missiles && ownship.msl>0){ if(launch_missile(ownship,has_enemy?bandit:null)) ownship.msl--; }   // weapons safe unless the gear is fully up
 		if(k==="KeyF" && cfg.flares && ownship.cm>0){ dispense_flares(ownship); ownship.cm--; }
 		if(k==="KeyX"){ ownship.rounds=578; ownship.msl=4; ownship.cm=60; }
 		if(k==="Digit0" && DECK_ALIGN && carrier_model){ deck_edit=!deck_edit; if(deck_edit){ enter_align(); } else { save_cfg(); copy_cats(); cat_saved_t=1.8; } }   // 0: deck-alignment tool, gated by DECK_ALIGN (dev-only) — exit saves + copies the poses to the clipboard
 		if(TEST_SCENARIOS && !deck_edit && e.shiftKey && /^Digit\d$/.test(k)){ start_test((+k.slice(5)+9)%10); }   // Shift+1..0: scripted landing test scenarios (dev-only)
+		if(TEST_SCENARIOS && e.shiftKey && k==="KeyC"){ const u=cloud_mat.uniforms.uDebug; u.value=u.value>0.5?0:1; }   // Shift+C (dev): keep the cloud render path but zero the cloud contribution — the definitive plumbing-vs-cloud-light A/B
 		else if(deck_edit && e.shiftKey && (k==="Digit1"||k==="Digit2"||k==="Digit3"||k==="Digit4")){ cat_idx=+k.slice(5)-1; place_on_cat(cat_idx); }   // in align mode, Shift+1-4 select the catapult being aligned (plain 1-5 stay views)
 		else { if(k==="Digit1") set_view("cockpit");   // 1 Cockpit — pending art, resolves to the HUD eye-point for now (not a dead key)
 			if(k==="Digit2") set_view("hud");        // 2 HUD (default start view)
@@ -1449,7 +1552,7 @@ function step_world(dt){ sim_time+=dt;
 	const flick=0.6+Math.random()*0.4; const set_ab=(g,on)=>g.children.forEach(c=>{ if(c.userData.ab){ c.visible=on; c.scale.z=flick; c.material.opacity=on?0.55+Math.random()*0.35:0; } });
 	set_ab(ownship.group,cfg.afterburner&&ownship.throttle>=0.98); set_ab(bandit.group,cfg.afterburner); extras.forEach(st=>set_ab(st.group,cfg.afterburner));   // reheat = throttle at max (keys.md §3: no detent, full throttle is burner)
 	// player guns
-	fire_gun(ownship,bandit,"own",dt,input.guns&&!ownship.launching&&!deck_edit);
+	fire_gun(ownship,bandit,"own",dt,input.guns&&!ownship.launching&&!deck_edit&&(ownship.gear??0)>0.98);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock)
 	update_pool_ballistic(tracers,dt,9.8,0); update_missiles(dt);
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96);
 	live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts);
@@ -1803,6 +1906,7 @@ function start_mission(){
 	reset_ownship(); apply_size(); save_cfg();
 	pause_toggle=false; map_on=false; map_el.style.display="none";
 	loading=!assets_ready(); loading_t0=performance.now();   // hold the LOADING screen until every async asset is in — no piecemeal pop-in of carrier/airfield/airframe
+	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
 	running=true;
 	try{ window.focus(); stage.focus(); }catch(e){}
 }
