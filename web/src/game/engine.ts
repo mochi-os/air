@@ -889,7 +889,7 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const sheaveMat=new THREE.MeshStandardMaterial({color:0x1a1d20,metalness:0.5,roughness:0.5});
 	const wires=[];
 	for(const wfa of WIRES){
-		const clat=strip_lat(wfa), hw=14;   // span the strip width, perpendicular to its centreline
+		const clat=strip_lat(wfa), hw=WIRE_HALFSPAN;   // span the strip width, perpendicular to its centreline
 		const a=carrier_world(wfa-STRIP_ULAT*hw,clat+STRIP_UFA*hw), b=carrier_world(wfa+STRIP_ULAT*hw,clat-STRIP_UFA*hw);
 		const ddx=b.x-a.x, ddz=b.z-a.z, len=Math.hypot(ddx,ddz);
 		const w=new THREE.Mesh(new THREE.BoxGeometry(len,0.08,0.09),wireMat); w.position.set((a.x+b.x)/2,dy+0.12,(a.z+b.z)/2); w.rotation.y=Math.atan2(-ddz,ddx); w.castShadow=true; scene.add(w);
@@ -945,6 +945,10 @@ function update_ols(p){   // 3D ball on the bracket, driven by the hook's deviat
 	o.wavePts.visible = low && (performance.now()%400)<200;
 }
 function seg_between(mesh,ax,az,bx,bz,y){ const dx=bx-ax, dz=bz-az, len=Math.hypot(dx,dz)||0.001; mesh.position.set((ax+bx)/2,y,(az+bz)/2); mesh.rotation.y=Math.atan2(-dz,dx); mesh.scale.x=len; }
+function seg_cross(ax,az,bx,bz,cx,cz,dx,dz){   // do the x-z segments A→B and C→D intersect? (orientation of the endpoints)
+	const s1=(bx-ax)*(cz-az)-(bz-az)*(cx-ax), s2=(bx-ax)*(dz-az)-(bz-az)*(dx-ax), s3=(dx-cx)*(az-cz)-(dz-cz)*(ax-cx), s4=(dx-cx)*(bz-cz)-(dz-cz)*(bx-cx);
+	return (s1>0)!==(s2>0) && (s3>0)!==(s4>0);
+}
 function update_wire_drag(){   // the caught wire deforms into a V, its apex dragged forward by the tailhook; released wires snap back straight
 	if(!carrier_ols) return; const o=carrier_ols, caught=ownship.trapped?ownship.wire:0;
 	for(let i=0;i<o.wires.length;i++) o.wires[i].mesh.visible=(i+1)!==caught;
@@ -1104,6 +1108,7 @@ const STRIP_SLOPE=(STRIP_B.lat-STRIP_A.lat)/(STRIP_B.fa-STRIP_A.fa);
 function strip_lat(fa){ return STRIP_A.lat+(fa-STRIP_A.fa)*STRIP_SLOPE; }   // lateral of the landing centreline at a given fore-aft
 const _slen=Math.hypot(STRIP_B.fa-STRIP_A.fa,STRIP_B.lat-STRIP_A.lat), STRIP_UFA=(STRIP_B.fa-STRIP_A.fa)/_slen, STRIP_ULAT=(STRIP_B.lat-STRIP_A.lat)/_slen;   // unit vector along the landing line (toward +fa = the rollout)
 const WIRES=[-96.6,-86.8,-71.6];   // arrestor wires 1..3 (aft→forward, increasing fore-aft; touchdown ≈ 1-wire, roll toward +fa); the 2-wire (−86.8) is the target
+const WIRE_HALFSPAN=14;            // each wire stretches this far each side of the landing centreline (drawn span == trap span)
 function ground_height(x,z){   // top of the solid surface under (x,z): carrier deck / runway / apron / island; -inf = open sea (no landing)
 	if(Math.abs(x-CARRIER.x)<160 && Math.abs(z-CARRIER.z)<160){
 		if(!carrier_model) return CARRIER.deckY;   // GLB still loading — treat the deck box as solid at the known height so a carrier start doesn't fall through to the flight model
@@ -1189,12 +1194,16 @@ function fly_player(dt){
 		}
 		else if(ownship.pos.y<g+GEAR+1.2 && ownship.fwd.y<0.06){ ownship.pos.y=g+GEAR; if(ownship.vel_dir.y>0){ ownship.vel_dir.y=0; ownship.vel_dir.normalize(); } }   // rolling level on a surface → stay glued; a shallow taxi climb angle mustn't drift us into "airborne" (nose up past ~3.5° releases it for takeoff)
 	}
-	// carrier arrestor: the deployed hook snags a wire whenever it crosses one at landing speed on the deck (every frame, so a fast rollout can't skip it; the speed gate means taxiing over a wire won't catch)
-	if(!ownship.trapped && carrier_model && (ownship.hook??0)>0.5 && ownship.speed>30 && g>-1e8 && ownship.pos.y<=g+GEAR+0.5 && Math.abs(ownship.pos.x-CARRIER.x)<160 && Math.abs(ownship.pos.z-CARRIER.z)<160){
-		const fa=carrier_fore_aft(ownship.pos.x,ownship.pos.z);
-		let wire=0; for(let i=0;i<WIRES.length;i++){ if(WIRES[i]>=fa){ wire=i+1; break; } }   // rolling toward +fa: catch the first wire at/ahead of the hook
-		if(wire>0 && fa>-110){ ownship.trapped=true; ownship.wire=wire; }
-	}
+	// carrier arrestor: the tailhook point sweeps a path across the deck each frame; it catches a wire only when that swept path actually crosses the wire's own line segment — real geometry (fore-aft, cross-deck span, and swept so a fast rollout can't tunnel between frames). Speed-gated so a taxi over a wire doesn't catch.
+	const hook_on_deck = carrier_model && carrier_ols && (ownship.hook??0)>0.5 && g>-1e8 && ownship.pos.y<=g+GEAR+0.5 && Math.abs(ownship.pos.x-CARRIER.x)<160 && Math.abs(ownship.pos.z-CARRIER.z)<160;
+	if(hook_on_deck){
+		const hx=ownship.pos.x-ownship.fwd.x*6.5, hz=ownship.pos.z-ownship.fwd.z*6.5;   // the tailhook point (~6.5 m aft of the CG, matching the drawn V apex), on the deck plane
+		if(!ownship.trapped && ownship.speed>30 && ownship.hook_px!==undefined){
+			for(let i=0;i<carrier_ols.wires.length;i++){ const w=carrier_ols.wires[i];
+				if(seg_cross(ownship.hook_px,ownship.hook_pz,hx,hz, w.ax,w.az,w.bx,w.bz)){ ownship.trapped=true; ownship.wire=i+1; break; } }   // hook path crossed this wire's segment
+		}
+		ownship.hook_px=hx; ownship.hook_pz=hz;   // remember the hook point for next frame's swept segment
+	} else ownship.hook_px=undefined;   // airborne / hook up → break the trail so an over-flight (approach pass, bolter climb-out) isn't counted as a crossing
 	if(g>-1e8 && ownship.pos.y<=g+GEAR+0.01) conform_to_surface(dt);   // resting on a surface → sit the airframe level on its gear (no nose-down / wing-dig)
 	if(on_cat_spot() && ownship.speed<3 && Math.abs(input.yaw)<0.15 && Math.abs(input.roll)<0.15) ease_onto_cat(dt);   // parked, spotted, not steering → glide onto the exact launch pose (releases the moment you roll or turn)
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
@@ -1249,6 +1258,15 @@ function reset_ownship(){
 		ownship.pos.set(ap.start.x,ap.start.y,ap.start.z); ownship.fwd.copy(ap.dir).normalize(); ownship.speed=0; ownship.throttle=0;
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
+	else if(cfg.start==="landing"){   // carrier landing: on the ICLS ~5 NM astern, a touch low and left, configured to trap
+		const A=carrier_world(STRIP_A.fa,STRIP_A.lat), B=carrier_world(STRIP_B.fa,STRIP_B.lat);   // landing centreline, A (aft) → B (forward, toward the rollout)
+		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;           // unit landing direction (the way the aircraft rolls out)
+		const td=carrier_world(-86.8,strip_lat(-86.8)), dist=5*1852, gs=3.5*D2R;                    // touchdown ≈ the 2-wire; 5 NM back on the 3.5° glideslope
+		ownship.pos.set(td.x-ldx*dist+ldz*170, CARRIER.deckY+dist*Math.tan(gs)+HOOK_DROP-80, td.z-ldz*dist-ldx*170);   // 5 NM astern, +170 m left of centre, ~80 m low — a deliberate off-glideslope, off-centre intercept
+		ownship.speed=70; ownship.throttle=0;   // ~135 kt approach speed
+		const yaw=5*D2R, cy=Math.cos(yaw), sy=Math.sin(yaw); ownship.fwd.set(ldx*cy-ldz*sy,0,ldz*cy+ldx*sy).normalize();   // level flight, heading ~5° to starboard of the centreline — pilot rolls out onto the ICLS and pushes over onto the glideslope from below
+		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
+		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
 	else {   // air start: ~15 km ENE of the runway at 5000 ft, heading at the carrier
 		const rwy=airports.length?airports[0]:{x:-1125,z:2898};   // Sand Island runway (fallback = its known centroid, since the map loads async)
 		const b=68*D2R;   // ENE
@@ -1256,8 +1274,8 @@ function reset_ownship(){
 		ownship.fwd.set(CARRIER.x-ownship.pos.x,0,CARRIER.z-ownship.pos.z).normalize(); ownship.speed=220; ownship.throttle=0.85;
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
-	{ const down=(cfg.start==="carrier"||cfg.start==="runway"); ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway, up for an air start
-	ownship.hookTarget=0; ownship.hook=0;   // hook stowed at start (deploy manually with H)
+	{ const down=(cfg.start==="carrier"||cfg.start==="runway"||cfg.start==="landing"); ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway/landing, up for an air start
+	{ const hk=(cfg.start==="landing")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }   // hook down for a carrier-landing start, else stowed (deploy manually with H)
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
 	bandit.pos.set(3000,2400,-1000); bandit.fwd.set(-0.3,0,1).normalize(); bandit.break_t=0; bandit.speed=195;
 }

@@ -345,6 +345,7 @@ export function MissionSetup({
                     { value: 'air', label: <Trans>In air</Trans> },
                     { value: 'runway', label: <Trans>On runway</Trans> },
                     { value: 'carrier', label: <Trans>On carrier</Trans> },
+                    { value: 'landing', label: <Trans>Carrier landing</Trans> },
                   ]}
                 />
               </TabsContent>
