@@ -197,6 +197,7 @@ interface Snapshot {
   at: number // performance.now() at arrival
   tick: number
   acknowledged: number
+  core: Float64Array | null // the recipient's own encoded flight state
   players: Map<number, RemotePose>
 }
 
@@ -210,6 +211,7 @@ export interface InputSample {
   brake: boolean
   gear: boolean
   hook: boolean
+  override: boolean
   fire: boolean
   flare: boolean
   missile: boolean
@@ -222,7 +224,7 @@ export interface Welcome {
   rate: { tick: number; snapshot: number }
   seed: number
   parameters?: Record<string, unknown>
-  spawn: { state?: SpawnState; wrap?: number }
+  spawn: { state?: SpawnState; wrap?: number; model?: number }
   players: { slot: number; name: string; identity: string }[]
 }
 
@@ -231,6 +233,7 @@ export interface SpawnState {
   direction: [number, number, number]
   attitude: [number, number, number, number]
   speed: number
+  core?: Uint8Array
 }
 
 export interface Handlers {
@@ -250,6 +253,8 @@ export class Net {
   private writer: WritableStreamDefaultWriter<Uint8Array> | null = null
   private datagrams: WritableStreamDefaultWriter<Uint8Array> | null = null
   private snapshots: Snapshot[] = []
+  private corrected = 0 // highest acknowledged sequence already reconciled
+  cored = false // the server has sent at least one own-state core
   private sequence = 0
   private batch: (InputSample & { sequence: number })[] = []
   private last = 0 // last input send, performance.now()
@@ -262,9 +267,11 @@ export class Net {
 
   // input queues one control sample; sends at most 60/s with the previous
   // two samples batched in for loss tolerance.
-  input(sample: InputSample) {
+  // input queues one control sample; returns the sequence it was assigned,
+  // or 0 when rate-limited (sends are capped at the server tick rate).
+  input(sample: InputSample): number {
     const now = performance.now()
-    if (now - this.last < 1000 / 60 - 1) return
+    if (now - this.last < 1000 / 60 - 1) return 0
     this.last = now
     this.sequence++
     this.batch.push({ ...sample, sequence: this.sequence })
@@ -274,6 +281,7 @@ export class Net {
     } catch {
       // datagram writes fail only once the connection is gone; the reader notices
     }
+    return this.sequence
   }
 
   // remote returns the interpolated pose for a slot, ~DELAY ms behind live,
@@ -304,6 +312,15 @@ export class Net {
       attitude: slerp(pa.attitude, pb.attitude, t),
       speed: lerp(pa.speed, pb.speed),
     }
+  }
+
+  // correction returns the newest unconsumed own-state authority for
+  // prediction reconciliation, or null when there is nothing new.
+  correction(): { sequence: number; core: Float64Array } | null {
+    const newest = this.snapshots[this.snapshots.length - 1]
+    if (!newest || !newest.core || newest.acknowledged <= this.corrected) return null
+    this.corrected = newest.acknowledged
+    return { sequence: newest.acknowledged, core: newest.core }
   }
 
   // slots lists the remote slots present in the newest snapshot.
@@ -382,10 +399,17 @@ export class Net {
             fire: !!entry.fire,
           })
         }
+        let core: Float64Array | null = null
+        const bytes = message.core as Uint8Array | undefined
+        if (bytes instanceof Uint8Array && bytes.byteLength >= 400) {
+          core = new Float64Array(bytes.buffer, bytes.byteOffset, 50)
+          this.cored = true
+        }
         this.snapshots.push({
           at: performance.now(),
           tick: Number(message.tick),
           acknowledged: Number(message.acknowledged ?? 0),
+          core,
           players,
         })
         if (this.snapshots.length > 40) this.snapshots.shift()

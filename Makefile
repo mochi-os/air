@@ -11,11 +11,19 @@ SAFE_PNPM = $(abspath ../../claude/scripts/safe-pnpm.sh)
 
 all: web/dist/index.html
 
+wasm: web/public/flight/flight.wasm
+
 clean:
 	rm -rf web/dist
 
-web/dist/index.html: $(shell find web/src ../../lib/web/src -type f 2>/dev/null)
+web/dist/index.html: web/public/flight/flight.wasm $(shell find web/src ../../lib/web/src -type f 2>/dev/null)
 	bash -c 'cd web && $(SAFE_PNPM) run build'
+# The flight simulation core, compiled for the browser from the world repo.
+web/public/flight/flight.wasm: $(shell find ../../world/games/furball/flight ../../world/wasm -name '*.go' 2>/dev/null)
+	mkdir -p web/public/flight
+	cd ../../world && GOOS=js GOARCH=wasm CGO_ENABLED=0 go build -trimpath -ldflags "-s -w" -o ../apps/furball/web/public/flight/flight.wasm ./wasm
+	cp "$$(go env GOROOT)/lib/wasm/wasm_exec.js" web/public/flight/
+
 release: web/dist/index.html
 	rm -f $(RELEASE)/$(APP)_*.zip
 	zip -r $(RELEASE)/$(APP)_$(VERSION).zip app.json *.star labels web/dist
