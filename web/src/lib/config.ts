@@ -8,7 +8,7 @@
 // a few more baked-in keys, e.g. the catapult spawn pose); the named fields keep
 // their precise types for the menu.
 export interface MissionConfig {
-  task: 'free' | 'joust'
+  task: 'free' | 'joust' | 'multiplayer'
   start: 'air' | 'runway' | 'carrier' | 'landing'
   tod: 'day' | 'night'
   clouds: 'none' | 'cumulus' | 'high_stratus' | 'low_stratus'
@@ -26,6 +26,8 @@ export interface MissionConfig {
   flares: boolean
   invert: boolean
   framerate: boolean
+  world: string
+  callsign: string
   [key: string]: string | number | boolean
 }
 
@@ -49,6 +51,8 @@ export const DEFAULT_CONFIG: MissionConfig = {
   flares: true,
   invert: false,
   framerate: false,
+  world: '',
+  callsign: '',
 }
 
 export type GraphicsPreset = 'low' | 'med' | 'high' | 'ultra'

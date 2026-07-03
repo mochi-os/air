@@ -8,6 +8,12 @@
 // extracted verbatim from the prototype. Imperative and self-contained; mounted by
 // the React <GameCanvas> via startGame(). The mission-setup menu lives in React.
 import * as THREE from 'three'
+import {
+  connect as net_dial,
+  record as net_record,
+  type Join as NetJoin,
+  type Net as NetHandle,
+} from './net'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 export type GameConfig = Record<string, unknown>
@@ -24,6 +30,7 @@ export function startGame({
   help,
   framerate,
   config = {},
+  join = null,
   onExit,
   translate = (s) => s,
 }: {
@@ -33,6 +40,7 @@ export function startGame({
   help: HTMLElement
   framerate?: HTMLElement
   config?: GameConfig
+  join?: NetJoin | null
   onExit?: () => void
   translate?: (text: string) => string
 }): GameHandle {
@@ -71,7 +79,8 @@ load_cfg();
 Object.assign(cfg, config);   // mission-setup menu overrides saved/defaults
 cfg.view="hud";   // start in HUD (view 2); 1-5 select views, V swaps cockpit/HUD
 let running=false, has_enemy=true;
-const MULTIPLAYER=false;             // single-player today; map/P pause only when this is false
+const MULTIPLAYER=!!join;            // in a live match the map/P must never freeze the world
+if(MULTIPLAYER){ cfg.task="joust"; cfg.extra_aircraft=0; cfg.missiles=false; }   // multiplayer: air start, no local AI; the match rules from the welcome may re-allow missiles
 const DECK_ALIGN=false;              // dev-only catapult/deck alignment tool (key 0) — code kept, unreachable in player builds; flip on to retune the cat poses
 const TEST_SCENARIOS=true;           // dev-only landing/trap test autopilot (Shift+1..0 fly scripted hands-off approaches) — flip off before release
 let cat_idx=1;                       // selected catapult (0-based; default = #2 port bow, the carrier-start spawn); Shift+1-4 select in align mode (key 0)
@@ -1211,8 +1220,10 @@ function on_ground(){ return deck_edit||ownship.launching||!!ownship.grounded; }
 addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown","/"].includes(e.key)) e.preventDefault();
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
 		if(k==="Enter" && launch_status()===2){ start_launch(); }   // only when spotted on the cat, lined up, at full power
-		if(k==="KeyR" && !ownship.launching && (ownship.gear??0)>0.98 && cfg.missiles && ownship.msl>0){ if(launch_missile(ownship,has_enemy?bandit:null)) ownship.msl--; }   // weapons safe unless the gear is fully up
-		if(k==="KeyF" && cfg.flares && ownship.cm>0){ dispense_flares(ownship); ownship.cm--; }
+		if(k==="KeyR" && !ownship.launching && (ownship.gear??0)>0.98 && cfg.missiles && ownship.msl>0){
+			if(MULTIPLAYER) missile_flag=true;   // the server acquires and scores; the local launch is the visual
+			if(launch_missile(ownship,MULTIPLAYER?remote_nearest():(has_enemy?bandit:null))) ownship.msl--; }   // weapons safe unless the gear is fully up
+		if(k==="KeyF" && cfg.flares && ownship.cm>0){ dispense_flares(ownship); ownship.cm--; flare_flag=true; }
 		if(k==="KeyX"){ ownship.rounds=578; ownship.msl=4; ownship.cm=60; }
 		if(k==="Digit0" && DECK_ALIGN && carrier_model){ deck_edit=!deck_edit; if(deck_edit){ enter_align(); } else { save_cfg(); copy_cats(); cat_saved_t=1.8; } }   // 0: deck-alignment tool, gated by DECK_ALIGN (dev-only) — exit saves + copies the poses to the clipboard
 		if(TEST_SCENARIOS && !deck_edit && e.shiftKey && /^Digit\d$/.test(k)){ start_test((+k.slice(5)+9)%10); }   // Shift+1..0: scripted landing test scenarios (dev-only)
@@ -1231,7 +1242,7 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 
 		if(k==="Slash"){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
 		if(k==="KeyG" && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; }   // G: landing gear up/down — only once airborne, never on deck/runway
-		if(k==="Escape" && running){ running=false; if(onExit) onExit(); } }
+		if(k==="Escape" && running){ running=false; if(MULTIPLAYER) net_finish("left"); if(onExit) onExit(); } }
 	keys.add(k); }, { signal });
 addEventListener("keyup",e=>keys.delete(e.code),{ signal });
 addEventListener("blur",()=>keys.clear(),{ signal });
@@ -1432,7 +1443,8 @@ function test_drive(){   // hold the prescribed approach exactly; hand control b
 	ownship.speed=t.V; ownship.vel_dir.copy(t.vd);
 }
 function fly_player(dt){
-	if(crash_t>0){ crash_t-=dt; if(crash_t<=0){ crash_t=0; ownship.group.visible=true; reset_ownship(); } return; }   // hold through the fireball, then respawn
+	if(crash_t>0){ if(MULTIPLAYER){ read_input(dt); return; }   // multiplayer: hold in the fireball until the server's respawn event places us
+		crash_t-=dt; if(crash_t<=0){ crash_t=0; ownship.group.visible=true; reset_ownship(); } return; }   // hold through the fireball, then respawn
 	read_input(dt);
 	ownship.fwd.set(1,0,0).applyQuaternion(ownship.q); ownship.up.set(0,1,0).applyQuaternion(ownship.q); ownship.right.set(0,0,1).applyQuaternion(ownship.q);
 	if(deck_edit){   // dev-only deck-alignment tool: freeze on the cat while nudging the pose
@@ -1545,14 +1557,14 @@ function update_anim(dt){ for(const st of [ownship,bandit,...extras]){
 	if(st.speedbrake===undefined) st.speedbrake=st.speedbrakeTarget??0; st.speedbrake+=THREE.MathUtils.clamp((st.speedbrakeTarget??0)-st.speedbrake,-1.5*dt,1.5*dt);   // air-brake state eases in ~0.7s — drives the HUD + drag; visible surface deferred to the full model
 	apply_anim(st); } }
 function step_world(dt){ sim_time+=dt;
-	fly_player(dt); if(has_enemy) fly_bandit(dt);
+	fly_player(dt); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
 	for(const st of extras){ st.circle_phase+=dt*(st.speed/st.circle_radius);
 		const tgt=new THREE.Vector3(Math.cos(st.circle_phase)*st.circle_radius,st.circle_alt+Math.sin(st.circle_phase*0.5)*200,Math.sin(st.circle_phase)*st.circle_radius);
 		steer(st,tgt.sub(st.pos),dt,0.3,1.0); apply_orientation(st); }
 	const flick=0.6+Math.random()*0.4; const set_ab=(g,on)=>g.children.forEach(c=>{ if(c.userData.ab){ c.visible=on; c.scale.z=flick; c.material.opacity=on?0.55+Math.random()*0.35:0; } });
 	set_ab(ownship.group,cfg.afterburner&&ownship.throttle>=0.98); set_ab(bandit.group,cfg.afterburner); extras.forEach(st=>set_ab(st.group,cfg.afterburner));   // reheat = throttle at max (keys.md §3: no detent, full throttle is burner)
 	// player guns
-	fire_gun(ownship,bandit,"own",dt,input.guns&&!ownship.launching&&!deck_edit&&(ownship.gear??0)>0.98);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock)
+	fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,input.guns&&!ownship.launching&&!deck_edit&&(ownship.gear??0)>0.98);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock); in multiplayer the tracers are local, the damage is the server's
 	update_pool_ballistic(tracers,dt,9.8,0); update_missiles(dt);
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96);
 	live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts);
@@ -1769,13 +1781,22 @@ function draw_hud(dt){
 	if(fpm){ hctx.beginPath(); hctx.arc(fpm[0],fpm[1],6,0,Math.PI*2);
 		hctx.moveTo(fpm[0]-6,fpm[1]); hctx.lineTo(fpm[0]-14,fpm[1]); hctx.moveTo(fpm[0]+6,fpm[1]); hctx.lineTo(fpm[0]+14,fpm[1]); hctx.moveTo(fpm[0],fpm[1]-6); hctx.lineTo(fpm[0],fpm[1]-12); hctx.stroke(); }
 
-	// ---- target box + range/closure (joust only) ----
-	const rng = has_enemy ? wrap_distance(ownship.pos,bandit.pos) : 1500;   // minimum-image across the toroidal wrap
+	// ---- target boxes: the AI bandit (joust) or every remote player (multiplayer) ----
+	let rng = has_enemy ? wrap_distance(ownship.pos,bandit.pos) : 1500;   // minimum-image across the toroidal wrap
 	if(has_enemy){ const closure=dt>0?(last_range-rng)/dt*1.94384:0; last_range=rng;
 		const tb=proj_point(bandit.pos);
 		if(tb){ hctx.strokeStyle=AM; hctx.fillStyle=AM; hctx.strokeRect(tb[0]-22,tb[1]-22,44,44);
 			hctx.font="11px monospace"; hctx.textAlign="left";
 			hctx.fillText((rng/1852).toFixed(1)+" NM",tb[0]+28,tb[1]-8); hctx.fillText((closure>0?"+":"")+Math.round(closure)+" kt",tb[0]+28,tb[1]+8); } }
+	else if(MULTIPLAYER&&net){ let nearest=1e12;   // box every live remote with callsign + range; the pipper ranges on the nearest
+		for(const st of remotes.values()){ if(!st.group.visible) continue;
+			const r=wrap_distance(ownship.pos,st.pos); if(r<nearest) nearest=r;
+			const tb=proj_point(st.pos);
+			if(tb){ hctx.strokeStyle=AM; hctx.fillStyle=AM; hctx.strokeRect(tb[0]-22,tb[1]-22,44,44);
+				hctx.font="11px monospace"; hctx.textAlign="left";
+				if(st.name) hctx.fillText(st.name,tb[0]+28,tb[1]-8);
+				hctx.fillText((r/1852).toFixed(1)+" NM",tb[0]+28,tb[1]+8); } }
+		if(nearest<1e12) rng=nearest; }
 
 	// ---- lead-computing gun pipper ----
 	const t=Math.min(rng,2000)/muzzle; const muz=body_offset(ownship,6.0,0.35,0.0);   // match the gun port used in fire_gun
@@ -1897,11 +1918,114 @@ function set_view(v){
 function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow=cfg.shadows;
 	const setc=g=>g.traverse(c=>{ if(c.isMesh&&(c.userData.body||c.userData.modelmesh))c.castShadow=cfg.shadows; }); setc(ownship.group); setc(bandit.group); extras.forEach(s=>setc(s.group)); }
 
+// ============================================================================ multiplayer
+// The server is authoritative (world/games/furball runs the same placeholder
+// kinematics); fly_player keeps running as the local predictor and is
+// corrected from snapshots — snap when >20 m off (minimum-image), gentle pull
+// otherwise. Remote players are interpolated ~100 ms behind live; the first
+// reuses the bandit airframe, the rest get their own.
+let net=null, flare_flag=false, missile_flag=false, session_over=false;
+let net_notice="", net_notice_t=0;
+let own_kills=0, own_deaths=0, match_started=0;
+const remotes=new Map();   // slot -> aircraft state
+function notice(text){ net_notice=text; net_notice_t=3; }
+function remote_for(slot){ let st=remotes.get(slot); if(st) return st;
+	if(![...remotes.values()].includes(bandit)) st=bandit;
+	else { st=make_state(new THREE.Vector3(0,3000,0),new THREE.Vector3(1,0,0),200); st.group=make_jet(0xb04a3a); scene.add(st.group); if(model_active) apply_model_to(st.group); }
+	remotes.set(slot,st); st.group.visible=true; return st; }
+function remote_drop(slot){ const st=remotes.get(slot); if(!st) return; remotes.delete(slot);
+	if(st===bandit){ st.group.visible=false; }
+	else { scene.remove(st.group); st.group.traverse(o=>{ if(o.isMesh&&o.material&&o.material.dispose)o.material.dispose(); }); } }
+// apply_own_state adopts an authoritative state. reset=true (spawn/respawn)
+// also restores the clean control configuration; a mid-flight snap correction
+// (e.g. after a background tab wakes far off the prediction) must keep the
+// pilot's throttle/gear/hook/speedbrake untouched.
+function apply_own_state(state,reset=true){ if(!state||!state.position) return;
+	ownship.pos.set(state.position[0],state.position[1],state.position[2]);
+	ownship.vel_dir.set(state.direction[0],state.direction[1],state.direction[2]).normalize();
+	ownship.q.set(state.attitude[1],state.attitude[2],state.attitude[3],state.attitude[0]);   // wire is [w,x,y,z]; THREE is (x,y,z,w)
+	ownship.fwd.set(1,0,0).applyQuaternion(ownship.q); ownship.up.set(0,1,0).applyQuaternion(ownship.q); ownship.right.set(0,0,1).applyQuaternion(ownship.q);
+	ownship.speed=state.speed;
+	if(reset){ ownship.throttle=0.85;
+		ownship.gearTarget=1; ownship.gear=1; ownship.hookTarget=0; ownship.hook=0; ownship.speedbrakeTarget=0; }
+	ownship.grounded=false; ownship.trapped=false; ownship.launching=false;
+	ownship.group.position.copy(ownship.pos); ownship.group.quaternion.copy(ownship.q); }
+function remote_nearest(){ let best=null, range=1e12;
+	for(const st of remotes.values()){ if(!st.group.visible) continue;
+		const d=(st.pos.x-ownship.pos.x)**2+(st.pos.y-ownship.pos.y)**2+(st.pos.z-ownship.pos.z)**2;
+		if(d<range){ best=st; range=d; } }
+	return best; }
+function net_event(e){ const slot=Number(e.slot);
+	switch(e.kind){
+	case "kill":
+		if(net&&slot===net.slot){ own_deaths++;
+			if(crash_t<=0){ crash_t=3.0; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z); ownship.group.visible=false; ownship.speed=0; } }
+		else { if(Array.isArray(e.position)) explosion_at(e.position[0],e.position[1],e.position[2]);
+			const st=remotes.get(slot); if(st) st.group.visible=false;
+			if(net&&Number(e.by)===net.slot){ own_kills++; notice(translate("KILL")); } }
+		break;
+	case "respawn":
+		if(net&&slot===net.slot){ apply_own_state(e.state); crash_t=0; ownship.group.visible=true; }
+		break;
+	case "flare": if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st&&cfg.flares) dispense_flares(st); } break;
+	case "join": if(!net||slot!==net.slot) notice((e.name||"")+" "+translate("JOINED")); break;
+	case "leave": remote_drop(slot); notice((e.name||"")+" "+translate("LEFT")); break;
+	} }
+function net_finish(reason){ if(session_over) return; session_over=true;
+	if(net&&match_started){ net_record({ world:join.server, session:join.session, mode:"joust",
+		started:match_started, ended:Date.now(), reason,
+		players:JSON.stringify([...remotes.keys()].length+1), kills:own_kills, deaths:own_deaths }); }
+	if(net){ net.leave(); net=null; } }
+function net_end(reason,results){ if(session_over) return;
+	net_finish(reason);
+	if(results&&results.name){ notice(results.name+" "+translate("WINS")); }   // joust outcome
+	else notice(translate("SESSION ENDED"));
+	setTimeout(()=>{ if(running){ running=false; if(onExit) onExit(); } },1800); }
+function net_frame(dt){
+	net.input({ pitch:input.pitch*cfg.sens, roll:input.roll*cfg.sens, yaw:input.yaw*cfg.sens,
+		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
+		reheat:ownship.throttle>=0.98, brake:input.brake,
+		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5,   // wire gear/hook: true = down/deployed
+		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, missile:missile_flag });
+	flare_flag=false; missile_flag=false;
+	const own=net.own();
+	if(own&&own.alive&&crash_t<=0){
+		const dx=wrap_axis(own.position[0]-ownship.pos.x), dy=own.position[1]-ownship.pos.y, dz=wrap_axis(own.position[2]-ownship.pos.z);
+		if(Math.hypot(dx,dy,dz)>20){ apply_own_state(own,false); }   // way off (e.g. a woken background tab): snap the dynamics, keep the pilot's controls
+		else { const k=Math.min(1,dt*3);
+			ownship.pos.x+=dx*k; ownship.pos.y+=dy*k; ownship.pos.z+=dz*k; wrap_position(ownship.pos);
+			ownship.speed+=(own.speed-ownship.speed)*k;
+			_q.set(own.attitude[1],own.attitude[2],own.attitude[3],own.attitude[0]);
+			ownship.q.slerp(_q,Math.min(1,dt*1.5)); ownship.q.normalize(); } }
+	const seen=new Set();
+	for(const slot of net.slots()){ const pose=net.remote(slot); if(!pose) continue; seen.add(slot);
+		const st=remote_for(slot);
+		st.pos.set(pose.position[0],pose.position[1],pose.position[2]); st.speed=pose.speed;
+		st.group.quaternion.set(pose.attitude[1],pose.attitude[2],pose.attitude[3],pose.attitude[0]);
+		st.group.position.copy(st.pos);
+		st.fwd.set(1,0,0).applyQuaternion(st.group.quaternion);
+		st.velx=st.fwd.x*pose.speed; st.vely=st.fwd.y*pose.speed; st.velz=st.fwd.z*pose.speed;
+		st.gearTarget=pose.gear?0:1; st.hookTarget=pose.hook?1:0; st.speedbrakeTarget=pose.speedbrake;
+		st.name=pose.name; st.group.visible=pose.alive; }
+	for(const slot of [...remotes.keys()]) if(!seen.has(slot)) remote_drop(slot); }
+function net_connect(){
+	net_dial(join,{ event:net_event, end:(reason,results)=>net_end(reason||"finished",results), close:()=>net_end("gone") })
+	.then((n)=>{ net=n; match_started=Date.now();
+		if(n.welcome&&n.welcome.spawn) apply_own_state(n.welcome.spawn.state);
+		const rules=(n.welcome&&n.welcome.parameters)||{};   // the creator's weather + rules apply to every participant
+		if(rules.tod==="day"||rules.tod==="night"){ cfg.tod=rules.tod; apply_time_of_day(cfg.tod); apply_effects(); }
+		if(typeof rules.clouds==="string"&&["none","cumulus","high_stratus","low_stratus"].includes(rules.clouds)){
+			cfg.clouds=rules.clouds; if(cloud_active()){ apply_clouds(); size_rt(); } }
+		cfg.missiles=rules.missiles===true;
+		notice(translate("CONNECTED")); })
+	.catch((error)=>{ console.error("furball multiplayer:", error);   // the HUD shows the headline; the console keeps the cause
+		notice(translate("CONNECTION FAILED")); setTimeout(()=>{ if(running){ running=false; if(onExit) onExit(); } },1800); }); }
+
 function start_mission(){
 	build_ocean(cfg.ocean_segments);
 	apply_time_of_day(cfg.tod); apply_effects();
 	if(cloud_active()){ apply_clouds(); size_rt(); }
-	has_enemy=(cfg.task==="joust"); bandit.group.visible=has_enemy;
+	has_enemy=(cfg.task==="joust")&&!MULTIPLAYER; bandit.group.visible=has_enemy;   // multiplayer: the bandit airframe is a remote player's, posed from snapshots
 	sync_extras(cfg.extra_aircraft);
 	reset_ownship(); apply_size(); save_cfg();
 	pause_toggle=false; map_on=false; map_el.style.display="none";
@@ -1938,7 +2062,8 @@ function frame(){ const dt=Math.min(clock.getDelta(),0.05);
 	render_frame();
 	stage.style.cursor=(running && !game_paused)?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused
 	help_el.style.display=(running && pause_toggle && !map_on)?"":"none";   // pause window: controls list appears while paused via P
-	if(running){ draw_hud(dt); if(game_paused && !map_on) draw_pause_banner(); } else hctx.clearRect(0,0,HW,HH);
+	if(running){ draw_hud(dt); if(game_paused && !map_on) draw_pause_banner();
+		if(net_notice_t>0){ net_notice_t-=dt; hud_message(net_notice); } } else hctx.clearRect(0,0,HW,HH);
 	if(map_on){ const zf=Math.pow(2.2,dt), pr=map_range*dt*0.9;   // held − zooms out, = zooms in (smooth; wheel does notches); arrows pan, scaled to the zoom
 		if(keys.has("Minus")) map_range=Math.min(MAP_RANGE_MAX,map_range*zf);
 		if(keys.has("Equal")) map_range=Math.max(MAP_RANGE_MIN,map_range/zf);
@@ -1954,11 +2079,13 @@ function draw_pause_banner(){ hctx.save(); hctx.textAlign="center"; hctx.fillSty
 	hctx.fillStyle=AM; hctx.font="34px monospace"; hctx.fillText(translate("PAUSED"),HW/2,HH/2-2);
 	hctx.fillStyle=GR; hctx.font="12px monospace"; hctx.fillText(translate("P to resume \u00b7 M map \u00b7 Esc menu"),HW/2,HH/2+24); hctx.restore(); }
 start_mission();
+if(MULTIPLAYER) net_connect();
 __raf = requestAnimationFrame(frame);
 init_external_model();
 init_carrier_model();
 
   function stop() {
+    if (MULTIPLAYER) net_finish('left')
     try { __ac.abort() } catch (e) {}
     cancelAnimationFrame(__raf)
     try { renderer.dispose() } catch (e) {}

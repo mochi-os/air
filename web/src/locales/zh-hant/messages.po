@@ -13,7 +13,22 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/GameCanvas.tsx:33
+#. placeholder {0}: status.players
+#: src/components/Multiplayer.tsx:198
+msgid "{0} flying"
+msgstr "{0} 人飛行中"
+
+#. placeholder {0}: (s.players ?? []).length
+#. placeholder {1}: s.capacity
+#: src/components/Multiplayer.tsx:277
+msgid "{0}/{1} players"
+msgstr "{0}/{1} 名玩家"
+
+#: src/components/Multiplayer.tsx:141
+msgid "{name}'s match"
+msgstr "{name}的對局"
+
+#: src/components/GameCanvas.tsx:34
 msgid "1 WIRE"
 msgstr "1號攔阻索"
 
@@ -21,7 +36,7 @@ msgstr "1號攔阻索"
 msgid "12 hours"
 msgstr "12 小時"
 
-#: src/components/GameCanvas.tsx:34
+#: src/components/GameCanvas.tsx:35
 msgid "2 WIRE"
 msgstr "2號攔阻索"
 
@@ -29,11 +44,11 @@ msgstr "2號攔阻索"
 msgid "24 hours"
 msgstr "24 小時"
 
-#: src/components/GameCanvas.tsx:35
+#: src/components/GameCanvas.tsx:36
 msgid "3 WIRE"
 msgstr "3號攔阻索"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:164
 msgid "A browser-based multiplayer jet-combat prototype — a shared flight model with server-authoritative netcode (work in progress), rendered with Three.js on WebGL2."
 msgstr "一款基於瀏覽器的多人噴射機空戰原型 — 採用共用飛行模型與伺服器權威網路代碼（開發中），透過 Three.js 在 WebGL2 上算繪。"
 
@@ -111,7 +126,7 @@ msgstr "新增檢視"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "調整外觀與版面配置以符合您的偏好。"
 
-#: src/components/MissionSetup.tsx:534
+#: src/components/MissionSetup.tsx:560
 msgid "Afterburner"
 msgstr "後燃器"
 
@@ -119,11 +134,11 @@ msgstr "後燃器"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:217
+#: src/components/MissionSetup.tsx:219
 msgid "Aircraft carrier <0>“Gerald Ford Aircraft Carrier”</0> by <1>Usman Zia (Uxxman)</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline, texture downscaled."
 msgstr "航空母艦 <0>“Gerald Ford Aircraft Carrier”</0>，由 <1>Usman Zia (Uxxman)</1>（Sketchfab）製作，依 <2>CC BY 4.0</2> 授權。已修改：重新縮放、艦艏重新朝向 +X、下沉至吃水線、材質降採樣。"
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:170
 msgid "Aircraft model <0>“Boeing F/A-18E/F Super Hornet”</0> by <1>andertan</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented nose +X, weapons and pylons removed, markings removed, landing gear added, converted to metal-rough."
 msgstr "飛機模型 <0>“Boeing F/A-18E/F Super Hornet”</0>，作者 <1>andertan</1>（Sketchfab），依據 <2>CC BY 4.0</2> 授權。修改：重新縮放，機頭重新定向至 +X，移除武器與掛架，移除標誌，新增起落架，轉換為金屬-粗糙度（metal-rough）材質。"
 
@@ -143,7 +158,7 @@ msgstr "發生未預期的錯誤"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "您確定要登出嗎?您將需要再次登入才能存取您的帳戶。"
 
-#: src/components/MissionSetup.tsx:419
+#: src/components/MissionSetup.tsx:445
 msgid "Arrestor hook"
 msgstr "攔阻鉤"
 
@@ -159,7 +174,7 @@ msgstr "升冪"
 msgid "Authenticator code"
 msgstr "驗證器代碼"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "back"
 msgstr "返回"
 
@@ -173,7 +188,7 @@ msgstr "返回"
 msgid "Back to home"
 msgstr "返回首頁"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:41
 msgid "BOLTER"
 msgstr "逃逸復飛"
 
@@ -182,9 +197,13 @@ msgstr "逃逸復飛"
 msgid "Boost interest"
 msgstr "提升興趣"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "brakes"
 msgstr "剎車"
+
+#: src/components/Multiplayer.tsx:183
+msgid "Callsign"
+msgstr "呼號"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
@@ -198,7 +217,7 @@ msgstr "剎車"
 msgid "Cancel"
 msgstr "取消"
 
-#: src/components/MissionSetup.tsx:348
+#: src/components/MissionSetup.tsx:372
 msgid "Carrier landing"
 msgstr "著艦"
 
@@ -211,11 +230,11 @@ msgstr "此通知的類別"
 msgid "Change notification category"
 msgstr "變更通知類別"
 
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:459
 msgid "Chase view"
 msgstr "追尾視角"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:122
 msgid "Chase view:"
 msgstr "追逐視角："
 
@@ -246,6 +265,7 @@ msgstr "選擇語言"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/Multiplayer.tsx:242
 msgid "Clear"
 msgstr "清除"
 
@@ -287,11 +307,11 @@ msgstr "關閉面板"
 msgid "Close search"
 msgstr "關閉搜尋"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:126
 msgid "closer"
 msgstr "拉近"
 
-#: src/components/MissionSetup.tsx:366
+#: src/components/MissionSetup.tsx:392
 msgid "Clouds"
 msgstr "雲層"
 
@@ -324,6 +344,18 @@ msgstr "緊湊"
 msgid "Confirm"
 msgstr "確認"
 
+#: src/components/GameCanvas.tsx:47
+msgid "CONNECTED"
+msgstr "已連線"
+
+#: src/components/Multiplayer.tsx:201
+msgid "Connecting…"
+msgstr "連線中…"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CONNECTION FAILED"
+msgstr "連線失敗"
+
 #: ../../../lib/web/src/lib/query-client.ts:81
 msgid "Content not modified"
 msgstr "內容未修改"
@@ -340,13 +372,17 @@ msgstr "繼續"
 msgid "Continue with {label}"
 msgstr "使用 {label} 繼續"
 
-#: src/components/MissionSetup.tsx:316
+#: src/components/MissionSetup.tsx:324
 msgid "Controls"
 msgstr "操控"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
 msgstr "複製"
+
+#: src/components/Multiplayer.tsx:153
+msgid "Could not create the match"
+msgstr "無法建立對戰"
 
 #: ../../../lib/web/src/features/document/document-page.tsx:84
 msgid "Could not load this document. Please try again later."
@@ -364,16 +400,25 @@ msgstr "無法開始重新驗證。請再試一次。"
 msgid "Couldn't verify with that account. Please try again."
 msgstr "無法使用該帳戶進行驗證。請重試。"
 
-#: src/components/GameCanvas.tsx:29
+#: src/components/GameCanvas.tsx:30
 msgid "CRASHED"
 msgstr "墜毀"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:157
+#: src/components/Multiplayer.tsx:258
+msgid "Create and fly"
+msgstr "建立並起飛"
+
+#: src/components/Multiplayer.tsx:216
+msgid "Create match"
+msgstr "建立對戰"
+
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:159
 msgid "Credits"
 msgstr "製作群"
 
-#: src/components/MissionSetup.tsx:373
+#: src/components/MissionSetup.tsx:399
+#: src/components/Multiplayer.tsx:243
 msgid "Cumulus"
 msgstr "積雲"
 
@@ -381,11 +426,11 @@ msgstr "積雲"
 msgid "Custom"
 msgstr "自訂"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:40
 msgid "CUT"
 msgstr "危險"
 
-#: src/components/MissionSetup.tsx:425
+#: src/components/MissionSetup.tsx:451
 msgid "Cycle view"
 msgstr "切換視角"
 
@@ -402,11 +447,12 @@ msgstr "深色"
 msgid "Dark mode"
 msgstr "深色模式"
 
-#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:387
+#: src/components/Multiplayer.tsx:238
 msgid "Day"
 msgstr "白天"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:43
 msgid "DECK POSITION SAVED"
 msgstr "甲板位置已儲存"
 
@@ -458,11 +504,11 @@ msgstr "關閉"
 msgid "Displays the mobile sidebar."
 msgstr "顯示行動裝置側邊欄。"
 
-#: src/components/MissionSetup.tsx:442
+#: src/components/MissionSetup.tsx:468
 msgid "Distance"
 msgstr "距離"
 
-#: src/components/MissionSetup.tsx:522
+#: src/components/MissionSetup.tsx:548
 msgid "Distance LOD"
 msgstr "距離 LOD"
 
@@ -475,7 +521,7 @@ msgstr "下載"
 msgid "Download failed"
 msgstr "下載失敗"
 
-#: src/components/MissionSetup.tsx:516
+#: src/components/MissionSetup.tsx:542
 msgid "Dynamic resolution"
 msgstr "動態解析度"
 
@@ -490,6 +536,10 @@ msgstr "編輯 {label}"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "電子郵件代碼"
+
+#: src/components/Multiplayer.tsx:276
+msgid "empty"
+msgstr "空"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:299
 msgid "Enter the code from your email"
@@ -510,11 +560,11 @@ msgstr "展開"
 msgid "Expand sidebar"
 msgstr "展開側邊欄"
 
-#: src/components/MissionSetup.tsx:488
+#: src/components/MissionSetup.tsx:514
 msgid "Exterior detail"
 msgstr "外觀細節"
 
-#: src/components/MissionSetup.tsx:504
+#: src/components/MissionSetup.tsx:530
 msgid "Extra aircraft"
 msgstr "額外飛機"
 
@@ -538,7 +588,7 @@ msgstr "傳送驗證碼失敗"
 msgid "Failed to update category"
 msgstr "更新類別失敗"
 
-#: src/components/GameCanvas.tsx:37
+#: src/components/GameCanvas.tsx:38
 msgid "FAIR"
 msgstr "尚可"
 
@@ -546,16 +596,16 @@ msgstr "尚可"
 msgid "Finish moving your account"
 msgstr "完成帳號遷移"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "flares"
 msgstr "熱焰彈"
 
-#: src/components/MissionSetup.tsx:422
-#: src/components/MissionSetup.tsx:552
+#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:578
 msgid "Flares"
 msgstr "熱焰彈"
 
-#: src/components/GameCanvas.tsx:22
+#: src/components/GameCanvas.tsx:23
 msgid "FLARES"
 msgstr "熱焰彈"
 
@@ -567,11 +617,11 @@ msgstr "扁平"
 msgid "Floating"
 msgstr "浮動"
 
-#: src/components/MissionSetup.tsx:558
+#: src/components/MissionSetup.tsx:584
 msgid "Framerate"
 msgstr "影格率"
 
-#: src/components/MissionSetup.tsx:334
+#: src/components/MissionSetup.tsx:342
 msgid "Free flight"
 msgstr "自由飛行"
 
@@ -596,11 +646,11 @@ msgstr "來自主題"
 msgid "Full layout"
 msgstr "完整版面"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "gear"
 msgstr "起落架"
 
-#: src/components/GameCanvas.tsx:23
+#: src/components/GameCanvas.tsx:24
 msgid "GEAR"
 msgstr "起落架"
 
@@ -630,7 +680,7 @@ msgstr "跳到第 {pageNumber} 頁"
 msgid "Go to previous page"
 msgstr "前往上一頁"
 
-#: src/components/MissionSetup.tsx:319
+#: src/components/MissionSetup.tsx:327
 msgid "Graphics"
 msgstr "圖形"
 
@@ -638,15 +688,15 @@ msgstr "圖形"
 msgid "Group"
 msgstr "群組"
 
-#: src/components/GameCanvas.tsx:21
+#: src/components/GameCanvas.tsx:22
 msgid "GUN"
 msgstr "機砲"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "guns"
 msgstr "機炮"
 
-#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:440
 msgid "Guns"
 msgstr "機炮"
 
@@ -658,11 +708,12 @@ msgstr "隱藏"
 msgid "Hide password"
 msgstr "隱藏密碼"
 
-#: src/components/MissionSetup.tsx:468
+#: src/components/MissionSetup.tsx:494
 msgid "High"
 msgstr "高"
 
-#: src/components/MissionSetup.tsx:374
+#: src/components/MissionSetup.tsx:400
+#: src/components/Multiplayer.tsx:244
 msgid "High stratus"
 msgstr "高層雲"
 
@@ -673,11 +724,11 @@ msgstr "高層雲"
 msgid "Home"
 msgstr "首頁"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "hook"
 msgstr "尾鉤"
 
-#: src/components/GameCanvas.tsx:24
+#: src/components/GameCanvas.tsx:25
 msgid "HOOK"
 msgstr "尾鉤"
 
@@ -689,11 +740,11 @@ msgstr "熱門"
 msgid "Imperial"
 msgstr "英制"
 
-#: src/components/MissionSetup.tsx:345
+#: src/components/MissionSetup.tsx:369
 msgid "In air"
 msgstr "空中"
 
-#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:408
 msgid "Input"
 msgstr "輸入"
 
@@ -709,23 +760,44 @@ msgstr "興趣"
 msgid "Invalid verification code"
 msgstr "無效的驗證碼"
 
-#: src/components/MissionSetup.tsx:397
+#: src/components/MissionSetup.tsx:423
 msgid "Invert pitch"
 msgstr "反轉俯仰"
 
-#: src/components/MissionSetup.tsx:335
+#: src/components/MissionSetup.tsx:608
+#: src/components/Multiplayer.tsx:290
+msgid "Join"
+msgstr "加入"
+
+#: src/components/GameCanvas.tsx:52
+msgid "JOINED"
+msgstr "已加入"
+
+#: src/components/Multiplayer.tsx:275
 msgid "Joust"
 msgstr "對衝"
 
-#: src/components/MissionSetup.tsx:404
+#: src/components/Multiplayer.tsx:230
+msgid "Joust — 1v1, first kill wins"
+msgstr "決鬥 — 1v1，先擊落者獲勝"
+
+#: src/components/MissionSetup.tsx:343
+msgid "Joust against AI player"
+msgstr "與 AI 玩家決鬥"
+
+#: src/components/MissionSetup.tsx:430
 msgid "Keys"
 msgstr "按鍵"
 
-#: src/components/MissionSetup.tsx:418
+#: src/components/GameCanvas.tsx:50
+msgid "KILL"
+msgstr "擊落"
+
+#: src/components/MissionSetup.tsx:444
 msgid "Landing gear"
 msgstr "起落架"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:195
 msgid "Landing-gear wheels from <0>“F/A-18F Super Hornet Fighter Jet”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: wheels extracted and mounted on procedural struts."
 msgstr "起落架機輪來自 <0>“F/A-18F Super Hornet Fighter Jet”</0>，作者 <1>Muhamad Mirza Arrafi</1>（Sketchfab），依據 <2>CC BY 4.0</2> 授權。修改：提取機輪並安裝在程序化生成的支柱上。"
 
@@ -734,21 +806,13 @@ msgstr "起落架機輪來自 <0>“F/A-18F Super Hornet Fighter Jet”</0>，�
 msgid "Large"
 msgstr "大"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "launch"
 msgstr "彈射"
 
-#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:441
 msgid "Launch (catapult)"
 msgstr "彈射起飛 (彈射器)"
-
-#: src/components/GameCanvas.tsx:96
-#~ msgid "launch / guns"
-#~ msgstr "彈射 / 機砲"
-
-#: src/components/MissionSetup.tsx:413
-#~ msgid "Launch / guns"
-#~ msgstr "發射 / 機砲"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:286
 msgid "Layout"
@@ -759,6 +823,10 @@ msgstr "版面"
 msgid "Learn more"
 msgstr "深入了解"
 
+#: src/components/GameCanvas.tsx:53
+msgid "LEFT"
+msgstr "已離開"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:354
 msgid "Left to Right"
 msgstr "由左至右"
@@ -768,15 +836,15 @@ msgstr "由左至右"
 msgid "Light"
 msgstr "淺色"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "lights"
 msgstr "燈光"
 
-#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:446
 msgid "Lights"
 msgstr "燈光"
 
-#: src/components/GameCanvas.tsx:31
+#: src/components/GameCanvas.tsx:32
 msgid "LIGHTS"
 msgstr "燈光"
 
@@ -784,7 +852,7 @@ msgstr "燈光"
 msgid "Load more"
 msgstr "載入更多"
 
-#: src/components/GameCanvas.tsx:28
+#: src/components/GameCanvas.tsx:29
 msgid "LOADING"
 msgstr "載入中"
 
@@ -819,23 +887,24 @@ msgstr "已成功登出"
 msgid "Logging out…"
 msgstr "正在登出…"
 
-#: src/components/MissionSetup.tsx:464
+#: src/components/MissionSetup.tsx:490
 msgid "Low"
 msgstr "低"
 
-#: src/components/MissionSetup.tsx:375
+#: src/components/MissionSetup.tsx:401
+#: src/components/Multiplayer.tsx:245
 msgid "Low stratus"
 msgstr "低層雲"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:45
 msgid "M to close"
 msgstr "M 關閉"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "map"
 msgstr "地圖"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:454
 msgid "Map"
 msgstr "地圖"
 
@@ -845,12 +914,16 @@ msgstr "地圖"
 msgid "Mark all as read"
 msgstr "全部標示為已讀"
 
+#: src/components/Multiplayer.tsx:226
+msgid "Match type"
+msgstr "對戰類型"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:466
+#: src/components/MissionSetup.tsx:492
 msgid "Medium"
 msgstr "中"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "menu"
 msgstr "選單"
 
@@ -862,29 +935,41 @@ msgstr "選單"
 msgid "Metric"
 msgstr "公制"
 
-#: src/components/MissionSetup.tsx:241
+#: src/components/MissionSetup.tsx:243
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "中途島環礁地圖 — 影像包含經過修改的 <0>Copernicus Sentinel-2</0> 資料（2026）；機場幾何資料（跑道、滑行道、停機坪）© <1>OpenStreetMap</1> 貢獻者，依據 <2>ODbL</2> 授權；海岸線與珊瑚礁資料來自 <3>NOAA NCCOS</3>（公有領域）。"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "missile"
 msgstr "飛彈"
 
-#: src/components/MissionSetup.tsx:421
+#: src/components/MissionSetup.tsx:447
 msgid "Missile"
 msgstr "飛彈"
 
-#: src/components/MissionSetup.tsx:546
+#: src/components/MissionSetup.tsx:572
 msgid "Missiles"
 msgstr "飛彈"
 
-#: src/components/MissionSetup.tsx:310
+#: src/components/Multiplayer.tsx:253
+msgid "Missiles allowed"
+msgstr "允許飛彈"
+
+#: src/components/MissionSetup.tsx:318
 msgid "Mission"
 msgstr "任務"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:59
 msgid "Monday"
 msgstr "星期一"
+
+#: src/components/MissionSetup.tsx:344
+msgid "Multiplayer"
+msgstr "多人遊戲"
+
+#: src/components/Multiplayer.tsx:162
+msgid "Multiplayer needs WebTransport, which this browser does not support yet."
+msgstr "多人遊戲需要 WebTransport，此瀏覽器尚不支援。"
 
 #: ../../../lib/web/src/lib/api-client.ts:300
 msgid "Network error"
@@ -899,7 +984,8 @@ msgstr "新增"
 msgid "Next image"
 msgstr "下一張圖片"
 
-#: src/components/MissionSetup.tsx:362
+#: src/components/MissionSetup.tsx:388
+#: src/components/Multiplayer.tsx:239
 msgid "Night"
 msgstr "夜晚"
 
@@ -914,6 +1000,10 @@ msgstr "無已連接的帳戶"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "無可用的群組"
+
+#: src/components/Multiplayer.tsx:267
+msgid "No open matches — create one."
+msgstr "目前沒有開放的對戰，建立一場吧。"
 
 #: ../../../lib/web/src/components/place-picker.tsx:132
 msgid "No places found"
@@ -940,14 +1030,18 @@ msgstr "尚無主題記錄 — 請在下次通知後再試一次。"
 msgid "No users found"
 msgstr "找不到使用者"
 
-#: src/components/GameCanvas.tsx:38
+#: src/components/Multiplayer.tsx:267
+msgid "No world server."
+msgstr "沒有世界伺服器。"
+
+#: src/components/GameCanvas.tsx:39
 msgid "NO-GRADE"
 msgstr "無評分"
 
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:372
+#: src/components/MissionSetup.tsx:398
 msgid "None"
 msgstr "無"
 
@@ -967,25 +1061,33 @@ msgstr "未設定"
 msgid "Notifications"
 msgstr "通知"
 
-#: src/components/MissionSetup.tsx:496
+#: src/components/MissionSetup.tsx:522
 msgid "Ocean detail"
 msgstr "海洋細節"
 
-#: src/components/GameCanvas.tsx:36
+#: src/components/GameCanvas.tsx:37
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:347
+#: src/components/MissionSetup.tsx:371
 msgid "On carrier"
 msgstr "在航艦上"
 
-#: src/components/MissionSetup.tsx:346
+#: src/components/MissionSetup.tsx:370
 msgid "On runway"
 msgstr "在跑道上"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:16
 msgid "Oops! Page Not Found!"
 msgstr "糟糕!找不到頁面!"
+
+#: src/components/Multiplayer.tsx:275
+msgid "Open"
+msgstr "開啟"
+
+#: src/components/Multiplayer.tsx:229
+msgid "Open — anyone may join or leave"
+msgstr "開放 — 任何人都可以加入或離開"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:156
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:166
@@ -1012,15 +1114,15 @@ msgstr "開啟導覽選單"
 msgid "Open theme settings"
 msgstr "開啟佈景主題設定"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "or"
 msgstr "或"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "orbit"
 msgstr "環繞"
 
-#: src/components/MissionSetup.tsx:437
+#: src/components/MissionSetup.tsx:463
 msgid "Orbit"
 msgstr "環繞"
 
@@ -1032,7 +1134,7 @@ msgstr "其他"
 msgid "Owner"
 msgstr "擁有者"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:46
 msgid "P to resume · M map · Esc menu"
 msgstr "P 繼續 · M 地圖 · Esc 選單"
 
@@ -1048,23 +1150,28 @@ msgstr "通行金鑰驗證失敗。請再試一次。"
 msgid "Passkeys"
 msgstr "Passkey"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "pause"
 msgstr "暫停"
 
-#: src/components/MissionSetup.tsx:429
+#: src/components/MissionSetup.tsx:455
 msgid "Pause"
 msgstr "暫停"
 
-#: src/components/GameCanvas.tsx:27
+#: src/components/GameCanvas.tsx:28
 msgid "PAUSED"
 msgstr "已暫停"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:188
+msgid "pilot"
+msgstr "飛行員"
+
+#: src/components/GameCanvas.tsx:112
 msgid "pitch"
 msgstr "俯仰"
 
-#: src/components/MissionSetup.tsx:407
+#: src/components/MissionSetup.tsx:433
 msgid "Pitch"
 msgstr "俯仰"
 
@@ -1072,11 +1179,11 @@ msgstr "俯仰"
 msgid "Please check your internet connection and try again."
 msgstr "請檢查您的網際網路連線後再試一次。"
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:477
 msgid "Preset"
 msgstr "預設"
 
-#: src/components/GameCanvas.tsx:30
+#: src/components/GameCanvas.tsx:31
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "按 ENTER 彈射起飛"
 
@@ -1107,11 +1214,11 @@ msgstr "在此伺服器上重新連結您的帳號"
 msgid "Re-register your passkeys on this server"
 msgstr "在此伺服器上重新註冊您的通行密鑰"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "rearm"
 msgstr "重新裝填"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:449
 msgid "Rearm"
 msgstr "重新武裝"
 
@@ -1128,6 +1235,10 @@ msgstr "重新導向至登入。"
 #: ../../../lib/web/src/components/post-tags.tsx:208
 msgid "Reduce interest"
 msgstr "降低興趣"
+
+#: src/components/Multiplayer.tsx:206
+msgid "Refresh"
+msgstr "重新整理"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
@@ -1162,7 +1273,7 @@ msgstr "重新發送電郵"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:595
+#: src/components/MissionSetup.tsx:626
 msgid "Reset"
 msgstr "重設"
 
@@ -1170,19 +1281,19 @@ msgstr "重設"
 msgid "Reset all settings to default values"
 msgstr "將所有設定重設為預設值"
 
-#: src/components/MissionSetup.tsx:478
+#: src/components/MissionSetup.tsx:504
 msgid "Resolution"
 msgstr "解決方式"
 
-#: src/components/MissionSetup.tsx:572
+#: src/components/MissionSetup.tsx:598
 msgid "Restart"
 msgstr "重新開始"
 
-#: src/components/MissionSetup.tsx:576
+#: src/components/MissionSetup.tsx:602
 msgid "Resume"
 msgstr "恢復"
 
-#: src/components/MissionSetup.tsx:430
+#: src/components/MissionSetup.tsx:456
 msgid "Return to menu"
 msgstr "返回選單"
 
@@ -1190,11 +1301,11 @@ msgstr "返回選單"
 msgid "Right to Left"
 msgstr "從右至左"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:113
 msgid "roll"
 msgstr "滾轉"
 
-#: src/components/MissionSetup.tsx:408
+#: src/components/MissionSetup.tsx:434
 msgid "Roll"
 msgstr "滾轉"
 
@@ -1202,7 +1313,7 @@ msgstr "滾轉"
 msgid "Rows per page"
 msgstr "每頁列數"
 
-#: src/components/GameCanvas.tsx:32
+#: src/components/GameCanvas.tsx:33
 msgid "RUN UP ENGINE"
 msgstr "滿油門"
 
@@ -1285,7 +1396,7 @@ msgstr "重新傳送"
 msgid "Send email"
 msgstr "傳送郵件"
 
-#: src/components/MissionSetup.tsx:386
+#: src/components/MissionSetup.tsx:412
 msgid "Sensitivity"
 msgstr "靈敏度"
 
@@ -1303,6 +1414,10 @@ msgstr "伺服器錯誤"
 msgid "Server rules"
 msgstr "伺服器規則"
 
+#: src/components/GameCanvas.tsx:49
+msgid "SESSION ENDED"
+msgstr "對局已結束"
+
 #: ../../../lib/web/src/lib/api-client.ts:227
 msgid "Session expired"
 msgstr "工作階段已過期"
@@ -1319,7 +1434,7 @@ msgstr "設定出發地與目的地"
 msgid "Settings"
 msgstr "設定"
 
-#: src/components/MissionSetup.tsx:528
+#: src/components/MissionSetup.tsx:554
 msgid "Shadows"
 msgstr "陰影"
 
@@ -1359,20 +1474,20 @@ msgstr "小"
 msgid "Spacious"
 msgstr "寬鬆"
 
-#: src/components/GameCanvas.tsx:25
+#: src/components/GameCanvas.tsx:26
 msgid "SPD BK"
 msgstr "減速板"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "speed brake"
 msgstr "減速板"
 
-#: src/components/MissionSetup.tsx:417
+#: src/components/MissionSetup.tsx:443
 msgid "Speed brake"
 msgstr "減速板"
 
-#: src/components/MissionSetup.tsx:339
-#: src/components/MissionSetup.tsx:582
+#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:613
 msgid "Start"
 msgstr "開始"
 
@@ -1394,7 +1509,7 @@ msgstr "星期日"
 msgid "System"
 msgstr "系統"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:44
 msgid "TACTICAL MAP"
 msgstr "戰術地圖"
 
@@ -1407,7 +1522,7 @@ msgstr "標籤"
 msgid "Tags"
 msgstr "標籤"
 
-#: src/components/MissionSetup.tsx:328
+#: src/components/MissionSetup.tsx:336
 msgid "Task"
 msgstr "目標"
 
@@ -1432,11 +1547,11 @@ msgstr "主題"
 msgid "Theme Settings"
 msgstr "主題設定"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "throttle"
 msgstr "油門"
 
-#: src/components/MissionSetup.tsx:411
+#: src/components/MissionSetup.tsx:437
 msgid "Throttle"
 msgstr "油門"
 
@@ -1444,15 +1559,15 @@ msgstr "油門"
 msgid "Thursday"
 msgstr "星期四"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "tilt"
 msgstr "傾斜"
 
-#: src/components/MissionSetup.tsx:440
+#: src/components/MissionSetup.tsx:466
 msgid "Tilt"
 msgstr "傾斜"
 
-#: src/components/MissionSetup.tsx:355
+#: src/components/MissionSetup.tsx:381
 msgid "Time of day"
 msgstr "時段"
 
@@ -1491,7 +1606,7 @@ msgstr "切換主題"
 msgid "Top"
 msgstr "頂端"
 
-#: src/components/MissionSetup.tsx:540
+#: src/components/MissionSetup.tsx:566
 msgid "Tracers"
 msgstr "曳光彈"
 
@@ -1526,7 +1641,7 @@ msgstr "輸入以搜尋使用者"
 msgid "Type to search..."
 msgstr "輸入以搜尋..."
 
-#: src/components/MissionSetup.tsx:470
+#: src/components/MissionSetup.tsx:496
 msgid "Ultra"
 msgstr "極致"
 
@@ -1589,7 +1704,7 @@ msgstr "驗證電子郵件地址"
 msgid "Video thumbnail"
 msgstr "影片縮圖"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "view"
 msgstr "視角"
 
@@ -1606,7 +1721,7 @@ msgstr "檢視全部"
 msgid "View all notifications"
 msgstr "檢視所有通知"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:42
 msgid "WAVE OFF"
 msgstr "重飛"
 
@@ -1614,7 +1729,8 @@ msgstr "重飛"
 msgid "We'll be back online shortly."
 msgstr "我們很快就會恢復上線。"
 
-#: src/components/MissionSetup.tsx:313
+#: src/components/MissionSetup.tsx:321
+#: src/components/Multiplayer.tsx:235
 msgid "Weather"
 msgstr "天氣"
 
@@ -1626,19 +1742,31 @@ msgstr "網站維護中!"
 msgid "Wednesday"
 msgstr "星期三"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:442
 msgid "Wheel brakes"
 msgstr "機輪剎車"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:51
+msgid "WINS"
+msgstr "獲勝"
+
+#: src/components/Multiplayer.tsx:172
+msgid "World server"
+msgstr "世界伺服器"
+
+#: src/components/Multiplayer.tsx:100
+msgid "World server not reachable"
+msgstr "無法連上世界伺服器"
+
+#: src/components/GameCanvas.tsx:113
 msgid "yaw"
 msgstr "偏航"
 
-#: src/components/MissionSetup.tsx:409
+#: src/components/MissionSetup.tsx:435
 msgid "Yaw"
 msgstr "偏航"
 
-#: src/components/GameCanvas.tsx:26
+#: src/components/GameCanvas.tsx:27
 msgid "YOU"
 msgstr "你"
 

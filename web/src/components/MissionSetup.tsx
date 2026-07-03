@@ -26,6 +26,8 @@ import {
   type GraphicsPreset,
   type MissionConfig,
 } from '../lib/config'
+import { Multiplayer } from './Multiplayer'
+import { type Join } from '../game/net'
 
 function SectionLabel({ children }: { children: ReactNode }) {
   return (
@@ -284,6 +286,7 @@ export function MissionSetup({
   onTabChange,
   gameInProgress,
   onStart,
+  onJoin,
   onResume,
   onRestart,
 }: {
@@ -293,11 +296,14 @@ export function MissionSetup({
   onTabChange: (tab: string) => void
   gameInProgress: boolean
   onStart: () => void
+  onJoin: (join: Join) => void
   onResume: () => void
   onRestart: () => void
 }) {
   const set = <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) =>
     onChange({ ...config, [key]: value })
+
+
 
   return (
     <div className='bg-background fixed inset-0 z-50 flex items-center justify-center overflow-auto p-6'>
@@ -332,9 +338,21 @@ export function MissionSetup({
                   onChange={(v) => set('task', v)}
                   options={[
                     { value: 'free', label: <Trans>Free flight</Trans> },
-                    { value: 'joust', label: <Trans>Joust</Trans> },
+                    { value: 'joust', label: <Trans>Joust against AI player</Trans> },
+                    { value: 'multiplayer', label: <Trans>Multiplayer</Trans> },
                   ]}
                 />
+                {config.task === 'multiplayer' && (
+                  <div className='mt-4'>
+                    <Multiplayer
+                      server={config.world}
+                      callsign={config.callsign}
+                      onServer={(v) => set('world', v)}
+                      onCallsign={(v) => set('callsign', v)}
+                      onJoin={onJoin}
+                    />
+                  </div>
+                )}
                 {config.task === 'free' && (
                   <>
                     {/* joust always starts at the symmetric merge, so the start choice applies to free flight only */}
@@ -581,7 +599,7 @@ export function MissionSetup({
                   <Trans>Resume</Trans>
                 </Button>
               </div>
-            ) : (
+            ) : config.task === 'multiplayer' ? null : (
               <Button className='min-w-40' onClick={onStart}>
                 <Play className='size-4' />
                 <Trans>Start</Trans>

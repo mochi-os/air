@@ -13,7 +13,22 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/GameCanvas.tsx:33
+#. placeholder {0}: status.players
+#: src/components/Multiplayer.tsx:198
+msgid "{0} flying"
+msgstr "{0} uçur"
+
+#. placeholder {0}: (s.players ?? []).length
+#. placeholder {1}: s.capacity
+#: src/components/Multiplayer.tsx:277
+msgid "{0}/{1} players"
+msgstr "{0}/{1} oyunçu"
+
+#: src/components/Multiplayer.tsx:141
+msgid "{name}'s match"
+msgstr "{name} matçı"
+
+#: src/components/GameCanvas.tsx:34
 msgid "1 WIRE"
 msgstr "TROS 1"
 
@@ -21,7 +36,7 @@ msgstr "TROS 1"
 msgid "12 hours"
 msgstr "12 saat"
 
-#: src/components/GameCanvas.tsx:34
+#: src/components/GameCanvas.tsx:35
 msgid "2 WIRE"
 msgstr "TROS 2"
 
@@ -29,11 +44,11 @@ msgstr "TROS 2"
 msgid "24 hours"
 msgstr "24 saat"
 
-#: src/components/GameCanvas.tsx:35
+#: src/components/GameCanvas.tsx:36
 msgid "3 WIRE"
 msgstr "TROS 3"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:164
 msgid "A browser-based multiplayer jet-combat prototype — a shared flight model with server-authoritative netcode (work in progress), rendered with Three.js on WebGL2."
 msgstr "Brauzer əsaslı çoxoyunçulu reaktiv təyyarə döyüşü prototipi — server-avtoritativ şəbəkə kodu (işlənməkdədir) ilə paylaşılan uçuş modeli, WebGL2 üzərində Three.js ilə render edilir."
 
@@ -111,7 +126,7 @@ msgstr "Görünüş əlavə et"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Üstünlüklərinizə uyğunlaşdırmaq üçün görünüşü və düzümü tənzimləyin."
 
-#: src/components/MissionSetup.tsx:534
+#: src/components/MissionSetup.tsx:560
 msgid "Afterburner"
 msgstr "Forsaj"
 
@@ -119,11 +134,11 @@ msgstr "Forsaj"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:217
+#: src/components/MissionSetup.tsx:219
 msgid "Aircraft carrier <0>“Gerald Ford Aircraft Carrier”</0> by <1>Usman Zia (Uxxman)</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline, texture downscaled."
 msgstr "Təyyarə daşıyıcısı <0>“Gerald Ford Aircraft Carrier”</0>, müəllif <1>Usman Zia (Uxxman)</1> (Sketchfab), <2>CC BY 4.0</2> lisenziyası ilə. Dəyişdirildi: ölçüsü dəyişdirildi, burun +X istiqamətləndirildi, su xəttinə batırıldı, tekstura kiçildildi."
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:170
 msgid "Aircraft model <0>“Boeing F/A-18E/F Super Hornet”</0> by <1>andertan</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented nose +X, weapons and pylons removed, markings removed, landing gear added, converted to metal-rough."
 msgstr "Təyyarə modeli <0>“Boeing F/A-18E/F Super Hornet”</0>, müəllif <1>andertan</1> (Sketchfab), <2>CC BY 4.0</2> lisenziyası altında. Dəyişdirilib: miqyası yenidən tənzimlənib, burun +X istiqamətinə yönəldilib, silahlar və pilonlar çıxarılıb, nişanlar silinib, eniş şassisi əlavə edilib, metal-rough formatına çevrilib."
 
@@ -143,7 +158,7 @@ msgstr "Gözlənilməz xəta baş verdi"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Çıxmaq istədiyinizə əminsiniz? Hesabınıza giriş üçün yenidən daxil olmalı olacaqsınız."
 
-#: src/components/MissionSetup.tsx:419
+#: src/components/MissionSetup.tsx:445
 msgid "Arrestor hook"
 msgstr "Əyləc qarmağı"
 
@@ -159,7 +174,7 @@ msgstr "Artan"
 msgid "Authenticator code"
 msgstr "Authenticator kodu"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "back"
 msgstr "geri"
 
@@ -173,7 +188,7 @@ msgstr "Geri"
 msgid "Back to home"
 msgstr "Ana səhifəyə qayıt"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:41
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -182,9 +197,13 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Marağı artır"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "brakes"
 msgstr "əyləclər"
+
+#: src/components/Multiplayer.tsx:183
+msgid "Callsign"
+msgstr "Çağırış işarəsi"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
@@ -198,7 +217,7 @@ msgstr "əyləclər"
 msgid "Cancel"
 msgstr "Ləğv et"
 
-#: src/components/MissionSetup.tsx:348
+#: src/components/MissionSetup.tsx:372
 msgid "Carrier landing"
 msgstr "Aviadaşıyıcıya eniş"
 
@@ -211,11 +230,11 @@ msgstr "Bu bildiriş üçün kateqoriya"
 msgid "Change notification category"
 msgstr "Bildiriş kateqoriyasını dəyişdir"
 
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:459
 msgid "Chase view"
 msgstr "Təqib görünüşü"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:122
 msgid "Chase view:"
 msgstr "Təqib görünüşü:"
 
@@ -246,6 +265,7 @@ msgstr "Dil seçin"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/Multiplayer.tsx:242
 msgid "Clear"
 msgstr "Təmizlə"
 
@@ -287,11 +307,11 @@ msgstr "Paneli bağla"
 msgid "Close search"
 msgstr "Axtarışı bağla"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:126
 msgid "closer"
 msgstr "yaxınlaş"
 
-#: src/components/MissionSetup.tsx:366
+#: src/components/MissionSetup.tsx:392
 msgid "Clouds"
 msgstr "Buludlar"
 
@@ -324,6 +344,18 @@ msgstr "Kompakt"
 msgid "Confirm"
 msgstr "Təsdiqlə"
 
+#: src/components/GameCanvas.tsx:47
+msgid "CONNECTED"
+msgstr "BAĞLANDI"
+
+#: src/components/Multiplayer.tsx:201
+msgid "Connecting…"
+msgstr "Bağlanır…"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CONNECTION FAILED"
+msgstr "BAĞLANTI ALINMADI"
+
 #: ../../../lib/web/src/lib/query-client.ts:81
 msgid "Content not modified"
 msgstr "Məzmun dəyişdirilməyib"
@@ -340,13 +372,17 @@ msgstr "Davam et"
 msgid "Continue with {label}"
 msgstr "{label} ilə davam edin"
 
-#: src/components/MissionSetup.tsx:316
+#: src/components/MissionSetup.tsx:324
 msgid "Controls"
 msgstr "İdarəetmə"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
 msgstr "Kopyala"
+
+#: src/components/Multiplayer.tsx:153
+msgid "Could not create the match"
+msgstr "Matç yaradıla bilmədi"
 
 #: ../../../lib/web/src/features/document/document-page.tsx:84
 msgid "Could not load this document. Please try again later."
@@ -364,16 +400,25 @@ msgstr "Yenidən autentifikasiyanı başlatmaq mümkün olmadı. Zəhmət olmasa
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Bu hesabla doğrulama mümkün olmadı. Zəhmət olmasa, yenidən cəhd edin."
 
-#: src/components/GameCanvas.tsx:29
+#: src/components/GameCanvas.tsx:30
 msgid "CRASHED"
 msgstr "QƏZAYA UĞRADI"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:157
+#: src/components/Multiplayer.tsx:258
+msgid "Create and fly"
+msgstr "Yarat və uç"
+
+#: src/components/Multiplayer.tsx:216
+msgid "Create match"
+msgstr "Matç yarat"
+
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:159
 msgid "Credits"
 msgstr "Müəlliflər"
 
-#: src/components/MissionSetup.tsx:373
+#: src/components/MissionSetup.tsx:399
+#: src/components/Multiplayer.tsx:243
 msgid "Cumulus"
 msgstr "Kumulus"
 
@@ -381,11 +426,11 @@ msgstr "Kumulus"
 msgid "Custom"
 msgstr "Xüsusi"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:40
 msgid "CUT"
 msgstr "TƏHLÜKƏLİ"
 
-#: src/components/MissionSetup.tsx:425
+#: src/components/MissionSetup.tsx:451
 msgid "Cycle view"
 msgstr "Görünüşü dəyiş"
 
@@ -402,11 +447,12 @@ msgstr "Tünd"
 msgid "Dark mode"
 msgstr "Tünd rejim"
 
-#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:387
+#: src/components/Multiplayer.tsx:238
 msgid "Day"
 msgstr "Gündüz"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:43
 msgid "DECK POSITION SAVED"
 msgstr "GÖYƏRTƏ MÖVQEYİ YADDA SAXLANDI"
 
@@ -458,11 +504,11 @@ msgstr "Rədd et"
 msgid "Displays the mobile sidebar."
 msgstr "Mobil yan paneli göstərir."
 
-#: src/components/MissionSetup.tsx:442
+#: src/components/MissionSetup.tsx:468
 msgid "Distance"
 msgstr "Məsafə"
 
-#: src/components/MissionSetup.tsx:522
+#: src/components/MissionSetup.tsx:548
 msgid "Distance LOD"
 msgstr "Məsafə LOD"
 
@@ -475,7 +521,7 @@ msgstr "Yüklə"
 msgid "Download failed"
 msgstr "Yükləmə alınmadı"
 
-#: src/components/MissionSetup.tsx:516
+#: src/components/MissionSetup.tsx:542
 msgid "Dynamic resolution"
 msgstr "Dinamik ayırdetmə"
 
@@ -490,6 +536,10 @@ msgstr "{label} redaktə et"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "E-poçt kodu"
+
+#: src/components/Multiplayer.tsx:276
+msgid "empty"
+msgstr "boş"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:299
 msgid "Enter the code from your email"
@@ -510,11 +560,11 @@ msgstr "Genişlət"
 msgid "Expand sidebar"
 msgstr "Yan paneli genişləndir"
 
-#: src/components/MissionSetup.tsx:488
+#: src/components/MissionSetup.tsx:514
 msgid "Exterior detail"
 msgstr "Xarici detal"
 
-#: src/components/MissionSetup.tsx:504
+#: src/components/MissionSetup.tsx:530
 msgid "Extra aircraft"
 msgstr "Əlavə təyyarələr"
 
@@ -538,7 +588,7 @@ msgstr "Doğrulama kodu göndərmək alınmadı"
 msgid "Failed to update category"
 msgstr "Kateqoriyanı yeniləmək alınmadı"
 
-#: src/components/GameCanvas.tsx:37
+#: src/components/GameCanvas.tsx:38
 msgid "FAIR"
 msgstr "ORTA"
 
@@ -546,16 +596,16 @@ msgstr "ORTA"
 msgid "Finish moving your account"
 msgstr "Hesabınızın köçürülməsini tamamlayın"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "flares"
 msgstr "fişənglər"
 
-#: src/components/MissionSetup.tsx:422
-#: src/components/MissionSetup.tsx:552
+#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:578
 msgid "Flares"
 msgstr "İşıq tələləri"
 
-#: src/components/GameCanvas.tsx:22
+#: src/components/GameCanvas.tsx:23
 msgid "FLARES"
 msgstr "TƏLƏLƏR"
 
@@ -567,11 +617,11 @@ msgstr "Düz"
 msgid "Floating"
 msgstr "Üzən"
 
-#: src/components/MissionSetup.tsx:558
+#: src/components/MissionSetup.tsx:584
 msgid "Framerate"
 msgstr "Kadr tezliyi"
 
-#: src/components/MissionSetup.tsx:334
+#: src/components/MissionSetup.tsx:342
 msgid "Free flight"
 msgstr "Sərbəst uçuş"
 
@@ -596,11 +646,11 @@ msgstr "Mövzudan"
 msgid "Full layout"
 msgstr "Tam tərtibat"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "gear"
 msgstr "şassi"
 
-#: src/components/GameCanvas.tsx:23
+#: src/components/GameCanvas.tsx:24
 msgid "GEAR"
 msgstr "ŞASSİ"
 
@@ -630,7 +680,7 @@ msgstr "{pageNumber}. səhifəyə keç"
 msgid "Go to previous page"
 msgstr "Əvvəlki səhifəyə get"
 
-#: src/components/MissionSetup.tsx:319
+#: src/components/MissionSetup.tsx:327
 msgid "Graphics"
 msgstr "Qrafika"
 
@@ -638,15 +688,15 @@ msgstr "Qrafika"
 msgid "Group"
 msgstr "Qrup"
 
-#: src/components/GameCanvas.tsx:21
+#: src/components/GameCanvas.tsx:22
 msgid "GUN"
 msgstr "TOP"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "guns"
 msgstr "toplar"
 
-#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:440
 msgid "Guns"
 msgstr "Toplar"
 
@@ -658,11 +708,12 @@ msgstr "Gizlət"
 msgid "Hide password"
 msgstr "Parolu gizlət"
 
-#: src/components/MissionSetup.tsx:468
+#: src/components/MissionSetup.tsx:494
 msgid "High"
 msgstr "Yüksək"
 
-#: src/components/MissionSetup.tsx:374
+#: src/components/MissionSetup.tsx:400
+#: src/components/Multiplayer.tsx:244
 msgid "High stratus"
 msgstr "Yüksək stratus"
 
@@ -673,11 +724,11 @@ msgstr "Yüksək stratus"
 msgid "Home"
 msgstr "Ev"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "hook"
 msgstr "qarmaq"
 
-#: src/components/GameCanvas.tsx:24
+#: src/components/GameCanvas.tsx:25
 msgid "HOOK"
 msgstr "QARMAQ"
 
@@ -689,11 +740,11 @@ msgstr "İsti"
 msgid "Imperial"
 msgstr "İmperial"
 
-#: src/components/MissionSetup.tsx:345
+#: src/components/MissionSetup.tsx:369
 msgid "In air"
 msgstr "Havada"
 
-#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:408
 msgid "Input"
 msgstr "Giriş"
 
@@ -709,23 +760,44 @@ msgstr "Maraqlar"
 msgid "Invalid verification code"
 msgstr "Etibarsız doğrulama kodu"
 
-#: src/components/MissionSetup.tsx:397
+#: src/components/MissionSetup.tsx:423
 msgid "Invert pitch"
 msgstr "Tanqajı tərsinə çevir"
 
-#: src/components/MissionSetup.tsx:335
+#: src/components/MissionSetup.tsx:608
+#: src/components/Multiplayer.tsx:290
+msgid "Join"
+msgstr "Qoşul"
+
+#: src/components/GameCanvas.tsx:52
+msgid "JOINED"
+msgstr "QOŞULDU"
+
+#: src/components/Multiplayer.tsx:275
 msgid "Joust"
 msgstr "Düello"
 
-#: src/components/MissionSetup.tsx:404
+#: src/components/Multiplayer.tsx:230
+msgid "Joust — 1v1, first kill wins"
+msgstr "Duel — 1v1, ilk vuran qazanır"
+
+#: src/components/MissionSetup.tsx:343
+msgid "Joust against AI player"
+msgstr "AI oyunçusuna qarşı duel"
+
+#: src/components/MissionSetup.tsx:430
 msgid "Keys"
 msgstr "Düymələr"
 
-#: src/components/MissionSetup.tsx:418
+#: src/components/GameCanvas.tsx:50
+msgid "KILL"
+msgstr "VURULDU"
+
+#: src/components/MissionSetup.tsx:444
 msgid "Landing gear"
 msgstr "Şassi"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:195
 msgid "Landing-gear wheels from <0>“F/A-18F Super Hornet Fighter Jet”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: wheels extracted and mounted on procedural struts."
 msgstr "Eniş şassisinin təkərləri <0>“F/A-18F Super Hornet Fighter Jet”</0> modelindən, müəllif <1>Muhamad Mirza Arrafi</1> (Sketchfab), <2>CC BY 4.0</2> lisenziyası altında. Dəyişdirilib: təkərlər çıxarılıb və prosedural dayaqlar üzərinə quraşdırılıb."
 
@@ -734,21 +806,13 @@ msgstr "Eniş şassisinin təkərləri <0>“F/A-18F Super Hornet Fighter Jet”
 msgid "Large"
 msgstr "Böyük"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "launch"
 msgstr "buraxılış"
 
-#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:441
 msgid "Launch (catapult)"
 msgstr "Buraxılış (katapult)"
-
-#: src/components/GameCanvas.tsx:96
-#~ msgid "launch / guns"
-#~ msgstr "buraxılış / toplar"
-
-#: src/components/MissionSetup.tsx:413
-#~ msgid "Launch / guns"
-#~ msgstr "Buraxılış / toplar"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:286
 msgid "Layout"
@@ -759,6 +823,10 @@ msgstr "Tərtibat"
 msgid "Learn more"
 msgstr "Daha çox öyrən"
 
+#: src/components/GameCanvas.tsx:53
+msgid "LEFT"
+msgstr "AYRILDI"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:354
 msgid "Left to Right"
 msgstr "Soldan sağa"
@@ -768,15 +836,15 @@ msgstr "Soldan sağa"
 msgid "Light"
 msgstr "İşıqlı"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "lights"
 msgstr "işıqlar"
 
-#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:446
 msgid "Lights"
 msgstr "İşıqlar"
 
-#: src/components/GameCanvas.tsx:31
+#: src/components/GameCanvas.tsx:32
 msgid "LIGHTS"
 msgstr "İŞIQLAR"
 
@@ -784,7 +852,7 @@ msgstr "İŞIQLAR"
 msgid "Load more"
 msgstr "Daha çox yüklə"
 
-#: src/components/GameCanvas.tsx:28
+#: src/components/GameCanvas.tsx:29
 msgid "LOADING"
 msgstr "YÜKLƏNİR"
 
@@ -819,23 +887,24 @@ msgstr "Uğurla çıxış edildi"
 msgid "Logging out…"
 msgstr "Çıxış edilir…"
 
-#: src/components/MissionSetup.tsx:464
+#: src/components/MissionSetup.tsx:490
 msgid "Low"
 msgstr "Aşağı"
 
-#: src/components/MissionSetup.tsx:375
+#: src/components/MissionSetup.tsx:401
+#: src/components/Multiplayer.tsx:245
 msgid "Low stratus"
 msgstr "Aşağı stratus"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:45
 msgid "M to close"
 msgstr "Bağlamaq üçün M"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "map"
 msgstr "xəritə"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:454
 msgid "Map"
 msgstr "Xəritə"
 
@@ -845,12 +914,16 @@ msgstr "Xəritə"
 msgid "Mark all as read"
 msgstr "Hamısını oxunmuş kimi işarələ"
 
+#: src/components/Multiplayer.tsx:226
+msgid "Match type"
+msgstr "Matç növü"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:466
+#: src/components/MissionSetup.tsx:492
 msgid "Medium"
 msgstr "Orta"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "menu"
 msgstr "menyu"
 
@@ -862,29 +935,41 @@ msgstr "Menyu"
 msgid "Metric"
 msgstr "Metrik"
 
-#: src/components/MissionSetup.tsx:241
+#: src/components/MissionSetup.tsx:243
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway Atolu xəritəsi — təsvirlərdə dəyişdirilmiş <0>Copernicus Sentinel-2</0> məlumatları var (2026); aerodrom həndəsəsi (uçuş-enmə zolağı, rulyoj yolları, perronlar) © <1>OpenStreetMap</1> iştirakçıları, <2>ODbL</2> lisenziyası altında; sahil və rif məlumatları <3>NOAA NCCOS</3> mənbəyindən (ictimai mülkiyyət)."
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "missile"
 msgstr "raket"
 
-#: src/components/MissionSetup.tsx:421
+#: src/components/MissionSetup.tsx:447
 msgid "Missile"
 msgstr "Raket"
 
-#: src/components/MissionSetup.tsx:546
+#: src/components/MissionSetup.tsx:572
 msgid "Missiles"
 msgstr "Raketlər"
 
-#: src/components/MissionSetup.tsx:310
+#: src/components/Multiplayer.tsx:253
+msgid "Missiles allowed"
+msgstr "Raketlərə icazə verilir"
+
+#: src/components/MissionSetup.tsx:318
 msgid "Mission"
 msgstr "Missiya"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:59
 msgid "Monday"
 msgstr "Bazar ertəsi"
+
+#: src/components/MissionSetup.tsx:344
+msgid "Multiplayer"
+msgstr "Çoxoyunçulu"
+
+#: src/components/Multiplayer.tsx:162
+msgid "Multiplayer needs WebTransport, which this browser does not support yet."
+msgstr "Çoxoyunçulu rejim üçün WebTransport lazımdır, bu brauzer isə onu hələ dəstəkləmir."
 
 #: ../../../lib/web/src/lib/api-client.ts:300
 msgid "Network error"
@@ -899,7 +984,8 @@ msgstr "Yeni"
 msgid "Next image"
 msgstr "Növbəti şəkil"
 
-#: src/components/MissionSetup.tsx:362
+#: src/components/MissionSetup.tsx:388
+#: src/components/Multiplayer.tsx:239
 msgid "Night"
 msgstr "Gecə"
 
@@ -914,6 +1000,10 @@ msgstr "Bağlı hesab yoxdur"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Mövcud qrup yoxdur"
+
+#: src/components/Multiplayer.tsx:267
+msgid "No open matches — create one."
+msgstr "Açıq matç yoxdur — birini yaradın."
 
 #: ../../../lib/web/src/components/place-picker.tsx:132
 msgid "No places found"
@@ -940,14 +1030,18 @@ msgstr "Hələ mövzu qeydi yoxdur — növbəti bildirişdən sonra yenidən c�
 msgid "No users found"
 msgstr "İstifadəçi tapılmadı"
 
-#: src/components/GameCanvas.tsx:38
+#: src/components/Multiplayer.tsx:267
+msgid "No world server."
+msgstr "Dünya serveri yoxdur."
+
+#: src/components/GameCanvas.tsx:39
 msgid "NO-GRADE"
 msgstr "QİYMƏT VERİLMƏDİ"
 
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:372
+#: src/components/MissionSetup.tsx:398
 msgid "None"
 msgstr "Heç biri"
 
@@ -967,25 +1061,33 @@ msgstr "Təyin edilməyib"
 msgid "Notifications"
 msgstr "Bildirişlər"
 
-#: src/components/MissionSetup.tsx:496
+#: src/components/MissionSetup.tsx:522
 msgid "Ocean detail"
 msgstr "Okean detalı"
 
-#: src/components/GameCanvas.tsx:36
+#: src/components/GameCanvas.tsx:37
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:347
+#: src/components/MissionSetup.tsx:371
 msgid "On carrier"
 msgstr "Daşıyıcıda"
 
-#: src/components/MissionSetup.tsx:346
+#: src/components/MissionSetup.tsx:370
 msgid "On runway"
 msgstr "Uçuş zolağında"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:16
 msgid "Oops! Page Not Found!"
 msgstr "Hopa! Səhifə Tapılmadı!"
+
+#: src/components/Multiplayer.tsx:275
+msgid "Open"
+msgstr "Aç"
+
+#: src/components/Multiplayer.tsx:229
+msgid "Open — anyone may join or leave"
+msgstr "Açıq — hər kəs qoşula və ya çıxa bilər"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:156
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:166
@@ -1012,15 +1114,15 @@ msgstr "Naviqasiya menyusunu aç"
 msgid "Open theme settings"
 msgstr "Tema parametrlərini aç"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "or"
 msgstr "və ya"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "orbit"
 msgstr "fırlan"
 
-#: src/components/MissionSetup.tsx:437
+#: src/components/MissionSetup.tsx:463
 msgid "Orbit"
 msgstr "Orbit"
 
@@ -1032,7 +1134,7 @@ msgstr "Digər"
 msgid "Owner"
 msgstr "Sahibi"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:46
 msgid "P to resume · M map · Esc menu"
 msgstr "P davam et · M xəritə · Esc menyu"
 
@@ -1048,23 +1150,28 @@ msgstr "Giriş açarının doğrulanması alınmadı. Zəhmət olmasa yenidən c
 msgid "Passkeys"
 msgstr "Passkey-lər"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "pause"
 msgstr "fasilə"
 
-#: src/components/MissionSetup.tsx:429
+#: src/components/MissionSetup.tsx:455
 msgid "Pause"
 msgstr "Pauza"
 
-#: src/components/GameCanvas.tsx:27
+#: src/components/GameCanvas.tsx:28
 msgid "PAUSED"
 msgstr "FASİLƏ"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:188
+msgid "pilot"
+msgstr "pilot"
+
+#: src/components/GameCanvas.tsx:112
 msgid "pitch"
 msgstr "tanqaj"
 
-#: src/components/MissionSetup.tsx:407
+#: src/components/MissionSetup.tsx:433
 msgid "Pitch"
 msgstr "Tanqaj"
 
@@ -1072,11 +1179,11 @@ msgstr "Tanqaj"
 msgid "Please check your internet connection and try again."
 msgstr "İnternet bağlantınızı yoxlayıb yenidən cəhd edin."
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:477
 msgid "Preset"
 msgstr "Hazır ayar"
 
-#: src/components/GameCanvas.tsx:30
+#: src/components/GameCanvas.tsx:31
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "UÇMAQ ÜÇÜN ENTER BASIN"
 
@@ -1107,11 +1214,11 @@ msgstr "Bu serverdə hesablarınızı yenidən əlaqələndirin"
 msgid "Re-register your passkeys on this server"
 msgstr "Bu serverdə giriş açarlarınızı yenidən qeydiyyatdan keçirin"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "rearm"
 msgstr "yenidən silahlan"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:449
 msgid "Rearm"
 msgstr "Yenidən silahlandır"
 
@@ -1128,6 +1235,10 @@ msgstr "Girişə yönləndirilir."
 #: ../../../lib/web/src/components/post-tags.tsx:208
 msgid "Reduce interest"
 msgstr "Marağı azalt"
+
+#: src/components/Multiplayer.tsx:206
+msgid "Refresh"
+msgstr "Yenilə"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
@@ -1162,7 +1273,7 @@ msgstr "E-poçtu yenidən göndər"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:595
+#: src/components/MissionSetup.tsx:626
 msgid "Reset"
 msgstr "Sıfırla"
 
@@ -1170,19 +1281,19 @@ msgstr "Sıfırla"
 msgid "Reset all settings to default values"
 msgstr "Bütün parametrləri standart dəyərlərə sıfırla"
 
-#: src/components/MissionSetup.tsx:478
+#: src/components/MissionSetup.tsx:504
 msgid "Resolution"
 msgstr "Çözüm"
 
-#: src/components/MissionSetup.tsx:572
+#: src/components/MissionSetup.tsx:598
 msgid "Restart"
 msgstr "Yenidən başlat"
 
-#: src/components/MissionSetup.tsx:576
+#: src/components/MissionSetup.tsx:602
 msgid "Resume"
 msgstr "Davam et"
 
-#: src/components/MissionSetup.tsx:430
+#: src/components/MissionSetup.tsx:456
 msgid "Return to menu"
 msgstr "Menyuya qayıt"
 
@@ -1190,11 +1301,11 @@ msgstr "Menyuya qayıt"
 msgid "Right to Left"
 msgstr "Sağdan Sola"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:113
 msgid "roll"
 msgstr "kren"
 
-#: src/components/MissionSetup.tsx:408
+#: src/components/MissionSetup.tsx:434
 msgid "Roll"
 msgstr "Kren"
 
@@ -1202,7 +1313,7 @@ msgstr "Kren"
 msgid "Rows per page"
 msgstr "Səhifə başına sətir"
 
-#: src/components/GameCanvas.tsx:32
+#: src/components/GameCanvas.tsx:33
 msgid "RUN UP ENGINE"
 msgstr "TAM GÜC"
 
@@ -1285,7 +1396,7 @@ msgstr "Yenidən göndər"
 msgid "Send email"
 msgstr "E-poçt göndər"
 
-#: src/components/MissionSetup.tsx:386
+#: src/components/MissionSetup.tsx:412
 msgid "Sensitivity"
 msgstr "Həssaslıq"
 
@@ -1303,6 +1414,10 @@ msgstr "Server xətası"
 msgid "Server rules"
 msgstr "Server qaydaları"
 
+#: src/components/GameCanvas.tsx:49
+msgid "SESSION ENDED"
+msgstr "SESSİYA BİTDİ"
+
 #: ../../../lib/web/src/lib/api-client.ts:227
 msgid "Session expired"
 msgstr "Sessiyanın vaxtı bitdi"
@@ -1319,7 +1434,7 @@ msgstr "Başlanğıc və təyinat nöqtəsini təyin et"
 msgid "Settings"
 msgstr "Parametrlər"
 
-#: src/components/MissionSetup.tsx:528
+#: src/components/MissionSetup.tsx:554
 msgid "Shadows"
 msgstr "Kölgələr"
 
@@ -1359,20 +1474,20 @@ msgstr "Kiçik"
 msgid "Spacious"
 msgstr "Geniş"
 
-#: src/components/GameCanvas.tsx:25
+#: src/components/GameCanvas.tsx:26
 msgid "SPD BK"
 msgstr "HV.FR"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "speed brake"
 msgstr "hava freni"
 
-#: src/components/MissionSetup.tsx:417
+#: src/components/MissionSetup.tsx:443
 msgid "Speed brake"
 msgstr "Hava freni"
 
-#: src/components/MissionSetup.tsx:339
-#: src/components/MissionSetup.tsx:582
+#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:613
 msgid "Start"
 msgstr "Başlat"
 
@@ -1394,7 +1509,7 @@ msgstr "Bazar"
 msgid "System"
 msgstr "Sistem"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:44
 msgid "TACTICAL MAP"
 msgstr "TAKTİKİ XƏRİTƏ"
 
@@ -1407,7 +1522,7 @@ msgstr "Etiket"
 msgid "Tags"
 msgstr "Etiketlər"
 
-#: src/components/MissionSetup.tsx:328
+#: src/components/MissionSetup.tsx:336
 msgid "Task"
 msgstr "Tapşırıq"
 
@@ -1432,11 +1547,11 @@ msgstr "Mövzu yeniləndi"
 msgid "Theme Settings"
 msgstr "Hələ heç bir moderasiya tədbiri qeyd olunmayıb"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "throttle"
 msgstr "qaz"
 
-#: src/components/MissionSetup.tsx:411
+#: src/components/MissionSetup.tsx:437
 msgid "Throttle"
 msgstr "Mühərrik gücü"
 
@@ -1444,15 +1559,15 @@ msgstr "Mühərrik gücü"
 msgid "Thursday"
 msgstr "Qalan vaxt"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "tilt"
 msgstr "əymə"
 
-#: src/components/MissionSetup.tsx:440
+#: src/components/MissionSetup.tsx:466
 msgid "Tilt"
 msgstr "Əyilmə"
 
-#: src/components/MissionSetup.tsx:355
+#: src/components/MissionSetup.tsx:381
 msgid "Time of day"
 msgstr "Günün vaxtı"
 
@@ -1491,7 +1606,7 @@ msgstr "İzlənilən filtri açıb-bağla"
 msgid "Top"
 msgstr "Mövzular"
 
-#: src/components/MissionSetup.tsx:540
+#: src/components/MissionSetup.tsx:566
 msgid "Tracers"
 msgstr "İzli güllələr"
 
@@ -1526,7 +1641,7 @@ msgstr "Mesajınızı yazın…"
 msgid "Type to search..."
 msgstr "Növlər"
 
-#: src/components/MissionSetup.tsx:470
+#: src/components/MissionSetup.tsx:496
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1589,7 +1704,7 @@ msgstr "Versiya"
 msgid "Video thumbnail"
 msgstr "Hamısına bax"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "view"
 msgstr "görünüş"
 
@@ -1606,7 +1721,7 @@ msgstr "Bütün yazılara bax"
 msgid "View all notifications"
 msgstr "Element təfərrüatlarına baxın və redaktə edin"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:42
 msgid "WAVE OFF"
 msgstr "İKİNCİ DÖVRƏYƏ GET"
 
@@ -1614,7 +1729,8 @@ msgstr "İKİNCİ DÖVRƏYƏ GET"
 msgid "We'll be back online shortly."
 msgstr "Mochi-ni sınamağa və dürüst rəy bildirməyə hazır olan erkən istifadəçiləri axtarırıq. Versiya 0.3-dür, bəzi xətaları var, lakin gündəlik istifadə üçün hazırdır."
 
-#: src/components/MissionSetup.tsx:313
+#: src/components/MissionSetup.tsx:321
+#: src/components/Multiplayer.tsx:235
 msgid "Weather"
 msgstr "Hava"
 
@@ -1626,19 +1742,31 @@ msgstr "Həftə başlayır"
 msgid "Wednesday"
 msgstr "Digər wiki-lər bu wiki-ni replikasiya etdikdə burada görünəcəklər."
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:442
 msgid "Wheel brakes"
 msgstr "Təkər əyləcləri"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:51
+msgid "WINS"
+msgstr "QALİB GƏLDİ"
+
+#: src/components/Multiplayer.tsx:172
+msgid "World server"
+msgstr "Dünya serveri"
+
+#: src/components/Multiplayer.tsx:100
+msgid "World server not reachable"
+msgstr "Dünya serveri əlçatan deyil"
+
+#: src/components/GameCanvas.tsx:113
 msgid "yaw"
 msgstr "rıskan"
 
-#: src/components/MissionSetup.tsx:409
+#: src/components/MissionSetup.tsx:435
 msgid "Yaw"
 msgstr "Rıskan"
 
-#: src/components/GameCanvas.tsx:26
+#: src/components/GameCanvas.tsx:27
 msgid "YOU"
 msgstr "SİZ"
 

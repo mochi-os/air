@@ -13,7 +13,22 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/GameCanvas.tsx:33
+#. placeholder {0}: status.players
+#: src/components/Multiplayer.tsx:198
+msgid "{0} flying"
+msgstr "{0} در حال پرواز"
+
+#. placeholder {0}: (s.players ?? []).length
+#. placeholder {1}: s.capacity
+#: src/components/Multiplayer.tsx:277
+msgid "{0}/{1} players"
+msgstr "{0}/{1} بازیکن"
+
+#: src/components/Multiplayer.tsx:141
+msgid "{name}'s match"
+msgstr "مسابقهٔ {name}"
+
+#: src/components/GameCanvas.tsx:34
 msgid "1 WIRE"
 msgstr "کابل 1"
 
@@ -21,7 +36,7 @@ msgstr "کابل 1"
 msgid "12 hours"
 msgstr "۱۲ ساعت"
 
-#: src/components/GameCanvas.tsx:34
+#: src/components/GameCanvas.tsx:35
 msgid "2 WIRE"
 msgstr "کابل 2"
 
@@ -29,11 +44,11 @@ msgstr "کابل 2"
 msgid "24 hours"
 msgstr "۲۴ ساعت"
 
-#: src/components/GameCanvas.tsx:35
+#: src/components/GameCanvas.tsx:36
 msgid "3 WIRE"
 msgstr "کابل 3"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:164
 msgid "A browser-based multiplayer jet-combat prototype — a shared flight model with server-authoritative netcode (work in progress), rendered with Three.js on WebGL2."
 msgstr "یک نمونه اولیه مرورگری چندنفره برای نبرد جت — یک مدل پروازی مشترک با کد شبکه‌ای تحت اقتدار سرور (در حال توسعه)، رندرشده با Three.js روی WebGL2."
 
@@ -111,7 +126,7 @@ msgstr "افزودن نما"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "ظاهر و چیدمان را مطابق سلیقهٔ خود تنظیم کنید."
 
-#: src/components/MissionSetup.tsx:534
+#: src/components/MissionSetup.tsx:560
 msgid "Afterburner"
 msgstr "پس‌سوز"
 
@@ -119,11 +134,11 @@ msgstr "پس‌سوز"
 msgid "AI"
 msgstr "هوش مصنوعی"
 
-#: src/components/MissionSetup.tsx:217
+#: src/components/MissionSetup.tsx:219
 msgid "Aircraft carrier <0>“Gerald Ford Aircraft Carrier”</0> by <1>Usman Zia (Uxxman)</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline, texture downscaled."
 msgstr "ناو هواپیمابر <0>“Gerald Ford Aircraft Carrier”</0> اثرِ <1>Usman Zia (Uxxman)</1> (Sketchfab)، تحت مجوز <2>CC BY 4.0</2>. اصلاح‌شده: تغییر مقیاس، جهت‌دهی مجدد دماغه به +X، فرورفته تا خط آب، کاهش کیفیت بافت."
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:170
 msgid "Aircraft model <0>“Boeing F/A-18E/F Super Hornet”</0> by <1>andertan</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented nose +X, weapons and pylons removed, markings removed, landing gear added, converted to metal-rough."
 msgstr "مدل هواپیمای <0>“Boeing F/A-18E/F Super Hornet”</0> ساختهٔ <1>andertan</1> (Sketchfab)، با مجوز <2>CC BY 4.0</2>. تغییرات: مقیاس‌گذاری مجدد، جهت‌گیری مجدد دماغه به +X، حذف سلاح‌ها و پایه‌ها، حذف نشانه‌ها، افزودن ارابه فرود، تبدیل به فلزی-خشن."
 
@@ -143,7 +158,7 @@ msgstr "خطای غیرمنتظره‌ای رخ داد"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "آیا از خروج از حساب مطمئن هستید؟ برای دسترسی به حساب باید دوباره وارد شوید."
 
-#: src/components/MissionSetup.tsx:419
+#: src/components/MissionSetup.tsx:445
 msgid "Arrestor hook"
 msgstr "قلاب مهار"
 
@@ -159,7 +174,7 @@ msgstr "صعودی"
 msgid "Authenticator code"
 msgstr "کد احراز هویت"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "back"
 msgstr "عقب"
 
@@ -173,7 +188,7 @@ msgstr "بازگشت"
 msgid "Back to home"
 msgstr "بازگشت به خانه"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:41
 msgid "BOLTER"
 msgstr "بولتر"
 
@@ -182,9 +197,13 @@ msgstr "بولتر"
 msgid "Boost interest"
 msgstr "تقویت علاقه"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "brakes"
 msgstr "ترمز"
+
+#: src/components/Multiplayer.tsx:183
+msgid "Callsign"
+msgstr "کال‌ساین"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
@@ -198,7 +217,7 @@ msgstr "ترمز"
 msgid "Cancel"
 msgstr "لغو"
 
-#: src/components/MissionSetup.tsx:348
+#: src/components/MissionSetup.tsx:372
 msgid "Carrier landing"
 msgstr "فرود روی ناو هواپیمابر"
 
@@ -211,11 +230,11 @@ msgstr "دستهٔ این اعلان"
 msgid "Change notification category"
 msgstr "تغییر دستهٔ اعلان"
 
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:459
 msgid "Chase view"
 msgstr "نمای تعقیب"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:122
 msgid "Chase view:"
 msgstr "نمای تعقیب:"
 
@@ -246,6 +265,7 @@ msgstr "انتخاب زبان"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/Multiplayer.tsx:242
 msgid "Clear"
 msgstr "پاک کردن"
 
@@ -287,11 +307,11 @@ msgstr "بستن پنل"
 msgid "Close search"
 msgstr "بستن جست‌وجو"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:126
 msgid "closer"
 msgstr "نزدیک‌تر"
 
-#: src/components/MissionSetup.tsx:366
+#: src/components/MissionSetup.tsx:392
 msgid "Clouds"
 msgstr "ابرها"
 
@@ -324,6 +344,18 @@ msgstr "فشرده"
 msgid "Confirm"
 msgstr "تأیید"
 
+#: src/components/GameCanvas.tsx:47
+msgid "CONNECTED"
+msgstr "متصل شد"
+
+#: src/components/Multiplayer.tsx:201
+msgid "Connecting…"
+msgstr "در حال اتصال…"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CONNECTION FAILED"
+msgstr "اتصال ناموفق بود"
+
 #: ../../../lib/web/src/lib/query-client.ts:81
 msgid "Content not modified"
 msgstr "محتوا تغییری نکرده است"
@@ -340,13 +372,17 @@ msgstr "ادامه"
 msgid "Continue with {label}"
 msgstr "ادامه با {label}"
 
-#: src/components/MissionSetup.tsx:316
+#: src/components/MissionSetup.tsx:324
 msgid "Controls"
 msgstr "کنترل‌ها"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
 msgstr "کپی"
+
+#: src/components/Multiplayer.tsx:153
+msgid "Could not create the match"
+msgstr "مسابقه ایجاد نشد"
 
 #: ../../../lib/web/src/features/document/document-page.tsx:84
 msgid "Could not load this document. Please try again later."
@@ -364,16 +400,25 @@ msgstr "شروع احراز هویت مجدد ممکن نشد. لطفاً دوب
 msgid "Couldn't verify with that account. Please try again."
 msgstr "تأیید با آن حساب ممکن نشد. لطفاً دوباره تلاش کنید."
 
-#: src/components/GameCanvas.tsx:29
+#: src/components/GameCanvas.tsx:30
 msgid "CRASHED"
 msgstr "سقوط کرد"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:157
+#: src/components/Multiplayer.tsx:258
+msgid "Create and fly"
+msgstr "ایجاد و پرواز"
+
+#: src/components/Multiplayer.tsx:216
+msgid "Create match"
+msgstr "ایجاد مسابقه"
+
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:159
 msgid "Credits"
 msgstr "دست‌اندرکاران"
 
-#: src/components/MissionSetup.tsx:373
+#: src/components/MissionSetup.tsx:399
+#: src/components/Multiplayer.tsx:243
 msgid "Cumulus"
 msgstr "کومولوس"
 
@@ -381,11 +426,11 @@ msgstr "کومولوس"
 msgid "Custom"
 msgstr "سفارشی"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:40
 msgid "CUT"
 msgstr "خطرناک"
 
-#: src/components/MissionSetup.tsx:425
+#: src/components/MissionSetup.tsx:451
 msgid "Cycle view"
 msgstr "تغییر نما"
 
@@ -402,11 +447,12 @@ msgstr "تیره"
 msgid "Dark mode"
 msgstr "حالت تیره"
 
-#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:387
+#: src/components/Multiplayer.tsx:238
 msgid "Day"
 msgstr "روز"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:43
 msgid "DECK POSITION SAVED"
 msgstr "موقعیت روی عرشه ذخیره شد"
 
@@ -458,11 +504,11 @@ msgstr "بستن"
 msgid "Displays the mobile sidebar."
 msgstr "نوار کناری موبایل را نمایش می‌دهد."
 
-#: src/components/MissionSetup.tsx:442
+#: src/components/MissionSetup.tsx:468
 msgid "Distance"
 msgstr "فاصله"
 
-#: src/components/MissionSetup.tsx:522
+#: src/components/MissionSetup.tsx:548
 msgid "Distance LOD"
 msgstr "LOD فاصله"
 
@@ -475,7 +521,7 @@ msgstr "دانلود"
 msgid "Download failed"
 msgstr "دانلود ناموفق بود"
 
-#: src/components/MissionSetup.tsx:516
+#: src/components/MissionSetup.tsx:542
 msgid "Dynamic resolution"
 msgstr "وضوح پویا"
 
@@ -490,6 +536,10 @@ msgstr "ویرایش {label}"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "کد ایمیل"
+
+#: src/components/Multiplayer.tsx:276
+msgid "empty"
+msgstr "خالی"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:299
 msgid "Enter the code from your email"
@@ -510,11 +560,11 @@ msgstr "گسترش"
 msgid "Expand sidebar"
 msgstr "گسترش نوار کناری"
 
-#: src/components/MissionSetup.tsx:488
+#: src/components/MissionSetup.tsx:514
 msgid "Exterior detail"
 msgstr "جزئیات بیرونی"
 
-#: src/components/MissionSetup.tsx:504
+#: src/components/MissionSetup.tsx:530
 msgid "Extra aircraft"
 msgstr "هواپیماهای اضافی"
 
@@ -538,7 +588,7 @@ msgstr "ارسال کد تأیید ناموفق بود"
 msgid "Failed to update category"
 msgstr "به‌روزرسانی دسته ناموفق بود"
 
-#: src/components/GameCanvas.tsx:37
+#: src/components/GameCanvas.tsx:38
 msgid "FAIR"
 msgstr "متوسط"
 
@@ -546,16 +596,16 @@ msgstr "متوسط"
 msgid "Finish moving your account"
 msgstr "انتقال حساب کاربری خود را تکمیل کنید"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "flares"
 msgstr "منورها"
 
-#: src/components/MissionSetup.tsx:422
-#: src/components/MissionSetup.tsx:552
+#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:578
 msgid "Flares"
 msgstr "فلرها"
 
-#: src/components/GameCanvas.tsx:22
+#: src/components/GameCanvas.tsx:23
 msgid "FLARES"
 msgstr "فلرها"
 
@@ -567,11 +617,11 @@ msgstr "تخت"
 msgid "Floating"
 msgstr "شناور"
 
-#: src/components/MissionSetup.tsx:558
+#: src/components/MissionSetup.tsx:584
 msgid "Framerate"
 msgstr "نرخ فریم"
 
-#: src/components/MissionSetup.tsx:334
+#: src/components/MissionSetup.tsx:342
 msgid "Free flight"
 msgstr "پرواز آزاد"
 
@@ -596,11 +646,11 @@ msgstr "از تم"
 msgid "Full layout"
 msgstr "چیدمان کامل"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "gear"
 msgstr "ارابه"
 
-#: src/components/GameCanvas.tsx:23
+#: src/components/GameCanvas.tsx:24
 msgid "GEAR"
 msgstr "ارابه"
 
@@ -630,7 +680,7 @@ msgstr "رفتن به صفحه {pageNumber}"
 msgid "Go to previous page"
 msgstr "رفتن به صفحه قبل"
 
-#: src/components/MissionSetup.tsx:319
+#: src/components/MissionSetup.tsx:327
 msgid "Graphics"
 msgstr "گرافیک"
 
@@ -638,15 +688,15 @@ msgstr "گرافیک"
 msgid "Group"
 msgstr "گروه"
 
-#: src/components/GameCanvas.tsx:21
+#: src/components/GameCanvas.tsx:22
 msgid "GUN"
 msgstr "توپ"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "guns"
 msgstr "مسلسل‌ها"
 
-#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:440
 msgid "Guns"
 msgstr "مسلسل‌ها"
 
@@ -658,11 +708,12 @@ msgstr "پنهان کردن"
 msgid "Hide password"
 msgstr "پنهان کردن رمز عبور"
 
-#: src/components/MissionSetup.tsx:468
+#: src/components/MissionSetup.tsx:494
 msgid "High"
 msgstr "بالا"
 
-#: src/components/MissionSetup.tsx:374
+#: src/components/MissionSetup.tsx:400
+#: src/components/Multiplayer.tsx:244
 msgid "High stratus"
 msgstr "استراتوس بالا"
 
@@ -673,11 +724,11 @@ msgstr "استراتوس بالا"
 msgid "Home"
 msgstr "خانه"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "hook"
 msgstr "قلاب"
 
-#: src/components/GameCanvas.tsx:24
+#: src/components/GameCanvas.tsx:25
 msgid "HOOK"
 msgstr "قلاب"
 
@@ -689,11 +740,11 @@ msgstr "داغ"
 msgid "Imperial"
 msgstr "امپریال"
 
-#: src/components/MissionSetup.tsx:345
+#: src/components/MissionSetup.tsx:369
 msgid "In air"
 msgstr "در هوا"
 
-#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:408
 msgid "Input"
 msgstr "ورودی"
 
@@ -709,23 +760,44 @@ msgstr "علاقه‌مندی‌ها"
 msgid "Invalid verification code"
 msgstr "کد تأیید نامعتبر"
 
-#: src/components/MissionSetup.tsx:397
+#: src/components/MissionSetup.tsx:423
 msgid "Invert pitch"
 msgstr "وارونه کردن پیچ"
 
-#: src/components/MissionSetup.tsx:335
+#: src/components/MissionSetup.tsx:608
+#: src/components/Multiplayer.tsx:290
+msgid "Join"
+msgstr "پیوستن"
+
+#: src/components/GameCanvas.tsx:52
+msgid "JOINED"
+msgstr "پیوست"
+
+#: src/components/Multiplayer.tsx:275
 msgid "Joust"
 msgstr "دوئل"
 
-#: src/components/MissionSetup.tsx:404
+#: src/components/Multiplayer.tsx:230
+msgid "Joust — 1v1, first kill wins"
+msgstr "دوئل — 1v1، اولین سرنگونی برنده است"
+
+#: src/components/MissionSetup.tsx:343
+msgid "Joust against AI player"
+msgstr "دوئل در برابر بازیکن هوش مصنوعی"
+
+#: src/components/MissionSetup.tsx:430
 msgid "Keys"
 msgstr "کلیدها"
 
-#: src/components/MissionSetup.tsx:418
+#: src/components/GameCanvas.tsx:50
+msgid "KILL"
+msgstr "سرنگونی"
+
+#: src/components/MissionSetup.tsx:444
 msgid "Landing gear"
 msgstr "ارابهٔ فرود"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:195
 msgid "Landing-gear wheels from <0>“F/A-18F Super Hornet Fighter Jet”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: wheels extracted and mounted on procedural struts."
 msgstr "چرخ‌های ارابه فرود از <0>“F/A-18F Super Hornet Fighter Jet”</0> ساختهٔ <1>Muhamad Mirza Arrafi</1> (Sketchfab)، با مجوز <2>CC BY 4.0</2>. تغییرات: چرخ‌ها جدا شده و روی پایه‌های پروسیجرال نصب شده‌اند."
 
@@ -734,21 +806,13 @@ msgstr "چرخ‌های ارابه فرود از <0>“F/A-18F Super Hornet Figh
 msgid "Large"
 msgstr "بزرگ"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "launch"
 msgstr "پرتاب"
 
-#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:441
 msgid "Launch (catapult)"
 msgstr "پرتاب (منجنیق)"
-
-#: src/components/GameCanvas.tsx:96
-#~ msgid "launch / guns"
-#~ msgstr "پرتاب / مسلسل"
-
-#: src/components/MissionSetup.tsx:413
-#~ msgid "Launch / guns"
-#~ msgstr "پرتاب / مسلسل"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:286
 msgid "Layout"
@@ -759,6 +823,10 @@ msgstr "چیدمان"
 msgid "Learn more"
 msgstr "اطلاعات بیشتر"
 
+#: src/components/GameCanvas.tsx:53
+msgid "LEFT"
+msgstr "خارج شد"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:354
 msgid "Left to Right"
 msgstr "چپ به راست"
@@ -768,15 +836,15 @@ msgstr "چپ به راست"
 msgid "Light"
 msgstr "روشن"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "lights"
 msgstr "چراغ‌ها"
 
-#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:446
 msgid "Lights"
 msgstr "چراغ‌ها"
 
-#: src/components/GameCanvas.tsx:31
+#: src/components/GameCanvas.tsx:32
 msgid "LIGHTS"
 msgstr "چراغ‌ها"
 
@@ -784,7 +852,7 @@ msgstr "چراغ‌ها"
 msgid "Load more"
 msgstr "بارگذاری بیشتر"
 
-#: src/components/GameCanvas.tsx:28
+#: src/components/GameCanvas.tsx:29
 msgid "LOADING"
 msgstr "در حال بارگذاری"
 
@@ -819,23 +887,24 @@ msgstr "با موفقیت خارج شد"
 msgid "Logging out…"
 msgstr "در حال خروج…"
 
-#: src/components/MissionSetup.tsx:464
+#: src/components/MissionSetup.tsx:490
 msgid "Low"
 msgstr "پایین"
 
-#: src/components/MissionSetup.tsx:375
+#: src/components/MissionSetup.tsx:401
+#: src/components/Multiplayer.tsx:245
 msgid "Low stratus"
 msgstr "استراتوس پایین"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:45
 msgid "M to close"
 msgstr "M برای بستن"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "map"
 msgstr "نقشه"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:454
 msgid "Map"
 msgstr "نقشه"
 
@@ -845,12 +914,16 @@ msgstr "نقشه"
 msgid "Mark all as read"
 msgstr "علامت‌گذاری همه به‌عنوان خوانده‌شده"
 
+#: src/components/Multiplayer.tsx:226
+msgid "Match type"
+msgstr "نوع مسابقه"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:466
+#: src/components/MissionSetup.tsx:492
 msgid "Medium"
 msgstr "متوسط"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "menu"
 msgstr "منو"
 
@@ -862,29 +935,41 @@ msgstr "منو"
 msgid "Metric"
 msgstr "متریک"
 
-#: src/components/MissionSetup.tsx:241
+#: src/components/MissionSetup.tsx:243
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "نقشهٔ آتول میدوی — تصاویر حاوی داده‌های اصلاح‌شدهٔ <0>Copernicus Sentinel-2</0> هستند (۲۰۲۶)؛ هندسهٔ فرودگاه (باند، مسیرهای تاکسی‌رو، اپرون‌ها) © مشارکت‌کنندگان <1>OpenStreetMap</1>، تحت مجوز <2>ODbL</2>؛ داده‌های خط ساحلی و آبسنگ‌ها از <3>NOAA NCCOS</3> (مالکیت عمومی)."
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "missile"
 msgstr "موشک"
 
-#: src/components/MissionSetup.tsx:421
+#: src/components/MissionSetup.tsx:447
 msgid "Missile"
 msgstr "موشک"
 
-#: src/components/MissionSetup.tsx:546
+#: src/components/MissionSetup.tsx:572
 msgid "Missiles"
 msgstr "موشک‌ها"
 
-#: src/components/MissionSetup.tsx:310
+#: src/components/Multiplayer.tsx:253
+msgid "Missiles allowed"
+msgstr "موشک‌ها مجاز هستند"
+
+#: src/components/MissionSetup.tsx:318
 msgid "Mission"
 msgstr "ماموریت"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:59
 msgid "Monday"
 msgstr "دوشنبه"
+
+#: src/components/MissionSetup.tsx:344
+msgid "Multiplayer"
+msgstr "چندنفره"
+
+#: src/components/Multiplayer.tsx:162
+msgid "Multiplayer needs WebTransport, which this browser does not support yet."
+msgstr "بخش چندنفره به WebTransport نیاز دارد که این مرورگر هنوز از آن پشتیبانی نمی‌کند."
 
 #: ../../../lib/web/src/lib/api-client.ts:300
 msgid "Network error"
@@ -899,7 +984,8 @@ msgstr "جدید"
 msgid "Next image"
 msgstr "تصویر بعدی"
 
-#: src/components/MissionSetup.tsx:362
+#: src/components/MissionSetup.tsx:388
+#: src/components/Multiplayer.tsx:239
 msgid "Night"
 msgstr "شب"
 
@@ -914,6 +1000,10 @@ msgstr "هیچ حساب متصلی وجود ندارد"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "هیچ گروهی در دسترس نیست"
+
+#: src/components/Multiplayer.tsx:267
+msgid "No open matches — create one."
+msgstr "هیچ مسابقه‌ی آزادی وجود ندارد — یکی بسازید."
 
 #: ../../../lib/web/src/components/place-picker.tsx:132
 msgid "No places found"
@@ -940,14 +1030,18 @@ msgstr "هنوز هیچ رکوردی برای موضوع وجود ندارد —
 msgid "No users found"
 msgstr "کاربری یافت نشد"
 
-#: src/components/GameCanvas.tsx:38
+#: src/components/Multiplayer.tsx:267
+msgid "No world server."
+msgstr "سرور دنیا وجود ندارد."
+
+#: src/components/GameCanvas.tsx:39
 msgid "NO-GRADE"
 msgstr "بدون نمره"
 
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:372
+#: src/components/MissionSetup.tsx:398
 msgid "None"
 msgstr "هیچ‌کدام"
 
@@ -967,25 +1061,33 @@ msgstr "تنظیم نشده"
 msgid "Notifications"
 msgstr "اعلان‌ها"
 
-#: src/components/MissionSetup.tsx:496
+#: src/components/MissionSetup.tsx:522
 msgid "Ocean detail"
 msgstr "جزئیات اقیانوس"
 
-#: src/components/GameCanvas.tsx:36
+#: src/components/GameCanvas.tsx:37
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:347
+#: src/components/MissionSetup.tsx:371
 msgid "On carrier"
 msgstr "روی ناو"
 
-#: src/components/MissionSetup.tsx:346
+#: src/components/MissionSetup.tsx:370
 msgid "On runway"
 msgstr "روی باند"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:16
 msgid "Oops! Page Not Found!"
 msgstr "اوه! صفحه پیدا نشد!"
+
+#: src/components/Multiplayer.tsx:275
+msgid "Open"
+msgstr "باز کردن"
+
+#: src/components/Multiplayer.tsx:229
+msgid "Open — anyone may join or leave"
+msgstr "آزاد — هر کسی می‌تواند بپیوندد یا خارج شود"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:156
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:166
@@ -1012,15 +1114,15 @@ msgstr "باز کردن منوی ناوبری"
 msgid "Open theme settings"
 msgstr "باز کردن تنظیمات تم"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "or"
 msgstr "یا"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "orbit"
 msgstr "گردش"
 
-#: src/components/MissionSetup.tsx:437
+#: src/components/MissionSetup.tsx:463
 msgid "Orbit"
 msgstr "مدار"
 
@@ -1032,7 +1134,7 @@ msgstr "سایر"
 msgid "Owner"
 msgstr "مالک"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:46
 msgid "P to resume · M map · Esc menu"
 msgstr "P ادامه · M نقشه · Esc منو"
 
@@ -1048,23 +1150,28 @@ msgstr "تأیید با کلید عبور ناموفق بود. لطفاً دوب
 msgid "Passkeys"
 msgstr "پسکی‌ها"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "pause"
 msgstr "توقف"
 
-#: src/components/MissionSetup.tsx:429
+#: src/components/MissionSetup.tsx:455
 msgid "Pause"
 msgstr "توقف"
 
-#: src/components/GameCanvas.tsx:27
+#: src/components/GameCanvas.tsx:28
 msgid "PAUSED"
 msgstr "مکث"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:188
+msgid "pilot"
+msgstr "خلبان"
+
+#: src/components/GameCanvas.tsx:112
 msgid "pitch"
 msgstr "فراز"
 
-#: src/components/MissionSetup.tsx:407
+#: src/components/MissionSetup.tsx:433
 msgid "Pitch"
 msgstr "پیچ"
 
@@ -1072,11 +1179,11 @@ msgstr "پیچ"
 msgid "Please check your internet connection and try again."
 msgstr "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید."
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:477
 msgid "Preset"
 msgstr "پیش‌تنظیم"
 
-#: src/components/GameCanvas.tsx:30
+#: src/components/GameCanvas.tsx:31
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "برای پرتاب Enter را فشار دهید"
 
@@ -1107,11 +1214,11 @@ msgstr "حساب‌های خود را در این سرور مجدداً پیون
 msgid "Re-register your passkeys on this server"
 msgstr "کلیدهای عبور خود را دوباره در این سرور ثبت کنید"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "rearm"
 msgstr "بارگذاری مجدد"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:449
 msgid "Rearm"
 msgstr "تسلیح مجدد"
 
@@ -1128,6 +1235,10 @@ msgstr "در حال تغییر مسیر به ورود."
 #: ../../../lib/web/src/components/post-tags.tsx:208
 msgid "Reduce interest"
 msgstr "کاهش علاقه"
+
+#: src/components/Multiplayer.tsx:206
+msgid "Refresh"
+msgstr "تازه‌سازی"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
@@ -1162,7 +1273,7 @@ msgstr "ارسال مجدد ایمیل"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:595
+#: src/components/MissionSetup.tsx:626
 msgid "Reset"
 msgstr "بازنشانی"
 
@@ -1170,19 +1281,19 @@ msgstr "بازنشانی"
 msgid "Reset all settings to default values"
 msgstr "بازنشانی همه تنظیمات به مقادیر پیش‌فرض"
 
-#: src/components/MissionSetup.tsx:478
+#: src/components/MissionSetup.tsx:504
 msgid "Resolution"
 msgstr "رفع"
 
-#: src/components/MissionSetup.tsx:572
+#: src/components/MissionSetup.tsx:598
 msgid "Restart"
 msgstr "شروع مجدد"
 
-#: src/components/MissionSetup.tsx:576
+#: src/components/MissionSetup.tsx:602
 msgid "Resume"
 msgstr "ازسرگیری"
 
-#: src/components/MissionSetup.tsx:430
+#: src/components/MissionSetup.tsx:456
 msgid "Return to menu"
 msgstr "بازگشت به منو"
 
@@ -1190,11 +1301,11 @@ msgstr "بازگشت به منو"
 msgid "Right to Left"
 msgstr "راست به چپ"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:113
 msgid "roll"
 msgstr "غلت"
 
-#: src/components/MissionSetup.tsx:408
+#: src/components/MissionSetup.tsx:434
 msgid "Roll"
 msgstr "غلت"
 
@@ -1202,7 +1313,7 @@ msgstr "غلت"
 msgid "Rows per page"
 msgstr "ردیف‌ها در هر صفحه"
 
-#: src/components/GameCanvas.tsx:32
+#: src/components/GameCanvas.tsx:33
 msgid "RUN UP ENGINE"
 msgstr "قدرت کامل"
 
@@ -1285,7 +1396,7 @@ msgstr "ارسال مجدد"
 msgid "Send email"
 msgstr "ارسال ایمیل"
 
-#: src/components/MissionSetup.tsx:386
+#: src/components/MissionSetup.tsx:412
 msgid "Sensitivity"
 msgstr "حساسیت"
 
@@ -1303,6 +1414,10 @@ msgstr "خطای سرور"
 msgid "Server rules"
 msgstr "قوانین سرور"
 
+#: src/components/GameCanvas.tsx:49
+msgid "SESSION ENDED"
+msgstr "جلسه پایان یافت"
+
 #: ../../../lib/web/src/lib/api-client.ts:227
 msgid "Session expired"
 msgstr "نشست منقضی شد"
@@ -1319,7 +1434,7 @@ msgstr "تنظیم مبدأ و مقصد"
 msgid "Settings"
 msgstr "تنظیمات"
 
-#: src/components/MissionSetup.tsx:528
+#: src/components/MissionSetup.tsx:554
 msgid "Shadows"
 msgstr "سایه‌ها"
 
@@ -1359,20 +1474,20 @@ msgstr "کوچک"
 msgid "Spacious"
 msgstr "گسترده"
 
-#: src/components/GameCanvas.tsx:25
+#: src/components/GameCanvas.tsx:26
 msgid "SPD BK"
 msgstr "ت.هو"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "speed brake"
 msgstr "ترمز هوایی"
 
-#: src/components/MissionSetup.tsx:417
+#: src/components/MissionSetup.tsx:443
 msgid "Speed brake"
 msgstr "ترمز هوایی"
 
-#: src/components/MissionSetup.tsx:339
-#: src/components/MissionSetup.tsx:582
+#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:613
 msgid "Start"
 msgstr "شروع"
 
@@ -1394,7 +1509,7 @@ msgstr "یکشنبه"
 msgid "System"
 msgstr "سیستم"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:44
 msgid "TACTICAL MAP"
 msgstr "نقشه تاکتیکی"
 
@@ -1407,7 +1522,7 @@ msgstr "برچسب"
 msgid "Tags"
 msgstr "برچسب‌ها"
 
-#: src/components/MissionSetup.tsx:328
+#: src/components/MissionSetup.tsx:336
 msgid "Task"
 msgstr "وظیفه"
 
@@ -1432,11 +1547,11 @@ msgstr "تم"
 msgid "Theme Settings"
 msgstr "تنظیمات تم"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "throttle"
 msgstr "گاز"
 
-#: src/components/MissionSetup.tsx:411
+#: src/components/MissionSetup.tsx:437
 msgid "Throttle"
 msgstr "گاز"
 
@@ -1444,15 +1559,15 @@ msgstr "گاز"
 msgid "Thursday"
 msgstr "پنجشنبه"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "tilt"
 msgstr "شیب"
 
-#: src/components/MissionSetup.tsx:440
+#: src/components/MissionSetup.tsx:466
 msgid "Tilt"
 msgstr "شیب"
 
-#: src/components/MissionSetup.tsx:355
+#: src/components/MissionSetup.tsx:381
 msgid "Time of day"
 msgstr "زمان روز"
 
@@ -1491,7 +1606,7 @@ msgstr "تغییر تم"
 msgid "Top"
 msgstr "بالا"
 
-#: src/components/MissionSetup.tsx:540
+#: src/components/MissionSetup.tsx:566
 msgid "Tracers"
 msgstr "گلوله‌های رسام"
 
@@ -1526,7 +1641,7 @@ msgstr "برای جست‌وجوی کاربران تایپ کنید"
 msgid "Type to search..."
 msgstr "برای جست‌وجو تایپ کنید..."
 
-#: src/components/MissionSetup.tsx:470
+#: src/components/MissionSetup.tsx:496
 msgid "Ultra"
 msgstr "اولترا"
 
@@ -1589,7 +1704,7 @@ msgstr "تأیید نشانی ایمیل"
 msgid "Video thumbnail"
 msgstr "بندانگشتی ویدیو"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "view"
 msgstr "نما"
 
@@ -1606,7 +1721,7 @@ msgstr "نمایش همه"
 msgid "View all notifications"
 msgstr "نمایش همه اعلان‌ها"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:42
 msgid "WAVE OFF"
 msgstr "فرود را لغو کن"
 
@@ -1614,7 +1729,8 @@ msgstr "فرود را لغو کن"
 msgid "We'll be back online shortly."
 msgstr "به‌زودی دوباره آنلاین خواهیم بود."
 
-#: src/components/MissionSetup.tsx:313
+#: src/components/MissionSetup.tsx:321
+#: src/components/Multiplayer.tsx:235
 msgid "Weather"
 msgstr "آب‌وهوا"
 
@@ -1626,19 +1742,31 @@ msgstr "وب‌سایت در حال نگهداری است!"
 msgid "Wednesday"
 msgstr "چهارشنبه"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:442
 msgid "Wheel brakes"
 msgstr "ترمز چرخ"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:51
+msgid "WINS"
+msgstr "برنده شد"
+
+#: src/components/Multiplayer.tsx:172
+msgid "World server"
+msgstr "سرور دنیا"
+
+#: src/components/Multiplayer.tsx:100
+msgid "World server not reachable"
+msgstr "سرور دنیا در دسترس نیست"
+
+#: src/components/GameCanvas.tsx:113
 msgid "yaw"
 msgstr "انحراف"
 
-#: src/components/MissionSetup.tsx:409
+#: src/components/MissionSetup.tsx:435
 msgid "Yaw"
 msgstr "یاو"
 
-#: src/components/GameCanvas.tsx:26
+#: src/components/GameCanvas.tsx:27
 msgid "YOU"
 msgstr "شما"
 
