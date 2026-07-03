@@ -9,6 +9,7 @@ import { msg } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { type MessageDescriptor } from '@lingui/core'
 import { startGame, type GameHandle } from '../game/engine'
+import { type Join as NetJoin } from '../game/net'
 import { type MissionConfig } from '../lib/config'
 import '../game/game.css'
 
@@ -43,6 +44,13 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'TACTICAL MAP': msg`TACTICAL MAP`,
   'M to close': msg`M to close`,
   'P to resume · M map · Esc menu': msg`P to resume · M map · Esc menu`,
+  CONNECTED: msg`CONNECTED`,
+  'CONNECTION FAILED': msg`CONNECTION FAILED`,
+  'SESSION ENDED': msg`SESSION ENDED`,
+  KILL: msg`KILL`,
+  WINS: msg`WINS`,
+  JOINED: msg`JOINED`,
+  LEFT: msg`LEFT`,
 }
 
 // Mounts the imperative Three.js engine onto its canvases and tears it down on
@@ -51,10 +59,12 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
 // paused game; onExit fires when the player presses Esc in flight.
 export function GameCanvas({
   config,
+  join = null,
   onExit,
   onReady,
 }: {
   config?: MissionConfig
+  join?: NetJoin | null
   onExit?: () => void
   onReady?: (handle: GameHandle) => void
 }) {
@@ -82,6 +92,7 @@ export function GameCanvas({
       help: helpRef.current!,
       framerate: framerateRef.current!,
       config,
+      join,
       onExit,
       translate,
     })

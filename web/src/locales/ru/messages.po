@@ -13,7 +13,22 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/GameCanvas.tsx:33
+#. placeholder {0}: status.players
+#: src/components/Multiplayer.tsx:198
+msgid "{0} flying"
+msgstr "{0} в полёте"
+
+#. placeholder {0}: (s.players ?? []).length
+#. placeholder {1}: s.capacity
+#: src/components/Multiplayer.tsx:277
+msgid "{0}/{1} players"
+msgstr "{0}/{1} игроков"
+
+#: src/components/Multiplayer.tsx:141
+msgid "{name}'s match"
+msgstr "Матч {name}"
+
+#: src/components/GameCanvas.tsx:34
 msgid "1 WIRE"
 msgstr "ТРОС 1"
 
@@ -21,7 +36,7 @@ msgstr "ТРОС 1"
 msgid "12 hours"
 msgstr "12 часов"
 
-#: src/components/GameCanvas.tsx:34
+#: src/components/GameCanvas.tsx:35
 msgid "2 WIRE"
 msgstr "ТРОС 2"
 
@@ -29,11 +44,11 @@ msgstr "ТРОС 2"
 msgid "24 hours"
 msgstr "24 часа"
 
-#: src/components/GameCanvas.tsx:35
+#: src/components/GameCanvas.tsx:36
 msgid "3 WIRE"
 msgstr "ТРОС 3"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:164
 msgid "A browser-based multiplayer jet-combat prototype — a shared flight model with server-authoritative netcode (work in progress), rendered with Three.js on WebGL2."
 msgstr "Браузерный многопользовательский прототип реактивного воздушного боя — общая модель полёта с серверным авторитетным сетевым кодом (в разработке), отрисовка через Three.js на WebGL2."
 
@@ -111,7 +126,7 @@ msgstr "Добавить вид"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Настройте внешний вид и расположение по своему вкусу."
 
-#: src/components/MissionSetup.tsx:534
+#: src/components/MissionSetup.tsx:560
 msgid "Afterburner"
 msgstr "Форсаж"
 
@@ -119,11 +134,11 @@ msgstr "Форсаж"
 msgid "AI"
 msgstr "ИИ"
 
-#: src/components/MissionSetup.tsx:217
+#: src/components/MissionSetup.tsx:219
 msgid "Aircraft carrier <0>“Gerald Ford Aircraft Carrier”</0> by <1>Usman Zia (Uxxman)</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline, texture downscaled."
 msgstr "Авианосец <0>“Gerald Ford Aircraft Carrier”</0> от <1>Usman Zia (Uxxman)</1> (Sketchfab), лицензия <2>CC BY 4.0</2>. Изменения: масштабирован, нос ориентирован по +X, погружён до ватерлинии, текстура уменьшена."
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:170
 msgid "Aircraft model <0>“Boeing F/A-18E/F Super Hornet”</0> by <1>andertan</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented nose +X, weapons and pylons removed, markings removed, landing gear added, converted to metal-rough."
 msgstr "Модель самолёта <0>“Boeing F/A-18E/F Super Hornet”</0> от <1>andertan</1> (Sketchfab), под лицензией <2>CC BY 4.0</2>. Изменения: изменён масштаб, нос переориентирован на +X, удалены вооружение и пилоны, удалена маркировка, добавлено шасси, выполнено преобразование в metallic-roughness."
 
@@ -143,7 +158,7 @@ msgstr "Произошла непредвиденная ошибка"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Вы уверены, что хотите выйти? Вам потребуется войти снова, чтобы получить доступ к аккаунту."
 
-#: src/components/MissionSetup.tsx:419
+#: src/components/MissionSetup.tsx:445
 msgid "Arrestor hook"
 msgstr "Тормозной гак"
 
@@ -159,7 +174,7 @@ msgstr "По возрастанию"
 msgid "Authenticator code"
 msgstr "Код аутентификатора"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "back"
 msgstr "назад"
 
@@ -173,7 +188,7 @@ msgstr "Назад"
 msgid "Back to home"
 msgstr "На главную"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:41
 msgid "BOLTER"
 msgstr "БОЛТЕР"
 
@@ -182,9 +197,13 @@ msgstr "БОЛТЕР"
 msgid "Boost interest"
 msgstr "Усилить интерес"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "brakes"
 msgstr "тормоза"
+
+#: src/components/Multiplayer.tsx:183
+msgid "Callsign"
+msgstr "Позывной"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
@@ -198,7 +217,7 @@ msgstr "тормоза"
 msgid "Cancel"
 msgstr "Отмена"
 
-#: src/components/MissionSetup.tsx:348
+#: src/components/MissionSetup.tsx:372
 msgid "Carrier landing"
 msgstr "Посадка на авианосец"
 
@@ -211,11 +230,11 @@ msgstr "Категория этого уведомления"
 msgid "Change notification category"
 msgstr "Изменить категорию уведомления"
 
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:459
 msgid "Chase view"
 msgstr "Вид преследования"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:122
 msgid "Chase view:"
 msgstr "Вид преследования:"
 
@@ -246,6 +265,7 @@ msgstr "Выберите язык"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/Multiplayer.tsx:242
 msgid "Clear"
 msgstr "Очистить"
 
@@ -287,11 +307,11 @@ msgstr "Закрыть панель"
 msgid "Close search"
 msgstr "Закрыть поиск"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:126
 msgid "closer"
 msgstr "ближе"
 
-#: src/components/MissionSetup.tsx:366
+#: src/components/MissionSetup.tsx:392
 msgid "Clouds"
 msgstr "Облака"
 
@@ -324,6 +344,18 @@ msgstr "Компактный"
 msgid "Confirm"
 msgstr "Подтвердить"
 
+#: src/components/GameCanvas.tsx:47
+msgid "CONNECTED"
+msgstr "ПОДКЛЮЧЕНО"
+
+#: src/components/Multiplayer.tsx:201
+msgid "Connecting…"
+msgstr "Подключение…"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CONNECTION FAILED"
+msgstr "ОШИБКА ПОДКЛЮЧЕНИЯ"
+
 #: ../../../lib/web/src/lib/query-client.ts:81
 msgid "Content not modified"
 msgstr "Содержимое не изменено"
@@ -340,13 +372,17 @@ msgstr "Продолжить"
 msgid "Continue with {label}"
 msgstr "Продолжить с {label}"
 
-#: src/components/MissionSetup.tsx:316
+#: src/components/MissionSetup.tsx:324
 msgid "Controls"
 msgstr "Управление"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
 msgstr "Копировать"
+
+#: src/components/Multiplayer.tsx:153
+msgid "Could not create the match"
+msgstr "Не удалось создать матч"
 
 #: ../../../lib/web/src/features/document/document-page.tsx:84
 msgid "Could not load this document. Please try again later."
@@ -364,16 +400,25 @@ msgstr "Не удалось начать повторную аутентифик
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Не удалось выполнить проверку с этой учётной записью. Пожалуйста, попробуйте ещё раз."
 
-#: src/components/GameCanvas.tsx:29
+#: src/components/GameCanvas.tsx:30
 msgid "CRASHED"
 msgstr "РАЗБИЛСЯ"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:157
+#: src/components/Multiplayer.tsx:258
+msgid "Create and fly"
+msgstr "Создать и лететь"
+
+#: src/components/Multiplayer.tsx:216
+msgid "Create match"
+msgstr "Создать матч"
+
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:159
 msgid "Credits"
 msgstr "Авторы"
 
-#: src/components/MissionSetup.tsx:373
+#: src/components/MissionSetup.tsx:399
+#: src/components/Multiplayer.tsx:243
 msgid "Cumulus"
 msgstr "Кучевые"
 
@@ -381,11 +426,11 @@ msgstr "Кучевые"
 msgid "Custom"
 msgstr "Пользовательский"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:40
 msgid "CUT"
 msgstr "ОПАСНО"
 
-#: src/components/MissionSetup.tsx:425
+#: src/components/MissionSetup.tsx:451
 msgid "Cycle view"
 msgstr "Сменить вид"
 
@@ -402,11 +447,12 @@ msgstr "Тёмная"
 msgid "Dark mode"
 msgstr "Тёмный режим"
 
-#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:387
+#: src/components/Multiplayer.tsx:238
 msgid "Day"
 msgstr "День"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:43
 msgid "DECK POSITION SAVED"
 msgstr "ПОЗИЦИЯ НА ПАЛУБЕ СОХРАНЕНА"
 
@@ -458,11 +504,11 @@ msgstr "Закрыть"
 msgid "Displays the mobile sidebar."
 msgstr "Отображает мобильную боковую панель."
 
-#: src/components/MissionSetup.tsx:442
+#: src/components/MissionSetup.tsx:468
 msgid "Distance"
 msgstr "Расстояние"
 
-#: src/components/MissionSetup.tsx:522
+#: src/components/MissionSetup.tsx:548
 msgid "Distance LOD"
 msgstr "LOD по расстоянию"
 
@@ -475,7 +521,7 @@ msgstr "Скачать"
 msgid "Download failed"
 msgstr "Не удалось скачать"
 
-#: src/components/MissionSetup.tsx:516
+#: src/components/MissionSetup.tsx:542
 msgid "Dynamic resolution"
 msgstr "Динамическое разрешение"
 
@@ -490,6 +536,10 @@ msgstr "Редактировать {label}"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Код по электронной почте"
+
+#: src/components/Multiplayer.tsx:276
+msgid "empty"
+msgstr "пусто"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:299
 msgid "Enter the code from your email"
@@ -510,11 +560,11 @@ msgstr "Развернуть"
 msgid "Expand sidebar"
 msgstr "Развернуть боковую панель"
 
-#: src/components/MissionSetup.tsx:488
+#: src/components/MissionSetup.tsx:514
 msgid "Exterior detail"
 msgstr "Детализация экстерьера"
 
-#: src/components/MissionSetup.tsx:504
+#: src/components/MissionSetup.tsx:530
 msgid "Extra aircraft"
 msgstr "Дополнительные самолёты"
 
@@ -538,7 +588,7 @@ msgstr "Не удалось отправить код подтверждения
 msgid "Failed to update category"
 msgstr "Не удалось обновить категорию"
 
-#: src/components/GameCanvas.tsx:37
+#: src/components/GameCanvas.tsx:38
 msgid "FAIR"
 msgstr "УДОВЛЕТВОРИТЕЛЬНО"
 
@@ -546,16 +596,16 @@ msgstr "УДОВЛЕТВОРИТЕЛЬНО"
 msgid "Finish moving your account"
 msgstr "Завершите перенос аккаунта"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "flares"
 msgstr "тепловые ловушки"
 
-#: src/components/MissionSetup.tsx:422
-#: src/components/MissionSetup.tsx:552
+#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:578
 msgid "Flares"
 msgstr "Тепловые ловушки"
 
-#: src/components/GameCanvas.tsx:22
+#: src/components/GameCanvas.tsx:23
 msgid "FLARES"
 msgstr "ЛОВУШКИ"
 
@@ -567,11 +617,11 @@ msgstr "Плоская"
 msgid "Floating"
 msgstr "Плавающий"
 
-#: src/components/MissionSetup.tsx:558
+#: src/components/MissionSetup.tsx:584
 msgid "Framerate"
 msgstr "Частота кадров"
 
-#: src/components/MissionSetup.tsx:334
+#: src/components/MissionSetup.tsx:342
 msgid "Free flight"
 msgstr "Свободный полёт"
 
@@ -596,11 +646,11 @@ msgstr "Из темы"
 msgid "Full layout"
 msgstr "Полный макет"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "gear"
 msgstr "Шасси"
 
-#: src/components/GameCanvas.tsx:23
+#: src/components/GameCanvas.tsx:24
 msgid "GEAR"
 msgstr "ШАССИ"
 
@@ -630,7 +680,7 @@ msgstr "Перейти на страницу {pageNumber}"
 msgid "Go to previous page"
 msgstr "Перейти на предыдущую страницу"
 
-#: src/components/MissionSetup.tsx:319
+#: src/components/MissionSetup.tsx:327
 msgid "Graphics"
 msgstr "Графика"
 
@@ -638,15 +688,15 @@ msgstr "Графика"
 msgid "Group"
 msgstr "Группа"
 
-#: src/components/GameCanvas.tsx:21
+#: src/components/GameCanvas.tsx:22
 msgid "GUN"
 msgstr "ПУШКА"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "guns"
 msgstr "пушки"
 
-#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:440
 msgid "Guns"
 msgstr "Пушки"
 
@@ -658,11 +708,12 @@ msgstr "Скрыть"
 msgid "Hide password"
 msgstr "Скрыть пароль"
 
-#: src/components/MissionSetup.tsx:468
+#: src/components/MissionSetup.tsx:494
 msgid "High"
 msgstr "Высокое"
 
-#: src/components/MissionSetup.tsx:374
+#: src/components/MissionSetup.tsx:400
+#: src/components/Multiplayer.tsx:244
 msgid "High stratus"
 msgstr "Высокие слоистые"
 
@@ -673,11 +724,11 @@ msgstr "Высокие слоистые"
 msgid "Home"
 msgstr "Главная"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "hook"
 msgstr "Гак"
 
-#: src/components/GameCanvas.tsx:24
+#: src/components/GameCanvas.tsx:25
 msgid "HOOK"
 msgstr "КРЮК"
 
@@ -689,11 +740,11 @@ msgstr "Популярное"
 msgid "Imperial"
 msgstr "Имперская"
 
-#: src/components/MissionSetup.tsx:345
+#: src/components/MissionSetup.tsx:369
 msgid "In air"
 msgstr "В воздухе"
 
-#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:408
 msgid "Input"
 msgstr "Ввод"
 
@@ -709,23 +760,44 @@ msgstr "Интересы"
 msgid "Invalid verification code"
 msgstr "Недопустимый код подтверждения"
 
-#: src/components/MissionSetup.tsx:397
+#: src/components/MissionSetup.tsx:423
 msgid "Invert pitch"
 msgstr "Инвертировать тангаж"
 
-#: src/components/MissionSetup.tsx:335
+#: src/components/MissionSetup.tsx:608
+#: src/components/Multiplayer.tsx:290
+msgid "Join"
+msgstr "Присоединиться"
+
+#: src/components/GameCanvas.tsx:52
+msgid "JOINED"
+msgstr "ПРИСОЕДИНИЛСЯ"
+
+#: src/components/Multiplayer.tsx:275
 msgid "Joust"
 msgstr "Дуэль"
 
-#: src/components/MissionSetup.tsx:404
+#: src/components/Multiplayer.tsx:230
+msgid "Joust — 1v1, first kill wins"
+msgstr "Дуэль — 1v1, побеждает первый сбивший"
+
+#: src/components/MissionSetup.tsx:343
+msgid "Joust against AI player"
+msgstr "Дуэль против ИИ-соперника"
+
+#: src/components/MissionSetup.tsx:430
 msgid "Keys"
 msgstr "Клавиши"
 
-#: src/components/MissionSetup.tsx:418
+#: src/components/GameCanvas.tsx:50
+msgid "KILL"
+msgstr "УБИЙСТВО"
+
+#: src/components/MissionSetup.tsx:444
 msgid "Landing gear"
 msgstr "Шасси"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:195
 msgid "Landing-gear wheels from <0>“F/A-18F Super Hornet Fighter Jet”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: wheels extracted and mounted on procedural struts."
 msgstr "Колёса шасси из <0>“F/A-18F Super Hornet Fighter Jet”</0> от <1>Muhamad Mirza Arrafi</1> (Sketchfab), под лицензией <2>CC BY 4.0</2>. Изменения: колёса извлечены и установлены на процедурные стойки."
 
@@ -734,21 +806,13 @@ msgstr "Колёса шасси из <0>“F/A-18F Super Hornet Fighter Jet”</
 msgid "Large"
 msgstr "Крупный"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "launch"
 msgstr "старт"
 
-#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:441
 msgid "Launch (catapult)"
 msgstr "Старт (катапульта)"
-
-#: src/components/GameCanvas.tsx:96
-#~ msgid "launch / guns"
-#~ msgstr "запуск / пушки"
-
-#: src/components/MissionSetup.tsx:413
-#~ msgid "Launch / guns"
-#~ msgstr "Пуск / пушки"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:286
 msgid "Layout"
@@ -759,6 +823,10 @@ msgstr "Макет"
 msgid "Learn more"
 msgstr "Подробнее"
 
+#: src/components/GameCanvas.tsx:53
+msgid "LEFT"
+msgstr "ВЫШЕЛ"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:354
 msgid "Left to Right"
 msgstr "Слева направо"
@@ -768,15 +836,15 @@ msgstr "Слева направо"
 msgid "Light"
 msgstr "Светлая"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "lights"
 msgstr "огни"
 
-#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:446
 msgid "Lights"
 msgstr "Огни"
 
-#: src/components/GameCanvas.tsx:31
+#: src/components/GameCanvas.tsx:32
 msgid "LIGHTS"
 msgstr "ОГНИ"
 
@@ -784,7 +852,7 @@ msgstr "ОГНИ"
 msgid "Load more"
 msgstr "Загрузить ещё"
 
-#: src/components/GameCanvas.tsx:28
+#: src/components/GameCanvas.tsx:29
 msgid "LOADING"
 msgstr "ЗАГРУЗКА"
 
@@ -819,23 +887,24 @@ msgstr "Выход выполнен успешно"
 msgid "Logging out…"
 msgstr "Выход…"
 
-#: src/components/MissionSetup.tsx:464
+#: src/components/MissionSetup.tsx:490
 msgid "Low"
 msgstr "Низкое"
 
-#: src/components/MissionSetup.tsx:375
+#: src/components/MissionSetup.tsx:401
+#: src/components/Multiplayer.tsx:245
 msgid "Low stratus"
 msgstr "Низкие слоистые"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:45
 msgid "M to close"
 msgstr "M закрыть"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "map"
 msgstr "карта"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:454
 msgid "Map"
 msgstr "Карта"
 
@@ -845,12 +914,16 @@ msgstr "Карта"
 msgid "Mark all as read"
 msgstr "Отметить все как прочитанное"
 
+#: src/components/Multiplayer.tsx:226
+msgid "Match type"
+msgstr "Тип матча"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:466
+#: src/components/MissionSetup.tsx:492
 msgid "Medium"
 msgstr "Средний"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "menu"
 msgstr "меню"
 
@@ -862,29 +935,41 @@ msgstr "Меню"
 msgid "Metric"
 msgstr "Метрический"
 
-#: src/components/MissionSetup.tsx:241
+#: src/components/MissionSetup.tsx:243
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Карта атолла Мидуэй — снимки содержат изменённые данные <0>Copernicus Sentinel-2</0> (2026); геометрия аэродрома (взлётно-посадочная полоса, рулёжные дорожки, перроны) © участники <1>OpenStreetMap</1>, лицензия <2>ODbL</2>; данные о береговой линии и рифах от <3>NOAA NCCOS</3> (общественное достояние)."
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "missile"
 msgstr "ракета"
 
-#: src/components/MissionSetup.tsx:421
+#: src/components/MissionSetup.tsx:447
 msgid "Missile"
 msgstr "Ракета"
 
-#: src/components/MissionSetup.tsx:546
+#: src/components/MissionSetup.tsx:572
 msgid "Missiles"
 msgstr "Ракеты"
 
-#: src/components/MissionSetup.tsx:310
+#: src/components/Multiplayer.tsx:253
+msgid "Missiles allowed"
+msgstr "Ракеты разрешены"
+
+#: src/components/MissionSetup.tsx:318
 msgid "Mission"
 msgstr "Миссия"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:59
 msgid "Monday"
 msgstr "Понедельник"
+
+#: src/components/MissionSetup.tsx:344
+msgid "Multiplayer"
+msgstr "Мультиплеер"
+
+#: src/components/Multiplayer.tsx:162
+msgid "Multiplayer needs WebTransport, which this browser does not support yet."
+msgstr "Для мультиплеера нужен WebTransport, который этот браузер пока не поддерживает."
 
 #: ../../../lib/web/src/lib/api-client.ts:300
 msgid "Network error"
@@ -899,7 +984,8 @@ msgstr "Новый"
 msgid "Next image"
 msgstr "Следующее изображение"
 
-#: src/components/MissionSetup.tsx:362
+#: src/components/MissionSetup.tsx:388
+#: src/components/Multiplayer.tsx:239
 msgid "Night"
 msgstr "Ночь"
 
@@ -914,6 +1000,10 @@ msgstr "Нет подключённых учётных записей"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Нет доступных групп"
+
+#: src/components/Multiplayer.tsx:267
+msgid "No open matches — create one."
+msgstr "Открытых матчей нет — создайте свой."
 
 #: ../../../lib/web/src/components/place-picker.tsx:132
 msgid "No places found"
@@ -940,14 +1030,18 @@ msgstr "Записи о теме пока нет — попробуйте ещё
 msgid "No users found"
 msgstr "Пользователи не найдены"
 
-#: src/components/GameCanvas.tsx:38
+#: src/components/Multiplayer.tsx:267
+msgid "No world server."
+msgstr "Нет сервера мира."
+
+#: src/components/GameCanvas.tsx:39
 msgid "NO-GRADE"
 msgstr "БЕЗ ОЦЕНКИ"
 
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:372
+#: src/components/MissionSetup.tsx:398
 msgid "None"
 msgstr "Нет"
 
@@ -967,25 +1061,33 @@ msgstr "Не задано"
 msgid "Notifications"
 msgstr "Уведомления"
 
-#: src/components/MissionSetup.tsx:496
+#: src/components/MissionSetup.tsx:522
 msgid "Ocean detail"
 msgstr "Детализация океана"
 
-#: src/components/GameCanvas.tsx:36
+#: src/components/GameCanvas.tsx:37
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:347
+#: src/components/MissionSetup.tsx:371
 msgid "On carrier"
 msgstr "На авианосце"
 
-#: src/components/MissionSetup.tsx:346
+#: src/components/MissionSetup.tsx:370
 msgid "On runway"
 msgstr "На полосе"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:16
 msgid "Oops! Page Not Found!"
 msgstr "Упс! Страница не найдена!"
+
+#: src/components/Multiplayer.tsx:275
+msgid "Open"
+msgstr "Открыть"
+
+#: src/components/Multiplayer.tsx:229
+msgid "Open — anyone may join or leave"
+msgstr "Открытый — любой может присоединиться или выйти"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:156
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:166
@@ -1012,15 +1114,15 @@ msgstr "Открыть меню навигации"
 msgid "Open theme settings"
 msgstr "Открыть настройки темы"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "or"
 msgstr "или"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "orbit"
 msgstr "орбита"
 
-#: src/components/MissionSetup.tsx:437
+#: src/components/MissionSetup.tsx:463
 msgid "Orbit"
 msgstr "Орбита"
 
@@ -1032,7 +1134,7 @@ msgstr "Другое"
 msgid "Owner"
 msgstr "Владелец"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:46
 msgid "P to resume · M map · Esc menu"
 msgstr "P продолжить · M карта · Esc меню"
 
@@ -1048,23 +1150,28 @@ msgstr "Не удалось проверить ключ доступа. Попр
 msgid "Passkeys"
 msgstr "Ключи доступа"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "pause"
 msgstr "пауза"
 
-#: src/components/MissionSetup.tsx:429
+#: src/components/MissionSetup.tsx:455
 msgid "Pause"
 msgstr "Пауза"
 
-#: src/components/GameCanvas.tsx:27
+#: src/components/GameCanvas.tsx:28
 msgid "PAUSED"
 msgstr "ПАУЗА"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:188
+msgid "pilot"
+msgstr "пилот"
+
+#: src/components/GameCanvas.tsx:112
 msgid "pitch"
 msgstr "тангаж"
 
-#: src/components/MissionSetup.tsx:407
+#: src/components/MissionSetup.tsx:433
 msgid "Pitch"
 msgstr "Тангаж"
 
@@ -1072,11 +1179,11 @@ msgstr "Тангаж"
 msgid "Please check your internet connection and try again."
 msgstr "Проверьте подключение к интернету и попробуйте снова."
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:477
 msgid "Preset"
 msgstr "Пресет"
 
-#: src/components/GameCanvas.tsx:30
+#: src/components/GameCanvas.tsx:31
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "НАЖМИ ENTER ДЛЯ ВЗЛЁТА"
 
@@ -1107,11 +1214,11 @@ msgstr "Повторно привяжите свои аккаунты на эт�
 msgid "Re-register your passkeys on this server"
 msgstr "Зарегистрируйте ключи доступа на этом сервере заново"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "rearm"
 msgstr "перезарядка"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:449
 msgid "Rearm"
 msgstr "Перевооружить"
 
@@ -1128,6 +1235,10 @@ msgstr "Перенаправление на страницу входа."
 #: ../../../lib/web/src/components/post-tags.tsx:208
 msgid "Reduce interest"
 msgstr "Снизить интерес"
+
+#: src/components/Multiplayer.tsx:206
+msgid "Refresh"
+msgstr "Обновить"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
@@ -1162,7 +1273,7 @@ msgstr "Отправить письмо повторно"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:595
+#: src/components/MissionSetup.tsx:626
 msgid "Reset"
 msgstr "Сбросить"
 
@@ -1170,19 +1281,19 @@ msgstr "Сбросить"
 msgid "Reset all settings to default values"
 msgstr "Сбросить все настройки к значениям по умолчанию"
 
-#: src/components/MissionSetup.tsx:478
+#: src/components/MissionSetup.tsx:504
 msgid "Resolution"
 msgstr "Разрешение"
 
-#: src/components/MissionSetup.tsx:572
+#: src/components/MissionSetup.tsx:598
 msgid "Restart"
 msgstr "Перезапустить"
 
-#: src/components/MissionSetup.tsx:576
+#: src/components/MissionSetup.tsx:602
 msgid "Resume"
 msgstr "Возобновить"
 
-#: src/components/MissionSetup.tsx:430
+#: src/components/MissionSetup.tsx:456
 msgid "Return to menu"
 msgstr "Вернуться в меню"
 
@@ -1190,11 +1301,11 @@ msgstr "Вернуться в меню"
 msgid "Right to Left"
 msgstr "Справа налево"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:113
 msgid "roll"
 msgstr "крен"
 
-#: src/components/MissionSetup.tsx:408
+#: src/components/MissionSetup.tsx:434
 msgid "Roll"
 msgstr "Крен"
 
@@ -1202,7 +1313,7 @@ msgstr "Крен"
 msgid "Rows per page"
 msgstr "Строк на странице"
 
-#: src/components/GameCanvas.tsx:32
+#: src/components/GameCanvas.tsx:33
 msgid "RUN UP ENGINE"
 msgstr "ПОЛНАЯ ТЯГА"
 
@@ -1285,7 +1396,7 @@ msgstr "Отправить ещё раз"
 msgid "Send email"
 msgstr "Отправить письмо"
 
-#: src/components/MissionSetup.tsx:386
+#: src/components/MissionSetup.tsx:412
 msgid "Sensitivity"
 msgstr "Чувствительность"
 
@@ -1303,6 +1414,10 @@ msgstr "Ошибка сервера"
 msgid "Server rules"
 msgstr "Правила сервера"
 
+#: src/components/GameCanvas.tsx:49
+msgid "SESSION ENDED"
+msgstr "СЕССИЯ ЗАВЕРШЕНА"
+
 #: ../../../lib/web/src/lib/api-client.ts:227
 msgid "Session expired"
 msgstr "Сеанс истёк"
@@ -1319,7 +1434,7 @@ msgstr "Укажите пункты отправления и назначени
 msgid "Settings"
 msgstr "Настройки"
 
-#: src/components/MissionSetup.tsx:528
+#: src/components/MissionSetup.tsx:554
 msgid "Shadows"
 msgstr "Тени"
 
@@ -1359,20 +1474,20 @@ msgstr "Мелкий"
 msgid "Spacious"
 msgstr "Просторный"
 
-#: src/components/GameCanvas.tsx:25
+#: src/components/GameCanvas.tsx:26
 msgid "SPD BK"
 msgstr "ВОЗД.ТОРМ"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "speed brake"
 msgstr "воздушный тормоз"
 
-#: src/components/MissionSetup.tsx:417
+#: src/components/MissionSetup.tsx:443
 msgid "Speed brake"
 msgstr "Воздушный тормоз"
 
-#: src/components/MissionSetup.tsx:339
-#: src/components/MissionSetup.tsx:582
+#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:613
 msgid "Start"
 msgstr "Старт"
 
@@ -1394,7 +1509,7 @@ msgstr "Воскресенье"
 msgid "System"
 msgstr "Система"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:44
 msgid "TACTICAL MAP"
 msgstr "ТАКТИЧЕСКАЯ КАРТА"
 
@@ -1407,7 +1522,7 @@ msgstr "Тег"
 msgid "Tags"
 msgstr "Теги"
 
-#: src/components/MissionSetup.tsx:328
+#: src/components/MissionSetup.tsx:336
 msgid "Task"
 msgstr "Задача"
 
@@ -1432,11 +1547,11 @@ msgstr "Тема"
 msgid "Theme Settings"
 msgstr "Настройки темы"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "throttle"
 msgstr "тяга"
 
-#: src/components/MissionSetup.tsx:411
+#: src/components/MissionSetup.tsx:437
 msgid "Throttle"
 msgstr "Тяга"
 
@@ -1444,15 +1559,15 @@ msgstr "Тяга"
 msgid "Thursday"
 msgstr "Четверг"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "tilt"
 msgstr "наклон"
 
-#: src/components/MissionSetup.tsx:440
+#: src/components/MissionSetup.tsx:466
 msgid "Tilt"
 msgstr "Наклон"
 
-#: src/components/MissionSetup.tsx:355
+#: src/components/MissionSetup.tsx:381
 msgid "Time of day"
 msgstr "Время суток"
 
@@ -1491,7 +1606,7 @@ msgstr "Переключить тему"
 msgid "Top"
 msgstr "Верх"
 
-#: src/components/MissionSetup.tsx:540
+#: src/components/MissionSetup.tsx:566
 msgid "Tracers"
 msgstr "Трассеры"
 
@@ -1526,7 +1641,7 @@ msgstr "Введите для поиска пользователей"
 msgid "Type to search..."
 msgstr "Введите для поиска..."
 
-#: src/components/MissionSetup.tsx:470
+#: src/components/MissionSetup.tsx:496
 msgid "Ultra"
 msgstr "Ультра"
 
@@ -1589,7 +1704,7 @@ msgstr "Подтвердить адрес email"
 msgid "Video thumbnail"
 msgstr "Миниатюра видео"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "view"
 msgstr "вид"
 
@@ -1606,7 +1721,7 @@ msgstr "Просмотреть всё"
 msgid "View all notifications"
 msgstr "Просмотреть все уведомления"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:42
 msgid "WAVE OFF"
 msgstr "УХОДИ НА ВТОРОЙ КРУГ"
 
@@ -1614,7 +1729,8 @@ msgstr "УХОДИ НА ВТОРОЙ КРУГ"
 msgid "We'll be back online shortly."
 msgstr "Мы скоро снова будем в сети."
 
-#: src/components/MissionSetup.tsx:313
+#: src/components/MissionSetup.tsx:321
+#: src/components/Multiplayer.tsx:235
 msgid "Weather"
 msgstr "Погода"
 
@@ -1626,19 +1742,31 @@ msgstr "Сайт на техническом обслуживании!"
 msgid "Wednesday"
 msgstr "Среда"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:442
 msgid "Wheel brakes"
 msgstr "Тормоза колёс"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:51
+msgid "WINS"
+msgstr "ПОБЕЖДАЕТ"
+
+#: src/components/Multiplayer.tsx:172
+msgid "World server"
+msgstr "Сервер мира"
+
+#: src/components/Multiplayer.tsx:100
+msgid "World server not reachable"
+msgstr "Сервер мира недоступен"
+
+#: src/components/GameCanvas.tsx:113
 msgid "yaw"
 msgstr "рыскание"
 
-#: src/components/MissionSetup.tsx:409
+#: src/components/MissionSetup.tsx:435
 msgid "Yaw"
 msgstr "Рыскание"
 
-#: src/components/GameCanvas.tsx:26
+#: src/components/GameCanvas.tsx:27
 msgid "YOU"
 msgstr "ВЫ"
 

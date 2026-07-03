@@ -13,7 +13,22 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/GameCanvas.tsx:33
+#. placeholder {0}: status.players
+#: src/components/Multiplayer.tsx:198
+msgid "{0} flying"
+msgstr "{0} đang bay"
+
+#. placeholder {0}: (s.players ?? []).length
+#. placeholder {1}: s.capacity
+#: src/components/Multiplayer.tsx:277
+msgid "{0}/{1} players"
+msgstr "{0}/{1} người chơi"
+
+#: src/components/Multiplayer.tsx:141
+msgid "{name}'s match"
+msgstr "Trận đấu của {name}"
+
+#: src/components/GameCanvas.tsx:34
 msgid "1 WIRE"
 msgstr "CÁP 1"
 
@@ -21,7 +36,7 @@ msgstr "CÁP 1"
 msgid "12 hours"
 msgstr "12 giờ"
 
-#: src/components/GameCanvas.tsx:34
+#: src/components/GameCanvas.tsx:35
 msgid "2 WIRE"
 msgstr "CÁP 2"
 
@@ -29,11 +44,11 @@ msgstr "CÁP 2"
 msgid "24 hours"
 msgstr "24 giờ"
 
-#: src/components/GameCanvas.tsx:35
+#: src/components/GameCanvas.tsx:36
 msgid "3 WIRE"
 msgstr "CÁP 3"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:164
 msgid "A browser-based multiplayer jet-combat prototype — a shared flight model with server-authoritative netcode (work in progress), rendered with Three.js on WebGL2."
 msgstr "Nguyên mẫu không chiến phản lực nhiều người chơi trên trình duyệt — mô hình bay dùng chung với mã mạng do máy chủ điều phối (đang phát triển), kết xuất bằng Three.js trên WebGL2."
 
@@ -111,7 +126,7 @@ msgstr "Thêm chế độ xem"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Điều chỉnh giao diện và bố cục theo sở thích của bạn."
 
-#: src/components/MissionSetup.tsx:534
+#: src/components/MissionSetup.tsx:560
 msgid "Afterburner"
 msgstr "Buồng đốt sau"
 
@@ -119,11 +134,11 @@ msgstr "Buồng đốt sau"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:217
+#: src/components/MissionSetup.tsx:219
 msgid "Aircraft carrier <0>“Gerald Ford Aircraft Carrier”</0> by <1>Usman Zia (Uxxman)</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline, texture downscaled."
 msgstr "Tàu sân bay <0>“Gerald Ford Aircraft Carrier”</0> của <1>Usman Zia (Uxxman)</1> (Sketchfab), cấp phép theo <2>CC BY 4.0</2>. Đã chỉnh sửa: chỉnh lại tỉ lệ, xoay mũi tàu về +X, hạ xuống mực nước, thu nhỏ kết cấu."
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:170
 msgid "Aircraft model <0>“Boeing F/A-18E/F Super Hornet”</0> by <1>andertan</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented nose +X, weapons and pylons removed, markings removed, landing gear added, converted to metal-rough."
 msgstr "Mẫu máy bay <0>“Boeing F/A-18E/F Super Hornet”</0> của <1>andertan</1> (Sketchfab), được cấp phép theo <2>CC BY 4.0</2>. Đã chỉnh sửa: đổi tỷ lệ, định hướng lại mũi theo +X, loại bỏ vũ khí và giá treo, loại bỏ ký hiệu nhận diện, thêm càng đáp, chuyển sang vật liệu kim loại–độ nhám."
 
@@ -143,7 +158,7 @@ msgstr "Đã xảy ra lỗi không mong muốn"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Bạn có chắc muốn đăng xuất? Bạn sẽ cần đăng nhập lại để truy cập tài khoản."
 
-#: src/components/MissionSetup.tsx:419
+#: src/components/MissionSetup.tsx:445
 msgid "Arrestor hook"
 msgstr "Móc hãm"
 
@@ -159,7 +174,7 @@ msgstr "Tăng dần"
 msgid "Authenticator code"
 msgstr "Mã xác thực"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "back"
 msgstr "ra xa"
 
@@ -173,7 +188,7 @@ msgstr "Quay lại"
 msgid "Back to home"
 msgstr "Về trang chủ"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:41
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -182,9 +197,13 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Đẩy mạnh sở thích"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "brakes"
 msgstr "phanh"
+
+#: src/components/Multiplayer.tsx:183
+msgid "Callsign"
+msgstr "Biệt danh"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
@@ -198,7 +217,7 @@ msgstr "phanh"
 msgid "Cancel"
 msgstr "Hủy"
 
-#: src/components/MissionSetup.tsx:348
+#: src/components/MissionSetup.tsx:372
 msgid "Carrier landing"
 msgstr "Hạ cánh trên tàu sân bay"
 
@@ -211,11 +230,11 @@ msgstr "Danh mục cho thông báo này"
 msgid "Change notification category"
 msgstr "Đổi danh mục thông báo"
 
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:459
 msgid "Chase view"
 msgstr "Góc nhìn đuổi theo"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:122
 msgid "Chase view:"
 msgstr "Góc nhìn bám đuôi:"
 
@@ -246,6 +265,7 @@ msgstr "Chọn ngôn ngữ"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/Multiplayer.tsx:242
 msgid "Clear"
 msgstr "Xóa"
 
@@ -287,11 +307,11 @@ msgstr "Đóng bảng"
 msgid "Close search"
 msgstr "Đóng tìm kiếm"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:126
 msgid "closer"
 msgstr "lại gần"
 
-#: src/components/MissionSetup.tsx:366
+#: src/components/MissionSetup.tsx:392
 msgid "Clouds"
 msgstr "Mây"
 
@@ -324,6 +344,18 @@ msgstr "Gọn"
 msgid "Confirm"
 msgstr "Xác nhận"
 
+#: src/components/GameCanvas.tsx:47
+msgid "CONNECTED"
+msgstr "ĐÃ KẾT NỐI"
+
+#: src/components/Multiplayer.tsx:201
+msgid "Connecting…"
+msgstr "Đang kết nối…"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CONNECTION FAILED"
+msgstr "KẾT NỐI THẤT BẠI"
+
 #: ../../../lib/web/src/lib/query-client.ts:81
 msgid "Content not modified"
 msgstr "Nội dung không thay đổi"
@@ -340,13 +372,17 @@ msgstr "Tiếp tục"
 msgid "Continue with {label}"
 msgstr "Tiếp tục với {label}"
 
-#: src/components/MissionSetup.tsx:316
+#: src/components/MissionSetup.tsx:324
 msgid "Controls"
 msgstr "Điều khiển"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
 msgstr "Sao chép"
+
+#: src/components/Multiplayer.tsx:153
+msgid "Could not create the match"
+msgstr "Không thể tạo trận đấu"
 
 #: ../../../lib/web/src/features/document/document-page.tsx:84
 msgid "Could not load this document. Please try again later."
@@ -364,16 +400,25 @@ msgstr "Không thể bắt đầu xác thực lại. Vui lòng thử lại."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Không thể xác minh bằng tài khoản đó. Vui lòng thử lại."
 
-#: src/components/GameCanvas.tsx:29
+#: src/components/GameCanvas.tsx:30
 msgid "CRASHED"
 msgstr "RƠI"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:157
+#: src/components/Multiplayer.tsx:258
+msgid "Create and fly"
+msgstr "Tạo và bay ngay"
+
+#: src/components/Multiplayer.tsx:216
+msgid "Create match"
+msgstr "Tạo trận đấu"
+
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:159
 msgid "Credits"
 msgstr "Ghi nhận"
 
-#: src/components/MissionSetup.tsx:373
+#: src/components/MissionSetup.tsx:399
+#: src/components/Multiplayer.tsx:243
 msgid "Cumulus"
 msgstr "Mây tích"
 
@@ -381,11 +426,11 @@ msgstr "Mây tích"
 msgid "Custom"
 msgstr "Tùy chỉnh"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:40
 msgid "CUT"
 msgstr "NGUY HIỂM"
 
-#: src/components/MissionSetup.tsx:425
+#: src/components/MissionSetup.tsx:451
 msgid "Cycle view"
 msgstr "Đổi góc nhìn"
 
@@ -402,11 +447,12 @@ msgstr "Tối"
 msgid "Dark mode"
 msgstr "Chế độ tối"
 
-#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:387
+#: src/components/Multiplayer.tsx:238
 msgid "Day"
 msgstr "Ban ngày"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:43
 msgid "DECK POSITION SAVED"
 msgstr "ĐÃ LƯU VỊ TRÍ TRÊN SÀN"
 
@@ -458,11 +504,11 @@ msgstr "Bỏ qua"
 msgid "Displays the mobile sidebar."
 msgstr "Hiển thị thanh bên di động."
 
-#: src/components/MissionSetup.tsx:442
+#: src/components/MissionSetup.tsx:468
 msgid "Distance"
 msgstr "Khoảng cách"
 
-#: src/components/MissionSetup.tsx:522
+#: src/components/MissionSetup.tsx:548
 msgid "Distance LOD"
 msgstr "LOD theo khoảng cách"
 
@@ -475,7 +521,7 @@ msgstr "Tải xuống"
 msgid "Download failed"
 msgstr "Tải xuống thất bại"
 
-#: src/components/MissionSetup.tsx:516
+#: src/components/MissionSetup.tsx:542
 msgid "Dynamic resolution"
 msgstr "Độ phân giải động"
 
@@ -490,6 +536,10 @@ msgstr "Chỉnh sửa {label}"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Mã email"
+
+#: src/components/Multiplayer.tsx:276
+msgid "empty"
+msgstr "trống"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:299
 msgid "Enter the code from your email"
@@ -510,11 +560,11 @@ msgstr "Mở rộng"
 msgid "Expand sidebar"
 msgstr "Mở rộng thanh bên"
 
-#: src/components/MissionSetup.tsx:488
+#: src/components/MissionSetup.tsx:514
 msgid "Exterior detail"
 msgstr "Chi tiết bên ngoài"
 
-#: src/components/MissionSetup.tsx:504
+#: src/components/MissionSetup.tsx:530
 msgid "Extra aircraft"
 msgstr "Máy bay bổ sung"
 
@@ -538,7 +588,7 @@ msgstr "Không gửi mã xác minh được"
 msgid "Failed to update category"
 msgstr "Không cập nhật danh mục được"
 
-#: src/components/GameCanvas.tsx:37
+#: src/components/GameCanvas.tsx:38
 msgid "FAIR"
 msgstr "TRUNG BÌNH"
 
@@ -546,16 +596,16 @@ msgstr "TRUNG BÌNH"
 msgid "Finish moving your account"
 msgstr "Hoàn tất việc chuyển tài khoản của bạn"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "flares"
 msgstr "pháo sáng"
 
-#: src/components/MissionSetup.tsx:422
-#: src/components/MissionSetup.tsx:552
+#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:578
 msgid "Flares"
 msgstr "Mồi nhiệt"
 
-#: src/components/GameCanvas.tsx:22
+#: src/components/GameCanvas.tsx:23
 msgid "FLARES"
 msgstr "PHÁO SÁNG"
 
@@ -567,11 +617,11 @@ msgstr "Phẳng"
 msgid "Floating"
 msgstr "Nổi"
 
-#: src/components/MissionSetup.tsx:558
+#: src/components/MissionSetup.tsx:584
 msgid "Framerate"
 msgstr "Tốc độ khung hình"
 
-#: src/components/MissionSetup.tsx:334
+#: src/components/MissionSetup.tsx:342
 msgid "Free flight"
 msgstr "Bay tự do"
 
@@ -596,11 +646,11 @@ msgstr "Từ giao diện"
 msgid "Full layout"
 msgstr "Bố cục đầy đủ"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "gear"
 msgstr "Càng"
 
-#: src/components/GameCanvas.tsx:23
+#: src/components/GameCanvas.tsx:24
 msgid "GEAR"
 msgstr "CÀNG"
 
@@ -630,7 +680,7 @@ msgstr "Đến trang {pageNumber}"
 msgid "Go to previous page"
 msgstr "Đến trang trước"
 
-#: src/components/MissionSetup.tsx:319
+#: src/components/MissionSetup.tsx:327
 msgid "Graphics"
 msgstr "Đồ họa"
 
@@ -638,15 +688,15 @@ msgstr "Đồ họa"
 msgid "Group"
 msgstr "Nhóm"
 
-#: src/components/GameCanvas.tsx:21
+#: src/components/GameCanvas.tsx:22
 msgid "GUN"
 msgstr "SÚNG"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "guns"
 msgstr "súng"
 
-#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:440
 msgid "Guns"
 msgstr "Súng"
 
@@ -658,11 +708,12 @@ msgstr "Ẩn"
 msgid "Hide password"
 msgstr "Ẩn mật khẩu"
 
-#: src/components/MissionSetup.tsx:468
+#: src/components/MissionSetup.tsx:494
 msgid "High"
 msgstr "Cao"
 
-#: src/components/MissionSetup.tsx:374
+#: src/components/MissionSetup.tsx:400
+#: src/components/Multiplayer.tsx:244
 msgid "High stratus"
 msgstr "Mây tầng cao"
 
@@ -673,11 +724,11 @@ msgstr "Mây tầng cao"
 msgid "Home"
 msgstr "Trang chủ"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "hook"
 msgstr "Móc"
 
-#: src/components/GameCanvas.tsx:24
+#: src/components/GameCanvas.tsx:25
 msgid "HOOK"
 msgstr "MÓC"
 
@@ -689,11 +740,11 @@ msgstr "Nóng"
 msgid "Imperial"
 msgstr "Hệ Anh"
 
-#: src/components/MissionSetup.tsx:345
+#: src/components/MissionSetup.tsx:369
 msgid "In air"
 msgstr "Trên không"
 
-#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:408
 msgid "Input"
 msgstr "Đầu vào"
 
@@ -709,23 +760,44 @@ msgstr "Sở thích"
 msgid "Invalid verification code"
 msgstr "Mã xác minh không hợp lệ"
 
-#: src/components/MissionSetup.tsx:397
+#: src/components/MissionSetup.tsx:423
 msgid "Invert pitch"
 msgstr "Đảo chiều chúc ngóc"
 
-#: src/components/MissionSetup.tsx:335
+#: src/components/MissionSetup.tsx:608
+#: src/components/Multiplayer.tsx:290
+msgid "Join"
+msgstr "Tham gia"
+
+#: src/components/GameCanvas.tsx:52
+msgid "JOINED"
+msgstr "ĐÃ THAM GIA"
+
+#: src/components/Multiplayer.tsx:275
 msgid "Joust"
 msgstr "Đối đầu"
 
-#: src/components/MissionSetup.tsx:404
+#: src/components/Multiplayer.tsx:230
+msgid "Joust — 1v1, first kill wins"
+msgstr "Đấu tay đôi — 1v1, ai bắn hạ trước sẽ thắng"
+
+#: src/components/MissionSetup.tsx:343
+msgid "Joust against AI player"
+msgstr "Đấu tay đôi với người chơi AI"
+
+#: src/components/MissionSetup.tsx:430
 msgid "Keys"
 msgstr "Phím"
 
-#: src/components/MissionSetup.tsx:418
+#: src/components/GameCanvas.tsx:50
+msgid "KILL"
+msgstr "BẮN HẠ"
+
+#: src/components/MissionSetup.tsx:444
 msgid "Landing gear"
 msgstr "Càng đáp"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:195
 msgid "Landing-gear wheels from <0>“F/A-18F Super Hornet Fighter Jet”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: wheels extracted and mounted on procedural struts."
 msgstr "Bánh càng đáp từ <0>“F/A-18F Super Hornet Fighter Jet”</0> của <1>Muhamad Mirza Arrafi</1> (Sketchfab), được cấp phép theo <2>CC BY 4.0</2>. Đã chỉnh sửa: trích xuất bánh xe và gắn lên các trụ càng tạo theo thuật toán."
 
@@ -734,21 +806,13 @@ msgstr "Bánh càng đáp từ <0>“F/A-18F Super Hornet Fighter Jet”</0> c�
 msgid "Large"
 msgstr "Lớn"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "launch"
 msgstr "phóng"
 
-#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:441
 msgid "Launch (catapult)"
 msgstr "Phóng (máy phóng)"
-
-#: src/components/GameCanvas.tsx:96
-#~ msgid "launch / guns"
-#~ msgstr "phóng / súng"
-
-#: src/components/MissionSetup.tsx:413
-#~ msgid "Launch / guns"
-#~ msgstr "Phóng / súng"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:286
 msgid "Layout"
@@ -759,6 +823,10 @@ msgstr "Bố cục"
 msgid "Learn more"
 msgstr "Tìm hiểu thêm"
 
+#: src/components/GameCanvas.tsx:53
+msgid "LEFT"
+msgstr "ĐÃ RỜI ĐI"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:354
 msgid "Left to Right"
 msgstr "Trái sang phải"
@@ -768,15 +836,15 @@ msgstr "Trái sang phải"
 msgid "Light"
 msgstr "Sáng"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "lights"
 msgstr "đèn"
 
-#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:446
 msgid "Lights"
 msgstr "Đèn"
 
-#: src/components/GameCanvas.tsx:31
+#: src/components/GameCanvas.tsx:32
 msgid "LIGHTS"
 msgstr "ĐÈN"
 
@@ -784,7 +852,7 @@ msgstr "ĐÈN"
 msgid "Load more"
 msgstr "Tải thêm"
 
-#: src/components/GameCanvas.tsx:28
+#: src/components/GameCanvas.tsx:29
 msgid "LOADING"
 msgstr "ĐANG TẢI"
 
@@ -819,23 +887,24 @@ msgstr "Đăng xuất thành công"
 msgid "Logging out…"
 msgstr "Đang đăng xuất…"
 
-#: src/components/MissionSetup.tsx:464
+#: src/components/MissionSetup.tsx:490
 msgid "Low"
 msgstr "Thấp"
 
-#: src/components/MissionSetup.tsx:375
+#: src/components/MissionSetup.tsx:401
+#: src/components/Multiplayer.tsx:245
 msgid "Low stratus"
 msgstr "Mây tầng thấp"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:45
 msgid "M to close"
 msgstr "M để đóng"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "map"
 msgstr "bản đồ"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:454
 msgid "Map"
 msgstr "Bản đồ"
 
@@ -845,12 +914,16 @@ msgstr "Bản đồ"
 msgid "Mark all as read"
 msgstr "Đánh dấu tất cả là đã đọc"
 
+#: src/components/Multiplayer.tsx:226
+msgid "Match type"
+msgstr "Loại trận đấu"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:466
+#: src/components/MissionSetup.tsx:492
 msgid "Medium"
 msgstr "Vừa"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "menu"
 msgstr "trình đơn"
 
@@ -862,29 +935,41 @@ msgstr "Menu"
 msgid "Metric"
 msgstr "Hệ mét"
 
-#: src/components/MissionSetup.tsx:241
+#: src/components/MissionSetup.tsx:243
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Bản đồ đảo san hô Midway — hình ảnh chứa dữ liệu <0>Copernicus Sentinel-2</0> đã chỉnh sửa (2026); hình học sân bay (đường băng, đường lăn, sân đỗ) © những người đóng góp <1>OpenStreetMap</1>, cấp phép theo <2>ODbL</2>; dữ liệu đường bờ biển và rạn san hô từ <3>NOAA NCCOS</3> (phạm vi công cộng)."
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "missile"
 msgstr "tên lửa"
 
-#: src/components/MissionSetup.tsx:421
+#: src/components/MissionSetup.tsx:447
 msgid "Missile"
 msgstr "Tên lửa"
 
-#: src/components/MissionSetup.tsx:546
+#: src/components/MissionSetup.tsx:572
 msgid "Missiles"
 msgstr "Tên lửa"
 
-#: src/components/MissionSetup.tsx:310
+#: src/components/Multiplayer.tsx:253
+msgid "Missiles allowed"
+msgstr "Cho phép tên lửa"
+
+#: src/components/MissionSetup.tsx:318
 msgid "Mission"
 msgstr "Nhiệm vụ"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:59
 msgid "Monday"
 msgstr "Thứ Hai"
+
+#: src/components/MissionSetup.tsx:344
+msgid "Multiplayer"
+msgstr "Nhiều người chơi"
+
+#: src/components/Multiplayer.tsx:162
+msgid "Multiplayer needs WebTransport, which this browser does not support yet."
+msgstr "Chế độ nhiều người chơi cần WebTransport, trình duyệt này chưa hỗ trợ."
 
 #: ../../../lib/web/src/lib/api-client.ts:300
 msgid "Network error"
@@ -899,7 +984,8 @@ msgstr "Mới"
 msgid "Next image"
 msgstr "Hình tiếp theo"
 
-#: src/components/MissionSetup.tsx:362
+#: src/components/MissionSetup.tsx:388
+#: src/components/Multiplayer.tsx:239
 msgid "Night"
 msgstr "Ban đêm"
 
@@ -914,6 +1000,10 @@ msgstr "Không có tài khoản đã kết nối"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Không có nhóm nào"
+
+#: src/components/Multiplayer.tsx:267
+msgid "No open matches — create one."
+msgstr "Không có trận nào đang mở — hãy tạo một trận."
 
 #: ../../../lib/web/src/components/place-picker.tsx:132
 msgid "No places found"
@@ -940,14 +1030,18 @@ msgstr "Chưa có bản ghi chủ đề — hãy thử lại sau thông báo ti�
 msgid "No users found"
 msgstr "Không tìm thấy người dùng nào"
 
-#: src/components/GameCanvas.tsx:38
+#: src/components/Multiplayer.tsx:267
+msgid "No world server."
+msgstr "Không có máy chủ thế giới."
+
+#: src/components/GameCanvas.tsx:39
 msgid "NO-GRADE"
 msgstr "KHÔNG XẾP LOẠI"
 
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:372
+#: src/components/MissionSetup.tsx:398
 msgid "None"
 msgstr "Không có"
 
@@ -967,25 +1061,33 @@ msgstr "Chưa đặt"
 msgid "Notifications"
 msgstr "Thông báo"
 
-#: src/components/MissionSetup.tsx:496
+#: src/components/MissionSetup.tsx:522
 msgid "Ocean detail"
 msgstr "Chi tiết đại dương"
 
-#: src/components/GameCanvas.tsx:36
+#: src/components/GameCanvas.tsx:37
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:347
+#: src/components/MissionSetup.tsx:371
 msgid "On carrier"
 msgstr "Trên tàu sân bay"
 
-#: src/components/MissionSetup.tsx:346
+#: src/components/MissionSetup.tsx:370
 msgid "On runway"
 msgstr "Trên đường băng"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:16
 msgid "Oops! Page Not Found!"
 msgstr "Rất tiếc! Không tìm thấy trang!"
+
+#: src/components/Multiplayer.tsx:275
+msgid "Open"
+msgstr "Mở"
+
+#: src/components/Multiplayer.tsx:229
+msgid "Open — anyone may join or leave"
+msgstr "Mở — ai cũng có thể tham gia hoặc rời đi"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:156
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:166
@@ -1012,15 +1114,15 @@ msgstr "Mở menu điều hướng"
 msgid "Open theme settings"
 msgstr "Mở cài đặt theme"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "or"
 msgstr "hoặc"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "orbit"
 msgstr "xoay quanh"
 
-#: src/components/MissionSetup.tsx:437
+#: src/components/MissionSetup.tsx:463
 msgid "Orbit"
 msgstr "Quay quanh"
 
@@ -1032,7 +1134,7 @@ msgstr "Khác"
 msgid "Owner"
 msgstr "Chủ sở hữu"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:46
 msgid "P to resume · M map · Esc menu"
 msgstr "P để tiếp tục · M bản đồ · Esc menu"
 
@@ -1048,23 +1150,28 @@ msgstr "Xác minh mã khóa không thành công. Vui lòng thử lại."
 msgid "Passkeys"
 msgstr "Passkey"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "pause"
 msgstr "tạm dừng"
 
-#: src/components/MissionSetup.tsx:429
+#: src/components/MissionSetup.tsx:455
 msgid "Pause"
 msgstr "Tạm dừng"
 
-#: src/components/GameCanvas.tsx:27
+#: src/components/GameCanvas.tsx:28
 msgid "PAUSED"
 msgstr "TẠM DỪNG"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:188
+msgid "pilot"
+msgstr "phi công"
+
+#: src/components/GameCanvas.tsx:112
 msgid "pitch"
 msgstr "chúc ngóc"
 
-#: src/components/MissionSetup.tsx:407
+#: src/components/MissionSetup.tsx:433
 msgid "Pitch"
 msgstr "Chúc ngóc"
 
@@ -1072,11 +1179,11 @@ msgstr "Chúc ngóc"
 msgid "Please check your internet connection and try again."
 msgstr "Vui lòng kiểm tra kết nối internet và thử lại."
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:477
 msgid "Preset"
 msgstr "Cài đặt sẵn"
 
-#: src/components/GameCanvas.tsx:30
+#: src/components/GameCanvas.tsx:31
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "NHẤN ENTER ĐỂ CẤT CÁNH"
 
@@ -1107,11 +1214,11 @@ msgstr "Liên kết lại các tài khoản của bạn trên máy chủ này"
 msgid "Re-register your passkeys on this server"
 msgstr "Đăng ký lại mã khóa của bạn trên máy chủ này"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "rearm"
 msgstr "nạp lại"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:449
 msgid "Rearm"
 msgstr "Nạp lại vũ khí"
 
@@ -1128,6 +1235,10 @@ msgstr "Đang chuyển hướng đến đăng nhập."
 #: ../../../lib/web/src/components/post-tags.tsx:208
 msgid "Reduce interest"
 msgstr "Giảm sự quan tâm"
+
+#: src/components/Multiplayer.tsx:206
+msgid "Refresh"
+msgstr "Làm mới"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
@@ -1162,7 +1273,7 @@ msgstr "Gửi lại email"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:595
+#: src/components/MissionSetup.tsx:626
 msgid "Reset"
 msgstr "Đặt lại"
 
@@ -1170,19 +1281,19 @@ msgstr "Đặt lại"
 msgid "Reset all settings to default values"
 msgstr "Đặt lại tất cả cài đặt về giá trị mặc định"
 
-#: src/components/MissionSetup.tsx:478
+#: src/components/MissionSetup.tsx:504
 msgid "Resolution"
 msgstr "Cách giải quyết"
 
-#: src/components/MissionSetup.tsx:572
+#: src/components/MissionSetup.tsx:598
 msgid "Restart"
 msgstr "Khởi động lại"
 
-#: src/components/MissionSetup.tsx:576
+#: src/components/MissionSetup.tsx:602
 msgid "Resume"
 msgstr "Tiếp tục"
 
-#: src/components/MissionSetup.tsx:430
+#: src/components/MissionSetup.tsx:456
 msgid "Return to menu"
 msgstr "Quay lại menu"
 
@@ -1190,11 +1301,11 @@ msgstr "Quay lại menu"
 msgid "Right to Left"
 msgstr "Phải sang trái"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:113
 msgid "roll"
 msgstr "lăn"
 
-#: src/components/MissionSetup.tsx:408
+#: src/components/MissionSetup.tsx:434
 msgid "Roll"
 msgstr "Lăn"
 
@@ -1202,7 +1313,7 @@ msgstr "Lăn"
 msgid "Rows per page"
 msgstr "Số hàng mỗi trang"
 
-#: src/components/GameCanvas.tsx:32
+#: src/components/GameCanvas.tsx:33
 msgid "RUN UP ENGINE"
 msgstr "HẾT CÔNG SUẤT"
 
@@ -1285,7 +1396,7 @@ msgstr "Gửi lại"
 msgid "Send email"
 msgstr "Gửi email"
 
-#: src/components/MissionSetup.tsx:386
+#: src/components/MissionSetup.tsx:412
 msgid "Sensitivity"
 msgstr "Độ nhạy"
 
@@ -1303,6 +1414,10 @@ msgstr "Lỗi máy chủ"
 msgid "Server rules"
 msgstr "Quy tắc máy chủ"
 
+#: src/components/GameCanvas.tsx:49
+msgid "SESSION ENDED"
+msgstr "PHIÊN ĐÃ KẾT THÚC"
+
 #: ../../../lib/web/src/lib/api-client.ts:227
 msgid "Session expired"
 msgstr "Phiên đã hết hạn"
@@ -1319,7 +1434,7 @@ msgstr "Đặt điểm xuất phát và điểm đến"
 msgid "Settings"
 msgstr "Cài đặt"
 
-#: src/components/MissionSetup.tsx:528
+#: src/components/MissionSetup.tsx:554
 msgid "Shadows"
 msgstr "Bóng đổ"
 
@@ -1359,20 +1474,20 @@ msgstr "Nhỏ"
 msgid "Spacious"
 msgstr "Rộng rãi"
 
-#: src/components/GameCanvas.tsx:25
+#: src/components/GameCanvas.tsx:26
 msgid "SPD BK"
 msgstr "PH.TĐ"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "speed brake"
 msgstr "phanh tốc độ"
 
-#: src/components/MissionSetup.tsx:417
+#: src/components/MissionSetup.tsx:443
 msgid "Speed brake"
 msgstr "Phanh tốc độ"
 
-#: src/components/MissionSetup.tsx:339
-#: src/components/MissionSetup.tsx:582
+#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:613
 msgid "Start"
 msgstr "Bắt đầu"
 
@@ -1394,7 +1509,7 @@ msgstr "Chủ nhật"
 msgid "System"
 msgstr "Hệ thống"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:44
 msgid "TACTICAL MAP"
 msgstr "BẢN ĐỒ CHIẾN THUẬT"
 
@@ -1407,7 +1522,7 @@ msgstr "Thẻ"
 msgid "Tags"
 msgstr "Các thẻ"
 
-#: src/components/MissionSetup.tsx:328
+#: src/components/MissionSetup.tsx:336
 msgid "Task"
 msgstr "Tác vụ"
 
@@ -1432,11 +1547,11 @@ msgstr "Giao diện"
 msgid "Theme Settings"
 msgstr "Cài đặt giao diện"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "throttle"
 msgstr "ga"
 
-#: src/components/MissionSetup.tsx:411
+#: src/components/MissionSetup.tsx:437
 msgid "Throttle"
 msgstr "Ga"
 
@@ -1444,15 +1559,15 @@ msgstr "Ga"
 msgid "Thursday"
 msgstr "Thứ năm"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "tilt"
 msgstr "nghiêng"
 
-#: src/components/MissionSetup.tsx:440
+#: src/components/MissionSetup.tsx:466
 msgid "Tilt"
 msgstr "Nghiêng"
 
-#: src/components/MissionSetup.tsx:355
+#: src/components/MissionSetup.tsx:381
 msgid "Time of day"
 msgstr "Thời điểm trong ngày"
 
@@ -1491,7 +1606,7 @@ msgstr "Bật/tắt giao diện"
 msgid "Top"
 msgstr "Đầu"
 
-#: src/components/MissionSetup.tsx:540
+#: src/components/MissionSetup.tsx:566
 msgid "Tracers"
 msgstr "Đạn vạch đường"
 
@@ -1526,7 +1641,7 @@ msgstr "Nhập để tìm người dùng"
 msgid "Type to search..."
 msgstr "Nhập để tìm kiếm..."
 
-#: src/components/MissionSetup.tsx:470
+#: src/components/MissionSetup.tsx:496
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1589,7 +1704,7 @@ msgstr "Xác minh địa chỉ email"
 msgid "Video thumbnail"
 msgstr "Hình thu nhỏ video"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "view"
 msgstr "góc nhìn"
 
@@ -1606,7 +1721,7 @@ msgstr "Xem tất cả"
 msgid "View all notifications"
 msgstr "Xem tất cả thông báo"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:42
 msgid "WAVE OFF"
 msgstr "BAY VÒNG LẠI"
 
@@ -1614,7 +1729,8 @@ msgstr "BAY VÒNG LẠI"
 msgid "We'll be back online shortly."
 msgstr "Chúng tôi sẽ trở lại trực tuyến sớm."
 
-#: src/components/MissionSetup.tsx:313
+#: src/components/MissionSetup.tsx:321
+#: src/components/Multiplayer.tsx:235
 msgid "Weather"
 msgstr "Thời tiết"
 
@@ -1626,19 +1742,31 @@ msgstr "Trang web đang bảo trì!"
 msgid "Wednesday"
 msgstr "Thứ tư"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:442
 msgid "Wheel brakes"
 msgstr "Phanh bánh xe"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:51
+msgid "WINS"
+msgstr "THẮNG"
+
+#: src/components/Multiplayer.tsx:172
+msgid "World server"
+msgstr "Máy chủ thế giới"
+
+#: src/components/Multiplayer.tsx:100
+msgid "World server not reachable"
+msgstr "Không thể kết nối máy chủ thế giới"
+
+#: src/components/GameCanvas.tsx:113
 msgid "yaw"
 msgstr "đảo lái"
 
-#: src/components/MissionSetup.tsx:409
+#: src/components/MissionSetup.tsx:435
 msgid "Yaw"
 msgstr "Đảo lái"
 
-#: src/components/GameCanvas.tsx:26
+#: src/components/GameCanvas.tsx:27
 msgid "YOU"
 msgstr "BẠN"
 

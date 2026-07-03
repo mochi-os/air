@@ -13,7 +13,22 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/GameCanvas.tsx:33
+#. placeholder {0}: status.players
+#: src/components/Multiplayer.tsx:198
+msgid "{0} flying"
+msgstr "{0} halaskiwa"
+
+#. placeholder {0}: (s.players ?? []).length
+#. placeholder {1}: s.capacity
+#: src/components/Multiplayer.tsx:277
+msgid "{0}/{1} players"
+msgstr "{0}/{1} anatirinaka"
+
+#: src/components/Multiplayer.tsx:141
+msgid "{name}'s match"
+msgstr "{name}na anatäwipa"
+
+#: src/components/GameCanvas.tsx:34
 msgid "1 WIRE"
 msgstr "CABLE 1"
 
@@ -21,7 +36,7 @@ msgstr "CABLE 1"
 msgid "12 hours"
 msgstr "12 hora"
 
-#: src/components/GameCanvas.tsx:34
+#: src/components/GameCanvas.tsx:35
 msgid "2 WIRE"
 msgstr "CABLE 2"
 
@@ -29,11 +44,11 @@ msgstr "CABLE 2"
 msgid "24 hours"
 msgstr "24 hora"
 
-#: src/components/GameCanvas.tsx:35
+#: src/components/GameCanvas.tsx:36
 msgid "3 WIRE"
 msgstr "CABLE 3"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:164
 msgid "A browser-based multiplayer jet-combat prototype — a shared flight model with server-authoritative netcode (work in progress), rendered with Three.js on WebGL2."
 msgstr "Navegador ukana mä juk'a jaqinakampi jet-nakampi nuwasiñ prototipo — mä yanapt'ata vuelo modelo, servidoruru apnaqata netcode ukampi (luräwiskiwa), Three.js ukampi WebGL2 patxaru uñstayata."
 
@@ -111,7 +126,7 @@ msgstr "Uñacht'awi yapxataña"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Uñnaqa ukat layout askichaña juma munawinakaman."
 
-#: src/components/MissionSetup.tsx:534
+#: src/components/MissionSetup.tsx:560
 msgid "Afterburner"
 msgstr "Posquemador"
 
@@ -119,11 +134,11 @@ msgstr "Posquemador"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:217
+#: src/components/MissionSetup.tsx:219
 msgid "Aircraft carrier <0>“Gerald Ford Aircraft Carrier”</0> by <1>Usman Zia (Uxxman)</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline, texture downscaled."
 msgstr "Portaaviones <0>“Gerald Ford Aircraft Carrier”</0> <1>Usman Zia (Uxxman)</1> lurawi (Sketchfab), <2>CC BY 4.0</2> ukampi licenciado. Mayjt'ayata: tamaño mayjt'ata, nayrïr tuqi +X uñt'ayata, uma thakhikamaru ch'allantata, textura jisk'achata."
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:170
 msgid "Aircraft model <0>“Boeing F/A-18E/F Super Hornet”</0> by <1>andertan</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented nose +X, weapons and pylons removed, markings removed, landing gear added, converted to metal-rough."
 msgstr "Avión modelo <0>“Boeing F/A-18E/F Super Hornet”</0>, <1>andertan</1> lurawi (Sketchfab), <2>CC BY 4.0</2> licencia ukampi. Mayjt'ayata: wasitat chimpuchata, nariz +X tuqiru kutt'ayata, armanaka ukat pilononaka apaqata, chimpunaka apaqata, tren de aterrizaje yapxata, metal-rough ukaru tukuyata."
 
@@ -143,7 +158,7 @@ msgstr "Jan suyt'ata juch'a utjawayi"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Chiqpach mistuña munta? Wasitat mantañam cuentamar mantañataki."
 
-#: src/components/MissionSetup.tsx:419
+#: src/components/MissionSetup.tsx:445
 msgid "Arrestor hook"
 msgstr "Sayt'ayir ganchu"
 
@@ -159,7 +174,7 @@ msgstr "Wichhukama"
 msgid "Authenticator code"
 msgstr "Authenticator código"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "back"
 msgstr "jayaru"
 
@@ -173,7 +188,7 @@ msgstr "Kutta"
 msgid "Back to home"
 msgstr "Utar kutiña"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:41
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -182,9 +197,13 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Munawi jiltayaña"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "brakes"
 msgstr "frenu"
+
+#: src/components/Multiplayer.tsx:183
+msgid "Callsign"
+msgstr "Jawsa suti"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
@@ -198,7 +217,7 @@ msgstr "frenu"
 msgid "Cancel"
 msgstr "Jaytaña"
 
-#: src/components/MissionSetup.tsx:348
+#: src/components/MissionSetup.tsx:372
 msgid "Carrier landing"
 msgstr "Portaavionesar uraqiña"
 
@@ -211,11 +230,11 @@ msgstr "Aka yatiyäw kasta"
 msgid "Change notification category"
 msgstr "Yatiyäw kasta mayjt'ayaña"
 
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:459
 msgid "Chase view"
 msgstr "Arkir uñjawi"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:122
 msgid "Chase view:"
 msgstr "Arkaña uñjawi:"
 
@@ -246,6 +265,7 @@ msgstr "Aru ajllxaña"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/Multiplayer.tsx:242
 msgid "Clear"
 msgstr "Q'umachaña"
 
@@ -287,11 +307,11 @@ msgstr "Panel jistantaña"
 msgid "Close search"
 msgstr "Thaqaña jist'antaña"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:126
 msgid "closer"
 msgstr "jak'aru"
 
-#: src/components/MissionSetup.tsx:366
+#: src/components/MissionSetup.tsx:392
 msgid "Clouds"
 msgstr "Qinayanaka"
 
@@ -324,6 +344,18 @@ msgstr "Compacto"
 msgid "Confirm"
 msgstr "Iyawsaña"
 
+#: src/components/GameCanvas.tsx:47
+msgid "CONNECTED"
+msgstr "MAYACHT'ATA"
+
+#: src/components/Multiplayer.tsx:201
+msgid "Connecting…"
+msgstr "Mayacht'asiski…"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CONNECTION FAILED"
+msgstr "JANIW MAYACHT'ASKITI"
+
 #: ../../../lib/web/src/lib/query-client.ts:81
 msgid "Content not modified"
 msgstr "Contenido jan mayjt'ata"
@@ -340,13 +372,17 @@ msgstr "Sarantaña"
 msgid "Continue with {label}"
 msgstr "{label} ukampi sarantañani"
 
-#: src/components/MissionSetup.tsx:316
+#: src/components/MissionSetup.tsx:324
 msgid "Controls"
 msgstr "Apnaqäwinaka"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
 msgstr "Copiaña"
+
+#: src/components/Multiplayer.tsx:153
+msgid "Could not create the match"
+msgstr "Janiw anatäwix lurasikiti"
 
 #: ../../../lib/web/src/features/document/document-page.tsx:84
 msgid "Could not load this document. Please try again later."
@@ -364,16 +400,25 @@ msgstr "Janiw wasita yatiyaña qalltañ atkchiti. Mira wasitat yant'asma."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Uka cuentampi jan chiqañchasiñjamäkiti. Mayampi yant'añamawa."
 
-#: src/components/GameCanvas.tsx:29
+#: src/components/GameCanvas.tsx:30
 msgid "CRASHED"
 msgstr "JALAQATA"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:157
+#: src/components/Multiplayer.tsx:258
+msgid "Create and fly"
+msgstr "Luraña ukat halaña"
+
+#: src/components/Multiplayer.tsx:216
+msgid "Create match"
+msgstr "Anatäwi luraña"
+
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:159
 msgid "Credits"
 msgstr "Créditos"
 
-#: src/components/MissionSetup.tsx:373
+#: src/components/MissionSetup.tsx:399
+#: src/components/Multiplayer.tsx:243
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -381,11 +426,11 @@ msgstr "Cumulus"
 msgid "Custom"
 msgstr "Sapa"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:40
 msgid "CUT"
 msgstr "PELIGROSO"
 
-#: src/components/MissionSetup.tsx:425
+#: src/components/MissionSetup.tsx:451
 msgid "Cycle view"
 msgstr "Uñjäw mayjt'aña"
 
@@ -402,11 +447,12 @@ msgstr "Ch'amaka"
 msgid "Dark mode"
 msgstr "Ch'amaka modo"
 
-#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:387
+#: src/components/Multiplayer.tsx:238
 msgid "Day"
 msgstr "Uru"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:43
 msgid "DECK POSITION SAVED"
 msgstr "CUBIERTA CHIQA IMATA"
 
@@ -458,11 +504,11 @@ msgstr "Apaqaña"
 msgid "Displays the mobile sidebar."
 msgstr "Móvil sidebar uñacht'ayi."
 
-#: src/components/MissionSetup.tsx:442
+#: src/components/MissionSetup.tsx:468
 msgid "Distance"
 msgstr "Jaya"
 
-#: src/components/MissionSetup.tsx:522
+#: src/components/MissionSetup.tsx:548
 msgid "Distance LOD"
 msgstr "Jaya LOD"
 
@@ -475,7 +521,7 @@ msgstr "Apaqaña"
 msgid "Download failed"
 msgstr "Apaqañax janiw walkiti"
 
-#: src/components/MissionSetup.tsx:516
+#: src/components/MissionSetup.tsx:542
 msgid "Dynamic resolution"
 msgstr "Resolución dinámica"
 
@@ -490,6 +536,10 @@ msgstr "{label} askichaña"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Email código"
+
+#: src/components/Multiplayer.tsx:276
+msgid "empty"
+msgstr "ch'usa"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:299
 msgid "Enter the code from your email"
@@ -510,11 +560,11 @@ msgstr "Jach'achaña"
 msgid "Expand sidebar"
 msgstr "Sidebar jach'achaña"
 
-#: src/components/MissionSetup.tsx:488
+#: src/components/MissionSetup.tsx:514
 msgid "Exterior detail"
 msgstr "Anqa detalle"
 
-#: src/components/MissionSetup.tsx:504
+#: src/components/MissionSetup.tsx:530
 msgid "Extra aircraft"
 msgstr "Yapa avionanaka"
 
@@ -538,7 +588,7 @@ msgstr "Janiw verificación código apayaña atinkti"
 msgid "Failed to update category"
 msgstr "Janiw categoría machaqachaña atinkti"
 
-#: src/components/GameCanvas.tsx:37
+#: src/components/GameCanvas.tsx:38
 msgid "FAIR"
 msgstr "REGULAR"
 
@@ -546,16 +596,16 @@ msgstr "REGULAR"
 msgid "Finish moving your account"
 msgstr "Cuenta apsuña tukuyaña"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "flares"
 msgstr "bengalanaka"
 
-#: src/components/MissionSetup.tsx:422
-#: src/components/MissionSetup.tsx:552
+#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:578
 msgid "Flares"
 msgstr "Bengalanaka"
 
-#: src/components/GameCanvas.tsx:22
+#: src/components/GameCanvas.tsx:23
 msgid "FLARES"
 msgstr "BENGALAS"
 
@@ -567,11 +617,11 @@ msgstr "Pallalla"
 msgid "Floating"
 msgstr "Tuyuri"
 
-#: src/components/MissionSetup.tsx:558
+#: src/components/MissionSetup.tsx:584
 msgid "Framerate"
 msgstr "Fotograma frecuencia"
 
-#: src/components/MissionSetup.tsx:334
+#: src/components/MissionSetup.tsx:342
 msgid "Free flight"
 msgstr "Libre jaläwi"
 
@@ -596,11 +646,11 @@ msgstr "Temata"
 msgid "Full layout"
 msgstr "Taqpach diseño"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "gear"
 msgstr "tren"
 
-#: src/components/GameCanvas.tsx:23
+#: src/components/GameCanvas.tsx:24
 msgid "GEAR"
 msgstr "TREN"
 
@@ -630,7 +680,7 @@ msgstr "{pageNumber} jananakaru saraña"
 msgid "Go to previous page"
 msgstr "Nayraqat páginar saraña"
 
-#: src/components/MissionSetup.tsx:319
+#: src/components/MissionSetup.tsx:327
 msgid "Graphics"
 msgstr "Gráficos"
 
@@ -638,15 +688,15 @@ msgstr "Gráficos"
 msgid "Group"
 msgstr "Grupo"
 
-#: src/components/GameCanvas.tsx:21
+#: src/components/GameCanvas.tsx:22
 msgid "GUN"
 msgstr "ILLAPA"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "guns"
 msgstr "illap'unaka"
 
-#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:440
 msgid "Guns"
 msgstr "Illap'unaka"
 
@@ -658,11 +708,12 @@ msgstr "Imantaña"
 msgid "Hide password"
 msgstr "Imantata aru imaña"
 
-#: src/components/MissionSetup.tsx:468
+#: src/components/MissionSetup.tsx:494
 msgid "High"
 msgstr "Patxa"
 
-#: src/components/MissionSetup.tsx:374
+#: src/components/MissionSetup.tsx:400
+#: src/components/Multiplayer.tsx:244
 msgid "High stratus"
 msgstr "Patxa stratus"
 
@@ -673,11 +724,11 @@ msgstr "Patxa stratus"
 msgid "Home"
 msgstr "Uta"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "hook"
 msgstr "gancho"
 
-#: src/components/GameCanvas.tsx:24
+#: src/components/GameCanvas.tsx:25
 msgid "HOOK"
 msgstr "GANCHO"
 
@@ -689,11 +740,11 @@ msgstr "Junt'u"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/MissionSetup.tsx:345
+#: src/components/MissionSetup.tsx:369
 msgid "In air"
 msgstr "Alaxpachana"
 
-#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:408
 msgid "Input"
 msgstr "Mantäwi"
 
@@ -709,23 +760,44 @@ msgstr "Interesanaka"
 msgid "Invalid verification code"
 msgstr "Jan wakisir verificación código"
 
-#: src/components/MissionSetup.tsx:397
+#: src/components/MissionSetup.tsx:423
 msgid "Invert pitch"
 msgstr "Cabeceo kutt'ayaña"
 
-#: src/components/MissionSetup.tsx:335
+#: src/components/MissionSetup.tsx:608
+#: src/components/Multiplayer.tsx:290
+msgid "Join"
+msgstr "Mantaña"
+
+#: src/components/GameCanvas.tsx:52
+msgid "JOINED"
+msgstr "MANTIWA"
+
+#: src/components/Multiplayer.tsx:275
 msgid "Joust"
 msgstr "Nuwasiña"
 
-#: src/components/MissionSetup.tsx:404
+#: src/components/Multiplayer.tsx:230
+msgid "Joust — 1v1, first kill wins"
+msgstr "Nuwasiña — 1v1, nayrïri jiwayirix atipi"
+
+#: src/components/MissionSetup.tsx:343
+msgid "Joust against AI player"
+msgstr "IA anatirimpi nuwasiña"
+
+#: src/components/MissionSetup.tsx:430
 msgid "Keys"
 msgstr "Teclanaka"
 
-#: src/components/MissionSetup.tsx:418
+#: src/components/GameCanvas.tsx:50
+msgid "KILL"
+msgstr "JIWAYATA"
+
+#: src/components/MissionSetup.tsx:444
 msgid "Landing gear"
 msgstr "Alintañ ruedanaka"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:195
 msgid "Landing-gear wheels from <0>“F/A-18F Super Hornet Fighter Jet”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: wheels extracted and mounted on procedural struts."
 msgstr "Tren de aterrizaje ruedanaka <0>“F/A-18F Super Hornet Fighter Jet”</0> ukata, <1>Muhamad Mirza Arrafi</1> lurawi (Sketchfab), <2>CC BY 4.0</2> licencia ukampi. Mayjt'ayata: ruedanaka apsuta ukat procedural pilaranakaru uchata."
 
@@ -734,21 +806,13 @@ msgstr "Tren de aterrizaje ruedanaka <0>“F/A-18F Super Hornet Fighter Jet”</
 msgid "Large"
 msgstr "Jach'a"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "launch"
 msgstr "jalaya"
 
-#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:441
 msgid "Launch (catapult)"
 msgstr "Jalaya (q'urawa)"
-
-#: src/components/GameCanvas.tsx:96
-#~ msgid "launch / guns"
-#~ msgstr "wayt'a / illapa"
-
-#: src/components/MissionSetup.tsx:413
-#~ msgid "Launch / guns"
-#~ msgstr "Antutaña / illapanaka"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:286
 msgid "Layout"
@@ -759,6 +823,10 @@ msgstr "Diseño"
 msgid "Learn more"
 msgstr "Jukamp yatiqaña"
 
+#: src/components/GameCanvas.tsx:53
+msgid "LEFT"
+msgstr "MISTUWA"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:354
 msgid "Left to Right"
 msgstr "Ch'iqat Kupïru"
@@ -768,15 +836,15 @@ msgstr "Ch'iqat Kupïru"
 msgid "Light"
 msgstr "Qhana"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "lights"
 msgstr "qhananaka"
 
-#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:446
 msgid "Lights"
 msgstr "Qhananaka"
 
-#: src/components/GameCanvas.tsx:31
+#: src/components/GameCanvas.tsx:32
 msgid "LIGHTS"
 msgstr "QHANANAKA"
 
@@ -784,7 +852,7 @@ msgstr "QHANANAKA"
 msgid "Load more"
 msgstr "Jukamp apaqaña"
 
-#: src/components/GameCanvas.tsx:28
+#: src/components/GameCanvas.tsx:29
 msgid "LOADING"
 msgstr "APAQASKIWA"
 
@@ -819,23 +887,24 @@ msgstr "Suma mistutawa"
 msgid "Logging out…"
 msgstr "Mistuskiwa…"
 
-#: src/components/MissionSetup.tsx:464
+#: src/components/MissionSetup.tsx:490
 msgid "Low"
 msgstr "Aynacha"
 
-#: src/components/MissionSetup.tsx:375
+#: src/components/MissionSetup.tsx:401
+#: src/components/Multiplayer.tsx:245
 msgid "Low stratus"
 msgstr "Aynacha stratus"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:45
 msgid "M to close"
 msgstr "M jist'añataki"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "map"
 msgstr "mapa"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:454
 msgid "Map"
 msgstr "Mapa"
 
@@ -845,12 +914,16 @@ msgstr "Mapa"
 msgid "Mark all as read"
 msgstr "Taqpach ullt'ata uñacht'ayaña"
 
+#: src/components/Multiplayer.tsx:226
+msgid "Match type"
+msgstr "Anatäwi kasta"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:466
+#: src/components/MissionSetup.tsx:492
 msgid "Medium"
 msgstr "Taypi"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "menu"
 msgstr "menu"
 
@@ -862,29 +935,41 @@ msgstr "Menú"
 msgid "Metric"
 msgstr "Métrico"
 
-#: src/components/MissionSetup.tsx:241
+#: src/components/MissionSetup.tsx:243
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway Atoll mapa — imaginakax <0>Copernicus Sentinel-2</0> mayjt'ayat yänaka apnaqi (2026); aeropuerto geometría (pista, calle de rodaje, plataformanaka) © <1>OpenStreetMap</1> yanapt'irinaka, <2>ODbL</2> ukampi licenciat; lamar thiya ukat arrecife yänakax <3>NOAA NCCOS</3> ukankiwa (dominio público)."
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "missile"
 msgstr "misil"
 
-#: src/components/MissionSetup.tsx:421
+#: src/components/MissionSetup.tsx:447
 msgid "Missile"
 msgstr "Misil"
 
-#: src/components/MissionSetup.tsx:546
+#: src/components/MissionSetup.tsx:572
 msgid "Missiles"
 msgstr "Misilanaka"
 
-#: src/components/MissionSetup.tsx:310
+#: src/components/Multiplayer.tsx:253
+msgid "Missiles allowed"
+msgstr "Misilanakax iyawsatawa"
+
+#: src/components/MissionSetup.tsx:318
 msgid "Mission"
 msgstr "Misión"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:59
 msgid "Monday"
 msgstr "Lunes"
+
+#: src/components/MissionSetup.tsx:344
+msgid "Multiplayer"
+msgstr "Walja anatirinaka"
+
+#: src/components/Multiplayer.tsx:162
+msgid "Multiplayer needs WebTransport, which this browser does not support yet."
+msgstr "Walja anatirinakatakix WebTransport wakisiwa, aka nabegadorax janiw ukx yanapt'kiti."
 
 #: ../../../lib/web/src/lib/api-client.ts:300
 msgid "Network error"
@@ -899,7 +984,8 @@ msgstr "Machaqa"
 msgid "Next image"
 msgstr "Arkiri imagen"
 
-#: src/components/MissionSetup.tsx:362
+#: src/components/MissionSetup.tsx:388
+#: src/components/Multiplayer.tsx:239
 msgid "Night"
 msgstr "Aruma"
 
@@ -914,6 +1000,10 @@ msgstr "Jan cuenta connectatati"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Jan tamanak utjki"
+
+#: src/components/Multiplayer.tsx:267
+msgid "No open matches — create one."
+msgstr "Janiw jist'arata anatäwinakax utjkiti — mä anatäwi lurma."
 
 #: ../../../lib/web/src/components/place-picker.tsx:132
 msgid "No places found"
@@ -940,14 +1030,18 @@ msgstr "Janira topic registro — arkiri yatiyawi qhipxaru sumat'asma."
 msgid "No users found"
 msgstr "Usuarionak jan jikxatasiti"
 
-#: src/components/GameCanvas.tsx:38
+#: src/components/Multiplayer.tsx:267
+msgid "No world server."
+msgstr "Janiw uraqpacha servidorax utjkiti."
+
+#: src/components/GameCanvas.tsx:39
 msgid "NO-GRADE"
 msgstr "SIN NOTA"
 
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:372
+#: src/components/MissionSetup.tsx:398
 msgid "None"
 msgstr "Janiwa"
 
@@ -967,25 +1061,33 @@ msgstr "Jan wakichata"
 msgid "Notifications"
 msgstr "Yatiyawinaka"
 
-#: src/components/MissionSetup.tsx:496
+#: src/components/MissionSetup.tsx:522
 msgid "Ocean detail"
 msgstr "Quta detalle"
 
-#: src/components/GameCanvas.tsx:36
+#: src/components/GameCanvas.tsx:37
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:347
+#: src/components/MissionSetup.tsx:371
 msgid "On carrier"
 msgstr "Portaaviones patxana"
 
-#: src/components/MissionSetup.tsx:346
+#: src/components/MissionSetup.tsx:370
 msgid "On runway"
 msgstr "Pista patxana"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:16
 msgid "Oops! Page Not Found!"
 msgstr "¡Oops! ¡Página jan jikxatasiti!"
+
+#: src/components/Multiplayer.tsx:275
+msgid "Open"
+msgstr "Jist'arma"
+
+#: src/components/Multiplayer.tsx:229
+msgid "Open — anyone may join or leave"
+msgstr "Jist'arata — khitis mantaspa jan ukax mistuspa"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:156
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:166
@@ -1012,15 +1114,15 @@ msgstr "Navegación menú jist'arma"
 msgid "Open theme settings"
 msgstr "Tema configuracionanak jist'arma"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "or"
 msgstr "jan ukax"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "orbit"
 msgstr "muyu"
 
-#: src/components/MissionSetup.tsx:437
+#: src/components/MissionSetup.tsx:463
 msgid "Orbit"
 msgstr "Muyuña"
 
@@ -1032,7 +1134,7 @@ msgstr "Yaqha"
 msgid "Owner"
 msgstr "Dueño"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:46
 msgid "P to resume · M map · Esc menu"
 msgstr "P sarantañataki · M mapa · Esc menú"
 
@@ -1048,23 +1150,28 @@ msgstr "Passkey yatiyañax jan walikiti. Mira wasitat yant'asma."
 msgid "Passkeys"
 msgstr "Passkeyanaka"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "pause"
 msgstr "sayt'a"
 
-#: src/components/MissionSetup.tsx:429
+#: src/components/MissionSetup.tsx:455
 msgid "Pause"
 msgstr "Sayt'aña"
 
-#: src/components/GameCanvas.tsx:27
+#: src/components/GameCanvas.tsx:28
 msgid "PAUSED"
 msgstr "SAYT'ATA"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:188
+msgid "pilot"
+msgstr "piloto"
+
+#: src/components/GameCanvas.tsx:112
 msgid "pitch"
 msgstr "k'umu"
 
-#: src/components/MissionSetup.tsx:407
+#: src/components/MissionSetup.tsx:433
 msgid "Pitch"
 msgstr "Cabeceo"
 
@@ -1072,11 +1179,11 @@ msgstr "Cabeceo"
 msgid "Please check your internet connection and try again."
 msgstr "Mira internet conexion ukat wasitat yant'asim."
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:477
 msgid "Preset"
 msgstr "Wakichäwi"
 
-#: src/components/GameCanvas.tsx:30
+#: src/components/GameCanvas.tsx:31
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "HALAÑATAKI ENTER ÑIT'AÑA"
 
@@ -1107,11 +1214,11 @@ msgstr "Aka servdorankiw cuentasnaka nayraqatapachani uñakipaña"
 msgid "Re-register your passkeys on this server"
 msgstr "Aka servidoran passkeysniykita wasitata qillqantañani"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "rearm"
 msgstr "phuqt'a"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:449
 msgid "Rearm"
 msgstr "Wasit armaña"
 
@@ -1128,6 +1235,10 @@ msgstr "Login uksaru redirecting."
 #: ../../../lib/web/src/components/post-tags.tsx:208
 msgid "Reduce interest"
 msgstr "Interés pisi tukuyma"
+
+#: src/components/Multiplayer.tsx:206
+msgid "Refresh"
+msgstr "Machaqachama"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
@@ -1162,7 +1273,7 @@ msgstr "Correo mayampi apaña"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:595
+#: src/components/MissionSetup.tsx:626
 msgid "Reset"
 msgstr "Kutintayama"
 
@@ -1170,19 +1281,19 @@ msgstr "Kutintayama"
 msgid "Reset all settings to default values"
 msgstr "Taqi configuracionanak default valoranakar kutintayama"
 
-#: src/components/MissionSetup.tsx:478
+#: src/components/MissionSetup.tsx:504
 msgid "Resolution"
 msgstr "Resolución"
 
-#: src/components/MissionSetup.tsx:572
+#: src/components/MissionSetup.tsx:598
 msgid "Restart"
 msgstr "Wasitat qalltaña"
 
-#: src/components/MissionSetup.tsx:576
+#: src/components/MissionSetup.tsx:602
 msgid "Resume"
 msgstr "Mayamp qalltama"
 
-#: src/components/MissionSetup.tsx:430
+#: src/components/MissionSetup.tsx:456
 msgid "Return to menu"
 msgstr "Menúru kutiña"
 
@@ -1190,11 +1301,11 @@ msgstr "Menúru kutiña"
 msgid "Right to Left"
 msgstr "Kupit Ch'iqaru"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:113
 msgid "roll"
 msgstr "kumpha"
 
-#: src/components/MissionSetup.tsx:408
+#: src/components/MissionSetup.tsx:434
 msgid "Roll"
 msgstr "Alabeo"
 
@@ -1202,7 +1313,7 @@ msgstr "Alabeo"
 msgid "Rows per page"
 msgstr "Página taypi filanaka"
 
-#: src/components/GameCanvas.tsx:32
+#: src/components/GameCanvas.tsx:33
 msgid "RUN UP ENGINE"
 msgstr "TAQI CH'AMA"
 
@@ -1285,7 +1396,7 @@ msgstr "Wasitata apayaña"
 msgid "Send email"
 msgstr "Email apayaña"
 
-#: src/components/MissionSetup.tsx:386
+#: src/components/MissionSetup.tsx:412
 msgid "Sensitivity"
 msgstr "Sensibilidad"
 
@@ -1303,6 +1414,10 @@ msgstr "Servidor juch'a"
 msgid "Server rules"
 msgstr "Servidor reglas"
 
+#: src/components/GameCanvas.tsx:49
+msgid "SESSION ENDED"
+msgstr "SESIONAX TUKUSIWA"
+
 #: ../../../lib/web/src/lib/api-client.ts:227
 msgid "Session expired"
 msgstr "Sesión tukusi"
@@ -1319,7 +1434,7 @@ msgstr "Origen ukat destino uñstayaña"
 msgid "Settings"
 msgstr "Configuración"
 
-#: src/components/MissionSetup.tsx:528
+#: src/components/MissionSetup.tsx:554
 msgid "Shadows"
 msgstr "Ch'iwinaka"
 
@@ -1359,20 +1474,20 @@ msgstr "Jisk'a"
 msgid "Spacious"
 msgstr "Jach'a"
 
-#: src/components/GameCanvas.tsx:25
+#: src/components/GameCanvas.tsx:26
 msgid "SPD BK"
 msgstr "WY FR"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "speed brake"
 msgstr "wayra freno"
 
-#: src/components/MissionSetup.tsx:417
+#: src/components/MissionSetup.tsx:443
 msgid "Speed brake"
 msgstr "Wayra freno"
 
-#: src/components/MissionSetup.tsx:339
-#: src/components/MissionSetup.tsx:582
+#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:613
 msgid "Start"
 msgstr "Qalltaña"
 
@@ -1394,7 +1509,7 @@ msgstr "Domingo"
 msgid "System"
 msgstr "Sistema"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:44
 msgid "TACTICAL MAP"
 msgstr "CH'AXWA MAPA"
 
@@ -1407,7 +1522,7 @@ msgstr "Chimpu"
 msgid "Tags"
 msgstr "Chimpunaka"
 
-#: src/components/MissionSetup.tsx:328
+#: src/components/MissionSetup.tsx:336
 msgid "Task"
 msgstr "Lurawi"
 
@@ -1432,11 +1547,11 @@ msgstr "Tema Configuración"
 msgid "Theme Settings"
 msgstr "Tema machaqachata"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "throttle"
 msgstr "ch'ama"
 
-#: src/components/MissionSetup.tsx:411
+#: src/components/MissionSetup.tsx:437
 msgid "Throttle"
 msgstr "Acelerador"
 
@@ -1444,15 +1559,15 @@ msgstr "Acelerador"
 msgid "Thursday"
 msgstr "Pacha formato"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "tilt"
 msgstr "thiya"
 
-#: src/components/MissionSetup.tsx:440
+#: src/components/MissionSetup.tsx:466
 msgid "Tilt"
 msgstr "Inclinación"
 
-#: src/components/MissionSetup.tsx:355
+#: src/components/MissionSetup.tsx:381
 msgid "Time of day"
 msgstr "Uru pacha"
 
@@ -1491,7 +1606,7 @@ msgstr "Uñjañ opcionanak cambiaña"
 msgid "Top"
 msgstr "Patxa nivel"
 
-#: src/components/MissionSetup.tsx:540
+#: src/components/MissionSetup.tsx:566
 msgid "Tracers"
 msgstr "Trazadoranaka"
 
@@ -1526,7 +1641,7 @@ msgstr "Thaqhañatak qillqam..."
 msgid "Type to search..."
 msgstr "Mensajemam qillqam…"
 
-#: src/components/MissionSetup.tsx:470
+#: src/components/MissionSetup.tsx:496
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1589,7 +1704,7 @@ msgstr "Passkey ukamp verificaña"
 msgid "Video thumbnail"
 msgstr "Uñjaña"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "view"
 msgstr "uñjawi"
 
@@ -1606,7 +1721,7 @@ msgstr "Taqi yatiyawinaka uñjaña"
 msgid "View all notifications"
 msgstr "Taqi posts uñjaña"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:42
 msgid "WAVE OFF"
 msgstr "WAVE OFF"
 
@@ -1614,7 +1729,8 @@ msgstr "WAVE OFF"
 msgid "We'll be back online shortly."
 msgstr "Aka chanikam bid lurañani jumatuyu, ukatpachakix wakischiri sapaki nayraqatar saraqañataki."
 
-#: src/components/MissionSetup.tsx:313
+#: src/components/MissionSetup.tsx:321
+#: src/components/Multiplayer.tsx:235
 msgid "Weather"
 msgstr "Pacha"
 
@@ -1626,19 +1742,31 @@ msgstr "Miércoles"
 msgid "Wednesday"
 msgstr "Semanax aka uru qalltani"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:442
 msgid "Wheel brakes"
 msgstr "Rueda frenu"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:51
+msgid "WINS"
+msgstr "ATIPI"
+
+#: src/components/Multiplayer.tsx:172
+msgid "World server"
+msgstr "Uraqpacha servidora"
+
+#: src/components/Multiplayer.tsx:100
+msgid "World server not reachable"
+msgstr "Janiw uraqpacha servidorar puriñjamäkiti"
+
+#: src/components/GameCanvas.tsx:113
 msgid "yaw"
 msgstr "muyt'a"
 
-#: src/components/MissionSetup.tsx:409
+#: src/components/MissionSetup.tsx:435
 msgid "Yaw"
 msgstr "Guiñada"
 
-#: src/components/GameCanvas.tsx:26
+#: src/components/GameCanvas.tsx:27
 msgid "YOU"
 msgstr "JUMA"
 

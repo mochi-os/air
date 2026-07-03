@@ -10,6 +10,7 @@ import { GameCanvas } from '../components/GameCanvas'
 import { MissionSetup } from '../components/MissionSetup'
 import { useMissionConfig } from '../lib/config-store'
 import { type GameHandle } from '../game/engine'
+import { type Join as NetJoin } from '../game/net'
 
 // Mission-setup tabs are mirrored in the URL (?tab=…) so the address bar tracks
 // the active tab and it's shareable / back-navigable, like other Mochi apps.
@@ -30,6 +31,7 @@ function exitFullscreen() {
 // (game running, menu hidden) hides the Mochi shell chrome and goes fullscreen.
 function Index() {
   const [config, setConfig] = useMissionConfig()
+  const [join, setJoin] = useState<NetJoin | null>(null)
   const [started, setStarted] = useState(false)
   const [menuOpen, setMenuOpen] = useState(true)
   const [gameKey, setGameKey] = useState(0)
@@ -70,6 +72,7 @@ function Index() {
         <GameCanvas
           key={gameKey}
           config={config}
+          join={join}
           onReady={(h) => {
             gameRef.current = h
           }}
@@ -84,6 +87,14 @@ function Index() {
           onTabChange={setTab}
           gameInProgress={started}
           onStart={() => {
+            setJoin(null)
+            setGameKey((k) => k + 1)
+            setStarted(true)
+            enterFlight()
+          }}
+          onJoin={(info) => {
+            setJoin(info)
+            setGameKey((k) => k + 1)
             setStarted(true)
             enterFlight()
           }}

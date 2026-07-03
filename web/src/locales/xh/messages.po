@@ -13,7 +13,22 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/GameCanvas.tsx:33
+#. placeholder {0}: status.players
+#: src/components/Multiplayer.tsx:198
+msgid "{0} flying"
+msgstr "{0} bayabhabha"
+
+#. placeholder {0}: (s.players ?? []).length
+#. placeholder {1}: s.capacity
+#: src/components/Multiplayer.tsx:277
+msgid "{0}/{1} players"
+msgstr "abadlali {0}/{1}"
+
+#: src/components/Multiplayer.tsx:141
+msgid "{name}'s match"
+msgstr "Umdlalo ka-{name}"
+
+#: src/components/GameCanvas.tsx:34
 msgid "1 WIRE"
 msgstr "UCINGO 1"
 
@@ -21,7 +36,7 @@ msgstr "UCINGO 1"
 msgid "12 hours"
 msgstr "iiyure ezili-12"
 
-#: src/components/GameCanvas.tsx:34
+#: src/components/GameCanvas.tsx:35
 msgid "2 WIRE"
 msgstr "UCINGO 2"
 
@@ -29,11 +44,11 @@ msgstr "UCINGO 2"
 msgid "24 hours"
 msgstr "iiyure ezingama-24"
 
-#: src/components/GameCanvas.tsx:35
+#: src/components/GameCanvas.tsx:36
 msgid "3 WIRE"
 msgstr "UCINGO 3"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:164
 msgid "A browser-based multiplayer jet-combat prototype — a shared flight model with server-authoritative netcode (work in progress), rendered with Three.js on WebGL2."
 msgstr "Uyilo lokuqala lomdlalo wokulwa ngeenqwelomoya ezijethi zabadlali abaninzi olusekwe kwibhrawuza — imodeli yokubhabha eyabelwanayo ene-netcode elawulwa yiseva (isaphuhliswa), eboniswa ngokusebenzisa i-Three.js kwi-WebGL2."
 
@@ -111,7 +126,7 @@ msgstr "Yongeza imbono"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Lungelelanisa imbonakalo nesakhiwo ukuze sihambelane neminqweno yakho."
 
-#: src/components/MissionSetup.tsx:534
+#: src/components/MissionSetup.tsx:560
 msgid "Afterburner"
 msgstr "I-afterburner"
 
@@ -119,11 +134,11 @@ msgstr "I-afterburner"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:217
+#: src/components/MissionSetup.tsx:219
 msgid "Aircraft carrier <0>“Gerald Ford Aircraft Carrier”</0> by <1>Usman Zia (Uxxman)</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline, texture downscaled."
 msgstr "Inqanawa ethwala iinqwelomoya <0>“Gerald Ford Aircraft Carrier”</0> eyenziwe ngu-<1>Usman Zia (Uxxman)</1> (Sketchfab), enelayisensi ye-<2>CC BY 4.0</2>. Iguquliwe: yatshintshwa ubungakanani, intloko yenqanawa yajoliswa ku-+X, yantywiliselwa kumgca wamanzi, itekisitsha yehliswa umgangatho."
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:170
 msgid "Aircraft model <0>“Boeing F/A-18E/F Super Hornet”</0> by <1>andertan</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented nose +X, weapons and pylons removed, markings removed, landing gear added, converted to metal-rough."
 msgstr "Imodeli yenqwelomoya <0>“Boeing F/A-18E/F Super Hornet”</0> ngu-<1>andertan</1> (Sketchfab), inikwe ilayisensi phantsi kwe-<2>CC BY 4.0</2>. Kulungisiwe: kuphinde kwakalwa ubungakanani, impumlo iphinde yajoliswa ku-+X, kususwe izixhobo neentsika, kususwe amaphawu, kongezwe izixhobo zokuhlala, kuguqulwe yaba yimetal-rough."
 
@@ -143,7 +158,7 @@ msgstr "Kwenzeke impazamo engalindelekanga"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Uqinisekile ufuna ukuphuma? Kuya kufuneka ungene kwakhona ukuze ufikelele kwi-akhawunti yakho."
 
-#: src/components/MissionSetup.tsx:419
+#: src/components/MissionSetup.tsx:445
 msgid "Arrestor hook"
 msgstr "Ihuku lokumisa"
 
@@ -159,7 +174,7 @@ msgstr "Ukunyuka"
 msgid "Authenticator code"
 msgstr "Ikhowudi yokuqinisekisa"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "back"
 msgstr "emva"
 
@@ -173,7 +188,7 @@ msgstr "Buyela"
 msgid "Back to home"
 msgstr "Buyela ekhaya"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:41
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -182,9 +197,13 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Khulisa umdla"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "brakes"
 msgstr "iibhreyiki"
+
+#: src/components/Multiplayer.tsx:183
+msgid "Callsign"
+msgstr "Igama lokubiza"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
@@ -198,7 +217,7 @@ msgstr "iibhreyiki"
 msgid "Cancel"
 msgstr "Rhoxisa"
 
-#: src/components/MissionSetup.tsx:348
+#: src/components/MissionSetup.tsx:372
 msgid "Carrier landing"
 msgstr "Ukuhla kwinqanawa ethwala iinqwelomoya"
 
@@ -211,11 +230,11 @@ msgstr "Udidi lwesi saziso"
 msgid "Change notification category"
 msgstr "Tshintsha udidi lwesaziso"
 
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:459
 msgid "Chase view"
 msgstr "Imbono yokusukela"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:122
 msgid "Chase view:"
 msgstr "Imbono yokusukela:"
 
@@ -246,6 +265,7 @@ msgstr "Khetha ulwimi"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/Multiplayer.tsx:242
 msgid "Clear"
 msgstr "Cima"
 
@@ -287,11 +307,11 @@ msgstr "Vala iphaneli"
 msgid "Close search"
 msgstr "Vala ukukhangela"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:126
 msgid "closer"
 msgstr "sondela"
 
-#: src/components/MissionSetup.tsx:366
+#: src/components/MissionSetup.tsx:392
 msgid "Clouds"
 msgstr "Amafu"
 
@@ -324,6 +344,18 @@ msgstr "Mfutshane"
 msgid "Confirm"
 msgstr "Qinisekisa"
 
+#: src/components/GameCanvas.tsx:47
+msgid "CONNECTED"
+msgstr "IQHAGAMSHELWE"
+
+#: src/components/Multiplayer.tsx:201
+msgid "Connecting…"
+msgstr "Iyaqhagamshela…"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CONNECTION FAILED"
+msgstr "UQHAGAMSHELWANO ALUPHUMELELANGA"
+
 #: ../../../lib/web/src/lib/query-client.ts:81
 msgid "Content not modified"
 msgstr "Umxholo awulungiswanga"
@@ -340,13 +372,17 @@ msgstr "Qhubeka"
 msgid "Continue with {label}"
 msgstr "Qhubeka nge-{label}"
 
-#: src/components/MissionSetup.tsx:316
+#: src/components/MissionSetup.tsx:324
 msgid "Controls"
 msgstr "Izilawuli"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
 msgstr "Kotshela"
+
+#: src/components/Multiplayer.tsx:153
+msgid "Could not create the match"
+msgstr "Akukwazekanga ukwenza umdlalo"
 
 #: ../../../lib/web/src/features/document/document-page.tsx:84
 msgid "Could not load this document. Please try again later."
@@ -364,16 +400,25 @@ msgstr "Ayikwazanga ukuqalisa ukuqinisekiswa kwakhona. Nceda uzame kwakhona."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Akukwazekanga ukuqinisekisa ngaloo akhawunti. Nceda uzame kwakhona."
 
-#: src/components/GameCanvas.tsx:29
+#: src/components/GameCanvas.tsx:30
 msgid "CRASHED"
 msgstr "IWILE"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:157
+#: src/components/Multiplayer.tsx:258
+msgid "Create and fly"
+msgstr "Yenza uze ubhabhe"
+
+#: src/components/Multiplayer.tsx:216
+msgid "Create match"
+msgstr "Yenza umdlalo"
+
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:159
 msgid "Credits"
 msgstr "Imibulelo"
 
-#: src/components/MissionSetup.tsx:373
+#: src/components/MissionSetup.tsx:399
+#: src/components/Multiplayer.tsx:243
 msgid "Cumulus"
 msgstr "I-cumulus"
 
@@ -381,11 +426,11 @@ msgstr "I-cumulus"
 msgid "Custom"
 msgstr "Ngokwesiqhelo"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:40
 msgid "CUT"
 msgstr "INGOZI"
 
-#: src/components/MissionSetup.tsx:425
+#: src/components/MissionSetup.tsx:451
 msgid "Cycle view"
 msgstr "Tshintsha imbono"
 
@@ -402,11 +447,12 @@ msgstr "Mnyama"
 msgid "Dark mode"
 msgstr "Imodi emnyama"
 
-#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:387
+#: src/components/Multiplayer.tsx:238
 msgid "Day"
 msgstr "Imini"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:43
 msgid "DECK POSITION SAVED"
 msgstr "INDAWO YEDEKI IGCINIWE"
 
@@ -458,11 +504,11 @@ msgstr "Yikhabe"
 msgid "Displays the mobile sidebar."
 msgstr "Ibonisa ibara lecala leselula."
 
-#: src/components/MissionSetup.tsx:442
+#: src/components/MissionSetup.tsx:468
 msgid "Distance"
 msgstr "Umgama"
 
-#: src/components/MissionSetup.tsx:522
+#: src/components/MissionSetup.tsx:548
 msgid "Distance LOD"
 msgstr "I-LOD ngomgama"
 
@@ -475,7 +521,7 @@ msgstr "Khuphela"
 msgid "Download failed"
 msgstr "Ukukhuphela akuphumelelanga"
 
-#: src/components/MissionSetup.tsx:516
+#: src/components/MissionSetup.tsx:542
 msgid "Dynamic resolution"
 msgstr "I-resolution eguqukayo"
 
@@ -490,6 +536,10 @@ msgstr "Hlela {label}"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Ikhowudi ye-imeyili"
+
+#: src/components/Multiplayer.tsx:276
+msgid "empty"
+msgstr "ayinamntu"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:299
 msgid "Enter the code from your email"
@@ -510,11 +560,11 @@ msgstr "Yandisa"
 msgid "Expand sidebar"
 msgstr "Yandisa ibara lecala"
 
-#: src/components/MissionSetup.tsx:488
+#: src/components/MissionSetup.tsx:514
 msgid "Exterior detail"
 msgstr "Iinkcukacha zangaphandle"
 
-#: src/components/MissionSetup.tsx:504
+#: src/components/MissionSetup.tsx:530
 msgid "Extra aircraft"
 msgstr "Iinqwelomoya ezongezelelweyo"
 
@@ -538,7 +588,7 @@ msgstr "Ayiphumelelanga ukuthumela ikhowudi yokuqinisekisa"
 msgid "Failed to update category"
 msgstr "Ayiphumelelanga ukuhlaziya udidi"
 
-#: src/components/GameCanvas.tsx:37
+#: src/components/GameCanvas.tsx:38
 msgid "FAIR"
 msgstr "PHAKATHI"
 
@@ -546,16 +596,16 @@ msgstr "PHAKATHI"
 msgid "Finish moving your account"
 msgstr "Gqiba ukufudusa i-akhawunti yakho"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "flares"
 msgstr "iiflare"
 
-#: src/components/MissionSetup.tsx:422
-#: src/components/MissionSetup.tsx:552
+#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:578
 msgid "Flares"
 msgstr "Ii-flares"
 
-#: src/components/GameCanvas.tsx:22
+#: src/components/GameCanvas.tsx:23
 msgid "FLARES"
 msgstr "AMALANGABI"
 
@@ -567,11 +617,11 @@ msgstr "Isicaba"
 msgid "Floating"
 msgstr "Idadayo"
 
-#: src/components/MissionSetup.tsx:558
+#: src/components/MissionSetup.tsx:584
 msgid "Framerate"
 msgstr "Izinga leefreyimu"
 
-#: src/components/MissionSetup.tsx:334
+#: src/components/MissionSetup.tsx:342
 msgid "Free flight"
 msgstr "Ukubhabha okukhululekileyo"
 
@@ -596,11 +646,11 @@ msgstr "Kwitimu"
 msgid "Full layout"
 msgstr "Ulungelelaniso olupheleleyo"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "gear"
 msgstr "Igiya"
 
-#: src/components/GameCanvas.tsx:23
+#: src/components/GameCanvas.tsx:24
 msgid "GEAR"
 msgstr "IGIYA"
 
@@ -630,7 +680,7 @@ msgstr "Yiya kwiphepha {pageNumber}"
 msgid "Go to previous page"
 msgstr "Yiya kwiphepha elidlulileyo"
 
-#: src/components/MissionSetup.tsx:319
+#: src/components/MissionSetup.tsx:327
 msgid "Graphics"
 msgstr "Imizobo"
 
@@ -638,15 +688,15 @@ msgstr "Imizobo"
 msgid "Group"
 msgstr "Iqela"
 
-#: src/components/GameCanvas.tsx:21
+#: src/components/GameCanvas.tsx:22
 msgid "GUN"
 msgstr "UMPU"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "guns"
 msgstr "imipu"
 
-#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:440
 msgid "Guns"
 msgstr "Imipu"
 
@@ -658,11 +708,12 @@ msgstr "Fihla"
 msgid "Hide password"
 msgstr "Fihla iphasiwedi"
 
-#: src/components/MissionSetup.tsx:468
+#: src/components/MissionSetup.tsx:494
 msgid "High"
 msgstr "Ephezulu"
 
-#: src/components/MissionSetup.tsx:374
+#: src/components/MissionSetup.tsx:400
+#: src/components/Multiplayer.tsx:244
 msgid "High stratus"
 msgstr "I-stratus ephezulu"
 
@@ -673,11 +724,11 @@ msgstr "I-stratus ephezulu"
 msgid "Home"
 msgstr "Ekhaya"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "hook"
 msgstr "Ihuku"
 
-#: src/components/GameCanvas.tsx:24
+#: src/components/GameCanvas.tsx:25
 msgid "HOOK"
 msgstr "IHUKU"
 
@@ -689,11 +740,11 @@ msgstr "Ishushu"
 msgid "Imperial"
 msgstr "I-Imperial"
 
-#: src/components/MissionSetup.tsx:345
+#: src/components/MissionSetup.tsx:369
 msgid "In air"
 msgstr "Emoyeni"
 
-#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:408
 msgid "Input"
 msgstr "Igalelo"
 
@@ -709,23 +760,44 @@ msgstr "Imidla"
 msgid "Invalid verification code"
 msgstr "Ikhowudi yokuqinisekisa engasebenziyo"
 
-#: src/components/MissionSetup.tsx:397
+#: src/components/MissionSetup.tsx:423
 msgid "Invert pitch"
 msgstr "Guqula i-pitch"
 
-#: src/components/MissionSetup.tsx:335
+#: src/components/MissionSetup.tsx:608
+#: src/components/Multiplayer.tsx:290
+msgid "Join"
+msgstr "Joyina"
+
+#: src/components/GameCanvas.tsx:52
+msgid "JOINED"
+msgstr "UJOYINILE"
+
+#: src/components/Multiplayer.tsx:275
 msgid "Joust"
 msgstr "Ukuqubisana"
 
-#: src/components/MissionSetup.tsx:404
+#: src/components/Multiplayer.tsx:230
+msgid "Joust — 1v1, first kill wins"
+msgstr "Idabi — 1v1, obulala kuqala uyaphumelela"
+
+#: src/components/MissionSetup.tsx:343
+msgid "Joust against AI player"
+msgstr "Idabi nomdlali we-AI"
+
+#: src/components/MissionSetup.tsx:430
 msgid "Keys"
 msgstr "Izitshixo"
 
-#: src/components/MissionSetup.tsx:418
+#: src/components/GameCanvas.tsx:50
+msgid "KILL"
+msgstr "UMBULELE"
+
+#: src/components/MissionSetup.tsx:444
 msgid "Landing gear"
 msgstr "Amavili okuhlala"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:195
 msgid "Landing-gear wheels from <0>“F/A-18F Super Hornet Fighter Jet”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: wheels extracted and mounted on procedural struts."
 msgstr "Amavili ezixhobo zokuhlala avela <0>“F/A-18F Super Hornet Fighter Jet”</0> ngu-<1>Muhamad Mirza Arrafi</1> (Sketchfab), inikwe ilayisensi phantsi kwe-<2>CC BY 4.0</2>. Kulungisiwe: amavili akhutshiwe aza axhonywa kwiintsika ezenziwe ngokwenkqubo."
 
@@ -734,21 +806,13 @@ msgstr "Amavili ezixhobo zokuhlala avela <0>“F/A-18F Super Hornet Fighter Jet�
 msgid "Large"
 msgstr "Inkulu"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "launch"
 msgstr "ndulula"
 
-#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:441
 msgid "Launch (catapult)"
 msgstr "Ndulula (ikhathaphali)"
-
-#: src/components/GameCanvas.tsx:96
-#~ msgid "launch / guns"
-#~ msgstr "ndulula / imipu"
-
-#: src/components/MissionSetup.tsx:413
-#~ msgid "Launch / guns"
-#~ msgstr "Ndulula / imipu"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:286
 msgid "Layout"
@@ -759,6 +823,10 @@ msgstr "Ulungelelaniso"
 msgid "Learn more"
 msgstr "Funda okungakumbi"
 
+#: src/components/GameCanvas.tsx:53
+msgid "LEFT"
+msgstr "UPHUMILE"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:354
 msgid "Left to Right"
 msgstr "Ekhohlo ukuya ekunene"
@@ -768,15 +836,15 @@ msgstr "Ekhohlo ukuya ekunene"
 msgid "Light"
 msgstr "Khaphukhaphu"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "lights"
 msgstr "izibane"
 
-#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:446
 msgid "Lights"
 msgstr "Izibane"
 
-#: src/components/GameCanvas.tsx:31
+#: src/components/GameCanvas.tsx:32
 msgid "LIGHTS"
 msgstr "IZIBANE"
 
@@ -784,7 +852,7 @@ msgstr "IZIBANE"
 msgid "Load more"
 msgstr "Layisha okungakumbi"
 
-#: src/components/GameCanvas.tsx:28
+#: src/components/GameCanvas.tsx:29
 msgid "LOADING"
 msgstr "KULAYISHWA"
 
@@ -819,23 +887,24 @@ msgstr "Uphume ngempumelelo"
 msgid "Logging out…"
 msgstr "Iyaphuma…"
 
-#: src/components/MissionSetup.tsx:464
+#: src/components/MissionSetup.tsx:490
 msgid "Low"
 msgstr "Ephantsi"
 
-#: src/components/MissionSetup.tsx:375
+#: src/components/MissionSetup.tsx:401
+#: src/components/Multiplayer.tsx:245
 msgid "Low stratus"
 msgstr "I-stratus ephantsi"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:45
 msgid "M to close"
 msgstr "M ukuvala"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "map"
 msgstr "imephu"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:454
 msgid "Map"
 msgstr "Imephu"
 
@@ -845,12 +914,16 @@ msgstr "Imephu"
 msgid "Mark all as read"
 msgstr "Phawula konke njengokufundiwe"
 
+#: src/components/Multiplayer.tsx:226
+msgid "Match type"
+msgstr "Uhlobo lomdlalo"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:466
+#: src/components/MissionSetup.tsx:492
 msgid "Medium"
 msgstr "Ephakathi"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "menu"
 msgstr "imenyu"
 
@@ -862,29 +935,41 @@ msgstr "Imenyu"
 msgid "Metric"
 msgstr "I-Metric"
 
-#: src/components/MissionSetup.tsx:241
+#: src/components/MissionSetup.tsx:243
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Imephu ye-Midway Atoll — imifanekiso iqulethe idatha ye-<0>Copernicus Sentinel-2</0> elungiselelweyo (2026); ulwakhiwo lwesikhululo seenqwelomoya (indlela yokundiza, iindlela zokuhamba kweenqwelomoya, iindawo zokupaka) © abanikeli be-<1>OpenStreetMap</1>, elinelayisensi phantsi kwe-<2>ODbL</2>; idatha yonxweme neriphu ivela kwi-<3>NOAA NCCOS</3> (kwimimandla yoluntu)."
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "missile"
 msgstr "imissile"
 
-#: src/components/MissionSetup.tsx:421
+#: src/components/MissionSetup.tsx:447
 msgid "Missile"
 msgstr "Imisayile"
 
-#: src/components/MissionSetup.tsx:546
+#: src/components/MissionSetup.tsx:572
 msgid "Missiles"
 msgstr "Iimisayile"
 
-#: src/components/MissionSetup.tsx:310
+#: src/components/Multiplayer.tsx:253
+msgid "Missiles allowed"
+msgstr "Ii-missile zivumelekile"
+
+#: src/components/MissionSetup.tsx:318
 msgid "Mission"
 msgstr "Uthumo"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:59
 msgid "Monday"
 msgstr "Umvulo"
+
+#: src/components/MissionSetup.tsx:344
+msgid "Multiplayer"
+msgstr "Abadlali abaninzi"
+
+#: src/components/Multiplayer.tsx:162
+msgid "Multiplayer needs WebTransport, which this browser does not support yet."
+msgstr "Umdlalo wabadlali abaninzi udinga i-WebTransport, kodwa le bhrawuza ayikayixhasi."
 
 #: ../../../lib/web/src/lib/api-client.ts:300
 msgid "Network error"
@@ -899,7 +984,8 @@ msgstr "Entsha"
 msgid "Next image"
 msgstr "Umfanekiso olandelayo"
 
-#: src/components/MissionSetup.tsx:362
+#: src/components/MissionSetup.tsx:388
+#: src/components/Multiplayer.tsx:239
 msgid "Night"
 msgstr "Ubusuku"
 
@@ -914,6 +1000,10 @@ msgstr "Akukho akhawunti zinxulumeneyo"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Akukho maqela afumanekayo"
+
+#: src/components/Multiplayer.tsx:267
+msgid "No open matches — create one."
+msgstr "Akukho midlalo ivulekileyo — yenza omnye."
 
 #: ../../../lib/web/src/components/place-picker.tsx:132
 msgid "No places found"
@@ -940,14 +1030,18 @@ msgstr "Akukho rekhodi yomxholo okwangoku — zama kwakhona emva kwesaziso esila
 msgid "No users found"
 msgstr "Akukho basebenzisi bafumanekileyo"
 
-#: src/components/GameCanvas.tsx:38
+#: src/components/Multiplayer.tsx:267
+msgid "No world server."
+msgstr "Akukho seva yehlabathi."
+
+#: src/components/GameCanvas.tsx:39
 msgid "NO-GRADE"
 msgstr "AKUKHO BANGA"
 
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:372
+#: src/components/MissionSetup.tsx:398
 msgid "None"
 msgstr "Akukho nanye"
 
@@ -967,25 +1061,33 @@ msgstr "Akumiselwanga"
 msgid "Notifications"
 msgstr "Izaziso"
 
-#: src/components/MissionSetup.tsx:496
+#: src/components/MissionSetup.tsx:522
 msgid "Ocean detail"
 msgstr "Iinkcukacha zolwandle"
 
-#: src/components/GameCanvas.tsx:36
+#: src/components/GameCanvas.tsx:37
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:347
+#: src/components/MissionSetup.tsx:371
 msgid "On carrier"
 msgstr "Kwinqanawa ethwala iinqwelomoya"
 
-#: src/components/MissionSetup.tsx:346
+#: src/components/MissionSetup.tsx:370
 msgid "On runway"
 msgstr "Kwibala lokundiza"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:16
 msgid "Oops! Page Not Found!"
 msgstr "Yhu! Iphepha Alifumanekanga!"
+
+#: src/components/Multiplayer.tsx:275
+msgid "Open"
+msgstr "Vula"
+
+#: src/components/Multiplayer.tsx:229
+msgid "Open — anyone may join or leave"
+msgstr "Uvulekile — nabani na angangena okanye aphume"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:156
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:166
@@ -1012,15 +1114,15 @@ msgstr "Vula imenyu yojikelo"
 msgid "Open theme settings"
 msgstr "Vula iisetingi zomxholo"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "or"
 msgstr "okanye"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "orbit"
 msgstr "jikeleza"
 
-#: src/components/MissionSetup.tsx:437
+#: src/components/MissionSetup.tsx:463
 msgid "Orbit"
 msgstr "Ukujikeleza"
 
@@ -1032,7 +1134,7 @@ msgstr "Okunye"
 msgid "Owner"
 msgstr "Umnini"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:46
 msgid "P to resume · M map · Esc menu"
 msgstr "P ukuqhubeka · M imephu · Esc imenyu"
 
@@ -1048,23 +1150,28 @@ msgstr "Ukuqinisekiswa kwe-passkey akuphumelelanga. Nceda uzame kwakhona."
 msgid "Passkeys"
 msgstr "Ii-passkey"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "pause"
 msgstr "nqumama"
 
-#: src/components/MissionSetup.tsx:429
+#: src/components/MissionSetup.tsx:455
 msgid "Pause"
 msgstr "Misa"
 
-#: src/components/GameCanvas.tsx:27
+#: src/components/GameCanvas.tsx:28
 msgid "PAUSED"
 msgstr "KUMISIWE"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:188
+msgid "pilot"
+msgstr "umqhubi wenqwelomoya"
+
+#: src/components/GameCanvas.tsx:112
 msgid "pitch"
 msgstr "nyusa-thoba"
 
-#: src/components/MissionSetup.tsx:407
+#: src/components/MissionSetup.tsx:433
 msgid "Pitch"
 msgstr "I-pitch"
 
@@ -1072,11 +1179,11 @@ msgstr "I-pitch"
 msgid "Please check your internet connection and try again."
 msgstr "Nceda ukhangele uqhagamshelwano lwakho lwe-intanethi uze uzame kwakhona."
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:477
 msgid "Preset"
 msgstr "Isimiselo"
 
-#: src/components/GameCanvas.tsx:30
+#: src/components/GameCanvas.tsx:31
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "CINEZELA U-ENTER UKUZE UNDIZE"
 
@@ -1107,11 +1214,11 @@ msgstr "Phinda udibanise iiakhawunti zakho kwiseva yesi"
 msgid "Re-register your passkeys on this server"
 msgstr "Phinda ubhalise izitshixo zakho zokufikelela kule seva"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "rearm"
 msgstr "xhoba kwakhona"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:449
 msgid "Rearm"
 msgstr "Hlomisa kwakhona"
 
@@ -1128,6 +1235,10 @@ msgstr "Iyahanjiswa kwiportal yokungena."
 #: ../../../lib/web/src/components/post-tags.tsx:208
 msgid "Reduce interest"
 msgstr "Nciphisa umnxili"
+
+#: src/components/Multiplayer.tsx:206
+msgid "Refresh"
+msgstr "Vuselela"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
@@ -1162,7 +1273,7 @@ msgstr "Thumela kwakhona i-imeyile"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:595
+#: src/components/MissionSetup.tsx:626
 msgid "Reset"
 msgstr "Buyisela"
 
@@ -1170,19 +1281,19 @@ msgstr "Buyisela"
 msgid "Reset all settings to default values"
 msgstr "Buyisela zonke iisetingi kumaxabiso amiselweyo"
 
-#: src/components/MissionSetup.tsx:478
+#: src/components/MissionSetup.tsx:504
 msgid "Resolution"
 msgstr "Isisombululo"
 
-#: src/components/MissionSetup.tsx:572
+#: src/components/MissionSetup.tsx:598
 msgid "Restart"
 msgstr "Qala kwakhona"
 
-#: src/components/MissionSetup.tsx:576
+#: src/components/MissionSetup.tsx:602
 msgid "Resume"
 msgstr "Qhubeka"
 
-#: src/components/MissionSetup.tsx:430
+#: src/components/MissionSetup.tsx:456
 msgid "Return to menu"
 msgstr "Buyela kwimenyu"
 
@@ -1190,11 +1301,11 @@ msgstr "Buyela kwimenyu"
 msgid "Right to Left"
 msgstr "Ekunene ukuya Ekhohlo"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:113
 msgid "roll"
 msgstr "qengqela"
 
-#: src/components/MissionSetup.tsx:408
+#: src/components/MissionSetup.tsx:434
 msgid "Roll"
 msgstr "I-roll"
 
@@ -1202,7 +1313,7 @@ msgstr "I-roll"
 msgid "Rows per page"
 msgstr "Imiqolo ngephepha"
 
-#: src/components/GameCanvas.tsx:32
+#: src/components/GameCanvas.tsx:33
 msgid "RUN UP ENGINE"
 msgstr "AMANDLA APHELELEYO"
 
@@ -1285,7 +1396,7 @@ msgstr "Thumela kwakhona"
 msgid "Send email"
 msgstr "Thumela i-imeyile"
 
-#: src/components/MissionSetup.tsx:386
+#: src/components/MissionSetup.tsx:412
 msgid "Sensitivity"
 msgstr "Uvakalelo"
 
@@ -1303,6 +1414,10 @@ msgstr "Impazamo yeseva"
 msgid "Server rules"
 msgstr "Imithetho yeseva"
 
+#: src/components/GameCanvas.tsx:49
+msgid "SESSION ENDED"
+msgstr "ISESHONI IPHELILE"
+
 #: ../../../lib/web/src/lib/api-client.ts:227
 msgid "Session expired"
 msgstr "Iseshoni iphelelwe"
@@ -1319,7 +1434,7 @@ msgstr "Misa indawo yokuqala neyokugqibela"
 msgid "Settings"
 msgstr "Iisetingi"
 
-#: src/components/MissionSetup.tsx:528
+#: src/components/MissionSetup.tsx:554
 msgid "Shadows"
 msgstr "Izithunzi"
 
@@ -1359,20 +1474,20 @@ msgstr "Encinci"
 msgid "Spacious"
 msgstr "Banzi"
 
-#: src/components/GameCanvas.tsx:25
+#: src/components/GameCanvas.tsx:26
 msgid "SPD BK"
 msgstr "IB.MO"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "speed brake"
 msgstr "ibhuleki yomoya"
 
-#: src/components/MissionSetup.tsx:417
+#: src/components/MissionSetup.tsx:443
 msgid "Speed brake"
 msgstr "Ibhuleki yomoya"
 
-#: src/components/MissionSetup.tsx:339
-#: src/components/MissionSetup.tsx:582
+#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:613
 msgid "Start"
 msgstr "Qala"
 
@@ -1394,7 +1509,7 @@ msgstr "Icawa"
 msgid "System"
 msgstr "Inkqubo"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:44
 msgid "TACTICAL MAP"
 msgstr "IMEPHU YEQHINGA"
 
@@ -1407,7 +1522,7 @@ msgstr "Iletile"
 msgid "Tags"
 msgstr "Iiletile"
 
-#: src/components/MissionSetup.tsx:328
+#: src/components/MissionSetup.tsx:336
 msgid "Task"
 msgstr "Umsebenzi"
 
@@ -1432,11 +1547,11 @@ msgstr "Itimu"
 msgid "Theme Settings"
 msgstr "Iisetingi zetimu"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "throttle"
 msgstr "isantya"
 
-#: src/components/MissionSetup.tsx:411
+#: src/components/MissionSetup.tsx:437
 msgid "Throttle"
 msgstr "I-throttle"
 
@@ -1444,15 +1559,15 @@ msgstr "I-throttle"
 msgid "Thursday"
 msgstr "Ulwesine"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "tilt"
 msgstr "thambeka"
 
-#: src/components/MissionSetup.tsx:440
+#: src/components/MissionSetup.tsx:466
 msgid "Tilt"
 msgstr "Tyekisa"
 
-#: src/components/MissionSetup.tsx:355
+#: src/components/MissionSetup.tsx:381
 msgid "Time of day"
 msgstr "Ixesha losuku"
 
@@ -1491,7 +1606,7 @@ msgstr "Tshintsha itimu"
 msgid "Top"
 msgstr "Phezulu"
 
-#: src/components/MissionSetup.tsx:540
+#: src/components/MissionSetup.tsx:566
 msgid "Tracers"
 msgstr "Ii-tracers"
 
@@ -1526,7 +1641,7 @@ msgstr "Bhala ukukhangela abasebenzisi"
 msgid "Type to search..."
 msgstr "Bhala ukukhangela..."
 
-#: src/components/MissionSetup.tsx:470
+#: src/components/MissionSetup.tsx:496
 msgid "Ultra"
 msgstr "I-ultra"
 
@@ -1589,7 +1704,7 @@ msgstr "Qinisekisa idilesi ye-imeyile"
 msgid "Video thumbnail"
 msgstr "Umfanekiso omfutshane wevidiyo"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "view"
 msgstr "imbono"
 
@@ -1606,7 +1721,7 @@ msgstr "Bonisa konke"
 msgid "View all notifications"
 msgstr "Bonisa zonke izaziso"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:42
 msgid "WAVE OFF"
 msgstr "WAVE OFF"
 
@@ -1614,7 +1729,8 @@ msgstr "WAVE OFF"
 msgid "We'll be back online shortly."
 msgstr "Sizakubuyela kungekudala."
 
-#: src/components/MissionSetup.tsx:313
+#: src/components/MissionSetup.tsx:321
+#: src/components/Multiplayer.tsx:235
 msgid "Weather"
 msgstr "Imozulu"
 
@@ -1626,19 +1742,31 @@ msgstr "Iwebhusayithi iphantsi kogcino!"
 msgid "Wednesday"
 msgstr "Ulwesithathu"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:442
 msgid "Wheel brakes"
 msgstr "Iibhreyiki zamasondo"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:51
+msgid "WINS"
+msgstr "UYAPHUMELELA"
+
+#: src/components/Multiplayer.tsx:172
+msgid "World server"
+msgstr "Iseva yehlabathi"
+
+#: src/components/Multiplayer.tsx:100
+msgid "World server not reachable"
+msgstr "Iseva yehlabathi ayifikeleleki"
+
+#: src/components/GameCanvas.tsx:113
 msgid "yaw"
 msgstr "jika"
 
-#: src/components/MissionSetup.tsx:409
+#: src/components/MissionSetup.tsx:435
 msgid "Yaw"
 msgstr "I-yaw"
 
-#: src/components/GameCanvas.tsx:26
+#: src/components/GameCanvas.tsx:27
 msgid "YOU"
 msgstr "WENA"
 

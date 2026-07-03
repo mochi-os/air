@@ -13,7 +13,22 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/GameCanvas.tsx:33
+#. placeholder {0}: status.players
+#: src/components/Multiplayer.tsx:198
+msgid "{0} flying"
+msgstr "{0} ap vole"
+
+#. placeholder {0}: (s.players ?? []).length
+#. placeholder {1}: s.capacity
+#: src/components/Multiplayer.tsx:277
+msgid "{0}/{1} players"
+msgstr "{0}/{1} jwè"
+
+#: src/components/Multiplayer.tsx:141
+msgid "{name}'s match"
+msgstr "Match {name}"
+
+#: src/components/GameCanvas.tsx:34
 msgid "1 WIRE"
 msgstr "KAB 1"
 
@@ -21,7 +36,7 @@ msgstr "KAB 1"
 msgid "12 hours"
 msgstr "12 èdtan"
 
-#: src/components/GameCanvas.tsx:34
+#: src/components/GameCanvas.tsx:35
 msgid "2 WIRE"
 msgstr "KAB 2"
 
@@ -29,11 +44,11 @@ msgstr "KAB 2"
 msgid "24 hours"
 msgstr "24 èdtan"
 
-#: src/components/GameCanvas.tsx:35
+#: src/components/GameCanvas.tsx:36
 msgid "3 WIRE"
 msgstr "KAB 3"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:164
 msgid "A browser-based multiplayer jet-combat prototype — a shared flight model with server-authoritative netcode (work in progress), rendered with Three.js on WebGL2."
 msgstr "Yon pwototip konba avyon a reyaksyon milti-jwè ki baze sou navigatè — yon modèl vòl pataje ak kòd rezo kontwole pa sèvè (n ap travay sou li), ki rann ak Three.js sou WebGL2."
 
@@ -111,7 +126,7 @@ msgstr "Ajoute vi"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Ajiste aparans ak layout dapre preferans ou."
 
-#: src/components/MissionSetup.tsx:534
+#: src/components/MissionSetup.tsx:560
 msgid "Afterburner"
 msgstr "Postkonbisyon"
 
@@ -119,11 +134,11 @@ msgstr "Postkonbisyon"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:217
+#: src/components/MissionSetup.tsx:219
 msgid "Aircraft carrier <0>“Gerald Ford Aircraft Carrier”</0> by <1>Usman Zia (Uxxman)</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline, texture downscaled."
 msgstr "Pòtavyon <0>“Gerald Ford Aircraft Carrier”</0> pa <1>Usman Zia (Uxxman)</1> (Sketchfab), ki gen lisans <2>CC BY 4.0</2>. Modifye: chanje echèl, devan an reoryante +X, koule jiska liy flotezon an, teksti redui."
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:170
 msgid "Aircraft model <0>“Boeing F/A-18E/F Super Hornet”</0> by <1>andertan</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented nose +X, weapons and pylons removed, markings removed, landing gear added, converted to metal-rough."
 msgstr "Modèl avyon <0>“Boeing F/A-18E/F Super Hornet”</0> pa <1>andertan</1> (Sketchfab), ki gen lisans anba <2>CC BY 4.0</2>. Modifye: chanje echèl, nen reoryante nan +X, retire zam ak pilòn, retire makaj, ajoute tren datèrisaj, konvèti an metal-rough."
 
@@ -143,7 +158,7 @@ msgstr "Yon erè inatandi te rive"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Èske ou sèten ou vle dekonekte? Ou pral bezwen konekte ankò pou aksede kont ou."
 
-#: src/components/MissionSetup.tsx:419
+#: src/components/MissionSetup.tsx:445
 msgid "Arrestor hook"
 msgstr "Kwòk arè"
 
@@ -159,7 +174,7 @@ msgstr "Monte"
 msgid "Authenticator code"
 msgstr "Kòd otantifikatè"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "back"
 msgstr "annaryè"
 
@@ -173,7 +188,7 @@ msgstr "Retounen"
 msgid "Back to home"
 msgstr "Tounen lakay"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:41
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -182,9 +197,13 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Ogmante enterè"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "brakes"
 msgstr "fren"
+
+#: src/components/Multiplayer.tsx:183
+msgid "Callsign"
+msgstr "Non apèl"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
@@ -198,7 +217,7 @@ msgstr "fren"
 msgid "Cancel"
 msgstr "Anile"
 
-#: src/components/MissionSetup.tsx:348
+#: src/components/MissionSetup.tsx:372
 msgid "Carrier landing"
 msgstr "Aterisaj sou pòtavyon"
 
@@ -211,11 +230,11 @@ msgstr "Kategori pou notifikasyon sa a"
 msgid "Change notification category"
 msgstr "Chanje kategori notifikasyon"
 
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:459
 msgid "Chase view"
 msgstr "Vi pouswit"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:122
 msgid "Chase view:"
 msgstr "Vi swivi:"
 
@@ -246,6 +265,7 @@ msgstr "Chwazi lang"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/Multiplayer.tsx:242
 msgid "Clear"
 msgstr "Efase"
 
@@ -287,11 +307,11 @@ msgstr "Fèmen panèl"
 msgid "Close search"
 msgstr "Fèmen rechèch"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:126
 msgid "closer"
 msgstr "pi pre"
 
-#: src/components/MissionSetup.tsx:366
+#: src/components/MissionSetup.tsx:392
 msgid "Clouds"
 msgstr "Nyaj"
 
@@ -324,6 +344,18 @@ msgstr "Konpak"
 msgid "Confirm"
 msgstr "Konfime"
 
+#: src/components/GameCanvas.tsx:47
+msgid "CONNECTED"
+msgstr "KONEKTE"
+
+#: src/components/Multiplayer.tsx:201
+msgid "Connecting…"
+msgstr "Ap konekte…"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CONNECTION FAILED"
+msgstr "KONEKSYON AN ECHWE"
+
 #: ../../../lib/web/src/lib/query-client.ts:81
 msgid "Content not modified"
 msgstr "Kontni pa modifye"
@@ -340,13 +372,17 @@ msgstr "Kontinye"
 msgid "Continue with {label}"
 msgstr "Kontinye ak {label}"
 
-#: src/components/MissionSetup.tsx:316
+#: src/components/MissionSetup.tsx:324
 msgid "Controls"
 msgstr "Kontwòl"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
 msgstr "Kopye"
+
+#: src/components/Multiplayer.tsx:153
+msgid "Could not create the match"
+msgstr "Nou pa t kapab kreye match la"
 
 #: ../../../lib/web/src/features/document/document-page.tsx:84
 msgid "Could not load this document. Please try again later."
@@ -364,16 +400,25 @@ msgstr "Nou pa t kapab kòmanse re-otantifikasyon an. Tanpri eseye ankò."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Nou pa t kapab verifye ak kont sa a. Tanpri eseye ankò."
 
-#: src/components/GameCanvas.tsx:29
+#: src/components/GameCanvas.tsx:30
 msgid "CRASHED"
 msgstr "KRAZE"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:157
+#: src/components/Multiplayer.tsx:258
+msgid "Create and fly"
+msgstr "Kreye epi vole"
+
+#: src/components/Multiplayer.tsx:216
+msgid "Create match"
+msgstr "Kreye match"
+
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:159
 msgid "Credits"
 msgstr "Kredi"
 
-#: src/components/MissionSetup.tsx:373
+#: src/components/MissionSetup.tsx:399
+#: src/components/Multiplayer.tsx:243
 msgid "Cumulus"
 msgstr "Kimilis"
 
@@ -381,11 +426,11 @@ msgstr "Kimilis"
 msgid "Custom"
 msgstr "Pèsonalize"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:40
 msgid "CUT"
 msgstr "DANJERE"
 
-#: src/components/MissionSetup.tsx:425
+#: src/components/MissionSetup.tsx:451
 msgid "Cycle view"
 msgstr "Chanje vi"
 
@@ -402,11 +447,12 @@ msgstr "Fonse"
 msgid "Dark mode"
 msgstr "Mòd fonse"
 
-#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:387
+#: src/components/Multiplayer.tsx:238
 msgid "Day"
 msgstr "Jou"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:43
 msgid "DECK POSITION SAVED"
 msgstr "POZISYON SOU PON ANREJISTRE"
 
@@ -458,11 +504,11 @@ msgstr "Rejte"
 msgid "Displays the mobile sidebar."
 msgstr "Afiche ba kote mobil la."
 
-#: src/components/MissionSetup.tsx:442
+#: src/components/MissionSetup.tsx:468
 msgid "Distance"
 msgstr "Distans"
 
-#: src/components/MissionSetup.tsx:522
+#: src/components/MissionSetup.tsx:548
 msgid "Distance LOD"
 msgstr "LOD distans"
 
@@ -475,7 +521,7 @@ msgstr "Telechaje"
 msgid "Download failed"
 msgstr "Telechajman an echwe"
 
-#: src/components/MissionSetup.tsx:516
+#: src/components/MissionSetup.tsx:542
 msgid "Dynamic resolution"
 msgstr "Rezolisyon dinamik"
 
@@ -490,6 +536,10 @@ msgstr "Modifye {label}"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Kòd imèl"
+
+#: src/components/Multiplayer.tsx:276
+msgid "empty"
+msgstr "vid"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:299
 msgid "Enter the code from your email"
@@ -510,11 +560,11 @@ msgstr "Elaji"
 msgid "Expand sidebar"
 msgstr "Elaji ba kote"
 
-#: src/components/MissionSetup.tsx:488
+#: src/components/MissionSetup.tsx:514
 msgid "Exterior detail"
 msgstr "Detay eksteryè"
 
-#: src/components/MissionSetup.tsx:504
+#: src/components/MissionSetup.tsx:530
 msgid "Extra aircraft"
 msgstr "Avyon anplis"
 
@@ -538,7 +588,7 @@ msgstr "Echwe pou voye kòd verifikasyon"
 msgid "Failed to update category"
 msgstr "Echwe pou mete ajou kategori"
 
-#: src/components/GameCanvas.tsx:37
+#: src/components/GameCanvas.tsx:38
 msgid "FAIR"
 msgstr "PASAB"
 
@@ -546,16 +596,16 @@ msgstr "PASAB"
 msgid "Finish moving your account"
 msgstr "Fini deplase kont ou"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "flares"
 msgstr "fize"
 
-#: src/components/MissionSetup.tsx:422
-#: src/components/MissionSetup.tsx:552
+#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:578
 msgid "Flares"
 msgstr "Fize"
 
-#: src/components/GameCanvas.tsx:22
+#: src/components/GameCanvas.tsx:23
 msgid "FLARES"
 msgstr "FIZE"
 
@@ -567,11 +617,11 @@ msgstr "Plat"
 msgid "Floating"
 msgstr "Flotan"
 
-#: src/components/MissionSetup.tsx:558
+#: src/components/MissionSetup.tsx:584
 msgid "Framerate"
 msgstr "To imaj"
 
-#: src/components/MissionSetup.tsx:334
+#: src/components/MissionSetup.tsx:342
 msgid "Free flight"
 msgstr "Vòl lib"
 
@@ -596,11 +646,11 @@ msgstr "Soti nan tèm"
 msgid "Full layout"
 msgstr "Layout konplè"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "gear"
 msgstr "tren"
 
-#: src/components/GameCanvas.tsx:23
+#: src/components/GameCanvas.tsx:24
 msgid "GEAR"
 msgstr "TREN"
 
@@ -630,7 +680,7 @@ msgstr "Ale nan paj {pageNumber}"
 msgid "Go to previous page"
 msgstr "Ale nan paj anvan"
 
-#: src/components/MissionSetup.tsx:319
+#: src/components/MissionSetup.tsx:327
 msgid "Graphics"
 msgstr "Grafik"
 
@@ -638,15 +688,15 @@ msgstr "Grafik"
 msgid "Group"
 msgstr "Gwoup"
 
-#: src/components/GameCanvas.tsx:21
+#: src/components/GameCanvas.tsx:22
 msgid "GUN"
 msgstr "KANON"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "guns"
 msgstr "kanon"
 
-#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:440
 msgid "Guns"
 msgstr "Kanon"
 
@@ -658,11 +708,12 @@ msgstr "Kache"
 msgid "Hide password"
 msgstr "Kache modpas la"
 
-#: src/components/MissionSetup.tsx:468
+#: src/components/MissionSetup.tsx:494
 msgid "High"
 msgstr "Wo"
 
-#: src/components/MissionSetup.tsx:374
+#: src/components/MissionSetup.tsx:400
+#: src/components/Multiplayer.tsx:244
 msgid "High stratus"
 msgstr "Stratis wo"
 
@@ -673,11 +724,11 @@ msgstr "Stratis wo"
 msgid "Home"
 msgstr "Akèy"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "hook"
 msgstr "Kwòk"
 
-#: src/components/GameCanvas.tsx:24
+#: src/components/GameCanvas.tsx:25
 msgid "HOOK"
 msgstr "KWÒK"
 
@@ -689,11 +740,11 @@ msgstr "Cho"
 msgid "Imperial"
 msgstr "Imperyal"
 
-#: src/components/MissionSetup.tsx:345
+#: src/components/MissionSetup.tsx:369
 msgid "In air"
 msgstr "Nan lè"
 
-#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:408
 msgid "Input"
 msgstr "Antre"
 
@@ -709,23 +760,44 @@ msgstr "Enterè"
 msgid "Invalid verification code"
 msgstr "Kòd verifikasyon envalid"
 
-#: src/components/MissionSetup.tsx:397
+#: src/components/MissionSetup.tsx:423
 msgid "Invert pitch"
 msgstr "Envèse tangaj"
 
-#: src/components/MissionSetup.tsx:335
+#: src/components/MissionSetup.tsx:608
+#: src/components/Multiplayer.tsx:290
+msgid "Join"
+msgstr "Antre"
+
+#: src/components/GameCanvas.tsx:52
+msgid "JOINED"
+msgstr "ANTRE"
+
+#: src/components/Multiplayer.tsx:275
 msgid "Joust"
 msgstr "Dyèl"
 
-#: src/components/MissionSetup.tsx:404
+#: src/components/Multiplayer.tsx:230
+msgid "Joust — 1v1, first kill wins"
+msgstr "Duèl — 1v1, premye kill la genyen"
+
+#: src/components/MissionSetup.tsx:343
+msgid "Joust against AI player"
+msgstr "Duèl kont yon jwè AI"
+
+#: src/components/MissionSetup.tsx:430
 msgid "Keys"
 msgstr "Touch"
 
-#: src/components/MissionSetup.tsx:418
+#: src/components/GameCanvas.tsx:50
+msgid "KILL"
+msgstr "ELIMINE"
+
+#: src/components/MissionSetup.tsx:444
 msgid "Landing gear"
 msgstr "Tren daterisaj"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:195
 msgid "Landing-gear wheels from <0>“F/A-18F Super Hornet Fighter Jet”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: wheels extracted and mounted on procedural struts."
 msgstr "Wou tren datèrisaj ki soti nan <0>“F/A-18F Super Hornet Fighter Jet”</0> pa <1>Muhamad Mirza Arrafi</1> (Sketchfab), ki gen lisans anba <2>CC BY 4.0</2>. Modifye: wou yo retire epi monte sou poto pwosediral."
 
@@ -734,21 +806,13 @@ msgstr "Wou tren datèrisaj ki soti nan <0>“F/A-18F Super Hornet Fighter Jet�
 msgid "Large"
 msgstr "Gwo"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "launch"
 msgstr "lanse"
 
-#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:441
 msgid "Launch (catapult)"
 msgstr "Lanse (katapil)"
-
-#: src/components/GameCanvas.tsx:96
-#~ msgid "launch / guns"
-#~ msgstr "lanse / kanon"
-
-#: src/components/MissionSetup.tsx:413
-#~ msgid "Launch / guns"
-#~ msgstr "Lanse / zam"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:286
 msgid "Layout"
@@ -759,6 +823,10 @@ msgstr "Disposisyon"
 msgid "Learn more"
 msgstr "Aprann plis"
 
+#: src/components/GameCanvas.tsx:53
+msgid "LEFT"
+msgstr "SOTI"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:354
 msgid "Left to Right"
 msgstr "Goch a Dwat"
@@ -768,15 +836,15 @@ msgstr "Goch a Dwat"
 msgid "Light"
 msgstr "Klè"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "lights"
 msgstr "limyè"
 
-#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:446
 msgid "Lights"
 msgstr "Limyè"
 
-#: src/components/GameCanvas.tsx:31
+#: src/components/GameCanvas.tsx:32
 msgid "LIGHTS"
 msgstr "LIMYÈ"
 
@@ -784,7 +852,7 @@ msgstr "LIMYÈ"
 msgid "Load more"
 msgstr "Chaje plis"
 
-#: src/components/GameCanvas.tsx:28
+#: src/components/GameCanvas.tsx:29
 msgid "LOADING"
 msgstr "AP CHAJE"
 
@@ -819,23 +887,24 @@ msgstr "Dekonekte avèk siksè"
 msgid "Logging out…"
 msgstr "Ap dekonekte…"
 
-#: src/components/MissionSetup.tsx:464
+#: src/components/MissionSetup.tsx:490
 msgid "Low"
 msgstr "Ba"
 
-#: src/components/MissionSetup.tsx:375
+#: src/components/MissionSetup.tsx:401
+#: src/components/Multiplayer.tsx:245
 msgid "Low stratus"
 msgstr "Stratis ba"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:45
 msgid "M to close"
 msgstr "M pou fèmen"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "map"
 msgstr "kat"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:454
 msgid "Map"
 msgstr "Kat"
 
@@ -845,12 +914,16 @@ msgstr "Kat"
 msgid "Mark all as read"
 msgstr "Make tout kòm li"
 
+#: src/components/Multiplayer.tsx:226
+msgid "Match type"
+msgstr "Kalite match"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:466
+#: src/components/MissionSetup.tsx:492
 msgid "Medium"
 msgstr "Mwayen"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "menu"
 msgstr "meni"
 
@@ -862,29 +935,41 @@ msgstr "Meni"
 msgid "Metric"
 msgstr "Metrik"
 
-#: src/components/MissionSetup.tsx:241
+#: src/components/MissionSetup.tsx:243
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Kat Midway Atoll — imaj yo gen done <0>Copernicus Sentinel-2</0> ki modifye (2026); jeyometri ayewopò a (pist, wout taksi, apwon) © kontribitè <1>OpenStreetMap</1>, ki gen lisans anba <2>ODbL</2>; done kòt ak resif soti nan <3>NOAA NCCOS</3> (domèn piblik)."
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "missile"
 msgstr "misil"
 
-#: src/components/MissionSetup.tsx:421
+#: src/components/MissionSetup.tsx:447
 msgid "Missile"
 msgstr "Misil"
 
-#: src/components/MissionSetup.tsx:546
+#: src/components/MissionSetup.tsx:572
 msgid "Missiles"
 msgstr "Misil yo"
 
-#: src/components/MissionSetup.tsx:310
+#: src/components/Multiplayer.tsx:253
+msgid "Missiles allowed"
+msgstr "Misil otorize"
+
+#: src/components/MissionSetup.tsx:318
 msgid "Mission"
 msgstr "Misyon"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:59
 msgid "Monday"
 msgstr "Lendi"
+
+#: src/components/MissionSetup.tsx:344
+msgid "Multiplayer"
+msgstr "Plizyè jwè"
+
+#: src/components/Multiplayer.tsx:162
+msgid "Multiplayer needs WebTransport, which this browser does not support yet."
+msgstr "Plizyè jwè bezwen WebTransport, men navigatè sa a poko sipòte li."
 
 #: ../../../lib/web/src/lib/api-client.ts:300
 msgid "Network error"
@@ -899,7 +984,8 @@ msgstr "Nouvo"
 msgid "Next image"
 msgstr "Pwochen imaj"
 
-#: src/components/MissionSetup.tsx:362
+#: src/components/MissionSetup.tsx:388
+#: src/components/Multiplayer.tsx:239
 msgid "Night"
 msgstr "Lannwit"
 
@@ -914,6 +1000,10 @@ msgstr "Pa gen kont konekte"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Pa gen gwoup disponib"
+
+#: src/components/Multiplayer.tsx:267
+msgid "No open matches — create one."
+msgstr "Pa gen match ouvè — kreye youn."
 
 #: ../../../lib/web/src/components/place-picker.tsx:132
 msgid "No places found"
@@ -940,14 +1030,18 @@ msgstr "Poko gen anrejistreman sijè — eseye ankò apre pwochèn notifikasyon 
 msgid "No users found"
 msgstr "Pa gen itilizatè ki jwenn"
 
-#: src/components/GameCanvas.tsx:38
+#: src/components/Multiplayer.tsx:267
+msgid "No world server."
+msgstr "Pa gen okenn sèvè mond."
+
+#: src/components/GameCanvas.tsx:39
 msgid "NO-GRADE"
 msgstr "SAN NÒT"
 
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:372
+#: src/components/MissionSetup.tsx:398
 msgid "None"
 msgstr "Okenn"
 
@@ -967,25 +1061,33 @@ msgstr "Pa defini"
 msgid "Notifications"
 msgstr "Notifikasyon"
 
-#: src/components/MissionSetup.tsx:496
+#: src/components/MissionSetup.tsx:522
 msgid "Ocean detail"
 msgstr "Detay oseyan"
 
-#: src/components/GameCanvas.tsx:36
+#: src/components/GameCanvas.tsx:37
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:347
+#: src/components/MissionSetup.tsx:371
 msgid "On carrier"
 msgstr "Sou pòtavyon"
 
-#: src/components/MissionSetup.tsx:346
+#: src/components/MissionSetup.tsx:370
 msgid "On runway"
 msgstr "Sou pis"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:16
 msgid "Oops! Page Not Found!"
 msgstr "Oops! Paj Pa Jwenn!"
+
+#: src/components/Multiplayer.tsx:275
+msgid "Open"
+msgstr "Ouvri"
+
+#: src/components/Multiplayer.tsx:229
+msgid "Open — anyone may join or leave"
+msgstr "Ouvè — nenpòt moun ka antre oswa soti"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:156
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:166
@@ -1012,15 +1114,15 @@ msgstr "Ouvri meni navigasyon"
 msgid "Open theme settings"
 msgstr "Ouvri paramèt tèm"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "or"
 msgstr "oswa"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "orbit"
 msgstr "vire"
 
-#: src/components/MissionSetup.tsx:437
+#: src/components/MissionSetup.tsx:463
 msgid "Orbit"
 msgstr "Òbit"
 
@@ -1032,7 +1134,7 @@ msgstr "Lòt"
 msgid "Owner"
 msgstr "Pwopriyetè"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:46
 msgid "P to resume · M map · Esc menu"
 msgstr "P pou kontinye · M kat · Esc meni"
 
@@ -1048,23 +1150,28 @@ msgstr "Verifikasyon passkey la echwe. Tanpri eseye ankò."
 msgid "Passkeys"
 msgstr "Paskey"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "pause"
 msgstr "poz"
 
-#: src/components/MissionSetup.tsx:429
+#: src/components/MissionSetup.tsx:455
 msgid "Pause"
 msgstr "Pòz"
 
-#: src/components/GameCanvas.tsx:27
+#: src/components/GameCanvas.tsx:28
 msgid "PAUSED"
 msgstr "AN POZ"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:188
+msgid "pilot"
+msgstr "pilòt"
+
+#: src/components/GameCanvas.tsx:112
 msgid "pitch"
 msgstr "tangaj"
 
-#: src/components/MissionSetup.tsx:407
+#: src/components/MissionSetup.tsx:433
 msgid "Pitch"
 msgstr "Tangaj"
 
@@ -1072,11 +1179,11 @@ msgstr "Tangaj"
 msgid "Please check your internet connection and try again."
 msgstr "Tanpri tcheke koneksyon entènèt ou epi eseye ankò."
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:477
 msgid "Preset"
 msgstr "Preregle"
 
-#: src/components/GameCanvas.tsx:30
+#: src/components/GameCanvas.tsx:31
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "PIJE ENTER POU DEKOLE"
 
@@ -1107,11 +1214,11 @@ msgstr "Konekte kont ou yo ankò sou sèvè sa a"
 msgid "Re-register your passkeys on this server"
 msgstr "Re-enskri paskey ou yo sou sèvè sa a"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "rearm"
 msgstr "rechaje"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:449
 msgid "Rearm"
 msgstr "Rearme"
 
@@ -1128,6 +1235,10 @@ msgstr "Ap redirije nan koneksyon."
 #: ../../../lib/web/src/components/post-tags.tsx:208
 msgid "Reduce interest"
 msgstr "Diminye enterè"
+
+#: src/components/Multiplayer.tsx:206
+msgid "Refresh"
+msgstr "Rafrechi"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
@@ -1162,7 +1273,7 @@ msgstr "Voye imèl la ankò"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:595
+#: src/components/MissionSetup.tsx:626
 msgid "Reset"
 msgstr "Remete"
 
@@ -1170,19 +1281,19 @@ msgstr "Remete"
 msgid "Reset all settings to default values"
 msgstr "Reset tout paramèt nan valè default"
 
-#: src/components/MissionSetup.tsx:478
+#: src/components/MissionSetup.tsx:504
 msgid "Resolution"
 msgstr "Rezolisyon"
 
-#: src/components/MissionSetup.tsx:572
+#: src/components/MissionSetup.tsx:598
 msgid "Restart"
 msgstr "Rekòmanse"
 
-#: src/components/MissionSetup.tsx:576
+#: src/components/MissionSetup.tsx:602
 msgid "Resume"
 msgstr "Repran"
 
-#: src/components/MissionSetup.tsx:430
+#: src/components/MissionSetup.tsx:456
 msgid "Return to menu"
 msgstr "Retounen nan meni"
 
@@ -1190,11 +1301,11 @@ msgstr "Retounen nan meni"
 msgid "Right to Left"
 msgstr "Dwat a Goch"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:113
 msgid "roll"
 msgstr "woulis"
 
-#: src/components/MissionSetup.tsx:408
+#: src/components/MissionSetup.tsx:434
 msgid "Roll"
 msgstr "Rouli"
 
@@ -1202,7 +1313,7 @@ msgstr "Rouli"
 msgid "Rows per page"
 msgstr "Ranje pa paj"
 
-#: src/components/GameCanvas.tsx:32
+#: src/components/GameCanvas.tsx:33
 msgid "RUN UP ENGINE"
 msgstr "PLEN GAZ"
 
@@ -1285,7 +1396,7 @@ msgstr "Voye ankò"
 msgid "Send email"
 msgstr "Voye imèl"
 
-#: src/components/MissionSetup.tsx:386
+#: src/components/MissionSetup.tsx:412
 msgid "Sensitivity"
 msgstr "Sansiblite"
 
@@ -1303,6 +1414,10 @@ msgstr "Erè sèvè"
 msgid "Server rules"
 msgstr "Règ sèvè"
 
+#: src/components/GameCanvas.tsx:49
+msgid "SESSION ENDED"
+msgstr "SESYON AN FINI"
+
 #: ../../../lib/web/src/lib/api-client.ts:227
 msgid "Session expired"
 msgstr "Sesyon ekspire"
@@ -1319,7 +1434,7 @@ msgstr "Mete orijin ak destinasyon"
 msgid "Settings"
 msgstr "Paramèt"
 
-#: src/components/MissionSetup.tsx:528
+#: src/components/MissionSetup.tsx:554
 msgid "Shadows"
 msgstr "Lonbraj"
 
@@ -1359,20 +1474,20 @@ msgstr "Piti"
 msgid "Spacious"
 msgstr "Espasye"
 
-#: src/components/GameCanvas.tsx:25
+#: src/components/GameCanvas.tsx:26
 msgid "SPD BK"
 msgstr "FRLÈ"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "speed brake"
 msgstr "frèn lè"
 
-#: src/components/MissionSetup.tsx:417
+#: src/components/MissionSetup.tsx:443
 msgid "Speed brake"
 msgstr "Frèn lè"
 
-#: src/components/MissionSetup.tsx:339
-#: src/components/MissionSetup.tsx:582
+#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:613
 msgid "Start"
 msgstr "Kòmanse"
 
@@ -1394,7 +1509,7 @@ msgstr "Dimanch"
 msgid "System"
 msgstr "Sistèm"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:44
 msgid "TACTICAL MAP"
 msgstr "KAT TAKTIK"
 
@@ -1407,7 +1522,7 @@ msgstr "Etikèt"
 msgid "Tags"
 msgstr "Tag yo"
 
-#: src/components/MissionSetup.tsx:328
+#: src/components/MissionSetup.tsx:336
 msgid "Task"
 msgstr "Travay"
 
@@ -1432,11 +1547,11 @@ msgstr "Tèm"
 msgid "Theme Settings"
 msgstr "Paramèt Tèm"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "throttle"
 msgstr "gaz"
 
-#: src/components/MissionSetup.tsx:411
+#: src/components/MissionSetup.tsx:437
 msgid "Throttle"
 msgstr "Gaz"
 
@@ -1444,15 +1559,15 @@ msgstr "Gaz"
 msgid "Thursday"
 msgstr "Jedi"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "tilt"
 msgstr "panche"
 
-#: src/components/MissionSetup.tsx:440
+#: src/components/MissionSetup.tsx:466
 msgid "Tilt"
 msgstr "Panche"
 
-#: src/components/MissionSetup.tsx:355
+#: src/components/MissionSetup.tsx:381
 msgid "Time of day"
 msgstr "Lè nan jounen"
 
@@ -1491,7 +1606,7 @@ msgstr "Aktive tèm"
 msgid "Top"
 msgstr "Anwo"
 
-#: src/components/MissionSetup.tsx:540
+#: src/components/MissionSetup.tsx:566
 msgid "Tracers"
 msgstr "Bal trasè"
 
@@ -1526,7 +1641,7 @@ msgstr "Tape pou chèche itilizatè"
 msgid "Type to search..."
 msgstr "Tape pou chèche..."
 
-#: src/components/MissionSetup.tsx:470
+#: src/components/MissionSetup.tsx:496
 msgid "Ultra"
 msgstr "Iltra"
 
@@ -1589,7 +1704,7 @@ msgstr "Verifye adrès imèl"
 msgid "Video thumbnail"
 msgstr "Imaj videyo"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "view"
 msgstr "vi"
 
@@ -1606,7 +1721,7 @@ msgstr "Wè tout"
 msgid "View all notifications"
 msgstr "Wè tout notifikasyon"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:42
 msgid "WAVE OFF"
 msgstr "ANILE ATERISAJ LA"
 
@@ -1614,7 +1729,8 @@ msgstr "ANILE ATERISAJ LA"
 msgid "We'll be back online shortly."
 msgstr "Nou ap retounen online byento."
 
-#: src/components/MissionSetup.tsx:313
+#: src/components/MissionSetup.tsx:321
+#: src/components/Multiplayer.tsx:235
 msgid "Weather"
 msgstr "Tan"
 
@@ -1626,19 +1742,31 @@ msgstr "Sit la nan antretyen!"
 msgid "Wednesday"
 msgstr "Mèkredi"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:442
 msgid "Wheel brakes"
 msgstr "Fren wou"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:51
+msgid "WINS"
+msgstr "GENYEN"
+
+#: src/components/Multiplayer.tsx:172
+msgid "World server"
+msgstr "Sèvè mond"
+
+#: src/components/Multiplayer.tsx:100
+msgid "World server not reachable"
+msgstr "Pa ka jwenn sèvè mond lan"
+
+#: src/components/GameCanvas.tsx:113
 msgid "yaw"
 msgstr "lasèt"
 
-#: src/components/MissionSetup.tsx:409
+#: src/components/MissionSetup.tsx:435
 msgid "Yaw"
 msgstr "Lasèt"
 
-#: src/components/GameCanvas.tsx:26
+#: src/components/GameCanvas.tsx:27
 msgid "YOU"
 msgstr "OU"
 

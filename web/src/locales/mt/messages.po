@@ -13,7 +13,22 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/GameCanvas.tsx:33
+#. placeholder {0}: status.players
+#: src/components/Multiplayer.tsx:198
+msgid "{0} flying"
+msgstr "{0} qed itiru"
+
+#. placeholder {0}: (s.players ?? []).length
+#. placeholder {1}: s.capacity
+#: src/components/Multiplayer.tsx:277
+msgid "{0}/{1} players"
+msgstr "{0}/{1} plejers"
+
+#: src/components/Multiplayer.tsx:141
+msgid "{name}'s match"
+msgstr "Il-partita ta' {name}"
+
+#: src/components/GameCanvas.tsx:34
 msgid "1 WIRE"
 msgstr "KEJBIL 1"
 
@@ -21,7 +36,7 @@ msgstr "KEJBIL 1"
 msgid "12 hours"
 msgstr "12-il siegħa"
 
-#: src/components/GameCanvas.tsx:34
+#: src/components/GameCanvas.tsx:35
 msgid "2 WIRE"
 msgstr "KEJBIL 2"
 
@@ -29,11 +44,11 @@ msgstr "KEJBIL 2"
 msgid "24 hours"
 msgstr "24 siegħa"
 
-#: src/components/GameCanvas.tsx:35
+#: src/components/GameCanvas.tsx:36
 msgid "3 WIRE"
 msgstr "KEJBIL 3"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:164
 msgid "A browser-based multiplayer jet-combat prototype — a shared flight model with server-authoritative netcode (work in progress), rendered with Three.js on WebGL2."
 msgstr "Prototip ta' ġlied bil-ġettijiet multiplayer ibbażat fuq il-browser — mudell tat-titjira kondiviż b'netcode awtoritattiv mis-server (xogħol għaddej), renderjat b'Three.js fuq WebGL2."
 
@@ -111,7 +126,7 @@ msgstr "Żid view"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Aġġusta d-dehra u l-layout skont il-preferenzi tiegħek."
 
-#: src/components/MissionSetup.tsx:534
+#: src/components/MissionSetup.tsx:560
 msgid "Afterburner"
 msgstr "Afterburner"
 
@@ -119,11 +134,11 @@ msgstr "Afterburner"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:217
+#: src/components/MissionSetup.tsx:219
 msgid "Aircraft carrier <0>“Gerald Ford Aircraft Carrier”</0> by <1>Usman Zia (Uxxman)</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline, texture downscaled."
 msgstr "Bastiment tal-ajruplani <0>“Gerald Ford Aircraft Carrier”</0> minn <1>Usman Zia (Uxxman)</1> (Sketchfab), liċenzjat taħt <2>CC BY 4.0</2>. Immodifikat: skalat mill-ġdid, il-pruwa orjentata +X, mgħarrqa sal-linja tal-ilma, it-texture mnaqqsa."
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:170
 msgid "Aircraft model <0>“Boeing F/A-18E/F Super Hornet”</0> by <1>andertan</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented nose +X, weapons and pylons removed, markings removed, landing gear added, converted to metal-rough."
 msgstr "Mudell tal-ajruplan <0>“Boeing F/A-18E/F Super Hornet”</0> minn <1>andertan</1> (Sketchfab), liċenzjat taħt <2>CC BY 4.0</2>. Immodifikat: skalat mill-ġdid, l-imnieħer orjentat mill-ġdid lejn +X, armi u pilonijiet imneħħija, marki mneħħija, miżjud it-tagħmir tal-inżul, konvertit għal metal-rough."
 
@@ -143,7 +158,7 @@ msgstr "Seħħ żball mhux mistenni"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Żgur trid toħroġ? Trid terġa' tidħol biex taċċessa l-kont tiegħek."
 
-#: src/components/MissionSetup.tsx:419
+#: src/components/MissionSetup.tsx:445
 msgid "Arrestor hook"
 msgstr "Ganċ tal-waqfien"
 
@@ -159,7 +174,7 @@ msgstr "Axxendenti"
 msgid "Authenticator code"
 msgstr "Kodiċi tal-awtentikazzjoni"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "back"
 msgstr "lura"
 
@@ -173,7 +188,7 @@ msgstr "Lura"
 msgid "Back to home"
 msgstr "Lura għall-paġna ewlenija"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:41
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -182,9 +197,13 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Saħħaħ l-interess"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "brakes"
 msgstr "freni"
+
+#: src/components/Multiplayer.tsx:183
+msgid "Callsign"
+msgstr "Sinjal tas-sejħa"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
@@ -198,7 +217,7 @@ msgstr "freni"
 msgid "Cancel"
 msgstr "Ikkanċella"
 
-#: src/components/MissionSetup.tsx:348
+#: src/components/MissionSetup.tsx:372
 msgid "Carrier landing"
 msgstr "Nżul fuq bastiment tal-ajruplani"
 
@@ -211,11 +230,11 @@ msgstr "Kategorija għal din in-notifika"
 msgid "Change notification category"
 msgstr "Ibdel il-kategorija tan-notifika"
 
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:459
 msgid "Chase view"
 msgstr "Veduta ta' segwiment"
 
-#: src/components/GameCanvas.tsx:111
+#: src/components/GameCanvas.tsx:122
 msgid "Chase view:"
 msgstr "Veduta tal-insegwiment:"
 
@@ -246,6 +265,7 @@ msgstr "Agħżel lingwa"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/Multiplayer.tsx:242
 msgid "Clear"
 msgstr "Naddaf"
 
@@ -287,11 +307,11 @@ msgstr "Agħlaq il-pannell"
 msgid "Close search"
 msgstr "Agħlaq it-tiftix"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:126
 msgid "closer"
 msgstr "eqreb"
 
-#: src/components/MissionSetup.tsx:366
+#: src/components/MissionSetup.tsx:392
 msgid "Clouds"
 msgstr "Sħab"
 
@@ -324,6 +344,18 @@ msgstr "Kompatt"
 msgid "Confirm"
 msgstr "Ikkonferma"
 
+#: src/components/GameCanvas.tsx:47
+msgid "CONNECTED"
+msgstr "IMQABBAD"
+
+#: src/components/Multiplayer.tsx:201
+msgid "Connecting…"
+msgstr "Qed jikkonnettja…"
+
+#: src/components/GameCanvas.tsx:48
+msgid "CONNECTION FAILED"
+msgstr "IL-KONNESSJONI FALLIET"
+
 #: ../../../lib/web/src/lib/query-client.ts:81
 msgid "Content not modified"
 msgstr "Il-kontenut ma ġiex modifikat"
@@ -340,13 +372,17 @@ msgstr "Kompli"
 msgid "Continue with {label}"
 msgstr "Kompli b'{label}"
 
-#: src/components/MissionSetup.tsx:316
+#: src/components/MissionSetup.tsx:324
 msgid "Controls"
 msgstr "Kontrolli"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
 msgstr "Ikkupja"
+
+#: src/components/Multiplayer.tsx:153
+msgid "Could not create the match"
+msgstr "Il-partita ma setgħetx tinħoloq"
 
 #: ../../../lib/web/src/features/document/document-page.tsx:84
 msgid "Could not load this document. Please try again later."
@@ -364,16 +400,25 @@ msgstr "Ma setgħetx tinbeda l-awtentikazzjoni mill-ġdid. Jekk jogħġbok erġa
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Ma stajniex nivverifikaw b'dak il-kont. Jekk jogħġbok erġa' pprova."
 
-#: src/components/GameCanvas.tsx:29
+#: src/components/GameCanvas.tsx:30
 msgid "CRASHED"
 msgstr "INQERED"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:157
+#: src/components/Multiplayer.tsx:258
+msgid "Create and fly"
+msgstr "Oħloq u tir"
+
+#: src/components/Multiplayer.tsx:216
+msgid "Create match"
+msgstr "Oħloq partita"
+
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:159
 msgid "Credits"
 msgstr "Krediti"
 
-#: src/components/MissionSetup.tsx:373
+#: src/components/MissionSetup.tsx:399
+#: src/components/Multiplayer.tsx:243
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -381,11 +426,11 @@ msgstr "Cumulus"
 msgid "Custom"
 msgstr "Personalizzat"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:40
 msgid "CUT"
 msgstr "PERIKOLUŻ"
 
-#: src/components/MissionSetup.tsx:425
+#: src/components/MissionSetup.tsx:451
 msgid "Cycle view"
 msgstr "Ibdel il-veduta"
 
@@ -402,11 +447,12 @@ msgstr "Skur"
 msgid "Dark mode"
 msgstr "Modalità skura"
 
-#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:387
+#: src/components/Multiplayer.tsx:238
 msgid "Day"
 msgstr "Binhar"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:43
 msgid "DECK POSITION SAVED"
 msgstr "POŻIZZJONI TAL-GVERTA MAĦŻUNA"
 
@@ -458,11 +504,11 @@ msgstr "Warrab"
 msgid "Displays the mobile sidebar."
 msgstr "Juri l-barra tal-ġenb tal-mobile."
 
-#: src/components/MissionSetup.tsx:442
+#: src/components/MissionSetup.tsx:468
 msgid "Distance"
 msgstr "Distanza"
 
-#: src/components/MissionSetup.tsx:522
+#: src/components/MissionSetup.tsx:548
 msgid "Distance LOD"
 msgstr "LOD tad-distanza"
 
@@ -475,7 +521,7 @@ msgstr "Niżżel"
 msgid "Download failed"
 msgstr "It-tniżżil falla"
 
-#: src/components/MissionSetup.tsx:516
+#: src/components/MissionSetup.tsx:542
 msgid "Dynamic resolution"
 msgstr "Riżoluzzjoni dinamika"
 
@@ -490,6 +536,10 @@ msgstr "Editja {label}"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Kodiċi tal-email"
+
+#: src/components/Multiplayer.tsx:276
+msgid "empty"
+msgstr "vojta"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:299
 msgid "Enter the code from your email"
@@ -510,11 +560,11 @@ msgstr "Espandi"
 msgid "Expand sidebar"
 msgstr "Espandi s-sidebar"
 
-#: src/components/MissionSetup.tsx:488
+#: src/components/MissionSetup.tsx:514
 msgid "Exterior detail"
 msgstr "Dettall estern"
 
-#: src/components/MissionSetup.tsx:504
+#: src/components/MissionSetup.tsx:530
 msgid "Extra aircraft"
 msgstr "Ajruplani żejda"
 
@@ -538,7 +588,7 @@ msgstr "Ma rnexxiex jintbagħat il-kodiċi tal-verifika"
 msgid "Failed to update category"
 msgstr "Ma rnexxiex tiġi aġġornata l-kategorija"
 
-#: src/components/GameCanvas.tsx:37
+#: src/components/GameCanvas.tsx:38
 msgid "FAIR"
 msgstr "SODISFAĊENTI"
 
@@ -546,16 +596,16 @@ msgstr "SODISFAĊENTI"
 msgid "Finish moving your account"
 msgstr "Lesti t-trasferiment tal-kont tiegħek"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "flares"
 msgstr "flares"
 
-#: src/components/MissionSetup.tsx:422
-#: src/components/MissionSetup.tsx:552
+#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:578
 msgid "Flares"
 msgstr "Flares"
 
-#: src/components/GameCanvas.tsx:22
+#: src/components/GameCanvas.tsx:23
 msgid "FLARES"
 msgstr "FLARES"
 
@@ -567,11 +617,11 @@ msgstr "Ċatta"
 msgid "Floating"
 msgstr "Galleġġjant"
 
-#: src/components/MissionSetup.tsx:558
+#: src/components/MissionSetup.tsx:584
 msgid "Framerate"
 msgstr "Framerate"
 
-#: src/components/MissionSetup.tsx:334
+#: src/components/MissionSetup.tsx:342
 msgid "Free flight"
 msgstr "Titjira ħielsa"
 
@@ -596,11 +646,11 @@ msgstr "Mit-tema"
 msgid "Full layout"
 msgstr "Layout sħiħ"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "gear"
 msgstr "Inżul"
 
-#: src/components/GameCanvas.tsx:23
+#: src/components/GameCanvas.tsx:24
 msgid "GEAR"
 msgstr "GEAR"
 
@@ -630,7 +680,7 @@ msgstr "Mur fil-paġna {pageNumber}"
 msgid "Go to previous page"
 msgstr "Mur il-paġna ta' qabel"
 
-#: src/components/MissionSetup.tsx:319
+#: src/components/MissionSetup.tsx:327
 msgid "Graphics"
 msgstr "Grafika"
 
@@ -638,15 +688,15 @@ msgstr "Grafika"
 msgid "Group"
 msgstr "Grupp"
 
-#: src/components/GameCanvas.tsx:21
+#: src/components/GameCanvas.tsx:22
 msgid "GUN"
 msgstr "KANUN"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "guns"
 msgstr "kanuni"
 
-#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:440
 msgid "Guns"
 msgstr "Kanuni"
 
@@ -658,11 +708,12 @@ msgstr "Aħbi"
 msgid "Hide password"
 msgstr "Aħbi l-password"
 
-#: src/components/MissionSetup.tsx:468
+#: src/components/MissionSetup.tsx:494
 msgid "High"
 msgstr "Għoli"
 
-#: src/components/MissionSetup.tsx:374
+#: src/components/MissionSetup.tsx:400
+#: src/components/Multiplayer.tsx:244
 msgid "High stratus"
 msgstr "Stratus għoli"
 
@@ -673,11 +724,11 @@ msgstr "Stratus għoli"
 msgid "Home"
 msgstr "Paġna ewlenija"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "hook"
 msgstr "ganċ"
 
-#: src/components/GameCanvas.tsx:24
+#: src/components/GameCanvas.tsx:25
 msgid "HOOK"
 msgstr "GANĊ"
 
@@ -689,11 +740,11 @@ msgstr "Sħun"
 msgid "Imperial"
 msgstr "Imperjali"
 
-#: src/components/MissionSetup.tsx:345
+#: src/components/MissionSetup.tsx:369
 msgid "In air"
 msgstr "Fl-arja"
 
-#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:408
 msgid "Input"
 msgstr "Input"
 
@@ -709,23 +760,44 @@ msgstr "Interessi"
 msgid "Invalid verification code"
 msgstr "Kodiċi tal-verifika invalidu"
 
-#: src/components/MissionSetup.tsx:397
+#: src/components/MissionSetup.tsx:423
 msgid "Invert pitch"
 msgstr "Aqleb il-pitch"
 
-#: src/components/MissionSetup.tsx:335
+#: src/components/MissionSetup.tsx:608
+#: src/components/Multiplayer.tsx:290
+msgid "Join"
+msgstr "Ingħaqad"
+
+#: src/components/GameCanvas.tsx:52
+msgid "JOINED"
+msgstr "INGĦAQAD"
+
+#: src/components/Multiplayer.tsx:275
 msgid "Joust"
 msgstr "Joust"
 
-#: src/components/MissionSetup.tsx:404
+#: src/components/Multiplayer.tsx:230
+msgid "Joust — 1v1, first kill wins"
+msgstr "Duell — 1v1, min iwaqqa' l-ewwel jirbaħ"
+
+#: src/components/MissionSetup.tsx:343
+msgid "Joust against AI player"
+msgstr "Duell kontra plejer AI"
+
+#: src/components/MissionSetup.tsx:430
 msgid "Keys"
 msgstr "Ċwievet"
 
-#: src/components/MissionSetup.tsx:418
+#: src/components/GameCanvas.tsx:50
+msgid "KILL"
+msgstr "QTIL"
+
+#: src/components/MissionSetup.tsx:444
 msgid "Landing gear"
 msgstr "Karrell tal-inżul"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:195
 msgid "Landing-gear wheels from <0>“F/A-18F Super Hornet Fighter Jet”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: wheels extracted and mounted on procedural struts."
 msgstr "Roti tat-tagħmir tal-inżul minn <0>“F/A-18F Super Hornet Fighter Jet”</0> minn <1>Muhamad Mirza Arrafi</1> (Sketchfab), liċenzjat taħt <2>CC BY 4.0</2>. Immodifikat: ir-roti estratti u mmuntati fuq sostenni proċedurali."
 
@@ -734,21 +806,13 @@ msgstr "Roti tat-tagħmir tal-inżul minn <0>“F/A-18F Super Hornet Fighter Jet
 msgid "Large"
 msgstr "Kbir"
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "launch"
 msgstr "tluq"
 
-#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:441
 msgid "Launch (catapult)"
 msgstr "Tluq (katapulta)"
-
-#: src/components/GameCanvas.tsx:96
-#~ msgid "launch / guns"
-#~ msgstr "tnedija / kanuni"
-
-#: src/components/MissionSetup.tsx:413
-#~ msgid "Launch / guns"
-#~ msgstr "Vara / kanuni"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:286
 msgid "Layout"
@@ -759,6 +823,10 @@ msgstr "Tqassim"
 msgid "Learn more"
 msgstr "Tgħallem aktar"
 
+#: src/components/GameCanvas.tsx:53
+msgid "LEFT"
+msgstr "TELAQ"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:354
 msgid "Left to Right"
 msgstr "Mix-Xellug għal-Lemin"
@@ -768,15 +836,15 @@ msgstr "Mix-Xellug għal-Lemin"
 msgid "Light"
 msgstr "Ċar"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "lights"
 msgstr "dwal"
 
-#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:446
 msgid "Lights"
 msgstr "Dwal"
 
-#: src/components/GameCanvas.tsx:31
+#: src/components/GameCanvas.tsx:32
 msgid "LIGHTS"
 msgstr "DAWLIJIET"
 
@@ -784,7 +852,7 @@ msgstr "DAWLIJIET"
 msgid "Load more"
 msgstr "Tella' aktar"
 
-#: src/components/GameCanvas.tsx:28
+#: src/components/GameCanvas.tsx:29
 msgid "LOADING"
 msgstr "QED JITGĦABBA"
 
@@ -819,23 +887,24 @@ msgstr "Ħareġ b'suċċess"
 msgid "Logging out…"
 msgstr "Qed joħroġ…"
 
-#: src/components/MissionSetup.tsx:464
+#: src/components/MissionSetup.tsx:490
 msgid "Low"
 msgstr "Baxx"
 
-#: src/components/MissionSetup.tsx:375
+#: src/components/MissionSetup.tsx:401
+#: src/components/Multiplayer.tsx:245
 msgid "Low stratus"
 msgstr "Stratus baxx"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:45
 msgid "M to close"
 msgstr "M biex tagħlaq"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "map"
 msgstr "mappa"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:454
 msgid "Map"
 msgstr "Mappa"
 
@@ -845,12 +914,16 @@ msgstr "Mappa"
 msgid "Mark all as read"
 msgstr "Immarka kollox bħala maqru"
 
+#: src/components/Multiplayer.tsx:226
+msgid "Match type"
+msgstr "Tip ta' partita"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:466
+#: src/components/MissionSetup.tsx:492
 msgid "Medium"
 msgstr "Medju"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "menu"
 msgstr "menu"
 
@@ -862,29 +935,41 @@ msgstr "Menu"
 msgid "Metric"
 msgstr "Metriku"
 
-#: src/components/MissionSetup.tsx:241
+#: src/components/MissionSetup.tsx:243
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Mappa tal-Atoll ta' Midway — l-immaġni fiha data <0>Copernicus Sentinel-2</0> modifikata (2026); il-ġeometrija tal-ajrudrom (runway, passaġġi tat-taxi, aprons) © kontributuri ta' <1>OpenStreetMap</1>, liċenzjata taħt <2>ODbL</2>; data tal-kosta u tas-sikek tal-qroll minn <3>NOAA NCCOS</3> (dominju pubbliku)."
 
-#: src/components/GameCanvas.tsx:104
+#: src/components/GameCanvas.tsx:115
 msgid "missile"
 msgstr "missila"
 
-#: src/components/MissionSetup.tsx:421
+#: src/components/MissionSetup.tsx:447
 msgid "Missile"
 msgstr "Missila"
 
-#: src/components/MissionSetup.tsx:546
+#: src/components/MissionSetup.tsx:572
 msgid "Missiles"
 msgstr "Missili"
 
-#: src/components/MissionSetup.tsx:310
+#: src/components/Multiplayer.tsx:253
+msgid "Missiles allowed"
+msgstr "Missili permessi"
+
+#: src/components/MissionSetup.tsx:318
 msgid "Mission"
 msgstr "Missjoni"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:59
 msgid "Monday"
 msgstr "It-Tnejn"
+
+#: src/components/MissionSetup.tsx:344
+msgid "Multiplayer"
+msgstr "Multiplayer"
+
+#: src/components/Multiplayer.tsx:162
+msgid "Multiplayer needs WebTransport, which this browser does not support yet."
+msgstr "Il-multiplayer jeħtieġ WebTransport, li dan il-browser għadu ma jappoġġjahx."
 
 #: ../../../lib/web/src/lib/api-client.ts:300
 msgid "Network error"
@@ -899,7 +984,8 @@ msgstr "Ġdid"
 msgid "Next image"
 msgstr "Stampa li jmiss"
 
-#: src/components/MissionSetup.tsx:362
+#: src/components/MissionSetup.tsx:388
+#: src/components/Multiplayer.tsx:239
 msgid "Night"
 msgstr "Lejl"
 
@@ -914,6 +1000,10 @@ msgstr "L-ebda kontijiet konnessi"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "L-ebda gruppi disponibbli"
+
+#: src/components/Multiplayer.tsx:267
+msgid "No open matches — create one."
+msgstr "M'hemm l-ebda partita miftuħa — oħloq waħda."
 
 #: ../../../lib/web/src/components/place-picker.tsx:132
 msgid "No places found"
@@ -940,14 +1030,18 @@ msgstr "Għadu m'hemm l-ebda rekord tat-topic — erġa' pprova wara n-notifika 
 msgid "No users found"
 msgstr "Ma nstabu l-ebda utenti"
 
-#: src/components/GameCanvas.tsx:38
+#: src/components/Multiplayer.tsx:267
+msgid "No world server."
+msgstr "M'hemm l-ebda server tad-dinja."
+
+#: src/components/GameCanvas.tsx:39
 msgid "NO-GRADE"
 msgstr "L-EBDA GRAD"
 
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:372
+#: src/components/MissionSetup.tsx:398
 msgid "None"
 msgstr "Xejn"
 
@@ -967,25 +1061,33 @@ msgstr "Mhux issettjat"
 msgid "Notifications"
 msgstr "Notifiki"
 
-#: src/components/MissionSetup.tsx:496
+#: src/components/MissionSetup.tsx:522
 msgid "Ocean detail"
 msgstr "Dettall tal-oċean"
 
-#: src/components/GameCanvas.tsx:36
+#: src/components/GameCanvas.tsx:37
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:347
+#: src/components/MissionSetup.tsx:371
 msgid "On carrier"
 msgstr "Fuq il-bastiment"
 
-#: src/components/MissionSetup.tsx:346
+#: src/components/MissionSetup.tsx:370
 msgid "On runway"
 msgstr "Fuq il-pista"
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:16
 msgid "Oops! Page Not Found!"
 msgstr "Oops! Paġna Mhux Misjuba!"
+
+#: src/components/Multiplayer.tsx:275
+msgid "Open"
+msgstr "Iftaħ"
+
+#: src/components/Multiplayer.tsx:229
+msgid "Open — anyone may join or leave"
+msgstr "Miftuħa — kulħadd jista' jingħaqad jew jitlaq"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:156
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:166
@@ -1012,15 +1114,15 @@ msgstr "Iftaħ menu tan-navigazzjoni"
 msgid "Open theme settings"
 msgstr "Iftaħ settings tat-tema"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "or"
 msgstr "jew"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:124
 msgid "orbit"
 msgstr "orbita"
 
-#: src/components/MissionSetup.tsx:437
+#: src/components/MissionSetup.tsx:463
 msgid "Orbit"
 msgstr "Orbita"
 
@@ -1032,7 +1134,7 @@ msgstr "Oħra"
 msgid "Owner"
 msgstr "Sid"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:46
 msgid "P to resume · M map · Esc menu"
 msgstr "P biex tkompli · M mappa · Esc menu"
 
@@ -1048,23 +1150,28 @@ msgstr "Il-verifika tal-passkey falliet. Jekk jogħġbok erġa' pprova."
 msgid "Passkeys"
 msgstr "Ċwievet tal-aċċess"
 
-#: src/components/GameCanvas.tsx:108
+#: src/components/GameCanvas.tsx:119
 msgid "pause"
 msgstr "pawża"
 
-#: src/components/MissionSetup.tsx:429
+#: src/components/MissionSetup.tsx:455
 msgid "Pause"
 msgstr "Pawża"
 
-#: src/components/GameCanvas.tsx:27
+#: src/components/GameCanvas.tsx:28
 msgid "PAUSED"
 msgstr "PAWŻA"
 
-#: src/components/GameCanvas.tsx:101
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:188
+msgid "pilot"
+msgstr "bdot"
+
+#: src/components/GameCanvas.tsx:112
 msgid "pitch"
 msgstr "pitch"
 
-#: src/components/MissionSetup.tsx:407
+#: src/components/MissionSetup.tsx:433
 msgid "Pitch"
 msgstr "Pitch"
 
@@ -1072,11 +1179,11 @@ msgstr "Pitch"
 msgid "Please check your internet connection and try again."
 msgstr "Jekk jogħġbok iċċekkja l-konnessjoni tal-internet tiegħek u erġa' pprova."
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:477
 msgid "Preset"
 msgstr "Preset"
 
-#: src/components/GameCanvas.tsx:30
+#: src/components/GameCanvas.tsx:31
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "AGĦFAS ENTER BIEX TITLAQ"
 
@@ -1107,11 +1214,11 @@ msgstr "Erġa' għaqqad il-kontijiet tiegħek fuq dan is-server"
 msgid "Re-register your passkeys on this server"
 msgstr "Erġa' rreġistra ċ-ċwievet tal-aċċess tiegħek fuq dan is-server"
 
-#: src/components/GameCanvas.tsx:105
+#: src/components/GameCanvas.tsx:116
 msgid "rearm"
 msgstr "armar mill-ġdid"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:449
 msgid "Rearm"
 msgstr "Erġa' arma"
 
@@ -1128,6 +1235,10 @@ msgstr "Qed nirredirezzjona għal-login."
 #: ../../../lib/web/src/components/post-tags.tsx:208
 msgid "Reduce interest"
 msgstr "Naqqas l-interess"
+
+#: src/components/Multiplayer.tsx:206
+msgid "Refresh"
+msgstr "Aġġorna"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
@@ -1162,7 +1273,7 @@ msgstr "Erġa' ibgħat l-email"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:595
+#: src/components/MissionSetup.tsx:626
 msgid "Reset"
 msgstr "Irrisettja"
 
@@ -1170,19 +1281,19 @@ msgstr "Irrisettja"
 msgid "Reset all settings to default values"
 msgstr "Irriżetta s-settings kollha għall-valuri default"
 
-#: src/components/MissionSetup.tsx:478
+#: src/components/MissionSetup.tsx:504
 msgid "Resolution"
 msgstr "Riżoluzzjoni"
 
-#: src/components/MissionSetup.tsx:572
+#: src/components/MissionSetup.tsx:598
 msgid "Restart"
 msgstr "Erġa' ibda"
 
-#: src/components/MissionSetup.tsx:576
+#: src/components/MissionSetup.tsx:602
 msgid "Resume"
 msgstr "Kompli"
 
-#: src/components/MissionSetup.tsx:430
+#: src/components/MissionSetup.tsx:456
 msgid "Return to menu"
 msgstr "Lura għall-menu"
 
@@ -1190,11 +1301,11 @@ msgstr "Lura għall-menu"
 msgid "Right to Left"
 msgstr "Lemin għal Xellug"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:113
 msgid "roll"
 msgstr "roll"
 
-#: src/components/MissionSetup.tsx:408
+#: src/components/MissionSetup.tsx:434
 msgid "Roll"
 msgstr "Roll"
 
@@ -1202,7 +1313,7 @@ msgstr "Roll"
 msgid "Rows per page"
 msgstr "Ringieli kull paġna"
 
-#: src/components/GameCanvas.tsx:32
+#: src/components/GameCanvas.tsx:33
 msgid "RUN UP ENGINE"
 msgstr "QAWWA SĦIĦA"
 
@@ -1285,7 +1396,7 @@ msgstr "Ibgħat mill-ġdid"
 msgid "Send email"
 msgstr "Ibgħat email"
 
-#: src/components/MissionSetup.tsx:386
+#: src/components/MissionSetup.tsx:412
 msgid "Sensitivity"
 msgstr "Sensittività"
 
@@ -1303,6 +1414,10 @@ msgstr "Żball tas-server"
 msgid "Server rules"
 msgstr "Regoli tas-server"
 
+#: src/components/GameCanvas.tsx:49
+msgid "SESSION ENDED"
+msgstr "IS-SESSJONI NTEMMET"
+
 #: ../../../lib/web/src/lib/api-client.ts:227
 msgid "Session expired"
 msgstr "Sessjoni skadiet"
@@ -1319,7 +1434,7 @@ msgstr "Issettja oriġini u destinazzjoni"
 msgid "Settings"
 msgstr "Issettjar"
 
-#: src/components/MissionSetup.tsx:528
+#: src/components/MissionSetup.tsx:554
 msgid "Shadows"
 msgstr "Dellijiet"
 
@@ -1359,20 +1474,20 @@ msgstr "Żgħir"
 msgid "Spacious"
 msgstr "Wiesa'"
 
-#: src/components/GameCanvas.tsx:25
+#: src/components/GameCanvas.tsx:26
 msgid "SPD BK"
 msgstr "FRN.VL"
 
-#: src/components/GameCanvas.tsx:106
+#: src/components/GameCanvas.tsx:117
 msgid "speed brake"
 msgstr "fren tal-veloċità"
 
-#: src/components/MissionSetup.tsx:417
+#: src/components/MissionSetup.tsx:443
 msgid "Speed brake"
 msgstr "Fren tal-veloċità"
 
-#: src/components/MissionSetup.tsx:339
-#: src/components/MissionSetup.tsx:582
+#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:613
 msgid "Start"
 msgstr "Ibda"
 
@@ -1394,7 +1509,7 @@ msgstr "Il-Ħadd"
 msgid "System"
 msgstr "Sistema"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:44
 msgid "TACTICAL MAP"
 msgstr "MAPPA TATTIKA"
 
@@ -1407,7 +1522,7 @@ msgstr "Tikketta"
 msgid "Tags"
 msgstr "Tikketti"
 
-#: src/components/MissionSetup.tsx:328
+#: src/components/MissionSetup.tsx:336
 msgid "Task"
 msgstr "Kompitu"
 
@@ -1432,11 +1547,11 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Settings tat-Tema"
 
-#: src/components/GameCanvas.tsx:103
+#: src/components/GameCanvas.tsx:114
 msgid "throttle"
 msgstr "throttle"
 
-#: src/components/MissionSetup.tsx:411
+#: src/components/MissionSetup.tsx:437
 msgid "Throttle"
 msgstr "Throttle"
 
@@ -1444,15 +1559,15 @@ msgstr "Throttle"
 msgid "Thursday"
 msgstr "Il-Ħamis"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:125
 msgid "tilt"
 msgstr "mejjel"
 
-#: src/components/MissionSetup.tsx:440
+#: src/components/MissionSetup.tsx:466
 msgid "Tilt"
 msgstr "Inklinazzjoni"
 
-#: src/components/MissionSetup.tsx:355
+#: src/components/MissionSetup.tsx:381
 msgid "Time of day"
 msgstr "Ħin tal-jum"
 
@@ -1491,7 +1606,7 @@ msgstr "Aqleb it-tema"
 msgid "Top"
 msgstr "Quċċata"
 
-#: src/components/MissionSetup.tsx:540
+#: src/components/MissionSetup.tsx:566
 msgid "Tracers"
 msgstr "Tracers"
 
@@ -1526,7 +1641,7 @@ msgstr "Ittajpja biex tfittex utenti"
 msgid "Type to search..."
 msgstr "Ittajpja biex tfittex..."
 
-#: src/components/MissionSetup.tsx:470
+#: src/components/MissionSetup.tsx:496
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1589,7 +1704,7 @@ msgstr "Ivverifika l-indirizz tal-email"
 msgid "Video thumbnail"
 msgstr "Thumbnail tal-vidjo"
 
-#: src/components/GameCanvas.tsx:107
+#: src/components/GameCanvas.tsx:118
 msgid "view"
 msgstr "veduta"
 
@@ -1606,7 +1721,7 @@ msgstr "Ara kollox"
 msgid "View all notifications"
 msgstr "Ara n-notifiki kollha"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:42
 msgid "WAVE OFF"
 msgstr "WAQQAF L-INŻUL"
 
@@ -1614,7 +1729,8 @@ msgstr "WAQQAF L-INŻUL"
 msgid "We'll be back online shortly."
 msgstr "Nerġgħu nkunu online dalwaqt."
 
-#: src/components/MissionSetup.tsx:313
+#: src/components/MissionSetup.tsx:321
+#: src/components/Multiplayer.tsx:235
 msgid "Weather"
 msgstr "Temp"
 
@@ -1626,19 +1742,31 @@ msgstr "Il-websajt qed tinżamm!"
 msgid "Wednesday"
 msgstr "L-Erbgħa"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:442
 msgid "Wheel brakes"
 msgstr "Freni tar-rota"
 
-#: src/components/GameCanvas.tsx:102
+#: src/components/GameCanvas.tsx:51
+msgid "WINS"
+msgstr "JIRBAĦ"
+
+#: src/components/Multiplayer.tsx:172
+msgid "World server"
+msgstr "Server tad-dinja"
+
+#: src/components/Multiplayer.tsx:100
+msgid "World server not reachable"
+msgstr "Is-server tad-dinja ma jistax jintlaħaq"
+
+#: src/components/GameCanvas.tsx:113
 msgid "yaw"
 msgstr "yaw"
 
-#: src/components/MissionSetup.tsx:409
+#: src/components/MissionSetup.tsx:435
 msgid "Yaw"
 msgstr "Yaw"
 
-#: src/components/GameCanvas.tsx:26
+#: src/components/GameCanvas.tsx:27
 msgid "YOU"
 msgstr "INT"
 
