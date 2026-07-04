@@ -126,13 +126,17 @@ msgstr "Magdagdag ng view"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Ayusin ang hitsura at layout ayon sa iyong kagustuhan."
 
-#: src/components/MissionSetup.tsx:557
+#: src/components/MissionSetup.tsx:568
 msgid "Afterburner"
 msgstr "Afterburner"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:41
 msgid "AI"
 msgstr "AI"
+
+#: src/components/MissionSetup.tsx:346
+msgid "Aircraft"
+msgstr "Sasakyang panghimpapawid"
 
 #: src/components/MissionSetup.tsx:219
 msgid "Aircraft carrier <0>“Gerald Ford Aircraft Carrier”</0> by <1>Usman Zia (Uxxman)</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline, texture downscaled."
@@ -158,7 +162,7 @@ msgstr "May naganap na hindi inaasahang error"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Sigurado ka bang gusto mong mag-log out? Kakailanganin mong mag-log in muli para ma-access ang iyong account."
 
-#: src/components/MissionSetup.tsx:442
+#: src/components/MissionSetup.tsx:453
 msgid "Arrestor hook"
 msgstr "Kawit na pampahinto"
 
@@ -174,7 +178,7 @@ msgstr "Pataas"
 msgid "Authenticator code"
 msgstr "Code ng authenticator"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:125
 msgid "back"
 msgstr "balik"
 
@@ -197,7 +201,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Palakasin ang interes"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:117
 msgid "brakes"
 msgstr "preno"
 
@@ -217,7 +221,7 @@ msgstr "Callsign"
 msgid "Cancel"
 msgstr "Kanselahin"
 
-#: src/components/MissionSetup.tsx:369
+#: src/components/MissionSetup.tsx:380
 msgid "Carrier landing"
 msgstr "Paglapag sa carrier ng eroplano"
 
@@ -230,11 +234,11 @@ msgstr "Category para sa notification na ito"
 msgid "Change notification category"
 msgstr "Baguhin ang category ng notification"
 
-#: src/components/MissionSetup.tsx:456
+#: src/components/MissionSetup.tsx:467
 msgid "Chase view"
 msgstr "Tanaw na panghabol"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:122
 msgid "Chase view:"
 msgstr "Tanaw sa paghabol:"
 
@@ -307,11 +311,11 @@ msgstr "Isara ang panel"
 msgid "Close search"
 msgstr "Isara ang paghahanap"
 
-#: src/components/GameCanvas.tsx:127
+#: src/components/GameCanvas.tsx:126
 msgid "closer"
 msgstr "mas malapit"
 
-#: src/components/MissionSetup.tsx:389
+#: src/components/MissionSetup.tsx:400
 msgid "Clouds"
 msgstr "Mga ulap"
 
@@ -344,15 +348,11 @@ msgstr "Compact"
 msgid "Confirm"
 msgstr "Kumpirmahin"
 
-#: src/components/GameCanvas.tsx:47
-msgid "CONNECTED"
-msgstr "NAKAKONEKTA"
-
 #: src/components/Multiplayer.tsx:189
 msgid "Connecting…"
 msgstr "Kumokonekta…"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:47
 msgid "CONNECTION FAILED"
 msgstr "NABIGO ANG KONEKSYON"
 
@@ -417,7 +417,7 @@ msgstr "Gumawa ng match"
 msgid "Credits"
 msgstr "Mga kredito"
 
-#: src/components/MissionSetup.tsx:396
+#: src/components/MissionSetup.tsx:407
 #: src/components/Multiplayer.tsx:231
 msgid "Cumulus"
 msgstr "Cumulus"
@@ -430,7 +430,7 @@ msgstr "Pasadya"
 msgid "CUT"
 msgstr "MAPANGANIB"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:459
 msgid "Cycle view"
 msgstr "Palitan ang tanaw"
 
@@ -447,7 +447,7 @@ msgstr "Madilim"
 msgid "Dark mode"
 msgstr "Madilim na mode"
 
-#: src/components/MissionSetup.tsx:384
+#: src/components/MissionSetup.tsx:395
 #: src/components/Multiplayer.tsx:226
 msgid "Day"
 msgstr "Araw"
@@ -504,11 +504,11 @@ msgstr "I-dismiss"
 msgid "Displays the mobile sidebar."
 msgstr "Ipinapakita ang mobile sidebar."
 
-#: src/components/MissionSetup.tsx:465
+#: src/components/MissionSetup.tsx:476
 msgid "Distance"
 msgstr "Distansya"
 
-#: src/components/MissionSetup.tsx:545
+#: src/components/MissionSetup.tsx:556
 msgid "Distance LOD"
 msgstr "LOD ayon sa distansya"
 
@@ -521,7 +521,7 @@ msgstr "I-download"
 msgid "Download failed"
 msgstr "Nabigo ang pag-download"
 
-#: src/components/MissionSetup.tsx:539
+#: src/components/MissionSetup.tsx:550
 msgid "Dynamic resolution"
 msgstr "Dynamic na resolution"
 
@@ -560,11 +560,11 @@ msgstr "Palawakin"
 msgid "Expand sidebar"
 msgstr "I-expand ang sidebar"
 
-#: src/components/MissionSetup.tsx:511
+#: src/components/MissionSetup.tsx:522
 msgid "Exterior detail"
 msgstr "Detalye ng eksteryor"
 
-#: src/components/MissionSetup.tsx:527
+#: src/components/MissionSetup.tsx:538
 msgid "Extra aircraft"
 msgstr "Karagdagang eroplano"
 
@@ -596,12 +596,12 @@ msgstr "KATAMTAMAN"
 msgid "Finish moving your account"
 msgstr "Tapusin ang paglipat ng iyong account"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:115
 msgid "flares"
 msgstr "flares"
 
-#: src/components/MissionSetup.tsx:445
-#: src/components/MissionSetup.tsx:575
+#: src/components/MissionSetup.tsx:456
+#: src/components/MissionSetup.tsx:586
 msgid "Flares"
 msgstr "Mga flare"
 
@@ -613,7 +613,7 @@ msgstr "FLARES"
 msgid "Flat"
 msgstr "Patag"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:48
 msgid "FLIGHT CORE FAILED"
 msgstr "NABIGO ANG FLIGHT CORE"
 
@@ -621,7 +621,7 @@ msgstr "NABIGO ANG FLIGHT CORE"
 msgid "Floating"
 msgstr "Floating"
 
-#: src/components/MissionSetup.tsx:581
+#: src/components/MissionSetup.tsx:592
 msgid "Framerate"
 msgstr "Framerate"
 
@@ -650,7 +650,7 @@ msgstr "Mula sa tema"
 msgid "Full layout"
 msgstr "Buong layout"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:116
 msgid "gear"
 msgstr "gear"
 
@@ -696,11 +696,11 @@ msgstr "Grupo"
 msgid "GUN"
 msgstr "BARIL"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:114
 msgid "guns"
 msgstr "baril"
 
-#: src/components/MissionSetup.tsx:437
+#: src/components/MissionSetup.tsx:448
 msgid "Guns"
 msgstr "Baril"
 
@@ -712,11 +712,11 @@ msgstr "Itago"
 msgid "Hide password"
 msgstr "Itago ang password"
 
-#: src/components/MissionSetup.tsx:491
+#: src/components/MissionSetup.tsx:502
 msgid "High"
 msgstr "Mataas"
 
-#: src/components/MissionSetup.tsx:397
+#: src/components/MissionSetup.tsx:408
 #: src/components/Multiplayer.tsx:232
 msgid "High stratus"
 msgstr "Mataas na stratus"
@@ -728,7 +728,7 @@ msgstr "Mataas na stratus"
 msgid "Home"
 msgstr "Home"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:116
 msgid "hook"
 msgstr "Kawit"
 
@@ -744,11 +744,11 @@ msgstr "Sikat"
 msgid "Imperial"
 msgstr "Imperyal"
 
-#: src/components/MissionSetup.tsx:366
+#: src/components/MissionSetup.tsx:377
 msgid "In air"
 msgstr "Nasa himpapawid"
 
-#: src/components/MissionSetup.tsx:405
+#: src/components/MissionSetup.tsx:416
 msgid "Input"
 msgstr "Input"
 
@@ -764,7 +764,7 @@ msgstr "Mga interest"
 msgid "Invalid verification code"
 msgstr "Invalid na verification code"
 
-#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:431
 msgid "Invert pitch"
 msgstr "Baligtarin ang pitch"
 
@@ -772,7 +772,7 @@ msgstr "Baligtarin ang pitch"
 msgid "Join"
 msgstr "Sumali"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:52
 msgid "JOINED"
 msgstr "SUMALI"
 
@@ -788,15 +788,15 @@ msgstr "Duel — 1v1, ang unang kill ang panalo"
 msgid "Joust against AI player"
 msgstr "Duel laban sa AI player"
 
-#: src/components/MissionSetup.tsx:427
+#: src/components/MissionSetup.tsx:438
 msgid "Keys"
 msgstr "Mga key"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:50
 msgid "KILL"
 msgstr "KILL"
 
-#: src/components/MissionSetup.tsx:441
+#: src/components/MissionSetup.tsx:452
 msgid "Landing gear"
 msgstr "Gulong sa paglapag"
 
@@ -809,11 +809,11 @@ msgstr "Mga gulong ng landing gear mula sa <0>“F/A-18F Super Hornet Fighter Je
 msgid "Large"
 msgstr "Malaki"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:115
 msgid "launch"
 msgstr "ilunsad"
 
-#: src/components/MissionSetup.tsx:438
+#: src/components/MissionSetup.tsx:449
 msgid "Launch (catapult)"
 msgstr "Ilunsad (katapulta)"
 
@@ -826,7 +826,7 @@ msgstr "Layout"
 msgid "Learn more"
 msgstr "Matuto pa"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:53
 msgid "LEFT"
 msgstr "UMALIS"
 
@@ -839,11 +839,11 @@ msgstr "Kaliwa pakanan"
 msgid "Light"
 msgstr "Maliwanag"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:116
 msgid "lights"
 msgstr "mga ilaw"
 
-#: src/components/MissionSetup.tsx:443
+#: src/components/MissionSetup.tsx:454
 msgid "Lights"
 msgstr "Mga ilaw"
 
@@ -890,11 +890,11 @@ msgstr "Matagumpay na nag-log out"
 msgid "Logging out…"
 msgstr "Nagla-log out…"
 
-#: src/components/MissionSetup.tsx:487
+#: src/components/MissionSetup.tsx:498
 msgid "Low"
 msgstr "Mababa"
 
-#: src/components/MissionSetup.tsx:398
+#: src/components/MissionSetup.tsx:409
 #: src/components/Multiplayer.tsx:233
 msgid "Low stratus"
 msgstr "Mababang stratus"
@@ -903,11 +903,11 @@ msgstr "Mababang stratus"
 msgid "M to close"
 msgstr "M para isara"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:118
 msgid "map"
 msgstr "mapa"
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:462
 msgid "Map"
 msgstr "Mapa"
 
@@ -922,11 +922,11 @@ msgid "Match type"
 msgstr "Uri ng match"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:489
+#: src/components/MissionSetup.tsx:500
 msgid "Medium"
 msgstr "Katamtaman"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:119
 msgid "menu"
 msgstr "menu"
 
@@ -942,15 +942,15 @@ msgstr "Metriko"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Mapa ng Midway Atoll — naglalaman ang mga imahe ng binagong datos ng <0>Copernicus Sentinel-2</0> (2026); ang heometriya ng paliparan (runway, mga taxiway, mga apron) © mga kontribyutor ng <1>OpenStreetMap</1>, lisensyado sa ilalim ng <2>ODbL</2>; datos ng baybayin at bahura mula sa <3>NOAA NCCOS</3> (pampublikong domain)."
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:115
 msgid "missile"
 msgstr "misil"
 
-#: src/components/MissionSetup.tsx:444
+#: src/components/MissionSetup.tsx:455
 msgid "Missile"
 msgstr "Misil"
 
-#: src/components/MissionSetup.tsx:569
+#: src/components/MissionSetup.tsx:580
 msgid "Missiles"
 msgstr "Mga misil"
 
@@ -987,7 +987,7 @@ msgstr "Bago"
 msgid "Next image"
 msgstr "Susunod na imahe"
 
-#: src/components/MissionSetup.tsx:385
+#: src/components/MissionSetup.tsx:396
 #: src/components/Multiplayer.tsx:227
 msgid "Night"
 msgstr "Gabi"
@@ -1044,7 +1044,7 @@ msgstr "WALANG GRADO"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:395
+#: src/components/MissionSetup.tsx:406
 msgid "None"
 msgstr "Wala"
 
@@ -1064,7 +1064,7 @@ msgstr "Hindi naka-set"
 msgid "Notifications"
 msgstr "Mga Notification"
 
-#: src/components/MissionSetup.tsx:519
+#: src/components/MissionSetup.tsx:530
 msgid "Ocean detail"
 msgstr "Detalye ng karagatan"
 
@@ -1072,11 +1072,11 @@ msgstr "Detalye ng karagatan"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:368
+#: src/components/MissionSetup.tsx:379
 msgid "On carrier"
 msgstr "Nasa carrier"
 
-#: src/components/MissionSetup.tsx:367
+#: src/components/MissionSetup.tsx:378
 msgid "On runway"
 msgstr "Nasa runway"
 
@@ -1117,15 +1117,15 @@ msgstr "Buksan ang navigation menu"
 msgid "Open theme settings"
 msgstr "Buksan ang mga setting ng theme"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:124
 msgid "or"
 msgstr "o"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:124
 msgid "orbit"
 msgstr "umikot"
 
-#: src/components/MissionSetup.tsx:460
+#: src/components/MissionSetup.tsx:471
 msgid "Orbit"
 msgstr "Orbit"
 
@@ -1153,11 +1153,11 @@ msgstr "Nabigo ang pag-verify ng passkey. Pakisubukang muli."
 msgid "Passkeys"
 msgstr "Mga Passkey"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:119
 msgid "pause"
 msgstr "i-pause"
 
-#: src/components/MissionSetup.tsx:452
+#: src/components/MissionSetup.tsx:463
 msgid "Pause"
 msgstr "I-pause"
 
@@ -1170,11 +1170,11 @@ msgstr "NAKA-PAUSE"
 msgid "pilot"
 msgstr "piloto"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:112
 msgid "pitch"
 msgstr "pitch"
 
-#: src/components/MissionSetup.tsx:430
+#: src/components/MissionSetup.tsx:441
 msgid "Pitch"
 msgstr "Pitch"
 
@@ -1182,7 +1182,7 @@ msgstr "Pitch"
 msgid "Please check your internet connection and try again."
 msgstr "Pakitingnan ang iyong koneksyon sa internet at subukang muli."
 
-#: src/components/MissionSetup.tsx:474
+#: src/components/MissionSetup.tsx:485
 msgid "Preset"
 msgstr "Preset"
 
@@ -1217,11 +1217,11 @@ msgstr "I-relink ang iyong mga account sa server na ito"
 msgid "Re-register your passkeys on this server"
 msgstr "Muling irehistro ang iyong mga passkey sa server na ito"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:116
 msgid "rearm"
 msgstr "muling kargahan"
 
-#: src/components/MissionSetup.tsx:446
+#: src/components/MissionSetup.tsx:457
 msgid "Rearm"
 msgstr "Muling armasan"
 
@@ -1276,7 +1276,7 @@ msgstr "Muling ipadala ang email"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:618
+#: src/components/MissionSetup.tsx:629
 msgid "Reset"
 msgstr "I-reset"
 
@@ -1284,19 +1284,19 @@ msgstr "I-reset"
 msgid "Reset all settings to default values"
 msgstr "I-reset ang lahat ng setting sa mga default na halaga"
 
-#: src/components/MissionSetup.tsx:501
+#: src/components/MissionSetup.tsx:512
 msgid "Resolution"
 msgstr "Resolusyon"
 
-#: src/components/MissionSetup.tsx:595
+#: src/components/MissionSetup.tsx:606
 msgid "Restart"
 msgstr "I-restart"
 
-#: src/components/MissionSetup.tsx:599
+#: src/components/MissionSetup.tsx:610
 msgid "Resume"
 msgstr "Ipagpatuloy"
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:464
 msgid "Return to menu"
 msgstr "Bumalik sa menu"
 
@@ -1304,11 +1304,11 @@ msgstr "Bumalik sa menu"
 msgid "Right to Left"
 msgstr "Kanan papuntang Kaliwa"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:113
 msgid "roll"
 msgstr "roll"
 
-#: src/components/MissionSetup.tsx:431
+#: src/components/MissionSetup.tsx:442
 msgid "Roll"
 msgstr "Roll"
 
@@ -1399,7 +1399,7 @@ msgstr "Ipadala muli"
 msgid "Send email"
 msgstr "Magpadala ng email"
 
-#: src/components/MissionSetup.tsx:409
+#: src/components/MissionSetup.tsx:420
 msgid "Sensitivity"
 msgstr "Sensitivity"
 
@@ -1417,7 +1417,7 @@ msgstr "Error sa server"
 msgid "Server rules"
 msgstr "Mga patakaran ng server"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:49
 msgid "SESSION ENDED"
 msgstr "TAPOS NA ANG SESSION"
 
@@ -1437,7 +1437,7 @@ msgstr "Itakda ang origin at destination"
 msgid "Settings"
 msgstr "Mga setting"
 
-#: src/components/MissionSetup.tsx:551
+#: src/components/MissionSetup.tsx:562
 msgid "Shadows"
 msgstr "Mga anino"
 
@@ -1481,16 +1481,16 @@ msgstr "Maluwag"
 msgid "SPD BK"
 msgstr "PR HGN"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:117
 msgid "speed brake"
 msgstr "preno ng hangin"
 
-#: src/components/MissionSetup.tsx:440
+#: src/components/MissionSetup.tsx:451
 msgid "Speed brake"
 msgstr "Preno ng hangin"
 
-#: src/components/MissionSetup.tsx:360
-#: src/components/MissionSetup.tsx:605
+#: src/components/MissionSetup.tsx:371
+#: src/components/MissionSetup.tsx:616
 msgid "Start"
 msgstr "Simulan"
 
@@ -1550,11 +1550,11 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Mga Setting ng Theme"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:114
 msgid "throttle"
 msgstr "throttle"
 
-#: src/components/MissionSetup.tsx:434
+#: src/components/MissionSetup.tsx:445
 msgid "Throttle"
 msgstr "Throttle"
 
@@ -1562,15 +1562,15 @@ msgstr "Throttle"
 msgid "Thursday"
 msgstr "Huwebes"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:125
 msgid "tilt"
 msgstr "ikiling"
 
-#: src/components/MissionSetup.tsx:463
+#: src/components/MissionSetup.tsx:474
 msgid "Tilt"
 msgstr "Pagkiling"
 
-#: src/components/MissionSetup.tsx:378
+#: src/components/MissionSetup.tsx:389
 msgid "Time of day"
 msgstr "Oras ng araw"
 
@@ -1609,7 +1609,7 @@ msgstr "I-toggle ang theme"
 msgid "Top"
 msgstr "Itaas"
 
-#: src/components/MissionSetup.tsx:563
+#: src/components/MissionSetup.tsx:574
 msgid "Tracers"
 msgstr "Mga tracer"
 
@@ -1644,7 +1644,7 @@ msgstr "Mag-type para maghanap ng user"
 msgid "Type to search..."
 msgstr "Mag-type para maghanap..."
 
-#: src/components/MissionSetup.tsx:493
+#: src/components/MissionSetup.tsx:504
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1707,7 +1707,7 @@ msgstr "Beripikahin ang email address"
 msgid "Video thumbnail"
 msgstr "Thumbnail ng video"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:118
 msgid "view"
 msgstr "tanaw"
 
@@ -1745,11 +1745,11 @@ msgstr "Nasa ilalim ng maintenance ang website!"
 msgid "Wednesday"
 msgstr "Miyerkules"
 
-#: src/components/MissionSetup.tsx:439
+#: src/components/MissionSetup.tsx:450
 msgid "Wheel brakes"
 msgstr "Preno ng gulong"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:51
 msgid "WINS"
 msgstr "PANALO"
 
@@ -1761,11 +1761,11 @@ msgstr "World server"
 msgid "World server not reachable"
 msgstr "Hindi maabot ang world server"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:113
 msgid "yaw"
 msgstr "yaw"
 
-#: src/components/MissionSetup.tsx:432
+#: src/components/MissionSetup.tsx:443
 msgid "Yaw"
 msgstr "Yaw"
 

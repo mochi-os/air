@@ -342,6 +342,17 @@ export function MissionSetup({
                     { value: 'multiplayer', label: <Trans>Multiplayer</Trans> },
                   ]}
                 />
+                <SectionLabel>
+                  <Trans>Aircraft</Trans>
+                </SectionLabel>
+                <Choice
+                  value={config.aircraft ?? 'fa18f'}
+                  onChange={(v) => set('aircraft', v)}
+                  options={[
+                    { value: 'fa18c', label: 'F/A-18C' },
+                    { value: 'fa18f', label: 'F/A-18F' },
+                  ]}
+                />
                 {config.task === 'multiplayer' && (
                   <div className='mt-4'>
                     <Multiplayer

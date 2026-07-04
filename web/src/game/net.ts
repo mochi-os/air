@@ -224,7 +224,7 @@ export interface Welcome {
   rate: { tick: number; snapshot: number }
   seed: number
   parameters?: Record<string, unknown>
-  spawn: { state?: SpawnState; wrap?: number; model?: number }
+  spawn: { state?: SpawnState; wrap?: number; model?: number; aircraft?: string }
   players: { slot: number; name: string; identity: string }[]
 }
 
@@ -401,8 +401,8 @@ export class Net {
         }
         let core: Float64Array | null = null
         const bytes = message.core as Uint8Array | undefined
-        if (bytes instanceof Uint8Array && bytes.byteLength >= 400) {
-          core = new Float64Array(bytes.buffer, bytes.byteOffset, 50)
+        if (bytes instanceof Uint8Array && bytes.byteLength >= 448) {
+          core = new Float64Array(bytes.buffer, bytes.byteOffset, 56)
           this.cored = true
         }
         this.snapshots.push({
