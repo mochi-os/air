@@ -53,26 +53,32 @@ export function startGame({
 const cfg = { render_scale:1.0, dyn_res:false, ocean_segments:256, exterior_detail:3, lod:true, extra_aircraft:0,
 	tracers:true, missiles:true, flares:true, shadows:false, clouds:"none", afterburner:true,
 	view:"hud", invert:false, framerate:false, sens:1.0,
-	task:"joust", start:"carrier", tod:"day", help:false,
-	cat_dy:2.46,                                        // aircraft rest height above the deck plane (shared by all cats; = measured wheel-bottom drop, keep equal to GEAR)
-	cats:[ {x:48.06, z:18.62, h:5.18},                  // 1: starboard bow — x toward bow, z + starboard, heading deg (0=+X); all four aligned with the deck tool (key 0)
-	       {x:48.43, z:-0.58, h:1.60},                  // 2: port bow (the carrier-start spawn)
-	       {x:-36.06, z:-15.32, h:4.54},                // 3: starboard waist, down the angled deck
-	       {x:-52.30, z:-26.34, h:-0.10} ] };           // 4: port waist
+	task:"joust", start:"carrier", tod:"day", help:false };
 const SAVE_KEY="joust_cfg_v1";
-const CAT_KEYS=["cats","cat_dy"];
-const CAT_DEFAULTS={ cat_dy:cfg.cat_dy, cats:cfg.cats.map(c=>({...c})) };   // baked-in spawn = canonical; localStorage copy is only read in alignment mode
+// The ship: everything that describes the carrier itself, per model —
+// shuttle (nose-gear) points, arrestor wires, the landing centreline, the
+// OLS bracket, and the deck outline for the flight core. Measured per deck
+// with the align tool and the GLB measurement scripts; a second carrier is
+// one more entry (#100). CARRIER {x,z} is world PLACEMENT, not ship data.
+const CARRIER_MODELS={
+	ford:{ url:"models/carrier.glb", length:300, yaw:110, draft:0.375, deck:19,
+		stroke:85, speed:88,                             // catapult throw and end speed, m / m/s
+		shuttles:[ {x:52.35, z:18.23, h:5.18},           // 1: starboard bow — x toward bow, z + starboard, heading deg (0=+X)
+		           {x:52.74, z:-0.70, h:1.60},           // 2: port bow (the carrier-start spawn)
+		           {x:-31.76, z:-15.66, h:4.54},         // 3: starboard waist, down the angled deck
+		           {x:-47.99, z:-26.33, h:-0.10} ],      // 4: port waist
+		wires:[-96.6,-86.8,-71.6], halfspan:14,          // arrestor wires 1..3 (fore-aft) spanning ±halfspan about the landing line
+		line:{ afa:-96.6, alat:0.9, bfa:-71.6, blat:-3.0 }, // the landing centreline, measured at the 1- and 3-wire crossings
+		ols:{ fa:16.9, lat:-35.4 },                      // OLS bracket on the port side
+		outline:[[-152,-38],[152,-38],[152,38],[-152,38]] } }; // deck polygon for the flight core (rectangle at the beam; refine with #72)
+const SHIP=CARRIER_MODELS.ford;   // the active carrier (a picker arrives with the second ship)
 function load_cfg(){ try{ const s=localStorage.getItem(SAVE_KEY); if(s) Object.assign(cfg,JSON.parse(s)); }catch(e){}
-	cfg.cat_dy=CAT_DEFAULTS.cat_dy; cfg.cats=CAT_DEFAULTS.cats.map(c=>({...c}));   // normal load always uses baked catapult positions, never the saved ones
+	delete cfg.cats; delete cfg.cat_dy;   // pre-#100 configs carried ship data; CARRIER_MODELS owns it now
 	if(cfg.clouds==="simple"||cfg.clouds==="volumetric") cfg.clouds=cfg.clouds==="volumetric"?"cumulus":"none"; }   // migrate removed types
-function save_cfg(){ try{ const cur={...cfg};
-	if(!deck_edit){ const prev=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}"); for(const k of CAT_KEYS) if(k in prev) cur[k]=prev[k]; }   // outside alignment, don't clobber the stored catapult scratch values
-	localStorage.setItem(SAVE_KEY,JSON.stringify(cur)); }catch(e){} }
-function enter_align(){ try{ const prev=JSON.parse(localStorage.getItem(SAVE_KEY)||"{}");
-	if(Array.isArray(prev.cats) && prev.cats.length===4) cfg.cats=prev.cats.map(c=>({...c}));
-	if("cat_dy" in prev) cfg.cat_dy=prev.cat_dy; }catch(e){} place_on_cat(cat_idx); }   // alignment mode resumes from the last saved catapult positions
-function copy_cats(){   // on align exit: the tuned poses to the clipboard, in the cfg-defaults source format (paste back as the new baked values)
-	const txt="cat_dy:"+cfg.cat_dy.toFixed(2)+",\n\tcats:[ "+cfg.cats.map(c=>"{x:"+c.x.toFixed(2)+", z:"+c.z.toFixed(2)+", h:"+c.h.toFixed(2)+"}").join(",\n\t       ")+" ]";
+function save_cfg(){ try{ localStorage.setItem(SAVE_KEY,JSON.stringify(cfg)); }catch(e){} }
+function enter_align(){ place_on_cat(cat_idx); }   // alignment nudges SHIP.shuttles in memory; exit copies them for pasting into CARRIER_MODELS
+function copy_cats(){   // on align exit: the tuned shuttles to the clipboard, in the CARRIER_MODELS source format
+	const txt="shuttles:[ "+SHIP.shuttles.map(c=>"{x:"+c.x.toFixed(2)+", z:"+c.z.toFixed(2)+", h:"+c.h.toFixed(2)+"}").join(",\n\t\t           ")+" ]";
 	const fallback=()=>{ try{ const ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }catch(e){} };   // sandboxed-iframe path: the async clipboard API is often blocked with an opaque origin
 	try{ navigator.clipboard.writeText(txt).catch(fallback); }catch(e){ fallback(); }
 }
@@ -89,7 +95,7 @@ let pause_toggle=false, game_paused=false;
 let loading=false, loading_t0=0;   // flight-start LOADING screen: the sim + render hold until assets_ready() (20 s cap so a failed load can't hang the game)
 let joust_side=1;   // which end of the merge the player drew this round (+1 = start west heading east); coin-flipped per joust start
 const sun_dir = new THREE.Vector3(0.45,0.42,-0.32).normalize();
-const CARRIER={ x:-18500, z:7500, deckY:19 };   // ~20 km WSW of Midway (leeward deep water); heading +X, bow at +x
+const CARRIER={ x:-18500, z:7500, deckY:SHIP.deck };   // ~20 km WSW of Midway (leeward deep water); heading +X, bow at +x
 const sky_horizon=new THREE.Color(0xbfd8e8), sky_zenith=new THREE.Color(0x2a5a8c), fog_colour=new THREE.Color(0xc4d6e2);
 const col_sundisc=new THREE.Color(0xfff3da), col_deep=new THREE.Color(0x0a2a3a), col_shallow=new THREE.Color(0x1d6e86);
 
@@ -401,9 +407,11 @@ function make_jet(tint){ const g=new THREE.Group(); g.userData.tint=tint;   // a
 // signed surface deflection (rad) onto the clip span, flip reverses it.
 const AIRCRAFT_MODELS={
 	fa18f:{ url:"models/fighter.glb", length:18.3, yaw:0, pitch:0, roll:0,
+		nose:5.3, wheel:4.31, stance:2.46,   // physics nose-gear x (aircraft/fa18f dataset) and the DRAWN nose-wheel x (measured, bbox-centred): the render shifts by the difference so both land on the shuttle
 		rig:[ { name:"gear", clip:/^gear/, drive:"gear" },
 		      { name:"hook", clip:/^hook/, drive:"hook" } ] },
 	fa18c:{ url:"models/fa18c.glb", length:17.07, yaw:90, pitch:0, roll:0,
+		nose:4.9, wheel:2.85, stance:2.57, squat:0.08,   // physics nose-gear x + the DEPLOYED drawn nose-wheel x and wheel-bottom drop (three.js pose of the gear animation — the STATIC pose is gear-up on this model and lies about both); squat = clip-fraction scrubbed back under weight so the drawn oleo compresses (~0.4 m of wheel travel per unit fraction at the clip tail)
 		rig:[ { name:"gear",     track:/(^|_)[clr]_(gear|wheel)_AN_/i, drive:"gear" },
 		      { name:"hook",     track:/^Hook_AN_/i, drive:"hook" },
 		      { name:"stabL",    track:/l_elevator_percent_key|l_aileron_percent_key_AN_Left_93/i, drive:"stabL", min:-0.42, max:0.30 },
@@ -426,7 +434,9 @@ function normalise_model(scene, spec){ scene.updateMatrixWorld(true);
 	const s=spec.length/Math.max(size.x,size.y,size.z,1e-3);
 	scene.scale.setScalar(s); scene.position.set(-ctr.x*s,-ctr.y*s,-ctr.z*s);
 	const proto=new THREE.Group(); proto.add(scene);
-	proto.rotation.set(spec.pitch*D2R, spec.yaw*D2R, spec.roll*D2R); proto.updateMatrixWorld(true); return proto; }
+	proto.rotation.set(spec.pitch*D2R, spec.yaw*D2R, spec.roll*D2R);
+	proto.position.x=(spec.nose||0)-(spec.wheel||spec.nose||0);   // align the drawn nose wheel onto the physics nose gear: wheels, physics, and the shuttle coincide
+	const outer=new THREE.Group(); outer.add(proto); outer.updateMatrixWorld(true); return outer; }
 
 // rig_build partitions a model's animations into scrubbable per-subsystem
 // clips: clip-name matching for models shipped with split clips, track-name
@@ -529,7 +539,6 @@ async function init_external_model(kind){
 }
 
 // ============================================================================ optional external carrier model
-const CARRIER_MODEL = { url:"models/carrier.glb", length:300, yaw:110, draft_frac:0.375 };   // yaw 110 → bow heading ~070°T (into the ENE trades, toward Midway); heading = 180 − yaw, so 90 was due-east
 // Placed so bow -> +X (yaw 90; flip to -90 or +180 if reversed) and the waterline sits at y=0.
 // draft_frac = fraction of the keel->deck height kept BELOW water; raise it to sit the hull deeper.
 let carrier_model=null; const _ray=new THREE.Raycaster();
@@ -553,27 +562,28 @@ let deck_edit=false;
 function place_on_cat(i=cat_idx){
 	// A cat pose ({x,z} offset, h launch heading) was tuned at yaw 90; rotate it by the
 	// carrier's yaw delta so it tracks the ship when the heading changes. R_y: x'=x·c+z·s, z'=−x·s+z·c.
-	const cat=cfg.cats[i], yaw_delta=(CARRIER_MODEL.yaw-90)*D2R, c=Math.cos(yaw_delta), s=Math.sin(yaw_delta);
-	const wx=CARRIER.x+(cat.x*c+cat.z*s), wz=CARRIER.z+(-cat.x*s+cat.z*c);
+	const cat=SHIP.shuttles[i], yaw_delta=(SHIP.yaw-90)*D2R, c=Math.cos(yaw_delta), s=Math.sin(yaw_delta);
+	const sx=CARRIER.x+(cat.x*c+cat.z*s), sz=CARRIER.z+(-cat.x*s+cat.z*c);   // the SHUTTLE, in world
 	const hd=cat.h*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
 	const fwd=new THREE.Vector3(fx*c+fz*s,0,-fx*s+fz*c);
+	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18f).nose||5.3;
+	const wx=sx-fwd.x*nose, wz=sz-fwd.z*nose;   // park the origin one nose-gear length behind the shuttle
 	const dy=carrier_model?deck_y_at(carrier_model,wx,wz,CARRIER.deckY):CARRIER.deckY;
-	ownship.pos.set(wx, dy+cfg.cat_dy, wz); ownship.fwd.copy(fwd); ownship.vel_dir.copy(fwd);
+	ownship.pos.set(wx, dy+((AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18f).stance||GEAR), wz); ownship.fwd.copy(fwd); ownship.vel_dir.copy(fwd);
 	const r=new THREE.Vector3().crossVectors(fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,fwd).normalize();
 	ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(fwd,u,r)); }
-function edit_cat(dt){ const mv=dt*1.2, rot=dt*2.5, cat=cfg.cats[cat_idx]; let ch=false;   // 10x finer positional nudges + heading for precise alignment
+function edit_cat(dt){ const mv=dt*1.2, rot=dt*2.5, cat=SHIP.shuttles[cat_idx]; let ch=false;   // 10x finer positional nudges + heading for precise alignment
 	if(keys.has("KeyI")){ cat.x+=mv; ch=true; } if(keys.has("KeyK")){ cat.x-=mv; ch=true; }     // fore / aft
 	if(keys.has("KeyJ")){ cat.z-=mv; ch=true; } if(keys.has("KeyL")){ cat.z+=mv; ch=true; }     // port / starboard
-	if(keys.has("BracketRight")){ cfg.cat_dy+=mv*0.5; ch=true; } if(keys.has("BracketLeft")){ cfg.cat_dy-=mv*0.5; ch=true; }  // ] up / [ down (shared height)
 	if(keys.has("KeyU")){ cat.h+=rot; ch=true; } if(keys.has("KeyO")){ cat.h-=rot; ch=true; }   // rotate heading
 	if(ch) place_on_cat(); }
 async function init_carrier_model(){
-	const tag=CARRIER_MODEL.url.startsWith("data:")?"embedded carrier":CARRIER_MODEL.url;
+	const tag=SHIP.url.startsWith("data:")?"embedded carrier":SHIP.url;
 	try{ 
 		let abuf;
-		if(CARRIER_MODEL.url.startsWith("data:")){ const b64=CARRIER_MODEL.url.slice(CARRIER_MODEL.url.indexOf(",")+1); const bin=atob(b64);
+		if(SHIP.url.startsWith("data:")){ const b64=SHIP.url.slice(SHIP.url.indexOf(",")+1); const bin=atob(b64);
 			const u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); abuf=u.buffer; }
-		else { const resp=await fetch(CARRIER_MODEL.url); if(!resp.ok) throw new Error("HTTP "+resp.status); abuf=await resp.arrayBuffer(); }
+		else { const resp=await fetch(SHIP.url); if(!resp.ok) throw new Error("HTTP "+resp.status); abuf=await resp.arrayBuffer(); }
 		const parts=glb_split(abuf); const M=(parts.json.materials||[])[0]||{};
 		const baseSrc=glb_image(parts, M.pbrMetallicRoughness&&M.pbrMetallicRoughness.baseColorTexture&&M.pbrMetallicRoughness.baseColorTexture.index);
 		const normSrc=glb_image(parts, M.normalTexture&&M.normalTexture.index);
@@ -584,11 +594,11 @@ async function init_carrier_model(){
 		new GLTFLoader().parse(clean, "", async gltf=>{ try{
 			const gscene=gltf.scene; gscene.updateMatrixWorld(true);
 			const b0=new THREE.Box3().setFromObject(gscene), sz=b0.getSize(new THREE.Vector3());
-			const s=CARRIER_MODEL.length/Math.max(sz.x,sz.y,sz.z,1e-3);
-			const grp=new THREE.Group(); grp.add(gscene); grp.scale.setScalar(s); grp.rotation.y=CARRIER_MODEL.yaw*D2R; grp.updateMatrixWorld(true);
+			const s=SHIP.length/Math.max(sz.x,sz.y,sz.z,1e-3);
+			const grp=new THREE.Group(); grp.add(gscene); grp.scale.setScalar(s); grp.rotation.y=SHIP.yaw*D2R; grp.updateMatrixWorld(true);
 			const b1=new THREE.Box3().setFromObject(grp), c1=b1.getCenter(new THREE.Vector3());          // centre over CARRIER.x/z
 			grp.position.x+=CARRIER.x-c1.x; grp.position.z+=CARRIER.z-c1.z; grp.updateMatrixWorld(true);
-			const st=model_y_stats(grp); const waterline=st.keelY+CARRIER_MODEL.draft_frac*(st.deckY-st.keelY);   // sink so waterline -> y=0
+			const st=model_y_stats(grp); const waterline=st.keelY+SHIP.draft*(st.deckY-st.keelY);   // sink so waterline -> y=0
 			grp.position.y-=waterline; grp.updateMatrixWorld(true);
 			let baseTex=null,normTex=null;
 			if(baseSrc&&typeof createImageBitmap==="function"){ try{ baseTex=await make_tex(baseSrc,true); }catch(e){} }
@@ -596,7 +606,7 @@ async function init_carrier_model(){
 			grp.traverse(o=>{ if(o.isMesh&&o.material){ const mm=o.material; if(baseTex)mm.map=baseTex; if(normTex)mm.normalMap=normTex; mm.metalness=0.0; mm.roughness=0.9; mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; } });
 			carrier_model=grp; scene.add(grp);
 			/* procedural carrier removed; nothing to hide */
-			const yd=(CARRIER_MODEL.yaw-90)*D2R, dc=Math.cos(yd), ds=Math.sin(yd);                        // rotate the sample spot with the carrier heading
+			const yd=(SHIP.yaw-90)*D2R, dc=Math.cos(yd), ds=Math.sin(yd);                        // rotate the sample spot with the carrier heading
 			CARRIER.deckY=deck_y_at(grp, CARRIER.x+(70*dc-6*ds), CARRIER.z+(-70*ds-6*dc), st.deckY-waterline);   // deck height near the catapult spot (carrier-relative)
 			build_carrier_deck_aids();   // wires + OLS, now that the deck height is known
 			if(mission_start()==="carrier" && !ownship.launching && ownship.speed<5){ place_on_cat(); flight_push(); }   // re-spot on the cat at the now-known deck height, unless already taxiing / launched
@@ -1138,8 +1148,8 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const wireMat=new THREE.MeshStandardMaterial({color:0x101012,metalness:0.4,roughness:0.6});
 	const sheaveMat=new THREE.MeshStandardMaterial({color:0x1a1d20,metalness:0.5,roughness:0.5});
 	const wires=[];
-	for(const wfa of WIRES){
-		const clat=strip_lat(wfa), hw=WIRE_HALFSPAN;   // span the strip width, perpendicular to its centreline
+	for(const wfa of SHIP.wires){
+		const clat=strip_lat(wfa), hw=SHIP.halfspan;   // span the strip width, perpendicular to its centreline
 		const a=carrier_world(wfa-STRIP_ULAT*hw,clat+STRIP_UFA*hw), b=carrier_world(wfa+STRIP_ULAT*hw,clat-STRIP_UFA*hw);
 		const ddx=b.x-a.x, ddz=b.z-a.z, len=Math.hypot(ddx,ddz);
 		const w=new THREE.Mesh(new THREE.BoxGeometry(len,0.08,0.09),wireMat); w.position.set((a.x+b.x)/2,dy+0.12,(a.z+b.z)/2); w.rotation.y=Math.atan2(-ddz,ddx); w.castShadow=true; scene.add(w);
@@ -1148,7 +1158,7 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	}
 	const vsegs=[0,1].map(()=>{ const m=new THREE.Mesh(new THREE.BoxGeometry(1,0.08,0.09),wireMat); m.visible=false; m.castShadow=true; scene.add(m); return m; });   // the caught wire, dragged into a V by the hook
 	// --- OLS (meatball) on the port bracket of the carrier (measured); glideslope stays referenced to the touchdown, not this housing ---
-	const twfa=WIRES[1], ofa=16.9, olat=-35.4;   // OLS bracket position on the carrier's port side
+	const twfa=SHIP.wires[1], ofa=SHIP.ols.fa, olat=SHIP.ols.lat;   // OLS bracket position on the carrier's port side
 	const o=carrier_world(ofa,olat), datumY=dy+0.8, travel=1.0;   // lowered to sit on the bracket, not hover above it
 	const house=new THREE.Mesh(new THREE.BoxGeometry(2.0,1.4,0.6),new THREE.MeshStandardMaterial({color:0x181b1f,metalness:0.4,roughness:0.6})); house.position.set(o.x,dy+0.2,o.z); house.rotation.y=Math.atan2(-CARRIER_C,CARRIER_S); house.castShadow=true; scene.add(house);
 	const at=(d,h)=>{ const q=carrier_world(ofa-STRIP_ULAT*d,olat+STRIP_UFA*d); return [q.x,h,q.z]; };   // flank the ball perpendicular to the strip (square to the approach)
@@ -1362,32 +1372,30 @@ function explosion_at(x,y,z){ for(let i=0;i<64;i++){ const k=pool_spawn(smoke); 
 function crash_ownship(){ if(crash_t>0) return; crash_t=3.0; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z); ownship.group.visible=false; ownship.speed=0; }
 function over_runway(p){ const r=obstacles.runway; if(!r) return false; const dx=p.x-r.x, dz=p.z-r.z;
 	return Math.abs(dx*r.fx+dz*r.fz)<r.hl && Math.abs(dx*r.fz-dz*r.fx)<r.hw; }
-const GEAR=2.46;   // the aircraft origin rests this far above whatever surface is beneath it — the model's wheel bottoms measure 2.457 m below the (bbox-centred) origin in the gear-down pose; keep equal to cfg.cat_dy. Lower buries the wheels
+const GEAR=2.46;   // the aircraft origin rests this far above whatever surface is beneath it — the model's wheel bottoms measure 2.457 m below the (bbox-centred) origin in the gear-down pose; per-aircraft stance lives in AIRCRAFT_MODELS. Lower buries the wheels
 const HOOK_DECK_CAP=0.88;   // max hook-deploy progress while resting on a surface — stops the claw at deck level instead of rotating through it
-const CARRIER_YD=(CARRIER_MODEL.yaw-90)*D2R, CARRIER_C=Math.cos(CARRIER_YD), CARRIER_S=Math.sin(CARRIER_YD);   // same yaw-delta frame as place_on_cat
+const CARRIER_YD=(SHIP.yaw-90)*D2R, CARRIER_C=Math.cos(CARRIER_YD), CARRIER_S=Math.sin(CARRIER_YD);   // same yaw-delta frame as place_on_cat
 function carrier_fore_aft(x,z){ return (x-CARRIER.x)*CARRIER_C-(z-CARRIER.z)*CARRIER_S; }   // carrier-local fore/aft: + toward the bow (catapult ≈ +48), the arrestor wires are aft (≈ −50)
 function carrier_world(lx,lz){ return { x:CARRIER.x+lx*CARRIER_C+lz*CARRIER_S, z:CARRIER.z-lx*CARRIER_S+lz*CARRIER_C }; }   // carrier-local (fore-aft, lateral: −=port) → world x/z (same frame as place_on_cat)
 function carrier_lateral(x,z){ return (x-CARRIER.x)*CARRIER_S+(z-CARRIER.z)*CARRIER_C; }   // inverse of the lateral axis: how far port(−)/starboard(+) of the ship centreline
-function cat_spot(i=cat_idx){ const cat=cfg.cats[i]; return { x:CARRIER.x+cat.x*CARRIER_C+cat.z*CARRIER_S, z:CARRIER.z-cat.x*CARRIER_S+cat.z*CARRIER_C }; }   // world position of a catapult spot
+function cat_spot(i=cat_idx){ const cat=SHIP.shuttles[i]; return { x:CARRIER.x+cat.x*CARRIER_C+cat.z*CARRIER_S, z:CARRIER.z-cat.x*CARRIER_S+cat.z*CARRIER_C }; }   // world position of a catapult spot
 const CAT_POS_TOL=3, CAT_HEADING_DOT=0.99;   // "spotted on the cat": within 3 m of the spot and ~8° of the launch heading — tight, so the launch (which fires from the actual pose, never snapped) always looks clean
 function on_cat_spot(){   // which catapult the aircraft is parked on, lined up down its launch heading — -1 for none (works before the carrier GLB finishes loading — the spots are fixed world coords)
 	if(ownship.launching) return -1;
 	const fh=Math.hypot(ownship.fwd.x,ownship.fwd.z)||1;
-	for(let i=0;i<cfg.cats.length;i++){
-		const cs=cat_spot(i); if(Math.hypot(ownship.pos.x-cs.x,ownship.pos.z-cs.z)>CAT_POS_TOL) continue;
-		const hd=cfg.cats[i].h*D2R, fx=Math.cos(hd), fz=-Math.sin(hd), cfx=fx*CARRIER_C+fz*CARRIER_S, cfz=-fx*CARRIER_S+fz*CARRIER_C;   // this cat's launch heading in world
+	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18f).nose||5.3;
+	const nx=ownship.pos.x+ownship.fwd.x/fh*nose, nz=ownship.pos.z+ownship.fwd.z/fh*nose;   // the nose-gear point — the shuttle datum
+	for(let i=0;i<SHIP.shuttles.length;i++){
+		const cs=cat_spot(i); if(Math.hypot(nx-cs.x,nz-cs.z)>CAT_POS_TOL) continue;
+		const hd=SHIP.shuttles[i].h*D2R, fx=Math.cos(hd), fz=-Math.sin(hd), cfx=fx*CARRIER_C+fz*CARRIER_S, cfz=-fx*CARRIER_S+fz*CARRIER_C;   // this cat's launch heading in world
 		if((ownship.fwd.x*cfx+ownship.fwd.z*cfz)/fh >= CAT_HEADING_DOT) return i;
 	}
 	return -1;
 }
 function launch_status(){ return (flight_active?(core_catapult>=0&&core_stroke<0):on_cat_spot()>=0) ? (ownship.throttle>=0.9?2:1) : 0; }   // 0 off the cat / not attached · 1 attached, run up · 2 attached + full power, ready
 // Landing line, measured directly at the three wire crossings on the landing path.
-const STRIP_A={fa:-96.6,lat:0.9}, STRIP_B={fa:-71.6,lat:-3.0};   // 1-wire and 3-wire crossings
-const STRIP_SLOPE=(STRIP_B.lat-STRIP_A.lat)/(STRIP_B.fa-STRIP_A.fa);
-function strip_lat(fa){ return STRIP_A.lat+(fa-STRIP_A.fa)*STRIP_SLOPE; }   // lateral of the landing centreline at a given fore-aft
-const _slen=Math.hypot(STRIP_B.fa-STRIP_A.fa,STRIP_B.lat-STRIP_A.lat), STRIP_UFA=(STRIP_B.fa-STRIP_A.fa)/_slen, STRIP_ULAT=(STRIP_B.lat-STRIP_A.lat)/_slen;   // unit vector along the landing line (toward +fa = the rollout)
-const WIRES=[-96.6,-86.8,-71.6];   // arrestor wires 1..3 (aft→forward, increasing fore-aft; touchdown ≈ 1-wire, roll toward +fa); the 2-wire (−86.8) is the target
-const WIRE_HALFSPAN=14;            // each wire stretches this far each side of the landing centreline (drawn span == trap span)
+function strip_lat(fa){ return SHIP.line.alat+(fa-SHIP.line.afa)*((SHIP.line.blat-SHIP.line.alat)/(SHIP.line.bfa-SHIP.line.afa)); }   // lateral of the landing centreline at a given fore-aft
+const _slen=Math.hypot(SHIP.line.bfa-SHIP.line.afa,SHIP.line.blat-SHIP.line.alat), STRIP_UFA=(SHIP.line.bfa-SHIP.line.afa)/_slen, STRIP_ULAT=(SHIP.line.blat-SHIP.line.alat)/_slen;   // unit vector along the landing line (toward +fa = the rollout)
 let ground_kind="";   // surface kind under the last ground_height() hit: deck / runway / apron / ground / "" (sea) — read right after the call
 function ground_height(x,z){   // top of the solid surface under (x,z): carrier deck / runway / apron / island; -inf = open sea (no landing)
 	ground_kind="";
@@ -1481,7 +1489,6 @@ function test_drive(){   // hold the prescribed approach exactly; hand control b
 // the ownship object every rendered frame.
 const physics_strips=[];   // paved capsules, collected as the airfields build
 const FUEL=3000;           // spawn fuel, kg (matches the multiplayer server)
-const NOSEGEAR=5.3;        // nose-gear x ahead of the origin (fighter.go) — the cat shuttle sits there (#83: aircraft-independent alignment)
 let flight_active=false, control_sequence=0, launch_flag=false, core_catapult=-1, core_stroke=-1, prev_wire=-1, prev_wow=false;
 let last_controls=null, marked_steps=0;   // multiplayer prediction: the sample the core flew this frame + fixed steps since the last mark
 const render_offset=new THREE.Vector3();  // reconciliation discontinuity, decayed on ownship.group only (~150 ms)
@@ -1493,9 +1500,9 @@ function flight_world(){
 	const fields=[{ height:ISLAND_H+AIRFIELD_FLOAT, strips:physics_strips.map(c=>({ a:{x:c.a[0], z:c.a[1]}, b:{x:c.b[0], z:c.b[1]}, width:c.w })) }];
 	for(const is of obstacles.islands) fields.push({ height:ISLAND_H, coast:is.pts.map(q=>({x:q[0], z:q[1]})) });
 	const carrier={ position:{x:CARRIER.x, y:CARRIER.deckY, z:CARRIER.z}, heading:CARRIER_YD, speed:0,
-		deck:[{x:-152,z:-38},{x:152,z:-38},{x:152,z:38},{x:-152,z:38}],   // rectangle at the GLB's beam; refine against the drawn edge with #72/#83
-		catapults:cfg.cats.map(c=>{ const hd=c.h*D2R; return { position:{x:c.x+NOSEGEAR*Math.cos(hd), y:0, z:c.z-NOSEGEAR*Math.sin(hd)}, heading:hd, stroke:85, speed:88 }; }),
-		wires:WIRES.map(fa=>({ a:{x:fa, y:0, z:strip_lat(fa)-WIRE_HALFSPAN}, b:{x:fa, y:0, z:strip_lat(fa)+WIRE_HALFSPAN} })) };
+		deck:SHIP.outline.map(q=>({x:q[0], z:q[1]})),
+		catapults:SHIP.shuttles.map(c=>({ position:{x:c.x, y:0, z:c.z}, heading:c.h*D2R, stroke:SHIP.stroke, speed:SHIP.speed })),   // shuttles ARE the nose-gear points — the core's native convention
+		wires:SHIP.wires.map(fa=>({ a:{x:fa, y:0, z:strip_lat(fa)-SHIP.halfspan}, b:{x:fa, y:0, z:strip_lat(fa)+SHIP.halfspan} })) };
 	return { aircraft:cfg.aircraft||"fa18f", environment:{ seed:1, wrap:WORLD_WRAP }, world:{ sea:0, fields, carrier } };
 }
 function sync_core(out){   // core state -> the ownship object every consumer reads (HUD, cameras, weapons, LSO)
@@ -1619,7 +1626,10 @@ function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.user
 		if(sweeping===r){ const f=(Math.sin(performance.now()/600)+1)/2; r.action.time=r.t0+f*(r.t1-r.t0); continue; }
 		let f;
 		switch(r.drive){
-		case "gear": f=1-THREE.MathUtils.clamp(st.gear??1,0,1); break;   // st.gear: 1 = up; the rig scrubs extension
+		case "gear": { f=1-THREE.MathUtils.clamp(st.gear??1,0,1);   // st.gear: 1 = up; the rig scrubs extension
+			const spec=AIRCRAFT_MODELS[g.userData.hasModel];   // weight on wheels: scrub back so the drawn oleo carries the strut compression instead of the tire sinking
+			if(spec&&spec.squat) f=Math.max(0, f-spec.squat*(st.squish||0));
+			break; }
 		case "hook": { f=THREE.MathUtils.clamp(st.hook??0,0,1);
 			if(f>0.05){ const surf=ground_height(st.pos.x,st.pos.z); if(surf>-1e8 && st.pos.y<=surf+GEAR+0.6) f=Math.min(f,HOOK_DECK_CAP); }   // claw rests ON the deck, not through it
 			break; }
@@ -1634,6 +1644,8 @@ function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.user
 function ease_to(cur,tgt,dt){ const d=tgt-cur; return Math.abs(d)>1e-4 ? cur+Math.sign(d)*Math.min(Math.abs(d),GEAR_RATE*dt) : tgt; }
 function update_anim(dt){ for(const st of [ownship,bandit,...extras]){
 	const owned=st===ownship&&flight_active;   // the core's actuators drive ownship gear + speedbrake progress (sync_core); don't ease over them
+	const settled=(st===ownship)?(ownship.grounded?1:0):0;   // weight on wheels: the drawn oleo compresses (squat scrub); remotes stay unloaded for now
+	st.squish=(st.squish??0)+THREE.MathUtils.clamp(settled-(st.squish??0),-3*dt,3*dt);
 	if(!owned){ if(st.gear===undefined) st.gear=st.gearTarget??1; st.gear=ease_to(st.gear,st.gearTarget??1,dt);
 		if(st.speedbrake===undefined) st.speedbrake=st.speedbrakeTarget??0; st.speedbrake+=THREE.MathUtils.clamp((st.speedbrakeTarget??0)-st.speedbrake,-1.5*dt,1.5*dt); }   // air-brake ease for the aircraft the core doesn't fly
 	if(st.hook===undefined) st.hook=st.hookTarget??0; st.hook=ease_to(st.hook,st.hookTarget??0,dt);
@@ -1677,9 +1689,9 @@ function reset_ownship(){
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
 	else if(st==="landing"){   // carrier landing: on the ICLS ~5 NM astern, a touch low and left, configured to trap
-		const A=carrier_world(STRIP_A.fa,STRIP_A.lat), B=carrier_world(STRIP_B.fa,STRIP_B.lat);   // landing centreline, A (aft) → B (forward, toward the rollout)
+		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);   // landing centreline, A (aft) → B (forward, toward the rollout)
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;           // unit landing direction (the way the aircraft rolls out)
-		const td=carrier_world(-86.8,strip_lat(-86.8)), dist=3*1852, gs=3.5*D2R;                    // touchdown ≈ the 2-wire; 3 NM back on the 3.5° glideslope
+		const td=carrier_world(SHIP.wires[1],strip_lat(SHIP.wires[1])), dist=3*1852, gs=3.5*D2R;                    // touchdown ≈ the 2-wire; 3 NM back on the 3.5° glideslope
 		ownship.pos.set(td.x-ldx*dist+ldz*100, CARRIER.deckY+dist*Math.tan(gs)+HOOK_DROP-50, td.z-ldz*dist-ldx*100);   // 3 NM astern, 100 m left of centre, 50 m low — a deliberate off-glideslope, off-centre intercept
 		ownship.speed=70; ownship.throttle=0;   // ~135 kt approach speed
 		const yaw=5*D2R, cy=Math.cos(yaw), sy=Math.sin(yaw); ownship.fwd.set(ldx*cy-ldz*sy,0,ldz*cy+ldx*sy).normalize();   // level flight, heading ~5° to starboard of the centreline — pilot rolls out onto the ICLS and pushes over onto the glideslope from below
@@ -1825,7 +1837,7 @@ function draw_hud(dt){
 	if(deck_edit){ hctx.textAlign="center"; hctx.save(); hctx.strokeStyle="rgba(255,193,77,0.55)"; hctx.lineWidth=1; hctx.setLineDash([6,6]);
 			hctx.beginPath(); hctx.moveTo(cx,0); hctx.lineTo(cx,HH); hctx.stroke(); hctx.restore();
 			hctx.fillStyle=AM; hctx.font="13px monospace"; hctx.fillText("DECK ALIGN  CAT "+(cat_idx+1)+"  Shift+1-4 select · I/K fore-aft · J/L port-stbd · [ ] height · U/O rotate · 0 save",cx,cy+182);
-			hctx.fillStyle=GR; hctx.fillText("x="+cfg.cats[cat_idx].x.toFixed(2)+"  z="+cfg.cats[cat_idx].z.toFixed(2)+"  height="+cfg.cat_dy.toFixed(2)+"  hdg="+cfg.cats[cat_idx].h.toFixed(1)+"\u00b0    (camera: Shift+\u2190\u2192 orbit · ,/. tilt · \u2212/= zoom)",cx,cy+200); }
+			hctx.fillStyle=GR; hctx.fillText("x="+SHIP.shuttles[cat_idx].x.toFixed(2)+"  z="+SHIP.shuttles[cat_idx].z.toFixed(2)+"  hdg="+SHIP.shuttles[cat_idx].h.toFixed(1)+"\u00b0    (camera: Shift+\u2190\u2192 orbit · ,/. tilt · \u2212/= zoom)",cx,cy+200); }
 		else { const ls=launch_status(); if(ls>0) hud_message(translate(ls===2?"PRESS ENTER TO LAUNCH":"RUN UP ENGINE")); }
 	if(cat_saved_t>0){ cat_saved_t-=dt; hctx.textAlign="center"; hctx.fillStyle=GR; hctx.font="14px monospace"; hctx.fillText(translate("DECK POSITION SAVED"),cx,cy+182); }
 	if(cfg.view!=="hud" && cfg.view!=="cockpit"){ return; }
