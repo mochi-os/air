@@ -392,30 +392,83 @@ function make_jet(tint){ const g=new THREE.Group(); g.userData.tint=tint;   // a
 // ============================================================================ optional external GLB model (cosmetic only)
 // Drop a downloaded glTF/GLB next to this file named "fighter.glb" to replace the procedural airframe.
 // Source must be UNCOMPRESSED glTF/GLB (no Draco/Meshopt) — Sketchfab's plain "glTF" download works.
-// If the file is missing or the loader CDN is blocked, the procedural jet is used automatically.
-const MODEL = { url:"models/fighter.glb", length:18.3, yaw:0, pitch:0, roll:0 };  // length in world units (nose-tail); rot in degrees
-// This asset is already nose +X / up +Y, so all rotations are 0. If you swap in a DIFFERENT model and it looks wrong:
-// flies BACKWARDS -> yaw 180; on its SIDE / wings vertical -> roll 90 or -90; nose pitched up/down -> pitch 90 or -90; upside down -> roll 180.
+// Per-aircraft models and their animation rigs. Orientation: if a model
+// looks wrong — flies BACKWARDS -> yaw 180; on its SIDE -> roll ±90; nose
+// pitched -> pitch ±90; upside down -> roll 180. A rig entry either matches
+// whole CLIPS by name (the F ships split clips) or partitions the model's
+// single timeline by animated-node TRACK name (the C); each is scrubbed
+// from game state: "drive" picks the state channel, min/max normalise a
+// signed surface deflection (rad) onto the clip span, flip reverses it.
+const AIRCRAFT_MODELS={
+	fa18f:{ url:"models/fighter.glb", length:18.3, yaw:0, pitch:0, roll:0,
+		rig:[ { name:"gear", clip:/^gear/, drive:"gear" },
+		      { name:"hook", clip:/^hook/, drive:"hook" } ] },
+	fa18c:{ url:"models/fa18c.glb", length:17.07, yaw:90, pitch:0, roll:0,
+		rig:[ { name:"gear",     track:/(^|_)[clr]_(gear|wheel)_AN_/i, drive:"gear" },
+		      { name:"hook",     track:/^Hook_AN_/i, drive:"hook" },
+		      { name:"stabL",    track:/l_elevator_percent_key|l_aileron_percent_key_AN_Left_93/i, drive:"stabL", min:-0.42, max:0.30 },
+		      { name:"stabR",    track:/elevator_percent_key_AN_238|r_aileron_percent_key_AN_right_96/i, drive:"stabR", min:-0.42, max:0.30 },
+		      { name:"flapL",    track:/l_flap_percent_key/i, drive:"flapL", min:-0.60, max:0.60 },
+		      { name:"flapR",    track:/r_flap_percent_key/i, drive:"flapR", min:-0.60, max:0.60 },
+		      { name:"aileronL", track:/l_aileron_percent_key_AN_(Cover|74)|AileronLAction/i, drive:"flapL", min:-0.60, max:0.60 },
+		      { name:"aileronR", track:/r_aileron_percent_key_AN_(Cover|_?_308)/i, drive:"flapR", min:-0.60, max:0.60 },
+		      { name:"rudderL",  track:/rudder_percent_key_AN_Left/i, drive:"rudder", min:-0.52, max:0.52 },
+		      { name:"rudderR",  track:/rudder_percent_key_AN_Right/i, drive:"rudder", min:-0.52, max:0.52 },
+		      { name:"brake",    track:/^SPOILER_L/i, drive:"speedbrake" } ] } };
 const D2R=Math.PI/180;
-let model_active=false, jet_proto=null;
-let gear_clips=[], hook_clips=[]; const GEAR_RATE=0.5;   // fold clips baked into fighter.glb (gear_* + hook); GEAR_RATE = extend/retract speed of the 0..1 progress (~2s cycle)
+// fleet: aircraft name -> { proto, rig:[{clip, t0, t1, drive, min, max, flip}] } once loaded.
+const fleet={}; const fleet_loading={};
+let model_active=false;   // the ownship's aircraft model is ready (loading gate)
+const GEAR_RATE=0.5;   // extend/retract speed of the 0..1 visual progress for aircraft the core doesn't fly
 function model_tint(hex){ return hex===0xb04a3a?0xff9a86 : hex===0x7f8a96?0xdde3ea : 0xffffff; }   // light team tints (white = untouched)
-function normalise_model(scene){ scene.updateMatrixWorld(true);
+function normalise_model(scene, spec){ scene.updateMatrixWorld(true);
 	const box=new THREE.Box3().setFromObject(scene), size=box.getSize(new THREE.Vector3()), ctr=box.getCenter(new THREE.Vector3());
-	const s=MODEL.length/Math.max(size.x,size.y,size.z,1e-3);
+	const s=spec.length/Math.max(size.x,size.y,size.z,1e-3);
 	scene.scale.setScalar(s); scene.position.set(-ctr.x*s,-ctr.y*s,-ctr.z*s);
 	const proto=new THREE.Group(); proto.add(scene);
-	proto.rotation.set(MODEL.pitch*D2R, MODEL.yaw*D2R, MODEL.roll*D2R); proto.updateMatrixWorld(true); return proto; }
-function apply_model_to(g){ if(!jet_proto||g.userData.hasModel) return; g.userData.hasModel=true;
+	proto.rotation.set(spec.pitch*D2R, spec.yaw*D2R, spec.roll*D2R); proto.updateMatrixWorld(true); return proto; }
+
+// rig_build partitions a model's animations into scrubbable per-subsystem
+// clips: clip-name matching for models shipped with split clips, track-name
+// matching to carve subsystems out of a single combined timeline.
+// moving_span finds where a track's values actually CHANGE — on a shared
+// timeline every track carries keys across the whole file and only moves in
+// its own segment, so keyframe extents lie about the subsystem's range.
+function moving_span(track){
+	const n=track.times.length, w=track.getValueSize();
+	let first=-1, last=-1;
+	for(let i=1;i<n;i++){ let moved=false;
+		for(let k=0;k<w;k++){ if(Math.abs(track.values[i*w+k]-track.values[(i-1)*w+k])>1e-5){ moved=true; break; } }
+		if(moved){ if(first<0) first=track.times[i-1]; last=track.times[i]; } }
+	return first<0?null:[first,last];
+}
+function rig_build(spec, animations){
+	const rig=[];
+	for(const entry of spec.rig||[]){
+		let tracks=[], duration=0;
+		if(entry.clip){ for(const c of animations){ if(entry.clip.test(c.name||"")){ tracks=tracks.concat(c.tracks); duration=Math.max(duration,c.duration||0); } } }
+		else { for(const c of animations) for(const t of c.tracks){ const node=t.name.slice(0,t.name.lastIndexOf(".")); if(entry.track.test(node)) tracks.push(t); } }
+		if(!tracks.length) continue;
+		let t0=1e9, t1=-1e9;
+		for(const t of tracks){ const span=moving_span(t); if(!span) continue; if(span[0]<t0) t0=span[0]; if(span[1]>t1) t1=span[1]; }
+		if(t1<t0){ t0=tracks[0].times[0]; t1=tracks[0].times[tracks[0].times.length-1]; } // nothing moves: fall back to extents
+		if(entry.clip){ t0=0; t1=duration||t1; }
+		rig.push({ name:entry.name, clip:new THREE.AnimationClip("rig_"+entry.name, -1, tracks), t0, t1, drive:entry.drive, min:entry.min, max:entry.max, flip:!!entry.flip });
+	}
+	return rig;
+}
+function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18f";
+	const loaded=fleet[kind]; if(!loaded||g.userData.hasModel===kind) return; g.userData.hasModel=kind;
 	g.children.forEach(c=>{ if(c.userData.body||c.userData.glass) c.visible=false; });   // hide procedural shell, keep afterburner cones
-	const m=jet_proto.clone(true); m.userData.model=true; const tint=model_tint(g.userData.tint||0xffffff);
+	const previous=g.children.find(c=>c.userData&&c.userData.model); if(previous) g.remove(previous);   // aircraft swap: drop the old airframe
+	const m=loaded.proto.clone(true); m.userData.model=true; const tint=model_tint(g.userData.tint||0xffffff);
 	m.traverse(o=>{ if(o.isMesh){ o.userData.modelmesh=true; o.castShadow=cfg.shadows;
 		if(tint!==0xffffff && o.material && o.material.color){ o.material=o.material.clone(); o.material.color=o.material.color.clone().multiply(new THREE.Color(tint)); } } });
 	g.add(m);
-	if(gear_clips.length||hook_clips.length){ const mixer=new THREE.AnimationMixer(m); g.userData.gearMixer=mixer;   // per-aircraft gear+hook fold; scrubbed by progress in update_anim()
-		g.userData.gearActions=gear_clips.map(c=>{ const a=mixer.clipAction(c); a.play(); return { action:a, dur:c.duration||1 }; });
-		g.userData.hookActions=hook_clips.map(c=>{ const a=mixer.clipAction(c); a.play(); return { action:a, dur:c.duration||1 }; }); } }
-function apply_model_all(){ apply_model_to(ownship.group); apply_model_to(bandit.group); extras.forEach(s=>apply_model_to(s.group)); position_aircraft_lights(); }   // re-pin the ownship lights to the real airframe
+	if(loaded.rig.length){ const mixer=new THREE.AnimationMixer(m); g.userData.gearMixer=mixer;   // per-subsystem scrub actions, driven by state in update_anim()
+		g.userData.rig=loaded.rig.map(r=>{ const a=mixer.clipAction(r.clip); a.play(); a.paused=true; return { ...r, action:a }; }); } }
+function own_aircraft(){ return MULTIPLAYER ? ((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.aircraft)||"fa18f") : (cfg.aircraft||"fa18f"); }   // multiplayer flies what the SERVER spawned (the picker requests a type with #93)
+function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); extras.forEach(s=>apply_model_to(s.group)); position_aircraft_lights(); }   // re-pin the ownship lights to the real airframe
 // --- minimal GLB container surgery (so we never trigger the loader's blob-URL texture path) ---
 function glb_split(ab){ const dv=new DataView(ab); if(dv.getUint32(0,true)!==0x46546C67) throw new Error("not a GLB");
 	let o=12; const jsonLen=dv.getUint32(o,true); o+=8; const json=JSON.parse(new TextDecoder().decode(new Uint8Array(ab,o,jsonLen))); o+=jsonLen;
@@ -437,39 +490,42 @@ function model_textures(parts){ const out={}; const images=parts.json.images||[]
 		if(!bct||!m.name||!textures[bct.index]) return; const im=images[textures[bct.index].source]; if(!im||im.bufferView==null||!parts.bin) return;
 		const bv=bvs[im.bufferView]; out[m.name]={ bytes:parts.bin.slice(bv.byteOffset||0,(bv.byteOffset||0)+bv.byteLength), mime:im.mimeType||"image/jpeg" }; });
 	return out; }
-async function init_external_model(){
-	const tag=MODEL.url.startsWith("data:")?"embedded model":MODEL.url;
+async function init_external_model(kind){
+	kind=kind||"fa18f"; const spec=AIRCRAFT_MODELS[kind]||AIRCRAFT_MODELS.fa18f;
+	if(fleet[kind]||fleet_loading[kind]) return fleet_loading[kind]; // one load per aircraft
+	let finish; fleet_loading[kind]=new Promise(r=>{ finish=r; });
+	const tag=spec.url;
 	try{
 		// Fetch/decode the GLB bytes ourselves (the loader's .load() builds a Request that sandboxed iframes can't clone).
-		let abuf;
-		if(MODEL.url.startsWith("data:")){ const b64=MODEL.url.slice(MODEL.url.indexOf(",")+1); const bin=atob(b64);
-			const u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); abuf=u.buffer; }
-		else { const resp=await fetch(MODEL.url); if(!resp.ok) throw new Error("HTTP "+resp.status); abuf=await resp.arrayBuffer(); }
+		const resp=await fetch(spec.url); if(!resp.ok) throw new Error("HTTP "+resp.status); const abuf=await resp.arrayBuffer();
 		// Capture per-material baseColor images, then strip texture refs so parse() never makes a blob: URL (which the sandbox rejects).
 		const parts=glb_split(abuf); const tex_by_material=model_textures(parts);
-		(parts.json.materials||[]).forEach(m=>{ if(m.pbrMetallicRoughness){ delete m.pbrMetallicRoughness.baseColorTexture; delete m.pbrMetallicRoughness.metallicRoughnessTexture; } delete m.normalTexture; delete m.occlusionTexture; delete m.emissiveTexture; });
+		(parts.json.materials||[]).forEach(m=>{ if(m.pbrMetallicRoughness){ delete m.pbrMetallicRoughness.baseColorTexture; delete m.pbrMetallicRoughness.metallicRoughnessTexture; } delete m.normalTexture; delete m.occlusionTexture; delete m.emissiveTexture;
+			for(const ext of Object.values(m.extensions||{})){ for(const key of Object.keys(ext)){ if(key.endsWith("Texture")) delete ext[key]; } } });   // extension-held refs too (KHR_materials_specular etc.) — a dangling texture index kills the parse
 		delete parts.json.textures; delete parts.json.images; delete parts.json.samplers;
 		const clean=glb_repack(parts.json, parts.bin);
 		new GLTFLoader().parse(clean, "",
 			async gltf=>{ try{
-				jet_proto=normalise_model(gltf.scene); const anims=gltf.animations||[];   // split baked clips: gear_* fold vs the hook
-					gear_clips=anims.filter(c=>c.name&&c.name.indexOf("gear")===0); hook_clips=anims.filter(c=>c.name&&c.name.indexOf("hook")===0);
+				const proto=normalise_model(gltf.scene, spec);
+				const rig=rig_build(spec, gltf.animations||[]);
 				if(typeof createImageBitmap==="function"){
 					const decoded={};   // material name -> THREE.Texture (decoded in-process, no URL/fetch)
 					await Promise.all(Object.keys(tex_by_material).map(async name=>{ try{
 						const src=tex_by_material[name]; const bmp=await createImageBitmap(new Blob([src.bytes],{type:src.mime}));
 						const tex=new THREE.Texture(bmp); tex.flipY=false; tex.colorSpace=THREE.SRGBColorSpace; tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.anisotropy=4; tex.needsUpdate=true; decoded[name]=tex;
 					}catch(te){ console.warn("[model] texture decode failed for "+name,te&&te.message||te); } }));
-					jet_proto.traverse(o=>{ if(o.isMesh&&o.material){ (Array.isArray(o.material)?o.material:[o.material]).forEach(mm=>{
+					proto.traverse(o=>{ if(o.isMesh&&o.material){ (Array.isArray(o.material)?o.material:[o.material]).forEach(mm=>{
 						if(decoded[mm.name]){ mm.map=decoded[mm.name]; }
 						if(mm.metalness!==undefined && !/glass|screen|oleo|gear/i.test(mm.name||"")){ mm.metalness=0.0; mm.roughness=0.88; }   // matte low-vis tactical paint; keep canopy glass, chrome oleo, and the gear (semi-gloss, matching the donor) untouched
 						mm.needsUpdate=true;
 					}); } });
 				}
-				model_active=true; apply_model_all();
-			}catch(e){ throw new Error("fighter model: failed to process "+tag+": "+(e&&e.message||e)); } },
-			err=>{ throw new Error("fighter model: parse failed for "+tag+" ("+((err&&err.message)||"bad glTF")+") — ensure uncompressed glTF/GLB (no Draco)"); });
-	}catch(e){ throw new Error("fighter model: not loaded "+tag+" ("+((e&&e.message)||e)+")"); }
+				fleet[kind]={ proto, rig };
+				if(kind===(cfg.aircraft||"fa18f")) model_active=true;   // the loading gate waits on the ownship's aircraft
+				apply_model_all(); finish();
+			}catch(e){ finish(); throw new Error("aircraft model: failed to process "+tag+": "+(e&&e.message||e)); } },
+			err=>{ finish(); throw new Error("aircraft model: parse failed for "+tag+" ("+((err&&err.message)||"bad glTF")+") — ensure uncompressed glTF/GLB (no Draco)"); });
+	}catch(e){ finish(); throw new Error("aircraft model: not loaded "+tag+" ("+((e&&e.message)||e)+")"); }
 }
 
 // ============================================================================ optional external carrier model
@@ -521,7 +577,8 @@ async function init_carrier_model(){
 		const parts=glb_split(abuf); const M=(parts.json.materials||[])[0]||{};
 		const baseSrc=glb_image(parts, M.pbrMetallicRoughness&&M.pbrMetallicRoughness.baseColorTexture&&M.pbrMetallicRoughness.baseColorTexture.index);
 		const normSrc=glb_image(parts, M.normalTexture&&M.normalTexture.index);
-		(parts.json.materials||[]).forEach(m=>{ if(m.pbrMetallicRoughness){ delete m.pbrMetallicRoughness.baseColorTexture; delete m.pbrMetallicRoughness.metallicRoughnessTexture; } delete m.normalTexture; delete m.occlusionTexture; delete m.emissiveTexture; });
+		(parts.json.materials||[]).forEach(m=>{ if(m.pbrMetallicRoughness){ delete m.pbrMetallicRoughness.baseColorTexture; delete m.pbrMetallicRoughness.metallicRoughnessTexture; } delete m.normalTexture; delete m.occlusionTexture; delete m.emissiveTexture;
+			for(const ext of Object.values(m.extensions||{})){ for(const key of Object.keys(ext)){ if(key.endsWith("Texture")) delete ext[key]; } } });   // extension-held refs too (KHR_materials_specular etc.) — a dangling texture index kills the parse
 		delete parts.json.textures; delete parts.json.images; delete parts.json.samplers;
 		const clean=glb_repack(parts.json, parts.bin);
 		new GLTFLoader().parse(clean, "", async gltf=>{ try{
@@ -1236,6 +1293,9 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(k==="KeyX"){ ownship.rounds=578; ownship.msl=4; ownship.cm=60; }
 		if(k==="Digit0" && DECK_ALIGN && carrier_model){ deck_edit=!deck_edit; if(deck_edit){ enter_align(); } else { save_cfg(); copy_cats(); cat_saved_t=1.8; } }   // 0: deck-alignment tool, gated by DECK_ALIGN (dev-only) — exit saves + copies the poses to the clipboard
 		if(TEST_SCENARIOS && !deck_edit && e.shiftKey && /^Digit\d$/.test(k)){ start_test((+k.slice(5)+9)%10); }   // Shift+1..0: scripted landing test scenarios (dev-only)
+		if(TEST_SCENARIOS && e.shiftKey && k==="KeyA"){ const rig=ownship.group.userData.rig||[];   // Shift+A (dev): rig calibration — cycle subsystems, sweeping the active one 0..1
+			rig_sweep = rig_sweep+1 > rig.length ? 0 : rig_sweep+1;
+			notice(rig_sweep ? "RIG SWEEP: "+rig[rig_sweep-1].name : "RIG SWEEP OFF"); }
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyC"){ const u=cloud_mat.uniforms.uDebug; u.value=u.value>0.5?0:1; }   // Shift+C (dev): keep the cloud render path but zero the cloud contribution — the definitive plumbing-vs-cloud-light A/B
 		else if(deck_edit && e.shiftKey && (k==="Digit1"||k==="Digit2"||k==="Digit3"||k==="Digit4")){ cat_idx=+k.slice(5)-1; place_on_cat(cat_idx); }   // in align mode, Shift+1-4 select the catapult being aligned (plain 1-5 stay views)
 		else { if(k==="Digit1") set_view("cockpit");   // 1 Cockpit — pending art, resolves to the HUD eye-point for now (not a dead key)
@@ -1429,14 +1489,14 @@ function flight_world(){
 	// Multiplayer must mirror the SERVER's world exactly (sea-only, the match
 	// seed and wrap) — a client-side carrier the server doesn't simulate would
 	// poison prediction; deck operations stay single-player for now.
-	if(MULTIPLAYER) return { environment:{ seed:(net&&net.welcome&&net.welcome.seed)||1, wrap:(net&&net.wrap)||WORLD_WRAP }, world:{ sea:3 } };
+	if(MULTIPLAYER) return { aircraft:"fa18f", environment:{ seed:(net&&net.welcome&&net.welcome.seed)||1, wrap:(net&&net.wrap)||WORLD_WRAP }, world:{ sea:3 } };
 	const fields=[{ height:ISLAND_H+AIRFIELD_FLOAT, strips:physics_strips.map(c=>({ a:{x:c.a[0], z:c.a[1]}, b:{x:c.b[0], z:c.b[1]}, width:c.w })) }];
 	for(const is of obstacles.islands) fields.push({ height:ISLAND_H, coast:is.pts.map(q=>({x:q[0], z:q[1]})) });
 	const carrier={ position:{x:CARRIER.x, y:CARRIER.deckY, z:CARRIER.z}, heading:CARRIER_YD, speed:0,
 		deck:[{x:-152,z:-38},{x:152,z:-38},{x:152,z:38},{x:-152,z:38}],   // rectangle at the GLB's beam; refine against the drawn edge with #72/#83
 		catapults:cfg.cats.map(c=>{ const hd=c.h*D2R; return { position:{x:c.x+NOSEGEAR*Math.cos(hd), y:0, z:c.z-NOSEGEAR*Math.sin(hd)}, heading:hd, stroke:85, speed:88 }; }),
 		wires:WIRES.map(fa=>({ a:{x:fa, y:0, z:strip_lat(fa)-WIRE_HALFSPAN}, b:{x:fa, y:0, z:strip_lat(fa)+WIRE_HALFSPAN} })) };
-	return { environment:{ seed:1, wrap:WORLD_WRAP }, world:{ sea:0, fields, carrier } };
+	return { aircraft:cfg.aircraft||"fa18f", environment:{ seed:1, wrap:WORLD_WRAP }, world:{ sea:0, fields, carrier } };
 }
 function sync_core(out){   // core state -> the ownship object every consumer reads (HUD, cameras, weapons, LSO)
 	ownship.pos.set(out[STATE.position],out[STATE.position+1],out[STATE.position+2]);
@@ -1447,8 +1507,9 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	if(ownship.speed>0.5) ownship.vel_dir.set(ownship.velx/ownship.speed,ownship.vely/ownship.speed,ownship.velz/ownship.speed); else ownship.vel_dir.copy(ownship.fwd);
 	ownship.aoa=out[STATE.alpha]*180/Math.PI; ownship.gload=out[STATE.nz];
 	ownship.cas=out[STATE.cas];   // calibrated airspeed, m/s — the real jet's HUD speed source
-	ownship.spool=(out[STATE.engine]+out[STATE.engine+2])/2; ownship.stage=(out[STATE.engine+1]+out[STATE.engine+3])/2;
+	ownship.spool=out[STATE.power]; ownship.stage=out[STATE.stage];   // achieved across the airframe's engines, computed core-side
 	ownship.gear=1-out[STATE.extension]; ownship.speedbrake=out[STATE.speedbrake];
+	ownship.surfaces={ stabL:out[STATE.stabilator], stabR:out[STATE.stabilator+1], flapL:out[STATE.flaperon], flapR:out[STATE.flaperon+1], rudder:out[STATE.rudder], slat:out[STATE.slat] };   // live FCS deflections, rad — the rig scrubs surfaces from these
 	ownship.grounded=out[STATE.wow]>0.5;
 	core_catapult=out[STATE.catapult]; core_stroke=out[STATE.stroke];
 	ownship.launching=core_catapult>=0&&core_stroke>=0;
@@ -1551,11 +1612,24 @@ function fly_bandit(dt){
 	// bandit guns at ownship
 	fire_gun(bandit,ownship,"bandit",dt);
 }
-function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer) return;   // scrub the baked clips: gear to st.gear (0=down,1=up), hook to st.hook (0=stowed,1=deployed)
-	const tg=THREE.MathUtils.clamp(st.gear,0,1); for(const a of g.userData.gearActions) a.action.time=tg*a.dur;
-	let th=THREE.MathUtils.clamp(st.hook??0,0,1);
-	if(th>0.05){ const surf=ground_height(st.pos.x,st.pos.z); if(surf>-1e8 && st.pos.y<=surf+GEAR+0.6) th=Math.min(th,HOOK_DECK_CAP); }   // resting on a surface: stop the hook short of full deploy so the claw sits on the deck, not through it
-	for(const a of g.userData.hookActions) a.action.time=th*a.dur;
+let rig_sweep=0;   // dev calibration (Shift+A): 0 = off, n = sweep the nth rig entry of the ownship
+function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.userData.rig) return;
+	const sweeping=(st===ownship&&rig_sweep>0)?g.userData.rig[rig_sweep-1]:null;
+	for(const r of g.userData.rig){
+		if(sweeping===r){ const f=(Math.sin(performance.now()/600)+1)/2; r.action.time=r.t0+f*(r.t1-r.t0); continue; }
+		let f;
+		switch(r.drive){
+		case "gear": f=1-THREE.MathUtils.clamp(st.gear??1,0,1); break;   // st.gear: 1 = up; the rig scrubs extension
+		case "hook": { f=THREE.MathUtils.clamp(st.hook??0,0,1);
+			if(f>0.05){ const surf=ground_height(st.pos.x,st.pos.z); if(surf>-1e8 && st.pos.y<=surf+GEAR+0.6) f=Math.min(f,HOOK_DECK_CAP); }   // claw rests ON the deck, not through it
+			break; }
+		case "speedbrake": f=THREE.MathUtils.clamp(st.speedbrake??0,0,1); break;
+		default: { const surfaces=st.surfaces; if(!surfaces||surfaces[r.drive]===undefined){ f=undefined; break; }   // no live FCS data (remotes): hold the rest pose
+			f=(surfaces[r.drive]-(r.min??0))/(((r.max??1)-(r.min??0))||1); f=THREE.MathUtils.clamp(f,0,1); } }
+		if(f===undefined) continue;
+		if(r.flip) f=1-f;
+		r.action.time=r.t0+f*(r.t1-r.t0);
+	}
 	g.userData.gearMixer.update(0); }
 function ease_to(cur,tgt,dt){ const d=tgt-cur; return Math.abs(d)>1e-4 ? cur+Math.sign(d)*Math.min(Math.abs(d),GEAR_RATE*dt) : tgt; }
 function update_anim(dt){ for(const st of [ownship,bandit,...extras]){
@@ -2042,6 +2116,7 @@ function net_connect(){
 	net_dial(join,{ event:net_event, end:(reason,results)=>net_end(reason||"finished",results), close:()=>net_end("gone") })
 	.then((n)=>{ net=n; match_started=Date.now();
 		if(n.welcome&&n.welcome.spawn) apply_own_state(n.welcome.spawn.state);
+		apply_model_all();   // the welcome names the server-assigned aircraft; re-apply in case the picker had another type
 		const rules=(n.welcome&&n.welcome.parameters)||{};   // the creator's weather + rules apply to every participant
 		if(rules.tod==="day"||rules.tod==="night"){ cfg.tod=rules.tod; apply_time_of_day(cfg.tod); apply_effects(); }
 		if(typeof rules.clouds==="string"&&["none","cumulus","high_stratus","low_stratus"].includes(rules.clouds)){
@@ -2111,7 +2186,8 @@ function draw_pause_banner(){ hctx.save(); hctx.textAlign="center"; hctx.fillSty
 start_mission();
 if(MULTIPLAYER) net_connect();
 __raf = requestAnimationFrame(frame);
-init_external_model();
+void init_external_model(cfg.aircraft||"fa18f");
+if((cfg.aircraft||"fa18f")!=="fa18f") void init_external_model("fa18f");   // the bandit and remotes still fly the default airframe
 init_carrier_model();
 void flight_load();   // the wasm flight core loads alongside the GLBs; assets_ready() gates on it
 

@@ -126,13 +126,17 @@ msgstr "Lisää näkymä"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Säädä ulkoasua ja asettelua mieltymystesi mukaan."
 
-#: src/components/MissionSetup.tsx:557
+#: src/components/MissionSetup.tsx:568
 msgid "Afterburner"
 msgstr "Jälkipoltin"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:41
 msgid "AI"
 msgstr "Tekoäly"
+
+#: src/components/MissionSetup.tsx:346
+msgid "Aircraft"
+msgstr "Lentokone"
 
 #: src/components/MissionSetup.tsx:219
 msgid "Aircraft carrier <0>“Gerald Ford Aircraft Carrier”</0> by <1>Usman Zia (Uxxman)</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline, texture downscaled."
@@ -158,7 +162,7 @@ msgstr "Tapahtui odottamaton virhe"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Haluatko varmasti kirjautua ulos? Sinun täytyy kirjautua uudelleen sisään päästäksesi tilillesi."
 
-#: src/components/MissionSetup.tsx:442
+#: src/components/MissionSetup.tsx:453
 msgid "Arrestor hook"
 msgstr "Jarrukoukku"
 
@@ -174,7 +178,7 @@ msgstr "Nouseva"
 msgid "Authenticator code"
 msgstr "Todennuskoodi"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:125
 msgid "back"
 msgstr "takaisin"
 
@@ -197,7 +201,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Korosta kiinnostusta"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:117
 msgid "brakes"
 msgstr "jarrut"
 
@@ -217,7 +221,7 @@ msgstr "Kutsutunnus"
 msgid "Cancel"
 msgstr "Peruuta"
 
-#: src/components/MissionSetup.tsx:369
+#: src/components/MissionSetup.tsx:380
 msgid "Carrier landing"
 msgstr "Laskeutuminen lentotukialukselle"
 
@@ -230,11 +234,11 @@ msgstr "Tämän ilmoituksen kategoria"
 msgid "Change notification category"
 msgstr "Vaihda ilmoituksen kategoria"
 
-#: src/components/MissionSetup.tsx:456
+#: src/components/MissionSetup.tsx:467
 msgid "Chase view"
 msgstr "Takanäkymä"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:122
 msgid "Chase view:"
 msgstr "Seurantanäkymä:"
 
@@ -307,11 +311,11 @@ msgstr "Sulje paneeli"
 msgid "Close search"
 msgstr "Sulje haku"
 
-#: src/components/GameCanvas.tsx:127
+#: src/components/GameCanvas.tsx:126
 msgid "closer"
 msgstr "lähemmäs"
 
-#: src/components/MissionSetup.tsx:389
+#: src/components/MissionSetup.tsx:400
 msgid "Clouds"
 msgstr "Pilvet"
 
@@ -344,15 +348,11 @@ msgstr "Tiivis"
 msgid "Confirm"
 msgstr "Vahvista"
 
-#: src/components/GameCanvas.tsx:47
-msgid "CONNECTED"
-msgstr "YHDISTETTY"
-
 #: src/components/Multiplayer.tsx:189
 msgid "Connecting…"
 msgstr "Yhdistetään…"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:47
 msgid "CONNECTION FAILED"
 msgstr "YHTEYS EPÄONNISTUI"
 
@@ -417,7 +417,7 @@ msgstr "Luo ottelu"
 msgid "Credits"
 msgstr "Tekijät"
 
-#: src/components/MissionSetup.tsx:396
+#: src/components/MissionSetup.tsx:407
 #: src/components/Multiplayer.tsx:231
 msgid "Cumulus"
 msgstr "Kumpupilvi"
@@ -430,7 +430,7 @@ msgstr "Mukautettu"
 msgid "CUT"
 msgstr "VAARALLINEN"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:459
 msgid "Cycle view"
 msgstr "Vaihda näkymää"
 
@@ -447,7 +447,7 @@ msgstr "Tumma"
 msgid "Dark mode"
 msgstr "Tumma tila"
 
-#: src/components/MissionSetup.tsx:384
+#: src/components/MissionSetup.tsx:395
 #: src/components/Multiplayer.tsx:226
 msgid "Day"
 msgstr "Päivä"
@@ -504,11 +504,11 @@ msgstr "Hylkää"
 msgid "Displays the mobile sidebar."
 msgstr "Näyttää mobiilisivupalkin."
 
-#: src/components/MissionSetup.tsx:465
+#: src/components/MissionSetup.tsx:476
 msgid "Distance"
 msgstr "Etäisyys"
 
-#: src/components/MissionSetup.tsx:545
+#: src/components/MissionSetup.tsx:556
 msgid "Distance LOD"
 msgstr "Etäisyys-LOD"
 
@@ -521,7 +521,7 @@ msgstr "Lataa"
 msgid "Download failed"
 msgstr "Lataus epäonnistui"
 
-#: src/components/MissionSetup.tsx:539
+#: src/components/MissionSetup.tsx:550
 msgid "Dynamic resolution"
 msgstr "Dynaaminen resoluutio"
 
@@ -560,11 +560,11 @@ msgstr "Laajenna"
 msgid "Expand sidebar"
 msgstr "Laajenna sivupalkki"
 
-#: src/components/MissionSetup.tsx:511
+#: src/components/MissionSetup.tsx:522
 msgid "Exterior detail"
 msgstr "Ulkopuolen yksityiskohdat"
 
-#: src/components/MissionSetup.tsx:527
+#: src/components/MissionSetup.tsx:538
 msgid "Extra aircraft"
 msgstr "Lisälentokoneet"
 
@@ -596,12 +596,12 @@ msgstr "KOHTALAINEN"
 msgid "Finish moving your account"
 msgstr "Viimeistele tilin siirto"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:115
 msgid "flares"
 msgstr "soihdut"
 
-#: src/components/MissionSetup.tsx:445
-#: src/components/MissionSetup.tsx:575
+#: src/components/MissionSetup.tsx:456
+#: src/components/MissionSetup.tsx:586
 msgid "Flares"
 msgstr "Soihdut"
 
@@ -613,7 +613,7 @@ msgstr "SOIHDUT"
 msgid "Flat"
 msgstr "Litteä"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:48
 msgid "FLIGHT CORE FAILED"
 msgstr "LENTOYTIMEN VIRHE"
 
@@ -621,7 +621,7 @@ msgstr "LENTOYTIMEN VIRHE"
 msgid "Floating"
 msgstr "Kelluva"
 
-#: src/components/MissionSetup.tsx:581
+#: src/components/MissionSetup.tsx:592
 msgid "Framerate"
 msgstr "Kuvataajuus"
 
@@ -650,7 +650,7 @@ msgstr "Teemasta"
 msgid "Full layout"
 msgstr "Täysi asettelu"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:116
 msgid "gear"
 msgstr "laskuteline"
 
@@ -696,11 +696,11 @@ msgstr "Ryhmä"
 msgid "GUN"
 msgstr "TYKKI"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:114
 msgid "guns"
 msgstr "aseet"
 
-#: src/components/MissionSetup.tsx:437
+#: src/components/MissionSetup.tsx:448
 msgid "Guns"
 msgstr "Aseet"
 
@@ -712,11 +712,11 @@ msgstr "Piilota"
 msgid "Hide password"
 msgstr "Piilota salasana"
 
-#: src/components/MissionSetup.tsx:491
+#: src/components/MissionSetup.tsx:502
 msgid "High"
 msgstr "Korkea"
 
-#: src/components/MissionSetup.tsx:397
+#: src/components/MissionSetup.tsx:408
 #: src/components/Multiplayer.tsx:232
 msgid "High stratus"
 msgstr "Korkea kerrospilvi"
@@ -728,7 +728,7 @@ msgstr "Korkea kerrospilvi"
 msgid "Home"
 msgstr "Etusivu"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:116
 msgid "hook"
 msgstr "koukku"
 
@@ -744,11 +744,11 @@ msgstr "Kuuma"
 msgid "Imperial"
 msgstr "Brittiläinen"
 
-#: src/components/MissionSetup.tsx:366
+#: src/components/MissionSetup.tsx:377
 msgid "In air"
 msgstr "Ilmassa"
 
-#: src/components/MissionSetup.tsx:405
+#: src/components/MissionSetup.tsx:416
 msgid "Input"
 msgstr "Syöte"
 
@@ -764,7 +764,7 @@ msgstr "Kiinnostuksen kohteet"
 msgid "Invalid verification code"
 msgstr "Virheellinen vahvistuskoodi"
 
-#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:431
 msgid "Invert pitch"
 msgstr "Käänteinen nyökkäys"
 
@@ -772,7 +772,7 @@ msgstr "Käänteinen nyökkäys"
 msgid "Join"
 msgstr "Liity"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:52
 msgid "JOINED"
 msgstr "LIITTYI"
 
@@ -788,15 +788,15 @@ msgstr "Kaksintaistelu — 1v1, ensimmäinen pudotus voittaa"
 msgid "Joust against AI player"
 msgstr "Kaksintaistelu tekoälypelaajaa vastaan"
 
-#: src/components/MissionSetup.tsx:427
+#: src/components/MissionSetup.tsx:438
 msgid "Keys"
 msgstr "Näppäimet"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:50
 msgid "KILL"
 msgstr "PUDOTUS"
 
-#: src/components/MissionSetup.tsx:441
+#: src/components/MissionSetup.tsx:452
 msgid "Landing gear"
 msgstr "Laskuteline"
 
@@ -809,11 +809,11 @@ msgstr "Laskutelineen pyörät mallista <0>“F/A-18F Super Hornet Fighter Jet�
 msgid "Large"
 msgstr "Suuri"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:115
 msgid "launch"
 msgstr "laukaisu"
 
-#: src/components/MissionSetup.tsx:438
+#: src/components/MissionSetup.tsx:449
 msgid "Launch (catapult)"
 msgstr "Laukaisu (katapultti)"
 
@@ -826,7 +826,7 @@ msgstr "Asettelu"
 msgid "Learn more"
 msgstr "Lue lisää"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:53
 msgid "LEFT"
 msgstr "POISTUI"
 
@@ -839,11 +839,11 @@ msgstr "Vasemmalta oikealle"
 msgid "Light"
 msgstr "Vaalea"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:116
 msgid "lights"
 msgstr "valot"
 
-#: src/components/MissionSetup.tsx:443
+#: src/components/MissionSetup.tsx:454
 msgid "Lights"
 msgstr "Valot"
 
@@ -890,11 +890,11 @@ msgstr "Uloskirjautuminen onnistui"
 msgid "Logging out…"
 msgstr "Kirjaudutaan ulos…"
 
-#: src/components/MissionSetup.tsx:487
+#: src/components/MissionSetup.tsx:498
 msgid "Low"
 msgstr "Matala"
 
-#: src/components/MissionSetup.tsx:398
+#: src/components/MissionSetup.tsx:409
 #: src/components/Multiplayer.tsx:233
 msgid "Low stratus"
 msgstr "Matala kerrospilvi"
@@ -903,11 +903,11 @@ msgstr "Matala kerrospilvi"
 msgid "M to close"
 msgstr "M sulkee"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:118
 msgid "map"
 msgstr "kartta"
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:462
 msgid "Map"
 msgstr "Kartta"
 
@@ -922,11 +922,11 @@ msgid "Match type"
 msgstr "Ottelutyyppi"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:489
+#: src/components/MissionSetup.tsx:500
 msgid "Medium"
 msgstr "Keskikoko"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:119
 msgid "menu"
 msgstr "valikko"
 
@@ -942,15 +942,15 @@ msgstr "Metrinen"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midwayn atollin kartta — kuvat sisältävät muokattua <0>Copernicus Sentinel-2</0> -dataa (2026); lentokentän geometria (kiitotie, rullaustiet, asematasot) © <1>OpenStreetMap</1>-avustajat, lisensoitu <2>ODbL</2>-lisenssillä; rannikko- ja riuttatiedot lähteestä <3>NOAA NCCOS</3> (tekijänoikeudesta vapaa)."
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:115
 msgid "missile"
 msgstr "ohjus"
 
-#: src/components/MissionSetup.tsx:444
+#: src/components/MissionSetup.tsx:455
 msgid "Missile"
 msgstr "Ohjus"
 
-#: src/components/MissionSetup.tsx:569
+#: src/components/MissionSetup.tsx:580
 msgid "Missiles"
 msgstr "Ohjukset"
 
@@ -987,7 +987,7 @@ msgstr "Uusi"
 msgid "Next image"
 msgstr "Seuraava kuva"
 
-#: src/components/MissionSetup.tsx:385
+#: src/components/MissionSetup.tsx:396
 #: src/components/Multiplayer.tsx:227
 msgid "Night"
 msgstr "Yö"
@@ -1044,7 +1044,7 @@ msgstr "EI ARVOSANAA"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:395
+#: src/components/MissionSetup.tsx:406
 msgid "None"
 msgstr "Ei mitään"
 
@@ -1064,7 +1064,7 @@ msgstr "Ei asetettu"
 msgid "Notifications"
 msgstr "Ilmoitukset"
 
-#: src/components/MissionSetup.tsx:519
+#: src/components/MissionSetup.tsx:530
 msgid "Ocean detail"
 msgstr "Meren yksityiskohdat"
 
@@ -1072,11 +1072,11 @@ msgstr "Meren yksityiskohdat"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:368
+#: src/components/MissionSetup.tsx:379
 msgid "On carrier"
 msgstr "Lentotukialuksella"
 
-#: src/components/MissionSetup.tsx:367
+#: src/components/MissionSetup.tsx:378
 msgid "On runway"
 msgstr "Kiitoradalla"
 
@@ -1117,15 +1117,15 @@ msgstr "Avaa navigointivalikko"
 msgid "Open theme settings"
 msgstr "Avaa teeman asetukset"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:124
 msgid "or"
 msgstr "tai"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:124
 msgid "orbit"
 msgstr "kierto"
 
-#: src/components/MissionSetup.tsx:460
+#: src/components/MissionSetup.tsx:471
 msgid "Orbit"
 msgstr "Kiertorata"
 
@@ -1153,11 +1153,11 @@ msgstr "Avainkoodin vahvistus epäonnistui. Yritä uudelleen."
 msgid "Passkeys"
 msgstr "Avainkoodit"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:119
 msgid "pause"
 msgstr "tauko"
 
-#: src/components/MissionSetup.tsx:452
+#: src/components/MissionSetup.tsx:463
 msgid "Pause"
 msgstr "Tauko"
 
@@ -1170,11 +1170,11 @@ msgstr "TAUOLLA"
 msgid "pilot"
 msgstr "lentäjä"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:112
 msgid "pitch"
 msgstr "nyökkäys"
 
-#: src/components/MissionSetup.tsx:430
+#: src/components/MissionSetup.tsx:441
 msgid "Pitch"
 msgstr "Nyökkäys"
 
@@ -1182,7 +1182,7 @@ msgstr "Nyökkäys"
 msgid "Please check your internet connection and try again."
 msgstr "Tarkista internetyhteytesi ja yritä uudelleen."
 
-#: src/components/MissionSetup.tsx:474
+#: src/components/MissionSetup.tsx:485
 msgid "Preset"
 msgstr "Esiasetus"
 
@@ -1217,11 +1217,11 @@ msgstr "Yhdistä tilisi uudelleen tällä palvelimella"
 msgid "Re-register your passkeys on this server"
 msgstr "Rekisteröi pääsyavaimesi uudelleen tällä palvelimella"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:116
 msgid "rearm"
 msgstr "uudelleenlataus"
 
-#: src/components/MissionSetup.tsx:446
+#: src/components/MissionSetup.tsx:457
 msgid "Rearm"
 msgstr "Varustele uudelleen"
 
@@ -1276,7 +1276,7 @@ msgstr "Lähetä sähköposti uudelleen"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:618
+#: src/components/MissionSetup.tsx:629
 msgid "Reset"
 msgstr "Nollaa"
 
@@ -1284,19 +1284,19 @@ msgstr "Nollaa"
 msgid "Reset all settings to default values"
 msgstr "Palauta kaikki asetukset oletusarvoihin"
 
-#: src/components/MissionSetup.tsx:501
+#: src/components/MissionSetup.tsx:512
 msgid "Resolution"
 msgstr "Ratkaisu"
 
-#: src/components/MissionSetup.tsx:595
+#: src/components/MissionSetup.tsx:606
 msgid "Restart"
 msgstr "Aloita alusta"
 
-#: src/components/MissionSetup.tsx:599
+#: src/components/MissionSetup.tsx:610
 msgid "Resume"
 msgstr "Jatka"
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:464
 msgid "Return to menu"
 msgstr "Takaisin valikkoon"
 
@@ -1304,11 +1304,11 @@ msgstr "Takaisin valikkoon"
 msgid "Right to Left"
 msgstr "Oikealta vasemmalle"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:113
 msgid "roll"
 msgstr "kallistus"
 
-#: src/components/MissionSetup.tsx:431
+#: src/components/MissionSetup.tsx:442
 msgid "Roll"
 msgstr "Kierto"
 
@@ -1399,7 +1399,7 @@ msgstr "Lähetä uudelleen"
 msgid "Send email"
 msgstr "Lähetä sähköposti"
 
-#: src/components/MissionSetup.tsx:409
+#: src/components/MissionSetup.tsx:420
 msgid "Sensitivity"
 msgstr "Herkkyys"
 
@@ -1417,7 +1417,7 @@ msgstr "Palvelinvirhe"
 msgid "Server rules"
 msgstr "Palvelimen säännöt"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:49
 msgid "SESSION ENDED"
 msgstr "ISTUNTO PÄÄTTYI"
 
@@ -1437,7 +1437,7 @@ msgstr "Aseta lähtöpaikka ja määränpää"
 msgid "Settings"
 msgstr "Asetukset"
 
-#: src/components/MissionSetup.tsx:551
+#: src/components/MissionSetup.tsx:562
 msgid "Shadows"
 msgstr "Varjot"
 
@@ -1481,16 +1481,16 @@ msgstr "Tilava"
 msgid "SPD BK"
 msgstr "ILMAJ"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:117
 msgid "speed brake"
 msgstr "ilmajarru"
 
-#: src/components/MissionSetup.tsx:440
+#: src/components/MissionSetup.tsx:451
 msgid "Speed brake"
 msgstr "Ilmajarru"
 
-#: src/components/MissionSetup.tsx:360
-#: src/components/MissionSetup.tsx:605
+#: src/components/MissionSetup.tsx:371
+#: src/components/MissionSetup.tsx:616
 msgid "Start"
 msgstr "Aloita"
 
@@ -1550,11 +1550,11 @@ msgstr "Teema"
 msgid "Theme Settings"
 msgstr "Teema-asetukset"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:114
 msgid "throttle"
 msgstr "kaasu"
 
-#: src/components/MissionSetup.tsx:434
+#: src/components/MissionSetup.tsx:445
 msgid "Throttle"
 msgstr "Kaasu"
 
@@ -1562,15 +1562,15 @@ msgstr "Kaasu"
 msgid "Thursday"
 msgstr "Torstai"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:125
 msgid "tilt"
 msgstr "kallistus"
 
-#: src/components/MissionSetup.tsx:463
+#: src/components/MissionSetup.tsx:474
 msgid "Tilt"
 msgstr "Kallistus"
 
-#: src/components/MissionSetup.tsx:378
+#: src/components/MissionSetup.tsx:389
 msgid "Time of day"
 msgstr "Vuorokaudenaika"
 
@@ -1609,7 +1609,7 @@ msgstr "Vaihda teema"
 msgid "Top"
 msgstr "Ylin"
 
-#: src/components/MissionSetup.tsx:563
+#: src/components/MissionSetup.tsx:574
 msgid "Tracers"
 msgstr "Valojuovat"
 
@@ -1644,7 +1644,7 @@ msgstr "Kirjoita hakeaksesi käyttäjiä"
 msgid "Type to search..."
 msgstr "Kirjoita hakeaksesi..."
 
-#: src/components/MissionSetup.tsx:493
+#: src/components/MissionSetup.tsx:504
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1707,7 +1707,7 @@ msgstr "Vahvista sähköpostiosoite"
 msgid "Video thumbnail"
 msgstr "Videon pikkukuva"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:118
 msgid "view"
 msgstr "näkymä"
 
@@ -1745,11 +1745,11 @@ msgstr "Sivusto on huoltotilassa!"
 msgid "Wednesday"
 msgstr "Keskiviikko"
 
-#: src/components/MissionSetup.tsx:439
+#: src/components/MissionSetup.tsx:450
 msgid "Wheel brakes"
 msgstr "Pyöräjarrut"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:51
 msgid "WINS"
 msgstr "VOITTAA"
 
@@ -1761,11 +1761,11 @@ msgstr "Maailmapalvelin"
 msgid "World server not reachable"
 msgstr "Maailmapalvelimeen ei saada yhteyttä"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:113
 msgid "yaw"
 msgstr "kääntö"
 
-#: src/components/MissionSetup.tsx:432
+#: src/components/MissionSetup.tsx:443
 msgid "Yaw"
 msgstr "Kääntö"
 

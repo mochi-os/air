@@ -9,6 +9,7 @@
 // their precise types for the menu.
 export interface MissionConfig {
   task: 'free' | 'joust' | 'multiplayer'
+  aircraft: 'fa18f' | 'fa18c'
   start: 'air' | 'runway' | 'carrier' | 'landing'
   tod: 'day' | 'night'
   clouds: 'none' | 'cumulus' | 'high_stratus' | 'low_stratus'
@@ -34,6 +35,7 @@ export interface MissionConfig {
 // Mirrors the engine's defaults so the menu reflects what an unconfigured game uses.
 export const DEFAULT_CONFIG: MissionConfig = {
   task: 'joust',
+  aircraft: 'fa18c',
   start: 'carrier',
   tod: 'day',
   clouds: 'none',

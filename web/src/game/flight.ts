@@ -13,39 +13,41 @@
 import { getErrorMessage } from '@mochi/web'
 
 // Encoded state layout (float64 words).
-export const SIZE = 50
+export const SIZE = 56
 export const STATE = {
   position: 0, // x y z
   velocity: 3,
   attitude: 6, // w x y z
   omega: 10,
   fuel: 13,
-  engine: 14, // spool, reheat × 2
-  stabilator: 18, // left right
-  flaperon: 20,
-  rudder: 22,
-  slat: 23,
-  flap: 24,
-  speedbrake: 25,
-  demand: 29,
-  normal: 30,
-  extension: 31,
-  catapult: 32,
-  stroke: 33,
-  wire: 34,
-  wow: 35,
-  contact: 36,
-  touch: 37, // occurred, sink, bank, kind
-  stress: 48,
-  time: 49,
+  engine: 14, // spool, reheat × 4 slots (airframes declare 0..4)
+  stabilator: 22, // left right
+  flaperon: 24,
+  rudder: 26,
+  slat: 27,
+  flap: 28,
+  speedbrake: 29,
+  demand: 33,
+  normal: 34,
+  extension: 35,
+  catapult: 36,
+  stroke: 37,
+  wire: 38,
+  wow: 39,
+  contact: 40,
+  touch: 41, // occurred, sink, bank, kind
+  stress: 54,
+  time: 55,
   // Instrument tail appended by frame()/get():
-  alpha: 50,
-  beta: 51,
-  nz: 52,
-  mach: 53,
-  cas: 54,
+  alpha: 56,
+  beta: 57,
+  nz: 58,
+  mach: 59,
+  cas: 60,
+  power: 61, // achieved spool fraction across the airframe's engines
+  stage: 62, // achieved reheat stage
 } as const
-const EXTRA = 5
+const EXTRA = 7
 
 export const DT = 1 / 240
 const CAP = 30 // accumulator cap: tab throttling must not spiral into replay storms
