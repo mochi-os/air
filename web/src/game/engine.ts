@@ -16,6 +16,7 @@ import {
 } from './net'
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_clear, flight_version, steps as flight_steps, STATE } from './flight'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { createAppClient } from '@mochi/web'
 
 export type GameConfig = Record<string, unknown>
 
@@ -411,17 +412,21 @@ const AIRCRAFT_MODELS={
 		rig:[ { name:"gear", clip:/^gear/, drive:"gear" },
 		      { name:"hook", clip:/^hook/, drive:"hook" } ] },
 	fa18c:{ url:"models/fa18c.glb", length:17.07, yaw:90, pitch:0, roll:0,
+		pose:[ { node:"elevator_percent_key_AN_238_100", quaternion:[0,-0.996,0.087,0] } ],   // the stabs' shared parent is authored mid-animation 180°-flipped (planform-reversed stabs); this is its animation END key — the correct frame. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
+
 		nose:4.9, wheel:2.85, stance:2.57, squat:0.08, flames:true,   // the model's own glow discs carry the burner look, procedural cones stay off (the nozzle helper-cube mesh was removed from the GLB itself — #94)   // physics nose-gear x + the DEPLOYED drawn nose-wheel x and wheel-bottom drop (three.js pose of the gear animation — the STATIC pose is gear-up on this model and lies about both); squat = clip-fraction scrubbed back under weight so the drawn oleo compresses (~0.4 m of wheel travel per unit fraction at the clip tail)
 		rig:[ { name:"gear",     track:/(^|_)[clr]_(gear|wheel)_AN_/i, drive:"gear" },
 		      { name:"hook",     track:/^Hook_AN_/i, drive:"hook" },
-		      { name:"stabL",    node:"Elevator_Left_94",  axis:"x", rest:-10.6*Math.PI/180, drive:"stabL" },   // all-moving stabs: the percent_key timelines are not a deflection map (the R side's even rests at -50°), so the FCS deflection drives the hinge (local X) directly
-		      { name:"stabR",    node:"Elevator_right_97", axis:"x", rest:-50.6*Math.PI/180, drive:"stabR" },
-		      { name:"flapL",    track:/l_flap_percent_key/i, drive:"flapL", min:-0.60, max:0.60 },
-		      { name:"flapR",    track:/r_flap_percent_key/i, drive:"flapR", min:-0.60, max:0.60 },
-		      { name:"aileronL", track:/l_aileron_percent_key_AN_(Cover|74)|AileronLAction/i, drive:"flapL", min:-0.60, max:0.60 },
-		      { name:"aileronR", track:/r_aileron_percent_key_AN_(Cover|_?_308)/i, drive:"flapR", min:-0.60, max:0.60 },
-		      { name:"rudderL",  track:/rudder_percent_key_AN_Left/i, drive:"rudder", min:-0.52, max:0.52 },
-		      { name:"rudderR",  track:/rudder_percent_key_AN_Right/i, drive:"rudder", min:-0.52, max:0.52 },
+		      { name:"stabL",    node:"Elevator_Left_94",  axis:"x", base:[0.96593,0,0,0.25882], drive:"stabL" },   // neutral base calibrated three ways: the user's Shift+E bracket (position 3 ≈ neutral), the thin-axis minimum (surface vertical thickness minimized at +130° from the old base), and NATOPS throws (+10.5°/−24°) mapping full stick inside the user's positions 2..4
+		      { name:"stabR",    node:"Elevator_right_97", axis:"x", base:[0.96502,0,0,0.26219], drive:"stabR" },
+		      { name:"flapL",     node:"FlapL_12",           axis:"x", sign:-1, drive:"flapL" },
+		      { name:"flapR",     node:"FlapR_15",           axis:"x", sign:-1, drive:"flapR" },
+		      { name:"innerL",    node:"Left_Flaperon_74",   axis:"x", sign:-1, drive:"flapL" },
+		      { name:"innerR",    node:"Right_Flaperon_312", axis:"x", sign:-1, drive:"flapR" },
+		      { name:"aileronL",  node:"AileronL_69",        axis:"x", sign:-1, drive:"flapL" },
+		      { name:"aileronR",  node:"AileronR_309",       axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapR" },   // authored droops ~10°; flush = -20° local (silhouette-bisected)
+		      { name:"rudderL",  node:"rudder_percent_key_AN_Left_319",  axis:"y", base:[0,0.15471,0,0.98796], drive:"rudder" },   // rudder neutral: trailing-edge-in-fin-plane (PCA fin plane, rotate until the TE's mean plane distance is zero) — sharper than the lateral-extent minimum, which sat ~6° off
+		      { name:"rudderR",  node:"rudder_percent_key_AN_Right_322", axis:"y", base:[0,0.19423,0,0.98096], drive:"rudder" },
 		      { name:"brake",    track:/^SPOILER_L/i, drive:"speedbrake" } ] } };
 const D2R=Math.PI/180;
 // fleet: aircraft name -> { proto, rig:[{clip, t0, t1, drive, min, max, flip}] } once loaded.
@@ -455,7 +460,7 @@ function moving_span(track){
 function rig_build(spec, animations){
 	const rig=[];
 	for(const entry of spec.rig||[]){
-		if(entry.node){ rig.push({ name:entry.name, node:entry.node, axis:entry.axis||"x", rest:entry.rest||0, drive:entry.drive }); continue; }   // direct hinge drive — resolved against each clone in apply_model_to
+		if(entry.node){ rig.push({ name:entry.name, node:entry.node, axis:entry.axis||"x", base:entry.base, sign:entry.sign||1, drive:entry.drive }); continue; }   // direct hinge drive — resolved against each clone in apply_model_to
 		let tracks=[], duration=0;
 		if(entry.clip){ for(const c of animations){ if(entry.clip.test(c.name||"")){ tracks=tracks.concat(c.tracks); duration=Math.max(duration,c.duration||0); } } }
 		else { for(const c of animations) for(const t of c.tracks){ const node=t.name.slice(0,t.name.lastIndexOf(".")); if(entry.track.test(node)) tracks.push(t); } }
@@ -483,7 +488,7 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18f";
 	if(loaded.rig.length){ const mixer=new THREE.AnimationMixer(m); g.userData.gearMixer=mixer;   // per-subsystem scrub actions, driven by state in update_anim()
 		g.userData.rig=loaded.rig.map(r=>{
 			if(r.node){ const o=m.getObjectByName(r.node); if(!o) return null;
-				return { ...r, object:o, quaternion:o.quaternion.clone() }; }   // direct hinge drive: rest pose captured per clone
+				return { ...r, object:o, quaternion:r.base?new THREE.Quaternion(...r.base):o.quaternion.clone() }; }   // direct hinge drive from the authored pose (or an explicit clean base)
 			const a=mixer.clipAction(r.clip); a.play(); a.paused=true; return { ...r, action:a }; }).filter(Boolean); } }
 function own_aircraft(){ return MULTIPLAYER ? ((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.aircraft)||"fa18f") : (cfg.aircraft||"fa18f"); }   // multiplayer flies what the SERVER spawned (the picker requests a type with #93)
 function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); extras.forEach(s=>apply_model_to(s.group)); position_aircraft_lights(); }   // re-pin the ownship lights to the real airframe
@@ -526,6 +531,7 @@ async function init_external_model(kind){
 		const clean=glb_repack(parts.json, parts.bin);
 		new GLTFLoader().parse(clean, "",
 			async gltf=>{ try{
+				for(const fix of spec.pose||[]){ let o=null; gltf.scene.traverse(x=>{ if(!o&&x.name===fix.node) o=x; }); if(o) o.quaternion.set(...fix.quaternion); }   // static pose corrections for mid-animation-authored nodes, before anything captures rest poses
 				const proto=normalise_model(gltf.scene, spec);
 				const rig=rig_build(spec, gltf.animations||[]);
 				if(typeof createImageBitmap==="function"){
@@ -1318,6 +1324,8 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(k==="KeyX"){ ownship.rounds=578; ownship.msl=4; ownship.cm=60; }
 		if(k==="Digit0" && DECK_ALIGN && carrier_model){ deck_edit=!deck_edit; if(deck_edit){ enter_align(); } else { save_cfg(); copy_cats(); cat_saved_t=1.8; } }   // 0: deck-alignment tool, gated by DECK_ALIGN (dev-only) — exit saves + copies the poses to the clipboard
 		if(TEST_SCENARIOS && !deck_edit && e.shiftKey && /^Digit\d$/.test(k)){ start_test((+k.slice(5)+9)%10); }   // Shift+1..0: scripted landing test scenarios (dev-only)
+		if(TEST_SCENARIOS && e.shiftKey && k==="KeyE"){ stab_cycle=(stab_cycle+1)%8; notice("STAB ANGLE "+stab_cycle); }   // Shift+E (dev): stab orientation cycle, +90° per press — the user reports the correct number
+		if(TEST_SCENARIOS && e.shiftKey && k==="KeyT"){ telemetry_dump(); }   // Shift+T (dev): download the handling telemetry ring
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyA"){ const rig=ownship.group.userData.rig||[];   // Shift+A (dev): rig calibration — cycle subsystems, sweeping the active one 0..1
 			rig_sweep = rig_sweep+1 > rig.length ? 0 : rig_sweep+1;
 			notice(rig_sweep ? "RIG SWEEP: "+rig[rig_sweep-1].name : "RIG SWEEP OFF"); }
@@ -1364,11 +1372,15 @@ function read_input(dt){
 	if(keys.has("KeyA")) tr-=1;   // roll left
 	if(keys.has("KeyE")) ty+=1; if(keys.has("KeyQ")) ty-=1;   // rudder / yaw
 	tp=THREE.MathUtils.clamp(tp,-1,1)*(cfg.invert?-1:1); tr=THREE.MathUtils.clamp(tr,-1,1); ty=THREE.MathUtils.clamp(ty,-1,1);
-	// ramp toward full deflection while held, decay to centre on release (~0.25s) — keys.md §2, so digital keys don't fly bang-bang
-	const R=4.0*dt;
-	input.pitch+=THREE.MathUtils.clamp(tp-input.pitch,-R,R);
-	input.roll+=THREE.MathUtils.clamp(tr-input.roll,-R,R);
-	input.yaw+=THREE.MathUtils.clamp(ty-input.yaw,-R,R);
+	// Asymmetric ramp: SLOW attack (2/s — a short tap gives a small deflection
+	// instead of a 40%-stick g-spike the FCS then chases into oscillation),
+	// FAST recentre (6/s) so releasing a key stops the command promptly.
+	// Hold ~0.5 s for full deflection.
+	const shape=(current,target)=>{ const toward=Math.abs(target)>Math.abs(current)&&target*current>=0;
+		const R=(toward?2.0:6.0)*dt; return current+THREE.MathUtils.clamp(target-current,-R,R); };
+	input.pitch=shape(input.pitch,tp);
+	input.roll=shape(input.roll,tr);
+	input.yaw=shape(input.yaw,ty);
 	input.guns=keys.has("Space"); input.brake=keys.has("KeyB");   // B: wheel brakes, held (both mains together)
 	if(!deck_edit && keys.has("BracketRight")) ownship.throttle=Math.min(1,ownship.throttle+dt*0.5);   // throttle up (], held & ramped)
 	if(!deck_edit && keys.has("BracketLeft")) ownship.throttle=Math.max(0,ownship.throttle-dt*0.5);    // throttle down ([)
@@ -1532,6 +1544,9 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.spool=out[STATE.power]; ownship.stage=out[STATE.stage];   // achieved across the airframe's engines, computed core-side
 	ownship.gear=1-out[STATE.extension]; ownship.speedbrake=out[STATE.speedbrake];
 	ownship.surfaces={ stabL:out[STATE.stabilator], stabR:out[STATE.stabilator+1], flapL:out[STATE.flaperon], flapR:out[STATE.flaperon+1], rudder:out[STATE.rudder], slat:out[STATE.slat] };   // live FCS deflections, rad — the rig scrubs surfaces from these
+	if(TEST_SCENARIOS){ const sp=Math.hypot(out[3],out[4],out[5])||1, D=180/Math.PI;   // telemetry row (Shift+T dumps)
+		telemetry.push([ (out[STATE.time]||0).toFixed(3), input.pitch.toFixed(3), (Math.asin(THREE.MathUtils.clamp(out[4]/sp,-1,1))*D+out[STATE.alpha]*D).toFixed(2), (out[STATE.alpha]*D).toFixed(2), (out[12]*D).toFixed(2), out[STATE.nz].toFixed(3), (out[STATE.cas]*1.944).toFixed(1), (out[STATE.stabilator]*D).toFixed(2) ]);
+		if(telemetry.length>7200) telemetry.shift(); }
 	ownship.grounded=out[STATE.wow]>0.5;
 	core_catapult=out[STATE.catapult]; core_stroke=out[STATE.stroke];
 	ownship.launching=core_catapult>=0&&core_stroke>=0;
@@ -1635,13 +1650,23 @@ function fly_bandit(dt){
 	fire_gun(bandit,ownship,"bandit",dt);
 }
 let rig_sweep=0;   // dev calibration (Shift+A): 0 = off, n = sweep the nth rig entry of the ownship
+let stab_cycle=0;   // dev calibration (Shift+E): adds n×90° about the stab hinge so the user can identify the correct orientation
+const client=createAppClient({ appName: 'furball' })
+const telemetry=[];   // dev (Shift+T): rolling ~2 min of stick/attitude/alpha/q/nz/cas/stab rows for handling analysis
+function telemetry_dump(){ if(!telemetry.length) return;
+	const csv="time,stick,attitude,alpha,q,nz,cas,stab\n"+telemetry.map(r=>r.join(",")).join("\n");
+	client.post("/-/telemetry/save", { data: csv }).then(   // the sandboxed shell drops blob downloads, so store server-side (settings table)
+		()=>notice("TELEMETRY SAVED ("+telemetry.length+" rows)"),
+		()=>notice("TELEMETRY SAVE FAILED"));
+	telemetry.length=0; }
 function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.userData.rig) return;
 	const sweeping=(st===ownship&&rig_sweep>0)?g.userData.rig[rig_sweep-1]:null;
 	const AXES={ x:new THREE.Vector3(1,0,0), y:new THREE.Vector3(0,1,0), z:new THREE.Vector3(0,0,1) };
 	for(const r of g.userData.rig){
 		if(r.object){ const surfaces=st.surfaces, v=(surfaces&&surfaces[r.drive]!==undefined)?surfaces[r.drive]:0;   // no FCS data (remotes): neutral, NOT the GLB rest pose (the C's right stab rests at -50°)
 			const sweep=(sweeping===r)?(Math.sin(performance.now()/600)-0.5)*0.6:0;
-			r.object.quaternion.copy(r.quaternion).multiply(new THREE.Quaternion().setFromAxisAngle(AXES[r.axis]||AXES.x, v+sweep-r.rest));
+			const cycle=(st===ownship&&stab_cycle&&(r.drive==="stabL"||r.drive==="stabR"))?stab_cycle*Math.PI/4:0;   // Shift+E calibration offset (45° per step)
+			r.object.quaternion.copy(r.quaternion).multiply(new THREE.Quaternion().setFromAxisAngle(AXES[r.axis]||AXES.x, cycle+(r.sign||1)*(v+sweep)));
 			continue; }
 		if(sweeping===r){ const f=(Math.sin(performance.now()/600)+1)/2; r.action.time=r.t0+f*(r.t1-r.t0); continue; }
 		let f;
@@ -1989,6 +2014,7 @@ function draw_hud(dt){
 	// amber = in transit; nothing drawn in the clean configuration (gear up, hook stowed).
 	hctx.textAlign="right"; hctx.font="13px monospace";
 	if((ownship.speedbrake??0)>0.02){ hctx.fillStyle=AM; hctx.fillText(translate("SPD BK"),HW-40,HH-88); }   // amber whenever the air brake is out (keys.md §3)
+	if(stab_cycle>0){ hctx.fillStyle=AM; hctx.fillText("STAB "+stab_cycle,HW-40,HH-108); }   // Shift+E calibration state
 	if(ownship.gear<0.99){ hctx.fillStyle=ownship.gear<0.02?GR:AM; hctx.fillText(translate("GEAR"),HW-40,HH-70); }
 	if((ownship.hook??0)>0.01){ hctx.fillStyle=(ownship.hook??0)>0.98?GR:AM; hctx.fillText(translate("HOOK"),HW-40,HH-52); }
 	if(ownship.lights){ hctx.fillStyle=GR; hctx.fillText(translate("LIGHTS"),HW-40,HH-34); }   // below HOOK
