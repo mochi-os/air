@@ -11,14 +11,6 @@ def database_create():
 	mochi.db.execute("create table if not exists settings (name text not null primary key, value text not null, updated integer not null)")
 	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, created integer not null)")
 
-def database_upgrade(to_version):
-	if to_version == 2:
-		# Self-recorded multiplayer match history: append-only, one row per
-		# match from this player's own view (world servers are untrusted; each
-		# participant records their own result). uid keys keep it replication-safe.
-		mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, created integer not null)")
-
-# config_load() -> {"data": {"config": {name: value, ...}}}: the signed-in user's saved settings.
 def config_load(a):
 	if not a.user:
 		return {"data": {"config": {}}}
@@ -51,3 +43,11 @@ def match_record(a):
 		mochi.uid(), world, session, a.input("mode", "")[:32], int(a.input("started", "0") or "0"), int(a.input("ended", "0") or "0"), a.input("reason", "")[:32],
 		a.input("players", "")[:1024], int(a.input("kills", "0") or "0"), int(a.input("deaths", "0") or "0"), mochi.time.now())
 	return {"data": {"recorded": True}}
+
+def telemetry_save(a):
+	# Development telemetry sink (Shift+T): browser downloads don't work from
+	# the sandboxed shell, so the client posts the CSV here instead.
+	data = a.input("data", "")[:2000000]
+	now = mochi.time.now()
+	mochi.db.execute("insert into settings (name, value, updated) values ('telemetry', ?, ?) on conflict(name) do update set value = excluded.value, updated = excluded.updated", data, now)
+	return {"rows": len(data.split("\n"))}
