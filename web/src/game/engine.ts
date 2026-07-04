@@ -411,11 +411,11 @@ const AIRCRAFT_MODELS={
 		rig:[ { name:"gear", clip:/^gear/, drive:"gear" },
 		      { name:"hook", clip:/^hook/, drive:"hook" } ] },
 	fa18c:{ url:"models/fa18c.glb", length:17.07, yaw:90, pitch:0, roll:0,
-		nose:4.9, wheel:2.85, stance:2.57, squat:0.08,   // physics nose-gear x + the DEPLOYED drawn nose-wheel x and wheel-bottom drop (three.js pose of the gear animation — the STATIC pose is gear-up on this model and lies about both); squat = clip-fraction scrubbed back under weight so the drawn oleo compresses (~0.4 m of wheel travel per unit fraction at the clip tail)
+		nose:4.9, wheel:2.85, stance:2.57, squat:0.08, flames:true,   // the model's own glow discs carry the burner look, procedural cones stay off (the nozzle helper-cube mesh was removed from the GLB itself — #94)   // physics nose-gear x + the DEPLOYED drawn nose-wheel x and wheel-bottom drop (three.js pose of the gear animation — the STATIC pose is gear-up on this model and lies about both); squat = clip-fraction scrubbed back under weight so the drawn oleo compresses (~0.4 m of wheel travel per unit fraction at the clip tail)
 		rig:[ { name:"gear",     track:/(^|_)[clr]_(gear|wheel)_AN_/i, drive:"gear" },
 		      { name:"hook",     track:/^Hook_AN_/i, drive:"hook" },
-		      { name:"stabL",    track:/l_elevator_percent_key|l_aileron_percent_key_AN_Left_93/i, drive:"stabL", min:-0.42, max:0.30 },
-		      { name:"stabR",    track:/elevator_percent_key_AN_238|r_aileron_percent_key_AN_right_96/i, drive:"stabR", min:-0.42, max:0.30 },
+		      { name:"stabL",    node:"Elevator_Left_94",  axis:"x", rest:-10.6*Math.PI/180, drive:"stabL" },   // all-moving stabs: the percent_key timelines are not a deflection map (the R side's even rests at -50°), so the FCS deflection drives the hinge (local X) directly
+		      { name:"stabR",    node:"Elevator_right_97", axis:"x", rest:-50.6*Math.PI/180, drive:"stabR" },
 		      { name:"flapL",    track:/l_flap_percent_key/i, drive:"flapL", min:-0.60, max:0.60 },
 		      { name:"flapR",    track:/r_flap_percent_key/i, drive:"flapR", min:-0.60, max:0.60 },
 		      { name:"aileronL", track:/l_aileron_percent_key_AN_(Cover|74)|AileronLAction/i, drive:"flapL", min:-0.60, max:0.60 },
@@ -455,6 +455,7 @@ function moving_span(track){
 function rig_build(spec, animations){
 	const rig=[];
 	for(const entry of spec.rig||[]){
+		if(entry.node){ rig.push({ name:entry.name, node:entry.node, axis:entry.axis||"x", rest:entry.rest||0, drive:entry.drive }); continue; }   // direct hinge drive — resolved against each clone in apply_model_to
 		let tracks=[], duration=0;
 		if(entry.clip){ for(const c of animations){ if(entry.clip.test(c.name||"")){ tracks=tracks.concat(c.tracks); duration=Math.max(duration,c.duration||0); } } }
 		else { for(const c of animations) for(const t of c.tracks){ const node=t.name.slice(0,t.name.lastIndexOf(".")); if(entry.track.test(node)) tracks.push(t); } }
@@ -474,9 +475,16 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18f";
 	const m=loaded.proto.clone(true); m.userData.model=true; const tint=model_tint(g.userData.tint||0xffffff);
 	m.traverse(o=>{ if(o.isMesh){ o.userData.modelmesh=true; o.castShadow=cfg.shadows;
 		if(tint!==0xffffff && o.material && o.material.color){ o.material=o.material.clone(); o.material.color=o.material.color.clone().multiply(new THREE.Color(tint)); } } });
+	const spec=AIRCRAFT_MODELS[kind]||{};
+	if(spec.hide) m.traverse(o=>{ if(o.name&&spec.hide.test(o.name)) o.visible=false; });   // per-aircraft junk meshes (helper cubes etc.)
+	g.userData.flames=spec.flames||undefined;
+	if(spec.flames) g.children.forEach(c=>{ if(c.userData&&c.userData.ab) c.visible=false; });   // this model's own glow replaces the procedural cones
 	g.add(m);
 	if(loaded.rig.length){ const mixer=new THREE.AnimationMixer(m); g.userData.gearMixer=mixer;   // per-subsystem scrub actions, driven by state in update_anim()
-		g.userData.rig=loaded.rig.map(r=>{ const a=mixer.clipAction(r.clip); a.play(); a.paused=true; return { ...r, action:a }; }); } }
+		g.userData.rig=loaded.rig.map(r=>{
+			if(r.node){ const o=m.getObjectByName(r.node); if(!o) return null;
+				return { ...r, object:o, quaternion:o.quaternion.clone() }; }   // direct hinge drive: rest pose captured per clone
+			const a=mixer.clipAction(r.clip); a.play(); a.paused=true; return { ...r, action:a }; }).filter(Boolean); } }
 function own_aircraft(){ return MULTIPLAYER ? ((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.aircraft)||"fa18f") : (cfg.aircraft||"fa18f"); }   // multiplayer flies what the SERVER spawned (the picker requests a type with #93)
 function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); extras.forEach(s=>apply_model_to(s.group)); position_aircraft_lights(); }   // re-pin the ownship lights to the real airframe
 // --- minimal GLB container surgery (so we never trigger the loader's blob-URL texture path) ---
@@ -496,9 +504,11 @@ function glb_repack(json,bin){ const js=new TextEncoder().encode(JSON.stringify(
 // strip textures, parse, then decode each in-process and assign. Solid-colour materials (no
 // baseColorTexture) keep their baseColorFactor, so a multi-material model renders its full livery.
 function model_textures(parts){ const out={}; const images=parts.json.images||[], textures=parts.json.textures||[], bvs=parts.json.bufferViews||[];
-	(parts.json.materials||[]).forEach(m=>{ const bct=m.pbrMetallicRoughness&&m.pbrMetallicRoughness.baseColorTexture;
-		if(!bct||!m.name||!textures[bct.index]) return; const im=images[textures[bct.index].source]; if(!im||im.bufferView==null||!parts.bin) return;
-		const bv=bvs[im.bufferView]; out[m.name]={ bytes:parts.bin.slice(bv.byteOffset||0,(bv.byteOffset||0)+bv.byteLength), mime:im.mimeType||"image/jpeg" }; });
+	const image=(ref)=>{ if(!ref||!textures[ref.index]) return null; const im=images[textures[ref.index].source]; if(!im||im.bufferView==null||!parts.bin) return null;
+		const bv=bvs[im.bufferView]; return { bytes:parts.bin.slice(bv.byteOffset||0,(bv.byteOffset||0)+bv.byteLength), mime:im.mimeType||"image/jpeg" }; };
+	(parts.json.materials||[]).forEach(m=>{ if(!m.name) return;
+		const base=image(m.pbrMetallicRoughness&&m.pbrMetallicRoughness.baseColorTexture), emissive=image(m.emissiveTexture);
+		if(base||emissive) out[m.name]={ base, emissive, hadEmissive:!!m.emissiveTexture }; });
 	return out; }
 async function init_external_model(kind){
 	kind=kind||"fa18f"; const spec=AIRCRAFT_MODELS[kind]||AIRCRAFT_MODELS.fa18f;
@@ -519,13 +529,18 @@ async function init_external_model(kind){
 				const proto=normalise_model(gltf.scene, spec);
 				const rig=rig_build(spec, gltf.animations||[]);
 				if(typeof createImageBitmap==="function"){
-					const decoded={};   // material name -> THREE.Texture (decoded in-process, no URL/fetch)
+					const decoded={};
 					await Promise.all(Object.keys(tex_by_material).map(async name=>{ try{
-						const src=tex_by_material[name]; const bmp=await createImageBitmap(new Blob([src.bytes],{type:src.mime}));
-						const tex=new THREE.Texture(bmp); tex.flipY=false; tex.colorSpace=THREE.SRGBColorSpace; tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.anisotropy=4; tex.needsUpdate=true; decoded[name]=tex;
+						const src=tex_by_material[name]; const make=async(im,srgb)=>{ if(!im) return null;
+							const bmp=await createImageBitmap(new Blob([im.bytes],{type:im.mime}));
+							const tex=new THREE.Texture(bmp); tex.flipY=false; if(srgb) tex.colorSpace=THREE.SRGBColorSpace; tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.anisotropy=4; tex.needsUpdate=true; return tex; };
+						decoded[name]={ base:await make(src.base,true), emissive:await make(src.emissive,true), hadEmissive:src.hadEmissive };
 					}catch(te){ console.warn("[model] texture decode failed for "+name,te&&te.message||te); } }));
 					proto.traverse(o=>{ if(o.isMesh&&o.material){ (Array.isArray(o.material)?o.material:[o.material]).forEach(mm=>{
-						if(decoded[mm.name]){ mm.map=decoded[mm.name]; }
+						const d=decoded[mm.name];
+						if(d&&d.base) mm.map=d.base;
+						if(d&&d.emissive){ mm.emissiveMap=d.emissive; mm.emissiveIntensity=Math.min(mm.emissiveIntensity||1, 1.1); }   // cap KHR emissive strength: under the scene's ACES tone mapping a hot emissive blows to white-pink
+						else if(d&&d.hadEmissive&&mm.emissive){ mm.emissive.setRGB(0,0,0); }   // emissive texture stripped and unrestorable: black it out rather than glow flat white
 						if(mm.metalness!==undefined && !/glass|screen|oleo|gear/i.test(mm.name||"")){ mm.metalness=0.0; mm.roughness=0.88; }   // matte low-vis tactical paint; keep canopy glass, chrome oleo, and the gear (semi-gloss, matching the donor) untouched
 						mm.needsUpdate=true;
 					}); } });
@@ -1622,7 +1637,12 @@ function fly_bandit(dt){
 let rig_sweep=0;   // dev calibration (Shift+A): 0 = off, n = sweep the nth rig entry of the ownship
 function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.userData.rig) return;
 	const sweeping=(st===ownship&&rig_sweep>0)?g.userData.rig[rig_sweep-1]:null;
+	const AXES={ x:new THREE.Vector3(1,0,0), y:new THREE.Vector3(0,1,0), z:new THREE.Vector3(0,0,1) };
 	for(const r of g.userData.rig){
+		if(r.object){ const surfaces=st.surfaces, v=(surfaces&&surfaces[r.drive]!==undefined)?surfaces[r.drive]:0;   // no FCS data (remotes): neutral, NOT the GLB rest pose (the C's right stab rests at -50°)
+			const sweep=(sweeping===r)?(Math.sin(performance.now()/600)-0.5)*0.6:0;
+			r.object.quaternion.copy(r.quaternion).multiply(new THREE.Quaternion().setFromAxisAngle(AXES[r.axis]||AXES.x, v+sweep-r.rest));
+			continue; }
 		if(sweeping===r){ const f=(Math.sin(performance.now()/600)+1)/2; r.action.time=r.t0+f*(r.t1-r.t0); continue; }
 		let f;
 		switch(r.drive){
@@ -1655,8 +1675,10 @@ function step_world(dt){ sim_time+=dt;
 	for(const st of extras){ st.circle_phase+=dt*(st.speed/st.circle_radius);
 		const tgt=new THREE.Vector3(Math.cos(st.circle_phase)*st.circle_radius,st.circle_alt+Math.sin(st.circle_phase*0.5)*200,Math.sin(st.circle_phase)*st.circle_radius);
 		steer(st,tgt.sub(st.pos),dt,0.3,1.0); apply_orientation(st); }
-	const flick=0.6+Math.random()*0.4; const set_ab=(g,on)=>g.children.forEach(c=>{ if(c.userData.ab){ c.visible=on; c.scale.z=flick; c.material.opacity=on?0.55+Math.random()*0.35:0; } });
-	set_ab(ownship.group,cfg.afterburner&&ownship.throttle>=0.98); set_ab(bandit.group,cfg.afterburner); extras.forEach(st=>set_ab(st.group,cfg.afterburner));   // reheat = throttle at max (keys.md §3: no detent, full throttle is burner)
+	const flick=0.6+Math.random()*0.4; const set_ab=(g,on)=>{
+		if(g.userData.flames) return;   // this airframe's burner look is its own nozzle glow — no cones, no flame boxes
+		g.children.forEach(c=>{ if(c.userData.ab){ c.visible=on; c.scale.z=flick; c.material.opacity=on?0.55+Math.random()*0.35:0; } }); };
+	set_ab(ownship.group,cfg.afterburner&&(ownship.stage??(ownship.throttle>=0.98?1:0))>0.15); set_ab(bandit.group,cfg.afterburner); extras.forEach(st=>set_ab(st.group,cfg.afterburner));   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
 	// player guns
 	fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,input.guns&&!ownship.launching&&!deck_edit&&(ownship.gear??0)>0.98);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock); in multiplayer the tracers are local, the damage is the server's
 	update_pool_ballistic(tracers,dt,9.8,0); update_missiles(dt);
