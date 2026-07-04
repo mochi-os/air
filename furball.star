@@ -49,5 +49,6 @@ def telemetry_save(a):
 	# the sandboxed shell, so the client posts the CSV here instead.
 	data = a.input("data", "")[:2000000]
 	now = mochi.time.now()
-	mochi.db.execute("insert into settings (name, value, updated) values ('telemetry', ?, ?) on conflict(name) do update set value = excluded.value, updated = excluded.updated", data, now)
-	return {"rows": len(data.split("\n"))}
+	name = "telemetry-" + str(now)
+	mochi.db.execute("insert into settings (name, value, updated) values (?, ?, ?)", name, data, now)
+	return {"name": name, "rows": len(data.split("\n"))}

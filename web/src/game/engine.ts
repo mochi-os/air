@@ -71,7 +71,7 @@ const CARRIER_MODELS={
 		wires:[-96.6,-86.8,-71.6], halfspan:14,          // arrestor wires 1..3 (fore-aft) spanning ±halfspan about the landing line
 		line:{ afa:-96.6, alat:0.9, bfa:-71.6, blat:-3.0 }, // the landing centreline, measured at the 1- and 3-wire crossings
 		ols:{ fa:16.9, lat:-35.4 },                      // OLS bracket on the port side
-		outline:[[-152,-38],[152,-38],[152,38],[-152,38]] } }; // deck polygon for the flight core (rectangle at the beam; refine with #72)
+		outline:[[-150,-3.1],[-78,22.1],[-48,33.8],[60,33.8],[72,27.1],[78,22.1],[126,15.3],[150,14],[150,3.1],[108,-12.3],[84,-13.8],[60,-29.7],[42,-34.8],[30,-34.7],[24,-32.5],[18,-37.4],[12,-36.6],[6,-30.2],[-54,-30.4],[-66,-32.7],[-120,-30.8],[-126,-29],[-132,-13.5],[-150,-12.6]] } }; // deck polygon raycast-measured from the GLB (bow taper, angled-deck flare, stern) — the old full-beam rectangle left ~8 m of invisible deck past the drawn edge
 const SHIP=CARRIER_MODELS.ford;   // the active carrier (a picker arrives with the second ship)
 function load_cfg(){ try{ const s=localStorage.getItem(SAVE_KEY); if(s) Object.assign(cfg,JSON.parse(s)); }catch(e){}
 	delete cfg.cats; delete cfg.cat_dy;   // pre-#100 configs carried ship data; CARRIER_MODELS owns it now
@@ -1545,7 +1545,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.gear=1-out[STATE.extension]; ownship.speedbrake=out[STATE.speedbrake];
 	ownship.surfaces={ stabL:out[STATE.stabilator], stabR:out[STATE.stabilator+1], flapL:out[STATE.flaperon], flapR:out[STATE.flaperon+1], rudder:out[STATE.rudder], slat:out[STATE.slat] };   // live FCS deflections, rad — the rig scrubs surfaces from these
 	if(TEST_SCENARIOS){ const sp=Math.hypot(out[3],out[4],out[5])||1, D=180/Math.PI;   // telemetry row (Shift+T dumps)
-		telemetry.push([ (out[STATE.time]||0).toFixed(3), input.pitch.toFixed(3), (Math.asin(THREE.MathUtils.clamp(out[4]/sp,-1,1))*D+out[STATE.alpha]*D).toFixed(2), (out[STATE.alpha]*D).toFixed(2), (out[12]*D).toFixed(2), out[STATE.nz].toFixed(3), (out[STATE.cas]*1.944).toFixed(1), (out[STATE.stabilator]*D).toFixed(2) ]);
+		telemetry.push([ (out[STATE.time]||0).toFixed(3), input.pitch.toFixed(3), (Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*D).toFixed(2), (out[STATE.alpha]*D).toFixed(2), (out[12]*D).toFixed(2), out[STATE.nz].toFixed(3), (out[STATE.cas]*1.944).toFixed(1), (out[STATE.stabilator]*D).toFixed(2) ]);   // attitude from the body axis: the velocity-derived form is garbage below ~5 kt
 		if(telemetry.length>7200) telemetry.shift(); }
 	ownship.grounded=out[STATE.wow]>0.5;
 	core_catapult=out[STATE.catapult]; core_stroke=out[STATE.stroke];
@@ -1655,10 +1655,10 @@ const client=createAppClient({ appName: 'furball' })
 const telemetry=[];   // dev (Shift+T): rolling ~2 min of stick/attitude/alpha/q/nz/cas/stab rows for handling analysis
 function telemetry_dump(){ if(!telemetry.length) return;
 	const csv="time,stick,attitude,alpha,q,nz,cas,stab\n"+telemetry.map(r=>r.join(",")).join("\n");
-	client.post("/-/telemetry/save", { data: csv }).then(   // the sandboxed shell drops blob downloads, so store server-side (settings table)
-		()=>notice("TELEMETRY SAVED ("+telemetry.length+" rows)"),
-		()=>notice("TELEMETRY SAVE FAILED"));
-	telemetry.length=0; }
+	const n=telemetry.length;
+	client.post("/-/telemetry/save", { data: csv }).then(   // the sandboxed shell drops blob downloads, so store server-side (a fresh settings row per save — the rolling buffer keeps recording)
+		()=>notice("TELEMETRY SAVED ("+n+" rows)"),
+		()=>notice("TELEMETRY SAVE FAILED")); }
 function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.userData.rig) return;
 	const sweeping=(st===ownship&&rig_sweep>0)?g.userData.rig[rig_sweep-1]:null;
 	const AXES={ x:new THREE.Vector3(1,0,0), y:new THREE.Vector3(0,1,0), z:new THREE.Vector3(0,0,1) };
