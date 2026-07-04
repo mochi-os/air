@@ -401,7 +401,7 @@ export class Net {
         }
         let core: Float64Array | null = null
         const bytes = message.core as Uint8Array | undefined
-        if (bytes instanceof Uint8Array && bytes.byteLength >= 448) {
+        if (bytes instanceof Uint8Array && bytes.byteLength >= 456) {
           core = new Float64Array(bytes.buffer, bytes.byteOffset, 56)
           this.cored = true
         }

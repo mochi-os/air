@@ -13,7 +13,7 @@
 import { getErrorMessage } from '@mochi/web'
 
 // Encoded state layout (float64 words).
-export const SIZE = 56
+export const SIZE = 57
 export const STATE = {
   position: 0, // x y z
   velocity: 3,
@@ -39,13 +39,13 @@ export const STATE = {
   stress: 54,
   time: 55,
   // Instrument tail appended by frame()/get():
-  alpha: 56,
-  beta: 57,
-  nz: 58,
-  mach: 59,
-  cas: 60,
-  power: 61, // achieved spool fraction across the airframe's engines
-  stage: 62, // achieved reheat stage
+  alpha: 57,
+  beta: 58,
+  nz: 59,
+  mach: 60,
+  cas: 61,
+  power: 62, // achieved spool fraction across the airframe's engines
+  stage: 63, // achieved reheat stage
 } as const
 const EXTRA = 7
 
