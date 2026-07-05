@@ -390,12 +390,12 @@ function size_rt(){ renderer.getDrawingBufferSize(_buf); const w=Math.max(2,_buf
 const fs_scene=new THREE.Scene(); const fs_cam=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
 const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,   // NOTE: no glslVersion:GLSL3 — three compiles ShaderMaterial as 300 es on WebGL2 anyway (sampler3D works), and the GLSL3 flag REMOVES the gl_FragColor compatibility define
 	uniforms:{ tDepth:{value:null}, tNoise:{value:null}, tDetail:{value:null}, uCamPos:{value:new THREE.Vector3()}, uInvVP:{value:new THREE.Matrix4()},
-		uTime:{value:0}, uSun:{value:sun_dir}, uSunCol:{value:col_sundisc}, uSky:{value:sky_horizon}, uDebug:{value:0.0},
+		uTime:{value:0}, uSun:{value:sun_dir}, uSunCol:{value:col_sundisc}, uSky:{value:sky_horizon}, uZenith:{value:sky_zenith}, uDebug:{value:0.0},
 		uBase:{value:600.0}, uTop:{value:2400.0}, uHigh:{value:5000.0}, uCoverage:{value:0.42}, uDensity:{value:1.0}, uFlat:{value:0.0}, uExposure:{value:1.05} },
 	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
 	fragmentShader:`varying vec2 vUv;
 		uniform sampler2D tDepth; uniform highp sampler3D tNoise,tDetail;
-		uniform vec3 uCamPos,uSun,uSunCol,uSky; uniform mat4 uInvVP;
+		uniform vec3 uCamPos,uSun,uSunCol,uSky,uZenith; uniform mat4 uInvVP;
 		uniform float uTime,uBase,uTop,uHigh,uCoverage,uDensity,uFlat,uExposure,uDebug;
 		float hash(vec3 p){ p=fract(p*0.3183099+vec3(0.1,0.2,0.3)); p*=17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
 		float remap(float v,float a,float b,float c,float d){ return c+clamp((v-a)/(b-a),0.0,1.0)*(d-c); }
@@ -410,22 +410,27 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,   
 			float h=(p.y-uBase)/(top-uBase); if(h<0.0||h>1.0) return 0.0;
 			float prof=mix( smoothstep(0.02,0.12,h)*smoothstep(1.0,0.5,h),    // cumulus: flat defined base, domed top
 			                smoothstep(0.0,0.25,h)*smoothstep(1.0,0.7,h), uFlat );   // stratus: thin even slab
-			vec3 sp=p+vec3(uTime*8.0,0.0,uTime*3.0);                          // slow drift
-			vec4 n=texture(tNoise, sp*1.6667e-4);                             // base field, ~6 km period
+			vec3 sp=p+vec3(uTime*8.0,0.0,uTime*3.0);   // slow drift
+			vec4 w=texture(tNoise, sp*6.5e-4+vec3(0.31,0.17,0.47));
+			sp+=(w.gba-0.5)*vec3(170.0,90.0,170.0)*(1.0-uFlat);   // domain warp (~1.5 km field), gentle: clusters the base blobs into LOBES; overdriven it shreds the field into torn spray
+			vec4 n=texture(tNoise, sp*1.6667e-4);   // base field, ~6 km period
 			float wf=n.g*0.625+n.b*0.25+n.a*0.125;
 			float base=remap(n.r, wf-1.0, 1.0, 0.0, 1.0)*prof;
-			float cov=uCoverage*mix(0.75+0.5*vig, 1.0, uFlat);                // vigorous cells run denser
+				float cov=uCoverage*mix((0.55+0.75*vig)*smoothstep(0.22,0.50,vig), 1.0, uFlat);   // vigorous cells denser AND weak cells CLEAR: coverage that never reaches zero renders a closed blanket from above, not a broken trade-wind field
 			float d=remap(base, 1.0-cov, 1.0, 0.0, 1.0)*cov;
 			if(d<=0.0) return 0.0;
 			float hb=clamp(h*4.0,0.0,1.0), estr=mix(0.35,0.15,uFlat);
 			float coarse=mix(n.b, 1.0-n.b, hb);                               // coarse erosion from the base sample: keeps far cells SEPARATE at zero cost and zero shimmer (fading erosion out entirely merged the horizon into a solid wall)
 			float er=coarse;
 			if(lod<0.7){
-				vec3 dn=texture(tDetail, sp*8.333e-4).rgb;                    // fine erosion detail, ~1.2 km period (near field only — it undersamples and shimmers at range)
+				vec3 dn=texture(tDetail, sp*8.333e-4).rgb;   // fine erosion detail, ~1.2 km period (near field only — it undersamples and shimmers at range)
 				float det=dn.r*0.625+dn.g*0.25+dn.b*0.125;
+				if(lod<0.35){ vec3 dn2=texture(tDetail, sp*3.1e-3+vec3(0.5)).rgb;   // second, finer crenellation scale (~320 m): one Worley scale bites circular cotton-ball chunks; two make the rims fractal
+					det=det*0.68+(dn2.r*0.625+dn2.g*0.25+dn2.b*0.125)*0.32*(1.0-smoothstep(0.15,0.35,lod)); }
 				er=mix(mix(det, 1.0-det, hb), coarse, smoothstep(0.25,0.7,lod));
 			}
-			d=remap(d, er*estr, 1.0, 0.0, 1.0);   // soft uniform erosion — the fuzzy look
+			d=remap(d, er*estr*(1.0+1.1*(1.0-clamp(d*2.2,0.0,1.0))), 1.0, 0.0, 1.0);   // edge-weighted erosion: the rim erodes hardest (fractal raggedness), the core stays solid
+			d=smoothstep(0.05,0.52,d);   // sharpen: defined lobe rims instead of uniform wool (a soft fringe survives below the knee)
 			return clamp(d,0.0,1.0)*uDensity;
 		}
 		// The blend layer expects display-encoded premultiplied light; reproduce three's exact ACESFilmic + sRGB.
@@ -441,25 +446,36 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,   
 			float sceneDist=1.0e9;
 			if(depth<1.0){ vec4 wp=uInvVP*vec4(vUv*2.0-1.0,depth*2.0-1.0,1.0); sceneDist=length(wp.xyz/wp.w-uCamPos); }
 			vec3 cloudc=vec3(0.0); float ctr=1.0;
-			if(uDebug<0.5 && abs(ray.y)>1.0e-4){   // uDebug=1: full RT path, zero cloud contribution (A/B against the no-clouds path)
+			if(uDebug<0.5){   // uDebug=1: full RT path, zero cloud contribution (A/B against the no-clouds path)
 				float slabTop=mix(uHigh,uTop,uFlat);
-				float ta=(uBase-uCamPos.y)/ray.y, tb=(slabTop-uCamPos.y)/ray.y;
+				float ry=ray.y<0.0?min(ray.y,-2.0e-3):max(ray.y,2.0e-3);   // horizontal rays: the exact-level slab intersection degenerates and paints a one-pixel cloudless line across the view (sign() would zero on ray.y==0)
+				float ta=(uBase-uCamPos.y)/ry, tb=(slabTop-uCamPos.y)/ry;
 				float cfar=mix(24000.0,60000.0,uFlat);
 				float t0=max(min(ta,tb),0.0), t1=min(max(ta,tb),min(sceneDist,cfar));
 				if(t1>t0){ float dt=min((t1-t0)/56.0,180.0);   // cap the step: long skimming rays otherwise decide a whole puff from 1-2 jittered samples per pixel (full-body stipple)
 					float ign=fract(52.9829189*fract(0.06711056*gl_FragCoord.x+0.00583715*gl_FragCoord.y));   // interleaved gradient noise: structured, so the blur pass removes it cleanly (white-noise hash read as fizz)
 					float t=t0+ign*dt; float tr=1.0; vec3 col=vec3(0.0);   // FULL-step jitter: anything less leaves the march shells visible as horizontal banding across cloud faces
-					float cosT=dot(ray,uSun); float ph=mix(hg(cosT,0.55), hg(cosT,-0.2), 0.35);   // two-lobe Henyey-Greenstein: forward silver lining + soft backscatter
+					float cosT=dot(ray,uSun);
+						// Multi-scattering octaves (Hillaire): each bounce generation sees less
+						// extinction and a flatter phase — single-scatter Beer renders dense cores
+						// dark grey; real cumulus glow white because light floods the interior.
+						vec3 phv=vec3( mix(hg(cosT,0.55),hg(cosT,-0.2),0.35),
+						               mix(hg(cosT,0.30),hg(cosT,-0.11),0.35),
+						               mix(hg(cosT,0.17),hg(cosT,-0.06),0.35) );
 					for(int i=0;i<96;i++){ if(t>t1||tr<0.03) break; vec3 pos=uCamPos+ray*t;
 						float lod=clamp(t/12000.0,0.0,1.0); float d=dens(pos,lod);
 						if(d>0.01){
-							float ld=0.0; vec3 lp=pos; float ls=90.0;                       // optical depth toward the sun (metres-weighted)
-							for(int j=0;j<5;j++){ lp+=uSun*ls; ld+=dens(lp,lod)*ls; ls*=1.35; }
-							float beer=exp(-ld*0.010);
-							float powder=1.0-exp(-ld*0.028);                                // Beer-powder: darkened crinkles on sun-facing billows
-							float vig=vigour(pos.xz); float hcur=clamp((pos.y-uBase)/(top_at(vig)-uBase),0.0,1.0);
-							vec3 ambient=mix(uSky*0.35, uSky*0.85+vec3(0.06), hcur);       // sky-lit tops, dimmer bases
-							vec3 lit=uSunCol*beer*(0.35+0.65*powder)*ph*3.6 + ambient*0.62;
+							float ld=0.0; vec3 lp=pos; float ls=32.0;   // optical depth toward the sun; the FIRST taps must be close — starting 90 m out skips the local billow, so tops get no self-shadowing and render uniform white
+							for(int j=0;j<5;j++){ lp+=uSun*ls; ld+=dens(lp,lod)*ls; ls*=1.55; }
+								float powder=1.0-exp(-ld*0.028);   // Beer-powder: darkened crinkles on sun-facing billows
+								float sun=(0.22+0.78*powder)*(phv.x*exp(-ld*0.010)+0.45*phv.y*exp(-ld*0.005))
+								         +0.22*phv.z*exp(-ld*0.0022);   // multi-scatter octaves; powder gates the first two — gap-slipping light samples otherwise flood the field white
+								float vig=vigour(pos.xz); float hcur=clamp((pos.y-uBase)/(top_at(vig)-uBase),0.0,1.0);
+								// Sky-dome ambient: cumulus shadows are BLUE (sky-lit), with a warm whisper
+								// bounced into the bases; both dim deep inside the mass (sun-march depth proxy).
+								vec3 dome=mix(uZenith,uSky,0.40);
+								vec3 ambient=(dome*(0.40+0.60*hcur) + uSunCol*0.08*(1.0-hcur))*exp(-ld*0.0030)*(1.0-0.42*d);   // crevice AO: dense samples sit deep between billows
+								vec3 lit=(uSunCol*sun*1.35 + ambient*0.55)*(0.55+0.45*smoothstep(0.02,0.30,d));   // the low-density fringe DIMS into translucency — a bright fringe reads as an airbrushed halo
 							float a=(1.0-exp(-d*0.09*dt))*smoothstep(cfar,cfar*0.65,t);   // fade the farthest field out instead of letting it pop at the range cap
 							col+=tr*a*lit; tr*=1.0-a; }
 						t+=dt; }
@@ -2419,6 +2435,8 @@ function net_connect(){
 		notice(translate("CONNECTION FAILED")); setTimeout(()=>{ if(running){ running=false; if(onExit) onExit(); } },1800); }); }
 
 function start_mission(){
+	const cloudq=new URLSearchParams(window.location.search).get("clouds");   // dev/screenshot hook (#105): force a cloud preset
+	if(cloudq!==null) cfg.clouds=cloudq;
 	build_ocean(cfg.ocean_segments);
 	apply_time_of_day(cfg.tod); apply_effects();
 	if(cloud_active()){ apply_clouds(); size_rt(); }
