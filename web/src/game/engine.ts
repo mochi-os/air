@@ -200,16 +200,32 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false,
 		u_detail:{value:build_water_detail()}, u_wind:{value:0.75}, u_rough:{value:0.11}, u_glint:{value:60.0}, u_sss:{value:new THREE.Color(0x16483f)},   // wind 0..1 scales caps+roughness; glint is HDR, soft-kneed in-shader (custom shaders bypass the renderer's ACES pass)
 		u_cloudnoise:{value:null}, u_cloud_on:{value:0.0}, u_cloud_cover:{value:0.42}, u_cloud_mid:{value:1500.0} },   // the SAME 3D noise field the cloud raymarcher samples — shadows land under the rendered clouds
 	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
-		const vec4 W0=vec4(1.0,0.3,420.0,90.0); const vec4 W1=vec4(-0.7,0.7,230.0,60.0); const vec4 W2=vec4(0.4,-0.9,110.0,38.0); const vec4 W3=vec4(-0.2,0.5,55.0,24.0);
+		const vec4 W0=vec4(1.0,0.3,420.0,90.0); const vec4 W1=vec4(0.85,0.55,233.0,60.0); const vec4 W2=vec4(0.95,-0.05,117.0,38.0); const vec4 W3=vec4(0.75,0.45,59.0,24.0);   // directions CLUSTERED about the wind: a four-way cross-sea is physically absurd and its interference lattice is a moving quilt no texture fix can hide
 		float wave(vec2 p,vec4 w,float amp,out vec2 grad){ vec2 dir=normalize(w.xy); float k=6.2831853/w.z; float ph=dot(dir,p)*k+u_time*(w.w/w.z); grad=dir*(k*amp*cos(ph)); return amp*sin(ph); }
 		void main(){ vec4 wp=modelMatrix*vec4(position,1.0); vec2 xz=wp.xz; vec2 g,gt=vec2(0.0); float h=0.0;
 		float calm=0.0; if(u_water_on>0.5){ vec2 wuv=clamp((xz+u_water_half)/(2.0*u_water_half),0.0,1.0); calm=texture2D(u_lagoon,wuv).r; }   // atoll interior (reef flat + lagoon incl. the deep basin) = calm
 		v_calm=calm; float ws=mix(1.0,0.12,calm);   // damp wave amplitude inside the reef
-		h+=wave(xz,W0,2.0,g);gt+=g; h+=wave(xz,W1,1.1,g);gt+=g; h+=wave(xz,W2,0.5,g);gt+=g; h+=wave(xz,W3,0.25,g);gt+=g;
+		h+=wave(xz,W0,2.0,g);gt+=g; h+=wave(xz,W1,1.1,g);gt+=g;
+		h+=wave(xz,W2,0.5,g); h+=wave(xz,W3,0.25,g);   // the short waves DISPLACE but do not shade: their slope interference is the moving quilt; the texture octaves own shading at those scales
 		h*=ws; gt*=ws;
 		wp.y+=h; v_height=h; v_normal=normalize(vec3(-gt.x,1.0,-gt.y)); v_world=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }`,
 	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_sky,u_fog,u_water_tint,u_sss; uniform float u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_rough,u_glint,u_cloud_on,u_cloud_cover,u_cloud_mid; uniform sampler2D u_water,u_detail; uniform highp sampler3D u_cloudnoise; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		float hash2(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+		vec2 hashcell(vec2 p){ return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453); }
+		// Stochastic tiling (Heitz/Deliot): static triangle lattice, per-cell hashed texture
+		// offsets, variance-preserving blend. Kills tile repetition WITHOUT the beat envelope
+		// dual incommensurate sampling creates (the "moving quilt"). Drift applies inside the
+		// fetch: the lattice stays world-static (no cell popping), the water flows through it.
+		vec2 hexslope(vec2 uv, vec2 drift){
+			vec2 t=mat2(1.0,0.0,-0.57735027,1.15470054)*uv*3.464;
+			vec2 i=floor(t), f=fract(t);
+			float su=step(1.0,f.x+f.y);
+			vec3 w=mix(vec3(1.0-f.x-f.y,f.x,f.y), vec3(f.x+f.y-1.0,1.0-f.y,1.0-f.x), su);
+			vec2 a=texture2D(u_detail,uv+hashcell(i+su*vec2(1.0))+drift).rg-0.5;
+			vec2 b=texture2D(u_detail,uv+hashcell(i+vec2(1.0,0.0))+drift).rg-0.5;
+			vec2 c=texture2D(u_detail,uv+hashcell(i+vec2(0.0,1.0))+drift).rg-0.5;
+			return (w.x*a+w.y*b+w.z*c)*inversesqrt(dot(w,w))*2.0;
+		}
 		float remap(float v,float a,float b,float c,float d){ return c+clamp((v-a)/(b-a),0.0,1.0)*(d-c); }
 		vec3 sky_at(vec3 d){ d=normalize(d); float t=clamp(d.y*1.2,0.0,1.0); vec3 col=mix(u_sky, u_sky*0.55+vec3(0.04,0.10,0.22), pow(t,0.65));
 			float s=max(dot(d,normalize(u_sun)),0.0); col+=vec3(1.0,0.96,0.85)*pow(s,14.0)*0.25; return col; }
@@ -218,30 +234,22 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false,
 			// --- multi-octave scrolling detail normals, distance-faded (the fine texture MSFS has at every altitude)
 			float f1=exp(-dist/9000.0), f2=exp(-dist/2200.0);
 			vec2 xr3=vec2(0.940*xz.x-0.342*xz.y, 0.342*xz.x+0.940*xz.y);
-			// Every octave samples the tile TWICE at incommensurate (golden-ratio) scales and
-			// sums: a single tiling repeats its exact motif every <scale> metres, and a low
-			// frequency warp cannot break that locally (adjacent repeats warp identically) —
-			// the recurring motif reads as woven fabric. Two mutually irrational tilings
-			// averaged have no visible repeat at any range.
-			// ALL texture drift runs downwind at dispersion-scaled speeds: mixed directions
-			// (the old arbitrary velocities) made the dual-sample interference beat visibly
-			// shear across the swell — the fast-moving quilt.
-			vec2 s3=(texture2D(u_detail,xr3/2650.0+u_time*vec2(1.45e-4,4.3e-5)).rg
-			        +texture2D(u_detail,vec2(0.978*xr3.x-0.208*xr3.y,0.208*xr3.x+0.978*xr3.y)/1638.0+u_time*vec2(2.34e-4,7.0e-5)).rg)-1.0;
+			// ALL texture drift runs downwind at dispersion-scaled speeds; anti-repeat is
+			// hex-tiling per octave (see hexslope) — dual incommensurate sampling created a
+			// beat envelope that drifted with the water: the "moving quilt".
+			vec2 s3=hexslope(xr3/2650.0, u_time*vec2(1.45e-4,4.3e-5));
 			// The coarse octave is warped by the kilometre octave and rotated off-axis: an
 			// unwarped tile repeats its exact pattern every 331 m, which reads as a quilt
 			// from altitude no matter how irregular the pattern inside the tile is.
 			vec2 warp=(texture2D(u_detail,xr3/6400.0).rg*2.0-1.0);   // very-low-frequency warp source: strong warp from a busy field marbles the sea into curlicues
 			vec2 xr0=vec2(0.993*xz.x-0.122*xz.y, 0.122*xz.x+0.993*xz.y)+warp*130.0+s3*18.0;
-			vec2 s0=(texture2D(u_detail,xr0/610.0+u_time*vec2(1.10e-3,3.3e-4)).rg
-			        +texture2D(u_detail,vec2(0.985*xr0.x+0.174*xr0.y,-0.174*xr0.x+0.985*xr0.y)/377.0+u_time*vec2(1.78e-3,5.3e-4)).rg)-1.0;
+			vec2 s0=hexslope(xr0/610.0, u_time*vec2(1.10e-3,3.3e-4));
 			// Octaves rotate AND domain-warp on the coarse field: same-direction lattices at
 			// every zoom read as a chessboard; warped, the crests meander like real seas.
 			vec2 xr1=vec2(0.966*xz.x+0.259*xz.y, -0.259*xz.x+0.966*xz.y)+warp*34.0+s0*5.0;   // ±15°: rotations must preserve the wind axis or the trains cross
-			vec2 s1=(texture2D(u_detail,xr1/90.0 +u_time*vec2(1.17e-2,3.5e-3)).rg
-			        +texture2D(u_detail,vec2(0.966*xr1.x-0.259*xr1.y,0.259*xr1.x+0.966*xr1.y)/55.6+u_time*vec2(1.90e-2,5.7e-3)).rg)-1.0;
+			vec2 s1=hexslope(xr1/90.0, u_time*vec2(1.17e-2,3.5e-3));
 			float far=smoothstep(2000.0,9000.0,dist);
-			vec2 slope=(s0*0.20 + s1*0.24*f2 + s3*0.15*far)*u_wind*(1.0-0.85*v_calm);
+			vec2 slope=(s0*0.34 + s1*0.48*f2 + s3*0.21*far)*u_wind*(1.0-0.85*v_calm);   // near Cox-Munk slope variance for a working breeze: too little and the Fresnel sky reflection stays coherent — the oily gloss
 			// Shading normal: the four fixed-direction vertex waves print a herringbone on the
 			// distance band once the detail octaves mip away — real seas read isotropic out
 			// there, so their slopes fade from SHADING with range (geometry keeps the swell).
@@ -280,7 +288,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false,
 			float env=exp(-(c.x*c.x/(rw*rw*3.6)+c.y*c.y/(rw*rw)));
 			vec2 fs=-N.xz/max(N.y,0.2); vec2 dv2=fs-hs; float rs=ra*1.6;   // sparkle sigma must sit near the true facet-slope spread or it never fires
 			float spark=exp(-dot(dv2,dv2)/(rs*rs));
-			float g=env*(0.22+2.4*spark);   // sparkle-dominant: a strong smooth-envelope base paints an oily sheen no breeze-rippled sea has
+			float g=env*(0.15+2.6*spark);   // sparkle-dominant: a strong smooth-envelope base paints an oily sheen no breeze-rippled sea has
 			float fresH=0.02+0.98*pow(1.0-max(dot(H,V),0.0),5.0);
 			vec3 glint=vec3(1.0,0.94,0.80)*g*fresH*u_glint*shade*shade;
 			col+=glint/(1.0+0.22*glint);   // soft knee: HDR bloom saturation without the renderer's ACES (custom shaders bypass it)
@@ -290,15 +298,14 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false,
 			vec3 Lb=normalize(vec3(L.x,0.25,L.z));
 			float trans=pow(max(dot(V,-Lb),0.0),3.0);
 			float crest=clamp(v_height/3.0+0.3,0.0,1.2);
-			float thin=clamp(length(slope)*3.0,0.2,1.0);
+			float thin=smoothstep(0.25,0.65,length(slope)*2.0)*0.55;   // gated on real steepness and dimmed: a broad smooth SSS wash reads as oil, not translucency
 			col+=u_sss*(trans*crest*thin*(0.35+0.65*shade)*(1.0-0.7*v_calm))*exp(-dist/6000.0);
 			// --- foam: crest foam on the big vertex waves + wind-scattered whitecaps from the cap-noise channel
-			float capn=texture2D(u_detail,xz/95.0+u_time*vec2(1.01e-2,3.0e-3)).b;    // small caps (~4-16 m)
-			float capb=texture2D(u_detail,xz/430.0+u_time*vec2(2.23e-3,6.7e-4)).b;  // rare large caps (~20-70 m)
+			float capn=texture2D(u_detail,xz/220.0+u_time*vec2(4.35e-3,1.30e-3)).b;  // cap mask (~9-37 m features): one FILLED patch per crest — a finer field fragments each cap into an archipelago of dots
+			float capb=texture2D(u_detail,xz/600.0+u_time*vec2(1.60e-3,4.8e-4)).b;  // rare large caps
 			float capc=texture2D(u_detail,xz/1900.0+u_time*vec2(5.0e-4,1.5e-4)).b; // wind-streak clustering
-			// Threshold the SUM of two scales: mostly small flecks, with occasional large
-			// connected caps where the fields align — the natural power-law size mix.
-			float caps=smoothstep(0.56,0.63,(0.62*capn+0.38*capb)*(0.6+0.4*capc))*smoothstep(0.3,0.8,u_wind)*(1.0-v_calm)*exp(-dist/5000.0);   // thresholds MEASURED against the generated field's distribution: 2.8% fleck coverage, 0.5% full-white cores (the old guess passed 0.11% — invisible)
+			float capv=(0.62*capn+0.38*capb)*(0.6+0.4*capc);
+			float caps=smoothstep(0.58,0.62,capv)*smoothstep(0.3,0.8,u_wind)*(1.0-v_calm)*exp(-dist/12000.0);   // measured: ~1.7% coverage, ~0.6% solid white. NO distance amplification — it was calibrated against SwiftShader's mip blur and floods the range band on a real GPU
 			float foam=smoothstep(1.5,2.6,v_height)*(0.55+0.45*hash2(floor(xz*0.6))); foam*=smoothstep(0.15,0.55,1.0-N.y);
 			foam=max(foam,caps*0.9);
 			col=mix(col,vec3(0.92,0.96,1.0)*shade,clamp(foam,0.0,0.85));
