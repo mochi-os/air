@@ -3,7 +3,7 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-import { useId, type ReactNode } from 'react'
+import { useEffect, useId, useState, type ReactNode } from 'react'
 import { Trans } from '@lingui/react/macro'
 import { Play, RotateCcw } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
@@ -33,6 +33,120 @@ function SectionLabel({ children }: { children: ReactNode }) {
   return (
     <div className='text-muted-foreground mt-4 mb-2 text-xs font-medium tracking-wide uppercase first:mt-0'>
       {children}
+    </div>
+  )
+}
+
+// Joystick button bindings: each row maps a pad button to the action's key
+// code, captured by pressing the button while armed. The engine replays bound
+// buttons as synthetic key events, so anything with a key just works.
+// Live view of the processed joystick axes — what the game actually sees —
+// with a reset for the automatic calibration. Trust through visibility.
+function AxisMeters() {
+  const [axes, setAxes] = useState<number[]>([])
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const pads = navigator.getGamepads ? navigator.getGamepads() : []
+      const pad = Array.from(pads).find((p) => p && p.connected)
+      setAxes(pad ? Array.from(pad.axes) : [])
+    }, 80)
+    return () => clearInterval(timer)
+  }, [])
+  if (!axes.length) return null
+  return (
+    <div className='space-y-2'>
+      <div className='grid gap-1'>
+        {axes.slice(0, 6).map((v, i) => (
+          <div key={i} className='flex items-center gap-2 text-xs'>
+            <span className='text-muted-foreground w-4'>{i}</span>
+            <div className='bg-muted relative h-2 flex-1 overflow-hidden rounded'>
+              <div className='bg-border absolute top-0 bottom-0 left-1/2 w-px' />
+              <div className='bg-primary absolute top-0 bottom-0 rounded'
+                style={{ left: `${50 + Math.min(0, v) * 50}%`, width: `${Math.abs(v) * 50}%` }} />
+            </div>
+            <span className='text-muted-foreground w-12 text-right tabular-nums'>{v.toFixed(2)}</span>
+          </div>
+        ))}
+      </div>
+      <Button type='button' size='sm' variant='outline'
+        onClick={() => (window as unknown as { furball_recalibrate?: () => void }).furball_recalibrate?.()}>
+        <Trans>Recalibrate</Trans>
+      </Button>
+    </div>
+  )
+}
+
+function JoystickBindings({
+  buttons,
+  onChange,
+}: {
+  buttons: Record<string, string>
+  onChange: (next: Record<string, string>) => void
+}) {
+  const [arming, setArming] = useState<string | null>(null)
+  useEffect(() => {
+    if (!arming) return
+    let held: Set<number> | null = null
+    const timer = setInterval(() => {
+      const pads = navigator.getGamepads ? navigator.getGamepads() : []
+      const pad = Array.from(pads).find((p) => p && p.connected)
+      if (!pad) return
+      const pressed = new Set<number>()
+      pad.buttons.forEach((b, i) => { if (b.pressed) pressed.add(i) })
+      if (held === null) { held = pressed; return }   // ignore buttons already down when arming
+      for (const i of pressed) {
+        if (!held.has(i)) {
+          const next: Record<string, string> = {}
+          for (const [k, v] of Object.entries(buttons)) if (Number(k) !== i) next[k] = v
+          next[String(i)] = arming
+          onChange(next)
+          setArming(null)
+          return
+        }
+      }
+    }, 50)
+    return () => clearInterval(timer)
+  }, [arming, buttons, onChange])
+  const BINDABLE: { code: string; label: ReactNode }[] = [
+    { code: 'KeyG', label: <Trans>Landing gear</Trans> },
+    { code: 'KeyH', label: <Trans>Arrestor hook</Trans> },
+    { code: 'Slash', label: <Trans>Speed brake</Trans> },
+    { code: 'KeyB', label: <Trans>Wheel brakes</Trans> },
+    { code: 'KeyF', label: <Trans>Flares</Trans> },
+    { code: 'KeyR', label: <Trans>Missile</Trans> },
+    { code: 'KeyX', label: <Trans>Rearm</Trans> },
+    { code: 'Enter', label: <Trans>Launch (catapult)</Trans> },
+    { code: 'KeyV', label: <Trans>Cycle view</Trans> },
+    { code: 'KeyM', label: <Trans>Map</Trans> },
+  ]
+  const bound = (code: string) => {
+    const hit = Object.entries(buttons).find(([, v]) => v === code)
+    return hit ? hit[0] : null
+  }
+  return (
+    <div className='grid gap-y-1 text-sm'>
+      <div className='text-muted-foreground flex items-center justify-between py-1'>
+        <span><Trans>Guns</Trans></span>
+        <span><Trans>Trigger</Trans></span>
+      </div>
+      {BINDABLE.map(({ code, label }) => (
+        <div key={code} className='flex items-center justify-between gap-2 py-0.5'>
+          <span>{label}</span>
+          <span className='flex items-center gap-2'>
+            {arming === code ? (
+              <span className='text-muted-foreground animate-pulse'>
+                <Trans>Press a joystick button…</Trans>
+              </span>
+            ) : bound(code) ? (
+              <Key>B{bound(code)}</Key>
+            ) : null}
+            <Button type='button' size='sm' variant='outline'
+              onClick={() => setArming(arming === code ? null : code)}>
+              {arming === code ? <Trans>Cancel</Trans> : <Trans>Bind</Trans>}
+            </Button>
+          </span>
+        </div>
+      ))}
     </div>
   )
 }
@@ -463,6 +577,15 @@ export function MissionSetup({
                   <ControlRow action={<Trans>Pause</Trans>} keys={<Key>P</Key>} />
                   <ControlRow action={<Trans>Return to menu</Trans>} keys={<Key>Esc</Key>} />
                 </div>
+                <Separator className='my-4' />
+                <SectionLabel>
+                  <Trans>Joystick buttons</Trans>
+                </SectionLabel>
+                <AxisMeters />
+                <JoystickBindings
+                  buttons={config.buttons ?? {}}
+                  onChange={(next) => set('buttons', next)}
+                />
                 <SectionLabel>
                   <Trans>Chase view</Trans>
                 </SectionLabel>

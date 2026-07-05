@@ -1364,6 +1364,32 @@ stage.addEventListener("pointermove",e=>{ if(!dragging) return;
 function end_drag(e){ if(!dragging) return; dragging=false; try{ stage.releasePointerCapture(e.pointerId); }catch(_){} }
 stage.addEventListener("pointerup",end_drag,{ signal });
 stage.addEventListener("pointercancel",end_drag,{ signal });
+let gamepad_seen=false;
+const key_axes={ pitch:0, roll:0, yaw:0 };
+const pad_center=[], pad_range=[], pad_window=[];   // self-calibration: centres capture when the stick is STILL (a new user waggling at detection no longer poisons them) and observed range (old pots rarely reach ±1 — reads as low sensitivity)
+let pad_centred=false, pad_buttons=[], pad_dirty=0;
+const pad_slider={ lo:1e9, hi:-1e9 };   // the throttle slider learns its true end stops (worn pots stop far short of ±1 — full back read 42%)
+function pad_recalibrate(){ pad_center.length=0; pad_range.length=0; pad_window.length=0; pad_centred=false; pad_slider.lo=1e9; pad_slider.hi=-1e9;
+	if(typeof cfg==="object"&&cfg.calibration) cfg.calibration={}; save_cfg(); notice("JOYSTICK RESET — centre the stick"); }
+if(typeof window!=="undefined") window.furball_recalibrate=pad_recalibrate;   // the Controls tab's Recalibrate button
+function read_gamepad(){ const pads=(navigator.getGamepads&&navigator.getGamepads())||[];   // #74: any connected pad with enough axes; browsers expose pads only after a button press
+	for(const p of pads){ if(p&&p.connected&&p.axes.length>=2) return p; } return null; }
+function pad_observe(pad){ pad_window.push(pad.axes.map(a=>a));   // once per frame from read_input
+	if(pad_window.length>30) pad_window.shift(); }
+function pad_still(pad){ if(pad_window.length<30) return false;   // stationarity: every axis within a hair for ~0.5 s
+	for(let i=0;i<pad.axes.length;i++){ let lo=1e9,hi=-1e9; for(const f of pad_window){ if(f[i]<lo)lo=f[i]; if(f[i]>hi)hi=f[i]; } if(hi-lo>0.02) return false; }
+	return true; }
+function pad_axis(pad,i){ let v=pad.axes[i]??0;
+	if(!pad_centred){ if(i===0&&pad_still(pad)){ for(let k=0;k<pad.axes.length;k++) pad_center[k]=pad_window[pad_window.length-1][k]; pad_centred=true; notice("JOYSTICK CALIBRATED"); } return 0; }
+	v-=pad_center[i]??0;   // no in-flight centre healing: it absorbed steady small inputs (gentle held back pressure vanished within seconds — "sluggish elevator"); Recalibrate handles true drift
+	const side=v>=0?1:0;   // per-direction session maxima: a worn pot's electrical centre is not mid-travel, so the two throws differ (one shared range left full back-stick at ~60% command)
+	pad_range[i]=pad_range[i]||[0,0];
+	pad_range[i][side]=Math.max(Math.abs(v), pad_range[i][side]);
+	const throw_=pad_range[i][side];
+	v/=(throw_>0.15?throw_:0.9);   // normalise by the demonstrated throw on THIS side once a deliberate deflection has shown it
+	const dz=Math.abs(v)<0.05?0:(v-Math.sign(v)*0.05)/0.95;
+	return Math.sign(dz)*Math.pow(Math.abs(dz),1.25);   // gentle expo: fine control near centre, full authority at the stops
+}
 function read_input(dt){
 	let tp=0,tr=0,ty=0;   // target axis deflections from the held keys (flight is W/S/A/D/Q/E only — arrows look/orbit, keys.md §2/§5)
 	if(keys.has("KeyS")) tp+=1;   // pull / nose up
@@ -1378,10 +1404,34 @@ function read_input(dt){
 	// Hold ~0.5 s for full deflection.
 	const shape=(current,target)=>{ const toward=Math.abs(target)>Math.abs(current)&&target*current>=0;
 		const R=(toward?2.0:6.0)*dt; return current+THREE.MathUtils.clamp(target-current,-R,R); };
-	input.pitch=shape(input.pitch,tp);
-	input.roll=shape(input.roll,tr);
-	input.yaw=shape(input.yaw,ty);
-	input.guns=keys.has("Space"); input.brake=keys.has("KeyB");   // B: wheel brakes, held (both mains together)
+	key_axes.pitch=shape(key_axes.pitch,tp);   // keyboard stays live alongside the stick — larger magnitude wins per axis
+	key_axes.roll=shape(key_axes.roll,tr);
+	key_axes.yaw=shape(key_axes.yaw,ty);
+	let pp=0, pr=0, py=0;
+	const pad=read_gamepad();
+	if(pad) pad_observe(pad);
+	if(pad){ if(!gamepad_seen){ gamepad_seen=true; notice("JOYSTICK: "+(pad.id||"connected").slice(0,40));
+			}
+
+		pp=pad_axis(pad,1)*(cfg.invert?-1:1);   // stick back = pull; analog goes straight to the FCS — no key shaping
+		pr=pad_axis(pad,0);
+		py=pad_axis(pad,2);
+		if(pad.axes.length>3){ const slider=pad.axes[3];
+			if(slider<pad_slider.lo) pad_slider.lo=slider;
+			if(slider>pad_slider.hi) pad_slider.hi=slider;
+			if(Math.abs(slider-(read_input.slider??slider))>0.01||read_input.armed){ read_input.armed=true;
+				const span=pad_slider.hi-pad_slider.lo;
+				ownship.throttle=THREE.MathUtils.clamp(span>0.5?(pad_slider.hi-slider)/span:(1-slider)/2,0,1); }   // learned end stops once the slider has been swept; the naive ±1 map until then
+			read_input.slider=slider; }
+		const binds=cfg.buttons||{};   // bound buttons act as their key: synthetic keydown on press, keyup on release, so held actions (brakes) work too
+		for(let b=0;b<pad.buttons.length;b++){ const down=pad.buttons[b].pressed, was=pad_buttons[b]||false;
+			if(down!==was){ pad_buttons[b]=down; const code=binds[String(b)];
+				if(code){ for(const target of [window, document, stage]) target.dispatchEvent(new KeyboardEvent(down?"keydown":"keyup",{ code, bubbles:true })); } } }
+	}
+	input.pitch=Math.abs(pp)>Math.abs(key_axes.pitch)?pp:key_axes.pitch;
+	input.roll=Math.abs(pr)>Math.abs(key_axes.roll)?pr:key_axes.roll;
+	input.yaw=Math.abs(py)>Math.abs(key_axes.yaw)?py:key_axes.yaw;
+	input.guns=keys.has("Space")||!!(pad&&pad.buttons[0]&&pad.buttons[0].pressed); input.brake=keys.has("KeyB");   // B: wheel brakes, held (both mains together); joystick trigger fires too
 	if(!deck_edit && keys.has("BracketRight")) ownship.throttle=Math.min(1,ownship.throttle+dt*0.5);   // throttle up (], held & ramped)
 	if(!deck_edit && keys.has("BracketLeft")) ownship.throttle=Math.max(0,ownship.throttle-dt*0.5);    // throttle down ([)
 }

@@ -48,7 +48,7 @@ msgstr "24 ordu"
 msgid "3 WIRE"
 msgstr "KABLE 3"
 
-#: src/components/MissionSetup.tsx:164
+#: src/components/MissionSetup.tsx:278
 msgid "A browser-based multiplayer jet-combat prototype — a shared flight model with server-authoritative netcode (work in progress), rendered with Three.js on WebGL2."
 msgstr "Nabigatzailean oinarritutako hainbat jokalarirentzako jet-borroka prototipoa — hegaldi-eredu partekatu bat, zerbitzariak agindutako sare-kodearekin (egiten ari da), Three.js-ekin WebGL2-n errenderizatua."
 
@@ -126,7 +126,7 @@ msgstr "Gehitu ikuspegia"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Doitu itxura eta diseinua zure lehentasunetara egokitzeko."
 
-#: src/components/MissionSetup.tsx:568
+#: src/components/MissionSetup.tsx:691
 msgid "Afterburner"
 msgstr "Postkonbustioa"
 
@@ -134,15 +134,15 @@ msgstr "Postkonbustioa"
 msgid "AI"
 msgstr "AA"
 
-#: src/components/MissionSetup.tsx:346
+#: src/components/MissionSetup.tsx:460
 msgid "Aircraft"
 msgstr "Hegazkina"
 
-#: src/components/MissionSetup.tsx:219
+#: src/components/MissionSetup.tsx:333
 msgid "Aircraft carrier <0>“Gerald Ford Aircraft Carrier”</0> by <1>Usman Zia (Uxxman)</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline, texture downscaled."
 msgstr "Hegazkin-ontzia <0>“Gerald Ford Aircraft Carrier”</0>, <1>Usman Zia (Uxxman)</1>-rena (Sketchfab), <2>CC BY 4.0</2> lizentziapean. Aldatua: birreskalatua, branka +X norabidean jarria, ur-marraraino hondoratua, testura txikitua."
 
-#: src/components/MissionSetup.tsx:170
+#: src/components/MissionSetup.tsx:284
 msgid "Aircraft model <0>“Boeing F/A-18E/F Super Hornet”</0> by <1>andertan</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented nose +X, weapons and pylons removed, markings removed, landing gear added, converted to metal-rough."
 msgstr "Hegazkin eredua: <0>“Boeing F/A-18E/F Super Hornet”</0>, egilea <1>andertan</1> (Sketchfab), <2>CC BY 4.0</2> lizentziapean. Aldaketak: berreskalatua, mokoa +X norabidera berbideratua, armak eta euskarriak kenduta, markak kenduta, lurreratze-trena gehituta, metal-latz bihurtua."
 
@@ -162,7 +162,8 @@ msgstr "Ustekabeko errore bat gertatu da"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Ziur al zaude saioa amaitu nahi duzula? Berriro hasi beharko duzu saioa zure kontura sartzeko."
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:112
+#: src/components/MissionSetup.tsx:567
 msgid "Arrestor hook"
 msgstr "Gelditze-kakoa"
 
@@ -192,6 +193,10 @@ msgstr "Atzera"
 msgid "Back to home"
 msgstr "Itzuli hasierara"
 
+#: src/components/MissionSetup.tsx:145
+msgid "Bind"
+msgstr "Esleitu"
+
 #: src/components/GameCanvas.tsx:41
 msgid "BOLTER"
 msgstr "BOLTER"
@@ -218,10 +223,11 @@ msgstr "Dei-izena"
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: src/components/MissionSetup.tsx:145
 msgid "Cancel"
 msgstr "Utzi"
 
-#: src/components/MissionSetup.tsx:380
+#: src/components/MissionSetup.tsx:494
 msgid "Carrier landing"
 msgstr "Hegazkin-ontzian lurreratzea"
 
@@ -234,7 +240,7 @@ msgstr "Jakinarazpen honentzako kategoria"
 msgid "Change notification category"
 msgstr "Aldatu jakinarazpen kategoria"
 
-#: src/components/MissionSetup.tsx:467
+#: src/components/MissionSetup.tsx:590
 msgid "Chase view"
 msgstr "Jarraipen-ikuspegia"
 
@@ -315,7 +321,7 @@ msgstr "Itxi bilaketa"
 msgid "closer"
 msgstr "gertuago"
 
-#: src/components/MissionSetup.tsx:400
+#: src/components/MissionSetup.tsx:514
 msgid "Clouds"
 msgstr "Hodeiak"
 
@@ -372,7 +378,7 @@ msgstr "Jarraitu"
 msgid "Continue with {label}"
 msgstr "Jarraitu {label} erabiliz"
 
-#: src/components/MissionSetup.tsx:322
+#: src/components/MissionSetup.tsx:436
 msgid "Controls"
 msgstr "Kontrolak"
 
@@ -412,12 +418,12 @@ msgstr "Sortu eta hegan egin"
 msgid "Create match"
 msgstr "Sortu partida"
 
-#: src/components/MissionSetup.tsx:153
-#: src/components/MissionSetup.tsx:159
+#: src/components/MissionSetup.tsx:267
+#: src/components/MissionSetup.tsx:273
 msgid "Credits"
 msgstr "Kredituak"
 
-#: src/components/MissionSetup.tsx:407
+#: src/components/MissionSetup.tsx:521
 #: src/components/Multiplayer.tsx:231
 msgid "Cumulus"
 msgstr "Kumulua"
@@ -430,7 +436,8 @@ msgstr "Pertsonalizatua"
 msgid "CUT"
 msgstr "ARRISKUTSUA"
 
-#: src/components/MissionSetup.tsx:459
+#: src/components/MissionSetup.tsx:119
+#: src/components/MissionSetup.tsx:573
 msgid "Cycle view"
 msgstr "Aldatu ikuspegia"
 
@@ -447,7 +454,7 @@ msgstr "Iluna"
 msgid "Dark mode"
 msgstr "Modu iluna"
 
-#: src/components/MissionSetup.tsx:395
+#: src/components/MissionSetup.tsx:509
 #: src/components/Multiplayer.tsx:226
 msgid "Day"
 msgstr "Eguna"
@@ -504,11 +511,11 @@ msgstr "Baztertu"
 msgid "Displays the mobile sidebar."
 msgstr "Mugikorraren alboko barra erakusten du."
 
-#: src/components/MissionSetup.tsx:476
+#: src/components/MissionSetup.tsx:599
 msgid "Distance"
 msgstr "Distantzia"
 
-#: src/components/MissionSetup.tsx:556
+#: src/components/MissionSetup.tsx:679
 msgid "Distance LOD"
 msgstr "Distantzia LOD"
 
@@ -521,7 +528,7 @@ msgstr "Deskargatu"
 msgid "Download failed"
 msgstr "Deskargak huts egin du"
 
-#: src/components/MissionSetup.tsx:550
+#: src/components/MissionSetup.tsx:673
 msgid "Dynamic resolution"
 msgstr "Bereizmen dinamikoa"
 
@@ -560,11 +567,11 @@ msgstr "Zabaldu"
 msgid "Expand sidebar"
 msgstr "Zabaldu alboko barra"
 
-#: src/components/MissionSetup.tsx:522
+#: src/components/MissionSetup.tsx:645
 msgid "Exterior detail"
 msgstr "Kanpoko xehetasuna"
 
-#: src/components/MissionSetup.tsx:538
+#: src/components/MissionSetup.tsx:661
 msgid "Extra aircraft"
 msgstr "Hegazkin gehigarriak"
 
@@ -600,8 +607,9 @@ msgstr "Amaitu kontuaren mugiketa"
 msgid "flares"
 msgstr "bengalak"
 
-#: src/components/MissionSetup.tsx:456
-#: src/components/MissionSetup.tsx:586
+#: src/components/MissionSetup.tsx:115
+#: src/components/MissionSetup.tsx:570
+#: src/components/MissionSetup.tsx:709
 msgid "Flares"
 msgstr "Bengalak"
 
@@ -621,11 +629,11 @@ msgstr "HEGALDI-NUKLEOAK HUTS EGIN DU"
 msgid "Floating"
 msgstr "Flotatzailea"
 
-#: src/components/MissionSetup.tsx:592
+#: src/components/MissionSetup.tsx:715
 msgid "Framerate"
 msgstr "Fotograma-tasa"
 
-#: src/components/MissionSetup.tsx:340
+#: src/components/MissionSetup.tsx:454
 msgid "Free flight"
 msgstr "Hegaldi librea"
 
@@ -684,7 +692,7 @@ msgstr "Joan {pageNumber} orrira"
 msgid "Go to previous page"
 msgstr "Joan aurreko orrira"
 
-#: src/components/MissionSetup.tsx:325
+#: src/components/MissionSetup.tsx:439
 msgid "Graphics"
 msgstr "Grafikoak"
 
@@ -700,7 +708,8 @@ msgstr "KANOIA"
 msgid "guns"
 msgstr "kanoiak"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:129
+#: src/components/MissionSetup.tsx:562
 msgid "Guns"
 msgstr "Kanoiak"
 
@@ -712,11 +721,11 @@ msgstr "Ezkutatu"
 msgid "Hide password"
 msgstr "Ezkutatu pasahitza"
 
-#: src/components/MissionSetup.tsx:502
+#: src/components/MissionSetup.tsx:625
 msgid "High"
 msgstr "Altua"
 
-#: src/components/MissionSetup.tsx:408
+#: src/components/MissionSetup.tsx:522
 #: src/components/Multiplayer.tsx:232
 msgid "High stratus"
 msgstr "Estratu altua"
@@ -744,11 +753,11 @@ msgstr "Beroa"
 msgid "Imperial"
 msgstr "Inperiala"
 
-#: src/components/MissionSetup.tsx:377
+#: src/components/MissionSetup.tsx:491
 msgid "In air"
 msgstr "Airean"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:530
 msgid "Input"
 msgstr "Sarrera"
 
@@ -764,7 +773,7 @@ msgstr "Interesak"
 msgid "Invalid verification code"
 msgstr "Egiaztapen-kode baliogabea"
 
-#: src/components/MissionSetup.tsx:431
+#: src/components/MissionSetup.tsx:545
 msgid "Invert pitch"
 msgstr "Alderantzikatu kabezeoa"
 
@@ -784,11 +793,15 @@ msgstr "Dueloa"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duelua — 1v1, lehen eraisteak irabazten du"
 
-#: src/components/MissionSetup.tsx:341
+#: src/components/MissionSetup.tsx:455
 msgid "Joust against AI player"
 msgstr "Duelua AA jokalariaren aurka"
 
-#: src/components/MissionSetup.tsx:438
+#: src/components/MissionSetup.tsx:582
+msgid "Joystick buttons"
+msgstr "Joystick botoiak"
+
+#: src/components/MissionSetup.tsx:552
 msgid "Keys"
 msgstr "Teklak"
 
@@ -796,11 +809,12 @@ msgstr "Teklak"
 msgid "KILL"
 msgstr "ERAITSITA"
 
-#: src/components/MissionSetup.tsx:452
+#: src/components/MissionSetup.tsx:111
+#: src/components/MissionSetup.tsx:566
 msgid "Landing gear"
 msgstr "Lurreratze-trena"
 
-#: src/components/MissionSetup.tsx:195
+#: src/components/MissionSetup.tsx:309
 msgid "Landing-gear wheels from <0>“F/A-18F Super Hornet Fighter Jet”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: wheels extracted and mounted on procedural struts."
 msgstr "Lurreratze-trenaren gurpilak <0>“F/A-18F Super Hornet Fighter Jet”</0> eredutik, egilea <1>Muhamad Mirza Arrafi</1> (Sketchfab), <2>CC BY 4.0</2> lizentziapean. Aldaketak: gurpilak ateratuta eta euskarri prozeduraletan muntatuta."
 
@@ -813,7 +827,8 @@ msgstr "Handia"
 msgid "launch"
 msgstr "jaurtiketa"
 
-#: src/components/MissionSetup.tsx:449
+#: src/components/MissionSetup.tsx:118
+#: src/components/MissionSetup.tsx:563
 msgid "Launch (catapult)"
 msgstr "Jaurtiketa (katapulta)"
 
@@ -843,7 +858,7 @@ msgstr "Argia"
 msgid "lights"
 msgstr "argiak"
 
-#: src/components/MissionSetup.tsx:454
+#: src/components/MissionSetup.tsx:568
 msgid "Lights"
 msgstr "Argiak"
 
@@ -890,11 +905,11 @@ msgstr "Saioa ondo amaituta"
 msgid "Logging out…"
 msgstr "Saioa amaitzen…"
 
-#: src/components/MissionSetup.tsx:498
+#: src/components/MissionSetup.tsx:621
 msgid "Low"
 msgstr "Baxua"
 
-#: src/components/MissionSetup.tsx:409
+#: src/components/MissionSetup.tsx:523
 #: src/components/Multiplayer.tsx:233
 msgid "Low stratus"
 msgstr "Estratu baxua"
@@ -907,7 +922,8 @@ msgstr "M ixteko"
 msgid "map"
 msgstr "mapa"
 
-#: src/components/MissionSetup.tsx:462
+#: src/components/MissionSetup.tsx:120
+#: src/components/MissionSetup.tsx:576
 msgid "Map"
 msgstr "Mapa"
 
@@ -922,7 +938,7 @@ msgid "Match type"
 msgstr "Partida mota"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:500
+#: src/components/MissionSetup.tsx:623
 msgid "Medium"
 msgstr "Ertaina"
 
@@ -938,7 +954,7 @@ msgstr "Menua"
 msgid "Metric"
 msgstr "Metrikoa"
 
-#: src/components/MissionSetup.tsx:243
+#: src/components/MissionSetup.tsx:357
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway atoloiaren mapa — irudiek <0>Copernicus Sentinel-2</0> datu aldatuak dituzte (2026); aerodromoaren geometria (pista, errodaje-bideak, plataformak) © <1>OpenStreetMap</1> laguntzaileak, <2>ODbL</2> lizentziapean; kostaldearen eta arrezifeen datuak <3>NOAA NCCOS</3>-etik (jabari publikoa)."
 
@@ -946,11 +962,12 @@ msgstr "Midway atoloiaren mapa — irudiek <0>Copernicus Sentinel-2</0> datu ald
 msgid "missile"
 msgstr "misila"
 
-#: src/components/MissionSetup.tsx:455
+#: src/components/MissionSetup.tsx:116
+#: src/components/MissionSetup.tsx:569
 msgid "Missile"
 msgstr "Misila"
 
-#: src/components/MissionSetup.tsx:580
+#: src/components/MissionSetup.tsx:703
 msgid "Missiles"
 msgstr "Misilak"
 
@@ -958,7 +975,7 @@ msgstr "Misilak"
 msgid "Missiles allowed"
 msgstr "Misilak baimenduta"
 
-#: src/components/MissionSetup.tsx:316
+#: src/components/MissionSetup.tsx:430
 msgid "Mission"
 msgstr "Misioa"
 
@@ -966,7 +983,7 @@ msgstr "Misioa"
 msgid "Monday"
 msgstr "Astelehena"
 
-#: src/components/MissionSetup.tsx:342
+#: src/components/MissionSetup.tsx:456
 msgid "Multiplayer"
 msgstr "Jokalari anitzekoa"
 
@@ -987,7 +1004,7 @@ msgstr "Berria"
 msgid "Next image"
 msgstr "Hurrengo irudia"
 
-#: src/components/MissionSetup.tsx:396
+#: src/components/MissionSetup.tsx:510
 #: src/components/Multiplayer.tsx:227
 msgid "Night"
 msgstr "Gaua"
@@ -1044,7 +1061,7 @@ msgstr "NOTARIK GABE"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:406
+#: src/components/MissionSetup.tsx:520
 msgid "None"
 msgstr "Bat ere ez"
 
@@ -1064,7 +1081,7 @@ msgstr "Ezarri gabe"
 msgid "Notifications"
 msgstr "Jakinarazpenak"
 
-#: src/components/MissionSetup.tsx:530
+#: src/components/MissionSetup.tsx:653
 msgid "Ocean detail"
 msgstr "Ozeanoaren xehetasuna"
 
@@ -1072,11 +1089,11 @@ msgstr "Ozeanoaren xehetasuna"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:379
+#: src/components/MissionSetup.tsx:493
 msgid "On carrier"
 msgstr "Ontzian"
 
-#: src/components/MissionSetup.tsx:378
+#: src/components/MissionSetup.tsx:492
 msgid "On runway"
 msgstr "Pistan"
 
@@ -1125,7 +1142,7 @@ msgstr "edo"
 msgid "orbit"
 msgstr "orbitatu"
 
-#: src/components/MissionSetup.tsx:471
+#: src/components/MissionSetup.tsx:594
 msgid "Orbit"
 msgstr "Orbita"
 
@@ -1157,7 +1174,7 @@ msgstr "Passkey-ak"
 msgid "pause"
 msgstr "pausa"
 
-#: src/components/MissionSetup.tsx:463
+#: src/components/MissionSetup.tsx:577
 msgid "Pause"
 msgstr "Pausatu"
 
@@ -1174,7 +1191,7 @@ msgstr "pilotua"
 msgid "pitch"
 msgstr "kabezeo"
 
-#: src/components/MissionSetup.tsx:441
+#: src/components/MissionSetup.tsx:555
 msgid "Pitch"
 msgstr "Kabezeoa"
 
@@ -1182,9 +1199,13 @@ msgstr "Kabezeoa"
 msgid "Please check your internet connection and try again."
 msgstr "Egiaztatu zure interneteko konexioa eta saiatu berriro."
 
-#: src/components/MissionSetup.tsx:485
+#: src/components/MissionSetup.tsx:608
 msgid "Preset"
 msgstr "Aurrezarpena"
+
+#: src/components/MissionSetup.tsx:138
+msgid "Press a joystick button…"
+msgstr "Sakatu joystick botoi bat…"
 
 #: src/components/GameCanvas.tsx:31
 msgid "PRESS ENTER TO LAUNCH"
@@ -1221,9 +1242,14 @@ msgstr "Erregistratu berriro zure sarbide-gakoak zerbitzari honetan"
 msgid "rearm"
 msgstr "birkargatu"
 
-#: src/components/MissionSetup.tsx:457
+#: src/components/MissionSetup.tsx:117
+#: src/components/MissionSetup.tsx:571
 msgid "Rearm"
 msgstr "Birarmatu"
+
+#: src/components/MissionSetup.tsx:73
+msgid "Recalibrate"
+msgstr "Birkalibratu"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:219
 #: ../../../lib/web/src/components/search-entity-page.tsx:194
@@ -1276,7 +1302,7 @@ msgstr "Bidali mezua berriro"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:629
+#: src/components/MissionSetup.tsx:752
 msgid "Reset"
 msgstr "Berrezarri"
 
@@ -1284,19 +1310,19 @@ msgstr "Berrezarri"
 msgid "Reset all settings to default values"
 msgstr "Berrezarri ezarpen guztiak balio lehenetsietara"
 
-#: src/components/MissionSetup.tsx:512
+#: src/components/MissionSetup.tsx:635
 msgid "Resolution"
 msgstr "Bereizmena"
 
-#: src/components/MissionSetup.tsx:606
+#: src/components/MissionSetup.tsx:729
 msgid "Restart"
 msgstr "Berrabiarazi"
 
-#: src/components/MissionSetup.tsx:610
+#: src/components/MissionSetup.tsx:733
 msgid "Resume"
 msgstr "Berriro hasi"
 
-#: src/components/MissionSetup.tsx:464
+#: src/components/MissionSetup.tsx:578
 msgid "Return to menu"
 msgstr "Itzuli menura"
 
@@ -1308,7 +1334,7 @@ msgstr "Eskuinetik ezkerrera"
 msgid "roll"
 msgstr "alabeo"
 
-#: src/components/MissionSetup.tsx:442
+#: src/components/MissionSetup.tsx:556
 msgid "Roll"
 msgstr "Alabeoa"
 
@@ -1399,7 +1425,7 @@ msgstr "Bidali berriz"
 msgid "Send email"
 msgstr "Bidali emaila"
 
-#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:534
 msgid "Sensitivity"
 msgstr "Sentsibilitatea"
 
@@ -1437,7 +1463,7 @@ msgstr "Ezarri jatorria eta helmuga"
 msgid "Settings"
 msgstr "Ezarpenak"
 
-#: src/components/MissionSetup.tsx:562
+#: src/components/MissionSetup.tsx:685
 msgid "Shadows"
 msgstr "Itzalak"
 
@@ -1485,12 +1511,13 @@ msgstr "AIREB"
 msgid "speed brake"
 msgstr "aire-balazta"
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:113
+#: src/components/MissionSetup.tsx:565
 msgid "Speed brake"
 msgstr "Aire-balazta"
 
-#: src/components/MissionSetup.tsx:371
-#: src/components/MissionSetup.tsx:616
+#: src/components/MissionSetup.tsx:485
+#: src/components/MissionSetup.tsx:739
 msgid "Start"
 msgstr "Hasi"
 
@@ -1525,7 +1552,7 @@ msgstr "Etiketa"
 msgid "Tags"
 msgstr "Etiketak"
 
-#: src/components/MissionSetup.tsx:334
+#: src/components/MissionSetup.tsx:448
 msgid "Task"
 msgstr "Zeregina"
 
@@ -1554,7 +1581,7 @@ msgstr "Gaiaren ezarpenak"
 msgid "throttle"
 msgstr "gasa"
 
-#: src/components/MissionSetup.tsx:445
+#: src/components/MissionSetup.tsx:559
 msgid "Throttle"
 msgstr "Azelerazioa"
 
@@ -1566,11 +1593,11 @@ msgstr "Osteguna"
 msgid "tilt"
 msgstr "makurtu"
 
-#: src/components/MissionSetup.tsx:474
+#: src/components/MissionSetup.tsx:597
 msgid "Tilt"
 msgstr "Okertzea"
 
-#: src/components/MissionSetup.tsx:389
+#: src/components/MissionSetup.tsx:503
 msgid "Time of day"
 msgstr "Eguneko ordua"
 
@@ -1609,13 +1636,17 @@ msgstr "Txandakatu gaia"
 msgid "Top"
 msgstr "Goia"
 
-#: src/components/MissionSetup.tsx:574
+#: src/components/MissionSetup.tsx:697
 msgid "Tracers"
 msgstr "Trazatzaileak"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:145
 msgid "Travelling"
 msgstr "Bidaian"
+
+#: src/components/MissionSetup.tsx:130
+msgid "Trigger"
+msgstr "Katua"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:193
 #: ../../../lib/web/src/components/search-entity-page.tsx:168
@@ -1644,7 +1675,7 @@ msgstr "Idatzi erabiltzaileak bilatzeko"
 msgid "Type to search..."
 msgstr "Idatzi bilatzeko..."
 
-#: src/components/MissionSetup.tsx:504
+#: src/components/MissionSetup.tsx:627
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1732,7 +1763,7 @@ msgstr "LURRERATZEA ETEN"
 msgid "We'll be back online shortly."
 msgstr "Laster online egongo gara berriro."
 
-#: src/components/MissionSetup.tsx:319
+#: src/components/MissionSetup.tsx:433
 #: src/components/Multiplayer.tsx:223
 msgid "Weather"
 msgstr "Eguraldia"
@@ -1745,7 +1776,8 @@ msgstr "Webgunea mantentze-lanetan dago!"
 msgid "Wednesday"
 msgstr "Asteazkena"
 
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:114
+#: src/components/MissionSetup.tsx:564
 msgid "Wheel brakes"
 msgstr "Gurpileko balaztak"
 
@@ -1765,7 +1797,7 @@ msgstr "Ezin da mundu-zerbitzarira iritsi"
 msgid "yaw"
 msgstr "guiñada"
 
-#: src/components/MissionSetup.tsx:443
+#: src/components/MissionSetup.tsx:557
 msgid "Yaw"
 msgstr "Gingada"
 
