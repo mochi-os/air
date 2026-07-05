@@ -323,6 +323,17 @@ export class Net {
     return { sequence: newest.acknowledged, core: newest.core }
   }
 
+  // time returns the shared session clock in seconds — the server tick at a known
+  // rate, extrapolated by wall time since the newest snapshot arrived. Every player
+  // computes the same value (± network jitter), which is what world-anchored visuals
+  // (cloud drift) must run on in multiplayer: a local mission clock puts each
+  // player's cloud field in a different place.
+  time(): number {
+    const newest = this.snapshots[this.snapshots.length - 1]
+    if (!newest) return 0
+    return newest.tick / (this.welcome?.rate?.tick || 60) + (performance.now() - newest.at) / 1000
+  }
+
   // slots lists the remote slots present in the newest snapshot.
   slots(): number[] {
     const newest = this.snapshots[this.snapshots.length - 1]
@@ -402,7 +413,7 @@ export class Net {
         let core: Float64Array | null = null
         const bytes = message.core as Uint8Array | undefined
         if (bytes instanceof Uint8Array && bytes.byteLength >= 456) {
-          core = new Float64Array(bytes.buffer, bytes.byteOffset, 56)
+          core = new Float64Array(bytes.buffer, bytes.byteOffset, 57)   // FULL state: viewing 56 words silently dropped Fcs.Reference from every reconciliation
           this.cored = true
         }
         this.snapshots.push({

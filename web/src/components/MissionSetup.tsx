@@ -519,6 +519,7 @@ export function MissionSetup({
                   options={[
                     { value: 'none', label: <Trans>None</Trans> },
                     { value: 'cumulus', label: <Trans>Cumulus</Trans> },
+                    { value: 'cumulonimbus', label: <Trans>Cumulonimbus</Trans> },
                     { value: 'high_stratus', label: <Trans>High stratus</Trans> },
                     { value: 'low_stratus', label: <Trans>Low stratus</Trans> },
                   ]}

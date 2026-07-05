@@ -364,15 +364,17 @@ build_ocean(cfg.ocean_segments);
 
 // cloud layer types (rendered by the raymarch pass below)
 const CLOUDS={   // cover: higher = more cloud (coverage remap). Trade-wind cumulus: low bases (~2,000 ft), most tops at the inversion, a few towers.
-	cumulus:      { base:600,  top:2400, high:5000, cover:0.42, density:1.0,  flat:0.0 },   // the dense fuzzy broken sky (user-preferred over the scattered/eroded variants)
-	high_stratus: { base:6000, top:6700, high:6700, cover:0.55, density:0.45, flat:1.0 },   // thin widespread cirrostratus
-	low_stratus:  { base:600,  top:1150, high:1150, cover:0.80, density:1.2,  flat:1.0 },   // low grey overcast
+	cumulus:      { base:600,  top:2400, high:5000,  cover:0.42, density:1.0, flat:0.0, gate:[0.22,0.50], dark:0.45, scud:0 },   // fair-weather broken trade-wind sky (user-preferred)
+	cumulonimbus: { base:500,  top:3500, high:11000, cover:0.62, density:1.5, flat:0.0, gate:[0.30,0.46], dark:1.0, scud:1, cell:0.55 },   // towering storm cells: cell pattern ~1.8x larger (real Cb masses run 5-15 km across, tens of km apart), gate keeps 2-4 towers in the field, tops soaring, near-black bases, scud ring at base height
+	high_stratus: { base:6000, top:6700, high:6700, cover:0.55, density:0.45, flat:1.0, gate:[0.0,0.0], dark:0.3, scud:0 },   // thin widespread cirrostratus
+	low_stratus:  { base:600,  top:1150, high:1150, cover:0.80, density:1.2,  flat:1.0, gate:[0.0,0.0], dark:0.5, scud:0 },   // low grey overcast
 };
 function apply_clouds(){ const p=CLOUDS[cfg.clouds];
 	ocean_mat.uniforms.u_cloud_on.value=p?1.0:0.0;
 	if(!p) return;
 	cloud_mat.uniforms.uBase.value=p.base; cloud_mat.uniforms.uTop.value=p.top; cloud_mat.uniforms.uHigh.value=p.high;
 	cloud_mat.uniforms.uCoverage.value=p.cover; cloud_mat.uniforms.uDensity.value=p.density; cloud_mat.uniforms.uFlat.value=p.flat;
+	cloud_mat.uniforms.uGate.value.set(p.gate[0],p.gate[1]); cloud_mat.uniforms.uDark.value=p.dark; cloud_mat.uniforms.uScud.value=p.scud; cloud_mat.uniforms.uCell.value=p.cell||1.0;
 	ocean_mat.uniforms.u_cloud_cover.value=p.cover; ocean_mat.uniforms.u_cloud_mid.value=(p.base+p.top)*0.5; }
 const cloud_active=()=>cfg.clouds&&cfg.clouds!=="none";
 
@@ -391,33 +393,61 @@ const fs_scene=new THREE.Scene(); const fs_cam=new THREE.OrthographicCamera(-1,1
 const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,   // NOTE: no glslVersion:GLSL3 — three compiles ShaderMaterial as 300 es on WebGL2 anyway (sampler3D works), and the GLSL3 flag REMOVES the gl_FragColor compatibility define
 	uniforms:{ tDepth:{value:null}, tNoise:{value:null}, tDetail:{value:null}, uCamPos:{value:new THREE.Vector3()}, uInvVP:{value:new THREE.Matrix4()},
 		uTime:{value:0}, uSun:{value:sun_dir}, uSunCol:{value:col_sundisc}, uSky:{value:sky_horizon}, uZenith:{value:sky_zenith}, uDebug:{value:0.0},
-		uBase:{value:600.0}, uTop:{value:2400.0}, uHigh:{value:5000.0}, uCoverage:{value:0.42}, uDensity:{value:1.0}, uFlat:{value:0.0}, uExposure:{value:1.05} },
+		uBase:{value:600.0}, uTop:{value:2400.0}, uHigh:{value:5000.0}, uCoverage:{value:0.42}, uDensity:{value:1.0}, uFlat:{value:0.0}, uExposure:{value:1.05},
+		uGate:{value:new THREE.Vector2(0.22,0.50)}, uDark:{value:0.45}, uScud:{value:0.0}, uCell:{value:1.0} },
 	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
 	fragmentShader:`varying vec2 vUv;
 		uniform sampler2D tDepth; uniform highp sampler3D tNoise,tDetail;
 		uniform vec3 uCamPos,uSun,uSunCol,uSky,uZenith; uniform mat4 uInvVP;
-		uniform float uTime,uBase,uTop,uHigh,uCoverage,uDensity,uFlat,uExposure,uDebug;
+		uniform float uTime,uBase,uTop,uHigh,uCoverage,uDensity,uFlat,uExposure,uDebug,uDark,uScud,uCell;
+			uniform vec2 uGate;
 		float hash(vec3 p){ p=fract(p*0.3183099+vec3(0.1,0.2,0.3)); p*=17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
 		float remap(float v,float a,float b,float c,float d){ return c+clamp((v-a)/(b-a),0.0,1.0)*(d-c); }
 		float hg(float c,float g){ float g2=g*g; return (1.0-g2)/pow(1.0+g2-2.0*g*c,1.5); }
 		// Trade-wind cumulus field: flat bases at uBase, most cells capped by the inversion at uTop, a minority of
 		// vigorous cells towering to uHigh (per-cell vigour from low-frequency noise). Density: Perlin-Worley base
 		// remapped by coverage, eroded at the edges by high-frequency Worley — the cauliflower billows.
-		float vigour(vec2 xz){ return texture(tNoise, vec3(xz*2.0833e-5, 0.37)).g; }   // ~8 km cells
-		float top_at(float vig){ return mix(mix(uTop,uHigh,smoothstep(0.62,0.95,vig)), uTop, uFlat); }
+		float vigour(vec2 xz){ vec2 q=vec2((xz.x*0.958+xz.y*0.286)*0.62, -xz.x*0.286+xz.y*0.958);   // cells stretched ~1.6x along the wind: STREETS of distinct cells — stronger stretch fuses them into worm-chains
+			return texture(tNoise, vec3(q*2.0833e-5*uCell, 0.37)).g; }   // uCell scales the whole convective pattern: real Cb cells run 5-15 km across, several times a fair-weather puff cell
+		float top_at(float vig){ return mix(mix(uTop,uHigh,smoothstep(0.48,0.82,vig)), uTop, uFlat); }   // more cells tower: the sky needs a few protagonists, not one-in-a-hundred
 		float dens(vec3 p, float lod){   // lod 0 = near (full erosion detail) … 1 = far (soft stable masses — fine detail undersamples at long range and reads as clouds bubbling in and out)
 			float vig=vigour(p.xz), top=top_at(vig);
-			float h=(p.y-uBase)/(top-uBase); if(h<0.0||h>1.0) return 0.0;
-			float prof=mix( smoothstep(0.02,0.12,h)*smoothstep(1.0,0.5,h),    // cumulus: flat defined base, domed top
+			float tallf=smoothstep(uTop,uHigh,top);   // 0 = modest dome, 1 = vigorous tower
+			if(tallf>0.02){   // the HEAD is a cluster of giant turrets, not one dome. The turret field
+				// must be LOW-PASSED: fine noise makes adjacent columns jump in height — vertical
+				// cliff striations down every flank (the curtain-wall look, found twice).
+				float turret=texture(tNoise, vec3(p.xz*0.75e-4, 0.71)).g;
+				top*=1.0+0.12*tallf*(turret*2.0-1.0);
+			}
+			float h=(p.y-uBase)/(top-uBase); if(h>1.0) return 0.0;
+			if(h<0.0){   // sub-base veil: vigorous cells trail translucent virga shafts toward the sea — the hazy "weather" under a building cell
+				if(uFlat>0.5) return 0.0;
+				float vfall=1.0+h*3.2; if(vfall<=0.0) return 0.0;
+				float shaft=smoothstep(0.60,0.85,vig)*vfall*(1.0-smoothstep(0.35,0.70,lod));   // NEAR-field only: at range the coarse stride integrates this thin veil into an opaque wash — a flat pale band above the horizon under every distant cell
+				if(shaft<=0.0) return 0.0;
+				vec4 nb=texture(tNoise,(p+vec3(uTime*8.0,0.0,uTime*3.0))*1.6667e-4);
+				return smoothstep(0.55,0.85,nb.r)*shaft*0.045*uDensity;
+			}
+			float prof=mix( smoothstep(0.02,0.12,h)*smoothstep(1.0,mix(0.50,0.86,tallf),h),   // cumulus domes; TOWERS hold near-constant width and only round at the head — early taper renders ice-cream cones
 			                smoothstep(0.0,0.25,h)*smoothstep(1.0,0.7,h), uFlat );   // stratus: thin even slab
 			vec3 sp=p+vec3(uTime*8.0,0.0,uTime*3.0);   // slow drift
-			vec4 w=texture(tNoise, sp*6.5e-4+vec3(0.31,0.17,0.47));
-			sp+=(w.gba-0.5)*vec3(170.0,90.0,170.0)*(1.0-uFlat);   // domain warp (~1.5 km field), gentle: clusters the base blobs into LOBES; overdriven it shreds the field into torn spray
+			vec4 w=texture(tNoise, sp*4.2e-4+vec3(0.31,0.17,0.47));   // ~2.4 km warp field: larger coherent lobes — a fine warp carves every mass into same-size berry clusters
+			sp+=(w.gba-0.5)*vec3(150.0,80.0,150.0)*(1.0-uFlat);   // domain warp, gentle: clusters the base blobs into LOBES (height-scaled warp smears the field into vertical curtain folds — tried and reverted)
 			vec4 n=texture(tNoise, sp*1.6667e-4);   // base field, ~6 km period
 			float wf=n.g*0.625+n.b*0.25+n.a*0.125;
-			float base=remap(n.r, wf-1.0, 1.0, 0.0, 1.0)*prof;
-				float cov=uCoverage*mix((0.55+0.75*vig)*smoothstep(0.22,0.50,vig), 1.0, uFlat);   // vigorous cells denser AND weak cells CLEAR: coverage that never reaches zero renders a closed blanket from above, not a broken trade-wind field
+			float braw=remap(n.r, wf-1.0, 1.0, 0.0, 1.0);
+			float base=braw*prof;
+				float cov=uCoverage*mix((0.55+0.95*vig)*smoothstep(uGate.x,uGate.y,vig), 1.0, uFlat);   // per-preset cell gate: how FEW the cells are; uCoverage sets how MASSIVE each survivor builds
 			float d=remap(base, 1.0-cov, 1.0, 0.0, 1.0)*cov;
+			if(uScud>0.5){   // low scud: cells that FAIL the tower gate carry shallow puffs at base height — real storm skies keep ragged low cumulus around the cells
+				float hs=(p.y-uBase)/560.0;
+				if(hs>=0.0&&hs<=1.0){
+					float sgate=smoothstep(uGate.x-0.14,uGate.x-0.04,vig)*(1.0-smoothstep(uGate.x,uGate.y,vig));
+					float covs=0.30*sgate*(1.0-smoothstep(0.30,0.60,lod));   // NEAR-field only: real scud at 30 km is a sub-stride speck — marched as a statistically-uniform layer it integrates into a solid pale band above the horizon (height-coded debug traced the band to exactly this 560 m slab)
+					if(covs>0.002){ float profs=smoothstep(0.03,0.22,hs)*smoothstep(1.0,0.55,hs);
+						d=max(d, remap(braw*profs, 1.0-covs, 1.0, 0.0, 1.0)*covs); }
+				}
+			}
 			if(d<=0.0) return 0.0;
 			float hb=clamp(h*4.0,0.0,1.0), estr=mix(0.35,0.15,uFlat);
 			float coarse=mix(n.b, 1.0-n.b, hb);                               // coarse erosion from the base sample: keeps far cells SEPARATE at zero cost and zero shimmer (fading erosion out entirely merged the horizon into a solid wall)
@@ -425,8 +455,8 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,   
 			if(lod<0.7){
 				vec3 dn=texture(tDetail, sp*8.333e-4).rgb;   // fine erosion detail, ~1.2 km period (near field only — it undersamples and shimmers at range)
 				float det=dn.r*0.625+dn.g*0.25+dn.b*0.125;
-				if(lod<0.35){ vec3 dn2=texture(tDetail, sp*3.1e-3+vec3(0.5)).rgb;   // second, finer crenellation scale (~320 m): one Worley scale bites circular cotton-ball chunks; two make the rims fractal
-					det=det*0.68+(dn2.r*0.625+dn2.g*0.25+dn2.b*0.125)*0.32*(1.0-smoothstep(0.15,0.35,lod)); }
+				if(lod<0.35){ vec3 dn2=texture(tDetail, sp*3.1e-3+vec3(0.5)).rgb;   // second, finer crenellation scale (~320 m), GENTLY mixed: it only exists near, so a strong weight makes clouds visibly dissolve as you approach them
+					det=det*0.85+(dn2.r*0.625+dn2.g*0.25+dn2.b*0.125)*0.15*(1.0-smoothstep(0.15,0.35,lod)); }
 				er=mix(mix(det, 1.0-det, hb), coarse, smoothstep(0.25,0.7,lod));
 			}
 			d=remap(d, er*estr*(1.0+1.1*(1.0-clamp(d*2.2,0.0,1.0))), 1.0, 0.0, 1.0);   // edge-weighted erosion: the rim erodes hardest (fractal raggedness), the core stays solid
@@ -450,11 +480,11 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,   
 				float slabTop=mix(uHigh,uTop,uFlat);
 				float ry=ray.y<0.0?min(ray.y,-2.0e-3):max(ray.y,2.0e-3);   // horizontal rays: the exact-level slab intersection degenerates and paints a one-pixel cloudless line across the view (sign() would zero on ray.y==0)
 				float ta=(uBase-uCamPos.y)/ry, tb=(slabTop-uCamPos.y)/ry;
-				float cfar=mix(24000.0,60000.0,uFlat);
+				float cfar=42000.0;   // full-range clouds: a 24 km cap put the player in a cloud bubble; 42 km is what ~96 adaptive steps can honestly sample
 				float t0=max(min(ta,tb),0.0), t1=min(max(ta,tb),min(sceneDist,cfar));
-				if(t1>t0){ float dt=min((t1-t0)/56.0,180.0);   // cap the step: long skimming rays otherwise decide a whole puff from 1-2 jittered samples per pixel (full-body stipple)
+				if(t1>t0){
 					float ign=fract(52.9829189*fract(0.06711056*gl_FragCoord.x+0.00583715*gl_FragCoord.y));   // interleaved gradient noise: structured, so the blur pass removes it cleanly (white-noise hash read as fizz)
-					float t=t0+ign*dt; float tr=1.0; vec3 col=vec3(0.0);   // FULL-step jitter: anything less leaves the march shells visible as horizontal banding across cloud faces
+					float t=t0+ign*max(60.0,t0*0.05); float tr=1.0; vec3 col=vec3(0.0); float hw=0.0;   // FULL-step jitter: anything less leaves the march shells visible as horizontal banding
 					float cosT=dot(ray,uSun);
 						// Multi-scattering octaves (Hillaire): each bounce generation sees less
 						// extinction and a flatter phase — single-scatter Beer renders dense cores
@@ -462,10 +492,13 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,   
 						vec3 phv=vec3( mix(hg(cosT,0.55),hg(cosT,-0.2),0.35),
 						               mix(hg(cosT,0.30),hg(cosT,-0.11),0.35),
 						               mix(hg(cosT,0.17),hg(cosT,-0.06),0.35) );
-					for(int i=0;i<96;i++){ if(t>t1||tr<0.03) break; vec3 pos=uCamPos+ray*t;
-						float lod=clamp(t/12000.0,0.0,1.0); float d=dens(pos,lod);
+					for(int i=0;i<96;i++){ if(t>t1||tr<0.03) break;
+						float dt=clamp(t*0.03,60.0,420.0);   // adaptive stride: fine nearby, moderate at range — 900 m strides starved distant towers into flat sheets, but a fixed step cannot reach the horizon on a 96-step budget
+						vec3 pos=uCamPos+ray*t;
+						float lod=clamp(t/26000.0,0.0,1.0); float d=dens(pos,lod);   // detail persists to range: the LOD fade also fades the SHADOW micro-structure, leaving distant towers uniform white against a detailed near one
 						if(d>0.01){
 							float ld=0.0; vec3 lp=pos; float ls=32.0;   // optical depth toward the sun; the FIRST taps must be close — starting 90 m out skips the local billow, so tops get no self-shadowing and render uniform white
+							ls*=(0.72+0.56*ign);   // per-pixel tap-distance jitter: decorrelates the shadow shells into floret-scale variance the blur then smooths
 							for(int j=0;j<5;j++){ lp+=uSun*ls; ld+=dens(lp,lod)*ls; ls*=1.55; }
 								float powder=1.0-exp(-ld*0.028);   // Beer-powder: darkened crinkles on sun-facing billows
 								float sun=(0.22+0.78*powder)*(phv.x*exp(-ld*0.010)+0.45*phv.y*exp(-ld*0.005))
@@ -473,13 +506,19 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,   
 								float vig=vigour(pos.xz); float hcur=clamp((pos.y-uBase)/(top_at(vig)-uBase),0.0,1.0);
 								// Sky-dome ambient: cumulus shadows are BLUE (sky-lit), with a warm whisper
 								// bounced into the bases; both dim deep inside the mass (sun-march depth proxy).
-								vec3 dome=mix(uZenith,uSky,0.40);
-								vec3 ambient=(dome*(0.40+0.60*hcur) + uSunCol*0.08*(1.0-hcur))*exp(-ld*0.0030)*(1.0-0.42*d);   // crevice AO: dense samples sit deep between billows
-								vec3 lit=(uSunCol*sun*1.35 + ambient*0.55)*(0.55+0.45*smoothstep(0.02,0.30,d));   // the low-density fringe DIMS into translucency — a bright fringe reads as an airbrushed halo
-							float a=(1.0-exp(-d*0.09*dt))*smoothstep(cfar,cfar*0.65,t);   // fade the farthest field out instead of letting it pop at the range cap
-							col+=tr*a*lit; tr*=1.0-a; }
+								vec3 dome=mix(uZenith,uSky,0.40); dome=mix(dome,vec3(dot(dome,vec3(0.333))),0.35);   // desaturated: full sky-blue ambient paints electric-blue shadow rims
+								float bfloor=mix(0.68,0.30,uDark);   // per-preset base darkness: fair-weather bottoms are shaded, storm bottoms near-black
+								sun=pow(sun,1.28)*(bfloor+(1.0-bfloor)*smoothstep(0.04,0.55,hcur));
+								float afloor=mix(0.30,0.12,uDark);
+								vec3 ambient=(dome*(afloor+(1.0-afloor)*hcur) + uSunCol*0.06*(1.0-hcur))*exp(-ld*0.0030)*(1.0-0.42*d);   // crevice AO: dense samples sit deep between billows
+								vec3 lit=(uSunCol*sun*1.30 + ambient*0.55)*(0.40+0.60*smoothstep(0.03,0.35,d));   // the low-density fringe DIMS into translucency — a bright fringe reads as an airbrushed halo
+							float a=(1.0-exp(-d*0.09*dt))*smoothstep(cfar,cfar*0.65,t)*smoothstep(0.006,0.045,d);   // the ultra-thin fringe barely registers: accumulated over steps it painted a pale glow RING around every cloud against dark water
+							float hz=clamp(1.0-exp(-t*t*0.6e-9),0.0,0.72);   // aerial perspective: the hazed share of each sample's alpha is paid out AFTER the march as the scene sky's own display-space colour — mixing a haze colour through this pass's aces/srgb never matches the sky behind and left a flat pale band above the horizon; pure alpha fade saturates over enough steps and turned the far field its raw beige
+							col+=tr*a*lit*(1.0-hz); hw+=tr*a*hz; tr*=1.0-a; }
 						t+=dt; }
-					cloudc=srgb(aces(col)); ctr=tr; } }   // display-encoded premultiplied cloud light + transmittance for the blend layer
+					vec3 skybg=mix(uSky,uZenith,pow(clamp(ray.y*1.2,0.0,1.0),0.65));   // EXACTLY the sky_mat gradient (+ sun aureole below), so the haze share composites to the true backdrop
+					float sbg=max(dot(ray,uSun),0.0); skybg+=uSunCol*(pow(sbg,220.0)*1.4+pow(sbg,8.0)*0.18);
+					cloudc=srgb(aces(col))+skybg*hw; ctr=tr; } }   // display-encoded premultiplied cloud light + transmittance for the blend layer
 			gl_FragColor=vec4(cloudc,ctr);
 		}` });
 fs_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),cloud_mat));
@@ -528,9 +567,18 @@ const comp_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, tra
 	uniforms:{ tCloud:{value:null}, uTexel:{value:new THREE.Vector2(1/512,1/512)} },
 	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
 	fragmentShader:`varying vec2 vUv; uniform sampler2D tCloud; uniform vec2 uTexel;
-		void main(){   // 4-tap tent upsample of the half-res cloud layer: averages the dither grain away (clouds are soft, so no visible detail is lost)
-			vec4 cl=( texture2D(tCloud,vUv+uTexel*vec2(-0.75,-0.75)) + texture2D(tCloud,vUv+uTexel*vec2(0.75,-0.75))
-			        + texture2D(tCloud,vUv+uTexel*vec2(-0.75,0.75))  + texture2D(tCloud,vUv+uTexel*vec2(0.75,0.75)) )*0.25;
+		void main(){   // alpha-aware joint upsample: a plain tent feathers bright cloud light across
+			// every silhouette into the background — a 2-3 px halo ring at 4K (the same disease
+			// the bilateral blur cured in the smoothing pass)
+			vec4 c0=texture2D(tCloud,vUv);
+			vec4 acc=c0; float wsum=1.0;
+			for(int i=0;i<4;i++){
+				vec2 dxy=(i==0)?vec2(-0.75,-0.75):(i==1)?vec2(0.75,-0.75):(i==2)?vec2(-0.75,0.75):vec2(0.75,0.75);
+				vec4 cs=texture2D(tCloud,vUv+uTexel*dxy);
+				float w=0.6*exp(-12.0*abs(cs.a-c0.a));
+				acc+=cs*w; wsum+=w;
+			}
+			vec4 cl=acc/wsum;
 			gl_FragColor=vec4(cl.rgb,1.0-cl.a); }` });
 const comp_scene=new THREE.Scene(); comp_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),comp_mat));
 const depth_override=new THREE.MeshBasicMaterial({colorWrite:false});   // depth-only scene pass for the cloud raymarch
@@ -538,19 +586,28 @@ const blur_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,
 	uniforms:{ tSrc:{value:null}, uTexel:{value:new THREE.Vector2(1/512,1/512)} },
 	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
 	fragmentShader:`varying vec2 vUv; uniform sampler2D tSrc; uniform vec2 uTexel;
-		void main(){   // 3x3 gaussian at ±1.2 texels: clouds are soft, so this only removes the dither grain
+		void main(){   // bilateral 3x3: smooth the march dither INSIDE clouds but never across their
+			// boundary — a plain gaussian bleeds bright cloud into dark background pixels, ringing
+			// every rim with a pale halo (worst against the dark sea at the horizon).
 			vec2 o=uTexel*1.5;
-			vec4 c=texture2D(tSrc,vUv)*0.25;
-			c+=(texture2D(tSrc,vUv+vec2(o.x,0.0))+texture2D(tSrc,vUv-vec2(o.x,0.0))+texture2D(tSrc,vUv+vec2(0.0,o.y))+texture2D(tSrc,vUv-vec2(0.0,o.y)))*0.125;
-			c+=(texture2D(tSrc,vUv+o)+texture2D(tSrc,vUv-o)+texture2D(tSrc,vUv+vec2(o.x,-o.y))+texture2D(tSrc,vUv+vec2(-o.x,o.y)))*0.0625;
-			gl_FragColor=c; }` });
+			vec4 c0=texture2D(tSrc,vUv);
+			vec4 acc=c0; float wsum=1.0;
+			for(int i=0;i<8;i++){
+				vec2 d=(i==0)?vec2(o.x,0.0):(i==1)?vec2(-o.x,0.0):(i==2)?vec2(0.0,o.y):(i==3)?vec2(0.0,-o.y)
+				      :(i==4)?o:(i==5)?-o:(i==6)?vec2(o.x,-o.y):vec2(-o.x,o.y);
+				vec4 cs=texture2D(tSrc,vUv+d);
+				float w=((i<4)?0.5:0.25)*exp(-14.0*abs(cs.a-c0.a));   // alpha-similarity gate: transmittance edges = cloud silhouettes
+				acc+=cs*w; wsum+=w;
+			}
+			gl_FragColor=acc/wsum; }` });
 const blur_scene=new THREE.Scene(); blur_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),blur_mat));
 function render_frame(){
 	if(cloud_active()){ size_rt();
 		scene.overrideMaterial=depth_override; renderer.setRenderTarget(rt); renderer.render(scene,camera); scene.overrideMaterial=null;   // half-res pass, used only for scene DEPTH (cloud occlusion) — cheap flat shading, no lighting or textures
 		invVP.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse).invert();
 		cloud_mat.uniforms.tDepth.value=rt.depthTexture;
-		cloud_mat.uniforms.uCamPos.value.copy(camera.position); cloud_mat.uniforms.uInvVP.value.copy(invVP); cloud_mat.uniforms.uTime.value=sim_time;
+		cloud_mat.uniforms.uCamPos.value.copy(camera.position); cloud_mat.uniforms.uInvVP.value.copy(invVP);
+		cloud_mat.uniforms.uTime.value=(MULTIPLAYER&&net&&net.time)?net.time():sim_time;   // multiplayer: clouds drift on the SHARED session clock — a local mission clock puts every player's cloud field in a different place, and hiding in cloud must mean the same cloud for everyone
 		renderer.setRenderTarget(rt_cloud); renderer.render(fs_scene,fs_cam);   // half-res raymarch
 		blur_mat.uniforms.tSrc.value=rt_cloud.texture; blur_mat.uniforms.uTexel.value.set(1/rt_cloud.width,1/rt_cloud.height);
 		renderer.setRenderTarget(rt_blur); renderer.render(blur_scene,fs_cam);   // low-pass the cloud layer (kills dither grain)
