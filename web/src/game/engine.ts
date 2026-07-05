@@ -191,11 +191,12 @@ function build_water_detail(){
 	const tex=new THREE.DataTexture(data,S,S,THREE.RGBAFormat);
 	tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.magFilter=THREE.LinearFilter;
 	tex.minFilter=THREE.LinearMipmapLinearFilter; tex.generateMipmaps=true; tex.needsUpdate=true;
+	tex.anisotropy=renderer.capabilities.getMaxAnisotropy();   // default anisotropy (1) blurs the detail flat at oblique view angles — a silky "oily" band that no shader change can fix (same disease as the deck markings)
 	return tex;
 }
 const col_deep2=new THREE.Color(0x11424e);
-const ocean_mat = new THREE.ShaderMaterial({ fog:false,
-	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_deep2:{value:col_deep2}, u_shallow:{value:col_shallow}, u_sky:{value:sky_horizon}, u_fog:{value:sky_horizon}, u_fog_density:{value:0.000075},
+const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
+	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_deep2:{value:col_deep2}, u_shallow:{value:col_shallow}, u_sky:{value:sky_horizon}, u_fog:{value:sky_horizon}, u_fog_density:{value:0.000060},
 		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)},
 		u_detail:{value:build_water_detail()}, u_wind:{value:0.75}, u_rough:{value:0.11}, u_glint:{value:60.0}, u_sss:{value:new THREE.Color(0x16483f)},   // wind 0..1 scales caps+roughness; glint is HDR, soft-kneed in-shader (custom shaders bypass the renderer's ACES pass)
 		u_cloudnoise:{value:null}, u_cloud_on:{value:0.0}, u_cloud_cover:{value:0.42}, u_cloud_mid:{value:1500.0} },   // the SAME 3D noise field the cloud raymarcher samples — shadows land under the rendered clouds
@@ -228,11 +229,11 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false,
 		}
 		float remap(float v,float a,float b,float c,float d){ return c+clamp((v-a)/(b-a),0.0,1.0)*(d-c); }
 		vec3 sky_at(vec3 d){ d=normalize(d); float t=clamp(d.y*1.2,0.0,1.0); vec3 col=mix(u_sky, u_sky*0.55+vec3(0.04,0.10,0.22), pow(t,0.65));
-			float s=max(dot(d,normalize(u_sun)),0.0); col+=vec3(1.0,0.96,0.85)*pow(s,14.0)*0.25; return col; }
+			float s=max(dot(d,normalize(u_sun)),0.0); col+=vec3(1.0,0.96,0.85)*pow(s,14.0)*0.07; return col; }   // sun halo kept faint: reflected via Fresnel it paints a smooth statistics-free pseudo-glint over the Cox-Munk corridor — the oily sheen in the sun zone
 		void main(){ vec3 V=normalize(cameraPosition-v_world); vec3 L=normalize(u_sun);
 			vec2 xz=v_world.xz; float dist=length(cameraPosition-v_world);
 			// --- multi-octave scrolling detail normals, distance-faded (the fine texture MSFS has at every altitude)
-			float f1=exp(-dist/9000.0), f2=exp(-dist/2200.0);
+			float f1=exp(-dist/9000.0), f2=exp(-dist/3200.0);   // the fine octave carries the glint's granulation — fading it early leaves the pool smooth at typical slant ranges
 			vec2 xr3=vec2(0.940*xz.x-0.342*xz.y, 0.342*xz.x+0.940*xz.y);
 			// ALL texture drift runs downwind at dispersion-scaled speeds; anti-repeat is
 			// hex-tiling per octave (see hexslope) — dual incommensurate sampling created a
@@ -242,7 +243,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false,
 			// unwarped tile repeats its exact pattern every 331 m, which reads as a quilt
 			// from altitude no matter how irregular the pattern inside the tile is.
 			vec2 warp=(texture2D(u_detail,xr3/6400.0).rg*2.0-1.0);   // very-low-frequency warp source: strong warp from a busy field marbles the sea into curlicues
-			vec2 xr0=vec2(0.993*xz.x-0.122*xz.y, 0.122*xz.x+0.993*xz.y)+warp*130.0+s3*18.0;
+			vec2 xr0=vec2(0.993*xz.x-0.122*xz.y, 0.122*xz.x+0.993*xz.y)+warp*45.0+s3*8.0;   // gentle meander only: hex-tiling owns anti-repetition now, and a strong warp draws visible mid-band swirl curls
 			vec2 s0=hexslope(xr0/610.0, u_time*vec2(1.10e-3,3.3e-4));
 			// Octaves rotate AND domain-warp on the coarse field: same-direction lattices at
 			// every zoom read as a chessboard; warped, the crests meander like real seas.
@@ -255,7 +256,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false,
 			// there, so their slopes fade from SHADING with range (geometry keeps the swell).
 			vec3 vn=normalize(mix(v_normal,vec3(0.0,1.0,0.0),far*0.85));
 			vec3 N=normalize(vn+vec3(slope.x,0.0,slope.y));
-			float fres=0.02+0.98*pow(1.0-max(dot(N,V),0.0),5.0);
+			float fres=(0.02+0.80*pow(1.0-max(dot(N,V),0.0),5.0))*(1.0-0.35*far);   // grazing reflectance capped AND rolled off at range: a rough sea's wave shadowing keeps the far band from mirroring the pale sky (Cox-Munk), so the horizon keeps its blue
 			float diff=max(dot(N,L),0.0); vec3 body;
 			if(u_water_on>0.5){ vec2 wuv=clamp((v_world.xz+u_water_half)/(2.0*u_water_half),0.0,1.0); body=texture2D(u_water,wuv).rgb*u_water_tint*(0.7+0.3*diff); }
 			else { // deep-water patchiness: slow drift between two deep hues at ~1.5 km scale
@@ -280,7 +281,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false,
 			// Corridor envelope from the SMOOTH normal (vertex waves + a whisper of coarse detail):
 			// the pool's shape stays coherent while the full detail normal supplies the granular
 			// sparkle inside it — two scales, as on a real sea.
-			vec3 Ne=normalize(v_normal+vec3(s0.x,0.0,s0.y)*0.06*u_wind*(1.0-0.85*v_calm));
+			vec3 Ne=v_normal;   // envelope from the swell alone: even a whisper of coarse detail in Ne paints the warp's filament structure across the pool as smooth white swirls — the residual oil
 			vec2 es=-Ne.xz/max(Ne.y,0.2); vec2 dv=es-hs;
 			vec2 az=normalize(L.xz+vec2(1e-4,0.0)); vec2 c=vec2(dot(dv,az),dot(dv,vec2(-az.y,az.x)));
 			float ra=u_rough*(0.55+0.45*u_wind)*mix(1.0,0.4,v_calm);
@@ -288,7 +289,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false,
 			float env=exp(-(c.x*c.x/(rw*rw*3.6)+c.y*c.y/(rw*rw)));
 			vec2 fs=-N.xz/max(N.y,0.2); vec2 dv2=fs-hs; float rs=ra*1.6;   // sparkle sigma must sit near the true facet-slope spread or it never fires
 			float spark=exp(-dot(dv2,dv2)/(rs*rs));
-			float g=env*(0.15+2.6*spark);   // sparkle-dominant: a strong smooth-envelope base paints an oily sheen no breeze-rippled sea has
+			float g=env*(0.10+2.8*spark);   // sparkle-dominant: a strong smooth-envelope base paints an oily sheen no breeze-rippled sea has
 			float fresH=0.02+0.98*pow(1.0-max(dot(H,V),0.0),5.0);
 			vec3 glint=vec3(1.0,0.94,0.80)*g*fresH*u_glint*shade*shade;
 			col+=glint/(1.0+0.22*glint);   // soft knee: HDR bloom saturation without the renderer's ACES (custom shaders bypass it)
@@ -301,19 +302,37 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false,
 			float thin=smoothstep(0.25,0.65,length(slope)*2.0)*0.55;   // gated on real steepness and dimmed: a broad smooth SSS wash reads as oil, not translucency
 			col+=u_sss*(trans*crest*thin*(0.35+0.65*shade)*(1.0-0.7*v_calm))*exp(-dist/6000.0);
 			// --- foam: crest foam on the big vertex waves + wind-scattered whitecaps from the cap-noise channel
-			float capn=texture2D(u_detail,xz/220.0+u_time*vec2(4.35e-3,1.30e-3)).b;  // cap mask (~9-37 m features): one FILLED patch per crest — a finer field fragments each cap into an archipelago of dots
-			float capb=texture2D(u_detail,xz/600.0+u_time*vec2(1.60e-3,4.8e-4)).b;  // rare large caps
+			float capn=texture2D(u_detail,xz/320.0+u_time*vec2(2.99e-3,8.9e-4)).b;  // cap mask (~13-53 m features): one FILLED patch per crest
+			float capb=texture2D(u_detail,xz/700.0+u_time*vec2(1.37e-3,4.1e-4)).b;  // large-cap component, weighted heavier for a fewer-larger mix
 			float capc=texture2D(u_detail,xz/1900.0+u_time*vec2(5.0e-4,1.5e-4)).b; // wind-streak clustering
-			float capv=(0.62*capn+0.38*capb)*(0.6+0.4*capc);
-			float caps=smoothstep(0.58,0.62,capv)*smoothstep(0.3,0.8,u_wind)*(1.0-v_calm)*exp(-dist/12000.0);   // measured: ~1.7% coverage, ~0.6% solid white. NO distance amplification — it was calibrated against SwiftShader's mip blur and floods the range band on a real GPU
+			float capv=(0.45*capn+0.55*capb)*(0.6+0.4*capc);
+			float caps=smoothstep(0.615,0.655,capv)*smoothstep(0.3,0.8,u_wind)*(1.0-v_calm)*exp(-dist/6000.0);   // measured: ~1.1% coverage, ~0.4% solid white — fewer, larger; tapered by ~6 km (mip flattening finishes the job further out)
 			float foam=smoothstep(1.5,2.6,v_height)*(0.55+0.45*hash2(floor(xz*0.6))); foam*=smoothstep(0.15,0.55,1.0-N.y);
 			foam=max(foam,caps*0.9);
 			col=mix(col,vec3(0.92,0.96,1.0)*shade,clamp(foam,0.0,0.85));
-			float fog=1.0-exp(-u_fog_density*u_fog_density*dist*dist); col=mix(col,u_fog,clamp(fog,0.0,1.0));
+			float fog=1.0-exp(-u_fog_density*u_fog_density*dist*dist);
+			fog=max(fog, smoothstep(70000.0,112000.0,dist));   // absolute saturation before the disc rim — a safety net; the density fog completes far earlier
+			col=mix(col,u_fog,clamp(fog,0.0,1.0));
 			gl_FragColor=vec4(col,1.0); }` });
 let ocean=null;
 function build_ocean(seg){ if(ocean){scene.remove(ocean);ocean.geometry.dispose();}
-	const geo=new THREE.PlaneGeometry(40000,40000,seg,seg); geo.rotateX(-Math.PI/2);
+	// Camera-centred polar disc, not a square: a 20 km square rim sits at ~2° depression
+	// and its projected edge curves like low-earth orbit; a 120 km disc puts the apparent
+	// horizon where fog completes (~40 km, ~0.5-1° depression) — straight and constant
+	// in every direction. Quadratic ring spacing keeps the vertex budget near the camera.
+	const rings=seg, sectors=Math.max(64,seg), R=120000;
+	const pos=new Float32Array((rings*sectors+1)*3);
+	let vi=1;
+	for(let i=1;i<=rings;i++){ const r=R*Math.pow(i/rings,2.0);
+		for(let j=0;j<sectors;j++){ const a=j/sectors*Math.PI*2;
+			pos[vi*3]=Math.cos(a)*r; pos[vi*3+1]=0; pos[vi*3+2]=Math.sin(a)*r; vi++; } }
+	const idx=[];
+	for(let j=0;j<sectors;j++) idx.push(0, 1+(j+1)%sectors, 1+j);
+	for(let i=0;i<rings-1;i++){ const a0=1+i*sectors, b0=1+(i+1)*sectors;
+		for(let j=0;j<sectors;j++){ const j2=(j+1)%sectors;
+			idx.push(a0+j, b0+j2, b0+j); idx.push(a0+j, a0+j2, b0+j2); } }
+	const geo=new THREE.BufferGeometry();
+	geo.setAttribute("position", new THREE.BufferAttribute(pos,3)); geo.setIndex(idx);
 	ocean=new THREE.Mesh(geo,ocean_mat); ocean.receiveShadow=true; ocean.frustumCulled=false; scene.add(ocean); }
 build_ocean(cfg.ocean_segments);
 
