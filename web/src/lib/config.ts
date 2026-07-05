@@ -9,7 +9,7 @@
 // their precise types for the menu.
 export interface MissionConfig {
   task: 'free' | 'joust' | 'multiplayer'
-  aircraft: 'fa18f' | 'fa18c'
+  aircraft: 'fa18c' // one shipping aircraft today; the field + catalogue stay so a second type re-adds cleanly (client AIRCRAFT_MODELS, world aircraft.Get, and the menu picker)
   buttons: Record<string, string>
   start: 'air' | 'runway' | 'carrier' | 'landing'
   tod: 'day' | 'night'

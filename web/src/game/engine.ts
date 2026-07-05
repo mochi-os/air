@@ -62,7 +62,7 @@ const SAVE_KEY="joust_cfg_v1";
 // with the align tool and the GLB measurement scripts; a second carrier is
 // one more entry (#100). CARRIER {x,z} is world PLACEMENT, not ship data.
 const CARRIER_MODELS={
-	ford:{ url:"models/carrier.glb", length:300, yaw:110, draft:0.375, deck:19,
+	ford:{ url:"vessels/ford/model.glb", length:300, yaw:110, draft:0.375, deck:19,
 		stroke:85, speed:88,                             // catapult throw and end speed, m / m/s
 		shuttles:[ {x:52.35, z:18.23, h:5.18},           // 1: starboard bow — x toward bow, z + starboard, heading deg (0=+X)
 		           {x:52.74, z:-0.70, h:1.60},           // 2: port bow (the carrier-start spawn)
@@ -651,8 +651,9 @@ const ab_mat=new THREE.MeshBasicMaterial({color:0xffaa44,transparent:true,opacit
 function make_jet(tint){ const g=new THREE.Group(); g.userData.tint=tint;   // afterburner cones only — the airframe is the loaded GLB (no procedural fallback)
 	for(const side of [1,-1]){ const ab=new THREE.Mesh(ab_geo,ab_mat); ab.position.set(-9.3,-0.37,side*0.48); ab.userData.ab=true; g.add(ab); } return g; }   // at the Hornet's twin nozzles (Y raised from -0.95 after the gear extended the model bbox, shifting normalise's centre up ~0.58)
 
-// ============================================================================ optional external GLB model (cosmetic only)
-// Drop a downloaded glTF/GLB next to this file named "fighter.glb" to replace the procedural airframe.
+// ============================================================================ aircraft GLB models (cosmetic only)
+// Each aircraft is web/public/aircraft/<id>/model.glb (served by the app.json "aircraft" action);
+// a new type is one CATALOGUE entry here plus its folder — mirrors world/games/furball/aircraft/<id>/.
 // Source must be UNCOMPRESSED glTF/GLB (no Draco/Meshopt) — Sketchfab's plain "glTF" download works.
 // Per-aircraft models and their animation rigs. Orientation: if a model
 // looks wrong — flies BACKWARDS -> yaw 180; on its SIDE -> roll ±90; nose
@@ -662,11 +663,7 @@ function make_jet(tint){ const g=new THREE.Group(); g.userData.tint=tint;   // a
 // from game state: "drive" picks the state channel, min/max normalise a
 // signed surface deflection (rad) onto the clip span, flip reverses it.
 const AIRCRAFT_MODELS={
-	fa18f:{ url:"models/fighter.glb", length:18.3, yaw:0, pitch:0, roll:0,
-		nose:5.3, wheel:4.31, stance:2.46,   // physics nose-gear x (aircraft/fa18f dataset) and the DRAWN nose-wheel x (measured, bbox-centred): the render shifts by the difference so both land on the shuttle
-		rig:[ { name:"gear", clip:/^gear/, drive:"gear" },
-		      { name:"hook", clip:/^hook/, drive:"hook" } ] },
-	fa18c:{ url:"models/fa18c.glb", length:17.07, yaw:90, pitch:0, roll:0,
+	fa18c:{ url:"aircraft/fa18c/model.glb", length:17.07, yaw:90, pitch:0, roll:0,
 		pose:[ { node:"elevator_percent_key_AN_238_100", quaternion:[0,-0.996,0.087,0] } ],   // the stabs' shared parent is authored mid-animation 180°-flipped (planform-reversed stabs); this is its animation END key — the correct frame. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
 
 		nose:4.9, wheel:2.85, stance:2.57, squat:0.08, flames:true,   // the model's own glow discs carry the burner look, procedural cones stay off (the nozzle helper-cube mesh was removed from the GLB itself — #94)   // physics nose-gear x + the DEPLOYED drawn nose-wheel x and wheel-bottom drop (three.js pose of the gear animation — the STATIC pose is gear-up on this model and lies about both); squat = clip-fraction scrubbed back under weight so the drawn oleo compresses (~0.4 m of wheel travel per unit fraction at the clip tail)
@@ -728,7 +725,7 @@ function rig_build(spec, animations){
 	}
 	return rig;
 }
-function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18f";
+function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	const loaded=fleet[kind]; if(!loaded||g.userData.hasModel===kind) return; g.userData.hasModel=kind;
 	g.children.forEach(c=>{ if(c.userData.body||c.userData.glass) c.visible=false; });   // hide procedural shell, keep afterburner cones
 	const previous=g.children.find(c=>c.userData&&c.userData.model); if(previous) g.remove(previous);   // aircraft swap: drop the old airframe
@@ -745,7 +742,7 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18f";
 			if(r.node){ const o=m.getObjectByName(r.node); if(!o) return null;
 				return { ...r, object:o, quaternion:r.base?new THREE.Quaternion(...r.base):o.quaternion.clone() }; }   // direct hinge drive from the authored pose (or an explicit clean base)
 			const a=mixer.clipAction(r.clip); a.play(); a.paused=true; return { ...r, action:a }; }).filter(Boolean); } }
-function own_aircraft(){ return MULTIPLAYER ? ((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.aircraft)||"fa18f") : (cfg.aircraft||"fa18f"); }   // multiplayer flies what the SERVER spawned (the picker requests a type with #93)
+function own_aircraft(){ return MULTIPLAYER ? ((net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.aircraft)||"fa18c") : (cfg.aircraft||"fa18c"); }   // multiplayer flies what the SERVER spawned; the name still travels on the wire so a second type needs no protocol change
 function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); extras.forEach(s=>apply_model_to(s.group)); position_aircraft_lights(); }   // re-pin the ownship lights to the real airframe
 // --- minimal GLB container surgery (so we never trigger the loader's blob-URL texture path) ---
 function glb_split(ab){ const dv=new DataView(ab); if(dv.getUint32(0,true)!==0x46546C67) throw new Error("not a GLB");
@@ -771,7 +768,7 @@ function model_textures(parts){ const out={}; const images=parts.json.images||[]
 		if(base||emissive) out[m.name]={ base, emissive, hadEmissive:!!m.emissiveTexture }; });
 	return out; }
 async function init_external_model(kind){
-	kind=kind||"fa18f"; const spec=AIRCRAFT_MODELS[kind]||AIRCRAFT_MODELS.fa18f;
+	kind=kind||"fa18c"; const spec=AIRCRAFT_MODELS[kind]||AIRCRAFT_MODELS.fa18c;
 	if(fleet[kind]||fleet_loading[kind]) return fleet_loading[kind]; // one load per aircraft
 	let finish; fleet_loading[kind]=new Promise(r=>{ finish=r; });
 	const tag=spec.url;
@@ -807,7 +804,7 @@ async function init_external_model(kind){
 					}); } });
 				}
 				fleet[kind]={ proto, rig };
-				if(kind===(cfg.aircraft||"fa18f")) model_active=true;   // the loading gate waits on the ownship's aircraft
+				if(kind===(cfg.aircraft||"fa18c")) model_active=true;   // the loading gate waits on the ownship's aircraft
 				apply_model_all(); finish();
 			}catch(e){ finish(); throw new Error("aircraft model: failed to process "+tag+": "+(e&&e.message||e)); } },
 			err=>{ finish(); throw new Error("aircraft model: parse failed for "+tag+" ("+((err&&err.message)||"bad glTF")+") — ensure uncompressed glTF/GLB (no Draco)"); });
@@ -842,10 +839,10 @@ function place_on_cat(i=cat_idx){
 	const sx=CARRIER.x+(cat.x*c+cat.z*s), sz=CARRIER.z+(-cat.x*s+cat.z*c);   // the SHUTTLE, in world
 	const hd=cat.h*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
 	const fwd=new THREE.Vector3(fx*c+fz*s,0,-fx*s+fz*c);
-	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18f).nose||5.3;
+	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
 	const wx=sx-fwd.x*nose, wz=sz-fwd.z*nose;   // park the origin one nose-gear length behind the shuttle
 	const dy=carrier_model?deck_y_at(carrier_model,wx,wz,CARRIER.deckY):CARRIER.deckY;
-	ownship.pos.set(wx, dy+((AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18f).stance||GEAR), wz); ownship.fwd.copy(fwd); ownship.vel_dir.copy(fwd);
+	ownship.pos.set(wx, dy+((AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).stance||GEAR), wz); ownship.fwd.copy(fwd); ownship.vel_dir.copy(fwd);
 	const r=new THREE.Vector3().crossVectors(fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,fwd).normalize();
 	ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(fwd,u,r)); }
 function edit_cat(dt){ const mv=dt*1.2, rot=dt*2.5, cat=SHIP.shuttles[cat_idx]; let ch=false;   // 10x finer positional nudges + heading for precise alignment
@@ -1715,7 +1712,7 @@ const CAT_POS_TOL=3, CAT_HEADING_DOT=0.99;   // "spotted on the cat": within 3 m
 function on_cat_spot(){   // which catapult the aircraft is parked on, lined up down its launch heading — -1 for none (works before the carrier GLB finishes loading — the spots are fixed world coords)
 	if(ownship.launching) return -1;
 	const fh=Math.hypot(ownship.fwd.x,ownship.fwd.z)||1;
-	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18f).nose||5.3;
+	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
 	const nx=ownship.pos.x+ownship.fwd.x/fh*nose, nz=ownship.pos.z+ownship.fwd.z/fh*nose;   // the nose-gear point — the shuttle datum
 	for(let i=0;i<SHIP.shuttles.length;i++){
 		const cs=cat_spot(i); if(Math.hypot(nx-cs.x,nz-cs.z)>CAT_POS_TOL) continue;
@@ -1828,14 +1825,14 @@ function flight_world(){
 	// Multiplayer must mirror the SERVER's world exactly (sea-only, the match
 	// seed and wrap) — a client-side carrier the server doesn't simulate would
 	// poison prediction; deck operations stay single-player for now.
-	if(MULTIPLAYER) return { aircraft:"fa18f", environment:{ seed:(net&&net.welcome&&net.welcome.seed)||1, wrap:(net&&net.wrap)||WORLD_WRAP }, world:{ sea:3 } };
+	if(MULTIPLAYER) return { aircraft:own_aircraft(), environment:{ seed:(net&&net.welcome&&net.welcome.seed)||1, wrap:(net&&net.wrap)||WORLD_WRAP }, world:{ sea:3 } };
 	const fields=[{ height:ISLAND_H+AIRFIELD_FLOAT, strips:physics_strips.map(c=>({ a:{x:c.a[0], z:c.a[1]}, b:{x:c.b[0], z:c.b[1]}, width:c.w })) }];
 	for(const is of obstacles.islands) fields.push({ height:ISLAND_H, coast:is.pts.map(q=>({x:q[0], z:q[1]})) });
 	const carrier={ position:{x:CARRIER.x, y:CARRIER.deckY, z:CARRIER.z}, heading:CARRIER_YD, speed:0,
 		deck:SHIP.outline.map(q=>({x:q[0], z:q[1]})),
 		catapults:SHIP.shuttles.map(c=>({ position:{x:c.x, y:0, z:c.z}, heading:c.h*D2R, stroke:SHIP.stroke, speed:SHIP.speed })),   // shuttles ARE the nose-gear points — the core's native convention
 		wires:SHIP.wires.map(fa=>({ a:{x:fa, y:0, z:strip_lat(fa)-SHIP.halfspan}, b:{x:fa, y:0, z:strip_lat(fa)+SHIP.halfspan} })) };
-	return { aircraft:cfg.aircraft||"fa18f", environment:{ seed:1, wrap:WORLD_WRAP }, world:{ sea:0, fields, carrier } };
+	return { aircraft:cfg.aircraft||"fa18c", environment:{ seed:1, wrap:WORLD_WRAP }, world:{ sea:0, fields, carrier } };
 }
 function sync_core(out){   // core state -> the ownship object every consumer reads (HUD, cameras, weapons, LSO)
 	ownship.pos.set(out[STATE.position],out[STATE.position+1],out[STATE.position+2]);
@@ -2561,8 +2558,7 @@ function draw_pause_banner(){ hctx.save(); hctx.textAlign="center"; hctx.fillSty
 start_mission();
 if(MULTIPLAYER) net_connect();
 __raf = requestAnimationFrame(frame);
-void init_external_model(cfg.aircraft||"fa18f");
-if((cfg.aircraft||"fa18f")!=="fa18f") void init_external_model("fa18f");   // the bandit and remotes still fly the default airframe
+void init_external_model(cfg.aircraft||"fa18c");   // one airframe today: ownship, bandit, and remotes all fly it (a second type would preload here too)
 init_carrier_model();
 void flight_load();   // the wasm flight core loads alongside the GLBs; assets_ready() gates on it
 

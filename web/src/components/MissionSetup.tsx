@@ -274,46 +274,14 @@ function CreditsDialog() {
           </DialogTitle>
         </DialogHeader>
         <div className='text-muted-foreground space-y-3 text-sm'>
-          <p>
-            <Trans>
-              A browser-based multiplayer jet-combat prototype — a shared flight model with
-              server-authoritative netcode (work in progress), rendered with Three.js on WebGL2.
-            </Trans>
-          </p>
           <p className='leading-relaxed'>
             <Trans>
-              Aircraft model <b>“Boeing F/A-18E/F Super Hornet”</b> by <b>andertan</b>{' '}
-              (Sketchfab), licensed under <b>CC BY 4.0</b>. Modified: rescaled, reoriented nose +X,
-              weapons and pylons removed, markings removed, landing gear added, converted to
-              metal-rough.
+              Aircraft model <b>“F/A-18C Hornet”</b> by <b>CreadorDeMu</b> (Sketchfab), licensed
+              under <b>CC BY 4.0</b>. Modified: reoriented nose +X, rescaled to length.
             </Trans>{' '}
             <a
               className='text-primary hover:underline'
-              href='https://sketchfab.com/3d-models/boeing-fa-18ef-super-hornet-f71e9fea01e24fea9b1b380161d21d38'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              Sketchfab
-            </a>{' '}
-            ·{' '}
-            <a
-              className='text-primary hover:underline'
-              href='https://creativecommons.org/licenses/by/4.0/'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              CC BY 4.0
-            </a>
-          </p>
-          <p className='leading-relaxed'>
-            <Trans>
-              Landing-gear wheels from <b>“F/A-18F Super Hornet Fighter Jet”</b> by{' '}
-              <b>Muhamad Mirza Arrafi</b> (Sketchfab), licensed under <b>CC BY 4.0</b>. Modified:
-              wheels extracted and mounted on procedural struts.
-            </Trans>{' '}
-            <a
-              className='text-primary hover:underline'
-              href='https://sketchfab.com/3d-models/fa-18f-super-hornet-fighter-jet-af08dc9320d14a1094476e0a34bd6750'
+              href='https://sketchfab.com/3d-models/fa-18c-hornet-1cc5824033d84185b9bf8b222d9bb068'
               target='_blank'
               rel='noopener noreferrer'
             >
@@ -454,17 +422,6 @@ export function MissionSetup({
                     { value: 'free', label: <Trans>Free flight</Trans> },
                     { value: 'joust', label: <Trans>Joust against AI player</Trans> },
                     { value: 'multiplayer', label: <Trans>Multiplayer</Trans> },
-                  ]}
-                />
-                <SectionLabel>
-                  <Trans>Aircraft</Trans>
-                </SectionLabel>
-                <Choice
-                  value={config.aircraft ?? 'fa18f'}
-                  onChange={(v) => set('aircraft', v)}
-                  options={[
-                    { value: 'fa18c', label: 'F/A-18C' },
-                    { value: 'fa18f', label: 'F/A-18F' },
                   ]}
                 />
                 {config.task === 'multiplayer' && (
