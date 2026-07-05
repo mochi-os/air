@@ -10,6 +10,8 @@
 export interface MissionConfig {
   task: 'free' | 'joust' | 'multiplayer'
   aircraft: 'fa18f' | 'fa18c'
+  buttons: Record<string, string>
+  calibration: Record<string, number[]>
   start: 'air' | 'runway' | 'carrier' | 'landing'
   tod: 'day' | 'night'
   clouds: 'none' | 'cumulus' | 'high_stratus' | 'low_stratus'
@@ -29,13 +31,15 @@ export interface MissionConfig {
   framerate: boolean
   world: string
   callsign: string
-  [key: string]: string | number | boolean
+  [key: string]: string | number | boolean | Record<string, string> | Record<string, number[]>
 }
 
 // Mirrors the engine's defaults so the menu reflects what an unconfigured game uses.
 export const DEFAULT_CONFIG: MissionConfig = {
   task: 'joust',
   aircraft: 'fa18c',
+  buttons: {},
+  calibration: {},
   start: 'carrier',
   tod: 'day',
   clouds: 'none',
