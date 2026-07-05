@@ -143,7 +143,7 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	renderer.toneMappingExposure=p.exp; cloud_mat.uniforms.uExposure.value=p.exp; stars.material.opacity=p.stars;   // the cloud composite uses the same exposure as the scene
 	if(p.water) ocean_mat.uniforms.u_water_tint.value.setRGB(p.water[0],p.water[1],p.water[2]);   // darken the reef/lagoon colour map at night
 	if(p.deep2!==undefined) ocean_mat.uniforms.u_deep2.value.setHex(p.deep2);
-	ocean_mat.uniforms.u_seafog.value.setHex(p.fog).multiplyScalar(0.76);   // the sea's distance colour: distinctly deeper than the sky's horizon so the sea-sky line reads as the darker edge real horizons have
+	ocean_mat.uniforms.u_seafog.value.setHex(p.fog).lerp(new THREE.Color(p.deep), 0.42);   // the sea's distance colour: mildly darker than the sky so the horizon line reads, but light enough that the approach to it SILVERS the way grazing Fresnel really behaves — the defect to avoid is a stripe (brighter than the water beyond it), not brightness itself   // the sea's distance colour: a deep slate CONTINUING the rolled-off mid-band's darkness — a merely-dimmed pale grey sits BRIGHTER than the mid band and reads as a white stripe before the horizon
 	if(p.glint!==undefined){ ocean_mat.uniforms.u_glint.value=p.glint; ocean_mat.uniforms.u_rough.value=p.rough; }
 	if(p.sss!==undefined) ocean_mat.uniforms.u_sss.value.setHex(p.sss);
 }
@@ -213,6 +213,10 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		wp.y+=h; v_height=h; v_normal=normalize(vec3(-gt.x,1.0,-gt.y)); v_world=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }`,
 	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_sky,u_fog,u_water_tint,u_sss,u_seafog; uniform float u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_rough,u_glint,u_cloud_on,u_cloud_cover,u_cloud_mid; uniform sampler2D u_water,u_detail; uniform highp sampler3D u_cloudnoise; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		float hash2(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+		float swell(vec2 p){   // the two SHADING swells, analytically — lets foam ask "is the crest here / was it here just now" at any point
+			float h=2.0*sin(dot(normalize(vec2(1.0,0.3)),p)*(6.2831853/420.0)+u_time*(90.0/420.0));
+			h+=1.1*sin(dot(normalize(vec2(0.85,0.55)),p)*(6.2831853/233.0)+u_time*(60.0/233.0));
+			return h; }
 		vec2 hashcell(vec2 p){ return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453); }
 		// Stochastic tiling (Heitz/Deliot): static triangle lattice, per-cell hashed texture
 		// offsets, variance-preserving blend. Kills tile repetition WITHOUT the beat envelope
@@ -234,7 +238,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		void main(){ vec3 V=normalize(cameraPosition-v_world); vec3 L=normalize(u_sun);
 			vec2 xz=v_world.xz; float dist=length(cameraPosition-v_world);
 			// --- multi-octave scrolling detail normals, distance-faded (the fine texture MSFS has at every altitude)
-			float f1=exp(-dist/9000.0), f2=exp(-dist/3200.0);   // the fine octave carries the glint's granulation — fading it early leaves the pool smooth at typical slant ranges
+			float f1=exp(-dist/22000.0), f2=exp(-dist/6500.0);   // the fine octave must outlive the 1-5 km ring: grazing Fresnel is hypersensitive to the glass-smooth swell faces left behind when it fades — pale mirror stripes along every crest   // f1 reaches the flight levels: from 30k ft NO pixel is nearer than 9 km, and sub-10 km fades render the whole sea featureless grey up there
 			vec2 xr3=vec2(0.940*xz.x-0.342*xz.y, 0.342*xz.x+0.940*xz.y);
 			// ALL texture drift runs downwind at dispersion-scaled speeds; anti-repeat is
 			// hex-tiling per octave (see hexslope) — dual incommensurate sampling created a
@@ -250,18 +254,19 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			// every zoom read as a chessboard; warped, the crests meander like real seas.
 			vec2 xr1=vec2(0.966*xz.x+0.259*xz.y, -0.259*xz.x+0.966*xz.y)+warp*34.0+s0*5.0;   // ±15°: rotations must preserve the wind axis or the trains cross
 			vec2 s1=hexslope(xr1/90.0, u_time*vec2(1.17e-2,3.5e-3));
-			float far=smoothstep(2000.0,9000.0,dist);
-			vec2 slope=(s0*0.34 + s1*0.48*f2 + s3*0.21*far)*u_wind*(1.0-0.85*v_calm);   // near Cox-Munk slope variance for a working breeze: too little and the Fresnel sky reflection stays coherent — the oily gloss
+			float far=smoothstep(3000.0,14000.0,dist);
+			vec2 slope=(s0*0.34 + s1*0.48*f2 + s3*0.28*far)*u_wind*(1.0-0.85*v_calm);   // near Cox-Munk slope variance for a working breeze: too little and the Fresnel sky reflection stays coherent — the oily gloss
 			// Shading normal: the four fixed-direction vertex waves print a herringbone on the
 			// distance band once the detail octaves mip away — real seas read isotropic out
 			// there, so their slopes fade from SHADING with range (geometry keeps the swell).
-			vec3 vn=normalize(mix(v_normal,vec3(0.0,1.0,0.0),far*0.85));
+			vec3 vn=normalize(mix(v_normal,vec3(0.0,1.0,0.0),far*0.7));
 			vec3 N=normalize(vn+vec3(slope.x,0.0,slope.y));
-			float fres=(0.02+0.80*pow(1.0-max(dot(N,V),0.0),5.0))*(1.0-0.70*far);   // grazing reflectance capped AND rolled off at range: a rough sea's wave shadowing keeps the far band from mirroring the pale sky (Cox-Munk), so the horizon keeps its blue
+			float fres=(0.02+0.80*pow(1.0-max(dot(N,V),0.0),5.0))*(1.0-0.58*far);   // grazing mirror reduced by wave shadowing but NOT killed: the sea silvers smoothly toward the horizon, it just must never form a stripe brighter than the water beyond it   // grazing reflectance capped AND rolled off at range: a rough sea's wave shadowing keeps the far band from mirroring the pale sky (Cox-Munk), so the horizon keeps its blue
 			float diff=max(dot(N,L),0.0); vec3 body;
 			if(u_water_on>0.5){ vec2 wuv=clamp((v_world.xz+u_water_half)/(2.0*u_water_half),0.0,1.0); body=texture2D(u_water,wuv).rgb*u_water_tint*(0.7+0.3*diff); }
 			else { // deep-water patchiness: slow drift between two deep hues at ~1.5 km scale
 				float swatch=texture2D(u_detail,xz/1470.0+u_time*vec2(1.3e-4,3.9e-5)).a;   // 'patch' is a GLSL ES 3.0 reserved word
+				swatch=mix(swatch, texture2D(u_detail,vec2(xz.y,-xz.x)/5300.0).a, far*0.7);   // kilometre-scale colour variation survives the mip flattening at flight-level slants
 				vec3 deep=mix(u_deep,u_deep2,smoothstep(0.35,0.65,swatch));
 				body=mix(deep,u_shallow,diff*0.8+0.2); }
 			float shallow=clamp((body.g-0.25)*2.2,0.0,1.0);   // turquoise/foam → damp the sky reflection so the colour shows
@@ -299,7 +304,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			// waves read as liquid up close (MSFS-style SSS, cheapened to one term).
 			vec3 Lb=normalize(vec3(L.x,0.25,L.z));
 			float trans=pow(max(dot(V,-Lb),0.0),3.0);
-			float crest=clamp(v_height/3.0+0.3,0.0,1.2);
+			float crest=clamp(v_height/3.0+0.12,0.0,1.2);   // low baseline: an unconditional floor paints a faint wash along the same near-grazing crest bands
 			float thin=smoothstep(0.25,0.65,length(slope)*2.0)*0.55;   // gated on real steepness and dimmed: a broad smooth SSS wash reads as oil, not translucency
 			col+=u_sss*(trans*crest*thin*(0.35+0.65*shade)*(1.0-0.7*v_calm))*exp(-dist/6000.0);
 			// --- foam: crest foam on the big vertex waves + wind-scattered whitecaps from the cap-noise channel
@@ -314,7 +319,20 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			float capc=texture2D(u_detail,xz/1900.0+u_time*vec2(5.0e-4,1.5e-4)).b; // wind-streak clustering
 			float hv=(0.45*texture2D(u_detail,hu/320.0).b+0.55*texture2D(u_detail,hu/700.0).b)*(0.6+0.4*capc);
 			float tv=(0.45*texture2D(u_detail,tu/320.0).b+0.55*texture2D(u_detail,tu/700.0).b)*(0.6+0.4*capc);
-			float caps=max(smoothstep(0.615,0.655,hv), 0.5*smoothstep(0.60,0.65,tv))*smoothstep(0.3,0.8,u_wind)*(1.0-v_calm)*exp(-dist/6000.0);   // measured: heads ~0.5%, tails ~0.8% at half weight   // measured: ~1.1% coverage, ~0.4% solid white — fewer, larger; tapered by ~6 km (mip flattening finishes the job further out)
+			float head=smoothstep(0.575,0.615,hv), tail=smoothstep(0.565,0.615,tv);
+			// Caps ride the big swell crests, and FOAM PERSISTS: heads gate on the crest
+			// being here now; tails also pass if the crest is just DOWNWIND (it recently
+			// swept this spot), so each break leaves a fading streak behind the wave for
+			// seconds instead of flashing out with the crest. Stateless memory — the
+			// swell is analytic, so "where was the crest" is a question, not a history.
+			// (An instantaneous steepness gate is wrong: sines are steepest at ZERO
+			// height, so ridge*steep only passed in narrow flickering windows.)
+			float ridge=smoothstep(0.55,1.8,swell(xzc));
+			float ridge1=smoothstep(0.55,1.8,swell(xzc+aw*24.0));
+			float ridge2=smoothstep(0.55,1.8,swell(xzc+aw*52.0));
+			float lee=0.7+0.3*smoothstep(0.0,0.10,dot(slope,aw));
+			float carry=max(ridge, max(ridge1*0.65, ridge2*0.35));
+			float caps=max(head*(0.10+0.90*ridge*lee), 0.5*tail*(0.10+0.90*carry*lee))*smoothstep(0.3,0.8,u_wind)*(1.0-v_calm)*exp(-dist/6000.0);   // measured: ~1.1% coverage, ~0.4% solid white — fewer, larger; tapered by ~6 km (mip flattening finishes the job further out)
 			float foam=smoothstep(1.5,2.6,v_height)*(0.55+0.45*hash2(floor(xz*0.6))); foam*=smoothstep(0.15,0.55,1.0-N.y);
 			foam=max(foam,caps*0.9);
 			col=mix(col,vec3(0.92,0.96,1.0)*shade,clamp(foam,0.0,0.85));
