@@ -143,6 +143,7 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	renderer.toneMappingExposure=p.exp; cloud_mat.uniforms.uExposure.value=p.exp; stars.material.opacity=p.stars;   // the cloud composite uses the same exposure as the scene
 	if(p.water) ocean_mat.uniforms.u_water_tint.value.setRGB(p.water[0],p.water[1],p.water[2]);   // darken the reef/lagoon colour map at night
 	if(p.deep2!==undefined) ocean_mat.uniforms.u_deep2.value.setHex(p.deep2);
+	ocean_mat.uniforms.u_seafog.value.setHex(p.fog).multiplyScalar(0.76);   // the sea's distance colour: distinctly deeper than the sky's horizon so the sea-sky line reads as the darker edge real horizons have
 	if(p.glint!==undefined){ ocean_mat.uniforms.u_glint.value=p.glint; ocean_mat.uniforms.u_rough.value=p.rough; }
 	if(p.sss!==undefined) ocean_mat.uniforms.u_sss.value.setHex(p.sss);
 }
@@ -197,7 +198,7 @@ function build_water_detail(){
 const col_deep2=new THREE.Color(0x11424e);
 const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_deep2:{value:col_deep2}, u_shallow:{value:col_shallow}, u_sky:{value:sky_horizon}, u_fog:{value:sky_horizon}, u_fog_density:{value:0.000060},
-		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)},
+		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)}, u_seafog:{value:new THREE.Color(0xa7bccc)},
 		u_detail:{value:build_water_detail()}, u_wind:{value:0.75}, u_rough:{value:0.11}, u_glint:{value:60.0}, u_sss:{value:new THREE.Color(0x16483f)},   // wind 0..1 scales caps+roughness; glint is HDR, soft-kneed in-shader (custom shaders bypass the renderer's ACES pass)
 		u_cloudnoise:{value:null}, u_cloud_on:{value:0.0}, u_cloud_cover:{value:0.42}, u_cloud_mid:{value:1500.0} },   // the SAME 3D noise field the cloud raymarcher samples — shadows land under the rendered clouds
 	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
@@ -210,7 +211,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		h+=wave(xz,W2,0.5,g); h+=wave(xz,W3,0.25,g);   // the short waves DISPLACE but do not shade: their slope interference is the moving quilt; the texture octaves own shading at those scales
 		h*=ws; gt*=ws;
 		wp.y+=h; v_height=h; v_normal=normalize(vec3(-gt.x,1.0,-gt.y)); v_world=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }`,
-	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_sky,u_fog,u_water_tint,u_sss; uniform float u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_rough,u_glint,u_cloud_on,u_cloud_cover,u_cloud_mid; uniform sampler2D u_water,u_detail; uniform highp sampler3D u_cloudnoise; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
+	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_sky,u_fog,u_water_tint,u_sss,u_seafog; uniform float u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_rough,u_glint,u_cloud_on,u_cloud_cover,u_cloud_mid; uniform sampler2D u_water,u_detail; uniform highp sampler3D u_cloudnoise; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		float hash2(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
 		vec2 hashcell(vec2 p){ return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453); }
 		// Stochastic tiling (Heitz/Deliot): static triangle lattice, per-cell hashed texture
@@ -256,7 +257,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			// there, so their slopes fade from SHADING with range (geometry keeps the swell).
 			vec3 vn=normalize(mix(v_normal,vec3(0.0,1.0,0.0),far*0.85));
 			vec3 N=normalize(vn+vec3(slope.x,0.0,slope.y));
-			float fres=(0.02+0.80*pow(1.0-max(dot(N,V),0.0),5.0))*(1.0-0.35*far);   // grazing reflectance capped AND rolled off at range: a rough sea's wave shadowing keeps the far band from mirroring the pale sky (Cox-Munk), so the horizon keeps its blue
+			float fres=(0.02+0.80*pow(1.0-max(dot(N,V),0.0),5.0))*(1.0-0.70*far);   // grazing reflectance capped AND rolled off at range: a rough sea's wave shadowing keeps the far band from mirroring the pale sky (Cox-Munk), so the horizon keeps its blue
 			float diff=max(dot(N,L),0.0); vec3 body;
 			if(u_water_on>0.5){ vec2 wuv=clamp((v_world.xz+u_water_half)/(2.0*u_water_half),0.0,1.0); body=texture2D(u_water,wuv).rgb*u_water_tint*(0.7+0.3*diff); }
 			else { // deep-water patchiness: slow drift between two deep hues at ~1.5 km scale
@@ -302,17 +303,24 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			float thin=smoothstep(0.25,0.65,length(slope)*2.0)*0.55;   // gated on real steepness and dimmed: a broad smooth SSS wash reads as oil, not translucency
 			col+=u_sss*(trans*crest*thin*(0.35+0.65*shade)*(1.0-0.7*v_calm))*exp(-dist/6000.0);
 			// --- foam: crest foam on the big vertex waves + wind-scattered whitecaps from the cap-noise channel
-			float capn=texture2D(u_detail,xz/320.0+u_time*vec2(2.99e-3,8.9e-4)).b;  // cap mask (~13-53 m features): one FILLED patch per crest
-			float capb=texture2D(u_detail,xz/700.0+u_time*vec2(1.37e-3,4.1e-4)).b;  // large-cap component, weighted heavier for a fewer-larger mix
+			// Real whitecaps are commas: born as a crest line elongated CROSS-wind (the
+			// breaking front), decaying into a dimmer foam streak stretched ALONG-wind
+			// behind it. Head = along-wind-compressed field; tail = upwind-shifted,
+			// along-wind-stretched field at half strength.
+			vec2 aw=vec2(0.958,0.286);
+			vec2 xzc=xz-u_time*aw*1.1;   // the cap pattern drifts downwind
+			float alo=dot(xzc,aw), cro=dot(xzc,vec2(-aw.y,aw.x));
+			vec2 hu=vec2(alo*2.2,cro), tu=vec2((alo-16.0)*0.45,cro*1.5);
 			float capc=texture2D(u_detail,xz/1900.0+u_time*vec2(5.0e-4,1.5e-4)).b; // wind-streak clustering
-			float capv=(0.45*capn+0.55*capb)*(0.6+0.4*capc);
-			float caps=smoothstep(0.615,0.655,capv)*smoothstep(0.3,0.8,u_wind)*(1.0-v_calm)*exp(-dist/6000.0);   // measured: ~1.1% coverage, ~0.4% solid white — fewer, larger; tapered by ~6 km (mip flattening finishes the job further out)
+			float hv=(0.45*texture2D(u_detail,hu/320.0).b+0.55*texture2D(u_detail,hu/700.0).b)*(0.6+0.4*capc);
+			float tv=(0.45*texture2D(u_detail,tu/320.0).b+0.55*texture2D(u_detail,tu/700.0).b)*(0.6+0.4*capc);
+			float caps=max(smoothstep(0.615,0.655,hv), 0.5*smoothstep(0.60,0.65,tv))*smoothstep(0.3,0.8,u_wind)*(1.0-v_calm)*exp(-dist/6000.0);   // measured: heads ~0.5%, tails ~0.8% at half weight   // measured: ~1.1% coverage, ~0.4% solid white — fewer, larger; tapered by ~6 km (mip flattening finishes the job further out)
 			float foam=smoothstep(1.5,2.6,v_height)*(0.55+0.45*hash2(floor(xz*0.6))); foam*=smoothstep(0.15,0.55,1.0-N.y);
 			foam=max(foam,caps*0.9);
 			col=mix(col,vec3(0.92,0.96,1.0)*shade,clamp(foam,0.0,0.85));
 			float fog=1.0-exp(-u_fog_density*u_fog_density*dist*dist);
 			fog=max(fog, smoothstep(70000.0,112000.0,dist));   // absolute saturation before the disc rim — a safety net; the density fog completes far earlier
-			col=mix(col,u_fog,clamp(fog,0.0,1.0));
+			col=mix(col,u_seafog,clamp(fog,0.0,1.0));   // the sea fogs to a slightly DEEPER colour than the sky: the real horizon is a visibly darker line, not a white merge
 			gl_FragColor=vec4(col,1.0); }` });
 let ocean=null;
 function build_ocean(seg){ if(ocean){scene.remove(ocean);ocean.geometry.dispose();}
