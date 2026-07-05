@@ -197,7 +197,7 @@ function build_water_detail(){
 }
 const col_deep2=new THREE.Color(0x11424e);
 const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
-	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_deep2:{value:col_deep2}, u_shallow:{value:col_shallow}, u_sky:{value:sky_horizon}, u_fog:{value:sky_horizon}, u_fog_density:{value:0.000060},
+	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_deep2:{value:col_deep2}, u_shallow:{value:col_shallow}, u_sky:{value:sky_horizon}, u_fog_density:{value:0.000060},
 		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)}, u_seafog:{value:new THREE.Color(0xa7bccc)},
 		u_detail:{value:build_water_detail()}, u_wind:{value:0.75}, u_rough:{value:0.11}, u_glint:{value:60.0}, u_sss:{value:new THREE.Color(0x16483f)},   // wind 0..1 scales caps+roughness; glint is HDR, soft-kneed in-shader (custom shaders bypass the renderer's ACES pass)
 		u_cloudnoise:{value:null}, u_cloud_on:{value:0.0}, u_cloud_cover:{value:0.42}, u_cloud_mid:{value:1500.0} },   // the SAME 3D noise field the cloud raymarcher samples — shadows land under the rendered clouds
@@ -211,7 +211,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		h+=wave(xz,W2,0.5,g); h+=wave(xz,W3,0.25,g);   // the short waves DISPLACE but do not shade: their slope interference is the moving quilt; the texture octaves own shading at those scales
 		h*=ws; gt*=ws;
 		wp.y+=h; v_height=h; v_normal=normalize(vec3(-gt.x,1.0,-gt.y)); v_world=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }`,
-	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_sky,u_fog,u_water_tint,u_sss,u_seafog; uniform float u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_rough,u_glint,u_cloud_on,u_cloud_cover,u_cloud_mid; uniform sampler2D u_water,u_detail; uniform highp sampler3D u_cloudnoise; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
+	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_sky,u_water_tint,u_sss,u_seafog; uniform float u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_rough,u_glint,u_cloud_on,u_cloud_cover,u_cloud_mid; uniform sampler2D u_water,u_detail; uniform highp sampler3D u_cloudnoise; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		float hash2(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
 		float swell(vec2 p){   // the two SHADING swells, analytically — lets foam ask "is the crest here / was it here just now" at any point
 			float h=2.0*sin(dot(normalize(vec2(1.0,0.3)),p)*(6.2831853/420.0)+u_time*(90.0/420.0));
@@ -238,7 +238,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		void main(){ vec3 V=normalize(cameraPosition-v_world); vec3 L=normalize(u_sun);
 			vec2 xz=v_world.xz; float dist=length(cameraPosition-v_world);
 			// --- multi-octave scrolling detail normals, distance-faded (the fine texture MSFS has at every altitude)
-			float f1=exp(-dist/22000.0), f2=exp(-dist/6500.0);   // the fine octave must outlive the 1-5 km ring: grazing Fresnel is hypersensitive to the glass-smooth swell faces left behind when it fades — pale mirror stripes along every crest   // f1 reaches the flight levels: from 30k ft NO pixel is nearer than 9 km, and sub-10 km fades render the whole sea featureless grey up there
+			float f2=exp(-dist/6500.0);   // the fine octave outlives the 1-5 km ring: grazing Fresnel is hypersensitive to the glass-smooth swell faces left when it fades (pale mirror stripes along every crest)
 			vec2 xr3=vec2(0.940*xz.x-0.342*xz.y, 0.342*xz.x+0.940*xz.y);
 			// ALL texture drift runs downwind at dispersion-scaled speeds; anti-repeat is
 			// hex-tiling per octave (see hexslope) — dual incommensurate sampling created a
@@ -1552,7 +1552,7 @@ const pad_center=[], pad_range=[], pad_window=[];   // self-calibration: centres
 let pad_centred=false, pad_buttons=[], pad_dirty=0;
 const pad_slider={ lo:1e9, hi:-1e9 };   // the throttle slider learns its true end stops (worn pots stop far short of ±1 — full back read 42%)
 function pad_recalibrate(){ pad_center.length=0; pad_range.length=0; pad_window.length=0; pad_centred=false; pad_slider.lo=1e9; pad_slider.hi=-1e9;
-	if(typeof cfg==="object"&&cfg.calibration) cfg.calibration={}; save_cfg(); notice("JOYSTICK RESET — centre the stick"); }
+	notice("JOYSTICK RESET — centre the stick"); }
 if(typeof window!=="undefined") window.furball_recalibrate=pad_recalibrate;   // the Controls tab's Recalibrate button
 function read_gamepad(){ const pads=(navigator.getGamepads&&navigator.getGamepads())||[];   // #74: any connected pad with enough axes; browsers expose pads only after a button press
 	for(const p of pads){ if(p&&p.connected&&p.axes.length>=2) return p; } return null; }
