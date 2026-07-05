@@ -131,8 +131,8 @@ stars.frustumCulled=false; scene.add(stars);
 
 // time-of-day presets + apply
 const TOD={
-	day:  { sun:[0,0.866,0.5], sunCol:0xfff4e0, sunI:2.4,  disc:0xfff3da, hor:0xbfd8e8, zen:0x2a5a8c, fog:0xc4d6e2, deep:0x0a2a3a, shal:0x1d6e86, hs:0xbcd6ec, hg:0x35506a, hi:0.9,  ac:0x405060, ai:0.4,  exp:1.05, stars:0.0,  water:[1.0,1.0,1.0] },   // sun due south at 60° — high and exactly abeam an east-west joust merge, so neither pilot starts up-sun (fair by mirror symmetry; realistic for 28°N)
-	night:{ sun:[0,0.866,0.5], sunCol:0x9fb6e0, sunI:0.32, disc:0xcdd8f0, hor:0x0f1626, zen:0x05080f, fog:0x0a111c, deep:0x030810, shal:0x0a2030, hs:0x1a2742, hg:0x05060a, hi:0.32, ac:0x0a0e18, ai:0.22, exp:1.18, stars:0.95, water:[0.30,0.36,0.50] },   // the moon takes the same slot at night — same fairness geometry, and no low glitter path on the sea
+	day:  { sun:[0,0.866,0.5], sunCol:0xfff4e0, sunI:2.4,  disc:0xfff3da, hor:0xbfd8e8, zen:0x2a5a8c, fog:0xc4d6e2, deep:0x0a2a3a, shal:0x1d6e86, hs:0xbcd6ec, hg:0x35506a, hi:0.9,  ac:0x405060, ai:0.4,  exp:1.05, stars:0.0,  water:[1.0,1.0,1.0], deep2:0x11424e, glint:60.0, rough:0.11, sss:0x16483f },   // sun due south at 60° — high and exactly abeam an east-west joust merge, so neither pilot starts up-sun (fair by mirror symmetry; realistic for 28°N)
+	night:{ sun:[0,0.866,0.5], sunCol:0x9fb6e0, sunI:0.32, disc:0xcdd8f0, hor:0x0f1626, zen:0x05080f, fog:0x0a111c, deep:0x030810, shal:0x0a2030, hs:0x1a2742, hg:0x05060a, hi:0.32, ac:0x0a0e18, ai:0.22, exp:1.18, stars:0.95, water:[0.30,0.36,0.50], deep2:0x05101a, glint:14.0, rough:0.07, sss:0x03100d },   // the moon takes the same slot at night — same fairness geometry, and no low glitter path on the sea
 };
 function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	sun_dir.set(p.sun[0],p.sun[1],p.sun[2]).normalize(); sun.position.copy(sun_dir).multiplyScalar(4000); sun.target.position.set(0,0,0);
@@ -142,11 +142,63 @@ function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
 	hemi.color.setHex(p.hs); hemi.groundColor.setHex(p.hg); hemi.intensity=p.hi; amb.color.setHex(p.ac); amb.intensity=p.ai;
 	renderer.toneMappingExposure=p.exp; cloud_mat.uniforms.uExposure.value=p.exp; stars.material.opacity=p.stars;   // the cloud composite uses the same exposure as the scene
 	if(p.water) ocean_mat.uniforms.u_water_tint.value.setRGB(p.water[0],p.water[1],p.water[2]);   // darken the reef/lagoon colour map at night
+	if(p.deep2!==undefined) ocean_mat.uniforms.u_deep2.value.setHex(p.deep2);
+	if(p.glint!==undefined){ ocean_mat.uniforms.u_glint.value=p.glint; ocean_mat.uniforms.u_rough.value=p.rough; }
+	if(p.sss!==undefined) ocean_mat.uniforms.u_sss.value.setHex(p.sss);
 }
 
+// Tileable water detail texture, generated at init (no asset): RG = surface-normal
+// slope of a periodic multi-wave heightfield (the per-pixel ripple detail at three
+// scrolled scales), B = mid-scale noise (whitecap mask), A = independent low-noise
+// (deep-water colour patchiness). Periodic by construction: integer wavenumbers only.
+function build_water_detail(){
+	const S=512, data=new Uint8Array(S*S*4);
+	let seed=0x1234567;
+	const rnd=()=>{ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; };
+	const mkwaves=(K,fmax,red)=>{ const w=[]; for(let i=0;i<K;i++){ let fx=0,fz=0;
+		while(fx===0&&fz===0){ fx=Math.round((rnd()*2-1)*fmax); fz=Math.round((rnd()*2-1)*fmax); }
+		w.push([fx,fz,rnd()*Math.PI*2,(0.6+0.7*rnd())/Math.pow(Math.hypot(fx,fz),red)]); } return w; };
+	// A dense red spectrum: few modes = visible plane-wave plaid (the "chessboard sea").
+	// Wide frequency band per tile: the repeat period in the world equals the sampling
+	// scale, so richness INSIDE the tile is what separates feature size from repeat size.
+	// Directional spectrum: real seas concentrate energy around the wind direction
+	// (crests elongate cross-wind, break irregularly along it). An isotropic dense
+	// field is a Gaussian noise — it reads as fingerprint swirls, not waves.
+	const band=(K,flo,fhi,red,dir,spread)=>{ const w=[]; for(let i=0;i<K;i++){
+		const f=flo*Math.pow(fhi/flo,rnd());
+		const th=dir+(rnd()+rnd()+rnd()-1.5)*spread;   // triangular-ish spread about the wind
+		const fx=Math.round(f*Math.cos(th)), fz=Math.round(f*Math.sin(th));
+		if(fx===0&&fz===0){ i--; continue; }
+		w.push([fx,fz,rnd()*Math.PI*2,(0.6+0.7*rnd())/Math.pow(Math.hypot(fx,fz),red)]); } return w; };
+	const WIND=0.29;   // matches the primary vertex swell W0 (1,0.3)
+	const H=band(170,3,40,1.15,WIND,0.9), B=band(26,6,24,1.0,WIND,1.4), A=mkwaves(8,3,1.0);
+	const T=Math.PI*2/S;
+	// Two passes: accumulate raw fields, then normalise each channel to its own
+	// max so nothing clips (clipped slopes read as ±45° wavelets and the whole
+	// sea turns into Fresnel mirror). Decoded range is ±1; the shader weights
+	// bring typical slopes to realistic ~0.1-0.2.
+	const raw=new Float32Array(S*S*4); const mx=[1e-6,1e-6,1e-6,1e-6];
+	for(let y=0;y<S;y++) for(let x=0;x<S;x++){
+		let gx=0,gz=0,b=0,a=0;
+		for(const [fx,fz,ph,am] of H){ const c=Math.cos((x*fx+y*fz)*T+ph); gx+=am*fx*c; gz+=am*fz*c; }
+		for(const [fx,fz,ph,am] of B) b+=am*Math.sin((x*fx+y*fz)*T+ph);
+		for(const [fx,fz,ph,am] of A) a+=am*Math.sin((x*fx+y*fz)*T+ph);
+		const o=(y*S+x)*4; raw[o]=gx; raw[o+1]=gz; raw[o+2]=b; raw[o+3]=a;
+		for(let k=0;k<4;k++) mx[k]=Math.max(mx[k],Math.abs(raw[o+k]));
+	}
+	for(let i=0;i<S*S;i++) for(let k=0;k<4;k++)
+		data[i*4+k]=Math.round(127.5+raw[i*4+k]/mx[k]*127.4);
+	const tex=new THREE.DataTexture(data,S,S,THREE.RGBAFormat);
+	tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.magFilter=THREE.LinearFilter;
+	tex.minFilter=THREE.LinearMipmapLinearFilter; tex.generateMipmaps=true; tex.needsUpdate=true;
+	return tex;
+}
+const col_deep2=new THREE.Color(0x11424e);
 const ocean_mat = new THREE.ShaderMaterial({ fog:false,
-	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_shallow:{value:col_shallow}, u_sky:{value:sky_horizon}, u_fog:{value:sky_horizon}, u_fog_density:{value:0.000075},
-		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)} },   // Midway imagery (maps/midway/map.jpg) + atoll-interior calm mask (lagoon.png), see map.json region_half
+	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_deep2:{value:col_deep2}, u_shallow:{value:col_shallow}, u_sky:{value:sky_horizon}, u_fog:{value:sky_horizon}, u_fog_density:{value:0.000075},
+		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)},
+		u_detail:{value:build_water_detail()}, u_wind:{value:0.75}, u_rough:{value:0.11}, u_glint:{value:60.0}, u_sss:{value:new THREE.Color(0x16483f)},   // wind 0..1 scales caps+roughness; glint is HDR, soft-kneed in-shader (custom shaders bypass the renderer's ACES pass)
+		u_cloudnoise:{value:null}, u_cloud_on:{value:0.0}, u_cloud_cover:{value:0.42}, u_cloud_mid:{value:1500.0} },   // the SAME 3D noise field the cloud raymarcher samples — shadows land under the rendered clouds
 	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		const vec4 W0=vec4(1.0,0.3,420.0,90.0); const vec4 W1=vec4(-0.7,0.7,230.0,60.0); const vec4 W2=vec4(0.4,-0.9,110.0,38.0); const vec4 W3=vec4(-0.2,0.5,55.0,24.0);
 		float wave(vec2 p,vec4 w,float amp,out vec2 grad){ vec2 dir=normalize(w.xy); float k=6.2831853/w.z; float ph=dot(dir,p)*k+u_time*(w.w/w.z); grad=dir*(k*amp*cos(ph)); return amp*sin(ph); }
@@ -156,27 +208,101 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false,
 		h+=wave(xz,W0,2.0,g);gt+=g; h+=wave(xz,W1,1.1,g);gt+=g; h+=wave(xz,W2,0.5,g);gt+=g; h+=wave(xz,W3,0.25,g);gt+=g;
 		h*=ws; gt*=ws;
 		wp.y+=h; v_height=h; v_normal=normalize(vec3(-gt.x,1.0,-gt.y)); v_world=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }`,
-	fragmentShader:`uniform vec3 u_sun,u_deep,u_shallow,u_sky,u_fog,u_water_tint; uniform float u_fog_density,u_time,u_water_half,u_water_on; uniform sampler2D u_water; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
-		vec2 ripple(vec2 p,vec2 dir,float wl,float amp,float spd){ dir=normalize(dir); float k=6.2831853/wl; float ph=dot(dir,p)*k+u_time*spd; return dir*(k*amp*cos(ph)); }
+	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_sky,u_fog,u_water_tint,u_sss; uniform float u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_rough,u_glint,u_cloud_on,u_cloud_cover,u_cloud_mid; uniform sampler2D u_water,u_detail; uniform highp sampler3D u_cloudnoise; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		float hash2(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+		float remap(float v,float a,float b,float c,float d){ return c+clamp((v-a)/(b-a),0.0,1.0)*(d-c); }
 		vec3 sky_at(vec3 d){ d=normalize(d); float t=clamp(d.y*1.2,0.0,1.0); vec3 col=mix(u_sky, u_sky*0.55+vec3(0.04,0.10,0.22), pow(t,0.65));
-			float s=max(dot(d,normalize(u_sun)),0.0); col+=vec3(1.0,0.95,0.8)*pow(s,500.0)*4.0; col+=vec3(1.0,0.96,0.85)*pow(s,14.0)*0.25; return col; }
+			float s=max(dot(d,normalize(u_sun)),0.0); col+=vec3(1.0,0.96,0.85)*pow(s,14.0)*0.25; return col; }
 		void main(){ vec3 V=normalize(cameraPosition-v_world); vec3 L=normalize(u_sun);
-			vec2 xz=v_world.xz; vec2 g=vec2(0.0);
-			g+=ripple(xz,vec2(1.0,0.4),26.0,0.06,1.2); g+=ripple(xz,vec2(-0.6,1.0),15.0,0.04,1.7); g+=ripple(xz,vec2(0.8,-0.7),8.0,0.025,2.2);
-				g*=(1.0-0.8*v_calm);   // calm lagoon: damp surface ripples too
-			vec3 N=normalize(v_normal+vec3(-g.x,0.0,-g.y));
+			vec2 xz=v_world.xz; float dist=length(cameraPosition-v_world);
+			// --- multi-octave scrolling detail normals, distance-faded (the fine texture MSFS has at every altitude)
+			float f1=exp(-dist/9000.0), f2=exp(-dist/2200.0);
+			vec2 xr3=vec2(0.940*xz.x-0.342*xz.y, 0.342*xz.x+0.940*xz.y);
+			// Every octave samples the tile TWICE at incommensurate (golden-ratio) scales and
+			// sums: a single tiling repeats its exact motif every <scale> metres, and a low
+			// frequency warp cannot break that locally (adjacent repeats warp identically) —
+			// the recurring motif reads as woven fabric. Two mutually irrational tilings
+			// averaged have no visible repeat at any range.
+			// ALL texture drift runs downwind at dispersion-scaled speeds: mixed directions
+			// (the old arbitrary velocities) made the dual-sample interference beat visibly
+			// shear across the swell — the fast-moving quilt.
+			vec2 s3=(texture2D(u_detail,xr3/2650.0+u_time*vec2(1.45e-4,4.3e-5)).rg
+			        +texture2D(u_detail,vec2(0.978*xr3.x-0.208*xr3.y,0.208*xr3.x+0.978*xr3.y)/1638.0+u_time*vec2(2.34e-4,7.0e-5)).rg)-1.0;
+			// The coarse octave is warped by the kilometre octave and rotated off-axis: an
+			// unwarped tile repeats its exact pattern every 331 m, which reads as a quilt
+			// from altitude no matter how irregular the pattern inside the tile is.
+			vec2 warp=(texture2D(u_detail,xr3/6400.0).rg*2.0-1.0);   // very-low-frequency warp source: strong warp from a busy field marbles the sea into curlicues
+			vec2 xr0=vec2(0.993*xz.x-0.122*xz.y, 0.122*xz.x+0.993*xz.y)+warp*130.0+s3*18.0;
+			vec2 s0=(texture2D(u_detail,xr0/610.0+u_time*vec2(1.10e-3,3.3e-4)).rg
+			        +texture2D(u_detail,vec2(0.985*xr0.x+0.174*xr0.y,-0.174*xr0.x+0.985*xr0.y)/377.0+u_time*vec2(1.78e-3,5.3e-4)).rg)-1.0;
+			// Octaves rotate AND domain-warp on the coarse field: same-direction lattices at
+			// every zoom read as a chessboard; warped, the crests meander like real seas.
+			vec2 xr1=vec2(0.966*xz.x+0.259*xz.y, -0.259*xz.x+0.966*xz.y)+warp*34.0+s0*5.0;   // ±15°: rotations must preserve the wind axis or the trains cross
+			vec2 s1=(texture2D(u_detail,xr1/90.0 +u_time*vec2(1.17e-2,3.5e-3)).rg
+			        +texture2D(u_detail,vec2(0.966*xr1.x-0.259*xr1.y,0.259*xr1.x+0.966*xr1.y)/55.6+u_time*vec2(1.90e-2,5.7e-3)).rg)-1.0;
+			float far=smoothstep(2000.0,9000.0,dist);
+			vec2 slope=(s0*0.20 + s1*0.24*f2 + s3*0.15*far)*u_wind*(1.0-0.85*v_calm);
+			// Shading normal: the four fixed-direction vertex waves print a herringbone on the
+			// distance band once the detail octaves mip away — real seas read isotropic out
+			// there, so their slopes fade from SHADING with range (geometry keeps the swell).
+			vec3 vn=normalize(mix(v_normal,vec3(0.0,1.0,0.0),far*0.85));
+			vec3 N=normalize(vn+vec3(slope.x,0.0,slope.y));
 			float fres=0.02+0.98*pow(1.0-max(dot(N,V),0.0),5.0);
 			float diff=max(dot(N,L),0.0); vec3 body;
 			if(u_water_on>0.5){ vec2 wuv=clamp((v_world.xz+u_water_half)/(2.0*u_water_half),0.0,1.0); body=texture2D(u_water,wuv).rgb*u_water_tint*(0.7+0.3*diff); }
-			else { body=mix(u_deep,u_shallow,diff*0.8+0.2); }
+			else { // deep-water patchiness: slow drift between two deep hues at ~1.5 km scale
+				float swatch=texture2D(u_detail,xz/1470.0+u_time*vec2(1.3e-4,3.9e-5)).a;   // 'patch' is a GLSL ES 3.0 reserved word
+				vec3 deep=mix(u_deep,u_deep2,smoothstep(0.35,0.65,swatch));
+				body=mix(deep,u_shallow,diff*0.8+0.2); }
 			float shallow=clamp((body.g-0.25)*2.2,0.0,1.0);   // turquoise/foam → damp the sky reflection so the colour shows
 			vec3 refl=sky_at(reflect(-V,N));
-			vec3 col=mix(body,refl,fres*mix(1.0,0.35,shallow));
-			vec3 H=normalize(L+V); float spec=pow(max(dot(N,H),0.0),220.0); col+=vec3(1.0,0.95,0.8)*spec*2.2;
+			// --- cloud shadows: one sample of the raymarcher's own base field at cloud-mid height along the sun ray
+			float shade=1.0;
+			if(u_cloud_on>0.5){
+				vec3 cp=v_world+L*((u_cloud_mid-v_world.y)/max(L.y,0.2)); vec3 sp=cp+vec3(u_time*8.0,0.0,u_time*3.0);
+				vec4 n=texture(u_cloudnoise,sp*1.6667e-4); float wf=n.g*0.625+n.b*0.25+n.a*0.125;
+				float dcl=remap(remap(n.r,wf-1.0,1.0,0.0,1.0)*0.7, 1.0-u_cloud_cover, 1.0, 0.0, 1.0)*u_cloud_cover;
+				shade=mix(1.0,exp(-dcl*4.0),0.5); }
+			body*=shade;
+			vec3 col=mix(body,refl*mix(shade,1.0,0.5),fres*mix(1.0,0.35,shallow));
+			// --- Cox-Munk style glint: slope-space Beckmann, corridor stretched along the sun azimuth,
+			// wind-roughened, calmed in the lagoon; granular sparkle emerges from the detail normals.
+			vec3 H=normalize(L+V);
+			vec2 hs=-H.xz/max(H.y,0.05);
+			// Corridor envelope from the SMOOTH normal (vertex waves + a whisper of coarse detail):
+			// the pool's shape stays coherent while the full detail normal supplies the granular
+			// sparkle inside it — two scales, as on a real sea.
+			vec3 Ne=normalize(v_normal+vec3(s0.x,0.0,s0.y)*0.06*u_wind*(1.0-0.85*v_calm));
+			vec2 es=-Ne.xz/max(Ne.y,0.2); vec2 dv=es-hs;
+			vec2 az=normalize(L.xz+vec2(1e-4,0.0)); vec2 c=vec2(dot(dv,az),dot(dv,vec2(-az.y,az.x)));
+			float ra=u_rough*(0.55+0.45*u_wind)*mix(1.0,0.4,v_calm);
+			float rw=ra*2.4;   // the envelope carries the FULL Cox-Munk slope variance (detail included) — the sparkle only granulates inside it
+			float env=exp(-(c.x*c.x/(rw*rw*3.6)+c.y*c.y/(rw*rw)));
+			vec2 fs=-N.xz/max(N.y,0.2); vec2 dv2=fs-hs; float rs=ra*1.6;   // sparkle sigma must sit near the true facet-slope spread or it never fires
+			float spark=exp(-dot(dv2,dv2)/(rs*rs));
+			float g=env*(0.22+2.4*spark);   // sparkle-dominant: a strong smooth-envelope base paints an oily sheen no breeze-rippled sea has
+			float fresH=0.02+0.98*pow(1.0-max(dot(H,V),0.0),5.0);
+			vec3 glint=vec3(1.0,0.94,0.80)*g*fresH*u_glint*shade*shade;
+			col+=glint/(1.0+0.22*glint);   // soft knee: HDR bloom saturation without the renderer's ACES (custom shaders bypass it)
+			// --- subsurface transmission: light through the thin water near a crest reaches the
+			// viewer when looking toward the sun's far side — the blue-green glow that makes
+			// waves read as liquid up close (MSFS-style SSS, cheapened to one term).
+			vec3 Lb=normalize(vec3(L.x,0.25,L.z));
+			float trans=pow(max(dot(V,-Lb),0.0),3.0);
+			float crest=clamp(v_height/3.0+0.3,0.0,1.2);
+			float thin=clamp(length(slope)*3.0,0.2,1.0);
+			col+=u_sss*(trans*crest*thin*(0.35+0.65*shade)*(1.0-0.7*v_calm))*exp(-dist/6000.0);
+			// --- foam: crest foam on the big vertex waves + wind-scattered whitecaps from the cap-noise channel
+			float capn=texture2D(u_detail,xz/95.0+u_time*vec2(1.01e-2,3.0e-3)).b;    // small caps (~4-16 m)
+			float capb=texture2D(u_detail,xz/430.0+u_time*vec2(2.23e-3,6.7e-4)).b;  // rare large caps (~20-70 m)
+			float capc=texture2D(u_detail,xz/1900.0+u_time*vec2(5.0e-4,1.5e-4)).b; // wind-streak clustering
+			// Threshold the SUM of two scales: mostly small flecks, with occasional large
+			// connected caps where the fields align — the natural power-law size mix.
+			float caps=smoothstep(0.56,0.63,(0.62*capn+0.38*capb)*(0.6+0.4*capc))*smoothstep(0.3,0.8,u_wind)*(1.0-v_calm)*exp(-dist/5000.0);   // thresholds MEASURED against the generated field's distribution: 2.8% fleck coverage, 0.5% full-white cores (the old guess passed 0.11% — invisible)
 			float foam=smoothstep(1.5,2.6,v_height)*(0.55+0.45*hash2(floor(xz*0.6))); foam*=smoothstep(0.15,0.55,1.0-N.y);
-			col=mix(col,vec3(0.92,0.96,1.0),clamp(foam,0.0,0.85));
-			float dist=length(cameraPosition-v_world); float fog=1.0-exp(-u_fog_density*u_fog_density*dist*dist); col=mix(col,u_fog,clamp(fog,0.0,1.0));
+			foam=max(foam,caps*0.9);
+			col=mix(col,vec3(0.92,0.96,1.0)*shade,clamp(foam,0.0,0.85));
+			float fog=1.0-exp(-u_fog_density*u_fog_density*dist*dist); col=mix(col,u_fog,clamp(fog,0.0,1.0));
 			gl_FragColor=vec4(col,1.0); }` });
 let ocean=null;
 function build_ocean(seg){ if(ocean){scene.remove(ocean);ocean.geometry.dispose();}
@@ -190,9 +316,12 @@ const CLOUDS={   // cover: higher = more cloud (coverage remap). Trade-wind cumu
 	high_stratus: { base:6000, top:6700, high:6700, cover:0.55, density:0.45, flat:1.0 },   // thin widespread cirrostratus
 	low_stratus:  { base:600,  top:1150, high:1150, cover:0.80, density:1.2,  flat:1.0 },   // low grey overcast
 };
-function apply_clouds(){ const p=CLOUDS[cfg.clouds]; if(!p) return;
+function apply_clouds(){ const p=CLOUDS[cfg.clouds];
+	ocean_mat.uniforms.u_cloud_on.value=p?1.0:0.0;
+	if(!p) return;
 	cloud_mat.uniforms.uBase.value=p.base; cloud_mat.uniforms.uTop.value=p.top; cloud_mat.uniforms.uHigh.value=p.high;
-	cloud_mat.uniforms.uCoverage.value=p.cover; cloud_mat.uniforms.uDensity.value=p.density; cloud_mat.uniforms.uFlat.value=p.flat; }
+	cloud_mat.uniforms.uCoverage.value=p.cover; cloud_mat.uniforms.uDensity.value=p.density; cloud_mat.uniforms.uFlat.value=p.flat;
+	ocean_mat.uniforms.u_cloud_cover.value=p.cover; ocean_mat.uniforms.u_cloud_mid.value=(p.base+p.top)*0.5; }
 const cloud_active=()=>cfg.clouds&&cfg.clouds!=="none";
 
 // ---- volumetric clouds: raymarched, composited against scene depth ----
@@ -322,6 +451,7 @@ function build_cloud_noise(){
 		for(let z=0;z<size;z++){ gen_mat.uniforms.uZ.value=(z+0.5)/size; renderer.setRenderTarget(t3,z); renderer.render(gs,fs_cam); }
 		renderer.setRenderTarget(null); return t3.texture; };
 	cloud_mat.uniforms.tNoise.value=mk(128,0);
+	ocean_mat.uniforms.u_cloudnoise.value=cloud_mat.uniforms.tNoise.value;   // the ocean's cloud shadows sample the same field the raymarcher renders
 	cloud_mat.uniforms.tDetail.value=mk(64,1);
 }
 build_cloud_noise();
@@ -2247,6 +2377,14 @@ function start_mission(){
 	loading=!assets_ready(); loading_t0=performance.now();   // hold the LOADING screen until every async asset is in — no piecemeal pop-in of carrier/airfield/airframe
 	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
 	running=true;
+	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,
+	// chase camera at the given azimuth/elevation. Judging water needs an external low view.
+	const shotp=new URLSearchParams(window.location.search).get("shot");
+	if(shotp!==null){ const [saz,sel,salt,sdist]=shotp.split(",").map(Number);
+		setTimeout(()=>{ try{
+			flight_level(CARRIER.x+2500, isNaN(salt)?100:salt, CARRIER.z+2500, 0.9, -0.45, 120, 2450);
+			set_view("chase"); cam_az=isNaN(saz)?2.4:saz; cam_el=isNaN(sel)?0.10:sel; cam_dist=isNaN(sdist)?40:sdist;
+		}catch(e){ console.log("shot preset failed", e); } }, 6000); }
 	try{ window.focus(); stage.focus(); }catch(e){}
 }
 function assets_ready(){ return !!carrier_model && model_active && airports.length>0 && flight_ready(); }   // the async loads: carrier GLB (+deck aids), fighter GLB, map/airfield, flight core wasm

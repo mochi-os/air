@@ -32,8 +32,9 @@ function exitFullscreen() {
 function Index() {
   const [config, setConfig] = useMissionConfig()
   const [join, setJoin] = useState<NetJoin | null>(null)
-  const [started, setStarted] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(true)
+  const fly = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('fly')   // dev/screenshot hook: ?fly=1 skips the menu straight into a mission with saved config
+  const [started, setStarted] = useState(fly)
+  const [menuOpen, setMenuOpen] = useState(!fly)
   const [gameKey, setGameKey] = useState(0)
   const gameRef = useRef<GameHandle | null>(null)
 
