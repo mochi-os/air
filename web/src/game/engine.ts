@@ -67,15 +67,16 @@ const CARRIER_MODELS={
 		stroke:85, speed:88,                             // catapult throw and end speed, m / m/s
 		// Wires + landing line: measured off the 1:200 CVN-68 deck plan (2026-07-06) — anchored on the deck
 		// plateau extent (model fa -166.5..+164.9), hull centreline at lat +1.3; strip axis came out 9.5° port
-		// of the bow (real angled deck: 9.05°), wire spacing 11.7 m (real: 40 ft). CATS, OLS AND THE DECK
-		// OUTLINE ARE STILL FORD PLACEHOLDERS pending the same treatment (align tool DECK_ALIGN, key 0).
-		shuttles:[ {x:52.35, z:18.23, h:5.18},           // 1: starboard bow — x toward bow, z + starboard, heading deg (0=+X)
-		           {x:52.74, z:-0.70, h:1.60},           // 2: port bow (the carrier-start spawn)
-		           {x:-31.76, z:-15.66, h:4.54},         // 3: starboard waist, down the angled deck
-		           {x:-47.99, z:-26.33, h:-0.10} ],      // 4: port waist
+		// of the bow (real angled deck: 9.05°), wire spacing 11.7 m (real: 40 ft). Catapults: measured off the
+		// MODEL's track troughs/JBDs via a painter-ordered deck raster + Hough fit (waist headings +9.2°/+8.8°
+		// bracket the real 9.05° angle). OLS AND THE DECK OUTLINE ARE STILL FORD PLACEHOLDERS.
+		shuttles:[ {x:41.0, z:5.6, h:0},                 // 1: starboard bow — x toward bow, z + starboard, heading deg (+ = port). Measured off the model's track troughs (2026-07-06): the slot band runs fa 36..150 at lat +5.6, JBD chevrons at fa 31-39; spot just forward of the JBD
+		           {x:51.0, z:-4.5, h:-0.8},             // 2: port bow (the carrier-start spawn) — thin track at lat -4.9 from fa ~46 (JBD box 40-48), converging 0.8° toward cat 1
+		           {x:-20.0, z:-3.3, h:9.2},             // 3: starboard waist — Hough line through the angled-deck trough (θ +9.2°, ends at the port edge fa 83.7); spot just aft of the island's aft end, along the landing strip's starboard edge as on the real deck
+		           {x:-52.0, z:-20.1, h:8.8} ],          // 4: port waist — parallel trough (θ +8.8°, ends fa 61), spot at its raised JBD panel (fa -57); all four tracks carry a consistent 19-28 m lead-out beyond the 85 m stroke
 		wires:[-115.6,-103.9,-92.2,-80.5], halfspan:16,  // arrestor wires 1..4 (fore-aft) spanning ±halfspan about the landing line — the classic four-wire CVN-68 fit, 11.7 m apart, 1-wire 51 m from the stern round-down
 		line:{ afa:-115.6, alat:-0.1, bfa:-92.2, blat:-4.0 }, // the landing centreline, measured at the 1- and 3-wire crossings (plan: the centre stripe crosses the hull axis at the 1-wire, angling 9.5° to port)
-		ols:{ fa:16.9, lat:-35.4 },                      // OLS bracket on the port side
+		ols:{ fa:-21.0, lat:-38.6, model:true },         // OLS bracket on the port side — measured off the model's own IFLOLS: amber lens column (heights -0.5..+2.1 rel deck), green datum arms at +0.66 spanning 8.5 m, red wave-off columns at ±1.5 m. model:true = the GLB carries the physical structure, so the engine draws only the glowing lights
 		outline:[[-150,-3.1],[-78,22.1],[-48,33.8],[60,33.8],[72,27.1],[78,22.1],[126,15.3],[150,14],[150,3.1],[108,-12.3],[84,-13.8],[60,-29.7],[42,-34.8],[30,-34.7],[24,-32.5],[18,-37.4],[12,-36.6],[6,-30.2],[-54,-30.4],[-66,-32.7],[-120,-30.8],[-126,-29],[-132,-13.5],[-150,-12.6]] } }; // deck polygon (Ford placeholder) — re-raycast from the Nimitz GLB when re-measuring
 const SHIP=CARRIER_MODELS.nimitz;   // the active carrier (a picker arrives with the second ship)
 function load_cfg(){ try{ const s=localStorage.getItem(SAVE_KEY); if(s) Object.assign(cfg,JSON.parse(s)); }catch(e){}
@@ -1620,18 +1621,20 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const vsegs=[0,1].map(()=>{ const m=new THREE.Mesh(new THREE.BoxGeometry(1,0.08,0.09),wireMat); m.visible=false; m.castShadow=true; scene.add(m); return m; });   // the caught wire, dragged into a V by the hook
 	// --- OLS (meatball) on the port bracket of the carrier (measured); glideslope stays referenced to the touchdown, not this housing ---
 	const twfa=SHIP.wires[SHIP.wires.length>3?2:1], ofa=SHIP.ols.fa, olat=SHIP.ols.lat;   // OLS bracket position on the carrier's port side; the glideslope targets the 3-wire on a four-wire deck (the US aim wire), the middle wire on a three-wire fit
-	const o=carrier_world(ofa,olat), datumY=dy+0.8, travel=1.0;   // lowered to sit on the bracket, not hover above it
-	const house=new THREE.Mesh(new THREE.BoxGeometry(2.0,1.4,0.6),new THREE.MeshStandardMaterial({color:0x181b1f,metalness:0.4,roughness:0.6})); house.position.set(o.x,dy+0.2,o.z); house.rotation.y=Math.atan2(-CARRIER_C,CARRIER_S); house.castShadow=true; scene.add(house);
+	const o=carrier_world(ofa,olat), datumY=dy+(SHIP.ols.model?0.66:0.8), travel=SHIP.ols.model?1.1:1.0;   // datum height + ball travel matched to the model's lens column when it provides the structure
+	if(!SHIP.ols.model){ const house=new THREE.Mesh(new THREE.BoxGeometry(2.0,1.4,0.6),new THREE.MeshStandardMaterial({color:0x181b1f,metalness:0.4,roughness:0.6})); house.position.set(o.x,dy+0.2,o.z); house.rotation.y=Math.atan2(-CARRIER_C,CARRIER_S); house.castShadow=true; scene.add(house); }
 	const at=(d,h)=>{ const q=carrier_world(ofa-STRIP_ULAT*d,olat+STRIP_UFA*d); return [q.x,h,q.z]; };   // flank the ball perpendicular to the strip (square to the approach)
-	const dpos=[]; for(const d of [-3.3,-2.5,-1.7,-0.9, 0.9,1.7,2.5,3.3]) dpos.push(...at(d,datumY)); ols_points(dpos,0x35e06a,7);   // green datum row (flanks the ball)
+	const dspread=SHIP.ols.model?[-4.2,-3.2,-2.2,-1.2, 1.2,2.2,3.2,4.2]:[-3.3,-2.5,-1.7,-0.9, 0.9,1.7,2.5,3.3];
+	const dpos=[]; for(const d of dspread) dpos.push(...at(d,datumY)); ols_points(dpos,0x35e06a,7);   // green datum row (flanks the ball; spread matches the model's 8.5 m arms when present)
 	const cpos=[]; for(const d of [-1.5,-0.5,0.5,1.5]) cpos.push(...at(d,dy+1.6)); ols_points(cpos,0x35e06a,4);   // cut lights (static)
-	const wpos=[]; for(const d of [-2.0,-0.7,0.7,2.0]) wpos.push(...at(d,dy+2.0)); const wavePts=ols_points(wpos,0xff2a1e,7); wavePts.visible=false;   // waveoff (flashes on a low approach)
+	const wpos=[]; for(const d of (SHIP.ols.model?[-1.5,-1.5,1.5,1.5]:[-2.0,-0.7,0.7,2.0])) wpos.push(...at(d, wpos.length<6&&SHIP.ols.model?dy+0.9:dy+(SHIP.ols.model?1.5:2.0))); const wavePts=ols_points(wpos,0xff2a1e,7); wavePts.visible=false;   // waveoff (flashes on a low approach) — on the model's red columns when present (two heights per side)
 	// structure: horizontal arms carrying the datum / cut / waveoff light rows, on a mast up from the housing (so the lights aren't floating)
+	if(!SHIP.ols.model){   // procedural bracket structure — only when the ship model doesn't carry its own OLS
 	const strut=new THREE.MeshStandardMaterial({color:0x15181c,metalness:0.5,roughness:0.6});
 	const arm=(d,y,th)=>{ const a=at(-d,y), b=at(d,y), dx=b[0]-a[0], dz=b[2]-a[2], len=Math.hypot(dx,dz); const m=new THREE.Mesh(new THREE.BoxGeometry(len,th,th),strut); m.position.set((a[0]+b[0])/2,y,(a[2]+b[2])/2); m.rotation.y=Math.atan2(-dz,dx); m.castShadow=true; scene.add(m); };
 	arm(3.9,datumY,0.13);   // datum arm (through the housing)
 	const mast=new THREE.Mesh(new THREE.BoxGeometry(0.13,2.1,0.13),strut); mast.position.set(o.x,dy+1.1,o.z); mast.castShadow=true; scene.add(mast);   // mast from the housing up to the cut/waveoff
-	arm(2.3,dy+1.6,0.1); arm(2.3,dy+2.0,0.1);   // cut + waveoff arms
+	arm(2.3,dy+1.6,0.1); arm(2.3,dy+2.0,0.1); }   // cut + waveoff arms
 	const bg=new THREE.BufferGeometry(); bg.setAttribute("position",new THREE.BufferAttribute(new Float32Array([o.x,datumY,o.z]),3)); bg.setAttribute("color",new THREE.BufferAttribute(new Float32Array([1,0.62,0]),3));
 	const ballPts=new THREE.Points(bg,new THREE.PointsMaterial({size:11,map:light_dot,vertexColors:true,transparent:true,blending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:false})); ballPts.frustumCulled=false; ballPts.visible=false; scene.add(ballPts);   // the amber "ball" — screen-space, normal-blended so it reads amber/red
 	const td=carrier_world(twfa,strip_lat(twfa));   // touchdown reference (the 2-wire) — the glideslope references the wires, NOT the OLS housing on the bracket
@@ -1883,12 +1886,20 @@ function read_input(dt){
 	const pad=read_gamepad();
 	if(pad) pad_observe(pad);
 	if(pad){ if(!gamepad_seen){ gamepad_seen=true; notice("JOYSTICK: "+(pad.id||"connected").slice(0,40));
+			// VelocityOne Flightstick defaults (mapping read off the real device's HID descriptor + a
+			// recorded control sweep, 2026-07-06): the POV castle reports as BUTTONS 8-11 (not hat axes) —
+			// bound to the arrows so it looks around the cockpit / orbits the chase camera; missile,
+			// flares and gear on the base buttons the user picked. Seeded only while no binds exist,
+			// so the Controls-tab editor always wins.
+			if(/velocityone|10f5/i.test(pad.id||"") && !Object.keys(cfg.buttons||{}).length)
+				cfg.buttons={ "17":"KeyR", "15":"KeyF", "16":"KeyG", "8":"ArrowUp", "9":"ArrowRight", "10":"ArrowDown", "11":"ArrowLeft" };
 			}
 
 		pp=pad_axis(pad,1)*(cfg.invert?-1:1);   // stick back = pull; analog goes straight to the FCS — no key shaping
 		pr=pad_axis(pad,0);
 		py=pad_axis(pad,2);
-		if(pad.axes.length>3){ const slider=pad.axes[3];
+		const ti=/velocityone|10f5/i.test(pad.id||"")?6:3;   // VelocityOne: the base throttle lever is HID Slider -> axis 6 (axis 3 is the mini thumbstick); generic sticks keep the conventional 3
+		if(pad.axes.length>ti){ const slider=pad.axes[ti];
 			if(slider<pad_slider.lo) pad_slider.lo=slider;
 			if(slider>pad_slider.hi) pad_slider.hi=slider;
 			if(Math.abs(slider-(read_input.slider??slider))>0.01||read_input.armed){ read_input.armed=true;
