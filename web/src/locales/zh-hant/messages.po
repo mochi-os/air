@@ -131,7 +131,7 @@ msgstr "新增檢視"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "調整外觀與版面配置以符合您的偏好。"
 
-#: src/components/MissionSetup.tsx:648
+#: src/components/MissionSetup.tsx:1000
 msgid "Afterburner"
 msgstr "後燃器"
 
@@ -139,13 +139,21 @@ msgstr "後燃器"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:301
+#: src/components/MissionSetup.tsx:455
+msgid "Aircraft"
+msgstr "機體"
+
+#: src/components/MissionSetup.tsx:712
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline."
 msgstr "航空母艦 <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>，作者 <1>Muhamad Mirza Arrafi</1>（Sketchfab），採用 <2>CC BY 4.0</2> 授權。已修改：重新縮放，船首朝向重新調整為 +X，下沉至吃水線。"
 
-#: src/components/MissionSetup.tsx:278
+#: src/components/MissionSetup.tsx:689
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented nose +X, rescaled to length."
 msgstr "飛機模型 <0>“F/A-18C Hornet”</0>，由 <1>CreadorDeMu</1>（Sketchfab）製作，依據 <2>CC BY 4.0</2> 授權。已修改：機頭重新定向為 +X，依長度重新縮放。"
+
+#: src/components/MissionSetup.tsx:458
+msgid "Alerts"
+msgstr "警告"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:163
 msgid "All"
@@ -163,8 +171,8 @@ msgstr "發生未預期的錯誤"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "您確定要登出嗎?您將需要再次登入才能存取您的帳戶。"
 
-#: src/components/MissionSetup.tsx:112
-#: src/components/MissionSetup.tsx:524
+#: src/components/MissionSetup.tsx:160
+#: src/components/MissionSetup.tsx:186
 msgid "Arrestor hook"
 msgstr "攔阻鉤"
 
@@ -179,6 +187,14 @@ msgstr "升冪"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Authenticator code"
 msgstr "驗證器代碼"
+
+#: src/components/MissionSetup.tsx:315
+msgid "Axes"
+msgstr "軸"
+
+#: src/components/MissionSetup.tsx:356
+msgid "Axis {i}"
+msgstr "軸 {i}"
 
 #: src/components/GameCanvas.tsx:131
 msgid "back"
@@ -195,8 +211,8 @@ msgid "Back to home"
 msgstr "返回首頁"
 
 #: src/components/MissionSetup.tsx:145
-msgid "Bind"
-msgstr "繫結"
+#~ msgid "Bind"
+#~ msgstr "繫結"
 
 #: src/components/GameCanvas.tsx:41
 msgid "BOLTER"
@@ -211,9 +227,21 @@ msgstr "提升興趣"
 msgid "brakes"
 msgstr "剎車"
 
+#: src/components/MissionSetup.tsx:410
+msgid "Button {i}"
+msgstr "按鈕 {i}"
+
+#: src/components/MissionSetup.tsx:390
+msgid "Buttons"
+msgstr "按鈕"
+
 #: src/components/Multiplayer.tsx:171
 msgid "Callsign"
 msgstr "呼號"
+
+#: src/components/MissionSetup.tsx:556
+msgid "Camera distance"
+msgstr "鏡頭距離"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
@@ -224,11 +252,15 @@ msgstr "呼號"
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
-#: src/components/MissionSetup.tsx:145
+#: src/components/MissionSetup.tsx:539
 msgid "Cancel"
 msgstr "取消"
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:558
+msgid "Canopy"
+msgstr "座艙罩"
+
+#: src/components/MissionSetup.tsx:868
 msgid "Carrier landing"
 msgstr "著艦"
 
@@ -242,8 +274,8 @@ msgid "Change notification category"
 msgstr "變更通知類別"
 
 #: src/components/MissionSetup.tsx:547
-msgid "Chase view"
-msgstr "追尾視角"
+#~ msgid "Chase view"
+#~ msgstr "追尾視角"
 
 #: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
@@ -322,7 +354,7 @@ msgstr "關閉搜尋"
 msgid "closer"
 msgstr "拉近"
 
-#: src/components/MissionSetup.tsx:471
+#: src/components/MissionSetup.tsx:888
 msgid "Clouds"
 msgstr "雲層"
 
@@ -380,8 +412,8 @@ msgid "Continue with {label}"
 msgstr "使用 {label} 繼續"
 
 #: src/components/MissionSetup.tsx:404
-msgid "Controls"
-msgstr "操控"
+#~ msgid "Controls"
+#~ msgstr "操控"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
@@ -419,12 +451,12 @@ msgstr "建立並起飛"
 msgid "Create match"
 msgstr "建立對戰"
 
-#: src/components/MissionSetup.tsx:267
-#: src/components/MissionSetup.tsx:273
+#: src/components/MissionSetup.tsx:678
+#: src/components/MissionSetup.tsx:684
 msgid "Credits"
 msgstr "製作群"
 
-#: src/components/MissionSetup.tsx:478
+#: src/components/MissionSetup.tsx:895
 #: src/components/Multiplayer.tsx:231
 msgid "Cumulus"
 msgstr "積雲"
@@ -437,8 +469,8 @@ msgstr "自訂"
 msgid "CUT"
 msgstr "危險"
 
-#: src/components/MissionSetup.tsx:119
-#: src/components/MissionSetup.tsx:530
+#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:195
 msgid "Cycle view"
 msgstr "切換視角"
 
@@ -459,7 +491,7 @@ msgstr "深色模式"
 msgid "Data conflict"
 msgstr "資料衝突"
 
-#: src/components/MissionSetup.tsx:466
+#: src/components/MissionSetup.tsx:883
 #: src/components/Multiplayer.tsx:226
 msgid "Day"
 msgstr "白天"
@@ -492,6 +524,11 @@ msgstr "降冪"
 msgid "Details Panel"
 msgstr "詳細資料面板"
 
+#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:425
+msgid "Detect"
+msgstr "偵測"
+
 #: ../../../lib/web/src/components/language-picker.tsx:276
 #: ../../../lib/web/src/components/timezone-select.tsx:46
 #: ../../../lib/web/src/components/timezone-select.tsx:83
@@ -503,9 +540,17 @@ msgstr "詳細資料面板"
 msgid "Detect from web browser"
 msgstr "從網頁瀏覽器偵測"
 
+#: src/components/MissionSetup.tsx:274
+msgid "Device"
+msgstr "裝置"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:340
 msgid "Direction"
 msgstr "方向"
+
+#: src/components/MissionSetup.tsx:286
+msgid "disconnected"
+msgstr "已斷線"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:79
 #: ../../../lib/web/src/components/restore-banner.tsx:85
@@ -517,10 +562,10 @@ msgid "Displays the mobile sidebar."
 msgstr "顯示行動裝置側邊欄。"
 
 #: src/components/MissionSetup.tsx:556
-msgid "Distance"
-msgstr "距離"
+#~ msgid "Distance"
+#~ msgstr "距離"
 
-#: src/components/MissionSetup.tsx:636
+#: src/components/MissionSetup.tsx:988
 msgid "Distance LOD"
 msgstr "距離 LOD"
 
@@ -533,7 +578,7 @@ msgstr "下載"
 msgid "Download failed"
 msgstr "下載失敗"
 
-#: src/components/MissionSetup.tsx:630
+#: src/components/MissionSetup.tsx:982
 msgid "Dynamic resolution"
 msgstr "動態解析度"
 
@@ -544,6 +589,10 @@ msgstr "閱讀障礙友善"
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "編輯 {label}"
+
+#: src/components/MissionSetup.tsx:192
+msgid "Eject"
+msgstr "彈射"
 
 #: src/components/GameCanvas.tsx:51
 msgid "EJECTED"
@@ -557,6 +606,10 @@ msgstr "電子郵件代碼"
 msgid "empty"
 msgstr "空"
 
+#: src/components/MissionSetup.tsx:454
+msgid "Engine"
+msgstr "引擎"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:299
 msgid "Enter the code from your email"
 msgstr "輸入電子郵件中的驗證碼"
@@ -564,6 +617,10 @@ msgstr "輸入電子郵件中的驗證碼"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:324
 msgid "Enter your authenticator code"
 msgstr "請輸入您的驗證器代碼"
+
+#: src/components/MissionSetup.tsx:457
+msgid "Environment"
+msgstr "環境"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx:101
 #: ../../../lib/web/src/components/comment-tree-layout.tsx:110
@@ -576,11 +633,11 @@ msgstr "展開"
 msgid "Expand sidebar"
 msgstr "展開側邊欄"
 
-#: src/components/MissionSetup.tsx:602
+#: src/components/MissionSetup.tsx:954
 msgid "Exterior detail"
 msgstr "外觀細節"
 
-#: src/components/MissionSetup.tsx:618
+#: src/components/MissionSetup.tsx:970
 msgid "Extra aircraft"
 msgstr "額外飛機"
 
@@ -616,13 +673,17 @@ msgstr "尚可"
 msgid "Finish moving your account"
 msgstr "完成帳號遷移"
 
+#: src/components/MissionSetup.tsx:551
+msgid "Fixed keys"
+msgstr "固定按鍵"
+
 #: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "熱焰彈"
 
-#: src/components/MissionSetup.tsx:115
-#: src/components/MissionSetup.tsx:527
-#: src/components/MissionSetup.tsx:666
+#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:1018
 msgid "Flares"
 msgstr "熱焰彈"
 
@@ -642,11 +703,11 @@ msgstr "飛行核心故障"
 msgid "Floating"
 msgstr "浮動"
 
-#: src/components/MissionSetup.tsx:678
+#: src/components/MissionSetup.tsx:1024
 msgid "Framerate"
 msgstr "影格率"
 
-#: src/components/MissionSetup.tsx:422
+#: src/components/MissionSetup.tsx:839
 msgid "Free flight"
 msgstr "自由飛行"
 
@@ -713,7 +774,7 @@ msgstr "跳到第 {pageNumber} 頁"
 msgid "Go to previous page"
 msgstr "前往上一頁"
 
-#: src/components/MissionSetup.tsx:407
+#: src/components/MissionSetup.tsx:824
 msgid "Graphics"
 msgstr "圖形"
 
@@ -729,8 +790,8 @@ msgstr "機砲"
 msgid "guns"
 msgstr "機炮"
 
-#: src/components/MissionSetup.tsx:129
-#: src/components/MissionSetup.tsx:519
+#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:182
 msgid "Guns"
 msgstr "機炮"
 
@@ -742,11 +803,11 @@ msgstr "隱藏"
 msgid "Hide password"
 msgstr "隱藏密碼"
 
-#: src/components/MissionSetup.tsx:582
+#: src/components/MissionSetup.tsx:934
 msgid "High"
 msgstr "高"
 
-#: src/components/MissionSetup.tsx:479
+#: src/components/MissionSetup.tsx:896
 #: src/components/Multiplayer.tsx:232
 msgid "High stratus"
 msgstr "高層雲"
@@ -774,13 +835,13 @@ msgstr "熱門"
 msgid "Imperial"
 msgstr "英制"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:865
 msgid "In air"
 msgstr "空中"
 
 #: src/components/MissionSetup.tsx:487
-msgid "Input"
-msgstr "輸入"
+#~ msgid "Input"
+#~ msgstr "輸入"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:252
 msgid "Inset"
@@ -794,7 +855,7 @@ msgstr "興趣"
 msgid "Invalid verification code"
 msgstr "無效的驗證碼"
 
-#: src/components/MissionSetup.tsx:502
+#: src/components/MissionSetup.tsx:309
 msgid "Invert pitch"
 msgstr "反轉俯仰"
 
@@ -814,15 +875,19 @@ msgstr "對衝"
 msgid "Joust — 1v1, first kill wins"
 msgstr "決鬥 — 1v1，先擊落者獲勝"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:840
 msgid "Joust against AI player"
 msgstr "與 AI 玩家決鬥"
 
-#: src/components/MissionSetup.tsx:539
-msgid "Joystick buttons"
-msgstr "搖桿按鈕"
+#: src/components/MissionSetup.tsx:815
+msgid "Joystick"
+msgstr "搖桿"
 
-#: src/components/MissionSetup.tsx:509
+#: src/components/MissionSetup.tsx:539
+#~ msgid "Joystick buttons"
+#~ msgstr "搖桿按鈕"
+
+#: src/components/MissionSetup.tsx:818
 msgid "Keys"
 msgstr "按鍵"
 
@@ -838,8 +903,8 @@ msgstr "擊落"
 #~ msgid "L ENG FIRE"
 #~ msgstr ""
 
-#: src/components/MissionSetup.tsx:111
-#: src/components/MissionSetup.tsx:523
+#: src/components/MissionSetup.tsx:159
+#: src/components/MissionSetup.tsx:185
 msgid "Landing gear"
 msgstr "起落架"
 
@@ -852,8 +917,8 @@ msgstr "大"
 msgid "launch"
 msgstr "彈射"
 
-#: src/components/MissionSetup.tsx:118
-#: src/components/MissionSetup.tsx:520
+#: src/components/MissionSetup.tsx:163
+#: src/components/MissionSetup.tsx:189
 msgid "Launch (catapult)"
 msgstr "彈射起飛 (彈射器)"
 
@@ -883,7 +948,8 @@ msgstr "淺色"
 msgid "lights"
 msgstr "燈光"
 
-#: src/components/MissionSetup.tsx:525
+#: src/components/MissionSetup.tsx:164
+#: src/components/MissionSetup.tsx:190
 msgid "Lights"
 msgstr "燈光"
 
@@ -930,11 +996,31 @@ msgstr "已成功登出"
 msgid "Logging out…"
 msgstr "正在登出…"
 
-#: src/components/MissionSetup.tsx:578
+#: src/components/MissionSetup.tsx:555
+msgid "Look / orbit"
+msgstr "視角 / 環繞"
+
+#: src/components/MissionSetup.tsx:168
+msgid "Look down"
+msgstr "向下看"
+
+#: src/components/MissionSetup.tsx:169
+msgid "Look left"
+msgstr "向左看"
+
+#: src/components/MissionSetup.tsx:170
+msgid "Look right"
+msgstr "向右看"
+
+#: src/components/MissionSetup.tsx:167
+msgid "Look up"
+msgstr "向上看"
+
+#: src/components/MissionSetup.tsx:930
 msgid "Low"
 msgstr "低"
 
-#: src/components/MissionSetup.tsx:480
+#: src/components/MissionSetup.tsx:897
 #: src/components/Multiplayer.tsx:233
 msgid "Low stratus"
 msgstr "低層雲"
@@ -947,8 +1033,7 @@ msgstr "M 關閉"
 msgid "map"
 msgstr "地圖"
 
-#: src/components/MissionSetup.tsx:120
-#: src/components/MissionSetup.tsx:533
+#: src/components/MissionSetup.tsx:193
 msgid "Map"
 msgstr "地圖"
 
@@ -958,12 +1043,16 @@ msgstr "地圖"
 msgid "Mark all as read"
 msgstr "全部標示為已讀"
 
+#: src/components/MissionSetup.tsx:453
+msgid "Master"
+msgstr "主音量"
+
 #: src/components/Multiplayer.tsx:214
 msgid "Match type"
 msgstr "對戰類型"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:580
+#: src/components/MissionSetup.tsx:932
 msgid "Medium"
 msgstr "中"
 
@@ -979,7 +1068,7 @@ msgstr "選單"
 msgid "Metric"
 msgstr "公制"
 
-#: src/components/MissionSetup.tsx:325
+#: src/components/MissionSetup.tsx:736
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "中途島環礁地圖 — 影像包含經過修改的 <0>Copernicus Sentinel-2</0> 資料（2026）；機場幾何資料（跑道、滑行道、停機坪）© <1>OpenStreetMap</1> 貢獻者，依據 <2>ODbL</2> 授權；海岸線與珊瑚礁資料來自 <3>NOAA NCCOS</3>（公有領域）。"
 
@@ -987,12 +1076,12 @@ msgstr "中途島環礁地圖 — 影像包含經過修改的 <0>Copernicus Sent
 msgid "missile"
 msgstr "飛彈"
 
-#: src/components/MissionSetup.tsx:116
-#: src/components/MissionSetup.tsx:526
+#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:183
 msgid "Missile"
 msgstr "飛彈"
 
-#: src/components/MissionSetup.tsx:660
+#: src/components/MissionSetup.tsx:1012
 msgid "Missiles"
 msgstr "飛彈"
 
@@ -1000,7 +1089,7 @@ msgstr "飛彈"
 msgid "Missiles allowed"
 msgstr "允許飛彈"
 
-#: src/components/MissionSetup.tsx:398
+#: src/components/MissionSetup.tsx:809
 msgid "Mission"
 msgstr "任務"
 
@@ -1008,7 +1097,11 @@ msgstr "任務"
 msgid "Monday"
 msgstr "星期一"
 
-#: src/components/MissionSetup.tsx:424
+#: src/components/MissionSetup.tsx:382
+msgid "Move it…"
+msgstr "移動它…"
+
+#: src/components/MissionSetup.tsx:841
 msgid "Multiplayer"
 msgstr "多人遊戲"
 
@@ -1030,7 +1123,7 @@ msgstr "新增"
 msgid "Next image"
 msgstr "下一張圖片"
 
-#: src/components/MissionSetup.tsx:467
+#: src/components/MissionSetup.tsx:884
 #: src/components/Multiplayer.tsx:227
 msgid "Night"
 msgstr "夜晚"
@@ -1046,6 +1139,10 @@ msgstr "無已連接的帳戶"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "無可用的群組"
+
+#: src/components/MissionSetup.tsx:293
+msgid "No joystick detected — press any button on it to wake it up."
+msgstr "未偵測到搖桿——按下搖桿上的任意按鈕以喚醒它。"
 
 #: src/components/Multiplayer.tsx:255
 msgid "No open matches — create one."
@@ -1087,7 +1184,9 @@ msgstr "無評分"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:477
+#: src/components/MissionSetup.tsx:352
+#: src/components/MissionSetup.tsx:406
+#: src/components/MissionSetup.tsx:894
 msgid "None"
 msgstr "無"
 
@@ -1111,7 +1210,7 @@ msgstr "未設定"
 msgid "Notifications"
 msgstr "通知"
 
-#: src/components/MissionSetup.tsx:610
+#: src/components/MissionSetup.tsx:962
 msgid "Ocean detail"
 msgstr "海洋細節"
 
@@ -1119,11 +1218,11 @@ msgstr "海洋細節"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:867
 msgid "On carrier"
 msgstr "在航艦上"
 
-#: src/components/MissionSetup.tsx:449
+#: src/components/MissionSetup.tsx:866
 msgid "On runway"
 msgstr "在跑道上"
 
@@ -1173,8 +1272,8 @@ msgid "orbit"
 msgstr "環繞"
 
 #: src/components/MissionSetup.tsx:551
-msgid "Orbit"
-msgstr "環繞"
+#~ msgid "Orbit"
+#~ msgstr "環繞"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:166
 msgid "Other"
@@ -1204,7 +1303,7 @@ msgstr "Passkey"
 msgid "pause"
 msgstr "暫停"
 
-#: src/components/MissionSetup.tsx:534
+#: src/components/MissionSetup.tsx:194
 msgid "Pause"
 msgstr "暫停"
 
@@ -1225,9 +1324,17 @@ msgstr "飛行員陣亡"
 msgid "pitch"
 msgstr "俯仰"
 
-#: src/components/MissionSetup.tsx:512
+#: src/components/MissionSetup.tsx:149
 msgid "Pitch"
 msgstr "俯仰"
+
+#: src/components/MissionSetup.tsx:175
+msgid "Pitch down"
+msgstr "下俯"
+
+#: src/components/MissionSetup.tsx:174
+msgid "Pitch up"
+msgstr "上仰"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
@@ -1242,17 +1349,25 @@ msgstr "請再試一次。"
 msgid "Please wait a moment and try again."
 msgstr "請稍候片刻，然後再試一次。"
 
-#: src/components/MissionSetup.tsx:565
+#: src/components/MissionSetup.tsx:917
 msgid "Preset"
 msgstr "預設"
 
 #: src/components/MissionSetup.tsx:138
-msgid "Press a joystick button…"
-msgstr "請按下搖桿按鈕…"
+#~ msgid "Press a joystick button…"
+#~ msgstr "請按下搖桿按鈕…"
+
+#: src/components/MissionSetup.tsx:533
+msgid "Press a key…"
+msgstr "按下一個按鍵…"
 
 #: src/components/GameCanvas.tsx:31
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "按 ENTER 彈射起飛"
+
+#: src/components/MissionSetup.tsx:425
+msgid "Press it…"
+msgstr "按下它…"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
@@ -1293,12 +1408,12 @@ msgstr "在此伺服器上重新註冊您的通行密鑰"
 msgid "rearm"
 msgstr "重新裝填"
 
-#: src/components/MissionSetup.tsx:117
-#: src/components/MissionSetup.tsx:528
+#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:191
 msgid "Rearm"
 msgstr "重新武裝"
 
-#: src/components/MissionSetup.tsx:73
+#: src/components/MissionSetup.tsx:440
 msgid "Recalibrate"
 msgstr "重新校準"
 
@@ -1319,6 +1434,10 @@ msgstr "降低興趣"
 #: src/components/Multiplayer.tsx:194
 msgid "Refresh"
 msgstr "重新整理"
+
+#: src/components/MissionSetup.tsx:557
+msgid "Refueling probe"
+msgstr "受油管"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
@@ -1353,7 +1472,7 @@ msgstr "重新發送電郵"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:715
+#: src/components/MissionSetup.tsx:1061
 msgid "Reset"
 msgstr "重設"
 
@@ -1361,19 +1480,19 @@ msgstr "重設"
 msgid "Reset all settings to default values"
 msgstr "將所有設定重設為預設值"
 
-#: src/components/MissionSetup.tsx:592
+#: src/components/MissionSetup.tsx:944
 msgid "Resolution"
 msgstr "解決方式"
 
-#: src/components/MissionSetup.tsx:692
+#: src/components/MissionSetup.tsx:1038
 msgid "Restart"
 msgstr "重新開始"
 
-#: src/components/MissionSetup.tsx:696
+#: src/components/MissionSetup.tsx:1042
 msgid "Resume"
 msgstr "恢復"
 
-#: src/components/MissionSetup.tsx:535
+#: src/components/MissionSetup.tsx:559
 msgid "Return to menu"
 msgstr "返回選單"
 
@@ -1385,9 +1504,17 @@ msgstr "從右至左"
 msgid "roll"
 msgstr "滾轉"
 
-#: src/components/MissionSetup.tsx:513
+#: src/components/MissionSetup.tsx:150
 msgid "Roll"
 msgstr "滾轉"
+
+#: src/components/MissionSetup.tsx:176
+msgid "Roll left"
+msgstr "向左滾轉"
+
+#: src/components/MissionSetup.tsx:177
+msgid "Roll right"
+msgstr "向右滾轉"
 
 #: ../../../lib/web/src/components/data-table/pagination.tsx:63
 msgid "Rows per page"
@@ -1476,7 +1603,7 @@ msgstr "重新傳送"
 msgid "Send email"
 msgstr "傳送郵件"
 
-#: src/components/MissionSetup.tsx:491
+#: src/components/MissionSetup.tsx:298
 msgid "Sensitivity"
 msgstr "靈敏度"
 
@@ -1502,6 +1629,10 @@ msgstr "對局已結束"
 msgid "Session expired. Please log in again."
 msgstr "工作階段已過期，請重新登入。"
 
+#: src/components/MissionSetup.tsx:539
+msgid "Set"
+msgstr "設定"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx:147
 msgid "Set origin and destination"
 msgstr "設定出發地與目的地"
@@ -1514,7 +1645,7 @@ msgstr "設定出發地與目的地"
 msgid "Settings"
 msgstr "設定"
 
-#: src/components/MissionSetup.tsx:642
+#: src/components/MissionSetup.tsx:994
 msgid "Shadows"
 msgstr "陰影"
 
@@ -1550,7 +1681,8 @@ msgstr "跳至主要內容"
 msgid "Small"
 msgstr "小"
 
-#: src/components/MissionSetup.tsx:672
+#: src/components/MissionSetup.tsx:473
+#: src/components/MissionSetup.tsx:821
 msgid "Sound"
 msgstr "聲音"
 
@@ -1566,13 +1698,13 @@ msgstr "減速板"
 msgid "speed brake"
 msgstr "減速板"
 
-#: src/components/MissionSetup.tsx:113
-#: src/components/MissionSetup.tsx:522
+#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:188
 msgid "Speed brake"
 msgstr "減速板"
 
-#: src/components/MissionSetup.tsx:442
-#: src/components/MissionSetup.tsx:702
+#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:1048
 msgid "Start"
 msgstr "開始"
 
@@ -1611,7 +1743,7 @@ msgstr "標籤"
 msgid "Tags"
 msgstr "標籤"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:833
 msgid "Task"
 msgstr "目標"
 
@@ -1644,9 +1776,17 @@ msgstr "主題設定"
 msgid "throttle"
 msgstr "油門"
 
-#: src/components/MissionSetup.tsx:516
+#: src/components/MissionSetup.tsx:152
 msgid "Throttle"
 msgstr "油門"
+
+#: src/components/MissionSetup.tsx:181
+msgid "Throttle down"
+msgstr "減小油門"
+
+#: src/components/MissionSetup.tsx:180
+msgid "Throttle up"
+msgstr "加大油門"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:62
 msgid "Thursday"
@@ -1657,10 +1797,10 @@ msgid "tilt"
 msgstr "傾斜"
 
 #: src/components/MissionSetup.tsx:554
-msgid "Tilt"
-msgstr "傾斜"
+#~ msgid "Tilt"
+#~ msgstr "傾斜"
 
-#: src/components/MissionSetup.tsx:460
+#: src/components/MissionSetup.tsx:877
 msgid "Time of day"
 msgstr "時段"
 
@@ -1703,7 +1843,7 @@ msgstr "要求次數過多"
 msgid "Top"
 msgstr "頂端"
 
-#: src/components/MissionSetup.tsx:654
+#: src/components/MissionSetup.tsx:1006
 msgid "Tracers"
 msgstr "曳光彈"
 
@@ -1712,8 +1852,8 @@ msgid "Travelling"
 msgstr "行進中"
 
 #: src/components/MissionSetup.tsx:130
-msgid "Trigger"
-msgstr "扳機"
+#~ msgid "Trigger"
+#~ msgstr "扳機"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:190
 #: ../../../lib/web/src/components/search-entity-page.tsx:214
@@ -1742,7 +1882,7 @@ msgstr "輸入以搜尋使用者"
 msgid "Type to search..."
 msgstr "輸入以搜尋..."
 
-#: src/components/MissionSetup.tsx:584
+#: src/components/MissionSetup.tsx:936
 msgid "Ultra"
 msgstr "極致"
 
@@ -1822,6 +1962,10 @@ msgstr "檢視全部"
 msgid "View all notifications"
 msgstr "檢視所有通知"
 
+#: src/components/MissionSetup.tsx:554
+msgid "Views"
+msgstr "檢視次數"
+
 #: src/components/GameCanvas.tsx:42
 msgid "WAVE OFF"
 msgstr "重飛"
@@ -1830,7 +1974,11 @@ msgstr "重飛"
 msgid "We'll be back online shortly."
 msgstr "我們很快就會恢復上線。"
 
-#: src/components/MissionSetup.tsx:401
+#: src/components/MissionSetup.tsx:456
+msgid "Weapons"
+msgstr "武器"
+
+#: src/components/MissionSetup.tsx:812
 #: src/components/Multiplayer.tsx:223
 msgid "Weather"
 msgstr "天氣"
@@ -1843,8 +1991,8 @@ msgstr "網站維護中!"
 msgid "Wednesday"
 msgstr "星期三"
 
-#: src/components/MissionSetup.tsx:114
-#: src/components/MissionSetup.tsx:521
+#: src/components/MissionSetup.tsx:161
+#: src/components/MissionSetup.tsx:187
 msgid "Wheel brakes"
 msgstr "機輪剎車"
 
@@ -1864,9 +2012,17 @@ msgstr "無法連上世界伺服器"
 msgid "yaw"
 msgstr "偏航"
 
-#: src/components/MissionSetup.tsx:514
+#: src/components/MissionSetup.tsx:151
 msgid "Yaw"
 msgstr "偏航"
+
+#: src/components/MissionSetup.tsx:178
+msgid "Yaw left"
+msgstr "向左偏航"
+
+#: src/components/MissionSetup.tsx:179
+msgid "Yaw right"
+msgstr "向右偏航"
 
 #: src/components/GameCanvas.tsx:27
 msgid "YOU"

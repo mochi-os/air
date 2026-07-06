@@ -3,6 +3,14 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
+// One joystick's bindings: which pad axis drives each aircraft axis ('' = none),
+// and which pad button provides each action ('' = none). Missing entries fall
+// back to the engine's built-in device defaults.
+export interface StickBindings {
+  axes: Record<string, string>
+  buttons: Record<string, string>
+}
+
 // Mission configuration collected by the setup menu and handed to the engine.
 // The index signature lets the engine treat it as a plain config bag (its cfg has
 // a few more baked-in keys, e.g. the catapult spawn pose); the named fields keep
@@ -10,7 +18,9 @@
 export interface MissionConfig {
   task: 'free' | 'joust' | 'multiplayer'
   aircraft: 'fa18c' // one shipping aircraft today; the field + catalogue stay so a second type re-adds cleanly (client AIRCRAFT_MODELS, world aircraft.Get, and the menu picker)
-  buttons: Record<string, string>
+  joystick: string // menu-selected stick id ('' = first connected)
+  sticks: Record<string, StickBindings> // per-device axis/button maps, keyed by pad id
+  keys: Record<string, string> // keyboard remaps: action -> key code (defaults live in the engine's KEYS table)
   start: 'air' | 'runway' | 'carrier' | 'landing'
   tod: 'day' | 'night'
   clouds: 'none' | 'cumulus' | 'high_stratus' | 'low_stratus'
@@ -27,18 +37,21 @@ export interface MissionConfig {
   missiles: boolean
   flares: boolean
   sound: boolean
+  volume: Record<string, number> // Sound-tab mixer, percent per bus: master, engine, aircraft, weapons, environment, alerts
   invert: boolean
   framerate: boolean
   world: string
   callsign: string
-  [key: string]: string | number | boolean | Record<string, string>
+  [key: string]: string | number | boolean | Record<string, string> | Record<string, number> | Record<string, StickBindings>
 }
 
 // Mirrors the engine's defaults so the menu reflects what an unconfigured game uses.
 export const DEFAULT_CONFIG: MissionConfig = {
   task: 'joust',
   aircraft: 'fa18c',
-  buttons: {},
+  joystick: '',
+  sticks: {},
+  keys: {},
   start: 'carrier',
   tod: 'day',
   clouds: 'none',
@@ -55,6 +68,7 @@ export const DEFAULT_CONFIG: MissionConfig = {
   missiles: true,
   flares: true,
   sound: true,
+  volume: { master: 80, engine: 100, aircraft: 100, weapons: 100, environment: 100, alerts: 100 },
   invert: false,
   framerate: false,
   world: '',

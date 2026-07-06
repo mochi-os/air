@@ -131,7 +131,7 @@ msgstr "Voeg aansig by"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Pas die voorkoms en uitleg aan om by jou voorkeure te pas."
 
-#: src/components/MissionSetup.tsx:648
+#: src/components/MissionSetup.tsx:1000
 msgid "Afterburner"
 msgstr "Naverbrander"
 
@@ -139,13 +139,21 @@ msgstr "Naverbrander"
 msgid "AI"
 msgstr "KI"
 
-#: src/components/MissionSetup.tsx:301
+#: src/components/MissionSetup.tsx:455
+msgid "Aircraft"
+msgstr "Vliegtuig"
+
+#: src/components/MissionSetup.tsx:712
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline."
 msgstr "Vliegdekskip <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> deur <1>Muhamad Mirza Arrafi</1> (Sketchfab), gelisensieer onder <2>CC BY 4.0</2>. Gewysig: herskaal, boeg heroriënteer na +X, tot by die waterlyn versink."
 
-#: src/components/MissionSetup.tsx:278
+#: src/components/MissionSetup.tsx:689
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented nose +X, rescaled to length."
 msgstr "Vliegtuigmodel <0>“F/A-18C Hornet”</0> deur <1>CreadorDeMu</1> (Sketchfab), gelisensieer onder <2>CC BY 4.0</2>. Gewysig: neus na +X herrig, na lengte herskaal."
+
+#: src/components/MissionSetup.tsx:458
+msgid "Alerts"
+msgstr "Waarskuwings"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:163
 msgid "All"
@@ -163,8 +171,8 @@ msgstr "'n Onverwagte fout het voorgekom"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Is jy seker jy wil afmeld? Jy sal weer moet aanmeld om toegang tot jou rekening te kry."
 
-#: src/components/MissionSetup.tsx:112
-#: src/components/MissionSetup.tsx:524
+#: src/components/MissionSetup.tsx:160
+#: src/components/MissionSetup.tsx:186
 msgid "Arrestor hook"
 msgstr "Vanghaak"
 
@@ -179,6 +187,14 @@ msgstr "Oplopend"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Authenticator code"
 msgstr "Verifikasiekode"
+
+#: src/components/MissionSetup.tsx:315
+msgid "Axes"
+msgstr "Asse"
+
+#: src/components/MissionSetup.tsx:356
+msgid "Axis {i}"
+msgstr "As {i}"
 
 #: src/components/GameCanvas.tsx:131
 msgid "back"
@@ -195,8 +211,8 @@ msgid "Back to home"
 msgstr "Terug na tuis"
 
 #: src/components/MissionSetup.tsx:145
-msgid "Bind"
-msgstr "Koppel"
+#~ msgid "Bind"
+#~ msgstr "Koppel"
 
 #: src/components/GameCanvas.tsx:41
 msgid "BOLTER"
@@ -211,9 +227,21 @@ msgstr "Versterk belangstelling"
 msgid "brakes"
 msgstr "remme"
 
+#: src/components/MissionSetup.tsx:410
+msgid "Button {i}"
+msgstr "Knoppie {i}"
+
+#: src/components/MissionSetup.tsx:390
+msgid "Buttons"
+msgstr "Knoppies"
+
 #: src/components/Multiplayer.tsx:171
 msgid "Callsign"
 msgstr "Roepsein"
+
+#: src/components/MissionSetup.tsx:556
+msgid "Camera distance"
+msgstr "Kamera-afstand"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
@@ -224,11 +252,15 @@ msgstr "Roepsein"
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
-#: src/components/MissionSetup.tsx:145
+#: src/components/MissionSetup.tsx:539
 msgid "Cancel"
 msgstr "Kanselleer"
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:558
+msgid "Canopy"
+msgstr "Kajuitkap"
+
+#: src/components/MissionSetup.tsx:868
 msgid "Carrier landing"
 msgstr "Landing op vliegdekskip"
 
@@ -242,8 +274,8 @@ msgid "Change notification category"
 msgstr "Verander kennisgewingkategorie"
 
 #: src/components/MissionSetup.tsx:547
-msgid "Chase view"
-msgstr "Agtervolgaansig"
+#~ msgid "Chase view"
+#~ msgstr "Agtervolgaansig"
 
 #: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
@@ -322,7 +354,7 @@ msgstr "Sluit soektog"
 msgid "closer"
 msgstr "nader"
 
-#: src/components/MissionSetup.tsx:471
+#: src/components/MissionSetup.tsx:888
 msgid "Clouds"
 msgstr "Wolke"
 
@@ -380,8 +412,8 @@ msgid "Continue with {label}"
 msgstr "Gaan voort met {label}"
 
 #: src/components/MissionSetup.tsx:404
-msgid "Controls"
-msgstr "Kontroles"
+#~ msgid "Controls"
+#~ msgstr "Kontroles"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
@@ -419,12 +451,12 @@ msgstr "Skep en vlieg"
 msgid "Create match"
 msgstr "Skep wedstryd"
 
-#: src/components/MissionSetup.tsx:267
-#: src/components/MissionSetup.tsx:273
+#: src/components/MissionSetup.tsx:678
+#: src/components/MissionSetup.tsx:684
 msgid "Credits"
 msgstr "Erkennings"
 
-#: src/components/MissionSetup.tsx:478
+#: src/components/MissionSetup.tsx:895
 #: src/components/Multiplayer.tsx:231
 msgid "Cumulus"
 msgstr "Cumulus"
@@ -437,8 +469,8 @@ msgstr "Pasgemaak"
 msgid "CUT"
 msgstr "GEVAARLIK"
 
-#: src/components/MissionSetup.tsx:119
-#: src/components/MissionSetup.tsx:530
+#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:195
 msgid "Cycle view"
 msgstr "Wissel aansig"
 
@@ -459,7 +491,7 @@ msgstr "Donker modus"
 msgid "Data conflict"
 msgstr "Datakonflik"
 
-#: src/components/MissionSetup.tsx:466
+#: src/components/MissionSetup.tsx:883
 #: src/components/Multiplayer.tsx:226
 msgid "Day"
 msgstr "Dag"
@@ -492,6 +524,11 @@ msgstr "Aflopend"
 msgid "Details Panel"
 msgstr "Besonderhede-paneel"
 
+#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:425
+msgid "Detect"
+msgstr "Bespeur"
+
 #: ../../../lib/web/src/components/language-picker.tsx:276
 #: ../../../lib/web/src/components/timezone-select.tsx:46
 #: ../../../lib/web/src/components/timezone-select.tsx:83
@@ -503,9 +540,17 @@ msgstr "Besonderhede-paneel"
 msgid "Detect from web browser"
 msgstr "Spoor op vanaf webblaaier"
 
+#: src/components/MissionSetup.tsx:274
+msgid "Device"
+msgstr "Toestel"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:340
 msgid "Direction"
 msgstr "Rigting"
+
+#: src/components/MissionSetup.tsx:286
+msgid "disconnected"
+msgstr "ontkoppel"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:79
 #: ../../../lib/web/src/components/restore-banner.tsx:85
@@ -517,10 +562,10 @@ msgid "Displays the mobile sidebar."
 msgstr "Vertoon die mobiele sybalk."
 
 #: src/components/MissionSetup.tsx:556
-msgid "Distance"
-msgstr "Afstand"
+#~ msgid "Distance"
+#~ msgstr "Afstand"
 
-#: src/components/MissionSetup.tsx:636
+#: src/components/MissionSetup.tsx:988
 msgid "Distance LOD"
 msgstr "Afstand-LOD"
 
@@ -533,7 +578,7 @@ msgstr "Laai af"
 msgid "Download failed"
 msgstr "Aflaai het misluk"
 
-#: src/components/MissionSetup.tsx:630
+#: src/components/MissionSetup.tsx:982
 msgid "Dynamic resolution"
 msgstr "Dinamiese resolusie"
 
@@ -544,6 +589,10 @@ msgstr "Diksleksie-vriendelik"
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "Wysig {label}"
+
+#: src/components/MissionSetup.tsx:192
+msgid "Eject"
+msgstr "Skiet uit"
 
 #: src/components/GameCanvas.tsx:51
 msgid "EJECTED"
@@ -557,6 +606,10 @@ msgstr "E-poskode"
 msgid "empty"
 msgstr "leeg"
 
+#: src/components/MissionSetup.tsx:454
+msgid "Engine"
+msgstr "Enjin"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:299
 msgid "Enter the code from your email"
 msgstr "Voer die kode uit jou e-pos in"
@@ -564,6 +617,10 @@ msgstr "Voer die kode uit jou e-pos in"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:324
 msgid "Enter your authenticator code"
 msgstr "Voer jou verifikator-kode in"
+
+#: src/components/MissionSetup.tsx:457
+msgid "Environment"
+msgstr "Omgewing"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx:101
 #: ../../../lib/web/src/components/comment-tree-layout.tsx:110
@@ -576,11 +633,11 @@ msgstr "Vou uit"
 msgid "Expand sidebar"
 msgstr "Brei sybalk uit"
 
-#: src/components/MissionSetup.tsx:602
+#: src/components/MissionSetup.tsx:954
 msgid "Exterior detail"
 msgstr "Eksterne detail"
 
-#: src/components/MissionSetup.tsx:618
+#: src/components/MissionSetup.tsx:970
 msgid "Extra aircraft"
 msgstr "Ekstra vliegtuie"
 
@@ -616,13 +673,17 @@ msgstr "GEMIDDELD"
 msgid "Finish moving your account"
 msgstr "Voltooi die skuif van jou rekening"
 
+#: src/components/MissionSetup.tsx:551
+msgid "Fixed keys"
+msgstr "Vaste toetse"
+
 #: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "fakkels"
 
-#: src/components/MissionSetup.tsx:115
-#: src/components/MissionSetup.tsx:527
-#: src/components/MissionSetup.tsx:666
+#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:1018
 msgid "Flares"
 msgstr "Fakkels"
 
@@ -642,11 +703,11 @@ msgstr "VLUGKERN HET GEFAAL"
 msgid "Floating"
 msgstr "Drywend"
 
-#: src/components/MissionSetup.tsx:678
+#: src/components/MissionSetup.tsx:1024
 msgid "Framerate"
 msgstr "Raamtempo"
 
-#: src/components/MissionSetup.tsx:422
+#: src/components/MissionSetup.tsx:839
 msgid "Free flight"
 msgstr "Vrye vlug"
 
@@ -713,7 +774,7 @@ msgstr "Gaan na bladsy {pageNumber}"
 msgid "Go to previous page"
 msgstr "Gaan na vorige bladsy"
 
-#: src/components/MissionSetup.tsx:407
+#: src/components/MissionSetup.tsx:824
 msgid "Graphics"
 msgstr "Grafika"
 
@@ -729,8 +790,8 @@ msgstr "KANON"
 msgid "guns"
 msgstr "kanonne"
 
-#: src/components/MissionSetup.tsx:129
-#: src/components/MissionSetup.tsx:519
+#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:182
 msgid "Guns"
 msgstr "Kanonne"
 
@@ -742,11 +803,11 @@ msgstr "Versteek"
 msgid "Hide password"
 msgstr "Versteek wagwoord"
 
-#: src/components/MissionSetup.tsx:582
+#: src/components/MissionSetup.tsx:934
 msgid "High"
 msgstr "Hoog"
 
-#: src/components/MissionSetup.tsx:479
+#: src/components/MissionSetup.tsx:896
 #: src/components/Multiplayer.tsx:232
 msgid "High stratus"
 msgstr "Hoë stratus"
@@ -774,13 +835,13 @@ msgstr "Warm"
 msgid "Imperial"
 msgstr "Imperiaal"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:865
 msgid "In air"
 msgstr "In die lug"
 
 #: src/components/MissionSetup.tsx:487
-msgid "Input"
-msgstr "Invoer"
+#~ msgid "Input"
+#~ msgstr "Invoer"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:252
 msgid "Inset"
@@ -794,7 +855,7 @@ msgstr "Belange"
 msgid "Invalid verification code"
 msgstr "Ongeldige verifikasiekode"
 
-#: src/components/MissionSetup.tsx:502
+#: src/components/MissionSetup.tsx:309
 msgid "Invert pitch"
 msgstr "Keer helling om"
 
@@ -814,15 +875,19 @@ msgstr "Steekspel"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Tweegeveg — 1v1, eerste kill wen"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:840
 msgid "Joust against AI player"
 msgstr "Tweegeveg teen KI-speler"
 
-#: src/components/MissionSetup.tsx:539
-msgid "Joystick buttons"
-msgstr "Joystick-knoppies"
+#: src/components/MissionSetup.tsx:815
+msgid "Joystick"
+msgstr "Stuurstok"
 
-#: src/components/MissionSetup.tsx:509
+#: src/components/MissionSetup.tsx:539
+#~ msgid "Joystick buttons"
+#~ msgstr "Joystick-knoppies"
+
+#: src/components/MissionSetup.tsx:818
 msgid "Keys"
 msgstr "Sleutels"
 
@@ -838,8 +903,8 @@ msgstr "AFGESKIET"
 #~ msgid "L ENG FIRE"
 #~ msgstr ""
 
-#: src/components/MissionSetup.tsx:111
-#: src/components/MissionSetup.tsx:523
+#: src/components/MissionSetup.tsx:159
+#: src/components/MissionSetup.tsx:185
 msgid "Landing gear"
 msgstr "Landingstel"
 
@@ -852,8 +917,8 @@ msgstr "Groot"
 msgid "launch"
 msgstr "lansering"
 
-#: src/components/MissionSetup.tsx:118
-#: src/components/MissionSetup.tsx:520
+#: src/components/MissionSetup.tsx:163
+#: src/components/MissionSetup.tsx:189
 msgid "Launch (catapult)"
 msgstr "Lansering (katapult)"
 
@@ -883,7 +948,8 @@ msgstr "Lig"
 msgid "lights"
 msgstr "ligte"
 
-#: src/components/MissionSetup.tsx:525
+#: src/components/MissionSetup.tsx:164
+#: src/components/MissionSetup.tsx:190
 msgid "Lights"
 msgstr "Ligte"
 
@@ -930,11 +996,31 @@ msgstr "Suksesvol afgemeld"
 msgid "Logging out…"
 msgstr "Besig om af te meld…"
 
-#: src/components/MissionSetup.tsx:578
+#: src/components/MissionSetup.tsx:555
+msgid "Look / orbit"
+msgstr "Kyk / wentel"
+
+#: src/components/MissionSetup.tsx:168
+msgid "Look down"
+msgstr "Kyk af"
+
+#: src/components/MissionSetup.tsx:169
+msgid "Look left"
+msgstr "Kyk links"
+
+#: src/components/MissionSetup.tsx:170
+msgid "Look right"
+msgstr "Kyk regs"
+
+#: src/components/MissionSetup.tsx:167
+msgid "Look up"
+msgstr "Kyk op"
+
+#: src/components/MissionSetup.tsx:930
 msgid "Low"
 msgstr "Laag"
 
-#: src/components/MissionSetup.tsx:480
+#: src/components/MissionSetup.tsx:897
 #: src/components/Multiplayer.tsx:233
 msgid "Low stratus"
 msgstr "Lae stratus"
@@ -947,8 +1033,7 @@ msgstr "M om te sluit"
 msgid "map"
 msgstr "kaart"
 
-#: src/components/MissionSetup.tsx:120
-#: src/components/MissionSetup.tsx:533
+#: src/components/MissionSetup.tsx:193
 msgid "Map"
 msgstr "Kaart"
 
@@ -958,12 +1043,16 @@ msgstr "Kaart"
 msgid "Mark all as read"
 msgstr "Merk alles as gelees"
 
+#: src/components/MissionSetup.tsx:453
+msgid "Master"
+msgstr "Hoof"
+
 #: src/components/Multiplayer.tsx:214
 msgid "Match type"
 msgstr "Wedstrydtipe"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:580
+#: src/components/MissionSetup.tsx:932
 msgid "Medium"
 msgstr "Medium"
 
@@ -979,7 +1068,7 @@ msgstr "Kieslys"
 msgid "Metric"
 msgstr "Metriek"
 
-#: src/components/MissionSetup.tsx:325
+#: src/components/MissionSetup.tsx:736
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Kaart van die Midway-atol — beelde bevat gewysigde <0>Copernicus Sentinel-2</0>-data (2026); vliegveldgeometrie (aanloopbaan, taxibane, platforms) © <1>OpenStreetMap</1>-bydraers, gelisensieer onder <2>ODbL</2>; kus- en rifdata van <3>NOAA NCCOS</3> (publieke domein)."
 
@@ -987,12 +1076,12 @@ msgstr "Kaart van die Midway-atol — beelde bevat gewysigde <0>Copernicus Senti
 msgid "missile"
 msgstr "missiel"
 
-#: src/components/MissionSetup.tsx:116
-#: src/components/MissionSetup.tsx:526
+#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:183
 msgid "Missile"
 msgstr "Missiel"
 
-#: src/components/MissionSetup.tsx:660
+#: src/components/MissionSetup.tsx:1012
 msgid "Missiles"
 msgstr "Missiele"
 
@@ -1000,7 +1089,7 @@ msgstr "Missiele"
 msgid "Missiles allowed"
 msgstr "Missiele toegelaat"
 
-#: src/components/MissionSetup.tsx:398
+#: src/components/MissionSetup.tsx:809
 msgid "Mission"
 msgstr "Missie"
 
@@ -1008,7 +1097,11 @@ msgstr "Missie"
 msgid "Monday"
 msgstr "Maandag"
 
-#: src/components/MissionSetup.tsx:424
+#: src/components/MissionSetup.tsx:382
+msgid "Move it…"
+msgstr "Beweeg die as…"
+
+#: src/components/MissionSetup.tsx:841
 msgid "Multiplayer"
 msgstr "Veelspeler"
 
@@ -1030,7 +1123,7 @@ msgstr "Nuut"
 msgid "Next image"
 msgstr "Volgende prent"
 
-#: src/components/MissionSetup.tsx:467
+#: src/components/MissionSetup.tsx:884
 #: src/components/Multiplayer.tsx:227
 msgid "Night"
 msgstr "Nag"
@@ -1046,6 +1139,10 @@ msgstr "Geen gekoppelde rekeninge nie"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Geen groepe beskikbaar nie"
+
+#: src/components/MissionSetup.tsx:293
+msgid "No joystick detected — press any button on it to wake it up."
+msgstr "Geen stuurstok bespeur nie — druk enige knoppie daarop om dit wakker te maak."
 
 #: src/components/Multiplayer.tsx:255
 msgid "No open matches — create one."
@@ -1087,7 +1184,9 @@ msgstr "GEEN GRADERING NIE"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:477
+#: src/components/MissionSetup.tsx:352
+#: src/components/MissionSetup.tsx:406
+#: src/components/MissionSetup.tsx:894
 msgid "None"
 msgstr "Geen"
 
@@ -1111,7 +1210,7 @@ msgstr "Nie ingestel nie"
 msgid "Notifications"
 msgstr "Kennisgewings"
 
-#: src/components/MissionSetup.tsx:610
+#: src/components/MissionSetup.tsx:962
 msgid "Ocean detail"
 msgstr "Oseaandetail"
 
@@ -1119,11 +1218,11 @@ msgstr "Oseaandetail"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:867
 msgid "On carrier"
 msgstr "Op vliegdekskip"
 
-#: src/components/MissionSetup.tsx:449
+#: src/components/MissionSetup.tsx:866
 msgid "On runway"
 msgstr "Op aanloopbaan"
 
@@ -1173,8 +1272,8 @@ msgid "orbit"
 msgstr "wentel"
 
 #: src/components/MissionSetup.tsx:551
-msgid "Orbit"
-msgstr "Wentel"
+#~ msgid "Orbit"
+#~ msgstr "Wentel"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:166
 msgid "Other"
@@ -1204,7 +1303,7 @@ msgstr "Wagwoordsleutels"
 msgid "pause"
 msgstr "pouse"
 
-#: src/components/MissionSetup.tsx:534
+#: src/components/MissionSetup.tsx:194
 msgid "Pause"
 msgstr "Pouseer"
 
@@ -1225,9 +1324,17 @@ msgstr "VLIEËNIER DOOD"
 msgid "pitch"
 msgstr "hei"
 
-#: src/components/MissionSetup.tsx:512
+#: src/components/MissionSetup.tsx:149
 msgid "Pitch"
 msgstr "Helling"
+
+#: src/components/MissionSetup.tsx:175
+msgid "Pitch down"
+msgstr "Neus af"
+
+#: src/components/MissionSetup.tsx:174
+msgid "Pitch up"
+msgstr "Neus op"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
@@ -1242,17 +1349,25 @@ msgstr "Probeer asseblief weer."
 msgid "Please wait a moment and try again."
 msgstr "Wag asseblief 'n oomblik en probeer weer."
 
-#: src/components/MissionSetup.tsx:565
+#: src/components/MissionSetup.tsx:917
 msgid "Preset"
 msgstr "Voorinstelling"
 
 #: src/components/MissionSetup.tsx:138
-msgid "Press a joystick button…"
-msgstr "Druk 'n joystick-knoppie…"
+#~ msgid "Press a joystick button…"
+#~ msgstr "Druk 'n joystick-knoppie…"
+
+#: src/components/MissionSetup.tsx:533
+msgid "Press a key…"
+msgstr "Druk 'n toets…"
 
 #: src/components/GameCanvas.tsx:31
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "DRUK ENTER OM TE LANSEER"
+
+#: src/components/MissionSetup.tsx:425
+msgid "Press it…"
+msgstr "Druk die knoppie…"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
@@ -1293,12 +1408,12 @@ msgstr "Herregistreer jou wagwoordsleutels op hierdie bediener"
 msgid "rearm"
 msgstr "herbewapen"
 
-#: src/components/MissionSetup.tsx:117
-#: src/components/MissionSetup.tsx:528
+#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:191
 msgid "Rearm"
 msgstr "Herbewapen"
 
-#: src/components/MissionSetup.tsx:73
+#: src/components/MissionSetup.tsx:440
 msgid "Recalibrate"
 msgstr "Herkalibreer"
 
@@ -1319,6 +1434,10 @@ msgstr "Verminder belangstelling"
 #: src/components/Multiplayer.tsx:194
 msgid "Refresh"
 msgstr "Verfris"
+
+#: src/components/MissionSetup.tsx:557
+msgid "Refueling probe"
+msgstr "Brandstofsonde"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
@@ -1353,7 +1472,7 @@ msgstr "Stuur e-pos weer"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:715
+#: src/components/MissionSetup.tsx:1061
 msgid "Reset"
 msgstr "Stel terug"
 
@@ -1361,19 +1480,19 @@ msgstr "Stel terug"
 msgid "Reset all settings to default values"
 msgstr "Stel alle instellings terug na verstekwaardes"
 
-#: src/components/MissionSetup.tsx:592
+#: src/components/MissionSetup.tsx:944
 msgid "Resolution"
 msgstr "Resolusie"
 
-#: src/components/MissionSetup.tsx:692
+#: src/components/MissionSetup.tsx:1038
 msgid "Restart"
 msgstr "Herbegin"
 
-#: src/components/MissionSetup.tsx:696
+#: src/components/MissionSetup.tsx:1042
 msgid "Resume"
 msgstr "Hervat"
 
-#: src/components/MissionSetup.tsx:535
+#: src/components/MissionSetup.tsx:559
 msgid "Return to menu"
 msgstr "Keer terug na kieslys"
 
@@ -1385,9 +1504,17 @@ msgstr "Regs na links"
 msgid "roll"
 msgstr "rol"
 
-#: src/components/MissionSetup.tsx:513
+#: src/components/MissionSetup.tsx:150
 msgid "Roll"
 msgstr "Rol"
+
+#: src/components/MissionSetup.tsx:176
+msgid "Roll left"
+msgstr "Rol links"
+
+#: src/components/MissionSetup.tsx:177
+msgid "Roll right"
+msgstr "Rol regs"
 
 #: ../../../lib/web/src/components/data-table/pagination.tsx:63
 msgid "Rows per page"
@@ -1476,7 +1603,7 @@ msgstr "Stuur weer"
 msgid "Send email"
 msgstr "Stuur e-pos"
 
-#: src/components/MissionSetup.tsx:491
+#: src/components/MissionSetup.tsx:298
 msgid "Sensitivity"
 msgstr "Sensitiwiteit"
 
@@ -1502,6 +1629,10 @@ msgstr "SESSIE BEËINDIG"
 msgid "Session expired. Please log in again."
 msgstr "Sessie het verval. Meld asseblief weer aan."
 
+#: src/components/MissionSetup.tsx:539
+msgid "Set"
+msgstr "Stel"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx:147
 msgid "Set origin and destination"
 msgstr "Stel oorsprong en bestemming"
@@ -1514,7 +1645,7 @@ msgstr "Stel oorsprong en bestemming"
 msgid "Settings"
 msgstr "Instellings"
 
-#: src/components/MissionSetup.tsx:642
+#: src/components/MissionSetup.tsx:994
 msgid "Shadows"
 msgstr "Skaduwees"
 
@@ -1550,7 +1681,8 @@ msgstr "Spring na hoofinhoud"
 msgid "Small"
 msgstr "Klein"
 
-#: src/components/MissionSetup.tsx:672
+#: src/components/MissionSetup.tsx:473
+#: src/components/MissionSetup.tsx:821
 msgid "Sound"
 msgstr "Klank"
 
@@ -1566,13 +1698,13 @@ msgstr "LGREM"
 msgid "speed brake"
 msgstr "lugrem"
 
-#: src/components/MissionSetup.tsx:113
-#: src/components/MissionSetup.tsx:522
+#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:188
 msgid "Speed brake"
 msgstr "Lugrem"
 
-#: src/components/MissionSetup.tsx:442
-#: src/components/MissionSetup.tsx:702
+#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:1048
 msgid "Start"
 msgstr "Begin"
 
@@ -1611,7 +1743,7 @@ msgstr "Etiket"
 msgid "Tags"
 msgstr "Etikette"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:833
 msgid "Task"
 msgstr "Taak"
 
@@ -1644,9 +1776,17 @@ msgstr "Tema-instellings"
 msgid "throttle"
 msgstr "versneller"
 
-#: src/components/MissionSetup.tsx:516
+#: src/components/MissionSetup.tsx:152
 msgid "Throttle"
 msgstr "Versnelling"
+
+#: src/components/MissionSetup.tsx:181
+msgid "Throttle down"
+msgstr "Verlaag versnelling"
+
+#: src/components/MissionSetup.tsx:180
+msgid "Throttle up"
+msgstr "Verhoog versnelling"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:62
 msgid "Thursday"
@@ -1657,10 +1797,10 @@ msgid "tilt"
 msgstr "kantel"
 
 #: src/components/MissionSetup.tsx:554
-msgid "Tilt"
-msgstr "Kantel"
+#~ msgid "Tilt"
+#~ msgstr "Kantel"
 
-#: src/components/MissionSetup.tsx:460
+#: src/components/MissionSetup.tsx:877
 msgid "Time of day"
 msgstr "Tyd van dag"
 
@@ -1703,7 +1843,7 @@ msgstr "Te veel versoeke"
 msgid "Top"
 msgstr "Bo"
 
-#: src/components/MissionSetup.tsx:654
+#: src/components/MissionSetup.tsx:1006
 msgid "Tracers"
 msgstr "Spoorkoeëls"
 
@@ -1712,8 +1852,8 @@ msgid "Travelling"
 msgstr "Op reis"
 
 #: src/components/MissionSetup.tsx:130
-msgid "Trigger"
-msgstr "Sneller"
+#~ msgid "Trigger"
+#~ msgstr "Sneller"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:190
 #: ../../../lib/web/src/components/search-entity-page.tsx:214
@@ -1742,7 +1882,7 @@ msgstr "Tik om gebruikers te soek"
 msgid "Type to search..."
 msgstr "Tik om te soek..."
 
-#: src/components/MissionSetup.tsx:584
+#: src/components/MissionSetup.tsx:936
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1822,6 +1962,10 @@ msgstr "Bekyk alles"
 msgid "View all notifications"
 msgstr "Bekyk alle kennisgewings"
 
+#: src/components/MissionSetup.tsx:554
+msgid "Views"
+msgstr "Bekykings"
+
 #: src/components/GameCanvas.tsx:42
 msgid "WAVE OFF"
 msgstr "STAAK DIE LANDING"
@@ -1830,7 +1974,11 @@ msgstr "STAAK DIE LANDING"
 msgid "We'll be back online shortly."
 msgstr "Ons sal binnekort weer aanlyn wees."
 
-#: src/components/MissionSetup.tsx:401
+#: src/components/MissionSetup.tsx:456
+msgid "Weapons"
+msgstr "Wapens"
+
+#: src/components/MissionSetup.tsx:812
 #: src/components/Multiplayer.tsx:223
 msgid "Weather"
 msgstr "Weer"
@@ -1843,8 +1991,8 @@ msgstr "Webwerf is onder instandhouding!"
 msgid "Wednesday"
 msgstr "Woensdag"
 
-#: src/components/MissionSetup.tsx:114
-#: src/components/MissionSetup.tsx:521
+#: src/components/MissionSetup.tsx:161
+#: src/components/MissionSetup.tsx:187
 msgid "Wheel brakes"
 msgstr "Wielremme"
 
@@ -1864,9 +2012,17 @@ msgstr "Wêreldbediener nie bereikbaar nie"
 msgid "yaw"
 msgstr "gier"
 
-#: src/components/MissionSetup.tsx:514
+#: src/components/MissionSetup.tsx:151
 msgid "Yaw"
 msgstr "Gier"
+
+#: src/components/MissionSetup.tsx:178
+msgid "Yaw left"
+msgstr "Gier links"
+
+#: src/components/MissionSetup.tsx:179
+msgid "Yaw right"
+msgstr "Gier regs"
 
 #: src/components/GameCanvas.tsx:27
 msgid "YOU"

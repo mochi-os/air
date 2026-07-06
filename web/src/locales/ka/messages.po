@@ -131,7 +131,7 @@ msgstr "ხედის დამატება"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "მოარგეთ გარემო და განლაგება თქვენს უპირატესობებს."
 
-#: src/components/MissionSetup.tsx:648
+#: src/components/MissionSetup.tsx:1000
 msgid "Afterburner"
 msgstr "ფორსაჟი"
 
@@ -139,13 +139,21 @@ msgstr "ფორსაჟი"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:301
+#: src/components/MissionSetup.tsx:455
+msgid "Aircraft"
+msgstr "თვითმფრინავი"
+
+#: src/components/MissionSetup.tsx:712
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline."
 msgstr "ავიამზიდი <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>, ავტორი <1>Muhamad Mirza Arrafi</1> (Sketchfab), ლიცენზირებულია <2>CC BY 4.0</2>-ის მიხედვით. შეცვლილია: მასშტაბი შეცვლილია, ცხვირი მიმართულია +X-ზე, ჩაძირულია წყლის ხაზამდე."
 
-#: src/components/MissionSetup.tsx:278
+#: src/components/MissionSetup.tsx:689
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented nose +X, rescaled to length."
 msgstr "თვითმფრინავის მოდელი <0>“F/A-18C Hornet”</0>, ავტორი <1>CreadorDeMu</1> (Sketchfab), ლიცენზირებულია <2>CC BY 4.0</2>-ის ქვეშ. შეცვლილია: ცხვირი გადამისამართებულია +X-ზე, გადამასშტაბებულია სიგრძის მიხედვით."
+
+#: src/components/MissionSetup.tsx:458
+msgid "Alerts"
+msgstr "გაფრთხილებები"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:163
 msgid "All"
@@ -163,8 +171,8 @@ msgstr "მოხდა მოულოდნელი შეცდომა"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "დარწმუნებული ხართ, რომ გსურთ გასვლა? ანგარიშზე წვდომისთვის ხელახლა შესვლა მოგიწევთ."
 
-#: src/components/MissionSetup.tsx:112
-#: src/components/MissionSetup.tsx:524
+#: src/components/MissionSetup.tsx:160
+#: src/components/MissionSetup.tsx:186
 msgid "Arrestor hook"
 msgstr "სამუხრუჭე კაუჭი"
 
@@ -179,6 +187,14 @@ msgstr "ზრდადობით"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Authenticator code"
 msgstr "Authenticator-ის კოდი"
+
+#: src/components/MissionSetup.tsx:315
+msgid "Axes"
+msgstr "ღერძები"
+
+#: src/components/MissionSetup.tsx:356
+msgid "Axis {i}"
+msgstr "ღერძი {i}"
 
 #: src/components/GameCanvas.tsx:131
 msgid "back"
@@ -195,8 +211,8 @@ msgid "Back to home"
 msgstr "მთავარზე დაბრუნება"
 
 #: src/components/MissionSetup.tsx:145
-msgid "Bind"
-msgstr "მინიჭება"
+#~ msgid "Bind"
+#~ msgstr "მინიჭება"
 
 #: src/components/GameCanvas.tsx:41
 msgid "BOLTER"
@@ -211,9 +227,21 @@ msgstr "ინტერესის გაძლიერება"
 msgid "brakes"
 msgstr "მუხრუჭები"
 
+#: src/components/MissionSetup.tsx:410
+msgid "Button {i}"
+msgstr "ღილაკი {i}"
+
+#: src/components/MissionSetup.tsx:390
+msgid "Buttons"
+msgstr "ღილაკები"
+
 #: src/components/Multiplayer.tsx:171
 msgid "Callsign"
 msgstr "გამოძახების ნიშანი"
+
+#: src/components/MissionSetup.tsx:556
+msgid "Camera distance"
+msgstr "კამერის მანძილი"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
@@ -224,11 +252,15 @@ msgstr "გამოძახების ნიშანი"
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
-#: src/components/MissionSetup.tsx:145
+#: src/components/MissionSetup.tsx:539
 msgid "Cancel"
 msgstr "გაუქმება"
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:558
+msgid "Canopy"
+msgstr "კაბინის ხუფი"
+
+#: src/components/MissionSetup.tsx:868
 msgid "Carrier landing"
 msgstr "დაშვება ავიამზიდზე"
 
@@ -242,8 +274,8 @@ msgid "Change notification category"
 msgstr "შეტყობინების კატეგორიის შეცვლა"
 
 #: src/components/MissionSetup.tsx:547
-msgid "Chase view"
-msgstr "დევნის ხედი"
+#~ msgid "Chase view"
+#~ msgstr "დევნის ხედი"
 
 #: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
@@ -322,7 +354,7 @@ msgstr "ძიების დახურვა"
 msgid "closer"
 msgstr "ახლოს"
 
-#: src/components/MissionSetup.tsx:471
+#: src/components/MissionSetup.tsx:888
 msgid "Clouds"
 msgstr "ღრუბლები"
 
@@ -380,8 +412,8 @@ msgid "Continue with {label}"
 msgstr "გაგრძელება {label}-ით"
 
 #: src/components/MissionSetup.tsx:404
-msgid "Controls"
-msgstr "მართვა"
+#~ msgid "Controls"
+#~ msgstr "მართვა"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
@@ -419,12 +451,12 @@ msgstr "შექმნა და აფრენა"
 msgid "Create match"
 msgstr "მატჩის შექმნა"
 
-#: src/components/MissionSetup.tsx:267
-#: src/components/MissionSetup.tsx:273
+#: src/components/MissionSetup.tsx:678
+#: src/components/MissionSetup.tsx:684
 msgid "Credits"
 msgstr "ავტორები"
 
-#: src/components/MissionSetup.tsx:478
+#: src/components/MissionSetup.tsx:895
 #: src/components/Multiplayer.tsx:231
 msgid "Cumulus"
 msgstr "კუმულუსი"
@@ -437,8 +469,8 @@ msgstr "მორგებული"
 msgid "CUT"
 msgstr "საშიში"
 
-#: src/components/MissionSetup.tsx:119
-#: src/components/MissionSetup.tsx:530
+#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:195
 msgid "Cycle view"
 msgstr "ხედის გადართვა"
 
@@ -459,7 +491,7 @@ msgstr "ბნელი რეჟიმი"
 msgid "Data conflict"
 msgstr "მონაცემთა კონფლიქტი"
 
-#: src/components/MissionSetup.tsx:466
+#: src/components/MissionSetup.tsx:883
 #: src/components/Multiplayer.tsx:226
 msgid "Day"
 msgstr "დღე"
@@ -492,6 +524,11 @@ msgstr "კლებადობით"
 msgid "Details Panel"
 msgstr "დეტალების პანელი"
 
+#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:425
+msgid "Detect"
+msgstr "აღმოჩენა"
+
 #: ../../../lib/web/src/components/language-picker.tsx:276
 #: ../../../lib/web/src/components/timezone-select.tsx:46
 #: ../../../lib/web/src/components/timezone-select.tsx:83
@@ -503,9 +540,17 @@ msgstr "დეტალების პანელი"
 msgid "Detect from web browser"
 msgstr "ვებ ბრაუზერიდან აღმოჩენა"
 
+#: src/components/MissionSetup.tsx:274
+msgid "Device"
+msgstr "მოწყობილობა"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:340
 msgid "Direction"
 msgstr "მიმართულება"
+
+#: src/components/MissionSetup.tsx:286
+msgid "disconnected"
+msgstr "გათიშულია"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:79
 #: ../../../lib/web/src/components/restore-banner.tsx:85
@@ -517,10 +562,10 @@ msgid "Displays the mobile sidebar."
 msgstr "აჩვენებს მობილურის გვერდით პანელს."
 
 #: src/components/MissionSetup.tsx:556
-msgid "Distance"
-msgstr "მანძილი"
+#~ msgid "Distance"
+#~ msgstr "მანძილი"
 
-#: src/components/MissionSetup.tsx:636
+#: src/components/MissionSetup.tsx:988
 msgid "Distance LOD"
 msgstr "მანძილის LOD"
 
@@ -533,7 +578,7 @@ msgstr "ჩამოტვირთვა"
 msgid "Download failed"
 msgstr "ჩამოტვირთვა ვერ მოხერხდა"
 
-#: src/components/MissionSetup.tsx:630
+#: src/components/MissionSetup.tsx:982
 msgid "Dynamic resolution"
 msgstr "დინამიკური გარჩევადობა"
 
@@ -544,6 +589,10 @@ msgstr "დისლექსიის თავსებადი"
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "{label}-ის რედაქტირება"
+
+#: src/components/MissionSetup.tsx:192
+msgid "Eject"
+msgstr "კატაპულტირება"
 
 #: src/components/GameCanvas.tsx:51
 msgid "EJECTED"
@@ -557,6 +606,10 @@ msgstr "ელფოსტის კოდი"
 msgid "empty"
 msgstr "ცარიელი"
 
+#: src/components/MissionSetup.tsx:454
+msgid "Engine"
+msgstr "ძრავა"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:299
 msgid "Enter the code from your email"
 msgstr "შეიყვანეთ კოდი თქვენი ელფოსტიდან"
@@ -564,6 +617,10 @@ msgstr "შეიყვანეთ კოდი თქვენი ელფო
 #: ../../../lib/web/src/components/step-up-dialog.tsx:324
 msgid "Enter your authenticator code"
 msgstr "შეიყვანეთ თქვენი authenticator-ის კოდი"
+
+#: src/components/MissionSetup.tsx:457
+msgid "Environment"
+msgstr "გარემო"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx:101
 #: ../../../lib/web/src/components/comment-tree-layout.tsx:110
@@ -576,11 +633,11 @@ msgstr "გაშლა"
 msgid "Expand sidebar"
 msgstr "გვერდითი პანელის გაშლა"
 
-#: src/components/MissionSetup.tsx:602
+#: src/components/MissionSetup.tsx:954
 msgid "Exterior detail"
 msgstr "გარე დეტალიზაცია"
 
-#: src/components/MissionSetup.tsx:618
+#: src/components/MissionSetup.tsx:970
 msgid "Extra aircraft"
 msgstr "დამატებითი თვითმფრინავები"
 
@@ -616,13 +673,17 @@ msgstr "საშუალო"
 msgid "Finish moving your account"
 msgstr "დაასრულეთ ანგარიშის გადატანა"
 
+#: src/components/MissionSetup.tsx:551
+msgid "Fixed keys"
+msgstr "ფიქსირებული კლავიშები"
+
 #: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "სატყუარები"
 
-#: src/components/MissionSetup.tsx:115
-#: src/components/MissionSetup.tsx:527
-#: src/components/MissionSetup.tsx:666
+#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:1018
 msgid "Flares"
 msgstr "თერმოხაფანგები"
 
@@ -642,11 +703,11 @@ msgstr "ფრენის ბირთვი ჩაიშალა"
 msgid "Floating"
 msgstr "მცურავი"
 
-#: src/components/MissionSetup.tsx:678
+#: src/components/MissionSetup.tsx:1024
 msgid "Framerate"
 msgstr "კადრების სიხშირე"
 
-#: src/components/MissionSetup.tsx:422
+#: src/components/MissionSetup.tsx:839
 msgid "Free flight"
 msgstr "თავისუფალი ფრენა"
 
@@ -713,7 +774,7 @@ msgstr "გვერდი {pageNumber}-ზე გადასვლა"
 msgid "Go to previous page"
 msgstr "წინა გვერდზე გადასვლა"
 
-#: src/components/MissionSetup.tsx:407
+#: src/components/MissionSetup.tsx:824
 msgid "Graphics"
 msgstr "გრაფიკა"
 
@@ -729,8 +790,8 @@ msgstr "ქვემეხი"
 msgid "guns"
 msgstr "ქვემეხები"
 
-#: src/components/MissionSetup.tsx:129
-#: src/components/MissionSetup.tsx:519
+#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:182
 msgid "Guns"
 msgstr "ქვემეხები"
 
@@ -742,11 +803,11 @@ msgstr "დამალვა"
 msgid "Hide password"
 msgstr "პაროლის დამალვა"
 
-#: src/components/MissionSetup.tsx:582
+#: src/components/MissionSetup.tsx:934
 msgid "High"
 msgstr "მაღალი"
 
-#: src/components/MissionSetup.tsx:479
+#: src/components/MissionSetup.tsx:896
 #: src/components/Multiplayer.tsx:232
 msgid "High stratus"
 msgstr "მაღალი სტრატუსი"
@@ -774,13 +835,13 @@ msgstr "ცხელი"
 msgid "Imperial"
 msgstr "იმპერიული"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:865
 msgid "In air"
 msgstr "ჰაერში"
 
 #: src/components/MissionSetup.tsx:487
-msgid "Input"
-msgstr "შეყვანა"
+#~ msgid "Input"
+#~ msgstr "შეყვანა"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:252
 msgid "Inset"
@@ -794,7 +855,7 @@ msgstr "ინტერესები"
 msgid "Invalid verification code"
 msgstr "არასწორი დადასტურების კოდი"
 
-#: src/components/MissionSetup.tsx:502
+#: src/components/MissionSetup.tsx:309
 msgid "Invert pitch"
 msgstr "ტანგაჟის შებრუნება"
 
@@ -814,15 +875,19 @@ msgstr "ორთაბრძოლა"
 msgid "Joust — 1v1, first kill wins"
 msgstr "დუელი — 1v1, პირველი ჩამოგდება იგებს"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:840
 msgid "Joust against AI player"
 msgstr "დუელი AI მოთამაშის წინააღმდეგ"
 
-#: src/components/MissionSetup.tsx:539
-msgid "Joystick buttons"
-msgstr "ჯოისტიკის ღილაკები"
+#: src/components/MissionSetup.tsx:815
+msgid "Joystick"
+msgstr "ჯოისტიკი"
 
-#: src/components/MissionSetup.tsx:509
+#: src/components/MissionSetup.tsx:539
+#~ msgid "Joystick buttons"
+#~ msgstr "ჯოისტიკის ღილაკები"
+
+#: src/components/MissionSetup.tsx:818
 msgid "Keys"
 msgstr "ღილაკები"
 
@@ -838,8 +903,8 @@ msgstr "ჩამოგდება"
 #~ msgid "L ENG FIRE"
 #~ msgstr ""
 
-#: src/components/MissionSetup.tsx:111
-#: src/components/MissionSetup.tsx:523
+#: src/components/MissionSetup.tsx:159
+#: src/components/MissionSetup.tsx:185
 msgid "Landing gear"
 msgstr "შასი"
 
@@ -852,8 +917,8 @@ msgstr "დიდი"
 msgid "launch"
 msgstr "გაშვება"
 
-#: src/components/MissionSetup.tsx:118
-#: src/components/MissionSetup.tsx:520
+#: src/components/MissionSetup.tsx:163
+#: src/components/MissionSetup.tsx:189
 msgid "Launch (catapult)"
 msgstr "გაშვება (კატაპულტი)"
 
@@ -883,7 +948,8 @@ msgstr "ღია"
 msgid "lights"
 msgstr "შუქები"
 
-#: src/components/MissionSetup.tsx:525
+#: src/components/MissionSetup.tsx:164
+#: src/components/MissionSetup.tsx:190
 msgid "Lights"
 msgstr "შუქები"
 
@@ -930,11 +996,31 @@ msgstr "წარმატებით გავიდა"
 msgid "Logging out…"
 msgstr "გასვლა…"
 
-#: src/components/MissionSetup.tsx:578
+#: src/components/MissionSetup.tsx:555
+msgid "Look / orbit"
+msgstr "მიმოხედვა / ორბიტა"
+
+#: src/components/MissionSetup.tsx:168
+msgid "Look down"
+msgstr "ქვემოთ ყურება"
+
+#: src/components/MissionSetup.tsx:169
+msgid "Look left"
+msgstr "მარცხნივ ყურება"
+
+#: src/components/MissionSetup.tsx:170
+msgid "Look right"
+msgstr "მარჯვნივ ყურება"
+
+#: src/components/MissionSetup.tsx:167
+msgid "Look up"
+msgstr "ზემოთ ყურება"
+
+#: src/components/MissionSetup.tsx:930
 msgid "Low"
 msgstr "დაბალი"
 
-#: src/components/MissionSetup.tsx:480
+#: src/components/MissionSetup.tsx:897
 #: src/components/Multiplayer.tsx:233
 msgid "Low stratus"
 msgstr "დაბალი სტრატუსი"
@@ -947,8 +1033,7 @@ msgstr "M დასახურად"
 msgid "map"
 msgstr "რუკა"
 
-#: src/components/MissionSetup.tsx:120
-#: src/components/MissionSetup.tsx:533
+#: src/components/MissionSetup.tsx:193
 msgid "Map"
 msgstr "რუკა"
 
@@ -958,12 +1043,16 @@ msgstr "რუკა"
 msgid "Mark all as read"
 msgstr "ყველას წაკითხულად მონიშვნა"
 
+#: src/components/MissionSetup.tsx:453
+msgid "Master"
+msgstr "საერთო"
+
 #: src/components/Multiplayer.tsx:214
 msgid "Match type"
 msgstr "მატჩის ტიპი"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:580
+#: src/components/MissionSetup.tsx:932
 msgid "Medium"
 msgstr "საშუალო"
 
@@ -979,7 +1068,7 @@ msgstr "მენიუ"
 msgid "Metric"
 msgstr "მეტრიკული"
 
-#: src/components/MissionSetup.tsx:325
+#: src/components/MissionSetup.tsx:736
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "მიდუეის ატოლის რუკა — გამოსახულებები შეიცავს <0>Copernicus Sentinel-2</0>-ის მოდიფიცირებულ მონაცემებს (2026); აეროდრომის გეომეტრია (ასაფრენ-დასაფრენი ბილიკი, სარულო ბილიკები, სადგომები) © <1>OpenStreetMap</1>-ის კონტრიბუტორები, ლიცენზირებულია <2>ODbL</2>-ის მიხედვით; სანაპირო ზოლისა და რიფის მონაცემები — <3>NOAA NCCOS</3>-დან (საჯარო დომენი)."
 
@@ -987,12 +1076,12 @@ msgstr "მიდუეის ატოლის რუკა — გამო�
 msgid "missile"
 msgstr "რაკეტა"
 
-#: src/components/MissionSetup.tsx:116
-#: src/components/MissionSetup.tsx:526
+#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:183
 msgid "Missile"
 msgstr "რაკეტა"
 
-#: src/components/MissionSetup.tsx:660
+#: src/components/MissionSetup.tsx:1012
 msgid "Missiles"
 msgstr "რაკეტები"
 
@@ -1000,7 +1089,7 @@ msgstr "რაკეტები"
 msgid "Missiles allowed"
 msgstr "რაკეტები დაშვებულია"
 
-#: src/components/MissionSetup.tsx:398
+#: src/components/MissionSetup.tsx:809
 msgid "Mission"
 msgstr "მისია"
 
@@ -1008,7 +1097,11 @@ msgstr "მისია"
 msgid "Monday"
 msgstr "ორშაბათი"
 
-#: src/components/MissionSetup.tsx:424
+#: src/components/MissionSetup.tsx:382
+msgid "Move it…"
+msgstr "გაანძრიეთ…"
+
+#: src/components/MissionSetup.tsx:841
 msgid "Multiplayer"
 msgstr "მულტიპლეიერი"
 
@@ -1030,7 +1123,7 @@ msgstr "ახალი"
 msgid "Next image"
 msgstr "შემდეგი სურათი"
 
-#: src/components/MissionSetup.tsx:467
+#: src/components/MissionSetup.tsx:884
 #: src/components/Multiplayer.tsx:227
 msgid "Night"
 msgstr "ღამე"
@@ -1046,6 +1139,10 @@ msgstr "დაკავშირებული ანგარიშები �
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "ხელმისაწვდომი ჯგუფები არ არის"
+
+#: src/components/MissionSetup.tsx:293
+msgid "No joystick detected — press any button on it to wake it up."
+msgstr "ჯოისტიკი ვერ მოიძებნა — მის გასაღვიძებლად დააჭირეთ მასზე ნებისმიერ ღილაკს."
 
 #: src/components/Multiplayer.tsx:255
 msgid "No open matches — create one."
@@ -1087,7 +1184,9 @@ msgstr "შეფასების გარეშე"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:477
+#: src/components/MissionSetup.tsx:352
+#: src/components/MissionSetup.tsx:406
+#: src/components/MissionSetup.tsx:894
 msgid "None"
 msgstr "არცერთი"
 
@@ -1111,7 +1210,7 @@ msgstr "არ არის დაყენებული"
 msgid "Notifications"
 msgstr "შეტყობინებები"
 
-#: src/components/MissionSetup.tsx:610
+#: src/components/MissionSetup.tsx:962
 msgid "Ocean detail"
 msgstr "ოკეანის დეტალიზაცია"
 
@@ -1119,11 +1218,11 @@ msgstr "ოკეანის დეტალიზაცია"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:867
 msgid "On carrier"
 msgstr "ავიამზიდზე"
 
-#: src/components/MissionSetup.tsx:449
+#: src/components/MissionSetup.tsx:866
 msgid "On runway"
 msgstr "ასაფრენ ბილიკზე"
 
@@ -1173,8 +1272,8 @@ msgid "orbit"
 msgstr "ბრუნვა"
 
 #: src/components/MissionSetup.tsx:551
-msgid "Orbit"
-msgstr "ორბიტა"
+#~ msgid "Orbit"
+#~ msgstr "ორბიტა"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:166
 msgid "Other"
@@ -1204,7 +1303,7 @@ msgstr "Passkey-ები"
 msgid "pause"
 msgstr "პაუზა"
 
-#: src/components/MissionSetup.tsx:534
+#: src/components/MissionSetup.tsx:194
 msgid "Pause"
 msgstr "შეჩერება"
 
@@ -1225,9 +1324,17 @@ msgstr "პილოტი დაიღუპა"
 msgid "pitch"
 msgstr "ტანგაჟი"
 
-#: src/components/MissionSetup.tsx:512
+#: src/components/MissionSetup.tsx:149
 msgid "Pitch"
 msgstr "ტანგაჟი"
+
+#: src/components/MissionSetup.tsx:175
+msgid "Pitch down"
+msgstr "ცხვირი ქვემოთ"
+
+#: src/components/MissionSetup.tsx:174
+msgid "Pitch up"
+msgstr "ცხვირი ზემოთ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
@@ -1242,17 +1349,25 @@ msgstr "გთხოვთ, კიდევ სცადეთ."
 msgid "Please wait a moment and try again."
 msgstr "გთხოვთ, ცოტა ხნით მოიცადოთ და ხელახლა სცადოთ."
 
-#: src/components/MissionSetup.tsx:565
+#: src/components/MissionSetup.tsx:917
 msgid "Preset"
 msgstr "პრესეტი"
 
 #: src/components/MissionSetup.tsx:138
-msgid "Press a joystick button…"
-msgstr "დააჭირეთ ჯოისტიკის ღილაკს…"
+#~ msgid "Press a joystick button…"
+#~ msgstr "დააჭირეთ ჯოისტიკის ღილაკს…"
+
+#: src/components/MissionSetup.tsx:533
+msgid "Press a key…"
+msgstr "დააჭირეთ კლავიშს…"
 
 #: src/components/GameCanvas.tsx:31
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ასაფრენად დააჭირე ENTER"
+
+#: src/components/MissionSetup.tsx:425
+msgid "Press it…"
+msgstr "დააჭირეთ მას…"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
@@ -1293,12 +1408,12 @@ msgstr "ხელახლა დაარეგისტრირეთ თქ�
 msgid "rearm"
 msgstr "გადატენვა"
 
-#: src/components/MissionSetup.tsx:117
-#: src/components/MissionSetup.tsx:528
+#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:191
 msgid "Rearm"
 msgstr "ხელახალი შეიარაღება"
 
-#: src/components/MissionSetup.tsx:73
+#: src/components/MissionSetup.tsx:440
 msgid "Recalibrate"
 msgstr "ხელახლა დაკალიბრება"
 
@@ -1319,6 +1434,10 @@ msgstr "ინტერესის შემცირება"
 #: src/components/Multiplayer.tsx:194
 msgid "Refresh"
 msgstr "განახლება"
+
+#: src/components/MissionSetup.tsx:557
+msgid "Refueling probe"
+msgstr "საწვავის ზონდი"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
@@ -1353,7 +1472,7 @@ msgstr "ელფოსტის ხელახლა გაგზავნა"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:715
+#: src/components/MissionSetup.tsx:1061
 msgid "Reset"
 msgstr "გადაყენება"
 
@@ -1361,19 +1480,19 @@ msgstr "გადაყენება"
 msgid "Reset all settings to default values"
 msgstr "ყველა პარამეტრის გადაყენება ნაგულისხმევ მნიშვნელობებზე"
 
-#: src/components/MissionSetup.tsx:592
+#: src/components/MissionSetup.tsx:944
 msgid "Resolution"
 msgstr "გადაწყვეტა"
 
-#: src/components/MissionSetup.tsx:692
+#: src/components/MissionSetup.tsx:1038
 msgid "Restart"
 msgstr "თავიდან დაწყება"
 
-#: src/components/MissionSetup.tsx:696
+#: src/components/MissionSetup.tsx:1042
 msgid "Resume"
 msgstr "გაგრძელება"
 
-#: src/components/MissionSetup.tsx:535
+#: src/components/MissionSetup.tsx:559
 msgid "Return to menu"
 msgstr "მენიუში დაბრუნება"
 
@@ -1385,9 +1504,17 @@ msgstr "მარჯვნიდან მარცხნივ"
 msgid "roll"
 msgstr "კრენი"
 
-#: src/components/MissionSetup.tsx:513
+#: src/components/MissionSetup.tsx:150
 msgid "Roll"
 msgstr "კრენი"
+
+#: src/components/MissionSetup.tsx:176
+msgid "Roll left"
+msgstr "კრენი მარცხნივ"
+
+#: src/components/MissionSetup.tsx:177
+msgid "Roll right"
+msgstr "კრენი მარჯვნივ"
 
 #: ../../../lib/web/src/components/data-table/pagination.tsx:63
 msgid "Rows per page"
@@ -1476,7 +1603,7 @@ msgstr "თავიდან გაგზავნა"
 msgid "Send email"
 msgstr "ელფოსტის გაგზავნა"
 
-#: src/components/MissionSetup.tsx:491
+#: src/components/MissionSetup.tsx:298
 msgid "Sensitivity"
 msgstr "მგრძნობელობა"
 
@@ -1502,6 +1629,10 @@ msgstr "სესია დასრულდა"
 msgid "Session expired. Please log in again."
 msgstr "სესიის ვადა ამოიწურა. გთხოვთ, ხელახლა შეხვიდეთ."
 
+#: src/components/MissionSetup.tsx:539
+msgid "Set"
+msgstr "დაყენება"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx:147
 msgid "Set origin and destination"
 msgstr "წყაროს და დანიშნულების დაყენება"
@@ -1514,7 +1645,7 @@ msgstr "წყაროს და დანიშნულების დაყ
 msgid "Settings"
 msgstr "პარამეტრები"
 
-#: src/components/MissionSetup.tsx:642
+#: src/components/MissionSetup.tsx:994
 msgid "Shadows"
 msgstr "ჩრდილები"
 
@@ -1550,7 +1681,8 @@ msgstr "ძირითადზე გადასვლა"
 msgid "Small"
 msgstr "პატარა"
 
-#: src/components/MissionSetup.tsx:672
+#: src/components/MissionSetup.tsx:473
+#: src/components/MissionSetup.tsx:821
 msgid "Sound"
 msgstr "ხმა"
 
@@ -1566,13 +1698,13 @@ msgstr "სმ"
 msgid "speed brake"
 msgstr "სიჩქარის მუხრუჭი"
 
-#: src/components/MissionSetup.tsx:113
-#: src/components/MissionSetup.tsx:522
+#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:188
 msgid "Speed brake"
 msgstr "სიჩქარის მუხრუჭი"
 
-#: src/components/MissionSetup.tsx:442
-#: src/components/MissionSetup.tsx:702
+#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:1048
 msgid "Start"
 msgstr "დაწყება"
 
@@ -1611,7 +1743,7 @@ msgstr "ტეგი"
 msgid "Tags"
 msgstr "ტეგები"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:833
 msgid "Task"
 msgstr "ამოცანა"
 
@@ -1644,9 +1776,17 @@ msgstr "თემის პარამეტრები"
 msgid "throttle"
 msgstr "გაზი"
 
-#: src/components/MissionSetup.tsx:516
+#: src/components/MissionSetup.tsx:152
 msgid "Throttle"
 msgstr "ღაზი"
+
+#: src/components/MissionSetup.tsx:181
+msgid "Throttle down"
+msgstr "ღაზის დაკლება"
+
+#: src/components/MissionSetup.tsx:180
+msgid "Throttle up"
+msgstr "ღაზის მომატება"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:62
 msgid "Thursday"
@@ -1657,10 +1797,10 @@ msgid "tilt"
 msgstr "დახრა"
 
 #: src/components/MissionSetup.tsx:554
-msgid "Tilt"
-msgstr "დახრა"
+#~ msgid "Tilt"
+#~ msgstr "დახრა"
 
-#: src/components/MissionSetup.tsx:460
+#: src/components/MissionSetup.tsx:877
 msgid "Time of day"
 msgstr "დღის დრო"
 
@@ -1703,7 +1843,7 @@ msgstr "ზედმეტად ბევრი მოთხოვნა"
 msgid "Top"
 msgstr "ძალიან დიდი"
 
-#: src/components/MissionSetup.tsx:654
+#: src/components/MissionSetup.tsx:1006
 msgid "Tracers"
 msgstr "ტრასერები"
 
@@ -1712,8 +1852,8 @@ msgid "Travelling"
 msgstr "თარგმნე ინგლისურად და აჩვენე ჩამონათვალის სახით."
 
 #: src/components/MissionSetup.tsx:130
-msgid "Trigger"
-msgstr "სასხლეტი"
+#~ msgid "Trigger"
+#~ msgstr "სასხლეტი"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:190
 #: ../../../lib/web/src/components/search-entity-page.tsx:214
@@ -1742,7 +1882,7 @@ msgstr "ჩაწერეთ შეტყობინება…"
 msgid "Type to search..."
 msgstr "მომხმარებლების მოსაძებნად ჩაწერეთ"
 
-#: src/components/MissionSetup.tsx:584
+#: src/components/MissionSetup.tsx:936
 msgid "Ultra"
 msgstr "ულტრა"
 
@@ -1822,6 +1962,10 @@ msgstr "ნახვა"
 msgid "View all notifications"
 msgstr "ყველას ნახვა"
 
+#: src/components/MissionSetup.tsx:554
+msgid "Views"
+msgstr "<0>{slug}</0>-ის ისტორიის ნახვა, მიმდინარე ვერსია {currentVersion}"
+
 #: src/components/GameCanvas.tsx:42
 msgid "WAVE OFF"
 msgstr "შეწყვიტე დაფრენა"
@@ -1830,7 +1974,11 @@ msgstr "შეწყვიტე დაფრენა"
 msgid "We'll be back online shortly."
 msgstr "ვერ ვიპოვეთ აპები თქვენთვის. ეს მოულოდნელია."
 
-#: src/components/MissionSetup.tsx:401
+#: src/components/MissionSetup.tsx:456
+msgid "Weapons"
+msgstr "იარაღი"
+
+#: src/components/MissionSetup.tsx:812
 #: src/components/Multiplayer.tsx:223
 msgid "Weather"
 msgstr "ამინდი"
@@ -1843,8 +1991,8 @@ msgstr "ჩვენ ვეძებთ ადრეულ მომხმარ
 msgid "Wednesday"
 msgstr "ვებსაიტი ტექმომსახურებაშია!"
 
-#: src/components/MissionSetup.tsx:114
-#: src/components/MissionSetup.tsx:521
+#: src/components/MissionSetup.tsx:161
+#: src/components/MissionSetup.tsx:187
 msgid "Wheel brakes"
 msgstr "ბორბლის მუხრუჭები"
 
@@ -1864,9 +2012,17 @@ msgstr "სამყაროს სერვერი მიუწვდომ�
 msgid "yaw"
 msgstr "მობრუნება"
 
-#: src/components/MissionSetup.tsx:514
+#: src/components/MissionSetup.tsx:151
 msgid "Yaw"
 msgstr "რისკანი"
+
+#: src/components/MissionSetup.tsx:178
+msgid "Yaw left"
+msgstr "ცხვირი მარცხნივ"
+
+#: src/components/MissionSetup.tsx:179
+msgid "Yaw right"
+msgstr "ცხვირი მარჯვნივ"
 
 #: src/components/GameCanvas.tsx:27
 msgid "YOU"

@@ -131,7 +131,7 @@ msgstr "Додај приказ"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Прилагодите изглед и распоред према вашим жељама."
 
-#: src/components/MissionSetup.tsx:648
+#: src/components/MissionSetup.tsx:1000
 msgid "Afterburner"
 msgstr "Допунско сагоревање"
 
@@ -139,13 +139,21 @@ msgstr "Допунско сагоревање"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:301
+#: src/components/MissionSetup.tsx:455
+msgid "Aircraft"
+msgstr "Авион"
+
+#: src/components/MissionSetup.tsx:712
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline."
 msgstr "Носач авиона <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> аутора <1>Muhamad Mirza Arrafi</1> (Sketchfab), лиценцирано под <2>CC BY 4.0</2>. Измењено: промењена размера, прамац преоријентисан ка +X, потопљено до водене линије."
 
-#: src/components/MissionSetup.tsx:278
+#: src/components/MissionSetup.tsx:689
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented nose +X, rescaled to length."
 msgstr "Модел авиона <0>“F/A-18C Hornet”</0> од <1>CreadorDeMu</1> (Sketchfab), лиценцирано под <2>CC BY 4.0</2>. Измењено: нос преусмерен на +X, скалиран на дужину."
+
+#: src/components/MissionSetup.tsx:458
+msgid "Alerts"
+msgstr "Упозорења"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:163
 msgid "All"
@@ -163,8 +171,8 @@ msgstr "Дошло је до неочекиване грешке"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Да ли сте сигурни да желите да се одјавите? Мораћете поново да се пријавите да приступите свом налогу."
 
-#: src/components/MissionSetup.tsx:112
-#: src/components/MissionSetup.tsx:524
+#: src/components/MissionSetup.tsx:160
+#: src/components/MissionSetup.tsx:186
 msgid "Arrestor hook"
 msgstr "Кука за заустављање"
 
@@ -179,6 +187,14 @@ msgstr "Растуће"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Authenticator code"
 msgstr "Authenticator код"
+
+#: src/components/MissionSetup.tsx:315
+msgid "Axes"
+msgstr "Осе"
+
+#: src/components/MissionSetup.tsx:356
+msgid "Axis {i}"
+msgstr "Оса {i}"
 
 #: src/components/GameCanvas.tsx:131
 msgid "back"
@@ -195,8 +211,8 @@ msgid "Back to home"
 msgstr "Назад на почетну"
 
 #: src/components/MissionSetup.tsx:145
-msgid "Bind"
-msgstr "Додели"
+#~ msgid "Bind"
+#~ msgstr "Додели"
 
 #: src/components/GameCanvas.tsx:41
 msgid "BOLTER"
@@ -211,9 +227,21 @@ msgstr "Појачај интересовање"
 msgid "brakes"
 msgstr "кочнице"
 
+#: src/components/MissionSetup.tsx:410
+msgid "Button {i}"
+msgstr "Дугме {i}"
+
+#: src/components/MissionSetup.tsx:390
+msgid "Buttons"
+msgstr "Дугмад"
+
 #: src/components/Multiplayer.tsx:171
 msgid "Callsign"
 msgstr "Позивни знак"
+
+#: src/components/MissionSetup.tsx:556
+msgid "Camera distance"
+msgstr "Удаљеност камере"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
@@ -224,11 +252,15 @@ msgstr "Позивни знак"
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
-#: src/components/MissionSetup.tsx:145
+#: src/components/MissionSetup.tsx:539
 msgid "Cancel"
 msgstr "Откажи"
 
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:558
+msgid "Canopy"
+msgstr "Поклопац кабине"
+
+#: src/components/MissionSetup.tsx:868
 msgid "Carrier landing"
 msgstr "Слетање на носач авиона"
 
@@ -242,8 +274,8 @@ msgid "Change notification category"
 msgstr "Промени категорију обавештења"
 
 #: src/components/MissionSetup.tsx:547
-msgid "Chase view"
-msgstr "Поглед из потере"
+#~ msgid "Chase view"
+#~ msgstr "Поглед из потере"
 
 #: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
@@ -322,7 +354,7 @@ msgstr "Затвори претрагу"
 msgid "closer"
 msgstr "ближе"
 
-#: src/components/MissionSetup.tsx:471
+#: src/components/MissionSetup.tsx:888
 msgid "Clouds"
 msgstr "Облаци"
 
@@ -380,8 +412,8 @@ msgid "Continue with {label}"
 msgstr "Настави са {label}"
 
 #: src/components/MissionSetup.tsx:404
-msgid "Controls"
-msgstr "Контроле"
+#~ msgid "Controls"
+#~ msgstr "Контроле"
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
@@ -419,12 +451,12 @@ msgstr "Направи и полети"
 msgid "Create match"
 msgstr "Направи меч"
 
-#: src/components/MissionSetup.tsx:267
-#: src/components/MissionSetup.tsx:273
+#: src/components/MissionSetup.tsx:678
+#: src/components/MissionSetup.tsx:684
 msgid "Credits"
 msgstr "Заслуге"
 
-#: src/components/MissionSetup.tsx:478
+#: src/components/MissionSetup.tsx:895
 #: src/components/Multiplayer.tsx:231
 msgid "Cumulus"
 msgstr "Кумулус"
@@ -437,8 +469,8 @@ msgstr "Прилагођено"
 msgid "CUT"
 msgstr "ОПАСНО"
 
-#: src/components/MissionSetup.tsx:119
-#: src/components/MissionSetup.tsx:530
+#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:195
 msgid "Cycle view"
 msgstr "Промени поглед"
 
@@ -459,7 +491,7 @@ msgstr "Тамни режим"
 msgid "Data conflict"
 msgstr "Конфликт података"
 
-#: src/components/MissionSetup.tsx:466
+#: src/components/MissionSetup.tsx:883
 #: src/components/Multiplayer.tsx:226
 msgid "Day"
 msgstr "Дан"
@@ -492,6 +524,11 @@ msgstr "Опадајуће"
 msgid "Details Panel"
 msgstr "Панел детаља"
 
+#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:425
+msgid "Detect"
+msgstr "Откриј"
+
 #: ../../../lib/web/src/components/language-picker.tsx:276
 #: ../../../lib/web/src/components/timezone-select.tsx:46
 #: ../../../lib/web/src/components/timezone-select.tsx:83
@@ -503,9 +540,17 @@ msgstr "Панел детаља"
 msgid "Detect from web browser"
 msgstr "Препознај из веб прегледача"
 
+#: src/components/MissionSetup.tsx:274
+msgid "Device"
+msgstr "Уређај"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:340
 msgid "Direction"
 msgstr "Смер"
+
+#: src/components/MissionSetup.tsx:286
+msgid "disconnected"
+msgstr "није повезан"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:79
 #: ../../../lib/web/src/components/restore-banner.tsx:85
@@ -517,10 +562,10 @@ msgid "Displays the mobile sidebar."
 msgstr "Приказује мобилну бочну траку."
 
 #: src/components/MissionSetup.tsx:556
-msgid "Distance"
-msgstr "Удаљеност"
+#~ msgid "Distance"
+#~ msgstr "Удаљеност"
 
-#: src/components/MissionSetup.tsx:636
+#: src/components/MissionSetup.tsx:988
 msgid "Distance LOD"
 msgstr "LOD удаљености"
 
@@ -533,7 +578,7 @@ msgstr "Преузми"
 msgid "Download failed"
 msgstr "Преузимање није успело"
 
-#: src/components/MissionSetup.tsx:630
+#: src/components/MissionSetup.tsx:982
 msgid "Dynamic resolution"
 msgstr "Динамичка резолуција"
 
@@ -544,6 +589,10 @@ msgstr "Прилагођено за дислексију"
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "Уреди {label}"
+
+#: src/components/MissionSetup.tsx:192
+msgid "Eject"
+msgstr "Катапултирање"
 
 #: src/components/GameCanvas.tsx:51
 msgid "EJECTED"
@@ -557,6 +606,10 @@ msgstr "Код е-поште"
 msgid "empty"
 msgstr "празно"
 
+#: src/components/MissionSetup.tsx:454
+msgid "Engine"
+msgstr "Мотор"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:299
 msgid "Enter the code from your email"
 msgstr "Унесите кôд из ваше е-поште"
@@ -564,6 +617,10 @@ msgstr "Унесите кôд из ваше е-поште"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:324
 msgid "Enter your authenticator code"
 msgstr "Унесите код из апликације за потврду идентитета"
+
+#: src/components/MissionSetup.tsx:457
+msgid "Environment"
+msgstr "Окружење"
 
 #: ../../../lib/web/src/components/comment-tree-layout.tsx:101
 #: ../../../lib/web/src/components/comment-tree-layout.tsx:110
@@ -576,11 +633,11 @@ msgstr "Прошири"
 msgid "Expand sidebar"
 msgstr "Прошири бочну траку"
 
-#: src/components/MissionSetup.tsx:602
+#: src/components/MissionSetup.tsx:954
 msgid "Exterior detail"
 msgstr "Детаљи спољашњости"
 
-#: src/components/MissionSetup.tsx:618
+#: src/components/MissionSetup.tsx:970
 msgid "Extra aircraft"
 msgstr "Додатни авиони"
 
@@ -616,13 +673,17 @@ msgstr "ЗАДОВОЉАВАЈУЋЕ"
 msgid "Finish moving your account"
 msgstr "Завршите премештање налога"
 
+#: src/components/MissionSetup.tsx:551
+msgid "Fixed keys"
+msgstr "Фиксни тастери"
+
 #: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "светлице"
 
-#: src/components/MissionSetup.tsx:115
-#: src/components/MissionSetup.tsx:527
-#: src/components/MissionSetup.tsx:666
+#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:1018
 msgid "Flares"
 msgstr "Бакље"
 
@@ -642,11 +703,11 @@ msgstr "ОТКАЗ ЛЕТНОГ ЈЕЗГРА"
 msgid "Floating"
 msgstr "Плутајуће"
 
-#: src/components/MissionSetup.tsx:678
+#: src/components/MissionSetup.tsx:1024
 msgid "Framerate"
 msgstr "Број кадрова"
 
-#: src/components/MissionSetup.tsx:422
+#: src/components/MissionSetup.tsx:839
 msgid "Free flight"
 msgstr "Слободан лет"
 
@@ -713,7 +774,7 @@ msgstr "Иди на страницу {pageNumber}"
 msgid "Go to previous page"
 msgstr "Иди на претходну страницу"
 
-#: src/components/MissionSetup.tsx:407
+#: src/components/MissionSetup.tsx:824
 msgid "Graphics"
 msgstr "Графика"
 
@@ -729,8 +790,8 @@ msgstr "ТОП"
 msgid "guns"
 msgstr "топови"
 
-#: src/components/MissionSetup.tsx:129
-#: src/components/MissionSetup.tsx:519
+#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:182
 msgid "Guns"
 msgstr "Топови"
 
@@ -742,11 +803,11 @@ msgstr "Сакриј"
 msgid "Hide password"
 msgstr "Сакриј лозинку"
 
-#: src/components/MissionSetup.tsx:582
+#: src/components/MissionSetup.tsx:934
 msgid "High"
 msgstr "Висок"
 
-#: src/components/MissionSetup.tsx:479
+#: src/components/MissionSetup.tsx:896
 #: src/components/Multiplayer.tsx:232
 msgid "High stratus"
 msgstr "Високи стратус"
@@ -774,13 +835,13 @@ msgstr "Популарно"
 msgid "Imperial"
 msgstr "Империјалне"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:865
 msgid "In air"
 msgstr "У ваздуху"
 
 #: src/components/MissionSetup.tsx:487
-msgid "Input"
-msgstr "Унос"
+#~ msgid "Input"
+#~ msgstr "Унос"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:252
 msgid "Inset"
@@ -794,7 +855,7 @@ msgstr "Интересовања"
 msgid "Invalid verification code"
 msgstr "Неважећи код за верификацију"
 
-#: src/components/MissionSetup.tsx:502
+#: src/components/MissionSetup.tsx:309
 msgid "Invert pitch"
 msgstr "Обрни пропињање"
 
@@ -814,15 +875,19 @@ msgstr "Двобој"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Дуел — 1v1, прво обарање побеђује"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:840
 msgid "Joust against AI player"
 msgstr "Дуел против AI играча"
 
-#: src/components/MissionSetup.tsx:539
-msgid "Joystick buttons"
-msgstr "Дугмад џојстика"
+#: src/components/MissionSetup.tsx:815
+msgid "Joystick"
+msgstr "Џојстик"
 
-#: src/components/MissionSetup.tsx:509
+#: src/components/MissionSetup.tsx:539
+#~ msgid "Joystick buttons"
+#~ msgstr "Дугмад џојстика"
+
+#: src/components/MissionSetup.tsx:818
 msgid "Keys"
 msgstr "Тастери"
 
@@ -838,8 +903,8 @@ msgstr "ОБАРАЊЕ"
 #~ msgid "L ENG FIRE"
 #~ msgstr ""
 
-#: src/components/MissionSetup.tsx:111
-#: src/components/MissionSetup.tsx:523
+#: src/components/MissionSetup.tsx:159
+#: src/components/MissionSetup.tsx:185
 msgid "Landing gear"
 msgstr "Стајни трап"
 
@@ -852,8 +917,8 @@ msgstr "Велико"
 msgid "launch"
 msgstr "лансирање"
 
-#: src/components/MissionSetup.tsx:118
-#: src/components/MissionSetup.tsx:520
+#: src/components/MissionSetup.tsx:163
+#: src/components/MissionSetup.tsx:189
 msgid "Launch (catapult)"
 msgstr "Лансирање (катапулт)"
 
@@ -883,7 +948,8 @@ msgstr "Светло"
 msgid "lights"
 msgstr "светла"
 
-#: src/components/MissionSetup.tsx:525
+#: src/components/MissionSetup.tsx:164
+#: src/components/MissionSetup.tsx:190
 msgid "Lights"
 msgstr "Светла"
 
@@ -930,11 +996,31 @@ msgstr "Успешно одјављен"
 msgid "Logging out…"
 msgstr "Одјављивање…"
 
-#: src/components/MissionSetup.tsx:578
+#: src/components/MissionSetup.tsx:555
+msgid "Look / orbit"
+msgstr "Поглед / кружење"
+
+#: src/components/MissionSetup.tsx:168
+msgid "Look down"
+msgstr "Поглед доле"
+
+#: src/components/MissionSetup.tsx:169
+msgid "Look left"
+msgstr "Поглед лево"
+
+#: src/components/MissionSetup.tsx:170
+msgid "Look right"
+msgstr "Поглед десно"
+
+#: src/components/MissionSetup.tsx:167
+msgid "Look up"
+msgstr "Поглед горе"
+
+#: src/components/MissionSetup.tsx:930
 msgid "Low"
 msgstr "Низак"
 
-#: src/components/MissionSetup.tsx:480
+#: src/components/MissionSetup.tsx:897
 #: src/components/Multiplayer.tsx:233
 msgid "Low stratus"
 msgstr "Ниски стратус"
@@ -947,8 +1033,7 @@ msgstr "M за затварање"
 msgid "map"
 msgstr "мапа"
 
-#: src/components/MissionSetup.tsx:120
-#: src/components/MissionSetup.tsx:533
+#: src/components/MissionSetup.tsx:193
 msgid "Map"
 msgstr "Мапа"
 
@@ -958,12 +1043,16 @@ msgstr "Мапа"
 msgid "Mark all as read"
 msgstr "Означи све као прочитано"
 
+#: src/components/MissionSetup.tsx:453
+msgid "Master"
+msgstr "Главна"
+
 #: src/components/Multiplayer.tsx:214
 msgid "Match type"
 msgstr "Тип меча"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:580
+#: src/components/MissionSetup.tsx:932
 msgid "Medium"
 msgstr "Средње"
 
@@ -979,7 +1068,7 @@ msgstr "Мени"
 msgid "Metric"
 msgstr "Метричке"
 
-#: src/components/MissionSetup.tsx:325
+#: src/components/MissionSetup.tsx:736
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Мапа атола Мидвеј — снимци садрже измењене податке <0>Copernicus Sentinel-2</0> (2026); геометрија аеродрома (писта, рулне стазе, платформе) © сарадници <1>OpenStreetMap</1>, лиценцирано под <2>ODbL</2>; подаци о обали и гребенима из <3>NOAA NCCOS</3> (јавни домен)."
 
@@ -987,12 +1076,12 @@ msgstr "Мапа атола Мидвеј — снимци садрже изме�
 msgid "missile"
 msgstr "ракета"
 
-#: src/components/MissionSetup.tsx:116
-#: src/components/MissionSetup.tsx:526
+#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:183
 msgid "Missile"
 msgstr "Ракета"
 
-#: src/components/MissionSetup.tsx:660
+#: src/components/MissionSetup.tsx:1012
 msgid "Missiles"
 msgstr "Ракете"
 
@@ -1000,7 +1089,7 @@ msgstr "Ракете"
 msgid "Missiles allowed"
 msgstr "Ракете дозвољене"
 
-#: src/components/MissionSetup.tsx:398
+#: src/components/MissionSetup.tsx:809
 msgid "Mission"
 msgstr "Мисија"
 
@@ -1008,7 +1097,11 @@ msgstr "Мисија"
 msgid "Monday"
 msgstr "Понедељак"
 
-#: src/components/MissionSetup.tsx:424
+#: src/components/MissionSetup.tsx:382
+msgid "Move it…"
+msgstr "Померите га…"
+
+#: src/components/MissionSetup.tsx:841
 msgid "Multiplayer"
 msgstr "Мултиплејер"
 
@@ -1030,7 +1123,7 @@ msgstr "Ново"
 msgid "Next image"
 msgstr "Следећа слика"
 
-#: src/components/MissionSetup.tsx:467
+#: src/components/MissionSetup.tsx:884
 #: src/components/Multiplayer.tsx:227
 msgid "Night"
 msgstr "Ноћ"
@@ -1046,6 +1139,10 @@ msgstr "Нема повезаних налога"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Нема доступних група"
+
+#: src/components/MissionSetup.tsx:293
+msgid "No joystick detected — press any button on it to wake it up."
+msgstr "Није откривен ниједан џојстик — притисните било које дугме на њему да га пробудите."
 
 #: src/components/Multiplayer.tsx:255
 msgid "No open matches — create one."
@@ -1087,7 +1184,9 @@ msgstr "БЕЗ ОЦЕНЕ"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:477
+#: src/components/MissionSetup.tsx:352
+#: src/components/MissionSetup.tsx:406
+#: src/components/MissionSetup.tsx:894
 msgid "None"
 msgstr "Ништа"
 
@@ -1111,7 +1210,7 @@ msgstr "Није постављено"
 msgid "Notifications"
 msgstr "Обавештења"
 
-#: src/components/MissionSetup.tsx:610
+#: src/components/MissionSetup.tsx:962
 msgid "Ocean detail"
 msgstr "Детаљи океана"
 
@@ -1119,11 +1218,11 @@ msgstr "Детаљи океана"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:867
 msgid "On carrier"
 msgstr "На носачу"
 
-#: src/components/MissionSetup.tsx:449
+#: src/components/MissionSetup.tsx:866
 msgid "On runway"
 msgstr "На писти"
 
@@ -1173,8 +1272,8 @@ msgid "orbit"
 msgstr "кружење"
 
 #: src/components/MissionSetup.tsx:551
-msgid "Orbit"
-msgstr "Орбита"
+#~ msgid "Orbit"
+#~ msgstr "Орбита"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:166
 msgid "Other"
@@ -1204,7 +1303,7 @@ msgstr "Passkey-еви"
 msgid "pause"
 msgstr "пауза"
 
-#: src/components/MissionSetup.tsx:534
+#: src/components/MissionSetup.tsx:194
 msgid "Pause"
 msgstr "Паузирај"
 
@@ -1225,9 +1324,17 @@ msgstr "ПИЛОТ ПОГИНУО"
 msgid "pitch"
 msgstr "пропињање"
 
-#: src/components/MissionSetup.tsx:512
+#: src/components/MissionSetup.tsx:149
 msgid "Pitch"
 msgstr "Пропињање"
+
+#: src/components/MissionSetup.tsx:175
+msgid "Pitch down"
+msgstr "Пропињање надоле"
+
+#: src/components/MissionSetup.tsx:174
+msgid "Pitch up"
+msgstr "Пропињање нагоре"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
@@ -1242,17 +1349,25 @@ msgstr "Покушајте поново."
 msgid "Please wait a moment and try again."
 msgstr "Сачекајте тренутак и покушајте поново."
 
-#: src/components/MissionSetup.tsx:565
+#: src/components/MissionSetup.tsx:917
 msgid "Preset"
 msgstr "Поставка"
 
 #: src/components/MissionSetup.tsx:138
-msgid "Press a joystick button…"
-msgstr "Притисните дугме џојстика…"
+#~ msgid "Press a joystick button…"
+#~ msgstr "Притисните дугме џојстика…"
+
+#: src/components/MissionSetup.tsx:533
+msgid "Press a key…"
+msgstr "Притисните тастер…"
 
 #: src/components/GameCanvas.tsx:31
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ПРИТИСНИ ENTER ЗА ПОЛЕТАЊЕ"
+
+#: src/components/MissionSetup.tsx:425
+msgid "Press it…"
+msgstr "Притисните га…"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
@@ -1293,12 +1408,12 @@ msgstr "Поново региструјте своје приступне кљу
 msgid "rearm"
 msgstr "допуна"
 
-#: src/components/MissionSetup.tsx:117
-#: src/components/MissionSetup.tsx:528
+#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:191
 msgid "Rearm"
 msgstr "Допуни наоружање"
 
-#: src/components/MissionSetup.tsx:73
+#: src/components/MissionSetup.tsx:440
 msgid "Recalibrate"
 msgstr "Поново калибриши"
 
@@ -1319,6 +1434,10 @@ msgstr "Смањи интересовање"
 #: src/components/Multiplayer.tsx:194
 msgid "Refresh"
 msgstr "Освежи"
+
+#: src/components/MissionSetup.tsx:557
+msgid "Refueling probe"
+msgstr "Сонда за допуну горива"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
@@ -1353,7 +1472,7 @@ msgstr "Поново пошаљи имејл"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:715
+#: src/components/MissionSetup.tsx:1061
 msgid "Reset"
 msgstr "Ресетуј"
 
@@ -1361,19 +1480,19 @@ msgstr "Ресетуј"
 msgid "Reset all settings to default values"
 msgstr "Ресетуј сва подешавања на подразумеване вредности"
 
-#: src/components/MissionSetup.tsx:592
+#: src/components/MissionSetup.tsx:944
 msgid "Resolution"
 msgstr "Резолуција"
 
-#: src/components/MissionSetup.tsx:692
+#: src/components/MissionSetup.tsx:1038
 msgid "Restart"
 msgstr "Поново покрени"
 
-#: src/components/MissionSetup.tsx:696
+#: src/components/MissionSetup.tsx:1042
 msgid "Resume"
 msgstr "Настави"
 
-#: src/components/MissionSetup.tsx:535
+#: src/components/MissionSetup.tsx:559
 msgid "Return to menu"
 msgstr "Назад на мени"
 
@@ -1385,9 +1504,17 @@ msgstr "С десна на лево"
 msgid "roll"
 msgstr "ваљање"
 
-#: src/components/MissionSetup.tsx:513
+#: src/components/MissionSetup.tsx:150
 msgid "Roll"
 msgstr "Ваљање"
+
+#: src/components/MissionSetup.tsx:176
+msgid "Roll left"
+msgstr "Ваљање улево"
+
+#: src/components/MissionSetup.tsx:177
+msgid "Roll right"
+msgstr "Ваљање удесно"
 
 #: ../../../lib/web/src/components/data-table/pagination.tsx:63
 msgid "Rows per page"
@@ -1476,7 +1603,7 @@ msgstr "Пошаљи поново"
 msgid "Send email"
 msgstr "Пошаљи имејл"
 
-#: src/components/MissionSetup.tsx:491
+#: src/components/MissionSetup.tsx:298
 msgid "Sensitivity"
 msgstr "Осетљивост"
 
@@ -1502,6 +1629,10 @@ msgstr "СЕСИЈА ЗАВРШЕНА"
 msgid "Session expired. Please log in again."
 msgstr "Сесија је истекла. Пријавите се поново."
 
+#: src/components/MissionSetup.tsx:539
+msgid "Set"
+msgstr "Постави"
+
 #: ../../../lib/web/src/components/travelling-picker.tsx:147
 msgid "Set origin and destination"
 msgstr "Постави полазиште и одредиште"
@@ -1514,7 +1645,7 @@ msgstr "Постави полазиште и одредиште"
 msgid "Settings"
 msgstr "Поставке"
 
-#: src/components/MissionSetup.tsx:642
+#: src/components/MissionSetup.tsx:994
 msgid "Shadows"
 msgstr "Сенке"
 
@@ -1550,7 +1681,8 @@ msgstr "Пређи на главно"
 msgid "Small"
 msgstr "Мало"
 
-#: src/components/MissionSetup.tsx:672
+#: src/components/MissionSetup.tsx:473
+#: src/components/MissionSetup.tsx:821
 msgid "Sound"
 msgstr "Звук"
 
@@ -1566,13 +1698,13 @@ msgstr "ВАЗ.КОЧ"
 msgid "speed brake"
 msgstr "ваздушна кочница"
 
-#: src/components/MissionSetup.tsx:113
-#: src/components/MissionSetup.tsx:522
+#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:188
 msgid "Speed brake"
 msgstr "Ваздушна кочница"
 
-#: src/components/MissionSetup.tsx:442
-#: src/components/MissionSetup.tsx:702
+#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:1048
 msgid "Start"
 msgstr "Почни"
 
@@ -1611,7 +1743,7 @@ msgstr "Ознака"
 msgid "Tags"
 msgstr "Ознаке"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:833
 msgid "Task"
 msgstr "Задатак"
 
@@ -1644,9 +1776,17 @@ msgstr "Поставке теме"
 msgid "throttle"
 msgstr "гас"
 
-#: src/components/MissionSetup.tsx:516
+#: src/components/MissionSetup.tsx:152
 msgid "Throttle"
 msgstr "Гас"
+
+#: src/components/MissionSetup.tsx:181
+msgid "Throttle down"
+msgstr "Смањи гас"
+
+#: src/components/MissionSetup.tsx:180
+msgid "Throttle up"
+msgstr "Додај гас"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:62
 msgid "Thursday"
@@ -1657,10 +1797,10 @@ msgid "tilt"
 msgstr "нагињање"
 
 #: src/components/MissionSetup.tsx:554
-msgid "Tilt"
-msgstr "Нагиб"
+#~ msgid "Tilt"
+#~ msgstr "Нагиб"
 
-#: src/components/MissionSetup.tsx:460
+#: src/components/MissionSetup.tsx:877
 msgid "Time of day"
 msgstr "Доба дана"
 
@@ -1703,7 +1843,7 @@ msgstr "Превише захтева"
 msgid "Top"
 msgstr "Врх"
 
-#: src/components/MissionSetup.tsx:654
+#: src/components/MissionSetup.tsx:1006
 msgid "Tracers"
 msgstr "Трасери"
 
@@ -1712,8 +1852,8 @@ msgid "Travelling"
 msgstr "Путовање"
 
 #: src/components/MissionSetup.tsx:130
-msgid "Trigger"
-msgstr "Окидач"
+#~ msgid "Trigger"
+#~ msgstr "Окидач"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:190
 #: ../../../lib/web/src/components/search-entity-page.tsx:214
@@ -1742,7 +1882,7 @@ msgstr "Куцај да би тражио кориснике"
 msgid "Type to search..."
 msgstr "Куцај да би тражио..."
 
-#: src/components/MissionSetup.tsx:584
+#: src/components/MissionSetup.tsx:936
 msgid "Ultra"
 msgstr "Ултра"
 
@@ -1822,6 +1962,10 @@ msgstr "Прикажи све"
 msgid "View all notifications"
 msgstr "Прикажи сва обавештења"
 
+#: src/components/MissionSetup.tsx:554
+msgid "Views"
+msgstr "Прегледи"
+
 #: src/components/GameCanvas.tsx:42
 msgid "WAVE OFF"
 msgstr "ПРЕКИНИ СЛЕТАЊЕ"
@@ -1830,7 +1974,11 @@ msgstr "ПРЕКИНИ СЛЕТАЊЕ"
 msgid "We'll be back online shortly."
 msgstr "Бићемо поново на мрежи ускоро."
 
-#: src/components/MissionSetup.tsx:401
+#: src/components/MissionSetup.tsx:456
+msgid "Weapons"
+msgstr "Оружје"
+
+#: src/components/MissionSetup.tsx:812
 #: src/components/Multiplayer.tsx:223
 msgid "Weather"
 msgstr "Време"
@@ -1843,8 +1991,8 @@ msgstr "Веб-сајт је на одржавању!"
 msgid "Wednesday"
 msgstr "Среда"
 
-#: src/components/MissionSetup.tsx:114
-#: src/components/MissionSetup.tsx:521
+#: src/components/MissionSetup.tsx:161
+#: src/components/MissionSetup.tsx:187
 msgid "Wheel brakes"
 msgstr "Кочнице точкова"
 
@@ -1864,9 +2012,17 @@ msgstr "Сервер света није доступан"
 msgid "yaw"
 msgstr "скретање"
 
-#: src/components/MissionSetup.tsx:514
+#: src/components/MissionSetup.tsx:151
 msgid "Yaw"
 msgstr "Скретање"
+
+#: src/components/MissionSetup.tsx:178
+msgid "Yaw left"
+msgstr "Скретање улево"
+
+#: src/components/MissionSetup.tsx:179
+msgid "Yaw right"
+msgstr "Скретање удесно"
 
 #: src/components/GameCanvas.tsx:27
 msgid "YOU"

@@ -18,13 +18,40 @@
 let context: AudioContext | null = null
 let master: GainNode | null = null
 let enabled = true
+// Mixer buses (#73): every voice routes through one; the menu's Sound tab
+// drives the levels (0..1). Master multiplies into the enable ramp.
+const BUSES = ['engine', 'aircraft', 'weapons', 'environment', 'alerts'] as const
+type Bus = (typeof BUSES)[number]
+const buses: Partial<Record<Bus, GainNode>> = {}
+const levels: Record<string, number> = { master: 1, engine: 1, aircraft: 1, weapons: 1, environment: 1, alerts: 1 }
+// one-shot routing
+const SHOT_BUS: Record<string, Bus> = {
+  gun: 'weapons', explosion: 'weapons', launch: 'weapons', flare: 'weapons',
+  hit: 'aircraft', catapult: 'aircraft', trap: 'aircraft', touchdown: 'aircraft', servo: 'aircraft', eject: 'aircraft',
+  caution: 'alerts', horn: 'alerts',
+}
+function bus(name: Bus): GainNode {
+  return buses[name] ?? (master as GainNode)
+}
+// audio_volumes applies the menu mix (values 0..100); cheap enough per frame.
+export function audio_volumes(volume: Record<string, number> | undefined): void {
+  if (!context) return
+  for (const name of ['master', ...BUSES]) {
+    const v = volume && volume[name] !== undefined ? Number(volume[name]) / 100 : 1
+    if (levels[name] !== v) {
+      levels[name] = v
+      if (name === 'master') { if (master && enabled) master.gain.setTargetAtTime(v, now(), 0.05) }
+      else buses[name as Bus]?.gain.setTargetAtTime(v, now(), 0.05)
+    }
+  }
+}
 
 // Continuous voices, built once.
 interface Voice {
   gain: GainNode
   tune?: (value: number) => void
 }
-let engines: { core: OscillatorNode; whine: OscillatorNode; roar: AudioBufferSourceNode; filter: BiquadFilterNode; gain: GainNode }[] = []
+let engines: { whine: OscillatorNode; second: OscillatorNode; whineGain: GainNode; rumble: BiquadFilterNode; hiss: BiquadFilterNode; hissGain: GainNode; gain: GainNode }[] = []
 let burner: Voice | null = null
 let wind: { source: AudioBufferSourceNode; filter: BiquadFilterNode; gain: GainNode } | null = null
 let buffet: Voice | null = null
@@ -57,7 +84,7 @@ export function audio_enable(on: boolean): void {
   if (on === lastEnable) return
   lastEnable = on
   enabled = on
-  if (master) master.gain.setTargetAtTime(on ? 1 : 0, now(), 0.05)
+  if (master) master.gain.setTargetAtTime(on ? levels.master : 0, now(), 0.05)
   if (!on && context && context.state === 'running') void context.suspend()
   if (on && context && context.state === 'suspended') void context.resume()
 }
@@ -97,38 +124,47 @@ function build(): void {
   }
   const c = context
   master = c.createGain()
-  master.gain.value = enabled ? 1 : 0
+  master.gain.value = enabled ? levels.master : 0
   master.connect(c.destination)
+  for (const name of BUSES) { const g = c.createGain(); g.gain.value = levels[name]; g.connect(master); buses[name] = g }
   noiseBuffer = noise(2.0, false)
   brownBuffer = noise(2.0, true)
 
-  // Two turbines: a low core note, a high whine harmonic, and filtered roar.
+  // Two turbofans. A jet's voice is NOISE, not a note (a pitched sawtooth here
+  // read as a lawnmower): deep exhaust rumble + a mid "tearing" hiss that opens
+  // with spool, and only a thin, distant compressor whine far up top — two
+  // slightly detuned tones so the pair beats like real N1/N2 spools.
   for (let e = 0; e < 2; e++) {
     const gain = c.createGain()
     gain.gain.value = 0
-    gain.connect(master)
-    const core = c.createOscillator()
-    core.type = 'sawtooth'
-    core.frequency.value = 60
-    const coreGain = c.createGain()
-    coreGain.gain.value = 0.12
-    core.connect(coreGain).connect(gain)
+    gain.connect(bus('engine'))
+    const rumble = c.createBiquadFilter()
+    rumble.type = 'lowpass'
+    rumble.frequency.value = 140
+    const rumbleGain = c.createGain()
+    rumbleGain.gain.value = 0.6
+    looper(brownBuffer).connect(rumble).connect(rumbleGain).connect(gain)
+    const hiss = c.createBiquadFilter()
+    hiss.type = 'bandpass'
+    hiss.frequency.value = 500
+    hiss.Q.value = 0.6
+    const hissGain = c.createGain()
+    hissGain.gain.value = 0.1
+    looper(noiseBuffer).connect(hiss).connect(hissGain).connect(gain)
     const whine = c.createOscillator()
-    whine.type = 'triangle'
-    whine.frequency.value = 900
+    whine.type = 'sine'
+    whine.frequency.value = 2400
+    const second = c.createOscillator()
+    second.type = 'sine'
+    second.frequency.value = 3050
     const whineGain = c.createGain()
-    whineGain.gain.value = 0.025
-    whine.connect(whineGain).connect(gain)
-    const roar = looper(brownBuffer)
-    const filter = c.createBiquadFilter()
-    filter.type = 'lowpass'
-    filter.frequency.value = 300
-    const roarGain = c.createGain()
-    roarGain.gain.value = 0.5
-    roar.connect(filter).connect(roarGain).connect(gain)
-    core.start()
+    whineGain.gain.value = 0.02
+    whine.connect(whineGain)
+    second.connect(whineGain)
+    whineGain.connect(gain)
     whine.start()
-    engines.push({ core, whine, roar, filter, gain })
+    second.start()
+    engines.push({ whine, second, whineGain, rumble, hiss, hissGain, gain })
   }
 
   // Afterburner: heavy brown rumble.
@@ -139,7 +175,7 @@ function build(): void {
     const filter = c.createBiquadFilter()
     filter.type = 'lowpass'
     filter.frequency.value = 160
-    source.connect(filter).connect(gain).connect(master)
+    source.connect(filter).connect(gain).connect(bus('engine'))
     burner = { gain }
   }
 
@@ -151,7 +187,7 @@ function build(): void {
     const filter = c.createBiquadFilter()
     filter.type = 'lowpass'
     filter.frequency.value = 400
-    source.connect(filter).connect(gain).connect(master)
+    source.connect(filter).connect(gain).connect(bus('aircraft'))
     wind = { source, filter, gain }
   }
 
@@ -171,7 +207,7 @@ function build(): void {
     carrier.gain.value = 0.5
     wobble.connect(depth).connect(carrier.gain)
     wobble.start()
-    source.connect(filter).connect(carrier).connect(gain).connect(master)
+    source.connect(filter).connect(carrier).connect(gain).connect(bus('aircraft'))
     buffet = { gain }
   }
 
@@ -196,7 +232,7 @@ function build(): void {
     source.buffer = buffer
     source.loop = true
     source.start()
-    source.connect(gain).connect(master)
+    source.connect(gain).connect(bus('aircraft'))
     fire = { gain }
   }
 
@@ -216,7 +252,7 @@ function build(): void {
     carrier.gain.value = 0.7
     swell.connect(depth).connect(carrier.gain)
     swell.start()
-    source.connect(filter).connect(carrier).connect(gain).connect(master)
+    source.connect(filter).connect(carrier).connect(gain).connect(bus('environment'))
     deck = { gain }
   }
 
@@ -344,12 +380,13 @@ function play(name: string, volume: number, lowpass?: number, delay?: number): v
   source.buffer = shots[name]
   const gain = context.createGain()
   gain.gain.value = volume
+  const out = SHOT_BUS[name] ? bus(SHOT_BUS[name]) : (master as GainNode)
   if (lowpass) {
     const filter = context.createBiquadFilter()
     filter.type = 'lowpass'
     filter.frequency.value = lowpass
-    source.connect(filter).connect(gain).connect(master)
-  } else source.connect(gain).connect(master)
+    source.connect(filter).connect(gain).connect(out)
+  } else source.connect(gain).connect(out)
   source.start(now() + (delay || 0))
 }
 
@@ -371,10 +408,13 @@ export function audio_frame(state: {
     const engine = engines[e]
     const health = 1 - (state.harm[e] || 0)
     const level = state.spool * (0.25 + 0.75 * health)
-    engine.core.frequency.setTargetAtTime(55 + 180 * level, t, smooth)
-    engine.whine.frequency.setTargetAtTime(600 + 2400 * level, t, smooth)
-    engine.filter.frequency.setTargetAtTime(220 + 1300 * level, t, smooth)
-    engine.gain.gain.setTargetAtTime(0.05 + 0.3 * level * level, t, smooth)
+    engine.rumble.frequency.setTargetAtTime(120 + 420 * level, t, smooth)
+    engine.hiss.frequency.setTargetAtTime(350 + 2500 * level, t, smooth)
+    engine.hissGain.gain.setTargetAtTime(0.08 + 0.5 * level * level, t, smooth)
+    engine.whine.frequency.setTargetAtTime(2200 + 5200 * level, t, smooth)
+    engine.second.frequency.setTargetAtTime((2200 + 5200 * level) * 1.26, t, smooth)   // the other spool, geared apart
+    engine.whineGain.gain.setTargetAtTime((0.018 + 0.055 * level) * (e ? 0.92 : 1), t, smooth)   // the whine EMERGES with power — the audible spool-up pitch; per-side offset keeps the pair shimmering
+    engine.gain.gain.setTargetAtTime(0.06 + 0.3 * level * level, t, smooth)
   }
   burner?.gain.gain.setTargetAtTime(0.5 * state.stage, t, smooth)
   if (wind) {
@@ -396,7 +436,7 @@ export function audio_gun(firing: boolean): void {
     gunLoop.loop = true
     const gain = context.createGain()
     gain.gain.value = 0.6
-    gunLoop.connect(gain).connect(master as GainNode)
+    gunLoop.connect(gain).connect(bus('weapons'))
     gunLoop.start()
   } else if (!firing && gunLoop) {
     gunLoop.stop()
@@ -457,7 +497,7 @@ export function audio_horn(active: boolean): void {
 interface Distant {
   gain: GainNode
   panner: PannerNode
-  core: OscillatorNode
+  filter: BiquadFilterNode
 }
 const distants = new Map<string, Distant>()
 
@@ -472,20 +512,15 @@ export function audio_remote(key: string, x: number, y: number, z: number, closu
     panner.maxDistance = 8000
     const gain = context.createGain()
     gain.gain.value = 0.5
-    const core = context.createOscillator()
-    core.type = 'sawtooth'
-    core.frequency.value = 160
     const roar = looper(brownBuffer as AudioBuffer)
     const filter = context.createBiquadFilter()
     filter.type = 'lowpass'
     filter.frequency.value = 600
     const mix = context.createGain()
-    mix.gain.value = 0.4
-    core.connect(mix)
+    mix.gain.value = 0.5
     roar.connect(filter).connect(mix)
-    mix.connect(panner).connect(gain).connect(master)
-    core.start()
-    d = { gain, panner, core }
+    mix.connect(panner).connect(gain).connect(bus('environment'))
+    d = { gain, panner, filter }
     distants.set(key, d)
   }
   const t = now()
@@ -493,7 +528,7 @@ export function audio_remote(key: string, x: number, y: number, z: number, closu
   d.panner.positionY.setTargetAtTime(y, t, smooth)
   d.panner.positionZ.setTargetAtTime(z, t, smooth)
   const doppler = Math.max(0.7, Math.min(1.3, 1 + closure / 343))
-  d.core.frequency.setTargetAtTime((reheat ? 210 : 160) * doppler, t, smooth)
+  d.filter.frequency.setTargetAtTime((reheat ? 900 : 600) * doppler, t, smooth)   // Doppler bends the roar's colour — noise has no pitch to bend
   d.gain.gain.setTargetAtTime(reheat ? 0.75 : 0.5, t, smooth)
 }
 
@@ -501,7 +536,7 @@ export function audio_remote_drop(key: string): void {
   const d = distants.get(key)
   if (!d) return
   d.gain.gain.value = 0
-  d.core.stop()
+  d.panner.disconnect()
   distants.delete(key)
 }
 
