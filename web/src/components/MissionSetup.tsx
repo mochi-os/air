@@ -7,6 +7,13 @@ import { useEffect, useId, useState, type ReactNode } from 'react'
 import { Trans } from '@lingui/react/macro'
 import { Play, RotateCcw } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@mochi/web/components/ui/select'
 import { Button } from '@mochi/web/components/ui/button'
 import { Slider } from '@mochi/web/components/ui/slider'
 import { Switch } from '@mochi/web/components/ui/switch'
@@ -25,6 +32,7 @@ import {
   GRAPHICS_PRESETS,
   type GraphicsPreset,
   type MissionConfig,
+  type StickBindings,
 } from '../lib/config'
 import { Multiplayer } from './Multiplayer'
 import { type Join } from '../game/net'
@@ -37,116 +45,510 @@ function SectionLabel({ children }: { children: ReactNode }) {
   )
 }
 
-// Joystick button bindings: each row maps a pad button to the action's key
-// code, captured by pressing the button while armed. The engine replays bound
-// buttons as synthetic key events, so anything with a key just works.
-// Live view of the processed joystick axes — what the game actually sees —
-// with a reset for the automatic calibration. Trust through visibility.
-function AxisMeters() {
-  const [axes, setAxes] = useState<number[]>([])
+// Input configuration (#74). Bindings are per-device: cfg.sticks[pad.id] holds the
+// axis and button maps for that stick, and cfg.keys remaps the keyboard actions.
+// KEY_DEFAULTS mirrors the engine's KEYS table (engine.ts key_of) for display.
+const KEY_DEFAULTS: Record<string, string> = {
+  'pitch.up': 'KeyS',
+  'pitch.down': 'KeyW',
+  'roll.right': 'KeyD',
+  'roll.left': 'KeyA',
+  'yaw.right': 'KeyE',
+  'yaw.left': 'KeyQ',
+  'throttle.up': 'BracketRight',
+  'throttle.down': 'BracketLeft',
+  guns: 'Space',
+  launch: 'Enter',
+  'brake.wheel': 'KeyB',
+  'brake.speed': 'Slash',
+  gear: 'KeyG',
+  hook: 'KeyH',
+  lights: 'KeyL',
+  missile: 'KeyR',
+  flares: 'KeyF',
+  rearm: 'KeyX',
+  eject: 'KeyJ',
+  map: 'KeyM',
+  pause: 'KeyP',
+  view: 'KeyV',
+}
+
+// Built-in per-device defaults, mirroring the engine's pad_bindings (VelocityOne
+// mapping measured off the hardware; "-N" = reversed axis sense, idle at the low end).
+function deviceDefaults(id: string): StickBindings {
+  const vone = /velocityone|10f5/i.test(id)
+  return {
+    axes: { pitch: '1', roll: '0', yaw: '2', throttle: vone ? '-5' : '3', speedbrake: vone ? '-6' : '' },
+    buttons: vone
+      ? { guns: '0', missile: '17', flares: '15', gear: '16', 'look.up': '8', 'look.right': '9', 'look.down': '10', 'look.left': '11' }
+      : { guns: '0' },
+  }
+}
+
+interface PadState {
+  id: string
+  axes: number[]
+  buttons: boolean[]
+}
+
+// Live poll of connected pads — the Gamepad API has no change events for values.
+function useGamepads(): PadState[] {
+  const [pads, setPads] = useState<PadState[]>([])
   useEffect(() => {
     const timer = setInterval(() => {
-      const pads = navigator.getGamepads ? navigator.getGamepads() : []
-      const pad = Array.from(pads).find((p) => p && p.connected)
-      setAxes(pad ? Array.from(pad.axes) : [])
-    }, 80)
+      const raw = navigator.getGamepads ? navigator.getGamepads() : []
+      const list: PadState[] = []
+      for (const p of raw) {
+        if (p && p.connected && p.axes.length >= 2)
+          list.push({ id: p.id, axes: Array.from(p.axes), buttons: p.buttons.map((b) => b.pressed) })
+      }
+      setPads((old) =>
+        old.length === list.length &&
+        old.every((o, i) => o.id === list[i].id && o.axes.every((a, k) => Math.abs(a - list[i].axes[k]) < 0.005) && o.buttons.every((b, k) => b === list[i].buttons[k]))
+          ? old
+          : list,
+      )
+    }, 120)
     return () => clearInterval(timer)
   }, [])
-  if (!axes.length) return null
+  return pads
+}
+
+function pretty(code: string): string {
+  if (!code || code === 'None') return '—'
+  const table: Record<string, string> = {
+    Space: 'Space',
+    Enter: 'Enter',
+    Slash: '/',
+    Backslash: '\\',
+    BracketLeft: '[',
+    BracketRight: ']',
+    Comma: ',',
+    Period: '.',
+    Semicolon: ';',
+    Quote: "'",
+    Minus: '−',
+    Equal: '=',
+    Tab: 'Tab',
+    Backspace: 'Backspace',
+    ShiftLeft: 'Shift',
+    ShiftRight: 'Shift',
+    ArrowUp: '↑',
+    ArrowDown: '↓',
+    ArrowLeft: '←',
+    ArrowRight: '→',
+  }
+  if (table[code]) return table[code]
+  if (code.startsWith('Key')) return code.slice(3)
+  if (code.startsWith('Digit')) return code.slice(5)
+  if (code.startsWith('Numpad')) return 'Num ' + code.slice(6)
+  return code
+}
+
+const AXIS_ROWS: { id: string; label: ReactNode }[] = [
+  { id: 'pitch', label: <Trans>Pitch</Trans> },
+  { id: 'roll', label: <Trans>Roll</Trans> },
+  { id: 'yaw', label: <Trans>Yaw</Trans> },
+  { id: 'throttle', label: <Trans>Throttle</Trans> },
+  { id: 'speedbrake', label: <Trans>Speed brake</Trans> },
+]
+const LEVERS = new Set(['throttle', 'speedbrake']) // lever-style rows: min-to-max meter + reverse toggle
+
+const BUTTON_ROWS: { id: string; label: ReactNode }[] = [
+  { id: 'guns', label: <Trans>Guns</Trans> },
+  { id: 'missile', label: <Trans>Missile</Trans> },
+  { id: 'flares', label: <Trans>Flares</Trans> },
+  { id: 'gear', label: <Trans>Landing gear</Trans> },
+  { id: 'hook', label: <Trans>Arrestor hook</Trans> },
+  { id: 'brake.wheel', label: <Trans>Wheel brakes</Trans> },
+  { id: 'brake.speed', label: <Trans>Speed brake</Trans> },
+  { id: 'launch', label: <Trans>Launch (catapult)</Trans> },
+  { id: 'lights', label: <Trans>Lights</Trans> },
+  { id: 'rearm', label: <Trans>Rearm</Trans> },
+  { id: 'view', label: <Trans>Cycle view</Trans> },
+  { id: 'look.up', label: <Trans>Look up</Trans> },
+  { id: 'look.down', label: <Trans>Look down</Trans> },
+  { id: 'look.left', label: <Trans>Look left</Trans> },
+  { id: 'look.right', label: <Trans>Look right</Trans> },
+]
+
+const KEY_ROWS: { id: string; label: ReactNode }[] = [
+  { id: 'pitch.up', label: <Trans>Pitch up</Trans> },
+  { id: 'pitch.down', label: <Trans>Pitch down</Trans> },
+  { id: 'roll.left', label: <Trans>Roll left</Trans> },
+  { id: 'roll.right', label: <Trans>Roll right</Trans> },
+  { id: 'yaw.left', label: <Trans>Yaw left</Trans> },
+  { id: 'yaw.right', label: <Trans>Yaw right</Trans> },
+  { id: 'throttle.up', label: <Trans>Throttle up</Trans> },
+  { id: 'throttle.down', label: <Trans>Throttle down</Trans> },
+  { id: 'guns', label: <Trans>Guns</Trans> },
+  { id: 'missile', label: <Trans>Missile</Trans> },
+  { id: 'flares', label: <Trans>Flares</Trans> },
+  { id: 'gear', label: <Trans>Landing gear</Trans> },
+  { id: 'hook', label: <Trans>Arrestor hook</Trans> },
+  { id: 'brake.wheel', label: <Trans>Wheel brakes</Trans> },
+  { id: 'brake.speed', label: <Trans>Speed brake</Trans> },
+  { id: 'launch', label: <Trans>Launch (catapult)</Trans> },
+  { id: 'lights', label: <Trans>Lights</Trans> },
+  { id: 'rearm', label: <Trans>Rearm</Trans> },
+  { id: 'eject', label: <Trans>Eject</Trans> },
+  { id: 'map', label: <Trans>Map</Trans> },
+  { id: 'pause', label: <Trans>Pause</Trans> },
+  { id: 'view', label: <Trans>Cycle view</Trans> },
+]
+
+// The joystick tab: device picker, aircraft-axis sources, button actions —
+// dropdowns plus press-to-detect, saved per device id.
+function JoystickPanel({
+  config,
+  set,
+}: {
+  config: MissionConfig
+  set: (key: string, value: MissionConfig[string]) => void
+}) {
+  const pads = useGamepads()
+  const sticks = (config.sticks ?? {}) as Record<string, StickBindings>
+  const known = Array.from(new Set([...pads.map((p) => p.id), ...Object.keys(sticks)]))
+  const active = config.joystick && known.includes(config.joystick) ? config.joystick : (pads[0]?.id ?? known[0] ?? '')
+  const pad = pads.find((p) => p.id === active) ?? null
+  const defaults = deviceDefaults(active)
+  const saved = sticks[active]
+  const axes = { ...defaults.axes, ...(saved?.axes ?? {}) }
+  const buttons = saved?.buttons && Object.keys(saved.buttons).length ? saved.buttons : defaults.buttons
+  const axisCount = pad ? pad.axes.length : 10
+  const buttonCount = pad ? pad.buttons.length : 24
+  const [detecting, setDetecting] = useState<string | null>(null) // "axis:pitch" | "button:guns"
+  const [baseline, setBaseline] = useState<{ axes: number[]; buttons: boolean[] } | null>(null)
+
+  const store = (nextAxes: Record<string, string>, nextButtons: Record<string, string>) => {
+    set('sticks', { ...sticks, [active]: { axes: nextAxes, buttons: nextButtons } })
+  }
+  const setAxis = (name: string, value: string) => {
+    const next = { ...axes, [name]: value }
+    if (value !== '')
+      for (const other of Object.keys(next)) if (other !== name && next[other].replace('-', '') === value.replace('-', '')) next[other] = ''
+    store(next, buttons)
+  }
+  const setButton = (action: string, value: string) => {
+    const next = { ...buttons, [action]: value }
+    if (value !== '')
+      for (const other of Object.keys(next)) if (other !== action && next[other] === value) next[other] = ''
+    store(axes, next)
+  }
+
+  // press-to-detect: watch the live pad against the armed baseline
+  useEffect(() => {
+    if (!detecting || !pad) return
+    if (!baseline) {
+      setBaseline({ axes: pad.axes, buttons: pad.buttons })
+      return
+    }
+    const [kind, name] = detecting.split(':')
+    if (kind === 'axis') {
+      for (let i = 0; i < pad.axes.length; i++) {
+        if (Math.abs(pad.axes[i] - (baseline.axes[i] ?? 0)) > 0.6) {
+          // throttle: sweep to FULL — a full stop above zero means idle sits at the low end (reversed)
+          const reversed = name === 'throttle' && pad.axes[i] > 0
+          setAxis(name, (reversed ? '-' : '') + String(i))
+          setDetecting(null)
+          setBaseline(null)
+          return
+        }
+      }
+    } else {
+      for (let i = 0; i < pad.buttons.length; i++) {
+        if (pad.buttons[i] && !baseline.buttons[i]) {
+          setButton(name, String(i))
+          setDetecting(null)
+          setBaseline(null)
+          return
+        }
+      }
+    }
+  }, [detecting, pad, baseline]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const axisOptions = Array.from({ length: axisCount }, (_, i) => String(i))
+  const buttonOptions = Array.from({ length: buttonCount }, (_, i) => String(i))
+
   return (
-    <div className='space-y-2'>
-      <div className='grid gap-1'>
-        {axes.slice(0, 6).map((v, i) => (
-          <div key={i} className='flex items-center gap-2 text-xs'>
-            <span className='text-muted-foreground w-4'>{i}</span>
-            <div className='bg-muted relative h-2 flex-1 overflow-hidden rounded'>
-              <div className='bg-border absolute top-0 bottom-0 left-1/2 w-px' />
-              <div className='bg-primary absolute top-0 bottom-0 rounded'
-                style={{ left: `${50 + Math.min(0, v) * 50}%`, width: `${Math.abs(v) * 50}%` }} />
-            </div>
-            <span className='text-muted-foreground w-12 text-right tabular-nums'>{v.toFixed(2)}</span>
-          </div>
-        ))}
+    <div>
+      <SectionLabel>
+        <Trans>Device</Trans>
+      </SectionLabel>
+      {known.length ? (
+        <Select value={active} onValueChange={(v) => set('joystick', v)}>
+          <SelectTrigger className='w-full'>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {known.map((id) => (
+              <SelectItem key={id} value={id}>
+                {id.replace(/\s*\(Vendor:.*$/, '')}
+                {!pads.some((p) => p.id === id) && ' — '}
+                {!pads.some((p) => p.id === id) && <Trans>disconnected</Trans>}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      ) : (
+        <div className='text-muted-foreground text-sm'>
+          <Trans>No joystick detected — press any button on it to wake it up.</Trans>
+        </div>
+      )}
+      <div className='mt-4 space-y-4'>
+        <SliderRow
+          label={<Trans>Sensitivity</Trans>}
+          value={config.sens}
+          min={0.4}
+          max={2}
+          step={0.1}
+          decimals={1}
+          suffix='×'
+          onChange={(v) => set('sens', v)}
+        />
+        <SwitchRow
+          id='invert'
+          label={<Trans>Invert pitch</Trans>}
+          checked={config.invert}
+          onChange={(v) => set('invert', v)}
+        />
       </div>
-      <Button type='button' size='sm' variant='outline'
-        onClick={() => (window as unknown as { furball_recalibrate?: () => void }).furball_recalibrate?.()}>
-        <Trans>Recalibrate</Trans>
-      </Button>
+      <SectionLabel>
+        <Trans>Axes</Trans>
+      </SectionLabel>
+      <div className='grid gap-y-1 text-sm'>
+        {AXIS_ROWS.map(({ id, label }) => {
+          const value = axes[id] ?? ''
+          const reversed = value.startsWith('-')
+          const index = value.replace('-', '')
+          const live = pad && index !== '' ? pad.axes[Number(index)] : null
+          return (
+            <div key={id} className='flex items-center justify-between gap-2 py-0.5'>
+              <span className='w-24 shrink-0'>{label}</span>
+              {live !== null && (
+                <div className='bg-muted relative h-2 min-w-10 flex-1 overflow-hidden rounded'>
+                  {/* levers show travel min..max as a left-anchored fill (throttle: power; speed brake: deployment); the flight axes stay centred +/- */}
+                  {LEVERS.has(id) ? (
+                    <div
+                      className='bg-primary absolute top-0 bottom-0 left-0 rounded'
+                      style={{ width: `${(((id === 'throttle') !== reversed ? 1 - live : live + 1) / 2) * 100}%` }}
+                    />
+                  ) : (
+                    <>
+                      <div className='bg-border absolute top-0 bottom-0 left-1/2 w-px' />
+                      <div
+                        className='bg-primary absolute top-0 bottom-0 rounded'
+                        style={{ left: `${50 + Math.min(0, live) * 50}%`, width: `${Math.abs(live) * 50}%` }}
+                      />
+                    </>
+                  )}
+                </div>
+              )}
+              <span className='flex shrink-0 items-center gap-1'>
+                <Select value={index === '' ? 'none' : index} onValueChange={(v) => setAxis(id, v === 'none' ? '' : (reversed ? '-' : '') + v)}>
+                  <SelectTrigger size='sm' className='min-w-28'>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='none'>
+                      <Trans>None</Trans>
+                    </SelectItem>
+                    {axisOptions.map((i) => (
+                      <SelectItem key={i} value={i}>
+                        <Trans>Axis {i}</Trans>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {LEVERS.has(id) && index !== '' && (
+                  <Button
+                    type='button'
+                    size='sm'
+                    variant={reversed ? 'default' : 'outline'}
+                    title='Reversed'
+                    onClick={() => setAxis(id, (reversed ? '' : '-') + index)}
+                  >
+                    ⇄
+                  </Button>
+                )}
+                <Button
+                  type='button'
+                  size='sm'
+                  variant='outline'
+                  disabled={!pad}
+                  onClick={() => {
+                    setBaseline(null)
+                    setDetecting(detecting === 'axis:' + id ? null : 'axis:' + id)
+                  }}
+                >
+                  {detecting === 'axis:' + id ? <Trans>Move it…</Trans> : <Trans>Detect</Trans>}
+                </Button>
+              </span>
+            </div>
+          )
+        })}
+      </div>
+      <SectionLabel>
+        <Trans>Buttons</Trans>
+      </SectionLabel>
+      <div className='grid gap-y-1 text-sm'>
+        {BUTTON_ROWS.map(({ id, label }) => {
+          const value = buttons[id] ?? ''
+          const held = pad && value !== '' && pad.buttons[Number(value)]
+          return (
+            <div key={id} className='flex items-center justify-between gap-2 py-0.5'>
+              <span className={held ? 'text-primary' : undefined}>{label}</span>
+              <span className='flex shrink-0 items-center gap-1'>
+                <Select value={value === '' ? 'none' : value} onValueChange={(v) => setButton(id, v === 'none' ? '' : v)}>
+                  <SelectTrigger size='sm' className='min-w-28'>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='none'>
+                      <Trans>None</Trans>
+                    </SelectItem>
+                    {buttonOptions.map((i) => (
+                      <SelectItem key={i} value={i}>
+                        <Trans>Button {i}</Trans>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button
+                  type='button'
+                  size='sm'
+                  variant='outline'
+                  disabled={!pad}
+                  onClick={() => {
+                    setBaseline(null)
+                    setDetecting(detecting === 'button:' + id ? null : 'button:' + id)
+                  }}
+                >
+                  {detecting === 'button:' + id ? <Trans>Press it…</Trans> : <Trans>Detect</Trans>}
+                </Button>
+              </span>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
 
-function JoystickBindings({
-  buttons,
-  onChange,
+// The sound tab: master switch plus a per-bus mixer. Buses mirror the audio
+// module's routing (audio.ts): engine = turbines/afterburner, aircraft = wind,
+// buffet, actuators, deck events, own fires and hits, weapons = gun/missiles/
+// flares/explosions, environment = deck ambience and other aircraft, alerts =
+// the cockpit tones.
+const VOLUME_ROWS: { id: string; label: ReactNode }[] = [
+  { id: 'master', label: <Trans>Master</Trans> },
+  { id: 'engine', label: <Trans>Engine</Trans> },
+  { id: 'aircraft', label: <Trans>Aircraft</Trans> },
+  { id: 'weapons', label: <Trans>Weapons</Trans> },
+  { id: 'environment', label: <Trans>Environment</Trans> },
+  { id: 'alerts', label: <Trans>Alerts</Trans> },
+]
+
+function SoundPanel({
+  config,
+  set,
 }: {
-  buttons: Record<string, string>
-  onChange: (next: Record<string, string>) => void
+  config: MissionConfig
+  set: (key: string, value: MissionConfig[string]) => void
 }) {
+  const volume = { ...DEFAULT_CONFIG.volume, ...((config.volume ?? {}) as Record<string, number>) }
+  return (
+    <div className='space-y-4'>
+      <SwitchRow
+        id='sound'
+        label={<Trans>Sound</Trans>}
+        checked={config.sound !== false}
+        onChange={(v) => set('sound', v)}
+      />
+      {VOLUME_ROWS.map(({ id, label }) => (
+        <SliderRow
+          key={id}
+          label={label}
+          value={volume[id]}
+          min={0}
+          max={100}
+          step={5}
+          decimals={0}
+          suffix='%'
+          onChange={(v) => set('volume', { ...volume, [id]: v })}
+        />
+      ))}
+    </div>
+  )
+}
+
+// The keyboard tab: every remappable action with click-to-capture rebinding.
+function KeysPanel({
+  config,
+  set,
+}: {
+  config: MissionConfig
+  set: (key: string, value: MissionConfig[string]) => void
+}) {
+  const overrides = (config.keys ?? {}) as Record<string, string>
   const [arming, setArming] = useState<string | null>(null)
+  const current = (id: string) => overrides[id] ?? KEY_DEFAULTS[id]
   useEffect(() => {
     if (!arming) return
-    let held: Set<number> | null = null
-    const timer = setInterval(() => {
-      const pads = navigator.getGamepads ? navigator.getGamepads() : []
-      const pad = Array.from(pads).find((p) => p && p.connected)
-      if (!pad) return
-      const pressed = new Set<number>()
-      pad.buttons.forEach((b, i) => { if (b.pressed) pressed.add(i) })
-      if (held === null) { held = pressed; return }   // ignore buttons already down when arming
-      for (const i of pressed) {
-        if (!held.has(i)) {
-          const next: Record<string, string> = {}
-          for (const [k, v] of Object.entries(buttons)) if (Number(k) !== i) next[k] = v
-          next[String(i)] = arming
-          onChange(next)
-          setArming(null)
-          return
-        }
+    const capture = (e: KeyboardEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (e.code === 'Escape') {
+        setArming(null)
+        return
       }
-    }, 50)
-    return () => clearInterval(timer)
-  }, [arming, buttons, onChange])
-  const BINDABLE: { code: string; label: ReactNode }[] = [
-    { code: 'KeyG', label: <Trans>Landing gear</Trans> },
-    { code: 'KeyH', label: <Trans>Arrestor hook</Trans> },
-    { code: 'Slash', label: <Trans>Speed brake</Trans> },
-    { code: 'KeyB', label: <Trans>Wheel brakes</Trans> },
-    { code: 'KeyF', label: <Trans>Flares</Trans> },
-    { code: 'KeyR', label: <Trans>Missile</Trans> },
-    { code: 'KeyX', label: <Trans>Rearm</Trans> },
-    { code: 'Enter', label: <Trans>Launch (catapult)</Trans> },
-    { code: 'KeyV', label: <Trans>Cycle view</Trans> },
-    { code: 'KeyM', label: <Trans>Map</Trans> },
-  ]
-  const bound = (code: string) => {
-    const hit = Object.entries(buttons).find(([, v]) => v === code)
-    return hit ? hit[0] : null
-  }
+      const next = { ...overrides }
+      for (const other of Object.keys(KEY_DEFAULTS)) if (other !== arming && current(other) === e.code) next[other] = 'None'
+      if (KEY_DEFAULTS[arming] === e.code) delete next[arming]
+      else next[arming] = e.code
+      set('keys', next)
+      setArming(null)
+    }
+    window.addEventListener('keydown', capture, { capture: true })
+    return () => window.removeEventListener('keydown', capture, { capture: true })
+  }, [arming]) // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <div className='grid gap-y-1 text-sm'>
-      <div className='text-muted-foreground flex items-center justify-between py-1'>
-        <span><Trans>Guns</Trans></span>
-        <span><Trans>Trigger</Trans></span>
+    <div>
+      <div className='grid gap-x-8 gap-y-1 text-sm sm:grid-cols-2'>
+        {KEY_ROWS.map(({ id, label }) => (
+          <div key={id} className='flex items-center justify-between gap-2 py-0.5'>
+            <span>{label}</span>
+            <span className='flex items-center gap-1'>
+              {arming === id ? (
+                <span className='text-muted-foreground animate-pulse'>
+                  <Trans>Press a key…</Trans>
+                </span>
+              ) : (
+                <Key>{pretty(current(id))}</Key>
+              )}
+              <Button type='button' size='sm' variant='outline' onClick={() => setArming(arming === id ? null : id)}>
+                {arming === id ? <Trans>Cancel</Trans> : <Trans>Set</Trans>}
+              </Button>
+              {current(id) !== 'None' && (
+                <Button type='button' size='sm' variant='outline' title='None' onClick={() => set('keys', { ...overrides, [id]: 'None' })}>
+                  ✕
+                </Button>
+              )}
+            </span>
+          </div>
+        ))}
       </div>
-      {BINDABLE.map(({ code, label }) => (
-        <div key={code} className='flex items-center justify-between gap-2 py-0.5'>
-          <span>{label}</span>
-          <span className='flex items-center gap-2'>
-            {arming === code ? (
-              <span className='text-muted-foreground animate-pulse'>
-                <Trans>Press a joystick button…</Trans>
-              </span>
-            ) : bound(code) ? (
-              <Key>B{bound(code)}</Key>
-            ) : null}
-            <Button type='button' size='sm' variant='outline'
-              onClick={() => setArming(arming === code ? null : code)}>
-              {arming === code ? <Trans>Cancel</Trans> : <Trans>Bind</Trans>}
-            </Button>
-          </span>
-        </div>
-      ))}
+      <SectionLabel>
+        <Trans>Fixed keys</Trans>
+      </SectionLabel>
+      <div className='grid gap-x-8 text-sm sm:grid-cols-2'>
+        <ControlRow action={<Trans>Views</Trans>} keys={<><Key>1</Key>–<Key>5</Key></>} />
+        <ControlRow action={<Trans>Look / orbit</Trans>} keys={<><Key>←</Key><Key>→</Key><Key>↑</Key><Key>↓</Key></>} />
+        <ControlRow action={<Trans>Camera distance</Trans>} keys={<><Key>−</Key><Key>=</Key></>} />
+        <ControlRow action={<Trans>Refueling probe</Trans>} keys={<><Key>Shift</Key>+<Key>F</Key></>} />
+        <ControlRow action={<Trans>Canopy</Trans>} keys={<><Key>Shift</Key>+<Key>C</Key></>} />
+        <ControlRow action={<Trans>Return to menu</Trans>} keys={<Key>Esc</Key>} />
+      </div>
     </div>
   )
 }
@@ -401,7 +803,13 @@ export function MissionSetup({
                 <Trans>Weather</Trans>
               </TabsTrigger>
               <TabsTrigger value='controls'>
-                <Trans>Controls</Trans>
+                <Trans>Joystick</Trans>
+              </TabsTrigger>
+              <TabsTrigger value='keys'>
+                <Trans>Keys</Trans>
+              </TabsTrigger>
+              <TabsTrigger value='sound'>
+                <Trans>Sound</Trans>
               </TabsTrigger>
               <TabsTrigger value='graphics'>
                 <Trans>Graphics</Trans>
@@ -483,80 +891,15 @@ export function MissionSetup({
               </TabsContent>
 
               <TabsContent value='controls'>
-                <SectionLabel>
-                  <Trans>Input</Trans>
-                </SectionLabel>
-                <div className='space-y-4'>
-                  <SliderRow
-                    label={<Trans>Sensitivity</Trans>}
-                    value={config.sens}
-                    min={0.4}
-                    max={2}
-                    step={0.1}
-                    decimals={1}
-                    suffix='×'
-                    onChange={(v) => set('sens', v)}
-                  />
-                  <SwitchRow
-                    id='invert'
-                    label={<Trans>Invert pitch</Trans>}
-                    checked={config.invert}
-                    onChange={(v) => set('invert', v)}
-                  />
-                </div>
-                <Separator className='my-4' />
-                <SectionLabel>
-                  <Trans>Keys</Trans>
-                </SectionLabel>
-                <div className='grid gap-x-8 text-sm sm:grid-cols-2'>
-                  <ControlRow action={<Trans>Pitch</Trans>} keys={<><Key>W</Key><Key>S</Key></>} />
-                  <ControlRow action={<Trans>Roll</Trans>} keys={<><Key>A</Key><Key>D</Key></>} />
-                  <ControlRow action={<Trans>Yaw</Trans>} keys={<><Key>Q</Key><Key>E</Key></>} />
-                  <ControlRow
-                    action={<Trans>Throttle</Trans>}
-                    keys={<><Key>[</Key><Key>]</Key></>}
-                  />
-                  <ControlRow action={<Trans>Guns</Trans>} keys={<Key>Space</Key>} />
-                  <ControlRow action={<Trans>Launch (catapult)</Trans>} keys={<Key>Enter</Key>} />
-                  <ControlRow action={<Trans>Wheel brakes</Trans>} keys={<Key>B</Key>} />
-                  <ControlRow action={<Trans>Speed brake</Trans>} keys={<Key>/</Key>} />
-                  <ControlRow action={<Trans>Landing gear</Trans>} keys={<Key>G</Key>} />
-                  <ControlRow action={<Trans>Arrestor hook</Trans>} keys={<Key>H</Key>} />
-                  <ControlRow action={<Trans>Lights</Trans>} keys={<Key>L</Key>} />
-                  <ControlRow action={<Trans>Missile</Trans>} keys={<Key>R</Key>} />
-                  <ControlRow action={<Trans>Flares</Trans>} keys={<Key>F</Key>} />
-                  <ControlRow action={<Trans>Rearm</Trans>} keys={<Key>X</Key>} />
-                  <ControlRow
-                    action={<Trans>Cycle view</Trans>}
-                    keys={<><Key>1</Key>–<Key>5</Key><Key>V</Key></>}
-                  />
-                  <ControlRow action={<Trans>Map</Trans>} keys={<Key>M</Key>} />
-                  <ControlRow action={<Trans>Pause</Trans>} keys={<Key>P</Key>} />
-                  <ControlRow action={<Trans>Return to menu</Trans>} keys={<Key>Esc</Key>} />
-                </div>
-                <Separator className='my-4' />
-                <SectionLabel>
-                  <Trans>Joystick buttons</Trans>
-                </SectionLabel>
-                <AxisMeters />
-                <JoystickBindings
-                  buttons={config.buttons ?? {}}
-                  onChange={(next) => set('buttons', next)}
-                />
-                <SectionLabel>
-                  <Trans>Chase view</Trans>
-                </SectionLabel>
-                <div className='grid gap-x-8 text-sm sm:grid-cols-2'>
-                  <ControlRow
-                    action={<Trans>Orbit</Trans>}
-                    keys={<><Key>Drag</Key><Key>←</Key><Key>→</Key></>}
-                  />
-                  <ControlRow action={<Trans>Tilt</Trans>} keys={<><Key>↑</Key><Key>↓</Key></>} />
-                  <ControlRow
-                    action={<Trans>Distance</Trans>}
-                    keys={<><Key>−</Key><Key>=</Key></>}
-                  />
-                </div>
+                <JoystickPanel config={config} set={set} />
+              </TabsContent>
+
+              <TabsContent value='keys'>
+                <KeysPanel config={config} set={set} />
+              </TabsContent>
+
+              <TabsContent value='sound'>
+                <SoundPanel config={config} set={set} />
               </TabsContent>
 
               <TabsContent value='graphics' className='space-y-4'>
@@ -666,12 +1009,6 @@ export function MissionSetup({
                     label={<Trans>Flares</Trans>}
                     checked={config.flares}
                     onChange={(v) => set('flares', v)}
-                  />
-                  <SwitchRow
-                    id='sound'
-                    label={<Trans>Sound</Trans>}
-                    checked={config.sound !== false}
-                    onChange={(v) => set('sound', v)}
                   />
                   <SwitchRow
                     id='framerate'
