@@ -71,6 +71,9 @@ const KEY_DEFAULTS: Record<string, string> = {
   map: 'KeyM',
   pause: 'KeyP',
   view: 'KeyV',
+  probe: 'Shift+KeyF',
+  canopy: 'Shift+KeyC',
+  fold: 'Shift+KeyW',
 }
 
 // Built-in per-device defaults, mirroring the engine's pad_bindings (VelocityOne
@@ -195,6 +198,9 @@ const KEY_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'map', label: <Trans>Map</Trans> },
   { id: 'pause', label: <Trans>Pause</Trans> },
   { id: 'view', label: <Trans>Cycle view</Trans> },
+  { id: 'probe', label: <Trans>Fuel probe</Trans> },
+  { id: 'canopy', label: <Trans>Canopy</Trans> },
+  { id: 'fold', label: <Trans>Wing fold</Trans> },
 ]
 
 // The joystick tab: device picker, aircraft-axis sources, button actions —
@@ -502,10 +508,12 @@ function KeysPanel({
         setArming(null)
         return
       }
+      if (/^(Shift|Control|Alt|Meta)/.test(e.code)) return // a bare modifier isn't a binding — wait for the full chord
+      const chord = (e.shiftKey ? 'Shift+' : '') + e.code
       const next = { ...overrides }
-      for (const other of Object.keys(KEY_DEFAULTS)) if (other !== arming && current(other) === e.code) next[other] = 'None'
-      if (KEY_DEFAULTS[arming] === e.code) delete next[arming]
-      else next[arming] = e.code
+      for (const other of Object.keys(KEY_DEFAULTS)) if (other !== arming && current(other) === chord) next[other] = 'None'
+      if (KEY_DEFAULTS[arming] === chord) delete next[arming]
+      else next[arming] = chord
       set('keys', next)
       setArming(null)
     }

@@ -757,7 +757,8 @@ const AIRCRAFT_MODELS={
 		      { name:"hook",     track:/^Hook_AN_/i, drive:"hook" },
 		      { name:"probe",    track:/^RefuelDoorAction_AN/i, drive:"probe" },   // in-flight refueling probe (starboard nose): door + arm + probe swing on one sequence; Shift+F toggles, ~5 s travel (the cockpit Refuel_Switch tracks have a different prefix and stay untouched)
 		      { name:"canopy",   track:/^Canopy_ParentAction_AN/i, drive:"canopy" },
-		      { name:"petals",   track:/^EXHAUSTS_/i, drive:"nozzle" },   // 24 nozzle petals, one shared sweep: authored = closed, track end = open (+7.2°, tip radius 25->32 cm, measured). Driven by the F404 area schedule, not a toggle   // canopy shells + actuator arm + linkage; Shift+C on the ground, ~6 s stroke, auto-closes on the takeoff roll (the cockpit Canopy_Switch has a different prefix)
+		      { name:"petals",   track:/^EXHAUSTS_/i, drive:"nozzle" },
+		      { name:"fold",     track:/wing_outer_AN/i, drive:"fold" },   // wing fold: both outer-panel tracks (left +100°, right -110° — the clip owns the asymmetric sweeps), authored = spread, track end = folded. The panels carry ailerons, covers, droop stages and outer slats   // 24 nozzle petals, one shared sweep: authored = closed, track end = open (+7.2°, tip radius 25->32 cm, measured). Driven by the F404 area schedule, not a toggle   // canopy shells + actuator arm + linkage; Shift+C on the ground, ~6 s stroke, auto-closes on the takeoff roll (the cockpit Canopy_Switch has a different prefix)
 		      { name:"stabL",    node:"Elevator_Left_94",  axis:"x", base:[0.96593,0,0,0.25882], drive:"stabL" },   // neutral base calibrated three ways: the user's Shift+E bracket (position 3 ≈ neutral), the thin-axis minimum (surface vertical thickness minimized at +130° from the old base), and NATOPS throws (+10.5°/−24°) mapping full stick inside the user's positions 2..4
 		      { name:"stabR",    node:"Elevator_right_97", axis:"x", base:[0.96502,0,0,0.26219], drive:"stabR" },
 		      { name:"slatLI",    node:"Left_Slat_Inner_63",   axis:"x", drive:"slat" },   // leading-edge flaps: static nodes in the GLB (no authored animation), direct-driven about their own local X — the modeller aligned each node frame with the swept LE hinge (within 3°), and +rotation droops the LE on BOTH sides (mirrored frames). Drive = the core's alpha-scheduled slat state (word 27)
@@ -1813,15 +1814,17 @@ function on_ground(){ return deck_edit||ownship.launching||!!ownship.grounded; }
 addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown","/"].includes(e.key)) e.preventDefault();
 	audio_gesture();   // the first gesture unlocks the audio context (browser policy)
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
-		if(k===key_of("launch") && launch_status()===2){ start_launch(); }   // only when spotted on the cat, lined up, at full power
-		if(k===key_of("missile") && !ownship.launching && (ownship.gear??0)>0.98 && cfg.missiles && ownship.msl>0){
+		const ch=(e.shiftKey?"Shift+":"")+k;   // full chord — remappable actions match this, so a shift-chord never fires the bare-key action and vice versa
+		if(ch===key_of("launch") && launch_status()===2){ if((ownship.fold??0)>0.02) notice(translate("SPREAD WINGS")); else start_launch(); }   // only when spotted on the cat, lined up, at full power — and never with the wings folded
+		if(ch===key_of("missile") && !ownship.launching && (ownship.gear??0)>0.98 && cfg.missiles && ownship.msl>0){
 			if(MULTIPLAYER) missile_flag=true;   // the server acquires and scores; the local launch is the visual
 			if(launch_missile(ownship,MULTIPLAYER?remote_nearest():(has_enemy?bandit:null))){ ownship.msl--; audio_launch(); } }   // weapons safe unless the gear is fully up
-		if(k==="KeyF" && e.shiftKey){ ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; notice(ownship.probeTarget?translate("PROBE OUT"):translate("PROBE IN")); }   // Shift+F: refueling probe (real limit is ~300 KCAS — procedural, not enforced)
-		if(k==="KeyC" && e.shiftKey){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.canopyTarget=(ownship.canopyTarget??0)>0.5?0:1; notice(ownship.canopyTarget?translate("CANOPY OPEN"):translate("CANOPY CLOSED")); } else notice(translate("CANOPY LOCKED")); }   // Shift+C: canopy — ground only, taxi speeds (NATOPS closes it before takeoff; ~60 kt operation wind limit)
-		if(k===key_of("flares") && !e.shiftKey && cfg.flares && ownship.cm>0 && (ownship.squish??0)<0.1){ dispense_flares(ownship); ownship.cm--; flare_flag=true; audio_flare(); }   // plain F only — Shift+F is the probe (self-guarded, NOT an else-chain: an inserted handler between the pair once re-aimed the else and Shift+F dropped flares). Weight-on-wheels inhibits the dispenser, as the real ALE-47 does — no pyrotechnics on the deck
-		if(k===key_of("rearm") && !e.shiftKey){ ownship.rounds=578; ownship.msl=4; ownship.cm=60; }   // plain X only — Shift+X is the dev cloud A/B
-		if(k===key_of("eject") && !deck_edit && crash_t<=0 && !ejected){   // ejection handle: three pulls inside 1.25 s — the zero-zero seat works everywhere
+		if(ch===key_of("probe")){ ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; notice(ownship.probeTarget?translate("PROBE OUT"):translate("PROBE IN")); }   // refueling probe (real limit is ~300 KCAS — procedural, not enforced)
+		if(ch===key_of("fold")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.foldTarget=(ownship.foldTarget??0)>0.5?0:1; notice(ownship.foldTarget?translate("WINGS FOLDING"):translate("WINGS SPREADING")); } else notice(translate("WINGS LOCKED")); }   // wing fold — ground only, taxi speeds; the outer panels carry the ailerons and outer slats with them
+		if(ch===key_of("canopy")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.canopyTarget=(ownship.canopyTarget??0)>0.5?0:1; notice(ownship.canopyTarget?translate("CANOPY OPEN"):translate("CANOPY CLOSED")); } else notice(translate("CANOPY LOCKED")); }   // Shift+C: canopy — ground only, taxi speeds (NATOPS closes it before takeoff; ~60 kt operation wind limit)
+		if(ch===key_of("flares") && cfg.flares && ownship.cm>0 && (ownship.squish??0)<0.1){ dispense_flares(ownship); ownship.cm--; flare_flag=true; audio_flare(); }   // plain F only — Shift+F is the probe (self-guarded, NOT an else-chain: an inserted handler between the pair once re-aimed the else and Shift+F dropped flares). Weight-on-wheels inhibits the dispenser, as the real ALE-47 does — no pyrotechnics on the deck
+		if(ch===key_of("rearm")){ ownship.rounds=578; ownship.msl=4; ownship.cm=60; }   // plain X only — Shift+X is the dev cloud A/B
+		if(ch===key_of("eject") && !deck_edit && crash_t<=0 && !ejected){   // ejection handle: three pulls inside 1.25 s — the zero-zero seat works everywhere
 			if(sim_time-eject_at>1.25) eject_taps=0;
 			eject_at=sim_time; eject_taps++;
 			if(eject_taps>=3){ eject_taps=0; ejected=true; audio_eject();
@@ -1842,14 +1845,14 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 			if(k==="Digit3") set_view("chase");      // 3 Chase
 			if(k==="Digit4") set_view("flypast");    // 4 Flypast
 			if(k==="Digit5") set_view("padlock"); }  // 5 Padlock
-		if(k===key_of("view")) set_view(cfg.view==="cockpit"?"hud":"cockpit");   // V: Cockpit↔HUD fast-swap (any other view → Cockpit)
-		if(k===key_of("map")){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on){ map_px=0; map_pz=0; map_resize(); } }   // reopening always returns centred on own aircraft
-		if(k===key_of("pause") && !MULTIPLAYER){ pause_toggle=!pause_toggle; }
-		if(k===key_of("hook")){ ownship.hookTarget = ownship.hookTarget>0.5?0:1; }   // arrestor hook deploy/stow
-		if(k===key_of("lights")){ ownship.lights=!ownship.lights; }   // aircraft position/strobe/landing lights
+		if(ch===key_of("view")) set_view(cfg.view==="cockpit"?"hud":"cockpit");   // V: Cockpit↔HUD fast-swap (any other view → Cockpit)
+		if(ch===key_of("map")){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on){ map_px=0; map_pz=0; map_resize(); } }   // reopening always returns centred on own aircraft
+		if(ch===key_of("pause") && !MULTIPLAYER){ pause_toggle=!pause_toggle; }
+		if(ch===key_of("hook")){ ownship.hookTarget = ownship.hookTarget>0.5?0:1; }   // arrestor hook deploy/stow
+		if(ch===key_of("lights")){ ownship.lights=!ownship.lights; }   // aircraft position/strobe/landing lights
 
-		if(k===key_of("brake.speed")){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
-		if(k===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; audio_servo(); }   // G: landing gear up/down — only once airborne, never on deck/runway
+		if(ch===key_of("brake.speed")){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
+		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; audio_servo(); }   // G: landing gear up/down — only once airborne, never on deck/runway
 		if(k==="Escape" && running){ running=false; if(MULTIPLAYER) net_finish("left"); if(onExit) onExit(); } }
 	keys.add(k); }, { signal });
 addEventListener("keyup",e=>keys.delete(e.code),{ signal });
@@ -1876,7 +1879,8 @@ stage.addEventListener("pointercancel",end_drag,{ signal });
 // action's current key as a synthetic event, so pad binds follow key remaps.
 const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.left":"KeyA", "yaw.right":"KeyE", "yaw.left":"KeyQ",
 	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash",
-	gear:"KeyG", hook:"KeyH", lights:"KeyL", missile:"KeyR", flares:"KeyF", rearm:"KeyX", eject:"KeyJ", map:"KeyM", pause:"KeyP", view:"KeyV" };
+	gear:"KeyG", hook:"KeyH", lights:"KeyL", missile:"KeyR", flares:"KeyF", rearm:"KeyX", eject:"KeyJ", map:"KeyM", pause:"KeyP", view:"KeyV",
+	probe:"Shift+KeyF", canopy:"Shift+KeyC", fold:"Shift+KeyW" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
@@ -1910,7 +1914,7 @@ function read_gamepad(){ const pads=(navigator.getGamepads&&navigator.getGamepad
 function pad_bindings(pad){   // resolved axis/button map for THIS stick: the menu's per-device config over built-in defaults (VelocityOne measured off the hardware, 2026-07-06)
 	const saved=(cfg.sticks||{})[pad.id]||{};
 	const vone=/velocityone|10f5/i.test(pad.id||"");
-	const axes={ pitch:"1", roll:"0", yaw:"2", throttle:vone?"-5":"3", speedbrake:vone?"-6":"", ...(saved.axes||{}) };   // "-N" = reversed sense; VelocityOne: throttle on the LEFT base slider (rests at -1), speed brake on the RIGHT — aft reads LOW (flight test), so reversed makes aft = deployed
+	const axes={ pitch:"1", roll:"0", yaw:"2", throttle:vone?"-5":"3", speedbrake:vone?"-6":"", hat:vone?"8":"", ...(saved.axes||{}) };   // "-N" = reversed sense; VelocityOne: throttle on the LEFT base slider (rests at -1), speed brake on the RIGHT — aft reads LOW (flight test), so reversed makes aft = deployed. hat = the POV x-axis index (y follows at +1); BOTH VelocityOne top hats emit this same HID hat
 	const buttons=saved.buttons&&Object.keys(saved.buttons).length?saved.buttons
 		:(vone?{ guns:"0", missile:"17", flares:"15", gear:"16", "look.up":"8", "look.right":"9", "look.down":"10", "look.left":"11" }
 		      :{ guns:"0" });
@@ -1952,13 +1956,18 @@ function read_input(dt){
 		{ const p=pad_lever(pad,bind.axes.speedbrake,"speedbrake");   // speed brake: full forward retracted, aft deployed (deployed at the HIGH raw end; "-" prefix flips)
 			if(p!==null) ownship.speedbrakeTarget=p; }
 		pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false;
+		{ const h=String(bind.axes.hat??""); if(h!==""){ const hi=+h;   // the POV hat looks/orbits too (HID: x -1 left +1 right, y -1 up +1 down)
+			if(pad.axes.length>hi+1){ const hx=pad.axes[hi], hy=pad.axes[hi+1];
+				if(hx<-0.5) pad_looks.left=true; if(hx>0.5) pad_looks.right=true;
+				if(hy<-0.5) pad_looks.up=true; if(hy>0.5) pad_looks.down=true; } } }
 		for(const [action,index] of Object.entries(bind.buttons)){ const b=+index;
 			if(!(b>=0)||b>=pad.buttons.length) continue;
 			const down=pad.buttons[b].pressed;
 			if(action.startsWith("look.")){ if(down) pad_looks[action.slice(5)]=true; continue; }   // look directions are level state for the camera, not key events
 			const was=pad_buttons[b]||false;   // other actions replay their CURRENT key: synthetic keydown on press, keyup on release, so held actions (brakes, guns) work and pad binds follow key remaps
-			if(down!==was){ pad_buttons[b]=down; const code=key_of(action);
-				if(code){ for(const target of [window, document, stage]) target.dispatchEvent(new KeyboardEvent(down?"keydown":"keyup",{ code, bubbles:true })); } } }
+			if(down!==was){ pad_buttons[b]=down; const bindText=key_of(action);
+				if(bindText){ const shift=bindText.startsWith("Shift+"), code=bindText.replace("Shift+","");
+					for(const target of [window, document, stage]) target.dispatchEvent(new KeyboardEvent(down?"keydown":"keyup",{ code, shiftKey:shift, bubbles:true })); } } }
 	}
 	else pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false;
 	input.pitch=Math.abs(pp)>Math.abs(key_axes.pitch)?pp:key_axes.pitch;
@@ -2350,6 +2359,7 @@ function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.user
 			const spool=own?(ownship.spool??0.8):0.8, stage=own?(ownship.stage??0):(cfg.afterburner?1:0);
 			f=Math.max(THREE.MathUtils.clamp((0.7-spool)/0.55,0,1), THREE.MathUtils.clamp(stage,0,1)); break; }
 		case "canopy": f=THREE.MathUtils.clamp(st.canopy??0,0,1); break;
+		case "fold": f=THREE.MathUtils.clamp(st.fold??0,0,1); break;
 		default: { const surfaces=st.surfaces; if(!surfaces||surfaces[r.drive]===undefined){ f=undefined; break; }   // no live FCS data (remotes): hold the rest pose
 			f=(surfaces[r.drive]-(r.min??0))/(((r.max??1)-(r.min??0))||1); f=THREE.MathUtils.clamp(f,0,1); } }
 		if(f===undefined) continue;
@@ -2384,6 +2394,8 @@ function update_anim(dt){ for(const st of [ownship,bandit,...extras]){
 	if(st.probe===undefined) st.probe=st.probeTarget??0; st.probe+=THREE.MathUtils.clamp((st.probeTarget??0)-st.probe,-0.2*dt,0.2*dt);   // refueling probe: ~5 s hydraulic stroke
 	if(st===ownship && (st.canopyTarget??0)>0.5 && st.speed>13){ st.canopyTarget=0; notice(translate("CANOPY CLOSING")); }   // the takeoff roll closes an open canopy before the airflow does it destructively
 	if(st.canopy===undefined) st.canopy=st.canopyTarget??0; st.canopy+=THREE.MathUtils.clamp((st.canopyTarget??0)-st.canopy,-0.167*dt,0.167*dt);   // ~6 s canopy stroke
+	if(st===ownship && (st.foldTarget??0)>0.5 && st.speed>13){ st.foldTarget=0; notice(translate("WINGS SPREADING")); }   // rolling for takeoff spreads folded wings before the airflow rips them
+	if(st.fold===undefined) st.fold=st.foldTarget??0; st.fold+=THREE.MathUtils.clamp((st.foldTarget??0)-st.fold,-0.125*dt,0.125*dt);   // ~8 s fold cycle
 	apply_anim(st); } }
 function step_world(dt){ sim_time+=dt;
 	fly_player(dt); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
@@ -2764,6 +2776,7 @@ function draw_hud(dt){
 	if(ownship.lights){ hctx.fillStyle=GR; hctx.fillText(translate("LIGHTS"),HW-40,HH-34); }   // below HOOK
 	if((ownship.probe??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("PROBE"),HW-40,HH-22); }   // below LIGHTS
 	if((ownship.canopy??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("CANOPY"),HW-40,HH-10); }   // below PROBE
+	if((ownship.fold??0)>0.02){ hctx.fillStyle=AM; hctx.fillText(translate("WINGS"),HW-40,HH-124); }   // amber, above SPD BK: not a flight configuration
 
 	// ---- caution panel (#78): red for fires and the pilot, amber for degraded systems ----
 	// Read straight from the core's damage words, so it works identically in SP and MP.
@@ -3050,6 +3063,7 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
 
   function stop() {
     if (MULTIPLAYER) net_finish('left')
+    audio_enable(false)   // the frame-loop gate dies with the RAF below — silence the surviving AudioContext explicitly, or its loops play on under the menu
     try { __ac.abort() } catch (e) {}
     cancelAnimationFrame(__raf)
     try { renderer.dispose() } catch (e) {}
