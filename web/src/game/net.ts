@@ -193,7 +193,7 @@ export interface RemotePose {
   gear: boolean
   hook: boolean
   speedbrake: number
-  reheat: boolean
+  reheat: number
   fire: boolean
 }
 
@@ -211,7 +211,7 @@ export interface InputSample {
   yaw: number
   throttle: number
   speedbrake: number
-  reheat: boolean
+  reheat: number
   brake: boolean
   gear: boolean
   hook: boolean
@@ -413,7 +413,7 @@ export class Net {
             gear: !!entry.gear,
             hook: !!entry.hook,
             speedbrake: Number(entry.speedbrake ?? 0),
-            reheat: !!entry.reheat,
+            reheat: +(entry.reheat as number ?? 0) || 0,
             fire: !!entry.fire,
           })
         }

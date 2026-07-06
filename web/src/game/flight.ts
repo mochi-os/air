@@ -65,7 +65,7 @@ export interface Controls {
   yaw: number
   throttle: number
   speedbrake: number
-  reheat: boolean
+  reheat: number // commanded afterburner-zone fraction 0..1 (0 = dry); the core quantizes to the five F404 zones
   brake: boolean
   gear: boolean
   hook: boolean
@@ -102,7 +102,7 @@ let failure: string | null = null
 
 // Preallocated boundary buffers: the same memory every frame, viewed as
 // bytes for the copy and floats for access.
-const input = new Float64Array(8)
+const input = new Float64Array(9)
 const input_bytes = new Uint8Array(input.buffer)
 const output = new Float64Array(SIZE + EXTRA)
 const output_bytes = new Uint8Array(output.buffer)
@@ -180,7 +180,6 @@ function fill(controls: Controls, count: number): void {
   input[3] = controls.throttle
   input[4] = controls.speedbrake
   input[5] =
-    (controls.reheat ? 1 : 0) |
     (controls.brake ? 2 : 0) |
     (controls.gear ? 4 : 0) |
     (controls.hook ? 8 : 0) |
@@ -188,6 +187,7 @@ function fill(controls: Controls, count: number): void {
     (controls.override ? 32 : 0)
   input[6] = controls.sequence
   input[7] = count
+  input[8] = controls.reheat   // analog reheat (flag bit 1 retired)
 }
 
 let accumulator = 0
