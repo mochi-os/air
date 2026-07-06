@@ -5,6 +5,8 @@
 
 import { useEffect, useId, useState, type ReactNode } from 'react'
 import { Trans } from '@lingui/react/macro'
+
+const CB_MENU = false // cumulonimbus menu entry hidden — see the Clouds options below
 import { Play, RotateCcw } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
 import { Button } from '@mochi/web/components/ui/button'
@@ -299,13 +301,13 @@ function CreditsDialog() {
           </p>
           <p className='leading-relaxed'>
             <Trans>
-              Aircraft carrier <b>“Gerald Ford Aircraft Carrier”</b> by <b>Usman Zia (Uxxman)</b>{' '}
-              (Sketchfab), licensed under <b>CC BY 4.0</b>. Modified: rescaled, reoriented bow +X,
-              sunk to the waterline, texture downscaled.
+              Aircraft carrier <b>“USS Nimitz CVN-68 Aircraft Carrier”</b> by{' '}
+              <b>Muhamad Mirza Arrafi</b> (Sketchfab), licensed under <b>CC BY 4.0</b>. Modified:
+              rescaled, reoriented bow +X, sunk to the waterline.
             </Trans>{' '}
             <a
               className='text-primary hover:underline'
-              href='https://sketchfab.com/3d-models/gerald-ford-aircraft-carrier-324120997379466caad30917911bcd8b'
+              href='https://sketchfab.com/3d-models/uss-nimitz-cvn-68-aircraft-carrier-06cf0dba66874934a105b3fe2bfdb0f7'
               target='_blank'
               rel='noopener noreferrer'
             >
@@ -476,7 +478,13 @@ export function MissionSetup({
                   options={[
                     { value: 'none', label: <Trans>None</Trans> },
                     { value: 'cumulus', label: <Trans>Cumulus</Trans> },
-                    { value: 'cumulonimbus', label: <Trans>Cumulonimbus</Trans> },
+                    // Cumulonimbus hidden from the menu (2026-07-06): the horizon under the storm
+                    // field never fully hid despite the murk/rain work. The preset, shader paths and
+                    // ?clouds=cumulonimbus dev hook all remain; CB_MENU re-lists it (the dead
+                    // reference below also keeps the translations alive through extract --clean).
+                    ...(CB_MENU
+                      ? [{ value: 'cumulonimbus' as const, label: <Trans>Cumulonimbus</Trans> }]
+                      : []),
                     { value: 'high_stratus', label: <Trans>High stratus</Trans> },
                     { value: 'low_stratus', label: <Trans>Low stratus</Trans> },
                   ]}
