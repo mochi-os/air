@@ -52,6 +52,10 @@ msgstr "WAYA 3"
 msgid "Absolute (date and time)"
 msgstr "Kamili (tarehe na muda)"
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:60
+msgid "Access denied"
+msgstr "Ufikiaji umekataliwa"
+
 #: ../../../lib/web/src/features/errors/forbidden.tsx:16
 msgid "Access Forbidden"
 msgstr "Ufikiaji Umekatazwa"
@@ -146,7 +150,7 @@ msgstr "Vyote"
 msgid "An error occurred"
 msgstr "Hitilafu imetokea"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:241
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "Hitilafu isiyotarajiwa imetokea"
 
@@ -223,12 +227,12 @@ msgstr "Ghairi"
 msgid "Carrier landing"
 msgstr "Kutua kwenye meli ya kubeba ndege"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:144
+#: ../../../lib/web/src/components/notification-category-button.tsx:143
 msgid "Category for this notification"
 msgstr "Kategoria ya arifa hii"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:125
-#: ../../../lib/web/src/components/notification-category-button.tsx:136
+#: ../../../lib/web/src/components/notification-category-button.tsx:124
+#: ../../../lib/web/src/components/notification-category-button.tsx:135
 msgid "Change notification category"
 msgstr "Badilisha kategoria ya arifa"
 
@@ -446,6 +450,10 @@ msgstr "Giza"
 msgid "Dark mode"
 msgstr "Hali ya giza"
 
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:240
+msgid "Data conflict"
+msgstr "Mgongano wa data"
+
 #: src/components/MissionSetup.tsx:466
 #: src/components/Multiplayer.tsx:226
 msgid "Day"
@@ -583,7 +591,7 @@ msgstr "Imeshindwa kuondoa akaunti"
 msgid "Failed to send verification code"
 msgstr "Imeshindwa kutuma msimbo wa uthibitisho"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:112
+#: ../../../lib/web/src/components/notification-category-button.tsx:111
 msgid "Failed to update category"
 msgstr "Imeshindwa kusasisha kategoria"
 
@@ -979,7 +987,8 @@ msgstr "Wachezaji wengi"
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Hali ya wachezaji wengi inahitaji WebTransport, ambayo kivinjari hiki bado hakiiauni."
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:288
+#: ../../../lib/web/src/features/errors/general-error.tsx:53
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:303
 msgid "Network error"
 msgstr "Hitilafu ya mtandao"
 
@@ -1030,7 +1039,7 @@ msgstr "Hakuna matokeo yaliyopatikana."
 msgid "No time zone found."
 msgstr "Hakuna saa za eneo zilizopatikana."
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:148
+#: ../../../lib/web/src/components/notification-category-button.tsx:147
 msgid "No topic record yet — try again after the next notification."
 msgstr "Hakuna rekodi ya mada bado — jaribu tena baada ya arifa inayofuata."
 
@@ -1056,6 +1065,10 @@ msgstr "Hakuna"
 #: ../../../lib/web/src/lib/preference-utils.ts:134
 msgid "Normal"
 msgstr "Kawaida"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:67
+msgid "Not found"
+msgstr "Haikupatikana"
 
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:146
 msgid "Not set"
@@ -1183,9 +1196,19 @@ msgstr "mwinamo"
 msgid "Pitch"
 msgstr "Pitch"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:289
+#: ../../../lib/web/src/features/errors/general-error.tsx:54
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:304
+#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Tafadhali angalia muunganisho wako wa intaneti na ujaribu tena."
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:83
+msgid "Please try again."
+msgstr "Tafadhali jaribu tena."
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:75
+msgid "Please wait a moment and try again."
+msgstr "Tafadhali subiri kidogo kisha ujaribu tena."
 
 #: src/components/MissionSetup.tsx:565
 msgid "Preset"
@@ -1239,8 +1262,8 @@ msgstr "Pakia silaha tena"
 msgid "Recalibrate"
 msgstr "Sawazisha upya"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:219
-#: ../../../lib/web/src/components/search-entity-page.tsx:243
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:216
+#: ../../../lib/web/src/components/search-entity-page.tsx:240
 msgid "Recommended"
 msgstr "Inapendekezwa"
 
@@ -1367,8 +1390,8 @@ msgstr "Tafuta watumiaji"
 msgid "Search..."
 msgstr "Tafuta..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:177
-#: ../../../lib/web/src/components/search-entity-page.tsx:201
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:174
+#: ../../../lib/web/src/components/search-entity-page.tsx:198
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
 msgstr "Inatafuta..."
@@ -1421,8 +1444,8 @@ msgstr "Usikivu"
 msgid "Serif"
 msgstr "Serif"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:245
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:271
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:260
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:286
 msgid "Server error"
 msgstr "Hitilafu ya seva"
 
@@ -1435,9 +1458,9 @@ msgstr "Sheria za seva"
 msgid "SESSION ENDED"
 msgstr "KIPINDI KIMEISHA"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:209
-msgid "Session expired"
-msgstr "Kipindi kimekwisha"
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:210
+msgid "Session expired. Please log in again."
+msgstr "Kipindi kimeisha. Tafadhali ingia tena."
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:147
 msgid "Set origin and destination"
@@ -1557,6 +1580,10 @@ msgstr "Masharti na vigezo"
 msgid "That code is incorrect or has expired."
 msgstr "Msimbo huo si sahihi au umekwisha muda wake."
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:68
+msgid "The requested content could not be found."
+msgstr "Maudhui yaliyoombwa hayakupatikana."
+
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
 msgstr "Mandhari"
@@ -1620,6 +1647,10 @@ msgstr "Geuza Upau wa Kando"
 msgid "Toggle theme"
 msgstr "Geuza mandhari"
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:74
+msgid "Too many requests"
+msgstr "Maombi mengi mno"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:45
 msgid "Top"
 msgstr "Juu"
@@ -1636,13 +1667,13 @@ msgstr "Kusafiri"
 msgid "Trigger"
 msgstr "Kifyatulio"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:193
-#: ../../../lib/web/src/components/search-entity-page.tsx:217
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:190
+#: ../../../lib/web/src/components/search-entity-page.tsx:214
 msgid "Try adjusting your search terms"
 msgstr "Jaribu kurekebisha maneno yako ya utafutaji"
 
-#: ../../../lib/web/src/features/errors/general-error.tsx:128
-#: ../../../lib/web/src/features/errors/general-error.tsx:168
+#: ../../../lib/web/src/features/errors/general-error.tsx:140
+#: ../../../lib/web/src/features/errors/general-error.tsx:180
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:19
 msgid "Try again"
 msgstr "Jaribu tena"
@@ -1667,7 +1698,7 @@ msgstr "Andika kutafuta..."
 msgid "Ultra"
 msgstr "Ultra"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:267
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:282
 msgid "Unable to connect to remote server"
 msgstr "Imeshindwa kuunganisha kwenye seva ya mbali"
 
@@ -1676,7 +1707,7 @@ msgstr "Imeshindwa kuunganisha kwenye seva ya mbali"
 msgid "Unable to redirect to login. Please try again."
 msgstr "Imeshindwa kuelekeza upya kwenye kuingia. Tafadhali jaribu tena."
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:156
+#: ../../../lib/web/src/components/notification-category-button.tsx:155
 msgid "Unassigned"
 msgstr "Haijapewa"
 
@@ -1792,6 +1823,10 @@ msgstr "Yaw"
 #: src/components/GameCanvas.tsx:27
 msgid "YOU"
 msgstr "WEWE"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:61
+msgid "You do not have access to this section."
+msgstr "Huna ruhusa ya kufikia sehemu hii."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
