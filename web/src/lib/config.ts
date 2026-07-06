@@ -26,6 +26,7 @@ export interface MissionConfig {
   tracers: boolean
   missiles: boolean
   flares: boolean
+  sound: boolean
   invert: boolean
   framerate: boolean
   world: string
@@ -53,6 +54,7 @@ export const DEFAULT_CONFIG: MissionConfig = {
   tracers: true,
   missiles: true,
   flares: true,
+  sound: true,
   invert: false,
   framerate: false,
   world: '',
