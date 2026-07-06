@@ -52,6 +52,10 @@ msgstr "LANO 3"
 msgid "Absolute (date and time)"
 msgstr "Absolútny (dátum a čas)"
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:60
+msgid "Access denied"
+msgstr "Prístup zamietnutý"
+
 #: ../../../lib/web/src/features/errors/forbidden.tsx:16
 msgid "Access Forbidden"
 msgstr "Prístup zakázaný"
@@ -146,7 +150,7 @@ msgstr "Všetko"
 msgid "An error occurred"
 msgstr "Vyskytla sa chyba"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:241
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "Vyskytla sa neočakávaná chyba"
 
@@ -223,12 +227,12 @@ msgstr "Zrušiť"
 msgid "Carrier landing"
 msgstr "Pristátie na lietadlovej lodi"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:144
+#: ../../../lib/web/src/components/notification-category-button.tsx:143
 msgid "Category for this notification"
 msgstr "Kategória pre túto notifikáciu"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:125
-#: ../../../lib/web/src/components/notification-category-button.tsx:136
+#: ../../../lib/web/src/components/notification-category-button.tsx:124
+#: ../../../lib/web/src/components/notification-category-button.tsx:135
 msgid "Change notification category"
 msgstr "Zmeniť kategóriu notifikácie"
 
@@ -446,6 +450,10 @@ msgstr "Tmavé"
 msgid "Dark mode"
 msgstr "Tmavý režim"
 
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:240
+msgid "Data conflict"
+msgstr "Konflikt údajov"
+
 #: src/components/MissionSetup.tsx:466
 #: src/components/Multiplayer.tsx:226
 msgid "Day"
@@ -583,7 +591,7 @@ msgstr "Nepodarilo sa odstrániť účet"
 msgid "Failed to send verification code"
 msgstr "Nepodarilo sa odoslať overovací kód"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:112
+#: ../../../lib/web/src/components/notification-category-button.tsx:111
 msgid "Failed to update category"
 msgstr "Nepodarilo sa aktualizovať kategóriu"
 
@@ -979,7 +987,8 @@ msgstr "Multiplayer"
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer vyžaduje WebTransport, ktorý tento prehliadač zatiaľ nepodporuje."
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:288
+#: ../../../lib/web/src/features/errors/general-error.tsx:53
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:303
 msgid "Network error"
 msgstr "Chyba siete"
 
@@ -1030,7 +1039,7 @@ msgstr "Nenašli sa žiadne výsledky."
 msgid "No time zone found."
 msgstr "Nenašlo sa žiadne časové pásmo."
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:148
+#: ../../../lib/web/src/components/notification-category-button.tsx:147
 msgid "No topic record yet — try again after the next notification."
 msgstr "Zatiaľ žiadny záznam témy — skúste to znova po ďalšej notifikácii."
 
@@ -1056,6 +1065,10 @@ msgstr "Žiadne"
 #: ../../../lib/web/src/lib/preference-utils.ts:134
 msgid "Normal"
 msgstr "Normálne"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:67
+msgid "Not found"
+msgstr "Nenájdené"
 
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:146
 msgid "Not set"
@@ -1183,9 +1196,19 @@ msgstr "klopenie"
 msgid "Pitch"
 msgstr "Sklon"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:289
+#: ../../../lib/web/src/features/errors/general-error.tsx:54
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:304
+#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Skontrolujte pripojenie na internet a skúste to znova."
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:83
+msgid "Please try again."
+msgstr "Skúste to znova."
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:75
+msgid "Please wait a moment and try again."
+msgstr "Chvíľu počkajte a skúste to znova."
 
 #: src/components/MissionSetup.tsx:565
 msgid "Preset"
@@ -1239,8 +1262,8 @@ msgstr "Prezbrojiť"
 msgid "Recalibrate"
 msgstr "Znova kalibrovať"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:219
-#: ../../../lib/web/src/components/search-entity-page.tsx:243
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:216
+#: ../../../lib/web/src/components/search-entity-page.tsx:240
 msgid "Recommended"
 msgstr "Odporúčané"
 
@@ -1367,8 +1390,8 @@ msgstr "Hľadať používateľov"
 msgid "Search..."
 msgstr "Hľadať..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:177
-#: ../../../lib/web/src/components/search-entity-page.tsx:201
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:174
+#: ../../../lib/web/src/components/search-entity-page.tsx:198
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
 msgstr "Hľadám..."
@@ -1421,8 +1444,8 @@ msgstr "Citlivosť"
 msgid "Serif"
 msgstr "Pätkové"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:245
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:271
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:260
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:286
 msgid "Server error"
 msgstr "Chyba servera"
 
@@ -1435,9 +1458,9 @@ msgstr "Pravidlá servera"
 msgid "SESSION ENDED"
 msgstr "RELÁCIA SKONČILA"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:209
-msgid "Session expired"
-msgstr "Platnosť relácie vypršala"
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:210
+msgid "Session expired. Please log in again."
+msgstr "Platnosť relácie vypršala. Prihláste sa znova."
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:147
 msgid "Set origin and destination"
@@ -1557,6 +1580,10 @@ msgstr "Podmienky používania"
 msgid "That code is incorrect or has expired."
 msgstr "Tento kód je nesprávny alebo vypršal."
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:68
+msgid "The requested content could not be found."
+msgstr "Požadovaný obsah sa nepodarilo nájsť."
+
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
 msgstr "Motív"
@@ -1620,6 +1647,10 @@ msgstr "Prepnúť bočný panel"
 msgid "Toggle theme"
 msgstr "Prepnúť motív"
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:74
+msgid "Too many requests"
+msgstr "Príliš veľa požiadaviek"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:45
 msgid "Top"
 msgstr "Hore"
@@ -1636,13 +1667,13 @@ msgstr "Cestujem"
 msgid "Trigger"
 msgstr "Spúšť"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:193
-#: ../../../lib/web/src/components/search-entity-page.tsx:217
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:190
+#: ../../../lib/web/src/components/search-entity-page.tsx:214
 msgid "Try adjusting your search terms"
 msgstr "Skúste upraviť hľadané výrazy"
 
-#: ../../../lib/web/src/features/errors/general-error.tsx:128
-#: ../../../lib/web/src/features/errors/general-error.tsx:168
+#: ../../../lib/web/src/features/errors/general-error.tsx:140
+#: ../../../lib/web/src/features/errors/general-error.tsx:180
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:19
 msgid "Try again"
 msgstr "Skúsiť znova"
@@ -1667,7 +1698,7 @@ msgstr "Píšte pre vyhľadanie..."
 msgid "Ultra"
 msgstr "Ultra"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:267
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:282
 msgid "Unable to connect to remote server"
 msgstr "Nepodarilo sa pripojiť k vzdialenému serveru"
 
@@ -1676,7 +1707,7 @@ msgstr "Nepodarilo sa pripojiť k vzdialenému serveru"
 msgid "Unable to redirect to login. Please try again."
 msgstr "Nemožno presmerovať na prihlásenie. Skúste to znova."
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:156
+#: ../../../lib/web/src/components/notification-category-button.tsx:155
 msgid "Unassigned"
 msgstr "Nepriradené"
 
@@ -1792,6 +1823,10 @@ msgstr "Vybočenie"
 #: src/components/GameCanvas.tsx:27
 msgid "YOU"
 msgstr "VY"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:61
+msgid "You do not have access to this section."
+msgstr "Nemáte prístup k tejto sekcii."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

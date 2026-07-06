@@ -52,6 +52,10 @@ msgstr "3番ワイヤー"
 msgid "Absolute (date and time)"
 msgstr "絶対 (日付と時刻)"
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:60
+msgid "Access denied"
+msgstr "アクセスが拒否されました"
+
 #: ../../../lib/web/src/features/errors/forbidden.tsx:16
 msgid "Access Forbidden"
 msgstr "アクセスが禁止されています"
@@ -146,7 +150,7 @@ msgstr "すべて"
 msgid "An error occurred"
 msgstr "エラーが発生しました"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:241
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "予期しないエラーが発生しました"
 
@@ -223,12 +227,12 @@ msgstr "キャンセル"
 msgid "Carrier landing"
 msgstr "着艦"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:144
+#: ../../../lib/web/src/components/notification-category-button.tsx:143
 msgid "Category for this notification"
 msgstr "この通知のカテゴリ"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:125
-#: ../../../lib/web/src/components/notification-category-button.tsx:136
+#: ../../../lib/web/src/components/notification-category-button.tsx:124
+#: ../../../lib/web/src/components/notification-category-button.tsx:135
 msgid "Change notification category"
 msgstr "通知カテゴリを変更"
 
@@ -446,6 +450,10 @@ msgstr "ダーク"
 msgid "Dark mode"
 msgstr "ダークモード"
 
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:240
+msgid "Data conflict"
+msgstr "データの競合"
+
 #: src/components/MissionSetup.tsx:466
 #: src/components/Multiplayer.tsx:226
 msgid "Day"
@@ -583,7 +591,7 @@ msgstr "アカウントの削除に失敗しました"
 msgid "Failed to send verification code"
 msgstr "確認コードの送信に失敗しました"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:112
+#: ../../../lib/web/src/components/notification-category-button.tsx:111
 msgid "Failed to update category"
 msgstr "カテゴリの更新に失敗しました"
 
@@ -979,7 +987,8 @@ msgstr "マルチプレイ"
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "マルチプレイには WebTransport が必要ですが、このブラウザはまだ対応していません。"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:288
+#: ../../../lib/web/src/features/errors/general-error.tsx:53
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:303
 msgid "Network error"
 msgstr "ネットワークエラー"
 
@@ -1030,7 +1039,7 @@ msgstr "結果が見つかりません。"
 msgid "No time zone found."
 msgstr "タイムゾーンが見つかりません。"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:148
+#: ../../../lib/web/src/components/notification-category-button.tsx:147
 msgid "No topic record yet — try again after the next notification."
 msgstr "まだトピック記録がありません — 次の通知後にもう一度お試しください。"
 
@@ -1056,6 +1065,10 @@ msgstr "なし"
 #: ../../../lib/web/src/lib/preference-utils.ts:134
 msgid "Normal"
 msgstr "標準"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:67
+msgid "Not found"
+msgstr "見つかりません"
 
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:146
 msgid "Not set"
@@ -1183,9 +1196,19 @@ msgstr "ピッチ"
 msgid "Pitch"
 msgstr "ピッチ"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:289
+#: ../../../lib/web/src/features/errors/general-error.tsx:54
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:304
+#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "インターネット接続を確認して、もう一度お試しください。"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:83
+msgid "Please try again."
+msgstr "もう一度お試しください。"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:75
+msgid "Please wait a moment and try again."
+msgstr "しばらくしてからもう一度お試しください。"
 
 #: src/components/MissionSetup.tsx:565
 msgid "Preset"
@@ -1239,8 +1262,8 @@ msgstr "再武装"
 msgid "Recalibrate"
 msgstr "再キャリブレーション"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:219
-#: ../../../lib/web/src/components/search-entity-page.tsx:243
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:216
+#: ../../../lib/web/src/components/search-entity-page.tsx:240
 msgid "Recommended"
 msgstr "おすすめ"
 
@@ -1367,8 +1390,8 @@ msgstr "ユーザーを検索"
 msgid "Search..."
 msgstr "検索…"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:177
-#: ../../../lib/web/src/components/search-entity-page.tsx:201
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:174
+#: ../../../lib/web/src/components/search-entity-page.tsx:198
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
 msgstr "検索中..."
@@ -1421,8 +1444,8 @@ msgstr "感度"
 msgid "Serif"
 msgstr "セリフ"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:245
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:271
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:260
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:286
 msgid "Server error"
 msgstr "サーバーエラー"
 
@@ -1435,9 +1458,9 @@ msgstr "サーバーのルール"
 msgid "SESSION ENDED"
 msgstr "セッション終了"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:209
-msgid "Session expired"
-msgstr "セッションの有効期限が切れました"
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:210
+msgid "Session expired. Please log in again."
+msgstr "セッションの有効期限が切れました。もう一度ログインしてください。"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:147
 msgid "Set origin and destination"
@@ -1557,6 +1580,10 @@ msgstr "利用規約"
 msgid "That code is incorrect or has expired."
 msgstr "そのコードは正しくないか、有効期限が切れています。"
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:68
+msgid "The requested content could not be found."
+msgstr "リクエストされたコンテンツが見つかりませんでした。"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
 msgstr "テーマ"
@@ -1620,6 +1647,10 @@ msgstr "サイドバーを切り替え"
 msgid "Toggle theme"
 msgstr "テーマを切り替え"
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:74
+msgid "Too many requests"
+msgstr "リクエストが多すぎます"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:45
 msgid "Top"
 msgstr "トップ"
@@ -1636,13 +1667,13 @@ msgstr "移動中"
 msgid "Trigger"
 msgstr "トリガー"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:193
-#: ../../../lib/web/src/components/search-entity-page.tsx:217
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:190
+#: ../../../lib/web/src/components/search-entity-page.tsx:214
 msgid "Try adjusting your search terms"
 msgstr "検索語を変えてみてください"
 
-#: ../../../lib/web/src/features/errors/general-error.tsx:128
-#: ../../../lib/web/src/features/errors/general-error.tsx:168
+#: ../../../lib/web/src/features/errors/general-error.tsx:140
+#: ../../../lib/web/src/features/errors/general-error.tsx:180
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:19
 msgid "Try again"
 msgstr "再試行"
@@ -1667,7 +1698,7 @@ msgstr "入力して検索…"
 msgid "Ultra"
 msgstr "ウルトラ"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:267
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:282
 msgid "Unable to connect to remote server"
 msgstr "リモートサーバーに接続できません"
 
@@ -1676,7 +1707,7 @@ msgstr "リモートサーバーに接続できません"
 msgid "Unable to redirect to login. Please try again."
 msgstr "ログインページにリダイレクトできません。再試行してください。"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:156
+#: ../../../lib/web/src/components/notification-category-button.tsx:155
 msgid "Unassigned"
 msgstr "未割り当て"
 
@@ -1792,6 +1823,10 @@ msgstr "ヨー"
 #: src/components/GameCanvas.tsx:27
 msgid "YOU"
 msgstr "自機"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:61
+msgid "You do not have access to this section."
+msgstr "このセクションへのアクセス権がありません。"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

@@ -52,6 +52,10 @@ msgstr "UCINGO 3"
 msgid "Absolute (date and time)"
 msgstr "Okuphelele (usuku nesikhathi)"
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:60
+msgid "Access denied"
+msgstr "Ukufinyelela kuvinjelwe"
+
 #: ../../../lib/web/src/features/errors/forbidden.tsx:16
 msgid "Access Forbidden"
 msgstr "Ukufinyelela Akuvunyelwe"
@@ -146,7 +150,7 @@ msgstr "Konke"
 msgid "An error occurred"
 msgstr "Kwenzeke iphutha"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:241
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "Kwenzeke iphutha elingalindelekile"
 
@@ -223,12 +227,12 @@ msgstr "Khansela"
 msgid "Carrier landing"
 msgstr "Ukwehla emkhunjini othwala izindiza"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:144
+#: ../../../lib/web/src/components/notification-category-button.tsx:143
 msgid "Category for this notification"
 msgstr "Isigaba salesi saziso"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:125
-#: ../../../lib/web/src/components/notification-category-button.tsx:136
+#: ../../../lib/web/src/components/notification-category-button.tsx:124
+#: ../../../lib/web/src/components/notification-category-button.tsx:135
 msgid "Change notification category"
 msgstr "Shintsha isigaba sesaziso"
 
@@ -446,6 +450,10 @@ msgstr "Kumnyama"
 msgid "Dark mode"
 msgstr "Imodi emnyama"
 
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:240
+msgid "Data conflict"
+msgstr "Ukungqubuzana kwedatha"
+
 #: src/components/MissionSetup.tsx:466
 #: src/components/Multiplayer.tsx:226
 msgid "Day"
@@ -583,7 +591,7 @@ msgstr "Kuhlulekile ukususa i-akhawunti"
 msgid "Failed to send verification code"
 msgstr "Kuhlulekile ukuthumela ikhodi yokuqinisekisa"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:112
+#: ../../../lib/web/src/components/notification-category-button.tsx:111
 msgid "Failed to update category"
 msgstr "Kuhlulekile ukubuyekeza isigaba"
 
@@ -979,7 +987,8 @@ msgstr "Abadlali abaningi"
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Umdlalo wabadlali abaningi udinga i-WebTransport, kodwa lesi siphequluli asikayisekeli."
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:288
+#: ../../../lib/web/src/features/errors/general-error.tsx:53
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:303
 msgid "Network error"
 msgstr "Iphutha lenethiwekhi"
 
@@ -1030,7 +1039,7 @@ msgstr "Imiphumela ayitholakali."
 msgid "No time zone found."
 msgstr "Asikho isikhathi sendawo esitholakele."
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:148
+#: ../../../lib/web/src/components/notification-category-button.tsx:147
 msgid "No topic record yet — try again after the next notification."
 msgstr "Awukho umbiko wesihloko okwamanje — zama futhi ngemva kwesaziso esilandelayo."
 
@@ -1056,6 +1065,10 @@ msgstr "Lutho"
 #: ../../../lib/web/src/lib/preference-utils.ts:134
 msgid "Normal"
 msgstr "Okuvamile"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:67
+msgid "Not found"
+msgstr "Ayitholakalanga"
 
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:146
 msgid "Not set"
@@ -1183,9 +1196,19 @@ msgstr "gobisa"
 msgid "Pitch"
 msgstr "I-pitch"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:289
+#: ../../../lib/web/src/features/errors/general-error.tsx:54
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:304
+#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Sicela uhlole uxhumano lwakho lwe-inthanethi bese uzama futhi."
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:83
+msgid "Please try again."
+msgstr "Sicela uzame futhi."
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:75
+msgid "Please wait a moment and try again."
+msgstr "Sicela ulinde isikhashana bese uzama futhi."
 
 #: src/components/MissionSetup.tsx:565
 msgid "Preset"
@@ -1239,8 +1262,8 @@ msgstr "Hlomisa kabusha"
 msgid "Recalibrate"
 msgstr "Phinda ulinganise"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:219
-#: ../../../lib/web/src/components/search-entity-page.tsx:243
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:216
+#: ../../../lib/web/src/components/search-entity-page.tsx:240
 msgid "Recommended"
 msgstr "Kunconywayo"
 
@@ -1367,8 +1390,8 @@ msgstr "Sesha abasebenzisi"
 msgid "Search..."
 msgstr "Sesha..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:177
-#: ../../../lib/web/src/components/search-entity-page.tsx:201
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:174
+#: ../../../lib/web/src/components/search-entity-page.tsx:198
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
 msgstr "Kuyaseshwa..."
@@ -1421,8 +1444,8 @@ msgstr "Ukuzwela"
 msgid "Serif"
 msgstr "I-Serif"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:245
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:271
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:260
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:286
 msgid "Server error"
 msgstr "Iphutha leseva"
 
@@ -1435,9 +1458,9 @@ msgstr "Imithetho yeseva"
 msgid "SESSION ENDED"
 msgstr "ISESHINI IPHELILE"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:209
-msgid "Session expired"
-msgstr "Iseshini iphelelwe yisikhathi"
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:210
+msgid "Session expired. Please log in again."
+msgstr "Iseshini iphelelwe yisikhathi. Sicela uphinde ungene ngemvume."
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:147
 msgid "Set origin and destination"
@@ -1557,6 +1580,10 @@ msgstr "Imibandela nemigomo"
 msgid "That code is incorrect or has expired."
 msgstr "Leyo khodi ayilungile noma isiphelelwe yisikhathi."
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:68
+msgid "The requested content could not be found."
+msgstr "Okuqukethwe okuceliwe akutholakalanga."
+
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
 msgstr "Indikimba"
@@ -1620,6 +1647,10 @@ msgstr "Vula/vala ibha eseceleni"
 msgid "Toggle theme"
 msgstr "Shintsha indikimba"
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:74
+msgid "Too many requests"
+msgstr "Izicelo eziningi kakhulu"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:45
 msgid "Top"
 msgstr "Phezulu"
@@ -1636,13 +1667,13 @@ msgstr "Kuyahanjwa"
 msgid "Trigger"
 msgstr "Isidubuli"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:193
-#: ../../../lib/web/src/components/search-entity-page.tsx:217
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:190
+#: ../../../lib/web/src/components/search-entity-page.tsx:214
 msgid "Try adjusting your search terms"
 msgstr "Zama ukulungisa amatemu okusesha kwakho"
 
-#: ../../../lib/web/src/features/errors/general-error.tsx:128
-#: ../../../lib/web/src/features/errors/general-error.tsx:168
+#: ../../../lib/web/src/features/errors/general-error.tsx:140
+#: ../../../lib/web/src/features/errors/general-error.tsx:180
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:19
 msgid "Try again"
 msgstr "Zama futhi"
@@ -1667,7 +1698,7 @@ msgstr "Thayipha ukuze useshe..."
 msgid "Ultra"
 msgstr "Ephezulu kakhulu"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:267
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:282
 msgid "Unable to connect to remote server"
 msgstr "Ayikwazi ukuxhuma kuseva ekude"
 
@@ -1676,7 +1707,7 @@ msgstr "Ayikwazi ukuxhuma kuseva ekude"
 msgid "Unable to redirect to login. Please try again."
 msgstr "Ayikwazi ukuqondisa kabusha ekungeneni. Sicela uzame futhi."
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:156
+#: ../../../lib/web/src/components/notification-category-button.tsx:155
 msgid "Unassigned"
 msgstr "Akwabelwanga"
 
@@ -1792,6 +1823,10 @@ msgstr "I-yaw"
 #: src/components/GameCanvas.tsx:27
 msgid "YOU"
 msgstr "WENA"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:61
+msgid "You do not have access to this section."
+msgstr "Awunakho ukufinyelela kule ngxenye."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

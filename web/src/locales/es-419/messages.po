@@ -52,6 +52,10 @@ msgstr "CABLE 3"
 msgid "Absolute (date and time)"
 msgstr "Absoluto (fecha y hora)"
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:60
+msgid "Access denied"
+msgstr "Acceso denegado"
+
 #: ../../../lib/web/src/features/errors/forbidden.tsx:16
 msgid "Access Forbidden"
 msgstr "Acceso prohibido"
@@ -146,7 +150,7 @@ msgstr "Todo"
 msgid "An error occurred"
 msgstr "Ocurrió un error"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:241
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "Ocurrió un error inesperado"
 
@@ -223,12 +227,12 @@ msgstr "Cancelar"
 msgid "Carrier landing"
 msgstr "Apontaje"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:144
+#: ../../../lib/web/src/components/notification-category-button.tsx:143
 msgid "Category for this notification"
 msgstr "Categoría para esta notificación"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:125
-#: ../../../lib/web/src/components/notification-category-button.tsx:136
+#: ../../../lib/web/src/components/notification-category-button.tsx:124
+#: ../../../lib/web/src/components/notification-category-button.tsx:135
 msgid "Change notification category"
 msgstr "Cambiar categoría de notificación"
 
@@ -446,6 +450,10 @@ msgstr "Oscuro"
 msgid "Dark mode"
 msgstr "Modo oscuro"
 
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:240
+msgid "Data conflict"
+msgstr "Conflicto de datos"
+
 #: src/components/MissionSetup.tsx:466
 #: src/components/Multiplayer.tsx:226
 msgid "Day"
@@ -583,7 +591,7 @@ msgstr "Error al eliminar la cuenta"
 msgid "Failed to send verification code"
 msgstr "Error al enviar el código de verificación"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:112
+#: ../../../lib/web/src/components/notification-category-button.tsx:111
 msgid "Failed to update category"
 msgstr "Error al actualizar la categoría"
 
@@ -979,7 +987,8 @@ msgstr "Multijugador"
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "El multijugador necesita WebTransport, que este navegador todavía no soporta."
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:288
+#: ../../../lib/web/src/features/errors/general-error.tsx:53
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:303
 msgid "Network error"
 msgstr "Error de red"
 
@@ -1030,7 +1039,7 @@ msgstr "No se encontraron resultados."
 msgid "No time zone found."
 msgstr "No se encontró zona horaria."
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:148
+#: ../../../lib/web/src/components/notification-category-button.tsx:147
 msgid "No topic record yet — try again after the next notification."
 msgstr "Aún no hay registro de tema — intenta de nuevo después de la próxima notificación."
 
@@ -1056,6 +1065,10 @@ msgstr "Ninguno"
 #: ../../../lib/web/src/lib/preference-utils.ts:134
 msgid "Normal"
 msgstr "Normal"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:67
+msgid "Not found"
+msgstr "No encontrado"
 
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:146
 msgid "Not set"
@@ -1183,9 +1196,19 @@ msgstr "cabeceo"
 msgid "Pitch"
 msgstr "Cabeceo"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:289
+#: ../../../lib/web/src/features/errors/general-error.tsx:54
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:304
+#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Verifica tu conexión a internet e inténtalo de nuevo."
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:83
+msgid "Please try again."
+msgstr "Inténtalo de nuevo."
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:75
+msgid "Please wait a moment and try again."
+msgstr "Espera un momento y vuelve a intentarlo."
 
 #: src/components/MissionSetup.tsx:565
 msgid "Preset"
@@ -1239,8 +1262,8 @@ msgstr "Rearmar"
 msgid "Recalibrate"
 msgstr "Recalibrar"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:219
-#: ../../../lib/web/src/components/search-entity-page.tsx:243
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:216
+#: ../../../lib/web/src/components/search-entity-page.tsx:240
 msgid "Recommended"
 msgstr "Recomendado"
 
@@ -1367,8 +1390,8 @@ msgstr "Buscar usuarios"
 msgid "Search..."
 msgstr "Buscar..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:177
-#: ../../../lib/web/src/components/search-entity-page.tsx:201
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:174
+#: ../../../lib/web/src/components/search-entity-page.tsx:198
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
 msgstr "Buscando..."
@@ -1421,8 +1444,8 @@ msgstr "Sensibilidad"
 msgid "Serif"
 msgstr "Con serifa"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:245
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:271
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:260
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:286
 msgid "Server error"
 msgstr "Error del servidor"
 
@@ -1435,9 +1458,9 @@ msgstr "Reglas del servidor"
 msgid "SESSION ENDED"
 msgstr "SESIÓN FINALIZADA"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:209
-msgid "Session expired"
-msgstr "Sesión expirada"
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:210
+msgid "Session expired. Please log in again."
+msgstr "La sesión expiró. Vuelve a iniciar sesión."
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:147
 msgid "Set origin and destination"
@@ -1557,6 +1580,10 @@ msgstr "Términos y condiciones"
 msgid "That code is incorrect or has expired."
 msgstr "Ese código es incorrecto o expiró."
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:68
+msgid "The requested content could not be found."
+msgstr "No se pudo encontrar el contenido solicitado."
+
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
 msgstr "Tema"
@@ -1620,6 +1647,10 @@ msgstr "Alternar barra lateral"
 msgid "Toggle theme"
 msgstr "Alternar tema"
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:74
+msgid "Too many requests"
+msgstr "Demasiadas solicitudes"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:45
 msgid "Top"
 msgstr "Arriba"
@@ -1636,13 +1667,13 @@ msgstr "Viajando"
 msgid "Trigger"
 msgstr "Gatillo"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:193
-#: ../../../lib/web/src/components/search-entity-page.tsx:217
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:190
+#: ../../../lib/web/src/components/search-entity-page.tsx:214
 msgid "Try adjusting your search terms"
 msgstr "Intenta ajustar tus términos de búsqueda"
 
-#: ../../../lib/web/src/features/errors/general-error.tsx:128
-#: ../../../lib/web/src/features/errors/general-error.tsx:168
+#: ../../../lib/web/src/features/errors/general-error.tsx:140
+#: ../../../lib/web/src/features/errors/general-error.tsx:180
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:19
 msgid "Try again"
 msgstr "Intentar de nuevo"
@@ -1667,7 +1698,7 @@ msgstr "Escribe para buscar..."
 msgid "Ultra"
 msgstr "Ultra"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:267
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:282
 msgid "Unable to connect to remote server"
 msgstr "No se pudo conectar al servidor remoto"
 
@@ -1676,7 +1707,7 @@ msgstr "No se pudo conectar al servidor remoto"
 msgid "Unable to redirect to login. Please try again."
 msgstr "No se pudo redirigir al inicio de sesión. Inténtalo de nuevo."
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:156
+#: ../../../lib/web/src/components/notification-category-button.tsx:155
 msgid "Unassigned"
 msgstr "Sin asignar"
 
@@ -1792,6 +1823,10 @@ msgstr "Guiñada"
 #: src/components/GameCanvas.tsx:27
 msgid "YOU"
 msgstr "TÚ"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:61
+msgid "You do not have access to this section."
+msgstr "No tienes acceso a esta sección."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

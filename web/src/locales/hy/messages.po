@@ -52,6 +52,10 @@ msgstr "ՃՈՊԱՆ 3"
 msgid "Absolute (date and time)"
 msgstr "Բացարձակ (ամսաթիվ և ժամ)"
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:60
+msgid "Access denied"
+msgstr "Մուտքը մերժված է"
+
 #: ../../../lib/web/src/features/errors/forbidden.tsx:16
 msgid "Access Forbidden"
 msgstr "Մուտքն արգելված է"
@@ -146,7 +150,7 @@ msgstr "Բոլոր CRM-երը"
 msgid "An error occurred"
 msgstr "Սխալ առաջացավ"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:241
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "Անսպասելի սխալ առաջացավ"
 
@@ -223,12 +227,12 @@ msgstr "Չեղարկել մեկնաբանությունը"
 msgid "Carrier landing"
 msgstr "Վայրէջք ավիակրի վրա"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:144
+#: ../../../lib/web/src/components/notification-category-button.tsx:143
 msgid "Category for this notification"
 msgstr "Կատեգորիան թարմացված է"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:125
-#: ../../../lib/web/src/components/notification-category-button.tsx:136
+#: ../../../lib/web/src/components/notification-category-button.tsx:124
+#: ../../../lib/web/src/components/notification-category-button.tsx:135
 msgid "Change notification category"
 msgstr "Փոփոխություններ"
 
@@ -446,6 +450,10 @@ msgstr "Մուգ ռեժիմ"
 msgid "Dark mode"
 msgstr "Վահանակ"
 
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:240
+msgid "Data conflict"
+msgstr "Տվյալների կոնֆլիկտ"
+
 #: src/components/MissionSetup.tsx:466
 #: src/components/Multiplayer.tsx:226
 msgid "Day"
@@ -583,7 +591,7 @@ msgstr "Չհաջողվեց հեռացնել հաշիվը"
 msgid "Failed to send verification code"
 msgstr "Չհաջողվեց ուղարկել հաստատման կոդը"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:112
+#: ../../../lib/web/src/components/notification-category-button.tsx:111
 msgid "Failed to update category"
 msgstr "Չհաջողվեց թարմացնել կատեգորիան"
 
@@ -979,7 +987,8 @@ msgstr "Բազմախաղացող"
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Բազմախաղացողի համար անհրաժեշտ է WebTransport, որին այս դիտարկիչը դեռ չի աջակցում։"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:288
+#: ../../../lib/web/src/features/errors/general-error.tsx:53
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:303
 msgid "Network error"
 msgstr "Ցանցի սխալ"
 
@@ -1030,7 +1039,7 @@ msgstr "Արդյունքներ չեն գտնվել։"
 msgid "No time zone found."
 msgstr "Ժամային գոտի չի գտնվել։"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:148
+#: ../../../lib/web/src/components/notification-category-button.tsx:147
 msgid "No topic record yet — try again after the next notification."
 msgstr "Դեռ թեմայի գրառում չկա — փորձեք նորից հաջորդ ծանուցումից հետո։"
 
@@ -1056,6 +1065,10 @@ msgstr "Ոչ մեկը"
 #: ../../../lib/web/src/lib/preference-utils.ts:134
 msgid "Normal"
 msgstr "Սովորական"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:67
+msgid "Not found"
+msgstr "Չի գտնվել"
 
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:146
 msgid "Not set"
@@ -1183,9 +1196,19 @@ msgstr "թեքում"
 msgid "Pitch"
 msgstr "Թեքում"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:289
+#: ../../../lib/web/src/features/errors/general-error.tsx:54
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:304
+#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Ստուգեք ձեր ինտերնետ կապը և կրկին փորձեք։"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:83
+msgid "Please try again."
+msgstr "Խնդրում ենք կրկին փորձել։"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:75
+msgid "Please wait a moment and try again."
+msgstr "Խնդրում ենք մի փոքր սպասել և նորից փորձել։"
 
 #: src/components/MissionSetup.tsx:565
 msgid "Preset"
@@ -1239,8 +1262,8 @@ msgstr "Վերազինել"
 msgid "Recalibrate"
 msgstr "Վերաչափաբերել"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:219
-#: ../../../lib/web/src/components/search-entity-page.tsx:243
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:216
+#: ../../../lib/web/src/components/search-entity-page.tsx:240
 msgid "Recommended"
 msgstr "Առաջարկվող"
 
@@ -1367,8 +1390,8 @@ msgstr "Որոնել օգտատերեր"
 msgid "Search..."
 msgstr "Որոնում..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:177
-#: ../../../lib/web/src/components/search-entity-page.tsx:201
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:174
+#: ../../../lib/web/src/components/search-entity-page.tsx:198
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
 msgstr "Որոնում..."
@@ -1421,8 +1444,8 @@ msgstr "Զգայունություն"
 msgid "Serif"
 msgstr "Սերիֆ"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:245
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:271
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:260
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:286
 msgid "Server error"
 msgstr "Սերվերի սխալ"
 
@@ -1435,9 +1458,9 @@ msgstr "Սերվերի կանոններ"
 msgid "SESSION ENDED"
 msgstr "ՍԵՍԻԱՆ ԱՎԱՐՏՎԵՑ"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:209
-msgid "Session expired"
-msgstr "Սեսիան ավարտվել է"
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:210
+msgid "Session expired. Please log in again."
+msgstr "Աշխատաշրջանի ժամկետը սպառվել է։ Խնդրում ենք նորից մուտք գործել։"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:147
 msgid "Set origin and destination"
@@ -1557,6 +1580,10 @@ msgstr "Պայմաններ և կանոններ"
 msgid "That code is incorrect or has expired."
 msgstr "Այդ կոդը սխալ է կամ ժամկետանց է։"
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:68
+msgid "The requested content could not be found."
+msgstr "Հնարավոր չեղավ գտնել պահանջված բովանդակությունը։"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
 msgstr "Թեմա"
@@ -1620,6 +1647,10 @@ msgstr "Կողագոտու փոխարկում"
 msgid "Toggle theme"
 msgstr "Թեմայի փոխարկում"
 
+#: ../../../lib/web/src/features/errors/general-error.tsx:74
+msgid "Too many requests"
+msgstr "Չափազանց շատ հարցումներ"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:45
 msgid "Top"
 msgstr "Վերև"
@@ -1636,13 +1667,13 @@ msgstr "Ճանապարհորդություն"
 msgid "Trigger"
 msgstr "Ձգան"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:193
-#: ../../../lib/web/src/components/search-entity-page.tsx:217
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:190
+#: ../../../lib/web/src/components/search-entity-page.tsx:214
 msgid "Try adjusting your search terms"
 msgstr "Փորձեք ճշգրտել ձեր որոնման տերմինները"
 
-#: ../../../lib/web/src/features/errors/general-error.tsx:128
-#: ../../../lib/web/src/features/errors/general-error.tsx:168
+#: ../../../lib/web/src/features/errors/general-error.tsx:140
+#: ../../../lib/web/src/features/errors/general-error.tsx:180
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:19
 msgid "Try again"
 msgstr "Փորձեք կրկին"
@@ -1667,7 +1698,7 @@ msgstr "Մուտքագրեք որոնելու համար..."
 msgid "Ultra"
 msgstr "Ուլտրա"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:267
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:282
 msgid "Unable to connect to remote server"
 msgstr "Հնարավոր չէ միանալ հեռավոր սերվերին"
 
@@ -1676,7 +1707,7 @@ msgstr "Հնարավոր չէ միանալ հեռավոր սերվերին"
 msgid "Unable to redirect to login. Please try again."
 msgstr "Հնարավոր չէ վերահղել մուտք: Խնդրում ենք կրկին փորձել:"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:156
+#: ../../../lib/web/src/components/notification-category-button.tsx:155
 msgid "Unassigned"
 msgstr "Չվերագրված"
 
@@ -1792,6 +1823,10 @@ msgstr "Շեղում"
 #: src/components/GameCanvas.tsx:27
 msgid "YOU"
 msgstr "ԴՈՒ"
+
+#: ../../../lib/web/src/features/errors/general-error.tsx:61
+msgid "You do not have access to this section."
+msgstr "Այս բաժինը ձեզ հասանելի չէ։"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
