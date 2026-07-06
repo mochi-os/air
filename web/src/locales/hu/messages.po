@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Ellenőrizze az internetkapcsolatát, és próbálja újra."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Növekvő"
 msgid "Authenticator code"
 msgstr "Hitelesítő kód"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "hátra"
 
@@ -202,7 +207,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Érdeklődés növelése"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "fékek"
 
@@ -240,7 +245,7 @@ msgstr "Értesítési kategória módosítása"
 msgid "Chase view"
 msgstr "Követő nézet"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Követő nézet:"
 
@@ -313,7 +318,7 @@ msgstr "Panel bezárása"
 msgid "Close search"
 msgstr "Keresés bezárása"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "közelebb"
 
@@ -540,6 +545,10 @@ msgstr "Diszlexiabarát"
 msgid "Edit {label}"
 msgstr "{label} szerkesztése"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "KATAPULTÁLT"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "E-mail kód"
@@ -599,11 +608,15 @@ msgstr "Nem sikerült frissíteni a kategóriát"
 msgid "FAIR"
 msgstr "KÖZEPES"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Fejezze be a fiók áthelyezését"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "fáklyák"
 
@@ -654,11 +667,19 @@ msgstr "Kezdete"
 msgid "From theme"
 msgstr "Témából"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Teljes elrendezés"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "futómű"
 
@@ -704,7 +725,7 @@ msgstr "Csoport"
 msgid "GUN"
 msgstr "GÉPÁGYÚ"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "gépágyúk"
 
@@ -737,7 +758,7 @@ msgstr "Magas rétegfelhő"
 msgid "Home"
 msgstr "Kezdőlap"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "Horog"
 
@@ -781,7 +802,7 @@ msgstr "Bólintás fordítása"
 msgid "Join"
 msgstr "Csatlakozás"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "CSATLAKOZOTT"
 
@@ -809,6 +830,14 @@ msgstr "Billentyűk"
 msgid "KILL"
 msgstr "LELÖVÉS"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Futómű"
 msgid "Large"
 msgstr "Nagy"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "indítás"
 
@@ -837,7 +866,7 @@ msgstr "Elrendezés"
 msgid "Learn more"
 msgstr "Tudjon meg többet"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "KILÉPETT"
 
@@ -850,7 +879,7 @@ msgstr "Balról jobbra"
 msgid "Light"
 msgstr "Világos"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "fények"
 
@@ -914,7 +943,7 @@ msgstr "Alacsony rétegfelhő"
 msgid "M to close"
 msgstr "M a bezáráshoz"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "térkép"
 
@@ -938,7 +967,7 @@ msgstr "Meccs típusa"
 msgid "Medium"
 msgstr "Közepes"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "menü"
 
@@ -954,7 +983,7 @@ msgstr "Metrika"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway-atoll térkép — a felvételek módosított <0>Copernicus Sentinel-2</0> adatokat tartalmaznak (2026); a repülőtér geometriája (kifutópálya, gurulóutak, előterek) © <1>OpenStreetMap</1> közreműködők, <2>ODbL</2> licenc alatt; a partvonal- és zátonyadatok forrása a <3>NOAA NCCOS</3> (közkincs)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "rakéta"
 
@@ -1135,11 +1164,11 @@ msgstr "Navigációs menü megnyitása"
 msgid "Open theme settings"
 msgstr "Téma beállításainak megnyitása"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "vagy"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "keringés"
 
@@ -1171,7 +1200,7 @@ msgstr "A hozzáférési kulcs ellenőrzése sikertelen. Próbálja újra."
 msgid "Passkeys"
 msgstr "Passkey-ek"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "szünet"
 
@@ -1188,7 +1217,11 @@ msgstr "SZÜNET"
 msgid "pilot"
 msgstr "pilóta"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "PILÓTA MEGHALT"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "bólintás"
 
@@ -1198,7 +1231,6 @@ msgstr "Bólintás"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Ellenőrizze az internetkapcsolatát, és próbálja újra."
 
@@ -1237,6 +1269,14 @@ msgstr "Adatvédelem"
 msgid "Profile"
 msgstr "Profil"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Kiemelt"
@@ -1249,7 +1289,7 @@ msgstr "Kapcsolja újra össze fiókjait ezen a szerveren"
 msgid "Re-register your passkeys on this server"
 msgstr "Regisztrálja újra a hozzáférési kulcsait ezen a kiszolgálón"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "újrafegyverzés"
 
@@ -1341,7 +1381,7 @@ msgstr "Vissza a menübe"
 msgid "Right to Left"
 msgstr "Jobbról balra"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "orsózás"
 
@@ -1518,7 +1558,7 @@ msgstr "Tágas"
 msgid "SPD BK"
 msgstr "SEB FK"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "sebességfék"
 
@@ -1535,6 +1575,10 @@ msgstr "Indítás"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "De maradjon velünk!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Téma"
 msgid "Theme Settings"
 msgstr "Témabeállítások"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "gázkar"
 
@@ -1604,7 +1648,7 @@ msgstr "Gázkar"
 msgid "Thursday"
 msgstr "Csütörtök"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "döntés"
 
@@ -1757,7 +1801,7 @@ msgstr "E-mail-cím ellenőrzése"
 msgid "Video thumbnail"
 msgstr "Videó indexképe"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "nézet"
 
@@ -1800,7 +1844,7 @@ msgstr "Szerda"
 msgid "Wheel brakes"
 msgstr "Kerékfékek"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "GYŐZ"
 
@@ -1812,7 +1856,7 @@ msgstr "Világszerver"
 msgid "World server not reachable"
 msgstr "A világszerver nem érhető el"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "legyezés"
 

@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Ji kerema xwe girêdana xwe ya înternetê kontrol bike û dîsa biceribîne."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Hilkişandî"
 msgid "Authenticator code"
 msgstr "Koda rastandinê"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "paş"
 
@@ -202,7 +207,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Berjewendiyê zêde bike"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "fren"
 
@@ -240,7 +245,7 @@ msgstr "Kategoriya agahdariyê biguherîne"
 msgid "Chase view"
 msgstr "Dîmena dûketinê"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Dîmena şopandinê:"
 
@@ -313,7 +318,7 @@ msgstr "Panelê bigire"
 msgid "Close search"
 msgstr "Lêgerînê bigire"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "nêziktir"
 
@@ -540,6 +545,10 @@ msgstr "Hevhewş ji bo dîslêksiyê"
 msgid "Edit {label}"
 msgstr "{label} biguherîne"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "XWE AVÊT DERVE"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Koda e-nameyê"
@@ -599,11 +608,15 @@ msgstr "Rojanekirina kategoriyê neserkeftî bû"
 msgid "FAIR"
 msgstr "NAVÎNCÎ"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Veguheztina hesabê xwe biqedînin"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "flare"
 
@@ -654,11 +667,19 @@ msgstr "Ji"
 msgid "From theme"
 msgstr "Ji temayê"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Bargeyê tev"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "Çerx"
 
@@ -704,7 +725,7 @@ msgstr "Kom"
 msgid "GUN"
 msgstr "TOP"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "top"
 
@@ -737,7 +758,7 @@ msgstr "Stratusa bilind"
 msgid "Home"
 msgstr "Mal"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "Çengel"
 
@@ -781,7 +802,7 @@ msgstr "Berevajîkirina pitchê"
 msgid "Join"
 msgstr "Tevlî bibe"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "TEVLÎ BÛ"
 
@@ -809,6 +830,14 @@ msgstr "Bişkok"
 msgid "KILL"
 msgstr "KUŞTIN"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Tekerên daketinê"
 msgid "Large"
 msgstr "Mezin"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "avêtin"
 
@@ -837,7 +866,7 @@ msgstr "Bargeh"
 msgid "Learn more"
 msgstr "Zêdetir bizane"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "DERKET"
 
@@ -850,7 +879,7 @@ msgstr "Ji çepê ber bi rastê"
 msgid "Light"
 msgstr "Ronî"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "çira"
 
@@ -914,7 +943,7 @@ msgstr "Stratusa nizm"
 msgid "M to close"
 msgstr "M ji bo girtinê"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "nexşe"
 
@@ -938,7 +967,7 @@ msgstr "Cureyê maçê"
 msgid "Medium"
 msgstr "Navîn"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "menû"
 
@@ -954,7 +983,7 @@ msgstr "Mîtrîk"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Nexşeya Midway Atoll — wêne daneyên <0>Copernicus Sentinel-2</0> yên guhertî dihewîne (2026); geometriya balafirgehê (rêça firîn û daketinê, rêyên texsiyê, apron) © beşdarên <1>OpenStreetMap</1>, di bin <2>ODbL</2> de bi destûr; daneyên peravê û refan ji <3>NOAA NCCOS</3> (domeyna giştî)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "mûşek"
 
@@ -1135,11 +1164,11 @@ msgstr "Menûya navîgasyonê veke"
 msgid "Open theme settings"
 msgstr "Mîhengên temayê veke"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "an"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "gerîn"
 
@@ -1171,7 +1200,7 @@ msgstr "Verastkirina passkey têk çû. Ji kerema xwe dîsa biceribîne."
 msgid "Passkeys"
 msgstr "Passkey"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "rawestan"
 
@@ -1188,7 +1217,11 @@ msgstr "RAWESTANDÎ"
 msgid "pilot"
 msgstr "pîlot"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "PÎLOT HAT KUŞTIN"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "pitch"
 
@@ -1198,7 +1231,6 @@ msgstr "Pitch"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Ji kerema xwe girêdana xwe ya înternetê kontrol bike û dîsa biceribîne."
 
@@ -1237,6 +1269,14 @@ msgstr "Nepenî"
 msgid "Profile"
 msgstr "Profîl"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Bilindkirî"
@@ -1249,7 +1289,7 @@ msgstr "Hesabên xwe li vî serverî ji nû ve girêdin"
 msgid "Re-register your passkeys on this server"
 msgstr "Mifteyên gihîştinê yên xwe li ser vî rajeyê ji nû ve qeyd bike"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "ji nû ve dagirtin"
 
@@ -1341,7 +1381,7 @@ msgstr "Vegere menûyê"
 msgid "Right to Left"
 msgstr "Ji rast ber bi çep"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "roll"
 
@@ -1518,7 +1558,7 @@ msgstr "Berfireh"
 msgid "SPD BK"
 msgstr "FR.H"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "frenê hewayê"
 
@@ -1535,6 +1575,10 @@ msgstr "Destpêk"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Lê li bendê bimîne!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Mîhengên Temayê"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "gaz"
 
@@ -1604,7 +1648,7 @@ msgstr "Gaz"
 msgid "Thursday"
 msgstr "Pêncşem"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "xwarkirin"
 
@@ -1757,7 +1801,7 @@ msgstr "Navnîşana e-nameyê verifîke bike"
 msgid "Video thumbnail"
 msgstr "Wêneya pêşgir a vîdeoyê"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "dîmen"
 
@@ -1800,7 +1844,7 @@ msgstr "Çarşem"
 msgid "Wheel brakes"
 msgstr "Frena teker"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "BI SER KET"
 
@@ -1812,7 +1856,7 @@ msgstr "Servera cîhanê"
 msgid "World server not reachable"
 msgstr "Gihîştina servera cîhanê ne pêkan e"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "yaw"
 

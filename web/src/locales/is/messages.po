@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Athugaðu nettenginguna og reyndu aftur."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Hækkandi"
 msgid "Authenticator code"
 msgstr "Auðkennisnúmer"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "til baka"
 
@@ -202,7 +207,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Auka áhuga"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "bremsur"
 
@@ -240,7 +245,7 @@ msgstr "Breyta flokki tilkynningar"
 msgid "Chase view"
 msgstr "Eltingarsýn"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Eltingarsýn:"
 
@@ -313,7 +318,7 @@ msgstr "Loka spjaldi"
 msgid "Close search"
 msgstr "Loka leit"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "nær"
 
@@ -540,6 +545,10 @@ msgstr "Lesblinduvænt"
 msgid "Edit {label}"
 msgstr "Breyta {label}"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "SKAUT SÉR ÚT"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Tölvupóstkóði"
@@ -599,11 +608,15 @@ msgstr "Tókst ekki að uppfæra flokk"
 msgid "FAIR"
 msgstr "SÆMILEGT"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Kláraðu að færa reikninginn þinn"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "blys"
 
@@ -654,11 +667,19 @@ msgstr "Frá"
 msgid "From theme"
 msgstr "Frá þema"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Full umgjörð"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "lendingarbúnaður"
 
@@ -704,7 +725,7 @@ msgstr "Hópur"
 msgid "GUN"
 msgstr "BYSSA"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "byssur"
 
@@ -737,7 +758,7 @@ msgstr "Há lagský"
 msgid "Home"
 msgstr "Heim"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "Krókur"
 
@@ -781,7 +802,7 @@ msgstr "Snúa hnigi við"
 msgid "Join"
 msgstr "Taka þátt"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "BÆTTIST VIÐ"
 
@@ -809,6 +830,14 @@ msgstr "Lyklar"
 msgid "KILL"
 msgstr "DRÁP"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Lendingarbúnaður"
 msgid "Large"
 msgstr "Stórt"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "skot"
 
@@ -837,7 +866,7 @@ msgstr "Umgjörð"
 msgid "Learn more"
 msgstr "Læra meira"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "FÓR"
 
@@ -850,7 +879,7 @@ msgstr "Vinstri til hægri"
 msgid "Light"
 msgstr "Ljóst"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "ljós"
 
@@ -914,7 +943,7 @@ msgstr "Lág lagský"
 msgid "M to close"
 msgstr "M til að loka"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "kort"
 
@@ -938,7 +967,7 @@ msgstr "Tegund leiks"
 msgid "Medium"
 msgstr "Miðlungs"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "valmynd"
 
@@ -954,7 +983,7 @@ msgstr "Mæling"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Kort af Midway-atollinum — myndirnar innihalda breytt <0>Copernicus Sentinel-2</0> gögn (2026); rúmfræði flugvallarins (flugbraut, akbrautir, flughlöð) © <1>OpenStreetMap</1> þátttakendur, með leyfi samkvæmt <2>ODbL</2>; strandlínu- og rifgögn frá <3>NOAA NCCOS</3> (almenningseign)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "flugskeyti"
 
@@ -1135,11 +1164,11 @@ msgstr "Opna leiðsögnarvalmynd"
 msgid "Open theme settings"
 msgstr "Opna þemastillingar"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "eða"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "hringsól"
 
@@ -1171,7 +1200,7 @@ msgstr "Staðfesting aðgangslykils mistókst. Reyndu aftur."
 msgid "Passkeys"
 msgstr "Aðgangslyklar"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "hlé"
 
@@ -1188,7 +1217,11 @@ msgstr "Í BIÐ"
 msgid "pilot"
 msgstr "flugmaður"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "FLUGMAÐUR FÉLL"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "hnik"
 
@@ -1198,7 +1231,6 @@ msgstr "Hnig"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Athugaðu nettenginguna og reyndu aftur."
 
@@ -1237,6 +1269,14 @@ msgstr "Friðhelgi"
 msgid "Profile"
 msgstr "Síða"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Upphækkað"
@@ -1249,7 +1289,7 @@ msgstr "Tengdu reikninga þína aftur á þessum þjóni"
 msgid "Re-register your passkeys on this server"
 msgstr "Skráðu aðgangslyklana þína aftur á þessum netþjóni"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "endurhlaða"
 
@@ -1341,7 +1381,7 @@ msgstr "Aftur í valmynd"
 msgid "Right to Left"
 msgstr "Hægri til vinstri"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "velta"
 
@@ -1518,7 +1558,7 @@ msgstr "Rúmgott"
 msgid "SPD BK"
 msgstr "LFTB"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "loftbremsa"
 
@@ -1535,6 +1575,10 @@ msgstr "Byrja"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "En haltu áfram að fylgjast með!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Þema"
 msgid "Theme Settings"
 msgstr "Þemastillingar"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "inngjöf"
 
@@ -1604,7 +1648,7 @@ msgstr "Inngjöf"
 msgid "Thursday"
 msgstr "Fimmtudagur"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "halli"
 
@@ -1757,7 +1801,7 @@ msgstr "Sannprófa netfang"
 msgid "Video thumbnail"
 msgstr "Smámynd myndbands"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "sýn"
 
@@ -1800,7 +1844,7 @@ msgstr "Miðvikudagur"
 msgid "Wheel brakes"
 msgstr "Hjólbremsur"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "SIGRAR"
 
@@ -1812,7 +1856,7 @@ msgstr "Heimsþjónn"
 msgid "World server not reachable"
 msgstr "Ekki næst í heimsþjóninn"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "snúningur"
 

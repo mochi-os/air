@@ -13,7 +13,7 @@
 import { getErrorMessage } from '@mochi/web'
 
 // Encoded state layout (float64 words).
-export const SIZE = 57
+export const SIZE = 106 // 57 base + 40 element losses + 8 channel jams + lost mass (#78, flight Version 23)
 export const STATE = {
   position: 0, // x y z
   velocity: 3,
@@ -38,14 +38,19 @@ export const STATE = {
   touch: 41, // occurred, sink, bank, kind
   stress: 54,
   time: 55,
+  engine_harm: 45, // per-engine thrust loss × 4 (#78 damage words)
+  leak: 49, // fuel loss, kg/s
+  element: 57, // per-element loss 0..1 × 40 (zero = pristine)
+  jam: 97, // per-channel restriction 0..1 × 8 (stabL, stabR, flapL, flapR, rudder, slat, brake)
+  loss: 105, // shed structure mass, kg
   // Instrument tail appended by frame()/get():
-  alpha: 57,
-  beta: 58,
-  nz: 59,
-  mach: 60,
-  cas: 61,
-  power: 62, // achieved spool fraction across the airframe's engines
-  stage: 63, // achieved reheat stage
+  alpha: 106,
+  beta: 107,
+  nz: 108,
+  mach: 109,
+  cas: 110,
+  power: 111, // achieved spool fraction across the airframe's engines
+  stage: 112, // achieved reheat stage
 } as const
 const EXTRA = 7
 
@@ -79,6 +84,10 @@ interface Core {
   ack(sequence: number, state: Uint8Array): number
   level(x: number, y: number, z: number, dx: number, dz: number, speed: number, fuel: number): string
   clear(): string
+  hulk(index: number, aircraft: string): boolean
+  burst(input: Uint8Array, output: Uint8Array): number
+  blast(input: Uint8Array, output: Uint8Array): boolean
+  progress(input: Uint8Array, output: Uint8Array): void
 }
 
 declare global {
@@ -233,4 +242,81 @@ export function flight_level(x: number, y: number, z: number, dx: number, dz: nu
 // after the host has read them.
 export function flight_clear(): void {
   core?.clear()
+}
+
+// ---- Battle (single-player damage authority, #78) ----------------------
+// The same Go battle package the multiplayer server runs natively judges
+// SP hits through these wrappers. Layouts mirror world/wasm/battle.go.
+
+const battle_input = new Float64Array(20)
+const battle_input_bytes = new Uint8Array(battle_input.buffer)
+const battle_output = new Float64Array(64)
+const battle_output_bytes = new Uint8Array(battle_output.buffer)
+
+// Event mask bits (world/wasm/battle.go).
+export const BATTLE = { fire: 1, pilot: 2, explode: 4, jam: 8, shed: 16 } as const
+
+export interface Aim {
+  position: { x: number; y: number; z: number }
+  quaternion: { w: number; x: number; y: number; z: number }
+}
+
+// battle_hulk builds or resets the model-less target body at an index
+// (0 = the bandit, 1.. = neutral traffic).
+export function battle_hulk(index: number, aircraft: string): boolean {
+  return !!core?.hulk(index, aircraft)
+}
+
+// battle_burst fires rounds at a target: -1 = the ownship model (the
+// bandit shooting the player), else a hulk index. Returns hits + events.
+export function battle_burst(
+  target: number,
+  shooter: { position: { x: number; y: number; z: number }; forward: { x: number; y: number; z: number }; up: { x: number; y: number; z: number } },
+  aim: Aim | null,
+  rounds: number,
+  identity: number,
+  tick: number,
+): { hits: number; mask: number } {
+  if (!core) return { hits: 0, mask: 0 }
+  const b = battle_input
+  b[0] = target
+  b[1] = shooter.position.x; b[2] = shooter.position.y; b[3] = shooter.position.z
+  b[4] = shooter.forward.x; b[5] = shooter.forward.y; b[6] = shooter.forward.z
+  b[7] = shooter.up.x; b[8] = shooter.up.y; b[9] = shooter.up.z
+  if (aim) {
+    b[10] = aim.position.x; b[11] = aim.position.y; b[12] = aim.position.z
+    b[13] = aim.quaternion.w; b[14] = aim.quaternion.x; b[15] = aim.quaternion.y; b[16] = aim.quaternion.z
+  }
+  b[17] = rounds; b[18] = identity; b[19] = tick
+  core.burst(battle_input_bytes, battle_output_bytes)
+  return { hits: battle_output[0], mask: battle_output[1] }
+}
+
+// battle_blast detonates a missile warhead at a world point against a target.
+export function battle_blast(target: number, point: { x: number; y: number; z: number }, aim: Aim | null, identity: number, tick: number): { kill: boolean; mask: number } {
+  if (!core) return { kill: false, mask: 0 }
+  const b = battle_input
+  b[0] = target
+  b[1] = point.x; b[2] = point.y; b[3] = point.z
+  if (aim) {
+    b[4] = aim.position.x; b[5] = aim.position.y; b[6] = aim.position.z
+    b[7] = aim.quaternion.w; b[8] = aim.quaternion.x; b[9] = aim.quaternion.y; b[10] = aim.quaternion.z
+  }
+  b[11] = identity; b[12] = tick
+  core.blast(battle_input_bytes, battle_output_bytes)
+  return { kill: battle_output[0] !== 0, mask: battle_output[1] }
+}
+
+// battle_progress runs the damage cascade one frame for the ownship and
+// every hulk; the returned view is valid until the next call. Layout:
+// 0-5 ownship (fire L, fire R, burning, killed, mask, leak);
+// 6+i*8.. per hulk (fire L, fire R, burning, killed, mask, thrust loss,
+// wing loss, element total).
+export function battle_progress(throttle: number, tick: number, reset: boolean): Float64Array {
+  if (!core) return battle_output
+  battle_input[0] = throttle
+  battle_input[1] = tick
+  battle_input[2] = reset ? 1 : 0
+  core.progress(battle_input_bytes, battle_output_bytes)
+  return battle_output
 }

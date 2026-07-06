@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Интернет байланышыңызды текшерип, кайра аракет кылыңыз."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Өсүү тартибинде"
 msgid "Authenticator code"
 msgstr "Authenticator коду"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "артка"
 
@@ -202,7 +207,7 @@ msgstr "БОЛТЕР"
 msgid "Boost interest"
 msgstr "Кызыгууну күчөтүү"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "тормоздор"
 
@@ -240,7 +245,7 @@ msgstr "Эскертүү категориясын өзгөртүү"
 msgid "Chase view"
 msgstr "Кубалоо көрүнүшү"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Кубалоо көрүнүшү:"
 
@@ -313,7 +318,7 @@ msgstr "Панелди жабуу"
 msgid "Close search"
 msgstr "Издөөнү жабуу"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "жакыныраак"
 
@@ -540,6 +545,10 @@ msgstr "Дислексияга ыңгайлуу"
 msgid "Edit {label}"
 msgstr "{label} түзөтүү"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "КАТАПУЛЬТАЛАНДЫ"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Электрондук почта коду"
@@ -599,11 +608,15 @@ msgstr "Категорияны жаңылоо ишке ашкан жок"
 msgid "FAIR"
 msgstr "ОРТОЧО"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Аккаунтуңузду көчүрүүнү аяктаңыз"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "флерлер"
 
@@ -654,11 +667,19 @@ msgstr "Кимден"
 msgid "From theme"
 msgstr "Темадан"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Толук жайгашуу"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "Шасси"
 
@@ -704,7 +725,7 @@ msgstr "Топ"
 msgid "GUN"
 msgstr "ЗАМБИРЕК"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "замбиректер"
 
@@ -737,7 +758,7 @@ msgstr "Жогорку стратус"
 msgid "Home"
 msgstr "Башкы бет"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "Илмек"
 
@@ -781,7 +802,7 @@ msgstr "Питчти тескери буруу"
 msgid "Join"
 msgstr "Кошулуу"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "КИРДИ"
 
@@ -809,6 +830,14 @@ msgstr "Баскычтар"
 msgid "KILL"
 msgstr "КУЛАТТЫҢЫЗ"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Шасси"
 msgid "Large"
 msgstr "Чоң"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "учуруу"
 
@@ -837,7 +866,7 @@ msgstr "Жайгашуу"
 msgid "Learn more"
 msgstr "Кененирээк билүү"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "ЧЫКТЫ"
 
@@ -850,7 +879,7 @@ msgstr "Солдон оңго"
 msgid "Light"
 msgstr "Жарык"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "оттор"
 
@@ -914,7 +943,7 @@ msgstr "Төмөнкү стратус"
 msgid "M to close"
 msgstr "Жабуу үчүн M"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "карта"
 
@@ -938,7 +967,7 @@ msgstr "Матч түрү"
 msgid "Medium"
 msgstr "Орточо"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "меню"
 
@@ -954,7 +983,7 @@ msgstr "Метрикалык"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Мидуэй атоллунун картасы — сүрөттөрдө өзгөртүлгөн <0>Copernicus Sentinel-2</0> дайындары камтылат (2026); аэродромдун геометриясы (учуу-конуу тилкеси, рулдоо жолдору, перрондор) © <1>OpenStreetMap</1> салымчылары, <2>ODbL</2> лицензиясы боюнча берилген; жээк сызыгы жана риф дайындары <3>NOAA NCCOS</3> булагынан (коомдук менчик)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "ракета"
 
@@ -1135,11 +1164,11 @@ msgstr "Навигация менюсун ачуу"
 msgid "Open theme settings"
 msgstr "Тема жөндөөлөрүн ачуу"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "же"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "айлануу"
 
@@ -1171,7 +1200,7 @@ msgstr "Passkey текшерүүсү ишке ашкан жок. Кайра ар
 msgid "Passkeys"
 msgstr "Кирүү ачкычтары"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "тыныгуу"
 
@@ -1188,7 +1217,11 @@ msgstr "ПАУЗА"
 msgid "pilot"
 msgstr "учкуч"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "УЧКУЧ КАЗА БОЛДУ"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "тангаж"
 
@@ -1198,7 +1231,6 @@ msgstr "Питч"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Интернет байланышыңызды текшерип, кайра аракет кылыңыз."
 
@@ -1237,6 +1269,14 @@ msgstr "Купуялык"
 msgid "Profile"
 msgstr "Профиль"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Көтөрүлгөн"
@@ -1249,7 +1289,7 @@ msgstr "Бул серверде аккаунттарыңызды кайра ба
 msgid "Re-register your passkeys on this server"
 msgstr "Бул серверде кирүү ачкычтарыңызды кайра каттаңыз"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "кайра жүктөө"
 
@@ -1341,7 +1381,7 @@ msgstr "Менюга кайтуу"
 msgid "Right to Left"
 msgstr "Оңдон солго"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "крен"
 
@@ -1518,7 +1558,7 @@ msgstr "Кенен"
 msgid "SPD BK"
 msgstr "АБ Т"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "аба тормозу"
 
@@ -1535,6 +1575,10 @@ msgstr "Баштоо"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Бирок биз менен болуңуз!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Тема"
 msgid "Theme Settings"
 msgstr "Тема жөндөөлөрү"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "газ"
 
@@ -1604,7 +1648,7 @@ msgstr "Газ"
 msgid "Thursday"
 msgstr "Бейшемби"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "эңкейтүү"
 
@@ -1757,7 +1801,7 @@ msgstr "Электрондук почта дарегин текшерүү"
 msgid "Video thumbnail"
 msgstr "Видеонун эскизи"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "көрүнүш"
 
@@ -1800,7 +1844,7 @@ msgstr "Шаршемби"
 msgid "Wheel brakes"
 msgstr "Дөңгөлөк тормоздору"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "ЖЕҢДИ"
 
@@ -1812,7 +1856,7 @@ msgstr "Дүйнө сервери"
 msgid "World server not reachable"
 msgstr "Дүйнө сервери жеткиликсиз"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "рыскоо"
 

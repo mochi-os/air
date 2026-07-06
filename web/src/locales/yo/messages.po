@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Jọ̀wọ́ ṣàyẹ̀wò ìsopọ̀ íntánẹ́ẹ̀tì rẹ kí o sì gbìyànjú lẹ́ẹ̀kan sí i."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Gòkè"
 msgid "Authenticator code"
 msgstr "Kóòdù olùfọwọ́sí"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "padà"
 
@@ -202,7 +207,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Mú ìfẹ́ pọ̀"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "breki"
 
@@ -240,7 +245,7 @@ msgstr "Yí ẹ̀ka ìfitónilétí padà"
 msgid "Chase view"
 msgstr "Ojú-ìwòye ìlépa"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Ìwòran ìlépa:"
 
@@ -313,7 +318,7 @@ msgstr "Ti panẹli"
 msgid "Close search"
 msgstr "Ti àwárí"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "súnmọ́ síi"
 
@@ -540,6 +545,10 @@ msgstr "Ẹ̀dá lóàfin fún àìmoọ̀rọ̀"
 msgid "Edit {label}"
 msgstr "Ṣàtúnṣe {label}"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "FÒ JÁDE"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Kóòdù ímẹ́ẹ̀lì"
@@ -599,11 +608,15 @@ msgstr "Kò lè mú ẹ̀ka dòde"
 msgid "FAIR"
 msgstr "ÀROPIN"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Pari gbigbe akonti rẹ"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "iná àbò"
 
@@ -654,11 +667,19 @@ msgstr "Láti"
 msgid "From theme"
 msgstr "Lát'ọ̀dọ̀ Theme"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Àtòjọ kíkún"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "Ẹsẹ̀"
 
@@ -704,7 +725,7 @@ msgstr "Àwùjọ"
 msgid "GUN"
 msgstr "IBỌN"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "ìbọn"
 
@@ -737,7 +758,7 @@ msgstr "Stratus gíga"
 msgid "Home"
 msgstr "Ilé"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "Ìkọ̀"
 
@@ -781,7 +802,7 @@ msgstr "Yí pitch padà"
 msgid "Join"
 msgstr "Darapọ̀"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "TI DARAPỌ̀"
 
@@ -809,6 +830,14 @@ msgstr "Àwọn bọtìnì"
 msgid "KILL"
 msgstr "O PA Á"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Ẹsẹ̀ ìbalẹ̀"
 msgid "Large"
 msgstr "Tóbi"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "ta"
 
@@ -837,7 +866,7 @@ msgstr "Àtòjọ"
 msgid "Learn more"
 msgstr "Kọ́ síwájú"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "TI JÁDE"
 
@@ -850,7 +879,7 @@ msgstr "Òsì sí Ọ̀tún"
 msgid "Light"
 msgstr "Ìmọ́lẹ̀"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "àwọn ìmọ́lẹ̀"
 
@@ -914,7 +943,7 @@ msgstr "Stratus kéré"
 msgid "M to close"
 msgstr "M láti tì"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "máàpù"
 
@@ -938,7 +967,7 @@ msgstr "Irú ìdíje"
 msgid "Medium"
 msgstr "Àárín"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "àkójọ"
 
@@ -954,7 +983,7 @@ msgstr "Òṣùwọ̀n"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Àwòrán ilẹ̀ Midway Atoll — àwọn àwòrán ní dátà <0>Copernicus Sentinel-2</0> tí a ṣàtúnṣe (2026); ìhun pápá ọkọ̀ òfuurufú (ojú-ọ̀nà ìfòfò, ọ̀nà takisi, ibi ìdúró ọkọ̀) © àwọn olùkópa <1>OpenStreetMap</1>, tí a fún ní àṣẹ lábẹ́ <2>ODbL</2>; dátà etíkun àti òkìtì iyùn láti ọ̀dọ̀ <3>NOAA NCCOS</3> (ìní àwùjọ)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "rọ́kẹ́tì"
 
@@ -1135,11 +1164,11 @@ msgstr "Ṣí ìtòlẹ́sẹẹsẹ ìṣàkóso"
 msgid "Open theme settings"
 msgstr "Ṣí àwọn ètò àkórí"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "tàbí"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "yíká"
 
@@ -1171,7 +1200,7 @@ msgstr "Ìjẹ́rìísí passkey kùnà. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan
 msgid "Passkeys"
 msgstr "Àwọn passkey"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "dúró"
 
@@ -1188,7 +1217,11 @@ msgstr "ÌDÁDÚRÓ"
 msgid "pilot"
 msgstr "awakọ̀ òfuurufú"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "AWAKỌ̀ TI KÚ"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "gòkè-sọ̀kalẹ̀"
 
@@ -1198,7 +1231,6 @@ msgstr "Pitch"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Jọ̀wọ́ ṣàyẹ̀wò ìsopọ̀ íntánẹ́ẹ̀tì rẹ kí o sì gbìyànjú lẹ́ẹ̀kan sí i."
 
@@ -1237,6 +1269,14 @@ msgstr "Aṣírí"
 msgid "Profile"
 msgstr "Profáìlì"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Gbígbé sókè"
@@ -1249,7 +1289,7 @@ msgstr "Tun so akonti rẹ pọ lori olupin yii"
 msgid "Re-register your passkeys on this server"
 msgstr "Tún àwọn bọ́tìnì ìwọlé rẹ forúkọsílẹ̀ lórí olùpèsè yìí"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "tún ìhámọ́ra"
 
@@ -1341,7 +1381,7 @@ msgstr "Padà sí àkójọ"
 msgid "Right to Left"
 msgstr "Ọ̀tún sí Òsì"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "yíyí"
 
@@ -1518,7 +1558,7 @@ msgstr "Àáyè"
 msgid "SPD BK"
 msgstr "BR.AF"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "breki àfẹ́fẹ́"
 
@@ -1535,6 +1575,10 @@ msgstr "Bẹ̀rẹ̀"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Ṣùgbọ́n dúró tì wá!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Àkòrí"
 msgid "Theme Settings"
 msgstr "Àwọn ìṣètò Theme"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "agbára"
 
@@ -1604,7 +1648,7 @@ msgstr "Throttle"
 msgid "Thursday"
 msgstr "Ọjọ́bọ̀"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "ìtẹ̀"
 
@@ -1757,7 +1801,7 @@ msgstr "Jẹ́rìí sí àdírẹ́sì email"
 msgid "Video thumbnail"
 msgstr "Àwòrán kékeré fídíò"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "ìwòran"
 
@@ -1800,7 +1844,7 @@ msgstr "Ọjọ́rú"
 msgid "Wheel brakes"
 msgstr "Breki kẹkẹ"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "BORÍ"
 
@@ -1812,7 +1856,7 @@ msgstr "Olùpín ayé"
 msgid "World server not reachable"
 msgstr "A kò lè dé ọ̀dọ̀ olùpín ayé"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "yíyà"
 

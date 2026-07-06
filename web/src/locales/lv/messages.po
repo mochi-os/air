@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Lūdzu, pārbaudiet interneta savienojumu un mēģiniet vēlreiz."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Augošā secībā"
 msgid "Authenticator code"
 msgstr "Authenticator kods"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "atpakaļ"
 
@@ -202,7 +207,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Veicināt interesi"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "bremzes"
 
@@ -240,7 +245,7 @@ msgstr "Mainīt paziņojuma kategoriju"
 msgid "Chase view"
 msgstr "Sekošanas skats"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Sekošanas skats:"
 
@@ -313,7 +318,7 @@ msgstr "Aizvērt paneli"
 msgid "Close search"
 msgstr "Aizvērt meklēšanu"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "tuvāk"
 
@@ -540,6 +545,10 @@ msgstr "Disleksijai draudzīgs"
 msgid "Edit {label}"
 msgstr "Rediģēt {label}"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "KATAPULTĒJĀS"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "E-pasta kods"
@@ -599,11 +608,15 @@ msgstr "Neizdevās atjaunināt kategoriju"
 msgid "FAIR"
 msgstr "APMIERINOŠI"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Pabeidziet konta pārvietošanu"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "uguņi"
 
@@ -654,11 +667,19 @@ msgstr "No"
 msgid "From theme"
 msgstr "No motīva"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Pilns izkārtojums"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "Šasija"
 
@@ -704,7 +725,7 @@ msgstr "Grupa"
 msgid "GUN"
 msgstr "LIELGABALS"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "lielgabali"
 
@@ -737,7 +758,7 @@ msgstr "Augsti slāņu mākoņi"
 msgid "Home"
 msgstr "Sākums"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "Āķis"
 
@@ -781,7 +802,7 @@ msgstr "Apvērst tangāžu"
 msgid "Join"
 msgstr "Pievienoties"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "PIEVIENOJĀS"
 
@@ -809,6 +830,14 @@ msgstr "Taustiņi"
 msgid "KILL"
 msgstr "NOTRIEKTS"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Šasija"
 msgid "Large"
 msgstr "Liels"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "palaišana"
 
@@ -837,7 +866,7 @@ msgstr "Izkārtojums"
 msgid "Learn more"
 msgstr "Uzzināt vairāk"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "IZGĀJA"
 
@@ -850,7 +879,7 @@ msgstr "No kreisās uz labo"
 msgid "Light"
 msgstr "Gaišs"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "gaismas"
 
@@ -914,7 +943,7 @@ msgstr "Zemi slāņu mākoņi"
 msgid "M to close"
 msgstr "M aizvēršanai"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "karte"
 
@@ -938,7 +967,7 @@ msgstr "Mača veids"
 msgid "Medium"
 msgstr "Vidējs"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "izvēlne"
 
@@ -954,7 +983,7 @@ msgstr "Metrisks"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midvejas atola karte — attēli satur modificētus <0>Copernicus Sentinel-2</0> datus (2026); lidlauka ģeometrija (skrejceļš, manevrēšanas ceļi, peroni) © <1>OpenStreetMap</1> līdzautori, licencēts saskaņā ar <2>ODbL</2>; krasta līnijas un rifu dati no <3>NOAA NCCOS</3> (publiskais īpašums)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "raķete"
 
@@ -1135,11 +1164,11 @@ msgstr "Atvērt navigācijas izvēlni"
 msgid "Open theme settings"
 msgstr "Atvērt motīva iestatījumus"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "vai"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "riņķošana"
 
@@ -1171,7 +1200,7 @@ msgstr "Piekļuves atslēgas pārbaude neizdevās. Lūdzu, mēģiniet vēlreiz."
 msgid "Passkeys"
 msgstr "Piekļuves atslēgas"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "pauze"
 
@@ -1188,7 +1217,11 @@ msgstr "PAUZE"
 msgid "pilot"
 msgstr "pilots"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "PILOTS KRITIS"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "tangāža"
 
@@ -1198,7 +1231,6 @@ msgstr "Tangāža"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Lūdzu, pārbaudiet interneta savienojumu un mēģiniet vēlreiz."
 
@@ -1237,6 +1269,14 @@ msgstr "Privātums"
 msgid "Profile"
 msgstr "Profils"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Izcelts"
@@ -1249,7 +1289,7 @@ msgstr "Atkārtoti saistiet savus kontus šajā serverī"
 msgid "Re-register your passkeys on this server"
 msgstr "Atkārtoti reģistrējiet savas piekļuves atslēgas šajā serverī"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "pārlādēt"
 
@@ -1341,7 +1381,7 @@ msgstr "Atgriezties izvēlnē"
 msgid "Right to Left"
 msgstr "No labās uz kreiso"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "sānsvere"
 
@@ -1518,7 +1558,7 @@ msgstr "Plašs"
 msgid "SPD BK"
 msgstr "G.BRZ"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "gaisa bremze"
 
@@ -1535,6 +1575,10 @@ msgstr "Sākt"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Tomēr palieciet uz viļņa!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Tēma"
 msgid "Theme Settings"
 msgstr "Tēmas iestatījumi"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "drosele"
 
@@ -1604,7 +1648,7 @@ msgstr "Drosele"
 msgid "Thursday"
 msgstr "Ceturtdiena"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "sasvere"
 
@@ -1757,7 +1801,7 @@ msgstr "Verificēt e-pasta adresi"
 msgid "Video thumbnail"
 msgstr "Video sīktēls"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "skats"
 
@@ -1800,7 +1844,7 @@ msgstr "Trešdiena"
 msgid "Wheel brakes"
 msgstr "Riteņu bremzes"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "UZVAR"
 
@@ -1812,7 +1856,7 @@ msgstr "Pasaules serveris"
 msgid "World server not reachable"
 msgstr "Pasaules serveris nav sasniedzams"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "novirze"
 

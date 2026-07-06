@@ -14,7 +14,7 @@ import {
   type Join as NetJoin,
   type Net as NetHandle,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_clear, flight_version, steps as flight_steps, STATE } from './flight'
+import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_burst, battle_blast, battle_progress, BATTLE } from './flight'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { createAppClient } from '@mochi/web'
 
@@ -729,8 +729,11 @@ const AIRCRAFT_MODELS={
 		pose:[ { node:"elevator_percent_key_AN_238_100", quaternion:[0,-0.996,0.087,0] } ],   // the stabs' shared parent is authored mid-animation 180°-flipped (planform-reversed stabs); this is its animation END key — the correct frame. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
 
 		nose:4.9, wheel:2.85, stance:2.57, squat:0.08, flames:true,   // the model's own glow discs carry the burner look, procedural cones stay off (the nozzle helper-cube mesh was removed from the GLB itself — #94)   // physics nose-gear x + the DEPLOYED drawn nose-wheel x and wheel-bottom drop (three.js pose of the gear animation — the STATIC pose is gear-up on this model and lies about both); squat = clip-fraction scrubbed back under weight so the drawn oleo compresses (~0.4 m of wheel travel per unit fraction at the clip tail)
+		swivel:{ node:"c_gear_AN_lower_134", axis:[-0.0012,-0.0934,-0.9956] },   // nosewheel steering: the lower strut + scissor + wheels swivel about this node-local axis (the strut line in the DEPLOYED gear pose — measured; the gear clip re-poses the node every frame so the steering twist is post-multiplied after the mixer)
 		rig:[ { name:"gear",     track:/(^|_)[clr]_(gear|wheel)_AN_/i, drive:"gear" },
 		      { name:"hook",     track:/^Hook_AN_/i, drive:"hook" },
+		      { name:"probe",    track:/^RefuelDoorAction_AN/i, drive:"probe" },   // in-flight refueling probe (starboard nose): door + arm + probe swing on one sequence; Shift+F toggles, ~5 s travel (the cockpit Refuel_Switch tracks have a different prefix and stay untouched)
+		      { name:"canopy",   track:/^Canopy_ParentAction_AN/i, drive:"canopy" },   // canopy shells + actuator arm + linkage; Shift+C on the ground, ~6 s stroke, auto-closes on the takeoff roll (the cockpit Canopy_Switch has a different prefix)
 		      { name:"stabL",    node:"Elevator_Left_94",  axis:"x", base:[0.96593,0,0,0.25882], drive:"stabL" },   // neutral base calibrated three ways: the user's Shift+E bracket (position 3 ≈ neutral), the thin-axis minimum (surface vertical thickness minimized at +130° from the old base), and NATOPS throws (+10.5°/−24°) mapping full stick inside the user's positions 2..4
 		      { name:"stabR",    node:"Elevator_right_97", axis:"x", base:[0.96502,0,0,0.26219], drive:"stabR" },
 		      { name:"flapL",     node:"FlapL_12",           axis:"x", sign:-1, drive:"flapL" },   // flap droop percent keys sweep 0..-40° with 0 = 0% droop, so the authored pose IS flush — no base needed (unlike the aileron roll stage, whose keys are roll ±20° around a -20° flush centre)
@@ -744,8 +747,8 @@ const AIRCRAFT_MODELS={
 		      { name:"aileronR",  node:"AileronR_309",       axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapR" },
 		      { name:"coverL",    node:"l_aileron_percent_key_AN_Cover_65",  axis:"x", sign:-1, max:0, drive:"flapL" },   // aileron shroud covers: separate follower nodes outside the aileron subtrees, seated on the wing at their authored statics and floored there via the node-drive max cap (they ride up with an up-deflected aileron so it never pokes through, and never follow the droop down). The original left plate was a different, smaller ride-on-the-aileron design that leaked a gap at every pose; its mesh was replaced in the GLB by a mirrored copy of the right cover baked closed at the authored static, so both wings now share the validated seated design
 		      { name:"coverR",    node:"r_aileron_percent_key_AN_Cover_302", axis:"x", sign:-1, max:0, drive:"flapR" },
-		      { name:"rudderL",  node:"rudder_percent_key_AN_Left_319",  axis:"y", base:[0,0.15471,0,0.98796], drive:"rudder" },   // rudder neutral: trailing-edge-in-fin-plane (PCA fin plane, rotate until the TE's mean plane distance is zero) — sharper than the lateral-extent minimum, which sat ~6° off
-		      { name:"rudderR",  node:"rudder_percent_key_AN_Right_322", axis:"y", base:[0,0.19423,0,0.98096], drive:"rudder" },
+		      { name:"rudderL",  node:"rudder_percent_key_AN_Left_319",  axis:"y", base:[0,0.15471,0,0.98796], sign:-1, toe:-0.5236, min:-0.5236, max:0.5236, drive:"rudder" },   // rudder neutral: trailing-edge-in-fin-plane (PCA fin plane, rotate until the TE's mean plane distance is zero) — sharper than the lateral-extent minimum, which sat ~6° off; re-verified 2026-07-06 (TE residual under 4 mm). toe = the Hornet's rudder toe-in: with the gear down both trailing edges deflect 30° INBOARD (the canted fins turn that into nose-up pitch for takeoff rotation), active with weight on wheels (washing out at liftoff via the squish signal); min/max clamp the sum of toe + yaw command at the ±30° physical throw
+		      { name:"rudderR",  node:"rudder_percent_key_AN_Right_322", axis:"y", base:[0,0.19423,0,0.98096], sign:-1, toe:0.5236, min:-0.5236, max:0.5236, drive:"rudder" },   // sign -1 on both: the core's aero convention is +rudder = nose LEFT (tail pushed right), and these hinges deflect the TEs starboard for +local rotation — so nose-right (negative) commands must show TE-starboard rudders. The toe values are pre-sign, hence flipped
 		      { name:"brake",    track:/^SPOILER_L/i, drive:"speedbrake" } ] } };
 const D2R=Math.PI/180;
 // fleet: aircraft name -> { proto, rig:[{clip, t0, t1, drive, min, max, flip}] } once loaded.
@@ -753,6 +756,7 @@ const fleet={}; const fleet_loading={};
 let model_active=false;   // the ownship's aircraft model is ready (loading gate)
 const GEAR_RATE=0.5;   // extend/retract speed of the 0..1 visual progress for aircraft the core doesn't fly
 const DROOP=30*D2R;    // PA trailing-edge droop (NATOPS flaps HALF on the ground: TEF 30°, aileron droop 30°) — the rest pose of the flap family for gear-down aircraft the core doesn't fly; the ownship's comes live from the FCS (Droop.Angle in the flight core)
+const NWS=75*D2R;      // nosewheel steering throw (NWS HI 75°; LOW is 22.5° — the speed washout stands in for the mode switch, mirroring Gear.Nose.Steer in the flight core)
 function model_tint(hex){ return hex===0xb04a3a?0xff9a86 : hex===0x7f8a96?0xdde3ea : 0xffffff; }   // light team tints (white = untouched)
 function normalise_model(scene, spec){ scene.updateMatrixWorld(true);
 	const box=new THREE.Box3().setFromObject(scene), size=box.getSize(new THREE.Vector3()), ctr=box.getCenter(new THREE.Vector3());
@@ -780,7 +784,7 @@ function moving_span(track){
 function rig_build(spec, animations){
 	const rig=[];
 	for(const entry of spec.rig||[]){
-		if(entry.node){ rig.push({ name:entry.name, node:entry.node, axis:entry.axis||"x", base:entry.base, sign:entry.sign||1, drive:entry.drive }); continue; }   // direct hinge drive — resolved against each clone in apply_model_to
+		if(entry.node){ rig.push({ ...entry, axis:entry.axis||"x", sign:entry.sign||1 }); continue; }   // direct hinge drive, all spec fields carried (toe/min/max included — an explicit field list here silently dropped them once) — resolved against each clone in apply_model_to
 		let tracks=[], duration=0;
 		if(entry.clip){ for(const c of animations){ if(entry.clip.test(c.name||"")){ tracks=tracks.concat(c.tracks); duration=Math.max(duration,c.duration||0); } } }
 		else { for(const c of animations) for(const t of c.tracks){ const node=t.name.slice(0,t.name.lastIndexOf(".")); if(entry.track.test(node)) tracks.push(t); } }
@@ -804,6 +808,15 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	if(spec.hide) m.traverse(o=>{ if(o.name&&spec.hide.test(o.name)) o.visible=false; });   // per-aircraft junk meshes (helper cubes etc.)
 	g.userData.flames=spec.flames||undefined;
 	if(spec.flames) g.children.forEach(c=>{ if(c.userData&&c.userData.ab) c.visible=false; });   // this model's own glow replaces the procedural cones
+	g.userData.swivel=null;
+	if(spec.swivel){ const sw=m.getObjectByName(spec.swivel.node); if(sw) g.userData.swivel={ object:sw, axis:new THREE.Vector3(...spec.swivel.axis).normalize() }; }
+	const glow=new Map();   // formation-strip / cockpit / navigation light materials — cloned per aircraft so each jet's exterior lights switch independently of the shared prototype (the afterburner glow stays always-on, it isn't a light)
+	m.traverse(o=>{ if(!o.isMesh||!o.material) return; (Array.isArray(o.material)?o.material:[o.material]).forEach((mm,ix)=>{
+		if(!mm.emissiveMap||/afterburner/i.test(mm.name||"")) return;
+		if(!glow.has(mm)){ const c=mm.clone(); c.userData.glowmax=/^(nose|fuselage|tails)$/i.test(mm.name||"")?4.0:(mm.emissiveIntensity??1); glow.set(mm,c); }   // the formation strips are pale PAINT in the baseColor — at night the off state already reflects moonlight, so the on state must overdrive well past it to read as a powered light under ACES
+		if(Array.isArray(o.material)) o.material[ix]=glow.get(mm); else o.material=glow.get(mm);
+	}); });
+	g.userData.glow=[...glow.values()];
 	g.add(m);
 	if(loaded.rig.length){ const mixer=new THREE.AnimationMixer(m); g.userData.gearMixer=mixer;   // per-subsystem scrub actions, driven by state in update_anim()
 		g.userData.rig=loaded.rig.map(r=>{
@@ -1008,9 +1021,10 @@ function fire_gun(st,target,key,dt,force){
 	let active;
 	if(force!==undefined) active=force;
 	else { const to=target.pos.clone().sub(st.pos); const rng=to.length(); active=(rng<2500 && st.fwd.dot(to.normalize())>0.985); }
-	if(!active) return; if(st.rounds!==undefined && st.rounds<=0) return; if(!cfg.tracers && st===ownship) {} // tracers toggle only affects render
+	if(!active) return 0; if(st.rounds!==undefined && st.rounds<=0) return 0; if(!cfg.tracers && st===ownship) {} // tracers toggle only affects render
 	const rps=100; gun[key]=(gun[key]||0)+rps*dt;   // M61 Vulcan: 6000 rpm = 100 rounds/sec
-	while(gun[key]>=1){ gun[key]-=1; if(st.rounds!==undefined){ if(st.rounds<=0) break; st.rounds--; }
+	let fired=0;
+	while(gun[key]>=1){ gun[key]-=1; fired++; if(st.rounds!==undefined){ if(st.rounds<=0) break; st.rounds--; }
 		const tr=(Math.floor(gun[key+"_n"]||0)%5)===0; gun[key+"_n"]=(gun[key+"_n"]||0)+1;
 		if(!tr) continue;   // only 1 in 5 rounds is a visible tracer; the rest fire invisibly
 		const k=pool_spawn(tracers); if(k<0) break; const sp=body_offset(st,6.0,0.35,0.0);   // gun port: nose-top centreline (forward of the windscreen)
@@ -1019,7 +1033,8 @@ function fire_gun(st,target,key,dt,force){
 		tracers.vy[k]=st.fwd.y*muzzle+(Math.random()-0.5)*spread*muzzle+st.vely;
 		tracers.vz[k]=st.fwd.z*muzzle+(Math.random()-0.5)*spread*muzzle+st.velz;
 		tracers.ttl[k]=tracers.life[k]=1.8;   // ~1.8s @1050m/s -> ~1900m burnout (real 20mm tracer range; no drag in this sim)
-		tracers.r[k]=1.3;tracers.g[k]=0.42;tracers.b[k]=0.1; } }   // red-orange; normal-blended (see tr_pts) so the colour reads instead of blowing out white
+		tracers.r[k]=1.3;tracers.g[k]=0.42;tracers.b[k]=0.1; }   // red-orange; normal-blended (see tr_pts) so the colour reads instead of blowing out white
+	return fired; }
 const flare_timer={bandit:4.5};
 function dispense_flares(st){ for(let i=0;i<36;i++){ const k=pool_spawn(flares); if(k<0) break; const sp=local_offset(st,-2,-0.3,0);
 	flares.px[k]=sp.x;flares.py[k]=sp.y;flares.pz[k]=sp.z; flares.vx[k]=st.velx*0.5+(Math.random()-0.5)*40; flares.vy[k]=st.vely*0.5-Math.random()*25; flares.vz[k]=st.velz*0.5+(Math.random()-0.5)*40;
@@ -1035,7 +1050,12 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z; m.vx=st.fwd.x*st.speed+st.fwd.x*60; m.vy=st.fwd.y*st.speed; m.vz=st.fwd.z*st.speed+st.fwd.z*60; m.life=8; m.target=target; m.smoke_acc=0; return true; }
 const _v=new THREE.Vector3();
 function update_missiles(dt){ for(const m of missiles){ if(!m.active) continue; m.life-=dt; if(m.life<=0){ m.active=false; m.mesh.visible=false; continue; }
-	const t=m.target; if(t){ _v.set(t.pos.x-m.px,t.pos.y-m.py,t.pos.z-m.pz); const dist=_v.length(); if(dist<25){ m.active=false; m.mesh.visible=false; continue; } _v.normalize();
+	const t=m.target; if(t){ _v.set(t.pos.x-m.px,t.pos.y-m.py,t.pos.z-m.pz); const dist=_v.length();
+		if(dist<12){ m.active=false; m.mesh.visible=false;   // proximity fuse: the battle warhead grades the burst — a direct hit kills, a fringe burst fragments
+			if(!MULTIPLAYER&&has_enemy&&t===bandit){ const verdict=battle_blast(0,{x:m.px,y:m.py,z:m.pz},battle_aim(bandit),0,battle_tick);
+				explosion_at(m.px,m.py,m.pz); if(verdict.kill){ own_kills++; bandit_destroy(); } }
+			continue; }
+		if(dist<25&&(MULTIPLAYER||!has_enemy||t!==bandit)){ m.active=false; m.mesh.visible=false; continue; } _v.normalize();
 		const spd=Math.min(900,Math.hypot(m.vx,m.vy,m.vz)+450*dt); let dx=m.vx,dy=m.vy,dz=m.vz; const dl=Math.hypot(dx,dy,dz)||1; dx/=dl;dy/=dl;dz/=dl;
 		const turn=Math.min(1,dt*2.5); dx+=(_v.x-dx)*turn; dy+=(_v.y-dy)*turn; dz+=(_v.z-dz)*turn; const nl=Math.hypot(dx,dy,dz)||1; m.vx=dx/nl*spd;m.vy=dy/nl*spd;m.vz=dz/nl*spd;
 	} else { const spd=Math.min(900,Math.hypot(m.vx,m.vy,m.vz)+450*dt); const l=Math.hypot(m.vx,m.vy,m.vz)||1; m.vx=m.vx/l*spd;m.vy=m.vy/l*spd;m.vz=m.vz/l*spd; }
@@ -1070,6 +1090,32 @@ ownship.launching=false;
 (()=>{ const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 	ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); })();
 const bandit=make_state(new THREE.Vector3(3000,2400,-1000),new THREE.Vector3(-0.3,0,1),195);
+// ============================================================================ battle (#78)
+// Single-player damage authority: the SAME Go battle package the multiplayer
+// server runs natively, through the wasm exports. The bandit and every extra
+// carry a "hulk" (a model-less hit body); the ownship's wounds land straight
+// in the flight core's damage state, so the aero degrades on the next step.
+let battle_tick=0, battle_reset=true;
+let harm_pending=null;   // ?harm dev hook (#105): pending injection kind
+function apply_harm(kind){ const words=flight_get(); if(!words) return;
+	if(kind==="wing"){ for(let i=4;i<8;i++) words[STATE.element+i]=1; }   // left wing outboard: the asymmetry rolls the jet
+	if(kind==="engine"){ words[STATE.engine_harm]=0.8; }
+	if(kind==="leak"){ words[STATE.leak]=2.0; }
+	if(kind==="jam"){ words[STATE.jam+4]=1; }   // rudder frozen
+	flight_set(words); }
+let own_burn=[0,0], own_burning=false, own_leak=0;   // ownship condition mirrored from progress()
+let eject_taps=0, eject_at=0, eject_flag=false, ejected=false;
+bandit.harm={ thrust:0, wing:0, killed:false, burning:false };   // zonal summary driving the AI
+function battle_aim(st){ const q=st.group?st.group.quaternion:ownship.q;
+	return { position:{x:st.pos.x,y:st.pos.y,z:st.pos.z}, quaternion:{w:q.w,x:q.x,y:q.y,z:q.z} }; }
+function battle_pose(st){ const up=st.up||world_up; return { position:{x:st.pos.x+st.fwd.x*6,y:st.pos.y+st.fwd.y*6,z:st.pos.z+st.fwd.z*6},
+	forward:{x:st.fwd.x,y:st.fwd.y,z:st.fwd.z}, up:{x:up.x,y:up.y,z:up.z} }; }
+function battle_rig(){ battle_hulk(0,"fa18c"); for(let i=0;i<extras.length&&i<8;i++) battle_hulk(1+i,"fa18c");
+	bandit.harm={thrust:0,wing:0,killed:false,burning:false}; battle_reset=true; }
+function bandit_destroy(){ explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
+	bandit.pos.set(3000,2400,-1000); bandit.fwd.set(-0.3,0,1).normalize(); bandit.merging=(cfg.task==="joust");
+	battle_hulk(0,"fa18c"); bandit.harm={thrust:0,wing:0,killed:false,burning:false};
+	notice(translate("KILL")); }
 let aircraft_lights=null;
 ownship.group=make_jet(0x9aa6b2); bandit.group=make_jet(0xb04a3a); scene.add(ownship.group,bandit.group);
 build_aircraft_lights();
@@ -1655,8 +1701,17 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(k==="KeyR" && !ownship.launching && (ownship.gear??0)>0.98 && cfg.missiles && ownship.msl>0){
 			if(MULTIPLAYER) missile_flag=true;   // the server acquires and scores; the local launch is the visual
 			if(launch_missile(ownship,MULTIPLAYER?remote_nearest():(has_enemy?bandit:null))) ownship.msl--; }   // weapons safe unless the gear is fully up
-		if(k==="KeyF" && cfg.flares && ownship.cm>0){ dispense_flares(ownship); ownship.cm--; flare_flag=true; }
-		if(k==="KeyX"){ ownship.rounds=578; ownship.msl=4; ownship.cm=60; }
+		if(k==="KeyF" && e.shiftKey){ ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; notice(ownship.probeTarget?translate("PROBE OUT"):translate("PROBE IN")); }   // Shift+F: refueling probe (real limit is ~300 KCAS — procedural, not enforced)
+		if(k==="KeyC" && e.shiftKey){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.canopyTarget=(ownship.canopyTarget??0)>0.5?0:1; notice(ownship.canopyTarget?translate("CANOPY OPEN"):translate("CANOPY CLOSED")); } else notice(translate("CANOPY LOCKED")); }   // Shift+C: canopy — ground only, taxi speeds (NATOPS closes it before takeoff; ~60 kt operation wind limit)
+		else if(k==="KeyF" && cfg.flares && ownship.cm>0){ dispense_flares(ownship); ownship.cm--; flare_flag=true; }
+		if(k==="KeyX" && !e.shiftKey){ ownship.rounds=578; ownship.msl=4; ownship.cm=60; }   // plain X only — Shift+X is the dev cloud A/B
+		if(k==="KeyJ" && !deck_edit && crash_t<=0 && !ejected){   // ejection handle: three pulls inside 1.25 s — the zero-zero seat works everywhere
+			if(sim_time-eject_at>1.25) eject_taps=0;
+			eject_at=sim_time; eject_taps++;
+			if(eject_taps>=3){ eject_taps=0; ejected=true;
+				if(MULTIPLAYER) eject_flag=true;   // the server scores the eject and wrecks the jet
+				notice(translate("EJECTED"));
+				crash_ownship(); } }
 		if(k==="Digit0" && DECK_ALIGN && carrier_model){ deck_edit=!deck_edit; if(deck_edit){ enter_align(); } else { save_cfg(); copy_cats(); cat_saved_t=1.8; } }   // 0: deck-alignment tool, gated by DECK_ALIGN (dev-only) — exit saves + copies the poses to the clipboard
 		if(TEST_SCENARIOS && !deck_edit && e.shiftKey && /^Digit\d$/.test(k)){ start_test((+k.slice(5)+9)%10); }   // Shift+1..0: scripted landing test scenarios (dev-only)
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyE"){ stab_cycle=(stab_cycle+1)%8; notice("STAB ANGLE "+stab_cycle); }   // Shift+E (dev): stab orientation cycle, +90° per press — the user reports the correct number
@@ -1664,7 +1719,7 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyA"){ const rig=ownship.group.userData.rig||[];   // Shift+A (dev): rig calibration — cycle subsystems, sweeping the active one 0..1
 			rig_sweep = rig_sweep+1 > rig.length ? 0 : rig_sweep+1;
 			notice(rig_sweep ? "RIG SWEEP: "+rig[rig_sweep-1].name : "RIG SWEEP OFF"); }
-		if(TEST_SCENARIOS && e.shiftKey && k==="KeyC"){ const u=cloud_mat.uniforms.uDebug; u.value=u.value>0.5?0:1; }   // Shift+C (dev): keep the cloud render path but zero the cloud contribution — the definitive plumbing-vs-cloud-light A/B
+		if(TEST_SCENARIOS && e.shiftKey && k==="KeyX"){ const u=cloud_mat.uniforms.uDebug; u.value=u.value>0.5?0:1; }   // Shift+X (dev, moved off Shift+C for the canopy): keep the cloud render path but zero the cloud contribution — the definitive plumbing-vs-cloud-light A/B
 		else if(deck_edit && e.shiftKey && (k==="Digit1"||k==="Digit2"||k==="Digit3"||k==="Digit4")){ cat_idx=+k.slice(5)-1; place_on_cat(cat_idx); }   // in align mode, Shift+1-4 select the catapult being aligned (plain 1-5 stay views)
 		else { if(k==="Digit1") set_view("cockpit");   // 1 Cockpit — pending art, resolves to the HUD eye-point for now (not a dead key)
 			if(k==="Digit2") set_view("hud");        // 2 HUD (default start view)
@@ -1775,6 +1830,21 @@ let sim_time=0;
 const _q=new THREE.Quaternion(), _fwd=new THREE.Vector3(), _up=new THREE.Vector3(), _right=new THREE.Vector3();
 function start_launch(){ launch_flag=true; ownship.trapped=false; ownship.throttle=Math.max(ownship.throttle,0.9); }   // requests the shot; the core fires it while attached to the shuttle (caller gates on launch_status()===2)
 let crash_t=0;   // >0 = crashed; counts down to the respawn
+let hit_flash=0;   // red vignette pulse when rounds land on the ownship
+let last_out=null;   // the core's latest output words: the HUD caution panel reads damage straight from them
+// burn_trail: flame + black smoke from a burning aircraft, rate by intensity.
+function burn_trail(pos,intensity,vx,vy,vz){ if(intensity<=0.02) return;
+	if(Math.random()<Math.min(1,intensity)){ const k=pool_spawn(smoke); if(k>=0){
+		smoke.px[k]=pos.x-((vx||0)*0.05);smoke.py[k]=pos.y;smoke.pz[k]=pos.z-((vz||0)*0.05);
+		smoke.vx[k]=(Math.random()-0.5)*4;smoke.vy[k]=4+Math.random()*6;smoke.vz[k]=(Math.random()-0.5)*4;
+		smoke.ttl[k]=smoke.life[k]=2.2+Math.random()*1.6;
+		const flame=Math.random()<0.3;
+		if(flame){ smoke.r[k]=2.2;smoke.g[k]=0.9;smoke.b[k]=0.25; } else { smoke.r[k]=0.12;smoke.g[k]=0.12;smoke.b[k]=0.13; } } } }
+// leak_trail: white fuel mist behind a holed tank.
+function leak_trail(pos,rate,vx,vy,vz){ if(Math.random()>Math.min(1,rate)) return; const k=pool_spawn(smoke); if(k<0) return;
+	smoke.px[k]=pos.x-((vx||0)*0.06);smoke.py[k]=pos.y-0.4;smoke.pz[k]=pos.z-((vz||0)*0.06);
+	smoke.vx[k]=(Math.random()-0.5)*3;smoke.vy[k]=(Math.random()-0.5)*3;smoke.vz[k]=(Math.random()-0.5)*3;
+	smoke.ttl[k]=smoke.life[k]=1.1+Math.random()*0.7; smoke.r[k]=0.95;smoke.g[k]=0.96;smoke.b[k]=0.98; }
 function explosion_at(x,y,z){ for(let i=0;i<64;i++){ const k=pool_spawn(smoke); if(k<0) break;
 	const fire=i<28, a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=fire?(9+Math.random()*40):(3+Math.random()*15);
 	smoke.px[k]=x; smoke.py[k]=y+1; smoke.pz[k]=z;
@@ -2010,7 +2080,24 @@ function fly_player(dt){
 	const out=flight_frame(controls,dt);
 	if(flight_steps.value>0) launch_flag=false;   // the edge was consumed by the core
 	last_controls=controls; marked_steps+=flight_steps.value;
-	sync_core(out);
+	sync_core(out); last_out=out;
+	if(!MULTIPLAYER){   // SP damage cascade: fires, fuses, sheds — judged by the same Go as the server
+		if(harm_pending&&battle_tick>2){ apply_harm(harm_pending); harm_pending=null; }   // frame-gated: headless captures render only a handful of frames
+		const battle=battle_progress(ownship.throttle,battle_tick++,battle_reset); battle_reset=false;
+		own_burn[0]=battle[0]; own_burn[1]=battle[1]; own_burning=battle[2]>0; own_leak=battle[5];
+		if(has_enemy){ const h=bandit.harm; h.thrust=battle[11]; h.wing=battle[12]; h.killed=battle[9]>0; h.burning=battle[8]>0;
+			if(battle[10]&BATTLE.explode){ own_kills++; bandit_destroy(); } }
+		for(let i=0;i<extras.length&&i<8;i++){ const base=6+(1+i)*8;   // neutral traffic: burning or exploding per its hulk
+			const ex=extras[i]; const glow=Math.max(battle[base],battle[base+1],battle[base+2]>0?1:0);
+			if(glow>0) burn_trail(ex.pos,glow,ex.velx,ex.vely,ex.velz);
+			if((battle[base+4]&BATTLE.explode)||battle[base+3]>0){ explosion_at(ex.pos.x,ex.pos.y,ex.pos.z);
+				ex.pos.set((Math.random()-0.5)*16000,1800+Math.random()*2200,(Math.random()-0.5)*16000); battle_hulk(1+i,"fa18c"); } }
+		burn_trail(ownship.pos,Math.max(own_burn[0],own_burn[1],own_burning?1:0),ownship.velx,ownship.vely,ownship.velz);
+		if(own_leak>0.05) leak_trail(ownship.pos,own_leak,ownship.velx,ownship.vely,ownship.velz);
+		if(battle[4]&BATTLE.explode){ ownship.grade=""; return crash_ownship(); }   // the fuel fire's fuse ran out
+		if(battle[3]>0&&crash_t<=0){ notice(translate("PILOT DOWN")); return crash_ownship(); }
+	}
+	if(hit_flash>0) hit_flash=Math.max(0,hit_flash-dt*2.2);
 	if(out[STATE.contact]>=0){ flight_clear(); ownship.group.position.copy(ownship.pos); return crash_ownship(); }   // crash probe: any non-permitted airframe contact
 	if(out[STATE.touch]>0.5){ const crashed=verdict(out); flight_clear(); if(crashed) return; }
 	// bolter: hook down, touched the deck this pass, airborne again without a wire
@@ -2021,11 +2108,16 @@ function fly_player(dt){
 	check_collisions();
 }
 function fly_bandit(dt){
+	if(bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5)) return fly_bandit_stricken(dt);
 	bandit.break_t-=dt;
 	const to_own=ownship.pos.clone().sub(bandit.pos); const rng=to_own.length();
 	if(bandit.merging){   // joust run-in: pure pursuit straight at the player — no weaving — until the pass, then the fight is on
 		if(rng<500 || to_own.dot(bandit.fwd)<0){ bandit.merging=false; }
-		else { steer(bandit,to_own.clone(),dt,0.3,1.0); apply_orientation(bandit); fire_gun(bandit,ownship,"bandit",dt); return; }
+		else { steer(bandit,to_own.clone(),dt,0.3,1.0); apply_orientation(bandit);
+			const fired=fire_gun(bandit,ownship,"bandit",dt);
+			if(fired>0){ const verdict=battle_burst(-1,battle_pose(bandit),null,fired,1,battle_tick);
+				if(verdict.hits>0) hit_flash=Math.min(1,hit_flash+0.25*verdict.hits); }
+			return; }
 	}
 	const threatened = rng<1800 && ownship.fwd.dot(to_own.clone().multiplyScalar(-1).normalize())>0.5; // ownship pointing at bandit from behind-ish
 	if(bandit.break_t<=0){ const a=Math.random()*Math.PI*2; bandit.break_dir.set(Math.cos(a),0,Math.sin(a)); bandit.break_t=threatened?(2+Math.random()*2):(5+Math.random()*5);
@@ -2033,8 +2125,22 @@ function fly_bandit(dt){
 	const b=bandit.break_dir.clone(); b.x+=Math.sin(sim_time*0.7)*0.6; b.z+=Math.cos(sim_time*0.9)*0.6;
 	if(bandit.pos.length()>5500) b.addScaledVector(bandit.pos.clone().negate().setY(0).normalize(),1.2);
 	hold_altitude(b,bandit,1400,3600); steer(bandit,b,dt,threatened?0.5:0.34,1.2); apply_orientation(bandit);
-	// bandit guns at ownship
-	fire_gun(bandit,ownship,"bandit",dt);
+	// bandit guns at ownship: the burst lands in the flight core's damage
+	// state, so the jet genuinely flies worse after every hit
+	{ const fired=fire_gun(bandit,ownship,"bandit",dt);
+		if(fired>0){ const verdict=battle_burst(-1,battle_pose(bandit),null,fired,1,battle_tick);
+			if(verdict.hits>0) hit_flash=Math.min(1,hit_flash+0.25*verdict.hits); } }
+}
+
+// Degraded bandit flying: pilot dead = a frozen shallow dive; a lost wing =
+// a terminal spiral; thrust loss slows it. The sea finishes each of them.
+function fly_bandit_stricken(dt){
+	const harm=bandit.harm;
+	if(harm.killed){ const d=bandit.fwd.clone(); d.y=-0.15; steer(bandit,d,dt,0.05,0.2); }
+	else { const d=bandit.break_dir.clone(); d.y=-0.5; steer(bandit,d,dt,0.9,1.5); bandit.speed=Math.max(120,bandit.speed-30*dt); }   // wing gone: rolling descent
+	apply_orientation(bandit);
+	burn_trail(bandit.pos,Math.max(harm.burning?1:0,harm.wing),bandit.velx,bandit.vely,bandit.velz);
+	if(bandit.pos.y<=6){ own_kills++; bandit_destroy(); }
 }
 let rig_sweep=0;   // dev calibration (Shift+A): 0 = off, n = sweep the nth rig entry of the ownship
 let stab_cycle=0;   // dev calibration (Shift+E): adds n×90° about the stab hinge so the user can identify the correct orientation
@@ -2052,7 +2158,9 @@ function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.user
 	for(const r of g.userData.rig){
 		if(r.object){ const surfaces=st.surfaces; let v=(surfaces&&surfaces[r.drive]!==undefined)?surfaces[r.drive]:0;   // no FCS data (remotes): neutral, NOT the GLB rest pose (the C's right stab rests at -50°)
 			if((!surfaces||surfaces[r.drive]===undefined)&&(r.drive==="flapL"||r.drive==="flapR")) v=DROOP*(1-THREE.MathUtils.clamp(st.gear??1,0,1));   // ...except the trailing-edge flap family: gear down = the PA configuration, drooped 30° (NATOPS flaps HALF on deck), scaled by the drawn gear travel — matching what the FCS commands for the ownship
-			if(r.max!==undefined&&v>r.max) v=r.max;   // node-driven cap (one-sided followers: the aileron shroud covers floor at flush and only ride up)
+			if(r.toe) v+=r.toe*(st.squish??0);   // rudder toe-in is a WEIGHT-ON-WHEELS aid: full during the takeoff roll, washing out at liftoff (squish = the smoothed ground-contact signal the oleo squat already uses) — NOT gear-scheduled; a climbing or approaching jet with gear down flies with straight rudders
+			if(r.max!==undefined&&v>r.max) v=r.max;   // node-driven caps (one-sided followers like the shroud covers, and the rudders' ±30° throw around the toe)
+			if(r.min!==undefined&&v<r.min) v=r.min;
 			const sweep=(sweeping===r)?(Math.sin(performance.now()/600)-0.5)*0.6:0;
 			const cycle=(st===ownship&&stab_cycle&&(r.drive==="stabL"||r.drive==="stabR"))?stab_cycle*Math.PI/4:0;   // Shift+E calibration offset (45° per step)
 			r.object.quaternion.copy(r.quaternion).multiply(new THREE.Quaternion().setFromAxisAngle(AXES[r.axis]||AXES.x, cycle+(r.sign||1)*(v+sweep)));
@@ -2068,13 +2176,21 @@ function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.user
 			if(f>0.05){ const surf=ground_height(st.pos.x,st.pos.z); if(surf>-1e8 && st.pos.y<=surf+GEAR+0.6) f=Math.min(f,HOOK_DECK_CAP); }   // claw rests ON the deck, not through it
 			break; }
 		case "speedbrake": f=THREE.MathUtils.clamp(st.speedbrake??0,0,1); break;
+		case "probe": f=THREE.MathUtils.clamp(st.probe??0,0,1); break;
+		case "canopy": f=THREE.MathUtils.clamp(st.canopy??0,0,1); break;
 		default: { const surfaces=st.surfaces; if(!surfaces||surfaces[r.drive]===undefined){ f=undefined; break; }   // no live FCS data (remotes): hold the rest pose
 			f=(surfaces[r.drive]-(r.min??0))/(((r.max??1)-(r.min??0))||1); f=THREE.MathUtils.clamp(f,0,1); } }
 		if(f===undefined) continue;
 		if(r.flip) f=1-f;
 		r.action.time=r.t0+f*(r.t1-r.t0);
 	}
-	g.userData.gearMixer.update(0); }
+	g.userData.gearMixer.update(0);
+	if(g.userData.glow&&g.userData.glow.length){ const on=(st===ownship)?!!ownship.lights:(cfg.tod!=="day");   // formation strips + cockpit glow follow the aircraft lights (L toggles the ownship's; others follow day/night)
+		for(const mm of g.userData.glow){ const want=on?mm.userData.glowmax:0; if(mm.emissiveIntensity!==want) mm.emissiveIntensity=want; } }
+	const sw=g.userData.swivel;   // nosewheel steering: the same law the core's strut applies (pedal x NWS throw, washing out with ground speed), gated on ground contact; the mixer above just re-posed the strut, so the twist post-multiplies cleanly
+	if(sw&&(st.squish??0)>0.001){ const pedal=(st===ownship)?THREE.MathUtils.clamp((input.yaw??0)*cfg.sens,-1,1):0;   // the core steers from the same sensitivity-scaled command
+		const steer=pedal*NWS*THREE.MathUtils.clamp(1-(st.speed||0)/60,0.1,1)*(st.squish??0);
+		if(steer) sw.object.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(sw.axis,steer)); } }
 function ease_to(cur,tgt,dt){ const d=tgt-cur; return Math.abs(d)>1e-4 ? cur+Math.sign(d)*Math.min(Math.abs(d),GEAR_RATE*dt) : tgt; }
 function update_anim(dt){ for(const st of [ownship,bandit,...extras]){
 	const owned=st===ownship&&flight_active;   // the core's actuators drive ownship gear + speedbrake progress (sync_core); don't ease over them
@@ -2083,6 +2199,9 @@ function update_anim(dt){ for(const st of [ownship,bandit,...extras]){
 	if(!owned){ if(st.gear===undefined) st.gear=st.gearTarget??1; st.gear=ease_to(st.gear,st.gearTarget??1,dt);
 		if(st.speedbrake===undefined) st.speedbrake=st.speedbrakeTarget??0; st.speedbrake+=THREE.MathUtils.clamp((st.speedbrakeTarget??0)-st.speedbrake,-1.5*dt,1.5*dt); }   // air-brake ease for the aircraft the core doesn't fly
 	if(st.hook===undefined) st.hook=st.hookTarget??0; st.hook=ease_to(st.hook,st.hookTarget??0,dt);
+	if(st.probe===undefined) st.probe=st.probeTarget??0; st.probe+=THREE.MathUtils.clamp((st.probeTarget??0)-st.probe,-0.2*dt,0.2*dt);   // refueling probe: ~5 s hydraulic stroke
+	if(st===ownship && (st.canopyTarget??0)>0.5 && st.speed>13){ st.canopyTarget=0; notice(translate("CANOPY CLOSING")); }   // the takeoff roll closes an open canopy before the airflow does it destructively
+	if(st.canopy===undefined) st.canopy=st.canopyTarget??0; st.canopy+=THREE.MathUtils.clamp((st.canopyTarget??0)-st.canopy,-0.167*dt,0.167*dt);   // ~6 s canopy stroke
 	apply_anim(st); } }
 function step_world(dt){ sim_time+=dt;
 	fly_player(dt); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
@@ -2094,7 +2213,10 @@ function step_world(dt){ sim_time+=dt;
 		g.children.forEach(c=>{ if(c.userData.ab){ c.visible=on; c.scale.z=flick; c.material.opacity=on?0.55+Math.random()*0.35:0; } }); };
 	set_ab(ownship.group,cfg.afterburner&&(ownship.stage??(ownship.throttle>=0.98?1:0))>0.15); set_ab(bandit.group,cfg.afterburner); extras.forEach(st=>set_ab(st.group,cfg.afterburner));   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
 	// player guns
-	fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,input.guns&&!ownship.launching&&!deck_edit&&(ownship.gear??0)>0.98);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock); in multiplayer the tracers are local, the damage is the server's
+	{ const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,input.guns&&!ownship.launching&&!deck_edit&&(ownship.gear??0)>0.98);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock); in multiplayer the tracers are local, the damage is the server's
+		if(fired>0&&!MULTIPLAYER){ const pose=battle_pose(ownship);
+			if(has_enemy) battle_burst(0,pose,battle_aim(bandit),fired,0,battle_tick);
+			for(let i=0;i<extras.length&&i<8;i++) battle_burst(1+i,pose,battle_aim(extras[i]),fired,0,battle_tick); } }
 	update_pool_ballistic(tracers,dt,9.8,0); update_missiles(dt);
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96);
 	live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts);
@@ -2115,6 +2237,7 @@ function step_world(dt){ sim_time+=dt;
 
 function reset_ownship(){
 	hist_valid=false;   // spawn/respawn teleports the camera — a cut for the cloud accumulation history
+	battle_rig(); ejected=false; eject_taps=0; hit_flash=0; own_burn=[0,0]; own_burning=false; own_leak=0;   // a fresh jet, a fresh fight (#78)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
 	ownship.rounds=578; ownship.msl=4; ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; ownship.lights=(cfg.tod!=="day");   // lights default on at night, off by day
 	ownship.grounded=false; ownship.touch=null; ownship.pass={gs:0,az:0,n:0}; ownship.pass_t=0; ownship.grade=""; ownship.waved=false;   // landing / LSO pass state
@@ -2408,6 +2531,25 @@ function draw_hud(dt){
 	if(ownship.gear<0.99){ hctx.fillStyle=ownship.gear<0.02?GR:AM; hctx.fillText(translate("GEAR"),HW-40,HH-70); }
 	if((ownship.hook??0)>0.01){ hctx.fillStyle=(ownship.hook??0)>0.98?GR:AM; hctx.fillText(translate("HOOK"),HW-40,HH-52); }
 	if(ownship.lights){ hctx.fillStyle=GR; hctx.fillText(translate("LIGHTS"),HW-40,HH-34); }   // below HOOK
+	if((ownship.probe??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("PROBE"),HW-40,HH-22); }   // below LIGHTS
+	if((ownship.canopy??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("CANOPY"),HW-40,HH-10); }   // below PROBE
+
+	// ---- caution panel (#78): red for fires and the pilot, amber for degraded systems ----
+	// Read straight from the core's damage words, so it works identically in SP and MP.
+	// Annunciator text stays English by policy — real Hornet cockpits do worldwide.
+	{ const cautions=[]; const RD="#ff5050"; const core=last_out;
+		if(own_burning) cautions.push(["FUEL FIRE",RD]);
+		if(own_burn[0]>0) cautions.push(["L ENG FIRE",RD]); else if(core&&core[STATE.engine_harm]>0.55) cautions.push(["L ENG",AM]);
+		if(own_burn[1]>0) cautions.push(["R ENG FIRE",RD]); else if(core&&core[STATE.engine_harm+1]>0.55) cautions.push(["R ENG",AM]);
+		if((core&&core[STATE.leak]>0.1)||own_leak>0.1) cautions.push(["FUEL LEAK",AM]);
+		if(core){ let jammed=false; for(let c=0;c<8;c++) if(core[STATE.jam+c]>0.2) jammed=true; if(jammed) cautions.push(["FCS",AM]);
+			let torn=false; for(let e=0;e<40;e++) if(core[STATE.element+e]>0.6) torn=true;
+			if(torn||core[STATE.stress]>2) cautions.push(["STRUCTURE",AM]); }
+		hctx.textAlign="left"; hctx.font="13px monospace";
+		let cy=HH-118;
+		for(const [label,colour] of cautions){ hctx.fillStyle=colour; hctx.fillText(label,40,cy); cy-=18; }
+	}
+	if(hit_flash>0){ hctx.fillStyle="rgba(255,32,32,"+(hit_flash*0.28).toFixed(3)+")"; hctx.fillRect(0,0,HW,HH); }   // rounds are landing on us
 
 	// ---- weapon legend (bottom-left) ----
 	hctx.textAlign="left"; hctx.font="13px monospace"; hctx.fillStyle=input.guns?AM:GR;
@@ -2503,6 +2645,12 @@ function net_event(e){ const slot=Number(e.slot);
 		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; }
 		break;
 	case "flare": if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st&&cfg.flares) dispense_flares(st); } break;
+	case "hit": if(net&&slot===net.slot&&e.count) hit_flash=Math.min(1,hit_flash+0.25*Number(e.count)); break;   // the server says rounds are landing on us
+	case "eject": case "pilot":
+		if(net&&slot===net.slot) notice(translate(e.kind==="eject"?"EJECTED":"PILOT DOWN"));
+		break;   // the airframe flies on as a wreck; the kill event handles scoring and the fireball
+	case "explode": { const st=(net&&slot===net.slot)?ownship:remotes.get(slot); if(st) explosion_at(st.pos.x,st.pos.y,st.pos.z); break; }
+	case "splash": if(Array.isArray(e.position)) explosion_at(e.position[0],e.position[1],e.position[2]); break;   // a wreck met the sea
 	case "join": if(!net||slot!==net.slot) notice((e.name||"")+" "+translate("JOINED")); break;
 	case "leave": remote_drop(slot); notice((e.name||"")+" "+translate("LEFT")); break;
 	} }
@@ -2523,9 +2671,9 @@ function net_frame(dt){
 		reheat:ownship.throttle>=0.98, brake:input.brake,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5,   // wire gear/hook: true = down/deployed
 		override:c?c.override:false,
-		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, missile:missile_flag };
+		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, missile:missile_flag, eject:eject_flag };
 	const sequence=net.input(sample);
-	if(sequence>0){ flare_flag=false; missile_flag=false; }
+	if(sequence>0){ flare_flag=false; missile_flag=false; eject_flag=false; }
 	// Prediction: the wire sample IS the sample the core flew, so the mark ring
 	// replays exactly what the server applies. The mark covers every fixed step
 	// since the previous send (input sends are capped at the tick rate).
@@ -2561,7 +2709,10 @@ function net_frame(dt){
 		st.fwd.set(1,0,0).applyQuaternion(st.group.quaternion);
 		st.velx=st.fwd.x*pose.speed; st.vely=st.fwd.y*pose.speed; st.velz=st.fwd.z*pose.speed;
 		st.gearTarget=pose.gear?0:1; st.hookTarget=pose.hook?1:0; st.speedbrakeTarget=pose.speedbrake;
-		st.name=pose.name; st.group.visible=pose.alive; }
+		st.name=pose.name; st.group.visible=pose.alive;
+		if(pose.alive){ const burning=Math.max(pose.burn?pose.burn[0]:0, pose.burn?pose.burn[1]:0);   // #78: the damage you inflicted shows on their jet
+			if(burning>0) burn_trail(st.pos,burning,st.velx,st.vely,st.velz);
+			if((pose.leak||0)>0.1) leak_trail(st.pos,pose.leak,st.velx,st.vely,st.velz); } }
 	for(const slot of [...remotes.keys()]) if(!seen.has(slot)) remote_drop(slot); }
 function net_connect(){
 	net_dial(join,{ event:net_event, end:(reason,results)=>net_end(reason||"finished",results), close:()=>net_end("gone") })
@@ -2578,9 +2729,10 @@ function net_connect(){
 		notice(translate("CONNECTION FAILED")); setTimeout(()=>{ if(running){ running=false; if(onExit) onExit(); } },1800); }); }
 
 function start_mission(){
-	const devq=new URLSearchParams(window.location.search);   // dev/screenshot hooks (#105): force a cloud preset / time of day
+	const devq=new URLSearchParams(window.location.search);   // dev/screenshot hooks (#105): force a cloud preset / time of day / inject damage
 	const cloudq=devq.get("clouds"); if(cloudq!==null) cfg.clouds=cloudq;
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
+	harm_pending=devq.get("harm");   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
 	build_ocean(cfg.ocean_segments);
 	apply_time_of_day(cfg.tod); apply_effects();
 	apply_clouds(); if(cloud_active()) size_rt();   // runs even for "none": zeroes the overcast/shadow uniforms on the ocean and sky

@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "صعودی"
 msgid "Authenticator code"
 msgstr "کد احراز هویت"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "عقب"
 
@@ -202,7 +207,7 @@ msgstr "بولتر"
 msgid "Boost interest"
 msgstr "تقویت علاقه"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "ترمز"
 
@@ -240,7 +245,7 @@ msgstr "تغییر دستهٔ اعلان"
 msgid "Chase view"
 msgstr "نمای تعقیب"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "نمای تعقیب:"
 
@@ -313,7 +318,7 @@ msgstr "بستن پنل"
 msgid "Close search"
 msgstr "بستن جست‌وجو"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "نزدیک‌تر"
 
@@ -540,6 +545,10 @@ msgstr "مناسب برای دیسلکسی"
 msgid "Edit {label}"
 msgstr "ویرایش {label}"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "ایجکت کرد"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "کد ایمیل"
@@ -599,11 +608,15 @@ msgstr "به‌روزرسانی دسته ناموفق بود"
 msgid "FAIR"
 msgstr "متوسط"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "انتقال حساب کاربری خود را تکمیل کنید"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "منورها"
 
@@ -654,11 +667,19 @@ msgstr "از"
 msgid "From theme"
 msgstr "از تم"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "چیدمان کامل"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "ارابه"
 
@@ -704,7 +725,7 @@ msgstr "گروه"
 msgid "GUN"
 msgstr "توپ"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "مسلسل‌ها"
 
@@ -737,7 +758,7 @@ msgstr "استراتوس بالا"
 msgid "Home"
 msgstr "خانه"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "قلاب"
 
@@ -781,7 +802,7 @@ msgstr "وارونه کردن پیچ"
 msgid "Join"
 msgstr "پیوستن"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "پیوست"
 
@@ -809,6 +830,14 @@ msgstr "کلیدها"
 msgid "KILL"
 msgstr "سرنگونی"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "ارابهٔ فرود"
 msgid "Large"
 msgstr "بزرگ"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "پرتاب"
 
@@ -837,7 +866,7 @@ msgstr "چیدمان"
 msgid "Learn more"
 msgstr "اطلاعات بیشتر"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "خارج شد"
 
@@ -850,7 +879,7 @@ msgstr "چپ به راست"
 msgid "Light"
 msgstr "روشن"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "چراغ‌ها"
 
@@ -914,7 +943,7 @@ msgstr "استراتوس پایین"
 msgid "M to close"
 msgstr "M برای بستن"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "نقشه"
 
@@ -938,7 +967,7 @@ msgstr "نوع مسابقه"
 msgid "Medium"
 msgstr "متوسط"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "منو"
 
@@ -954,7 +983,7 @@ msgstr "متریک"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "نقشهٔ آتول میدوی — تصاویر حاوی داده‌های اصلاح‌شدهٔ <0>Copernicus Sentinel-2</0> هستند (۲۰۲۶)؛ هندسهٔ فرودگاه (باند، مسیرهای تاکسی‌رو، اپرون‌ها) © مشارکت‌کنندگان <1>OpenStreetMap</1>، تحت مجوز <2>ODbL</2>؛ داده‌های خط ساحلی و آبسنگ‌ها از <3>NOAA NCCOS</3> (مالکیت عمومی)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "موشک"
 
@@ -1135,11 +1164,11 @@ msgstr "باز کردن منوی ناوبری"
 msgid "Open theme settings"
 msgstr "باز کردن تنظیمات تم"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "یا"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "گردش"
 
@@ -1171,7 +1200,7 @@ msgstr "تأیید با کلید عبور ناموفق بود. لطفاً دوب
 msgid "Passkeys"
 msgstr "پسکی‌ها"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "توقف"
 
@@ -1188,7 +1217,11 @@ msgstr "مکث"
 msgid "pilot"
 msgstr "خلبان"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "خلبان کشته شد"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "فراز"
 
@@ -1198,7 +1231,6 @@ msgstr "پیچ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید."
 
@@ -1237,6 +1269,14 @@ msgstr "حریم خصوصی"
 msgid "Profile"
 msgstr "پروفایل"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "برجسته"
@@ -1249,7 +1289,7 @@ msgstr "حساب‌های خود را در این سرور مجدداً پیون
 msgid "Re-register your passkeys on this server"
 msgstr "کلیدهای عبور خود را دوباره در این سرور ثبت کنید"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "بارگذاری مجدد"
 
@@ -1341,7 +1381,7 @@ msgstr "بازگشت به منو"
 msgid "Right to Left"
 msgstr "راست به چپ"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "غلت"
 
@@ -1518,7 +1558,7 @@ msgstr "گسترده"
 msgid "SPD BK"
 msgstr "ت.هو"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "ترمز هوایی"
 
@@ -1535,6 +1575,10 @@ msgstr "شروع"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "اما با ما همراه بمانید!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "تم"
 msgid "Theme Settings"
 msgstr "تنظیمات تم"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "گاز"
 
@@ -1604,7 +1648,7 @@ msgstr "گاز"
 msgid "Thursday"
 msgstr "پنجشنبه"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "شیب"
 
@@ -1757,7 +1801,7 @@ msgstr "تأیید نشانی ایمیل"
 msgid "Video thumbnail"
 msgstr "بندانگشتی ویدیو"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "نما"
 
@@ -1800,7 +1844,7 @@ msgstr "چهارشنبه"
 msgid "Wheel brakes"
 msgstr "ترمز چرخ"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "برنده شد"
 
@@ -1812,7 +1856,7 @@ msgstr "سرور دنیا"
 msgid "World server not reachable"
 msgstr "سرور دنیا در دسترس نیست"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "انحراف"
 

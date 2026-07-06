@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Internet tinkiyniykita qhaway, kutiykachimuy."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Wicharispa"
 msgid "Authenticator code"
 msgstr "Authenticator código"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "qhipaman"
 
@@ -202,7 +207,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Munay yapay"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "frinus"
 
@@ -240,7 +245,7 @@ msgstr "Willaykuna categoría tikray"
 msgid "Chase view"
 msgstr "Qatiq qhaway"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Qatiy qhaway:"
 
@@ -313,7 +318,7 @@ msgstr "Panelta wisq’ay"
 msgid "Close search"
 msgstr "Maskhay wichq'ay"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "aswan qaylla"
 
@@ -540,6 +545,10 @@ msgstr "Disleksia llamkaywanmi"
 msgid "Edit {label}"
 msgstr "{label} allinchay"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "WISCH'USQA"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Email código"
@@ -599,11 +608,15 @@ msgstr "Mana categoríata musuqyachiyta atinchu"
 msgid "FAIR"
 msgstr "REGULAR"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Cuenta-ykita apaykachay tukuchiy"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "bengalakuna"
 
@@ -654,11 +667,19 @@ msgstr "Manta"
 msgid "From theme"
 msgstr "Temamanta"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Hunt'asqa layout"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "tren"
 
@@ -704,7 +725,7 @@ msgstr "Huñu"
 msgid "GUN"
 msgstr "ILLAPA"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "illapakuna"
 
@@ -737,7 +758,7 @@ msgstr "Hanaq stratus"
 msgid "Home"
 msgstr "Wasi"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "warku"
 
@@ -781,7 +802,7 @@ msgstr "Pitch t'ikray"
 msgid "Join"
 msgstr "Yaykuy"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "YAYKUN"
 
@@ -809,6 +830,14 @@ msgstr "Teclakuna"
 msgid "KILL"
 msgstr "URMACHISQA"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Uraykuy muyuq"
 msgid "Large"
 msgstr "Hatun"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "wikch'uy"
 
@@ -837,7 +866,7 @@ msgstr "Churana"
 msgid "Learn more"
 msgstr "Aswan yachay"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "LLUQSIN"
 
@@ -850,7 +879,7 @@ msgstr "Lluq'imanta Pañaman"
 msgid "Light"
 msgstr "Sut'i"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "k'anchaykuna"
 
@@ -914,7 +943,7 @@ msgstr "Uray stratus"
 msgid "M to close"
 msgstr "M wisq'anapaq"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "mapa"
 
@@ -938,7 +967,7 @@ msgstr "Pukllay laya"
 msgid "Medium"
 msgstr "Chawpi"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "menú"
 
@@ -954,7 +983,7 @@ msgstr "Metrico"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway Atoll mapa — rikchaykunaqa <0>Copernicus Sentinel-2</0> willaykuna hukchasqata (2026) apan; aeropuertopa geometrian (phawana ñan, taxi ñankuna, sayana pampakuna) © <1>OpenStreetMap</1> yanapaqkuna, <2>ODbL</2> nisqawan licenciasqa; qucha kantu hinaspa arrecife willaykunaqa <3>NOAA NCCOS</3> manta (dominio público)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "misil"
 
@@ -1135,11 +1164,11 @@ msgstr "Navegación menúta kichay"
 msgid "Open theme settings"
 msgstr "Tema configuracionta kichay"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "icha"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "muyuy"
 
@@ -1171,7 +1200,7 @@ msgstr "Yaykuna llaveq takyachiynin mana atikurqanchu. Ama hina kaspa watiqmanta
 msgid "Passkeys"
 msgstr "Passkeykuna"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "samay"
 
@@ -1188,7 +1217,11 @@ msgstr "SAYACHISQA"
 msgid "pilot"
 msgstr "piloto"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "PILOTO WAÑUSQA"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "k'umuy"
 
@@ -1198,7 +1231,6 @@ msgstr "Pitch"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Internet tinkiyniykita qhaway, kutiykachimuy."
 
@@ -1237,6 +1269,14 @@ msgstr "Pakaynin"
 msgid "Profile"
 msgstr "Perfil"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Hoqarisqa"
@@ -1249,7 +1289,7 @@ msgstr "Kay serverpi cuenta-ykikunata watiqmanta huñuy"
 msgid "Re-register your passkeys on this server"
 msgstr "Kay servidorpi passkeyniykita musukmanta qillqachiy"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "huntʼachiy"
 
@@ -1341,7 +1381,7 @@ msgstr "Menúman kutiy"
 msgid "Right to Left"
 msgstr "Pañamanta Lluq'iman"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "tikray"
 
@@ -1518,7 +1558,7 @@ msgstr "Hatun"
 msgid "SPD BK"
 msgstr "W.FR"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "wayra frena"
 
@@ -1535,6 +1575,10 @@ msgstr "Qallariy"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Suyaylla!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Tema Wakichiykuna"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "kallpa"
 
@@ -1604,7 +1648,7 @@ msgstr "Acelerador"
 msgid "Thursday"
 msgstr "Illapachaw"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "k'iray"
 
@@ -1757,7 +1801,7 @@ msgstr "Email direccionta qhaway"
 msgid "Video thumbnail"
 msgstr "Vidiyup uñanchanan"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "qhaway"
 
@@ -1800,7 +1844,7 @@ msgstr "Quyllurchaw"
 msgid "Wheel brakes"
 msgstr "Muyu frinus"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "LLALLIN"
 
@@ -1812,7 +1856,7 @@ msgstr "Pacha servidor"
 msgid "World server not reachable"
 msgstr "Pacha servidorman mana chayay atikunchu"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "kinray"
 
