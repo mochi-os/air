@@ -566,11 +566,15 @@ fs_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),cloud_mat));
 // slice by slice into 3D textures. Sampling these is ~10x cheaper than the old in-loop fbm, which is what
 // pays for the richer lighting and step count above.
 function build_cloud_noise(){
-	const gen_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,
+	const gen_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, glslVersion:THREE.GLSL3,
 		uniforms:{ uZ:{value:0}, uMode:{value:0} },
-		vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
-		fragmentShader:`varying vec2 vUv; uniform float uZ,uMode;
-			vec3 h3(vec3 p){ p=vec3(dot(p,vec3(127.1,311.7,74.7)),dot(p,vec3(269.5,183.3,246.1)),dot(p,vec3(113.5,271.9,124.6))); return fract(sin(p)*43758.5453); }
+		vertexShader:`out vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
+		fragmentShader:`in vec2 vUv; layout(location=0) out vec4 frag; uniform float uZ,uMode;
+			// PCG3D integer hash, shared VERBATIM with the flight core's convection.go —
+			// bit-exact on every GPU and in Go, so the physics feels the cells the player
+			// sees (the old sin-hash was driver-dependent). Change one, change both.
+			uvec3 pcg3d(uvec3 v){ v=v*1664525u+1013904223u; v.x+=v.y*v.z; v.y+=v.z*v.x; v.z+=v.x*v.y; v=v^(v>>16u); v.x+=v.y*v.z; v.y+=v.z*v.x; v.z+=v.x*v.y; return v; }
+			vec3 h3(vec3 p){ uvec3 r=pcg3d(uvec3(ivec3(p+0.5)+64)); return vec3(r)*(1.0/4294967296.0); }
 			float worley(vec3 p,float freq){ p*=freq; vec3 id=floor(p), f=fract(p); float m=8.0;
 				for(int x=-1;x<=1;x++)for(int y=-1;y<=1;y++)for(int z=-1;z<=1;z++){ vec3 o=vec3(float(x),float(y),float(z));
 					vec3 c=h3(mod(id+o,freq))*0.85+0.075+o; vec3 d=c-f; m=min(m,dot(d,d)); }
@@ -587,9 +591,9 @@ function build_cloud_noise(){
 					float pf=pnoise(p,4.0)*0.55+pnoise(p,8.0)*0.3+pnoise(p,16.0)*0.15;
 					float w1=worley(p,6.0), w2=worley(p,12.0), w3=worley(p,24.0);
 					float wf=w1*0.625+w2*0.25+w3*0.125;
-					gl_FragColor=vec4(remap(pf,wf-1.0,1.0,0.0,1.0), w1,w2,w3);   // R: perlin-worley; GBA: worley fbm octaves
+					frag=vec4(remap(pf,wf-1.0,1.0,0.0,1.0), w1,w2,w3);   // R: perlin-worley; GBA: worley fbm octaves
 				} else {
-					gl_FragColor=vec4(worley(p,4.0),worley(p,8.0),worley(p,16.0),1.0);   // erosion detail octaves
+					frag=vec4(worley(p,4.0),worley(p,8.0),worley(p,16.0),1.0);   // erosion detail octaves
 				} }` });
 	const gs=new THREE.Scene(); gs.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),gen_mat));
 	const mk=(size,mode)=>{ const t3=new THREE.WebGL3DRenderTarget(size,size,size);
@@ -735,6 +739,8 @@ const AIRCRAFT_MODELS={
 		      { name:"innerR",    node:"Right_Flaperon_312", axis:"x", sign:-1, drive:"flapR" },
 		      { name:"aileronL",  node:"AileronL_69",        axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapL" },   // both ailerons: flush (TE continues the wing; ailerons are faired with flaps up) = -20° local, the centre of each side's 0..-40° percent-key animation sweep — matches the right's silhouette-bisected hand calibration to 0.02°. The authored static poses are asymmetric (left full-up 0°, right full-down -40°), so neither is neutral
 		      { name:"aileronR",  node:"AileronR_309",       axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapR" },
+		      { name:"coverL",    node:"l_aileron_percent_key_AN_Cover_65",  axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapL" },   // aileron shroud covers: animated 1:1 with their ailerons but living OUTSIDE the aileron subtrees, so they need their own drive. Authored like their surfaces (left raised at the full-up static — the floating dark plate; right closed), so the left gets the same -20° flush base and the right keeps its authored pose
+		      { name:"coverR",    node:"r_aileron_percent_key_AN_Cover_302", axis:"x", sign:-1, drive:"flapR" },
 		      { name:"rudderL",  node:"rudder_percent_key_AN_Left_319",  axis:"y", base:[0,0.15471,0,0.98796], drive:"rudder" },   // rudder neutral: trailing-edge-in-fin-plane (PCA fin plane, rotate until the TE's mean plane distance is zero) — sharper than the lateral-extent minimum, which sat ~6° off
 		      { name:"rudderR",  node:"rudder_percent_key_AN_Right_322", axis:"y", base:[0,0.19423,0,0.98096], drive:"rudder" },
 		      { name:"brake",    track:/^SPOILER_L/i, drive:"speedbrake" } ] } };
@@ -844,6 +850,21 @@ async function init_external_model(kind){
 				for(const fix of spec.pose||[]){ let o=null; gltf.scene.traverse(x=>{ if(!o&&x.name===fix.node) o=x; }); if(o) o.quaternion.set(...fix.quaternion); }   // static pose corrections for mid-animation-authored nodes, before anything captures rest poses
 				const proto=normalise_model(gltf.scene, spec);
 				const rig=rig_build(spec, gltf.animations||[]);
+				// Stand the drawn model on its wheels. normalise_model centres on the bounding box, which knows
+				// nothing about wheel geometry — and GLB edits move the centre (removing the external tanks
+				// shifted it ~11 cm and buried the wheels). Scrub the gear rig to the grounded pose, find the
+				// drawn wheel bottoms, and lift the model so they land exactly on the physics resting plane
+				// (spec.stance below the origin — the core settles the origin ~2.56 m above the surface).
+				const gearrig=rig.find(r=>r.name==="gear"&&r.clip);
+				if(gearrig&&spec.stance){
+					const mixer=new THREE.AnimationMixer(proto), action=mixer.clipAction(gearrig.clip);
+					action.play(); action.paused=true;
+					action.time=gearrig.t0+(1-(spec.squat||0))*(gearrig.t1-gearrig.t0); mixer.update(0); proto.updateMatrixWorld(true);
+					let low=1e9; const lv=new THREE.Vector3();
+					proto.traverse(x=>{ if(!x.isMesh) return; const pa=x.geometry.attributes.position;
+						for(let i=0;i<pa.count;i++){ lv.fromBufferAttribute(pa,i).applyMatrix4(x.matrixWorld); if(lv.y<low) low=lv.y; } });
+					if(low>-8&&low<-1) proto.children[0].position.y=(-spec.stance)-low;   // clones inherit; each aircraft's own gear scrub re-poses the struts every frame
+				}
 				if(typeof createImageBitmap==="function"){
 					const decoded={};
 					await Promise.all(Object.keys(tex_by_material).map(async name=>{ try{
@@ -1890,7 +1911,9 @@ function flight_world(){
 		deck:SHIP.outline.map(q=>({x:q[0], z:q[1]})),
 		catapults:SHIP.shuttles.map(c=>({ position:{x:c.x, y:0, z:c.z}, heading:c.h*D2R, stroke:SHIP.stroke, speed:SHIP.speed })),   // shuttles ARE the nose-gear points — the core's native convention
 		wires:SHIP.wires.map(fa=>({ a:{x:fa, y:0, z:strip_lat(fa)-SHIP.halfspan}, b:{x:fa, y:0, z:strip_lat(fa)+SHIP.halfspan} })) };
-	return { aircraft:cfg.aircraft||"fa18c", environment:{ seed:1, wrap:WORLD_WRAP }, world:{ sea:0, fields, carrier } };
+	const cl=CLOUDS[cfg.clouds];
+	const cloud=(cl&&cl.flat<0.5)?{ base:cl.base, top:cl.top, high:cl.high, convective:1, gate:{ minimum:cl.gate[0], maximum:cl.gate[1] } }:undefined;   // #122: convective presets bump and lift; stratiform decks are STABLE air and stay deliberately smooth
+	return { aircraft:cfg.aircraft||"fa18c", environment:{ seed:1, wrap:WORLD_WRAP, cloud }, world:{ sea:0, fields, carrier } };
 }
 function sync_core(out){   // core state -> the ownship object every consumer reads (HUD, cameras, weapons, LSO)
 	ownship.pos.set(out[STATE.position],out[STATE.position+1],out[STATE.position+2]);
