@@ -78,8 +78,7 @@ const CARRIER_MODELS={
 const SHIP=CARRIER_MODELS.nimitz;   // the active carrier (a picker arrives with the second ship)
 function load_cfg(){ try{ const s=localStorage.getItem(SAVE_KEY); if(s) Object.assign(cfg,JSON.parse(s)); }catch(e){}
 	delete cfg.cats; delete cfg.cat_dy;   // pre-#100 configs carried ship data; CARRIER_MODELS owns it now
-	if(cfg.clouds==="simple"||cfg.clouds==="volumetric") cfg.clouds=cfg.clouds==="volumetric"?"cumulus":"none";   // migrate removed types
-	if(cfg.clouds==="cumulonimbus") cfg.clouds="cumulus"; }   // cumulonimbus is hidden from the menu (preset + dev hook remain) — a saved selection would otherwise show an empty Clouds choice
+	if(cfg.clouds!=="none"&&!["cumulus","high_stratus","low_stratus"].includes(cfg.clouds)) cfg.clouds="cumulus"; }   // a saved cloud type that no longer exists falls back to the default
 function save_cfg(){ try{ localStorage.setItem(SAVE_KEY,JSON.stringify(cfg)); }catch(e){} }
 function enter_align(){ place_on_cat(cat_idx); }   // alignment nudges SHIP.shuttles in memory; exit copies them for pasting into CARRIER_MODELS
 function copy_cats(){   // on align exit: the tuned shuttles to the clipboard, in the CARRIER_MODELS source format
@@ -370,17 +369,16 @@ build_ocean(cfg.ocean_segments);
 
 // cloud layer types (rendered by the raymarch pass below)
 const CLOUDS={   // cover: higher = more cloud (coverage remap). Trade-wind cumulus: low bases (~2,000 ft), most tops at the inversion, a few towers.
-	cumulus:      { base:600,  top:2400, high:5000,  cover:0.42, density:1.0, flat:0.0, gate:[0.22,0.50], dark:0.45, scud:0 },   // fair-weather broken trade-wind sky (user-preferred)
-	cumulonimbus: { base:500,  top:3500, high:12800, cover:0.62, density:1.5, flat:0.0, gate:[0.30,0.46], dark:1.0, scud:1, cell:0.55 },   // towering storm cells: cell pattern ~1.8x larger (real Cb masses run 5-15 km across, tens of km apart), gate keeps 2-4 towers in the field, tops to ~12.8 km (subtropical Pacific tropopause regime — 11 km read fat and squat against the 5-15 km cell widths), near-black bases, clumped scud, downwind anvils on the mature cells
-	high_stratus: { base:6000, top:6700, high:6700, cover:0.55, density:0.45, flat:1.0, gate:[0.0,0.0], dark:0.3, scud:0 },   // thin widespread cirrostratus
-	low_stratus:  { base:600,  top:1150, high:1150, cover:0.80, density:1.2,  flat:1.0, gate:[0.0,0.0], dark:0.5, scud:0 },   // low grey overcast
+	cumulus:      { base:600,  top:2400, high:5000,  cover:0.42, density:1.0, flat:0.0, gate:[0.22,0.50], dark:0.45 },   // fair-weather broken trade-wind sky (user-preferred). (A cumulonimbus preset lived here 2026-07-05/06 and was removed entirely — recover from git if ever revisited)
+	high_stratus: { base:6000, top:6700, high:6700, cover:0.55, density:0.45, flat:1.0, gate:[0.0,0.0], dark:0.3 },   // thin widespread cirrostratus
+	low_stratus:  { base:600,  top:1150, high:1150, cover:0.80, density:1.2,  flat:1.0, gate:[0.0,0.0], dark:0.5 },   // low grey overcast
 };
 function apply_clouds(){ const p=CLOUDS[cfg.clouds];
 	ocean_mat.uniforms.u_cloud_on.value=p?1.0:0.0;
 	if(!p) return;
 	cloud_mat.uniforms.uBase.value=p.base; cloud_mat.uniforms.uTop.value=p.top; cloud_mat.uniforms.uHigh.value=p.high;
 	cloud_mat.uniforms.uCoverage.value=p.cover; cloud_mat.uniforms.uDensity.value=p.density; cloud_mat.uniforms.uFlat.value=p.flat;
-	cloud_mat.uniforms.uGate.value.set(p.gate[0],p.gate[1]); cloud_mat.uniforms.uDark.value=p.dark; cloud_mat.uniforms.uScud.value=p.scud; cloud_mat.uniforms.uCell.value=p.cell||1.0;
+	cloud_mat.uniforms.uGate.value.set(p.gate[0],p.gate[1]); cloud_mat.uniforms.uDark.value=p.dark;
 	ocean_mat.uniforms.u_cloud_cover.value=p.cover; ocean_mat.uniforms.u_cloud_mid.value=(p.base+p.top)*0.5; }
 const cloud_active=()=>cfg.clouds&&cfg.clouds!=="none";
 
@@ -403,7 +401,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 	uniforms:{ tDepth:{value:null}, tNoise:{value:null}, tDetail:{value:null}, uCamPos:{value:new THREE.Vector3()}, uInvVP:{value:new THREE.Matrix4()},
 		uTime:{value:0}, uSun:{value:sun_dir}, uSunCol:{value:col_sundisc}, uSky:{value:sky_horizon}, uZenith:{value:sky_zenith}, uFog:{value:fog_colour}, uDip:{value:0.0}, uDebug:{value:0.0}, uJitter:{value:0.0},
 		uBase:{value:600.0}, uTop:{value:2400.0}, uHigh:{value:5000.0}, uCoverage:{value:0.42}, uDensity:{value:1.0}, uFlat:{value:0.0}, uExposure:{value:1.05},
-		uGate:{value:new THREE.Vector2(0.22,0.50)}, uDark:{value:0.45}, uScud:{value:0.0}, uCell:{value:1.0},
+		uGate:{value:new THREE.Vector2(0.22,0.50)}, uDark:{value:0.45},
 		uClear:{value:[   // spawn clearings (xy world centre, z inner radius², w outer radius²): no cumulus/Cb ON a spawn spot. World CONSTANTS, so the shared multiplayer cloud field stays identical on every client
 			new THREE.Vector4(CARRIER.x, CARRIER.z, 25.0e6, 100.0e6),                                     // carrier (cat spots + landing spawn astern)
 			new THREE.Vector4(-1125, 2898, 25.0e6, 100.0e6),                                              // Sand Island runway (reset_ownship's fallback centroid)
@@ -415,7 +413,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 		layout(location=1) out vec4 oDepth;   // R: transmittance-weighted mean march distance / 45 km, G: accumulated alpha (validity)
 		uniform sampler2D tDepth; uniform highp sampler3D tNoise,tDetail;
 		uniform vec3 uCamPos,uSun,uSunCol,uSky,uZenith,uFog; uniform mat4 uInvVP;
-		uniform float uTime,uBase,uTop,uHigh,uCoverage,uDensity,uFlat,uExposure,uDebug,uDark,uScud,uCell,uJitter,uDip;
+		uniform float uTime,uBase,uTop,uHigh,uCoverage,uDensity,uFlat,uExposure,uDebug,uDark,uJitter,uDip;
 			uniform vec2 uGate;
 		float hash(vec3 p){ p=fract(p*0.3183099+vec3(0.1,0.2,0.3)); p*=17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
 		float remap(float v,float a,float b,float c,float d){ return c+clamp((v-a)/(b-a),0.0,1.0)*(d-c); }
@@ -424,7 +422,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 		// vigorous cells towering to uHigh (per-cell vigour from low-frequency noise). Density: Perlin-Worley base
 		// remapped by coverage, eroded at the edges by high-frequency Worley — the cauliflower billows.
 		vec4 cellfield(vec2 xz){ vec2 q=vec2((xz.x*0.958+xz.y*0.286)*0.62, -xz.x*0.286+xz.y*0.958);   // cells stretched ~1.6x along the wind: STREETS of distinct cells — stronger stretch fuses them into worm-chains
-			return texture(tNoise, vec3(q*2.0833e-5*uCell, 0.37)); }   // uCell scales the whole convective pattern: real Cb cells run 5-15 km across, several times a fair-weather puff cell
+			return texture(tNoise, vec3(q*2.0833e-5, 0.37)); }   // ~8 km cell pattern
 		float vigour(vec2 xz){ return cellfield(xz).g; }   // .g drives cell placement; .b/.a (worley octaves at the same fetch — free) become per-cell CHARACTER fields below
 		uniform vec4 uClear[4];   // spawn clearings — see the uniform block
 		float clearing(vec2 xz){ float m=1.0;
@@ -435,13 +433,11 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 			float cm=clearing(p.xz); if(cm<=0.002) return 0.0;   // spawn clearings: nothing to march inside them
 			vec3 sp=p+vec3(uTime*8.0,0.0,uTime*3.0);   // slow drift
 			vec4 w=texture(tNoise, sp*4.2e-4+vec3(0.31,0.17,0.47));   // ~2.4 km warp field (fetched early: .r feeds the flank turrets, .gba warps the base field below)
-			float hh=clamp((p.y-uBase)/(uHigh-uBase),0.0,1.0);   // absolute slab altitude (independent of vig — the lobe/anvil terms below must not feed back into themselves)
-			float storm=smoothstep(0.60,1.0,uDark);
-			float anv=storm*smoothstep(0.66,0.88,hh);   // ANVIL (incus), storm preset only: above ~2/3 of the cap the mature cell glaciates and spreads
-			vec4 cf=cellfield(p.xz-vec2(0.936,0.351)*(3200.0*anv)); float vig=cf.g;   // the anvil SHEARS downwind (sampling upwind pushes the spread downwind — same direction as the drift)
-			vec4 lb=texture(tNoise, sp*9.0e-5+vec3(0.63,0.42,0.11));   // GIANT lobe field, ~2 km features: the reference-photo hierarchy is a few HUGE bulging masses first, billows second, texture last
+			float hh=clamp((p.y-uBase)/(uHigh-uBase),0.0,1.0);   // absolute slab altitude (independent of vig — the lobe terms below must not feed back into themselves)
+			vec4 cf=cellfield(p.xz); float vig=cf.g;
+			vec4 lb=texture(tNoise, sp*9.0e-5+vec3(0.63,0.42,0.11));   // GIANT lobe field, ~2 km features: a few HUGE bulging masses first, billows second, texture last
 			float attach=smoothstep(uGate.x-0.02,uGate.x+0.06,vig);   // perturbations SCULPT existing cells only: unmasked, a strong lobe over near-gate vigour conjures isolated round puffs floating in mid-air with no tower beneath
-			vig=clamp(vig+((lb.g-0.5)*(0.05+0.13*hh)+(w.r-0.5)*0.04)*(1.0-uFlat)*attach+0.11*anv,0.0,1.0);   // FLANK TURRETS, two scales: km-class lobes (amplitude growing with height — flat bases, billowing flared heads) + fine 3D scalloping (both TRUE 3D fields — an xz-only field paints vertical cliff striations, found twice). The anvil term DILATES the footprint at cap height: the flat spreading table
+			vig=clamp(vig+((lb.g-0.5)*(0.05+0.13*hh)+(w.r-0.5)*0.04)*(1.0-uFlat)*attach,0.0,1.0);   // FLANK TURRETS, two scales: km-class lobes (amplitude growing with height — flat bases, billowing flared heads) + fine 3D scalloping (both TRUE 3D fields — an xz-only field paints vertical cliff striations, found twice)
 			float top=top_at(vig);
 			float tA=smoothstep(0.25,0.75,cf.b), tB=smoothstep(0.25,0.75,cf.a);   // per-cell character (smooth low-frequency fields, same fetch as vigour): every cell no longer bakes from an identical recipe
 			float tallf=smoothstep(uTop,uHigh,top);   // 0 = modest dome, 1 = vigorous tower
@@ -451,26 +447,17 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 				float turret=texture(tNoise, vec3(p.xz*0.75e-4, 0.71)).g;
 				top*=1.0+0.12*tallf*(turret*2.0-1.0);
 			}
-			float lbase=uBase+(lb.a-0.5)*(110.0+150.0*storm)*(1.0-uFlat);   // the condensation level is flat, not MACHINE-flat: lobe-scale undulation (lowered shelves, ragged patches) breaks the single shared plane that read as artificial
+			float lbase=uBase+(lb.a-0.5)*110.0*(1.0-uFlat);   // the condensation level is flat, not MACHINE-flat: lobe-scale undulation (lowered shelves, ragged patches) breaks the single shared plane that read as artificial
 			float h=(p.y-lbase)/(top-lbase); if(h>1.0) return 0.0;
-			if(h<0.0){   // below base: rain curtains under the mature cores, virga veil near the walls
+			if(h<0.0){   // sub-base veil: vigorous cells trail translucent virga toward the sea
 				if(uFlat>0.5) return 0.0;
+				float vfall=1.0+h*3.2; if(vfall<=0.0) return 0.0;
+				float shaft=smoothstep(0.60,0.85,vig)*vfall*(1.0-smoothstep(0.35,0.70,lod));   // NEAR-field only: as a thin horizontal layer it integrates into a flat pale band above the horizon at range (height-coded debug, 2026-07-05)
+				if(shaft<=0.0) return 0.0;
 				vec4 nb=texture(tNoise,(p+vec3(uTime*8.0,0.0,uTime*3.0))*1.6667e-4);
-				float rain=0.0;
-				if(storm>0.001){   // RAIN SHAFTS, base to sea: the murk that fills the base-to-horizon gap under a storm — a clean bright strip there read as clouds floating on a shelf. Columnar and core-locked (unlike the old thin veil), so grazing rays meet grey curtains only beneath actual cells — no uniform far band
-					float core=smoothstep(0.48,0.68,vig);   // rain under most of the massed cell, not just the strongest core — at 0.58+ the curtains were sparse wisps and the horizon showed straight through
-					float col=smoothstep(0.30,0.62,nb.r*0.55+lb.b*0.45);   // streaky fall-columns, coarse + fine
-					rain=storm*core*col*0.085;   // near-solid grey at range; still translucent at close quarters
-				}
-				float veil=0.0;
-				float vfall=1.0+h*3.2;
-				if(vfall>0.0){   // translucent virga near the cell walls — NEAR-field only: as a thin horizontal layer it integrates into a flat pale band above the horizon at range (height-coded debug, 2026-07-05)
-					float shaft=smoothstep(0.60,0.85,vig)*vfall*(1.0-smoothstep(0.35,0.70,lod));
-					veil=smoothstep(0.55,0.85,nb.r)*shaft*0.045;
-				}
-				return max(rain,veil)*uDensity*cm;
+				return smoothstep(0.55,0.85,nb.r)*shaft*0.045*uDensity*cm;
 			}
-			float prof=mix( smoothstep(0.02,mix(0.12,0.06,storm),h)*smoothstep(1.0,mix(mix(0.40,0.62,tA),0.86,tallf),h),   // cumulus domes, per-cell taper (flat-topped through plump); storm bases cut on sharper (the undulating shelf line stays DEFINED); TOWERS hold near-constant width and only round at the head — early taper renders ice-cream cones
+			float prof=mix( smoothstep(0.02,0.12,h)*smoothstep(1.0,mix(mix(0.40,0.62,tA),0.86,tallf),h),   // cumulus domes, per-cell taper (flat-topped through plump); TOWERS hold near-constant width and only round at the head — early taper renders ice-cream cones
 			                smoothstep(0.0,0.25,h)*smoothstep(1.0,0.7,h), uFlat );   // stratus: thin even slab
 			sp+=(w.gba-0.5)*vec3(150.0,80.0,150.0)*(0.75+0.5*tA)*(1.0-uFlat);   // domain warp, gentle, per-cell amplitude: clusters the base blobs into LOBES (height-scaled warp smears the field into vertical curtain folds — tried and reverted)
 			vec4 n=texture(tNoise, sp*1.6667e-4);   // base field, ~6 km period
@@ -479,18 +466,8 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 			float base=braw*prof;
 				float cov=uCoverage*mix((0.55+0.95*vig)*smoothstep(uGate.x,uGate.y,vig), 1.0, uFlat);   // per-preset cell gate: how FEW the cells are; uCoverage sets how MASSIVE each survivor builds
 			float d=remap(base, 1.0-cov, 1.0, 0.0, 1.0)*cov;
-			if(uScud>0.5){   // low scud (pannus): ragged fragments torn loose around the cells — clumped tufts at varying heights over a WIDE ring, not a uniform collar
-				float hs=(p.y-uBase)/620.0-(lb.a-0.5)*0.9;   // per-clump vertical offset: each tuft floats at its own level instead of filling one fixed slab
-				if(hs>=0.0&&hs<=1.0){
-					float sgate=smoothstep(uGate.x-0.26,uGate.x-0.06,vig)*(1.0-smoothstep(uGate.x,uGate.y,vig));   // wide vigour band: fragments scatter many km out from the cell walls...
-					float scat=smoothstep(0.45,0.75,lb.b);   // ...but only inside ~1 km CLUMPS of the scatter field — isolated tufts with genuine gaps between them
-					float covs=0.34*sgate*scat*(1.0-smoothstep(0.30,0.60,lod));   // NEAR-field only: real scud at 30 km is a sub-stride speck — marched as a statistically-uniform layer it integrates into a solid pale band above the horizon (height-coded debug traced the band to exactly this slab)
-					if(covs>0.002){ float profs=smoothstep(0.03,0.22,hs)*smoothstep(1.0,0.55,hs);
-						d=max(d, remap(braw*profs, 1.0-covs, 1.0, 0.0, 1.0)*covs); }
-				}
-			}
 			if(d<=0.0) return 0.0;
-			float hb=clamp(h*4.0,0.0,1.0), estr=mix(0.35,0.15,uFlat)*(0.82+0.36*tB)*mix(1.0,0.75,uDark);   // per-cell erosion character: some cells ragged and crisply carved, others fuller and softer. Storm cells erode LESS — a saturated updraft is full and billowing, and heavy erosion serrated the towers into chiselled rock faces
+			float hb=clamp(h*4.0,0.0,1.0), estr=mix(0.35,0.15,uFlat)*(0.82+0.36*tB)*mix(1.0,0.75,uDark);   // per-cell erosion character: some cells ragged and crisply carved, others fuller and softer; darker presets erode less (full billowing masses, not serrated rock)
 			float coarse=mix(n.b, 1.0-n.b, hb);                               // coarse erosion from the base sample: keeps far cells SEPARATE at zero cost and zero shimmer (fading erosion out entirely merged the horizon into a solid wall)
 			float er=coarse;
 			if(lod<0.7){
@@ -519,9 +496,8 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 			vec3 cloudc=vec3(0.0); float ctr=1.0; float aw=0.0, adist=0.0;   // aw/adist: alpha-weighted mean march distance — the accumulation pass reprojects each pixel at this depth
 			if(uDebug<0.5){   // uDebug=1: full RT path, zero cloud contribution (A/B against the no-clouds path)
 				float slabTop=mix(uHigh,uTop,uFlat);
-				float slabBot=uDark>0.6?0.0:uBase;   // storm preset: the march floor drops to the SEA so the sub-base rain curtains lie on the view ray — with the floor at uBase the whole h<0 branch (rain, virga) was unreachable from the air
 				float ry=ray.y<0.0?min(ray.y,-2.0e-3):max(ray.y,2.0e-3);   // horizontal rays: the exact-level slab intersection degenerates and paints a one-pixel cloudless line across the view (sign() would zero on ray.y==0)
-				float ta=(slabBot-uCamPos.y)/ry, tb=(slabTop-uCamPos.y)/ry;
+				float ta=(uBase-uCamPos.y)/ry, tb=(slabTop-uCamPos.y)/ry;
 				float cfar=90000.0;   // real maritime visibility: a 12.8 km tower is geometrically visible past 100 km — a 60 km cap read as "clouds nearby, empty sky beyond". Far cells arrive as 72%-hazed silhouettes (the aerial perspective saturates by ~46 km), so haze ends visibility, not a wall
 				float t0=max(min(ta,tb),0.0), t1=min(max(ta,tb),min(sceneDist,cfar));
 				if(t1>t0){

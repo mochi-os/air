@@ -13,7 +13,7 @@ export interface MissionConfig {
   buttons: Record<string, string>
   start: 'air' | 'runway' | 'carrier' | 'landing'
   tod: 'day' | 'night'
-  clouds: 'none' | 'cumulus' | 'cumulonimbus' | 'high_stratus' | 'low_stratus'
+  clouds: 'none' | 'cumulus' | 'high_stratus' | 'low_stratus'
   render_scale: number
   sens: number
   exterior_detail: number

@@ -5,8 +5,6 @@
 
 import { useEffect, useId, useState, type ReactNode } from 'react'
 import { Trans } from '@lingui/react/macro'
-
-const CB_MENU = false // cumulonimbus menu entry hidden — see the Clouds options below
 import { Play, RotateCcw } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
 import { Button } from '@mochi/web/components/ui/button'
@@ -478,13 +476,6 @@ export function MissionSetup({
                   options={[
                     { value: 'none', label: <Trans>None</Trans> },
                     { value: 'cumulus', label: <Trans>Cumulus</Trans> },
-                    // Cumulonimbus hidden from the menu (2026-07-06): the horizon under the storm
-                    // field never fully hid despite the murk/rain work. The preset, shader paths and
-                    // ?clouds=cumulonimbus dev hook all remain; CB_MENU re-lists it (the dead
-                    // reference below also keeps the translations alive through extract --clean).
-                    ...(CB_MENU
-                      ? [{ value: 'cumulonimbus' as const, label: <Trans>Cumulonimbus</Trans> }]
-                      : []),
                     { value: 'high_stratus', label: <Trans>High stratus</Trans> },
                     { value: 'low_stratus', label: <Trans>Low stratus</Trans> },
                   ]}
