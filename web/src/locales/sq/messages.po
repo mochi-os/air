@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Kontrolloni lidhjen tuaj me internetin dhe provoni përsëri."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Në rritje"
 msgid "Authenticator code"
 msgstr "Kodi i autentikuesit"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "prapa"
 
@@ -202,7 +207,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Rrit interesin"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "frenat"
 
@@ -240,7 +245,7 @@ msgstr "Ndrysho kategorinë e njoftimit"
 msgid "Chase view"
 msgstr "Pamje ndjekjeje"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Pamja e ndjekjes:"
 
@@ -313,7 +318,7 @@ msgstr "Mbyll panelin"
 msgid "Close search"
 msgstr "Mbyll kërkimin"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "më afër"
 
@@ -540,6 +545,10 @@ msgstr "I përshtatshëm për disleksi"
 msgid "Edit {label}"
 msgstr "Modifiko {label}"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "U KATAPULTUA"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Kodi me email"
@@ -599,11 +608,15 @@ msgstr "Përditësimi i kategorisë dështoi"
 msgid "FAIR"
 msgstr "MESATAR"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Përfundoni lëvizjen e llogarisë suaj"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "flarë"
 
@@ -654,11 +667,19 @@ msgstr "Nga"
 msgid "From theme"
 msgstr "Nga tema"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Paraqitje e plotë"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "Trupi i uljes"
 
@@ -704,7 +725,7 @@ msgstr "Grupi"
 msgid "GUN"
 msgstr "TOP"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "topa"
 
@@ -737,7 +758,7 @@ msgstr "Stratus i lartë"
 msgid "Home"
 msgstr "Faqja kryesore"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "Grep"
 
@@ -781,7 +802,7 @@ msgstr "Përmbys pjerrësinë"
 msgid "Join"
 msgstr "Bashkohu"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "U BASHKUA"
 
@@ -809,6 +830,14 @@ msgstr "Tastet"
 msgid "KILL"
 msgstr "VRASJE"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Rrotat e uljes"
 msgid "Large"
 msgstr "I madh"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "nisje"
 
@@ -837,7 +866,7 @@ msgstr "Paraqitja"
 msgid "Learn more"
 msgstr "Mëso më shumë"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "U LARGUA"
 
@@ -850,7 +879,7 @@ msgstr "Nga e majta në të djathtë"
 msgid "Light"
 msgstr "E çelët"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "dritat"
 
@@ -914,7 +943,7 @@ msgstr "Stratus i ulët"
 msgid "M to close"
 msgstr "M për të mbyllur"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "hartë"
 
@@ -938,7 +967,7 @@ msgstr "Lloji i ndeshjes"
 msgid "Medium"
 msgstr "I mesëm"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "meny"
 
@@ -954,7 +983,7 @@ msgstr "Metrik"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Harta e Atolit Midway — imazhet përmbajnë të dhëna të modifikuara <0>Copernicus Sentinel-2</0> (2026); gjeometria e aerodromit (pista, rrugët e taksimit, platformat) © kontribuesit e <1>OpenStreetMap</1>, licencuar sipas <2>ODbL</2>; të dhënat e vijës bregdetare dhe shkëmbinjve koralorë nga <3>NOAA NCCOS</3> (domen publik)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "raketë"
 
@@ -1135,11 +1164,11 @@ msgstr "Hap menynë e navigimit"
 msgid "Open theme settings"
 msgstr "Hap cilësimet e temës"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "ose"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "orbitë"
 
@@ -1171,7 +1200,7 @@ msgstr "Verifikimi i çelësit të hyrjes dështoi. Ju lutemi provoni përsëri.
 msgid "Passkeys"
 msgstr "Kyçet"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "pauzë"
 
@@ -1188,7 +1217,11 @@ msgstr "NË PAUZË"
 msgid "pilot"
 msgstr "pilot"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "PILOTI U VRA"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "pjerrësi"
 
@@ -1198,7 +1231,6 @@ msgstr "Pjerrësi"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Kontrolloni lidhjen tuaj me internetin dhe provoni përsëri."
 
@@ -1237,6 +1269,14 @@ msgstr "Privatësia"
 msgid "Profile"
 msgstr "Profili"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Ngritur"
@@ -1249,7 +1289,7 @@ msgstr "Rilinkoni llogaritë tuaja në këtë server"
 msgid "Re-register your passkeys on this server"
 msgstr "Riregjistroni çelësat tuaj të hyrjes në këtë server"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "riarmim"
 
@@ -1341,7 +1381,7 @@ msgstr "Kthehu te menu"
 msgid "Right to Left"
 msgstr "Nga e djathta në të majtë"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "rrotullim"
 
@@ -1518,7 +1558,7 @@ msgstr "I hapësirshëm"
 msgid "SPD BK"
 msgstr "FR.AJR"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "frena ajrore"
 
@@ -1535,6 +1575,10 @@ msgstr "Fillo"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Mbetuni të lidhur!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Cilësimet e temës"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "gaz"
 
@@ -1604,7 +1648,7 @@ msgstr "Gaz"
 msgid "Thursday"
 msgstr "E enjte"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "anim"
 
@@ -1757,7 +1801,7 @@ msgstr "Verifiko adresën e email-it"
 msgid "Video thumbnail"
 msgstr "Miniatura e videos"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "pamje"
 
@@ -1800,7 +1844,7 @@ msgstr "E mërkurë"
 msgid "Wheel brakes"
 msgstr "Frenat e rrotave"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "FITON"
 
@@ -1812,7 +1856,7 @@ msgstr "Serveri i botës"
 msgid "World server not reachable"
 msgstr "Serveri i botës nuk arrihet"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "devijim"
 

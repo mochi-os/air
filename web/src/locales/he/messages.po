@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "בדקו את חיבור האינטרנט ונסו שוב."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "סדר עולה"
 msgid "Authenticator code"
 msgstr "קוד אימות"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "אחורה"
 
@@ -202,7 +207,7 @@ msgstr "בולטר"
 msgid "Boost interest"
 msgstr "הגבר עניין"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "בלמים"
 
@@ -240,7 +245,7 @@ msgstr "שנה קטגוריית התראה"
 msgid "Chase view"
 msgstr "מבט מרדף"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "תצוגת מרדף:"
 
@@ -313,7 +318,7 @@ msgstr "סגור פנל"
 msgid "Close search"
 msgstr "סגור חיפוש"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "קרוב יותר"
 
@@ -540,6 +545,10 @@ msgstr "ידידותי לדיסלקציה"
 msgid "Edit {label}"
 msgstr "עריכת {label}"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "נטש"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "קוד אימייל"
@@ -599,11 +608,15 @@ msgstr "עדכון הקטגוריה נכשל"
 msgid "FAIR"
 msgstr "סביר"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "סיים את העברת החשבון"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "נורי תעתוע"
 
@@ -654,11 +667,19 @@ msgstr "מאת"
 msgid "From theme"
 msgstr "מערכת נושא"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "פריסה מלאה"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "כן נסע"
 
@@ -704,7 +725,7 @@ msgstr "קבוצה"
 msgid "GUN"
 msgstr "תותח"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "תותחים"
 
@@ -737,7 +758,7 @@ msgstr "סטרטוס גבוה"
 msgid "Home"
 msgstr "בית"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "וו"
 
@@ -781,7 +802,7 @@ msgstr "היפוך עלרוד"
 msgid "Join"
 msgstr "הצטרפות"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "הצטרף"
 
@@ -809,6 +830,14 @@ msgstr "מקשים"
 msgid "KILL"
 msgstr "חיסול"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "כן נחיתה"
 msgid "Large"
 msgstr "גדול"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "שיגור"
 
@@ -837,7 +866,7 @@ msgstr "פריסה"
 msgid "Learn more"
 msgstr "מידע נוסף"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "עזב"
 
@@ -850,7 +879,7 @@ msgstr "משמאל לימין"
 msgid "Light"
 msgstr "בהיר"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "אורות"
 
@@ -914,7 +943,7 @@ msgstr "סטרטוס נמוך"
 msgid "M to close"
 msgstr "M לסגירה"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "מפה"
 
@@ -938,7 +967,7 @@ msgstr "סוג משחק"
 msgid "Medium"
 msgstr "בינוני"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "תפריט"
 
@@ -954,7 +983,7 @@ msgstr "מטרי"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "מפת אטול מידווי — התצלומים מכילים נתוני <0>Copernicus Sentinel-2</0> ששונו (2026); גאומטריית שדה התעופה (מסלול המראה, נתיבי הסעה, מדרכות חנייה) © תורמי <1>OpenStreetMap</1>, ברישיון <2>ODbL</2>; נתוני קו החוף והשונית מ־<3>NOAA NCCOS</3> (נחלת הכלל)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "טיל"
 
@@ -1135,11 +1164,11 @@ msgstr "פתח תפריט ניווט"
 msgid "Open theme settings"
 msgstr "פתח הגדרות ערכת נושא"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "או"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "הקפה"
 
@@ -1171,7 +1200,7 @@ msgstr "אימות מפתח הגישה נכשל. נסה שוב."
 msgid "Passkeys"
 msgstr "מפתחות גישה"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "השהיה"
 
@@ -1188,7 +1217,11 @@ msgstr "מושהה"
 msgid "pilot"
 msgstr "טייס"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "טייס נהרג"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "עלרוד"
 
@@ -1198,7 +1231,6 @@ msgstr "עלרוד"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "בדקו את חיבור האינטרנט ונסו שוב."
 
@@ -1237,6 +1269,14 @@ msgstr "פרטיות"
 msgid "Profile"
 msgstr "פרופיל"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "מורם"
@@ -1249,7 +1289,7 @@ msgstr "קשר מחדש את חשבונותיך בשרת זה"
 msgid "Re-register your passkeys on this server"
 msgstr "רשמו מחדש את מפתחות הגישה שלכם בשרת הזה"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "חימוש מחדש"
 
@@ -1341,7 +1381,7 @@ msgstr "חזרה לתפריט"
 msgid "Right to Left"
 msgstr "מימין לשמאל"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "גלגול"
 
@@ -1518,7 +1558,7 @@ msgstr "מרווח"
 msgid "SPD BK"
 msgstr "בל\"א"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "בלם אוויר"
 
@@ -1535,6 +1575,10 @@ msgstr "התחל"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "הישאר מעודכן!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "ערכת נושא"
 msgid "Theme Settings"
 msgstr "הגדרות ערכת נושא"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "מצערת"
 
@@ -1604,7 +1648,7 @@ msgstr "מצערת"
 msgid "Thursday"
 msgstr "יום חמישי"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "הטיה"
 
@@ -1757,7 +1801,7 @@ msgstr "אמת כתובת אימייל"
 msgid "Video thumbnail"
 msgstr "תמונה ממוזערת של הסרטון"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "תצוגה"
 
@@ -1800,7 +1844,7 @@ msgstr "יום רביעי"
 msgid "Wheel brakes"
 msgstr "בלמי גלגלים"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "מנצח"
 
@@ -1812,7 +1856,7 @@ msgstr "שרת עולם"
 msgid "World server not reachable"
 msgstr "לא ניתן להגיע לשרת העולם"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "סבסוב"
 

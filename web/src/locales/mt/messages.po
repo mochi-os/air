@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Jekk jogħġbok iċċekkja l-konnessjoni tal-internet tiegħek u erġa' pprova."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Axxendenti"
 msgid "Authenticator code"
 msgstr "Kodiċi tal-awtentikazzjoni"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "lura"
 
@@ -202,7 +207,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Saħħaħ l-interess"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "freni"
 
@@ -240,7 +245,7 @@ msgstr "Ibdel il-kategorija tan-notifika"
 msgid "Chase view"
 msgstr "Veduta ta' segwiment"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Veduta tal-insegwiment:"
 
@@ -313,7 +318,7 @@ msgstr "Agħlaq il-pannell"
 msgid "Close search"
 msgstr "Agħlaq it-tiftix"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "eqreb"
 
@@ -540,6 +545,10 @@ msgstr "Adattat għad-disleksja"
 msgid "Edit {label}"
 msgstr "Editja {label}"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "QABEŻ 'IL BARRA"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Kodiċi tal-email"
@@ -599,11 +608,15 @@ msgstr "Ma rnexxiex tiġi aġġornata l-kategorija"
 msgid "FAIR"
 msgstr "SODISFAĊENTI"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Lesti t-trasferiment tal-kont tiegħek"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "flares"
 
@@ -654,11 +667,19 @@ msgstr "Minn"
 msgid "From theme"
 msgstr "Mit-tema"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Layout sħiħ"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "Inżul"
 
@@ -704,7 +725,7 @@ msgstr "Grupp"
 msgid "GUN"
 msgstr "KANUN"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "kanuni"
 
@@ -737,7 +758,7 @@ msgstr "Stratus għoli"
 msgid "Home"
 msgstr "Paġna ewlenija"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "ganċ"
 
@@ -781,7 +802,7 @@ msgstr "Aqleb il-pitch"
 msgid "Join"
 msgstr "Ingħaqad"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "INGĦAQAD"
 
@@ -809,6 +830,14 @@ msgstr "Ċwievet"
 msgid "KILL"
 msgstr "QTIL"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Karrell tal-inżul"
 msgid "Large"
 msgstr "Kbir"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "tluq"
 
@@ -837,7 +866,7 @@ msgstr "Tqassim"
 msgid "Learn more"
 msgstr "Tgħallem aktar"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "TELAQ"
 
@@ -850,7 +879,7 @@ msgstr "Mix-Xellug għal-Lemin"
 msgid "Light"
 msgstr "Ċar"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "dwal"
 
@@ -914,7 +943,7 @@ msgstr "Stratus baxx"
 msgid "M to close"
 msgstr "M biex tagħlaq"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "mappa"
 
@@ -938,7 +967,7 @@ msgstr "Tip ta' partita"
 msgid "Medium"
 msgstr "Medju"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "menu"
 
@@ -954,7 +983,7 @@ msgstr "Metriku"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Mappa tal-Atoll ta' Midway — l-immaġni fiha data <0>Copernicus Sentinel-2</0> modifikata (2026); il-ġeometrija tal-ajrudrom (runway, passaġġi tat-taxi, aprons) © kontributuri ta' <1>OpenStreetMap</1>, liċenzjata taħt <2>ODbL</2>; data tal-kosta u tas-sikek tal-qroll minn <3>NOAA NCCOS</3> (dominju pubbliku)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "missila"
 
@@ -1135,11 +1164,11 @@ msgstr "Iftaħ menu tan-navigazzjoni"
 msgid "Open theme settings"
 msgstr "Iftaħ settings tat-tema"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "jew"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "orbita"
 
@@ -1171,7 +1200,7 @@ msgstr "Il-verifika tal-passkey falliet. Jekk jogħġbok erġa' pprova."
 msgid "Passkeys"
 msgstr "Ċwievet tal-aċċess"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "pawża"
 
@@ -1188,7 +1217,11 @@ msgstr "PAWŻA"
 msgid "pilot"
 msgstr "bdot"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "BDOT MEJJET"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "pitch"
 
@@ -1198,7 +1231,6 @@ msgstr "Pitch"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Jekk jogħġbok iċċekkja l-konnessjoni tal-internet tiegħek u erġa' pprova."
 
@@ -1237,6 +1269,14 @@ msgstr "Privatezza"
 msgid "Profile"
 msgstr "Profil"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Imqajjem"
@@ -1249,7 +1289,7 @@ msgstr "Erġa' għaqqad il-kontijiet tiegħek fuq dan is-server"
 msgid "Re-register your passkeys on this server"
 msgstr "Erġa' rreġistra ċ-ċwievet tal-aċċess tiegħek fuq dan is-server"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "armar mill-ġdid"
 
@@ -1341,7 +1381,7 @@ msgstr "Lura għall-menu"
 msgid "Right to Left"
 msgstr "Lemin għal Xellug"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "roll"
 
@@ -1518,7 +1558,7 @@ msgstr "Wiesa'"
 msgid "SPD BK"
 msgstr "FRN.VL"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "fren tal-veloċità"
 
@@ -1535,6 +1575,10 @@ msgstr "Ibda"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Imma ibqa' segwina!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Settings tat-Tema"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "throttle"
 
@@ -1604,7 +1648,7 @@ msgstr "Throttle"
 msgid "Thursday"
 msgstr "Il-Ħamis"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "mejjel"
 
@@ -1757,7 +1801,7 @@ msgstr "Ivverifika l-indirizz tal-email"
 msgid "Video thumbnail"
 msgstr "Thumbnail tal-vidjo"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "veduta"
 
@@ -1800,7 +1844,7 @@ msgstr "L-Erbgħa"
 msgid "Wheel brakes"
 msgstr "Freni tar-rota"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "JIRBAĦ"
 
@@ -1812,7 +1856,7 @@ msgstr "Server tad-dinja"
 msgid "World server not reachable"
 msgstr "Is-server tad-dinja ma jistax jintlaħaq"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "yaw"
 

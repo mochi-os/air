@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Seiceáil do nasc idirlín agus bain triail eile as."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Ardaitheach"
 msgid "Authenticator code"
 msgstr "Cód fíordheimhnitheora"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "ar ais"
 
@@ -202,7 +207,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Spreag spéis"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "coscáin"
 
@@ -240,7 +245,7 @@ msgstr "Athraigh catagóir an fhógra"
 msgid "Chase view"
 msgstr "Amharc tóraíochta"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Amharc tóraíochta:"
 
@@ -313,7 +318,7 @@ msgstr "Dún an painéal"
 msgid "Close search"
 msgstr "Dún cuardach"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "níos gaire"
 
@@ -540,6 +545,10 @@ msgstr "Oiriúnach do disléicse"
 msgid "Edit {label}"
 msgstr "Cuir {label} in eagar"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "TEILGEADH AMACH"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Cód ríomhphoist"
@@ -599,11 +608,15 @@ msgstr "Theip ar nuashonrú catagóire"
 msgid "FAIR"
 msgstr "MEASARTHA"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Críochnaigh aistriú do chuntas"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "bladhmanna"
 
@@ -654,11 +667,19 @@ msgstr "Ó"
 msgid "From theme"
 msgstr "Ón téama"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Leagan amach iomlán"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "fearas"
 
@@ -704,7 +725,7 @@ msgstr "Grúpa"
 msgid "GUN"
 msgstr "GUNNA"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "gunnaí"
 
@@ -737,7 +758,7 @@ msgstr "Stratus ard"
 msgid "Home"
 msgstr "Baile"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "crúca"
 
@@ -781,7 +802,7 @@ msgstr "Inbhéartaigh an claonadh"
 msgid "Join"
 msgstr "Glac páirt"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "TAGTHA ISTEACH"
 
@@ -809,6 +830,14 @@ msgstr "Eochracha"
 msgid "KILL"
 msgstr "MARÚ"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Fearas tuirlingthe"
 msgid "Large"
 msgstr "Mór"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "seoladh"
 
@@ -837,7 +866,7 @@ msgstr "Leagan amach"
 msgid "Learn more"
 msgstr "Foghlaim tuilleadh"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "IMITHE"
 
@@ -850,7 +879,7 @@ msgstr "Clé go Deas"
 msgid "Light"
 msgstr "Geal"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "soilse"
 
@@ -914,7 +943,7 @@ msgstr "Stratus íseal"
 msgid "M to close"
 msgstr "M chun dúnadh"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "léarscáil"
 
@@ -938,7 +967,7 @@ msgstr "Cineál cluiche"
 msgid "Medium"
 msgstr "Meánach"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "roghchlár"
 
@@ -954,7 +983,7 @@ msgstr "Méadrach"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Léarscáil Atal Midway — tá sonraí <0>Copernicus Sentinel-2</0> mionathraithe sna híomhánna (2026); céimseata an aeradróim (rúidbhealach, tacsaíbhealaí, naprúin) © rannpháirtithe <1>OpenStreetMap</1>, ceadúnaithe faoi <2>ODbL</2>; sonraí cósta agus sceire ó <3>NOAA NCCOS</3> (fearann poiblí)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "diúracán"
 
@@ -1135,11 +1164,11 @@ msgstr "Oscail roghchlár nascleanúna"
 msgid "Open theme settings"
 msgstr "Oscail socruithe téama"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "nó"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "fithis"
 
@@ -1171,7 +1200,7 @@ msgstr "Theip ar fhíorú na heochrach rochtana. Bain triail eile as."
 msgid "Passkeys"
 msgstr "Pasluichí"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "sos"
 
@@ -1188,7 +1217,11 @@ msgstr "AR SOS"
 msgid "pilot"
 msgstr "píolóta"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "PÍOLÓTA MARBH"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "claonadh"
 
@@ -1198,7 +1231,6 @@ msgstr "Claonadh"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Seiceáil do nasc idirlín agus bain triail eile as."
 
@@ -1237,6 +1269,14 @@ msgstr "Príobháideacht"
 msgid "Profile"
 msgstr "Próifíl"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Ardaithe"
@@ -1249,7 +1289,7 @@ msgstr "Athnasc do chuntais ar an bhfreastalaí seo"
 msgid "Re-register your passkeys on this server"
 msgstr "Athchláraigh do heochracha rochtana ar an bhfreastalaí seo"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "ath-armáil"
 
@@ -1341,7 +1381,7 @@ msgstr "Fill ar an roghchlár"
 msgid "Right to Left"
 msgstr "Deas go Clé"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "rolladh"
 
@@ -1518,7 +1558,7 @@ msgstr "Spáslach"
 msgid "SPD BK"
 msgstr "CSCAE"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "coscán aeir"
 
@@ -1535,6 +1575,10 @@ msgstr "Tosaigh"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Fan ag faire áfach!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Téama"
 msgid "Theme Settings"
 msgstr "Socruithe Téama"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "scóig"
 
@@ -1604,7 +1648,7 @@ msgstr "Scóig"
 msgid "Thursday"
 msgstr "Déardaoin"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "claon"
 
@@ -1757,7 +1801,7 @@ msgstr "Fíoraigh seoladh ríomhphoist"
 msgid "Video thumbnail"
 msgstr "Mionsamhail físeáin"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "amharc"
 
@@ -1800,7 +1844,7 @@ msgstr "Céadaoin"
 msgid "Wheel brakes"
 msgstr "Coscáin rotha"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "A BHUANN"
 
@@ -1812,7 +1856,7 @@ msgstr "Freastalaí domhain"
 msgid "World server not reachable"
 msgstr "Ní féidir teacht ar an bhfreastalaí domhain"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "fiaradh"
 

@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Tafadhali angalia muunganisho wako wa intaneti na ujaribu tena."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Kupanda"
 msgid "Authenticator code"
 msgstr "Msimbo wa mthibitishaji"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "nyuma"
 
@@ -202,7 +207,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Ongeza mvuto"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "breki"
 
@@ -240,7 +245,7 @@ msgstr "Badilisha kategoria ya arifa"
 msgid "Chase view"
 msgstr "Mwonekano wa kufuata"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Mwonekano wa kufuatilia:"
 
@@ -313,7 +318,7 @@ msgstr "Funga paneli"
 msgid "Close search"
 msgstr "Funga utafutaji"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "karibu zaidi"
 
@@ -540,6 +545,10 @@ msgstr "Rahisi kwa dyslexia"
 msgid "Edit {label}"
 msgstr "Hariri {label}"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "AMEJITUPA NJE"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Msimbo wa barua pepe"
@@ -599,11 +608,15 @@ msgstr "Imeshindwa kusasisha kategoria"
 msgid "FAIR"
 msgstr "WASTANI"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Maliza kuhamisha akaunti yako"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "miali"
 
@@ -654,11 +667,19 @@ msgstr "Kutoka"
 msgid "From theme"
 msgstr "Kutoka mandhari"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Mpangilio kamili"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "Gia"
 
@@ -704,7 +725,7 @@ msgstr "Kikundi"
 msgid "GUN"
 msgstr "MZINGA"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "bunduki"
 
@@ -737,7 +758,7 @@ msgstr "Stratus ya juu"
 msgid "Home"
 msgstr "Nyumbani"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "Ndoano"
 
@@ -781,7 +802,7 @@ msgstr "Geuza pitch"
 msgid "Join"
 msgstr "Jiunge"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "AMEJIUNGA"
 
@@ -809,6 +830,14 @@ msgstr "Vitufe"
 msgid "KILL"
 msgstr "UMEUA"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Gia ya kutua"
 msgid "Large"
 msgstr "Kubwa"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "rusha"
 
@@ -837,7 +866,7 @@ msgstr "Mpangilio"
 msgid "Learn more"
 msgstr "Jifunze zaidi"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "AMEONDOKA"
 
@@ -850,7 +879,7 @@ msgstr "Kushoto kwenda Kulia"
 msgid "Light"
 msgstr "Mwepesi"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "taa"
 
@@ -914,7 +943,7 @@ msgstr "Stratus ya chini"
 msgid "M to close"
 msgstr "M kufunga"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "ramani"
 
@@ -938,7 +967,7 @@ msgstr "Aina ya mechi"
 msgid "Medium"
 msgstr "Wastani"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "menyu"
 
@@ -954,7 +983,7 @@ msgstr "Metriki"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Ramani ya Atolo ya Midway — picha zina data zilizorekebishwa za <0>Copernicus Sentinel-2</0> (2026); jiometri ya kiwanja cha ndege (njia ya kurukia, njia za kutembeza ndege, maegesho) © wachangiaji wa <1>OpenStreetMap</1>, iliyopewa leseni chini ya <2>ODbL</2>; data ya ukanda wa pwani na miamba ya matumbawe kutoka <3>NOAA NCCOS</3> (mali ya umma)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "kombora"
 
@@ -1135,11 +1164,11 @@ msgstr "Fungua menyu ya urambazaji"
 msgid "Open theme settings"
 msgstr "Fungua mipangilio ya mandhari"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "au"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "zunguka"
 
@@ -1171,7 +1200,7 @@ msgstr "Uthibitishaji wa ufunguo umeshindwa. Tafadhali jaribu tena."
 msgid "Passkeys"
 msgstr "Passkey"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "simamisha"
 
@@ -1188,7 +1217,11 @@ msgstr "IMESITISHWA"
 msgid "pilot"
 msgstr "rubani"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "RUBANI AMEUAWA"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "mwinamo"
 
@@ -1198,7 +1231,6 @@ msgstr "Pitch"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Tafadhali angalia muunganisho wako wa intaneti na ujaribu tena."
 
@@ -1237,6 +1269,14 @@ msgstr "Faragha"
 msgid "Profile"
 msgstr "Wasifu"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Iliyoinuliwa"
@@ -1249,7 +1289,7 @@ msgstr "Unganisha tena akaunti zako kwenye seva hii"
 msgid "Re-register your passkeys on this server"
 msgstr "Sajili upya funguo zako za ufikiaji kwenye seva hii"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "pakia upya"
 
@@ -1341,7 +1381,7 @@ msgstr "Rudi kwenye menyu"
 msgid "Right to Left"
 msgstr "Kulia kwenda Kushoto"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "mzunguko"
 
@@ -1518,7 +1558,7 @@ msgstr "Pana"
 msgid "SPD BK"
 msgstr "BR.HEW"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "breki ya hewa"
 
@@ -1535,6 +1575,10 @@ msgstr "Anza"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Endelea kufuatilia!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Mandhari"
 msgid "Theme Settings"
 msgstr "Mipangilio ya Mandhari"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "kasi"
 
@@ -1604,7 +1648,7 @@ msgstr "Throttle"
 msgid "Thursday"
 msgstr "Alhamisi"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "inamisha"
 
@@ -1757,7 +1801,7 @@ msgstr "Thibitisha anwani ya barua pepe"
 msgid "Video thumbnail"
 msgstr "Kijipicha cha video"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "mwonekano"
 
@@ -1800,7 +1844,7 @@ msgstr "Jumatano"
 msgid "Wheel brakes"
 msgstr "Breki za magurudumu"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "AMESHINDA"
 
@@ -1812,7 +1856,7 @@ msgstr "Seva ya dunia"
 msgid "World server not reachable"
 msgstr "Seva ya dunia haipatikani"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "mgeuko"
 

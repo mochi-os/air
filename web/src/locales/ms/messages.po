@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Sila semak sambungan internet anda dan cuba lagi."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Menaik"
 msgid "Authenticator code"
 msgstr "Kod authenticator"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "undur"
 
@@ -202,7 +207,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Tingkatkan minat"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "brek"
 
@@ -240,7 +245,7 @@ msgstr "Tukar kategori pemberitahuan"
 msgid "Chase view"
 msgstr "Pandangan kejar"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Pandangan kejar:"
 
@@ -313,7 +318,7 @@ msgstr "Tutup panel"
 msgid "Close search"
 msgstr "Tutup carian"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "lebih dekat"
 
@@ -540,6 +545,10 @@ msgstr "Mesra disleksia"
 msgid "Edit {label}"
 msgstr "Edit {label}"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "TERLONTAR KELUAR"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Kod e-mel"
@@ -599,11 +608,15 @@ msgstr "Gagal mengemas kini kategori"
 msgid "FAIR"
 msgstr "SEDERHANA"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Selesaikan pemindahan akaun anda"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "suar"
 
@@ -654,11 +667,19 @@ msgstr "Daripada"
 msgid "From theme"
 msgstr "Daripada tema"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Susun atur penuh"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "Gear"
 
@@ -704,7 +725,7 @@ msgstr "Kumpulan"
 msgid "GUN"
 msgstr "MERIAM"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "senjata"
 
@@ -737,7 +758,7 @@ msgstr "Stratus tinggi"
 msgid "Home"
 msgstr "Laman utama"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "Cangkuk"
 
@@ -781,7 +802,7 @@ msgstr "Songsangkan pitch"
 msgid "Join"
 msgstr "Sertai"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "MENYERTAI"
 
@@ -809,6 +830,14 @@ msgstr "Kekunci"
 msgid "KILL"
 msgstr "KILL"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Roda pendaratan"
 msgid "Large"
 msgstr "Besar"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "lancarkan"
 
@@ -837,7 +866,7 @@ msgstr "Susun atur"
 msgid "Learn more"
 msgstr "Ketahui lebih lanjut"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "KELUAR"
 
@@ -850,7 +879,7 @@ msgstr "Kiri ke Kanan"
 msgid "Light"
 msgstr "Terang"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "lampu"
 
@@ -914,7 +943,7 @@ msgstr "Stratus rendah"
 msgid "M to close"
 msgstr "M untuk tutup"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "peta"
 
@@ -938,7 +967,7 @@ msgstr "Jenis perlawanan"
 msgid "Medium"
 msgstr "Sederhana"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "menu"
 
@@ -954,7 +983,7 @@ msgstr "Metrik"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Peta Atol Midway — imej mengandungi data <0>Copernicus Sentinel-2</0> yang diubah suai (2026); geometri lapangan terbang (landasan, laluan rayapan, apron) © penyumbang <1>OpenStreetMap</1>, dilesenkan di bawah <2>ODbL</2>; data garis pantai dan terumbu daripada <3>NOAA NCCOS</3> (domain awam)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "peluru berpandu"
 
@@ -1135,11 +1164,11 @@ msgstr "Buka menu navigasi"
 msgid "Open theme settings"
 msgstr "Buka tetapan tema"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "atau"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "orbit"
 
@@ -1171,7 +1200,7 @@ msgstr "Pengesahan kunci laluan gagal. Sila cuba lagi."
 msgid "Passkeys"
 msgstr "Passkey"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "jeda"
 
@@ -1188,7 +1217,11 @@ msgstr "DIJEDA"
 msgid "pilot"
 msgstr "juruterbang"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "JURUTERBANG TERKORBAN"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "anggul"
 
@@ -1198,7 +1231,6 @@ msgstr "Pitch"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Sila semak sambungan internet anda dan cuba lagi."
 
@@ -1237,6 +1269,14 @@ msgstr "Privasi"
 msgid "Profile"
 msgstr "Profil"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Timbul"
@@ -1249,7 +1289,7 @@ msgstr "Pautkan semula akaun anda di pelayan ini"
 msgid "Re-register your passkeys on this server"
 msgstr "Daftar semula kunci laluan anda di pelayan ini"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "isi semula"
 
@@ -1341,7 +1381,7 @@ msgstr "Kembali ke menu"
 msgid "Right to Left"
 msgstr "Kanan ke Kiri"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "golek"
 
@@ -1518,7 +1558,7 @@ msgstr "Luas"
 msgid "SPD BK"
 msgstr "B.LAJ"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "brek laju"
 
@@ -1535,6 +1575,10 @@ msgstr "Mula"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Nantikan!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Tetapan Tema"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "pendikit"
 
@@ -1604,7 +1648,7 @@ msgstr "Pendikit"
 msgid "Thursday"
 msgstr "Khamis"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "condong"
 
@@ -1757,7 +1801,7 @@ msgstr "Sahkan alamat e-mel"
 msgid "Video thumbnail"
 msgstr "Imej kecil video"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "pandangan"
 
@@ -1800,7 +1844,7 @@ msgstr "Rabu"
 msgid "Wheel brakes"
 msgstr "Brek roda"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "MENANG"
 
@@ -1812,7 +1856,7 @@ msgstr "Pelayan dunia"
 msgid "World server not reachable"
 msgstr "Pelayan dunia tidak dapat dihubungi"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "rewang"
 

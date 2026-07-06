@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "请检查您的网络连接后重试。"
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "升序"
 msgid "Authenticator code"
 msgstr "身份验证码"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "后退"
 
@@ -202,7 +207,7 @@ msgstr "逃逸复飞"
 msgid "Boost interest"
 msgstr "提升兴趣"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "刹车"
 
@@ -240,7 +245,7 @@ msgstr "更改通知分类"
 msgid "Chase view"
 msgstr "追尾视角"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "追逐视角："
 
@@ -313,7 +318,7 @@ msgstr "关闭面板"
 msgid "Close search"
 msgstr "关闭搜索"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "拉近"
 
@@ -540,6 +545,10 @@ msgstr "阅读障碍友好"
 msgid "Edit {label}"
 msgstr "编辑 {label}"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "弹射"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "邮箱验证码"
@@ -599,11 +608,15 @@ msgstr "更新分类失败"
 msgid "FAIR"
 msgstr "尚可"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "完成账户迁移"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "热焰弹"
 
@@ -654,11 +667,19 @@ msgstr "来自"
 msgid "From theme"
 msgstr "来自主题"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "完整布局"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "起落架"
 
@@ -704,7 +725,7 @@ msgstr "群组"
 msgid "GUN"
 msgstr "机炮"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "机炮"
 
@@ -737,7 +758,7 @@ msgstr "高层云"
 msgid "Home"
 msgstr "首页"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "尾钩"
 
@@ -781,7 +802,7 @@ msgstr "反转俯仰"
 msgid "Join"
 msgstr "加入"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "已加入"
 
@@ -809,6 +830,14 @@ msgstr "按键"
 msgid "KILL"
 msgstr "击落"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "起落架"
 msgid "Large"
 msgstr "大"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "弹射"
 
@@ -837,7 +866,7 @@ msgstr "布局"
 msgid "Learn more"
 msgstr "了解更多"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "已离开"
 
@@ -850,7 +879,7 @@ msgstr "从左到右"
 msgid "Light"
 msgstr "浅色"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "灯光"
 
@@ -914,7 +943,7 @@ msgstr "低层云"
 msgid "M to close"
 msgstr "M 关闭"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "地图"
 
@@ -938,7 +967,7 @@ msgstr "对局类型"
 msgid "Medium"
 msgstr "中"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "菜单"
 
@@ -954,7 +983,7 @@ msgstr "公制"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "中途岛环礁地图 — 影像包含经过修改的 <0>Copernicus Sentinel-2</0> 数据（2026）；机场几何数据（跑道、滑行道、停机坪）© <1>OpenStreetMap</1> 贡献者，依据 <2>ODbL</2> 授权；海岸线和珊瑚礁数据来自 <3>NOAA NCCOS</3>（公有领域）。"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "导弹"
 
@@ -1135,11 +1164,11 @@ msgstr "打开导航菜单"
 msgid "Open theme settings"
 msgstr "打开主题设置"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "或"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "环绕"
 
@@ -1171,7 +1200,7 @@ msgstr "通行密钥验证失败。请重试。"
 msgid "Passkeys"
 msgstr "通行密钥"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "暂停"
 
@@ -1188,7 +1217,11 @@ msgstr "已暂停"
 msgid "pilot"
 msgstr "飞行员"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "飞行员阵亡"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "俯仰"
 
@@ -1198,7 +1231,6 @@ msgstr "俯仰"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "请检查您的网络连接后重试。"
 
@@ -1237,6 +1269,14 @@ msgstr "隐私"
 msgid "Profile"
 msgstr "个人资料"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "凸起"
@@ -1249,7 +1289,7 @@ msgstr "在此服务器上重新关联账户"
 msgid "Re-register your passkeys on this server"
 msgstr "在此服务器上重新注册您的通行密钥"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "重新装弹"
 
@@ -1341,7 +1381,7 @@ msgstr "返回菜单"
 msgid "Right to Left"
 msgstr "从右到左"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "横滚"
 
@@ -1518,7 +1558,7 @@ msgstr "宽松"
 msgid "SPD BK"
 msgstr "减速板"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "减速板"
 
@@ -1535,6 +1575,10 @@ msgstr "开始"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "敬请期待!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "主题"
 msgid "Theme Settings"
 msgstr "主题设置"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "油门"
 
@@ -1604,7 +1648,7 @@ msgstr "油门"
 msgid "Thursday"
 msgstr "星期四"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "倾斜"
 
@@ -1757,7 +1801,7 @@ msgstr "验证邮箱地址"
 msgid "Video thumbnail"
 msgstr "视频缩略图"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "视角"
 
@@ -1800,7 +1844,7 @@ msgstr "星期三"
 msgid "Wheel brakes"
 msgstr "机轮刹车"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "获胜"
 
@@ -1812,7 +1856,7 @@ msgstr "世界服务器"
 msgid "World server not reachable"
 msgstr "无法连接世界服务器"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "偏航"
 

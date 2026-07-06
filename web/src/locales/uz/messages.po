@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Internet aloqangizni tekshiring va qayta urinib ko‘ring."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Oʻsish boʻyicha"
 msgid "Authenticator code"
 msgstr "Autentifikator kodi"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "orqaga"
 
@@ -202,7 +207,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Qiziqishni kuchaytirish"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "tormozlar"
 
@@ -240,7 +245,7 @@ msgstr "Bildirishnoma toifasini oʻzgartirish"
 msgid "Chase view"
 msgstr "Taʼqib koʻrinishi"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Ta'qib ko'rinishi:"
 
@@ -313,7 +318,7 @@ msgstr "Panelni yopish"
 msgid "Close search"
 msgstr "Qidiruvni yopish"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "yaqinroq"
 
@@ -540,6 +545,10 @@ msgstr "Disleksiyaga moslashtirilgan"
 msgid "Edit {label}"
 msgstr "{label}ni tahrirlash"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "KATAPULTLANDI"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Email kodi"
@@ -599,11 +608,15 @@ msgstr "Toifani yangilab boʻlmadi"
 msgid "FAIR"
 msgstr "OʻRTACHA"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Hisobni ko'chirishni yakunlang"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "flerlar"
 
@@ -654,11 +667,19 @@ msgstr "Kimdan"
 msgid "From theme"
 msgstr "Mavzudan"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Toʻliq tartib"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "shassi"
 
@@ -704,7 +725,7 @@ msgstr "Guruh"
 msgid "GUN"
 msgstr "TOʻP"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "to'plar"
 
@@ -737,7 +758,7 @@ msgstr "Yuqori stratus"
 msgid "Home"
 msgstr "Bosh sahifa"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "Ilgak"
 
@@ -781,7 +802,7 @@ msgstr "Tangajni teskari qilish"
 msgid "Join"
 msgstr "Qoʻshilish"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "QOʻSHILDI"
 
@@ -809,6 +830,14 @@ msgstr "Tugmalar"
 msgid "KILL"
 msgstr "URIB TUSHIRILDI"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Shassi"
 msgid "Large"
 msgstr "Katta"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "uchirish"
 
@@ -837,7 +866,7 @@ msgstr "Tartib"
 msgid "Learn more"
 msgstr "Batafsil"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "CHIQIB KETDI"
 
@@ -850,7 +879,7 @@ msgstr "Chapdan oʻngga"
 msgid "Light"
 msgstr "Yorugʻ"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "chiroqlar"
 
@@ -914,7 +943,7 @@ msgstr "Past stratus"
 msgid "M to close"
 msgstr "Yopish uchun M"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "xarita"
 
@@ -938,7 +967,7 @@ msgstr "Oʻyin turi"
 msgid "Medium"
 msgstr "Oʻrta"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "menyu"
 
@@ -954,7 +983,7 @@ msgstr "Metrik"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway Atoll xaritasi — tasvirlar oʻzgartirilgan <0>Copernicus Sentinel-2</0> maʼlumotlarini oʻz ichiga oladi (2026); aerodrom geometriyasi (uchish-qoʻnish yoʻlagi, rulash yoʻllari, perronlar) © <1>OpenStreetMap</1> ishtirokchilari, <2>ODbL</2> litsenziyasi asosida; qirgʻoq chizigʻi va rif maʼlumotlari <3>NOAA NCCOS</3> dan (jamoat mulki)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "raketa"
 
@@ -1135,11 +1164,11 @@ msgstr "Navigatsiya menyusini ochish"
 msgid "Open theme settings"
 msgstr "Mavzu sozlamalarini ochish"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "yoki"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "aylanish"
 
@@ -1171,7 +1200,7 @@ msgstr "Kirish kaliti tasdig'i muvaffaqiyatsiz tugadi. Iltimos, qaytadan urinib 
 msgid "Passkeys"
 msgstr "Passkey’lar"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "pauza"
 
@@ -1188,7 +1217,11 @@ msgstr "TOʻXTATILDI"
 msgid "pilot"
 msgstr "uchuvchi"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "UCHUVCHI HALOK BO'LDI"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "qiyalanish"
 
@@ -1198,7 +1231,6 @@ msgstr "Tangaj"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Internet aloqangizni tekshiring va qayta urinib ko‘ring."
 
@@ -1237,6 +1269,14 @@ msgstr "Maxfiylik"
 msgid "Profile"
 msgstr "Profil"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Koʻtarilgan"
@@ -1249,7 +1289,7 @@ msgstr "Bu serverdagi hisoblaringizni qayta ulang"
 msgid "Re-register your passkeys on this server"
 msgstr "Ushbu serverda kirish kalitlaringizni qayta ro'yxatdan o'tkazing"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "qayta o'qlash"
 
@@ -1341,7 +1381,7 @@ msgstr "Menyuga qaytish"
 msgid "Right to Left"
 msgstr "Oʻngdan chapga"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "ag'darilish"
 
@@ -1518,7 +1558,7 @@ msgstr "Keng"
 msgid "SPD BK"
 msgstr "TZL TR"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "tezlik tormozi"
 
@@ -1535,6 +1575,10 @@ msgstr "Boshlash"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Lekin kuzatishda davom eting!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Mavzu"
 msgid "Theme Settings"
 msgstr "Mavzu sozlamalari"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "gaz"
 
@@ -1604,7 +1648,7 @@ msgstr "Gaz"
 msgid "Thursday"
 msgstr "Payshanba"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "egish"
 
@@ -1757,7 +1801,7 @@ msgstr "Email manzilini tasdiqlash"
 msgid "Video thumbnail"
 msgstr "Video eskizi"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "ko'rinish"
 
@@ -1800,7 +1844,7 @@ msgstr "Chorshanba"
 msgid "Wheel brakes"
 msgstr "G'ildirak tormozlari"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "GʻOLIB"
 
@@ -1812,7 +1856,7 @@ msgstr "Dunyo serveri"
 msgid "World server not reachable"
 msgstr "Dunyo serveriga ulanib boʻlmadi"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "burilish"
 

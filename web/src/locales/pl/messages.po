@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Sprawdź połączenie internetowe i spróbuj ponownie."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Rosnąco"
 msgid "Authenticator code"
 msgstr "Kod uwierzytelniający"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "wstecz"
 
@@ -202,7 +207,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Zwiększ zainteresowanie"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "hamulce"
 
@@ -240,7 +245,7 @@ msgstr "Zmień kategorię powiadomienia"
 msgid "Chase view"
 msgstr "Widok pościgowy"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Widok pościgu:"
 
@@ -313,7 +318,7 @@ msgstr "Zamknij panel"
 msgid "Close search"
 msgstr "Zamknij wyszukiwanie"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "bliżej"
 
@@ -540,6 +545,10 @@ msgstr "Przyjazna dla dysleksji"
 msgid "Edit {label}"
 msgstr "Edytuj {label}"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "KATAPULTOWANY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Kod e-mail"
@@ -599,11 +608,15 @@ msgstr "Nie udało się zaktualizować kategorii"
 msgid "FAIR"
 msgstr "DOSTATECZNIE"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Zakończ przenoszenie konta"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "flary"
 
@@ -654,11 +667,19 @@ msgstr "Od"
 msgid "From theme"
 msgstr "Z motywu"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Pełny układ"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "podwozie"
 
@@ -704,7 +725,7 @@ msgstr "Grupa"
 msgid "GUN"
 msgstr "DZIAŁKO"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "działka"
 
@@ -737,7 +758,7 @@ msgstr "Wysoki stratus"
 msgid "Home"
 msgstr "Główna"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "hak"
 
@@ -781,7 +802,7 @@ msgstr "Odwróć pochylenie"
 msgid "Join"
 msgstr "Dołącz"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "DOŁĄCZYŁ"
 
@@ -809,6 +830,14 @@ msgstr "Klawisze"
 msgid "KILL"
 msgstr "ZESTRZELENIE"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Podwozie"
 msgid "Large"
 msgstr "Duży"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "start"
 
@@ -837,7 +866,7 @@ msgstr "Układ"
 msgid "Learn more"
 msgstr "Dowiedz się więcej"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "WYSZEDŁ"
 
@@ -850,7 +879,7 @@ msgstr "Od lewej do prawej"
 msgid "Light"
 msgstr "Jasny"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "światła"
 
@@ -914,7 +943,7 @@ msgstr "Niski stratus"
 msgid "M to close"
 msgstr "M aby zamknąć"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "mapa"
 
@@ -938,7 +967,7 @@ msgstr "Typ meczu"
 msgid "Medium"
 msgstr "Średni"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "menu"
 
@@ -954,7 +983,7 @@ msgstr "Metryczny"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Mapa atolu Midway — zdjęcia zawierają zmodyfikowane dane <0>Copernicus Sentinel-2</0> (2026); geometria lotniska (droga startowa, drogi kołowania, płyty postojowe) © autorzy <1>OpenStreetMap</1>, na licencji <2>ODbL</2>; dane o linii brzegowej i rafach z <3>NOAA NCCOS</3> (domena publiczna)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "pocisk"
 
@@ -1135,11 +1164,11 @@ msgstr "Otwórz menu nawigacji"
 msgid "Open theme settings"
 msgstr "Otwórz ustawienia motywu"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "lub"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "orbita"
 
@@ -1171,7 +1200,7 @@ msgstr "Weryfikacja kluczem dostępu nie powiodła się. Spróbuj ponownie."
 msgid "Passkeys"
 msgstr "Klucze dostępu"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "pauza"
 
@@ -1188,7 +1217,11 @@ msgstr "PAUZA"
 msgid "pilot"
 msgstr "pilot"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "PILOT ZABITY"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "pochylenie"
 
@@ -1198,7 +1231,6 @@ msgstr "Pochylenie"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Sprawdź połączenie internetowe i spróbuj ponownie."
 
@@ -1237,6 +1269,14 @@ msgstr "Prywatność"
 msgid "Profile"
 msgstr "Profil"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Uniesiony"
@@ -1249,7 +1289,7 @@ msgstr "Ponownie powiąż swoje konta na tym serwerze"
 msgid "Re-register your passkeys on this server"
 msgstr "Zarejestruj ponownie swoje klucze dostępu na tym serwerze"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "przeładuj"
 
@@ -1341,7 +1381,7 @@ msgstr "Powrót do menu"
 msgid "Right to Left"
 msgstr "Od prawej do lewej"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "przechylenie"
 
@@ -1518,7 +1558,7 @@ msgstr "Przestronne"
 msgid "SPD BK"
 msgstr "H.AER"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "hamulec aerodynamiczny"
 
@@ -1535,6 +1575,10 @@ msgstr "Start"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Bądź jednak na bieżąco!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Motyw"
 msgid "Theme Settings"
 msgstr "Ustawienia motywu"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "przepustnica"
 
@@ -1604,7 +1648,7 @@ msgstr "Przepustnica"
 msgid "Thursday"
 msgstr "Czwartek"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "nachylenie"
 
@@ -1757,7 +1801,7 @@ msgstr "Zweryfikuj adres e-mail"
 msgid "Video thumbnail"
 msgstr "Miniatura wideo"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "widok"
 
@@ -1800,7 +1844,7 @@ msgstr "Środa"
 msgid "Wheel brakes"
 msgstr "Hamulce kołowe"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "WYGRYWA"
 
@@ -1812,7 +1856,7 @@ msgstr "Serwer świata"
 msgid "World server not reachable"
 msgstr "Serwer świata jest nieosiągalny"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "odchylenie"
 

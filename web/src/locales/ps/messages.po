@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "مهرباني وکړئ خپل د انټرنیټ اړیکه وګورئ او بیا هڅه وکړئ."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "د کم څخه ډېر"
 msgid "Authenticator code"
 msgstr "د Authenticator کوډ"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "شاته"
 
@@ -202,7 +207,7 @@ msgstr "بولټر"
 msgid "Boost interest"
 msgstr "دلچسپي ډیره کړه"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "بریک"
 
@@ -240,7 +245,7 @@ msgstr "د خبرتیا کټګورۍ بدله کړه"
 msgid "Chase view"
 msgstr "د تعقیب لید"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "د تعقیب لید:"
 
@@ -313,7 +318,7 @@ msgstr "پټۍ بنده کړئ"
 msgid "Close search"
 msgstr "لټون وتړئ"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "نږدې"
 
@@ -540,6 +545,10 @@ msgstr "د لوستلو ستونزې سره مطابقت لري"
 msgid "Edit {label}"
 msgstr "{label} سمول"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "بهر ودانګل"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "د بریښنالیک کوډ"
@@ -599,11 +608,15 @@ msgstr "د کټګورۍ تازه کولو پاتې راغلل"
 msgid "FAIR"
 msgstr "منځنی"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "د خپل حساب لیږد پای ته ورسوئ"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "فلیرونه"
 
@@ -654,11 +667,19 @@ msgstr "له"
 msgid "From theme"
 msgstr "د ښکارندوی څخه"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "بشپړ ترتیب"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "ګیر"
 
@@ -704,7 +725,7 @@ msgstr "ګروپ"
 msgid "GUN"
 msgstr "توپ"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "توپونه"
 
@@ -737,7 +758,7 @@ msgstr "لوړ سټراتوس"
 msgid "Home"
 msgstr "کور"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "قلاب"
 
@@ -781,7 +802,7 @@ msgstr "پیچ معکوس کړئ"
 msgid "Join"
 msgstr "یوځای شئ"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "یوځای شو"
 
@@ -809,6 +830,14 @@ msgstr "کیلۍ"
 msgid "KILL"
 msgstr "وژنه"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "د کوزېدو ټایرونه"
 msgid "Large"
 msgstr "لوی"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "توغول"
 
@@ -837,7 +866,7 @@ msgstr "ترتیب"
 msgid "Learn more"
 msgstr "نور زده کړئ"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "ووت"
 
@@ -850,7 +879,7 @@ msgstr "له کیڼ څخه ښي"
 msgid "Light"
 msgstr "روښانه"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "څراغونه"
 
@@ -914,7 +943,7 @@ msgstr "ټیټ سټراتوس"
 msgid "M to close"
 msgstr "د بندولو لپاره M"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "نقشه"
 
@@ -938,7 +967,7 @@ msgstr "د سيالۍ ډول"
 msgid "Medium"
 msgstr "منځنی"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "غورنۍ"
 
@@ -954,7 +983,7 @@ msgstr "میټریک"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "د Midway Atoll نقشه — انځورونه بدل شوي <0>Copernicus Sentinel-2</0> معلومات (۲۰۲۶) لري؛ د هوايي ډګر جیومیټري (د الوتنې کرښه، د ټکسي کرښې، اپرانونه) © د <1>OpenStreetMap</1> ونډه‌والان، تر <2>ODbL</2> لاندې جواز لري؛ د ساحل کرښې او مرجاني ډبرو معلومات له <3>NOAA NCCOS</3> څخه (عامه ملکیت)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "توغندی"
 
@@ -1135,11 +1164,11 @@ msgstr "د نیویګیشن مینو خلاص کړئ"
 msgid "Open theme settings"
 msgstr "د ت موضوع تنظیمات خلاص کړئ"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "یا"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "مدار"
 
@@ -1171,7 +1200,7 @@ msgstr "د پاس کیلۍ تایید ناکام شو. مهرباني وکړئ �
 msgid "Passkeys"
 msgstr "د لاسرسي کيلۍ"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "وقفه"
 
@@ -1188,7 +1217,11 @@ msgstr "ودرول شو"
 msgid "pilot"
 msgstr "پیلوټ"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "پیلوټ ووژل شو"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "پورته-ښکته"
 
@@ -1198,7 +1231,6 @@ msgstr "پیچ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "مهرباني وکړئ خپل د انټرنیټ اړیکه وګورئ او بیا هڅه وکړئ."
 
@@ -1237,6 +1269,14 @@ msgstr "محرمیت"
 msgid "Profile"
 msgstr "پروفایل"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "پورته شوی"
@@ -1249,7 +1289,7 @@ msgstr "پر دې سرور خپل حسابونه بیا وصل کړئ"
 msgid "Re-register your passkeys on this server"
 msgstr "خپل د لاسرسي کيلۍ پدې سرور کې بیا ثبت کړئ"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "بیا ډکول"
 
@@ -1341,7 +1381,7 @@ msgstr "مینو ته بیرته"
 msgid "Right to Left"
 msgstr "له ښي څخه کیڼ ته"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "غلت"
 
@@ -1518,7 +1558,7 @@ msgstr "پراخه"
 msgid "SPD BK"
 msgstr "س.بر"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "سرعتي بریک"
 
@@ -1535,6 +1575,10 @@ msgstr "پیل"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "خو خبر اوسئ!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "ښکارندوی"
 msgid "Theme Settings"
 msgstr "د ښکارندوی ترتیبات"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "ګاز"
 
@@ -1604,7 +1648,7 @@ msgstr "تروتل"
 msgid "Thursday"
 msgstr "پنجشنبه"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "کږول"
 
@@ -1757,7 +1801,7 @@ msgstr "د ایمیل پته تصدیق کړئ"
 msgid "Video thumbnail"
 msgstr "د ویډیو thumbnail"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "لید"
 
@@ -1800,7 +1844,7 @@ msgstr "چهارشنبه"
 msgid "Wheel brakes"
 msgstr "د چرخ بریک"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "ګټونکی"
 
@@ -1812,7 +1856,7 @@ msgstr "د نړۍ سرور"
 msgid "World server not reachable"
 msgstr "د نړۍ سرور ته لاسرسی نشته"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "انحراف"
 

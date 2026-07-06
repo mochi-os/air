@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Provjerite svoju internetsku vezu i pokušajte ponovo."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Rastuće"
 msgid "Authenticator code"
 msgstr "Authenticator kod"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "nazad"
 
@@ -202,7 +207,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Pojačaj interes"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "kočnice"
 
@@ -240,7 +245,7 @@ msgstr "Promijeni kategoriju obavještenja"
 msgid "Chase view"
 msgstr "Prateći pogled"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Pogled iz potjere:"
 
@@ -313,7 +318,7 @@ msgstr "Zatvori panel"
 msgid "Close search"
 msgstr "Zatvori pretragu"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "bliže"
 
@@ -540,6 +545,10 @@ msgstr "Prilagođeno disleksiji"
 msgid "Edit {label}"
 msgstr "Uredi {label}"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "KATAPULTIRAN"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Email kod"
@@ -599,11 +608,15 @@ msgstr "Ažuriranje kategorije nije uspjelo"
 msgid "FAIR"
 msgstr "ZADOVOLJAVAJUĆE"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Završite premještanje računa"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "baklje"
 
@@ -654,11 +667,19 @@ msgstr "Od"
 msgid "From theme"
 msgstr "Iz teme"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Puni izgled"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "stajni trap"
 
@@ -704,7 +725,7 @@ msgstr "Grupa"
 msgid "GUN"
 msgstr "TOP"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "topovi"
 
@@ -737,7 +758,7 @@ msgstr "Visoki stratus"
 msgid "Home"
 msgstr "Početna"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "kuka"
 
@@ -781,7 +802,7 @@ msgstr "Obrni nagib"
 msgid "Join"
 msgstr "Pridruži se"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "SE PRIDRUŽIO"
 
@@ -809,6 +830,14 @@ msgstr "Tipke"
 msgid "KILL"
 msgstr "OBOREN"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Stajni trap"
 msgid "Large"
 msgstr "Veliko"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "lansiranje"
 
@@ -837,7 +866,7 @@ msgstr "Izgled"
 msgid "Learn more"
 msgstr "Saznajte više"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "JE OTIŠAO"
 
@@ -850,7 +879,7 @@ msgstr "Slijeva nadesno"
 msgid "Light"
 msgstr "Svijetla"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "svjetla"
 
@@ -914,7 +943,7 @@ msgstr "Niski stratus"
 msgid "M to close"
 msgstr "M za zatvaranje"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "karta"
 
@@ -938,7 +967,7 @@ msgstr "Vrsta meča"
 msgid "Medium"
 msgstr "Srednje"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "meni"
 
@@ -954,7 +983,7 @@ msgstr "Metrička"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Karta atola Midway — snimci sadrže modifikovane podatke <0>Copernicus Sentinel-2</0> (2026); geometrija aerodroma (uzletno-sletna staza, rulne staze, platforme) © saradnici <1>OpenStreetMap</1>, licencirano pod <2>ODbL</2>; podaci o obali i grebenima iz <3>NOAA NCCOS</3> (javno vlasništvo)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "raketa"
 
@@ -1135,11 +1164,11 @@ msgstr "Otvori navigacijski meni"
 msgid "Open theme settings"
 msgstr "Otvori postavke teme"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "ili"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "kruženje"
 
@@ -1171,7 +1200,7 @@ msgstr "Provjera pristupnog ključa nije uspjela. Molimo pokušajte ponovo."
 msgid "Passkeys"
 msgstr "Pristupni ključevi"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "pauza"
 
@@ -1188,7 +1217,11 @@ msgstr "PAUZIRANO"
 msgid "pilot"
 msgstr "pilot"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "PILOT POGINUO"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "propinjanje"
 
@@ -1198,7 +1231,6 @@ msgstr "Nagib"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Provjerite svoju internetsku vezu i pokušajte ponovo."
 
@@ -1237,6 +1269,14 @@ msgstr "Privatnost"
 msgid "Profile"
 msgstr "Profil"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Izdignut"
@@ -1249,7 +1289,7 @@ msgstr "Povežite ponovo svoje račune na ovom serveru"
 msgid "Re-register your passkeys on this server"
 msgstr "Ponovo registrujte svoje pristupne ključeve na ovom serveru"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "dopuna naoružanja"
 
@@ -1341,7 +1381,7 @@ msgstr "Povratak na meni"
 msgid "Right to Left"
 msgstr "S desna na lijevo"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "valjanje"
 
@@ -1518,7 +1558,7 @@ msgstr "Prostrano"
 msgid "SPD BK"
 msgstr "VZD K"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "vazdušna kočnica"
 
@@ -1535,6 +1575,10 @@ msgstr "Počni"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Ali ostanite na vezi!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Postavke teme"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "gas"
 
@@ -1604,7 +1648,7 @@ msgstr "Gas"
 msgid "Thursday"
 msgstr "Četvrtak"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "nagib"
 
@@ -1757,7 +1801,7 @@ msgstr "Verifikuj email adresu"
 msgid "Video thumbnail"
 msgstr "Sličica videa"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "pogled"
 
@@ -1800,7 +1844,7 @@ msgstr "Srijeda"
 msgid "Wheel brakes"
 msgstr "Točkovne kočnice"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "POBJEĐUJE"
 
@@ -1812,7 +1856,7 @@ msgstr "Server svijeta"
 msgid "World server not reachable"
 msgstr "Server svijeta nije dostupan"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "skretanje"
 

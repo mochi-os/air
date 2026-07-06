@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "Проверете ја вашата интернет-врска и обидете се повторно."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "Растечки"
 msgid "Authenticator code"
 msgstr "Код за автентикација"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "подалеку"
 
@@ -202,7 +207,7 @@ msgstr "БОЛТЕР"
 msgid "Boost interest"
 msgstr "Поттикни интерес"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "кочници"
 
@@ -240,7 +245,7 @@ msgstr "Промени категорија на известување"
 msgid "Chase view"
 msgstr "Поглед од потера"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "Поглед во потера:"
 
@@ -313,7 +318,7 @@ msgstr "Затвори панел"
 msgid "Close search"
 msgstr "Затвори пребарување"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "поблиску"
 
@@ -540,6 +545,10 @@ msgstr "Прилагодено за дислексија"
 msgid "Edit {label}"
 msgstr "Уреди {label}"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "КАТАПУЛТИРАН"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Код за е-пошта"
@@ -599,11 +608,15 @@ msgstr "Неуспешно ажурирање на категорија"
 msgid "FAIR"
 msgstr "ЗАДОВОЛИТЕЛНО"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "Завршете го преместувањето на профилот"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "термички мамки"
 
@@ -654,11 +667,19 @@ msgstr "Од"
 msgid "From theme"
 msgstr "Од темата"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "Целосен распоред"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "Трап"
 
@@ -704,7 +725,7 @@ msgstr "Група"
 msgid "GUN"
 msgstr "ТОП"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "топови"
 
@@ -737,7 +758,7 @@ msgstr "Високи слоести облаци"
 msgid "Home"
 msgstr "Дома"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "Кука"
 
@@ -781,7 +802,7 @@ msgstr "Инвертирај пропињање"
 msgid "Join"
 msgstr "Придружи се"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "СЕ ПРИДРУЖИ"
 
@@ -809,6 +830,14 @@ msgstr "Копчиња"
 msgid "KILL"
 msgstr "УБИСТВО"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "Стајна опрема"
 msgid "Large"
 msgstr "Големо"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "лансирање"
 
@@ -837,7 +866,7 @@ msgstr "Распоред"
 msgid "Learn more"
 msgstr "Дознај повеќе"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "ИЗЛЕЗЕ"
 
@@ -850,7 +879,7 @@ msgstr "Лево кон десно"
 msgid "Light"
 msgstr "Светло"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "светла"
 
@@ -914,7 +943,7 @@ msgstr "Ниски слоести облаци"
 msgid "M to close"
 msgstr "M за затворање"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "мапа"
 
@@ -938,7 +967,7 @@ msgstr "Тип на натпревар"
 msgid "Medium"
 msgstr "Средно"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "мени"
 
@@ -954,7 +983,7 @@ msgstr "Метрички"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Карта на атолот Мидвеј — сликите содржат изменети податоци од <0>Copernicus Sentinel-2</0> (2026); геометријата на аеродромот (писта, ролни патеки, платформи) © соработници на <1>OpenStreetMap</1>, лиценцирано под <2>ODbL</2>; податоците за крајбрежјето и гребените се од <3>NOAA NCCOS</3> (јавен домен)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "ракета"
 
@@ -1135,11 +1164,11 @@ msgstr "Отвори мени за навигација"
 msgid "Open theme settings"
 msgstr "Отвори поставки за тема"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "или"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "кружење"
 
@@ -1171,7 +1200,7 @@ msgstr "Потврдата на passkey не успеа. Обидете се п�
 msgid "Passkeys"
 msgstr "Passkey-и"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "пауза"
 
@@ -1188,7 +1217,11 @@ msgstr "ПАУЗА"
 msgid "pilot"
 msgstr "пилот"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "ПИЛОТ ЗАГИНАТ"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "пропињање"
 
@@ -1198,7 +1231,6 @@ msgstr "Пропињање"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "Проверете ја вашата интернет-врска и обидете се повторно."
 
@@ -1237,6 +1269,14 @@ msgstr "Приватност"
 msgid "Profile"
 msgstr "Профил"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Издигнато"
@@ -1249,7 +1289,7 @@ msgstr "Повторно поврзете ги профилите на овој 
 msgid "Re-register your passkeys on this server"
 msgstr "Повторно регистрирајте ги вашите клучеви за пристап на овој сервер"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "превооружување"
 
@@ -1341,7 +1381,7 @@ msgstr "Назад во мени"
 msgid "Right to Left"
 msgstr "Од десно кон лево"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "валање"
 
@@ -1518,7 +1558,7 @@ msgstr "Простран"
 msgid "SPD BK"
 msgstr "В.КОЧ"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "воздушна кочница"
 
@@ -1535,6 +1575,10 @@ msgstr "Започни"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Но останете блиску!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "Тема"
 msgid "Theme Settings"
 msgstr "Поставки на темата"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "гас"
 
@@ -1604,7 +1648,7 @@ msgstr "Гас"
 msgid "Thursday"
 msgstr "Четврток"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "наклон"
 
@@ -1757,7 +1801,7 @@ msgstr "Потврди ја адресата на е-пошта"
 msgid "Video thumbnail"
 msgstr "Сликичка на видео"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "поглед"
 
@@ -1800,7 +1844,7 @@ msgstr "Среда"
 msgid "Wheel brakes"
 msgstr "Кочници на тркала"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "ПОБЕДУВА"
 
@@ -1812,7 +1856,7 @@ msgstr "Сервер за свет"
 msgid "World server not reachable"
 msgstr "Серверот за свет не е достапен"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "скршнување"
 

@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "インターネット接続を確認して、もう一度お試しください。"
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "昇順"
 msgid "Authenticator code"
 msgstr "認証コード"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "後退"
 
@@ -202,7 +207,7 @@ msgstr "ボルター"
 msgid "Boost interest"
 msgstr "関心を高める"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "ブレーキ"
 
@@ -240,7 +245,7 @@ msgstr "通知カテゴリを変更"
 msgid "Chase view"
 msgstr "チェイスビュー"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "追跡視点："
 
@@ -313,7 +318,7 @@ msgstr "パネルを閉じる"
 msgid "Close search"
 msgstr "検索を閉じる"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "近づく"
 
@@ -540,6 +545,10 @@ msgstr "ディスレクシア対応"
 msgid "Edit {label}"
 msgstr "{label} を編集"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "射出"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "メールコード"
@@ -599,11 +608,15 @@ msgstr "カテゴリの更新に失敗しました"
 msgid "FAIR"
 msgstr "可"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "アカウントの移行を完了する"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "フレア"
 
@@ -654,11 +667,19 @@ msgstr "差出元"
 msgid "From theme"
 msgstr "テーマから"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "フルレイアウト"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "脚"
 
@@ -704,7 +725,7 @@ msgstr "グループ"
 msgid "GUN"
 msgstr "機関砲"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "機銃"
 
@@ -737,7 +758,7 @@ msgstr "層雲（高）"
 msgid "Home"
 msgstr "ホーム"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "フック"
 
@@ -781,7 +802,7 @@ msgstr "ピッチ反転"
 msgid "Join"
 msgstr "参加する"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "参加"
 
@@ -809,6 +830,14 @@ msgstr "キー"
 msgid "KILL"
 msgstr "撃墜"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "着陸装置"
 msgid "Large"
 msgstr "大"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "発艦"
 
@@ -837,7 +866,7 @@ msgstr "レイアウト"
 msgid "Learn more"
 msgstr "詳細"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "退出"
 
@@ -850,7 +879,7 @@ msgstr "左から右"
 msgid "Light"
 msgstr "ライト"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "灯火"
 
@@ -914,7 +943,7 @@ msgstr "層雲（低）"
 msgid "M to close"
 msgstr "M で閉じる"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "マップ"
 
@@ -938,7 +967,7 @@ msgstr "マッチタイプ"
 msgid "Medium"
 msgstr "中"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "メニュー"
 
@@ -954,7 +983,7 @@ msgstr "メートル法"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "ミッドウェー環礁の地図 — 画像には改変された<0>Copernicus Sentinel-2</0>データ（2026年）が含まれます。飛行場の形状（滑走路、誘導路、エプロン）© <1>OpenStreetMap</1> コントリビューター、<2>ODbL</2>に基づいてライセンス供与。海岸線とサンゴ礁のデータは<3>NOAA NCCOS</3>より（パブリックドメイン）。"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "ミサイル"
 
@@ -1135,11 +1164,11 @@ msgstr "ナビゲーションメニューを開く"
 msgid "Open theme settings"
 msgstr "テーマ設定を開く"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "または"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "旋回"
 
@@ -1171,7 +1200,7 @@ msgstr "パスキーの認証に失敗しました。もう一度お試しくだ
 msgid "Passkeys"
 msgstr "パスキー"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "一時停止"
 
@@ -1188,7 +1217,11 @@ msgstr "一時停止"
 msgid "pilot"
 msgstr "パイロット"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "パイロット死亡"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "ピッチ"
 
@@ -1198,7 +1231,6 @@ msgstr "ピッチ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "インターネット接続を確認して、もう一度お試しください。"
 
@@ -1237,6 +1269,14 @@ msgstr "プライバシー"
 msgid "Profile"
 msgstr "プロフィール"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "浮き出し"
@@ -1249,7 +1289,7 @@ msgstr "このサーバーでアカウントを再リンクする"
 msgid "Re-register your passkeys on this server"
 msgstr "このサーバーでパスキーを再登録してください"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "再武装"
 
@@ -1341,7 +1381,7 @@ msgstr "メニューに戻る"
 msgid "Right to Left"
 msgstr "右から左"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "ロール"
 
@@ -1518,7 +1558,7 @@ msgstr "ゆったり"
 msgid "SPD BK"
 msgstr "スピブレ"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "スピードブレーキ"
 
@@ -1535,6 +1575,10 @@ msgstr "スタート"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "今後の更新にご期待ください!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "テーマ"
 msgid "Theme Settings"
 msgstr "テーマ設定"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "スロットル"
 
@@ -1604,7 +1648,7 @@ msgstr "スロットル"
 msgid "Thursday"
 msgstr "木曜日"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "チルト"
 
@@ -1757,7 +1801,7 @@ msgstr "メールアドレスを認証"
 msgid "Video thumbnail"
 msgstr "動画のサムネイル"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "視点"
 
@@ -1800,7 +1844,7 @@ msgstr "水曜日"
 msgid "Wheel brakes"
 msgstr "車輪ブレーキ"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "の勝利"
 
@@ -1812,7 +1856,7 @@ msgstr "ワールドサーバー"
 msgid "World server not reachable"
 msgstr "ワールドサーバーに接続できません"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "ヨー"
 

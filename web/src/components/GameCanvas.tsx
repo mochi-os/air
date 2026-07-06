@@ -48,6 +48,12 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'FLIGHT CORE FAILED': msg`FLIGHT CORE FAILED`,
   'SESSION ENDED': msg`SESSION ENDED`,
   KILL: msg`KILL`,
+  EJECTED: msg`EJECTED`,
+  'PILOT DOWN': msg`PILOT DOWN`,
+  // The caution-panel annunciators (L ENG FIRE, FUEL LEAK, FCS, STRUCTURE, …)
+  // are deliberately NOT in this catalog: real F/A-18 annunciators read in
+  // English in every operator's cockpit, so they fall through translate()
+  // verbatim — the same policy as the HUD's standard flight symbology.
   WINS: msg`WINS`,
   JOINED: msg`JOINED`,
   LEFT: msg`LEFT`,

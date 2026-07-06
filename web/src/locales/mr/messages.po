@@ -13,6 +13,11 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: ../../../lib/web/src/lib/error-normalizer.ts:204
+msgid "Please check your internet connection and try again."
+msgstr "कृपया तुमचे इंटरनेट कनेक्शन तपासा आणि पुन्हा प्रयत्न करा."
+
 #. placeholder {0}: status.players
 #: src/components/Multiplayer.tsx:186
 msgid "{0} flying"
@@ -175,7 +180,7 @@ msgstr "चढत्या क्रमाने"
 msgid "Authenticator code"
 msgstr "प्रमाणीकरण कोड"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "back"
 msgstr "मागे"
 
@@ -202,7 +207,7 @@ msgstr "बोल्टर"
 msgid "Boost interest"
 msgstr "रुची वाढवा"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "brakes"
 msgstr "ब्रेक"
 
@@ -240,7 +245,7 @@ msgstr "सूचना श्रेणी बदला"
 msgid "Chase view"
 msgstr "पाठलाग दृश्य"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:128
 msgid "Chase view:"
 msgstr "पाठलाग दृश्य:"
 
@@ -313,7 +318,7 @@ msgstr "पॅनेल बंद करा"
 msgid "Close search"
 msgstr "शोध बंद करा"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:132
 msgid "closer"
 msgstr "जवळ"
 
@@ -540,6 +545,10 @@ msgstr "डिस्लेक्सिया-अनुकूल"
 msgid "Edit {label}"
 msgstr "{label} संपादित करा"
 
+#: src/components/GameCanvas.tsx:51
+msgid "EJECTED"
+msgstr "इजेक्ट झाले"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "ईमेल कोड"
@@ -599,11 +608,15 @@ msgstr "श्रेणी अद्यतनित करण्यात अय
 msgid "FAIR"
 msgstr "मध्यम"
 
+#: src/components/GameCanvas.tsx:59
+#~ msgid "FCS"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
 msgstr "खाते हलवणे पूर्ण करा"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "flares"
 msgstr "फ्लेअर्स"
 
@@ -654,11 +667,19 @@ msgstr "पासून"
 msgid "From theme"
 msgstr "थीममधून"
 
+#: src/components/GameCanvas.tsx:53
+#~ msgid "FUEL FIRE"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:58
+#~ msgid "FUEL LEAK"
+#~ msgstr ""
+
 #: ../../../lib/web/src/components/config-drawer.tsx:320
 msgid "Full layout"
 msgstr "संपूर्ण लेआउट"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "gear"
 msgstr "गियर"
 
@@ -704,7 +725,7 @@ msgstr "गट"
 msgid "GUN"
 msgstr "तोफ"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "guns"
 msgstr "तोफा"
 
@@ -737,7 +758,7 @@ msgstr "उच्च स्ट्रॅटस"
 msgid "Home"
 msgstr "मुख्यपृष्ठ"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "hook"
 msgstr "आकडा"
 
@@ -781,7 +802,7 @@ msgstr "पिच उलटा करा"
 msgid "Join"
 msgstr "सामील व्हा"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:58
 msgid "JOINED"
 msgstr "सामील झाले"
 
@@ -809,6 +830,14 @@ msgstr "कीज"
 msgid "KILL"
 msgstr "किल"
 
+#: src/components/GameCanvas.tsx:56
+#~ msgid "L ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:54
+#~ msgid "L ENG FIRE"
+#~ msgstr ""
+
 #: src/components/MissionSetup.tsx:111
 #: src/components/MissionSetup.tsx:523
 msgid "Landing gear"
@@ -819,7 +848,7 @@ msgstr "लँडिंग गियर"
 msgid "Large"
 msgstr "मोठे"
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "launch"
 msgstr "प्रक्षेपण"
 
@@ -837,7 +866,7 @@ msgstr "लेआउट"
 msgid "Learn more"
 msgstr "अधिक जाणून घ्या"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:59
 msgid "LEFT"
 msgstr "बाहेर पडले"
 
@@ -850,7 +879,7 @@ msgstr "डावीकडून उजवीकडे"
 msgid "Light"
 msgstr "हलके"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "lights"
 msgstr "दिवे"
 
@@ -914,7 +943,7 @@ msgstr "कमी स्ट्रॅटस"
 msgid "M to close"
 msgstr "बंद करण्यासाठी M"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "map"
 msgstr "नकाशा"
 
@@ -938,7 +967,7 @@ msgstr "सामन्याचा प्रकार"
 msgid "Medium"
 msgstr "मध्यम"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "menu"
 msgstr "मेनू"
 
@@ -954,7 +983,7 @@ msgstr "मेट्रिक"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway Atoll नकाशा — प्रतिमांमध्ये सुधारित <0>Copernicus Sentinel-2</0> डेटा समाविष्ट आहे (2026); विमानतळाची भूमिती (धावपट्टी, टॅक्सीवे, ॲप्रन) © <1>OpenStreetMap</1> योगदानकर्ते, <2>ODbL</2> अंतर्गत परवानाकृत; किनारपट्टी आणि प्रवाळ डेटा <3>NOAA NCCOS</3> कडून (सार्वजनिक डोमेन)."
 
-#: src/components/GameCanvas.tsx:115
+#: src/components/GameCanvas.tsx:121
 msgid "missile"
 msgstr "क्षेपणास्त्र"
 
@@ -1135,11 +1164,11 @@ msgstr "नेव्हिगेशन मेन्यू उघडा"
 msgid "Open theme settings"
 msgstr "थीम सेटिंग्ज उघडा"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "or"
 msgstr "किंवा"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:130
 msgid "orbit"
 msgstr "परिभ्रमण"
 
@@ -1171,7 +1200,7 @@ msgstr "पासकी पडताळणी अयशस्वी झाली
 msgid "Passkeys"
 msgstr "पासकीज"
 
-#: src/components/GameCanvas.tsx:119
+#: src/components/GameCanvas.tsx:125
 msgid "pause"
 msgstr "विराम"
 
@@ -1188,7 +1217,11 @@ msgstr "विराम दिला"
 msgid "pilot"
 msgstr "पायलट"
 
-#: src/components/GameCanvas.tsx:112
+#: src/components/GameCanvas.tsx:52
+msgid "PILOT DOWN"
+msgstr "वैमानिक ठार"
+
+#: src/components/GameCanvas.tsx:118
 msgid "pitch"
 msgstr "पिच"
 
@@ -1198,7 +1231,6 @@ msgstr "पिच"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:304
-#: ../../../lib/web/src/lib/error-normalizer.ts:201
 msgid "Please check your internet connection and try again."
 msgstr "कृपया तुमचे इंटरनेट कनेक्शन तपासा आणि पुन्हा प्रयत्न करा."
 
@@ -1237,6 +1269,14 @@ msgstr "गोपनीयता"
 msgid "Profile"
 msgstr "प्रोफाइल"
 
+#: src/components/GameCanvas.tsx:57
+#~ msgid "R ENG"
+#~ msgstr ""
+
+#: src/components/GameCanvas.tsx:55
+#~ msgid "R ENG FIRE"
+#~ msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "उंचावलेले"
@@ -1249,7 +1289,7 @@ msgstr "या सर्व्हरवर तुमची खाती पु�
 msgid "Re-register your passkeys on this server"
 msgstr "या सर्व्हरवर तुमच्या पासकी पुन्हा नोंदवा"
 
-#: src/components/GameCanvas.tsx:116
+#: src/components/GameCanvas.tsx:122
 msgid "rearm"
 msgstr "पुनर्भरण"
 
@@ -1341,7 +1381,7 @@ msgstr "मेनूवर परत जा"
 msgid "Right to Left"
 msgstr "उजवीकडून डावीकडे"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "roll"
 msgstr "रोल"
 
@@ -1518,7 +1558,7 @@ msgstr "विस्तृत"
 msgid "SPD BK"
 msgstr "वे.ब्रे"
 
-#: src/components/GameCanvas.tsx:117
+#: src/components/GameCanvas.tsx:123
 msgid "speed brake"
 msgstr "वेग ब्रेक"
 
@@ -1535,6 +1575,10 @@ msgstr "सुरू करा"
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "मात्र संपर्कात रहा!"
+
+#: src/components/GameCanvas.tsx:60
+#~ msgid "STRUCTURE"
+#~ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
@@ -1592,7 +1636,7 @@ msgstr "थीम"
 msgid "Theme Settings"
 msgstr "थीम सेटिंग्ज"
 
-#: src/components/GameCanvas.tsx:114
+#: src/components/GameCanvas.tsx:120
 msgid "throttle"
 msgstr "थ्रॉटल"
 
@@ -1604,7 +1648,7 @@ msgstr "थ्रॉटल"
 msgid "Thursday"
 msgstr "गुरुवार"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:131
 msgid "tilt"
 msgstr "कल"
 
@@ -1757,7 +1801,7 @@ msgstr "ईमेल पत्ता पडताळा"
 msgid "Video thumbnail"
 msgstr "व्हिडिओ थंबनेल"
 
-#: src/components/GameCanvas.tsx:118
+#: src/components/GameCanvas.tsx:124
 msgid "view"
 msgstr "दृश्य"
 
@@ -1800,7 +1844,7 @@ msgstr "बुधवार"
 msgid "Wheel brakes"
 msgstr "चाकाचे ब्रेक"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:57
 msgid "WINS"
 msgstr "विजयी"
 
@@ -1812,7 +1856,7 @@ msgstr "वर्ल्ड सर्व्हर"
 msgid "World server not reachable"
 msgstr "वर्ल्ड सर्व्हरशी संपर्क होत नाही"
 
-#: src/components/GameCanvas.tsx:113
+#: src/components/GameCanvas.tsx:119
 msgid "yaw"
 msgstr "यॉ"
 

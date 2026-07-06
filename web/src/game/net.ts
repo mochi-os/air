@@ -12,6 +12,7 @@
 // authenticated app connection.
 
 import { createAppClient } from '@mochi/web'
+import { SIZE } from './flight'
 
 export const PROTOCOL = 1
 
@@ -183,7 +184,10 @@ export interface RemotePose {
   speed: number
   name: string
   alive: boolean
-  health: number
+  burn: [number, number]
+  leak: number
+  pilot: boolean
+  loss: number
   kills: number
   deaths: number
   gear: boolean
@@ -400,7 +404,10 @@ export class Net {
             speed: Number(entry.speed),
             name: String(entry.name ?? ''),
             alive: !!entry.alive,
-            health: Number(entry.health ?? 0),
+            burn: [Number((entry.burn as number[] | undefined)?.[0] ?? 0), Number((entry.burn as number[] | undefined)?.[1] ?? 0)],
+            leak: Number(entry.leak ?? 0),
+            pilot: entry.pilot !== false,
+            loss: Number(entry.loss ?? 0),
             kills: Number(entry.kills ?? 0),
             deaths: Number(entry.deaths ?? 0),
             gear: !!entry.gear,
@@ -412,8 +419,19 @@ export class Net {
         }
         let core: Float64Array | null = null
         const bytes = message.core as Uint8Array | undefined
-        if (bytes instanceof Uint8Array && bytes.byteLength >= 456) {
-          core = new Float64Array(bytes.buffer, bytes.byteOffset, 57)   // FULL state: viewing 56 words silently dropped Fcs.Reference from every reconciliation
+        if (bytes instanceof Uint8Array && bytes.byteLength >= 456 + (SIZE - 57) * 2) {
+          // The wire core: 57 base words at full float64 precision, then the
+          // damage tail quantised to uint16 (unit-interval losses; the final
+          // word is shed mass at kg/8000) — full float64 burst the datagram
+          // MTU. Re-expand to the flight core's 106-word layout.
+          core = new Float64Array(SIZE)
+          const view = new DataView(bytes.buffer, bytes.byteOffset)
+          for (let i = 0; i < 57; i++) core[i] = view.getFloat64(i * 8, true)
+          for (let i = 57; i < SIZE; i++) {
+            let v = view.getUint16(57 * 8 + (i - 57) * 2, true) / 65535
+            if (i === SIZE - 1) v *= 8000 // Loss, kg
+            core[i] = v
+          }
           this.cored = true
         }
         this.snapshots.push({
