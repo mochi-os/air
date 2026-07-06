@@ -118,13 +118,13 @@ scene.add(sun,sun.target); const hemi=new THREE.HemisphereLight(0xbcd6ec,0x35506
 
 // ============================================================================ sky + ocean (proven)
 const sky_mat = new THREE.ShaderMaterial({ side:THREE.BackSide, depthWrite:false, fog:false,
-	uniforms:{ u_sun:{value:sun_dir}, u_horizon:{value:sky_horizon}, u_zenith:{value:sky_zenith}, u_fog:{value:fog_colour}, u_dip:{value:0.0}, u_ovc:{value:0.0}, u_sun_col:{value:col_sundisc} },
+	uniforms:{ u_sun:{value:sun_dir}, u_horizon:{value:sky_horizon}, u_zenith:{value:sky_zenith}, u_fog:{value:fog_colour}, u_dip:{value:0.0}, u_ovc:{value:0.0}, u_ovct:{value:1.02}, u_ovcw:{value:0.28}, u_sun_col:{value:col_sundisc} },
 	vertexShader:`varying vec3 v_dir; void main(){ v_dir=normalize(position); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
-	fragmentShader:`varying vec3 v_dir; uniform vec3 u_sun,u_horizon,u_zenith,u_fog,u_sun_col; uniform float u_dip,u_ovc;
+	fragmentShader:`varying vec3 v_dir; uniform vec3 u_sun,u_horizon,u_zenith,u_fog,u_sun_col; uniform float u_dip,u_ovc,u_ovct,u_ovcw;
 		void main(){ vec3 d=normalize(v_dir); float t=(d.y+u_dip)*1.2;
 		vec3 col=t>=0.0?mix(u_horizon,u_zenith,pow(clamp(t,0.0,1.0),0.65))
 		               :mix(u_horizon,u_fog*0.88,clamp(-t*6.0,0.0,1.0));   // #108: the gradient's bright peak sits at the VISIBLE HORIZON (u_dip = the altitude-dependent dip to the ocean rim), not at eye level — peaking at d.y=0 painted a bright crest ACROSS the sky at eye level from any altitude, framed darker above and below: the persistent band. Below the horizon the sky descends into a darkened haze belt. CHANGE IN LOCKSTEP with the cloud pass's skybg — the aerial-haze payout must match this dome exactly or a colour-seam band returns
-		col=mix(col, vec3(dot(col,vec3(0.333)))*1.02, u_ovc*(1.0-smoothstep(0.0,0.28,abs(t))));   // OVERCAST presets grey the dome near the horizon: under an endless deck, rays passing beneath the cloud slab forever showed a blue band between the deck's far edge and the sea. Horizon-weighted so holes in the deck overhead still show blue sky. LOCKSTEP with the cloud skybg
+		col=mix(col, vec3(dot(col,vec3(0.333)))*u_ovct, u_ovc*(1.0-smoothstep(0.0,u_ovcw,abs(t))));   // CLOUD HORIZON BAND, preset-driven: overcast (strength 1, wide, deck-grey tone) — under an endless deck, rays passing beneath the slab forever showed blue between the deck's far edge and the sea; scattered cumulus (partial strength, narrow, bright haze tone) — the real field extends far beyond the 90 km march and its stacked distant clouds read as a hazy band riding the sea line. Horizon-weighted so sky overhead stays blue. LOCKSTEP with the cloud skybg
 		float s=max(dot(d,normalize(u_sun)),0.0); col+=u_sun_col*pow(s,220.0)*1.4; col+=u_sun_col*pow(s,8.0)*0.18; gl_FragColor=vec4(col,1.0); }` });
 const sky = new THREE.Mesh(new THREE.SphereGeometry(30000,32,16),sky_mat); sky.frustumCulled=false; scene.add(sky);
 
@@ -378,8 +378,12 @@ const CLOUDS={   // cover: higher = more cloud (coverage remap). Trade-wind cumu
 };
 function apply_clouds(){ const p=CLOUDS[cfg.clouds];
 	ocean_mat.uniforms.u_cloud_on.value=p?1.0:0.0;
-	ocean_mat.uniforms.u_cloud_flat.value=p?p.flat:0.0;   // overcast presets grey the sea's far silvering
-	sky_mat.uniforms.u_ovc.value=p?p.flat:0.0;            // ...and the sky dome near the horizon (lockstep with the cloud skybg via uFlat)
+	ocean_mat.uniforms.u_cloud_flat.value=p?p.flat:0.0;   // overcast presets grey the sea's far silvering + reflection (scattered cumulus leaves the sunny sea alone)
+	// Cloud horizon band (sky dome + cloud skybg in lockstep): overcast = full-strength wide deck-grey;
+	// scattered presets = partial narrow bright haze scaled by coverage (the distant unresolved field).
+	const ovc=p?Math.max(p.flat,Math.min(1.0,1.6*p.cover)*(1.0-p.flat)):0.0, ovct=p?(p.flat>0.5?1.02:1.10):1.02, ovcw=p?(p.flat>0.5?0.28:0.14):0.28;   // scattered strength 1.6x cover (cumulus ~0.67): at 0.3 the band vanished on a real display
+	sky_mat.uniforms.u_ovc.value=ovc; sky_mat.uniforms.u_ovct.value=ovct; sky_mat.uniforms.u_ovcw.value=ovcw;
+	cloud_mat.uniforms.uOvc.value=ovc; cloud_mat.uniforms.uOvcT.value=ovct; cloud_mat.uniforms.uOvcW.value=ovcw;
 	if(!p) return;
 	cloud_mat.uniforms.uBase.value=p.base; cloud_mat.uniforms.uTop.value=p.top; cloud_mat.uniforms.uHigh.value=p.high;
 	cloud_mat.uniforms.uCoverage.value=p.cover; cloud_mat.uniforms.uDensity.value=p.density; cloud_mat.uniforms.uFlat.value=p.flat;
@@ -406,7 +410,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 	uniforms:{ tDepth:{value:null}, tNoise:{value:null}, tDetail:{value:null}, uCamPos:{value:new THREE.Vector3()}, uInvVP:{value:new THREE.Matrix4()},
 		uTime:{value:0}, uSun:{value:sun_dir}, uSunCol:{value:col_sundisc}, uSky:{value:sky_horizon}, uZenith:{value:sky_zenith}, uFog:{value:fog_colour}, uDip:{value:0.0}, uDebug:{value:0.0}, uJitter:{value:0.0},
 		uBase:{value:600.0}, uTop:{value:2400.0}, uHigh:{value:5000.0}, uCoverage:{value:0.42}, uDensity:{value:1.0}, uFlat:{value:0.0}, uExposure:{value:1.05},
-		uGate:{value:new THREE.Vector2(0.22,0.50)}, uDark:{value:0.45},
+		uGate:{value:new THREE.Vector2(0.22,0.50)}, uDark:{value:0.45}, uOvc:{value:0.0}, uOvcT:{value:1.02}, uOvcW:{value:0.28},
 		uClear:{value:[   // spawn clearings (xy world centre, z inner radius², w outer radius²): no cumulus/Cb ON a spawn spot. World CONSTANTS, so the shared multiplayer cloud field stays identical on every client
 			new THREE.Vector4(CARRIER.x, CARRIER.z, 25.0e6, 100.0e6),                                     // carrier (cat spots + landing spawn astern)
 			new THREE.Vector4(-1125, 2898, 25.0e6, 100.0e6),                                              // Sand Island runway (reset_ownship's fallback centroid)
@@ -418,7 +422,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 		layout(location=1) out vec4 oDepth;   // R: transmittance-weighted mean march distance / 45 km, G: accumulated alpha (validity)
 		uniform sampler2D tDepth; uniform highp sampler3D tNoise,tDetail;
 		uniform vec3 uCamPos,uSun,uSunCol,uSky,uZenith,uFog; uniform mat4 uInvVP;
-		uniform float uTime,uBase,uTop,uHigh,uCoverage,uDensity,uFlat,uExposure,uDebug,uDark,uJitter,uDip;
+		uniform float uTime,uBase,uTop,uHigh,uCoverage,uDensity,uFlat,uExposure,uDebug,uDark,uJitter,uDip,uOvc,uOvcT,uOvcW;
 			uniform vec2 uGate;
 		float hash(vec3 p){ p=fract(p*0.3183099+vec3(0.1,0.2,0.3)); p*=17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
 		float remap(float v,float a,float b,float c,float d){ return c+clamp((v-a)/(b-a),0.0,1.0)*(d-c); }
@@ -548,7 +552,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 					float tsk=(ray.y+uDip)*1.2;   // EXACTLY the sky_mat gradient incl. the #108 horizon-dip peak shift, fog descent and overcast horizon grey (+ sun aureole below), so the haze share composites to the true backdrop — these two shaders change in LOCKSTEP
 					vec3 skybg=tsk>=0.0?mix(uSky,uZenith,pow(clamp(tsk,0.0,1.0),0.65))
 					                   :mix(uSky,uFog*0.88,clamp(-tsk*6.0,0.0,1.0));
-					skybg=mix(skybg, vec3(dot(skybg,vec3(0.333)))*1.02, uFlat*(1.0-smoothstep(0.0,0.28,abs(tsk))));
+					skybg=mix(skybg, vec3(dot(skybg,vec3(0.333)))*uOvcT, uOvc*(1.0-smoothstep(0.0,uOvcW,abs(tsk))));
 					float sbg=max(dot(ray,uSun),0.0); skybg+=uSunCol*(pow(sbg,220.0)*1.4+pow(sbg,8.0)*0.18);
 					cloudc=srgb(aces(col))+skybg*hw; ctr=tr; } }   // display-encoded premultiplied cloud light + transmittance for the blend layer
 					// (An analytic under-storm horizon mist lived here 2026-07-06 and was removed by request:
@@ -729,8 +733,8 @@ const AIRCRAFT_MODELS={
 		      { name:"flapR",     node:"FlapR_15",           axis:"x", sign:-1, drive:"flapR" },
 		      { name:"innerL",    node:"Left_Flaperon_74",   axis:"x", sign:-1, drive:"flapL" },
 		      { name:"innerR",    node:"Right_Flaperon_312", axis:"x", sign:-1, drive:"flapR" },
-		      { name:"aileronL",  node:"AileronL_69",        axis:"x", sign:-1, drive:"flapL" },
-		      { name:"aileronR",  node:"AileronR_309",       axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapR" },   // authored droops ~10°; flush = -20° local (silhouette-bisected)
+		      { name:"aileronL",  node:"AileronL_69",        axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapL" },   // both ailerons: flush (TE continues the wing; ailerons are faired with flaps up) = -20° local, the centre of each side's 0..-40° percent-key animation sweep — matches the right's silhouette-bisected hand calibration to 0.02°. The authored static poses are asymmetric (left full-up 0°, right full-down -40°), so neither is neutral
+		      { name:"aileronR",  node:"AileronR_309",       axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapR" },
 		      { name:"rudderL",  node:"rudder_percent_key_AN_Left_319",  axis:"y", base:[0,0.15471,0,0.98796], drive:"rudder" },   // rudder neutral: trailing-edge-in-fin-plane (PCA fin plane, rotate until the TE's mean plane distance is zero) — sharper than the lateral-extent minimum, which sat ~6° off
 		      { name:"rudderR",  node:"rudder_percent_key_AN_Right_322", axis:"y", base:[0,0.19423,0,0.98096], drive:"rudder" },
 		      { name:"brake",    track:/^SPOILER_L/i, drive:"speedbrake" } ] } };
