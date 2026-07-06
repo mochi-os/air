@@ -1088,7 +1088,7 @@ function body_offset(st,x,y,z){ const up=st.up||world_up; const right=st.right||
 // ownship = player
 const ownship=make_state(new THREE.Vector3(CARRIER.x+70,CARRIER.deckY+1.8,CARRIER.z-6),new THREE.Vector3(1,0,0),0);
 ownship.player=true; ownship.q=new THREE.Quaternion(); ownship.up=new THREE.Vector3(0,1,0); ownship.right=new THREE.Vector3(0,0,1);
-ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.rounds=578; ownship.msl=4; ownship.cm=60; ownship.aoa=0; ownship.gload=1;
+ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.burner=0; ownship.rounds=578; ownship.msl=4; ownship.cm=60; ownship.aoa=0; ownship.gload=1;
 ownship.launching=false;
 // init quaternion from initial fwd
 (()=>{ const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
@@ -1816,7 +1816,8 @@ function read_input(dt){
 			if(slider>pad_slider.hi) pad_slider.hi=slider;
 			if(Math.abs(slider-(read_input.slider??slider))>0.01||read_input.armed){ read_input.armed=true;
 				const span=pad_slider.hi-pad_slider.lo;
-				ownship.throttle=THREE.MathUtils.clamp(span>0.5?(pad_slider.hi-slider)/span:(1-slider)/2,0,1); }   // learned end stops once the slider has been swept; the naive ±1 map until then
+				{ const lever=THREE.MathUtils.clamp(span>0.5?(pad_slider.hi-slider)/span:(1-slider)/2,0,1);   // learned end stops once the slider has been swept; the naive ±1 map until then
+				ownship.throttle=Math.min(1,lever/0.75); ownship.burner=THREE.MathUtils.clamp((lever-0.75)/0.25,0,1); } }   // slider: 0..75% = idle..MIL, the top quarter sweeps the five AB zones
 			read_input.slider=slider; }
 		const binds=cfg.buttons||{};   // bound buttons act as their key: synthetic keydown on press, keyup on release, so held actions (brakes) work too
 		for(let b=0;b<pad.buttons.length;b++){ const down=pad.buttons[b].pressed, was=pad_buttons[b]||false;
@@ -1827,8 +1828,8 @@ function read_input(dt){
 	input.roll=Math.abs(pr)>Math.abs(key_axes.roll)?pr:key_axes.roll;
 	input.yaw=Math.abs(py)>Math.abs(key_axes.yaw)?py:key_axes.yaw;
 	input.guns=keys.has("Space")||!!(pad&&pad.buttons[0]&&pad.buttons[0].pressed); input.brake=keys.has("KeyB");   // B: wheel brakes, held (both mains together); joystick trigger fires too
-	if(!deck_edit && keys.has("BracketRight")) ownship.throttle=Math.min(1,ownship.throttle+dt*0.5);   // throttle up (], held & ramped)
-	if(!deck_edit && keys.has("BracketLeft")) ownship.throttle=Math.max(0,ownship.throttle-dt*0.5);    // throttle down ([)
+	if(!deck_edit && keys.has("BracketRight")){ if(ownship.throttle>=1) ownship.burner=Math.min(1,(ownship.burner??0)+dt*0.8); else ownship.throttle=Math.min(1,ownship.throttle+dt*0.5); }   // throttle up (], held & ramped); past MIL the lever advances through the afterburner range
+	if(!deck_edit && keys.has("BracketLeft")){ if((ownship.burner??0)>0) ownship.burner=Math.max(0,ownship.burner-dt*0.8); else ownship.throttle=Math.max(0,ownship.throttle-dt*0.5); }    // throttle down ([): the burner comes off before the dry range
 }
 
 let sim_time=0;
@@ -2083,7 +2084,7 @@ function fly_player(dt){
 	if(test_active) test_drive();   // scripted test approach: prescribes attitude + velocity into the core each frame
 	const controls={ pitch:THREE.MathUtils.clamp(input.pitch*cfg.sens,-1,1), roll:THREE.MathUtils.clamp(input.roll*cfg.sens,-1,1), yaw:THREE.MathUtils.clamp(input.yaw*cfg.sens,-1,1),
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
-		reheat:ownship.throttle>=0.98, brake:input.brake,
+		reheat:ownship.burner??0, brake:input.brake,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5,
 		launch:launch_flag, override:keys.has("KeyO"), sequence:++control_sequence };
 	const out=flight_frame(controls,dt);
@@ -2241,7 +2242,7 @@ function step_world(dt){ sim_time+=dt;
 	const flick=0.6+Math.random()*0.4; const set_ab=(g,on)=>{
 		if(g.userData.flames) return;   // this airframe's burner look is its own nozzle glow — no cones, no flame boxes
 		g.children.forEach(c=>{ if(c.userData.ab){ c.visible=on; c.scale.z=flick; c.material.opacity=on?0.55+Math.random()*0.35:0; } }); };
-	set_ab(ownship.group,cfg.afterburner&&(ownship.stage??(ownship.throttle>=0.98?1:0))>0.15); set_ab(bandit.group,cfg.afterburner); extras.forEach(st=>set_ab(st.group,cfg.afterburner));   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
+	set_ab(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15); set_ab(bandit.group,cfg.afterburner); extras.forEach(st=>set_ab(st.group,cfg.afterburner));   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
 	// player guns
 	{ const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,input.guns&&!ownship.launching&&!deck_edit&&(ownship.gear??0)>0.98);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock); in multiplayer the tracers are local, the damage is the server's
 		if(fired>0&&!MULTIPLAYER){ const pose=battle_pose(ownship);
@@ -2546,11 +2547,12 @@ function draw_hud(dt){
 	// ---- throttle vertical gauge (left of airspeed) ----
 	const tgx=cx-262, tgcy=cy, tgh=140; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.lineWidth=1.5;
 	hctx.strokeRect(tgx-8,tgcy-tgh/2,16,tgh);
-	const fh=tgh*ownship.throttle; hctx.fillRect(tgx-8,tgcy+tgh/2-fh,16,fh);
+	const fh=tgh*(ownship.throttle*0.75+(ownship.burner??0)*0.25); hctx.fillRect(tgx-8,tgcy+tgh/2-fh,16,fh);   // the full lever: 0..75% dry, the top quarter is the AB range
+	hctx.beginPath(); hctx.moveTo(tgx-8,tgcy+tgh/2-tgh*0.75); hctx.lineTo(tgx+8,tgcy+tgh/2-tgh*0.75); hctx.stroke();   // MIL detent tick
 	hctx.font="11px monospace"; hctx.fillStyle=GR; hctx.fillText("THR",tgx,tgcy-tgh/2-9);
 	const thrust=(ownship.spool??ownship.throttle)*100+(ownship.stage??0)*58;   // achieved thrust, % of military power; burner runs to ~158%
 	hctx.font="15px monospace"; hctx.fillText(Math.round(thrust)+"%",tgx,tgcy+tgh/2+15);
-	if((ownship.stage??0)>0.1){ hctx.font="11px monospace"; hctx.fillText("AB",tgx,tgcy+tgh/2+28); }
+	if((ownship.stage??0)>0.05){ hctx.font="11px monospace"; hctx.fillText("AB "+Math.max(1,Math.round((ownship.stage??0)*5)),tgx,tgcy+tgh/2+28); }   // the achieved zone, counting up as the segments light
 
 	// ---- gear / hook status (bottom-right) ----
 	// Shown only while deployed (like the SPD BK convention): green = down & locked,
@@ -2699,7 +2701,7 @@ function net_frame(dt){
 	const c=last_controls;
 	const sample={ pitch:c?c.pitch:input.pitch*cfg.sens, roll:c?c.roll:input.roll*cfg.sens, yaw:c?c.yaw:input.yaw*cfg.sens,
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
-		reheat:ownship.throttle>=0.98, brake:input.brake,
+		reheat:ownship.burner??0, brake:input.brake,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5,   // wire gear/hook: true = down/deployed
 		override:c?c.override:false,
 		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, missile:missile_flag, eject:eject_flag };
