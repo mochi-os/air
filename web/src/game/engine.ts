@@ -733,14 +733,17 @@ const AIRCRAFT_MODELS={
 		      { name:"hook",     track:/^Hook_AN_/i, drive:"hook" },
 		      { name:"stabL",    node:"Elevator_Left_94",  axis:"x", base:[0.96593,0,0,0.25882], drive:"stabL" },   // neutral base calibrated three ways: the user's Shift+E bracket (position 3 ≈ neutral), the thin-axis minimum (surface vertical thickness minimized at +130° from the old base), and NATOPS throws (+10.5°/−24°) mapping full stick inside the user's positions 2..4
 		      { name:"stabR",    node:"Elevator_right_97", axis:"x", base:[0.96502,0,0,0.26219], drive:"stabR" },
-		      { name:"flapL",     node:"FlapL_12",           axis:"x", sign:-1, drive:"flapL" },
+		      { name:"flapL",     node:"FlapL_12",           axis:"x", sign:-1, drive:"flapL" },   // flap droop percent keys sweep 0..-40° with 0 = 0% droop, so the authored pose IS flush — no base needed (unlike the aileron roll stage, whose keys are roll ±20° around a -20° flush centre)
 		      { name:"flapR",     node:"FlapR_15",           axis:"x", sign:-1, drive:"flapR" },
-		      { name:"innerL",    node:"Left_Flaperon_74",   axis:"x", sign:-1, drive:"flapL" },
-		      { name:"innerR",    node:"Right_Flaperon_312", axis:"x", sign:-1, drive:"flapR" },
-		      { name:"aileronL",  node:"AileronL_69",        axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapL" },   // both ailerons: flush (TE continues the wing; ailerons are faired with flaps up) = -20° local, the centre of each side's 0..-40° percent-key animation sweep — matches the right's silhouette-bisected hand calibration to 0.02°. The authored static poses are asymmetric (left full-up 0°, right full-down -40°), so neither is neutral
+		      // NOTE: Left_Flaperon_74 / Right_Flaperon_312 are NOT separate inboard surfaces — they are the
+		      // DROOP stage of the aileron chains (Left_Flaperon_74 -> ... -> AileronL_69 -> the one aileron
+		      // mesh). Driving them alongside the aileron entries doubled the droop (ailerons drooped 2v while
+		      // the flaps drooped v — the in-flight "ailerons droop relative to the flaps"). The aileron entries
+		      // below carry the full flaperon signal (droop + roll differential) through one stage instead.
+		      { name:"aileronL",  node:"AileronL_69",        axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapL" },   // both ailerons: flush (TE continues the wing; ailerons are faired with flaps up) = -20° local, the centre of each side's 0..±40° roll percent-key sweep — matches the right's silhouette-bisected hand calibration to 0.02°. The authored static poses are asymmetric (left full-up 0°, right full-down -40°), so neither is neutral
 		      { name:"aileronR",  node:"AileronR_309",       axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapR" },
-		      { name:"coverL",    node:"l_aileron_percent_key_AN_Cover_65",  axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapL" },   // aileron shroud covers: animated 1:1 with their ailerons but living OUTSIDE the aileron subtrees, so they need their own drive. Authored like their surfaces (left raised at the full-up static — the floating dark plate; right closed), so the left gets the same -20° flush base and the right keeps its authored pose
-		      { name:"coverR",    node:"r_aileron_percent_key_AN_Cover_302", axis:"x", sign:-1, drive:"flapR" },
+		      { name:"coverL",    node:"l_aileron_percent_key_AN_Cover_65",  axis:"x", sign:-1, max:0, drive:"flapL" },   // aileron shroud covers: separate follower nodes outside the aileron subtrees, seated on the wing at their authored statics and floored there via the node-drive max cap (they ride up with an up-deflected aileron so it never pokes through, and never follow the droop down). The original left plate was a different, smaller ride-on-the-aileron design that leaked a gap at every pose; its mesh was replaced in the GLB by a mirrored copy of the right cover baked closed at the authored static, so both wings now share the validated seated design
+		      { name:"coverR",    node:"r_aileron_percent_key_AN_Cover_302", axis:"x", sign:-1, max:0, drive:"flapR" },
 		      { name:"rudderL",  node:"rudder_percent_key_AN_Left_319",  axis:"y", base:[0,0.15471,0,0.98796], drive:"rudder" },   // rudder neutral: trailing-edge-in-fin-plane (PCA fin plane, rotate until the TE's mean plane distance is zero) — sharper than the lateral-extent minimum, which sat ~6° off
 		      { name:"rudderR",  node:"rudder_percent_key_AN_Right_322", axis:"y", base:[0,0.19423,0,0.98096], drive:"rudder" },
 		      { name:"brake",    track:/^SPOILER_L/i, drive:"speedbrake" } ] } };
@@ -749,6 +752,7 @@ const D2R=Math.PI/180;
 const fleet={}; const fleet_loading={};
 let model_active=false;   // the ownship's aircraft model is ready (loading gate)
 const GEAR_RATE=0.5;   // extend/retract speed of the 0..1 visual progress for aircraft the core doesn't fly
+const DROOP=30*D2R;    // PA trailing-edge droop (NATOPS flaps HALF on the ground: TEF 30°, aileron droop 30°) — the rest pose of the flap family for gear-down aircraft the core doesn't fly; the ownship's comes live from the FCS (Droop.Angle in the flight core)
 function model_tint(hex){ return hex===0xb04a3a?0xff9a86 : hex===0x7f8a96?0xdde3ea : 0xffffff; }   // light team tints (white = untouched)
 function normalise_model(scene, spec){ scene.updateMatrixWorld(true);
 	const box=new THREE.Box3().setFromObject(scene), size=box.getSize(new THREE.Vector3()), ctr=box.getCenter(new THREE.Vector3());
@@ -2046,7 +2050,9 @@ function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.user
 	const sweeping=(st===ownship&&rig_sweep>0)?g.userData.rig[rig_sweep-1]:null;
 	const AXES={ x:new THREE.Vector3(1,0,0), y:new THREE.Vector3(0,1,0), z:new THREE.Vector3(0,0,1) };
 	for(const r of g.userData.rig){
-		if(r.object){ const surfaces=st.surfaces, v=(surfaces&&surfaces[r.drive]!==undefined)?surfaces[r.drive]:0;   // no FCS data (remotes): neutral, NOT the GLB rest pose (the C's right stab rests at -50°)
+		if(r.object){ const surfaces=st.surfaces; let v=(surfaces&&surfaces[r.drive]!==undefined)?surfaces[r.drive]:0;   // no FCS data (remotes): neutral, NOT the GLB rest pose (the C's right stab rests at -50°)
+			if((!surfaces||surfaces[r.drive]===undefined)&&(r.drive==="flapL"||r.drive==="flapR")) v=DROOP*(1-THREE.MathUtils.clamp(st.gear??1,0,1));   // ...except the trailing-edge flap family: gear down = the PA configuration, drooped 30° (NATOPS flaps HALF on deck), scaled by the drawn gear travel — matching what the FCS commands for the ownship
+			if(r.max!==undefined&&v>r.max) v=r.max;   // node-driven cap (one-sided followers: the aileron shroud covers floor at flush and only ride up)
 			const sweep=(sweeping===r)?(Math.sin(performance.now()/600)-0.5)*0.6:0;
 			const cycle=(st===ownship&&stab_cycle&&(r.drive==="stabL"||r.drive==="stabR"))?stab_cycle*Math.PI/4:0;   // Shift+E calibration offset (45° per step)
 			r.object.quaternion.copy(r.quaternion).multiply(new THREE.Quaternion().setFromAxisAngle(AXES[r.axis]||AXES.x, cycle+(r.sign||1)*(v+sweep)));
