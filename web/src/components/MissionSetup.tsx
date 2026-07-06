@@ -668,6 +668,12 @@ export function MissionSetup({
                     onChange={(v) => set('flares', v)}
                   />
                   <SwitchRow
+                    id='sound'
+                    label={<Trans>Sound</Trans>}
+                    checked={config.sound !== false}
+                    onChange={(v) => set('sound', v)}
+                  />
+                  <SwitchRow
                     id='framerate'
                     label={<Trans>Framerate</Trans>}
                     checked={config.framerate}
