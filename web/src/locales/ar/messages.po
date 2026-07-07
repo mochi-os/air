@@ -131,7 +131,7 @@ msgstr "إضافة عرض"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "اضبط المظهر والتخطيط ليناسب تفضيلاتك."
 
-#: src/components/MissionSetup.tsx:1003
+#: src/components/MissionSetup.tsx:1038
 msgid "Afterburner"
 msgstr "الحارق اللاحق"
 
@@ -143,13 +143,13 @@ msgstr "الذكاء الاصطناعي"
 msgid "Aircraft"
 msgstr "الطائرة"
 
-#: src/components/MissionSetup.tsx:715
-msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline."
-msgstr "حاملة طائرات <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> بواسطة <1>Muhamad Mirza Arrafi</1> ‏(Sketchfab)، مرخّصة بموجب <2>CC BY 4.0</2>. مُعدّلة: أُعيد قياسها، وأُعيد توجيه المقدمة نحو +X، وغُمرت حتى خط الماء."
+#: src/components/MissionSetup.tsx:716
+msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
+msgstr ""
 
 #: src/components/MissionSetup.tsx:692
-msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented nose +X, rescaled to length."
-msgstr "نموذج طائرة <0>“F/A-18C Hornet”</0> بواسطة <1>CreadorDeMu</1> (Sketchfab)، مرخّص بموجب <2>CC BY 4.0</2>. تعديل: إعادة توجيه المقدمة نحو +X، وإعادة تحجيمها حسب الطول."
+msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
+msgstr ""
 
 #: src/components/MissionSetup.tsx:459
 msgid "Alerts"
@@ -257,9 +257,13 @@ msgstr "إلغاء"
 msgid "Canopy"
 msgstr "قبة القمرة"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:889
 msgid "Carrier landing"
 msgstr "الهبوط على حاملة الطائرات"
+
+#: src/components/MissionSetup.tsx:895
+msgid "Catapult"
+msgstr ""
 
 #: ../../../lib/web/src/components/notification-category-button.tsx:143
 msgid "Category for this notification"
@@ -347,7 +351,7 @@ msgstr "إغلاق البحث"
 msgid "closer"
 msgstr "أقرب"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:926
 msgid "Clouds"
 msgstr "السحب"
 
@@ -445,7 +449,7 @@ msgstr "إنشاء مباراة"
 msgid "Credits"
 msgstr "شكر وتقدير"
 
-#: src/components/MissionSetup.tsx:898
+#: src/components/MissionSetup.tsx:933
 #: src/components/Multiplayer.tsx:231
 msgid "Cumulus"
 msgstr "سحب ركامية"
@@ -480,7 +484,7 @@ msgstr "الوضع الداكن"
 msgid "Data conflict"
 msgstr "تعارض في البيانات"
 
-#: src/components/MissionSetup.tsx:886
+#: src/components/MissionSetup.tsx:921
 #: src/components/Multiplayer.tsx:226
 msgid "Day"
 msgstr "نهار"
@@ -550,7 +554,7 @@ msgstr "تجاهل"
 msgid "Displays the mobile sidebar."
 msgstr "يعرض الشريط الجانبي للهاتف."
 
-#: src/components/MissionSetup.tsx:991
+#: src/components/MissionSetup.tsx:1026
 msgid "Distance LOD"
 msgstr "مستوى تفاصيل المسافة (LOD)"
 
@@ -563,7 +567,7 @@ msgstr "تنزيل"
 msgid "Download failed"
 msgstr "فشل التنزيل"
 
-#: src/components/MissionSetup.tsx:985
+#: src/components/MissionSetup.tsx:1020
 msgid "Dynamic resolution"
 msgstr "الدقة الديناميكية"
 
@@ -618,11 +622,11 @@ msgstr "توسيع"
 msgid "Expand sidebar"
 msgstr "توسيع الشريط الجانبي"
 
-#: src/components/MissionSetup.tsx:957
+#: src/components/MissionSetup.tsx:992
 msgid "Exterior detail"
 msgstr "التفاصيل الخارجية"
 
-#: src/components/MissionSetup.tsx:973
+#: src/components/MissionSetup.tsx:1008
 msgid "Extra aircraft"
 msgstr "طائرات إضافية"
 
@@ -664,7 +668,7 @@ msgstr "مشاعل"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1021
+#: src/components/MissionSetup.tsx:1056
 msgid "Flares"
 msgstr "الشعلات"
 
@@ -684,11 +688,11 @@ msgstr "فشل نواة الطيران"
 msgid "Floating"
 msgstr "عائم"
 
-#: src/components/MissionSetup.tsx:1027
+#: src/components/MissionSetup.tsx:1062
 msgid "Framerate"
 msgstr "معدل الإطارات"
 
-#: src/components/MissionSetup.tsx:842
+#: src/components/MissionSetup.tsx:860
 msgid "Free flight"
 msgstr "طيران حر"
 
@@ -751,7 +755,7 @@ msgstr "الانتقال إلى الصفحة {pageNumber}"
 msgid "Go to previous page"
 msgstr "الانتقال إلى الصفحة السابقة"
 
-#: src/components/MissionSetup.tsx:827
+#: src/components/MissionSetup.tsx:845
 msgid "Graphics"
 msgstr "الرسوميات"
 
@@ -780,11 +784,11 @@ msgstr "إخفاء"
 msgid "Hide password"
 msgstr "إخفاء كلمة المرور"
 
-#: src/components/MissionSetup.tsx:937
+#: src/components/MissionSetup.tsx:972
 msgid "High"
 msgstr "عالٍ"
 
-#: src/components/MissionSetup.tsx:899
+#: src/components/MissionSetup.tsx:934
 #: src/components/Multiplayer.tsx:232
 msgid "High stratus"
 msgstr "سحب طبقية مرتفعة"
@@ -812,7 +816,7 @@ msgstr "رائج"
 msgid "Imperial"
 msgstr "إمبراطوري"
 
-#: src/components/MissionSetup.tsx:868
+#: src/components/MissionSetup.tsx:886
 msgid "In air"
 msgstr "في الجو"
 
@@ -848,15 +852,15 @@ msgstr "مبارزة"
 msgid "Joust — 1v1, first kill wins"
 msgstr "مبارزة — 1v1، أول إسقاط يحسم الفوز"
 
-#: src/components/MissionSetup.tsx:843
+#: src/components/MissionSetup.tsx:861
 msgid "Joust against AI player"
 msgstr "مبارزة ضد لاعب ذكاء اصطناعي"
 
-#: src/components/MissionSetup.tsx:818
+#: src/components/MissionSetup.tsx:836
 msgid "Joystick"
 msgstr "عصا التحكم"
 
-#: src/components/MissionSetup.tsx:821
+#: src/components/MissionSetup.tsx:839
 msgid "Keys"
 msgstr "المفاتيح"
 
@@ -981,11 +985,11 @@ msgstr "النظر لليمين"
 msgid "Look up"
 msgstr "النظر لأعلى"
 
-#: src/components/MissionSetup.tsx:933
+#: src/components/MissionSetup.tsx:968
 msgid "Low"
 msgstr "منخفض"
 
-#: src/components/MissionSetup.tsx:900
+#: src/components/MissionSetup.tsx:935
 #: src/components/Multiplayer.tsx:233
 msgid "Low stratus"
 msgstr "سحب طبقية منخفضة"
@@ -1017,7 +1021,7 @@ msgid "Match type"
 msgstr "نوع المباراة"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:935
+#: src/components/MissionSetup.tsx:970
 msgid "Medium"
 msgstr "متوسط"
 
@@ -1033,7 +1037,7 @@ msgstr "القائمة"
 msgid "Metric"
 msgstr "متري"
 
-#: src/components/MissionSetup.tsx:739
+#: src/components/MissionSetup.tsx:740
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "خريطة جزيرة ميدواي المرجانية — تحتوي الصور على بيانات <0>Copernicus Sentinel-2</0> معدّلة (2026)؛ هندسة المطار (المدرج، ممرات السير، ساحات الوقوف) © مساهمي <1>OpenStreetMap</1>، مرخّصة بموجب <2>ODbL</2>؛ بيانات الساحل والشعاب المرجانية من <3>NOAA NCCOS</3> (ملكية عامة)."
 
@@ -1046,7 +1050,7 @@ msgstr "صاروخ"
 msgid "Missile"
 msgstr "صاروخ"
 
-#: src/components/MissionSetup.tsx:1015
+#: src/components/MissionSetup.tsx:1050
 msgid "Missiles"
 msgstr "صواريخ"
 
@@ -1054,7 +1058,7 @@ msgstr "صواريخ"
 msgid "Missiles allowed"
 msgstr "مسموح بالصواريخ"
 
-#: src/components/MissionSetup.tsx:812
+#: src/components/MissionSetup.tsx:830
 msgid "Mission"
 msgstr "مهمة"
 
@@ -1066,7 +1070,7 @@ msgstr "الاثنين"
 msgid "Move it…"
 msgstr "حرّك المحور…"
 
-#: src/components/MissionSetup.tsx:844
+#: src/components/MissionSetup.tsx:862
 msgid "Multiplayer"
 msgstr "متعدد اللاعبين"
 
@@ -1088,7 +1092,7 @@ msgstr "جديد"
 msgid "Next image"
 msgstr "الصورة التالية"
 
-#: src/components/MissionSetup.tsx:887
+#: src/components/MissionSetup.tsx:922
 #: src/components/Multiplayer.tsx:227
 msgid "Night"
 msgstr "ليل"
@@ -1151,7 +1155,7 @@ msgstr "بدون تقدير"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:364
 #: src/components/MissionSetup.tsx:418
-#: src/components/MissionSetup.tsx:897
+#: src/components/MissionSetup.tsx:932
 msgid "None"
 msgstr "لا شيء"
 
@@ -1175,7 +1179,7 @@ msgstr "غير محدد"
 msgid "Notifications"
 msgstr "الإشعارات"
 
-#: src/components/MissionSetup.tsx:965
+#: src/components/MissionSetup.tsx:1000
 msgid "Ocean detail"
 msgstr "تفاصيل المحيط"
 
@@ -1183,11 +1187,11 @@ msgstr "تفاصيل المحيط"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:870
+#: src/components/MissionSetup.tsx:888
 msgid "On carrier"
 msgstr "على الحاملة"
 
-#: src/components/MissionSetup.tsx:869
+#: src/components/MissionSetup.tsx:887
 msgid "On runway"
 msgstr "على المدرج"
 
@@ -1310,7 +1314,7 @@ msgstr "يرجى المحاولة مرة أخرى."
 msgid "Please wait a moment and try again."
 msgstr "يرجى الانتظار قليلاً ثم إعادة المحاولة."
 
-#: src/components/MissionSetup.tsx:920
+#: src/components/MissionSetup.tsx:955
 msgid "Preset"
 msgstr "إعداد مسبق"
 
@@ -1411,13 +1415,17 @@ msgstr "إزالة الوصول؟"
 msgid "Remove interest"
 msgstr "إزالة الاهتمام"
 
+#: src/components/MissionSetup.tsx:774
+msgid "Rendering by <0>three.js</0> (MIT licence)."
+msgstr ""
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:367
 msgid "Resend email"
 msgstr "إعادة إرسال البريد الإلكتروني"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1069
+#: src/components/MissionSetup.tsx:1104
 msgid "Reset"
 msgstr "إعادة تعيين"
 
@@ -1425,15 +1433,15 @@ msgstr "إعادة تعيين"
 msgid "Reset all settings to default values"
 msgstr "إعادة تعيين كل الإعدادات إلى القيم الافتراضية"
 
-#: src/components/MissionSetup.tsx:947
+#: src/components/MissionSetup.tsx:982
 msgid "Resolution"
 msgstr "القرار"
 
-#: src/components/MissionSetup.tsx:1041
+#: src/components/MissionSetup.tsx:1076
 msgid "Restart"
 msgstr "إعادة التشغيل"
 
-#: src/components/MissionSetup.tsx:1045
+#: src/components/MissionSetup.tsx:1080
 msgid "Resume"
 msgstr "استئناف"
 
@@ -1590,7 +1598,7 @@ msgstr "تعيين المنشأ والوجهة"
 msgid "Settings"
 msgstr "الإعدادات"
 
-#: src/components/MissionSetup.tsx:997
+#: src/components/MissionSetup.tsx:1032
 msgid "Shadows"
 msgstr "الظلال"
 
@@ -1627,7 +1635,7 @@ msgid "Small"
 msgstr "صغير"
 
 #: src/components/MissionSetup.tsx:474
-#: src/components/MissionSetup.tsx:824
+#: src/components/MissionSetup.tsx:842
 msgid "Sound"
 msgstr "الصوت"
 
@@ -1649,8 +1657,8 @@ msgstr "كابح هوائي"
 msgid "Speed brake"
 msgstr "كابح هوائي"
 
-#: src/components/MissionSetup.tsx:862
-#: src/components/MissionSetup.tsx:1051
+#: src/components/MissionSetup.tsx:880
+#: src/components/MissionSetup.tsx:1086
 msgid "Start"
 msgstr "ابدأ"
 
@@ -1685,7 +1693,7 @@ msgstr "وسم"
 msgid "Tags"
 msgstr "الوسوم"
 
-#: src/components/MissionSetup.tsx:836
+#: src/components/MissionSetup.tsx:854
 msgid "Task"
 msgstr "وظيفة"
 
@@ -1738,7 +1746,7 @@ msgstr "الخميس"
 msgid "tilt"
 msgstr "إمالة"
 
-#: src/components/MissionSetup.tsx:880
+#: src/components/MissionSetup.tsx:915
 msgid "Time of day"
 msgstr "وقت اليوم"
 
@@ -1781,7 +1789,7 @@ msgstr "طلبات كثيرة جدًا"
 msgid "Top"
 msgstr "الأعلى"
 
-#: src/components/MissionSetup.tsx:1009
+#: src/components/MissionSetup.tsx:1044
 msgid "Tracers"
 msgstr "الطلقات الكاشفة"
 
@@ -1816,7 +1824,7 @@ msgstr "اكتب للبحث عن مستخدمين"
 msgid "Type to search..."
 msgstr "اكتب للبحث..."
 
-#: src/components/MissionSetup.tsx:939
+#: src/components/MissionSetup.tsx:974
 msgid "Ultra"
 msgstr "فائق"
 
@@ -1912,7 +1920,7 @@ msgstr "سنعود للاتصال قريبًا."
 msgid "Weapons"
 msgstr "الأسلحة"
 
-#: src/components/MissionSetup.tsx:815
+#: src/components/MissionSetup.tsx:833
 #: src/components/Multiplayer.tsx:223
 msgid "Weather"
 msgstr "الطقس"

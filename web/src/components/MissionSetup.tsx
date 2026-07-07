@@ -691,7 +691,8 @@ function CreditsDialog() {
           <p className='leading-relaxed'>
             <Trans>
               Aircraft model <b>“F/A-18C Hornet”</b> by <b>CreadorDeMu</b> (Sketchfab), licensed
-              under <b>CC BY 4.0</b>. Modified: reoriented nose +X, rescaled to length.
+              under <b>CC BY 4.0</b>. Modified: reoriented and rescaled, unused texture payload
+              removed, external stores split into a separate file, one shroud mesh mirrored.
             </Trans>{' '}
             <a
               className='text-primary hover:underline'
@@ -715,7 +716,7 @@ function CreditsDialog() {
             <Trans>
               Aircraft carrier <b>“USS Nimitz CVN-68 Aircraft Carrier”</b> by{' '}
               <b>Muhamad Mirza Arrafi</b> (Sketchfab), licensed under <b>CC BY 4.0</b>. Modified:
-              rescaled, reoriented bow +X, sunk to the waterline.
+              rescaled, reoriented, sunk to the waterline, and simplified for the web.
             </Trans>{' '}
             <a
               className='text-primary hover:underline'
@@ -769,6 +770,19 @@ function CreditsDialog() {
               NOAA NCCOS
             </a>
           </p>
+          <p className='leading-relaxed'>
+            <Trans>
+              Rendering by <b>three.js</b> (MIT licence).
+            </Trans>{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://threejs.org/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              three.js
+            </a>
+          </p>
         </div>
       </DialogContent>
     </Dialog>
@@ -778,6 +792,8 @@ function CreditsDialog() {
 export function MissionSetup({
   config,
   onChange,
+  cat,
+  onCat,
   tab,
   onTabChange,
   gameInProgress,
@@ -788,6 +804,8 @@ export function MissionSetup({
 }: {
   config: MissionConfig
   onChange: (config: MissionConfig) => void
+  cat: number
+  onCat: (cat: number) => void
   tab: string
   onTabChange: (tab: string) => void
   gameInProgress: boolean
@@ -871,6 +889,23 @@ export function MissionSetup({
                         { value: 'landing', label: <Trans>Carrier landing</Trans> },
                       ]}
                     />
+                    {config.start === 'carrier' && (
+                      <>
+                        <SectionLabel>
+                          <Trans>Catapult</Trans>
+                        </SectionLabel>
+                        <Choice
+                          value={String(cat)}
+                          onChange={(v) => onCat(parseInt(v, 10))}
+                          options={[
+                            { value: '1', label: '1' },
+                            { value: '2', label: '2' },
+                            { value: '3', label: '3' },
+                            { value: '4', label: '4' },
+                          ]}
+                        />
+                      </>
+                    )}
                   </>
                 )}
               </TabsContent>
