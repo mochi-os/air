@@ -15,6 +15,7 @@ import {
   type Net as NetHandle,
 } from './net'
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_burst, battle_blast, battle_progress, BATTLE } from './flight'
+import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_horn, audio_remote, audio_remote_drop, audio_listener } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { createAppClient } from '@mochi/web'
@@ -24,6 +25,7 @@ export type GameConfig = Record<string, unknown>
 export interface GameHandle {
   stop: () => void
   resume: (config?: GameConfig) => void
+  leave: () => void
 }
 
 export function startGame({
@@ -99,7 +101,8 @@ const DECK_ALIGN=false;              // dev-only catapult/deck alignment tool (k
 const TEST_SCENARIOS=true;           // dev-only landing/trap test autopilot (Shift+1..0 fly scripted hands-off approaches) — flip off before release
 let cat_idx=1;                       // selected catapult (0-based; default = #2 port bow, the carrier-start spawn); Shift+1-4 select in align mode (key 0)
 let pause_toggle=false, game_paused=false;
-let loading=false, loading_t0=0;   // flight-start LOADING screen: the sim + render hold until assets_ready() (20 s cap so a failed load can't hang the game)
+let loading=false, loading_t0=0;
+const load_marks={}; let load_pending=[];   // loading-screen profiling: per-gate ready times + what is still pending (drawn under LOADING)   // flight-start LOADING screen: the sim + render hold until assets_ready() (20 s cap so a failed load can't hang the game)
 let joust_side=1;   // which end of the merge the player drew this round (+1 = start west heading east); coin-flipped per joust start
 const sun_dir = new THREE.Vector3(0.45,0.42,-0.32).normalize();
 const CARRIER={ x:-18500, z:7500, deckY:SHIP.deck };   // ~20 km WSW of Midway (leeward deep water); heading +X, bow at +x
@@ -752,13 +755,18 @@ const AIRCRAFT_MODELS={
 		pose:[ { node:"elevator_percent_key_AN_238_100", quaternion:[0,-0.996,0.087,0] } ],   // the stabs' shared parent is authored mid-animation 180°-flipped (planform-reversed stabs); this is its animation END key — the correct frame. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
 
 		nose:4.9, wheel:2.85, stance:2.57, squat:0.08, flames:true,   // the model's own glow discs carry the burner look, procedural cones stay off (the nozzle helper-cube mesh was removed from the GLB itself — #94)   // physics nose-gear x + the DEPLOYED drawn nose-wheel x and wheel-bottom drop (three.js pose of the gear animation — the STATIC pose is gear-up on this model and lies about both); squat = clip-fraction scrubbed back under weight so the drawn oleo compresses (~0.4 m of wheel travel per unit fraction at the clip tail)
-		swivel:{ node:"c_gear_AN_lower_134", axis:[-0.0012,-0.0934,-0.9956] },   // nosewheel steering: the lower strut + scissor + wheels swivel about this node-local axis (the strut line in the DEPLOYED gear pose — measured; the gear clip re-poses the node every frame so the steering twist is post-multiplied after the mixer)
+		swivel:{ node:"c_gear_AN_lower_134", axis:[0.0012,0.0934,0.9956] },
+		spin:[ { node:"l_tire_anim_AN_Tire_35",     axis:[-0.043,-0.991,-0.130], radius:0.375 },   // wheel spin: node-local axles measured in the DEPLOYED gear pose (the static pose stows the mains FLAT — never measure there); +rotation about each axis rolls forward. Radii match the real 30x11.5 mains / 22x6.6 nose tires
+		       { node:"r_tire_anim_AN__287",        axis:[-0.124,0.992,0.029],   radius:0.377 },
+		       { node:"c_tire_anim_AN_Wheels_132",  axis:[1,0,0],                radius:0.296 } ],   // the nose PAIR's axle is exactly local +x (0.63 m across the pair, circular 0.59 m discs about it) — the deployed-pose world-x read was 13.7° off and made the wheels wobble ("ploughed field"). (Fan-face rotation was implemented and REMOVED: the S-ducts hide the fans from every outside sightline — verified by render — so it was invisible machinery)
+		flame:[ "Afterburner_can_flamesAction_AN_flames_1", "Afterburner_can_flames_rightAction_AN_right_4" ],   // the can-interior flame discs: the modeller's authored effect is a spin about the engine axis (local z) — a radial flame texture churning inside the can. Hidden dry, spinning with each engine's reheat   // nosewheel steering: the lower strut + scissor + wheels swivel about this node-local axis (the strut line in the DEPLOYED gear pose — measured; the gear clip re-poses the node every frame so the steering twist is post-multiplied after the mixer). Axis SIGN set empirically: the offline tire-PCA direction read was ambiguous and picked the wrong sense — the user saw the wheel steer opposite the turn
 		rig:[ { name:"gear",     track:/(^|_)[clr]_(gear|wheel)_AN_/i, drive:"gear" },
 		      { name:"hook",     track:/^Hook_AN_/i, drive:"hook" },
 		      { name:"probe",    track:/^RefuelDoorAction_AN/i, drive:"probe" },   // in-flight refueling probe (starboard nose): door + arm + probe swing on one sequence; Shift+F toggles, ~5 s travel (the cockpit Refuel_Switch tracks have a different prefix and stay untouched)
 		      { name:"canopy",   track:/^Canopy_ParentAction_AN/i, drive:"canopy" },
 		      { name:"petals",   track:/^EXHAUSTS_/i, drive:"nozzle" },
-		      { name:"fold",     track:/wing_outer_AN/i, drive:"fold" },   // wing fold: both outer-panel tracks (left +100°, right -110° — the clip owns the asymmetric sweeps), authored = spread, track end = folded. The panels carry ailerons, covers, droop stages and outer slats   // 24 nozzle petals, one shared sweep: authored = closed, track end = open (+7.2°, tip radius 25->32 cm, measured). Driven by the F404 area schedule, not a toggle   // canopy shells + actuator arm + linkage; Shift+C on the ground, ~6 s stroke, auto-closes on the takeoff roll (the cockpit Canopy_Switch has a different prefix)
+		      { name:"fold",     track:/wing_outer_AN/i, drive:"fold" },
+		      { name:"bar",      track:/^c_launch_bar_AN/i, drive:"bar" },   // launch bar: rides the nose-gear subtree (retracts with the gear); its own track swings it 133° from stowed-along-strut (authored) to the deck hookup (end). Automatic: down when captured by a catapult, up after the shot   // wing fold: both outer-panel tracks (left +100°, right -110° — the clip owns the asymmetric sweeps), authored = spread, track end = folded. The panels carry ailerons, covers, droop stages and outer slats   // 24 nozzle petals, one shared sweep: authored = closed, track end = open (+7.2°, tip radius 25->32 cm, measured). Driven by the F404 area schedule, not a toggle   // canopy shells + actuator arm + linkage; Shift+C on the ground, ~6 s stroke, auto-closes on the takeoff roll (the cockpit Canopy_Switch has a different prefix)
 		      { name:"stabL",    node:"Elevator_Left_94",  axis:"x", base:[0.96593,0,0,0.25882], drive:"stabL" },   // neutral base calibrated three ways: the user's Shift+E bracket (position 3 ≈ neutral), the thin-axis minimum (surface vertical thickness minimized at +130° from the old base), and NATOPS throws (+10.5°/−24°) mapping full stick inside the user's positions 2..4
 		      { name:"stabR",    node:"Elevator_right_97", axis:"x", base:[0.96502,0,0,0.26219], drive:"stabR" },
 		      { name:"slatLI",    node:"Left_Slat_Inner_63",   axis:"x", drive:"slat" },   // leading-edge flaps: static nodes in the GLB (no authored animation), direct-driven about their own local X — the modeller aligned each node frame with the swept LE hinge (within 3°), and +rotation droops the LE on BOTH sides (mirrored frames). Drive = the core's alpha-scheduled slat state (word 27)
@@ -855,6 +863,8 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	if(spec.flames) g.children.forEach(c=>{ if(c.userData&&c.userData.ab) c.visible=false; });   // this model's own glow replaces the procedural cones
 	g.userData.swivel=null;
 	if(spec.swivel){ const sw=m.getObjectByName(spec.swivel.node); if(sw) g.userData.swivel={ object:sw, axis:new THREE.Vector3(...spec.swivel.axis).normalize() }; }
+	g.userData.spin=(spec.spin||[]).map(s=>{ const o=m.getObjectByName(s.node); return o?{ object:o, axis:new THREE.Vector3(...s.axis).normalize(), radius:s.radius, base:o.quaternion.clone() }:null; }).filter(Boolean);
+	g.userData.flame=(spec.flame||[]).map(n=>{ const o=m.getObjectByName(n); return o?{ object:o, base:o.quaternion.clone() }:null; }).filter(Boolean);
 	const glow=new Map(), burner=new Map();   // emissive materials cloned per aircraft: exterior/cockpit lights switch with the lights state; the afterburner can + exit-disc glow follows the achieved engine power (no external plume — the glow lives inside the nozzles)
 	m.traverse(o=>{ if(!o.isMesh||!o.material) return; (Array.isArray(o.material)?o.material:[o.material]).forEach((mm,ix)=>{
 		if(!mm.emissiveMap) return;
@@ -999,7 +1009,40 @@ function model_y_stats(grp){ grp.updateMatrixWorld(true); const v=new THREE.Vect
 		for(let i=0;i<pa.count;i++){ v.fromBufferAttribute(pa,i).applyMatrix4(o.matrixWorld); if(v.y<mn)mn=v.y; if(v.y>mx)mx=v.y; ys.push(v.y); } } });
 	const NB=80,w=(mx-mn)/NB||1,h=new Array(NB).fill(0); for(const y of ys){ let b=Math.floor((y-mn)/w); if(b<0)b=0; if(b>=NB)b=NB-1; h[b]++; }
 	let pk=0; for(let i=0;i<NB;i++) if(h[i]>h[pk])pk=i; return { keelY:mn, topY:mx, deckY:mn+(pk+0.5)*w }; }
-function deck_y_at(grp,x,z,fallback){ _ray.set(new THREE.Vector3(x,5000,z), new THREE.Vector3(0,-1,0)); const hits=_ray.intersectObject(grp,true); return hits.length?hits[0].point.y:fallback; }
+let deck_grid=null;   // deck height field, carrier-local 1.5 m cells — built once at carrier load; raycasting the 358k-triangle hull cost 13 ms PER QUERY and startup makes ~300 of them (the 4-second loading hang)
+function build_deck_grid(grp,deckY){
+	const cell=1.5, minFa=-172, maxFa=172, minLat=-52, maxLat=48;
+	const W=Math.ceil((maxFa-minFa)/cell), H=Math.ceil((maxLat-minLat)/cell);
+	const data=new Float32Array(W*H).fill(NaN);
+	const a=new THREE.Vector3(), b=new THREE.Vector3(), c=new THREE.Vector3();
+	grp.traverse(o=>{ if(!o.isMesh||!o.geometry.attributes.position) return;
+		const p=o.geometry.attributes.position, idx=o.geometry.index;
+		const n=idx?idx.count:p.count;
+		for(let i=0;i<n;i+=3){
+			a.fromBufferAttribute(p, idx?idx.getX(i):i).applyMatrix4(o.matrixWorld);
+			b.fromBufferAttribute(p, idx?idx.getX(i+1):i+1).applyMatrix4(o.matrixWorld);
+			c.fromBufferAttribute(p, idx?idx.getX(i+2):i+2).applyMatrix4(o.matrixWorld);
+			if(Math.abs(a.y-deckY)>3.5||Math.abs(b.y-deckY)>3.5||Math.abs(c.y-deckY)>3.5) continue;   // deck band only: the island must NOT write cells, or cats near it would read roof heights
+			const fa=[carrier_fore_aft(a.x,a.z),carrier_fore_aft(b.x,b.z),carrier_fore_aft(c.x,c.z)];
+			const la=[carrier_lateral(a.x,a.z),carrier_lateral(b.x,b.z),carrier_lateral(c.x,c.z)];
+			const ys=[a.y,b.y,c.y];
+			const i0=Math.max(0,Math.floor((Math.min(...fa)-minFa)/cell)), i1=Math.min(W-1,Math.ceil((Math.max(...fa)-minFa)/cell));
+			const j0=Math.max(0,Math.floor((Math.min(...la)-minLat)/cell)), j1=Math.min(H-1,Math.ceil((Math.max(...la)-minLat)/cell));
+			const d=(fa[1]-fa[0])*(la[2]-la[0])-(la[1]-la[0])*(fa[2]-fa[0]); if(Math.abs(d)<1e-9) continue;
+			for(let gi=i0;gi<=i1;gi++) for(let gj=j0;gj<=j1;gj++){
+				const qf=minFa+(gi+0.5)*cell, ql=minLat+(gj+0.5)*cell;
+				const w1=((fa[1]-qf)*(la[2]-ql)-(la[1]-ql)*(fa[2]-qf))/d, w2=((fa[2]-qf)*(la[0]-ql)-(la[2]-ql)*(fa[0]-qf))/d, w3=1-w1-w2;
+				if(w1<-0.02||w2<-0.02||w3<-0.02) continue;
+				const y=w1*ys[0]+w2*ys[1]+w3*ys[2], k=gj*W+gi;
+				if(!(data[k]>=y)) data[k]=y;   // top surface wins (NaN-safe)
+			}
+		} });
+	deck_grid={ data, W, H, cell, minFa, minLat };
+}
+function deck_y_at(grp,x,z,fallback){
+	if(deck_grid){ const g=deck_grid, gi=Math.floor((carrier_fore_aft(x,z)-g.minFa)/g.cell), gj=Math.floor((carrier_lateral(x,z)-g.minLat)/g.cell);
+		if(gi>=0&&gi<g.W&&gj>=0&&gj<g.H){ const y=g.data[gj*g.W+gi]; if(!Number.isNaN(y)) return y; } return fallback; }
+	_ray.set(new THREE.Vector3(x,5000,z), new THREE.Vector3(0,-1,0)); const hits=_ray.intersectObject(grp,true); return hits.length?hits[0].point.y:fallback; }
 // Place ownship on the configured catapult (deck height found by raycast when a model carrier is present).
 let deck_edit=false;
 function place_on_cat(i=cat_idx){
@@ -1043,6 +1086,7 @@ async function init_carrier_model(){
 			grp.position.set(CARRIER.x,0,CARRIER.z); grp.updateMatrixWorld(true);
 			const st=model_y_stats(grp); const waterline=st.keelY+SHIP.draft*(st.deckY-st.keelY);   // sink so waterline -> y=0
 			grp.position.y-=waterline; grp.updateMatrixWorld(true);
+			build_deck_grid(grp, st.deckY-waterline);   // one triangle pass replaces every startup deck raycast
 			let baseTex=null,normTex=null;
 			if(baseSrc&&typeof createImageBitmap==="function"){ try{ baseTex=await make_tex(baseSrc,true); }catch(e){} }
 			if(normSrc&&typeof createImageBitmap==="function"){ try{ normTex=await make_tex(normSrc,false); }catch(e){} }
@@ -1911,15 +1955,13 @@ function read_gamepad(){ const pads=(navigator.getGamepads&&navigator.getGamepad
 		if(cfg.joystick&&p.id===cfg.joystick) return p;
 		if(!first) first=p; }
 	return first; }
-function pad_bindings(pad){   // resolved axis/button map for THIS stick: the menu's per-device config over built-in defaults (VelocityOne measured off the hardware, 2026-07-06)
+function pad_bindings(pad){   // resolved axis/button map for THIS stick: the menu's per-device config over the SHARED built-in defaults (lib/config deviceDefaults — one source for the engine and the menu, so Reset always shows what the engine flies)
 	const saved=(cfg.sticks||{})[pad.id]||{};
-	const vone=/velocityone|10f5/i.test(pad.id||"");
-	const axes={ pitch:"1", roll:"0", yaw:"2", throttle:vone?"-5":"3", speedbrake:vone?"-6":"", hat:vone?"8":"", ...(saved.axes||{}) };   // "-N" = reversed sense; VelocityOne: throttle on the LEFT base slider (rests at -1), speed brake on the RIGHT — aft reads LOW (flight test), so reversed makes aft = deployed. hat = the POV x-axis index (y follows at +1); BOTH VelocityOne top hats emit this same HID hat
-	const buttons=saved.buttons&&Object.keys(saved.buttons).length?saved.buttons
-		:(vone?{ guns:"0", missile:"17", flares:"15", gear:"16", "look.up":"8", "look.right":"9", "look.down":"10", "look.left":"11" }
-		      :{ guns:"0" });
-	return { axes, buttons }; }
+	const defaults=deviceDefaults(pad.id||"");
+	return { axes:{ ...defaults.axes, ...(saved.axes||{}) },
+		buttons: saved.buttons&&Object.keys(saved.buttons).length?saved.buttons:defaults.buttons }; }
 const pad_looks={ up:false, down:false, left:false, right:false };   // castle/hat state, level-read per frame — deliberately NOT synthetic Arrow events (shared codes let a castle release kill a held physical arrow)
+let pad_guns=false;   // guns level state, same reasoning: a HELD action with possibly several bound buttons must never be synthetic key events
 function pad_axis(pad,i){ const v=pad.axes[i]??0;   // raw ±1, no calibration: the worn-pot centring/throw machinery is gone by decree — modern sticks read clean, and every margin only made dead travel
 	const dz=Math.abs(v)<0.05?0:(v-Math.sign(v)*0.05)/0.95;   // small centre deadzone against electrical jitter
 	return Math.sign(dz)*Math.pow(Math.abs(dz),1.25);   // gentle expo: fine control near centre, full authority at the stops
@@ -1955,25 +1997,28 @@ function read_input(dt){
 				ownship.throttle=Math.min(1,lever/0.75); ownship.burner=THREE.MathUtils.clamp((lever-0.75)/0.25,0,1); } }   // lever: 0..75% = idle..MIL, the top quarter sweeps the five AB zones
 		{ const p=pad_lever(pad,bind.axes.speedbrake,"speedbrake");   // speed brake: full forward retracted, aft deployed (deployed at the HIGH raw end; "-" prefix flips)
 			if(p!==null) ownship.speedbrakeTarget=p; }
-		pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false;
-		{ const h=String(bind.axes.hat??""); if(h!==""){ const hi=+h;   // the POV hat looks/orbits too (HID: x -1 left +1 right, y -1 up +1 down)
+		pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_guns=false;
+		{ const h=String(bind.axes.look??""); if(h!==""){ const hi=+h;   // the Look pair (HID: x -1 left +1 right, y -1 up +1 down; the 0.5 threshold covers analog ministicks and digital hats alike)
 			if(pad.axes.length>hi+1){ const hx=pad.axes[hi], hy=pad.axes[hi+1];
 				if(hx<-0.5) pad_looks.left=true; if(hx>0.5) pad_looks.right=true;
 				if(hy<-0.5) pad_looks.up=true; if(hy>0.5) pad_looks.down=true; } } }
-		for(const [action,index] of Object.entries(bind.buttons)){ const b=+index;
+		for(const [action,list] of Object.entries(bind.buttons)) for(const index of String(list).split(",")){ const b=+index;   // a binding may list several buttons
 			if(!(b>=0)||b>=pad.buttons.length) continue;
 			const down=pad.buttons[b].pressed;
 			if(action.startsWith("look.")){ if(down) pad_looks[action.slice(5)]=true; continue; }   // look directions are level state for the camera, not key events
-			const was=pad_buttons[b]||false;   // other actions replay their CURRENT key: synthetic keydown on press, keyup on release, so held actions (brakes, guns) work and pad binds follow key remaps
+			if(action==="guns"){ if(down) pad_guns=true; continue; }   // guns too: held fire from any bound button, immune to another button's release
+			const was=pad_buttons[b]||false;   // other actions replay their CURRENT key: synthetic keydown on press, keyup on release, so held actions (brakes) work and pad binds follow key remaps
 			if(down!==was){ pad_buttons[b]=down; const bindText=key_of(action);
 				if(bindText){ const shift=bindText.startsWith("Shift+"), code=bindText.replace("Shift+","");
 					for(const target of [window, document, stage]) target.dispatchEvent(new KeyboardEvent(down?"keydown":"keyup",{ code, shiftKey:shift, bubbles:true })); } } }
 	}
-	else pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false;
+	else { pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_guns=false; }
 	input.pitch=Math.abs(pp)>Math.abs(key_axes.pitch)?pp:key_axes.pitch;
 	input.roll=Math.abs(pr)>Math.abs(key_axes.roll)?pr:key_axes.roll;
 	input.yaw=Math.abs(py)>Math.abs(key_axes.yaw)?py:key_axes.yaw;
-	input.guns=keys.has(key_of("guns")); input.brake=keys.has(key_of("brake.wheel"));   // the pad trigger arrives as a synthetic guns key through its action bind   // B: wheel brakes, held (both mains together); joystick trigger fires too
+	input.guns=keys.has(key_of("guns"))||pad_guns; input.brake=keys.has(key_of("brake.wheel"));   // the trigger's gear-down brake role comes from its brake.wheel BINDING, not hidden logic   // B: wheel brakes, held (both mains together); joystick trigger fires too
+	const throttling=!deck_edit&&(keys.has(key_of("throttle.up"))||keys.has(key_of("throttle.down")));
+	if(throttling&&pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; }   // the keyboard takes the throttle back from an armed physical lever (else the lever pins it every frame and e.g. the catapult unhook — throttle below 30% + full pedal — can never fire); the next deliberate lever sweep re-takes control
 	if(!deck_edit && keys.has(key_of("throttle.up"))){ if(ownship.throttle>=1) ownship.burner=Math.min(1,(ownship.burner??0)+dt*0.8); else ownship.throttle=Math.min(1,ownship.throttle+dt*0.5); }   // throttle up (], held & ramped); past MIL the lever advances through the afterburner range
 	if(!deck_edit && keys.has(key_of("throttle.down"))){ if((ownship.burner??0)>0) ownship.burner=Math.max(0,ownship.burner-dt*0.8); else ownship.throttle=Math.max(0,ownship.throttle-dt*0.5); }    // throttle down ([): the burner comes off before the dry range
 }
@@ -2154,6 +2199,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.aoa=out[STATE.alpha]*180/Math.PI; ownship.gload=out[STATE.nz];
 	ownship.cas=out[STATE.cas];   // calibrated airspeed, m/s — the real jet's HUD speed source
 	ownship.spool=out[STATE.power]; ownship.stage=out[STATE.stage];   // achieved across the airframe's engines, computed core-side
+	ownship.reheats=[out[STATE.engine+1], out[STATE.engine+3]];   // per-engine achieved reheat (flame discs; one burner can die independently)
 	ownship.gear=1-out[STATE.extension]; ownship.speedbrake=out[STATE.speedbrake];
 	ownship.surfaces={ stabL:out[STATE.stabilator], stabR:out[STATE.stabilator+1], flapL:out[STATE.flaperon], flapR:out[STATE.flaperon+1], rudder:out[STATE.rudder], slat:out[STATE.slat] };   // live FCS deflections, rad — the rig scrubs surfaces from these
 	update_gauges(out);   // cockpit instruments (#99)
@@ -2171,8 +2217,8 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 function flight_push(){   // deliver the ownship pose to the core: trimmed level flight when airborne, a composed state on the ground / in a test
 	if(!flight_active) return;
 	prev_wire=-1;
-	if(!test_active && ownship.speed>50 && !ownship.grounded){
-		flight_level(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, ownship.speed, FUEL);
+	if(!test_active && ownship.speed>50 && !ownship.grounded && mission_start()!=="landing"){
+		flight_level(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, ownship.speed, FUEL);   // trimmed CLEAN level flight — right for air starts, but it threw away the landing start's composed on-speed pose (the PA law then wrestled a clean trim onto approach alpha: nose-down lurch, dead stick)
 		sync_core(flight_get()); return;
 	}
 	const b=flight_get();   // keep time (carrier pose, wind field) and fuel across resets
@@ -2181,6 +2227,7 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 	b[STATE.position]=ownship.pos.x; b[STATE.position+1]=ownship.pos.y; b[STATE.position+2]=ownship.pos.z;
 	b[STATE.velocity]=ownship.vel_dir.x*ownship.speed; b[STATE.velocity+1]=ownship.vel_dir.y*ownship.speed; b[STATE.velocity+2]=ownship.vel_dir.z*ownship.speed;
 	b[STATE.attitude]=ownship.q.w; b[STATE.attitude+1]=ownship.q.x; b[STATE.attitude+2]=ownship.q.y; b[STATE.attitude+3]=ownship.q.z;
+	b[STATE.extension]=(ownship.gearTarget??0)<0.5?1:0;   // the core's gear matches the spawn configuration immediately — a landing start otherwise spends its first seconds extending (flaps absent, trim shifting)
 	b[STATE.omega]=0; b[STATE.omega+1]=0; b[STATE.omega+2]=0;
 	if(b[STATE.fuel]<500) b[STATE.fuel]=FUEL;
 	b[STATE.engine]=ownship.throttle; b[STATE.engine+1]=0; b[STATE.engine+2]=ownship.throttle; b[STATE.engine+3]=0;
@@ -2360,6 +2407,7 @@ function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.user
 			f=Math.max(THREE.MathUtils.clamp((0.7-spool)/0.55,0,1), THREE.MathUtils.clamp(stage,0,1)); break; }
 		case "canopy": f=THREE.MathUtils.clamp(st.canopy??0,0,1); break;
 		case "fold": f=THREE.MathUtils.clamp(st.fold??0,0,1); break;
+		case "bar": f=THREE.MathUtils.clamp(st.bar??0,0,1); break;
 		default: { const surfaces=st.surfaces; if(!surfaces||surfaces[r.drive]===undefined){ f=undefined; break; }   // no live FCS data (remotes): hold the rest pose
 			f=(surfaces[r.drive]-(r.min??0))/(((r.max??1)-(r.min??0))||1); f=THREE.MathUtils.clamp(f,0,1); } }
 		if(f===undefined) continue;
@@ -2374,15 +2422,17 @@ function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.user
 		if(st===ownship){ const stage=ownship.stage??0, spool=ownship.spool??0;
 			want=stage>0.02 ? 0.5+2.5*stage : (spool>0.7 ? (spool-0.7)*0.7 : 0); }
 		for(const mm of g.userData.burner){ if(mm.emissiveIntensity!==want) mm.emissiveIntensity=want; } }
+	if(g.userData.spin&&g.userData.spin.length){ const d=st.wheelDist??0;
+		for(const s of g.userData.spin) s.object.quaternion.copy(s.base).multiply(new THREE.Quaternion().setFromAxisAngle(s.axis, d/s.radius)); }
+	if(g.userData.flame&&g.userData.flame.length){ const Z=new THREE.Vector3(0,0,1), a=[st.flameA??0,st.flameB??0], on=st.flameOn||[false,false];
+		g.userData.flame.forEach((f2,i2)=>{ f2.object.visible=!!on[i2]; if(on[i2]) f2.object.quaternion.copy(f2.base).multiply(new THREE.Quaternion().setFromAxisAngle(Z,a[i2])); }); }
 	const sw=g.userData.swivel;   // nosewheel steering: the same law the core's strut applies (pedal x NWS throw, washing out with ground speed), gated on ground contact
 	if(sw){   // ABSOLUTE application from a captured base: the mixer only rewrites the strut pose when the gear-clip time changes, so post-multiplying every frame compounded and the wheel windmilled under alternating pedal
 		if(!sw.gear) sw.gear=(g.userData.rig||[]).find(r=>r.name==="gear"&&r.action)||null;
 		const gt=sw.gear?sw.gear.action.time:0;
 		if(!sw.base||sw.baseTime!==gt){ sw.base=sw.object.quaternion.clone(); sw.baseTime=gt; }
 		sw.object.quaternion.copy(sw.base);
-		if((st.squish??0)>0.001){ const pedal=(st===ownship)?THREE.MathUtils.clamp((input.yaw??0)*cfg.sens,-1,1):0;   // the core steers from the same sensitivity-scaled command
-			const steer=pedal*NWS*THREE.MathUtils.clamp(1-(st.speed||0)/60,0.1,1)*(st.squish??0);
-			if(steer) sw.object.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(sw.axis,steer)); } } }
+		if(Math.abs(st.steer??0)>0.001) sw.object.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(sw.axis,st.steer)); } }   // st.steer = the slewed, authority-blended state from update_anim (LOW 22.5° at taxi, HI near standstill, ~23°/s actuator rate)
 function ease_to(cur,tgt,dt){ const d=tgt-cur; return Math.abs(d)>1e-4 ? cur+Math.sign(d)*Math.min(Math.abs(d),GEAR_RATE*dt) : tgt; }
 function update_anim(dt){ for(const st of [ownship,bandit,...extras]){
 	const owned=st===ownship&&flight_active;   // the core's actuators drive ownship gear + speedbrake progress (sync_core); don't ease over them
@@ -2396,6 +2446,18 @@ function update_anim(dt){ for(const st of [ownship,bandit,...extras]){
 	if(st.canopy===undefined) st.canopy=st.canopyTarget??0; st.canopy+=THREE.MathUtils.clamp((st.canopyTarget??0)-st.canopy,-0.167*dt,0.167*dt);   // ~6 s canopy stroke
 	if(st===ownship && (st.foldTarget??0)>0.5 && st.speed>13){ st.foldTarget=0; notice(translate("WINGS SPREADING")); }   // rolling for takeoff spreads folded wings before the airflow rips them
 	if(st.fold===undefined) st.fold=st.foldTarget??0; st.fold+=THREE.MathUtils.clamp((st.foldTarget??0)-st.fold,-0.125*dt,0.125*dt);   // ~8 s fold cycle
+	if(st===ownship) st.barTarget=(st.launching || ((st.squish??0)>0.5 && ownship.speed<15 && on_cat_spot()>=0))?1:0;   // launch bar drops automatically when the catapult captures the jet (the deck crew the game doesn't have), stays down through the stroke, retracts as the jet flies off or taxis clear — the real bar's retraction IS automatic
+	if(st.bar===undefined) st.bar=st.barTarget??0; st.bar+=THREE.MathUtils.clamp((st.barTarget??0)-st.bar,-0.8*dt,0.8*dt);   // ~1.3 s swing
+	if(st===ownship){ const pedal=THREE.MathUtils.clamp((input.yaw??0)*cfg.sens,-1,1), sp=st.speed||0;   // nosewheel steering: mirror the core's authority blend (LOW 22.5° at taxi, HI 75° only near standstill), then slew the drawn wheel at an actuator-like rate — the keyboard pedal is bang-bang and an unslewed wheel snaps
+		const auth=(22.5+(75-22.5)*THREE.MathUtils.clamp(1-sp/2.5,0,1))*D2R;
+		const target=pedal*auth*THREE.MathUtils.clamp(1-sp/60,0.1,1)*(st.squish??0);
+		st.steer=(st.steer??0)+THREE.MathUtils.clamp(target-(st.steer??0),-0.4*dt,0.4*dt); }   // ~23°/s — hydraulic, not snappy
+	{ const rh=(st===ownship)?(ownship.reheats||[0,0]):[cfg.afterburner?1:0,cfg.afterburner?1:0];   // flame discs churn with each engine's reheat: ~0.5 rev/s at min zone to ~3 rev/s at max
+		st.flameA=(st.flameA??0)+(rh[0]>0.02?(0.5+2.5*rh[0])*6.283*dt:0); st.flameB=(st.flameB??0)+(rh[1]>0.02?(0.5+2.5*rh[1])*6.283*dt:0);
+		st.flameOn=[rh[0]>0.02, rh[1]>0.02]; }
+	{ const rolling=(st===ownship)?(st.squish??0)>0.1:((st.gear??1)<0.1 && st.speed>1);   // wheel spin: on the ground the tires match ground speed; airborne they freewheel down (~2.5 s), and retraction brakes them (real jets auto-brake the wheels in the wells)
+		st.wheelSpeed=rolling?st.speed:(st.gear??1)>0.5?0:(st.wheelSpeed??0)*Math.exp(-dt/2.5);
+		st.wheelDist=(st.wheelDist??0)+(st.wheelSpeed??0)*dt; }
 	apply_anim(st); } }
 function step_world(dt){ sim_time+=dt;
 	fly_player(dt); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
@@ -2447,10 +2509,12 @@ function reset_ownship(){
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;           // unit landing direction (the way the aircraft rolls out)
 		const tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw)), dist=3*1852, gs=3.5*D2R;                    // touchdown ≈ the aim wire (3-wire on a four-wire deck); 3 NM back on the 3.5° glideslope
 		ownship.pos.set(td.x-ldx*dist+ldz*100, CARRIER.deckY+dist*Math.tan(gs)+HOOK_DROP-50, td.z-ldz*dist-ldx*100);   // 3 NM astern, 100 m left of centre, 50 m low — a deliberate off-glideslope, off-centre intercept
-		ownship.speed=70; ownship.throttle=0.8;   // ~135 kt approach speed at approach power (on-speed, draggy landing config) — NOT idle, or it sinks off the glideslope at the spawn
+		ownship.speed=70; ownship.throttle=0.75;   // ~135 kt approach speed at descent power (on-speed, draggy landing config) — NOT idle, or it sinks off the glideslope at the spawn
 		const yaw=5*D2R, cy=Math.cos(yaw), sy=Math.sin(yaw); ownship.fwd.set(ldx*cy-ldz*sy,0,ldz*cy+ldx*sy).normalize();   // level flight, heading ~5° to starboard of the centreline — pilot rolls out onto the ICLS and pushes over onto the glideslope from below
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
-		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
+		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
+		const glide=3.5*D2R; ownship.vel_dir.y=-Math.sin(glide);   // DESCENDING on the glideslope, not level below it — holding level off the spawn took seconds of forward stick
+		ownship.q.premultiply(new THREE.Quaternion().setFromAxisAngle(r,8*D2R-glide)); }   // attitude = path + approach alpha: spawns on-speed AND on-slope   // spawn ON-SPEED: nose up ~approach alpha over the level path — a zero-alpha spawn sank while the PA law scrambled to capture on-speed (nose-down lurch, dead stick during the transient)
 	else if(st==="joust"){   // 1v1 merge: head-on east-west directly over the atoll at 15,000 ft, 1 NM either side, equal AIRSPEED — symmetric in every respect (island below both at all fight orientations, sun/moon abeam both noses); the side is a coin flip so the sun-left/sun-right mirror can't systematically favour one player
 		joust_side=Math.random()<0.5?1:-1;
 		ownship.pos.set(-joust_side*1.5*NM, 4572, 0); ownship.fwd.set(joust_side,0,0); ownship.speed=220; ownship.throttle=0.85;   // 15,000 ft = 4572 m; 1.5 NM either side = 3 NM head-on
@@ -2623,7 +2687,7 @@ function draw_hud(dt){
 			hctx.beginPath(); hctx.moveTo(cx,0); hctx.lineTo(cx,HH); hctx.stroke(); hctx.restore();
 			hctx.fillStyle=AM; hctx.font="13px monospace"; hctx.fillText("DECK ALIGN  CAT "+(cat_idx+1)+"  Shift+1-4 select · I/K fore-aft · J/L port-stbd · [ ] height · U/O rotate · 0 save",cx,cy+182);
 			hctx.fillStyle=GR; hctx.fillText("x="+SHIP.shuttles[cat_idx].x.toFixed(2)+"  z="+SHIP.shuttles[cat_idx].z.toFixed(2)+"  hdg="+SHIP.shuttles[cat_idx].h.toFixed(1)+"\u00b0    (camera: Shift+\u2190\u2192 orbit · ,/. tilt · \u2212/= zoom)",cx,cy+200); }
-		else { const ls=launch_status(); if(ls>0) hud_message(translate(ls===2?"PRESS ENTER TO LAUNCH":"RUN UP ENGINE")); }
+		else if(net_notice_t<=0){ const ls=launch_status(); if(ls>0) hud_message(translate(ls===2?"PRESS ENTER TO LAUNCH":"RUN UP ENGINE")); }   // transient notices own the centre banner — never draw two messages on top of each other
 	if(cat_saved_t>0){ cat_saved_t-=dt; hctx.textAlign="center"; hctx.fillStyle=GR; hctx.font="14px monospace"; hctx.fillText(translate("DECK POSITION SAVED"),cx,cy+182); }
 	if(cfg.view!=="hud" && cfg.view!=="cockpit"){ return; }
 	{ const mb=meatball_state(ownship.pos);   // 2D OLS meatball, top-left, when on the carrier approach with gear + hook down
@@ -2986,6 +3050,7 @@ function start_mission(){
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
 	harm_pending=devq.get("harm");   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
 	const viewq=devq.get("view"); if(viewq) set_view(viewq);   // ?view=cockpit|hud|chase — headless capture hook (#105)
+	const startq=devq.get("start"); if(startq){ cfg.start=startq; cfg.task="free"; }   // ?start=landing|carrier|runway|air — headless spawn selection (forces free flight; ?fly alone is a joust) (#105)
 	const headq=devq.get("head"); if(headq){ const [a,e]=headq.split(",").map(Number); head_az=a||0; head_el=e||0; head_drag=true; }   // &head=az,el pins the head pose (head_drag blocks the snap-back)
 	sweep_pending=devq.get("sweep");   // &sweep=<rig name> — wall-clock sweep of one rig entry (visible motion even in a ~5-frame headless capture)
 	build_ocean(cfg.ocean_segments);
@@ -3013,7 +3078,7 @@ function assets_ready(){ return !!carrier_model && model_active && airports.leng
 // ============================================================================ boot
 apply_time_of_day(cfg.tod); apply_effects(); apply_size();
 help_el.style.display="none";   // controls list lives in the pause window now (shown while paused via P)
-addEventListener("pointerdown",()=>{ try{ window.focus(); }catch(e){} },{ signal });
+addEventListener("pointerdown",()=>{ audio_gesture(); try{ window.focus(); }catch(e){} },{ signal });   // clicks are user activations too: without this, a mouse-started carrier mission is silent until the first keypress
 
 function menu_backdrop(){ const a=performance.now()*0.00007; const r=440;
 	camera.position.set(CARRIER.x+Math.cos(a)*r, CARRIER.deckY+70, CARRIER.z+Math.sin(a)*r);
@@ -3022,17 +3087,21 @@ function menu_backdrop(){ const a=performance.now()*0.00007; const r=440;
 
 const clock=new THREE.Clock();
 function frame(){ const dt=Math.min(clock.getDelta(),0.05);
+	game_paused = running && !MULTIPLAYER && (map_on || pause_toggle);
+	audio_enable(cfg.sound!==false && running && !game_paused);   // FIRST thing every frame — silence must not depend on anything below surviving (silent in the menu, paused, and the SP map)
+	audio_volumes(cfg.volume);
 	if(running && loading){   // hold on a black LOADING screen, then jump straight to the fully rendered scene (no piecemeal pop-in)
-		if(assets_ready() || performance.now()-loading_t0>20000){ loading=false; }
+		{ const parts={ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() };   // load profiling: stamp each gate the first time it opens, report the breakdown once done
+			for(const k of Object.keys(parts)) if(parts[k]&&load_marks[k]===undefined) load_marks[k]=performance.now()-loading_t0;
+			load_pending=Object.keys(parts).filter(k=>!parts[k]); }
+		if(assets_ready() || performance.now()-loading_t0>20000){ loading=false;
+			console.log("[load] "+Object.entries(load_marks).map(([k,v])=>k+" "+(v/1000).toFixed(2)+"s").join(" · ")+" · total "+((performance.now()-loading_t0)/1000).toFixed(2)+"s"); }
 		else { draw_loading(); __raf=requestAnimationFrame(frame); return; }
 	}
-	game_paused = running && !MULTIPLAYER && (map_on || pause_toggle);
 	if(running){
 		if(!game_paused){ ocean_mat.uniforms.u_time.value+=dt; step_world(dt); }   // frozen world stops advancing
 		update_camera(dt);
 	} else { ocean_mat.uniforms.u_time.value+=dt; menu_backdrop(); }
-	audio_enable(cfg.sound!==false && running && !game_paused);   // silent in the menu, while paused, and with the SP map up (the world is frozen); the gesture unlock stands ready either way
-	audio_volumes(cfg.volume);   // the menu's Sound tab mix (guarded per bus inside)
 	if(ocean){ ocean.position.x=camera.position.x; ocean.position.z=camera.position.z; }
 	sky.position.copy(camera.position); stars.position.copy(camera.position);
 	render_frame();
@@ -3050,7 +3119,8 @@ function frame(){ const dt=Math.min(clock.getDelta(),0.05);
 	__raf = requestAnimationFrame(frame); }
 function draw_loading(){ hctx.clearRect(0,0,HW,HH); hctx.fillStyle="#000"; hctx.fillRect(0,0,HW,HH);   // opaque: covers the half-built 3D scene beneath
 	hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="22px monospace";
-	hctx.fillText(translate("LOADING")+".".repeat(1+Math.floor(performance.now()/400)%3), HW/2, HH/2); }
+	hctx.fillText(translate("LOADING")+".".repeat(1+Math.floor(performance.now()/400)%3), HW/2, HH/2);
+	if(load_pending.length){ hctx.font="12px monospace"; hctx.fillStyle="#8fa4b8"; hctx.fillText(load_pending.join(" · "), HW/2, HH/2+24); hctx.font="20px monospace"; } }   // what the gate is still waiting on — the answer to "what is taking so long
 function draw_pause_banner(){ hctx.save(); hctx.textAlign="center"; hctx.fillStyle="rgba(3,12,9,0.45)"; hctx.fillRect(HW/2-150,HH/2-44,300,88);
 	hctx.fillStyle=AM; hctx.font="34px monospace"; hctx.fillText(translate("PAUSED"),HW/2,HH/2-2);
 	hctx.fillStyle=GR; hctx.font="12px monospace"; hctx.fillText(translate("P to resume \u00b7 M map \u00b7 Esc menu"),HW/2,HH/2+24); hctx.restore(); }
@@ -3082,5 +3152,10 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
     running = true
     try { stage.focus() } catch (e) {}
   }
-  return { stop, resume }
+  function leave() {
+    if (!running) return
+    running = false
+    if (MULTIPLAYER) net_finish('left')
+  }
+  return { stop, resume, leave }
 }

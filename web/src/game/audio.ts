@@ -81,10 +81,14 @@ export function audio_gesture(): void {
 
 let lastEnable: boolean | null = null
 export function audio_enable(on: boolean): void {
-  if (on === lastEnable) return
-  lastEnable = on
-  enabled = on
-  if (master) master.gain.setTargetAtTime(on ? levels.master : 0, now(), 0.05)
+  if (on !== lastEnable) {
+    lastEnable = on
+    enabled = on
+    if (master) master.gain.setTargetAtTime(on ? levels.master : 0, now(), 0.05)
+  }
+  // State enforcement runs UNCONDITIONALLY (no early return): if anything ever
+  // resumes the context while disabled, the next frame re-suspends it — belt
+  // and braces against any resume path the guards miss.
   if (!on && context && context.state === 'running') void context.suspend()
   if (on && context && context.state === 'suspended') void context.resume()
 }

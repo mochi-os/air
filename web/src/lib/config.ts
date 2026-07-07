@@ -11,6 +11,21 @@ export interface StickBindings {
   buttons: Record<string, string>
 }
 
+// Built-in per-device bindings — the SINGLE source: the engine's pad_bindings and
+// the menu's Joystick tab both read this (a duplicated mirror once showed stale
+// defaults after Reset). "-N" = reversed axis sense; look = the axis pair that
+// looks around (x index, y at x+1); a buttons value may list several indices
+// comma-separated. VelocityOne notes: buttons 8-11 are LATCHING base toggles —
+// never bind them to momentary actions; guns and wheel brakes share a button
+// because the gear decides which applies.
+export function deviceDefaults(id: string): StickBindings {
+  const vone = /velocityone|10f5/i.test(id)
+  return {
+    axes: { pitch: '1', roll: '0', yaw: '2', throttle: vone ? '-5' : '3', speedbrake: vone ? '-6' : '', look: vone ? '3' : '' },
+    buttons: vone ? { guns: '17', 'brake.wheel': '17', missile: '15', flares: '16', gear: '3', hook: '2' } : { guns: '0' },
+  }
+}
+
 // Mission configuration collected by the setup menu and handed to the engine.
 // The index signature lets the engine treat it as a plain config bag (its cfg has
 // a few more baked-in keys, e.g. the catapult spawn pose); the named fields keep

@@ -52,7 +52,10 @@ function Index() {
   // Leaving fullscreen (Esc is always permitted) returns to the menu.
   useEffect(() => {
     function onFullscreenChange() {
-      if (!document.fullscreenElement && inFlight) setMenuOpen(true)
+      if (!document.fullscreenElement && inFlight) {
+        gameRef.current?.leave?.() // Escape in fullscreen reaches the browser, not the page: stop the game like the in-page Escape would, or it keeps flying (and sounding) under the menu
+        setMenuOpen(true)
+      }
     }
     document.addEventListener('fullscreenchange', onFullscreenChange)
     return () => document.removeEventListener('fullscreenchange', onFullscreenChange)
