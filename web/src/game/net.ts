@@ -315,6 +315,21 @@ export class Net {
     const a = after > 0 ? ring[after - 1] : b
     const pb = b.pose
     const pa = a.pose
+    // Beyond the newest sample (the far tail refreshes round-robin at a few
+    // Hz), DEAD-RECKON along the last velocity instead of freezing: without
+    // this every far update was a visible position snap.
+    if (target > b.at + 1) {
+      const ahead = Math.min(1.2, (target - b.at) / 1000)
+      const reach = pb.speed * ahead
+      return {
+        ...pb,
+        position: [
+          this.rewrap(pb.position[0] + pb.direction[0] * reach),
+          pb.position[1] + pb.direction[1] * reach,
+          this.rewrap(pb.position[2] + pb.direction[2] * reach),
+        ],
+      }
+    }
     const span = b.at - a.at
     const t = span > 1 ? Math.min(1, Math.max(0, (target - a.at) / span)) : 1
     const unwrap = (from: number, to: number) => from + this.shortest(from, to) * t

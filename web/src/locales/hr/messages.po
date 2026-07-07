@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "Provjerite internetsku vezu i pokušajte ponovno."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:186
+#: src/components/Multiplayer.tsx:187
 msgid "{0} flying"
 msgstr "{0} u zraku"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:282
 msgid "{0}/{1} players"
 msgstr "{0}/{1} igrača"
 
-#: src/components/Multiplayer.tsx:129
+#: src/components/Multiplayer.tsx:130
 msgid "{name}'s match"
 msgstr "Meč igrača {name}"
 
@@ -219,6 +219,10 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Pojačaj interes"
 
+#: src/components/Multiplayer.tsx:248
+msgid "Bots"
+msgstr "Botovi"
+
 #: src/components/GameCanvas.tsx:125
 msgid "brakes"
 msgstr "kočnice"
@@ -231,7 +235,7 @@ msgstr "Gumb {i}"
 msgid "Buttons"
 msgstr "Gumbi"
 
-#: src/components/Multiplayer.tsx:171
+#: src/components/Multiplayer.tsx:172
 msgid "Callsign"
 msgstr "Pozivni znak"
 
@@ -305,7 +309,7 @@ msgstr "Odaberite jezik"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:231
 msgid "Clear"
 msgstr "Očisti"
 
@@ -384,7 +388,7 @@ msgstr "Kompaktno"
 msgid "Confirm"
 msgstr "Potvrdi"
 
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:190
 msgid "Connecting…"
 msgstr "Povezivanje…"
 
@@ -412,7 +416,7 @@ msgstr "Nastavi s {label}"
 msgid "Copy"
 msgstr "Kopiraj"
 
-#: src/components/Multiplayer.tsx:141
+#: src/components/Multiplayer.tsx:142
 msgid "Could not create the match"
 msgstr "Stvaranje meča nije uspjelo"
 
@@ -436,11 +440,11 @@ msgstr "Provjera s tim računom nije uspjela. Pokušajte ponovno."
 msgid "CRASHED"
 msgstr "SRUŠENO"
 
-#: src/components/Multiplayer.tsx:246
+#: src/components/Multiplayer.tsx:263
 msgid "Create and fly"
 msgstr "Stvori i poleti"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:205
 msgid "Create match"
 msgstr "Stvori meč"
 
@@ -450,7 +454,7 @@ msgid "Credits"
 msgstr "Zasluge"
 
 #: src/components/MissionSetup.tsx:933
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Cumulus"
 msgstr "Kumulus"
 
@@ -485,7 +489,7 @@ msgid "Data conflict"
 msgstr "Sukob podataka"
 
 #: src/components/MissionSetup.tsx:921
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:227
 msgid "Day"
 msgstr "Dan"
 
@@ -591,7 +595,7 @@ msgstr "KATAPULTIRAN"
 msgid "Email code"
 msgstr "Kod e-pošte"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:281
 msgid "empty"
 msgstr "prazna"
 
@@ -656,7 +660,7 @@ msgstr "ZADOVOLJAVAJUĆE"
 
 #: src/components/GameCanvas.tsx:30
 msgid "FIGHT'S ON"
-msgstr ""
+msgstr "BORBA POČINJE"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -793,7 +797,7 @@ msgid "High"
 msgstr "Visoko"
 
 #: src/components/MissionSetup.tsx:934
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:233
 msgid "High stratus"
 msgstr "Visoki stratus"
 
@@ -840,7 +844,7 @@ msgstr "Nevažeći verifikacijski kod"
 msgid "Invert pitch"
 msgstr "Obrni propinjanje"
 
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:295
 msgid "Join"
 msgstr "Pridruži se"
 
@@ -848,11 +852,11 @@ msgstr "Pridruži se"
 msgid "JOINED"
 msgstr "SE PRIDRUŽIO"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Joust"
 msgstr "Dvoboj"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Joust — 1v1, first kill wins"
 msgstr "Dvoboj — 1v1, prvo obaranje pobjeđuje"
 
@@ -994,7 +998,7 @@ msgid "Low"
 msgstr "Nisko"
 
 #: src/components/MissionSetup.tsx:935
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:234
 msgid "Low stratus"
 msgstr "Niski stratus"
 
@@ -1020,7 +1024,7 @@ msgstr "Označi sve kao pročitano"
 msgid "Master"
 msgstr "Glavna"
 
-#: src/components/Multiplayer.tsx:214
+#: src/components/Multiplayer.tsx:215
 msgid "Match type"
 msgstr "Vrsta meča"
 
@@ -1058,7 +1062,7 @@ msgstr "Projektil"
 msgid "Missiles"
 msgstr "Projektili"
 
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:243
 msgid "Missiles allowed"
 msgstr "Rakete dopuštene"
 
@@ -1078,7 +1082,7 @@ msgstr "Pomaknite je…"
 msgid "Multiplayer"
 msgstr "Više igrača"
 
-#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:151
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Za više igrača potreban je WebTransport, koji ovaj preglednik još ne podržava."
 
@@ -1097,7 +1101,7 @@ msgid "Next image"
 msgstr "Sljedeća slika"
 
 #: src/components/MissionSetup.tsx:922
-#: src/components/Multiplayer.tsx:227
+#: src/components/Multiplayer.tsx:228
 msgid "Night"
 msgstr "Noć"
 
@@ -1117,7 +1121,7 @@ msgstr "Nema dostupnih grupa"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Joystick nije otkriven — pritisnite bilo koji gumb na njemu da ga probudite."
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No open matches — create one."
 msgstr "Nema otvorenih mečeva — stvori jedan."
 
@@ -1146,7 +1150,7 @@ msgstr "Još nema zapisa o temi — pokušajte ponovno nakon sljedeće obavijest
 msgid "No users found"
 msgstr "Nije pronađen nijedan korisnik"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No world server."
 msgstr "Nema poslužitelja svijeta."
 
@@ -1203,11 +1207,11 @@ msgstr "Na pisti"
 msgid "Oops! Page Not Found!"
 msgstr "Ups! Stranica nije pronađena!"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Open"
 msgstr "Otvori"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:218
 msgid "Open — anyone may join or leave"
 msgstr "Otvoreni — svatko se može pridružiti ili izaći"
 
@@ -1280,8 +1284,8 @@ msgstr "Pauziraj"
 msgid "PAUSED"
 msgstr "PAUZIRANO"
 
-#: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:176
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:177
 msgid "pilot"
 msgstr "pilot"
 
@@ -1384,7 +1388,7 @@ msgstr "Preusmjeravanje na prijavu."
 msgid "Reduce interest"
 msgstr "Smanji interes"
 
-#: src/components/Multiplayer.tsx:194
+#: src/components/Multiplayer.tsx:195
 msgid "Refresh"
 msgstr "Osvježi"
 
@@ -1914,7 +1918,7 @@ msgstr "Pregledi"
 
 #: src/components/GameCanvas.tsx:29
 msgid "WAITING FOR OPPONENT"
-msgstr ""
+msgstr "ČEKANJE PROTIVNIKA"
 
 #: src/components/GameCanvas.tsx:44
 msgid "WAVE OFF"
@@ -1929,7 +1933,7 @@ msgid "Weapons"
 msgstr "Oružje"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:224
 msgid "Weather"
 msgstr "Vrijeme"
 
@@ -1954,11 +1958,11 @@ msgstr "Sklapanje krila"
 msgid "WINS"
 msgstr "POBJEĐUJE"
 
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:161
 msgid "World server"
 msgstr "Poslužitelj svijeta"
 
-#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:99
 msgid "World server not reachable"
 msgstr "Poslužitelj svijeta nije dostupan"
 

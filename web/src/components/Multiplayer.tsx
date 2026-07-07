@@ -83,6 +83,7 @@ export function Multiplayer({
   const [tod, setTod] = useState<'day' | 'night'>('day')
   const [clouds, setClouds] = useState('none')
   const [missiles, setMissiles] = useState(false)
+  const [bots, setBots] = useState(0) // server-flown practice aircraft (0 = none); also the 100-player verification lever
   const address = normalize_server(server || default_server())
   const name = (callsign || identity || t`pilot`).slice(0, 32)
 
@@ -128,7 +129,7 @@ export function Multiplayer({
         mode,
         label: t`${name}'s match`,
         capacity: mode === 'joust' ? 2 : 0,
-        parameters: { tod, clouds, missiles },
+        parameters: { tod, clouds, missiles, bots },
       })
       onJoin({
         server: address,
@@ -235,11 +236,27 @@ export function Multiplayer({
             </div>
           </div>
           <div className='flex items-center justify-between'>
-            <div className='flex items-center gap-2'>
-              <Switch id='rule-missiles' checked={missiles} onCheckedChange={setMissiles} />
-              <Label htmlFor='rule-missiles' className='font-normal'>
-                <Trans>Missiles allowed</Trans>
-              </Label>
+            <div className='flex items-center gap-4'>
+              <div className='flex items-center gap-2'>
+                <Switch id='rule-missiles' checked={missiles} onCheckedChange={setMissiles} />
+                <Label htmlFor='rule-missiles' className='font-normal'>
+                  <Trans>Missiles allowed</Trans>
+                </Label>
+              </div>
+              <div className='flex items-center gap-2'>
+                <Label htmlFor='rule-bots' className='font-normal'>
+                  <Trans>Bots</Trans>
+                </Label>
+                <Input
+                  id='rule-bots'
+                  type='number'
+                  min={0}
+                  max={99}
+                  value={bots}
+                  onChange={(e) => setBots(Math.max(0, Math.min(99, Number(e.target.value) || 0)))}
+                  className='h-8 w-16'
+                />
+              </div>
             </div>
             <Button type='button' size='sm' disabled={!status || busy} onClick={() => void create()}>
               <Plus className='size-4' />

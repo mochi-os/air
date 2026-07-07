@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "בדקו את חיבור האינטרנט ונסו שוב."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:186
+#: src/components/Multiplayer.tsx:187
 msgid "{0} flying"
 msgstr "{0} באוויר"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:282
 msgid "{0}/{1} players"
 msgstr "{0}/{1} שחקנים"
 
-#: src/components/Multiplayer.tsx:129
+#: src/components/Multiplayer.tsx:130
 msgid "{name}'s match"
 msgstr "המשחק של {name}"
 
@@ -219,6 +219,10 @@ msgstr "בולטר"
 msgid "Boost interest"
 msgstr "הגבר עניין"
 
+#: src/components/Multiplayer.tsx:248
+msgid "Bots"
+msgstr "בוטים"
+
 #: src/components/GameCanvas.tsx:125
 msgid "brakes"
 msgstr "בלמים"
@@ -231,7 +235,7 @@ msgstr "כפתור {i}"
 msgid "Buttons"
 msgstr "כפתורים"
 
-#: src/components/Multiplayer.tsx:171
+#: src/components/Multiplayer.tsx:172
 msgid "Callsign"
 msgstr "אות קריאה"
 
@@ -305,7 +309,7 @@ msgstr "בחר שפה"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:231
 msgid "Clear"
 msgstr "נקה"
 
@@ -384,7 +388,7 @@ msgstr "מצומצם"
 msgid "Confirm"
 msgstr "אישור"
 
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:190
 msgid "Connecting…"
 msgstr "מתחבר…"
 
@@ -412,7 +416,7 @@ msgstr "המשך עם {label}"
 msgid "Copy"
 msgstr "העתק"
 
-#: src/components/Multiplayer.tsx:141
+#: src/components/Multiplayer.tsx:142
 msgid "Could not create the match"
 msgstr "לא ניתן היה ליצור את המשחק"
 
@@ -436,11 +440,11 @@ msgstr "לא ניתן היה לאמת עם החשבון הזה. נסה שוב."
 msgid "CRASHED"
 msgstr "התרסק"
 
-#: src/components/Multiplayer.tsx:246
+#: src/components/Multiplayer.tsx:263
 msgid "Create and fly"
 msgstr "יצירה וטיסה"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:205
 msgid "Create match"
 msgstr "יצירת משחק"
 
@@ -450,7 +454,7 @@ msgid "Credits"
 msgstr "קרדיטים"
 
 #: src/components/MissionSetup.tsx:933
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Cumulus"
 msgstr "קומולוס"
 
@@ -485,7 +489,7 @@ msgid "Data conflict"
 msgstr "התנגשות נתונים"
 
 #: src/components/MissionSetup.tsx:921
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:227
 msgid "Day"
 msgstr "יום"
 
@@ -591,7 +595,7 @@ msgstr "נטש"
 msgid "Email code"
 msgstr "קוד אימייל"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:281
 msgid "empty"
 msgstr "ריק"
 
@@ -656,7 +660,7 @@ msgstr "סביר"
 
 #: src/components/GameCanvas.tsx:30
 msgid "FIGHT'S ON"
-msgstr ""
+msgstr "הקרב החל"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -793,7 +797,7 @@ msgid "High"
 msgstr "גבוה"
 
 #: src/components/MissionSetup.tsx:934
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:233
 msgid "High stratus"
 msgstr "סטרטוס גבוה"
 
@@ -840,7 +844,7 @@ msgstr "קוד אימות לא תקין"
 msgid "Invert pitch"
 msgstr "היפוך עלרוד"
 
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:295
 msgid "Join"
 msgstr "הצטרפות"
 
@@ -848,11 +852,11 @@ msgstr "הצטרפות"
 msgid "JOINED"
 msgstr "הצטרף"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Joust"
 msgstr "דו-קרב"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Joust — 1v1, first kill wins"
 msgstr "דו-קרב — 1v1, ההריגה הראשונה מנצחת"
 
@@ -994,7 +998,7 @@ msgid "Low"
 msgstr "נמוך"
 
 #: src/components/MissionSetup.tsx:935
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:234
 msgid "Low stratus"
 msgstr "סטרטוס נמוך"
 
@@ -1020,7 +1024,7 @@ msgstr "סמן הכול כנקרא"
 msgid "Master"
 msgstr "ראשי"
 
-#: src/components/Multiplayer.tsx:214
+#: src/components/Multiplayer.tsx:215
 msgid "Match type"
 msgstr "סוג משחק"
 
@@ -1058,7 +1062,7 @@ msgstr "טיל"
 msgid "Missiles"
 msgstr "טילים"
 
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:243
 msgid "Missiles allowed"
 msgstr "טילים מותרים"
 
@@ -1078,7 +1082,7 @@ msgstr "הזז אותו…"
 msgid "Multiplayer"
 msgstr "מרובה משתתפים"
 
-#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:151
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "מרובה משתתפים דורש WebTransport, שהדפדפן הזה עדיין לא תומך בו."
 
@@ -1097,7 +1101,7 @@ msgid "Next image"
 msgstr "התמונה הבאה"
 
 #: src/components/MissionSetup.tsx:922
-#: src/components/Multiplayer.tsx:227
+#: src/components/Multiplayer.tsx:228
 msgid "Night"
 msgstr "לילה"
 
@@ -1117,7 +1121,7 @@ msgstr "אין קבוצות זמינות"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "לא זוהה ג'ויסטיק — לחץ על כפתור כלשהו עליו כדי להעיר אותו."
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No open matches — create one."
 msgstr "אין משחקים פתוחים — צרו אחד."
 
@@ -1146,7 +1150,7 @@ msgstr "עדיין אין רשומת נושא — נסה שוב לאחר ההת�
 msgid "No users found"
 msgstr "לא נמצאו משתמשים"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No world server."
 msgstr "אין שרת עולם."
 
@@ -1203,11 +1207,11 @@ msgstr "על המסלול"
 msgid "Oops! Page Not Found!"
 msgstr "אופס! הדף לא נמצא!"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Open"
 msgstr "פתוח"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:218
 msgid "Open — anyone may join or leave"
 msgstr "פתוח — כל אחד יכול להצטרף או לעזוב"
 
@@ -1280,8 +1284,8 @@ msgstr "השהה"
 msgid "PAUSED"
 msgstr "מושהה"
 
-#: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:176
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:177
 msgid "pilot"
 msgstr "טייס"
 
@@ -1384,7 +1388,7 @@ msgstr "מפנה לדף ההתחברות."
 msgid "Reduce interest"
 msgstr "הפחת עניין"
 
-#: src/components/Multiplayer.tsx:194
+#: src/components/Multiplayer.tsx:195
 msgid "Refresh"
 msgstr "רענן"
 
@@ -1914,7 +1918,7 @@ msgstr "צפיות"
 
 #: src/components/GameCanvas.tsx:29
 msgid "WAITING FOR OPPONENT"
-msgstr ""
+msgstr "ממתין ליריב"
 
 #: src/components/GameCanvas.tsx:44
 msgid "WAVE OFF"
@@ -1929,7 +1933,7 @@ msgid "Weapons"
 msgstr "חימוש"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:224
 msgid "Weather"
 msgstr "מזג אוויר"
 
@@ -1954,11 +1958,11 @@ msgstr "קיפול כנפיים"
 msgid "WINS"
 msgstr "מנצח"
 
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:161
 msgid "World server"
 msgstr "שרת עולם"
 
-#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:99
 msgid "World server not reachable"
 msgstr "לא ניתן להגיע לשרת העולם"
 

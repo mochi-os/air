@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "உங்கள் இணைய இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:186
+#: src/components/Multiplayer.tsx:187
 msgid "{0} flying"
 msgstr "{0} பேர் பறக்கின்றனர்"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:282
 msgid "{0}/{1} players"
 msgstr "{0}/{1} வீரர்கள்"
 
-#: src/components/Multiplayer.tsx:129
+#: src/components/Multiplayer.tsx:130
 msgid "{name}'s match"
 msgstr "{name} இன் போட்டி"
 
@@ -219,6 +219,10 @@ msgstr "போல்டர்"
 msgid "Boost interest"
 msgstr "ஆர்வத்தை அதிகரி"
 
+#: src/components/Multiplayer.tsx:248
+msgid "Bots"
+msgstr "போட்கள்"
+
 #: src/components/GameCanvas.tsx:125
 msgid "brakes"
 msgstr "பிரேக்கு"
@@ -231,7 +235,7 @@ msgstr "பொத்தான் {i}"
 msgid "Buttons"
 msgstr "பொத்தான்கள்"
 
-#: src/components/Multiplayer.tsx:171
+#: src/components/Multiplayer.tsx:172
 msgid "Callsign"
 msgstr "அழைப்புப் பெயர்"
 
@@ -305,7 +309,7 @@ msgstr "மொழியைத் தேர்ந்தெடுக்கவு�
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:231
 msgid "Clear"
 msgstr "அழி"
 
@@ -384,7 +388,7 @@ msgstr "சுருக்கமான"
 msgid "Confirm"
 msgstr "உறுதிசெய்"
 
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:190
 msgid "Connecting…"
 msgstr "இணைக்கிறது…"
 
@@ -412,7 +416,7 @@ msgstr "{label} மூலம் தொடரவும்"
 msgid "Copy"
 msgstr "நகலெடு"
 
-#: src/components/Multiplayer.tsx:141
+#: src/components/Multiplayer.tsx:142
 msgid "Could not create the match"
 msgstr "போட்டியை உருவாக்க முடியவில்லை"
 
@@ -436,11 +440,11 @@ msgstr "அந்தக் கணக்கைச் சரிபார்க்�
 msgid "CRASHED"
 msgstr "விழுந்தது"
 
-#: src/components/Multiplayer.tsx:246
+#: src/components/Multiplayer.tsx:263
 msgid "Create and fly"
 msgstr "உருவாக்கிப் பற"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:205
 msgid "Create match"
 msgstr "போட்டியை உருவாக்கு"
 
@@ -450,7 +454,7 @@ msgid "Credits"
 msgstr "பங்களிப்பாளர்கள்"
 
 #: src/components/MissionSetup.tsx:933
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Cumulus"
 msgstr "திரள் மேகம்"
 
@@ -485,7 +489,7 @@ msgid "Data conflict"
 msgstr "தரவு முரண்பாடு"
 
 #: src/components/MissionSetup.tsx:921
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:227
 msgid "Day"
 msgstr "பகல்"
 
@@ -591,7 +595,7 @@ msgstr "வெளியேறினார்"
 msgid "Email code"
 msgstr "மின்னஞ்சல் குறியீடு"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:281
 msgid "empty"
 msgstr "காலி"
 
@@ -656,7 +660,7 @@ msgstr "சராசரி"
 
 #: src/components/GameCanvas.tsx:30
 msgid "FIGHT'S ON"
-msgstr ""
+msgstr "சண்டை தொடங்கியது"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -793,7 +797,7 @@ msgid "High"
 msgstr "உயர்ந்த"
 
 #: src/components/MissionSetup.tsx:934
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:233
 msgid "High stratus"
 msgstr "உயர் அடுக்கு மேகம்"
 
@@ -840,7 +844,7 @@ msgstr "தவறான சரிபார்ப்பு குறியீட�
 msgid "Invert pitch"
 msgstr "பிட்சைத் தலைகீழாக்கு"
 
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:295
 msgid "Join"
 msgstr "சேர்"
 
@@ -848,11 +852,11 @@ msgstr "சேர்"
 msgid "JOINED"
 msgstr "சேர்ந்தார்"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Joust"
 msgstr "நேருக்குநேர் மோதல்"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Joust — 1v1, first kill wins"
 msgstr "டூயல் — 1v1, முதலில் வீழ்த்துபவர் வெற்றி"
 
@@ -994,7 +998,7 @@ msgid "Low"
 msgstr "குறைந்த"
 
 #: src/components/MissionSetup.tsx:935
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:234
 msgid "Low stratus"
 msgstr "தாழ் அடுக்கு மேகம்"
 
@@ -1020,7 +1024,7 @@ msgstr "அனைத்தையும் படித்ததாகக் க�
 msgid "Master"
 msgstr "முதன்மை"
 
-#: src/components/Multiplayer.tsx:214
+#: src/components/Multiplayer.tsx:215
 msgid "Match type"
 msgstr "போட்டி வகை"
 
@@ -1058,7 +1062,7 @@ msgstr "ஏவுகணை"
 msgid "Missiles"
 msgstr "ஏவுகணைகள்"
 
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:243
 msgid "Missiles allowed"
 msgstr "ஏவுகணைகள் அனுமதி"
 
@@ -1078,7 +1082,7 @@ msgstr "அதை நகர்த்தவும்…"
 msgid "Multiplayer"
 msgstr "மல்டிபிளேயர்"
 
-#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:151
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "மல்டிபிளேயருக்கு WebTransport தேவை; இந்த உலாவி அதை இன்னும் ஆதரிக்கவில்லை."
 
@@ -1097,7 +1101,7 @@ msgid "Next image"
 msgstr "அடுத்த படம்"
 
 #: src/components/MissionSetup.tsx:922
-#: src/components/Multiplayer.tsx:227
+#: src/components/Multiplayer.tsx:228
 msgid "Night"
 msgstr "இரவு"
 
@@ -1117,7 +1121,7 @@ msgstr "குழுக்கள் கிடைக்கவில்லை"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "ஜாய்ஸ்டிக் எதுவும் கண்டறியப்படவில்லை — அதை எழுப்ப அதில் ஏதேனும் ஒரு பொத்தானை அழுத்தவும்."
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No open matches — create one."
 msgstr "திறந்த போட்டிகள் இல்லை — ஒன்றை உருவாக்கு."
 
@@ -1146,7 +1150,7 @@ msgstr "தலைப்புப் பதிவு இன்னும் இல
 msgid "No users found"
 msgstr "பயனர்கள் எதுவும் கிடைக்கவில்லை"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No world server."
 msgstr "உலக சேவையகம் இல்லை."
 
@@ -1203,11 +1207,11 @@ msgstr "ஓடுபாதையில்"
 msgid "Oops! Page Not Found!"
 msgstr "அய்யோ! பக்கம் கிடைக்கவில்லை!"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Open"
 msgstr "திற"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:218
 msgid "Open — anyone may join or leave"
 msgstr "திறந்தது — யார் வேண்டுமானாலும் சேரலாம் அல்லது வெளியேறலாம்"
 
@@ -1280,8 +1284,8 @@ msgstr "இடைநிறுத்து"
 msgid "PAUSED"
 msgstr "இடைநிறுத்தப்பட்டது"
 
-#: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:176
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:177
 msgid "pilot"
 msgstr "விமானி"
 
@@ -1384,7 +1388,7 @@ msgstr "உள்நுழைவுக்கு redirect ஆகிறது."
 msgid "Reduce interest"
 msgstr "ஆர்வத்தைக் குறைக்கவும்"
 
-#: src/components/Multiplayer.tsx:194
+#: src/components/Multiplayer.tsx:195
 msgid "Refresh"
 msgstr "புதுப்பி"
 
@@ -1914,7 +1918,7 @@ msgstr "காட்சிகள்"
 
 #: src/components/GameCanvas.tsx:29
 msgid "WAITING FOR OPPONENT"
-msgstr ""
+msgstr "எதிராளிக்காகக் காத்திருக்கிறது"
 
 #: src/components/GameCanvas.tsx:44
 msgid "WAVE OFF"
@@ -1929,7 +1933,7 @@ msgid "Weapons"
 msgstr "ஆயுதங்கள்"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:224
 msgid "Weather"
 msgstr "வானிலை"
 
@@ -1954,11 +1958,11 @@ msgstr "இறக்கை மடிப்பு"
 msgid "WINS"
 msgstr "வெற்றி"
 
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:161
 msgid "World server"
 msgstr "உலக சேவையகம்"
 
-#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:99
 msgid "World server not reachable"
 msgstr "உலக சேவையகத்தை அடைய முடியவில்லை"
 

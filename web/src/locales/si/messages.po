@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "කරුණාකර ඔබගේ අන්තර්ජාල සම්බන්ධතාවය පරීක්ෂා කර නැවත උත්සාහ කරන්න."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:186
+#: src/components/Multiplayer.tsx:187
 msgid "{0} flying"
 msgstr "{0}ක් පියාසර කරයි"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:282
 msgid "{0}/{1} players"
 msgstr "ක්‍රීඩකයන් {0}/{1}"
 
-#: src/components/Multiplayer.tsx:129
+#: src/components/Multiplayer.tsx:130
 msgid "{name}'s match"
 msgstr "{name}ගේ තරගය"
 
@@ -219,6 +219,10 @@ msgstr "බෝල්ටර්"
 msgid "Boost interest"
 msgstr "කැමැත්ත වැඩි කරන්න"
 
+#: src/components/Multiplayer.tsx:248
+msgid "Bots"
+msgstr "බොට්ස්"
+
 #: src/components/GameCanvas.tsx:125
 msgid "brakes"
 msgstr "බ්‍රේක්"
@@ -231,7 +235,7 @@ msgstr "බොත්තම {i}"
 msgid "Buttons"
 msgstr "බොත්තම්"
 
-#: src/components/Multiplayer.tsx:171
+#: src/components/Multiplayer.tsx:172
 msgid "Callsign"
 msgstr "කෝල්සයින්"
 
@@ -305,7 +309,7 @@ msgstr "භාෂාව තෝරන්න"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:231
 msgid "Clear"
 msgstr "හිස් කරන්න"
 
@@ -384,7 +388,7 @@ msgstr "සංයුක්ත"
 msgid "Confirm"
 msgstr "තහවුරු කරන්න"
 
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:190
 msgid "Connecting…"
 msgstr "සම්බන්ධ වෙමින්…"
 
@@ -412,7 +416,7 @@ msgstr "{label} සමඟ ඉදිරියට යන්න"
 msgid "Copy"
 msgstr "පිටපත් කරන්න"
 
-#: src/components/Multiplayer.tsx:141
+#: src/components/Multiplayer.tsx:142
 msgid "Could not create the match"
 msgstr "තරගය සෑදීමට නොහැකි විය"
 
@@ -436,11 +440,11 @@ msgstr "එම ගිණුම සමඟ සත්‍යාපනය කළ න�
 msgid "CRASHED"
 msgstr "කඩා වැටුණා"
 
-#: src/components/Multiplayer.tsx:246
+#: src/components/Multiplayer.tsx:263
 msgid "Create and fly"
 msgstr "සාදා පියාසර කරන්න"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:205
 msgid "Create match"
 msgstr "තරගයක් සාදන්න"
 
@@ -450,7 +454,7 @@ msgid "Credits"
 msgstr "ස්තුති"
 
 #: src/components/MissionSetup.tsx:933
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Cumulus"
 msgstr "කියුමියුලස්"
 
@@ -485,7 +489,7 @@ msgid "Data conflict"
 msgstr "දත්ත ගැටුමක්"
 
 #: src/components/MissionSetup.tsx:921
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:227
 msgid "Day"
 msgstr "දහවල"
 
@@ -591,7 +595,7 @@ msgstr "පිටතට පැන්නා"
 msgid "Email code"
 msgstr "ඊමේල් කේතය"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:281
 msgid "empty"
 msgstr "හිස්"
 
@@ -656,7 +660,7 @@ msgstr "සාමාන්‍ය"
 
 #: src/components/GameCanvas.tsx:30
 msgid "FIGHT'S ON"
-msgstr ""
+msgstr "සටන ආරම්භයි"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -793,7 +797,7 @@ msgid "High"
 msgstr "ඉහළ"
 
 #: src/components/MissionSetup.tsx:934
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:233
 msgid "High stratus"
 msgstr "ඉහළ ස්ට්‍රැටස්"
 
@@ -840,7 +844,7 @@ msgstr "අවලංගු සත්‍යාපන කේතය"
 msgid "Invert pitch"
 msgstr "පිච් යටිකුරු කරන්න"
 
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:295
 msgid "Join"
 msgstr "එක්වන්න"
 
@@ -848,11 +852,11 @@ msgstr "එක්වන්න"
 msgid "JOINED"
 msgstr "එක් වුණා"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Joust"
 msgstr "ජවුස්ට්"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Joust — 1v1, first kill wins"
 msgstr "ද්වන්ද්ව සටන — 1v1, පළමුව බිම හෙළන්නා ජයග්‍රහණය කරයි"
 
@@ -994,7 +998,7 @@ msgid "Low"
 msgstr "පහළ"
 
 #: src/components/MissionSetup.tsx:935
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:234
 msgid "Low stratus"
 msgstr "පහළ ස්ට්‍රැටස්"
 
@@ -1020,7 +1024,7 @@ msgstr "සියල්ල කියවූ ලෙස සලකුණු කර�
 msgid "Master"
 msgstr "ප්‍රධාන"
 
-#: src/components/Multiplayer.tsx:214
+#: src/components/Multiplayer.tsx:215
 msgid "Match type"
 msgstr "තරග වර්ගය"
 
@@ -1058,7 +1062,7 @@ msgstr "මිසයිලය"
 msgid "Missiles"
 msgstr "මිසයිල"
 
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:243
 msgid "Missiles allowed"
 msgstr "මිසයිලවලට අවසර ඇත"
 
@@ -1078,7 +1082,7 @@ msgstr "අක්ෂය චලනය කරන්න…"
 msgid "Multiplayer"
 msgstr "මල්ටිප්ලේයර්"
 
-#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:151
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "මල්ටිප්ලේයර් සඳහා WebTransport අවශ්‍යයි. මෙම බ්‍රවුසරය එය තවම සහාය නොදක්වයි."
 
@@ -1097,7 +1101,7 @@ msgid "Next image"
 msgstr "ඊළඟ පින්තූරය"
 
 #: src/components/MissionSetup.tsx:922
-#: src/components/Multiplayer.tsx:227
+#: src/components/Multiplayer.tsx:228
 msgid "Night"
 msgstr "රාත්‍රිය"
 
@@ -1117,7 +1121,7 @@ msgstr "කණ්ඩායම් ලබා ගත නොහැක"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "ජොයිස්ටික් එකක් හමු නොවීය — එය අවදි කිරීමට එහි ඕනෑම බොත්තමක් ඔබන්න."
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No open matches — create one."
 msgstr "විවෘත තරග නොමැත — එකක් සාදන්න."
 
@@ -1146,7 +1150,7 @@ msgstr "තවම topic වාර්තාවක් නැත — ඊළඟ ද�
 msgid "No users found"
 msgstr "පරිශීලකයන් හමු නොවීය"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No world server."
 msgstr "ලෝක සර්වරයක් නැත."
 
@@ -1203,11 +1207,11 @@ msgstr "ධාවන පථයේ"
 msgid "Oops! Page Not Found!"
 msgstr "අහෝ! පිටුව හමු නොවීය!"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Open"
 msgstr "විවෘත කරන්න"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:218
 msgid "Open — anyone may join or leave"
 msgstr "විවෘත — ඕනෑම කෙනෙකුට එක් විය හෝ ඉවත් විය හැක"
 
@@ -1280,8 +1284,8 @@ msgstr "විරාමය"
 msgid "PAUSED"
 msgstr "විරාමයි"
 
-#: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:176
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:177
 msgid "pilot"
 msgstr "නියමුවා"
 
@@ -1384,7 +1388,7 @@ msgstr "පිවිසුම වෙත redirect කරමින්."
 msgid "Reduce interest"
 msgstr "උනන්දුව අඩු කරන්න"
 
-#: src/components/Multiplayer.tsx:194
+#: src/components/Multiplayer.tsx:195
 msgid "Refresh"
 msgstr "අලුත් කරන්න"
 
@@ -1914,7 +1918,7 @@ msgstr "දසුන්"
 
 #: src/components/GameCanvas.tsx:29
 msgid "WAITING FOR OPPONENT"
-msgstr ""
+msgstr "ප්‍රතිවාදියා එනතුරු බලා සිටී"
 
 #: src/components/GameCanvas.tsx:44
 msgid "WAVE OFF"
@@ -1929,7 +1933,7 @@ msgid "Weapons"
 msgstr "ආයුධ"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:224
 msgid "Weather"
 msgstr "කාලගුණය"
 
@@ -1954,11 +1958,11 @@ msgstr "පියාපත් නැමීම"
 msgid "WINS"
 msgstr "ජය ගනී"
 
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:161
 msgid "World server"
 msgstr "ලෝක සර්වරය"
 
-#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:99
 msgid "World server not reachable"
 msgstr "ලෝක සර්වරය වෙත ළඟා විය නොහැක"
 

@@ -86,6 +86,7 @@ function load_cfg(){ try{ const s=localStorage.getItem(SAVE_KEY); if(s) Object.a
 	if(cfg.clouds!=="none"&&!["cumulus","high_stratus","low_stratus"].includes(cfg.clouds)) cfg.clouds="cumulus"; }   // a saved cloud type that no longer exists falls back to the default
 function save_cfg(){ try{ localStorage.setItem(SAVE_KEY,JSON.stringify(cfg)); }catch(e){} }
 let dev_cursor=null;   // the measuring-cursor ring on deck (dev mode)
+let dev_probe=null, dev_probe_text="", dev_probe_t=0;   // &probe pixel raycast state
 const dev_nudge={fa:0,lat:0,hd:0};   // dev measuring-cursor offset from the nose wheel (I/K fore-aft, J/L port-stbd, U/O heading while parked); the readout and Ctrl+C include it
 function here_text(){   // dev: the deck point under the NOSE WHEEL (plus the nudge offset) in carrier-local coordinates — the same frame AND reference point as the shuttle table (a value can be compared with or pasted as a cat spot directly)
 	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
@@ -2762,6 +2763,13 @@ function draw_hud(dt){
 	if(DEV_MODE && carrier_model){   // developer mode: live nose-wheel deck position (Ctrl+C copies) + a dashed view centreline for eyeballing alignment
 		hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="14px monospace";
 		hctx.fillText(here_text(), 14, 46);
+		if(dev_probe && performance.now()-dev_probe_t>1000){ dev_probe_t=performance.now();
+			const rc=new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(dev_probe.x*2-1, -(dev_probe.y*2-1)), camera);
+			const hits=rc.intersectObject(carrier_model.parent||carrier_model, true);
+			if(hits.length){ const h=hits[0]; const fa2=carrier_fore_aft(h.point.x,h.point.z), la2=carrier_lateral(h.point.x,h.point.z);
+				dev_probe_text="probe: fa="+fa2.toFixed(1)+" lat="+la2.toFixed(1)+" y="+h.point.y.toFixed(2)+" mesh="+(h.object.name||"?")+" mat="+((h.object as THREE.Mesh & {material?:{name?:string}}).material?.name||"?"); }
+			else dev_probe_text="probe: no hit"; }
+		if(dev_probe_text){ hctx.fillStyle="#ff80ff"; hctx.fillText(dev_probe_text, 14, 64); }
 		if(!dev_cursor){ const cmat=new THREE.MeshBasicMaterial({color:0x7fc8ff,side:THREE.DoubleSide,depthTest:false});
 			dev_cursor=new THREE.Group();
 			const ring=new THREE.Mesh(new THREE.RingGeometry(0.10,0.16,24),cmat); ring.rotation.x=-Math.PI/2; ring.renderOrder=999; dev_cursor.add(ring);
@@ -3131,7 +3139,10 @@ function net_frame(dt){
 function net_connect(){
 	net_dial(join,{ event:net_event, end:(reason,results)=>net_end(reason||"finished",results), close:()=>net_end("gone") })
 	.then((n)=>{ net=n; match_started=Date.now();
-		if(n.welcome&&n.welcome.spawn){ apply_own_state(n.welcome.spawn.state); net_waiting=!!n.welcome.spawn.waiting; weapons_hold=n.welcome.spawn.mode==="joust"; }
+		if(n.welcome&&n.welcome.spawn){ apply_own_state(n.welcome.spawn.state); net_waiting=!!n.welcome.spawn.waiting; weapons_hold=n.welcome.spawn.mode==="joust";
+			const rules=n.welcome.parameters||{};   // session-owned weather (#107): the match creator's sky wins over local preferences — every player flies the same clouds and clock
+			if(typeof rules.tod==="string"&&TOD[rules.tod]){ cfg.tod=rules.tod; apply_time_of_day(cfg.tod); }
+			if(typeof rules.clouds==="string"&&(rules.clouds==="none"||CLOUDS[rules.clouds])){ cfg.clouds=rules.clouds; apply_clouds(); } }
 		apply_model_all();   // the welcome names the server-assigned aircraft; re-apply in case the picker had another type
 		const rules=(n.welcome&&n.welcome.parameters)||{};   // the creator's weather + rules apply to every participant
 		if(rules.tod==="day"||rules.tod==="night"){ cfg.tod=rules.tod; apply_time_of_day(cfg.tod); apply_effects(); }
@@ -3150,6 +3161,8 @@ function start_mission(){
 	const viewq=devq.get("view"); if(viewq) set_view(viewq);   // ?view=cockpit|hud|chase — headless capture hook (#105)
 	const startq=devq.get("start"); if(startq){ cfg.start=startq; cfg.task="free"; }
 	sweep_pending=devq.get("sweep");   // &sweep=<rig name> — wall-clock sweep of one rig entry (visible motion even in a ~5-frame headless capture)
+	{ const azq=devq.get("az"); if(azq!==null){ set_view("chase"); cam_az=parseFloat(azq)||0; const elq=parseFloat(devq.get("el")||""); if(!isNaN(elq)) cam_el=elq; const dq=parseFloat(devq.get("dist")||""); if(!isNaN(dq)) cam_dist=dq; } }   // &az=<rad>[&el=&dist=] — headless chase-camera pose without relocating (unlike ?shot)
+	{ const pq=devq.get("probe"); if(pq){ const [px,py]=pq.split(",").map(Number); dev_probe={x:px,y:py}; } }   // &probe=x,y (viewport fractions) — raycast that pixel each second and print the hit on the dev HUD (headless artifact identification)
 	build_ocean(cfg.ocean_segments);
 	apply_time_of_day(cfg.tod); apply_effects();
 	apply_clouds(); if(cloud_active()) size_rt();   // runs even for "none": zeroes the overcast/shadow uniforms on the ocean and sky

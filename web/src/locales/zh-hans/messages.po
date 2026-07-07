@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "请检查您的网络连接后重试。"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:186
+#: src/components/Multiplayer.tsx:187
 msgid "{0} flying"
 msgstr "{0} 人飞行中"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:282
 msgid "{0}/{1} players"
 msgstr "{0}/{1} 名玩家"
 
-#: src/components/Multiplayer.tsx:129
+#: src/components/Multiplayer.tsx:130
 msgid "{name}'s match"
 msgstr "{name}的对局"
 
@@ -219,6 +219,10 @@ msgstr "逃逸复飞"
 msgid "Boost interest"
 msgstr "提升兴趣"
 
+#: src/components/Multiplayer.tsx:248
+msgid "Bots"
+msgstr "人机"
+
 #: src/components/GameCanvas.tsx:125
 msgid "brakes"
 msgstr "刹车"
@@ -231,7 +235,7 @@ msgstr "按钮 {i}"
 msgid "Buttons"
 msgstr "按钮"
 
-#: src/components/Multiplayer.tsx:171
+#: src/components/Multiplayer.tsx:172
 msgid "Callsign"
 msgstr "呼号"
 
@@ -305,7 +309,7 @@ msgstr "选择语言"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:231
 msgid "Clear"
 msgstr "清除"
 
@@ -384,7 +388,7 @@ msgstr "紧凑"
 msgid "Confirm"
 msgstr "确认"
 
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:190
 msgid "Connecting…"
 msgstr "连接中…"
 
@@ -412,7 +416,7 @@ msgstr "使用 {label} 继续"
 msgid "Copy"
 msgstr "复制"
 
-#: src/components/Multiplayer.tsx:141
+#: src/components/Multiplayer.tsx:142
 msgid "Could not create the match"
 msgstr "无法创建对局"
 
@@ -436,11 +440,11 @@ msgstr "无法使用该账户进行验证。请重试。"
 msgid "CRASHED"
 msgstr "坠毁"
 
-#: src/components/Multiplayer.tsx:246
+#: src/components/Multiplayer.tsx:263
 msgid "Create and fly"
 msgstr "创建并起飞"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:205
 msgid "Create match"
 msgstr "创建对局"
 
@@ -450,7 +454,7 @@ msgid "Credits"
 msgstr "鸣谢"
 
 #: src/components/MissionSetup.tsx:933
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Cumulus"
 msgstr "积云"
 
@@ -485,7 +489,7 @@ msgid "Data conflict"
 msgstr "数据冲突"
 
 #: src/components/MissionSetup.tsx:921
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:227
 msgid "Day"
 msgstr "白天"
 
@@ -591,7 +595,7 @@ msgstr "弹射"
 msgid "Email code"
 msgstr "邮箱验证码"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:281
 msgid "empty"
 msgstr "空"
 
@@ -656,7 +660,7 @@ msgstr "尚可"
 
 #: src/components/GameCanvas.tsx:30
 msgid "FIGHT'S ON"
-msgstr ""
+msgstr "战斗开始"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -793,7 +797,7 @@ msgid "High"
 msgstr "高"
 
 #: src/components/MissionSetup.tsx:934
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:233
 msgid "High stratus"
 msgstr "高层云"
 
@@ -840,7 +844,7 @@ msgstr "验证码无效"
 msgid "Invert pitch"
 msgstr "反转俯仰"
 
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:295
 msgid "Join"
 msgstr "加入"
 
@@ -848,11 +852,11 @@ msgstr "加入"
 msgid "JOINED"
 msgstr "已加入"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Joust"
 msgstr "对决"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Joust — 1v1, first kill wins"
 msgstr "决斗 — 1v1，先击落者获胜"
 
@@ -994,7 +998,7 @@ msgid "Low"
 msgstr "低"
 
 #: src/components/MissionSetup.tsx:935
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:234
 msgid "Low stratus"
 msgstr "低层云"
 
@@ -1020,7 +1024,7 @@ msgstr "全部标为已读"
 msgid "Master"
 msgstr "主音量"
 
-#: src/components/Multiplayer.tsx:214
+#: src/components/Multiplayer.tsx:215
 msgid "Match type"
 msgstr "对局类型"
 
@@ -1058,7 +1062,7 @@ msgstr "导弹"
 msgid "Missiles"
 msgstr "导弹"
 
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:243
 msgid "Missiles allowed"
 msgstr "允许导弹"
 
@@ -1078,7 +1082,7 @@ msgstr "移动它…"
 msgid "Multiplayer"
 msgstr "多人游戏"
 
-#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:151
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "多人游戏需要 WebTransport，此浏览器尚不支持。"
 
@@ -1097,7 +1101,7 @@ msgid "Next image"
 msgstr "下一张图片"
 
 #: src/components/MissionSetup.tsx:922
-#: src/components/Multiplayer.tsx:227
+#: src/components/Multiplayer.tsx:228
 msgid "Night"
 msgstr "夜晚"
 
@@ -1117,7 +1121,7 @@ msgstr "无可用群组"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "未检测到摇杆——按下摇杆上的任意按钮以唤醒它。"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No open matches — create one."
 msgstr "暂无开放的对局，创建一个吧。"
 
@@ -1146,7 +1150,7 @@ msgstr "暂无主题记录,请在下次通知后重试。"
 msgid "No users found"
 msgstr "未找到用户"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No world server."
 msgstr "没有世界服务器。"
 
@@ -1203,11 +1207,11 @@ msgstr "跑道上"
 msgid "Oops! Page Not Found!"
 msgstr "抱歉!页面未找到!"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Open"
 msgstr "打开"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:218
 msgid "Open — anyone may join or leave"
 msgstr "开放 — 任何人都可以加入或退出"
 
@@ -1280,8 +1284,8 @@ msgstr "暂停"
 msgid "PAUSED"
 msgstr "已暂停"
 
-#: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:176
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:177
 msgid "pilot"
 msgstr "飞行员"
 
@@ -1384,7 +1388,7 @@ msgstr "正在重定向到登录。"
 msgid "Reduce interest"
 msgstr "降低兴趣"
 
-#: src/components/Multiplayer.tsx:194
+#: src/components/Multiplayer.tsx:195
 msgid "Refresh"
 msgstr "刷新"
 
@@ -1914,7 +1918,7 @@ msgstr "查看"
 
 #: src/components/GameCanvas.tsx:29
 msgid "WAITING FOR OPPONENT"
-msgstr ""
+msgstr "等待对手"
 
 #: src/components/GameCanvas.tsx:44
 msgid "WAVE OFF"
@@ -1929,7 +1933,7 @@ msgid "Weapons"
 msgstr "武器"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:224
 msgid "Weather"
 msgstr "天气"
 
@@ -1954,11 +1958,11 @@ msgstr "机翼折叠"
 msgid "WINS"
 msgstr "获胜"
 
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:161
 msgid "World server"
 msgstr "世界服务器"
 
-#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:99
 msgid "World server not reachable"
 msgstr "无法连接世界服务器"
 
