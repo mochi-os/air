@@ -2677,7 +2677,9 @@ function draw_hud(dt){
 	if(crash_t<=0 && ownship.pass_t>0){ ownship.pass_t-=dt;   // LSO debrief: grade + wire (or BOLTER), held for a few seconds after the pass
 		hud_message(ownship.grade==="BOLTER"?translate("BOLTER"):translate(ownship.grade)+", "+translate(ownship.wire+" WIRE")); }
 	else if(crash_t<=0 && ownship.waving && (performance.now()%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call while dangerously low in close (matches the OLS waveoff lights)
-	if(test_active){ hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="13px monospace"; hctx.fillText("TEST  "+test_active.name, 14, 28); }   // dev test-scenario label (untranslated, like the align overlay)
+	if(test_active){ hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="13px monospace"; hctx.fillText("TEST  "+test_active.name, 14, 28); }
+	if(new URLSearchParams(location.search).get("coredebug")&&last_out){ hctx.textAlign="left"; hctx.fillStyle="#ff80ff"; hctx.font="16px monospace";
+		hctx.fillText("FLAP "+(last_out[STATE.flaperon]*57.3).toFixed(1)+"  V "+(ownship.speed*1.94384).toFixed(0)+"  THR "+ownship.throttle.toFixed(2)+"  SPOOL "+((ownship.spool??0)).toFixed(2)+"  GEAR "+(ownship.gear??1).toFixed(2), 14, 50); }   // dev test-scenario label (untranslated, like the align overlay)
 	if(deck_edit && carrier_model){   // carrier-frame position + centreline — only in the dev deck-alignment mode (key 0)
 		hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="14px monospace";
 		hctx.fillText("deck  fa="+carrier_fore_aft(ownship.pos.x,ownship.pos.z).toFixed(1)+"  lat="+carrier_lateral(ownship.pos.x,ownship.pos.z).toFixed(1)+"  h="+(ownship.pos.y-CARRIER.deckY).toFixed(1), 14, 28);
