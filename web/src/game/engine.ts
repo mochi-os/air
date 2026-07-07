@@ -64,8 +64,12 @@ const SAVE_KEY="joust_cfg_v1";
 // OLS bracket, and the deck outline for the flight core. Measured per deck
 // with the align tool and the GLB measurement scripts; a second carrier is
 // one more entry (#100). CARRIER {x,z} is world PLACEMENT, not ship data.
+const NIMITZ_MODEL_VERSION=14;
 const CARRIER_MODELS={
-	nimitz:{ url:"vessels/nimitz/model.glb", length:333, yaw:20, bow:0, draft:0.375, deck:19,   // real USS Nimitz length. yaw:20 faces the bow to 070° (into the Midway wind) — the model's bow is +X (the retired Ford's was +Z, hence its yaw:110); both reach the same 070° recovery course. bow = the bow's bearing in the MODEL frame (0 = +X, 90 = +Z): the deck-ops frame is (yaw - bow), so carrier-local fore-aft tracks the drawn bow whatever the modeller's axes
+	// NIMITZ_MODEL_VERSION: bump on EVERY model.glb regen. The engine fetches the model programmatically,
+	// and browsers serve programmatic fetches from HTTP cache even across hard refreshes — a stale model
+	// cost us 90 minutes of phantom debugging (2026-07-07). The version is also shown in the dev readout.
+	nimitz:{ url:"vessels/nimitz/model.glb?v="+NIMITZ_MODEL_VERSION, length:333, yaw:20, bow:0, draft:0.375, deck:19,   // real USS Nimitz length. yaw:20 faces the bow to 070° (into the Midway wind) — the model's bow is +X (the retired Ford's was +Z, hence its yaw:110); both reach the same 070° recovery course. bow = the bow's bearing in the MODEL frame (0 = +X, 90 = +Z): the deck-ops frame is (yaw - bow), so carrier-local fore-aft tracks the drawn bow whatever the modeller's axes
 		stroke:85, speed:88,                             // catapult throw and end speed, m / m/s
 		// Wires + landing line: measured off the 1:200 CVN-68 deck plan (2026-07-06) — anchored on the deck
 		// plateau extent (model fa -166.5..+164.9), hull centreline at lat +1.3; strip axis came out 9.5° port
@@ -93,7 +97,7 @@ function here_text(){   // dev: the deck point under the NOSE WHEEL (plus the nu
 	const nx=ownship.pos.x+ownship.fwd.x*nose, nz=ownship.pos.z+ownship.fwd.z*nose;
 	const fa=carrier_fore_aft(nx,nz)+dev_nudge.fa, lat=carrier_lateral(nx,nz)+dev_nudge.lat;
 	const hd=Math.atan2(-(ownship.fwd.x*CARRIER_S+ownship.fwd.z*CARRIER_C), ownship.fwd.x*CARRIER_C-ownship.fwd.z*CARRIER_S)*180/Math.PI+dev_nudge.hd;   // heading in the deck frame (0 = down the bow, + = port), from the forward vector through the inverse frame
-	return "fa="+fa.toFixed(2)+", lat="+lat.toFixed(2)+", heading="+hd.toFixed(1)+", y="+ownship.pos.y.toFixed(2);
+	return "fa="+fa.toFixed(2)+", lat="+lat.toFixed(2)+", heading="+hd.toFixed(1)+", y="+ownship.pos.y.toFixed(2)+" · nimitz v"+NIMITZ_MODEL_VERSION;
 }
 function copy_here(){   // dev (Ctrl+C): the live position line to the clipboard
 	const txt=here_text();
@@ -909,7 +913,11 @@ function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_7
 			c.applyMatrix4(mesh.matrixWorld); ownship.group.worldToLocal(c); lo.min(c); hi.max(c); }
 		ownship.group.userData.glass={ x:(lo.x+hi.x)/2, y:(lo.y+hi.y)/2, hw:(hi.z-lo.z)/2, hh:(hi.y-lo.y)/2 }; }   // body-frame pane: x fore-aft, y up, half-extents across the span and vertically
 	console.log("cockpit eye", ownship.group.userData.eye.x.toFixed(2), ownship.group.userData.eye.y.toFixed(2)); }
-function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); extras.forEach(s=>apply_model_to(s.group)); position_aircraft_lights(); calibrate_eye(); }   // re-pin the ownship lights to the real airframe
+const MISSILE_NODES=["Object_114","Object_29"];   // the two wingtip AIM-9 meshes in the fa18c GLB (LAU-7 rails stay with the wing) — hidden per missiles-remaining for empty rails after firing, or entirely on a guns-only loadout
+function update_rails(st,count){ if(!st.group) return;
+	for(let i=0;i<MISSILE_NODES.length;i++){ const node=st.group.getObjectByName(MISSILE_NODES[i]); if(node) node.visible=i<count; } }
+function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); extras.forEach(s=>apply_model_to(s.group)); position_aircraft_lights(); calibrate_eye();
+	update_rails(ownship, cfg.missiles?ownship.msl:0); update_rails(bandit, cfg.missiles?2:0); extras.forEach(s=>update_rails(s,2)); }   // re-pin the ownship lights to the real airframe; rails reflect the loadout
 // --- minimal GLB container surgery (so we never trigger the loader's blob-URL texture path) ---
 function glb_split(ab){ const dv=new DataView(ab); if(dv.getUint32(0,true)!==0x46546C67) throw new Error("not a GLB");
 	let o=12; const jsonLen=dv.getUint32(o,true); o+=8; const json=JSON.parse(new TextDecoder().decode(new Uint8Array(ab,o,jsonLen))); o+=jsonLen;
@@ -1588,7 +1596,7 @@ function glow_points(pts, color, size){   // additive glowing point-lights (runw
 	const p=new THREE.Points(g,new THREE.PointsMaterial({size,map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true})); p.frustumCulled=false; scene.add(p); return p;
 }
 const night_lights=[];   // runway lights that are lit only when it's dark (edge lights; bidirectional)
-const ops_lights=[]; const flood_lights=[];   // carrier flight-ops lighting: up when the deck is ACTIVE (player on deck or inbound gear-down), darkened-ship otherwise
+const ops_lights=[]; const flood_lights=[]; const deck_floods=[];   // carrier night lighting, split per real procedure: ops_lights = recovery aids (centreline/drop/datum/deck-edge), up for an inbound gear-down approach; deck_floods + flood_lights = the island floodlights, WORK lights only — on when on deck, doused during launch/recovery so they never wreck night vision on the ball
 const beacon_lights=[];  // aerodrome beacon on the tower: alternating white/green flash at night (userData.phase 0/1)
 const dir_lights=[];     // directional + night-only lights (green threshold / red end / REIL) — shown only from their facing side
 function dir_glow(pts,color,size,x,z,fx,fz,flash){ const p=glow_points(pts,color,size); dir_lights.push({mesh:p,x,z,fx,fz,flash}); return p; }
@@ -1656,9 +1664,11 @@ function update_papi(p){ const flash=(performance.now()%520)<90;   // REIL: ~2 H
 	const dark=cfg.tod!=="day";                                     // edge/threshold/REIL lit only when dark; PAPI is always on
 	for(const m of night_lights) m.visible=dark;
 	{ const dx=p.x-CARRIER.x, dz=p.z-CARRIER.z, d2=dx*dx+dz*dz;   // carrier flight-ops gate: deck working = lights up; otherwise the ship stays darkened
-		const ops=dark && ((d2<400*400 && (ownship.squish??0)>0.1) || (d2<6000*6000 && (ownship.gear??1)<0.5));   // 6 km: the landing start spawns at 3 NM (5.6 km) — the deck lights up as you settle onto the approach, comfortably before the ball call
+		const ops=dark && ((d2<400*400 && (ownship.squish??0)>0.1) || (d2<6000*6000 && (ownship.gear??1)<0.5));   // 6 km: the landing start spawns at 3 NM (5.6 km) — the recovery aids light up as you settle onto the approach, comfortably before the ball call
+		const work=dark && d2<400*400 && (ownship.squish??0)>0.1;   // floods are WORK lights: real carriers douse them for night launch/recovery (black-hole deck); they come up only with weight on wheels
 		for(const m of ops_lights) m.visible=ops;
-		for(const s2 of flood_lights) s2.visible=ops; }
+		for(const m of deck_floods) m.visible=work;
+		for(const s2 of flood_lights) s2.visible=work; }
 	const bph=(performance.now()%3000)<1500;                        // aerodrome beacon: white / green alternating ~1.5 s each
 	for(const m of beacon_lights) m.visible=dark && ((m.userData.phase===0)===bph);
 	for(const m of window_mats) m.emissiveIntensity=dark?1.15:0;    // building windows light up after dark
@@ -1764,9 +1774,10 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 			s2.position.set(q.x,dy+h,q.z); s2.target.position.set(tx,dy,tz); scene.add(s2); scene.add(s2.target); s2.visible=false; return s2; };
 		const ld=carrier_world(-80,strip_lat(-80)), bw=carrier_world(30,2);
 		flood_lights.push(mk(-56.6,28.0,5.9,ld.x,ld.z), mk(-42.8,31.1,12.0,bw.x,bw.z));
+		const pscale=Math.max(1, renderer.domElement.height/720);   // Points sizes are DEVICE pixels: unscaled, the lamps were 3x smaller on a 4K screen than in 720p captures
 		const mkpts=(size,color)=>{ const lg=new THREE.BufferGeometry(); lg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(fixtures),3));
-			const lp=new THREE.Points(lg,new THREE.PointsMaterial({size,map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:false}));
-			lp.frustumCulled=false; lp.renderOrder=998; scene.add(lp); ops_lights.push(lp); };
+			const lp=new THREE.Points(lg,new THREE.PointsMaterial({size:size*pscale,map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:false}));
+			lp.frustumCulled=false; lp.renderOrder=998; scene.add(lp); deck_floods.push(lp); };
 		mkpts(46,0x4a3a20);
 		mkpts(13,0xfff2d2); }   // the white-hot lamp core   // flood GLARE sprites: constant pixels AND no depth test — the broad island superstructure occluded every depth-tested placement near the mast; a source this bright blooms through structure anyway
 }
@@ -1909,13 +1920,13 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(ch===key_of("launch") && launch_status()===2){ if((ownship.fold??0)>0.02) notice(translate("SPREAD WINGS")); else start_launch(); }   // only when spotted on the cat, lined up, at full power — and never with the wings folded
 		if(ch===key_of("missile") && !weapons_hold && !ownship.launching && (ownship.gear??0)>0.98 && cfg.missiles && ownship.msl>0){
 			if(MULTIPLAYER) missile_flag=true;   // the server acquires and scores; the local launch is the visual
-			if(launch_missile(ownship,MULTIPLAYER?remote_nearest():(has_enemy?bandit:null))){ ownship.msl--; audio_launch(); } }   // weapons safe unless the gear is fully up
+			if(launch_missile(ownship,MULTIPLAYER?remote_nearest():(has_enemy?bandit:null))){ ownship.msl--; audio_launch(); update_rails(ownship,ownship.msl); } }   // weapons safe unless the gear is fully up
 		if(TEST_SCENARIOS && e.ctrlKey && k==="KeyC"){ copy_here(); notice("POSITION COPIED"); }   // dev (Ctrl+C): the live position line to the clipboard — for identifying deck locations (spots, markings) by taxiing onto them
 		if(ch===key_of("probe")){ ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; notice(ownship.probeTarget?translate("PROBE OUT"):translate("PROBE IN")); }   // refueling probe (real limit is ~300 KCAS — procedural, not enforced)
 		if(ch===key_of("fold")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.foldTarget=(ownship.foldTarget??0)>0.5?0:1; notice(ownship.foldTarget?translate("WINGS FOLDING"):translate("WINGS SPREADING")); } else notice(translate("WINGS LOCKED")); }   // wing fold — ground only, taxi speeds; the outer panels carry the ailerons and outer slats with them
 		if(ch===key_of("canopy")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.canopyTarget=(ownship.canopyTarget??0)>0.5?0:1; notice(ownship.canopyTarget?translate("CANOPY OPEN"):translate("CANOPY CLOSED")); } else notice(translate("CANOPY LOCKED")); }   // Shift+C: canopy — ground only, taxi speeds (NATOPS closes it before takeoff; ~60 kt operation wind limit)
 		if(ch===key_of("flares") && cfg.flares && ownship.cm>0 && (ownship.squish??0)<0.1){ dispense_flares(ownship); ownship.cm--; flare_flag=true; audio_flare(); }   // plain F only — Shift+F is the probe (self-guarded, NOT an else-chain: an inserted handler between the pair once re-aimed the else and Shift+F dropped flares). Weight-on-wheels inhibits the dispenser, as the real ALE-47 does — no pyrotechnics on the deck
-		if(ch===key_of("rearm")){ ownship.rounds=578; ownship.msl=4; ownship.cm=60; }   // plain X only — Shift+X is the dev cloud A/B
+		if(ch===key_of("rearm")){ ownship.rounds=578; ownship.msl=4; ownship.cm=60; update_rails(ownship,cfg.missiles?4:0); }   // plain X only — Shift+X is the dev cloud A/B
 		const dev_parked=DEV_MODE && on_ground() && (ownship.speed??0)<1;   // J/L/O are nudge keys in this state
 		if(ch===key_of("eject") && !dev_parked && crash_t<=0 && !ejected){   // ejection handle: three pulls inside 1.25 s — the zero-zero seat works everywhere
 			if(sim_time-eject_at>1.25) eject_taps=0;
@@ -2612,6 +2623,7 @@ function reset_ownship(){
 	battle_rig(); ejected=false; eject_taps=0; hit_flash=0; own_burn=[0,0]; own_burning=false; own_leak=0;   // a fresh jet, a fresh fight (#78)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
 	ownship.rounds=578; ownship.msl=4; ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; ownship.lights=(cfg.tod!=="day");   // lights default on at night, off by day
+	update_rails(ownship, cfg.missiles?4:0); update_rails(bandit, cfg.missiles?2:0);
 	ownship.grounded=false; ownship.touch=null; ownship.pass={gs:0,az:0,n:0}; ownship.pass_t=0; ownship.grade=""; ownship.waved=false;   // landing / LSO pass state
 	test_active=null;   // a test scenario must not keep driving across a crash respawn (it would fly the fresh spawn straight into the deck, forever)
 	const st=mission_start();
@@ -3061,7 +3073,7 @@ function notice(text){ net_notice=text; net_notice_t=3; }
 function remote_for(slot){ let st=remotes.get(slot); if(st) return st;
 	if(![...remotes.values()].includes(bandit)) st=bandit;
 	else { st=make_state(new THREE.Vector3(0,3000,0),new THREE.Vector3(1,0,0),200); st.group=make_jet(0xb04a3a); scene.add(st.group); if(model_active) apply_model_to(st.group); }
-	remotes.set(slot,st); st.group.visible=true; return st; }
+	remotes.set(slot,st); st.group.visible=true; st.msl=st.msl??4; update_rails(st,st.msl); return st; }
 function remote_drop(slot){ const st=remotes.get(slot); if(!st) return; remotes.delete(slot); audio_remote_drop("r"+slot);
 	if(st===bandit){ st.group.visible=false; }
 	else { scene.remove(st.group); st.group.traverse(o=>{ if(o.isMesh&&o.material&&o.material.dispose)o.material.dispose(); }); } }
@@ -3094,7 +3106,11 @@ function net_event(e){ const slot=Number(e.slot);
 			if(net&&Number(e.by)===net.slot){ own_kills++; notice(translate("KILL")); } }
 		break;
 	case "respawn":
-		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; }   // in a joust the match-starting double-respawn releases the waiting room
+		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; update_rails(ownship, cfg.missiles?ownship.msl:0); }   // in a joust the match-starting double-respawn releases the waiting room
+		else { const st=remotes.get(slot); if(st){ st.msl=4; update_rails(st,st.msl); } }   // a fresh jet comes with fresh rails
+		break;
+	case "missile":
+		if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st&&st.msl>0){ st.msl--; update_rails(st,st.msl); } }   // his wingtip empties as he shoots
 		break;
 	case "fighton": weapons_hold=false; notice(translate("FIGHT'S ON")); break;   // the server saw the merge (#87)
 	case "flare": if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st&&cfg.flares) dispense_flares(st); } break;
