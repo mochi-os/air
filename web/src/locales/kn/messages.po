@@ -131,7 +131,7 @@ msgstr "ವೀಕ್ಷಣೆ ಸೇರಿಸಿ"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "ನಿಮ್ಮ ಆದ್ಯತೆಗಳಿಗೆ ಸರಿಹೊಂದುವಂತೆ ಗೋಚರಿಕೆ ಮತ್ತು ಲೇಔಟ್ ಅನ್ನು ಹೊಂದಿಸಿ."
 
-#: src/components/MissionSetup.tsx:1003
+#: src/components/MissionSetup.tsx:1038
 msgid "Afterburner"
 msgstr "ಆಫ್ಟರ್‌ಬರ್ನರ್"
 
@@ -143,13 +143,13 @@ msgstr "AI"
 msgid "Aircraft"
 msgstr "ವಿಮಾನ"
 
-#: src/components/MissionSetup.tsx:715
-msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented bow +X, sunk to the waterline."
-msgstr "ವಿಮಾನವಾಹಕ ನೌಕೆ <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>, <1>Muhamad Mirza Arrafi</1> ಅವರಿಂದ (Sketchfab), <2>CC BY 4.0</2> ಅಡಿಯಲ್ಲಿ ಪರವಾನಗಿ ಪಡೆದಿದೆ. ಮಾರ್ಪಡಿಸಲಾಗಿದೆ: ಗಾತ್ರವನ್ನು ಮರುಹೊಂದಿಸಲಾಗಿದೆ, ಮುಂಭಾಗವನ್ನು +X ಗೆ ತಿರುಗಿಸಲಾಗಿದೆ, ನೀರಿನ ಗೆರೆಯವರೆಗೆ ಮುಳುಗಿಸಲಾಗಿದೆ."
+#: src/components/MissionSetup.tsx:716
+msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
+msgstr ""
 
 #: src/components/MissionSetup.tsx:692
-msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented nose +X, rescaled to length."
-msgstr "ವಿಮಾನ ಮಾದರಿ <0>“F/A-18C Hornet”</0>, ರಚಿಸಿದವರು <1>CreadorDeMu</1> (Sketchfab), <2>CC BY 4.0</2> ಅಡಿಯಲ್ಲಿ ಪರವಾನಗಿ ಪಡೆದಿದೆ. ಮಾರ್ಪಡಿಸಲಾಗಿದೆ: ಮೂತಿಯನ್ನು +X ಗೆ ಮರುನಿರ್ದೇಶಿಸಲಾಗಿದೆ, ಉದ್ದಕ್ಕೆ ಮರುಗಾತ್ರಗೊಳಿಸಲಾಗಿದೆ."
+msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
+msgstr ""
 
 #: src/components/MissionSetup.tsx:459
 msgid "Alerts"
@@ -257,9 +257,13 @@ msgstr "ರದ್ದುಮಾಡಿ"
 msgid "Canopy"
 msgstr "ಕ್ಯಾನೋಪಿ"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:889
 msgid "Carrier landing"
 msgstr "ವಿಮಾನವಾಹಕ ನೌಕೆಯಲ್ಲಿ ಇಳಿಯುವಿಕೆ"
+
+#: src/components/MissionSetup.tsx:895
+msgid "Catapult"
+msgstr ""
 
 #: ../../../lib/web/src/components/notification-category-button.tsx:143
 msgid "Category for this notification"
@@ -347,7 +351,7 @@ msgstr "ಹುಡುಕಾಟ ಮುಚ್ಚಿ"
 msgid "closer"
 msgstr "ಹತ್ತಿರ"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:926
 msgid "Clouds"
 msgstr "ಮೋಡಗಳು"
 
@@ -445,7 +449,7 @@ msgstr "ಪಂದ್ಯ ರಚಿಸಿ"
 msgid "Credits"
 msgstr "ಶ್ರೇಯಸ್ಸು"
 
-#: src/components/MissionSetup.tsx:898
+#: src/components/MissionSetup.tsx:933
 #: src/components/Multiplayer.tsx:231
 msgid "Cumulus"
 msgstr "ಕ್ಯುಮುಲಸ್"
@@ -480,7 +484,7 @@ msgstr "ಡಾರ್ಕ್ ಮೋಡ್"
 msgid "Data conflict"
 msgstr "ಡೇಟಾ ಸಂಘರ್ಷ"
 
-#: src/components/MissionSetup.tsx:886
+#: src/components/MissionSetup.tsx:921
 #: src/components/Multiplayer.tsx:226
 msgid "Day"
 msgstr "ಹಗಲು"
@@ -550,7 +554,7 @@ msgstr "ತಿರಸ್ಕರಿಸಿ"
 msgid "Displays the mobile sidebar."
 msgstr "ಮೊಬೈಲ್ ಸೈಡ್‌ಬಾರ್ ಪ್ರದರ್ಶಿಸುತ್ತದೆ."
 
-#: src/components/MissionSetup.tsx:991
+#: src/components/MissionSetup.tsx:1026
 msgid "Distance LOD"
 msgstr "ಅಂತರ LOD"
 
@@ -563,7 +567,7 @@ msgstr "ಡೌನ್‌ಲೋಡ್"
 msgid "Download failed"
 msgstr "ಡೌನ್‌ಲೋಡ್ ವಿಫಲವಾಗಿದೆ"
 
-#: src/components/MissionSetup.tsx:985
+#: src/components/MissionSetup.tsx:1020
 msgid "Dynamic resolution"
 msgstr "ಡೈನಾಮಿಕ್ ರೆಸಲ್ಯೂಶನ್"
 
@@ -618,11 +622,11 @@ msgstr "ವಿಸ್ತರಿಸಿ"
 msgid "Expand sidebar"
 msgstr "ಸೈಡ್‌ಬಾರ್ ವಿಸ್ತರಿಸಿ"
 
-#: src/components/MissionSetup.tsx:957
+#: src/components/MissionSetup.tsx:992
 msgid "Exterior detail"
 msgstr "ಹೊರಭಾಗದ ವಿವರ"
 
-#: src/components/MissionSetup.tsx:973
+#: src/components/MissionSetup.tsx:1008
 msgid "Extra aircraft"
 msgstr "ಹೆಚ್ಚುವರಿ ವಿಮಾನಗಳು"
 
@@ -664,7 +668,7 @@ msgstr "ಜ್ವಾಲೆಗಳು"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1021
+#: src/components/MissionSetup.tsx:1056
 msgid "Flares"
 msgstr "ಫ್ಲೇರ್‌ಗಳು"
 
@@ -684,11 +688,11 @@ msgstr "ಫ್ಲೈಟ್ ಕೋರ್ ವಿಫಲ"
 msgid "Floating"
 msgstr "ಫ್ಲೋಟಿಂಗ್"
 
-#: src/components/MissionSetup.tsx:1027
+#: src/components/MissionSetup.tsx:1062
 msgid "Framerate"
 msgstr "ಫ್ರೇಮ್‌ರೇಟ್"
 
-#: src/components/MissionSetup.tsx:842
+#: src/components/MissionSetup.tsx:860
 msgid "Free flight"
 msgstr "ಮುಕ್ತ ಹಾರಾಟ"
 
@@ -751,7 +755,7 @@ msgstr "ಪುಟ {pageNumber}ಗೆ ಹೋಗಿ"
 msgid "Go to previous page"
 msgstr "ಹಿಂದಿನ ಪುಟಕ್ಕೆ ಹೋಗಿ"
 
-#: src/components/MissionSetup.tsx:827
+#: src/components/MissionSetup.tsx:845
 msgid "Graphics"
 msgstr "ಗ್ರಾಫಿಕ್ಸ್"
 
@@ -780,11 +784,11 @@ msgstr "ಮರೆಮಾಡಿ"
 msgid "Hide password"
 msgstr "ಪಾಸ್‌ವರ್ಡ್ ಮರೆಮಾಡಿ"
 
-#: src/components/MissionSetup.tsx:937
+#: src/components/MissionSetup.tsx:972
 msgid "High"
 msgstr "ಹೆಚ್ಚು"
 
-#: src/components/MissionSetup.tsx:899
+#: src/components/MissionSetup.tsx:934
 #: src/components/Multiplayer.tsx:232
 msgid "High stratus"
 msgstr "ಎತ್ತರದ ಸ್ಟ್ರಾಟಸ್"
@@ -812,7 +816,7 @@ msgstr "ಹಾಟ್"
 msgid "Imperial"
 msgstr "ಇಂಪೀರಿಯಲ್"
 
-#: src/components/MissionSetup.tsx:868
+#: src/components/MissionSetup.tsx:886
 msgid "In air"
 msgstr "ಗಾಳಿಯಲ್ಲಿ"
 
@@ -848,15 +852,15 @@ msgstr "ದ್ವಂದ್ವ"
 msgid "Joust — 1v1, first kill wins"
 msgstr "ದ್ವಂದ್ವಯುದ್ಧ — 1v1, ಮೊದಲ ಕಿಲ್‌ಗೆ ಗೆಲುವು"
 
-#: src/components/MissionSetup.tsx:843
+#: src/components/MissionSetup.tsx:861
 msgid "Joust against AI player"
 msgstr "AI ಆಟಗಾರನ ವಿರುದ್ಧ ದ್ವಂದ್ವಯುದ್ಧ"
 
-#: src/components/MissionSetup.tsx:818
+#: src/components/MissionSetup.tsx:836
 msgid "Joystick"
 msgstr "ಜಾಯ್‌ಸ್ಟಿಕ್"
 
-#: src/components/MissionSetup.tsx:821
+#: src/components/MissionSetup.tsx:839
 msgid "Keys"
 msgstr "ಕೀಲಿಗಳು"
 
@@ -981,11 +985,11 @@ msgstr "ಬಲಕ್ಕೆ ನೋಡಿ"
 msgid "Look up"
 msgstr "ಮೇಲೆ ನೋಡಿ"
 
-#: src/components/MissionSetup.tsx:933
+#: src/components/MissionSetup.tsx:968
 msgid "Low"
 msgstr "ಕಡಿಮೆ"
 
-#: src/components/MissionSetup.tsx:900
+#: src/components/MissionSetup.tsx:935
 #: src/components/Multiplayer.tsx:233
 msgid "Low stratus"
 msgstr "ತಗ್ಗಿನ ಸ್ಟ್ರಾಟಸ್"
@@ -1017,7 +1021,7 @@ msgid "Match type"
 msgstr "ಪಂದ್ಯದ ಪ್ರಕಾರ"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:935
+#: src/components/MissionSetup.tsx:970
 msgid "Medium"
 msgstr "ಮಧ್ಯಮ"
 
@@ -1033,7 +1037,7 @@ msgstr "ಮೆನು"
 msgid "Metric"
 msgstr "ಮೆಟ್ರಿಕ್"
 
-#: src/components/MissionSetup.tsx:739
+#: src/components/MissionSetup.tsx:740
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway Atoll ನಕ್ಷೆ — ಚಿತ್ರಗಳು ಮಾರ್ಪಡಿಸಿದ <0>Copernicus Sentinel-2</0> ದತ್ತಾಂಶವನ್ನು ಒಳಗೊಂಡಿವೆ (2026); ವಿಮಾನನಿಲ್ದಾಣದ ಜ್ಯಾಮಿತಿ (ರನ್‌ವೇ, ಟ್ಯಾಕ್ಸಿವೇಗಳು, ಆ್ಯಪ್ರಾನ್‌ಗಳು) © <1>OpenStreetMap</1> ಕೊಡುಗೆದಾರರು, <2>ODbL</2> ಅಡಿಯಲ್ಲಿ ಪರವಾನಗಿ ಪಡೆದಿದೆ; ಕರಾವಳಿ ಮತ್ತು ಹವಳದ ದಿಬ್ಬದ ದತ್ತಾಂಶ <3>NOAA NCCOS</3> ನಿಂದ (ಸಾರ್ವಜನಿಕ ಡೊಮೇನ್)."
 
@@ -1046,7 +1050,7 @@ msgstr "ಕ್ಷಿಪಣಿ"
 msgid "Missile"
 msgstr "ಕ್ಷಿಪಣಿ"
 
-#: src/components/MissionSetup.tsx:1015
+#: src/components/MissionSetup.tsx:1050
 msgid "Missiles"
 msgstr "ಕ್ಷಿಪಣಿಗಳು"
 
@@ -1054,7 +1058,7 @@ msgstr "ಕ್ಷಿಪಣಿಗಳು"
 msgid "Missiles allowed"
 msgstr "ಕ್ಷಿಪಣಿಗಳಿಗೆ ಅನುಮತಿ"
 
-#: src/components/MissionSetup.tsx:812
+#: src/components/MissionSetup.tsx:830
 msgid "Mission"
 msgstr "ಕಾರ್ಯಾಚರಣೆ"
 
@@ -1066,7 +1070,7 @@ msgstr "ಸೋಮವಾರ"
 msgid "Move it…"
 msgstr "ಅದನ್ನು ಚಲಿಸಿ…"
 
-#: src/components/MissionSetup.tsx:844
+#: src/components/MissionSetup.tsx:862
 msgid "Multiplayer"
 msgstr "ಮಲ್ಟಿಪ್ಲೇಯರ್"
 
@@ -1088,7 +1092,7 @@ msgstr "ಹೊಸ"
 msgid "Next image"
 msgstr "ಮುಂದಿನ ಚಿತ್ರ"
 
-#: src/components/MissionSetup.tsx:887
+#: src/components/MissionSetup.tsx:922
 #: src/components/Multiplayer.tsx:227
 msgid "Night"
 msgstr "ರಾತ್ರಿ"
@@ -1151,7 +1155,7 @@ msgstr "ಗ್ರೇಡ್ ಇಲ್ಲ"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:364
 #: src/components/MissionSetup.tsx:418
-#: src/components/MissionSetup.tsx:897
+#: src/components/MissionSetup.tsx:932
 msgid "None"
 msgstr "ಯಾವುದೂ ಇಲ್ಲ"
 
@@ -1175,7 +1179,7 @@ msgstr "ಸೆಟ್ ಮಾಡಲಾಗಿಲ್ಲ"
 msgid "Notifications"
 msgstr "ನೋಟಿಫಿಕೇಶನ್‌ಗಳು"
 
-#: src/components/MissionSetup.tsx:965
+#: src/components/MissionSetup.tsx:1000
 msgid "Ocean detail"
 msgstr "ಸಾಗರ ವಿವರ"
 
@@ -1183,11 +1187,11 @@ msgstr "ಸಾಗರ ವಿವರ"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:870
+#: src/components/MissionSetup.tsx:888
 msgid "On carrier"
 msgstr "ವಾಹಕದ ಮೇಲೆ"
 
-#: src/components/MissionSetup.tsx:869
+#: src/components/MissionSetup.tsx:887
 msgid "On runway"
 msgstr "ರನ್‌ವೇ ಮೇಲೆ"
 
@@ -1310,7 +1314,7 @@ msgstr "ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.
 msgid "Please wait a moment and try again."
 msgstr "ದಯವಿಟ್ಟು ಸ್ವಲ್ಪ ಸಮಯ ನಿರೀಕ್ಷಿಸಿ ಮತ್ತು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 
-#: src/components/MissionSetup.tsx:920
+#: src/components/MissionSetup.tsx:955
 msgid "Preset"
 msgstr "ಪ್ರೀಸೆಟ್"
 
@@ -1411,13 +1415,17 @@ msgstr "ಪ್ರವೇಶ ತೆಗೆದುಹಾಕಬೇಕೆ?"
 msgid "Remove interest"
 msgstr "ಆಸಕ್ತಿ ತೆಗೆದುಹಾಕಿ"
 
+#: src/components/MissionSetup.tsx:774
+msgid "Rendering by <0>three.js</0> (MIT licence)."
+msgstr ""
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:367
 msgid "Resend email"
 msgstr "ಇಮೇಲ್ ಮತ್ತೆ ಕಳುಹಿಸಿ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1069
+#: src/components/MissionSetup.tsx:1104
 msgid "Reset"
 msgstr "ರೀಸೆಟ್ ಮಾಡಿ"
 
@@ -1425,15 +1433,15 @@ msgstr "ರೀಸೆಟ್ ಮಾಡಿ"
 msgid "Reset all settings to default values"
 msgstr "ಎಲ್ಲಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಡೀಫಾಲ್ಟ್ ಮೌಲ್ಯಗಳಿಗೆ ರೀಸೆಟ್ ಮಾಡಿ"
 
-#: src/components/MissionSetup.tsx:947
+#: src/components/MissionSetup.tsx:982
 msgid "Resolution"
 msgstr "ರೆಸಲ್ಯೂಶನ್"
 
-#: src/components/MissionSetup.tsx:1041
+#: src/components/MissionSetup.tsx:1076
 msgid "Restart"
 msgstr "ಮರುಪ್ರಾರಂಭಿಸಿ"
 
-#: src/components/MissionSetup.tsx:1045
+#: src/components/MissionSetup.tsx:1080
 msgid "Resume"
 msgstr "ಮುಂದುವರಿಸಿ"
 
@@ -1590,7 +1598,7 @@ msgstr "ಮೂಲ ಮತ್ತು ಗಮ್ಯಸ್ಥಾನವನ್ನು ಹ
 msgid "Settings"
 msgstr "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
 
-#: src/components/MissionSetup.tsx:997
+#: src/components/MissionSetup.tsx:1032
 msgid "Shadows"
 msgstr "ನೆರಳುಗಳು"
 
@@ -1627,7 +1635,7 @@ msgid "Small"
 msgstr "ಸಣ್ಣ"
 
 #: src/components/MissionSetup.tsx:474
-#: src/components/MissionSetup.tsx:824
+#: src/components/MissionSetup.tsx:842
 msgid "Sound"
 msgstr "ಧ್ವನಿ"
 
@@ -1649,8 +1657,8 @@ msgstr "ವೇಗ ಬ್ರೇಕ್"
 msgid "Speed brake"
 msgstr "ವೇಗ ಬ್ರೇಕ್"
 
-#: src/components/MissionSetup.tsx:862
-#: src/components/MissionSetup.tsx:1051
+#: src/components/MissionSetup.tsx:880
+#: src/components/MissionSetup.tsx:1086
 msgid "Start"
 msgstr "ಪ್ರಾರಂಭಿಸಿ"
 
@@ -1685,7 +1693,7 @@ msgstr "ಟ್ಯಾಗ್"
 msgid "Tags"
 msgstr "ಟ್ಯಾಗ್‌ಗಳು"
 
-#: src/components/MissionSetup.tsx:836
+#: src/components/MissionSetup.tsx:854
 msgid "Task"
 msgstr "ಕಾರ್ಯ"
 
@@ -1738,7 +1746,7 @@ msgstr "ಗುರುವಾರ"
 msgid "tilt"
 msgstr "ಬಾಗು"
 
-#: src/components/MissionSetup.tsx:880
+#: src/components/MissionSetup.tsx:915
 msgid "Time of day"
 msgstr "ದಿನದ ಸಮಯ"
 
@@ -1781,7 +1789,7 @@ msgstr "ತುಂಬಾ ಹೆಚ್ಚು ವಿನಂತಿಗಳು"
 msgid "Top"
 msgstr "ಅಗ್ರ"
 
-#: src/components/MissionSetup.tsx:1009
+#: src/components/MissionSetup.tsx:1044
 msgid "Tracers"
 msgstr "ಟ್ರೇಸರ್‌ಗಳು"
 
@@ -1816,7 +1824,7 @@ msgstr "ಬಳಕೆದಾರರನ್ನು ಹುಡುಕಲು ಟೈಪ್ 
 msgid "Type to search..."
 msgstr "ಹುಡುಕಲು ಟೈಪ್ ಮಾಡಿ..."
 
-#: src/components/MissionSetup.tsx:939
+#: src/components/MissionSetup.tsx:974
 msgid "Ultra"
 msgstr "ಅಲ್ಟ್ರಾ"
 
@@ -1912,7 +1920,7 @@ msgstr "ನಾವು ಶೀಘ್ರದಲ್ಲೇ ಮತ್ತೆ ಆನ್‌
 msgid "Weapons"
 msgstr "ಆಯುಧಗಳು"
 
-#: src/components/MissionSetup.tsx:815
+#: src/components/MissionSetup.tsx:833
 #: src/components/Multiplayer.tsx:223
 msgid "Weather"
 msgstr "ಹವಾಮಾನ"
