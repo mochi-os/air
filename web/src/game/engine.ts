@@ -1576,6 +1576,7 @@ function glow_points(pts, color, size){   // additive glowing point-lights (runw
 	const p=new THREE.Points(g,new THREE.PointsMaterial({size,map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true})); p.frustumCulled=false; scene.add(p); return p;
 }
 const night_lights=[];   // runway lights that are lit only when it's dark (edge lights; bidirectional)
+const ops_lights=[]; const flood_lights=[];   // carrier flight-ops lighting: up when the deck is ACTIVE (player on deck or inbound gear-down), darkened-ship otherwise
 const beacon_lights=[];  // aerodrome beacon on the tower: alternating white/green flash at night (userData.phase 0/1)
 const dir_lights=[];     // directional + night-only lights (green threshold / red end / REIL) — shown only from their facing side
 function dir_glow(pts,color,size,x,z,fx,fz,flash){ const p=glow_points(pts,color,size); dir_lights.push({mesh:p,x,z,fx,fz,flash}); return p; }
@@ -1642,6 +1643,10 @@ function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
 function update_papi(p){ const flash=(performance.now()%520)<90;   // REIL: ~2 Hz synchronized white flash
 	const dark=cfg.tod!=="day";                                     // edge/threshold/REIL lit only when dark; PAPI is always on
 	for(const m of night_lights) m.visible=dark;
+	{ const dx=p.x-CARRIER.x, dz=p.z-CARRIER.z, d2=dx*dx+dz*dz;   // carrier flight-ops gate: deck working = lights up; otherwise the ship stays darkened
+		const ops=dark && ((d2<400*400 && (ownship.squish??0)>0.1) || (d2<5000*5000 && (ownship.gear??1)<0.5));
+		for(const m of ops_lights) m.visible=ops;
+		for(const s2 of flood_lights) s2.visible=ops; }
 	const bph=(performance.now()%3000)<1500;                        // aerodrome beacon: white / green alternating ~1.5 s each
 	for(const m of beacon_lights) m.visible=dark && ((m.userData.phase===0)===bph);
 	for(const m of window_mats) m.emissiveIntensity=dark?1.15:0;    // building windows light up after dark
@@ -1712,17 +1717,33 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	carrier_ols={ x:o.x, z:o.z, dy, datumY, travel, ballPts, wavePts, wires, vsegs, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl };   // approach comes from the −fa (aft) side, opposite the rollout
 	// --- night lighting (darken-ship, night-only); heights + edges sampled off the REAL deck (which isn't flat), not a rectangle at deckY ---
 	const dh=(f,l)=>{ const w=carrier_world(f,l); return { x:w.x, z:w.z, y:deck_y_at(carrier_model,w.x,w.z,-1e9) }; };   // world pos + deck height at a carrier-local point (−1e9 = off the deck)
-	const edge_lat=(f,dir)=>{ let e=null; for(let l=0;Math.abs(l)<42;l+=dir*4){ const d=dh(f,l); if(d.y>-1e8 && d.y<dy+4) e=l; else if(e!==null) break; } return e; };   // scan out from the centre to the outermost still-flat-deck lat → traces the real edge
+	const edge_lat=(f,dir)=>{ let e=null; for(let l=0;Math.abs(l)<42;l+=dir*4){ const d=dh(f,l); if(d.y>dy-0.6 && d.y<dy+4) e=l; else if(e!==null) break; } return e; };   // scan out from the centre to the outermost still-DECK-LEVEL lat: the catwalks outboard sit ~1-2 m BELOW the lip and used to qualify, hanging edge lights off the ship (measured: dots at -0.84 and -2.2 m)
 	const edge=[];
 	for(let f=-145;f<=150;f+=18){ for(const dir of [1,-1]){ const e=edge_lat(f,dir); if(e!==null){ const d=dh(f,e); edge.push(d.x,d.y+0.3,d.z); } } }
-	night_lights.push(glow_points(edge,0xf0d18a,4));                                      // warm-white deck-edge outline, on the real edge + deck height
+	night_lights.push(glow_points(edge,0xf0d18a,3));                                      // warm-white deck-edge outline, on the real edge + deck height — stays up all night as the find-the-boat watch lighting
+	// RECOVERY AIDS join the flight-ops group: a darkened carrier brings its deck lighting up for launch/recovery, not all night
 	const line=[]; for(let f=-118;f<=48;f+=9){ const d=dh(f,strip_lat(f)); line.push(d.x,(d.y>-1e8?d.y:dy)+0.25,d.z); }   // angled-deck centreline / lineup
-	night_lights.push(glow_points(line,0xbfe6cf,3));
+	ops_lights.push(glow_points(line,0xbfe6cf,3));
 	const dd=dh(-140,strip_lat(-140)), db=dd.y>-1e8?dd.y:dy; const drop=[]; for(let h=0;h>=-16;h-=2.2) drop.push(dd.x,db+h,dd.z);   // red drop line down the round-down
-	night_lights.push(glow_points(drop,0xff3222,5));
-	for(const [dir,col] of [[-1,0xff2418],[1,0x24ff2a]]){ const e=edge_lat(-5,dir); if(e!==null){ const d=dh(-5,e); night_lights.push(glow_points([d.x,d.y+1.2,d.z],col,6)); } }   // red (port) / green (starboard) nav lights on the beam edges
+	ops_lights.push(glow_points(drop,0xff3222,5));
+	const datum=[]; for(const d2 of [-6,-4,4,6]){ const q=carrier_world(-140,strip_lat(-140)+d2); datum.push(q.x,db+0.3,q.z); }   // green ramp datum bar flanking the drop line — the LSO's ramp reference
+	ops_lights.push(glow_points(datum,0x35e06a,5));
+	for(const el of [[11,35,1],[-33,-11,1],[-111,-89,1],[-119,-93,-1]]){ const pts=[];   // amber elevator-edge dots (fa spans + side measured off the deck map)
+		for(let f=el[0];f<=el[1];f+=6){ const e=edge_lat(f,el[2]); if(e!==null){ const d=dh(f,e); pts.push(d.x,d.y+0.25,d.z); } }
+		if(pts.length) ops_lights.push(glow_points(pts,0xffb060,3)); }
+	for(const [dir,col] of [[-1,0xff2418],[1,0x24ff2a]]){ const e=edge_lat(-5,dir); if(e!==null){ const d=dh(-5,e); night_lights.push(glow_points([d.x,d.y+1.2,d.z],col,5)); } }   // red (port) / green (starboard) nav lights on the beam edges
+	{ const st2=dh(-160,0); if(st2.y>-1e8) night_lights.push(glow_points([st2.x,st2.y+1.5,st2.z],0xffffff,5)); }   // white sternlight on the fantail — completes the COLREGS steaming set
 	let my=-1e9,mx=0,mz=0; for(let f=-100;f<=60;f+=5) for(let l=10;l<=45;l+=3){ const d=dh(f,l); if(d.y>my){ my=d.y; mx=d.x; mz=d.z; } }   // tallest point over the starboard side = the island mast
-	if(my>dy+3) night_lights.push(glow_points([mx,my+1.2,mz],0xffffff,7));                // white masthead just above the mast top
+	if(my>dy+3){ night_lights.push(glow_points([mx,my+1.2,mz],0xffffff,6));               // white masthead just above the mast top
+		night_lights.push(glow_points([mx,my+0.4,mz],0xff2418,5)); }                       // red obstruction light just below it
+	// ISLAND DECK FLOODS: the warm sodium wash real carriers run during flight ops. Two spots
+	// from the island top, one over the landing area, one over the bow cats; halos so the
+	// sources read from a distance. Gated with ops_lights (deck active), not all night.
+	if(my>dy+3){ const mkflood=(tx,tz)=>{ const s2=new THREE.SpotLight(0xffd9a0,320,260,0.62,0.65,1); s2.castShadow=false;
+			s2.position.set(mx,my-1,mz); s2.target.position.set(tx,dy,tz); scene.add(s2); scene.add(s2.target); s2.visible=false; return s2; };
+		const ld=carrier_world(-80,strip_lat(-80)), bw=carrier_world(30,2);
+		flood_lights.push(mkflood(ld.x,ld.z), mkflood(bw.x,bw.z));
+		ops_lights.push(glow_points([mx,my-1,mz],0xffd9a0,10)); }   // the halo at the source
 }
 const HOOK_DROP=4, HOOK_AFT=9;   // the tailhook rides ~4 m below and ~9 m aft of the pilot's eye; the meatball flies the HOOK onto the wire, so the eye rides well above the 3.5° glideslope
 function ols_dev(p,o){   // hook's deviation off the 3.5° glideslope to the touchdown: along/lateral/distance + dev (+ high, − low)
@@ -2509,12 +2530,12 @@ function reset_ownship(){
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;           // unit landing direction (the way the aircraft rolls out)
 		const tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw)), dist=3*1852, gs=3.5*D2R;                    // touchdown ≈ the aim wire (3-wire on a four-wire deck); 3 NM back on the 3.5° glideslope
 		ownship.pos.set(td.x-ldx*dist+ldz*100, CARRIER.deckY+dist*Math.tan(gs)+HOOK_DROP-50, td.z-ldz*dist-ldx*100);   // 3 NM astern, 100 m left of centre, 50 m low — a deliberate off-glideslope, off-centre intercept
-		ownship.speed=70; ownship.throttle=0.75;   // ~135 kt approach speed at descent power (on-speed, draggy landing config) — NOT idle, or it sinks off the glideslope at the spawn
+		ownship.speed=80; ownship.throttle=0.30;   // pattern speed (~155 kt) at bleed power: decelerates to on-speed (~138 kt) over the ~25 s turn to final (core-probed profile), leaving the pilot the on-final power capture
 		const yaw=5*D2R, cy=Math.cos(yaw), sy=Math.sin(yaw); ownship.fwd.set(ldx*cy-ldz*sy,0,ldz*cy+ldx*sy).normalize();   // level flight, heading ~5° to starboard of the centreline — pilot rolls out onto the ICLS and pushes over onto the glideslope from below
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		const glide=3.5*D2R; ownship.vel_dir.y=-Math.sin(glide);   // DESCENDING on the glideslope, not level below it — holding level off the spawn took seconds of forward stick
-		ownship.q.premultiply(new THREE.Quaternion().setFromAxisAngle(r,8*D2R-glide)); }   // attitude = path + approach alpha: spawns on-speed AND on-slope   // spawn ON-SPEED: nose up ~approach alpha over the level path — a zero-alpha spawn sank while the PA law scrambled to capture on-speed (nose-down lurch, dead stick during the transient)
+		ownship.q.premultiply(new THREE.Quaternion().setFromAxisAngle(r,7*D2R-glide)); }   // attitude = path + the 155 kt trim alpha (~7°): trimmed at the spawn's pattern speed, alpha rides up to on-speed as it bleeds   // spawn ON-SPEED: nose up ~approach alpha over the level path — a zero-alpha spawn sank while the PA law scrambled to capture on-speed (nose-down lurch, dead stick during the transient)
 	else if(st==="joust"){   // 1v1 merge: head-on east-west directly over the atoll at 15,000 ft, 1 NM either side, equal AIRSPEED — symmetric in every respect (island below both at all fight orientations, sun/moon abeam both noses); the side is a coin flip so the sun-left/sun-right mirror can't systematically favour one player
 		joust_side=Math.random()<0.5?1:-1;
 		ownship.pos.set(-joust_side*1.5*NM, 4572, 0); ownship.fwd.set(joust_side,0,0); ownship.speed=220; ownship.throttle=0.85;   // 15,000 ft = 4572 m; 1.5 NM either side = 3 NM head-on
@@ -2678,8 +2699,6 @@ function draw_hud(dt){
 		hud_message(ownship.grade==="BOLTER"?translate("BOLTER"):translate(ownship.grade)+", "+translate(ownship.wire+" WIRE")); }
 	else if(crash_t<=0 && ownship.waving && (performance.now()%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call while dangerously low in close (matches the OLS waveoff lights)
 	if(test_active){ hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="13px monospace"; hctx.fillText("TEST  "+test_active.name, 14, 28); }
-	if(new URLSearchParams(location.search).get("coredebug")&&last_out){ hctx.textAlign="left"; hctx.fillStyle="#ff80ff"; hctx.font="16px monospace";
-		hctx.fillText("FLAP "+(last_out[STATE.flaperon]*57.3).toFixed(1)+"  V "+(ownship.speed*1.94384).toFixed(0)+"  THR "+ownship.throttle.toFixed(2)+"  SPOOL "+((ownship.spool??0)).toFixed(2)+"  GEAR "+(ownship.gear??1).toFixed(2), 14, 50); }   // dev test-scenario label (untranslated, like the align overlay)
 	if(deck_edit && carrier_model){   // carrier-frame position + centreline — only in the dev deck-alignment mode (key 0)
 		hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="14px monospace";
 		hctx.fillText("deck  fa="+carrier_fore_aft(ownship.pos.x,ownship.pos.z).toFixed(1)+"  lat="+carrier_lateral(ownship.pos.x,ownship.pos.z).toFixed(1)+"  h="+(ownship.pos.y-CARRIER.deckY).toFixed(1), 14, 28);
@@ -2732,6 +2751,15 @@ function draw_hud(dt){
 	const fpm=proj_dir(ownship.vel_dir);
 	if(fpm){ hctx.beginPath(); hctx.arc(fpm[0],fpm[1],6,0,Math.PI*2);
 		hctx.moveTo(fpm[0]-6,fpm[1]); hctx.lineTo(fpm[0]-14,fpm[1]); hctx.moveTo(fpm[0]+6,fpm[1]); hctx.lineTo(fpm[0]+14,fpm[1]); hctx.moveTo(fpm[0],fpm[1]-6); hctx.lineTo(fpm[0],fpm[1]-12); hctx.stroke(); }
+	// ---- E bracket (#86): the PA-mode AoA error bracket, left of the velocity vector.
+	// FPM centred = on-speed 8.1°; FPM at the TOP = fast (6.9°), at the BOTTOM = slow (9.3°) —
+	// so the bracket centre offsets by (8.1 − α)·px/deg (fast pushes the bracket DOWN under the FPM).
+	if(fpm && (ownship.gear??1)<0.5 && !ownship.grounded){
+		const ppd=HH/45;   // px per degree at the HUD's 45° vertical field — matches the ladder's angular scale
+		const off=THREE.MathUtils.clamp((8.1-(ownship.aoa??8.1))*ppd,-3.5*ppd,3.5*ppd);
+		const bx=fpm[0]-30, by=fpm[1]+off, half=1.2*ppd;
+		hctx.beginPath(); hctx.moveTo(bx+7,by-half); hctx.lineTo(bx,by-half); hctx.lineTo(bx,by+half); hctx.lineTo(bx+7,by+half);
+		hctx.moveTo(bx,by); hctx.lineTo(bx+5,by); hctx.stroke(); }   // centre tick marks on-speed
 	}
 	if(glass) hctx.restore();
 
@@ -3052,8 +3080,7 @@ function start_mission(){
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
 	harm_pending=devq.get("harm");   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
 	const viewq=devq.get("view"); if(viewq) set_view(viewq);   // ?view=cockpit|hud|chase — headless capture hook (#105)
-	const startq=devq.get("start"); if(startq){ cfg.start=startq; cfg.task="free"; }   // ?start=landing|carrier|runway|air — headless spawn selection (forces free flight; ?fly alone is a joust) (#105)
-	const headq=devq.get("head"); if(headq){ const [a,e]=headq.split(",").map(Number); head_az=a||0; head_el=e||0; head_drag=true; }   // &head=az,el pins the head pose (head_drag blocks the snap-back)
+	const startq=devq.get("start"); if(startq){ cfg.start=startq; cfg.task="free"; }
 	sweep_pending=devq.get("sweep");   // &sweep=<rig name> — wall-clock sweep of one rig entry (visible motion even in a ~5-frame headless capture)
 	build_ocean(cfg.ocean_segments);
 	apply_time_of_day(cfg.tod); apply_effects();
