@@ -5,7 +5,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { useShellImmersive } from '@mochi/web'
+import { shellSetTitle, useShellImmersive } from '@mochi/web'
 import { GameCanvas } from '../components/GameCanvas'
 import { MissionSetup } from '../components/MissionSetup'
 import { useMissionConfig } from '../lib/config-store'
@@ -16,6 +16,14 @@ import { type Join as NetJoin } from '../game/net'
 // the active tab and it's shareable / back-navigable, like other Mochi apps.
 type SetupTab = 'mission' | 'weather' | 'controls' | 'graphics'
 const SETUP_TABS: SetupTab[] = ['mission', 'weather', 'controls', 'graphics']
+
+// Inside the menu shell the top window owns the browser tab; without this it
+// stays titled "Mochi" no matter what the app's own index.html says.
+function useTabTitle() {
+  useEffect(() => {
+    shellSetTitle('Furball')
+  }, [])
+}
 
 function enterFullscreen() {
   // Requires the shell to grant the iframe allow="fullscreen"; a no-op (caught)
@@ -48,6 +56,7 @@ function Index() {
   // Hide the shell chrome while in flight; the hook's heartbeat lets the shell
   // restore it automatically if furball crashes or is closed.
   useShellImmersive(inFlight)
+  useTabTitle()
 
   // Leaving fullscreen (Esc is always permitted) returns to the menu.
   useEffect(() => {
