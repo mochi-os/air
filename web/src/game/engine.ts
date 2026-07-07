@@ -72,10 +72,10 @@ const CARRIER_MODELS={
 		// of the bow (real angled deck: 9.05°), wire spacing 11.7 m (real: 40 ft). Catapults: measured off the
 		// MODEL's track troughs/JBDs via a painter-ordered deck raster + Hough fit (waist headings +9.2°/+8.8°
 		// bracket the real 9.05° angle). OLS AND THE DECK OUTLINE ARE STILL FORD PLACEHOLDERS.
-		shuttles:[ {x:49.0, z:11.3, h:2.6},              // 1: starboard bow — x toward bow, z + starboard, heading deg (+ = port). Precise Hough refit (2026-07-06): track lat = 13.55 - 0.0454*fa (converges 2.6° toward the bow, meeting cat 2 ~10 m apart at the deck edge, as on the real ship), contiguous fa 46..150
-		           {x:51.0, z:-3.5, h:0},                // 2: port bow (the carrier-start spawn) — track dead-straight at lat -3.5 from fa 47 (JBD panel 41-48, dashed marking box 36-41 centred -3.6 — all coherent)
-		           {x:-20.0, z:-3.3, h:9.2},             // 3: starboard waist — Hough line through the angled-deck trough (θ +9.2°, ends at the port edge fa 83.7); spot just aft of the island's aft end, along the landing strip's starboard edge as on the real deck
-		           {x:-52.0, z:-20.1, h:8.8} ],          // 4: port waist — parallel trough (θ +8.8°, ends fa 61), spot at its raised JBD panel (fa -57); all four tracks carry a consistent 19-28 m lead-out beyond the 85 m stroke
+		shuttles:[ {x:48.98, z:20.22, h:5.9},            // 1: starboard bow — x toward bow, z + starboard, heading deg (+ = port). User-located in-game (2026-07-07), then EXACT-fitted to the painted track's own triangles (total least squares on the 43 m² line strip ahead of the spot: heading +5.905°, line at lat 20.22 for this fa). The earlier Hough refit had locked onto the recessed band edge at lat ~11, ten metres port of the real track
+		           {x:47.23, z:-3.58, h:0},              // 2: port bow (the carrier-start spawn) — user-located in-game (2026-07-07), exact-fitted to the track's own triangles (heading -0.044° ≈ dead straight, line at lat -3.58 for this fa)
+		           {x:-46.61, z:-17.79, h:4.2},          // 3: starboard waist — user-located in-game (2026-07-07), exact-fitted to the track's own triangles (heading +4.225°, line at lat -17.79 for this fa); the old Hough entry had fit the angled-deck trough 27 m away
+		           {x:-66.50, z:-27.94, h:0} ],          // 4: port waist — user-located in-game (2026-07-07), exact-fitted to the track's own triangles (heading +0.030° = dead straight; the first unconstrained fit chased an angled-deck marking crossing the corridor — the user's needle reading of 0.2° was right)
 		wires:[-115.6,-103.9,-92.2,-80.5], halfspan:13,  // arrestor wires 1..4 (fore-aft) spanning ±halfspan about the landing line — the classic four-wire CVN-68 fit, 11.7 m apart, 1-wire 51 m from the stern round-down. halfspan 13 parks the sheaves just outside the 22 m strip; 16 reached the el-4 apron on the port side
 		line:{ afa:-115.6, alat:2.0, bfa:-92.2, blat:-1.7 }, // the landing centreline = the MODEL's painted stripe (least-squares through its yellow centreline segments: lat = -16.27 - 0.1583·fa, 8.99° — the real angled deck is 9.05°). The plan-derived line sat 2.1-2.4 m port of the painted stripe, which made the wires' starboard sheaves look further out; the 1:200 plan says the sheaves are symmetric (~15.5 m each side), so the wires centre on the stripe
 		ols:{ fa:-21.0, lat:-38.6, model:true },         // OLS bracket on the port side — measured off the model's own IFLOLS: amber lens column (heights -0.5..+2.1 rel deck), green datum arms at +0.66 spanning 8.5 m, red wave-off columns at ±1.5 m. model:true = the GLB carries the physical structure, so the engine draws only the glowing lights
@@ -105,9 +105,10 @@ cfg.view="hud";   // start in HUD (view 2); 1-5 select views, V swaps cockpit/HU
 let running=false, has_enemy=true;
 const MULTIPLAYER=!!join;            // in a live match the map/P must never freeze the world
 if(MULTIPLAYER){ cfg.task="joust"; cfg.extra_aircraft=0; cfg.missiles=false; }   // multiplayer: air start, no local AI; the match rules from the welcome may re-allow missiles
-const DEV_MODE=new URLSearchParams(location.search).get("developer")==="1";   // &developer=1: landing/trap test autopilot (Shift+1..0), deck align (0), stab cycle (Shift+E), telemetry (Shift+T), cloud A/B (Shift+X), position copy (Shift+P)
+const DEV_MODE=new URLSearchParams(location.search).get("developer")==="1";   // &developer=1: landing/trap test autopilot (Shift+1..0), deck align (0), stab cycle (Shift+E), telemetry (Shift+T), cloud A/B (Shift+X), position copy (Shift+P), and ALL query hooks (?fly/clouds/tod/harm/view/start/sweep/shot/cat/glassdebug) — outside developer mode none of the scaffolding parses (#105)
+const GLASS_DEBUG=DEV_MODE&&new URLSearchParams(location.search).get("glassdebug")==="1";   // magenta outline of the HUD-glass clip quad
 let TEST_SCENARIOS=DEV_MODE;         // (DEV_MODE must be declared FIRST: initializing these from it a line early was a temporal-dead-zone crash at module load)
-let cat_idx=1;                       // selected catapult (0-based; default = #2 port bow, the carrier-start spawn)
+let cat_idx=(()=>{ const u=DEV_MODE?parseInt(new URLSearchParams(location.search).get("cat")||"",10):NaN; const c=u>=1&&u<=4?u:(cfg.cat>=1&&cfg.cat<=4?cfg.cat:2); return c-1; })();   // selected catapult (0-based): &cat=1..4 (developer mode) wins, else the menu's Catapult choice, else #2 port bow
 let pause_toggle=false, game_paused=false;
 let loading=false, loading_t0=0;
 const load_marks={}; let load_pending=[];   // loading-screen profiling: per-gate ready times + what is still pending (drawn under LOADING)   // flight-start LOADING screen: the sim + render hold until assets_ready() (20 s cap so a failed load can't hang the game)
@@ -1753,7 +1754,10 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 			s2.position.set(mx,my-1,mz); s2.target.position.set(tx,dy,tz); scene.add(s2); scene.add(s2.target); s2.visible=false; return s2; };
 		const ld=carrier_world(-80,strip_lat(-80)), bw=carrier_world(30,2);
 		flood_lights.push(mkflood(ld.x,ld.z), mkflood(bw.x,bw.z));
-		ops_lights.push(glow_points([mx,my-1,mz],0xffd9a0,10)); }   // the halo at the source
+		const lamps=[];
+		for(const t of [ld,bw]){ const ddx=t.x-mx, ddz=t.z-mz, L=Math.hypot(ddx,ddz)||1;
+			lamps.push(mx+ddx/L*2.5, my-1, mz+ddz/L*2.5); }   // each lamp hangs 2.5 m off the mast TOWARD its flood target — centred on the mast the depth-tested sprite hid behind the pole itself
+		ops_lights.push(ols_points(lamps,0xffd9a0,30)); }   // ols_points sizes are DEVICE PIXELS (the meatball is deliberately small) — 13 was a speck on a 4K screen   // the fixture bank: SCREEN-SPACE sprites (constant pixels) so the lamps blaze from on deck below AND read from the approach — a distance-attenuated halo shrank to nothing seen from the deck
 }
 const HOOK_DROP=4, HOOK_AFT=9;   // the tailhook rides ~4 m below and ~9 m aft of the pilot's eye; the meatball flies the HOOK onto the wire, so the eye rides well above the 3.5° glideslope
 function ols_dev(p,o){   // hook's deviation off the 3.5° glideslope to the touchdown: along/lateral/distance + dev (+ high, − low)
@@ -2274,6 +2278,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 		if(telemetry.length>7200) telemetry.shift(); }
 	ownship.grounded=out[STATE.wow]>0.5;
 	core_catapult=out[STATE.catapult]; core_stroke=out[STATE.stroke];
+	if(core_catapult>=0 && core_catapult<SHIP.shuttles.length) cat_idx=core_catapult;   // the active cat follows whichever shuttle the crew hooked you onto — without this, taxiing to another cat towed the wrong shuttle mesh
 	ownship.launching=core_catapult>=0&&core_stroke>=0;
 	const wire=out[STATE.wire];
 	if(wire>=0&&prev_wire<0){ ownship.trapped=true; ownship.wire=wire+1; ownship.grade=lso_grade(); ownship.pass_t=10; }
@@ -2682,7 +2687,7 @@ function glass_rect(){ const at=ownship.group.userData.eye||{x:3.0,y:0.6};
 	return { corners, rcx, rcy, scale:width/620 }; }
 function glass_clip(g){ hctx.beginPath(); hctx.moveTo(g.corners[0][0],g.corners[0][1]);
 	for(let i=1;i<4;i++) hctx.lineTo(g.corners[i][0],g.corners[i][1]); hctx.closePath();
-	if(new URLSearchParams(location.search).get("glassdebug")){ hctx.save(); hctx.strokeStyle="#ff40ff"; hctx.lineWidth=2; hctx.stroke(); hctx.restore(); }
+	if(GLASS_DEBUG){ hctx.save(); hctx.strokeStyle="#ff40ff"; hctx.lineWidth=2; hctx.stroke(); hctx.restore(); }
 	hctx.clip(); }
 function proj_dir(d){ _p.copy(camera.position).addScaledVector(d,1000).project(camera); if(_p.z>1) return null; return [(_p.x*0.5+0.5)*HW,(-_p.y*0.5+0.5)*HH]; }
 let GR="#15b85f"; const AM="#ffc14d";   // GR switches to a brighter daytime green in draw_hud (real HUDs have a brightness knob)
@@ -2746,9 +2751,17 @@ function draw_hud(dt){
 	if(DEV_MODE && carrier_model){   // developer mode: live nose-wheel deck position (Ctrl+C copies) + a dashed view centreline for eyeballing alignment
 		hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="14px monospace";
 		hctx.fillText(here_text(), 14, 46);
-		if(!dev_cursor){ dev_cursor=new THREE.Mesh(new THREE.RingGeometry(0.10,0.16,24),new THREE.MeshBasicMaterial({color:0x7fc8ff,side:THREE.DoubleSide,depthTest:false})); dev_cursor.rotation.x=-Math.PI/2; dev_cursor.renderOrder=999; dev_cursor.frustumCulled=false; scene.add(dev_cursor); }
+		if(!dev_cursor){ const cmat=new THREE.MeshBasicMaterial({color:0x7fc8ff,side:THREE.DoubleSide,depthTest:false});
+			dev_cursor=new THREE.Group();
+			const ring=new THREE.Mesh(new THREE.RingGeometry(0.10,0.16,24),cmat); ring.rotation.x=-Math.PI/2; ring.renderOrder=999; dev_cursor.add(ring);
+			const needle=new THREE.Mesh(new THREE.BoxGeometry(2.4,0.02,0.06),cmat); needle.position.x=1.2; needle.renderOrder=999; dev_cursor.add(needle);   // heading needle: U/O rotate it; lay it along the painted track line to read the true heading
+			dev_cursor.traverse(o=>{ o.frustumCulled=false; }); scene.add(dev_cursor); }
 		{ const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
 			const bx=ownship.pos.x+ownship.fwd.x*nose+dev_nudge.fa*CARRIER_C+dev_nudge.lat*CARRIER_S, bz=ownship.pos.z+ownship.fwd.z*nose-dev_nudge.fa*CARRIER_S+dev_nudge.lat*CARRIER_C;
+			const hd=(Math.atan2(-(ownship.fwd.x*CARRIER_S+ownship.fwd.z*CARRIER_C), ownship.fwd.x*CARRIER_C-ownship.fwd.z*CARRIER_S)+dev_nudge.hd*D2R);
+			const dfa=Math.cos(hd), dla=-Math.sin(hd);   // deck-frame heading (+ = port) -> world direction, same transform as the offset
+			const dx2=dfa*CARRIER_C+dla*CARRIER_S, dz2=-dfa*CARRIER_S+dla*CARRIER_C;
+			dev_cursor.rotation.y=Math.atan2(-dz2,dx2);
 			dev_cursor.position.set(bx, deck_y_at(carrier_model,bx,bz,CARRIER.deckY)+0.06, bz); dev_cursor.visible=true; }
 		hctx.save(); hctx.strokeStyle="rgba(127,200,255,0.55)"; hctx.lineWidth=1; hctx.setLineDash([7,7]); hctx.beginPath(); hctx.moveTo(cx,0); hctx.lineTo(cx,HH); hctx.stroke(); hctx.restore(); }
 	if(net_notice_t<=0){ const ls=launch_status(); if(ls>0) hud_message(translate(ls===2?"PRESS ENTER TO LAUNCH":"RUN UP ENGINE")); }   // transient notices own the centre banner — never draw two messages on top of each other
@@ -3118,7 +3131,7 @@ function net_connect(){
 		notice(translate("CONNECTION FAILED")); setTimeout(()=>{ if(running){ running=false; if(onExit) onExit(); } },1800); }); }
 
 function start_mission(){
-	const devq=new URLSearchParams(window.location.search);   // dev/screenshot hooks (#105): force a cloud preset / time of day / inject damage
+	const devq=new URLSearchParams(DEV_MODE?window.location.search:"");   // dev/screenshot hooks (#105), parsed ONLY in developer mode: force a cloud preset / time of day / inject damage
 	const cloudq=devq.get("clouds"); if(cloudq!==null) cfg.clouds=cloudq;
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
 	harm_pending=devq.get("harm");   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
@@ -3137,7 +3150,7 @@ function start_mission(){
 	running=true;
 	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,
 	// chase camera at the given azimuth/elevation. Judging water needs an external low view.
-	const shotp=new URLSearchParams(window.location.search).get("shot");
+	const shotp=DEV_MODE?new URLSearchParams(window.location.search).get("shot"):null;
 	if(shotp!==null){ const [saz,sel,salt,sdist]=shotp.split(",").map(Number);
 		setTimeout(()=>{ try{
 			flight_level(CARRIER.x+2500, isNaN(salt)?100:salt, CARRIER.z+2500, 0.9, -0.45, 120, 2450);
