@@ -39,8 +39,12 @@ function exitFullscreen() {
 // (game running, menu hidden) hides the Mochi shell chrome and goes fullscreen.
 function Index() {
   const [config, setConfig] = useMissionConfig()
+  const [cat, setCat] = useState(2) // carrier-start catapult; session-only by design (not part of the persisted config)
   const [join, setJoin] = useState<NetJoin | null>(null)
-  const fly = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('fly')   // dev/screenshot hook: ?fly=1 skips the menu straight into a mission with saved config
+  const fly =
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('developer') === '1' &&
+    new URLSearchParams(window.location.search).has('fly') // dev/screenshot hook: ?developer=1&fly=1 skips the menu straight into a mission with saved config (#105: all hooks live behind developer mode)
   const [started, setStarted] = useState(fly)
   const [menuOpen, setMenuOpen] = useState(!fly)
   const [gameKey, setGameKey] = useState(0)
@@ -84,7 +88,7 @@ function Index() {
       {started && (
         <GameCanvas
           key={gameKey}
-          config={config}
+          config={{ ...config, cat }}
           join={join}
           onReady={(h) => {
             gameRef.current = h
@@ -96,6 +100,8 @@ function Index() {
         <MissionSetup
           config={config}
           onChange={setConfig}
+          cat={cat}
+          onCat={setCat}
           tab={tab}
           onTabChange={setTab}
           gameInProgress={started}
