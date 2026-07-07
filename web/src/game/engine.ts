@@ -1760,7 +1760,7 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 		for(const t of [ld,bw]){ const ddx=t.x-mx, ddz=t.z-mz, L=Math.hypot(ddx,ddz)||1;
 			lamps.push(mx+ddx/L*2.5, my-1, mz+ddz/L*2.5); }   // each lamp hangs 2.5 m off the mast TOWARD its flood target — centred on the mast the depth-tested sprite hid behind the pole itself
 		{ const lg=new THREE.BufferGeometry(); lg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(lamps),3));
-			const lp=new THREE.Points(lg,new THREE.PointsMaterial({size:30,map:light_dot,color:0xffd9a0,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:false}));
+			const lp=new THREE.Points(lg,new THREE.PointsMaterial({size:90,map:light_dot,color:0xffd9a0,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:false}));   // proper glare: 30px read as one more mast dot
 			lp.frustumCulled=false; lp.renderOrder=998; scene.add(lp); ops_lights.push(lp); } }   // flood GLARE sprites: constant pixels AND no depth test — the broad island superstructure occluded every depth-tested placement near the mast; a source this bright blooms through structure anyway
 }
 const HOOK_DROP=4, HOOK_AFT=9;   // the tailhook rides ~4 m below and ~9 m aft of the pilot's eye; the meatball flies the HOOK onto the wire, so the eye rides well above the 3.5° glideslope

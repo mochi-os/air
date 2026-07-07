@@ -202,7 +202,16 @@ interface Snapshot {
   tick: number
   acknowledged: number
   core: Float64Array | null // the recipient's own encoded flight state
-  players: Map<number, RemotePose>
+}
+
+// One decoded 34-byte pose record with its arrival time — the per-slot rings
+// these build replace per-snapshot player maps (#81): each slot updates at its
+// own rate (nearest players every poses datagram, the far tail round-robin),
+// so interpolation must bracket within the slot's own sample history.
+interface TimedPose {
+  at: number
+  tick: number
+  pose: RemotePose
 }
 
 export interface InputSample {
@@ -257,6 +266,9 @@ export class Net {
   private writer: WritableStreamDefaultWriter<Uint8Array> | null = null
   private datagrams: WritableStreamDefaultWriter<Uint8Array> | null = null
   private snapshots: Snapshot[] = []
+  private rings = new Map<number, TimedPose[]>() // per-slot pose history (#81)
+  names = new Map<number, string>() // slot -> callsign (welcome + roster events)
+  private tallies = new Map<number, { kills: number; deaths: number }>() // counted from kill events
   private corrected = 0 // highest acknowledged sequence already reconciled
   cored = false // the server has sent at least one own-state core
   private sequence = 0
@@ -291,16 +303,18 @@ export class Net {
   // remote returns the interpolated pose for a slot, ~DELAY ms behind live,
   // unwrapping across the toroidal seam before lerping.
   remote(slot: number): RemotePose | null {
-    const list = this.snapshots
-    if (!list.length) return null
+    // Interpolate within the slot's OWN sample ring (#81): the nearest players
+    // refresh every poses datagram, the far tail a few times a second — each
+    // slot brackets the render time in its own history, whatever its rate.
+    const ring = this.rings.get(slot)
+    if (!ring || !ring.length) return null
     const target = performance.now() - DELAY
-    let after = list.length - 1
-    while (after > 0 && list[after - 1].at >= target) after--
-    const b = list[after]
-    const a = after > 0 ? list[after - 1] : b
-    const pb = b.players.get(slot)
-    const pa = a.players.get(slot) ?? pb
-    if (!pb || !pa) return null
+    let after = ring.length - 1
+    while (after > 0 && ring[after - 1].at >= target) after--
+    const b = ring[after]
+    const a = after > 0 ? ring[after - 1] : b
+    const pb = b.pose
+    const pa = a.pose
     const span = b.at - a.at
     const t = span > 1 ? Math.min(1, Math.max(0, (target - a.at) / span)) : 1
     const unwrap = (from: number, to: number) => from + this.shortest(from, to) * t
@@ -338,17 +352,24 @@ export class Net {
     return newest.tick / (this.welcome?.rate?.tick || 60) + (performance.now() - newest.at) / 1000
   }
 
-  // slots lists the remote slots present in the newest snapshot.
+  // slots lists the remote slots with a reasonably fresh pose — the far tail
+  // refreshes round-robin, so anything seen within the last two seconds is
+  // live; older rings belong to players who left (the wire stops mentioning
+  // them) and their jets vanish.
   slots(): number[] {
-    const newest = this.snapshots[this.snapshots.length - 1]
-    if (!newest) return []
-    return [...newest.players.keys()].filter((slot) => slot !== this.slot)
+    const now = performance.now()
+    const live: number[] = []
+    for (const [slot, ring] of this.rings) {
+      if (slot === this.slot) continue
+      if (ring.length && now - ring[ring.length - 1].at < 2000) live.push(slot)
+    }
+    return live
   }
 
   // own returns the newest authoritative state for our aircraft.
   own(): RemotePose | null {
-    const newest = this.snapshots[this.snapshots.length - 1]
-    return newest?.players.get(this.slot) ?? null
+    const ring = this.rings.get(this.slot)
+    return ring?.length ? ring[ring.length - 1].pose : null   // self rides first in every poses datagram
   }
 
   shortest(from: number, to: number): number {
@@ -394,29 +415,53 @@ export class Net {
 
   private handle(message: Record<string, unknown>) {
     switch (message.kind) {
-      case 'snapshot': {
-        const players = new Map<number, RemotePose>()
-        for (const entry of (message.players as Record<string, unknown>[]) ?? []) {
-          players.set(Number(entry.slot), {
-            position: entry.position as [number, number, number],
-            direction: entry.direction as [number, number, number],
-            attitude: entry.attitude as [number, number, number, number],
-            speed: Number(entry.speed),
-            name: String(entry.name ?? ''),
-            alive: !!entry.alive,
-            burn: [Number((entry.burn as number[] | undefined)?.[0] ?? 0), Number((entry.burn as number[] | undefined)?.[1] ?? 0)],
-            leak: Number(entry.leak ?? 0),
-            pilot: entry.pilot !== false,
-            loss: Number(entry.loss ?? 0),
-            kills: Number(entry.kills ?? 0),
-            deaths: Number(entry.deaths ?? 0),
-            gear: !!entry.gear,
-            hook: !!entry.hook,
-            speedbrake: Number(entry.speedbrake ?? 0),
-            reheat: +(entry.reheat as number ?? 0) || 0,
-            fire: !!entry.fire,
-          })
+      case 'poses': {
+        // The interest-managed pose datagram (#81): fixed 34-byte records —
+        // self first, then the nearest remotes, then the rotating far tail.
+        const blob = message.blob as Uint8Array | undefined
+        if (!(blob instanceof Uint8Array)) break
+        const at = performance.now()
+        const tick = Number(message.tick)
+        const view = new DataView(blob.buffer, blob.byteOffset)
+        for (let base = 0; base + 34 <= blob.byteLength; base += 34) {
+          const slot = view.getUint8(base)
+          const flags = view.getUint8(base + 26)
+          const tally = this.tallies.get(slot)
+          const pose: RemotePose = {
+            position: [view.getFloat32(base + 1, true), view.getFloat32(base + 5, true), view.getFloat32(base + 9, true)],
+            attitude: [
+              view.getInt16(base + 13, true) / 32767,
+              view.getInt16(base + 15, true) / 32767,
+              view.getInt16(base + 17, true) / 32767,
+              view.getInt16(base + 19, true) / 32767,
+            ],
+            direction: [view.getInt8(base + 21) / 127, view.getInt8(base + 22) / 127, view.getInt8(base + 23) / 127],
+            speed: view.getUint16(base + 24, true) / 10,
+            name: this.names.get(slot) ?? '',
+            alive: !!(flags & 1),
+            gear: !!(flags & 2),
+            hook: !!(flags & 4),
+            fire: !!(flags & 8),
+            pilot: !!(flags & 16),
+            reheat: view.getUint8(base + 27) / 255,
+            speedbrake: view.getUint8(base + 28) / 255,
+            burn: [view.getUint8(base + 29) / 255, view.getUint8(base + 30) / 255],
+            leak: view.getUint8(base + 31) / 10,
+            loss: view.getUint16(base + 32, true),
+            kills: tally?.kills ?? 0,
+            deaths: tally?.deaths ?? 0,
+          }
+          let ring = this.rings.get(slot)
+          if (!ring) {
+            ring = []
+            this.rings.set(slot, ring)
+          }
+          ring.push({ at, tick, pose })
+          if (ring.length > 20) ring.shift()
         }
+        break
+      }
+      case 'snapshot': {
         let core: Float64Array | null = null
         const bytes = message.core as Uint8Array | undefined
         if (bytes instanceof Uint8Array && bytes.byteLength >= 456 + (SIZE - 57) * 2) {
@@ -439,14 +484,27 @@ export class Net {
           tick: Number(message.tick),
           acknowledged: Number(message.acknowledged ?? 0),
           core,
-          players,
         })
         if (this.snapshots.length > 40) this.snapshots.shift()
         break
       }
-      case 'event':
-        this.handlers.event?.(message.event as Record<string, unknown>)
+      case 'event': {
+        const event = message.event as Record<string, unknown>
+        if (event?.kind === 'roster') this.names.set(Number(event.slot), String(event.name ?? ''))   // names arrive out of the hot path (#81)
+        if (event?.kind === 'kill') {   // scores are counted, not shipped per snapshot (#81)
+          const victim = Number(event.slot), killer = Number(event.by)
+          const down = this.tallies.get(victim) ?? { kills: 0, deaths: 0 }
+          down.deaths++
+          this.tallies.set(victim, down)
+          if (Number.isFinite(killer) && killer >= 0) {
+            const up = this.tallies.get(killer) ?? { kills: 0, deaths: 0 }
+            up.kills++
+            this.tallies.set(killer, up)
+          }
+        }
+        this.handlers.event?.(event)
         break
+      }
       case 'end':
         this.closed = true
         this.handlers.end?.(String(message.reason ?? ''), message.results)
@@ -556,6 +614,7 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
         }
         const net = new Net(transport, handlers)
         net.welcome = first as unknown as Welcome
+        for (const p of net.welcome.players ?? []) net.names.set(p.slot, p.name)   // players present before us; later joiners arrive via roster events
         net.slot = Number(first.slot)
         const spawn = first.spawn as { wrap?: number } | undefined
         if (spawn?.wrap) net.wrap = Number(spawn.wrap)
