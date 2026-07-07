@@ -155,6 +155,7 @@ const AXIS_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'throttle', label: <Trans>Throttle</Trans> },
   { id: 'speedbrake', label: <Trans>Speed brake</Trans> },
   { id: 'look', label: <Trans>Look</Trans> }, // an axis PAIR: the chosen index is horizontal, the next one up is vertical
+  { id: 'zoom', label: <Trans>Zoom</Trans> }, // spring-centred wheel: deflection = zoom rate on the view (or the map when open)
 ]
 const LEVERS = new Set(['throttle', 'speedbrake']) // lever-style rows: min-to-max meter + reverse toggle
 
@@ -174,6 +175,8 @@ const BUTTON_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'look.down', label: <Trans>Look down</Trans> },
   { id: 'look.left', label: <Trans>Look left</Trans> },
   { id: 'look.right', label: <Trans>Look right</Trans> },
+  { id: 'zoom.in', label: <Trans>Zoom in</Trans> },
+  { id: 'zoom.out', label: <Trans>Zoom out</Trans> },
 ]
 
 const KEY_ROWS: { id: string; label: ReactNode }[] = [
