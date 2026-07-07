@@ -267,6 +267,8 @@ export class Net {
   private datagrams: WritableStreamDefaultWriter<Uint8Array> | null = null
   private snapshots: Snapshot[] = []
   private rings = new Map<number, TimedPose[]>() // per-slot pose history (#81)
+  private clock = NaN // EMA of (local seconds - server tick seconds): the jitter-filtered clock the pose timeline runs on
+  private glide = new Map<number, { x: number; y: number; z: number; ox: number; oy: number; oz: number; at: number }>() // per-slot discontinuity smoothing: raw stream memory + decaying offset
   names = new Map<number, string>() // slot -> callsign (welcome + roster events)
   private tallies = new Map<number, { kills: number; deaths: number }>() // counted from kill events
   private corrected = 0 // highest acknowledged sequence already reconciled
@@ -302,15 +304,55 @@ export class Net {
 
   // remote returns the interpolated pose for a slot, ~DELAY ms behind live,
   // unwrapping across the toroidal seam before lerping.
+  // soften absorbs position discontinuities (interest-set entry after a long
+  // dead-reckon, late samples on a turning jet): any step between the raw
+  // stream and its velocity-extrapolated expectation folds into an offset
+  // that bleeds out over ~⅓ s, so near aircraft glide instead of snapping.
+  private soften(slot: number, pose: RemotePose): RemotePose {
+    const now = performance.now()
+    const memo = this.glide.get(slot)
+    const [x, y, z] = pose.position
+    if (!memo) {
+      this.glide.set(slot, { x, y, z, ox: 0, oy: 0, oz: 0, at: now })
+      return pose
+    }
+    const dt = Math.min(0.25, (now - memo.at) / 1000)
+    const fade = Math.exp(-3.5 * dt)
+    let ox = memo.ox * fade
+    let oy = memo.oy * fade
+    let oz = memo.oz * fade
+    const reach = pose.speed * dt
+    const jx = this.shortest(x, memo.x + pose.direction[0] * reach)
+    const jy = memo.y + pose.direction[1] * reach - y
+    const jz = this.shortest(z, memo.z + pose.direction[2] * reach)
+    const step = Math.hypot(jx, jy, jz)
+    if (step > 1.2 && step < 60) {
+      ox += jx
+      oy += jy
+      oz += jz
+    } // beyond 60 m it's a respawn/teleport: snap honestly
+    const cap = Math.hypot(ox, oy, oz)
+    if (cap > 40) {
+      ox *= 40 / cap
+      oy *= 40 / cap
+      oz *= 40 / cap
+    }
+    this.glide.set(slot, { x, y, z, ox, oy, oz, at: now })
+    return { ...pose, position: [this.rewrap(x + ox), y + oy, this.rewrap(z + oz)] }
+  }
+
   remote(slot: number): RemotePose | null {
     // Interpolate within the slot's OWN sample ring (#81): the nearest players
     // refresh every poses datagram, the far tail a few times a second — each
     // slot brackets the render time in its own history, whatever its rate.
     const ring = this.rings.get(slot)
-    if (!ring || !ring.length) return null
-    const target = performance.now() - DELAY
+    if (!ring || !ring.length || !Number.isFinite(this.clock)) return null
+    // The pose timeline runs on SERVER TICK TIME through the smoothed clock:
+    // bracketing by arrival time made every datagram's jitter a position wobble.
+    const target = performance.now() / 1000 - this.clock - DELAY / 1000
+    const when = (s: TimedPose) => s.tick / 60
     let after = ring.length - 1
-    while (after > 0 && ring[after - 1].at >= target) after--
+    while (after > 0 && when(ring[after - 1]) >= target) after--
     const b = ring[after]
     const a = after > 0 ? ring[after - 1] : b
     const pb = b.pose
@@ -318,23 +360,23 @@ export class Net {
     // Beyond the newest sample (the far tail refreshes round-robin at a few
     // Hz), DEAD-RECKON along the last velocity instead of freezing: without
     // this every far update was a visible position snap.
-    if (target > b.at + 1) {
-      const ahead = Math.min(1.2, (target - b.at) / 1000)
+    if (target > when(b) + 0.001) {
+      const ahead = Math.min(1.2, target - when(b))
       const reach = pb.speed * ahead
-      return {
+      return this.soften(slot, {
         ...pb,
         position: [
           this.rewrap(pb.position[0] + pb.direction[0] * reach),
           pb.position[1] + pb.direction[1] * reach,
           this.rewrap(pb.position[2] + pb.direction[2] * reach),
         ],
-      }
+      })
     }
-    const span = b.at - a.at
-    const t = span > 1 ? Math.min(1, Math.max(0, (target - a.at) / span)) : 1
+    const span = when(b) - when(a)
+    const t = span > 0.001 ? Math.min(1, Math.max(0, (target - when(a)) / span)) : 1
     const unwrap = (from: number, to: number) => from + this.shortest(from, to) * t
     const lerp = (from: number, to: number) => from + (to - from) * t
-    return {
+    return this.soften(slot, {
       ...pb,
       position: [
         this.rewrap(unwrap(pa.position[0], pb.position[0])),
@@ -344,7 +386,7 @@ export class Net {
       direction: pb.direction,
       attitude: slerp(pa.attitude, pb.attitude, t),
       speed: lerp(pa.speed, pb.speed),
-    }
+    })
   }
 
   // correction returns the newest unconsumed own-state authority for
@@ -437,6 +479,11 @@ export class Net {
         if (!(blob instanceof Uint8Array)) break
         const at = performance.now()
         const tick = Number(message.tick)
+        // Smooth the local-to-server clock offset: interpolating on ARRIVAL
+        // times fed every network jitter wobble straight into aircraft motion.
+        const offset = at / 1000 - tick / 60
+        if (!Number.isFinite(this.clock) || Math.abs(offset - this.clock) > 0.25) this.clock = offset
+        else this.clock += (offset - this.clock) * 0.08
         const view = new DataView(blob.buffer, blob.byteOffset)
         for (let base = 0; base + 34 <= blob.byteLength; base += 34) {
           const slot = view.getUint8(base)
