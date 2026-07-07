@@ -83,7 +83,7 @@ export function Multiplayer({
   const [tod, setTod] = useState<'day' | 'night'>('day')
   const [clouds, setClouds] = useState('none')
   const [missiles, setMissiles] = useState(false)
-  const [bots, setBots] = useState(0) // server-flown practice aircraft (0 = none); also the 100-player verification lever
+  const [bots, setBots] = useState<Record<string, number>>({ drone: 0, rookie: 0, pilot: 0, veteran: 0, ace: 0 }) // server-flown aircraft per skill level; drones cruise, the rest fight (also the 100-player verification lever)
   const address = normalize_server(server || default_server())
   const name = (callsign || identity || t`pilot`).slice(0, 32)
 
@@ -129,7 +129,7 @@ export function Multiplayer({
         mode,
         label: t`${name}'s match`,
         capacity: mode === 'joust' ? 2 : 0,
-        parameters: { tod, clouds, missiles, bots },
+        parameters: { tod, clouds, missiles, bots },   // bots: per-level counts {drone, rookie, pilot, veteran, ace}
       })
       onJoin({
         server: address,
@@ -243,19 +243,41 @@ export function Multiplayer({
                   <Trans>Missiles allowed</Trans>
                 </Label>
               </div>
-              <div className='flex items-center gap-2'>
-                <Label htmlFor='rule-bots' className='font-normal'>
+              <div className='flex flex-wrap items-center gap-2'>
+                <Label className='font-normal'>
                   <Trans>Bots</Trans>
                 </Label>
-                <Input
-                  id='rule-bots'
-                  type='number'
-                  min={0}
-                  max={99}
-                  value={bots}
-                  onChange={(e) => setBots(Math.max(0, Math.min(99, Number(e.target.value) || 0)))}
-                  className='h-8 w-16'
-                />
+                {(
+                  [
+                    ['drone', t`Drone`],
+                    ['rookie', t`Rookie`],
+                    ['pilot', t`Pilot`],
+                    ['veteran', t`Veteran`],
+                    ['ace', t`Ace`],
+                  ] as const
+                ).map(([level, label]) => (
+                  <div key={level} className='flex items-center gap-1'>
+                    <Label htmlFor={'bots-' + level} className='text-muted-foreground text-xs font-normal'>
+                      {label}
+                    </Label>
+                    <Input
+                      id={'bots-' + level}
+                      type='number'
+                      min={0}
+                      max={99}
+                      value={bots[level]}
+                      onChange={(e) => {
+                        const value = Math.max(0, Math.min(99, Number(e.target.value) || 0))
+                        setBots((b) => {
+                          const next = { ...b, [level]: value }
+                          const total = Object.values(next).reduce((sum, n) => sum + n, 0)
+                          return total <= 99 ? next : b // the match holds 99 bots at most
+                        })
+                      }}
+                      className='h-8 w-14'
+                    />
+                  </div>
+                ))}
               </div>
             </div>
             <Button type='button' size='sm' disabled={!status || busy} onClick={() => void create()}>

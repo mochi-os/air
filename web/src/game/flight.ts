@@ -88,6 +88,11 @@ interface Core {
   burst(input: Uint8Array, output: Uint8Array): number
   blast(input: Uint8Array, output: Uint8Array): boolean
   progress(input: Uint8Array, output: Uint8Array): void
+  bandit_init?(config: string): string
+  bandit_place?(spawn: string): string
+  bandit_mirror?(state: Uint8Array): string
+  bandit_menace?(shots: Uint8Array, count: number): string
+  bandit_step?(state: Uint8Array): number
 }
 
 declare global {
@@ -263,6 +268,55 @@ export interface Aim {
 
 // battle_hulk builds or resets the model-less target body at an index
 // (0 = the bandit, 1.. = neutral traffic).
+// ============================================================ bandit boundary
+// The SP joust opponent: the same brain the server flies for multiplayer
+// bots, on a second flight core inside the same wasm module.
+
+const mirror = new Float64Array(SIZE + 1)
+const mirror_bytes = new Uint8Array(mirror.buffer)
+const bandit_out = new Float64Array(SIZE)
+const bandit_bytes = new Uint8Array(bandit_out.buffer)
+const menace = new Float64Array(36)
+const menace_bytes = new Uint8Array(menace.buffer)
+
+export function bandit_init(config: { level: string; seed: number; wrap: number; sky: string; night: boolean }): boolean {
+  if (!core?.bandit_init) return false
+  const error = core.bandit_init(JSON.stringify(config))
+  if (error) console.error('bandit init:', error)
+  return !error
+}
+
+export function bandit_spawn(position: { x: number; y: number; z: number }, velocity: { x: number; y: number; z: number }): void {
+  core?.bandit_place?.(JSON.stringify({ position: [position.x, position.y, position.z], velocity: [velocity.x, velocity.y, velocity.z] }))
+}
+
+// bandit_mirror reflects the player into the bandit's arena: the encoded own
+// state, whether the player is firing (tracer perception), and alive.
+export function bandit_mirror(state: Float64Array, firing: boolean, alive: boolean): void {
+  if (!core?.bandit_mirror) return
+  mirror.set(state.subarray(0, SIZE))
+  mirror[SIZE] = (firing ? 1 : 0) | (alive ? 2 : 0)
+  core.bandit_mirror(mirror_bytes)
+}
+
+// bandit_menace declares the player's missiles chasing the bandit: a flat
+// array of six words each (position, velocity), up to six missiles.
+export function bandit_menace(shots: number[]): void {
+  if (!core?.bandit_menace) return
+  const count = Math.min(6, Math.floor(shots.length / 6))
+  for (let i = 0; i < count * 6; i++) menace[i] = shots[i]
+  core.bandit_menace(menace_bytes, count)
+}
+
+// bandit_step advances one 60 Hz frame; returns the bandit's encoded state
+// plus its trigger and flare decisions, or null when the core is absent.
+export function bandit_step(): { state: Float64Array; fire: boolean; flare: boolean } | null {
+  if (!core?.bandit_step) return null
+  const flags = core.bandit_step(bandit_bytes)
+  if (typeof flags !== 'number' || flags < 0) return null
+  return { state: bandit_out, fire: (flags & 1) !== 0, flare: (flags & 2) !== 0 }
+}
+
 export function battle_hulk(index: number, aircraft: string): boolean {
   return !!core?.hulk(index, aircraft)
 }
