@@ -34,6 +34,7 @@ export function deviceDefaults(id: string): StickBindings {
 // their precise types for the menu.
 export interface MissionConfig {
   task: 'free' | 'joust' | 'multiplayer'
+  bandit: 'rookie' | 'pilot' | 'veteran' | 'ace'
   aircraft: 'fa18c' // one shipping aircraft today; the field + catalogue stay so a second type re-adds cleanly (client AIRCRAFT_MODELS, world aircraft.Get, and the menu picker)
   joystick: string // menu-selected stick id ('' = first connected)
   sticks: Record<string, StickBindings> // per-device axis/button maps, keyed by pad id
@@ -65,6 +66,7 @@ export interface MissionConfig {
 // Mirrors the engine's defaults so the menu reflects what an unconfigured game uses.
 export const DEFAULT_CONFIG: MissionConfig = {
   task: 'joust',
+  bandit: 'veteran',
   aircraft: 'fa18c',
   joystick: '',
   sticks: {},

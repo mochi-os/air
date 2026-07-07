@@ -14,7 +14,7 @@ import {
   type Join as NetJoin,
   type Net as NetHandle,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_burst, battle_blast, battle_progress, BATTLE } from './flight'
+import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_burst, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step } from './flight'
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_horn, audio_remote, audio_remote_drop, audio_listener } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -1224,6 +1224,7 @@ const bandit=make_state(new THREE.Vector3(3000,2400,-1000),new THREE.Vector3(-0.
 let battle_tick=0, battle_reset=true;
 let net_waiting=false;   // joust waiting room (#88): the server holds the lone first player frozen at the ring until the opponent joins
 let weapons_hold=false;   // joust weapons hold (#87): guns and missiles inhibited until the MERGE — either aircraft crossing the other's 3/9 line; released by the fighton event (MP) or the local check (SP)
+let bandit_brain=false;   // SP joust bandit runs on the wasm brain (#125 phase 2); false = the legacy kinematic AI
 let harm_pending=null;   // ?harm dev hook (#105): pending injection kind
 let sweep_pending=null;   // ?sweep dev hook (#105): rig entry name to sweep once the model resolves
 function apply_harm(kind){ const words=flight_get(); if(!words) return;
@@ -1243,6 +1244,7 @@ function battle_rig(){ battle_hulk(0,"fa18c"); for(let i=0;i<extras.length&&i<8;
 	bandit.harm={thrust:0,wing:0,killed:false,burning:false}; battle_reset=true; }
 function bandit_destroy(){ explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
 	bandit.pos.set(3000,2400,-1000); bandit.fwd.set(-0.3,0,1).normalize(); bandit.merging=(cfg.task==="joust");
+	if(bandit_brain) bandit_spawn(bandit.pos, {x:bandit.fwd.x*200, y:0, z:bandit.fwd.z*200});
 	battle_hulk(0,"fa18c"); bandit.harm={thrust:0,wing:0,killed:false,burning:false};
 	notice(translate("KILL")); }
 let aircraft_lights=null;
@@ -1683,18 +1685,19 @@ function ols_points(pts,color,size){   // like glow_points but SCREEN-SPACE (con
 function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the flight deck (called once the carrier GLB has loaded and CARRIER.deckY is known)
 	const dy=CARRIER.deckY;
 	// --- 3 arrestor wires across the landing strip, at the trap fore-aft positions (angled to the strip) ---
-	const wireMat=new THREE.MeshStandardMaterial({color:0x101012,metalness:0.4,roughness:0.6});
+	const wireMat=new THREE.MeshStandardMaterial({color:0x26282a,metalness:0.8,roughness:0.45});   // greased working steel: dark gunmetal with a faint sheen
 	const sheaveMat=new THREE.MeshStandardMaterial({color:0x6a6e73,metalness:0.5,roughness:0.6});   // grey, per user — black boxes read as holes in the deck
 	const wires=[];
 	for(const wfa of SHIP.wires){
 		const clat=strip_lat(wfa), hw=SHIP.halfspan;   // span the strip width, perpendicular to its centreline
 		const a=carrier_world(wfa-STRIP_ULAT*hw,clat+STRIP_UFA*hw), b=carrier_world(wfa+STRIP_ULAT*hw,clat-STRIP_UFA*hw);
 		const ddx=b.x-a.x, ddz=b.z-a.z, len=Math.hypot(ddx,ddz);
-		const w=new THREE.Mesh(new THREE.BoxGeometry(len,0.08,0.09),wireMat); w.position.set((a.x+b.x)/2,dy+0.12,(a.z+b.z)/2); w.rotation.y=Math.atan2(-ddz,ddx); w.castShadow=true; scene.add(w);
+		const w=new THREE.Mesh(new THREE.BoxGeometry(len,0.05,0.05),wireMat); w.position.set((a.x+b.x)/2,dy+0.10,(a.z+b.z)/2); w.rotation.y=Math.atan2(-ddz,ddx); w.castShadow=true; scene.add(w);   // Mk 7 cross-deck pendant: 35 mm wire rope ~10 cm off the deck on its supports (drawn a touch fat for visibility)
 		wires.push({ax:a.x,az:a.z,bx:b.x,bz:b.z,mesh:w});
-		for(const e of [a,b]){ const s=new THREE.Mesh(new THREE.BoxGeometry(0.28,0.16,0.28),sheaveMat); s.position.set(e.x,dy+0.1,e.z); scene.add(s); }   // deck-edge sheaves
+		const wyaw=Math.atan2(-ddz,ddx);
+		for(const e of [a,b]){ const s=new THREE.Mesh(new THREE.BoxGeometry(1.3,0.24,0.5),sheaveMat); s.position.set(e.x,dy+0.12,e.z); s.rotation.y=wyaw; scene.add(s); }   // deck-edge fairing housings over the sheave pockets (the real 60-90 cm sheave wheels live BELOW deck) — long low deck-grey ramps aligned with the cable run
 	}
-	const vsegs=[0,1].map(()=>{ const m=new THREE.Mesh(new THREE.BoxGeometry(1,0.08,0.09),wireMat); m.visible=false; m.castShadow=true; scene.add(m); return m; });   // the caught wire, dragged into a V by the hook
+	const vsegs=[0,1].map(()=>{ const m=new THREE.Mesh(new THREE.BoxGeometry(1,0.05,0.05),wireMat); m.visible=false; m.castShadow=true; scene.add(m); return m; });   // the caught wire, dragged into a V by the hook
 	// --- catapult shuttles: the towing spreader standing proud of each track slot; the launch bar drops onto it.
 	// Real C-13 shuttle: a low greased-steel block with a raised towing HORN at the rear that the bar hooks
 	// over — near-black worn metal, never painted ---
@@ -1751,19 +1754,21 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const mt=(deck_grid&&deck_grid.mast)||{x:0,y:-1e9,z:0}; let my=mt.y,mx=mt.x,mz=mt.z;   // the island mast top, recorded during the grid build (the deck grid itself excludes the island, so a deck_y_at scan can never find the mast)
 	if(my>dy+3){ night_lights.push(glow_points([mx,my+1.2,mz],0xffffff,6));               // white masthead just above the mast top
 		night_lights.push(glow_points([mx,my+0.4,mz],0xff2418,5)); }                       // red obstruction light just below it
-	// ISLAND DECK FLOODS: the warm sodium wash real carriers run during flight ops. Two spots
-	// from the island top, one over the landing area, one over the bow cats; halos so the
-	// sources read from a distance. Gated with ops_lights (deck active), not all night.
-	if(my>dy+3){ const mkflood=(tx,tz)=>{ const s2=new THREE.SpotLight(0xffd9a0,320,260,0.62,0.65,1); s2.castShadow=false;
-			s2.position.set(mx,my-1,mz); s2.target.position.set(tx,dy,tz); scene.add(s2); scene.add(s2.target); s2.visible=false; return s2; };
+	// ISLAND DECK FLOODS: one glare per AUTHORED lamp fitting — the model's yellow grid arrays
+	// (material_43) clustered at 0.9 m resolution = 68 individual fittings; wash spots shine
+	// from the two big banks. Day geometry and night light are the same objects.
+	if(my>dy+3){ const FIX=[[-68.0,29.1,16.6],[-67.9,34.8,16.6],[-62.2,28.7,16.4],[-59.9,28.3,7.5],[-59.6,28.4,8.0],[-59.3,28.4,5.2],[-58.9,28.2,5.2],[-58.5,28.1,8.5],[-58.0,28.1,8.6],[-57.9,28.1,5.3],[-57.8,28.1,8.2],[-57.4,28.0,7.5],[-55.8,27.9,7.4],[-55.6,27.9,7.9],[-55.2,27.7,8.5],[-55.1,27.8,8.5],[-54.7,27.7,5.6],[-54.1,27.7,5.6],[-53.8,27.7,8.1],[-53.4,27.6,7.9],[-52.7,28.4,19.3],[-52.7,32.1,19.3],[-50.0,27.4,10.9],[-48.6,34.4,5.9],[-45.3,37.5,16.6],[-44.8,23.9,18.4],[-44.4,24.1,18.4],[-44.3,34.4,5.9],[-43.7,23.9,18.4],[-43.1,23.9,18.9],[-42.8,24.1,18.9],[-42.1,24.1,18.9],[-41.5,23.9,18.9],[-41.1,24.0,18.7],[-40.5,24.1,18.9],[-39.8,23.9,19.0],[-39.4,24.2,18.9],[-39.0,24.3,18.4],[-39.0,24.6,19.0],[-39.0,33.6,18.6],[-38.6,24.6,18.9],[-38.6,25.0,18.4],[-38.6,26.0,18.9],[-38.6,27.0,19.0],[-38.6,27.5,19.0],[-38.6,28.4,18.9],[-38.6,29.5,18.9],[-38.6,29.9,18.9],[-38.4,25.3,19.0],[-38.4,26.3,18.9],[-38.4,27.8,18.9],[-38.4,28.7,19.0],[-38.3,28.1,15.7],[-38.3,31.7,15.7],[-38.3,32.1,15.7],[-38.2,29.2,15.9],[-38.2,30.6,15.9],[-38.2,33.1,15.9],[-38.2,33.9,15.9],[-38.1,28.4,15.6],[-38.1,28.7,15.6],[-38.1,29.7,15.6],[-38.1,32.6,15.6],[-38.1,34.1,15.6],[-38.0,29.3,15.7],[-38.0,30.1,15.8],[-38.0,32.1,15.7],[-38.0,33.2,15.8]];
+		const fixtures=[];
+		for(const [f,l,h] of FIX){ const q=carrier_world(f,l); fixtures.push(q.x, dy+h, q.z); }
+		const mk=(f,l,h,tx,tz)=>{ const q=carrier_world(f,l); const s2=new THREE.SpotLight(0xffd9a0,320,260,0.62,0.65,1); s2.castShadow=false;
+			s2.position.set(q.x,dy+h,q.z); s2.target.position.set(tx,dy,tz); scene.add(s2); scene.add(s2.target); s2.visible=false; return s2; };
 		const ld=carrier_world(-80,strip_lat(-80)), bw=carrier_world(30,2);
-		flood_lights.push(mkflood(ld.x,ld.z), mkflood(bw.x,bw.z));
-		const lamps=[];
-		for(const t of [ld,bw]){ const ddx=t.x-mx, ddz=t.z-mz, L=Math.hypot(ddx,ddz)||1;
-			lamps.push(mx+ddx/L*2.5, my-1, mz+ddz/L*2.5); }   // each lamp hangs 2.5 m off the mast TOWARD its flood target — centred on the mast the depth-tested sprite hid behind the pole itself
-		{ const lg=new THREE.BufferGeometry(); lg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(lamps),3));
-			const lp=new THREE.Points(lg,new THREE.PointsMaterial({size:90,map:light_dot,color:0xffd9a0,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:false}));   // proper glare: 30px read as one more mast dot
-			lp.frustumCulled=false; lp.renderOrder=998; scene.add(lp); ops_lights.push(lp); } }   // flood GLARE sprites: constant pixels AND no depth test — the broad island superstructure occluded every depth-tested placement near the mast; a source this bright blooms through structure anyway
+		flood_lights.push(mk(-56.6,28.0,5.9,ld.x,ld.z), mk(-42.8,31.1,12.0,bw.x,bw.z));
+		const mkpts=(size,color)=>{ const lg=new THREE.BufferGeometry(); lg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(fixtures),3));
+			const lp=new THREE.Points(lg,new THREE.PointsMaterial({size,map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:false}));
+			lp.frustumCulled=false; lp.renderOrder=998; scene.add(lp); ops_lights.push(lp); };
+		mkpts(46,0x4a3a20);
+		mkpts(13,0xfff2d2); }   // the white-hot lamp core   // flood GLARE sprites: constant pixels AND no depth test — the broad island superstructure occluded every depth-tested placement near the mast; a source this bright blooms through structure anyway
 }
 const HOOK_DROP=4, HOOK_AFT=9;   // the tailhook rides ~4 m below and ~9 m aft of the pilot's eye; the meatball flies the HOOK onto the wire, so the eye rides well above the 3.5° glideslope
 function ols_dev(p,o){   // hook's deviation off the 3.5° glideslope to the touchdown: along/lateral/distance + dev (+ high, − low)
@@ -2408,6 +2413,34 @@ function fly_player(dt){
 }
 function fly_bandit(dt){
 	if(bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5)) return fly_bandit_stricken(dt);
+	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&!fly_bandit.tried){   // lazy: the core loads async and start_mission races it — arm the brain on the first frame the core is ready
+		fly_bandit.tried=true;
+		bandit_brain=bandit_init({ level: cfg.bandit||"veteran", seed: 7, wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night" });
+		if(bandit_brain) bandit_spawn(bandit.pos, {x:bandit.fwd.x*bandit.speed, y:0, z:bandit.fwd.z*bandit.speed});
+	}
+	if(bandit_brain){   // the wasm brain: mirror the player in, step the second core, read the bandit back (#125 phase 2)
+		bandit_mirror(flight_get(), input.guns, crash_t<=0);
+		const shots=[]; for(const m of missiles){ if(m.active&&m.target===bandit&&shots.length<36) shots.push(m.px,m.py,m.pz,m.vx,m.vy,m.vz); }
+		bandit_menace(shots);
+		const step=bandit_step();
+		if(step){
+			const w=step.state;
+
+			bandit.pos.set(w[0],w[1],w[2]);
+			bandit.velx=w[3]; bandit.vely=w[4]; bandit.velz=w[5];
+			bandit.speed=Math.hypot(w[3],w[4],w[5]);
+			_q.set(w[7],w[8],w[9],w[6]);   // words are W,X,Y,Z; three.js wants x,y,z,w
+			bandit.fwd.set(1,0,0).applyQuaternion(_q);
+			bandit.group.quaternion.copy(_q);
+			bandit.group.position.copy(bandit.pos);
+			if(bandit.merging&&(wrap_distance(bandit.pos,ownship.pos)<500||bandit.fwd.dot(_v.subVectors(ownship.pos,bandit.pos))<0)) bandit.merging=false;   // keep the merge flag honest for the SP weapons hold
+			if(step.flare&&cfg.flares) dispense_flares(bandit);
+			const fired=fire_gun(bandit,ownship,"bandit",dt,step.fire);
+			if(fired>0){ const verdict=battle_burst(-1,battle_pose(bandit),null,fired,1,battle_tick);
+				if(verdict.hits>0){ hit_flash=Math.min(1,hit_flash+0.25*verdict.hits); audio_hit(verdict.hits); } }
+			return;
+		}
+	}
 	bandit.break_t-=dt;
 	const to_own=ownship.pos.clone().sub(bandit.pos); const rng=to_own.length();
 	if(bandit.merging){   // joust run-in: pure pursuit straight at the player — no weaving — until the pass, then the fight is on
@@ -2616,7 +2649,9 @@ function reset_ownship(){
 	{ const hk=(st==="landing")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }   // hook down for a carrier-landing start, else stowed (deploy manually with H)
 	flight_push();   // deliver the spawn to the flight core (no-op until it boots; the boot pushes this pose itself)
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
-	if(st==="joust"){ bandit.pos.set(joust_side*1.5*NM,4572,0); bandit.fwd.set(-joust_side,0,0); bandit.speed=220; bandit.merging=true; }   // merging: the bandit flies straight at the player until the pass, so the merge can be timed   // the other end of the merge, same airspeed (equal TAS is the fair condition once wind exists)
+	if(st==="joust"){ bandit.pos.set(joust_side*1.5*NM,4572,0); bandit.fwd.set(-joust_side,0,0); bandit.speed=220; bandit.merging=true;   // merging: the bandit flies straight at the player until the pass, so the merge can be timed   // the other end of the merge, same airspeed (equal TAS is the fair condition once wind exists)
+		bandit_brain=false; fly_bandit.tried=false;   // the wasm brain arms lazily in fly_bandit once the core is ready (#125 phase 2)
+	}
 	else { bandit.pos.set(3000,2400,-1000); bandit.fwd.set(-0.3,0,1).normalize(); bandit.speed=195; bandit.merging=false; }   // ground/deck starts: the bandit orbits near Midway as before
 	bandit.break_t=0;
 }
