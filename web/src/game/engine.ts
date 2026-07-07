@@ -1015,6 +1015,7 @@ function build_deck_grid(grp,deckY){
 	const W=Math.ceil((maxFa-minFa)/cell), H=Math.ceil((maxLat-minLat)/cell);
 	const data=new Float32Array(W*H).fill(NaN);
 	const a=new THREE.Vector3(), b=new THREE.Vector3(), c=new THREE.Vector3();
+	const mast={x:0,y:-1e9,z:0};   // the island mast top — found here because the deck grid EXCLUDES island geometry by design, so the old deck_y_at height scan can never see it (the masthead/floods silently vanished when the grid replaced raycasts)
 	grp.traverse(o=>{ if(!o.isMesh||!o.geometry.attributes.position) return;
 		const p=o.geometry.attributes.position, idx=o.geometry.index;
 		const n=idx?idx.count:p.count;
@@ -1022,6 +1023,8 @@ function build_deck_grid(grp,deckY){
 			a.fromBufferAttribute(p, idx?idx.getX(i):i).applyMatrix4(o.matrixWorld);
 			b.fromBufferAttribute(p, idx?idx.getX(i+1):i+1).applyMatrix4(o.matrixWorld);
 			c.fromBufferAttribute(p, idx?idx.getX(i+2):i+2).applyMatrix4(o.matrixWorld);
+			for(const v2 of [a,b,c]){ if(v2.y>mast.y){ const lf=carrier_fore_aft(v2.x,v2.z), ll=carrier_lateral(v2.x,v2.z);
+				if(lf>-105&&lf<65&&ll>8&&ll<46){ mast.x=v2.x; mast.y=v2.y; mast.z=v2.z; } } }
 			if(Math.abs(a.y-deckY)>3.5||Math.abs(b.y-deckY)>3.5||Math.abs(c.y-deckY)>3.5) continue;   // deck band only: the island must NOT write cells, or cats near it would read roof heights
 			const fa=[carrier_fore_aft(a.x,a.z),carrier_fore_aft(b.x,b.z),carrier_fore_aft(c.x,c.z)];
 			const la=[carrier_lateral(a.x,a.z),carrier_lateral(b.x,b.z),carrier_lateral(c.x,c.z)];
@@ -1037,7 +1040,7 @@ function build_deck_grid(grp,deckY){
 				if(!(data[k]>=y)) data[k]=y;   // top surface wins (NaN-safe)
 			}
 		} });
-	deck_grid={ data, W, H, cell, minFa, minLat };
+	deck_grid={ data, W, H, cell, minFa, minLat, mast };
 }
 function deck_y_at(grp,x,z,fallback){
 	if(deck_grid){ const g=deck_grid, gi=Math.floor((carrier_fore_aft(x,z)-g.minFa)/g.cell), gj=Math.floor((carrier_lateral(x,z)-g.minLat)/g.cell);
@@ -1644,7 +1647,7 @@ function update_papi(p){ const flash=(performance.now()%520)<90;   // REIL: ~2 H
 	const dark=cfg.tod!=="day";                                     // edge/threshold/REIL lit only when dark; PAPI is always on
 	for(const m of night_lights) m.visible=dark;
 	{ const dx=p.x-CARRIER.x, dz=p.z-CARRIER.z, d2=dx*dx+dz*dz;   // carrier flight-ops gate: deck working = lights up; otherwise the ship stays darkened
-		const ops=dark && ((d2<400*400 && (ownship.squish??0)>0.1) || (d2<5000*5000 && (ownship.gear??1)<0.5));
+		const ops=dark && ((d2<400*400 && (ownship.squish??0)>0.1) || (d2<6000*6000 && (ownship.gear??1)<0.5));   // 6 km: the landing start spawns at 3 NM (5.6 km) — the deck lights up as you settle onto the approach, comfortably before the ball call
 		for(const m of ops_lights) m.visible=ops;
 		for(const s2 of flood_lights) s2.visible=ops; }
 	const bph=(performance.now()%3000)<1500;                        // aerodrome beacon: white / green alternating ~1.5 s each
@@ -1733,7 +1736,7 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 		if(pts.length) ops_lights.push(glow_points(pts,0xffb060,3)); }
 	for(const [dir,col] of [[-1,0xff2418],[1,0x24ff2a]]){ const e=edge_lat(-5,dir); if(e!==null){ const d=dh(-5,e); night_lights.push(glow_points([d.x,d.y+1.2,d.z],col,5)); } }   // red (port) / green (starboard) nav lights on the beam edges
 	{ const st2=dh(-160,0); if(st2.y>-1e8) night_lights.push(glow_points([st2.x,st2.y+1.5,st2.z],0xffffff,5)); }   // white sternlight on the fantail — completes the COLREGS steaming set
-	let my=-1e9,mx=0,mz=0; for(let f=-100;f<=60;f+=5) for(let l=10;l<=45;l+=3){ const d=dh(f,l); if(d.y>my){ my=d.y; mx=d.x; mz=d.z; } }   // tallest point over the starboard side = the island mast
+	const mt=(deck_grid&&deck_grid.mast)||{x:0,y:-1e9,z:0}; let my=mt.y,mx=mt.x,mz=mt.z;   // the island mast top, recorded during the grid build (the deck grid itself excludes the island, so a deck_y_at scan can never find the mast)
 	if(my>dy+3){ night_lights.push(glow_points([mx,my+1.2,mz],0xffffff,6));               // white masthead just above the mast top
 		night_lights.push(glow_points([mx,my+0.4,mz],0xff2418,5)); }                       // red obstruction light just below it
 	// ISLAND DECK FLOODS: the warm sodium wash real carriers run during flight ops. Two spots
@@ -1757,7 +1760,8 @@ function update_ols(p){   // 3D ball on the bracket, driven by the hook's deviat
 	const low=s.dev<-0.7;
 	const pos=o.ballPts.geometry.attributes.position; pos.setY(0, o.datumY+THREE.MathUtils.clamp(s.dev/0.8,-1,1)*o.travel); pos.needsUpdate=true;
 	const col=o.ballPts.geometry.attributes.color; col.setXYZ(0, 1, low?0.1:0.62, 0); col.needsUpdate=true;
-	o.wavePts.visible = low && (performance.now()%400)<200;
+	if(low && !o.low) o.wavet=performance.now(); o.low=low;   // phase-anchor the red flash to its onset too
+	o.wavePts.visible = low && ((performance.now()-(o.wavet||0))%400)<200;
 }
 function seg_between(mesh,ax,az,bx,bz,y){ const dx=bx-ax, dz=bz-az, len=Math.hypot(dx,dz)||0.001; mesh.position.set((ax+bx)/2,y,(az+bz)/2); mesh.rotation.y=Math.atan2(-dz,dx); mesh.scale.x=len; }
 function seg_cross(ax,az,bx,bz,cx,cz,dx,dz){   // do the x-z segments A→B and C→D intersect? (orientation of the endpoints)
@@ -2500,14 +2504,19 @@ function step_world(dt){ sim_time+=dt;
 	tr_pts.visible=cfg.tracers; fl_pts.visible=cfg.flares;
 	update_anim(dt);
 	update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights(); update_shuttles();
-	if(carrier_ols && !ownship.trapped && (ownship.hook??0)>0.5){   // LSO watch: accumulate glideslope/lineup deviation through the in-close portion of a pass, and call the waveoff
+	if(carrier_ols && !ownship.trapped && ((ownship.hook??0)>0.5 || (ownship.gear??1)<0.5)){   // LSO watch: accumulate glideslope/lineup deviation through the in-close portion of a pass, and call the waveoff — the LSO waves off ANY unlandable pass, not just a low one
 		const s=ols_dev(ownship.pos,carrier_ols);
 		ownship.waving=false;   // current waveoff call (drives the flashing banner); waved is sticky for the pass grade
 		if(s.along>2500 || s.along<0){ ownship.pass={gs:0,az:0,n:0}; ownship.waved=false; }   // outside the pass (or past the ship) → fresh slate for the next one
 		else if(!ownship.grounded && s.dist<1852 && s.along>40){
-			const p=ownship.pass||(ownship.pass={gs:0,az:0,n:0});
-			p.gs+=Math.abs(s.dev); p.az+=Math.abs(Math.atan2(s.lat,Math.max(s.along,1)))*180/Math.PI; p.n++;
-			if(s.dev<-0.7 && s.dist>250){ ownship.waved=true; ownship.waving=true; }   // dangerously low in close — the LSO waves it off (same threshold as the OLS waveoff lights); inside ~250 m the call is over (and hook-geometry makes a good pass read falsely low there)
+			if((ownship.hook??0)>0.5){ const p=ownship.pass||(ownship.pass={gs:0,az:0,n:0});
+				p.gs+=Math.abs(s.dev); p.az+=Math.abs(Math.atan2(s.lat,Math.max(s.along,1)))*180/Math.PI; p.n++; }
+			const lineup=Math.abs(Math.atan2(s.lat,Math.max(s.along,1)))*180/Math.PI;
+			const wave=(s.dev<-0.7 && s.dist>250)   // dangerously low in close (matches the OLS waveoff lights); inside ~250 m the call is over (hook geometry reads falsely low there)
+				|| (lineup>6 && s.along>250)          // gross lineup deviation — drifting for the foul line or the island
+				|| (s.dev>1.8 && s.along<800 && s.along>250)   // way high in close: unlandable, go around
+				|| ((ownship.hook??0)<0.5 && s.along<1200);    // hook up on an approach — a mandatory wave-off on any deck
+			if(wave){ ownship.waved=true; if(!ownship.waving) ownship.wavet=performance.now(); ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
 		}
 	} else ownship.waving=false;
 }
@@ -2697,7 +2706,7 @@ function draw_hud(dt){
 	if(crash_t>0){ hctx.textAlign="center"; hctx.fillStyle="#ff5040"; hctx.font="bold 36px monospace"; hctx.fillText(translate("CRASHED"),cx,cy-60); return; }
 	if(crash_t<=0 && ownship.pass_t>0){ ownship.pass_t-=dt;   // LSO debrief: grade + wire (or BOLTER), held for a few seconds after the pass
 		hud_message(ownship.grade==="BOLTER"?translate("BOLTER"):translate(ownship.grade)+", "+translate(ownship.wire+" WIRE")); }
-	else if(crash_t<=0 && ownship.waving && (performance.now()%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call while dangerously low in close (matches the OLS waveoff lights)
+	else if(crash_t<=0 && ownship.waving && ((performance.now()-(ownship.wavet||0))%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call, blink phase anchored to the call's onset
 	if(test_active){ hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="13px monospace"; hctx.fillText("TEST  "+test_active.name, 14, 28); }
 	if(deck_edit && carrier_model){   // carrier-frame position + centreline — only in the dev deck-alignment mode (key 0)
 		hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="14px monospace";
