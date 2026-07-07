@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "Sila semak sambungan internet anda dan cuba lagi."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:186
+#: src/components/Multiplayer.tsx:187
 msgid "{0} flying"
 msgstr "{0} sedang terbang"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:282
 msgid "{0}/{1} players"
 msgstr "{0}/{1} pemain"
 
-#: src/components/Multiplayer.tsx:129
+#: src/components/Multiplayer.tsx:130
 msgid "{name}'s match"
 msgstr "Perlawanan {name}"
 
@@ -219,6 +219,10 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Tingkatkan minat"
 
+#: src/components/Multiplayer.tsx:248
+msgid "Bots"
+msgstr "Bot"
+
 #: src/components/GameCanvas.tsx:125
 msgid "brakes"
 msgstr "brek"
@@ -231,7 +235,7 @@ msgstr "Butang {i}"
 msgid "Buttons"
 msgstr "Butang"
 
-#: src/components/Multiplayer.tsx:171
+#: src/components/Multiplayer.tsx:172
 msgid "Callsign"
 msgstr "Tanda panggilan"
 
@@ -305,7 +309,7 @@ msgstr "Pilih bahasa"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:231
 msgid "Clear"
 msgstr "Kosongkan"
 
@@ -384,7 +388,7 @@ msgstr "Padat"
 msgid "Confirm"
 msgstr "Sahkan"
 
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:190
 msgid "Connecting…"
 msgstr "Menyambung…"
 
@@ -412,7 +416,7 @@ msgstr "Teruskan dengan {label}"
 msgid "Copy"
 msgstr "Salin"
 
-#: src/components/Multiplayer.tsx:141
+#: src/components/Multiplayer.tsx:142
 msgid "Could not create the match"
 msgstr "Tidak dapat mencipta perlawanan"
 
@@ -436,11 +440,11 @@ msgstr "Tidak dapat mengesahkan dengan akaun itu. Sila cuba lagi."
 msgid "CRASHED"
 msgstr "TERHEMPAS"
 
-#: src/components/Multiplayer.tsx:246
+#: src/components/Multiplayer.tsx:263
 msgid "Create and fly"
 msgstr "Cipta dan terbang"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:205
 msgid "Create match"
 msgstr "Cipta perlawanan"
 
@@ -450,7 +454,7 @@ msgid "Credits"
 msgstr "Kredit"
 
 #: src/components/MissionSetup.tsx:933
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Cumulus"
 msgstr "Kumulus"
 
@@ -485,7 +489,7 @@ msgid "Data conflict"
 msgstr "Konflik data"
 
 #: src/components/MissionSetup.tsx:921
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:227
 msgid "Day"
 msgstr "Siang"
 
@@ -591,7 +595,7 @@ msgstr "TERLONTAR KELUAR"
 msgid "Email code"
 msgstr "Kod e-mel"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:281
 msgid "empty"
 msgstr "kosong"
 
@@ -656,7 +660,7 @@ msgstr "SEDERHANA"
 
 #: src/components/GameCanvas.tsx:30
 msgid "FIGHT'S ON"
-msgstr ""
+msgstr "PERTARUNGAN BERMULA"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -793,7 +797,7 @@ msgid "High"
 msgstr "Tinggi"
 
 #: src/components/MissionSetup.tsx:934
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:233
 msgid "High stratus"
 msgstr "Stratus tinggi"
 
@@ -840,7 +844,7 @@ msgstr "Kod pengesahan tidak sah"
 msgid "Invert pitch"
 msgstr "Songsangkan pitch"
 
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:295
 msgid "Join"
 msgstr "Sertai"
 
@@ -848,11 +852,11 @@ msgstr "Sertai"
 msgid "JOINED"
 msgstr "MENYERTAI"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Joust"
 msgstr "Joust"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, jatuhkan lawan dahulu untuk menang"
 
@@ -994,7 +998,7 @@ msgid "Low"
 msgstr "Rendah"
 
 #: src/components/MissionSetup.tsx:935
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:234
 msgid "Low stratus"
 msgstr "Stratus rendah"
 
@@ -1020,7 +1024,7 @@ msgstr "Tanda semua sebagai dibaca"
 msgid "Master"
 msgstr "Utama"
 
-#: src/components/Multiplayer.tsx:214
+#: src/components/Multiplayer.tsx:215
 msgid "Match type"
 msgstr "Jenis perlawanan"
 
@@ -1058,7 +1062,7 @@ msgstr "Peluru berpandu"
 msgid "Missiles"
 msgstr "Peluru berpandu"
 
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:243
 msgid "Missiles allowed"
 msgstr "Misil dibenarkan"
 
@@ -1078,7 +1082,7 @@ msgstr "Gerakkan paksi…"
 msgid "Multiplayer"
 msgstr "Multiplayer"
 
-#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:151
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer memerlukan WebTransport, yang belum disokong oleh pelayar ini."
 
@@ -1097,7 +1101,7 @@ msgid "Next image"
 msgstr "Imej seterusnya"
 
 #: src/components/MissionSetup.tsx:922
-#: src/components/Multiplayer.tsx:227
+#: src/components/Multiplayer.tsx:228
 msgid "Night"
 msgstr "Malam"
 
@@ -1117,7 +1121,7 @@ msgstr "Tiada kumpulan tersedia"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Tiada joystick dikesan — tekan mana-mana butang padanya untuk membangunkannya."
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No open matches — create one."
 msgstr "Tiada perlawanan terbuka — cipta satu."
 
@@ -1146,7 +1150,7 @@ msgstr "Tiada rekod topik lagi — cuba lagi selepas pemberitahuan seterusnya."
 msgid "No users found"
 msgstr "Tiada pengguna dijumpai"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No world server."
 msgstr "Tiada pelayan dunia."
 
@@ -1203,11 +1207,11 @@ msgstr "Di landasan"
 msgid "Oops! Page Not Found!"
 msgstr "Alamak! Halaman Tidak Dijumpai!"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Open"
 msgstr "Buka"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:218
 msgid "Open — anyone may join or leave"
 msgstr "Terbuka — sesiapa boleh menyertai atau keluar"
 
@@ -1280,8 +1284,8 @@ msgstr "Jeda"
 msgid "PAUSED"
 msgstr "DIJEDA"
 
-#: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:176
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:177
 msgid "pilot"
 msgstr "juruterbang"
 
@@ -1384,7 +1388,7 @@ msgstr "Melencongkan ke log masuk."
 msgid "Reduce interest"
 msgstr "Kurangkan minat"
 
-#: src/components/Multiplayer.tsx:194
+#: src/components/Multiplayer.tsx:195
 msgid "Refresh"
 msgstr "Muat semula"
 
@@ -1914,7 +1918,7 @@ msgstr "Paparan"
 
 #: src/components/GameCanvas.tsx:29
 msgid "WAITING FOR OPPONENT"
-msgstr ""
+msgstr "MENUNGGU LAWAN"
 
 #: src/components/GameCanvas.tsx:44
 msgid "WAVE OFF"
@@ -1929,7 +1933,7 @@ msgid "Weapons"
 msgstr "Senjata"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:224
 msgid "Weather"
 msgstr "Cuaca"
 
@@ -1954,11 +1958,11 @@ msgstr "Lipatan sayap"
 msgid "WINS"
 msgstr "MENANG"
 
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:161
 msgid "World server"
 msgstr "Pelayan dunia"
 
-#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:99
 msgid "World server not reachable"
 msgstr "Pelayan dunia tidak dapat dihubungi"
 

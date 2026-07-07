@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "Интернет холболтоо шалгаад дахин оролдоно уу."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:186
+#: src/components/Multiplayer.tsx:187
 msgid "{0} flying"
 msgstr "{0} нисэж байна"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:282
 msgid "{0}/{1} players"
 msgstr "{0}/{1} тоглогч"
 
-#: src/components/Multiplayer.tsx:129
+#: src/components/Multiplayer.tsx:130
 msgid "{name}'s match"
 msgstr "{name}-ийн тоглолт"
 
@@ -219,6 +219,10 @@ msgstr "БОЛТЕР"
 msgid "Boost interest"
 msgstr "Сонирхлыг идэвхжүүлэх"
 
+#: src/components/Multiplayer.tsx:248
+msgid "Bots"
+msgstr "Ботууд"
+
 #: src/components/GameCanvas.tsx:125
 msgid "brakes"
 msgstr "гальм"
@@ -231,7 +235,7 @@ msgstr "Товч {i}"
 msgid "Buttons"
 msgstr "Товчнууд"
 
-#: src/components/Multiplayer.tsx:171
+#: src/components/Multiplayer.tsx:172
 msgid "Callsign"
 msgstr "Дуудлагын нэр"
 
@@ -305,7 +309,7 @@ msgstr "Хэл сонгох"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:231
 msgid "Clear"
 msgstr "Цэвэрлэх"
 
@@ -384,7 +388,7 @@ msgstr "Хумисан"
 msgid "Confirm"
 msgstr "Баталгаажуулах"
 
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:190
 msgid "Connecting…"
 msgstr "Холбогдож байна…"
 
@@ -412,7 +416,7 @@ msgstr "{label}-р үргэлжлүүлэх"
 msgid "Copy"
 msgstr "Хуулах"
 
-#: src/components/Multiplayer.tsx:141
+#: src/components/Multiplayer.tsx:142
 msgid "Could not create the match"
 msgstr "Тоглолт үүсгэж чадсангүй"
 
@@ -436,11 +440,11 @@ msgstr "Тэр бүртгэлээр баталгаажуулж чадсангү�
 msgid "CRASHED"
 msgstr "СҮЙРЭВ"
 
-#: src/components/Multiplayer.tsx:246
+#: src/components/Multiplayer.tsx:263
 msgid "Create and fly"
 msgstr "Үүсгээд нисэх"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:205
 msgid "Create match"
 msgstr "Тоглолт үүсгэх"
 
@@ -450,7 +454,7 @@ msgid "Credits"
 msgstr "Талархал"
 
 #: src/components/MissionSetup.tsx:933
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Cumulus"
 msgstr "Овоохой үүл"
 
@@ -485,7 +489,7 @@ msgid "Data conflict"
 msgstr "Өгөгдлийн зөрчил"
 
 #: src/components/MissionSetup.tsx:921
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:227
 msgid "Day"
 msgstr "Өдөр"
 
@@ -591,7 +595,7 @@ msgstr "КАТАПУЛЬТЛАВ"
 msgid "Email code"
 msgstr "Имэйл код"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:281
 msgid "empty"
 msgstr "хоосон"
 
@@ -656,7 +660,7 @@ msgstr "ДУНД"
 
 #: src/components/GameCanvas.tsx:30
 msgid "FIGHT'S ON"
-msgstr ""
+msgstr "ТУЛААН ЭХЭЛЛЭЭ"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -793,7 +797,7 @@ msgid "High"
 msgstr "Өндөр"
 
 #: src/components/MissionSetup.tsx:934
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:233
 msgid "High stratus"
 msgstr "Өндөр давхарга үүл"
 
@@ -840,7 +844,7 @@ msgstr "Баталгаажуулах код хүчингүй"
 msgid "Invert pitch"
 msgstr "Тангажийг урвуулах"
 
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:295
 msgid "Join"
 msgstr "Нэгдэх"
 
@@ -848,11 +852,11 @@ msgstr "Нэгдэх"
 msgid "JOINED"
 msgstr "НЭГДЛЭЭ"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Joust"
 msgstr "Дуэль"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Joust — 1v1, first kill wins"
 msgstr "Тулаан — 1v1, түрүүлж унагасан нь ялна"
 
@@ -994,7 +998,7 @@ msgid "Low"
 msgstr "Бага"
 
 #: src/components/MissionSetup.tsx:935
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:234
 msgid "Low stratus"
 msgstr "Нам давхарга үүл"
 
@@ -1020,7 +1024,7 @@ msgstr "Бүгдийг уншсан гэж тэмдэглэх"
 msgid "Master"
 msgstr "Ерөнхий"
 
-#: src/components/Multiplayer.tsx:214
+#: src/components/Multiplayer.tsx:215
 msgid "Match type"
 msgstr "Тоглолтын төрөл"
 
@@ -1058,7 +1062,7 @@ msgstr "Пуужин"
 msgid "Missiles"
 msgstr "Пуужингууд"
 
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:243
 msgid "Missiles allowed"
 msgstr "Пуужин зөвшөөрөгдсөн"
 
@@ -1078,7 +1082,7 @@ msgstr "Тэнхлэгийг хөдөлгөнө үү…"
 msgid "Multiplayer"
 msgstr "Мультиплеер"
 
-#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:151
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Мультиплеерт WebTransport шаардлагатай бөгөөд энэ хөтөч үүнийг одоогоор дэмждэггүй."
 
@@ -1097,7 +1101,7 @@ msgid "Next image"
 msgstr "Дараагийн зураг"
 
 #: src/components/MissionSetup.tsx:922
-#: src/components/Multiplayer.tsx:227
+#: src/components/Multiplayer.tsx:228
 msgid "Night"
 msgstr "Шөнө"
 
@@ -1117,7 +1121,7 @@ msgstr "Боломжит групп байхгүй"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Жойстик илрээгүй — сэрээхийн тулд түүний дурын товчийг дарна уу."
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No open matches — create one."
 msgstr "Нээлттэй тоглолт алга — нэгийг үүсгээрэй."
 
@@ -1146,7 +1150,7 @@ msgstr "Сэдвийн бичлэг алга — дараагийн мэдэгд
 msgid "No users found"
 msgstr "Хэрэглэгч олдсонгүй"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No world server."
 msgstr "Ертөнцийн сервер алга."
 
@@ -1203,11 +1207,11 @@ msgstr "Хөөрөлтийн зам дээр"
 msgid "Oops! Page Not Found!"
 msgstr "Уучлаарай! Хуудас олдсонгүй!"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Open"
 msgstr "Нээх"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:218
 msgid "Open — anyone may join or leave"
 msgstr "Нээлттэй — хэн ч нэгдэж эсвэл гарч болно"
 
@@ -1280,8 +1284,8 @@ msgstr "Түр зогсоох"
 msgid "PAUSED"
 msgstr "ТҮР ЗОГССОН"
 
-#: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:176
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:177
 msgid "pilot"
 msgstr "нисгэгч"
 
@@ -1384,7 +1388,7 @@ msgstr "Нэвтрэх рүү дахин чиглүүлж байна."
 msgid "Reduce interest"
 msgstr "Хүүг бууруулах"
 
-#: src/components/Multiplayer.tsx:194
+#: src/components/Multiplayer.tsx:195
 msgid "Refresh"
 msgstr "Сэргээх"
 
@@ -1914,7 +1918,7 @@ msgstr "Үзлэгүүд"
 
 #: src/components/GameCanvas.tsx:29
 msgid "WAITING FOR OPPONENT"
-msgstr ""
+msgstr "ӨРСӨЛДӨГЧИЙГ ХҮЛЭЭЖ БАЙНА"
 
 #: src/components/GameCanvas.tsx:44
 msgid "WAVE OFF"
@@ -1929,7 +1933,7 @@ msgid "Weapons"
 msgstr "Зэвсэг"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:224
 msgid "Weather"
 msgstr "Цаг агаар"
 
@@ -1954,11 +1958,11 @@ msgstr "Далавч эвхэх"
 msgid "WINS"
 msgstr "ЯЛЛАА"
 
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:161
 msgid "World server"
 msgstr "Ертөнцийн сервер"
 
-#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:99
 msgid "World server not reachable"
 msgstr "Ертөнцийн серверт холбогдох боломжгүй"
 

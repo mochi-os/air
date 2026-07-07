@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "कृपया अपना इंटरनेट कनेक्शन जाँचें और फिर से प्रयास करें।"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:186
+#: src/components/Multiplayer.tsx:187
 msgid "{0} flying"
 msgstr "{0} उड़ान में"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:282
 msgid "{0}/{1} players"
 msgstr "{0}/{1} खिलाड़ी"
 
-#: src/components/Multiplayer.tsx:129
+#: src/components/Multiplayer.tsx:130
 msgid "{name}'s match"
 msgstr "{name} का मैच"
 
@@ -219,6 +219,10 @@ msgstr "बोल्टर"
 msgid "Boost interest"
 msgstr "रुचि बढ़ाएँ"
 
+#: src/components/Multiplayer.tsx:248
+msgid "Bots"
+msgstr "बॉट"
+
 #: src/components/GameCanvas.tsx:125
 msgid "brakes"
 msgstr "ब्रेक"
@@ -231,7 +235,7 @@ msgstr "बटन {i}"
 msgid "Buttons"
 msgstr "बटन"
 
-#: src/components/Multiplayer.tsx:171
+#: src/components/Multiplayer.tsx:172
 msgid "Callsign"
 msgstr "कॉलसाइन"
 
@@ -305,7 +309,7 @@ msgstr "भाषा चुनें"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:231
 msgid "Clear"
 msgstr "साफ़ करें"
 
@@ -384,7 +388,7 @@ msgstr "कॉम्पैक्ट"
 msgid "Confirm"
 msgstr "पुष्टि करें"
 
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:190
 msgid "Connecting…"
 msgstr "कनेक्ट हो रहा है…"
 
@@ -412,7 +416,7 @@ msgstr "{label} के साथ जारी रखें"
 msgid "Copy"
 msgstr "कॉपी करें"
 
-#: src/components/Multiplayer.tsx:141
+#: src/components/Multiplayer.tsx:142
 msgid "Could not create the match"
 msgstr "मैच नहीं बनाया जा सका"
 
@@ -436,11 +440,11 @@ msgstr "उस खाते से सत्यापन नहीं हो स
 msgid "CRASHED"
 msgstr "दुर्घटनाग्रस्त"
 
-#: src/components/Multiplayer.tsx:246
+#: src/components/Multiplayer.tsx:263
 msgid "Create and fly"
 msgstr "बनाएँ और उड़ान भरें"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:205
 msgid "Create match"
 msgstr "मैच बनाएँ"
 
@@ -450,7 +454,7 @@ msgid "Credits"
 msgstr "श्रेय"
 
 #: src/components/MissionSetup.tsx:933
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Cumulus"
 msgstr "क्यूम्यलस"
 
@@ -485,7 +489,7 @@ msgid "Data conflict"
 msgstr "डेटा विरोध"
 
 #: src/components/MissionSetup.tsx:921
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:227
 msgid "Day"
 msgstr "दिन"
 
@@ -591,7 +595,7 @@ msgstr "इजेक्ट हुए"
 msgid "Email code"
 msgstr "ईमेल कोड"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:281
 msgid "empty"
 msgstr "खाली"
 
@@ -656,7 +660,7 @@ msgstr "औसत"
 
 #: src/components/GameCanvas.tsx:30
 msgid "FIGHT'S ON"
-msgstr ""
+msgstr "लड़ाई शुरू"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -793,7 +797,7 @@ msgid "High"
 msgstr "उच्च"
 
 #: src/components/MissionSetup.tsx:934
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:233
 msgid "High stratus"
 msgstr "उच्च स्ट्रेटस"
 
@@ -840,7 +844,7 @@ msgstr "अमान्य सत्यापन कोड"
 msgid "Invert pitch"
 msgstr "पिच उलटें"
 
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:295
 msgid "Join"
 msgstr "शामिल हों"
 
@@ -848,11 +852,11 @@ msgstr "शामिल हों"
 msgid "JOINED"
 msgstr "शामिल हुए"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Joust"
 msgstr "जौस्ट"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Joust — 1v1, first kill wins"
 msgstr "द्वंद्वयुद्ध — 1v1, पहली किल से जीत"
 
@@ -994,7 +998,7 @@ msgid "Low"
 msgstr "निम्न"
 
 #: src/components/MissionSetup.tsx:935
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:234
 msgid "Low stratus"
 msgstr "निम्न स्ट्रेटस"
 
@@ -1020,7 +1024,7 @@ msgstr "सभी को पढ़ा हुआ मार्क करें"
 msgid "Master"
 msgstr "मास्टर"
 
-#: src/components/Multiplayer.tsx:214
+#: src/components/Multiplayer.tsx:215
 msgid "Match type"
 msgstr "मैच का प्रकार"
 
@@ -1058,7 +1062,7 @@ msgstr "मिसाइल"
 msgid "Missiles"
 msgstr "मिसाइलें"
 
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:243
 msgid "Missiles allowed"
 msgstr "मिसाइलों की अनुमति"
 
@@ -1078,7 +1082,7 @@ msgstr "उसे हिलाएँ…"
 msgid "Multiplayer"
 msgstr "मल्टीप्लेयर"
 
-#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:151
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "मल्टीप्लेयर के लिए WebTransport ज़रूरी है, जिसे यह ब्राउज़र अभी सपोर्ट नहीं करता।"
 
@@ -1097,7 +1101,7 @@ msgid "Next image"
 msgstr "अगली इमेज"
 
 #: src/components/MissionSetup.tsx:922
-#: src/components/Multiplayer.tsx:227
+#: src/components/Multiplayer.tsx:228
 msgid "Night"
 msgstr "रात"
 
@@ -1117,7 +1121,7 @@ msgstr "कोई ग्रुप उपलब्ध नहीं"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "कोई जॉयस्टिक नहीं मिला — उसे जगाने के लिए उस पर कोई भी बटन दबाएँ।"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No open matches — create one."
 msgstr "कोई ओपन मैच नहीं — एक बनाएँ।"
 
@@ -1146,7 +1150,7 @@ msgstr "अभी तक कोई टॉपिक रिकॉर्ड नह�
 msgid "No users found"
 msgstr "कोई यूज़र नहीं मिले"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No world server."
 msgstr "कोई वर्ल्ड सर्वर नहीं।"
 
@@ -1203,11 +1207,11 @@ msgstr "रनवे पर"
 msgid "Oops! Page Not Found!"
 msgstr "ओह! पेज नहीं मिला!"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Open"
 msgstr "खोलें"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:218
 msgid "Open — anyone may join or leave"
 msgstr "ओपन — कोई भी शामिल हो या निकल सकता है"
 
@@ -1280,8 +1284,8 @@ msgstr "रोकें"
 msgid "PAUSED"
 msgstr "रुका हुआ"
 
-#: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:176
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:177
 msgid "pilot"
 msgstr "पायलट"
 
@@ -1384,7 +1388,7 @@ msgstr "लॉगिन पर रीडायरेक्ट हो रहा �
 msgid "Reduce interest"
 msgstr "रुचि कम करें"
 
-#: src/components/Multiplayer.tsx:194
+#: src/components/Multiplayer.tsx:195
 msgid "Refresh"
 msgstr "रिफ़्रेश"
 
@@ -1914,7 +1918,7 @@ msgstr "व्यू"
 
 #: src/components/GameCanvas.tsx:29
 msgid "WAITING FOR OPPONENT"
-msgstr ""
+msgstr "प्रतिद्वंद्वी की प्रतीक्षा"
 
 #: src/components/GameCanvas.tsx:44
 msgid "WAVE OFF"
@@ -1929,7 +1933,7 @@ msgid "Weapons"
 msgstr "हथियार"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:224
 msgid "Weather"
 msgstr "मौसम"
 
@@ -1954,11 +1958,11 @@ msgstr "पंख मोड़ना"
 msgid "WINS"
 msgstr "की जीत"
 
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:161
 msgid "World server"
 msgstr "वर्ल्ड सर्वर"
 
-#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:99
 msgid "World server not reachable"
 msgstr "वर्ल्ड सर्वर से संपर्क नहीं हो सका"
 

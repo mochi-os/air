@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "Tafadhali angalia muunganisho wako wa intaneti na ujaribu tena."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:186
+#: src/components/Multiplayer.tsx:187
 msgid "{0} flying"
 msgstr "{0} angani"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:282
 msgid "{0}/{1} players"
 msgstr "wachezaji {0}/{1}"
 
-#: src/components/Multiplayer.tsx:129
+#: src/components/Multiplayer.tsx:130
 msgid "{name}'s match"
 msgstr "Mechi ya {name}"
 
@@ -219,6 +219,10 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Ongeza mvuto"
 
+#: src/components/Multiplayer.tsx:248
+msgid "Bots"
+msgstr "Boti"
+
 #: src/components/GameCanvas.tsx:125
 msgid "brakes"
 msgstr "breki"
@@ -231,7 +235,7 @@ msgstr "Kitufe {i}"
 msgid "Buttons"
 msgstr "Vitufe"
 
-#: src/components/Multiplayer.tsx:171
+#: src/components/Multiplayer.tsx:172
 msgid "Callsign"
 msgstr "Jina la mwito"
 
@@ -305,7 +309,7 @@ msgstr "Chagua lugha"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:231
 msgid "Clear"
 msgstr "Futa"
 
@@ -384,7 +388,7 @@ msgstr "Fupi"
 msgid "Confirm"
 msgstr "Thibitisha"
 
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:190
 msgid "Connecting…"
 msgstr "Inaunganisha…"
 
@@ -412,7 +416,7 @@ msgstr "Endelea na {label}"
 msgid "Copy"
 msgstr "Nakili"
 
-#: src/components/Multiplayer.tsx:141
+#: src/components/Multiplayer.tsx:142
 msgid "Could not create the match"
 msgstr "Imeshindikana kuunda mechi"
 
@@ -436,11 +440,11 @@ msgstr "Imeshindwa kuthibitisha kwa akaunti hiyo. Tafadhali jaribu tena."
 msgid "CRASHED"
 msgstr "IMEANGUKA"
 
-#: src/components/Multiplayer.tsx:246
+#: src/components/Multiplayer.tsx:263
 msgid "Create and fly"
 msgstr "Unda na uruke"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:205
 msgid "Create match"
 msgstr "Unda mechi"
 
@@ -450,7 +454,7 @@ msgid "Credits"
 msgstr "Shukrani"
 
 #: src/components/MissionSetup.tsx:933
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -485,7 +489,7 @@ msgid "Data conflict"
 msgstr "Mgongano wa data"
 
 #: src/components/MissionSetup.tsx:921
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:227
 msgid "Day"
 msgstr "Mchana"
 
@@ -591,7 +595,7 @@ msgstr "AMEJITUPA NJE"
 msgid "Email code"
 msgstr "Msimbo wa barua pepe"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:281
 msgid "empty"
 msgstr "tupu"
 
@@ -656,7 +660,7 @@ msgstr "WASTANI"
 
 #: src/components/GameCanvas.tsx:30
 msgid "FIGHT'S ON"
-msgstr ""
+msgstr "PAMBANO LIMEANZA"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -793,7 +797,7 @@ msgid "High"
 msgstr "Juu"
 
 #: src/components/MissionSetup.tsx:934
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:233
 msgid "High stratus"
 msgstr "Stratus ya juu"
 
@@ -840,7 +844,7 @@ msgstr "Msimbo wa uthibitisho batili"
 msgid "Invert pitch"
 msgstr "Geuza pitch"
 
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:295
 msgid "Join"
 msgstr "Jiunge"
 
@@ -848,11 +852,11 @@ msgstr "Jiunge"
 msgid "JOINED"
 msgstr "AMEJIUNGA"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Joust"
 msgstr "Joust"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Joust — 1v1, first kill wins"
 msgstr "Pambano — 1v1, anayeangusha kwanza ndiye mshindi"
 
@@ -994,7 +998,7 @@ msgid "Low"
 msgstr "Chini"
 
 #: src/components/MissionSetup.tsx:935
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:234
 msgid "Low stratus"
 msgstr "Stratus ya chini"
 
@@ -1020,7 +1024,7 @@ msgstr "Weka zote kama zilizosomwa"
 msgid "Master"
 msgstr "Jumla"
 
-#: src/components/Multiplayer.tsx:214
+#: src/components/Multiplayer.tsx:215
 msgid "Match type"
 msgstr "Aina ya mechi"
 
@@ -1058,7 +1062,7 @@ msgstr "Kombora"
 msgid "Missiles"
 msgstr "Makombora"
 
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:243
 msgid "Missiles allowed"
 msgstr "Makombora yanaruhusiwa"
 
@@ -1078,7 +1082,7 @@ msgstr "Isogeze…"
 msgid "Multiplayer"
 msgstr "Wachezaji wengi"
 
-#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:151
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Hali ya wachezaji wengi inahitaji WebTransport, ambayo kivinjari hiki bado hakiiauni."
 
@@ -1097,7 +1101,7 @@ msgid "Next image"
 msgstr "Picha inayofuata"
 
 #: src/components/MissionSetup.tsx:922
-#: src/components/Multiplayer.tsx:227
+#: src/components/Multiplayer.tsx:228
 msgid "Night"
 msgstr "Usiku"
 
@@ -1117,7 +1121,7 @@ msgstr "Hakuna vikundi vinavyopatikana"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Hakuna joystick iliyotambuliwa — bonyeza kitufe chochote juu yake ili kuiamsha."
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No open matches — create one."
 msgstr "Hakuna mechi zilizo wazi — unda moja."
 
@@ -1146,7 +1150,7 @@ msgstr "Hakuna rekodi ya mada bado — jaribu tena baada ya arifa inayofuata."
 msgid "No users found"
 msgstr "Hakuna watumiaji waliopatikana"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No world server."
 msgstr "Hakuna seva ya dunia."
 
@@ -1203,11 +1207,11 @@ msgstr "Kwenye njia ya kurukia"
 msgid "Oops! Page Not Found!"
 msgstr "Lo! Ukurasa Haukupatikana!"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Open"
 msgstr "Fungua"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:218
 msgid "Open — anyone may join or leave"
 msgstr "Wazi — yeyote anaweza kujiunga au kuondoka"
 
@@ -1280,8 +1284,8 @@ msgstr "Simamisha"
 msgid "PAUSED"
 msgstr "IMESITISHWA"
 
-#: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:176
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:177
 msgid "pilot"
 msgstr "rubani"
 
@@ -1384,7 +1388,7 @@ msgstr "Inaelekeza kwenye kuingia."
 msgid "Reduce interest"
 msgstr "Punguza shauku"
 
-#: src/components/Multiplayer.tsx:194
+#: src/components/Multiplayer.tsx:195
 msgid "Refresh"
 msgstr "Onyesha upya"
 
@@ -1914,7 +1918,7 @@ msgstr "Mwonekano"
 
 #: src/components/GameCanvas.tsx:29
 msgid "WAITING FOR OPPONENT"
-msgstr ""
+msgstr "INASUBIRI MPINZANI"
 
 #: src/components/GameCanvas.tsx:44
 msgid "WAVE OFF"
@@ -1929,7 +1933,7 @@ msgid "Weapons"
 msgstr "Silaha"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:224
 msgid "Weather"
 msgstr "Hali ya hewa"
 
@@ -1954,11 +1958,11 @@ msgstr "Kukunja mabawa"
 msgid "WINS"
 msgstr "AMESHINDA"
 
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:161
 msgid "World server"
 msgstr "Seva ya dunia"
 
-#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:99
 msgid "World server not reachable"
 msgstr "Seva ya dunia haipatikani"
 

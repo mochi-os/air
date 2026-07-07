@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "Pakitingnan ang iyong koneksyon sa internet at subukang muli."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:186
+#: src/components/Multiplayer.tsx:187
 msgid "{0} flying"
 msgstr "{0} ang lumilipad"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:282
 msgid "{0}/{1} players"
 msgstr "{0}/{1} manlalaro"
 
-#: src/components/Multiplayer.tsx:129
+#: src/components/Multiplayer.tsx:130
 msgid "{name}'s match"
 msgstr "Match ni {name}"
 
@@ -219,6 +219,10 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Palakasin ang interes"
 
+#: src/components/Multiplayer.tsx:248
+msgid "Bots"
+msgstr "Mga bot"
+
 #: src/components/GameCanvas.tsx:125
 msgid "brakes"
 msgstr "preno"
@@ -231,7 +235,7 @@ msgstr "Button {i}"
 msgid "Buttons"
 msgstr "Mga button"
 
-#: src/components/Multiplayer.tsx:171
+#: src/components/Multiplayer.tsx:172
 msgid "Callsign"
 msgstr "Callsign"
 
@@ -305,7 +309,7 @@ msgstr "Pumili ng wika"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:231
 msgid "Clear"
 msgstr "Burahin"
 
@@ -384,7 +388,7 @@ msgstr "Compact"
 msgid "Confirm"
 msgstr "Kumpirmahin"
 
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:190
 msgid "Connecting…"
 msgstr "Kumokonekta…"
 
@@ -412,7 +416,7 @@ msgstr "Magpatuloy gamit ang {label}"
 msgid "Copy"
 msgstr "Kopyahin"
 
-#: src/components/Multiplayer.tsx:141
+#: src/components/Multiplayer.tsx:142
 msgid "Could not create the match"
 msgstr "Hindi nagawa ang match"
 
@@ -436,11 +440,11 @@ msgstr "Hindi ma-verify gamit ang account na iyon. Pakisubukang muli."
 msgid "CRASHED"
 msgstr "BUMAGSAK"
 
-#: src/components/Multiplayer.tsx:246
+#: src/components/Multiplayer.tsx:263
 msgid "Create and fly"
 msgstr "Gumawa at lumipad"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:205
 msgid "Create match"
 msgstr "Gumawa ng match"
 
@@ -450,7 +454,7 @@ msgid "Credits"
 msgstr "Mga kredito"
 
 #: src/components/MissionSetup.tsx:933
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -485,7 +489,7 @@ msgid "Data conflict"
 msgstr "Salungatan sa data"
 
 #: src/components/MissionSetup.tsx:921
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:227
 msgid "Day"
 msgstr "Araw"
 
@@ -591,7 +595,7 @@ msgstr "NAG-EJECT"
 msgid "Email code"
 msgstr "Code ng email"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:281
 msgid "empty"
 msgstr "walang laman"
 
@@ -656,7 +660,7 @@ msgstr "KATAMTAMAN"
 
 #: src/components/GameCanvas.tsx:30
 msgid "FIGHT'S ON"
-msgstr ""
+msgstr "LABAN NA"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -793,7 +797,7 @@ msgid "High"
 msgstr "Mataas"
 
 #: src/components/MissionSetup.tsx:934
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:233
 msgid "High stratus"
 msgstr "Mataas na stratus"
 
@@ -840,7 +844,7 @@ msgstr "Invalid na verification code"
 msgid "Invert pitch"
 msgstr "Baligtarin ang pitch"
 
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:295
 msgid "Join"
 msgstr "Sumali"
 
@@ -848,11 +852,11 @@ msgstr "Sumali"
 msgid "JOINED"
 msgstr "SUMALI"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Joust"
 msgstr "Tagisan"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, ang unang kill ang panalo"
 
@@ -994,7 +998,7 @@ msgid "Low"
 msgstr "Mababa"
 
 #: src/components/MissionSetup.tsx:935
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:234
 msgid "Low stratus"
 msgstr "Mababang stratus"
 
@@ -1020,7 +1024,7 @@ msgstr "Markahan lahat bilang nabasa"
 msgid "Master"
 msgstr "Pangkalahatan"
 
-#: src/components/Multiplayer.tsx:214
+#: src/components/Multiplayer.tsx:215
 msgid "Match type"
 msgstr "Uri ng match"
 
@@ -1058,7 +1062,7 @@ msgstr "Misil"
 msgid "Missiles"
 msgstr "Mga misil"
 
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:243
 msgid "Missiles allowed"
 msgstr "Puwede ang missiles"
 
@@ -1078,7 +1082,7 @@ msgstr "Igalaw ito…"
 msgid "Multiplayer"
 msgstr "Multiplayer"
 
-#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:151
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Kailangan ng multiplayer ang WebTransport, na hindi pa sinusuportahan ng browser na ito."
 
@@ -1097,7 +1101,7 @@ msgid "Next image"
 msgstr "Susunod na imahe"
 
 #: src/components/MissionSetup.tsx:922
-#: src/components/Multiplayer.tsx:227
+#: src/components/Multiplayer.tsx:228
 msgid "Night"
 msgstr "Gabi"
 
@@ -1117,7 +1121,7 @@ msgstr "Walang available na grupo"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Walang na-detect na joystick — pindutin ang kahit anong button nito para gisingin ito."
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No open matches — create one."
 msgstr "Walang open na match — gumawa ng isa."
 
@@ -1146,7 +1150,7 @@ msgstr "Wala pang topic record — subukan muli pagkatapos ng susunod na notific
 msgid "No users found"
 msgstr "Walang nakitang user"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No world server."
 msgstr "Walang world server."
 
@@ -1203,11 +1207,11 @@ msgstr "Nasa runway"
 msgid "Oops! Page Not Found!"
 msgstr "Ay! Hindi Nahanap ang Pahina!"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Open"
 msgstr "Buksan"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:218
 msgid "Open — anyone may join or leave"
 msgstr "Open — kahit sino ay puwedeng sumali o umalis"
 
@@ -1280,8 +1284,8 @@ msgstr "I-pause"
 msgid "PAUSED"
 msgstr "NAKA-PAUSE"
 
-#: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:176
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:177
 msgid "pilot"
 msgstr "piloto"
 
@@ -1384,7 +1388,7 @@ msgstr "Nire-redirect sa login."
 msgid "Reduce interest"
 msgstr "Bawasan ang interes"
 
-#: src/components/Multiplayer.tsx:194
+#: src/components/Multiplayer.tsx:195
 msgid "Refresh"
 msgstr "I-refresh"
 
@@ -1914,7 +1918,7 @@ msgstr "Mga view"
 
 #: src/components/GameCanvas.tsx:29
 msgid "WAITING FOR OPPONENT"
-msgstr ""
+msgstr "NAGHIHINTAY NG KALABAN"
 
 #: src/components/GameCanvas.tsx:44
 msgid "WAVE OFF"
@@ -1929,7 +1933,7 @@ msgid "Weapons"
 msgstr "Mga armas"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:224
 msgid "Weather"
 msgstr "Panahon"
 
@@ -1954,11 +1958,11 @@ msgstr "Pagtiklop ng pakpak"
 msgid "WINS"
 msgstr "PANALO"
 
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:161
 msgid "World server"
 msgstr "World server"
 
-#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:99
 msgid "World server not reachable"
 msgstr "Hindi maabot ang world server"
 

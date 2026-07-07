@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "Verifică conexiunea la internet și încearcă din nou."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:186
+#: src/components/Multiplayer.tsx:187
 msgid "{0} flying"
 msgstr "{0} în zbor"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:282
 msgid "{0}/{1} players"
 msgstr "{0}/{1} jucători"
 
-#: src/components/Multiplayer.tsx:129
+#: src/components/Multiplayer.tsx:130
 msgid "{name}'s match"
 msgstr "Meciul lui {name}"
 
@@ -219,6 +219,10 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Promovează interesul"
 
+#: src/components/Multiplayer.tsx:248
+msgid "Bots"
+msgstr "Boți"
+
 #: src/components/GameCanvas.tsx:125
 msgid "brakes"
 msgstr "frâne"
@@ -231,7 +235,7 @@ msgstr "Buton {i}"
 msgid "Buttons"
 msgstr "Butoane"
 
-#: src/components/Multiplayer.tsx:171
+#: src/components/Multiplayer.tsx:172
 msgid "Callsign"
 msgstr "Indicativ"
 
@@ -305,7 +309,7 @@ msgstr "Alege limba"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:231
 msgid "Clear"
 msgstr "Golește"
 
@@ -384,7 +388,7 @@ msgstr "Compact"
 msgid "Confirm"
 msgstr "Confirmă"
 
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:190
 msgid "Connecting…"
 msgstr "Se conectează…"
 
@@ -412,7 +416,7 @@ msgstr "Continuă cu {label}"
 msgid "Copy"
 msgstr "Copiază"
 
-#: src/components/Multiplayer.tsx:141
+#: src/components/Multiplayer.tsx:142
 msgid "Could not create the match"
 msgstr "Meciul nu a putut fi creat"
 
@@ -436,11 +440,11 @@ msgstr "Nu s-a putut verifica cu acel cont. Încearcă din nou."
 msgid "CRASHED"
 msgstr "PRĂBUȘIT"
 
-#: src/components/Multiplayer.tsx:246
+#: src/components/Multiplayer.tsx:263
 msgid "Create and fly"
 msgstr "Creează și zboară"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:205
 msgid "Create match"
 msgstr "Creează meci"
 
@@ -450,7 +454,7 @@ msgid "Credits"
 msgstr "Credite"
 
 #: src/components/MissionSetup.tsx:933
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -485,7 +489,7 @@ msgid "Data conflict"
 msgstr "Conflict de date"
 
 #: src/components/MissionSetup.tsx:921
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:227
 msgid "Day"
 msgstr "Zi"
 
@@ -591,7 +595,7 @@ msgstr "CATAPULTAT"
 msgid "Email code"
 msgstr "Cod email"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:281
 msgid "empty"
 msgstr "goală"
 
@@ -656,7 +660,7 @@ msgstr "SATISFĂCĂTOR"
 
 #: src/components/GameCanvas.tsx:30
 msgid "FIGHT'S ON"
-msgstr ""
+msgstr "LUPTA A ÎNCEPUT"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -793,7 +797,7 @@ msgid "High"
 msgstr "Ridicat"
 
 #: src/components/MissionSetup.tsx:934
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:233
 msgid "High stratus"
 msgstr "Stratus înalt"
 
@@ -840,7 +844,7 @@ msgstr "Cod de verificare invalid"
 msgid "Invert pitch"
 msgstr "Inversează tangajul"
 
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:295
 msgid "Join"
 msgstr "Alătură-te"
 
@@ -848,11 +852,11 @@ msgstr "Alătură-te"
 msgid "JOINED"
 msgstr "S-A ALĂTURAT"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Joust"
 msgstr "Duel"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, prima doborâre câștigă"
 
@@ -994,7 +998,7 @@ msgid "Low"
 msgstr "Scăzut"
 
 #: src/components/MissionSetup.tsx:935
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:234
 msgid "Low stratus"
 msgstr "Stratus jos"
 
@@ -1020,7 +1024,7 @@ msgstr "Marchează totul ca citit"
 msgid "Master"
 msgstr "General"
 
-#: src/components/Multiplayer.tsx:214
+#: src/components/Multiplayer.tsx:215
 msgid "Match type"
 msgstr "Tip de meci"
 
@@ -1058,7 +1062,7 @@ msgstr "Rachetă"
 msgid "Missiles"
 msgstr "Rachete"
 
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:243
 msgid "Missiles allowed"
 msgstr "Rachete permise"
 
@@ -1078,7 +1082,7 @@ msgstr "Mișcă axa…"
 msgid "Multiplayer"
 msgstr "Multiplayer"
 
-#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:151
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayerul necesită WebTransport, pe care acest browser nu îl suportă încă."
 
@@ -1097,7 +1101,7 @@ msgid "Next image"
 msgstr "Imaginea următoare"
 
 #: src/components/MissionSetup.tsx:922
-#: src/components/Multiplayer.tsx:227
+#: src/components/Multiplayer.tsx:228
 msgid "Night"
 msgstr "Noapte"
 
@@ -1117,7 +1121,7 @@ msgstr "Niciun grup disponibil"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Niciun joystick detectat — apasă orice buton de pe el pentru a-l trezi."
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No open matches — create one."
 msgstr "Niciun meci deschis — creează unul."
 
@@ -1146,7 +1150,7 @@ msgstr "Încă nu există înregistrare de subiect — încearcă din nou după 
 msgid "No users found"
 msgstr "Nu s-au găsit utilizatori"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No world server."
 msgstr "Niciun server de lume."
 
@@ -1203,11 +1207,11 @@ msgstr "Pe pistă"
 msgid "Oops! Page Not Found!"
 msgstr "Hopa! Pagina nu a fost găsită!"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Open"
 msgstr "Deschide"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:218
 msgid "Open — anyone may join or leave"
 msgstr "Deschis — oricine poate intra sau ieși"
 
@@ -1280,8 +1284,8 @@ msgstr "Pauză"
 msgid "PAUSED"
 msgstr "PAUZĂ"
 
-#: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:176
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:177
 msgid "pilot"
 msgstr "pilot"
 
@@ -1384,7 +1388,7 @@ msgstr "Se redirecționează către autentificare."
 msgid "Reduce interest"
 msgstr "Reduce interesul"
 
-#: src/components/Multiplayer.tsx:194
+#: src/components/Multiplayer.tsx:195
 msgid "Refresh"
 msgstr "Reîmprospătează"
 
@@ -1914,7 +1918,7 @@ msgstr "Vizualizări"
 
 #: src/components/GameCanvas.tsx:29
 msgid "WAITING FOR OPPONENT"
-msgstr ""
+msgstr "SE AȘTEAPTĂ ADVERSARUL"
 
 #: src/components/GameCanvas.tsx:44
 msgid "WAVE OFF"
@@ -1929,7 +1933,7 @@ msgid "Weapons"
 msgstr "Armament"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:224
 msgid "Weather"
 msgstr "Vreme"
 
@@ -1954,11 +1958,11 @@ msgstr "Plierea aripilor"
 msgid "WINS"
 msgstr "CÂȘTIGĂ"
 
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:161
 msgid "World server"
 msgstr "Server de lume"
 
-#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:99
 msgid "World server not reachable"
 msgstr "Serverul de lume nu este accesibil"
 

@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "Kontrolloni lidhjen tuaj me internetin dhe provoni përsëri."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:186
+#: src/components/Multiplayer.tsx:187
 msgid "{0} flying"
 msgstr "{0} duke fluturuar"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:282
 msgid "{0}/{1} players"
 msgstr "{0}/{1} lojtarë"
 
-#: src/components/Multiplayer.tsx:129
+#: src/components/Multiplayer.tsx:130
 msgid "{name}'s match"
 msgstr "Ndeshja e {name}"
 
@@ -219,6 +219,10 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Rrit interesin"
 
+#: src/components/Multiplayer.tsx:248
+msgid "Bots"
+msgstr "Bots"
+
 #: src/components/GameCanvas.tsx:125
 msgid "brakes"
 msgstr "frenat"
@@ -231,7 +235,7 @@ msgstr "Butoni {i}"
 msgid "Buttons"
 msgstr "Butonat"
 
-#: src/components/Multiplayer.tsx:171
+#: src/components/Multiplayer.tsx:172
 msgid "Callsign"
 msgstr "Shenja e thirrjes"
 
@@ -305,7 +309,7 @@ msgstr "Zgjidh gjuhën"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:231
 msgid "Clear"
 msgstr "Pastro"
 
@@ -384,7 +388,7 @@ msgstr "Kompakt"
 msgid "Confirm"
 msgstr "Konfirmo"
 
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:190
 msgid "Connecting…"
 msgstr "Duke u lidhur…"
 
@@ -412,7 +416,7 @@ msgstr "Vazhdo me {label}"
 msgid "Copy"
 msgstr "Kopjo"
 
-#: src/components/Multiplayer.tsx:141
+#: src/components/Multiplayer.tsx:142
 msgid "Could not create the match"
 msgstr "Ndeshja nuk u krijua dot"
 
@@ -436,11 +440,11 @@ msgstr "Nuk u verifikua dot me atë llogari. Ju lutemi provoni përsëri."
 msgid "CRASHED"
 msgstr "U RRËZUA"
 
-#: src/components/Multiplayer.tsx:246
+#: src/components/Multiplayer.tsx:263
 msgid "Create and fly"
 msgstr "Krijo dhe fluturo"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:205
 msgid "Create match"
 msgstr "Krijo ndeshje"
 
@@ -450,7 +454,7 @@ msgid "Credits"
 msgstr "Falënderime"
 
 #: src/components/MissionSetup.tsx:933
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Cumulus"
 msgstr "Kumulus"
 
@@ -485,7 +489,7 @@ msgid "Data conflict"
 msgstr "Konflikt të dhënash"
 
 #: src/components/MissionSetup.tsx:921
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:227
 msgid "Day"
 msgstr "Ditë"
 
@@ -591,7 +595,7 @@ msgstr "U KATAPULTUA"
 msgid "Email code"
 msgstr "Kodi me email"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:281
 msgid "empty"
 msgstr "bosh"
 
@@ -656,7 +660,7 @@ msgstr "MESATAR"
 
 #: src/components/GameCanvas.tsx:30
 msgid "FIGHT'S ON"
-msgstr ""
+msgstr "LUFTA FILLOI"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -793,7 +797,7 @@ msgid "High"
 msgstr "I lartë"
 
 #: src/components/MissionSetup.tsx:934
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:233
 msgid "High stratus"
 msgstr "Stratus i lartë"
 
@@ -840,7 +844,7 @@ msgstr "Kod verifikimi i pavlefshëm"
 msgid "Invert pitch"
 msgstr "Përmbys pjerrësinë"
 
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:295
 msgid "Join"
 msgstr "Bashkohu"
 
@@ -848,11 +852,11 @@ msgstr "Bashkohu"
 msgid "JOINED"
 msgstr "U BASHKUA"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Joust"
 msgstr "Duel"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, kush rrëzon i pari fiton"
 
@@ -994,7 +998,7 @@ msgid "Low"
 msgstr "I ulët"
 
 #: src/components/MissionSetup.tsx:935
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:234
 msgid "Low stratus"
 msgstr "Stratus i ulët"
 
@@ -1020,7 +1024,7 @@ msgstr "Shëno të gjitha si të lexuara"
 msgid "Master"
 msgstr "Kryesori"
 
-#: src/components/Multiplayer.tsx:214
+#: src/components/Multiplayer.tsx:215
 msgid "Match type"
 msgstr "Lloji i ndeshjes"
 
@@ -1058,7 +1062,7 @@ msgstr "Raketë"
 msgid "Missiles"
 msgstr "Raketa"
 
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:243
 msgid "Missiles allowed"
 msgstr "Raketat lejohen"
 
@@ -1078,7 +1082,7 @@ msgstr "Lëvizeni…"
 msgid "Multiplayer"
 msgstr "Shumëlojtarësh"
 
-#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:151
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Loja shumëlojtarëshe kërkon WebTransport, të cilin ky shfletues ende nuk e mbështet."
 
@@ -1097,7 +1101,7 @@ msgid "Next image"
 msgstr "Imazhi tjetër"
 
 #: src/components/MissionSetup.tsx:922
-#: src/components/Multiplayer.tsx:227
+#: src/components/Multiplayer.tsx:228
 msgid "Night"
 msgstr "Natë"
 
@@ -1117,7 +1121,7 @@ msgstr "Asnjë grup i disponueshëm"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Nuk u zbulua asnjë joystick — shtypni çfarëdo butoni në të për ta zgjuar."
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No open matches — create one."
 msgstr "Nuk ka ndeshje të hapura — krijo një."
 
@@ -1146,7 +1150,7 @@ msgstr "Ende asnjë regjistrim teme — provoni përsëri pas njoftimit tjetër.
 msgid "No users found"
 msgstr "S'u gjet asnjë përdorues"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No world server."
 msgstr "Nuk ka server bote."
 
@@ -1203,11 +1207,11 @@ msgstr "Në pistë"
 msgid "Oops! Page Not Found!"
 msgstr "Ups! Faqja s'u gjet!"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Open"
 msgstr "Hap"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:218
 msgid "Open — anyone may join or leave"
 msgstr "E hapur — kushdo mund të bashkohet ose të largohet"
 
@@ -1280,8 +1284,8 @@ msgstr "Ndalo"
 msgid "PAUSED"
 msgstr "NË PAUZË"
 
-#: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:176
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:177
 msgid "pilot"
 msgstr "pilot"
 
@@ -1384,7 +1388,7 @@ msgstr "Duke ridrejtuar te hyrja."
 msgid "Reduce interest"
 msgstr "Zvogëlo interesin"
 
-#: src/components/Multiplayer.tsx:194
+#: src/components/Multiplayer.tsx:195
 msgid "Refresh"
 msgstr "Rifresko"
 
@@ -1914,7 +1918,7 @@ msgstr "Pamjet"
 
 #: src/components/GameCanvas.tsx:29
 msgid "WAITING FOR OPPONENT"
-msgstr ""
+msgstr "NË PRITJE TË KUNDËRSHTARIT"
 
 #: src/components/GameCanvas.tsx:44
 msgid "WAVE OFF"
@@ -1929,7 +1933,7 @@ msgid "Weapons"
 msgstr "Armët"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:224
 msgid "Weather"
 msgstr "Moti"
 
@@ -1954,11 +1958,11 @@ msgstr "Palosja e krahëve"
 msgid "WINS"
 msgstr "FITON"
 
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:161
 msgid "World server"
 msgstr "Serveri i botës"
 
-#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:99
 msgid "World server not reachable"
 msgstr "Serveri i botës nuk arrihet"
 

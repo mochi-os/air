@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "İnternet bağlantınızı yoxlayıb yenidən cəhd edin."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:186
+#: src/components/Multiplayer.tsx:187
 msgid "{0} flying"
 msgstr "{0} uçur"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:282
 msgid "{0}/{1} players"
 msgstr "{0}/{1} oyunçu"
 
-#: src/components/Multiplayer.tsx:129
+#: src/components/Multiplayer.tsx:130
 msgid "{name}'s match"
 msgstr "{name} matçı"
 
@@ -219,6 +219,10 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Marağı artır"
 
+#: src/components/Multiplayer.tsx:248
+msgid "Bots"
+msgstr "Botlar"
+
 #: src/components/GameCanvas.tsx:125
 msgid "brakes"
 msgstr "əyləclər"
@@ -231,7 +235,7 @@ msgstr "Düymə {i}"
 msgid "Buttons"
 msgstr "Düymələr"
 
-#: src/components/Multiplayer.tsx:171
+#: src/components/Multiplayer.tsx:172
 msgid "Callsign"
 msgstr "Çağırış işarəsi"
 
@@ -305,7 +309,7 @@ msgstr "Dil seçin"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:231
 msgid "Clear"
 msgstr "Təmizlə"
 
@@ -384,7 +388,7 @@ msgstr "Kompakt"
 msgid "Confirm"
 msgstr "Təsdiqlə"
 
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:190
 msgid "Connecting…"
 msgstr "Bağlanır…"
 
@@ -412,7 +416,7 @@ msgstr "{label} ilə davam edin"
 msgid "Copy"
 msgstr "Kopyala"
 
-#: src/components/Multiplayer.tsx:141
+#: src/components/Multiplayer.tsx:142
 msgid "Could not create the match"
 msgstr "Matç yaradıla bilmədi"
 
@@ -436,11 +440,11 @@ msgstr "Bu hesabla doğrulama mümkün olmadı. Zəhmət olmasa, yenidən cəhd 
 msgid "CRASHED"
 msgstr "QƏZAYA UĞRADI"
 
-#: src/components/Multiplayer.tsx:246
+#: src/components/Multiplayer.tsx:263
 msgid "Create and fly"
 msgstr "Yarat və uç"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:205
 msgid "Create match"
 msgstr "Matç yarat"
 
@@ -450,7 +454,7 @@ msgid "Credits"
 msgstr "Müəlliflər"
 
 #: src/components/MissionSetup.tsx:933
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Cumulus"
 msgstr "Kumulus"
 
@@ -485,7 +489,7 @@ msgid "Data conflict"
 msgstr "Məlumat konflikti"
 
 #: src/components/MissionSetup.tsx:921
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:227
 msgid "Day"
 msgstr "Gündüz"
 
@@ -591,7 +595,7 @@ msgstr "KATAPULT OLDU"
 msgid "Email code"
 msgstr "E-poçt kodu"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:281
 msgid "empty"
 msgstr "boş"
 
@@ -656,7 +660,7 @@ msgstr "ORTA"
 
 #: src/components/GameCanvas.tsx:30
 msgid "FIGHT'S ON"
-msgstr ""
+msgstr "DÖYÜŞ BAŞLADI"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -793,7 +797,7 @@ msgid "High"
 msgstr "Yüksək"
 
 #: src/components/MissionSetup.tsx:934
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:233
 msgid "High stratus"
 msgstr "Yüksək stratus"
 
@@ -840,7 +844,7 @@ msgstr "Etibarsız doğrulama kodu"
 msgid "Invert pitch"
 msgstr "Tanqajı tərsinə çevir"
 
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:295
 msgid "Join"
 msgstr "Qoşul"
 
@@ -848,11 +852,11 @@ msgstr "Qoşul"
 msgid "JOINED"
 msgstr "QOŞULDU"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Joust"
 msgstr "Düello"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, ilk vuran qazanır"
 
@@ -994,7 +998,7 @@ msgid "Low"
 msgstr "Aşağı"
 
 #: src/components/MissionSetup.tsx:935
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:234
 msgid "Low stratus"
 msgstr "Aşağı stratus"
 
@@ -1020,7 +1024,7 @@ msgstr "Hamısını oxunmuş kimi işarələ"
 msgid "Master"
 msgstr "Əsas"
 
-#: src/components/Multiplayer.tsx:214
+#: src/components/Multiplayer.tsx:215
 msgid "Match type"
 msgstr "Matç növü"
 
@@ -1058,7 +1062,7 @@ msgstr "Raket"
 msgid "Missiles"
 msgstr "Raketlər"
 
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:243
 msgid "Missiles allowed"
 msgstr "Raketlərə icazə verilir"
 
@@ -1078,7 +1082,7 @@ msgstr "Oxu tərpət…"
 msgid "Multiplayer"
 msgstr "Çoxoyunçulu"
 
-#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:151
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Çoxoyunçulu rejim üçün WebTransport lazımdır, bu brauzer isə onu hələ dəstəkləmir."
 
@@ -1097,7 +1101,7 @@ msgid "Next image"
 msgstr "Növbəti şəkil"
 
 #: src/components/MissionSetup.tsx:922
-#: src/components/Multiplayer.tsx:227
+#: src/components/Multiplayer.tsx:228
 msgid "Night"
 msgstr "Gecə"
 
@@ -1117,7 +1121,7 @@ msgstr "Mövcud qrup yoxdur"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Joystik tapılmadı — oyatmaq üçün üzərindəki hər hansı düyməni bas."
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No open matches — create one."
 msgstr "Açıq matç yoxdur — birini yaradın."
 
@@ -1146,7 +1150,7 @@ msgstr "Hələ mövzu qeydi yoxdur — növbəti bildirişdən sonra yenidən c�
 msgid "No users found"
 msgstr "İstifadəçi tapılmadı"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No world server."
 msgstr "Dünya serveri yoxdur."
 
@@ -1203,11 +1207,11 @@ msgstr "Uçuş zolağında"
 msgid "Oops! Page Not Found!"
 msgstr "Hopa! Səhifə Tapılmadı!"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Open"
 msgstr "Aç"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:218
 msgid "Open — anyone may join or leave"
 msgstr "Açıq — hər kəs qoşula və ya çıxa bilər"
 
@@ -1280,8 +1284,8 @@ msgstr "Pauza"
 msgid "PAUSED"
 msgstr "FASİLƏ"
 
-#: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:176
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:177
 msgid "pilot"
 msgstr "pilot"
 
@@ -1384,7 +1388,7 @@ msgstr "Girişə yönləndirilir."
 msgid "Reduce interest"
 msgstr "Marağı azalt"
 
-#: src/components/Multiplayer.tsx:194
+#: src/components/Multiplayer.tsx:195
 msgid "Refresh"
 msgstr "Yenilə"
 
@@ -1914,7 +1918,7 @@ msgstr "Səs ver və bax"
 
 #: src/components/GameCanvas.tsx:29
 msgid "WAITING FOR OPPONENT"
-msgstr ""
+msgstr "RƏQİB GÖZLƏNİLİR"
 
 #: src/components/GameCanvas.tsx:44
 msgid "WAVE OFF"
@@ -1929,7 +1933,7 @@ msgid "Weapons"
 msgstr "Silahlar"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:224
 msgid "Weather"
 msgstr "Hava"
 
@@ -1954,11 +1958,11 @@ msgstr "Qanad qatlanması"
 msgid "WINS"
 msgstr "QALİB GƏLDİ"
 
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:161
 msgid "World server"
 msgstr "Dünya serveri"
 
-#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:99
 msgid "World server not reachable"
 msgstr "Dünya serveri əlçatan deyil"
 

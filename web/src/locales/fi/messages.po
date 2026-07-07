@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "Tarkista internetyhteytesi ja yritä uudelleen."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:186
+#: src/components/Multiplayer.tsx:187
 msgid "{0} flying"
 msgstr "{0} ilmassa"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:282
 msgid "{0}/{1} players"
 msgstr "{0}/{1} pelaajaa"
 
-#: src/components/Multiplayer.tsx:129
+#: src/components/Multiplayer.tsx:130
 msgid "{name}'s match"
 msgstr "Pelaajan {name} ottelu"
 
@@ -219,6 +219,10 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Korosta kiinnostusta"
 
+#: src/components/Multiplayer.tsx:248
+msgid "Bots"
+msgstr "Botit"
+
 #: src/components/GameCanvas.tsx:125
 msgid "brakes"
 msgstr "jarrut"
@@ -231,7 +235,7 @@ msgstr "Painike {i}"
 msgid "Buttons"
 msgstr "Painikkeet"
 
-#: src/components/Multiplayer.tsx:171
+#: src/components/Multiplayer.tsx:172
 msgid "Callsign"
 msgstr "Kutsutunnus"
 
@@ -305,7 +309,7 @@ msgstr "Valitse kieli"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:231
 msgid "Clear"
 msgstr "Tyhjennä"
 
@@ -384,7 +388,7 @@ msgstr "Tiivis"
 msgid "Confirm"
 msgstr "Vahvista"
 
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:190
 msgid "Connecting…"
 msgstr "Yhdistetään…"
 
@@ -412,7 +416,7 @@ msgstr "Jatka käyttäen palvelua {label}"
 msgid "Copy"
 msgstr "Kopioi"
 
-#: src/components/Multiplayer.tsx:141
+#: src/components/Multiplayer.tsx:142
 msgid "Could not create the match"
 msgstr "Ottelun luominen epäonnistui"
 
@@ -436,11 +440,11 @@ msgstr "Vahvistaminen tällä tilillä ei onnistunut. Yritä uudelleen."
 msgid "CRASHED"
 msgstr "PUTOSI"
 
-#: src/components/Multiplayer.tsx:246
+#: src/components/Multiplayer.tsx:263
 msgid "Create and fly"
 msgstr "Luo ja lennä"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:205
 msgid "Create match"
 msgstr "Luo ottelu"
 
@@ -450,7 +454,7 @@ msgid "Credits"
 msgstr "Tekijät"
 
 #: src/components/MissionSetup.tsx:933
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Cumulus"
 msgstr "Kumpupilvi"
 
@@ -485,7 +489,7 @@ msgid "Data conflict"
 msgstr "Tietoristiriita"
 
 #: src/components/MissionSetup.tsx:921
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:227
 msgid "Day"
 msgstr "Päivä"
 
@@ -591,7 +595,7 @@ msgstr "PELASTAUTUI"
 msgid "Email code"
 msgstr "Sähköpostikoodi"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:281
 msgid "empty"
 msgstr "tyhjä"
 
@@ -656,7 +660,7 @@ msgstr "KOHTALAINEN"
 
 #: src/components/GameCanvas.tsx:30
 msgid "FIGHT'S ON"
-msgstr ""
+msgstr "TAISTELU ALKAA"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -793,7 +797,7 @@ msgid "High"
 msgstr "Korkea"
 
 #: src/components/MissionSetup.tsx:934
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:233
 msgid "High stratus"
 msgstr "Korkea kerrospilvi"
 
@@ -840,7 +844,7 @@ msgstr "Virheellinen vahvistuskoodi"
 msgid "Invert pitch"
 msgstr "Käänteinen nyökkäys"
 
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:295
 msgid "Join"
 msgstr "Liity"
 
@@ -848,11 +852,11 @@ msgstr "Liity"
 msgid "JOINED"
 msgstr "LIITTYI"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Joust"
 msgstr "Kaksintaistelu"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Joust — 1v1, first kill wins"
 msgstr "Kaksintaistelu — 1v1, ensimmäinen pudotus voittaa"
 
@@ -994,7 +998,7 @@ msgid "Low"
 msgstr "Matala"
 
 #: src/components/MissionSetup.tsx:935
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:234
 msgid "Low stratus"
 msgstr "Matala kerrospilvi"
 
@@ -1020,7 +1024,7 @@ msgstr "Merkitse kaikki luetuiksi"
 msgid "Master"
 msgstr "Yleinen"
 
-#: src/components/Multiplayer.tsx:214
+#: src/components/Multiplayer.tsx:215
 msgid "Match type"
 msgstr "Ottelutyyppi"
 
@@ -1058,7 +1062,7 @@ msgstr "Ohjus"
 msgid "Missiles"
 msgstr "Ohjukset"
 
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:243
 msgid "Missiles allowed"
 msgstr "Ohjukset sallittu"
 
@@ -1078,7 +1082,7 @@ msgstr "Liikuta akselia…"
 msgid "Multiplayer"
 msgstr "Moninpeli"
 
-#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:151
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Moninpeli vaatii WebTransportin, jota tämä selain ei vielä tue."
 
@@ -1097,7 +1101,7 @@ msgid "Next image"
 msgstr "Seuraava kuva"
 
 #: src/components/MissionSetup.tsx:922
-#: src/components/Multiplayer.tsx:227
+#: src/components/Multiplayer.tsx:228
 msgid "Night"
 msgstr "Yö"
 
@@ -1117,7 +1121,7 @@ msgstr "Ei saatavilla olevia ryhmiä"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Sauvaohjainta ei havaittu — herätä se painamalla mitä tahansa sen painiketta."
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No open matches — create one."
 msgstr "Ei avoimia otteluita — luo uusi."
 
@@ -1146,7 +1150,7 @@ msgstr "Ei vielä aihetietoa — yritä uudelleen seuraavan ilmoituksen jälkeen
 msgid "No users found"
 msgstr "Käyttäjiä ei löytynyt"
 
-#: src/components/Multiplayer.tsx:255
+#: src/components/Multiplayer.tsx:272
 msgid "No world server."
 msgstr "Ei maailmapalvelinta."
 
@@ -1203,11 +1207,11 @@ msgstr "Kiitoradalla"
 msgid "Oops! Page Not Found!"
 msgstr "Hups! Sivua ei löytynyt!"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:280
 msgid "Open"
 msgstr "Avaa"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:218
 msgid "Open — anyone may join or leave"
 msgstr "Avoin — kuka tahansa voi liittyä tai poistua"
 
@@ -1280,8 +1284,8 @@ msgstr "Tauko"
 msgid "PAUSED"
 msgstr "TAUOLLA"
 
-#: src/components/Multiplayer.tsx:87
-#: src/components/Multiplayer.tsx:176
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:177
 msgid "pilot"
 msgstr "lentäjä"
 
@@ -1384,7 +1388,7 @@ msgstr "Uudelleenohjataan kirjautumiseen."
 msgid "Reduce interest"
 msgstr "Vähennä kiinnostusta"
 
-#: src/components/Multiplayer.tsx:194
+#: src/components/Multiplayer.tsx:195
 msgid "Refresh"
 msgstr "Päivitä"
 
@@ -1914,7 +1918,7 @@ msgstr "Katselukerrat"
 
 #: src/components/GameCanvas.tsx:29
 msgid "WAITING FOR OPPONENT"
-msgstr ""
+msgstr "ODOTETAAN VASTUSTAJAA"
 
 #: src/components/GameCanvas.tsx:44
 msgid "WAVE OFF"
@@ -1929,7 +1933,7 @@ msgid "Weapons"
 msgstr "Aseet"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:224
 msgid "Weather"
 msgstr "Sää"
 
@@ -1954,11 +1958,11 @@ msgstr "Siipien taitto"
 msgid "WINS"
 msgstr "VOITTAA"
 
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:161
 msgid "World server"
 msgstr "Maailmapalvelin"
 
-#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:99
 msgid "World server not reachable"
 msgstr "Maailmapalvelimeen ei saada yhteyttä"
 
