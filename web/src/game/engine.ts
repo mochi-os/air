@@ -1220,6 +1220,8 @@ const bandit=make_state(new THREE.Vector3(3000,2400,-1000),new THREE.Vector3(-0.
 // carry a "hulk" (a model-less hit body); the ownship's wounds land straight
 // in the flight core's damage state, so the aero degrades on the next step.
 let battle_tick=0, battle_reset=true;
+let net_waiting=false;   // joust waiting room (#88): the server holds the lone first player frozen at the ring until the opponent joins
+let weapons_hold=false;   // joust weapons hold (#87): guns and missiles inhibited until the MERGE — either aircraft crossing the other's 3/9 line; released by the fighton event (MP) or the local check (SP)
 let harm_pending=null;   // ?harm dev hook (#105): pending injection kind
 let sweep_pending=null;   // ?sweep dev hook (#105): rig entry name to sweep once the model resolves
 function apply_harm(kind){ const words=flight_get(); if(!words) return;
@@ -1757,7 +1759,9 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 		const lamps=[];
 		for(const t of [ld,bw]){ const ddx=t.x-mx, ddz=t.z-mz, L=Math.hypot(ddx,ddz)||1;
 			lamps.push(mx+ddx/L*2.5, my-1, mz+ddz/L*2.5); }   // each lamp hangs 2.5 m off the mast TOWARD its flood target — centred on the mast the depth-tested sprite hid behind the pole itself
-		ops_lights.push(ols_points(lamps,0xffd9a0,30)); }   // ols_points sizes are DEVICE PIXELS (the meatball is deliberately small) — 13 was a speck on a 4K screen   // the fixture bank: SCREEN-SPACE sprites (constant pixels) so the lamps blaze from on deck below AND read from the approach — a distance-attenuated halo shrank to nothing seen from the deck
+		{ const lg=new THREE.BufferGeometry(); lg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(lamps),3));
+			const lp=new THREE.Points(lg,new THREE.PointsMaterial({size:30,map:light_dot,color:0xffd9a0,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:false}));
+			lp.frustumCulled=false; lp.renderOrder=998; scene.add(lp); ops_lights.push(lp); } }   // flood GLARE sprites: constant pixels AND no depth test — the broad island superstructure occluded every depth-tested placement near the mast; a source this bright blooms through structure anyway
 }
 const HOOK_DROP=4, HOOK_AFT=9;   // the tailhook rides ~4 m below and ~9 m aft of the pilot's eye; the meatball flies the HOOK onto the wire, so the eye rides well above the 3.5° glideslope
 function ols_dev(p,o){   // hook's deviation off the 3.5° glideslope to the touchdown: along/lateral/distance + dev (+ high, − low)
@@ -1896,7 +1900,7 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
 		const ch=(e.shiftKey?"Shift+":"")+k;   // full chord — remappable actions match this, so a shift-chord never fires the bare-key action and vice versa
 		if(ch===key_of("launch") && launch_status()===2){ if((ownship.fold??0)>0.02) notice(translate("SPREAD WINGS")); else start_launch(); }   // only when spotted on the cat, lined up, at full power — and never with the wings folded
-		if(ch===key_of("missile") && !ownship.launching && (ownship.gear??0)>0.98 && cfg.missiles && ownship.msl>0){
+		if(ch===key_of("missile") && !weapons_hold && !ownship.launching && (ownship.gear??0)>0.98 && cfg.missiles && ownship.msl>0){
 			if(MULTIPLAYER) missile_flag=true;   // the server acquires and scores; the local launch is the visual
 			if(launch_missile(ownship,MULTIPLAYER?remote_nearest():(has_enemy?bandit:null))){ ownship.msl--; audio_launch(); } }   // weapons safe unless the gear is fully up
 		if(TEST_SCENARIOS && e.ctrlKey && k==="KeyC"){ copy_here(); notice("POSITION COPIED"); }   // dev (Ctrl+C): the live position line to the clipboard — for identifying deck locations (spots, markings) by taxiing onto them
@@ -2330,6 +2334,7 @@ function verdict(out){   // judge the core's touchdown record: crash conditions 
 	return false;                                                     // bounces and rollout are the core's physics, not a verdict
 }
 function fly_player(dt){
+	if(net_waiting){ hud_message(translate("WAITING FOR OPPONENT")); return; }   // joust waiting room: frozen at the ring, no sim, until the server's match-start respawn
 	if(crash_t>0){ if(MULTIPLAYER){ read_input(dt); return; }   // multiplayer: hold in the fireball until the server's respawn event places us
 		crash_t-=dt; if(crash_t<=0){ crash_t=0; ownship.group.visible=true; reset_ownship(); } return; }   // hold through the fireball, then respawn
 	read_input(dt);
@@ -2372,6 +2377,11 @@ function fly_player(dt){
 		if(battle[4]&BATTLE.explode){ ownship.grade=""; return crash_ownship(); }   // the fuel fire's fuse ran out
 		if(battle[3]>0&&crash_t<=0){ notice(translate("PILOT DOWN")); return crash_ownship(); }
 	}
+	if(weapons_hold&&!MULTIPLAYER&&has_enemy){   // SP merge check (#87): either jet crossing the other's 3/9 line frees the weapons (mirrors the server's rule)
+		const rx=bandit.pos.x-ownship.pos.x, ry=bandit.pos.y-ownship.pos.y, rz=bandit.pos.z-ownship.pos.z;
+		const ownBehind=-(rx*bandit.fwd.x+ry*bandit.fwd.y+rz*bandit.fwd.z)< -5;   // own position in the bandit's frame: -rel·fwd
+		const banditBehind=(rx*ownship.fwd.x+ry*ownship.fwd.y+rz*ownship.fwd.z)< -5;
+		if(ownBehind||banditBehind){ weapons_hold=false; notice(translate("FIGHT'S ON")); } }
 	if(hit_flash>0) hit_flash=Math.max(0,hit_flash-dt*2.2);
 	{ // audio (#73): continuous voices track the core; edges fire one-shots
 		const harmL=last_out?last_out[STATE.engine_harm]:0, harmR=last_out?last_out[STATE.engine_harm+1]:0;
@@ -2535,7 +2545,7 @@ function step_world(dt){ sim_time+=dt;
 		g.children.forEach(c=>{ if(c.userData.ab){ c.visible=on; c.scale.z=flick; c.material.opacity=on?0.55+Math.random()*0.35:0; } }); };
 	set_ab(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15); set_ab(bandit.group,cfg.afterburner); extras.forEach(st=>set_ab(st.group,cfg.afterburner));   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
 	// player guns
-	{ const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,input.guns&&!ownship.launching&&(ownship.gear??0)>0.98);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock); in multiplayer the tracers are local, the damage is the server's
+	{ const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,input.guns&&!weapons_hold&&!ownship.launching&&(ownship.gear??0)>0.98);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock) or before the joust merge; in multiplayer the tracers are local, the damage is the server's
 		if(fired>0&&!MULTIPLAYER){ const pose=battle_pose(ownship);
 			if(has_enemy) battle_burst(0,pose,battle_aim(bandit),fired,0,battle_tick);
 			for(let i=0;i<extras.length&&i<8;i++) battle_burst(1+i,pose,battle_aim(extras[i]),fired,0,battle_tick); } }
@@ -2587,6 +2597,7 @@ function reset_ownship(){
 		const glide=3.5*D2R; ownship.vel_dir.y=-Math.sin(glide);   // DESCENDING on the glideslope, not level below it — holding level off the spawn took seconds of forward stick
 		ownship.q.premultiply(new THREE.Quaternion().setFromAxisAngle(r,7*D2R-glide)); }   // attitude = path + the 155 kt trim alpha (~7°): trimmed at the spawn's pattern speed, alpha rides up to on-speed as it bleeds   // spawn ON-SPEED: nose up ~approach alpha over the level path — a zero-alpha spawn sank while the PA law scrambled to capture on-speed (nose-down lurch, dead stick during the transient)
 	else if(st==="joust"){   // 1v1 merge: head-on east-west directly over the atoll at 15,000 ft, 1 NM either side, equal AIRSPEED — symmetric in every respect (island below both at all fight orientations, sun/moon abeam both noses); the side is a coin flip so the sun-left/sun-right mirror can't systematically favour one player
+		weapons_hold=true;   // #87: fight's on at the merge, not before
 		joust_side=Math.random()<0.5?1:-1;
 		ownship.pos.set(-joust_side*1.5*NM, 4572, 0); ownship.fwd.set(joust_side,0,0); ownship.speed=220; ownship.throttle=0.85;   // 15,000 ft = 4572 m; 1.5 NM either side = 3 NM head-on
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
@@ -3039,8 +3050,9 @@ function net_event(e){ const slot=Number(e.slot);
 			if(net&&Number(e.by)===net.slot){ own_kills++; notice(translate("KILL")); } }
 		break;
 	case "respawn":
-		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; }
+		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; }   // in a joust the match-starting double-respawn releases the waiting room
 		break;
+	case "fighton": weapons_hold=false; notice(translate("FIGHT'S ON")); break;   // the server saw the merge (#87)
 	case "flare": if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st&&cfg.flares) dispense_flares(st); } break;
 	case "hit": if(net&&slot===net.slot&&e.count){ hit_flash=Math.min(1,hit_flash+0.25*Number(e.count)); audio_hit(Number(e.count)); } break;   // the server says rounds are landing on us
 	case "eject": case "pilot":
@@ -3119,7 +3131,7 @@ function net_frame(dt){
 function net_connect(){
 	net_dial(join,{ event:net_event, end:(reason,results)=>net_end(reason||"finished",results), close:()=>net_end("gone") })
 	.then((n)=>{ net=n; match_started=Date.now();
-		if(n.welcome&&n.welcome.spawn) apply_own_state(n.welcome.spawn.state);
+		if(n.welcome&&n.welcome.spawn){ apply_own_state(n.welcome.spawn.state); net_waiting=!!n.welcome.spawn.waiting; weapons_hold=n.welcome.spawn.mode==="joust"; }
 		apply_model_all();   // the welcome names the server-assigned aircraft; re-apply in case the picker had another type
 		const rules=(n.welcome&&n.welcome.parameters)||{};   // the creator's weather + rules apply to every participant
 		if(rules.tod==="day"||rules.tod==="night"){ cfg.tod=rules.tod; apply_time_of_day(cfg.tod); apply_effects(); }

@@ -26,6 +26,8 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'SPD BK': msg`SPD BK`,
   YOU: msg`YOU`,
   PAUSED: msg`PAUSED`,
+  'WAITING FOR OPPONENT': msg`WAITING FOR OPPONENT`,
+  "FIGHT'S ON": msg`FIGHT'S ON`,
   LOADING: msg`LOADING`,
   CRASHED: msg`CRASHED`,
   'PRESS ENTER TO LAUNCH': msg`PRESS ENTER TO LAUNCH`,
@@ -69,7 +71,7 @@ export function GameCanvas({
   onExit,
   onReady,
 }: {
-  config?: MissionConfig
+  config?: MissionConfig & { cat?: number } // cat: carrier-start catapult 1-4, session-only (deliberately not part of the persisted MissionConfig)
   join?: NetJoin | null
   onExit?: () => void
   onReady?: (handle: GameHandle) => void

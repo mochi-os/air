@@ -228,7 +228,7 @@ export interface Welcome {
   rate: { tick: number; snapshot: number }
   seed: number
   parameters?: Record<string, unknown>
-  spawn: { state?: SpawnState; wrap?: number; model?: number; aircraft?: string }
+  spawn: { state?: SpawnState; wrap?: number; model?: number; aircraft?: string; waiting?: boolean; mode?: string }
   players: { slot: number; name: string; identity: string }[]
 }
 
