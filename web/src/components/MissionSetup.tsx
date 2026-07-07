@@ -33,9 +33,21 @@ import {
   type GraphicsPreset,
   type MissionConfig,
   type StickBindings,
+  deviceDefaults,
 } from '../lib/config'
 import { Multiplayer } from './Multiplayer'
 import { type Join } from '../game/net'
+
+// The fields each tab owns, for the per-tab Reset (the joystick tab also clears
+// the per-device maps so built-in defaults apply again).
+const TAB_FIELDS: Record<string, string[]> = {
+  mission: ['task', 'start', 'world', 'callsign', 'aircraft'],
+  weather: ['tod', 'clouds'],
+  controls: ['sens', 'invert', 'joystick', 'sticks'],
+  keys: ['keys'],
+  sound: ['sound', 'volume'],
+  graphics: ['render_scale', 'dyn_res', 'lod', 'shadows', 'exterior_detail', 'ocean_segments', 'extra_aircraft', 'afterburner', 'tracers', 'missiles', 'flares', 'framerate'],
+}
 
 function SectionLabel({ children }: { children: ReactNode }) {
   return (
@@ -74,18 +86,6 @@ const KEY_DEFAULTS: Record<string, string> = {
   probe: 'Shift+KeyF',
   canopy: 'Shift+KeyC',
   fold: 'Shift+KeyW',
-}
-
-// Built-in per-device defaults, mirroring the engine's pad_bindings (VelocityOne
-// mapping measured off the hardware; "-N" = reversed axis sense, idle at the low end).
-function deviceDefaults(id: string): StickBindings {
-  const vone = /velocityone|10f5/i.test(id)
-  return {
-    axes: { pitch: '1', roll: '0', yaw: '2', throttle: vone ? '-5' : '3', speedbrake: vone ? '-6' : '' },
-    buttons: vone
-      ? { guns: '0', missile: '17', flares: '15', gear: '16', 'look.up': '8', 'look.right': '9', 'look.down': '10', 'look.left': '11' }
-      : { guns: '0' },
-  }
 }
 
 interface PadState {
@@ -154,6 +154,7 @@ const AXIS_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'yaw', label: <Trans>Yaw</Trans> },
   { id: 'throttle', label: <Trans>Throttle</Trans> },
   { id: 'speedbrake', label: <Trans>Speed brake</Trans> },
+  { id: 'look', label: <Trans>Look</Trans> }, // an axis PAIR: the chosen index is horizontal, the next one up is vertical
 ]
 const LEVERS = new Set(['throttle', 'speedbrake']) // lever-style rows: min-to-max meter + reverse toggle
 
@@ -1055,7 +1056,12 @@ export function MissionSetup({
             variant='ghost'
             size='sm'
             className='text-muted-foreground'
-            onClick={() => onChange({ ...DEFAULT_CONFIG })}
+            onClick={() => {
+              const fields = TAB_FIELDS[tab] ?? Object.keys(DEFAULT_CONFIG)
+              const next = { ...config }
+              for (const field of fields) next[field] = DEFAULT_CONFIG[field]
+              onChange(next)
+            }}
           >
             <Trans>Reset</Trans>
           </Button>
