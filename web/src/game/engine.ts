@@ -79,16 +79,24 @@ const CARRIER_MODELS={
 		wires:[-115.6,-103.9,-92.2,-80.5], halfspan:13,  // arrestor wires 1..4 (fore-aft) spanning ±halfspan about the landing line — the classic four-wire CVN-68 fit, 11.7 m apart, 1-wire 51 m from the stern round-down. halfspan 13 parks the sheaves just outside the 22 m strip; 16 reached the el-4 apron on the port side
 		line:{ afa:-115.6, alat:2.0, bfa:-92.2, blat:-1.7 }, // the landing centreline = the MODEL's painted stripe (least-squares through its yellow centreline segments: lat = -16.27 - 0.1583·fa, 8.99° — the real angled deck is 9.05°). The plan-derived line sat 2.1-2.4 m port of the painted stripe, which made the wires' starboard sheaves look further out; the 1:200 plan says the sheaves are symmetric (~15.5 m each side), so the wires centre on the stripe
 		ols:{ fa:-21.0, lat:-38.6, model:true },         // OLS bracket on the port side — measured off the model's own IFLOLS: amber lens column (heights -0.5..+2.1 rel deck), green datum arms at +0.66 spanning 8.5 m, red wave-off columns at ±1.5 m. model:true = the GLB carries the physical structure, so the engine draws only the glowing lights
-		outline:[[-150,-3.1],[-78,22.1],[-48,33.8],[60,33.8],[72,27.1],[78,22.1],[126,15.3],[150,14],[150,3.1],[108,-12.3],[84,-13.8],[60,-29.7],[42,-34.8],[30,-34.7],[24,-32.5],[18,-37.4],[12,-36.6],[6,-30.2],[-54,-30.4],[-66,-32.7],[-120,-30.8],[-126,-29],[-132,-13.5],[-150,-12.6]] } }; // deck polygon (Ford placeholder) — re-raycast from the Nimitz GLB when re-measuring
+		outline:[ [-166,4.2],[-158,31.2],[-150,29.8],[-142,29.8],[-134,31.2],[-126,34.2],[-118,31.2],[-110,35.8],[-102,37.2],[-94,37.2],[-86,37.2],[-78,40.2],[-70,38.8],[-62,28.2],[-54,26.8],[-46,26.8],[-38,38.8],[-30,37.2],[-22,37.2],[-14,37.2],[-6,38.8],[2,38.8],[10,38.8],[18,37.2],[26,37.2],[34,37.2],[42,37.2],[50,38.8],[58,38.8],[66,38.8],[74,32.8],[82,26.8],[90,20.8],[98,19.2],[106,22.2],[114,17.8],[122,17.8],[130,17.8],[138,16.2],[146,14.8],[154,14.8],[162,14.8],[162,-12.2],[154,-12.2],[146,-13.8],[138,-13.8],[130,-15.2],[122,-16.8],[114,-16.8],[106,-16.8],[98,-16.8],[90,-18.2],[82,-22.8],[74,-25.8],[66,-34.8],[58,-40.8],[50,-39.2],[42,-39.2],[34,-39.2],[26,-37.8],[18,-34.8],[10,-40.8],[2,-34.8],[-6,-43.8],[-14,-34.8],[-22,-42.2],[-30,-34.8],[-38,-34.8],[-46,-36.2],[-54,-36.2],[-62,-34.8],[-70,-36.2],[-78,-37.8],[-86,-34.8],[-94,-34.8],[-102,-34.8],[-110,-34.8],[-118,-34.8],[-126,-18.2],[-134,-15.2],[-142,-15.2],[-150,-13.8],[-158,-12.2],[-166,-1.8] ] } }; // deck polygon TRACED FROM THE NIMITZ deck grid (84 pts, 1.5 m cells) — the Ford placeholder was narrower in places and the physics dropped jets through visually-solid deck near the edges
 const SHIP=CARRIER_MODELS.nimitz;   // the active carrier (a picker arrives with the second ship)
 function load_cfg(){ try{ const s=localStorage.getItem(SAVE_KEY); if(s) Object.assign(cfg,JSON.parse(s)); }catch(e){}
 	delete cfg.cats; delete cfg.cat_dy;   // pre-#100 configs carried ship data; CARRIER_MODELS owns it now
 	if(cfg.clouds!=="none"&&!["cumulus","high_stratus","low_stratus"].includes(cfg.clouds)) cfg.clouds="cumulus"; }   // a saved cloud type that no longer exists falls back to the default
 function save_cfg(){ try{ localStorage.setItem(SAVE_KEY,JSON.stringify(cfg)); }catch(e){} }
-function enter_align(){ place_on_cat(cat_idx); }   // alignment nudges SHIP.shuttles in memory; exit copies them for pasting into CARRIER_MODELS
-function copy_cats(){   // on align exit: the tuned shuttles to the clipboard, in the CARRIER_MODELS source format
-	const txt="shuttles:[ "+SHIP.shuttles.map(c=>"{x:"+c.x.toFixed(2)+", z:"+c.z.toFixed(2)+", h:"+c.h.toFixed(2)+"}").join(",\n\t\t           ")+" ]";
-	const fallback=()=>{ try{ const ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }catch(e){} };   // sandboxed-iframe path: the async clipboard API is often blocked with an opaque origin
+let dev_cursor=null;   // the measuring-cursor ring on deck (dev mode)
+const dev_nudge={fa:0,lat:0,hd:0};   // dev measuring-cursor offset from the nose wheel (I/K fore-aft, J/L port-stbd, U/O heading while parked); the readout and Ctrl+C include it
+function here_text(){   // dev: the deck point under the NOSE WHEEL (plus the nudge offset) in carrier-local coordinates — the same frame AND reference point as the shuttle table (a value can be compared with or pasted as a cat spot directly)
+	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
+	const nx=ownship.pos.x+ownship.fwd.x*nose, nz=ownship.pos.z+ownship.fwd.z*nose;
+	const fa=carrier_fore_aft(nx,nz)+dev_nudge.fa, lat=carrier_lateral(nx,nz)+dev_nudge.lat;
+	const hd=Math.atan2(-(ownship.fwd.x*CARRIER_S+ownship.fwd.z*CARRIER_C), ownship.fwd.x*CARRIER_C-ownship.fwd.z*CARRIER_S)*180/Math.PI+dev_nudge.hd;   // heading in the deck frame (0 = down the bow, + = port), from the forward vector through the inverse frame
+	return "fa="+fa.toFixed(2)+", lat="+lat.toFixed(2)+", heading="+hd.toFixed(1)+", y="+ownship.pos.y.toFixed(2);
+}
+function copy_here(){   // dev (Ctrl+C): the live position line to the clipboard
+	const txt=here_text();
+	const fallback=()=>{ try{ const ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }catch(e){} };
 	try{ navigator.clipboard.writeText(txt).catch(fallback); }catch(e){ fallback(); }
 }
 load_cfg();
@@ -97,9 +105,9 @@ cfg.view="hud";   // start in HUD (view 2); 1-5 select views, V swaps cockpit/HU
 let running=false, has_enemy=true;
 const MULTIPLAYER=!!join;            // in a live match the map/P must never freeze the world
 if(MULTIPLAYER){ cfg.task="joust"; cfg.extra_aircraft=0; cfg.missiles=false; }   // multiplayer: air start, no local AI; the match rules from the welcome may re-allow missiles
-const DECK_ALIGN=false;              // dev-only catapult/deck alignment tool (key 0) — code kept, unreachable in player builds; flip on to retune the cat poses
-const TEST_SCENARIOS=true;           // dev-only landing/trap test autopilot (Shift+1..0 fly scripted hands-off approaches) — flip off before release
-let cat_idx=1;                       // selected catapult (0-based; default = #2 port bow, the carrier-start spawn); Shift+1-4 select in align mode (key 0)
+const DEV_MODE=new URLSearchParams(location.search).get("developer")==="1";   // &developer=1: landing/trap test autopilot (Shift+1..0), deck align (0), stab cycle (Shift+E), telemetry (Shift+T), cloud A/B (Shift+X), position copy (Shift+P)
+let TEST_SCENARIOS=DEV_MODE;         // (DEV_MODE must be declared FIRST: initializing these from it a line early was a temporal-dead-zone crash at module load)
+let cat_idx=1;                       // selected catapult (0-based; default = #2 port bow, the carrier-start spawn)
 let pause_toggle=false, game_paused=false;
 let loading=false, loading_t0=0;
 const load_marks={}; let load_pending=[];   // loading-screen profiling: per-gate ready times + what is still pending (drawn under LOADING)   // flight-start LOADING screen: the sim + render hold until assets_ready() (20 s cap so a failed load can't hang the game)
@@ -1047,7 +1055,6 @@ function deck_y_at(grp,x,z,fallback){
 		if(gi>=0&&gi<g.W&&gj>=0&&gj<g.H){ const y=g.data[gj*g.W+gi]; if(!Number.isNaN(y)) return y; } return fallback; }
 	_ray.set(new THREE.Vector3(x,5000,z), new THREE.Vector3(0,-1,0)); const hits=_ray.intersectObject(grp,true); return hits.length?hits[0].point.y:fallback; }
 // Place ownship on the configured catapult (deck height found by raycast when a model carrier is present).
-let deck_edit=false;
 function place_on_cat(i=cat_idx){
 	// A cat pose ({x,z} offset, h launch heading) was tuned at yaw 90; rotate it by the
 	// carrier's yaw delta so it tracks the ship when the heading changes. R_y: x'=x·c+z·s, z'=−x·s+z·c.
@@ -1061,11 +1068,6 @@ function place_on_cat(i=cat_idx){
 	ownship.pos.set(wx, dy+((AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).stance||GEAR), wz); ownship.fwd.copy(fwd); ownship.vel_dir.copy(fwd);
 	const r=new THREE.Vector3().crossVectors(fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,fwd).normalize();
 	ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(fwd,u,r)); }
-function edit_cat(dt){ const mv=dt*1.2, rot=dt*2.5, cat=SHIP.shuttles[cat_idx]; let ch=false;   // 10x finer positional nudges + heading for precise alignment
-	if(keys.has("KeyI")){ cat.x+=mv; ch=true; } if(keys.has("KeyK")){ cat.x-=mv; ch=true; }     // fore / aft
-	if(keys.has("KeyJ")){ cat.z-=mv; ch=true; } if(keys.has("KeyL")){ cat.z+=mv; ch=true; }     // port / starboard
-	if(keys.has("KeyU")){ cat.h+=rot; ch=true; } if(keys.has("KeyO")){ cat.h-=rot; ch=true; }   // rotate heading
-	if(ch) place_on_cat(); }
 async function init_carrier_model(){
 	const tag=SHIP.url.startsWith("data:")?"embedded carrier":SHIP.url;
 	try{ 
@@ -1688,13 +1690,18 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 		for(const e of [a,b]){ const s=new THREE.Mesh(new THREE.BoxGeometry(0.28,0.16,0.28),sheaveMat); s.position.set(e.x,dy+0.1,e.z); scene.add(s); }   // deck-edge sheaves
 	}
 	const vsegs=[0,1].map(()=>{ const m=new THREE.Mesh(new THREE.BoxGeometry(1,0.08,0.09),wireMat); m.visible=false; m.castShadow=true; scene.add(m); return m; });   // the caught wire, dragged into a V by the hook
-	// --- catapult shuttles: the towing spreader standing proud of each track slot; the launch bar drops onto it ---
-	const shuttleMat=new THREE.MeshStandardMaterial({color:0x43474d,metalness:0.6,roughness:0.5});
+	// --- catapult shuttles: the towing spreader standing proud of each track slot; the launch bar drops onto it.
+	// Real C-13 shuttle: a low greased-steel block with a raised towing HORN at the rear that the bar hooks
+	// over — near-black worn metal, never painted ---
+	const shuttleMat=new THREE.MeshStandardMaterial({color:0x2e3136,metalness:0.75,roughness:0.4});
 	carrier_shuttles=SHIP.shuttles.map(cat=>{
 		const w=carrier_world(cat.x,cat.z), hd=cat.h*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
 		const fwdx=fx*CARRIER_C+fz*CARRIER_S, fwdz=-fx*CARRIER_S+fz*CARRIER_C;
-		const m=new THREE.Mesh(new THREE.BoxGeometry(0.9,0.1,0.3),shuttleMat);
-		m.position.set(w.x, deck_y_at(carrier_model,w.x,w.z,dy)+0.05, w.z); m.rotation.y=Math.atan2(-fwdz,fwdx); m.castShadow=true; scene.add(m);   // the real spreader stands ~10 cm proud
+		const m=new THREE.Group();
+		const body=new THREE.Mesh(new THREE.BoxGeometry(0.7,0.08,0.32),shuttleMat); body.position.set(0.1,0.04,0); m.add(body);   // the low deck block
+		const horn=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.14,0.24),shuttleMat); horn.position.set(-0.22,0.13,0); horn.rotation.z=0.18; m.add(horn);   // the raised aft towing horn, leaning forward
+		m.traverse(o=>{ if(o.isMesh) o.castShadow=true; });
+		m.position.set(w.x, deck_y_at(carrier_model,w.x,w.z,dy), w.z); m.rotation.y=Math.atan2(-fwdz,fwdx); scene.add(m);
 		return { mesh:m, home:m.position.clone() };
 	});
 	// --- OLS (meatball) on the port bracket of the carrier (measured); glideslope stays referenced to the touchdown, not this housing ---
@@ -1872,14 +1879,14 @@ const input={ pitch:0, roll:0, yaw:0, guns:false, brake:false };
 const keys=new Set();
 let cam_az=0, cam_el=0.22, cam_dist=24, cam_psi=0;
 let head_az=0, head_el=0, head_drag=false, head_keys=false;   // cockpit head look (#99): mouse-drag or arrow keys, snap back on release
+let view_zoom=1, zoom_target=1, zoom_wheel=0;   // optical zoom: notches move the TARGET, the view eases after it (stepping the FOV directly read as jerky); resets on every view change (deliberately non-persistent)
 const _headq=new THREE.Quaternion(), _pitq=new THREE.Quaternion(), _yaxis=new THREE.Vector3(0,1,0), _zaxis=new THREE.Vector3(0,0,1);
 const CAMFIX=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),-Math.PI/2);   // maps the camera's -Z view axis onto body +X with +Y up   // chase view: orbit around the aircraft; cam_psi = smoothed heading the orbit is referenced to
 let flyby_pos=null, flyby_side=1;          // flypast view: fixed world point the jet flies past, re-seeded ahead as it recedes
-let cat_saved_t=0;                              // "deck position saved" flash timer
 // True while the aircraft is sitting/rolling on the deck or runway (not yet airborne) — gear can't retract then.
 function mission_start(){ return cfg.task==="joust"?"joust":cfg.start; }   // joust always starts at the merge; the Start selector applies to free flight only
 function takeoff_surface(){ const st=mission_start(); if(st==="carrier") return CARRIER.deckY; if(st==="runway"&&airports.length) return airports[0].start.y; return 8; }
-function on_ground(){ return deck_edit||ownship.launching||!!ownship.grounded; }   // the real resting flag, not an altitude guess — off the cat you fly level at deck height, where a +12 m heuristic left G dead
+function on_ground(){ return ownship.launching||!!ownship.grounded; }   // the real resting flag, not an altitude guess — off the cat you fly level at deck height, where a +12 m heuristic left G dead
 addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown","/"].includes(e.key)) e.preventDefault();
 	audio_gesture();   // the first gesture unlocks the audio context (browser policy)
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
@@ -1888,27 +1895,27 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(ch===key_of("missile") && !ownship.launching && (ownship.gear??0)>0.98 && cfg.missiles && ownship.msl>0){
 			if(MULTIPLAYER) missile_flag=true;   // the server acquires and scores; the local launch is the visual
 			if(launch_missile(ownship,MULTIPLAYER?remote_nearest():(has_enemy?bandit:null))){ ownship.msl--; audio_launch(); } }   // weapons safe unless the gear is fully up
+		if(TEST_SCENARIOS && e.ctrlKey && k==="KeyC"){ copy_here(); notice("POSITION COPIED"); }   // dev (Ctrl+C): the live position line to the clipboard — for identifying deck locations (spots, markings) by taxiing onto them
 		if(ch===key_of("probe")){ ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; notice(ownship.probeTarget?translate("PROBE OUT"):translate("PROBE IN")); }   // refueling probe (real limit is ~300 KCAS — procedural, not enforced)
 		if(ch===key_of("fold")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.foldTarget=(ownship.foldTarget??0)>0.5?0:1; notice(ownship.foldTarget?translate("WINGS FOLDING"):translate("WINGS SPREADING")); } else notice(translate("WINGS LOCKED")); }   // wing fold — ground only, taxi speeds; the outer panels carry the ailerons and outer slats with them
 		if(ch===key_of("canopy")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.canopyTarget=(ownship.canopyTarget??0)>0.5?0:1; notice(ownship.canopyTarget?translate("CANOPY OPEN"):translate("CANOPY CLOSED")); } else notice(translate("CANOPY LOCKED")); }   // Shift+C: canopy — ground only, taxi speeds (NATOPS closes it before takeoff; ~60 kt operation wind limit)
 		if(ch===key_of("flares") && cfg.flares && ownship.cm>0 && (ownship.squish??0)<0.1){ dispense_flares(ownship); ownship.cm--; flare_flag=true; audio_flare(); }   // plain F only — Shift+F is the probe (self-guarded, NOT an else-chain: an inserted handler between the pair once re-aimed the else and Shift+F dropped flares). Weight-on-wheels inhibits the dispenser, as the real ALE-47 does — no pyrotechnics on the deck
 		if(ch===key_of("rearm")){ ownship.rounds=578; ownship.msl=4; ownship.cm=60; }   // plain X only — Shift+X is the dev cloud A/B
-		if(ch===key_of("eject") && !deck_edit && crash_t<=0 && !ejected){   // ejection handle: three pulls inside 1.25 s — the zero-zero seat works everywhere
+		const dev_parked=DEV_MODE && on_ground() && (ownship.speed??0)<1;   // J/L/O are nudge keys in this state
+		if(ch===key_of("eject") && !dev_parked && crash_t<=0 && !ejected){   // ejection handle: three pulls inside 1.25 s — the zero-zero seat works everywhere
 			if(sim_time-eject_at>1.25) eject_taps=0;
 			eject_at=sim_time; eject_taps++;
 			if(eject_taps>=3){ eject_taps=0; ejected=true; audio_eject();
 				if(MULTIPLAYER) eject_flag=true;   // the server scores the eject and wrecks the jet
 				notice(translate("EJECTED"));
 				crash_ownship(); } }
-		if(k==="Digit0" && DECK_ALIGN && carrier_model){ deck_edit=!deck_edit; if(deck_edit){ enter_align(); } else { save_cfg(); copy_cats(); cat_saved_t=1.8; } }   // 0: deck-alignment tool, gated by DECK_ALIGN (dev-only) — exit saves + copies the poses to the clipboard
-		if(TEST_SCENARIOS && !deck_edit && e.shiftKey && /^Digit\d$/.test(k)){ start_test((+k.slice(5)+9)%10); }   // Shift+1..0: scripted landing test scenarios (dev-only)
+		if(TEST_SCENARIOS && e.shiftKey && /^Digit\d$/.test(k)){ start_test((+k.slice(5)+9)%10); }   // Shift+1..0: scripted landing test scenarios (dev-only)
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyE"){ stab_cycle=(stab_cycle+1)%8; notice("STAB ANGLE "+stab_cycle); }   // Shift+E (dev): stab orientation cycle, +90° per press — the user reports the correct number
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyT"){ telemetry_dump(); }   // Shift+T (dev): download the handling telemetry ring
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyA"){ const rig=ownship.group.userData.rig||[];   // Shift+A (dev): rig calibration — cycle subsystems, sweeping the active one 0..1
 			rig_sweep = rig_sweep+1 > rig.length ? 0 : rig_sweep+1;
 			notice(rig_sweep ? "RIG SWEEP: "+rig[rig_sweep-1].name : "RIG SWEEP OFF"); }
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyX"){ const u=cloud_mat.uniforms.uDebug; u.value=u.value>0.5?0:1; }   // Shift+X (dev, moved off Shift+C for the canopy): keep the cloud render path but zero the cloud contribution — the definitive plumbing-vs-cloud-light A/B
-		else if(deck_edit && e.shiftKey && (k==="Digit1"||k==="Digit2"||k==="Digit3"||k==="Digit4")){ cat_idx=+k.slice(5)-1; place_on_cat(cat_idx); }   // in align mode, Shift+1-4 select the catapult being aligned (plain 1-5 stay views)
 		else { if(k==="Digit1") set_view("cockpit");   // 1 Cockpit — pending art, resolves to the HUD eye-point for now (not a dead key)
 			if(k==="Digit2") set_view("hud");        // 2 HUD (default start view)
 			if(k==="Digit3") set_view("chase");      // 3 Chase
@@ -1918,7 +1925,7 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(ch===key_of("map")){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on){ map_px=0; map_pz=0; map_resize(); } }   // reopening always returns centred on own aircraft
 		if(ch===key_of("pause") && !MULTIPLAYER){ pause_toggle=!pause_toggle; }
 		if(ch===key_of("hook")){ ownship.hookTarget = ownship.hookTarget>0.5?0:1; }   // arrestor hook deploy/stow
-		if(ch===key_of("lights")){ ownship.lights=!ownship.lights; }   // aircraft position/strobe/landing lights
+		if(ch===key_of("lights") && !dev_parked){ ownship.lights=!ownship.lights; }   // aircraft position/strobe/landing lights
 
 		if(ch===key_of("brake.speed")){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
 		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; audio_servo(); }   // G: landing gear up/down — only once airborne, never on deck/runway
@@ -1942,6 +1949,25 @@ stage.addEventListener("pointermove",e=>{ if(!dragging) return;
 	cam_az-=dx*f; cam_el=THREE.MathUtils.clamp(cam_el+dy*f,-1.2,1.45); }, { signal });   // both axes reversed (grab-the-world feel): drag right = orbit left, drag up = camera lowers
 function end_drag(e){ if(!dragging) return; dragging=false; head_drag=false; try{ stage.releasePointerCapture(e.pointerId); }catch(_){} }
 stage.addEventListener("pointerup",end_drag,{ signal });
+// zoom_step: one discrete notch of zoom (trim-wheel button pulse or scroll notch).
+function zoom_step(direction){
+	if(map_on){ map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,-direction),MAP_RANGE_MIN,MAP_RANGE_MAX); return; }
+	if(running) zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.25,direction),cfg.view==="chase"?0.5:1,4); }   // chase may zoom OUT past 1x (45°→90° wide); first-person floors at 1x
+// scan_zoom: the trim-wheel notch buttons, edge-detected. Called from read_input
+// in flight AND from frame() while the map is up — the SP map pauses the world,
+// so read_input stops and the wheel went dead over the map without this.
+function scan_zoom(pad,bind){
+	for(const [action,list] of Object.entries(bind.buttons)){ if(action!=="zoom.in"&&action!=="zoom.out") continue;
+		for(const index of String(list).split(",")){ const b=+index;
+			if(!(b>=0)||b>=pad.buttons.length) continue;
+			const down=pad.buttons[b].pressed, was=pad_buttons[b]||false;
+			if(down!==was){ pad_buttons[b]=down; if(down) zoom_step(action==="zoom.in"?1:-1); } } } }
+stage.addEventListener("wheel",e=>{ e.preventDefault();   // scroll = zoom (any mouse wheel; the VelocityOne trim wheel in DIGITAL mode arrives as button pulses instead — see zoom.in/zoom.out)
+	if(!running||game_paused) return;
+	const notch=-e.deltaY/(e.deltaMode===1?3:100);   // deltaMode 1 = lines (Firefox), else pixels; scroll up = zoom in
+	if(map_on){ map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.30,-notch),MAP_RANGE_MIN,MAP_RANGE_MAX); return; }
+	zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.30,notch),cfg.view==="chase"?0.5:1,4);
+},{ signal, passive:false });
 stage.addEventListener("pointercancel",end_drag,{ signal });
 // Remappable input actions (#74): defaults here, user overrides in cfg.keys
 // (the menu's Keys tab). Joystick buttons bind to ACTIONS and replay the
@@ -2023,6 +2049,13 @@ function read_input(dt){
 		{ const p=pad_lever(pad,bind.axes.speedbrake,"speedbrake");   // speed brake: full forward retracted, aft deployed (deployed at the HIGH raw end; "-" prefix flips)
 			if(p!==null) ownship.speedbrakeTarget=p; }
 		pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_guns=false;
+		{ const z=String(bind.axes.zoom??""); zoom_wheel=0;
+			if(z.endsWith("+")){ const zi=Math.abs(parseInt(z,10));   // "N+": half-axis PAIR wheel — each roll direction sweeps its own axis 0..-1 (thumbwheel style)
+				if(pad.axes.length>zi+1){ const back=Math.max(0,-pad.axes[zi]), fore=Math.max(0,-pad.axes[zi+1]);
+					const v=(z.startsWith("-")?-1:1)*(fore-back);
+					zoom_wheel=Math.abs(v)>0.08?v:0; } }
+			else if(z!==""){ const zi=Math.abs(+z); if(pad.axes.length>zi){ const v=(z.startsWith("-")?-1:1)*pad.axes[zi];
+				zoom_wheel=Math.abs(v)>0.02?v:0; } } }   // plain "N": a rate axis — the VelocityOne's infinite clicky wheel reports rolling SPEED that decays to zero, so single notches are brief small blips: tiny deadband, gain lives at the apply site
 		{ const h=String(bind.axes.look??""); if(h!==""){ const hi=+h;   // the Look pair (HID: x -1 left +1 right, y -1 up +1 down; the 0.5 threshold covers analog ministicks and digital hats alike)
 			if(pad.axes.length>hi+1){ const hx=pad.axes[hi], hy=pad.axes[hi+1];
 				if(hx<-0.5) pad_looks.left=true; if(hx>0.5) pad_looks.right=true;
@@ -2032,6 +2065,7 @@ function read_input(dt){
 			const down=pad.buttons[b].pressed;
 			if(action.startsWith("look.")){ if(down) pad_looks[action.slice(5)]=true; continue; }   // look directions are level state for the camera, not key events
 			if(action==="guns"){ if(down) pad_guns=true; continue; }   // guns too: held fire from any bound button, immune to another button's release
+			if(action==="zoom.in"||action==="zoom.out") continue;   // notch zoom is scanned by scan_zoom (also polled while the map pauses the world)
 			const was=pad_buttons[b]||false;   // other actions replay their CURRENT key: synthetic keydown on press, keyup on release, so held actions (brakes) work and pad binds follow key remaps
 			if(down!==was){ pad_buttons[b]=down; const bindText=key_of(action);
 				if(bindText){ const shift=bindText.startsWith("Shift+"), code=bindText.replace("Shift+","");
@@ -2041,11 +2075,18 @@ function read_input(dt){
 	input.pitch=Math.abs(pp)>Math.abs(key_axes.pitch)?pp:key_axes.pitch;
 	input.roll=Math.abs(pr)>Math.abs(key_axes.roll)?pr:key_axes.roll;
 	input.yaw=Math.abs(py)>Math.abs(key_axes.yaw)?py:key_axes.yaw;
+	if(pad) scan_zoom(pad,pad_bindings(pad));
 	input.guns=keys.has(key_of("guns"))||pad_guns; input.brake=keys.has(key_of("brake.wheel"));   // the trigger's gear-down brake role comes from its brake.wheel BINDING, not hidden logic   // B: wheel brakes, held (both mains together); joystick trigger fires too
-	const throttling=!deck_edit&&(keys.has(key_of("throttle.up"))||keys.has(key_of("throttle.down")));
+	if(DEV_MODE && on_ground() && (ownship.speed??0)<1){   // dev measuring cursor: nudge the readout point off the nose wheel while parked (the eject/lights/override keys are gated off in this state)
+		const step=dt*1.2, turn=dt*2.5;
+		if(keys.has("KeyI")) dev_nudge.fa+=step; if(keys.has("KeyK")) dev_nudge.fa-=step;
+		if(keys.has("KeyJ")) dev_nudge.lat-=step; if(keys.has("KeyL")) dev_nudge.lat+=step;
+		if(keys.has("KeyU")) dev_nudge.hd+=turn; if(keys.has("KeyO")) dev_nudge.hd-=turn;
+	}
+	const throttling=keys.has(key_of("throttle.up"))||keys.has(key_of("throttle.down"));
 	if(throttling&&pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; }   // the keyboard takes the throttle back from an armed physical lever (else the lever pins it every frame and e.g. the catapult unhook — throttle below 30% + full pedal — can never fire); the next deliberate lever sweep re-takes control
-	if(!deck_edit && keys.has(key_of("throttle.up"))){ if(ownship.throttle>=1) ownship.burner=Math.min(1,(ownship.burner??0)+dt*0.8); else ownship.throttle=Math.min(1,ownship.throttle+dt*0.5); }   // throttle up (], held & ramped); past MIL the lever advances through the afterburner range
-	if(!deck_edit && keys.has(key_of("throttle.down"))){ if((ownship.burner??0)>0) ownship.burner=Math.max(0,ownship.burner-dt*0.8); else ownship.throttle=Math.max(0,ownship.throttle-dt*0.5); }    // throttle down ([): the burner comes off before the dry range
+	if(keys.has(key_of("throttle.up"))){ if(ownship.throttle>=1) ownship.burner=Math.min(1,(ownship.burner??0)+dt*0.8); else ownship.throttle=Math.min(1,ownship.throttle+dt*0.5); }   // throttle up (], held & ramped); past MIL the lever advances through the afterburner range
+	if(keys.has(key_of("throttle.down"))){ if((ownship.burner??0)>0) ownship.burner=Math.max(0,ownship.burner-dt*0.8); else ownship.throttle=Math.max(0,ownship.throttle-dt*0.5); }    // throttle down ([): the burner comes off before the dry range
 }
 
 let sim_time=0;
@@ -2288,11 +2329,6 @@ function fly_player(dt){
 		crash_t-=dt; if(crash_t<=0){ crash_t=0; ownship.group.visible=true; reset_ownship(); } return; }   // hold through the fireball, then respawn
 	read_input(dt);
 	ownship.fwd.set(1,0,0).applyQuaternion(ownship.q); ownship.up.set(0,1,0).applyQuaternion(ownship.q); ownship.right.set(0,0,1).applyQuaternion(ownship.q);
-	if(deck_edit){   // dev-only deck-alignment tool: freeze on the cat while nudging the pose
-		edit_cat(dt);
-		ownship.speed=0; ownship.velx=ownship.vely=ownship.velz=0; ownship.aoa=0; ownship.gload=1; ownship.vel_dir.copy(ownship.fwd);
-		ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos); return;
-	}
 	if(!flight_active){   // bind the core to this mission's world on the first live frame past the loading gate
 		if(MULTIPLAYER && !(net&&net.welcome)) return;   // the world payload needs the match seed/wrap from the welcome
 		if(!flight_ready()){ if(flight_failure()) notice(translate("FLIGHT CORE FAILED")); return; }
@@ -2304,7 +2340,7 @@ function fly_player(dt){
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5,
-		launch:launch_flag, override:keys.has("KeyO"), sequence:++control_sequence };
+		launch:launch_flag, override:keys.has("KeyO")&&!(DEV_MODE&&on_ground()), sequence:++control_sequence };
 	const out=flight_frame(controls,dt);
 	if(flight_steps.value>0) launch_flag=false;   // the edge was consumed by the core
 	last_controls=controls; marked_steps+=flight_steps.value;
@@ -2336,7 +2372,7 @@ function fly_player(dt){
 		const harmL=last_out?last_out[STATE.engine_harm]:0, harmR=last_out?last_out[STATE.engine_harm+1]:0;
 		audio_frame({ spool:ownship.spool||0, stage:ownship.stage||0, speed:ownship.speed||0, alpha:ownship.aoa||0,
 			wow:!!ownship.grounded, burn:Math.max(own_burn[0],own_burn[1],own_burning?1:0), harm:[harmL,harmR] });
-		audio_gun(!!(input.guns&&!ownship.launching&&!deck_edit&&(ownship.gear??0)>0.98&&ownship.rounds>0));
+		audio_gun(!!(input.guns&&!ownship.launching&&(ownship.gear??0)>0.98&&ownship.rounds>0));
 		if(ownship.launching&&!audio_prev.launching) audio_catapult();
 		if(ownship.trapped&&!audio_prev.trapped) audio_trap();
 		if(ownship.grounded&&!audio_prev.grounded&&!ownship.trapped&&ownship.speed>30) audio_touchdown();
@@ -2432,7 +2468,7 @@ function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.user
 			f=Math.max(THREE.MathUtils.clamp((0.7-spool)/0.55,0,1), THREE.MathUtils.clamp(stage,0,1)); break; }
 		case "canopy": f=THREE.MathUtils.clamp(st.canopy??0,0,1); break;
 		case "fold": f=THREE.MathUtils.clamp(st.fold??0,0,1); break;
-		case "bar": f=THREE.MathUtils.clamp(st.bar??0,0,1); break;
+		case "bar": f=THREE.MathUtils.clamp(st.bar??0,0,1)*0.955; break;   // full track-end deployment stabs the tip 5 cm into the deck (measured); 0.955 rests it on the shuttle block instead
 		default: { const surfaces=st.surfaces; if(!surfaces||surfaces[r.drive]===undefined){ f=undefined; break; }   // no live FCS data (remotes): hold the rest pose
 			f=(surfaces[r.drive]-(r.min??0))/(((r.max??1)-(r.min??0))||1); f=THREE.MathUtils.clamp(f,0,1); } }
 		if(f===undefined) continue;
@@ -2494,7 +2530,7 @@ function step_world(dt){ sim_time+=dt;
 		g.children.forEach(c=>{ if(c.userData.ab){ c.visible=on; c.scale.z=flick; c.material.opacity=on?0.55+Math.random()*0.35:0; } }); };
 	set_ab(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15); set_ab(bandit.group,cfg.afterburner); extras.forEach(st=>set_ab(st.group,cfg.afterburner));   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
 	// player guns
-	{ const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,input.guns&&!ownship.launching&&!deck_edit&&(ownship.gear??0)>0.98);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock); in multiplayer the tracers are local, the damage is the server's
+	{ const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,input.guns&&!ownship.launching&&(ownship.gear??0)>0.98);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock); in multiplayer the tracers are local, the damage is the server's
 		if(fired>0&&!MULTIPLAYER){ const pose=battle_pose(ownship);
 			if(has_enemy) battle_burst(0,pose,battle_aim(bandit),fired,0,battle_tick);
 			for(let i=0;i<extras.length&&i<8;i++) battle_burst(1+i,pose,battle_aim(extras[i]),fired,0,battle_tick); } }
@@ -2569,9 +2605,8 @@ function reset_ownship(){
 
 // ============================================================================ camera
 function update_camera(dt){
-	const editing = deck_edit;
 	const firstPerson = (cfg.view==="hud");
-	ownship.group.visible=(!firstPerson) || editing || cfg.view==="cockpit";   // in cockpit view the airframe RENDERS (near pass); the layer split keeps it out of the world passes
+	ownship.group.visible=(!firstPerson) || cfg.view==="cockpit";   // in cockpit view the airframe RENDERS (near pass); the layer split keeps it out of the world passes
 	if(cfg.view==="cockpit" && !map_on){   // arrow-key head look, sharing head_az/el with the mouse drag; held arrows hold the pose, release snaps back
 		const hr=dt*1.6;
 		const daz=(((keys.has("ArrowLeft")||pad_looks.left)?1:0)-((keys.has("ArrowRight")||pad_looks.right)?1:0))*hr;
@@ -2584,7 +2619,7 @@ function update_camera(dt){
 		cam_az+=(((keys.has("ArrowRight")||pad_looks.right)?1:0)-((keys.has("ArrowLeft")||pad_looks.left)?1:0))*ar;           // ←/→ orbit (keyboard or castle)
 		cam_el=THREE.MathUtils.clamp(cam_el+(((keys.has("ArrowUp")||pad_looks.up)?1:0)-((keys.has("ArrowDown")||pad_looks.down)?1:0))*ar,-1.2,1.45);   // ↑/↓ tilt
 		if(keys.has("Minus")) cam_dist=Math.min(140,cam_dist+zr);           // - back
-		if(keys.has("Equal")) cam_dist=Math.max(8,cam_dist-zr);             // = in
+		if(keys.has("Equal")) cam_dist=Math.max(14,cam_dist-zr);            // = in — floor clears the airframe: ~10 m bounding radius about the orbit centre + the 3 m near plane + margin, so the camera can never cut inside the jet (#116)
 	}
 	if(firstPerson){ const eye=body_offset(ownship,3.0,0.6,0); camera.position.copy(eye); camera.up.copy(ownship.up);
 		camera.lookAt(eye.clone().addScaledVector(ownship.fwd,200)); }
@@ -2708,17 +2743,15 @@ function draw_hud(dt){
 		hud_message(ownship.grade==="BOLTER"?translate("BOLTER"):translate(ownship.grade)+", "+translate(ownship.wire+" WIRE")); }
 	else if(crash_t<=0 && ownship.waving && ((performance.now()-(ownship.wavet||0))%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call, blink phase anchored to the call's onset
 	if(test_active){ hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="13px monospace"; hctx.fillText("TEST  "+test_active.name, 14, 28); }
-	if(deck_edit && carrier_model){   // carrier-frame position + centreline — only in the dev deck-alignment mode (key 0)
+	if(DEV_MODE && carrier_model){   // developer mode: live nose-wheel deck position (Ctrl+C copies) + a dashed view centreline for eyeballing alignment
 		hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="14px monospace";
-		hctx.fillText("deck  fa="+carrier_fore_aft(ownship.pos.x,ownship.pos.z).toFixed(1)+"  lat="+carrier_lateral(ownship.pos.x,ownship.pos.z).toFixed(1)+"  h="+(ownship.pos.y-CARRIER.deckY).toFixed(1), 14, 28);
-		hctx.save(); hctx.strokeStyle="rgba(127,200,255,0.55)"; hctx.lineWidth=1; hctx.setLineDash([7,7]); hctx.beginPath(); hctx.moveTo(cx,0); hctx.lineTo(cx,HH); hctx.stroke(); hctx.restore(); }   // alignment centreline
-	// ---- carrier / deck-align overlay: shown in every view (incl. chase) ----
-	if(deck_edit){ hctx.textAlign="center"; hctx.save(); hctx.strokeStyle="rgba(255,193,77,0.55)"; hctx.lineWidth=1; hctx.setLineDash([6,6]);
-			hctx.beginPath(); hctx.moveTo(cx,0); hctx.lineTo(cx,HH); hctx.stroke(); hctx.restore();
-			hctx.fillStyle=AM; hctx.font="13px monospace"; hctx.fillText("DECK ALIGN  CAT "+(cat_idx+1)+"  Shift+1-4 select · I/K fore-aft · J/L port-stbd · [ ] height · U/O rotate · 0 save",cx,cy+182);
-			hctx.fillStyle=GR; hctx.fillText("x="+SHIP.shuttles[cat_idx].x.toFixed(2)+"  z="+SHIP.shuttles[cat_idx].z.toFixed(2)+"  hdg="+SHIP.shuttles[cat_idx].h.toFixed(1)+"\u00b0    (camera: Shift+\u2190\u2192 orbit · ,/. tilt · \u2212/= zoom)",cx,cy+200); }
-		else if(net_notice_t<=0){ const ls=launch_status(); if(ls>0) hud_message(translate(ls===2?"PRESS ENTER TO LAUNCH":"RUN UP ENGINE")); }   // transient notices own the centre banner — never draw two messages on top of each other
-	if(cat_saved_t>0){ cat_saved_t-=dt; hctx.textAlign="center"; hctx.fillStyle=GR; hctx.font="14px monospace"; hctx.fillText(translate("DECK POSITION SAVED"),cx,cy+182); }
+		hctx.fillText(here_text(), 14, 46);
+		if(!dev_cursor){ dev_cursor=new THREE.Mesh(new THREE.RingGeometry(0.10,0.16,24),new THREE.MeshBasicMaterial({color:0x7fc8ff,side:THREE.DoubleSide,depthTest:false})); dev_cursor.rotation.x=-Math.PI/2; dev_cursor.renderOrder=999; dev_cursor.frustumCulled=false; scene.add(dev_cursor); }
+		{ const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
+			const bx=ownship.pos.x+ownship.fwd.x*nose+dev_nudge.fa*CARRIER_C+dev_nudge.lat*CARRIER_S, bz=ownship.pos.z+ownship.fwd.z*nose-dev_nudge.fa*CARRIER_S+dev_nudge.lat*CARRIER_C;
+			dev_cursor.position.set(bx, deck_y_at(carrier_model,bx,bz,CARRIER.deckY)+0.06, bz); dev_cursor.visible=true; }
+		hctx.save(); hctx.strokeStyle="rgba(127,200,255,0.55)"; hctx.lineWidth=1; hctx.setLineDash([7,7]); hctx.beginPath(); hctx.moveTo(cx,0); hctx.lineTo(cx,HH); hctx.stroke(); hctx.restore(); }
+	if(net_notice_t<=0){ const ls=launch_status(); if(ls>0) hud_message(translate(ls===2?"PRESS ENTER TO LAUNCH":"RUN UP ENGINE")); }   // transient notices own the centre banner — never draw two messages on top of each other
 	if(cfg.view!=="hud" && cfg.view!=="cockpit"){ return; }
 	{ const mb=meatball_state(ownship.pos);   // 2D OLS meatball, top-left, when on the carrier approach with gear + hook down
 		if(mb){ const bx=72, by=150, half=58; hctx.save();
@@ -2939,6 +2972,7 @@ function set_view(v){
 	if(v==="chase" && cfg.view==="chase"){ cam_az=0; cam_el=0.22; cam_dist=24; }   // re-press recentres the orbit (keys.md §4)
 	if(v==="flypast") flyby_pos=null;   // (re)seed a fresh flyby each time it's selected
 	if(v!==cfg.view) hist_valid=false;   // a view switch is a camera CUT: reprojecting cloud history across it smears the old view over the new one for a beat
+	view_zoom=1; zoom_target=1;   // the thumbwheel zoom is per-view and deliberately transient
 	cfg.view=v;
 	cockpit_hidden();
 }
@@ -3140,6 +3174,10 @@ function frame(){ const dt=Math.min(clock.getDelta(),0.05);
 		if(!game_paused){ ocean_mat.uniforms.u_time.value+=dt; step_world(dt); }   // frozen world stops advancing
 		update_camera(dt);
 	} else { ocean_mat.uniforms.u_time.value+=dt; menu_backdrop(); }
+	if(map_on&&running){ const pad=read_gamepad(); if(pad) scan_zoom(pad,pad_bindings(pad)); }   // the map pauses the world (read_input stops): poll the wheel here so it still zooms the map
+	if(!map_on&&zoom_wheel&&running&&!game_paused) zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(3,zoom_wheel*4*dt),cfg.view==="chase"?0.5:1,4);   // axis-form wheels steer the target too
+	view_zoom+=(zoom_target-view_zoom)*Math.min(1,dt*10);   // ease toward the notch target — direct FOV steps read as jerky
+	{ const fov=45/view_zoom; if(Math.abs(camera.fov-fov)>0.01){ camera.fov=fov; camera.updateProjectionMatrix(); cockpit_cam.fov=fov; cockpit_cam.updateProjectionMatrix(); } }
 	if(ocean){ ocean.position.x=camera.position.x; ocean.position.z=camera.position.z; }
 	sky.position.copy(camera.position); stars.position.copy(camera.position);
 	render_frame();
@@ -3150,6 +3188,7 @@ function frame(){ const dt=Math.min(clock.getDelta(),0.05);
 	if(map_on){ const zf=Math.pow(2.2,dt), pr=map_range*dt*0.9;   // held − zooms out, = zooms in (smooth; wheel does notches); arrows pan, scaled to the zoom
 		if(keys.has("Minus")) map_range=Math.min(MAP_RANGE_MAX,map_range*zf);
 		if(keys.has("Equal")) map_range=Math.max(MAP_RANGE_MIN,map_range/zf);
+		if(zoom_wheel) map_range=THREE.MathUtils.clamp(map_range*Math.pow(2.2,-zoom_wheel*4*dt),MAP_RANGE_MIN,MAP_RANGE_MAX);   // the thumbwheel zooms the MAP while it's up (same notch gain as the view zoom)
 		if(keys.has("ArrowLeft")) map_px-=pr; if(keys.has("ArrowRight")) map_px+=pr;
 		if(keys.has("ArrowUp")) map_pz-=pr; if(keys.has("ArrowDown")) map_pz+=pr;
 		draw_map(); }
