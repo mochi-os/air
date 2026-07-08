@@ -2287,7 +2287,7 @@ const TESTS=[
 	{name:"9 carrier - on glideslope (traps)",              V:70,  S:4.3, pitch:4, carrier:true, hook:true},
 	{name:"0 carrier - touch and go (bolter)",              V:80,  S:1.2, pitch:3, carrier:true, hook:false, long:55, bolter:true},
 ];
-let test_active=null, test_idle=0, test_power=0, test_brake=false, dev_fps=0;   // post-scenario throttle grace: the physical lever must not re-power a scripted rollout (test_power: a bolter keeps MIL power instead)
+let test_active=null, test_idle=0, test_power=0, test_brake=false, dev_fps=0, dev_jitter=false;   // post-scenario throttle grace: the physical lever must not re-power a scripted rollout (test_power: a bolter keeps MIL power instead)
 if(DEV_MODE) (globalThis as any).dev_measure=()=>{   // one-shot: the lowest mesh nodes in MODEL frame, named — the source of truth for the physics Belly/Probe constants (#72)
 	const inverse=new THREE.Matrix4().copy(ownship.group.matrixWorld).invert();
 	const v=new THREE.Vector3();
@@ -2303,8 +2303,8 @@ if(DEV_MODE) (globalThis as any).dev_measure=()=>{   // one-shot: the lowest mes
 	rows.sort((p1,p2)=>p1.y-p2.y);
 	return JSON.stringify(rows.slice(0,16));
 };
-let dev_peakbank=0;   // true per-frame peak |bank| since the last scenario start (dev instrumentation for #72)
-if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, peak:+dev_peakbank.toFixed(1), why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,
+let dev_peakbank=0, dev_pitchhi=0, dev_pitchlo=0;   // true per-frame peak bank + pitch high/low since the last scenario start (#72)
+if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, peak:+dev_peakbank.toFixed(1), phi:+dev_pitchhi.toFixed(1), plo:+dev_pitchlo.toFixed(1), why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,
 	lat:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*(-carrier_ols.apz)+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apx).toFixed(1)):0,
 	along:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*carrier_ols.apx+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apz).toFixed(1)):0, fa:+carrier_fore_aft(ownship.pos.x,ownship.pos.z).toFixed(1), edge:carrier_ols?+((ownship.pos.y-carrier_ols.dy).toFixed(1)):0 });   // dev: CDP-reachable state sampler for headless scenario verification (#72)
 function start_test(i){ const sc=TESTS[i]; if(!sc || crash_t>0) return;
@@ -2327,7 +2327,7 @@ function start_test(i){ const sc=TESTS[i]; if(!sc || crash_t>0) return;
 	ownship.gearTarget=sc.gearup?1:0; ownship.gear=ownship.gearTarget; ownship.hookTarget=sc.hook?1:0; ownship.hook=ownship.hookTarget;
 	ownship.launching=false; ownship.trapped=false; ownship.wire=0; ownship.touch=null; ownship.grounded=false;
 	ownship.pass={gs:0,az:0,n:0}; ownship.waved=false; ownship.pass_t=0;
-	test_active={ name:sc.name, q:q.clone(), vd:vd.clone(), V, t0:sim_time, bolter:!!sc.bolter, touchY:T.y, carrier:!!sc.carrier }; dev_peakbank=0;
+	test_active={ name:sc.name, q:q.clone(), vd:vd.clone(), V, t0:sim_time, bolter:!!sc.bolter, touchY:T.y, carrier:!!sc.carrier }; dev_peakbank=0; dev_pitchhi=0; dev_pitchlo=0;
 	flight_push();
 }
 function test_handoff(t){   // the scenario's outcome is decided: hand the jet back with the right hands on the controls
@@ -3329,7 +3329,7 @@ function start_mission(){
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
 	harm_pending=devq.get("harm");   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
 	const viewq=devq.get("view"); if(viewq) set_view(viewq);   // ?view=cockpit|hud|chase — headless capture hook (#105)
-	dev_fps=parseFloat(devq.get("fps")||"0")||0;   // ?fps=N: force a fixed frame dt for reproducing frame-rate-dependent physics
+	dev_fps=parseFloat(devq.get("fps")||"0")||0; dev_jitter=devq.get("jitter")==="1";   // ?fps=N + ?jitter=1: forced frame dt with optional stutter spikes
 	const scq=devq.get("scenario"); if(scq!==null){ const n=parseInt(scq)||0; const arm=setInterval(()=>{ if(TESTS[n]&&TESTS[n].carrier?carrier_ols:airports.length){ clearInterval(arm); start_test(n); } }, 500); }   // &scenario=N: fire a landing test once ITS surface data exists (carrier scenarios need the OLS survey, not just the airfield list) — a fixed 3 s timer lost the race to the map load and the hook silently never ran
 	const startq=devq.get("start"); if(startq){ cfg.start=startq; cfg.task="free"; }
 	sweep_pending=devq.get("sweep");   // &sweep=<rig name> — wall-clock sweep of one rig entry (visible motion even in a ~5-frame headless capture)
@@ -3369,8 +3369,9 @@ function menu_backdrop(){ const a=performance.now()*0.00007; const r=440;
 
 const clock=new THREE.Clock();
 function frame(){ let dt=Math.min(clock.getDelta(),0.05);
-	if(DEV_MODE&&running){ const bk=Math.abs(Math.atan2(ownship.right.y,ownship.up.y))*180/Math.PI; if(bk>dev_peakbank&&bk<170) dev_peakbank=bk; }   // true per-frame peak bank for #72 low-fps measurement
-	if(DEV_MODE&&dev_fps>0) dt=1/dev_fps;   // dev: force a fixed frame dt (?fps=N) to reproduce a specific frame rate through the real physics path (#72 low-fps trap topple)
+	if(DEV_MODE&&running){ const bk=Math.abs(Math.atan2(ownship.right.y,ownship.up.y))*180/Math.PI; if(bk>dev_peakbank&&bk<170) dev_peakbank=bk;
+		const pt=Math.asin(Math.max(-1,Math.min(1,ownship.fwd.y)))*180/Math.PI; if(pt>dev_pitchhi)dev_pitchhi=pt; if(pt<dev_pitchlo)dev_pitchlo=pt; }   // true per-frame peak bank + pitch extent for #72
+	if(DEV_MODE&&dev_fps>0){ dt=1/dev_fps; if(dev_jitter&&Math.random()<0.25) dt=0.05; }   // dev: force a fixed frame dt (?fps=N); ?jitter=1 randomly spikes to the 0.05 clamp to mimic real stutter (#72)
 	if(DEV_MODE&&dt>0){ const sp=ownship.speed||1;   // instantaneous turn rate: how fast the velocity vector rotates
 		const vx=ownship.velx/sp, vy=ownship.vely/sp, vz=ownship.velz/sp;
 		const dot=Math.min(1,Math.max(-1,vx*turn_probe.x+vy*turn_probe.y+vz*turn_probe.z));
