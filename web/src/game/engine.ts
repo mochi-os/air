@@ -1285,6 +1285,7 @@ const bandit=make_state(new THREE.Vector3(3000,2400,-1000),new THREE.Vector3(-0.
 let battle_tick=0, battle_reset=true;
 let net_waiting=false;   // joust waiting room (#88): the server holds the lone first player frozen at the ring until the opponent joins
 let weapons_hold=false;   // joust weapons hold (#87): guns and missiles inhibited until the MERGE — either aircraft crossing the other's 3/9 line; released by the fighton event (MP) or the local check (SP)
+const turn_probe={x:1,y:0,z:0,rate:0};   // developer readout: instantaneous turn rate — the angular rate of the VELOCITY vector (the BFM number), EMA-smoothed
 let bandit_brain=false;   // SP joust bandit runs on the wasm brain (#125 phase 2); false = the legacy kinematic AI
 let harm_pending=null;   // ?harm dev hook (#105): pending injection kind
 let sweep_pending=null;   // ?sweep dev hook (#105): rig entry name to sweep once the model resolves
@@ -3006,6 +3007,7 @@ function draw_hud(dt){
 	hctx.fillStyle=GR; hctx.textAlign="right"; hctx.font="15px monospace"; hctx.fillText(String(Math.round(kcas)),axr-10,cy+5);
 	hctx.textAlign="left"; hctx.font="11px monospace"; hctx.fillText("M "+(ownship.speed/343).toFixed(2),axr-52,abot+18);
 	hctx.fillText("G "+ownship.gload.toFixed(1),axr-52,abot+34); hctx.fillText("\u03b1 "+ownship.aoa.toFixed(0),axr-52,abot+50);
+	if(DEV_MODE) hctx.fillText("\u03c9 "+turn_probe.rate.toFixed(1)+"\u00b0/s",axr-52,abot+66);   // instantaneous turn rate (velocity-vector rotation) for EM validation (#131)
 
 	// ---- altitude tape (right) with integrated VSI, smooth scrolling ----
 	const ft=ownship.pos.y*3.28084; const lxl=cx+150, ltop=cy-105, lbot=cy+105, lppu=0.05;     // px per foot
@@ -3314,6 +3316,12 @@ function menu_backdrop(){ const a=performance.now()*0.00007; const r=440;
 
 const clock=new THREE.Clock();
 function frame(){ const dt=Math.min(clock.getDelta(),0.05);
+	if(DEV_MODE&&dt>0){ const sp=ownship.speed||1;   // instantaneous turn rate: how fast the velocity vector rotates
+		const vx=ownship.velx/sp, vy=ownship.vely/sp, vz=ownship.velz/sp;
+		const dot=Math.min(1,Math.max(-1,vx*turn_probe.x+vy*turn_probe.y+vz*turn_probe.z));
+		const rate=Math.acos(dot)/dt*180/Math.PI;
+		if(rate<200) turn_probe.rate+=(rate-turn_probe.rate)*Math.min(1,dt*8);   // EMA; ignore teleports/respawns
+		turn_probe.x=vx; turn_probe.y=vy; turn_probe.z=vz; }
 	game_paused = running && !MULTIPLAYER && (map_on || pause_toggle);
 	audio_enable(cfg.sound!==false && running && !game_paused);   // FIRST thing every frame — silence must not depend on anything below surviving (silent in the menu, paused, and the SP map)
 	audio_volumes(cfg.volume);
