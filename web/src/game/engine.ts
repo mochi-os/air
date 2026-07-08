@@ -2123,7 +2123,7 @@ function read_input(dt){
 		pp=ax("pitch")*(cfg.invert?-1:1);   // stick back = pull; analog goes straight to the FCS — no key shaping
 		pr=ax("roll");
 		py=ax("yaw");
-		{ const p=pad_lever(pad,bind.axes.throttle,"throttle");   // throttle: power grows from the HIGH raw end (idle at high; "-" prefix flips)
+		{ const p=(test_active||sim_time<test_idle)?null:pad_lever(pad,bind.axes.throttle,"throttle");   // throttle: power grows from the HIGH raw end (idle at high; "-" prefix flips). The lever yields during a scripted scenario and its rollout grace — a parked lever re-powering the touchdown floated every test landing (#72)
 			if(p!==null){ const lever=1-p;
 				ownship.throttle=Math.min(1,lever/0.75); ownship.burner=THREE.MathUtils.clamp((lever-0.75)/0.25,0,1); } }   // lever: 0..75% = idle..MIL, the top quarter sweeps the five AB zones
 		{ const p=pad_lever(pad,bind.axes.speedbrake,"speedbrake");   // speed brake: full forward retracted, aft deployed (deployed at the HIGH raw end; "-" prefix flips)
@@ -2280,7 +2280,7 @@ const TESTS=[
 	{name:"9 carrier - on glideslope (traps)",              V:70,  S:4.3, pitch:4, carrier:true, hook:true},
 	{name:"0 carrier - flat and floaty (hook skip, bolter)",V:75,  S:0.8, pitch:2, carrier:true, hook:true, short:18},
 ];
-let test_active=null;
+let test_active=null, test_idle=0;   // post-scenario throttle grace: the physical lever must not re-power a scripted rollout
 function start_test(i){ const sc=TESTS[i]; if(!sc || crash_t>0) return;
 	let T,d;
 	if(sc.carrier){ if(!carrier_ols) return; const o=carrier_ols;
@@ -2306,7 +2306,7 @@ function test_drive(){   // hold the prescribed approach exactly; hand control b
 	const t=test_active;
 	if(crash_t>0 || ownship.trapped || (ownship.touch && ownship.touch.t>=t.t0)){ test_active=null; return; }
 	const b=flight_get();   // hold the prescribed approach exactly; position integrates in the core
-	if(b[STATE.wow]>0.5 || b[STATE.contact]>=0){ test_active=null; return; }   // wheels on: release IMMEDIATELY — re-pinning the scripted sink into a compressed strut at 60 Hz spring-loaded the gear and bounced every touchdown (#72)
+	if(b[STATE.wow]>0.5 || b[STATE.contact]>=0){ test_active=null; test_idle=sim_time+6; return; }   // wheels on: release IMMEDIATELY — re-pinning the scripted sink into a compressed strut at 60 Hz spring-loaded the gear and bounced every touchdown (#72). The idle grace stops a physical throttle lever from re-powering the rollout
 	b[STATE.velocity]=t.vd.x*t.V; b[STATE.velocity+1]=t.vd.y*t.V; b[STATE.velocity+2]=t.vd.z*t.V;
 	b[STATE.attitude]=t.q.w; b[STATE.attitude+1]=t.q.x; b[STATE.attitude+2]=t.q.y; b[STATE.attitude+3]=t.q.z;
 	b[STATE.omega]=0; b[STATE.omega+1]=0; b[STATE.omega+2]=0;
@@ -2401,8 +2401,8 @@ function verdict(out){   // judge the core's touchdown record: crash conditions 
 	ownship.touch={ sink, bank, t:sim_time, deck, fa:deck?carrier_fore_aft(ownship.pos.x,ownship.pos.z):0 };
 	const die=()=>{ ownship.group.position.copy(ownship.pos); crash_ownship(); return true; };
 	if(deck && ownship.touch.fa<-134) return die();                   // ramp strike: caught the round-down at the stern
-	if(out[STATE.extension]<0.5){                                     // belly arrival: survivable only feather-soft and level
-		if(sink>2 || bank>0.09 || pitch>0.21 || pitch<-0.04) return die();
+	if(out[STATE.extension]<0.5){                                     // belly arrival: survivable only feather-soft and level — but judged at FLYING speed: the core now lets a slide settle its nose and rest a wingtip below 20 m/s (ground handling, not a crash)
+		if(ownship.speed>20 && (sink>2 || bank>0.09 || pitch>0.21 || pitch<-0.04)) return die();
 	} else {
 		if(ownship.speed>105) return die();                           // far above the tire limits (~200 kt)
 		if(bank>0.17) return die();                                   // wingtip strike (~10°)
@@ -2426,7 +2426,7 @@ function fly_player(dt){
 		flight_active=true; flight_push();
 	}
 	if(test_active) test_drive();   // scripted test approach: prescribes attitude + velocity into the core each frame
-	const controls={ pitch:THREE.MathUtils.clamp(input.pitch*cfg.sens,-1,1), roll:THREE.MathUtils.clamp(input.roll*cfg.sens,-1,1), yaw:THREE.MathUtils.clamp(input.yaw*cfg.sens,-1,1),
+	const controls={ pitch:THREE.MathUtils.clamp(input.pitch,-1,1), roll:THREE.MathUtils.clamp(input.roll,-1,1), yaw:THREE.MathUtils.clamp(input.yaw,-1,1),   // RAW stick: cfg.sens used to scale these (the removed Sensitivity slider genuinely was a flight-control gain — a saved sens!=1 silently rescaled the whole stick)
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5,
