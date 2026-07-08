@@ -43,7 +43,7 @@ import { type Join } from '../game/net'
 const TAB_FIELDS: Record<string, string[]> = {
   mission: ['task', 'start', 'world', 'callsign', 'aircraft', 'bandit', 'fuel'],
   weather: ['tod', 'clouds'],
-  controls: ['sens', 'invert', 'joystick', 'sticks'],
+  controls: ['invert', 'joystick', 'sticks'],
   keys: ['keys'],
   sound: ['sound', 'volume'],
   graphics: ['render_scale', 'dyn_res', 'lod', 'shadows', 'exterior_detail', 'ocean_segments', 'extra_aircraft', 'afterburner', 'tracers', 'missiles', 'flares', 'framerate'],
@@ -306,16 +306,6 @@ function JoystickPanel({
         </div>
       )}
       <div className='mt-4 space-y-4'>
-        <SliderRow
-          label={<Trans>Sensitivity</Trans>}
-          value={config.sens}
-          min={0.4}
-          max={2}
-          step={0.1}
-          decimals={1}
-          suffix='×'
-          onChange={(v) => set('sens', v)}
-        />
         <SwitchRow
           id='invert'
           label={<Trans>Invert pitch</Trans>}

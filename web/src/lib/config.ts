@@ -44,7 +44,6 @@ export interface MissionConfig {
   tod: 'day' | 'night'
   clouds: 'none' | 'cumulus' | 'high_stratus' | 'low_stratus'
   render_scale: number
-  sens: number
   exterior_detail: number
   ocean_segments: number
   extra_aircraft: number
@@ -77,7 +76,6 @@ export const DEFAULT_CONFIG: MissionConfig = {
   tod: 'day',
   clouds: 'none',
   render_scale: 1.0,
-  sens: 1.0,
   exterior_detail: 3,
   ocean_segments: 256,
   extra_aircraft: 0,
