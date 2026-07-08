@@ -64,7 +64,7 @@ const SAVE_KEY="joust_cfg_v1";
 // OLS bracket, and the deck outline for the flight core. Measured per deck
 // with the align tool and the GLB measurement scripts; a second carrier is
 // one more entry (#100). CARRIER {x,z} is world PLACEMENT, not ship data.
-const NIMITZ_MODEL_VERSION=27;
+const NIMITZ_MODEL_VERSION=30;
 const CARRIER_MODELS={
 	// NIMITZ_MODEL_VERSION: bump on EVERY model.glb regen. The engine fetches the model programmatically,
 	// and browsers serve programmatic fetches from HTTP cache even across hard refreshes — a stale model
@@ -2197,7 +2197,7 @@ function explosion_at(x,y,z){
 	smoke.vx[k]=Math.cos(a)*Math.cos(e)*sp; smoke.vy[k]=Math.abs(Math.sin(e))*sp*0.8+6; smoke.vz[k]=Math.sin(a)*Math.cos(e)*sp;
 	smoke.ttl[k]=smoke.life[k]=fire?(0.5+Math.random()*0.7):(2.6+Math.random()*2.6);
 	if(fire){ smoke.r[k]=1.0; smoke.g[k]=0.42+Math.random()*0.25; smoke.b[k]=0.08; } else { smoke.r[k]=0.30; smoke.g[k]=0.30; smoke.b[k]=0.32; } } }
-function crash_ownship(){ if(crash_t>0) return; crash_t=3.0; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z); ownship.group.visible=false; ownship.speed=0; }
+function crash_ownship(why){ if(crash_t>0) return; crash_t=3.0; (globalThis as any).dev_crash=why||"?"; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z); ownship.group.visible=false; ownship.speed=0; }
 function over_runway(p){ const r=obstacles.runway; if(!r) return false; const dx=p.x-r.x, dz=p.z-r.z;
 	return Math.abs(dx*r.fx+dz*r.fz)<r.hl && Math.abs(dx*r.fz-dz*r.fx)<r.hw; }
 const GEAR=2.46;   // the aircraft origin rests this far above whatever surface is beneath it — the model's wheel bottoms measure 2.457 m below the (bbox-centred) origin in the gear-down pose; per-aircraft stance lives in AIRCRAFT_MODELS. Lower buries the wheels
@@ -2243,18 +2243,18 @@ function ground_height(x,z){   // top of the solid surface under (x,z): carrier 
 }
 function check_collisions(){   // ownship vs sea / buildings / structures / carrier / other aircraft (land landings handled by the ground floor in fly_player)
 	if(crash_t>0) return; const p=ownship.pos;
-	if(p.y<3.4 && ground_height(p.x,p.z)<-1e8) return crash_ownship();   // the sea — but not the beach skirt, which slopes below this line down to the waterline
+	if(p.y<3.4 && ground_height(p.x,p.z)<-1e8) return crash_ownship("sea");   // the sea — but not the beach skirt, which slopes below this line down to the waterline
 	if(p.y<45){
-		for(const b of obstacles.buildings){ if(p.y<b.topY+2 && p.x>b.minx&&p.x<b.maxx&&p.z>b.minz&&p.z<b.maxz && pip(p.x,p.z,b.pts)) return crash_ownship(); }
-		for(const s of obstacles.posts){ if(p.y<s.y1 && Math.hypot(p.x-s.x,p.z-s.z)<s.r+4) return crash_ownship(); }
+		for(const b of obstacles.buildings){ if(p.y<b.topY+2 && p.x>b.minx&&p.x<b.maxx&&p.z>b.minz&&p.z<b.maxz && pip(p.x,p.z,b.pts)) return crash_ownship("building"); }
+		for(const s of obstacles.posts){ if(p.y<s.y1 && Math.hypot(p.x-s.x,p.z-s.z)<s.r+4) return crash_ownship("post"); }
 	}
 	if(carrier_model && p.y<80 && Math.abs(p.x-CARRIER.x)<160 && Math.abs(p.z-CARRIER.z)<160){
 		const h=deck_y_at(carrier_model,p.x,p.z,-1e9);   // the flat deck is a landing surface (ground floor); only the taller island superstructure is an obstacle here
-		if(h>CARRIER.deckY+4 && p.y<h) return crash_ownship();   // flew into the island superstructure
+		if(h>CARRIER.deckY+4 && p.y<h) return crash_ownship("island");   // flew into the island superstructure
 	}
-	if(has_enemy && wrap_distance(p,bandit.pos)<14){ explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z); bandit.pos.set(3000,2400,-1000); return crash_ownship(); }
+	if(has_enemy && wrap_distance(p,bandit.pos)<14){ explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z); bandit.pos.set(3000,2400,-1000); return crash_ownship("midair"); }
 	for(const ex of extras){ if(wrap_distance(p,ex.pos)<14){ explosion_at(ex.pos.x,ex.pos.y,ex.pos.z);
-		const a=Math.random()*Math.PI*2, r=3000+Math.random()*4000; ex.pos.set(Math.cos(a)*r,1600+Math.random()*2400,Math.sin(a)*r); return crash_ownship(); } }
+		const a=Math.random()*Math.PI*2, r=3000+Math.random()*4000; ex.pos.set(Math.cos(a)*r,1600+Math.random()*2400,Math.sin(a)*r); return crash_ownship("collision"); } }
 }
 function lso_grade(){   // LSO pass grade from the in-close deviations and the touchdown: OK / FAIR / NO-GRADE / CUT
 	const p=ownship.pass||{gs:0,az:0,n:0}, t=ownship.touch||{sink:0,bank:0,fa:0};
@@ -2281,6 +2281,7 @@ const TESTS=[
 	{name:"0 carrier - flat and floaty (hook skip, bolter)",V:75,  S:0.8, pitch:2, carrier:true, hook:true, short:18},
 ];
 let test_active=null, test_idle=0;   // post-scenario throttle grace: the physical lever must not re-power a scripted rollout
+if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)) });   // dev: CDP-reachable state sampler for headless scenario verification (#72)
 function start_test(i){ const sc=TESTS[i]; if(!sc || crash_t>0) return;
 	let T,d;
 	if(sc.carrier){ if(!carrier_ols) return; const o=carrier_ols;
@@ -2399,7 +2400,7 @@ function verdict(out){   // judge the core's touchdown record: crash conditions 
 	const deck=kind===3, soft=kind===2;
 	const pitch=Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1));
 	ownship.touch={ sink, bank, t:sim_time, deck, fa:deck?carrier_fore_aft(ownship.pos.x,ownship.pos.z):0 };
-	const die=()=>{ ownship.group.position.copy(ownship.pos); crash_ownship(); return true; };
+	const die=()=>{ ownship.group.position.copy(ownship.pos); crash_ownship("verdict"); return true; };
 	if(deck && ownship.touch.fa<-134) return die();                   // ramp strike: caught the round-down at the stern
 	if(out[STATE.extension]<0.5){                                     // belly arrival: survivable only feather-soft and level — but judged at FLYING speed: the core now lets a slide settle its nose and rest a wingtip below 20 m/s (ground handling, not a crash)
 		if(ownship.speed>20 && (sink>2 || bank>0.09 || pitch>0.21 || pitch<-0.04)) return die();
@@ -2454,7 +2455,7 @@ function fly_player(dt){
 				ex.pos.set((Math.random()-0.5)*16000,1800+Math.random()*2200,(Math.random()-0.5)*16000); battle_hulk(1+i,"fa18c"); } }
 		burn_trail(ownship.pos,Math.max(own_burn[0],own_burn[1],own_burning?1:0),ownship.velx,ownship.vely,ownship.velz);
 		if(own_leak>0.05) leak_trail(ownship.pos,own_leak,ownship.velx,ownship.vely,ownship.velz);
-		if(battle[4]&BATTLE.explode){ ownship.grade=""; return crash_ownship(); }   // the fuel fire's fuse ran out
+		if(battle[4]&BATTLE.explode){ ownship.grade=""; return crash_ownship("fire"); }   // the fuel fire's fuse ran out
 		if(battle[3]>0&&crash_t<=0){ notice(translate("PILOT DOWN")); return crash_ownship(); }
 	}
 	if(weapons_hold&&!MULTIPLAYER&&has_enemy){   // SP merge check (#87): either jet crossing the other's 3/9 line frees the weapons (mirrors the server's rule)
