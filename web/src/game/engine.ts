@@ -1873,7 +1873,11 @@ function update_wire_drag(){   // the caught wire deforms into a V, its apex dra
 	const w=o.wires[caught-1]; ownship.group.updateMatrixWorld(true);
 	const claw=claw_world(_wireApex);   // the V apex rides the ACTUAL claw, not the fixed pos-6.5m guess that floated ~0.9 m above it (#72)
 	let hx, hz, hy;
-	if(claw){ hx=claw.x; hz=claw.z; hy=Math.max(claw.y, o.dy+0.05); }   // clamp to the deck: the mesh tip dips a touch below, the wire rides on top
+	if(claw){
+		const rx=ownship.right.x, rz=ownship.right.z, rl=Math.hypot(rx,rz)||1;   // starboard, horizontal-projected
+		const off=((claw.x-ownship.pos.x)*rx+(claw.z-ownship.pos.z)*rz)/(rl*rl);   // the claw vertex sits ~7 cm off the centreline (furthest-vertex of the asymmetric claw); project the apex back onto the jet's vertical centreline so the V is dead centre under the hook (#72)
+		hx=claw.x-rx*off; hz=claw.z-rz*off; hy=Math.max(claw.y, o.dy+0.05);   // clamp to the deck: the mesh tip dips a touch below, the wire rides on top
+	}
 	else { hx=ownship.pos.x-ownship.fwd.x*6.5; hz=ownship.pos.z-ownship.fwd.z*6.5; hy=o.dy+0.5; }   // fallback before the model resolves
 	seg_between(o.vsegs[0],w.ax,w.az,hx,hz,hy); seg_between(o.vsegs[1],hx,hz,w.bx,w.bz,hy); o.vsegs[0].visible=o.vsegs[1].visible=true;
 }
@@ -2322,8 +2326,8 @@ let dev_peakbank=0, dev_pitchhi=0, dev_pitchlo=0;   // true per-frame peak bank 
 if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most low vertex of the Hook mesh) in WORLD, vs the current wire apex — #72 wire-to-claw
 	let claw=null as any; const v=new THREE.Vector3(); const base=ownship.group.getObjectByName("Hook_AN_base_20");
 	if(base) base.traverse((o:any)=>{ if(o.isMesh&&o.geometry?.attributes?.position){ const pos=o.geometry.attributes.position; for(let i=0;i<pos.count;i++){ v.fromBufferAttribute(pos,i).applyMatrix4(o.matrixWorld); if(!claw||v.y<claw.y) claw={x:v.x,y:v.y,z:v.z}; } } });
-	const o=carrier_ols; const apex=o?{x:ownship.pos.x-ownship.fwd.x*6.5,y:o.dy+0.5,z:ownship.pos.z-ownship.fwd.z*6.5}:null;
-	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, apex:apex?{x:+apex.x.toFixed(2),y:+apex.y.toFixed(2),z:+apex.z.toFixed(2)}:null, trapped:!!ownship.trapped, wire:ownship.wire||0, py:+ownship.pos.y.toFixed(2)}); };
+	let cl=null; if(claw){ const local=new THREE.Vector3(claw.x,claw.y,claw.z); ownship.group.worldToLocal(local); cl={x:+local.x.toFixed(2),y:+local.y.toFixed(2),z:+local.z.toFixed(2)}; }
+	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, peak:+dev_peakbank.toFixed(1), phi:+dev_pitchhi.toFixed(1), plo:+dev_pitchlo.toFixed(1), gs:ownship.pass&&ownship.pass.n?+(ownship.pass.gs/ownship.pass.n).toFixed(2):-1, az:ownship.pass&&ownship.pass.n?+(ownship.pass.az/ownship.pass.n).toFixed(2):-1, grade:ownship.grade||"", pn:ownship.pass?ownship.pass.n:0, why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,
 	lat:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*(-carrier_ols.apz)+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apx).toFixed(1)):0,
 	along:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*carrier_ols.apx+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apz).toFixed(1)):0, fa:+carrier_fore_aft(ownship.pos.x,ownship.pos.z).toFixed(1), edge:carrier_ols?+((ownship.pos.y-carrier_ols.dy).toFixed(1)):0 });   // dev: CDP-reachable state sampler for headless scenario verification (#72)
