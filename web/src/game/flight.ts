@@ -55,6 +55,10 @@ export const STATE = {
 const EXTRA = 7
 
 export const DT = 1 / 240
+// Bump on any flight.wasm rebuild that must reach already-loaded browsers. The
+// cache:'reload' fetch below makes this belt-and-suspenders, but the version
+// query also breaks any entry a proxy or old cache is still pinning by URL.
+const WASM_VERSION = '2026-07-08b'
 const CAP = 30 // accumulator cap: tab throttling must not spiral into replay storms
 
 // Control sample for one frame; the FCS interprets pitch/roll/yaw as
@@ -122,12 +126,17 @@ export async function flight_load(): Promise<void> {
     await new Promise<void>((resolve, reject) => {
       if (globalThis.Go) return resolve()
       const script = document.createElement('script')
-      script.src = new URL('flight/wasm_exec.js', location.href).href
+      script.src = new URL('flight/wasm_exec.js?v=' + WASM_VERSION, location.href).href
       script.onload = () => resolve()
       script.onerror = () => reject(new Error('wasm_exec.js failed to load'))
       document.head.appendChild(script)
     })
-    const response = await fetch(new URL('flight/flight.wasm', location.href).href)
+    // cache: 'reload' bypasses the browser HTTP cache on EVERY load — the wasm
+    // is a build product with no content hash in its name, and browsers serve
+    // programmatic fetches from cache even across hard refreshes (the same trap
+    // documented for the model glb). A stale wasm paired with a fresh engine.js
+    // silently runs old physics under new geometry (the #72 trap-topple report).
+    const response = await fetch(new URL('flight/flight.wasm?v=' + WASM_VERSION, location.href).href, { cache: 'reload' })
     if (!response.ok) throw new Error('flight.wasm HTTP ' + response.status)
     const go = new globalThis.Go!()
     const { instance } = await WebAssembly.instantiate(await response.arrayBuffer(), go.importObject)
