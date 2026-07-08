@@ -2312,7 +2312,8 @@ function test_drive(){   // hold the prescribed approach exactly; hand control b
 // the world, delivers state on spawns/resets, and syncs its output back onto
 // the ownship object every rendered frame.
 const physics_strips=[];   // paved capsules, collected as the airfields build
-const FUEL=3000;           // spawn fuel, kg (matches the multiplayer server)
+const FUEL=()=>THREE.MathUtils.clamp((cfg.fuel||6600)/2.2046,500,4900);   // spawn fuel: the menu slider speaks POUNDS like the IFEI, the sim burns kilograms (default 6,600 lb ≈ 3,000 kg, matching the server)
+const BINGO=1361, FUELLO=726;   // kg: the 3,000 lb bingo call and the ~1,600 lb hardware FUEL LO caution
 let flight_active=false, control_sequence=0, launch_flag=false, core_catapult=-1, core_stroke=-1, prev_wire=-1, prev_wow=false;
 let last_controls=null, marked_steps=0;   // multiplayer prediction: the sample the core flew this frame + fixed steps since the last mark
 const render_offset=new THREE.Vector3();  // reconciliation discontinuity, decayed on ownship.group only (~150 ms)
@@ -2339,6 +2340,9 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.speed=Math.hypot(ownship.velx,ownship.vely,ownship.velz);
 	if(ownship.speed>0.5) ownship.vel_dir.set(ownship.velx/ownship.speed,ownship.vely/ownship.speed,ownship.velz/ownship.speed); else ownship.vel_dir.copy(ownship.fwd);
 	ownship.aoa=out[STATE.alpha]*180/Math.PI; ownship.gload=out[STATE.nz];
+	{ const before=ownship.fuel??1e9; ownship.fuel=out[STATE.fuel];   // the tank state, for the IFEI readout and the calls
+		if(before>=BINGO&&ownship.fuel<BINGO) notice(translate("BINGO FUEL"));
+		if(before>=FUELLO&&ownship.fuel<FUELLO) notice(translate("FUEL LO")); }
 	ownship.cas=out[STATE.cas];   // calibrated airspeed, m/s — the real jet's HUD speed source
 	ownship.spool=out[STATE.power]; ownship.stage=out[STATE.stage];   // achieved across the airframe's engines, computed core-side
 	ownship.reheats=[out[STATE.engine+1], out[STATE.engine+3]];   // per-engine achieved reheat (flame discs; one burner can die independently)
@@ -2353,7 +2357,10 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	if(core_catapult>=0 && core_catapult<SHIP.shuttles.length) cat_idx=core_catapult;   // the active cat follows whichever shuttle the crew hooked you onto — without this, taxiing to another cat towed the wrong shuttle mesh
 	ownship.launching=core_catapult>=0&&core_stroke>=0;
 	const wire=out[STATE.wire];
-	if(wire>=0&&prev_wire<0){ ownship.trapped=true; ownship.wire=wire+1; ownship.grade=lso_grade(); ownship.pass_t=10; }
+	if(wire>=0&&prev_wire<0){ ownship.trapped=true; ownship.wire=wire+1; ownship.grade=lso_grade(); ownship.pass_t=10; ownship.turned=false; }
+	if(ownship.trapped&&!ownship.turned&&ownship.speed<0.5){ ownship.turned=true;   // chocked and chained: the deck crew turn the jet around (#128)
+		ownship.rounds=578; ownship.msl=cfg.missiles?2:0; ownship.cm=60; update_rails(ownship,cfg.missiles?2:0);
+		const b=flight_get(); b[STATE.fuel]=FUEL(); flight_set(b); notice(translate("REARMED")); }
 	else if(wire<0&&prev_wire>=0){ ownship.trapped=false; }
 	prev_wire=wire;
 }
@@ -2361,7 +2368,7 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 	if(!flight_active) return;
 	prev_wire=-1;
 	if(!test_active && ownship.speed>50 && !ownship.grounded && mission_start()!=="landing"){
-		flight_level(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, ownship.speed, FUEL);   // trimmed CLEAN level flight — right for air starts, but it threw away the landing start's composed on-speed pose (the PA law then wrestled a clean trim onto approach alpha: nose-down lurch, dead stick)
+		flight_level(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, ownship.speed, FUEL());   // trimmed CLEAN level flight — right for air starts, but it threw away the landing start's composed on-speed pose (the PA law then wrestled a clean trim onto approach alpha: nose-down lurch, dead stick)
 		sync_core(flight_get()); return;
 	}
 	const b=flight_get();   // keep time (carrier pose, wind field) and fuel across resets
@@ -2372,7 +2379,7 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 	b[STATE.attitude]=ownship.q.w; b[STATE.attitude+1]=ownship.q.x; b[STATE.attitude+2]=ownship.q.y; b[STATE.attitude+3]=ownship.q.z;
 	b[STATE.extension]=(ownship.gearTarget??0)<0.5?1:0;   // the core's gear matches the spawn configuration immediately — a landing start otherwise spends its first seconds extending (flaps absent, trim shifting)
 	b[STATE.omega]=0; b[STATE.omega+1]=0; b[STATE.omega+2]=0;
-	if(b[STATE.fuel]<500) b[STATE.fuel]=FUEL;
+	if(b[STATE.fuel]<500) b[STATE.fuel]=FUEL();
 	b[STATE.engine]=ownship.throttle; b[STATE.engine+1]=0; b[STATE.engine+2]=ownship.throttle; b[STATE.engine+3]=0;
 	for(let i=STATE.stabilator;i<=STATE.normal;i++) b[i]=0;   // surfaces + controller memories
 	b[STATE.demand]=1; b[STATE.normal]=1;
@@ -3066,6 +3073,10 @@ function draw_hud(dt){
 	hctx.textAlign="left"; hctx.font="13px monospace"; hctx.fillStyle=input.guns?AM:GR;
 	hctx.fillText(translate("GUN")+"  "+ownship.rounds,40,HH-88); hctx.fillStyle=GR;
 	hctx.fillText("IR  "+ownship.msl,40,HH-70); hctx.fillText(translate("FLARES")+"  "+ownship.cm,40,HH-52);
+	{ const pounds=Math.round((ownship.fuel??0)*2.2046/10)*10;   // the IFEI shows pounds
+		if((ownship.fuel??1e9)<FUELLO) hctx.fillStyle=(sim_time%0.8<0.4)?"#ff5050":"#803030";   // FUEL LO flashes
+		else if((ownship.fuel??1e9)<BINGO) hctx.fillStyle="#ffb050";
+		hctx.fillText(translate("FUEL")+"  "+pounds,40,HH-34); hctx.fillStyle=GR; }
 
 	// ---- catapult prompt ----
 }

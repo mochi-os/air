@@ -19,21 +19,21 @@ msgid "Please check your internet connection and try again."
 msgstr "Verifică conexiunea la internet și încearcă din nou."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:187
+#: src/components/Multiplayer.tsx:188
 msgid "{0} flying"
 msgstr "{0} în zbor"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:304
+#: src/components/Multiplayer.tsx:323
 msgid "{0}/{1} players"
 msgstr "{0}/{1} jucători"
 
-#: src/components/Multiplayer.tsx:130
+#: src/components/Multiplayer.tsx:131
 msgid "{name}'s match"
 msgstr "Meciul lui {name}"
 
-#: src/components/GameCanvas.tsx:36
+#: src/components/GameCanvas.tsx:40
 msgid "1 WIRE"
 msgstr "CABLU 1"
 
@@ -41,7 +41,7 @@ msgstr "CABLU 1"
 msgid "12 hours"
 msgstr "12 ore"
 
-#: src/components/GameCanvas.tsx:37
+#: src/components/GameCanvas.tsx:41
 msgid "2 WIRE"
 msgstr "CABLU 2"
 
@@ -49,7 +49,7 @@ msgstr "CABLU 2"
 msgid "24 hours"
 msgstr "24 de ore"
 
-#: src/components/GameCanvas.tsx:38
+#: src/components/GameCanvas.tsx:42
 msgid "3 WIRE"
 msgstr "CABLU 3"
 
@@ -85,8 +85,8 @@ msgstr "Tip de cont"
 msgid "Account verified"
 msgstr "Cont verificat"
 
-#: src/components/MissionSetup.tsx:877
-#: src/components/Multiplayer.tsx:256
+#: src/components/MissionSetup.tsx:890
+#: src/components/Multiplayer.tsx:275
 msgid "Ace"
 msgstr "As"
 
@@ -136,7 +136,7 @@ msgstr "Adaugă vizualizare"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Ajustează aspectul și aranjamentul după preferințe."
 
-#: src/components/MissionSetup.tsx:1055
+#: src/components/MissionSetup.tsx:1068
 msgid "Afterburner"
 msgstr "Postcombustie"
 
@@ -201,7 +201,7 @@ msgstr "Axe"
 msgid "Axis {i}"
 msgstr "Axa {i}"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:137
 msgid "back"
 msgstr "înapoi"
 
@@ -215,11 +215,15 @@ msgstr "Înapoi"
 msgid "Back to home"
 msgstr "Înapoi la pornire"
 
-#: src/components/MissionSetup.tsx:868
+#: src/components/MissionSetup.tsx:881
 msgid "Bandit"
 msgstr "Bandit"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:32
+msgid "BINGO FUEL"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:47
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -228,11 +232,11 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Promovează interesul"
 
-#: src/components/Multiplayer.tsx:248
+#: src/components/Multiplayer.tsx:267
 msgid "Bots"
 msgstr "Boți"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:129
 msgid "brakes"
 msgstr "frâne"
 
@@ -244,7 +248,7 @@ msgstr "Buton {i}"
 msgid "Buttons"
 msgstr "Butoane"
 
-#: src/components/Multiplayer.tsx:172
+#: src/components/Multiplayer.tsx:173
 msgid "Callsign"
 msgstr "Indicativ"
 
@@ -270,11 +274,11 @@ msgstr "Anulează"
 msgid "Canopy"
 msgstr "Cupolă"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:919
 msgid "Carrier landing"
 msgstr "Aterizare pe portavion"
 
-#: src/components/MissionSetup.tsx:912
+#: src/components/MissionSetup.tsx:925
 msgid "Catapult"
 msgstr "Catapultă"
 
@@ -287,7 +291,7 @@ msgstr "Categorie pentru această notificare"
 msgid "Change notification category"
 msgstr "Schimbă categoria notificării"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:134
 msgid "Chase view:"
 msgstr "Vedere de urmărire:"
 
@@ -318,7 +322,7 @@ msgstr "Alege limba"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Clear"
 msgstr "Golește"
 
@@ -360,11 +364,11 @@ msgstr "Închide panoul"
 msgid "Close search"
 msgstr "Închide căutarea"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:138
 msgid "closer"
 msgstr "mai aproape"
 
-#: src/components/MissionSetup.tsx:943
+#: src/components/MissionSetup.tsx:956
 msgid "Clouds"
 msgstr "Nori"
 
@@ -397,11 +401,11 @@ msgstr "Compact"
 msgid "Confirm"
 msgstr "Confirmă"
 
-#: src/components/Multiplayer.tsx:190
+#: src/components/Multiplayer.tsx:191
 msgid "Connecting…"
 msgstr "Se conectează…"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:53
 msgid "CONNECTION FAILED"
 msgstr "CONEXIUNE EȘUATĂ"
 
@@ -425,7 +429,7 @@ msgstr "Continuă cu {label}"
 msgid "Copy"
 msgstr "Copiază"
 
-#: src/components/Multiplayer.tsx:142
+#: src/components/Multiplayer.tsx:143
 msgid "Could not create the match"
 msgstr "Meciul nu a putut fi creat"
 
@@ -445,15 +449,15 @@ msgstr "Reautentificarea nu a putut fi inițiată. Încearcă din nou."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Nu s-a putut verifica cu acel cont. Încearcă din nou."
 
-#: src/components/GameCanvas.tsx:32
+#: src/components/GameCanvas.tsx:36
 msgid "CRASHED"
 msgstr "PRĂBUȘIT"
 
-#: src/components/Multiplayer.tsx:285
+#: src/components/Multiplayer.tsx:304
 msgid "Create and fly"
 msgstr "Creează și zboară"
 
-#: src/components/Multiplayer.tsx:205
+#: src/components/Multiplayer.tsx:206
 msgid "Create match"
 msgstr "Creează meci"
 
@@ -462,8 +466,8 @@ msgstr "Creează meci"
 msgid "Credits"
 msgstr "Credite"
 
-#: src/components/MissionSetup.tsx:950
-#: src/components/Multiplayer.tsx:232
+#: src/components/MissionSetup.tsx:963
+#: src/components/Multiplayer.tsx:233
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -471,7 +475,7 @@ msgstr "Cumulus"
 msgid "Custom"
 msgstr "Personalizat"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:46
 msgid "CUT"
 msgstr "PERICULOS"
 
@@ -497,12 +501,12 @@ msgstr "Mod întunecat"
 msgid "Data conflict"
 msgstr "Conflict de date"
 
-#: src/components/MissionSetup.tsx:938
-#: src/components/Multiplayer.tsx:227
+#: src/components/MissionSetup.tsx:951
+#: src/components/Multiplayer.tsx:228
 msgid "Day"
 msgstr "Zi"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:49
 msgid "DECK POSITION SAVED"
 msgstr "POZIȚIE PE PUNTE SALVATĂ"
 
@@ -567,7 +571,7 @@ msgstr "Renunță"
 msgid "Displays the mobile sidebar."
 msgstr "Afișează bara laterală mobilă."
 
-#: src/components/MissionSetup.tsx:1043
+#: src/components/MissionSetup.tsx:1056
 msgid "Distance LOD"
 msgstr "LOD după distanță"
 
@@ -580,11 +584,11 @@ msgstr "Descarcă"
 msgid "Download failed"
 msgstr "Descărcarea a eșuat"
 
-#: src/components/Multiplayer.tsx:252
+#: src/components/Multiplayer.tsx:271
 msgid "Drone"
 msgstr "Dronă"
 
-#: src/components/MissionSetup.tsx:1037
+#: src/components/MissionSetup.tsx:1050
 msgid "Dynamic resolution"
 msgstr "Rezoluție dinamică"
 
@@ -600,7 +604,7 @@ msgstr "Editează {label}"
 msgid "Eject"
 msgstr "Catapultare"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:57
 msgid "EJECTED"
 msgstr "CATAPULTAT"
 
@@ -608,7 +612,7 @@ msgstr "CATAPULTAT"
 msgid "Email code"
 msgstr "Cod email"
 
-#: src/components/Multiplayer.tsx:303
+#: src/components/Multiplayer.tsx:322
 msgid "empty"
 msgstr "goală"
 
@@ -639,11 +643,11 @@ msgstr "Extinde"
 msgid "Expand sidebar"
 msgstr "Extinde bara laterală"
 
-#: src/components/MissionSetup.tsx:1009
+#: src/components/MissionSetup.tsx:1022
 msgid "Exterior detail"
 msgstr "Detaliu exterior"
 
-#: src/components/MissionSetup.tsx:1025
+#: src/components/MissionSetup.tsx:1038
 msgid "Extra aircraft"
 msgstr "Avioane suplimentare"
 
@@ -667,7 +671,7 @@ msgstr "Trimiterea codului de verificare a eșuat"
 msgid "Failed to update category"
 msgstr "Actualizarea categoriei a eșuat"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:44
 msgid "FAIR"
 msgstr "SATISFĂCĂTOR"
 
@@ -683,13 +687,13 @@ msgstr "Finalizați mutarea contului dvs."
 msgid "Fixed keys"
 msgstr "Taste fixe"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:127
 msgid "flares"
 msgstr "flare-uri"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1073
+#: src/components/MissionSetup.tsx:1086
 msgid "Flares"
 msgstr "Capcane termice"
 
@@ -701,7 +705,7 @@ msgstr "FLARE"
 msgid "Flat"
 msgstr "Plat"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:54
 msgid "FLIGHT CORE FAILED"
 msgstr "NUCLEUL DE ZBOR A EȘUAT"
 
@@ -709,7 +713,7 @@ msgstr "NUCLEUL DE ZBOR A EȘUAT"
 msgid "Floating"
 msgstr "Flotant"
 
-#: src/components/MissionSetup.tsx:1079
+#: src/components/MissionSetup.tsx:1092
 msgid "Framerate"
 msgstr "Rată de cadre"
 
@@ -734,6 +738,19 @@ msgstr "De la"
 msgid "From theme"
 msgstr "Din temă"
 
+#: src/components/MissionSetup.tsx:866
+#: src/components/Multiplayer.tsx:243
+msgid "Fuel"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:31
+msgid "FUEL"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:33
+msgid "FUEL LO"
+msgstr ""
+
 #: src/components/MissionSetup.tsx:205
 msgid "Fuel probe"
 msgstr "Sondă de combustibil"
@@ -742,7 +759,7 @@ msgstr "Sondă de combustibil"
 msgid "Full layout"
 msgstr "Aspect complet"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "gear"
 msgstr "tren"
 
@@ -788,7 +805,7 @@ msgstr "Grup"
 msgid "GUN"
 msgstr "TUN"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:126
 msgid "guns"
 msgstr "tunuri"
 
@@ -805,12 +822,12 @@ msgstr "Ascunde"
 msgid "Hide password"
 msgstr "Ascunde parola"
 
-#: src/components/MissionSetup.tsx:989
+#: src/components/MissionSetup.tsx:1002
 msgid "High"
 msgstr "Ridicat"
 
-#: src/components/MissionSetup.tsx:951
-#: src/components/Multiplayer.tsx:233
+#: src/components/MissionSetup.tsx:964
+#: src/components/Multiplayer.tsx:234
 msgid "High stratus"
 msgstr "Stratus înalt"
 
@@ -821,7 +838,7 @@ msgstr "Stratus înalt"
 msgid "Home"
 msgstr "Acasă"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "hook"
 msgstr "cârlig"
 
@@ -837,7 +854,7 @@ msgstr "Popular"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/MissionSetup.tsx:903
+#: src/components/MissionSetup.tsx:916
 msgid "In air"
 msgstr "În aer"
 
@@ -857,19 +874,19 @@ msgstr "Cod de verificare invalid"
 msgid "Invert pitch"
 msgstr "Inversează tangajul"
 
-#: src/components/Multiplayer.tsx:317
+#: src/components/Multiplayer.tsx:336
 msgid "Join"
 msgstr "Alătură-te"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:64
 msgid "JOINED"
 msgstr "S-A ALĂTURAT"
 
-#: src/components/Multiplayer.tsx:302
+#: src/components/Multiplayer.tsx:321
 msgid "Joust"
 msgstr "Duel"
 
-#: src/components/Multiplayer.tsx:219
+#: src/components/Multiplayer.tsx:220
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, prima doborâre câștigă"
 
@@ -885,7 +902,7 @@ msgstr "Joystick"
 msgid "Keys"
 msgstr "Taste"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:56
 msgid "KILL"
 msgstr "DOBORÂRE"
 
@@ -899,7 +916,7 @@ msgstr "Tren de aterizare"
 msgid "Large"
 msgstr "Mare"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:127
 msgid "launch"
 msgstr "lansare"
 
@@ -912,12 +929,16 @@ msgstr "Lansare (catapultă)"
 msgid "Layout"
 msgstr "Aspect"
 
+#: src/components/Multiplayer.tsx:256
+msgid "lb"
+msgstr ""
+
 #: ../../../lib/web/src/components/learn-more.tsx:33
 #: ../../../lib/web/src/components/learn-more.tsx:38
 msgid "Learn more"
 msgstr "Află mai multe"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:65
 msgid "LEFT"
 msgstr "A PLECAT"
 
@@ -930,7 +951,7 @@ msgstr "De la stânga la dreapta"
 msgid "Light"
 msgstr "Luminos"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "lights"
 msgstr "lumini"
 
@@ -939,15 +960,19 @@ msgstr "lumini"
 msgid "Lights"
 msgstr "Lumini"
 
-#: src/components/GameCanvas.tsx:34
+#: src/components/GameCanvas.tsx:38
 msgid "LIGHTS"
 msgstr "LUMINI"
+
+#: src/components/MissionSetup.tsx:869
+msgid "Load"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx:35
 msgid "Load more"
 msgstr "Încarcă mai multe"
 
-#: src/components/GameCanvas.tsx:31
+#: src/components/GameCanvas.tsx:35
 msgid "LOADING"
 msgstr "SE ÎNCARCĂ"
 
@@ -1006,20 +1031,20 @@ msgstr "Privește la dreapta"
 msgid "Look up"
 msgstr "Privește în sus"
 
-#: src/components/MissionSetup.tsx:985
+#: src/components/MissionSetup.tsx:998
 msgid "Low"
 msgstr "Scăzut"
 
-#: src/components/MissionSetup.tsx:952
-#: src/components/Multiplayer.tsx:234
+#: src/components/MissionSetup.tsx:965
+#: src/components/Multiplayer.tsx:235
 msgid "Low stratus"
 msgstr "Stratus jos"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:51
 msgid "M to close"
 msgstr "M pentru închidere"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:130
 msgid "map"
 msgstr "hartă"
 
@@ -1037,16 +1062,16 @@ msgstr "Marchează totul ca citit"
 msgid "Master"
 msgstr "General"
 
-#: src/components/Multiplayer.tsx:215
+#: src/components/Multiplayer.tsx:216
 msgid "Match type"
 msgstr "Tip de meci"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:987
+#: src/components/MissionSetup.tsx:1000
 msgid "Medium"
 msgstr "Mediu"
 
-#: src/components/GameCanvas.tsx:127
+#: src/components/GameCanvas.tsx:131
 msgid "menu"
 msgstr "meniu"
 
@@ -1062,7 +1087,7 @@ msgstr "Metric"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Harta atolului Midway — imaginile conțin date <0>Copernicus Sentinel-2</0> modificate (2026); geometria aerodromului (pistă, căi de rulare, platforme) © contribuitorii <1>OpenStreetMap</1>, licențiată sub <2>ODbL</2>; datele privind linia de coastă și recifele de la <3>NOAA NCCOS</3> (domeniu public)."
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:127
 msgid "missile"
 msgstr "rachetă"
 
@@ -1071,11 +1096,11 @@ msgstr "rachetă"
 msgid "Missile"
 msgstr "Rachetă"
 
-#: src/components/MissionSetup.tsx:1067
+#: src/components/MissionSetup.tsx:1080
 msgid "Missiles"
 msgstr "Rachete"
 
-#: src/components/Multiplayer.tsx:243
+#: src/components/Multiplayer.tsx:262
 msgid "Missiles allowed"
 msgstr "Rachete permise"
 
@@ -1095,7 +1120,7 @@ msgstr "Mișcă axa…"
 msgid "Multiplayer"
 msgstr "Multiplayer"
 
-#: src/components/Multiplayer.tsx:151
+#: src/components/Multiplayer.tsx:152
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayerul necesită WebTransport, pe care acest browser nu îl suportă încă."
 
@@ -1113,8 +1138,8 @@ msgstr "Nou"
 msgid "Next image"
 msgstr "Imaginea următoare"
 
-#: src/components/MissionSetup.tsx:939
-#: src/components/Multiplayer.tsx:228
+#: src/components/MissionSetup.tsx:952
+#: src/components/Multiplayer.tsx:229
 msgid "Night"
 msgstr "Noapte"
 
@@ -1134,7 +1159,7 @@ msgstr "Niciun grup disponibil"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Niciun joystick detectat — apasă orice buton de pe el pentru a-l trezi."
 
-#: src/components/Multiplayer.tsx:294
+#: src/components/Multiplayer.tsx:313
 msgid "No open matches — create one."
 msgstr "Niciun meci deschis — creează unul."
 
@@ -1163,11 +1188,11 @@ msgstr "Încă nu există înregistrare de subiect — încearcă din nou după 
 msgid "No users found"
 msgstr "Nu s-au găsit utilizatori"
 
-#: src/components/Multiplayer.tsx:294
+#: src/components/Multiplayer.tsx:313
 msgid "No world server."
 msgstr "Niciun server de lume."
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:45
 msgid "NO-GRADE"
 msgstr "FĂRĂ NOTĂ"
 
@@ -1176,7 +1201,7 @@ msgstr "FĂRĂ NOTĂ"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:364
 #: src/components/MissionSetup.tsx:418
-#: src/components/MissionSetup.tsx:949
+#: src/components/MissionSetup.tsx:962
 msgid "None"
 msgstr "Niciuna"
 
@@ -1200,19 +1225,19 @@ msgstr "Nesetat"
 msgid "Notifications"
 msgstr "Notificări"
 
-#: src/components/MissionSetup.tsx:1017
+#: src/components/MissionSetup.tsx:1030
 msgid "Ocean detail"
 msgstr "Detaliu ocean"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:43
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:905
+#: src/components/MissionSetup.tsx:918
 msgid "On carrier"
 msgstr "Pe portavion"
 
-#: src/components/MissionSetup.tsx:904
+#: src/components/MissionSetup.tsx:917
 msgid "On runway"
 msgstr "Pe pistă"
 
@@ -1220,11 +1245,11 @@ msgstr "Pe pistă"
 msgid "Oops! Page Not Found!"
 msgstr "Hopa! Pagina nu a fost găsită!"
 
-#: src/components/Multiplayer.tsx:302
+#: src/components/Multiplayer.tsx:321
 msgid "Open"
 msgstr "Deschide"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Open — anyone may join or leave"
 msgstr "Deschis — oricine poate intra sau ieși"
 
@@ -1253,11 +1278,11 @@ msgstr "Deschide meniul de navigare"
 msgid "Open theme settings"
 msgstr "Deschide setările temei"
 
-#: src/components/GameCanvas.tsx:132
+#: src/components/GameCanvas.tsx:136
 msgid "or"
 msgstr "sau"
 
-#: src/components/GameCanvas.tsx:132
+#: src/components/GameCanvas.tsx:136
 msgid "orbit"
 msgstr "orbitare"
 
@@ -1269,7 +1294,7 @@ msgstr "Altele"
 msgid "Owner"
 msgstr "Proprietar"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:52
 msgid "P to resume · M map · Esc menu"
 msgstr "P reluare · M hartă · Esc meniu"
 
@@ -1285,7 +1310,7 @@ msgstr "Verificarea cheii de acces a eșuat. Încearcă din nou."
 msgid "Passkeys"
 msgstr "Chei de acces"
 
-#: src/components/GameCanvas.tsx:127
+#: src/components/GameCanvas.tsx:131
 msgid "pause"
 msgstr "pauză"
 
@@ -1297,21 +1322,21 @@ msgstr "Pauză"
 msgid "PAUSED"
 msgstr "PAUZĂ"
 
-#: src/components/Multiplayer.tsx:88
-#: src/components/Multiplayer.tsx:177
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:178
 msgid "pilot"
 msgstr "pilot"
 
-#: src/components/MissionSetup.tsx:875
-#: src/components/Multiplayer.tsx:254
+#: src/components/MissionSetup.tsx:888
+#: src/components/Multiplayer.tsx:273
 msgid "Pilot"
 msgstr "Pilot"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:58
 msgid "PILOT DOWN"
 msgstr "PILOT UCIS"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:124
 msgid "pitch"
 msgstr "tangaj"
 
@@ -1340,7 +1365,7 @@ msgstr "Încearcă din nou."
 msgid "Please wait a moment and try again."
 msgstr "Așteptați un moment și încercați din nou."
 
-#: src/components/MissionSetup.tsx:972
+#: src/components/MissionSetup.tsx:985
 msgid "Preset"
 msgstr "Presetare"
 
@@ -1348,7 +1373,7 @@ msgstr "Presetare"
 msgid "Press a key…"
 msgstr "Apasă o tastă…"
 
-#: src/components/GameCanvas.tsx:33
+#: src/components/GameCanvas.tsx:37
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "APASĂ ENTER PENTRU LANSARE"
 
@@ -1383,7 +1408,7 @@ msgstr "Reconectați conturile pe acest server"
 msgid "Re-register your passkeys on this server"
 msgstr "Reînregistrați-vă cheile de acces pe acest server"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "rearm"
 msgstr "reîncărcare"
 
@@ -1391,6 +1416,10 @@ msgstr "reîncărcare"
 #: src/components/MissionSetup.tsx:200
 msgid "Rearm"
 msgstr "Reînarmare"
+
+#: src/components/GameCanvas.tsx:34
+msgid "REARMED"
+msgstr ""
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:216
 #: ../../../lib/web/src/components/search-entity-page.tsx:240
@@ -1406,7 +1435,7 @@ msgstr "Se redirecționează către autentificare."
 msgid "Reduce interest"
 msgstr "Reduce interesul"
 
-#: src/components/Multiplayer.tsx:195
+#: src/components/Multiplayer.tsx:196
 msgid "Refresh"
 msgstr "Reîmprospătează"
 
@@ -1451,7 +1480,7 @@ msgstr "Retrimite e-mailul"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1121
+#: src/components/MissionSetup.tsx:1134
 msgid "Reset"
 msgstr "Resetează"
 
@@ -1459,15 +1488,15 @@ msgstr "Resetează"
 msgid "Reset all settings to default values"
 msgstr "Resetează toate setările la valorile implicite"
 
-#: src/components/MissionSetup.tsx:999
+#: src/components/MissionSetup.tsx:1012
 msgid "Resolution"
 msgstr "Rezoluție"
 
-#: src/components/MissionSetup.tsx:1093
+#: src/components/MissionSetup.tsx:1106
 msgid "Restart"
 msgstr "Repornește"
 
-#: src/components/MissionSetup.tsx:1097
+#: src/components/MissionSetup.tsx:1110
 msgid "Resume"
 msgstr "Reia"
 
@@ -1479,7 +1508,7 @@ msgstr "Înapoi la meniu"
 msgid "Right to Left"
 msgstr "De la dreapta la stânga"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:125
 msgid "roll"
 msgstr "ruliu"
 
@@ -1495,8 +1524,8 @@ msgstr "Ruliu la stânga"
 msgid "Roll right"
 msgstr "Ruliu la dreapta"
 
-#: src/components/MissionSetup.tsx:874
-#: src/components/Multiplayer.tsx:253
+#: src/components/MissionSetup.tsx:887
+#: src/components/Multiplayer.tsx:272
 msgid "Rookie"
 msgstr "Boboc"
 
@@ -1504,7 +1533,7 @@ msgstr "Boboc"
 msgid "Rows per page"
 msgstr "Rânduri pe pagină"
 
-#: src/components/GameCanvas.tsx:35
+#: src/components/GameCanvas.tsx:39
 msgid "RUN UP ENGINE"
 msgstr "PUTERE MAXIMĂ"
 
@@ -1605,7 +1634,7 @@ msgstr "Eroare de server"
 msgid "Server rules"
 msgstr "Regulile serverului"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:55
 msgid "SESSION ENDED"
 msgstr "SESIUNE ÎNCHEIATĂ"
 
@@ -1629,7 +1658,7 @@ msgstr "Setează originea și destinația"
 msgid "Settings"
 msgstr "Setări"
 
-#: src/components/MissionSetup.tsx:1049
+#: src/components/MissionSetup.tsx:1062
 msgid "Shadows"
 msgstr "Umbre"
 
@@ -1678,7 +1707,7 @@ msgstr "Spațios"
 msgid "SPD BK"
 msgstr "FR.AER"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:129
 msgid "speed brake"
 msgstr "frână aerodinamică"
 
@@ -1688,8 +1717,8 @@ msgstr "frână aerodinamică"
 msgid "Speed brake"
 msgstr "Frână aerodinamică"
 
-#: src/components/MissionSetup.tsx:897
-#: src/components/MissionSetup.tsx:1103
+#: src/components/MissionSetup.tsx:910
+#: src/components/MissionSetup.tsx:1116
 msgid "Start"
 msgstr "Start"
 
@@ -1711,7 +1740,7 @@ msgstr "Duminică"
 msgid "System"
 msgstr "Sistem"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:50
 msgid "TACTICAL MAP"
 msgstr "HARTĂ TACTICĂ"
 
@@ -1753,7 +1782,7 @@ msgstr "Temă"
 msgid "Theme Settings"
 msgstr "Setări temă"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:126
 msgid "throttle"
 msgstr "accelerație"
 
@@ -1773,11 +1802,11 @@ msgstr "Crește accelerația"
 msgid "Thursday"
 msgstr "Joi"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:137
 msgid "tilt"
 msgstr "înclinare"
 
-#: src/components/MissionSetup.tsx:932
+#: src/components/MissionSetup.tsx:945
 msgid "Time of day"
 msgstr "Ora din zi"
 
@@ -1820,7 +1849,7 @@ msgstr "Prea multe solicitări"
 msgid "Top"
 msgstr "Sus"
 
-#: src/components/MissionSetup.tsx:1061
+#: src/components/MissionSetup.tsx:1074
 msgid "Tracers"
 msgstr "Trasoare"
 
@@ -1855,7 +1884,7 @@ msgstr "Tastează pentru a căuta utilizatori"
 msgid "Type to search..."
 msgstr "Tastează pentru a căuta..."
 
-#: src/components/MissionSetup.tsx:991
+#: src/components/MissionSetup.tsx:1004
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1914,8 +1943,8 @@ msgstr "Verifică"
 msgid "Verify email address"
 msgstr "Verifică adresa de email"
 
-#: src/components/MissionSetup.tsx:876
-#: src/components/Multiplayer.tsx:255
+#: src/components/MissionSetup.tsx:889
+#: src/components/Multiplayer.tsx:274
 msgid "Veteran"
 msgstr "Veteran"
 
@@ -1923,7 +1952,7 @@ msgstr "Veteran"
 msgid "Video thumbnail"
 msgstr "Miniatură video"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:130
 msgid "view"
 msgstr "vedere"
 
@@ -1948,7 +1977,7 @@ msgstr "Vizualizări"
 msgid "WAITING FOR OPPONENT"
 msgstr "SE AȘTEAPTĂ ADVERSARUL"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:48
 msgid "WAVE OFF"
 msgstr "ÎNTRERUPE ATERIZAREA"
 
@@ -1961,7 +1990,7 @@ msgid "Weapons"
 msgstr "Armament"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:225
 msgid "Weather"
 msgstr "Vreme"
 
@@ -1982,19 +2011,19 @@ msgstr "Frâne de roată"
 msgid "Wing fold"
 msgstr "Plierea aripilor"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:63
 msgid "WINS"
 msgstr "CÂȘTIGĂ"
 
-#: src/components/Multiplayer.tsx:161
+#: src/components/Multiplayer.tsx:162
 msgid "World server"
 msgstr "Server de lume"
 
-#: src/components/Multiplayer.tsx:99
+#: src/components/Multiplayer.tsx:100
 msgid "World server not reachable"
 msgstr "Serverul de lume nu este accesibil"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:125
 msgid "yaw"
 msgstr "girație"
 

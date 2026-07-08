@@ -19,21 +19,21 @@ msgid "Please check your internet connection and try again."
 msgstr "Ellenőrizze az internetkapcsolatát, és próbálja újra."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:187
+#: src/components/Multiplayer.tsx:188
 msgid "{0} flying"
 msgstr "{0} a levegőben"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:304
+#: src/components/Multiplayer.tsx:323
 msgid "{0}/{1} players"
 msgstr "{0}/{1} játékos"
 
-#: src/components/Multiplayer.tsx:130
+#: src/components/Multiplayer.tsx:131
 msgid "{name}'s match"
 msgstr "{name} meccse"
 
-#: src/components/GameCanvas.tsx:36
+#: src/components/GameCanvas.tsx:40
 msgid "1 WIRE"
 msgstr "KÖTÉL 1"
 
@@ -41,7 +41,7 @@ msgstr "KÖTÉL 1"
 msgid "12 hours"
 msgstr "12 óra"
 
-#: src/components/GameCanvas.tsx:37
+#: src/components/GameCanvas.tsx:41
 msgid "2 WIRE"
 msgstr "KÖTÉL 2"
 
@@ -49,7 +49,7 @@ msgstr "KÖTÉL 2"
 msgid "24 hours"
 msgstr "24 óra"
 
-#: src/components/GameCanvas.tsx:38
+#: src/components/GameCanvas.tsx:42
 msgid "3 WIRE"
 msgstr "KÖTÉL 3"
 
@@ -85,8 +85,8 @@ msgstr "Fióktípus"
 msgid "Account verified"
 msgstr "Fiók ellenőrizve"
 
-#: src/components/MissionSetup.tsx:877
-#: src/components/Multiplayer.tsx:256
+#: src/components/MissionSetup.tsx:890
+#: src/components/Multiplayer.tsx:275
 msgid "Ace"
 msgstr "Ász"
 
@@ -136,7 +136,7 @@ msgstr "Nézet hozzáadása"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Igazítsa a megjelenést és az elrendezést a saját igényei szerint."
 
-#: src/components/MissionSetup.tsx:1055
+#: src/components/MissionSetup.tsx:1068
 msgid "Afterburner"
 msgstr "Utánégető"
 
@@ -201,7 +201,7 @@ msgstr "Tengelyek"
 msgid "Axis {i}"
 msgstr "{i}. tengely"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:137
 msgid "back"
 msgstr "hátra"
 
@@ -215,11 +215,15 @@ msgstr "Vissza"
 msgid "Back to home"
 msgstr "Vissza a kezdőlapra"
 
-#: src/components/MissionSetup.tsx:868
+#: src/components/MissionSetup.tsx:881
 msgid "Bandit"
 msgstr "Bandita"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:32
+msgid "BINGO FUEL"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:47
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -228,11 +232,11 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Érdeklődés növelése"
 
-#: src/components/Multiplayer.tsx:248
+#: src/components/Multiplayer.tsx:267
 msgid "Bots"
 msgstr "Botok"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:129
 msgid "brakes"
 msgstr "fékek"
 
@@ -244,7 +248,7 @@ msgstr "{i}. gomb"
 msgid "Buttons"
 msgstr "Gombok"
 
-#: src/components/Multiplayer.tsx:172
+#: src/components/Multiplayer.tsx:173
 msgid "Callsign"
 msgstr "Hívójel"
 
@@ -270,11 +274,11 @@ msgstr "Mégse"
 msgid "Canopy"
 msgstr "Kabintető"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:919
 msgid "Carrier landing"
 msgstr "Leszállás repülőgép-hordozóra"
 
-#: src/components/MissionSetup.tsx:912
+#: src/components/MissionSetup.tsx:925
 msgid "Catapult"
 msgstr "Katapult"
 
@@ -287,7 +291,7 @@ msgstr "Az értesítés kategóriája"
 msgid "Change notification category"
 msgstr "Értesítési kategória módosítása"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:134
 msgid "Chase view:"
 msgstr "Követő nézet:"
 
@@ -318,7 +322,7 @@ msgstr "Nyelv kiválasztása"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Clear"
 msgstr "Törlés"
 
@@ -360,11 +364,11 @@ msgstr "Panel bezárása"
 msgid "Close search"
 msgstr "Keresés bezárása"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:138
 msgid "closer"
 msgstr "közelebb"
 
-#: src/components/MissionSetup.tsx:943
+#: src/components/MissionSetup.tsx:956
 msgid "Clouds"
 msgstr "Felhők"
 
@@ -397,11 +401,11 @@ msgstr "Kompakt"
 msgid "Confirm"
 msgstr "Megerősítés"
 
-#: src/components/Multiplayer.tsx:190
+#: src/components/Multiplayer.tsx:191
 msgid "Connecting…"
 msgstr "Kapcsolódás…"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:53
 msgid "CONNECTION FAILED"
 msgstr "SIKERTELEN KAPCSOLÓDÁS"
 
@@ -425,7 +429,7 @@ msgstr "Folytatás a következővel: {label}"
 msgid "Copy"
 msgstr "Másolás"
 
-#: src/components/Multiplayer.tsx:142
+#: src/components/Multiplayer.tsx:143
 msgid "Could not create the match"
 msgstr "Nem sikerült létrehozni a meccset"
 
@@ -445,15 +449,15 @@ msgstr "Az újrahitelesítést nem sikerült elindítani. Próbálja újra."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Nem sikerült ellenőrizni azzal a fiókkal. Kérjük, próbálja újra."
 
-#: src/components/GameCanvas.tsx:32
+#: src/components/GameCanvas.tsx:36
 msgid "CRASHED"
 msgstr "LEZUHANT"
 
-#: src/components/Multiplayer.tsx:285
+#: src/components/Multiplayer.tsx:304
 msgid "Create and fly"
 msgstr "Létrehozás és repülés"
 
-#: src/components/Multiplayer.tsx:205
+#: src/components/Multiplayer.tsx:206
 msgid "Create match"
 msgstr "Meccs létrehozása"
 
@@ -462,8 +466,8 @@ msgstr "Meccs létrehozása"
 msgid "Credits"
 msgstr "Stáblista"
 
-#: src/components/MissionSetup.tsx:950
-#: src/components/Multiplayer.tsx:232
+#: src/components/MissionSetup.tsx:963
+#: src/components/Multiplayer.tsx:233
 msgid "Cumulus"
 msgstr "Gomolyfelhő"
 
@@ -471,7 +475,7 @@ msgstr "Gomolyfelhő"
 msgid "Custom"
 msgstr "Egyéni"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:46
 msgid "CUT"
 msgstr "VESZÉLYES"
 
@@ -497,12 +501,12 @@ msgstr "Sötét mód"
 msgid "Data conflict"
 msgstr "Adatütközés"
 
-#: src/components/MissionSetup.tsx:938
-#: src/components/Multiplayer.tsx:227
+#: src/components/MissionSetup.tsx:951
+#: src/components/Multiplayer.tsx:228
 msgid "Day"
 msgstr "Nappal"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:49
 msgid "DECK POSITION SAVED"
 msgstr "FEDÉLZETI POZÍCIÓ MENTVE"
 
@@ -567,7 +571,7 @@ msgstr "Elvetés"
 msgid "Displays the mobile sidebar."
 msgstr "Megjeleníti a mobil oldalsávot."
 
-#: src/components/MissionSetup.tsx:1043
+#: src/components/MissionSetup.tsx:1056
 msgid "Distance LOD"
 msgstr "Távolsági LOD"
 
@@ -580,11 +584,11 @@ msgstr "Letöltés"
 msgid "Download failed"
 msgstr "A letöltés sikertelen"
 
-#: src/components/Multiplayer.tsx:252
+#: src/components/Multiplayer.tsx:271
 msgid "Drone"
 msgstr "Drón"
 
-#: src/components/MissionSetup.tsx:1037
+#: src/components/MissionSetup.tsx:1050
 msgid "Dynamic resolution"
 msgstr "Dinamikus felbontás"
 
@@ -600,7 +604,7 @@ msgstr "{label} szerkesztése"
 msgid "Eject"
 msgstr "Katapultálás"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:57
 msgid "EJECTED"
 msgstr "KATAPULTÁLT"
 
@@ -608,7 +612,7 @@ msgstr "KATAPULTÁLT"
 msgid "Email code"
 msgstr "E-mail kód"
 
-#: src/components/Multiplayer.tsx:303
+#: src/components/Multiplayer.tsx:322
 msgid "empty"
 msgstr "üres"
 
@@ -639,11 +643,11 @@ msgstr "Kibontás"
 msgid "Expand sidebar"
 msgstr "Oldalsáv kibontása"
 
-#: src/components/MissionSetup.tsx:1009
+#: src/components/MissionSetup.tsx:1022
 msgid "Exterior detail"
 msgstr "Külső részletesség"
 
-#: src/components/MissionSetup.tsx:1025
+#: src/components/MissionSetup.tsx:1038
 msgid "Extra aircraft"
 msgstr "További repülőgépek"
 
@@ -667,7 +671,7 @@ msgstr "Nem sikerült elküldeni az ellenőrző kódot"
 msgid "Failed to update category"
 msgstr "Nem sikerült frissíteni a kategóriát"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:44
 msgid "FAIR"
 msgstr "KÖZEPES"
 
@@ -683,13 +687,13 @@ msgstr "Fejezze be a fiók áthelyezését"
 msgid "Fixed keys"
 msgstr "Rögzített billentyűk"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:127
 msgid "flares"
 msgstr "fáklyák"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1073
+#: src/components/MissionSetup.tsx:1086
 msgid "Flares"
 msgstr "Fáklyák"
 
@@ -701,7 +705,7 @@ msgstr "INFRACSAPDÁK"
 msgid "Flat"
 msgstr "Lapos"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:54
 msgid "FLIGHT CORE FAILED"
 msgstr "REPÜLÉSI MAG HIBA"
 
@@ -709,7 +713,7 @@ msgstr "REPÜLÉSI MAG HIBA"
 msgid "Floating"
 msgstr "Lebegő"
 
-#: src/components/MissionSetup.tsx:1079
+#: src/components/MissionSetup.tsx:1092
 msgid "Framerate"
 msgstr "Képkockasebesség"
 
@@ -734,6 +738,19 @@ msgstr "Kezdete"
 msgid "From theme"
 msgstr "Témából"
 
+#: src/components/MissionSetup.tsx:866
+#: src/components/Multiplayer.tsx:243
+msgid "Fuel"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:31
+msgid "FUEL"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:33
+msgid "FUEL LO"
+msgstr ""
+
 #: src/components/MissionSetup.tsx:205
 msgid "Fuel probe"
 msgstr "Üzemanyag-szonda"
@@ -742,7 +759,7 @@ msgstr "Üzemanyag-szonda"
 msgid "Full layout"
 msgstr "Teljes elrendezés"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "gear"
 msgstr "futómű"
 
@@ -788,7 +805,7 @@ msgstr "Csoport"
 msgid "GUN"
 msgstr "GÉPÁGYÚ"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:126
 msgid "guns"
 msgstr "gépágyúk"
 
@@ -805,12 +822,12 @@ msgstr "Elrejtés"
 msgid "Hide password"
 msgstr "Jelszó elrejtése"
 
-#: src/components/MissionSetup.tsx:989
+#: src/components/MissionSetup.tsx:1002
 msgid "High"
 msgstr "Magas"
 
-#: src/components/MissionSetup.tsx:951
-#: src/components/Multiplayer.tsx:233
+#: src/components/MissionSetup.tsx:964
+#: src/components/Multiplayer.tsx:234
 msgid "High stratus"
 msgstr "Magas rétegfelhő"
 
@@ -821,7 +838,7 @@ msgstr "Magas rétegfelhő"
 msgid "Home"
 msgstr "Kezdőlap"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "hook"
 msgstr "Horog"
 
@@ -837,7 +854,7 @@ msgstr "Forró"
 msgid "Imperial"
 msgstr "Angolszász"
 
-#: src/components/MissionSetup.tsx:903
+#: src/components/MissionSetup.tsx:916
 msgid "In air"
 msgstr "Levegőben"
 
@@ -857,19 +874,19 @@ msgstr "Érvénytelen ellenőrző kód"
 msgid "Invert pitch"
 msgstr "Bólintás fordítása"
 
-#: src/components/Multiplayer.tsx:317
+#: src/components/Multiplayer.tsx:336
 msgid "Join"
 msgstr "Csatlakozás"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:64
 msgid "JOINED"
 msgstr "CSATLAKOZOTT"
 
-#: src/components/Multiplayer.tsx:302
+#: src/components/Multiplayer.tsx:321
 msgid "Joust"
 msgstr "Párbaj"
 
-#: src/components/Multiplayer.tsx:219
+#: src/components/Multiplayer.tsx:220
 msgid "Joust — 1v1, first kill wins"
 msgstr "Párbaj — 1v1, az első lelövés győz"
 
@@ -885,7 +902,7 @@ msgstr "Joystick"
 msgid "Keys"
 msgstr "Billentyűk"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:56
 msgid "KILL"
 msgstr "LELÖVÉS"
 
@@ -899,7 +916,7 @@ msgstr "Futómű"
 msgid "Large"
 msgstr "Nagy"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:127
 msgid "launch"
 msgstr "indítás"
 
@@ -912,12 +929,16 @@ msgstr "Indítás (katapult)"
 msgid "Layout"
 msgstr "Elrendezés"
 
+#: src/components/Multiplayer.tsx:256
+msgid "lb"
+msgstr ""
+
 #: ../../../lib/web/src/components/learn-more.tsx:33
 #: ../../../lib/web/src/components/learn-more.tsx:38
 msgid "Learn more"
 msgstr "Tudjon meg többet"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:65
 msgid "LEFT"
 msgstr "KILÉPETT"
 
@@ -930,7 +951,7 @@ msgstr "Balról jobbra"
 msgid "Light"
 msgstr "Világos"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "lights"
 msgstr "fények"
 
@@ -939,15 +960,19 @@ msgstr "fények"
 msgid "Lights"
 msgstr "Fények"
 
-#: src/components/GameCanvas.tsx:34
+#: src/components/GameCanvas.tsx:38
 msgid "LIGHTS"
 msgstr "FÉNYEK"
+
+#: src/components/MissionSetup.tsx:869
+msgid "Load"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx:35
 msgid "Load more"
 msgstr "Továbbiak betöltése"
 
-#: src/components/GameCanvas.tsx:31
+#: src/components/GameCanvas.tsx:35
 msgid "LOADING"
 msgstr "BETÖLTÉS"
 
@@ -1006,20 +1031,20 @@ msgstr "Jobbra nézés"
 msgid "Look up"
 msgstr "Felfelé nézés"
 
-#: src/components/MissionSetup.tsx:985
+#: src/components/MissionSetup.tsx:998
 msgid "Low"
 msgstr "Alacsony"
 
-#: src/components/MissionSetup.tsx:952
-#: src/components/Multiplayer.tsx:234
+#: src/components/MissionSetup.tsx:965
+#: src/components/Multiplayer.tsx:235
 msgid "Low stratus"
 msgstr "Alacsony rétegfelhő"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:51
 msgid "M to close"
 msgstr "M a bezáráshoz"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:130
 msgid "map"
 msgstr "térkép"
 
@@ -1037,16 +1062,16 @@ msgstr "Összes megjelölése olvasottként"
 msgid "Master"
 msgstr "Fő hangerő"
 
-#: src/components/Multiplayer.tsx:215
+#: src/components/Multiplayer.tsx:216
 msgid "Match type"
 msgstr "Meccs típusa"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:987
+#: src/components/MissionSetup.tsx:1000
 msgid "Medium"
 msgstr "Közepes"
 
-#: src/components/GameCanvas.tsx:127
+#: src/components/GameCanvas.tsx:131
 msgid "menu"
 msgstr "menü"
 
@@ -1062,7 +1087,7 @@ msgstr "Metrika"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway-atoll térkép — a felvételek módosított <0>Copernicus Sentinel-2</0> adatokat tartalmaznak (2026); a repülőtér geometriája (kifutópálya, gurulóutak, előterek) © <1>OpenStreetMap</1> közreműködők, <2>ODbL</2> licenc alatt; a partvonal- és zátonyadatok forrása a <3>NOAA NCCOS</3> (közkincs)."
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:127
 msgid "missile"
 msgstr "rakéta"
 
@@ -1071,11 +1096,11 @@ msgstr "rakéta"
 msgid "Missile"
 msgstr "Rakéta"
 
-#: src/components/MissionSetup.tsx:1067
+#: src/components/MissionSetup.tsx:1080
 msgid "Missiles"
 msgstr "Rakéták"
 
-#: src/components/Multiplayer.tsx:243
+#: src/components/Multiplayer.tsx:262
 msgid "Missiles allowed"
 msgstr "Rakéták engedélyezve"
 
@@ -1095,7 +1120,7 @@ msgstr "Mozdítsa meg…"
 msgid "Multiplayer"
 msgstr "Többjátékos"
 
-#: src/components/Multiplayer.tsx:151
+#: src/components/Multiplayer.tsx:152
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "A többjátékos módhoz WebTransport szükséges, amit ez a böngésző még nem támogat."
 
@@ -1113,8 +1138,8 @@ msgstr "Új"
 msgid "Next image"
 msgstr "Következő kép"
 
-#: src/components/MissionSetup.tsx:939
-#: src/components/Multiplayer.tsx:228
+#: src/components/MissionSetup.tsx:952
+#: src/components/Multiplayer.tsx:229
 msgid "Night"
 msgstr "Éjszaka"
 
@@ -1134,7 +1159,7 @@ msgstr "Nincsenek elérhető csoportok"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Nem található joystick — nyomjon meg rajta egy gombot, hogy felébressze."
 
-#: src/components/Multiplayer.tsx:294
+#: src/components/Multiplayer.tsx:313
 msgid "No open matches — create one."
 msgstr "Nincs nyílt meccs — hozz létre egyet!"
 
@@ -1163,11 +1188,11 @@ msgstr "Még nincs téma rekord — próbálja újra a következő értesítés 
 msgid "No users found"
 msgstr "Nem találhatók felhasználók"
 
-#: src/components/Multiplayer.tsx:294
+#: src/components/Multiplayer.tsx:313
 msgid "No world server."
 msgstr "Nincs világszerver."
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:45
 msgid "NO-GRADE"
 msgstr "NINCS OSZTÁLYZAT"
 
@@ -1176,7 +1201,7 @@ msgstr "NINCS OSZTÁLYZAT"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:364
 #: src/components/MissionSetup.tsx:418
-#: src/components/MissionSetup.tsx:949
+#: src/components/MissionSetup.tsx:962
 msgid "None"
 msgstr "Nincs"
 
@@ -1200,19 +1225,19 @@ msgstr "Nincs beállítva"
 msgid "Notifications"
 msgstr "Értesítések"
 
-#: src/components/MissionSetup.tsx:1017
+#: src/components/MissionSetup.tsx:1030
 msgid "Ocean detail"
 msgstr "Óceán részletessége"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:43
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:905
+#: src/components/MissionSetup.tsx:918
 msgid "On carrier"
 msgstr "Hordozón"
 
-#: src/components/MissionSetup.tsx:904
+#: src/components/MissionSetup.tsx:917
 msgid "On runway"
 msgstr "Kifutópályán"
 
@@ -1220,11 +1245,11 @@ msgstr "Kifutópályán"
 msgid "Oops! Page Not Found!"
 msgstr "Hopp! Az oldal nem található!"
 
-#: src/components/Multiplayer.tsx:302
+#: src/components/Multiplayer.tsx:321
 msgid "Open"
 msgstr "Megnyitás"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Open — anyone may join or leave"
 msgstr "Nyílt — bárki csatlakozhat vagy kiléphet"
 
@@ -1253,11 +1278,11 @@ msgstr "Navigációs menü megnyitása"
 msgid "Open theme settings"
 msgstr "Téma beállításainak megnyitása"
 
-#: src/components/GameCanvas.tsx:132
+#: src/components/GameCanvas.tsx:136
 msgid "or"
 msgstr "vagy"
 
-#: src/components/GameCanvas.tsx:132
+#: src/components/GameCanvas.tsx:136
 msgid "orbit"
 msgstr "keringés"
 
@@ -1269,7 +1294,7 @@ msgstr "Egyéb"
 msgid "Owner"
 msgstr "Tulajdonos"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:52
 msgid "P to resume · M map · Esc menu"
 msgstr "P folytatás · M térkép · Esc menü"
 
@@ -1285,7 +1310,7 @@ msgstr "A hozzáférési kulcs ellenőrzése sikertelen. Próbálja újra."
 msgid "Passkeys"
 msgstr "Passkey-ek"
 
-#: src/components/GameCanvas.tsx:127
+#: src/components/GameCanvas.tsx:131
 msgid "pause"
 msgstr "szünet"
 
@@ -1297,21 +1322,21 @@ msgstr "Szünet"
 msgid "PAUSED"
 msgstr "SZÜNET"
 
-#: src/components/Multiplayer.tsx:88
-#: src/components/Multiplayer.tsx:177
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:178
 msgid "pilot"
 msgstr "pilóta"
 
-#: src/components/MissionSetup.tsx:875
-#: src/components/Multiplayer.tsx:254
+#: src/components/MissionSetup.tsx:888
+#: src/components/Multiplayer.tsx:273
 msgid "Pilot"
 msgstr "Pilóta"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:58
 msgid "PILOT DOWN"
 msgstr "PILÓTA MEGHALT"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:124
 msgid "pitch"
 msgstr "bólintás"
 
@@ -1340,7 +1365,7 @@ msgstr "Próbálja újra."
 msgid "Please wait a moment and try again."
 msgstr "Kérjük, várjon egy kicsit, majd próbálja újra."
 
-#: src/components/MissionSetup.tsx:972
+#: src/components/MissionSetup.tsx:985
 msgid "Preset"
 msgstr "Előbeállítás"
 
@@ -1348,7 +1373,7 @@ msgstr "Előbeállítás"
 msgid "Press a key…"
 msgstr "Nyomjon le egy billentyűt…"
 
-#: src/components/GameCanvas.tsx:33
+#: src/components/GameCanvas.tsx:37
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "NYOMD MEG AZ ENTERT AZ INDÍTÁSHOZ"
 
@@ -1383,7 +1408,7 @@ msgstr "Kapcsolja újra össze fiókjait ezen a szerveren"
 msgid "Re-register your passkeys on this server"
 msgstr "Regisztrálja újra a hozzáférési kulcsait ezen a kiszolgálón"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "rearm"
 msgstr "újrafegyverzés"
 
@@ -1391,6 +1416,10 @@ msgstr "újrafegyverzés"
 #: src/components/MissionSetup.tsx:200
 msgid "Rearm"
 msgstr "Újrafegyverzés"
+
+#: src/components/GameCanvas.tsx:34
+msgid "REARMED"
+msgstr ""
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:216
 #: ../../../lib/web/src/components/search-entity-page.tsx:240
@@ -1406,7 +1435,7 @@ msgstr "Átirányítás a bejelentkezéshez."
 msgid "Reduce interest"
 msgstr "Érdeklődés csökkentése"
 
-#: src/components/Multiplayer.tsx:195
+#: src/components/Multiplayer.tsx:196
 msgid "Refresh"
 msgstr "Frissítés"
 
@@ -1451,7 +1480,7 @@ msgstr "E-mail újraküldése"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1121
+#: src/components/MissionSetup.tsx:1134
 msgid "Reset"
 msgstr "Visszaállítás"
 
@@ -1459,15 +1488,15 @@ msgstr "Visszaállítás"
 msgid "Reset all settings to default values"
 msgstr "Minden beállítás visszaállítása alapértelmezett értékekre"
 
-#: src/components/MissionSetup.tsx:999
+#: src/components/MissionSetup.tsx:1012
 msgid "Resolution"
 msgstr "Megoldás"
 
-#: src/components/MissionSetup.tsx:1093
+#: src/components/MissionSetup.tsx:1106
 msgid "Restart"
 msgstr "Újraindítás"
 
-#: src/components/MissionSetup.tsx:1097
+#: src/components/MissionSetup.tsx:1110
 msgid "Resume"
 msgstr "Folytatás"
 
@@ -1479,7 +1508,7 @@ msgstr "Vissza a menübe"
 msgid "Right to Left"
 msgstr "Jobbról balra"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:125
 msgid "roll"
 msgstr "orsózás"
 
@@ -1495,8 +1524,8 @@ msgstr "Orsózás balra"
 msgid "Roll right"
 msgstr "Orsózás jobbra"
 
-#: src/components/MissionSetup.tsx:874
-#: src/components/Multiplayer.tsx:253
+#: src/components/MissionSetup.tsx:887
+#: src/components/Multiplayer.tsx:272
 msgid "Rookie"
 msgstr "Újonc"
 
@@ -1504,7 +1533,7 @@ msgstr "Újonc"
 msgid "Rows per page"
 msgstr "Sorok oldalanként"
 
-#: src/components/GameCanvas.tsx:35
+#: src/components/GameCanvas.tsx:39
 msgid "RUN UP ENGINE"
 msgstr "TELJES GÁZ"
 
@@ -1605,7 +1634,7 @@ msgstr "Kiszolgálóhiba"
 msgid "Server rules"
 msgstr "Szerverszabályzat"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:55
 msgid "SESSION ENDED"
 msgstr "MUNKAMENET VÉGE"
 
@@ -1629,7 +1658,7 @@ msgstr "Kiindulási és úti cél beállítása"
 msgid "Settings"
 msgstr "Beállítások"
 
-#: src/components/MissionSetup.tsx:1049
+#: src/components/MissionSetup.tsx:1062
 msgid "Shadows"
 msgstr "Árnyékok"
 
@@ -1678,7 +1707,7 @@ msgstr "Tágas"
 msgid "SPD BK"
 msgstr "SEB FK"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:129
 msgid "speed brake"
 msgstr "sebességfék"
 
@@ -1688,8 +1717,8 @@ msgstr "sebességfék"
 msgid "Speed brake"
 msgstr "Sebességfék"
 
-#: src/components/MissionSetup.tsx:897
-#: src/components/MissionSetup.tsx:1103
+#: src/components/MissionSetup.tsx:910
+#: src/components/MissionSetup.tsx:1116
 msgid "Start"
 msgstr "Indítás"
 
@@ -1711,7 +1740,7 @@ msgstr "Vasárnap"
 msgid "System"
 msgstr "Rendszer"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:50
 msgid "TACTICAL MAP"
 msgstr "TAKTIKAI TÉRKÉP"
 
@@ -1753,7 +1782,7 @@ msgstr "Téma"
 msgid "Theme Settings"
 msgstr "Témabeállítások"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:126
 msgid "throttle"
 msgstr "gázkar"
 
@@ -1773,11 +1802,11 @@ msgstr "Gázadás"
 msgid "Thursday"
 msgstr "Csütörtök"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:137
 msgid "tilt"
 msgstr "döntés"
 
-#: src/components/MissionSetup.tsx:932
+#: src/components/MissionSetup.tsx:945
 msgid "Time of day"
 msgstr "Napszak"
 
@@ -1820,7 +1849,7 @@ msgstr "Túl sok kérés"
 msgid "Top"
 msgstr "Eleje"
 
-#: src/components/MissionSetup.tsx:1061
+#: src/components/MissionSetup.tsx:1074
 msgid "Tracers"
 msgstr "Nyomjelzők"
 
@@ -1855,7 +1884,7 @@ msgstr "Gépeljen a felhasználók kereséséhez"
 msgid "Type to search..."
 msgstr "Gépeljen a kereséshez..."
 
-#: src/components/MissionSetup.tsx:991
+#: src/components/MissionSetup.tsx:1004
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1914,8 +1943,8 @@ msgstr "Ellenőrzés"
 msgid "Verify email address"
 msgstr "E-mail-cím ellenőrzése"
 
-#: src/components/MissionSetup.tsx:876
-#: src/components/Multiplayer.tsx:255
+#: src/components/MissionSetup.tsx:889
+#: src/components/Multiplayer.tsx:274
 msgid "Veteran"
 msgstr "Veterán"
 
@@ -1923,7 +1952,7 @@ msgstr "Veterán"
 msgid "Video thumbnail"
 msgstr "Videó indexképe"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:130
 msgid "view"
 msgstr "nézet"
 
@@ -1948,7 +1977,7 @@ msgstr "Megtekintések"
 msgid "WAITING FOR OPPONENT"
 msgstr "VÁRAKOZÁS AZ ELLENFÉLRE"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:48
 msgid "WAVE OFF"
 msgstr "ÁTSTARTOLÁS"
 
@@ -1961,7 +1990,7 @@ msgid "Weapons"
 msgstr "Fegyverek"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:225
 msgid "Weather"
 msgstr "Időjárás"
 
@@ -1982,19 +2011,19 @@ msgstr "Kerékfékek"
 msgid "Wing fold"
 msgstr "Szárnybehajtás"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:63
 msgid "WINS"
 msgstr "GYŐZ"
 
-#: src/components/Multiplayer.tsx:161
+#: src/components/Multiplayer.tsx:162
 msgid "World server"
 msgstr "Világszerver"
 
-#: src/components/Multiplayer.tsx:99
+#: src/components/Multiplayer.tsx:100
 msgid "World server not reachable"
 msgstr "A világszerver nem érhető el"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:125
 msgid "yaw"
 msgstr "legyezés"
 
