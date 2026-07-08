@@ -19,21 +19,21 @@ msgid "Please check your internet connection and try again."
 msgstr "Sjekk internettforbindelsen din og prøv igjen."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:187
+#: src/components/Multiplayer.tsx:188
 msgid "{0} flying"
 msgstr "{0} flyr"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:304
+#: src/components/Multiplayer.tsx:323
 msgid "{0}/{1} players"
 msgstr "{0}/{1} spillere"
 
-#: src/components/Multiplayer.tsx:130
+#: src/components/Multiplayer.tsx:131
 msgid "{name}'s match"
 msgstr "{name}s match"
 
-#: src/components/GameCanvas.tsx:36
+#: src/components/GameCanvas.tsx:40
 msgid "1 WIRE"
 msgstr "VAIER 1"
 
@@ -41,7 +41,7 @@ msgstr "VAIER 1"
 msgid "12 hours"
 msgstr "12 timer"
 
-#: src/components/GameCanvas.tsx:37
+#: src/components/GameCanvas.tsx:41
 msgid "2 WIRE"
 msgstr "VAIER 2"
 
@@ -49,7 +49,7 @@ msgstr "VAIER 2"
 msgid "24 hours"
 msgstr "24 timer"
 
-#: src/components/GameCanvas.tsx:38
+#: src/components/GameCanvas.tsx:42
 msgid "3 WIRE"
 msgstr "VAIER 3"
 
@@ -85,8 +85,8 @@ msgstr "Kontotype"
 msgid "Account verified"
 msgstr "Konto bekreftet"
 
-#: src/components/MissionSetup.tsx:877
-#: src/components/Multiplayer.tsx:256
+#: src/components/MissionSetup.tsx:890
+#: src/components/Multiplayer.tsx:275
 msgid "Ace"
 msgstr "Ess"
 
@@ -136,7 +136,7 @@ msgstr "Legg til visning"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Juster utseendet og layouten etter dine preferanser."
 
-#: src/components/MissionSetup.tsx:1055
+#: src/components/MissionSetup.tsx:1068
 msgid "Afterburner"
 msgstr "Etterbrenner"
 
@@ -201,7 +201,7 @@ msgstr "Akser"
 msgid "Axis {i}"
 msgstr "Akse {i}"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:137
 msgid "back"
 msgstr "tilbake"
 
@@ -215,11 +215,15 @@ msgstr "Tilbake"
 msgid "Back to home"
 msgstr "Tilbake til start"
 
-#: src/components/MissionSetup.tsx:868
+#: src/components/MissionSetup.tsx:881
 msgid "Bandit"
 msgstr "Banditt"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:32
+msgid "BINGO FUEL"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:47
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -228,11 +232,11 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Øk interesse"
 
-#: src/components/Multiplayer.tsx:248
+#: src/components/Multiplayer.tsx:267
 msgid "Bots"
 msgstr "Boter"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:129
 msgid "brakes"
 msgstr "bremser"
 
@@ -244,7 +248,7 @@ msgstr "Knapp {i}"
 msgid "Buttons"
 msgstr "Knapper"
 
-#: src/components/Multiplayer.tsx:172
+#: src/components/Multiplayer.tsx:173
 msgid "Callsign"
 msgstr "Kallesignal"
 
@@ -270,11 +274,11 @@ msgstr "Avbryt"
 msgid "Canopy"
 msgstr "Kanopi"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:919
 msgid "Carrier landing"
 msgstr "Landing på hangarskip"
 
-#: src/components/MissionSetup.tsx:912
+#: src/components/MissionSetup.tsx:925
 msgid "Catapult"
 msgstr "Katapult"
 
@@ -287,7 +291,7 @@ msgstr "Kategori for dette varselet"
 msgid "Change notification category"
 msgstr "Endre varselkategori"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:134
 msgid "Chase view:"
 msgstr "Følgevisning:"
 
@@ -318,7 +322,7 @@ msgstr "Velg språk"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Clear"
 msgstr "Tøm"
 
@@ -360,11 +364,11 @@ msgstr "Lukk panel"
 msgid "Close search"
 msgstr "Lukk søk"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:138
 msgid "closer"
 msgstr "nærmere"
 
-#: src/components/MissionSetup.tsx:943
+#: src/components/MissionSetup.tsx:956
 msgid "Clouds"
 msgstr "Skyer"
 
@@ -397,11 +401,11 @@ msgstr "Kompakt"
 msgid "Confirm"
 msgstr "Bekreft"
 
-#: src/components/Multiplayer.tsx:190
+#: src/components/Multiplayer.tsx:191
 msgid "Connecting…"
 msgstr "Kobler til…"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:53
 msgid "CONNECTION FAILED"
 msgstr "TILKOBLING MISLYKTES"
 
@@ -425,7 +429,7 @@ msgstr "Fortsett med {label}"
 msgid "Copy"
 msgstr "Kopier"
 
-#: src/components/Multiplayer.tsx:142
+#: src/components/Multiplayer.tsx:143
 msgid "Could not create the match"
 msgstr "Kunne ikke opprette kampen"
 
@@ -445,15 +449,15 @@ msgstr "Kunne ikke starte ny autentisering. Prøv igjen."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Kunne ikke verifisere med den kontoen. Prøv igjen."
 
-#: src/components/GameCanvas.tsx:32
+#: src/components/GameCanvas.tsx:36
 msgid "CRASHED"
 msgstr "STYRTET"
 
-#: src/components/Multiplayer.tsx:285
+#: src/components/Multiplayer.tsx:304
 msgid "Create and fly"
 msgstr "Opprett og fly"
 
-#: src/components/Multiplayer.tsx:205
+#: src/components/Multiplayer.tsx:206
 msgid "Create match"
 msgstr "Opprett kamp"
 
@@ -462,8 +466,8 @@ msgstr "Opprett kamp"
 msgid "Credits"
 msgstr "Medvirkende"
 
-#: src/components/MissionSetup.tsx:950
-#: src/components/Multiplayer.tsx:232
+#: src/components/MissionSetup.tsx:963
+#: src/components/Multiplayer.tsx:233
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -471,7 +475,7 @@ msgstr "Cumulus"
 msgid "Custom"
 msgstr "Tilpasset"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:46
 msgid "CUT"
 msgstr "FARLIG"
 
@@ -497,12 +501,12 @@ msgstr "Mørkt utseende"
 msgid "Data conflict"
 msgstr "Datakonflikt"
 
-#: src/components/MissionSetup.tsx:938
-#: src/components/Multiplayer.tsx:227
+#: src/components/MissionSetup.tsx:951
+#: src/components/Multiplayer.tsx:228
 msgid "Day"
 msgstr "Dag"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:49
 msgid "DECK POSITION SAVED"
 msgstr "DEKKPOSISJON LAGRET"
 
@@ -567,7 +571,7 @@ msgstr "Lukk"
 msgid "Displays the mobile sidebar."
 msgstr "Viser sidefeltet for mobil."
 
-#: src/components/MissionSetup.tsx:1043
+#: src/components/MissionSetup.tsx:1056
 msgid "Distance LOD"
 msgstr "Avstands-LOD"
 
@@ -580,11 +584,11 @@ msgstr "Last ned"
 msgid "Download failed"
 msgstr "Nedlastingen mislyktes"
 
-#: src/components/Multiplayer.tsx:252
+#: src/components/Multiplayer.tsx:271
 msgid "Drone"
 msgstr "Drone"
 
-#: src/components/MissionSetup.tsx:1037
+#: src/components/MissionSetup.tsx:1050
 msgid "Dynamic resolution"
 msgstr "Dynamisk oppløsning"
 
@@ -600,7 +604,7 @@ msgstr "Rediger {label}"
 msgid "Eject"
 msgstr "Skyt ut"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:57
 msgid "EJECTED"
 msgstr "SKUTT UT"
 
@@ -608,7 +612,7 @@ msgstr "SKUTT UT"
 msgid "Email code"
 msgstr "E-postkode"
 
-#: src/components/Multiplayer.tsx:303
+#: src/components/Multiplayer.tsx:322
 msgid "empty"
 msgstr "tom"
 
@@ -639,11 +643,11 @@ msgstr "Utvid"
 msgid "Expand sidebar"
 msgstr "Utvid sidefelt"
 
-#: src/components/MissionSetup.tsx:1009
+#: src/components/MissionSetup.tsx:1022
 msgid "Exterior detail"
 msgstr "Eksteriørdetaljer"
 
-#: src/components/MissionSetup.tsx:1025
+#: src/components/MissionSetup.tsx:1038
 msgid "Extra aircraft"
 msgstr "Ekstra fly"
 
@@ -667,7 +671,7 @@ msgstr "Kunne ikke sende bekreftelseskode"
 msgid "Failed to update category"
 msgstr "Kunne ikke oppdatere kategori"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:44
 msgid "FAIR"
 msgstr "MIDDELS"
 
@@ -683,13 +687,13 @@ msgstr "Fullfør flyttingen av kontoen din"
 msgid "Fixed keys"
 msgstr "Faste taster"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:127
 msgid "flares"
 msgstr "fakler"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1073
+#: src/components/MissionSetup.tsx:1086
 msgid "Flares"
 msgstr "Bluss"
 
@@ -701,7 +705,7 @@ msgstr "FAKLER"
 msgid "Flat"
 msgstr "Flat"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:54
 msgid "FLIGHT CORE FAILED"
 msgstr "FLYKJERNEN SVIKTET"
 
@@ -709,7 +713,7 @@ msgstr "FLYKJERNEN SVIKTET"
 msgid "Floating"
 msgstr "Flytende"
 
-#: src/components/MissionSetup.tsx:1079
+#: src/components/MissionSetup.tsx:1092
 msgid "Framerate"
 msgstr "Bildefrekvens"
 
@@ -734,6 +738,19 @@ msgstr "Fra"
 msgid "From theme"
 msgstr "Fra tema"
 
+#: src/components/MissionSetup.tsx:866
+#: src/components/Multiplayer.tsx:243
+msgid "Fuel"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:31
+msgid "FUEL"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:33
+msgid "FUEL LO"
+msgstr ""
+
 #: src/components/MissionSetup.tsx:205
 msgid "Fuel probe"
 msgstr "Drivstoffsonde"
@@ -742,7 +759,7 @@ msgstr "Drivstoffsonde"
 msgid "Full layout"
 msgstr "Fullt oppsett"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "gear"
 msgstr "Understell"
 
@@ -788,7 +805,7 @@ msgstr "Gruppe"
 msgid "GUN"
 msgstr "KANON"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:126
 msgid "guns"
 msgstr "kanoner"
 
@@ -805,12 +822,12 @@ msgstr "Skjul"
 msgid "Hide password"
 msgstr "Skjul passord"
 
-#: src/components/MissionSetup.tsx:989
+#: src/components/MissionSetup.tsx:1002
 msgid "High"
 msgstr "Høy"
 
-#: src/components/MissionSetup.tsx:951
-#: src/components/Multiplayer.tsx:233
+#: src/components/MissionSetup.tsx:964
+#: src/components/Multiplayer.tsx:234
 msgid "High stratus"
 msgstr "Høy stratus"
 
@@ -821,7 +838,7 @@ msgstr "Høy stratus"
 msgid "Home"
 msgstr "Hjem"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "hook"
 msgstr "krok"
 
@@ -837,7 +854,7 @@ msgstr "Populært"
 msgid "Imperial"
 msgstr "Imperialsk"
 
-#: src/components/MissionSetup.tsx:903
+#: src/components/MissionSetup.tsx:916
 msgid "In air"
 msgstr "I luften"
 
@@ -857,19 +874,19 @@ msgstr "Ugyldig bekreftelseskode"
 msgid "Invert pitch"
 msgstr "Inverter stamping"
 
-#: src/components/Multiplayer.tsx:317
+#: src/components/Multiplayer.tsx:336
 msgid "Join"
 msgstr "Bli med"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:64
 msgid "JOINED"
 msgstr "BLE MED"
 
-#: src/components/Multiplayer.tsx:302
+#: src/components/Multiplayer.tsx:321
 msgid "Joust"
 msgstr "Dyst"
 
-#: src/components/Multiplayer.tsx:219
+#: src/components/Multiplayer.tsx:220
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duell — 1v1, første nedskyting vinner"
 
@@ -885,7 +902,7 @@ msgstr "Styrespak"
 msgid "Keys"
 msgstr "Taster"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:56
 msgid "KILL"
 msgstr "NEDSKYTING"
 
@@ -899,7 +916,7 @@ msgstr "Understell"
 msgid "Large"
 msgstr "Stor"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:127
 msgid "launch"
 msgstr "utskyting"
 
@@ -912,12 +929,16 @@ msgstr "Utskyting (katapult)"
 msgid "Layout"
 msgstr "Oppsett"
 
+#: src/components/Multiplayer.tsx:256
+msgid "lb"
+msgstr ""
+
 #: ../../../lib/web/src/components/learn-more.tsx:33
 #: ../../../lib/web/src/components/learn-more.tsx:38
 msgid "Learn more"
 msgstr "Les mer"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:65
 msgid "LEFT"
 msgstr "DRO"
 
@@ -930,7 +951,7 @@ msgstr "Venstre mot høyre"
 msgid "Light"
 msgstr "Lys"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "lights"
 msgstr "lys"
 
@@ -939,15 +960,19 @@ msgstr "lys"
 msgid "Lights"
 msgstr "Lys"
 
-#: src/components/GameCanvas.tsx:34
+#: src/components/GameCanvas.tsx:38
 msgid "LIGHTS"
 msgstr "LYS"
+
+#: src/components/MissionSetup.tsx:869
+msgid "Load"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx:35
 msgid "Load more"
 msgstr "Last inn flere"
 
-#: src/components/GameCanvas.tsx:31
+#: src/components/GameCanvas.tsx:35
 msgid "LOADING"
 msgstr "LASTER"
 
@@ -1006,20 +1031,20 @@ msgstr "Se til høyre"
 msgid "Look up"
 msgstr "Se opp"
 
-#: src/components/MissionSetup.tsx:985
+#: src/components/MissionSetup.tsx:998
 msgid "Low"
 msgstr "Lav"
 
-#: src/components/MissionSetup.tsx:952
-#: src/components/Multiplayer.tsx:234
+#: src/components/MissionSetup.tsx:965
+#: src/components/Multiplayer.tsx:235
 msgid "Low stratus"
 msgstr "Lav stratus"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:51
 msgid "M to close"
 msgstr "M for å lukke"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:130
 msgid "map"
 msgstr "kart"
 
@@ -1037,16 +1062,16 @@ msgstr "Merk alle som lest"
 msgid "Master"
 msgstr "Master"
 
-#: src/components/Multiplayer.tsx:215
+#: src/components/Multiplayer.tsx:216
 msgid "Match type"
 msgstr "Kamptype"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:987
+#: src/components/MissionSetup.tsx:1000
 msgid "Medium"
 msgstr "Middels"
 
-#: src/components/GameCanvas.tsx:127
+#: src/components/GameCanvas.tsx:131
 msgid "menu"
 msgstr "meny"
 
@@ -1062,7 +1087,7 @@ msgstr "Metrisk"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Kart over Midway Atoll — bildene inneholder modifiserte <0>Copernicus Sentinel-2</0>-data (2026); flyplassgeometri (rullebane, taksebaner, oppstillingsplasser) © <1>OpenStreetMap</1>-bidragsytere, lisensiert under <2>ODbL</2>; kystlinje- og revdata fra <3>NOAA NCCOS</3> (offentlig eiendom)."
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:127
 msgid "missile"
 msgstr "missil"
 
@@ -1071,11 +1096,11 @@ msgstr "missil"
 msgid "Missile"
 msgstr "Missil"
 
-#: src/components/MissionSetup.tsx:1067
+#: src/components/MissionSetup.tsx:1080
 msgid "Missiles"
 msgstr "Missiler"
 
-#: src/components/Multiplayer.tsx:243
+#: src/components/Multiplayer.tsx:262
 msgid "Missiles allowed"
 msgstr "Missiler tillatt"
 
@@ -1095,7 +1120,7 @@ msgstr "Beveg aksen…"
 msgid "Multiplayer"
 msgstr "Flerspiller"
 
-#: src/components/Multiplayer.tsx:151
+#: src/components/Multiplayer.tsx:152
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Flerspiller krever WebTransport, som denne nettleseren ikke støtter ennå."
 
@@ -1113,8 +1138,8 @@ msgstr "Ny"
 msgid "Next image"
 msgstr "Neste bilde"
 
-#: src/components/MissionSetup.tsx:939
-#: src/components/Multiplayer.tsx:228
+#: src/components/MissionSetup.tsx:952
+#: src/components/Multiplayer.tsx:229
 msgid "Night"
 msgstr "Natt"
 
@@ -1134,7 +1159,7 @@ msgstr "Ingen grupper tilgjengelig"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ingen styrespak funnet — trykk på en knapp på den for å vekke den."
 
-#: src/components/Multiplayer.tsx:294
+#: src/components/Multiplayer.tsx:313
 msgid "No open matches — create one."
 msgstr "Ingen åpne kamper — opprett en."
 
@@ -1163,11 +1188,11 @@ msgstr "Ingen emnepost ennå – prøv igjen etter neste varsel."
 msgid "No users found"
 msgstr "Ingen brukere funnet"
 
-#: src/components/Multiplayer.tsx:294
+#: src/components/Multiplayer.tsx:313
 msgid "No world server."
 msgstr "Ingen verdensserver."
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:45
 msgid "NO-GRADE"
 msgstr "INGEN KARAKTER"
 
@@ -1176,7 +1201,7 @@ msgstr "INGEN KARAKTER"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:364
 #: src/components/MissionSetup.tsx:418
-#: src/components/MissionSetup.tsx:949
+#: src/components/MissionSetup.tsx:962
 msgid "None"
 msgstr "Ingen"
 
@@ -1200,19 +1225,19 @@ msgstr "Ikke satt"
 msgid "Notifications"
 msgstr "Varsler"
 
-#: src/components/MissionSetup.tsx:1017
+#: src/components/MissionSetup.tsx:1030
 msgid "Ocean detail"
 msgstr "Havdetaljer"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:43
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:905
+#: src/components/MissionSetup.tsx:918
 msgid "On carrier"
 msgstr "På hangarskip"
 
-#: src/components/MissionSetup.tsx:904
+#: src/components/MissionSetup.tsx:917
 msgid "On runway"
 msgstr "På rullebane"
 
@@ -1220,11 +1245,11 @@ msgstr "På rullebane"
 msgid "Oops! Page Not Found!"
 msgstr "Ups! Side ikke funnet!"
 
-#: src/components/Multiplayer.tsx:302
+#: src/components/Multiplayer.tsx:321
 msgid "Open"
 msgstr "Åpne"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Open — anyone may join or leave"
 msgstr "Åpen — alle kan bli med eller forlate"
 
@@ -1253,11 +1278,11 @@ msgstr "Åpne navigasjonsmeny"
 msgid "Open theme settings"
 msgstr "Åpne temainnstillinger"
 
-#: src/components/GameCanvas.tsx:132
+#: src/components/GameCanvas.tsx:136
 msgid "or"
 msgstr "eller"
 
-#: src/components/GameCanvas.tsx:132
+#: src/components/GameCanvas.tsx:136
 msgid "orbit"
 msgstr "bane"
 
@@ -1269,7 +1294,7 @@ msgstr "Annet"
 msgid "Owner"
 msgstr "Eier"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:52
 msgid "P to resume · M map · Esc menu"
 msgstr "P for å fortsette · M kart · Esc meny"
 
@@ -1285,7 +1310,7 @@ msgstr "Verifisering med passnøkkel mislyktes. Prøv igjen."
 msgid "Passkeys"
 msgstr "Passnøkler"
 
-#: src/components/GameCanvas.tsx:127
+#: src/components/GameCanvas.tsx:131
 msgid "pause"
 msgstr "pause"
 
@@ -1297,21 +1322,21 @@ msgstr "Pause"
 msgid "PAUSED"
 msgstr "PAUSET"
 
-#: src/components/Multiplayer.tsx:88
-#: src/components/Multiplayer.tsx:177
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:178
 msgid "pilot"
 msgstr "pilot"
 
-#: src/components/MissionSetup.tsx:875
-#: src/components/Multiplayer.tsx:254
+#: src/components/MissionSetup.tsx:888
+#: src/components/Multiplayer.tsx:273
 msgid "Pilot"
 msgstr "Pilot"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:58
 msgid "PILOT DOWN"
 msgstr "PILOT DREPT"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:124
 msgid "pitch"
 msgstr "stamp"
 
@@ -1340,7 +1365,7 @@ msgstr "Prøv igjen."
 msgid "Please wait a moment and try again."
 msgstr "Vent litt og prøv igjen."
 
-#: src/components/MissionSetup.tsx:972
+#: src/components/MissionSetup.tsx:985
 msgid "Preset"
 msgstr "Forhåndsinnstilling"
 
@@ -1348,7 +1373,7 @@ msgstr "Forhåndsinnstilling"
 msgid "Press a key…"
 msgstr "Trykk på en tast…"
 
-#: src/components/GameCanvas.tsx:33
+#: src/components/GameCanvas.tsx:37
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "TRYKK ENTER FOR Å LETTE"
 
@@ -1383,7 +1408,7 @@ msgstr "Koble kontoene dine til på nytt på denne serveren"
 msgid "Re-register your passkeys on this server"
 msgstr "Registrer tilgangsnøklene dine på nytt på denne serveren"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "rearm"
 msgstr "lad om"
 
@@ -1391,6 +1416,10 @@ msgstr "lad om"
 #: src/components/MissionSetup.tsx:200
 msgid "Rearm"
 msgstr "Bevæpne på nytt"
+
+#: src/components/GameCanvas.tsx:34
+msgid "REARMED"
+msgstr ""
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:216
 #: ../../../lib/web/src/components/search-entity-page.tsx:240
@@ -1406,7 +1435,7 @@ msgstr "Omdirigerer til innlogging."
 msgid "Reduce interest"
 msgstr "Reduser interesse"
 
-#: src/components/Multiplayer.tsx:195
+#: src/components/Multiplayer.tsx:196
 msgid "Refresh"
 msgstr "Oppdater"
 
@@ -1451,7 +1480,7 @@ msgstr "Send e-post på nytt"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1121
+#: src/components/MissionSetup.tsx:1134
 msgid "Reset"
 msgstr "Tilbakestill"
 
@@ -1459,15 +1488,15 @@ msgstr "Tilbakestill"
 msgid "Reset all settings to default values"
 msgstr "Tilbakestill alle innstillinger til standardverdier"
 
-#: src/components/MissionSetup.tsx:999
+#: src/components/MissionSetup.tsx:1012
 msgid "Resolution"
 msgstr "Løsning"
 
-#: src/components/MissionSetup.tsx:1093
+#: src/components/MissionSetup.tsx:1106
 msgid "Restart"
 msgstr "Start på nytt"
 
-#: src/components/MissionSetup.tsx:1097
+#: src/components/MissionSetup.tsx:1110
 msgid "Resume"
 msgstr "Gjenoppta"
 
@@ -1479,7 +1508,7 @@ msgstr "Tilbake til meny"
 msgid "Right to Left"
 msgstr "Høyre mot venstre"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:125
 msgid "roll"
 msgstr "rull"
 
@@ -1495,8 +1524,8 @@ msgstr "Rulling venstre"
 msgid "Roll right"
 msgstr "Rulling høyre"
 
-#: src/components/MissionSetup.tsx:874
-#: src/components/Multiplayer.tsx:253
+#: src/components/MissionSetup.tsx:887
+#: src/components/Multiplayer.tsx:272
 msgid "Rookie"
 msgstr "Fersking"
 
@@ -1504,7 +1533,7 @@ msgstr "Fersking"
 msgid "Rows per page"
 msgstr "Rader per side"
 
-#: src/components/GameCanvas.tsx:35
+#: src/components/GameCanvas.tsx:39
 msgid "RUN UP ENGINE"
 msgstr "FULL KRAFT"
 
@@ -1605,7 +1634,7 @@ msgstr "Tjenerfeil"
 msgid "Server rules"
 msgstr "Serverregler"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:55
 msgid "SESSION ENDED"
 msgstr "ØKT AVSLUTTET"
 
@@ -1629,7 +1658,7 @@ msgstr "Angi opprinnelse og destinasjon"
 msgid "Settings"
 msgstr "Innstillinger"
 
-#: src/components/MissionSetup.tsx:1049
+#: src/components/MissionSetup.tsx:1062
 msgid "Shadows"
 msgstr "Skygger"
 
@@ -1678,7 +1707,7 @@ msgstr "Romslig"
 msgid "SPD BK"
 msgstr "FBRMS"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:129
 msgid "speed brake"
 msgstr "fartbrems"
 
@@ -1688,8 +1717,8 @@ msgstr "fartbrems"
 msgid "Speed brake"
 msgstr "Fartbrems"
 
-#: src/components/MissionSetup.tsx:897
-#: src/components/MissionSetup.tsx:1103
+#: src/components/MissionSetup.tsx:910
+#: src/components/MissionSetup.tsx:1116
 msgid "Start"
 msgstr "Start"
 
@@ -1711,7 +1740,7 @@ msgstr "Søndag"
 msgid "System"
 msgstr "System"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:50
 msgid "TACTICAL MAP"
 msgstr "TAKTISK KART"
 
@@ -1753,7 +1782,7 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Temainnstillinger"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:126
 msgid "throttle"
 msgstr "gass"
 
@@ -1773,11 +1802,11 @@ msgstr "Gass opp"
 msgid "Thursday"
 msgstr "Torsdag"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:137
 msgid "tilt"
 msgstr "vipp"
 
-#: src/components/MissionSetup.tsx:932
+#: src/components/MissionSetup.tsx:945
 msgid "Time of day"
 msgstr "Tid på døgnet"
 
@@ -1820,7 +1849,7 @@ msgstr "For mange forespørsler"
 msgid "Top"
 msgstr "Topp"
 
-#: src/components/MissionSetup.tsx:1061
+#: src/components/MissionSetup.tsx:1074
 msgid "Tracers"
 msgstr "Sporlys"
 
@@ -1855,7 +1884,7 @@ msgstr "Skriv for å søke i brukere"
 msgid "Type to search..."
 msgstr "Skriv for å søke ..."
 
-#: src/components/MissionSetup.tsx:991
+#: src/components/MissionSetup.tsx:1004
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1914,8 +1943,8 @@ msgstr "Verifiser"
 msgid "Verify email address"
 msgstr "Verifiser e-postadresse"
 
-#: src/components/MissionSetup.tsx:876
-#: src/components/Multiplayer.tsx:255
+#: src/components/MissionSetup.tsx:889
+#: src/components/Multiplayer.tsx:274
 msgid "Veteran"
 msgstr "Veteran"
 
@@ -1923,7 +1952,7 @@ msgstr "Veteran"
 msgid "Video thumbnail"
 msgstr "Videominiatyr"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:130
 msgid "view"
 msgstr "visning"
 
@@ -1948,7 +1977,7 @@ msgstr "Visninger"
 msgid "WAITING FOR OPPONENT"
 msgstr "VENTER PÅ MOTSTANDER"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:48
 msgid "WAVE OFF"
 msgstr "AVBRYT LANDING"
 
@@ -1961,7 +1990,7 @@ msgid "Weapons"
 msgstr "Våpen"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:225
 msgid "Weather"
 msgstr "Vær"
 
@@ -1982,19 +2011,19 @@ msgstr "Hjulbremser"
 msgid "Wing fold"
 msgstr "Vingefolding"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:63
 msgid "WINS"
 msgstr "VINNER"
 
-#: src/components/Multiplayer.tsx:161
+#: src/components/Multiplayer.tsx:162
 msgid "World server"
 msgstr "Verdensserver"
 
-#: src/components/Multiplayer.tsx:99
+#: src/components/Multiplayer.tsx:100
 msgid "World server not reachable"
 msgstr "Verdensserveren er ikke tilgjengelig"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:125
 msgid "yaw"
 msgstr "gir"
 

@@ -41,7 +41,7 @@ import { type Join } from '../game/net'
 // The fields each tab owns, for the per-tab Reset (the joystick tab also clears
 // the per-device maps so built-in defaults apply again).
 const TAB_FIELDS: Record<string, string[]> = {
-  mission: ['task', 'start', 'world', 'callsign', 'aircraft', 'bandit'],
+  mission: ['task', 'start', 'world', 'callsign', 'aircraft', 'bandit', 'fuel'],
   weather: ['tod', 'clouds'],
   controls: ['sens', 'invert', 'joystick', 'sticks'],
   keys: ['keys'],
@@ -861,6 +861,19 @@ export function MissionSetup({
                     { value: 'joust', label: <Trans>Joust against AI player</Trans> },
                     { value: 'multiplayer', label: <Trans>Multiplayer</Trans> },
                   ]}
+                />
+                <SectionLabel>
+                  <Trans>Fuel</Trans>
+                </SectionLabel>
+                <SliderRow
+                  label={<Trans>Load</Trans>}
+                  value={Number(config.fuel) || 6600}
+                  min={1500}
+                  max={10800}
+                  step={100}
+                  decimals={0}
+                  suffix=' lb'
+                  onChange={(v) => set('fuel', v)}
                 />
                 {config.task === 'joust' && (
                   <>

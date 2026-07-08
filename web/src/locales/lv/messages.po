@@ -19,21 +19,21 @@ msgid "Please check your internet connection and try again."
 msgstr "Lūdzu, pārbaudiet interneta savienojumu un mēģiniet vēlreiz."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:187
+#: src/components/Multiplayer.tsx:188
 msgid "{0} flying"
 msgstr "{0} lido"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:304
+#: src/components/Multiplayer.tsx:323
 msgid "{0}/{1} players"
 msgstr "{0}/{1} spēlētāji"
 
-#: src/components/Multiplayer.tsx:130
+#: src/components/Multiplayer.tsx:131
 msgid "{name}'s match"
 msgstr "{name} mačs"
 
-#: src/components/GameCanvas.tsx:36
+#: src/components/GameCanvas.tsx:40
 msgid "1 WIRE"
 msgstr "TROSE 1"
 
@@ -41,7 +41,7 @@ msgstr "TROSE 1"
 msgid "12 hours"
 msgstr "12 stundas"
 
-#: src/components/GameCanvas.tsx:37
+#: src/components/GameCanvas.tsx:41
 msgid "2 WIRE"
 msgstr "TROSE 2"
 
@@ -49,7 +49,7 @@ msgstr "TROSE 2"
 msgid "24 hours"
 msgstr "24 stundas"
 
-#: src/components/GameCanvas.tsx:38
+#: src/components/GameCanvas.tsx:42
 msgid "3 WIRE"
 msgstr "TROSE 3"
 
@@ -85,8 +85,8 @@ msgstr "Konta veids"
 msgid "Account verified"
 msgstr "Konts verificēts"
 
-#: src/components/MissionSetup.tsx:877
-#: src/components/Multiplayer.tsx:256
+#: src/components/MissionSetup.tsx:890
+#: src/components/Multiplayer.tsx:275
 msgid "Ace"
 msgstr "Dūzis"
 
@@ -136,7 +136,7 @@ msgstr "Pievienot skatu"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Pielāgo izskatu un izkārtojumu pēc savām vēlmēm."
 
-#: src/components/MissionSetup.tsx:1055
+#: src/components/MissionSetup.tsx:1068
 msgid "Afterburner"
 msgstr "Pēcdedzinātājs"
 
@@ -201,7 +201,7 @@ msgstr "Asis"
 msgid "Axis {i}"
 msgstr "Ass {i}"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:137
 msgid "back"
 msgstr "atpakaļ"
 
@@ -215,11 +215,15 @@ msgstr "Atpakaļ"
 msgid "Back to home"
 msgstr "Atpakaļ uz sākumu"
 
-#: src/components/MissionSetup.tsx:868
+#: src/components/MissionSetup.tsx:881
 msgid "Bandit"
 msgstr "Bandīts"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:32
+msgid "BINGO FUEL"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:47
 msgid "BOLTER"
 msgstr "BOLTER"
 
@@ -228,11 +232,11 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Veicināt interesi"
 
-#: src/components/Multiplayer.tsx:248
+#: src/components/Multiplayer.tsx:267
 msgid "Bots"
 msgstr "Boti"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:129
 msgid "brakes"
 msgstr "bremzes"
 
@@ -244,7 +248,7 @@ msgstr "Poga {i}"
 msgid "Buttons"
 msgstr "Pogas"
 
-#: src/components/Multiplayer.tsx:172
+#: src/components/Multiplayer.tsx:173
 msgid "Callsign"
 msgstr "Izsaukuma signāls"
 
@@ -270,11 +274,11 @@ msgstr "Atcelt"
 msgid "Canopy"
 msgstr "Kabīnes kupols"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:919
 msgid "Carrier landing"
 msgstr "Nolaišanās uz lidmašīnu nesēja"
 
-#: src/components/MissionSetup.tsx:912
+#: src/components/MissionSetup.tsx:925
 msgid "Catapult"
 msgstr "Katapulta"
 
@@ -287,7 +291,7 @@ msgstr "Šī paziņojuma kategorija"
 msgid "Change notification category"
 msgstr "Mainīt paziņojuma kategoriju"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:134
 msgid "Chase view:"
 msgstr "Sekošanas skats:"
 
@@ -318,7 +322,7 @@ msgstr "Izvēlies valodu"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:232
 msgid "Clear"
 msgstr "Notīrīt"
 
@@ -360,11 +364,11 @@ msgstr "Aizvērt paneli"
 msgid "Close search"
 msgstr "Aizvērt meklēšanu"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:138
 msgid "closer"
 msgstr "tuvāk"
 
-#: src/components/MissionSetup.tsx:943
+#: src/components/MissionSetup.tsx:956
 msgid "Clouds"
 msgstr "Mākoņi"
 
@@ -397,11 +401,11 @@ msgstr "Kompakts"
 msgid "Confirm"
 msgstr "Apstiprināt"
 
-#: src/components/Multiplayer.tsx:190
+#: src/components/Multiplayer.tsx:191
 msgid "Connecting…"
 msgstr "Savienojas…"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:53
 msgid "CONNECTION FAILED"
 msgstr "SAVIENOJUMS NEIZDEVĀS"
 
@@ -425,7 +429,7 @@ msgstr "Turpināt ar {label}"
 msgid "Copy"
 msgstr "Kopēt"
 
-#: src/components/Multiplayer.tsx:142
+#: src/components/Multiplayer.tsx:143
 msgid "Could not create the match"
 msgstr "Neizdevās izveidot maču"
 
@@ -445,15 +449,15 @@ msgstr "Neizdevās sākt atkārtotu autentifikāciju. Lūdzu, mēģiniet vēlrei
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Neizdevās verificēt ar šo kontu. Lūdzu, mēģiniet vēlreiz."
 
-#: src/components/GameCanvas.tsx:32
+#: src/components/GameCanvas.tsx:36
 msgid "CRASHED"
 msgstr "AVARĒJA"
 
-#: src/components/Multiplayer.tsx:285
+#: src/components/Multiplayer.tsx:304
 msgid "Create and fly"
 msgstr "Izveidot un lidot"
 
-#: src/components/Multiplayer.tsx:205
+#: src/components/Multiplayer.tsx:206
 msgid "Create match"
 msgstr "Izveidot maču"
 
@@ -462,8 +466,8 @@ msgstr "Izveidot maču"
 msgid "Credits"
 msgstr "Veidotāji"
 
-#: src/components/MissionSetup.tsx:950
-#: src/components/Multiplayer.tsx:232
+#: src/components/MissionSetup.tsx:963
+#: src/components/Multiplayer.tsx:233
 msgid "Cumulus"
 msgstr "Gubu mākoņi"
 
@@ -471,7 +475,7 @@ msgstr "Gubu mākoņi"
 msgid "Custom"
 msgstr "Pielāgots"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:46
 msgid "CUT"
 msgstr "BĪSTAMI"
 
@@ -497,12 +501,12 @@ msgstr "Tumšais režīms"
 msgid "Data conflict"
 msgstr "Datu konflikts"
 
-#: src/components/MissionSetup.tsx:938
-#: src/components/Multiplayer.tsx:227
+#: src/components/MissionSetup.tsx:951
+#: src/components/Multiplayer.tsx:228
 msgid "Day"
 msgstr "Diena"
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:49
 msgid "DECK POSITION SAVED"
 msgstr "KLĀJA POZĪCIJA SAGLABĀTA"
 
@@ -567,7 +571,7 @@ msgstr "Aizvērt"
 msgid "Displays the mobile sidebar."
 msgstr "Parāda mobilo sānu joslu."
 
-#: src/components/MissionSetup.tsx:1043
+#: src/components/MissionSetup.tsx:1056
 msgid "Distance LOD"
 msgstr "Attāluma LOD"
 
@@ -580,11 +584,11 @@ msgstr "Lejupielādēt"
 msgid "Download failed"
 msgstr "Lejupielāde neizdevās"
 
-#: src/components/Multiplayer.tsx:252
+#: src/components/Multiplayer.tsx:271
 msgid "Drone"
 msgstr "Drons"
 
-#: src/components/MissionSetup.tsx:1037
+#: src/components/MissionSetup.tsx:1050
 msgid "Dynamic resolution"
 msgstr "Dinamiska izšķirtspēja"
 
@@ -600,7 +604,7 @@ msgstr "Rediģēt {label}"
 msgid "Eject"
 msgstr "Katapultēties"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:57
 msgid "EJECTED"
 msgstr "KATAPULTĒJĀS"
 
@@ -608,7 +612,7 @@ msgstr "KATAPULTĒJĀS"
 msgid "Email code"
 msgstr "E-pasta kods"
 
-#: src/components/Multiplayer.tsx:303
+#: src/components/Multiplayer.tsx:322
 msgid "empty"
 msgstr "tukša"
 
@@ -639,11 +643,11 @@ msgstr "Izvērst"
 msgid "Expand sidebar"
 msgstr "Izvērst sānjoslu"
 
-#: src/components/MissionSetup.tsx:1009
+#: src/components/MissionSetup.tsx:1022
 msgid "Exterior detail"
 msgstr "Ārējā detalizācija"
 
-#: src/components/MissionSetup.tsx:1025
+#: src/components/MissionSetup.tsx:1038
 msgid "Extra aircraft"
 msgstr "Papildu lidaparāti"
 
@@ -667,7 +671,7 @@ msgstr "Neizdevās nosūtīt verifikācijas kodu"
 msgid "Failed to update category"
 msgstr "Neizdevās atjaunināt kategoriju"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:44
 msgid "FAIR"
 msgstr "APMIERINOŠI"
 
@@ -683,13 +687,13 @@ msgstr "Pabeidziet konta pārvietošanu"
 msgid "Fixed keys"
 msgstr "Fiksētie taustiņi"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:127
 msgid "flares"
 msgstr "uguņi"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1073
+#: src/components/MissionSetup.tsx:1086
 msgid "Flares"
 msgstr "Lāpas"
 
@@ -701,7 +705,7 @@ msgstr "MĀNEKĻI"
 msgid "Flat"
 msgstr "Plakana"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:54
 msgid "FLIGHT CORE FAILED"
 msgstr "LIDOJUMA KODOLA KĻŪME"
 
@@ -709,7 +713,7 @@ msgstr "LIDOJUMA KODOLA KĻŪME"
 msgid "Floating"
 msgstr "Peldošs"
 
-#: src/components/MissionSetup.tsx:1079
+#: src/components/MissionSetup.tsx:1092
 msgid "Framerate"
 msgstr "Kadru nomaiņas ātrums"
 
@@ -734,6 +738,19 @@ msgstr "No"
 msgid "From theme"
 msgstr "No motīva"
 
+#: src/components/MissionSetup.tsx:866
+#: src/components/Multiplayer.tsx:243
+msgid "Fuel"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:31
+msgid "FUEL"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:33
+msgid "FUEL LO"
+msgstr ""
+
 #: src/components/MissionSetup.tsx:205
 msgid "Fuel probe"
 msgstr "Degvielas zonde"
@@ -742,7 +759,7 @@ msgstr "Degvielas zonde"
 msgid "Full layout"
 msgstr "Pilns izkārtojums"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "gear"
 msgstr "Šasija"
 
@@ -788,7 +805,7 @@ msgstr "Grupa"
 msgid "GUN"
 msgstr "LIELGABALS"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:126
 msgid "guns"
 msgstr "lielgabali"
 
@@ -805,12 +822,12 @@ msgstr "Slēpt"
 msgid "Hide password"
 msgstr "Slēpt paroli"
 
-#: src/components/MissionSetup.tsx:989
+#: src/components/MissionSetup.tsx:1002
 msgid "High"
 msgstr "Augsta"
 
-#: src/components/MissionSetup.tsx:951
-#: src/components/Multiplayer.tsx:233
+#: src/components/MissionSetup.tsx:964
+#: src/components/Multiplayer.tsx:234
 msgid "High stratus"
 msgstr "Augsti slāņu mākoņi"
 
@@ -821,7 +838,7 @@ msgstr "Augsti slāņu mākoņi"
 msgid "Home"
 msgstr "Sākums"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "hook"
 msgstr "Āķis"
 
@@ -837,7 +854,7 @@ msgstr "Aktuāli"
 msgid "Imperial"
 msgstr "Imperiāls"
 
-#: src/components/MissionSetup.tsx:903
+#: src/components/MissionSetup.tsx:916
 msgid "In air"
 msgstr "Gaisā"
 
@@ -857,19 +874,19 @@ msgstr "Nederīgs verifikācijas kods"
 msgid "Invert pitch"
 msgstr "Apvērst tangāžu"
 
-#: src/components/Multiplayer.tsx:317
+#: src/components/Multiplayer.tsx:336
 msgid "Join"
 msgstr "Pievienoties"
 
-#: src/components/GameCanvas.tsx:60
+#: src/components/GameCanvas.tsx:64
 msgid "JOINED"
 msgstr "PIEVIENOJĀS"
 
-#: src/components/Multiplayer.tsx:302
+#: src/components/Multiplayer.tsx:321
 msgid "Joust"
 msgstr "Duelis"
 
-#: src/components/Multiplayer.tsx:219
+#: src/components/Multiplayer.tsx:220
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duelis — 1v1, uzvar tas, kurš notriec pirmais"
 
@@ -885,7 +902,7 @@ msgstr "Kursorsvira"
 msgid "Keys"
 msgstr "Taustiņi"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:56
 msgid "KILL"
 msgstr "NOTRIEKTS"
 
@@ -899,7 +916,7 @@ msgstr "Šasija"
 msgid "Large"
 msgstr "Liels"
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:127
 msgid "launch"
 msgstr "palaišana"
 
@@ -912,12 +929,16 @@ msgstr "Palaišana (katapulta)"
 msgid "Layout"
 msgstr "Izkārtojums"
 
+#: src/components/Multiplayer.tsx:256
+msgid "lb"
+msgstr ""
+
 #: ../../../lib/web/src/components/learn-more.tsx:33
 #: ../../../lib/web/src/components/learn-more.tsx:38
 msgid "Learn more"
 msgstr "Uzzināt vairāk"
 
-#: src/components/GameCanvas.tsx:61
+#: src/components/GameCanvas.tsx:65
 msgid "LEFT"
 msgstr "IZGĀJA"
 
@@ -930,7 +951,7 @@ msgstr "No kreisās uz labo"
 msgid "Light"
 msgstr "Gaišs"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "lights"
 msgstr "gaismas"
 
@@ -939,15 +960,19 @@ msgstr "gaismas"
 msgid "Lights"
 msgstr "Gaismas"
 
-#: src/components/GameCanvas.tsx:34
+#: src/components/GameCanvas.tsx:38
 msgid "LIGHTS"
 msgstr "GAISMAS"
+
+#: src/components/MissionSetup.tsx:869
+msgid "Load"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx:35
 msgid "Load more"
 msgstr "Ielādēt vairāk"
 
-#: src/components/GameCanvas.tsx:31
+#: src/components/GameCanvas.tsx:35
 msgid "LOADING"
 msgstr "IELĀDĒ"
 
@@ -1006,20 +1031,20 @@ msgstr "Skatīties pa labi"
 msgid "Look up"
 msgstr "Skatīties augšup"
 
-#: src/components/MissionSetup.tsx:985
+#: src/components/MissionSetup.tsx:998
 msgid "Low"
 msgstr "Zema"
 
-#: src/components/MissionSetup.tsx:952
-#: src/components/Multiplayer.tsx:234
+#: src/components/MissionSetup.tsx:965
+#: src/components/Multiplayer.tsx:235
 msgid "Low stratus"
 msgstr "Zemi slāņu mākoņi"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:51
 msgid "M to close"
 msgstr "M aizvēršanai"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:130
 msgid "map"
 msgstr "karte"
 
@@ -1037,16 +1062,16 @@ msgstr "Atzīmēt visus kā lasītus"
 msgid "Master"
 msgstr "Kopējais"
 
-#: src/components/Multiplayer.tsx:215
+#: src/components/Multiplayer.tsx:216
 msgid "Match type"
 msgstr "Mača veids"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:987
+#: src/components/MissionSetup.tsx:1000
 msgid "Medium"
 msgstr "Vidējs"
 
-#: src/components/GameCanvas.tsx:127
+#: src/components/GameCanvas.tsx:131
 msgid "menu"
 msgstr "izvēlne"
 
@@ -1062,7 +1087,7 @@ msgstr "Metrisks"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midvejas atola karte — attēli satur modificētus <0>Copernicus Sentinel-2</0> datus (2026); lidlauka ģeometrija (skrejceļš, manevrēšanas ceļi, peroni) © <1>OpenStreetMap</1> līdzautori, licencēts saskaņā ar <2>ODbL</2>; krasta līnijas un rifu dati no <3>NOAA NCCOS</3> (publiskais īpašums)."
 
-#: src/components/GameCanvas.tsx:123
+#: src/components/GameCanvas.tsx:127
 msgid "missile"
 msgstr "raķete"
 
@@ -1071,11 +1096,11 @@ msgstr "raķete"
 msgid "Missile"
 msgstr "Raķete"
 
-#: src/components/MissionSetup.tsx:1067
+#: src/components/MissionSetup.tsx:1080
 msgid "Missiles"
 msgstr "Raķetes"
 
-#: src/components/Multiplayer.tsx:243
+#: src/components/Multiplayer.tsx:262
 msgid "Missiles allowed"
 msgstr "Raķetes atļautas"
 
@@ -1095,7 +1120,7 @@ msgstr "Pakustiniet asi…"
 msgid "Multiplayer"
 msgstr "Vairākspēlētāju režīms"
 
-#: src/components/Multiplayer.tsx:151
+#: src/components/Multiplayer.tsx:152
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Vairākspēlētāju režīmam nepieciešams WebTransport, ko šī pārlūkprogramma vēl neatbalsta."
 
@@ -1113,8 +1138,8 @@ msgstr "Jauns"
 msgid "Next image"
 msgstr "Nākamais attēls"
 
-#: src/components/MissionSetup.tsx:939
-#: src/components/Multiplayer.tsx:228
+#: src/components/MissionSetup.tsx:952
+#: src/components/Multiplayer.tsx:229
 msgid "Night"
 msgstr "Nakts"
 
@@ -1134,7 +1159,7 @@ msgstr "Nav pieejamu grupu"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Kursorsvira nav atrasta — nospiediet jebkuru tās pogu, lai to pamodinātu."
 
-#: src/components/Multiplayer.tsx:294
+#: src/components/Multiplayer.tsx:313
 msgid "No open matches — create one."
 msgstr "Nav atvērtu maču — izveidojiet jaunu."
 
@@ -1163,11 +1188,11 @@ msgstr "Vēl nav tēmas ieraksta — mēģiniet vēlreiz pēc nākamā paziņoju
 msgid "No users found"
 msgstr "Lietotāji nav atrasti"
 
-#: src/components/Multiplayer.tsx:294
+#: src/components/Multiplayer.tsx:313
 msgid "No world server."
 msgstr "Nav pasaules servera."
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:45
 msgid "NO-GRADE"
 msgstr "BEZ VĒRTĒJUMA"
 
@@ -1176,7 +1201,7 @@ msgstr "BEZ VĒRTĒJUMA"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:364
 #: src/components/MissionSetup.tsx:418
-#: src/components/MissionSetup.tsx:949
+#: src/components/MissionSetup.tsx:962
 msgid "None"
 msgstr "Nav"
 
@@ -1200,19 +1225,19 @@ msgstr "Nav iestatīts"
 msgid "Notifications"
 msgstr "Paziņojumi"
 
-#: src/components/MissionSetup.tsx:1017
+#: src/components/MissionSetup.tsx:1030
 msgid "Ocean detail"
 msgstr "Okeāna detalizācija"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:43
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:905
+#: src/components/MissionSetup.tsx:918
 msgid "On carrier"
 msgstr "Uz kuģa"
 
-#: src/components/MissionSetup.tsx:904
+#: src/components/MissionSetup.tsx:917
 msgid "On runway"
 msgstr "Uz skrejceļa"
 
@@ -1220,11 +1245,11 @@ msgstr "Uz skrejceļa"
 msgid "Oops! Page Not Found!"
 msgstr "Hops! Lapa nav atrasta!"
 
-#: src/components/Multiplayer.tsx:302
+#: src/components/Multiplayer.tsx:321
 msgid "Open"
 msgstr "Atvērt"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:219
 msgid "Open — anyone may join or leave"
 msgstr "Atvērts — jebkurš var pievienoties vai iziet"
 
@@ -1253,11 +1278,11 @@ msgstr "Atvērt navigācijas izvēlni"
 msgid "Open theme settings"
 msgstr "Atvērt motīva iestatījumus"
 
-#: src/components/GameCanvas.tsx:132
+#: src/components/GameCanvas.tsx:136
 msgid "or"
 msgstr "vai"
 
-#: src/components/GameCanvas.tsx:132
+#: src/components/GameCanvas.tsx:136
 msgid "orbit"
 msgstr "riņķošana"
 
@@ -1269,7 +1294,7 @@ msgstr "Cits"
 msgid "Owner"
 msgstr "Īpašnieks"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:52
 msgid "P to resume · M map · Esc menu"
 msgstr "P turpināt · M karte · Esc izvēlne"
 
@@ -1285,7 +1310,7 @@ msgstr "Piekļuves atslēgas pārbaude neizdevās. Lūdzu, mēģiniet vēlreiz."
 msgid "Passkeys"
 msgstr "Piekļuves atslēgas"
 
-#: src/components/GameCanvas.tsx:127
+#: src/components/GameCanvas.tsx:131
 msgid "pause"
 msgstr "pauze"
 
@@ -1297,21 +1322,21 @@ msgstr "Apturēt"
 msgid "PAUSED"
 msgstr "PAUZE"
 
-#: src/components/Multiplayer.tsx:88
-#: src/components/Multiplayer.tsx:177
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:178
 msgid "pilot"
 msgstr "pilots"
 
-#: src/components/MissionSetup.tsx:875
-#: src/components/Multiplayer.tsx:254
+#: src/components/MissionSetup.tsx:888
+#: src/components/Multiplayer.tsx:273
 msgid "Pilot"
 msgstr "Pilots"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:58
 msgid "PILOT DOWN"
 msgstr "PILOTS KRITIS"
 
-#: src/components/GameCanvas.tsx:120
+#: src/components/GameCanvas.tsx:124
 msgid "pitch"
 msgstr "tangāža"
 
@@ -1340,7 +1365,7 @@ msgstr "Mēģini vēlreiz."
 msgid "Please wait a moment and try again."
 msgstr "Lūdzu, uzgaidiet brīdi un mēģiniet vēlreiz."
 
-#: src/components/MissionSetup.tsx:972
+#: src/components/MissionSetup.tsx:985
 msgid "Preset"
 msgstr "Priekšiestatījums"
 
@@ -1348,7 +1373,7 @@ msgstr "Priekšiestatījums"
 msgid "Press a key…"
 msgstr "Nospiediet taustiņu…"
 
-#: src/components/GameCanvas.tsx:33
+#: src/components/GameCanvas.tsx:37
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "NOSPIED ENTER, LAI PACELTOS"
 
@@ -1383,7 +1408,7 @@ msgstr "Atkārtoti saistiet savus kontus šajā serverī"
 msgid "Re-register your passkeys on this server"
 msgstr "Atkārtoti reģistrējiet savas piekļuves atslēgas šajā serverī"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:128
 msgid "rearm"
 msgstr "pārlādēt"
 
@@ -1391,6 +1416,10 @@ msgstr "pārlādēt"
 #: src/components/MissionSetup.tsx:200
 msgid "Rearm"
 msgstr "Pārbruņot"
+
+#: src/components/GameCanvas.tsx:34
+msgid "REARMED"
+msgstr ""
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:216
 #: ../../../lib/web/src/components/search-entity-page.tsx:240
@@ -1406,7 +1435,7 @@ msgstr "Pāradresē uz pieteikšanos."
 msgid "Reduce interest"
 msgstr "Samazināt interesi"
 
-#: src/components/Multiplayer.tsx:195
+#: src/components/Multiplayer.tsx:196
 msgid "Refresh"
 msgstr "Atsvaidzināt"
 
@@ -1451,7 +1480,7 @@ msgstr "Sūtīt e-pastu vēlreiz"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1121
+#: src/components/MissionSetup.tsx:1134
 msgid "Reset"
 msgstr "Atiestatīt"
 
@@ -1459,15 +1488,15 @@ msgstr "Atiestatīt"
 msgid "Reset all settings to default values"
 msgstr "Atiestatīt visus iestatījumus uz noklusējuma vērtībām"
 
-#: src/components/MissionSetup.tsx:999
+#: src/components/MissionSetup.tsx:1012
 msgid "Resolution"
 msgstr "Izšķirtspēja"
 
-#: src/components/MissionSetup.tsx:1093
+#: src/components/MissionSetup.tsx:1106
 msgid "Restart"
 msgstr "Restartēt"
 
-#: src/components/MissionSetup.tsx:1097
+#: src/components/MissionSetup.tsx:1110
 msgid "Resume"
 msgstr "Atsākt"
 
@@ -1479,7 +1508,7 @@ msgstr "Atgriezties izvēlnē"
 msgid "Right to Left"
 msgstr "No labās uz kreiso"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:125
 msgid "roll"
 msgstr "sānsvere"
 
@@ -1495,8 +1524,8 @@ msgstr "Sānsvere pa kreisi"
 msgid "Roll right"
 msgstr "Sānsvere pa labi"
 
-#: src/components/MissionSetup.tsx:874
-#: src/components/Multiplayer.tsx:253
+#: src/components/MissionSetup.tsx:887
+#: src/components/Multiplayer.tsx:272
 msgid "Rookie"
 msgstr "Iesācējs"
 
@@ -1504,7 +1533,7 @@ msgstr "Iesācējs"
 msgid "Rows per page"
 msgstr "Rindu skaits lapā"
 
-#: src/components/GameCanvas.tsx:35
+#: src/components/GameCanvas.tsx:39
 msgid "RUN UP ENGINE"
 msgstr "PILNA JAUDA"
 
@@ -1605,7 +1634,7 @@ msgstr "Servera kļūda"
 msgid "Server rules"
 msgstr "Servera noteikumi"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:55
 msgid "SESSION ENDED"
 msgstr "SESIJA BEIGUSIES"
 
@@ -1629,7 +1658,7 @@ msgstr "Iestatīt sākuma un galapunktu"
 msgid "Settings"
 msgstr "Iestatījumi"
 
-#: src/components/MissionSetup.tsx:1049
+#: src/components/MissionSetup.tsx:1062
 msgid "Shadows"
 msgstr "Ēnas"
 
@@ -1678,7 +1707,7 @@ msgstr "Plašs"
 msgid "SPD BK"
 msgstr "G.BRZ"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:129
 msgid "speed brake"
 msgstr "gaisa bremze"
 
@@ -1688,8 +1717,8 @@ msgstr "gaisa bremze"
 msgid "Speed brake"
 msgstr "Gaisa bremze"
 
-#: src/components/MissionSetup.tsx:897
-#: src/components/MissionSetup.tsx:1103
+#: src/components/MissionSetup.tsx:910
+#: src/components/MissionSetup.tsx:1116
 msgid "Start"
 msgstr "Sākt"
 
@@ -1711,7 +1740,7 @@ msgstr "Svētdiena"
 msgid "System"
 msgstr "Sistēma"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:50
 msgid "TACTICAL MAP"
 msgstr "TAKTISKĀ KARTE"
 
@@ -1753,7 +1782,7 @@ msgstr "Tēma"
 msgid "Theme Settings"
 msgstr "Tēmas iestatījumi"
 
-#: src/components/GameCanvas.tsx:122
+#: src/components/GameCanvas.tsx:126
 msgid "throttle"
 msgstr "drosele"
 
@@ -1773,11 +1802,11 @@ msgstr "Palielināt droseli"
 msgid "Thursday"
 msgstr "Ceturtdiena"
 
-#: src/components/GameCanvas.tsx:133
+#: src/components/GameCanvas.tsx:137
 msgid "tilt"
 msgstr "sasvere"
 
-#: src/components/MissionSetup.tsx:932
+#: src/components/MissionSetup.tsx:945
 msgid "Time of day"
 msgstr "Diennakts laiks"
 
@@ -1820,7 +1849,7 @@ msgstr "Pārāk daudz pieprasījumu"
 msgid "Top"
 msgstr "Augšā"
 
-#: src/components/MissionSetup.tsx:1061
+#: src/components/MissionSetup.tsx:1074
 msgid "Tracers"
 msgstr "Trasējošās lodes"
 
@@ -1855,7 +1884,7 @@ msgstr "Ierakstiet, lai meklētu lietotājus"
 msgid "Type to search..."
 msgstr "Ierakstiet, lai meklētu..."
 
-#: src/components/MissionSetup.tsx:991
+#: src/components/MissionSetup.tsx:1004
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1914,8 +1943,8 @@ msgstr "Verificēt"
 msgid "Verify email address"
 msgstr "Verificēt e-pasta adresi"
 
-#: src/components/MissionSetup.tsx:876
-#: src/components/Multiplayer.tsx:255
+#: src/components/MissionSetup.tsx:889
+#: src/components/Multiplayer.tsx:274
 msgid "Veteran"
 msgstr "Veterāns"
 
@@ -1923,7 +1952,7 @@ msgstr "Veterāns"
 msgid "Video thumbnail"
 msgstr "Video sīktēls"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:130
 msgid "view"
 msgstr "skats"
 
@@ -1948,7 +1977,7 @@ msgstr "Skatījumi"
 msgid "WAITING FOR OPPONENT"
 msgstr "GAIDA PRETINIEKU"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:48
 msgid "WAVE OFF"
 msgstr "PĀRTRAUC NOSĒŠANOS"
 
@@ -1961,7 +1990,7 @@ msgid "Weapons"
 msgstr "Ieroči"
 
 #: src/components/MissionSetup.tsx:833
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:225
 msgid "Weather"
 msgstr "Laikapstākļi"
 
@@ -1982,19 +2011,19 @@ msgstr "Riteņu bremzes"
 msgid "Wing fold"
 msgstr "Spārnu salocīšana"
 
-#: src/components/GameCanvas.tsx:59
+#: src/components/GameCanvas.tsx:63
 msgid "WINS"
 msgstr "UZVAR"
 
-#: src/components/Multiplayer.tsx:161
+#: src/components/Multiplayer.tsx:162
 msgid "World server"
 msgstr "Pasaules serveris"
 
-#: src/components/Multiplayer.tsx:99
+#: src/components/Multiplayer.tsx:100
 msgid "World server not reachable"
 msgstr "Pasaules serveris nav sasniedzams"
 
-#: src/components/GameCanvas.tsx:121
+#: src/components/GameCanvas.tsx:125
 msgid "yaw"
 msgstr "novirze"
 
