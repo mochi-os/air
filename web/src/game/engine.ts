@@ -64,7 +64,7 @@ const SAVE_KEY="joust_cfg_v1";
 // OLS bracket, and the deck outline for the flight core. Measured per deck
 // with the align tool and the GLB measurement scripts; a second carrier is
 // one more entry (#100). CARRIER {x,z} is world PLACEMENT, not ship data.
-const NIMITZ_MODEL_VERSION=17;
+const NIMITZ_MODEL_VERSION=27;
 const CARRIER_MODELS={
 	// NIMITZ_MODEL_VERSION: bump on EVERY model.glb regen. The engine fetches the model programmatically,
 	// and browsers serve programmatic fetches from HTTP cache even across hard refreshes — a stale model
@@ -83,7 +83,7 @@ const CARRIER_MODELS={
 		wires:[-115.6,-103.9,-92.2,-80.5], halfspan:13,  // arrestor wires 1..4 (fore-aft) spanning ±halfspan about the landing line — the classic four-wire CVN-68 fit, 11.7 m apart, 1-wire 51 m from the stern round-down. halfspan 13 parks the sheaves just outside the 22 m strip; 16 reached the el-4 apron on the port side
 		line:{ afa:-115.6, alat:2.0, bfa:-92.2, blat:-1.7 }, // the landing centreline = the MODEL's painted stripe (least-squares through its yellow centreline segments: lat = -16.27 - 0.1583·fa, 8.99° — the real angled deck is 9.05°). The plan-derived line sat 2.1-2.4 m port of the painted stripe, which made the wires' starboard sheaves look further out; the 1:200 plan says the sheaves are symmetric (~15.5 m each side), so the wires centre on the stripe
 		ols:{ fa:-21.0, lat:-38.6, model:true },         // OLS bracket on the port side — measured off the model's own IFLOLS: amber lens column (heights -0.5..+2.1 rel deck), green datum arms at +0.66 spanning 8.5 m, red wave-off columns at ±1.5 m. model:true = the GLB carries the physical structure, so the engine draws only the glowing lights
-		outline:[ [-166,4.2],[-158,31.2],[-150,29.8],[-142,29.8],[-134,31.2],[-126,34.2],[-118,31.2],[-110,35.8],[-102,37.2],[-94,37.2],[-86,37.2],[-78,40.2],[-70,38.8],[-62,28.2],[-54,26.8],[-46,26.8],[-38,38.8],[-30,37.2],[-22,37.2],[-14,37.2],[-6,38.8],[2,38.8],[10,38.8],[18,37.2],[26,37.2],[34,37.2],[42,37.2],[50,38.8],[58,38.8],[66,38.8],[74,32.8],[82,26.8],[90,20.8],[98,19.2],[106,22.2],[114,17.8],[122,17.8],[130,17.8],[138,16.2],[146,14.8],[154,14.8],[162,14.8],[162,-12.2],[154,-12.2],[146,-13.8],[138,-13.8],[130,-15.2],[122,-16.8],[114,-16.8],[106,-16.8],[98,-16.8],[90,-18.2],[82,-22.8],[74,-25.8],[66,-34.8],[58,-40.8],[50,-39.2],[42,-39.2],[34,-39.2],[26,-37.8],[18,-34.8],[10,-40.8],[2,-34.8],[-6,-43.8],[-14,-34.8],[-22,-42.2],[-30,-34.8],[-38,-34.8],[-46,-36.2],[-54,-36.2],[-62,-34.8],[-70,-36.2],[-78,-37.8],[-86,-34.8],[-94,-34.8],[-102,-34.8],[-110,-34.8],[-118,-34.8],[-126,-18.2],[-134,-15.2],[-142,-15.2],[-150,-13.8],[-158,-12.2],[-166,-1.8] ] } }; // deck polygon TRACED FROM THE NIMITZ deck grid (84 pts, 1.5 m cells) — the Ford placeholder was narrower in places and the physics dropped jets through visually-solid deck near the edges
+		outline:[ [-166,4.2],[-158,31.2],[-150,29.8],[-142,29.8],[-134,31.2],[-126,34.2],[-118,31.2],[-110,35.8],[-102,37.2],[-94,37.2],[-86,37.2],[-78,40.2],[-70,38.8],[-62,28.2],[-54,26.8],[-46,26.8],[-38,38.8],[-30,37.2],[-22,37.2],[-14,37.2],[-6,38.8],[2,38.8],[10,38.8],[18,37.2],[26,37.2],[34,37.2],[42,37.2],[50,38.8],[58,38.8],[66,38.8],[74,32.8],[82,26.8],[90,20.8],[98,19.2],[106,22.2],[114,17.8],[122,17.8],[130,17.8],[138,16.2],[146,14.8],[154,14.8],[162,14.0],[164.5,13.6],[165.3,5.0],[165.3,-4.0],[164.5,-11.1],[162,-11.4],[154,-12.2],[146,-13.8],[138,-13.8],[130,-15.2],[122,-16.8],[114,-16.8],[106,-16.8],[98,-16.8],[90,-18.2],[82,-22.8],[74,-25.8],[66,-34.8],[58,-40.8],[50,-39.2],[42,-39.2],[34,-39.2],[26,-37.8],[18,-34.8],[10,-40.8],[2,-34.8],[-6,-43.8],[-14,-34.8],[-22,-42.2],[-30,-34.8],[-38,-34.8],[-46,-36.2],[-54,-36.2],[-62,-34.8],[-70,-36.2],[-78,-37.8],[-86,-34.8],[-94,-34.8],[-102,-34.8],[-110,-34.8],[-118,-34.8],[-126,-18.2],[-134,-15.2],[-142,-15.2],[-150,-13.8],[-158,-12.2],[-166,-1.8] ] } }; // deck polygon TRACED FROM THE NIMITZ deck grid (84 pts, 1.5 m cells) — the Ford placeholder was narrower in places and the physics dropped jets through visually-solid deck near the edges
 const SHIP=CARRIER_MODELS.nimitz;   // the active carrier (a picker arrives with the second ship)
 function load_cfg(){ try{ const s=localStorage.getItem(SAVE_KEY); if(s) Object.assign(cfg,JSON.parse(s)); }catch(e){}
 	delete cfg.cats; delete cfg.cat_dy;   // pre-#100 configs carried ship data; CARRIER_MODELS owns it now
@@ -1996,7 +1996,7 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 			rig_sweep = rig_sweep+1 > rig.length ? 0 : rig_sweep+1;
 			notice(rig_sweep ? "RIG SWEEP: "+rig[rig_sweep-1].name : "RIG SWEEP OFF"); }
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyX"){ const u=cloud_mat.uniforms.uDebug; u.value=u.value>0.5?0:1; }   // Shift+X (dev, moved off Shift+C for the canopy): keep the cloud render path but zero the cloud contribution — the definitive plumbing-vs-cloud-light A/B
-		else { if(k==="Digit1") set_view("cockpit");   // 1 Cockpit — pending art, resolves to the HUD eye-point for now (not a dead key)
+		else if(!e.shiftKey){ if(k==="Digit1") set_view("cockpit");   // 1 Cockpit — plain digits ONLY: the else fell through for every Shift+Digit, so starting scenario 1 (Shift+1) ALSO flipped the view to cockpit on every landing test (#72)
 			if(k==="Digit2") set_view("hud");        // 2 HUD (default start view)
 			if(k==="Digit3") set_view("chase");      // 3 Chase
 			if(k==="Digit4") set_view("flypast");    // 4 Flypast
@@ -2306,6 +2306,7 @@ function test_drive(){   // hold the prescribed approach exactly; hand control b
 	const t=test_active;
 	if(crash_t>0 || ownship.trapped || (ownship.touch && ownship.touch.t>=t.t0)){ test_active=null; return; }
 	const b=flight_get();   // hold the prescribed approach exactly; position integrates in the core
+	if(b[STATE.wow]>0.5 || b[STATE.contact]>=0){ test_active=null; return; }   // wheels on: release IMMEDIATELY — re-pinning the scripted sink into a compressed strut at 60 Hz spring-loaded the gear and bounced every touchdown (#72)
 	b[STATE.velocity]=t.vd.x*t.V; b[STATE.velocity+1]=t.vd.y*t.V; b[STATE.velocity+2]=t.vd.z*t.V;
 	b[STATE.attitude]=t.q.w; b[STATE.attitude+1]=t.q.x; b[STATE.attitude+2]=t.q.y; b[STATE.attitude+3]=t.q.z;
 	b[STATE.omega]=0; b[STATE.omega+1]=0; b[STATE.omega+2]=0;
@@ -3273,11 +3274,13 @@ function net_connect(){
 		notice(translate("CONNECTION FAILED")); setTimeout(()=>{ if(running){ running=false; if(onExit) onExit(); } },1800); }); }
 
 function start_mission(){
+	set_view("hud");   // every mission starts in HUD view — a cockpit/chase choice is per-flight, not sticky across missions
 	const devq=new URLSearchParams(DEV_MODE?window.location.search:"");   // dev/screenshot hooks (#105), parsed ONLY in developer mode: force a cloud preset / time of day / inject damage
 	const cloudq=devq.get("clouds"); if(cloudq!==null) cfg.clouds=cloudq;
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
 	harm_pending=devq.get("harm");   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
 	const viewq=devq.get("view"); if(viewq) set_view(viewq);   // ?view=cockpit|hud|chase — headless capture hook (#105)
+	const scq=devq.get("scenario"); if(scq!==null) setTimeout(()=>start_test(parseInt(scq)||0), 3000);   // &scenario=N: fire a landing test after the world settles — the headless verification hook for #72
 	const startq=devq.get("start"); if(startq){ cfg.start=startq; cfg.task="free"; }
 	sweep_pending=devq.get("sweep");   // &sweep=<rig name> — wall-clock sweep of one rig entry (visible motion even in a ~5-frame headless capture)
 	{ const azq=devq.get("az"); if(azq!==null){ set_view("chase"); cam_az=parseFloat(azq)||0; const elq=parseFloat(devq.get("el")||""); if(!isNaN(elq)) cam_el=elq; const dq=parseFloat(devq.get("dist")||""); if(!isNaN(dq)) cam_dist=dq; } }   // &az=<rad>[&el=&dist=] — headless chase-camera pose without relocating (unlike ?shot)
