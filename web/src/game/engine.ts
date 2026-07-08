@@ -764,7 +764,7 @@ function make_jet(tint){ const g=new THREE.Group(); g.userData.tint=tint;   // a
 // from game state: "drive" picks the state channel, min/max normalise a
 // signed surface deflection (rad) onto the clip span, flip reverses it.
 const AIRCRAFT_MODELS={
-	fa18c:{ url:"aircraft/fa18c/model.glb?v=3", length:17.07, yaw:90, pitch:0, roll:0,
+	fa18c:{ url:"aircraft/fa18c/model.glb?v=4", length:17.07, yaw:90, pitch:0, roll:0,
 		cockpitHide:/^Pilot_Head_769$/,   // first person: this subtree is the head+helmet+visor+mask; the body and arms stay on the stick
 		pose:[ { node:"elevator_percent_key_AN_238_100", quaternion:[0,-0.996,0.087,0] } ],   // the stabs' shared parent is authored mid-animation 180°-flipped (planform-reversed stabs); this is its animation END key — the correct frame. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
 
@@ -1897,12 +1897,19 @@ function position_aircraft_lights(){   // pin the lights to the real airframe: c
 	set(L.landing[0], L.nose.x, L.nose.y, nose.z);   // landing light on the nose gear strut (as on the real Hornet), so it exists only with the gear down
 }
 let cockpit_flood=null;
-function update_shuttles(){   // the active cat's shuttle tows with the jet during the stroke, then returns home
+function update_shuttles(){   // the hooked cat's shuttle rides with the jet's launch bar; the others sit home
 	if(!carrier_shuttles) return;
-	const sh=carrier_shuttles[cat_idx];
-	for(const s of carrier_shuttles) if(s!==sh || !ownship.launching){ s.mesh.position.copy(s.home); }
-	if(ownship.launching && sh){ const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
-		sh.mesh.position.set(ownship.pos.x+ownship.fwd.x*nose, sh.home.y, ownship.pos.z+ownship.fwd.z*nose); }
+	// The shuttle is mechanically attached to the launch bar, so it follows the bar tip
+	// whenever the jet is HOOKED — parked (the holdback spring stretches the nose ~0.2-0.8 m
+	// forward of the spot at run-up power) as well as through the stroke. Drawing it only
+	// during the launch left it pinned at the spot while the bar strained forward, so the
+	// jet looked parked in front of the shuttle. The horn (local -0.22 m) meets the deployed
+	// bar tip (~0.06 m ahead of the nose gear) when the group origin leads the nose gear by 0.28 m.
+	const active=ownship.launching?cat_idx:on_cat_spot();   // the cat the jet is hooked to (on_cat_spot is -1 mid-launch)
+	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
+	for(let i=0;i<carrier_shuttles.length;i++){ const s=carrier_shuttles[i];
+		if(i===active) s.mesh.position.set(ownship.pos.x+ownship.fwd.x*(nose+0.28), s.home.y, ownship.pos.z+ownship.fwd.z*(nose+0.28));
+		else s.mesh.position.copy(s.home); }
 }
 function update_aircraft_lights(){
 	if(!aircraft_lights) return; const on=!!ownship.lights, strobe=on && (performance.now()%1100)<70;   // ~1 Hz strobe flash
@@ -2278,9 +2285,9 @@ const TESTS=[
 	{name:"7 runway - gentle belly landing (slides)",       V:70,  S:1.2, pitch:2, gearup:true},
 	{name:"8 runway - hard belly landing (crashes)",        V:70,  S:4,   pitch:2, gearup:true},
 	{name:"9 carrier - on glideslope (traps)",              V:70,  S:4.3, pitch:4, carrier:true, hook:true},
-	{name:"0 carrier - high and fast (bolter)",             V:78,  S:1.4, pitch:3, carrier:true, hook:true, long:70, bolter:true},
+	{name:"0 carrier - touch and go (bolter)",              V:80,  S:1.2, pitch:3, carrier:true, hook:false, long:55, bolter:true},
 ];
-let test_active=null, test_idle=0, test_power=0;   // post-scenario throttle grace: the physical lever must not re-power a scripted rollout (test_power: a bolter keeps MIL power instead)
+let test_active=null, test_idle=0, test_power=0, test_brake=false, dev_fps=0;   // post-scenario throttle grace: the physical lever must not re-power a scripted rollout (test_power: a bolter keeps MIL power instead)
 if(DEV_MODE) (globalThis as any).dev_measure=()=>{   // one-shot: the lowest mesh nodes in MODEL frame, named — the source of truth for the physics Belly/Probe constants (#72)
 	const inverse=new THREE.Matrix4().copy(ownship.group.matrixWorld).invert();
 	const v=new THREE.Vector3();
@@ -2296,7 +2303,8 @@ if(DEV_MODE) (globalThis as any).dev_measure=()=>{   // one-shot: the lowest mes
 	rows.sort((p1,p2)=>p1.y-p2.y);
 	return JSON.stringify(rows.slice(0,16));
 };
-if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,
+let dev_peakbank=0;   // true per-frame peak |bank| since the last scenario start (dev instrumentation for #72)
+if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, peak:+dev_peakbank.toFixed(1), why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,
 	lat:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*(-carrier_ols.apz)+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apx).toFixed(1)):0,
 	along:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*carrier_ols.apx+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apz).toFixed(1)):0, fa:+carrier_fore_aft(ownship.pos.x,ownship.pos.z).toFixed(1), edge:carrier_ols?+((ownship.pos.y-carrier_ols.dy).toFixed(1)):0 });   // dev: CDP-reachable state sampler for headless scenario verification (#72)
 function start_test(i){ const sc=TESTS[i]; if(!sc || crash_t>0) return;
@@ -2319,18 +2327,33 @@ function start_test(i){ const sc=TESTS[i]; if(!sc || crash_t>0) return;
 	ownship.gearTarget=sc.gearup?1:0; ownship.gear=ownship.gearTarget; ownship.hookTarget=sc.hook?1:0; ownship.hook=ownship.hookTarget;
 	ownship.launching=false; ownship.trapped=false; ownship.wire=0; ownship.touch=null; ownship.grounded=false;
 	ownship.pass={gs:0,az:0,n:0}; ownship.waved=false; ownship.pass_t=0;
-	test_active={ name:sc.name, q:q.clone(), vd:vd.clone(), V, t0:sim_time, bolter:!!sc.bolter };
+	test_active={ name:sc.name, q:q.clone(), vd:vd.clone(), V, t0:sim_time, bolter:!!sc.bolter, touchY:T.y, carrier:!!sc.carrier }; dev_peakbank=0;
 	flight_push();
 }
 function test_handoff(t){   // the scenario's outcome is decided: hand the jet back with the right hands on the controls
 	test_active=null; test_idle=sim_time+60;   // rollout grace: the scripted pilot rides the brakes to a stop (a hands-off free roll ran off into the sea)
 	if(t.bolter){ test_power=0.95; ownship.throttle=0.95; ownship.burner=0; }   // a bolter goes to MIL power and flies off the bow — no brakes (test_power gates them off)
+	test_brake=!t.carrier && !t.bolter;   // grace-brake only on a RUNWAY rollout: on the carrier the wire (or the bolter's power) stops the jet, and braking the just-touched wheels for the frame before the wire catch registers grabbed asymmetrically and banked the arrest (#72 low-fps trap)
 }
 function test_drive(){   // hold the prescribed approach exactly; hand control back the moment the outcome is decided
 	const t=test_active;
 	if(crash_t>0 || ownship.trapped || (ownship.touch && ownship.touch.t>=t.t0)){ test_handoff(t); return; }   // this branch fires a frame before the state checks below (the verdict path records the touch first) — it must ALSO start the rollout grace
 	const b=flight_get();   // hold the prescribed approach exactly; position integrates in the core
-	if(b[STATE.wow]>0.5 || b[STATE.contact]>=0 || b[STATE.touch]>0.5){ test_handoff(t); return; }   // the LATCHED touch record too: at low frame rates the strut can contact AND rebound inside one frame, wow reads false again, and the re-pinned sink loads the gear into a real bounce — 28 fps machines bounced, 60 fps machines did not   // wheels on: release IMMEDIATELY — re-pinning the scripted sink into a compressed strut at 60 Hz spring-loaded the gear and bounced every touchdown (#72). The idle grace stops a physical throttle lever from re-powering the rollout
+	if(b[STATE.wow]>0.5 || b[STATE.contact]>=0 || b[STATE.touch]>0.5){ test_handoff(t); return; }
+	// EARLY RELEASE ~1.5 m up, with a CLEAN on-speed state: the settle,
+	// touchdown, wire catch and arrest then run as pure core physics, which is
+	// frame-rate independent (like a real un-scripted landing). Re-pinning the
+	// approach THROUGH the gear/wire engagement fights the physics for a whole
+	// frame and resonates with the frame rate — banking the rollout up to ~25°
+	// around 15 fps while 60 fps looked clean (#72 trap-topple-at-low-fps).
+	if(!t.bolter && ownship.pos.y < t.touchY + 1.5){   // NOT the bolter: it must fly its scripted high approach clear over the wires and touch down forward of them; releasing early (with power) drops it onto a wire
+		b[STATE.velocity]=t.vd.x*t.V; b[STATE.velocity+1]=t.vd.y*t.V; b[STATE.velocity+2]=t.vd.z*t.V;
+		b[STATE.attitude]=t.q.w; b[STATE.attitude+1]=t.q.x; b[STATE.attitude+2]=t.q.y; b[STATE.attitude+3]=t.q.z;
+		b[STATE.omega]=0; b[STATE.omega+1]=0; b[STATE.omega+2]=0;
+		flight_set(b);
+		test_handoff(t);
+		return;
+	}   // the LATCHED touch record too: at low frame rates the strut can contact AND rebound inside one frame, wow reads false again, and the re-pinned sink loads the gear into a real bounce — 28 fps machines bounced, 60 fps machines did not   // wheels on: release IMMEDIATELY — re-pinning the scripted sink into a compressed strut at 60 Hz spring-loaded the gear and bounced every touchdown (#72). The idle grace stops a physical throttle lever from re-powering the rollout
 	b[STATE.velocity]=t.vd.x*t.V; b[STATE.velocity+1]=t.vd.y*t.V; b[STATE.velocity+2]=t.vd.z*t.V;
 	b[STATE.attitude]=t.q.w; b[STATE.attitude+1]=t.q.x; b[STATE.attitude+2]=t.q.y; b[STATE.attitude+3]=t.q.z;
 	b[STATE.omega]=0; b[STATE.omega+1]=0; b[STATE.omega+2]=0;
@@ -2452,7 +2475,7 @@ function fly_player(dt){
 	if(test_active) test_drive();   // scripted test approach: prescribes attitude + velocity into the core each frame
 	const controls={ pitch:THREE.MathUtils.clamp(input.pitch,-1,1), roll:THREE.MathUtils.clamp(input.roll,-1,1), yaw:THREE.MathUtils.clamp(input.yaw,-1,1),   // RAW stick: cfg.sens used to scale these (the removed Sensitivity slider genuinely was a flight-control gain — a saved sens!=1 silently rescaled the whole stick)
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
-		reheat:ownship.burner??0, brake:input.brake || (sim_time<test_idle && !ownship.wire && !test_power),   // scenario rollout: the script's pilot rides the brakes (unless a bolter, which keeps power) (a hands-off free roll ran 1.4 km off the runway end into the lagoon) — but NEVER on a wire: locked mains under the 3 g runout slammed the nose and rolled the trap over (the live-traced 37-degree topple)
+		reheat:ownship.burner??0, brake:input.brake || (sim_time<test_idle && test_brake && !ownship.wire),   // scenario rollout: the scripted pilot rides the brakes only on a runway (test_brake); the carrier's wire and the bolter's power stop the jet instead (a hands-off free roll ran 1.4 km off the runway end into the lagoon) — but NEVER on a wire: locked mains under the 3 g runout slammed the nose and rolled the trap over (the live-traced 37-degree topple)
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5,
 		launch:launch_flag, override:keys.has("KeyO")&&!(DEV_MODE&&on_ground()), sequence:++control_sequence };
 	const out=flight_frame(controls,dt);
@@ -3306,6 +3329,7 @@ function start_mission(){
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
 	harm_pending=devq.get("harm");   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
 	const viewq=devq.get("view"); if(viewq) set_view(viewq);   // ?view=cockpit|hud|chase — headless capture hook (#105)
+	dev_fps=parseFloat(devq.get("fps")||"0")||0;   // ?fps=N: force a fixed frame dt for reproducing frame-rate-dependent physics
 	const scq=devq.get("scenario"); if(scq!==null){ const n=parseInt(scq)||0; const arm=setInterval(()=>{ if(TESTS[n]&&TESTS[n].carrier?carrier_ols:airports.length){ clearInterval(arm); start_test(n); } }, 500); }   // &scenario=N: fire a landing test once ITS surface data exists (carrier scenarios need the OLS survey, not just the airfield list) — a fixed 3 s timer lost the race to the map load and the hook silently never ran
 	const startq=devq.get("start"); if(startq){ cfg.start=startq; cfg.task="free"; }
 	sweep_pending=devq.get("sweep");   // &sweep=<rig name> — wall-clock sweep of one rig entry (visible motion even in a ~5-frame headless capture)
@@ -3344,7 +3368,9 @@ function menu_backdrop(){ const a=performance.now()*0.00007; const r=440;
 	ownship.group.visible=true; ownship.group.position.copy(ownship.pos); ownship.group.quaternion.copy(ownship.q); bandit.group.visible=false; }
 
 const clock=new THREE.Clock();
-function frame(){ const dt=Math.min(clock.getDelta(),0.05);
+function frame(){ let dt=Math.min(clock.getDelta(),0.05);
+	if(DEV_MODE&&running){ const bk=Math.abs(Math.atan2(ownship.right.y,ownship.up.y))*180/Math.PI; if(bk>dev_peakbank&&bk<170) dev_peakbank=bk; }   // true per-frame peak bank for #72 low-fps measurement
+	if(DEV_MODE&&dev_fps>0) dt=1/dev_fps;   // dev: force a fixed frame dt (?fps=N) to reproduce a specific frame rate through the real physics path (#72 low-fps trap topple)
 	if(DEV_MODE&&dt>0){ const sp=ownship.speed||1;   // instantaneous turn rate: how fast the velocity vector rotates
 		const vx=ownship.velx/sp, vy=ownship.vely/sp, vz=ownship.velz/sp;
 		const dot=Math.min(1,Math.max(-1,vx*turn_probe.x+vy*turn_probe.y+vz*turn_probe.z));
