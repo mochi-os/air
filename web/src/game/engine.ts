@@ -913,7 +913,7 @@ function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_7
 			c.applyMatrix4(mesh.matrixWorld); ownship.group.worldToLocal(c); lo.min(c); hi.max(c); }
 		ownship.group.userData.glass={ x:(lo.x+hi.x)/2, y:(lo.y+hi.y)/2, hw:(hi.z-lo.z)/2, hh:(hi.y-lo.y)/2 }; }   // body-frame pane: x fore-aft, y up, half-extents across the span and vertically
 	console.log("cockpit eye", ownship.group.userData.eye.x.toFixed(2), ownship.group.userData.eye.y.toFixed(2)); }
-const MISSILE_NODES=["Object_114","Object_29"];   // the two wingtip AIM-9 meshes in the fa18c GLB (LAU-7 rails stay with the wing) — hidden per missiles-remaining for empty rails after firing, or entirely on a guns-only loadout
+const MISSILE_NODES=["Object_145","Object_542"];   // the two wingtip AIM-9 NODES in the fa18c GLB (the mesh-level names Object_114/29 are not in the scene graph — a silent getObjectByName miss); LAU-7 rails stay with the wing. Hidden per missiles-remaining for empty rails after firing, or entirely on a guns-only loadout
 function update_rails(st,count){ if(!st.group) return;
 	for(let i=0;i<MISSILE_NODES.length;i++){ const node=st.group.getObjectByName(MISSILE_NODES[i]); if(node) node.visible=i<count; } }
 function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); extras.forEach(s=>apply_model_to(s.group)); position_aircraft_lights(); calibrate_eye();
@@ -1161,7 +1161,7 @@ function fire_gun(st,target,key,dt,force){
 	while(gun[key]>=1){ gun[key]-=1; fired++; if(st.rounds!==undefined){ if(st.rounds<=0) break; st.rounds--; }
 		const tr=(Math.floor(gun[key+"_n"]||0)%5)===0; gun[key+"_n"]=(gun[key+"_n"]||0)+1;
 		if(!tr) continue;   // only 1 in 5 rounds is a visible tracer; the rest fire invisibly
-		const k=pool_spawn(tracers); if(k<0) break; const sp=body_offset(st,6.0,0.35,0.0);   // gun port: nose-top centreline (forward of the windscreen)
+		const k=pool_spawn(tracers); if(k<0) break; const sp=body_offset(st,6.53,0.43,0.0);   // the M61 port: nose-top centreline, ~0.9 m ahead of and ~0.12 m below the pilot's eye (runtime-calibrated at 5.61/0.55 from Pilot_Head_769) — matches the server's hitscan muzzle
 		tracers.px[k]=sp.x;tracers.py[k]=sp.y;tracers.pz[k]=sp.z; const spread=0.004;
 		tracers.vx[k]=st.fwd.x*muzzle+(Math.random()-0.5)*spread*muzzle+st.velx;
 		tracers.vy[k]=st.fwd.y*muzzle+(Math.random()-0.5)*spread*muzzle+st.vely;
@@ -1181,7 +1181,10 @@ const missile_mat=new THREE.MeshStandardMaterial({color:0xdedede,metalness:0.3,r
 const missiles=[]; for(let i=0;i<MSL_MAX;i++){ const m=new THREE.Mesh(missile_geo,missile_mat); m.visible=false; scene.add(m);
 	missiles.push({mesh:m,active:false,px:0,py:0,pz:0,vx:0,vy:0,vz:0,life:0,target:null,smoke_acc:0,
 		burn:0,flew:0,sx:0,sy:0,sz:0,loose:false,blind:0,lx:0,ly:0,lz:0,window:false}); }   // AIM-9M state (#126): boost, arming, seeker sight line, broken lock, and a swallowed flare's fall point
-function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) return false; const sp=local_offset(st,1,-0.8,0);
+function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) return false;
+	let sp=local_offset(st,1,-0.8,0);   // fallback: near the nose
+	if(st.group&&st.msl>0){ const rail=st.group.getObjectByName(MISSILE_NODES[st.msl-1]);   // the rail about to empty (the caller decrements after) — the missile departs the WINGTIP, not the centreline
+		if(rail){ rail.getWorldPosition(_v); sp={x:_v.x,y:_v.y,z:_v.z}; } }
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30);   // off the rail at aircraft speed; the Mk 36 does the rest
 	m.life=20; m.target=target; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false;
@@ -3055,13 +3058,14 @@ function draw_hud(dt){
 	// Read straight from the core's damage words, so it works identically in SP and MP.
 	// Annunciator text stays English by policy — real Hornet cockpits do worldwide.
 	{ const cautions=[]; const RD="#ff5050"; const core=last_out;
-		if(own_burning) cautions.push(["FUEL FIRE",RD]);
-		if(own_burn[0]>0) cautions.push(["L ENG FIRE",RD]); else if(core&&core[STATE.engine_harm]>0.55) cautions.push(["L ENG",AM]);
-		if(own_burn[1]>0) cautions.push(["R ENG FIRE",RD]); else if(core&&core[STATE.engine_harm+1]>0.55) cautions.push(["R ENG",AM]);
-		if((core&&core[STATE.leak]>0.1)||own_leak>0.1) cautions.push(["FUEL LEAK",AM]);
-		if(core){ let jammed=false; for(let c=0;c<8;c++) if(core[STATE.jam+c]>0.2) jammed=true; if(jammed) cautions.push(["FCS",AM]);
+		if((ownship.fuel??1)<=0) cautions.push([translate("FLAMEOUT"),RD]);   // the throttle bar shows the HAND's lever; this shows the dead engines
+		if(own_burning) cautions.push([translate("FUEL FIRE"),RD]);
+		if(own_burn[0]>0) cautions.push([translate("L ENG FIRE"),RD]); else if(core&&core[STATE.engine_harm]>0.55) cautions.push([translate("L ENG"),AM]);
+		if(own_burn[1]>0) cautions.push([translate("R ENG FIRE"),RD]); else if(core&&core[STATE.engine_harm+1]>0.55) cautions.push([translate("R ENG"),AM]);
+		if((core&&core[STATE.leak]>0.1)||own_leak>0.1) cautions.push([translate("FUEL LEAK"),AM]);
+		if(core){ let jammed=false; for(let c=0;c<8;c++) if(core[STATE.jam+c]>0.2) jammed=true; if(jammed) cautions.push([translate("FCS"),AM]);
 			let torn=false; for(let e=0;e<40;e++) if(core[STATE.element+e]>0.6) torn=true;
-			if(torn||core[STATE.stress]>2) cautions.push(["STRUCTURE",AM]); }
+			if(torn||core[STATE.stress]>2) cautions.push([translate("STRUCTURE"),AM]); }
 		hctx.textAlign="left"; hctx.font="13px monospace";
 		hud_cautions=cautions.length;
 		let cy=HH-118;
@@ -3072,7 +3076,7 @@ function draw_hud(dt){
 	// ---- weapon legend (bottom-left) ----
 	hctx.textAlign="left"; hctx.font="13px monospace"; hctx.fillStyle=input.guns?AM:GR;
 	hctx.fillText(translate("GUN")+"  "+ownship.rounds,40,HH-88); hctx.fillStyle=GR;
-	hctx.fillText("IR  "+ownship.msl,40,HH-70); hctx.fillText(translate("FLARES")+"  "+ownship.cm,40,HH-52);
+	hctx.fillText("9M  "+ownship.msl,40,HH-70); hctx.fillText(translate("FLARES")+"  "+ownship.cm,40,HH-52);
 	{ const pounds=Math.round((ownship.fuel??0)*2.2046/10)*10;   // the IFEI shows pounds
 		if((ownship.fuel??1e9)<FUELLO) hctx.fillStyle=(sim_time%0.8<0.4)?"#ff5050":"#803030";   // FUEL LO flashes
 		else if((ownship.fuel??1e9)<BINGO) hctx.fillStyle="#ffb050";

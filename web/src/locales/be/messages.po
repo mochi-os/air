@@ -33,7 +33,7 @@ msgstr "{0}/{1} гульцоў"
 msgid "{name}'s match"
 msgstr "Матч {name}"
 
-#: src/components/GameCanvas.tsx:40
+#: src/components/GameCanvas.tsx:49
 msgid "1 WIRE"
 msgstr "ТРОС 1"
 
@@ -41,7 +41,7 @@ msgstr "ТРОС 1"
 msgid "12 hours"
 msgstr "12 гадзін"
 
-#: src/components/GameCanvas.tsx:41
+#: src/components/GameCanvas.tsx:50
 msgid "2 WIRE"
 msgstr "ТРОС 2"
 
@@ -49,7 +49,7 @@ msgstr "ТРОС 2"
 msgid "24 hours"
 msgstr "24 гадзіны"
 
-#: src/components/GameCanvas.tsx:42
+#: src/components/GameCanvas.tsx:51
 msgid "3 WIRE"
 msgstr "ТРОС 3"
 
@@ -201,7 +201,7 @@ msgstr "Восі"
 msgid "Axis {i}"
 msgstr "Вось {i}"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:146
 msgid "back"
 msgstr "назад"
 
@@ -223,7 +223,7 @@ msgstr "Бандыт"
 msgid "BINGO FUEL"
 msgstr "БІНГА ПАЛІВА"
 
-#: src/components/GameCanvas.tsx:47
+#: src/components/GameCanvas.tsx:56
 msgid "BOLTER"
 msgstr "БОЛТЭР"
 
@@ -236,7 +236,7 @@ msgstr "Узмацніць цікавасць"
 msgid "Bots"
 msgstr "Боты"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:138
 msgid "brakes"
 msgstr "тармазы"
 
@@ -291,7 +291,7 @@ msgstr "Катэгорыя для гэтага апавяшчэння"
 msgid "Change notification category"
 msgstr "Змяніць катэгорыю апавяшчэння"
 
-#: src/components/GameCanvas.tsx:134
+#: src/components/GameCanvas.tsx:143
 msgid "Chase view:"
 msgstr "Від пагоні:"
 
@@ -364,7 +364,7 @@ msgstr "Закрыць панэль"
 msgid "Close search"
 msgstr "Закрыць пошук"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:147
 msgid "closer"
 msgstr "бліжэй"
 
@@ -405,7 +405,7 @@ msgstr "Пацвердзіць"
 msgid "Connecting…"
 msgstr "Падключэнне…"
 
-#: src/components/GameCanvas.tsx:53
+#: src/components/GameCanvas.tsx:62
 msgid "CONNECTION FAILED"
 msgstr "ЗЛУЧЭННЕ НЕ ЎДАЛОСЯ"
 
@@ -449,7 +449,7 @@ msgstr "Не ўдалося пачаць паўторную аўтэнтыфік
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Не ўдалося пацвердзіць з гэтым уліковым запісам. Калі ласка, паспрабуйце яшчэ раз."
 
-#: src/components/GameCanvas.tsx:36
+#: src/components/GameCanvas.tsx:45
 msgid "CRASHED"
 msgstr "РАЗБІЎСЯ"
 
@@ -475,7 +475,7 @@ msgstr "Кучавыя"
 msgid "Custom"
 msgstr "Карыстальніцкі"
 
-#: src/components/GameCanvas.tsx:46
+#: src/components/GameCanvas.tsx:55
 msgid "CUT"
 msgstr "НЕБЯСПЕЧНА"
 
@@ -506,7 +506,7 @@ msgstr "Канфлікт даных"
 msgid "Day"
 msgstr "Дзень"
 
-#: src/components/GameCanvas.tsx:49
+#: src/components/GameCanvas.tsx:58
 msgid "DECK POSITION SAVED"
 msgstr "ПАЗІЦЫЯ НА ПАЛУБЕ ЗАХАВАНА"
 
@@ -604,7 +604,7 @@ msgstr "Рэдагаваць {label}"
 msgid "Eject"
 msgstr "Катапультаванне"
 
-#: src/components/GameCanvas.tsx:57
+#: src/components/GameCanvas.tsx:66
 msgid "EJECTED"
 msgstr "КАТАПУЛЬТАВАЎСЯ"
 
@@ -671,9 +671,13 @@ msgstr "Не ўдалося адправіць код пацвярджэння"
 msgid "Failed to update category"
 msgstr "Не ўдалося абнавіць катэгорыю"
 
-#: src/components/GameCanvas.tsx:44
+#: src/components/GameCanvas.tsx:53
 msgid "FAIR"
 msgstr "ЗДАВАЛЬНЯЮЧА"
+
+#: src/components/GameCanvas.tsx:42
+msgid "FCS"
+msgstr ""
 
 #: src/components/GameCanvas.tsx:30
 msgid "FIGHT'S ON"
@@ -687,7 +691,11 @@ msgstr "Завяршыце перанос акаўнта"
 msgid "Fixed keys"
 msgstr "Нязменныя клавішы"
 
-#: src/components/GameCanvas.tsx:127
+#: src/components/GameCanvas.tsx:35
+msgid "FLAMEOUT"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:136
 msgid "flares"
 msgstr "цеплавыя пасткі"
 
@@ -705,7 +713,7 @@ msgstr "ПАСТКІ"
 msgid "Flat"
 msgstr "Плоская"
 
-#: src/components/GameCanvas.tsx:54
+#: src/components/GameCanvas.tsx:63
 msgid "FLIGHT CORE FAILED"
 msgstr "ЗБОЙ ПАЛЁТНАГА ЯДРА"
 
@@ -747,6 +755,14 @@ msgstr "Паліва"
 msgid "FUEL"
 msgstr "ПАЛІВА"
 
+#: src/components/GameCanvas.tsx:36
+msgid "FUEL FIRE"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:41
+msgid "FUEL LEAK"
+msgstr ""
+
 #: src/components/GameCanvas.tsx:33
 msgid "FUEL LO"
 msgstr "МАЛА ПАЛІВА"
@@ -759,7 +775,7 @@ msgstr "Паліўны зонд"
 msgid "Full layout"
 msgstr "Поўная разметка"
 
-#: src/components/GameCanvas.tsx:128
+#: src/components/GameCanvas.tsx:137
 msgid "gear"
 msgstr "шасі"
 
@@ -805,7 +821,7 @@ msgstr "Група"
 msgid "GUN"
 msgstr "ГАРМАТА"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:135
 msgid "guns"
 msgstr "гарматы"
 
@@ -838,7 +854,7 @@ msgstr "Высокія слаістыя"
 msgid "Home"
 msgstr "Галоўная"
 
-#: src/components/GameCanvas.tsx:128
+#: src/components/GameCanvas.tsx:137
 msgid "hook"
 msgstr "гак"
 
@@ -878,7 +894,7 @@ msgstr "Інвертаваць тангаж"
 msgid "Join"
 msgstr "Далучыцца"
 
-#: src/components/GameCanvas.tsx:64
+#: src/components/GameCanvas.tsx:73
 msgid "JOINED"
 msgstr "ДАЛУЧЫЎСЯ"
 
@@ -902,9 +918,17 @@ msgstr "Джойсцік"
 msgid "Keys"
 msgstr "Клавішы"
 
-#: src/components/GameCanvas.tsx:56
+#: src/components/GameCanvas.tsx:65
 msgid "KILL"
 msgstr "ЗБІТЫ"
+
+#: src/components/GameCanvas.tsx:39
+msgid "L ENG"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:37
+msgid "L ENG FIRE"
+msgstr ""
 
 #: src/components/MissionSetup.tsx:166
 #: src/components/MissionSetup.tsx:194
@@ -916,7 +940,7 @@ msgstr "Шасі"
 msgid "Large"
 msgstr "Вялікі"
 
-#: src/components/GameCanvas.tsx:127
+#: src/components/GameCanvas.tsx:136
 msgid "launch"
 msgstr "запуск"
 
@@ -938,7 +962,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Падрабязней"
 
-#: src/components/GameCanvas.tsx:65
+#: src/components/GameCanvas.tsx:74
 msgid "LEFT"
 msgstr "ВЫЙШАЎ"
 
@@ -951,7 +975,7 @@ msgstr "Злева направа"
 msgid "Light"
 msgstr "Светлая"
 
-#: src/components/GameCanvas.tsx:128
+#: src/components/GameCanvas.tsx:137
 msgid "lights"
 msgstr "агні"
 
@@ -960,7 +984,7 @@ msgstr "агні"
 msgid "Lights"
 msgstr "Агні"
 
-#: src/components/GameCanvas.tsx:38
+#: src/components/GameCanvas.tsx:47
 msgid "LIGHTS"
 msgstr "АГНІ"
 
@@ -972,7 +996,7 @@ msgstr "Запас"
 msgid "Load more"
 msgstr "Загрузіць больш"
 
-#: src/components/GameCanvas.tsx:35
+#: src/components/GameCanvas.tsx:44
 msgid "LOADING"
 msgstr "ЗАГРУЗКА"
 
@@ -1040,11 +1064,11 @@ msgstr "Нізкі"
 msgid "Low stratus"
 msgstr "Нізкія слаістыя"
 
-#: src/components/GameCanvas.tsx:51
+#: src/components/GameCanvas.tsx:60
 msgid "M to close"
 msgstr "M каб закрыць"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:139
 msgid "map"
 msgstr "карта"
 
@@ -1071,7 +1095,7 @@ msgstr "Тып матчу"
 msgid "Medium"
 msgstr "Сярэдні"
 
-#: src/components/GameCanvas.tsx:131
+#: src/components/GameCanvas.tsx:140
 msgid "menu"
 msgstr "меню"
 
@@ -1087,7 +1111,7 @@ msgstr "Метрычная"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Карта атола Мідуэй — здымкі змяшчаюць мадыфікаваныя даныя <0>Copernicus Sentinel-2</0> (2026); геаметрыя аэрадрома (узлётна-пасадачная паласа, рулёжныя дарожкі, перроны) © удзельнікі <1>OpenStreetMap</1>, ліцэнзавана паводле <2>ODbL</2>; даныя пра берагавую лінію і рыфы з <3>NOAA NCCOS</3> (грамадскі набытак)."
 
-#: src/components/GameCanvas.tsx:127
+#: src/components/GameCanvas.tsx:136
 msgid "missile"
 msgstr "ракета"
 
@@ -1192,7 +1216,7 @@ msgstr "Карыстальнікі не знойдзены"
 msgid "No world server."
 msgstr "Няма сервера свету."
 
-#: src/components/GameCanvas.tsx:45
+#: src/components/GameCanvas.tsx:54
 msgid "NO-GRADE"
 msgstr "БЕЗ АЦЭНКІ"
 
@@ -1229,7 +1253,7 @@ msgstr "Апавяшчэнні"
 msgid "Ocean detail"
 msgstr "Дэталізацыя акіяна"
 
-#: src/components/GameCanvas.tsx:43
+#: src/components/GameCanvas.tsx:52
 msgid "OK"
 msgstr "OK"
 
@@ -1278,11 +1302,11 @@ msgstr "Адкрыць меню навігацыі"
 msgid "Open theme settings"
 msgstr "Адкрыць налады тэмы"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:145
 msgid "or"
 msgstr "або"
 
-#: src/components/GameCanvas.tsx:136
+#: src/components/GameCanvas.tsx:145
 msgid "orbit"
 msgstr "арбіта"
 
@@ -1294,7 +1318,7 @@ msgstr "Іншае"
 msgid "Owner"
 msgstr "Уладальнік"
 
-#: src/components/GameCanvas.tsx:52
+#: src/components/GameCanvas.tsx:61
 msgid "P to resume · M map · Esc menu"
 msgstr "P працяг · M карта · Esc меню"
 
@@ -1310,7 +1334,7 @@ msgstr "Не ўдалося праверыць ключ доступу. Калі
 msgid "Passkeys"
 msgstr "Ключы доступу"
 
-#: src/components/GameCanvas.tsx:131
+#: src/components/GameCanvas.tsx:140
 msgid "pause"
 msgstr "паўза"
 
@@ -1332,11 +1356,11 @@ msgstr "пілот"
 msgid "Pilot"
 msgstr "Пілот"
 
-#: src/components/GameCanvas.tsx:58
+#: src/components/GameCanvas.tsx:67
 msgid "PILOT DOWN"
 msgstr "ПІЛОТ ЗАГІНУЎ"
 
-#: src/components/GameCanvas.tsx:124
+#: src/components/GameCanvas.tsx:133
 msgid "pitch"
 msgstr "тангаж"
 
@@ -1373,7 +1397,7 @@ msgstr "Прэсет"
 msgid "Press a key…"
 msgstr "Націсніце клавішу…"
 
-#: src/components/GameCanvas.tsx:37
+#: src/components/GameCanvas.tsx:46
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "НАЦІСНІ ENTER ДЛЯ ЎЗЛЁТУ"
 
@@ -1396,6 +1420,14 @@ msgstr "Канфідэнцыяльнасць"
 msgid "Profile"
 msgstr "Профіль"
 
+#: src/components/GameCanvas.tsx:40
+msgid "R ENG"
+msgstr ""
+
+#: src/components/GameCanvas.tsx:38
+msgid "R ENG FIRE"
+msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Узняты"
@@ -1408,7 +1440,7 @@ msgstr "Паўторна прывяжыце свае акаўнты на гэт�
 msgid "Re-register your passkeys on this server"
 msgstr "Зарэгіструйце ключы доступу на гэтым серверы зноў"
 
-#: src/components/GameCanvas.tsx:128
+#: src/components/GameCanvas.tsx:137
 msgid "rearm"
 msgstr "перазарадка"
 
@@ -1422,7 +1454,7 @@ msgid "REARMED"
 msgstr "ПЕРАЎЗБРОЕНЫ"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:216
-#: ../../../lib/web/src/components/search-entity-page.tsx:240
+#: ../../../lib/web/src/components/search-entity-page.tsx:242
 msgid "Recommended"
 msgstr "Рэкамендуецца"
 
@@ -1508,7 +1540,7 @@ msgstr "Вярнуцца ў меню"
 msgid "Right to Left"
 msgstr "Справа налева"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:134
 msgid "roll"
 msgstr "крэн"
 
@@ -1533,7 +1565,7 @@ msgstr "Навічок"
 msgid "Rows per page"
 msgstr "Радкоў на старонцы"
 
-#: src/components/GameCanvas.tsx:39
+#: src/components/GameCanvas.tsx:48
 msgid "RUN UP ENGINE"
 msgstr "ПОЎНЫ ГАЗ"
 
@@ -1571,7 +1603,7 @@ msgid "Search..."
 msgstr "Пошук..."
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:174
-#: ../../../lib/web/src/components/search-entity-page.tsx:198
+#: ../../../lib/web/src/components/search-entity-page.tsx:200
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
 msgstr "Пошук..."
@@ -1634,7 +1666,7 @@ msgstr "Памылка сервера"
 msgid "Server rules"
 msgstr "Правілы сервера"
 
-#: src/components/GameCanvas.tsx:55
+#: src/components/GameCanvas.tsx:64
 msgid "SESSION ENDED"
 msgstr "СЕСІЯ ЗАВЕРШАНА"
 
@@ -1707,7 +1739,7 @@ msgstr "Прасторны"
 msgid "SPD BK"
 msgstr "П.Т"
 
-#: src/components/GameCanvas.tsx:129
+#: src/components/GameCanvas.tsx:138
 msgid "speed brake"
 msgstr "паветраны тармаз"
 
@@ -1726,6 +1758,10 @@ msgstr "Старт"
 msgid "Stay tuned though!"
 msgstr "Сачыце за абнаўленнямі!"
 
+#: src/components/GameCanvas.tsx:43
+msgid "STRUCTURE"
+msgstr ""
+
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
 msgstr "Тэма"
@@ -1740,7 +1776,7 @@ msgstr "Нядзеля"
 msgid "System"
 msgstr "Сістэма"
 
-#: src/components/GameCanvas.tsx:50
+#: src/components/GameCanvas.tsx:59
 msgid "TACTICAL MAP"
 msgstr "ТАКТЫЧНАЯ КАРТА"
 
@@ -1782,7 +1818,7 @@ msgstr "Тэма"
 msgid "Theme Settings"
 msgstr "Налады тэмы"
 
-#: src/components/GameCanvas.tsx:126
+#: src/components/GameCanvas.tsx:135
 msgid "throttle"
 msgstr "газ"
 
@@ -1802,7 +1838,7 @@ msgstr "Павялічыць цягу"
 msgid "Thursday"
 msgstr "Чацвер"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:146
 msgid "tilt"
 msgstr "нахіл"
 
@@ -1858,7 +1894,7 @@ msgid "Travelling"
 msgstr "У дарозе"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:190
-#: ../../../lib/web/src/components/search-entity-page.tsx:214
+#: ../../../lib/web/src/components/search-entity-page.tsx:216
 msgid "Try adjusting your search terms"
 msgstr "Паспрабуйце наладзіць пошукавыя запыты"
 
@@ -1952,7 +1988,7 @@ msgstr "Ветэран"
 msgid "Video thumbnail"
 msgstr "Мініяцюра відэа"
 
-#: src/components/GameCanvas.tsx:130
+#: src/components/GameCanvas.tsx:139
 msgid "view"
 msgstr "від"
 
@@ -1977,7 +2013,7 @@ msgstr "Прагляды"
 msgid "WAITING FOR OPPONENT"
 msgstr "ЧАКАННЕ САПЕРНІКА"
 
-#: src/components/GameCanvas.tsx:48
+#: src/components/GameCanvas.tsx:57
 msgid "WAVE OFF"
 msgstr "ІДЗІ НА ДРУГІ КРУГ"
 
@@ -2011,7 +2047,7 @@ msgstr "Колавыя тармазы"
 msgid "Wing fold"
 msgstr "Складанне крыла"
 
-#: src/components/GameCanvas.tsx:63
+#: src/components/GameCanvas.tsx:72
 msgid "WINS"
 msgstr "ПЕРАМАГАЕ"
 
@@ -2023,7 +2059,7 @@ msgstr "Сервер свету"
 msgid "World server not reachable"
 msgstr "Сервер свету недаступны"
 
-#: src/components/GameCanvas.tsx:125
+#: src/components/GameCanvas.tsx:134
 msgid "yaw"
 msgstr "рысканне"
 
