@@ -64,7 +64,7 @@ const SAVE_KEY="joust_cfg_v1";
 // OLS bracket, and the deck outline for the flight core. Measured per deck
 // with the align tool and the GLB measurement scripts; a second carrier is
 // one more entry (#100). CARRIER {x,z} is world PLACEMENT, not ship data.
-const NIMITZ_MODEL_VERSION=30;
+const NIMITZ_MODEL_VERSION=34;
 const CARRIER_MODELS={
 	// NIMITZ_MODEL_VERSION: bump on EVERY model.glb regen. The engine fetches the model programmatically,
 	// and browsers serve programmatic fetches from HTTP cache even across hard refreshes — a stale model
@@ -2305,9 +2305,9 @@ function start_test(i){ const sc=TESTS[i]; if(!sc || crash_t>0) return;
 }
 function test_drive(){   // hold the prescribed approach exactly; hand control back the moment the outcome is decided
 	const t=test_active;
-	if(crash_t>0 || ownship.trapped || (ownship.touch && ownship.touch.t>=t.t0)){ test_active=null; return; }
+	if(crash_t>0 || ownship.trapped || (ownship.touch && ownship.touch.t>=t.t0)){ test_active=null; test_idle=sim_time+60; return; }   // this branch fires a frame before the state checks below (the verdict path records the touch first) — it must ALSO start the rollout grace
 	const b=flight_get();   // hold the prescribed approach exactly; position integrates in the core
-	if(b[STATE.wow]>0.5 || b[STATE.contact]>=0){ test_active=null; test_idle=sim_time+6; return; }   // wheels on: release IMMEDIATELY — re-pinning the scripted sink into a compressed strut at 60 Hz spring-loaded the gear and bounced every touchdown (#72). The idle grace stops a physical throttle lever from re-powering the rollout
+	if(b[STATE.wow]>0.5 || b[STATE.contact]>=0 || b[STATE.touch]>0.5){ test_active=null; test_idle=sim_time+60; return; }   // the LATCHED touch record too: at low frame rates the strut can contact AND rebound inside one frame, wow reads false again, and the re-pinned sink loads the gear into a real bounce — 28 fps machines bounced, 60 fps machines did not   // wheels on: release IMMEDIATELY — re-pinning the scripted sink into a compressed strut at 60 Hz spring-loaded the gear and bounced every touchdown (#72). The idle grace stops a physical throttle lever from re-powering the rollout
 	b[STATE.velocity]=t.vd.x*t.V; b[STATE.velocity+1]=t.vd.y*t.V; b[STATE.velocity+2]=t.vd.z*t.V;
 	b[STATE.attitude]=t.q.w; b[STATE.attitude+1]=t.q.x; b[STATE.attitude+2]=t.q.y; b[STATE.attitude+3]=t.q.z;
 	b[STATE.omega]=0; b[STATE.omega+1]=0; b[STATE.omega+2]=0;
@@ -2429,7 +2429,7 @@ function fly_player(dt){
 	if(test_active) test_drive();   // scripted test approach: prescribes attitude + velocity into the core each frame
 	const controls={ pitch:THREE.MathUtils.clamp(input.pitch,-1,1), roll:THREE.MathUtils.clamp(input.roll,-1,1), yaw:THREE.MathUtils.clamp(input.yaw,-1,1),   // RAW stick: cfg.sens used to scale these (the removed Sensitivity slider genuinely was a flight-control gain — a saved sens!=1 silently rescaled the whole stick)
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
-		reheat:ownship.burner??0, brake:input.brake,
+		reheat:ownship.burner??0, brake:input.brake || sim_time<test_idle,   // scenario rollout: the script's pilot rides the brakes — a hands-off free roll ran 1.4 km off the runway end into the lagoon (the "crashes as it stops" report, live-traced to why:"sea")
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5,
 		launch:launch_flag, override:keys.has("KeyO")&&!(DEV_MODE&&on_ground()), sequence:++control_sequence };
 	const out=flight_frame(controls,dt);
@@ -2478,6 +2478,7 @@ function fly_player(dt){
 	}
 	if(out[STATE.contact]>=0){ flight_clear(); ownship.group.position.copy(ownship.pos); return crash_ownship(); }   // crash probe: any non-permitted airframe contact
 	if(out[STATE.touch]>0.5){ const crashed=verdict(out); flight_clear(); if(crashed) return; }
+	if(sim_time<test_idle && out[STATE.wow]<0.5 && out[STATE.velocity+1]>1) test_idle=0;   // climbing away (a bolter): end the rollout grace — the pilot needs the throttle back
 	// bolter: hook down, touched the deck this pass, airborne again without a wire
 	if(prev_wow&&!ownship.grounded&&!ownship.trapped&&(ownship.hookTarget??0)>0.5&&ownship.touch&&ownship.touch.deck&&(sim_time-ownship.touch.t)<8&&ownship.speed>30){ ownship.grade="BOLTER"; ownship.pass_t=6; }
 	prev_wow=ownship.grounded;
@@ -2682,6 +2683,7 @@ function step_world(dt){ sim_time+=dt;
 }
 
 function reset_ownship(){
+	test_idle=0;   // a respawn ends any scenario rollout grace — the lever and brakes are the pilot's again
 	hist_valid=false;   // spawn/respawn teleports the camera — a cut for the cloud accumulation history
 	battle_rig(); ejected=false; eject_taps=0; hit_flash=0; own_burn=[0,0]; own_burning=false; own_leak=0;   // a fresh jet, a fresh fight (#78)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
