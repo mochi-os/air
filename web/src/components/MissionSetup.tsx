@@ -665,24 +665,32 @@ function ControlRow({ action, keys }: { action: ReactNode; keys: ReactNode }) {
 
 // The measured F/A-18C performance reference (#89): every number flown out of
 // the flight model by tools/vspeeds.sh (world repo) — rerun it after flight
-// changes and update these cells. Speeds in knots as the HUD reads (KCAS);
-// ranges span light (11.2 t, minimum fuel) to heavy (15.6 t, full internal).
+// changes and update these cells. Cells are the harness's KEAS verbatim: the
+// HUD's CAS (flight/frames.go Cas()) approximates calibrated as EQUIVALENT
+// airspeed, no compressibility term, so KEAS is exactly what the player's
+// HUD shows. If #133 (real HUD) gives Cas() true pitot compressibility,
+// re-run the harness and re-base these cells on real KCAS.
+// Ranges span light (11.2 t, minimum fuel) to heavy (15.6 t, full internal).
 // Translations deliberately deferred at the user's instruction (2026-07-10):
 // plain strings for now — wrap with Lingui and fill locales before release.
-// Rows in sortie order: climb, combat, emergency, landing. Rotation (Vr) is
-// deliberately absent: nosewheel liftoff depends on weight, CG, and technique
-// (NATOPS gives no single speed), so a one-number row would mislead.
+// Rows in sortie order: climb, engine-out, dash, combat, landing. Rotation
+// (Vr) is deliberately absent: nosewheel liftoff depends on weight, CG, and
+// technique (NATOPS gives no single speed), so a one-number row would
+// mislead.
 const REFERENCE_ROWS: { label: string; cells: [string, string, string] }[] = [
-  { label: 'Steepest climb (Vx, 100% thrust)', cells: ['167-385', '320-385', '317-326'] },
-  { label: 'Steepest climb (Vx, afterburner)', cells: ['Vertical', '277-311', '275-337'] },
-  { label: 'Best climb (Vy, 100% thrust)', cells: ['510-546', '404-454', '339-341'] },
-  { label: 'Best climb (Vy, afterburner)', cells: ['532-610', '466-467', '348-351'] },
-  { label: 'Single-engine best climb (Vyse, afterburner)', cells: ['398-457', '216-361', '161-204'] },
-  { label: 'Corner speed (best instant turn)', cells: ['321-376', '340-390', '323-335'] },
-  { label: 'Best sustained turn speed', cells: ['353-468', '390-436', '326-327'] },
-  { label: 'Stall, clean (Vs1)', cells: ['159-185', '159-186', '161-190'] },
+  { label: 'Steepest climb (Vx, 100% thrust)', cells: ['167-385', '314-374', '300-307'] },
+  { label: 'Steepest climb (Vx, afterburner)', cells: ['Vertical', '273-305', '263-317'] },
+  { label: 'Best climb (Vy, 100% thrust)', cells: ['510-546', '392-438', '318-320'] },
+  { label: 'Best climb (Vy, afterburner)', cells: ['532-610', '448-449', '326-328'] },
+  { label: 'Single-engine best climb (Vyse, afterburner)', cells: ['398-457', '214-352', '158-199'] },
+  { label: 'Best glide (engines out)', cells: ['245-291', '247-290', '247-295'] },
+  { label: 'Maximum level speed (afterburner)', cells: ['671-671', '675-676', '529-532'] },
+  { label: 'Corner speed (best instant turn)', cells: ['321-376', '332-379', '305-315'] },
+  { label: 'Best sustained turn speed', cells: ['353-468', '379-420', '307-310'] },
+  { label: 'Tightest sustained turn speed', cells: ['167-203', '166-225', '186-198'] },
+  { label: 'Stall, clean (Vs1)', cells: ['159-185', '158-185', '158-186'] },
   { label: 'Stall, landing config (Vs0)', cells: ['111-128', '110-128', '—'] },
-  { label: 'Approach, on-speed (Vapp)', cells: ['126-148', '125-148', '—'] },
+  { label: 'Approach, on-speed (Vapp)', cells: ['126-148', '125-147', '—'] },
 ]
 
 function ReferenceDialog() {
