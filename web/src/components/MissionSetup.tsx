@@ -673,15 +673,15 @@ function ControlRow({ action, keys }: { action: ReactNode; keys: ReactNode }) {
 // deliberately absent: nosewheel liftoff depends on weight, CG, and technique
 // (NATOPS gives no single speed), so a one-number row would mislead.
 const REFERENCE_ROWS: { label: string; cells: [string, string, string] }[] = [
-  { label: 'Steepest climb (Vx, 100% thrust)', cells: ['168-388', '315-386', '314-331'] },
-  { label: 'Steepest climb (Vx, afterburner)', cells: ['Vertical', '278-311', '273-342'] },
-  { label: 'Best climb (Vy, 100% thrust)', cells: ['504-549', '398-452', '335-342'] },
-  { label: 'Best climb (Vy, afterburner)', cells: ['534-606', '461-465', '345-352'] },
-  { label: 'Single-engine best climb (Vyse, afterburner)', cells: ['401-461', '215-364', '176-210'] },
-  { label: 'Corner speed (best instant turn)', cells: ['321-377', '340-391', '324-335'] },
-  { label: 'Best sustained turn speed', cells: ['369-486', '397-447', '328-328'] },
-  { label: 'Stall, clean (Vs1)', cells: ['159-186', '159-186', '160-190'] },
-  { label: 'Stall, landing config (Vs0)', cells: ['111-129', '110-128', '—'] },
+  { label: 'Steepest climb (Vx, 100% thrust)', cells: ['167-385', '320-385', '317-326'] },
+  { label: 'Steepest climb (Vx, afterburner)', cells: ['Vertical', '277-311', '275-337'] },
+  { label: 'Best climb (Vy, 100% thrust)', cells: ['510-546', '404-454', '339-341'] },
+  { label: 'Best climb (Vy, afterburner)', cells: ['532-610', '466-467', '348-351'] },
+  { label: 'Single-engine best climb (Vyse, afterburner)', cells: ['398-457', '216-361', '161-204'] },
+  { label: 'Corner speed (best instant turn)', cells: ['321-376', '340-390', '323-335'] },
+  { label: 'Best sustained turn speed', cells: ['353-468', '390-436', '326-327'] },
+  { label: 'Stall, clean (Vs1)', cells: ['159-185', '159-186', '161-190'] },
+  { label: 'Stall, landing config (Vs0)', cells: ['111-128', '110-128', '—'] },
   { label: 'Approach, on-speed (Vapp)', cells: ['126-148', '125-148', '—'] },
 ]
 
