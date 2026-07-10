@@ -669,9 +669,10 @@ function ControlRow({ action, keys }: { action: ReactNode; keys: ReactNode }) {
 // ranges span light (11.2 t, minimum fuel) to heavy (15.6 t, full internal).
 // Translations deliberately deferred at the user's instruction (2026-07-10):
 // plain strings for now — wrap with Lingui and fill locales before release.
-// Rows in sortie order: takeoff, climb, combat, emergency, landing.
+// Rows in sortie order: climb, combat, emergency, landing. Rotation (Vr) is
+// deliberately absent: nosewheel liftoff depends on weight, CG, and technique
+// (NATOPS gives no single speed), so a one-number row would mislead.
 const REFERENCE_ROWS: { label: string; cells: [string, string, string] }[] = [
-  { label: 'Rotation (Vr)', cells: ['99', '—', '—'] },
   { label: 'Steepest climb (Vx, 100% thrust)', cells: ['168-388', '315-386', '314-331'] },
   { label: 'Steepest climb (Vx, afterburner)', cells: ['Vertical', '278-311', '273-342'] },
   { label: 'Best climb (Vy, 100% thrust)', cells: ['504-549', '398-452', '335-342'] },
