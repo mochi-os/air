@@ -677,10 +677,10 @@ const REFERENCE_ROWS: { label: string; cells: [string, string, string] }[] = [
   { label: 'Corner speed (best instant turn)', cells: ['321-377', '340-391', '324-335'] },
   { label: 'Best sustained turn speed', cells: ['369-486', '397-447', '328'] },
   { label: 'Best climb (Vy, 100% thrust)', cells: ['504-549', '398-452', '335-342'] },
-  { label: 'Best climb (Vy, Afterburner)', cells: ['534-606', '461-465', '345-352'] },
+  { label: 'Best climb (Vy, afterburner)', cells: ['534-606', '461-465', '345-352'] },
   { label: 'Steepest climb (Vx, 100% thrust)', cells: ['168-388', '315-386', '314-331'] },
-  { label: 'Steepest climb (Vx, Afterburner)', cells: ['Vertical', '278-311', '273-342'] },
-  { label: 'Single-engine best climb (Afterburner)', cells: ['401-461', '215-364', '176-210'] },
+  { label: 'Steepest climb (Vx, afterburner)', cells: ['Vertical', '278-311', '273-342'] },
+  { label: 'Single-engine best climb (afterburner)', cells: ['401-461', '215-364', '176-210'] },
 ]
 
 function ReferenceDialog() {
