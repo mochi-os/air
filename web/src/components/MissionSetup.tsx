@@ -663,6 +663,80 @@ function ControlRow({ action, keys }: { action: ReactNode; keys: ReactNode }) {
   )
 }
 
+// The measured F/A-18C performance reference (#89): every number flown out of
+// the flight model by tools/vspeeds.sh (world repo) — rerun it after flight
+// changes and update these cells. Speeds in knots as the HUD reads (KCAS);
+// ranges span light (11.2 t, minimum fuel) to heavy (15.6 t, full internal).
+// Translations deliberately deferred at the user's instruction (2026-07-10):
+// plain strings for now — wrap with Lingui and fill locales before release.
+const REFERENCE_ROWS: { label: string; cells: [string, string, string] }[] = [
+  { label: 'Stall, clean (Vs1)', cells: ['159–186', '159–186', '160–190'] },
+  { label: 'Stall, landing config (Vs0)', cells: ['111–129', '110–128', '—'] },
+  { label: 'Approach, on-speed (Vapp)', cells: ['118–130', '119–155', '—'] },
+  { label: 'Rotation (Vr)', cells: ['99', '—', '—'] },
+  { label: 'Corner speed (best instant turn)', cells: ['321–377', '340–391', '324–335'] },
+  { label: 'Best sustained turn speed', cells: ['369–486', '397–447', '328'] },
+  { label: 'Sustained turn rate', cells: ['17–22°/s', '12–17°/s', '7–10°/s'] },
+  { label: 'Best climb (Vy, MIL)', cells: ['504–549', '398–452', '335–342'] },
+  { label: 'Best climb (Vy, AB)', cells: ['534–606', '461–465', '345–352'] },
+  { label: 'Steepest climb (Vx, MIL)', cells: ['168–388', '315–386', '314–331'] },
+  { label: 'Steepest climb (Vx, AB)', cells: ['vertical', '278–311', '273–342'] },
+  { label: 'Single-engine best climb (AB)', cells: ['401–461', '215–364', '176–210'] },
+]
+
+function ReferenceDialog() {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button type='button' variant='link' size='sm' className='text-muted-foreground'>
+          Reference
+        </Button>
+      </DialogTrigger>
+      <DialogContent className='sm:max-w-xl'>
+        <DialogHeader>
+          <DialogTitle>F/A-18C reference</DialogTitle>
+        </DialogHeader>
+        <div className='overflow-x-auto'>
+          <table className='w-full text-sm'>
+            <thead>
+              <tr className='text-muted-foreground border-b text-left'>
+                <th className='py-1.5 pr-3 font-medium'></th>
+                <th className='px-3 py-1.5 text-right font-medium'>Sea level</th>
+                <th className='px-3 py-1.5 text-right font-medium'>15,000 AMSL</th>
+                <th className='px-3 py-1.5 text-right font-medium'>30,000 AMSL</th>
+              </tr>
+            </thead>
+            <tbody>
+              {REFERENCE_ROWS.map((row) => (
+                <tr key={row.label} className='border-b border-dashed last:border-0'>
+                  <td className='py-1.5 pr-3'>{row.label}</td>
+                  {row.cells.map((cell, i) => (
+                    <td key={i} className='text-muted-foreground px-3 py-1.5 text-right tabular-nums whitespace-nowrap'>
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className='text-muted-foreground space-y-1 text-xs leading-relaxed'>
+          <p>
+            Speeds in knots as the HUD reads them (KCAS). Ranges span light (minimum fuel, 11.2 t)
+            to heavy (full fuel, 15.6 t) — your jet sits in between and lightens as fuel burns.
+          </p>
+          <p>
+            Corner speed delivers ~6.5 g in a snap pull. Steepest climb in afterburner at sea level
+            is vertical — thrust exceeds weight. Landing configuration is unavailable at 30,000 ft.
+            Liftoff follows rotation at ~116 kt. Single-engine directional control is never
+            limiting.
+          </p>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
 function CreditsDialog() {
   return (
     <Dialog>
@@ -1123,6 +1197,7 @@ export function MissionSetup({
           >
             <Trans>Reset</Trans>
           </Button>
+          <ReferenceDialog />
           <CreditsDialog />
         </div>
       </div>
