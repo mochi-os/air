@@ -41,6 +41,10 @@ msgstr "ΚΑΛΩΔΙΟ 1"
 msgid "12 hours"
 msgstr "12 ώρες"
 
+#: src/components/MissionSetup.tsx:719
+msgid "15,000 AMSL"
+msgstr "15,000 AMSL"
+
 #: src/components/GameCanvas.tsx:50
 msgid "2 WIRE"
 msgstr "ΚΑΛΩΔΙΟ 2"
@@ -52,6 +56,10 @@ msgstr "24 ώρες"
 #: src/components/GameCanvas.tsx:51
 msgid "3 WIRE"
 msgstr "ΚΑΛΩΔΙΟ 3"
+
+#: src/components/MissionSetup.tsx:722
+msgid "30,000 AMSL"
+msgstr "30,000 AMSL"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:51
 msgid "Absolute (date and time)"
@@ -85,7 +93,7 @@ msgstr "Τύπος λογαριασμού"
 msgid "Account verified"
 msgstr "Ο λογαριασμός επαληθεύτηκε"
 
-#: src/components/MissionSetup.tsx:880
+#: src/components/MissionSetup.tsx:968
 #: src/components/Multiplayer.tsx:275
 msgid "Ace"
 msgstr "Άσος"
@@ -136,7 +144,7 @@ msgstr "Προσθήκη προβολής"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Προσαρμόστε την εμφάνιση και τη διάταξη σύμφωνα με τις προτιμήσεις σας."
 
-#: src/components/MissionSetup.tsx:1058
+#: src/components/MissionSetup.tsx:1146
 msgid "Afterburner"
 msgstr "Μετάκαυση"
 
@@ -148,11 +156,11 @@ msgstr "AI"
 msgid "Aircraft"
 msgstr "Αεροσκάφος"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:794
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Αεροπλανοφόρο <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> από <1>Muhamad Mirza Arrafi</1> (Sketchfab), με άδεια <2>CC BY 4.0</2>. Τροποποιήθηκε: αλλαγή κλίμακας, επαναπροσανατολίστηκε, βυθίστηκε έως την ίσαλο γραμμή και απλοποιήθηκε για το web."
 
-#: src/components/MissionSetup.tsx:682
+#: src/components/MissionSetup.tsx:770
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Μοντέλο αεροσκάφους <0>“F/A-18C Hornet”</0> από <1>CreadorDeMu</1> (Sketchfab), με άδεια <2>CC BY 4.0</2>. Τροποποιήθηκε: επαναπροσανατολίστηκε και άλλαξε κλίμακα, αφαιρέθηκαν τα αχρησιμοποίητα δεδομένα υφών, τα εξωτερικά φορτία διαχωρίστηκαν σε ξεχωριστό αρχείο, ένα πλέγμα καλύμματος αντικατοπτρίστηκε."
 
@@ -171,6 +179,10 @@ msgstr "Παρουσιάστηκε σφάλμα"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "Παρουσιάστηκε απροσδόκητο σφάλμα"
+
+#: src/components/MissionSetup.tsx:693
+msgid "Approach, on-speed (Vapp)"
+msgstr "Προσέγγιση, στη σωστή ταχύτητα (Vapp)"
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
@@ -215,9 +227,25 @@ msgstr "Πίσω"
 msgid "Back to home"
 msgstr "Επιστροφή στην αρχή"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:959
 msgid "Bandit"
 msgstr "Εχθρός"
+
+#: src/components/MissionSetup.tsx:684
+msgid "Best climb (Vy, 100% thrust)"
+msgstr "Βέλτιστη άνοδος (Vy, 100% ώση)"
+
+#: src/components/MissionSetup.tsx:685
+msgid "Best climb (Vy, afterburner)"
+msgstr "Βέλτιστη άνοδος (Vy, μετάκαυση)"
+
+#: src/components/MissionSetup.tsx:687
+msgid "Best glide (engines out)"
+msgstr "Βέλτιστη ολίσθηση (σβηστοί κινητήρες)"
+
+#: src/components/MissionSetup.tsx:689
+msgid "Best sustained turn speed"
+msgstr "Ταχύτητα βέλτιστης διατηρούμενης στροφής"
 
 #: src/components/GameCanvas.tsx:32
 msgid "BINGO FUEL"
@@ -274,11 +302,11 @@ msgstr "Ακύρωση"
 msgid "Canopy"
 msgstr "Θόλος πιλοτηρίου"
 
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:997
 msgid "Carrier landing"
 msgstr "Προσγείωση σε αεροπλανοφόρο"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:1003
 msgid "Catapult"
 msgstr "Καταπέλτης"
 
@@ -368,7 +396,7 @@ msgstr "Κλείσιμο αναζήτησης"
 msgid "closer"
 msgstr "πιο κοντά"
 
-#: src/components/MissionSetup.tsx:946
+#: src/components/MissionSetup.tsx:1034
 msgid "Clouds"
 msgstr "Σύννεφα"
 
@@ -429,6 +457,10 @@ msgstr "Συνέχεια με {label}"
 msgid "Copy"
 msgstr "Αντιγραφή"
 
+#: src/components/MissionSetup.tsx:688
+msgid "Corner speed (best instant turn)"
+msgstr "Ταχύτητα γωνίας (βέλτιστη στιγμιαία στροφή)"
+
 #: src/components/Multiplayer.tsx:143
 msgid "Could not create the match"
 msgstr "Δεν ήταν δυνατή η δημιουργία του αγώνα"
@@ -461,12 +493,12 @@ msgstr "Δημιουργία και πτήση"
 msgid "Create match"
 msgstr "Δημιουργία αγώνα"
 
-#: src/components/MissionSetup.tsx:671
-#: src/components/MissionSetup.tsx:677
+#: src/components/MissionSetup.tsx:759
+#: src/components/MissionSetup.tsx:765
 msgid "Credits"
 msgstr "Συντελεστές"
 
-#: src/components/MissionSetup.tsx:953
+#: src/components/MissionSetup.tsx:1041
 #: src/components/Multiplayer.tsx:233
 msgid "Cumulus"
 msgstr "Σωρείτης"
@@ -501,7 +533,7 @@ msgstr "Σκοτεινή λειτουργία"
 msgid "Data conflict"
 msgstr "Διένεξη δεδομένων"
 
-#: src/components/MissionSetup.tsx:941
+#: src/components/MissionSetup.tsx:1029
 #: src/components/Multiplayer.tsx:228
 msgid "Day"
 msgstr "Ημέρα"
@@ -571,7 +603,7 @@ msgstr "Απόρριψη"
 msgid "Displays the mobile sidebar."
 msgstr "Εμφανίζει την πλευρική μπάρα κινητού."
 
-#: src/components/MissionSetup.tsx:1046
+#: src/components/MissionSetup.tsx:1134
 msgid "Distance LOD"
 msgstr "LOD απόστασης"
 
@@ -588,7 +620,7 @@ msgstr "Η λήψη απέτυχε"
 msgid "Drone"
 msgstr "Ντρόουν"
 
-#: src/components/MissionSetup.tsx:1040
+#: src/components/MissionSetup.tsx:1128
 msgid "Dynamic resolution"
 msgstr "Δυναμική ανάλυση"
 
@@ -643,17 +675,21 @@ msgstr "Ανάπτυξη"
 msgid "Expand sidebar"
 msgstr "Επέκταση πλευρικής μπάρας"
 
-#: src/components/MissionSetup.tsx:1012
+#: src/components/MissionSetup.tsx:1100
 msgid "Exterior detail"
 msgstr "Λεπτομέρεια εξωτερικού"
 
-#: src/components/MissionSetup.tsx:1028
+#: src/components/MissionSetup.tsx:1116
 msgid "Extra aircraft"
 msgstr "Επιπλέον αεροσκάφη"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:136
 msgid "Extra large"
 msgstr "Πολύ μεγάλο"
+
+#: src/components/MissionSetup.tsx:707
+msgid "F/A-18C reference"
+msgstr "Αναφορά F/A-18C"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:225
 msgid "Failed to add account"
@@ -701,7 +737,7 @@ msgstr "φωτοβολίδες"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1076
+#: src/components/MissionSetup.tsx:1164
 msgid "Flares"
 msgstr "Φωτοβολίδες"
 
@@ -721,11 +757,11 @@ msgstr "ΑΠΟΤΥΧΙΑ ΠΥΡΗΝΑ ΠΤΗΣΗΣ"
 msgid "Floating"
 msgstr "Αιωρούμενο"
 
-#: src/components/MissionSetup.tsx:1082
+#: src/components/MissionSetup.tsx:1170
 msgid "Framerate"
 msgstr "Ρυθμός καρέ"
 
-#: src/components/MissionSetup.tsx:850
+#: src/components/MissionSetup.tsx:938
 msgid "Free flight"
 msgstr "Ελεύθερη πτήση"
 
@@ -746,7 +782,7 @@ msgstr "Από"
 msgid "From theme"
 msgstr "Από το θέμα"
 
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:944
 #: src/components/Multiplayer.tsx:243
 msgid "Fuel"
 msgstr "Καύσιμο"
@@ -809,7 +845,7 @@ msgstr "Μετάβαση στη σελίδα {pageNumber}"
 msgid "Go to previous page"
 msgstr "Μετάβαση στην προηγούμενη σελίδα"
 
-#: src/components/MissionSetup.tsx:835
+#: src/components/MissionSetup.tsx:923
 msgid "Graphics"
 msgstr "Γραφικά"
 
@@ -838,11 +874,11 @@ msgstr "Απόκρυψη"
 msgid "Hide password"
 msgstr "Απόκρυψη κωδικού"
 
-#: src/components/MissionSetup.tsx:992
+#: src/components/MissionSetup.tsx:1080
 msgid "High"
 msgstr "Υψηλή"
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:1042
 #: src/components/Multiplayer.tsx:234
 msgid "High stratus"
 msgstr "Υψηλά στρώματα"
@@ -870,7 +906,7 @@ msgstr "Δημοφιλή"
 msgid "Imperial"
 msgstr "Αυτοκρατορικό"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:994
 msgid "In air"
 msgstr "Στον αέρα"
 
@@ -906,15 +942,15 @@ msgstr "Κονταρομαχία"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Μονομαχία — 1v1, η πρώτη κατάρριψη κερδίζει"
 
-#: src/components/MissionSetup.tsx:851
+#: src/components/MissionSetup.tsx:939
 msgid "Joust against AI player"
 msgstr "Μονομαχία εναντίον παίκτη AI"
 
-#: src/components/MissionSetup.tsx:826
+#: src/components/MissionSetup.tsx:914
 msgid "Joystick"
 msgstr "Χειριστήριο"
 
-#: src/components/MissionSetup.tsx:829
+#: src/components/MissionSetup.tsx:917
 msgid "Keys"
 msgstr "Πλήκτρα"
 
@@ -988,7 +1024,7 @@ msgstr "Φώτα"
 msgid "LIGHTS"
 msgstr "ΦΩΤΑ"
 
-#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:947
 msgid "Load"
 msgstr "Ποσότητα"
 
@@ -1055,11 +1091,11 @@ msgstr "Θέαση δεξιά"
 msgid "Look up"
 msgstr "Θέαση πάνω"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1076
 msgid "Low"
 msgstr "Χαμηλή"
 
-#: src/components/MissionSetup.tsx:955
+#: src/components/MissionSetup.tsx:1043
 #: src/components/Multiplayer.tsx:235
 msgid "Low stratus"
 msgstr "Χαμηλά στρώματα"
@@ -1091,7 +1127,7 @@ msgid "Match type"
 msgstr "Τύπος αγώνα"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:990
+#: src/components/MissionSetup.tsx:1078
 msgid "Medium"
 msgstr "Μεσαίο"
 
@@ -1107,7 +1143,7 @@ msgstr "Μενού"
 msgid "Metric"
 msgstr "Μετρικό"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:818
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Χάρτης της Ατόλης Μίντγουεϊ — οι εικόνες περιέχουν τροποποιημένα δεδομένα <0>Copernicus Sentinel-2</0> (2026)· η γεωμετρία του αεροδρομίου (διάδρομος, τροχόδρομοι, δάπεδα στάθμευσης) © συνεισφέροντες του <1>OpenStreetMap</1>, υπό άδεια <2>ODbL</2>· δεδομένα ακτογραμμής και υφάλων από <3>NOAA NCCOS</3> (κοινό κτήμα)."
 
@@ -1120,7 +1156,7 @@ msgstr "πύραυλος"
 msgid "Missile"
 msgstr "Πύραυλος"
 
-#: src/components/MissionSetup.tsx:1070
+#: src/components/MissionSetup.tsx:1158
 msgid "Missiles"
 msgstr "Πύραυλοι"
 
@@ -1128,7 +1164,7 @@ msgstr "Πύραυλοι"
 msgid "Missiles allowed"
 msgstr "Επιτρέπονται οι πύραυλοι"
 
-#: src/components/MissionSetup.tsx:820
+#: src/components/MissionSetup.tsx:908
 msgid "Mission"
 msgstr "Αποστολή"
 
@@ -1140,7 +1176,7 @@ msgstr "Δευτέρα"
 msgid "Move it…"
 msgstr "Κινήστε τον άξονα…"
 
-#: src/components/MissionSetup.tsx:852
+#: src/components/MissionSetup.tsx:940
 msgid "Multiplayer"
 msgstr "Multiplayer"
 
@@ -1162,7 +1198,7 @@ msgstr "Νέο"
 msgid "Next image"
 msgstr "Επόμενη εικόνα"
 
-#: src/components/MissionSetup.tsx:942
+#: src/components/MissionSetup.tsx:1030
 #: src/components/Multiplayer.tsx:229
 msgid "Night"
 msgstr "Νύχτα"
@@ -1225,7 +1261,7 @@ msgstr "ΧΩΡΙΣ ΒΑΘΜΟ"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:354
 #: src/components/MissionSetup.tsx:408
-#: src/components/MissionSetup.tsx:952
+#: src/components/MissionSetup.tsx:1040
 msgid "None"
 msgstr "Κανένα"
 
@@ -1249,7 +1285,7 @@ msgstr "Δεν έχει οριστεί"
 msgid "Notifications"
 msgstr "Ειδοποιήσεις"
 
-#: src/components/MissionSetup.tsx:1020
+#: src/components/MissionSetup.tsx:1108
 msgid "Ocean detail"
 msgstr "Λεπτομέρεια ωκεανού"
 
@@ -1257,11 +1293,11 @@ msgstr "Λεπτομέρεια ωκεανού"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:908
+#: src/components/MissionSetup.tsx:996
 msgid "On carrier"
 msgstr "Στο αεροπλανοφόρο"
 
-#: src/components/MissionSetup.tsx:907
+#: src/components/MissionSetup.tsx:995
 msgid "On runway"
 msgstr "Στον διάδρομο"
 
@@ -1351,7 +1387,7 @@ msgstr "ΠΑΥΣΗ"
 msgid "pilot"
 msgstr "πιλότος"
 
-#: src/components/MissionSetup.tsx:878
+#: src/components/MissionSetup.tsx:966
 #: src/components/Multiplayer.tsx:273
 msgid "Pilot"
 msgstr "Πιλότος"
@@ -1389,7 +1425,7 @@ msgstr "Δοκιμάστε ξανά."
 msgid "Please wait a moment and try again."
 msgstr "Περιμένετε λίγο και δοκιμάστε ξανά."
 
-#: src/components/MissionSetup.tsx:975
+#: src/components/MissionSetup.tsx:1063
 msgid "Preset"
 msgstr "Προεπιλογή"
 
@@ -1467,6 +1503,10 @@ msgstr "Ανακατεύθυνση στη σύνδεση."
 msgid "Reduce interest"
 msgstr "Μείωση ενδιαφέροντος"
 
+#: src/components/MissionSetup.tsx:701
+msgid "Reference"
+msgstr "Αναφορά"
+
 #: src/components/Multiplayer.tsx:196
 msgid "Refresh"
 msgstr "Ανανέωση"
@@ -1502,7 +1542,7 @@ msgstr "Αφαίρεση πρόσβασης;"
 msgid "Remove interest"
 msgstr "Αφαίρεση ενδιαφέροντος"
 
-#: src/components/MissionSetup.tsx:764
+#: src/components/MissionSetup.tsx:852
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Η απόδοση γίνεται με το <0>three.js</0> (άδεια MIT)."
 
@@ -1512,7 +1552,7 @@ msgstr "Επαναποστολή email"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1212
 msgid "Reset"
 msgstr "Επαναφορά"
 
@@ -1520,15 +1560,15 @@ msgstr "Επαναφορά"
 msgid "Reset all settings to default values"
 msgstr "Επαναφορά όλων των ρυθμίσεων σε προεπιλεγμένες τιμές"
 
-#: src/components/MissionSetup.tsx:1002
+#: src/components/MissionSetup.tsx:1090
 msgid "Resolution"
 msgstr "Επίλυση"
 
-#: src/components/MissionSetup.tsx:1096
+#: src/components/MissionSetup.tsx:1184
 msgid "Restart"
 msgstr "Επανεκκίνηση"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1188
 msgid "Resume"
 msgstr "Συνέχιση"
 
@@ -1556,7 +1596,7 @@ msgstr "Κλίση αριστερά"
 msgid "Roll right"
 msgstr "Κλίση δεξιά"
 
-#: src/components/MissionSetup.tsx:877
+#: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:272
 msgid "Rookie"
 msgstr "Αρχάριος"
@@ -1577,6 +1617,10 @@ msgstr "Σάββατο"
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
 msgstr "Αποθήκευση"
+
+#: src/components/MissionSetup.tsx:716
+msgid "Sea level"
+msgstr "Στάθμη θάλασσας"
 
 #: ../../../lib/web/src/components/place-picker.tsx:85
 msgid "Search for a place"
@@ -1690,7 +1734,7 @@ msgstr "Ορίστε αφετηρία και προορισμό"
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 
-#: src/components/MissionSetup.tsx:1052
+#: src/components/MissionSetup.tsx:1140
 msgid "Shadows"
 msgstr "Σκιές"
 
@@ -1717,6 +1761,10 @@ msgstr "Αποσύνδεση"
 msgid "Signing out..."
 msgstr "Αποσύνδεση..."
 
+#: src/components/MissionSetup.tsx:686
+msgid "Single-engine best climb (Vyse, afterburner)"
+msgstr "Βέλτιστη άνοδος με έναν κινητήρα (Vyse, μετάκαυση)"
+
 #: ../../../lib/web/src/components/skip-to-main.tsx:11
 msgid "Skip to Main"
 msgstr "Μετάβαση στο κύριο περιεχόμενο"
@@ -1727,7 +1775,7 @@ msgid "Small"
 msgstr "Μικρό"
 
 #: src/components/MissionSetup.tsx:464
-#: src/components/MissionSetup.tsx:832
+#: src/components/MissionSetup.tsx:920
 msgid "Sound"
 msgstr "Ήχος"
 
@@ -1749,14 +1797,34 @@ msgstr "αεροφρένο"
 msgid "Speed brake"
 msgstr "Αεροφρένο"
 
-#: src/components/MissionSetup.tsx:900
-#: src/components/MissionSetup.tsx:1106
+#: src/components/MissionSetup.tsx:742
+msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
+msgstr "Ταχύτητες σε KCAS, ως εύρος από ελαφρύ (ελάχιστο καύσιμο, χωρίς φορτία) έως βαρύ (μέγιστο μικτό βάρος). Τα δεδομένα προέκυψαν πειραματικά εντός του παιχνιδιού. Τυχόν διαφορές από το πραγματικό αεροσκάφος αντικατοπτρίζουν σφάλματα του μοντέλου πτήσης του προσομοιωτή."
+
+#: src/components/MissionSetup.tsx:691
+msgid "Stall, clean (Vs1)"
+msgstr "Απώλεια στήριξης, καθαρή (Vs1)"
+
+#: src/components/MissionSetup.tsx:692
+msgid "Stall, landing config (Vs0)"
+msgstr "Απώλεια στήριξης, διαμόρφωση προσγείωσης (Vs0)"
+
+#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1194
 msgid "Start"
 msgstr "Έναρξη"
 
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Μείνετε όμως συντονισμένοι!"
+
+#: src/components/MissionSetup.tsx:682
+msgid "Steepest climb (Vx, 100% thrust)"
+msgstr "Πιο απότομη άνοδος (Vx, 100% ώση)"
+
+#: src/components/MissionSetup.tsx:683
+msgid "Steepest climb (Vx, afterburner)"
+msgstr "Πιο απότομη άνοδος (Vx, μετάκαυση)"
 
 #: src/components/GameCanvas.tsx:43
 msgid "STRUCTURE"
@@ -1789,7 +1857,7 @@ msgstr "Ετικέτα"
 msgid "Tags"
 msgstr "Ετικέτες"
 
-#: src/components/MissionSetup.tsx:844
+#: src/components/MissionSetup.tsx:932
 msgid "Task"
 msgstr "Εργασία"
 
@@ -1838,11 +1906,15 @@ msgstr "Αύξηση γκαζιού"
 msgid "Thursday"
 msgstr "Πέμπτη"
 
+#: src/components/MissionSetup.tsx:690
+msgid "Tightest sustained turn speed"
+msgstr "Ταχύτητα στενότερης διατηρούμενης στροφής"
+
 #: src/components/GameCanvas.tsx:146
 msgid "tilt"
 msgstr "κλίση"
 
-#: src/components/MissionSetup.tsx:935
+#: src/components/MissionSetup.tsx:1023
 msgid "Time of day"
 msgstr "Ώρα της ημέρας"
 
@@ -1885,7 +1957,7 @@ msgstr "Πάρα πολλά αιτήματα"
 msgid "Top"
 msgstr "Κορυφή"
 
-#: src/components/MissionSetup.tsx:1064
+#: src/components/MissionSetup.tsx:1152
 msgid "Tracers"
 msgstr "Ιχνηλάτες"
 
@@ -1920,7 +1992,7 @@ msgstr "Πληκτρολογήστε για αναζήτηση χρηστών"
 msgid "Type to search..."
 msgstr "Πληκτρολογήστε για αναζήτηση..."
 
-#: src/components/MissionSetup.tsx:994
+#: src/components/MissionSetup.tsx:1082
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1979,7 +2051,11 @@ msgstr "Επαλήθευση"
 msgid "Verify email address"
 msgstr "Επαλήθευση διεύθυνσης email"
 
-#: src/components/MissionSetup.tsx:879
+#: src/components/MissionSetup.tsx:732
+msgid "Vertical"
+msgstr "Κατακόρυφη"
+
+#: src/components/MissionSetup.tsx:967
 #: src/components/Multiplayer.tsx:274
 msgid "Veteran"
 msgstr "Βετεράνος"
@@ -2025,7 +2101,7 @@ msgstr "Θα είμαστε ξανά online σύντομα."
 msgid "Weapons"
 msgstr "Όπλα"
 
-#: src/components/MissionSetup.tsx:823
+#: src/components/MissionSetup.tsx:911
 #: src/components/Multiplayer.tsx:225
 msgid "Weather"
 msgstr "Καιρός"

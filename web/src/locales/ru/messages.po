@@ -41,6 +41,10 @@ msgstr "ТРОС 1"
 msgid "12 hours"
 msgstr "12 часов"
 
+#: src/components/MissionSetup.tsx:719
+msgid "15,000 AMSL"
+msgstr "15,000 AMSL"
+
 #: src/components/GameCanvas.tsx:50
 msgid "2 WIRE"
 msgstr "ТРОС 2"
@@ -52,6 +56,10 @@ msgstr "24 часа"
 #: src/components/GameCanvas.tsx:51
 msgid "3 WIRE"
 msgstr "ТРОС 3"
+
+#: src/components/MissionSetup.tsx:722
+msgid "30,000 AMSL"
+msgstr "30,000 AMSL"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:51
 msgid "Absolute (date and time)"
@@ -85,7 +93,7 @@ msgstr "Тип аккаунта"
 msgid "Account verified"
 msgstr "Аккаунт подтверждён"
 
-#: src/components/MissionSetup.tsx:880
+#: src/components/MissionSetup.tsx:968
 #: src/components/Multiplayer.tsx:275
 msgid "Ace"
 msgstr "Ас"
@@ -136,7 +144,7 @@ msgstr "Добавить вид"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Настройте внешний вид и расположение по своему вкусу."
 
-#: src/components/MissionSetup.tsx:1058
+#: src/components/MissionSetup.tsx:1146
 msgid "Afterburner"
 msgstr "Форсаж"
 
@@ -148,11 +156,11 @@ msgstr "ИИ"
 msgid "Aircraft"
 msgstr "Самолёт"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:794
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Авианосец <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> от <1>Muhamad Mirza Arrafi</1> (Sketchfab), лицензия <2>CC BY 4.0</2>. Изменено: масштабировано, переориентировано, погружён до ватерлинии и упрощено для веба."
 
-#: src/components/MissionSetup.tsx:682
+#: src/components/MissionSetup.tsx:770
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Модель самолёта <0>“F/A-18C Hornet”</0> от <1>CreadorDeMu</1> (Sketchfab), лицензия <2>CC BY 4.0</2>. Изменено: переориентировано и масштабировано, неиспользуемые данные текстур удалены, внешние подвески вынесены в отдельный файл, одна сетка кожуха зеркально отражена."
 
@@ -171,6 +179,10 @@ msgstr "Произошла ошибка"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "Произошла непредвиденная ошибка"
+
+#: src/components/MissionSetup.tsx:693
+msgid "Approach, on-speed (Vapp)"
+msgstr "Заход, на расчётной скорости (Vapp)"
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
@@ -215,9 +227,25 @@ msgstr "Назад"
 msgid "Back to home"
 msgstr "На главную"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:959
 msgid "Bandit"
 msgstr "Бандит"
+
+#: src/components/MissionSetup.tsx:684
+msgid "Best climb (Vy, 100% thrust)"
+msgstr "Лучший набор высоты (Vy, 100% тяги)"
+
+#: src/components/MissionSetup.tsx:685
+msgid "Best climb (Vy, afterburner)"
+msgstr "Лучший набор высоты (Vy, форсаж)"
+
+#: src/components/MissionSetup.tsx:687
+msgid "Best glide (engines out)"
+msgstr "Лучшее планирование (двигатели выключены)"
+
+#: src/components/MissionSetup.tsx:689
+msgid "Best sustained turn speed"
+msgstr "Скорость наилучшего установившегося разворота"
 
 #: src/components/GameCanvas.tsx:32
 msgid "BINGO FUEL"
@@ -274,11 +302,11 @@ msgstr "Отмена"
 msgid "Canopy"
 msgstr "Фонарь кабины"
 
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:997
 msgid "Carrier landing"
 msgstr "Посадка на авианосец"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:1003
 msgid "Catapult"
 msgstr "Катапульта"
 
@@ -368,7 +396,7 @@ msgstr "Закрыть поиск"
 msgid "closer"
 msgstr "ближе"
 
-#: src/components/MissionSetup.tsx:946
+#: src/components/MissionSetup.tsx:1034
 msgid "Clouds"
 msgstr "Облака"
 
@@ -429,6 +457,10 @@ msgstr "Продолжить с {label}"
 msgid "Copy"
 msgstr "Копировать"
 
+#: src/components/MissionSetup.tsx:688
+msgid "Corner speed (best instant turn)"
+msgstr "Угловая скорость (лучший мгновенный разворот)"
+
 #: src/components/Multiplayer.tsx:143
 msgid "Could not create the match"
 msgstr "Не удалось создать матч"
@@ -461,12 +493,12 @@ msgstr "Создать и лететь"
 msgid "Create match"
 msgstr "Создать матч"
 
-#: src/components/MissionSetup.tsx:671
-#: src/components/MissionSetup.tsx:677
+#: src/components/MissionSetup.tsx:759
+#: src/components/MissionSetup.tsx:765
 msgid "Credits"
 msgstr "Авторы"
 
-#: src/components/MissionSetup.tsx:953
+#: src/components/MissionSetup.tsx:1041
 #: src/components/Multiplayer.tsx:233
 msgid "Cumulus"
 msgstr "Кучевые"
@@ -501,7 +533,7 @@ msgstr "Тёмный режим"
 msgid "Data conflict"
 msgstr "Конфликт данных"
 
-#: src/components/MissionSetup.tsx:941
+#: src/components/MissionSetup.tsx:1029
 #: src/components/Multiplayer.tsx:228
 msgid "Day"
 msgstr "День"
@@ -571,7 +603,7 @@ msgstr "Закрыть"
 msgid "Displays the mobile sidebar."
 msgstr "Отображает мобильную боковую панель."
 
-#: src/components/MissionSetup.tsx:1046
+#: src/components/MissionSetup.tsx:1134
 msgid "Distance LOD"
 msgstr "LOD по расстоянию"
 
@@ -588,7 +620,7 @@ msgstr "Не удалось скачать"
 msgid "Drone"
 msgstr "Дрон"
 
-#: src/components/MissionSetup.tsx:1040
+#: src/components/MissionSetup.tsx:1128
 msgid "Dynamic resolution"
 msgstr "Динамическое разрешение"
 
@@ -643,17 +675,21 @@ msgstr "Развернуть"
 msgid "Expand sidebar"
 msgstr "Развернуть боковую панель"
 
-#: src/components/MissionSetup.tsx:1012
+#: src/components/MissionSetup.tsx:1100
 msgid "Exterior detail"
 msgstr "Детализация экстерьера"
 
-#: src/components/MissionSetup.tsx:1028
+#: src/components/MissionSetup.tsx:1116
 msgid "Extra aircraft"
 msgstr "Дополнительные самолёты"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:136
 msgid "Extra large"
 msgstr "Очень крупный"
+
+#: src/components/MissionSetup.tsx:707
+msgid "F/A-18C reference"
+msgstr "Справочные данные F/A-18C"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:225
 msgid "Failed to add account"
@@ -701,7 +737,7 @@ msgstr "тепловые ловушки"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1076
+#: src/components/MissionSetup.tsx:1164
 msgid "Flares"
 msgstr "Тепловые ловушки"
 
@@ -721,11 +757,11 @@ msgstr "СБОЙ ПОЛЁТНОГО ЯДРА"
 msgid "Floating"
 msgstr "Плавающий"
 
-#: src/components/MissionSetup.tsx:1082
+#: src/components/MissionSetup.tsx:1170
 msgid "Framerate"
 msgstr "Частота кадров"
 
-#: src/components/MissionSetup.tsx:850
+#: src/components/MissionSetup.tsx:938
 msgid "Free flight"
 msgstr "Свободный полёт"
 
@@ -746,7 +782,7 @@ msgstr "От"
 msgid "From theme"
 msgstr "Из темы"
 
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:944
 #: src/components/Multiplayer.tsx:243
 msgid "Fuel"
 msgstr "Топливо"
@@ -809,7 +845,7 @@ msgstr "Перейти на страницу {pageNumber}"
 msgid "Go to previous page"
 msgstr "Перейти на предыдущую страницу"
 
-#: src/components/MissionSetup.tsx:835
+#: src/components/MissionSetup.tsx:923
 msgid "Graphics"
 msgstr "Графика"
 
@@ -838,11 +874,11 @@ msgstr "Скрыть"
 msgid "Hide password"
 msgstr "Скрыть пароль"
 
-#: src/components/MissionSetup.tsx:992
+#: src/components/MissionSetup.tsx:1080
 msgid "High"
 msgstr "Высокое"
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:1042
 #: src/components/Multiplayer.tsx:234
 msgid "High stratus"
 msgstr "Высокие слоистые"
@@ -870,7 +906,7 @@ msgstr "Популярное"
 msgid "Imperial"
 msgstr "Имперская"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:994
 msgid "In air"
 msgstr "В воздухе"
 
@@ -906,15 +942,15 @@ msgstr "Дуэль"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Дуэль — 1v1, побеждает первый сбивший"
 
-#: src/components/MissionSetup.tsx:851
+#: src/components/MissionSetup.tsx:939
 msgid "Joust against AI player"
 msgstr "Дуэль против ИИ-соперника"
 
-#: src/components/MissionSetup.tsx:826
+#: src/components/MissionSetup.tsx:914
 msgid "Joystick"
 msgstr "Джойстик"
 
-#: src/components/MissionSetup.tsx:829
+#: src/components/MissionSetup.tsx:917
 msgid "Keys"
 msgstr "Клавиши"
 
@@ -988,7 +1024,7 @@ msgstr "Огни"
 msgid "LIGHTS"
 msgstr "ОГНИ"
 
-#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:947
 msgid "Load"
 msgstr "Запас"
 
@@ -1055,11 +1091,11 @@ msgstr "Взгляд вправо"
 msgid "Look up"
 msgstr "Взгляд вверх"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1076
 msgid "Low"
 msgstr "Низкое"
 
-#: src/components/MissionSetup.tsx:955
+#: src/components/MissionSetup.tsx:1043
 #: src/components/Multiplayer.tsx:235
 msgid "Low stratus"
 msgstr "Низкие слоистые"
@@ -1091,7 +1127,7 @@ msgid "Match type"
 msgstr "Тип матча"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:990
+#: src/components/MissionSetup.tsx:1078
 msgid "Medium"
 msgstr "Средний"
 
@@ -1107,7 +1143,7 @@ msgstr "Меню"
 msgid "Metric"
 msgstr "Метрический"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:818
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Карта атолла Мидуэй — снимки содержат изменённые данные <0>Copernicus Sentinel-2</0> (2026); геометрия аэродрома (взлётно-посадочная полоса, рулёжные дорожки, перроны) © участники <1>OpenStreetMap</1>, лицензия <2>ODbL</2>; данные о береговой линии и рифах от <3>NOAA NCCOS</3> (общественное достояние)."
 
@@ -1120,7 +1156,7 @@ msgstr "ракета"
 msgid "Missile"
 msgstr "Ракета"
 
-#: src/components/MissionSetup.tsx:1070
+#: src/components/MissionSetup.tsx:1158
 msgid "Missiles"
 msgstr "Ракеты"
 
@@ -1128,7 +1164,7 @@ msgstr "Ракеты"
 msgid "Missiles allowed"
 msgstr "Ракеты разрешены"
 
-#: src/components/MissionSetup.tsx:820
+#: src/components/MissionSetup.tsx:908
 msgid "Mission"
 msgstr "Миссия"
 
@@ -1140,7 +1176,7 @@ msgstr "Понедельник"
 msgid "Move it…"
 msgstr "Двигайте ось…"
 
-#: src/components/MissionSetup.tsx:852
+#: src/components/MissionSetup.tsx:940
 msgid "Multiplayer"
 msgstr "Мультиплеер"
 
@@ -1162,7 +1198,7 @@ msgstr "Новый"
 msgid "Next image"
 msgstr "Следующее изображение"
 
-#: src/components/MissionSetup.tsx:942
+#: src/components/MissionSetup.tsx:1030
 #: src/components/Multiplayer.tsx:229
 msgid "Night"
 msgstr "Ночь"
@@ -1225,7 +1261,7 @@ msgstr "БЕЗ ОЦЕНКИ"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:354
 #: src/components/MissionSetup.tsx:408
-#: src/components/MissionSetup.tsx:952
+#: src/components/MissionSetup.tsx:1040
 msgid "None"
 msgstr "Нет"
 
@@ -1249,7 +1285,7 @@ msgstr "Не задано"
 msgid "Notifications"
 msgstr "Уведомления"
 
-#: src/components/MissionSetup.tsx:1020
+#: src/components/MissionSetup.tsx:1108
 msgid "Ocean detail"
 msgstr "Детализация океана"
 
@@ -1257,11 +1293,11 @@ msgstr "Детализация океана"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:908
+#: src/components/MissionSetup.tsx:996
 msgid "On carrier"
 msgstr "На авианосце"
 
-#: src/components/MissionSetup.tsx:907
+#: src/components/MissionSetup.tsx:995
 msgid "On runway"
 msgstr "На полосе"
 
@@ -1351,7 +1387,7 @@ msgstr "ПАУЗА"
 msgid "pilot"
 msgstr "пилот"
 
-#: src/components/MissionSetup.tsx:878
+#: src/components/MissionSetup.tsx:966
 #: src/components/Multiplayer.tsx:273
 msgid "Pilot"
 msgstr "Пилот"
@@ -1389,7 +1425,7 @@ msgstr "Попробуйте ещё раз."
 msgid "Please wait a moment and try again."
 msgstr "Подождите немного и повторите попытку."
 
-#: src/components/MissionSetup.tsx:975
+#: src/components/MissionSetup.tsx:1063
 msgid "Preset"
 msgstr "Пресет"
 
@@ -1467,6 +1503,10 @@ msgstr "Перенаправление на страницу входа."
 msgid "Reduce interest"
 msgstr "Снизить интерес"
 
+#: src/components/MissionSetup.tsx:701
+msgid "Reference"
+msgstr "Справочные данные"
+
 #: src/components/Multiplayer.tsx:196
 msgid "Refresh"
 msgstr "Обновить"
@@ -1502,7 +1542,7 @@ msgstr "Удалить доступ?"
 msgid "Remove interest"
 msgstr "Удалить интерес"
 
-#: src/components/MissionSetup.tsx:764
+#: src/components/MissionSetup.tsx:852
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Рендеринг: <0>three.js</0> (лицензия MIT)."
 
@@ -1512,7 +1552,7 @@ msgstr "Отправить письмо повторно"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1212
 msgid "Reset"
 msgstr "Сбросить"
 
@@ -1520,15 +1560,15 @@ msgstr "Сбросить"
 msgid "Reset all settings to default values"
 msgstr "Сбросить все настройки к значениям по умолчанию"
 
-#: src/components/MissionSetup.tsx:1002
+#: src/components/MissionSetup.tsx:1090
 msgid "Resolution"
 msgstr "Разрешение"
 
-#: src/components/MissionSetup.tsx:1096
+#: src/components/MissionSetup.tsx:1184
 msgid "Restart"
 msgstr "Перезапустить"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1188
 msgid "Resume"
 msgstr "Возобновить"
 
@@ -1556,7 +1596,7 @@ msgstr "Крен влево"
 msgid "Roll right"
 msgstr "Крен вправо"
 
-#: src/components/MissionSetup.tsx:877
+#: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:272
 msgid "Rookie"
 msgstr "Новичок"
@@ -1577,6 +1617,10 @@ msgstr "Суббота"
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
 msgstr "Сохранить"
+
+#: src/components/MissionSetup.tsx:716
+msgid "Sea level"
+msgstr "Уровень моря"
 
 #: ../../../lib/web/src/components/place-picker.tsx:85
 msgid "Search for a place"
@@ -1690,7 +1734,7 @@ msgstr "Укажите пункты отправления и назначени
 msgid "Settings"
 msgstr "Настройки"
 
-#: src/components/MissionSetup.tsx:1052
+#: src/components/MissionSetup.tsx:1140
 msgid "Shadows"
 msgstr "Тени"
 
@@ -1717,6 +1761,10 @@ msgstr "Выйти"
 msgid "Signing out..."
 msgstr "Выход..."
 
+#: src/components/MissionSetup.tsx:686
+msgid "Single-engine best climb (Vyse, afterburner)"
+msgstr "Лучший набор высоты на одном двигателе (Vyse, форсаж)"
+
 #: ../../../lib/web/src/components/skip-to-main.tsx:11
 msgid "Skip to Main"
 msgstr "Перейти к основному"
@@ -1727,7 +1775,7 @@ msgid "Small"
 msgstr "Мелкий"
 
 #: src/components/MissionSetup.tsx:464
-#: src/components/MissionSetup.tsx:832
+#: src/components/MissionSetup.tsx:920
 msgid "Sound"
 msgstr "Звук"
 
@@ -1749,14 +1797,34 @@ msgstr "воздушный тормоз"
 msgid "Speed brake"
 msgstr "Воздушный тормоз"
 
-#: src/components/MissionSetup.tsx:900
-#: src/components/MissionSetup.tsx:1106
+#: src/components/MissionSetup.tsx:742
+msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
+msgstr "Скорости в KCAS, в виде диапазона от лёгкого (минимум топлива, без подвесок) до тяжёлого (максимальная взлётная масса). Данные получены экспериментально в игре. Любые расхождения с реальным самолётом отражают ошибки лётной модели симулятора."
+
+#: src/components/MissionSetup.tsx:691
+msgid "Stall, clean (Vs1)"
+msgstr "Сваливание, чистая конфигурация (Vs1)"
+
+#: src/components/MissionSetup.tsx:692
+msgid "Stall, landing config (Vs0)"
+msgstr "Сваливание, посадочная конфигурация (Vs0)"
+
+#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1194
 msgid "Start"
 msgstr "Старт"
 
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Следите за обновлениями!"
+
+#: src/components/MissionSetup.tsx:682
+msgid "Steepest climb (Vx, 100% thrust)"
+msgstr "Максимальный угол набора (Vx, 100% тяги)"
+
+#: src/components/MissionSetup.tsx:683
+msgid "Steepest climb (Vx, afterburner)"
+msgstr "Максимальный угол набора (Vx, форсаж)"
 
 #: src/components/GameCanvas.tsx:43
 msgid "STRUCTURE"
@@ -1789,7 +1857,7 @@ msgstr "Тег"
 msgid "Tags"
 msgstr "Теги"
 
-#: src/components/MissionSetup.tsx:844
+#: src/components/MissionSetup.tsx:932
 msgid "Task"
 msgstr "Задача"
 
@@ -1838,11 +1906,15 @@ msgstr "Увеличить тягу"
 msgid "Thursday"
 msgstr "Четверг"
 
+#: src/components/MissionSetup.tsx:690
+msgid "Tightest sustained turn speed"
+msgstr "Скорость наименьшего установившегося разворота"
+
 #: src/components/GameCanvas.tsx:146
 msgid "tilt"
 msgstr "наклон"
 
-#: src/components/MissionSetup.tsx:935
+#: src/components/MissionSetup.tsx:1023
 msgid "Time of day"
 msgstr "Время суток"
 
@@ -1885,7 +1957,7 @@ msgstr "Слишком много запросов"
 msgid "Top"
 msgstr "Верх"
 
-#: src/components/MissionSetup.tsx:1064
+#: src/components/MissionSetup.tsx:1152
 msgid "Tracers"
 msgstr "Трассеры"
 
@@ -1920,7 +1992,7 @@ msgstr "Введите для поиска пользователей"
 msgid "Type to search..."
 msgstr "Введите для поиска..."
 
-#: src/components/MissionSetup.tsx:994
+#: src/components/MissionSetup.tsx:1082
 msgid "Ultra"
 msgstr "Ультра"
 
@@ -1979,7 +2051,11 @@ msgstr "Подтвердить"
 msgid "Verify email address"
 msgstr "Подтвердить адрес email"
 
-#: src/components/MissionSetup.tsx:879
+#: src/components/MissionSetup.tsx:732
+msgid "Vertical"
+msgstr "Вертикальный"
+
+#: src/components/MissionSetup.tsx:967
 #: src/components/Multiplayer.tsx:274
 msgid "Veteran"
 msgstr "Ветеран"
@@ -2025,7 +2101,7 @@ msgstr "Мы скоро снова будем в сети."
 msgid "Weapons"
 msgstr "Вооружение"
 
-#: src/components/MissionSetup.tsx:823
+#: src/components/MissionSetup.tsx:911
 #: src/components/Multiplayer.tsx:225
 msgid "Weather"
 msgstr "Погода"

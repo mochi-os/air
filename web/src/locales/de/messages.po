@@ -41,6 +41,10 @@ msgstr "SEIL 1"
 msgid "12 hours"
 msgstr "12 Stunden"
 
+#: src/components/MissionSetup.tsx:719
+msgid "15,000 AMSL"
+msgstr "15,000 AMSL"
+
 #: src/components/GameCanvas.tsx:50
 msgid "2 WIRE"
 msgstr "SEIL 2"
@@ -52,6 +56,10 @@ msgstr "24 Stunden"
 #: src/components/GameCanvas.tsx:51
 msgid "3 WIRE"
 msgstr "SEIL 3"
+
+#: src/components/MissionSetup.tsx:722
+msgid "30,000 AMSL"
+msgstr "30,000 AMSL"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:51
 msgid "Absolute (date and time)"
@@ -85,7 +93,7 @@ msgstr "Kontotyp"
 msgid "Account verified"
 msgstr "Konto verifiziert"
 
-#: src/components/MissionSetup.tsx:880
+#: src/components/MissionSetup.tsx:968
 #: src/components/Multiplayer.tsx:275
 msgid "Ace"
 msgstr "Ass"
@@ -136,7 +144,7 @@ msgstr "Ansicht hinzufügen"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Passen Sie Erscheinungsbild und Layout an Ihre Präferenzen an."
 
-#: src/components/MissionSetup.tsx:1058
+#: src/components/MissionSetup.tsx:1146
 msgid "Afterburner"
 msgstr "Nachbrenner"
 
@@ -148,11 +156,11 @@ msgstr "KI"
 msgid "Aircraft"
 msgstr "Flugzeug"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:794
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Flugzeugträger <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> von <1>Muhamad Mirza Arrafi</1> (Sketchfab), lizenziert unter <2>CC BY 4.0</2>. Bearbeitet: neu skaliert, neu ausgerichtet, bis zur Wasserlinie abgesenkt und für das Web vereinfacht."
 
-#: src/components/MissionSetup.tsx:682
+#: src/components/MissionSetup.tsx:770
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Flugzeugmodell <0>“F/A-18C Hornet”</0> von <1>CreadorDeMu</1> (Sketchfab), lizenziert unter <2>CC BY 4.0</2>. Bearbeitet: neu ausgerichtet und neu skaliert, ungenutzte Texturdaten entfernt, Außenlasten in eine separate Datei ausgelagert, ein Mesh der Verkleidung gespiegelt."
 
@@ -171,6 +179,10 @@ msgstr "Ein Fehler ist aufgetreten"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "Ein unerwarteter Fehler ist aufgetreten"
+
+#: src/components/MissionSetup.tsx:693
+msgid "Approach, on-speed (Vapp)"
+msgstr "Anflug, auf Sollgeschwindigkeit (Vapp)"
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
@@ -215,9 +227,25 @@ msgstr "Zurück"
 msgid "Back to home"
 msgstr "Zurück zur Startseite"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:959
 msgid "Bandit"
 msgstr "Bandit"
+
+#: src/components/MissionSetup.tsx:684
+msgid "Best climb (Vy, 100% thrust)"
+msgstr "Bester Steigflug (Vy, 100% Schub)"
+
+#: src/components/MissionSetup.tsx:685
+msgid "Best climb (Vy, afterburner)"
+msgstr "Bester Steigflug (Vy, Nachbrenner)"
+
+#: src/components/MissionSetup.tsx:687
+msgid "Best glide (engines out)"
+msgstr "Bester Gleitflug (Triebwerke aus)"
+
+#: src/components/MissionSetup.tsx:689
+msgid "Best sustained turn speed"
+msgstr "Beste stationäre Kurvengeschwindigkeit"
 
 #: src/components/GameCanvas.tsx:32
 msgid "BINGO FUEL"
@@ -274,11 +302,11 @@ msgstr "Abbrechen"
 msgid "Canopy"
 msgstr "Kabinenhaube"
 
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:997
 msgid "Carrier landing"
 msgstr "Trägerlandung"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:1003
 msgid "Catapult"
 msgstr "Katapult"
 
@@ -368,7 +396,7 @@ msgstr "Suche schließen"
 msgid "closer"
 msgstr "näher"
 
-#: src/components/MissionSetup.tsx:946
+#: src/components/MissionSetup.tsx:1034
 msgid "Clouds"
 msgstr "Wolken"
 
@@ -429,6 +457,10 @@ msgstr "Mit {label} fortsetzen"
 msgid "Copy"
 msgstr "Kopieren"
 
+#: src/components/MissionSetup.tsx:688
+msgid "Corner speed (best instant turn)"
+msgstr "Eckgeschwindigkeit (beste Momentankurve)"
+
 #: src/components/Multiplayer.tsx:143
 msgid "Could not create the match"
 msgstr "Match konnte nicht erstellt werden"
@@ -461,12 +493,12 @@ msgstr "Erstellen und fliegen"
 msgid "Create match"
 msgstr "Match erstellen"
 
-#: src/components/MissionSetup.tsx:671
-#: src/components/MissionSetup.tsx:677
+#: src/components/MissionSetup.tsx:759
+#: src/components/MissionSetup.tsx:765
 msgid "Credits"
 msgstr "Mitwirkende"
 
-#: src/components/MissionSetup.tsx:953
+#: src/components/MissionSetup.tsx:1041
 #: src/components/Multiplayer.tsx:233
 msgid "Cumulus"
 msgstr "Cumulus"
@@ -501,7 +533,7 @@ msgstr "Dunkler Modus"
 msgid "Data conflict"
 msgstr "Datenkonflikt"
 
-#: src/components/MissionSetup.tsx:941
+#: src/components/MissionSetup.tsx:1029
 #: src/components/Multiplayer.tsx:228
 msgid "Day"
 msgstr "Tag"
@@ -571,7 +603,7 @@ msgstr "Schließen"
 msgid "Displays the mobile sidebar."
 msgstr "Zeigt die mobile Seitenleiste an."
 
-#: src/components/MissionSetup.tsx:1046
+#: src/components/MissionSetup.tsx:1134
 msgid "Distance LOD"
 msgstr "Entfernungs-LOD"
 
@@ -588,7 +620,7 @@ msgstr "Download fehlgeschlagen"
 msgid "Drone"
 msgstr "Drohne"
 
-#: src/components/MissionSetup.tsx:1040
+#: src/components/MissionSetup.tsx:1128
 msgid "Dynamic resolution"
 msgstr "Dynamische Auflösung"
 
@@ -643,17 +675,21 @@ msgstr "Ausklappen"
 msgid "Expand sidebar"
 msgstr "Seitenleiste erweitern"
 
-#: src/components/MissionSetup.tsx:1012
+#: src/components/MissionSetup.tsx:1100
 msgid "Exterior detail"
 msgstr "Außendetails"
 
-#: src/components/MissionSetup.tsx:1028
+#: src/components/MissionSetup.tsx:1116
 msgid "Extra aircraft"
 msgstr "Zusätzliche Flugzeuge"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:136
 msgid "Extra large"
 msgstr "Extra groß"
+
+#: src/components/MissionSetup.tsx:707
+msgid "F/A-18C reference"
+msgstr "F/A-18C-Referenz"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:225
 msgid "Failed to add account"
@@ -701,7 +737,7 @@ msgstr "täuschkörper"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1076
+#: src/components/MissionSetup.tsx:1164
 msgid "Flares"
 msgstr "Täuschkörper"
 
@@ -721,11 +757,11 @@ msgstr "FLUGKERN FEHLGESCHLAGEN"
 msgid "Floating"
 msgstr "Schwebend"
 
-#: src/components/MissionSetup.tsx:1082
+#: src/components/MissionSetup.tsx:1170
 msgid "Framerate"
 msgstr "Bildrate"
 
-#: src/components/MissionSetup.tsx:850
+#: src/components/MissionSetup.tsx:938
 msgid "Free flight"
 msgstr "Freier Flug"
 
@@ -746,7 +782,7 @@ msgstr "Von"
 msgid "From theme"
 msgstr "Vom Theme"
 
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:944
 #: src/components/Multiplayer.tsx:243
 msgid "Fuel"
 msgstr "Treibstoff"
@@ -809,7 +845,7 @@ msgstr "Zu Seite {pageNumber} gehen"
 msgid "Go to previous page"
 msgstr "Zur vorherigen Seite"
 
-#: src/components/MissionSetup.tsx:835
+#: src/components/MissionSetup.tsx:923
 msgid "Graphics"
 msgstr "Grafik"
 
@@ -838,11 +874,11 @@ msgstr "Ausblenden"
 msgid "Hide password"
 msgstr "Passwort ausblenden"
 
-#: src/components/MissionSetup.tsx:992
+#: src/components/MissionSetup.tsx:1080
 msgid "High"
 msgstr "Hoch"
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:1042
 #: src/components/Multiplayer.tsx:234
 msgid "High stratus"
 msgstr "Hoher Stratus"
@@ -870,7 +906,7 @@ msgstr "Heiß"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:994
 msgid "In air"
 msgstr "In der Luft"
 
@@ -906,15 +942,15 @@ msgstr "Joust"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duell — 1v1, der erste Abschuss gewinnt"
 
-#: src/components/MissionSetup.tsx:851
+#: src/components/MissionSetup.tsx:939
 msgid "Joust against AI player"
 msgstr "Duell gegen KI-Spieler"
 
-#: src/components/MissionSetup.tsx:826
+#: src/components/MissionSetup.tsx:914
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MissionSetup.tsx:829
+#: src/components/MissionSetup.tsx:917
 msgid "Keys"
 msgstr "Tasten"
 
@@ -988,7 +1024,7 @@ msgstr "Beleuchtung"
 msgid "LIGHTS"
 msgstr "LICHTER"
 
-#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:947
 msgid "Load"
 msgstr "Menge"
 
@@ -1055,11 +1091,11 @@ msgstr "Blick nach rechts"
 msgid "Look up"
 msgstr "Blick nach oben"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1076
 msgid "Low"
 msgstr "Niedrig"
 
-#: src/components/MissionSetup.tsx:955
+#: src/components/MissionSetup.tsx:1043
 #: src/components/Multiplayer.tsx:235
 msgid "Low stratus"
 msgstr "Niedriger Stratus"
@@ -1091,7 +1127,7 @@ msgid "Match type"
 msgstr "Match-Typ"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:990
+#: src/components/MissionSetup.tsx:1078
 msgid "Medium"
 msgstr "Mittel"
 
@@ -1107,7 +1143,7 @@ msgstr "Menü"
 msgid "Metric"
 msgstr "Metrisch"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:818
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Karte des Midway-Atolls — die Bilddaten enthalten modifizierte <0>Copernicus Sentinel-2</0>-Daten (2026); Flugplatzgeometrie (Start- und Landebahn, Rollwege, Vorfelder) © <1>OpenStreetMap</1>-Mitwirkende, lizenziert unter <2>ODbL</2>; Küsten- und Riffdaten von <3>NOAA NCCOS</3> (gemeinfrei)."
 
@@ -1120,7 +1156,7 @@ msgstr "rakete"
 msgid "Missile"
 msgstr "Rakete"
 
-#: src/components/MissionSetup.tsx:1070
+#: src/components/MissionSetup.tsx:1158
 msgid "Missiles"
 msgstr "Raketen"
 
@@ -1128,7 +1164,7 @@ msgstr "Raketen"
 msgid "Missiles allowed"
 msgstr "Raketen erlaubt"
 
-#: src/components/MissionSetup.tsx:820
+#: src/components/MissionSetup.tsx:908
 msgid "Mission"
 msgstr "Mission"
 
@@ -1140,7 +1176,7 @@ msgstr "Montag"
 msgid "Move it…"
 msgstr "Achse bewegen…"
 
-#: src/components/MissionSetup.tsx:852
+#: src/components/MissionSetup.tsx:940
 msgid "Multiplayer"
 msgstr "Multiplayer"
 
@@ -1162,7 +1198,7 @@ msgstr "Neu"
 msgid "Next image"
 msgstr "Nächstes Bild"
 
-#: src/components/MissionSetup.tsx:942
+#: src/components/MissionSetup.tsx:1030
 #: src/components/Multiplayer.tsx:229
 msgid "Night"
 msgstr "Nacht"
@@ -1225,7 +1261,7 @@ msgstr "KEINE WERTUNG"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:354
 #: src/components/MissionSetup.tsx:408
-#: src/components/MissionSetup.tsx:952
+#: src/components/MissionSetup.tsx:1040
 msgid "None"
 msgstr "Keine"
 
@@ -1249,7 +1285,7 @@ msgstr "Nicht festgelegt"
 msgid "Notifications"
 msgstr "Benachrichtigungen"
 
-#: src/components/MissionSetup.tsx:1020
+#: src/components/MissionSetup.tsx:1108
 msgid "Ocean detail"
 msgstr "Ozeandetails"
 
@@ -1257,11 +1293,11 @@ msgstr "Ozeandetails"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:908
+#: src/components/MissionSetup.tsx:996
 msgid "On carrier"
 msgstr "Auf dem Träger"
 
-#: src/components/MissionSetup.tsx:907
+#: src/components/MissionSetup.tsx:995
 msgid "On runway"
 msgstr "Auf der Startbahn"
 
@@ -1351,7 +1387,7 @@ msgstr "PAUSIERT"
 msgid "pilot"
 msgstr "Pilot"
 
-#: src/components/MissionSetup.tsx:878
+#: src/components/MissionSetup.tsx:966
 #: src/components/Multiplayer.tsx:273
 msgid "Pilot"
 msgstr "Pilot"
@@ -1389,7 +1425,7 @@ msgstr "Bitte versuche es erneut."
 msgid "Please wait a moment and try again."
 msgstr "Bitte warten Sie einen Moment und versuchen Sie es erneut."
 
-#: src/components/MissionSetup.tsx:975
+#: src/components/MissionSetup.tsx:1063
 msgid "Preset"
 msgstr "Voreinstellung"
 
@@ -1467,6 +1503,10 @@ msgstr "Weiterleitung zur Anmeldung."
 msgid "Reduce interest"
 msgstr "Interesse reduzieren"
 
+#: src/components/MissionSetup.tsx:701
+msgid "Reference"
+msgstr "Referenz"
+
 #: src/components/Multiplayer.tsx:196
 msgid "Refresh"
 msgstr "Aktualisieren"
@@ -1502,7 +1542,7 @@ msgstr "Zugriff entfernen?"
 msgid "Remove interest"
 msgstr "Interesse entfernen"
 
-#: src/components/MissionSetup.tsx:764
+#: src/components/MissionSetup.tsx:852
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Rendering durch <0>three.js</0> (MIT-Lizenz)."
 
@@ -1512,7 +1552,7 @@ msgstr "E-Mail erneut senden"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1212
 msgid "Reset"
 msgstr "Zurücksetzen"
 
@@ -1520,15 +1560,15 @@ msgstr "Zurücksetzen"
 msgid "Reset all settings to default values"
 msgstr "Alle Einstellungen auf Standardwerte zurücksetzen"
 
-#: src/components/MissionSetup.tsx:1002
+#: src/components/MissionSetup.tsx:1090
 msgid "Resolution"
 msgstr "Auflösung"
 
-#: src/components/MissionSetup.tsx:1096
+#: src/components/MissionSetup.tsx:1184
 msgid "Restart"
 msgstr "Neu starten"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1188
 msgid "Resume"
 msgstr "Fortsetzen"
 
@@ -1556,7 +1596,7 @@ msgstr "Rollen nach links"
 msgid "Roll right"
 msgstr "Rollen nach rechts"
 
-#: src/components/MissionSetup.tsx:877
+#: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:272
 msgid "Rookie"
 msgstr "Anfänger"
@@ -1577,6 +1617,10 @@ msgstr "Samstag"
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
 msgstr "Speichern"
+
+#: src/components/MissionSetup.tsx:716
+msgid "Sea level"
+msgstr "Meeresspiegel"
 
 #: ../../../lib/web/src/components/place-picker.tsx:85
 msgid "Search for a place"
@@ -1690,7 +1734,7 @@ msgstr "Ausgangspunkt und Ziel festlegen"
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: src/components/MissionSetup.tsx:1052
+#: src/components/MissionSetup.tsx:1140
 msgid "Shadows"
 msgstr "Schatten"
 
@@ -1717,6 +1761,10 @@ msgstr "Abmelden"
 msgid "Signing out..."
 msgstr "Abmeldung läuft..."
 
+#: src/components/MissionSetup.tsx:686
+msgid "Single-engine best climb (Vyse, afterburner)"
+msgstr "Bester Steigflug mit einem Triebwerk (Vyse, Nachbrenner)"
+
 #: ../../../lib/web/src/components/skip-to-main.tsx:11
 msgid "Skip to Main"
 msgstr "Zum Hauptinhalt springen"
@@ -1727,7 +1775,7 @@ msgid "Small"
 msgstr "Klein"
 
 #: src/components/MissionSetup.tsx:464
-#: src/components/MissionSetup.tsx:832
+#: src/components/MissionSetup.tsx:920
 msgid "Sound"
 msgstr "Ton"
 
@@ -1749,14 +1797,34 @@ msgstr "Bremsklappe"
 msgid "Speed brake"
 msgstr "Bremsklappe"
 
-#: src/components/MissionSetup.tsx:900
-#: src/components/MissionSetup.tsx:1106
+#: src/components/MissionSetup.tsx:742
+msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
+msgstr "Geschwindigkeiten in KCAS, als Bereich von leicht (minimaler Kraftstoff, keine Außenlasten) bis schwer (maximales Gesamtgewicht). Daten experimentell im Spiel ermittelt. Abweichungen vom realen Flugzeug spiegeln Fehler im Flugmodell des Simulators wider."
+
+#: src/components/MissionSetup.tsx:691
+msgid "Stall, clean (Vs1)"
+msgstr "Strömungsabriss, sauber (Vs1)"
+
+#: src/components/MissionSetup.tsx:692
+msgid "Stall, landing config (Vs0)"
+msgstr "Strömungsabriss, Landekonfiguration (Vs0)"
+
+#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1194
 msgid "Start"
 msgstr "Start"
 
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Bleiben Sie aber dran!"
+
+#: src/components/MissionSetup.tsx:682
+msgid "Steepest climb (Vx, 100% thrust)"
+msgstr "Steilster Steigflug (Vx, 100% Schub)"
+
+#: src/components/MissionSetup.tsx:683
+msgid "Steepest climb (Vx, afterburner)"
+msgstr "Steilster Steigflug (Vx, Nachbrenner)"
 
 #: src/components/GameCanvas.tsx:43
 msgid "STRUCTURE"
@@ -1789,7 +1857,7 @@ msgstr "Tag"
 msgid "Tags"
 msgstr "Tags"
 
-#: src/components/MissionSetup.tsx:844
+#: src/components/MissionSetup.tsx:932
 msgid "Task"
 msgstr "Aufgabe"
 
@@ -1838,11 +1906,15 @@ msgstr "Schub erhöhen"
 msgid "Thursday"
 msgstr "Donnerstag"
 
+#: src/components/MissionSetup.tsx:690
+msgid "Tightest sustained turn speed"
+msgstr "Engste stationäre Kurvengeschwindigkeit"
+
 #: src/components/GameCanvas.tsx:146
 msgid "tilt"
 msgstr "neigen"
 
-#: src/components/MissionSetup.tsx:935
+#: src/components/MissionSetup.tsx:1023
 msgid "Time of day"
 msgstr "Tageszeit"
 
@@ -1885,7 +1957,7 @@ msgstr "Zu viele Anfragen"
 msgid "Top"
 msgstr "Oben"
 
-#: src/components/MissionSetup.tsx:1064
+#: src/components/MissionSetup.tsx:1152
 msgid "Tracers"
 msgstr "Leuchtspur"
 
@@ -1920,7 +1992,7 @@ msgstr "Tippen, um Benutzer zu suchen"
 msgid "Type to search..."
 msgstr "Tippen, um zu suchen..."
 
-#: src/components/MissionSetup.tsx:994
+#: src/components/MissionSetup.tsx:1082
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1979,7 +2051,11 @@ msgstr "Verifizieren"
 msgid "Verify email address"
 msgstr "E-Mail-Adresse verifizieren"
 
-#: src/components/MissionSetup.tsx:879
+#: src/components/MissionSetup.tsx:732
+msgid "Vertical"
+msgstr "Senkrecht"
+
+#: src/components/MissionSetup.tsx:967
 #: src/components/Multiplayer.tsx:274
 msgid "Veteran"
 msgstr "Veteran"
@@ -2025,7 +2101,7 @@ msgstr "Wir sind in Kürze wieder online."
 msgid "Weapons"
 msgstr "Waffen"
 
-#: src/components/MissionSetup.tsx:823
+#: src/components/MissionSetup.tsx:911
 #: src/components/Multiplayer.tsx:225
 msgid "Weather"
 msgstr "Wetter"

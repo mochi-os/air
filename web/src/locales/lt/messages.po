@@ -41,6 +41,10 @@ msgstr "TROSAS 1"
 msgid "12 hours"
 msgstr "12 valandų"
 
+#: src/components/MissionSetup.tsx:719
+msgid "15,000 AMSL"
+msgstr "15,000 AMSL"
+
 #: src/components/GameCanvas.tsx:50
 msgid "2 WIRE"
 msgstr "TROSAS 2"
@@ -52,6 +56,10 @@ msgstr "24 valandos"
 #: src/components/GameCanvas.tsx:51
 msgid "3 WIRE"
 msgstr "TROSAS 3"
+
+#: src/components/MissionSetup.tsx:722
+msgid "30,000 AMSL"
+msgstr "30,000 AMSL"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:51
 msgid "Absolute (date and time)"
@@ -85,7 +93,7 @@ msgstr "Paskyros tipas"
 msgid "Account verified"
 msgstr "Paskyra patvirtinta"
 
-#: src/components/MissionSetup.tsx:880
+#: src/components/MissionSetup.tsx:968
 #: src/components/Multiplayer.tsx:275
 msgid "Ace"
 msgstr "Asas"
@@ -136,7 +144,7 @@ msgstr "Pridėti rodinį"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Koreguokite išvaizdą ir išdėstymą pagal savo pageidavimus."
 
-#: src/components/MissionSetup.tsx:1058
+#: src/components/MissionSetup.tsx:1146
 msgid "Afterburner"
 msgstr "Papildomas degiklis"
 
@@ -148,11 +156,11 @@ msgstr "DI"
 msgid "Aircraft"
 msgstr "Lėktuvas"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:794
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Lėktuvnešis <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>, autorius <1>Muhamad Mirza Arrafi</1> (Sketchfab), licencijuota pagal <2>CC BY 4.0</2>. Pakeista: pakeistas mastelis, pakeista orientacija, nuleista iki vaterlinijos ir supaprastinta žiniatinkliui."
 
-#: src/components/MissionSetup.tsx:682
+#: src/components/MissionSetup.tsx:770
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Orlaivio modelis <0>“F/A-18C Hornet”</0>, sukūrė <1>CreadorDeMu</1> (Sketchfab), licencijuota pagal <2>CC BY 4.0</2>. Pakeista: pakeista orientacija ir mastelis, pašalinti nenaudojami tekstūrų duomenys, išorinė pakabinamoji įranga atskirta į atskirą failą, vienas gaubto tinklelis atspindėtas veidrodiškai."
 
@@ -171,6 +179,10 @@ msgstr "Įvyko klaida"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "Įvyko netikėta klaida"
+
+#: src/components/MissionSetup.tsx:693
+msgid "Approach, on-speed (Vapp)"
+msgstr "Artėjimas, tinkamu greičiu (Vapp)"
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
@@ -215,9 +227,25 @@ msgstr "Atgal"
 msgid "Back to home"
 msgstr "Atgal į pradžią"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:959
 msgid "Bandit"
 msgstr "Banditas"
+
+#: src/components/MissionSetup.tsx:684
+msgid "Best climb (Vy, 100% thrust)"
+msgstr "Geriausias kilimas (Vy, 100% traukos)"
+
+#: src/components/MissionSetup.tsx:685
+msgid "Best climb (Vy, afterburner)"
+msgstr "Geriausias kilimas (Vy, forsažas)"
+
+#: src/components/MissionSetup.tsx:687
+msgid "Best glide (engines out)"
+msgstr "Geriausias sklendimas (varikliai išjungti)"
+
+#: src/components/MissionSetup.tsx:689
+msgid "Best sustained turn speed"
+msgstr "Geriausias išlaikomo posūkio greitis"
 
 #: src/components/GameCanvas.tsx:32
 msgid "BINGO FUEL"
@@ -274,11 +302,11 @@ msgstr "Atšaukti"
 msgid "Canopy"
 msgstr "Kabinos gaubtas"
 
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:997
 msgid "Carrier landing"
 msgstr "Nusileidimas lėktuvnešyje"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:1003
 msgid "Catapult"
 msgstr "Katapulta"
 
@@ -368,7 +396,7 @@ msgstr "Uždaryti paiešką"
 msgid "closer"
 msgstr "arčiau"
 
-#: src/components/MissionSetup.tsx:946
+#: src/components/MissionSetup.tsx:1034
 msgid "Clouds"
 msgstr "Debesys"
 
@@ -429,6 +457,10 @@ msgstr "Tęsti su {label}"
 msgid "Copy"
 msgstr "Kopijuoti"
 
+#: src/components/MissionSetup.tsx:688
+msgid "Corner speed (best instant turn)"
+msgstr "Kampinis greitis (geriausias momentinis posūkis)"
+
 #: src/components/Multiplayer.tsx:143
 msgid "Could not create the match"
 msgstr "Nepavyko sukurti mačo"
@@ -461,12 +493,12 @@ msgstr "Sukurti ir skristi"
 msgid "Create match"
 msgstr "Sukurti mačą"
 
-#: src/components/MissionSetup.tsx:671
-#: src/components/MissionSetup.tsx:677
+#: src/components/MissionSetup.tsx:759
+#: src/components/MissionSetup.tsx:765
 msgid "Credits"
 msgstr "Padėkos"
 
-#: src/components/MissionSetup.tsx:953
+#: src/components/MissionSetup.tsx:1041
 #: src/components/Multiplayer.tsx:233
 msgid "Cumulus"
 msgstr "Kamuoliniai"
@@ -501,7 +533,7 @@ msgstr "Tamsus režimas"
 msgid "Data conflict"
 msgstr "Duomenų konfliktas"
 
-#: src/components/MissionSetup.tsx:941
+#: src/components/MissionSetup.tsx:1029
 #: src/components/Multiplayer.tsx:228
 msgid "Day"
 msgstr "Diena"
@@ -571,7 +603,7 @@ msgstr "Atmesti"
 msgid "Displays the mobile sidebar."
 msgstr "Rodo mobiliąją šoninę juostą."
 
-#: src/components/MissionSetup.tsx:1046
+#: src/components/MissionSetup.tsx:1134
 msgid "Distance LOD"
 msgstr "Atstumo LOD"
 
@@ -588,7 +620,7 @@ msgstr "Atsisiųsti nepavyko"
 msgid "Drone"
 msgstr "Dronas"
 
-#: src/components/MissionSetup.tsx:1040
+#: src/components/MissionSetup.tsx:1128
 msgid "Dynamic resolution"
 msgstr "Dinaminė skiriamoji geba"
 
@@ -643,17 +675,21 @@ msgstr "Išskleisti"
 msgid "Expand sidebar"
 msgstr "Išskleisti šoninę juostą"
 
-#: src/components/MissionSetup.tsx:1012
+#: src/components/MissionSetup.tsx:1100
 msgid "Exterior detail"
 msgstr "Išorės detalumas"
 
-#: src/components/MissionSetup.tsx:1028
+#: src/components/MissionSetup.tsx:1116
 msgid "Extra aircraft"
 msgstr "Papildomi lėktuvai"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:136
 msgid "Extra large"
 msgstr "Labai didelis"
+
+#: src/components/MissionSetup.tsx:707
+msgid "F/A-18C reference"
+msgstr "F/A-18C žinynas"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:225
 msgid "Failed to add account"
@@ -701,7 +737,7 @@ msgstr "fakelai"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1076
+#: src/components/MissionSetup.tsx:1164
 msgid "Flares"
 msgstr "Šiluminės gaudyklės"
 
@@ -721,11 +757,11 @@ msgstr "SKRYDŽIO BRANDUOLIO KLAIDA"
 msgid "Floating"
 msgstr "Plaukiojantis"
 
-#: src/components/MissionSetup.tsx:1082
+#: src/components/MissionSetup.tsx:1170
 msgid "Framerate"
 msgstr "Kadrų dažnis"
 
-#: src/components/MissionSetup.tsx:850
+#: src/components/MissionSetup.tsx:938
 msgid "Free flight"
 msgstr "Laisvas skrydis"
 
@@ -746,7 +782,7 @@ msgstr "Nuo"
 msgid "From theme"
 msgstr "Iš temos"
 
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:944
 #: src/components/Multiplayer.tsx:243
 msgid "Fuel"
 msgstr "Degalai"
@@ -809,7 +845,7 @@ msgstr "Eiti į puslapį {pageNumber}"
 msgid "Go to previous page"
 msgstr "Eiti į ankstesnį puslapį"
 
-#: src/components/MissionSetup.tsx:835
+#: src/components/MissionSetup.tsx:923
 msgid "Graphics"
 msgstr "Grafika"
 
@@ -838,11 +874,11 @@ msgstr "Slėpti"
 msgid "Hide password"
 msgstr "Slėpti slaptažodį"
 
-#: src/components/MissionSetup.tsx:992
+#: src/components/MissionSetup.tsx:1080
 msgid "High"
 msgstr "Aukštas"
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:1042
 #: src/components/Multiplayer.tsx:234
 msgid "High stratus"
 msgstr "Aukšti sluoksniniai"
@@ -870,7 +906,7 @@ msgstr "Karšta"
 msgid "Imperial"
 msgstr "Imperinė"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:994
 msgid "In air"
 msgstr "Ore"
 
@@ -906,15 +942,15 @@ msgstr "Dvikova"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Dvikova — 1v1, laimi pirmas numušimas"
 
-#: src/components/MissionSetup.tsx:851
+#: src/components/MissionSetup.tsx:939
 msgid "Joust against AI player"
 msgstr "Dvikova prieš AI žaidėją"
 
-#: src/components/MissionSetup.tsx:826
+#: src/components/MissionSetup.tsx:914
 msgid "Joystick"
 msgstr "Vairasvirtė"
 
-#: src/components/MissionSetup.tsx:829
+#: src/components/MissionSetup.tsx:917
 msgid "Keys"
 msgstr "Klavišai"
 
@@ -988,7 +1024,7 @@ msgstr "Žiburiai"
 msgid "LIGHTS"
 msgstr "ŽIBURIAI"
 
-#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:947
 msgid "Load"
 msgstr "Kiekis"
 
@@ -1055,11 +1091,11 @@ msgstr "Žiūrėti dešinėn"
 msgid "Look up"
 msgstr "Žiūrėti aukštyn"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1076
 msgid "Low"
 msgstr "Žemas"
 
-#: src/components/MissionSetup.tsx:955
+#: src/components/MissionSetup.tsx:1043
 #: src/components/Multiplayer.tsx:235
 msgid "Low stratus"
 msgstr "Žemi sluoksniniai"
@@ -1091,7 +1127,7 @@ msgid "Match type"
 msgstr "Mačo tipas"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:990
+#: src/components/MissionSetup.tsx:1078
 msgid "Medium"
 msgstr "Vidutinis"
 
@@ -1107,7 +1143,7 @@ msgstr "Meniu"
 msgid "Metric"
 msgstr "Metrinė"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:818
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midvėjaus atolo žemėlapis — vaizduose yra modifikuotų <0>Copernicus Sentinel-2</0> duomenų (2026); aerodromo geometrija (kilimo ir tūpimo takas, riedėjimo takai, peronai) © <1>OpenStreetMap</1> talkininkai, licencijuota pagal <2>ODbL</2>; pakrantės ir rifų duomenys iš <3>NOAA NCCOS</3> (viešoji sritis)."
 
@@ -1120,7 +1156,7 @@ msgstr "raketa"
 msgid "Missile"
 msgstr "Raketa"
 
-#: src/components/MissionSetup.tsx:1070
+#: src/components/MissionSetup.tsx:1158
 msgid "Missiles"
 msgstr "Raketos"
 
@@ -1128,7 +1164,7 @@ msgstr "Raketos"
 msgid "Missiles allowed"
 msgstr "Raketos leidžiamos"
 
-#: src/components/MissionSetup.tsx:820
+#: src/components/MissionSetup.tsx:908
 msgid "Mission"
 msgstr "Misija"
 
@@ -1140,7 +1176,7 @@ msgstr "Pirmadienis"
 msgid "Move it…"
 msgstr "Pajudinkite ašį…"
 
-#: src/components/MissionSetup.tsx:852
+#: src/components/MissionSetup.tsx:940
 msgid "Multiplayer"
 msgstr "Kelių žaidėjų"
 
@@ -1162,7 +1198,7 @@ msgstr "Naujas"
 msgid "Next image"
 msgstr "Kitas paveikslėlis"
 
-#: src/components/MissionSetup.tsx:942
+#: src/components/MissionSetup.tsx:1030
 #: src/components/Multiplayer.tsx:229
 msgid "Night"
 msgstr "Naktis"
@@ -1225,7 +1261,7 @@ msgstr "BE ĮVERTINIMO"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:354
 #: src/components/MissionSetup.tsx:408
-#: src/components/MissionSetup.tsx:952
+#: src/components/MissionSetup.tsx:1040
 msgid "None"
 msgstr "Nėra"
 
@@ -1249,7 +1285,7 @@ msgstr "Nenustatyta"
 msgid "Notifications"
 msgstr "Pranešimai"
 
-#: src/components/MissionSetup.tsx:1020
+#: src/components/MissionSetup.tsx:1108
 msgid "Ocean detail"
 msgstr "Vandenyno detalumas"
 
@@ -1257,11 +1293,11 @@ msgstr "Vandenyno detalumas"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:908
+#: src/components/MissionSetup.tsx:996
 msgid "On carrier"
 msgstr "Lėktuvnešyje"
 
-#: src/components/MissionSetup.tsx:907
+#: src/components/MissionSetup.tsx:995
 msgid "On runway"
 msgstr "Ant kilimo tako"
 
@@ -1351,7 +1387,7 @@ msgstr "PRISTABDYTA"
 msgid "pilot"
 msgstr "pilotas"
 
-#: src/components/MissionSetup.tsx:878
+#: src/components/MissionSetup.tsx:966
 #: src/components/Multiplayer.tsx:273
 msgid "Pilot"
 msgstr "Pilotas"
@@ -1389,7 +1425,7 @@ msgstr "Bandykite dar kartą."
 msgid "Please wait a moment and try again."
 msgstr "Palaukite šiek tiek ir bandykite dar kartą."
 
-#: src/components/MissionSetup.tsx:975
+#: src/components/MissionSetup.tsx:1063
 msgid "Preset"
 msgstr "Išankstinis nustatymas"
 
@@ -1467,6 +1503,10 @@ msgstr "Peradresuojama į prisijungimą."
 msgid "Reduce interest"
 msgstr "Sumažinti susidomėjimą"
 
+#: src/components/MissionSetup.tsx:701
+msgid "Reference"
+msgstr "Žinynas"
+
 #: src/components/Multiplayer.tsx:196
 msgid "Refresh"
 msgstr "Atnaujinti"
@@ -1502,7 +1542,7 @@ msgstr "Šalinti prieigą?"
 msgid "Remove interest"
 msgstr "Šalinti susidomėjimą"
 
-#: src/components/MissionSetup.tsx:764
+#: src/components/MissionSetup.tsx:852
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Atvaizdavimą atlieka <0>three.js</0> (MIT licencija)."
 
@@ -1512,7 +1552,7 @@ msgstr "Siųsti el. laišką dar kartą"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1212
 msgid "Reset"
 msgstr "Atstatyti"
 
@@ -1520,15 +1560,15 @@ msgstr "Atstatyti"
 msgid "Reset all settings to default values"
 msgstr "Atstatyti visus nustatymus į numatytąsias reikšmes"
 
-#: src/components/MissionSetup.tsx:1002
+#: src/components/MissionSetup.tsx:1090
 msgid "Resolution"
 msgstr "Sprendimas"
 
-#: src/components/MissionSetup.tsx:1096
+#: src/components/MissionSetup.tsx:1184
 msgid "Restart"
 msgstr "Paleisti iš naujo"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1188
 msgid "Resume"
 msgstr "Tęsti"
 
@@ -1556,7 +1596,7 @@ msgstr "Posvyris kairėn"
 msgid "Roll right"
 msgstr "Posvyris dešinėn"
 
-#: src/components/MissionSetup.tsx:877
+#: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:272
 msgid "Rookie"
 msgstr "Naujokas"
@@ -1577,6 +1617,10 @@ msgstr "Šeštadienis"
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
 msgstr "Išsaugoti"
+
+#: src/components/MissionSetup.tsx:716
+msgid "Sea level"
+msgstr "Jūros lygis"
 
 #: ../../../lib/web/src/components/place-picker.tsx:85
 msgid "Search for a place"
@@ -1690,7 +1734,7 @@ msgstr "Nustatyti pradžią ir paskirties vietą"
 msgid "Settings"
 msgstr "Nustatymai"
 
-#: src/components/MissionSetup.tsx:1052
+#: src/components/MissionSetup.tsx:1140
 msgid "Shadows"
 msgstr "Šešėliai"
 
@@ -1717,6 +1761,10 @@ msgstr "Atsijungti"
 msgid "Signing out..."
 msgstr "Atsijungiama..."
 
+#: src/components/MissionSetup.tsx:686
+msgid "Single-engine best climb (Vyse, afterburner)"
+msgstr "Geriausias kilimas su vienu varikliu (Vyse, forsažas)"
+
 #: ../../../lib/web/src/components/skip-to-main.tsx:11
 msgid "Skip to Main"
 msgstr "Pereiti prie pagrindinio"
@@ -1727,7 +1775,7 @@ msgid "Small"
 msgstr "Mažas"
 
 #: src/components/MissionSetup.tsx:464
-#: src/components/MissionSetup.tsx:832
+#: src/components/MissionSetup.tsx:920
 msgid "Sound"
 msgstr "Garsas"
 
@@ -1749,14 +1797,34 @@ msgstr "oro stabdys"
 msgid "Speed brake"
 msgstr "Oro stabdys"
 
-#: src/components/MissionSetup.tsx:900
-#: src/components/MissionSetup.tsx:1106
+#: src/components/MissionSetup.tsx:742
+msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
+msgstr "Greičiai KCAS, kaip diapazonas nuo lengvo (minimalus kuras, be išorinės apkrovos) iki sunkaus (didžiausia bendroji masė). Duomenys gauti eksperimentiškai žaidime. Bet kokie skirtumai nuo tikro orlaivio atspindi simuliatoriaus skrydžio modelio klaidas."
+
+#: src/components/MissionSetup.tsx:691
+msgid "Stall, clean (Vs1)"
+msgstr "Kritinis greitis, švari konfigūracija (Vs1)"
+
+#: src/components/MissionSetup.tsx:692
+msgid "Stall, landing config (Vs0)"
+msgstr "Kritinis greitis, tūpimo konfigūracija (Vs0)"
+
+#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1194
 msgid "Start"
 msgstr "Pradėti"
 
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Bet būkite budrūs!"
+
+#: src/components/MissionSetup.tsx:682
+msgid "Steepest climb (Vx, 100% thrust)"
+msgstr "Stačiausias kilimas (Vx, 100% traukos)"
+
+#: src/components/MissionSetup.tsx:683
+msgid "Steepest climb (Vx, afterburner)"
+msgstr "Stačiausias kilimas (Vx, forsažas)"
 
 #: src/components/GameCanvas.tsx:43
 msgid "STRUCTURE"
@@ -1789,7 +1857,7 @@ msgstr "Žyma"
 msgid "Tags"
 msgstr "Žymos"
 
-#: src/components/MissionSetup.tsx:844
+#: src/components/MissionSetup.tsx:932
 msgid "Task"
 msgstr "Užduotis"
 
@@ -1838,11 +1906,15 @@ msgstr "Didinti droselį"
 msgid "Thursday"
 msgstr "Ketvirtadienis"
 
+#: src/components/MissionSetup.tsx:690
+msgid "Tightest sustained turn speed"
+msgstr "Aštriausio išlaikomo posūkio greitis"
+
 #: src/components/GameCanvas.tsx:146
 msgid "tilt"
 msgstr "pakreipti"
 
-#: src/components/MissionSetup.tsx:935
+#: src/components/MissionSetup.tsx:1023
 msgid "Time of day"
 msgstr "Paros laikas"
 
@@ -1885,7 +1957,7 @@ msgstr "Per daug užklausų"
 msgid "Top"
 msgstr "Viršus"
 
-#: src/components/MissionSetup.tsx:1064
+#: src/components/MissionSetup.tsx:1152
 msgid "Tracers"
 msgstr "Trasuojantys šoviniai"
 
@@ -1920,7 +1992,7 @@ msgstr "Įveskite, kad surastumėte vartotojus"
 msgid "Type to search..."
 msgstr "Įveskite, kad ieškotumėte..."
 
-#: src/components/MissionSetup.tsx:994
+#: src/components/MissionSetup.tsx:1082
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1979,7 +2051,11 @@ msgstr "Patvirtinti"
 msgid "Verify email address"
 msgstr "Patvirtinti el. pašto adresą"
 
-#: src/components/MissionSetup.tsx:879
+#: src/components/MissionSetup.tsx:732
+msgid "Vertical"
+msgstr "Vertikalus"
+
+#: src/components/MissionSetup.tsx:967
 #: src/components/Multiplayer.tsx:274
 msgid "Veteran"
 msgstr "Veteranas"
@@ -2025,7 +2101,7 @@ msgstr "Netrukus vėl būsime prisijungę."
 msgid "Weapons"
 msgstr "Ginklai"
 
-#: src/components/MissionSetup.tsx:823
+#: src/components/MissionSetup.tsx:911
 #: src/components/Multiplayer.tsx:225
 msgid "Weather"
 msgstr "Oras"

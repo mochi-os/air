@@ -41,6 +41,10 @@ msgstr "KABEL 1"
 msgid "12 hours"
 msgstr "12 jam"
 
+#: src/components/MissionSetup.tsx:719
+msgid "15,000 AMSL"
+msgstr "15,000 AMSL"
+
 #: src/components/GameCanvas.tsx:50
 msgid "2 WIRE"
 msgstr "KABEL 2"
@@ -52,6 +56,10 @@ msgstr "24 jam"
 #: src/components/GameCanvas.tsx:51
 msgid "3 WIRE"
 msgstr "KABEL 3"
+
+#: src/components/MissionSetup.tsx:722
+msgid "30,000 AMSL"
+msgstr "30,000 AMSL"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:51
 msgid "Absolute (date and time)"
@@ -85,7 +93,7 @@ msgstr "Jinis akun"
 msgid "Account verified"
 msgstr "Akun diverifikasi"
 
-#: src/components/MissionSetup.tsx:880
+#: src/components/MissionSetup.tsx:968
 #: src/components/Multiplayer.tsx:275
 msgid "Ace"
 msgstr "As"
@@ -136,7 +144,7 @@ msgstr "Tambah tampilan"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Atur tampilan lan tata letak supaya cocog karo karep sampéyan."
 
-#: src/components/MissionSetup.tsx:1058
+#: src/components/MissionSetup.tsx:1146
 msgid "Afterburner"
 msgstr "Afterburner"
 
@@ -148,11 +156,11 @@ msgstr "AI"
 msgid "Aircraft"
 msgstr "Pesawat"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:794
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Kapal induk <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> déning <1>Muhamad Mirza Arrafi</1> (Sketchfab), dilisénsi miturut <2>CC BY 4.0</2>. Diowahi: diukur ulang, diarahaké manèh, dikelemké tekan garis banyu, lan digawé luwih prasaja kanggo web."
 
-#: src/components/MissionSetup.tsx:682
+#: src/components/MissionSetup.tsx:770
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Model pesawat <0>“F/A-18C Hornet”</0> déning <1>CreadorDeMu</1> (Sketchfab), dilisénsi miturut <2>CC BY 4.0</2>. Diowahi: diarahaké manèh lan diskala manèh, data tèkstur sing ora dienggo dibusak, muatan gantung njaba dipisah dadi file dhéwé, siji mesh shroud dicerminaké."
 
@@ -171,6 +179,10 @@ msgstr "Ana kaluputan"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "Ana kaluputan sing ora dikarepake"
+
+#: src/components/MissionSetup.tsx:693
+msgid "Approach, on-speed (Vapp)"
+msgstr "Nyedhak, pas kacepetan (Vapp)"
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
@@ -215,9 +227,25 @@ msgstr "Bali"
 msgid "Back to home"
 msgstr "Mulih menyang ngarep"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:959
 msgid "Bandit"
 msgstr "Pesawat mungsuh"
+
+#: src/components/MissionSetup.tsx:684
+msgid "Best climb (Vy, 100% thrust)"
+msgstr "Munggah paling apik (Vy, 100% dhorongan)"
+
+#: src/components/MissionSetup.tsx:685
+msgid "Best climb (Vy, afterburner)"
+msgstr "Munggah paling apik (Vy, afterburner)"
+
+#: src/components/MissionSetup.tsx:687
+msgid "Best glide (engines out)"
+msgstr "Nglayang paling apik (mesin mati)"
+
+#: src/components/MissionSetup.tsx:689
+msgid "Best sustained turn speed"
+msgstr "Kacepetan belok ajeg paling apik"
 
 #: src/components/GameCanvas.tsx:32
 msgid "BINGO FUEL"
@@ -274,11 +302,11 @@ msgstr "Batal"
 msgid "Canopy"
 msgstr "Kanopi"
 
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:997
 msgid "Carrier landing"
 msgstr "Mendharat ing kapal induk"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:1003
 msgid "Catapult"
 msgstr "Katapel"
 
@@ -368,7 +396,7 @@ msgstr "Tutup panggolékan"
 msgid "closer"
 msgstr "luwih cedhak"
 
-#: src/components/MissionSetup.tsx:946
+#: src/components/MissionSetup.tsx:1034
 msgid "Clouds"
 msgstr "Mega"
 
@@ -429,6 +457,10 @@ msgstr "Terusake nganggo {label}"
 msgid "Copy"
 msgstr "Salin"
 
+#: src/components/MissionSetup.tsx:688
+msgid "Corner speed (best instant turn)"
+msgstr "Kacepetan pojok (belok sanalika paling apik)"
+
 #: src/components/Multiplayer.tsx:143
 msgid "Could not create the match"
 msgstr "Ora bisa nggawe pertandhingan"
@@ -461,12 +493,12 @@ msgstr "Gawe lan mabur"
 msgid "Create match"
 msgstr "Gawe pertandhingan"
 
-#: src/components/MissionSetup.tsx:671
-#: src/components/MissionSetup.tsx:677
+#: src/components/MissionSetup.tsx:759
+#: src/components/MissionSetup.tsx:765
 msgid "Credits"
 msgstr "Kredit"
 
-#: src/components/MissionSetup.tsx:953
+#: src/components/MissionSetup.tsx:1041
 #: src/components/Multiplayer.tsx:233
 msgid "Cumulus"
 msgstr "Cumulus"
@@ -501,7 +533,7 @@ msgstr "Mode peteng"
 msgid "Data conflict"
 msgstr "Konflik data"
 
-#: src/components/MissionSetup.tsx:941
+#: src/components/MissionSetup.tsx:1029
 #: src/components/Multiplayer.tsx:228
 msgid "Day"
 msgstr "Rina"
@@ -571,7 +603,7 @@ msgstr "Singkiraké"
 msgid "Displays the mobile sidebar."
 msgstr "Nampilaké sidebar mobile."
 
-#: src/components/MissionSetup.tsx:1046
+#: src/components/MissionSetup.tsx:1134
 msgid "Distance LOD"
 msgstr "Jarak LOD"
 
@@ -588,7 +620,7 @@ msgstr "Gagal ngundhuh"
 msgid "Drone"
 msgstr "Drone"
 
-#: src/components/MissionSetup.tsx:1040
+#: src/components/MissionSetup.tsx:1128
 msgid "Dynamic resolution"
 msgstr "Resolusi dinamis"
 
@@ -643,17 +675,21 @@ msgstr "Jèrèngaké"
 msgid "Expand sidebar"
 msgstr "Bukak sidebar"
 
-#: src/components/MissionSetup.tsx:1012
+#: src/components/MissionSetup.tsx:1100
 msgid "Exterior detail"
 msgstr "Detail njaba"
 
-#: src/components/MissionSetup.tsx:1028
+#: src/components/MissionSetup.tsx:1116
 msgid "Extra aircraft"
 msgstr "Pesawat tambahan"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:136
 msgid "Extra large"
 msgstr "Gedhe banget"
+
+#: src/components/MissionSetup.tsx:707
+msgid "F/A-18C reference"
+msgstr "Pathokan F/A-18C"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:225
 msgid "Failed to add account"
@@ -701,7 +737,7 @@ msgstr "suar"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1076
+#: src/components/MissionSetup.tsx:1164
 msgid "Flares"
 msgstr "Suar"
 
@@ -721,11 +757,11 @@ msgstr "INTI PENERBANGAN GAGAL"
 msgid "Floating"
 msgstr "Ngambang"
 
-#: src/components/MissionSetup.tsx:1082
+#: src/components/MissionSetup.tsx:1170
 msgid "Framerate"
 msgstr "Framerate"
 
-#: src/components/MissionSetup.tsx:850
+#: src/components/MissionSetup.tsx:938
 msgid "Free flight"
 msgstr "Mabur bebas"
 
@@ -746,7 +782,7 @@ msgstr "Saka"
 msgid "From theme"
 msgstr "Saka tema"
 
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:944
 #: src/components/Multiplayer.tsx:243
 msgid "Fuel"
 msgstr "Bahan bakar"
@@ -809,7 +845,7 @@ msgstr "Menyang kaca {pageNumber}"
 msgid "Go to previous page"
 msgstr "Menyang halaman sadurungé"
 
-#: src/components/MissionSetup.tsx:835
+#: src/components/MissionSetup.tsx:923
 msgid "Graphics"
 msgstr "Grafis"
 
@@ -838,11 +874,11 @@ msgstr "Singidaké"
 msgid "Hide password"
 msgstr "Singidaké sandhi"
 
-#: src/components/MissionSetup.tsx:992
+#: src/components/MissionSetup.tsx:1080
 msgid "High"
 msgstr "Dhuwur"
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:1042
 #: src/components/Multiplayer.tsx:234
 msgid "High stratus"
 msgstr "Stratus dhuwur"
@@ -870,7 +906,7 @@ msgstr "Panas"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:994
 msgid "In air"
 msgstr "Ing udara"
 
@@ -906,15 +942,15 @@ msgstr "Joust"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, kill pisanan menang"
 
-#: src/components/MissionSetup.tsx:851
+#: src/components/MissionSetup.tsx:939
 msgid "Joust against AI player"
 msgstr "Duel nglawan pemain AI"
 
-#: src/components/MissionSetup.tsx:826
+#: src/components/MissionSetup.tsx:914
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MissionSetup.tsx:829
+#: src/components/MissionSetup.tsx:917
 msgid "Keys"
 msgstr "Tombol"
 
@@ -988,7 +1024,7 @@ msgstr "Lampu"
 msgid "LIGHTS"
 msgstr "LAMPU"
 
-#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:947
 msgid "Load"
 msgstr "Jumlah"
 
@@ -1055,11 +1091,11 @@ msgstr "Ndeleng nengen"
 msgid "Look up"
 msgstr "Ndeleng mendhuwur"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1076
 msgid "Low"
 msgstr "Endhek"
 
-#: src/components/MissionSetup.tsx:955
+#: src/components/MissionSetup.tsx:1043
 #: src/components/Multiplayer.tsx:235
 msgid "Low stratus"
 msgstr "Stratus endhek"
@@ -1091,7 +1127,7 @@ msgid "Match type"
 msgstr "Jinis pertandhingan"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:990
+#: src/components/MissionSetup.tsx:1078
 msgid "Medium"
 msgstr "Sedheng"
 
@@ -1107,7 +1143,7 @@ msgstr "Menu"
 msgid "Metric"
 msgstr "Metrik"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:818
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Peta Atol Midway — gambar ngemot data <0>Copernicus Sentinel-2</0> sing wis diowahi (2026); geometri lapangan mabur (landhesan mabur, dalan taksi, apron) © kontributor <1>OpenStreetMap</1>, dilisensi miturut <2>ODbL</2>; data pesisir lan terumbu saka <3>NOAA NCCOS</3> (domain publik)."
 
@@ -1120,7 +1156,7 @@ msgstr "misil"
 msgid "Missile"
 msgstr "Misil"
 
-#: src/components/MissionSetup.tsx:1070
+#: src/components/MissionSetup.tsx:1158
 msgid "Missiles"
 msgstr "Misil"
 
@@ -1128,7 +1164,7 @@ msgstr "Misil"
 msgid "Missiles allowed"
 msgstr "Rudal diidinake"
 
-#: src/components/MissionSetup.tsx:820
+#: src/components/MissionSetup.tsx:908
 msgid "Mission"
 msgstr "Misi"
 
@@ -1140,7 +1176,7 @@ msgstr "Senin"
 msgid "Move it…"
 msgstr "Obahna…"
 
-#: src/components/MissionSetup.tsx:852
+#: src/components/MissionSetup.tsx:940
 msgid "Multiplayer"
 msgstr "Multiplayer"
 
@@ -1162,7 +1198,7 @@ msgstr "Anyar"
 msgid "Next image"
 msgstr "Gambar sabanjure"
 
-#: src/components/MissionSetup.tsx:942
+#: src/components/MissionSetup.tsx:1030
 #: src/components/Multiplayer.tsx:229
 msgid "Night"
 msgstr "Bengi"
@@ -1225,7 +1261,7 @@ msgstr "TANPA BIJI"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:354
 #: src/components/MissionSetup.tsx:408
-#: src/components/MissionSetup.tsx:952
+#: src/components/MissionSetup.tsx:1040
 msgid "None"
 msgstr "Ora ana"
 
@@ -1249,7 +1285,7 @@ msgstr "Ora disetel"
 msgid "Notifications"
 msgstr "Notifikasi"
 
-#: src/components/MissionSetup.tsx:1020
+#: src/components/MissionSetup.tsx:1108
 msgid "Ocean detail"
 msgstr "Detail segara"
 
@@ -1257,11 +1293,11 @@ msgstr "Detail segara"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:908
+#: src/components/MissionSetup.tsx:996
 msgid "On carrier"
 msgstr "Ing kapal induk"
 
-#: src/components/MissionSetup.tsx:907
+#: src/components/MissionSetup.tsx:995
 msgid "On runway"
 msgstr "Ing landhasan"
 
@@ -1351,7 +1387,7 @@ msgstr "LÈRÈN"
 msgid "pilot"
 msgstr "pilot"
 
-#: src/components/MissionSetup.tsx:878
+#: src/components/MissionSetup.tsx:966
 #: src/components/Multiplayer.tsx:273
 msgid "Pilot"
 msgstr "Pilot"
@@ -1389,7 +1425,7 @@ msgstr "Coba maneh."
 msgid "Please wait a moment and try again."
 msgstr "Mangga enteni sedhela, banjur coba maneh."
 
-#: src/components/MissionSetup.tsx:975
+#: src/components/MissionSetup.tsx:1063
 msgid "Preset"
 msgstr "Preset"
 
@@ -1467,6 +1503,10 @@ msgstr "Lagi ngarahaké menyang login."
 msgid "Reduce interest"
 msgstr "Kurangi minat"
 
+#: src/components/MissionSetup.tsx:701
+msgid "Reference"
+msgstr "Pathokan"
+
 #: src/components/Multiplayer.tsx:196
 msgid "Refresh"
 msgstr "Refresh"
@@ -1502,7 +1542,7 @@ msgstr "Cabut akses?"
 msgid "Remove interest"
 msgstr "Cabut minat"
 
-#: src/components/MissionSetup.tsx:764
+#: src/components/MissionSetup.tsx:852
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Rendering déning <0>three.js</0> (lisénsi MIT)."
 
@@ -1512,7 +1552,7 @@ msgstr "Kirim ulang email"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1212
 msgid "Reset"
 msgstr "Setel maneh"
 
@@ -1520,15 +1560,15 @@ msgstr "Setel maneh"
 msgid "Reset all settings to default values"
 msgstr "Reset kabèh setelan menyang nilai default"
 
-#: src/components/MissionSetup.tsx:1002
+#: src/components/MissionSetup.tsx:1090
 msgid "Resolution"
 msgstr "Resolusi"
 
-#: src/components/MissionSetup.tsx:1096
+#: src/components/MissionSetup.tsx:1184
 msgid "Restart"
 msgstr "Miwiti maneh"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1188
 msgid "Resume"
 msgstr "Lanjutaké"
 
@@ -1556,7 +1596,7 @@ msgstr "Roll ngiwa"
 msgid "Roll right"
 msgstr "Roll nengen"
 
-#: src/components/MissionSetup.tsx:877
+#: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:272
 msgid "Rookie"
 msgstr "Pamula"
@@ -1577,6 +1617,10 @@ msgstr "Setu"
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
 msgstr "Simpen"
+
+#: src/components/MissionSetup.tsx:716
+msgid "Sea level"
+msgstr "Lumahing segara"
 
 #: ../../../lib/web/src/components/place-picker.tsx:85
 msgid "Search for a place"
@@ -1690,7 +1734,7 @@ msgstr "Atur asal lan tujuan"
 msgid "Settings"
 msgstr "Setelan"
 
-#: src/components/MissionSetup.tsx:1052
+#: src/components/MissionSetup.tsx:1140
 msgid "Shadows"
 msgstr "Wewayangan"
 
@@ -1717,6 +1761,10 @@ msgstr "Metu"
 msgid "Signing out..."
 msgstr "Lagi metu..."
 
+#: src/components/MissionSetup.tsx:686
+msgid "Single-engine best climb (Vyse, afterburner)"
+msgstr "Munggah paling apik mesin siji (Vyse, afterburner)"
+
 #: ../../../lib/web/src/components/skip-to-main.tsx:11
 msgid "Skip to Main"
 msgstr "Liwati menyang Utama"
@@ -1727,7 +1775,7 @@ msgid "Small"
 msgstr "Cilik"
 
 #: src/components/MissionSetup.tsx:464
-#: src/components/MissionSetup.tsx:832
+#: src/components/MissionSetup.tsx:920
 msgid "Sound"
 msgstr "Swara"
 
@@ -1749,14 +1797,34 @@ msgstr "rem udara"
 msgid "Speed brake"
 msgstr "Rem Udara"
 
-#: src/components/MissionSetup.tsx:900
-#: src/components/MissionSetup.tsx:1106
+#: src/components/MissionSetup.tsx:742
+msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
+msgstr "Kacepetan ing KCAS, minangka rentang saka entheng (bahan bakar minimal, tanpa muatan) nganti abot (bobot maksimal). Data dijupuk kanthi eksperimen ing njero game. Sabarang bedane karo pesawat asli nuduhake kaluputan model mabur simulator."
+
+#: src/components/MissionSetup.tsx:691
+msgid "Stall, clean (Vs1)"
+msgstr "Stall, resik (Vs1)"
+
+#: src/components/MissionSetup.tsx:692
+msgid "Stall, landing config (Vs0)"
+msgstr "Stall, tata ndharat (Vs0)"
+
+#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1194
 msgid "Start"
 msgstr "Miwiti"
 
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Tetep nyemak yo!"
+
+#: src/components/MissionSetup.tsx:682
+msgid "Steepest climb (Vx, 100% thrust)"
+msgstr "Munggah paling curam (Vx, 100% dhorongan)"
+
+#: src/components/MissionSetup.tsx:683
+msgid "Steepest climb (Vx, afterburner)"
+msgstr "Munggah paling curam (Vx, afterburner)"
 
 #: src/components/GameCanvas.tsx:43
 msgid "STRUCTURE"
@@ -1789,7 +1857,7 @@ msgstr "Tag"
 msgid "Tags"
 msgstr "Tag"
 
-#: src/components/MissionSetup.tsx:844
+#: src/components/MissionSetup.tsx:932
 msgid "Task"
 msgstr "Tugas"
 
@@ -1838,11 +1906,15 @@ msgstr "Throttle munggah"
 msgid "Thursday"
 msgstr "Kemis"
 
+#: src/components/MissionSetup.tsx:690
+msgid "Tightest sustained turn speed"
+msgstr "Kacepetan belok ajeg paling rapet"
+
 #: src/components/GameCanvas.tsx:146
 msgid "tilt"
 msgstr "miring"
 
-#: src/components/MissionSetup.tsx:935
+#: src/components/MissionSetup.tsx:1023
 msgid "Time of day"
 msgstr "Wektu dina"
 
@@ -1885,7 +1957,7 @@ msgstr "Kakehan panjalukan"
 msgid "Top"
 msgstr "Ndhuwur"
 
-#: src/components/MissionSetup.tsx:1064
+#: src/components/MissionSetup.tsx:1152
 msgid "Tracers"
 msgstr "Tracer"
 
@@ -1920,7 +1992,7 @@ msgstr "Ketik kanggo nggolèki panganggo"
 msgid "Type to search..."
 msgstr "Ketik kanggo nggolèki..."
 
-#: src/components/MissionSetup.tsx:994
+#: src/components/MissionSetup.tsx:1082
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1979,7 +2051,11 @@ msgstr "Verifikasi"
 msgid "Verify email address"
 msgstr "Verifikasi alamat email"
 
-#: src/components/MissionSetup.tsx:879
+#: src/components/MissionSetup.tsx:732
+msgid "Vertical"
+msgstr "Jejeg"
+
+#: src/components/MissionSetup.tsx:967
 #: src/components/Multiplayer.tsx:274
 msgid "Veteran"
 msgstr "Veteran"
@@ -2025,7 +2101,7 @@ msgstr "Awaké dhéwé bakal online manèh sedhilut."
 msgid "Weapons"
 msgstr "Senjata"
 
-#: src/components/MissionSetup.tsx:823
+#: src/components/MissionSetup.tsx:911
 #: src/components/Multiplayer.tsx:225
 msgid "Weather"
 msgstr "Cuaca"

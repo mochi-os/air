@@ -41,6 +41,10 @@ msgstr "ገመድ 1"
 msgid "12 hours"
 msgstr "12 ሰዓት"
 
+#: src/components/MissionSetup.tsx:719
+msgid "15,000 AMSL"
+msgstr "15,000 AMSL"
+
 #: src/components/GameCanvas.tsx:50
 msgid "2 WIRE"
 msgstr "ገመድ 2"
@@ -52,6 +56,10 @@ msgstr "24 ሰዓት"
 #: src/components/GameCanvas.tsx:51
 msgid "3 WIRE"
 msgstr "ገመድ 3"
+
+#: src/components/MissionSetup.tsx:722
+msgid "30,000 AMSL"
+msgstr "30,000 AMSL"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:51
 msgid "Absolute (date and time)"
@@ -85,7 +93,7 @@ msgstr "የመለያ ዓይነት"
 msgid "Account verified"
 msgstr "መለያ ተረጋግጧል"
 
-#: src/components/MissionSetup.tsx:880
+#: src/components/MissionSetup.tsx:968
 #: src/components/Multiplayer.tsx:275
 msgid "Ace"
 msgstr "ጀግና"
@@ -136,7 +144,7 @@ msgstr "እይታ ጨምር"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "መልክና አቀማመጥን እንደ ምርጫዎችህ አስተካክል።"
 
-#: src/components/MissionSetup.tsx:1058
+#: src/components/MissionSetup.tsx:1146
 msgid "Afterburner"
 msgstr "አፍተርበርነር"
 
@@ -148,11 +156,11 @@ msgstr "AI"
 msgid "Aircraft"
 msgstr "አውሮፕላን"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:794
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "አውሮፕላን ተሸካሚ መርከብ <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> በ<1>Muhamad Mirza Arrafi</1> (Sketchfab)፣ በ<2>CC BY 4.0</2> ፍቃድ ስር። ተስተካክሏል፦ መጠኑ ተቀይሯል፣ አቅጣጫው ተቀይሯል፣ እስከ ውሃ መስመር ድረስ ተጠምቋል፣ ለድር ቀለል ተደርጓል።"
 
-#: src/components/MissionSetup.tsx:682
+#: src/components/MissionSetup.tsx:770
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "የአውሮፕላን ሞዴል <0>“F/A-18C Hornet”</0> በ<1>CreadorDeMu</1> (Sketchfab)፣ በ<2>CC BY 4.0</2> ፈቃድ ስር። ተስተካክሏል፦ አቅጣጫው ተቀይሯል እና መጠኑ ተስተካክሏል፣ ጥቅም ላይ ያልዋለ የቴክስቸር ውሂብ ተወግዷል፣ የውጭ ጭነቶች ወደ ተለየ ፋይል ተነጥለዋል፣ አንድ የሽፋን ሜሽ በመስታወት ተገልብጧል።"
 
@@ -171,6 +179,10 @@ msgstr "ስህተት ተከስቷል"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "ያልተጠበቀ ስህተት ተከስቷል"
+
+#: src/components/MissionSetup.tsx:693
+msgid "Approach, on-speed (Vapp)"
+msgstr "አቀራረብ፣ ትክክለኛ ፍጥነት ላይ (Vapp)"
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
@@ -215,9 +227,25 @@ msgstr "ተመለስ"
 msgid "Back to home"
 msgstr "ወደ መነሻ ተመለስ"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:959
 msgid "Bandit"
 msgstr "ጠላት"
+
+#: src/components/MissionSetup.tsx:684
+msgid "Best climb (Vy, 100% thrust)"
+msgstr "የተሻለ መውጣት (Vy፣ 100% ግፊት)"
+
+#: src/components/MissionSetup.tsx:685
+msgid "Best climb (Vy, afterburner)"
+msgstr "የተሻለ መውጣት (Vy፣ አፍተርበርነር)"
+
+#: src/components/MissionSetup.tsx:687
+msgid "Best glide (engines out)"
+msgstr "የተሻለ ማንሸራተት (ሞተሮች ጠፍተው)"
+
+#: src/components/MissionSetup.tsx:689
+msgid "Best sustained turn speed"
+msgstr "የተሻለ ቀጣይ የመታጠፍ ፍጥነት"
 
 #: src/components/GameCanvas.tsx:32
 msgid "BINGO FUEL"
@@ -274,11 +302,11 @@ msgstr "ይቅር"
 msgid "Canopy"
 msgstr "ካኖፒ"
 
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:997
 msgid "Carrier landing"
 msgstr "በአውሮፕላን ተሸካሚ ላይ ማረፍ"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:1003
 msgid "Catapult"
 msgstr "ካታፑልት"
 
@@ -368,7 +396,7 @@ msgstr "ፍለጋን ዝጋ"
 msgid "closer"
 msgstr "ቅርብ"
 
-#: src/components/MissionSetup.tsx:946
+#: src/components/MissionSetup.tsx:1034
 msgid "Clouds"
 msgstr "ደመናዎች"
 
@@ -429,6 +457,10 @@ msgstr "በ{label} ይቀጥሉ"
 msgid "Copy"
 msgstr "ቅዳ"
 
+#: src/components/MissionSetup.tsx:688
+msgid "Corner speed (best instant turn)"
+msgstr "የማዕዘን ፍጥነት (የተሻለ ፈጣን መታጠፍ)"
+
 #: src/components/Multiplayer.tsx:143
 msgid "Could not create the match"
 msgstr "ግጥሚያውን መፍጠር አልተቻለም"
@@ -461,12 +493,12 @@ msgstr "ፍጠር እና ብረር"
 msgid "Create match"
 msgstr "ግጥሚያ ፍጠር"
 
-#: src/components/MissionSetup.tsx:671
-#: src/components/MissionSetup.tsx:677
+#: src/components/MissionSetup.tsx:759
+#: src/components/MissionSetup.tsx:765
 msgid "Credits"
 msgstr "ምስጋናዎች"
 
-#: src/components/MissionSetup.tsx:953
+#: src/components/MissionSetup.tsx:1041
 #: src/components/Multiplayer.tsx:233
 msgid "Cumulus"
 msgstr "ኩሙለስ"
@@ -501,7 +533,7 @@ msgstr "ጨለማ ሁነታ"
 msgid "Data conflict"
 msgstr "የውሂብ ግጭት"
 
-#: src/components/MissionSetup.tsx:941
+#: src/components/MissionSetup.tsx:1029
 #: src/components/Multiplayer.tsx:228
 msgid "Day"
 msgstr "ቀን"
@@ -571,7 +603,7 @@ msgstr "አጥፋ"
 msgid "Displays the mobile sidebar."
 msgstr "የሞባይል ጎንደርን ያሳያል።"
 
-#: src/components/MissionSetup.tsx:1046
+#: src/components/MissionSetup.tsx:1134
 msgid "Distance LOD"
 msgstr "የርቀት LOD"
 
@@ -588,7 +620,7 @@ msgstr "ማውረድ አልተሳካም"
 msgid "Drone"
 msgstr "ድሮን"
 
-#: src/components/MissionSetup.tsx:1040
+#: src/components/MissionSetup.tsx:1128
 msgid "Dynamic resolution"
 msgstr "ተለዋዋጭ ሬዞሉሽን"
 
@@ -643,17 +675,21 @@ msgstr "ዘርጋ"
 msgid "Expand sidebar"
 msgstr "ጎንደርን ዘርጋ"
 
-#: src/components/MissionSetup.tsx:1012
+#: src/components/MissionSetup.tsx:1100
 msgid "Exterior detail"
 msgstr "የውጭ ዝርዝር"
 
-#: src/components/MissionSetup.tsx:1028
+#: src/components/MissionSetup.tsx:1116
 msgid "Extra aircraft"
 msgstr "ተጨማሪ አውሮፕላኖች"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:136
 msgid "Extra large"
 msgstr "በጣም ትልቅ"
+
+#: src/components/MissionSetup.tsx:707
+msgid "F/A-18C reference"
+msgstr "የF/A-18C ማጣቀሻ"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:225
 msgid "Failed to add account"
@@ -701,7 +737,7 @@ msgstr "ችቦዎች"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1076
+#: src/components/MissionSetup.tsx:1164
 msgid "Flares"
 msgstr "ፍሌሮች"
 
@@ -721,11 +757,11 @@ msgstr "የበረራ ኮር አልተሳካም"
 msgid "Floating"
 msgstr "ተንሳፋፊ"
 
-#: src/components/MissionSetup.tsx:1082
+#: src/components/MissionSetup.tsx:1170
 msgid "Framerate"
 msgstr "የፍሬም ፍጥነት"
 
-#: src/components/MissionSetup.tsx:850
+#: src/components/MissionSetup.tsx:938
 msgid "Free flight"
 msgstr "ነፃ በረራ"
 
@@ -746,7 +782,7 @@ msgstr "ከ"
 msgid "From theme"
 msgstr "ከገጽታ"
 
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:944
 #: src/components/Multiplayer.tsx:243
 msgid "Fuel"
 msgstr "ነዳጅ"
@@ -809,7 +845,7 @@ msgstr "ወደ ገጽ {pageNumber} ሂድ"
 msgid "Go to previous page"
 msgstr "ወደ ቀዳሚ ገጽ ሂድ"
 
-#: src/components/MissionSetup.tsx:835
+#: src/components/MissionSetup.tsx:923
 msgid "Graphics"
 msgstr "ግራፊክስ"
 
@@ -838,11 +874,11 @@ msgstr "ደብቅ"
 msgid "Hide password"
 msgstr "የይለፍ ቃል ደብቅ"
 
-#: src/components/MissionSetup.tsx:992
+#: src/components/MissionSetup.tsx:1080
 msgid "High"
 msgstr "ከፍተኛ"
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:1042
 #: src/components/Multiplayer.tsx:234
 msgid "High stratus"
 msgstr "ከፍተኛ ስትራተስ"
@@ -870,7 +906,7 @@ msgstr "ሞቅ ያለ"
 msgid "Imperial"
 msgstr "ኢምፔሪያል"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:994
 msgid "In air"
 msgstr "በአየር ላይ"
 
@@ -906,15 +942,15 @@ msgstr "ፍልሚያ"
 msgid "Joust — 1v1, first kill wins"
 msgstr "ፍልሚያ — 1v1፣ መጀመሪያ የገደለ ያሸንፋል"
 
-#: src/components/MissionSetup.tsx:851
+#: src/components/MissionSetup.tsx:939
 msgid "Joust against AI player"
 msgstr "ከAI ተጫዋች ጋር ፍልሚያ"
 
-#: src/components/MissionSetup.tsx:826
+#: src/components/MissionSetup.tsx:914
 msgid "Joystick"
 msgstr "ጆይስቲክ"
 
-#: src/components/MissionSetup.tsx:829
+#: src/components/MissionSetup.tsx:917
 msgid "Keys"
 msgstr "ቁልፎች"
 
@@ -988,7 +1024,7 @@ msgstr "መብራቶች"
 msgid "LIGHTS"
 msgstr "መብራቶች"
 
-#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:947
 msgid "Load"
 msgstr "መጠን"
 
@@ -1055,11 +1091,11 @@ msgstr "ወደ ቀኝ ተመልከት"
 msgid "Look up"
 msgstr "ወደ ላይ ተመልከት"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1076
 msgid "Low"
 msgstr "ዝቅተኛ"
 
-#: src/components/MissionSetup.tsx:955
+#: src/components/MissionSetup.tsx:1043
 #: src/components/Multiplayer.tsx:235
 msgid "Low stratus"
 msgstr "ዝቅተኛ ስትራተስ"
@@ -1091,7 +1127,7 @@ msgid "Match type"
 msgstr "የግጥሚያ አይነት"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:990
+#: src/components/MissionSetup.tsx:1078
 msgid "Medium"
 msgstr "መካከለኛ"
 
@@ -1107,7 +1143,7 @@ msgstr "ምናሌ"
 msgid "Metric"
 msgstr "ሜትሪክ"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:818
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "የሚድዌይ አቶል ካርታ — ምስሎቹ የተስተካከሉ የ<0>Copernicus Sentinel-2</0> ውሂብ ይይዛሉ (2026)፤ የአየር ማረፊያ ጂኦሜትሪ (ማኮብኮቢያ፣ የማንሸራተቻ መንገዶች፣ የማቆሚያ ሜዳዎች) © <1>OpenStreetMap</1> አበርካቾች፣ በ<2>ODbL</2> ፈቃድ የተሰጠ፤ የባህር ዳርቻና ሪፍ ውሂብ ከ<3>NOAA NCCOS</3> (የሕዝብ ንብረት)።"
 
@@ -1120,7 +1156,7 @@ msgstr "ሚሳይል"
 msgid "Missile"
 msgstr "ሚሳይል"
 
-#: src/components/MissionSetup.tsx:1070
+#: src/components/MissionSetup.tsx:1158
 msgid "Missiles"
 msgstr "ሚሳይሎች"
 
@@ -1128,7 +1164,7 @@ msgstr "ሚሳይሎች"
 msgid "Missiles allowed"
 msgstr "ሚሳይሎች ተፈቅደዋል"
 
-#: src/components/MissionSetup.tsx:820
+#: src/components/MissionSetup.tsx:908
 msgid "Mission"
 msgstr "ተልዕኮ"
 
@@ -1140,7 +1176,7 @@ msgstr "ሰኞ"
 msgid "Move it…"
 msgstr "ዘንጉን አንቀሳቅስ…"
 
-#: src/components/MissionSetup.tsx:852
+#: src/components/MissionSetup.tsx:940
 msgid "Multiplayer"
 msgstr "ባለብዙ ተጫዋች"
 
@@ -1162,7 +1198,7 @@ msgstr "አዲስ"
 msgid "Next image"
 msgstr "ቀጣይ ምስል"
 
-#: src/components/MissionSetup.tsx:942
+#: src/components/MissionSetup.tsx:1030
 #: src/components/Multiplayer.tsx:229
 msgid "Night"
 msgstr "ሌሊት"
@@ -1225,7 +1261,7 @@ msgstr "ደረጃ የለም"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:354
 #: src/components/MissionSetup.tsx:408
-#: src/components/MissionSetup.tsx:952
+#: src/components/MissionSetup.tsx:1040
 msgid "None"
 msgstr "ምንም"
 
@@ -1249,7 +1285,7 @@ msgstr "አልተዋቀረም"
 msgid "Notifications"
 msgstr "ማሳወቂያዎች"
 
-#: src/components/MissionSetup.tsx:1020
+#: src/components/MissionSetup.tsx:1108
 msgid "Ocean detail"
 msgstr "የውቅያኖስ ዝርዝር"
 
@@ -1257,11 +1293,11 @@ msgstr "የውቅያኖስ ዝርዝር"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:908
+#: src/components/MissionSetup.tsx:996
 msgid "On carrier"
 msgstr "በተሸካሚው ላይ"
 
-#: src/components/MissionSetup.tsx:907
+#: src/components/MissionSetup.tsx:995
 msgid "On runway"
 msgstr "በማኮብኮቢያ መንገድ ላይ"
 
@@ -1351,7 +1387,7 @@ msgstr "ቆሟል"
 msgid "pilot"
 msgstr "አብራሪ"
 
-#: src/components/MissionSetup.tsx:878
+#: src/components/MissionSetup.tsx:966
 #: src/components/Multiplayer.tsx:273
 msgid "Pilot"
 msgstr "አብራሪ"
@@ -1389,7 +1425,7 @@ msgstr "እባክዎ እንደገና ይሞክሩ።"
 msgid "Please wait a moment and try again."
 msgstr "እባክዎ ትንሽ ይጠብቁና እንደገና ይሞክሩ።"
 
-#: src/components/MissionSetup.tsx:975
+#: src/components/MissionSetup.tsx:1063
 msgid "Preset"
 msgstr "ቅድመ-ቅንብር"
 
@@ -1467,6 +1503,10 @@ msgstr "ወደ መግቢያ በማዘዋወር ላይ።"
 msgid "Reduce interest"
 msgstr "ፍላጎትን ቀንስ"
 
+#: src/components/MissionSetup.tsx:701
+msgid "Reference"
+msgstr "ማጣቀሻ"
+
 #: src/components/Multiplayer.tsx:196
 msgid "Refresh"
 msgstr "አድስ"
@@ -1502,7 +1542,7 @@ msgstr "ድረሳ ይወገድ?"
 msgid "Remove interest"
 msgstr "ፍላጎት አስወግድ"
 
-#: src/components/MissionSetup.tsx:764
+#: src/components/MissionSetup.tsx:852
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "ሬንደሪንግ በ<0>three.js</0> ይከናወናል (የMIT ፈቃድ)።"
 
@@ -1512,7 +1552,7 @@ msgstr "ኢሜይል እንደገና ላክ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1212
 msgid "Reset"
 msgstr "ዳግም አስጀምር"
 
@@ -1520,15 +1560,15 @@ msgstr "ዳግም አስጀምር"
 msgid "Reset all settings to default values"
 msgstr "ሁሉንም ቅንብሮች ወደ ነባሪ እሴቶች ዳግም አስጀምር"
 
-#: src/components/MissionSetup.tsx:1002
+#: src/components/MissionSetup.tsx:1090
 msgid "Resolution"
 msgstr "ፍታት"
 
-#: src/components/MissionSetup.tsx:1096
+#: src/components/MissionSetup.tsx:1184
 msgid "Restart"
 msgstr "እንደገና ጀምር"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1188
 msgid "Resume"
 msgstr "ይቀጥሉ"
 
@@ -1556,7 +1596,7 @@ msgstr "ሮል ወደ ግራ"
 msgid "Roll right"
 msgstr "ሮል ወደ ቀኝ"
 
-#: src/components/MissionSetup.tsx:877
+#: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:272
 msgid "Rookie"
 msgstr "ጀማሪ"
@@ -1577,6 +1617,10 @@ msgstr "ቅዳሜ"
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
 msgstr "ያስቀምጡ"
+
+#: src/components/MissionSetup.tsx:716
+msgid "Sea level"
+msgstr "የባሕር ጠለል"
 
 #: ../../../lib/web/src/components/place-picker.tsx:85
 msgid "Search for a place"
@@ -1690,7 +1734,7 @@ msgstr "መነሻ እና መድረሻ ያዘጋጁ"
 msgid "Settings"
 msgstr "ቅንብሮች"
 
-#: src/components/MissionSetup.tsx:1052
+#: src/components/MissionSetup.tsx:1140
 msgid "Shadows"
 msgstr "ጥላዎች"
 
@@ -1717,6 +1761,10 @@ msgstr "ውጣ"
 msgid "Signing out..."
 msgstr "በመውጣት ላይ..."
 
+#: src/components/MissionSetup.tsx:686
+msgid "Single-engine best climb (Vyse, afterburner)"
+msgstr "በአንድ ሞተር የተሻለ መውጣት (Vyse፣ አፍተርበርነር)"
+
 #: ../../../lib/web/src/components/skip-to-main.tsx:11
 msgid "Skip to Main"
 msgstr "ወደ ዋናው ይዝለሉ"
@@ -1727,7 +1775,7 @@ msgid "Small"
 msgstr "ትንሽ"
 
 #: src/components/MissionSetup.tsx:464
-#: src/components/MissionSetup.tsx:832
+#: src/components/MissionSetup.tsx:920
 msgid "Sound"
 msgstr "ድምፅ"
 
@@ -1749,14 +1797,34 @@ msgstr "የአየር ብሬክ"
 msgid "Speed brake"
 msgstr "የአየር ብሬክ"
 
-#: src/components/MissionSetup.tsx:900
-#: src/components/MissionSetup.tsx:1106
+#: src/components/MissionSetup.tsx:742
+msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
+msgstr "ፍጥነቶች በ KCAS፣ ከቀላል (ዝቅተኛ ነዳጅ፣ ያለ ውጫዊ ጭነት) እስከ ከባድ (ከፍተኛ አጠቃላይ ክብደት) ባለው ክልል። መረጃው በጨዋታ ውስጥ በሙከራ የተገኘ ነው። ከእውነተኛው አውሮፕላን የሚለዩ ማናቸውም ልዩነቶች የሲሙሌተሩን የበረራ ሞዴል ስህተቶች ያንጸባርቃሉ።"
+
+#: src/components/MissionSetup.tsx:691
+msgid "Stall, clean (Vs1)"
+msgstr "ስቶል፣ ንጹህ (Vs1)"
+
+#: src/components/MissionSetup.tsx:692
+msgid "Stall, landing config (Vs0)"
+msgstr "ስቶል፣ የማረፊያ አቀማመጥ (Vs0)"
+
+#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1194
 msgid "Start"
 msgstr "ጀምር"
 
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "ግን ይከታተሉ!"
+
+#: src/components/MissionSetup.tsx:682
+msgid "Steepest climb (Vx, 100% thrust)"
+msgstr "እጅግ ዳገታማ መውጣት (Vx፣ 100% ግፊት)"
+
+#: src/components/MissionSetup.tsx:683
+msgid "Steepest climb (Vx, afterburner)"
+msgstr "እጅግ ዳገታማ መውጣት (Vx፣ አፍተርበርነር)"
 
 #: src/components/GameCanvas.tsx:43
 msgid "STRUCTURE"
@@ -1789,7 +1857,7 @@ msgstr "መለያ"
 msgid "Tags"
 msgstr "መለያዎች"
 
-#: src/components/MissionSetup.tsx:844
+#: src/components/MissionSetup.tsx:932
 msgid "Task"
 msgstr "ተግባር"
 
@@ -1838,11 +1906,15 @@ msgstr "ስሮትል ጨምር"
 msgid "Thursday"
 msgstr "ሐሙስ"
 
+#: src/components/MissionSetup.tsx:690
+msgid "Tightest sustained turn speed"
+msgstr "እጅግ ጠባብ ቀጣይ የመታጠፍ ፍጥነት"
+
 #: src/components/GameCanvas.tsx:146
 msgid "tilt"
 msgstr "ማዘንበል"
 
-#: src/components/MissionSetup.tsx:935
+#: src/components/MissionSetup.tsx:1023
 msgid "Time of day"
 msgstr "የቀኑ ሰዓት"
 
@@ -1885,7 +1957,7 @@ msgstr "በጣም ብዙ ጥያቄዎች"
 msgid "Top"
 msgstr "ላይ"
 
-#: src/components/MissionSetup.tsx:1064
+#: src/components/MissionSetup.tsx:1152
 msgid "Tracers"
 msgstr "የመከታተያ ጥይቶች"
 
@@ -1920,7 +1992,7 @@ msgstr "ተጠቃሚዎችን ለመፈለግ ይተይቡ"
 msgid "Type to search..."
 msgstr "ለመፈለግ ይተይቡ..."
 
-#: src/components/MissionSetup.tsx:994
+#: src/components/MissionSetup.tsx:1082
 msgid "Ultra"
 msgstr "ኡልትራ"
 
@@ -1979,7 +2051,11 @@ msgstr "ያረጋግጡ"
 msgid "Verify email address"
 msgstr "የኢሜይል አድራሻ ያረጋግጡ"
 
-#: src/components/MissionSetup.tsx:879
+#: src/components/MissionSetup.tsx:732
+msgid "Vertical"
+msgstr "ቀጥ ያለ"
+
+#: src/components/MissionSetup.tsx:967
 #: src/components/Multiplayer.tsx:274
 msgid "Veteran"
 msgstr "አንጋፋ"
@@ -2025,7 +2101,7 @@ msgstr "በቅርቡ ወደ መስመር እንመለሳለን።"
 msgid "Weapons"
 msgstr "የጦር መሣሪያዎች"
 
-#: src/components/MissionSetup.tsx:823
+#: src/components/MissionSetup.tsx:911
 #: src/components/Multiplayer.tsx:225
 msgid "Weather"
 msgstr "የአየር ሁኔታ"
