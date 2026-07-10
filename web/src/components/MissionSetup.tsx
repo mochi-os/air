@@ -692,7 +692,7 @@ function ReferenceDialog() {
           Reference
         </Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-xl'>
+      <DialogContent className='sm:max-w-2xl'>
         <DialogHeader>
           <DialogTitle>F/A-18C reference</DialogTitle>
         </DialogHeader>
@@ -709,7 +709,7 @@ function ReferenceDialog() {
             <tbody>
               {REFERENCE_ROWS.map((row) => (
                 <tr key={row.label} className='border-b border-dashed last:border-0'>
-                  <td className='py-1.5 pr-3'>{row.label}</td>
+                  <td className='py-1.5 pr-3 whitespace-nowrap'>{row.label}</td>
                   {row.cells.map((cell, i) => (
                     <td key={i} className='text-muted-foreground px-3 py-1.5 text-right tabular-nums whitespace-nowrap'>
                       {cell}
