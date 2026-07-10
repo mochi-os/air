@@ -41,6 +41,10 @@ msgstr "তার 1"
 msgid "12 hours"
 msgstr "১২ ঘণ্টা"
 
+#: src/components/MissionSetup.tsx:719
+msgid "15,000 AMSL"
+msgstr "15,000 AMSL"
+
 #: src/components/GameCanvas.tsx:50
 msgid "2 WIRE"
 msgstr "তার 2"
@@ -52,6 +56,10 @@ msgstr "২৪ ঘণ্টা"
 #: src/components/GameCanvas.tsx:51
 msgid "3 WIRE"
 msgstr "তার 3"
+
+#: src/components/MissionSetup.tsx:722
+msgid "30,000 AMSL"
+msgstr "30,000 AMSL"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:51
 msgid "Absolute (date and time)"
@@ -85,7 +93,7 @@ msgstr "অ্যাকাউন্টের ধরন"
 msgid "Account verified"
 msgstr "অ্যাকাউন্ট যাচাই করা হয়েছে"
 
-#: src/components/MissionSetup.tsx:880
+#: src/components/MissionSetup.tsx:968
 #: src/components/Multiplayer.tsx:275
 msgid "Ace"
 msgstr "টেক্কা"
@@ -136,7 +144,7 @@ msgstr "ভিউ যোগ করুন"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "আপনার পছন্দ অনুযায়ী চেহারা এবং লেআউট সমন্বয় করুন।"
 
-#: src/components/MissionSetup.tsx:1058
+#: src/components/MissionSetup.tsx:1146
 msgid "Afterburner"
 msgstr "আফটারবার্নার"
 
@@ -148,11 +156,11 @@ msgstr "এআই"
 msgid "Aircraft"
 msgstr "বিমান"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:794
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "বিমানবাহী রণতরী <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> <1>Muhamad Mirza Arrafi</1> দ্বারা (Sketchfab), <2>CC BY 4.0</2> এর অধীনে লাইসেন্সপ্রাপ্ত। পরিবর্তিত: পুনরায় মাপ করা হয়েছে, অভিমুখ পরিবর্তন করা হয়েছে, জলরেখা পর্যন্ত ডোবানো হয়েছে, এবং ওয়েবের জন্য সরলীকৃত করা হয়েছে।"
 
-#: src/components/MissionSetup.tsx:682
+#: src/components/MissionSetup.tsx:770
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "বিমানের মডেল <0>“F/A-18C Hornet”</0> <1>CreadorDeMu</1> দ্বারা (Sketchfab), <2>CC BY 4.0</2> এর অধীনে লাইসেন্সপ্রাপ্ত। পরিবর্তিত: অভিমুখ পরিবর্তন ও পুনরায় মাপ করা হয়েছে, অব্যবহৃত টেক্সচার ডেটা সরানো হয়েছে, বাহ্যিক ভারগুলি আলাদা ফাইলে পৃথক করা হয়েছে, একটি শ্রাউড মেশ আয়নার মতো উল্টে নেওয়া হয়েছে।"
 
@@ -171,6 +179,10 @@ msgstr "একটি ত্রুটি ঘটেছে"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে"
+
+#: src/components/MissionSetup.tsx:693
+msgid "Approach, on-speed (Vapp)"
+msgstr "অভিগমন, নির্দিষ্ট গতিতে (Vapp)"
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
@@ -215,9 +227,25 @@ msgstr "ফিরে যান"
 msgid "Back to home"
 msgstr "হোমে ফিরে যান"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:959
 msgid "Bandit"
 msgstr "শত্রু বিমান"
+
+#: src/components/MissionSetup.tsx:684
+msgid "Best climb (Vy, 100% thrust)"
+msgstr "সেরা আরোহণ (Vy, 100% থ্রাস্ট)"
+
+#: src/components/MissionSetup.tsx:685
+msgid "Best climb (Vy, afterburner)"
+msgstr "সেরা আরোহণ (Vy, আফটারবার্নার)"
+
+#: src/components/MissionSetup.tsx:687
+msgid "Best glide (engines out)"
+msgstr "সেরা গ্লাইড (ইঞ্জিন বন্ধ)"
+
+#: src/components/MissionSetup.tsx:689
+msgid "Best sustained turn speed"
+msgstr "সেরা টেকসই বাঁকের গতি"
 
 #: src/components/GameCanvas.tsx:32
 msgid "BINGO FUEL"
@@ -274,11 +302,11 @@ msgstr "বাতিল করুন"
 msgid "Canopy"
 msgstr "ক্যানোপি"
 
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:997
 msgid "Carrier landing"
 msgstr "বিমানবাহী জাহাজে অবতরণ"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:1003
 msgid "Catapult"
 msgstr "ক্যাটাপল্ট"
 
@@ -368,7 +396,7 @@ msgstr "অনুসন্ধান বন্ধ করুন"
 msgid "closer"
 msgstr "আরও কাছে"
 
-#: src/components/MissionSetup.tsx:946
+#: src/components/MissionSetup.tsx:1034
 msgid "Clouds"
 msgstr "মেঘ"
 
@@ -429,6 +457,10 @@ msgstr "{label} দিয়ে চালিয়ে যান"
 msgid "Copy"
 msgstr "কপি করুন"
 
+#: src/components/MissionSetup.tsx:688
+msgid "Corner speed (best instant turn)"
+msgstr "কর্নার গতি (সেরা তাৎক্ষণিক বাঁক)"
+
 #: src/components/Multiplayer.tsx:143
 msgid "Could not create the match"
 msgstr "ম্যাচ তৈরি করা যায়নি"
@@ -461,12 +493,12 @@ msgstr "তৈরি করে উড়ুন"
 msgid "Create match"
 msgstr "ম্যাচ তৈরি করুন"
 
-#: src/components/MissionSetup.tsx:671
-#: src/components/MissionSetup.tsx:677
+#: src/components/MissionSetup.tsx:759
+#: src/components/MissionSetup.tsx:765
 msgid "Credits"
 msgstr "কৃতিত্ব"
 
-#: src/components/MissionSetup.tsx:953
+#: src/components/MissionSetup.tsx:1041
 #: src/components/Multiplayer.tsx:233
 msgid "Cumulus"
 msgstr "কিউমুলাস"
@@ -501,7 +533,7 @@ msgstr "ডার্ক মোড"
 msgid "Data conflict"
 msgstr "ডেটা দ্বন্দ্ব"
 
-#: src/components/MissionSetup.tsx:941
+#: src/components/MissionSetup.tsx:1029
 #: src/components/Multiplayer.tsx:228
 msgid "Day"
 msgstr "দিন"
@@ -571,7 +603,7 @@ msgstr "বাতিল করুন"
 msgid "Displays the mobile sidebar."
 msgstr "মোবাইল সাইডবার প্রদর্শন করে।"
 
-#: src/components/MissionSetup.tsx:1046
+#: src/components/MissionSetup.tsx:1134
 msgid "Distance LOD"
 msgstr "দূরত্ব LOD"
 
@@ -588,7 +620,7 @@ msgstr "ডাউনলোড ব্যর্থ হয়েছে"
 msgid "Drone"
 msgstr "ড্রোন"
 
-#: src/components/MissionSetup.tsx:1040
+#: src/components/MissionSetup.tsx:1128
 msgid "Dynamic resolution"
 msgstr "ডায়নামিক রেজোলিউশন"
 
@@ -643,17 +675,21 @@ msgstr "প্রসারিত করুন"
 msgid "Expand sidebar"
 msgstr "সাইডবার প্রসারিত করুন"
 
-#: src/components/MissionSetup.tsx:1012
+#: src/components/MissionSetup.tsx:1100
 msgid "Exterior detail"
 msgstr "বাহ্যিক বিবরণ"
 
-#: src/components/MissionSetup.tsx:1028
+#: src/components/MissionSetup.tsx:1116
 msgid "Extra aircraft"
 msgstr "অতিরিক্ত বিমান"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:136
 msgid "Extra large"
 msgstr "অতিরিক্ত বড়"
+
+#: src/components/MissionSetup.tsx:707
+msgid "F/A-18C reference"
+msgstr "F/A-18C তথ্যসূত্র"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:225
 msgid "Failed to add account"
@@ -701,7 +737,7 @@ msgstr "ফ্লেয়ার"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1076
+#: src/components/MissionSetup.tsx:1164
 msgid "Flares"
 msgstr "ফ্লেয়ার"
 
@@ -721,11 +757,11 @@ msgstr "ফ্লাইট কোর ব্যর্থ"
 msgid "Floating"
 msgstr "ফ্লোটিং"
 
-#: src/components/MissionSetup.tsx:1082
+#: src/components/MissionSetup.tsx:1170
 msgid "Framerate"
 msgstr "ফ্রেমরেট"
 
-#: src/components/MissionSetup.tsx:850
+#: src/components/MissionSetup.tsx:938
 msgid "Free flight"
 msgstr "মুক্ত উড়ান"
 
@@ -746,7 +782,7 @@ msgstr "থেকে"
 msgid "From theme"
 msgstr "থিম থেকে"
 
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:944
 #: src/components/Multiplayer.tsx:243
 msgid "Fuel"
 msgstr "জ্বালানি"
@@ -809,7 +845,7 @@ msgstr "{pageNumber} নম্বর পৃষ্ঠায় যান"
 msgid "Go to previous page"
 msgstr "পূর্ববর্তী পেজে যান"
 
-#: src/components/MissionSetup.tsx:835
+#: src/components/MissionSetup.tsx:923
 msgid "Graphics"
 msgstr "গ্রাফিক্স"
 
@@ -838,11 +874,11 @@ msgstr "লুকান"
 msgid "Hide password"
 msgstr "পাসওয়ার্ড লুকান"
 
-#: src/components/MissionSetup.tsx:992
+#: src/components/MissionSetup.tsx:1080
 msgid "High"
 msgstr "উচ্চ"
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:1042
 #: src/components/Multiplayer.tsx:234
 msgid "High stratus"
 msgstr "উচ্চ স্ট্র্যাটাস"
@@ -870,7 +906,7 @@ msgstr "জনপ্রিয়"
 msgid "Imperial"
 msgstr "ইম্পেরিয়াল"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:994
 msgid "In air"
 msgstr "আকাশে"
 
@@ -906,15 +942,15 @@ msgstr "জাউস্ট"
 msgid "Joust — 1v1, first kill wins"
 msgstr "দ্বৈরথ — 1v1, প্রথম কিলেই জয়"
 
-#: src/components/MissionSetup.tsx:851
+#: src/components/MissionSetup.tsx:939
 msgid "Joust against AI player"
 msgstr "AI খেলোয়াড়ের বিরুদ্ধে দ্বৈরথ"
 
-#: src/components/MissionSetup.tsx:826
+#: src/components/MissionSetup.tsx:914
 msgid "Joystick"
 msgstr "জয়স্টিক"
 
-#: src/components/MissionSetup.tsx:829
+#: src/components/MissionSetup.tsx:917
 msgid "Keys"
 msgstr "কী"
 
@@ -988,7 +1024,7 @@ msgstr "বাতি"
 msgid "LIGHTS"
 msgstr "লাইট"
 
-#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:947
 msgid "Load"
 msgstr "পরিমাণ"
 
@@ -1055,11 +1091,11 @@ msgstr "ডানে তাকান"
 msgid "Look up"
 msgstr "উপরে তাকান"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1076
 msgid "Low"
 msgstr "নিম্ন"
 
-#: src/components/MissionSetup.tsx:955
+#: src/components/MissionSetup.tsx:1043
 #: src/components/Multiplayer.tsx:235
 msgid "Low stratus"
 msgstr "নিম্ন স্ট্র্যাটাস"
@@ -1091,7 +1127,7 @@ msgid "Match type"
 msgstr "ম্যাচের ধরন"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:990
+#: src/components/MissionSetup.tsx:1078
 msgid "Medium"
 msgstr "মাঝারি"
 
@@ -1107,7 +1143,7 @@ msgstr "মেনু"
 msgid "Metric"
 msgstr "মেট্রিক"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:818
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "মিডওয়ে অ্যাটল মানচিত্র — চিত্রে পরিবর্তিত <0>Copernicus Sentinel-2</0> ডেটা রয়েছে (2026); বিমানঘাঁটির জ্যামিতি (রানওয়ে, ট্যাক্সিওয়ে, অ্যাপ্রন) © <1>OpenStreetMap</1> অবদানকারীগণ, <2>ODbL</2>-এর অধীনে লাইসেন্সপ্রাপ্ত; উপকূলরেখা ও প্রবালপ্রাচীরের ডেটা <3>NOAA NCCOS</3> থেকে (পাবলিক ডোমেইন)।"
 
@@ -1120,7 +1156,7 @@ msgstr "ক্ষেপণাস্ত্র"
 msgid "Missile"
 msgstr "মিসাইল"
 
-#: src/components/MissionSetup.tsx:1070
+#: src/components/MissionSetup.tsx:1158
 msgid "Missiles"
 msgstr "মিসাইল"
 
@@ -1128,7 +1164,7 @@ msgstr "মিসাইল"
 msgid "Missiles allowed"
 msgstr "মিসাইল অনুমোদিত"
 
-#: src/components/MissionSetup.tsx:820
+#: src/components/MissionSetup.tsx:908
 msgid "Mission"
 msgstr "মিশন"
 
@@ -1140,7 +1176,7 @@ msgstr "সোমবার"
 msgid "Move it…"
 msgstr "অক্ষটি নাড়ান…"
 
-#: src/components/MissionSetup.tsx:852
+#: src/components/MissionSetup.tsx:940
 msgid "Multiplayer"
 msgstr "মাল্টিপ্লেয়ার"
 
@@ -1162,7 +1198,7 @@ msgstr "নতুন"
 msgid "Next image"
 msgstr "পরবর্তী ছবি"
 
-#: src/components/MissionSetup.tsx:942
+#: src/components/MissionSetup.tsx:1030
 #: src/components/Multiplayer.tsx:229
 msgid "Night"
 msgstr "রাত"
@@ -1225,7 +1261,7 @@ msgstr "কোনো গ্রেড নেই"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:354
 #: src/components/MissionSetup.tsx:408
-#: src/components/MissionSetup.tsx:952
+#: src/components/MissionSetup.tsx:1040
 msgid "None"
 msgstr "কোনোটি নয়"
 
@@ -1249,7 +1285,7 @@ msgstr "সেট করা নেই"
 msgid "Notifications"
 msgstr "বিজ্ঞপ্তি"
 
-#: src/components/MissionSetup.tsx:1020
+#: src/components/MissionSetup.tsx:1108
 msgid "Ocean detail"
 msgstr "সমুদ্রের বিবরণ"
 
@@ -1257,11 +1293,11 @@ msgstr "সমুদ্রের বিবরণ"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:908
+#: src/components/MissionSetup.tsx:996
 msgid "On carrier"
 msgstr "রণতরীতে"
 
-#: src/components/MissionSetup.tsx:907
+#: src/components/MissionSetup.tsx:995
 msgid "On runway"
 msgstr "রানওয়েতে"
 
@@ -1351,7 +1387,7 @@ msgstr "বিরতি"
 msgid "pilot"
 msgstr "পাইলট"
 
-#: src/components/MissionSetup.tsx:878
+#: src/components/MissionSetup.tsx:966
 #: src/components/Multiplayer.tsx:273
 msgid "Pilot"
 msgstr "পাইলট"
@@ -1389,7 +1425,7 @@ msgstr "অনুগ্রহ করে আবার চেষ্টা কর�
 msgid "Please wait a moment and try again."
 msgstr "অনুগ্রহ করে কিছুক্ষণ অপেক্ষা করে আবার চেষ্টা করুন।"
 
-#: src/components/MissionSetup.tsx:975
+#: src/components/MissionSetup.tsx:1063
 msgid "Preset"
 msgstr "প্রিসেট"
 
@@ -1467,6 +1503,10 @@ msgstr "লগইনে রিডাইরেক্ট করা হচ্ছে
 msgid "Reduce interest"
 msgstr "আগ্রহ কমান"
 
+#: src/components/MissionSetup.tsx:701
+msgid "Reference"
+msgstr "তথ্যসূত্র"
+
 #: src/components/Multiplayer.tsx:196
 msgid "Refresh"
 msgstr "রিফ্রেশ"
@@ -1502,7 +1542,7 @@ msgstr "অ্যাক্সেস সরাবেন?"
 msgid "Remove interest"
 msgstr "আগ্রহ সরান"
 
-#: src/components/MissionSetup.tsx:764
+#: src/components/MissionSetup.tsx:852
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "রেন্ডারিং <0>three.js</0> দ্বারা (MIT লাইসেন্স)।"
 
@@ -1512,7 +1552,7 @@ msgstr "ইমেল আবার পাঠান"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1212
 msgid "Reset"
 msgstr "রিসেট"
 
@@ -1520,15 +1560,15 @@ msgstr "রিসেট"
 msgid "Reset all settings to default values"
 msgstr "সমস্ত সেটিংস ডিফল্ট মানে রিসেট করুন"
 
-#: src/components/MissionSetup.tsx:1002
+#: src/components/MissionSetup.tsx:1090
 msgid "Resolution"
 msgstr "রেজোলিউশন"
 
-#: src/components/MissionSetup.tsx:1096
+#: src/components/MissionSetup.tsx:1184
 msgid "Restart"
 msgstr "পুনরায় শুরু"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1188
 msgid "Resume"
 msgstr "পুনরায় শুরু করুন"
 
@@ -1556,7 +1596,7 @@ msgstr "রোল বামে"
 msgid "Roll right"
 msgstr "রোল ডানে"
 
-#: src/components/MissionSetup.tsx:877
+#: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:272
 msgid "Rookie"
 msgstr "নবিশ"
@@ -1577,6 +1617,10 @@ msgstr "শনিবার"
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
 msgstr "সংরক্ষণ করুন"
+
+#: src/components/MissionSetup.tsx:716
+msgid "Sea level"
+msgstr "সমুদ্রপৃষ্ঠ"
 
 #: ../../../lib/web/src/components/place-picker.tsx:85
 msgid "Search for a place"
@@ -1690,7 +1734,7 @@ msgstr "উৎস ও গন্তব্য সেট করুন"
 msgid "Settings"
 msgstr "সেটিংস"
 
-#: src/components/MissionSetup.tsx:1052
+#: src/components/MissionSetup.tsx:1140
 msgid "Shadows"
 msgstr "ছায়া"
 
@@ -1717,6 +1761,10 @@ msgstr "সাইন আউট"
 msgid "Signing out..."
 msgstr "সাইন আউট করা হচ্ছে..."
 
+#: src/components/MissionSetup.tsx:686
+msgid "Single-engine best climb (Vyse, afterburner)"
+msgstr "একক-ইঞ্জিনে সেরা আরোহণ (Vyse, আফটারবার্নার)"
+
 #: ../../../lib/web/src/components/skip-to-main.tsx:11
 msgid "Skip to Main"
 msgstr "মূল অংশে এড়িয়ে যান"
@@ -1727,7 +1775,7 @@ msgid "Small"
 msgstr "ছোট"
 
 #: src/components/MissionSetup.tsx:464
-#: src/components/MissionSetup.tsx:832
+#: src/components/MissionSetup.tsx:920
 msgid "Sound"
 msgstr "শব্দ"
 
@@ -1749,14 +1797,34 @@ msgstr "বায়ু ব্রেক"
 msgid "Speed brake"
 msgstr "বায়ু ব্রেক"
 
-#: src/components/MissionSetup.tsx:900
-#: src/components/MissionSetup.tsx:1106
+#: src/components/MissionSetup.tsx:742
+msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
+msgstr "KCAS-এ গতি, হালকা (সর্বনিম্ন জ্বালানি, কোনো বাহ্যিক বোঝা নেই) থেকে ভারী (সর্বোচ্চ মোট ওজন) পর্যন্ত একটি পরিসর হিসেবে। তথ্য খেলার মধ্যে পরীক্ষামূলকভাবে সংগৃহীত। প্রকৃত বিমানের সঙ্গে যেকোনো পার্থক্য সিমুলেটরের উড়ান মডেলের ত্রুটি প্রতিফলিত করে।"
+
+#: src/components/MissionSetup.tsx:691
+msgid "Stall, clean (Vs1)"
+msgstr "স্টল, পরিচ্ছন্ন (Vs1)"
+
+#: src/components/MissionSetup.tsx:692
+msgid "Stall, landing config (Vs0)"
+msgstr "স্টল, অবতরণ বিন্যাস (Vs0)"
+
+#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1194
 msgid "Start"
 msgstr "শুরু"
 
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "তবে সাথে থাকুন!"
+
+#: src/components/MissionSetup.tsx:682
+msgid "Steepest climb (Vx, 100% thrust)"
+msgstr "খাড়াতম আরোহণ (Vx, 100% থ্রাস্ট)"
+
+#: src/components/MissionSetup.tsx:683
+msgid "Steepest climb (Vx, afterburner)"
+msgstr "খাড়াতম আরোহণ (Vx, আফটারবার্নার)"
 
 #: src/components/GameCanvas.tsx:43
 msgid "STRUCTURE"
@@ -1789,7 +1857,7 @@ msgstr "ট্যাগ"
 msgid "Tags"
 msgstr "ট্যাগ"
 
-#: src/components/MissionSetup.tsx:844
+#: src/components/MissionSetup.tsx:932
 msgid "Task"
 msgstr "কাজ"
 
@@ -1838,11 +1906,15 @@ msgstr "থ্রটল বাড়ান"
 msgid "Thursday"
 msgstr "বৃহস্পতিবার"
 
+#: src/components/MissionSetup.tsx:690
+msgid "Tightest sustained turn speed"
+msgstr "সংকীর্ণতম টেকসই বাঁকের গতি"
+
 #: src/components/GameCanvas.tsx:146
 msgid "tilt"
 msgstr "কাত"
 
-#: src/components/MissionSetup.tsx:935
+#: src/components/MissionSetup.tsx:1023
 msgid "Time of day"
 msgstr "দিনের সময়"
 
@@ -1885,7 +1957,7 @@ msgstr "অনেক বেশি অনুরোধ"
 msgid "Top"
 msgstr "উপরে"
 
-#: src/components/MissionSetup.tsx:1064
+#: src/components/MissionSetup.tsx:1152
 msgid "Tracers"
 msgstr "ট্রেসার"
 
@@ -1920,7 +1992,7 @@ msgstr "ব্যবহারকারী অনুসন্ধান করত�
 msgid "Type to search..."
 msgstr "অনুসন্ধান করতে টাইপ করুন..."
 
-#: src/components/MissionSetup.tsx:994
+#: src/components/MissionSetup.tsx:1082
 msgid "Ultra"
 msgstr "আল্ট্রা"
 
@@ -1979,7 +2051,11 @@ msgstr "যাচাই করুন"
 msgid "Verify email address"
 msgstr "ইমেল ঠিকানা যাচাই করুন"
 
-#: src/components/MissionSetup.tsx:879
+#: src/components/MissionSetup.tsx:732
+msgid "Vertical"
+msgstr "উল্লম্ব"
+
+#: src/components/MissionSetup.tsx:967
 #: src/components/Multiplayer.tsx:274
 msgid "Veteran"
 msgstr "অভিজ্ঞ"
@@ -2025,7 +2101,7 @@ msgstr "আমরা শীঘ্রই আবার অনলাইনে ফ�
 msgid "Weapons"
 msgstr "অস্ত্র"
 
-#: src/components/MissionSetup.tsx:823
+#: src/components/MissionSetup.tsx:911
 #: src/components/Multiplayer.tsx:225
 msgid "Weather"
 msgstr "আবহাওয়া"

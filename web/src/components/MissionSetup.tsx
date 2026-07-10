@@ -671,25 +671,26 @@ function ControlRow({ action, keys }: { action: ReactNode; keys: ReactNode }) {
 // HUD shows. If #133 (real HUD) gives Cas() true pitot compressibility,
 // re-run the harness and re-base these cells on real KCAS.
 // Ranges span light (11.2 t, minimum fuel) to heavy (15.6 t, full internal).
-// Translations deliberately deferred at the user's instruction (2026-07-10):
-// plain strings for now — wrap with Lingui and fill locales before release.
 // Rows in sortie order: climb, engine-out, dash, combat, landing. Rotation
 // (Vr) is deliberately absent: nosewheel liftoff depends on weight, CG, and
 // technique (NATOPS gives no single speed), so a one-number row would
-// mislead.
-const REFERENCE_ROWS: { label: string; cells: [string, string, string] }[] = [
-  { label: 'Steepest climb (Vx, 100% thrust)', cells: ['167-385', '314-374', '300-307'] },
-  { label: 'Steepest climb (Vx, afterburner)', cells: ['Vertical', '273-305', '263-317'] },
-  { label: 'Best climb (Vy, 100% thrust)', cells: ['510-546', '392-438', '318-320'] },
-  { label: 'Best climb (Vy, afterburner)', cells: ['532-610', '448-449', '326-328'] },
-  { label: 'Single-engine best climb (Vyse, afterburner)', cells: ['398-457', '214-352', '158-199'] },
-  { label: 'Best glide (engines out)', cells: ['245-291', '247-290', '247-295'] },
-  { label: 'Corner speed (best instant turn)', cells: ['321-376', '332-379', '305-315'] },
-  { label: 'Best sustained turn speed', cells: ['353-468', '379-420', '307-310'] },
-  { label: 'Tightest sustained turn speed', cells: ['167-203', '166-225', '186-198'] },
-  { label: 'Stall, clean (Vs1)', cells: ['159-185', '158-185', '158-186'] },
-  { label: 'Stall, landing config (Vs0)', cells: ['111-128', '110-128', '—'] },
-  { label: 'Approach, on-speed (Vapp)', cells: ['126-148', '125-147', '—'] },
+// mislead. The V-speed designations (Vx, Vy, Vs1, Vs0, Vapp, Vyse) are
+// international aviation abbreviations and stay verbatim in every locale; the
+// descriptive phrase around each is translated. id is the stable React key
+// (the label is now a translated node, not a plain string).
+const REFERENCE_ROWS: { id: string; label: ReactNode; cells: [string, string, string] }[] = [
+  { id: 'vx-mil', label: <Trans>Steepest climb (Vx, 100% thrust)</Trans>, cells: ['167-385', '314-374', '300-307'] },
+  { id: 'vx-ab', label: <Trans>Steepest climb (Vx, afterburner)</Trans>, cells: ['Vertical', '273-305', '263-317'] },
+  { id: 'vy-mil', label: <Trans>Best climb (Vy, 100% thrust)</Trans>, cells: ['510-546', '392-438', '318-320'] },
+  { id: 'vy-ab', label: <Trans>Best climb (Vy, afterburner)</Trans>, cells: ['532-610', '448-449', '326-328'] },
+  { id: 'vyse', label: <Trans>Single-engine best climb (Vyse, afterburner)</Trans>, cells: ['398-457', '214-352', '158-199'] },
+  { id: 'glide', label: <Trans>Best glide (engines out)</Trans>, cells: ['245-291', '247-290', '247-295'] },
+  { id: 'corner', label: <Trans>Corner speed (best instant turn)</Trans>, cells: ['321-376', '332-379', '305-315'] },
+  { id: 'sustained', label: <Trans>Best sustained turn speed</Trans>, cells: ['353-468', '379-420', '307-310'] },
+  { id: 'tightest', label: <Trans>Tightest sustained turn speed</Trans>, cells: ['167-203', '166-225', '186-198'] },
+  { id: 'vs1', label: <Trans>Stall, clean (Vs1)</Trans>, cells: ['159-185', '158-185', '158-186'] },
+  { id: 'vs0', label: <Trans>Stall, landing config (Vs0)</Trans>, cells: ['111-128', '110-128', '—'] },
+  { id: 'vapp', label: <Trans>Approach, on-speed (Vapp)</Trans>, cells: ['126-148', '125-147', '—'] },
 ]
 
 function ReferenceDialog() {
@@ -697,30 +698,38 @@ function ReferenceDialog() {
     <Dialog>
       <DialogTrigger asChild>
         <Button type='button' variant='link' size='sm' className='text-muted-foreground'>
-          Reference
+          <Trans>Reference</Trans>
         </Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-2xl'>
         <DialogHeader>
-          <DialogTitle>F/A-18C reference</DialogTitle>
+          <DialogTitle>
+            <Trans>F/A-18C reference</Trans>
+          </DialogTitle>
         </DialogHeader>
         <div className='overflow-x-auto'>
           <table className='w-full text-sm'>
             <thead>
               <tr className='text-muted-foreground border-b text-left'>
                 <th className='py-1.5 pr-3 font-medium'></th>
-                <th className='px-3 py-1.5 text-right font-medium'>Sea level</th>
-                <th className='px-3 py-1.5 text-right font-medium'>15,000 AMSL</th>
-                <th className='px-3 py-1.5 text-right font-medium'>30,000 AMSL</th>
+                <th className='px-3 py-1.5 text-right font-medium'>
+                  <Trans>Sea level</Trans>
+                </th>
+                <th className='px-3 py-1.5 text-right font-medium'>
+                  <Trans>15,000 AMSL</Trans>
+                </th>
+                <th className='px-3 py-1.5 text-right font-medium'>
+                  <Trans>30,000 AMSL</Trans>
+                </th>
               </tr>
             </thead>
             <tbody>
               {REFERENCE_ROWS.map((row) => (
-                <tr key={row.label} className='border-b border-dashed last:border-0'>
+                <tr key={row.id} className='border-b border-dashed last:border-0'>
                   <td className='py-1.5 pr-3 whitespace-nowrap'>{row.label}</td>
                   {row.cells.map((cell, i) => (
                     <td key={i} className='text-muted-foreground px-3 py-1.5 text-right tabular-nums whitespace-nowrap'>
-                      {cell}
+                      {cell === 'Vertical' ? <Trans>Vertical</Trans> : cell}
                     </td>
                   ))}
                 </tr>
@@ -730,9 +739,11 @@ function ReferenceDialog() {
         </div>
         <div className='text-muted-foreground space-y-1 text-xs leading-relaxed'>
           <p>
-            Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum
-            gross). Data derived experimentally in-game. Any differences from the real aircraft
-            reflect simulator flight model errors.
+            <Trans>
+              Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum
+              gross). Data derived experimentally in-game. Any differences from the real aircraft
+              reflect simulator flight model errors.
+            </Trans>
           </p>
         </div>
       </DialogContent>

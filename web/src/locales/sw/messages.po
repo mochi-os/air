@@ -41,6 +41,10 @@ msgstr "WAYA 1"
 msgid "12 hours"
 msgstr "Masaa 12"
 
+#: src/components/MissionSetup.tsx:719
+msgid "15,000 AMSL"
+msgstr "15,000 AMSL"
+
 #: src/components/GameCanvas.tsx:50
 msgid "2 WIRE"
 msgstr "WAYA 2"
@@ -52,6 +56,10 @@ msgstr "Masaa 24"
 #: src/components/GameCanvas.tsx:51
 msgid "3 WIRE"
 msgstr "WAYA 3"
+
+#: src/components/MissionSetup.tsx:722
+msgid "30,000 AMSL"
+msgstr "30,000 AMSL"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:51
 msgid "Absolute (date and time)"
@@ -85,7 +93,7 @@ msgstr "Aina ya akaunti"
 msgid "Account verified"
 msgstr "Akaunti imethibitishwa"
 
-#: src/components/MissionSetup.tsx:880
+#: src/components/MissionSetup.tsx:968
 #: src/components/Multiplayer.tsx:275
 msgid "Ace"
 msgstr "Bingwa"
@@ -136,7 +144,7 @@ msgstr "Ongeza mwonekano"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Rekebisha muonekano na mpangilio kulingana na mapendeleo yako."
 
-#: src/components/MissionSetup.tsx:1058
+#: src/components/MissionSetup.tsx:1146
 msgid "Afterburner"
 msgstr "Afterburner"
 
@@ -148,11 +156,11 @@ msgstr "AI"
 msgid "Aircraft"
 msgstr "Ndege"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:794
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Meli ya kubebea ndege <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> na <1>Muhamad Mirza Arrafi</1> (Sketchfab), iliyopewa leseni chini ya <2>CC BY 4.0</2>. Imebadilishwa: imepimwa upya, imeelekezwa upya, imezamishwa hadi mstari wa maji, na kurahisishwa kwa ajili ya wavuti."
 
-#: src/components/MissionSetup.tsx:682
+#: src/components/MissionSetup.tsx:770
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Modeli ya ndege <0>“F/A-18C Hornet”</0> na <1>CreadorDeMu</1> (Sketchfab), imepewa leseni chini ya <2>CC BY 4.0</2>. Imebadilishwa: imeelekezwa upya na kupimwa upya, data ya tekstura isiyotumika imeondolewa, mizigo ya nje imetenganishwa katika faili tofauti, wavu mmoja wa kifuniko umeakisiwa kama kioo."
 
@@ -171,6 +179,10 @@ msgstr "Hitilafu imetokea"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "Hitilafu isiyotarajiwa imetokea"
+
+#: src/components/MissionSetup.tsx:693
+msgid "Approach, on-speed (Vapp)"
+msgstr "Ukaribiaji, kwa mwendo sahihi (Vapp)"
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
@@ -215,9 +227,25 @@ msgstr "Rudi"
 msgid "Back to home"
 msgstr "Rudi mwanzo"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:959
 msgid "Bandit"
 msgstr "Ndege ya adui"
+
+#: src/components/MissionSetup.tsx:684
+msgid "Best climb (Vy, 100% thrust)"
+msgstr "Kupanda bora (Vy, 100% msukumo)"
+
+#: src/components/MissionSetup.tsx:685
+msgid "Best climb (Vy, afterburner)"
+msgstr "Kupanda bora (Vy, mchomeo wa nyongeza)"
+
+#: src/components/MissionSetup.tsx:687
+msgid "Best glide (engines out)"
+msgstr "Kuteleza bora (injini zimezimwa)"
+
+#: src/components/MissionSetup.tsx:689
+msgid "Best sustained turn speed"
+msgstr "Mwendo bora wa mzunguko endelevu"
 
 #: src/components/GameCanvas.tsx:32
 msgid "BINGO FUEL"
@@ -274,11 +302,11 @@ msgstr "Ghairi"
 msgid "Canopy"
 msgstr "Kanopi"
 
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:997
 msgid "Carrier landing"
 msgstr "Kutua kwenye meli ya kubeba ndege"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:1003
 msgid "Catapult"
 msgstr "Katapulti"
 
@@ -368,7 +396,7 @@ msgstr "Funga utafutaji"
 msgid "closer"
 msgstr "karibu zaidi"
 
-#: src/components/MissionSetup.tsx:946
+#: src/components/MissionSetup.tsx:1034
 msgid "Clouds"
 msgstr "Mawingu"
 
@@ -429,6 +457,10 @@ msgstr "Endelea na {label}"
 msgid "Copy"
 msgstr "Nakili"
 
+#: src/components/MissionSetup.tsx:688
+msgid "Corner speed (best instant turn)"
+msgstr "Mwendo wa kona (mzunguko bora wa papo hapo)"
+
 #: src/components/Multiplayer.tsx:143
 msgid "Could not create the match"
 msgstr "Imeshindikana kuunda mechi"
@@ -461,12 +493,12 @@ msgstr "Unda na uruke"
 msgid "Create match"
 msgstr "Unda mechi"
 
-#: src/components/MissionSetup.tsx:671
-#: src/components/MissionSetup.tsx:677
+#: src/components/MissionSetup.tsx:759
+#: src/components/MissionSetup.tsx:765
 msgid "Credits"
 msgstr "Shukrani"
 
-#: src/components/MissionSetup.tsx:953
+#: src/components/MissionSetup.tsx:1041
 #: src/components/Multiplayer.tsx:233
 msgid "Cumulus"
 msgstr "Cumulus"
@@ -501,7 +533,7 @@ msgstr "Hali ya giza"
 msgid "Data conflict"
 msgstr "Mgongano wa data"
 
-#: src/components/MissionSetup.tsx:941
+#: src/components/MissionSetup.tsx:1029
 #: src/components/Multiplayer.tsx:228
 msgid "Day"
 msgstr "Mchana"
@@ -571,7 +603,7 @@ msgstr "Ondoa"
 msgid "Displays the mobile sidebar."
 msgstr "Huonyesha utepe wa simu."
 
-#: src/components/MissionSetup.tsx:1046
+#: src/components/MissionSetup.tsx:1134
 msgid "Distance LOD"
 msgstr "LOD ya umbali"
 
@@ -588,7 +620,7 @@ msgstr "Upakuaji umeshindwa"
 msgid "Drone"
 msgstr "Droni"
 
-#: src/components/MissionSetup.tsx:1040
+#: src/components/MissionSetup.tsx:1128
 msgid "Dynamic resolution"
 msgstr "Azimio linalobadilika"
 
@@ -643,17 +675,21 @@ msgstr "Panua"
 msgid "Expand sidebar"
 msgstr "Panua utepe"
 
-#: src/components/MissionSetup.tsx:1012
+#: src/components/MissionSetup.tsx:1100
 msgid "Exterior detail"
 msgstr "Maelezo ya nje"
 
-#: src/components/MissionSetup.tsx:1028
+#: src/components/MissionSetup.tsx:1116
 msgid "Extra aircraft"
 msgstr "Ndege za ziada"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:136
 msgid "Extra large"
 msgstr "Kubwa zaidi"
+
+#: src/components/MissionSetup.tsx:707
+msgid "F/A-18C reference"
+msgstr "Rejea ya F/A-18C"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:225
 msgid "Failed to add account"
@@ -701,7 +737,7 @@ msgstr "miali"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1076
+#: src/components/MissionSetup.tsx:1164
 msgid "Flares"
 msgstr "Flares"
 
@@ -721,11 +757,11 @@ msgstr "KIINI CHA NDEGE KIMESHINDWA"
 msgid "Floating"
 msgstr "Inayoelea"
 
-#: src/components/MissionSetup.tsx:1082
+#: src/components/MissionSetup.tsx:1170
 msgid "Framerate"
 msgstr "Kasi ya fremu"
 
-#: src/components/MissionSetup.tsx:850
+#: src/components/MissionSetup.tsx:938
 msgid "Free flight"
 msgstr "Kuruka huru"
 
@@ -746,7 +782,7 @@ msgstr "Kutoka"
 msgid "From theme"
 msgstr "Kutoka mandhari"
 
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:944
 #: src/components/Multiplayer.tsx:243
 msgid "Fuel"
 msgstr "Mafuta"
@@ -809,7 +845,7 @@ msgstr "Nenda ukurasa {pageNumber}"
 msgid "Go to previous page"
 msgstr "Nenda kwenye ukurasa uliopita"
 
-#: src/components/MissionSetup.tsx:835
+#: src/components/MissionSetup.tsx:923
 msgid "Graphics"
 msgstr "Grafiki"
 
@@ -838,11 +874,11 @@ msgstr "Ficha"
 msgid "Hide password"
 msgstr "Ficha nenosiri"
 
-#: src/components/MissionSetup.tsx:992
+#: src/components/MissionSetup.tsx:1080
 msgid "High"
 msgstr "Juu"
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:1042
 #: src/components/Multiplayer.tsx:234
 msgid "High stratus"
 msgstr "Stratus ya juu"
@@ -870,7 +906,7 @@ msgstr "Moto"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:994
 msgid "In air"
 msgstr "Angani"
 
@@ -906,15 +942,15 @@ msgstr "Joust"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Pambano — 1v1, anayeangusha kwanza ndiye mshindi"
 
-#: src/components/MissionSetup.tsx:851
+#: src/components/MissionSetup.tsx:939
 msgid "Joust against AI player"
 msgstr "Pambano dhidi ya mchezaji wa AI"
 
-#: src/components/MissionSetup.tsx:826
+#: src/components/MissionSetup.tsx:914
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MissionSetup.tsx:829
+#: src/components/MissionSetup.tsx:917
 msgid "Keys"
 msgstr "Vitufe"
 
@@ -988,7 +1024,7 @@ msgstr "Taa"
 msgid "LIGHTS"
 msgstr "TAA"
 
-#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:947
 msgid "Load"
 msgstr "Kiasi"
 
@@ -1055,11 +1091,11 @@ msgstr "Tazama kulia"
 msgid "Look up"
 msgstr "Tazama juu"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1076
 msgid "Low"
 msgstr "Chini"
 
-#: src/components/MissionSetup.tsx:955
+#: src/components/MissionSetup.tsx:1043
 #: src/components/Multiplayer.tsx:235
 msgid "Low stratus"
 msgstr "Stratus ya chini"
@@ -1091,7 +1127,7 @@ msgid "Match type"
 msgstr "Aina ya mechi"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:990
+#: src/components/MissionSetup.tsx:1078
 msgid "Medium"
 msgstr "Wastani"
 
@@ -1107,7 +1143,7 @@ msgstr "Menyu"
 msgid "Metric"
 msgstr "Metriki"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:818
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Ramani ya Atolo ya Midway — picha zina data zilizorekebishwa za <0>Copernicus Sentinel-2</0> (2026); jiometri ya kiwanja cha ndege (njia ya kurukia, njia za kutembeza ndege, maegesho) © wachangiaji wa <1>OpenStreetMap</1>, iliyopewa leseni chini ya <2>ODbL</2>; data ya ukanda wa pwani na miamba ya matumbawe kutoka <3>NOAA NCCOS</3> (mali ya umma)."
 
@@ -1120,7 +1156,7 @@ msgstr "kombora"
 msgid "Missile"
 msgstr "Kombora"
 
-#: src/components/MissionSetup.tsx:1070
+#: src/components/MissionSetup.tsx:1158
 msgid "Missiles"
 msgstr "Makombora"
 
@@ -1128,7 +1164,7 @@ msgstr "Makombora"
 msgid "Missiles allowed"
 msgstr "Makombora yanaruhusiwa"
 
-#: src/components/MissionSetup.tsx:820
+#: src/components/MissionSetup.tsx:908
 msgid "Mission"
 msgstr "Misheni"
 
@@ -1140,7 +1176,7 @@ msgstr "Jumatatu"
 msgid "Move it…"
 msgstr "Isogeze…"
 
-#: src/components/MissionSetup.tsx:852
+#: src/components/MissionSetup.tsx:940
 msgid "Multiplayer"
 msgstr "Wachezaji wengi"
 
@@ -1162,7 +1198,7 @@ msgstr "Mpya"
 msgid "Next image"
 msgstr "Picha inayofuata"
 
-#: src/components/MissionSetup.tsx:942
+#: src/components/MissionSetup.tsx:1030
 #: src/components/Multiplayer.tsx:229
 msgid "Night"
 msgstr "Usiku"
@@ -1225,7 +1261,7 @@ msgstr "BILA DARAJA"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:354
 #: src/components/MissionSetup.tsx:408
-#: src/components/MissionSetup.tsx:952
+#: src/components/MissionSetup.tsx:1040
 msgid "None"
 msgstr "Hakuna"
 
@@ -1249,7 +1285,7 @@ msgstr "Haijawekwa"
 msgid "Notifications"
 msgstr "Arifa"
 
-#: src/components/MissionSetup.tsx:1020
+#: src/components/MissionSetup.tsx:1108
 msgid "Ocean detail"
 msgstr "Maelezo ya bahari"
 
@@ -1257,11 +1293,11 @@ msgstr "Maelezo ya bahari"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:908
+#: src/components/MissionSetup.tsx:996
 msgid "On carrier"
 msgstr "Kwenye meli"
 
-#: src/components/MissionSetup.tsx:907
+#: src/components/MissionSetup.tsx:995
 msgid "On runway"
 msgstr "Kwenye njia ya kurukia"
 
@@ -1351,7 +1387,7 @@ msgstr "IMESITISHWA"
 msgid "pilot"
 msgstr "rubani"
 
-#: src/components/MissionSetup.tsx:878
+#: src/components/MissionSetup.tsx:966
 #: src/components/Multiplayer.tsx:273
 msgid "Pilot"
 msgstr "Rubani"
@@ -1389,7 +1425,7 @@ msgstr "Tafadhali jaribu tena."
 msgid "Please wait a moment and try again."
 msgstr "Tafadhali subiri kidogo kisha ujaribu tena."
 
-#: src/components/MissionSetup.tsx:975
+#: src/components/MissionSetup.tsx:1063
 msgid "Preset"
 msgstr "Iliyowekwa awali"
 
@@ -1467,6 +1503,10 @@ msgstr "Inaelekeza kwenye kuingia."
 msgid "Reduce interest"
 msgstr "Punguza shauku"
 
+#: src/components/MissionSetup.tsx:701
+msgid "Reference"
+msgstr "Rejea"
+
 #: src/components/Multiplayer.tsx:196
 msgid "Refresh"
 msgstr "Onyesha upya"
@@ -1502,7 +1542,7 @@ msgstr "Ondoa ufikiaji?"
 msgid "Remove interest"
 msgstr "Ondoa shauku"
 
-#: src/components/MissionSetup.tsx:764
+#: src/components/MissionSetup.tsx:852
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Uchoraji unafanywa na <0>three.js</0> (leseni ya MIT)."
 
@@ -1512,7 +1552,7 @@ msgstr "Tuma barua pepe tena"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1212
 msgid "Reset"
 msgstr "Weka upya"
 
@@ -1520,15 +1560,15 @@ msgstr "Weka upya"
 msgid "Reset all settings to default values"
 msgstr "Weka upya mipangilio yote kwa thamani chaguo-msingi"
 
-#: src/components/MissionSetup.tsx:1002
+#: src/components/MissionSetup.tsx:1090
 msgid "Resolution"
 msgstr "Utatuzi"
 
-#: src/components/MissionSetup.tsx:1096
+#: src/components/MissionSetup.tsx:1184
 msgid "Restart"
 msgstr "Anzisha upya"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1188
 msgid "Resume"
 msgstr "Endelea"
 
@@ -1556,7 +1596,7 @@ msgstr "Roll kushoto"
 msgid "Roll right"
 msgstr "Roll kulia"
 
-#: src/components/MissionSetup.tsx:877
+#: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:272
 msgid "Rookie"
 msgstr "Chipukizi"
@@ -1577,6 +1617,10 @@ msgstr "Jumamosi"
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
 msgstr "Hifadhi"
+
+#: src/components/MissionSetup.tsx:716
+msgid "Sea level"
+msgstr "Usawa wa bahari"
 
 #: ../../../lib/web/src/components/place-picker.tsx:85
 msgid "Search for a place"
@@ -1690,7 +1734,7 @@ msgstr "Weka chanzo na marudio"
 msgid "Settings"
 msgstr "Mipangilio"
 
-#: src/components/MissionSetup.tsx:1052
+#: src/components/MissionSetup.tsx:1140
 msgid "Shadows"
 msgstr "Vivuli"
 
@@ -1717,6 +1761,10 @@ msgstr "Toka"
 msgid "Signing out..."
 msgstr "Inaondoka..."
 
+#: src/components/MissionSetup.tsx:686
+msgid "Single-engine best climb (Vyse, afterburner)"
+msgstr "Kupanda bora kwa injini moja (Vyse, mchomeo wa nyongeza)"
+
 #: ../../../lib/web/src/components/skip-to-main.tsx:11
 msgid "Skip to Main"
 msgstr "Ruka kwa Kuu"
@@ -1727,7 +1775,7 @@ msgid "Small"
 msgstr "Ndogo"
 
 #: src/components/MissionSetup.tsx:464
-#: src/components/MissionSetup.tsx:832
+#: src/components/MissionSetup.tsx:920
 msgid "Sound"
 msgstr "Sauti"
 
@@ -1749,14 +1797,34 @@ msgstr "breki ya hewa"
 msgid "Speed brake"
 msgstr "Breki ya hewa"
 
-#: src/components/MissionSetup.tsx:900
-#: src/components/MissionSetup.tsx:1106
+#: src/components/MissionSetup.tsx:742
+msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
+msgstr "Mwendo katika KCAS, kama masafa kutoka kwepesi (mafuta ya chini kabisa, bila mizigo) hadi kizito (uzito wa juu kabisa). Data ilipatikana kwa majaribio ndani ya mchezo. Tofauti zozote na ndege halisi zinaonyesha makosa ya modeli ya urukaji ya kiigizaji."
+
+#: src/components/MissionSetup.tsx:691
+msgid "Stall, clean (Vs1)"
+msgstr "Kukwama, safi (Vs1)"
+
+#: src/components/MissionSetup.tsx:692
+msgid "Stall, landing config (Vs0)"
+msgstr "Kukwama, mpangilio wa kutua (Vs0)"
+
+#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1194
 msgid "Start"
 msgstr "Anza"
 
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Endelea kufuatilia!"
+
+#: src/components/MissionSetup.tsx:682
+msgid "Steepest climb (Vx, 100% thrust)"
+msgstr "Kupanda kwa mteremko mkali zaidi (Vx, 100% msukumo)"
+
+#: src/components/MissionSetup.tsx:683
+msgid "Steepest climb (Vx, afterburner)"
+msgstr "Kupanda kwa mteremko mkali zaidi (Vx, mchomeo wa nyongeza)"
 
 #: src/components/GameCanvas.tsx:43
 msgid "STRUCTURE"
@@ -1789,7 +1857,7 @@ msgstr "Lebo"
 msgid "Tags"
 msgstr "Lebo"
 
-#: src/components/MissionSetup.tsx:844
+#: src/components/MissionSetup.tsx:932
 msgid "Task"
 msgstr "Kazi"
 
@@ -1838,11 +1906,15 @@ msgstr "Ongeza throttle"
 msgid "Thursday"
 msgstr "Alhamisi"
 
+#: src/components/MissionSetup.tsx:690
+msgid "Tightest sustained turn speed"
+msgstr "Mwendo wa mzunguko endelevu mkazo zaidi"
+
 #: src/components/GameCanvas.tsx:146
 msgid "tilt"
 msgstr "inamisha"
 
-#: src/components/MissionSetup.tsx:935
+#: src/components/MissionSetup.tsx:1023
 msgid "Time of day"
 msgstr "Wakati wa siku"
 
@@ -1885,7 +1957,7 @@ msgstr "Maombi mengi mno"
 msgid "Top"
 msgstr "Juu"
 
-#: src/components/MissionSetup.tsx:1064
+#: src/components/MissionSetup.tsx:1152
 msgid "Tracers"
 msgstr "Risasi za mwanga"
 
@@ -1920,7 +1992,7 @@ msgstr "Andika kutafuta watumiaji"
 msgid "Type to search..."
 msgstr "Andika kutafuta..."
 
-#: src/components/MissionSetup.tsx:994
+#: src/components/MissionSetup.tsx:1082
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1979,7 +2051,11 @@ msgstr "Thibitisha"
 msgid "Verify email address"
 msgstr "Thibitisha anwani ya barua pepe"
 
-#: src/components/MissionSetup.tsx:879
+#: src/components/MissionSetup.tsx:732
+msgid "Vertical"
+msgstr "Wima"
+
+#: src/components/MissionSetup.tsx:967
 #: src/components/Multiplayer.tsx:274
 msgid "Veteran"
 msgstr "Mkongwe"
@@ -2025,7 +2101,7 @@ msgstr "Tutarudi mtandaoni hivi karibuni."
 msgid "Weapons"
 msgstr "Silaha"
 
-#: src/components/MissionSetup.tsx:823
+#: src/components/MissionSetup.tsx:911
 #: src/components/Multiplayer.tsx:225
 msgid "Weather"
 msgstr "Hali ya hewa"

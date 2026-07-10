@@ -41,6 +41,10 @@ msgstr "CÀBLA 1"
 msgid "12 hours"
 msgstr "12 uair"
 
+#: src/components/MissionSetup.tsx:719
+msgid "15,000 AMSL"
+msgstr "15,000 AMSL"
+
 #: src/components/GameCanvas.tsx:50
 msgid "2 WIRE"
 msgstr "CÀBLA 2"
@@ -52,6 +56,10 @@ msgstr "24 uair"
 #: src/components/GameCanvas.tsx:51
 msgid "3 WIRE"
 msgstr "CÀBLA 3"
+
+#: src/components/MissionSetup.tsx:722
+msgid "30,000 AMSL"
+msgstr "30,000 AMSL"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:51
 msgid "Absolute (date and time)"
@@ -85,7 +93,7 @@ msgstr "Seòrsa cunntais"
 msgid "Account verified"
 msgstr "Cunntas dearbhte"
 
-#: src/components/MissionSetup.tsx:880
+#: src/components/MissionSetup.tsx:968
 #: src/components/Multiplayer.tsx:275
 msgid "Ace"
 msgstr "Gaisgeach"
@@ -136,7 +144,7 @@ msgstr "Cuir sealladh ris"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Atharraich an coltas agus an coimhead a rèir do roghainnean."
 
-#: src/components/MissionSetup.tsx:1058
+#: src/components/MissionSetup.tsx:1146
 msgid "Afterburner"
 msgstr "Iar-loisgear"
 
@@ -148,11 +156,11 @@ msgstr "AI"
 msgid "Aircraft"
 msgstr "Itealan"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:794
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Giùlanair-adhair <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> le <1>Muhamad Mirza Arrafi</1> (Sketchfab), fo cheadachas <2>CC BY 4.0</2>. Air atharrachadh: air ath-sgèileadh, air ath-chomharrachadh, air a bhàthadh gu loidhne an uisge, agus air a shimpleachadh airson an lìn."
 
-#: src/components/MissionSetup.tsx:682
+#: src/components/MissionSetup.tsx:770
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Modail itealain <0>“F/A-18C Hornet”</0> le <1>CreadorDeMu</1> (Sketchfab), ceadaichte fo <2>CC BY 4.0</2>. Air atharrachadh: air ath-chomharrachadh agus air ath-sgèileadh, dàta inneach gun chleachdadh air a thoirt air falbh, luchdan taobh a-muigh air an sgaradh gu faidhle fa leth, agus aon mhogal còmhdaich air a sgàthanachadh."
 
@@ -171,6 +179,10 @@ msgstr "Thachair mearachd"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "Thachair mearachd ris nach robh dùil"
+
+#: src/components/MissionSetup.tsx:693
+msgid "Approach, on-speed (Vapp)"
+msgstr "Dlùthachadh, air an astar (Vapp)"
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
@@ -215,9 +227,25 @@ msgstr "Air ais"
 msgid "Back to home"
 msgstr "Air ais dhan dachaigh"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:959
 msgid "Bandit"
 msgstr "Nàmhaid"
+
+#: src/components/MissionSetup.tsx:684
+msgid "Best climb (Vy, 100% thrust)"
+msgstr "An dìreadh as fheàrr (Vy, putadh 100%)"
+
+#: src/components/MissionSetup.tsx:685
+msgid "Best climb (Vy, afterburner)"
+msgstr "An dìreadh as fheàrr (Vy, iar-losgadh)"
+
+#: src/components/MissionSetup.tsx:687
+msgid "Best glide (engines out)"
+msgstr "An sleamhnachadh as fheàrr (einnseanan dheth)"
+
+#: src/components/MissionSetup.tsx:689
+msgid "Best sustained turn speed"
+msgstr "Astar an tionndaidh sheasmhaich as fheàrr"
 
 #: src/components/GameCanvas.tsx:32
 msgid "BINGO FUEL"
@@ -274,11 +302,11 @@ msgstr "Sguir dheth"
 msgid "Canopy"
 msgstr "Còmhdach a' chocpit"
 
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:997
 msgid "Carrier landing"
 msgstr "Laighe air giùlanair-adhair"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:1003
 msgid "Catapult"
 msgstr "Catapult"
 
@@ -368,7 +396,7 @@ msgstr "Dùin an lorg"
 msgid "closer"
 msgstr "nas fhaisge"
 
-#: src/components/MissionSetup.tsx:946
+#: src/components/MissionSetup.tsx:1034
 msgid "Clouds"
 msgstr "Sgòthan"
 
@@ -429,6 +457,10 @@ msgstr "Lean air adhart le {label}"
 msgid "Copy"
 msgstr "Dèan lethbhreac"
 
+#: src/components/MissionSetup.tsx:688
+msgid "Corner speed (best instant turn)"
+msgstr "Astar oisein (an tionndadh grad as fheàrr)"
+
 #: src/components/Multiplayer.tsx:143
 msgid "Could not create the match"
 msgstr "Cha b' urrainn dhuinn am maids a chruthachadh"
@@ -461,12 +493,12 @@ msgstr "Cruthaich agus itealaich"
 msgid "Create match"
 msgstr "Cruthaich maids"
 
-#: src/components/MissionSetup.tsx:671
-#: src/components/MissionSetup.tsx:677
+#: src/components/MissionSetup.tsx:759
+#: src/components/MissionSetup.tsx:765
 msgid "Credits"
 msgstr "Creideasan"
 
-#: src/components/MissionSetup.tsx:953
+#: src/components/MissionSetup.tsx:1041
 #: src/components/Multiplayer.tsx:233
 msgid "Cumulus"
 msgstr "Cumulus"
@@ -501,7 +533,7 @@ msgstr "Modh dorcha"
 msgid "Data conflict"
 msgstr "Còmhstri dàta"
 
-#: src/components/MissionSetup.tsx:941
+#: src/components/MissionSetup.tsx:1029
 #: src/components/Multiplayer.tsx:228
 msgid "Day"
 msgstr "Latha"
@@ -571,7 +603,7 @@ msgstr "Leig seachad"
 msgid "Displays the mobile sidebar."
 msgstr "Seallaidh am bàr-thaobh fòn-làimhe."
 
-#: src/components/MissionSetup.tsx:1046
+#: src/components/MissionSetup.tsx:1134
 msgid "Distance LOD"
 msgstr "LOD astair"
 
@@ -588,7 +620,7 @@ msgstr "Dh’fhàillig an luchdadh a-nuas"
 msgid "Drone"
 msgstr "Dròn"
 
-#: src/components/MissionSetup.tsx:1040
+#: src/components/MissionSetup.tsx:1128
 msgid "Dynamic resolution"
 msgstr "Dùmhlachd ghluasadach"
 
@@ -643,17 +675,21 @@ msgstr "Leudaich"
 msgid "Expand sidebar"
 msgstr "Leudaich am bàr-taobh"
 
-#: src/components/MissionSetup.tsx:1012
+#: src/components/MissionSetup.tsx:1100
 msgid "Exterior detail"
 msgstr "Mion-fhiosrachadh a-muigh"
 
-#: src/components/MissionSetup.tsx:1028
+#: src/components/MissionSetup.tsx:1116
 msgid "Extra aircraft"
 msgstr "Itealain a bharrachd"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:136
 msgid "Extra large"
 msgstr "A bharrachd mòr"
+
+#: src/components/MissionSetup.tsx:707
+msgid "F/A-18C reference"
+msgstr "Iomradh F/A-18C"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:225
 msgid "Failed to add account"
@@ -701,7 +737,7 @@ msgstr "lasraichean"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1076
+#: src/components/MissionSetup.tsx:1164
 msgid "Flares"
 msgstr "Lasraichean"
 
@@ -721,11 +757,11 @@ msgstr "DH'FHÀILLIG AN CRIDHE ITEALAICH"
 msgid "Floating"
 msgstr "A' fleòdradh"
 
-#: src/components/MissionSetup.tsx:1082
+#: src/components/MissionSetup.tsx:1170
 msgid "Framerate"
 msgstr "Reat fhrèamaichean"
 
-#: src/components/MissionSetup.tsx:850
+#: src/components/MissionSetup.tsx:938
 msgid "Free flight"
 msgstr "Itealan saor"
 
@@ -746,7 +782,7 @@ msgstr "O"
 msgid "From theme"
 msgstr "On ùrlar"
 
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:944
 #: src/components/Multiplayer.tsx:243
 msgid "Fuel"
 msgstr "Connadh"
@@ -809,7 +845,7 @@ msgstr "Rach gu duilleag {pageNumber}"
 msgid "Go to previous page"
 msgstr "Rach dhan duilleag roimhe"
 
-#: src/components/MissionSetup.tsx:835
+#: src/components/MissionSetup.tsx:923
 msgid "Graphics"
 msgstr "Grafaigs"
 
@@ -838,11 +874,11 @@ msgstr "Falaich"
 msgid "Hide password"
 msgstr "Falaich am facal-faire"
 
-#: src/components/MissionSetup.tsx:992
+#: src/components/MissionSetup.tsx:1080
 msgid "High"
 msgstr "Àrd"
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:1042
 #: src/components/Multiplayer.tsx:234
 msgid "High stratus"
 msgstr "Stratus àrd"
@@ -870,7 +906,7 @@ msgstr "Teth"
 msgid "Imperial"
 msgstr "Ìmpireach"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:994
 msgid "In air"
 msgstr "San adhar"
 
@@ -906,15 +942,15 @@ msgstr "Còmhrag-aghaidh"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Còmhrag-dithis — 1v1, buannaichidh a' chiad mharbhadh"
 
-#: src/components/MissionSetup.tsx:851
+#: src/components/MissionSetup.tsx:939
 msgid "Joust against AI player"
 msgstr "Còmhrag-dithis an aghaidh cluicheadair AI"
 
-#: src/components/MissionSetup.tsx:826
+#: src/components/MissionSetup.tsx:914
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MissionSetup.tsx:829
+#: src/components/MissionSetup.tsx:917
 msgid "Keys"
 msgstr "Iuchraichean"
 
@@ -988,7 +1024,7 @@ msgstr "Solais"
 msgid "LIGHTS"
 msgstr "SOLAIS"
 
-#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:947
 msgid "Load"
 msgstr "Luchd"
 
@@ -1055,11 +1091,11 @@ msgstr "Seall gu deas"
 msgid "Look up"
 msgstr "Seall suas"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1076
 msgid "Low"
 msgstr "Ìosal"
 
-#: src/components/MissionSetup.tsx:955
+#: src/components/MissionSetup.tsx:1043
 #: src/components/Multiplayer.tsx:235
 msgid "Low stratus"
 msgstr "Stratus ìosal"
@@ -1091,7 +1127,7 @@ msgid "Match type"
 msgstr "Seòrsa maidse"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:990
+#: src/components/MissionSetup.tsx:1078
 msgid "Medium"
 msgstr "Meadhanach"
 
@@ -1107,7 +1143,7 @@ msgstr "Clàr-taice"
 msgid "Metric"
 msgstr "Meatraigeach"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:818
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Mapa Atal Midway — tha dàta <0>Copernicus Sentinel-2</0> atharraichte anns na h-ìomhaighean (2026); geomatras an raon-adhair (raon-laighe, slighean-tagsaidh, aprain) © luchd-cuideachaidh <1>OpenStreetMap</1>, fo cheadachas <2>ODbL</2>; dàta oirthir agus sgeirean bho <3>NOAA NCCOS</3> (raon poblach)."
 
@@ -1120,7 +1156,7 @@ msgstr "urchair"
 msgid "Missile"
 msgstr "Rocaid"
 
-#: src/components/MissionSetup.tsx:1070
+#: src/components/MissionSetup.tsx:1158
 msgid "Missiles"
 msgstr "Rocaidean"
 
@@ -1128,7 +1164,7 @@ msgstr "Rocaidean"
 msgid "Missiles allowed"
 msgstr "Urchraichean ceadaichte"
 
-#: src/components/MissionSetup.tsx:820
+#: src/components/MissionSetup.tsx:908
 msgid "Mission"
 msgstr "Misean"
 
@@ -1140,7 +1176,7 @@ msgstr "DiLuain"
 msgid "Move it…"
 msgstr "Gluais e…"
 
-#: src/components/MissionSetup.tsx:852
+#: src/components/MissionSetup.tsx:940
 msgid "Multiplayer"
 msgstr "Ioma-chluicheadair"
 
@@ -1162,7 +1198,7 @@ msgstr "Ùr"
 msgid "Next image"
 msgstr "An ath dhealbh"
 
-#: src/components/MissionSetup.tsx:942
+#: src/components/MissionSetup.tsx:1030
 #: src/components/Multiplayer.tsx:229
 msgid "Night"
 msgstr "Oidhche"
@@ -1225,7 +1261,7 @@ msgstr "GUN ÌRE"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:354
 #: src/components/MissionSetup.tsx:408
-#: src/components/MissionSetup.tsx:952
+#: src/components/MissionSetup.tsx:1040
 msgid "None"
 msgstr "Chan eil gin"
 
@@ -1249,7 +1285,7 @@ msgstr "Cha deach a shuidheachadh"
 msgid "Notifications"
 msgstr "Brathan"
 
-#: src/components/MissionSetup.tsx:1020
+#: src/components/MissionSetup.tsx:1108
 msgid "Ocean detail"
 msgstr "Mion-fhiosrachadh cuain"
 
@@ -1257,11 +1293,11 @@ msgstr "Mion-fhiosrachadh cuain"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:908
+#: src/components/MissionSetup.tsx:996
 msgid "On carrier"
 msgstr "Air a' ghiùlanair"
 
-#: src/components/MissionSetup.tsx:907
+#: src/components/MissionSetup.tsx:995
 msgid "On runway"
 msgstr "Air an raon-laighe"
 
@@ -1351,7 +1387,7 @@ msgstr "AIR STAD"
 msgid "pilot"
 msgstr "pìleat"
 
-#: src/components/MissionSetup.tsx:878
+#: src/components/MissionSetup.tsx:966
 #: src/components/Multiplayer.tsx:273
 msgid "Pilot"
 msgstr "Pìleat"
@@ -1389,7 +1425,7 @@ msgstr "Feuch ris a-rithist."
 msgid "Please wait a moment and try again."
 msgstr "Fuirich greiseag is feuch ris a-rithist."
 
-#: src/components/MissionSetup.tsx:975
+#: src/components/MissionSetup.tsx:1063
 msgid "Preset"
 msgstr "Ro-sheata"
 
@@ -1467,6 +1503,10 @@ msgstr "Ag ath-stiùireadh dhan log a-steach."
 msgid "Reduce interest"
 msgstr "Lùghdaich an ùidh"
 
+#: src/components/MissionSetup.tsx:701
+msgid "Reference"
+msgstr "Iomradh"
+
 #: src/components/Multiplayer.tsx:196
 msgid "Refresh"
 msgstr "Ath-nuadhaich"
@@ -1502,7 +1542,7 @@ msgstr "Thoir an cothrom air falbh?"
 msgid "Remove interest"
 msgstr "Thoir an ùidh air falbh"
 
-#: src/components/MissionSetup.tsx:764
+#: src/components/MissionSetup.tsx:852
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Reandaradh le <0>three.js</0> (ceadachas MIT)."
 
@@ -1512,7 +1552,7 @@ msgstr "Cuir am post-d a-rithist"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1212
 msgid "Reset"
 msgstr "Ath-shuidhich"
 
@@ -1520,15 +1560,15 @@ msgstr "Ath-shuidhich"
 msgid "Reset all settings to default values"
 msgstr "Ath-shuidhich a h-uile roghainn chun a' bhun-tuiteamais"
 
-#: src/components/MissionSetup.tsx:1002
+#: src/components/MissionSetup.tsx:1090
 msgid "Resolution"
 msgstr "Rùn"
 
-#: src/components/MissionSetup.tsx:1096
+#: src/components/MissionSetup.tsx:1184
 msgid "Restart"
 msgstr "Ath-thòisich"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1188
 msgid "Resume"
 msgstr "Lean ort"
 
@@ -1556,7 +1596,7 @@ msgstr "Rolladh gu clì"
 msgid "Roll right"
 msgstr "Rolladh gu deas"
 
-#: src/components/MissionSetup.tsx:877
+#: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:272
 msgid "Rookie"
 msgstr "Tòisiche"
@@ -1577,6 +1617,10 @@ msgstr "Disathairne"
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
 msgstr "Sàbhail"
+
+#: src/components/MissionSetup.tsx:716
+msgid "Sea level"
+msgstr "Ìre na mara"
 
 #: ../../../lib/web/src/components/place-picker.tsx:85
 msgid "Search for a place"
@@ -1690,7 +1734,7 @@ msgstr "Suidhich tùs is ceann-uidhe"
 msgid "Settings"
 msgstr "Roghainnean"
 
-#: src/components/MissionSetup.tsx:1052
+#: src/components/MissionSetup.tsx:1140
 msgid "Shadows"
 msgstr "Sgàilean"
 
@@ -1717,6 +1761,10 @@ msgstr "Clàraich a-mach"
 msgid "Signing out..."
 msgstr "A' soidhnigeadh a-mach..."
 
+#: src/components/MissionSetup.tsx:686
+msgid "Single-engine best climb (Vyse, afterburner)"
+msgstr "An dìreadh as fheàrr le aon einnsean (Vyse, iar-losgadh)"
+
 #: ../../../lib/web/src/components/skip-to-main.tsx:11
 msgid "Skip to Main"
 msgstr "Gearr-shlighe dhan phrìomh"
@@ -1727,7 +1775,7 @@ msgid "Small"
 msgstr "Beag"
 
 #: src/components/MissionSetup.tsx:464
-#: src/components/MissionSetup.tsx:832
+#: src/components/MissionSetup.tsx:920
 msgid "Sound"
 msgstr "Fuaim"
 
@@ -1749,14 +1797,34 @@ msgstr "brèic adhair"
 msgid "Speed brake"
 msgstr "Brèic adhair"
 
-#: src/components/MissionSetup.tsx:900
-#: src/components/MissionSetup.tsx:1106
+#: src/components/MissionSetup.tsx:742
+msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
+msgstr "Astaran ann an KCAS, mar raon bho aotrom (as lugha de chonnadh, gun uallaichean) gu trom (an cuideam as motha). Chaidh an dàta fhaighinn tro dheuchainn san gheama. Tha eadar-dhealachadh sam bith bhon fhìor phlèana a' sealltainn mhearachdan ann am modail-itealaich an t-simuladair."
+
+#: src/components/MissionSetup.tsx:691
+msgid "Stall, clean (Vs1)"
+msgstr "Stalladh, glan (Vs1)"
+
+#: src/components/MissionSetup.tsx:692
+msgid "Stall, landing config (Vs0)"
+msgstr "Stalladh, rèiteachadh laighe (Vs0)"
+
+#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1194
 msgid "Start"
 msgstr "Tòisich"
 
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Fuirich an dùil ge-tà!"
+
+#: src/components/MissionSetup.tsx:682
+msgid "Steepest climb (Vx, 100% thrust)"
+msgstr "An dìreadh as caise (Vx, putadh 100%)"
+
+#: src/components/MissionSetup.tsx:683
+msgid "Steepest climb (Vx, afterburner)"
+msgstr "An dìreadh as caise (Vx, iar-losgadh)"
 
 #: src/components/GameCanvas.tsx:43
 msgid "STRUCTURE"
@@ -1789,7 +1857,7 @@ msgstr "Taga"
 msgid "Tags"
 msgstr "Tagaichean"
 
-#: src/components/MissionSetup.tsx:844
+#: src/components/MissionSetup.tsx:932
 msgid "Task"
 msgstr "Gnìomh"
 
@@ -1838,11 +1906,15 @@ msgstr "Sgòrnan suas"
 msgid "Thursday"
 msgstr "Diardaoin"
 
+#: src/components/MissionSetup.tsx:690
+msgid "Tightest sustained turn speed"
+msgstr "Astar an tionndaidh sheasmhaich as teinne"
+
 #: src/components/GameCanvas.tsx:146
 msgid "tilt"
 msgstr "aomadh"
 
-#: src/components/MissionSetup.tsx:935
+#: src/components/MissionSetup.tsx:1023
 msgid "Time of day"
 msgstr "Àm an latha"
 
@@ -1885,7 +1957,7 @@ msgstr "Cus iarrtasan"
 msgid "Top"
 msgstr "Mullach"
 
-#: src/components/MissionSetup.tsx:1064
+#: src/components/MissionSetup.tsx:1152
 msgid "Tracers"
 msgstr "Peilearan-lorgaidh"
 
@@ -1920,7 +1992,7 @@ msgstr "Sgrìobh airson cleachdaichean a lorg"
 msgid "Type to search..."
 msgstr "Sgrìobh airson lorg..."
 
-#: src/components/MissionSetup.tsx:994
+#: src/components/MissionSetup.tsx:1082
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -1979,7 +2051,11 @@ msgstr "Dearbh"
 msgid "Verify email address"
 msgstr "Dearbh seòladh puist-d"
 
-#: src/components/MissionSetup.tsx:879
+#: src/components/MissionSetup.tsx:732
+msgid "Vertical"
+msgstr "Dìreach"
+
+#: src/components/MissionSetup.tsx:967
 #: src/components/Multiplayer.tsx:274
 msgid "Veteran"
 msgstr "Eòlach"
@@ -2025,7 +2101,7 @@ msgstr "Bidh sinn air ais air-loidhne goirid."
 msgid "Weapons"
 msgstr "Airm"
 
-#: src/components/MissionSetup.tsx:823
+#: src/components/MissionSetup.tsx:911
 #: src/components/Multiplayer.tsx:225
 msgid "Weather"
 msgstr "Sìde"
