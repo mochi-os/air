@@ -721,14 +721,9 @@ function ReferenceDialog() {
         </div>
         <div className='text-muted-foreground space-y-1 text-xs leading-relaxed'>
           <p>
-            Speeds in knots as the HUD reads them (KCAS). Ranges span light (minimum fuel, 11.2 t)
-            to heavy (full fuel, 15.6 t) — your jet sits in between and lightens as fuel burns.
-          </p>
-          <p>
-            Corner speed delivers ~6.5 g in a snap pull. Steepest climb in afterburner at sea level
-            is vertical — thrust exceeds weight. Landing configuration is unavailable at 30,000 ft.
-            Liftoff follows rotation at ~116 kt. Single-engine directional control is never
-            limiting.
+            Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum
+            gross). Data derived experimentally in-game. Any differences from the real aircraft
+            reflect simulator flight model errors.
           </p>
         </div>
       </DialogContent>
