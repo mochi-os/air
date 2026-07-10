@@ -679,7 +679,7 @@ const REFERENCE_ROWS: { label: string; cells: [string, string, string] }[] = [
   { label: 'Best climb (Vy, afterburner)', cells: ['534-606', '461-465', '345-352'] },
   { label: 'Single-engine best climb (Vyse, afterburner)', cells: ['401-461', '215-364', '176-210'] },
   { label: 'Corner speed (best instant turn)', cells: ['321-377', '340-391', '324-335'] },
-  { label: 'Best sustained turn speed', cells: ['369-486', '397-447', '328'] },
+  { label: 'Best sustained turn speed', cells: ['369-486', '397-447', '328-328'] },
   { label: 'Stall, clean (Vs1)', cells: ['159-186', '159-186', '160-190'] },
   { label: 'Stall, landing config (Vs0)', cells: ['111-129', '110-128', '—'] },
   { label: 'Approach, on-speed (Vapp)', cells: ['126-148', '125-148', '—'] },
