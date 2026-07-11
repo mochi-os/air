@@ -31,6 +31,7 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   FUEL: msg`FUEL`,
   'BINGO FUEL': msg`BINGO FUEL`,
   'FUEL LO': msg`FUEL LO`,
+  INVULNERABLE: msg`INVULNERABLE`,
   REARMED: msg`REARMED`,
   FLAMEOUT: msg`FLAMEOUT`,
   'FUEL FIRE': msg`FUEL FIRE`,

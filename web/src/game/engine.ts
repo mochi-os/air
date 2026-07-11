@@ -2418,8 +2418,9 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	if(ownship.speed>0.5) ownship.vel_dir.set(ownship.velx/ownship.speed,ownship.vely/ownship.speed,ownship.velz/ownship.speed); else ownship.vel_dir.copy(ownship.fwd);
 	ownship.aoa=out[STATE.alpha]*180/Math.PI; ownship.gload=out[STATE.nz];
 	{ const before=ownship.fuel??1e9; ownship.fuel=out[STATE.fuel];   // the tank state, for the IFEI readout and the calls (the infinite-fuel cheat freezes it inside the core: environment.cheat.fuel)
-		if(before>=BINGO&&ownship.fuel<BINGO) notice(translate("BINGO FUEL"));
-		if(before>=FUELLO&&ownship.fuel<FUELLO) notice(translate("FUEL LO")); }
+		if(!cheat("fuel")){   // a frozen tank makes the fuel calls meaningless — a light spawn load would otherwise call BINGO at mission start
+			if(before>=BINGO&&ownship.fuel<BINGO) notice(translate("BINGO FUEL"));
+			if(before>=FUELLO&&ownship.fuel<FUELLO) notice(translate("FUEL LO")); } }
 	ownship.cas=out[STATE.cas];   // calibrated airspeed, m/s — the real jet's HUD speed source
 	ownship.spool=out[STATE.power]; ownship.stage=out[STATE.stage];   // achieved across the airframe's engines, computed core-side
 	ownship.reheats=[out[STATE.engine+1], out[STATE.engine+3]];   // per-engine achieved reheat (flame discs; one burner can die independently)
@@ -3150,10 +3151,16 @@ function draw_hud(dt){
 	if(hit_flash>0){ hctx.fillStyle="rgba(255,32,32,"+(hit_flash*0.28).toFixed(3)+")"; hctx.fillRect(0,0,HW,HH); }   // rounds are landing on us
 
 	// ---- weapon legend (bottom-left) ----
-	hctx.textAlign="left"; hctx.font="13px monospace"; hctx.fillStyle=input.guns?AM:GR;
-	hctx.fillText(translate("GUN")+"  "+ownship.rounds,40,HH-88); hctx.fillStyle=GR;
-	hctx.fillText("9M  "+ownship.msl,40,HH-70); hctx.fillText(translate("FLARES")+"  "+ownship.cm,40,HH-52);
-	{ const pounds=Math.round((ownship.fuel??0)*2.2046/10)*10;   // the IFEI shows pounds
+	// Cheats show in the symbology: ∞ replaces the counters the cheat makes
+	// meaningless, and INVULNERABLE sits just above — so a cheat mission
+	// announces itself, to multiplayer joiners as much as the mission owner.
+	hctx.textAlign="left"; hctx.font="13px monospace";
+	if(cheat("invulnerable")){ hctx.fillStyle=GR; hctx.fillText(translate("INVULNERABLE"),40,HH-106); }
+	hctx.fillStyle=input.guns?AM:GR;
+	hctx.fillText(translate("GUN")+"  "+(cheat("ammunition")?"∞":ownship.rounds),40,HH-88); hctx.fillStyle=GR;
+	hctx.fillText("9M  "+(cheat("ammunition")?"∞":ownship.msl),40,HH-70); hctx.fillText(translate("FLARES")+"  "+ownship.cm,40,HH-52);
+	if(cheat("fuel")) hctx.fillText(translate("FUEL")+"  ∞",40,HH-34);   // the tank is frozen: no pounds, no LO/BINGO colours
+	else { const pounds=Math.round((ownship.fuel??0)*2.2046/10)*10;   // the IFEI shows pounds
 		if((ownship.fuel??1e9)<FUELLO) hctx.fillStyle=(sim_time%0.8<0.4)?"#ff5050":"#803030";   // FUEL LO flashes
 		else if((ownship.fuel??1e9)<BINGO) hctx.fillStyle="#ffb050";
 		hctx.fillText(translate("FUEL")+"  "+pounds,40,HH-34); hctx.fillStyle=GR; }
