@@ -85,7 +85,7 @@ export function Multiplayer({
   const [missiles, setMissiles] = useState(false)
   const [cheats, setCheats] = useState<Record<string, boolean>>({}) // invulnerable (humans only), ammunition, fuel
   const [bots, setBots] = useState<Record<string, number>>({ drone: 0, rookie: 0, pilot: 0, veteran: 0, ace: 0 }) // server-flown aircraft per skill level; drones cruise, the rest fight (also the 100-player verification lever)
-  const [fuel, setFuel] = useState(6600) // spawn load in POUNDS, like the IFEI
+  const [fuel, setFuel] = useState(6000) // spawn load in POUNDS, like the IFEI
   const address = normalize_server(server || default_server())
   const name = (callsign || identity || t`pilot`).slice(0, 32)
 
@@ -250,7 +250,7 @@ export function Multiplayer({
                   max={10800}
                   step={100}
                   value={fuel}
-                  onChange={(e) => setFuel(Math.max(1500, Math.min(10800, Number(e.target.value) || 6600)))}
+                  onChange={(e) => setFuel(Math.max(1500, Math.min(10800, Number(e.target.value) || 6000)))}
                   className='h-8 w-20'
                 />
                 <span className='text-muted-foreground text-xs'>

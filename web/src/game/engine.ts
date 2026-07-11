@@ -2388,7 +2388,7 @@ function test_drive(){   // hold the prescribed approach exactly; hand control b
 // the world, delivers state on spawns/resets, and syncs its output back onto
 // the ownship object every rendered frame.
 const physics_strips=[];   // paved capsules, collected as the airfields build
-const FUEL=()=>THREE.MathUtils.clamp((cfg.fuel||6600)/2.2046,500,4900);   // spawn fuel: the menu slider speaks POUNDS like the IFEI, the sim burns kilograms (default 6,600 lb ≈ 3,000 kg, matching the server)
+const FUEL=()=>THREE.MathUtils.clamp((cfg.fuel||6000)/2.2046,500,4900);   // spawn fuel: the menu slider speaks POUNDS like the IFEI, the sim burns kilograms (default 6,000 lb ≈ 2,722 kg, matching the server)
 const BINGO=1361, FUELLO=726;   // kg: the 3,000 lb bingo call and the ~1,600 lb hardware FUEL LO caution
 let flight_active=false, control_sequence=0, launch_flag=false, core_catapult=-1, core_stroke=-1, prev_wire=-1, prev_wow=false;
 let last_controls=null, marked_steps=0;   // multiplayer prediction: the sample the core flew this frame + fixed steps since the last mark

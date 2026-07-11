@@ -68,7 +68,7 @@ export interface MissionConfig {
 export const DEFAULT_CONFIG: MissionConfig = {
   task: 'joust',
   bandit: 'veteran',
-  fuel: 6600,
+  fuel: 6000,
   aircraft: 'fa18c',
   joystick: '',
   sticks: {},
