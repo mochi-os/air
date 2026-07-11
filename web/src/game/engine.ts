@@ -3294,7 +3294,8 @@ function net_event(e){ const slot=Number(e.slot);
 function net_finish(reason){ if(session_over) return; session_over=true;
 	if(net&&match_started){ net_record({ world:join.server, session:join.session, mode:"joust",
 		started:match_started, ended:Date.now(), reason,
-		players:JSON.stringify([...remotes.keys()].length+1), kills:own_kills, deaths:own_deaths }); }
+		players:JSON.stringify([...remotes.keys()].length+1), kills:own_kills, deaths:own_deaths,
+		cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0 }); }   // mark cheated matches so an honest history stays honest (the match rules from the welcome populate cfg.cheats)
 	if(net){ net.leave(); net=null; } }
 function net_end(reason,results){ if(session_over) return;
 	net_finish(reason);

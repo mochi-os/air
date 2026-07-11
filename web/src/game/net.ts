@@ -729,6 +729,7 @@ export async function record(match: {
   players: string
   kills: number
   deaths: number
+  cheated: number
 }): Promise<void> {
   try {
     await client.post('match/record', match)
