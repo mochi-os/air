@@ -2007,7 +2007,6 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(ch===key_of("fold")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.foldTarget=(ownship.foldTarget??0)>0.5?0:1; notice(ownship.foldTarget?translate("WINGS FOLDING"):translate("WINGS SPREADING")); } else notice(translate("WINGS LOCKED")); }   // wing fold — ground only, taxi speeds; the outer panels carry the ailerons and outer slats with them
 		if(ch===key_of("canopy")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.canopyTarget=(ownship.canopyTarget??0)>0.5?0:1; notice(ownship.canopyTarget?translate("CANOPY OPEN"):translate("CANOPY CLOSED")); } else notice(translate("CANOPY LOCKED")); }   // Shift+C: canopy — ground only, taxi speeds (NATOPS closes it before takeoff; ~60 kt operation wind limit)
 		if(ch===key_of("flares") && cfg.flares && ownship.cm>0 && (ownship.squish??0)<0.1){ dispense_flares(ownship); ownship.cm--; flare_flag=true; audio_flare(); }   // plain F only — Shift+F is the probe (self-guarded, NOT an else-chain: an inserted handler between the pair once re-aimed the else and Shift+F dropped flares). Weight-on-wheels inhibits the dispenser, as the real ALE-47 does — no pyrotechnics on the deck
-		if(ch===key_of("rearm")){ ownship.rounds=578; ownship.msl=2; ownship.cm=60; update_rails(ownship,cfg.missiles?2:0); }   // plain X only — Shift+X is the dev cloud A/B
 		const dev_parked=DEV_MODE && on_ground() && (ownship.speed??0)<1;   // J/L/O are nudge keys in this state
 		if(ch===key_of("eject") && !dev_parked && crash_t<=0 && !ejected){   // ejection handle: three pulls inside 1.25 s — the zero-zero seat works everywhere
 			if(sim_time-eject_at>1.25) eject_taps=0;
@@ -2081,7 +2080,7 @@ stage.addEventListener("pointercancel",end_drag,{ signal });
 // action's current key as a synthetic event, so pad binds follow key remaps.
 const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.left":"KeyA", "yaw.right":"KeyE", "yaw.left":"KeyQ",
 	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash",
-	gear:"KeyG", hook:"KeyH", lights:"KeyL", missile:"KeyR", flares:"KeyF", rearm:"KeyX", eject:"KeyJ", map:"KeyM", pause:"KeyP", view:"KeyV",
+	gear:"KeyG", hook:"KeyH", lights:"KeyL", missile:"KeyR", flares:"KeyF", eject:"KeyJ", map:"KeyM", pause:"KeyP", view:"KeyV",
 	probe:"Shift+KeyF", canopy:"Shift+KeyC", fold:"Shift+KeyW" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
