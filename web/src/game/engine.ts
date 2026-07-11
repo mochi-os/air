@@ -2441,10 +2441,29 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	if(ownship.turned&&!ownship.taxied&&ownship.speed>4){ ownship.taxied=true; notice(translate("REARMED")); }   // announce the rearm only once the player TAXIES clear of the trap — so it never lands on top of the LSO grade at the stop (#72)   // end the LSO grade banner so REARMED replaces it cleanly instead of overprinting it (#72)
 	else if(wire<0&&prev_wire>=0){ ownship.trapped=false; }
 	prev_wire=wire;
+	// Airfield service: a full stop on the paved strip after a flight brings
+	// the ground crew — the carrier trap's choreography (service at the stop,
+	// REARMED announced through the same taxi-away line above). The flown gate
+	// keeps a runway spawn from being "serviced" it never needed; it re-arms
+	// only after genuinely flying again. Multiplayer has no airfields (and
+	// physics_strips stays empty there), so this is single-player by nature.
+	if(!ownship.grounded && ownship.speed>50) ownship.flown=true;
+	if(ownship.flown && ownship.grounded && !ownship.trapped && ownship.speed<0.5 && on_strip(ownship.pos)){
+		ownship.flown=false; ownship.turned=true; ownship.taxied=false;
+		ownship.rounds=578; ownship.msl=cfg.missiles?2:0; ownship.cm=60; update_rails(ownship,cfg.missiles?2:0);
+		const b=flight_get(); b[STATE.fuel]=FUEL(); flight_set(b); }
+}
+function on_strip(p){   // point inside any paved capsule (the airfield strips; the carrier deck is not one)
+	for(const c of physics_strips){ const dx=c.b[0]-c.a[0], dz=c.b[1]-c.a[1], len=dx*dx+dz*dz;
+		const t=len>0?THREE.MathUtils.clamp(((p.x-c.a[0])*dx+(p.z-c.a[1])*dz)/len,0,1):0;
+		const qx=c.a[0]+dx*t, qz=c.a[1]+dz*t, w=(c.w||0)/2+5;   // +5 m shoulder: stopping with the mains on the paint but the reference point off it still counts
+		if((p.x-qx)*(p.x-qx)+(p.z-qz)*(p.z-qz)<=w*w) return true; }
+	return false;
 }
 function flight_push(){   // deliver the ownship pose to the core: trimmed level flight when airborne, a composed state on the ground / in a test
 	if(!flight_active) return;
 	prev_wire=-1;
+	ownship.flown=false;   // a fresh spawn has not flown: no phantom airfield service (a respawn already carries a full load)
 	if(!test_active && ownship.speed>50 && !ownship.grounded && mission_start()!=="landing"){
 		flight_level(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, ownship.speed, FUEL());   // trimmed CLEAN level flight — right for air starts, but it threw away the landing start's composed on-speed pose (the PA law then wrestled a clean trim onto approach alpha: nose-down lurch, dead stick)
 		sync_core(flight_get()); return;
