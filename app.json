@@ -14,8 +14,9 @@
 
 	"database": {
 		"file": "furball.db",
-		"schema": 1,
+		"schema": 2,
 		"create": {"function": "database_create"},
+		"upgrade": {"function": "database_upgrade"},
 	},
 
 	"icons": [
