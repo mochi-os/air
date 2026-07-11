@@ -83,6 +83,7 @@ export function Multiplayer({
   const [tod, setTod] = useState<'day' | 'night'>('day')
   const [clouds, setClouds] = useState('none')
   const [missiles, setMissiles] = useState(false)
+  const [cheats, setCheats] = useState<Record<string, boolean>>({}) // invulnerable (humans only), ammunition, fuel
   const [bots, setBots] = useState<Record<string, number>>({ drone: 0, rookie: 0, pilot: 0, veteran: 0, ace: 0 }) // server-flown aircraft per skill level; drones cruise, the rest fight (also the 100-player verification lever)
   const [fuel, setFuel] = useState(6600) // spawn load in POUNDS, like the IFEI
   const address = normalize_server(server || default_server())
@@ -130,7 +131,7 @@ export function Multiplayer({
         mode,
         label: t`${name}'s match`,
         capacity: mode === 'joust' ? 2 : 0,
-        parameters: { tod, clouds, missiles, bots, fuel },   // bots: per-level counts {drone, rookie, pilot, veteran, ace}; fuel in pounds
+        parameters: { tod, clouds, missiles, bots, fuel, cheats },   // bots: per-level counts {drone, rookie, pilot, veteran, ace}; fuel in pounds; cheats: {invulnerable, ammunition, fuel}
       })
       onJoin({
         server: address,
@@ -260,6 +261,36 @@ export function Multiplayer({
                 <Switch id='rule-missiles' checked={missiles} onCheckedChange={setMissiles} />
                 <Label htmlFor='rule-missiles' className='font-normal'>
                   <Trans>Missiles allowed</Trans>
+                </Label>
+              </div>
+              <div className='flex items-center gap-2'>
+                <Switch
+                  id='rule-invulnerable'
+                  checked={!!cheats.invulnerable}
+                  onCheckedChange={(v) => setCheats((c) => ({ ...c, invulnerable: v }))}
+                />
+                <Label htmlFor='rule-invulnerable' className='font-normal'>
+                  <Trans>Invulnerable (human players only)</Trans>
+                </Label>
+              </div>
+              <div className='flex items-center gap-2'>
+                <Switch
+                  id='rule-ammunition'
+                  checked={!!cheats.ammunition}
+                  onCheckedChange={(v) => setCheats((c) => ({ ...c, ammunition: v }))}
+                />
+                <Label htmlFor='rule-ammunition' className='font-normal'>
+                  <Trans>Infinite ammunition</Trans>
+                </Label>
+              </div>
+              <div className='flex items-center gap-2'>
+                <Switch
+                  id='rule-fuel'
+                  checked={!!cheats.fuel}
+                  onCheckedChange={(v) => setCheats((c) => ({ ...c, fuel: v }))}
+                />
+                <Label htmlFor='rule-fuel' className='font-normal'>
+                  <Trans>Infinite fuel</Trans>
                 </Label>
               </div>
               <div className='flex flex-wrap items-center gap-2'>

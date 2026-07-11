@@ -41,7 +41,7 @@ import { type Join } from '../game/net'
 // The fields each tab owns, for the per-tab Reset (the joystick tab also clears
 // the per-device maps so built-in defaults apply again).
 const TAB_FIELDS: Record<string, string[]> = {
-  mission: ['task', 'start', 'world', 'callsign', 'aircraft', 'bandit', 'fuel'],
+  mission: ['task', 'start', 'world', 'callsign', 'aircraft', 'bandit', 'fuel', 'cheats'],
   weather: ['tod', 'clouds'],
   controls: ['invert', 'joystick', 'sticks'],
   keys: ['keys'],
@@ -1014,6 +1014,34 @@ export function MissionSetup({
                         />
                       </>
                     )}
+                  </>
+                )}
+                {config.task !== 'multiplayer' && (
+                  <>
+                    {/* a multiplayer match takes its cheats from the creator's match rules instead */}
+                    <SectionLabel>
+                      <Trans>Cheats</Trans>
+                    </SectionLabel>
+                    <div className='space-y-2'>
+                      <SwitchRow
+                        id='cheat-invulnerable'
+                        label={<Trans>Invulnerable (human players only)</Trans>}
+                        checked={!!(config.cheats ?? {}).invulnerable}
+                        onChange={(v) => set('cheats', { ...(config.cheats ?? {}), invulnerable: v })}
+                      />
+                      <SwitchRow
+                        id='cheat-ammunition'
+                        label={<Trans>Infinite ammunition</Trans>}
+                        checked={!!(config.cheats ?? {}).ammunition}
+                        onChange={(v) => set('cheats', { ...(config.cheats ?? {}), ammunition: v })}
+                      />
+                      <SwitchRow
+                        id='cheat-fuel'
+                        label={<Trans>Infinite fuel</Trans>}
+                        checked={!!(config.cheats ?? {}).fuel}
+                        onChange={(v) => set('cheats', { ...(config.cheats ?? {}), fuel: v })}
+                      />
+                    </div>
                   </>
                 )}
               </TabsContent>

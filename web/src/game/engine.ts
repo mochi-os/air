@@ -109,7 +109,8 @@ Object.assign(cfg, config);   // mission-setup menu overrides saved/defaults
 cfg.view="hud";   // start in HUD (view 2); 1-5 select views, V swaps cockpit/HUD
 let running=false, has_enemy=true;
 const MULTIPLAYER=!!join;            // in a live match the map/P must never freeze the world
-if(MULTIPLAYER){ cfg.task="joust"; cfg.extra_aircraft=0; cfg.missiles=false; }   // multiplayer: air start, no local AI; the match rules from the welcome may re-allow missiles
+if(MULTIPLAYER){ cfg.task="joust"; cfg.extra_aircraft=0; cfg.missiles=false; cfg.cheats={}; }   // multiplayer: air start, no local AI; the match rules from the welcome may re-allow missiles and set the match cheats (the menu's own cheats never leak into a match)
+const cheat=(name)=>!!(cfg.cheats&&cfg.cheats[name]);   // mission cheats: invulnerable (humans only — the server enforces it in multiplayer), ammunition, fuel
 const DEV_MODE=new URLSearchParams(location.search).get("developer")==="1";   // &developer=1: landing/trap test autopilot (Shift+1..0), deck align (0), stab cycle (Shift+E), telemetry (Shift+T), cloud A/B (Shift+X), position copy (Shift+P), and ALL query hooks (?fly/clouds/tod/harm/view/start/sweep/shot/cat/glassdebug) — outside developer mode none of the scaffolding parses (#105)
 const GLASS_DEBUG=DEV_MODE&&new URLSearchParams(location.search).get("glassdebug")==="1";   // magenta outline of the HUD-glass clip quad
 let TEST_SCENARIOS=DEV_MODE;         // (DEV_MODE must be declared FIRST: initializing these from it a line early was a temporal-dead-zone crash at module load)
@@ -1158,7 +1159,7 @@ function fire_gun(st,target,key,dt,force){
 	if(!active) return 0; if(st.rounds!==undefined && st.rounds<=0) return 0; if(!cfg.tracers && st===ownship) {} // tracers toggle only affects render
 	const rps=100; gun[key]=(gun[key]||0)+rps*dt;   // M61 Vulcan: 6000 rpm = 100 rounds/sec
 	let fired=0;
-	while(gun[key]>=1){ gun[key]-=1; fired++; if(st.rounds!==undefined){ if(st.rounds<=0) break; st.rounds--; }
+	while(gun[key]>=1){ gun[key]-=1; fired++; if(st.rounds!==undefined){ if(st.rounds<=0) break; if(!cheat("ammunition")) st.rounds--; }
 		const tr=(Math.floor(gun[key+"_n"]||0)%5)===0; gun[key+"_n"]=(gun[key+"_n"]||0)+1;
 		if(!tr) continue;   // only 1 in 5 rounds is a visible tracer; the rest fire invisibly
 		const k=pool_spawn(tracers); if(k<0) break; const sp=body_offset(st,6.53,0.43,0.0);   // the M61 port: nose-top centreline, ~0.9 m ahead of and ~0.12 m below the pilot's eye (runtime-calibrated at 5.61/0.55 from Pilot_Head_769) — matches the server's hitscan muzzle
@@ -2000,7 +2001,7 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(ch===key_of("launch") && launch_status()===2){ if((ownship.fold??0)>0.02) notice(translate("SPREAD WINGS")); else start_launch(); }   // only when spotted on the cat, lined up, at full power — and never with the wings folded
 		if(ch===key_of("missile") && !weapons_hold && !ownship.launching && (ownship.gear??0)>0.98 && cfg.missiles && ownship.msl>0){
 			if(MULTIPLAYER) missile_flag=true;   // the server acquires and scores; the local launch is the visual
-			if(launch_missile(ownship,MULTIPLAYER?remote_nearest():(has_enemy?bandit:null))){ ownship.msl--; audio_launch(); update_rails(ownship,ownship.msl); } }   // weapons safe unless the gear is fully up
+			if(launch_missile(ownship,MULTIPLAYER?remote_nearest():(has_enemy?bandit:null))){ if(!cheat("ammunition")) ownship.msl--; audio_launch(); update_rails(ownship,ownship.msl); } }   // weapons safe unless the gear is fully up
 		if(TEST_SCENARIOS && e.ctrlKey && k==="KeyC"){ copy_here(); notice("POSITION COPIED"); }   // dev (Ctrl+C): the live position line to the clipboard — for identifying deck locations (spots, markings) by taxiing onto them
 		if(ch===key_of("probe")){ ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; notice(ownship.probeTarget?translate("PROBE OUT"):translate("PROBE IN")); }   // refueling probe (real limit is ~300 KCAS — procedural, not enforced)
 		if(ch===key_of("fold")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.foldTarget=(ownship.foldTarget??0)>0.5?0:1; notice(ownship.foldTarget?translate("WINGS FOLDING"):translate("WINGS SPREADING")); } else notice(translate("WINGS LOCKED")); }   // wing fold — ground only, taxi speeds; the outer panels carry the ailerons and outer slats with them
@@ -2417,6 +2418,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	if(ownship.speed>0.5) ownship.vel_dir.set(ownship.velx/ownship.speed,ownship.vely/ownship.speed,ownship.velz/ownship.speed); else ownship.vel_dir.copy(ownship.fwd);
 	ownship.aoa=out[STATE.alpha]*180/Math.PI; ownship.gload=out[STATE.nz];
 	{ const before=ownship.fuel??1e9; ownship.fuel=out[STATE.fuel];   // the tank state, for the IFEI readout and the calls
+		if(!MULTIPLAYER && cheat("fuel") && ownship.fuel<FUEL()*0.9){ const b=flight_get(); b[STATE.fuel]=FUEL(); flight_set(b); ownship.fuel=FUEL(); }   // infinite fuel: top the tank back up before it can burn down (multiplayer refills server-side; the corrections carry it)
 		if(before>=BINGO&&ownship.fuel<BINGO) notice(translate("BINGO FUEL"));
 		if(before>=FUELLO&&ownship.fuel<FUELLO) notice(translate("FUEL LO")); }
 	ownship.cas=out[STATE.cas];   // calibrated airspeed, m/s — the real jet's HUD speed source
@@ -2582,7 +2584,7 @@ function fly_bandit(dt){
 			if(bandit.merging&&(wrap_distance(bandit.pos,ownship.pos)<500||bandit.fwd.dot(_v.subVectors(ownship.pos,bandit.pos))<0)) bandit.merging=false;   // keep the merge flag honest for the SP weapons hold
 			if(step.flare&&cfg.flares){ dispense_flares(bandit); bandit.flared_at=sim_time; }
 			const fired=fire_gun(bandit,ownship,"bandit",dt,step.fire);
-			if(fired>0){ const verdict=battle_burst(-1,battle_pose(bandit),null,fired,1,battle_tick);
+			if(fired>0 && !cheat("invulnerable")){ const verdict=battle_burst(-1,battle_pose(bandit),null,fired,1,battle_tick);
 				if(verdict.hits>0){ hit_flash=Math.min(1,hit_flash+0.25*verdict.hits); audio_hit(verdict.hits); } }
 			return;
 		}
@@ -2593,7 +2595,7 @@ function fly_bandit(dt){
 		if(rng<500 || to_own.dot(bandit.fwd)<0){ bandit.merging=false; }
 		else { steer(bandit,to_own.clone(),dt,0.3,1.0); apply_orientation(bandit);
 			const fired=fire_gun(bandit,ownship,"bandit",dt);
-			if(fired>0){ const verdict=battle_burst(-1,battle_pose(bandit),null,fired,1,battle_tick);
+			if(fired>0 && !cheat("invulnerable")){ const verdict=battle_burst(-1,battle_pose(bandit),null,fired,1,battle_tick);
 				if(verdict.hits>0){ hit_flash=Math.min(1,hit_flash+0.25*verdict.hits); audio_hit(verdict.hits); } }
 			return; }
 	}
@@ -2606,7 +2608,7 @@ function fly_bandit(dt){
 	// bandit guns at ownship: the burst lands in the flight core's damage
 	// state, so the jet genuinely flies worse after every hit
 	{ const fired=fire_gun(bandit,ownship,"bandit",dt);
-		if(fired>0){ const verdict=battle_burst(-1,battle_pose(bandit),null,fired,1,battle_tick);
+		if(fired>0 && !cheat("invulnerable")){ const verdict=battle_burst(-1,battle_pose(bandit),null,fired,1,battle_tick);
 			if(verdict.hits>0){ hit_flash=Math.min(1,hit_flash+0.25*verdict.hits); audio_hit(verdict.hits); } } }
 }
 
@@ -3341,6 +3343,7 @@ function net_connect(){
 		if(typeof rules.clouds==="string"&&["none","cumulus","high_stratus","low_stratus"].includes(rules.clouds)){
 			cfg.clouds=rules.clouds; apply_clouds(); if(cloud_active()) size_rt(); }   // apply_clouds runs even for "none": it zeroes the overcast/shadow uniforms on the ocean and sky
 		cfg.missiles=rules.missiles===true;
+		cfg.cheats=(rules.cheats&&typeof rules.cheats==="object")?rules.cheats:{};   // the creator's match cheats: the server enforces them; the client mirrors the ammo gates so the HUD counters and the launch gate agree
 		})
 	.catch((error)=>{ console.error("furball multiplayer:", error);   // the HUD shows the headline; the console keeps the cause
 		notice(translate("CONNECTION FAILED")); setTimeout(()=>{ if(running){ running=false; if(onExit) onExit(); } },1800); }); }
