@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "Maaloo walqunnamtii intarneetii kee mirkaneeffadhuutii irra deebi'ii yaali."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:188
+#: src/components/Multiplayer.tsx:189
 msgid "{0} flying"
 msgstr "{0} balali'aa jiru"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:323
+#: src/components/Multiplayer.tsx:354
 msgid "{0}/{1} players"
 msgstr "Taphattoota {0}/{1}"
 
-#: src/components/Multiplayer.tsx:131
+#: src/components/Multiplayer.tsx:132
 msgid "{name}'s match"
 msgstr "Dorgommii {name}"
 
@@ -94,7 +94,7 @@ msgid "Account verified"
 msgstr "Akkaawuntiin mirkanaa'e"
 
 #: src/components/MissionSetup.tsx:968
-#: src/components/Multiplayer.tsx:275
+#: src/components/Multiplayer.tsx:306
 msgid "Ace"
 msgstr "Jagna"
 
@@ -144,7 +144,7 @@ msgstr "Mul'ata dabali"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Mul'ataa fi caasaa fedhii kee waliin haa wal simu sirreessi."
 
-#: src/components/MissionSetup.tsx:1146
+#: src/components/MissionSetup.tsx:1174
 msgid "Afterburner"
 msgstr "Afterburner"
 
@@ -260,7 +260,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Fedhii cimsi"
 
-#: src/components/Multiplayer.tsx:267
+#: src/components/Multiplayer.tsx:298
 msgid "Bots"
 msgstr "Bootota"
 
@@ -276,7 +276,7 @@ msgstr "Qabduu {i}"
 msgid "Buttons"
 msgstr "Qabduuwwan"
 
-#: src/components/Multiplayer.tsx:173
+#: src/components/Multiplayer.tsx:174
 msgid "Callsign"
 msgstr "Maqaa waamichaa"
 
@@ -323,6 +323,10 @@ msgstr "Ramaddii beeksisaa jijjiiri"
 msgid "Chase view:"
 msgstr "Mul'ata ari'achuu:"
 
+#: src/components/MissionSetup.tsx:1023
+msgid "Cheats"
+msgstr "Gowwoomsaa"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:328
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
 msgstr "Akaakuu jechaa kan duraan baballate, dhokkachaa mallattoo qofa, ykn caasaa guutuu gidduu filadhu"
@@ -350,7 +354,7 @@ msgstr "Afaan filadhu"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:233
 msgid "Clear"
 msgstr "Cilliisi"
 
@@ -396,7 +400,7 @@ msgstr "Barbaadii cufi"
 msgid "closer"
 msgstr "dhihoo"
 
-#: src/components/MissionSetup.tsx:1034
+#: src/components/MissionSetup.tsx:1062
 msgid "Clouds"
 msgstr "Duumessoota"
 
@@ -429,7 +433,7 @@ msgstr "Walitti qabame"
 msgid "Confirm"
 msgstr "Mirkaneessi"
 
-#: src/components/Multiplayer.tsx:191
+#: src/components/Multiplayer.tsx:192
 msgid "Connecting…"
 msgstr "Walqunnamaa jira…"
 
@@ -461,7 +465,7 @@ msgstr "Garagalchi"
 msgid "Corner speed (best instant turn)"
 msgstr "Saffisa golee (goruu battalaa gaarii)"
 
-#: src/components/Multiplayer.tsx:143
+#: src/components/Multiplayer.tsx:144
 msgid "Could not create the match"
 msgstr "Dorgommii uumuun hin milkoofne"
 
@@ -485,11 +489,11 @@ msgstr "Akkaawuntii sana waliin mirkaneessuun hin danda'amne. Maaloo irra deebi'
 msgid "CRASHED"
 msgstr "KUFE"
 
-#: src/components/Multiplayer.tsx:304
+#: src/components/Multiplayer.tsx:335
 msgid "Create and fly"
 msgstr "Uumiitii balali'i"
 
-#: src/components/Multiplayer.tsx:206
+#: src/components/Multiplayer.tsx:207
 msgid "Create match"
 msgstr "Dorgommii uumi"
 
@@ -498,8 +502,8 @@ msgstr "Dorgommii uumi"
 msgid "Credits"
 msgstr "Galata"
 
-#: src/components/MissionSetup.tsx:1041
-#: src/components/Multiplayer.tsx:233
+#: src/components/MissionSetup.tsx:1069
+#: src/components/Multiplayer.tsx:234
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -533,8 +537,8 @@ msgstr "Akkaataa dukkanaa"
 msgid "Data conflict"
 msgstr "Walitti bu'iinsa deetaa"
 
-#: src/components/MissionSetup.tsx:1029
-#: src/components/Multiplayer.tsx:228
+#: src/components/MissionSetup.tsx:1057
+#: src/components/Multiplayer.tsx:229
 msgid "Day"
 msgstr "Guyyaa"
 
@@ -603,7 +607,7 @@ msgstr "Dhiisi"
 msgid "Displays the mobile sidebar."
 msgstr "Cinaa moobaayilaa mul'isa."
 
-#: src/components/MissionSetup.tsx:1134
+#: src/components/MissionSetup.tsx:1162
 msgid "Distance LOD"
 msgstr "LOD fageenyaa"
 
@@ -616,11 +620,11 @@ msgstr "Buufadhu"
 msgid "Download failed"
 msgstr "Buufachuun hin milkoofne"
 
-#: src/components/Multiplayer.tsx:271
+#: src/components/Multiplayer.tsx:302
 msgid "Drone"
 msgstr "Diroonii"
 
-#: src/components/MissionSetup.tsx:1128
+#: src/components/MissionSetup.tsx:1156
 msgid "Dynamic resolution"
 msgstr "Resoluushinii dinaamikaawaa"
 
@@ -644,7 +648,7 @@ msgstr "UTAALEE BA'E"
 msgid "Email code"
 msgstr "Koodii imeelii"
 
-#: src/components/Multiplayer.tsx:322
+#: src/components/Multiplayer.tsx:353
 msgid "empty"
 msgstr "duwwaa"
 
@@ -675,11 +679,11 @@ msgstr "Babalʼisi"
 msgid "Expand sidebar"
 msgstr "Sidebar baldhisi"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1128
 msgid "Exterior detail"
 msgstr "Bal'ina alaa"
 
-#: src/components/MissionSetup.tsx:1116
+#: src/components/MissionSetup.tsx:1144
 msgid "Extra aircraft"
 msgstr "Xayyaara dabalataa"
 
@@ -737,7 +741,7 @@ msgstr "flares"
 
 #: src/components/MissionSetup.tsx:165
 #: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:1164
+#: src/components/MissionSetup.tsx:1192
 msgid "Flares"
 msgstr "Flares"
 
@@ -757,7 +761,7 @@ msgstr "HANDHUURRI BALALII HIN MILKOOFNE"
 msgid "Floating"
 msgstr "Bilisa"
 
-#: src/components/MissionSetup.tsx:1170
+#: src/components/MissionSetup.tsx:1198
 msgid "Framerate"
 msgstr "Saffisa fireemii"
 
@@ -783,7 +787,7 @@ msgid "From theme"
 msgstr "Akeeka irraa"
 
 #: src/components/MissionSetup.tsx:944
-#: src/components/Multiplayer.tsx:243
+#: src/components/Multiplayer.tsx:244
 msgid "Fuel"
 msgstr "Boba'aa"
 
@@ -874,12 +878,12 @@ msgstr "Dhoksi"
 msgid "Hide password"
 msgstr "Jecha darbii dhoksi"
 
-#: src/components/MissionSetup.tsx:1080
+#: src/components/MissionSetup.tsx:1108
 msgid "High"
 msgstr "Ol'aanaa"
 
-#: src/components/MissionSetup.tsx:1042
-#: src/components/Multiplayer.tsx:234
+#: src/components/MissionSetup.tsx:1070
+#: src/components/Multiplayer.tsx:235
 msgid "High stratus"
 msgstr "Istraatasii ol'aanaa"
 
@@ -910,6 +914,16 @@ msgstr "Imperiyaal"
 msgid "In air"
 msgstr "Qilleensa keessa"
 
+#: src/components/MissionSetup.tsx:1034
+#: src/components/Multiplayer.tsx:283
+msgid "Infinite ammunition"
+msgstr "Rasaasa hin dhumne"
+
+#: src/components/MissionSetup.tsx:1040
+#: src/components/Multiplayer.tsx:293
+msgid "Infinite fuel"
+msgstr "Boba'aa hin dhumne"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:252
 msgid "Inset"
 msgstr "Keessoo"
@@ -926,7 +940,12 @@ msgstr "Koodii mirkanaa sirrii hin taane"
 msgid "Invert pitch"
 msgstr "Pitch garagalchuu"
 
-#: src/components/Multiplayer.tsx:336
+#: src/components/MissionSetup.tsx:1028
+#: src/components/Multiplayer.tsx:273
+msgid "Invulnerable (human players only)"
+msgstr "Kan hin miidhamne (taphattoota namaa qofa)"
+
+#: src/components/Multiplayer.tsx:367
 msgid "Join"
 msgstr "Seeni"
 
@@ -934,11 +953,11 @@ msgstr "Seeni"
 msgid "JOINED"
 msgstr "SEENEERA"
 
-#: src/components/Multiplayer.tsx:321
+#: src/components/Multiplayer.tsx:352
 msgid "Joust"
 msgstr "Wal-lola"
 
-#: src/components/Multiplayer.tsx:220
+#: src/components/Multiplayer.tsx:221
 msgid "Joust — 1v1, first kill wins"
 msgstr "Wal-lola — 1v1, kan dura kuffise ni mo'ata"
 
@@ -989,7 +1008,7 @@ msgstr "Darbi (furrisaa)"
 msgid "Layout"
 msgstr "Bocii"
 
-#: src/components/Multiplayer.tsx:256
+#: src/components/Multiplayer.tsx:257
 msgid "lb"
 msgstr "lb"
 
@@ -1091,12 +1110,12 @@ msgstr "Mirgatti ilaali"
 msgid "Look up"
 msgstr "Ol ilaali"
 
-#: src/components/MissionSetup.tsx:1076
+#: src/components/MissionSetup.tsx:1104
 msgid "Low"
 msgstr "Gad'aanaa"
 
-#: src/components/MissionSetup.tsx:1043
-#: src/components/Multiplayer.tsx:235
+#: src/components/MissionSetup.tsx:1071
+#: src/components/Multiplayer.tsx:236
 msgid "Low stratus"
 msgstr "Istraatasii gad'aanaa"
 
@@ -1122,12 +1141,12 @@ msgstr "Hunda dubbifame jechuu mallatteessi"
 msgid "Master"
 msgstr "Waliigala"
 
-#: src/components/Multiplayer.tsx:216
+#: src/components/Multiplayer.tsx:217
 msgid "Match type"
 msgstr "Gosa dorgommii"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1078
+#: src/components/MissionSetup.tsx:1106
 msgid "Medium"
 msgstr "Giddu-galeessa"
 
@@ -1156,11 +1175,11 @@ msgstr "missaayilii"
 msgid "Missile"
 msgstr "Miisaayilii"
 
-#: src/components/MissionSetup.tsx:1158
+#: src/components/MissionSetup.tsx:1186
 msgid "Missiles"
 msgstr "Miisaayiloota"
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:263
 msgid "Missiles allowed"
 msgstr "Misaa'elonni ni hayyamamu"
 
@@ -1180,7 +1199,7 @@ msgstr "Siiqqee sochoosi…"
 msgid "Multiplayer"
 msgstr "Multiplayer"
 
-#: src/components/Multiplayer.tsx:152
+#: src/components/Multiplayer.tsx:153
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer WebTransport barbaada, kan biraawzarri kun ammallee hin deeggarre."
 
@@ -1198,8 +1217,8 @@ msgstr "Haaraa"
 msgid "Next image"
 msgstr "Suuraa itti aanu"
 
-#: src/components/MissionSetup.tsx:1030
-#: src/components/Multiplayer.tsx:229
+#: src/components/MissionSetup.tsx:1058
+#: src/components/Multiplayer.tsx:230
 msgid "Night"
 msgstr "Halkan"
 
@@ -1219,7 +1238,7 @@ msgstr "Garreen hin jiran"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Joystick tokkollee hin argamne — dammaqsuuf qabduu isaa kamiyyuu dhiibi."
 
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:344
 msgid "No open matches — create one."
 msgstr "Dorgommiin banaa hin jiru — tokko uumi."
 
@@ -1248,7 +1267,7 @@ msgstr "Hanga ammaatti galmeen mata duree hin jiru — beeksisa itti aanu booda 
 msgid "No users found"
 msgstr "Fayyadamtoonni hin argamne"
 
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:344
 msgid "No world server."
 msgstr "Serveriin addunyaa hin jiru."
 
@@ -1261,7 +1280,7 @@ msgstr "QABXII HIN JIRU"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:354
 #: src/components/MissionSetup.tsx:408
-#: src/components/MissionSetup.tsx:1040
+#: src/components/MissionSetup.tsx:1068
 msgid "None"
 msgstr "Tokko illee"
 
@@ -1285,7 +1304,7 @@ msgstr "Hin qabamne"
 msgid "Notifications"
 msgstr "Beeksisaalee"
 
-#: src/components/MissionSetup.tsx:1108
+#: src/components/MissionSetup.tsx:1136
 msgid "Ocean detail"
 msgstr "Bal'ina galaanaa"
 
@@ -1305,11 +1324,11 @@ msgstr "Daandii balalii irra"
 msgid "Oops! Page Not Found!"
 msgstr "Hoo! Fuulli hin argamne!"
 
-#: src/components/Multiplayer.tsx:321
+#: src/components/Multiplayer.tsx:352
 msgid "Open"
 msgstr "Bani"
 
-#: src/components/Multiplayer.tsx:219
+#: src/components/Multiplayer.tsx:220
 msgid "Open — anyone may join or leave"
 msgstr "Banaa — namni kamiyyuu makamuu ykn bahuu ni danda'a"
 
@@ -1382,13 +1401,13 @@ msgstr "Dhaabsisi"
 msgid "PAUSED"
 msgstr "DHAABBATE"
 
-#: src/components/Multiplayer.tsx:89
-#: src/components/Multiplayer.tsx:178
+#: src/components/Multiplayer.tsx:90
+#: src/components/Multiplayer.tsx:179
 msgid "pilot"
 msgstr "balaliisaa"
 
 #: src/components/MissionSetup.tsx:966
-#: src/components/Multiplayer.tsx:273
+#: src/components/Multiplayer.tsx:304
 msgid "Pilot"
 msgstr "Balaliisaa"
 
@@ -1425,7 +1444,7 @@ msgstr "Maaloo irra deebi'ii yaali."
 msgid "Please wait a moment and try again."
 msgstr "Maaloo yeroo xiqqoo eegiitii irra deebi'ii yaali."
 
-#: src/components/MissionSetup.tsx:1063
+#: src/components/MissionSetup.tsx:1091
 msgid "Preset"
 msgstr "Qophii duraa"
 
@@ -1507,7 +1526,7 @@ msgstr "Dantaa hir'isi"
 msgid "Reference"
 msgstr "Wabii"
 
-#: src/components/Multiplayer.tsx:196
+#: src/components/Multiplayer.tsx:197
 msgid "Refresh"
 msgstr "Haaromsi"
 
@@ -1552,7 +1571,7 @@ msgstr "Imeelii irra deebi'ii ergi"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1212
+#: src/components/MissionSetup.tsx:1240
 msgid "Reset"
 msgstr "Haaromsi"
 
@@ -1560,15 +1579,15 @@ msgstr "Haaromsi"
 msgid "Reset all settings to default values"
 msgstr "Qindaa'inoota hunda gara durtiitti deebisi"
 
-#: src/components/MissionSetup.tsx:1090
+#: src/components/MissionSetup.tsx:1118
 msgid "Resolution"
 msgstr "Furmaata"
 
-#: src/components/MissionSetup.tsx:1184
+#: src/components/MissionSetup.tsx:1212
 msgid "Restart"
 msgstr "Irra deebiin jalqabuu"
 
-#: src/components/MissionSetup.tsx:1188
+#: src/components/MissionSetup.tsx:1216
 msgid "Resume"
 msgstr "Itti fufi"
 
@@ -1597,7 +1616,7 @@ msgid "Roll right"
 msgstr "Roll mirgatti"
 
 #: src/components/MissionSetup.tsx:965
-#: src/components/Multiplayer.tsx:272
+#: src/components/Multiplayer.tsx:303
 msgid "Rookie"
 msgstr "Jalqabaa"
 
@@ -1734,7 +1753,7 @@ msgstr "Madda fi galma qindeessi"
 msgid "Settings"
 msgstr "Qindaa'inoota"
 
-#: src/components/MissionSetup.tsx:1140
+#: src/components/MissionSetup.tsx:1168
 msgid "Shadows"
 msgstr "Gaaddidduuwwan"
 
@@ -1810,7 +1829,7 @@ msgid "Stall, landing config (Vs0)"
 msgstr "Stall, haala qubannaa (Vs0)"
 
 #: src/components/MissionSetup.tsx:988
-#: src/components/MissionSetup.tsx:1194
+#: src/components/MissionSetup.tsx:1222
 msgid "Start"
 msgstr "Jalqabi"
 
@@ -1914,7 +1933,7 @@ msgstr "Saffisa goruu itti-fufaa cimaa"
 msgid "tilt"
 msgstr "dabsuu"
 
-#: src/components/MissionSetup.tsx:1023
+#: src/components/MissionSetup.tsx:1051
 msgid "Time of day"
 msgstr "Yeroo guyyaa"
 
@@ -1957,7 +1976,7 @@ msgstr "Gaaffiiwwan baay'ee garmalee"
 msgid "Top"
 msgstr "Ol"
 
-#: src/components/MissionSetup.tsx:1152
+#: src/components/MissionSetup.tsx:1180
 msgid "Tracers"
 msgstr "Tracers"
 
@@ -1992,7 +2011,7 @@ msgstr "Fayyadamtoota barbaaduuf barreessi"
 msgid "Type to search..."
 msgstr "Barbaaduuf barreessi..."
 
-#: src/components/MissionSetup.tsx:1082
+#: src/components/MissionSetup.tsx:1110
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -2056,7 +2075,7 @@ msgid "Vertical"
 msgstr "Ol-ka'aa"
 
 #: src/components/MissionSetup.tsx:967
-#: src/components/Multiplayer.tsx:274
+#: src/components/Multiplayer.tsx:305
 msgid "Veteran"
 msgstr "Ogeessa"
 
@@ -2102,7 +2121,7 @@ msgid "Weapons"
 msgstr "Meeshaalee waraanaa"
 
 #: src/components/MissionSetup.tsx:911
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:226
 msgid "Weather"
 msgstr "Haala qilleensaa"
 
@@ -2127,11 +2146,11 @@ msgstr "Dachaa qoochoo"
 msgid "WINS"
 msgstr "NI MO'ATA"
 
-#: src/components/Multiplayer.tsx:162
+#: src/components/Multiplayer.tsx:163
 msgid "World server"
 msgstr "Serverii addunyaa"
 
-#: src/components/Multiplayer.tsx:100
+#: src/components/Multiplayer.tsx:101
 msgid "World server not reachable"
 msgstr "Serverii addunyaa qaqqabuun hin danda'amne"
 

@@ -60,7 +60,8 @@ export interface MissionConfig {
   framerate: boolean
   world: string
   callsign: string
-  [key: string]: string | number | boolean | Record<string, string> | Record<string, number> | Record<string, StickBindings>
+  cheats: Record<string, boolean> // invulnerable (humans only), ammunition, fuel — mission cheats; a multiplayer match takes its own set from the creator
+  [key: string]: string | number | boolean | Record<string, string> | Record<string, number> | Record<string, boolean> | Record<string, StickBindings>
 }
 
 // Mirrors the engine's defaults so the menu reflects what an unconfigured game uses.
@@ -92,6 +93,7 @@ export const DEFAULT_CONFIG: MissionConfig = {
   framerate: false,
   world: '',
   callsign: '',
+  cheats: {},
 }
 
 export type GraphicsPreset = 'low' | 'med' | 'high' | 'ultra'
