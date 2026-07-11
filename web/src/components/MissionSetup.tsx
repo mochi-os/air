@@ -952,7 +952,7 @@ export function MissionSetup({
                 </SectionLabel>
                 <SliderRow
                   label={<Trans>Load</Trans>}
-                  value={Number(config.fuel) || 6600}
+                  value={Number(config.fuel) || 6000}
                   min={1500}
                   max={10800}
                   step={100}
