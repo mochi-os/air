@@ -2476,7 +2476,7 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 	b[STATE.attitude]=ownship.q.w; b[STATE.attitude+1]=ownship.q.x; b[STATE.attitude+2]=ownship.q.y; b[STATE.attitude+3]=ownship.q.z;
 	b[STATE.extension]=(ownship.gearTarget??0)<0.5?1:0;   // the core's gear matches the spawn configuration immediately — a landing start otherwise spends its first seconds extending (flaps absent, trim shifting)
 	b[STATE.omega]=0; b[STATE.omega+1]=0; b[STATE.omega+2]=0;
-	if(b[STATE.fuel]<500) b[STATE.fuel]=FUEL();
+	if(b[STATE.time]===0 || b[STATE.fuel]<500) b[STATE.fuel]=FUEL();   // a NEVER-STEPPED core boots with the airframe's full 4,900 kg tank — without the time gate the menu's fuel load never reached ground starts (carrier/runway read 10,800 lb whatever the slider said); mid-mission resets still keep their burned-down tank
 	b[STATE.engine]=ownship.throttle; b[STATE.engine+1]=0; b[STATE.engine+2]=ownship.throttle; b[STATE.engine+3]=0;
 	for(let i=STATE.stabilator;i<=STATE.normal;i++) b[i]=0;   // surfaces + controller memories
 	b[STATE.demand]=1; b[STATE.normal]=1;
@@ -3345,6 +3345,7 @@ function net_frame(dt){
 		st.velx=st.fwd.x*pose.speed; st.vely=st.fwd.y*pose.speed; st.velz=st.fwd.z*pose.speed;
 		st.gearTarget=pose.gear?0:1; st.hookTarget=pose.hook?1:0; st.speedbrakeTarget=pose.speedbrake;
 		st.name=pose.name; st.group.visible=pose.alive;
+		if(pose.alive&&pose.fire) fire_gun(st,ownship,"r"+slot,dt,true);   // his trigger rides the pose flags: tracers stream from his nose (visual only — the server scores the real rounds)
 		if(pose.alive){ const rdx=st.pos.x-ownship.pos.x, rdy=st.pos.y-ownship.pos.y, rdz=st.pos.z-ownship.pos.z;
 			const range=Math.hypot(rdx,rdy,rdz)||1;
 			const closure=-((st.velx-ownship.velx)*rdx+(st.vely-ownship.vely)*rdy+(st.velz-ownship.velz)*rdz)/range;
@@ -3353,7 +3354,33 @@ function net_frame(dt){
 		if(pose.alive){ const burning=Math.max(pose.burn?pose.burn[0]:0, pose.burn?pose.burn[1]:0);   // #78: the damage you inflicted shows on their jet
 			if(burning>0) burn_trail(st.pos,burning,st.velx,st.vely,st.velz);
 			if((pose.leak||0)>0.1) leak_trail(st.pos,pose.leak,st.velx,st.vely,st.velz); } }
-	for(const slot of [...remotes.keys()]) if(!seen.has(slot)) remote_drop(slot); }
+	for(const slot of [...remotes.keys()]) if(!seen.has(slot)) remote_drop(slot);
+	update_darts(dt); }
+// Server missiles ("darts", net.darts): every missile near the player rides
+// the poses datagram as position+velocity+shooter. Render everyone ELSE's —
+// the own launch already flies a local visual — dead-reckoned between the
+// 20 Hz snapshots, with the same reduced-smoke trail as the local missiles.
+const darts_pool=[]; const _dart_axis=new THREE.Vector3(1,0,0); const _dart_q=new THREE.Quaternion();
+function update_darts(dt){
+	if(!net) return;
+	while(darts_pool.length<6){ const mesh=new THREE.Mesh(missile_geo,missile_mat); mesh.visible=false; scene.add(mesh); darts_pool.push({mesh,acc:0}); }
+	const age=(performance.now()-(net.dartsAt||0))/1000;   // seconds since the dart set arrived
+	let used=0;
+	for(const d of (net.darts||[])){
+		if(d.shooter===net.slot) continue;
+		if(used>=darts_pool.length) break;
+		const p=darts_pool[used++]; p.mesh.visible=age<1.0;   // a stale set (detonated, or out of the top six) disappears rather than flying on forever
+		const x=d.position[0]+d.velocity[0]*age, y=d.position[1]+d.velocity[1]*age, z=d.position[2]+d.velocity[2]*age;
+		p.mesh.position.set(x,y,z);
+		_v.set(d.velocity[0],d.velocity[1],d.velocity[2]);
+		if(_v.lengthSq()>1){ _dart_q.setFromUnitVectors(_dart_axis,_v.normalize()); p.mesh.quaternion.copy(_dart_q); }
+		if(!p.mesh.visible) continue;
+		p.acc+=dt; const puff=0.02;
+		while(p.acc>puff){ p.acc-=puff; const k=pool_spawn(smoke); if(k<0) break;
+			smoke.px[k]=x; smoke.py[k]=y; smoke.pz[k]=z; smoke.vx[k]=(Math.random()-0.5)*6; smoke.vy[k]=(Math.random()-0.5)*6+2; smoke.vz[k]=(Math.random()-0.5)*6;
+			smoke.ttl[k]=smoke.life[k]=2.8; smoke.r[k]=0.7; smoke.g[k]=0.72; smoke.b[k]=0.75; } }
+	for(let i=used;i<darts_pool.length;i++) darts_pool[i].mesh.visible=false;
+}
 function net_connect(){
 	net_dial(join,{ event:net_event, end:(reason,results)=>net_end(reason||"finished",results), close:()=>net_end("gone") })
 	.then((n)=>{ net=n; match_started=Date.now();
