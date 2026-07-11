@@ -2398,7 +2398,7 @@ function flight_world(){
 	// Multiplayer must mirror the SERVER's world exactly (sea-only, the match
 	// seed and wrap) — a client-side carrier the server doesn't simulate would
 	// poison prediction; deck operations stay single-player for now.
-	if(MULTIPLAYER) return { aircraft:own_aircraft(), environment:{ seed:(net&&net.welcome&&net.welcome.seed)||1, wrap:(net&&net.wrap)||WORLD_WRAP }, world:{ sea:3 } };
+	if(MULTIPLAYER) return { aircraft:own_aircraft(), environment:{ seed:(net&&net.welcome&&net.welcome.seed)||1, wrap:(net&&net.wrap)||WORLD_WRAP, cheat:{ fuel:cheat("fuel") } }, world:{ sea:3 } };   // the prediction core must freeze the tank exactly as the server does, or fuel drift feeds the corrections forever
 	const fields=[{ height:ISLAND_H+AIRFIELD_FLOAT, strips:physics_strips.map(c=>({ a:{x:c.a[0], z:c.a[1]}, b:{x:c.b[0], z:c.b[1]}, width:c.w })) }];
 	for(const is of obstacles.islands) fields.push({ height:ISLAND_H, coast:is.pts.map(q=>({x:q[0], z:q[1]})) });
 	const carrier={ position:{x:CARRIER.x, y:CARRIER.deckY, z:CARRIER.z}, heading:CARRIER_YD, speed:0,
@@ -2407,7 +2407,7 @@ function flight_world(){
 		wires:SHIP.wires.map(fa=>({ a:{x:fa+SHIP.halfspan*STRIP_ULAT, y:0, z:strip_lat(fa)-SHIP.halfspan*STRIP_UFA}, b:{x:fa-SHIP.halfspan*STRIP_ULAT, y:0, z:strip_lat(fa)+SHIP.halfspan*STRIP_UFA} })) };   // pendants span SQUARE TO THE LANDING STRIP, as a real angled deck rigs them (the hook crosses them perpendicular on rollout); ship-axis-aligned wires skewed the catch geometry. NOT the topple fix — that was the world-side wing-leveler (#72 scenario 9) — but correct regardless
 	const cl=CLOUDS[cfg.clouds];
 	const cloud=(cl&&cl.flat<0.5)?{ base:cl.base, top:cl.top, high:cl.high, convective:1, gate:{ minimum:cl.gate[0], maximum:cl.gate[1] } }:undefined;   // #122: convective presets bump and lift; stratiform decks are STABLE air and stay deliberately smooth
-	return { aircraft:cfg.aircraft||"fa18c", environment:{ seed:1, wrap:WORLD_WRAP, cloud }, world:{ sea:0, fields, carrier } };
+	return { aircraft:cfg.aircraft||"fa18c", environment:{ seed:1, wrap:WORLD_WRAP, cloud, cheat:{ fuel:cheat("fuel") } }, world:{ sea:0, fields, carrier } };
 }
 function sync_core(out){   // core state -> the ownship object every consumer reads (HUD, cameras, weapons, LSO)
 	ownship.pos.set(out[STATE.position],out[STATE.position+1],out[STATE.position+2]);
@@ -2417,8 +2417,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.speed=Math.hypot(ownship.velx,ownship.vely,ownship.velz);
 	if(ownship.speed>0.5) ownship.vel_dir.set(ownship.velx/ownship.speed,ownship.vely/ownship.speed,ownship.velz/ownship.speed); else ownship.vel_dir.copy(ownship.fwd);
 	ownship.aoa=out[STATE.alpha]*180/Math.PI; ownship.gload=out[STATE.nz];
-	{ const before=ownship.fuel??1e9; ownship.fuel=out[STATE.fuel];   // the tank state, for the IFEI readout and the calls
-		if(!MULTIPLAYER && cheat("fuel") && ownship.fuel<FUEL()*0.9){ const b=flight_get(); b[STATE.fuel]=FUEL(); flight_set(b); ownship.fuel=FUEL(); }   // infinite fuel: top the tank back up before it can burn down (multiplayer refills server-side; the corrections carry it)
+	{ const before=ownship.fuel??1e9; ownship.fuel=out[STATE.fuel];   // the tank state, for the IFEI readout and the calls (the infinite-fuel cheat freezes it inside the core: environment.cheat.fuel)
 		if(before>=BINGO&&ownship.fuel<BINGO) notice(translate("BINGO FUEL"));
 		if(before>=FUELLO&&ownship.fuel<FUELLO) notice(translate("FUEL LO")); }
 	ownship.cas=out[STATE.cas];   // calibrated airspeed, m/s — the real jet's HUD speed source
