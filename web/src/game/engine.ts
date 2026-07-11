@@ -2323,6 +2323,7 @@ if(DEV_MODE) (globalThis as any).dev_measure=()=>{   // one-shot: the lowest mes
 	return JSON.stringify(rows.slice(0,16));
 };
 let dev_peakbank=0, dev_pitchhi=0, dev_pitchlo=0;   // true per-frame peak bank + pitch high/low since the last scenario start (#72)
+let dev_fired=0;   // frames on which any REMOTE streamed gunfire — cumulative, so a headless probe can't miss a short burst between samples
 if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most low vertex of the Hook mesh) in WORLD, vs the current wire apex — #72 wire-to-claw
 	let claw=null as any; const v=new THREE.Vector3(); const base=ownship.group.getObjectByName("Hook_AN_base_20");
 	if(base) base.traverse((o:any)=>{ if(o.isMesh&&o.geometry?.attributes?.position){ const pos=o.geometry.attributes.position; for(let i=0;i<pos.count;i++){ v.fromBufferAttribute(pos,i).applyMatrix4(o.matrixWorld); if(!claw||v.y<claw.y) claw={x:v.x,y:v.y,z:v.z}; } } });
@@ -2330,7 +2331,8 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, peak:+dev_peakbank.toFixed(1), phi:+dev_pitchhi.toFixed(1), plo:+dev_pitchlo.toFixed(1), gs:ownship.pass&&ownship.pass.n?+(ownship.pass.gs/ownship.pass.n).toFixed(2):-1, az:ownship.pass&&ownship.pass.n?+(ownship.pass.az/ownship.pass.n).toFixed(2):-1, grade:ownship.grade||"", pn:ownship.pass?ownship.pass.n:0, why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,
 	lat:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*(-carrier_ols.apz)+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apx).toFixed(1)):0,
-	along:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*carrier_ols.apx+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apz).toFixed(1)):0, fa:+carrier_fore_aft(ownship.pos.x,ownship.pos.z).toFixed(1), edge:carrier_ols?+((ownship.pos.y-carrier_ols.dy).toFixed(1)):0 });   // dev: CDP-reachable state sampler for headless scenario verification (#72)
+	along:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*carrier_ols.apx+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apz).toFixed(1)):0, fa:+carrier_fore_aft(ownship.pos.x,ownship.pos.z).toFixed(1), edge:carrier_ols?+((ownship.pos.y-carrier_ols.dy).toFixed(1)):0,
+	darts:net?net.darts.map(d=>({p:d.position.map(n=>+n.toFixed(0)),v:d.velocity.map(n=>+n.toFixed(0)),s:d.shooter})):[], drawn:darts_pool.filter(p=>p.mesh.visible).length, firing:[...remotes.values()].filter(st=>st.firing).length, fired:dev_fired, remotes:remotes.size });   // dev: CDP-reachable state sampler for headless scenario verification (#72); darts/drawn/firing/remotes verify the multiplayer weapon visuals over a live wire
 function start_test(i){ const sc=TESTS[i]; if(!sc || crash_t>0) return;
 	let T,d;
 	if(sc.carrier){ if(!carrier_ols) return; const o=carrier_ols;
@@ -3345,7 +3347,8 @@ function net_frame(dt){
 		st.velx=st.fwd.x*pose.speed; st.vely=st.fwd.y*pose.speed; st.velz=st.fwd.z*pose.speed;
 		st.gearTarget=pose.gear?0:1; st.hookTarget=pose.hook?1:0; st.speedbrakeTarget=pose.speedbrake;
 		st.name=pose.name; st.group.visible=pose.alive;
-		if(pose.alive&&pose.fire) fire_gun(st,ownship,"r"+slot,dt,true);   // his trigger rides the pose flags: tracers stream from his nose (visual only — the server scores the real rounds)
+		st.firing=!!(pose.alive&&pose.fire);
+		if(st.firing){ dev_fired++; fire_gun(st,ownship,"r"+slot,dt,true); }   // his trigger rides the pose flags: tracers stream from his nose (visual only — the server scores the real rounds)
 		if(pose.alive){ const rdx=st.pos.x-ownship.pos.x, rdy=st.pos.y-ownship.pos.y, rdz=st.pos.z-ownship.pos.z;
 			const range=Math.hypot(rdx,rdy,rdz)||1;
 			const closure=-((st.velx-ownship.velx)*rdx+(st.vely-ownship.vely)*rdy+(st.velz-ownship.velz)*rdz)/range;
