@@ -270,6 +270,8 @@ export class Net {
   private clock = NaN // EMA of (local seconds - server tick seconds): the jitter-filtered clock the pose timeline runs on
   private glide = new Map<number, { x: number; y: number; z: number; ox: number; oy: number; oz: number; at: number }>() // per-slot discontinuity smoothing: raw stream memory + decaying offset
   names = new Map<number, string>() // slot -> callsign (welcome + roster events)
+  darts: { position: [number, number, number]; velocity: [number, number, number]; shooter: number }[] = [] // the recipient's nearest server missiles, from the poses datagram — the engine renders every dart another player fired
+  dartsAt = 0 // arrival time of the dart set (performance.now()), for dead reckoning
   private tallies = new Map<number, { kills: number; deaths: number }>() // counted from kill events
   private corrected = 0 // highest acknowledged sequence already reconciled
   cored = false // the server has sent at least one own-state core
@@ -520,6 +522,24 @@ export class Net {
           }
           ring.push({ at, tick, pose })
           if (ring.length > 20) ring.shift()
+        }
+        // The missile block: 25-byte darts (position, velocity, shooter) —
+        // the recipient's nearest server missiles, capped at 6. The stride
+        // must match the server's snapshot assembly; the modulo guard shows
+        // no darts on a mismatched build rather than garbage.
+        const missiles = message.missiles as Uint8Array | undefined
+        if (missiles instanceof Uint8Array && missiles.byteLength % 25 === 0) {
+          const mv = new DataView(missiles.buffer, missiles.byteOffset)
+          const list: typeof this.darts = []
+          for (let base = 0; base + 25 <= missiles.byteLength; base += 25) {
+            list.push({
+              position: [mv.getFloat32(base, true), mv.getFloat32(base + 4, true), mv.getFloat32(base + 8, true)],
+              velocity: [mv.getFloat32(base + 12, true), mv.getFloat32(base + 16, true), mv.getFloat32(base + 20, true)],
+              shooter: mv.getUint8(base + 24),
+            })
+          }
+          this.darts = list
+          this.dartsAt = at
         }
         break
       }
