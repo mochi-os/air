@@ -280,7 +280,7 @@ export function Multiplayer({
                   onCheckedChange={(v) => setCheats((c) => ({ ...c, ammunition: v }))}
                 />
                 <Label htmlFor='rule-ammunition' className='font-normal'>
-                  <Trans>Infinite ammunition</Trans>
+                  <Trans>Unlimited ammunition</Trans>
                 </Label>
               </div>
               <div className='flex items-center gap-2'>
@@ -290,7 +290,7 @@ export function Multiplayer({
                   onCheckedChange={(v) => setCheats((c) => ({ ...c, fuel: v }))}
                 />
                 <Label htmlFor='rule-fuel' className='font-normal'>
-                  <Trans>Infinite fuel</Trans>
+                  <Trans>Unlimited fuel</Trans>
                 </Label>
               </div>
               <div className='flex flex-wrap items-center gap-2'>
