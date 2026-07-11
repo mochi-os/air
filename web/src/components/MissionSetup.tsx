@@ -3,7 +3,7 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-import { useEffect, useId, useState, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { Trans } from '@lingui/react/macro'
 import { Play, RotateCcw } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
@@ -895,6 +895,16 @@ export function MissionSetup({
   const set = <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) =>
     onChange({ ...config, [key]: value })
 
+  // Cheat toggles accumulate through a ref: spreading config.cheats from the
+  // render clobbers sibling flags when several switches flip inside one React
+  // batch (config only re-renders between batches).
+  const cheats = useRef<Record<string, boolean>>({})
+  cheats.current = { ...((config.cheats as Record<string, boolean>) ?? {}) }
+  const setCheat = (name: string, value: boolean) => {
+    cheats.current = { ...cheats.current, [name]: value }
+    set('cheats', cheats.current)
+  }
+
 
 
   return (
@@ -1027,19 +1037,19 @@ export function MissionSetup({
                         id='cheat-invulnerable'
                         label={<Trans>Invulnerable (human players only)</Trans>}
                         checked={!!(config.cheats ?? {}).invulnerable}
-                        onChange={(v) => set('cheats', { ...(config.cheats ?? {}), invulnerable: v })}
+                        onChange={(v) => setCheat('invulnerable', v)}
                       />
                       <SwitchRow
                         id='cheat-ammunition'
                         label={<Trans>Infinite ammunition</Trans>}
                         checked={!!(config.cheats ?? {}).ammunition}
-                        onChange={(v) => set('cheats', { ...(config.cheats ?? {}), ammunition: v })}
+                        onChange={(v) => setCheat('ammunition', v)}
                       />
                       <SwitchRow
                         id='cheat-fuel'
                         label={<Trans>Infinite fuel</Trans>}
                         checked={!!(config.cheats ?? {}).fuel}
-                        onChange={(v) => set('cheats', { ...(config.cheats ?? {}), fuel: v })}
+                        onChange={(v) => setCheat('fuel', v)}
                       />
                     </div>
                   </>
