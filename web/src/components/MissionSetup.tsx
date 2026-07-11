@@ -1038,13 +1038,13 @@ export function MissionSetup({
                       />
                       <SwitchRow
                         id='cheat-ammunition'
-                        label={<Trans>Infinite ammunition</Trans>}
+                        label={<Trans>Unlimited ammunition</Trans>}
                         checked={!!(config.cheats ?? {}).ammunition}
                         onChange={(v) => setCheat('ammunition', v)}
                       />
                       <SwitchRow
                         id='cheat-fuel'
-                        label={<Trans>Infinite fuel</Trans>}
+                        label={<Trans>Unlimited fuel</Trans>}
                         checked={!!(config.cheats ?? {}).fuel}
                         onChange={(v) => setCheat('fuel', v)}
                       />
