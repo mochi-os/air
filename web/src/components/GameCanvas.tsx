@@ -136,7 +136,8 @@ export function GameCanvas({
       <div className='panel' id='help' ref={helpRef}>
         <b>W/S</b> <Trans>pitch</Trans> · <b>A/D</b>{' '}
         <Trans>roll</Trans> · <b>Q/E</b> <Trans>yaw</Trans> · <b>[/]</b>{' '}
-        <Trans>throttle</Trans> · <b>Space</b> <Trans>guns</Trans> · <b>Enter</b>{' '}
+        <Trans>throttle</Trans> · <b>Space</b> <Trans>fire</Trans> · <b>X</b>{' '}
+        <Trans>weapon</Trans> · <b>Enter</b>{' '}
         <Trans>launch</Trans> · <b>R</b> <Trans>missile</Trans> · <b>F</b> <Trans>flares</Trans> · <b>G</b>{' '}
         <Trans>gear</Trans> · <b>H</b> <Trans>hook</Trans> · <b>L</b> <Trans>lights</Trans> ·{' '}
         <b>B</b> <Trans>brakes</Trans> · <b>/</b> <Trans>speed brake</Trans> ·{' '}
