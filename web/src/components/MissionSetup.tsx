@@ -70,6 +70,7 @@ const KEY_DEFAULTS: Record<string, string> = {
   'throttle.up': 'BracketRight',
   'throttle.down': 'BracketLeft',
   guns: 'Space',
+  select: 'KeyX',
   launch: 'Enter',
   'brake.wheel': 'KeyB',
   'brake.speed': 'Slash',
@@ -85,6 +86,8 @@ const KEY_DEFAULTS: Record<string, string> = {
   probe: 'Shift+KeyF',
   canopy: 'Shift+KeyC',
   fold: 'Shift+KeyW',
+  altitude: 'KeyK',
+  reject: 'KeyU',
 }
 
 interface PadState {
@@ -160,6 +163,7 @@ const LEVERS = new Set(['throttle', 'speedbrake']) // lever-style rows: min-to-m
 
 const BUTTON_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'guns', label: <Trans>Guns</Trans> },
+  { id: 'select', label: <Trans>Weapon select</Trans> },
   { id: 'missile', label: <Trans>Missile</Trans> },
   { id: 'flares', label: <Trans>Flares</Trans> },
   { id: 'gear', label: <Trans>Landing gear</Trans> },
@@ -187,6 +191,7 @@ const KEY_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'throttle.up', label: <Trans>Throttle up</Trans> },
   { id: 'throttle.down', label: <Trans>Throttle down</Trans> },
   { id: 'guns', label: <Trans>Guns</Trans> },
+  { id: 'select', label: <Trans>Weapon select</Trans> },
   { id: 'missile', label: <Trans>Missile</Trans> },
   { id: 'flares', label: <Trans>Flares</Trans> },
   { id: 'gear', label: <Trans>Landing gear</Trans> },
@@ -202,6 +207,8 @@ const KEY_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'probe', label: <Trans>Fuel probe</Trans> },
   { id: 'canopy', label: <Trans>Canopy</Trans> },
   { id: 'fold', label: <Trans>Wing fold</Trans> },
+  { id: 'altitude', label: <Trans>HUD altitude source</Trans> },
+  { id: 'reject', label: <Trans>HUD declutter</Trans> },
 ]
 
 // The joystick tab: device picker, aircraft-axis sources, button actions —
@@ -662,11 +669,10 @@ function ControlRow({ action, keys }: { action: ReactNode; keys: ReactNode }) {
 
 // The measured F/A-18C performance reference (#89): every number flown out of
 // the flight model by tools/vspeeds.sh (world repo) — rerun it after flight
-// changes and update these cells. Cells are the harness's KEAS verbatim: the
-// HUD's CAS (flight/frames.go Cas()) approximates calibrated as EQUIVALENT
-// airspeed, no compressibility term, so KEAS is exactly what the player's
-// HUD shows. If #133 (real HUD) gives Cas() true pitot compressibility,
-// re-run the harness and re-base these cells on real KCAS.
+// changes and update these cells. Cells are TRUE KCAS, matching the HUD box:
+// flight/frames.go Cas() carries the compressible pitot term (#133), so the
+// 15,000/30,000 ft cells sit up to ~20 kt above the harness's KEAS printout
+// (convert with the compressible formula; sea level is the identity).
 // Ranges span light (11.2 t, minimum fuel) to heavy (15.6 t, full internal).
 // Rows in sortie order: climb, engine-out, dash, combat, landing. Rotation
 // (Vr) is deliberately absent: nosewheel liftoff depends on weight, CG, and
@@ -676,18 +682,18 @@ function ControlRow({ action, keys }: { action: ReactNode; keys: ReactNode }) {
 // descriptive phrase around each is translated. id is the stable React key
 // (the label is now a translated node, not a plain string).
 const REFERENCE_ROWS: { id: string; label: ReactNode; cells: [string, string, string] }[] = [
-  { id: 'vx-mil', label: <Trans>Steepest climb (Vx, 100% thrust)</Trans>, cells: ['167-385', '314-374', '300-307'] },
-  { id: 'vx-ab', label: <Trans>Steepest climb (Vx, afterburner)</Trans>, cells: ['Vertical', '273-305', '263-317'] },
-  { id: 'vy-mil', label: <Trans>Best climb (Vy, 100% thrust)</Trans>, cells: ['510-546', '392-438', '318-320'] },
-  { id: 'vy-ab', label: <Trans>Best climb (Vy, afterburner)</Trans>, cells: ['532-610', '448-449', '326-328'] },
-  { id: 'vyse', label: <Trans>Single-engine best climb (Vyse, afterburner)</Trans>, cells: ['398-457', '214-352', '158-199'] },
-  { id: 'glide', label: <Trans>Best glide (engines out)</Trans>, cells: ['245-291', '247-290', '247-295'] },
-  { id: 'corner', label: <Trans>Corner speed (best instant turn)</Trans>, cells: ['321-376', '332-379', '305-315'] },
-  { id: 'sustained', label: <Trans>Best sustained turn speed</Trans>, cells: ['353-468', '379-420', '307-310'] },
-  { id: 'tightest', label: <Trans>Tightest sustained turn speed</Trans>, cells: ['167-203', '166-225', '186-198'] },
-  { id: 'vs1', label: <Trans>Stall, clean (Vs1)</Trans>, cells: ['159-185', '158-185', '158-186'] },
+  { id: 'vx-mil', label: <Trans>Steepest climb (Vx, 100% thrust)</Trans>, cells: ['167-385', '320-385', '317-326'] },
+  { id: 'vx-ab', label: <Trans>Steepest climb (Vx, afterburner)</Trans>, cells: ['Vertical', '277-311', '275-337'] },
+  { id: 'vy-mil', label: <Trans>Best climb (Vy, 100% thrust)</Trans>, cells: ['510-546', '404-454', '339-341'] },
+  { id: 'vy-ab', label: <Trans>Best climb (Vy, afterburner)</Trans>, cells: ['532-610', '466-467', '348-351'] },
+  { id: 'vyse', label: <Trans>Single-engine best climb (Vyse, afterburner)</Trans>, cells: ['398-457', '216-361', '161-204'] },
+  { id: 'glide', label: <Trans>Best glide (engines out)</Trans>, cells: ['245-291', '250-295', '257-312'] },
+  { id: 'corner', label: <Trans>Corner speed (best instant turn)</Trans>, cells: ['321-376', '340-390', '323-335'] },
+  { id: 'sustained', label: <Trans>Best sustained turn speed</Trans>, cells: ['353-468', '390-435', '326-329'] },
+  { id: 'tightest', label: <Trans>Tightest sustained turn speed</Trans>, cells: ['167-203', '167-227', '190-203'] },
+  { id: 'vs1', label: <Trans>Stall, clean (Vs1)</Trans>, cells: ['159-185', '159-186', '161-190'] },
   { id: 'vs0', label: <Trans>Stall, landing config (Vs0)</Trans>, cells: ['111-128', '110-128', '—'] },
-  { id: 'vapp', label: <Trans>Approach, on-speed (Vapp)</Trans>, cells: ['126-148', '125-147', '—'] },
+  { id: 'vapp', label: <Trans>Approach, on-speed (Vapp)</Trans>, cells: ['126-148', '125-148', '—'] },
 ]
 
 function ReferenceDialog() {

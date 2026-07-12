@@ -44,14 +44,17 @@ export const STATE = {
   jam: 97, // per-channel restriction 0..1 × 8 (stabL, stabR, flapL, flapR, rudder, slat, brake)
   gear_harm: 106, // per-strut damage 0..1 × 3 (nose, left, right) — tyre blown past 0.3, leg folded past 0.7 (#78)
   loss: 105, // shed structure mass, kg
-  // Instrument tail appended by frame()/get():
-  alpha: 106,
-  beta: 107,
-  nz: 108,
-  mach: 109,
-  cas: 110,
-  power: 111, // achieved spool fraction across the airframe's engines
-  stage: 112, // achieved reheat stage
+  // Instrument tail appended by frame()/get() — starts at flight.Size (encode.go),
+  // so it moves whenever the encoded state grows. #78's three gear words pushed
+  // Size to 109 and this tail was left at 106, silently reading gear damage as
+  // alpha/nz and nz as the throttle spool (#133 found it via a dead CAS box).
+  alpha: 109,
+  beta: 110,
+  nz: 111,
+  mach: 112,
+  cas: 113,
+  power: 114, // achieved spool fraction across the airframe's engines
+  stage: 115, // achieved reheat stage
 } as const
 const EXTRA = 7
 
