@@ -13,7 +13,7 @@
 import { getErrorMessage } from '@mochi/web'
 
 // Encoded state layout (float64 words).
-export const SIZE = 106 // 57 base + 40 element losses + 8 channel jams + lost mass (#78, flight Version 23)
+export const SIZE = 109 // 57 base + 40 element losses + 8 channel jams + lost mass + 3 gear-leg damages (#78, flight Version 24)
 export const STATE = {
   position: 0, // x y z
   velocity: 3,
@@ -42,6 +42,7 @@ export const STATE = {
   leak: 49, // fuel loss, kg/s
   element: 57, // per-element loss 0..1 × 40 (zero = pristine)
   jam: 97, // per-channel restriction 0..1 × 8 (stabL, stabR, flapL, flapR, rudder, slat, brake)
+  gear_harm: 106, // per-strut damage 0..1 × 3 (nose, left, right) — tyre blown past 0.3, leg folded past 0.7 (#78)
   loss: 105, // shed structure mass, kg
   // Instrument tail appended by frame()/get():
   alpha: 106,

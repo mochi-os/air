@@ -1295,6 +1295,7 @@ function apply_harm(kind){ const words=flight_get(); if(!words) return;
 	if(kind==="engine"){ words[STATE.engine_harm]=0.8; }
 	if(kind==="leak"){ words[STATE.leak]=2.0; }
 	if(kind==="jam"){ words[STATE.jam+4]=1; }   // rudder frozen
+	if(kind==="gear"){ words[STATE.gear_harm+1]=0.8; }   // left main folded (#78)
 	if(kind==="fire"){ words[STATE.engine_harm]=0.9; words[STATE.engine_harm+1]=0.9; }   // pre-damaged engines...
 	flight_set(words);
 	if(kind==="fire"){   // ...then rake the jet from astern through the real battle path: the kindle roll lights the fire honestly (visual verification of the burn trail, #78)
@@ -3166,6 +3167,8 @@ function draw_hud(dt){
 		if(own_burn[0]>0) cautions.push([translate("L ENG FIRE"),RD]); else if(core&&core[STATE.engine_harm]>0.55) cautions.push([translate("L ENG"),AM]);
 		if(own_burn[1]>0) cautions.push([translate("R ENG FIRE"),RD]); else if(core&&core[STATE.engine_harm+1]>0.55) cautions.push([translate("R ENG"),AM]);
 		if((core&&core[STATE.leak]>0.1)||own_leak>0.1) cautions.push([translate("FUEL LEAK"),AM]);
+		if(core) for(let leg=0;leg<3;leg++){ const harm=core[STATE.gear_harm+leg]; if(harm>0.3){ const label=["NOSE GEAR","L GEAR","R GEAR"][leg];
+			cautions.push([translate(label),harm>0.7?RD:AM]); } }   // blown tyre amber, folded leg red (#78)
 		if(core){ let jammed=false; for(let c=0;c<8;c++) if(core[STATE.jam+c]>0.2) jammed=true; if(jammed) cautions.push([translate("FCS"),AM]);
 			let torn=false; for(let e=0;e<40;e++) if(core[STATE.element+e]>0.6) torn=true;
 			if(torn||core[STATE.stress]>2) cautions.push([translate("STRUCTURE"),AM]); }
