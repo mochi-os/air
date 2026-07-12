@@ -41,7 +41,7 @@ import { type Join } from '../game/net'
 // The fields each tab owns, for the per-tab Reset (the joystick tab also clears
 // the per-device maps so built-in defaults apply again).
 const TAB_FIELDS: Record<string, string[]> = {
-  mission: ['task', 'start', 'world', 'callsign', 'aircraft', 'bandit', 'fuel', 'cheats'],
+  mission: ['task', 'start', 'cat', 'world', 'callsign', 'aircraft', 'bandit', 'fuel', 'cheats'],
   weather: ['tod', 'clouds'],
   controls: ['invert', 'joystick', 'sticks'],
   keys: ['keys'],
@@ -870,8 +870,6 @@ function CreditsDialog() {
 export function MissionSetup({
   config,
   onChange,
-  cat,
-  onCat,
   tab,
   onTabChange,
   gameInProgress,
@@ -882,8 +880,6 @@ export function MissionSetup({
 }: {
   config: MissionConfig
   onChange: (config: MissionConfig) => void
-  cat: number
-  onCat: (cat: number) => void
   tab: string
   onTabChange: (tab: string) => void
   gameInProgress: boolean
@@ -1013,8 +1009,8 @@ export function MissionSetup({
                           <Trans>Catapult</Trans>
                         </SectionLabel>
                         <Choice
-                          value={String(cat)}
-                          onChange={(v) => onCat(parseInt(v, 10))}
+                          value={String(config.cat)}
+                          onChange={(v) => set('cat', parseInt(v, 10))}
                           options={[
                             { value: '1', label: '1' },
                             { value: '2', label: '2' },
