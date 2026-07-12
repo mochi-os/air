@@ -23,7 +23,7 @@ export function deviceDefaults(id: string): StickBindings {
   return {
     axes: { pitch: '1', roll: '0', yaw: '2', throttle: vone ? '-5' : '3', speedbrake: vone ? '-6' : '', look: vone ? '3' : '', zoom: '' },   // look = the smooth-hat ministick (axes 3/4, spring-centred — measured; the castle POV pair at 8/9 stays free). zoom: the VelocityOne thumbwheel is a SCROLL WHEEL on the stick's mouse interface — DOM wheel events, not a gamepad axis; the axis forms ("N", "N+") remain for sticks whose wheel is a real axis
     buttons: vone
-      ? { guns: '17', 'brake.wheel': '17', missile: '15', flares: '16', gear: '3', hook: '2', 'zoom.in': '12', 'zoom.out': '13' }   // zoom.in/out: the trim wheel in its DIGITAL mode pulses one button per notch (12 forward, 13 back — set via the stick's OLED; its default mouse-cursor mode is invisible to the Gamepad API)
+      ? { guns: '17', 'brake.wheel': '17', select: '15', flares: '16', gear: '3', hook: '2', 'zoom.in': '12', 'zoom.out': '13' }   // select: the old missile button becomes weapon select — one trigger fires the selected weapon, like the real stick. zoom.in/out: the trim wheel in its DIGITAL mode pulses one button per notch (12 forward, 13 back — set via the stick's OLED; its default mouse-cursor mode is invisible to the Gamepad API)
       : { guns: '0' },
   }
 }

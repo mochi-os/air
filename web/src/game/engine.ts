@@ -1949,12 +1949,6 @@ function update_aircraft_lights(){
 	if(land){ const n=aircraft_lights.nose; spot.position.copy(ownship.pos).addScaledVector(ownship.fwd,n.x).addScaledVector(ownship.up,n.y);   // at the strut
 		aircraft_lights.spotTarget.position.copy(ownship.pos).addScaledVector(ownship.fwd,70).addScaledVector(ownship.up,-15); }   // aim forward + ~12° down
 }
-function meatball_state(p){   // 2D OLS: shown in an approach cone aft of the carrier with gear + hook down; returns the glideslope deviation
-	if(!carrier_ols) return null; const o=carrier_ols, s=ols_dev(p,o);
-	const geardown=(ownship.gear??0)<0.5, hookdown=(ownship.hook??0)>0.5;
-	if(!(geardown && hookdown && ownship.vely<3 && s.along>40 && s.dist<9260 && Math.abs(s.lat)<s.along*0.36 && p.y>o.dy)) return null;   // ~20° cone, out to 5 nm, descending only (so a climb-out / launch doesn't trip it)
-	return { dev:s.dev, low:s.dev<-0.7 };
-}
 function approach_deviation(){   // shared by the HUD ICLS needles and the cockpit ADI bars: one computation, one truth
 	if(!carrier_ols) return null; const o=carrier_ols, p=ownship.pos, s=ols_dev(p,o);
 	const toward=(o.tdx-p.x)*ownship.fwd.x+(o.tdz-p.z)*ownship.fwd.z;   // >0 = nose pointing at the touchdown
@@ -2002,9 +1996,6 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(ch===key_of("guns") && master==="9m" && !weapons_hold && !ownship.launching && (ownship.gear??0)>0.98 && cfg.missiles && ownship.msl>0){
 			if(MULTIPLAYER) missile_flag=true;   // one trigger, weapon-selected: in 9M the trigger launches (the real Hornet's trigger fires the selected A/A weapon)
 			if(launch_missile(ownship,MULTIPLAYER?remote_nearest():(has_enemy?bandit:null))){ if(!cheat("ammunition")) ownship.msl--; audio_launch(); update_rails(ownship,ownship.msl); } }
-		if(ch===key_of("missile") && !weapons_hold && !ownship.launching && (ownship.gear??0)>0.98 && cfg.missiles && ownship.msl>0){ master="9m";   // the legacy missile key stays as select-9M-and-fire
-			if(MULTIPLAYER) missile_flag=true;   // the server acquires and scores; the local launch is the visual
-			if(launch_missile(ownship,MULTIPLAYER?remote_nearest():(has_enemy?bandit:null))){ if(!cheat("ammunition")) ownship.msl--; audio_launch(); update_rails(ownship,ownship.msl); } }   // weapons safe unless the gear is fully up
 		if(TEST_SCENARIOS && e.ctrlKey && k==="KeyC"){ copy_here(); notice("POSITION COPIED"); }   // dev (Ctrl+C): the live position line to the clipboard — for identifying deck locations (spots, markings) by taxiing onto them
 		if(ch===key_of("probe")){ ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; notice(ownship.probeTarget?translate("PROBE OUT"):translate("PROBE IN")); }   // refueling probe (real limit is ~300 KCAS — procedural, not enforced)
 		if(ch===key_of("fold")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.foldTarget=(ownship.foldTarget??0)>0.5?0:1; notice(ownship.foldTarget?translate("WINGS FOLDING"):translate("WINGS SPREADING")); } else notice(translate("WINGS LOCKED")); }   // wing fold — ground only, taxi speeds; the outer panels carry the ailerons and outer slats with them
@@ -2083,7 +2074,7 @@ stage.addEventListener("pointercancel",end_drag,{ signal });
 // action's current key as a synthetic event, so pad binds follow key remaps.
 const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.left":"KeyA", "yaw.right":"KeyE", "yaw.left":"KeyQ",
 	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash",
-	gear:"KeyG", hook:"KeyH", lights:"KeyL", missile:"KeyR", flares:"KeyF", eject:"KeyJ", map:"KeyM", pause:"KeyP", view:"KeyV", select:"KeyX", altitude:"KeyK", reject:"KeyU",
+	gear:"KeyG", hook:"KeyH", lights:"KeyL", flares:"KeyF", eject:"KeyJ", map:"KeyM", pause:"KeyP", view:"KeyV", select:"KeyX", altitude:"KeyK", reject:"KeyU",
 	probe:"Shift+KeyF", canopy:"Shift+KeyC", fold:"Shift+KeyW" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
@@ -2998,12 +2989,6 @@ function draw_hud(dt){
 		hctx.save(); hctx.strokeStyle="rgba(127,200,255,0.55)"; hctx.lineWidth=1; hctx.setLineDash([7,7]); hctx.beginPath(); hctx.moveTo(cx,0); hctx.lineTo(cx,HH); hctx.stroke(); hctx.restore(); }
 	if(net_notice_t<=0){ const ls=launch_status(); if(ls>0) hud_message(translate(ls===2?"PRESS ENTER TO LAUNCH":"RUN UP ENGINE")); }   // transient notices own the centre banner — never draw two messages on top of each other
 	if(cfg.view!=="hud" && cfg.view!=="cockpit"){ return; }
-	if(cfg.view!=="cockpit"){ const mb=meatball_state(ownship.pos);   // 2D OLS meatball repeater: hud-view furniture — in the cockpit you fly the real ball outside (#133)
-		if(mb){ const bx=72, by=150, half=58; hctx.save();
-			hctx.fillStyle="rgba(0,0,0,0.35)"; hctx.fillRect(bx-11,by-half-10,22,half*2+20); hctx.strokeStyle="rgba(150,150,150,0.5)"; hctx.lineWidth=1; hctx.strokeRect(bx-11,by-half-10,22,half*2+20);
-			hctx.fillStyle="#35e06a"; for(const s of [-1,1]) for(let i=1;i<=3;i++){ hctx.beginPath(); hctx.arc(bx+s*(13+i*7),by,2.4,0,Math.PI*2); hctx.fill(); }   // green datum lights
-			const off=THREE.MathUtils.clamp(mb.dev/0.8,-1,1)*half; hctx.fillStyle=mb.low?"#ff2a1e":"#ffb020"; hctx.beginPath(); hctx.arc(bx,by-off,6.5,0,Math.PI*2); hctx.fill();   // the ball — up when high, red when low
-			hctx.restore(); } }
 	hctx.lineWidth=1.5; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.font="13px monospace";
 	hctx.textAlign="center"; hctx.textBaseline="middle";
 
@@ -3175,7 +3160,7 @@ function draw_hud(dt){
 
 	// ---- vertical velocity above the altitude box (NAV master mode only, per NATOPS) ----
 	const vs=ownship.vel_dir.y*ownship.speed*196.85;
-	if((master==="nav"||pa)&&!declutter){ hctx.font="13px monospace"; hctx.textAlign="left";   // NAV master mode and the landing configuration both carry the VVI (NATOPS fig 2-26)
+	if(master==="nav"&&!declutter){ hctx.font="13px monospace"; hctx.textAlign="left";   // "only displayed in the NAV master mode" — NATOPS 2.13.4.8 item 12
 		hctx.fillText((vs<0?"-":"")+Math.abs(Math.round(vs/10)*10),lx+2,wly-12); }
 
 	// ---- AoA / Mach / G / peak-G block (left-centre); Mach and g are DELETED in the landing configuration ----
@@ -3210,11 +3195,11 @@ function draw_hud(dt){
 		else if(master==="9m") hctx.fillText("9M "+(cheat("ammunition")?"\u221e":ownship.msl),bxl,ly);
 		else hctx.fillText("NAV",bxl,ly); }
 
-	// ---- throttle gauge: hud-view furniture only — the real HUD carries no such thing ----
-	if(!authentic){ const tgx=cx-262, tgcy=cy, tgh=140; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.lineWidth=1.5;
-	hctx.strokeRect(tgx-8,tgcy-tgh/2,16,tgh);
-	const fh=tgh*(ownship.throttle*0.75+(ownship.burner??0)*0.25); hctx.fillRect(tgx-8,tgcy+tgh/2-fh,16,fh);   // the full lever: 0..75% dry, the top quarter is the AB range
-	hctx.beginPath(); hctx.moveTo(tgx-8,tgcy+tgh/2-tgh*0.75); hctx.lineTo(tgx+8,tgcy+tgh/2-tgh*0.75); hctx.stroke();   // MIL detent tick
+	// ---- throttle gauge: hud-view furniture only — the real HUD carries no such thing, so it lives at the screen edge with the rest of the game furniture ----
+	if(!authentic){ const tgx=30, tgcy=cy, tgh=140; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.lineWidth=1.5;
+	hctx.strokeRect(tgx-5,tgcy-tgh/2,10,tgh);
+	const fh=tgh*(ownship.throttle*0.75+(ownship.burner??0)*0.25); hctx.fillRect(tgx-5,tgcy+tgh/2-fh,10,fh);   // the full lever: 0..75% dry, the top quarter is the AB range
+	hctx.beginPath(); hctx.moveTo(tgx-5,tgcy+tgh/2-tgh*0.75); hctx.lineTo(tgx+5,tgcy+tgh/2-tgh*0.75); hctx.stroke();   // MIL detent tick
 	hctx.font="11px monospace"; hctx.fillStyle=GR; hctx.fillText("THR",tgx,tgcy-tgh/2-9);
 	const thrust=(ownship.spool??ownship.throttle)*100+(ownship.stage??0)*58;   // achieved thrust, % of military power; burner runs to ~158%
 	hctx.font="15px monospace"; hctx.fillText(Math.round(thrust)+"%",tgx,tgcy+tgh/2+15);
@@ -3262,8 +3247,11 @@ function draw_hud(dt){
 	// announces itself, to multiplayer joiners as much as the mission owner.
 	hctx.textAlign="left"; hctx.font="13px monospace";
 	if(cheat("invulnerable")){ hctx.fillStyle=GR; hctx.fillText(translate("INVULNERABLE"),40,HH-106); }
-	if(!authentic){   // stores furniture (hud view): the selected weapon lives in the authentic data block now (#133); the IFEI fuel belongs to the cockpit panel, kept here for the fullscreen view
-	hctx.fillStyle=GR; hctx.fillText(translate("FLARES")+"  "+(cheat("ammunition")?"∞":ownship.cm),40,HH-52);
+	if(!authentic){   // stores furniture (hud view): the FULL counter set — the authentic data block shows only the selected weapon, so without these the other weapon's count is invisible; the IFEI fuel belongs to the cockpit panel, kept here for the fullscreen view
+	hctx.fillStyle=input.guns?AM:GR;
+	hctx.fillText(translate("GUN")+"  "+(cheat("ammunition")?"∞":ownship.rounds),40,HH-88); hctx.fillStyle=GR;
+	hctx.fillText("9M  "+(cheat("ammunition")?"∞":ownship.msl),40,HH-70);
+	hctx.fillText(translate("FLARES")+"  "+(cheat("ammunition")?"∞":ownship.cm),40,HH-52);
 	if(cheat("fuel")) hctx.fillText(translate("FUEL")+"  ∞",40,HH-34);   // the tank is frozen: no pounds, no LO/BINGO colours
 	else { const pounds=Math.round((ownship.fuel??0)*2.2046/10)*10;   // the IFEI shows pounds
 		if((ownship.fuel??1e9)<FUELLO) hctx.fillStyle=(sim_time%0.8<0.4)?"#ff5050":"#803030";   // FUEL LO flashes
