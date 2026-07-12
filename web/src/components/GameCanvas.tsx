@@ -88,7 +88,7 @@ export function GameCanvas({
   onExit,
   onReady,
 }: {
-  config?: MissionConfig & { cat?: number } // cat: carrier-start catapult 1-4, session-only (deliberately not part of the persisted MissionConfig)
+  config?: MissionConfig
   join?: NetJoin | null
   onExit?: () => void
   onReady?: (handle: GameHandle) => void

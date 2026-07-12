@@ -39,7 +39,6 @@ function exitFullscreen() {
 // (game running, menu hidden) hides the Mochi shell chrome and goes fullscreen.
 function Index() {
   const [config, setConfig] = useMissionConfig()
-  const [cat, setCat] = useState(2) // carrier-start catapult; session-only by design (not part of the persisted config)
   const [join, setJoin] = useState<NetJoin | null>(null)
   const fly =
     typeof window !== 'undefined' &&
@@ -88,7 +87,7 @@ function Index() {
       {started && (
         <GameCanvas
           key={gameKey}
-          config={{ ...config, cat }}
+          config={config}
           join={join}
           onReady={(h) => {
             gameRef.current = h
@@ -100,8 +99,6 @@ function Index() {
         <MissionSetup
           config={config}
           onChange={setConfig}
-          cat={cat}
-          onCat={setCat}
           tab={tab}
           onTabChange={setTab}
           gameInProgress={started}
