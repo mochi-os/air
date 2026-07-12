@@ -64,7 +64,7 @@ const SAVE_KEY="joust_cfg_v1";
 // OLS bracket, and the deck outline for the flight core. Measured per deck
 // with the align tool and the GLB measurement scripts; a second carrier is
 // one more entry (#100). CARRIER {x,z} is world PLACEMENT, not ship data.
-const NIMITZ_MODEL_VERSION=52;
+const NIMITZ_MODEL_VERSION=72;
 const CARRIER_MODELS={
 	// NIMITZ_MODEL_VERSION: bump on EVERY model.glb regen. The engine fetches the model programmatically,
 	// and browsers serve programmatic fetches from HTTP cache even across hard refreshes — a stale model
@@ -76,10 +76,10 @@ const CARRIER_MODELS={
 		// of the bow (real angled deck: 9.05°), wire spacing 11.7 m (real: 40 ft). Catapults: measured off the
 		// MODEL's track troughs/JBDs via a painter-ordered deck raster + Hough fit (waist headings +9.2°/+8.8°
 		// bracket the real 9.05° angle). OLS AND THE DECK OUTLINE ARE STILL FORD PLACEHOLDERS.
-		shuttles:[ {x:48.98, z:19.41, h:5.67},            // 1: starboard bow — x toward bow, z + starboard, heading deg (+ = port). User-located in-game (2026-07-07), then EXACT-fitted to the painted track's own triangles (total least squares on the 43 m² line strip ahead of the spot: heading +5.905°, line at lat 20.22 for this fa). The earlier Hough refit had locked onto the recessed band edge at lat ~11, ten metres port of the real track
+		shuttles:[ {x:48.98, z:15.50, h:3.30},            // 1: starboard bow — x toward bow, z + starboard, heading deg (+ = port). PLAN-derived (Stage C, 1:200 GA drawing 2026-07-10): the plan's cat-1 track line starts at fa 45 (a slot's aft end, right behind this spot) and runs to the bow water-brake slot centre at 0.95 ridge coverage. The MODEL's painted track (z 19.41, h 5.67 — the 2026-07-07 exact fit) sits 3.9 m starboard with +2.4° excess heading and lies on no plan feature at all (0.22 coverage); the baked deck track moved with this constant, so jet, shuttle, and paint stay coherent
 		           {x:47.23, z:-3.44, h:0},              // 2: port bow (the carrier-start spawn) — user-located in-game (2026-07-07), exact-fitted to the track's own triangles (heading -0.044° ≈ dead straight, line at lat -3.58 for this fa)
 		           {x:-46.61, z:-17.08, h:4.03},          // 3: starboard waist — user-located in-game (2026-07-07), exact-fitted to the track's own triangles (heading +4.225°, line at lat -17.79 for this fa); the old Hough entry had fit the angled-deck trough 27 m away
-		           {x:-66.50, z:-26.82, h:0} ],          // 4: port waist — user-located in-game (2026-07-07), exact-fitted to the track's own triangles (heading +0.030° = dead straight; the first unconstrained fit chased an angled-deck marking crossing the corridor — the user's needle reading of 0.2° was right)
+		           {x:-66.50, z:-27.75, h:0} ],          // 4: port waist — heading stays the user's dead-straight in-game reading (2026-07-07); lat re-sourced from the 1:200 plan's track line (Stage C 2026-07-10: -27.75 at 0.99 ridge coverage over the unambiguous aft stretch; the model paint's -26.82 scores 0.15). Baked deck track moved with it
 		wires:[-115.6,-103.9,-92.2,-80.5], halfspan:12.5,  // arrestor wires 1..4 (fore-aft) spanning ±halfspan about the landing line — the classic four-wire CVN-68 fit, 11.7 m apart, 1-wire 51 m from the stern round-down. halfspan 13 parks the sheaves just outside the 22 m strip; 16 reached the el-4 apron on the port side
 		line:{ afa:-115.6, alat:1.92, bfa:-92.2, blat:-1.63 }, // the landing centreline = the MODEL's painted stripe (least-squares through its yellow centreline segments: lat = -16.27 - 0.1583·fa, 8.99° — the real angled deck is 9.05°). The plan-derived line sat 2.1-2.4 m port of the painted stripe, which made the wires' starboard sheaves look further out; the 1:200 plan says the sheaves are symmetric (~15.5 m each side), so the wires centre on the stripe
 		ols:{ fa:-21.0, lat:-37.06, model:true },         // OLS bracket on the port side — measured off the model's own IFLOLS: amber lens column (heights -0.5..+2.1 rel deck), green datum arms at +0.66 spanning 8.5 m, red wave-off columns at ±1.5 m. model:true = the GLB carries the physical structure, so the engine draws only the glowing lights
@@ -1788,8 +1788,8 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const o=carrier_world(ofa,olat), datumY=dy+(SHIP.ols.model?0.66:0.8), travel=SHIP.ols.model?1.1:1.0;   // datum height + ball travel matched to the model's lens column when it provides the structure
 	if(!SHIP.ols.model){ const house=new THREE.Mesh(new THREE.BoxGeometry(2.0,1.4,0.6),new THREE.MeshStandardMaterial({color:0x181b1f,metalness:0.4,roughness:0.6})); house.position.set(o.x,dy+0.2,o.z); house.rotation.y=Math.atan2(-CARRIER_C,CARRIER_S); house.castShadow=true; scene.add(house); }
 	const at=(d,h)=>{ const q=carrier_world(ofa-STRIP_ULAT*d,olat+STRIP_UFA*d); return [q.x,h,q.z]; };   // flank the ball perpendicular to the strip (square to the approach)
-	const dspread=SHIP.ols.model?[-4.2,-3.2,-2.2,-1.2, 1.2,2.2,3.2,4.2]:[-3.3,-2.5,-1.7,-0.9, 0.9,1.7,2.5,3.3];
-	const dpos=[]; for(const d of dspread) dpos.push(...at(d,datumY)); ols_points(dpos,0x35e06a,7);   // green datum row (flanks the ball; spread matches the model's 8.5 m arms when present)
+	const dspread=SHIP.ols.model?[-1.65,-1.2,-0.75,-0.3, 0.3,0.75,1.2,1.65]:[-3.3,-2.5,-1.7,-0.9, 0.9,1.7,2.5,3.3];
+	const dpos=[]; for(const d of dspread) dpos.push(...at(d,datumY)); ols_points(dpos,0x35e06a,7);   // green datum row (flanks the ball; spread matches the model's arm bar, TRIMMED to ±1.8 m in v54 — the authored 8.5 m bar overhung the flight deck by 2.2 m, under the cat-4 wingtip path)
 	const cpos=[]; for(const d of [-1.5,-0.5,0.5,1.5]) cpos.push(...at(d,dy+1.6)); ols_points(cpos,0x35e06a,4);   // cut lights (static)
 	const wpos=[]; for(const d of (SHIP.ols.model?[-1.5,-1.5,1.5,1.5]:[-2.0,-0.7,0.7,2.0])) wpos.push(...at(d, wpos.length<6&&SHIP.ols.model?dy+0.9:dy+(SHIP.ols.model?1.5:2.0))); const wavePts=ols_points(wpos,0xff2a1e,7); wavePts.visible=false;   // waveoff (flashes on a low approach) — on the model's red columns when present (two heights per side)
 	// structure: horizontal arms carrying the datum / cut / waveoff light rows, on a mast up from the housing (so the lights aren't floating)

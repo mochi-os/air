@@ -24,6 +24,11 @@ and iteration knobs, so multiple attempts don't lose the design.
   glass) from the original, dropped 0.64 m flush. Run once; `build_carrier` loads the `.npy`.
 - **`splice_outline.py`** — splices `outline.json` into `engine.ts` `SHIP.outline` (the
   physics polygon must match the drawn deck strip).
+- **`plan_check.py`** — checks the engine layout (outline, cats, wires) against the
+  1:200 GA drawing `nimitz-plan.jpg` by registering the outline onto the scan and
+  ridge-fitting the equipment lines (Stage C of PLAN.md; found + fixed the cat-1/cat-4
+  misplacements 2026-07-10). Run after changing SHIP equipment constants; `fit` arg
+  refits the registration frame.
 - **`cdp_shot.py`** — headless capture via Chrome DevTools Protocol (the old
   `--virtual-time-budget` one-shot broke in Chrome 141). `cdp_shot.py "<query>" out.png [wait-s]`.
 - **`purge_fa18c.py`** — rig-safe sealed-interior purge for the F/A-18C model.
