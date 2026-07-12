@@ -1295,7 +1295,12 @@ function apply_harm(kind){ const words=flight_get(); if(!words) return;
 	if(kind==="engine"){ words[STATE.engine_harm]=0.8; }
 	if(kind==="leak"){ words[STATE.leak]=2.0; }
 	if(kind==="jam"){ words[STATE.jam+4]=1; }   // rudder frozen
-	flight_set(words); }
+	if(kind==="fire"){ words[STATE.engine_harm]=0.9; words[STATE.engine_harm+1]=0.9; }   // pre-damaged engines...
+	flight_set(words);
+	if(kind==="fire"){   // ...then rake the jet from astern through the real battle path: the kindle roll lights the fire honestly (visual verification of the burn trail, #78)
+		const pose={ position:{x:ownship.pos.x-ownship.fwd.x*300, y:ownship.pos.y-ownship.fwd.y*300, z:ownship.pos.z-ownship.fwd.z*300},
+			forward:{x:ownship.fwd.x,y:ownship.fwd.y,z:ownship.fwd.z}, up:{x:ownship.up.x,y:ownship.up.y,z:ownship.up.z} };
+		for(let volley=0;volley<6;volley++) battle_burst(-1,pose,null,40,1,battle_tick+volley); } }
 let own_burn=[0,0], own_burning=false, own_leak=0;   // ownship condition mirrored from progress()
 let eject_taps=0, eject_at=0, eject_flag=false, ejected=false;
 bandit.harm={ thrust:0, wing:0, killed:false, burning:false };   // zonal summary driving the AI
@@ -2332,7 +2337,8 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, peak:+dev_peakbank.toFixed(1), phi:+dev_pitchhi.toFixed(1), plo:+dev_pitchlo.toFixed(1), gs:ownship.pass&&ownship.pass.n?+(ownship.pass.gs/ownship.pass.n).toFixed(2):-1, az:ownship.pass&&ownship.pass.n?+(ownship.pass.az/ownship.pass.n).toFixed(2):-1, grade:ownship.grade||"", pn:ownship.pass?ownship.pass.n:0, why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,
 	lat:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*(-carrier_ols.apz)+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apx).toFixed(1)):0,
 	along:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*carrier_ols.apx+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apz).toFixed(1)):0, fa:+carrier_fore_aft(ownship.pos.x,ownship.pos.z).toFixed(1), edge:carrier_ols?+((ownship.pos.y-carrier_ols.dy).toFixed(1)):0,
-	darts:net?net.darts.map(d=>({p:d.position.map(n=>+n.toFixed(0)),v:d.velocity.map(n=>+n.toFixed(0)),s:d.shooter})):[], drawn:darts_pool.filter(p=>p.mesh.visible).length, firing:[...remotes.values()].filter(st=>st.firing).length, fired:dev_fired, remotes:remotes.size });   // dev: CDP-reachable state sampler for headless scenario verification (#72); darts/drawn/firing/remotes verify the multiplayer weapon visuals over a live wire
+	darts:net?net.darts.map(d=>({p:d.position.map(n=>+n.toFixed(0)),v:d.velocity.map(n=>+n.toFixed(0)),s:d.shooter})):[], drawn:darts_pool.filter(p=>p.mesh.visible).length, firing:[...remotes.values()].filter(st=>st.firing).length, fired:dev_fired, remotes:remotes.size,
+	burn:+Math.max(own_burn[0],own_burn[1]).toFixed(2), burning:own_burning, leak:+own_leak.toFixed(2) });   // dev: CDP-reachable state sampler for headless scenario verification (#72); darts/drawn/firing/remotes verify the multiplayer weapon visuals over a live wire; burn/leak mirror the damage-visual drivers (#78)
 function start_test(i){ const sc=TESTS[i]; if(!sc || crash_t>0) return;
 	let T,d;
 	if(sc.carrier){ if(!carrier_ols) return; const o=carrier_ols;
