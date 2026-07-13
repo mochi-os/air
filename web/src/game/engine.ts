@@ -1812,8 +1812,8 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	if(!SHIP.ols.model){ const house=new THREE.Mesh(new THREE.BoxGeometry(2.0,1.4,0.6),new THREE.MeshStandardMaterial({color:0x181b1f,metalness:0.4,roughness:0.6})); house.position.set(o.x,dy+0.2,o.z); house.rotation.y=Math.atan2(-CARRIER_C,CARRIER_S); house.castShadow=true; scene.add(house); }
 	const at=(d,h)=>{ const q=carrier_world(ofa-STRIP_ULAT*d,olat+STRIP_UFA*d); return [q.x,h,q.z]; };   // flank the ball perpendicular to the strip (square to the approach)
 	const dspread=SHIP.ols.model?[-1.65,-1.2,-0.75,-0.3, 0.3,0.75,1.2,1.65]:[-3.3,-2.5,-1.7,-0.9, 0.9,1.7,2.5,3.3];
-	const dpos=[]; for(const d of dspread) dpos.push(...at(d,datumY)); ols_points(dpos,0x35e06a,7);   // green datum row (flanks the ball; spread matches the model's arm bar, TRIMMED to ±1.8 m in v54 — the authored 8.5 m bar overhung the flight deck by 2.2 m, under the cat-4 wingtip path)
-	const cpos=[]; for(const d of [-1.5,-0.5,0.5,1.5]) cpos.push(...at(d,dy+1.6)); ols_points(cpos,0x35e06a,4);   // cut lights (static)
+	const dpos=[]; for(const d of dspread) dpos.push(...at(d,datumY)); const datumPts=ols_points(dpos,0x35e06a,7);   // green datum row (flanks the ball; spread matches the model's arm bar, TRIMMED to ±1.8 m in v54 — the authored 8.5 m bar overhung the flight deck by 2.2 m, under the cat-4 wingtip path)
+	const cpos=[]; for(const d of [-1.5,-0.5,0.5,1.5]) cpos.push(...at(d,dy+1.6)); const cutPts=ols_points(cpos,0x35e06a,4);   // cut lights
 	const wpos=[]; for(const d of (SHIP.ols.model?[-1.5,-1.5,1.5,1.5]:[-2.0,-0.7,0.7,2.0])) wpos.push(...at(d, wpos.length<6&&SHIP.ols.model?dy+0.9:dy+(SHIP.ols.model?1.5:2.0))); const wavePts=ols_points(wpos,0xff2a1e,7); wavePts.visible=false;   // waveoff (flashes on a low approach) — on the model's red columns when present (two heights per side)
 	// structure: horizontal arms carrying the datum / cut / waveoff light rows, on a mast up from the housing (so the lights aren't floating)
 	if(!SHIP.ols.model){   // procedural bracket structure — only when the ship model doesn't carry its own OLS
@@ -1826,7 +1826,7 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const ballPts=new THREE.Points(bg,new THREE.PointsMaterial({size:11,map:light_dot,vertexColors:true,transparent:true,blending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:false})); ballPts.frustumCulled=false; ballPts.visible=false; scene.add(ballPts);   // the amber "ball" — screen-space, normal-blended so it reads amber/red
 	const td=carrier_world(twfa,strip_lat(twfa));   // touchdown reference (the 2-wire) — the glideslope references the wires, NOT the OLS housing on the bracket
 	const sdx=STRIP_UFA*CARRIER_C+STRIP_ULAT*CARRIER_S, sdz=-STRIP_UFA*CARRIER_S+STRIP_ULAT*CARRIER_C, sl=Math.hypot(sdx,sdz);
-	carrier_ols={ x:o.x, z:o.z, dy, datumY, travel, ballPts, wavePts, wires, vsegs, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl };   // approach comes from the −fa (aft) side, opposite the rollout
+	carrier_ols={ x:o.x, z:o.z, dy, datumY, travel, ballPts, wavePts, datumPts, cutPts, wires, vsegs, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl };   // approach comes from the −fa (aft) side, opposite the rollout
 	// --- night lighting (darken-ship, night-only); heights + edges sampled off the REAL deck (which isn't flat), not a rectangle at deckY ---
 	const dh=(f,l)=>{ const w=carrier_world(f,l); return { x:w.x, z:w.z, y:deck_y_at(carrier_model,w.x,w.z,-1e9) }; };   // world pos + deck height at a carrier-local point (−1e9 = off the deck)
 	const edge_lat=(f,dir)=>{ let e=null; for(let l=0;Math.abs(l)<42;l+=dir*4){ const d=dh(f,l); if(d.y>dy-0.6 && d.y<dy+4) e=l; else if(e!==null) break; } return e; };   // scan out from the centre to the outermost still-DECK-LEVEL lat: the catwalks outboard sit ~1-2 m BELOW the lip and used to qualify, hanging edge lights off the ship (measured: dots at -0.84 and -2.2 m)
@@ -1872,6 +1872,10 @@ function ols_dev(p,o){   // hook's deviation off the 3.5° glideslope to the tou
 }
 function update_ols(p){   // 3D ball on the bracket, driven by the hook's deviation off the glideslope to the touchdown
 	if(!carrier_ols) return; const o=carrier_ols, s=ols_dev(p,o);
+	// the IFLOLS is DIRECTIONAL: lens, datum, cut, and wave-off all project aft along
+	// the final bearing into a ~±40° wedge — from the bow (or anywhere off-wedge) the
+	// bracket shows no lights. tan 40° = 0.84.
+	o.datumPts.visible=o.cutPts.visible = s.along>10 && s.dist<7000 && Math.abs(s.lat)<s.along*0.84;
 	const approach = s.dist>40 && s.dist<5000 && s.along>40 && ownship.vely<3 && p.y>o.dy;
 	o.ballPts.visible=approach; if(!approach){ o.wavePts.visible=false; return; }
 	const low=s.dev<-0.7;
