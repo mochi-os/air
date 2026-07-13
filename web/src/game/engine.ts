@@ -16,7 +16,7 @@ import {
 } from './net'
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_burst, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step } from './flight'
 import { deviceDefaults } from '../lib/config'
-import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_horn, audio_remote, audio_remote_drop, audio_listener } from './audio'
+import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_horn, audio_seeker, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { createAppClient } from '@mochi/web'
 
@@ -82,6 +82,7 @@ const CARRIER_MODELS={
 		           {x:-66.50, z:-27.75, h:0} ],          // 4: port waist — heading stays the user's dead-straight in-game reading (2026-07-07); lat re-sourced from the 1:200 plan's track line (Stage C 2026-07-10: -27.75 at 0.99 ridge coverage over the unambiguous aft stretch; the model paint's -26.82 scores 0.15). Baked deck track moved with it
 		wires:[-115.6,-103.9,-92.2,-80.5], halfspan:12.5,  // arrestor wires 1..4 (fore-aft) spanning ±halfspan about the landing line — the classic four-wire CVN-68 fit, 11.7 m apart, 1-wire 51 m from the stern round-down. halfspan 13 parks the sheaves just outside the 22 m strip; 16 reached the el-4 apron on the port side
 		line:{ afa:-115.6, alat:1.92, bfa:-92.2, blat:-1.63 }, // the landing centreline = the MODEL's painted stripe (least-squares through its yellow centreline segments: lat = -16.27 - 0.1583·fa, 8.99° — the real angled deck is 9.05°). The plan-derived line sat 2.1-2.4 m port of the painted stripe, which made the wires' starboard sheaves look further out; the 1:200 plan says the sheaves are symmetric (~15.5 m each side), so the wires centre on the stripe
+		ident:"NIM",                                      // the ship's TACAN ident, shown beside the HUD's slant range
 		ols:{ fa:-21.0, lat:-37.06, model:true },         // OLS bracket on the port side — measured off the model's own IFLOLS: amber lens column (heights -0.5..+2.1 rel deck), green datum arms at +0.66 spanning 8.5 m, red wave-off columns at ±1.5 m. model:true = the GLB carries the physical structure, so the engine draws only the glowing lights
 		outline:[ [-167.0,8.11],[-164.0,16.72],[-161.0,23.5],[-158.0,24.35],[-155.0,23.36],[-152.0,24.56],[-149.0,25.74],[-146.0,26.68],[-143.0,27.34],[-140.0,28.56],[-137.0,28.88],[-134.0,29.37],[-131.0,29.85],[-128.0,30.25],[-125.0,30.36],[-122.0,30.46],[-119.0,31.88],[-116.0,33.41],[-113.0,34.89],[-110.0,35.02],[-107.0,35.11],[-104.0,35.19],[-101.0,35.28],[-98.0,35.36],[-95.0,35.44],[-92.0,35.52],[-89.0,35.6],[-86.0,36.4],[-83.0,37.35],[-80.0,38.27],[-77.0,38.45],[-74.0,38.45],[-71.0,38.27],[-68.0,38.08],[-65.0,34.5],[-62.0,31.1],[-59.0,27.37],[-56.0,27.03],[-53.0,26.7],[-50.0,26.7],[-47.0,26.7],[-44.0,30.62],[-41.0,34.53],[-38.0,38.27],[-35.0,37.35],[-32.0,36.43],[-29.0,35.69],[-26.0,35.69],[-23.0,35.69],[-20.0,35.69],[-17.0,35.69],[-14.0,35.69],[-11.0,35.69],[-8.0,36.43],[-5.0,37.16],[-2.0,37.9],[1.0,37.9],[4.0,37.9],[7.0,37.9],[10.0,37.9],[13.0,37.16],[16.0,36.43],[19.0,35.69],[22.0,35.69],[25.0,35.69],[28.0,35.69],[31.0,35.69],[34.0,35.69],[37.0,35.69],[40.0,36.43],[43.0,37.16],[46.0,37.9],[49.0,37.9],[52.0,37.9],[55.0,37.9],[58.0,37.9],[61.0,37.9],[64.0,37.85],[67.0,37.33],[70.0,36.04],[73.0,33.99],[76.0,31.65],[79.0,29.27],[82.0,26.93],[85.0,24.55],[88.0,22.43],[91.0,21.04],[94.0,20.41],[97.0,19.46],[100.0,18.47],[103.0,17.44],[106.0,17.22],[109.0,17.0],[112.0,16.76],[115.0,16.52],[118.0,16.32],[121.0,16.13],[124.0,15.95],[127.0,15.68],[130.0,15.43],[133.0,15.17],[136.0,15.0],[139.0,14.78],[142.0,14.61],[145.0,14.38],[148.0,14.16],[151.0,13.99],[154.0,13.74],[157.0,13.54],[160.0,13.23],[163.0,13.02],[164.0,12.84],[165.0,12.77],[165.0,-10.34],[164.0,-10.51],[163.0,-10.76],[160.0,-10.9],[157.0,-11.1],[154.0,-11.29],[151.0,-11.44],[148.0,-11.61],[145.0,-11.78],[142.0,-12.1],[139.0,-12.33],[136.0,-12.62],[133.0,-12.76],[130.0,-12.93],[127.0,-13.03],[124.0,-13.31],[121.0,-13.58],[118.0,-13.91],[115.0,-14.06],[112.0,-14.25],[109.0,-14.39],[106.0,-14.6],[103.0,-14.86],[100.0,-15.13],[97.0,-15.37],[94.0,-15.53],[91.0,-15.77],[88.0,-16.75],[85.0,-18.5],[82.0,-20.84],[79.0,-23.16],[76.0,-25.49],[73.0,-27.81],[70.0,-30.12],[67.0,-32.44],[64.0,-34.66],[61.0,-36.46],[58.0,-37.48],[55.0,-37.83],[52.0,-37.83],[49.0,-37.83],[46.0,-37.83],[43.0,-37.83],[40.0,-37.83],[37.0,-37.83],[34.0,-37.83],[31.0,-37.36],[28.0,-36.6],[25.0,-35.65],[22.0,-34.99],[19.0,-34.45],[16.0,-33.92],[13.0,-33.48],[10.0,-33.57],[7.0,-33.83],[4.0,-34.19],[1.0,-34.19],[-2.0,-34.32],[-5.0,-33.56],[-8.0,-33.56],[-11.0,-33.43],[-14.0,-34.2],[-17.0,-35.95],[-20.0,-35.45],[-23.0,-34.7],[-26.0,-33.0],[-29.0,-33.55],[-32.0,-34.35],[-35.0,-34.35],[-38.0,-34.35],[-41.0,-34.35],[-44.0,-34.67],[-47.0,-34.98],[-50.0,-35.3],[-53.0,-34.98],[-56.0,-34.66],[-59.0,-34.34],[-62.0,-34.34],[-65.0,-34.34],[-68.0,-35.16],[-71.0,-35.97],[-74.0,-36.79],[-77.0,-36.79],[-80.0,-36.79],[-83.0,-35.97],[-86.0,-35.16],[-89.0,-33.81],[-92.0,-33.29],[-95.0,-32.76],[-98.0,-32.76],[-101.0,-32.76],[-104.0,-32.76],[-107.0,-32.76],[-110.0,-32.76],[-113.0,-32.76],[-116.0,-32.81],[-119.0,-32.64],[-122.0,-28.11],[-125.0,-22.52],[-128.0,-17.05],[-131.0,-15.77],[-134.0,-15.39],[-137.0,-15.0],[-140.0,-14.69],[-143.0,-14.37],[-146.0,-14.06],[-149.0,-13.6],[-152.0,-13.18],[-155.0,-12.77],[-158.0,-12.42],[-161.0,-11.97],[-164.0,-9.43],[-167.0,-7.09] ] } }; // deck polygon TRACED FROM THE NIMITZ deck grid (84 pts, 1.5 m cells) — the Ford placeholder was narrower in places and the physics dropped jets through visually-solid deck near the edges
 const SHIP=CARRIER_MODELS.nimitz;   // the active carrier (a picker arrives with the second ship)
@@ -1329,9 +1330,11 @@ let own_burn=[0,0], own_burning=false, own_leak=0;   // ownship condition mirror
 let eject_taps=0, eject_at=0, eject_flag=false, ejected=false;
 bandit.harm={ thrust:0, wing:0, killed:false, burning:false };   // zonal summary driving the AI
 function battle_aim(st){ const q=st.group?st.group.quaternion:ownship.q;
-	return { position:{x:st.pos.x,y:st.pos.y,z:st.pos.z}, quaternion:{w:q.w,x:q.x,y:q.y,z:q.z} }; }
+	return { position:{x:st.pos.x,y:st.pos.y,z:st.pos.z}, quaternion:{w:q.w,x:q.x,y:q.y,z:q.z},
+		velocity:{x:st.velx??st.fwd.x*st.speed,y:st.vely??st.fwd.y*st.speed,z:st.velz??st.fwd.z*st.speed} }; }   // the target's motion carries it across the rounds' flight
 function battle_pose(st){ const up=st.up||world_up; return { position:{x:st.pos.x+st.fwd.x*6,y:st.pos.y+st.fwd.y*6,z:st.pos.z+st.fwd.z*6},
-	forward:{x:st.fwd.x,y:st.fwd.y,z:st.fwd.z}, up:{x:up.x,y:up.y,z:up.z} }; }
+	forward:{x:st.fwd.x,y:st.fwd.y,z:st.fwd.z}, up:{x:up.x,y:up.y,z:up.z},
+	velocity:{x:st.velx??st.fwd.x*st.speed,y:st.vely??st.fwd.y*st.speed,z:st.velz??st.fwd.z*st.speed} }; }   // the shooter's velocity rides on every round
 function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c"); for(let i=0;i<extras.length&&i<8;i++) battle_hulk(1+i,"fa18c");   // battle_rigged: mission start races the async wasm load and battle_hulk silently no-ops until the core lands — the frame loop retries until the rig takes (an unrigged hulk made the bandit UNHITTABLE: every gun burst and missile blast on him no-opped for the whole mission)
 	bandit.harm={thrust:0,wing:0,killed:false,burning:false}; battle_reset=true; }
 function bandit_destroy(){ explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
@@ -2070,7 +2073,7 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 		if(ch===key_of("acquire") && MULTIPLAYER && !on_ground()) acquire_target();   // ACM acquisition (in flight, Enter is free — the catapult owns it only on deck); single-player auto-designates the lone bandit
 		if(ch===key_of("select")){ master=master==="gun"?"9m":master==="9m"?"nav":"gun"; }   // weapon select (#133): GUN -> 9M -> NAV -> GUN; the HUD master mode follows
 		if(ch===key_of("altitude")){ alt_radar=!alt_radar; }   // HUD altitude switch: BARO <-> RDR
-		if(ch===key_of("reject")){ declutter=!declutter; }     // REJ 1 declutter (NATOPS symbology reject)
+		if(ch===key_of("reject")){ declutter=(declutter+1)%3; }     // the three-position symbology reject switch: NORM -> REJ 1 -> REJ 2 (NATOPS 2.13.4.8.1)
 		if(ch===key_of("guns") && master==="9m" && !weapons_hold && !ownship.launching && (ownship.gear??0)>0.98 && cfg.missiles && ownship.msl>0){
 			if(MULTIPLAYER) missile_flag=true;   // one trigger, weapon-selected: in 9M the trigger launches (the real Hornet's trigger fires the selected A/A weapon)
 			if(launch_missile(ownship,MULTIPLAYER?(remotes.get(designated)||remote_nearest()):(has_enemy?bandit:null))){ if(!cheat("ammunition")) ownship.msl--; audio_launch(); update_rails(ownship,ownship.msl); } }   // the visual missile chases the acquisition when one exists (the server's seeker judges the real damage)
@@ -2274,6 +2277,7 @@ let crash_t=0;   // >0 = crashed; counts down to the respawn
 let hit_flash=0;   // red vignette pulse when rounds land on the ownship
 const audio_prev={launching:false,trapped:false,grounded:false,cautions:0};   // one-shot edge detection (#73)
 let hud_cautions=0;   // caution count published by draw_hud for the master-caution beep
+let law_armed=true;   // radar-altimeter low-altitude warning: one aural per descent through the bug
 let last_out=null;   // the core's latest output words: the HUD caution panel reads damage straight from them
 // burn_trail: flame + black smoke from a burning aircraft, rate by intensity.
 function burn_trail(pos,intensity,vx,vy,vz){ if(intensity<=0.02) return;
@@ -2643,6 +2647,9 @@ function fly_player(dt){
 		if(ownship.trapped&&!audio_prev.trapped) audio_trap();
 		if(ownship.grounded&&!audio_prev.grounded&&!ownship.trapped&&ownship.speed>30) audio_touchdown();
 		audio_horn((ownship.gearTarget??0)>0.5&&ownship.pos.y<300&&ownship.speed<95&&!ownship.grounded&&!ownship.launching);
+		{ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;   // radar-altimeter low-altitude warning: descending through 250 ft AGL clean — the "altitude, altitude" moment; the gear coming down declares the descent deliberate
+			if(law_armed&&agl<250&&(ownship.vely??0)<-2&&!ownship.grounded&&!ownship.launching&&crash_t<=0&&(ownship.gearTarget??0)>0.5) { audio_law(); law_armed=false; }
+			else if(agl>400) law_armed=true; }
 		if(hud_cautions>audio_prev.cautions) audio_caution();
 		audio_prev.launching=!!ownship.launching; audio_prev.trapped=!!ownship.trapped; audio_prev.grounded=!!ownship.grounded; audio_prev.cautions=hud_cautions;
 	}
@@ -3047,7 +3054,7 @@ let last_range=0;
 // trigger fires the SELECTED weapon like the real stick), the HUD control
 // panel's BARO/RDR altitude switch, the REJ 1 declutter, and the sticky
 // peak-g readout NATOPS shows past 4.0.
-let master="gun", alt_radar=false, declutter=false, peak_g=1;
+let master="gun", alt_radar=false, declutter=0, peak_g=1;   // declutter: 0 NORM, 1 REJ 1, 2 REJ 2
 function dir_at(headFwd, rightH, yawRad, pitchRad){ const d=headFwd.clone().applyAxisAngle(world_up,yawRad); d.applyAxisAngle(rightH,pitchRad); return d; }
 function hud_message(text){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="20px monospace"; hctx.fillText(text, HW/2, HH/2+180); }   // shared centre banner for important messages (RUN UP ENGINE / PRESS SPACE TO LAUNCH / N WIRE)
 function draw_hud(dt){
@@ -3166,6 +3173,14 @@ function draw_hud(dt){
 		if(dst&&dst.group.visible){ boxed=dst; rng=wrap_distance(ownship.pos,dst.pos); if(dt>0) vc=(last_range-rng)/dt; last_range=rng; }
 		else designated=-1; }
 
+	// 9M seeker tone (#73): the growl/lock audio tracks the seeker itself, not
+	// the drawn symbology — the tone keeps playing with the head turned away
+	// from the glass, exactly like the real headset.
+	let lockon=false;
+	if(master==="9m"&&!pa&&boxed){ const to=_v.set(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)); const d=to.length()||1; to.multiplyScalar(1/d);
+		lockon=ownship.fwd.dot(to)>0.866&&d<7000; }
+	audio_seeker(game_paused?0:(master==="9m"&&!pa?(lockon?2:1):0));
+
 	// ---- A/A weapon symbology (#133): GUN = funnel free / director pipper on a
 	// boxed target, with the gun cross above; 9M = seeker circle + SHOOT cue.
 	if(flight_symbols&&master!=="nav"&&!pa){ if(glass){ hctx.save(); glass_clip(glass); }
@@ -3182,15 +3197,19 @@ function draw_hud(dt){
 			hctx.fillStyle=GR; hctx.font="12px monospace"; hctx.textAlign="center";
 			hctx.fillText(String(Math.round(off)),bore[0]+ux*84,bore[1]+uy*84+4); } }
 	if(master==="gun"){
-		if(boxed&&td){   // director: the lead-computing pipper with a range analog around the ring
-			const t=Math.min(rng,2000)/muzzle; const muz=body_offset(ownship,6.0,0.35,0.0);
+		if(boxed&&td){   // director: a TRUE lead-computing pipper now that rounds fly real time of flight — where my rounds will be, pulled back by where HE will be, so pipper-on-target IS the deflection solution (mirrors battle.Burst exactly); range analog around the ring
+			const t=Math.min(rng,2000)/Math.max(muzzle+vc,200); const muz=body_offset(ownship,6.0,0.35,0.0);
 			const impact=muz.clone().addScaledVector(ownship.fwd,muzzle*t).addScaledVector(ownship.vel_dir,ownship.speed*t); impact.y-=0.5*9.8*t*t;
+			impact.x-=(boxed.velx??boxed.fwd.x*boxed.speed)*t; impact.y-=(boxed.vely??boxed.fwd.y*boxed.speed)*t; impact.z-=(boxed.velz??boxed.fwd.z*boxed.speed)*t;
 			const pip=proj_point(impact);
 			if(pip){ hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.setLineDash([]);
 				hctx.beginPath(); hctx.arc(pip[0],pip[1],4,0,Math.PI*2); hctx.fill();
 				hctx.beginPath(); hctx.arc(pip[0],pip[1],11,0,Math.PI*2); hctx.stroke();
 				const fraction=THREE.MathUtils.clamp(1-rng/3000,0,1);   // range analog: the arc unwinds as the target closes
-				hctx.lineWidth=2.5; hctx.beginPath(); hctx.arc(pip[0],pip[1],15,-Math.PI/2,-Math.PI/2+fraction*Math.PI*2); hctx.stroke(); hctx.lineWidth=1.5; } }
+				hctx.lineWidth=2.5; hctx.beginPath(); hctx.arc(pip[0],pip[1],15,-Math.PI/2,-Math.PI/2+fraction*Math.PI*2); hctx.stroke(); hctx.lineWidth=1.5;
+				const miss=Math.hypot(wrap_axis(impact.x-boxed.pos.x),impact.y-boxed.pos.y,wrap_axis(impact.z-boxed.pos.z));   // predicted miss: the pipper point IS the burst's arrival pulled back by his motion, so its distance from him is where the rounds land
+				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0&&(sim_time*5)%2<1){ hctx.font="16px monospace"; hctx.textAlign="center";   // the director commands the shot only on a VALID solution — in range AND the stream landing on the airframe, not merely a track
+					hctx.fillText("SHOOT",pip[0],pip[1]-28); } } }
 		else {   // funnel: stadiametric rails a 40 ft wingspan should touch at firing range
 			hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.2;
 			const rails=[[],[]];
@@ -3204,10 +3223,7 @@ function draw_hud(dt){
 			hctx.lineWidth=1.5; } }
 	if(master==="9m"){
 		const seeker=2.5*ppd;   // the 5° seeker circle
-		let lockon=false;
-		if(boxed&&td){ const to=new THREE.Vector3(boxed.pos.x-ownship.pos.x,boxed.pos.y-ownship.pos.y,boxed.pos.z-ownship.pos.z); const d=to.length()||1; to.multiplyScalar(1/d);
-			lockon=ownship.fwd.dot(to)>0.866&&d<7000; }
-		const at=lockon?td:bore;
+		const at=(lockon&&td)?td:bore;
 		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(at[0],at[1],seeker,0,Math.PI*2); hctx.stroke();
 		if(lockon&&!brk&&!weapons_hold&&(sim_time*5)%2<1&&ownship.msl>0&&cfg.missiles){ hctx.fillStyle=GR; hctx.font="16px monospace"; hctx.textAlign="center";   // no SHOOT inside the breakaway regime (the X owns it) or during the joust weapons hold — commanding a launch the trigger will refuse just confuses the merge
 			hctx.fillText("SHOOT",at[0],at[1]-seeker-16); } }
@@ -3224,7 +3240,8 @@ function draw_hud(dt){
 	const ppdv=HH/45;                                   // the virtual layout's pixels per degree (zoom-independent)
 	const wly=cy-4*ppdv;                                // the waterline datum: the airspeed/altitude box TOPS sit here (NATOPS)
 	const aa=master!=="nav"&&!pa;                       // A/A master modes relocate the heading scale to the bottom
-	// ---- heading scale: a moving 30° window with the caret beneath — the value reads off the scale (no digital box on the real HUD) ----
+	// ---- heading scale: a moving 30° window with the caret beneath — the value reads off the scale (no digital box on the real HUD); REJ 2 removes the whole group ----
+	if(declutter<2){
 	const hty=glass?(aa?cy+170:cy-150):(aa?HH-64:46);
 	hctx.save(); hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.font="11px monospace";
 	const hdg=(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360; const hppx=7, halfd=15;
@@ -3241,6 +3258,7 @@ function draw_hud(dt){
 		const dd=THREE.MathUtils.clamp(((brg-hdg+540)%360)-180,-halfd,halfd); const mx=cx+dd*hppx;
 		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
 		hctx.moveTo(mx-6,hty+21); hctx.lineTo(mx,hty+14); hctx.lineTo(mx+6,hty+21); hctx.stroke(); }
+	}
 
 	// ---- airspeed box (left): boxed KCAS, top at the waterline ----
 	const kcas=(ownship.cas??ownship.speed)*1.94384; const ax=cx-4.2*ppdv;
@@ -3266,7 +3284,7 @@ function draw_hud(dt){
 
 	// ---- vertical velocity above the altitude box (NAV master mode only, per NATOPS) ----
 	const vs=ownship.vel_dir.y*ownship.speed*196.85;
-	if(master==="nav"&&!declutter){ hctx.font="13px monospace"; hctx.textAlign="left";   // "only displayed in the NAV master mode" — NATOPS 2.13.4.8 item 12
+	if(master==="nav"){ hctx.font="13px monospace"; hctx.textAlign="left";   // "only displayed in the NAV master mode" — NATOPS 2.13.4.8 item 12; not on the reject list, so it survives REJ 1/2
 		hctx.fillText((vs<0?"-":"")+Math.abs(Math.round(vs/10)*10),lx+2,wly-12); }
 
 	// ---- AoA / Mach / G / peak-G block (left-centre); Mach and g are DELETED in the landing configuration ----
@@ -3294,8 +3312,8 @@ function draw_hud(dt){
 
 	// ---- data blocks: TCN slant range to the carrier (lower right), selected weapon (lower left) ----
 	hctx.font="13px monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
-	if(carrier_ols){ const slant=Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),ownship.pos.y,wrap_axis(CARRIER.z-ownship.pos.z))/1852;
-		hctx.fillText("TCN "+slant.toFixed(1),lx,cy+7.2*ppdv); }
+	if(carrier_ols&&declutter<2){ const slant=Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),ownship.pos.y,wrap_axis(CARRIER.z-ownship.pos.z))/1852;
+		hctx.fillText("TCN "+slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range + the station's ident, like the real data block (REJ 2 removes it)
 	if(boxed&&aa){   // designated-target range and closure: fixed right-side data block, like the radar-track readouts on the real HUD — never text glued to the target
 		hctx.fillText((rng/1852).toFixed(1)+" NM",lx,cy+5.4*ppdv);
 		hctx.fillText((vc>0?"+":"")+Math.round(vc*1.94384)+" kt",lx,cy+6.3*ppdv); }

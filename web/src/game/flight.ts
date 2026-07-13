@@ -62,7 +62,7 @@ export const DT = 1 / 240
 // Bump on any flight.wasm rebuild that must reach already-loaded browsers. The
 // cache:'reload' fetch below makes this belt-and-suspenders, but the version
 // query also breaks any entry a proxy or old cache is still pinning by URL.
-const WASM_VERSION = '2026-07-08b'
+const WASM_VERSION = '2026-07-13a' // burst wire gains shooter/target velocities (time-of-flight gunnery)
 const CAP = 30 // accumulator cap: tab throttling must not spiral into replay storms
 
 // Control sample for one frame; the FCS interprets pitch/roll/yaw as
@@ -266,7 +266,7 @@ export function flight_clear(): void {
 // The same Go battle package the multiplayer server runs natively judges
 // SP hits through these wrappers. Layouts mirror world/wasm/battle.go.
 
-const battle_input = new Float64Array(20)
+const battle_input = new Float64Array(26)
 const battle_input_bytes = new Uint8Array(battle_input.buffer)
 const battle_output = new Float64Array(64)
 const battle_output_bytes = new Uint8Array(battle_output.buffer)
@@ -277,6 +277,7 @@ export const BATTLE = { fire: 1, pilot: 2, explode: 4, jam: 8, shed: 16 } as con
 export interface Aim {
   position: { x: number; y: number; z: number }
   quaternion: { w: number; x: number; y: number; z: number }
+  velocity?: { x: number; y: number; z: number } // the target's motion carries it across the rounds' time of flight
 }
 
 // battle_hulk builds or resets the model-less target body at an index
@@ -338,7 +339,7 @@ export function battle_hulk(index: number, aircraft: string): boolean {
 // bandit shooting the player), else a hulk index. Returns hits + events.
 export function battle_burst(
   target: number,
-  shooter: { position: { x: number; y: number; z: number }; forward: { x: number; y: number; z: number }; up: { x: number; y: number; z: number } },
+  shooter: { position: { x: number; y: number; z: number }; forward: { x: number; y: number; z: number }; up: { x: number; y: number; z: number }; velocity?: { x: number; y: number; z: number } },
   aim: Aim | null,
   rounds: number,
   identity: number,
@@ -355,6 +356,8 @@ export function battle_burst(
     b[13] = aim.quaternion.w; b[14] = aim.quaternion.x; b[15] = aim.quaternion.y; b[16] = aim.quaternion.z
   }
   b[17] = rounds; b[18] = identity; b[19] = tick
+  b[20] = shooter.velocity?.x ?? 0; b[21] = shooter.velocity?.y ?? 0; b[22] = shooter.velocity?.z ?? 0
+  b[23] = aim?.velocity?.x ?? 0; b[24] = aim?.velocity?.y ?? 0; b[25] = aim?.velocity?.z ?? 0
   core.burst(battle_input_bytes, battle_output_bytes)
   return { hits: battle_output[0], mask: battle_output[1] }
 }
