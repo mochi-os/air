@@ -1772,6 +1772,8 @@ function update_papi(p){ const flash=(performance.now()%520)<90;   // REIL: ~2 H
 } } }
 let carrier_ols=null;
 let carrier_shuttles=null;   // one catapult shuttle (towing spreader) per cat spot; the active one rides the stroke with the jet
+let carrier_jbds=null;       // one Mk 7 jet blast deflector per cat spot; rises behind the hooked jet
+const JBD_W=9.4, JBD_L=4.2, JBD_T=0.28, JBD_ANG=50*Math.PI/180;   // panel fills the painted plan-derived box (~9.7x4.4 m); real Mk 7 raises to ~50°
 function ols_points(pts,color,size){   // like glow_points but SCREEN-SPACE (constant pixels) so the meatball reads small up close and far, not a 9 m blob
 	const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(new Float32Array(pts),3));
 	const p=new THREE.Points(g,new THREE.PointsMaterial({size,map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:false})); p.frustumCulled=false; scene.add(p); return p;
@@ -1805,6 +1807,32 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 		m.traverse(o=>{ if(o.isMesh) o.castShadow=true; });
 		m.position.set(w.x, deck_y_at(carrier_model,w.x,w.z,dy), w.z); m.rotation.y=Math.atan2(-fwdz,fwdx); scene.add(m);
 		return { mesh:m, home:m.position.clone() };
+	});
+	// --- jet blast deflectors: a Mk 7 panel behind each cat spot, engine-animated ---
+	// The painted JBD boxes (plan-derived, centred on each track 18-24 m aft of the spot)
+	// are the FOOTPRINT: the panel fills the box, hinged at its FORWARD edge, lying 1.5 cm
+	// proud when flat (flush to the eye, never coplanar — the z-fight rule), rising to 50°
+	// behind a hooked jet. The face jets taxi over is deck tone; the underside the queued
+	// jet sees when it's raised is ribbed steel. Raised, a near-black pit quad and three
+	// hydraulic rams appear in the footprint — the recess the real panel lies in.
+	const jbdSteel=new THREE.MeshStandardMaterial({color:0x7a8087,metalness:0.35,roughness:0.62});
+	const jbdDeck=new THREE.MeshStandardMaterial({color:0x5e605c,metalness:0.05,roughness:0.95});
+	const jbdPitM=new THREE.MeshStandardMaterial({color:0x0c0d0f,metalness:0.1,roughness:1.0});
+	const jbdRamM=new THREE.MeshStandardMaterial({color:0xb9bec4,metalness:0.85,roughness:0.3});
+	const JBDS=[{x:27.2,z:16.76,h:3.30},{x:23.5,z:-3.44,h:0},{x:-68.7,z:-15.52,h:4.03},{x:-84.5,z:-27.75,h:0}];   // box centres from the bake's JBD table (post-squash deck frame, on the current track lines)
+	carrier_jbds=JBDS.map(cat=>{
+		const w=carrier_world(cat.x,cat.z), hd=cat.h*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
+		const fwdx=fx*CARRIER_C+fz*CARRIER_S, fwdz=-fx*CARRIER_S+fz*CARRIER_C;
+		const g=new THREE.Group();
+		g.position.set(w.x, deck_y_at(carrier_model,w.x,w.z,dy), w.z); g.rotation.y=Math.atan2(-fwdz,fwdx); scene.add(g);
+		const pivot=new THREE.Group(); pivot.position.set(JBD_L/2,0.015,0); g.add(pivot);   // hinge line = the box's forward edge, 1.5 cm above deck
+		const pg=new THREE.BoxGeometry(JBD_L,JBD_T,JBD_W); pg.translate(-JBD_L/2,-JBD_T/2,0);   // TOP face at hinge level: flat = flush plate, body sunk in the notional recess
+		const panel=new THREE.Mesh(pg,[jbdSteel,jbdSteel,jbdDeck,jbdSteel,jbdSteel,jbdSteel]);   // +y (taxi face) deck tone, all other faces steel
+		panel.castShadow=true; pivot.add(panel);
+		for(let r=0;r<4;r++){ const rib=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.10,JBD_W-0.5),jbdSteel); rib.position.set(-0.55-r*1.02,-JBD_T-0.05,0); rib.castShadow=true; pivot.add(rib); }   // underside stiffeners (buried when flat, shown when raised)
+		const pit=new THREE.Mesh(new THREE.PlaneGeometry(JBD_L+0.2,JBD_W+0.2),jbdPitM); pit.rotation.x=-Math.PI/2; pit.position.set(0,0.012,0); pit.visible=false; g.add(pit);
+		const rams=[-1,0,1].map(k=>{ const m=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.11,1,8),jbdRamM); m.castShadow=true; m.visible=false; g.add(m); m.userData.kz=k*3.1; return m; });
+		return { g, pivot, pit, rams, frac:0 };
 	});
 	// --- OLS (meatball) on the port bracket of the carrier (measured); glideslope stays referenced to the touchdown, not this housing ---
 	const twfa=SHIP.wires[SHIP.wires.length>3?2:1], ofa=SHIP.ols.fa, olat=SHIP.ols.lat;   // OLS bracket position on the carrier's port side; the glideslope targets the 3-wire on a four-wire deck (the US aim wire), the middle wire on a three-wire fit
@@ -1963,6 +1991,28 @@ function update_shuttles(){   // the hooked cat's shuttle rides with the jet's l
 	for(let i=0;i<carrier_shuttles.length;i++){ const s=carrier_shuttles[i];
 		if(i===active) s.mesh.position.set(ownship.pos.x+ownship.fwd.x*(nose+0.28), s.home.y, ownship.pos.z+ownship.fwd.z*(nose+0.28));
 		else s.mesh.position.copy(s.home); }
+}
+const _ramDir=new THREE.Vector3(), _ramUp=new THREE.Vector3(0,1,0);
+function update_jbds(dt){   // the hooked cat's deflector rises through run-up and the stroke, drops after
+	if(!carrier_jbds) return;
+	const active=ownship.launching?cat_idx:on_cat_spot();
+	for(let i=0;i<carrier_jbds.length;i++){ const j=carrier_jbds[i];
+		const tgt=i===active?1:0, rate=tgt>j.frac?0.9:0.55;   // ~1.1 s up (hydraulic), ~1.8 s settle down
+		j.frac=THREE.MathUtils.clamp(j.frac+THREE.MathUtils.clamp(tgt-j.frac,-rate*dt,rate*dt),0,1);
+		const th=j.frac*JBD_ANG;
+		j.pivot.rotation.z=-th;   // -z rotation lifts the aft (free) edge
+		const show=j.frac>0.06; j.pit.visible=show;
+		// rams: fixed base in the pit to an attachment on the panel underside (pivot-local
+		// x -2.5), which sweeps with the hinge angle — position/orient/stretch each frame
+		const ax=-2.5*Math.cos(th)-JBD_T*Math.sin(th), ay=2.5*Math.sin(th)-JBD_T*Math.cos(th);   // attachment on the panel UNDERSIDE (pivot-local -2.5,-T), swept by the hinge angle
+		const hx=JBD_L/2, tipx=hx+ax, tipy=0.015+ay, bx=hx-2.9, by=0.04;
+		for(const m of j.rams){ m.visible=show; if(!show) continue;
+			const len=Math.hypot(tipx-bx,tipy-by);
+			m.scale.set(1,Math.max(len,0.05),1);
+			m.position.set((bx+tipx)/2,(by+tipy)/2,m.userData.kz);
+			_ramDir.set(tipx-bx,tipy-by,0).normalize();
+			m.quaternion.setFromUnitVectors(_ramUp,_ramDir); }
+	}
 }
 function update_aircraft_lights(){
 	if(!aircraft_lights) return; const on=!!ownship.lights, strobe=on && (performance.now()%1100)<70;   // ~1 Hz strobe flash
@@ -2795,7 +2845,7 @@ function step_world(dt){ sim_time+=dt;
 	live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts);
 	tr_pts.visible=cfg.tracers; fl_pts.visible=cfg.flares;
 	update_anim(dt);
-	update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights(); update_shuttles();
+	update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights(); update_shuttles(); update_jbds(dt);
 	if(carrier_ols && !ownship.trapped && ((ownship.hook??0)>0.5 || (ownship.gear??1)<0.5)){   // LSO watch: accumulate glideslope/lineup deviation through the in-close portion of a pass, and call the waveoff — the LSO waves off ANY unlandable pass, not just a low one
 		const s=ols_dev(ownship.pos,carrier_ols);
 		ownship.waving=false;   // current waveoff call (drives the flashing banner); waved is sticky for the pass grade
