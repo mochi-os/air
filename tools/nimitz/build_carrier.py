@@ -359,12 +359,6 @@ RAIL=len(mats)-1
 # params as deck_baked — repainted plates merge with the baked deck under the same light
 mats.append({'name':'deck_repaint','pbrMetallicRoughness':{'baseColorFactor':[0.117,0.122,0.112,1.0],'metallicFactor':0.0,'roughnessFactor':0.92}})
 DTONE=len(mats)-1
-# the authored racks' 0137_Black is absolute black (0,0,0) — zero reflectance renders as a
-# void wherever a face is exposed (end plates, whole black components). The rafts get their
-# own dark grey instead; the shared 0137_Black stays untouched for the mast/island parts.
-mats.append({'name':'raft_hardware','pbrMetallicRoughness':{'baseColorFactor':[0.15,0.16,0.17,1.0],'metallicFactor':0.1,'roughnessFactor':0.9}})
-RAFTDARK=len(mats)-1
-
 inst=defaultdict(list)
 for ni,n in enumerate(nodes):
     if 'mesh' in n: inst[n['mesh']].append(ni)
@@ -376,12 +370,12 @@ def addidx(arr32):
     acc.append({'bufferView':len(bvs)-1,'byteOffset':0,'componentType':5125,'count':len(arr32),'type':'SCALAR'})
     return len(acc)-1
 
-# --- 1b. life-raft rack REPLACEMENT (v59) --- the authored canister racks straddle the
-# rebuilt deck's boundary planes (strip at the sheered rim height + skirt at the outline),
-# so any exemption leaves them either beheaded (v57) or clipping through the deck (v58).
-# Replace them wholesale: collect the authored canister clusters (material_37 shells) along
-# the outline, KILL all three rack materials inside those zones during the band clear, and
-# GENERATE clean two-row canister stacks hung below the local deck lip after the railings.
+# --- 1b. life-raft rack REMOVAL --- the authored canister racks straddle the rebuilt
+# deck's boundary planes (strip at the sheered rim height + skirt at the outline): every
+# scheme tried v57-v74 left them beheaded, clipping, floating, sliced, or brought the
+# messy authored catwalk back with them. REMOVED entirely (user 2026-07-12): the zones
+# are collected here only so the band clear kills the racks; nothing is regenerated, and
+# the full uniform skirt is the fascia everywhere.
 _P=np.array(OUT,np.float64); _SG=np.roll(_P,-1,axis=0)-_P
 _SL=np.hypot(_SG[:,0],_SG[:,1]); _AR=np.concatenate([[0.0],np.cumsum(_SL)])[:len(_P)]
 def arc_project(f,l):
@@ -391,17 +385,6 @@ def arc_project(f,l):
     dd=np.hypot(f-q0,l-q1)
     j=int(np.argmin(dd))
     return _AR[j]+tpar[j]*_SL[j], dd[j]
-_ccw=(np.sum(_P[:,0]*np.roll(_P[:,1],-1)-np.roll(_P[:,0],-1)*_P[:,1])/2)>0
-def arc_signed(f,l):   # signed offset from the outline: positive = outboard (see _SFLIP)
-    d0=f-_P[:,0]; d1=l-_P[:,1]
-    tpar=np.clip((d0*_SG[:,0]+d1*_SG[:,1])/(_SL**2+1e-9),0,1)
-    q0=_P[:,0]+tpar*_SG[:,0]; q1=_P[:,1]+tpar*_SG[:,1]
-    dd=(f-q0)**2+(l-q1)**2
-    j=int(np.argmin(dd))
-    tx,ty=_SG[j,0]/max(_SL[j],1e-9),_SG[j,1]/max(_SL[j],1e-9)
-    nx,ny=(ty,-tx) if _ccw else (-ty,tx)
-    return _AR[j]+tpar[j]*_SL[j], (f-q0[j])*nx+(l-q1[j])*ny
-_SFLIP=-1.0 if arc_signed(0.0,0.0)[1]>0 else 1.0
 raftpts=[]
 for mi2,nis in inst.items():
     for p in G['meshes'][mi2]['primitives']:
@@ -427,8 +410,9 @@ if raftpts:
                 fs=[p[1] for p in seg]; ls=[p[2] for p in seg]
                 RAFT_ZONES.append((min(fs)-0.7,max(fs)+0.7,min(ls)-0.7,max(ls)+0.7))
             start=i
-print(f"life-raft clusters: {len(RAFT_CLUSTERS)} (authored racks killed in-zone, regenerated)")
-RACK_MATS={'material_3','material_37','0137_Black'}
+print(f"life-raft clusters: {len(RAFT_CLUSTERS)} (authored racks killed in-zone, NOT regenerated)")
+# RACK_MATS gate removed: the zone kill is material-blind (brackets span many materials)
+
 
 # --- 2. the deck-band clear ---
 deleted=0; resplit=0
@@ -441,7 +425,6 @@ for mi2,nis in inst.items():
         mi=p.get('material',-1)
         col=mats[mi].get('pbrMetallicRoughness',{}).get('baseColorFactor') if mi>=0 else None
         dark=(col is not None and max(col[:3])<0.42 and mats[mi].get('alphaMode')!='BLEND')
-        rack=mi>=0 and mats[mi].get('name') in RACK_MATS
         # pale-neutral: flush plates the kill rules can miss (giant tris whose centroid
         # falls outside the ring, partial escapes) get DECK-TONE repaint instead — any
         # survivor then merges with the baked deck rather than reading as a pale slab
@@ -484,15 +467,20 @@ for mi2,nis in inst.items():
             if mi>=0 and mats[mi].get('name')=='material_5':   # OLS datum-arm bar only
                 for f0,f1,l0,l1,h0,h1 in OLS_TRIM:
                     fkill|=(fa>f0)&(fa<f1)&(la>l0)&(la<l1)&(ys>h0)&(ys<h1)
-            if rack:   # authored life-raft racks: killed in-zone, transplanted after railings
-                rz=np.zeros(len(t),bool)
-                for f0,f1,l0,l1 in RAFT_ZONES:
-                    rz|=(fa>f0)&(fa<f1)&(la>l0)&(la<l1)&(ys>-2.2)&(ys<1.4)
-                for i3 in np.where(rz)[0]:
-                    # the stbd-forward zone bbox spans the elevator notches: without this
-                    # bound it swallows deck-interior fittings up to 19 m inboard
-                    if arc_project(fa[i3],la[i3])[1]>3.2: rz[i3]=False
-                fkill|=rz
+            # life-raft zones: kill EVERYTHING authored, whatever the material — the
+            # racks were RACK_MATS but their mounting brackets/fittings span others
+            # (orange material_9, material_38, dark frames the repaints caught), and
+            # with the rafts removed the empty brackets read as junk on the fascia.
+            # Inside the deck outline the band rules already kill regardless of
+            # colour, so this only widens the sub-deck/outboard part of the zones.
+            rz=np.zeros(len(t),bool)
+            for f0,f1,l0,l1 in RAFT_ZONES:
+                rz|=(fa>f0)&(fa<f1)&(la>l0)&(la<l1)&(ys>-2.2)&(ys<1.4)
+            for i3 in np.where(rz)[0]:
+                # the stbd-forward zone bbox spans the elevator notches: without this
+                # bound it swallows deck-interior fittings up to 19 m inboard
+                if arc_project(fa[i3],la[i3])[1]>3.2: rz[i3]=False
+            fkill|=rz
             if not (col is not None and (max(col[:3])-min(col[:3]))>0.12):   # saturated border paint survives
                 # any tri touching the platform band dies unless rooted deep (hull fascia
                 # spans many metres down; under-platform braces root at -1..-2 and die)
@@ -724,273 +712,10 @@ RAILS[:,1]*=S_LAT   # railing sites were measured pre-squash; follow the deck
 # cylinders per authored cluster, hung on the outline's outboard side BELOW the local
 # deck lip (deck-edge clearance like the real racks; nothing touches the strip or
 # skirt). Cluster spans come from the authored material_37 shells (step 1b).
-def cyl_tris(c,axis,radius,length,nseg=8):
-    a=np.array(axis,np.float64); a/=np.linalg.norm(a)
-    u=np.cross(a,[0.0,0.0,1.0])
-    if np.linalg.norm(u)<1e-6: u=np.cross(a,[0.0,1.0,0.0])
-    u/=np.linalg.norm(u); w2=np.cross(a,u)
-    c=np.array(c,np.float64)
-    e0,e1=c-a*length/2,c+a*length/2
-    th=np.linspace(0,2*np.pi,nseg,endpoint=False)
-    r0=[e0+(u*np.cos(t)+w2*np.sin(t))*radius for t in th]
-    r1=[e1+(u*np.cos(t)+w2*np.sin(t))*radius for t in th]
-    T=[]
-    for k in range(nseg):
-        k2=(k+1)%nseg
-        T+=[[r0[k],r0[k2],r1[k2]],[r0[k],r1[k2],r1[k]]]
-        T+=[[e0,r0[k2],r0[k]],[e1,r1[k],r1[k2]]]
-    return np.array(T).reshape(-1,3)
-def outline_at(s):
-    j=int(np.clip(np.searchsorted(_AR,s)-1,0,len(_P)-1))
-    t=(s-_AR[j])/max(_SL[j],1e-9)
-    px=_P[j,0]+t*_SG[j,0]; py=_P[j,1]+t*_SG[j,1]
-    tx,ty=_SG[j,0]/max(_SL[j],1e-9),_SG[j,1]/max(_SL[j],1e-9)
-    nx,ny2=ty,-tx
-    if inpoly_vec(np.array([px+nx*0.8]),np.array([py+ny2*0.8]),P_base)[0]: nx,ny2=-nx,-ny2
-    return px,py,nx,ny2,RIMH[j]
-# v61: VERBATIM TRANSPLANT of the authored racks (generated approximations — v59
-# cylinder rows, v60 capsule stacks — read wrong next to the real thing; the ICCS
-# cab precedent applies). Fresh-parse the ORIGINAL, take every rack-material tri in
-# the collected clusters, and re-add it with a per-cluster rigid shift: OUTBOARD
-# until clear of the skirt/lip (the authored units lean ~0.25 m inside the outline),
-# DOWN until the cluster top sits under the LOCAL rim (authored tops are a constant
-# +0.66..0.68 while the deck sheers 0.06..0.66, so amidships/aft they poked above
-# deck and clipped the strip).
-_d2=open(ORIG,'rb').read()
-_cl2,_=struct.unpack('<II',_d2[12:20])
-_G2=json.loads(_d2[20:20+_cl2]); _bo2=20+_cl2
-_bl2,_=struct.unpack('<II',_d2[_bo2:_bo2+8])
-_B2=_d2[_bo2+8:_bo2+8+_bl2]
-def _readA2(ai):
-    a=_G2['accessors'][ai]; bv=_G2['bufferViews'][a['bufferView']]
-    comps={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4}[a['type']]
-    dt={5126:np.float32,5125:np.uint32,5123:np.uint16,5121:np.uint8,5120:np.int8}[a['componentType']]
-    isz=np.dtype(dt).itemsize
-    off=bv.get('byteOffset',0)+a.get('byteOffset',0)
-    stride=bv.get('byteStride',comps*isz)
-    if stride!=comps*isz:
-        raw=np.frombuffer(_B2,np.uint8,a['count']*stride,off).reshape(a['count'],stride)
-        return np.ascontiguousarray(raw[:,:comps*isz]).view(dt).reshape(a['count'],comps)
-    return np.frombuffer(_B2,dt,a['count']*comps,off).reshape(a['count'],comps)
-_w2={}
-def _walk2(i,P):
-    _w2[i]=P@trs(_G2['nodes'][i])
-    for c in _G2['nodes'][i].get('children',[]): _walk2(c,_w2[i])
-for r in _G2['scenes'][_G2.get('scene',0)]['nodes']: _walk2(r,np.eye(4))
-_m2=_G2['materials']
-raftbuckets=defaultdict(list)   # (cluster index, material name) -> [tri verts (fa,lat,h)]
-for ni,n in enumerate(_G2['nodes']):
-    if 'mesh' not in n: continue
-    for p in _G2['meshes'][n['mesh']]['primitives']:
-        mi=p.get('material',-1)
-        if mi<0 or _m2[mi].get('name') not in RACK_MATS: continue
-        v=_readA2(p['attributes']['POSITION']).astype(np.float64)
-        w=(_w2[ni][:3,:3]@v.T).T+_w2[ni][:3,3]
-        if 'indices' in p: idx=_readA2(p['indices']).ravel().astype(np.int64)
-        else: idx=np.arange(len(w),dtype=np.int64)
-        idx=idx[:len(idx)//3*3]
-        t=w[idx].reshape(-1,3,3)
-        fa=(t[:,:,0]-CX)*S; la=(t[:,:,2]-CZ)*S*S_LAT; hh=(t[:,:,1]-DECKY)*S
-        cf=fa.mean(1); cl=la.mean(1); ch=hh.mean(1)
-        for i2 in range(len(t)):
-            # EXACTLY the kill footprint (RAFT_ZONES bboxes + the same height band) —
-            # anything looser duplicates or hoists unrelated same-material fittings
-            # (the zones extend down the hull side without the height bound)
-            if not (-2.2<ch[i2]<1.4): continue
-            for k,(f0,f1,l0,l1) in enumerate(RAFT_ZONES):
-                if f0<cf[i2]<f1 and l0<cl[i2]<l1:
-                    s_arc,dd_arc=arc_project(cf[i2],cl[i2])
-                    if dd_arc>3.2: break   # matches the kill bound: interior fittings stay authored
-                    raftbuckets[(k,_m2[mi]['name'])].append((s_arc,np.stack([fa[i2],la[i2],hh[i2]],1)))
-                    break
-# Per-ROW placement: split each cluster at 0.6 m arc gaps into rows, then BEND each row
-# smoothly onto the wall — a per-vertex outboard displacement field delta(s) sampled at
-# 0.8 m stations (front=P98, back clamped to front-1.5: the mount-arm guard), smoothed
-# over ~4 m, applied along the local outline normal, outboard-only, plus the analogous
-# smoothed vertical tuck to the local lip. NO segmentation: rigid pieces on this wall
-# inherently step at their seams (the offset between the authored rack line and the
-# outline varies 0.5-2.9 m along one 56 m row, and some rows are continuous — largest
-# natural gap 0.03 m), which sliced packs open (user-reported 2026-07-12). The field's
-# gradient after smoothing is a few cm/m — invisible shear, no seams, coincident soup
-# vertices get identical displacement (same position -> same s), so nothing tears.
-raftsoup=defaultdict(list)
-RAFT_PLATES=[]
-RAFT_DROPPED=[]
-for k,(s0,s1) in enumerate(RAFT_CLUSTERS):
-    members=[(sa,mn,t) for (ck,mn),ts in raftbuckets.items() if ck==k for sa,t in ts]
-    if not members: continue
-    members.sort(key=lambda m:m[0])
-    unit=[]; units=[]
-    for m in members:
-        if unit and m[0]-unit[-1][0]>0.6: units.append(unit); unit=[]
-        unit.append(m)
-    units.append(unit)
-    for unit in units:
-        allv=np.concatenate([t for _,_,t in unit])
-        V=allv[:,:2].copy()
-        H=allv[:,2].copy()
-        def field(P):   # vectorised arc_signed over all vertices, chunked
-            ssf=np.empty(len(P)); ddf=np.empty(len(P))
-            for o in range(0,len(P),8000):
-                q=P[o:o+8000]
-                d0=q[:,0,None]-_P[None,:,0]; d1=q[:,1,None]-_P[None,:,1]
-                tpar=np.clip((d0*_SG[None,:,0]+d1*_SG[None,:,1])/(_SL[None,:]**2+1e-9),0,1)
-                q0=_P[None,:,0]+tpar*_SG[None,:,0]; q1=_P[None,:,1]+tpar*_SG[None,:,1]
-                dist2=(q[:,0,None]-q0)**2+(q[:,1,None]-q1)**2
-                jj=np.argmin(dist2,axis=1)
-                rr=np.arange(len(q))
-                tx=_SG[jj,0]/np.maximum(_SL[jj],1e-9); ty=_SG[jj,1]/np.maximum(_SL[jj],1e-9)
-                nx2,ny3=(ty,-tx) if _ccw else (-ty,tx)
-                ssf[o:o+8000]=_AR[jj]+tpar[rr,jj]*_SL[jj]
-                ddf[o:o+8000]=((q[:,0]-q0[rr,jj])*nx2+(q[:,1]-q1[rr,jj])*ny3)*_SFLIP
-            return ssf,ddf
-        def smooth(a):
-            if len(a)<3: return a
-            w=min(5,len(a)-(1-len(a)%2))
-            k2=np.ones(w)
-            # edge-corrected moving average: zero-pad 'same' underestimates at the row
-            # ends, which left end packs buried
-            return np.convolve(a,k2,mode='same')/np.convolve(np.ones(len(a)),k2,mode='same')
-        # repeated smoothed-residual passes: one pass cannot meet a stepped wall demand
-        # (the smoothing spreads it); iterate until the residual is gone — displacement
-        # accumulates smoothly, so the shell bends instead of stepping
-        for _pass in range(6):
-            ss,dd=field(V)
-            st=np.arange(ss.min(),ss.max()+0.4,0.8)
-            delta=np.zeros(len(st))
-            for i2,sc2 in enumerate(st):
-                w=np.abs(ss-sc2)<=1.6
-                if w.sum()<6:
-                    w=np.abs(ss-sc2)<=3.0
-                    if w.sum()<6: continue
-                dw=dd[w]
-                front=float(np.percentile(dw,98))
-                back=max(float(np.percentile(dw,5)),front-1.5)
-                delta[i2]=max(0.0,0.02-back)
-            delta=smooth(delta)
-            dv=np.interp(ss,st,delta)
-            if dv.max()<=0.01: break
-            nxs=np.empty(len(st)); nys=np.empty(len(st))
-            for i2,sc2 in enumerate(st):
-                _,_,a1,a2,_=outline_at(sc2); nxs[i2]=a1; nys[i2]=a2
-            vx=np.interp(ss,st,nxs); vy=np.interp(ss,st,nys)
-            nn=np.hypot(vx,vy)+1e-12
-            V=V+np.stack([dv*vx/nn,dv*vy/nn],1)
-        # vertical tuck: per-station top envelope vs local rim, smoothed the same way
-        ss,dd=field(V)
-        st=np.arange(ss.min(),ss.max()+0.4,0.8)
-        dzs=np.zeros(len(st)); rims=np.zeros(len(st))
-        for i2,sc2 in enumerate(st):
-            _,_,_,_,rim2=outline_at(sc2); rims[i2]=rim2
-            w=np.abs(ss-sc2)<=1.6
-            if w.sum()<3:
-                w=np.abs(ss-sc2)<=3.0
-                if w.sum()<3: continue
-            dzs[i2]=max(-0.9,min(0.0,(rim2-0.12)-float(H[w].max())))
-        dzs=smooth(dzs)
-        dzv=np.interp(ss,st,dzs)
-        H2=H+dzv
-        # NEATNESS FILTER (user 2026-07-12: keep the v70 smooth-bend placement, but
-        # remove any life raft that does not sit neatly alongside the fascia; keep
-        # those that do). Segment the unit into CONNECTED COMPONENTS of the authored
-        # geometry (each shell/fitting is its own object — arc-gap chunks mixed
-        # multiple shells with the rack rails and mis-measured everything), then
-        # judge each component as placed by the smooth field:
-        #   bent    — nonlinearly warped (banana): max deviation from the component's
-        #             own best rigid fit > 0.35 m (compact) / > 0.10 m per metre of
-        #             span (long rows and rails — bending ALONG the wall is their
-        #             normal state), or vertical tuck varying > 0.40 m inside it
-        #   askew   — long axis not parallel to the wall: > 25 deg (elongated only)
-        #   buried  — back face visibly inside the hull: back < -0.20 (or fully in)
-        # There is deliberately NO per-component floating test: the outer row of a
-        # two-deep rack legitimately stands ~1 m off the wall, and the unit-level
-        # field already guarantees the assembly touches the wall.
-        # Survivors keep their v70 smooth-mapped positions untouched.
-        sa_arr=np.array([m3[0] for m3 in unit])
-        parent=list(range(len(unit)))
-        def find(a):
-            while parent[a]!=a:
-                parent[a]=parent[parent[a]]; a=parent[a]
-            return a
-        vkey={}
-        for j in range(len(unit)):
-            for v3 in range(3):
-                kq=(round(float(allv[3*j+v3,0]),3),round(float(allv[3*j+v3,1]),3),round(float(H[3*j+v3]),3))
-                if kq in vkey:
-                    ra,rb=find(vkey[kq]),find(j)
-                    if ra!=rb: parent[rb]=ra
-                else: vkey[kq]=j
-        comps=defaultdict(list)
-        for j in range(len(unit)): comps[find(j)].append(j)
-        kept_lo=None; kept_hi=None
-        for cidx in comps.values():
-            cidx=np.array(cidx)
-            rows=np.concatenate([np.arange(3*j,3*j+3) for j in cidx])
-            span=float(sa_arr[cidx].max()-sa_arr[cidx].min())
-            reason=None
-            X=allv[rows,:2]; Y=V[rows]
-            cx=X.mean(0); cy=Y.mean(0)
-            Hm=(X-cx).T@(Y-cy)
-            U2,S2,Vt=np.linalg.svd(Hm)
-            Rm=U2@Vt
-            if np.linalg.det(Rm)<0:
-                Vt[-1]*=-1; Rm=U2@Vt
-            resid=float(np.linalg.norm((X-cx)@Rm+cy-Y,axis=1).max())
-            vspread=(H2-H)[rows]
-            vsp=float(vspread.max()-vspread.min())
-            rlim=0.35 if span<=3.6 else 0.10*span
-            if resid>rlim or vsp>0.40: reason=f'bent r={resid:.2f} v={vsp:.2f} span={span:.1f}'
-            cdd=dd[rows]
-            front=float(np.percentile(cdd,98))
-            back=max(float(np.percentile(cdd,5)),front-1.5)
-            if reason is None and (back<-0.20 or front<0.05): reason=f'buried b={back:.2f} f={front:.2f}'
-            if reason is None and span<=3.6 and len(rows)>=24:
-                Xc=Y-cy
-                w2,vec=np.linalg.eigh(Xc.T@Xc)
-                if w2[1]>2.25*w2[0]:
-                    axis=vec[:,1]
-                    scm=float(ss[rows].mean())
-                    _,_,wnx,wny,_=outline_at(scm)
-                    ang=float(np.degrees(np.arcsin(min(1.0,abs(axis@np.array([wnx,wny]))))))
-                    if ang>25: reason=f'askew a={ang:.0f}'
-            if reason is not None:
-                px2,py2,_,_,_=outline_at(float(sa_arr[cidx].mean()))
-                RAFT_DROPPED.append((reason,px2,py2,len(cidx)))
-                continue
-            lo2=float(sa_arr[cidx].min()); hi2=float(sa_arr[cidx].max())
-            kept_lo=lo2 if kept_lo is None else min(kept_lo,lo2)
-            kept_hi=hi2 if kept_hi is None else max(kept_hi,hi2)
-            for j in cidx:
-                t2=unit[j][2].copy()
-                t2[:,:2]=V[3*j:3*j+3]; t2[:,2]=H2[3*j:3*j+3]
-                raftsoup[unit[j][1]].append(t2)
-        if kept_lo is None: continue
-        # backing plate: a strip of double-sided quads 0.01 outboard of the skirt plane
-        # following the row, with per-step local heights — the packs visibly touch
-        # fascia-coloured structure even if the back estimate is off by a few cm.
-        # Spans only the SURVIVING canisters' arc range.
-        s_a=kept_lo-0.15; s_b=kept_hi+0.15
-        steps=max(1,int((s_b-s_a)/3.0)+1)
-        prev=None
-        for q in range(steps+1):
-            sq=s_a+(s_b-s_a)*q/steps
-            qx,qy,qnx,qny,rim2=outline_at(sq)
-            w=np.abs(ss-sq)<=1.8
-            if w.sum()<3:
-                prev=None; continue
-            h0=float(H2[w].min())-0.12; h1=min(float(H2[w].max())+0.12,rim2-0.02)
-            if h1<=h0:
-                prev=None; continue
-            ptop=(qx+qnx*0.01,qy+qny*0.01,h1); pbot=(qx+qnx*0.01,qy+qny*0.01,h0)
-            if prev is not None:
-                a,b2=prev
-                RAFT_PLATES+=[a,ptop,pbot, a,pbot,b2, a,pbot,ptop, a,b2,pbot]
-            prev=(ptop,pbot)
-print(f"raft transplant: {sum(len(v) for vs in raftsoup.values() for v in vs)//3} tris across {len(RAFT_CLUSTERS)} clusters")
-if RAFT_DROPPED:
-    print(f"  neatness filter dropped {len(RAFT_DROPPED)} canisters:")
-    for reason,px2,py2,nm2 in RAFT_DROPPED:
-        print(f"    {reason:7s} fa={px2:7.1f} lat={py2:6.1f} members={nm2}")
+# life rafts REMOVED (user 2026-07-12): every placement scheme fought the same
+# structural conflict (authored rafts belong to the authored catwalk, which the
+# band clear must delete). The zone kill above removes the racks; nothing is
+# regenerated. The full skirt is the fascia everywhere.
 
 def add_soup(verts, mat_idx, name, deckframe):
     global B
@@ -1022,10 +747,6 @@ def add_soup(verts, mat_idx, name, deckframe):
 
 matbyname={m.get('name'):i for i,m in enumerate(mats)}
 add_soup(RAILS, RAIL, 'railings', True)
-for mn,parts in raftsoup.items():
-    mi3=RAFTDARK if mn=='0137_Black' else matbyname.get(mn,0)
-    add_soup(np.concatenate(parts), mi3, f'rafts_{mn}', True)
-add_soup(np.array(RAFT_PLATES,dtype=np.float64), GREY, 'raft_plates', True)
 cab38=np.load('cab38.npy'); cab1=np.load('cab1.npy')
 # the cab was extracted 'dropped 0.64 m' to sit flush on the OLD interior (h=0); v43 raised the
 # deck ~0.65 m, so it was fully buried ('ICCS gone'). Undo the drop so it sits flush on the deck.
@@ -1079,7 +800,7 @@ FA0,FA1,LA0,LA1=-172.0,172.0,-52.0,48.0
 stbd=OUT[:NS]; port=[OUT[2*NS-1-i] for i in range(NS)]
 hs_stbd=[rim_h[i] for i in range(NS)]; hs_port=[rim_h[2*NS-1-i] for i in range(NS)]
 APRON=6.0
-pos=[]; uv=[]; nrm=[]
+pos=[]; uv=[]; nrm=[]; stations=[]
 for i in range(NS):
     (fs,ls),(fp,lp)=stbd[i],port[i]
     dx,dl=fp-fs,lp-ls
@@ -1089,6 +810,7 @@ for i in range(NS):
           (fs+dx*a,ls+dl*a,hs_stbd[i]),
           (fp-dx*a,lp-dl*a,hs_port[i]),
           (fp,lp,hs_port[i])]
+    stations.append(cols)
     for f2,l2,hh2 in cols:
         pos.extend([CX+f2/S, DECKY+hh2/S, CZ+l2/S]); uv.extend([(f2-FA0)/(FA1-FA0), (l2-LA0)/(LA1-LA0)]); nrm.extend([0,1,0])
 tris=[]
@@ -1113,6 +835,17 @@ ib=pushbuf(tris.tobytes(),target=34963); acc.append({'bufferView':ib,'byteOffset
 G['meshes'].append({'name':'deck_baked','primitives':[{'attributes':{'POSITION':A_P,'NORMAL':A_N,'TEXCOORD_0':A_U},'indices':A_I,'material':MDECK}]})
 nodes.append({'name':'deck_baked','mesh':len(G['meshes'])-1})
 G['scenes'][G.get('scene',0)]['nodes'].append(len(nodes)-1)
+# underside: the strip is single-sided (up-facing) — from below the deck you saw SKY
+# through it. A steel plate 0.10 m below, wound downward, closes it; the skirt
+# (rim down 2 m) covers the 0.10 m edge gap.
+under=[]
+for i in range(NS-1):
+    c0=stations[i]; c1=stations[i+1]
+    for c in range(3):
+        ua=(c0[c][0],c0[c][1],c0[c][2]-0.10);   ub=(c0[c+1][0],c0[c+1][1],c0[c+1][2]-0.10)
+        uc=(c1[c][0],c1[c][1],c1[c][2]-0.10);   ud=(c1[c+1][0],c1[c+1][1],c1[c+1][2]-0.10)
+        under+=[ua,uc,ub, ub,uc,ud]
+add_soup(np.array(under,dtype=np.float64), GREY, 'deck_underside', True)
 
 # --- 5. empty-mesh strip + GC repack ---
 empty={i for i,m in enumerate(G['meshes']) if not m.get('primitives')}
