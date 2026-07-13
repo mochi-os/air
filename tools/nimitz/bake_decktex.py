@@ -3,15 +3,31 @@
 
 Layers, in order:
   1. weathered non-skid base (value noise + plate seams + grunge)
-  2. the ORIGINAL model's up-facing paint, classified:
+  2. ANALYTIC landing-area boundary lines (four lines parallel to the landing
+     centreline, drawn BEFORE tracks/rubber so cats and wires overlay them - real deck
+     layering; authored fragments near a line are suppressed in the mark pass)
+  3. the ORIGINAL model's up-facing paint, classified:
        - near-black paint            -> never painted
-       - saturated colour markings   -> painted fully (except exclusion zones)
+       - saturated colour markings   -> painted fully (except exclusion zones; JBD
+         boxes rigid-mapped to the 1:200 plan positions on the CURRENT track lines)
        - neutral thin lines (<1.0 m) -> painted fully (centreline dashes, foul lines, outlines)
        - neutral wide plates         -> skipped (lids, walkway wedges, ICCS ghost class)
        - neutral marks inside a catapult track corridor -> skipped (the strip owns them)
-  3. catapult tracks: bare-steel strip 1.4 m + near-black slot 0.12 m, from just aft of each
-     shuttle position to the exact deck-outline exit (the real track runs to the round-down)
-  4. rubber: landing-strip band + catapult start streaks
+       - material_37 (life-raft canister shells) -> never painted (their tops sat close
+         enough to deck height to bake as white ghost dashes along the edge)
+       - EDGE_KILL: grey mono marks (lum<=0.60) within 4.5 m of the outline die (phantom
+         catwalk-plate bakes); painted lines and whites survive; the bow "68" numerals
+         are exempted by box (same grey as the phantom plates)
+  4. catapult tracks: bare-steel strip 1.4 m + near-black slot 0.12 m, from just aft of each
+     shuttle position to the exact deck-outline exit (the real track runs to the round-down);
+     the cat 1 and cat 4 lines are PLAN-derived (Stage C), not the model's misplaced paint
+  5. rubber: landing-strip band + catapult start streaks
+
+After ANY mark-rule change, run the lost-bright-pixel diff against the previous texture,
+clustered by fa bin - per-spot brightness probes miss systemic damage (three separate
+rules ate the landing-area edge stripes across v55-v59 before that diff found them all).
+The lum split that discriminates: phantom catwalk plates 0.523, painted lines 0.659,
+whites 0.976.
 
 All markings are drawn anti-aliased (3x3 coverage for model paint, analytic lateral
 coverage for the tracks) - hard texel edges read as staircases on every diagonal line

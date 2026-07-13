@@ -16,8 +16,13 @@ Steps:
        - elevator platforms (ELEV_CLEAR): the strip owns the surface, so EVERYTHING in the band
          dies regardless of facing (saturated border paint survives); pale flush plates the kill
          rules miss get DECK-TONE repaint so any survivor merges with the baked deck
-  3. one FLAT deck polygon (traced outline) textured with the decktex bake
-  4. re-add: authored ICCS cab (verbatim transplant, flush), generated post-and-rail railings
+       - life-raft zones (RAFT_ZONES): EVERYTHING dies, material-blind (racks + their
+         orange/grey mounting brackets), nothing regenerated - see lessons below
+  3. one flat-across, sheer-following deck polygon (traced outline, per-vertex rim heights)
+     textured with the decktex bake, plus a steel UNDERSIDE plate 0.10 m below (the strip is
+     single-sided; without the plate the deck is invisible - sky - from underneath)
+  4. deck-edge skirt (2 m, the generated fascia), authored ICCS cab transplant, generated
+     post-and-rail railings
   5. strip empty meshes (safety), GC-repack
 
 Wires, sheaves, shuttles, JBD animation, OLS lights, floods are ENGINE-drawn - not model work.
@@ -26,6 +31,32 @@ Output: nimitz-clean.glb
 REGEN CHAIN (order matters): build_carrier.py (writes outline.json) -> bake_decktex.py
 (reads outline.json -> decktex12.png) -> build_carrier.py (reads decktex12) -> deploy +
 splice_outline.py + bump NIMITZ_MODEL_VERSION + make. Needs cab38.npy/cab1.npy (extract_cab.py).
+
+LESSONS (2026-07-10..13, v53-v80 - the full history is in PLAN.md and README.md):
+- SOURCES OF TRUTH: the 1:200 GA plan is 2D layout truth for markings and fixtures
+  (plan outranks the model's own paint - cat 1 was 3.9 m off yet exactly fitted);
+  the model is 3D truth (outline shape, sheer, hull, island; the plan has no
+  elevation data); the fascia is GENERATED - the skirt is the ship's side below
+  the deck edge, nothing is sourced for it.
+- LIFE RAFTS ARE REMOVED, permanently. Fourteen versions tried to keep them
+  (exemptions, transplant, smooth bend field, per-component filter, authored-fascia
+  zones): every scheme fought the same conflict - the authored racks belong to the
+  authored catwalk, which this rebuild must delete. Do not re-add them without a
+  fresh design discussion.
+- SKY-FROM-BELOW is ACCEPTED-UNRESOLVED (v80, user decision). Four fixes (deck
+  underside, 5 m skirt, hangar walls, closed interior liner) each sealed every
+  path that could be measured, and the user still saw sky from in-game viewpoints
+  the measurements did not reproduce. v77-v79 are reverted. If reopened: reproduce
+  the user's exact camera FIRST, add it as a ray to raycheck.py, watch it fail,
+  then design the fix. Do not patch sightlines one screenshot at a time.
+- VERIFY by measurement, in the build's own frame: after rule changes compare the
+  deleted/repainted counters against the previous run (a clean revert reproduces
+  them exactly); run raycheck.py after any hull/skirt/deck edit; judge recesses
+  and dark cavities IN GAME (engine lighting), never in Cycles renders - Cycles
+  shows any overhung cavity as pure black and misleads.
+- Bump NIMITZ_MODEL_VERSION on EVERY model.glb regen and md5-compare
+  web/public vs web/dist after make - browsers serve stale programmatic fetches
+  across hard refreshes, and the vite copy can race the build.
 """
 import json, struct
 import numpy as np

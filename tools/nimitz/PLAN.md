@@ -57,7 +57,29 @@ Model lateral squash factor: `S_lat = 76.8 / (measured model max beam in m)`. Ex
 
 - **Stage A — DONE (v43/v44/v46/v47).** Concavity fixed (all 4 strip columns at rim height — flat cross-sections; the raise desynced ICCS/railings, re-based in v46); bow tip reached (stations to fa 165); deck-edge fascia skirt (v44); bow walkways preserved (v47: margin kill by `hmax>0.60` — the old ys>-0.30 threshold was in the pre-raise h=0 frame and wiped the bow's near-lip walkways).
 - **Stage B — DONE (v48).** True beam measured 80.0 m (not ~9% over; not the 78.9 inset-outline figure) -> S_LAT=0.96 applied as a per-accessor world-frame vertex edit (no multi-instance meshes exist, verified); DOME_KEEP contents preserved via blend-to-translation with 1.2 m falloff; all measured build constants + bake lats + engine deck-ops constants scaled consistently. Accepted trade: angled deck 8.99->8.64 deg vs real 9.05 (invisible). Deck plates now exactly 76.8 m.
-- **Stage C — DONE 2026-07-10, as a CHECK, not a re-source.** Automated outline extraction from the scan failed (leader lines, part drawings, compass rose corrupt the trace; lateral reads +-1.5-2 m) — see `plan_check.py`'s header for the method that worked: register the CURRENT outline onto the plan (whole-outline darkness fit; the tips are unusable anchors — there is no bow point, the deck front is a blunt ~23 m edge) and ridge-fit specific features. Verdict: outline, wires, landing line, OLS, cat 2 and cat 3 all agree with the plan within the scan's noise (+-0.5-1.7 m), so wholesale re-sourcing was NOT justified. Two real discrepancies found and FIXED: cat 1 was 3.9 m starboard with +2.4 deg excess heading (the model's painted track lies on no plan feature; the exact fit had been made to misplaced paint) -> (15.50, 3.30 deg); cat 4 was 0.93 m starboard -> -27.75. Both moved coherently: engine shuttles + bake CATS + the cat-1 JBD box/panel-frame paint transplanted onto the new line (the blast-zone rectangle stays as authored — its bottom hugs the deck edge, which did not move). The superseded model-paint track pairs are killed in the bake (`OLD`/`superseded`). Launches on cats 1 and 4 need in-game re-verification.
+- **Stage C — DONE 2026-07-10, as a CHECK, not a re-source.** Automated outline extraction from the scan failed (leader lines, part drawings, compass rose corrupt the trace; lateral reads +-1.5-2 m) — see `plan_check.py`'s header for the method that worked: register the CURRENT outline onto the plan (whole-outline darkness fit; the tips are unusable anchors — there is no bow point, the deck front is a blunt ~23 m edge) and ridge-fit specific features. Verdict: outline, wires, landing line, OLS, cat 2 and cat 3 all agree with the plan within the scan's noise (+-0.5-1.7 m), so wholesale re-sourcing was NOT justified. Two real discrepancies found and FIXED: cat 1 was 3.9 m starboard with +2.4 deg excess heading (the model's painted track lies on no plan feature; the exact fit had been made to misplaced paint) -> (15.50, 3.30 deg); cat 4 was 0.93 m starboard -> -27.75. Both moved coherently: engine shuttles + bake CATS + the cat-1 JBD box/panel-frame paint transplanted onto the new line (the blast-zone rectangle stays as authored — its bottom hugs the deck edge, which did not move). The superseded model-paint track pairs are killed in the bake (`OLD`/`superseded`). Launches on cats 1 and 4 verified in-game 2026-07-10.
+- **Stage D (unplanned) — the life-raft saga and edge finishing, DONE 2026-07-13 at v80.**
+  Fourteen versions (v57-v74) tried to keep the authored life-raft racks on the rebuilt
+  deck edge: margin-kill exemptions (beheaded shells), inset-judged exemptions (deck
+  clipping), generated cylinder/capsule rows (read wrong next to authored geometry),
+  verbatim transplant with rigid shifts (floating/buried oscillation - the deck edge
+  OVERHANGS the catwalk face, so authored positions are inboard of any wall we build),
+  fixed-arc segmentation (sliced packs open), rigid rotate+translate per pack (steps at
+  seams - some rows are continuous and the wall-to-row offset varies 0.5-2.9 m along one
+  row), a smooth bend field (banana-bent canisters where the gradient falls inside one
+  pack), per-canister rigidification (rotated shells back into the hull), a per-component
+  neatness filter (orphans), and authored-fascia zones with mutual deck/fascia cropping
+  (brought back the shredded catwalk the band clear exists to remove). VERDICT (user):
+  REMOVE the rafts entirely. The zone kill is material-blind (the mounts span orange
+  material_9, material_38, and dark frames beyond the three rack materials); nothing is
+  regenerated; the uniform skirt is the fascia. Also from this arc: a steel deck
+  UNDERSIDE plate (the strip is single-sided - sky showed through from beneath), and the
+  sky-from-below sightline class is ACCEPTED-UNRESOLVED after four sealed-by-measurement
+  attempts (deeper skirt, hangar walls, closed interior liner - v77-v79) still showed
+  sky from viewpoints the measurements never reproduced; all three are reverted. Tools
+  that survive the saga: `raycheck.py` (regression rays, necessary-not-sufficient) and
+  `skyprobe.py` (bulk corridor finder, over-reports). If rafts or the sky class are ever
+  reopened, start from the README's standing-decisions section, not from scratch.
 
 ## Pipeline (scripts + data flow)
 
