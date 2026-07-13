@@ -28,7 +28,7 @@ const levels: Record<string, number> = { master: 1, engine: 1, aircraft: 1, weap
 const SHOT_BUS: Record<string, Bus> = {
   gun: 'weapons', explosion: 'weapons', launch: 'weapons', flare: 'weapons',
   hit: 'aircraft', catapult: 'aircraft', trap: 'aircraft', touchdown: 'aircraft', servo: 'aircraft', eject: 'aircraft',
-  caution: 'alerts', horn: 'alerts',
+  caution: 'alerts', horn: 'alerts', law: 'alerts',
 }
 function bus(name: Bus): GainNode {
   return buses[name] ?? (master as GainNode)
@@ -53,6 +53,7 @@ interface Voice {
 }
 let engines: { whine: OscillatorNode; second: OscillatorNode; whineGain: GainNode; rumble: BiquadFilterNode; hiss: BiquadFilterNode; hissGain: GainNode; gain: GainNode }[] = []
 let burner: Voice | null = null
+let seeker: { osc: OscillatorNode; gain: GainNode } | null = null
 let wind: { source: AudioBufferSourceNode; filter: BiquadFilterNode; gain: GainNode } | null = null
 let buffet: Voice | null = null
 let fire: Voice | null = null
@@ -181,6 +182,20 @@ function build(): void {
     filter.frequency.value = 160
     source.connect(filter).connect(gain).connect(bus('engine'))
     burner = { gain }
+  }
+
+  // The Sidewinder in the headset: a raspy square-wave growl while the seeker
+  // stares at empty sky, jumping to the loud steady lock tone when it holds a
+  // target. This IS how the 9M is employed - the SHOOT cue only confirms it.
+  {
+    const osc = c.createOscillator()
+    osc.type = 'square'
+    osc.frequency.value = 700
+    const gain = c.createGain()
+    gain.gain.value = 0
+    osc.connect(gain).connect(bus('weapons'))
+    osc.start()
+    seeker = { osc, gain }
   }
 
   // Airflow: white noise through a speed-tracking lowpass.
@@ -375,6 +390,19 @@ async function bake(): Promise<void> {
   shots.horn = await render(1.0, (d, r) => {
     for (let i = 0; i < r * 0.55; i++) d[i] = Math.sin((i / r) * 2 * Math.PI * 250) * Math.min(1, i / (r * 0.01), (r * 0.55 - i) / (r * 0.02)) * 0.3
   })
+  // Radar-altimeter low-altitude warning: an urgent descending whoop, twice.
+  shots.law = await render(0.9, (d, r) => {
+    const whoop = (at: number) => {
+      const base = Math.floor(at * r)
+      let phase = 0
+      for (let i = 0; i < r * 0.3 && base + i < d.length; i++) {
+        phase += (2 * Math.PI * (1500 - 950 * (i / (r * 0.3)))) / r
+        d[base + i] += Math.sin(phase) * Math.min(1, i / (r * 0.008), (r * 0.3 - i) / (r * 0.02)) * 0.42
+      }
+    }
+    whoop(0)
+    whoop(0.42)
+  })
 }
 
 // play a named one-shot at a volume, optionally lowpassed (distance dulling).
@@ -482,6 +510,19 @@ export function audio_eject(): void {
 }
 export function audio_caution(): void {
   play('caution', 0.8)
+}
+
+// audio_seeker drives the 9M tone each frame: 0 silent, 1 growl, 2 lock.
+export function audio_seeker(state: number): void {
+  if (!seeker || !context || context.state !== 'running') return
+  const t = now()
+  const lock = state === 2
+  seeker.osc.frequency.setTargetAtTime(lock ? 1450 : 700 + Math.sin(t * 7) * 60, t, 0.03)
+  seeker.gain.gain.setTargetAtTime(state === 0 ? 0 : lock ? 0.1 : 0.032, t, 0.05)
+}
+
+export function audio_law(): void {
+  play('law', 0.9)
 }
 
 // The gear horn repeats while the condition holds.
