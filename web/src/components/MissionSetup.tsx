@@ -71,6 +71,7 @@ const KEY_DEFAULTS: Record<string, string> = {
   'throttle.down': 'BracketLeft',
   guns: 'Space',
   select: 'KeyX',
+  acquire: 'Enter',
   launch: 'Enter',
   'brake.wheel': 'KeyB',
   'brake.speed': 'Slash',
@@ -163,6 +164,7 @@ const LEVERS = new Set(['throttle', 'speedbrake']) // lever-style rows: min-to-m
 const BUTTON_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'guns', label: <Trans>Guns</Trans> },
   { id: 'select', label: <Trans>Weapon select</Trans> },
+  { id: 'acquire', label: <Trans>Acquire target</Trans> },
   { id: 'flares', label: <Trans>Flares</Trans> },
   { id: 'gear', label: <Trans>Landing gear</Trans> },
   { id: 'hook', label: <Trans>Arrestor hook</Trans> },
@@ -190,6 +192,7 @@ const KEY_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'throttle.down', label: <Trans>Throttle down</Trans> },
   { id: 'guns', label: <Trans>Guns</Trans> },
   { id: 'select', label: <Trans>Weapon select</Trans> },
+  { id: 'acquire', label: <Trans>Acquire target</Trans> },
   { id: 'flares', label: <Trans>Flares</Trans> },
   { id: 'gear', label: <Trans>Landing gear</Trans> },
   { id: 'hook', label: <Trans>Arrestor hook</Trans> },
