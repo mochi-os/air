@@ -65,6 +65,12 @@ python3 splice_outline.py              # outline.json -> engine.ts SHIP.outline
 # then bump NIMITZ_MODEL_VERSION in engine.ts and run `make` in apps/furball
 ```
 
+`bake_decktex.py` caps its own memory at 8 GB (`RLIMIT_AS`) and rasterises marks in
+256-row stripes. Uncapped, a stalled dash-walk loop once grew to 18.6 GB and the
+kernel OOM killer reaped unrelated desktop processes (2026-07-13). A `MemoryError`
+from the bake means a rule change introduced an unbounded allocation - fix the
+allocation, do not raise the cap.
+
 The vite build copies `web/public/` → `web/dist/`; the server serves `dist`. After the cp,
 `touch web/src/game/engine.ts && make`, then `md5sum` dist vs public model.glb to confirm
 dist got the new bytes (the copy can race the build).

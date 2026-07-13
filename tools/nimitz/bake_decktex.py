@@ -8,8 +8,8 @@ Layers, in order:
      layering; authored fragments near a line are suppressed in the mark pass)
   3. the ORIGINAL model's up-facing paint, classified:
        - near-black paint            -> never painted
-       - saturated colour markings   -> painted fully (except exclusion zones; JBD
-         boxes rigid-mapped to the 1:200 plan positions on the CURRENT track lines)
+       - saturated colour markings   -> painted fully (except exclusion zones; the JBD
+         borders are killed at the authored spots and DRAWN at the plan rectangles, uniform width)
        - neutral thin lines (<1.0 m) -> painted fully (centreline dashes, foul lines, outlines)
        - neutral wide plates         -> skipped (lids, walkway wedges, ICCS ghost class)
        - neutral marks inside a catapult track corridor -> skipped (the strip owns them)
@@ -36,8 +36,17 @@ at 4.2 cm/texel. Track steel noise is smooth 1D (per-column noise reads as stria
 Output: decktex12.png (8192x2400, fa -172..172, lat -52..48)
 """
 import json, math, struct, sys
+import resource
 import numpy as np
 from PIL import Image
+
+# Hard memory cap: fail with a clean MemoryError rather than drive the kernel OOM
+# killer into the desktop session (2026-07-13: a stalled float-remainder dash walk
+# appended zero-length tris to 18.6 GB and the kernel reaped unrelated processes;
+# this cap turned the same bug into a one-line traceback). A healthy bake fits in
+# well under 4 GB; a MemoryError here means a new unbounded allocation, not a
+# too-small cap.
+resource.setrlimit(resource.RLIMIT_AS, (8 << 30, 8 << 30))
 
 ORIG = '/home/alistair/mochi/apps/furball/downloads/uss_nimitz_cvn-68_aircraft_carrier.glb'
 W, H = 8192, 2400
@@ -89,29 +98,25 @@ OLD = [
     (-67.0, 73.0,  lambda f: (-27.94+0*f)*S_LAT),
 ]
 def superseded(f, l): return any(a < f < b and abs(l-ln(f)) < 0.9 for a, b, ln in OLD)
-# JBD relocation (v56): the model authored each cat's red/yellow dashed JBD box
-# ~8-10 m aft of the shuttle spot — under the parked jet's rear fuselage, where a
-# deflector could never rise — plus a grey "frame" between box and spot that exists
-# on no reference. The 1:200 plan draws the JBDs as hatched bars 18-24 m aft of the
-# spots, centred on each track. Per cat: SAT marks in the ensemble region (the
-# dashed box) rigid-map onto the plan JBD centre on the CURRENT track line (cat 1
-# also rotates from the superseded model heading onto the plan heading); GREY mono
-# marks there (the frame — lum<=0.85 spares the near-white landing-area stripes
-# crossing at the waist) are killed. The big blast-zone rectangle aft of cat 1
-# (fa ~13..37, down to the deck edge) stays as authored: its bottom hugs the deck
-# edge, which did not move.
-#     region fa0,fa1,lat0,lat1      box centre       target centre    dtheta
+# JBD relocation (v56) + analytic borders (2026-07-13): the model authored each cat's
+# red/yellow dashed JBD box ~8-10 m aft of the shuttle spot — under the parked jet's
+# rear fuselage, where a deflector could never rise — plus a grey "frame" between box
+# and spot that exists on no reference. The 1:200 plan draws the JBDs as hatched bars
+# 18-24 m aft of the spots, centred on each track. Per cat: SAT marks in the ensemble
+# region (the authored dashed box) are KILLED (they were rigid-transplanted until the
+# authored dashes proved half the width of every neighbouring safety border) and the
+# border is DRAWN at the plan rectangle instead, uniform width, same rectangle the
+# engine's animated panel fills; GREY mono marks there (the frame — lum<=0.85 spares
+# the near-white landing-area stripes crossing at the waist) are killed. The big
+# blast-zone rectangle aft of cat 1 (fa ~13..37, down to the deck edge) stays as
+# authored: its bottom hugs the deck edge, which did not move.
+#     region fa0,fa1,lat0,lat1      box centre       target centre
 JBD = [
-    (36.4, 53.5, 14.6, 25.4,     39.35, 20.47,    27.2, 16.76,    math.atan(-0.0601*S_LAT)-math.atan(-0.1034*S_LAT)),
-    (35.0, 47.6, -8.7, 1.9,      37.5, -3.40,     23.5, -3.44,    0.0),
-    (-59.2, -45.6, -21.5, -11.0, -56.3, -17.06,   -68.7, -15.52,  0.0),
-    (-78.9, -60.4, -32.4, -21.8, -76.25, -26.79,  -84.5, -27.75,  0.0),
+    (36.4, 53.5, 14.6, 25.4,     39.35, 20.47,    27.2, 16.76),
+    (35.0, 47.6, -8.7, 1.9,      37.5, -3.40,     23.5, -3.44),
+    (-59.2, -45.6, -21.5, -11.0, -56.3, -17.06,   -68.7, -15.52),
+    (-78.9, -60.4, -32.4, -21.8, -76.25, -26.79,  -84.5, -27.75),
 ]
-def jbd_map(tri, e):   # 3x2 (fa,lat): authored box frame -> plan JBD position
-    cf, cl, tf, tl, th = e[4], e[5], e[6], e[7], e[8]
-    c, s = math.cos(th), math.sin(th)
-    d = tri-np.array([cf, cl])
-    return np.stack([tf+d[:, 0]*c-d[:, 1]*s, tl+d[:, 0]*s+d[:, 1]*c], 1)
 # grey-frame mono kill boxes. NOT the same as the JBD regions: the landing-area edge
 # stripes are drawn as triangle FANS whose short apex tris land inside cat 3's region
 # (same material and lum as the frame — position is the only discriminator), so cat 3
@@ -264,35 +269,71 @@ for ni, n in enumerate(nodes):
                 if lum <= 0.60 and not (NUMERALS[0] < f2 < NUMERALS[1] and NUMERALS[2] < l2 < NUMERALS[3]) \
                         and edge_distance(f2, l2) < EDGE_KILL: continue   # phantom rim-structure grey — the catwalk/sponson plates are lum 0.523. Painted LINES near the edge are lum 0.659 (the angled-deck edge stripe runs 2.5-4.5 m from the outline for its whole length — a <=0.85 kill severed it, v55..v59) or 0.976 white (edge dashes): both must survive. The 68 numerals use BOTH greys, hence the box exemption stays.
             tri = np.stack([fa[i2], la[i2]], 1)
-            if sat:
-                for e in JBD:
-                    if e[0] < f2 < e[1] and e[2] < l2 < e[3]:
-                        tri = jbd_map(tri, e); break
+            if sat and any(e[0] < f2 < e[1] and e[2] < l2 < e[3] for e in JBD):
+                continue   # authored JBD dashes: killed at the source; the borders are DRAWN below (uniform width — the authored dashes were half the width of the neighbouring safety borders)
             elif lum <= 0.85 and any(b[0] < f2 < b[1] and b[2] < l2 < b[3] for b in MONO_KILL):
                 continue   # the grey frames
             if not sat and 0.60 < lum <= 0.85 and near_landing_line(f2, l2):
                 continue   # authored boundary-line fragments: replaced by the drawn lines
             marks.append((ch[i2], tri, (c3*255)))
+# analytic JBD borders (2026-07-13): the authored dashes measured 17-21 cm wide vs the
+# 25-33 cm of the neighbouring safety borders (blast zone, elevators) — deck safety
+# stripes are a uniform width on the real ship. Drawn as 0.34 m red/yellow dashes on
+# the exact plan rectangles the engine's animated panels fill, so paint and geometry
+# stay concentric by construction. Appended as mark tris at ch +10 so they rasterise
+# last through the same anti-aliased pipeline.
+JBD_BW, JBD_BD, JBD_LW, JBD_DASH = 9.65, 4.4, 0.34, 1.55
+JBD_M = [-0.0601*S_LAT, 0.0, -0.0705*S_LAT, 0.0]   # track slope d(lat)/d(fa) per cat (post-squash)
+JBD_RED = np.array([0.58, 0.0, 0.01])*255; JBD_YEL = np.array([0.97, 0.86, 0.02])*255
+for e, m in zip(JBD, JBD_M):
+    tf, tl = e[6], e[7]
+    u = np.array([1.0, m]); u /= np.linalg.norm(u)
+    w2 = np.array([-u[1], u[0]])
+    corners = [np.array([tf, tl])+u*JBD_BD/2+w2*JBD_BW/2, np.array([tf, tl])-u*JBD_BD/2+w2*JBD_BW/2,
+               np.array([tf, tl])-u*JBD_BD/2-w2*JBD_BW/2, np.array([tf, tl])+u*JBD_BD/2-w2*JBD_BW/2]
+    s = 0.0
+    for k in range(4):
+        a, b = corners[k], corners[(k+1) % 4]
+        seg = b-a; seglen = np.linalg.norm(seg); sd = seg/seglen
+        nn = np.array([-sd[1], sd[0]])*JBD_LW/2
+        # dash boundaries continuous around the loop, walked by INTEGER dash index —
+        # the float-remainder walk this replaces stalled when the remainder landed at
+        # ~JBD_DASH (step 2e-16), appending zero-length tris until the kernel OOM
+        # killer took out the desktop session (2026-07-13)
+        for i in range(int(math.floor(s/JBD_DASH)), int(math.floor((s+seglen)/JBD_DASH))+1):
+            t0 = max(i*JBD_DASH-s, 0.0); t1 = min((i+1)*JBD_DASH-s, seglen)
+            if t1 <= t0: continue
+            col = JBD_RED if i % 2 == 0 else JBD_YEL
+            p0, p1 = a+sd*t0, a+sd*t1
+            marks.append((10.0, np.stack([p0+nn, p1+nn, p1-nn]), col))
+            marks.append((10.0, np.stack([p0+nn, p1-nn, p0-nn]), col))
+        s += seglen
 print(f"  {len(marks)} paint tris")
 marks.sort(key=lambda x: x[0])
 SS = 3   # 3x3 coverage per texel: edge steps of 1/3 texel read smooth at deck view distances
+CHUNK = 256   # texel rows per raster stripe: temporaries stay ~CHUNK*W*SS^2 floats however
+              # large the triangle (a deck-spanning mark's whole-bbox meshgrid was a multi-GB
+              # spike). Stripes align to texel rows, so every subsample and coverage mean is
+              # computed exactly as before — output identical.
 for _, tri, col in marks:
     up = U(tri[:,0]); vp = V(tri[:,1])
     x0, x1 = max(int(up.min()),0), min(int(np.ceil(up.max()))+1, W)
-    y0, y1 = max(int(vp.min()),0), min(int(np.ceil(vp.max()))+1, H)
-    if x1<=x0 or y1<=y0: continue
-    gx, gy = np.meshgrid(x0+(np.arange((x1-x0)*SS)+0.5)/SS, y0+(np.arange((y1-y0)*SS)+0.5)/SS)
+    yb0, yb1 = max(int(vp.min()),0), min(int(np.ceil(vp.max()))+1, H)
+    if x1<=x0 or yb1<=yb0: continue
     det = (up[1]-up[0])*(vp[2]-vp[0]) - (vp[1]-vp[0])*(up[2]-up[0])
     if abs(det) < 1e-9: continue
     sgn = 1.0 if det > 0 else -1.0
-    inside = np.ones(gx.shape, bool)
-    for k in range(3):
-        ax, ay = up[k], vp[k]; bx, by = up[(k+1)%3], vp[(k+1)%3]
-        e = (gx-ax)*(by-ay) - (gy-ay)*(bx-ax)
-        inside &= (e*sgn <= 0.01)
-    if not inside.any(): continue
-    cov = inside.reshape(y1-y0, SS, x1-x0, SS).mean(axis=(1,3))
-    img[y0:y1, x0:x1] = img[y0:y1, x0:x1]*(1-cov)[:,:,None] + col[None,None,:]*cov[:,:,None]
+    for y0 in range(yb0, yb1, CHUNK):
+        y1 = min(y0+CHUNK, yb1)
+        gx, gy = np.meshgrid(x0+(np.arange((x1-x0)*SS)+0.5)/SS, y0+(np.arange((y1-y0)*SS)+0.5)/SS)
+        inside = np.ones(gx.shape, bool)
+        for k in range(3):
+            ax, ay = up[k], vp[k]; bx, by = up[(k+1)%3], vp[(k+1)%3]
+            e = (gx-ax)*(by-ay) - (gy-ay)*(bx-ax)
+            inside &= (e*sgn <= 0.01)
+        if not inside.any(): continue
+        cov = inside.reshape(y1-y0, SS, x1-x0, SS).mean(axis=(1,3))
+        img[y0:y1, x0:x1] = img[y0:y1, x0:x1]*(1-cov)[:,:,None] + col[None,None,:]*cov[:,:,None]
 
 print("landing boundary lines...")
 _rowlat = (np.arange(H)+0.5)/H*(LA1-LA0)+LA0

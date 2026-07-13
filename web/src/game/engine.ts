@@ -64,7 +64,7 @@ const SAVE_KEY="joust_cfg_v1";
 // OLS bracket, and the deck outline for the flight core. Measured per deck
 // with the align tool and the GLB measurement scripts; a second carrier is
 // one more entry (#100). CARRIER {x,z} is world PLACEMENT, not ship data.
-const NIMITZ_MODEL_VERSION=80;
+const NIMITZ_MODEL_VERSION=81;
 const CARRIER_MODELS={
 	// NIMITZ_MODEL_VERSION: bump on EVERY model.glb regen. The engine fetches the model programmatically,
 	// and browsers serve programmatic fetches from HTTP cache even across hard refreshes — a stale model
@@ -1815,14 +1815,17 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	// The painted JBD boxes (plan-derived, centred on each track 18-24 m aft of the spot)
 	// are the FOOTPRINT: the panel fills the box, hinged at its FORWARD edge, lying 1.5 cm
 	// proud when flat (flush to the eye, never coplanar — the z-fight rule), rising to 50°
-	// behind a hooked jet. The face jets taxi over is deck tone; the underside the queued
-	// jet sees when it's raised is ribbed steel. Raised, a near-black pit quad and three
-	// hydraulic rams appear in the footprint — the recess the real panel lies in.
+	// behind a hooked jet. The taxi face samples the baked deck texture at the panel's own
+	// footprint (the real panels are recessed flush and painted as deck — a flat-tone plate
+	// read as sitting proud of the deck); the underside the queued jet sees when it's raised
+	// is ribbed steel. Raised, a near-black pit quad and three hydraulic rams appear in the
+	// footprint — the recess the real panel lies in.
 	const jbdSteel=new THREE.MeshStandardMaterial({color:0x7a8087,metalness:0.35,roughness:0.62});
-	const jbdDeck=new THREE.MeshStandardMaterial({color:0x5e605c,metalness:0.05,roughness:0.95});
+	const jbdDeck=new THREE.MeshStandardMaterial({color:0x5e605c,metalness:0.05,roughness:0.95});   // fallback only: a carrier without a deck_baked material
 	const jbdPitM=new THREE.MeshStandardMaterial({color:0x0c0d0f,metalness:0.1,roughness:1.0});
 	const jbdRamM=new THREE.MeshStandardMaterial({color:0xb9bec4,metalness:0.85,roughness:0.3});
-	const JBDS=[{x:27.2,z:16.76,h:3.30},{x:23.5,z:-3.44,h:0},{x:-68.7,z:-15.52,h:4.03},{x:-84.5,z:-27.75,h:0}];   // box centres from the bake's JBD table (post-squash deck frame, on the current track lines)
+	let jbdTop:THREE.Material|null=null; carrier_model.traverse(o=>{ const m=(o as THREE.Mesh & {material?:THREE.Material}).material; if(!jbdTop && m?.name==='deck_baked') jbdTop=m; });   // the deck strip's own material: same texture, same light response
+	const JBDS=[{x:27.2,z:16.76,h:3.30},{x:23.5,z:-3.44,h:0},{x:-68.7,z:-15.52,h:3.87},{x:-84.5,z:-27.75,h:0}];   // box centres from the bake's JBD table (post-squash deck frame, on the current track lines); h = atan(track slope × the 0.96 lateral squash)
 	carrier_jbds=JBDS.map(cat=>{
 		const w=carrier_world(cat.x,cat.z), hd=cat.h*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
 		const fwdx=fx*CARRIER_C+fz*CARRIER_S, fwdz=-fx*CARRIER_S+fz*CARRIER_C;
@@ -1830,7 +1833,11 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 		g.position.set(w.x, deck_y_at(carrier_model,w.x,w.z,dy), w.z); g.rotation.y=Math.atan2(-fwdz,fwdx); scene.add(g);
 		const pivot=new THREE.Group(); pivot.position.set(JBD_L/2,0.015,0); g.add(pivot);   // hinge line = the box's forward edge, 1.5 cm above deck
 		const pg=new THREE.BoxGeometry(JBD_L,JBD_T,JBD_W); pg.translate(-JBD_L/2,-JBD_T/2,0);   // TOP face at hinge level: flat = flush plate, body sunk in the notional recess
-		const panel=new THREE.Mesh(pg,[jbdSteel,jbdSteel,jbdDeck,jbdSteel,jbdSteel,jbdSteel]);   // +y (taxi face) deck tone, all other faces steel
+		{ const pp=pg.attributes.position, uv=pg.attributes.uv;   // taxi-face UVs = the panel footprint in the bake frame, so flat = the deck's own paint (deck_baked maps u=(fa+172)/344, v=(lat+52)/100 — bake_decktex.py FA0/FA1/LA0/LA1)
+			for(let i=0;i<pp.count;i++){ const gx=pp.getX(i)+JBD_L/2, gz=pp.getZ(i);
+				const f2=cat.x+gx*fx-gz*fz, l2=cat.z+gx*fz+gz*fx;
+				uv.setXY(i,(f2+172)/344,(l2+52)/100); } }
+		const panel=new THREE.Mesh(pg,[jbdSteel,jbdSteel,jbdTop||jbdDeck,jbdSteel,jbdSteel,jbdSteel]);   // +y (taxi face) deck paint, all other faces steel
 		panel.castShadow=true; pivot.add(panel);
 		for(let r=0;r<4;r++){ const rib=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.10,JBD_W-0.5),jbdSteel); rib.position.set(-0.55-r*1.02,-JBD_T-0.05,0); rib.castShadow=true; pivot.add(rib); }   // underside stiffeners (buried when flat, shown when raised)
 		const pit=new THREE.Mesh(new THREE.PlaneGeometry(JBD_L+0.2,JBD_W+0.2),jbdPitM); pit.rotation.x=-Math.PI/2; pit.position.set(0,0.012,0); pit.visible=false; g.add(pit);
