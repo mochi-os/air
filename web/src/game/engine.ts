@@ -64,7 +64,7 @@ const SAVE_KEY="joust_cfg_v1";
 // OLS bracket, and the deck outline for the flight core. Measured per deck
 // with the align tool and the GLB measurement scripts; a second carrier is
 // one more entry (#100). CARRIER {x,z} is world PLACEMENT, not ship data.
-const NIMITZ_MODEL_VERSION=81;
+const NIMITZ_MODEL_VERSION=82;
 const CARRIER_MODELS={
 	// NIMITZ_MODEL_VERSION: bump on EVERY model.glb regen. The engine fetches the model programmatically,
 	// and browsers serve programmatic fetches from HTTP cache even across hard refreshes — a stale model
@@ -1813,13 +1813,15 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	});
 	// --- jet blast deflectors: a Mk 7 panel behind each cat spot, engine-animated ---
 	// The painted JBD boxes (plan-derived, centred on each track 18-24 m aft of the spot)
-	// are the FOOTPRINT: the panel fills the box, hinged at its FORWARD edge, lying 1.5 cm
-	// proud when flat (flush to the eye, never coplanar — the z-fight rule), rising to 50°
-	// behind a hooked jet. The taxi face samples the baked deck texture at the panel's own
-	// footprint (the real panels are recessed flush and painted as deck — a flat-tone plate
-	// read as sitting proud of the deck); the underside the queued jet sees when it's raised
-	// is ribbed steel. Raised, a near-black pit quad and three hydraulic rams appear in the
-	// footprint — the recess the real panel lies in.
+	// are the FOOTPRINT: the panel fills the box, hinged at its FORWARD edge, 1.5 cm above
+	// deck while it moves (never coplanar — the z-fight rule), rising to 50° behind a hooked
+	// jet. Fully down the mesh is HIDDEN and the painted deck is the flush panel — the real
+	// panels are recessed flush, and any rendered plate, even deck-textured (the taxi face
+	// samples the bake at the panel's own footprint), reads raised at grazing angles: its
+	// edge halves the border dashes, parallax doubles them, and the steel side face draws a
+	// dark outline. The underside the queued jet sees when it's raised is ribbed steel.
+	// Raised, a near-black pit quad and three hydraulic rams appear in the footprint — the
+	// recess the real panel lies in.
 	const jbdSteel=new THREE.MeshStandardMaterial({color:0x7a8087,metalness:0.35,roughness:0.62});
 	const jbdDeck=new THREE.MeshStandardMaterial({color:0x5e605c,metalness:0.05,roughness:0.95});   // fallback only: a carrier without a deck_baked material
 	const jbdPitM=new THREE.MeshStandardMaterial({color:0x0c0d0f,metalness:0.1,roughness:1.0});
@@ -1829,7 +1831,7 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	carrier_jbds=JBDS.map(cat=>{
 		const w=carrier_world(cat.x,cat.z), hd=cat.h*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
 		const fwdx=fx*CARRIER_C+fz*CARRIER_S, fwdz=-fx*CARRIER_S+fz*CARRIER_C;
-		const g=new THREE.Group();
+		const g=new THREE.Group(); g.visible=false;   // shown only while animating/raised (update_jbds)
 		g.position.set(w.x, deck_y_at(carrier_model,w.x,w.z,dy), w.z); g.rotation.y=Math.atan2(-fwdz,fwdx); scene.add(g);
 		const pivot=new THREE.Group(); pivot.position.set(JBD_L/2,0.015,0); g.add(pivot);   // hinge line = the box's forward edge, 1.5 cm above deck
 		const pg=new THREE.BoxGeometry(JBD_L,JBD_T,JBD_W); pg.translate(-JBD_L/2,-JBD_T/2,0);   // TOP face at hinge level: flat = flush plate, body sunk in the notional recess
@@ -2011,6 +2013,7 @@ function update_jbds(dt){   // the hooked cat's deflector rises through run-up a
 		j.frac=THREE.MathUtils.clamp(j.frac+THREE.MathUtils.clamp(tgt-j.frac,-rate*dt,rate*dt),0,1);
 		const th=j.frac*JBD_ANG;
 		j.pivot.rotation.z=-th;   // -z rotation lifts the aft (free) edge
+		j.g.visible=j.frac>0.002;   // fully down = the painted deck IS the flush panel: even deck-textured, a 1.5 cm plate reads raised at grazing angles (its edge halves the border dashes and the parallax doubles them, with the steel side face drawing a dark outline)
 		const show=j.frac>0.06; j.pit.visible=show;
 		// rams: fixed base in the pit to an attachment on the panel underside (pivot-local
 		// x -2.5), which sweeps with the hinge angle — position/orient/stretch each frame
