@@ -715,7 +715,7 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
 
 // ---------------------------------------------------------------- history
 
-const client = createAppClient({ appName: 'furball' })
+const client = createAppClient({ appName: 'air' })
 
 // record stores this player's own view of a finished match through their own
 // authenticated app connection (fails silently for anonymous players).

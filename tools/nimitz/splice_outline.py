@@ -3,7 +3,7 @@
 polygon must match the drawn deck strip — same source of truth)."""
 import json
 
-ENGINE='/home/alistair/mochi/apps/furball/web/src/game/engine.ts'
+ENGINE='/home/alistair/mochi/apps/air/web/src/game/engine.ts'
 O=json.load(open('outline.json'))
 pts=','.join(f"[{f},{l}]" for f,l in O['OUT'])
 s=open(ENGINE).read()

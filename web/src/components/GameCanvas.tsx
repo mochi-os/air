@@ -128,7 +128,7 @@ export function GameCanvas({
   }, [])
 
   return (
-    <div className='furball-game'>
+    <div className='air-game'>
       <canvas id='stage' ref={stageRef} tabIndex={0} />
       <canvas id='hud' ref={hudRef} />
       <canvas id='map' ref={mapRef} />

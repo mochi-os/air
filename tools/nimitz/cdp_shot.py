@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""CDP-driven furball capture — real-time replacement for the --virtual-time-budget
+"""CDP-driven air capture — real-time replacement for the --virtual-time-budget
 one-shot, which Chrome 141 broke (virtual time now expires before the first canvas
 paint; --enable-unsafe-swiftshader is also required for software WebGL at all).
 
-Waits a real-time window (assets load + a few frames) then captures. All furball dev
+Waits a real-time window (assets load + a few frames) then captures. All air dev
 query hooks require developer=1; &fly=1 skips the menu into a mission. The engine's
 &probe=x,y hook prints the model coordinate/material under a viewport pixel on the dev HUD.
 
@@ -54,7 +54,7 @@ def main():
     wait_s = float(sys.argv[3]) if len(sys.argv) > 3 else 150.0
     srv = ThreadingHTTPServer(("127.0.0.1", PORT), H)
     threading.Thread(target=srv.serve_forever, daemon=True).start()
-    url = f"http://127.0.0.1:{PORT}/furball/?{query}"
+    url = f"http://127.0.0.1:{PORT}/air/?{query}"
     prof = tempfile.mkdtemp(prefix="cdpshot")
     chrome = subprocess.Popen(["google-chrome", "--headless=new", "--disable-gpu",
         "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--no-sandbox",

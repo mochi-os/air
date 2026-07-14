@@ -1,6 +1,6 @@
 # Plan-based Nimitz deck rebuild
 
-Rebuild the furball carrier using the 1:200 CVN-68 general-arrangement drawing
+Rebuild the air carrier using the 1:200 CVN-68 general-arrangement drawing
 (`nimitz-plan.jpg`, in this directory — the durable copy of the original `~/tmp/nimitz.jpg`)
 as the authoritative source for the **horizontal** layout, correcting
 three defects the model-traced pipeline can't fix from the model alone:

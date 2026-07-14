@@ -1,6 +1,6 @@
 # Nimitz carrier model pipeline
 
-Builds the playable furball carrier (`web/public/vessels/nimitz/model.glb`) directly from
+Builds the playable air carrier (`web/public/vessels/nimitz/model.glb`) directly from
 the pristine Sketchfab download (`../../downloads/uss_nimitz_cvn-68_aircraft_carrier.glb`,
 gitignored) — no Blender round-trip. Each script reads that original and writes derived
 artifacts into this directory (all gitignored; regenerate on demand).
@@ -62,7 +62,7 @@ python3 bake_decktex.py                # re-bake with the real traced outline
 python3 build_carrier.py               # final model
 cp nimitz-clean.glb ../../web/public/vessels/nimitz/model.glb
 python3 splice_outline.py              # outline.json -> engine.ts SHIP.outline
-# then bump NIMITZ_MODEL_VERSION in engine.ts and run `make` in apps/furball
+# then bump NIMITZ_MODEL_VERSION in engine.ts and run `make` in apps/air
 ```
 
 `bake_decktex.py` caps its own memory at 8 GB (`RLIMIT_AS`) and rasterises marks in

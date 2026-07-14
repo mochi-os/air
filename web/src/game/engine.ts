@@ -4,7 +4,7 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 //
-// Furball game engine: the Three.js render loop, flight model and 2D-canvas HUD,
+// Air game engine: the Three.js render loop, flight model and 2D-canvas HUD,
 // extracted verbatim from the prototype. Imperative and self-contained; mounted by
 // the React <GameCanvas> via startGame(). The mission-setup menu lives in React.
 import * as THREE from 'three'
@@ -756,7 +756,7 @@ function make_jet(tint){ const g=new THREE.Group(); g.userData.tint=tint;   // a
 
 // ============================================================================ aircraft GLB models (cosmetic only)
 // Each aircraft is web/public/aircraft/<id>/model.glb (served by the app.json "aircraft" action);
-// a new type is one CATALOGUE entry here plus its folder — mirrors world/games/furball/aircraft/<id>/.
+// a new type is one CATALOGUE entry here plus its folder — mirrors world/games/air/aircraft/<id>/.
 // Source must be UNCOMPRESSED glTF/GLB (no Draco/Meshopt) — Sketchfab's plain "glTF" download works.
 // Per-aircraft models and their animation rigs. Orientation: if a model
 // looks wrong — flies BACKWARDS -> yaw 180; on its SIDE -> roll ±90; nose
@@ -2756,7 +2756,7 @@ function fly_bandit_stricken(dt){
 }
 let rig_sweep=0;   // dev calibration (Shift+A): 0 = off, n = sweep the nth rig entry of the ownship
 let stab_cycle=0;   // dev calibration (Shift+E): adds n×90° about the stab hinge so the user can identify the correct orientation
-const client=createAppClient({ appName: 'furball' })
+const client=createAppClient({ appName: 'air' })
 const telemetry=[];   // dev (Shift+T): rolling ~2 min of stick/attitude/alpha/q/nz/cas/stab rows for handling analysis
 function telemetry_dump(){ if(!telemetry.length) return;
 	const csv="time,stick,attitude,alpha,q,nz,cas,stab\n"+telemetry.map(r=>r.join(",")).join("\n");
@@ -3445,7 +3445,7 @@ function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow
 	const setc=g=>g.traverse(c=>{ if(c.isMesh&&(c.userData.body||c.userData.modelmesh))c.castShadow=cfg.shadows; }); setc(ownship.group); setc(bandit.group); extras.forEach(s=>setc(s.group)); }
 
 // ============================================================================ multiplayer
-// The server is authoritative (world/games/furball runs the same placeholder
+// The server is authoritative (world/games/air runs the same placeholder
 // kinematics); fly_player keeps running as the local predictor and is
 // corrected from snapshots — snap when >20 m off (minimum-image), gentle pull
 // otherwise. Remote players are interpolated ~100 ms behind live; the first
@@ -3634,7 +3634,7 @@ function net_connect(){
 		cfg.missiles=rules.missiles===true;
 		cfg.cheats=(rules.cheats&&typeof rules.cheats==="object")?rules.cheats:{};   // the creator's match cheats: the server enforces them; the client mirrors the ammo gates so the HUD counters and the launch gate agree
 		})
-	.catch((error)=>{ console.error("furball multiplayer:", error);   // the HUD shows the headline; the console keeps the cause
+	.catch((error)=>{ console.error("air multiplayer:", error);   // the HUD shows the headline; the console keeps the cause
 		notice(translate("CONNECTION FAILED")); setTimeout(()=>{ if(running){ running=false; if(onExit) onExit(); } },1800); }); }
 
 function start_mission(){

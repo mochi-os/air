@@ -1,9 +1,9 @@
 # midway-prep
 
 Offline build tool that turns public-domain Midway Atoll data into game-ready
-assets for the furball client. See `midway.md` §5.
+assets for the air client. See `midway.md` §5.
 
-World frame (furball.md / midway.md): 1 unit = 1 m, x = east, z = south, atoll
+World frame (air.md / midway.md): 1 unit = 1 m, x = east, z = south, atoll
 centred on the world origin.
 
 ## Source data

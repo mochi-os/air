@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # midway-prep — offline build tool that turns the public-domain NOAA/NCEI Midway
-# data into game-ready assets for the furball client (per midway.md §5).
+# data into game-ready assets for the air client (per midway.md §5).
 #
 # Outputs (to web/public/maps/midway/):
 #   map.json           metadata: world origin, texture region half-extent, size, ground region
@@ -13,7 +13,7 @@
 #   NOAA NCCOS midway_cover_geog.shp (public domain), unzipped under data/ — coastline only
 #   Sentinel-2 L2A TCI (public sentinel-cogs bucket) — read remotely, see SENTINEL_TCI
 #
-# World frame (furball.md / midway.md): 1 unit = 1 m, x = east, z = south,
+# World frame (air.md / midway.md): 1 unit = 1 m, x = east, z = south,
 # atoll centred on the origin.
 import os, json, shapefile
 import numpy as np, rasterio
@@ -116,7 +116,7 @@ def load_osm():
         import urllib.request, urllib.parse
         os.makedirs(DATA, exist_ok=True)
         body = urllib.parse.urlencode({"data": OSM_QUERY}).encode()
-        req = urllib.request.Request(OVERPASS, data=body, headers={"User-Agent": "furball-midway-prep/1.0"})
+        req = urllib.request.Request(OVERPASS, data=body, headers={"User-Agent": "air-midway-prep/1.0"})
         with urllib.request.urlopen(req, timeout=120) as r:
             open(cache, "wb").write(r.read())
     return json.load(open(cache))

@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { createAppClient, useShellStorage } from '@mochi/web'
 import { DEFAULT_CONFIG, type MissionConfig } from './config'
 
-const client = createAppClient({ appName: 'furball' })
+const client = createAppClient({ appName: 'air' })
 
 const unwrap = <T>(raw: unknown): T =>
   raw && typeof raw === 'object' && 'data' in raw
@@ -87,7 +87,7 @@ export function useMissionConfig(): [
   (config: MissionConfig) => void,
 ] {
   const [config, setStored] = useShellStorage<MissionConfig>(
-    'furball.config',
+    'air.config',
     DEFAULT_CONFIG
   )
   const configRef = useRef(config)

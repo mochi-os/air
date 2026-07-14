@@ -13,7 +13,7 @@ consumes it directly. Run once; build_carrier.py loads the .npy files.
 import json, struct
 import numpy as np
 
-ORIG = '/home/alistair/mochi/apps/furball/downloads/uss_nimitz_cvn-68_aircraft_carrier.glb'
+ORIG = '/home/alistair/mochi/apps/air/downloads/uss_nimitz_cvn-68_aircraft_carrier.glb'
 S = 0.025; CX, CZ = 6361.3, -469.3; DECKY = 776.0
 ZONE = (64.5, 73.0, 4.5, 11.5)   # ICCSZONES[0]
 DROP = 0.64 / S                  # 0.64 m flush drop, in world Y units

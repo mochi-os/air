@@ -15,7 +15,7 @@ import json, struct, os
 import numpy as np
 from collections import defaultdict
 
-PATH='/home/alistair/mochi/apps/furball/web/public/aircraft/fa18c/model.glb'
+PATH='/home/alistair/mochi/apps/air/web/public/aircraft/fa18c/model.glb'
 VOX=0.15; PROBE=0.25
 
 data=open(PATH,'rb').read()

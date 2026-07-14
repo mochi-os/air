@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Canonical furball Nimitz deck-texture bake — FROM THE ORIGINAL MODEL.
+"""Canonical air Nimitz deck-texture bake — FROM THE ORIGINAL MODEL.
 
 Layers, in order:
   1. weathered non-skid base (value noise + plate seams + grunge)
@@ -48,7 +48,7 @@ from PIL import Image
 # too-small cap.
 resource.setrlimit(resource.RLIMIT_AS, (8 << 30, 8 << 30))
 
-ORIG = '/home/alistair/mochi/apps/furball/downloads/uss_nimitz_cvn-68_aircraft_carrier.glb'
+ORIG = '/home/alistair/mochi/apps/air/downloads/uss_nimitz_cvn-68_aircraft_carrier.glb'
 W, H = 8192, 2400
 FA0, FA1, LA0, LA1 = -172.0, 172.0, -52.0, 48.0
 S = 0.025; CX, CZ = 6361.3, -469.3; DECKY = 776.0

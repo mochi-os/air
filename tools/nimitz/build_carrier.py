@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Canonical furball Nimitz build — FROM THE PRISTINE ORIGINAL, single pass.
+"""Canonical air Nimitz build — FROM THE PRISTINE ORIGINAL, single pass.
 
     original download  ->  clean playable carrier
 
@@ -62,7 +62,7 @@ import json, struct
 import numpy as np
 from collections import defaultdict, deque
 
-ORIG = '/home/alistair/mochi/apps/furball/downloads/uss_nimitz_cvn-68_aircraft_carrier.glb'
+ORIG = '/home/alistair/mochi/apps/air/downloads/uss_nimitz_cvn-68_aircraft_carrier.glb'
 TEX  = 'decktex12.png'
 OUTFILE = 'nimitz-clean.glb'
 S = 0.025; CX, CZ = 6361.3, -469.3; DECKY = 776.0
