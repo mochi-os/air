@@ -16,12 +16,12 @@ wasm: web/public/flight/flight.wasm
 clean:
 	rm -rf web/dist
 
-web/dist/index.html: web/public/flight/flight.wasm $(shell find web/src ../../lib/web/src -type f 2>/dev/null)
+web/dist/index.html: web/public/flight/flight.wasm $(shell find web/src web/public ../../lib/web/src -type f 2>/dev/null)
 	bash -c 'cd web && $(SAFE_PNPM) run build'
 # The flight simulation core, compiled for the browser from the world repo.
-web/public/flight/flight.wasm: $(shell find ../../world/games/furball ../../world/wasm -name '*.go' 2>/dev/null)
+web/public/flight/flight.wasm: $(shell find ../../world/games/air ../../world/wasm -name '*.go' 2>/dev/null)
 	mkdir -p web/public/flight
-	cd ../../world && GOOS=js GOARCH=wasm CGO_ENABLED=0 go build -trimpath -ldflags "-s -w" -o ../apps/furball/web/public/flight/flight.wasm ./wasm
+	cd ../../world && GOOS=js GOARCH=wasm CGO_ENABLED=0 go build -trimpath -ldflags "-s -w" -o ../apps/air/web/public/flight/flight.wasm ./wasm
 	cp "$$(go env GOROOT)/lib/wasm/wasm_exec.js" web/public/flight/
 
 release: web/dist/index.html

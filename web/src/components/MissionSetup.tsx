@@ -909,7 +909,7 @@ export function MissionSetup({
   return (
     <div className='bg-background fixed inset-0 z-50 flex items-center justify-center overflow-auto p-6'>
       <div className='w-full max-w-2xl'>
-        <h1 className='mb-6 text-3xl font-semibold tracking-tight'>Furball</h1>
+        <h1 className='mb-6 text-3xl font-semibold tracking-tight'>Air</h1>
         <div>
           <Tabs variant='underline' value={tab} onValueChange={onTabChange}>
             <TabsList>

@@ -4,10 +4,10 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 // The flight simulation core: a Go blade-element model compiled to wasm
-// (built from world/games/furball/flight into public/flight/), shared with
+// (built from world/games/air/flight into public/flight/), shared with
 // the authoritative world server. This module owns loading, the fixed-dt
 // accumulator, and the typed-array boundary — one crossing per rendered
-// frame. Layouts mirror world/games/furball/flight/encode.go and
+// frame. Layouts mirror world/games/air/flight/encode.go and
 // world/wasm/main.go exactly; a mismatch is a version bump, not a patch.
 
 import { getErrorMessage } from '@mochi/web'
@@ -62,7 +62,7 @@ export const DT = 1 / 240
 // Bump on any flight.wasm rebuild that must reach already-loaded browsers. The
 // cache:'reload' fetch below makes this belt-and-suspenders, but the version
 // query also breaks any entry a proxy or old cache is still pinning by URL.
-const WASM_VERSION = '2026-07-13a' // burst wire gains shooter/target velocities (time-of-flight gunnery)
+const WASM_VERSION = '2026-07-14a' // the exported JS global renames furball_flight -> air_flight (app rename)
 const CAP = 30 // accumulator cap: tab throttling must not spiral into replay storms
 
 // Control sample for one frame; the FCS interprets pitch/roll/yaw as
@@ -105,7 +105,7 @@ interface Core {
 
 declare global {
   // eslint-disable-next-line no-var
-  var furball_flight: Core | undefined
+  var air_flight: Core | undefined
   // eslint-disable-next-line no-var
   var Go: new () => { importObject: WebAssembly.Imports; run(instance: WebAssembly.Instance): Promise<void> }
 }
@@ -146,14 +146,14 @@ export async function flight_load(): Promise<void> {
     const { instance } = await WebAssembly.instantiate(await response.arrayBuffer(), go.importObject)
     void go.run(instance) // resolves only if the core exits — it never should
     const started = performance.now()
-    while (!globalThis.furball_flight) {
+    while (!globalThis.air_flight) {
       // 30 s, not a snappier 5: the Go runtime's first-boot main-thread slice is at the
       // mercy of machine load (busy laptops, software rasterizers, headless captures),
       // and a slow boot must not be declared a terminal core failure
       if (performance.now() - started > 30000) throw new Error('flight core did not export')
       await new Promise((r) => setTimeout(r, 10))
     }
-    core = globalThis.furball_flight
+    core = globalThis.air_flight
   } catch (error) {
     failure = getErrorMessage(error, 'flight core load failed')
     console.error('flight core load failed:', failure)

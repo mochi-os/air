@@ -21,7 +21,7 @@ const SETUP_TABS: SetupTab[] = ['mission', 'weather', 'controls', 'graphics']
 // stays titled "Mochi" no matter what the app's own index.html says.
 function useTabTitle() {
   useEffect(() => {
-    shellSetTitle('Furball')
+    shellSetTitle('Air')
   }, [])
 }
 
@@ -57,7 +57,7 @@ function Index() {
   const inFlight = started && !menuOpen
 
   // Hide the shell chrome while in flight; the hook's heartbeat lets the shell
-  // restore it automatically if furball crashes or is closed.
+  // restore it automatically if air crashes or is closed.
   useShellImmersive(inFlight)
   useTabTitle()
 

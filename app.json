@@ -1,4 +1,4 @@
-// Mochi Furball app
+// Mochi Air app
 // Copyright © 2026 Mochi OÜ
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
@@ -7,13 +7,13 @@
 {
 	"version": "0.1",
 	"label": "app.name",
-	"paths": ["furball"],
+	"paths": ["air"],
 
 	"architecture": {"engine": "starlark", "version": 4},
-	"execute": ["furball.star"],
+	"execute": ["air.star"],
 
 	"database": {
-		"file": "furball.db",
+		"file": "air.db",
 		"schema": 2,
 		"create": {"function": "database_create"},
 		"upgrade": {"function": "database_upgrade"},

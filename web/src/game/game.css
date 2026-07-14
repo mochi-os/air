@@ -3,7 +3,7 @@
  * Game-surface styles, ported from the prototype. Scoped to the elements
  * <GameCanvas> renders; the HUD is drawn imperatively onto #hud. */
 
-.furball-game {
+.air-game {
   --hud-green: #5fffa8;
   --hud-amber: #ffc14d;
   --hud-dim: #2a7d57;
@@ -12,7 +12,7 @@
   --mono: 'SF Mono', 'JetBrains Mono', 'Consolas', ui-monospace, monospace;
 }
 
-.furball-game #stage {
+.air-game #stage {
   position: fixed;
   inset: 0;
   display: block;
@@ -22,19 +22,19 @@
   background: #0a1412;
   touch-action: none;
 }
-.furball-game #stage:focus,
-.furball-game #stage:focus-visible {
+.air-game #stage:focus,
+.air-game #stage:focus-visible {
   outline: none;
 }
 
-.furball-game #hud {
+.air-game #hud {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 5;
 }
 
-.furball-game #map {
+.air-game #map {
   position: fixed;
   inset: 0;
   z-index: 24;
@@ -43,7 +43,7 @@
 }
 
 /* fps + 1% low readout, top-right; shown only when the Framerate graphics setting is on */
-.furball-game #framerate {
+.air-game #framerate {
   top: 10px;
   right: 10px;
   display: none;
@@ -53,7 +53,7 @@
   pointer-events: none;
 }
 
-.furball-game .panel {
+.air-game .panel {
   position: fixed;
   background: var(--panel-bg);
   border: 1px solid var(--panel-edge);
@@ -66,7 +66,7 @@
   z-index: 10;
 }
 
-.furball-game #help {
+.air-game #help {
   left: 50%;
   bottom: 10px;
   transform: translateX(-50%);
@@ -77,6 +77,6 @@
   line-height: 1.5;
   max-width: 90vw;
 }
-.furball-game #help b {
+.air-game #help b {
   color: var(--hud-green);
 }

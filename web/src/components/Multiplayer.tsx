@@ -91,7 +91,7 @@ export function Multiplayer({
 
   const refresh = useCallback(async () => {
     try {
-      const [s, list] = await Promise.all([world_status(address), world_sessions(address, 'furball')])
+      const [s, list] = await Promise.all([world_status(address), world_sessions(address, 'air')])
       setStatus(s)
       setSessions(list)
       setError('')
@@ -127,7 +127,7 @@ export function Multiplayer({
     setBusy(true)
     try {
       const made = await world_create(address, {
-        game: 'furball',
+        game: 'air',
         mode,
         label: t`${name}'s match`,
         capacity: mode === 'joust' ? 2 : 0,

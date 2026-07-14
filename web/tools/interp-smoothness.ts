@@ -10,7 +10,7 @@
 //   interp    : Net.remote() — the real smoothing under test
 //   naive     : the newest raw packet each frame, no interp — the worst case
 //
-// Run: apps/furball/web/tools/run-interp-smoothness.sh
+// Run: apps/air/web/tools/run-interp-smoothness.sh
 // (bundles this with esbuild, stubbing @mochi/web, then runs under Node.)
 
 import { Net } from '../src/game/net'
