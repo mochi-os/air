@@ -2386,7 +2386,7 @@ const TESTS=[
 	{name:"3 runway - hard 16 m/s (crashes)",               V:70,  S:16,  pitch:4},
 	{name:"4 runway - banked 12 deg (wingtip strike)",      V:70,  S:2.5, pitch:2, bank:12},
 	{name:"5 runway - nose-high 17 deg (tail strike)",      V:70,  S:2.5, pitch:17},
-	{name:"6 runway - overspeed 115 m/s (tire failure)",    V:115, S:2.5, pitch:2},
+	{name:"6 runway - overspeed 115 m/s (tires fail, crashes)", V:115, S:2.5, pitch:2},   // ~90 kt over the tire limit: the blown-tire rollout cascading to a wreck is the ACCEPTED outcome under the real flight model (2026-07-14) — the placeholder model's survivable slide is history
 	{name:"7 runway - gentle belly landing (slides)",       V:70,  S:1.2, pitch:2, gearup:true},
 	{name:"8 runway - hard belly landing (crashes)",        V:70,  S:4,   pitch:2, gearup:true},
 	{name:"9 carrier - on glideslope (traps)",              V:70,  S:4.3, pitch:4, carrier:true, hook:true},
@@ -2561,6 +2561,13 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 		sync_core(flight_get()); return;
 	}
 	const b=flight_get();   // keep time (carrier pose, wind field) and fuel across resets
+	// ...but NEVER the damage block: every flight_push call site is a fresh-airframe moment
+	// (mission start, cat re-spot, scenario, respawn), and recycling the snapshot carried the
+	// crashed jet's damage into the respawn — folded gear with red cautions at the threshold,
+	// and worse, silent engine thrust loss + fuel leak (the client visuals reset, the core
+	// words didn't). Air starts were immune only because flight_level builds a fresh state.
+	for(let i=STATE.engine_harm;i<=STATE.stress;i++) b[i]=0;   // engine harm ×4, leak, drag, shift ×3, stress
+	for(let i=STATE.element;i<=STATE.gear_harm+2;i++) b[i]=0;   // element losses ×40, jams ×8, shed mass, gear struts ×3
 	if(ownship.speed<1){ const g=ground_height(ownship.pos.x,ownship.pos.z);   // ground spawns: rest the wheels ON the surface — legacy spawn heights assume the old glue, and an interpenetrated spawn fires the bottomed-out struts like a mortar
 		if(g>-1e8) ownship.pos.y=Math.max(ownship.pos.y,g+GEAR); }
 	b[STATE.position]=ownship.pos.x; b[STATE.position+1]=ownship.pos.y; b[STATE.position+2]=ownship.pos.z;
