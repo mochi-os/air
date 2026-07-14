@@ -109,7 +109,8 @@ def superseded(f, l): return any(a < f < b and abs(l-ln(f)) < 0.9 for a, b, ln i
 # engine's animated panel fills; GREY mono marks there (the frame — lum<=0.85 spares
 # the near-white landing-area stripes crossing at the waist) are killed. The big
 # blast-zone rectangle aft of cat 1 (fa ~13..37, down to the deck edge) stays as
-# authored: its bottom hugs the deck edge, which did not move.
+# authored — its bottom hugs the deck edge, which did not move — except where it
+# crosses a plan JBD rectangle (jbd_zone kill below).
 #     region fa0,fa1,lat0,lat1      box centre       target centre
 JBD = [
     (36.4, 53.5, 14.6, 25.4,     39.35, 20.47,    27.2, 16.76),
@@ -117,6 +118,24 @@ JBD = [
     (-59.2, -45.6, -21.5, -11.0, -56.3, -17.06,   -68.7, -15.52),
     (-78.9, -60.4, -32.4, -21.8, -76.25, -26.79,  -84.5, -27.75),
 ]
+# plan-rectangle geometry, shared by the kill pass and the border drawing at the end:
+# 0.34 m border matches the measured neighbouring safety borders (blast zone, elevators,
+# 25-33 cm); the rectangle is the one the engine's animated panel fills.
+JBD_BW, JBD_BD, JBD_LW, JBD_DASH = 9.65, 4.4, 0.34, 1.55
+JBD_M = [-0.0601*S_LAT, 0.0, -0.0705*S_LAT, 0.0]   # track slope d(lat)/d(fa) per cat (post-squash)
+def jbd_zone(f, l, margin=0.55):
+    # Inside a plan JBD rectangle (+margin). Authored SAT paint dies here: besides stray
+    # dashes, this terminates the authored cat-1 blast-zone border cleanly at the box —
+    # that rectangle sits ~10 m from its plan position, so its port edge crosses the plan
+    # JBD box at a shallow angle, and deck features do not overpaint each other.
+    for e, m in zip(JBD, JBD_M):
+        tf, tl = e[6], e[7]
+        nl = math.hypot(1.0, m)
+        ux, uy = 1.0/nl, m/nl
+        df, dl = f-tf, l-tl
+        if abs(df*ux+dl*uy) < JBD_BD/2+margin and abs(-df*uy+dl*ux) < JBD_BW/2+margin:
+            return True
+    return False
 # grey-frame mono kill boxes. NOT the same as the JBD regions: the landing-area edge
 # stripes are drawn as triangle FANS whose short apex tris land inside cat 3's region
 # (same material and lum as the frame — position is the only discriminator), so cat 3
@@ -269,8 +288,8 @@ for ni, n in enumerate(nodes):
                 if lum <= 0.60 and not (NUMERALS[0] < f2 < NUMERALS[1] and NUMERALS[2] < l2 < NUMERALS[3]) \
                         and edge_distance(f2, l2) < EDGE_KILL: continue   # phantom rim-structure grey — the catwalk/sponson plates are lum 0.523. Painted LINES near the edge are lum 0.659 (the angled-deck edge stripe runs 2.5-4.5 m from the outline for its whole length — a <=0.85 kill severed it, v55..v59) or 0.976 white (edge dashes): both must survive. The 68 numerals use BOTH greys, hence the box exemption stays.
             tri = np.stack([fa[i2], la[i2]], 1)
-            if sat and any(e[0] < f2 < e[1] and e[2] < l2 < e[3] for e in JBD):
-                continue   # authored JBD dashes: killed at the source; the borders are DRAWN below (uniform width — the authored dashes were half the width of the neighbouring safety borders)
+            if sat and (any(e[0] < f2 < e[1] and e[2] < l2 < e[3] for e in JBD) or jbd_zone(f2, l2)):
+                continue   # authored JBD dashes + anything crossing the plan rectangles: killed at the source; the borders are DRAWN below (uniform width — the authored dashes were half the width of the neighbouring safety borders)
             elif lum <= 0.85 and any(b[0] < f2 < b[1] and b[2] < l2 < b[3] for b in MONO_KILL):
                 continue   # the grey frames
             if not sat and 0.60 < lum <= 0.85 and near_landing_line(f2, l2):
@@ -282,8 +301,6 @@ for ni, n in enumerate(nodes):
 # the exact plan rectangles the engine's animated panels fill, so paint and geometry
 # stay concentric by construction. Appended as mark tris at ch +10 so they rasterise
 # last through the same anti-aliased pipeline.
-JBD_BW, JBD_BD, JBD_LW, JBD_DASH = 9.65, 4.4, 0.34, 1.55
-JBD_M = [-0.0601*S_LAT, 0.0, -0.0705*S_LAT, 0.0]   # track slope d(lat)/d(fa) per cat (post-squash)
 JBD_RED = np.array([0.58, 0.0, 0.01])*255; JBD_YEL = np.array([0.97, 0.86, 0.02])*255
 for e, m in zip(JBD, JBD_M):
     tf, tl = e[6], e[7]

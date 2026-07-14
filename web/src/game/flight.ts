@@ -147,7 +147,10 @@ export async function flight_load(): Promise<void> {
     void go.run(instance) // resolves only if the core exits — it never should
     const started = performance.now()
     while (!globalThis.furball_flight) {
-      if (performance.now() - started > 5000) throw new Error('flight core did not export')
+      // 30 s, not a snappier 5: the Go runtime's first-boot main-thread slice is at the
+      // mercy of machine load (busy laptops, software rasterizers, headless captures),
+      // and a slow boot must not be declared a terminal core failure
+      if (performance.now() - started > 30000) throw new Error('flight core did not export')
       await new Promise((r) => setTimeout(r, 10))
     }
     core = globalThis.furball_flight
