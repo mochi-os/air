@@ -62,7 +62,7 @@ export const DT = 1 / 240
 // Bump on any flight.wasm rebuild that must reach already-loaded browsers. The
 // cache:'reload' fetch below makes this belt-and-suspenders, but the version
 // query also breaks any entry a proxy or old cache is still pinning by URL.
-const WASM_VERSION = '2026-07-14a' // the exported JS global renames furball_flight -> air_flight (app rename)
+const WASM_VERSION = '2026-07-14b' // BFM layer (#130): wounded flying, fire drill, defensive spiral, timed breaks, drag — and the bandit hulk's damage now feeds its brain and dynamics
 const CAP = 30 // accumulator cap: tab throttling must not spiral into replay storms
 
 // Control sample for one frame; the FCS interprets pitch/roll/yaw as
