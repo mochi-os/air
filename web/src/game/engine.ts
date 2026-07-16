@@ -3558,6 +3558,13 @@ function net_event(e){ const slot=Number(e.slot);
 	case "splash": if(Array.isArray(e.position)) explosion_at(e.position[0],e.position[1],e.position[2]); break;   // a wreck met the sea
 	case "join": if(!net||slot!==net.slot) notice((e.name||"")+" "+translate("JOINED")); break;
 	case "leave": remote_drop(slot); notice((e.name||"")+" "+translate("LEFT")); break;
+	case "call": {   // wingman brevity calls (#139): radio is team-scoped, callsigns verbatim, call words localised
+		if(!net) break;
+		const myteam=net.teams.get(net.slot); if(!myteam||net.teams.get(slot)!==myteam) break;
+		const name=net.names.get(slot)||"";
+		if(e.call==="engaged") notice(name+": "+translate("ENGAGED"),4);
+		else if(e.call==="break"&&Number(e.target)===net.slot) notice(name+": "+translate(e.direction==="right"?"BREAK RIGHT":"BREAK LEFT"),4);   // direction words are relative to the warned pilot — nobody else's business
+		break; }
 	} }
 function net_finish(reason){ if(session_over) return; session_over=true;
 	if(net&&match_started){ net_record({ world:join.server, session:join.session,

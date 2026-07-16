@@ -218,7 +218,7 @@ msgstr "অক্ষসমূহ"
 msgid "Axis {i}"
 msgstr "অক্ষ {i}"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:156
 msgid "back"
 msgstr "পিছনে"
 
@@ -277,9 +277,17 @@ msgstr "আগ্রহ বৃদ্ধি করুন"
 msgid "Bots"
 msgstr "বট"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:148
 msgid "brakes"
 msgstr "ব্রেক"
+
+#: src/components/GameCanvas.tsx:83
+msgid "BREAK LEFT"
+msgstr "বাঁয়ে কাটো"
+
+#: src/components/GameCanvas.tsx:82
+msgid "BREAK RIGHT"
+msgstr "ডানে কাটো"
 
 #: src/components/MissionSetup.tsx:416
 msgid "Button {i}"
@@ -332,7 +340,7 @@ msgstr "এই নোটিফিকেশনের ক্যাটেগরি"
 msgid "Change notification category"
 msgstr "নোটিফিকেশন ক্যাটেগরি পরিবর্তন করুন"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:153
 msgid "Chase view:"
 msgstr "অনুসরণ দৃশ্য:"
 
@@ -409,7 +417,7 @@ msgstr "প্যানেল বন্ধ করুন"
 msgid "Close search"
 msgstr "অনুসন্ধান বন্ধ করুন"
 
-#: src/components/GameCanvas.tsx:152
+#: src/components/GameCanvas.tsx:157
 msgid "closer"
 msgstr "আরও কাছে"
 
@@ -665,6 +673,10 @@ msgstr "ইমেইল কোড"
 msgid "empty"
 msgstr "খালি"
 
+#: src/components/GameCanvas.tsx:81
+msgid "ENGAGED"
+msgstr "আক্রমণ করছি"
+
 #: src/components/MissionSetup.tsx:449
 msgid "Engine"
 msgstr "ইঞ্জিন"
@@ -740,7 +752,7 @@ msgstr "লড়াই শুরু"
 msgid "Finish moving your account"
 msgstr "আপনার অ্যাকাউন্ট স্থানান্তর সম্পন্ন করুন"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:144
 msgid "fire"
 msgstr "ফায়ার"
 
@@ -752,7 +764,7 @@ msgstr "স্থির কীসমূহ"
 msgid "FLAMEOUT"
 msgstr "ফ্লেমআউট"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:146
 msgid "flares"
 msgstr "ফ্লেয়ার"
 
@@ -832,7 +844,7 @@ msgstr "জ্বালানি প্রোব"
 msgid "Full layout"
 msgstr "সম্পূর্ণ লেআউট"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:147
 msgid "gear"
 msgstr "ল্যান্ডিং গিয়ার"
 
@@ -907,7 +919,7 @@ msgstr "উচ্চ স্ট্র্যাটাস"
 msgid "Home"
 msgstr "হোম"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:147
 msgid "hook"
 msgstr "হুক"
 
@@ -1019,7 +1031,7 @@ msgstr "বড়"
 msgid "Launch (catapult)"
 msgstr "উৎক্ষেপণ (ক্যাটাপাল্ট)"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:146
 msgid "launch / target"
 msgstr "লঞ্চ / টার্গেট"
 
@@ -1049,7 +1061,7 @@ msgstr "বাম থেকে ডান"
 msgid "Light"
 msgstr "হালকা"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:147
 msgid "lights"
 msgstr "বাতি"
 
@@ -1142,7 +1154,7 @@ msgstr "নিম্ন স্ট্র্যাটাস"
 msgid "M to close"
 msgstr "বন্ধ করতে M"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:149
 msgid "map"
 msgstr "মানচিত্র"
 
@@ -1169,7 +1181,7 @@ msgstr "ম্যাচের ধরন"
 msgid "Medium"
 msgstr "মাঝারি"
 
-#: src/components/GameCanvas.tsx:145
+#: src/components/GameCanvas.tsx:150
 msgid "menu"
 msgstr "মেনু"
 
@@ -1371,11 +1383,11 @@ msgstr "নেভিগেশন মেনু খুলুন"
 msgid "Open theme settings"
 msgstr "থিম সেটিংস খুলুন"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:155
 msgid "or"
 msgstr "বা"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:155
 msgid "orbit"
 msgstr "প্রদক্ষিণ"
 
@@ -1403,7 +1415,7 @@ msgstr "পাসকি যাচাই ব্যর্থ হয়েছে।
 msgid "Passkeys"
 msgstr "পাসকি"
 
-#: src/components/GameCanvas.tsx:145
+#: src/components/GameCanvas.tsx:150
 msgid "pause"
 msgstr "বিরতি"
 
@@ -1429,7 +1441,7 @@ msgstr "পাইলট"
 msgid "PILOT DOWN"
 msgstr "পাইলট নিহত"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:142
 msgid "pitch"
 msgstr "পিচ"
 
@@ -1616,7 +1628,7 @@ msgstr "মেনুতে ফিরুন"
 msgid "Right to Left"
 msgstr "ডান থেকে বাম"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:143
 msgid "roll"
 msgstr "রোল"
 
@@ -1819,7 +1831,7 @@ msgstr "প্রশস্ত"
 msgid "SPD BK"
 msgstr "বা.ব্র"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:148
 msgid "speed brake"
 msgstr "বায়ু ব্রেক"
 
@@ -1926,7 +1938,7 @@ msgstr "থিম"
 msgid "Theme Settings"
 msgstr "থিম সেটিংস"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:144
 msgid "throttle"
 msgstr "থ্রটল"
 
@@ -1950,7 +1962,7 @@ msgstr "বৃহস্পতিবার"
 msgid "Tightest sustained turn speed"
 msgstr "সংকীর্ণতম টেকসই বাঁকের গতি"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:156
 msgid "tilt"
 msgstr "কাত"
 
@@ -2114,7 +2126,7 @@ msgstr "অভিজ্ঞ"
 msgid "Video thumbnail"
 msgstr "ভিডিও থাম্বনেইল"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:149
 msgid "view"
 msgstr "দৃশ্য"
 
@@ -2147,7 +2159,7 @@ msgstr "গো অ্যারাউন্ড"
 msgid "We'll be back online shortly."
 msgstr "আমরা শীঘ্রই আবার অনলাইনে ফিরে আসব।"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:145
 msgid "weapon"
 msgstr "অস্ত্র"
 
@@ -2194,7 +2206,7 @@ msgstr "ওয়ার্ল্ড সার্ভার"
 msgid "World server not reachable"
 msgstr "ওয়ার্ল্ড সার্ভারে পৌঁছানো যাচ্ছে না"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:143
 msgid "yaw"
 msgstr "ইয়ো"
 

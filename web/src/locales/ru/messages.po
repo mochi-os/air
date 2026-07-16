@@ -218,7 +218,7 @@ msgstr "Оси"
 msgid "Axis {i}"
 msgstr "Ось {i}"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:156
 msgid "back"
 msgstr "назад"
 
@@ -277,9 +277,17 @@ msgstr "Усилить интерес"
 msgid "Bots"
 msgstr "Боты"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:148
 msgid "brakes"
 msgstr "тормоза"
+
+#: src/components/GameCanvas.tsx:83
+msgid "BREAK LEFT"
+msgstr "РЕЗКО ВЛЕВО"
+
+#: src/components/GameCanvas.tsx:82
+msgid "BREAK RIGHT"
+msgstr "РЕЗКО ВПРАВО"
 
 #: src/components/MissionSetup.tsx:416
 msgid "Button {i}"
@@ -332,7 +340,7 @@ msgstr "Категория этого уведомления"
 msgid "Change notification category"
 msgstr "Изменить категорию уведомления"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:153
 msgid "Chase view:"
 msgstr "Вид преследования:"
 
@@ -409,7 +417,7 @@ msgstr "Закрыть панель"
 msgid "Close search"
 msgstr "Закрыть поиск"
 
-#: src/components/GameCanvas.tsx:152
+#: src/components/GameCanvas.tsx:157
 msgid "closer"
 msgstr "ближе"
 
@@ -665,6 +673,10 @@ msgstr "Код по электронной почте"
 msgid "empty"
 msgstr "пусто"
 
+#: src/components/GameCanvas.tsx:81
+msgid "ENGAGED"
+msgstr "АТАКУЮ"
+
 #: src/components/MissionSetup.tsx:449
 msgid "Engine"
 msgstr "Двигатель"
@@ -740,7 +752,7 @@ msgstr "БОЙ НАЧАЛСЯ"
 msgid "Finish moving your account"
 msgstr "Завершите перенос аккаунта"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:144
 msgid "fire"
 msgstr "огонь"
 
@@ -752,7 +764,7 @@ msgstr "Фиксированные клавиши"
 msgid "FLAMEOUT"
 msgstr "СРЫВ ПЛАМЕНИ"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:146
 msgid "flares"
 msgstr "тепловые ловушки"
 
@@ -832,7 +844,7 @@ msgstr "Топливная штанга"
 msgid "Full layout"
 msgstr "Полный макет"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:147
 msgid "gear"
 msgstr "Шасси"
 
@@ -907,7 +919,7 @@ msgstr "Высокие слоистые"
 msgid "Home"
 msgstr "Главная"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:147
 msgid "hook"
 msgstr "Гак"
 
@@ -1019,7 +1031,7 @@ msgstr "Крупный"
 msgid "Launch (catapult)"
 msgstr "Старт (катапульта)"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:146
 msgid "launch / target"
 msgstr "старт / захват"
 
@@ -1049,7 +1061,7 @@ msgstr "Слева направо"
 msgid "Light"
 msgstr "Светлая"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:147
 msgid "lights"
 msgstr "огни"
 
@@ -1142,7 +1154,7 @@ msgstr "Низкие слоистые"
 msgid "M to close"
 msgstr "M закрыть"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:149
 msgid "map"
 msgstr "карта"
 
@@ -1169,7 +1181,7 @@ msgstr "Тип матча"
 msgid "Medium"
 msgstr "Средний"
 
-#: src/components/GameCanvas.tsx:145
+#: src/components/GameCanvas.tsx:150
 msgid "menu"
 msgstr "меню"
 
@@ -1371,11 +1383,11 @@ msgstr "Открыть меню навигации"
 msgid "Open theme settings"
 msgstr "Открыть настройки темы"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:155
 msgid "or"
 msgstr "или"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:155
 msgid "orbit"
 msgstr "орбита"
 
@@ -1403,7 +1415,7 @@ msgstr "Не удалось проверить ключ доступа. Попр
 msgid "Passkeys"
 msgstr "Ключи доступа"
 
-#: src/components/GameCanvas.tsx:145
+#: src/components/GameCanvas.tsx:150
 msgid "pause"
 msgstr "пауза"
 
@@ -1429,7 +1441,7 @@ msgstr "Пилот"
 msgid "PILOT DOWN"
 msgstr "ПИЛОТ ПОГИБ"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:142
 msgid "pitch"
 msgstr "тангаж"
 
@@ -1616,7 +1628,7 @@ msgstr "Вернуться в меню"
 msgid "Right to Left"
 msgstr "Справа налево"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:143
 msgid "roll"
 msgstr "крен"
 
@@ -1819,7 +1831,7 @@ msgstr "Просторный"
 msgid "SPD BK"
 msgstr "ВОЗД.ТОРМ"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:148
 msgid "speed brake"
 msgstr "воздушный тормоз"
 
@@ -1926,7 +1938,7 @@ msgstr "Тема"
 msgid "Theme Settings"
 msgstr "Настройки темы"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:144
 msgid "throttle"
 msgstr "тяга"
 
@@ -1950,7 +1962,7 @@ msgstr "Четверг"
 msgid "Tightest sustained turn speed"
 msgstr "Скорость наименьшего установившегося разворота"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:156
 msgid "tilt"
 msgstr "наклон"
 
@@ -2114,7 +2126,7 @@ msgstr "Ветеран"
 msgid "Video thumbnail"
 msgstr "Миниатюра видео"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:149
 msgid "view"
 msgstr "вид"
 
@@ -2147,7 +2159,7 @@ msgstr "УХОДИ НА ВТОРОЙ КРУГ"
 msgid "We'll be back online shortly."
 msgstr "Мы скоро снова будем в сети."
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:145
 msgid "weapon"
 msgstr "оружие"
 
@@ -2194,7 +2206,7 @@ msgstr "Сервер мира"
 msgid "World server not reachable"
 msgstr "Сервер мира недоступен"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:143
 msgid "yaw"
 msgstr "рыскание"
 
