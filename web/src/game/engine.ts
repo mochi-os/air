@@ -2392,7 +2392,7 @@ const TESTS=[
 	{name:"9 carrier - on glideslope (traps)",              V:70,  S:4.3, pitch:4, carrier:true, hook:true},
 	{name:"0 carrier - touch and go (bolter)",              V:80,  S:1.2, pitch:3, carrier:true, hook:false, long:55, bolter:true},
 ];
-let test_active=null, test_idle=0, test_power=0, test_brake=false, dev_fps=0, dev_jitter=false;   // post-scenario throttle grace: the physical lever must not re-power a scripted rollout (test_power: a bolter keeps MIL power instead)
+let test_active=null, test_idle=0, test_power=0, test_brake=false, dev_fps=0, dev_jitter=false, livery_pending=null;   // post-scenario throttle grace: the physical lever must not re-power a scripted rollout (test_power: a bolter keeps MIL power instead)
 if(DEV_MODE) (globalThis as any).dev_measure=()=>{   // one-shot: the lowest mesh nodes in MODEL frame, named — the source of truth for the physics Belly/Probe constants (#72)
 	const inverse=new THREE.Matrix4().copy(ownship.group.matrixWorld).invert();
 	const v=new THREE.Vector3();
@@ -2628,6 +2628,7 @@ function fly_player(dt){
 	sync_core(out); last_out=out;
 	if(!MULTIPLAYER){   // SP damage cascade: fires, fuses, sheds — judged by the same Go as the server
 		if(harm_pending&&battle_tick>2){ apply_harm(harm_pending); harm_pending=null; }   // frame-gated: headless captures render only a handful of frames
+		if(livery_pending&&model_active){ apply_livery(ownship.group,livery_pending); apply_livery(bandit.group,livery_pending==="red"?"blue":"red"); livery_pending=null; }
 		if(sweep_pending&&ownship.group.userData.rig){ const i=ownship.group.userData.rig.findIndex(r=>r.name===sweep_pending);
 			if(i>=0){ rig_sweep=i+1; } sweep_pending=null; }
 		if(!battle_rigged) battle_rig();   // the mission-start rig raced the wasm load and no-opped: retry until it takes
@@ -3057,6 +3058,20 @@ function draw_map(){ const W=innerWidth,H=innerHeight; mctx.clearRect(0,0,W,H);
 	// carrier
 	const kx=X(CARRIER.x), ky=Y(CARRIER.z); mctx.fillStyle="#ffd27a"; mctx.fillRect(kx-5,ky-5,10,10);
 	mctx.fillStyle="#ffd27a"; mctx.font="10px monospace"; mctx.fillText("CV",kx,ky-9);
+	// contacts: rendered remotes (and the SP bandit), coloured by side
+	const jet=(x2,y2,fx,fz,colour,label)=>{ const fl=Math.hypot(fx,fz)||1, jux=fx/fl, juz=fz/fl, jrx=-juz, jrz=jux;
+		mctx.fillStyle=colour; mctx.beginPath();
+		mctx.moveTo(x2+jux*9,y2+juz*9); mctx.lineTo(x2-jux*6+jrx*5,y2-juz*6+jrz*5); mctx.lineTo(x2-jux*6-jrx*5,y2-juz*6-jrz*5); mctx.closePath(); mctx.fill();
+		if(label){ mctx.font="9px monospace"; mctx.textAlign="center"; mctx.fillText(label,x2,y2+18); } };
+	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
+			const team=net.teams.get(slot)||"";
+			const colour=team==="red"?"#ff5a48":team==="blue"?"#5a86ff":"#ffb04a";
+			jet(X(st.pos.x),Y(st.pos.z),st.fwd.x,st.fwd.z,colour,st.name||net.names.get(slot)||""); } }
+	else if(has_enemy&&bandit.group.visible) jet(X(bandit.pos.x),Y(bandit.pos.z),bandit.fwd.x,bandit.fwd.z,"#ffb04a","");
+	if(MULTIPLAYER&&net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams"){
+		mctx.textAlign="left"; mctx.font="13px monospace";
+		mctx.fillStyle="#ff5a48"; mctx.fillText("RED "+(net.score.red||0),24,70);
+		mctx.fillStyle="#5a86ff"; mctx.fillText("BLUE "+(net.score.blue||0),24,88); }
 	// player aircraft: triangle pointing along heading
 	const hx=ownship.fwd.x, hz=ownship.fwd.z, hl=Math.hypot(hx,hz)||1; const ux=hx/hl, uz=hz/hl, rxv=-uz, rzv=ux;
 	mctx.fillStyle="#ffffff"; mctx.beginPath();
@@ -3391,6 +3406,9 @@ function draw_hud(dt){
 	// announces itself, to multiplayer joiners as much as the mission owner.
 	hctx.textAlign="left"; hctx.font="13px monospace";
 	if(cheat("invulnerable")){ hctx.fillStyle=GR; hctx.fillText(translate("INVULNERABLE"),40,HH-106); }
+	if(!authentic&&MULTIPLAYER&&net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams"){   // team score (game furniture): red and blue running totals above the stores legend
+		hctx.fillStyle="#ff5a48"; hctx.fillText("RED "+(net.score.red||0),40,HH-142);
+		hctx.fillStyle="#5a86ff"; hctx.fillText("BLUE "+(net.score.blue||0),40,HH-124); hctx.fillStyle=GR; }
 	if(!authentic){   // stores furniture (hud view): the FULL counter set — the authentic data block shows only the selected weapon, so without these the other weapon's count is invisible; the IFEI fuel belongs to the cockpit panel, kept here for the fullscreen view
 	hctx.fillStyle=input.guns?AM:GR;
 	hctx.fillText(translate("GUN")+"  "+(cheat("ammunition")?"∞":ownship.rounds),40,HH-88); hctx.fillStyle=GR;
@@ -3472,6 +3490,22 @@ function acquire_target(){
 	designated=cone[(at+1)%cone.length].slot;
 }
 function notice(text,secs){ net_notice=text; net_notice_t=secs||3; }   // the single centre-banner slot; each call REPLACES the last (the LSO grade, BOLTER and REARMED all route through here so they can never overprint each other)
+// Team liveries (#130): the separately-named rig subtrees double as paint
+// masks — the rudder nodes ride the tail fins and the folding outer panels
+// are the wingtips, so tinting them flies team colours without touching the
+// merged airframe. Materials are shared across the GLB: clone before painting.
+const LIVERY=/rudder_percent_key_AN|wing_outer_AN/i;
+function apply_livery(group, team){
+	const color=team?new THREE.Color(team==="red"?0xc03028:0x2858c0):null;
+	group.traverse(o=>{ if(!o.isMesh||!o.material) return;
+		let node=o, hit=false;
+		while(node&&node!==group){ if(LIVERY.test(node.name||"")){ hit=true; break; } node=node.parent; }
+		if(!hit) return;
+		if(!o.userData.liveried){ o.material=o.material.clone(); o.userData.base=o.material.color.clone(); o.userData.liveried=true; }
+		if(color) o.material.color.copy(o.userData.base).lerp(color,0.8);
+		else o.material.color.copy(o.userData.base);
+	});
+}
 function remote_for(slot){ let st=remotes.get(slot); if(st) return st;
 	if(![...remotes.values()].includes(bandit)) st=bandit;
 	else { st=make_state(new THREE.Vector3(0,3000,0),new THREE.Vector3(1,0,0),200); st.group=make_jet(0xb04a3a); scene.add(st.group); if(model_active) apply_model_to(st.group); }
@@ -3526,7 +3560,9 @@ function net_event(e){ const slot=Number(e.slot);
 	case "leave": remote_drop(slot); notice((e.name||"")+" "+translate("LEFT")); break;
 	} }
 function net_finish(reason){ if(session_over) return; session_over=true;
-	if(net&&match_started){ net_record({ world:join.server, session:join.session, mode:"joust",
+	if(net&&match_started){ net_record({ world:join.server, session:join.session,
+		mode:String(net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode||"furball"),   // the session's real mode (this recorded every match as a joust before)
+		team:net.teams.get(net.slot)||"",
 		started:match_started, ended:Date.now(), reason,
 		players:JSON.stringify([...remotes.keys()].length+1), kills:own_kills, deaths:own_deaths,
 		cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0 }); }   // mark cheated matches so an honest history stays honest (the match rules from the welcome populate cfg.cheats)
@@ -3572,6 +3608,8 @@ function net_frame(dt){
 				_q.set(own.attitude[1],own.attitude[2],own.attitude[3],own.attitude[0]);
 				ownship.q.slerp(_q,Math.min(1,dt*1.5)); ownship.q.normalize(); } }
 	}
+	{ const mine=net.teams.get(net.slot)||"";
+		if(ownship.livery!==mine&&model_active){ apply_livery(ownship.group,mine); ownship.livery=mine; } }
 	const seen=new Set();
 	for(const slot of net.slots()){ const pose=net.remote(slot); if(!pose) continue; seen.add(slot);
 		const st=remote_for(slot);
@@ -3582,6 +3620,8 @@ function net_frame(dt){
 		st.velx=st.fwd.x*pose.speed; st.vely=st.fwd.y*pose.speed; st.velz=st.fwd.z*pose.speed;
 		st.gearTarget=pose.gear?0:1; st.hookTarget=pose.hook?1:0; st.speedbrakeTarget=pose.speedbrake;
 		st.name=pose.name; st.group.visible=pose.alive;
+		{ const team=net.teams.get(slot)||"";
+			if(st.livery!==team&&model_active){ apply_livery(st.group,team); st.livery=team; } }
 		st.firing=!!(pose.alive&&pose.fire);
 		if(st.firing){ dev_fired++; fire_gun(st,ownship,"r"+slot,dt,true); }   // his trigger rides the pose flags: tracers stream from his nose (visual only — the server scores the real rounds)
 		if(pose.alive){ const rdx=st.pos.x-ownship.pos.x, rdy=st.pos.y-ownship.pos.y, rdz=st.pos.z-ownship.pos.z;
@@ -3643,6 +3683,7 @@ function start_mission(){
 	const cloudq=devq.get("clouds"); if(cloudq!==null) cfg.clouds=cloudq;
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
 	harm_pending=devq.get("harm");   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
+	livery_pending=devq.get("livery");   // ?livery=red|blue — paint ownship that side and the bandit the other (headless livery verification)
 	const viewq=devq.get("view"); if(viewq) set_view(viewq);   // ?view=cockpit|hud|chase — headless capture hook (#105)
 	dev_fps=parseFloat(devq.get("fps")||"0")||0; dev_jitter=devq.get("jitter")==="1";   // ?fps=N + ?jitter=1: forced frame dt with optional stutter spikes
 	const scq=devq.get("scenario"); if(scq!==null){ const n=parseInt(scq)||0; const arm=setInterval(()=>{ if(TESTS[n]&&TESTS[n].carrier?carrier_ols:airports.length){ clearInterval(arm); start_test(n); } }, 500); }   // &scenario=N: fire a landing test once ITS surface data exists (carrier scenarios need the OLS survey, not just the airfield list) — a fixed 3 s timer lost the race to the map load and the hook silently never ran

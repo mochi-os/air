@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "Thoir sùil air a' cheangal eadar-lìn agad agus feuch ris a-rithist."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:192
 msgid "{0} flying"
 msgstr "{0} ag itealaich"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:364
 msgid "{0}/{1} players"
 msgstr "{0}/{1} cluicheadairean"
 
-#: src/components/Multiplayer.tsx:132
+#: src/components/Multiplayer.tsx:134
 msgid "{name}'s match"
 msgstr "Am maids aig {name}"
 
@@ -94,7 +94,7 @@ msgid "Account verified"
 msgstr "Cunntas dearbhte"
 
 #: src/components/MissionSetup.tsx:977
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:314
 msgid "Ace"
 msgstr "Gaisgeach"
 
@@ -256,6 +256,14 @@ msgstr "Astar an tionndaidh sheasmhaich as fheàrr"
 msgid "BINGO FUEL"
 msgstr "BINGO CONNADH"
 
+#: src/components/Multiplayer.tsx:390
+msgid "Blue"
+msgstr "Gorm"
+
+#: src/components/Multiplayer.tsx:306
+msgid "Blue bots"
+msgstr "Botaichean gorma"
+
 #: src/components/GameCanvas.tsx:60
 msgid "BOLTER"
 msgstr "BOLTER"
@@ -265,7 +273,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Brosnaich ùidh"
 
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:306
 msgid "Bots"
 msgstr "Botaichean"
 
@@ -281,7 +289,7 @@ msgstr "Putan {i}"
 msgid "Buttons"
 msgstr "Putanan"
 
-#: src/components/Multiplayer.tsx:174
+#: src/components/Multiplayer.tsx:177
 msgid "Callsign"
 msgstr "Ainm-gairme"
 
@@ -359,7 +367,7 @@ msgstr "Tagh cànan"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:237
 msgid "Clear"
 msgstr "Falamhaich"
 
@@ -438,7 +446,7 @@ msgstr "Dùmhail"
 msgid "Confirm"
 msgstr "Dearbhaich"
 
-#: src/components/Multiplayer.tsx:192
+#: src/components/Multiplayer.tsx:195
 msgid "Connecting…"
 msgstr "A' ceangal…"
 
@@ -470,7 +478,7 @@ msgstr "Dèan lethbhreac"
 msgid "Corner speed (best instant turn)"
 msgstr "Astar oisein (an tionndadh grad as fheàrr)"
 
-#: src/components/Multiplayer.tsx:144
+#: src/components/Multiplayer.tsx:147
 msgid "Could not create the match"
 msgstr "Cha b' urrainn dhuinn am maids a chruthachadh"
 
@@ -494,11 +502,11 @@ msgstr "Cha b' urrainn dearbhadh leis a' chunntas sin. Feuch ris a-rithist."
 msgid "CRASHED"
 msgstr "SGRIOSTE"
 
-#: src/components/Multiplayer.tsx:335
+#: src/components/Multiplayer.tsx:345
 msgid "Create and fly"
 msgstr "Cruthaich agus itealaich"
 
-#: src/components/Multiplayer.tsx:207
+#: src/components/Multiplayer.tsx:210
 msgid "Create match"
 msgstr "Cruthaich maids"
 
@@ -508,7 +516,7 @@ msgid "Credits"
 msgstr "Creideasan"
 
 #: src/components/MissionSetup.tsx:1078
-#: src/components/Multiplayer.tsx:234
+#: src/components/Multiplayer.tsx:238
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -543,7 +551,7 @@ msgid "Data conflict"
 msgstr "Còmhstri dàta"
 
 #: src/components/MissionSetup.tsx:1066
-#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:233
 msgid "Day"
 msgstr "Latha"
 
@@ -625,7 +633,7 @@ msgstr "Luchdaich a-nuas"
 msgid "Download failed"
 msgstr "Dh’fhàillig an luchdadh a-nuas"
 
-#: src/components/Multiplayer.tsx:302
+#: src/components/Multiplayer.tsx:310
 msgid "Drone"
 msgstr "Dròn"
 
@@ -653,7 +661,7 @@ msgstr "TILGTE A-MACH"
 msgid "Email code"
 msgstr "Còd puist-d"
 
-#: src/components/Multiplayer.tsx:353
+#: src/components/Multiplayer.tsx:363
 msgid "empty"
 msgstr "falamh"
 
@@ -796,7 +804,7 @@ msgid "From theme"
 msgstr "On ùrlar"
 
 #: src/components/MissionSetup.tsx:953
-#: src/components/Multiplayer.tsx:244
+#: src/components/Multiplayer.tsx:248
 msgid "Fuel"
 msgstr "Connadh"
 
@@ -888,7 +896,7 @@ msgid "High"
 msgstr "Àrd"
 
 #: src/components/MissionSetup.tsx:1079
-#: src/components/Multiplayer.tsx:235
+#: src/components/Multiplayer.tsx:239
 msgid "High stratus"
 msgstr "Stratus àrd"
 
@@ -948,11 +956,11 @@ msgid "INVULNERABLE"
 msgstr "DO-LEÒNTA"
 
 #: src/components/MissionSetup.tsx:1037
-#: src/components/Multiplayer.tsx:273
+#: src/components/Multiplayer.tsx:277
 msgid "Invulnerable (human players only)"
 msgstr "Do-leònta (cluicheadairean daonna a-mhàin)"
 
-#: src/components/Multiplayer.tsx:367
+#: src/components/Multiplayer.tsx:402
 msgid "Join"
 msgstr "Gabh pàirt"
 
@@ -960,11 +968,11 @@ msgstr "Gabh pàirt"
 msgid "JOINED"
 msgstr "AIR TIGHINN A-STEACH"
 
-#: src/components/Multiplayer.tsx:352
+#: src/components/Multiplayer.tsx:362
 msgid "Joust"
 msgstr "Còmhrag-aghaidh"
 
-#: src/components/Multiplayer.tsx:221
+#: src/components/Multiplayer.tsx:224
 msgid "Joust — 1v1, first kill wins"
 msgstr "Còmhrag-dithis — 1v1, buannaichidh a' chiad mharbhadh"
 
@@ -1019,7 +1027,7 @@ msgstr "cur air bhog / targaid"
 msgid "Layout"
 msgstr "Cruth"
 
-#: src/components/Multiplayer.tsx:257
+#: src/components/Multiplayer.tsx:261
 msgid "lb"
 msgstr "lb"
 
@@ -1126,7 +1134,7 @@ msgid "Low"
 msgstr "Ìosal"
 
 #: src/components/MissionSetup.tsx:1080
-#: src/components/Multiplayer.tsx:236
+#: src/components/Multiplayer.tsx:240
 msgid "Low stratus"
 msgstr "Stratus ìosal"
 
@@ -1152,7 +1160,7 @@ msgstr "Comharraich gach nì mar leughte"
 msgid "Master"
 msgstr "Coitcheann"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:220
 msgid "Match type"
 msgstr "Seòrsa maidse"
 
@@ -1181,7 +1189,7 @@ msgstr "Mapa Atal Midway — tha dàta <0>Copernicus Sentinel-2</0> atharraichte
 msgid "Missiles"
 msgstr "Rocaidean"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:267
 msgid "Missiles allowed"
 msgstr "Urchraichean ceadaichte"
 
@@ -1201,7 +1209,7 @@ msgstr "Gluais e…"
 msgid "Multiplayer"
 msgstr "Ioma-chluicheadair"
 
-#: src/components/Multiplayer.tsx:153
+#: src/components/Multiplayer.tsx:156
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Feumaidh am modh ioma-chluicheadair WebTransport ach chan eil am brabhsair seo a' cur taic ris fhathast."
 
@@ -1220,7 +1228,7 @@ msgid "Next image"
 msgstr "An ath dhealbh"
 
 #: src/components/MissionSetup.tsx:1067
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:234
 msgid "Night"
 msgstr "Oidhche"
 
@@ -1240,7 +1248,7 @@ msgstr "Chan eil buidhnean rim faotainn"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Cha deach joystick a lorg — brùth putan sam bith air gus a dhùsgadh."
 
-#: src/components/Multiplayer.tsx:344
+#: src/components/Multiplayer.tsx:354
 msgid "No open matches — create one."
 msgstr "Chan eil maidsichean fosgailte ann — cruthaich fear."
 
@@ -1269,7 +1277,7 @@ msgstr "Chan eil clàradh cuspair ann fhathast — feuch a-rithist às dèidh an
 msgid "No users found"
 msgstr "Cha deach cleachdaichean a lorg"
 
-#: src/components/Multiplayer.tsx:344
+#: src/components/Multiplayer.tsx:354
 msgid "No world server."
 msgstr "Chan eil frithealaiche saoghail ann."
 
@@ -1330,11 +1338,11 @@ msgstr "Air an raon-laighe"
 msgid "Oops! Page Not Found!"
 msgstr "Och! Cha deach an duilleag a lorg!"
 
-#: src/components/Multiplayer.tsx:352
+#: src/components/Multiplayer.tsx:362
 msgid "Open"
 msgstr "Fosgail"
 
-#: src/components/Multiplayer.tsx:220
+#: src/components/Multiplayer.tsx:223
 msgid "Open — anyone may join or leave"
 msgstr "Fosgailte — faodaidh duine sam bith tighinn a-steach no falbh"
 
@@ -1407,13 +1415,13 @@ msgstr "Stad"
 msgid "PAUSED"
 msgstr "AIR STAD"
 
-#: src/components/Multiplayer.tsx:90
-#: src/components/Multiplayer.tsx:179
+#: src/components/Multiplayer.tsx:91
+#: src/components/Multiplayer.tsx:182
 msgid "pilot"
 msgstr "pìleat"
 
 #: src/components/MissionSetup.tsx:975
-#: src/components/Multiplayer.tsx:304
+#: src/components/Multiplayer.tsx:312
 msgid "Pilot"
 msgstr "Pìleat"
 
@@ -1514,6 +1522,14 @@ msgstr "ATH-ARMAICHTE"
 msgid "Recommended"
 msgstr "Air a mholadh"
 
+#: src/components/Multiplayer.tsx:380
+msgid "Red"
+msgstr "Dearg"
+
+#: src/components/Multiplayer.tsx:306
+msgid "Red bots"
+msgstr "Botaichean dearga"
+
 #: ../../../lib/web/src/components/layout/authenticated-layout.tsx:133
 msgid "Redirecting to login."
 msgstr "Ag ath-stiùireadh dhan log a-steach."
@@ -1527,7 +1543,7 @@ msgstr "Lùghdaich an ùidh"
 msgid "Reference"
 msgstr "Iomradh"
 
-#: src/components/Multiplayer.tsx:197
+#: src/components/Multiplayer.tsx:200
 msgid "Refresh"
 msgstr "Ath-nuadhaich"
 
@@ -1617,7 +1633,7 @@ msgid "Roll right"
 msgstr "Rolladh gu deas"
 
 #: src/components/MissionSetup.tsx:974
-#: src/components/Multiplayer.tsx:303
+#: src/components/Multiplayer.tsx:311
 msgid "Rookie"
 msgstr "Tòisiche"
 
@@ -1877,6 +1893,14 @@ msgstr "Tagaichean"
 msgid "Task"
 msgstr "Gnìomh"
 
+#: src/components/Multiplayer.tsx:362
+msgid "Teams"
+msgstr "Sgiobaidhean"
+
+#: src/components/Multiplayer.tsx:225
+msgid "Teams — red versus blue"
+msgstr "Sgiobaidhean — dearg an aghaidh gorm"
+
 #: ../../../lib/web/src/components/layout/team-switcher.tsx:63
 msgid "Teams/Apps"
 msgstr "Sgiobaidhean/Aplacaidean"
@@ -2034,12 +2058,12 @@ msgid "United States"
 msgstr "Stàitean Aonaichte"
 
 #: src/components/MissionSetup.tsx:1043
-#: src/components/Multiplayer.tsx:283
+#: src/components/Multiplayer.tsx:287
 msgid "Unlimited ammunition"
 msgstr "Connadh-làmhaich gun chrìoch"
 
 #: src/components/MissionSetup.tsx:1049
-#: src/components/Multiplayer.tsx:293
+#: src/components/Multiplayer.tsx:297
 msgid "Unlimited fuel"
 msgstr "Connadh gun chrìoch"
 
@@ -2082,7 +2106,7 @@ msgid "Vertical"
 msgstr "Dìreach"
 
 #: src/components/MissionSetup.tsx:976
-#: src/components/Multiplayer.tsx:305
+#: src/components/Multiplayer.tsx:313
 msgid "Veteran"
 msgstr "Eòlach"
 
@@ -2137,7 +2161,7 @@ msgid "Weapons"
 msgstr "Airm"
 
 #: src/components/MissionSetup.tsx:920
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:230
 msgid "Weather"
 msgstr "Sìde"
 
@@ -2162,11 +2186,11 @@ msgstr "Pasgadh sgiathan"
 msgid "WINS"
 msgstr "AIR BUANNACHADH"
 
-#: src/components/Multiplayer.tsx:163
+#: src/components/Multiplayer.tsx:166
 msgid "World server"
 msgstr "Frithealaiche saoghail"
 
-#: src/components/Multiplayer.tsx:101
+#: src/components/Multiplayer.tsx:102
 msgid "World server not reachable"
 msgstr "Cha ruigear frithealaiche an t-saoghail"
 

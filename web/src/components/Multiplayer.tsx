@@ -79,12 +79,13 @@ export function Multiplayer({
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
   const [making, setMaking] = useState(false)
-  const [mode, setMode] = useState<'furball' | 'joust'>('furball')
+  const [mode, setMode] = useState<'furball' | 'joust' | 'teams'>('furball')
   const [tod, setTod] = useState<'day' | 'night'>('day')
   const [clouds, setClouds] = useState('none')
   const [missiles, setMissiles] = useState(false)
   const [cheats, setCheats] = useState<Record<string, boolean>>({}) // invulnerable (humans only), ammunition, fuel
   const [bots, setBots] = useState<Record<string, number>>({ drone: 0, rookie: 0, pilot: 0, veteran: 0, ace: 0 }) // server-flown aircraft per skill level; drones cruise, the rest fight (also the 100-player verification lever)
+  const [blueBots, setBlueBots] = useState<Record<string, number>>({ drone: 0, rookie: 0, pilot: 0, veteran: 0, ace: 0 }) // teams mode: the blue side's bots (the row above places red's)
   const [fuel, setFuel] = useState(6000) // spawn load in POUNDS, like the IFEI
   const address = normalize_server(server || default_server())
   const name = (callsign || identity || t`pilot`).slice(0, 32)
@@ -110,7 +111,7 @@ export function Multiplayer({
   }, [refresh])
 
   const join = useCallback(
-    (session: string) => {
+    (session: string, team?: string) => {
       if (!status) return
       onJoin({
         server: address,
@@ -118,6 +119,7 @@ export function Multiplayer({
         certificate: status.certificate,
         session,
         name,
+        team,
       })
     },
     [address, name, status, onJoin]
@@ -131,7 +133,8 @@ export function Multiplayer({
         mode,
         label: t`${name}'s match`,
         capacity: mode === 'joust' ? 2 : 0,
-        parameters: { tod, clouds, missiles, bots, fuel, cheats },   // bots: per-level counts {drone, rookie, pilot, veteran, ace}; fuel in pounds; cheats: {invulnerable, ammunition, fuel}
+        // bots: per-level counts {drone, rookie, ...}; the teams mode places them per side. Fuel in pounds; cheats: {invulnerable, ammunition, fuel}.
+        parameters: { tod, clouds, missiles, bots: mode === 'teams' ? { red: bots, blue: blueBots } : bots, fuel, cheats },
       })
       onJoin({
         server: address,
@@ -216,9 +219,10 @@ export function Multiplayer({
               <div className='text-muted-foreground text-xs font-medium uppercase'>
                 <Trans>Match type</Trans>
               </div>
-              <RadioGroup value={mode} onValueChange={(v) => setMode(v as 'furball' | 'joust')}>
+              <RadioGroup value={mode} onValueChange={(v) => setMode(v as 'furball' | 'joust' | 'teams')}>
                 <Option group={group + 'mode'} value='furball' label={<Trans>Open — anyone may join or leave</Trans>} />
                 <Option group={group + 'mode'} value='joust' label={<Trans>Joust — 1v1, first kill wins</Trans>} />
+                <Option group={group + 'mode'} value='teams' label={<Trans>Teams — red versus blue</Trans>} />
               </RadioGroup>
             </div>
             <div className='space-y-2'>
@@ -293,42 +297,48 @@ export function Multiplayer({
                   <Trans>Unlimited fuel</Trans>
                 </Label>
               </div>
-              <div className='flex flex-wrap items-center gap-2'>
-                <Label className='font-normal'>
-                  <Trans>Bots</Trans>
-                </Label>
-                {(
-                  [
-                    ['drone', t`Drone`],
-                    ['rookie', t`Rookie`],
-                    ['pilot', t`Pilot`],
-                    ['veteran', t`Veteran`],
-                    ['ace', t`Ace`],
-                  ] as const
-                ).map(([level, label]) => (
-                  <div key={level} className='flex items-center gap-1'>
-                    <Label htmlFor={'bots-' + level} className='text-muted-foreground text-xs font-normal'>
-                      {label}
+              {(mode === 'teams' ? (['red', 'blue'] as const) : (['all'] as const)).map((side) => {
+                const counts = side === 'blue' ? blueBots : bots
+                const update = side === 'blue' ? setBlueBots : setBots
+                return (
+                  <div key={side} className='flex flex-wrap items-center gap-2'>
+                    <Label className='font-normal'>
+                      {side === 'red' ? <Trans>Red bots</Trans> : side === 'blue' ? <Trans>Blue bots</Trans> : <Trans>Bots</Trans>}
                     </Label>
-                    <Input
-                      id={'bots-' + level}
-                      type='number'
-                      min={0}
-                      max={99}
-                      value={bots[level]}
-                      onChange={(e) => {
-                        const value = Math.max(0, Math.min(99, Number(e.target.value) || 0))
-                        setBots((b) => {
-                          const next = { ...b, [level]: value }
-                          const total = Object.values(next).reduce((sum, n) => sum + n, 0)
-                          return total <= 99 ? next : b // the match holds 99 bots at most
-                        })
-                      }}
-                      className='h-8 w-14'
-                    />
+                    {(
+                      [
+                        ['drone', t`Drone`],
+                        ['rookie', t`Rookie`],
+                        ['pilot', t`Pilot`],
+                        ['veteran', t`Veteran`],
+                        ['ace', t`Ace`],
+                      ] as const
+                    ).map(([level, label]) => (
+                      <div key={level} className='flex items-center gap-1'>
+                        <Label htmlFor={'bots-' + side + '-' + level} className='text-muted-foreground text-xs font-normal'>
+                          {label}
+                        </Label>
+                        <Input
+                          id={'bots-' + side + '-' + level}
+                          type='number'
+                          min={0}
+                          max={99}
+                          value={counts[level]}
+                          onChange={(e) => {
+                            const value = Math.max(0, Math.min(99, Number(e.target.value) || 0))
+                            update((b) => {
+                              const next = { ...b, [level]: value }
+                              const total = Object.values(next).reduce((sum, n) => sum + n, 0)
+                              return total <= 99 ? next : b // the match holds 99 bots at most
+                            })
+                          }}
+                          className='h-8 w-14'
+                        />
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                )
+              })}
             </div>
             <Button type='button' size='sm' disabled={!status || busy} onClick={() => void create()}>
               <Plus className='size-4' />
@@ -349,23 +359,49 @@ export function Multiplayer({
             <div className='min-w-0'>
               <div className='truncate text-sm font-medium'>{s.label || s.mode}</div>
               <div className='text-muted-foreground truncate text-xs'>
-                {s.mode === 'joust' ? <Trans>Joust</Trans> : <Trans>Open</Trans>} ·{' '}
+                {s.mode === 'joust' ? <Trans>Joust</Trans> : s.mode === 'teams' ? <Trans>Teams</Trans> : <Trans>Open</Trans>} ·{' '}
                 {(s.players ?? []).map((p) => p.name).join(', ') || <Trans>empty</Trans>} ·{' '}
                 <Trans>
                   {(s.players ?? []).length}/{s.capacity} players
                 </Trans>
               </div>
             </div>
-            <Button
-              type='button'
-              variant='outline'
-              size='sm'
-              disabled={(s.players ?? []).length >= s.capacity || s.state === 'finished'}
-              onClick={() => join(s.session)}
-            >
-              <LogIn className='size-4' />
-              <Trans>Join</Trans>
-            </Button>
+            <div className='flex shrink-0 gap-2'>
+              {s.mode === 'teams' && (
+                <>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    size='sm'
+                    className='text-red-600'
+                    disabled={(s.players ?? []).length >= s.capacity || s.state === 'finished'}
+                    onClick={() => join(s.session, 'red')}
+                  >
+                    <Trans>Red</Trans>
+                  </Button>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    size='sm'
+                    className='text-blue-600'
+                    disabled={(s.players ?? []).length >= s.capacity || s.state === 'finished'}
+                    onClick={() => join(s.session, 'blue')}
+                  >
+                    <Trans>Blue</Trans>
+                  </Button>
+                </>
+              )}
+              <Button
+                type='button'
+                variant='outline'
+                size='sm'
+                disabled={(s.players ?? []).length >= s.capacity || s.state === 'finished'}
+                onClick={() => join(s.session)}
+              >
+                <LogIn className='size-4' />
+                <Trans>Join</Trans>
+              </Button>
+            </div>
           </div>
         ))}
       </div>

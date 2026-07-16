@@ -19,17 +19,17 @@ msgid "Please check your internet connection and try again."
 msgstr "Lütfen internet bağlantınızı kontrol edip tekrar deneyin."
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:192
 msgid "{0} flying"
 msgstr "{0} kişi uçuyor"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:364
 msgid "{0}/{1} players"
 msgstr "{0}/{1} oyuncu"
 
-#: src/components/Multiplayer.tsx:132
+#: src/components/Multiplayer.tsx:134
 msgid "{name}'s match"
 msgstr "{name} maçı"
 
@@ -94,7 +94,7 @@ msgid "Account verified"
 msgstr "Hesap doğrulandı"
 
 #: src/components/MissionSetup.tsx:977
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:314
 msgid "Ace"
 msgstr "As"
 
@@ -256,6 +256,14 @@ msgstr "En iyi sürekli dönüş hızı"
 msgid "BINGO FUEL"
 msgstr "BINGO YAKIT"
 
+#: src/components/Multiplayer.tsx:390
+msgid "Blue"
+msgstr "Mavi"
+
+#: src/components/Multiplayer.tsx:306
+msgid "Blue bots"
+msgstr "Mavi botlar"
+
 #: src/components/GameCanvas.tsx:60
 msgid "BOLTER"
 msgstr "BOLTER"
@@ -265,7 +273,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "İlgiyi artır"
 
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:306
 msgid "Bots"
 msgstr "Botlar"
 
@@ -281,7 +289,7 @@ msgstr "Düğme {i}"
 msgid "Buttons"
 msgstr "Düğmeler"
 
-#: src/components/Multiplayer.tsx:174
+#: src/components/Multiplayer.tsx:177
 msgid "Callsign"
 msgstr "Çağrı işareti"
 
@@ -359,7 +367,7 @@ msgstr "Dil seçin"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:237
 msgid "Clear"
 msgstr "Temizle"
 
@@ -438,7 +446,7 @@ msgstr "Kompakt"
 msgid "Confirm"
 msgstr "Onayla"
 
-#: src/components/Multiplayer.tsx:192
+#: src/components/Multiplayer.tsx:195
 msgid "Connecting…"
 msgstr "Bağlanıyor…"
 
@@ -470,7 +478,7 @@ msgstr "Kopyala"
 msgid "Corner speed (best instant turn)"
 msgstr "Köşe hızı (en iyi ani dönüş)"
 
-#: src/components/Multiplayer.tsx:144
+#: src/components/Multiplayer.tsx:147
 msgid "Could not create the match"
 msgstr "Maç oluşturulamadı"
 
@@ -494,11 +502,11 @@ msgstr "Bu hesapla doğrulama yapılamadı. Lütfen tekrar deneyin."
 msgid "CRASHED"
 msgstr "DÜŞTÜ"
 
-#: src/components/Multiplayer.tsx:335
+#: src/components/Multiplayer.tsx:345
 msgid "Create and fly"
 msgstr "Oluştur ve uç"
 
-#: src/components/Multiplayer.tsx:207
+#: src/components/Multiplayer.tsx:210
 msgid "Create match"
 msgstr "Maç oluştur"
 
@@ -508,7 +516,7 @@ msgid "Credits"
 msgstr "Künye"
 
 #: src/components/MissionSetup.tsx:1078
-#: src/components/Multiplayer.tsx:234
+#: src/components/Multiplayer.tsx:238
 msgid "Cumulus"
 msgstr "Kümülüs"
 
@@ -543,7 +551,7 @@ msgid "Data conflict"
 msgstr "Veri çakışması"
 
 #: src/components/MissionSetup.tsx:1066
-#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:233
 msgid "Day"
 msgstr "Gündüz"
 
@@ -625,7 +633,7 @@ msgstr "İndir"
 msgid "Download failed"
 msgstr "İndirme başarısız oldu"
 
-#: src/components/Multiplayer.tsx:302
+#: src/components/Multiplayer.tsx:310
 msgid "Drone"
 msgstr "Drone"
 
@@ -653,7 +661,7 @@ msgstr "FIRLATILDI"
 msgid "Email code"
 msgstr "E-posta kodu"
 
-#: src/components/Multiplayer.tsx:353
+#: src/components/Multiplayer.tsx:363
 msgid "empty"
 msgstr "boş"
 
@@ -796,7 +804,7 @@ msgid "From theme"
 msgstr "Temadan"
 
 #: src/components/MissionSetup.tsx:953
-#: src/components/Multiplayer.tsx:244
+#: src/components/Multiplayer.tsx:248
 msgid "Fuel"
 msgstr "Yakıt"
 
@@ -888,7 +896,7 @@ msgid "High"
 msgstr "Yüksek"
 
 #: src/components/MissionSetup.tsx:1079
-#: src/components/Multiplayer.tsx:235
+#: src/components/Multiplayer.tsx:239
 msgid "High stratus"
 msgstr "Yüksek stratus"
 
@@ -948,11 +956,11 @@ msgid "INVULNERABLE"
 msgstr "ÖLÜMSÜZ"
 
 #: src/components/MissionSetup.tsx:1037
-#: src/components/Multiplayer.tsx:273
+#: src/components/Multiplayer.tsx:277
 msgid "Invulnerable (human players only)"
 msgstr "Ölümsüz (yalnızca insan oyuncular)"
 
-#: src/components/Multiplayer.tsx:367
+#: src/components/Multiplayer.tsx:402
 msgid "Join"
 msgstr "Katıl"
 
@@ -960,11 +968,11 @@ msgstr "Katıl"
 msgid "JOINED"
 msgstr "KATILDI"
 
-#: src/components/Multiplayer.tsx:352
+#: src/components/Multiplayer.tsx:362
 msgid "Joust"
 msgstr "Düello"
 
-#: src/components/Multiplayer.tsx:221
+#: src/components/Multiplayer.tsx:224
 msgid "Joust — 1v1, first kill wins"
 msgstr "Düello — 1v1, ilk düşüren kazanır"
 
@@ -1019,7 +1027,7 @@ msgstr "fırlat / hedef"
 msgid "Layout"
 msgstr "Düzen"
 
-#: src/components/Multiplayer.tsx:257
+#: src/components/Multiplayer.tsx:261
 msgid "lb"
 msgstr "lb"
 
@@ -1126,7 +1134,7 @@ msgid "Low"
 msgstr "Düşük"
 
 #: src/components/MissionSetup.tsx:1080
-#: src/components/Multiplayer.tsx:236
+#: src/components/Multiplayer.tsx:240
 msgid "Low stratus"
 msgstr "Alçak stratus"
 
@@ -1152,7 +1160,7 @@ msgstr "Tümünü okundu olarak işaretle"
 msgid "Master"
 msgstr "Genel"
 
-#: src/components/Multiplayer.tsx:217
+#: src/components/Multiplayer.tsx:220
 msgid "Match type"
 msgstr "Maç türü"
 
@@ -1181,7 +1189,7 @@ msgstr "Midway Adaları haritası — görüntüler değiştirilmiş <0>Copernic
 msgid "Missiles"
 msgstr "Füzeler"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:267
 msgid "Missiles allowed"
 msgstr "Füzeler serbest"
 
@@ -1201,7 +1209,7 @@ msgstr "Hareket ettirin…"
 msgid "Multiplayer"
 msgstr "Çok oyunculu"
 
-#: src/components/Multiplayer.tsx:153
+#: src/components/Multiplayer.tsx:156
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Çok oyunculu mod WebTransport gerektirir; bu tarayıcı bunu henüz desteklemiyor."
 
@@ -1220,7 +1228,7 @@ msgid "Next image"
 msgstr "Sonraki görsel"
 
 #: src/components/MissionSetup.tsx:1067
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:234
 msgid "Night"
 msgstr "Gece"
 
@@ -1240,7 +1248,7 @@ msgstr "Grup yok"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Joystick algılanmadı — uyandırmak için üzerindeki herhangi bir düğmeye basın."
 
-#: src/components/Multiplayer.tsx:344
+#: src/components/Multiplayer.tsx:354
 msgid "No open matches — create one."
 msgstr "Açık maç yok — bir tane oluştur."
 
@@ -1269,7 +1277,7 @@ msgstr "Henüz konu kaydı yok — bir sonraki bildirimden sonra tekrar deneyin.
 msgid "No users found"
 msgstr "Kullanıcı bulunamadı"
 
-#: src/components/Multiplayer.tsx:344
+#: src/components/Multiplayer.tsx:354
 msgid "No world server."
 msgstr "Dünya sunucusu yok."
 
@@ -1330,11 +1338,11 @@ msgstr "Pistte"
 msgid "Oops! Page Not Found!"
 msgstr "Hata! Sayfa bulunamadı!"
 
-#: src/components/Multiplayer.tsx:352
+#: src/components/Multiplayer.tsx:362
 msgid "Open"
 msgstr "Aç"
 
-#: src/components/Multiplayer.tsx:220
+#: src/components/Multiplayer.tsx:223
 msgid "Open — anyone may join or leave"
 msgstr "Açık — herkes katılabilir veya ayrılabilir"
 
@@ -1407,13 +1415,13 @@ msgstr "Duraklat"
 msgid "PAUSED"
 msgstr "DURAKLATILDI"
 
-#: src/components/Multiplayer.tsx:90
-#: src/components/Multiplayer.tsx:179
+#: src/components/Multiplayer.tsx:91
+#: src/components/Multiplayer.tsx:182
 msgid "pilot"
 msgstr "pilot"
 
 #: src/components/MissionSetup.tsx:975
-#: src/components/Multiplayer.tsx:304
+#: src/components/Multiplayer.tsx:312
 msgid "Pilot"
 msgstr "Pilot"
 
@@ -1514,6 +1522,14 @@ msgstr "YENİDEN SİLAHLANDIRILDI"
 msgid "Recommended"
 msgstr "Önerilen"
 
+#: src/components/Multiplayer.tsx:380
+msgid "Red"
+msgstr "Kırmızı"
+
+#: src/components/Multiplayer.tsx:306
+msgid "Red bots"
+msgstr "Kırmızı botlar"
+
 #: ../../../lib/web/src/components/layout/authenticated-layout.tsx:133
 msgid "Redirecting to login."
 msgstr "Girişe yönlendiriliyor."
@@ -1527,7 +1543,7 @@ msgstr "İlgiyi azalt"
 msgid "Reference"
 msgstr "Referans"
 
-#: src/components/Multiplayer.tsx:197
+#: src/components/Multiplayer.tsx:200
 msgid "Refresh"
 msgstr "Yenile"
 
@@ -1617,7 +1633,7 @@ msgid "Roll right"
 msgstr "Sağa yuvarlanma"
 
 #: src/components/MissionSetup.tsx:974
-#: src/components/Multiplayer.tsx:303
+#: src/components/Multiplayer.tsx:311
 msgid "Rookie"
 msgstr "Acemi"
 
@@ -1877,6 +1893,14 @@ msgstr "Etiketler"
 msgid "Task"
 msgstr "Vazife"
 
+#: src/components/Multiplayer.tsx:362
+msgid "Teams"
+msgstr "Takımlar"
+
+#: src/components/Multiplayer.tsx:225
+msgid "Teams — red versus blue"
+msgstr "Takımlar — kırmızı maviye karşı"
+
 #: ../../../lib/web/src/components/layout/team-switcher.tsx:63
 msgid "Teams/Apps"
 msgstr "Takımlar/Uygulamalar"
@@ -2034,12 +2058,12 @@ msgid "United States"
 msgstr "Amerika Birleşik Devletleri"
 
 #: src/components/MissionSetup.tsx:1043
-#: src/components/Multiplayer.tsx:283
+#: src/components/Multiplayer.tsx:287
 msgid "Unlimited ammunition"
 msgstr "Sınırsız mühimmat"
 
 #: src/components/MissionSetup.tsx:1049
-#: src/components/Multiplayer.tsx:293
+#: src/components/Multiplayer.tsx:297
 msgid "Unlimited fuel"
 msgstr "Sınırsız yakıt"
 
@@ -2082,7 +2106,7 @@ msgid "Vertical"
 msgstr "Dikey"
 
 #: src/components/MissionSetup.tsx:976
-#: src/components/Multiplayer.tsx:305
+#: src/components/Multiplayer.tsx:313
 msgid "Veteran"
 msgstr "Kıdemli"
 
@@ -2137,7 +2161,7 @@ msgid "Weapons"
 msgstr "Silahlar"
 
 #: src/components/MissionSetup.tsx:920
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:230
 msgid "Weather"
 msgstr "Hava durumu"
 
@@ -2162,11 +2186,11 @@ msgstr "Kanat katlama"
 msgid "WINS"
 msgstr "KAZANDI"
 
-#: src/components/Multiplayer.tsx:163
+#: src/components/Multiplayer.tsx:166
 msgid "World server"
 msgstr "Dünya sunucusu"
 
-#: src/components/Multiplayer.tsx:101
+#: src/components/Multiplayer.tsx:102
 msgid "World server not reachable"
 msgstr "Dünya sunucusuna ulaşılamıyor"
 
