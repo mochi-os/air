@@ -3564,6 +3564,7 @@ function net_event(e){ const slot=Number(e.slot);
 		const name=net.names.get(slot)||"";
 		if(e.call==="engaged") notice(name+": "+translate("ENGAGED"),4);
 		else if(e.call==="break"&&Number(e.target)===net.slot) notice(name+": "+translate(e.direction==="right"?"BREAK RIGHT":"BREAK LEFT"),4);   // direction words are relative to the warned pilot — nobody else's business
+		else if(e.call==="missile"&&Number(e.target)===net.slot) notice(name+": "+translate("MISSILE"),4);   // a wingman saw the plume you didn't (#146)
 		break; }
 	} }
 function net_finish(reason){ if(session_over) return; session_over=true;
