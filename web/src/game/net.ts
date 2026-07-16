@@ -173,6 +173,7 @@ export interface Join {
   certificate?: { hash: string }
   session: string
   name: string
+  team?: string // teams mode side choice ('red'/'blue'); absent = the server assigns the smaller side
 }
 
 // ---------------------------------------------------------------- connection
@@ -237,7 +238,7 @@ export interface Welcome {
   rate: { tick: number; snapshot: number }
   seed: number
   parameters?: Record<string, unknown>
-  spawn: { state?: SpawnState; wrap?: number; model?: number; aircraft?: string; waiting?: boolean; mode?: string }
+  spawn: { state?: SpawnState; wrap?: number; model?: number; aircraft?: string; waiting?: boolean; mode?: string; team?: string; score?: Record<string, number> }
   players: { slot: number; name: string; identity: string }[]
 }
 
@@ -270,6 +271,8 @@ export class Net {
   private clock = NaN // EMA of (local seconds - server tick seconds): the jitter-filtered clock the pose timeline runs on
   private glide = new Map<number, { x: number; y: number; z: number; ox: number; oy: number; oz: number; at: number }>() // per-slot discontinuity smoothing: raw stream memory + decaying offset
   names = new Map<number, string>() // slot -> callsign (welcome + roster events)
+  teams = new Map<number, string>() // slot -> side ('red'/'blue'; teams mode roster events)
+  score: Record<string, number> = {} // teams mode running score (welcome + kill events)
   darts: { position: [number, number, number]; velocity: [number, number, number]; shooter: number }[] = [] // the recipient's nearest server missiles, from the poses datagram — the engine renders every dart another player fired
   dartsAt = 0 // arrival time of the dart set (performance.now()), for dead reckoning
   private tallies = new Map<number, { kills: number; deaths: number }>() // counted from kill events
@@ -572,7 +575,11 @@ export class Net {
       }
       case 'event': {
         const event = message.event as Record<string, unknown>
-        if (event?.kind === 'roster') this.names.set(Number(event.slot), String(event.name ?? ''))   // names arrive out of the hot path (#81)
+        if (event?.kind === 'roster') {
+          this.names.set(Number(event.slot), String(event.name ?? ''))   // names arrive out of the hot path (#81)
+          if (event.team) this.teams.set(Number(event.slot), String(event.team))
+        }
+        if (event?.kind === 'kill' && event.score) this.score = event.score as Record<string, number>
         if (event?.kind === 'kill') {   // scores are counted, not shipped per snapshot (#81)
           const victim = Number(event.slot), killer = Number(event.by)
           const down = this.tallies.get(victim) ?? { kills: 0, deaths: 0 }
@@ -677,7 +684,7 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
   const writer = stream.writable.getWriter() as WritableStreamDefaultWriter<Uint8Array>
   const reader = stream.readable.getReader() as ReadableStreamDefaultReader<Uint8Array>
   await writer.write(
-    frame(cbor_encode({ kind: 'join', session: join.session, name: join.name, protocol: PROTOCOL }))
+    frame(cbor_encode({ kind: 'join', session: join.session, name: join.name, team: join.team ?? '', protocol: PROTOCOL }))
   )
   // Read the first frame: welcome or refuse.
   let buffer = new Uint8Array(0)
@@ -698,8 +705,10 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
         net.welcome = first as unknown as Welcome
         for (const p of net.welcome.players ?? []) net.names.set(p.slot, p.name)   // players present before us; later joiners arrive via roster events
         net.slot = Number(first.slot)
-        const spawn = first.spawn as { wrap?: number } | undefined
+        const spawn = first.spawn as { wrap?: number; team?: string; score?: Record<string, number> } | undefined
         if (spawn?.wrap) net.wrap = Number(spawn.wrap)
+        if (spawn?.team) net.teams.set(net.slot, spawn.team)
+        if (spawn?.score) net.score = spawn.score
         net.start(writer, reader, buffer.slice(4 + size))
         return net
       }
@@ -723,6 +732,7 @@ export async function record(match: {
   world: string
   session: string
   mode: string
+  team: string
   started: number
   ended: number
   reason: string
