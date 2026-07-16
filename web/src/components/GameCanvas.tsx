@@ -81,6 +81,7 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   ENGAGED: msg`ENGAGED`,
   'BREAK RIGHT': msg`BREAK RIGHT`,
   'BREAK LEFT': msg`BREAK LEFT`,
+  MISSILE: msg`MISSILE`,
 }
 
 // Mounts the imperative Three.js engine onto its canvases and tears it down on
