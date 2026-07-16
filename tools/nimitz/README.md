@@ -32,7 +32,9 @@ and iteration knobs, so multiple attempts don't lose the design.
   1:200 GA drawing `nimitz-plan.jpg` by registering the outline onto the scan and
   ridge-fitting the equipment lines (Stage C of PLAN.md; found + fixed the cat-1/cat-4
   misplacements 2026-07-10). Run after changing SHIP equipment constants; `fit` arg
-  refits the registration frame.
+  refits the registration frame. The scan itself is NOT in the repository
+  (third-party drawing, rights unverified — gitignored): it lives only in the
+  local working tree, so keep a copy before wiping this checkout.
 - **`cdp_shot.py`** — headless capture via Chrome DevTools Protocol (the old
   `--virtual-time-budget` one-shot broke in Chrome 141). `cdp_shot.py "<query>" out.png [wait-s]`.
 - **`raycheck.py`** — sky-through-ship regression rays: exact triangle ray-casts of the
