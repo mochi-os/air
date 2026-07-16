@@ -218,7 +218,7 @@ msgstr "แกน"
 msgid "Axis {i}"
 msgstr "แกน {i}"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:156
 msgid "back"
 msgstr "ถอยออก"
 
@@ -277,9 +277,17 @@ msgstr "เพิ่มความสนใจ"
 msgid "Bots"
 msgstr "บอท"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:148
 msgid "brakes"
 msgstr "เบรก"
+
+#: src/components/GameCanvas.tsx:83
+msgid "BREAK LEFT"
+msgstr "หักซ้าย"
+
+#: src/components/GameCanvas.tsx:82
+msgid "BREAK RIGHT"
+msgstr "หักขวา"
 
 #: src/components/MissionSetup.tsx:416
 msgid "Button {i}"
@@ -332,7 +340,7 @@ msgstr "หมวดหมู่สำหรับการแจ้งเตื
 msgid "Change notification category"
 msgstr "เปลี่ยนหมวดหมู่การแจ้งเตือน"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:153
 msgid "Chase view:"
 msgstr "มุมมองไล่ตาม:"
 
@@ -409,7 +417,7 @@ msgstr "ปิดแผง"
 msgid "Close search"
 msgstr "ปิดการค้นหา"
 
-#: src/components/GameCanvas.tsx:152
+#: src/components/GameCanvas.tsx:157
 msgid "closer"
 msgstr "เข้าใกล้"
 
@@ -665,6 +673,10 @@ msgstr "รหัสอีเมล"
 msgid "empty"
 msgstr "ว่าง"
 
+#: src/components/GameCanvas.tsx:81
+msgid "ENGAGED"
+msgstr "เข้าโจมตี"
+
 #: src/components/MissionSetup.tsx:449
 msgid "Engine"
 msgstr "เครื่องยนต์"
@@ -740,7 +752,7 @@ msgstr "การต่อสู้เริ่มแล้ว"
 msgid "Finish moving your account"
 msgstr "เสร็จสิ้นการย้ายบัญชี"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:144
 msgid "fire"
 msgstr "ยิง"
 
@@ -752,7 +764,7 @@ msgstr "ปุ่มตายตัว"
 msgid "FLAMEOUT"
 msgstr "เครื่องดับ"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:146
 msgid "flares"
 msgstr "พลุล่อ"
 
@@ -832,7 +844,7 @@ msgstr "ท่อรับเชื้อเพลิง"
 msgid "Full layout"
 msgstr "เลย์เอาต์เต็ม"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:147
 msgid "gear"
 msgstr "ฐานล้อ"
 
@@ -907,7 +919,7 @@ msgstr "สเตรตัสสูง"
 msgid "Home"
 msgstr "หน้าหลัก"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:147
 msgid "hook"
 msgstr "ตะขอ"
 
@@ -1019,7 +1031,7 @@ msgstr "ใหญ่"
 msgid "Launch (catapult)"
 msgstr "การปล่อยตัว (เครื่องดีด)"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:146
 msgid "launch / target"
 msgstr "ปล่อยตัว / ล็อกเป้า"
 
@@ -1049,7 +1061,7 @@ msgstr "ซ้ายไปขวา"
 msgid "Light"
 msgstr "สว่าง"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:147
 msgid "lights"
 msgstr "ไฟ"
 
@@ -1142,7 +1154,7 @@ msgstr "สเตรตัสต่ำ"
 msgid "M to close"
 msgstr "M เพื่อปิด"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:149
 msgid "map"
 msgstr "แผนที่"
 
@@ -1169,7 +1181,7 @@ msgstr "ประเภทแมตช์"
 msgid "Medium"
 msgstr "กลาง"
 
-#: src/components/GameCanvas.tsx:145
+#: src/components/GameCanvas.tsx:150
 msgid "menu"
 msgstr "เมนู"
 
@@ -1371,11 +1383,11 @@ msgstr "เปิดเมนูการนำทาง"
 msgid "Open theme settings"
 msgstr "เปิดการตั้งค่าธีม"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:155
 msgid "or"
 msgstr "หรือ"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:155
 msgid "orbit"
 msgstr "หมุนรอบ"
 
@@ -1403,7 +1415,7 @@ msgstr "การยืนยันด้วยพาสคีย์ล้มเ
 msgid "Passkeys"
 msgstr "พาสคีย์"
 
-#: src/components/GameCanvas.tsx:145
+#: src/components/GameCanvas.tsx:150
 msgid "pause"
 msgstr "หยุดชั่วคราว"
 
@@ -1429,7 +1441,7 @@ msgstr "นักบิน"
 msgid "PILOT DOWN"
 msgstr "นักบินเสียชีวิต"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:142
 msgid "pitch"
 msgstr "ก้มเงย"
 
@@ -1616,7 +1628,7 @@ msgstr "กลับสู่เมนู"
 msgid "Right to Left"
 msgstr "ขวาไปซ้าย"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:143
 msgid "roll"
 msgstr "ม้วนตัว"
 
@@ -1819,7 +1831,7 @@ msgstr "กว้างขวาง"
 msgid "SPD BK"
 msgstr "เบ.ลม"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:148
 msgid "speed brake"
 msgstr "เบรกลม"
 
@@ -1926,7 +1938,7 @@ msgstr "ธีม"
 msgid "Theme Settings"
 msgstr "การตั้งค่าธีม"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:144
 msgid "throttle"
 msgstr "คันเร่ง"
 
@@ -1950,7 +1962,7 @@ msgstr "วันพฤหัสบดี"
 msgid "Tightest sustained turn speed"
 msgstr "ความเร็วเลี้ยวต่อเนื่องแคบที่สุด"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:156
 msgid "tilt"
 msgstr "เอียง"
 
@@ -2114,7 +2126,7 @@ msgstr "มือเก๋า"
 msgid "Video thumbnail"
 msgstr "ภาพย่อวิดีโอ"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:149
 msgid "view"
 msgstr "มุมมอง"
 
@@ -2147,7 +2159,7 @@ msgstr "โกอะราวด์"
 msgid "We'll be back online shortly."
 msgstr "เราจะกลับมาออนไลน์เร็วๆ นี้"
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:145
 msgid "weapon"
 msgstr "อาวุธ"
 
@@ -2194,7 +2206,7 @@ msgstr "เซิร์ฟเวอร์โลก"
 msgid "World server not reachable"
 msgstr "เข้าถึงเซิร์ฟเวอร์โลกไม่ได้"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:143
 msgid "yaw"
 msgstr "หันเห"
 

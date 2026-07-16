@@ -218,7 +218,7 @@ msgstr "Osie"
 msgid "Axis {i}"
 msgstr "Oś {i}"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:156
 msgid "back"
 msgstr "wstecz"
 
@@ -277,9 +277,17 @@ msgstr "Zwiększ zainteresowanie"
 msgid "Bots"
 msgstr "Boty"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:148
 msgid "brakes"
 msgstr "hamulce"
+
+#: src/components/GameCanvas.tsx:83
+msgid "BREAK LEFT"
+msgstr "OSTRO W LEWO"
+
+#: src/components/GameCanvas.tsx:82
+msgid "BREAK RIGHT"
+msgstr "OSTRO W PRAWO"
 
 #: src/components/MissionSetup.tsx:416
 msgid "Button {i}"
@@ -332,7 +340,7 @@ msgstr "Kategoria tego powiadomienia"
 msgid "Change notification category"
 msgstr "Zmień kategorię powiadomienia"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:153
 msgid "Chase view:"
 msgstr "Widok pościgu:"
 
@@ -409,7 +417,7 @@ msgstr "Zamknij panel"
 msgid "Close search"
 msgstr "Zamknij wyszukiwanie"
 
-#: src/components/GameCanvas.tsx:152
+#: src/components/GameCanvas.tsx:157
 msgid "closer"
 msgstr "bliżej"
 
@@ -665,6 +673,10 @@ msgstr "Kod e-mail"
 msgid "empty"
 msgstr "pusta"
 
+#: src/components/GameCanvas.tsx:81
+msgid "ENGAGED"
+msgstr "ATAKUJĘ"
+
 #: src/components/MissionSetup.tsx:449
 msgid "Engine"
 msgstr "Silnik"
@@ -740,7 +752,7 @@ msgstr "WALKA ROZPOCZĘTA"
 msgid "Finish moving your account"
 msgstr "Zakończ przenoszenie konta"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:144
 msgid "fire"
 msgstr "strzał"
 
@@ -752,7 +764,7 @@ msgstr "Stałe klawisze"
 msgid "FLAMEOUT"
 msgstr "ZGAŚNIĘCIE"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:146
 msgid "flares"
 msgstr "flary"
 
@@ -832,7 +844,7 @@ msgstr "Sonda paliwowa"
 msgid "Full layout"
 msgstr "Pełny układ"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:147
 msgid "gear"
 msgstr "podwozie"
 
@@ -907,7 +919,7 @@ msgstr "Wysoki stratus"
 msgid "Home"
 msgstr "Główna"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:147
 msgid "hook"
 msgstr "hak"
 
@@ -1019,7 +1031,7 @@ msgstr "Duży"
 msgid "Launch (catapult)"
 msgstr "Start (katapulta)"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:146
 msgid "launch / target"
 msgstr "start / cel"
 
@@ -1049,7 +1061,7 @@ msgstr "Od lewej do prawej"
 msgid "Light"
 msgstr "Jasny"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:147
 msgid "lights"
 msgstr "światła"
 
@@ -1142,7 +1154,7 @@ msgstr "Niski stratus"
 msgid "M to close"
 msgstr "M aby zamknąć"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:149
 msgid "map"
 msgstr "mapa"
 
@@ -1169,7 +1181,7 @@ msgstr "Typ meczu"
 msgid "Medium"
 msgstr "Średni"
 
-#: src/components/GameCanvas.tsx:145
+#: src/components/GameCanvas.tsx:150
 msgid "menu"
 msgstr "menu"
 
@@ -1371,11 +1383,11 @@ msgstr "Otwórz menu nawigacji"
 msgid "Open theme settings"
 msgstr "Otwórz ustawienia motywu"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:155
 msgid "or"
 msgstr "lub"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:155
 msgid "orbit"
 msgstr "orbita"
 
@@ -1403,7 +1415,7 @@ msgstr "Weryfikacja kluczem dostępu nie powiodła się. Spróbuj ponownie."
 msgid "Passkeys"
 msgstr "Klucze dostępu"
 
-#: src/components/GameCanvas.tsx:145
+#: src/components/GameCanvas.tsx:150
 msgid "pause"
 msgstr "pauza"
 
@@ -1429,7 +1441,7 @@ msgstr "Pilot"
 msgid "PILOT DOWN"
 msgstr "PILOT ZABITY"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:142
 msgid "pitch"
 msgstr "pochylenie"
 
@@ -1616,7 +1628,7 @@ msgstr "Powrót do menu"
 msgid "Right to Left"
 msgstr "Od prawej do lewej"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:143
 msgid "roll"
 msgstr "przechylenie"
 
@@ -1819,7 +1831,7 @@ msgstr "Przestronne"
 msgid "SPD BK"
 msgstr "H.AER"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:148
 msgid "speed brake"
 msgstr "hamulec aerodynamiczny"
 
@@ -1926,7 +1938,7 @@ msgstr "Motyw"
 msgid "Theme Settings"
 msgstr "Ustawienia motywu"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:144
 msgid "throttle"
 msgstr "przepustnica"
 
@@ -1950,7 +1962,7 @@ msgstr "Czwartek"
 msgid "Tightest sustained turn speed"
 msgstr "Prędkość najciaśniejszego zakrętu ustalonego"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:156
 msgid "tilt"
 msgstr "nachylenie"
 
@@ -2114,7 +2126,7 @@ msgstr "Weteran"
 msgid "Video thumbnail"
 msgstr "Miniatura wideo"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:149
 msgid "view"
 msgstr "widok"
 
@@ -2147,7 +2159,7 @@ msgstr "ODEJDŹ NA DRUGI KRĄG"
 msgid "We'll be back online shortly."
 msgstr "Wkrótce wrócimy online."
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:145
 msgid "weapon"
 msgstr "broń"
 
@@ -2194,7 +2206,7 @@ msgstr "Serwer świata"
 msgid "World server not reachable"
 msgstr "Serwer świata jest nieosiągalny"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:143
 msgid "yaw"
 msgstr "odchylenie"
 

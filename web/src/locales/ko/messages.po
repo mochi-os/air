@@ -218,7 +218,7 @@ msgstr "축"
 msgid "Axis {i}"
 msgstr "축 {i}"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:156
 msgid "back"
 msgstr "뒤로"
 
@@ -277,9 +277,17 @@ msgstr "관심도 부스트"
 msgid "Bots"
 msgstr "봇"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:148
 msgid "brakes"
 msgstr "브레이크"
+
+#: src/components/GameCanvas.tsx:83
+msgid "BREAK LEFT"
+msgstr "좌측 급선회"
+
+#: src/components/GameCanvas.tsx:82
+msgid "BREAK RIGHT"
+msgstr "우측 급선회"
 
 #: src/components/MissionSetup.tsx:416
 msgid "Button {i}"
@@ -332,7 +340,7 @@ msgstr "이 알림의 카테고리"
 msgid "Change notification category"
 msgstr "알림 카테고리 변경"
 
-#: src/components/GameCanvas.tsx:148
+#: src/components/GameCanvas.tsx:153
 msgid "Chase view:"
 msgstr "추적 시점:"
 
@@ -409,7 +417,7 @@ msgstr "패널 닫기"
 msgid "Close search"
 msgstr "검색 닫기"
 
-#: src/components/GameCanvas.tsx:152
+#: src/components/GameCanvas.tsx:157
 msgid "closer"
 msgstr "가까이"
 
@@ -665,6 +673,10 @@ msgstr "이메일 코드"
 msgid "empty"
 msgstr "비어 있음"
 
+#: src/components/GameCanvas.tsx:81
+msgid "ENGAGED"
+msgstr "교전 개시"
+
 #: src/components/MissionSetup.tsx:449
 msgid "Engine"
 msgstr "엔진"
@@ -740,7 +752,7 @@ msgstr "전투 개시"
 msgid "Finish moving your account"
 msgstr "계정 이전 완료"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:144
 msgid "fire"
 msgstr "발사"
 
@@ -752,7 +764,7 @@ msgstr "고정 키"
 msgid "FLAMEOUT"
 msgstr "플레임아웃"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:146
 msgid "flares"
 msgstr "플레어"
 
@@ -832,7 +844,7 @@ msgstr "급유 프로브"
 msgid "Full layout"
 msgstr "전체 레이아웃"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:147
 msgid "gear"
 msgstr "기어"
 
@@ -907,7 +919,7 @@ msgstr "높은 층운"
 msgid "Home"
 msgstr "홈"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:147
 msgid "hook"
 msgstr "후크"
 
@@ -1019,7 +1031,7 @@ msgstr "크게"
 msgid "Launch (catapult)"
 msgstr "발진 (캐터펄트)"
 
-#: src/components/GameCanvas.tsx:141
+#: src/components/GameCanvas.tsx:146
 msgid "launch / target"
 msgstr "발진 / 포착"
 
@@ -1049,7 +1061,7 @@ msgstr "왼쪽에서 오른쪽"
 msgid "Light"
 msgstr "라이트"
 
-#: src/components/GameCanvas.tsx:142
+#: src/components/GameCanvas.tsx:147
 msgid "lights"
 msgstr "등화"
 
@@ -1142,7 +1154,7 @@ msgstr "낮은 층운"
 msgid "M to close"
 msgstr "M 닫기"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:149
 msgid "map"
 msgstr "지도"
 
@@ -1169,7 +1181,7 @@ msgstr "매치 유형"
 msgid "Medium"
 msgstr "보통"
 
-#: src/components/GameCanvas.tsx:145
+#: src/components/GameCanvas.tsx:150
 msgid "menu"
 msgstr "메뉴"
 
@@ -1371,11 +1383,11 @@ msgstr "내비게이션 메뉴 열기"
 msgid "Open theme settings"
 msgstr "테마 설정 열기"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:155
 msgid "or"
 msgstr "또는"
 
-#: src/components/GameCanvas.tsx:150
+#: src/components/GameCanvas.tsx:155
 msgid "orbit"
 msgstr "선회"
 
@@ -1403,7 +1415,7 @@ msgstr "패스키 인증에 실패했습니다. 다시 시도해 주세요."
 msgid "Passkeys"
 msgstr "패스키"
 
-#: src/components/GameCanvas.tsx:145
+#: src/components/GameCanvas.tsx:150
 msgid "pause"
 msgstr "일시정지"
 
@@ -1429,7 +1441,7 @@ msgstr "파일럿"
 msgid "PILOT DOWN"
 msgstr "조종사 사망"
 
-#: src/components/GameCanvas.tsx:137
+#: src/components/GameCanvas.tsx:142
 msgid "pitch"
 msgstr "피치"
 
@@ -1616,7 +1628,7 @@ msgstr "메뉴로 돌아가기"
 msgid "Right to Left"
 msgstr "오른쪽에서 왼쪽"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:143
 msgid "roll"
 msgstr "롤"
 
@@ -1819,7 +1831,7 @@ msgstr "여유로운"
 msgid "SPD BK"
 msgstr "감속판"
 
-#: src/components/GameCanvas.tsx:143
+#: src/components/GameCanvas.tsx:148
 msgid "speed brake"
 msgstr "감속판"
 
@@ -1926,7 +1938,7 @@ msgstr "테마"
 msgid "Theme Settings"
 msgstr "테마 설정"
 
-#: src/components/GameCanvas.tsx:139
+#: src/components/GameCanvas.tsx:144
 msgid "throttle"
 msgstr "스로틀"
 
@@ -1950,7 +1962,7 @@ msgstr "목요일"
 msgid "Tightest sustained turn speed"
 msgstr "최소 반경 지속 선회 속도"
 
-#: src/components/GameCanvas.tsx:151
+#: src/components/GameCanvas.tsx:156
 msgid "tilt"
 msgstr "기울이기"
 
@@ -2114,7 +2126,7 @@ msgstr "베테랑"
 msgid "Video thumbnail"
 msgstr "동영상 미리보기 이미지"
 
-#: src/components/GameCanvas.tsx:144
+#: src/components/GameCanvas.tsx:149
 msgid "view"
 msgstr "시점"
 
@@ -2147,7 +2159,7 @@ msgstr "복행"
 msgid "We'll be back online shortly."
 msgstr "곧 다시 온라인으로 돌아올게요."
 
-#: src/components/GameCanvas.tsx:140
+#: src/components/GameCanvas.tsx:145
 msgid "weapon"
 msgstr "무기"
 
@@ -2194,7 +2206,7 @@ msgstr "월드 서버"
 msgid "World server not reachable"
 msgstr "월드 서버에 연결할 수 없습니다"
 
-#: src/components/GameCanvas.tsx:138
+#: src/components/GameCanvas.tsx:143
 msgid "yaw"
 msgstr "요"
 

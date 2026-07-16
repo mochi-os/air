@@ -76,6 +76,11 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   WINS: msg`WINS`,
   JOINED: msg`JOINED`,
   LEFT: msg`LEFT`,
+  // Wingman brevity calls (#139) — the caller's name stays verbatim, the call
+  // words localise (unlike the annunciators above, these are radio speech).
+  ENGAGED: msg`ENGAGED`,
+  'BREAK RIGHT': msg`BREAK RIGHT`,
+  'BREAK LEFT': msg`BREAK LEFT`,
 }
 
 // Mounts the imperative Three.js engine onto its canvases and tears it down on
