@@ -449,6 +449,14 @@ export class Net {
     return value - this.wrap * Math.round(value / this.wrap)
   }
 
+  // chat sends one match-chat line (#84); the server sanitizes, scopes, and
+  // echoes it back as a chat event — the echo is the delivery confirmation.
+  chat(text: string, scope: string) {
+    try {
+      this.writer?.write(frame(cbor_encode({ kind: 'chat', text, scope })))
+    } catch { /* already gone */ }
+  }
+
   leave() {
     this.closed = true
     try {
