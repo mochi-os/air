@@ -84,6 +84,10 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   MISSILE: msg`MISSILE`,
   // The comms log's team-chat prefix (#84).
   TEAM: msg`TEAM`,
+  // The flavour radio tier (#146) — log-only calls.
+  SPLASH: msg`SPLASH`,
+  TALLY: msg`TALLY`,
+  REJOINING: msg`REJOINING`,
 }
 
 // Mounts the imperative Three.js engine onto its canvases and tears it down on

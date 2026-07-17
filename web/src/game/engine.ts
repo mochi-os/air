@@ -3562,6 +3562,8 @@ function net_event(e){ const slot=Number(e.slot);
 		else { if(Array.isArray(e.position)) explosion_at(e.position[0],e.position[1],e.position[2]);
 			const st=remotes.get(slot); if(st) st.group.visible=false;
 			if(net&&Number(e.by)===net.slot){ own_kills++; notice(translate("KILL")); } }
+		if(net&&Number(e.by)>=0&&Number(e.by)!==net.slot){ const killer=Number(e.by); const myteam=net.teams.get(net.slot);   // SPLASH (#146): a teammate's kill, straight off the kill event — no server change, log only
+			if(myteam&&net.teams.get(killer)===myteam) comm((net.names.get(killer)||"")+": "+translate("SPLASH"),"#ffd27f"); }
 		break;
 	case "respawn":
 		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; update_rails(ownship, cfg.missiles?ownship.msl:0); }   // in a joust the match-starting double-respawn releases the waiting room
@@ -3589,6 +3591,8 @@ function net_event(e){ const slot=Number(e.slot);
 		else if(e.call==="break"&&Number(e.target)===net.slot) call=name+": "+translate(e.direction==="right"?"BREAK RIGHT":"BREAK LEFT");   // direction words are relative to the warned pilot — nobody else's business
 		else if(e.call==="missile"&&Number(e.target)===net.slot) call=name+": "+translate("MISSILE");   // a wingman saw the plume you didn't (#146)
 		if(call){ notice(call,4); comm(call,"#ffd27f"); }   // urgent on the banner, and a copy in the log so it survives being replaced (#84)
+		else if(e.call==="tally") comm(name+": "+translate("TALLY"),"#ffd27f");   // flavour tier (#146): the log only — the banner stays reserved for the calls that save lives
+		else if(e.call==="rejoin") comm(name+": "+translate("REJOINING"),"#ffd27f");
 		break; }
 	case "chat": {   // match chat (#84): server-sanitized and team-scoped; player text renders verbatim, never translated
 		if(!net) break;
