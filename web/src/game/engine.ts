@@ -26,6 +26,10 @@ export interface GameHandle {
   stop: () => void
   resume: (config?: GameConfig) => void
   leave: () => void
+  exit: () => void                              // the old Esc: suspend to the mission menu (leaves the match in multiplayer)
+  pause: (on: boolean) => void                  // the menu popup's single-player freeze (#84)
+  chat: (text: string, scope: string) => void   // send one match-chat line (#84)
+  scope: () => string                           // the default chat scope: "team" in a teams match, else "all"
 }
 
 export function startGame({
@@ -37,6 +41,8 @@ export function startGame({
   config = {},
   join = null,
   onExit,
+  onMenu,
+  onChat,
   translate = (s) => s,
 }: {
   stage: HTMLCanvasElement
@@ -47,6 +53,8 @@ export function startGame({
   config?: GameConfig
   join?: NetJoin | null
   onExit?: () => void
+  onMenu?: () => void
+  onChat?: (scope: string) => void
   translate?: (text: string) => string
 }): GameHandle {
   const __ac = new AbortController()
@@ -2075,7 +2083,8 @@ let flyby_pos=null, flyby_side=1;          // flypast view: fixed world point th
 function mission_start(){ return cfg.task==="joust"?"joust":cfg.start; }   // joust always starts at the merge; the Start selector applies to free flight only
 function takeoff_surface(){ const st=mission_start(); if(st==="carrier") return CARRIER.deckY; if(st==="runway"&&airports.length) return airports[0].start.y; return 8; }
 function on_ground(){ return ownship.launching||!!ownship.grounded; }   // the real resting flag, not an altitude guess — off the cat you fly level at deck height, where a +12 m heuristic left G dead
-addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown","/"].includes(e.key)) e.preventDefault();
+addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.target instanceof HTMLTextAreaElement) return;   // the chat box owns the keyboard while focused (#84) — no flares while typing f
+	if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown","/"].includes(e.key)) e.preventDefault();
 	audio_gesture();   // the first gesture unlocks the audio context (browser policy)
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
 		const ch=(e.shiftKey?"Shift+":"")+k;   // full chord — remappable actions match this, so a shift-chord never fires the bare-key action and vice versa
@@ -2114,13 +2123,14 @@ addEventListener("keydown",e=>{ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRigh
 			if(k==="Digit5") set_view("padlock"); }  // 5 Padlock
 		if(ch===key_of("view")) set_view(cfg.view==="cockpit"?"hud":"cockpit");   // V: Cockpit↔HUD fast-swap (any other view → Cockpit)
 		if(ch===key_of("map")){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on){ map_px=0; map_pz=0; map_resize(); } }   // reopening always returns centred on own aircraft
-		if(ch===key_of("pause") && !MULTIPLAYER){ pause_toggle=!pause_toggle; }
+		if(ch===key_of("chat") && MULTIPLAYER && running && onChat){ e.preventDefault(); onChat(chat_scope()); }   // T: the fast path to match chat (#84); MP only — bots do not read
+		if(ch===key_of("shout") && MULTIPLAYER && running && onChat){ e.preventDefault(); onChat("all"); }   // Shift+T: everyone, when team chat is the default
 		if(ch===key_of("hook")){ ownship.hookTarget = ownship.hookTarget>0.5?0:1; }   // arrestor hook deploy/stow
 		if(ch===key_of("lights") && !dev_parked){ ownship.lights=!ownship.lights; }   // aircraft position/strobe/landing lights
 
 		if(ch===key_of("brake.speed")){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
 		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; audio_servo(); }   // G: landing gear up/down — only once airborne, never on deck/runway
-		if(k==="Escape" && running){ running=false; if(MULTIPLAYER) net_finish("left"); if(onExit) onExit(); } }
+		if(ch===key_of("menu") && running){ if(onMenu) onMenu(); else exit_match(); } }   // Esc: the in-game menu popup (#84); the popup exits via exit_match, and a host without a popup falls back to the old immediate exit
 	keys.add(k); }, { signal });
 addEventListener("keyup",e=>keys.delete(e.code),{ signal });
 addEventListener("blur",()=>keys.clear(),{ signal });
@@ -2165,7 +2175,7 @@ stage.addEventListener("pointercancel",end_drag,{ signal });
 // action's current key as a synthetic event, so pad binds follow key remaps.
 const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.left":"KeyA", "yaw.right":"KeyE", "yaw.left":"KeyQ",
 	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash",
-	gear:"KeyG", hook:"KeyH", lights:"KeyL", flares:"KeyF", eject:"KeyJ", map:"KeyM", pause:"KeyP", view:"KeyV", select:"KeyX", altitude:"KeyK", reject:"KeyU", acquire:"Enter",
+	gear:"KeyG", hook:"KeyH", lights:"KeyL", flares:"KeyF", eject:"KeyJ", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"KeyV", select:"KeyX", altitude:"KeyK", reject:"KeyU", acquire:"Enter",
 	probe:"Shift+KeyF", canopy:"Shift+KeyC", fold:"Shift+KeyW" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
@@ -3409,6 +3419,14 @@ function draw_hud(dt){
 	if(!authentic&&MULTIPLAYER&&net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams"){   // team score (game furniture): red and blue running totals above the stores legend
 		hctx.fillStyle="#ff5a48"; hctx.fillText("RED "+(net.score.red||0),40,HH-142);
 		hctx.fillStyle="#5a86ff"; hctx.fillText("BLUE "+(net.score.blue||0),40,HH-124); hctx.fillStyle=GR; }
+	if(!authentic&&MULTIPLAYER&&comms.length){   // the radio/chat log (#84): top-left, scrolling, fading — game furniture, never in the authentic cockpit
+		const cnow=performance.now(); comms=comms.filter(c=>c.until>cnow);
+		hctx.save(); hctx.textAlign="left"; hctx.font="15px ui-monospace, SFMono-Regular, Menlo, monospace";
+		let cy=128;
+		for(const c of comms){ hctx.globalAlpha=Math.min(1,(c.until-cnow)/2000);
+			hctx.fillStyle="#00000090"; hctx.fillText(c.text,41,cy+1);
+			hctx.fillStyle=c.colour; hctx.fillText(c.text,40,cy); cy+=19; }
+		hctx.restore(); }
 	if(!authentic){   // stores furniture (hud view): the FULL counter set — the authentic data block shows only the selected weapon, so without these the other weapon's count is invisible; the IFEI fuel belongs to the cockpit panel, kept here for the fullscreen view
 	hctx.fillStyle=input.guns?AM:GR;
 	hctx.fillText(translate("GUN")+"  "+(cheat("ammunition")?"∞":ownship.rounds),40,HH-88); hctx.fillStyle=GR;
@@ -3470,6 +3488,10 @@ function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow
 // reuses the bandit airframe, the rest get their own.
 let net=null, flare_flag=false, missile_flag=false, session_over=false;
 let net_notice="", net_notice_t=0;
+let comms=[];   // the radio/chat log (#84): {text, colour, until} — top-left, hud-view furniture, multiplayer only
+function comm(text,colour){ comms.push({ text:String(text).slice(0,80), colour, until:performance.now()+10000 }); while(comms.length>5) comms.shift(); }
+function chat_scope(){ return (net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams")?"team":"all"; }
+function exit_match(){ if(!running) return; running=false; if(MULTIPLAYER) net_finish("left"); if(onExit) onExit(); }
 let own_kills=0, own_deaths=0, match_started=0;
 const remotes=new Map();   // slot -> aircraft state
 let designated=-1;   // multiplayer L&S designation: the remote slot the pilot acquired (-1 = none) — HUD state only, like the real jet (the missile's seeker hunts its own cone)
@@ -3562,9 +3584,18 @@ function net_event(e){ const slot=Number(e.slot);
 		if(!net) break;
 		const myteam=net.teams.get(net.slot); if(!myteam||net.teams.get(slot)!==myteam) break;
 		const name=net.names.get(slot)||"";
-		if(e.call==="engaged") notice(name+": "+translate("ENGAGED"),4);
-		else if(e.call==="break"&&Number(e.target)===net.slot) notice(name+": "+translate(e.direction==="right"?"BREAK RIGHT":"BREAK LEFT"),4);   // direction words are relative to the warned pilot — nobody else's business
-		else if(e.call==="missile"&&Number(e.target)===net.slot) notice(name+": "+translate("MISSILE"),4);   // a wingman saw the plume you didn't (#146)
+		let call="";
+		if(e.call==="engaged") call=name+": "+translate("ENGAGED");
+		else if(e.call==="break"&&Number(e.target)===net.slot) call=name+": "+translate(e.direction==="right"?"BREAK RIGHT":"BREAK LEFT");   // direction words are relative to the warned pilot — nobody else's business
+		else if(e.call==="missile"&&Number(e.target)===net.slot) call=name+": "+translate("MISSILE");   // a wingman saw the plume you didn't (#146)
+		if(call){ notice(call,4); comm(call,"#ffd27f"); }   // urgent on the banner, and a copy in the log so it survives being replaced (#84)
+		break; }
+	case "chat": {   // match chat (#84): server-sanitized and team-scoped; player text renders verbatim, never translated
+		if(!net) break;
+		const name=e.name||net.names.get(slot)||"";
+		const team=e.scope==="team";
+		const tint=team?(net.teams.get(net.slot)==="red"?"#ff9d8f":"#8fb8ff"):"#ffffff";
+		comm((team?"["+translate("TEAM")+"] ":"")+name+": "+(e.text||""),tint);
 		break; }
 	} }
 function net_finish(reason){ if(session_over) return; session_over=true;
@@ -3817,5 +3848,10 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
     running = false
     if (MULTIPLAYER) net_finish('left')
   }
-  return { stop, resume, leave }
+  return { stop, resume, leave,
+    exit: exit_match,
+    pause: (on) => { pause_toggle = !!on },   // only game_paused gates on !MULTIPLAYER — the popup cannot freeze a server
+    chat: (words, scope) => { if (MULTIPLAYER && net && running) net.chat(String(words).slice(0, 200), scope) },
+    scope: chat_scope,
+  }
 }
