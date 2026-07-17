@@ -11,9 +11,9 @@
 // relays to every participant. The standing "Furball" match is listed first;
 // every match is joined from its row.
 
-import { useCallback, useEffect, useId, useState } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { LogIn, Plus, RefreshCw } from 'lucide-react'
+import { LogIn, Plus, RefreshCw, Send } from 'lucide-react'
 import { Button } from '@mochi/web/components/ui/button'
 import { Input } from '@mochi/web/components/ui/input'
 import { Label } from '@mochi/web/components/ui/label'
@@ -24,9 +24,12 @@ import { useIdentityName } from '../lib/config-store'
 import {
   normalize_server,
   supported,
+  world_chat,
   world_create,
+  world_say,
   world_sessions,
   world_status,
+  type WorldChatLine,
   type Join,
   type WorldSession,
   type WorldStatus,
@@ -88,6 +91,10 @@ export function Multiplayer({
   const [blueBots, setBlueBots] = useState<Record<string, number>>({ drone: 0, rookie: 0, pilot: 0, veteran: 0, ace: 0 }) // teams mode: the blue side's bots (the row above places red's)
   const [fuel, setFuel] = useState(6000) // spawn load in POUNDS, like the IFEI
   const address = normalize_server(server || default_server())
+  const [lounge, setLounge] = useState<WorldChatLine[]>([])   // the server-wide lobby chat (#84)
+  const cursor = useRef(0)
+  const lineRef = useRef<HTMLInputElement>(null)
+  const boxRef = useRef<HTMLDivElement>(null)
   const name = (callsign || identity || t`pilot`).slice(0, 32)
 
   const refresh = useCallback(async () => {
@@ -109,6 +116,47 @@ export function Multiplayer({
     const timer = setInterval(() => void refresh(), 5000)
     return () => clearInterval(timer)
   }, [refresh])
+
+  // The server-wide lobby chat (#84): poll while the panel is open — this
+  // audience has no game connection yet, so plain HTTP beside the other
+  // lobby calls.
+  useEffect(() => {
+    cursor.current = 0
+    setLounge([])
+    let alive = true
+    const pull = async () => {
+      try {
+        const reply = await world_chat(address, cursor.current)
+        if (!alive) return
+        cursor.current = reply.sequence
+        if (reply.lines.length) setLounge((have) => [...have, ...reply.lines].slice(-100))
+      } catch { /* the status row already reports an unreachable server */ }
+    }
+    void pull()
+    const chatter = setInterval(pull, 3000)
+    return () => {
+      alive = false
+      clearInterval(chatter)
+    }
+  }, [address])
+
+  useEffect(() => {
+    boxRef.current?.scrollTo({ top: boxRef.current.scrollHeight })
+  }, [lounge])
+
+  const say = async () => {
+    const words = lineRef.current?.value.trim()
+    if (!words) return
+    if (lineRef.current) lineRef.current.value = ''
+    try {
+      await world_say(address, name, words)
+      const reply = await world_chat(address, cursor.current)
+      cursor.current = reply.sequence
+      if (reply.lines.length) setLounge((have) => [...have, ...reply.lines].slice(-100))
+    } catch (e) {
+      setError(getErrorMessage(e, t`Could not send the message`))
+    }
+  }
 
   const join = useCallback(
     (session: string, team?: string) => {
@@ -132,6 +180,7 @@ export function Multiplayer({
         game: 'air',
         mode,
         label: t`${name}'s match`,
+        name,
         capacity: mode === 'joust' ? 2 : 0,
         // bots: per-level counts {drone, rookie, ...}; the teams mode places them per side. Fuel in pounds; cheats: {invulnerable, ammunition, fuel}.
         parameters: { tod, clouds, missiles, bots: mode === 'teams' ? { red: bots, blue: blueBots } : bots, fuel, cheats },
@@ -404,6 +453,50 @@ export function Multiplayer({
             </div>
           </div>
         ))}
+      </div>
+
+      {/* The server-wide lobby chat (#84): everyone browsing this server's
+          match list, deciding what to fly next. System lines are structured
+          events rendered in the viewer's language. */}
+      <div className='space-y-2'>
+        <div className='text-muted-foreground text-xs font-medium uppercase'>
+          <Trans>Server chat</Trans>
+        </div>
+        <div ref={boxRef} className='max-h-40 space-y-0.5 overflow-y-auto rounded-md border p-2 text-sm'>
+          {lounge.length === 0 && (
+            <div className='text-muted-foreground text-xs'>
+              <Trans>Nothing yet — say hello.</Trans>
+            </div>
+          )}
+          {lounge.map((line) =>
+            line.event === 'made' ? (
+              <div key={line.sequence} className='text-muted-foreground text-xs italic'>
+                <Trans>
+                  {line.name} created “{line.label}”
+                </Trans>
+              </div>
+            ) : (
+              <div key={line.sequence} className='break-words'>
+                <span className='text-muted-foreground'>{line.name}: </span>
+                {line.text}
+              </div>
+            )
+          )}
+        </div>
+        <div className='flex gap-2'>
+          <Input
+            ref={lineRef}
+            maxLength={200}
+            placeholder={t`Message players on this server`}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') void say()
+            }}
+          />
+          <Button type='button' variant='outline' onClick={() => void say()}>
+            <Send className='size-4' />
+            <Trans>Send</Trans>
+          </Button>
+        </div>
       </div>
     </div>
   )
