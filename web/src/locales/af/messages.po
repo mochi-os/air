@@ -18,18 +18,24 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Gaan asseblief jou internetverbinding na en probeer weer."
 
+#. placeholder {0}: line.name
+#. placeholder {1}: line.label
+#: src/components/Multiplayer.tsx:474
+msgid "{0} created “{1}”"
+msgstr "{0} het “{1}” geskep"
+
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:192
+#: src/components/Multiplayer.tsx:241
 msgid "{0} flying"
 msgstr "{0} vlieg"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:364
+#: src/components/Multiplayer.tsx:413
 msgid "{0}/{1} players"
 msgstr "{0}/{1} spelers"
 
-#: src/components/Multiplayer.tsx:134
+#: src/components/Multiplayer.tsx:182
 msgid "{name}'s match"
 msgstr "{name} se wedstryd"
 
@@ -94,7 +100,7 @@ msgid "Account verified"
 msgstr "Rekening geverifieer"
 
 #: src/components/MissionSetup.tsx:981
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:363
 msgid "Ace"
 msgstr "Aas"
 
@@ -218,7 +224,7 @@ msgstr "Asse"
 msgid "Axis {i}"
 msgstr "As {i}"
 
-#: src/components/GameCanvas.tsx:244
+#: src/components/GameCanvas.tsx:259
 msgid "back"
 msgstr "terug"
 
@@ -256,11 +262,11 @@ msgstr "Beste volgehoue draaispoed"
 msgid "BINGO FUEL"
 msgstr "BINGO BRANDSTOF"
 
-#: src/components/Multiplayer.tsx:390
+#: src/components/Multiplayer.tsx:439
 msgid "Blue"
 msgstr "Blou"
 
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:355
 msgid "Blue bots"
 msgstr "Blou bots"
 
@@ -273,11 +279,11 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Versterk belangstelling"
 
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:355
 msgid "Bots"
 msgstr "Bots"
 
-#: src/components/GameCanvas.tsx:236
+#: src/components/GameCanvas.tsx:251
 msgid "brakes"
 msgstr "remme"
 
@@ -297,7 +303,7 @@ msgstr "Knoppie {i}"
 msgid "Buttons"
 msgstr "Knoppies"
 
-#: src/components/Multiplayer.tsx:177
+#: src/components/Multiplayer.tsx:226
 msgid "Callsign"
 msgstr "Roepsein"
 
@@ -340,11 +346,11 @@ msgstr "Kategorie vir hierdie kennisgewing"
 msgid "Change notification category"
 msgstr "Verander kennisgewingkategorie"
 
-#: src/components/GameCanvas.tsx:241
+#: src/components/GameCanvas.tsx:256
 msgid "Chase view:"
 msgstr "Volgaansig:"
 
-#: src/components/GameCanvas.tsx:238
+#: src/components/GameCanvas.tsx:253
 msgid "chat"
 msgstr "klets"
 
@@ -387,7 +393,7 @@ msgstr "Kies taal"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:237
+#: src/components/Multiplayer.tsx:286
 msgid "Clear"
 msgstr "Maak skoon"
 
@@ -429,7 +435,7 @@ msgstr "Sluit paneel"
 msgid "Close search"
 msgstr "Sluit soektog"
 
-#: src/components/GameCanvas.tsx:245
+#: src/components/GameCanvas.tsx:260
 msgid "closer"
 msgstr "nader"
 
@@ -466,7 +472,7 @@ msgstr "Kompak"
 msgid "Confirm"
 msgstr "Bevestig"
 
-#: src/components/Multiplayer.tsx:195
+#: src/components/Multiplayer.tsx:244
 msgid "Connecting…"
 msgstr "Verbind tans…"
 
@@ -498,13 +504,17 @@ msgstr "Kopieer"
 msgid "Corner speed (best instant turn)"
 msgstr "Hoekspoed (beste onmiddellike draai)"
 
-#: src/components/Multiplayer.tsx:147
+#: src/components/Multiplayer.tsx:196
 msgid "Could not create the match"
 msgstr "Kon nie die wedstryd skep nie"
 
 #: ../../../lib/web/src/features/document/document-page.tsx:84
 msgid "Could not load this document. Please try again later."
 msgstr "Kon nie hierdie dokument laai nie. Probeer asseblief later weer."
+
+#: src/components/Multiplayer.tsx:157
+msgid "Could not send the message"
+msgstr "Kon nie die boodskap stuur nie"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:184
 msgid "Couldn't send the code. Please try again."
@@ -522,11 +532,11 @@ msgstr "Kon nie met daardie rekening verifieer nie. Probeer asseblief weer."
 msgid "CRASHED"
 msgstr "NEERGESTORT"
 
-#: src/components/Multiplayer.tsx:345
+#: src/components/Multiplayer.tsx:394
 msgid "Create and fly"
 msgstr "Skep en vlieg"
 
-#: src/components/Multiplayer.tsx:210
+#: src/components/Multiplayer.tsx:259
 msgid "Create match"
 msgstr "Skep wedstryd"
 
@@ -536,7 +546,7 @@ msgid "Credits"
 msgstr "Erkennings"
 
 #: src/components/MissionSetup.tsx:1082
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:287
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -571,7 +581,7 @@ msgid "Data conflict"
 msgstr "Datakonflik"
 
 #: src/components/MissionSetup.tsx:1070
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:282
 msgid "Day"
 msgstr "Dag"
 
@@ -653,7 +663,7 @@ msgstr "Laai af"
 msgid "Download failed"
 msgstr "Aflaai het misluk"
 
-#: src/components/Multiplayer.tsx:310
+#: src/components/Multiplayer.tsx:359
 msgid "Drone"
 msgstr "Hommeltuig"
 
@@ -681,7 +691,7 @@ msgstr "UITGESKIET"
 msgid "Email code"
 msgstr "E-poskode"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:412
 msgid "empty"
 msgstr "leeg"
 
@@ -705,11 +715,11 @@ msgstr "Voer jou verifikator-kode in"
 msgid "Environment"
 msgstr "Omgewing"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:183
 msgid "Everyone"
 msgstr "Almal"
 
-#: src/components/GameCanvas.tsx:219
+#: src/components/GameCanvas.tsx:234
 msgid "Exit match"
 msgstr "Verlaat wedstryd"
 
@@ -772,7 +782,7 @@ msgstr "DIE GEVEG IS AAN"
 msgid "Finish moving your account"
 msgstr "Voltooi die skuif van jou rekening"
 
-#: src/components/GameCanvas.tsx:232
+#: src/components/GameCanvas.tsx:247
 msgid "fire"
 msgstr "vuur"
 
@@ -784,7 +794,7 @@ msgstr "Vaste toetse"
 msgid "FLAMEOUT"
 msgstr "FLAMEOUT"
 
-#: src/components/GameCanvas.tsx:234
+#: src/components/GameCanvas.tsx:249
 msgid "flares"
 msgstr "fakkels"
 
@@ -836,7 +846,7 @@ msgid "From theme"
 msgstr "Vanaf tema"
 
 #: src/components/MissionSetup.tsx:957
-#: src/components/Multiplayer.tsx:248
+#: src/components/Multiplayer.tsx:297
 msgid "Fuel"
 msgstr "Brandstof"
 
@@ -864,7 +874,7 @@ msgstr "Brandstofsonde"
 msgid "Full layout"
 msgstr "Volle uitleg"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:250
 msgid "gear"
 msgstr "onderstel"
 
@@ -928,7 +938,7 @@ msgid "High"
 msgstr "Hoog"
 
 #: src/components/MissionSetup.tsx:1083
-#: src/components/Multiplayer.tsx:239
+#: src/components/Multiplayer.tsx:288
 msgid "High stratus"
 msgstr "Hoë stratus"
 
@@ -939,7 +949,7 @@ msgstr "Hoë stratus"
 msgid "Home"
 msgstr "Tuis"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:250
 msgid "hook"
 msgstr "haak"
 
@@ -988,11 +998,11 @@ msgid "INVULNERABLE"
 msgstr "ONKWESBAAR"
 
 #: src/components/MissionSetup.tsx:1041
-#: src/components/Multiplayer.tsx:277
+#: src/components/Multiplayer.tsx:326
 msgid "Invulnerable (human players only)"
 msgstr "Onkwesbaar (slegs menslike spelers)"
 
-#: src/components/Multiplayer.tsx:402
+#: src/components/Multiplayer.tsx:451
 msgid "Join"
 msgstr "Sluit aan"
 
@@ -1000,11 +1010,11 @@ msgstr "Sluit aan"
 msgid "JOINED"
 msgstr "HET AANGESLUIT"
 
-#: src/components/Multiplayer.tsx:362
+#: src/components/Multiplayer.tsx:411
 msgid "Joust"
 msgstr "Steekspel"
 
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:273
 msgid "Joust — 1v1, first kill wins"
 msgstr "Tweegeveg — 1v1, eerste kill wen"
 
@@ -1051,7 +1061,7 @@ msgstr "Groot"
 msgid "Launch (catapult)"
 msgstr "Lansering (katapult)"
 
-#: src/components/GameCanvas.tsx:234
+#: src/components/GameCanvas.tsx:249
 msgid "launch / target"
 msgstr "lansering / teiken"
 
@@ -1059,7 +1069,7 @@ msgstr "lansering / teiken"
 msgid "Layout"
 msgstr "Uitleg"
 
-#: src/components/Multiplayer.tsx:261
+#: src/components/Multiplayer.tsx:310
 msgid "lb"
 msgstr "lb"
 
@@ -1081,7 +1091,7 @@ msgstr "Links na regs"
 msgid "Light"
 msgstr "Lig"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:250
 msgid "lights"
 msgstr "ligte"
 
@@ -1166,7 +1176,7 @@ msgid "Low"
 msgstr "Laag"
 
 #: src/components/MissionSetup.tsx:1084
-#: src/components/Multiplayer.tsx:240
+#: src/components/Multiplayer.tsx:289
 msgid "Low stratus"
 msgstr "Lae stratus"
 
@@ -1174,7 +1184,7 @@ msgstr "Lae stratus"
 msgid "M to close"
 msgstr "M om te sluit"
 
-#: src/components/GameCanvas.tsx:237
+#: src/components/GameCanvas.tsx:252
 msgid "map"
 msgstr "kaart"
 
@@ -1192,7 +1202,7 @@ msgstr "Merk alles as gelees"
 msgid "Master"
 msgstr "Hoof"
 
-#: src/components/Multiplayer.tsx:220
+#: src/components/Multiplayer.tsx:269
 msgid "Match type"
 msgstr "Wedstrydtipe"
 
@@ -1201,7 +1211,7 @@ msgstr "Wedstrydtipe"
 msgid "Medium"
 msgstr "Medium"
 
-#: src/components/GameCanvas.tsx:238
+#: src/components/GameCanvas.tsx:253
 msgid "menu"
 msgstr "kieslys"
 
@@ -1210,11 +1220,15 @@ msgstr "kieslys"
 msgid "Menu"
 msgstr "Kieslys"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:188
 msgid "Message everyone"
 msgstr "Boodskap aan almal"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/Multiplayer.tsx:490
+msgid "Message players on this server"
+msgstr "Stuur 'n boodskap aan spelers op hierdie bediener"
+
+#: src/components/GameCanvas.tsx:188
 msgid "Message your team"
 msgstr "Boodskap aan jou span"
 
@@ -1234,7 +1248,7 @@ msgstr "MISSIEL"
 msgid "Missiles"
 msgstr "Missiele"
 
-#: src/components/Multiplayer.tsx:267
+#: src/components/Multiplayer.tsx:316
 msgid "Missiles allowed"
 msgstr "Missiele toegelaat"
 
@@ -1254,7 +1268,7 @@ msgstr "Beweeg die as…"
 msgid "Multiplayer"
 msgstr "Veelspeler"
 
-#: src/components/Multiplayer.tsx:156
+#: src/components/Multiplayer.tsx:205
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Veelspeler benodig WebTransport, wat hierdie blaaier nog nie ondersteun nie."
 
@@ -1273,7 +1287,7 @@ msgid "Next image"
 msgstr "Volgende prent"
 
 #: src/components/MissionSetup.tsx:1071
-#: src/components/Multiplayer.tsx:234
+#: src/components/Multiplayer.tsx:283
 msgid "Night"
 msgstr "Nag"
 
@@ -1293,7 +1307,7 @@ msgstr "Geen groepe beskikbaar nie"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Geen stuurstok bespeur nie — druk enige knoppie daarop om dit wakker te maak."
 
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:403
 msgid "No open matches — create one."
 msgstr "Geen oop wedstryde nie — skep een."
 
@@ -1322,7 +1336,7 @@ msgstr "Nog geen onderwerprekord nie — probeer weer na die volgende kennisgewi
 msgid "No users found"
 msgstr "Geen gebruikers gevind nie"
 
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:403
 msgid "No world server."
 msgstr "Geen wêreldbediener nie."
 
@@ -1355,6 +1369,10 @@ msgstr "Nie gevind nie"
 msgid "Not set"
 msgstr "Nie ingestel nie"
 
+#: src/components/Multiplayer.tsx:468
+msgid "Nothing yet — say hello."
+msgstr "Nog niks nie — sê hallo."
+
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:136
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:150
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:236
@@ -1383,11 +1401,11 @@ msgstr "Op aanloopbaan"
 msgid "Oops! Page Not Found!"
 msgstr "Oeps! Bladsy nie gevind nie!"
 
-#: src/components/Multiplayer.tsx:362
+#: src/components/Multiplayer.tsx:411
 msgid "Open"
 msgstr "Oop"
 
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:272
 msgid "Open — anyone may join or leave"
 msgstr "Oop — enigiemand kan aansluit of verlaat"
 
@@ -1416,11 +1434,11 @@ msgstr "Maak navigasie-kieslys oop"
 msgid "Open theme settings"
 msgstr "Maak tema-instellings oop"
 
-#: src/components/GameCanvas.tsx:243
+#: src/components/GameCanvas.tsx:258
 msgid "or"
 msgstr "of"
 
-#: src/components/GameCanvas.tsx:243
+#: src/components/GameCanvas.tsx:258
 msgid "orbit"
 msgstr "wentel"
 
@@ -1452,13 +1470,13 @@ msgstr "Wagwoordsleutels"
 msgid "PAUSED"
 msgstr "GEPOUSEER"
 
-#: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:182
+#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:231
 msgid "pilot"
 msgstr "vlieënier"
 
 #: src/components/MissionSetup.tsx:979
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:361
 msgid "Pilot"
 msgstr "Vlieënier"
 
@@ -1466,7 +1484,7 @@ msgstr "Vlieënier"
 msgid "PILOT DOWN"
 msgstr "VLIEËNIER DOOD"
 
-#: src/components/GameCanvas.tsx:230
+#: src/components/GameCanvas.tsx:245
 msgid "pitch"
 msgstr "hei"
 
@@ -1559,11 +1577,11 @@ msgstr "HERBEWAPEN"
 msgid "Recommended"
 msgstr "Aanbeveel"
 
-#: src/components/Multiplayer.tsx:380
+#: src/components/Multiplayer.tsx:429
 msgid "Red"
 msgstr "Rooi"
 
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:355
 msgid "Red bots"
 msgstr "Rooi bots"
 
@@ -1580,7 +1598,7 @@ msgstr "Verminder belangstelling"
 msgid "Reference"
 msgstr "Verwysing"
 
-#: src/components/Multiplayer.tsx:200
+#: src/components/Multiplayer.tsx:249
 msgid "Refresh"
 msgstr "Verfris"
 
@@ -1641,7 +1659,7 @@ msgstr "Resolusie"
 msgid "Restart"
 msgstr "Herbegin"
 
-#: src/components/GameCanvas.tsx:197
+#: src/components/GameCanvas.tsx:212
 #: src/components/MissionSetup.tsx:1229
 msgid "Resume"
 msgstr "Hervat"
@@ -1654,7 +1672,7 @@ msgstr "Keer terug na kieslys"
 msgid "Right to Left"
 msgstr "Regs na links"
 
-#: src/components/GameCanvas.tsx:231
+#: src/components/GameCanvas.tsx:246
 msgid "roll"
 msgstr "rol"
 
@@ -1671,7 +1689,7 @@ msgid "Roll right"
 msgstr "Rol regs"
 
 #: src/components/MissionSetup.tsx:978
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:360
 msgid "Rookie"
 msgstr "Groentjie"
 
@@ -1758,11 +1776,15 @@ msgstr "Kies werfrigting"
 msgid "Select theme preference"
 msgstr "Kies tema-voorkeur"
 
+#: src/components/Multiplayer.tsx:497
+msgid "Send"
+msgstr "Stuur"
+
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:98
 msgid "Send again"
 msgstr "Stuur weer"
 
-#: src/components/GameCanvas.tsx:208
+#: src/components/GameCanvas.tsx:223
 msgid "Send chat"
 msgstr "Stuur boodskap"
 
@@ -1773,6 +1795,10 @@ msgstr "Stuur e-pos"
 #: ../../../lib/web/src/lib/preference-utils.ts:145
 msgid "Serif"
 msgstr "Skreef"
+
+#: src/components/Multiplayer.tsx:463
+msgid "Server chat"
+msgstr "Bedienerklets"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:260
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:286
@@ -1861,7 +1887,7 @@ msgstr "Ruim"
 msgid "SPD BK"
 msgstr "LGREM"
 
-#: src/components/GameCanvas.tsx:236
+#: src/components/GameCanvas.tsx:251
 msgid "speed brake"
 msgstr "lugrem"
 
@@ -1935,7 +1961,7 @@ msgstr "Etikette"
 msgid "Task"
 msgstr "Taak"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:183
 msgid "Team"
 msgstr "Span"
 
@@ -1943,11 +1969,11 @@ msgstr "Span"
 msgid "TEAM"
 msgstr "SPAN"
 
-#: src/components/Multiplayer.tsx:362
+#: src/components/Multiplayer.tsx:411
 msgid "Teams"
 msgstr "Spanne"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:274
 msgid "Teams — red versus blue"
 msgstr "Spanne — rooi teen blou"
 
@@ -1964,7 +1990,7 @@ msgstr "Bepalings en voorwaardes"
 msgid "That code is incorrect or has expired."
 msgstr "Daardie kode is verkeerd of het verval."
 
-#: src/components/GameCanvas.tsx:223
+#: src/components/GameCanvas.tsx:238
 msgid "The match continues behind this menu."
 msgstr "Die wedstryd gaan agter hierdie kieslys voort."
 
@@ -1980,7 +2006,7 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Tema-instellings"
 
-#: src/components/GameCanvas.tsx:232
+#: src/components/GameCanvas.tsx:247
 msgid "throttle"
 msgstr "versneller"
 
@@ -2004,7 +2030,7 @@ msgstr "Donderdag"
 msgid "Tightest sustained turn speed"
 msgstr "Nouste volgehoue draaispoed"
 
-#: src/components/GameCanvas.tsx:244
+#: src/components/GameCanvas.tsx:259
 msgid "tilt"
 msgstr "kantel"
 
@@ -2112,12 +2138,12 @@ msgid "United States"
 msgstr "Verenigde State"
 
 #: src/components/MissionSetup.tsx:1047
-#: src/components/Multiplayer.tsx:287
+#: src/components/Multiplayer.tsx:336
 msgid "Unlimited ammunition"
 msgstr "Onbeperkte ammunisie"
 
 #: src/components/MissionSetup.tsx:1053
-#: src/components/Multiplayer.tsx:297
+#: src/components/Multiplayer.tsx:346
 msgid "Unlimited fuel"
 msgstr "Onbeperkte brandstof"
 
@@ -2160,7 +2186,7 @@ msgid "Vertical"
 msgstr "Vertikaal"
 
 #: src/components/MissionSetup.tsx:980
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:362
 msgid "Veteran"
 msgstr "Veteraan"
 
@@ -2168,7 +2194,7 @@ msgstr "Veteraan"
 msgid "Video thumbnail"
 msgstr "Video-duimnael"
 
-#: src/components/GameCanvas.tsx:237
+#: src/components/GameCanvas.tsx:252
 msgid "view"
 msgstr "aansig"
 
@@ -2201,7 +2227,7 @@ msgstr "STAAK DIE LANDING"
 msgid "We'll be back online shortly."
 msgstr "Ons sal binnekort weer aanlyn wees."
 
-#: src/components/GameCanvas.tsx:233
+#: src/components/GameCanvas.tsx:248
 msgid "weapon"
 msgstr "wapen"
 
@@ -2215,7 +2241,7 @@ msgid "Weapons"
 msgstr "Wapens"
 
 #: src/components/MissionSetup.tsx:924
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:279
 msgid "Weather"
 msgstr "Weer"
 
@@ -2240,15 +2266,15 @@ msgstr "Vlerkvou"
 msgid "WINS"
 msgstr "WEN"
 
-#: src/components/Multiplayer.tsx:166
+#: src/components/Multiplayer.tsx:215
 msgid "World server"
 msgstr "Wêreldbediener"
 
-#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:109
 msgid "World server not reachable"
 msgstr "Wêreldbediener nie bereikbaar nie"
 
-#: src/components/GameCanvas.tsx:231
+#: src/components/GameCanvas.tsx:246
 msgid "yaw"
 msgstr "gier"
 

@@ -18,18 +18,24 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Patikrinkite interneto ryšį ir bandykite dar kartą."
 
+#. placeholder {0}: line.name
+#. placeholder {1}: line.label
+#: src/components/Multiplayer.tsx:474
+msgid "{0} created “{1}”"
+msgstr "{0} sukūrė „{1}“"
+
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:192
+#: src/components/Multiplayer.tsx:241
 msgid "{0} flying"
 msgstr "{0} skrenda"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:364
+#: src/components/Multiplayer.tsx:413
 msgid "{0}/{1} players"
 msgstr "{0}/{1} žaidėjų"
 
-#: src/components/Multiplayer.tsx:134
+#: src/components/Multiplayer.tsx:182
 msgid "{name}'s match"
 msgstr "{name} mačas"
 
@@ -94,7 +100,7 @@ msgid "Account verified"
 msgstr "Paskyra patvirtinta"
 
 #: src/components/MissionSetup.tsx:981
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:363
 msgid "Ace"
 msgstr "Asas"
 
@@ -218,7 +224,7 @@ msgstr "Ašys"
 msgid "Axis {i}"
 msgstr "Ašis {i}"
 
-#: src/components/GameCanvas.tsx:244
+#: src/components/GameCanvas.tsx:259
 msgid "back"
 msgstr "atgal"
 
@@ -256,11 +262,11 @@ msgstr "Geriausias išlaikomo posūkio greitis"
 msgid "BINGO FUEL"
 msgstr "BINGO DEGALAI"
 
-#: src/components/Multiplayer.tsx:390
+#: src/components/Multiplayer.tsx:439
 msgid "Blue"
 msgstr "Mėlyni"
 
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:355
 msgid "Blue bots"
 msgstr "Mėlyni botai"
 
@@ -273,11 +279,11 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Padidinti susidomėjimą"
 
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:355
 msgid "Bots"
 msgstr "Botai"
 
-#: src/components/GameCanvas.tsx:236
+#: src/components/GameCanvas.tsx:251
 msgid "brakes"
 msgstr "stabdžiai"
 
@@ -297,7 +303,7 @@ msgstr "Mygtukas {i}"
 msgid "Buttons"
 msgstr "Mygtukai"
 
-#: src/components/Multiplayer.tsx:177
+#: src/components/Multiplayer.tsx:226
 msgid "Callsign"
 msgstr "Šaukinys"
 
@@ -340,11 +346,11 @@ msgstr "Šio pranešimo kategorija"
 msgid "Change notification category"
 msgstr "Pakeisti pranešimo kategoriją"
 
-#: src/components/GameCanvas.tsx:241
+#: src/components/GameCanvas.tsx:256
 msgid "Chase view:"
 msgstr "Sekimo vaizdas:"
 
-#: src/components/GameCanvas.tsx:238
+#: src/components/GameCanvas.tsx:253
 msgid "chat"
 msgstr "pokalbis"
 
@@ -387,7 +393,7 @@ msgstr "Pasirinkite kalbą"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:237
+#: src/components/Multiplayer.tsx:286
 msgid "Clear"
 msgstr "Išvalyti"
 
@@ -429,7 +435,7 @@ msgstr "Uždaryti skydelį"
 msgid "Close search"
 msgstr "Uždaryti paiešką"
 
-#: src/components/GameCanvas.tsx:245
+#: src/components/GameCanvas.tsx:260
 msgid "closer"
 msgstr "arčiau"
 
@@ -466,7 +472,7 @@ msgstr "Kompaktiškas"
 msgid "Confirm"
 msgstr "Patvirtinti"
 
-#: src/components/Multiplayer.tsx:195
+#: src/components/Multiplayer.tsx:244
 msgid "Connecting…"
 msgstr "Jungiamasi…"
 
@@ -498,13 +504,17 @@ msgstr "Kopijuoti"
 msgid "Corner speed (best instant turn)"
 msgstr "Kampinis greitis (geriausias momentinis posūkis)"
 
-#: src/components/Multiplayer.tsx:147
+#: src/components/Multiplayer.tsx:196
 msgid "Could not create the match"
 msgstr "Nepavyko sukurti mačo"
 
 #: ../../../lib/web/src/features/document/document-page.tsx:84
 msgid "Could not load this document. Please try again later."
 msgstr "Nepavyko įkelti šio dokumento. Pabandykite dar kartą vėliau."
+
+#: src/components/Multiplayer.tsx:157
+msgid "Could not send the message"
+msgstr "Nepavyko išsiųsti žinutės"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:184
 msgid "Couldn't send the code. Please try again."
@@ -522,11 +532,11 @@ msgstr "Nepavyko patvirtinti su ta paskyra. Bandykite dar kartą."
 msgid "CRASHED"
 msgstr "SUDUŽO"
 
-#: src/components/Multiplayer.tsx:345
+#: src/components/Multiplayer.tsx:394
 msgid "Create and fly"
 msgstr "Sukurti ir skristi"
 
-#: src/components/Multiplayer.tsx:210
+#: src/components/Multiplayer.tsx:259
 msgid "Create match"
 msgstr "Sukurti mačą"
 
@@ -536,7 +546,7 @@ msgid "Credits"
 msgstr "Padėkos"
 
 #: src/components/MissionSetup.tsx:1082
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:287
 msgid "Cumulus"
 msgstr "Kamuoliniai"
 
@@ -571,7 +581,7 @@ msgid "Data conflict"
 msgstr "Duomenų konfliktas"
 
 #: src/components/MissionSetup.tsx:1070
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:282
 msgid "Day"
 msgstr "Diena"
 
@@ -653,7 +663,7 @@ msgstr "Atsisiųsti"
 msgid "Download failed"
 msgstr "Atsisiųsti nepavyko"
 
-#: src/components/Multiplayer.tsx:310
+#: src/components/Multiplayer.tsx:359
 msgid "Drone"
 msgstr "Dronas"
 
@@ -681,7 +691,7 @@ msgstr "KATAPULTAVOSI"
 msgid "Email code"
 msgstr "El. pašto kodas"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:412
 msgid "empty"
 msgstr "tuščia"
 
@@ -705,11 +715,11 @@ msgstr "Įveskite autentifikatoriaus kodą"
 msgid "Environment"
 msgstr "Aplinka"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:183
 msgid "Everyone"
 msgstr "Visi"
 
-#: src/components/GameCanvas.tsx:219
+#: src/components/GameCanvas.tsx:234
 msgid "Exit match"
 msgstr "Palikti mačą"
 
@@ -772,7 +782,7 @@ msgstr "KOVA PRASIDEDA"
 msgid "Finish moving your account"
 msgstr "Užbaikite paskyros perkėlimą"
 
-#: src/components/GameCanvas.tsx:232
+#: src/components/GameCanvas.tsx:247
 msgid "fire"
 msgstr "šauti"
 
@@ -784,7 +794,7 @@ msgstr "Fiksuoti klavišai"
 msgid "FLAMEOUT"
 msgstr "UŽGESIMAS"
 
-#: src/components/GameCanvas.tsx:234
+#: src/components/GameCanvas.tsx:249
 msgid "flares"
 msgstr "fakelai"
 
@@ -836,7 +846,7 @@ msgid "From theme"
 msgstr "Iš temos"
 
 #: src/components/MissionSetup.tsx:957
-#: src/components/Multiplayer.tsx:248
+#: src/components/Multiplayer.tsx:297
 msgid "Fuel"
 msgstr "Degalai"
 
@@ -864,7 +874,7 @@ msgstr "Degalų zondas"
 msgid "Full layout"
 msgstr "Pilnas išdėstymas"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:250
 msgid "gear"
 msgstr "Važiuoklė"
 
@@ -928,7 +938,7 @@ msgid "High"
 msgstr "Aukštas"
 
 #: src/components/MissionSetup.tsx:1083
-#: src/components/Multiplayer.tsx:239
+#: src/components/Multiplayer.tsx:288
 msgid "High stratus"
 msgstr "Aukšti sluoksniniai"
 
@@ -939,7 +949,7 @@ msgstr "Aukšti sluoksniniai"
 msgid "Home"
 msgstr "Pradžia"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:250
 msgid "hook"
 msgstr "Kablys"
 
@@ -988,11 +998,11 @@ msgid "INVULNERABLE"
 msgstr "NEPAŽEIDŽIAMAS"
 
 #: src/components/MissionSetup.tsx:1041
-#: src/components/Multiplayer.tsx:277
+#: src/components/Multiplayer.tsx:326
 msgid "Invulnerable (human players only)"
 msgstr "Nepažeidžiamas (tik žaidėjai žmonės)"
 
-#: src/components/Multiplayer.tsx:402
+#: src/components/Multiplayer.tsx:451
 msgid "Join"
 msgstr "Prisijungti"
 
@@ -1000,11 +1010,11 @@ msgstr "Prisijungti"
 msgid "JOINED"
 msgstr "PRISIJUNGĖ"
 
-#: src/components/Multiplayer.tsx:362
+#: src/components/Multiplayer.tsx:411
 msgid "Joust"
 msgstr "Dvikova"
 
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:273
 msgid "Joust — 1v1, first kill wins"
 msgstr "Dvikova — 1v1, laimi pirmas numušimas"
 
@@ -1051,7 +1061,7 @@ msgstr "Didelis"
 msgid "Launch (catapult)"
 msgstr "Paleidimas (katapulta)"
 
-#: src/components/GameCanvas.tsx:234
+#: src/components/GameCanvas.tsx:249
 msgid "launch / target"
 msgstr "startas / taikinys"
 
@@ -1059,7 +1069,7 @@ msgstr "startas / taikinys"
 msgid "Layout"
 msgstr "Išdėstymas"
 
-#: src/components/Multiplayer.tsx:261
+#: src/components/Multiplayer.tsx:310
 msgid "lb"
 msgstr "lb"
 
@@ -1081,7 +1091,7 @@ msgstr "Iš kairės į dešinę"
 msgid "Light"
 msgstr "Šviesi"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:250
 msgid "lights"
 msgstr "žiburiai"
 
@@ -1166,7 +1176,7 @@ msgid "Low"
 msgstr "Žemas"
 
 #: src/components/MissionSetup.tsx:1084
-#: src/components/Multiplayer.tsx:240
+#: src/components/Multiplayer.tsx:289
 msgid "Low stratus"
 msgstr "Žemi sluoksniniai"
 
@@ -1174,7 +1184,7 @@ msgstr "Žemi sluoksniniai"
 msgid "M to close"
 msgstr "M uždaryti"
 
-#: src/components/GameCanvas.tsx:237
+#: src/components/GameCanvas.tsx:252
 msgid "map"
 msgstr "žemėlapis"
 
@@ -1192,7 +1202,7 @@ msgstr "Pažymėti visus kaip skaitytus"
 msgid "Master"
 msgstr "Bendras"
 
-#: src/components/Multiplayer.tsx:220
+#: src/components/Multiplayer.tsx:269
 msgid "Match type"
 msgstr "Mačo tipas"
 
@@ -1201,7 +1211,7 @@ msgstr "Mačo tipas"
 msgid "Medium"
 msgstr "Vidutinis"
 
-#: src/components/GameCanvas.tsx:238
+#: src/components/GameCanvas.tsx:253
 msgid "menu"
 msgstr "meniu"
 
@@ -1210,11 +1220,15 @@ msgstr "meniu"
 msgid "Menu"
 msgstr "Meniu"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:188
 msgid "Message everyone"
 msgstr "Rašykite visiems"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/Multiplayer.tsx:490
+msgid "Message players on this server"
+msgstr "Rašykite šio serverio žaidėjams"
+
+#: src/components/GameCanvas.tsx:188
 msgid "Message your team"
 msgstr "Rašykite savo komandai"
 
@@ -1234,7 +1248,7 @@ msgstr "RAKETA"
 msgid "Missiles"
 msgstr "Raketos"
 
-#: src/components/Multiplayer.tsx:267
+#: src/components/Multiplayer.tsx:316
 msgid "Missiles allowed"
 msgstr "Raketos leidžiamos"
 
@@ -1254,7 +1268,7 @@ msgstr "Pajudinkite ašį…"
 msgid "Multiplayer"
 msgstr "Kelių žaidėjų"
 
-#: src/components/Multiplayer.tsx:156
+#: src/components/Multiplayer.tsx:205
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Kelių žaidėjų režimui reikia WebTransport, kurio ši naršyklė dar nepalaiko."
 
@@ -1273,7 +1287,7 @@ msgid "Next image"
 msgstr "Kitas paveikslėlis"
 
 #: src/components/MissionSetup.tsx:1071
-#: src/components/Multiplayer.tsx:234
+#: src/components/Multiplayer.tsx:283
 msgid "Night"
 msgstr "Naktis"
 
@@ -1293,7 +1307,7 @@ msgstr "Grupių nėra"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Vairasvirtė neaptikta — paspauskite bet kurį jos mygtuką, kad ją pažadintumėte."
 
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:403
 msgid "No open matches — create one."
 msgstr "Atvirų mačų nėra — sukurkite vieną."
 
@@ -1322,7 +1336,7 @@ msgstr "Dar nėra temos įrašo — bandykite dar kartą po kito pranešimo."
 msgid "No users found"
 msgstr "Vartotojų nerasta"
 
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:403
 msgid "No world server."
 msgstr "Nėra pasaulio serverio."
 
@@ -1355,6 +1369,10 @@ msgstr "Nerasta"
 msgid "Not set"
 msgstr "Nenustatyta"
 
+#: src/components/Multiplayer.tsx:468
+msgid "Nothing yet — say hello."
+msgstr "Kol kas nieko nėra — pasisveikinkite."
+
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:136
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:150
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:236
@@ -1383,11 +1401,11 @@ msgstr "Ant kilimo tako"
 msgid "Oops! Page Not Found!"
 msgstr "Oi! Puslapis nerastas!"
 
-#: src/components/Multiplayer.tsx:362
+#: src/components/Multiplayer.tsx:411
 msgid "Open"
 msgstr "Atidaryti"
 
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:272
 msgid "Open — anyone may join or leave"
 msgstr "Atviras — bet kas gali prisijungti ar išeiti"
 
@@ -1416,11 +1434,11 @@ msgstr "Atidaryti naršymo meniu"
 msgid "Open theme settings"
 msgstr "Atidaryti temos nustatymus"
 
-#: src/components/GameCanvas.tsx:243
+#: src/components/GameCanvas.tsx:258
 msgid "or"
 msgstr "arba"
 
-#: src/components/GameCanvas.tsx:243
+#: src/components/GameCanvas.tsx:258
 msgid "orbit"
 msgstr "orbita"
 
@@ -1452,13 +1470,13 @@ msgstr "Slaptarakčiai"
 msgid "PAUSED"
 msgstr "PRISTABDYTA"
 
-#: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:182
+#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:231
 msgid "pilot"
 msgstr "pilotas"
 
 #: src/components/MissionSetup.tsx:979
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:361
 msgid "Pilot"
 msgstr "Pilotas"
 
@@ -1466,7 +1484,7 @@ msgstr "Pilotas"
 msgid "PILOT DOWN"
 msgstr "PILOTAS ŽUVO"
 
-#: src/components/GameCanvas.tsx:230
+#: src/components/GameCanvas.tsx:245
 msgid "pitch"
 msgstr "tangažas"
 
@@ -1559,11 +1577,11 @@ msgstr "PERGINKLUOTAS"
 msgid "Recommended"
 msgstr "Rekomenduojama"
 
-#: src/components/Multiplayer.tsx:380
+#: src/components/Multiplayer.tsx:429
 msgid "Red"
 msgstr "Raudoni"
 
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:355
 msgid "Red bots"
 msgstr "Raudoni botai"
 
@@ -1580,7 +1598,7 @@ msgstr "Sumažinti susidomėjimą"
 msgid "Reference"
 msgstr "Žinynas"
 
-#: src/components/Multiplayer.tsx:200
+#: src/components/Multiplayer.tsx:249
 msgid "Refresh"
 msgstr "Atnaujinti"
 
@@ -1641,7 +1659,7 @@ msgstr "Sprendimas"
 msgid "Restart"
 msgstr "Paleisti iš naujo"
 
-#: src/components/GameCanvas.tsx:197
+#: src/components/GameCanvas.tsx:212
 #: src/components/MissionSetup.tsx:1229
 msgid "Resume"
 msgstr "Tęsti"
@@ -1654,7 +1672,7 @@ msgstr "Grįžti į meniu"
 msgid "Right to Left"
 msgstr "Iš dešinės į kairę"
 
-#: src/components/GameCanvas.tsx:231
+#: src/components/GameCanvas.tsx:246
 msgid "roll"
 msgstr "krenas"
 
@@ -1671,7 +1689,7 @@ msgid "Roll right"
 msgstr "Posvyris dešinėn"
 
 #: src/components/MissionSetup.tsx:978
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:360
 msgid "Rookie"
 msgstr "Naujokas"
 
@@ -1758,11 +1776,15 @@ msgstr "Pasirinkite svetainės kryptį"
 msgid "Select theme preference"
 msgstr "Pasirinkite temos nustatymą"
 
+#: src/components/Multiplayer.tsx:497
+msgid "Send"
+msgstr "Siųsti"
+
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:98
 msgid "Send again"
 msgstr "Siųsti dar kartą"
 
-#: src/components/GameCanvas.tsx:208
+#: src/components/GameCanvas.tsx:223
 msgid "Send chat"
 msgstr "Siųsti žinutę"
 
@@ -1773,6 +1795,10 @@ msgstr "Siųsti el. laišką"
 #: ../../../lib/web/src/lib/preference-utils.ts:145
 msgid "Serif"
 msgstr "Serifinis"
+
+#: src/components/Multiplayer.tsx:463
+msgid "Server chat"
+msgstr "Serverio pokalbis"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:260
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:286
@@ -1861,7 +1887,7 @@ msgstr "Erdvus"
 msgid "SPD BK"
 msgstr "OR ST"
 
-#: src/components/GameCanvas.tsx:236
+#: src/components/GameCanvas.tsx:251
 msgid "speed brake"
 msgstr "oro stabdys"
 
@@ -1935,7 +1961,7 @@ msgstr "Žymos"
 msgid "Task"
 msgstr "Užduotis"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:183
 msgid "Team"
 msgstr "Komanda"
 
@@ -1943,11 +1969,11 @@ msgstr "Komanda"
 msgid "TEAM"
 msgstr "KOMANDA"
 
-#: src/components/Multiplayer.tsx:362
+#: src/components/Multiplayer.tsx:411
 msgid "Teams"
 msgstr "Komandos"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:274
 msgid "Teams — red versus blue"
 msgstr "Komandos — raudoni prieš mėlynus"
 
@@ -1964,7 +1990,7 @@ msgstr "Sąlygos ir nuostatos"
 msgid "That code is incorrect or has expired."
 msgstr "Šis kodas neteisingas arba nebegalioja."
 
-#: src/components/GameCanvas.tsx:223
+#: src/components/GameCanvas.tsx:238
 msgid "The match continues behind this menu."
 msgstr "Mačas tęsiasi už šio meniu."
 
@@ -1980,7 +2006,7 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Temos nustatymai"
 
-#: src/components/GameCanvas.tsx:232
+#: src/components/GameCanvas.tsx:247
 msgid "throttle"
 msgstr "droselis"
 
@@ -2004,7 +2030,7 @@ msgstr "Ketvirtadienis"
 msgid "Tightest sustained turn speed"
 msgstr "Aštriausio išlaikomo posūkio greitis"
 
-#: src/components/GameCanvas.tsx:244
+#: src/components/GameCanvas.tsx:259
 msgid "tilt"
 msgstr "pakreipti"
 
@@ -2112,12 +2138,12 @@ msgid "United States"
 msgstr "Jungtinės Valstijos"
 
 #: src/components/MissionSetup.tsx:1047
-#: src/components/Multiplayer.tsx:287
+#: src/components/Multiplayer.tsx:336
 msgid "Unlimited ammunition"
 msgstr "Neriboti šaudmenys"
 
 #: src/components/MissionSetup.tsx:1053
-#: src/components/Multiplayer.tsx:297
+#: src/components/Multiplayer.tsx:346
 msgid "Unlimited fuel"
 msgstr "Neriboti degalai"
 
@@ -2160,7 +2186,7 @@ msgid "Vertical"
 msgstr "Vertikalus"
 
 #: src/components/MissionSetup.tsx:980
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:362
 msgid "Veteran"
 msgstr "Veteranas"
 
@@ -2168,7 +2194,7 @@ msgstr "Veteranas"
 msgid "Video thumbnail"
 msgstr "Vaizdo įrašo miniatiūra"
 
-#: src/components/GameCanvas.tsx:237
+#: src/components/GameCanvas.tsx:252
 msgid "view"
 msgstr "vaizdas"
 
@@ -2201,7 +2227,7 @@ msgstr "NUTRAUK TŪPIMĄ"
 msgid "We'll be back online shortly."
 msgstr "Netrukus vėl būsime prisijungę."
 
-#: src/components/GameCanvas.tsx:233
+#: src/components/GameCanvas.tsx:248
 msgid "weapon"
 msgstr "ginklas"
 
@@ -2215,7 +2241,7 @@ msgid "Weapons"
 msgstr "Ginklai"
 
 #: src/components/MissionSetup.tsx:924
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:279
 msgid "Weather"
 msgstr "Oras"
 
@@ -2240,15 +2266,15 @@ msgstr "Sparnų sulankstymas"
 msgid "WINS"
 msgstr "LAIMI"
 
-#: src/components/Multiplayer.tsx:166
+#: src/components/Multiplayer.tsx:215
 msgid "World server"
 msgstr "Pasaulio serveris"
 
-#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:109
 msgid "World server not reachable"
 msgstr "Pasaulio serveris nepasiekiamas"
 
-#: src/components/GameCanvas.tsx:231
+#: src/components/GameCanvas.tsx:246
 msgid "yaw"
 msgstr "posūkis"
 

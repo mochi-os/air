@@ -153,7 +153,7 @@ export async function world_sessions(server: string, game: string): Promise<Worl
 
 export async function world_create(
   server: string,
-  request: { game: string; mode: string; label: string; capacity?: number; parameters?: Record<string, unknown> }
+  request: { game: string; mode: string; label: string; name?: string; capacity?: number; parameters?: Record<string, unknown> }
 ): Promise<{ session: string; address: string; certificate?: { hash: string } }> {
   const response = await fetch(server + '/sessions', {
     method: 'POST',
@@ -164,6 +164,34 @@ export async function world_create(
   const body = (await response.json()) as { error?: string; session: string; address: string; certificate?: { hash: string } }
   if (!response.ok || body.error) throw new Error(body.error || 'status ' + response.status)
   return body
+}
+
+// The server-wide lobby chat (#84): a polled ring beside the match list.
+// Lines are player chat ({name, text}) or structured system events
+// ({event: "made", name, label}) the caller renders in its own language.
+export interface WorldChatLine {
+  sequence: number
+  time: number
+  name?: string
+  text?: string
+  event?: string
+  label?: string
+}
+
+export async function world_chat(server: string, since: number): Promise<{ lines: WorldChatLine[]; sequence: number }> {
+  const response = await fetch(server + '/chat?since=' + since, { mode: 'cors' })
+  if (!response.ok) throw new Error('status ' + response.status)
+  return (await response.json()) as { lines: WorldChatLine[]; sequence: number }
+}
+
+export async function world_say(server: string, name: string, text: string): Promise<void> {
+  const response = await fetch(server + '/chat', {
+    method: 'POST',
+    mode: 'cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, text }),
+  })
+  if (!response.ok) throw new Error('status ' + response.status)
 }
 
 // Join is everything the engine needs to enter a session.

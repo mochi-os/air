@@ -18,18 +18,24 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Verifique sua conexão com a internet e tente novamente."
 
+#. placeholder {0}: line.name
+#. placeholder {1}: line.label
+#: src/components/Multiplayer.tsx:474
+msgid "{0} created “{1}”"
+msgstr "{0} criou “{1}”"
+
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:192
+#: src/components/Multiplayer.tsx:241
 msgid "{0} flying"
 msgstr "{0} voando"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:364
+#: src/components/Multiplayer.tsx:413
 msgid "{0}/{1} players"
 msgstr "{0}/{1} jogadores"
 
-#: src/components/Multiplayer.tsx:134
+#: src/components/Multiplayer.tsx:182
 msgid "{name}'s match"
 msgstr "Partida de {name}"
 
@@ -94,7 +100,7 @@ msgid "Account verified"
 msgstr "Conta verificada"
 
 #: src/components/MissionSetup.tsx:981
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:363
 msgid "Ace"
 msgstr "Ás"
 
@@ -218,7 +224,7 @@ msgstr "Eixos"
 msgid "Axis {i}"
 msgstr "Eixo {i}"
 
-#: src/components/GameCanvas.tsx:244
+#: src/components/GameCanvas.tsx:259
 msgid "back"
 msgstr "afastar"
 
@@ -256,11 +262,11 @@ msgstr "Melhor velocidade de curva sustentada"
 msgid "BINGO FUEL"
 msgstr "BINGO COMBUSTÍVEL"
 
-#: src/components/Multiplayer.tsx:390
+#: src/components/Multiplayer.tsx:439
 msgid "Blue"
 msgstr "Azul"
 
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:355
 msgid "Blue bots"
 msgstr "Bots azuis"
 
@@ -273,11 +279,11 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Aumentar interesse"
 
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:355
 msgid "Bots"
 msgstr "Bots"
 
-#: src/components/GameCanvas.tsx:236
+#: src/components/GameCanvas.tsx:251
 msgid "brakes"
 msgstr "freios"
 
@@ -297,7 +303,7 @@ msgstr "Botão {i}"
 msgid "Buttons"
 msgstr "Botões"
 
-#: src/components/Multiplayer.tsx:177
+#: src/components/Multiplayer.tsx:226
 msgid "Callsign"
 msgstr "Indicativo"
 
@@ -340,11 +346,11 @@ msgstr "Categoria desta notificação"
 msgid "Change notification category"
 msgstr "Alterar categoria da notificação"
 
-#: src/components/GameCanvas.tsx:241
+#: src/components/GameCanvas.tsx:256
 msgid "Chase view:"
 msgstr "Visão de perseguição:"
 
-#: src/components/GameCanvas.tsx:238
+#: src/components/GameCanvas.tsx:253
 msgid "chat"
 msgstr "chat"
 
@@ -387,7 +393,7 @@ msgstr "Escolher idioma"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:237
+#: src/components/Multiplayer.tsx:286
 msgid "Clear"
 msgstr "Limpar"
 
@@ -429,7 +435,7 @@ msgstr "Fechar painel"
 msgid "Close search"
 msgstr "Fechar pesquisa"
 
-#: src/components/GameCanvas.tsx:245
+#: src/components/GameCanvas.tsx:260
 msgid "closer"
 msgstr "aproximar"
 
@@ -466,7 +472,7 @@ msgstr "Compacto"
 msgid "Confirm"
 msgstr "Confirmar"
 
-#: src/components/Multiplayer.tsx:195
+#: src/components/Multiplayer.tsx:244
 msgid "Connecting…"
 msgstr "Conectando…"
 
@@ -498,13 +504,17 @@ msgstr "Copiar"
 msgid "Corner speed (best instant turn)"
 msgstr "Velocidade de canto (melhor curva instantânea)"
 
-#: src/components/Multiplayer.tsx:147
+#: src/components/Multiplayer.tsx:196
 msgid "Could not create the match"
 msgstr "Não foi possível criar a partida"
 
 #: ../../../lib/web/src/features/document/document-page.tsx:84
 msgid "Could not load this document. Please try again later."
 msgstr "Não foi possível carregar este documento. Tente novamente mais tarde."
+
+#: src/components/Multiplayer.tsx:157
+msgid "Could not send the message"
+msgstr "Não foi possível enviar a mensagem"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:184
 msgid "Couldn't send the code. Please try again."
@@ -522,11 +532,11 @@ msgstr "Não foi possível verificar com essa conta. Tente novamente."
 msgid "CRASHED"
 msgstr "CAIU"
 
-#: src/components/Multiplayer.tsx:345
+#: src/components/Multiplayer.tsx:394
 msgid "Create and fly"
 msgstr "Criar e voar"
 
-#: src/components/Multiplayer.tsx:210
+#: src/components/Multiplayer.tsx:259
 msgid "Create match"
 msgstr "Criar partida"
 
@@ -536,7 +546,7 @@ msgid "Credits"
 msgstr "Créditos"
 
 #: src/components/MissionSetup.tsx:1082
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:287
 msgid "Cumulus"
 msgstr "Cúmulos"
 
@@ -571,7 +581,7 @@ msgid "Data conflict"
 msgstr "Conflito de dados"
 
 #: src/components/MissionSetup.tsx:1070
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:282
 msgid "Day"
 msgstr "Dia"
 
@@ -653,7 +663,7 @@ msgstr "Baixar"
 msgid "Download failed"
 msgstr "Falha no download"
 
-#: src/components/Multiplayer.tsx:310
+#: src/components/Multiplayer.tsx:359
 msgid "Drone"
 msgstr "Drone"
 
@@ -681,7 +691,7 @@ msgstr "EJETADO"
 msgid "Email code"
 msgstr "Código por e-mail"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:412
 msgid "empty"
 msgstr "vazia"
 
@@ -705,11 +715,11 @@ msgstr "Digite o código do autenticador"
 msgid "Environment"
 msgstr "Ambiente"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:183
 msgid "Everyone"
 msgstr "Todos"
 
-#: src/components/GameCanvas.tsx:219
+#: src/components/GameCanvas.tsx:234
 msgid "Exit match"
 msgstr "Sair da partida"
 
@@ -772,7 +782,7 @@ msgstr "O COMBATE COMEÇOU"
 msgid "Finish moving your account"
 msgstr "Conclua a migração da sua conta"
 
-#: src/components/GameCanvas.tsx:232
+#: src/components/GameCanvas.tsx:247
 msgid "fire"
 msgstr "atirar"
 
@@ -784,7 +794,7 @@ msgstr "Teclas fixas"
 msgid "FLAMEOUT"
 msgstr "APAGAMENTO"
 
-#: src/components/GameCanvas.tsx:234
+#: src/components/GameCanvas.tsx:249
 msgid "flares"
 msgstr "sinalizadores"
 
@@ -836,7 +846,7 @@ msgid "From theme"
 msgstr "Do tema"
 
 #: src/components/MissionSetup.tsx:957
-#: src/components/Multiplayer.tsx:248
+#: src/components/Multiplayer.tsx:297
 msgid "Fuel"
 msgstr "Combustível"
 
@@ -864,7 +874,7 @@ msgstr "Sonda de combustível"
 msgid "Full layout"
 msgstr "Layout completo"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:250
 msgid "gear"
 msgstr "trem"
 
@@ -928,7 +938,7 @@ msgid "High"
 msgstr "Alto"
 
 #: src/components/MissionSetup.tsx:1083
-#: src/components/Multiplayer.tsx:239
+#: src/components/Multiplayer.tsx:288
 msgid "High stratus"
 msgstr "Estratos altos"
 
@@ -939,7 +949,7 @@ msgstr "Estratos altos"
 msgid "Home"
 msgstr "Início"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:250
 msgid "hook"
 msgstr "gancho"
 
@@ -988,11 +998,11 @@ msgid "INVULNERABLE"
 msgstr "INVULNERÁVEL"
 
 #: src/components/MissionSetup.tsx:1041
-#: src/components/Multiplayer.tsx:277
+#: src/components/Multiplayer.tsx:326
 msgid "Invulnerable (human players only)"
 msgstr "Invulnerável (apenas jogadores humanos)"
 
-#: src/components/Multiplayer.tsx:402
+#: src/components/Multiplayer.tsx:451
 msgid "Join"
 msgstr "Entrar"
 
@@ -1000,11 +1010,11 @@ msgstr "Entrar"
 msgid "JOINED"
 msgstr "ENTROU"
 
-#: src/components/Multiplayer.tsx:362
+#: src/components/Multiplayer.tsx:411
 msgid "Joust"
 msgstr "Justa"
 
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:273
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duelo — 1v1, o primeiro abate vence"
 
@@ -1051,7 +1061,7 @@ msgstr "Grande"
 msgid "Launch (catapult)"
 msgstr "Lançamento (catapulta)"
 
-#: src/components/GameCanvas.tsx:234
+#: src/components/GameCanvas.tsx:249
 msgid "launch / target"
 msgstr "lançar / travar"
 
@@ -1059,7 +1069,7 @@ msgstr "lançar / travar"
 msgid "Layout"
 msgstr "Layout"
 
-#: src/components/Multiplayer.tsx:261
+#: src/components/Multiplayer.tsx:310
 msgid "lb"
 msgstr "lb"
 
@@ -1081,7 +1091,7 @@ msgstr "Da esquerda para a direita"
 msgid "Light"
 msgstr "Claro"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:250
 msgid "lights"
 msgstr "luzes"
 
@@ -1166,7 +1176,7 @@ msgid "Low"
 msgstr "Baixo"
 
 #: src/components/MissionSetup.tsx:1084
-#: src/components/Multiplayer.tsx:240
+#: src/components/Multiplayer.tsx:289
 msgid "Low stratus"
 msgstr "Estratos baixos"
 
@@ -1174,7 +1184,7 @@ msgstr "Estratos baixos"
 msgid "M to close"
 msgstr "M para fechar"
 
-#: src/components/GameCanvas.tsx:237
+#: src/components/GameCanvas.tsx:252
 msgid "map"
 msgstr "mapa"
 
@@ -1192,7 +1202,7 @@ msgstr "Marcar tudo como lido"
 msgid "Master"
 msgstr "Geral"
 
-#: src/components/Multiplayer.tsx:220
+#: src/components/Multiplayer.tsx:269
 msgid "Match type"
 msgstr "Tipo de partida"
 
@@ -1201,7 +1211,7 @@ msgstr "Tipo de partida"
 msgid "Medium"
 msgstr "Médio"
 
-#: src/components/GameCanvas.tsx:238
+#: src/components/GameCanvas.tsx:253
 msgid "menu"
 msgstr "menu"
 
@@ -1210,11 +1220,15 @@ msgstr "menu"
 msgid "Menu"
 msgstr "Menu"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:188
 msgid "Message everyone"
 msgstr "Escreva para todos"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/Multiplayer.tsx:490
+msgid "Message players on this server"
+msgstr "Envie uma mensagem aos jogadores deste servidor"
+
+#: src/components/GameCanvas.tsx:188
 msgid "Message your team"
 msgstr "Escreva para sua equipe"
 
@@ -1234,7 +1248,7 @@ msgstr "MÍSSIL"
 msgid "Missiles"
 msgstr "Mísseis"
 
-#: src/components/Multiplayer.tsx:267
+#: src/components/Multiplayer.tsx:316
 msgid "Missiles allowed"
 msgstr "Mísseis permitidos"
 
@@ -1254,7 +1268,7 @@ msgstr "Mova o eixo…"
 msgid "Multiplayer"
 msgstr "Multijogador"
 
-#: src/components/Multiplayer.tsx:156
+#: src/components/Multiplayer.tsx:205
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "O multijogador precisa de WebTransport, que este navegador ainda não suporta."
 
@@ -1273,7 +1287,7 @@ msgid "Next image"
 msgstr "Próxima imagem"
 
 #: src/components/MissionSetup.tsx:1071
-#: src/components/Multiplayer.tsx:234
+#: src/components/Multiplayer.tsx:283
 msgid "Night"
 msgstr "Noite"
 
@@ -1293,7 +1307,7 @@ msgstr "Nenhum grupo disponível"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Nenhum joystick detectado — pressione qualquer botão nele para despertá-lo."
 
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:403
 msgid "No open matches — create one."
 msgstr "Nenhuma partida aberta — crie uma."
 
@@ -1322,7 +1336,7 @@ msgstr "Ainda não há registro do tópico — tente novamente após a próxima 
 msgid "No users found"
 msgstr "Nenhum usuário encontrado"
 
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:403
 msgid "No world server."
 msgstr "Nenhum servidor de mundo."
 
@@ -1355,6 +1369,10 @@ msgstr "Não encontrado"
 msgid "Not set"
 msgstr "Não definido"
 
+#: src/components/Multiplayer.tsx:468
+msgid "Nothing yet — say hello."
+msgstr "Nada por aqui ainda — diga um oi."
+
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:136
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:150
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:236
@@ -1383,11 +1401,11 @@ msgstr "Na pista"
 msgid "Oops! Page Not Found!"
 msgstr "Ops! Página não encontrada!"
 
-#: src/components/Multiplayer.tsx:362
+#: src/components/Multiplayer.tsx:411
 msgid "Open"
 msgstr "Abrir"
 
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:272
 msgid "Open — anyone may join or leave"
 msgstr "Aberta — qualquer um pode entrar ou sair"
 
@@ -1416,11 +1434,11 @@ msgstr "Abrir menu de navegação"
 msgid "Open theme settings"
 msgstr "Abrir configurações do tema"
 
-#: src/components/GameCanvas.tsx:243
+#: src/components/GameCanvas.tsx:258
 msgid "or"
 msgstr "ou"
 
-#: src/components/GameCanvas.tsx:243
+#: src/components/GameCanvas.tsx:258
 msgid "orbit"
 msgstr "orbitar"
 
@@ -1452,13 +1470,13 @@ msgstr "Chaves de acesso"
 msgid "PAUSED"
 msgstr "PAUSADO"
 
-#: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:182
+#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:231
 msgid "pilot"
 msgstr "piloto"
 
 #: src/components/MissionSetup.tsx:979
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:361
 msgid "Pilot"
 msgstr "Piloto"
 
@@ -1466,7 +1484,7 @@ msgstr "Piloto"
 msgid "PILOT DOWN"
 msgstr "PILOTO ABATIDO"
 
-#: src/components/GameCanvas.tsx:230
+#: src/components/GameCanvas.tsx:245
 msgid "pitch"
 msgstr "arfagem"
 
@@ -1559,11 +1577,11 @@ msgstr "REARMADO"
 msgid "Recommended"
 msgstr "Recomendado"
 
-#: src/components/Multiplayer.tsx:380
+#: src/components/Multiplayer.tsx:429
 msgid "Red"
 msgstr "Vermelho"
 
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:355
 msgid "Red bots"
 msgstr "Bots vermelhos"
 
@@ -1580,7 +1598,7 @@ msgstr "Reduzir interesse"
 msgid "Reference"
 msgstr "Referência"
 
-#: src/components/Multiplayer.tsx:200
+#: src/components/Multiplayer.tsx:249
 msgid "Refresh"
 msgstr "Atualizar"
 
@@ -1641,7 +1659,7 @@ msgstr "Resolução"
 msgid "Restart"
 msgstr "Reiniciar"
 
-#: src/components/GameCanvas.tsx:197
+#: src/components/GameCanvas.tsx:212
 #: src/components/MissionSetup.tsx:1229
 msgid "Resume"
 msgstr "Retomar"
@@ -1654,7 +1672,7 @@ msgstr "Voltar ao menu"
 msgid "Right to Left"
 msgstr "Da direita para a esquerda"
 
-#: src/components/GameCanvas.tsx:231
+#: src/components/GameCanvas.tsx:246
 msgid "roll"
 msgstr "rolagem"
 
@@ -1671,7 +1689,7 @@ msgid "Roll right"
 msgstr "Rolagem para a direita"
 
 #: src/components/MissionSetup.tsx:978
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:360
 msgid "Rookie"
 msgstr "Novato"
 
@@ -1758,11 +1776,15 @@ msgstr "Selecionar direção do site"
 msgid "Select theme preference"
 msgstr "Selecionar preferência de tema"
 
+#: src/components/Multiplayer.tsx:497
+msgid "Send"
+msgstr "Enviar"
+
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:98
 msgid "Send again"
 msgstr "Enviar novamente"
 
-#: src/components/GameCanvas.tsx:208
+#: src/components/GameCanvas.tsx:223
 msgid "Send chat"
 msgstr "Enviar mensagem"
 
@@ -1773,6 +1795,10 @@ msgstr "Enviar e-mail"
 #: ../../../lib/web/src/lib/preference-utils.ts:145
 msgid "Serif"
 msgstr "Com serifa"
+
+#: src/components/Multiplayer.tsx:463
+msgid "Server chat"
+msgstr "Chat do servidor"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:260
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:286
@@ -1861,7 +1887,7 @@ msgstr "Espaçoso"
 msgid "SPD BK"
 msgstr "AEROF"
 
-#: src/components/GameCanvas.tsx:236
+#: src/components/GameCanvas.tsx:251
 msgid "speed brake"
 msgstr "aerofreio"
 
@@ -1935,7 +1961,7 @@ msgstr "Tags"
 msgid "Task"
 msgstr "Tarefa"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:183
 msgid "Team"
 msgstr "Equipe"
 
@@ -1943,11 +1969,11 @@ msgstr "Equipe"
 msgid "TEAM"
 msgstr "EQUIPE"
 
-#: src/components/Multiplayer.tsx:362
+#: src/components/Multiplayer.tsx:411
 msgid "Teams"
 msgstr "Equipes"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:274
 msgid "Teams — red versus blue"
 msgstr "Equipes — vermelho contra azul"
 
@@ -1964,7 +1990,7 @@ msgstr "Termos e condições"
 msgid "That code is incorrect or has expired."
 msgstr "Esse código está incorreto ou expirou."
 
-#: src/components/GameCanvas.tsx:223
+#: src/components/GameCanvas.tsx:238
 msgid "The match continues behind this menu."
 msgstr "A partida continua atrás deste menu."
 
@@ -1980,7 +2006,7 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Configurações de tema"
 
-#: src/components/GameCanvas.tsx:232
+#: src/components/GameCanvas.tsx:247
 msgid "throttle"
 msgstr "acelerador"
 
@@ -2004,7 +2030,7 @@ msgstr "Quinta-feira"
 msgid "Tightest sustained turn speed"
 msgstr "Velocidade de curva sustentada mais fechada"
 
-#: src/components/GameCanvas.tsx:244
+#: src/components/GameCanvas.tsx:259
 msgid "tilt"
 msgstr "inclinar"
 
@@ -2112,12 +2138,12 @@ msgid "United States"
 msgstr "Estados Unidos"
 
 #: src/components/MissionSetup.tsx:1047
-#: src/components/Multiplayer.tsx:287
+#: src/components/Multiplayer.tsx:336
 msgid "Unlimited ammunition"
 msgstr "Munição infinita"
 
 #: src/components/MissionSetup.tsx:1053
-#: src/components/Multiplayer.tsx:297
+#: src/components/Multiplayer.tsx:346
 msgid "Unlimited fuel"
 msgstr "Combustível infinito"
 
@@ -2160,7 +2186,7 @@ msgid "Vertical"
 msgstr "Vertical"
 
 #: src/components/MissionSetup.tsx:980
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:362
 msgid "Veteran"
 msgstr "Veterano"
 
@@ -2168,7 +2194,7 @@ msgstr "Veterano"
 msgid "Video thumbnail"
 msgstr "Miniatura do vídeo"
 
-#: src/components/GameCanvas.tsx:237
+#: src/components/GameCanvas.tsx:252
 msgid "view"
 msgstr "visão"
 
@@ -2201,7 +2227,7 @@ msgstr "ARREMETER"
 msgid "We'll be back online shortly."
 msgstr "Voltaremos a ficar on-line em breve."
 
-#: src/components/GameCanvas.tsx:233
+#: src/components/GameCanvas.tsx:248
 msgid "weapon"
 msgstr "arma"
 
@@ -2215,7 +2241,7 @@ msgid "Weapons"
 msgstr "Armas"
 
 #: src/components/MissionSetup.tsx:924
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:279
 msgid "Weather"
 msgstr "Clima"
 
@@ -2240,15 +2266,15 @@ msgstr "Dobragem das asas"
 msgid "WINS"
 msgstr "VENCE"
 
-#: src/components/Multiplayer.tsx:166
+#: src/components/Multiplayer.tsx:215
 msgid "World server"
 msgstr "Servidor de mundo"
 
-#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:109
 msgid "World server not reachable"
 msgstr "Servidor de mundo inacessível"
 
-#: src/components/GameCanvas.tsx:231
+#: src/components/GameCanvas.tsx:246
 msgid "yaw"
 msgstr "guinada"
 

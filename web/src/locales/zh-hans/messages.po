@@ -18,18 +18,24 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "请检查您的网络连接后重试。"
 
+#. placeholder {0}: line.name
+#. placeholder {1}: line.label
+#: src/components/Multiplayer.tsx:474
+msgid "{0} created “{1}”"
+msgstr "{0} 创建了“{1}”"
+
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:192
+#: src/components/Multiplayer.tsx:241
 msgid "{0} flying"
 msgstr "{0} 人飞行中"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:364
+#: src/components/Multiplayer.tsx:413
 msgid "{0}/{1} players"
 msgstr "{0}/{1} 名玩家"
 
-#: src/components/Multiplayer.tsx:134
+#: src/components/Multiplayer.tsx:182
 msgid "{name}'s match"
 msgstr "{name}的对局"
 
@@ -94,7 +100,7 @@ msgid "Account verified"
 msgstr "账户已验证"
 
 #: src/components/MissionSetup.tsx:981
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:363
 msgid "Ace"
 msgstr "王牌"
 
@@ -218,7 +224,7 @@ msgstr "轴"
 msgid "Axis {i}"
 msgstr "轴 {i}"
 
-#: src/components/GameCanvas.tsx:244
+#: src/components/GameCanvas.tsx:259
 msgid "back"
 msgstr "后退"
 
@@ -256,11 +262,11 @@ msgstr "最佳持续转弯速度"
 msgid "BINGO FUEL"
 msgstr "返航油量"
 
-#: src/components/Multiplayer.tsx:390
+#: src/components/Multiplayer.tsx:439
 msgid "Blue"
 msgstr "蓝队"
 
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:355
 msgid "Blue bots"
 msgstr "蓝队机器人"
 
@@ -273,11 +279,11 @@ msgstr "逃逸复飞"
 msgid "Boost interest"
 msgstr "提升兴趣"
 
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:355
 msgid "Bots"
 msgstr "人机"
 
-#: src/components/GameCanvas.tsx:236
+#: src/components/GameCanvas.tsx:251
 msgid "brakes"
 msgstr "刹车"
 
@@ -297,7 +303,7 @@ msgstr "按钮 {i}"
 msgid "Buttons"
 msgstr "按钮"
 
-#: src/components/Multiplayer.tsx:177
+#: src/components/Multiplayer.tsx:226
 msgid "Callsign"
 msgstr "呼号"
 
@@ -340,11 +346,11 @@ msgstr "该通知的分类"
 msgid "Change notification category"
 msgstr "更改通知分类"
 
-#: src/components/GameCanvas.tsx:241
+#: src/components/GameCanvas.tsx:256
 msgid "Chase view:"
 msgstr "追逐视角："
 
-#: src/components/GameCanvas.tsx:238
+#: src/components/GameCanvas.tsx:253
 msgid "chat"
 msgstr "聊天"
 
@@ -387,7 +393,7 @@ msgstr "选择语言"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:237
+#: src/components/Multiplayer.tsx:286
 msgid "Clear"
 msgstr "清除"
 
@@ -429,7 +435,7 @@ msgstr "关闭面板"
 msgid "Close search"
 msgstr "关闭搜索"
 
-#: src/components/GameCanvas.tsx:245
+#: src/components/GameCanvas.tsx:260
 msgid "closer"
 msgstr "拉近"
 
@@ -466,7 +472,7 @@ msgstr "紧凑"
 msgid "Confirm"
 msgstr "确认"
 
-#: src/components/Multiplayer.tsx:195
+#: src/components/Multiplayer.tsx:244
 msgid "Connecting…"
 msgstr "连接中…"
 
@@ -498,13 +504,17 @@ msgstr "复制"
 msgid "Corner speed (best instant turn)"
 msgstr "角点速度（最佳瞬时转弯）"
 
-#: src/components/Multiplayer.tsx:147
+#: src/components/Multiplayer.tsx:196
 msgid "Could not create the match"
 msgstr "无法创建对局"
 
 #: ../../../lib/web/src/features/document/document-page.tsx:84
 msgid "Could not load this document. Please try again later."
 msgstr "无法加载此文档。请稍后重试。"
+
+#: src/components/Multiplayer.tsx:157
+msgid "Could not send the message"
+msgstr "无法发送消息"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:184
 msgid "Couldn't send the code. Please try again."
@@ -522,11 +532,11 @@ msgstr "无法使用该账户进行验证。请重试。"
 msgid "CRASHED"
 msgstr "坠毁"
 
-#: src/components/Multiplayer.tsx:345
+#: src/components/Multiplayer.tsx:394
 msgid "Create and fly"
 msgstr "创建并起飞"
 
-#: src/components/Multiplayer.tsx:210
+#: src/components/Multiplayer.tsx:259
 msgid "Create match"
 msgstr "创建对局"
 
@@ -536,7 +546,7 @@ msgid "Credits"
 msgstr "鸣谢"
 
 #: src/components/MissionSetup.tsx:1082
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:287
 msgid "Cumulus"
 msgstr "积云"
 
@@ -571,7 +581,7 @@ msgid "Data conflict"
 msgstr "数据冲突"
 
 #: src/components/MissionSetup.tsx:1070
-#: src/components/Multiplayer.tsx:233
+#: src/components/Multiplayer.tsx:282
 msgid "Day"
 msgstr "白天"
 
@@ -653,7 +663,7 @@ msgstr "下载"
 msgid "Download failed"
 msgstr "下载失败"
 
-#: src/components/Multiplayer.tsx:310
+#: src/components/Multiplayer.tsx:359
 msgid "Drone"
 msgstr "无人机"
 
@@ -681,7 +691,7 @@ msgstr "弹射"
 msgid "Email code"
 msgstr "邮箱验证码"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:412
 msgid "empty"
 msgstr "空"
 
@@ -705,11 +715,11 @@ msgstr "请输入您的身份验证器代码"
 msgid "Environment"
 msgstr "环境"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:183
 msgid "Everyone"
 msgstr "所有人"
 
-#: src/components/GameCanvas.tsx:219
+#: src/components/GameCanvas.tsx:234
 msgid "Exit match"
 msgstr "退出对局"
 
@@ -772,7 +782,7 @@ msgstr "战斗开始"
 msgid "Finish moving your account"
 msgstr "完成账户迁移"
 
-#: src/components/GameCanvas.tsx:232
+#: src/components/GameCanvas.tsx:247
 msgid "fire"
 msgstr "开火"
 
@@ -784,7 +794,7 @@ msgstr "固定按键"
 msgid "FLAMEOUT"
 msgstr "发动机熄火"
 
-#: src/components/GameCanvas.tsx:234
+#: src/components/GameCanvas.tsx:249
 msgid "flares"
 msgstr "热焰弹"
 
@@ -836,7 +846,7 @@ msgid "From theme"
 msgstr "来自主题"
 
 #: src/components/MissionSetup.tsx:957
-#: src/components/Multiplayer.tsx:248
+#: src/components/Multiplayer.tsx:297
 msgid "Fuel"
 msgstr "燃油"
 
@@ -864,7 +874,7 @@ msgstr "加油探管"
 msgid "Full layout"
 msgstr "完整布局"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:250
 msgid "gear"
 msgstr "起落架"
 
@@ -928,7 +938,7 @@ msgid "High"
 msgstr "高"
 
 #: src/components/MissionSetup.tsx:1083
-#: src/components/Multiplayer.tsx:239
+#: src/components/Multiplayer.tsx:288
 msgid "High stratus"
 msgstr "高层云"
 
@@ -939,7 +949,7 @@ msgstr "高层云"
 msgid "Home"
 msgstr "首页"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:250
 msgid "hook"
 msgstr "尾钩"
 
@@ -988,11 +998,11 @@ msgid "INVULNERABLE"
 msgstr "无敌"
 
 #: src/components/MissionSetup.tsx:1041
-#: src/components/Multiplayer.tsx:277
+#: src/components/Multiplayer.tsx:326
 msgid "Invulnerable (human players only)"
 msgstr "无敌（仅限人类玩家）"
 
-#: src/components/Multiplayer.tsx:402
+#: src/components/Multiplayer.tsx:451
 msgid "Join"
 msgstr "加入"
 
@@ -1000,11 +1010,11 @@ msgstr "加入"
 msgid "JOINED"
 msgstr "已加入"
 
-#: src/components/Multiplayer.tsx:362
+#: src/components/Multiplayer.tsx:411
 msgid "Joust"
 msgstr "对决"
 
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:273
 msgid "Joust — 1v1, first kill wins"
 msgstr "决斗 — 1v1，先击落者获胜"
 
@@ -1051,7 +1061,7 @@ msgstr "大"
 msgid "Launch (catapult)"
 msgstr "弹射起飞 (弹射器)"
 
-#: src/components/GameCanvas.tsx:234
+#: src/components/GameCanvas.tsx:249
 msgid "launch / target"
 msgstr "弹射 / 锁定"
 
@@ -1059,7 +1069,7 @@ msgstr "弹射 / 锁定"
 msgid "Layout"
 msgstr "布局"
 
-#: src/components/Multiplayer.tsx:261
+#: src/components/Multiplayer.tsx:310
 msgid "lb"
 msgstr "磅"
 
@@ -1081,7 +1091,7 @@ msgstr "从左到右"
 msgid "Light"
 msgstr "浅色"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:250
 msgid "lights"
 msgstr "灯光"
 
@@ -1166,7 +1176,7 @@ msgid "Low"
 msgstr "低"
 
 #: src/components/MissionSetup.tsx:1084
-#: src/components/Multiplayer.tsx:240
+#: src/components/Multiplayer.tsx:289
 msgid "Low stratus"
 msgstr "低层云"
 
@@ -1174,7 +1184,7 @@ msgstr "低层云"
 msgid "M to close"
 msgstr "M 关闭"
 
-#: src/components/GameCanvas.tsx:237
+#: src/components/GameCanvas.tsx:252
 msgid "map"
 msgstr "地图"
 
@@ -1192,7 +1202,7 @@ msgstr "全部标为已读"
 msgid "Master"
 msgstr "主音量"
 
-#: src/components/Multiplayer.tsx:220
+#: src/components/Multiplayer.tsx:269
 msgid "Match type"
 msgstr "对局类型"
 
@@ -1201,7 +1211,7 @@ msgstr "对局类型"
 msgid "Medium"
 msgstr "中"
 
-#: src/components/GameCanvas.tsx:238
+#: src/components/GameCanvas.tsx:253
 msgid "menu"
 msgstr "菜单"
 
@@ -1210,11 +1220,15 @@ msgstr "菜单"
 msgid "Menu"
 msgstr "菜单"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/GameCanvas.tsx:188
 msgid "Message everyone"
 msgstr "向所有人发送消息"
 
-#: src/components/GameCanvas.tsx:176
+#: src/components/Multiplayer.tsx:490
+msgid "Message players on this server"
+msgstr "给此服务器上的玩家发消息"
+
+#: src/components/GameCanvas.tsx:188
 msgid "Message your team"
 msgstr "向队伍发送消息"
 
@@ -1234,7 +1248,7 @@ msgstr "导弹"
 msgid "Missiles"
 msgstr "导弹"
 
-#: src/components/Multiplayer.tsx:267
+#: src/components/Multiplayer.tsx:316
 msgid "Missiles allowed"
 msgstr "允许导弹"
 
@@ -1254,7 +1268,7 @@ msgstr "移动它…"
 msgid "Multiplayer"
 msgstr "多人游戏"
 
-#: src/components/Multiplayer.tsx:156
+#: src/components/Multiplayer.tsx:205
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "多人游戏需要 WebTransport，此浏览器尚不支持。"
 
@@ -1273,7 +1287,7 @@ msgid "Next image"
 msgstr "下一张图片"
 
 #: src/components/MissionSetup.tsx:1071
-#: src/components/Multiplayer.tsx:234
+#: src/components/Multiplayer.tsx:283
 msgid "Night"
 msgstr "夜晚"
 
@@ -1293,7 +1307,7 @@ msgstr "无可用群组"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "未检测到摇杆——按下摇杆上的任意按钮以唤醒它。"
 
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:403
 msgid "No open matches — create one."
 msgstr "暂无开放的对局，创建一个吧。"
 
@@ -1322,7 +1336,7 @@ msgstr "暂无主题记录,请在下次通知后重试。"
 msgid "No users found"
 msgstr "未找到用户"
 
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:403
 msgid "No world server."
 msgstr "没有世界服务器。"
 
@@ -1355,6 +1369,10 @@ msgstr "未找到"
 msgid "Not set"
 msgstr "未设置"
 
+#: src/components/Multiplayer.tsx:468
+msgid "Nothing yet — say hello."
+msgstr "还没有消息，来打个招呼吧。"
+
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:136
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:150
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:236
@@ -1383,11 +1401,11 @@ msgstr "跑道上"
 msgid "Oops! Page Not Found!"
 msgstr "抱歉!页面未找到!"
 
-#: src/components/Multiplayer.tsx:362
+#: src/components/Multiplayer.tsx:411
 msgid "Open"
 msgstr "打开"
 
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:272
 msgid "Open — anyone may join or leave"
 msgstr "开放 — 任何人都可以加入或退出"
 
@@ -1416,11 +1434,11 @@ msgstr "打开导航菜单"
 msgid "Open theme settings"
 msgstr "打开主题设置"
 
-#: src/components/GameCanvas.tsx:243
+#: src/components/GameCanvas.tsx:258
 msgid "or"
 msgstr "或"
 
-#: src/components/GameCanvas.tsx:243
+#: src/components/GameCanvas.tsx:258
 msgid "orbit"
 msgstr "环绕"
 
@@ -1452,13 +1470,13 @@ msgstr "通行密钥"
 msgid "PAUSED"
 msgstr "已暂停"
 
-#: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:182
+#: src/components/Multiplayer.tsx:98
+#: src/components/Multiplayer.tsx:231
 msgid "pilot"
 msgstr "飞行员"
 
 #: src/components/MissionSetup.tsx:979
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:361
 msgid "Pilot"
 msgstr "飞行员"
 
@@ -1466,7 +1484,7 @@ msgstr "飞行员"
 msgid "PILOT DOWN"
 msgstr "飞行员阵亡"
 
-#: src/components/GameCanvas.tsx:230
+#: src/components/GameCanvas.tsx:245
 msgid "pitch"
 msgstr "俯仰"
 
@@ -1559,11 +1577,11 @@ msgstr "已重新武装"
 msgid "Recommended"
 msgstr "推荐"
 
-#: src/components/Multiplayer.tsx:380
+#: src/components/Multiplayer.tsx:429
 msgid "Red"
 msgstr "红队"
 
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:355
 msgid "Red bots"
 msgstr "红队机器人"
 
@@ -1580,7 +1598,7 @@ msgstr "降低兴趣"
 msgid "Reference"
 msgstr "参考"
 
-#: src/components/Multiplayer.tsx:200
+#: src/components/Multiplayer.tsx:249
 msgid "Refresh"
 msgstr "刷新"
 
@@ -1641,7 +1659,7 @@ msgstr "解决方式"
 msgid "Restart"
 msgstr "重新开始"
 
-#: src/components/GameCanvas.tsx:197
+#: src/components/GameCanvas.tsx:212
 #: src/components/MissionSetup.tsx:1229
 msgid "Resume"
 msgstr "继续"
@@ -1654,7 +1672,7 @@ msgstr "返回菜单"
 msgid "Right to Left"
 msgstr "从右到左"
 
-#: src/components/GameCanvas.tsx:231
+#: src/components/GameCanvas.tsx:246
 msgid "roll"
 msgstr "横滚"
 
@@ -1671,7 +1689,7 @@ msgid "Roll right"
 msgstr "向右横滚"
 
 #: src/components/MissionSetup.tsx:978
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:360
 msgid "Rookie"
 msgstr "新手"
 
@@ -1758,11 +1776,15 @@ msgstr "选择站点方向"
 msgid "Select theme preference"
 msgstr "选择主题偏好"
 
+#: src/components/Multiplayer.tsx:497
+msgid "Send"
+msgstr "发送"
+
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:98
 msgid "Send again"
 msgstr "再次发送"
 
-#: src/components/GameCanvas.tsx:208
+#: src/components/GameCanvas.tsx:223
 msgid "Send chat"
 msgstr "发送消息"
 
@@ -1773,6 +1795,10 @@ msgstr "发送邮件"
 #: ../../../lib/web/src/lib/preference-utils.ts:145
 msgid "Serif"
 msgstr "衬线体"
+
+#: src/components/Multiplayer.tsx:463
+msgid "Server chat"
+msgstr "服务器聊天"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:260
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:286
@@ -1861,7 +1887,7 @@ msgstr "宽松"
 msgid "SPD BK"
 msgstr "减速板"
 
-#: src/components/GameCanvas.tsx:236
+#: src/components/GameCanvas.tsx:251
 msgid "speed brake"
 msgstr "减速板"
 
@@ -1935,7 +1961,7 @@ msgstr "标签"
 msgid "Task"
 msgstr "目标"
 
-#: src/components/GameCanvas.tsx:171
+#: src/components/GameCanvas.tsx:183
 msgid "Team"
 msgstr "团队"
 
@@ -1943,11 +1969,11 @@ msgstr "团队"
 msgid "TEAM"
 msgstr "队伍"
 
-#: src/components/Multiplayer.tsx:362
+#: src/components/Multiplayer.tsx:411
 msgid "Teams"
 msgstr "团队战"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:274
 msgid "Teams — red versus blue"
 msgstr "团队战 — 红队对蓝队"
 
@@ -1964,7 +1990,7 @@ msgstr "服务条款"
 msgid "That code is incorrect or has expired."
 msgstr "该代码不正确或已过期。"
 
-#: src/components/GameCanvas.tsx:223
+#: src/components/GameCanvas.tsx:238
 msgid "The match continues behind this menu."
 msgstr "菜单打开时对局仍在继续。"
 
@@ -1980,7 +2006,7 @@ msgstr "主题"
 msgid "Theme Settings"
 msgstr "主题设置"
 
-#: src/components/GameCanvas.tsx:232
+#: src/components/GameCanvas.tsx:247
 msgid "throttle"
 msgstr "油门"
 
@@ -2004,7 +2030,7 @@ msgstr "星期四"
 msgid "Tightest sustained turn speed"
 msgstr "最紧持续转弯速度"
 
-#: src/components/GameCanvas.tsx:244
+#: src/components/GameCanvas.tsx:259
 msgid "tilt"
 msgstr "倾斜"
 
@@ -2112,12 +2138,12 @@ msgid "United States"
 msgstr "美国"
 
 #: src/components/MissionSetup.tsx:1047
-#: src/components/Multiplayer.tsx:287
+#: src/components/Multiplayer.tsx:336
 msgid "Unlimited ammunition"
 msgstr "无限弹药"
 
 #: src/components/MissionSetup.tsx:1053
-#: src/components/Multiplayer.tsx:297
+#: src/components/Multiplayer.tsx:346
 msgid "Unlimited fuel"
 msgstr "无限燃料"
 
@@ -2160,7 +2186,7 @@ msgid "Vertical"
 msgstr "垂直"
 
 #: src/components/MissionSetup.tsx:980
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:362
 msgid "Veteran"
 msgstr "老兵"
 
@@ -2168,7 +2194,7 @@ msgstr "老兵"
 msgid "Video thumbnail"
 msgstr "视频缩略图"
 
-#: src/components/GameCanvas.tsx:237
+#: src/components/GameCanvas.tsx:252
 msgid "view"
 msgstr "视角"
 
@@ -2201,7 +2227,7 @@ msgstr "复飞"
 msgid "We'll be back online shortly."
 msgstr "我们将很快恢复在线。"
 
-#: src/components/GameCanvas.tsx:233
+#: src/components/GameCanvas.tsx:248
 msgid "weapon"
 msgstr "武器"
 
@@ -2215,7 +2241,7 @@ msgid "Weapons"
 msgstr "武器"
 
 #: src/components/MissionSetup.tsx:924
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:279
 msgid "Weather"
 msgstr "天气"
 
@@ -2240,15 +2266,15 @@ msgstr "机翼折叠"
 msgid "WINS"
 msgstr "获胜"
 
-#: src/components/Multiplayer.tsx:166
+#: src/components/Multiplayer.tsx:215
 msgid "World server"
 msgstr "世界服务器"
 
-#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:109
 msgid "World server not reachable"
 msgstr "无法连接世界服务器"
 
-#: src/components/GameCanvas.tsx:231
+#: src/components/GameCanvas.tsx:246
 msgid "yaw"
 msgstr "偏航"
 
