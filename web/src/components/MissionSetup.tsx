@@ -4,8 +4,11 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
-import { Trans } from '@lingui/react/macro'
-import { Play, RotateCcw } from 'lucide-react'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { Play, RotateCcw, Send } from 'lucide-react'
+import { Input } from '@mochi/web/components/ui/input'
+import { getErrorMessage } from '@mochi/web'
+import { useIdentityName } from '../lib/config-store'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
 import {
   Select,
@@ -35,8 +38,14 @@ import {
   type StickBindings,
   deviceDefaults,
 } from '../lib/config'
-import { Multiplayer } from './Multiplayer'
-import { type Join } from '../game/net'
+import { Multiplayer, default_server } from './Multiplayer'
+import {
+  normalize_server,
+  world_chat,
+  world_say,
+  type Join,
+  type WorldChatLine,
+} from '../game/net'
 
 // The fields each tab owns, for the per-tab Reset (the joystick tab also clears
 // the per-device maps so built-in defaults apply again).
@@ -874,6 +883,116 @@ function CreditsDialog() {
   )
 }
 
+// The server-wide lobby chat (#84): sits beside the menu so anyone browsing —
+// whether or not they've picked a match — can talk about what to fly next.
+// Player lines are {name, text}; system lines are structured events rendered
+// in the viewer's language. It follows the world server configured on the
+// Mission tab, falling back to this host's conventional lobby port.
+function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
+  const { t } = useLingui()
+  const identity = useIdentityName()
+  const [lounge, setLounge] = useState<WorldChatLine[]>([])
+  const [error, setError] = useState('')
+  const [up, setUp] = useState(true) // optimistic until the first poll answers
+  const cursor = useRef(0)
+  const lineRef = useRef<HTMLInputElement>(null)
+  const boxRef = useRef<HTMLDivElement>(null)
+  const address = normalize_server(server || default_server())
+  const name = (callsign || identity || t`pilot`).slice(0, 32)
+
+  // Poll while the menu is open. This audience has no game connection, so plain
+  // HTTP; an unreachable world server just leaves the lobby empty and quiet.
+  useEffect(() => {
+    cursor.current = 0
+    setLounge([])
+    let alive = true
+    const pull = async () => {
+      try {
+        const reply = await world_chat(address, cursor.current)
+        if (!alive) return
+        cursor.current = reply.sequence
+        if (reply.lines.length) setLounge((have) => [...have, ...reply.lines].slice(-100))
+        setUp(true)
+      } catch {
+        if (alive) setUp(false) // no reachable world server — the empty state says so
+      }
+    }
+    void pull()
+    const chatter = setInterval(pull, 3000)
+    return () => {
+      alive = false
+      clearInterval(chatter)
+    }
+  }, [address])
+
+  useEffect(() => {
+    boxRef.current?.scrollTo({ top: boxRef.current.scrollHeight })
+  }, [lounge])
+
+  const say = async () => {
+    const words = lineRef.current?.value.trim()
+    if (!words) return
+    if (lineRef.current) lineRef.current.value = ''
+    try {
+      await world_say(address, name, words)
+      const reply = await world_chat(address, cursor.current)
+      cursor.current = reply.sequence
+      if (reply.lines.length) setLounge((have) => [...have, ...reply.lines].slice(-100))
+      setError('')
+      setUp(true)
+    } catch (e) {
+      // A fetch-level failure carries the browser's raw "Failed to fetch" —
+      // when the server is (or just went) unreachable, say that instead.
+      setUp(false)
+      setError(up ? getErrorMessage(e, t`Could not send the message`) : t`World server not reachable`)
+    }
+  }
+
+  return (
+    <div className='flex h-full flex-col'>
+      <div className='text-muted-foreground mb-2 text-xs font-medium tracking-wide uppercase'>
+        <Trans>Server chat</Trans>
+      </div>
+      <div ref={boxRef} className='flex-1 space-y-0.5 overflow-y-auto rounded-md border p-2 text-sm'>
+        {lounge.length === 0 && (
+          <div className='text-muted-foreground text-xs'>
+            {up ? <Trans>Nothing yet — say hello.</Trans> : <Trans>No world server.</Trans>}
+          </div>
+        )}
+        {lounge.map((line) =>
+          line.event === 'made' ? (
+            <div key={line.sequence} className='text-muted-foreground text-xs italic'>
+              <Trans>
+                {line.name} created “{line.label}”
+              </Trans>
+            </div>
+          ) : (
+            <div key={line.sequence} className='break-words'>
+              <span className='text-muted-foreground'>{line.name}: </span>
+              {line.text}
+            </div>
+          )
+        )}
+      </div>
+      {error && <div className='text-destructive mt-1 text-xs'>{error}</div>}
+      <div className='mt-2 flex gap-2'>
+        <Input
+          ref={lineRef}
+          maxLength={200}
+          placeholder={t`Message players on this server`}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') void say()
+          }}
+        />
+        <Button type='button' variant='outline' onClick={() => void say()}>
+          <Send className='size-4' />
+          <Trans>Send</Trans>
+        </Button>
+      </div>
+    </div>
+  )
+}
+
 export function MissionSetup({
   config,
   onChange,
@@ -912,8 +1031,9 @@ export function MissionSetup({
 
   return (
     <div className='bg-background fixed inset-0 z-50 flex items-center justify-center overflow-auto p-6'>
-      <div className='w-full max-w-2xl'>
-        <h1 className='mb-6 text-3xl font-semibold tracking-tight'>Air</h1>
+      <div className='flex w-full max-w-5xl flex-col items-center gap-6 lg:flex-row lg:items-stretch lg:justify-center'>
+        <div className='w-full max-w-2xl'>
+          <h1 className='mb-6 text-3xl font-semibold tracking-tight'>Air</h1>
         <div>
           <Tabs variant='underline' value={tab} onValueChange={onTabChange}>
             <TabsList>
@@ -1254,6 +1374,10 @@ export function MissionSetup({
           </Button>
           <ReferenceDialog />
           <CreditsDialog />
+        </div>
+        </div>
+        <div className='flex h-96 w-full max-w-sm flex-col lg:h-auto lg:w-80'>
+          <LobbyChat server={config.world} callsign={config.callsign} />
         </div>
       </div>
     </div>
