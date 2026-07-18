@@ -11,18 +11,20 @@ SAFE_PNPM = $(abspath ../../claude/scripts/safe-pnpm.sh)
 
 all: web/dist/index.html
 
-wasm: web/public/flight/flight.wasm
+wasm: web/src/assets/flight.wasm
 
 clean:
 	rm -rf web/dist
 
-web/dist/index.html: web/public/flight/flight.wasm $(shell find web/src web/public ../../lib/web/src -type f 2>/dev/null)
+web/dist/index.html: web/src/assets/flight.wasm $(shell find web/src web/public ../../lib/web/src -type f 2>/dev/null)
 	bash -c 'cd web && $(SAFE_PNPM) run build'
 # The flight simulation core, compiled for the browser from the world repo.
-web/public/flight/flight.wasm: $(shell find ../../world/games/air ../../world/wasm -name '*.go' 2>/dev/null)
-	mkdir -p web/public/flight
-	cd ../../world && GOOS=js GOARCH=wasm CGO_ENABLED=0 go build -trimpath -ldflags "-s -w" -o ../apps/air/web/public/flight/flight.wasm ./wasm
-	cp "$$(go env GOROOT)/lib/wasm/wasm_exec.js" web/public/flight/
+# Lands in src/assets so Vite content-hashes it into the bundle (no manual
+# cache-bust versions); the build products are gitignored there.
+web/src/assets/flight.wasm: $(shell find ../../world/games/air ../../world/wasm -name '*.go' 2>/dev/null)
+	mkdir -p web/src/assets
+	cd ../../world && GOOS=js GOARCH=wasm CGO_ENABLED=0 go build -trimpath -ldflags "-s -w" -o ../apps/air/web/src/assets/flight.wasm ./wasm
+	cp "$$(go env GOROOT)/lib/wasm/wasm_exec.js" web/src/assets/
 
 release: web/dist/index.html
 	rm -f $(RELEASE)/$(APP)_*.zip

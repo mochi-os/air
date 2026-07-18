@@ -27,5 +27,7 @@ dist-ssr
 # Raw model source downloads (carrier GLB is derived from these; not committed)
 downloads/
 
-# Flight core wasm — built by "make wasm" from ../../world (see Makefile)
-web/public/flight/
+# Flight core wasm — built by "make wasm" from ../../world (see Makefile);
+# lands in src/assets so Vite content-hashes it (committed GLBs live there too)
+web/src/assets/flight.wasm
+web/src/assets/wasm_exec.js

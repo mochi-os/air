@@ -18,6 +18,12 @@ import { flight_load, flight_ready, flight_failure, flight_init, flight_set, fli
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_horn, audio_seeker, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+// Model binaries ride the bundle as content-hashed assets (assets/nimitz-<hash>.glb):
+// the URL changes exactly when the bytes do, so the stale-programmatic-fetch trap
+// (90 minutes of phantom debugging, 2026-07-07) is impossible by construction —
+// no manual version constants to bump on regen. The dev readout shows the hash.
+import nimitz_model_url from '../assets/nimitz.glb?url'
+import fa18c_model_url from '../assets/fa18c.glb?url'
 import { createAppClient } from '@mochi/web'
 
 export type GameConfig = Record<string, unknown>
@@ -72,12 +78,11 @@ const SAVE_KEY="joust_cfg_v1";
 // OLS bracket, and the deck outline for the flight core. Measured per deck
 // with the align tool and the GLB measurement scripts; a second carrier is
 // one more entry (#100). CARRIER {x,z} is world PLACEMENT, not ship data.
-const NIMITZ_MODEL_VERSION=82;
+// stamp: the content hash from an imported asset URL (assets/nimitz-<hash>.glb),
+// for the dev readout — the capture-verification workflow reads it off the HUD.
+function model_stamp(url){ const m=/-([\w-]+)\.\w+$/.exec(url); return m?m[1]:url; }
 const CARRIER_MODELS={
-	// NIMITZ_MODEL_VERSION: bump on EVERY model.glb regen. The engine fetches the model programmatically,
-	// and browsers serve programmatic fetches from HTTP cache even across hard refreshes — a stale model
-	// cost us 90 minutes of phantom debugging (2026-07-07). The version is also shown in the dev readout.
-	nimitz:{ url:"vessels/nimitz/model.glb?v="+NIMITZ_MODEL_VERSION, length:333, yaw:20, bow:0, draft:0.375, deck:19,   // real USS Nimitz length. yaw:20 faces the bow to 070° (into the Midway wind) — the model's bow is +X (the retired Ford's was +Z, hence its yaw:110); both reach the same 070° recovery course. bow = the bow's bearing in the MODEL frame (0 = +X, 90 = +Z): the deck-ops frame is (yaw - bow), so carrier-local fore-aft tracks the drawn bow whatever the modeller's axes
+	nimitz:{ url:nimitz_model_url, length:333, yaw:20, bow:0, draft:0.375, deck:19,   // real USS Nimitz length. yaw:20 faces the bow to 070° (into the Midway wind) — the model's bow is +X (the retired Ford's was +Z, hence its yaw:110); both reach the same 070° recovery course. bow = the bow's bearing in the MODEL frame (0 = +X, 90 = +Z): the deck-ops frame is (yaw - bow), so carrier-local fore-aft tracks the drawn bow whatever the modeller's axes
 		stroke:85, speed:88,                             // catapult throw and end speed, m / m/s
 		// Wires + landing line: measured off the 1:200 CVN-68 deck plan (2026-07-06) — anchored on the deck
 		// plateau extent (model fa -166.5..+164.9), hull centreline at lat +1.3; strip axis came out 9.5° port
@@ -106,7 +111,7 @@ function here_text(){   // dev: the deck point under the NOSE WHEEL (plus the nu
 	const nx=ownship.pos.x+ownship.fwd.x*nose, nz=ownship.pos.z+ownship.fwd.z*nose;
 	const fa=carrier_fore_aft(nx,nz)+dev_nudge.fa, lat=carrier_lateral(nx,nz)+dev_nudge.lat;
 	const hd=Math.atan2(-(ownship.fwd.x*CARRIER_S+ownship.fwd.z*CARRIER_C), ownship.fwd.x*CARRIER_C-ownship.fwd.z*CARRIER_S)*180/Math.PI+dev_nudge.hd;   // heading in the deck frame (0 = down the bow, + = port), from the forward vector through the inverse frame
-	return "fa="+fa.toFixed(2)+", lat="+lat.toFixed(2)+", heading="+hd.toFixed(1)+", y="+ownship.pos.y.toFixed(2)+" · nimitz v"+NIMITZ_MODEL_VERSION;
+	return "fa="+fa.toFixed(2)+", lat="+lat.toFixed(2)+", heading="+hd.toFixed(1)+", y="+ownship.pos.y.toFixed(2)+" · nimitz "+model_stamp(nimitz_model_url);
 }
 function copy_here(){   // dev (Ctrl+C): the live position line to the clipboard
 	const txt=here_text();
@@ -774,7 +779,7 @@ function make_jet(tint){ const g=new THREE.Group(); g.userData.tint=tint;   // a
 // from game state: "drive" picks the state channel, min/max normalise a
 // signed surface deflection (rad) onto the clip span, flip reverses it.
 const AIRCRAFT_MODELS={
-	fa18c:{ url:"aircraft/fa18c/model.glb?v=4", length:17.07, yaw:90, pitch:0, roll:0,
+	fa18c:{ url:fa18c_model_url, length:17.07, yaw:90, pitch:0, roll:0,
 		cockpitHide:/^Pilot_Head_769$/,   // first person: this subtree is the head+helmet+visor+mask; the body and arms stay on the stick
 		pose:[ { node:"elevator_percent_key_AN_238_100", quaternion:[0,-0.996,0.087,0] } ],   // the stabs' shared parent is authored mid-animation 180°-flipped (planform-reversed stabs); this is its animation END key — the correct frame. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
 
