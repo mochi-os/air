@@ -1,6 +1,6 @@
 # Nimitz carrier model pipeline
 
-Builds the playable air carrier (`web/public/vessels/nimitz/model.glb`) directly from
+Builds the playable air carrier (`web/src/assets/nimitz.glb`) directly from
 the pristine Sketchfab download (`../../downloads/uss_nimitz_cvn-68_aircraft_carrier.glb`,
 gitignored) — no Blender round-trip. Each script reads that original and writes derived
 artifacts into this directory (all gitignored; regenerate on demand).
@@ -62,9 +62,10 @@ python3 bake_decktex.py                # bootstrap texture (uses previous/placeh
 python3 build_carrier.py               # writes outline.json, reads decktex12.png
 python3 bake_decktex.py                # re-bake with the real traced outline
 python3 build_carrier.py               # final model
-cp nimitz-clean.glb ../../web/public/vessels/nimitz/model.glb
+cp nimitz-clean.glb ../../web/src/assets/nimitz.glb
 python3 splice_outline.py              # outline.json -> engine.ts SHIP.outline
-# then bump NIMITZ_MODEL_VERSION in engine.ts and run `make` in apps/air
+# then run `make` in apps/air — Vite content-hashes the GLB into the bundle,
+# so the new bytes get a new URL automatically (no version constant to bump)
 ```
 
 `bake_decktex.py` caps its own memory at 8 GB (`RLIMIT_AS`) and rasterises marks in
@@ -73,9 +74,9 @@ kernel OOM killer reaped unrelated desktop processes (2026-07-13). A `MemoryErro
 from the bake means a rule change introduced an unbounded allocation - fix the
 allocation, do not raise the cap.
 
-The vite build copies `web/public/` → `web/dist/`; the server serves `dist`. After the cp,
-`touch web/src/game/engine.ts && make`, then `md5sum` dist vs public model.glb to confirm
-dist got the new bytes (the copy can race the build).
+The server serves `web/dist`. After the cp, run `make`, then confirm dist got the new
+bytes: `md5sum web/dist/assets/nimitz-*.glb web/src/assets/nimitz.glb` (a stale hash
+means the build ran before the cp landed).
 
 ## Verification (do these, in this order, after any model change)
 
@@ -86,7 +87,8 @@ dist got the new bytes (the copy can race the build).
 3. **In-game captures** (`cdp_shot.py`, `start=carrier&cat=4&view=chase`) at the standard
    angles: close (`az=-0.85&el=0.25&dist=32`), straight down (`az=-1.2&el=1.45&dist=55`),
    beam (`az=-1.6&el=0.06&dist=60`), and from below (`el<0`, incl. grazing `el=-0.12`
-   close in). The HUD stamps `nimitz vNN` — confirm the version before trusting a capture.
+   close in). The HUD stamps `nimitz <hash>` (the bundled GLB's content hash) — confirm
+   it matches the freshly built `dist/assets/nimitz-<hash>.glb` before trusting a capture.
 4. **Judge recesses in game, never in Cycles.** Cycles sun+sky renders any overhung
    cavity as pure black and misleads (it nearly misdiagnosed the authored-fascia
    prototype); the engine's ambient-rich lighting is the target look. Blender renders

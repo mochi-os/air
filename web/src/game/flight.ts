@@ -4,16 +4,22 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 // The flight simulation core: a Go blade-element model compiled to wasm
-// (built from world/games/air/flight into public/flight/), shared with
+// (built from world/games/air/flight into src/assets/), shared with
 // the authoritative world server. This module owns loading, the fixed-dt
 // accumulator, and the typed-array boundary — one crossing per rendered
 // frame. Layouts mirror world/games/air/flight/encode.go and
 // world/wasm/main.go exactly; a mismatch is a version bump, not a patch.
 
 import { getErrorMessage } from '@mochi/web'
+// Vite content-hashes these into the bundle (assets/flight-<hash>.wasm): the
+// URL changes exactly when the bytes do, so stale-cache pairing of an old wasm
+// with a fresh engine.js (the #72 trap-topple report) is impossible by
+// construction — no manual version bumps, no cache:'reload'.
+import wasm_exec_url from '../assets/wasm_exec.js?url'
+import flight_wasm_url from '../assets/flight.wasm?url'
 
 // Encoded state layout (float64 words).
-export const SIZE = 109 // 57 base + 40 element losses + 8 channel jams + lost mass + 3 gear-leg damages (#78, flight Version 24)
+export const SIZE = 109 // 57 base + 40 element losses + 8 channel jams + lost mass + 3 gear-leg damages (#78)
 export const STATE = {
   position: 0, // x y z
   velocity: 3,
@@ -59,10 +65,6 @@ export const STATE = {
 const EXTRA = 7
 
 export const DT = 1 / 240
-// Bump on any flight.wasm rebuild that must reach already-loaded browsers. The
-// cache:'reload' fetch below makes this belt-and-suspenders, but the version
-// query also breaks any entry a proxy or old cache is still pinning by URL.
-const WASM_VERSION = '2026-07-14b' // BFM layer (#130): wounded flying, fire drill, defensive spiral, timed breaks, drag — and the bandit hulk's damage now feeds its brain and dynamics
 const CAP = 30 // accumulator cap: tab throttling must not spiral into replay storms
 
 // Control sample for one frame; the FCS interprets pitch/roll/yaw as
@@ -130,17 +132,12 @@ export async function flight_load(): Promise<void> {
     await new Promise<void>((resolve, reject) => {
       if (globalThis.Go) return resolve()
       const script = document.createElement('script')
-      script.src = new URL('flight/wasm_exec.js?v=' + WASM_VERSION, location.href).href
+      script.src = wasm_exec_url
       script.onload = () => resolve()
       script.onerror = () => reject(new Error('wasm_exec.js failed to load'))
       document.head.appendChild(script)
     })
-    // cache: 'reload' bypasses the browser HTTP cache on EVERY load — the wasm
-    // is a build product with no content hash in its name, and browsers serve
-    // programmatic fetches from cache even across hard refreshes (the same trap
-    // documented for the model glb). A stale wasm paired with a fresh engine.js
-    // silently runs old physics under new geometry (the #72 trap-topple report).
-    const response = await fetch(new URL('flight/flight.wasm?v=' + WASM_VERSION, location.href).href, { cache: 'reload' })
+    const response = await fetch(flight_wasm_url)
     if (!response.ok) throw new Error('flight.wasm HTTP ' + response.status)
     const go = new globalThis.Go!()
     const { instance } = await WebAssembly.instantiate(await response.arrayBuffer(), go.importObject)

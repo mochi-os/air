@@ -29,8 +29,8 @@ Wires, sheaves, shuttles, JBD animation, OLS lights, floods are ENGINE-drawn - n
 Output: nimitz-clean.glb
 
 REGEN CHAIN (order matters): build_carrier.py (writes outline.json) -> bake_decktex.py
-(reads outline.json -> decktex12.png) -> build_carrier.py (reads decktex12) -> deploy +
-splice_outline.py + bump NIMITZ_MODEL_VERSION + make. Needs cab38.npy/cab1.npy (extract_cab.py).
+(reads outline.json -> decktex12.png) -> build_carrier.py (reads decktex12) -> cp to
+web/src/assets/nimitz.glb + splice_outline.py + make. Needs cab38.npy/cab1.npy (extract_cab.py).
 
 LESSONS (2026-07-10..13, v53-v80 - the full history is in PLAN.md and README.md):
 - SOURCES OF TRUTH: the 1:200 GA plan is 2D layout truth for markings and fixtures
@@ -54,9 +54,11 @@ LESSONS (2026-07-10..13, v53-v80 - the full history is in PLAN.md and README.md)
   them exactly); run raycheck.py after any hull/skirt/deck edit; judge recesses
   and dark cavities IN GAME (engine lighting), never in Cycles renders - Cycles
   shows any overhung cavity as pure black and misleads.
-- Bump NIMITZ_MODEL_VERSION on EVERY model.glb regen and md5-compare
-  web/public vs web/dist after make - browsers serve stale programmatic fetches
-  across hard refreshes, and the vite copy can race the build.
+- The GLB is a Vite content-hashed bundle asset (web/src/assets/nimitz.glb ->
+  dist/assets/nimitz-<hash>.glb): new bytes get a new URL automatically, no
+  version constant. After make, md5-compare dist/assets/nimitz-*.glb against
+  src/assets/nimitz.glb - a stale hash means the build raced the cp. The dev
+  HUD stamps the hash.
 """
 import json, struct
 import numpy as np
