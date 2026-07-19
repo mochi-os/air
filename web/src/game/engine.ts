@@ -18,12 +18,14 @@ import { flight_load, flight_ready, flight_failure, flight_init, flight_set, fli
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_horn, audio_seeker, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 // Model binaries ride the bundle as content-hashed assets (assets/nimitz-<hash>.glb):
 // the URL changes exactly when the bytes do, so the stale-programmatic-fetch trap
 // (90 minutes of phantom debugging, 2026-07-07) is impossible by construction —
 // no manual version constants to bump on regen. The dev readout shows the hash.
 import nimitz_model_url from '../assets/nimitz.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
+import { asset as asset_bytes, progress as load_progress } from './preload'
 import { createAppClient } from '@mochi/web'
 
 export type GameConfig = Record<string, unknown>
@@ -963,14 +965,16 @@ async function init_external_model(kind){
 	const tag=spec.url;
 	try{
 		// Fetch/decode the GLB bytes ourselves (the loader's .load() builds a Request that sandboxed iframes can't clone).
-		const resp=await fetch(spec.url); if(!resp.ok) throw new Error("HTTP "+resp.status); const abuf=await resp.arrayBuffer();
+		// The preload module owns the download: single-flight with the menu's early start, byte-counted for the loading screen.
+		const abuf=await asset_bytes(spec.url);
 		// Capture per-material baseColor images, then strip texture refs so parse() never makes a blob: URL (which the sandbox rejects).
 		const parts=glb_split(abuf); const tex_by_material=model_textures(parts);
 		(parts.json.materials||[]).forEach(m=>{ if(m.pbrMetallicRoughness){ delete m.pbrMetallicRoughness.baseColorTexture; delete m.pbrMetallicRoughness.metallicRoughnessTexture; } delete m.normalTexture; delete m.occlusionTexture; delete m.emissiveTexture;
 			for(const ext of Object.values(m.extensions||{})){ for(const key of Object.keys(ext)){ if(key.endsWith("Texture")) delete ext[key]; } } });   // extension-held refs too (KHR_materials_specular etc.) — a dangling texture index kills the parse
 		delete parts.json.textures; delete parts.json.images; delete parts.json.samplers;
 		const clean=glb_repack(parts.json, parts.bin);
-		new GLTFLoader().parse(clean, "",
+		const loader=new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder);   // models ship meshopt-compressed (EXT_meshopt_compression); the decoder is bundled, no CDN
+		loader.parse(clean, "",
 			async gltf=>{ try{
 				for(const fix of spec.pose||[]){ let o=null; gltf.scene.traverse(x=>{ if(!o&&x.name===fix.node) o=x; }); if(o) o.quaternion.set(...fix.quaternion); }   // static pose corrections for mid-animation-authored nodes, before anything captures rest poses
 				const proto=normalise_model(gltf.scene, spec);
@@ -1099,7 +1103,7 @@ async function init_carrier_model(){
 		let abuf;
 		if(SHIP.url.startsWith("data:")){ const b64=SHIP.url.slice(SHIP.url.indexOf(",")+1); const bin=atob(b64);
 			const u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); abuf=u.buffer; }
-		else { const resp=await fetch(SHIP.url); if(!resp.ok) throw new Error("HTTP "+resp.status); abuf=await resp.arrayBuffer(); }
+		else { abuf=await asset_bytes(SHIP.url); }   // preload-owned download: single-flight with the menu's early start
 		const parts=glb_split(abuf); const M=(parts.json.materials||[]).find(m=>m.pbrMetallicRoughness&&m.pbrMetallicRoughness.baseColorTexture)||{};   // the first material CARRYING a texture (the Ford's was materials[0]; the Nimitz's baked deck material sits at the end)
 		const baseSrc=glb_image(parts, M.pbrMetallicRoughness&&M.pbrMetallicRoughness.baseColorTexture&&M.pbrMetallicRoughness.baseColorTexture.index);
 		const normSrc=glb_image(parts, M.normalTexture&&M.normalTexture.index);
@@ -1107,7 +1111,8 @@ async function init_carrier_model(){
 			for(const ext of Object.values(m.extensions||{})){ for(const key of Object.keys(ext)){ if(key.endsWith("Texture")) delete ext[key]; } } });   // extension-held refs too (KHR_materials_specular etc.) — a dangling texture index kills the parse
 		delete parts.json.textures; delete parts.json.images; delete parts.json.samplers;
 		const clean=glb_repack(parts.json, parts.bin);
-		new GLTFLoader().parse(clean, "", async gltf=>{ try{
+		const shiploader=new GLTFLoader(); shiploader.setMeshoptDecoder(MeshoptDecoder);   // the carrier ships meshopt-compressed
+		shiploader.parse(clean, "", async gltf=>{ try{
 			const gscene=gltf.scene; gscene.updateMatrixWorld(true);
 			const b0=new THREE.Box3().setFromObject(gscene), sz=b0.getSize(new THREE.Vector3());
 			const s=SHIP.length/Math.max(sz.x,sz.y,sz.z,1e-3);
@@ -3789,9 +3794,17 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 		{ const parts={ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() };   // load profiling: stamp each gate the first time it opens, report the breakdown once done
 			for(const k of Object.keys(parts)) if(parts[k]&&load_marks[k]===undefined) load_marks[k]=performance.now()-loading_t0;
 			load_pending=Object.keys(parts).filter(k=>!parts[k]); }
-		if(assets_ready() || performance.now()-loading_t0>20000){ loading=false;
-			console.log("[load] "+Object.entries(load_marks).map(([k,v])=>k+" "+(v/1000).toFixed(2)+"s").join(" · ")+" · total "+((performance.now()-loading_t0)/1000).toFixed(2)+"s"); }
-		else { draw_loading(); __raf=requestAnimationFrame(frame); return; }
+		if(assets_ready()){ loading=false;
+			console.log("[load] "+Object.entries(load_marks).map(([k,v])=>k+" "+(v/1000).toFixed(2)+"s").join(" · ")+" · total "+((performance.now()-loading_t0)/1000).toFixed(2)+"s");
+			if(MULTIPLAYER && !net) net_connect(); }   // dial only NOW: connecting before the assets exist left the link idle for the whole download (slow connections were dropped mid-load and bounced back to the menu)
+		else { const lp=load_progress();
+			// A slow load is a slow load — the percentage moves and the player waits. Failure is a
+			// FAILED fetch or 20 s with no byte anywhere: the old fixed 20 s wall-clock cap
+			// force-started missions with missing models whenever the connection was merely slow.
+			if(lp.failed || lp.idle>20000){ loading=false;
+				console.error("air load failed:", lp.failed?"fetch error":"stalled", load_pending.join(","));
+				notice(translate("LOADING FAILED")); setTimeout(()=>{ if(running){ running=false; if(onExit) onExit(); } },1800); }
+			else { draw_loading(); __raf=requestAnimationFrame(frame); return; } }
 	}
 	if(running){
 		if(!game_paused){ ocean_mat.uniforms.u_time.value+=dt; step_world(dt); }   // frozen world stops advancing
@@ -3819,13 +3832,14 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 	__raf = requestAnimationFrame(frame); }
 function draw_loading(){ hctx.clearRect(0,0,HW,HH); hctx.fillStyle="#000"; hctx.fillRect(0,0,HW,HH);   // opaque: covers the half-built 3D scene beneath
 	hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="22px monospace";
-	hctx.fillText(translate("LOADING")+".".repeat(1+Math.floor(performance.now()/400)%3), HW/2, HH/2);
+	const lp=load_progress();   // real download percentage across the byte-counted assets (models + flight core)
+	hctx.fillText(translate("LOADING")+".".repeat(1+Math.floor(performance.now()/400)%3)+(lp.percent>0&&lp.percent<100?" "+lp.percent+"%":""), HW/2, HH/2);
 	if(load_pending.length){ hctx.font="12px monospace"; hctx.fillStyle="#8fa4b8"; hctx.fillText(load_pending.join(" · "), HW/2, HH/2+24); hctx.font="20px monospace"; } }   // what the gate is still waiting on — the answer to "what is taking so long
 function draw_pause_banner(){ hctx.save(); hctx.textAlign="center"; hctx.fillStyle="rgba(3,12,9,0.45)"; hctx.fillRect(HW/2-150,HH/2-44,300,88);
 	hctx.fillStyle=AM; hctx.font="34px monospace"; hctx.fillText(translate("PAUSED"),HW/2,HH/2-2);
 	hctx.fillStyle=GR; hctx.font="12px monospace"; hctx.fillText(translate("P to resume \u00b7 M map \u00b7 Esc menu"),HW/2,HH/2+24); hctx.restore(); }
 start_mission();
-if(MULTIPLAYER) net_connect();
+if(MULTIPLAYER && !loading) net_connect();   // assets already cached: dial at once; otherwise the loading gate dials on completion
 __raf = requestAnimationFrame(frame);
 void init_external_model(cfg.aircraft||"fa18c");   // one airframe today: ownship, bandit, and remotes all fly it (a second type would preload here too)
 init_carrier_model();

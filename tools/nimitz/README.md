@@ -62,10 +62,19 @@ python3 bake_decktex.py                # bootstrap texture (uses previous/placeh
 python3 build_carrier.py               # writes outline.json, reads decktex12.png
 python3 bake_decktex.py                # re-bake with the real traced outline
 python3 build_carrier.py               # final model
-cp nimitz-clean.glb ../../web/src/assets/nimitz.glb
+../../web/node_modules/.bin/gltfpack -i nimitz-clean.glb -o ../../web/src/assets/nimitz.glb -cc -kn -noq
 python3 splice_outline.py              # outline.json -> engine.ts SHIP.outline
 # then run `make` in apps/air — Vite content-hashes the GLB into the bundle,
-# so the new bytes get a new URL automatically (no version constant to bump)
+# so the new bytes get a new URL automatically (no version constant to bump).
+# gltfpack (a web devDependency) meshopt-compresses the shipped copy
+# (~21 MB -> ~12; most of the rest is the embedded deck JPEG); the engine's
+# GLTFLoader has the meshopt decoder registered. -noq is REQUIRED: with
+# quantization on, gltfpack moves UV dequantization into KHR_texture_transform,
+# which the engine's manual texture rebinding bypasses (the deck paints
+# vanished into a blur), and the quantized positions shifted the measured
+# deck height 0.35 m (y 22.52 -> 22.87). nimitz-clean.glb stays UNCOMPRESSED —
+# raycheck.py/audit.py/plan_check.py all read it, and gltfpack prunes unused
+# materials, so tooling always works on the clean build.
 ```
 
 `bake_decktex.py` caps its own memory at 8 GB (`RLIMIT_AS`) and rasterises marks in
