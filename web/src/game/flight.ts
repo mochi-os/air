@@ -17,6 +17,7 @@ import { getErrorMessage } from '@mochi/web'
 // construction — no manual version bumps, no cache:'reload'.
 import wasm_exec_url from '../assets/wasm_exec.js?url'
 import flight_wasm_url from '../assets/flight.wasm?url'
+import { asset } from './preload'
 
 // Encoded state layout (float64 words).
 export const SIZE = 109 // 57 base + 40 element losses + 8 channel jams + lost mass + 3 gear-leg damages (#78)
@@ -137,10 +138,11 @@ export async function flight_load(): Promise<void> {
       script.onerror = () => reject(new Error('wasm_exec.js failed to load'))
       document.head.appendChild(script)
     })
-    const response = await fetch(flight_wasm_url)
-    if (!response.ok) throw new Error('flight.wasm HTTP ' + response.status)
+    // The preload module owns the download (single-flight with the menu's
+    // early start, byte counting for the loading screen).
+    const bytes = await asset(flight_wasm_url)
     const go = new globalThis.Go!()
-    const { instance } = await WebAssembly.instantiate(await response.arrayBuffer(), go.importObject)
+    const { instance } = await WebAssembly.instantiate(bytes, go.importObject)
     void go.run(instance) // resolves only if the core exits — it never should
     const started = performance.now()
     while (!globalThis.air_flight) {

@@ -11,6 +11,7 @@ import { MissionSetup } from '../components/MissionSetup'
 import { useMissionConfig } from '../lib/config-store'
 import { type GameHandle } from '../game/engine'
 import { type Join as NetJoin } from '../game/net'
+import { preload } from '../game/preload'
 
 // Mission-setup tabs are mirrored in the URL (?tab=…) so the address bar tracks
 // the active tab and it's shareable / back-navigable, like other Mochi apps.
@@ -22,6 +23,10 @@ const SETUP_TABS: SetupTab[] = ['mission', 'weather', 'controls', 'graphics']
 function useTabTitle() {
   useEffect(() => {
     shellSetTitle('Air')
+    // Start the big asset downloads (models + flight core) while the player is
+    // still in the menu: by the time they start a mission the loading screen
+    // usually costs nothing, and the engine joins these same in-flight fetches.
+    preload()
   }, [])
 }
 

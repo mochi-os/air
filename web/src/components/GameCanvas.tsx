@@ -64,6 +64,7 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'M to close': msg`M to close`,
   'P to resume · M map · Esc menu': msg`P to resume · M map · Esc menu`,
   'CONNECTION FAILED': msg`CONNECTION FAILED`,
+  'LOADING FAILED': msg`LOADING FAILED`,
   'FLIGHT CORE FAILED': msg`FLIGHT CORE FAILED`,
   'SESSION ENDED': msg`SESSION ENDED`,
   KILL: msg`KILL`,
