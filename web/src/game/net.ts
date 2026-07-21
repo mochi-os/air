@@ -14,6 +14,7 @@
 import { createAppClient } from '@mochi/web'
 import { SIZE } from './flight'
 import { frame, frames } from './framing'
+import { sanitizeWrap, minimumImage, fold } from './wrap'
 
 const PROTOCOL = 1
 
@@ -472,18 +473,11 @@ export class Net {
   }
 
   shortest(from: number, to: number): number {
-    let d = to - from
-    if (this.wrap > 0) {
-      const half = this.wrap / 2
-      while (d > half) d -= this.wrap
-      while (d < -half) d += this.wrap
-    }
-    return d
+    return minimumImage(this.wrap, from, to)
   }
 
   private rewrap(value: number): number {
-    if (this.wrap <= 0) return value
-    return value - this.wrap * Math.round(value / this.wrap)
+    return fold(this.wrap, value)
   }
 
   // chat sends one match-chat line (#84); the server sanitizes, scopes, and
@@ -563,6 +557,11 @@ export class Net {
             kills: tally?.kills ?? 0,
             deaths: tally?.deaths ?? 0,
           }
+          // The position floats are the only non-finite-capable field (a
+          // hostile server can encode NaN/Inf in the Float32s); drop the
+          // record rather than feed NaN through shortest()/rewrap() into
+          // Three.js. Attitude/direction/speed are int-derived and finite.
+          if (!pose.position.every(Number.isFinite)) continue
           let ring = this.rings.get(slot)
           if (!ring) {
             ring = []
@@ -738,7 +737,7 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
   for (const p of net.welcome.players ?? []) net.names.set(p.slot, p.name) // players present before us; later joiners arrive via roster events
   net.slot = Number(first.slot)
   const spawn = first.spawn as { wrap?: number; team?: string; score?: Record<string, number> } | undefined
-  if (spawn?.wrap) net.wrap = Number(spawn.wrap)
+  if (spawn && spawn.wrap !== undefined) net.wrap = sanitizeWrap(spawn.wrap, net.wrap)
   if (spawn?.team) net.teams.set(net.slot, spawn.team)
   if (spawn?.score) net.score = spawn.score
   net.start(writer, messages)
