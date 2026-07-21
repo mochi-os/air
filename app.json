@@ -14,7 +14,7 @@
 
 	"database": {
 		"file": "air.db",
-		"schema": 3,
+		"schema": 4,
 		"create": {"function": "database_create"},
 		"upgrade": {"function": "database_upgrade"},
 	},
@@ -34,6 +34,6 @@
 		"-/config/load": {"function": "config_load"},
 		"-/config/save": {"function": "config_save"},
 		"-/match/record": {"function": "match_record"},
-		"-/telemetry/save": {"function": "telemetry_save", "public": true}
+		"-/telemetry/save": {"function": "telemetry_save"}
 	}
 }

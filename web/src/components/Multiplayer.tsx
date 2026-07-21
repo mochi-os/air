@@ -290,11 +290,11 @@ export function Multiplayer({
               </div>
               <div className='flex items-center gap-2'>
                 <Switch
-                  id='rule-fuel'
+                  id='rule-fuel-unlimited'
                   checked={!!cheats.fuel}
                   onCheckedChange={(v) => setCheats((c) => ({ ...c, fuel: v }))}
                 />
-                <Label htmlFor='rule-fuel' className='font-normal'>
+                <Label htmlFor='rule-fuel-unlimited' className='font-normal'>
                   <Trans>Unlimited fuel</Trans>
                 </Label>
               </div>
