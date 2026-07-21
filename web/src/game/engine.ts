@@ -33,7 +33,6 @@ export type GameConfig = Record<string, unknown>
 export interface GameHandle {
   stop: () => void
   resume: (config?: GameConfig) => void
-  leave: () => void
   exit: () => void                              // the old Esc: suspend to the mission menu (leaves the match in multiplayer)
   pause: (on: boolean) => void                  // the menu popup's single-player freeze (#84)
   chat: (text: string, scope: string) => void   // send one match-chat line (#84)
@@ -74,7 +73,6 @@ const cfg = { render_scale:1.0, dyn_res:false, ocean_segments:256, exterior_deta
 	tracers:true, missiles:true, flares:true, shadows:false, clouds:"none", afterburner:true,
 	view:"hud", invert:false, framerate:false, sens:1.0,
 	task:"joust", start:"carrier", tod:"day", help:false };
-const SAVE_KEY="joust_cfg_v1";
 // The ship: everything that describes the carrier itself, per model —
 // shuttle (nose-gear) points, arrestor wires, the landing centreline, the
 // OLS bracket, and the deck outline for the flight core. Measured per deck
@@ -101,10 +99,9 @@ const CARRIER_MODELS={
 		ols:{ fa:-21.0, lat:-37.06, model:true },         // OLS bracket on the port side — measured off the model's own IFLOLS: amber lens column (heights -0.5..+2.1 rel deck), green datum arms at +0.66 spanning 8.5 m, red wave-off columns at ±1.5 m. model:true = the GLB carries the physical structure, so the engine draws only the glowing lights
 		outline:[ [-167.0,8.11],[-164.0,16.72],[-161.0,23.5],[-158.0,24.35],[-155.0,23.36],[-152.0,24.56],[-149.0,25.74],[-146.0,26.68],[-143.0,27.34],[-140.0,28.56],[-137.0,28.88],[-134.0,29.37],[-131.0,29.85],[-128.0,30.25],[-125.0,30.36],[-122.0,30.46],[-119.0,31.88],[-116.0,33.41],[-113.0,34.89],[-110.0,35.02],[-107.0,35.11],[-104.0,35.19],[-101.0,35.28],[-98.0,35.36],[-95.0,35.44],[-92.0,35.52],[-89.0,35.6],[-86.0,36.4],[-83.0,37.35],[-80.0,38.27],[-77.0,38.45],[-74.0,38.45],[-71.0,38.27],[-68.0,38.08],[-65.0,34.5],[-62.0,31.1],[-59.0,27.37],[-56.0,27.03],[-53.0,26.7],[-50.0,26.7],[-47.0,26.7],[-44.0,30.62],[-41.0,34.53],[-38.0,38.27],[-35.0,37.35],[-32.0,36.43],[-29.0,35.69],[-26.0,35.69],[-23.0,35.69],[-20.0,35.69],[-17.0,35.69],[-14.0,35.69],[-11.0,35.69],[-8.0,36.43],[-5.0,37.16],[-2.0,37.9],[1.0,37.9],[4.0,37.9],[7.0,37.9],[10.0,37.9],[13.0,37.16],[16.0,36.43],[19.0,35.69],[22.0,35.69],[25.0,35.69],[28.0,35.69],[31.0,35.69],[34.0,35.69],[37.0,35.69],[40.0,36.43],[43.0,37.16],[46.0,37.9],[49.0,37.9],[52.0,37.9],[55.0,37.9],[58.0,37.9],[61.0,37.9],[64.0,37.85],[67.0,37.33],[70.0,36.04],[73.0,33.99],[76.0,31.65],[79.0,29.27],[82.0,26.93],[85.0,24.55],[88.0,22.43],[91.0,21.04],[94.0,20.41],[97.0,19.46],[100.0,18.47],[103.0,17.44],[106.0,17.22],[109.0,17.0],[112.0,16.76],[115.0,16.52],[118.0,16.32],[121.0,16.13],[124.0,15.95],[127.0,15.68],[130.0,15.43],[133.0,15.17],[136.0,15.0],[139.0,14.78],[142.0,14.61],[145.0,14.38],[148.0,14.16],[151.0,13.99],[154.0,13.74],[157.0,13.54],[160.0,13.23],[163.0,13.02],[164.0,12.84],[165.0,12.77],[165.0,-10.34],[164.0,-10.51],[163.0,-10.76],[160.0,-10.9],[157.0,-11.1],[154.0,-11.29],[151.0,-11.44],[148.0,-11.61],[145.0,-11.78],[142.0,-12.1],[139.0,-12.33],[136.0,-12.62],[133.0,-12.76],[130.0,-12.93],[127.0,-13.03],[124.0,-13.31],[121.0,-13.58],[118.0,-13.91],[115.0,-14.06],[112.0,-14.25],[109.0,-14.39],[106.0,-14.6],[103.0,-14.86],[100.0,-15.13],[97.0,-15.37],[94.0,-15.53],[91.0,-15.77],[88.0,-16.75],[85.0,-18.5],[82.0,-20.84],[79.0,-23.16],[76.0,-25.49],[73.0,-27.81],[70.0,-30.12],[67.0,-32.44],[64.0,-34.66],[61.0,-36.46],[58.0,-37.48],[55.0,-37.83],[52.0,-37.83],[49.0,-37.83],[46.0,-37.83],[43.0,-37.83],[40.0,-37.83],[37.0,-37.83],[34.0,-37.83],[31.0,-37.36],[28.0,-36.6],[25.0,-35.65],[22.0,-34.99],[19.0,-34.45],[16.0,-33.92],[13.0,-33.48],[10.0,-33.57],[7.0,-33.83],[4.0,-34.19],[1.0,-34.19],[-2.0,-34.32],[-5.0,-33.56],[-8.0,-33.56],[-11.0,-33.43],[-14.0,-34.2],[-17.0,-35.95],[-20.0,-35.45],[-23.0,-34.7],[-26.0,-33.0],[-29.0,-33.55],[-32.0,-34.35],[-35.0,-34.35],[-38.0,-34.35],[-41.0,-34.35],[-44.0,-34.67],[-47.0,-34.98],[-50.0,-35.3],[-53.0,-34.98],[-56.0,-34.66],[-59.0,-34.34],[-62.0,-34.34],[-65.0,-34.34],[-68.0,-35.16],[-71.0,-35.97],[-74.0,-36.79],[-77.0,-36.79],[-80.0,-36.79],[-83.0,-35.97],[-86.0,-35.16],[-89.0,-33.81],[-92.0,-33.29],[-95.0,-32.76],[-98.0,-32.76],[-101.0,-32.76],[-104.0,-32.76],[-107.0,-32.76],[-110.0,-32.76],[-113.0,-32.76],[-116.0,-32.81],[-119.0,-32.64],[-122.0,-28.11],[-125.0,-22.52],[-128.0,-17.05],[-131.0,-15.77],[-134.0,-15.39],[-137.0,-15.0],[-140.0,-14.69],[-143.0,-14.37],[-146.0,-14.06],[-149.0,-13.6],[-152.0,-13.18],[-155.0,-12.77],[-158.0,-12.42],[-161.0,-11.97],[-164.0,-9.43],[-167.0,-7.09] ] } }; // deck polygon TRACED FROM THE NIMITZ deck grid (84 pts, 1.5 m cells) — the Ford placeholder was narrower in places and the physics dropped jets through visually-solid deck near the edges
 const SHIP=CARRIER_MODELS.nimitz;   // the active carrier (a picker arrives with the second ship)
-function load_cfg(){ try{ const s=localStorage.getItem(SAVE_KEY); if(s) Object.assign(cfg,JSON.parse(s)); }catch(e){}
+function sanitize_cfg(){   // runs after every config merge (the server-backed store can hold stale eras too)
 	delete cfg.cats; delete cfg.cat_dy;   // pre-#100 configs carried ship data; CARRIER_MODELS owns it now
 	if(cfg.clouds!=="none"&&!["cumulus","high_stratus","low_stratus"].includes(cfg.clouds)) cfg.clouds="cumulus"; }   // a saved cloud type that no longer exists falls back to the default
-function save_cfg(){ try{ localStorage.setItem(SAVE_KEY,JSON.stringify(cfg)); }catch(e){} }
 let dev_cursor=null;   // the measuring-cursor ring on deck (dev mode)
 let dev_probe=null, dev_probe_text="", dev_probe_t=0;   // &probe pixel raycast state
 const dev_nudge={fa:0,lat:0,hd:0};   // dev measuring-cursor offset from the nose wheel (I/K fore-aft, J/L port-stbd, U/O heading while parked); the readout and Ctrl+C include it
@@ -120,8 +117,8 @@ function copy_here(){   // dev (Ctrl+C): the live position line to the clipboard
 	const fallback=()=>{ try{ const ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }catch(e){} };
 	try{ navigator.clipboard.writeText(txt).catch(fallback); }catch(e){ fallback(); }
 }
-load_cfg();
-Object.assign(cfg, config);   // mission-setup menu overrides saved/defaults
+Object.assign(cfg, config);   // mission-setup menu overrides defaults — the server-backed config store is the single source (the joust_cfg_v1 localStorage era silently no-opped in the sandboxed shell and shadowed the store outside it)
+sanitize_cfg();
 cfg.view="hud";   // start in HUD (view 2); 1-5 select views, V swaps cockpit/HUD
 let running=false, has_enemy=true;
 const MULTIPLAYER=!!join;            // in a live match the map/P must never freeze the world
@@ -740,32 +737,6 @@ function merge_geometries(geos){ let total=0; const parts=geos.map(g=>(g.index?g
 	const pos=new Float32Array(total*3),nor=new Float32Array(total*3); let o=0;
 	for(const g of parts){ const p=g.attributes.position.array,n=g.attributes.normal.array; pos.set(p,o); nor.set(n,o); o+=p.length; }
 	const out=new THREE.BufferGeometry(); out.setAttribute("position",new THREE.BufferAttribute(pos,3)); out.setAttribute("normal",new THREE.BufferAttribute(nor,3)); out.computeBoundingSphere(); return out; }
-function load_blob(d,r){ return new THREE.IcosahedronGeometry(r,d); }
-function build_exterior(detail){ const seg=[10,12,16,20,24,28][detail-1]; const parts=[];
-	const body=new THREE.CylinderGeometry(0.62,0.95,9,seg,3); body.rotateZ(-Math.PI/2); parts.push(body);
-	const nose=new THREE.ConeGeometry(0.62,3.4,seg); nose.rotateZ(-Math.PI/2); nose.translate(6.2,0,0); parts.push(nose);
-	const tail=new THREE.ConeGeometry(0.95,1.6,seg); tail.rotateZ(Math.PI/2); tail.translate(-5.3,0,0); parts.push(tail);
-	for(const side of [1,-1]){ const noz=new THREE.CylinderGeometry(0.45,0.55,1.4,seg,2); noz.rotateZ(Math.PI/2); noz.translate(-6.0,0,side*0.55); parts.push(noz);
-		const ring=new THREE.TorusGeometry(0.5,0.08,Math.max(6,seg/2),seg); ring.rotateY(Math.PI/2); ring.translate(-6.7,0,side*0.55); parts.push(ring); }
-	for(const side of [1,-1]){ const wing=new THREE.BoxGeometry(5.2,0.18,4.6,4,1,4); wing.translate(-0.6,-0.1,side*3.4); wing.rotateY(side*0.34); parts.push(wing);
-		const ail=new THREE.BoxGeometry(1.6,0.16,1.2,2,1,2); ail.translate(-2.4,-0.1,side*4.6); ail.rotateY(side*0.34); parts.push(ail);
-		const lex=new THREE.BoxGeometry(3.4,0.16,1.5,3,1,2); lex.translate(1.6,0.05,side*1.5); lex.rotateY(side*0.5); parts.push(lex);
-		const vt=new THREE.BoxGeometry(2.0,1.8,0.14,2,2,1); vt.translate(-4.2,1.1,side*0.8); vt.rotateX(side*0.28); parts.push(vt);
-		const hs=new THREE.BoxGeometry(1.8,0.14,2.0,2,1,2); hs.translate(-4.6,0,side*1.7); hs.rotateY(side*0.3); parts.push(hs);
-		const pyl=new THREE.BoxGeometry(0.8,0.4,0.18); pyl.translate(-0.4,-0.5,side*3.0); parts.push(pyl);
-		const msl=new THREE.CylinderGeometry(0.13,0.13,2.6,seg); msl.rotateZ(-Math.PI/2); msl.translate(-0.2,-0.8,side*3.0); parts.push(msl);
-		const mtip=new THREE.ConeGeometry(0.13,0.5,seg); mtip.rotateZ(-Math.PI/2); mtip.translate(1.35,-0.8,side*3.0); parts.push(mtip); }
-	const rivets=24*detail; for(let i=0;i<rivets;i++){ const r=new THREE.BoxGeometry(0.06,0.06,0.06); r.translate(5-(i/rivets)*10,0.62,0); parts.push(r); }
-	parts.push(load_blob(Math.min(detail+2,7),0.8));
-	return merge_geometries(parts); }
-function build_exterior_low(){ const parts=[];
-	const body=new THREE.CylinderGeometry(0.62,0.95,9,8); body.rotateZ(-Math.PI/2); parts.push(body);
-	const nose=new THREE.ConeGeometry(0.62,3.4,8); nose.rotateZ(-Math.PI/2); nose.translate(6.2,0,0); parts.push(nose);
-	for(const side of [1,-1]){ const wing=new THREE.BoxGeometry(5.2,0.18,4.6); wing.translate(-0.6,-0.1,side*3.4); wing.rotateY(side*0.34); parts.push(wing);
-		const vt=new THREE.BoxGeometry(2.0,1.8,0.14); vt.translate(-4.2,1.1,side*0.8); vt.rotateX(side*0.28); parts.push(vt); }
-	return merge_geometries(parts); }
-const ab_geo=new THREE.ConeGeometry(0.3,2.6,12); ab_geo.rotateZ(Math.PI/2);
-const ab_mat=new THREE.MeshBasicMaterial({color:0xffaa44,transparent:true,opacity:0.8,blending:THREE.AdditiveBlending,depthWrite:false,fog:false});
 function make_jet(tint){ const g=new THREE.Group(); g.userData.tint=tint;   // afterburner cones only — the airframe is the loaded GLB (no procedural fallback)
 	for(const side of [1,-1]){ const ab=new THREE.Mesh(ab_geo,ab_mat); ab.position.set(-9.3,-0.37,side*0.48); ab.userData.ab=true; g.add(ab); } return g; }   // at the Hornet's twin nozzles (Y raised from -0.95 after the gear extended the model bbox, shifting normalise's centre up ~0.58)
 
@@ -1366,84 +1337,6 @@ ownship.group.userData.player=true; layer_own_group(ownship.group);
 build_aircraft_lights(); layer_own_group(ownship.group);   // the nav lights/strobes/landing spot just joined the group — layer them too
 
 // ---- aircraft carrier (static landmark + launch platform) ----
-function deck_texture(){ const c=document.createElement("canvas"); c.width=1024; c.height=320; const x=c.getContext("2d");
-	x.fillStyle="#30343a"; x.fillRect(0,0,1024,320);
-	// 4 elevator outlines (deck-edge)
-	x.strokeStyle="#5a5f66"; x.lineWidth=3; x.setLineDash([]);
-	[[150,8,90,70],[470,8,90,70],[760,8,90,70],[150,244,90,70]].forEach(([ex,ey,ew,eh])=>{ x.fillStyle="#3a3f45"; x.fillRect(ex,ey,ew,eh); x.strokeRect(ex,ey,ew,eh); });
-	// angled landing area
-	x.save(); x.translate(430,170); x.rotate(-9*Math.PI/180);
-	x.strokeStyle="#f0f0f0"; x.lineWidth=4; x.strokeRect(-320,-58,640,116);
-	x.setLineDash([30,22]); x.lineWidth=7; x.strokeStyle="#f4f4f4"; x.beginPath(); x.moveTo(-320,0); x.lineTo(320,0); x.stroke(); x.setLineDash([]);
-	// touchdown target + arrestor reference bars
-	x.fillStyle="#f4f4f4"; for(let i=-2;i<=2;i++){ x.fillRect(-40,i*16-4,80,8); }
-	x.restore();
-	// landing number
-	x.fillStyle="#ededed"; x.font="bold 110px sans-serif"; x.textAlign="center"; x.textBaseline="middle";
-	x.save(); x.translate(250,170); x.rotate(-9*Math.PI/180); x.fillText("68",0,0); x.restore();
-	// bow catapult tracks (toward +u)
-	x.strokeStyle="#dadada"; x.lineWidth=4; x.beginPath();
-	x.moveTo(700,120); x.lineTo(1010,96); x.moveTo(700,176); x.lineTo(1010,176); x.stroke();
-	// JBD / foul lines
-	x.strokeStyle="#d9b430"; x.lineWidth=5; x.beginPath(); x.moveTo(660,60); x.lineTo(1010,46); x.moveTo(640,300); x.lineTo(420,210); x.stroke();
-	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=renderer.capabilities.getMaxAnisotropy(); return t; }
-function build_carrier(){
-	const g=new THREE.Group();
-	const hullMat=new THREE.MeshStandardMaterial({color:0x474c52,metalness:0.45,roughness:0.72,flatShading:true});
-	const deckMat=new THREE.MeshStandardMaterial({color:0x31353b,metalness:0.2,roughness:0.93});
-	const islMat=new THREE.MeshStandardMaterial({color:0x565b61,metalness:0.45,roughness:0.68,flatShading:true});
-	const drkMat=new THREE.MeshStandardMaterial({color:0x202327,metalness:0.5,roughness:0.6,flatShading:true});
-	// hull: main box, tapered bow, transom stern, bulb
-	const hp=[];
-	const hull=new THREE.BoxGeometry(286,24,40); hull.translate(0,7,0); hp.push(hull);
-	// bow taper — two angled side wedges + prow
-	for(const s of [1,-1]){ const side=new THREE.BoxGeometry(54,24,22); side.rotateY(-s*0.34); side.translate(150,7,s*9); hp.push(side); }
-	const prow=new THREE.BoxGeometry(18,24,14); prow.translate(172,7,0); hp.push(prow);
-	const stern=new THREE.BoxGeometry(16,24,40); stern.translate(-150,7,0); hp.push(stern);
-	const bulb=new THREE.BoxGeometry(120,8,26); bulb.translate(20,-3,0); hp.push(bulb);
-	const hullMesh=new THREE.Mesh(merge_geometries(hp),hullMat); hullMesh.castShadow=true; hullMesh.receiveShadow=true; g.add(hullMesh);
-	// flight deck: main + angled landing deck (port) + round-down stern + sponson overhangs
-	const dp=[];
-	const deck=new THREE.BoxGeometry(312,2,72); deck.translate(0,19,0); dp.push(deck);
-	const ang=new THREE.BoxGeometry(210,2,30); ang.rotateY(9*Math.PI/180); ang.translate(-36,19.05,-30); dp.push(ang);
-	for(const s of [1,-1]){ const cw=new THREE.BoxGeometry(280,1.2,4); cw.translate(0,18.4,s*37); dp.push(cw); }      // catwalk edge
-	const deckMesh=new THREE.Mesh(merge_geometries(dp),deckMat); deckMesh.receiveShadow=true; g.add(deckMesh);
-	// deck markings
-	const mark=new THREE.Mesh(new THREE.PlaneGeometry(312,72),new THREE.MeshBasicMaterial({map:deck_texture(),transparent:true}));
-	mark.rotation.x=-Math.PI/2; mark.position.set(0,20.08,0); g.add(mark);
-	// arrestor wires across the landing area
-	const wireMat=new THREE.MeshStandardMaterial({color:0x101010});
-	for(let i=0;i<4;i++){ const w=new THREE.Mesh(new THREE.BoxGeometry(46,0.25,0.25),wireMat); w.position.set(-70+i*12,20.2,-22); w.rotation.y=9*Math.PI/180; g.add(w); }
-	// island superstructure (starboard), multi-tier + funnel + masts + radars
-	const ip=[];
-	ip.push(new THREE.BoxGeometry(40,10,13).translate(-34,25,28));
-	ip.push(new THREE.BoxGeometry(30,7,12).translate(-34,33.5,28));
-	ip.push(new THREE.BoxGeometry(20,6,11).translate(-30,40,28));     // bridge
-	ip.push(new THREE.BoxGeometry(10,9,9).translate(-44,42,28));      // funnel
-	const islMesh=new THREE.Mesh(merge_geometries(ip),islMat); islMesh.castShadow=true; g.add(islMesh);
-	// dark glass bridge band
-	const gl=new THREE.Mesh(new THREE.BoxGeometry(20.4,3,11.4),drkMat); gl.position.set(-30,40.5,28); g.add(gl);
-	// masts + antennas + radar dishes
-	const mp=[];
-	mp.push(new THREE.CylinderGeometry(0.5,0.8,22,8).translate(-30,56,28));
-	mp.push(new THREE.CylinderGeometry(0.4,0.5,14,6).translate(-44,53,28));
-	for(let i=0;i<10;i++){ mp.push(new THREE.BoxGeometry(0.35,2.4,0.35).translate(-30+(Math.random()-0.5)*10,60+Math.random()*6,28+(Math.random()-0.5)*7)); }
-	const mastMesh=new THREE.Mesh(merge_geometries(mp),islMat); g.add(mastMesh);
-	for(const [mx,my,mz,r] of [[-30,49,33,3.2],[-26,52,24,2.4]]){ const dish=new THREE.Mesh(new THREE.BoxGeometry(r,r,0.5),drkMat); dish.position.set(mx,my,mz); dish.rotation.y=Math.random(); g.add(dish); }
-	// CIWS / sponson mounts at deck corners
-	for(const [sx,sz] of [[150,-22],[-140,26],[-140,-26],[120,30]]){ const sp=new THREE.Mesh(new THREE.BoxGeometry(6,4,6),islMat); sp.position.set(sx,16.5,sz); g.add(sp);
-		const dome=new THREE.Mesh(new THREE.SphereGeometry(2,8,6),drkMat); dome.position.set(sx,19,sz); g.add(dome); }
-	// deck-edge lights (visible at night)
-	const lg=new THREE.BufferGeometry(); const lp=[]; for(let i=-150;i<=150;i+=10){ lp.push(i,20.2,36, i,20.2,-36); }
-	lg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(lp),3));
-	g.add(new THREE.Points(lg,new THREE.PointsMaterial({color:0xffe9b0,size:1.6,sizeAttenuation:true,transparent:true,opacity:0.9})));
-	g.position.set(CARRIER.x,0,CARRIER.z);
-	return g;
-}
-const carrier_proc=null;   // procedural carrier removed — the carrier is the loaded GLB (crash if it fails to load)
-
-// ============================================================================ procedural world (fixed seed → deterministic, no stored map)
-function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
 const airports=[]; let island_polygons=[]; let WORLD_WRAP=0;   // 2D-map island outlines; toroidal world size (m, 0 = no wrap) — both set from map.json
 // Midway: load the baked map assets (midway-prep, per midway.md) and build the world.
 async function generate_world(){
@@ -1943,12 +1836,6 @@ function update_ols(p){   // 3D ball on the bracket, driven by the hook's deviat
 	o.wavePts.visible = low && ((performance.now()-(o.wavet||0))%400)<200;
 }
 function seg_between(mesh,ax,az,bx,bz,y){ const dx=bx-ax, dz=bz-az, len=Math.hypot(dx,dz)||0.001; mesh.position.set((ax+bx)/2,y,(az+bz)/2); mesh.rotation.y=Math.atan2(-dz,dx); mesh.scale.x=len; }
-function seg_cross(ax,az,bx,bz,cx,cz,dx,dz){   // do the x-z segments A→B and C→D intersect? (orientation of the endpoints)
-	const s1=(bx-ax)*(cz-az)-(bz-az)*(cx-ax), s2=(bx-ax)*(dz-az)-(bz-az)*(dx-ax), s3=(dx-cx)*(az-cz)-(dz-cz)*(ax-cx), s4=(dx-cx)*(bz-cz)-(dz-cz)*(bx-cx);
-	return (s1>0)!==(s2>0) && (s3>0)!==(s4>0);
-}
-let hook_claw=null;   // {node, local}: the tailhook claw tip, resolved once as the furthest vertex from the hook pivot (attitude-invariant in the node's local frame)
-const _wireApex=new THREE.Vector3();
 function claw_world(out){   // world position of the actual rendered claw, or null if the hook model isn't resolved
 	if(!hook_claw){ const base=ownship.group.getObjectByName("Hook_AN_base_20"); if(!base) return null;
 		const v=new THREE.Vector3(); let far=null, best=-1; base.updateWorldMatrix(true,true);
@@ -2782,7 +2669,7 @@ const telemetry=[];   // dev (Shift+T): rolling ~2 min of stick/attitude/alpha/q
 function telemetry_dump(){ if(!telemetry.length) return;
 	const csv="time,stick,attitude,alpha,q,nz,cas,stab\n"+telemetry.map(r=>r.join(",")).join("\n");
 	const n=telemetry.length;
-	client.post("/-/telemetry/save", { data: csv }).then(   // the sandboxed shell drops blob downloads, so store server-side (a fresh settings row per save — the rolling buffer keeps recording)
+	client.post("/-/telemetry/save", { data: csv }).then(   // the sandboxed shell drops blob downloads, so store server-side (a fresh telemetry row per save — the rolling buffer keeps recording)
 		()=>notice("TELEMETRY SAVED ("+n+" rows)"),
 		()=>notice("TELEMETRY SAVE FAILED")); }
 function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.userData.rig) return;
@@ -3749,7 +3636,7 @@ function start_mission(){
 	apply_clouds(); if(cloud_active()) size_rt();   // runs even for "none": zeroes the overcast/shadow uniforms on the ocean and sky
 	has_enemy=(cfg.task==="joust")&&!MULTIPLAYER; bandit.group.visible=has_enemy;   // multiplayer: the bandit airframe is a remote player's, posed from snapshots
 	sync_extras(cfg.extra_aircraft);
-	reset_ownship(); apply_size(); save_cfg();
+	reset_ownship(); apply_size();
 	pause_toggle=false; map_on=false; map_el.style.display="none";
 	loading=!assets_ready(); loading_t0=performance.now();   // hold the LOADING screen until every async asset is in — no piecemeal pop-in of carrier/airfield/airframe
 	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
@@ -3859,6 +3746,7 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
   function resume(updated) {
     if (updated) {
       Object.assign(cfg, updated)
+      sanitize_cfg()
       apply_size()
       apply_effects()
       apply_time_of_day(cfg.tod)
@@ -3866,12 +3754,7 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
     running = true
     try { stage.focus() } catch (e) {}
   }
-  function leave() {
-    if (!running) return
-    running = false
-    if (MULTIPLAYER) net_finish('left')
-  }
-  return { stop, resume, leave,
+  return { stop, resume,
     exit: exit_match,
     pause: (on) => { pause_toggle = !!on },   // only game_paused gates on !MULTIPLAYER — the popup cannot freeze a server
     chat: (words, scope) => { if (MULTIPLAYER && net && running) net.chat(String(words).slice(0, 200), scope) },

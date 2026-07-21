@@ -15,8 +15,8 @@ import { preload } from '../game/preload'
 
 // Mission-setup tabs are mirrored in the URL (?tab=…) so the address bar tracks
 // the active tab and it's shareable / back-navigable, like other Mochi apps.
-type SetupTab = 'mission' | 'weather' | 'controls' | 'graphics'
-const SETUP_TABS: SetupTab[] = ['mission', 'weather', 'controls', 'graphics']
+type SetupTab = 'mission' | 'weather' | 'controls' | 'keys' | 'sound' | 'graphics'
+const SETUP_TABS: SetupTab[] = ['mission', 'weather', 'controls', 'keys', 'sound', 'graphics']
 
 // Inside the menu shell the top window owns the browser tab; without this it
 // stays titled "Mochi" no matter what the app's own index.html says.

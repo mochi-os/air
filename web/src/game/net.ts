@@ -14,7 +14,7 @@
 import { createAppClient } from '@mochi/web'
 import { SIZE } from './flight'
 
-export const PROTOCOL = 1
+const PROTOCOL = 1
 
 // ---------------------------------------------------------------- CBOR codec
 // Minimal CBOR (RFC 8949) subset matching the server's fxamacker encoding:
@@ -161,8 +161,16 @@ export async function world_create(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
   })
+  // Parse only after the status check falls through to the structured-error
+  // case: an HTML 502 from a proxy used to surface as a JSON parse error
+  // instead of the status. The server DOES answer failed creates with JSON
+  // ({error}), so a failed parse on !ok falls back to the bare status.
+  if (!response.ok) {
+    const failure = (await response.json().catch(() => null)) as { error?: string } | null
+    throw new Error(failure?.error || 'status ' + response.status)
+  }
   const body = (await response.json()) as { error?: string; session: string; address: string; certificate?: { hash: string } }
-  if (!response.ok || body.error) throw new Error(body.error || 'status ' + response.status)
+  if (body.error) throw new Error(body.error)
   return body
 }
 
@@ -778,6 +786,6 @@ export async function record(match: {
   cheated: number
 }): Promise<void> {
   try {
-    await client.post('match/record', match)
+    await client.post('/-/match/record', match)
   } catch { /* anonymous or offline — history is best-effort */ }
 }

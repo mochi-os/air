@@ -65,7 +65,7 @@ export const STATE = {
 } as const
 const EXTRA = 7
 
-export const DT = 1 / 240
+const DT = 1 / 240
 const CAP = 30 // accumulator cap: tab throttling must not spiral into replay storms
 
 // Control sample for one frame; the FCS interprets pitch/roll/yaw as

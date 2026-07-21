@@ -20,10 +20,6 @@ type ConfigPayload = { config?: Partial<MissionConfig>; name?: string }
 // multiplayer callsign. Empty until loaded / for anonymous visitors.
 let identity_name = ''
 const identity_waiters: ((name: string) => void)[] = []
-export function identityName(): string {
-  return identity_name
-}
-
 // useIdentityName re-renders when the name arrives from config/load, which
 // may complete after mount (and, when the account has no saved config, with
 // no config change to piggyback a re-render on).

@@ -10,10 +10,20 @@ def database_create():
 	# key as an LWW-register so writes converge under multi-host replication.
 	mochi.db.execute("create table if not exists settings (name text not null primary key, value text not null, updated integer not null)")
 	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, created integer not null)")
+	mochi.db.execute("create table if not exists telemetry (name text not null primary key, value text not null, created integer not null)")
 
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
+	if version == 4:
+		# Telemetry out of the settings store (#161 review): the CSV rows rode
+		# into config_load's wholesale dump, failed json.decode into None, and
+		# the next config_save wrote them back as the literal string "null" —
+		# destroying the telemetry and junking the config. Surviving rows
+		# (still raw CSV) move to their own table; the "null" corpses drop.
+		mochi.db.execute("create table if not exists telemetry (name text not null primary key, value text not null, created integer not null)")
+		mochi.db.execute("insert or ignore into telemetry (name, value, created) select name, value, updated from settings where name like 'telemetry%' and value <> 'null'")
+		mochi.db.execute("delete from settings where name like 'telemetry%'")
 	if version == 3:
 		# The teams mode (#130): record which side this player flew.
 		columns = [c["name"] for c in mochi.db.table("matches")]
@@ -46,6 +56,13 @@ def config_save(a):
 		mochi.db.execute("insert into settings (name, value, updated) values (?, ?, ?) on conflict(name) do update set value = excluded.value, updated = excluded.updated where excluded.updated >= settings.updated", name, json.encode(config[name]), now)
 	return {"data": {"saved": True}}
 
+# whole(a, name) -> int: a non-negative numeric input, zero for anything
+# malformed. int() on garbage is an unhandled Starlark error (no try/except
+# exists), so a buggy client's post would 500 instead of degrading.
+def whole(a, name):
+	value = a.input(name, "0") or "0"
+	return int(value) if value.isdigit() else 0
+
 # match_record() -> {"data": {"recorded": bool}}: store this player's own view of a finished multiplayer match.
 def match_record(a):
 	if not a.user:
@@ -54,16 +71,27 @@ def match_record(a):
 	session = a.input("session", "")[:64]
 	if not world or not session:
 		return {"data": {"recorded": False}}
-	mochi.db.execute("insert or ignore into matches (id, world, session, mode, team, started, ended, reason, players, kills, deaths, cheated, created) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-		mochi.uid(), world, session, a.input("mode", "")[:32], a.input("team", "")[:16], int(a.input("started", "0") or "0"), int(a.input("ended", "0") or "0"), a.input("reason", "")[:32],
-		a.input("players", "")[:1024], int(a.input("kills", "0") or "0"), int(a.input("deaths", "0") or "0"), int(a.input("cheated", "0") or "0"), mochi.time.now())
+	# Real dedup: the old `insert or ignore` conflicted only on the primary
+	# key — a fresh uid every call — so it never fired and a client retry
+	# duplicated history. A match is identified by where and when it ran.
+	if mochi.db.exists("select 1 from matches where world = ? and session = ? and started = ?", world, session, whole(a, "started")):
+		return {"data": {"recorded": False}}
+	mochi.db.execute("insert into matches (id, world, session, mode, team, started, ended, reason, players, kills, deaths, cheated, created) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		mochi.uid(), world, session, a.input("mode", "")[:32], a.input("team", "")[:16], whole(a, "started"), whole(a, "ended"), a.input("reason", "")[:32],
+		a.input("players", "")[:1024], whole(a, "kills"), whole(a, "deaths"), whole(a, "cheated"), mochi.time.now())
 	return {"data": {"recorded": True}}
 
 def telemetry_save(a):
 	# Development telemetry sink (Shift+T): browser downloads don't work from
 	# the sandboxed shell, so the client posts the CSV here instead.
+	# Authenticated only — as a public class-level action this ran as the
+	# app's FIRST ADMINISTRATOR, so any anonymous caller could write ~1MB
+	# rows into the admin's settings table (the public-runs-as-owner trap).
+	if not a.user.identity.id:
+		a.error.label(401, "errors.not_logged_in")
+		return
 	data = a.input("data", "")[:2000000]
 	now = mochi.time.now()
 	name = "telemetry-" + str(now)
-	mochi.db.execute("insert into settings (name, value, updated) values (?, ?, ?)", name, data, now)
-	return {"name": name, "rows": len(data.split("\n"))}
+	mochi.db.execute("insert into telemetry (name, value, created) values (?, ?, ?)", name, data, now)
+	return {"data": {"name": name, "rows": len(data.split("\n"))}}
