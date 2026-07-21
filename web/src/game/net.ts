@@ -13,6 +13,7 @@
 
 import { createAppClient } from '@mochi/web'
 import { SIZE } from './flight'
+import { frame, frames } from './framing'
 
 const PROTOCOL = 1
 
@@ -504,10 +505,10 @@ export class Net {
   }
 
   // start runs the reader pumps after a successful handshake.
-  start(writer: WritableStreamDefaultWriter<Uint8Array>, control: ReadableStreamDefaultReader<Uint8Array>, pending: Uint8Array) {
+  start(writer: WritableStreamDefaultWriter<Uint8Array>, messages: AsyncGenerator<Uint8Array>) {
     this.writer = writer
     this.datagrams = this.transport.datagrams.writable.getWriter()
-    void this.control(control, pending)
+    void this.control(messages)
     void this.receive()
     this.transport.closed
       .catch(() => undefined)
@@ -645,12 +646,24 @@ export class Net {
     }
   }
 
-  private async control(reader: ReadableStreamDefaultReader<Uint8Array>, pending: Uint8Array) {
+  private async control(messages: AsyncGenerator<Uint8Array>) {
     try {
-      for await (const payload of frames(reader, pending)) {
+      for await (const payload of messages) {
         this.handle(cbor_decode(payload) as Record<string, unknown>)
       }
-    } catch { /* connection gone; transport.closed fires the handler */ }
+    } catch {
+      // A framing violation or decode failure on the control stream is fatal:
+      // the server is hostile or broken. Close the transport rather than let a
+      // silently-dead reader leave a frozen match alive — transport.closed then
+      // fires the close handler with a protocol reason.
+      if (!this.closed) {
+        this.closed = true
+        this.handlers.close?.('protocol')
+      }
+      try {
+        this.transport.close()
+      } catch { /* already closing */ }
+    }
   }
 
   private async receive() {
@@ -662,32 +675,6 @@ export class Net {
         if (value) this.handle(cbor_decode(value) as Record<string, unknown>)
       }
     } catch { /* connection gone */ }
-  }
-}
-
-function frame(payload: Uint8Array): Uint8Array {
-  const out = new Uint8Array(4 + payload.length)
-  new DataView(out.buffer).setUint32(0, payload.length)
-  out.set(payload, 4)
-  return out
-}
-
-// frames yields length-framed messages from a stream reader.
-async function* frames(reader: ReadableStreamDefaultReader<Uint8Array>, pending: Uint8Array): AsyncGenerator<Uint8Array> {
-  let buffer = pending
-  for (;;) {
-    while (buffer.length >= 4) {
-      const size = new DataView(buffer.buffer, buffer.byteOffset).getUint32(0)
-      if (buffer.length < 4 + size) break
-      yield buffer.slice(4, 4 + size)
-      buffer = buffer.slice(4 + size)
-    }
-    const { value, done } = await reader.read()
-    if (done) return
-    const joined = new Uint8Array(buffer.length + value.length)
-    joined.set(buffer)
-    joined.set(value, buffer.length)
-    buffer = joined
   }
 }
 
@@ -730,40 +717,32 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
   await writer.write(
     frame(cbor_encode({ kind: 'join', session: join.session, name: join.name, team: join.team ?? '', protocol: PROTOCOL }))
   )
-  // Read the first frame: welcome or refuse.
-  let buffer = new Uint8Array(0)
-  for (;;) {
-    if (buffer.length >= 4) {
-      const size = new DataView(buffer.buffer, buffer.byteOffset).getUint32(0)
-      if (buffer.length >= 4 + size) {
-        const first = cbor_decode(buffer.slice(4, 4 + size)) as Record<string, unknown>
-        if (first.kind === 'refuse') {
-          transport.close()
-          throw new Error(String(first.reason ?? 'refused'))
-        }
-        if (first.kind !== 'welcome') {
-          transport.close()
-          throw new Error('protocol')
-        }
-        const net = new Net(transport, handlers)
-        net.welcome = first as unknown as Welcome
-        for (const p of net.welcome.players ?? []) net.names.set(p.slot, p.name)   // players present before us; later joiners arrive via roster events
-        net.slot = Number(first.slot)
-        const spawn = first.spawn as { wrap?: number; team?: string; score?: Record<string, number> } | undefined
-        if (spawn?.wrap) net.wrap = Number(spawn.wrap)
-        if (spawn?.team) net.teams.set(net.slot, spawn.team)
-        if (spawn?.score) net.score = spawn.score
-        net.start(writer, reader, buffer.slice(4 + size))
-        return net
-      }
-    }
-    const { value, done } = await reader.read()
-    if (done) throw new Error('closed')
-    const joined = new Uint8Array(buffer.length + value.length)
-    joined.set(buffer)
-    joined.set(value, buffer.length)
-    buffer = joined
+  // The handshake and the established connection share ONE bounded frame
+  // reader (the same size caps and chunk-queue apply to the welcome/refuse):
+  // pull the first frame here, then hand the live iterator to the Net so the
+  // control loop continues from exactly where the handshake left off.
+  const messages = frames(reader, new Uint8Array(0))
+  const opening = await messages.next()
+  if (opening.done) throw new Error('closed')
+  const first = cbor_decode(opening.value) as Record<string, unknown>
+  if (first.kind === 'refuse') {
+    transport.close()
+    throw new Error(String(first.reason ?? 'refused'))
   }
+  if (first.kind !== 'welcome') {
+    transport.close()
+    throw new Error('protocol')
+  }
+  const net = new Net(transport, handlers)
+  net.welcome = first as unknown as Welcome
+  for (const p of net.welcome.players ?? []) net.names.set(p.slot, p.name) // players present before us; later joiners arrive via roster events
+  net.slot = Number(first.slot)
+  const spawn = first.spawn as { wrap?: number; team?: string; score?: Record<string, number> } | undefined
+  if (spawn?.wrap) net.wrap = Number(spawn.wrap)
+  if (spawn?.team) net.teams.set(net.slot, spawn.team)
+  if (spawn?.score) net.score = spawn.score
+  net.start(writer, messages)
+  return net
 }
 
 // ---------------------------------------------------------------- history
