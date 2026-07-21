@@ -61,14 +61,25 @@ export function normalize_server(address: string): string {
   return a
 }
 
-export async function world_status(server: string): Promise<WorldStatus> {
-  const response = await fetch(server + '/status', { mode: 'cors' })
+// LOBBY_TIMEOUT bounds every lobby request: an untrusted server that accepts a
+// connection but never responds must not hang the UI (a stuck refresh, a busy
+// state that never clears). withTimeout also folds in an optional caller signal
+// so a polled request can be aborted on unmount or a server-address change.
+const LOBBY_TIMEOUT = 8000
+
+function withTimeout(signal?: AbortSignal): AbortSignal {
+  const timeout = AbortSignal.timeout(LOBBY_TIMEOUT)
+  return signal ? AbortSignal.any([signal, timeout]) : timeout
+}
+
+export async function world_status(server: string, signal?: AbortSignal): Promise<WorldStatus> {
+  const response = await fetch(server + '/status', { mode: 'cors', signal: withTimeout(signal) })
   if (!response.ok) throw new Error('status ' + response.status)
   return (await response.json()) as WorldStatus
 }
 
-export async function world_sessions(server: string, game: string): Promise<WorldSession[]> {
-  const response = await fetch(server + '/sessions?game=' + encodeURIComponent(game), { mode: 'cors' })
+export async function world_sessions(server: string, game: string, signal?: AbortSignal): Promise<WorldSession[]> {
+  const response = await fetch(server + '/sessions?game=' + encodeURIComponent(game), { mode: 'cors', signal: withTimeout(signal) })
   if (!response.ok) throw new Error('status ' + response.status)
   const body = (await response.json()) as { sessions: WorldSession[] }
   return body.sessions ?? []
@@ -83,6 +94,7 @@ export async function world_create(
     mode: 'cors',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
+    signal: withTimeout(),
   })
   // Parse only after the status check falls through to the structured-error
   // case: an HTML 502 from a proxy used to surface as a JSON parse error
@@ -109,8 +121,8 @@ export interface WorldChatLine {
   label?: string
 }
 
-export async function world_chat(server: string, since: number): Promise<{ lines: WorldChatLine[]; sequence: number }> {
-  const response = await fetch(server + '/chat?since=' + since, { mode: 'cors' })
+export async function world_chat(server: string, since: number, signal?: AbortSignal): Promise<{ lines: WorldChatLine[]; sequence: number }> {
+  const response = await fetch(server + '/chat?since=' + since, { mode: 'cors', signal: withTimeout(signal) })
   if (!response.ok) throw new Error('status ' + response.status)
   return (await response.json()) as { lines: WorldChatLine[]; sequence: number }
 }
@@ -121,6 +133,7 @@ export async function world_say(server: string, name: string, text: string): Pro
     mode: 'cors',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, text }),
+    signal: withTimeout(),
   })
   if (!response.ok) throw new Error('status ' + response.status)
 }
@@ -642,6 +655,23 @@ export function supported(): boolean {
 }
 
 // connect dials the world server and completes the join handshake.
+// CONNECT_DEADLINE bounds the transport open + stream; WELCOME_DEADLINE bounds
+// the wait for the first server frame. Separate so a server that completes the
+// QUIC handshake but never answers the join still fails promptly instead of
+// leaving the game stuck on its loading path.
+const CONNECT_DEADLINE = 10000
+const WELCOME_DEADLINE = 10000
+
+// deadline rejects if the operation has not settled in ms; the underlying work
+// is torn down by the caller closing the transport.
+function deadline<T>(work: Promise<T>, ms: number, label: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout>
+  const expiry = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(label + ' timeout')), ms)
+  })
+  return Promise.race([work, expiry]).finally(() => clearTimeout(timer)) as Promise<T>
+}
+
 export async function connect(join: Join, handlers: Handlers): Promise<Net> {
   const options: WebTransportOptions = {}
   if (join.certificate?.hash) {
@@ -651,39 +681,43 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
     options.serverCertificateHashes = [{ algorithm: 'sha-256', value }]
   }
   const transport = new WebTransport(join.address, options)
-  await transport.ready
-  const stream = await transport.createBidirectionalStream()
-  const writer = stream.writable.getWriter() as WritableStreamDefaultWriter<Uint8Array>
-  const reader = stream.readable.getReader() as ReadableStreamDefaultReader<Uint8Array>
-  await writer.write(
-    frame(cbor_encode({ kind: 'join', session: join.session, name: join.name, team: join.team ?? '', protocol: PROTOCOL }))
-  )
-  // The handshake and the established connection share ONE bounded frame
-  // reader (the same size caps and chunk-queue apply to the welcome/refuse):
-  // pull the first frame here, then hand the live iterator to the Net so the
-  // control loop continues from exactly where the handshake left off.
-  const messages = frames(reader, new Uint8Array(0))
-  const opening = await messages.next()
-  if (opening.done) throw new Error('closed')
-  const first = cbor_decode(opening.value) as Record<string, unknown>
-  if (first.kind === 'refuse') {
-    transport.close()
-    throw new Error(String(first.reason ?? 'refused'))
+  try {
+    await deadline(transport.ready, CONNECT_DEADLINE, 'connect')
+    const stream = await deadline(transport.createBidirectionalStream(), CONNECT_DEADLINE, 'stream')
+    const writer = stream.writable.getWriter() as WritableStreamDefaultWriter<Uint8Array>
+    const reader = stream.readable.getReader() as ReadableStreamDefaultReader<Uint8Array>
+    await writer.write(
+      frame(cbor_encode({ kind: 'join', session: join.session, name: join.name, team: join.team ?? '', protocol: PROTOCOL }))
+    )
+    // The handshake and the established connection share ONE bounded frame
+    // reader (the same size caps and chunk-queue apply to the welcome/refuse):
+    // pull the first frame here, then hand the live iterator to the Net so the
+    // control loop continues from exactly where the handshake left off.
+    const messages = frames(reader, new Uint8Array(0))
+    const opening = await deadline(messages.next(), WELCOME_DEADLINE, 'welcome')
+    if (opening.done) throw new Error('closed')
+    const first = cbor_decode(opening.value) as Record<string, unknown>
+    if (first.kind === 'refuse') throw new Error(String(first.reason ?? 'refused'))
+    if (first.kind !== 'welcome') throw new Error('protocol')
+    const net = new Net(transport, handlers)
+    net.welcome = first as unknown as Welcome
+    for (const p of net.welcome.players ?? []) net.names.set(p.slot, p.name) // players present before us; later joiners arrive via roster events
+    net.slot = Number(first.slot)
+    const spawn = first.spawn as { wrap?: number; team?: string; score?: Record<string, number> } | undefined
+    if (spawn && spawn.wrap !== undefined) net.wrap = sanitizeWrap(spawn.wrap, net.wrap)
+    if (spawn?.team) net.teams.set(net.slot, spawn.team)
+    if (spawn?.score) net.score = spawn.score
+    net.start(writer, messages)
+    return net
+  } catch (error) {
+    // Any failure before the Net takes ownership — timeout, refuse, protocol,
+    // bad welcome — must close the partially-opened transport so nothing is
+    // left dangling.
+    try {
+      transport.close()
+    } catch { /* already closing */ }
+    throw error
   }
-  if (first.kind !== 'welcome') {
-    transport.close()
-    throw new Error('protocol')
-  }
-  const net = new Net(transport, handlers)
-  net.welcome = first as unknown as Welcome
-  for (const p of net.welcome.players ?? []) net.names.set(p.slot, p.name) // players present before us; later joiners arrive via roster events
-  net.slot = Number(first.slot)
-  const spawn = first.spawn as { wrap?: number; team?: string; score?: Record<string, number> } | undefined
-  if (spawn && spawn.wrap !== undefined) net.wrap = sanitizeWrap(spawn.wrap, net.wrap)
-  if (spawn?.team) net.teams.set(net.slot, spawn.team)
-  if (spawn?.score) net.score = spawn.score
-  net.start(writer, messages)
-  return net
 }
 
 // ---------------------------------------------------------------- history
