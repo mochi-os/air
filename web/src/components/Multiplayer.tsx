@@ -90,24 +90,44 @@ export function Multiplayer({
   const address = normalize_server(server || default_server())
   const name = (callsign || identity || t`pilot`).slice(0, 32)
 
-  const refresh = useCallback(async () => {
-    try {
-      const [s, list] = await Promise.all([world_status(address), world_sessions(address, 'air')])
-      setStatus(s)
-      setSessions(list)
-      setError('')
-    } catch (e) {
-      setStatus(null)
-      setSessions([])
-      setError(getErrorMessage(e, t`World server not reachable`))
-    }
-  }, [address, t])
+  const refresh = useCallback(
+    async (signal?: AbortSignal) => {
+      try {
+        const [s, list] = await Promise.all([world_status(address, signal), world_sessions(address, 'air', signal)])
+        setStatus(s)
+        setSessions(list)
+        setError('')
+      } catch (e) {
+        if (signal?.aborted) return // unmounted or the address changed: don't clobber state with a stale failure
+        setStatus(null)
+        setSessions([])
+        setError(getErrorMessage(e, t`World server not reachable`))
+      }
+    },
+    [address, t],
+  )
 
-  // Poll while the panel is visible so the match list stays live.
+  // Poll while the panel is visible so the match list stays live. A single
+  // controller aborts in-flight requests on unmount or address change, and the
+  // in-flight guard stops a slow server from stacking overlapping refreshes.
   useEffect(() => {
-    void refresh()
-    const timer = setInterval(() => void refresh(), 5000)
-    return () => clearInterval(timer)
+    const controller = new AbortController()
+    let busy = false
+    const tick = async () => {
+      if (busy) return
+      busy = true
+      try {
+        await refresh(controller.signal)
+      } finally {
+        busy = false
+      }
+    }
+    void tick()
+    const timer = setInterval(() => void tick(), 5000)
+    return () => {
+      clearInterval(timer)
+      controller.abort()
+    }
   }, [refresh])
 
   const join = useCallback(
