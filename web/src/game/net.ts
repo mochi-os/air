@@ -19,6 +19,13 @@ import { cbor_encode, cbor_decode } from './cbor'
 
 const PROTOCOL = 1
 
+// isEnvelope is the minimal shape every server message must have before it
+// reaches handle(): an object with a string `kind` discriminator. Per-message
+// field validation (finite numbers, bounded slots, ...) is a separate layer.
+function isEnvelope(message: unknown): message is Record<string, unknown> {
+  return typeof message === 'object' && message !== null && typeof (message as { kind?: unknown }).kind === 'string'
+}
+
 // ---------------------------------------------------------------- lobby API
 
 export interface WorldStatus {
@@ -559,35 +566,56 @@ export class Net {
     }
   }
 
+  // fail tears the connection down with a reason: a framing/protocol violation
+  // must not leave a silently-dead reader behind a frozen-looking match.
+  private fail(reason: string) {
+    if (!this.closed) {
+      this.closed = true
+      this.handlers.close?.(reason)
+    }
+    try {
+      this.transport.close()
+    } catch { /* already closing */ }
+  }
+
   private async control(messages: AsyncGenerator<Uint8Array>) {
     try {
       for await (const payload of messages) {
-        this.handle(cbor_decode(payload) as Record<string, unknown>)
+        const message = cbor_decode(payload)
+        if (!isEnvelope(message)) throw new Error('envelope')
+        this.handle(message)
       }
     } catch {
-      // A framing violation or decode failure on the control stream is fatal:
-      // the server is hostile or broken. Close the transport rather than let a
-      // silently-dead reader leave a frozen match alive — transport.closed then
-      // fires the close handler with a protocol reason.
-      if (!this.closed) {
-        this.closed = true
-        this.handlers.close?.('protocol')
-      }
-      try {
-        this.transport.close()
-      } catch { /* already closing */ }
+      // A framing violation, decode failure, or malformed envelope on the
+      // control stream is fatal — the server is hostile or broken.
+      this.fail('protocol')
     }
   }
 
   private async receive() {
+    let malformed = 0
     try {
       const reader = this.transport.datagrams.readable.getReader() as ReadableStreamDefaultReader<Uint8Array>
       for (;;) {
         const { value, done } = await reader.read()
         if (done) return
-        if (value) this.handle(cbor_decode(value) as Record<string, unknown>)
+        if (!value) continue
+        // A datagram is lossy by nature, so drop an ISOLATED malformed one
+        // rather than kill the whole reader (which silently froze pose
+        // updates). A burst means a hostile or broken server: terminate.
+        try {
+          const message = cbor_decode(value)
+          if (!isEnvelope(message)) throw new Error('envelope')
+          this.handle(message)
+          malformed = 0
+        } catch {
+          if (++malformed > 8) {
+            this.fail('protocol')
+            return
+          }
+        }
       }
-    } catch { /* connection gone */ }
+    } catch { /* reader gone; transport.closed fires the handler */ }
   }
 }
 
