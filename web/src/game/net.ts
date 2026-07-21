@@ -15,95 +15,9 @@ import { createAppClient } from '@mochi/web'
 import { SIZE } from './flight'
 import { frame, frames } from './framing'
 import { sanitizeWrap, minimumImage, fold } from './wrap'
+import { cbor_encode, cbor_decode } from './cbor'
 
 const PROTOCOL = 1
-
-// ---------------------------------------------------------------- CBOR codec
-// Minimal CBOR (RFC 8949) subset matching the server's fxamacker encoding:
-// unsigned/negative integers, byte/text strings, arrays, string-keyed maps,
-// booleans, null, and float16/32/64. No dependency, no indefinite lengths.
-
-const text_encoder = new TextEncoder()
-const text_decoder = new TextDecoder()
-
-function cbor_encode(value: unknown): Uint8Array {
-  const parts: number[] = []
-  const head = (major: number, length: number) => {
-    if (length < 24) parts.push((major << 5) | length)
-    else if (length < 0x100) parts.push((major << 5) | 24, length)
-    else if (length < 0x10000) parts.push((major << 5) | 25, length >> 8, length & 0xff)
-    else parts.push((major << 5) | 26, (length >>> 24) & 0xff, (length >>> 16) & 0xff, (length >>> 8) & 0xff, length & 0xff)
-  }
-  const put = (v: unknown) => {
-    if (v === null || v === undefined) { parts.push(0xf6); return }
-    if (typeof v === 'boolean') { parts.push(v ? 0xf5 : 0xf4); return }
-    if (typeof v === 'number') {
-      if (Number.isSafeInteger(v) && Math.abs(v) < 0x100000000) {
-        if (v >= 0) head(0, v)
-        else head(1, -v - 1)
-      } else {
-        parts.push(0xfb)
-        const b = new DataView(new ArrayBuffer(8))
-        b.setFloat64(0, v)
-        for (let i = 0; i < 8; i++) parts.push(b.getUint8(i))
-      }
-      return
-    }
-    if (typeof v === 'string') { const bytes = text_encoder.encode(v); head(3, bytes.length); for (const x of bytes) parts.push(x); return }
-    if (Array.isArray(v)) { head(4, v.length); for (const item of v) put(item); return }
-    if (typeof v === 'object') {
-      const entries = Object.entries(v as Record<string, unknown>).filter(([, x]) => x !== undefined)
-      head(5, entries.length)
-      for (const [k, x] of entries) { put(k); put(x) }
-      return
-    }
-    parts.push(0xf6)
-  }
-  put(value)
-  return new Uint8Array(parts)
-}
-
-function cbor_decode(bytes: Uint8Array): unknown {
-  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)
-  let at = 0
-  const length = (info: number): number => {
-    if (info < 24) return info
-    if (info === 24) return view.getUint8(at++)
-    if (info === 25) { const v = view.getUint16(at); at += 2; return v }
-    if (info === 26) { const v = view.getUint32(at); at += 4; return v }
-    const v = Number(view.getBigUint64(at)); at += 8; return v
-  }
-  const half = (): number => {
-    const h = view.getUint16(at); at += 2
-    const sign = h & 0x8000 ? -1 : 1, exponent = (h >> 10) & 0x1f, fraction = h & 0x3ff
-    if (exponent === 0) return sign * fraction * 2 ** -24
-    if (exponent === 31) return fraction ? NaN : sign * Infinity
-    return sign * (1024 + fraction) * 2 ** (exponent - 25)
-  }
-  const item = (): unknown => {
-    const first = view.getUint8(at++)
-    const major = first >> 5, info = first & 0x1f
-    switch (major) {
-      case 0: return length(info)
-      case 1: return -1 - length(info)
-      case 2: { const n = length(info); const v = bytes.slice(at, at + n); at += n; return v }
-      case 3: { const n = length(info); const v = text_decoder.decode(bytes.subarray(at, at + n)); at += n; return v }
-      case 4: { const n = length(info); const list = new Array(n); for (let i = 0; i < n; i++) list[i] = item(); return list }
-      case 5: { const n = length(info); const map: Record<string, unknown> = {}; for (let i = 0; i < n; i++) { const k = item(); map[String(k)] = item() } return map }
-      case 7:
-        if (info === 20) return false
-        if (info === 21) return true
-        if (info === 22 || info === 23) return null
-        if (info === 25) return half()
-        if (info === 26) { const v = view.getFloat32(at); at += 4; return v }
-        if (info === 27) { const v = view.getFloat64(at); at += 8; return v }
-        return null
-      default:
-        return null
-    }
-  }
-  return item()
-}
 
 // ---------------------------------------------------------------- lobby API
 
