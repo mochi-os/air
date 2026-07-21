@@ -695,18 +695,18 @@ function ControlRow({ action, keys }: { action: ReactNode; keys: ReactNode }) {
 // descriptive phrase around each is translated. id is the stable React key
 // (the label is now a translated node, not a plain string).
 const REFERENCE_ROWS: { id: string; label: ReactNode; cells: [string, string, string] }[] = [
-  { id: 'vx-mil', label: <Trans>Steepest climb (Vx, 100% thrust)</Trans>, cells: ['167-385', '320-385', '317-326'] },
-  { id: 'vx-ab', label: <Trans>Steepest climb (Vx, afterburner)</Trans>, cells: ['Vertical', '277-311', '275-337'] },
-  { id: 'vy-mil', label: <Trans>Best climb (Vy, 100% thrust)</Trans>, cells: ['510-546', '404-454', '339-341'] },
-  { id: 'vy-ab', label: <Trans>Best climb (Vy, afterburner)</Trans>, cells: ['532-610', '466-467', '348-351'] },
-  { id: 'vyse', label: <Trans>Single-engine best climb (Vyse, afterburner)</Trans>, cells: ['398-457', '216-361', '161-204'] },
-  { id: 'glide', label: <Trans>Best glide (engines out)</Trans>, cells: ['245-291', '250-295', '257-312'] },
-  { id: 'corner', label: <Trans>Corner speed (best instant turn)</Trans>, cells: ['321-376', '340-390', '323-335'] },
-  { id: 'sustained', label: <Trans>Best sustained turn speed</Trans>, cells: ['353-468', '390-435', '326-329'] },
-  { id: 'tightest', label: <Trans>Tightest sustained turn speed</Trans>, cells: ['167-203', '167-227', '190-203'] },
-  { id: 'vs1', label: <Trans>Stall, clean (Vs1)</Trans>, cells: ['159-185', '159-186', '161-190'] },
-  { id: 'vs0', label: <Trans>Stall, landing config (Vs0)</Trans>, cells: ['111-128', '110-128', '—'] },
-  { id: 'vapp', label: <Trans>Approach, on-speed (Vapp)</Trans>, cells: ['126-148', '125-148', '—'] },
+  { id: 'vx-mil', label: <Trans>Steepest climb (Vx, 100% thrust)</Trans>, cells: ['250-393', '312-391', '337-339'] },
+  { id: 'vx-ab', label: <Trans>Steepest climb (Vx, afterburner)</Trans>, cells: ['Vertical', '267-463', '260-346'] },
+  { id: 'vy-mil', label: <Trans>Best climb (Vy, 100% thrust)</Trans>, cells: ['510-563', '454-460', '343-345'] },
+  { id: 'vy-ab', label: <Trans>Best climb (Vy, afterburner)</Trans>, cells: ['526-609', '466-471', '353-354'] },
+  { id: 'vyse', label: <Trans>Single-engine best climb (Vyse, afterburner)</Trans>, cells: ['404-475', '211-360', '144-338'] },
+  { id: 'glide', label: <Trans>Best glide (engines out)</Trans>, cells: ['238-282', '242-287', '249-300'] },
+  { id: 'corner', label: <Trans>Corner speed (best instant turn)</Trans>, cells: ['298-396', '338-401', '330-348'] },
+  { id: 'sustained', label: <Trans>Best sustained turn speed</Trans>, cells: ['363-484', '402-437', '328-329'] },
+  { id: 'tightest', label: <Trans>Tightest sustained turn speed</Trans>, cells: ['167-214', '167-254', '213-215'] },
+  { id: 'vs1', label: <Trans>Stall, clean (Vs1)</Trans>, cells: ['159-186', '159-187', '160-190'] },
+  { id: 'vs0', label: <Trans>Stall, landing config (Vs0)</Trans>, cells: ['113-130', '111-130', '—'] },
+  { id: 'vapp', label: <Trans>Approach, on-speed (Vapp)</Trans>, cells: ['126-148', '126-148', '—'] },
 ]
 
 function ReferenceDialog() {
