@@ -12,7 +12,6 @@ import {
   connect as net_dial,
   record as net_record,
   type Join as NetJoin,
-  type Net as NetHandle,
 } from './net'
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_burst, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step } from './flight'
 import { deviceDefaults } from '../lib/config'
@@ -114,8 +113,8 @@ function here_text(){   // dev: the deck point under the NOSE WHEEL (plus the nu
 }
 function copy_here(){   // dev (Ctrl+C): the live position line to the clipboard
 	const txt=here_text();
-	const fallback=()=>{ try{ const ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }catch(e){} };
-	try{ navigator.clipboard.writeText(txt).catch(fallback); }catch(e){ fallback(); }
+	const fallback=()=>{ try{ const ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }catch{ /* clipboard fallback best-effort */ } };
+	try{ navigator.clipboard.writeText(txt).catch(fallback); }catch{ fallback(); }
 }
 Object.assign(cfg, config);   // mission-setup menu overrides defaults — the server-backed config store is the single source (the joust_cfg_v1 localStorage era silently no-opped in the sandboxed shell and shadowed the store outside it)
 sanitize_cfg();
@@ -126,7 +125,7 @@ if(MULTIPLAYER){ cfg.task="joust"; cfg.extra_aircraft=0; cfg.missiles=false; cfg
 const cheat=(name)=>!!(cfg.cheats&&cfg.cheats[name]);   // mission cheats: invulnerable (humans only — the server enforces it in multiplayer), ammunition, fuel
 const DEV_MODE=new URLSearchParams(location.search).get("developer")==="1";   // &developer=1: landing/trap test autopilot (Shift+1..0), deck align (0), stab cycle (Shift+E), telemetry (Shift+T), cloud A/B (Shift+X), position copy (Shift+P), and ALL query hooks (?fly/clouds/tod/harm/view/start/sweep/shot/cat/glassdebug) — outside developer mode none of the scaffolding parses (#105)
 const GLASS_DEBUG=DEV_MODE&&new URLSearchParams(location.search).get("glassdebug")==="1";   // magenta outline of the HUD-glass clip quad
-let TEST_SCENARIOS=DEV_MODE;         // (DEV_MODE must be declared FIRST: initializing these from it a line early was a temporal-dead-zone crash at module load)
+const TEST_SCENARIOS=DEV_MODE;         // (DEV_MODE must be declared FIRST: initializing these from it a line early was a temporal-dead-zone crash at module load)
 let cat_idx=(()=>{ const u=DEV_MODE?parseInt(new URLSearchParams(location.search).get("cat")||"",10):NaN; const c=u>=1&&u<=4?u:(cfg.cat>=1&&cfg.cat<=4?cfg.cat:2); return c-1; })();   // selected catapult (0-based): &cat=1..4 (developer mode) wins, else the menu's Catapult choice, else #2 port bow
 let pause_toggle=false, game_paused=false;
 let loading=false, loading_t0=0;
@@ -811,7 +810,7 @@ let model_active=false;   // the ownship's aircraft model is ready (loading gate
 const GEAR_RATE=0.5;   // extend/retract speed of the 0..1 visual progress for aircraft the core doesn't fly
 const DROOP=30*D2R;    // PA trailing-edge droop (NATOPS flaps HALF on the ground: TEF 30°, aileron droop 30°) — the rest pose of the flap family for gear-down aircraft the core doesn't fly; the ownship's comes live from the FCS (Droop.Angle in the flight core)
 const SLAT_PA=12*D2R;  // parked/gear-down LEF droop for aircraft without FCS data (NATOPS flaps HALF: LEF 12°) — the ownship's comes live from the alpha schedule
-const NWS=75*D2R;      // nosewheel steering throw (NWS HI 75°; LOW is 22.5° — the speed washout stands in for the mode switch, mirroring Gear.Nose.Steer in the flight core)
+const _NWS=75*D2R;      // nosewheel steering throw (NWS HI 75°; LOW is 22.5° — the speed washout stands in for the mode switch, mirroring Gear.Nose.Steer in the flight core)
 function model_tint(hex){ return hex===0xb04a3a?0xff9a86 : hex===0x7f8a96?0xdde3ea : 0xffffff; }   // light team tints (white = untouched)
 function normalise_model(scene, spec){ scene.updateMatrixWorld(true);
 	const box=new THREE.Box3().setFromObject(scene), size=box.getSize(new THREE.Vector3()), ctr=box.getCenter(new THREE.Vector3());
@@ -900,7 +899,7 @@ function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_7
 		for(let k=0;k<8;k++){ c.set(k&1?box.max.x:box.min.x, k&2?box.max.y:box.min.y, k&4?box.max.z:box.min.z);
 			c.applyMatrix4(mesh.matrixWorld); ownship.group.worldToLocal(c); lo.min(c); hi.max(c); }
 		ownship.group.userData.glass={ x:(lo.x+hi.x)/2, y:(lo.y+hi.y)/2, hw:(hi.z-lo.z)/2, hh:(hi.y-lo.y)/2 }; }   // body-frame pane: x fore-aft, y up, half-extents across the span and vertically
-	console.log("cockpit eye", ownship.group.userData.eye.x.toFixed(2), ownship.group.userData.eye.y.toFixed(2)); }
+	console.warn("cockpit eye", ownship.group.userData.eye.x.toFixed(2), ownship.group.userData.eye.y.toFixed(2)); }
 const MISSILE_NODES=["Object_145","Object_542"];   // the two wingtip AIM-9 NODES in the fa18c GLB (the mesh-level names Object_114/29 are not in the scene graph — a silent getObjectByName miss); LAU-7 rails stay with the wing. Hidden per missiles-remaining for empty rails after firing, or entirely on a guns-only loadout
 function update_rails(st,count){ if(!st.group) return;
 	for(let i=0;i<MISSILE_NODES.length;i++){ const node=st.group.getObjectByName(MISSILE_NODES[i]); if(node) node.visible=i<count; } }
@@ -1094,8 +1093,8 @@ async function init_carrier_model(){
 			grp.position.y-=waterline; grp.updateMatrixWorld(true);
 			build_deck_grid(grp, st.deckY-waterline);   // one triangle pass replaces every startup deck raycast
 			let baseTex=null,normTex=null;
-			if(baseSrc&&typeof createImageBitmap==="function"){ try{ baseTex=await make_tex(baseSrc,true); }catch(e){} }
-			if(normSrc&&typeof createImageBitmap==="function"){ try{ normTex=await make_tex(normSrc,false); }catch(e){} }
+			if(baseSrc&&typeof createImageBitmap==="function"){ try{ baseTex=await make_tex(baseSrc,true); }catch{ /* texture optional */ } }
+			if(normSrc&&typeof createImageBitmap==="function"){ try{ normTex=await make_tex(normSrc,false); }catch{ /* texture optional */ } }
 			grp.traverse(o=>{ if(o.isMesh&&o.material){ const mm=o.material; const hasuv=!!(o.geometry&&o.geometry.attributes&&o.geometry.attributes.uv);
 				if(baseTex&&hasuv)mm.map=baseTex; if(normTex&&hasuv)mm.normalMap=normTex; mm.metalness=0.0; mm.roughness=0.9; mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; } });   // the map goes only where UVs exist: on the Nimitz only the baked deck strip has them (a map without UVs renders garbage)
 			carrier_model=grp; scene.add(grp);
@@ -1136,7 +1135,7 @@ function flush_points(p,pts){ const pos=pts.geometry.attributes.position.array,c
 	for(let i=0;i<p.max;i++){ if(!p.active[i]) continue; const o=n*3; pos[o]=p.px[i];pos[o+1]=p.py[i];pos[o+2]=p.pz[i];
 		const f=Math.max(0,p.life[i]/p.ttl[i]); col[o]=p.r[i]*f;col[o+1]=p.g[i]*f;col[o+2]=p.b[i]*f; n++; }
 	pts.geometry.setDrawRange(0,n); pts.geometry.attributes.position.needsUpdate=true; pts.geometry.attributes.color.needsUpdate=true; return n; }
-let live_particles=0;
+let _live_particles=0;
 function update_pool_ballistic(p,dt,grav,drag){ for(let i=0;i<p.max;i++){ if(!p.active[i]) continue;
 	p.vy[i]-=grav*dt; if(drag){p.vx[i]*=drag;p.vy[i]*=drag;p.vz[i]*=drag;}
 	p.px[i]+=p.vx[i]*dt; p.py[i]+=p.vy[i]*dt; p.pz[i]+=p.vz[i]*dt; p.life[i]-=dt; if(p.life[i]<=0||p.py[i]<0) p.active[i]=0; } }
@@ -1146,7 +1145,7 @@ function fire_gun(st,target,key,dt,force){
 	let active;
 	if(force!==undefined) active=force;
 	else { const to=target.pos.clone().sub(st.pos); const rng=to.length(); active=(rng<2500 && st.fwd.dot(to.normalize())>0.985); }
-	if(!active) return 0; if(st.rounds!==undefined && st.rounds<=0) return 0; if(!cfg.tracers && st===ownship) {} // tracers toggle only affects render
+	if(!active) return 0; if(st.rounds!==undefined && st.rounds<=0) return 0; if(!cfg.tracers && st===ownship) { /* own-ship tracers suppressed */ } // tracers toggle only affects render
 	const rps=100; gun[key]=(gun[key]||0)+rps*dt;   // M61 Vulcan: 6000 rpm = 100 rounds/sec
 	let fired=0;
 	while(gun[key]>=1){ gun[key]-=1; fired++; if(st.rounds!==undefined){ if(st.rounds<=0) break; if(!cheat("ammunition")) st.rounds--; }
@@ -1160,7 +1159,7 @@ function fire_gun(st,target,key,dt,force){
 		tracers.ttl[k]=tracers.life[k]=1.8;   // ~1.8s @1050m/s -> ~1900m burnout (real 20mm tracer range; no drag in this sim)
 		tracers.r[k]=1.3;tracers.g[k]=0.42;tracers.b[k]=0.1; }   // red-orange; normal-blended (see tr_pts) so the colour reads instead of blowing out white
 	return fired; }
-const flare_timer={bandit:4.5};
+const _flare_timer={bandit:4.5};
 function dispense_flares(st){ for(let i=0;i<36;i++){ const k=pool_spawn(flares); if(k<0) break; const sp=local_offset(st,-2,-0.3,0);
 	flares.px[k]=sp.x;flares.py[k]=sp.y;flares.pz[k]=sp.z; flares.vx[k]=st.velx*0.5+(Math.random()-0.5)*40; flares.vy[k]=st.vely*0.5-Math.random()*25; flares.vz[k]=st.velz*0.5+(Math.random()-0.5)*40;
 	flares.ttl[k]=flares.life[k]=3.5+Math.random()*1.5; flares.r[k]=2.6;flares.g[k]=2.3;flares.b[k]=1.2; } }   // brilliant white-hot with a warm tinge (burning magnesium), not orange
@@ -1268,7 +1267,7 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active) continue; 
 const world_up=new THREE.Vector3(0,1,0);
 function make_state(pos,fwd,speed){ return { pos:pos.clone(), fwd:fwd.clone().normalize(), speed, bank:0, group:null,
 	break_t:0, break_dir:new THREE.Vector3(1,0,0), circle_phase:Math.random()*Math.PI*2, circle_radius:1500+Math.random()*2500, circle_alt:1600+Math.random()*2200, velx:0,vely:0,velz:0, gear:1, gearTarget:1, hook:0, hookTarget:0, speedbrake:0, speedbrakeTarget:0 }; }   // gear 0=down 1=up, hook 0=stowed 1=deployed, speedbrake 0=stowed 1=deployed (default clean for bandits/extras)
-function steer(st,desired,dt,max_rate,max_bank){ desired.normalize(); let ang=st.fwd.angleTo(desired); const max=max_rate*dt;
+function steer(st,desired,dt,max_rate,max_bank){ desired.normalize(); const ang=st.fwd.angleTo(desired); const max=max_rate*dt;
 	if(ang>1e-4){ const axis=new THREE.Vector3().crossVectors(st.fwd,desired).normalize(); st.fwd.applyAxisAngle(axis,Math.min(ang,max)).normalize(); }
 	const horiz=new THREE.Vector3(desired.x-st.fwd.x,0,desired.z-st.fwd.z); const side=new THREE.Vector3().crossVectors(world_up,st.fwd);
 	const bt=THREE.MathUtils.clamp(side.dot(horiz)*4.0,-1,1)*max_bank; st.bank+=(bt-st.bank)*Math.min(1,dt*3);
@@ -1390,7 +1389,7 @@ function build_islands(polygons, ground, half){
 		// quay at 2 m, then a smooth vertical wall into the deep water.
 		{ const n=polygon.length, vn=[];
 			for(let i=0;i<n;i++){ const p0=polygon[(i-1+n)%n], p1=polygon[i], p2=polygon[(i+1)%n];
-				let nx=(p1[1]-p0[1])+(p2[1]-p1[1]), nz=-((p1[0]-p0[0])+(p2[0]-p1[0])); const l=Math.hypot(nx,nz)||1; vn.push([nx/l,nz/l]); }   // per-vertex normal (adjacent edges averaged) → gap-free ribbon at corners
+				const nx=(p1[1]-p0[1])+(p2[1]-p1[1]), nz=-((p1[0]-p0[0])+(p2[0]-p1[0])); const l=Math.hypot(nx,nz)||1; vn.push([nx/l,nz/l]); }   // per-vertex normal (adjacent edges averaged) → gap-free ribbon at corners
 			if(pip(polygon[0][0]+vn[0][0]*2, polygon[0][1]+vn[0][1]*2, polygon)){ for(const v of vn){ v[0]=-v[0]; v[1]=-v[1]; } }   // orient outward (winding-agnostic)
 			const prof=polygon.map(a=>in_harbour(a[0],a[1])?{o1:QUAY_APRON,h1:QUAY,o2:QUAY_APRON,h2:-1.5}:{o1:SKIRT,h1:-SKIRT_DROP,o2:SKIRT+1,h2:-SKIRT_DROP-0.2});   // per-vertex profile; shared vertices blend the two continuously
 			const r1=polygon.map((a,i)=>[a[0]+vn[i][0]*prof[i].o1, a[1]+vn[i][1]*prof[i].o1, prof[i].h1]);
@@ -1428,8 +1427,8 @@ function asphalt_texture(){ const c=document.createElement("canvas"); c.width=c.
 	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.anisotropy=renderer.capabilities.getMaxAnisotropy(); return t; }
 function ribbon(points, width, y){   // asphalt strip of `width` (m) along a world-space polyline at height y
 	const hw=width/2, pos=[], uvs=[];
-	const off=points.map((p,i)=>{ const a=points[Math.max(0,i-1)], b=points[Math.min(points.length-1,i+1)];
-		let dx=b[0]-a[0], dz=b[1]-a[1]; const l=Math.hypot(dx,dz)||1; return [-dz/l*hw, dx/l*hw]; });   // perpendicular (left) offset
+	const off=points.map((_p,i)=>{ const a=points[Math.max(0,i-1)], b=points[Math.min(points.length-1,i+1)];
+		const dx=b[0]-a[0], dz=b[1]-a[1]; const l=Math.hypot(dx,dz)||1; return [-dz/l*hw, dx/l*hw]; });   // perpendicular (left) offset
 	for(let i=0;i<points.length-1;i++){ const p=points[i], q=points[i+1], u=off[i], v=off[i+1];
 		const pl=[p[0]+u[0],p[1]+u[1]], pr=[p[0]-u[0],p[1]-u[1]], ql=[q[0]+v[0],q[1]+v[1]], qr=[q[0]-v[0],q[1]-v[1]];
 		const ny=(pr[1]-pl[1])*(qr[0]-pl[0])-(pr[0]-pl[0])*(qr[1]-pl[1]);   // wind the top face upward regardless of strip direction (else it back-faces and shades black)
@@ -1796,7 +1795,7 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 		if(pts.length) ops_lights.push(glow_points(pts,0xffb060,3)); }
 	for(const [dir,col] of [[-1,0xff2418],[1,0x24ff2a]]){ const e=edge_lat(-5,dir); if(e!==null){ const d=dh(-5,e); night_lights.push(glow_points([d.x,d.y+1.2,d.z],col,5)); } }   // red (port) / green (starboard) nav lights on the beam edges
 	{ const st2=dh(-160,0); if(st2.y>-1e8) night_lights.push(glow_points([st2.x,st2.y+1.5,st2.z],0xffffff,5)); }   // white sternlight on the fantail — completes the COLREGS steaming set
-	const mt=(deck_grid&&deck_grid.mast)||{x:0,y:-1e9,z:0}; let my=mt.y,mx=mt.x,mz=mt.z;   // the island mast top, recorded during the grid build (the deck grid itself excludes the island, so a deck_y_at scan can never find the mast)
+	const mt=(deck_grid&&deck_grid.mast)||{x:0,y:-1e9,z:0}; const my=mt.y,mx=mt.x,mz=mt.z;   // the island mast top, recorded during the grid build (the deck grid itself excludes the island, so a deck_y_at scan can never find the mast)
 	if(my>dy+3){ night_lights.push(glow_points([mx,my+1.2,mz],0xffffff,6));               // white masthead just above the mast top
 		night_lights.push(glow_points([mx,my+0.4,mz],0xff2418,5)); }                       // red obstruction light just below it
 	// ISLAND DECK FLOODS: one glare per AUTHORED lamp fitting — the model's yellow grid arrays
@@ -2039,13 +2038,13 @@ addEventListener("pagehide",()=>{ if(MULTIPLAYER) net_finish("left"); },{ signal
 // the sandboxed shell iframe can block. Zoom stays on -/= (not the wheel), so no wheel handler.
 let dragging=false, drag_x=0, drag_y=0;
 stage.addEventListener("pointerdown",e=>{ if(e.button!==0 || (cfg.view!=="chase"&&cfg.view!=="cockpit")) return;
-	dragging=true; head_drag=(cfg.view==="cockpit"); drag_x=e.clientX; drag_y=e.clientY; try{ stage.setPointerCapture(e.pointerId); }catch(_){} e.preventDefault(); }, { signal });
+	dragging=true; head_drag=(cfg.view==="cockpit"); drag_x=e.clientX; drag_y=e.clientY; try{ stage.setPointerCapture(e.pointerId); }catch(_){ /* pointer capture optional */ } e.preventDefault(); }, { signal });
 stage.addEventListener("pointermove",e=>{ if(!dragging) return;
 	const dx=e.clientX-drag_x, dy=e.clientY-drag_y; drag_x=e.clientX; drag_y=e.clientY;
 	const f=0.005;   // radians per pixel (the sensitivity slider is gone: one constant fits, and the setting only ever scaled THIS — players kept reading it as a flight-control gain)
 	if(head_drag){ head_az=THREE.MathUtils.clamp(head_az-dx*f,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+dy*f,-1.047,1.396); return; }   // cockpit head look (#99): ±150° az, −60/+80° el; snap-back runs on release
 	cam_az-=dx*f; cam_el=THREE.MathUtils.clamp(cam_el+dy*f,-1.2,1.45); }, { signal });   // both axes reversed (grab-the-world feel): drag right = orbit left, drag up = camera lowers
-function end_drag(e){ if(!dragging) return; dragging=false; head_drag=false; try{ stage.releasePointerCapture(e.pointerId); }catch(_){} }
+function end_drag(e){ if(!dragging) return; dragging=false; head_drag=false; try{ stage.releasePointerCapture(e.pointerId); }catch(_){ /* release optional */ } }
 stage.addEventListener("pointerup",end_drag,{ signal });
 // zoom_step: one discrete notch of zoom (trim-wheel button pulse or scroll notch).
 function zoom_step(direction){
@@ -2077,7 +2076,7 @@ const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
-let pad_buttons=[];
+const pad_buttons=[];
 const pad_levers={};   // per-purpose lever state: armed on the first deliberate sweep
 function throttle_from_lever(){   // mission start: seed the throttle from the physical lever when one is bound, and arm it so it tracks from the first frame
 	const pad=read_gamepad(); if(!pad) return;
@@ -2197,7 +2196,7 @@ let hud_cautions=0;   // caution count published by draw_hud for the master-caut
 let law_armed=true;   // radar-altimeter low-altitude warning: one aural per descent through the bug
 let last_out=null;   // the core's latest output words: the HUD caution panel reads damage straight from them
 // burn_trail: flame + black smoke from a burning aircraft, rate by intensity.
-function burn_trail(pos,intensity,vx,vy,vz){ if(intensity<=0.02) return;
+function burn_trail(pos,intensity,vx,_vy,vz){ if(intensity<=0.02) return;
 	if(Math.random()<Math.min(1,intensity)){ const k=pool_spawn(smoke); if(k>=0){
 		smoke.px[k]=pos.x-((vx||0)*0.05);smoke.py[k]=pos.y;smoke.pz[k]=pos.z-((vz||0)*0.05);
 		smoke.vx[k]=(Math.random()-0.5)*4;smoke.vy[k]=4+Math.random()*6;smoke.vz[k]=(Math.random()-0.5)*4;
@@ -2205,7 +2204,7 @@ function burn_trail(pos,intensity,vx,vy,vz){ if(intensity<=0.02) return;
 		const flame=Math.random()<0.3;
 		if(flame){ smoke.r[k]=2.2;smoke.g[k]=0.9;smoke.b[k]=0.25; } else { smoke.r[k]=0.12;smoke.g[k]=0.12;smoke.b[k]=0.13; } } } }
 // leak_trail: white fuel mist behind a holed tank.
-function leak_trail(pos,rate,vx,vy,vz){ if(Math.random()>Math.min(1,rate)) return; const k=pool_spawn(smoke); if(k<0) return;
+function leak_trail(pos,rate,vx,_vy,vz){ if(Math.random()>Math.min(1,rate)) return; const k=pool_spawn(smoke); if(k<0) return;
 	smoke.px[k]=pos.x-((vx||0)*0.06);smoke.py[k]=pos.y-0.4;smoke.pz[k]=pos.z-((vz||0)*0.06);
 	smoke.vx[k]=(Math.random()-0.5)*3;smoke.vy[k]=(Math.random()-0.5)*3;smoke.vz[k]=(Math.random()-0.5)*3;
 	smoke.ttl[k]=smoke.life[k]=1.1+Math.random()*0.7; smoke.r[k]=0.95;smoke.g[k]=0.96;smoke.b[k]=0.98; }
@@ -2243,20 +2242,20 @@ function launch_status(){ return (flight_active?(core_catapult>=0&&core_stroke<0
 // Landing line, measured directly at the three wire crossings on the landing path.
 function strip_lat(fa){ return SHIP.line.alat+(fa-SHIP.line.afa)*((SHIP.line.blat-SHIP.line.alat)/(SHIP.line.bfa-SHIP.line.afa)); }   // lateral of the landing centreline at a given fore-aft
 const _slen=Math.hypot(SHIP.line.bfa-SHIP.line.afa,SHIP.line.blat-SHIP.line.alat), STRIP_UFA=(SHIP.line.bfa-SHIP.line.afa)/_slen, STRIP_ULAT=(SHIP.line.blat-SHIP.line.alat)/_slen;   // unit vector along the landing line (toward +fa = the rollout)
-let ground_kind="";   // surface kind under the last ground_height() hit: deck / runway / apron / ground / "" (sea) — read right after the call
+let _ground_kind="";   // surface kind under the last ground_height() hit: deck / runway / apron / ground / "" (sea) — read right after the call
 function ground_height(x,z){   // top of the solid surface under (x,z): carrier deck / runway / apron / island; -inf = open sea (no landing)
-	ground_kind="";
+	_ground_kind="";
 	if(Math.abs(x-CARRIER.x)<160 && Math.abs(z-CARRIER.z)<160){
-		if(!carrier_model){ ground_kind="deck"; return CARRIER.deckY; }   // GLB still loading — treat the deck box as solid at the known height so a carrier start doesn't fall through to the flight model
+		if(!carrier_model){ _ground_kind="deck"; return CARRIER.deckY; }   // GLB still loading — treat the deck box as solid at the known height so a carrier start doesn't fall through to the flight model
 		const h=deck_y_at(carrier_model,x,z,-1e9);
-		if(h>-1e8 && h<CARRIER.deckY+4){ ground_kind="deck"; return h>CARRIER.deckY-2.5?CARRIER.deckY:h; }   // the flight deck is one horizontal plane — the GLB models it as two flat layers 1.72 m apart (gaps in the top layer expose the lower), so near-deck hits snap to the measured plane; genuinely lower hits (catwalks/sponsons off the edge) stay real. Taller hits are the island superstructure — see check_collisions
+		if(h>-1e8 && h<CARRIER.deckY+4){ _ground_kind="deck"; return h>CARRIER.deckY-2.5?CARRIER.deckY:h; }   // the flight deck is one horizontal plane — the GLB models it as two flat layers 1.72 m apart (gaps in the top layer expose the lower), so near-deck hits snap to the measured plane; genuinely lower hits (catwalks/sponsons off the edge) stay real. Taller hits are the island superstructure — see check_collisions
 	}
-	if(obstacles.runway && over_runway({x,z})){ ground_kind="runway"; return ISLAND_H+1.5; }
-	for(const a of obstacles.aprons){ if(pip(x,z,a)){ ground_kind="apron"; return ISLAND_H+AIRFIELD_FLOAT; } }
+	if(obstacles.runway && over_runway({x,z})){ _ground_kind="runway"; return ISLAND_H+1.5; }
+	for(const a of obstacles.aprons){ if(pip(x,z,a)){ _ground_kind="apron"; return ISLAND_H+AIRFIELD_FLOAT; } }
 	for(const is of obstacles.islands){ if(x>is.minx-SKIRT&&x<is.maxx+SKIRT&&z>is.minz-SKIRT&&z<is.maxz+SKIRT){
-		if(pip(x,z,is.pts)){ ground_kind="ground"; return ISLAND_H; }
-		if(in_harbour(x,z)){ const d=edge_distance(x,z,is.pts); if(d<QUAY_APRON){ ground_kind="ground"; return ISLAND_H-(ISLAND_H-QUAY)*(d/QUAY_APRON); } }   // harbour: short apron to the quay edge, then the wall drops into deep water
-		else { const d=edge_distance(x,z,is.pts); if(d<SKIRT){ ground_kind="ground"; return ISLAND_H-(ISLAND_H+SKIRT_DROP)*(d/SKIRT); } }   // the beach skirt is a real sloped surface (sand → soft-field rules)
+		if(pip(x,z,is.pts)){ _ground_kind="ground"; return ISLAND_H; }
+		if(in_harbour(x,z)){ const d=edge_distance(x,z,is.pts); if(d<QUAY_APRON){ _ground_kind="ground"; return ISLAND_H-(ISLAND_H-QUAY)*(d/QUAY_APRON); } }   // harbour: short apron to the quay edge, then the wall drops into deep water
+		else { const d=edge_distance(x,z,is.pts); if(d<SKIRT){ _ground_kind="ground"; return ISLAND_H-(ISLAND_H+SKIRT_DROP)*(d/SKIRT); } }   // the beach skirt is a real sloped surface (sand → soft-field rules)
 	} }
 	return -1e9;
 }
@@ -2299,7 +2298,7 @@ const TESTS=[
 	{name:"9 carrier - on glideslope (traps)",              V:70,  S:4.3, pitch:4, carrier:true, hook:true},
 	{name:"0 carrier - touch and go (bolter)",              V:80,  S:1.2, pitch:3, carrier:true, hook:false, long:55, bolter:true},
 ];
-let test_active=null, test_idle=0, test_power=0, test_brake=false, dev_fps=0, dev_jitter=false, livery_pending=null;   // post-scenario throttle grace: the physical lever must not re-power a scripted rollout (test_power: a bolter keeps MIL power instead)
+let test_active=null, test_idle=0, _test_power=0, test_brake=false, dev_fps=0, dev_jitter=false, livery_pending=null;   // post-scenario throttle grace: the physical lever must not re-power a scripted rollout (_test_power: a bolter keeps MIL power instead)
 if(DEV_MODE) (globalThis as any).dev_measure=()=>{   // one-shot: the lowest mesh nodes in MODEL frame, named — the source of truth for the physics Belly/Probe constants (#72)
 	const inverse=new THREE.Matrix4().copy(ownship.group.matrixWorld).invert();
 	const v=new THREE.Vector3();
@@ -2355,7 +2354,7 @@ function start_test(i){ const sc=TESTS[i]; if(!sc || crash_t>0) return;
 }
 function test_handoff(t){   // the scenario's outcome is decided: hand the jet back with the right hands on the controls
 	test_active=null; test_idle=sim_time+60;   // rollout grace: the scripted pilot rides the brakes to a stop (a hands-off free roll ran off into the sea)
-	if(t.bolter){ test_power=0.95; ownship.throttle=0.95; ownship.burner=0; }   // a bolter goes to MIL power and flies off the bow — no brakes (test_power gates them off)
+	if(t.bolter){ _test_power=0.95; ownship.throttle=0.95; ownship.burner=0; }   // a bolter goes to MIL power and flies off the bow — no brakes (_test_power gates them off)
 	test_brake=!t.carrier && !t.bolter;   // grace-brake only on a RUNWAY rollout: on the carrier the wire (or the bolter's power) stops the jet, and braking the just-touched wheels for the frame before the wire catch registers grabbed asymmetrically and banked the arrest (#72 low-fps trap)
 }
 function test_drive(){   // hold the prescribed approach exactly; hand control back the moment the outcome is decided
@@ -2425,7 +2424,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.gear=1-out[STATE.extension]; ownship.speedbrake=out[STATE.speedbrake];
 	ownship.surfaces={ stabL:out[STATE.stabilator], stabR:out[STATE.stabilator+1], flapL:out[STATE.flaperon], flapR:out[STATE.flaperon+1], rudder:out[STATE.rudder], slat:out[STATE.slat] };   // live FCS deflections, rad — the rig scrubs surfaces from these
 	update_gauges(out);   // cockpit instruments (#99)
-	if(TEST_SCENARIOS){ const sp=Math.hypot(out[3],out[4],out[5])||1, D=180/Math.PI;   // telemetry row (Shift+T dumps)
+	if(TEST_SCENARIOS){ const _sp=Math.hypot(out[3],out[4],out[5])||1, D=180/Math.PI;   // telemetry row (Shift+T dumps)
 		telemetry.push([ (out[STATE.time]||0).toFixed(3), input.pitch.toFixed(3), (Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*D).toFixed(2), (out[STATE.alpha]*D).toFixed(2), (out[12]*D).toFixed(2), out[STATE.nz].toFixed(3), (out[STATE.cas]*1.944).toFixed(1), (out[STATE.stabilator]*D).toFixed(2) ]);   // attitude from the body axis: the velocity-derived form is garbage below ~5 kt
 		if(telemetry.length>7200) telemetry.shift(); }
 	ownship.grounded=out[STATE.wow]>0.5;
@@ -2580,7 +2579,7 @@ function fly_player(dt){
 	}
 	if(out[STATE.contact]>=0){ flight_clear(); ownship.group.position.copy(ownship.pos); return crash_ownship("probe"); }   // crash probe: any non-permitted airframe contact
 	if(out[STATE.touch]>0.5){ const crashed=verdict(out); flight_clear(); if(crashed) return; }
-	if(sim_time<test_idle && out[STATE.wow]<0.5 && out[STATE.velocity+1]>1){ test_idle=0; test_power=0; }   // climbing away (a bolter): end the rollout grace — the pilot needs the throttle back
+	if(sim_time<test_idle && out[STATE.wow]<0.5 && out[STATE.velocity+1]>1){ test_idle=0; _test_power=0; }   // climbing away (a bolter): end the rollout grace — the pilot needs the throttle back
 	// bolter: hook down, touched the deck this pass, airborne again without a wire
 	if(prev_wow&&!ownship.grounded&&!ownship.trapped&&(ownship.hookTarget??0)>0.5&&ownship.touch&&ownship.touch.deck&&(sim_time-ownship.touch.t)<8&&ownship.speed>30){ ownship.grade="BOLTER"; notice(translate("BOLTER"), 6); }
 	prev_wow=ownship.grounded;
@@ -2774,7 +2773,7 @@ function step_world(dt){ sim_time+=dt;
 			for(let i=0;i<extras.length&&i<8;i++) battle_burst(1+i,pose,battle_aim(extras[i]),fired,0,battle_tick); } }
 	update_pool_ballistic(tracers,dt,9.8,0); update_missiles(dt);
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96);
-	live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts);
+	_live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts);
 	tr_pts.visible=cfg.tracers; fl_pts.visible=cfg.flares;
 	update_anim(dt);
 	update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights(); update_shuttles(); update_jbds(dt);
@@ -2796,7 +2795,7 @@ function step_world(dt){ sim_time+=dt;
 }
 
 function reset_ownship(){
-	test_idle=0; test_power=0;   // a respawn ends any scenario rollout grace — the lever and brakes are the pilot's again
+	test_idle=0; _test_power=0;   // a respawn ends any scenario rollout grace — the lever and brakes are the pilot's again
 	hist_valid=false;   // spawn/respawn teleports the camera — a cut for the cloud accumulation history
 	battle_rig(); ejected=false; eject_taps=0; hit_flash=0; own_burn=[0,0]; own_burning=false; own_leak=0; peak_g=1;   // a fresh jet, a fresh fight (#78)
 	master=cfg.task==="free"?"nav":"gun";   // default master mode per mission: combat spawns fight-ready (a dead trigger at the merge is a trap), free flight powers up in NAV like the real jet
@@ -2894,7 +2893,7 @@ function camera_floor(p){   // keep an external camera above whatever's beneath 
 	if(p.y<f) p.y=f; return p;
 }
 
-function update_flypast(dt){   // fixed-ground flyby: the jet flies past a stationary camera; re-seed ahead once it recedes
+function update_flypast(_dt){   // fixed-ground flyby: the jet flies past a stationary camera; re-seed ahead once it recedes
 	if(!flyby_pos || ownship.pos.distanceTo(flyby_pos)>380){
 		flyby_side*=-1;
 		const fwdH=new THREE.Vector3(ownship.fwd.x,0,ownship.fwd.z); if(fwdH.lengthSq()<1e-4) fwdH.set(0,0,1); fwdH.normalize();
@@ -3648,15 +3647,15 @@ function start_mission(){
 		setTimeout(()=>{ try{
 			flight_level(CARRIER.x+2500, isNaN(salt)?100:salt, CARRIER.z+2500, 0.9, -0.45, 120, 2450);
 			set_view("chase"); cam_az=isNaN(saz)?2.4:saz; cam_el=isNaN(sel)?0.10:sel; cam_dist=isNaN(sdist)?40:sdist;
-		}catch(e){ console.log("shot preset failed", e); } }, 6000); }
-	try{ window.focus(); stage.focus(); }catch(e){}
+		}catch(e){ console.warn("shot preset failed", e); } }, 6000); }
+	try{ window.focus(); stage.focus(); }catch{ /* focus best-effort */ }
 }
 function assets_ready(){ return !!carrier_model && model_active && airports.length>0 && flight_ready(); }   // the async loads: carrier GLB (+deck aids), fighter GLB, map/airfield, flight core wasm
 
 // ============================================================================ boot
 apply_time_of_day(cfg.tod); apply_effects(); apply_size();
 help_el.style.display="none";   // controls list lives in the pause window now (shown while paused via P)
-addEventListener("pointerdown",()=>{ audio_gesture(); try{ window.focus(); }catch(e){} },{ signal });   // clicks are user activations too: without this, a mouse-started carrier mission is silent until the first keypress
+addEventListener("pointerdown",()=>{ audio_gesture(); try{ window.focus(); }catch{ /* focus best-effort */ } },{ signal });   // clicks are user activations too: without this, a mouse-started carrier mission is silent until the first keypress
 
 function menu_backdrop(){ const a=performance.now()*0.00007; const r=440;
 	camera.position.set(CARRIER.x+Math.cos(a)*r, CARRIER.deckY+70, CARRIER.z+Math.sin(a)*r);
@@ -3682,7 +3681,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 			for(const k of Object.keys(parts)) if(parts[k]&&load_marks[k]===undefined) load_marks[k]=performance.now()-loading_t0;
 			load_pending=Object.keys(parts).filter(k=>!parts[k]); }
 		if(assets_ready()){ loading=false;
-			console.log("[load] "+Object.entries(load_marks).map(([k,v])=>k+" "+(v/1000).toFixed(2)+"s").join(" · ")+" · total "+((performance.now()-loading_t0)/1000).toFixed(2)+"s");
+			console.warn("[load] "+Object.entries(load_marks).map(([k,v])=>k+" "+(v/1000).toFixed(2)+"s").join(" · ")+" · total "+((performance.now()-loading_t0)/1000).toFixed(2)+"s");
 			if(MULTIPLAYER && !net) net_connect(); }   // dial only NOW: connecting before the assets exist left the link idle for the whole download (slow connections were dropped mid-load and bounced back to the menu)
 		else { const lp=load_progress();
 			// A slow load is a slow load — the percentage moves and the player waits. Failure is a
@@ -3735,9 +3734,9 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
   function stop() {
     if (MULTIPLAYER) net_finish('left')
     audio_enable(false)   // the frame-loop gate dies with the RAF below — silence the surviving AudioContext explicitly, or its loops play on under the menu
-    try { __ac.abort() } catch (e) {}
+    try { __ac.abort() } catch { /* ignore */ }
     cancelAnimationFrame(__raf)
-    try { renderer.dispose() } catch (e) {}
+    try { renderer.dispose() } catch { /* ignore */ }
   }
   // Re-enter a game paused by Esc (running was set false; state is preserved).
   // Re-applies any settings changed in the menu that take effect live — sensitivity,
@@ -3752,7 +3751,7 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
       apply_time_of_day(cfg.tod)
     }
     running = true
-    try { stage.focus() } catch (e) {}
+    try { stage.focus() } catch { /* ignore */ }
   }
   return { stop, resume,
     exit: exit_match,

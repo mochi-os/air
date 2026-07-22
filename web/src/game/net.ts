@@ -83,6 +83,12 @@ export function normalize_server(address: string): string {
   return a
 }
 
+// default_server is the conventional lobby URL on the page's own host — the
+// natural default when the Mochi server's operator also runs a world server.
+export function default_server(): string {
+  return `${location.protocol === 'https:' ? 'https' : 'http'}://${location.hostname}:4433`
+}
+
 // LOBBY_TIMEOUT bounds every lobby request: an untrusted server that accepts a
 // connection but never responds must not hang the UI (a stuck refresh, a busy
 // state that never clears). withTimeout also folds in an optional caller signal
@@ -674,7 +680,7 @@ function slerp(
   t: number
 ): [number, number, number, number] {
   // Normalised lerp — adequate for 50 ms snapshot gaps.
-  let dot = a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3]
+  const dot = a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3]
   const sign = dot < 0 ? -1 : 1
   const out: [number, number, number, number] = [
     a[0] + (sign * b[0] - a[0]) * t,

@@ -1,0 +1,26 @@
+name: Ambient Ownership Check
+
+on:
+  pull_request:
+    paths:
+      - '**/*.star'
+      - '.github/workflows/ambient-ownership-check.yml'
+      - '.github/scripts/check-ambient-ownership.py'
+  push:
+    branches: [main, master]
+    paths:
+      - '**/*.star'
+      - '.github/workflows/ambient-ownership-check.yml'
+      - '.github/scripts/check-ambient-ownership.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ownership:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check ambient-ownership authorization pattern
+        run: python3 .github/scripts/check-ambient-ownership.py --check .

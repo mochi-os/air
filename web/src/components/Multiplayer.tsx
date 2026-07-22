@@ -30,6 +30,7 @@ import { Switch } from '@mochi/web/components/ui/switch'
 import { getErrorMessage } from '@mochi/web'
 import { useIdentityName } from '../lib/config-store'
 import {
+  default_server,
   normalize_server,
   supported,
   world_create,
@@ -39,12 +40,6 @@ import {
   type WorldSession,
   type WorldStatus,
 } from '../game/net'
-
-// The conventional lobby port on the page's own host — the natural default
-// when the Mochi server's operator also runs a world server.
-export function default_server(): string {
-  return `${location.protocol === 'https:' ? 'https' : 'http'}://${location.hostname}:4433`
-}
 
 // crossHost returns the transport hostname when it differs from the lobby the
 // player actually chose, or null when they match. The lobby (untrusted) hands

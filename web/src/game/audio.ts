@@ -51,7 +51,7 @@ interface Voice {
   gain: GainNode
   tune?: (value: number) => void
 }
-let engines: { whine: OscillatorNode; second: OscillatorNode; whineGain: GainNode; rumble: BiquadFilterNode; hiss: BiquadFilterNode; hissGain: GainNode; gain: GainNode }[] = []
+const engines: { whine: OscillatorNode; second: OscillatorNode; whineGain: GainNode; rumble: BiquadFilterNode; hiss: BiquadFilterNode; hissGain: GainNode; gain: GainNode }[] = []
 let burner: Voice | null = null
 let seeker: { osc: OscillatorNode; gain: GainNode } | null = null
 let wind: { source: AudioBufferSourceNode; filter: BiquadFilterNode; gain: GainNode } | null = null
