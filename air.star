@@ -10,11 +10,22 @@ def database_create():
 	# key as an LWW-register so writes converge under multi-host replication.
 	mochi.db.execute("create table if not exists settings (name text not null primary key, value text not null, updated integer not null)")
 	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, created integer not null)")
+	# A match is identified by where and when it ran; the unique index makes the
+	# dedup atomic (insert ... on conflict do nothing) instead of a racy check-
+	# then-insert.
+	mochi.db.execute("create unique index if not exists matches_replay on matches(world, session, started)")
 	mochi.db.execute("create table if not exists telemetry (name text not null primary key, value text not null, created integer not null)")
 
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
+	if version == 5:
+		# Atomic match dedup (#191 review): the check-then-insert could let two
+		# concurrent retries both pass the existence check and insert duplicates.
+		# Collapse any existing (world, session, started) collisions to the
+		# lowest id, then a unique index makes future inserts conflict-safe.
+		mochi.db.execute("delete from matches where id not in (select min(id) from matches group by world, session, started)")
+		mochi.db.execute("create unique index if not exists matches_replay on matches(world, session, started)")
 	if version == 4:
 		# Telemetry out of the settings store (#161 review): the CSV rows rode
 		# into config_load's wholesale dump, failed json.decode into None, and
@@ -71,15 +82,17 @@ def match_record(a):
 	session = a.input("session", "")[:64]
 	if not world or not session:
 		return {"data": {"recorded": False}}
-	# Real dedup: the old `insert or ignore` conflicted only on the primary
-	# key — a fresh uid every call — so it never fired and a client retry
-	# duplicated history. A match is identified by where and when it ran.
-	if mochi.db.exists("select 1 from matches where world = ? and session = ? and started = ?", world, session, whole(a, "started")):
-		return {"data": {"recorded": False}}
-	mochi.db.execute("insert into matches (id, world, session, mode, team, started, ended, reason, players, kills, deaths, cheated, created) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-		mochi.uid(), world, session, a.input("mode", "")[:32], a.input("team", "")[:16], whole(a, "started"), whole(a, "ended"), a.input("reason", "")[:32],
+	# Atomic dedup on the (world, session, started) unique index (#191): the old
+	# check-then-insert let two concurrent retries both pass and duplicate the
+	# row. `on conflict do nothing` is the single, race-free write; whether our
+	# own id landed then tells the caller if this was the first record.
+	started = whole(a, "started")
+	id = mochi.uid()
+	mochi.db.execute("insert into matches (id, world, session, mode, team, started, ended, reason, players, kills, deaths, cheated, created) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) on conflict(world, session, started) do nothing",
+		id, world, session, a.input("mode", "")[:32], a.input("team", "")[:16], started, whole(a, "ended"), a.input("reason", "")[:32],
 		a.input("players", "")[:1024], whole(a, "kills"), whole(a, "deaths"), whole(a, "cheated"), mochi.time.now())
-	return {"data": {"recorded": True}}
+	recorded = mochi.db.exists("select 1 from matches where world = ? and session = ? and started = ? and id = ?", world, session, started, id)
+	return {"data": {"recorded": recorded}}
 
 def telemetry_save(a):
 	# Development telemetry sink (Shift+T): browser downloads don't work from
@@ -87,11 +100,14 @@ def telemetry_save(a):
 	# Authenticated only — as a public class-level action this ran as the
 	# app's FIRST ADMINISTRATOR, so any anonymous caller could write ~1MB
 	# rows into the admin's settings table (the public-runs-as-owner trap).
-	if not a.user.identity.id:
+	if not a.user or not a.user.identity.id:
 		a.error.label(401, "errors.not_logged_in")
 		return
 	data = a.input("data", "")[:2000000]
 	now = mochi.time.now()
-	name = "telemetry-" + str(now)
+	# A uid key, not "telemetry-" + timestamp: two saves within the same second
+	# collided on the primary key and raised an unhandled DB error. `created`
+	# still carries the time for ordering.
+	name = mochi.uid()
 	mochi.db.execute("insert into telemetry (name, value, created) values (?, ?, ?)", name, data, now)
 	return {"data": {"name": name, "rows": len(data.split("\n"))}}

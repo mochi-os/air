@@ -25,17 +25,17 @@ msgid "{0} created “{1}”"
 msgstr "{0} «{1}»-ро эҷод кард"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:193
+#: src/components/Multiplayer.tsx:278
 msgid "{0} flying"
 msgstr "{0} дар парвоз"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:365
+#: src/components/Multiplayer.tsx:450
 msgid "{0}/{1} players"
 msgstr "{0}/{1} бозигар"
 
-#: src/components/Multiplayer.tsx:134
+#: src/components/Multiplayer.tsx:189
 msgid "{name}'s match"
 msgstr "Бозии {name}"
 
@@ -100,7 +100,7 @@ msgid "Account verified"
 msgstr "Ҳисоб тасдиқ карда шуд"
 
 #: src/components/MissionSetup.tsx:1101
-#: src/components/Multiplayer.tsx:315
+#: src/components/Multiplayer.tsx:400
 msgid "Ace"
 msgstr "Устод"
 
@@ -262,11 +262,11 @@ msgstr "Суръати беҳтарин гардиши устувор"
 msgid "BINGO FUEL"
 msgstr "БИНГО СӮЗИШВОРӢ"
 
-#: src/components/Multiplayer.tsx:391
+#: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "Кабуд"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Blue bots"
 msgstr "Ботҳои кабуд"
 
@@ -279,7 +279,7 @@ msgstr "БОЛТЕР"
 msgid "Boost interest"
 msgstr "Афзоиши таваҷҷуҳ"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Bots"
 msgstr "Ботҳо"
 
@@ -303,7 +303,7 @@ msgstr "Тугмаи {i}"
 msgid "Buttons"
 msgstr "Тугмаҳо"
 
-#: src/components/Multiplayer.tsx:178
+#: src/components/Multiplayer.tsx:263
 msgid "Callsign"
 msgstr "Тахаллус"
 
@@ -321,6 +321,7 @@ msgstr "Масофаи камера"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
 #: src/components/MissionSetup.tsx:549
+#: src/components/Multiplayer.tsx:235
 msgid "Cancel"
 msgstr "Бекор кардан"
 
@@ -393,7 +394,7 @@ msgstr "Забон интихоб кунед"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:323
 msgid "Clear"
 msgstr "Тоза кардан"
 
@@ -472,7 +473,7 @@ msgstr "Паймон"
 msgid "Confirm"
 msgstr "Тасдиқ"
 
-#: src/components/Multiplayer.tsx:196
+#: src/components/Multiplayer.tsx:281
 msgid "Connecting…"
 msgstr "Пайвастшавӣ…"
 
@@ -489,6 +490,7 @@ msgid "Contextual information and details."
 msgstr "Маълумоти заминавӣ ва тафсилот."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
+#: src/components/Multiplayer.tsx:244
 msgid "Continue"
 msgstr "Идома"
 
@@ -504,7 +506,7 @@ msgstr "Нусхабардорӣ"
 msgid "Corner speed (best instant turn)"
 msgstr "Суръати кунҷӣ (беҳтарин гардиши фаврӣ)"
 
-#: src/components/Multiplayer.tsx:148
+#: src/components/Multiplayer.tsx:203
 msgid "Could not create the match"
 msgstr "Матч эҷод карда нашуд"
 
@@ -532,11 +534,11 @@ msgstr "Бо он ҳисоб тасдиқ кардан имконнопазир 
 msgid "CRASHED"
 msgstr "СУҚУТ КАРД"
 
-#: src/components/Multiplayer.tsx:346
+#: src/components/Multiplayer.tsx:431
 msgid "Create and fly"
 msgstr "Эҷод кунед ва парвоз кунед"
 
-#: src/components/Multiplayer.tsx:211
+#: src/components/Multiplayer.tsx:296
 msgid "Create match"
 msgstr "Матч эҷод кунед"
 
@@ -546,7 +548,7 @@ msgid "Credits"
 msgstr "Муаллифон"
 
 #: src/components/MissionSetup.tsx:1202
-#: src/components/Multiplayer.tsx:239
+#: src/components/Multiplayer.tsx:324
 msgid "Cumulus"
 msgstr "Абри тӯдагӣ"
 
@@ -581,7 +583,7 @@ msgid "Data conflict"
 msgstr "Ихтилофи маълумот"
 
 #: src/components/MissionSetup.tsx:1190
-#: src/components/Multiplayer.tsx:234
+#: src/components/Multiplayer.tsx:319
 msgid "Day"
 msgstr "Рӯз"
 
@@ -633,6 +635,10 @@ msgstr "Аз браузери веб муайян кардан"
 msgid "Device"
 msgstr "Дастгоҳ"
 
+#: src/components/Multiplayer.tsx:224
+msgid "Different game host"
+msgstr "Мизбони дигари бозӣ"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:340
 msgid "Direction"
 msgstr "Самт"
@@ -663,7 +669,7 @@ msgstr "Боргирӣ"
 msgid "Download failed"
 msgstr "Боргирӣ ноком шуд"
 
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:396
 msgid "Drone"
 msgstr "Дрон"
 
@@ -691,7 +697,7 @@ msgstr "КАТАПУЛТА ШУД"
 msgid "Email code"
 msgstr "Рамзи email"
 
-#: src/components/Multiplayer.tsx:364
+#: src/components/Multiplayer.tsx:449
 msgid "empty"
 msgstr "холӣ"
 
@@ -846,7 +852,7 @@ msgid "From theme"
 msgstr "Аз мавзӯъ"
 
 #: src/components/MissionSetup.tsx:1077
-#: src/components/Multiplayer.tsx:249
+#: src/components/Multiplayer.tsx:334
 msgid "Fuel"
 msgstr "Сӯзишворӣ"
 
@@ -938,7 +944,7 @@ msgid "High"
 msgstr "Баланд"
 
 #: src/components/MissionSetup.tsx:1203
-#: src/components/Multiplayer.tsx:240
+#: src/components/Multiplayer.tsx:325
 msgid "High stratus"
 msgstr "Абри қабатии баланд"
 
@@ -998,11 +1004,11 @@ msgid "INVULNERABLE"
 msgstr "ОСЕБНОПАЗИР"
 
 #: src/components/MissionSetup.tsx:1161
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:363
 msgid "Invulnerable (human players only)"
 msgstr "Осебнопазир (танҳо бозигарони инсонӣ)"
 
-#: src/components/Multiplayer.tsx:403
+#: src/components/Multiplayer.tsx:488
 msgid "Join"
 msgstr "Ҳамроҳ шудан"
 
@@ -1010,11 +1016,11 @@ msgstr "Ҳамроҳ шудан"
 msgid "JOINED"
 msgstr "ҲАМРОҲ ШУД"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Joust"
 msgstr "Дуэл"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:310
 msgid "Joust — 1v1, first kill wins"
 msgstr "Дуэл — 1v1, кӣ аввал ҳарифро занад, ғолиб мешавад"
 
@@ -1069,7 +1075,7 @@ msgstr "партоб / ҳадаф"
 msgid "Layout"
 msgstr "Тарҳбандӣ"
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:347
 msgid "lb"
 msgstr "lb"
 
@@ -1180,7 +1186,7 @@ msgid "Low"
 msgstr "Паст"
 
 #: src/components/MissionSetup.tsx:1204
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:326
 msgid "Low stratus"
 msgstr "Абри қабатии паст"
 
@@ -1206,7 +1212,7 @@ msgstr "Аломатгузорӣ ҳамчун хондашуда"
 msgid "Master"
 msgstr "Умумӣ"
 
-#: src/components/Multiplayer.tsx:221
+#: src/components/Multiplayer.tsx:306
 msgid "Match type"
 msgstr "Навъи матч"
 
@@ -1252,7 +1258,7 @@ msgstr "МУШАК"
 msgid "Missiles"
 msgstr "Мушакҳо"
 
-#: src/components/Multiplayer.tsx:268
+#: src/components/Multiplayer.tsx:353
 msgid "Missiles allowed"
 msgstr "Ракетаҳо иҷозат дода шудаанд"
 
@@ -1272,7 +1278,7 @@ msgstr "Онро ҳаракат диҳед…"
 msgid "Multiplayer"
 msgstr "Бисёрнафара"
 
-#: src/components/Multiplayer.tsx:157
+#: src/components/Multiplayer.tsx:212
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Реҷаи бисёрнафара WebTransport-ро талаб мекунад, ки ин браузер онро ҳоло дастгирӣ намекунад."
 
@@ -1291,7 +1297,7 @@ msgid "Next image"
 msgstr "Тасвири навбатӣ"
 
 #: src/components/MissionSetup.tsx:1191
-#: src/components/Multiplayer.tsx:235
+#: src/components/Multiplayer.tsx:320
 msgid "Night"
 msgstr "Шаб"
 
@@ -1311,7 +1317,7 @@ msgstr "Ягон гурӯҳ дастрас нест"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ягон ҷойстик муайян нашуд — барои бедор кардани он ягон тугмаи онро пахш кунед."
 
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No open matches — create one."
 msgstr "Матчҳои кушода нестанд — якто эҷод кунед."
 
@@ -1341,7 +1347,7 @@ msgid "No users found"
 msgstr "Ягон корбар ёфт нашуд"
 
 #: src/components/MissionSetup.tsx:959
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No world server."
 msgstr "Сервери ҷаҳон нест."
 
@@ -1406,11 +1412,11 @@ msgstr "Дар хати парвоз"
 msgid "Oops! Page Not Found!"
 msgstr "Эҳ! Саҳифа ёфт нашуд!"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Open"
 msgstr "Кушодан"
 
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:309
 msgid "Open — anyone may join or leave"
 msgstr "Кушода — ҳар кас метавонад ҳамроҳ шавад ё барояд"
 
@@ -1419,8 +1425,8 @@ msgstr "Кушода — ҳар кас метавонад ҳамроҳ шава�
 msgid "Open account actions"
 msgstr "Кушодани амалҳои ҳисоб"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:182
-#: ../../../lib/web/src/components/layout/nav-group.tsx:187
+#: ../../../lib/web/src/components/layout/nav-group.tsx:202
+#: ../../../lib/web/src/components/layout/nav-group.tsx:207
 msgid "Open actions"
 msgstr "Кушодани амалҳо"
 
@@ -1476,13 +1482,13 @@ msgid "PAUSED"
 msgstr "ТАВАҚҚУФ"
 
 #: src/components/MissionSetup.tsx:901
-#: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:183
+#: src/components/Multiplayer.tsx:115
+#: src/components/Multiplayer.tsx:268
 msgid "pilot"
 msgstr "халабон"
 
 #: src/components/MissionSetup.tsx:1099
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:398
 msgid "Pilot"
 msgstr "Халабон"
 
@@ -1583,11 +1589,11 @@ msgstr "АЗ НАВ МУСАЛЛАҲ ШУД"
 msgid "Recommended"
 msgstr "Тавсияшуда"
 
-#: src/components/Multiplayer.tsx:381
+#: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "Сурх"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Red bots"
 msgstr "Ботҳои сурх"
 
@@ -1604,7 +1610,7 @@ msgstr "Кам кардани шавқу ҳавас"
 msgid "Reference"
 msgstr "Истинод"
 
-#: src/components/Multiplayer.tsx:201
+#: src/components/Multiplayer.tsx:286
 msgid "Refresh"
 msgstr "Нав кардан"
 
@@ -1699,7 +1705,7 @@ msgid "Roll right"
 msgstr "Ғалт ба рост"
 
 #: src/components/MissionSetup.tsx:1098
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:397
 msgid "Rookie"
 msgstr "Навкор"
 
@@ -1987,11 +1993,11 @@ msgstr "Даста"
 msgid "TEAM"
 msgstr "ДАСТА"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Teams"
 msgstr "Дастаҳо"
 
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:311
 msgid "Teams — red versus blue"
 msgstr "Дастаҳо — сурх зидди кабуд"
 
@@ -2023,6 +2029,10 @@ msgstr "Мавзӯъ"
 #: ../../../lib/web/src/components/config-drawer.tsx:69
 msgid "Theme Settings"
 msgstr "Танзимоти мавзӯъ"
+
+#: src/components/Multiplayer.tsx:227
+msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
+msgstr "Ин лобӣ пайвасти бозии шуморо ба мизбони дигар ({redirectHost}) мефиристад. Танҳо дар сурате идома диҳед, ки ба ин сервер эътимод доред."
 
 #: src/components/GameCanvas.tsx:252
 msgid "throttle"
@@ -2065,10 +2075,10 @@ msgstr "Тағйир додани сутунҳо"
 msgid "Toggle right panel"
 msgstr "Панели ростро иваз кардан"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:351
-#: ../../../lib/web/src/components/layout/nav-group.tsx:358
-#: ../../../lib/web/src/components/layout/nav-group.tsx:481
-#: ../../../lib/web/src/components/layout/nav-group.tsx:488
+#: ../../../lib/web/src/components/layout/nav-group.tsx:373
+#: ../../../lib/web/src/components/layout/nav-group.tsx:380
+#: ../../../lib/web/src/components/layout/nav-group.tsx:503
+#: ../../../lib/web/src/components/layout/nav-group.tsx:510
 msgid "Toggle section"
 msgstr "Гузориши қисмат"
 
@@ -2156,12 +2166,12 @@ msgid "United States"
 msgstr "Иёлоти Муттаҳида"
 
 #: src/components/MissionSetup.tsx:1167
-#: src/components/Multiplayer.tsx:288
+#: src/components/Multiplayer.tsx:373
 msgid "Unlimited ammunition"
 msgstr "Муҳимоти номаҳдуд"
 
 #: src/components/MissionSetup.tsx:1173
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:383
 msgid "Unlimited fuel"
 msgstr "Сӯзишвории номаҳдуд"
 
@@ -2204,11 +2214,11 @@ msgid "Vertical"
 msgstr "Амудӣ"
 
 #: src/components/MissionSetup.tsx:1100
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:399
 msgid "Veteran"
 msgstr "Собиқадор"
 
-#: ../../../lib/web/src/components/attachment-gallery.tsx:74
+#: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Эскизи видео"
 
@@ -2259,7 +2269,7 @@ msgid "Weapons"
 msgstr "Силоҳҳо"
 
 #: src/components/MissionSetup.tsx:1044
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:316
 msgid "Weather"
 msgstr "Обу ҳаво"
 
@@ -2284,12 +2294,12 @@ msgstr "Қатшавии бол"
 msgid "WINS"
 msgstr "ҒОЛИБ"
 
-#: src/components/Multiplayer.tsx:167
+#: src/components/Multiplayer.tsx:252
 msgid "World server"
 msgstr "Сервери ҷаҳон"
 
 #: src/components/MissionSetup.tsx:947
-#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:128
 msgid "World server not reachable"
 msgstr "Сервери ҷаҳон дастнорас аст"
 

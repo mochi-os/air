@@ -25,17 +25,17 @@ msgid "{0} created “{1}”"
 msgstr "{0}님이 “{1}”을(를) 만들었습니다"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:193
+#: src/components/Multiplayer.tsx:278
 msgid "{0} flying"
 msgstr "{0}명 비행 중"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:365
+#: src/components/Multiplayer.tsx:450
 msgid "{0}/{1} players"
 msgstr "{0}/{1}명"
 
-#: src/components/Multiplayer.tsx:134
+#: src/components/Multiplayer.tsx:189
 msgid "{name}'s match"
 msgstr "{name}의 매치"
 
@@ -100,7 +100,7 @@ msgid "Account verified"
 msgstr "계정이 인증되었어요"
 
 #: src/components/MissionSetup.tsx:1101
-#: src/components/Multiplayer.tsx:315
+#: src/components/Multiplayer.tsx:400
 msgid "Ace"
 msgstr "에이스"
 
@@ -262,11 +262,11 @@ msgstr "최적 지속 선회 속도"
 msgid "BINGO FUEL"
 msgstr "빙고 연료"
 
-#: src/components/Multiplayer.tsx:391
+#: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "파랑"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Blue bots"
 msgstr "파랑 봇"
 
@@ -279,7 +279,7 @@ msgstr "볼터"
 msgid "Boost interest"
 msgstr "관심도 부스트"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Bots"
 msgstr "봇"
 
@@ -303,7 +303,7 @@ msgstr "버튼 {i}"
 msgid "Buttons"
 msgstr "버튼"
 
-#: src/components/Multiplayer.tsx:178
+#: src/components/Multiplayer.tsx:263
 msgid "Callsign"
 msgstr "콜사인"
 
@@ -321,6 +321,7 @@ msgstr "카메라 거리"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
 #: src/components/MissionSetup.tsx:549
+#: src/components/Multiplayer.tsx:235
 msgid "Cancel"
 msgstr "취소"
 
@@ -393,7 +394,7 @@ msgstr "언어 선택"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:323
 msgid "Clear"
 msgstr "지우기"
 
@@ -472,7 +473,7 @@ msgstr "컴팩트"
 msgid "Confirm"
 msgstr "확인"
 
-#: src/components/Multiplayer.tsx:196
+#: src/components/Multiplayer.tsx:281
 msgid "Connecting…"
 msgstr "연결 중…"
 
@@ -489,6 +490,7 @@ msgid "Contextual information and details."
 msgstr "맥락 정보 및 세부 사항."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
+#: src/components/Multiplayer.tsx:244
 msgid "Continue"
 msgstr "계속"
 
@@ -504,7 +506,7 @@ msgstr "복사"
 msgid "Corner speed (best instant turn)"
 msgstr "코너 속도 (최적 순간 선회)"
 
-#: src/components/Multiplayer.tsx:148
+#: src/components/Multiplayer.tsx:203
 msgid "Could not create the match"
 msgstr "매치를 만들지 못했습니다"
 
@@ -532,11 +534,11 @@ msgstr "해당 계정으로 인증하지 못했습니다. 다시 시도해 주�
 msgid "CRASHED"
 msgstr "추락"
 
-#: src/components/Multiplayer.tsx:346
+#: src/components/Multiplayer.tsx:431
 msgid "Create and fly"
 msgstr "만들고 출격"
 
-#: src/components/Multiplayer.tsx:211
+#: src/components/Multiplayer.tsx:296
 msgid "Create match"
 msgstr "매치 만들기"
 
@@ -546,7 +548,7 @@ msgid "Credits"
 msgstr "크레딧"
 
 #: src/components/MissionSetup.tsx:1202
-#: src/components/Multiplayer.tsx:239
+#: src/components/Multiplayer.tsx:324
 msgid "Cumulus"
 msgstr "적운"
 
@@ -581,7 +583,7 @@ msgid "Data conflict"
 msgstr "데이터 충돌"
 
 #: src/components/MissionSetup.tsx:1190
-#: src/components/Multiplayer.tsx:234
+#: src/components/Multiplayer.tsx:319
 msgid "Day"
 msgstr "낮"
 
@@ -633,6 +635,10 @@ msgstr "웹 브라우저에서 감지"
 msgid "Device"
 msgstr "기기"
 
+#: src/components/Multiplayer.tsx:224
+msgid "Different game host"
+msgstr "다른 게임 호스트"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:340
 msgid "Direction"
 msgstr "방향"
@@ -663,7 +669,7 @@ msgstr "다운로드"
 msgid "Download failed"
 msgstr "다운로드 실패"
 
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:396
 msgid "Drone"
 msgstr "드론"
 
@@ -691,7 +697,7 @@ msgstr "사출"
 msgid "Email code"
 msgstr "이메일 코드"
 
-#: src/components/Multiplayer.tsx:364
+#: src/components/Multiplayer.tsx:449
 msgid "empty"
 msgstr "비어 있음"
 
@@ -846,7 +852,7 @@ msgid "From theme"
 msgstr "테마에서"
 
 #: src/components/MissionSetup.tsx:1077
-#: src/components/Multiplayer.tsx:249
+#: src/components/Multiplayer.tsx:334
 msgid "Fuel"
 msgstr "연료"
 
@@ -938,7 +944,7 @@ msgid "High"
 msgstr "높음"
 
 #: src/components/MissionSetup.tsx:1203
-#: src/components/Multiplayer.tsx:240
+#: src/components/Multiplayer.tsx:325
 msgid "High stratus"
 msgstr "높은 층운"
 
@@ -998,11 +1004,11 @@ msgid "INVULNERABLE"
 msgstr "무적"
 
 #: src/components/MissionSetup.tsx:1161
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:363
 msgid "Invulnerable (human players only)"
 msgstr "무적 (인간 플레이어만)"
 
-#: src/components/Multiplayer.tsx:403
+#: src/components/Multiplayer.tsx:488
 msgid "Join"
 msgstr "참가하기"
 
@@ -1010,11 +1016,11 @@ msgstr "참가하기"
 msgid "JOINED"
 msgstr "참가"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Joust"
 msgstr "정면 대결"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:310
 msgid "Joust — 1v1, first kill wins"
 msgstr "결투 — 1v1, 먼저 격추하면 승리"
 
@@ -1069,7 +1075,7 @@ msgstr "발진 / 포착"
 msgid "Layout"
 msgstr "레이아웃"
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:347
 msgid "lb"
 msgstr "lb"
 
@@ -1180,7 +1186,7 @@ msgid "Low"
 msgstr "낮음"
 
 #: src/components/MissionSetup.tsx:1204
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:326
 msgid "Low stratus"
 msgstr "낮은 층운"
 
@@ -1206,7 +1212,7 @@ msgstr "모두 읽음으로 표시"
 msgid "Master"
 msgstr "마스터"
 
-#: src/components/Multiplayer.tsx:221
+#: src/components/Multiplayer.tsx:306
 msgid "Match type"
 msgstr "매치 유형"
 
@@ -1252,7 +1258,7 @@ msgstr "미사일"
 msgid "Missiles"
 msgstr "미사일"
 
-#: src/components/Multiplayer.tsx:268
+#: src/components/Multiplayer.tsx:353
 msgid "Missiles allowed"
 msgstr "미사일 허용"
 
@@ -1272,7 +1278,7 @@ msgstr "움직이세요…"
 msgid "Multiplayer"
 msgstr "멀티플레이어"
 
-#: src/components/Multiplayer.tsx:157
+#: src/components/Multiplayer.tsx:212
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "멀티플레이어에는 WebTransport가 필요하지만 이 브라우저는 아직 지원하지 않습니다."
 
@@ -1291,7 +1297,7 @@ msgid "Next image"
 msgstr "다음 이미지"
 
 #: src/components/MissionSetup.tsx:1191
-#: src/components/Multiplayer.tsx:235
+#: src/components/Multiplayer.tsx:320
 msgid "Night"
 msgstr "밤"
 
@@ -1311,7 +1317,7 @@ msgstr "이용 가능한 그룹이 없어요"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "조이스틱이 감지되지 않았어요 — 아무 버튼이나 눌러 깨워 주세요."
 
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No open matches — create one."
 msgstr "오픈 매치가 없습니다. 하나 만들어 보세요."
 
@@ -1341,7 +1347,7 @@ msgid "No users found"
 msgstr "사용자를 찾을 수 없어요"
 
 #: src/components/MissionSetup.tsx:959
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No world server."
 msgstr "월드 서버가 없습니다."
 
@@ -1406,11 +1412,11 @@ msgstr "활주로"
 msgid "Oops! Page Not Found!"
 msgstr "이런! 페이지를 찾을 수 없어요!"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Open"
 msgstr "열기"
 
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:309
 msgid "Open — anyone may join or leave"
 msgstr "오픈 — 누구나 참가하거나 나갈 수 있음"
 
@@ -1419,8 +1425,8 @@ msgstr "오픈 — 누구나 참가하거나 나갈 수 있음"
 msgid "Open account actions"
 msgstr "계정 작업 열기"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:182
-#: ../../../lib/web/src/components/layout/nav-group.tsx:187
+#: ../../../lib/web/src/components/layout/nav-group.tsx:202
+#: ../../../lib/web/src/components/layout/nav-group.tsx:207
 msgid "Open actions"
 msgstr "작업 열기"
 
@@ -1476,13 +1482,13 @@ msgid "PAUSED"
 msgstr "일시정지"
 
 #: src/components/MissionSetup.tsx:901
-#: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:183
+#: src/components/Multiplayer.tsx:115
+#: src/components/Multiplayer.tsx:268
 msgid "pilot"
 msgstr "파일럿"
 
 #: src/components/MissionSetup.tsx:1099
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:398
 msgid "Pilot"
 msgstr "파일럿"
 
@@ -1583,11 +1589,11 @@ msgstr "재무장 완료"
 msgid "Recommended"
 msgstr "추천됨"
 
-#: src/components/Multiplayer.tsx:381
+#: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "빨강"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Red bots"
 msgstr "빨강 봇"
 
@@ -1604,7 +1610,7 @@ msgstr "관심사 줄이기"
 msgid "Reference"
 msgstr "참조"
 
-#: src/components/Multiplayer.tsx:201
+#: src/components/Multiplayer.tsx:286
 msgid "Refresh"
 msgstr "새로고침"
 
@@ -1699,7 +1705,7 @@ msgid "Roll right"
 msgstr "오른쪽 롤"
 
 #: src/components/MissionSetup.tsx:1098
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:397
 msgid "Rookie"
 msgstr "신참"
 
@@ -1987,11 +1993,11 @@ msgstr "팀"
 msgid "TEAM"
 msgstr "팀"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Teams"
 msgstr "팀전"
 
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:311
 msgid "Teams — red versus blue"
 msgstr "팀전 — 빨강 대 파랑"
 
@@ -2023,6 +2029,10 @@ msgstr "테마"
 #: ../../../lib/web/src/components/config-drawer.tsx:69
 msgid "Theme Settings"
 msgstr "테마 설정"
+
+#: src/components/Multiplayer.tsx:227
+msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
+msgstr "이 로비가 게임 연결을 다른 호스트({redirectHost})로 전환하고 있습니다. 이 서버를 신뢰하는 경우에만 계속하세요."
 
 #: src/components/GameCanvas.tsx:252
 msgid "throttle"
@@ -2065,10 +2075,10 @@ msgstr "열 전환"
 msgid "Toggle right panel"
 msgstr "오른쪽 패널 토글"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:351
-#: ../../../lib/web/src/components/layout/nav-group.tsx:358
-#: ../../../lib/web/src/components/layout/nav-group.tsx:481
-#: ../../../lib/web/src/components/layout/nav-group.tsx:488
+#: ../../../lib/web/src/components/layout/nav-group.tsx:373
+#: ../../../lib/web/src/components/layout/nav-group.tsx:380
+#: ../../../lib/web/src/components/layout/nav-group.tsx:503
+#: ../../../lib/web/src/components/layout/nav-group.tsx:510
 msgid "Toggle section"
 msgstr "섹션 전환"
 
@@ -2156,12 +2166,12 @@ msgid "United States"
 msgstr "미국"
 
 #: src/components/MissionSetup.tsx:1167
-#: src/components/Multiplayer.tsx:288
+#: src/components/Multiplayer.tsx:373
 msgid "Unlimited ammunition"
 msgstr "무한 탄약"
 
 #: src/components/MissionSetup.tsx:1173
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:383
 msgid "Unlimited fuel"
 msgstr "무한 연료"
 
@@ -2204,11 +2214,11 @@ msgid "Vertical"
 msgstr "수직"
 
 #: src/components/MissionSetup.tsx:1100
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:399
 msgid "Veteran"
 msgstr "베테랑"
 
-#: ../../../lib/web/src/components/attachment-gallery.tsx:74
+#: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "동영상 미리보기 이미지"
 
@@ -2259,7 +2269,7 @@ msgid "Weapons"
 msgstr "무장"
 
 #: src/components/MissionSetup.tsx:1044
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:316
 msgid "Weather"
 msgstr "날씨"
 
@@ -2284,12 +2294,12 @@ msgstr "날개 접기"
 msgid "WINS"
 msgstr "승리"
 
-#: src/components/Multiplayer.tsx:167
+#: src/components/Multiplayer.tsx:252
 msgid "World server"
 msgstr "월드 서버"
 
 #: src/components/MissionSetup.tsx:947
-#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:128
 msgid "World server not reachable"
 msgstr "월드 서버에 연결할 수 없습니다"
 
