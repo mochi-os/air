@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createAppClient, useShellStorage } from '@mochi/web'
 import { DEFAULT_CONFIG, type MissionConfig } from './config'
+import { loadOutcome } from './config-persist'
 
 const client = createAppClient({ appName: 'air' })
 
@@ -119,9 +120,20 @@ export function useMissionConfig(): [
 
   useEffect(() => {
     loadConfig().then((saved) => {
-      if (dirty.current) return // the player edited while loading; keep their change
-      if (saved) setStored({ ...DEFAULT_CONFIG, ...saved } as MissionConfig)
-      else void saveConfig(configRef.current) // first run on this account — seed the server
+      const outcome = loadOutcome(dirty.current, saved)
+      if (outcome === 'flush') {
+        // The player edited while loading: keep their change (don't overwrite it
+        // with the server's older value) AND persist it. A debounced save that
+        // fired before config/load established the identity was dropped, so this
+        // is the point that actually saves the edit — the identity is known now.
+        // Cancel any still-pending timer so it isn't a duplicate save.
+        if (saveTimer.current) clearTimeout(saveTimer.current)
+        void saveConfig(configRef.current)
+      } else if (outcome === 'apply' && saved) {
+        setStored({ ...DEFAULT_CONFIG, ...saved } as MissionConfig)
+      } else {
+        void saveConfig(configRef.current) // first run on this account — seed the server
+      }
     })
     return () => {
       if (saveTimer.current) clearTimeout(saveTimer.current)
