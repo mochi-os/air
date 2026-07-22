@@ -20,10 +20,31 @@ import { cbor_encode, cbor_decode } from './cbor'
 const PROTOCOL = 1
 
 // isEnvelope is the minimal shape every server message must have before it
-// reaches handle(): an object with a string `kind` discriminator. Per-message
-// field validation (finite numbers, bounded slots, ...) is a separate layer.
+// reaches handle(): an object with a string `kind` discriminator.
 function isEnvelope(message: unknown): message is Record<string, unknown> {
   return typeof message === 'object' && message !== null && typeof (message as { kind?: unknown }).kind === 'string'
+}
+
+// MAX_SLOT bounds a slot index from an untrusted server (session capacity is
+// well under this) — a slot is a map key and identity, so a NaN or absurd
+// value must not through.
+const MAX_SLOT = 256
+
+function validSlot(value: unknown): boolean {
+  return Number.isInteger(value) && (value as number) >= 0 && (value as number) < MAX_SLOT
+}
+
+// finiteScore keeps only the finite numeric entries of an untrusted score map,
+// so a non-finite or wrongly-typed value cannot reach the scoreboard.
+function finiteScore(value: unknown): Record<string, number> {
+  const out: Record<string, number> = {}
+  if (typeof value === 'object' && value !== null) {
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      const n = Number(v)
+      if (Number.isFinite(n)) out[k] = n
+    }
+  }
+  return out
 }
 
 // ---------------------------------------------------------------- lobby API
@@ -457,6 +478,7 @@ export class Net {
         if (!(blob instanceof Uint8Array)) break
         const at = performance.now()
         const tick = Number(message.tick)
+        if (!Number.isFinite(tick)) break // a non-finite tick would poison the interpolation clock
         // Smooth the local-to-server clock offset: interpolating on ARRIVAL
         // times fed every network jitter wobble straight into aircraft motion.
         const offset = at / 1000 - tick / 60
@@ -525,6 +547,8 @@ export class Net {
         break
       }
       case 'snapshot': {
+        const tick = Number(message.tick)
+        if (!Number.isFinite(tick)) break
         let core: Float64Array | null = null
         const bytes = message.core as Uint8Array | undefined
         if (bytes instanceof Uint8Array && bytes.byteLength >= 456 + (SIZE - 57) * 2) {
@@ -532,44 +556,54 @@ export class Net {
           // damage tail quantised to uint16 (unit-interval losses; the final
           // word is shed mass at kg/8000) — full float64 burst the datagram
           // MTU. Re-expand to the flight core's 106-word layout.
-          core = new Float64Array(SIZE)
+          const expanded = new Float64Array(SIZE)
           const view = new DataView(bytes.buffer, bytes.byteOffset)
-          for (let i = 0; i < 57; i++) core[i] = view.getFloat64(i * 8, true)
-          for (let i = 57; i < SIZE; i++) {
-            let v = view.getUint16(57 * 8 + (i - 57) * 2, true) / 65535
-            if (i === SIZE - 1) v *= 8000 // Loss, kg
-            core[i] = v
+          let bad = false
+          for (let i = 0; i < 57; i++) {
+            const w = view.getFloat64(i * 8, true)
+            if (!Number.isFinite(w)) { bad = true; break } // a non-finite core word would poison the WASM prediction
+            expanded[i] = w
           }
-          this.cored = true
+          if (!bad) {
+            for (let i = 57; i < SIZE; i++) {
+              let v = view.getUint16(57 * 8 + (i - 57) * 2, true) / 65535 // the uint16 tail is always finite
+              if (i === SIZE - 1) v *= 8000 // Loss, kg
+              expanded[i] = v
+            }
+            core = expanded
+            this.cored = true
+          }
         }
         this.snapshots.push({
           at: performance.now(),
-          tick: Number(message.tick),
-          acknowledged: Number(message.acknowledged ?? 0),
+          tick,
+          acknowledged: Number.isFinite(Number(message.acknowledged)) ? Number(message.acknowledged) : 0,
           core,
         })
         if (this.snapshots.length > 40) this.snapshots.shift()
         break
       }
       case 'event': {
-        const event = message.event as Record<string, unknown>
-        if (event?.kind === 'roster') {
-          this.names.set(Number(event.slot), String(event.name ?? ''))   // names arrive out of the hot path (#81)
-          if (event.team) this.teams.set(Number(event.slot), String(event.team))
+        const event = message.event
+        if (typeof event !== 'object' || event === null) break // an event must be an object before it reaches the engine handler
+        const ev = event as Record<string, unknown>
+        if (ev.kind === 'roster' && validSlot(ev.slot)) {
+          this.names.set(ev.slot as number, String(ev.name ?? ''))   // names arrive out of the hot path (#81)
+          if (ev.team) this.teams.set(ev.slot as number, String(ev.team))
         }
-        if (event?.kind === 'kill' && event.score) this.score = event.score as Record<string, number>
-        if (event?.kind === 'kill') {   // scores are counted, not shipped per snapshot (#81)
-          const victim = Number(event.slot), killer = Number(event.by)
+        if (ev.kind === 'kill' && ev.score) this.score = finiteScore(ev.score)
+        if (ev.kind === 'kill' && validSlot(ev.slot)) {   // scores are counted, not shipped per snapshot (#81)
+          const victim = ev.slot as number, killer = Number(ev.by)
           const down = this.tallies.get(victim) ?? { kills: 0, deaths: 0 }
           down.deaths++
           this.tallies.set(victim, down)
-          if (Number.isFinite(killer) && killer >= 0) {
+          if (validSlot(killer)) {
             const up = this.tallies.get(killer) ?? { kills: 0, deaths: 0 }
             up.kills++
             this.tallies.set(killer, up)
           }
         }
-        this.handlers.event?.(event)
+        this.handlers.event?.(ev)
         break
       }
       case 'end':
@@ -699,14 +733,24 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
     const first = cbor_decode(opening.value) as Record<string, unknown>
     if (first.kind === 'refuse') throw new Error(String(first.reason ?? 'refused'))
     if (first.kind !== 'welcome') throw new Error('protocol')
+    // Validate the welcome before it becomes our identity: an out-of-range or
+    // non-integer slot corrupts every slot-keyed map, and players must be a
+    // real array before we iterate it.
+    const slot = Number(first.slot)
+    if (!validSlot(slot)) throw new Error('slot')
     const net = new Net(transport, handlers)
     net.welcome = first as unknown as Welcome
-    for (const p of net.welcome.players ?? []) net.names.set(p.slot, p.name) // players present before us; later joiners arrive via roster events
-    net.slot = Number(first.slot)
-    const spawn = first.spawn as { wrap?: number; team?: string; score?: Record<string, number> } | undefined
+    net.slot = slot
+    const players = Array.isArray(first.players) ? first.players : []
+    for (const p of players) {
+      if (typeof p !== 'object' || p === null) continue
+      const record = p as { slot?: unknown; name?: unknown }
+      if (validSlot(record.slot)) net.names.set(record.slot as number, String(record.name ?? '')) // players present before us; later joiners arrive via roster events
+    }
+    const spawn = first.spawn as { wrap?: unknown; team?: unknown; score?: unknown } | undefined
     if (spawn && spawn.wrap !== undefined) net.wrap = sanitizeWrap(spawn.wrap, net.wrap)
-    if (spawn?.team) net.teams.set(net.slot, spawn.team)
-    if (spawn?.score) net.score = spawn.score
+    if (spawn?.team) net.teams.set(slot, String(spawn.team))
+    if (spawn?.score) net.score = finiteScore(spawn.score)
     net.start(writer, messages)
     return net
   } catch (error) {
