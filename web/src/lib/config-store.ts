@@ -14,7 +14,19 @@ const unwrap = <T>(raw: unknown): T =>
     ? (raw as { data: T }).data
     : (raw as T)
 
-type ConfigPayload = { config?: Partial<MissionConfig>; name?: string }
+type ConfigPayload = {
+  config?: Partial<MissionConfig>
+  name?: string
+  identity?: string
+}
+
+// The identity the loaded config belongs to, echoed back with every save. The
+// server requires it to match the session, so a debounced save that fires after
+// an in-place account switch (the shell delivers init once and stops listening,
+// so this hook need not remount) is refused rather than landing the previous
+// account's edit in the new account's config. Empty until config/load resolves;
+// saveConfig defers while empty so no unattributed save is ever sent.
+let config_identity = ''
 
 // The signed-in identity's display name (from config/load) — the default
 // multiplayer callsign. Empty until loaded / for anonymous visitors.
@@ -48,6 +60,7 @@ export async function loadConfig(): Promise<Partial<MissionConfig> | null> {
       '/-/config/load'
     )
     const payload = unwrap<ConfigPayload>(res)
+    config_identity = payload?.identity ?? ''
     if (payload?.name) {
       identity_name = payload.name
       for (const waiter of identity_waiters.splice(0)) waiter(identity_name)
@@ -61,8 +74,17 @@ export async function loadConfig(): Promise<Partial<MissionConfig> | null> {
 
 // Persist the whole config; the server upserts each key. Best-effort.
 export async function saveConfig(config: MissionConfig): Promise<void> {
+  // Defer until config/load has established the owning identity: the server
+  // requires a matching identity, and a save fired before it is known (or for an
+  // anonymous visitor) can't be safely attributed, so don't send one.
+  if (!config_identity) return
   try {
-    await client.post('/-/config/save', { config: JSON.stringify(config) })
+    // identity is the account the config was loaded under; the server drops the
+    // save if the session identity has since changed (in-place account switch).
+    await client.post('/-/config/save', {
+      config: JSON.stringify(config),
+      identity: config_identity,
+    })
   } catch {
     /* best-effort — the in-memory config still applies this session */
   }
