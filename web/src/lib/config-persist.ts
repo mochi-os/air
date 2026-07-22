@@ -21,3 +21,35 @@ export function loadOutcome(
   if (dirty) return 'flush'
   return saved ? 'apply' : 'seed'
 }
+
+// PendingConfig bundles the latest edited config and the dirty flag as one unit
+// so an edit updates BOTH synchronously. The React ref mirroring component state
+// is only refreshed on render, so a config/load that resolves between an edit
+// and React committing that render would flush a stale value; recording the edit
+// here in the edit path (not on render) makes the flush independent of React
+// scheduling. Isolated so the invariant is unit testable without React.
+export class PendingConfig {
+  private value: MissionConfig
+  dirty = false
+
+  constructor(initial: MissionConfig) {
+    this.value = initial
+  }
+
+  // edit records a user change; current() reflects it immediately, before the
+  // render that would otherwise sync it.
+  edit(next: MissionConfig): void {
+    this.dirty = true
+    this.value = next
+  }
+
+  // sync mirrors external/component state (a render). Once the user has edited,
+  // their pending value is authoritative, so a later render can't clobber it.
+  sync(value: MissionConfig): void {
+    if (!this.dirty) this.value = value
+  }
+
+  current(): MissionConfig {
+    return this.value
+  }
+}

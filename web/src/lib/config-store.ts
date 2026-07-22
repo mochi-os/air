@@ -6,7 +6,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createAppClient, useShellStorage } from '@mochi/web'
 import { DEFAULT_CONFIG, type MissionConfig } from './config'
-import { loadOutcome } from './config-persist'
+import { loadOutcome, PendingConfig } from './config-persist'
 
 const client = createAppClient({ appName: 'air' })
 
@@ -105,13 +105,16 @@ export function useMissionConfig(): [
     'air.config',
     DEFAULT_CONFIG
   )
-  const configRef = useRef(config)
-  configRef.current = config
-  // dirty guards the async config load: the setup menu is interactive while the
-  // load is in flight (slow or replicated servers especially), so if the player
-  // changes a setting before the response lands, that edit is NEWER than the
-  // server's stored value and the late load must not overwrite it.
-  const dirty = useRef(false)
+  // pending bundles the latest edited config with the dirty flag, updated
+  // synchronously in the edit path (see PendingConfig): the setup menu is
+  // interactive while config/load is in flight, so an edit during the load is
+  // NEWER than the server's value and must (a) not be overwritten by the late
+  // load and (b) be the value flushed to the server — independent of when React
+  // commits the render that syncs component state (configRef only updated then).
+  const pendingRef = useRef<PendingConfig | null>(null)
+  pendingRef.current ??= new PendingConfig(config)
+  const pending = pendingRef.current
+  pending.sync(config)
   // The debounce timer lives INSIDE the hook, not module-global: a global timer
   // survived unmount and was shared by every hook instance, so a pending save
   // could fire after navigation or an in-place account change and write stale
@@ -120,19 +123,20 @@ export function useMissionConfig(): [
 
   useEffect(() => {
     loadConfig().then((saved) => {
-      const outcome = loadOutcome(dirty.current, saved)
+      const outcome = loadOutcome(pending.dirty, saved)
       if (outcome === 'flush') {
         // The player edited while loading: keep their change (don't overwrite it
         // with the server's older value) AND persist it. A debounced save that
         // fired before config/load established the identity was dropped, so this
         // is the point that actually saves the edit — the identity is known now.
-        // Cancel any still-pending timer so it isn't a duplicate save.
+        // pending.current() is the latest edit even if React has not yet
+        // committed the render. Cancel any pending timer so it isn't a duplicate.
         if (saveTimer.current) clearTimeout(saveTimer.current)
-        void saveConfig(configRef.current)
+        void saveConfig(pending.current())
       } else if (outcome === 'apply' && saved) {
         setStored({ ...DEFAULT_CONFIG, ...saved } as MissionConfig)
       } else {
-        void saveConfig(configRef.current) // first run on this account — seed the server
+        void saveConfig(pending.current()) // first run on this account — seed the server
       }
     })
     return () => {
@@ -143,12 +147,12 @@ export function useMissionConfig(): [
 
   const setConfig = useCallback(
     (next: MissionConfig) => {
-      dirty.current = true
+      pending.edit(next) // records the edit AND the value synchronously
       setStored(next)
       if (saveTimer.current) clearTimeout(saveTimer.current)
       saveTimer.current = setTimeout(() => void saveConfig(next), SAVE_DELAY) // captures this exact config snapshot
     },
-    [setStored]
+    [setStored, pending] // pending is a stable ref object; listed to satisfy exhaustive-deps
   )
 
   return [config, setConfig]
