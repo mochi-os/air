@@ -25,17 +25,17 @@ msgid "{0} created “{1}”"
 msgstr "{0} «{1}»ni yaratdi"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:193
+#: src/components/Multiplayer.tsx:278
 msgid "{0} flying"
 msgstr "{0} kishi uchmoqda"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:365
+#: src/components/Multiplayer.tsx:450
 msgid "{0}/{1} players"
 msgstr "{0}/{1} oʻyinchi"
 
-#: src/components/Multiplayer.tsx:134
+#: src/components/Multiplayer.tsx:189
 msgid "{name}'s match"
 msgstr "{name}ning oʻyini"
 
@@ -100,7 +100,7 @@ msgid "Account verified"
 msgstr "Hisob tasdiqlandi"
 
 #: src/components/MissionSetup.tsx:1101
-#: src/components/Multiplayer.tsx:315
+#: src/components/Multiplayer.tsx:400
 msgid "Ace"
 msgstr "Usta"
 
@@ -262,11 +262,11 @@ msgstr "Eng yaxshi barqaror burilish tezligi"
 msgid "BINGO FUEL"
 msgstr "BINGO YOQILGʻI"
 
-#: src/components/Multiplayer.tsx:391
+#: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "Koʻk"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Blue bots"
 msgstr "Koʻk botlar"
 
@@ -279,7 +279,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Qiziqishni kuchaytirish"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Bots"
 msgstr "Botlar"
 
@@ -303,7 +303,7 @@ msgstr "Tugma {i}"
 msgid "Buttons"
 msgstr "Tugmalar"
 
-#: src/components/Multiplayer.tsx:178
+#: src/components/Multiplayer.tsx:263
 msgid "Callsign"
 msgstr "Chaqiruv belgisi"
 
@@ -321,6 +321,7 @@ msgstr "Kamera masofasi"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
 #: src/components/MissionSetup.tsx:549
+#: src/components/Multiplayer.tsx:235
 msgid "Cancel"
 msgstr "Bekor qilish"
 
@@ -393,7 +394,7 @@ msgstr "Tilni tanlang"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:323
 msgid "Clear"
 msgstr "Tozalash"
 
@@ -472,7 +473,7 @@ msgstr "Ixcham"
 msgid "Confirm"
 msgstr "Tasdiqlash"
 
-#: src/components/Multiplayer.tsx:196
+#: src/components/Multiplayer.tsx:281
 msgid "Connecting…"
 msgstr "Ulanmoqda…"
 
@@ -489,6 +490,7 @@ msgid "Contextual information and details."
 msgstr "Kontekstli maʼlumotlar va tafsilotlar."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
+#: src/components/Multiplayer.tsx:244
 msgid "Continue"
 msgstr "Davom etish"
 
@@ -504,7 +506,7 @@ msgstr "Nusxalash"
 msgid "Corner speed (best instant turn)"
 msgstr "Burchak tezligi (eng yaxshi oniy burilish)"
 
-#: src/components/Multiplayer.tsx:148
+#: src/components/Multiplayer.tsx:203
 msgid "Could not create the match"
 msgstr "Oʻyin yaratib boʻlmadi"
 
@@ -532,11 +534,11 @@ msgstr "Ushbu hisob bilan tasdiqlab bo‘lmadi. Iltimos, qayta urinib ko‘ring.
 msgid "CRASHED"
 msgstr "QULADI"
 
-#: src/components/Multiplayer.tsx:346
+#: src/components/Multiplayer.tsx:431
 msgid "Create and fly"
 msgstr "Yaratish va uchish"
 
-#: src/components/Multiplayer.tsx:211
+#: src/components/Multiplayer.tsx:296
 msgid "Create match"
 msgstr "Oʻyin yaratish"
 
@@ -546,7 +548,7 @@ msgid "Credits"
 msgstr "Mualliflar"
 
 #: src/components/MissionSetup.tsx:1202
-#: src/components/Multiplayer.tsx:239
+#: src/components/Multiplayer.tsx:324
 msgid "Cumulus"
 msgstr "Kumulus"
 
@@ -581,7 +583,7 @@ msgid "Data conflict"
 msgstr "Maʼlumotlar ziddiyati"
 
 #: src/components/MissionSetup.tsx:1190
-#: src/components/Multiplayer.tsx:234
+#: src/components/Multiplayer.tsx:319
 msgid "Day"
 msgstr "Kunduz"
 
@@ -633,6 +635,10 @@ msgstr "Veb-brauzerdan aniqlash"
 msgid "Device"
 msgstr "Qurilma"
 
+#: src/components/Multiplayer.tsx:224
+msgid "Different game host"
+msgstr "Boshqa oʻyin xosti"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:340
 msgid "Direction"
 msgstr "Yoʻnalish"
@@ -663,7 +669,7 @@ msgstr "Yuklab olish"
 msgid "Download failed"
 msgstr "Yuklab olib boʻlmadi"
 
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:396
 msgid "Drone"
 msgstr "Dron"
 
@@ -691,7 +697,7 @@ msgstr "KATAPULTLANDI"
 msgid "Email code"
 msgstr "Email kodi"
 
-#: src/components/Multiplayer.tsx:364
+#: src/components/Multiplayer.tsx:449
 msgid "empty"
 msgstr "boʻsh"
 
@@ -846,7 +852,7 @@ msgid "From theme"
 msgstr "Mavzudan"
 
 #: src/components/MissionSetup.tsx:1077
-#: src/components/Multiplayer.tsx:249
+#: src/components/Multiplayer.tsx:334
 msgid "Fuel"
 msgstr "Yoqilgʻi"
 
@@ -938,7 +944,7 @@ msgid "High"
 msgstr "Yuqori"
 
 #: src/components/MissionSetup.tsx:1203
-#: src/components/Multiplayer.tsx:240
+#: src/components/Multiplayer.tsx:325
 msgid "High stratus"
 msgstr "Yuqori stratus"
 
@@ -998,11 +1004,11 @@ msgid "INVULNERABLE"
 msgstr "ZARAR KOʻRMASLIK"
 
 #: src/components/MissionSetup.tsx:1161
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:363
 msgid "Invulnerable (human players only)"
 msgstr "Zarar koʻrmaslik (faqat odam oʻyinchilar)"
 
-#: src/components/Multiplayer.tsx:403
+#: src/components/Multiplayer.tsx:488
 msgid "Join"
 msgstr "Qoʻshilish"
 
@@ -1010,11 +1016,11 @@ msgstr "Qoʻshilish"
 msgid "JOINED"
 msgstr "QOʻSHILDI"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Joust"
 msgstr "Yakkama-yakka"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:310
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, birinchi boʻlib urib tushirgan gʻolib"
 
@@ -1069,7 +1075,7 @@ msgstr "uchirish / nishon"
 msgid "Layout"
 msgstr "Tartib"
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:347
 msgid "lb"
 msgstr "lb"
 
@@ -1180,7 +1186,7 @@ msgid "Low"
 msgstr "Past"
 
 #: src/components/MissionSetup.tsx:1204
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:326
 msgid "Low stratus"
 msgstr "Past stratus"
 
@@ -1206,7 +1212,7 @@ msgstr "Hammasini oʻqilgan deb belgilash"
 msgid "Master"
 msgstr "Umumiy"
 
-#: src/components/Multiplayer.tsx:221
+#: src/components/Multiplayer.tsx:306
 msgid "Match type"
 msgstr "Oʻyin turi"
 
@@ -1252,7 +1258,7 @@ msgstr "RAKETA"
 msgid "Missiles"
 msgstr "Raketalar"
 
-#: src/components/Multiplayer.tsx:268
+#: src/components/Multiplayer.tsx:353
 msgid "Missiles allowed"
 msgstr "Raketalarga ruxsat berilgan"
 
@@ -1272,7 +1278,7 @@ msgstr "Uni qimirlating…"
 msgid "Multiplayer"
 msgstr "Koʻp oʻyinchili"
 
-#: src/components/Multiplayer.tsx:157
+#: src/components/Multiplayer.tsx:212
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Koʻp oʻyinchili rejim WebTransport talab qiladi, bu brauzer uni hali qoʻllab-quvvatlamaydi."
 
@@ -1291,7 +1297,7 @@ msgid "Next image"
 msgstr "Keyingi rasm"
 
 #: src/components/MissionSetup.tsx:1191
-#: src/components/Multiplayer.tsx:235
+#: src/components/Multiplayer.tsx:320
 msgid "Night"
 msgstr "Tun"
 
@@ -1311,7 +1317,7 @@ msgstr "Mavjud guruhlar yoʻq"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Joystik aniqlanmadi — uni uygʻotish uchun undagi istalgan tugmani bosing."
 
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No open matches — create one."
 msgstr "Ochiq oʻyinlar yoʻq — bittasini yarating."
 
@@ -1341,7 +1347,7 @@ msgid "No users found"
 msgstr "Foydalanuvchilar topilmadi"
 
 #: src/components/MissionSetup.tsx:959
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No world server."
 msgstr "Dunyo serveri yoʻq."
 
@@ -1406,11 +1412,11 @@ msgstr "Uchish yoʻlagida"
 msgid "Oops! Page Not Found!"
 msgstr "Voy! Sahifa topilmadi!"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Open"
 msgstr "Ochiq"
 
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:309
 msgid "Open — anyone may join or leave"
 msgstr "Ochiq — istalgan kishi qoʻshilishi yoki chiqib ketishi mumkin"
 
@@ -1419,8 +1425,8 @@ msgstr "Ochiq — istalgan kishi qoʻshilishi yoki chiqib ketishi mumkin"
 msgid "Open account actions"
 msgstr "Hisob amallarini ochish"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:182
-#: ../../../lib/web/src/components/layout/nav-group.tsx:187
+#: ../../../lib/web/src/components/layout/nav-group.tsx:202
+#: ../../../lib/web/src/components/layout/nav-group.tsx:207
 msgid "Open actions"
 msgstr "Amallarni ochish"
 
@@ -1476,13 +1482,13 @@ msgid "PAUSED"
 msgstr "TOʻXTATILDI"
 
 #: src/components/MissionSetup.tsx:901
-#: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:183
+#: src/components/Multiplayer.tsx:115
+#: src/components/Multiplayer.tsx:268
 msgid "pilot"
 msgstr "uchuvchi"
 
 #: src/components/MissionSetup.tsx:1099
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:398
 msgid "Pilot"
 msgstr "Uchuvchi"
 
@@ -1583,11 +1589,11 @@ msgstr "QAYTA QUROLLANDI"
 msgid "Recommended"
 msgstr "Tavsiya etiladi"
 
-#: src/components/Multiplayer.tsx:381
+#: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "Qizil"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Red bots"
 msgstr "Qizil botlar"
 
@@ -1604,7 +1610,7 @@ msgstr "Qiziqishni kamaytirish"
 msgid "Reference"
 msgstr "Ma'lumotnoma"
 
-#: src/components/Multiplayer.tsx:201
+#: src/components/Multiplayer.tsx:286
 msgid "Refresh"
 msgstr "Yangilash"
 
@@ -1699,7 +1705,7 @@ msgid "Roll right"
 msgstr "Kren oʻngga"
 
 #: src/components/MissionSetup.tsx:1098
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:397
 msgid "Rookie"
 msgstr "Boshlovchi"
 
@@ -1987,11 +1993,11 @@ msgstr "Jamoa"
 msgid "TEAM"
 msgstr "JAMOA"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Teams"
 msgstr "Jamoalar"
 
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:311
 msgid "Teams — red versus blue"
 msgstr "Jamoalar — qizil koʻkka qarshi"
 
@@ -2023,6 +2029,10 @@ msgstr "Mavzu"
 #: ../../../lib/web/src/components/config-drawer.tsx:69
 msgid "Theme Settings"
 msgstr "Mavzu sozlamalari"
+
+#: src/components/Multiplayer.tsx:227
+msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
+msgstr "Bu lobbi oʻyin ulanishingizni boshqa xostga ({redirectHost}) yubormoqda. Faqat ushbu serverga ishonsangiz davom eting."
 
 #: src/components/GameCanvas.tsx:252
 msgid "throttle"
@@ -2065,10 +2075,10 @@ msgstr "Ustunlarni almashtirish"
 msgid "Toggle right panel"
 msgstr "Oʻng panelni almashtirish"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:351
-#: ../../../lib/web/src/components/layout/nav-group.tsx:358
-#: ../../../lib/web/src/components/layout/nav-group.tsx:481
-#: ../../../lib/web/src/components/layout/nav-group.tsx:488
+#: ../../../lib/web/src/components/layout/nav-group.tsx:373
+#: ../../../lib/web/src/components/layout/nav-group.tsx:380
+#: ../../../lib/web/src/components/layout/nav-group.tsx:503
+#: ../../../lib/web/src/components/layout/nav-group.tsx:510
 msgid "Toggle section"
 msgstr "Bo‘limni ochish/yopish"
 
@@ -2156,12 +2166,12 @@ msgid "United States"
 msgstr "Amerika Qoʻshma Shtatlari"
 
 #: src/components/MissionSetup.tsx:1167
-#: src/components/Multiplayer.tsx:288
+#: src/components/Multiplayer.tsx:373
 msgid "Unlimited ammunition"
 msgstr "Cheksiz oʻq-dori"
 
 #: src/components/MissionSetup.tsx:1173
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:383
 msgid "Unlimited fuel"
 msgstr "Cheksiz yoqilgʻi"
 
@@ -2204,11 +2214,11 @@ msgid "Vertical"
 msgstr "Vertikal"
 
 #: src/components/MissionSetup.tsx:1100
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:399
 msgid "Veteran"
 msgstr "Faxriy"
 
-#: ../../../lib/web/src/components/attachment-gallery.tsx:74
+#: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Video eskizi"
 
@@ -2259,7 +2269,7 @@ msgid "Weapons"
 msgstr "Qurollar"
 
 #: src/components/MissionSetup.tsx:1044
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:316
 msgid "Weather"
 msgstr "Ob-havo"
 
@@ -2284,12 +2294,12 @@ msgstr "Qanot buklash"
 msgid "WINS"
 msgstr "GʻOLIB"
 
-#: src/components/Multiplayer.tsx:167
+#: src/components/Multiplayer.tsx:252
 msgid "World server"
 msgstr "Dunyo serveri"
 
 #: src/components/MissionSetup.tsx:947
-#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:128
 msgid "World server not reachable"
 msgstr "Dunyo serveriga ulanib boʻlmadi"
 

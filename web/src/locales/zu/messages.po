@@ -25,17 +25,17 @@ msgid "{0} created “{1}”"
 msgstr "{0} udale “{1}”"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:193
+#: src/components/Multiplayer.tsx:278
 msgid "{0} flying"
 msgstr "{0} bayandiza"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:365
+#: src/components/Multiplayer.tsx:450
 msgid "{0}/{1} players"
 msgstr "abadlali {0}/{1}"
 
-#: src/components/Multiplayer.tsx:134
+#: src/components/Multiplayer.tsx:189
 msgid "{name}'s match"
 msgstr "Umdlalo ka-{name}"
 
@@ -100,7 +100,7 @@ msgid "Account verified"
 msgstr "I-akhawunti iqinisekisiwe"
 
 #: src/components/MissionSetup.tsx:1101
-#: src/components/Multiplayer.tsx:315
+#: src/components/Multiplayer.tsx:400
 msgid "Ace"
 msgstr "Ingcweti"
 
@@ -262,11 +262,11 @@ msgstr "Isivinini esingcono sokujika okuqhubekayo"
 msgid "BINGO FUEL"
 msgstr "UPHETHILOLI BINGO"
 
-#: src/components/Multiplayer.tsx:391
+#: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "Oluhlaza okwesibhakabhaka"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Blue bots"
 msgstr "Amabhothi aluhlaza okwesibhakabhaka"
 
@@ -279,7 +279,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Khulisa intshisekelo"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Bots"
 msgstr "Amabhothi"
 
@@ -303,7 +303,7 @@ msgstr "Inkinobho {i}"
 msgid "Buttons"
 msgstr "Izinkinobho"
 
-#: src/components/Multiplayer.tsx:178
+#: src/components/Multiplayer.tsx:263
 msgid "Callsign"
 msgstr "Igama lokubiza"
 
@@ -321,6 +321,7 @@ msgstr "Ibanga lekhamera"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
 #: src/components/MissionSetup.tsx:549
+#: src/components/Multiplayer.tsx:235
 msgid "Cancel"
 msgstr "Khansela"
 
@@ -393,7 +394,7 @@ msgstr "Khetha ulimi"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:323
 msgid "Clear"
 msgstr "Sula"
 
@@ -472,7 +473,7 @@ msgstr "Okufishane"
 msgid "Confirm"
 msgstr "Qinisekisa"
 
-#: src/components/Multiplayer.tsx:196
+#: src/components/Multiplayer.tsx:281
 msgid "Connecting…"
 msgstr "Iyaxhuma…"
 
@@ -489,6 +490,7 @@ msgid "Contextual information and details."
 msgstr "Ulwazi nemininingwane yomongo."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
+#: src/components/Multiplayer.tsx:244
 msgid "Continue"
 msgstr "Qhubeka"
 
@@ -504,7 +506,7 @@ msgstr "Kopisha"
 msgid "Corner speed (best instant turn)"
 msgstr "Isivinini sekhona (ukujika okusheshayo okungcono)"
 
-#: src/components/Multiplayer.tsx:148
+#: src/components/Multiplayer.tsx:203
 msgid "Could not create the match"
 msgstr "Akukwazekanga ukudala umdlalo"
 
@@ -532,11 +534,11 @@ msgstr "Ayikwazanga ukuqinisekisa ngaleyo akhawunti. Sicela uzame futhi."
 msgid "CRASHED"
 msgstr "IPHAHLAZEKILE"
 
-#: src/components/Multiplayer.tsx:346
+#: src/components/Multiplayer.tsx:431
 msgid "Create and fly"
 msgstr "Dala bese undiza"
 
-#: src/components/Multiplayer.tsx:211
+#: src/components/Multiplayer.tsx:296
 msgid "Create match"
 msgstr "Dala umdlalo"
 
@@ -546,7 +548,7 @@ msgid "Credits"
 msgstr "Abanikele"
 
 #: src/components/MissionSetup.tsx:1202
-#: src/components/Multiplayer.tsx:239
+#: src/components/Multiplayer.tsx:324
 msgid "Cumulus"
 msgstr "I-cumulus"
 
@@ -581,7 +583,7 @@ msgid "Data conflict"
 msgstr "Ukungqubuzana kwedatha"
 
 #: src/components/MissionSetup.tsx:1190
-#: src/components/Multiplayer.tsx:234
+#: src/components/Multiplayer.tsx:319
 msgid "Day"
 msgstr "Imini"
 
@@ -633,6 +635,10 @@ msgstr "Bona kusuka kubhrawuza ye-web"
 msgid "Device"
 msgstr "Idivayisi"
 
+#: src/components/Multiplayer.tsx:224
+msgid "Different game host"
+msgstr "Umsingathi womdlalo ohlukile"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:340
 msgid "Direction"
 msgstr "Indlela"
@@ -663,7 +669,7 @@ msgstr "Landa"
 msgid "Download failed"
 msgstr "Ukulanda kuhlulekile"
 
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:396
 msgid "Drone"
 msgstr "Idroni"
 
@@ -691,7 +697,7 @@ msgstr "UKHISHIWE"
 msgid "Email code"
 msgstr "Ikhodi ye-imeyili"
 
-#: src/components/Multiplayer.tsx:364
+#: src/components/Multiplayer.tsx:449
 msgid "empty"
 msgstr "ayinamuntu"
 
@@ -846,7 +852,7 @@ msgid "From theme"
 msgstr "Kusukela endikimbeni"
 
 #: src/components/MissionSetup.tsx:1077
-#: src/components/Multiplayer.tsx:249
+#: src/components/Multiplayer.tsx:334
 msgid "Fuel"
 msgstr "Uphethiloli"
 
@@ -938,7 +944,7 @@ msgid "High"
 msgstr "Okuphezulu"
 
 #: src/components/MissionSetup.tsx:1203
-#: src/components/Multiplayer.tsx:240
+#: src/components/Multiplayer.tsx:325
 msgid "High stratus"
 msgstr "I-stratus ephakeme"
 
@@ -998,11 +1004,11 @@ msgid "INVULNERABLE"
 msgstr "AKALIMALI"
 
 #: src/components/MissionSetup.tsx:1161
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:363
 msgid "Invulnerable (human players only)"
 msgstr "Akalimali (abadlali abangabantu kuphela)"
 
-#: src/components/Multiplayer.tsx:403
+#: src/components/Multiplayer.tsx:488
 msgid "Join"
 msgstr "Joyina"
 
@@ -1010,11 +1016,11 @@ msgstr "Joyina"
 msgid "JOINED"
 msgstr "UJOYINILE"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Joust"
 msgstr "Umqhudelwano"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:310
 msgid "Joust — 1v1, first kill wins"
 msgstr "Umlo wababili — 1v1, obulala kuqala uyanqoba"
 
@@ -1069,7 +1075,7 @@ msgstr "suka / ithagethi"
 msgid "Layout"
 msgstr "Isakhiwo"
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:347
 msgid "lb"
 msgstr "lb"
 
@@ -1180,7 +1186,7 @@ msgid "Low"
 msgstr "Okuphansi"
 
 #: src/components/MissionSetup.tsx:1204
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:326
 msgid "Low stratus"
 msgstr "I-stratus ephansi"
 
@@ -1206,7 +1212,7 @@ msgstr "Maka konke njengokufundiwe"
 msgid "Master"
 msgstr "Okuphelele"
 
-#: src/components/Multiplayer.tsx:221
+#: src/components/Multiplayer.tsx:306
 msgid "Match type"
 msgstr "Uhlobo lomdlalo"
 
@@ -1252,7 +1258,7 @@ msgstr "UMCIBISHOLO"
 msgid "Missiles"
 msgstr "Imicibisholo"
 
-#: src/components/Multiplayer.tsx:268
+#: src/components/Multiplayer.tsx:353
 msgid "Missiles allowed"
 msgstr "Imicibisholo ivunyelwe"
 
@@ -1272,7 +1278,7 @@ msgstr "Yinyakazise…"
 msgid "Multiplayer"
 msgstr "Abadlali abaningi"
 
-#: src/components/Multiplayer.tsx:157
+#: src/components/Multiplayer.tsx:212
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Umdlalo wabadlali abaningi udinga i-WebTransport, kodwa lesi siphequluli asikayisekeli."
 
@@ -1291,7 +1297,7 @@ msgid "Next image"
 msgstr "Isithombe esilandelayo"
 
 #: src/components/MissionSetup.tsx:1191
-#: src/components/Multiplayer.tsx:235
+#: src/components/Multiplayer.tsx:320
 msgid "Night"
 msgstr "Ubusuku"
 
@@ -1311,7 +1317,7 @@ msgstr "Awekho amaqembu atholakalayo"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ayikho i-joystick etholakele — cindezela noma iyiphi inkinobho kuyo ukuze uyivuse."
 
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No open matches — create one."
 msgstr "Ayikho imidlalo evulekile — dala owodwa."
 
@@ -1341,7 +1347,7 @@ msgid "No users found"
 msgstr "Abakho abasebenzisi abatholakele"
 
 #: src/components/MissionSetup.tsx:959
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No world server."
 msgstr "Ayikho iseva yomhlaba."
 
@@ -1406,11 +1412,11 @@ msgstr "Endleleni yokundiza"
 msgid "Oops! Page Not Found!"
 msgstr "Yini! Ikhasi Alitholakali!"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Open"
 msgstr "Vula"
 
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:309
 msgid "Open — anyone may join or leave"
 msgstr "Uvulekile — noma ubani angangena noma aphume"
 
@@ -1419,8 +1425,8 @@ msgstr "Uvulekile — noma ubani angangena noma aphume"
 msgid "Open account actions"
 msgstr "Vula izenzo ze-akhawunti"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:182
-#: ../../../lib/web/src/components/layout/nav-group.tsx:187
+#: ../../../lib/web/src/components/layout/nav-group.tsx:202
+#: ../../../lib/web/src/components/layout/nav-group.tsx:207
 msgid "Open actions"
 msgstr "Vula izenzo"
 
@@ -1476,13 +1482,13 @@ msgid "PAUSED"
 msgstr "KUMISIWE"
 
 #: src/components/MissionSetup.tsx:901
-#: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:183
+#: src/components/Multiplayer.tsx:115
+#: src/components/Multiplayer.tsx:268
 msgid "pilot"
 msgstr "umshayeli webhanoyi"
 
 #: src/components/MissionSetup.tsx:1099
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:398
 msgid "Pilot"
 msgstr "Umshayeli webhanoyi"
 
@@ -1583,11 +1589,11 @@ msgstr "UHLONYISWE KABUSHA"
 msgid "Recommended"
 msgstr "Kunconywayo"
 
-#: src/components/Multiplayer.tsx:381
+#: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "Obomvu"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Red bots"
 msgstr "Amabhothi abomvu"
 
@@ -1604,7 +1610,7 @@ msgstr "Yehlisa intshisekelo"
 msgid "Reference"
 msgstr "Inkomba"
 
-#: src/components/Multiplayer.tsx:201
+#: src/components/Multiplayer.tsx:286
 msgid "Refresh"
 msgstr "Vuselela"
 
@@ -1699,7 +1705,7 @@ msgid "Roll right"
 msgstr "I-roll kwesokudla"
 
 #: src/components/MissionSetup.tsx:1098
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:397
 msgid "Rookie"
 msgstr "Osaqalayo"
 
@@ -1987,11 +1993,11 @@ msgstr "Iqembu"
 msgid "TEAM"
 msgstr "IQEMBU"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Teams"
 msgstr "Amaqembu"
 
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:311
 msgid "Teams — red versus blue"
 msgstr "Amaqembu — obomvu ngokumelene noluhlaza okwesibhakabhaka"
 
@@ -2023,6 +2029,10 @@ msgstr "Indikimba"
 #: ../../../lib/web/src/components/config-drawer.tsx:69
 msgid "Theme Settings"
 msgstr "Izilungiselelo Zendikimba"
+
+#: src/components/Multiplayer.tsx:227
+msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
+msgstr "Le lobby ithumela uxhumano lwakho lomdlalo kumsingathi ohlukile ({redirectHost}). Qhubeka kuphela uma uyithemba le seva."
 
 #: src/components/GameCanvas.tsx:252
 msgid "throttle"
@@ -2065,10 +2075,10 @@ msgstr "Vula/vala amakholomu"
 msgid "Toggle right panel"
 msgstr "Shintsha iphaneli yangakwesokudla"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:351
-#: ../../../lib/web/src/components/layout/nav-group.tsx:358
-#: ../../../lib/web/src/components/layout/nav-group.tsx:481
-#: ../../../lib/web/src/components/layout/nav-group.tsx:488
+#: ../../../lib/web/src/components/layout/nav-group.tsx:373
+#: ../../../lib/web/src/components/layout/nav-group.tsx:380
+#: ../../../lib/web/src/components/layout/nav-group.tsx:503
+#: ../../../lib/web/src/components/layout/nav-group.tsx:510
 msgid "Toggle section"
 msgstr "Vula/vala isigaba"
 
@@ -2156,12 +2166,12 @@ msgid "United States"
 msgstr "I-United States"
 
 #: src/components/MissionSetup.tsx:1167
-#: src/components/Multiplayer.tsx:288
+#: src/components/Multiplayer.tsx:373
 msgid "Unlimited ammunition"
 msgstr "Izinhlamvu ezingenamkhawulo"
 
 #: src/components/MissionSetup.tsx:1173
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:383
 msgid "Unlimited fuel"
 msgstr "Amafutha angenamkhawulo"
 
@@ -2204,11 +2214,11 @@ msgid "Vertical"
 msgstr "Okuqonde phezulu"
 
 #: src/components/MissionSetup.tsx:1100
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:399
 msgid "Veteran"
 msgstr "Onesipiliyoni"
 
-#: ../../../lib/web/src/components/attachment-gallery.tsx:74
+#: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Isithombe esincane sevidiyo"
 
@@ -2259,7 +2269,7 @@ msgid "Weapons"
 msgstr "Izikhali"
 
 #: src/components/MissionSetup.tsx:1044
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:316
 msgid "Weather"
 msgstr "Isimo sezulu"
 
@@ -2284,12 +2294,12 @@ msgstr "Ukugoqwa kwamaphiko"
 msgid "WINS"
 msgstr "UYANQOBA"
 
-#: src/components/Multiplayer.tsx:167
+#: src/components/Multiplayer.tsx:252
 msgid "World server"
 msgstr "Iseva yomhlaba"
 
 #: src/components/MissionSetup.tsx:947
-#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:128
 msgid "World server not reachable"
 msgstr "Iseva yomhlaba ayifinyeleleki"
 

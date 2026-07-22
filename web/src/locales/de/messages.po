@@ -25,17 +25,17 @@ msgid "{0} created “{1}”"
 msgstr "{0} hat „{1}“ erstellt"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:193
+#: src/components/Multiplayer.tsx:278
 msgid "{0} flying"
 msgstr "{0} in der Luft"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:365
+#: src/components/Multiplayer.tsx:450
 msgid "{0}/{1} players"
 msgstr "{0}/{1} Spieler"
 
-#: src/components/Multiplayer.tsx:134
+#: src/components/Multiplayer.tsx:189
 msgid "{name}'s match"
 msgstr "Match von {name}"
 
@@ -100,7 +100,7 @@ msgid "Account verified"
 msgstr "Konto verifiziert"
 
 #: src/components/MissionSetup.tsx:1101
-#: src/components/Multiplayer.tsx:315
+#: src/components/Multiplayer.tsx:400
 msgid "Ace"
 msgstr "Ass"
 
@@ -262,11 +262,11 @@ msgstr "Beste stationäre Kurvengeschwindigkeit"
 msgid "BINGO FUEL"
 msgstr "BINGO TREIBSTOFF"
 
-#: src/components/Multiplayer.tsx:391
+#: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "Blau"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Blue bots"
 msgstr "Blaue Bots"
 
@@ -279,7 +279,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Interesse hervorheben"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Bots"
 msgstr "Bots"
 
@@ -303,7 +303,7 @@ msgstr "Knopf {i}"
 msgid "Buttons"
 msgstr "Knöpfe"
 
-#: src/components/Multiplayer.tsx:178
+#: src/components/Multiplayer.tsx:263
 msgid "Callsign"
 msgstr "Rufzeichen"
 
@@ -321,6 +321,7 @@ msgstr "Kameraabstand"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
 #: src/components/MissionSetup.tsx:549
+#: src/components/Multiplayer.tsx:235
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -393,7 +394,7 @@ msgstr "Sprache auswählen"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:323
 msgid "Clear"
 msgstr "Leeren"
 
@@ -472,7 +473,7 @@ msgstr "Kompakt"
 msgid "Confirm"
 msgstr "Bestätigen"
 
-#: src/components/Multiplayer.tsx:196
+#: src/components/Multiplayer.tsx:281
 msgid "Connecting…"
 msgstr "Verbinden…"
 
@@ -489,6 +490,7 @@ msgid "Contextual information and details."
 msgstr "Kontextinformationen und Details."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
+#: src/components/Multiplayer.tsx:244
 msgid "Continue"
 msgstr "Fortfahren"
 
@@ -504,7 +506,7 @@ msgstr "Kopieren"
 msgid "Corner speed (best instant turn)"
 msgstr "Eckgeschwindigkeit (beste Momentankurve)"
 
-#: src/components/Multiplayer.tsx:148
+#: src/components/Multiplayer.tsx:203
 msgid "Could not create the match"
 msgstr "Match konnte nicht erstellt werden"
 
@@ -532,11 +534,11 @@ msgstr "Verifizierung mit diesem Konto fehlgeschlagen. Bitte versuchen Sie es er
 msgid "CRASHED"
 msgstr "ABGESTÜRZT"
 
-#: src/components/Multiplayer.tsx:346
+#: src/components/Multiplayer.tsx:431
 msgid "Create and fly"
 msgstr "Erstellen und fliegen"
 
-#: src/components/Multiplayer.tsx:211
+#: src/components/Multiplayer.tsx:296
 msgid "Create match"
 msgstr "Match erstellen"
 
@@ -546,7 +548,7 @@ msgid "Credits"
 msgstr "Mitwirkende"
 
 #: src/components/MissionSetup.tsx:1202
-#: src/components/Multiplayer.tsx:239
+#: src/components/Multiplayer.tsx:324
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -581,7 +583,7 @@ msgid "Data conflict"
 msgstr "Datenkonflikt"
 
 #: src/components/MissionSetup.tsx:1190
-#: src/components/Multiplayer.tsx:234
+#: src/components/Multiplayer.tsx:319
 msgid "Day"
 msgstr "Tag"
 
@@ -633,6 +635,10 @@ msgstr "Aus Webbrowser ermitteln"
 msgid "Device"
 msgstr "Gerät"
 
+#: src/components/Multiplayer.tsx:224
+msgid "Different game host"
+msgstr "Anderer Spielhost"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:340
 msgid "Direction"
 msgstr "Richtung"
@@ -663,7 +669,7 @@ msgstr "Herunterladen"
 msgid "Download failed"
 msgstr "Download fehlgeschlagen"
 
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:396
 msgid "Drone"
 msgstr "Drohne"
 
@@ -691,7 +697,7 @@ msgstr "KATAPULTIERT"
 msgid "Email code"
 msgstr "E-Mail-Code"
 
-#: src/components/Multiplayer.tsx:364
+#: src/components/Multiplayer.tsx:449
 msgid "empty"
 msgstr "leer"
 
@@ -846,7 +852,7 @@ msgid "From theme"
 msgstr "Vom Theme"
 
 #: src/components/MissionSetup.tsx:1077
-#: src/components/Multiplayer.tsx:249
+#: src/components/Multiplayer.tsx:334
 msgid "Fuel"
 msgstr "Treibstoff"
 
@@ -938,7 +944,7 @@ msgid "High"
 msgstr "Hoch"
 
 #: src/components/MissionSetup.tsx:1203
-#: src/components/Multiplayer.tsx:240
+#: src/components/Multiplayer.tsx:325
 msgid "High stratus"
 msgstr "Hoher Stratus"
 
@@ -998,11 +1004,11 @@ msgid "INVULNERABLE"
 msgstr "UNVERWUNDBAR"
 
 #: src/components/MissionSetup.tsx:1161
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:363
 msgid "Invulnerable (human players only)"
 msgstr "Unverwundbar (nur menschliche Spieler)"
 
-#: src/components/Multiplayer.tsx:403
+#: src/components/Multiplayer.tsx:488
 msgid "Join"
 msgstr "Beitreten"
 
@@ -1010,11 +1016,11 @@ msgstr "Beitreten"
 msgid "JOINED"
 msgstr "IST BEIGETRETEN"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Joust"
 msgstr "Joust"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:310
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duell — 1v1, der erste Abschuss gewinnt"
 
@@ -1069,7 +1075,7 @@ msgstr "starten / aufschalten"
 msgid "Layout"
 msgstr "Layout"
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:347
 msgid "lb"
 msgstr "lb"
 
@@ -1180,7 +1186,7 @@ msgid "Low"
 msgstr "Niedrig"
 
 #: src/components/MissionSetup.tsx:1204
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:326
 msgid "Low stratus"
 msgstr "Niedriger Stratus"
 
@@ -1206,7 +1212,7 @@ msgstr "Alle als gelesen markieren"
 msgid "Master"
 msgstr "Master"
 
-#: src/components/Multiplayer.tsx:221
+#: src/components/Multiplayer.tsx:306
 msgid "Match type"
 msgstr "Match-Typ"
 
@@ -1252,7 +1258,7 @@ msgstr "RAKETE"
 msgid "Missiles"
 msgstr "Raketen"
 
-#: src/components/Multiplayer.tsx:268
+#: src/components/Multiplayer.tsx:353
 msgid "Missiles allowed"
 msgstr "Raketen erlaubt"
 
@@ -1272,7 +1278,7 @@ msgstr "Achse bewegen…"
 msgid "Multiplayer"
 msgstr "Multiplayer"
 
-#: src/components/Multiplayer.tsx:157
+#: src/components/Multiplayer.tsx:212
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer benötigt WebTransport, das dieser Browser noch nicht unterstützt."
 
@@ -1291,7 +1297,7 @@ msgid "Next image"
 msgstr "Nächstes Bild"
 
 #: src/components/MissionSetup.tsx:1191
-#: src/components/Multiplayer.tsx:235
+#: src/components/Multiplayer.tsx:320
 msgid "Night"
 msgstr "Nacht"
 
@@ -1311,7 +1317,7 @@ msgstr "Keine Gruppen verfügbar"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Kein Joystick erkannt — zum Aufwecken einen beliebigen Knopf darauf drücken."
 
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No open matches — create one."
 msgstr "Keine offenen Matches — erstelle eins."
 
@@ -1341,7 +1347,7 @@ msgid "No users found"
 msgstr "Keine Nutzer gefunden"
 
 #: src/components/MissionSetup.tsx:959
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No world server."
 msgstr "Kein Weltserver."
 
@@ -1406,11 +1412,11 @@ msgstr "Auf der Startbahn"
 msgid "Oops! Page Not Found!"
 msgstr "Hoppla! Seite nicht gefunden!"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Open"
 msgstr "Öffnen"
 
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:309
 msgid "Open — anyone may join or leave"
 msgstr "Offen — jeder kann beitreten oder gehen"
 
@@ -1419,8 +1425,8 @@ msgstr "Offen — jeder kann beitreten oder gehen"
 msgid "Open account actions"
 msgstr "Kontoaktionen öffnen"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:182
-#: ../../../lib/web/src/components/layout/nav-group.tsx:187
+#: ../../../lib/web/src/components/layout/nav-group.tsx:202
+#: ../../../lib/web/src/components/layout/nav-group.tsx:207
 msgid "Open actions"
 msgstr "Aktionen öffnen"
 
@@ -1476,13 +1482,13 @@ msgid "PAUSED"
 msgstr "PAUSIERT"
 
 #: src/components/MissionSetup.tsx:901
-#: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:183
+#: src/components/Multiplayer.tsx:115
+#: src/components/Multiplayer.tsx:268
 msgid "pilot"
 msgstr "Pilot"
 
 #: src/components/MissionSetup.tsx:1099
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:398
 msgid "Pilot"
 msgstr "Pilot"
 
@@ -1583,11 +1589,11 @@ msgstr "AUFMUNITIONIERT"
 msgid "Recommended"
 msgstr "Empfohlen"
 
-#: src/components/Multiplayer.tsx:381
+#: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "Rot"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Red bots"
 msgstr "Rote Bots"
 
@@ -1604,7 +1610,7 @@ msgstr "Interesse reduzieren"
 msgid "Reference"
 msgstr "Referenz"
 
-#: src/components/Multiplayer.tsx:201
+#: src/components/Multiplayer.tsx:286
 msgid "Refresh"
 msgstr "Aktualisieren"
 
@@ -1699,7 +1705,7 @@ msgid "Roll right"
 msgstr "Rollen nach rechts"
 
 #: src/components/MissionSetup.tsx:1098
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:397
 msgid "Rookie"
 msgstr "Anfänger"
 
@@ -1987,11 +1993,11 @@ msgstr "Team"
 msgid "TEAM"
 msgstr "TEAM"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Teams"
 msgstr "Teams"
 
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:311
 msgid "Teams — red versus blue"
 msgstr "Teams — Rot gegen Blau"
 
@@ -2023,6 +2029,10 @@ msgstr "Design"
 #: ../../../lib/web/src/components/config-drawer.tsx:69
 msgid "Theme Settings"
 msgstr "Theme-Einstellungen"
+
+#: src/components/Multiplayer.tsx:227
+msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
+msgstr "Diese Lobby leitet deine Spielverbindung an einen anderen Host ({redirectHost}) weiter. Fahre nur fort, wenn du diesem Server vertraust."
 
 #: src/components/GameCanvas.tsx:252
 msgid "throttle"
@@ -2065,10 +2075,10 @@ msgstr "Spalten umschalten"
 msgid "Toggle right panel"
 msgstr "Rechtes Panel umschalten"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:351
-#: ../../../lib/web/src/components/layout/nav-group.tsx:358
-#: ../../../lib/web/src/components/layout/nav-group.tsx:481
-#: ../../../lib/web/src/components/layout/nav-group.tsx:488
+#: ../../../lib/web/src/components/layout/nav-group.tsx:373
+#: ../../../lib/web/src/components/layout/nav-group.tsx:380
+#: ../../../lib/web/src/components/layout/nav-group.tsx:503
+#: ../../../lib/web/src/components/layout/nav-group.tsx:510
 msgid "Toggle section"
 msgstr "Abschnitt ein-/ausklappen"
 
@@ -2156,12 +2166,12 @@ msgid "United States"
 msgstr "Vereinigte Staaten"
 
 #: src/components/MissionSetup.tsx:1167
-#: src/components/Multiplayer.tsx:288
+#: src/components/Multiplayer.tsx:373
 msgid "Unlimited ammunition"
 msgstr "Unbegrenzte Munition"
 
 #: src/components/MissionSetup.tsx:1173
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:383
 msgid "Unlimited fuel"
 msgstr "Unbegrenzter Treibstoff"
 
@@ -2204,11 +2214,11 @@ msgid "Vertical"
 msgstr "Senkrecht"
 
 #: src/components/MissionSetup.tsx:1100
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:399
 msgid "Veteran"
 msgstr "Veteran"
 
-#: ../../../lib/web/src/components/attachment-gallery.tsx:74
+#: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Video-Vorschaubild"
 
@@ -2259,7 +2269,7 @@ msgid "Weapons"
 msgstr "Waffen"
 
 #: src/components/MissionSetup.tsx:1044
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:316
 msgid "Weather"
 msgstr "Wetter"
 
@@ -2284,12 +2294,12 @@ msgstr "Flügelfaltung"
 msgid "WINS"
 msgstr "GEWINNT"
 
-#: src/components/Multiplayer.tsx:167
+#: src/components/Multiplayer.tsx:252
 msgid "World server"
 msgstr "Weltserver"
 
 #: src/components/MissionSetup.tsx:947
-#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:128
 msgid "World server not reachable"
 msgstr "Weltserver nicht erreichbar"
 

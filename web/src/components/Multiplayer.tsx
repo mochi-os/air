@@ -15,6 +15,14 @@ import { useCallback, useEffect, useId, useState } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { LogIn, Plus, RefreshCw } from 'lucide-react'
 import { Button } from '@mochi/web/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@mochi/web/components/ui/dialog'
 import { Input } from '@mochi/web/components/ui/input'
 import { Label } from '@mochi/web/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@mochi/web/components/ui/radio-group'
@@ -36,6 +44,21 @@ import {
 // when the Mochi server's operator also runs a world server.
 export function default_server(): string {
   return `${location.protocol === 'https:' ? 'https' : 'http'}://${location.hostname}:4433`
+}
+
+// crossHost returns the transport hostname when it differs from the lobby the
+// player actually chose, or null when they match. The lobby (untrusted) hands
+// out the separate WebTransport address, so it could point the browser at
+// another host — a private-network or loopback service — without this check.
+// An unparseable transport address is treated as cross-host (surfaced, not
+// silently trusted).
+function crossHost(transport: string, lobby: string): string | null {
+  try {
+    const other = new URL(transport).hostname
+    return other === new URL(lobby).hostname ? null : other
+  } catch {
+    return transport
+  }
 }
 
 function Option({
@@ -75,6 +98,7 @@ export function Multiplayer({
   const identity = useIdentityName()
   const group = useId()
   const [status, setStatus] = useState<WorldStatus | null>(null)
+  const [redirect, setRedirect] = useState<{ host: string; proceed: () => void } | null>(null)
   const [sessions, setSessions] = useState<WorldSession[]>([])
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
@@ -130,10 +154,21 @@ export function Multiplayer({
     }
   }, [refresh])
 
+  // enter gates every join on a cross-host check: if the lobby is redirecting
+  // the game connection to a different host, confirm before dialling it.
+  const enter = useCallback(
+    (params: Join) => {
+      const other = crossHost(params.address, address)
+      if (other) setRedirect({ host: other, proceed: () => onJoin(params) })
+      else onJoin(params)
+    },
+    [address, onJoin]
+  )
+
   const join = useCallback(
     (session: string, team?: string) => {
       if (!status) return
-      onJoin({
+      enter({
         server: address,
         address: status.address,
         certificate: status.certificate,
@@ -142,7 +177,7 @@ export function Multiplayer({
         team,
       })
     },
-    [address, name, status, onJoin]
+    [address, name, status, enter]
   )
 
   const create = async () => {
@@ -157,7 +192,7 @@ export function Multiplayer({
         // bots: per-level counts {drone, rookie, ...}; the teams mode places them per side. Fuel in pounds; cheats: {invulnerable, ammunition, fuel}.
         parameters: { tod, clouds, missiles, bots: mode === 'teams' ? { red: bots, blue: blueBots } : bots, fuel, cheats },
       })
-      onJoin({
+      enter({
         server: address,
         address: made.address,
         certificate: made.certificate ?? status?.certificate,
@@ -179,8 +214,38 @@ export function Multiplayer({
     )
   }
 
+  const redirectHost = redirect?.host ?? ''
   return (
     <div className='space-y-4'>
+      <Dialog open={!!redirect} onOpenChange={(open) => !open && setRedirect(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              <Trans>Different game host</Trans>
+            </DialogTitle>
+            <DialogDescription>
+              <Trans>
+                This lobby is sending your game connection to a different host ({redirectHost}). Only continue if
+                you trust this server.
+              </Trans>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant='outline' onClick={() => setRedirect(null)}>
+              <Trans>Cancel</Trans>
+            </Button>
+            <Button
+              onClick={() => {
+                redirect?.proceed()
+                setRedirect(null)
+              }}
+            >
+              <LogIn className='size-4' />
+              <Trans>Continue</Trans>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <div className='grid gap-4 sm:grid-cols-2'>
         <div className='space-y-2'>
           <Label htmlFor='world-server'>

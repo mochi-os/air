@@ -25,17 +25,17 @@ msgid "{0} created “{1}”"
 msgstr "{0} «{1}» түздү"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:193
+#: src/components/Multiplayer.tsx:278
 msgid "{0} flying"
 msgstr "{0} учууда"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:365
+#: src/components/Multiplayer.tsx:450
 msgid "{0}/{1} players"
 msgstr "{0}/{1} оюнчу"
 
-#: src/components/Multiplayer.tsx:134
+#: src/components/Multiplayer.tsx:189
 msgid "{name}'s match"
 msgstr "{name} матчы"
 
@@ -100,7 +100,7 @@ msgid "Account verified"
 msgstr "Аккаунт текшерилди"
 
 #: src/components/MissionSetup.tsx:1101
-#: src/components/Multiplayer.tsx:315
+#: src/components/Multiplayer.tsx:400
 msgid "Ace"
 msgstr "Чебер"
 
@@ -262,11 +262,11 @@ msgstr "Эң жакшы туруктуу бурулуу ылдамдыгы"
 msgid "BINGO FUEL"
 msgstr "БИНГО КҮЙҮҮЧҮ МАЙ"
 
-#: src/components/Multiplayer.tsx:391
+#: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "Көк"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Blue bots"
 msgstr "Көк боттор"
 
@@ -279,7 +279,7 @@ msgstr "БОЛТЕР"
 msgid "Boost interest"
 msgstr "Кызыгууну күчөтүү"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Bots"
 msgstr "Боттор"
 
@@ -303,7 +303,7 @@ msgstr "Баскыч {i}"
 msgid "Buttons"
 msgstr "Баскычтар"
 
-#: src/components/Multiplayer.tsx:178
+#: src/components/Multiplayer.tsx:263
 msgid "Callsign"
 msgstr "Чакыруу белгиси"
 
@@ -321,6 +321,7 @@ msgstr "Камера аралыгы"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
 #: src/components/MissionSetup.tsx:549
+#: src/components/Multiplayer.tsx:235
 msgid "Cancel"
 msgstr "Жокко чыгаруу"
 
@@ -393,7 +394,7 @@ msgstr "Тилди тандоо"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:323
 msgid "Clear"
 msgstr "Тазалоо"
 
@@ -472,7 +473,7 @@ msgstr "Компакттык"
 msgid "Confirm"
 msgstr "Ырастоо"
 
-#: src/components/Multiplayer.tsx:196
+#: src/components/Multiplayer.tsx:281
 msgid "Connecting…"
 msgstr "Туташууда…"
 
@@ -489,6 +490,7 @@ msgid "Contextual information and details."
 msgstr "Контексттик маалымат жана деталдар."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
+#: src/components/Multiplayer.tsx:244
 msgid "Continue"
 msgstr "Улантуу"
 
@@ -504,7 +506,7 @@ msgstr "Көчүрүү"
 msgid "Corner speed (best instant turn)"
 msgstr "Бурч ылдамдыгы (эң жакшы заматтык бурулуу)"
 
-#: src/components/Multiplayer.tsx:148
+#: src/components/Multiplayer.tsx:203
 msgid "Could not create the match"
 msgstr "Матчты түзүү мүмкүн болгон жок"
 
@@ -532,11 +534,11 @@ msgstr "Бул каттоо эсеби менен текшерүү мүмкүн 
 msgid "CRASHED"
 msgstr "КУЛАДЫ"
 
-#: src/components/Multiplayer.tsx:346
+#: src/components/Multiplayer.tsx:431
 msgid "Create and fly"
 msgstr "Түзүү жана учуу"
 
-#: src/components/Multiplayer.tsx:211
+#: src/components/Multiplayer.tsx:296
 msgid "Create match"
 msgstr "Матч түзүү"
 
@@ -546,7 +548,7 @@ msgid "Credits"
 msgstr "Авторлор"
 
 #: src/components/MissionSetup.tsx:1202
-#: src/components/Multiplayer.tsx:239
+#: src/components/Multiplayer.tsx:324
 msgid "Cumulus"
 msgstr "Кумулус"
 
@@ -581,7 +583,7 @@ msgid "Data conflict"
 msgstr "Дайындар карама-каршылыгы"
 
 #: src/components/MissionSetup.tsx:1190
-#: src/components/Multiplayer.tsx:234
+#: src/components/Multiplayer.tsx:319
 msgid "Day"
 msgstr "Күн"
 
@@ -633,6 +635,10 @@ msgstr "Веб-браузерден аныктоо"
 msgid "Device"
 msgstr "Түзмөк"
 
+#: src/components/Multiplayer.tsx:224
+msgid "Different game host"
+msgstr "Башка оюн сервери"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:340
 msgid "Direction"
 msgstr "Багыт"
@@ -663,7 +669,7 @@ msgstr "Жүктөп алуу"
 msgid "Download failed"
 msgstr "Жүктөп алуу ишке ашкан жок"
 
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:396
 msgid "Drone"
 msgstr "Дрон"
 
@@ -691,7 +697,7 @@ msgstr "КАТАПУЛЬТАЛАНДЫ"
 msgid "Email code"
 msgstr "Электрондук почта коду"
 
-#: src/components/Multiplayer.tsx:364
+#: src/components/Multiplayer.tsx:449
 msgid "empty"
 msgstr "бош"
 
@@ -846,7 +852,7 @@ msgid "From theme"
 msgstr "Темадан"
 
 #: src/components/MissionSetup.tsx:1077
-#: src/components/Multiplayer.tsx:249
+#: src/components/Multiplayer.tsx:334
 msgid "Fuel"
 msgstr "Күйүүчү май"
 
@@ -938,7 +944,7 @@ msgid "High"
 msgstr "Жогорку"
 
 #: src/components/MissionSetup.tsx:1203
-#: src/components/Multiplayer.tsx:240
+#: src/components/Multiplayer.tsx:325
 msgid "High stratus"
 msgstr "Жогорку стратус"
 
@@ -998,11 +1004,11 @@ msgid "INVULNERABLE"
 msgstr "ӨЛБӨС"
 
 #: src/components/MissionSetup.tsx:1161
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:363
 msgid "Invulnerable (human players only)"
 msgstr "Өлбөс (адам оюнчулар гана)"
 
-#: src/components/Multiplayer.tsx:403
+#: src/components/Multiplayer.tsx:488
 msgid "Join"
 msgstr "Кошулуу"
 
@@ -1010,11 +1016,11 @@ msgstr "Кошулуу"
 msgid "JOINED"
 msgstr "КИРДИ"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Joust"
 msgstr "Жоуст"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:310
 msgid "Joust — 1v1, first kill wins"
 msgstr "Жекеме-жеке — 1v1, биринчи атып түшүргөн жеңет"
 
@@ -1069,7 +1075,7 @@ msgstr "учуу / бута"
 msgid "Layout"
 msgstr "Жайгашуу"
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:347
 msgid "lb"
 msgstr "lb"
 
@@ -1180,7 +1186,7 @@ msgid "Low"
 msgstr "Төмөн"
 
 #: src/components/MissionSetup.tsx:1204
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:326
 msgid "Low stratus"
 msgstr "Төмөнкү стратус"
 
@@ -1206,7 +1212,7 @@ msgstr "Баарын окулду деп белгилөө"
 msgid "Master"
 msgstr "Жалпы"
 
-#: src/components/Multiplayer.tsx:221
+#: src/components/Multiplayer.tsx:306
 msgid "Match type"
 msgstr "Матч түрү"
 
@@ -1252,7 +1258,7 @@ msgstr "РАКЕТА"
 msgid "Missiles"
 msgstr "Ракеталар"
 
-#: src/components/Multiplayer.tsx:268
+#: src/components/Multiplayer.tsx:353
 msgid "Missiles allowed"
 msgstr "Ракеталарга уруксат"
 
@@ -1272,7 +1278,7 @@ msgstr "Аны кыймылдатыңыз…"
 msgid "Multiplayer"
 msgstr "Мультиплеер"
 
-#: src/components/Multiplayer.tsx:157
+#: src/components/Multiplayer.tsx:212
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Мультиплеер үчүн WebTransport керек, бирок бул браузер аны азырынча колдобойт."
 
@@ -1291,7 +1297,7 @@ msgid "Next image"
 msgstr "Кийинки сүрөт"
 
 #: src/components/MissionSetup.tsx:1191
-#: src/components/Multiplayer.tsx:235
+#: src/components/Multiplayer.tsx:320
 msgid "Night"
 msgstr "Түн"
 
@@ -1311,7 +1317,7 @@ msgstr "Топтор жеткиликсиз"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Джойстик табылган жок — аны ойготуу үчүн андагы каалаган баскычты басыңыз."
 
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No open matches — create one."
 msgstr "Ачык матчтар жок — бирөөнү түзүңүз."
 
@@ -1341,7 +1347,7 @@ msgid "No users found"
 msgstr "Колдонуучулар табылган жок"
 
 #: src/components/MissionSetup.tsx:959
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No world server."
 msgstr "Дүйнө сервери жок."
 
@@ -1406,11 +1412,11 @@ msgstr "Учуу-конуу тилкесинде"
 msgid "Oops! Page Not Found!"
 msgstr "Аттиң! Барак табылган жок!"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Open"
 msgstr "Ачуу"
 
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:309
 msgid "Open — anyone may join or leave"
 msgstr "Ачык — каалаган адам кошула же чыга алат"
 
@@ -1419,8 +1425,8 @@ msgstr "Ачык — каалаган адам кошула же чыга ала
 msgid "Open account actions"
 msgstr "Аккаунт аракеттерин ачуу"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:182
-#: ../../../lib/web/src/components/layout/nav-group.tsx:187
+#: ../../../lib/web/src/components/layout/nav-group.tsx:202
+#: ../../../lib/web/src/components/layout/nav-group.tsx:207
 msgid "Open actions"
 msgstr "Аракеттерди ачуу"
 
@@ -1476,13 +1482,13 @@ msgid "PAUSED"
 msgstr "ПАУЗА"
 
 #: src/components/MissionSetup.tsx:901
-#: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:183
+#: src/components/Multiplayer.tsx:115
+#: src/components/Multiplayer.tsx:268
 msgid "pilot"
 msgstr "учкуч"
 
 #: src/components/MissionSetup.tsx:1099
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:398
 msgid "Pilot"
 msgstr "Учкуч"
 
@@ -1583,11 +1589,11 @@ msgstr "КАЙРА КУРАЛДАНДЫ"
 msgid "Recommended"
 msgstr "Сунушталган"
 
-#: src/components/Multiplayer.tsx:381
+#: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "Кызыл"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Red bots"
 msgstr "Кызыл боттор"
 
@@ -1604,7 +1610,7 @@ msgstr "Кызыгууну азайтуу"
 msgid "Reference"
 msgstr "Маалымдама"
 
-#: src/components/Multiplayer.tsx:201
+#: src/components/Multiplayer.tsx:286
 msgid "Refresh"
 msgstr "Жаңыртуу"
 
@@ -1699,7 +1705,7 @@ msgid "Roll right"
 msgstr "Крен оңго"
 
 #: src/components/MissionSetup.tsx:1098
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:397
 msgid "Rookie"
 msgstr "Үйрөнчүк"
 
@@ -1987,11 +1993,11 @@ msgstr "Команда"
 msgid "TEAM"
 msgstr "КОМАНДА"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Teams"
 msgstr "Командалар"
 
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:311
 msgid "Teams — red versus blue"
 msgstr "Командалар — кызыл көккө каршы"
 
@@ -2023,6 +2029,10 @@ msgstr "Тема"
 #: ../../../lib/web/src/components/config-drawer.tsx:69
 msgid "Theme Settings"
 msgstr "Тема жөндөөлөрү"
+
+#: src/components/Multiplayer.tsx:227
+msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
+msgstr "Бул лобби оюн туташууңузду башка серверге ({redirectHost}) багыттап жатат. Бул серверге ишенсеңиз гана улантыңыз."
 
 #: src/components/GameCanvas.tsx:252
 msgid "throttle"
@@ -2065,10 +2075,10 @@ msgstr "Тилкелерди которуу"
 msgid "Toggle right panel"
 msgstr "Оң панелди алмаштыруу"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:351
-#: ../../../lib/web/src/components/layout/nav-group.tsx:358
-#: ../../../lib/web/src/components/layout/nav-group.tsx:481
-#: ../../../lib/web/src/components/layout/nav-group.tsx:488
+#: ../../../lib/web/src/components/layout/nav-group.tsx:373
+#: ../../../lib/web/src/components/layout/nav-group.tsx:380
+#: ../../../lib/web/src/components/layout/nav-group.tsx:503
+#: ../../../lib/web/src/components/layout/nav-group.tsx:510
 msgid "Toggle section"
 msgstr "Бөлүмдү которуу"
 
@@ -2156,12 +2166,12 @@ msgid "United States"
 msgstr "Кошмо Штаттар"
 
 #: src/components/MissionSetup.tsx:1167
-#: src/components/Multiplayer.tsx:288
+#: src/components/Multiplayer.tsx:373
 msgid "Unlimited ammunition"
 msgstr "Чексиз ок-дары"
 
 #: src/components/MissionSetup.tsx:1173
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:383
 msgid "Unlimited fuel"
 msgstr "Чексиз күйүүчү май"
 
@@ -2204,11 +2214,11 @@ msgid "Vertical"
 msgstr "Тик"
 
 #: src/components/MissionSetup.tsx:1100
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:399
 msgid "Veteran"
 msgstr "Ардагер"
 
-#: ../../../lib/web/src/components/attachment-gallery.tsx:74
+#: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Видеонун эскизи"
 
@@ -2259,7 +2269,7 @@ msgid "Weapons"
 msgstr "Куралдар"
 
 #: src/components/MissionSetup.tsx:1044
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:316
 msgid "Weather"
 msgstr "Аба ырайы"
 
@@ -2284,12 +2294,12 @@ msgstr "Канат бүктөө"
 msgid "WINS"
 msgstr "ЖЕҢДИ"
 
-#: src/components/Multiplayer.tsx:167
+#: src/components/Multiplayer.tsx:252
 msgid "World server"
 msgstr "Дүйнө сервери"
 
 #: src/components/MissionSetup.tsx:947
-#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:128
 msgid "World server not reachable"
 msgstr "Дүйнө сервери жеткиликсиз"
 

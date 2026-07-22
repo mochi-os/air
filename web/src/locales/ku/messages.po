@@ -25,17 +25,17 @@ msgid "{0} created “{1}”"
 msgstr "{0} «{1}» çêkir"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:193
+#: src/components/Multiplayer.tsx:278
 msgid "{0} flying"
 msgstr "{0} difirin"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:365
+#: src/components/Multiplayer.tsx:450
 msgid "{0}/{1} players"
 msgstr "{0}/{1} lîstikvan"
 
-#: src/components/Multiplayer.tsx:134
+#: src/components/Multiplayer.tsx:189
 msgid "{name}'s match"
 msgstr "Maça {name}"
 
@@ -100,7 +100,7 @@ msgid "Account verified"
 msgstr "Hesab hat piştrastkirin"
 
 #: src/components/MissionSetup.tsx:1101
-#: src/components/Multiplayer.tsx:315
+#: src/components/Multiplayer.tsx:400
 msgid "Ace"
 msgstr "As"
 
@@ -262,11 +262,11 @@ msgstr "Leza zivirîna domdar a herî baş"
 msgid "BINGO FUEL"
 msgstr "BINGO SOTEMENÎ"
 
-#: src/components/Multiplayer.tsx:391
+#: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "Şîn"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Blue bots"
 msgstr "Botên şîn"
 
@@ -279,7 +279,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Berjewendiyê zêde bike"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Bots"
 msgstr "Bot"
 
@@ -303,7 +303,7 @@ msgstr "Bişkoka {i}"
 msgid "Buttons"
 msgstr "Bişkok"
 
-#: src/components/Multiplayer.tsx:178
+#: src/components/Multiplayer.tsx:263
 msgid "Callsign"
 msgstr "Navê bangê"
 
@@ -321,6 +321,7 @@ msgstr "Dûrahiya kamerayê"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
 #: src/components/MissionSetup.tsx:549
+#: src/components/Multiplayer.tsx:235
 msgid "Cancel"
 msgstr "Betal bike"
 
@@ -393,7 +394,7 @@ msgstr "Ziman hilbijêre"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:323
 msgid "Clear"
 msgstr "Paqij bike"
 
@@ -472,7 +473,7 @@ msgstr "Kompakt"
 msgid "Confirm"
 msgstr "Piştrast bike"
 
-#: src/components/Multiplayer.tsx:196
+#: src/components/Multiplayer.tsx:281
 msgid "Connecting…"
 msgstr "Tê girêdan…"
 
@@ -489,6 +490,7 @@ msgid "Contextual information and details."
 msgstr "Agahî û hûragahiyên kontekstê."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
+#: src/components/Multiplayer.tsx:244
 msgid "Continue"
 msgstr "Berdewam bike"
 
@@ -504,7 +506,7 @@ msgstr "Kopî bike"
 msgid "Corner speed (best instant turn)"
 msgstr "Leza korner (zivirîna anî ya herî baş)"
 
-#: src/components/Multiplayer.tsx:148
+#: src/components/Multiplayer.tsx:203
 msgid "Could not create the match"
 msgstr "Maç nehat çêkirin"
 
@@ -532,11 +534,11 @@ msgstr "Bi wê hesabê re piştrastkirin pêk nehat. Ji kerema xwe dîsa bicerib
 msgid "CRASHED"
 msgstr "HILWEŞIYA"
 
-#: src/components/Multiplayer.tsx:346
+#: src/components/Multiplayer.tsx:431
 msgid "Create and fly"
 msgstr "Çêbike û bifire"
 
-#: src/components/Multiplayer.tsx:211
+#: src/components/Multiplayer.tsx:296
 msgid "Create match"
 msgstr "Maçê çêbike"
 
@@ -546,7 +548,7 @@ msgid "Credits"
 msgstr "Spasî"
 
 #: src/components/MissionSetup.tsx:1202
-#: src/components/Multiplayer.tsx:239
+#: src/components/Multiplayer.tsx:324
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -581,7 +583,7 @@ msgid "Data conflict"
 msgstr "Nakokiya daneyan"
 
 #: src/components/MissionSetup.tsx:1190
-#: src/components/Multiplayer.tsx:234
+#: src/components/Multiplayer.tsx:319
 msgid "Day"
 msgstr "Roj"
 
@@ -633,6 +635,10 @@ msgstr "Ji geroka webê tespît bike"
 msgid "Device"
 msgstr "Cîhaz"
 
+#: src/components/Multiplayer.tsx:224
+msgid "Different game host"
+msgstr "Hosteke lîstikê ya cuda"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:340
 msgid "Direction"
 msgstr "Arasteyî"
@@ -663,7 +669,7 @@ msgstr "Daxe"
 msgid "Download failed"
 msgstr "Daxistin têk çû"
 
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:396
 msgid "Drone"
 msgstr "Dron"
 
@@ -691,7 +697,7 @@ msgstr "XWE AVÊT DERVE"
 msgid "Email code"
 msgstr "Koda e-nameyê"
 
-#: src/components/Multiplayer.tsx:364
+#: src/components/Multiplayer.tsx:449
 msgid "empty"
 msgstr "vala"
 
@@ -846,7 +852,7 @@ msgid "From theme"
 msgstr "Ji temayê"
 
 #: src/components/MissionSetup.tsx:1077
-#: src/components/Multiplayer.tsx:249
+#: src/components/Multiplayer.tsx:334
 msgid "Fuel"
 msgstr "Sotemenî"
 
@@ -938,7 +944,7 @@ msgid "High"
 msgstr "Bilind"
 
 #: src/components/MissionSetup.tsx:1203
-#: src/components/Multiplayer.tsx:240
+#: src/components/Multiplayer.tsx:325
 msgid "High stratus"
 msgstr "Stratusa bilind"
 
@@ -998,11 +1004,11 @@ msgid "INVULNERABLE"
 msgstr "NEMIR"
 
 #: src/components/MissionSetup.tsx:1161
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:363
 msgid "Invulnerable (human players only)"
 msgstr "Nemir (tenê ji bo lîstikvanên mirov)"
 
-#: src/components/Multiplayer.tsx:403
+#: src/components/Multiplayer.tsx:488
 msgid "Join"
 msgstr "Tevlî bibe"
 
@@ -1010,11 +1016,11 @@ msgstr "Tevlî bibe"
 msgid "JOINED"
 msgstr "TEVLÎ BÛ"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Joust"
 msgstr "Pevçûn"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:310
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, kuştina yekem bi ser dikeve"
 
@@ -1069,7 +1075,7 @@ msgstr "hilfirîn / armanc"
 msgid "Layout"
 msgstr "Bargeh"
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:347
 msgid "lb"
 msgstr "lb"
 
@@ -1180,7 +1186,7 @@ msgid "Low"
 msgstr "Nizm"
 
 #: src/components/MissionSetup.tsx:1204
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:326
 msgid "Low stratus"
 msgstr "Stratusa nizm"
 
@@ -1206,7 +1212,7 @@ msgstr "Hemû wek xwendî nîşan bike"
 msgid "Master"
 msgstr "Giştî"
 
-#: src/components/Multiplayer.tsx:221
+#: src/components/Multiplayer.tsx:306
 msgid "Match type"
 msgstr "Cureyê maçê"
 
@@ -1252,7 +1258,7 @@ msgstr "MÛŞEK"
 msgid "Missiles"
 msgstr "Mûşek"
 
-#: src/components/Multiplayer.tsx:268
+#: src/components/Multiplayer.tsx:353
 msgid "Missiles allowed"
 msgstr "Destûra mûşekan heye"
 
@@ -1272,7 +1278,7 @@ msgstr "Wê bilivîne…"
 msgid "Multiplayer"
 msgstr "Pirlîstikvan"
 
-#: src/components/Multiplayer.tsx:157
+#: src/components/Multiplayer.tsx:212
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Pirlîstikvan hewceyî WebTransport e, ku ev gerok hîn piştgiriya wê nake."
 
@@ -1291,7 +1297,7 @@ msgid "Next image"
 msgstr "Wêneya pêştir"
 
 #: src/components/MissionSetup.tsx:1191
-#: src/components/Multiplayer.tsx:235
+#: src/components/Multiplayer.tsx:320
 msgid "Night"
 msgstr "Şev"
 
@@ -1311,7 +1317,7 @@ msgstr "Tu kom berdest nîn in"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Joystick nehat dîtin — pêl bişkokeke wê bike da ku hişyar bibe."
 
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No open matches — create one."
 msgstr "Maçên vekirî tune ne — yekê çêbike."
 
@@ -1341,7 +1347,7 @@ msgid "No users found"
 msgstr "Tu bikarhêner nehatin dîtin"
 
 #: src/components/MissionSetup.tsx:959
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No world server."
 msgstr "Servera cîhanê tune."
 
@@ -1406,11 +1412,11 @@ msgstr "Li ser pîstê"
 msgid "Oops! Page Not Found!"
 msgstr "Wey! Rûpel nehat dîtin!"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Open"
 msgstr "Veke"
 
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:309
 msgid "Open — anyone may join or leave"
 msgstr "Vekirî — her kes dikare beşdar bibe an derkeve"
 
@@ -1419,8 +1425,8 @@ msgstr "Vekirî — her kes dikare beşdar bibe an derkeve"
 msgid "Open account actions"
 msgstr "Çalakiyên hesabê veke"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:182
-#: ../../../lib/web/src/components/layout/nav-group.tsx:187
+#: ../../../lib/web/src/components/layout/nav-group.tsx:202
+#: ../../../lib/web/src/components/layout/nav-group.tsx:207
 msgid "Open actions"
 msgstr "Kiryaran veke"
 
@@ -1476,13 +1482,13 @@ msgid "PAUSED"
 msgstr "RAWESTANDÎ"
 
 #: src/components/MissionSetup.tsx:901
-#: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:183
+#: src/components/Multiplayer.tsx:115
+#: src/components/Multiplayer.tsx:268
 msgid "pilot"
 msgstr "pîlot"
 
 #: src/components/MissionSetup.tsx:1099
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:398
 msgid "Pilot"
 msgstr "Pîlot"
 
@@ -1583,11 +1589,11 @@ msgstr "JI NÛ VE ÇEKDAR"
 msgid "Recommended"
 msgstr "Pêşniyarkirî"
 
-#: src/components/Multiplayer.tsx:381
+#: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "Sor"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Red bots"
 msgstr "Botên sor"
 
@@ -1604,7 +1610,7 @@ msgstr "Balkêşî kêm bike"
 msgid "Reference"
 msgstr "Referans"
 
-#: src/components/Multiplayer.tsx:201
+#: src/components/Multiplayer.tsx:286
 msgid "Refresh"
 msgstr "Nûjen bike"
 
@@ -1699,7 +1705,7 @@ msgid "Roll right"
 msgstr "Meyla rastê"
 
 #: src/components/MissionSetup.tsx:1098
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:397
 msgid "Rookie"
 msgstr "Nûhatî"
 
@@ -1987,11 +1993,11 @@ msgstr "Tîm"
 msgid "TEAM"
 msgstr "TÎM"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Teams"
 msgstr "Tîm"
 
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:311
 msgid "Teams — red versus blue"
 msgstr "Tîm — sor li dijî şîn"
 
@@ -2023,6 +2029,10 @@ msgstr "Tema"
 #: ../../../lib/web/src/components/config-drawer.tsx:69
 msgid "Theme Settings"
 msgstr "Mîhengên Temayê"
+
+#: src/components/Multiplayer.tsx:227
+msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
+msgstr "Ev lobî girêdana lîstika te dişîne hosteke din ({redirectHost}). Tenê berdewam bike heke tu bi vê serverê bawer dikî."
 
 #: src/components/GameCanvas.tsx:252
 msgid "throttle"
@@ -2065,10 +2075,10 @@ msgstr "Stûnan biguherîne"
 msgid "Toggle right panel"
 msgstr "Panela rastê biguhêre"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:351
-#: ../../../lib/web/src/components/layout/nav-group.tsx:358
-#: ../../../lib/web/src/components/layout/nav-group.tsx:481
-#: ../../../lib/web/src/components/layout/nav-group.tsx:488
+#: ../../../lib/web/src/components/layout/nav-group.tsx:373
+#: ../../../lib/web/src/components/layout/nav-group.tsx:380
+#: ../../../lib/web/src/components/layout/nav-group.tsx:503
+#: ../../../lib/web/src/components/layout/nav-group.tsx:510
 msgid "Toggle section"
 msgstr "Beşê biguhêre"
 
@@ -2156,12 +2166,12 @@ msgid "United States"
 msgstr "Dewletên Yekbûyî"
 
 #: src/components/MissionSetup.tsx:1167
-#: src/components/Multiplayer.tsx:288
+#: src/components/Multiplayer.tsx:373
 msgid "Unlimited ammunition"
 msgstr "Cebilxaneya bêsînor"
 
 #: src/components/MissionSetup.tsx:1173
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:383
 msgid "Unlimited fuel"
 msgstr "Sotemeniya bêsînor"
 
@@ -2204,11 +2214,11 @@ msgid "Vertical"
 msgstr "Stûnî"
 
 #: src/components/MissionSetup.tsx:1100
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:399
 msgid "Veteran"
 msgstr "Ezmûndar"
 
-#: ../../../lib/web/src/components/attachment-gallery.tsx:74
+#: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Wêneya pêşgir a vîdeoyê"
 
@@ -2259,7 +2269,7 @@ msgid "Weapons"
 msgstr "Çek"
 
 #: src/components/MissionSetup.tsx:1044
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:316
 msgid "Weather"
 msgstr "Hewa"
 
@@ -2284,12 +2294,12 @@ msgstr "Qatkirina baskan"
 msgid "WINS"
 msgstr "BI SER KET"
 
-#: src/components/Multiplayer.tsx:167
+#: src/components/Multiplayer.tsx:252
 msgid "World server"
 msgstr "Servera cîhanê"
 
 #: src/components/MissionSetup.tsx:947
-#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:128
 msgid "World server not reachable"
 msgstr "Gihîştina servera cîhanê ne pêkan e"
 

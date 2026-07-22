@@ -68,11 +68,7 @@ export async function saveConfig(config: MissionConfig): Promise<void> {
   }
 }
 
-let saveTimer: ReturnType<typeof setTimeout> | undefined
-function saveConfigDebounced(config: MissionConfig, delay = 600) {
-  if (saveTimer) clearTimeout(saveTimer)
-  saveTimer = setTimeout(() => void saveConfig(config), delay)
-}
+const SAVE_DELAY = 600
 
 // Mission/graphics config backed by the Mochi app database (the cross-device
 // source of truth), with shell storage as a local cache so the menu renders the
@@ -93,6 +89,11 @@ export function useMissionConfig(): [
   // changes a setting before the response lands, that edit is NEWER than the
   // server's stored value and the late load must not overwrite it.
   const dirty = useRef(false)
+  // The debounce timer lives INSIDE the hook, not module-global: a global timer
+  // survived unmount and was shared by every hook instance, so a pending save
+  // could fire after navigation or an in-place account change and write stale
+  // config under the then-current auth context. Cancelled on unmount.
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   useEffect(() => {
     loadConfig().then((saved) => {
@@ -100,6 +101,9 @@ export function useMissionConfig(): [
       if (saved) setStored({ ...DEFAULT_CONFIG, ...saved } as MissionConfig)
       else void saveConfig(configRef.current) // first run on this account — seed the server
     })
+    return () => {
+      if (saveTimer.current) clearTimeout(saveTimer.current)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -107,7 +111,8 @@ export function useMissionConfig(): [
     (next: MissionConfig) => {
       dirty.current = true
       setStored(next)
-      saveConfigDebounced(next)
+      if (saveTimer.current) clearTimeout(saveTimer.current)
+      saveTimer.current = setTimeout(() => void saveConfig(next), SAVE_DELAY) // captures this exact config snapshot
     },
     [setStored]
   )

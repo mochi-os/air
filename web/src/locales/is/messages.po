@@ -25,17 +25,17 @@ msgid "{0} created “{1}”"
 msgstr "{0} bjó til „{1}“"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:193
+#: src/components/Multiplayer.tsx:278
 msgid "{0} flying"
 msgstr "{0} á flugi"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:365
+#: src/components/Multiplayer.tsx:450
 msgid "{0}/{1} players"
 msgstr "{0}/{1} leikmenn"
 
-#: src/components/Multiplayer.tsx:134
+#: src/components/Multiplayer.tsx:189
 msgid "{name}'s match"
 msgstr "Leikur {name}"
 
@@ -100,7 +100,7 @@ msgid "Account verified"
 msgstr "Reikningur staðfestur"
 
 #: src/components/MissionSetup.tsx:1101
-#: src/components/Multiplayer.tsx:315
+#: src/components/Multiplayer.tsx:400
 msgid "Ace"
 msgstr "Ás"
 
@@ -262,11 +262,11 @@ msgstr "Besti hraði viðvarandi beygju"
 msgid "BINGO FUEL"
 msgstr "BINGO ELDSNEYTI"
 
-#: src/components/Multiplayer.tsx:391
+#: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "Blátt"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Blue bots"
 msgstr "Bláir bottar"
 
@@ -279,7 +279,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "Auka áhuga"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Bots"
 msgstr "Vélmenni"
 
@@ -303,7 +303,7 @@ msgstr "Hnappur {i}"
 msgid "Buttons"
 msgstr "Hnappar"
 
-#: src/components/Multiplayer.tsx:178
+#: src/components/Multiplayer.tsx:263
 msgid "Callsign"
 msgstr "Kallmerki"
 
@@ -321,6 +321,7 @@ msgstr "Fjarlægð myndavélar"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
 #: src/components/MissionSetup.tsx:549
+#: src/components/Multiplayer.tsx:235
 msgid "Cancel"
 msgstr "Hætta við"
 
@@ -393,7 +394,7 @@ msgstr "Veldu tungumál"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:323
 msgid "Clear"
 msgstr "Hreinsa"
 
@@ -472,7 +473,7 @@ msgstr "Þétt"
 msgid "Confirm"
 msgstr "Staðfesta"
 
-#: src/components/Multiplayer.tsx:196
+#: src/components/Multiplayer.tsx:281
 msgid "Connecting…"
 msgstr "Tengist…"
 
@@ -489,6 +490,7 @@ msgid "Contextual information and details."
 msgstr "Samhengisupplýsingar og smáatriði."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
+#: src/components/Multiplayer.tsx:244
 msgid "Continue"
 msgstr "Halda áfram"
 
@@ -504,7 +506,7 @@ msgstr "Afrita"
 msgid "Corner speed (best instant turn)"
 msgstr "Hornhraði (besta augnabliksbeygja)"
 
-#: src/components/Multiplayer.tsx:148
+#: src/components/Multiplayer.tsx:203
 msgid "Could not create the match"
 msgstr "Ekki tókst að stofna leikinn"
 
@@ -532,11 +534,11 @@ msgstr "Ekki tókst að staðfesta með þeim reikningi. Reyndu aftur."
 msgid "CRASHED"
 msgstr "HRAPAÐI"
 
-#: src/components/Multiplayer.tsx:346
+#: src/components/Multiplayer.tsx:431
 msgid "Create and fly"
 msgstr "Stofna og fljúga"
 
-#: src/components/Multiplayer.tsx:211
+#: src/components/Multiplayer.tsx:296
 msgid "Create match"
 msgstr "Stofna leik"
 
@@ -546,7 +548,7 @@ msgid "Credits"
 msgstr "Þakkir"
 
 #: src/components/MissionSetup.tsx:1202
-#: src/components/Multiplayer.tsx:239
+#: src/components/Multiplayer.tsx:324
 msgid "Cumulus"
 msgstr "Bólstraský"
 
@@ -581,7 +583,7 @@ msgid "Data conflict"
 msgstr "Gagnaárekstur"
 
 #: src/components/MissionSetup.tsx:1190
-#: src/components/Multiplayer.tsx:234
+#: src/components/Multiplayer.tsx:319
 msgid "Day"
 msgstr "Dagur"
 
@@ -633,6 +635,10 @@ msgstr "Greina út frá vafra"
 msgid "Device"
 msgstr "Tæki"
 
+#: src/components/Multiplayer.tsx:224
+msgid "Different game host"
+msgstr "Annar leikjahýsill"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:340
 msgid "Direction"
 msgstr "Stefna"
@@ -663,7 +669,7 @@ msgstr "Hlaða niður"
 msgid "Download failed"
 msgstr "Niðurhal mistókst"
 
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:396
 msgid "Drone"
 msgstr "Dróni"
 
@@ -691,7 +697,7 @@ msgstr "SKAUT SÉR ÚT"
 msgid "Email code"
 msgstr "Tölvupóstkóði"
 
-#: src/components/Multiplayer.tsx:364
+#: src/components/Multiplayer.tsx:449
 msgid "empty"
 msgstr "tóm"
 
@@ -846,7 +852,7 @@ msgid "From theme"
 msgstr "Frá þema"
 
 #: src/components/MissionSetup.tsx:1077
-#: src/components/Multiplayer.tsx:249
+#: src/components/Multiplayer.tsx:334
 msgid "Fuel"
 msgstr "Eldsneyti"
 
@@ -938,7 +944,7 @@ msgid "High"
 msgstr "Hátt"
 
 #: src/components/MissionSetup.tsx:1203
-#: src/components/Multiplayer.tsx:240
+#: src/components/Multiplayer.tsx:325
 msgid "High stratus"
 msgstr "Há lagský"
 
@@ -998,11 +1004,11 @@ msgid "INVULNERABLE"
 msgstr "ÓSÆRANLEGUR"
 
 #: src/components/MissionSetup.tsx:1161
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:363
 msgid "Invulnerable (human players only)"
 msgstr "Ósæranlegur (aðeins mennskir leikmenn)"
 
-#: src/components/Multiplayer.tsx:403
+#: src/components/Multiplayer.tsx:488
 msgid "Join"
 msgstr "Taka þátt"
 
@@ -1010,11 +1016,11 @@ msgstr "Taka þátt"
 msgid "JOINED"
 msgstr "BÆTTIST VIÐ"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Joust"
 msgstr "Einvígi"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:310
 msgid "Joust — 1v1, first kill wins"
 msgstr "Einvígi — 1v1, fyrsta niðurskotið vinnur"
 
@@ -1069,7 +1075,7 @@ msgstr "flugtak / læsing"
 msgid "Layout"
 msgstr "Umgjörð"
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:347
 msgid "lb"
 msgstr "lb"
 
@@ -1180,7 +1186,7 @@ msgid "Low"
 msgstr "Lágt"
 
 #: src/components/MissionSetup.tsx:1204
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:326
 msgid "Low stratus"
 msgstr "Lág lagský"
 
@@ -1206,7 +1212,7 @@ msgstr "Merkja allt sem lesið"
 msgid "Master"
 msgstr "Almennt"
 
-#: src/components/Multiplayer.tsx:221
+#: src/components/Multiplayer.tsx:306
 msgid "Match type"
 msgstr "Tegund leiks"
 
@@ -1252,7 +1258,7 @@ msgstr "FLUGSKEYTI"
 msgid "Missiles"
 msgstr "Flugskeyti"
 
-#: src/components/Multiplayer.tsx:268
+#: src/components/Multiplayer.tsx:353
 msgid "Missiles allowed"
 msgstr "Eldflaugar leyfðar"
 
@@ -1272,7 +1278,7 @@ msgstr "Hreyfðu hann…"
 msgid "Multiplayer"
 msgstr "Fjölspilun"
 
-#: src/components/Multiplayer.tsx:157
+#: src/components/Multiplayer.tsx:212
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Fjölspilun þarfnast WebTransport, sem þessi vafri styður ekki enn."
 
@@ -1291,7 +1297,7 @@ msgid "Next image"
 msgstr "Næsta mynd"
 
 #: src/components/MissionSetup.tsx:1191
-#: src/components/Multiplayer.tsx:235
+#: src/components/Multiplayer.tsx:320
 msgid "Night"
 msgstr "Nótt"
 
@@ -1311,7 +1317,7 @@ msgstr "Engir hópar tiltækir"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Enginn stýripinni fannst — ýttu á einhvern hnapp á honum til að vekja hann."
 
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No open matches — create one."
 msgstr "Engir opnir leikir — stofnaðu einn."
 
@@ -1341,7 +1347,7 @@ msgid "No users found"
 msgstr "Engir notendur fundust"
 
 #: src/components/MissionSetup.tsx:959
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No world server."
 msgstr "Enginn heimsþjónn."
 
@@ -1406,11 +1412,11 @@ msgstr "Á flugbraut"
 msgid "Oops! Page Not Found!"
 msgstr "Úps! Síða fannst ekki!"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Open"
 msgstr "Opna"
 
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:309
 msgid "Open — anyone may join or leave"
 msgstr "Opinn — hver sem er getur tekið þátt eða hætt"
 
@@ -1419,8 +1425,8 @@ msgstr "Opinn — hver sem er getur tekið þátt eða hætt"
 msgid "Open account actions"
 msgstr "Opna reikningsaðgerðir"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:182
-#: ../../../lib/web/src/components/layout/nav-group.tsx:187
+#: ../../../lib/web/src/components/layout/nav-group.tsx:202
+#: ../../../lib/web/src/components/layout/nav-group.tsx:207
 msgid "Open actions"
 msgstr "Opna aðgerðir"
 
@@ -1476,13 +1482,13 @@ msgid "PAUSED"
 msgstr "Í BIÐ"
 
 #: src/components/MissionSetup.tsx:901
-#: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:183
+#: src/components/Multiplayer.tsx:115
+#: src/components/Multiplayer.tsx:268
 msgid "pilot"
 msgstr "flugmaður"
 
 #: src/components/MissionSetup.tsx:1099
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:398
 msgid "Pilot"
 msgstr "Flugmaður"
 
@@ -1583,11 +1589,11 @@ msgstr "ENDURVOPNUÐ"
 msgid "Recommended"
 msgstr "Mælt með"
 
-#: src/components/Multiplayer.tsx:381
+#: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "Rautt"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Red bots"
 msgstr "Rauðir bottar"
 
@@ -1604,7 +1610,7 @@ msgstr "Minnka áhuga"
 msgid "Reference"
 msgstr "Viðmið"
 
-#: src/components/Multiplayer.tsx:201
+#: src/components/Multiplayer.tsx:286
 msgid "Refresh"
 msgstr "Endurnýja"
 
@@ -1699,7 +1705,7 @@ msgid "Roll right"
 msgstr "Velta til hægri"
 
 #: src/components/MissionSetup.tsx:1098
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:397
 msgid "Rookie"
 msgstr "Nýliði"
 
@@ -1987,11 +1993,11 @@ msgstr "Teymi"
 msgid "TEAM"
 msgstr "LIÐ"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Teams"
 msgstr "Lið"
 
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:311
 msgid "Teams — red versus blue"
 msgstr "Lið — rautt gegn bláu"
 
@@ -2023,6 +2029,10 @@ msgstr "Þema"
 #: ../../../lib/web/src/components/config-drawer.tsx:69
 msgid "Theme Settings"
 msgstr "Þemastillingar"
+
+#: src/components/Multiplayer.tsx:227
+msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
+msgstr "Þessi biðstofa er að beina leikjatengingunni þinni á annan hýsil ({redirectHost}). Haltu aðeins áfram ef þú treystir þessum netþjóni."
 
 #: src/components/GameCanvas.tsx:252
 msgid "throttle"
@@ -2065,10 +2075,10 @@ msgstr "Skipta um dálka"
 msgid "Toggle right panel"
 msgstr "Skipta hægra spjaldi"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:351
-#: ../../../lib/web/src/components/layout/nav-group.tsx:358
-#: ../../../lib/web/src/components/layout/nav-group.tsx:481
-#: ../../../lib/web/src/components/layout/nav-group.tsx:488
+#: ../../../lib/web/src/components/layout/nav-group.tsx:373
+#: ../../../lib/web/src/components/layout/nav-group.tsx:380
+#: ../../../lib/web/src/components/layout/nav-group.tsx:503
+#: ../../../lib/web/src/components/layout/nav-group.tsx:510
 msgid "Toggle section"
 msgstr "Víxla hluta"
 
@@ -2156,12 +2166,12 @@ msgid "United States"
 msgstr "Bandaríkin"
 
 #: src/components/MissionSetup.tsx:1167
-#: src/components/Multiplayer.tsx:288
+#: src/components/Multiplayer.tsx:373
 msgid "Unlimited ammunition"
 msgstr "Ótakmörkuð skotfæri"
 
 #: src/components/MissionSetup.tsx:1173
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:383
 msgid "Unlimited fuel"
 msgstr "Ótakmarkað eldsneyti"
 
@@ -2204,11 +2214,11 @@ msgid "Vertical"
 msgstr "Lóðrétt"
 
 #: src/components/MissionSetup.tsx:1100
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:399
 msgid "Veteran"
 msgstr "Reyndur"
 
-#: ../../../lib/web/src/components/attachment-gallery.tsx:74
+#: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Smámynd myndbands"
 
@@ -2259,7 +2269,7 @@ msgid "Weapons"
 msgstr "Vopn"
 
 #: src/components/MissionSetup.tsx:1044
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:316
 msgid "Weather"
 msgstr "Veður"
 
@@ -2284,12 +2294,12 @@ msgstr "Vængjafelling"
 msgid "WINS"
 msgstr "SIGRAR"
 
-#: src/components/Multiplayer.tsx:167
+#: src/components/Multiplayer.tsx:252
 msgid "World server"
 msgstr "Heimsþjónn"
 
 #: src/components/MissionSetup.tsx:947
-#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:128
 msgid "World server not reachable"
 msgstr "Ekki næst í heimsþjóninn"
 

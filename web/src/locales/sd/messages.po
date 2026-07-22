@@ -25,17 +25,17 @@ msgid "{0} created “{1}”"
 msgstr "{0} “{1}” ٺاهيو"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:193
+#: src/components/Multiplayer.tsx:278
 msgid "{0} flying"
 msgstr "{0} اڏامي رهيا آهن"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:365
+#: src/components/Multiplayer.tsx:450
 msgid "{0}/{1} players"
 msgstr "{0}/{1} رانديگر"
 
-#: src/components/Multiplayer.tsx:134
+#: src/components/Multiplayer.tsx:189
 msgid "{name}'s match"
 msgstr "{name} جو ميچ"
 
@@ -100,7 +100,7 @@ msgid "Account verified"
 msgstr "اڪائونٽ تصديق ٿيل"
 
 #: src/components/MissionSetup.tsx:1101
-#: src/components/Multiplayer.tsx:315
+#: src/components/Multiplayer.tsx:400
 msgid "Ace"
 msgstr "استاد"
 
@@ -262,11 +262,11 @@ msgstr "بهترين مسلسل موڙ جي رفتار"
 msgid "BINGO FUEL"
 msgstr "بنگو ٻارڻ"
 
-#: src/components/Multiplayer.tsx:391
+#: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "نيرو"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Blue bots"
 msgstr "نيرا بوٽ"
 
@@ -279,7 +279,7 @@ msgstr "بولٽر"
 msgid "Boost interest"
 msgstr "دلچسپي وڌايو"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Bots"
 msgstr "بوٽ"
 
@@ -303,7 +303,7 @@ msgstr "بٽڻ {i}"
 msgid "Buttons"
 msgstr "بٽڻ"
 
-#: src/components/Multiplayer.tsx:178
+#: src/components/Multiplayer.tsx:263
 msgid "Callsign"
 msgstr "ڪال سائن"
 
@@ -321,6 +321,7 @@ msgstr "ڪيمرا جو مفاصلو"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
 #: src/components/MissionSetup.tsx:549
+#: src/components/Multiplayer.tsx:235
 msgid "Cancel"
 msgstr "منسوخ ڪريو"
 
@@ -393,7 +394,7 @@ msgstr "ٻولي چونڊيو"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:323
 msgid "Clear"
 msgstr "صاف ڪريو"
 
@@ -472,7 +473,7 @@ msgstr "گهٽ"
 msgid "Confirm"
 msgstr "تصديق ڪريو"
 
-#: src/components/Multiplayer.tsx:196
+#: src/components/Multiplayer.tsx:281
 msgid "Connecting…"
 msgstr "ڳنڍجي رهيو آهي…"
 
@@ -489,6 +490,7 @@ msgid "Contextual information and details."
 msgstr "حوالي جي معلومات ۽ تفصيل."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
+#: src/components/Multiplayer.tsx:244
 msgid "Continue"
 msgstr "جاري رکو"
 
@@ -504,7 +506,7 @@ msgstr "ڪاپي ڪريو"
 msgid "Corner speed (best instant turn)"
 msgstr "ڪنڊ جي رفتار (بهترين فوري موڙ)"
 
-#: src/components/Multiplayer.tsx:148
+#: src/components/Multiplayer.tsx:203
 msgid "Could not create the match"
 msgstr "ميچ ٺهي نه سگهيو"
 
@@ -532,11 +534,11 @@ msgstr "ان اڪائونٽ سان تصديق نه ٿي سگهي. مهرباني
 msgid "CRASHED"
 msgstr "ڪري پيو"
 
-#: src/components/Multiplayer.tsx:346
+#: src/components/Multiplayer.tsx:431
 msgid "Create and fly"
 msgstr "ٺاهيو ۽ اڏامو"
 
-#: src/components/Multiplayer.tsx:211
+#: src/components/Multiplayer.tsx:296
 msgid "Create match"
 msgstr "ميچ ٺاهيو"
 
@@ -546,7 +548,7 @@ msgid "Credits"
 msgstr "ڪريڊٽس"
 
 #: src/components/MissionSetup.tsx:1202
-#: src/components/Multiplayer.tsx:239
+#: src/components/Multiplayer.tsx:324
 msgid "Cumulus"
 msgstr "ڪيمولس"
 
@@ -581,7 +583,7 @@ msgid "Data conflict"
 msgstr "ڊيٽا جو ٽڪراءُ"
 
 #: src/components/MissionSetup.tsx:1190
-#: src/components/Multiplayer.tsx:234
+#: src/components/Multiplayer.tsx:319
 msgid "Day"
 msgstr "ڏينهن"
 
@@ -633,6 +635,10 @@ msgstr "ويب براؤزر کان معلوم ڪريو"
 msgid "Device"
 msgstr "ڊوائيس"
 
+#: src/components/Multiplayer.tsx:224
+msgid "Different game host"
+msgstr "راند جو مختلف ميزبان"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:340
 msgid "Direction"
 msgstr "هدايت"
@@ -663,7 +669,7 @@ msgstr "ڊائون لوڊ"
 msgid "Download failed"
 msgstr "ڊائون لوڊ ناڪام ٿيو"
 
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:396
 msgid "Drone"
 msgstr "ڊرون"
 
@@ -691,7 +697,7 @@ msgstr "ايجيڪٽ ٿيو"
 msgid "Email code"
 msgstr "اي ميل ڪوڊ"
 
-#: src/components/Multiplayer.tsx:364
+#: src/components/Multiplayer.tsx:449
 msgid "empty"
 msgstr "خالي"
 
@@ -846,7 +852,7 @@ msgid "From theme"
 msgstr "ٿيم کان"
 
 #: src/components/MissionSetup.tsx:1077
-#: src/components/Multiplayer.tsx:249
+#: src/components/Multiplayer.tsx:334
 msgid "Fuel"
 msgstr "ٻارڻ"
 
@@ -938,7 +944,7 @@ msgid "High"
 msgstr "اوچو"
 
 #: src/components/MissionSetup.tsx:1203
-#: src/components/Multiplayer.tsx:240
+#: src/components/Multiplayer.tsx:325
 msgid "High stratus"
 msgstr "اوچو اسٽريٽس"
 
@@ -998,11 +1004,11 @@ msgid "INVULNERABLE"
 msgstr "ناقابل نقصان"
 
 #: src/components/MissionSetup.tsx:1161
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:363
 msgid "Invulnerable (human players only)"
 msgstr "ناقابل نقصان (رڳو انساني رانديگر)"
 
-#: src/components/Multiplayer.tsx:403
+#: src/components/Multiplayer.tsx:488
 msgid "Join"
 msgstr "شامل ٿيو"
 
@@ -1010,11 +1016,11 @@ msgstr "شامل ٿيو"
 msgid "JOINED"
 msgstr "شامل ٿي ويو"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Joust"
 msgstr "جوسٽ"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:310
 msgid "Joust — 1v1, first kill wins"
 msgstr "دوبدو مقابلو — 1v1، جيڪو پهرين ڪيرائيندو سو کٽيندو"
 
@@ -1069,7 +1075,7 @@ msgstr "اُڏام / نشانو"
 msgid "Layout"
 msgstr "ليئوٽ"
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:347
 msgid "lb"
 msgstr "lb"
 
@@ -1180,7 +1186,7 @@ msgid "Low"
 msgstr "گهٽ"
 
 #: src/components/MissionSetup.tsx:1204
-#: src/components/Multiplayer.tsx:241
+#: src/components/Multiplayer.tsx:326
 msgid "Low stratus"
 msgstr "گهٽ اسٽريٽس"
 
@@ -1206,7 +1212,7 @@ msgstr "سڀ پڙهيل طور نشانبر ڪريو"
 msgid "Master"
 msgstr "مکيه"
 
-#: src/components/Multiplayer.tsx:221
+#: src/components/Multiplayer.tsx:306
 msgid "Match type"
 msgstr "ميچ جو قسم"
 
@@ -1252,7 +1258,7 @@ msgstr "ميزائل"
 msgid "Missiles"
 msgstr "ميزائل"
 
-#: src/components/Multiplayer.tsx:268
+#: src/components/Multiplayer.tsx:353
 msgid "Missiles allowed"
 msgstr "ميزائيلن جي اجازت"
 
@@ -1272,7 +1278,7 @@ msgstr "محور کي هلايو…"
 msgid "Multiplayer"
 msgstr "ملٽي پليئر"
 
-#: src/components/Multiplayer.tsx:157
+#: src/components/Multiplayer.tsx:212
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "ملٽي پليئر لاءِ WebTransport گهربل آهي، جنهن کي هي برائوزر اڃا سپورٽ نٿو ڪري."
 
@@ -1291,7 +1297,7 @@ msgid "Next image"
 msgstr "اڳيون تصوير"
 
 #: src/components/MissionSetup.tsx:1191
-#: src/components/Multiplayer.tsx:235
+#: src/components/Multiplayer.tsx:320
 msgid "Night"
 msgstr "رات"
 
@@ -1311,7 +1317,7 @@ msgstr "ڪو گروپ دستياب ناهي"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "ڪو جوئي اسٽڪ نه مليو — ان کي جاڳائڻ لاءِ ان تي ڪو به بٽڻ دٻايو."
 
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No open matches — create one."
 msgstr "ڪو به کليل ميچ ناهي — هڪ ٺاهيو."
 
@@ -1341,7 +1347,7 @@ msgid "No users found"
 msgstr "ڪو يوزر نه مليو"
 
 #: src/components/MissionSetup.tsx:959
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:440
 msgid "No world server."
 msgstr "ڪو ورلڊ سرور ناهي."
 
@@ -1406,11 +1412,11 @@ msgstr "رن وي تي"
 msgid "Oops! Page Not Found!"
 msgstr "افسوس! صفحو نه مليو!"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Open"
 msgstr "کوليو"
 
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:309
 msgid "Open — anyone may join or leave"
 msgstr "کليل — ڪو به شامل ٿي سگهي ٿو يا ڇڏي سگهي ٿو"
 
@@ -1419,8 +1425,8 @@ msgstr "کليل — ڪو به شامل ٿي سگهي ٿو يا ڇڏي سگهي 
 msgid "Open account actions"
 msgstr "اڪائونٽ ڪارناما کوليو"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:182
-#: ../../../lib/web/src/components/layout/nav-group.tsx:187
+#: ../../../lib/web/src/components/layout/nav-group.tsx:202
+#: ../../../lib/web/src/components/layout/nav-group.tsx:207
 msgid "Open actions"
 msgstr "ڪارروايون کوليو"
 
@@ -1476,13 +1482,13 @@ msgid "PAUSED"
 msgstr "روڪيل"
 
 #: src/components/MissionSetup.tsx:901
-#: src/components/Multiplayer.tsx:91
-#: src/components/Multiplayer.tsx:183
+#: src/components/Multiplayer.tsx:115
+#: src/components/Multiplayer.tsx:268
 msgid "pilot"
 msgstr "پائلٽ"
 
 #: src/components/MissionSetup.tsx:1099
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:398
 msgid "Pilot"
 msgstr "پائلٽ"
 
@@ -1583,11 +1589,11 @@ msgstr "ٻيهر هٿياربند"
 msgid "Recommended"
 msgstr "تجويز ڪيل"
 
-#: src/components/Multiplayer.tsx:381
+#: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "ڳاڙهو"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:392
 msgid "Red bots"
 msgstr "ڳاڙها بوٽ"
 
@@ -1604,7 +1610,7 @@ msgstr "دلچسپي گهٽايو"
 msgid "Reference"
 msgstr "حوالو"
 
-#: src/components/Multiplayer.tsx:201
+#: src/components/Multiplayer.tsx:286
 msgid "Refresh"
 msgstr "ريفريش"
 
@@ -1699,7 +1705,7 @@ msgid "Roll right"
 msgstr "رول ساڄي"
 
 #: src/components/MissionSetup.tsx:1098
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:397
 msgid "Rookie"
 msgstr "سيکڙاٽ"
 
@@ -1987,11 +1993,11 @@ msgstr "ٽيم"
 msgid "TEAM"
 msgstr "ٽيم"
 
-#: src/components/Multiplayer.tsx:363
+#: src/components/Multiplayer.tsx:448
 msgid "Teams"
 msgstr "ٽيمون"
 
-#: src/components/Multiplayer.tsx:226
+#: src/components/Multiplayer.tsx:311
 msgid "Teams — red versus blue"
 msgstr "ٽيمون — ڳاڙهو مقابل نيرو"
 
@@ -2023,6 +2029,10 @@ msgstr "ٿيم"
 #: ../../../lib/web/src/components/config-drawer.tsx:69
 msgid "Theme Settings"
 msgstr "ٿيم سيٽنگون"
+
+#: src/components/Multiplayer.tsx:227
+msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
+msgstr "هي لابي توهان جي راند جو ڪنيڪشن هڪ ٻئي ميزبان ({redirectHost}) ڏانهن موڪلي رهيو آهي. صرف تڏهن جاري رکو جڏهن توهان هن سرور تي ڀروسو ڪريو ٿا."
 
 #: src/components/GameCanvas.tsx:252
 msgid "throttle"
@@ -2065,10 +2075,10 @@ msgstr "ڪالم ٽوگل ڪريو"
 msgid "Toggle right panel"
 msgstr "ساڄي پينل کي ٽوگل ڪريو"
 
-#: ../../../lib/web/src/components/layout/nav-group.tsx:351
-#: ../../../lib/web/src/components/layout/nav-group.tsx:358
-#: ../../../lib/web/src/components/layout/nav-group.tsx:481
-#: ../../../lib/web/src/components/layout/nav-group.tsx:488
+#: ../../../lib/web/src/components/layout/nav-group.tsx:373
+#: ../../../lib/web/src/components/layout/nav-group.tsx:380
+#: ../../../lib/web/src/components/layout/nav-group.tsx:503
+#: ../../../lib/web/src/components/layout/nav-group.tsx:510
 msgid "Toggle section"
 msgstr "سيڪشن ٽوگل ڪريو"
 
@@ -2156,12 +2166,12 @@ msgid "United States"
 msgstr "آمريڪا"
 
 #: src/components/MissionSetup.tsx:1167
-#: src/components/Multiplayer.tsx:288
+#: src/components/Multiplayer.tsx:373
 msgid "Unlimited ammunition"
 msgstr "لامحدود گولا بارود"
 
 #: src/components/MissionSetup.tsx:1173
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:383
 msgid "Unlimited fuel"
 msgstr "لامحدود ٻارڻ"
 
@@ -2204,11 +2214,11 @@ msgid "Vertical"
 msgstr "عمودي"
 
 #: src/components/MissionSetup.tsx:1100
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:399
 msgid "Veteran"
 msgstr "تجربيڪار"
 
-#: ../../../lib/web/src/components/attachment-gallery.tsx:74
+#: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "وڊيو ٿمب نيل"
 
@@ -2259,7 +2269,7 @@ msgid "Weapons"
 msgstr "هٿيار"
 
 #: src/components/MissionSetup.tsx:1044
-#: src/components/Multiplayer.tsx:231
+#: src/components/Multiplayer.tsx:316
 msgid "Weather"
 msgstr "موسم"
 
@@ -2284,12 +2294,12 @@ msgstr "کنڀ ويڙهڻ"
 msgid "WINS"
 msgstr "کٽي ٿو"
 
-#: src/components/Multiplayer.tsx:167
+#: src/components/Multiplayer.tsx:252
 msgid "World server"
 msgstr "ورلڊ سرور"
 
 #: src/components/MissionSetup.tsx:947
-#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:128
 msgid "World server not reachable"
 msgstr "ورلڊ سرور تائين پهچ ناهي"
 
