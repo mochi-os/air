@@ -88,9 +88,15 @@ export function useMissionConfig(): [
   )
   const configRef = useRef(config)
   configRef.current = config
+  // dirty guards the async config load: the setup menu is interactive while the
+  // load is in flight (slow or replicated servers especially), so if the player
+  // changes a setting before the response lands, that edit is NEWER than the
+  // server's stored value and the late load must not overwrite it.
+  const dirty = useRef(false)
 
   useEffect(() => {
     loadConfig().then((saved) => {
+      if (dirty.current) return // the player edited while loading; keep their change
       if (saved) setStored({ ...DEFAULT_CONFIG, ...saved } as MissionConfig)
       else void saveConfig(configRef.current) // first run on this account — seed the server
     })
@@ -99,6 +105,7 @@ export function useMissionConfig(): [
 
   const setConfig = useCallback(
     (next: MissionConfig) => {
+      dirty.current = true
       setStored(next)
       saveConfigDebounced(next)
     },
