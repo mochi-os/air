@@ -16,6 +16,7 @@ import { SIZE } from './flight'
 import { frame, frames } from './framing'
 import { sanitizeWrap, minimumImage, fold } from './wrap'
 import { cbor_encode, cbor_decode } from './cbor'
+import { parseDarts, type Dart } from './darts'
 
 const PROTOCOL = 1
 
@@ -266,7 +267,7 @@ export class Net {
   names = new Map<number, string>() // slot -> callsign (welcome + roster events)
   teams = new Map<number, string>() // slot -> side ('red'/'blue'; teams mode roster events)
   score: Record<string, number> = {} // teams mode running score (welcome + kill events)
-  darts: { position: [number, number, number]; velocity: [number, number, number]; shooter: number }[] = [] // the recipient's nearest server missiles, from the poses datagram — the engine renders every dart another player fired
+  darts: Dart[] = [] // the recipient's nearest server missiles, from the poses datagram — the engine renders every dart another player fired
   dartsAt = 0 // arrival time of the dart set (performance.now()), for dead reckoning
   private tallies = new Map<number, { kills: number; deaths: number }>() // counted from kill events
   private corrected = 0 // highest acknowledged sequence already reconciled
@@ -530,18 +531,11 @@ export class Net {
         // the recipient's nearest server missiles, capped at 6. The stride
         // must match the server's snapshot assembly; the modulo guard shows
         // no darts on a mismatched build rather than garbage.
+        // Darts are validated (non-finite dropped) and capped in parseDarts —
+        // the floats ride an opaque byte string the CBOR finite guard can't see.
         const missiles = message.missiles as Uint8Array | undefined
-        if (missiles instanceof Uint8Array && missiles.byteLength % 25 === 0) {
-          const mv = new DataView(missiles.buffer, missiles.byteOffset)
-          const list: typeof this.darts = []
-          for (let base = 0; base + 25 <= missiles.byteLength; base += 25) {
-            list.push({
-              position: [mv.getFloat32(base, true), mv.getFloat32(base + 4, true), mv.getFloat32(base + 8, true)],
-              velocity: [mv.getFloat32(base + 12, true), mv.getFloat32(base + 16, true), mv.getFloat32(base + 20, true)],
-              shooter: mv.getUint8(base + 24),
-            })
-          }
-          this.darts = list
+        if (missiles instanceof Uint8Array) {
+          this.darts = parseDarts(missiles)
           this.dartsAt = at
         }
         break
@@ -636,7 +630,15 @@ export class Net {
       // A framing violation, decode failure, or malformed envelope on the
       // control stream is fatal — the server is hostile or broken.
       this.fail('protocol')
+      return
     }
+    // The generator ended without throwing: the control stream closed cleanly
+    // between frames. It is the reliable channel a live match needs (welcome,
+    // roster, events, kills), so its end means the session is over — a hostile
+    // server that FINs it while holding the transport open must not leave a
+    // frozen-looking match alive. fail() is idempotent, so a user-initiated
+    // leave (which sets this.closed first) makes this a no-op.
+    this.fail('closed')
   }
 
   private async receive() {

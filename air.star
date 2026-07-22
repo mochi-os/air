@@ -53,11 +53,19 @@ def config_load(a):
 	config = {}
 	for row in mochi.db.rows("select name, value from settings"):
 		config[row["name"]] = json.decode(row["value"], None)
-	return {"data": {"config": config, "name": a.user.identity.name}}
+	return {"data": {"config": config, "name": a.user.identity.name, "identity": a.user.identity.id}}
 
 # config_save() -> {"data": {"saved": bool}}: upsert each posted key (newer `updated` wins; stale writes rejected).
 def config_save(a):
 	if not a.user:
+		return {"data": {"saved": False}}
+	# Require a matching identity. A debounced client save that fires after an
+	# in-place account switch - or before config/load established the identity -
+	# would otherwise write the previous/unknown account's edits into this user's
+	# config. Empty is refused too (not just a mismatch): the client always sends
+	# its loaded identity and defers saves until it is known, so a missing one is
+	# a stale or pre-load save, not a legitimate one.
+	if a.input("identity", "") != a.user.identity.id:
 		return {"data": {"saved": False}}
 	config = json.decode(a.input("config", ""), None)
 	if type(config) != "dict":

@@ -37,7 +37,13 @@ export async function* frames(
   reader: ReadableStreamDefaultReader<Uint8Array>,
   pending: Uint8Array,
 ): AsyncGenerator<Uint8Array> {
+  // Chunks are consumed from the head via an index (head) plus a byte offset
+  // into the head chunk (headOffset). Advancing is O(1) and the array is
+  // compacted in amortised O(1), so assembling a frame from many tiny chunks
+  // stays linear — a plain shift() per consumed chunk would be O(n^2).
   const chunks: Uint8Array[] = []
+  let head = 0
+  let headOffset = 0
   let total = 0
   if (pending.length) {
     chunks.push(pending)
@@ -56,30 +62,44 @@ export async function* frames(
   }
 
   // take removes and returns the first n buffered bytes, assembling exactly n
-  // from the head of the queue (never copying the whole backlog).
+  // from the head of the queue without shifting or copying the whole backlog.
   const take = (n: number): Uint8Array => {
     const out = new Uint8Array(n)
     let off = 0
     while (off < n) {
-      const head = chunks[0]
-      const need = n - off
-      if (head.length <= need) {
-        out.set(head, off)
-        off += head.length
-        chunks.shift()
+      const chunk = chunks[head]
+      const available = chunk.length - headOffset
+      const wanted = n - off
+      if (available <= wanted) {
+        out.set(chunk.subarray(headOffset), off)
+        off += available
+        head++
+        headOffset = 0
       } else {
-        out.set(head.subarray(0, need), off)
-        chunks[0] = head.subarray(need)
-        off += need
+        out.set(chunk.subarray(headOffset, headOffset + wanted), off)
+        headOffset += wanted
+        off += wanted
       }
     }
     total -= n
+    // Drop fully-consumed chunks once they dominate the array, so `chunks` does
+    // not grow without bound over a long-lived stream (amortised O(1)).
+    if (head > 32 && head * 2 >= chunks.length) {
+      chunks.splice(0, head)
+      head = 0
+    }
     return out
   }
 
   for (;;) {
     while (total < 4) {
-      if (!(await fill())) return // clean end of stream between frames
+      // A clean end BETWEEN frames leaves nothing buffered. Anything else is a
+      // truncated header — a protocol violation the caller must treat as fatal,
+      // so a half-sent frame at EOF cannot be mistaken for a clean close.
+      if (!(await fill())) {
+        if (total === 0) return
+        throw new FramingError('truncated header')
+      }
     }
     const header = take(4)
     const size = new DataView(header.buffer, header.byteOffset).getUint32(0)
@@ -87,7 +107,9 @@ export async function* frames(
       throw new FramingError(`frame size ${size}`)
     }
     while (total < size) {
-      if (!(await fill())) return // truncated at EOF: the transport is closing
+      // EOF mid-body: the frame is truncated. Throw (not return) so the caller
+      // tears the match down rather than treating it as a clean stream end.
+      if (!(await fill())) throw new FramingError('truncated frame')
     }
     yield take(size)
   }
