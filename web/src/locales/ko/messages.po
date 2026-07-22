@@ -20,22 +20,22 @@ msgstr "인터넷 연결을 확인하고 다시 시도하세요."
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:965
+#: src/components/MissionSetup.tsx:904
 msgid "{0} created “{1}”"
 msgstr "{0}님이 “{1}”을(를) 만들었습니다"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:278
+#: src/components/Multiplayer.tsx:273
 msgid "{0} flying"
 msgstr "{0}명 비행 중"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:450
+#: src/components/Multiplayer.tsx:445
 msgid "{0}/{1} players"
 msgstr "{0}/{1}명"
 
-#: src/components/Multiplayer.tsx:189
+#: src/components/Multiplayer.tsx:184
 msgid "{name}'s match"
 msgstr "{name}의 매치"
 
@@ -47,7 +47,7 @@ msgstr "1번 와이어"
 msgid "12 hours"
 msgstr "12시간"
 
-#: src/components/MissionSetup.tsx:735
+#: src/components/MissionSetup.tsx:674
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -63,7 +63,7 @@ msgstr "24시간"
 msgid "3 WIRE"
 msgstr "3번 와이어"
 
-#: src/components/MissionSetup.tsx:738
+#: src/components/MissionSetup.tsx:677
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -99,13 +99,13 @@ msgstr "계정 유형"
 msgid "Account verified"
 msgstr "계정이 인증되었어요"
 
-#: src/components/MissionSetup.tsx:1101
-#: src/components/Multiplayer.tsx:400
+#: src/components/MissionSetup.tsx:1040
+#: src/components/Multiplayer.tsx:395
 msgid "Ace"
 msgstr "에이스"
 
-#: src/components/MissionSetup.tsx:178
-#: src/components/MissionSetup.tsx:206
+#: src/components/MissionSetup.tsx:116
+#: src/components/MissionSetup.tsx:144
 msgid "Acquire target"
 msgstr "표적 획득"
 
@@ -155,7 +155,7 @@ msgstr "뷰 추가"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "원하는 대로 외관과 레이아웃을 조정하세요."
 
-#: src/components/MissionSetup.tsx:1307
+#: src/components/MissionSetup.tsx:1246
 msgid "Afterburner"
 msgstr "애프터버너"
 
@@ -163,19 +163,19 @@ msgstr "애프터버너"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:463
+#: src/components/MissionSetup.tsx:402
 msgid "Aircraft"
 msgstr "기체"
 
-#: src/components/MissionSetup.tsx:810
+#: src/components/MissionSetup.tsx:749
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "항공모함 <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>, <1>Muhamad Mirza Arrafi</1> 제작 (Sketchfab), <2>CC BY 4.0</2>에 따라 라이선스가 부여됨. 수정됨: 크기 재조정, 방향 재정렬, 흘수선까지 침수, 웹에 맞게 단순화."
 
-#: src/components/MissionSetup.tsx:786
+#: src/components/MissionSetup.tsx:725
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "항공기 모델 <0>“F/A-18C Hornet”</0>, 제작 <1>CreadorDeMu</1> (Sketchfab), <2>CC BY 4.0</2>에 따라 라이선스됨. 수정됨: 방향 재정렬 및 크기 재조정, 사용하지 않는 텍스처 데이터 제거, 외부 장착물을 별도 파일로 분리, 슈라우드 메시 하나를 미러링."
 
-#: src/components/MissionSetup.tsx:466
+#: src/components/MissionSetup.tsx:405
 msgid "Alerts"
 msgstr "경고"
 
@@ -191,7 +191,7 @@ msgstr "오류가 발생했습니다"
 msgid "An unexpected error occurred"
 msgstr "예기치 않은 오류가 발생했습니다"
 
-#: src/components/MissionSetup.tsx:709
+#: src/components/MissionSetup.tsx:648
 msgid "Approach, on-speed (Vapp)"
 msgstr "접근, 적정 속도 (Vapp)"
 
@@ -199,8 +199,8 @@ msgstr "접근, 적정 속도 (Vapp)"
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "로그아웃할까요? 계정에 다시 접근하려면 다시 로그인해야 해요."
 
-#: src/components/MissionSetup.tsx:181
-#: src/components/MissionSetup.tsx:209
+#: src/components/MissionSetup.tsx:119
+#: src/components/MissionSetup.tsx:147
 msgid "Arrestor hook"
 msgstr "어레스팅 후크"
 
@@ -216,11 +216,11 @@ msgstr "오름차순"
 msgid "Authenticator code"
 msgstr "인증 코드"
 
-#: src/components/MissionSetup.tsx:334
+#: src/components/MissionSetup.tsx:273
 msgid "Axes"
 msgstr "축"
 
-#: src/components/MissionSetup.tsx:375
+#: src/components/MissionSetup.tsx:314
 msgid "Axis {i}"
 msgstr "축 {i}"
 
@@ -238,23 +238,23 @@ msgstr "뒤로"
 msgid "Back to home"
 msgstr "홈으로 돌아가기"
 
-#: src/components/MissionSetup.tsx:1092
+#: src/components/MissionSetup.tsx:1031
 msgid "Bandit"
 msgstr "적기"
 
-#: src/components/MissionSetup.tsx:700
+#: src/components/MissionSetup.tsx:639
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "최대 상승률 (Vy, 100% 추력)"
 
-#: src/components/MissionSetup.tsx:701
+#: src/components/MissionSetup.tsx:640
 msgid "Best climb (Vy, afterburner)"
 msgstr "최대 상승률 (Vy, 애프터버너)"
 
-#: src/components/MissionSetup.tsx:703
+#: src/components/MissionSetup.tsx:642
 msgid "Best glide (engines out)"
 msgstr "최적 활공 (엔진 정지)"
 
-#: src/components/MissionSetup.tsx:705
+#: src/components/MissionSetup.tsx:644
 msgid "Best sustained turn speed"
 msgstr "최적 지속 선회 속도"
 
@@ -262,11 +262,11 @@ msgstr "최적 지속 선회 속도"
 msgid "BINGO FUEL"
 msgstr "빙고 연료"
 
-#: src/components/Multiplayer.tsx:476
+#: src/components/Multiplayer.tsx:471
 msgid "Blue"
 msgstr "파랑"
 
-#: src/components/Multiplayer.tsx:392
+#: src/components/Multiplayer.tsx:387
 msgid "Blue bots"
 msgstr "파랑 봇"
 
@@ -279,7 +279,7 @@ msgstr "볼터"
 msgid "Boost interest"
 msgstr "관심도 부스트"
 
-#: src/components/Multiplayer.tsx:392
+#: src/components/Multiplayer.tsx:387
 msgid "Bots"
 msgstr "봇"
 
@@ -295,19 +295,19 @@ msgstr "좌측 급선회"
 msgid "BREAK RIGHT"
 msgstr "우측 급선회"
 
-#: src/components/MissionSetup.tsx:429
+#: src/components/MissionSetup.tsx:368
 msgid "Button {i}"
 msgstr "버튼 {i}"
 
-#: src/components/MissionSetup.tsx:409
+#: src/components/MissionSetup.tsx:348
 msgid "Buttons"
 msgstr "버튼"
 
-#: src/components/Multiplayer.tsx:263
+#: src/components/Multiplayer.tsx:258
 msgid "Callsign"
 msgstr "콜사인"
 
-#: src/components/MissionSetup.tsx:566
+#: src/components/MissionSetup.tsx:505
 msgid "Camera distance"
 msgstr "카메라 거리"
 
@@ -320,21 +320,21 @@ msgstr "카메라 거리"
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
-#: src/components/MissionSetup.tsx:549
-#: src/components/Multiplayer.tsx:235
+#: src/components/MissionSetup.tsx:488
+#: src/components/Multiplayer.tsx:230
 msgid "Cancel"
 msgstr "취소"
 
-#: src/components/MissionSetup.tsx:221
-#: src/components/MissionSetup.tsx:568
+#: src/components/MissionSetup.tsx:159
+#: src/components/MissionSetup.tsx:507
 msgid "Canopy"
 msgstr "캐노피"
 
-#: src/components/MissionSetup.tsx:1130
+#: src/components/MissionSetup.tsx:1069
 msgid "Carrier landing"
 msgstr "착함"
 
-#: src/components/MissionSetup.tsx:1136
+#: src/components/MissionSetup.tsx:1075
 msgid "Catapult"
 msgstr "캐터펄트"
 
@@ -355,15 +355,15 @@ msgstr "추적 시점:"
 msgid "chat"
 msgstr "채팅"
 
-#: src/components/MissionSetup.tsx:216
+#: src/components/MissionSetup.tsx:154
 msgid "Chat"
 msgstr "채팅"
 
-#: src/components/MissionSetup.tsx:217
+#: src/components/MissionSetup.tsx:155
 msgid "Chat to everyone"
 msgstr "전체 채팅"
 
-#: src/components/MissionSetup.tsx:1156
+#: src/components/MissionSetup.tsx:1095
 msgid "Cheats"
 msgstr "치트"
 
@@ -394,7 +394,7 @@ msgstr "언어 선택"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:323
+#: src/components/Multiplayer.tsx:318
 msgid "Clear"
 msgstr "지우기"
 
@@ -440,7 +440,7 @@ msgstr "검색 닫기"
 msgid "closer"
 msgstr "가까이"
 
-#: src/components/MissionSetup.tsx:1195
+#: src/components/MissionSetup.tsx:1134
 msgid "Clouds"
 msgstr "구름"
 
@@ -473,7 +473,7 @@ msgstr "컴팩트"
 msgid "Confirm"
 msgstr "확인"
 
-#: src/components/Multiplayer.tsx:281
+#: src/components/Multiplayer.tsx:276
 msgid "Connecting…"
 msgstr "연결 중…"
 
@@ -490,7 +490,7 @@ msgid "Contextual information and details."
 msgstr "맥락 정보 및 세부 사항."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:244
+#: src/components/Multiplayer.tsx:239
 msgid "Continue"
 msgstr "계속"
 
@@ -502,11 +502,11 @@ msgstr "{label}(으)로 계속하기"
 msgid "Copy"
 msgstr "복사"
 
-#: src/components/MissionSetup.tsx:704
+#: src/components/MissionSetup.tsx:643
 msgid "Corner speed (best instant turn)"
 msgstr "코너 속도 (최적 순간 선회)"
 
-#: src/components/Multiplayer.tsx:203
+#: src/components/Multiplayer.tsx:198
 msgid "Could not create the match"
 msgstr "매치를 만들지 못했습니다"
 
@@ -514,7 +514,7 @@ msgstr "매치를 만들지 못했습니다"
 msgid "Could not load this document. Please try again later."
 msgstr "이 문서를 불러올 수 없었습니다. 잠시 후 다시 시도해 주세요."
 
-#: src/components/MissionSetup.tsx:947
+#: src/components/MissionSetup.tsx:886
 msgid "Could not send the message"
 msgstr "메시지를 보내지 못했습니다"
 
@@ -534,21 +534,21 @@ msgstr "해당 계정으로 인증하지 못했습니다. 다시 시도해 주�
 msgid "CRASHED"
 msgstr "추락"
 
-#: src/components/Multiplayer.tsx:431
+#: src/components/Multiplayer.tsx:426
 msgid "Create and fly"
 msgstr "만들고 출격"
 
-#: src/components/Multiplayer.tsx:296
+#: src/components/Multiplayer.tsx:291
 msgid "Create match"
 msgstr "매치 만들기"
 
-#: src/components/MissionSetup.tsx:775
-#: src/components/MissionSetup.tsx:781
+#: src/components/MissionSetup.tsx:714
+#: src/components/MissionSetup.tsx:720
 msgid "Credits"
 msgstr "크레딧"
 
-#: src/components/MissionSetup.tsx:1202
-#: src/components/Multiplayer.tsx:324
+#: src/components/MissionSetup.tsx:1141
+#: src/components/Multiplayer.tsx:319
 msgid "Cumulus"
 msgstr "적운"
 
@@ -560,8 +560,8 @@ msgstr "사용자 지정"
 msgid "CUT"
 msgstr "위험"
 
-#: src/components/MissionSetup.tsx:186
-#: src/components/MissionSetup.tsx:219
+#: src/components/MissionSetup.tsx:124
+#: src/components/MissionSetup.tsx:157
 msgid "Cycle view"
 msgstr "시점 전환"
 
@@ -582,8 +582,8 @@ msgstr "다크 모드"
 msgid "Data conflict"
 msgstr "데이터 충돌"
 
-#: src/components/MissionSetup.tsx:1190
-#: src/components/Multiplayer.tsx:319
+#: src/components/MissionSetup.tsx:1129
+#: src/components/Multiplayer.tsx:314
 msgid "Day"
 msgstr "낮"
 
@@ -615,8 +615,8 @@ msgstr "내림차순"
 msgid "Details Panel"
 msgstr "세부 정보 패널"
 
-#: src/components/MissionSetup.tsx:401
-#: src/components/MissionSetup.tsx:444
+#: src/components/MissionSetup.tsx:340
+#: src/components/MissionSetup.tsx:383
 msgid "Detect"
 msgstr "감지"
 
@@ -631,11 +631,11 @@ msgstr "감지"
 msgid "Detect from web browser"
 msgstr "웹 브라우저에서 감지"
 
-#: src/components/MissionSetup.tsx:303
+#: src/components/MissionSetup.tsx:242
 msgid "Device"
 msgstr "기기"
 
-#: src/components/Multiplayer.tsx:224
+#: src/components/Multiplayer.tsx:219
 msgid "Different game host"
 msgstr "다른 게임 호스트"
 
@@ -643,7 +643,7 @@ msgstr "다른 게임 호스트"
 msgid "Direction"
 msgstr "방향"
 
-#: src/components/MissionSetup.tsx:315
+#: src/components/MissionSetup.tsx:254
 msgid "disconnected"
 msgstr "연결 끊김"
 
@@ -656,7 +656,7 @@ msgstr "닫기"
 msgid "Displays the mobile sidebar."
 msgstr "모바일 사이드바를 표시해요."
 
-#: src/components/MissionSetup.tsx:1295
+#: src/components/MissionSetup.tsx:1234
 msgid "Distance LOD"
 msgstr "거리 LOD"
 
@@ -669,11 +669,15 @@ msgstr "다운로드"
 msgid "Download failed"
 msgstr "다운로드 실패"
 
-#: src/components/Multiplayer.tsx:396
+#: src/components/GameCanvas.tsx:263
+msgid "Drag"
+msgstr "드래그"
+
+#: src/components/Multiplayer.tsx:391
 msgid "Drone"
 msgstr "드론"
 
-#: src/components/MissionSetup.tsx:1289
+#: src/components/MissionSetup.tsx:1228
 msgid "Dynamic resolution"
 msgstr "동적 해상도"
 
@@ -685,7 +689,7 @@ msgstr "난독증 친화적"
 msgid "Edit {label}"
 msgstr "{label} 편집"
 
-#: src/components/MissionSetup.tsx:214
+#: src/components/MissionSetup.tsx:152
 msgid "Eject"
 msgstr "사출"
 
@@ -697,7 +701,7 @@ msgstr "사출"
 msgid "Email code"
 msgstr "이메일 코드"
 
-#: src/components/Multiplayer.tsx:449
+#: src/components/Multiplayer.tsx:444
 msgid "empty"
 msgstr "비어 있음"
 
@@ -705,7 +709,7 @@ msgstr "비어 있음"
 msgid "ENGAGED"
 msgstr "교전 개시"
 
-#: src/components/MissionSetup.tsx:462
+#: src/components/MissionSetup.tsx:401
 msgid "Engine"
 msgstr "엔진"
 
@@ -717,7 +721,7 @@ msgstr "이메일로 받은 코드를 입력하세요"
 msgid "Enter your authenticator code"
 msgstr "인증 앱 코드를 입력하세요"
 
-#: src/components/MissionSetup.tsx:465
+#: src/components/MissionSetup.tsx:404
 msgid "Environment"
 msgstr "환경"
 
@@ -740,11 +744,11 @@ msgstr "펼치기"
 msgid "Expand sidebar"
 msgstr "사이드바 펼치기"
 
-#: src/components/MissionSetup.tsx:1261
+#: src/components/MissionSetup.tsx:1200
 msgid "Exterior detail"
 msgstr "외부 디테일"
 
-#: src/components/MissionSetup.tsx:1277
+#: src/components/MissionSetup.tsx:1216
 msgid "Extra aircraft"
 msgstr "추가 항공기"
 
@@ -752,7 +756,7 @@ msgstr "추가 항공기"
 msgid "Extra large"
 msgstr "아주 크게"
 
-#: src/components/MissionSetup.tsx:723
+#: src/components/MissionSetup.tsx:662
 msgid "F/A-18C reference"
 msgstr "F/A-18C 참조"
 
@@ -792,7 +796,7 @@ msgstr "계정 이전 완료"
 msgid "fire"
 msgstr "발사"
 
-#: src/components/MissionSetup.tsx:561
+#: src/components/MissionSetup.tsx:500
 msgid "Fixed keys"
 msgstr "고정 키"
 
@@ -804,9 +808,9 @@ msgstr "플레임아웃"
 msgid "flares"
 msgstr "플레어"
 
-#: src/components/MissionSetup.tsx:179
-#: src/components/MissionSetup.tsx:207
-#: src/components/MissionSetup.tsx:1325
+#: src/components/MissionSetup.tsx:117
+#: src/components/MissionSetup.tsx:145
+#: src/components/MissionSetup.tsx:1264
 msgid "Flares"
 msgstr "플레어"
 
@@ -826,11 +830,11 @@ msgstr "비행 코어 실패"
 msgid "Floating"
 msgstr "플로팅"
 
-#: src/components/MissionSetup.tsx:1331
+#: src/components/MissionSetup.tsx:1270
 msgid "Framerate"
 msgstr "프레임률"
 
-#: src/components/MissionSetup.tsx:1071
+#: src/components/MissionSetup.tsx:1010
 msgid "Free flight"
 msgstr "자유 비행"
 
@@ -851,8 +855,8 @@ msgstr "보낸이"
 msgid "From theme"
 msgstr "테마에서"
 
-#: src/components/MissionSetup.tsx:1077
-#: src/components/Multiplayer.tsx:334
+#: src/components/MissionSetup.tsx:1016
+#: src/components/Multiplayer.tsx:329
 msgid "Fuel"
 msgstr "연료"
 
@@ -872,7 +876,7 @@ msgstr "연료 누출"
 msgid "FUEL LO"
 msgstr "연료 부족"
 
-#: src/components/MissionSetup.tsx:220
+#: src/components/MissionSetup.tsx:158
 msgid "Fuel probe"
 msgstr "급유 프로브"
 
@@ -914,7 +918,7 @@ msgstr "{pageNumber}페이지로 이동"
 msgid "Go to previous page"
 msgstr "이전 페이지로 이동"
 
-#: src/components/MissionSetup.tsx:1056
+#: src/components/MissionSetup.tsx:995
 msgid "Graphics"
 msgstr "그래픽"
 
@@ -926,8 +930,8 @@ msgstr "그룹"
 msgid "GUN"
 msgstr "기관포"
 
-#: src/components/MissionSetup.tsx:176
-#: src/components/MissionSetup.tsx:204
+#: src/components/MissionSetup.tsx:114
+#: src/components/MissionSetup.tsx:142
 msgid "Guns"
 msgstr "기관총"
 
@@ -939,12 +943,12 @@ msgstr "숨기기"
 msgid "Hide password"
 msgstr "비밀번호 숨기기"
 
-#: src/components/MissionSetup.tsx:1241
+#: src/components/MissionSetup.tsx:1180
 msgid "High"
 msgstr "높음"
 
-#: src/components/MissionSetup.tsx:1203
-#: src/components/Multiplayer.tsx:325
+#: src/components/MissionSetup.tsx:1142
+#: src/components/Multiplayer.tsx:320
 msgid "High stratus"
 msgstr "높은 층운"
 
@@ -967,11 +971,11 @@ msgstr "훅"
 msgid "Hot"
 msgstr "인기"
 
-#: src/components/MissionSetup.tsx:223
+#: src/components/MissionSetup.tsx:161
 msgid "HUD altitude source"
 msgstr "HUD 고도 소스"
 
-#: src/components/MissionSetup.tsx:224
+#: src/components/MissionSetup.tsx:162
 msgid "HUD declutter"
 msgstr "HUD 간소화"
 
@@ -979,7 +983,7 @@ msgstr "HUD 간소화"
 msgid "Imperial"
 msgstr "야드파운드법"
 
-#: src/components/MissionSetup.tsx:1127
+#: src/components/MissionSetup.tsx:1066
 msgid "In air"
 msgstr "공중"
 
@@ -995,7 +999,7 @@ msgstr "관심사"
 msgid "Invalid verification code"
 msgstr "잘못된 인증 코드"
 
-#: src/components/MissionSetup.tsx:328
+#: src/components/MissionSetup.tsx:267
 msgid "Invert pitch"
 msgstr "피치 반전"
 
@@ -1003,12 +1007,12 @@ msgstr "피치 반전"
 msgid "INVULNERABLE"
 msgstr "무적"
 
-#: src/components/MissionSetup.tsx:1161
-#: src/components/Multiplayer.tsx:363
+#: src/components/MissionSetup.tsx:1100
+#: src/components/Multiplayer.tsx:358
 msgid "Invulnerable (human players only)"
 msgstr "무적 (인간 플레이어만)"
 
-#: src/components/Multiplayer.tsx:488
+#: src/components/Multiplayer.tsx:483
 msgid "Join"
 msgstr "참가하기"
 
@@ -1016,23 +1020,23 @@ msgstr "참가하기"
 msgid "JOINED"
 msgstr "참가"
 
-#: src/components/Multiplayer.tsx:448
+#: src/components/Multiplayer.tsx:443
 msgid "Joust"
 msgstr "정면 대결"
 
-#: src/components/Multiplayer.tsx:310
+#: src/components/Multiplayer.tsx:305
 msgid "Joust — 1v1, first kill wins"
 msgstr "결투 — 1v1, 먼저 격추하면 승리"
 
-#: src/components/MissionSetup.tsx:1072
+#: src/components/MissionSetup.tsx:1011
 msgid "Joust against AI player"
 msgstr "AI 플레이어와 결투"
 
-#: src/components/MissionSetup.tsx:1047
+#: src/components/MissionSetup.tsx:986
 msgid "Joystick"
 msgstr "조이스틱"
 
-#: src/components/MissionSetup.tsx:1050
+#: src/components/MissionSetup.tsx:989
 msgid "Keys"
 msgstr "키"
 
@@ -1052,8 +1056,8 @@ msgstr "좌 엔진 화재"
 msgid "L GEAR"
 msgstr "좌 기어"
 
-#: src/components/MissionSetup.tsx:180
-#: src/components/MissionSetup.tsx:208
+#: src/components/MissionSetup.tsx:118
+#: src/components/MissionSetup.tsx:146
 msgid "Landing gear"
 msgstr "착륙 장치"
 
@@ -1062,8 +1066,8 @@ msgstr "착륙 장치"
 msgid "Large"
 msgstr "크게"
 
-#: src/components/MissionSetup.tsx:184
-#: src/components/MissionSetup.tsx:212
+#: src/components/MissionSetup.tsx:122
+#: src/components/MissionSetup.tsx:150
 msgid "Launch (catapult)"
 msgstr "발진 (캐터펄트)"
 
@@ -1075,7 +1079,7 @@ msgstr "발진 / 포착"
 msgid "Layout"
 msgstr "레이아웃"
 
-#: src/components/Multiplayer.tsx:347
+#: src/components/Multiplayer.tsx:342
 msgid "lb"
 msgstr "lb"
 
@@ -1101,8 +1105,8 @@ msgstr "라이트"
 msgid "lights"
 msgstr "등화"
 
-#: src/components/MissionSetup.tsx:185
-#: src/components/MissionSetup.tsx:213
+#: src/components/MissionSetup.tsx:123
+#: src/components/MissionSetup.tsx:151
 msgid "Lights"
 msgstr "등화"
 
@@ -1110,7 +1114,7 @@ msgstr "등화"
 msgid "LIGHTS"
 msgstr "라이트"
 
-#: src/components/MissionSetup.tsx:1080
+#: src/components/MissionSetup.tsx:1019
 msgid "Load"
 msgstr "탑재량"
 
@@ -1157,36 +1161,36 @@ msgstr "성공적으로 로그아웃되었어요"
 msgid "Logging out…"
 msgstr "로그아웃 중…"
 
-#: src/components/MissionSetup.tsx:170
+#: src/components/MissionSetup.tsx:108
 msgid "Look"
 msgstr "보기"
 
-#: src/components/MissionSetup.tsx:565
+#: src/components/MissionSetup.tsx:504
 msgid "Look / orbit"
 msgstr "시점 / 회전"
 
-#: src/components/MissionSetup.tsx:188
+#: src/components/MissionSetup.tsx:126
 msgid "Look down"
 msgstr "아래 보기"
 
-#: src/components/MissionSetup.tsx:189
+#: src/components/MissionSetup.tsx:127
 msgid "Look left"
 msgstr "왼쪽 보기"
 
-#: src/components/MissionSetup.tsx:190
+#: src/components/MissionSetup.tsx:128
 msgid "Look right"
 msgstr "오른쪽 보기"
 
-#: src/components/MissionSetup.tsx:187
+#: src/components/MissionSetup.tsx:125
 msgid "Look up"
 msgstr "위 보기"
 
-#: src/components/MissionSetup.tsx:1237
+#: src/components/MissionSetup.tsx:1176
 msgid "Low"
 msgstr "낮음"
 
-#: src/components/MissionSetup.tsx:1204
-#: src/components/Multiplayer.tsx:326
+#: src/components/MissionSetup.tsx:1143
+#: src/components/Multiplayer.tsx:321
 msgid "Low stratus"
 msgstr "낮은 층운"
 
@@ -1198,7 +1202,7 @@ msgstr "M 닫기"
 msgid "map"
 msgstr "지도"
 
-#: src/components/MissionSetup.tsx:215
+#: src/components/MissionSetup.tsx:153
 msgid "Map"
 msgstr "지도"
 
@@ -1208,16 +1212,16 @@ msgstr "지도"
 msgid "Mark all as read"
 msgstr "모두 읽음으로 표시"
 
-#: src/components/MissionSetup.tsx:461
+#: src/components/MissionSetup.tsx:400
 msgid "Master"
 msgstr "마스터"
 
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:301
 msgid "Match type"
 msgstr "매치 유형"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1239
+#: src/components/MissionSetup.tsx:1178
 msgid "Medium"
 msgstr "보통"
 
@@ -1226,7 +1230,7 @@ msgid "menu"
 msgstr "메뉴"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:173
-#: src/components/MissionSetup.tsx:218
+#: src/components/MissionSetup.tsx:156
 msgid "Menu"
 msgstr "메뉴"
 
@@ -1234,7 +1238,7 @@ msgstr "메뉴"
 msgid "Message everyone"
 msgstr "모두에게 메시지 보내기"
 
-#: src/components/MissionSetup.tsx:982
+#: src/components/MissionSetup.tsx:921
 msgid "Message players on this server"
 msgstr "이 서버의 플레이어에게 메시지 보내기"
 
@@ -1246,7 +1250,7 @@ msgstr "팀에게 메시지 보내기"
 msgid "Metric"
 msgstr "측정 항목"
 
-#: src/components/MissionSetup.tsx:834
+#: src/components/MissionSetup.tsx:773
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "미드웨이 환초 지도 — 위성 영상에는 수정된 <0>Copernicus Sentinel-2</0> 데이터가 포함되어 있습니다(2026); 비행장 형상(활주로, 유도로, 계류장)은 © <1>OpenStreetMap</1> 기여자, <2>ODbL</2> 라이선스에 따라 제공됩니다; 해안선 및 산호초 데이터는 <3>NOAA NCCOS</3> 제공(퍼블릭 도메인)."
 
@@ -1254,15 +1258,15 @@ msgstr "미드웨이 환초 지도 — 위성 영상에는 수정된 <0>Copernic
 msgid "MISSILE"
 msgstr "미사일"
 
-#: src/components/MissionSetup.tsx:1319
+#: src/components/MissionSetup.tsx:1258
 msgid "Missiles"
 msgstr "미사일"
 
-#: src/components/Multiplayer.tsx:353
+#: src/components/Multiplayer.tsx:348
 msgid "Missiles allowed"
 msgstr "미사일 허용"
 
-#: src/components/MissionSetup.tsx:1041
+#: src/components/MissionSetup.tsx:980
 msgid "Mission"
 msgstr "임무"
 
@@ -1270,15 +1274,15 @@ msgstr "임무"
 msgid "Monday"
 msgstr "월요일"
 
-#: src/components/MissionSetup.tsx:401
+#: src/components/MissionSetup.tsx:340
 msgid "Move it…"
 msgstr "움직이세요…"
 
-#: src/components/MissionSetup.tsx:1073
+#: src/components/MissionSetup.tsx:1012
 msgid "Multiplayer"
 msgstr "멀티플레이어"
 
-#: src/components/Multiplayer.tsx:212
+#: src/components/Multiplayer.tsx:207
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "멀티플레이어에는 WebTransport가 필요하지만 이 브라우저는 아직 지원하지 않습니다."
 
@@ -1296,8 +1300,8 @@ msgstr "새로 만들기"
 msgid "Next image"
 msgstr "다음 이미지"
 
-#: src/components/MissionSetup.tsx:1191
-#: src/components/Multiplayer.tsx:320
+#: src/components/MissionSetup.tsx:1130
+#: src/components/Multiplayer.tsx:315
 msgid "Night"
 msgstr "밤"
 
@@ -1313,11 +1317,11 @@ msgstr "연결된 계정이 없어요"
 msgid "No groups available"
 msgstr "이용 가능한 그룹이 없어요"
 
-#: src/components/MissionSetup.tsx:322
+#: src/components/MissionSetup.tsx:261
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "조이스틱이 감지되지 않았어요 — 아무 버튼이나 눌러 깨워 주세요."
 
-#: src/components/Multiplayer.tsx:440
+#: src/components/Multiplayer.tsx:435
 msgid "No open matches — create one."
 msgstr "오픈 매치가 없습니다. 하나 만들어 보세요."
 
@@ -1346,8 +1350,8 @@ msgstr "아직 토픽 기록이 없어요 — 다음 알림 후에 다시 시도
 msgid "No users found"
 msgstr "사용자를 찾을 수 없어요"
 
-#: src/components/MissionSetup.tsx:959
-#: src/components/Multiplayer.tsx:440
+#: src/components/MissionSetup.tsx:898
+#: src/components/Multiplayer.tsx:435
 msgid "No world server."
 msgstr "월드 서버가 없습니다."
 
@@ -1358,9 +1362,9 @@ msgstr "등급 없음"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:371
-#: src/components/MissionSetup.tsx:425
-#: src/components/MissionSetup.tsx:1201
+#: src/components/MissionSetup.tsx:310
+#: src/components/MissionSetup.tsx:364
+#: src/components/MissionSetup.tsx:1140
 msgid "None"
 msgstr "없음"
 
@@ -1380,7 +1384,7 @@ msgstr "찾을 수 없음"
 msgid "Not set"
 msgstr "설정되지 않음"
 
-#: src/components/MissionSetup.tsx:959
+#: src/components/MissionSetup.tsx:898
 msgid "Nothing yet — say hello."
 msgstr "아직 아무것도 없어요. 인사를 나눠 보세요."
 
@@ -1392,7 +1396,7 @@ msgstr "아직 아무것도 없어요. 인사를 나눠 보세요."
 msgid "Notifications"
 msgstr "알림"
 
-#: src/components/MissionSetup.tsx:1269
+#: src/components/MissionSetup.tsx:1208
 msgid "Ocean detail"
 msgstr "바다 디테일"
 
@@ -1400,11 +1404,11 @@ msgstr "바다 디테일"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:1129
+#: src/components/MissionSetup.tsx:1068
 msgid "On carrier"
 msgstr "항공모함"
 
-#: src/components/MissionSetup.tsx:1128
+#: src/components/MissionSetup.tsx:1067
 msgid "On runway"
 msgstr "활주로"
 
@@ -1412,11 +1416,11 @@ msgstr "활주로"
 msgid "Oops! Page Not Found!"
 msgstr "이런! 페이지를 찾을 수 없어요!"
 
-#: src/components/Multiplayer.tsx:448
+#: src/components/Multiplayer.tsx:443
 msgid "Open"
 msgstr "열기"
 
-#: src/components/Multiplayer.tsx:309
+#: src/components/Multiplayer.tsx:304
 msgid "Open — anyone may join or leave"
 msgstr "오픈 — 누구나 참가하거나 나갈 수 있음"
 
@@ -1481,14 +1485,14 @@ msgstr "패스키"
 msgid "PAUSED"
 msgstr "일시정지"
 
-#: src/components/MissionSetup.tsx:901
-#: src/components/Multiplayer.tsx:115
-#: src/components/Multiplayer.tsx:268
+#: src/components/MissionSetup.tsx:840
+#: src/components/Multiplayer.tsx:110
+#: src/components/Multiplayer.tsx:263
 msgid "pilot"
 msgstr "파일럿"
 
-#: src/components/MissionSetup.tsx:1099
-#: src/components/Multiplayer.tsx:398
+#: src/components/MissionSetup.tsx:1038
+#: src/components/Multiplayer.tsx:393
 msgid "Pilot"
 msgstr "파일럿"
 
@@ -1500,15 +1504,15 @@ msgstr "조종사 사망"
 msgid "pitch"
 msgstr "피치"
 
-#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:103
 msgid "Pitch"
 msgstr "피치"
 
-#: src/components/MissionSetup.tsx:197
+#: src/components/MissionSetup.tsx:135
 msgid "Pitch down"
 msgstr "기수 내리기"
 
-#: src/components/MissionSetup.tsx:196
+#: src/components/MissionSetup.tsx:134
 msgid "Pitch up"
 msgstr "기수 올리기"
 
@@ -1525,11 +1529,11 @@ msgstr "다시 시도해 주세요."
 msgid "Please wait a moment and try again."
 msgstr "잠시 후 다시 시도해 주세요."
 
-#: src/components/MissionSetup.tsx:1224
+#: src/components/MissionSetup.tsx:1163
 msgid "Preset"
 msgstr "프리셋"
 
-#: src/components/MissionSetup.tsx:543
+#: src/components/MissionSetup.tsx:482
 msgid "Press a key…"
 msgstr "키를 누르세요…"
 
@@ -1537,7 +1541,7 @@ msgstr "키를 누르세요…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ENTER로 발진"
 
-#: src/components/MissionSetup.tsx:444
+#: src/components/MissionSetup.tsx:383
 msgid "Press it…"
 msgstr "버튼을 누르세요…"
 
@@ -1589,11 +1593,11 @@ msgstr "재무장 완료"
 msgid "Recommended"
 msgstr "추천됨"
 
-#: src/components/Multiplayer.tsx:466
+#: src/components/Multiplayer.tsx:461
 msgid "Red"
 msgstr "빨강"
 
-#: src/components/Multiplayer.tsx:392
+#: src/components/Multiplayer.tsx:387
 msgid "Red bots"
 msgstr "빨강 봇"
 
@@ -1606,15 +1610,15 @@ msgstr "로그인으로 리디렉션 중이에요."
 msgid "Reduce interest"
 msgstr "관심사 줄이기"
 
-#: src/components/MissionSetup.tsx:717
+#: src/components/MissionSetup.tsx:656
 msgid "Reference"
 msgstr "참조"
 
-#: src/components/Multiplayer.tsx:286
+#: src/components/Multiplayer.tsx:281
 msgid "Refresh"
 msgstr "새로고침"
 
-#: src/components/MissionSetup.tsx:567
+#: src/components/MissionSetup.tsx:506
 msgid "Refueling probe"
 msgstr "급유 프로브"
 
@@ -1649,7 +1653,7 @@ msgstr "접근 권한을 제거할까요?"
 msgid "Remove interest"
 msgstr "관심사 제거"
 
-#: src/components/MissionSetup.tsx:868
+#: src/components/MissionSetup.tsx:807
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "렌더링은 <0>three.js</0> 사용 (MIT 라이선스)."
 
@@ -1659,7 +1663,7 @@ msgstr "이메일 다시 보내기"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1373
+#: src/components/MissionSetup.tsx:1312
 msgid "Reset"
 msgstr "재설정"
 
@@ -1667,22 +1671,26 @@ msgstr "재설정"
 msgid "Reset all settings to default values"
 msgstr "모든 설정을 기본값으로 재설정"
 
-#: src/components/MissionSetup.tsx:1251
+#: src/components/MissionSetup.tsx:1190
 msgid "Resolution"
 msgstr "해결"
 
-#: src/components/MissionSetup.tsx:1345
+#: src/components/MissionSetup.tsx:1284
 msgid "Restart"
 msgstr "재시작"
 
 #: src/components/GameCanvas.tsx:217
-#: src/components/MissionSetup.tsx:1349
+#: src/components/MissionSetup.tsx:1288
 msgid "Resume"
 msgstr "재개"
 
-#: src/components/MissionSetup.tsx:569
+#: src/components/MissionSetup.tsx:508
 msgid "Return to menu"
 msgstr "메뉴로 돌아가기"
+
+#: src/components/MissionSetup.tsx:324
+msgid "Reversed"
+msgstr "반전"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:361
 msgid "Right to Left"
@@ -1692,20 +1700,20 @@ msgstr "오른쪽에서 왼쪽"
 msgid "roll"
 msgstr "롤"
 
-#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:104
 msgid "Roll"
 msgstr "롤"
 
-#: src/components/MissionSetup.tsx:198
+#: src/components/MissionSetup.tsx:136
 msgid "Roll left"
 msgstr "왼쪽 롤"
 
-#: src/components/MissionSetup.tsx:199
+#: src/components/MissionSetup.tsx:137
 msgid "Roll right"
 msgstr "오른쪽 롤"
 
-#: src/components/MissionSetup.tsx:1098
-#: src/components/Multiplayer.tsx:397
+#: src/components/MissionSetup.tsx:1037
+#: src/components/Multiplayer.tsx:392
 msgid "Rookie"
 msgstr "신참"
 
@@ -1726,7 +1734,7 @@ msgstr "토요일"
 msgid "Save"
 msgstr "저장"
 
-#: src/components/MissionSetup.tsx:732
+#: src/components/MissionSetup.tsx:671
 msgid "Sea level"
 msgstr "해수면"
 
@@ -1792,7 +1800,7 @@ msgstr "사이트 방향 선택"
 msgid "Select theme preference"
 msgstr "테마 환경설정 선택"
 
-#: src/components/MissionSetup.tsx:989
+#: src/components/MissionSetup.tsx:928
 msgid "Send"
 msgstr "보내기"
 
@@ -1812,7 +1820,7 @@ msgstr "이메일 보내기"
 msgid "Serif"
 msgstr "세리프"
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:893
 msgid "Server chat"
 msgstr "서버 채팅"
 
@@ -1834,7 +1842,7 @@ msgstr "세션 종료"
 msgid "Session expired. Please log in again."
 msgstr "세션이 만료되었습니다. 다시 로그인해 주세요."
 
-#: src/components/MissionSetup.tsx:549
+#: src/components/MissionSetup.tsx:488
 msgid "Set"
 msgstr "지정"
 
@@ -1850,7 +1858,7 @@ msgstr "출발지와 도착지 설정"
 msgid "Settings"
 msgstr "설정"
 
-#: src/components/MissionSetup.tsx:1301
+#: src/components/MissionSetup.tsx:1240
 msgid "Shadows"
 msgstr "그림자"
 
@@ -1877,7 +1885,7 @@ msgstr "로그아웃"
 msgid "Signing out..."
 msgstr "로그아웃 중..."
 
-#: src/components/MissionSetup.tsx:702
+#: src/components/MissionSetup.tsx:641
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "단발 최대 상승률 (Vyse, 애프터버너)"
 
@@ -1890,8 +1898,8 @@ msgstr "본문으로 건너뛰기"
 msgid "Small"
 msgstr "작게"
 
-#: src/components/MissionSetup.tsx:481
-#: src/components/MissionSetup.tsx:1053
+#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:992
 msgid "Sound"
 msgstr "소리"
 
@@ -1907,13 +1915,13 @@ msgstr "감속판"
 msgid "speed brake"
 msgstr "감속판"
 
-#: src/components/MissionSetup.tsx:169
-#: src/components/MissionSetup.tsx:183
-#: src/components/MissionSetup.tsx:211
+#: src/components/MissionSetup.tsx:107
+#: src/components/MissionSetup.tsx:121
+#: src/components/MissionSetup.tsx:149
 msgid "Speed brake"
 msgstr "감속판"
 
-#: src/components/MissionSetup.tsx:758
+#: src/components/MissionSetup.tsx:697
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "속도는 KCAS 기준이며, 경량(최소 연료, 외부 장착물 없음)에서 중량(최대 총중량)까지의 범위입니다. 데이터는 게임 내에서 실험적으로 측정되었습니다. 실제 항공기와의 차이는 시뮬레이터 비행 모델의 오차를 반영합니다."
 
@@ -1921,16 +1929,16 @@ msgstr "속도는 KCAS 기준이며, 경량(최소 연료, 외부 장착물 없�
 msgid "SPLASH"
 msgstr "격추"
 
-#: src/components/MissionSetup.tsx:707
+#: src/components/MissionSetup.tsx:646
 msgid "Stall, clean (Vs1)"
 msgstr "실속, 클린 형상 (Vs1)"
 
-#: src/components/MissionSetup.tsx:708
+#: src/components/MissionSetup.tsx:647
 msgid "Stall, landing config (Vs0)"
 msgstr "실속, 착륙 형상 (Vs0)"
 
-#: src/components/MissionSetup.tsx:1121
-#: src/components/MissionSetup.tsx:1355
+#: src/components/MissionSetup.tsx:1060
+#: src/components/MissionSetup.tsx:1294
 msgid "Start"
 msgstr "시작"
 
@@ -1938,11 +1946,11 @@ msgstr "시작"
 msgid "Stay tuned though!"
 msgstr "기대해 주세요!"
 
-#: src/components/MissionSetup.tsx:698
+#: src/components/MissionSetup.tsx:637
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "최대 상승각 (Vx, 100% 추력)"
 
-#: src/components/MissionSetup.tsx:699
+#: src/components/MissionSetup.tsx:638
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "최대 상승각 (Vx, 애프터버너)"
 
@@ -1981,7 +1989,7 @@ msgstr "태그"
 msgid "TALLY"
 msgstr "적기 확인"
 
-#: src/components/MissionSetup.tsx:1065
+#: src/components/MissionSetup.tsx:1004
 msgid "Task"
 msgstr "과제"
 
@@ -1993,11 +2001,11 @@ msgstr "팀"
 msgid "TEAM"
 msgstr "팀"
 
-#: src/components/Multiplayer.tsx:448
+#: src/components/Multiplayer.tsx:443
 msgid "Teams"
 msgstr "팀전"
 
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:306
 msgid "Teams — red versus blue"
 msgstr "팀전 — 빨강 대 파랑"
 
@@ -2030,7 +2038,7 @@ msgstr "테마"
 msgid "Theme Settings"
 msgstr "테마 설정"
 
-#: src/components/Multiplayer.tsx:227
+#: src/components/Multiplayer.tsx:222
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "이 로비가 게임 연결을 다른 호스트({redirectHost})로 전환하고 있습니다. 이 서버를 신뢰하는 경우에만 계속하세요."
 
@@ -2038,15 +2046,15 @@ msgstr "이 로비가 게임 연결을 다른 호스트({redirectHost})로 전�
 msgid "throttle"
 msgstr "스로틀"
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:106
 msgid "Throttle"
 msgstr "스로틀"
 
-#: src/components/MissionSetup.tsx:203
+#: src/components/MissionSetup.tsx:141
 msgid "Throttle down"
 msgstr "스로틀 감소"
 
-#: src/components/MissionSetup.tsx:202
+#: src/components/MissionSetup.tsx:140
 msgid "Throttle up"
 msgstr "스로틀 증가"
 
@@ -2054,7 +2062,7 @@ msgstr "스로틀 증가"
 msgid "Thursday"
 msgstr "목요일"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:645
 msgid "Tightest sustained turn speed"
 msgstr "최소 반경 지속 선회 속도"
 
@@ -2062,7 +2070,7 @@ msgstr "최소 반경 지속 선회 속도"
 msgid "tilt"
 msgstr "기울이기"
 
-#: src/components/MissionSetup.tsx:1184
+#: src/components/MissionSetup.tsx:1123
 msgid "Time of day"
 msgstr "시간대"
 
@@ -2105,7 +2113,7 @@ msgstr "요청이 너무 많음"
 msgid "Top"
 msgstr "위"
 
-#: src/components/MissionSetup.tsx:1313
+#: src/components/MissionSetup.tsx:1252
 msgid "Tracers"
 msgstr "예광탄"
 
@@ -2140,7 +2148,7 @@ msgstr "입력하여 사용자 검색"
 msgid "Type to search..."
 msgstr "입력하여 검색..."
 
-#: src/components/MissionSetup.tsx:1243
+#: src/components/MissionSetup.tsx:1182
 msgid "Ultra"
 msgstr "울트라"
 
@@ -2165,13 +2173,13 @@ msgstr "허용되지 않은 접근"
 msgid "United States"
 msgstr "미국"
 
-#: src/components/MissionSetup.tsx:1167
-#: src/components/Multiplayer.tsx:373
+#: src/components/MissionSetup.tsx:1106
+#: src/components/Multiplayer.tsx:368
 msgid "Unlimited ammunition"
 msgstr "무한 탄약"
 
-#: src/components/MissionSetup.tsx:1173
-#: src/components/Multiplayer.tsx:383
+#: src/components/MissionSetup.tsx:1112
+#: src/components/Multiplayer.tsx:378
 msgid "Unlimited fuel"
 msgstr "무한 연료"
 
@@ -2209,12 +2217,12 @@ msgstr "확인"
 msgid "Verify email address"
 msgstr "이메일 주소 확인"
 
-#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:687
 msgid "Vertical"
 msgstr "수직"
 
-#: src/components/MissionSetup.tsx:1100
-#: src/components/Multiplayer.tsx:399
+#: src/components/MissionSetup.tsx:1039
+#: src/components/Multiplayer.tsx:394
 msgid "Veteran"
 msgstr "베테랑"
 
@@ -2239,7 +2247,7 @@ msgstr "모두 보기"
 msgid "View all notifications"
 msgstr "모든 알림 보기"
 
-#: src/components/MissionSetup.tsx:564
+#: src/components/MissionSetup.tsx:503
 msgid "Views"
 msgstr "조회수"
 
@@ -2259,17 +2267,17 @@ msgstr "곧 다시 온라인으로 돌아올게요."
 msgid "weapon"
 msgstr "무기"
 
-#: src/components/MissionSetup.tsx:177
-#: src/components/MissionSetup.tsx:205
+#: src/components/MissionSetup.tsx:115
+#: src/components/MissionSetup.tsx:143
 msgid "Weapon select"
 msgstr "무기 선택"
 
-#: src/components/MissionSetup.tsx:464
+#: src/components/MissionSetup.tsx:403
 msgid "Weapons"
 msgstr "무장"
 
-#: src/components/MissionSetup.tsx:1044
-#: src/components/Multiplayer.tsx:316
+#: src/components/MissionSetup.tsx:983
+#: src/components/Multiplayer.tsx:311
 msgid "Weather"
 msgstr "날씨"
 
@@ -2281,12 +2289,12 @@ msgstr "웹사이트가 점검 중이에요!"
 msgid "Wednesday"
 msgstr "수요일"
 
-#: src/components/MissionSetup.tsx:182
-#: src/components/MissionSetup.tsx:210
+#: src/components/MissionSetup.tsx:120
+#: src/components/MissionSetup.tsx:148
 msgid "Wheel brakes"
 msgstr "바퀴 브레이크"
 
-#: src/components/MissionSetup.tsx:222
+#: src/components/MissionSetup.tsx:160
 msgid "Wing fold"
 msgstr "날개 접기"
 
@@ -2294,12 +2302,12 @@ msgstr "날개 접기"
 msgid "WINS"
 msgstr "승리"
 
-#: src/components/Multiplayer.tsx:252
+#: src/components/Multiplayer.tsx:247
 msgid "World server"
 msgstr "월드 서버"
 
-#: src/components/MissionSetup.tsx:947
-#: src/components/Multiplayer.tsx:128
+#: src/components/MissionSetup.tsx:886
+#: src/components/Multiplayer.tsx:123
 msgid "World server not reachable"
 msgstr "월드 서버에 연결할 수 없습니다"
 
@@ -2307,15 +2315,15 @@ msgstr "월드 서버에 연결할 수 없습니다"
 msgid "yaw"
 msgstr "요"
 
-#: src/components/MissionSetup.tsx:167
+#: src/components/MissionSetup.tsx:105
 msgid "Yaw"
 msgstr "요"
 
-#: src/components/MissionSetup.tsx:200
+#: src/components/MissionSetup.tsx:138
 msgid "Yaw left"
 msgstr "왼쪽 요"
 
-#: src/components/MissionSetup.tsx:201
+#: src/components/MissionSetup.tsx:139
 msgid "Yaw right"
 msgstr "오른쪽 요"
 
@@ -2331,14 +2339,14 @@ msgstr "이 섹션에 대한 접근 권한이 없습니다."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "계정이 {source}에서 이곳으로 이전되었습니다. 거기서 삭제할 때까지 메시지와 알림이 두 서버 모두에 전달될 수 있으며, 일부 콘텐츠는 이전 서버에서 계속 제공되고 팔로워가 이곳에서 나를 찾는 데 몇 분이 걸릴 수 있습니다."
 
-#: src/components/MissionSetup.tsx:171
+#: src/components/MissionSetup.tsx:109
 msgid "Zoom"
 msgstr "줌"
 
-#: src/components/MissionSetup.tsx:191
+#: src/components/MissionSetup.tsx:129
 msgid "Zoom in"
 msgstr "확대"
 
-#: src/components/MissionSetup.tsx:192
+#: src/components/MissionSetup.tsx:130
 msgid "Zoom out"
 msgstr "축소"

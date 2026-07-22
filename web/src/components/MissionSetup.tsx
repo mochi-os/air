@@ -38,8 +38,10 @@ import {
   type StickBindings,
   deviceDefaults,
 } from '../lib/config'
-import { Multiplayer, default_server } from './Multiplayer'
+import { Multiplayer } from './Multiplayer'
+import { KEY_DEFAULTS, pretty } from '../game/keys'
 import {
+  default_server,
   normalize_server,
   world_chat,
   world_say,
@@ -68,39 +70,6 @@ function SectionLabel({ children }: { children: ReactNode }) {
 
 // Input configuration (#74). Bindings are per-device: cfg.sticks[pad.id] holds the
 // axis and button maps for that stick, and cfg.keys remaps the keyboard actions.
-// KEY_DEFAULTS mirrors the engine's KEYS table (engine.ts key_of) for display.
-const KEY_DEFAULTS: Record<string, string> = {
-  'pitch.up': 'KeyS',
-  'pitch.down': 'KeyW',
-  'roll.right': 'KeyD',
-  'roll.left': 'KeyA',
-  'yaw.right': 'KeyE',
-  'yaw.left': 'KeyQ',
-  'throttle.up': 'BracketRight',
-  'throttle.down': 'BracketLeft',
-  guns: 'Space',
-  select: 'KeyX',
-  acquire: 'Enter',
-  launch: 'Enter',
-  'brake.wheel': 'KeyB',
-  'brake.speed': 'Slash',
-  gear: 'KeyG',
-  hook: 'KeyH',
-  lights: 'KeyL',
-  flares: 'KeyF',
-  eject: 'KeyJ',
-  map: 'KeyM',
-  chat: 'KeyT',
-  shout: 'Shift+KeyT',
-  menu: 'Escape',
-  view: 'KeyV',
-  probe: 'Shift+KeyF',
-  canopy: 'Shift+KeyC',
-  fold: 'Shift+KeyW',
-  altitude: 'KeyK',
-  reject: 'KeyU',
-}
-
 interface PadState {
   id: string
   axes: number[]
@@ -128,37 +97,6 @@ function useGamepads(): PadState[] {
     return () => clearInterval(timer)
   }, [])
   return pads
-}
-
-function pretty(code: string): string {
-  if (!code || code === 'None') return '—'
-  const table: Record<string, string> = {
-    Space: 'Space',
-    Enter: 'Enter',
-    Slash: '/',
-    Backslash: '\\',
-    BracketLeft: '[',
-    BracketRight: ']',
-    Comma: ',',
-    Period: '.',
-    Semicolon: ';',
-    Quote: "'",
-    Minus: '−',
-    Equal: '=',
-    Tab: 'Tab',
-    Backspace: 'Backspace',
-    ShiftLeft: 'Shift',
-    ShiftRight: 'Shift',
-    ArrowUp: '↑',
-    ArrowDown: '↓',
-    ArrowLeft: '←',
-    ArrowRight: '→',
-  }
-  if (table[code]) return table[code]
-  if (code.startsWith('Key')) return code.slice(3)
-  if (code.startsWith('Digit')) return code.slice(5)
-  if (code.startsWith('Numpad')) return 'Num ' + code.slice(6)
-  return code
 }
 
 const AXIS_ROWS: { id: string; label: ReactNode }[] = [
@@ -233,6 +171,7 @@ function JoystickPanel({
   config: MissionConfig
   set: (key: string, value: MissionConfig[string]) => void
 }) {
+  const { t } = useLingui()
   const pads = useGamepads()
   const sticks = (config.sticks ?? {}) as Record<string, StickBindings>
   const known = Array.from(new Set([...pads.map((p) => p.id), ...Object.keys(sticks)]))
@@ -382,7 +321,7 @@ function JoystickPanel({
                     type='button'
                     size='sm'
                     variant={reversed ? 'default' : 'outline'}
-                    title='Reversed'
+                    title={t`Reversed`}
                     onClick={() => setAxis(id, (reversed ? '' : '-') + index)}
                   >
                     ⇄

@@ -1,0 +1,32 @@
+name: Frontend Lint
+
+on:
+  pull_request:
+    paths:
+      - 'web/**'
+      - 'labels/**'
+      - 'pnpm-lock.yaml'
+      - 'package.json'
+      - '.github/workflows/frontend-lint.yml'
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'web/**'
+      - 'labels/**'
+      - 'pnpm-lock.yaml'
+      - 'package.json'
+      - '.github/workflows/frontend-lint.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    uses: mochi-os/web/.github/workflows/reusable-frontend-lint.yml@main
+    with:
+      web_dir: web
+      node_version: '20'
+    secrets: inherit

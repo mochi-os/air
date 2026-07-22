@@ -107,9 +107,9 @@ interface Core {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
+   
   var air_flight: Core | undefined
-  // eslint-disable-next-line no-var
+   
   var Go: new () => { importObject: WebAssembly.Imports; run(instance: WebAssembly.Instance): Promise<void> }
 }
 
