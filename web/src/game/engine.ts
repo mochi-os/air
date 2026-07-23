@@ -3391,7 +3391,15 @@ function dynamic_res(dt){ if(!cfg.dyn_res) return; dyn_cd-=dt; if(dyn_cd>0) retu
 // quality knobs and honour the &dynres override once cfg exists.
 if(BENCH_PARAMS&&BENCH_PARAMS.get("bench")){
 	const dynq=BENCH_PARAMS.get("dynres"); if(dynq==="1") cfg.dyn_res=true; else if(dynq==="0") cfg.dyn_res=false;
-	bench_register(()=>({ scale:+cfg.render_scale.toFixed(2), ssaa:supersample(Math.min(devicePixelRatio||1,2)), msaa:!MSAA_OFF, dyn:!!cfg.dyn_res, clouds:cfg.clouds }));
+	// Submission-cost probe (#197): accumulate the CPU time spent INSIDE
+	// renderer.render (WebGL command building + submission — the main-thread cost
+	// a slow driver inflates). acc_* fields are cumulative; bench.ts diffs them
+	// across the sample window and reports per-frame values.
+	let submit_ms=0;
+	const raw_render=renderer.render.bind(renderer);
+	renderer.render=(s,c)=>{ const t0=performance.now(); raw_render(s,c); submit_ms+=performance.now()-t0; };
+	bench_register(()=>({ scale:+cfg.render_scale.toFixed(2), ssaa:supersample(Math.min(devicePixelRatio||1,2)), msaa:!MSAA_OFF, dyn:!!cfg.dyn_res, clouds:cfg.clouds,
+		acc_submit:+submit_ms.toFixed(1), draws:renderer.info.render.calls, tris:renderer.info.render.triangles, progs:(renderer.info.programs||[]).length, texs:renderer.info.memory.textures, geoms:renderer.info.memory.geometries }));
 }
 
 // ============================================================================ UI / menu
