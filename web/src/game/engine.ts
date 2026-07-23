@@ -8,6 +8,7 @@
 // extracted verbatim from the prototype. Imperative and self-contained; mounted by
 // the React <GameCanvas> via startGame(). The mission-setup menu lives in React.
 import { bench_register } from './bench'   // FIRST: the #148 sampler must survive an engine-init failure
+import { atc_step } from './atc'
 import * as THREE from 'three'
 import {
   connect as net_dial,
@@ -2062,6 +2063,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 
 		if(ch===key_of("brake.speed")){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
 		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; audio_servo(); }   // G: landing gear up/down — only once airborne, never on deck/runway
+		if(ch===key_of("atc")){ if(atc_on) atc_on=false; else if(ownship.gearTarget>0.5 && !on_ground()){ atc_on=true; atc_alpha=ownship.aoa; } }   // P: Approach Power Compensator (#202) — engages only in the landing configuration (gear down, airborne); toggling off is always allowed
 		if(ch===key_of("menu") && running){ if(onMenu) onMenu(); else exit_match(); } }   // Esc: the in-game menu popup (#84); the popup exits via exit_match, and a host without a popup falls back to the old immediate exit
 	keys.add(k); }, { signal });
 addEventListener("keyup",e=>keys.delete(e.code),{ signal });
@@ -2107,7 +2109,7 @@ stage.addEventListener("pointercancel",end_drag,{ signal });
 // action's current key as a synthetic event, so pad binds follow key remaps.
 const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.left":"KeyA", "yaw.right":"KeyE", "yaw.left":"KeyQ",
 	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash",
-	gear:"KeyG", hook:"KeyH", lights:"KeyL", flares:"KeyF", eject:"KeyJ", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"KeyV", select:"KeyX", altitude:"KeyK", reject:"KeyU", acquire:"Enter",
+	gear:"KeyG", hook:"KeyH", atc:"KeyP", lights:"KeyL", flares:"KeyF", eject:"KeyJ", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"KeyV", select:"KeyX", altitude:"KeyK", reject:"KeyU", acquire:"Enter",
 	probe:"Shift+KeyF", canopy:"Shift+KeyC", fold:"Shift+KeyW" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
@@ -2219,12 +2221,23 @@ function read_input(dt){
 	const throttling=keys.has(key_of("throttle.up"))||keys.has(key_of("throttle.down"));
 	if(throttling&&pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; }   // the keyboard takes the throttle back from an armed physical lever (else the lever pins it every frame and e.g. the catapult unhook — throttle below 30% + full pedal — can never fire); the next deliberate lever sweep re-takes control
 	if(keys.has(key_of("throttle.up"))){ if(ownship.throttle>=1) ownship.burner=Math.min(1,(ownship.burner??0)+dt*0.8); else ownship.throttle=Math.min(1,ownship.throttle+dt*0.5); }   // throttle up (], held & ramped); past MIL the lever advances through the afterburner range
+	// Approach Power Compensator (#202): with ATC engaged the throttle holds
+	// on-speed alpha and the pilot flies glideslope/lineup with the stick.
+	// Auto-disengage on touchdown, gear retraction, or any manual throttle
+	// input (keyboard keys or an armed physical lever) — the real jet's
+	// force-override. Alpha in degrees from the flight core (ownship.aoa).
+	if(atc_on){
+		if(on_ground()||ownship.gearTarget<0.5||throttling||(pad_levers.throttle&&pad_levers.throttle.armed)) atc_on=false;
+		else { const rate=(ownship.aoa-atc_alpha)/Math.max(dt,1e-3); atc_alpha=ownship.aoa;
+			ownship.throttle=atc_step(ownship.throttle,ownship.aoa,rate,dt); ownship.burner=0; }
+	}
 	if(keys.has(key_of("throttle.down"))){ if((ownship.burner??0)>0) ownship.burner=Math.max(0,ownship.burner-dt*0.8); else ownship.throttle=Math.max(0,ownship.throttle-dt*0.5); }    // throttle down ([): the burner comes off before the dry range
 }
 
 let sim_time=0;
 const _q=new THREE.Quaternion(), _fwd=new THREE.Vector3(), _up=new THREE.Vector3(), _right=new THREE.Vector3();
 function start_launch(){ launch_flag=true; ownship.trapped=false; ownship.throttle=Math.max(ownship.throttle,0.9); }   // requests the shot; the core fires it while attached to the shuttle (caller gates on launch_status()===2)
+let atc_on=false, atc_alpha=0;   // Approach Power Compensator (#202): engaged flag + last-frame alpha for the rate term
 let crash_t=0;   // >0 = crashed; counts down to the respawn
 let hit_flash=0;   // red vignette pulse when rounds land on the ownship
 const audio_prev={launching:false,trapped:false,grounded:false,cautions:0};   // one-shot edge detection (#73)
@@ -2359,6 +2372,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
+	atc:atc_on, aoa:+(ownship.aoa??0).toFixed(2), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)),
 	boff:has_enemy?+(Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(_v.set(bandit.pos.x-ownship.pos.x,bandit.pos.y-ownship.pos.y,bandit.pos.z-ownship.pos.z).normalize()),-1,1))*57.3).toFixed(0):-1,
 	bburn:has_enemy&&bandit.harm?(bandit.harm.burning?1:0):-1, bkill:has_enemy&&bandit.harm?(bandit.harm.killed?1:0):-1, bwing:has_enemy&&bandit.harm?+(bandit.harm.wing??0).toFixed(2):-1,
 	brng:has_enemy?+wrap_distance(ownship.pos,bandit.pos).toFixed(0):-1, peak:+dev_peakbank.toFixed(1), phi:+dev_pitchhi.toFixed(1), plo:+dev_pitchlo.toFixed(1), gs:ownship.pass&&ownship.pass.n?+(ownship.pass.gs/ownship.pass.n).toFixed(2):-1, az:ownship.pass&&ownship.pass.n?+(ownship.pass.az/ownship.pass.n).toFixed(2):-1, grade:ownship.grade||"", pn:ownship.pass?ownship.pass.n:0, why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,
@@ -2839,7 +2853,7 @@ function reset_ownship(){
 	bandit_acc=0;   // no stale fixed-step debt across spawns
 	designated=-1;   // a respawn drops the acquisition
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
-	ownship.rounds=578; ownship.msl=2; ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; ownship.lights=(cfg.tod!=="day");   // lights default on at night, off by day — two AIM-9Ms: what the wingtips actually carry
+	ownship.rounds=578; ownship.msl=2; ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; ownship.lights=(cfg.tod!=="day");   // lights default on at night, off by day — two AIM-9Ms: what the wingtips actually carry
 	update_rails(ownship, cfg.missiles?2:0); update_rails(bandit, cfg.missiles?2:0);
 	ownship.grounded=false; ownship.touch=null; ownship.pass={gs:0,az:0,n:0}; ownship.grade=""; ownship.waved=false; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
 	test_active=null;   // a test scenario must not keep driving across a crash respawn (it would fly the fresh spawn straight into the deck, forever)
@@ -3298,6 +3312,7 @@ function draw_hud(dt){
 		else hctx.fillText("NAV",bxl,ly); }
 
 	// ---- throttle gauge: hud-view furniture only — the real HUD carries no such thing, so it lives at the screen edge with the rest of the game furniture ----
+	if(atc_on){ hctx.font="11px monospace"; hctx.fillStyle=AM; hctx.textAlign="center"; hctx.fillText("ATC",30,cy-92); }   // ATC cue at the throttle station (the real HUD shows one when engaged)
 	if(!authentic){ const tgx=30, tgcy=cy, tgh=140; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.textAlign="center"; hctx.lineWidth=1.5;
 	hctx.strokeRect(tgx-5,tgcy-tgh/2,10,tgh);
 	const fh=tgh*(ownship.throttle*0.75+(ownship.burner??0)*0.25); hctx.fillRect(tgx-5,tgcy+tgh/2-fh,10,fh);   // the full lever: 0..75% dry, the top quarter is the AB range
