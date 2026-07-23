@@ -7,6 +7,7 @@
 // Air game engine: the Three.js render loop, flight model and 2D-canvas HUD,
 // extracted verbatim from the prototype. Imperative and self-contained; mounted by
 // the React <GameCanvas> via startGame(). The mission-setup menu lives in React.
+import { bench_register } from './bench'   // FIRST: the #148 sampler must survive an engine-init failure
 import * as THREE from 'three'
 import {
   connect as net_dial,
@@ -68,7 +69,7 @@ export function startGame({
   let __raf = 0
 
 // ============================================================================ config
-const cfg = { render_scale:1.0, dyn_res:false, ocean_segments:256, exterior_detail:3, lod:true, extra_aircraft:0,
+const cfg = { render_scale:1.0, dyn_res:true, ocean_segments:256, exterior_detail:3, lod:true, extra_aircraft:0,   // dyn_res defaults ON (#148): slow machines self-tune render_scale down to 0.45 instead of stuttering
 	tracers:true, missiles:true, flares:true, shadows:false, clouds:"none", afterburner:true,
 	view:"hud", invert:false, framerate:false, sens:1.0,
 	task:"joust", start:"carrier", tod:"day", help:false };
@@ -125,6 +126,12 @@ if(MULTIPLAYER){ cfg.task="joust"; cfg.extra_aircraft=0; cfg.missiles=false; cfg
 const cheat=(name)=>!!(cfg.cheats&&cfg.cheats[name]);   // mission cheats: invulnerable (humans only — the server enforces it in multiplayer), ammunition, fuel
 const DEV_MODE=new URLSearchParams(location.search).get("developer")==="1";   // &developer=1: landing/trap test autopilot (Shift+1..0), deck align (0), stab cycle (Shift+E), telemetry (Shift+T), cloud A/B (Shift+X), position copy (Shift+P), and ALL query hooks (?fly/clouds/tod/harm/view/start/sweep/shot/cat/glassdebug) — outside developer mode none of the scaffolding parses (#105)
 const GLASS_DEBUG=DEV_MODE&&new URLSearchParams(location.search).get("glassdebug")==="1";   // magenta outline of the HUD-glass clip quad
+// Benchmark overrides (#148, developer mode only): &ssaa=1.0 / &msaa=0 / &dynres=0|1
+// pin the startup-read quality knobs so a single build can A/B each one; &bench=S
+// (below, with &benchto=) samples frame times and beacons the stats out.
+const BENCH_PARAMS=DEV_MODE?new URLSearchParams(location.search):null;
+const SSAA_OVERRIDE=BENCH_PARAMS?parseFloat(BENCH_PARAMS.get("ssaa")||""):NaN;
+const MSAA_OFF=BENCH_PARAMS?.get("msaa")==="0";
 const TEST_SCENARIOS=DEV_MODE;         // (DEV_MODE must be declared FIRST: initializing these from it a line early was a temporal-dead-zone crash at module load)
 let cat_idx=(()=>{ const u=DEV_MODE?parseInt(new URLSearchParams(location.search).get("cat")||"",10):NaN; const c=u>=1&&u<=4?u:(cfg.cat>=1&&cfg.cat<=4?cfg.cat:2); return c-1; })();   // selected catapult (0-based): &cat=1..4 (developer mode) wins, else the menu's Catapult choice, else #2 port bow
 let pause_toggle=false, game_paused=false;
@@ -138,7 +145,7 @@ const col_sundisc=new THREE.Color(0xfff3da), col_deep=new THREE.Color(0x0a2a3a),
 
 // ============================================================================ renderer/scene
 const canvas = stage;
-const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, powerPreference:"high-performance" });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:!MSAA_OFF, powerPreference:"high-performance" });
 renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 const scene = new THREE.Scene(); scene.fog=new THREE.FogExp2(fog_colour,0.000042);
@@ -736,6 +743,11 @@ function merge_geometries(geos){ let total=0; const parts=geos.map(g=>(g.index?g
 	const pos=new Float32Array(total*3),nor=new Float32Array(total*3); let o=0;
 	for(const g of parts){ const p=g.attributes.position.array,n=g.attributes.normal.array; pos.set(p,o); nor.set(n,o); o+=p.length; }
 	const out=new THREE.BufferGeometry(); out.setAttribute("position",new THREE.BufferAttribute(pos,3)); out.setAttribute("normal",new THREE.BufferAttribute(nor,3)); out.computeBoundingSphere(); return out; }
+// Afterburner cone geometry/material — SHARED by every jet make_jet builds.
+// (Restored: the #166 dead-code sweep removed them as "procedural jet leftovers"
+// while make_jet still used both, so every mission start threw ab_geo-not-defined.)
+const ab_geo=new THREE.ConeGeometry(0.3,2.6,12); ab_geo.rotateZ(Math.PI/2);
+const ab_mat=new THREE.MeshBasicMaterial({color:0xffaa44,transparent:true,opacity:0.8,blending:THREE.AdditiveBlending,depthWrite:false,fog:false});
 function make_jet(tint){ const g=new THREE.Group(); g.userData.tint=tint;   // afterburner cones only — the airframe is the loaded GLB (no procedural fallback)
 	for(const side of [1,-1]){ const ab=new THREE.Mesh(ab_geo,ab_mat); ab.position.set(-9.3,-0.37,side*0.48); ab.userData.ab=true; g.add(ab); } return g; }   // at the Hornet's twin nozzles (Y raised from -0.95 after the gear extended the model bbox, shifting normalise's centre up ~0.58)
 
@@ -1835,6 +1847,8 @@ function update_ols(p){   // 3D ball on the bracket, driven by the hook's deviat
 	o.wavePts.visible = low && ((performance.now()-(o.wavet||0))%400)<200;
 }
 function seg_between(mesh,ax,az,bx,bz,y){ const dx=bx-ax, dz=bz-az, len=Math.hypot(dx,dz)||0.001; mesh.position.set((ax+bx)/2,y,(az+bz)/2); mesh.rotation.y=Math.atan2(-dz,dx); mesh.scale.x=len; }
+let hook_claw=null;   // {node, local}: the tailhook claw tip, resolved once as the furthest vertex from the hook pivot (attitude-invariant in the node's local frame). (Restored with _wireApex: the #166 sweep removed both while claw_world still used them — carrier traps would throw.)
+const _wireApex=new THREE.Vector3();
 function claw_world(out){   // world position of the actual rendered claw, or null if the hook model isn't resolved
 	if(!hook_claw){ const base=ownship.group.getObjectByName("Hook_AN_base_20"); if(!base) return null;
 		const v=new THREE.Vector3(); let far=null, best=-1; base.updateWorldMatrix(true,true);
@@ -3351,16 +3365,34 @@ function refresh_perf(dt){ ft_ring[ft_i]=dt*1000; ft_i=(ft_i+1)%ft_ring.length; 
 // This is the only thing that smooths *texture-baked* detail like the carrier deck markings at grazing
 // angles — anisotropy already maxed, but the lines are inside the texture so MSAA can't touch them.
 // Kept separate from render_scale (the dyn-res perf knob, capped at 1.0) so it isn't scaled away or
-// clobbered by a saved cfg. 1.5 = ~2.25× pixels; raise toward 2.0 for crisper, lower if a client struggles.
-const SUPERSAMPLE=1.5;
-function apply_size(){ const w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,2),sc=THREE.MathUtils.clamp(cfg.render_scale,0.3,2.0)*dpr*SUPERSAMPLE;
+// clobbered by a saved cfg. GATED TO dpr 1 (#148): a HiDPI screen already samples the deck textures at
+// 2× density, so 1.5× SSAA there bought nothing visible while costing 2.25× the pixels ON TOP of the
+// dpr — measured 26.7 -> 46.5 fps on an Arc iGPU at dpr 2 with SSAA off, no sharpness loss. At dpr 1
+// (where the markings genuinely alias) it stays, and that config holds 60 fps.
+function supersample(dpr){ if(Number.isFinite(SSAA_OVERRIDE)) return SSAA_OVERRIDE;   // &ssaa=X (dev) pins it for benchmarking
+	return dpr>1.25?1.0:1.5; }
+function apply_size(){ const w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,2),sc=THREE.MathUtils.clamp(cfg.render_scale,0.3,2.0)*dpr*supersample(dpr);
 	renderer.setSize(Math.round(w*sc),Math.round(h*sc),false); canvas.style.width=w+"px"; canvas.style.height=h+"px";
 	camera.aspect=w/h; camera.updateProjectionMatrix(); cockpit_cam.aspect=w/h; cockpit_cam.updateProjectionMatrix(); hud_resize(); if(cloud_active()||rt) size_rt(); }
 addEventListener("resize",apply_size,{ signal });
 let dyn_cd=0;
-function dynamic_res(dt){ if(!cfg.dyn_res) return; dyn_cd-=dt; if(dyn_cd>0) return; dyn_cd=0.5; const recent=ft_ring.slice(-30).reduce((s,v)=>s+v,0)/30;
+function dynamic_res(dt){ if(!cfg.dyn_res) return; dyn_cd-=dt; if(dyn_cd>0) return; dyn_cd=0.5;
+	const last=ft_ring.slice(-30), recent=last.reduce((s,v)=>s+v,0)/30, spike=[...last].sort((a,b)=>a-b)[27];   // mean + p90 of the last 30 frames
 	if(recent>18&&cfg.render_scale>0.45){ cfg.render_scale=Math.max(0.45,cfg.render_scale-0.1); apply_size(); }
-	else if(recent<14&&cfg.render_scale<1.0){ cfg.render_scale=Math.min(1.0,cfg.render_scale+0.05); apply_size(); } }
+	// Raise while SOLIDLY vsynced. The old <14 ms test could never pass on a 60 Hz
+	// display (a pegged frame reads 16.7 ms), so any loading stutter ratcheted the
+	// scale to the floor permanently. Pegged-with-margin now qualifies (mean under
+	// 17.2, p90 tight); an over-raise is caught by the >18 branch and the
+	// asymmetric steps (-0.10/+0.05 at 0.5 s cadence) keep the hunt gentle.
+	else if(recent<17.2&&spike<17.5&&cfg.render_scale<1.0){ cfg.render_scale=Math.min(1.0,cfg.render_scale+0.05); apply_size(); } }
+
+// Benchmark reporting (#148): the sampler itself lives in bench.ts (imported
+// first, so it survives an engine-init failure); here we hand it the resolved
+// quality knobs and honour the &dynres override once cfg exists.
+if(BENCH_PARAMS&&BENCH_PARAMS.get("bench")){
+	const dynq=BENCH_PARAMS.get("dynres"); if(dynq==="1") cfg.dyn_res=true; else if(dynq==="0") cfg.dyn_res=false;
+	bench_register(()=>({ scale:+cfg.render_scale.toFixed(2), ssaa:supersample(Math.min(devicePixelRatio||1,2)), msaa:!MSAA_OFF, dyn:!!cfg.dyn_res, clouds:cfg.clouds }));
+}
 
 // ============================================================================ UI / menu
 function cockpit_hidden(){ for(const o of ownship.group.userData.cockpitHide||[]) o.visible = cfg.view!=="cockpit"; }   // hide the pilot's head in first person; every external view keeps him
