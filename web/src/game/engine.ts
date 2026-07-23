@@ -18,6 +18,7 @@ import { flight_load, flight_ready, flight_failure, flight_init, flight_set, fli
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_horn, audio_seeker, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 // Model binaries ride the bundle as content-hashed assets (assets/nimitz-<hash>.glb):
 // the URL changes exactly when the bytes do, so the stale-programmatic-fetch trap
@@ -934,7 +935,9 @@ function glb_repack(json,bin){ const js=new TextEncoder().encode(JSON.stringify(
 // strip textures, parse, then decode each in-process and assign. Solid-colour materials (no
 // baseColorTexture) keep their baseColorFactor, so a multi-material model renders its full livery.
 function model_textures(parts){ const out={}; const images=parts.json.images||[], textures=parts.json.textures||[], bvs=parts.json.bufferViews||[];
-	const image=(ref)=>{ if(!ref||!textures[ref.index]) return null; const im=images[textures[ref.index].source]; if(!im||im.bufferView==null||!parts.bin) return null;
+	const image=(ref)=>{ if(!ref||!textures[ref.index]) return null; const t=textures[ref.index];
+		const si=t.source!=null?t.source:(t.extensions&&t.extensions.KHR_texture_basisu?t.extensions.KHR_texture_basisu.source:null);   // KTX2 textures (#200) carry their image in the basisu extension, no top-level source
+		const im=si!=null?images[si]:null; if(!im||im.bufferView==null||!parts.bin) return null;
 		const bv=bvs[im.bufferView]; return { bytes:parts.bin.slice(bv.byteOffset||0,(bv.byteOffset||0)+bv.byteLength), mime:im.mimeType||"image/jpeg" }; };
 	(parts.json.materials||[]).forEach(m=>{ if(!m.name) return;
 		const base=image(m.pbrMetallicRoughness&&m.pbrMetallicRoughness.baseColorTexture), emissive=image(m.emissiveTexture);
@@ -988,9 +991,10 @@ async function init_external_model(kind){
 				if(typeof createImageBitmap==="function"){
 					const decoded={};
 					await Promise.all(Object.keys(tex_by_material).map(async name=>{ try{
-						const src=tex_by_material[name]; const make=async(im,srgb)=>{ if(!im) return null;
-							const bmp=await createImageBitmap(new Blob([im.bytes],{type:im.mime}));
-							const tex=new THREE.Texture(bmp); tex.flipY=false; if(srgb) tex.colorSpace=THREE.SRGBColorSpace; tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.anisotropy=4; tex.needsUpdate=true; return tex; };
+						// make_tex handles both classic images (createImageBitmap) and KTX2 (#200,
+						// transcoded via KTX2Loader) — the old inline duplicate fed KTX2 bytes to
+						// createImageBitmap, which throws, leaving the jet untextured.
+						const src=tex_by_material[name]; const make=async(im,srgb)=>im?make_tex(im,srgb):null;
 						decoded[name]={ base:await make(src.base,true), emissive:await make(src.emissive,true), hadEmissive:src.hadEmissive };
 					}catch(te){ console.warn("[model] texture decode failed for "+name,te&&te.message||te); } }));
 					proto.traverse(o=>{ if(o.isMesh&&o.material){ (Array.isArray(o.material)?o.material:[o.material]).forEach(mm=>{
@@ -1015,9 +1019,27 @@ async function init_external_model(kind){
 // draft_frac = fraction of the keel->deck height kept BELOW water; raise it to sit the hull deeper.
 let carrier_model=null; const _ray=new THREE.Raycaster();
 function glb_image(p,ti){ if(ti==null||!p.bin||!p.json.textures) return null; const t=p.json.textures[ti]; if(!t) return null;
-	const im=p.json.images&&p.json.images[t.source]; if(!im||im.bufferView==null) return null; const bv=p.json.bufferViews[im.bufferView];
+	const si=t.source!=null?t.source:(t.extensions&&t.extensions.KHR_texture_basisu?t.extensions.KHR_texture_basisu.source:null);   // KTX2 textures (#200) carry their image in the basisu extension
+	const im=p.json.images&&si!=null?p.json.images[si]:null; if(!im||im.bufferView==null) return null; const bv=p.json.bufferViews[im.bufferView];
 	return { bytes:p.bin.slice(bv.byteOffset||0,(bv.byteOffset||0)+bv.byteLength), mime:im.mimeType||"image/png" }; }
-async function make_tex(src,srgb){ const bmp=await createImageBitmap(new Blob([src.bytes],{type:src.mime}));
+// Shared KTX2/BasisU transcoder (#200): one instance (KTX2Loader warns on more),
+// created lazily because detectSupport needs the renderer. The transcoder js/wasm
+// are self-hosted under the app's basis/ files action; the relative path resolves
+// against the page URL like the maps/ convention.
+let ktx2=null;
+function ktx2_loader(){ if(!ktx2){ ktx2=new KTX2Loader().setTranscoderPath("basis/").detectSupport(renderer); } return ktx2; }
+async function make_tex(src,srgb){
+	if(src.mime==="image/ktx2"){
+		// GPU-compressed textures (#200): transcode the KTX2 payload to the native
+		// block format (BC7/ASTC/ETC2). _createTexture is KTX2Loader's buffer entry
+		// (load() is a thin URL wrapper around it); the mip chain ships in the
+		// container, so no generateMipmaps. flipY stays false (glTF convention —
+		// compressed textures cannot flip anyway).
+		const buf=src.bytes.byteOffset===0&&src.bytes.byteLength===src.bytes.buffer.byteLength?src.bytes.buffer:src.bytes.slice().buffer;
+		const t=await ktx2_loader()._createTexture(buf);
+		t.colorSpace=srgb?THREE.SRGBColorSpace:THREE.LinearSRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping;
+		t.anisotropy=renderer.capabilities.getMaxAnisotropy(); t.needsUpdate=true; return t; }
+	const bmp=await createImageBitmap(new Blob([src.bytes],{type:src.mime}));
 	const t=new THREE.Texture(bmp); t.flipY=false; t.colorSpace=srgb?THREE.SRGBColorSpace:THREE.LinearSRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping;
 	// trilinear mipmapping + max anisotropy: the carrier deck is a big flat surface viewed at grazing
 	// angles from altitude, where thin painted markings (landing strip, centreline) alias badly without it.
