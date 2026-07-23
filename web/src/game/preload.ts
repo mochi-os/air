@@ -29,6 +29,7 @@ let moved = 0 // performance.now() of the last byte progress anywhere
 function begin(url: string): Load {
   const existing = loads.get(url)
   if (existing) return existing
+  moved = performance.now() // a fresh fetch starts the stall clock now, not at the last byte of some earlier download
   const load: Load = { promise: Promise.resolve(new ArrayBuffer(0)), received: 0, total: 0, done: false, failed: false }
   load.promise = (async () => {
     try {
@@ -87,14 +88,20 @@ export function progress(): { percent: number; failed: boolean; idle: number } {
   let received = 0
   let total = 0
   let failed = false
+  let outstanding = false
   for (const load of loads.values()) {
     received += load.received
     total += load.total
     failed = failed || load.failed
+    outstanding = outstanding || (!load.done && !load.failed)
   }
   return {
     percent: total > 0 ? Math.min(100, Math.floor((received / total) * 100)) : 0,
     failed,
-    idle: performance.now() - moved, // ms since any byte arrived — the stall signal
+    // A stall needs OUTSTANDING work with no bytes moving. With every download
+    // complete, "ms since the last byte" grows forever — on a match RESTART the
+    // cached assets fetch nothing, so the old unconditional clock read minutes
+    // idle and the engine declared LOADING FAILED on the first frame.
+    idle: outstanding ? performance.now() - moved : 0,
   }
 }
