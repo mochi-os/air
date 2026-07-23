@@ -135,7 +135,7 @@ const SSAA_OVERRIDE=BENCH_PARAMS?parseFloat(BENCH_PARAMS.get("ssaa")||""):NaN;
 const MSAA_OFF=BENCH_PARAMS?.get("msaa")==="0";
 const TEST_SCENARIOS=DEV_MODE;         // (DEV_MODE must be declared FIRST: initializing these from it a line early was a temporal-dead-zone crash at module load)
 let cat_idx=(()=>{ const u=DEV_MODE?parseInt(new URLSearchParams(location.search).get("cat")||"",10):NaN; const c=u>=1&&u<=4?u:(cfg.cat>=1&&cfg.cat<=4?cfg.cat:2); return c-1; })();   // selected catapult (0-based): &cat=1..4 (developer mode) wins, else the menu's Catapult choice, else #2 port bow
-let pause_toggle=false, game_paused=false;
+let menu_hold=false, game_paused=false;   // menu_hold = the Esc popup freeze; the popup is the ONLY pause UI (the old P-pause banner/controls-window plumbing was dead code whose banner drew UNDER the popup)
 let loading=false, loading_t0=0;
 const load_marks={}; let load_pending=[];   // loading-screen profiling: per-gate ready times + what is still pending (drawn under LOADING)   // flight-start LOADING screen: the sim + render hold until assets_ready() (20 s cap so a failed load can't hang the game)
 let joust_side=1;   // which end of the merge the player drew this round (+1 = start west heading east); coin-flipped per joust start
@@ -3698,7 +3698,7 @@ function start_mission(){
 	has_enemy=(cfg.task==="joust")&&!MULTIPLAYER; bandit.group.visible=has_enemy;   // multiplayer: the bandit airframe is a remote player's, posed from snapshots
 	sync_extras(cfg.extra_aircraft);
 	reset_ownship(); apply_size();
-	pause_toggle=false; map_on=false; map_el.style.display="none";
+	menu_hold=false; map_on=false; map_el.style.display="none";
 	loading=!assets_ready(); loading_t0=performance.now();   // hold the LOADING screen until every async asset is in — no piecemeal pop-in of carrier/airfield/airframe
 	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
 	running=true;
@@ -3735,7 +3735,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 		const rate=Math.acos(dot)/dt*180/Math.PI;
 		if(rate<200) turn_probe.rate+=(rate-turn_probe.rate)*Math.min(1,dt*8);   // EMA; ignore teleports/respawns
 		turn_probe.x=vx; turn_probe.y=vy; turn_probe.z=vz; }
-	game_paused = running && !MULTIPLAYER && (map_on || pause_toggle);
+	game_paused = running && !MULTIPLAYER && (map_on || menu_hold);
 	audio_enable(cfg.sound!==false && running && !game_paused);   // FIRST thing every frame — silence must not depend on anything below surviving (silent in the menu, paused, and the SP map)
 	audio_volumes(cfg.volume);
 	if(running && loading){   // hold on a black LOADING screen, then jump straight to the fully rendered scene (no piecemeal pop-in)
@@ -3766,8 +3766,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 	sky.position.copy(camera.position); stars.position.copy(camera.position);
 	render_frame();
 	stage.style.cursor=(running && !game_paused)?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused
-	help_el.style.display=(running && pause_toggle && !map_on)?"":"none";   // pause window: controls list appears while paused via P
-	if(running){ draw_hud(dt); if(game_paused && !map_on) draw_pause_banner();
+	if(running){ draw_hud(dt);
 		if(net_notice_t>0){ net_notice_t-=dt; hud_message(net_notice); } } else hctx.clearRect(0,0,HW,HH);
 	if(map_on){ const zf=Math.pow(2.2,dt), pr=map_range*dt*0.9;   // held − zooms out, = zooms in (smooth; wheel does notches); arrows pan, scaled to the zoom
 		if(keys.has("Minus")) map_range=Math.min(MAP_RANGE_MAX,map_range*zf);
@@ -3783,9 +3782,6 @@ function draw_loading(){ hctx.clearRect(0,0,HW,HH); hctx.fillStyle="#000"; hctx.
 	const lp=load_progress();   // real download percentage across the byte-counted assets (models + flight core)
 	hctx.fillText(translate("LOADING")+".".repeat(1+Math.floor(performance.now()/400)%3)+(lp.percent>0&&lp.percent<100?" "+lp.percent+"%":""), HW/2, HH/2);
 	if(load_pending.length){ hctx.font="12px monospace"; hctx.fillStyle="#8fa4b8"; hctx.fillText(load_pending.join(" · "), HW/2, HH/2+24); hctx.font="20px monospace"; } }   // what the gate is still waiting on — the answer to "what is taking so long
-function draw_pause_banner(){ hctx.save(); hctx.textAlign="center"; hctx.fillStyle="rgba(3,12,9,0.45)"; hctx.fillRect(HW/2-150,HH/2-44,300,88);
-	hctx.fillStyle=AM; hctx.font="34px monospace"; hctx.fillText(translate("PAUSED"),HW/2,HH/2-2);
-	hctx.fillStyle=GR; hctx.font="12px monospace"; hctx.fillText(translate("P to resume \u00b7 M map \u00b7 Esc menu"),HW/2,HH/2+24); hctx.restore(); }
 start_mission();
 if(MULTIPLAYER && !loading) net_connect();   // assets already cached: dial at once; otherwise the loading gate dials on completion
 __raf = requestAnimationFrame(frame);
@@ -3817,7 +3813,7 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
   }
   return { stop, resume,
     exit: exit_match,
-    pause: (on) => { pause_toggle = !!on },   // only game_paused gates on !MULTIPLAYER — the popup cannot freeze a server
+    pause: (on) => { menu_hold = !!on },   // the Esc popup: freezes the SP world (game_paused gates on !MULTIPLAYER — it cannot freeze a server) without the P-pause banner/controls
     chat: (words, scope) => { if (MULTIPLAYER && net && running) net.chat(String(words).slice(0, 200), scope) },
     scope: chat_scope,
   }
