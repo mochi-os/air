@@ -795,3 +795,32 @@ export async function record(match: {
     await client.post('/-/match/record', match)
   } catch { /* anonymous or offline — history is best-effort */ }
 }
+
+// MatchRow is one recorded match as match_list returns it (players is the
+// participant count as a string; cheated is 0/1).
+export interface MatchRow {
+  world: string
+  mode: string
+  team: string
+  started: number
+  ended: number
+  reason: string
+  players: string
+  kills: number
+  deaths: number
+  cheated: number
+}
+
+// history reads this player's recorded matches, most recent first. Empty for an
+// anonymous visitor or on error — the view renders that as "no matches yet".
+export async function history(): Promise<MatchRow[]> {
+  try {
+    const res = (await client.get('/-/match/list')) as {
+      data?: { matches?: MatchRow[] }
+      matches?: MatchRow[]
+    }
+    return res?.data?.matches ?? res?.matches ?? []
+  } catch {
+    return []
+  }
+}
