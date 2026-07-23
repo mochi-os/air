@@ -41,6 +41,10 @@ if (active) {
   const deltas: number[] = []
   let prev = 0
   let t0 = 0
+  // Engine state at the start of the sample window: acc_* fields are cumulative
+  // counters (e.g. render-submission ms); finish() diffs them over the window so
+  // the report carries per-frame costs (#197).
+  let state0: Record<string, unknown> | null = null
   const finish = () => {
     const s = [...deltas].sort((a, b) => a - b)
     const sum = s.reduce((a, v) => a + v, 0) || 1
@@ -60,7 +64,17 @@ if (active) {
       const dbg = gl?.getExtension('WEBGL_debug_renderer_info')
       out.gpu = dbg && gl ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : '?'
     } catch { out.gpu = '?' }
-    if (bench_state) Object.assign(out, bench_state())
+    if (bench_state) {
+      const state = bench_state()
+      for (const [k, v] of Object.entries(state)) {
+        if (k.startsWith('acc_') && typeof v === 'number') {
+          const base = typeof state0?.[k] === 'number' ? (state0[k] as number) : 0
+          out['frame_' + k.slice(4)] = +((v - base) / (s.length || 1)).toFixed(2)
+        } else {
+          out[k] = v
+        }
+      }
+    }
     send(out)
   }
   const tick = (now: number) => {
@@ -68,6 +82,7 @@ if (active) {
     const dt = now - prev
     prev = now
     if (now - t0 > warm * 1000) {
+      if (!state0 && bench_state) state0 = bench_state()
       deltas.push(dt)
       if (now - t0 > (warm + sample) * 1000) { finish(); return }
     }
