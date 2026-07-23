@@ -82,7 +82,10 @@ export const DEFAULT_CONFIG: MissionConfig = {
   exterior_detail: 3,
   ocean_segments: 256,
   extra_aircraft: 0,
-  dyn_res: false,
+  // Dynamic resolution defaults ON (#148): the frame-time governor sheds
+  // render_scale (floor 0.45) when frames exceed 18 ms, so slow machines get a
+  // smooth game instead of a slideshow. The Graphics tab switch still disables it.
+  dyn_res: true,
   lod: true,
   shadows: false,
   afterburner: true,
