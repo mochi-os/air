@@ -250,7 +250,7 @@ export function GameCanvas({
         <Trans>throttle</Trans> · <b>Space</b> <Trans>fire</Trans> · <b>X</b>{' '}
         <Trans>weapon</Trans> · <b>Enter</b>{' '}
         <Trans>launch / target</Trans> · <b>F</b> <Trans>flares</Trans> · <b>G</b>{' '}
-        <Trans>gear</Trans> · <b>H</b> <Trans>hook</Trans> · <b>L</b> <Trans>lights</Trans> ·{' '}
+        <Trans>gear</Trans> · <b>H</b> <Trans>hook</Trans> · <b>P</b> {'ATC'} · <b>L</b> <Trans>lights</Trans> ·{' '}
         <b>B</b> <Trans>brakes</Trans> · <b>/</b> <Trans>speed brake</Trans> ·{' '}
         <b>1</b>–<b>5</b>/<b>V</b> <Trans>view</Trans> · <b>M</b> <Trans>map</Trans> ·{' '}
         <b>T</b> <Trans>chat</Trans> · <b>Esc</b> <Trans>menu</Trans>

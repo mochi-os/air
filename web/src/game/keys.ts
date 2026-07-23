@@ -26,6 +26,7 @@ export const KEY_DEFAULTS: Record<string, string> = {
   'brake.speed': 'Slash',
   gear: 'KeyG',
   hook: 'KeyH',
+  atc: 'KeyP',
   lights: 'KeyL',
   flares: 'KeyF',
   eject: 'KeyJ',

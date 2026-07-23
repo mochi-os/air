@@ -111,6 +111,9 @@ export default defineConfig(
             // display maps them through pretty()/<Trans>), and the app name.
             '^(None|Vertical)$',
             '^Air$',
+            // Aviation instrument tokens shown verbatim in every language (the
+            // same policy as the HUD's KCAS/THR/NM symbology).
+            '^ATC$',
             // Attribution link labels in the credits: platform / data-source
             // proper nouns and a license identifier — brand names kept verbatim
             // (the glossary guard requires it), not translatable prose.
