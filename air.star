@@ -102,6 +102,16 @@ def match_record(a):
 	recorded = mochi.db.exists("select 1 from matches where world = ? and session = ? and started = ? and id = ?", world, session, started, id)
 	return {"data": {"recorded": recorded}}
 
+# match_list() -> {"data": {"matches": [...]}}: this player's recorded multiplayer
+# matches, most recent first (capped). The reader the history view was missing.
+# Ordered by `started` (an intrinsic integer, so the SQL sort is fine); the
+# client formats dates and maps mode/reason to labels.
+def match_list(a):
+	if not a.user:
+		return {"data": {"matches": []}}
+	matches = mochi.db.rows("select world, mode, team, started, ended, reason, players, kills, deaths, cheated from matches order by started desc limit 50")
+	return {"data": {"matches": matches}}
+
 def telemetry_save(a):
 	# Development telemetry sink (Shift+T): browser downloads don't work from
 	# the sandboxed shell, so the client posts the CSV here instead.

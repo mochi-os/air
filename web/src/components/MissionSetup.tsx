@@ -39,6 +39,7 @@ import {
   deviceDefaults,
 } from '../lib/config'
 import { Multiplayer } from './Multiplayer'
+import { MatchHistory } from './MatchHistory'
 import { KEY_DEFAULTS, pretty } from '../game/keys'
 import {
   default_server,
@@ -994,6 +995,9 @@ export function MissionSetup({
               <TabsTrigger value='graphics'>
                 <Trans>Graphics</Trans>
               </TabsTrigger>
+              <TabsTrigger value='history'>
+                <Trans>History</Trans>
+              </TabsTrigger>
             </TabsList>
 
             {/* Fixed-height area so the card doesn't resize when switching tabs */}
@@ -1272,6 +1276,9 @@ export function MissionSetup({
                     onChange={(v) => set('framerate', v)}
                   />
                 </div>
+              </TabsContent>
+              <TabsContent value='history'>
+                <MatchHistory />
               </TabsContent>
             </div>
           </Tabs>
