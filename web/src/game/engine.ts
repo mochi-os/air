@@ -3413,16 +3413,19 @@ function apply_size(){ const w=innerWidth,h=innerHeight,dpr=Math.min(devicePixel
 	renderer.setSize(Math.round(w*sc),Math.round(h*sc),false); canvas.style.width=w+"px"; canvas.style.height=h+"px";
 	camera.aspect=w/h; camera.updateProjectionMatrix(); cockpit_cam.aspect=w/h; cockpit_cam.updateProjectionMatrix(); hud_resize(); if(cloud_active()||rt) size_rt(); }
 addEventListener("resize",apply_size,{ signal });
-let dyn_cd=0;
-function dynamic_res(dt){ if(!cfg.dyn_res) return; dyn_cd-=dt; if(dyn_cd>0) return; dyn_cd=0.5;
+let dyn_cd=0, dyn_ceiling=2.0, dyn_ceiling_t=0;
+function dynamic_res(dt){ if(!cfg.dyn_res) return; dyn_cd-=dt; if((dyn_ceiling_t-=dt)<=0) dyn_ceiling=2.0; if(dyn_cd>0) return; dyn_cd=0.5;
 	const last=ft_ring.slice(-30), recent=last.reduce((s,v)=>s+v,0)/30, spike=[...last].sort((a,b)=>a-b)[27];   // mean + p90 of the last 30 frames
-	if(recent>18&&cfg.render_scale>0.45){ cfg.render_scale=Math.max(0.45,cfg.render_scale-0.1); apply_size(); }
+	if(recent>18&&cfg.render_scale>0.45){ dyn_ceiling=Math.min(dyn_ceiling,cfg.render_scale); dyn_ceiling_t=30;   // this scale overloaded: don't climb back into it for a while
+		cfg.render_scale=Math.max(0.45,cfg.render_scale-0.1); apply_size(); }
 	// Raise while SOLIDLY vsynced. The old <14 ms test could never pass on a 60 Hz
 	// display (a pegged frame reads 16.7 ms), so any loading stutter ratcheted the
 	// scale to the floor permanently. Pegged-with-margin now qualifies (mean under
-	// 17.2, p90 tight); an over-raise is caught by the >18 branch and the
-	// asymmetric steps (-0.10/+0.05 at 0.5 s cadence) keep the hunt gentle.
-	else if(recent<17.2&&spike<17.5&&cfg.render_scale<1.0){ cfg.render_scale=Math.min(1.0,cfg.render_scale+0.05); apply_size(); } }
+	// 17.2, p90 tight). A machine that pegs at scale S but overloads at S+0.05
+	// would otherwise hunt forever (raise -> overload -> drop -> raise...), so the
+	// overloaded scale becomes a 30 s ceiling and the governor settles one step
+	// below it; raises are also slower (2 s) than drops (0.5 s).
+	else if(recent<17.2&&spike<17.5&&cfg.render_scale<1.0&&cfg.render_scale+0.05<dyn_ceiling-0.001){ cfg.render_scale=Math.min(1.0,cfg.render_scale+0.05); dyn_cd=2; apply_size(); } }
 
 // Benchmark reporting (#148): the sampler itself lives in bench.ts (imported
 // first, so it survives an engine-init failure); here we hand it the resolved
@@ -3780,6 +3783,11 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 	{ const fov=45/view_zoom; if(Math.abs(camera.fov-fov)>0.01){ camera.fov=fov; camera.updateProjectionMatrix(); cockpit_cam.fov=fov; cockpit_cam.updateProjectionMatrix(); } }
 	if(ocean){ ocean.position.x=camera.position.x; ocean.position.z=camera.position.z; }
 	sky.position.copy(camera.position); stars.position.copy(camera.position);
+	// Resize BEFORE rendering: setSize clears the drawing buffer, so a dyn-res
+	// step after the render composited one black frame per adjustment (visible
+	// as black flicker while the governor hunted). Stepping first means the
+	// resized buffer is repainted below before the compositor ever sees it.
+	refresh_perf(dt); dynamic_res(dt);
 	render_frame();
 	stage.style.cursor=(running && !game_paused)?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused
 	if(running){ draw_hud(dt);
@@ -3791,7 +3799,6 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 		if(keys.has("ArrowLeft")) map_px-=pr; if(keys.has("ArrowRight")) map_px+=pr;
 		if(keys.has("ArrowUp")) map_pz-=pr; if(keys.has("ArrowDown")) map_pz+=pr;
 		draw_map(); }
-	refresh_perf(dt); dynamic_res(dt);
 	__raf = requestAnimationFrame(frame); }
 function draw_loading(){ hctx.clearRect(0,0,HW,HH); hctx.fillStyle="#000"; hctx.fillRect(0,0,HW,HH);   // opaque: covers the half-built 3D scene beneath
 	hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="22px monospace";
