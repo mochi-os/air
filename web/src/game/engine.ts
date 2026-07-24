@@ -15,7 +15,7 @@ import {
   record as net_record,
   type Join as NetJoin,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_burst, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step } from './flight'
+import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_burst, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step } from './flight'
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_horn, audio_seeker, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -2510,11 +2510,21 @@ function on_strip(p){   // point inside any paved capsule (the airfield strips; 
 		if((p.x-qx)*(p.x-qx)+(p.z-qz)*(p.z-qz)<=w*w) return true; }
 	return false;
 }
+const LANDING_SLOPE=3.5;   // the carrier's optical glideslope, degrees — the landing spawn, the ICLS bars and the core's approach trim all read this one number
 function flight_push(){   // deliver the ownship pose to the core: trimmed level flight when airborne, a composed state on the ground / in a test
 	if(!flight_active) return;
 	prev_wire=-1;
 	ownship.flown=false;   // a fresh spawn has not flown: no phantom airfield service (a respawn already carries a full load)
-	if(!test_active && ownship.speed>50 && !ownship.grounded && mission_start()!=="landing"){
+	if(!test_active && !ownship.grounded && mission_start()==="landing"){
+		// The CORE owns approach trim (#158). On-speed is a wing condition, so the
+		// speed, the attitude and the power all follow from the weight and the
+		// droop schedule — carrying them here as measured constants is what let
+		// the landing start go stale under the flight core and balloon off the
+		// glideslope. The client supplies only where and which way.
+		ownship.throttle=flight_approach(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, LANDING_SLOPE, FUEL());
+		sync_core(flight_get()); return;
+	}
+	if(!test_active && ownship.speed>50 && !ownship.grounded){
 		flight_level(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, ownship.speed, FUEL());   // trimmed CLEAN level flight — right for air starts, but it threw away the landing start's composed on-speed pose (the PA law then wrestled a clean trim onto approach alpha: nose-down lurch, dead stick)
 		sync_core(flight_get()); return;
 	}
@@ -2867,13 +2877,13 @@ function reset_ownship(){
 	else if(st==="landing"){   // carrier landing: on the ICLS ~5 NM astern, a touch low and left, configured to trap
 		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);   // landing centreline, A (aft) → B (forward, toward the rollout)
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;           // unit landing direction (the way the aircraft rolls out)
-		const tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw)), dist=3*1852, gs=3.5*D2R;                    // touchdown ≈ the aim wire (3-wire on a four-wire deck); 3 NM back on the 3.5° glideslope
+		const tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw)), dist=3*1852, gs=LANDING_SLOPE*D2R;                    // touchdown ≈ the aim wire (3-wire on a four-wire deck); 3 NM back on the 3.5° glideslope
 		ownship.pos.set(td.x-ldx*dist+ldz*100, CARRIER.deckY+dist*Math.tan(gs)+HOOK_DROP-50, td.z-ldz*dist-ldx*100);   // 3 NM astern, 100 m left of centre, 50 m low — a deliberate off-glideslope, off-centre intercept
-		ownship.speed=72; ownship.throttle=0.17;   // ON-SPEED and trimmed for the slope. The old 155 kt / 0.30 "bleed to on-speed" spawn dated from an earlier core trim: today 0.30 is CLIMB power in the landing configuration, so the alpha-hold law turned the excess speed into a balloon off the slope and a barely-damped phugoid — the pilot fought it with full-alpha keyboard pushes (and ATC read those pushes as speed-up commands). Spawning at the measured on-speed trim (alpha 8.1 at 72 m/s, ATC-probed) leaves only the deliberate low/left offsets to correct
+		ownship.speed=72; ownship.throttle=0.17;   // pre-core fallback only — flight_push asks the core for the real on-speed trim (speed, attitude and power) the moment it is up.
 		const yaw=5*D2R, cy=Math.cos(yaw), sy=Math.sin(yaw); ownship.fwd.set(ldx*cy-ldz*sy,0,ldz*cy+ldx*sy).normalize();   // level flight, heading ~5° to starboard of the centreline — pilot rolls out onto the ICLS and pushes over onto the glideslope from below
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
-		const glide=3.5*D2R; ownship.vel_dir.y=-Math.sin(glide);   // DESCENDING on the glideslope, not level below it — holding level off the spawn took seconds of forward stick
+		const glide=LANDING_SLOPE*D2R; ownship.vel_dir.y=-Math.sin(glide);   // DESCENDING on the glideslope, not level below it — holding level off the spawn took seconds of forward stick
 		ownship.q.premultiply(new THREE.Quaternion().setFromAxisAngle(r,8.1*D2R-glide)); }   // attitude = path + on-speed alpha (8.1°): matches the PA law's neutral demand exactly, so there is no capture transient at all — a zero-alpha spawn sank while the PA law scrambled to capture on-speed (nose-down lurch, dead stick during the transient)
 	else if(st==="joust"){   // 1v1 merge: head-on east-west directly over the atoll at 15,000 ft, 1 NM either side, equal AIRSPEED — symmetric in every respect (island below both at all fight orientations, sun/moon abeam both noses); the side is a coin flip so the sun-left/sun-right mirror can't systematically favour one player
 		weapons_hold=true;   // #87: fight's on at the merge, not before

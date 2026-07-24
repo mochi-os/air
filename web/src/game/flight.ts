@@ -94,6 +94,7 @@ interface Core {
   mark(input: Uint8Array): string
   ack(sequence: number, state: Uint8Array): number
   level(x: number, y: number, z: number, dx: number, dz: number, speed: number, fuel: number): string
+  approach(x: number, y: number, z: number, dx: number, dz: number, slope: number, fuel: number): number
   clear(): string
   hulk(index: number, aircraft: string): boolean
   burst(input: Uint8Array, output: Uint8Array): number
@@ -391,4 +392,13 @@ export function battle_progress(throttle: number, tick: number, reset: boolean):
   battle_input[2] = reset ? 1 : 0
   core.progress(battle_input_bytes, battle_output_bytes)
   return battle_output
+}
+
+// flight_approach places the model on a trimmed on-speed descent — the landing
+// spawn. The glideslope is in DEGREES below the horizon; it returns the
+// throttle holding the trim, so the client's lever starts where the core put
+// the engines rather than carrying its own measured constant (which goes stale
+// the moment the airframe or the approach law moves).
+export function flight_approach(x: number, y: number, z: number, dx: number, dz: number, slope: number, fuel: number): number {
+  return (core?.approach(x, y, z, dx, dz, slope, fuel) as number) ?? 0
 }
