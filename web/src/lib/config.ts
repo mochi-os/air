@@ -40,7 +40,7 @@ export interface MissionConfig {
   joystick: string // menu-selected stick id ('' = first connected)
   sticks: Record<string, StickBindings> // per-device axis/button maps, keyed by pad id
   keys: Record<string, string> // keyboard remaps: action -> key code (defaults live in the engine's KEYS table)
-  start: 'air' | 'runway' | 'carrier' | 'landing'
+  start: 'air' | 'runway' | 'carrier' | 'case1' | 'case2' | 'case3' | 'landing' // landing = legacy saved value, read as case2 (#205)
   cat: number // carrier-start catapult 1-4
   tod: 'day' | 'night'
   clouds: 'none' | 'cumulus' | 'high_stratus' | 'low_stratus'

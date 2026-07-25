@@ -53,8 +53,7 @@ import {
 // The fields each tab owns, for the per-tab Reset (the joystick tab also clears
 // the per-device maps so built-in defaults apply again).
 const TAB_FIELDS: Record<string, string[]> = {
-  mission: ['task', 'start', 'cat', 'world', 'callsign', 'aircraft', 'bandit', 'fuel', 'cheats'],
-  weather: ['tod', 'clouds'],
+  mission: ['task', 'start', 'cat', 'world', 'callsign', 'aircraft', 'bandit', 'fuel', 'cheats', 'tod', 'clouds'],
   controls: ['invert', 'joystick', 'sticks'],
   keys: ['keys'],
   sound: ['sound', 'volume'],
@@ -982,9 +981,6 @@ export function MissionSetup({
               <TabsTrigger value='mission'>
                 <Trans>Mission</Trans>
               </TabsTrigger>
-              <TabsTrigger value='weather'>
-                <Trans>Weather</Trans>
-              </TabsTrigger>
               <TabsTrigger value='controls'>
                 <Trans>Joystick</Trans>
               </TabsTrigger>
@@ -1066,13 +1062,31 @@ export function MissionSetup({
                       <Trans>Start</Trans>
                     </SectionLabel>
                     <Choice
-                      value={config.start}
-                      onChange={(v) => set('start', v)}
+                      value={config.start === 'landing' ? 'case2' : config.start}
+                      onChange={(v) => {
+                        set('start', v)
+                        // A recovery case IS a weather definition: picking one seeds the
+                        // authentic conditions in the controls just below — visibly, and
+                        // freely overridable (a day Case III profile is a real training
+                        // sortie, and a clear-night Case III is its own famous misery).
+                        if (v === 'case1') {
+                          set('tod', 'day')
+                          set('clouds', 'cumulus')
+                        } else if (v === 'case2') {
+                          set('tod', 'day')
+                          set('clouds', 'low_stratus')
+                        } else if (v === 'case3') {
+                          set('tod', 'night')
+                          set('clouds', 'low_stratus')
+                        }
+                      }}
                       options={[
                         { value: 'air', label: <Trans>In air</Trans> },
                         { value: 'runway', label: <Trans>On runway</Trans> },
                         { value: 'carrier', label: <Trans>On carrier</Trans> },
-                        { value: 'landing', label: <Trans>Carrier landing</Trans> },
+                        { value: 'case1', label: <Trans>Case I (day)</Trans> },
+                        { value: 'case2', label: <Trans>Case II (weather)</Trans> },
+                        { value: 'case3', label: <Trans>Case III (night)</Trans> },
                       ]}
                     />
                     {config.start === 'carrier' && (
@@ -1094,6 +1108,30 @@ export function MissionSetup({
                     )}
                   </>
                 )}
+                <SectionLabel>
+                  <Trans>Time of day</Trans>
+                </SectionLabel>
+                <Choice
+                  value={config.tod}
+                  onChange={(v) => set('tod', v)}
+                  options={[
+                    { value: 'day', label: <Trans>Day</Trans> },
+                    { value: 'night', label: <Trans>Night</Trans> },
+                  ]}
+                />
+                <SectionLabel>
+                  <Trans>Clouds</Trans>
+                </SectionLabel>
+                <Choice
+                  value={config.clouds}
+                  onChange={(v) => set('clouds', v)}
+                  options={[
+                    { value: 'none', label: <Trans>None</Trans> },
+                    { value: 'cumulus', label: <Trans>Cumulus</Trans> },
+                    { value: 'high_stratus', label: <Trans>High stratus</Trans> },
+                    { value: 'low_stratus', label: <Trans>Low stratus</Trans> },
+                  ]}
+                />
                 {config.task !== 'multiplayer' && (
                   <>
                     {/* a multiplayer match takes its cheats from the creator's match rules instead */}
@@ -1122,33 +1160,6 @@ export function MissionSetup({
                     </div>
                   </>
                 )}
-              </TabsContent>
-
-              <TabsContent value='weather'>
-                <SectionLabel>
-                  <Trans>Time of day</Trans>
-                </SectionLabel>
-                <Choice
-                  value={config.tod}
-                  onChange={(v) => set('tod', v)}
-                  options={[
-                    { value: 'day', label: <Trans>Day</Trans> },
-                    { value: 'night', label: <Trans>Night</Trans> },
-                  ]}
-                />
-                <SectionLabel>
-                  <Trans>Clouds</Trans>
-                </SectionLabel>
-                <Choice
-                  value={config.clouds}
-                  onChange={(v) => set('clouds', v)}
-                  options={[
-                    { value: 'none', label: <Trans>None</Trans> },
-                    { value: 'cumulus', label: <Trans>Cumulus</Trans> },
-                    { value: 'high_stratus', label: <Trans>High stratus</Trans> },
-                    { value: 'low_stratus', label: <Trans>Low stratus</Trans> },
-                  ]}
-                />
               </TabsContent>
 
               <TabsContent value='controls'>
