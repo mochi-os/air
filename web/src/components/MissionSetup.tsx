@@ -1064,21 +1064,25 @@ export function MissionSetup({
                     <Choice
                       value={config.start === 'landing' ? 'case2' : config.start}
                       onChange={(v) => {
-                        set('start', v)
                         // A recovery case IS a weather definition: picking one seeds the
                         // authentic conditions in the controls just below — visibly, and
                         // freely overridable (a day Case III profile is a real training
                         // sortie, and a clear-night Case III is its own famous misery).
+                        // One onChange with every seeded field: consecutive set() calls
+                        // each spread the RENDER's config, so the last would revert the
+                        // start (the same React-batch clobber the cheats ref works around).
+                        const seeded = { ...config, start: v }
                         if (v === 'case1') {
-                          set('tod', 'day')
-                          set('clouds', 'cumulus')
+                          seeded.tod = 'day'
+                          seeded.clouds = 'cumulus'
                         } else if (v === 'case2') {
-                          set('tod', 'day')
-                          set('clouds', 'low_stratus')
+                          seeded.tod = 'day'
+                          seeded.clouds = 'low_stratus'
                         } else if (v === 'case3') {
-                          set('tod', 'night')
-                          set('clouds', 'low_stratus')
+                          seeded.tod = 'night'
+                          seeded.clouds = 'low_stratus'
                         }
+                        onChange(seeded)
                       }}
                       options={[
                         { value: 'air', label: <Trans>In air</Trans> },
