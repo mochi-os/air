@@ -1074,7 +1074,7 @@ export function MissionSetup({
                         const seeded = { ...config, start: v }
                         if (v === 'case1') {
                           seeded.tod = 'day'
-                          seeded.clouds = 'cumulus'
+                          seeded.clouds = 'none'
                         } else if (v === 'case2') {
                           seeded.tod = 'day'
                           seeded.clouds = 'low_stratus'
