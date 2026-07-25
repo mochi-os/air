@@ -3137,10 +3137,16 @@ function draw_hud(dt){
 	if(pa){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
 		hctx.moveTo(bore[0]-16,bore[1]); hctx.lineTo(bore[0]-6,bore[1]); hctx.lineTo(bore[0],bore[1]+7); hctx.lineTo(bore[0]+6,bore[1]); hctx.lineTo(bore[0]+16,bore[1]); hctx.stroke(); }
 
-	// ---- velocity vector, limited to 8° from the boresight and flashing when limited (NATOPS) ----
+	// ---- velocity vector, limited to 10° from the boresight and flashing when limited ----
+	// The cage models the HUD field-of-view edge, which the real jet references —
+	// NOT an 8° boresight cone: on-speed alpha is 8.1°, so an 8° cage clamped the
+	// marker by an invisible 0.1° on every trimmed approach and flashed it
+	// continuously while it looked perfectly centred. 10° keeps the trimmed
+	// approach steady with gust margin, and still cues a genuinely pegged marker
+	// (the catapult fly-away peaks ~10.9° alpha and flashes briefly, as before).
 	fpm=proj_dir(ownship.vel_dir);
 	let fpm_limited=false;
-	if(fpm){ const dx=fpm[0]-bore[0], dy=fpm[1]-bore[1], r=Math.hypot(dx,dy), rmax=8*ppd;
+	if(fpm){ const dx=fpm[0]-bore[0], dy=fpm[1]-bore[1], r=Math.hypot(dx,dy), rmax=10*ppd;
 		if(r>rmax){ fpm=[bore[0]+dx/r*rmax,bore[1]+dy/r*rmax]; fpm_limited=true; }
 		if(!fpm_limited||(sim_time*6)%2<1){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(fpm[0],fpm[1],6,0,Math.PI*2);
 			hctx.moveTo(fpm[0]-6,fpm[1]); hctx.lineTo(fpm[0]-14,fpm[1]); hctx.moveTo(fpm[0]+6,fpm[1]); hctx.lineTo(fpm[0]+14,fpm[1]); hctx.moveTo(fpm[0],fpm[1]-6); hctx.lineTo(fpm[0],fpm[1]-12); hctx.stroke(); } }
