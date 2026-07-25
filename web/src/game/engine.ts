@@ -2546,6 +2546,9 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 	}
 	if(!test_active && ownship.speed>50 && !ownship.grounded){
 		flight_level(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, ownship.speed, FUEL());   // trimmed CLEAN level flight — right for air starts, but it threw away the landing start's composed on-speed pose (the PA law then wrestled a clean trim onto approach alpha: nose-down lurch, dead stick)
+		{ const entry=mission_start();
+			if(entry==="case1"||entry==="case3"){   // pattern and marshal entries HOLD their entry speed: command the power the core just solved, or the spawn's high default spools back up and the jet runs away from 350/250 kt (the free-flight air start keeps its power-on feel). (spool − idle)/(1 − idle) inverts the propulsion idle floor (0.04) back to a lever position
+				const trimmed=flight_get(); ownship.throttle=Math.max(0,Math.min(1,(trimmed[STATE.engine]-0.04)/0.96)); } }
 		sync_core(flight_get()); return;
 	}
 	const b=flight_get();   // keep time (carrier pose, wind field) and fuel across resets
@@ -2901,7 +2904,7 @@ function reset_ownship(){
 		let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;   // unit hull-forward
 		const dist=3*1852;
 		ownship.pos.set(O.x-hx*dist, 245, O.z-hz*dist);   // 3 NM astern on the wake at 800 ft
-		ownship.speed=180; ownship.throttle=0.85;   // 350 kt clean; flight_push trims it via the core's Level
+		ownship.speed=180; ownship.throttle=0.85;   // 350 kt clean; pre-core fallback — flight_push trims speed AND power via the core's Level
 		ownship.fwd.set(hx,0,hz).normalize();
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
@@ -2920,7 +2923,7 @@ function reset_ownship(){
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;
 		const tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw)), dist=21*1852;
 		ownship.pos.set(td.x-ldx*dist, 1829, td.z-ldz*dist);   // angels 6 at 21 DME: "angels = DME − 15"
-		ownship.speed=129; ownship.throttle=0.7;   // 250 kt hold speed; flight_push trims via Level
+		ownship.speed=129; ownship.throttle=0.7;   // 250 kt hold speed; pre-core fallback — flight_push trims speed AND power via Level
 		ownship.fwd.set(ldx,0,ldz).normalize();
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
