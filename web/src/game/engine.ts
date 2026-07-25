@@ -2013,7 +2013,26 @@ const _headq=new THREE.Quaternion(), _pitq=new THREE.Quaternion(), _yaxis=new TH
 const CAMFIX=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),-Math.PI/2);   // maps the camera's -Z view axis onto body +X with +Y up   // chase view: orbit around the aircraft; cam_psi = smoothed heading the orbit is referenced to
 let flyby_pos=null, flyby_side=1;          // flypast view: fixed world point the jet flies past, re-seeded ahead as it recedes
 // True while the aircraft is sitting/rolling on the deck or runway (not yet airborne) — gear can't retract then.
-function mission_start(){ return cfg.task==="joust"?"joust":cfg.start; }   // joust always starts at the merge; the Start selector applies to free flight only
+let marshal=null;   // Case III recovery state (#205): {push: sim_time of the assigned EAT, commenced, platform, dirty, ball} — null outside a Case III mission
+const MARSHAL_PUSH=DEV_MODE&&+(new URLSearchParams(location.search).get("push")||0)>0?+(new URLSearchParams(location.search).get("push")||0):360;   // one full six-minute racetrack to the push; &push=N (dev) shortens it for testing
+function clock_text(seconds){ const s=Math.max(0,Math.round(seconds)); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+// marshal_watch: the Case III radio script, driven by range and altitude. The
+// controller calls come from range gates (MARSHAL/APPROACH/PADDLES callsigns
+// verbatim, call words localised — the #139 radio rule); the pilot's own calls
+// carry the callsign. Commencing is judged against the assigned push time:
+// within ±10 s is on time, as the real recovery demands.
+function marshal_watch(){ if(!marshal||!running) return;
+	const range=Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),wrap_axis(CARRIER.z-ownship.pos.z));
+	if(!marshal.commenced){ if(range<20.5*1852){ marshal.commenced=true;
+		const delta=sim_time-marshal.push;
+		let call=translate("COMMENCING");
+		if(Math.abs(delta)>10) call+=" — "+(delta<0?translate("EARLY"):translate("LATE"))+" "+Math.round(Math.abs(delta))+"s";
+		comm((cfg.callsign||"701")+": "+call, "#9fd0ff"); }
+		return; }
+	if(!marshal.platform && ownship.pos.y<1524){ marshal.platform=true; comm((cfg.callsign||"701")+": "+translate("PLATFORM"), "#9fd0ff"); }
+	if(!marshal.dirty && range<10*1852){ marshal.dirty=true; comm("APPROACH: "+translate("LEVEL AT 1200, DIRTY UP"), "#9fd0ff"); }
+	if(!marshal.ball && range<0.75*1852){ marshal.ball=true; comm("PADDLES: "+translate("CALL THE BALL"), "#9fd0ff"); } }
+function mission_start(){ const start=cfg.task==="joust"?"joust":cfg.start; return start==="landing"?"case2":start; }   // joust always starts at the merge; the Start selector applies to free flight only. "landing" is the legacy saved value for what is now Case II (#205)
 function takeoff_surface(){ const st=mission_start(); if(st==="carrier") return CARRIER.deckY; if(st==="runway"&&airports.length) return airports[0].start.y; return 8; }
 function on_ground(){ return ownship.launching||!!ownship.grounded; }   // the real resting flag, not an altitude guess — off the cat you fly level at deck height, where a +12 m heuristic left G dead
 addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.target instanceof HTMLTextAreaElement) return;   // the chat box owns the keyboard while focused (#84) — no flares while typing f
@@ -2373,7 +2392,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, aoa:+(ownship.aoa??0).toFixed(2), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)),
+	atc:atc_on, aoa:+(ownship.aoa??0).toFixed(2), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)), marshal:marshal?{left:+(marshal.push-sim_time).toFixed(1),commenced:marshal.commenced,platform:marshal.platform,dirty:marshal.dirty,ball:marshal.ball}:null, comms:comms.map(c=>c.text),
 	boff:has_enemy?+(Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(_v.set(bandit.pos.x-ownship.pos.x,bandit.pos.y-ownship.pos.y,bandit.pos.z-ownship.pos.z).normalize()),-1,1))*57.3).toFixed(0):-1,
 	bburn:has_enemy&&bandit.harm?(bandit.harm.burning?1:0):-1, bkill:has_enemy&&bandit.harm?(bandit.harm.killed?1:0):-1, bwing:has_enemy&&bandit.harm?+(bandit.harm.wing??0).toFixed(2):-1,
 	brng:has_enemy?+wrap_distance(ownship.pos,bandit.pos).toFixed(0):-1, peak:+dev_peakbank.toFixed(1), phi:+dev_pitchhi.toFixed(1), plo:+dev_pitchlo.toFixed(1), gs:ownship.pass&&ownship.pass.n?+(ownship.pass.gs/ownship.pass.n).toFixed(2):-1, az:ownship.pass&&ownship.pass.n?+(ownship.pass.az/ownship.pass.n).toFixed(2):-1, grade:ownship.grade||"", pn:ownship.pass?ownship.pass.n:0, why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,
@@ -2510,18 +2529,19 @@ function on_strip(p){   // point inside any paved capsule (the airfield strips; 
 		if((p.x-qx)*(p.x-qx)+(p.z-qz)*(p.z-qz)<=w*w) return true; }
 	return false;
 }
-const LANDING_SLOPE=3.5;   // the carrier's optical glideslope, degrees — the landing spawn, the ICLS bars and the core's approach trim all read this one number
 function flight_push(){   // deliver the ownship pose to the core: trimmed level flight when airborne, a composed state on the ground / in a test
 	if(!flight_active) return;
 	prev_wire=-1;
 	ownship.flown=false;   // a fresh spawn has not flown: no phantom airfield service (a respawn already carries a full load)
-	if(!test_active && !ownship.grounded && mission_start()==="landing"){
+	if(!test_active && !ownship.grounded && mission_start()==="case2"){
 		// The CORE owns approach trim (#158). On-speed is a wing condition, so the
 		// speed, the attitude and the power all follow from the weight and the
 		// droop schedule — carrying them here as measured constants is what let
-		// the landing start go stale under the flight core and balloon off the
-		// glideslope. The client supplies only where and which way.
-		ownship.throttle=flight_approach(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, LANDING_SLOPE, FUEL());
+		// the old landing start go stale under the flight core and balloon off
+		// the glideslope. The client supplies only where and which way. Case II
+		// trims LEVEL (slope 0): established at 1,200 ft on the final bearing,
+		// the glideslope intercept ~3 nm ahead is the pilot's to fly (CV-1).
+		ownship.throttle=flight_approach(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, 0, FUEL());
 		sync_core(flight_get()); return;
 	}
 	if(!test_active && ownship.speed>50 && !ownship.grounded){
@@ -2820,6 +2840,7 @@ function update_anim(dt){ for(const st of [ownship,bandit,...extras]){
 		st.wheelDist=(st.wheelDist??0)+(st.wheelSpeed??0)*dt; }
 	apply_anim(st); } }
 function step_world(dt){ sim_time+=dt;
+	marshal_watch();
 	fly_player(dt); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
 	for(const st of extras){ st.circle_phase+=dt*(st.speed/st.circle_radius);
 		const tgt=new THREE.Vector3(Math.cos(st.circle_phase)*st.circle_radius,st.circle_alt+Math.sin(st.circle_phase*0.5)*200,Math.sin(st.circle_phase)*st.circle_radius);
@@ -2869,22 +2890,42 @@ function reset_ownship(){
 	ownship.grounded=false; ownship.touch=null; ownship.pass={gs:0,az:0,n:0}; ownship.grade=""; ownship.waved=false; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
 	test_active=null;   // a test scenario must not keep driving across a crash respawn (it would fly the fresh spawn straight into the deck, forever)
 	const st=mission_start();
+	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
 	else if(st==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
 		ownship.pos.set(ap.start.x,ap.start.y,ap.start.z); ownship.fwd.copy(ap.dir).normalize(); ownship.speed=0; ownship.throttle=0;
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
-	else if(st==="landing"){   // carrier landing: on the ICLS ~5 NM astern, a touch low and left, configured to trap
+	else if(st==="case1"){   // Case I (#205): initial — up the WAKE (hull axis, not the angled centreline) at 800 ft, 350 kt, clean. The break, the dirty-up, and the pattern are the mission
+		const O=carrier_world(0,0), F=carrier_world(100,0);
+		let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;   // unit hull-forward
+		const dist=3*1852;
+		ownship.pos.set(O.x-hx*dist, 245, O.z-hz*dist);   // 3 NM astern on the wake at 800 ft
+		ownship.speed=180; ownship.throttle=0.85;   // 350 kt clean; flight_push trims it via the core's Level
+		ownship.fwd.set(hx,0,hz).normalize();
+		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
+		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
+	else if(st==="case2"){   // Case II (#205): established on the FINAL BEARING at 1,200 ft, on-speed, configured — needles to the break-out, visual finish. Level at 1,200 intercepts the 3.5° glideslope ~3 nm out (CV-1)
 		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);   // landing centreline, A (aft) → B (forward, toward the rollout)
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;           // unit landing direction (the way the aircraft rolls out)
-		const tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw)), dist=3*1852, gs=LANDING_SLOPE*D2R;                    // touchdown ≈ the aim wire (3-wire on a four-wire deck); 3 NM back on the 3.5° glideslope
-		ownship.pos.set(td.x-ldx*dist+ldz*100, CARRIER.deckY+dist*Math.tan(gs)+HOOK_DROP-50, td.z-ldz*dist-ldx*100);   // 3 NM astern, 100 m left of centre, 50 m low — a deliberate off-glideslope, off-centre intercept
-		ownship.speed=72; ownship.throttle=0.17;   // pre-core fallback only — flight_push asks the core for the real on-speed trim (speed, attitude and power) the moment it is up.
-		const yaw=5*D2R, cy=Math.cos(yaw), sy=Math.sin(yaw); ownship.fwd.set(ldx*cy-ldz*sy,0,ldz*cy+ldx*sy).normalize();   // level flight, heading ~5° to starboard of the centreline — pilot rolls out onto the ICLS and pushes over onto the glideslope from below
+		const tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw)), dist=6*1852;   // 6 NM astern of the aim wire
+		ownship.pos.set(td.x-ldx*dist, 366, td.z-ldz*dist);
+		ownship.speed=72; ownship.throttle=0.35;   // pre-core fallback only — flight_push asks the core for the real LEVEL on-speed trim the moment it is up
+		ownship.fwd.set(ldx,0,ldz).normalize();
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
-		const glide=LANDING_SLOPE*D2R; ownship.vel_dir.y=-Math.sin(glide);   // DESCENDING on the glideslope, not level below it — holding level off the spawn took seconds of forward stick
-		ownship.q.premultiply(new THREE.Quaternion().setFromAxisAngle(r,8.1*D2R-glide)); }   // attitude = path + on-speed alpha (8.1°): matches the PA law's neutral demand exactly, so there is no capture transient at all — a zero-alpha spawn sank while the PA law scrambled to capture on-speed (nose-down lurch, dead stick during the transient)
+		ownship.q.premultiply(new THREE.Quaternion().setFromAxisAngle(r,8.1*D2R)); }   // attitude = on-speed alpha over the level path (pre-core fallback)
+	else if(st==="case3"){   // Case III (#205): marshal — 21 NM on the final bearing at angels 6, clean, 250 kt, inbound at the fix. The push clock is running: fly the racetrack, commence on time
+		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);
+		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;
+		const tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw)), dist=21*1852;
+		ownship.pos.set(td.x-ldx*dist, 1829, td.z-ldz*dist);   // angels 6 at 21 DME: "angels = DME − 15"
+		ownship.speed=129; ownship.throttle=0.7;   // 250 kt hold speed; flight_push trims via Level
+		ownship.fwd.set(ldx,0,ldz).normalize();
+		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
+		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
+		marshal={ push:sim_time+MARSHAL_PUSH, commenced:false, platform:false, dirty:false, ball:false };
+		comm("MARSHAL: "+translate("PUSH TIME")+" "+clock_text(MARSHAL_PUSH), "#9fd0ff"); }
 	else if(st==="joust"){   // 1v1 merge: head-on east-west directly over the atoll at 15,000 ft, 1 NM either side, equal AIRSPEED — symmetric in every respect (island below both at all fight orientations, sun/moon abeam both noses); the side is a coin flip so the sun-left/sun-right mirror can't systematically favour one player
 		weapons_hold=true;   // #87: fight's on at the merge, not before
 		joust_side=Math.random()<0.5?1:-1;
@@ -2899,8 +2940,8 @@ function reset_ownship(){
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
 	throttle_from_lever();   // a connected stick with a bound throttle wins over the spawn default — the physical lever position IS the commanded power (falls back silently: browsers hide pads until a button has been pressed)
-	{ const down=(st==="carrier"||st==="runway"||st==="landing"); ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway/landing, up for an air start
-	{ const hk=(st==="landing")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }   // hook down for a carrier-landing start, else stowed (deploy manually with H)
+	{ const down=(st==="carrier"||st==="runway"||st==="case2"); ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway/Case II (established on the approach); Cases I and III spawn CLEAN — the dirty-up is part of the procedure
+	{ const hk=(st==="case2")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }   // hook down for the Case II approach start, else stowed (deploy manually with H)
 	flight_push();   // deliver the spawn to the flight core (no-op until it boots; the boot pushes this pose itself)
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
 	if(st==="joust"){ bandit.pos.set(joust_side*1.5*NM,4572,0); bandit.fwd.set(-joust_side,0,0); bandit.speed=220; bandit.merging=true;   // merging: the bandit flies straight at the player until the pass, so the merge can be timed   // the other end of the merge, same airspeed (equal TAS is the fair condition once wind exists)
@@ -3321,6 +3362,9 @@ function draw_hud(dt){
 	hctx.font="13px monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
 	if(carrier_ols&&declutter<2){ const slant=Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),ownship.pos.y,wrap_axis(CARRIER.z-ownship.pos.z))/1852;
 		hctx.fillText("TCN "+slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range + the station's ident, like the real data block (REJ 2 removes it)
+	if(marshal&&!marshal.commenced&&declutter<2){ const left=marshal.push-sim_time;   // Case III push clock (#205): counts down to the assigned EAT, then counts UP the lateness
+		hctx.fillStyle=(left<30)?AM:GR; hctx.textAlign="left"; hctx.font="13px monospace";
+		hctx.fillText("PUSH "+(left>=0?clock_text(left):"+"+clock_text(-left)),lx,cy+8.1*ppdv); hctx.fillStyle=GR; }
 	if(boxed&&aa){   // designated-target range and closure: fixed right-side data block, like the radar-track readouts on the real HUD — never text glued to the target
 		hctx.fillText((rng/1852).toFixed(1)+" NM",lx,cy+5.4*ppdv);
 		hctx.fillText((vc>0?"+":"")+Math.round(vc*1.94384)+" kt",lx,cy+6.3*ppdv); }
@@ -3384,7 +3428,7 @@ function draw_hud(dt){
 	if(!authentic&&MULTIPLAYER&&net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams"){   // team score (game furniture): red and blue running totals above the stores legend
 		hctx.fillStyle="#ff5a48"; hctx.fillText("RED "+(net.score.red||0),40,HH-142);
 		hctx.fillStyle="#5a86ff"; hctx.fillText("BLUE "+(net.score.blue||0),40,HH-124); hctx.fillStyle=GR; }
-	if(!authentic&&MULTIPLAYER&&comms.length){   // the radio/chat log (#84): top-left, scrolling, fading — game furniture, never in the authentic cockpit
+	if(!authentic&&comms.length){   // the radio/chat log (#84): top-left, scrolling, fading — game furniture, never in the authentic cockpit. Single player too since the Case III radio script (#205)
 		const cnow=performance.now(); comms=comms.filter(c=>c.until>cnow);
 		hctx.save(); hctx.textAlign="left"; hctx.font="15px ui-monospace, SFMono-Regular, Menlo, monospace";
 		let cy=128;
@@ -3482,7 +3526,7 @@ function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow
 // reuses the bandit airframe, the rest get their own.
 let net=null, flare_flag=false, missile_flag=false, session_over=false;
 let net_notice="", net_notice_t=0;
-let comms=[];   // the radio/chat log (#84): {text, colour, until} — top-left, hud-view furniture, multiplayer only
+let comms=[];   // the radio/chat log (#84): {text, colour, until} — top-left, hud-view furniture (multiplayer chat + the Case III radio script)
 function comm(text,colour){ comms.push({ text:String(text).slice(0,80), colour, until:performance.now()+10000 }); while(comms.length>5) comms.shift(); }
 function chat_scope(){ return (net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams")?"team":"all"; }
 function exit_match(){ if(!running) return; running=false; if(MULTIPLAYER) net_finish("left"); if(onExit) onExit(); }

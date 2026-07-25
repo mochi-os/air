@@ -87,6 +87,16 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   SPLASH: msg`SPLASH`,
   TALLY: msg`TALLY`,
   REJOINING: msg`REJOINING`,
+  // The Case III recovery script (#205) — controller callsigns (MARSHAL,
+  // APPROACH, PADDLES) stay verbatim like player callsigns; the call words
+  // localise, same rule as the wingman brevity calls above.
+  'PUSH TIME': msg`PUSH TIME`,
+  COMMENCING: msg`COMMENCING`,
+  EARLY: msg`EARLY`,
+  LATE: msg`LATE`,
+  PLATFORM: msg`PLATFORM`,
+  'LEVEL AT 1200, DIRTY UP': msg`LEVEL AT 1200, DIRTY UP`,
+  'CALL THE BALL': msg`CALL THE BALL`,
 }
 
 // Mounts the imperative Three.js engine onto its canvases and tears it down on
