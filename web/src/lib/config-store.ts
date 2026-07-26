@@ -76,6 +76,12 @@ export async function loadConfig(): Promise<Partial<MissionConfig> | null> {
       for (const waiter of identity_waiters.splice(0)) waiter(identity_name)
     }
     const config = payload?.config ?? {}
+    // The callsign DEFAULTS to the identity name (#77). Seeded here, inside the
+    // load, rather than from a component effect: the menu surface that shows
+    // the field is a dialog, so an effect only ran if the player happened to
+    // open it, and any earlier write raced the load. Here it is unmissable and
+    // cannot race — the value simply arrives already filled in.
+    if (!config.callsign && payload?.name) config.callsign = payload.name
     return Object.keys(config).length ? config : null
   } catch {
     config_loaded = true // a FAILED load still settles the question: seeding may proceed against defaults rather than waiting forever
