@@ -80,6 +80,7 @@ export interface Controls {
   brake: boolean
   gear: boolean
   hook: boolean
+  probe: boolean // refuelling probe out (drag; the real ~300 KCAS limit stays procedural)
   launch: boolean
   override: boolean
   sequence: number
@@ -94,6 +95,7 @@ interface Core {
   mark(input: Uint8Array): string
   ack(sequence: number, state: Uint8Array): number
   level(x: number, y: number, z: number, dx: number, dz: number, speed: number, fuel: number): string
+  stores(mask: number): string
   approach(x: number, y: number, z: number, dx: number, dz: number, slope: number, fuel: number): number
   clear(): string
   hulk(index: number, aircraft: string): boolean
@@ -205,7 +207,8 @@ function fill(controls: Controls, count: number): void {
     (controls.gear ? 4 : 0) |
     (controls.hook ? 8 : 0) |
     (controls.launch ? 16 : 0) |
-    (controls.override ? 32 : 0)
+    (controls.override ? 32 : 0) |
+    (controls.probe ? 64 : 0)
   input[6] = controls.sequence
   input[7] = count
   input[8] = controls.reheat   // analog reheat (flag bit 1 retired)
@@ -392,6 +395,13 @@ export function battle_progress(throttle: number, tick: number, reset: boolean):
   battle_input[2] = reset ? 1 : 0
   core.progress(battle_input_bytes, battle_output_bytes)
   return battle_output
+}
+
+// flight_stores sets the attached external-store bitmask (bit i = wingtip
+// station i): the engine clears bits as missiles depart, dropping their mass
+// and carriage drag in the core.
+export function flight_stores(mask: number): void {
+  core?.stores(mask)
 }
 
 // flight_approach places the model on a trimmed on-speed descent — the landing
