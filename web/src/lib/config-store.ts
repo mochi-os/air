@@ -32,6 +32,14 @@ let config_identity = ''
 // The signed-in identity's display name (from config/load) — the default
 // multiplayer callsign. Empty until loaded / for anonymous visitors.
 let identity_name = ''
+
+// configLoaded reports whether config/load has answered. Menu code that seeds a
+// value must wait for it: a write before the load lands persists a
+// defaults-shaped config over the saved one (the PendingConfig hazard below).
+let config_loaded = false
+export function configLoaded(): boolean {
+	return config_loaded
+}
 const identity_waiters: ((name: string) => void)[] = []
 // useIdentityName re-renders when the name arrives from config/load, which
 // may complete after mount (and, when the account has no saved config, with
@@ -62,6 +70,7 @@ export async function loadConfig(): Promise<Partial<MissionConfig> | null> {
     )
     const payload = unwrap<ConfigPayload>(res)
     config_identity = payload?.identity ?? ''
+    config_loaded = true
     if (payload?.name) {
       identity_name = payload.name
       for (const waiter of identity_waiters.splice(0)) waiter(identity_name)
@@ -69,6 +78,7 @@ export async function loadConfig(): Promise<Partial<MissionConfig> | null> {
     const config = payload?.config ?? {}
     return Object.keys(config).length ? config : null
   } catch {
+    config_loaded = true // a FAILED load still settles the question: seeding may proceed against defaults rather than waiting forever
     return null
   }
 }

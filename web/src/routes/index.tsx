@@ -13,10 +13,12 @@ import { type GameHandle } from '../game/engine'
 import { type Join as NetJoin } from '../game/net'
 import { preload } from '../game/preload'
 
-// Mission-setup tabs are mirrored in the URL (?tab=…) so the address bar tracks
-// the active tab and it's shareable / back-navigable, like other Mochi apps.
+// The Settings tabs are COMPONENT state, not a route. Mirroring them in the URL
+// made sense when tabs were the menu itself; now Settings is a dialog, so a tab
+// is transient UI — and inside the shell iframe every change relayed a
+// navigation to the parent, rewriting the address bar and stacking a history
+// entry per click (#77).
 type SetupTab = 'general' | 'graphics' | 'sound' | 'controls' | 'keys' // the Settings dialog's tabs (#77): mission, weather and history became their own surfaces
-const SETUP_TABS: SetupTab[] = ['general', 'graphics', 'sound', 'controls', 'keys']
 
 // Inside the menu shell the top window owns the browser tab; without this it
 // stays titled "Mochi" no matter what the app's own index.html says.
@@ -54,10 +56,7 @@ function Index() {
   const [gameKey, setGameKey] = useState(0)
   const gameRef = useRef<GameHandle | null>(null)
 
-  const { tab = 'general' } = Route.useSearch()
-  const navigate = Route.useNavigate()
-  const setTab = (t: string) =>
-    navigate({ search: (prev) => ({ ...prev, tab: t as SetupTab }) })
+  const [tab, setTab] = useState<SetupTab>('general')
 
   const inFlight = started && !menuOpen
 
@@ -99,7 +98,7 @@ function Index() {
           config={config}
           onChange={setConfig}
           tab={tab}
-          onTabChange={setTab}
+          onTabChange={(t) => setTab(t as SetupTab)}
           gameInProgress={started}
           onStart={() => {
             setJoin(null)
@@ -131,6 +130,6 @@ export const Route = createFileRoute('/')({
   component: Index,
   // tab is optional so navigations to '/' (e.g. shared error pages) needn't supply it;
   // it's defaulted to 'mission' on read.
-  validateSearch: (search: Record<string, unknown>): { tab?: SetupTab } =>
-    SETUP_TABS.includes(search.tab as SetupTab) ? { tab: search.tab as SetupTab } : {},
+  // A legacy ?tab= is accepted and ignored: old links must not error.
+  validateSearch: (): Record<string, never> => ({}),
 })

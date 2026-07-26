@@ -8,7 +8,7 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import { History, LogIn, Pencil, Play, RotateCcw, Send, Settings, Users, X } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
 import { getErrorMessage } from '@mochi/web'
-import { useIdentityName } from '../lib/config-store'
+import { configLoaded as loaded, useIdentityName } from '../lib/config-store'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
 import {
   Select,
@@ -982,29 +982,31 @@ function ServerFlow({
   onClose,
   config,
   set,
+  onChange,
   onJoin,
 }: {
   open: boolean
   onClose: () => void
   config: MissionConfig
   set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
+  onChange: (config: MissionConfig) => void
   onJoin: (join: Join) => void
 }) {
   const [entered, setEntered] = useState(false)
   const [address, setAddress] = useState(config.world || '')
-  // The pilot token identifies the owner of a match offer across reconnects —
-  // minted once, then persisted with the rest of the config.
+  // The pilot token identifies the owner of a match offer across reconnects.
+  // It is minted when the player actually enters a server — NOT in an effect at
+  // mount: this component is mounted (closed) from the first render, and a
+  // write then races config/load, persisting a defaults-shaped config over the
+  // saved one. That is the PendingConfig hazard useMissionConfig documents, and
+  // it cost a saved callsign.
   const pilot = config.pilot || crypto.randomUUID()
-  useEffect(() => {
-    if (!config.pilot) set('pilot', pilot)
-  }, [config.pilot, pilot, set])
   // Recents live beside the rest of the mission config so they persist with it.
   const recents = String(config.servers ?? '').split('\n').filter(Boolean)
   const enter = (server: string) => {
     const chosen = server.trim() || default_server()
-    set('world', chosen)
-    const next = [chosen, ...recents.filter((r) => r !== chosen)].slice(0, 5)
-    set('servers', next.join('\n'))
+    const next = { ...config, world: chosen, pilot }
+    onChange({ ...next, servers: [chosen, ...recents.filter((r) => r !== chosen)].slice(0, 5).join('\n') }) // one write: consecutive set() calls each spread the render's config
     setEntered(true)
   }
   const leave = () => {
@@ -1414,7 +1416,10 @@ function GeneralPanel({
   // matches and on the radio is what the field says.
   const identity = useIdentityName()
   useEffect(() => {
-    if (!config.callsign && identity) set('callsign', identity)
+    // Gated on loaded(): seeding before config/load resolves writes a
+    // defaults-shaped config over the saved one — which is how a saved callsign
+    // came back empty after a refresh.
+    if (loaded() && !config.callsign && identity) set('callsign', identity)
   }, [config.callsign, identity, set])
   return (
     <>
@@ -1538,7 +1543,7 @@ export function MissionSetup({
             }}
           >
             <Play className='size-4' />
-            <Trans>Create and fly</Trans>
+            <Trans>Fly</Trans>
           </Button>
         </div>
       </MenuDialog>
@@ -1602,7 +1607,7 @@ export function MissionSetup({
         <MatchHistory />
       </MenuDialog>
 
-      <ServerFlow open={dialog === 'server'} onClose={close} config={config} set={set} onJoin={onJoin} />
+      <ServerFlow open={dialog === 'server'} onClose={close} config={config} set={set} onChange={onChange} onJoin={onJoin} />
     </div>
   )
 }
