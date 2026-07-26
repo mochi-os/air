@@ -45,6 +45,7 @@ import {
   default_server,
   normalize_server,
   world_chat,
+  world_withdraw,
   world_say,
   type Join,
   type WorldChatLine,
@@ -991,6 +992,12 @@ function ServerFlow({
 }) {
   const [entered, setEntered] = useState(false)
   const [address, setAddress] = useState(config.world || '')
+  // The pilot token identifies the owner of a match offer across reconnects —
+  // minted once, then persisted with the rest of the config.
+  const pilot = config.pilot || crypto.randomUUID()
+  useEffect(() => {
+    if (!config.pilot) set('pilot', pilot)
+  }, [config.pilot, pilot, set])
   // Recents live beside the rest of the mission config so they persist with it.
   const recents = String(config.servers ?? '').split('\n').filter(Boolean)
   const enter = (server: string) => {
@@ -1002,7 +1009,9 @@ function ServerFlow({
   }
   const leave = () => {
     // Leaving the page withdraws any offer you were making: an offer is
-    // presence-scoped — you are offering a match while you are here.
+    // presence-scoped — you are offering a match while you are here. The
+    // server's heartbeat grace only has to cover a tab that vanished.
+    void world_withdraw(normalize_server(config.world || default_server()), pilot)
     setEntered(false)
     onClose()
   }
@@ -1064,11 +1073,17 @@ function ServerFlow({
           </div>
           <Multiplayer
             hideServer
+            pilot={pilot}
             server={config.world}
             callsign={config.callsign}
             onServer={(v) => set('world', v)}
             onCallsign={(v) => set('callsign', v)}
-            onJoin={onJoin}
+            onJoin={(info) => {
+              // Flying somebody else's match retires your own offer: you can
+              // hold one, and you are no longer waiting in it.
+              void world_withdraw(normalize_server(config.world || default_server()), pilot)
+              onJoin(info)
+            }}
           />
         </div>
         <div className='flex h-96 w-full flex-col lg:h-auto lg:w-80'>
