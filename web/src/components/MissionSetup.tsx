@@ -5,7 +5,7 @@
 
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { History, LogIn, Pencil, Play, RotateCcw, Send, Settings, Users, X } from 'lucide-react'
+import { Check, History, LogIn, Pencil, Play, RotateCcw, Send, Settings, Users, X } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
 import { getErrorMessage } from '@mochi/web'
 
@@ -1603,7 +1603,7 @@ export function MissionSetup({
             </TabsContent>
           </div>
         </Tabs>
-        <div className='mt-4 border-t pt-3'>
+        <div className='mt-4 flex items-center justify-between border-t pt-3'>
           <Button
             type='button'
             variant='ghost'
@@ -1622,6 +1622,13 @@ export function MissionSetup({
             }}
           >
             <Trans>Reset</Trans>
+          </Button>
+          {/* Settings applies live, so this only closes — but a dialog that ends
+              in nothing but Reset reads as unfinished, and leaving by Esc or the
+              corner ✕ is not obvious enough to rely on. */}
+          <Button className='min-w-28' onClick={close}>
+            <Check className='size-4' />
+            <Trans>Done</Trans>
           </Button>
         </div>
       </MenuDialog>
