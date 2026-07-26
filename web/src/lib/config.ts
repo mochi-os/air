@@ -33,7 +33,7 @@ export function deviceDefaults(id: string): StickBindings {
 // a few more baked-in keys, e.g. the catapult spawn pose); the named fields keep
 // their precise types for the menu.
 export interface MissionConfig {
-  task: 'free' | 'joust' | 'multiplayer'
+  task: 'free' | 'joust' // multiplayer is no longer a task: a MATCH is joined from the server page (#77)
   fuel: number
   bandit: 'rookie' | 'pilot' | 'veteran' | 'ace'
   aircraft: 'fa18c' // one shipping aircraft today; the field + catalogue stay so a second type re-adds cleanly (client AIRCRAFT_MODELS, world aircraft.Get, and the menu picker)
@@ -41,6 +41,7 @@ export interface MissionConfig {
   sticks: Record<string, StickBindings> // per-device axis/button maps, keyed by pad id
   keys: Record<string, string> // keyboard remaps: action -> key code (defaults live in the engine's KEYS table)
   start: 'air' | 'runway' | 'carrier' | 'case1' | 'case2' | 'case3' | 'landing' // landing = legacy saved value, read as case2 (#205)
+  servers: string // recently joined world servers, newline-separated, most recent first (#77) — the config's index signature is scalar-or-record, and a bare array does not fit it
   cat: number // carrier-start catapult 1-4
   tod: 'day' | 'night'
   clouds: 'none' | 'cumulus' | 'high_stratus' | 'low_stratus'
@@ -75,6 +76,7 @@ export const DEFAULT_CONFIG: MissionConfig = {
   sticks: {},
   keys: {},
   start: 'carrier',
+  servers: '',
   cat: 2,
   tod: 'day',
   clouds: 'none',

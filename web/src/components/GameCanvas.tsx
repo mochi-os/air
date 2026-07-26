@@ -108,11 +108,13 @@ export function GameCanvas({
   join = null,
   onExit,
   onReady,
+  onSettings,
 }: {
   config?: MissionConfig
   join?: NetJoin | null
   onExit?: () => void
   onReady?: (handle: GameHandle) => void
+  onSettings?: () => void
 }) {
   const stageRef = useRef<HTMLCanvasElement>(null)
   const handleRef = useRef<GameHandle | null>(null)
@@ -236,6 +238,19 @@ export function GameCanvas({
                 <Trans>Send chat</Trans>
               </button>
             )}
+            {onSettings && (
+              <button
+                type='button'
+                className='rounded border border-white/25 px-3 py-2 text-sm text-white hover:bg-white/10'
+                onClick={() => onSettings()}
+              >
+                {/* Tuning over the PAUSED, visible scene is the best place to do
+                    it — the graphics knobs apply against the frame you are
+                    looking at. The dialog fences input while open so a rebind
+                    cannot reach the jet (in a match it keeps flying). */}
+                <Trans>Settings</Trans>
+              </button>
+            )}
             <button
               type='button'
               className='rounded border border-white/25 px-3 py-2 text-sm text-white hover:bg-white/10'
@@ -244,7 +259,8 @@ export function GameCanvas({
                 handleRef.current?.exit()
               }}
             >
-              <Trans>Exit match</Trans>
+              {/* A MISSION is yours to leave; a MATCH continues without you. */}
+              {join ? <Trans>Exit match</Trans> : <Trans>Exit mission</Trans>}
             </button>
             {join && (
               <p className='text-center text-xs text-white/50'>
