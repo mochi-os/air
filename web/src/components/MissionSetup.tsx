@@ -1412,15 +1412,20 @@ function GeneralPanel({
   config: MissionConfig
   set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
 }) {
-  // The callsign arrives already defaulted to the identity name — loadConfig
-  // seeds it, so there is nothing to do here but show it.
+  // The identity name IS the default, applied at render. Seeding it into the
+  // stored config is not reliable on its own: useMissionConfig can take the
+  // flush path (a locally-dirty config wins and is pushed to the server), which
+  // discards whatever the load seeded — which is why two earlier attempts, one
+  // in an effect and one inside loadConfig, both left the field blank. Showing
+  // it here cannot be raced or discarded, and the first edit makes it explicit.
+  const identity = useIdentityName()
   return (
     <>
       <SectionLabel>
         <Trans>Callsign</Trans>
       </SectionLabel>
       <Input
-        value={config.callsign}
+        value={config.callsign || identity}
         maxLength={16}
         className='max-w-xs'
         onChange={(e) => set('callsign', e.target.value)}
