@@ -1526,6 +1526,21 @@ export function MissionSetup({
 
       <MenuDialog open={dialog === 'mission'} onClose={close} title={<Trans>Create mission</Trans>}>
         <MissionPanel config={config} set={set} setCheat={setCheat} onChange={onChange} />
+        {/* The controls above write through live, so closing keeps the changes
+            and the front page's Fly launches them. This is the same action
+            without the round trip: create the mission and go. */}
+        <div className='mt-4 flex justify-end border-t pt-4'>
+          <Button
+            className='min-w-40'
+            onClick={() => {
+              close()
+              onStart()
+            }}
+          >
+            <Play className='size-4' />
+            <Trans>Create and fly</Trans>
+          </Button>
+        </div>
       </MenuDialog>
 
       <MenuDialog open={dialog === 'settings'} onClose={close} title={<Trans>Settings</Trans>}>
