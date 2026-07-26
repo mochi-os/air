@@ -44,6 +44,25 @@ const identity_waiters: ((name: string) => void)[] = []
 // useIdentityName re-renders when the name arrives from config/load, which
 // may complete after mount (and, when the account has no saved config, with
 // no config change to piggyback a re-render on).
+// resolve_identity asks CORE for the signed-in name. config/load carries it
+// too, but only for callers holding an app token — and the name is wanted
+// before and outside that (the callsign default). /_/identity needs just the
+// session cookie, so it answers wherever the app is signed in at all.
+let identity_asked = false
+function resolve_identity(): void {
+  if (identity_asked || identity_name) return
+  identity_asked = true
+  fetch('/_/identity', { credentials: 'same-origin' })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((body) => {
+      const name = body?.identity?.name
+      if (!name || identity_name) return
+      identity_name = name
+      for (const waiter of identity_waiters.splice(0)) waiter(identity_name)
+    })
+    .catch(() => {}) // best effort: the field simply stays empty
+}
+
 export function useIdentityName(): string {
   const [name, setName] = useState(identity_name)
   useEffect(() => {
@@ -51,6 +70,7 @@ export function useIdentityName(): string {
       setName(identity_name)
       return
     }
+    resolve_identity()
     identity_waiters.push(setName)
     return () => {
       const at = identity_waiters.indexOf(setName)
