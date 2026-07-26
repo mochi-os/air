@@ -15,7 +15,6 @@ import {
   installShellNavigationSync,
   installShellLinkInterceptor,
   installShellClipboardProxy,
-  isInShell,
   useAuthStore,
   type Catalogs,
 } from '@mochi/web'
@@ -169,9 +168,12 @@ installShellClipboardProxy()
 // never ran this, so every authenticated call went out bare and 401'd — no
 // saved config, no identity name, and settings that only appeared to persist
 // because they were cached in shell storage.
-if (!isInShell()) {
-  useAuthStore.getState().initialize()
-}
+// Unconditional: initialize() covers BOTH paths — it awaits initShellBridge()
+// for the token the shell delivers by postMessage, and falls back to fetching
+// /_/token itself when standalone. Guarding it on !isInShell() (copied from
+// feeds, which handles the shell case in an _authenticated route Air does not
+// have) skipped the shell — which is where the app actually runs.
+void useAuthStore.getState().initialize()
 
 const router = createRouter({
   routeTree,
