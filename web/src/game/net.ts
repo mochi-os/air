@@ -71,6 +71,8 @@ export interface WorldSession {
   created: number
   state: string
   permanent?: boolean
+  owner?: string // the creator's pilot token: an unjoined session with an owner is an OFFER (#77)
+  offer?: boolean
 }
 
 // normalize_server turns user input like "host", "host:4433" or a full URL
@@ -106,8 +108,11 @@ export async function world_status(server: string, signal?: AbortSignal): Promis
   return (await response.json()) as WorldStatus
 }
 
-export async function world_sessions(server: string, game: string, signal?: AbortSignal): Promise<WorldSession[]> {
-  const response = await fetch(server + '/sessions?game=' + encodeURIComponent(game), { mode: 'cors', signal: withTimeout(signal) })
+export async function world_sessions(server: string, game: string, signal?: AbortSignal, pilot?: string): Promise<WorldSession[]> {
+  // The pilot token rides the poll: on the server side the match-list request
+  // IS the heartbeat that keeps this player's own offer alive (#77).
+  const query = '/sessions?game=' + encodeURIComponent(game) + (pilot ? '&pilot=' + encodeURIComponent(pilot) : '')
+  const response = await fetch(server + query, { mode: 'cors', signal: withTimeout(signal) })
   if (!response.ok) throw new Error('status ' + response.status)
   const body = (await response.json()) as { sessions: WorldSession[] }
   return body.sessions ?? []
@@ -115,7 +120,7 @@ export async function world_sessions(server: string, game: string, signal?: Abor
 
 export async function world_create(
   server: string,
-  request: { game: string; mode: string; label: string; name?: string; capacity?: number; parameters?: Record<string, unknown> }
+  request: { game: string; mode: string; label: string; name?: string; pilot?: string; capacity?: number; parameters?: Record<string, unknown> }
 ): Promise<{ session: string; address: string; certificate?: { hash: string } }> {
   const response = await fetch(server + '/sessions', {
     method: 'POST',
@@ -135,6 +140,19 @@ export async function world_create(
   const body = (await response.json()) as { error?: string; session: string; address: string; certificate?: { hash: string } }
   if (body.error) throw new Error(body.error)
   return body
+}
+
+// world_withdraw retires this pilot's own offer immediately — leaving the
+// server page, or joining somebody else's match. The server's heartbeat
+// timeout is only the backstop for a tab that vanished without saying so.
+export async function world_withdraw(server: string, pilot: string): Promise<void> {
+  await fetch(server + '/withdraw', {
+    method: 'POST',
+    mode: 'cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ pilot }),
+    signal: withTimeout(),
+  }).catch(() => {}) // best effort: the grace period covers a failed withdraw
 }
 
 // The server-wide lobby chat (#84): a polled ring beside the match list.

@@ -42,6 +42,7 @@ export interface MissionConfig {
   keys: Record<string, string> // keyboard remaps: action -> key code (defaults live in the engine's KEYS table)
   start: 'air' | 'runway' | 'carrier' | 'case1' | 'case2' | 'case3' | 'landing' // landing = legacy saved value, read as case2 (#205)
   servers: string // recently joined world servers, newline-separated, most recent first (#77) — the config's index signature is scalar-or-record, and a bare array does not fit it
+  pilot: string // this player's stable token: identifies the owner of a match offer across reconnects (#77)
   cat: number // carrier-start catapult 1-4
   tod: 'day' | 'night'
   clouds: 'none' | 'cumulus' | 'high_stratus' | 'low_stratus'
@@ -77,6 +78,7 @@ export const DEFAULT_CONFIG: MissionConfig = {
   keys: {},
   start: 'carrier',
   servers: '',
+  pilot: '',
   cat: 2,
   tod: 'day',
   clouds: 'none',

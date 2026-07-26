@@ -35,6 +35,7 @@ import {
   supported,
   world_create,
   world_sessions,
+  world_withdraw,
   world_status,
   type Join,
   type WorldSession,
@@ -82,6 +83,7 @@ export function Multiplayer({
   onServer,
   onCallsign,
   onJoin,
+  pilot,
   hideServer,
 }: {
   server: string
@@ -89,6 +91,7 @@ export function Multiplayer({
   onServer: (value: string) => void
   onCallsign: (value: string) => void
   onJoin: (join: Join) => void
+  pilot?: string // this player's stable offer token (#77)
   hideServer?: boolean // the server page owns the address and the callsign (Settings does): show only the match list and its controls
 }) {
   const { t } = useLingui()
@@ -114,7 +117,7 @@ export function Multiplayer({
   const refresh = useCallback(
     async (signal?: AbortSignal) => {
       try {
-        const [s, list] = await Promise.all([world_status(address, signal), world_sessions(address, 'air', signal)])
+        const [s, list] = await Promise.all([world_status(address, signal), world_sessions(address, 'air', signal, pilot)])
         setStatus(s)
         setSessions(list)
         setError('')
@@ -125,7 +128,7 @@ export function Multiplayer({
         setError(getErrorMessage(e, t`World server not reachable`))
       }
     },
-    [address, t],
+    [address, t, pilot],
   )
 
   // Poll while the panel is visible so the match list stays live. A single
@@ -181,6 +184,7 @@ export function Multiplayer({
     setBusy(true)
     try {
       const made = await world_create(address, {
+        pilot,
         game: 'air',
         mode,
         label: t`${name}'s match`,
@@ -439,10 +443,19 @@ export function Multiplayer({
             {status ? <Trans>No open matches — create one.</Trans> : <Trans>No world server.</Trans>}
           </div>
         )}
-        {sessions.map((s) => (
-          <div key={s.session} className='flex items-center justify-between gap-3 p-3'>
+        {[...sessions]
+          .sort((a, b) => Number(!!pilot && b.owner === pilot) - Number(!!pilot && a.owner === pilot)) // your own offer pins to the top
+          .map((s) => (
+          <div key={s.session} className={'flex items-center justify-between gap-3 p-3' + (pilot && s.owner === pilot ? ' bg-muted/40' : '')}>
             <div className='min-w-0'>
-              <div className='truncate text-sm font-medium'>{s.label || s.mode}</div>
+              <div className='truncate text-sm font-medium'>
+                {s.label || s.mode}
+                {pilot && s.owner === pilot && (
+                  <span className='text-muted-foreground ml-2 text-xs font-normal'>
+                    · <Trans>your offer</Trans>
+                  </span>
+                )}
+              </div>
               <div className='text-muted-foreground truncate text-xs'>
                 {s.mode === 'joust' ? <Trans>Joust</Trans> : s.mode === 'teams' ? <Trans>Teams</Trans> : <Trans>Open</Trans>} ·{' '}
                 {(s.players ?? []).map((p) => p.name).join(', ') || <Trans>empty</Trans>} ·{' '}
@@ -452,6 +465,19 @@ export function Multiplayer({
               </div>
             </div>
             <div className='flex shrink-0 gap-2'>
+              {pilot && s.owner === pilot && !s.offer === false && (
+                <Button
+                  type='button'
+                  variant='outline'
+                  size='sm'
+                  onClick={async () => {
+                    await world_withdraw(address, pilot)
+                    void refresh()
+                  }}
+                >
+                  <Trans>Cancel</Trans>
+                </Button>
+              )}
               {s.mode === 'teams' && (
                 <>
                   <Button
