@@ -1419,16 +1419,35 @@ function GeneralPanel({
   // in an effect and one inside loadConfig, both left the field blank. Showing
   // it here cannot be raced or discarded, and the first edit makes it explicit.
   const identity = useIdentityName()
+  // Local text state, seeded from the stored callsign or the identity default.
+  // Deriving the displayed value as `callsign || identity` instead made the
+  // field un-clearable: emptying it re-showed the identity name on the very next
+  // render, so select-all-delete looked like it did nothing. The seed runs only
+  // while nothing is stored, so it cannot fight an edit.
+  const [text, setText] = useState(config.callsign)
+  useEffect(() => setText(config.callsign), [config.callsign]) // follow the config, so Reset lands in the field
+  const seeded = useRef(Boolean(config.callsign)) // already had one at mount: never seed, so clearing it stays cleared
+  useEffect(() => {
+    // Seed ONCE. Re-seeding whenever the value is empty made the field
+    // un-clearable: select-all-delete was undone on the next render. A
+    // deliberately blank callsign is now allowed to stay blank.
+    if (seeded.current || config.callsign || !identity) return
+    seeded.current = true
+    set('callsign', identity)
+  }, [config.callsign, identity, set])
   return (
     <>
       <SectionLabel>
         <Trans>Callsign</Trans>
       </SectionLabel>
       <Input
-        value={config.callsign || identity}
-        maxLength={16}
+        value={text}
+        maxLength={32}
         className='max-w-xs'
-        onChange={(e) => set('callsign', e.target.value)}
+        onChange={(e) => {
+          setText(e.target.value)
+          set('callsign', e.target.value)
+        }}
       />
     </>
   )
