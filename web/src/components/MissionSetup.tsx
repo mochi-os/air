@@ -1409,7 +1409,13 @@ function GeneralPanel({
   config: MissionConfig
   set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
 }) {
-  const { t } = useLingui()
+  // The callsign defaults to the player's Mochi identity name: seeded as a real
+  // VALUE the moment the identity resolves, not a placeholder, so what shows in
+  // matches and on the radio is what the field says.
+  const identity = useIdentityName()
+  useEffect(() => {
+    if (!config.callsign && identity) set('callsign', identity)
+  }, [config.callsign, identity, set])
   return (
     <>
       <SectionLabel>
@@ -1418,7 +1424,6 @@ function GeneralPanel({
       <Input
         value={config.callsign}
         maxLength={16}
-        placeholder={t`Your name in matches and on the radio`}
         className='max-w-xs'
         onChange={(e) => set('callsign', e.target.value)}
       />
