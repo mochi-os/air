@@ -1471,6 +1471,7 @@ export function MissionSetup({
   // is you against each other — created, offered, joined, and never paused by
   // one participant. The vocabulary is load-bearing, not decorative.
   const [dialog, setDialog] = useState<string | null>(null)
+  const identity = useIdentityName()
   const close = () => setDialog(null)
   const started = STARTS[config.start === 'landing' ? 'case2' : config.start]
 
@@ -1588,6 +1589,11 @@ export function MissionSetup({
               const fields = TAB_FIELDS[tab] ?? Object.keys(DEFAULT_CONFIG)
               const next = { ...config }
               for (const field of fields) next[field] = DEFAULT_CONFIG[field]
+              // The callsign's default is the identity name, not blank — the
+              // same value loadConfig seeds. DEFAULT_CONFIG cannot hold it
+              // (it is per-player and arrives with the config), so reset
+              // re-applies it here rather than emptying the field.
+              if (next.callsign === '' && identity) next.callsign = identity
               onChange(next)
             }}
           >
