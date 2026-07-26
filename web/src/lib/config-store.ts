@@ -52,8 +52,13 @@ let identity_asked = false
 function resolve_identity(): void {
   if (identity_asked || identity_name) return
   identity_asked = true
-  fetch('/_/identity', { credentials: 'same-origin' })
-    .then((r) => (r.ok ? r.json() : null))
+  // Through the APP CLIENT, not a bare fetch: inside the menu shell's sandboxed
+  // iframe the origin is opaque, so credentials:'same-origin' sends no cookies
+  // and /_/identity answers 401 — it only appeared to work in a bare-app
+  // harness. The client carries the shell's token, which core accepts.
+  client
+    .get<{ identity?: { name?: string } }>('/_/identity', { baseURL: '/' })
+    .then((res) => unwrap<{ identity?: { name?: string } }>(res)) // the client may hand back the body or {data}: unwrap knows both, as loadConfig does
     .then((body) => {
       const name = body?.identity?.name
       if (!name || identity_name) return
