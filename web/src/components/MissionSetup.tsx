@@ -8,7 +8,7 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import { History, LogIn, Pencil, Play, RotateCcw, Send, Settings, Users, X } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
 import { getErrorMessage } from '@mochi/web'
-import { configLoaded as loaded, useIdentityName } from '../lib/config-store'
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
 import {
   Select,
@@ -1411,16 +1411,8 @@ function GeneralPanel({
   config: MissionConfig
   set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
 }) {
-  // The callsign defaults to the player's Mochi identity name: seeded as a real
-  // VALUE the moment the identity resolves, not a placeholder, so what shows in
-  // matches and on the radio is what the field says.
-  const identity = useIdentityName()
-  useEffect(() => {
-    // Gated on loaded(): seeding before config/load resolves writes a
-    // defaults-shaped config over the saved one — which is how a saved callsign
-    // came back empty after a refresh.
-    if (loaded() && !config.callsign && identity) set('callsign', identity)
-  }, [config.callsign, identity, set])
+  // The callsign arrives already defaulted to the identity name — loadConfig
+  // seeds it, so there is nothing to do here but show it.
   return (
     <>
       <SectionLabel>
