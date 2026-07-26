@@ -15,6 +15,8 @@ import {
   installShellNavigationSync,
   installShellLinkInterceptor,
   installShellClipboardProxy,
+  isInShell,
+  useAuthStore,
   type Catalogs,
 } from '@mochi/web'
 // Generated Routes
@@ -159,6 +161,16 @@ installShellClipboardProxy()
     u.searchParams.delete('_shell')
     history.replaceState(history.state, '', u.pathname + u.search + u.hash)
   }
+}
+
+// Authenticate BEFORE the router mounts. Top-window (a typed URL, a deep link)
+// there is no shell to hand the app a token, so the auth store fetches one from
+// /_/token itself; in the shell it arrives asynchronously by postMessage. Air
+// never ran this, so every authenticated call went out bare and 401'd — no
+// saved config, no identity name, and settings that only appeared to persist
+// because they were cached in shell storage.
+if (!isInShell()) {
+  useAuthStore.getState().initialize()
 }
 
 const router = createRouter({
