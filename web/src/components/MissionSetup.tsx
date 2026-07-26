@@ -5,7 +5,7 @@
 
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { Play, RotateCcw, Send } from 'lucide-react'
+import { History, LogIn, Pencil, Play, RotateCcw, Send, Settings, Users, X } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
 import { getErrorMessage } from '@mochi/web'
 import { useIdentityName } from '../lib/config-store'
@@ -53,7 +53,8 @@ import {
 // The fields each tab owns, for the per-tab Reset (the joystick tab also clears
 // the per-device maps so built-in defaults apply again).
 const TAB_FIELDS: Record<string, string[]> = {
-  mission: ['task', 'start', 'cat', 'world', 'callsign', 'aircraft', 'bandit', 'fuel', 'cheats', 'tod', 'clouds'],
+  mission: ['task', 'start', 'cat', 'world', 'aircraft', 'bandit', 'fuel', 'cheats', 'tod', 'clouds', 'extra_aircraft'],
+  general: ['callsign'],
   controls: ['invert', 'joystick', 'sticks'],
   keys: ['keys'],
   sound: ['sound', 'volume'],
@@ -934,6 +935,482 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
   )
 }
 
+const STARTS: Record<string, string> = {
+  air: 'In air',
+  runway: 'On runway',
+  carrier: 'On carrier',
+  case1: 'Case I',
+  case2: 'Case II',
+  case3: 'Case III',
+}
+
+// MenuDialog is the one shell every menu surface opens in: title, scroll, and
+// Esc/backdrop dismissal, so each dialog body is just its content.
+function MenuDialog({
+  open,
+  onClose,
+  title,
+  wide,
+  children,
+}: {
+  open: boolean
+  onClose: () => void
+  title: ReactNode
+  wide?: boolean
+  children: ReactNode
+}) {
+  return (
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+      <DialogContent className={wide ? 'sm:max-w-4xl' : 'sm:max-w-2xl'}>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
+        {children}
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+// ServerFlow is the multiplayer half of the menu: pick a server (recents
+// first — typing a hostname every time would sting), then a full page of the
+// matches it is offering beside its lobby chat. A MATCH is you against each
+// other: created, offered, joined, left — never paused or restarted by one
+// participant, which is why none of the mission verbs appear here.
+function ServerFlow({
+  open,
+  onClose,
+  config,
+  set,
+  onJoin,
+}: {
+  open: boolean
+  onClose: () => void
+  config: MissionConfig
+  set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
+  onJoin: (join: Join) => void
+}) {
+  const [entered, setEntered] = useState(false)
+  const [address, setAddress] = useState(config.world || '')
+  // Recents live beside the rest of the mission config so they persist with it.
+  const recents = String(config.servers ?? '').split('\n').filter(Boolean)
+  const enter = (server: string) => {
+    const chosen = server.trim() || default_server()
+    set('world', chosen)
+    const next = [chosen, ...recents.filter((r) => r !== chosen)].slice(0, 5)
+    set('servers', next.join('\n'))
+    setEntered(true)
+  }
+  const leave = () => {
+    // Leaving the page withdraws any offer you were making: an offer is
+    // presence-scoped — you are offering a match while you are here.
+    setEntered(false)
+    onClose()
+  }
+  if (!open) return null
+  if (!entered) {
+    return (
+      <MenuDialog open onClose={onClose} title={<Trans>Join server</Trans>}>
+        <div className='space-y-4'>
+          {recents.length > 0 && (
+            <div className='space-y-2'>
+              <SectionLabel>
+                <Trans>Recent</Trans>
+              </SectionLabel>
+              <div className='flex flex-col gap-1'>
+                {recents.map((r) => (
+                  <Button key={r} type='button' variant='outline' className='justify-start font-mono text-sm' onClick={() => enter(r)}>
+                    {r}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className='space-y-2'>
+            <SectionLabel>
+              <Trans>Server</Trans>
+            </SectionLabel>
+            <Input
+              value={address}
+              placeholder={default_server()}
+              onChange={(e) => setAddress(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && enter(address)}
+            />
+          </div>
+          <div className='flex justify-end'>
+            <Button onClick={() => enter(address)}>
+              <LogIn className='size-4' />
+              <Trans>Connect</Trans>
+            </Button>
+          </div>
+        </div>
+      </MenuDialog>
+    )
+  }
+  return (
+    <div className='bg-background fixed inset-0 z-50 overflow-auto p-6'>
+      <div className='mx-auto flex w-full max-w-5xl flex-col gap-6 lg:flex-row'>
+        <div className='min-w-0 flex-1'>
+          <div className='mb-4 flex items-center justify-between'>
+            <div>
+              <h2 className='text-2xl font-semibold tracking-tight'>
+                <Trans>Matches</Trans>
+              </h2>
+              <p className='text-muted-foreground font-mono text-xs'>{config.world}</p>
+            </div>
+            <Button type='button' variant='outline' onClick={leave}>
+              <X className='size-4' />
+              <Trans>Leave server</Trans>
+            </Button>
+          </div>
+          <Multiplayer
+            hideServer
+            server={config.world}
+            callsign={config.callsign}
+            onServer={(v) => set('world', v)}
+            onCallsign={(v) => set('callsign', v)}
+            onJoin={onJoin}
+          />
+        </div>
+        <div className='flex h-96 w-full flex-col lg:h-auto lg:w-80'>
+          <LobbyChat server={config.world} callsign={config.callsign} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ---- panels: each former tab body, now mounted inside its dialog ----
+
+function MissionPanel({
+  config,
+  set,
+  setCheat,
+  onChange,
+}: {
+  config: MissionConfig
+  set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
+  setCheat: (name: string, value: boolean) => void
+  onChange: (config: MissionConfig) => void
+}) {
+  return (
+    <>
+<SectionLabel>
+  <Trans>Task</Trans>
+</SectionLabel>
+<Choice
+  value={config.task}
+  onChange={(v) => set('task', v)}
+  options={[
+    { value: 'free', label: <Trans>Free flight</Trans> },
+    { value: 'joust', label: <Trans>Joust against AI player</Trans> },
+  ]}
+/>
+<SectionLabel>
+  <Trans>Extra aircraft</Trans>
+</SectionLabel>
+{/* Ambient traffic is WORLD CONTENT, not a rendering preference: it belongs
+    with the sortie for the same reason the weather does, and the moment it
+    becomes pattern traffic to time an interval against it is unambiguously
+    mission. Multiplayer forces it to zero — the match rules own that sky. */}
+<SliderRow
+  label={<Trans>Aircraft</Trans>}
+  value={config.extra_aircraft}
+  min={0}
+  max={40}
+  step={1}
+  onChange={(v) => set('extra_aircraft', v)}
+/>
+<SectionLabel>
+  <Trans>Fuel</Trans>
+</SectionLabel>
+<SliderRow
+  label={<Trans>Load</Trans>}
+  value={Number(config.fuel) || 6000}
+  min={1500}
+  max={10800}
+  step={100}
+  decimals={0}
+  suffix=' lb'
+  onChange={(v) => set('fuel', v)}
+/>
+{config.task === 'joust' && (
+  <>
+    <SectionLabel>
+      <Trans>Bandit</Trans>
+    </SectionLabel>
+    <Choice
+      value={String(config.bandit || 'veteran')}
+      onChange={(v) => set('bandit', v as 'rookie' | 'pilot' | 'veteran' | 'ace')}
+      options={[
+        { value: 'rookie', label: <Trans>Rookie</Trans> },
+        { value: 'pilot', label: <Trans>Pilot</Trans> },
+        { value: 'veteran', label: <Trans>Veteran</Trans> },
+        { value: 'ace', label: <Trans>Ace</Trans> },
+      ]}
+    />
+  </>
+)}
+
+{config.task === 'free' && (
+  <>
+    {/* joust always starts at the symmetric merge, so the start choice applies to free flight only */}
+    <SectionLabel>
+      <Trans>Start</Trans>
+    </SectionLabel>
+    <Choice
+      value={config.start === 'landing' ? 'case2' : config.start}
+      onChange={(v) => {
+        // A recovery case IS a weather definition: picking one seeds the
+        // authentic conditions in the controls just below — visibly, and
+        // freely overridable (a day Case III profile is a real training
+        // sortie, and a clear-night Case III is its own famous misery).
+        // One onChange with every seeded field: consecutive set() calls
+        // each spread the RENDER's config, so the last would revert the
+        // start (the same React-batch clobber the cheats ref works around).
+        const seeded = { ...config, start: v }
+        if (v === 'case1') {
+          seeded.tod = 'day'
+          seeded.clouds = 'none'
+        } else if (v === 'case2') {
+          seeded.tod = 'day'
+          seeded.clouds = 'low_stratus'
+        } else if (v === 'case3') {
+          seeded.tod = 'night'
+          seeded.clouds = 'low_stratus'
+        }
+        onChange(seeded)
+      }}
+      options={[
+        { value: 'air', label: <Trans>In air</Trans> },
+        { value: 'runway', label: <Trans>On runway</Trans> },
+        { value: 'carrier', label: <Trans>On carrier</Trans> },
+        { value: 'case1', label: <Trans>Case I (day)</Trans> },
+        { value: 'case2', label: <Trans>Case II (weather)</Trans> },
+        { value: 'case3', label: <Trans>Case III (night)</Trans> },
+      ]}
+    />
+    {config.start === 'carrier' && (
+      <>
+        <SectionLabel>
+          <Trans>Catapult</Trans>
+        </SectionLabel>
+        <Choice
+          value={String(config.cat)}
+          onChange={(v) => set('cat', parseInt(v, 10))}
+          options={[
+            { value: '1', label: '1' },
+            { value: '2', label: '2' },
+            { value: '3', label: '3' },
+            { value: '4', label: '4' },
+          ]}
+        />
+      </>
+    )}
+  </>
+)}
+<SectionLabel>
+  <Trans>Time of day</Trans>
+</SectionLabel>
+<Choice
+  value={config.tod}
+  onChange={(v) => set('tod', v)}
+  options={[
+    { value: 'day', label: <Trans>Day</Trans> },
+    { value: 'night', label: <Trans>Night</Trans> },
+  ]}
+/>
+<SectionLabel>
+  <Trans>Clouds</Trans>
+</SectionLabel>
+<Choice
+  value={config.clouds}
+  onChange={(v) => set('clouds', v)}
+  options={[
+    { value: 'none', label: <Trans>None</Trans> },
+    { value: 'cumulus', label: <Trans>Cumulus</Trans> },
+    { value: 'high_stratus', label: <Trans>High stratus</Trans> },
+    { value: 'low_stratus', label: <Trans>Low stratus</Trans> },
+  ]}
+/>
+{true && (
+  <>
+    {/* a MATCH takes its cheats from the creator's rules instead — these are the mission's */}
+    <SectionLabel>
+      <Trans>Cheats</Trans>
+    </SectionLabel>
+    <div className='space-y-2'>
+      <SwitchRow
+        id='cheat-invulnerable'
+        label={<Trans>Invulnerable (human players only)</Trans>}
+        checked={!!(config.cheats ?? {}).invulnerable}
+        onChange={(v) => setCheat('invulnerable', v)}
+      />
+      <SwitchRow
+        id='cheat-ammunition'
+        label={<Trans>Unlimited ammunition</Trans>}
+        checked={!!(config.cheats ?? {}).ammunition}
+        onChange={(v) => setCheat('ammunition', v)}
+      />
+      <SwitchRow
+        id='cheat-fuel'
+        label={<Trans>Unlimited fuel</Trans>}
+        checked={!!(config.cheats ?? {}).fuel}
+        onChange={(v) => setCheat('fuel', v)}
+      />
+    </div>
+  </>
+)}
+    </>
+  )
+}
+
+function GraphicsPanel({
+  config,
+  set,
+  onChange,
+}: {
+  config: MissionConfig
+  set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
+  onChange: (config: MissionConfig) => void
+}) {
+  return (
+    <div className='space-y-4'>
+<div>
+  <SectionLabel>
+    <Trans>Preset</Trans>
+  </SectionLabel>
+  <div className='flex flex-wrap gap-2'>
+    {(['low', 'med', 'high', 'ultra'] as GraphicsPreset[]).map((p) => (
+      <Button
+        key={p}
+        type='button'
+        variant='outline'
+        size='sm'
+        className='min-w-20 flex-1'
+        onClick={() => onChange({ ...config, ...GRAPHICS_PRESETS[p] })}
+      >
+        {p === 'low' ? (
+          <Trans>Low</Trans>
+        ) : p === 'med' ? (
+          <Trans>Medium</Trans>
+        ) : p === 'high' ? (
+          <Trans>High</Trans>
+        ) : (
+          <Trans>Ultra</Trans>
+        )}
+      </Button>
+    ))}
+  </div>
+</div>
+<div className='grid gap-4 sm:grid-cols-2'>
+  <SliderRow
+    label={<Trans>Resolution</Trans>}
+    value={config.render_scale}
+    min={0.4}
+    max={2}
+    step={0.1}
+    decimals={1}
+    suffix='×'
+    onChange={(v) => set('render_scale', v)}
+  />
+  <SliderRow
+    label={<Trans>Exterior detail</Trans>}
+    value={config.exterior_detail}
+    min={1}
+    max={6}
+    step={1}
+    onChange={(v) => set('exterior_detail', v)}
+  />
+  <SliderRow
+    label={<Trans>Ocean detail</Trans>}
+    value={config.ocean_segments}
+    min={64}
+    max={512}
+    step={32}
+    onChange={(v) => set('ocean_segments', v)}
+  />
+</div>
+<Separator />
+<div className='grid gap-3 sm:grid-cols-2'>
+  <SwitchRow
+    id='dyn_res'
+    label={<Trans>Dynamic resolution</Trans>}
+    checked={config.dyn_res}
+    onChange={(v) => set('dyn_res', v)}
+  />
+  <SwitchRow
+    id='lod'
+    label={<Trans>Distance LOD</Trans>}
+    checked={config.lod}
+    onChange={(v) => set('lod', v)}
+  />
+  <SwitchRow
+    id='shadows'
+    label={<Trans>Shadows</Trans>}
+    checked={config.shadows}
+    onChange={(v) => set('shadows', v)}
+  />
+  <SwitchRow
+    id='afterburner'
+    label={<Trans>Afterburner</Trans>}
+    checked={config.afterburner}
+    onChange={(v) => set('afterburner', v)}
+  />
+  <SwitchRow
+    id='tracers'
+    label={<Trans>Tracers</Trans>}
+    checked={config.tracers}
+    onChange={(v) => set('tracers', v)}
+  />
+  <SwitchRow
+    id='missiles'
+    label={<Trans>Missiles</Trans>}
+    checked={config.missiles}
+    onChange={(v) => set('missiles', v)}
+  />
+  <SwitchRow
+    id='flares'
+    label={<Trans>Flares</Trans>}
+    checked={config.flares}
+    onChange={(v) => set('flares', v)}
+  />
+  <SwitchRow
+    id='framerate'
+    label={<Trans>Framerate</Trans>}
+    checked={config.framerate}
+    onChange={(v) => set('framerate', v)}
+  />
+</div>
+    </div>
+  )
+}
+
+// General is the player's own identity and preferences — the things that are
+// neither sortie (the mission dialog) nor hardware (the tabs beside it).
+function GeneralPanel({
+  config,
+  set,
+}: {
+  config: MissionConfig
+  set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
+}) {
+  const { t } = useLingui()
+  return (
+    <>
+      <SectionLabel>
+        <Trans>Callsign</Trans>
+      </SectionLabel>
+      <Input
+        value={config.callsign}
+        maxLength={16}
+        placeholder={t`Your name in matches and on the radio`}
+        className='max-w-xs'
+        onChange={(e) => set('callsign', e.target.value)}
+      />
+    </>
+  )
+}
+
 export function MissionSetup({
   config,
   onChange,
@@ -970,357 +1447,105 @@ export function MissionSetup({
 
 
 
+
+  // The menu is a front page plus dialogs (#77): one decision per surface.
+  // "Mission" is you against the world — configured, owned, pausable; "match"
+  // is you against each other — created, offered, joined, and never paused by
+  // one participant. The vocabulary is load-bearing, not decorative.
+  const [dialog, setDialog] = useState<string | null>(null)
+  const close = () => setDialog(null)
+  const started = STARTS[config.start === 'landing' ? 'case2' : config.start]
+
   return (
     <div className='bg-background fixed inset-0 z-50 flex items-center justify-center overflow-auto p-6'>
-      <div className='flex w-full max-w-5xl flex-col items-center gap-6 lg:flex-row lg:items-stretch lg:justify-center'>
-        <div className='w-full max-w-2xl'>
-          <h1 className='mb-6 text-3xl font-semibold tracking-tight'>Air</h1>
-        <div>
-          <Tabs variant='underline' value={tab} onValueChange={onTabChange}>
-            <TabsList>
-              <TabsTrigger value='mission'>
-                <Trans>Mission</Trans>
-              </TabsTrigger>
-              <TabsTrigger value='controls'>
-                <Trans>Joystick</Trans>
-              </TabsTrigger>
-              <TabsTrigger value='keys'>
-                <Trans>Keys</Trans>
-              </TabsTrigger>
-              <TabsTrigger value='sound'>
-                <Trans>Sound</Trans>
-              </TabsTrigger>
-              <TabsTrigger value='graphics'>
-                <Trans>Graphics</Trans>
-              </TabsTrigger>
-              <TabsTrigger value='history'>
-                <Trans>History</Trans>
-              </TabsTrigger>
-            </TabsList>
-
-            {/* Fixed-height area so the card doesn't resize when switching tabs */}
-            {/* Fixed height so the layout never shifts when switching tabs (Graphics is the tallest). */}
-            <div className='h-[30rem] overflow-y-auto pt-4'>
-              <TabsContent value='mission'>
-                <SectionLabel>
-                  <Trans>Task</Trans>
-                </SectionLabel>
-                <Choice
-                  value={config.task}
-                  onChange={(v) => set('task', v)}
-                  options={[
-                    { value: 'free', label: <Trans>Free flight</Trans> },
-                    { value: 'joust', label: <Trans>Joust against AI player</Trans> },
-                    { value: 'multiplayer', label: <Trans>Multiplayer</Trans> },
-                  ]}
-                />
-                <SectionLabel>
-                  <Trans>Fuel</Trans>
-                </SectionLabel>
-                <SliderRow
-                  label={<Trans>Load</Trans>}
-                  value={Number(config.fuel) || 6000}
-                  min={1500}
-                  max={10800}
-                  step={100}
-                  decimals={0}
-                  suffix=' lb'
-                  onChange={(v) => set('fuel', v)}
-                />
-                {config.task === 'joust' && (
-                  <>
-                    <SectionLabel>
-                      <Trans>Bandit</Trans>
-                    </SectionLabel>
-                    <Choice
-                      value={String(config.bandit || 'veteran')}
-                      onChange={(v) => set('bandit', v as 'rookie' | 'pilot' | 'veteran' | 'ace')}
-                      options={[
-                        { value: 'rookie', label: <Trans>Rookie</Trans> },
-                        { value: 'pilot', label: <Trans>Pilot</Trans> },
-                        { value: 'veteran', label: <Trans>Veteran</Trans> },
-                        { value: 'ace', label: <Trans>Ace</Trans> },
-                      ]}
-                    />
-                  </>
-                )}
-                {config.task === 'multiplayer' && (
-                  <div className='mt-4'>
-                    <Multiplayer
-                      server={config.world}
-                      callsign={config.callsign}
-                      onServer={(v) => set('world', v)}
-                      onCallsign={(v) => set('callsign', v)}
-                      onJoin={onJoin}
-                    />
-                  </div>
-                )}
-                {config.task === 'free' && (
-                  <>
-                    {/* joust always starts at the symmetric merge, so the start choice applies to free flight only */}
-                    <SectionLabel>
-                      <Trans>Start</Trans>
-                    </SectionLabel>
-                    <Choice
-                      value={config.start === 'landing' ? 'case2' : config.start}
-                      onChange={(v) => {
-                        // A recovery case IS a weather definition: picking one seeds the
-                        // authentic conditions in the controls just below — visibly, and
-                        // freely overridable (a day Case III profile is a real training
-                        // sortie, and a clear-night Case III is its own famous misery).
-                        // One onChange with every seeded field: consecutive set() calls
-                        // each spread the RENDER's config, so the last would revert the
-                        // start (the same React-batch clobber the cheats ref works around).
-                        const seeded = { ...config, start: v }
-                        if (v === 'case1') {
-                          seeded.tod = 'day'
-                          seeded.clouds = 'none'
-                        } else if (v === 'case2') {
-                          seeded.tod = 'day'
-                          seeded.clouds = 'low_stratus'
-                        } else if (v === 'case3') {
-                          seeded.tod = 'night'
-                          seeded.clouds = 'low_stratus'
-                        }
-                        onChange(seeded)
-                      }}
-                      options={[
-                        { value: 'air', label: <Trans>In air</Trans> },
-                        { value: 'runway', label: <Trans>On runway</Trans> },
-                        { value: 'carrier', label: <Trans>On carrier</Trans> },
-                        { value: 'case1', label: <Trans>Case I (day)</Trans> },
-                        { value: 'case2', label: <Trans>Case II (weather)</Trans> },
-                        { value: 'case3', label: <Trans>Case III (night)</Trans> },
-                      ]}
-                    />
-                    {config.start === 'carrier' && (
-                      <>
-                        <SectionLabel>
-                          <Trans>Catapult</Trans>
-                        </SectionLabel>
-                        <Choice
-                          value={String(config.cat)}
-                          onChange={(v) => set('cat', parseInt(v, 10))}
-                          options={[
-                            { value: '1', label: '1' },
-                            { value: '2', label: '2' },
-                            { value: '3', label: '3' },
-                            { value: '4', label: '4' },
-                          ]}
-                        />
-                      </>
-                    )}
-                  </>
-                )}
-                <SectionLabel>
-                  <Trans>Time of day</Trans>
-                </SectionLabel>
-                <Choice
-                  value={config.tod}
-                  onChange={(v) => set('tod', v)}
-                  options={[
-                    { value: 'day', label: <Trans>Day</Trans> },
-                    { value: 'night', label: <Trans>Night</Trans> },
-                  ]}
-                />
-                <SectionLabel>
-                  <Trans>Clouds</Trans>
-                </SectionLabel>
-                <Choice
-                  value={config.clouds}
-                  onChange={(v) => set('clouds', v)}
-                  options={[
-                    { value: 'none', label: <Trans>None</Trans> },
-                    { value: 'cumulus', label: <Trans>Cumulus</Trans> },
-                    { value: 'high_stratus', label: <Trans>High stratus</Trans> },
-                    { value: 'low_stratus', label: <Trans>Low stratus</Trans> },
-                  ]}
-                />
-                {config.task !== 'multiplayer' && (
-                  <>
-                    {/* a multiplayer match takes its cheats from the creator's match rules instead */}
-                    <SectionLabel>
-                      <Trans>Cheats</Trans>
-                    </SectionLabel>
-                    <div className='space-y-2'>
-                      <SwitchRow
-                        id='cheat-invulnerable'
-                        label={<Trans>Invulnerable (human players only)</Trans>}
-                        checked={!!(config.cheats ?? {}).invulnerable}
-                        onChange={(v) => setCheat('invulnerable', v)}
-                      />
-                      <SwitchRow
-                        id='cheat-ammunition'
-                        label={<Trans>Unlimited ammunition</Trans>}
-                        checked={!!(config.cheats ?? {}).ammunition}
-                        onChange={(v) => setCheat('ammunition', v)}
-                      />
-                      <SwitchRow
-                        id='cheat-fuel'
-                        label={<Trans>Unlimited fuel</Trans>}
-                        checked={!!(config.cheats ?? {}).fuel}
-                        onChange={(v) => setCheat('fuel', v)}
-                      />
-                    </div>
-                  </>
-                )}
-              </TabsContent>
-
-              <TabsContent value='controls'>
-                <JoystickPanel config={config} set={set} />
-              </TabsContent>
-
-              <TabsContent value='keys'>
-                <KeysPanel config={config} set={set} />
-              </TabsContent>
-
-              <TabsContent value='sound'>
-                <SoundPanel config={config} set={set} />
-              </TabsContent>
-
-              <TabsContent value='graphics' className='space-y-4'>
-                <div>
-                  <SectionLabel>
-                    <Trans>Preset</Trans>
-                  </SectionLabel>
-                  <div className='flex flex-wrap gap-2'>
-                    {(['low', 'med', 'high', 'ultra'] as GraphicsPreset[]).map((p) => (
-                      <Button
-                        key={p}
-                        type='button'
-                        variant='outline'
-                        size='sm'
-                        className='min-w-20 flex-1'
-                        onClick={() => onChange({ ...config, ...GRAPHICS_PRESETS[p] })}
-                      >
-                        {p === 'low' ? (
-                          <Trans>Low</Trans>
-                        ) : p === 'med' ? (
-                          <Trans>Medium</Trans>
-                        ) : p === 'high' ? (
-                          <Trans>High</Trans>
-                        ) : (
-                          <Trans>Ultra</Trans>
-                        )}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-                <div className='grid gap-4 sm:grid-cols-2'>
-                  <SliderRow
-                    label={<Trans>Resolution</Trans>}
-                    value={config.render_scale}
-                    min={0.4}
-                    max={2}
-                    step={0.1}
-                    decimals={1}
-                    suffix='×'
-                    onChange={(v) => set('render_scale', v)}
-                  />
-                  <SliderRow
-                    label={<Trans>Exterior detail</Trans>}
-                    value={config.exterior_detail}
-                    min={1}
-                    max={6}
-                    step={1}
-                    onChange={(v) => set('exterior_detail', v)}
-                  />
-                  <SliderRow
-                    label={<Trans>Ocean detail</Trans>}
-                    value={config.ocean_segments}
-                    min={64}
-                    max={512}
-                    step={32}
-                    onChange={(v) => set('ocean_segments', v)}
-                  />
-                  <SliderRow
-                    label={<Trans>Extra aircraft</Trans>}
-                    value={config.extra_aircraft}
-                    min={0}
-                    max={40}
-                    step={1}
-                    onChange={(v) => set('extra_aircraft', v)}
-                  />
-                </div>
-                <Separator />
-                <div className='grid gap-3 sm:grid-cols-2'>
-                  <SwitchRow
-                    id='dyn_res'
-                    label={<Trans>Dynamic resolution</Trans>}
-                    checked={config.dyn_res}
-                    onChange={(v) => set('dyn_res', v)}
-                  />
-                  <SwitchRow
-                    id='lod'
-                    label={<Trans>Distance LOD</Trans>}
-                    checked={config.lod}
-                    onChange={(v) => set('lod', v)}
-                  />
-                  <SwitchRow
-                    id='shadows'
-                    label={<Trans>Shadows</Trans>}
-                    checked={config.shadows}
-                    onChange={(v) => set('shadows', v)}
-                  />
-                  <SwitchRow
-                    id='afterburner'
-                    label={<Trans>Afterburner</Trans>}
-                    checked={config.afterburner}
-                    onChange={(v) => set('afterburner', v)}
-                  />
-                  <SwitchRow
-                    id='tracers'
-                    label={<Trans>Tracers</Trans>}
-                    checked={config.tracers}
-                    onChange={(v) => set('tracers', v)}
-                  />
-                  <SwitchRow
-                    id='missiles'
-                    label={<Trans>Missiles</Trans>}
-                    checked={config.missiles}
-                    onChange={(v) => set('missiles', v)}
-                  />
-                  <SwitchRow
-                    id='flares'
-                    label={<Trans>Flares</Trans>}
-                    checked={config.flares}
-                    onChange={(v) => set('flares', v)}
-                  />
-                  <SwitchRow
-                    id='framerate'
-                    label={<Trans>Framerate</Trans>}
-                    checked={config.framerate}
-                    onChange={(v) => set('framerate', v)}
-                  />
-                </div>
-              </TabsContent>
-              <TabsContent value='history'>
-                <MatchHistory />
-              </TabsContent>
-            </div>
-          </Tabs>
-
-          <div className='mt-6 flex items-center justify-end gap-3'>
-            {gameInProgress ? (
-              <div className='flex gap-2'>
-                <Button type='button' variant='outline' onClick={onRestart}>
-                  <RotateCcw className='size-4' />
-                  <Trans>Restart</Trans>
-                </Button>
-                <Button className='min-w-32' onClick={onResume}>
-                  <Play className='size-4' />
-                  <Trans>Resume</Trans>
-                </Button>
-              </div>
-            ) : config.task === 'multiplayer' ? null : (
-              <Button className='min-w-40' onClick={onStart}>
+      <div className='w-full max-w-md'>
+        <h1 className='mb-8 text-4xl font-semibold tracking-tight'>Air</h1>
+        <div className='flex flex-col gap-2'>
+          {gameInProgress ? (
+            <>
+              <Button className='h-12 justify-start text-base' onClick={onResume}>
                 <Play className='size-4' />
-                <Trans>Start</Trans>
+                <Trans>Resume mission</Trans>
               </Button>
-            )}
+              <Button type='button' variant='outline' className='h-12 justify-start text-base' onClick={onRestart}>
+                <RotateCcw className='size-4' />
+                <Trans>Restart mission</Trans>
+              </Button>
+            </>
+          ) : (
+            <Button className='h-12 justify-start text-base' onClick={onStart}>
+              <Play className='size-4' />
+              {/* The fast path stays one click: fly the mission already configured,
+                  labelled with it, so tweak-and-fly never grows a detour. */}
+              <Trans>Fly</Trans>
+              <span className='text-primary-foreground/70 ml-1 text-sm'>{started ? <>— {started}</> : null}</span>
+            </Button>
+          )}
+          <Button type='button' variant='outline' className='h-12 justify-start text-base' onClick={() => setDialog('mission')}>
+            <Pencil className='size-4' />
+            <Trans>Create mission</Trans>
+          </Button>
+          <Button type='button' variant='outline' className='h-12 justify-start text-base' onClick={() => setDialog('server')}>
+            <Users className='size-4' />
+            <Trans>Join server</Trans>
+          </Button>
+          <Button type='button' variant='outline' className='h-12 justify-start text-base' onClick={() => setDialog('settings')}>
+            <Settings className='size-4' />
+            <Trans>Settings</Trans>
+          </Button>
+          <Button type='button' variant='outline' className='h-12 justify-start text-base' onClick={() => setDialog('history')}>
+            <History className='size-4' />
+            <Trans>History</Trans>
+          </Button>
+          <div className='mt-2 flex gap-2'>
+            <ReferenceDialog />
+            <CreditsDialog />
           </div>
         </div>
-        <div className='text-muted-foreground/60 mt-4 flex items-center justify-between border-t pt-3'>
+      </div>
+
+      <MenuDialog open={dialog === 'mission'} onClose={close} title={<Trans>Create mission</Trans>}>
+        <MissionPanel config={config} set={set} setCheat={setCheat} onChange={onChange} />
+      </MenuDialog>
+
+      <MenuDialog open={dialog === 'settings'} onClose={close} title={<Trans>Settings</Trans>}>
+        <Tabs variant='underline' value={tab} onValueChange={onTabChange}>
+          <TabsList>
+            <TabsTrigger value='general'>
+              <Trans>General</Trans>
+            </TabsTrigger>
+            <TabsTrigger value='graphics'>
+              <Trans>Graphics</Trans>
+            </TabsTrigger>
+            <TabsTrigger value='sound'>
+              <Trans>Sound</Trans>
+            </TabsTrigger>
+            <TabsTrigger value='controls'>
+              <Trans>Joystick</Trans>
+            </TabsTrigger>
+            <TabsTrigger value='keys'>
+              <Trans>Keys</Trans>
+            </TabsTrigger>
+          </TabsList>
+          <div className='h-[26rem] overflow-y-auto pt-4'>
+            <TabsContent value='general'>
+              <GeneralPanel config={config} set={set} />
+            </TabsContent>
+            <TabsContent value='graphics'>
+              <GraphicsPanel config={config} set={set} onChange={onChange} />
+            </TabsContent>
+            <TabsContent value='sound'>
+              <SoundPanel config={config} set={set} />
+            </TabsContent>
+            <TabsContent value='controls'>
+              <JoystickPanel config={config} set={set} />
+            </TabsContent>
+            <TabsContent value='keys'>
+              <KeysPanel config={config} set={set} />
+            </TabsContent>
+          </div>
+        </Tabs>
+        <div className='mt-4 border-t pt-3'>
           <Button
             type='button'
             variant='ghost'
@@ -1335,14 +1560,14 @@ export function MissionSetup({
           >
             <Trans>Reset</Trans>
           </Button>
-          <ReferenceDialog />
-          <CreditsDialog />
         </div>
-        </div>
-        <div className='flex h-96 w-full max-w-sm flex-col lg:h-auto lg:w-80'>
-          <LobbyChat server={config.world} callsign={config.callsign} />
-        </div>
-      </div>
+      </MenuDialog>
+
+      <MenuDialog open={dialog === 'history'} onClose={close} title={<Trans>History</Trans>}>
+        <MatchHistory />
+      </MenuDialog>
+
+      <ServerFlow open={dialog === 'server'} onClose={close} config={config} set={set} onJoin={onJoin} />
     </div>
   )
 }

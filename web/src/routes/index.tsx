@@ -15,8 +15,8 @@ import { preload } from '../game/preload'
 
 // Mission-setup tabs are mirrored in the URL (?tab=…) so the address bar tracks
 // the active tab and it's shareable / back-navigable, like other Mochi apps.
-type SetupTab = 'mission' | 'weather' | 'controls' | 'keys' | 'sound' | 'graphics' | 'history'
-const SETUP_TABS: SetupTab[] = ['mission', 'weather', 'controls', 'keys', 'sound', 'graphics', 'history']
+type SetupTab = 'general' | 'graphics' | 'sound' | 'controls' | 'keys' // the Settings dialog's tabs (#77): mission, weather and history became their own surfaces
+const SETUP_TABS: SetupTab[] = ['general', 'graphics', 'sound', 'controls', 'keys']
 
 // Inside the menu shell the top window owns the browser tab; without this it
 // stays titled "Mochi" no matter what the app's own index.html says.
@@ -54,7 +54,7 @@ function Index() {
   const [gameKey, setGameKey] = useState(0)
   const gameRef = useRef<GameHandle | null>(null)
 
-  const { tab = 'mission' } = Route.useSearch()
+  const { tab = 'general' } = Route.useSearch()
   const navigate = Route.useNavigate()
   const setTab = (t: string) =>
     navigate({ search: (prev) => ({ ...prev, tab: t as SetupTab }) })
@@ -86,6 +86,12 @@ function Index() {
             gameRef.current = h
           }}
           onExit={leaveFlight}
+          onSettings={() => {
+            // Settings over a paused mission: reuse the one menu surface rather
+            // than a second copy of every panel. Resume returns to flight.
+            setTab('general')
+            leaveFlight()
+          }}
         />
       )}
       {menuOpen && (

@@ -82,12 +82,14 @@ export function Multiplayer({
   onServer,
   onCallsign,
   onJoin,
+  hideServer,
 }: {
   server: string
   callsign: string
   onServer: (value: string) => void
   onCallsign: (value: string) => void
   onJoin: (join: Join) => void
+  hideServer?: boolean // the server page owns the address and the callsign (Settings does): show only the match list and its controls
 }) {
   const { t } = useLingui()
   const identity = useIdentityName()
@@ -241,31 +243,33 @@ export function Multiplayer({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <div className='grid gap-4 sm:grid-cols-2'>
-        <div className='space-y-2'>
-          <Label htmlFor='world-server'>
-            <Trans>World server</Trans>
-          </Label>
-          <Input
-            id='world-server'
-            value={server}
-            placeholder={default_server()}
-            onChange={(e) => onServer(e.target.value)}
-          />
+      {!hideServer && (
+        <div className='grid gap-4 sm:grid-cols-2'>
+          <div className='space-y-2'>
+            <Label htmlFor='world-server'>
+              <Trans>World server</Trans>
+            </Label>
+            <Input
+              id='world-server'
+              value={server}
+              placeholder={default_server()}
+              onChange={(e) => onServer(e.target.value)}
+            />
+          </div>
+          <div className='space-y-2'>
+            <Label htmlFor='callsign'>
+              <Trans>Callsign</Trans>
+            </Label>
+            <Input
+              id='callsign'
+              value={callsign}
+              placeholder={identity || t`pilot`}
+              maxLength={32}
+              onChange={(e) => onCallsign(e.target.value)}
+            />
+          </div>
         </div>
-        <div className='space-y-2'>
-          <Label htmlFor='callsign'>
-            <Trans>Callsign</Trans>
-          </Label>
-          <Input
-            id='callsign'
-            value={callsign}
-            placeholder={identity || t`pilot`}
-            maxLength={32}
-            onChange={(e) => onCallsign(e.target.value)}
-          />
-        </div>
-      </div>
+      )}
 
       <div className='text-muted-foreground flex items-center justify-between text-sm'>
         {status ? (
