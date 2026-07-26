@@ -38,6 +38,7 @@ import {
   type StickBindings,
   deviceDefaults,
 } from '../lib/config'
+import { useIdentityName } from '../lib/config-store'
 import { Multiplayer } from './Multiplayer'
 import { MatchHistory } from './MatchHistory'
 import { KEY_DEFAULTS, pretty } from '../game/keys'
