@@ -950,7 +950,7 @@ function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_7
 	ownship.group.updateMatrixWorld(true);
 	const p=new THREE.Vector3(); head.getWorldPosition(p);
 	ownship.group.worldToLocal(p);
-	ownship.group.userData.eye={ x:p.x+0.10, y:p.y+0.16 };   // head origin -> eye offset (y tuned from captures: more world over the glareshield); z forced to the centreline by the camera branch
+	ownship.group.userData.eye={ x:p.x+0.17, y:p.y+0.17 };   // head origin -> eye offset (y tuned from captures: more world over the glareshield; x moved 7 cm nearer the glass so the canopy bow reads slim, DCS-style, instead of looming); z forced to the centreline by the camera branch
 	const pane=ownship.group.getObjectByName("Object_1042");   // the combining glass: the only small transparent pane centred just forward-above the eye line (identified by geometry — the GLB leaves it anonymous)
 	let mesh=null; if(pane) pane.traverse(o=>{ if(!mesh&&o.isMesh&&o.geometry) mesh=o; });
 	if(mesh){ ownship.group.updateMatrixWorld(true);

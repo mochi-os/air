@@ -1458,6 +1458,7 @@ export function MissionSetup({
   onChange,
   tab,
   onTabChange,
+  settingsNonce = 0,
   gameInProgress,
   onStart,
   onJoin,
@@ -1468,6 +1469,7 @@ export function MissionSetup({
   onChange: (config: MissionConfig) => void
   tab: string
   onTabChange: (tab: string) => void
+  settingsNonce?: number
   gameInProgress: boolean
   onStart: () => void
   onJoin: (join: Join) => void
@@ -1495,6 +1497,9 @@ export function MissionSetup({
   // is you against each other — created, offered, joined, and never paused by
   // one participant. The vocabulary is load-bearing, not decorative.
   const [dialog, setDialog] = useState<string | null>(null)
+  useEffect(() => {
+    if (settingsNonce) setDialog('settings') // the Esc menu's Settings button lands here
+  }, [settingsNonce])
   const identity = useIdentityName()
   const close = () => setDialog(null)
   const started = STARTS[config.start === 'landing' ? 'case2' : config.start]

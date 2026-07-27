@@ -59,6 +59,7 @@ function Index() {
   const [tab, setTab] = useState<SetupTab>('general')
 
   const inFlight = started && !menuOpen
+  const [settingsNonce, setSettingsNonce] = useState(0)
 
   // Hide the shell chrome while in flight; the hook's heartbeat lets the shell
   // restore it automatically if air crashes or is closed.
@@ -87,8 +88,11 @@ function Index() {
           onExit={leaveFlight}
           onSettings={() => {
             // Settings over a paused mission: reuse the one menu surface rather
-            // than a second copy of every panel. Resume returns to flight.
+            // than a second copy of every panel. Resume returns to flight. The
+            // nonce asks MissionSetup to OPEN its settings dialog — landing on
+            // the front page alone left the button apparently dead.
             setTab('general')
+            setSettingsNonce((n) => n + 1)
             leaveFlight()
           }}
         />
@@ -99,6 +103,7 @@ function Index() {
           onChange={setConfig}
           tab={tab}
           onTabChange={(t) => setTab(t as SetupTab)}
+          settingsNonce={settingsNonce}
           gameInProgress={started}
           onStart={() => {
             setJoin(null)
