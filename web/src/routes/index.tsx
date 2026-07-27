@@ -86,6 +86,7 @@ function Index() {
             gameRef.current = h
           }}
           onExit={leaveFlight}
+          flying={inFlight}
           onSettings={() => {
             // Settings over a paused mission: reuse the one menu surface rather
             // than a second copy of every panel. Resume returns to flight. The
