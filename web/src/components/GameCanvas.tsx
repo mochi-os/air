@@ -111,6 +111,7 @@ export function GameCanvas({
   onExit,
   onReady,
   onSettings,
+  onConfig,
   flying,
 }: {
   config?: MissionConfig
@@ -118,10 +119,15 @@ export function GameCanvas({
   onExit?: () => void
   onReady?: (handle: GameHandle) => void
   onSettings?: () => void
+  onConfig?: (partial: Record<string, number>) => void
   flying?: boolean
 }) {
   const stageRef = useRef<HTMLCanvasElement>(null)
   const handleRef = useRef<GameHandle | null>(null)
+  // the engine captures its callbacks once at startGame; the ref keeps the
+  // latest closure live across re-renders (config identity changes per render)
+  const onConfigRef = useRef(onConfig)
+  onConfigRef.current = onConfig
   const chatRef = useRef<HTMLInputElement>(null)
   const [menu, setMenu] = useState(false)
   const [chat, setChat] = useState<string | null>(null) // the open chat prompt's scope, null when closed
@@ -151,6 +157,7 @@ export function GameCanvas({
       config,
       join,
       onExit,
+      onConfig: (partial: Record<string, number>) => onConfigRef.current?.(partial),
       onMenu: () => setMenu((open) => !open), // Esc toggles the popup (#84)
       onChat: (scope) => setChat(scope),
       translate,

@@ -93,6 +93,11 @@ function Index() {
             leaveFlight()
           }}
           flying={inFlight}
+          onConfig={(partial) => {
+            // Engine-side setting changes (per-view zoom) merge into the same
+            // persisted config the menu owns — one store, one save path.
+            setConfig({ ...config, ...partial })
+          }}
           onSettings={() => {
             // Settings over a paused mission: reuse the one menu surface rather
             // than a second copy of every panel. Resume returns to flight. The

@@ -52,6 +52,7 @@ export function startGame({
   onExit,
   onMenu,
   onChat,
+  onConfig,
   translate = (s) => s,
 }: {
   stage: HTMLCanvasElement
@@ -62,6 +63,7 @@ export function startGame({
   config?: GameConfig
   join?: NetJoin | null
   onExit?: () => void
+  onConfig?: (partial: Record<string, number>) => void // engine-side setting changes (per-view zoom) flow back for persistence
   onMenu?: () => void
   onChat?: (scope: string) => void
   translate?: (text: string) => string
@@ -2298,7 +2300,17 @@ const input={ pitch:0, roll:0, yaw:0, guns:false, brake:false };
 const keys=new Set();
 let cam_az=0, cam_el=0.22, cam_dist=24, cam_psi=0;
 let head_az=0, head_el=0, head_drag=false, head_keys=false;   // cockpit head look (#99): mouse-drag or arrow keys, snap back on release
-let view_zoom=1, zoom_target=1, zoom_wheel=0;   // optical zoom: notches move the TARGET, the view eases after it (stepping the FOV directly read as jerky); resets on every view change (deliberately non-persistent)
+let view_zoom=1, zoom_target=1, zoom_wheel=0;   // optical zoom: notches move the TARGET, the view eases after it (stepping the FOV directly read as jerky); per-view values persist in the config (zoom_<view>, #209)
+let zoom_save=0;   // debounce handle for persisting the zoom
+function zoom_floor(){ return cfg.view==="chase"?0.5:1; }   // chase may zoom OUT past 1x (45°→90° wide); first-person floors at 1x
+function zoom_recall(v){ return THREE.MathUtils.clamp(Number(cfg["zoom_"+v])||1, v==="chase"?0.5:1, 4); }
+function zoom_persist(){   // remember the setting per view, debounced past the notch flurry
+	const view=cfg.view, value=()=>Math.round(zoom_target*100)/100;   // the view is captured at SCHEDULE time: a swap inside the debounce window otherwise files this zoom under the view just switched TO
+	if(zoom_save) clearTimeout(zoom_save);
+	zoom_save=window.setTimeout(()=>{ zoom_save=0;
+		const key="zoom_"+view, v=view===cfg.view?value():Math.round(zoom_recall(view)*100)/100;
+		if(cfg[key]!==v){ cfg[key]=v; if(on_config) on_config({ [key]:v }); } },800); }
+let on_config=null;   // engine -> menu config channel (startGame option): partial updates the menu merges and saves
 const _headq=new THREE.Quaternion(), _pitq=new THREE.Quaternion(), _yaxis=new THREE.Vector3(0,1,0), _zaxis=new THREE.Vector3(0,0,1);
 const CAMFIX=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),-Math.PI/2);   // maps the camera's -Z view axis onto body +X with +Y up   // chase view: orbit around the aircraft; cam_psi = smoothed heading the orbit is referenced to
 let flyby_pos=null, flyby_side=1;          // flypast view: fixed world point the jet flies past, re-seeded ahead as it recedes
@@ -2364,6 +2376,8 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 			if(k==="Digit4") set_view("flypast");    // 4 Flypast
 			if(k==="Digit5") set_view("padlock"); }  // 5 Padlock
 		if(ch===key_of("view")) set_view(cfg.view==="cockpit"?"hud":"cockpit");   // V: Cockpit↔HUD fast-swap (any other view → Cockpit)
+		if(ch===key_of("zoom.in")&&(map_on||cfg.view!=="chase")) zoom_step(1);     // =/− zoom every view optically; chase keeps them for the orbit distance, its wheel already zooms. Edge-triggered here, and HELD keys sweep continuously from read_input below
+		if(ch===key_of("zoom.out")&&(map_on||cfg.view!=="chase")) zoom_step(-1);
 		if(ch===key_of("map")){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on){ map_px=0; map_pz=0; map_resize(); } }   // reopening always returns centred on own aircraft
 		if(ch===key_of("chat") && MULTIPLAYER && running && onChat){ e.preventDefault(); onChat(chat_scope()); }   // T: the fast path to match chat (#84); MP only — bots do not read
 		if(ch===key_of("shout") && MULTIPLAYER && running && onChat){ e.preventDefault(); onChat("all"); }   // Shift+T: everyone, when team chat is the default
@@ -2397,7 +2411,7 @@ stage.addEventListener("pointerup",end_drag,{ signal });
 // zoom_step: one discrete notch of zoom (trim-wheel button pulse or scroll notch).
 function zoom_step(direction){
 	if(map_on){ map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,-direction),MAP_RANGE_MIN,MAP_RANGE_MAX); return; }
-	if(running) zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.25,direction),cfg.view==="chase"?0.5:1,4); }   // chase may zoom OUT past 1x (45°→90° wide); first-person floors at 1x
+	if(running){ zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.25,direction),zoom_floor(),4); zoom_persist(); } }
 // scan_zoom: the trim-wheel notch buttons, edge-detected. Called from read_input
 // in flight AND from frame() while the map is up — the SP map pauses the world,
 // so read_input stops and the wheel went dead over the map without this.
@@ -2411,7 +2425,7 @@ stage.addEventListener("wheel",e=>{ e.preventDefault();   // scroll = zoom (any 
 	if(!running||game_paused) return;
 	const notch=-e.deltaY/(e.deltaMode===1?3:100);   // deltaMode 1 = lines (Firefox), else pixels; scroll up = zoom in
 	if(map_on){ map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.30,-notch),MAP_RANGE_MIN,MAP_RANGE_MAX); return; }
-	zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.30,notch),cfg.view==="chase"?0.5:1,4);
+	zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.30,notch),zoom_floor(),4); zoom_persist();
 },{ signal, passive:false });
 stage.addEventListener("pointercancel",end_drag,{ signal });
 // Remappable input actions (#74): defaults here, user overrides in cfg.keys
@@ -2420,7 +2434,7 @@ stage.addEventListener("pointercancel",end_drag,{ signal });
 const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.left":"KeyA", "yaw.right":"KeyE", "yaw.left":"KeyQ",
 	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash",
 	gear:"KeyG", hook:"KeyH", atc:"KeyP", lights:"KeyL", flares:"KeyF", eject:"KeyJ", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"KeyV", select:"KeyX", altitude:"KeyK", reject:"KeyU", acquire:"Enter",
-	probe:"Shift+KeyF", canopy:"Shift+KeyC", fold:"Shift+KeyW" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares
+	probe:"Shift+KeyF", canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
@@ -2684,7 +2698,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, aoa:+(ownship.aoa??0).toFixed(2),
+	atc:atc_on, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view,
 	rig:(()=>{ const r=(ownship.group.userData.rig||[]).filter(e=>e.gauge!==undefined); return { bound:r.filter(e=>e.object).length, total:r.length, missing:r.filter(e=>!e.object).map(e=>e.name) }; })(),
 	screens:(()=>{ const out={}; const v=new THREE.Vector3();   // where each driven gauge lands on screen (css px): crops for visual verification
 		for(const e of ownship.group.userData.rig||[]){ if(e.gauge===undefined||!e.object) continue;
@@ -3285,6 +3299,11 @@ function update_camera(dt){
 		if(daz||del){ head_az=THREE.MathUtils.clamp(head_az+daz,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+del,-1.047,1.396); head_keys=true; }
 		else head_keys=false;
 	}
+	if(cfg.view!=="chase" || map_on){   // HELD zoom keys sweep the optical zoom (the keydown edge gives the first notch; this carries the hold). Chase in flight is excluded: there −/= dolly the orbit below
+		const zk=(k)=>keys.has(key_of(k).replace(/^Shift\+/,""));
+		const sweep=((zk("zoom.in")?1:0)-(zk("zoom.out")?1:0))*dt*1.6;
+		if(sweep&&running&&!game_paused){ if(map_on) map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,-sweep),MAP_RANGE_MIN,MAP_RANGE_MAX);
+			else { zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(2.4,sweep),zoom_floor(),4); zoom_persist(); } } }
 	if(cfg.view==="chase" && !map_on){   // keyboard orbit (shares cam_az/el with the mouse drag): ←→ azimuth, ↑↓ elevation, −/= zoom — keys.md §5; with the map up, −/= zoom the map instead
 		const ar=dt*0.9, zr=dt*40;
 		cam_az+=(((keys.has("ArrowRight")||pad_looks.right)?1:0)-((keys.has("ArrowLeft")||pad_looks.left)?1:0))*ar;           // ←/→ orbit (keyboard or castle)
@@ -3835,7 +3854,7 @@ function set_view(v){
 	if(v==="chase" && cfg.view==="chase"){ cam_az=0; cam_el=0.22; cam_dist=24; }   // re-press recentres the orbit (keys.md §4)
 	if(v==="flypast") flyby_pos=null;   // (re)seed a fresh flyby each time it's selected
 	if(v!==cfg.view) hist_valid=false;   // a view switch is a camera CUT: reprojecting cloud history across it smears the old view over the new one for a beat
-	view_zoom=1; zoom_target=1;   // the thumbwheel zoom is per-view and deliberately transient
+	zoom_target=zoom_recall(v); view_zoom=zoom_target;   // each view wakes at its remembered zoom (#209) — no ease across the cut
 	cfg.view=v;
 	cockpit_hidden();
 }
@@ -4114,6 +4133,7 @@ function start_mission(){
 	loading=!assets_ready(); loading_t0=performance.now();   // hold the LOADING screen until every async asset is in — no piecemeal pop-in of carrier/airfield/airframe
 	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
 	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0;   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
+	on_config=onConfig||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
 	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,
 	// chase camera at the given azimuth/elevation. Judging water needs an external low view.
 	const shotp=DEV_MODE?new URLSearchParams(window.location.search).get("shot"):null;
@@ -4171,7 +4191,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 		update_camera(dt);
 	} else { ocean_mat.uniforms.u_time.value+=dt; menu_backdrop(); }
 	if(map_on&&running){ const pad=read_gamepad(); if(pad) scan_zoom(pad,pad_bindings(pad)); }   // the map pauses the world (read_input stops): poll the wheel here so it still zooms the map
-	if(!map_on&&zoom_wheel&&running&&!game_paused) zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(3,zoom_wheel*4*dt),cfg.view==="chase"?0.5:1,4);   // axis-form wheels steer the target too
+	if(!map_on&&zoom_wheel&&running&&!game_paused){ zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(3,zoom_wheel*4*dt),zoom_floor(),4); zoom_persist(); }   // axis-form wheels steer the target too
 	view_zoom+=(zoom_target-view_zoom)*Math.min(1,dt*10);   // ease toward the notch target — direct FOV steps read as jerky
 	{ const base=cfg.view==="cockpit"?72:45;   // wide field in the pit — at 45° the glareshield swallowed the canopy; 45° elsewhere keeps the HUD's 1:1 glideslope
 		const fov=base/view_zoom; if(Math.abs(camera.fov-fov)>0.01){ camera.fov=fov; camera.updateProjectionMatrix(); cockpit_cam.fov=fov; cockpit_cam.updateProjectionMatrix(); } }
