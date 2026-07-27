@@ -816,7 +816,44 @@ const AIRCRAFT_MODELS={
 	      { name:"stickRoll", node:"Stick_LR_Action_AN_Column_379",                          axis:"z", gain:0.52,  gauge:"stickRoll" },
 	      { name:"adiSlip",   node:"INSTRUMENT_AttitudeIndicator_Slip_AN_Slip_514",          trans:[-1,-0.02,0],  gain:0.0276, min:-1, max:1, gauge:"slip" },
 	      { name:"adiGlide",  node:"INSTRUMENT_AttitudeIndicator_Glide_AN_Glide_508",        trans:[0,0.99,0.14], gain:0.0468, min:-1, max:1, gauge:"glide" },
-	      { name:"adiLoc",    node:"INSTRUMENT_AttitudeIndicator_Localizer_AN_Localizer_511",trans:[-1,0,0],      gain:0.0554, min:-1, max:1, gauge:"loc" } ] } };
+	      { name:"adiLoc",    node:"INSTRUMENT_AttitudeIndicator_Localizer_AN_Localizer_511",trans:[-1,0,0],      gain:0.0554, min:-1, max:1, gauge:"loc" },
+	      // ---- #99 batch 2: needles are shaped in update_gauges (nonlinear dials measured off the
+	      // face textures — the GLB's needle tracks are uncalibrated double-spins, useless beyond
+	      // axis+sign); drums are plain place-value gains (full turn per 10 units of their place).
+	      // Needle +z = clockwise and drum -x = digits ascending, verified against the live pit.
+	      { name:"asi",       node:"Airspeed_Action_AN__350",                        axis:"z", gauge:"asi" },
+	      { name:"altNeedle", node:"needle_altitude_thousand_AN_thousand_594",       axis:"z", gain:6.2832/1000,   gauge:"altitude" },
+	      { name:"altH",      node:"digits_altitude_hundred_AN_hundred_388",         axis:"x", sign:-1, gain:6.2832/1000,   gauge:"altitude" },
+	      { name:"altT",      node:"digits_altitude_thousand_AN_thousand_394",       axis:"x", sign:-1, gain:6.2832/10000,  gauge:"altitude" },
+	      { name:"altTT",     node:"digits_altitude_tenthousand_AN_tenthousand_391", axis:"x", sign:-1, gain:6.2832/100000, gauge:"altitude" },
+	      { name:"vsi",       node:"VSINeedleAction_AN__736",                        axis:"z", gauge:"vsi" },
+	      { name:"fuelNeedle",node:"FuelNeedleAction_AN_Needle_466",                 axis:"z", gain:6.2832/22000,  gauge:"fuelLbs" },
+	      { name:"fuel10",    node:"Fuel_Drum_10_AN_10_442",                         axis:"x", sign:-1, gain:6.2832/100,    gauge:"fuelLbs" },
+	      { name:"fuel100",   node:"Fuel_Drum_100_AN_100_445",                       axis:"x", sign:-1, gain:6.2832/1000,   gauge:"fuelLbs" },
+	      { name:"fuel1000",  node:"Fuel_Drum_1000_AN_1000_448",                     axis:"x", sign:-1, gain:6.2832/10000,  gauge:"fuelLbs" },
+	      { name:"fuel10000", node:"Fuel_Drum_10000_AN_10000_451",                   axis:"x", sign:-1, gain:6.2832/100000, gauge:"fuelLbs" },
+	      // engine column pairs: higher x = higher digit place AND the left-engine column (both
+	      // verified from node positions: EGT_10/100/1000 ascend with x; L-pair sits at higher x)
+	      { name:"rpmL10",    node:"RPMNeedleLAction_AN__646",  axis:"x", sign:-1, gain:6.2832/100,   gauge:"rpmL" },
+	      { name:"rpmL1",     node:"RPMNeedleL2Action_AN__649", axis:"x", sign:-1, gain:6.2832/10,    gauge:"rpmL" },
+	      { name:"rpmR10",    node:"RPMNeedleRAction_AN__652",  axis:"x", sign:-1, gain:6.2832/100,   gauge:"rpmR" },
+	      { name:"rpmR1",     node:"RPMNeedleR2Action_AN__655", axis:"x", sign:-1, gain:6.2832/10,    gauge:"rpmR" },
+	      { name:"egtL10",    node:"EGT_10_AN_10_424",       axis:"x", sign:-1, gain:6.2832/100,   gauge:"egtL" },
+	      { name:"egtL100",   node:"EGT_100_AN_100_427",     axis:"x", sign:-1, gain:6.2832/1000,  gauge:"egtL" },
+	      { name:"egtL1000",  node:"EGT_1000_AN_1000_430",   axis:"x", sign:-1, gain:6.2832/10000, gauge:"egtL" },
+	      { name:"egtR10",    node:"EGT2_10_AN_10_415",      axis:"x", sign:-1, gain:6.2832/100,   gauge:"egtR" },
+	      { name:"egtR100",   node:"EGT2_100_AN_100_418",    axis:"x", sign:-1, gain:6.2832/1000,  gauge:"egtR" },
+	      { name:"egtR1000",  node:"EGT2_1000_AN_1000_421",  axis:"x", sign:-1, gain:6.2832/10000, gauge:"egtR" },
+	      // fuel flow displays pph/10 on three drums (place order by x, same rule)
+	      { name:"flowL1",    node:"FuelFlowAction3_AN__472",   axis:"x", sign:-1, gain:6.2832/10,   gauge:"flowL" },
+	      { name:"flowL10",   node:"FuelFlowAction4_AN__475",   axis:"x", sign:-1, gain:6.2832/100,  gauge:"flowL" },
+	      { name:"flowL100",  node:"FuelFlowAction5_AN__478",   axis:"x", sign:-1, gain:6.2832/1000, gauge:"flowL" },
+	      { name:"flowR1",    node:"Fuel_Flow1d_AN_Flow1d_463", axis:"x", sign:-1, gain:6.2832/10,   gauge:"flowR" },
+	      { name:"flowR10",   node:"Fuel_Flow1c_AN_Flow1c_460", axis:"x", sign:-1, gain:6.2832/100,  gauge:"flowR" },
+	      { name:"flowR100",  node:"Fuel_Flow1b_AN_Flow1b_457", axis:"x", sign:-1, gain:6.2832/1000, gauge:"flowR" },
+	      { name:"clockH",    node:"Clock_hourAction_AN_Hour_364", axis:"z", gain:6.2832/12, gauge:"clockH" },
+	      { name:"clockM",    node:"ClockMinutesAction_AN__367",   axis:"z", gain:6.2832/60, gauge:"clockM" },
+	      { name:"clockS",    node:"ClockSecondsAction_AN__370",   axis:"z", gain:6.2832/60, gauge:"clockS" } ] } };
 const D2R=Math.PI/180;
 // fleet: aircraft name -> { proto, rig:[{clip, t0, t1, drive, min, max, flip}] } once loaded.
 const fleet={}; const fleet_loading={};
@@ -913,7 +950,31 @@ function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_7
 		for(let k=0;k<8;k++){ c.set(k&1?box.max.x:box.min.x, k&2?box.max.y:box.min.y, k&4?box.max.z:box.min.z);
 			c.applyMatrix4(mesh.matrixWorld); ownship.group.worldToLocal(c); lo.min(c); hi.max(c); }
 		ownship.group.userData.glass={ x:(lo.x+hi.x)/2, y:(lo.y+hi.y)/2, hw:(hi.z-lo.z)/2, hh:(hi.y-lo.y)/2 }; }   // body-frame pane: x fore-aft, y up, half-extents across the span and vertically
+	build_indexer(ownship.group);
 	console.warn("cockpit eye", ownship.group.userData.eye.x.toFixed(2), ownship.group.userData.eye.y.toFixed(2)); }
+// AoA indexer (#99): the GLB ships the brightness knob but no indexer lights, so
+// three unlit emissive shapes stand in, mounted beside the combining glass —
+// green chevron (slow), amber donut (on-speed), red chevron (fast), Navy
+// colours. Driven from alpha in update_gauges; lit only with the gear down,
+// like the real box. Unlit material so it reads at night, LAYER_OWN so only
+// the cockpit pass pays for it.
+function build_indexer(g){
+	if(g.userData.indexer&&g.userData.indexerGroup&&g.userData.indexerGroup.parent===g) return;
+	const glass=g.userData.glass, eye=g.userData.eye;
+	if(!glass||!eye) return;
+	const box=new THREE.Group();
+	const mat=c=>new THREE.MeshBasicMaterial({ color:c, transparent:true, opacity:0, side:THREE.DoubleSide, depthWrite:false });
+	const chevron=(down)=>{ const sh=new THREE.Shape();   // a V of thickness t, apex on the centreline, pointing at the donut
+		const w=0.013, h=0.008, t=0.0042, dir=down?-1:1;
+		sh.moveTo(-w,dir*(h+t)); sh.lineTo(0,dir*t); sh.lineTo(w,dir*(h+t)); sh.lineTo(w,dir*h); sh.lineTo(0,0); sh.lineTo(-w,dir*h);
+		sh.closePath(); return new THREE.ShapeGeometry(sh); };
+	const parts={ slow:mat(0x2fd24a), donut:mat(0xffb03a), fast:mat(0xe23b2e) };
+	const geoms=[ chevron(true), new THREE.RingGeometry(0.0052,0.0092,24), chevron(false) ];
+	["slow","donut","fast"].forEach((k,i)=>{ const m=new THREE.Mesh(geoms[i],parts[k]);
+		m.rotateY(Math.PI/2);   // face the shapes aft toward the pilot (DoubleSide covers the sign)
+		m.position.set(0,0.028-0.028*i,0); m.layers.set(LAYER_OWN); box.add(m); });
+	box.position.set(glass.x-0.02, glass.y-glass.hh*0.35, -(glass.hw+0.028));   // beside the pane's LEFT edge (negative z; the first cut sat right of the HUD), low
+	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box; }
 const MISSILE_NODES=["Object_145","Object_542"];   // the two wingtip AIM-9 NODES in the fa18c GLB (the mesh-level names Object_114/29 are not in the scene graph — a silent getObjectByName miss); LAU-7 rails stay with the wing. Hidden per missiles-remaining for empty rails after firing, or entirely on a guns-only loadout
 function update_rails(st,count){ if(!st.group) return;
 	for(let i=0;i<MISSILE_NODES.length;i++){ const node=st.group.getObjectByName(MISSILE_NODES[i]); if(node) node.visible=i<count; } }
@@ -1001,6 +1062,7 @@ async function init_external_model(kind){
 					proto.traverse(o=>{ if(o.isMesh&&o.material){ (Array.isArray(o.material)?o.material:[o.material]).forEach(mm=>{
 						const d=decoded[mm.name];
 						if(d&&d.base) mm.map=d.base;
+						if(d&&d.base&&/^Material_1[24]$/.test(mm.name||"")){ mm.emissiveMap=d.base; mm.emissive=new THREE.Color(0xffffff); mm.emissiveIntensity=0.32; }   // instrument backlighting (#99): the two cockpit gauge atlases are near-black faces that vanish in the glareshield's shadow — self-illuminate them from their own baseColor, like the real backlit panels, so dials read day and night
 						if(d&&d.emissive){ mm.emissiveMap=d.emissive; mm.emissiveIntensity=Math.min(mm.emissiveIntensity||1, 1.1); }   // cap KHR emissive strength: under the scene's ACES tone mapping a hot emissive blows to white-pink
 						else if(d&&d.hadEmissive&&mm.emissive){ mm.emissive.setRGB(0,0,0); }   // emissive texture stripped and unrestorable: black it out rather than glow flat white
 						if(mm.metalness!==undefined && !/glass|screen|oleo|gear/i.test(mm.name||"")){ mm.metalness=0.0; mm.roughness=0.88; }   // matte low-vis tactical paint; keep canopy glass, chrome oleo, and the gear (semi-gloss, matching the donor) untouched
@@ -1988,8 +2050,29 @@ function approach_deviation(){   // shared by the HUD ICLS needles and the cockp
 	const az=Math.atan2(s.lat,Math.max(s.along,1))*180/Math.PI;                        // ° off the extended centreline
 	if(Math.abs(az)>5) return null;   // needles alive only near the localizer: the Case I upwind runs ~9° off the angled centreline, and pegged bars there were clutter, not guidance
 	return { az:THREE.MathUtils.clamp(az/3,-1,1), gs:THREE.MathUtils.clamp(s.dev/0.8,-1,1) }; }
+// Dial calibrations measured off the GLB's face textures (the needle tracks are
+// uncalibrated demo spins). Piecewise-linear: value -> dial angle, degrees
+// clockwise from the needle's rest. The standby ASI expands 60-200 kt (the
+// approach band) and compresses beyond; the VSI is the usual log-ish card.
+const ASI_DIAL=[[0,0],[60,14],[100,54],[150,108],[200,202],[300,242],[400,263],[500,287],[600,302],[700,321],[800,340],[850,350]];
+const VSI_DIAL=[[0,0],[500,28],[1000,44],[2000,73],[4000,119],[6000,180]];
+function dial(table,v){ const a=Math.abs(v);
+	for(let i=1;i<table.length;i++){ if(a<=table[i][0]){ const [v0,d0]=table[i-1], [v1,d1]=table[i];
+		return Math.sign(v)*(d0+(d1-d0)*(a-v0)/(v1-v0))*D2R; } }
+	return Math.sign(v)*table[table.length-1][1]*D2R; }
+let flow_state={t:0,fuel:0,pph:0};   // smoothed total burn from the fuel word itself — honest, includes AB and leaks
 function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 	const dev=approach_deviation();
+	const cas=(out[STATE.cas]||0)*1.944, altitude=Math.max(0,(out[STATE.position+1]||0)*3.281);
+	const fpm=THREE.MathUtils.clamp((out[STATE.velocity+1]||0)*196.85,-6000,6000);
+	const lbs=Math.max(0,(out[STATE.fuel]||0)*2.2046);
+	const t=out[STATE.time]||0;
+	if(t>flow_state.t){ const target=THREE.MathUtils.clamp((flow_state.fuel-out[STATE.fuel])/(t-flow_state.t)*2.2046*3600,0,40000);
+		flow_state.pph+=(target-flow_state.pph)*Math.min(1,(t-flow_state.t)/2); }   // ~2 s smoothing so the counter reads steadily
+	flow_state={t, fuel:out[STATE.fuel]||0, pph:flow_state.pph};
+	const sL=THREE.MathUtils.clamp(out[STATE.engine]||0,0,1), sR=THREE.MathUtils.clamp(out[STATE.engine+2]||0,0,1);
+	const rL=THREE.MathUtils.clamp(out[STATE.engine+1]||0,0,1), rR=THREE.MathUtils.clamp(out[STATE.engine+3]||0,0,1);
+	const now=new Date();
 	ownship.gauges={
 		pitch:Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1)),
 		bank:Math.atan2(ownship.right.y,ownship.up.y),
@@ -1997,7 +2080,20 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		slip:THREE.MathUtils.clamp(out[STATE.beta]/0.10,-1,1),   // ±~6° of sideslip = full ball travel
 		glide:dev?dev.gs:0, loc:dev?dev.az:0,                    // park centred off-approach
 		throttle:ownship.throttle||0,                            // the LEVERS show the hand, not the spool
-		stickPitch:last_controls?last_controls.pitch:0, stickRoll:last_controls?last_controls.roll:0 }; }
+		stickPitch:last_controls?last_controls.pitch:0, stickRoll:last_controls?last_controls.roll:0,
+		asi:dial(ASI_DIAL,cas), altitude,
+		vsi:dial(VSI_DIAL,fpm),
+		fuelLbs:Math.min(lbs,21000),
+		rpmL:65+34*sL, rpmR:65+34*sR,                            // F404 N2: ground idle ~65 %, military 99
+		egtL:400+350*sL+180*rL, egtR:400+350*sR+180*rR,          // °C, tens resolution on the drums
+		flowL:THREE.MathUtils.clamp(flow_state.pph/2/10,0,999), flowR:THREE.MathUtils.clamp(flow_state.pph/2/10,0,999),   // pph/10 per engine
+		clockH:(now.getHours()%12)+now.getMinutes()/60, clockM:now.getMinutes()+now.getSeconds()/60, clockS:now.getSeconds() };
+	const ind=ownship.group.userData.indexer;
+	if(ind){ const devd=(out[STATE.alpha]||0)/D2R-8.1;   // Control.Onspeed, the PA on-speed alpha datum (trim.go)
+		const lit=(out[STATE.extension]||0)>0.9;   // the real indexer arms with the gear
+		ind.slow.opacity = lit?THREE.MathUtils.clamp((devd-0.4)/0.5,0,1):0;
+		ind.fast.opacity = lit?THREE.MathUtils.clamp((-devd-0.4)/0.5,0,1):0;
+		ind.donut.opacity= lit?THREE.MathUtils.clamp(1-(Math.abs(devd)-0.5)/0.5,0,1):0; } }
 generate_world();
 const extras=[];
 function sync_extras(n){ while(extras.length<n){ const a=Math.random()*Math.PI*2,r=2000+Math.random()*4000;
@@ -2394,7 +2490,15 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, aoa:+(ownship.aoa??0).toFixed(2), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)), marshal:marshal?{left:+(marshal.push-sim_time).toFixed(1),commenced:marshal.commenced,platform:marshal.platform,dirty:marshal.dirty,ball:marshal.ball}:null, comms:comms.map(c=>c.text), groove:!!ownship.groove, waving:!!ownship.waving, icls:!!approach_deviation(),
+	atc:atc_on, aoa:+(ownship.aoa??0).toFixed(2),
+	rig:(()=>{ const r=(ownship.group.userData.rig||[]).filter(e=>e.gauge!==undefined); return { bound:r.filter(e=>e.object).length, total:r.length, missing:r.filter(e=>!e.object).map(e=>e.name) }; })(),
+	screens:(()=>{ const out={}; const v=new THREE.Vector3();   // where each driven gauge lands on screen (css px): crops for visual verification
+		for(const e of ownship.group.userData.rig||[]){ if(e.gauge===undefined||!e.object) continue;
+			e.object.getWorldPosition(v); v.project(cockpit_cam);
+			if(v.z<1) out[e.name]=[Math.round((v.x+1)/2*innerWidth), Math.round((1-v.y)/2*innerHeight)]; }
+		return out; })(),
+	gauges:(()=>{ const g=ownship.gauges||{}; const f=v=>v===undefined?null:+(+v).toFixed(3); return { asi:f(g.asi), altitude:f(g.altitude), vsi:f(g.vsi), fuelLbs:f(g.fuelLbs), rpmL:f(g.rpmL), egtL:f(g.egtL), flowL:f(g.flowL), clockH:f(g.clockH) }; })(),
+	indexer:(()=>{ const i=ownship.group.userData.indexer; return i?{ slow:+i.slow.opacity.toFixed(2), donut:+i.donut.opacity.toFixed(2), fast:+i.fast.opacity.toFixed(2) }:null; })(), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)), marshal:marshal?{left:+(marshal.push-sim_time).toFixed(1),commenced:marshal.commenced,platform:marshal.platform,dirty:marshal.dirty,ball:marshal.ball}:null, comms:comms.map(c=>c.text), groove:!!ownship.groove, waving:!!ownship.waving, icls:!!approach_deviation(),
 	boff:has_enemy?+(Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(_v.set(bandit.pos.x-ownship.pos.x,bandit.pos.y-ownship.pos.y,bandit.pos.z-ownship.pos.z).normalize()),-1,1))*57.3).toFixed(0):-1,
 	bburn:has_enemy&&bandit.harm?(bandit.harm.burning?1:0):-1, bkill:has_enemy&&bandit.harm?(bandit.harm.killed?1:0):-1, bwing:has_enemy&&bandit.harm?+(bandit.harm.wing??0).toFixed(2):-1,
 	brng:has_enemy?+wrap_distance(ownship.pos,bandit.pos).toFixed(0):-1, peak:+dev_peakbank.toFixed(1), phi:+dev_pitchhi.toFixed(1), plo:+dev_pitchlo.toFixed(1), gs:ownship.pass&&ownship.pass.n?+(ownship.pass.gs/ownship.pass.n).toFixed(2):-1, az:ownship.pass&&ownship.pass.n?+(ownship.pass.az/ownship.pass.n).toFixed(2):-1, grade:ownship.grade||"", pn:ownship.pass?ownship.pass.n:0, why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,
