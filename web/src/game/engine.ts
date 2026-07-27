@@ -2574,7 +2574,9 @@ function explosion_at(x,y,z){
 	smoke.vx[k]=Math.cos(a)*Math.cos(e)*sp; smoke.vy[k]=Math.abs(Math.sin(e))*sp*0.8+6; smoke.vz[k]=Math.sin(a)*Math.cos(e)*sp;
 	smoke.ttl[k]=smoke.life[k]=fire?(0.5+Math.random()*0.7):(2.6+Math.random()*2.6);
 	if(fire){ smoke.r[k]=1.0; smoke.g[k]=0.42+Math.random()*0.25; smoke.b[k]=0.08; } else { smoke.r[k]=0.30; smoke.g[k]=0.30; smoke.b[k]=0.32; } } }
-function crash_ownship(why){ if(crash_t>0) return; crash_t=3.0; (globalThis as any).dev_crash=why||"?"; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z); ownship.group.visible=false; ownship.speed=0; }
+function crash_ownship(why){ if(crash_t>0) return; crash_t=3.0;
+	if(!MULTIPLAYER) own_deaths++;   // local deaths count too — the history records the joust honestly (multiplayer's arrive via the net death event)
+	(globalThis as any).dev_crash=why||"?"; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z); ownship.group.visible=false; ownship.speed=0; }
 function over_runway(p){ const r=obstacles.runway; if(!r) return false; const dx=p.x-r.x, dz=p.z-r.z;
 	return Math.abs(dx*r.fx+dz*r.fz)<r.hl && Math.abs(dx*r.fz-dz*r.fx)<r.hw; }
 const GEAR=2.46;   // the aircraft origin rests this far above whatever surface is beneath it — the model's wheel bottoms measure 2.457 m below the (bbox-centred) origin in the gear-down pose; per-aircraft stance lives in AIRCRAFT_MODELS. Lower buries the wheels
@@ -3851,7 +3853,15 @@ let net_notice="", net_notice_t=0;
 let comms=[];   // the radio/chat log (#84): {text, colour, until} — top-left, hud-view furniture (multiplayer chat + the Case III radio script)
 function comm(text,colour){ comms.push({ text:String(text).slice(0,80), colour, until:performance.now()+10000 }); while(comms.length>5) comms.shift(); }
 function chat_scope(){ return (net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams")?"team":"all"; }
-function exit_match(){ if(!running) return; running=false; if(MULTIPLAYER) net_finish("left"); if(onExit) onExit(); }
+function exit_match(){ if(!running) return; running=false;
+	if(MULTIPLAYER) net_finish("left");
+	else if(cfg.task==="joust" && (own_kills>0||own_deaths>0)) net_record({   // local jousts belong in the history too — same table, world "local"; free flight stays unrecorded (no result to record)
+		world:"local", session:"local-"+mission_began, mode:"joust", team:"",
+		started:mission_began, ended:Date.now(), reason:own_kills>0?"victory":"killed",
+		players:"2", kills:own_kills, deaths:own_deaths,
+		cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0 });
+	if(onExit) onExit(); }
+let mission_began=Date.now();   // local session identity for the history's replay-dedup key
 let own_kills=0, own_deaths=0, match_started=0;
 const remotes=new Map();   // slot -> aircraft state
 let designated=-1;   // multiplayer L&S designation: the remote slot the pilot acquired (-1 = none) — HUD state only, like the real jet (the missile's seeker hunts its own cone)
@@ -4103,7 +4113,7 @@ function start_mission(){
 	menu_hold=false; map_on=false; map_el.style.display="none";
 	loading=!assets_ready(); loading_t0=performance.now();   // hold the LOADING screen until every async asset is in — no piecemeal pop-in of carrier/airfield/airframe
 	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
-	running=true;
+	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0;   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
 	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,
 	// chase camera at the given azimuth/elevation. Judging water needs an external low view.
 	const shotp=DEV_MODE?new URLSearchParams(window.location.search).get("shot"):null;
