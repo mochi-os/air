@@ -1143,7 +1143,7 @@ function MissionPanel({
 </SectionLabel>
 <SliderRow
   label={<Trans>Load</Trans>}
-  value={Number(config.fuel) || 6000}
+  value={Number(config.fuel) || 10800}
   min={1500}
   max={10800}
   step={100}

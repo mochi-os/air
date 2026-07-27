@@ -71,7 +71,7 @@ export interface MissionConfig {
 export const DEFAULT_CONFIG: MissionConfig = {
   task: 'joust',
   bandit: 'veteran',
-  fuel: 6000,
+  fuel: 10800, // full internal — combat loads are a slider pull away
   aircraft: 'fa18c',
   joystick: '',
   sticks: {},
