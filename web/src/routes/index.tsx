@@ -85,7 +85,13 @@ function Index() {
           onReady={(h) => {
             gameRef.current = h
           }}
-          onExit={leaveFlight}
+          onExit={() => {
+            // Leaving the mission clears any pending settings request: the
+            // nonce survives into MissionSetup's fresh mount, and a stale one
+            // reopened the settings dialog over the front page.
+            setSettingsNonce(0)
+            leaveFlight()
+          }}
           flying={inFlight}
           onSettings={() => {
             // Settings over a paused mission: reuse the one menu surface rather
