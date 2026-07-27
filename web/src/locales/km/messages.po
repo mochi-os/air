@@ -342,13 +342,25 @@ msgstr "បោះបង់"
 msgid "Canopy"
 msgstr "គម្របកាប៊ីន"
 
+#: src/components/MissionSetup.tsx:944
+msgid "Case I"
+msgstr "Case I"
+
 #: src/components/MissionSetup.tsx:1205
 msgid "Case I (day)"
 msgstr "ករណី I (ថ្ងៃ)"
 
+#: src/components/MissionSetup.tsx:945
+msgid "Case II"
+msgstr "Case II"
+
 #: src/components/MissionSetup.tsx:1206
 msgid "Case II (weather)"
 msgstr "ករណី II (អាកាសធាតុ)"
+
+#: src/components/MissionSetup.tsx:946
+msgid "Case III"
+msgstr "Case III"
 
 #: src/components/MissionSetup.tsx:1207
 msgid "Case III (night)"
@@ -571,8 +583,8 @@ msgstr "បង្កើត ហើយហោះហើរ"
 msgid "Create match"
 msgstr "បង្កើតការប្រកួត"
 
-#: src/components/MissionSetup.tsx:1529
-#: src/components/MissionSetup.tsx:1550
+#: src/components/MissionSetup.tsx:1542
+#: src/components/MissionSetup.tsx:1563
 msgid "Create mission"
 msgstr "បង្កើតបេសកកម្ម"
 
@@ -707,7 +719,7 @@ msgstr "បង្ហាញរបារចំហៀងទូរស័ព្ទ។
 msgid "Distance LOD"
 msgstr "LOD តាមចម្ងាយ"
 
-#: src/components/MissionSetup.tsx:1631
+#: src/components/MissionSetup.tsx:1644
 msgid "Done"
 msgstr "រួចរាល់"
 
@@ -893,8 +905,8 @@ msgstr "ស្នូលហោះហើរបរាជ័យ"
 msgid "Floating"
 msgstr "អណ្ដែត"
 
-#: src/components/MissionSetup.tsx:1523
-#: src/components/MissionSetup.tsx:1564
+#: src/components/MissionSetup.tsx:1536
+#: src/components/MissionSetup.tsx:1577
 msgid "Fly"
 msgstr "ហោះ"
 
@@ -964,7 +976,7 @@ msgstr "កង់ចុះចត"
 msgid "GEAR"
 msgstr "ហ្គៀ"
 
-#: src/components/MissionSetup.tsx:1573
+#: src/components/MissionSetup.tsx:1586
 msgid "General"
 msgstr "ទូទៅ"
 
@@ -994,7 +1006,7 @@ msgstr "ទៅទំព័រ {pageNumber}"
 msgid "Go to previous page"
 msgstr "ទៅទំព័រមុន"
 
-#: src/components/MissionSetup.tsx:1576
+#: src/components/MissionSetup.tsx:1589
 msgid "Graphics"
 msgstr "ក្រាហ្វិក"
 
@@ -1028,8 +1040,8 @@ msgstr "ខ្ពស់"
 msgid "High stratus"
 msgstr "ស្ត្រាទុសខ្ពស់"
 
-#: src/components/MissionSetup.tsx:1541
-#: src/components/MissionSetup.tsx:1636
+#: src/components/MissionSetup.tsx:1554
+#: src/components/MissionSetup.tsx:1649
 msgid "History"
 msgstr "ប្រវត្តិ"
 
@@ -1064,6 +1076,7 @@ msgstr "សម្រួល HUD"
 msgid "Imperial"
 msgstr "អ៊ីមភេរៀល"
 
+#: src/components/MissionSetup.tsx:941
 #: src/components/MissionSetup.tsx:1202
 msgid "In air"
 msgstr "នៅលើអាកាស"
@@ -1098,7 +1111,7 @@ msgid "Join"
 msgstr "ចូលរួម"
 
 #: src/components/MissionSetup.tsx:1024
-#: src/components/MissionSetup.tsx:1533
+#: src/components/MissionSetup.tsx:1546
 msgid "Join server"
 msgstr "ចូលរួមម៉ាស៊ីនមេ"
 
@@ -1107,6 +1120,7 @@ msgid "JOINED"
 msgstr "បានចូលរួម"
 
 #: src/components/MatchHistory.tsx:51
+#: src/components/MissionSetup.tsx:1510
 #: src/components/Multiplayer.tsx:460
 msgid "Joust"
 msgstr "ការតទល់"
@@ -1119,7 +1133,7 @@ msgstr "ប្រយុទ្ធទល់មុខ — 1v1, បាញ់ទម�
 msgid "Joust against AI player"
 msgstr "ប្រយុទ្ធទល់មុខជាមួយអ្នកលេង AI"
 
-#: src/components/MissionSetup.tsx:1582
+#: src/components/MissionSetup.tsx:1595
 msgid "Joystick"
 msgstr "ចយស្ទីក"
 
@@ -1127,7 +1141,7 @@ msgstr "ចយស្ទីក"
 msgid "K/D"
 msgstr "K/D"
 
-#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1598
 msgid "Keys"
 msgstr "គ្រាប់ចុច"
 
@@ -1521,10 +1535,12 @@ msgstr "ព័ត៌មានលម្អិតមហាសមុទ្រ"
 msgid "OK"
 msgstr "OK"
 
+#: src/components/MissionSetup.tsx:943
 #: src/components/MissionSetup.tsx:1204
 msgid "On carrier"
 msgstr "នៅលើនាវាដឹកយន្តហោះ"
 
+#: src/components/MissionSetup.tsx:942
 #: src/components/MissionSetup.tsx:1203
 msgid "On runway"
 msgstr "នៅលើផ្លូវរត់"
@@ -1788,7 +1804,7 @@ msgstr "ផ្ញើអ៊ីមែលឡើងវិញ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1624
+#: src/components/MissionSetup.tsx:1637
 msgid "Reset"
 msgstr "កំណត់ឡើងវិញ"
 
@@ -1800,7 +1816,7 @@ msgstr "កំណត់ការកំណត់ទាំងអស់ឡើងវ
 msgid "Resolution"
 msgstr "ដំណោះស្រាយ"
 
-#: src/components/MissionSetup.tsx:1515
+#: src/components/MissionSetup.tsx:1528
 msgid "Restart mission"
 msgstr "ចាប់ផ្តើមបេសកកម្មឡើងវិញ"
 
@@ -1812,7 +1828,7 @@ msgstr "លទ្ធផល"
 msgid "Resume"
 msgstr "បន្ត"
 
-#: src/components/MissionSetup.tsx:1511
+#: src/components/MissionSetup.tsx:1524
 msgid "Resume mission"
 msgstr "បន្តបេសកកម្ម"
 
@@ -1993,8 +2009,8 @@ msgstr "កំណត់ចំណុចចេញដំណើរ និងគោ�
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
 #: src/components/GameCanvas.tsx:251
-#: src/components/MissionSetup.tsx:1537
-#: src/components/MissionSetup.tsx:1569
+#: src/components/MissionSetup.tsx:1550
+#: src/components/MissionSetup.tsx:1582
 msgid "Settings"
 msgstr "ការកំណត់"
 
@@ -2039,7 +2055,7 @@ msgid "Small"
 msgstr "តូច"
 
 #: src/components/MissionSetup.tsx:425
-#: src/components/MissionSetup.tsx:1579
+#: src/components/MissionSetup.tsx:1592
 msgid "Sound"
 msgstr "សំឡេង"
 

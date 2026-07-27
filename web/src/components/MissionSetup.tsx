@@ -937,13 +937,13 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
   )
 }
 
-const STARTS: Record<string, string> = {
-  air: 'In air',
-  runway: 'On runway',
-  carrier: 'On carrier',
-  case1: 'Case I',
-  case2: 'Case II',
-  case3: 'Case III',
+const STARTS: Record<string, ReactNode> = {
+  air: <Trans>In air</Trans>,
+  runway: <Trans>On runway</Trans>,
+  carrier: <Trans>On carrier</Trans>,
+  case1: <Trans>Case I</Trans>,
+  case2: <Trans>Case II</Trans>,
+  case3: <Trans>Case III</Trans>,
 }
 
 // MenuDialog is the one shell every menu surface opens in: title, scroll, and
@@ -1502,7 +1502,15 @@ export function MissionSetup({
   }, [settingsNonce])
   const identity = useIdentityName()
   const close = () => setDialog(null)
-  const started = STARTS[config.start === 'landing' ? 'case2' : config.start]
+  // The label must describe what Fly actually does: a joust ignores the start
+  // selector entirely (the engine spawns both jets at the merge), so showing
+  // the start read as a deck start that then began airborne.
+  const started =
+    config.task === 'joust' ? (
+      <Trans>Joust</Trans>
+    ) : (
+      STARTS[config.start === 'landing' ? 'case2' : config.start]
+    )
 
   return (
     <div className='bg-background fixed inset-0 z-50 flex items-center justify-center overflow-auto p-6'>
