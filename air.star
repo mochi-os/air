@@ -109,7 +109,7 @@ def match_record(a):
 def match_list(a):
 	if not a.user:
 		return {"data": {"matches": []}}
-	matches = mochi.db.rows("select world, mode, team, started, ended, reason, players, kills, deaths, cheated from matches order by started desc limit 50")
+	matches = mochi.db.rows("select world, session, mode, team, started, ended, reason, players, kills, deaths, cheated from matches order by started desc limit 50")
 	return {"data": {"matches": matches}}
 
 def telemetry_save(a):

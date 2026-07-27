@@ -117,6 +117,7 @@ function Index() {
           onTabChange={(t) => setTab(t as SetupTab)}
           settingsNonce={settingsNonce}
           gameInProgress={started}
+          recording={() => gameRef.current?.recording?.() ?? null}
           onStart={() => {
             setJoin(null)
             setGameKey((k) => k + 1)

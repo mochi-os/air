@@ -125,7 +125,7 @@ msgid "Account verified"
 msgstr "Уліковы запіс пацверджаны"
 
 #: src/components/MissionSetup.tsx:1166
-#: src/components/MissionSetup.tsx:1526
+#: src/components/MissionSetup.tsx:1539
 #: src/components/Multiplayer.tsx:378
 msgid "Ace"
 msgstr "Ас"
@@ -421,7 +421,7 @@ msgstr "Чат"
 msgid "Chat to everyone"
 msgstr "Чат з усімі"
 
-#: src/components/MatchHistory.tsx:141
+#: src/components/MatchHistory.tsx:167
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Чыты"
@@ -582,6 +582,10 @@ msgstr "Не ўдалося стварыць матч"
 msgid "Could not load this document. Please try again later."
 msgstr "Не атрымалася загрузіць гэты дакумент. Калі ласка, паспрабуйце пазней."
 
+#: src/components/MatchHistory.tsx:181
+msgid "Could not save the recording"
+msgstr "Не ўдалося захаваць запіс"
+
 #: src/components/MissionSetup.tsx:891
 msgid "Could not send the message"
 msgstr "Не атрымалася даслаць паведамленне"
@@ -610,8 +614,8 @@ msgstr "Стварыць і ляцець"
 msgid "Create match"
 msgstr "Стварыць матч"
 
-#: src/components/MissionSetup.tsx:1564
-#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1577
+#: src/components/MissionSetup.tsx:1598
 msgid "Create mission"
 msgstr "Стварыць місію"
 
@@ -656,7 +660,7 @@ msgstr "Цёмны рэжым"
 msgid "Data conflict"
 msgstr "Канфлікт даных"
 
-#: src/components/MatchHistory.tsx:103
+#: src/components/MatchHistory.tsx:128
 msgid "Date"
 msgstr "Дата"
 
@@ -665,8 +669,8 @@ msgstr "Дата"
 msgid "Day"
 msgstr "Дзень"
 
-#: src/components/MatchHistory.tsx:93
 #: src/components/MatchHistory.tsx:118
+#: src/components/MatchHistory.tsx:143
 msgid "Deaths"
 msgstr "Смерці"
 
@@ -730,7 +734,7 @@ msgstr "Напрамак"
 msgid "disconnected"
 msgstr "адключаны"
 
-#: src/components/MatchHistory.tsx:59
+#: src/components/MatchHistory.tsx:84
 msgid "Disconnected"
 msgstr "Адключана"
 
@@ -747,7 +751,7 @@ msgstr "Адлюстроўвае мабільную бакавую панэль.
 msgid "Distance LOD"
 msgstr "LOD адлегласці"
 
-#: src/components/MissionSetup.tsx:1666
+#: src/components/MissionSetup.tsx:1679
 msgid "Done"
 msgstr "Гатова"
 
@@ -899,7 +903,7 @@ msgstr "БОЙ ПАЧАЎСЯ"
 msgid "Finish moving your account"
 msgstr "Завяршыце перанос акаўнта"
 
-#: src/components/MatchHistory.tsx:60
+#: src/components/MatchHistory.tsx:85
 msgid "Finished"
 msgstr "Завершана"
 
@@ -941,8 +945,8 @@ msgstr "ЗБОЙ ПАЛЁТНАГА ЯДРА"
 msgid "Floating"
 msgstr "Плаваючы"
 
-#: src/components/MissionSetup.tsx:1558
-#: src/components/MissionSetup.tsx:1599
+#: src/components/MissionSetup.tsx:1571
+#: src/components/MissionSetup.tsx:1612
 msgid "Fly"
 msgstr "Ляцець"
 
@@ -1000,7 +1004,7 @@ msgstr "Паліўны зонд"
 msgid "Full layout"
 msgstr "Поўная разметка"
 
-#: src/components/MatchHistory.tsx:50
+#: src/components/MatchHistory.tsx:75
 msgid "Furball"
 msgstr "Furball"
 
@@ -1012,7 +1016,7 @@ msgstr "шасі"
 msgid "GEAR"
 msgstr "ШАСІ"
 
-#: src/components/MissionSetup.tsx:1608
+#: src/components/MissionSetup.tsx:1621
 msgid "General"
 msgstr "Агульныя"
 
@@ -1042,7 +1046,7 @@ msgstr "Перайсці на старонку {pageNumber}"
 msgid "Go to previous page"
 msgstr "На папярэднюю старонку"
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1624
 msgid "Graphics"
 msgstr "Графіка"
 
@@ -1076,8 +1080,8 @@ msgstr "Высокі"
 msgid "High stratus"
 msgstr "Высокія слаістыя"
 
-#: src/components/MissionSetup.tsx:1576
-#: src/components/MissionSetup.tsx:1671
+#: src/components/MissionSetup.tsx:1589
+#: src/components/MissionSetup.tsx:1684
 msgid "History"
 msgstr "Гісторыя"
 
@@ -1156,7 +1160,7 @@ msgid "Join"
 msgstr "Далучыцца"
 
 #: src/components/MissionSetup.tsx:1024
-#: src/components/MissionSetup.tsx:1568
+#: src/components/MissionSetup.tsx:1581
 msgid "Join server"
 msgstr "Далучыцца да сервера"
 
@@ -1164,8 +1168,8 @@ msgstr "Далучыцца да сервера"
 msgid "JOINED"
 msgstr "ДАЛУЧЫЎСЯ"
 
-#: src/components/MatchHistory.tsx:51
-#: src/components/MissionSetup.tsx:1531
+#: src/components/MatchHistory.tsx:76
+#: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
 msgstr "Паядынак"
@@ -1178,15 +1182,15 @@ msgstr "Дуэль — 1v1, перамагае першы кіл"
 msgid "Joust against AI player"
 msgstr "Дуэль супраць ШІ-гульца"
 
-#: src/components/MissionSetup.tsx:1617
+#: src/components/MissionSetup.tsx:1630
 msgid "Joystick"
 msgstr "Джойсцік"
 
-#: src/components/MatchHistory.tsx:96
+#: src/components/MatchHistory.tsx:121
 msgid "K/D"
 msgstr "K/D"
 
-#: src/components/MissionSetup.tsx:1620
+#: src/components/MissionSetup.tsx:1633
 msgid "Keys"
 msgstr "Клавішы"
 
@@ -1194,8 +1198,8 @@ msgstr "Клавішы"
 msgid "KILL"
 msgstr "ЗБІТЫ"
 
-#: src/components/MatchHistory.tsx:90
 #: src/components/MatchHistory.tsx:115
+#: src/components/MatchHistory.tsx:140
 msgid "Kills"
 msgstr "Забойствы"
 
@@ -1251,7 +1255,7 @@ msgstr "Падрабязней"
 msgid "Leave server"
 msgstr "Пакінуць сервер"
 
-#: src/components/MatchHistory.tsx:58
+#: src/components/MatchHistory.tsx:83
 msgid "Left"
 msgstr "Пакінуў"
 
@@ -1392,7 +1396,7 @@ msgstr "Агульная"
 msgid "Match type"
 msgstr "Тып матчу"
 
-#: src/components/MatchHistory.tsx:87
+#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Матчы"
@@ -1443,7 +1447,7 @@ msgstr "Ракеты"
 msgid "Missiles allowed"
 msgstr "Ракеты дазволеныя"
 
-#: src/components/MatchHistory.tsx:109
+#: src/components/MatchHistory.tsx:134
 msgid "Mode"
 msgstr "Рэжым"
 
@@ -1494,7 +1498,7 @@ msgstr "Групы недаступны"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Джойсцік не знойдзены — націсніце любую кнопку на ім, каб абудзіць яго."
 
-#: src/components/MatchHistory.tsx:71
+#: src/components/MatchHistory.tsx:96
 msgid "No matches yet"
 msgstr "Пакуль няма матчаў"
 
@@ -1673,7 +1677,7 @@ msgid "pilot"
 msgstr "пілот"
 
 #: src/components/MissionSetup.tsx:1164
-#: src/components/MissionSetup.tsx:1524
+#: src/components/MissionSetup.tsx:1537
 #: src/components/Multiplayer.tsx:376
 msgid "Pilot"
 msgstr "Пілот"
@@ -1702,7 +1706,7 @@ msgstr "Тангаж уверх"
 msgid "PLATFORM"
 msgstr "ПЛАТФОРМА"
 
-#: src/components/MatchHistory.tsx:112
+#: src/components/MatchHistory.tsx:137
 msgid "Players"
 msgstr "Гульцы"
 
@@ -1795,6 +1799,19 @@ msgstr "Нядаўнія"
 msgid "Recommended"
 msgstr "Рэкамендуецца"
 
+#: src/components/MissionSetup.tsx:1459
+msgid "Record flights"
+msgstr "Запісваць палёты"
+
+#: src/components/MatchHistory.tsx:186
+#: src/components/MissionSetup.tsx:1453
+msgid "Recording"
+msgstr "Запіс"
+
+#: src/components/MatchHistory.tsx:180
+msgid "Recording saved"
+msgstr "Запіс захаваны"
+
 #: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "Чырвоныя"
@@ -1870,7 +1887,7 @@ msgstr "Адправіць ліст паўторна"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1659
+#: src/components/MissionSetup.tsx:1672
 msgid "Reset"
 msgstr "Скід"
 
@@ -1882,11 +1899,11 @@ msgstr "Скінуць усе налады да значэнняў па змаў
 msgid "Resolution"
 msgstr "Дазвол"
 
-#: src/components/MissionSetup.tsx:1550
+#: src/components/MissionSetup.tsx:1563
 msgid "Restart mission"
 msgstr "Перазапусціць місію"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:146
 msgid "Result"
 msgstr "Вынік"
 
@@ -1894,7 +1911,7 @@ msgstr "Вынік"
 msgid "Resume"
 msgstr "Працягнуць"
 
-#: src/components/MissionSetup.tsx:1546
+#: src/components/MissionSetup.tsx:1559
 msgid "Resume mission"
 msgstr "Працягнуць місію"
 
@@ -1927,7 +1944,7 @@ msgid "Roll right"
 msgstr "Крэн управа"
 
 #: src/components/MissionSetup.tsx:1163
-#: src/components/MissionSetup.tsx:1523
+#: src/components/MissionSetup.tsx:1536
 #: src/components/Multiplayer.tsx:375
 msgid "Rookie"
 msgstr "Навічок"
@@ -2044,7 +2061,7 @@ msgstr "Адправіць эл. пошту"
 msgid "Serif"
 msgstr "З засечкамі"
 
-#: src/components/MatchHistory.tsx:106
+#: src/components/MatchHistory.tsx:131
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Сервер"
@@ -2085,8 +2102,8 @@ msgstr "Задаць адпраўленне і прызначэнне"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1572
-#: src/components/MissionSetup.tsx:1604
+#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1617
 msgid "Settings"
 msgstr "Налады"
 
@@ -2131,7 +2148,7 @@ msgid "Small"
 msgstr "Малы"
 
 #: src/components/MissionSetup.tsx:425
-#: src/components/MissionSetup.tsx:1614
+#: src/components/MissionSetup.tsx:1627
 msgid "Sound"
 msgstr "Гук"
 
@@ -2233,7 +2250,7 @@ msgstr "Каманда"
 msgid "TEAM"
 msgstr "КАМАНДА"
 
-#: src/components/MatchHistory.tsx:52
+#: src/components/MatchHistory.tsx:77
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Каманды"
@@ -2467,7 +2484,7 @@ msgid "Vertical"
 msgstr "Вертыкальны"
 
 #: src/components/MissionSetup.tsx:1165
-#: src/components/MissionSetup.tsx:1525
+#: src/components/MissionSetup.tsx:1538
 #: src/components/Multiplayer.tsx:377
 msgid "Veteran"
 msgstr "Ветэран"
@@ -2598,7 +2615,7 @@ msgstr "У вас няма патрэбнага дазволу, <0/>каб пр�
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Ваш акаўнт быў перанесены сюды з {source}. Пакуль вы не выдаліце яго там, паведамленні і апавяшчэнні могуць паступаць на абодва серверы, частка вашага кантэнту па-ранейшаму будзе аддавацца са старога сервера, а падпісчыкам можа спатрэбіцца некалькі хвілін, каб знайсці вас тут."
 
-#: src/components/MatchHistory.tsx:72
+#: src/components/MatchHistory.tsx:97
 msgid "Your multiplayer matches appear here once you've flown one."
 msgstr "Вашы шматкарыстальніцкія матчы з'явяцца тут, калі вы праляціце хаця б адзін."
 

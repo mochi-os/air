@@ -125,7 +125,7 @@ msgid "Account verified"
 msgstr "I-akhawunti iqinisekisiwe"
 
 #: src/components/MissionSetup.tsx:1166
-#: src/components/MissionSetup.tsx:1526
+#: src/components/MissionSetup.tsx:1539
 #: src/components/Multiplayer.tsx:378
 msgid "Ace"
 msgstr "Ingcweti"
@@ -421,7 +421,7 @@ msgstr "Ingxoxo"
 msgid "Chat to everyone"
 msgstr "Ingxoxo nabo bonke"
 
-#: src/components/MatchHistory.tsx:141
+#: src/components/MatchHistory.tsx:167
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Ukukopela"
@@ -582,6 +582,10 @@ msgstr "Akukwazekanga ukudala umdlalo"
 msgid "Could not load this document. Please try again later."
 msgstr "Akukwazanga ukulayisha le dokhumenti. Sicela uzame futhi kamuva."
 
+#: src/components/MatchHistory.tsx:181
+msgid "Could not save the recording"
+msgstr "Akukwazekanga ukulondoloza irekhodi"
+
 #: src/components/MissionSetup.tsx:891
 msgid "Could not send the message"
 msgstr "Akukwazekanga ukuthumela umlayezo"
@@ -610,8 +614,8 @@ msgstr "Dala bese undiza"
 msgid "Create match"
 msgstr "Dala umdlalo"
 
-#: src/components/MissionSetup.tsx:1564
-#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1577
+#: src/components/MissionSetup.tsx:1598
 msgid "Create mission"
 msgstr "Dala umsebenzi"
 
@@ -656,7 +660,7 @@ msgstr "Imodi emnyama"
 msgid "Data conflict"
 msgstr "Ukungqubuzana kwedatha"
 
-#: src/components/MatchHistory.tsx:103
+#: src/components/MatchHistory.tsx:128
 msgid "Date"
 msgstr "Usuku"
 
@@ -665,8 +669,8 @@ msgstr "Usuku"
 msgid "Day"
 msgstr "Imini"
 
-#: src/components/MatchHistory.tsx:93
 #: src/components/MatchHistory.tsx:118
+#: src/components/MatchHistory.tsx:143
 msgid "Deaths"
 msgstr "Ukufa"
 
@@ -730,7 +734,7 @@ msgstr "Indlela"
 msgid "disconnected"
 msgstr "ayixhunyiwe"
 
-#: src/components/MatchHistory.tsx:59
+#: src/components/MatchHistory.tsx:84
 msgid "Disconnected"
 msgstr "Kunqanyuliwe"
 
@@ -747,7 +751,7 @@ msgstr "Ibonisa ibha eseceleni yefoni."
 msgid "Distance LOD"
 msgstr "I-LOD yebanga"
 
-#: src/components/MissionSetup.tsx:1666
+#: src/components/MissionSetup.tsx:1679
 msgid "Done"
 msgstr "Kwenziwe"
 
@@ -899,7 +903,7 @@ msgstr "IMPI ISIQALILE"
 msgid "Finish moving your account"
 msgstr "Qeda ukudlulisa i-akhawunti yakho"
 
-#: src/components/MatchHistory.tsx:60
+#: src/components/MatchHistory.tsx:85
 msgid "Finished"
 msgstr "Kuqediwe"
 
@@ -941,8 +945,8 @@ msgstr "UMGOGODLA WOKUNDIZA WEHLULEKILE"
 msgid "Floating"
 msgstr "Kuntwebezelayo"
 
-#: src/components/MissionSetup.tsx:1558
-#: src/components/MissionSetup.tsx:1599
+#: src/components/MissionSetup.tsx:1571
+#: src/components/MissionSetup.tsx:1612
 msgid "Fly"
 msgstr "Ndiza"
 
@@ -1000,7 +1004,7 @@ msgstr "Iprobhu kaphethiloli"
 msgid "Full layout"
 msgstr "Isakhiwo esiphelele"
 
-#: src/components/MatchHistory.tsx:50
+#: src/components/MatchHistory.tsx:75
 msgid "Furball"
 msgstr "Furball"
 
@@ -1012,7 +1016,7 @@ msgstr "Igiya"
 msgid "GEAR"
 msgstr "IGIYA"
 
-#: src/components/MissionSetup.tsx:1608
+#: src/components/MissionSetup.tsx:1621
 msgid "General"
 msgstr "Okujwayelekile"
 
@@ -1042,7 +1046,7 @@ msgstr "Yiya ekhasini {pageNumber}"
 msgid "Go to previous page"
 msgstr "Yiya ekhasini elingaphambilini"
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1624
 msgid "Graphics"
 msgstr "Imidwebo"
 
@@ -1076,8 +1080,8 @@ msgstr "Okuphezulu"
 msgid "High stratus"
 msgstr "I-stratus ephakeme"
 
-#: src/components/MissionSetup.tsx:1576
-#: src/components/MissionSetup.tsx:1671
+#: src/components/MissionSetup.tsx:1589
+#: src/components/MissionSetup.tsx:1684
 msgid "History"
 msgstr "Umlando"
 
@@ -1156,7 +1160,7 @@ msgid "Join"
 msgstr "Joyina"
 
 #: src/components/MissionSetup.tsx:1024
-#: src/components/MissionSetup.tsx:1568
+#: src/components/MissionSetup.tsx:1581
 msgid "Join server"
 msgstr "Joyina iseva"
 
@@ -1164,8 +1168,8 @@ msgstr "Joyina iseva"
 msgid "JOINED"
 msgstr "UJOYINILE"
 
-#: src/components/MatchHistory.tsx:51
-#: src/components/MissionSetup.tsx:1531
+#: src/components/MatchHistory.tsx:76
+#: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
 msgstr "Umqhudelwano"
@@ -1178,15 +1182,15 @@ msgstr "Umlo wababili — 1v1, obulala kuqala uyanqoba"
 msgid "Joust against AI player"
 msgstr "Umlo wababili nomdlali we-AI"
 
-#: src/components/MissionSetup.tsx:1617
+#: src/components/MissionSetup.tsx:1630
 msgid "Joystick"
 msgstr "I-joystick"
 
-#: src/components/MatchHistory.tsx:96
+#: src/components/MatchHistory.tsx:121
 msgid "K/D"
 msgstr "K/D"
 
-#: src/components/MissionSetup.tsx:1620
+#: src/components/MissionSetup.tsx:1633
 msgid "Keys"
 msgstr "Okhiye"
 
@@ -1194,8 +1198,8 @@ msgstr "Okhiye"
 msgid "KILL"
 msgstr "UMBULELE"
 
-#: src/components/MatchHistory.tsx:90
 #: src/components/MatchHistory.tsx:115
+#: src/components/MatchHistory.tsx:140
 msgid "Kills"
 msgstr "Ukubulala"
 
@@ -1251,7 +1255,7 @@ msgstr "Funda kabanzi"
 msgid "Leave server"
 msgstr "Shiya iseva"
 
-#: src/components/MatchHistory.tsx:58
+#: src/components/MatchHistory.tsx:83
 msgid "Left"
 msgstr "Uphumile"
 
@@ -1392,7 +1396,7 @@ msgstr "Okuphelele"
 msgid "Match type"
 msgstr "Uhlobo lomdlalo"
 
-#: src/components/MatchHistory.tsx:87
+#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Imidlalo"
@@ -1443,7 +1447,7 @@ msgstr "Imicibisholo"
 msgid "Missiles allowed"
 msgstr "Imicibisholo ivunyelwe"
 
-#: src/components/MatchHistory.tsx:109
+#: src/components/MatchHistory.tsx:134
 msgid "Mode"
 msgstr "Imodi"
 
@@ -1494,7 +1498,7 @@ msgstr "Awekho amaqembu atholakalayo"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ayikho i-joystick etholakele — cindezela noma iyiphi inkinobho kuyo ukuze uyivuse."
 
-#: src/components/MatchHistory.tsx:71
+#: src/components/MatchHistory.tsx:96
 msgid "No matches yet"
 msgstr "Ayikho imidlalo okwamanje"
 
@@ -1673,7 +1677,7 @@ msgid "pilot"
 msgstr "umshayeli webhanoyi"
 
 #: src/components/MissionSetup.tsx:1164
-#: src/components/MissionSetup.tsx:1524
+#: src/components/MissionSetup.tsx:1537
 #: src/components/Multiplayer.tsx:376
 msgid "Pilot"
 msgstr "Umshayeli webhanoyi"
@@ -1702,7 +1706,7 @@ msgstr "I-pitch phezulu"
 msgid "PLATFORM"
 msgstr "INKUNDLA"
 
-#: src/components/MatchHistory.tsx:112
+#: src/components/MatchHistory.tsx:137
 msgid "Players"
 msgstr "Abadlali"
 
@@ -1795,6 +1799,19 @@ msgstr "Kwakamuva"
 msgid "Recommended"
 msgstr "Kunconywayo"
 
+#: src/components/MissionSetup.tsx:1459
+msgid "Record flights"
+msgstr "Qopha ukundiza"
+
+#: src/components/MatchHistory.tsx:186
+#: src/components/MissionSetup.tsx:1453
+msgid "Recording"
+msgstr "Ukuqopha"
+
+#: src/components/MatchHistory.tsx:180
+msgid "Recording saved"
+msgstr "Irekhodi lilondoloziwe"
+
 #: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "Obomvu"
@@ -1870,7 +1887,7 @@ msgstr "Thumela i-imeyili futhi"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1659
+#: src/components/MissionSetup.tsx:1672
 msgid "Reset"
 msgstr "Setha kabusha"
 
@@ -1882,11 +1899,11 @@ msgstr "Setha kabusha zonke izilungiselelo emanani okuzenzakalelayo"
 msgid "Resolution"
 msgstr "Isixazululo"
 
-#: src/components/MissionSetup.tsx:1550
+#: src/components/MissionSetup.tsx:1563
 msgid "Restart mission"
 msgstr "Qala kabusha umsebenzi"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:146
 msgid "Result"
 msgstr "Umphumela"
 
@@ -1894,7 +1911,7 @@ msgstr "Umphumela"
 msgid "Resume"
 msgstr "Qhubeka"
 
-#: src/components/MissionSetup.tsx:1546
+#: src/components/MissionSetup.tsx:1559
 msgid "Resume mission"
 msgstr "Qhubeka nomsebenzi"
 
@@ -1927,7 +1944,7 @@ msgid "Roll right"
 msgstr "I-roll kwesokudla"
 
 #: src/components/MissionSetup.tsx:1163
-#: src/components/MissionSetup.tsx:1523
+#: src/components/MissionSetup.tsx:1536
 #: src/components/Multiplayer.tsx:375
 msgid "Rookie"
 msgstr "Osaqalayo"
@@ -2044,7 +2061,7 @@ msgstr "Thumela i-imeyili"
 msgid "Serif"
 msgstr "I-Serif"
 
-#: src/components/MatchHistory.tsx:106
+#: src/components/MatchHistory.tsx:131
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Iseva"
@@ -2085,8 +2102,8 @@ msgstr "Misa indawo yokuqala neyokuya"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1572
-#: src/components/MissionSetup.tsx:1604
+#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1617
 msgid "Settings"
 msgstr "Izilungiselelo"
 
@@ -2131,7 +2148,7 @@ msgid "Small"
 msgstr "Okuncane"
 
 #: src/components/MissionSetup.tsx:425
-#: src/components/MissionSetup.tsx:1614
+#: src/components/MissionSetup.tsx:1627
 msgid "Sound"
 msgstr "Umsindo"
 
@@ -2233,7 +2250,7 @@ msgstr "Iqembu"
 msgid "TEAM"
 msgstr "IQEMBU"
 
-#: src/components/MatchHistory.tsx:52
+#: src/components/MatchHistory.tsx:77
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Amaqembu"
@@ -2467,7 +2484,7 @@ msgid "Vertical"
 msgstr "Okuqonde phezulu"
 
 #: src/components/MissionSetup.tsx:1165
-#: src/components/MissionSetup.tsx:1525
+#: src/components/MissionSetup.tsx:1538
 #: src/components/Multiplayer.tsx:377
 msgid "Veteran"
 msgstr "Onesipiliyoni"
@@ -2598,7 +2615,7 @@ msgstr "Awunayo imvume edingekayo <0/>yokubuka le nsiza."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "I-akhawunti yakho isuswe lapha ivela ku-{source}. Uze uyisuse lapho, imilayezo nezaziso zingafika eziservereni zombili, ingxenye yomqukathi wakho iqhubeka inikezwa eservereni endala, futhi abalandeli bangathatha imizuzu embalwa ukukuthola lapha."
 
-#: src/components/MatchHistory.tsx:72
+#: src/components/MatchHistory.tsx:97
 msgid "Your multiplayer matches appear here once you've flown one."
 msgstr "Imidlalo yakho yabadlali abaningi izovela lapha uma usubhabhile omunye."
 

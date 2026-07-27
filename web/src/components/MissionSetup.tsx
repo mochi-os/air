@@ -40,7 +40,7 @@ import {
 } from '../lib/config'
 import { useIdentityName } from '../lib/config-store'
 import { Multiplayer } from './Multiplayer'
-import { MatchHistory } from './MatchHistory'
+import { MatchHistory, type Replay } from './MatchHistory'
 import { KEY_DEFAULTS, pretty } from '../game/keys'
 import {
   default_server,
@@ -56,7 +56,7 @@ import {
 // the per-device maps so built-in defaults apply again).
 const TAB_FIELDS: Record<string, string[]> = {
   mission: ['task', 'start', 'cat', 'world', 'aircraft', 'bandit', 'fuel', 'cheats', 'tod', 'clouds', 'extra_aircraft'],
-  general: ['callsign'],
+  general: ['callsign', 'record'],
   controls: ['invert', 'joystick', 'sticks'],
   keys: ['keys'],
   sound: ['sound', 'volume'],
@@ -1449,6 +1449,17 @@ function GeneralPanel({
           set('callsign', e.target.value)
         }}
       />
+      <SectionLabel>
+        <Trans>Recording</Trans>
+      </SectionLabel>
+      {/* Always-on by design: a recording you have to remember to start is one
+          you only ever have for dull flights. Saved from the History page. */}
+      <SwitchRow
+        id='record'
+        label={<Trans>Record flights</Trans>}
+        checked={config.record !== false}
+        onChange={(v) => set('record', v)}
+      />
     </>
   )
 }
@@ -1459,6 +1470,7 @@ export function MissionSetup({
   tab,
   onTabChange,
   settingsNonce = 0,
+  recording,
   gameInProgress,
   onStart,
   onJoin,
@@ -1470,6 +1482,7 @@ export function MissionSetup({
   tab: string
   onTabChange: (tab: string) => void
   settingsNonce?: number
+  recording?: () => Replay | null // the engine's in-memory flight recording (#212)
   gameInProgress: boolean
   onStart: () => void
   onJoin: (join: Join) => void
@@ -1669,7 +1682,7 @@ export function MissionSetup({
       </MenuDialog>
 
       <MenuDialog open={dialog === 'history'} onClose={close} title={<Trans>History</Trans>}>
-        <MatchHistory />
+        <MatchHistory recording={recording} />
       </MenuDialog>
 
       <ServerFlow open={dialog === 'server'} onClose={close} config={config} set={set} onChange={onChange} onJoin={onJoin} />

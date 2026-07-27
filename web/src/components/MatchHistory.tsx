@@ -9,7 +9,7 @@
 
 import { useEffect, useState } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { History, ShieldAlert } from 'lucide-react'
+import { Download, History, ShieldAlert } from 'lucide-react'
 import { EmptyState, useFormat } from '@mochi/web'
 import {
   Table,
@@ -20,6 +20,30 @@ import {
   TableRow,
 } from '@mochi/web/components/ui/table'
 import { history, type MatchRow } from '../game/net'
+import { Button } from '@mochi/web/components/ui/button'
+import { toast } from '@mochi/web'
+import { shellSaveBlob } from '@mochi/web'
+
+// Replay is the in-memory recording the engine still holds for this session's
+// flights (#212). Nothing is stored server-side yet, so only rows flown since
+// the page loaded can offer a download — see #213.
+export interface Replay {
+  text: string
+  session: string
+  kind: string
+}
+
+// save writes the recording out. shellSaveBlob posts the blob to the parent
+// shell inside the sandboxed iframe (where an anchor download is silently
+// dropped) and falls back to a direct anchor outside it.
+async function save(replay: Replay, started: number, done: (ok: boolean) => void) {
+  const stamp = new Date(started)
+    .toISOString()
+    .replace(/[:T]/g, '-')
+    .replace(/\..*$/, '')
+  const name = `air-${stamp}-${replay.kind}.acmi`
+  done(await shellSaveBlob(new Blob([replay.text], { type: 'text/plain' }), name))
+}
 
 // serverName shows just the host of a lobby URL; the full URL is noise.
 function serverName(world: string): string {
@@ -30,8 +54,9 @@ function serverName(world: string): string {
   }
 }
 
-export function MatchHistory() {
+export function MatchHistory({ recording }: { recording?: () => Replay | null }) {
   const { t } = useLingui()
+  const replay = recording?.() ?? null
   const { formatDateTime, formatNumber } = useFormat()
   const [matches, setMatches] = useState<MatchRow[] | null>(null)
 
@@ -120,6 +145,7 @@ export function MatchHistory() {
             <TableHead>
               <Trans>Result</Trans>
             </TableHead>
+            <TableHead />
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -140,6 +166,25 @@ export function MatchHistory() {
                     <ShieldAlert className='size-3' />
                     <Trans>Cheats</Trans>
                   </span>
+                ) : null}
+              </TableCell>
+              <TableCell className='text-right'>
+                {replay && replay.session === m.session ? (
+                  <Button
+                    type='button'
+                    variant='outline'
+                    size='sm'
+                    onClick={() =>
+                      void save(replay, m.started, (ok) =>
+                        ok
+                          ? toast.success(t`Recording saved`)
+                          : toast.error(t`Could not save the recording`)
+                      )
+                    }
+                  >
+                    <Download className='size-4' />
+                    <Trans>Recording</Trans>
+                  </Button>
                 ) : null}
               </TableCell>
             </TableRow>
