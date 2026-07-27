@@ -29,33 +29,8 @@ import { RadioGroup, RadioGroupItem } from '@mochi/web/components/ui/radio-group
 import { Switch } from '@mochi/web/components/ui/switch'
 import { getErrorMessage } from '@mochi/web'
 import { useIdentityName } from '../lib/config-store'
-import {
-  default_server,
-  normalize_server,
-  supported,
-  world_create,
-  world_sessions,
-  world_withdraw,
-  world_status,
-  type Join,
-  type WorldSession,
-  type WorldStatus,
-} from '../game/net'
+import { default_server, normalize_server, supported, world_create, world_sessions, world_withdraw, world_status, type Join, type WorldSession, type WorldStatus, crossHost } from '../game/net'
 
-// crossHost returns the transport hostname when it differs from the lobby the
-// player actually chose, or null when they match. The lobby (untrusted) hands
-// out the separate WebTransport address, so it could point the browser at
-// another host — a private-network or loopback service — without this check.
-// An unparseable transport address is treated as cross-host (surfaced, not
-// silently trusted).
-function crossHost(transport: string, lobby: string): string | null {
-  try {
-    const other = new URL(transport).hostname
-    return other === new URL(lobby).hostname ? null : other
-  } catch {
-    return transport
-  }
-}
 
 function Option({
   value,
