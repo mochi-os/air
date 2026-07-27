@@ -853,7 +853,17 @@ const AIRCRAFT_MODELS={
 	      { name:"flowR100",  node:"Fuel_Flow1b_AN_Flow1b_457", axis:"x", sign:-1, gain:6.2832/1000, gauge:"flowR" },
 	      { name:"clockH",    node:"Clock_hourAction_AN_Hour_364", axis:"z", gain:6.2832/12, gauge:"clockH" },
 	      { name:"clockM",    node:"ClockMinutesAction_AN__367",   axis:"z", gain:6.2832/60, gauge:"clockM" },
-	      { name:"clockS",    node:"ClockSecondsAction_AN__370",   axis:"z", gain:6.2832/60, gauge:"clockS" } ] } };
+	      { name:"clockS",    node:"ClockSecondsAction_AN__370",   axis:"z", gain:6.2832/60, gauge:"clockS" },
+	      // right-console gauges: batteries are calibrated ±143° y-axis sweeps; hyd/cabin follow
+	      // the needle family's clock-anchored +z convention with game-plausible drives
+	      { name:"hyd",       node:"INSTRUMENT_Needle_HydPressure_AN_HydPressure_529", axis:"z", gauge:"hyd" },
+	      { name:"cabin",     node:"INSTRUMENT_Needle_CabinPress_AN_CabinPress_526",   axis:"z", gauge:"cabin" },
+	      { name:"voltE",     node:"INSTRUMENT_Needle_Battery_AN_BatteryE_520",  axis:"y", sign:-1, gauge:"volts" },
+	      { name:"voltU",     node:"INSTRUMENT_Needle_BatteryUAction_AN_BatteryU_523", axis:"y", gauge:"volts" },
+	      // cockpit levers ride their authored clips (single calibrated sweeps), scrubbed from state
+	      { name:"gearlever", track:/^Gear_handle_AN/i, drive:"gearlever" },
+	      { name:"hooklever", track:/^LANDING_Gear_Lever_Hook_AN/i, drive:"hooklever" },
+	      { name:"flaplever", track:/^lever_flap_AN/i, drive:"flaplever" } ] } };
 const D2R=Math.PI/180;
 // fleet: aircraft name -> { proto, rig:[{clip, t0, t1, drive, min, max, flip}] } once loaded.
 const fleet={}; const fleet_loading={};
@@ -950,7 +960,7 @@ function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_7
 		for(let k=0;k<8;k++){ c.set(k&1?box.max.x:box.min.x, k&2?box.max.y:box.min.y, k&4?box.max.z:box.min.z);
 			c.applyMatrix4(mesh.matrixWorld); ownship.group.worldToLocal(c); lo.min(c); hi.max(c); }
 		ownship.group.userData.glass={ x:(lo.x+hi.x)/2, y:(lo.y+hi.y)/2, hw:(hi.z-lo.z)/2, hh:(hi.y-lo.y)/2 }; }   // body-frame pane: x fore-aft, y up, half-extents across the span and vertically
-	build_indexer(ownship.group);
+	try{ build_indexer(ownship.group); }catch(e){ build_error=String(e&&e.message||e); }
 	console.warn("cockpit eye", ownship.group.userData.eye.x.toFixed(2), ownship.group.userData.eye.y.toFixed(2)); }
 // AoA indexer (#99): the GLB ships the brightness knob but no indexer lights, so
 // three unlit emissive shapes stand in, mounted beside the combining glass —
@@ -973,8 +983,175 @@ function build_indexer(g){
 	["slow","donut","fast"].forEach((k,i)=>{ const m=new THREE.Mesh(geoms[i],parts[k]);
 		m.rotateY(Math.PI/2);   // face the shapes aft toward the pilot (DoubleSide covers the sign)
 		m.position.set(0,0.028-0.028*i,0); m.layers.set(LAYER_OWN); box.add(m); });
-	box.position.set(glass.x-0.02, glass.y-glass.hh*0.35, -(glass.hw+0.028));   // beside the pane's LEFT edge (negative z; the first cut sat right of the HUD), low
-	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box; }
+	box.position.set(glass.x-0.055, glass.y-glass.hh*0.35, -(glass.hw-0.008));   // just inside the pane's LEFT edge and nearer the pilot — outboard of it the HUD frame post swallows it
+	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
+	build_lamps(g);
+	if(SCREENS_WIP){ build_radalt(g); build_screens(g); } }   // parked OFF: their proud-quad placement never rendered under the headless harness; reopen with live-browser iteration, where placement feedback is immediate (#99 follow-up)
+// Cockpit lamps (#99 realism): the GLB models no annunciators, so the indexer's
+// unlit-quad pattern extends to the fire/caution row on the glareshield and the
+// gear lights beside the handle. All state the lamps need already exists.
+function build_lamps(g){
+	if(g.userData.lamps&&g.userData.lampsGroup&&g.userData.lampsGroup.parent===g) return;
+	const glass=g.userData.glass; if(!glass) return;
+	const lamp=(c,w,h)=>new THREE.Mesh(new THREE.PlaneGeometry(w||0.016,h||0.009),
+		new THREE.MeshBasicMaterial({ color:c, transparent:true, opacity:0, side:THREE.DoubleSide, depthWrite:false }));
+	const lamps={};
+	const brow=new THREE.Group();
+	lamps.fireL=lamp(0xe23b2e); lamps.fireL.position.set(0,0,-0.075);
+	lamps.caution=lamp(0xffc23a); lamps.caution.position.set(0,-0.004,0);
+	lamps.fireR=lamp(0xe23b2e); lamps.fireR.position.set(0,0,0.075);
+	brow.add(lamps.fireL,lamps.caution,lamps.fireR);
+	brow.position.set(glass.x-0.03, glass.y-glass.hh-0.035, 0);
+	brow.children.forEach(m=>{ m.rotateY(Math.PI/2); m.layers.set(LAYER_OWN); });
+	g.add(brow);
+	const handle=g.getObjectByName("Gear_handle_483"); const gear=new THREE.Group();
+	if(handle){ const p=new THREE.Vector3(); handle.getWorldPosition(p); g.worldToLocal(p);
+		lamps.transit=lamp(0xe23b2e,0.011,0.011); lamps.transit.position.set(0,0.045,0);   // the lollipop: red while the gear travels
+		lamps.nose=lamp(0x2fd24a,0.010,0.008); lamps.nose.position.set(0,0.022,0);
+		lamps.left=lamp(0x2fd24a,0.010,0.008); lamps.left.position.set(0,0.008,-0.009);
+		lamps.right=lamp(0x2fd24a,0.010,0.008); lamps.right.position.set(0,0.008,0.009);
+		gear.add(lamps.transit,lamps.nose,lamps.left,lamps.right);
+		gear.position.copy(p); gear.position.x-=0.02; gear.position.z+=0.02;   // just inboard of the handle, proud of its panel
+		gear.children.forEach(m=>{ m.rotateY(Math.PI/2); m.layers.set(LAYER_OWN); }); g.add(gear); }
+	g.userData.lamps=lamps; g.userData.lampsGroup=brow; }
+function lamps_update(out){
+	const l=ownship.group.userData.lamps; if(!l) return;
+	const ext=out[STATE.extension]||0, harmL=out[STATE.engine_harm]||0, harmR=out[STATE.engine_harm+1]||0;
+	const fuel=(out[STATE.fuel]||0)*2.2046, leak=out[STATE.leak]||0;
+	l.fireL.material.opacity=harmL>0.85?1:0; l.fireR.material.opacity=harmR>0.85?1:0;
+	l.caution.material.opacity=(leak>0||fuel<800||Math.max(harmL,harmR)>0.5)?1:0;
+	if(l.transit){ const moving=ext>0.02&&ext<0.98;
+		l.transit.material.opacity=moving?1:0;
+		const green=ext>0.98?1:0; l.nose.material.opacity=green; l.left.material.opacity=green; l.right.material.opacity=green; }
+	const r=ownship.group.userData.radalt;
+	if(r){ const now=performance.now(); if(now-r.last>250){ r.last=now;
+		const surface=ground_height(ownship.pos.x,ownship.pos.z);
+		radalt_draw(r, ownship.pos.y-(surface>-1e8?surface:0)); } } }
+// Radar altimeter (#99 realism): the modeled gauge has its needle and OFF flag
+// painted into the face texture, so a live canvas disc covers it — APN-194
+// style dial measured from that face, needle below 5000 ft, OFF flag above.
+const RADALT_DIAL=[[0,35],[100,52],[200,70],[300,103],[400,149],[600,202],[800,235],[1000,280],[3000,305],[5000,325]];
+function build_radalt(g){
+	if(g.userData.radalt&&g.userData.radalt.mesh.parent) return;
+	const face=g.getObjectByName("Object_1372"); const eye=g.userData.eye;
+	if(!face||!eye) return;
+	const box=new THREE.Box3().setFromObject(face), c=box.getCenter(new THREE.Vector3());
+	g.worldToLocal(c);
+	const canvas=document.createElement("canvas"); canvas.width=canvas.height=160;
+	const tex=new THREE.CanvasTexture(canvas);
+	const mesh=new THREE.Mesh(new THREE.CircleGeometry(0.040,36),
+		new THREE.MeshBasicMaterial({ map:tex, side:THREE.DoubleSide, toneMapped:false }));
+	mesh.position.copy(c);
+	const at=g.localToWorld(new THREE.Vector3(eye.x,eye.y,0));   // lookAt wants WORLD space; eye is group-local
+	g.add(mesh); mesh.lookAt(at); g.remove(mesh);
+	mesh.position.addScaledVector(new THREE.Vector3(eye.x-c.x,eye.y-c.y,-c.z).normalize(),0.004);   // proud of the painted face
+	mesh.layers.set(LAYER_OWN); g.add(mesh);
+	g.userData.radalt={ mesh, canvas, tex, last:0 };
+	radalt_draw(g.userData.radalt, 1e9); }
+function radalt_draw(r, agl){
+	const x=r.canvas.getContext("2d"), W=160, C=80;
+	x.fillStyle="#101210"; x.fillRect(0,0,W,W);
+	x.strokeStyle="#d8d8d0"; x.fillStyle="#d8d8d0"; x.lineWidth=2;
+	x.font="16px monospace"; x.textAlign="center"; x.textBaseline="middle";
+	for(const [ft,deg] of RADALT_DIAL){ if(!ft) continue;
+		const a=(deg-90)*D2R, inner=ft<=1000&&ft%200===0||ft>=3000;
+		x.beginPath(); x.moveTo(C+Math.cos(a)*66,C+Math.sin(a)*66); x.lineTo(C+Math.cos(a)*58,C+Math.sin(a)*58); x.stroke();
+		if(inner) x.fillText(String(ft/100),C+Math.cos(a)*46,C+Math.sin(a)*46); }
+	x.font="9px monospace"; x.fillText("RADAR ALT",C,C-22); x.fillText("X100 FT",C,C+24);
+	const off=agl>5000;
+	if(off){ x.fillStyle="#a02020"; x.fillRect(C-18,C+34,36,14); x.fillStyle="#fff"; x.font="10px monospace"; x.fillText("OFF",C,C+41); }
+	else{ const ang=(dial(RADALT_DIAL,Math.max(0,agl))/D2R-90)*D2R;
+		x.strokeStyle="#f0f0e8"; x.lineWidth=4;
+		x.beginPath(); x.moveTo(C-Math.cos(ang)*10,C-Math.sin(ang)*10); x.lineTo(C+Math.cos(ang)*54,C+Math.sin(ang)*54); x.stroke(); }
+	r.tex.needsUpdate=true; }
+// DDI/MPCD pages (#99 realism): the three screen meshes exist but are bare dark
+// glass; each gets its own cloned unlit material and canvas — engine page left,
+// ADI right, HSI with the carrier TACAN on the MPCD. Redrawn throttled, and
+// only while the cockpit view is up.
+function build_screens(g){
+	if(g.userData.screens&&g.userData.screens.every(sc=>sc.mesh.parent)) return;
+	const spec=[ ["Object_1045","eng"], ["Object_1048","adi"], ["Object_1051","hsi"] ];
+	const list=[];
+	const eye=g.userData.eye||{x:3.0,y:0.6};
+	for(const [name,page] of spec){ const node=g.getObjectByName(name); if(!node) continue;
+		const box=new THREE.Box3().setFromObject(node), c=box.getCenter(new THREE.Vector3()), sz=box.getSize(new THREE.Vector3());
+		g.worldToLocal(c);
+		const w=Math.max(sz.x,sz.z)*0.92, h=sz.y*0.92;   // just inside the bezel
+		const canvas=document.createElement("canvas"); canvas.width=canvas.height=512;
+		const tex=new THREE.CanvasTexture(canvas);
+		const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h),
+			new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, side:THREE.DoubleSide }));
+		mesh.position.copy(c);
+		const at=g.localToWorld(new THREE.Vector3(eye.x,eye.y,0));   // face the pilot, proud of the recess glass
+		g.add(mesh); mesh.lookAt(at);
+		mesh.position.addScaledVector(new THREE.Vector3(eye.x-c.x,eye.y-c.y,-c.z).normalize(),0.006);
+		mesh.layers.set(LAYER_OWN);
+		list.push({ mesh, canvas, tex, page }); }
+	if(list.length) g.userData.screens=list; }
+let screens_last=0;
+function screens_update(){
+	const list=ownship.group.userData.screens; if(!list||cfg.view!=="cockpit") return;
+	const now=performance.now(); if(now-screens_last<120) return; screens_last=now;
+	const gz=ownship.gauges||{};
+	for(const sc of list){ ddi_draw(sc, gz); sc.tex.needsUpdate=true; } }
+function ddi_page_frame(x){ x.fillStyle="#050b06"; x.fillRect(0,0,512,512);
+	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="26px monospace"; x.textAlign="center"; x.textBaseline="middle"; }
+function ddi_draw(sc, gz){
+	const x=sc.canvas.getContext("2d"); ddi_page_frame(x);
+	if(sc.page==="eng"){ x.fillText("ENG",256,36);
+		x.font="24px monospace"; x.textAlign="right";
+		const rows=[["N2 %",gz.rpmL,gz.rpmR,0],["EGT C",gz.egtL,gz.egtR,0],["FF PPH",(gz.flowL||0)*10,(gz.flowR||0)*10,-1],["NOZ %",100*Math.max((0.7-(gz.spoolL||0))/0.55,gz.reheatL||0),100*Math.max((0.7-(gz.spoolR||0))/0.55,gz.reheatR||0),0],["OIL PSI",55+10*(gz.spoolL||0),55+10*(gz.spoolR||0),0]];
+		let y=110;
+		x.textAlign="center"; x.fillText("L",190,74); x.fillText("R",330,74);
+		for(const [label,L,R,round] of rows){
+			x.textAlign="right"; x.fillText(String(Math.round((L||0)/(round<0?10:1))*(round<0?10:1)),230,y);
+			x.fillText(String(Math.round((R||0)/(round<0?10:1))*(round<0?10:1)),370,y);
+			x.textAlign="left"; x.font="20px monospace"; x.fillText(label,30,y); x.font="24px monospace"; y+=64; }
+		x.textAlign="center"; x.font="24px monospace";
+		x.fillText("FUEL "+Math.round((gz.fuelRaw||0)/10)*10+" LB",256,460); return; }
+	if(sc.page==="adi"){ const bank=gz.bank||0, pitch=gz.pitch||0, ppd=6;
+		x.save(); x.translate(256,240); x.rotate(-bank);
+		const off=pitch/D2R*ppd;
+		x.fillStyle="#123a5e"; x.fillRect(-400,-400+off,800,400);   // sky
+		x.fillStyle="#4a3a20"; x.fillRect(-400,off,800,400);        // ground
+		x.strokeStyle="#e8e8e0"; x.lineWidth=3;
+		x.beginPath(); x.moveTo(-400,off); x.lineTo(400,off); x.stroke();
+		x.fillStyle="#e8e8e0"; x.font="18px monospace";
+		for(let d=-30;d<=30;d+=10){ if(!d) continue; const py=off+d*ppd;
+			x.beginPath(); x.moveTo(-60,py); x.lineTo(60,py); x.stroke();
+			x.textAlign="left"; x.fillText(String(Math.abs(d)),66,py); }
+		x.restore();
+		x.strokeStyle="#39e07a"; x.lineWidth=4;   // waterline
+		x.beginPath(); x.moveTo(196,240); x.lineTo(236,240); x.lineTo(256,252); x.lineTo(276,240); x.lineTo(316,240); x.stroke();
+		x.fillStyle="#39e07a"; x.font="24px monospace";
+		x.textAlign="left"; x.fillText(Math.round(gz.casKt||0)+" KT",26,470);
+		x.textAlign="right"; x.fillText(Math.round(gz.altitude||0)+" FT",486,470);
+		x.textAlign="center"; x.fillText(String(Math.round((gz.heading||0)/D2R+360)%360).padStart(3,"0"),256,36);
+		const dev=approach_deviation();
+		if(dev){ x.strokeStyle="#ffd24a"; x.lineWidth=4;   // ILS needles
+			const gs=THREE.MathUtils.clamp(dev.gs,-1,1), az=THREE.MathUtils.clamp(dev.az,-1,1);
+			x.beginPath(); x.moveTo(80,240+gs*120); x.lineTo(140,240+gs*120); x.stroke();
+			x.beginPath(); x.moveTo(256+az*120,340); x.lineTo(256+az*120,400); x.stroke(); }
+		return; }
+	// hsi
+	const hdg=gz.heading||0;
+	x.fillText(String(Math.round(hdg/D2R+360)%360).padStart(3,"0"),256,30);
+	x.save(); x.translate(256,266);
+	x.strokeStyle="#39e07a"; x.lineWidth=2; x.font="20px monospace";
+	for(let d=0;d<360;d+=30){ const a=(d*D2R)-hdg-Math.PI/2;
+		const cx=Math.cos(a), cy=Math.sin(a);
+		x.beginPath(); x.moveTo(cx*196,cy*196); x.lineTo(cx*180,cy*180); x.stroke();
+		x.fillText(d%90===0?"NESW"[d/90]:String(d/10),cx*158,cy*158); }
+	const dx=CARRIER.x-ownship.pos.x, dz=CARRIER.z-ownship.pos.z;
+	const brg=Math.atan2(dx,-dz), rel=brg-hdg;   // world bearing in the heading convention, relative to the nose
+	x.rotate(rel); x.strokeStyle="#ffd24a"; x.lineWidth=5;   // TACAN pointer to the boat
+	x.beginPath(); x.moveTo(0,-196); x.lineTo(0,-140); x.stroke();
+	x.beginPath(); x.moveTo(-12,-172); x.lineTo(0,-196); x.lineTo(12,-172); x.stroke();
+	x.restore();
+	x.strokeStyle="#39e07a"; x.lineWidth=3;   // ownship symbol
+	x.beginPath(); x.moveTo(256,246); x.lineTo(246,282); x.lineTo(266,282); x.closePath(); x.stroke();
+	x.font="22px monospace"; x.textAlign="center";
+	x.fillText("TCN "+(Math.hypot(dx,dz)/1852).toFixed(1)+" NM",256,486); }
 const MISSILE_NODES=["Object_145","Object_542"];   // the two wingtip AIM-9 NODES in the fa18c GLB (the mesh-level names Object_114/29 are not in the scene graph — a silent getObjectByName miss); LAU-7 rails stay with the wing. Hidden per missiles-remaining for empty rails after firing, or entirely on a guns-only loadout
 function update_rails(st,count){ if(!st.group) return;
 	for(let i=0;i<MISSILE_NODES.length;i++){ const node=st.group.getObjectByName(MISSILE_NODES[i]); if(node) node.visible=i<count; } }
@@ -1062,7 +1239,7 @@ async function init_external_model(kind){
 					proto.traverse(o=>{ if(o.isMesh&&o.material){ (Array.isArray(o.material)?o.material:[o.material]).forEach(mm=>{
 						const d=decoded[mm.name];
 						if(d&&d.base) mm.map=d.base;
-						if(d&&d.base&&/^Material_1[24]$/.test(mm.name||"")){ mm.emissiveMap=d.base; mm.emissive=new THREE.Color(0xffffff); mm.emissiveIntensity=0.32; }   // instrument backlighting (#99): the two cockpit gauge atlases are near-black faces that vanish in the glareshield's shadow — self-illuminate them from their own baseColor, like the real backlit panels, so dials read day and night
+						if(d&&d.base&&/^Material_1[24]$/.test(mm.name||"")){ mm.emissiveMap=d.base; mm.emissive=new THREE.Color(0xffffff); mm.emissiveIntensity=0.32; instrument_mats.push(mm); }   // instrument backlighting (#99): the two cockpit gauge atlases are near-black faces that vanish in the glareshield's shadow — self-illuminate them from their own baseColor, like the real backlit panels, so dials read day and night; intensity follows tod/lights (instrument_backlight)
 						if(d&&d.emissive){ mm.emissiveMap=d.emissive; mm.emissiveIntensity=Math.min(mm.emissiveIntensity||1, 1.1); }   // cap KHR emissive strength: under the scene's ACES tone mapping a hot emissive blows to white-pink
 						else if(d&&d.hadEmissive&&mm.emissive){ mm.emissive.setRGB(0,0,0); }   // emissive texture stripped and unrestorable: black it out rather than glow flat white
 						if(mm.metalness!==undefined && !/glass|screen|oleo|gear/i.test(mm.name||"")){ mm.metalness=0.0; mm.roughness=0.88; }   // matte low-vis tactical paint; keep canopy glass, chrome oleo, and the gear (semi-gloss, matching the donor) untouched
@@ -1992,6 +2169,14 @@ function position_aircraft_lights(){   // pin the lights to the real airframe: c
 	else L.nose={x:xmax-3.5, y:-1.2};
 	set(L.landing[0], L.nose.x, L.nose.y, nose.z);   // landing light on the nose gear strut (as on the real Hornet), so it exists only with the gear down
 }
+const SCREENS_WIP=false;   // DDI pages + radar-altimeter disc: built but not yet placed correctly — see build_indexer's tail
+let build_error="";   // first cockpit-builder failure, surfaced via dev_probe
+const instrument_mats=[];   // the two gauge-atlas materials, per loaded model — backlight follows night + the lights switch
+let backlight_state="";
+function instrument_backlight(){
+	const level=cfg.tod==="night"?(ownship.lights?0.62:0.30):0.22;   // dim wash by day; night panel follows the lights switch (L)
+	const key=level.toFixed(2); if(key===backlight_state) return; backlight_state=key;
+	for(const mm of instrument_mats) mm.emissiveIntensity=level; }
 let cockpit_flood=null;
 function update_shuttles(){   // the hooked cat's shuttle rides with the jet's launch bar; the others sit home
 	if(!carrier_shuttles) return;
@@ -2032,6 +2217,7 @@ function update_jbds(dt){   // the hooked cat's deflector rises through run-up a
 }
 function update_aircraft_lights(){
 	if(!aircraft_lights) return; const on=!!ownship.lights, strobe=on && (performance.now()%1100)<70;   // ~1 Hz strobe flash
+	instrument_backlight();
 	if(!cockpit_flood){ cockpit_flood=new THREE.PointLight(0xffd9a8,0,2.2,2); cockpit_flood.layers.set(LAYER_OWN);   // panel flood (#99): the night pit is otherwise unlit; layer-own so the world pass never pays for it
 		ownship.group.add(cockpit_flood); }
 	const at=ownship.group.userData.eye||{x:3.0,y:0.6}; cockpit_flood.position.set(at.x+0.45,at.y-0.15,0);
@@ -2085,9 +2271,15 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		vsi:dial(VSI_DIAL,fpm),
 		fuelLbs:Math.min(lbs,21000),
 		rpmL:65+34*sL, rpmR:65+34*sR,                            // F404 N2: ground idle ~65 %, military 99
-		egtL:400+350*sL+180*rL, egtR:400+350*sR+180*rR,          // °C, tens resolution on the drums
-		flowL:THREE.MathUtils.clamp(flow_state.pph/2/10,0,999), flowR:THREE.MathUtils.clamp(flow_state.pph/2/10,0,999),   // pph/10 per engine
-		clockH:(now.getHours()%12)+now.getMinutes()/60, clockM:now.getMinutes()+now.getSeconds()/60, clockS:now.getSeconds() };
+		egtL:450+360*sL+140*rL, egtR:450+360*sR+140*rR,          // °C, F404-shaped: idle ~450, military ~810, max reheat ~950
+		flowL:THREE.MathUtils.clamp(flow_state.pph*((0.12+sL+3.4*rL)/((0.12+sL+3.4*rL)+(0.12+sR+3.4*rR)))/10,0,999),   // the honest measured total, split by each engine's own demand — a dead engine's counter winds down
+		flowR:THREE.MathUtils.clamp(flow_state.pph*((0.12+sR+3.4*rR)/((0.12+sL+3.4*rL)+(0.12+sR+3.4*rR)))/10,0,999),
+		hyd:(sL+sR)>0.03?2.83:0,                                 // ~3000 psi on the 0-5k arc while either pump turns
+		cabin:Math.min(altitude,8000+Math.max(0,altitude-8000)*0.35)*(5.2/50000),   // ECS schedule: sea-level cabin to 8k, then bleed up
+		volts:(sL+sR)>0.03?1.86:1.55,                            // generators 28 V / battery 24 V on the ±143° dual voltmeter
+		clockH:(now.getHours()%12)+now.getMinutes()/60, clockM:now.getMinutes()+now.getSeconds()/60, clockS:now.getSeconds(),
+		casKt:cas, fpm, spoolL:sL, spoolR:sR, reheatL:rL, reheatR:rR, fuelRaw:lbs };
+	lamps_update(out);
 	const ind=ownship.group.userData.indexer;
 	if(ind){ const devd=(out[STATE.alpha]||0)/D2R-8.1;   // Control.Onspeed, the PA on-speed alpha datum (trim.go)
 		const lit=(out[STATE.extension]||0)>0.9;   // the real indexer arms with the gear
@@ -2498,7 +2690,14 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v
 			if(v.z<1) out[e.name]=[Math.round((v.x+1)/2*innerWidth), Math.round((1-v.y)/2*innerHeight)]; }
 		return out; })(),
 	gauges:(()=>{ const g=ownship.gauges||{}; const f=v=>v===undefined?null:+(+v).toFixed(3); return { asi:f(g.asi), altitude:f(g.altitude), vsi:f(g.vsi), fuelLbs:f(g.fuelLbs), rpmL:f(g.rpmL), egtL:f(g.egtL), flowL:f(g.flowL), clockH:f(g.clockH) }; })(),
-	indexer:(()=>{ const i=ownship.group.userData.indexer; return i?{ slow:+i.slow.opacity.toFixed(2), donut:+i.donut.opacity.toFixed(2), fast:+i.fast.opacity.toFixed(2) }:null; })(), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)), marshal:marshal?{left:+(marshal.push-sim_time).toFixed(1),commenced:marshal.commenced,platform:marshal.platform,dirty:marshal.dirty,ball:marshal.ball}:null, comms:comms.map(c=>c.text), groove:!!ownship.groove, waving:!!ownship.waving, icls:!!approach_deviation(),
+	indexer:(()=>{ const i=ownship.group.userData.indexer; return i?{ slow:+i.slow.opacity.toFixed(2), donut:+i.donut.opacity.toFixed(2), fast:+i.fast.opacity.toFixed(2) }:null; })(),
+	built:(()=>{ const u=ownship.group.userData; return { indexer:!!u.indexer, lamps:!!u.lamps, radalt:!!u.radalt, screens:(u.screens||[]).length, err:build_error }; })(),
+	scene:(()=>{ const u=ownship.group.userData; const probe=(o)=>{ if(!o) return null;
+			const p=new THREE.Vector3(); o.getWorldPosition(p);
+			let vis=true, q=o; while(q){ if(!q.visible) vis=false; q=q.parent; }
+			let inScene=false; q=o; while(q){ if(q===scene) inScene=true; q=q.parent; }
+			return { p:[+p.x.toFixed(1),+p.y.toFixed(1),+p.z.toFixed(1)], layer:o.layers.mask, vis, inScene }; };
+		return { radalt:probe(u.radalt&&u.radalt.mesh), screen0:probe(u.screens&&u.screens[0]&&u.screens[0].mesh), nose:probe(u.lamps&&u.lamps.nose), donut:probe(u.indexerGroup&&u.indexerGroup.children[1]), eyecam:[+cockpit_cam.position.x.toFixed(1),+cockpit_cam.position.y.toFixed(1),+cockpit_cam.position.z.toFixed(1)], cam_layer:cockpit_cam.layers.mask }; })(), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)), marshal:marshal?{left:+(marshal.push-sim_time).toFixed(1),commenced:marshal.commenced,platform:marshal.platform,dirty:marshal.dirty,ball:marshal.ball}:null, comms:comms.map(c=>c.text), groove:!!ownship.groove, waving:!!ownship.waving, icls:!!approach_deviation(),
 	boff:has_enemy?+(Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(_v.set(bandit.pos.x-ownship.pos.x,bandit.pos.y-ownship.pos.y,bandit.pos.z-ownship.pos.z).normalize()),-1,1))*57.3).toFixed(0):-1,
 	bburn:has_enemy&&bandit.harm?(bandit.harm.burning?1:0):-1, bkill:has_enemy&&bandit.harm?(bandit.harm.killed?1:0):-1, bwing:has_enemy&&bandit.harm?+(bandit.harm.wing??0).toFixed(2):-1,
 	brng:has_enemy?+wrap_distance(ownship.pos,bandit.pos).toFixed(0):-1, peak:+dev_peakbank.toFixed(1), phi:+dev_pitchhi.toFixed(1), plo:+dev_pitchlo.toFixed(1), gs:ownship.pass&&ownship.pass.n?+(ownship.pass.gs/ownship.pass.n).toFixed(2):-1, az:ownship.pass&&ownship.pass.n?+(ownship.pass.az/ownship.pass.n).toFixed(2):-1, grade:ownship.grade||"", pn:ownship.pass?ownship.pass.n:0, why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,
@@ -2601,6 +2800,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.gear=1-out[STATE.extension]; ownship.speedbrake=out[STATE.speedbrake];
 	ownship.surfaces={ stabL:out[STATE.stabilator], stabR:out[STATE.stabilator+1], flapL:out[STATE.flaperon], flapR:out[STATE.flaperon+1], rudder:out[STATE.rudder], slat:out[STATE.slat] };   // live FCS deflections, rad — the rig scrubs surfaces from these
 	update_gauges(out);   // cockpit instruments (#99)
+	screens_update();
 	if(TEST_SCENARIOS){ const _sp=Math.hypot(out[3],out[4],out[5])||1, D=180/Math.PI;   // telemetry row (Shift+T dumps)
 		telemetry.push([ (out[STATE.time]||0).toFixed(3), input.pitch.toFixed(3), (Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*D).toFixed(2), (out[STATE.alpha]*D).toFixed(2), (out[12]*D).toFixed(2), out[STATE.nz].toFixed(3), (out[STATE.cas]*1.944).toFixed(1), (out[STATE.stabilator]*D).toFixed(2) ]);   // attitude from the body axis: the velocity-derived form is garbage below ~5 kt
 		if(telemetry.length>7200) telemetry.shift(); }
@@ -2896,6 +3096,9 @@ function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.user
 			const spool=own?(ownship.spool??0.8):0.8, stage=own?(ownship.stage??0):(cfg.afterburner?1:0);
 			f=Math.max(THREE.MathUtils.clamp((0.7-spool)/0.55,0,1), THREE.MathUtils.clamp(stage,0,1)); break; }
 		case "canopy": f=THREE.MathUtils.clamp(st.canopy??0,0,1); break;
+		case "gearlever": f=st===ownship?THREE.MathUtils.clamp(ownship.gearTarget??0,0,1):THREE.MathUtils.clamp(st.gear??1,0,1); break;   // the handle snaps with the SELECTION (travel lags it); authored rest = parked = handle down
+		case "hooklever": f=(st.hook??0)>0.05?1:0; break;
+		case "flaplever": f=(st===ownship?(ownship.gearTarget??0):(st.gear??1))<0.5?(st.grounded?0.5:1):0; break;   // AUTO up-and-away, HALF on deck (NATOPS takeoff), FULL in the air with gear down
 		case "fold": f=THREE.MathUtils.clamp(st.fold??0,0,1); break;
 		case "bar": f=THREE.MathUtils.clamp(st.bar??0,0,1)*0.955; break;   // full track-end deployment stabs the tip 5 cm into the deck (measured); 0.955 rests it on the shuttle block instead
 		default: { const surfaces=st.surfaces; if(!surfaces||surfaces[r.drive]===undefined){ f=undefined; break; }   // no live FCS data (remotes): hold the rest pose
