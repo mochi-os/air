@@ -8,6 +8,8 @@ import { useLingui } from '@lingui/react'
 import { msg } from '@lingui/core/macro'
 import { Trans, useLingui as useLinguiMacro } from '@lingui/react/macro'
 import { type MessageDescriptor } from '@lingui/core'
+import { Button } from '@mochi/web/components/ui/button'
+import { LogOut, Play, Send, Settings as SettingsIcon } from 'lucide-react'
 import { startGame, type GameHandle } from '../game/engine'
 import { type Join as NetJoin } from '../game/net'
 import { type MissionConfig } from '../lib/config'
@@ -224,55 +226,63 @@ export function GameCanvas({
       )}
       {menu && (
         <div className='fixed inset-0 z-40 flex items-center justify-center bg-black/40'>
-          <div className='flex w-64 flex-col gap-2 rounded-lg border border-white/20 bg-black/80 p-4'>
-            <button
-              type='button'
-              className='rounded border border-white/25 px-3 py-2 text-sm text-white hover:bg-white/10'
+          {/* Same visual language as the front page: card surface, solid primary,
+              outline secondaries, leading icons. */}
+          <div className='bg-background flex w-72 flex-col gap-2 rounded-lg border p-4 shadow-lg'>
+            <Button
+              className='h-12 justify-start text-base'
               onClick={() => {
                 setMenu(false)
                 document.documentElement.requestFullscreen?.().catch(() => {}) // back to fullscreen flight; the click is the gesture
               }}
             >
+              <Play className='size-4' />
               <Trans>Resume</Trans>
-            </button>
+            </Button>
             {join && (
-              <button
+              <Button
                 type='button'
-                className='rounded border border-white/25 px-3 py-2 text-sm text-white hover:bg-white/10'
+                variant='outline'
+                className='h-12 justify-start text-base'
                 onClick={() => {
                   setMenu(false)
                   setChat(handleRef.current?.scope() ?? 'all')
                 }}
               >
+                <Send className='size-4' />
                 <Trans>Send chat</Trans>
-              </button>
+              </Button>
             )}
             {onSettings && (
-              <button
+              <Button
                 type='button'
-                className='rounded border border-white/25 px-3 py-2 text-sm text-white hover:bg-white/10'
+                variant='outline'
+                className='h-12 justify-start text-base'
                 onClick={() => onSettings()}
               >
                 {/* Tuning over the PAUSED, visible scene is the best place to do
                     it — the graphics knobs apply against the frame you are
                     looking at. The dialog fences input while open so a rebind
                     cannot reach the jet (in a match it keeps flying). */}
+                <SettingsIcon className='size-4' />
                 <Trans>Settings</Trans>
-              </button>
+              </Button>
             )}
-            <button
+            <Button
               type='button'
-              className='rounded border border-white/25 px-3 py-2 text-sm text-white hover:bg-white/10'
+              variant='outline'
+              className='h-12 justify-start text-base'
               onClick={() => {
                 setMenu(false)
                 handleRef.current?.exit()
               }}
             >
+              <LogOut className='size-4' />
               {/* A MISSION is yours to leave; a MATCH continues without you. */}
               {join ? <Trans>Exit match</Trans> : <Trans>Exit mission</Trans>}
-            </button>
+            </Button>
             {join && (
-              <p className='text-center text-xs text-white/50'>
+              <p className='text-muted-foreground text-center text-xs'>
                 <Trans>The match continues behind this menu.</Trans>
               </p>
             )}
