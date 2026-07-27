@@ -1517,9 +1517,19 @@ export function MissionSetup({
   // The label must describe what Fly actually does: a joust ignores the start
   // selector entirely (the engine spawns both jets at the merge), so showing
   // the start read as a deck start that then began airborne.
+  // Composed from msgids the bandit selector and task label already carry, so
+  // every locale is covered with no new translation surface.
+  const BANDITS: Record<string, ReactNode> = {
+    rookie: <Trans>Rookie</Trans>,
+    pilot: <Trans>Pilot</Trans>,
+    veteran: <Trans>Veteran</Trans>,
+    ace: <Trans>Ace</Trans>,
+  }
   const started =
     config.task === 'joust' ? (
-      <Trans>Joust</Trans>
+      <>
+        <Trans>Joust</Trans> · {BANDITS[String(config.bandit || 'veteran')] ?? BANDITS.veteran}
+      </>
     ) : (
       STARTS[config.start === 'landing' ? 'case2' : config.start]
     )
@@ -1546,7 +1556,7 @@ export function MissionSetup({
               {/* The fast path stays one click: fly the mission already configured,
                   labelled with it, so tweak-and-fly never grows a detour. */}
               <Trans>Fly</Trans>
-              <span className='text-primary-foreground/70 ml-1 text-sm'>{started ? <>— {started}</> : null}</span>
+              <span className='text-primary-foreground/70 ml-1 text-sm'>{started}</span>
             </Button>
           )}
           <Button type='button' variant='outline' className='h-12 justify-start text-base' onClick={() => setDialog('mission')}>
