@@ -37,11 +37,14 @@ export interface Replay {
 // shell inside the sandboxed iframe (where an anchor download is silently
 // dropped) and falls back to a direct anchor outside it.
 async function save(replay: Replay, started: number, done: (ok: boolean) => void) {
-  const stamp = new Date(started)
-    .toISOString()
-    .replace(/[:T]/g, '-')
-    .replace(/\..*$/, '')
-  const name = `air-${stamp}-${replay.kind}.acmi`
+  // YYYYMMDD_HHMMSS in LOCAL time: the name should match the clock the player
+  // flew by, and sorts chronologically in a downloads folder.
+  const at = new Date(started)
+  const pad = (v: number) => String(v).padStart(2, '0')
+  const stamp =
+    `${at.getFullYear()}${pad(at.getMonth() + 1)}${pad(at.getDate())}` +
+    `_${pad(at.getHours())}${pad(at.getMinutes())}${pad(at.getSeconds())}`
+  const name = `${stamp}.acmi`
   done(await shellSaveBlob(new Blob([replay.text], { type: 'text/plain' }), name))
 }
 
