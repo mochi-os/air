@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "請檢查您的網際網路連線後再試一次。"
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, one {已選 #} other {已選 #}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} 人飛行中"
 msgid "{0}/{1} players"
 msgstr "{0}/{1} 名玩家"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "{entityLabel}名稱"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "{name}的對局"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, one {已選取 {entityName}} other {已選取 {manyName}}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, one {已選取 # 個 {entityName}。批次操作工具列可用。} other {已選取 # 個 {manyName}。批次操作工具列可用。}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, one {# 項已選取} other {# 項已選取}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, one {對已選取的 # 個 {entityName} 執行批次操作} other {對已選取的 # 個 {manyName} 執行批次操作}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "軸"
 msgid "Axis {i}"
 msgstr "軸 {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "返回"
 
@@ -239,9 +264,9 @@ msgstr "返回"
 msgid "Back"
 msgstr "返回"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "返回首頁"
 
@@ -290,7 +315,7 @@ msgstr "提升興趣"
 msgid "Bots"
 msgstr "電腦玩家"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "剎車"
 
@@ -331,7 +356,7 @@ msgstr "鏡頭距離"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "此通知的類別"
 msgid "Change notification category"
 msgstr "變更通知類別"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "追逐視角："
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "聊天"
 
@@ -436,28 +461,29 @@ msgstr "清除"
 msgid "Clear all"
 msgstr "全部清除"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "清除篩選"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "清除選取"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "清除選取 (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "關閉"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "關閉導航"
 
@@ -470,7 +496,7 @@ msgstr "關閉面板"
 msgid "Close search"
 msgstr "關閉搜尋"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "拉近"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "切換視角"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "深色"
@@ -724,8 +751,8 @@ msgstr "距離 LOD"
 msgid "Done"
 msgstr "完成"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "下載"
 
@@ -733,7 +760,7 @@ msgstr "下載"
 msgid "Download failed"
 msgstr "下載失敗"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "拖曳"
 
@@ -793,15 +820,15 @@ msgstr "請輸入您的驗證器代碼"
 msgid "Environment"
 msgstr "環境"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "所有人"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "離開對戰"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "退出任務"
 
@@ -836,6 +863,14 @@ msgstr "F/A-18C 參考"
 msgid "Failed to add account"
 msgstr "新增帳號失敗"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "無法載入圖片"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "無法載入影片"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "移除帳號失敗"
@@ -868,7 +903,7 @@ msgstr "完成帳號遷移"
 msgid "Finished"
 msgstr "已結束"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "開火"
 
@@ -880,7 +915,7 @@ msgstr "固定按鍵"
 msgid "FLAMEOUT"
 msgstr "發動機熄火"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "熱焰彈"
 
@@ -969,7 +1004,7 @@ msgstr "完整版面"
 msgid "Furball"
 msgstr "混戰"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "起落架"
 
@@ -981,29 +1016,29 @@ msgstr "起落架"
 msgid "General"
 msgstr "一般"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "返回"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "前往第一頁"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "前往最後一頁"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "前往下一頁"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "跳到第 {pageNumber} 頁"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "前往上一頁"
 
@@ -1053,7 +1088,7 @@ msgstr "記錄"
 msgid "Home"
 msgstr "首頁"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "尾鉤"
 
@@ -1072,6 +1107,11 @@ msgstr "HUD高度來源"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "HUD簡化顯示"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "圖片檢視器：{0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "無敵"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "無敵（僅限真人玩家）"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "您尋找的頁面 <0/>不存在或可能已被移除。"
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "延遲"
 msgid "Launch (catapult)"
 msgstr "彈射起飛 (彈射器)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "彈射 / 鎖定"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200保持平飛,放起落架"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "淺色"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "燈光"
 
@@ -1325,7 +1370,7 @@ msgstr "低層雲"
 msgid "M to close"
 msgstr "M 關閉"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "地圖"
 
@@ -1333,8 +1378,8 @@ msgstr "地圖"
 msgid "Map"
 msgstr "地圖"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "全部標示為已讀"
@@ -1357,7 +1402,7 @@ msgstr "對局"
 msgid "Medium"
 msgstr "中"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "選單"
 
@@ -1366,7 +1411,7 @@ msgstr "選單"
 msgid "Menu"
 msgstr "選單"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "傳訊息給所有人"
 
@@ -1374,7 +1419,7 @@ msgstr "傳訊息給所有人"
 msgid "Message players on this server"
 msgstr "傳訊息給此伺服器上的玩家"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "傳訊息給你的隊伍"
 
@@ -1423,8 +1468,8 @@ msgstr "網路錯誤"
 msgid "New"
 msgstr "新增"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "下一張圖片"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "無個人檔案"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "找不到結果。"
 
@@ -1528,6 +1573,11 @@ msgstr "還沒有訊息，來打個招呼吧。"
 msgid "Notifications"
 msgstr "通知"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "通知：{0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "海洋細節"
@@ -1583,11 +1633,11 @@ msgstr "開啟導覽選單"
 msgid "Open theme settings"
 msgstr "開啟佈景主題設定"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "或"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "環繞"
 
@@ -1598,6 +1648,11 @@ msgstr "其他"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "擁有者"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "第 {currentPage} 頁，共 {totalPages} 頁"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "飛行員"
 msgid "PILOT DOWN"
 msgstr "飛行員陣亡"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "俯仰"
 
@@ -1656,6 +1711,10 @@ msgstr "玩家"
 msgid "Please check your internet connection and try again."
 msgstr "請檢查您的網際網路連線後再試一次。"
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "請使用適當的憑證登入 <0/> 以存取此資源。"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "請再試一次。"
@@ -1680,8 +1739,8 @@ msgstr "按 ENTER 彈射起飛"
 msgid "Press it…"
 msgstr "按下它…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "上一張圖片"
 
@@ -1787,6 +1846,11 @@ msgstr "移除"
 msgid "Remove access rule"
 msgstr "移除存取規則"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "移除「{0}」的存取規則？"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "移除存取權?"
@@ -1826,7 +1890,7 @@ msgstr "重新開始任務"
 msgid "Result"
 msgstr "結果"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "恢復"
 
@@ -1846,7 +1910,7 @@ msgstr "反向"
 msgid "Right to Left"
 msgstr "從右至左"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "滾轉"
 
@@ -1868,7 +1932,7 @@ msgstr "向右滾轉"
 msgid "Rookie"
 msgstr "新手"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "每頁列數"
 
@@ -1951,15 +2015,24 @@ msgstr "選擇網站方向"
 msgid "Select theme preference"
 msgstr "選擇主題偏好"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "項已選取"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "已選擇: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "傳送"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "重新傳送"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "傳送訊息"
 
@@ -2011,7 +2084,7 @@ msgstr "設定出發地與目的地"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "寬鬆"
 msgid "SPD BK"
 msgstr "減速板"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "減速板"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "星期日"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "發現敵機"
 msgid "Task"
 msgstr "目標"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "團隊"
 
@@ -2181,13 +2255,17 @@ msgstr "條款與細則"
 msgid "That code is incorrect or has expired."
 msgstr "該代碼不正確或已過期。"
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "選單開啟時對戰仍會繼續。"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "找不到要求的內容。"
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "網站目前無法使用。"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "主題設定"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "此大廳正在將你的遊戲連線轉到另一個主機（{redirectHost}）。只有在你信任此伺服器時才繼續。"
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "此頁面尚未建立。"
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "油門"
 
@@ -2225,13 +2307,17 @@ msgstr "星期四"
 msgid "Tightest sustained turn speed"
 msgstr "最緊持續轉彎速度"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "傾斜"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "時段"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "到"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "使用您的通行金鑰"
 msgid "User"
 msgstr "使用者"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "驗證碼"
 
@@ -2368,7 +2454,7 @@ msgstr "驗證失敗"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "驗證"
 
@@ -2390,7 +2476,12 @@ msgstr "老兵"
 msgid "Video thumbnail"
 msgstr "影片縮圖"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "影片檢視器：{0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "視角"
 
@@ -2402,8 +2493,8 @@ msgstr "檢視"
 msgid "View all"
 msgstr "檢視全部"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "檢視所有通知"
 
@@ -2419,11 +2510,16 @@ msgstr "等待對手"
 msgid "WAVE OFF"
 msgstr "重飛"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "我們已將驗證碼傳送至 <0>{0}</0>。請在下方輸入驗證碼以驗證您的電子郵件地址。"
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "我們很快就會恢復上線。"
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "武器"
 
@@ -2470,7 +2566,7 @@ msgstr "世界伺服器"
 msgid "World server not reachable"
 msgstr "無法連上世界伺服器"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "偏航"
 
@@ -2493,6 +2589,10 @@ msgstr "你"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "您沒有存取此區段的權限。"
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "您沒有檢視此資源 <0/>所需的權限。"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

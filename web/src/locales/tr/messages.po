@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Lütfen internet bağlantınızı kontrol edip tekrar deneyin."
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, one {# seçili} other {# seçili}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} kişi uçuyor"
 msgid "{0}/{1} players"
 msgstr "{0}/{1} oyuncu"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "{entityLabel} adı"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "{name} maçı"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, one {{entityName} seçildi} other {{manyName} seçildi}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, one {# {entityName} seçildi. Toplu işlem araç çubuğu kullanılabilir.} other {# {manyName} seçildi. Toplu işlem araç çubuğu kullanılabilir.}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, one {# seçildi} other {# seçildi}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, one {# seçili {entityName} için toplu işlemler} other {# seçili {manyName} için toplu işlemler}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "Eksenler"
 msgid "Axis {i}"
 msgstr "Eksen {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "geri"
 
@@ -239,9 +264,9 @@ msgstr "geri"
 msgid "Back"
 msgstr "Geri"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "Ana sayfaya dön"
 
@@ -290,7 +315,7 @@ msgstr "İlgiyi artır"
 msgid "Bots"
 msgstr "Botlar"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "frenler"
 
@@ -331,7 +356,7 @@ msgstr "Kamera mesafesi"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "Bu bildirim için kategori"
 msgid "Change notification category"
 msgstr "Bildirim kategorisini değiştir"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "Takip görünümü:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "sohbet"
 
@@ -436,28 +461,29 @@ msgstr "Temizle"
 msgid "Clear all"
 msgstr "Tümünü temizle"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "Filtreleri temizle"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "Seçimi temizle"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "Seçimi temizle (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Kapat"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "Gezinmeyi kapat"
 
@@ -470,7 +496,7 @@ msgstr "Paneli kapat"
 msgid "Close search"
 msgstr "Aramayı kapat"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "yakınlaş"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "Görünümü değiştir"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "Koyu"
@@ -724,8 +751,8 @@ msgstr "Mesafe LOD"
 msgid "Done"
 msgstr "Tamamlandı"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "İndir"
 
@@ -733,7 +760,7 @@ msgstr "İndir"
 msgid "Download failed"
 msgstr "İndirme başarısız oldu"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "Sürükle"
 
@@ -793,15 +820,15 @@ msgstr "Kimlik doğrulayıcı kodunuzu girin"
 msgid "Environment"
 msgstr "Ortam"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "Herkes"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "Maçtan çık"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "Görevden çık"
 
@@ -836,6 +863,14 @@ msgstr "F/A-18C referansı"
 msgid "Failed to add account"
 msgstr "Hesap eklenemedi"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "Görsel yüklenemedi"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "Video yüklenemedi"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "Hesap kaldırılamadı"
@@ -868,7 +903,7 @@ msgstr "Hesap taşımayı tamamlayın"
 msgid "Finished"
 msgstr "Tamamlandı"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "ateş"
 
@@ -880,7 +915,7 @@ msgstr "Sabit tuşlar"
 msgid "FLAMEOUT"
 msgstr "ALEV SÖNMESİ"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "flare"
 
@@ -969,7 +1004,7 @@ msgstr "Tam düzen"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "iniş takımı"
 
@@ -981,29 +1016,29 @@ msgstr "İNİŞ TAKIMI"
 msgid "General"
 msgstr "Genel"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "Geri"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "İlk sayfaya git"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "Son sayfaya git"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "Sonraki sayfaya git"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "{pageNumber}. sayfaya git"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "Önceki sayfaya git"
 
@@ -1053,7 +1088,7 @@ msgstr "Geçmiş"
 msgid "Home"
 msgstr "Ana sayfa"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "Kanca"
 
@@ -1072,6 +1107,11 @@ msgstr "HUD irtifa kaynağı"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "HUD sadeleştirme"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "Görsel görüntüleyici: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "ÖLÜMSÜZ"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "Ölümsüz (yalnızca insan oyuncular)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "Aradığınız sayfa <0/>mevcut değil veya kaldırılmış görünüyor."
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "GEÇ"
 msgid "Launch (catapult)"
 msgstr "Fırlatma (katapult)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "fırlat / hedef"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200’DE DÜZ, INIŞ TAKIMI AÇ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "Açık"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "ışıklar"
 
@@ -1325,7 +1370,7 @@ msgstr "Alçak stratus"
 msgid "M to close"
 msgstr "Kapatmak için M"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "harita"
 
@@ -1333,8 +1378,8 @@ msgstr "harita"
 msgid "Map"
 msgstr "Harita"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "Tümünü okundu olarak işaretle"
@@ -1357,7 +1402,7 @@ msgstr "Maçlar"
 msgid "Medium"
 msgstr "Orta"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "menü"
 
@@ -1366,7 +1411,7 @@ msgstr "menü"
 msgid "Menu"
 msgstr "Menü"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "Herkese mesaj yaz"
 
@@ -1374,7 +1419,7 @@ msgstr "Herkese mesaj yaz"
 msgid "Message players on this server"
 msgstr "Bu sunucudaki oyunculara mesaj gönder"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "Takımına mesaj yaz"
 
@@ -1423,8 +1468,8 @@ msgstr "Ağ hatası"
 msgid "New"
 msgstr "Yeni"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "Sonraki görsel"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "Profil yok"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "Sonuç bulunamadı."
 
@@ -1528,6 +1573,11 @@ msgstr "Henüz bir şey yok — merhaba de!"
 msgid "Notifications"
 msgstr "Bildirimler"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "Bildirimler: {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "Okyanus detayı"
@@ -1583,11 +1633,11 @@ msgstr "Gezinme menüsünü aç"
 msgid "Open theme settings"
 msgstr "Tema ayarlarını aç"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "veya"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "yörünge"
 
@@ -1598,6 +1648,11 @@ msgstr "Diğer"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "Sahip"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "Sayfa {currentPage} / {totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "Pilot"
 msgid "PILOT DOWN"
 msgstr "PİLOT ÖLDÜ"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "yunuslama"
 
@@ -1656,6 +1711,10 @@ msgstr "Oyuncular"
 msgid "Please check your internet connection and try again."
 msgstr "Lütfen internet bağlantınızı kontrol edip tekrar deneyin."
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "Bu kaynağa erişmek için <0/> lütfen uygun kimlik bilgileriyle giriş yapın."
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "Lütfen tekrar deneyin."
@@ -1680,8 +1739,8 @@ msgstr "FIRLATMAK İÇİN ENTER'A BAS"
 msgid "Press it…"
 msgstr "Ona basın…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "Önceki görsel"
 
@@ -1787,6 +1846,11 @@ msgstr "Kaldır"
 msgid "Remove access rule"
 msgstr "Erişim kuralını kaldır"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "\"{0}\" için erişim kuralı kaldırılsın mı?"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "Erişim kaldırılsın mı?"
@@ -1826,7 +1890,7 @@ msgstr "Görevi yeniden başlat"
 msgid "Result"
 msgstr "Sonuç"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "Sürdür"
 
@@ -1846,7 +1910,7 @@ msgstr "Ters"
 msgid "Right to Left"
 msgstr "Sağdan sola"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "yuvarlanma"
 
@@ -1868,7 +1932,7 @@ msgstr "Sağa yuvarlanma"
 msgid "Rookie"
 msgstr "Acemi"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "Sayfa başına satır"
 
@@ -1951,15 +2015,24 @@ msgstr "Site yönünü seç"
 msgid "Select theme preference"
 msgstr "Tema tercihi seç"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "seçildi"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "Seçili: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "Gönder"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "Tekrar gönder"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "Mesaj gönder"
 
@@ -2011,7 +2084,7 @@ msgstr "Başlangıç ve hedef belirle"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "Geniş"
 msgid "SPD BK"
 msgstr "HIZ FR"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "hız freni"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "Pazar"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "DÜŞMANI GÖRÜYORUM"
 msgid "Task"
 msgstr "Vazife"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "Takım"
 
@@ -2181,13 +2255,17 @@ msgstr "Şartlar ve koşullar"
 msgid "That code is incorrect or has expired."
 msgstr "Bu kod yanlış veya süresi dolmuş."
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "Maç bu menünün arkasında devam ediyor."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "İstenen içerik bulunamadı."
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "Site şu anda kullanılamıyor."
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "Tema ayarları"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Bu lobi oyun bağlantınızı farklı bir ana makineye ({redirectHost}) yönlendiriyor. Yalnızca bu sunucuya güveniyorsanız devam edin."
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "Bu sayfa henüz oluşturulmadı."
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "gaz"
 
@@ -2225,13 +2307,17 @@ msgstr "Perşembe"
 msgid "Tightest sustained turn speed"
 msgstr "En dar sürekli dönüş hızı"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "eğme"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "Günün saati"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "Nereye"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "Geçiş anahtarınızı kullanın"
 msgid "User"
 msgstr "Kullanıcı"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "Doğrulama kodu"
 
@@ -2368,7 +2454,7 @@ msgstr "Doğrulama başarısız"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "Doğrula"
 
@@ -2390,7 +2476,12 @@ msgstr "Kıdemli"
 msgid "Video thumbnail"
 msgstr "Video küçük resmi"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "Video görüntüleyici: {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "görünüm"
 
@@ -2402,8 +2493,8 @@ msgstr "Görüntüle"
 msgid "View all"
 msgstr "Tümünü görüntüle"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "Tüm bildirimleri görüntüle"
 
@@ -2419,11 +2510,16 @@ msgstr "RAKİP BEKLENİYOR"
 msgid "WAVE OFF"
 msgstr "PAS GEÇ"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "<0>{0}</0> adresine bir doğrulama kodu gönderdik. E-posta adresinizi doğrulamak için kodu aşağıya girin."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "Kısa süre içinde tekrar çevrimiçi olacağız."
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "silah"
 
@@ -2470,7 +2566,7 @@ msgstr "Dünya sunucusu"
 msgid "World server not reachable"
 msgstr "Dünya sunucusuna ulaşılamıyor"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "sapma"
 
@@ -2493,6 +2589,10 @@ msgstr "SEN"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "Bu bölüme erişiminiz yok."
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "Bu kaynağı görüntülemek için <0/>gerekli izniniz yok."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

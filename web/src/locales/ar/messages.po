@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى."
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, zero {# محدد} one {# محدد} two {# محدد} few {# محدد} many {# محدد} other {# محدد}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} في الجو"
 msgid "{0}/{1} players"
 msgstr "{0}/{1} لاعبين"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "اسم {entityLabel}"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "مباراة {name}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, zero {لم يتم تحديد {manyName}} one {تم تحديد {entityName}} two {تم تحديد {manyName}} few {تم تحديد {manyName}} many {تم تحديد {manyName}} other {تم تحديد {manyName}}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, zero {لم يتم تحديد {manyName}. شريط الإجراءات المجمعة متاح.} one {تم تحديد {entityName} واحد. شريط الإجراءات المجمعة متاح.} two {تم تحديد {manyName}. شريط الإجراءات المجمعة متاح.} few {تم تحديد # {manyName}. شريط الإجراءات المجمعة متاح.} many {تم تحديد # {manyName}. شريط الإجراءات المجمعة متاح.} other {تم تحديد # {manyName}. شريط الإجراءات المجمعة متاح.}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, zero {# محدد} one {# محدد} two {# محدد} few {# محدد} many {# محدد} other {# محدد}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, zero {إجراءات مجمعة لـ {manyName}} one {إجراءات مجمعة لـ {entityName} واحد محدد} two {إجراءات مجمعة لـ {manyName} محددين} few {إجراءات مجمعة لـ # {manyName} محددة} many {إجراءات مجمعة لـ # {manyName} محددًا} other {إجراءات مجمعة لـ # {manyName} محدد}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "المحاور"
 msgid "Axis {i}"
 msgstr "المحور {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "للخلف"
 
@@ -239,9 +264,9 @@ msgstr "للخلف"
 msgid "Back"
 msgstr "رجوع"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "العودة إلى الرئيسية"
 
@@ -290,7 +315,7 @@ msgstr "تعزيز الاهتمام"
 msgid "Bots"
 msgstr "البوتات"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "فرامل"
 
@@ -331,7 +356,7 @@ msgstr "مسافة الكاميرا"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "فئة هذا الإشعار"
 msgid "Change notification category"
 msgstr "تغيير فئة الإشعار"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "منظر المطاردة:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "دردشة"
 
@@ -436,28 +461,29 @@ msgstr "مسح"
 msgid "Clear all"
 msgstr "مسح الكل"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "مسح الفلاتر"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "مسح التحديد"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "مسح التحديد (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "إغلاق"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "إغلاق التنقل"
 
@@ -470,7 +496,7 @@ msgstr "إغلاق اللوحة"
 msgid "Close search"
 msgstr "إغلاق البحث"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "أقرب"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "تبديل المنظر"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "داكن"
@@ -724,8 +751,8 @@ msgstr "مستوى تفاصيل المسافة (LOD)"
 msgid "Done"
 msgstr "منتهٍ"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "تنزيل"
 
@@ -733,7 +760,7 @@ msgstr "تنزيل"
 msgid "Download failed"
 msgstr "فشل التنزيل"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "سحب"
 
@@ -793,15 +820,15 @@ msgstr "أدخل رمز تطبيق المصادقة"
 msgid "Environment"
 msgstr "المحيط"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "الجميع"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "مغادرة المباراة"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "إنهاء المهمة"
 
@@ -836,6 +863,14 @@ msgstr "مرجع F/A-18C"
 msgid "Failed to add account"
 msgstr "فشل إضافة الحساب"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "تعذّر تحميل الصورة"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "تعذّر تحميل الفيديو"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "فشل إزالة الحساب"
@@ -868,7 +903,7 @@ msgstr "أتمم نقل حسابك"
 msgid "Finished"
 msgstr "انتهت"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "إطلاق النار"
 
@@ -880,7 +915,7 @@ msgstr "مفاتيح ثابتة"
 msgid "FLAMEOUT"
 msgstr "انطفاء المحرك"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "مشاعل"
 
@@ -969,7 +1004,7 @@ msgstr "تخطيط كامل"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "هيكل الهبوط"
 
@@ -981,29 +1016,29 @@ msgstr "عجلات"
 msgid "General"
 msgstr "عام"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "رجوع"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "الانتقال إلى الصفحة الأولى"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "الانتقال إلى الصفحة الأخيرة"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "الانتقال إلى الصفحة التالية"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "الانتقال إلى الصفحة {pageNumber}"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "الانتقال إلى الصفحة السابقة"
 
@@ -1053,7 +1088,7 @@ msgstr "السجل"
 msgid "Home"
 msgstr "الرئيسية"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "خطاف"
 
@@ -1072,6 +1107,11 @@ msgstr "مصدر الارتفاع في HUD"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "تبسيط HUD"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "عارض الصور: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "حصانة"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "حصانة (للاعبين البشريين فقط)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "يبدو أن الصفحة التي تبحث عنها <0/>غير موجودة أو ربما تمت إزالتها."
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "متأخر"
 msgid "Launch (catapult)"
 msgstr "إطلاق (منجنيق)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "إطلاق / استهداف"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "حافظ على 1200، أنزل العجلات"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "فاتح"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "أضواء"
 
@@ -1325,7 +1370,7 @@ msgstr "سحب طبقية منخفضة"
 msgid "M to close"
 msgstr "M للإغلاق"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "خريطة"
 
@@ -1333,8 +1378,8 @@ msgstr "خريطة"
 msgid "Map"
 msgstr "الخريطة"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "وضع علامة مقروء على الكل"
@@ -1357,7 +1402,7 @@ msgstr "المباريات"
 msgid "Medium"
 msgstr "متوسط"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "قائمة"
 
@@ -1366,7 +1411,7 @@ msgstr "قائمة"
 msgid "Menu"
 msgstr "القائمة"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "راسل الجميع"
 
@@ -1374,7 +1419,7 @@ msgstr "راسل الجميع"
 msgid "Message players on this server"
 msgstr "راسل اللاعبين على هذا الخادم"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "راسل فريقك"
 
@@ -1423,8 +1468,8 @@ msgstr "خطأ في الشبكة"
 msgid "New"
 msgstr "جديد"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "الصورة التالية"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "لا يوجد ملف شخصي"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "لم يتم العثور على نتائج."
 
@@ -1528,6 +1573,11 @@ msgstr "لا شيء بعد — قل مرحبًا."
 msgid "Notifications"
 msgstr "الإشعارات"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "الإشعارات: {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "تفاصيل المحيط"
@@ -1583,11 +1633,11 @@ msgstr "فتح قائمة التنقل"
 msgid "Open theme settings"
 msgstr "فتح إعدادات السمة"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "أو"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "دوران"
 
@@ -1598,6 +1648,11 @@ msgstr "أخرى"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "المالك"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "صفحة {currentPage} من {totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "طيار"
 msgid "PILOT DOWN"
 msgstr "سقط الطيار"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "انعطاف"
 
@@ -1656,6 +1711,10 @@ msgstr "اللاعبون"
 msgid "Please check your internet connection and try again."
 msgstr "يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى."
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "يرجى تسجيل الدخول ببيانات الاعتماد المناسبة <0/> للوصول إلى هذا المورد."
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "يرجى المحاولة مرة أخرى."
@@ -1680,8 +1739,8 @@ msgstr "اضغط Enter للإطلاق"
 msgid "Press it…"
 msgstr "اضغط الزر…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "الصورة السابقة"
 
@@ -1787,6 +1846,11 @@ msgstr "إزالة"
 msgid "Remove access rule"
 msgstr "إزالة قاعدة الوصول"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "إزالة قاعدة الوصول لـ \"{0}\"؟"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "إزالة الوصول؟"
@@ -1826,7 +1890,7 @@ msgstr "إعادة بدء المهمة"
 msgid "Result"
 msgstr "النتيجة"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "استئناف"
 
@@ -1846,7 +1910,7 @@ msgstr "معكوس"
 msgid "Right to Left"
 msgstr "من اليمين إلى اليسار"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "تدحرج"
 
@@ -1868,7 +1932,7 @@ msgstr "اللف لليمين"
 msgid "Rookie"
 msgstr "مبتدئ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "عدد الصفوف في الصفحة"
 
@@ -1951,15 +2015,24 @@ msgstr "اختر اتجاه الموقع"
 msgid "Select theme preference"
 msgstr "اختر تفضيل السمة"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "محدد"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "المحدد: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "إرسال"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "إرسال مرة أخرى"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "إرسال رسالة"
 
@@ -2011,7 +2084,7 @@ msgstr "تعيين المنشأ والوجهة"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "واسع"
 msgid "SPD BK"
 msgstr "ك.هـ"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "كابح هوائي"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "الأحد"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "أرى العدو"
 msgid "Task"
 msgstr "وظيفة"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "الفريق"
 
@@ -2181,13 +2255,17 @@ msgstr "الشروط والأحكام"
 msgid "That code is incorrect or has expired."
 msgstr "هذا الرمز غير صحيح أو انتهت صلاحيته."
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "تستمر المباراة خلف هذه القائمة."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "تعذر العثور على المحتوى المطلوب."
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "الموقع غير متاح في الوقت الحالي."
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "إعدادات السمة"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "ترسل هذه الرَّدهة اتصال لعبتك إلى مضيف مختلف ({redirectHost}). تابع فقط إذا كنت تثق بهذا الخادم."
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "لم يتم إنشاء هذه الصفحة بعد."
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "خانق"
 
@@ -2225,13 +2307,17 @@ msgstr "الخميس"
 msgid "Tightest sustained turn speed"
 msgstr "أضيق سرعة انعطاف مستمر"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "إمالة"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "وقت اليوم"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "إلى"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "استخدم مفتاح المرور الخاص بك"
 msgid "User"
 msgstr "المستخدم"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "رمز التحقق"
 
@@ -2368,7 +2454,7 @@ msgstr "فشل التحقق"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "تحقق"
 
@@ -2390,7 +2476,12 @@ msgstr "محنك"
 msgid "Video thumbnail"
 msgstr "صورة مصغرة للفيديو"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "عارض الفيديو: {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "منظر"
 
@@ -2402,8 +2493,8 @@ msgstr "عرض"
 msgid "View all"
 msgstr "عرض الكل"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "عرض جميع الإشعارات"
 
@@ -2419,11 +2510,16 @@ msgstr "في انتظار الخصم"
 msgid "WAVE OFF"
 msgstr "ألغِ الهبوط"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "أرسلنا رمز تحقق إلى <0>{0}</0>. أدخل الرمز أدناه للتحقق من بريدك الإلكتروني."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "سنعود للاتصال قريبًا."
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "سلاح"
 
@@ -2470,7 +2566,7 @@ msgstr "خادم العالم"
 msgid "World server not reachable"
 msgstr "تعذّر الوصول إلى خادم العالم"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "انعراج"
 
@@ -2493,6 +2589,10 @@ msgstr "أنت"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "ليس لديك صلاحية الوصول إلى هذا القسم."
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "ليس لديك الإذن اللازم <0/>لعرض هذا المورد."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

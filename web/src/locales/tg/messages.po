@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Лутфан пайвасти интернети худро санҷед ва аз нав кӯшиш кунед."
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, one {# интихобшуда} other {# интихобшуда}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} дар парвоз"
 msgid "{0}/{1} players"
 msgstr "{0}/{1} бозигар"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "Номи {entityLabel}"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "Бозии {name}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, one {{entityName} интихоб шуд} other {{manyName} интихоб шуданд}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, one {# {entityName} интихоб шуд. Панели амалҳои оммавӣ дастрас аст.} other {# {manyName} интихоб шуданд. Панели амалҳои оммавӣ дастрас аст.}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, one {# интихобшуда} other {# интихобшуда}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, one {Амалҳои оммавӣ барои # {entityName}-и интихобшуда} other {Амалҳои оммавӣ барои # {manyName}-и интихобшуда}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "Меҳварҳо"
 msgid "Axis {i}"
 msgstr "Меҳвари {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "ақиб"
 
@@ -239,9 +264,9 @@ msgstr "ақиб"
 msgid "Back"
 msgstr "Бозгашт"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "Бозгашт ба саҳифаи асосӣ"
 
@@ -290,7 +315,7 @@ msgstr "Афзоиши таваҷҷуҳ"
 msgid "Bots"
 msgstr "Ботҳо"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "тормозҳо"
 
@@ -331,7 +356,7 @@ msgstr "Масофаи камера"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "Категория барои ин огоҳинома"
 msgid "Change notification category"
 msgstr "Тағйири категорияи огоҳинома"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "Намои таъқиб:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "чат"
 
@@ -436,28 +461,29 @@ msgstr "Тоза кардан"
 msgid "Clear all"
 msgstr "Ҳамаро тоза кардан"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "Тоза кардани филтрҳо"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "Тоза кардани интихоб"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "Тоза кардани интихоб (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Пӯшидан"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "Пӯшидани навигатсия"
 
@@ -470,7 +496,7 @@ msgstr "Панелро пӯшидан"
 msgid "Close search"
 msgstr "Пӯшидани ҷустуҷӯ"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "наздиктар"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "Иваз кардани намуд"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "Торик"
@@ -724,8 +751,8 @@ msgstr "LOD-и масофа"
 msgid "Done"
 msgstr "Иҷро шуд"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "Боргирӣ"
 
@@ -733,7 +760,7 @@ msgstr "Боргирӣ"
 msgid "Download failed"
 msgstr "Боргирӣ ноком шуд"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "Кашидан"
 
@@ -793,15 +820,15 @@ msgstr "Рамзи аутентификатори худро ворид куне
 msgid "Environment"
 msgstr "Муҳит"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "Ҳама"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "Баромадан аз бозӣ"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "Баромадан аз супориш"
 
@@ -836,6 +863,14 @@ msgstr "Истиноди F/A-18C"
 msgid "Failed to add account"
 msgstr "Илова кардани ҳисоб ба анҷом нарасид"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "Тасвир бор карда нашуд"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "Видео бор карда нашуд"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "Бартараф кардани ҳисоб ба анҷом нарасид"
@@ -868,7 +903,7 @@ msgstr "Интиқоли ҳисобро анҷом диҳед"
 msgid "Finished"
 msgstr "Тамом шуд"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "оташ"
 
@@ -880,7 +915,7 @@ msgstr "Тугмаҳои доимӣ"
 msgid "FLAMEOUT"
 msgstr "АЛАНГА ХОМӮШ"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "машъалҳо"
 
@@ -969,7 +1004,7 @@ msgstr "Тарҳбандии пурра"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "шасси"
 
@@ -981,29 +1016,29 @@ msgstr "ШАССИ"
 msgid "General"
 msgstr "Умумӣ"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "Бозгашт"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "Ба саҳифаи якум рафтан"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "Ба саҳифаи охирин рафтан"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "Ба саҳифаи навбатӣ рафтан"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "Ба саҳифаи {pageNumber} гузаштан"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "Ба саҳифаи қаблӣ рафтан"
 
@@ -1053,7 +1088,7 @@ msgstr "Таърих"
 msgid "Home"
 msgstr "Хона"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "Қалмоқ"
 
@@ -1072,6 +1107,11 @@ msgstr "Манбаи баландии HUD"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "Соддакунии HUD"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "Тамошои тасвир: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "ОСЕБНОПАЗИР"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "Осебнопазир (танҳо бозигарони инсонӣ)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "Чунин ба назар мерасад, ки саҳифае, ки шумо ҷустуҷӯ мекунед, <0/>вуҷуд надорад ё нест карда шудааст."
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "ДЕР"
 msgid "Launch (catapult)"
 msgstr "Партоб (катапулт)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "партоб / ҳадаф"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "ДАР 1200 ҲАМВОР, ЧАРХҲО ПОЁН"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "Равшан"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "чароғҳо"
 
@@ -1325,7 +1370,7 @@ msgstr "Абри қабатии паст"
 msgid "M to close"
 msgstr "M барои пӯшидан"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "харита"
 
@@ -1333,8 +1378,8 @@ msgstr "харита"
 msgid "Map"
 msgstr "Харита"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "Аломатгузорӣ ҳамчун хондашуда"
@@ -1357,7 +1402,7 @@ msgstr "Бозиҳо"
 msgid "Medium"
 msgstr "Миёна"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "меню"
 
@@ -1366,7 +1411,7 @@ msgstr "меню"
 msgid "Menu"
 msgstr "Меню"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "Ба ҳама нависед"
 
@@ -1374,7 +1419,7 @@ msgstr "Ба ҳама нависед"
 msgid "Message players on this server"
 msgstr "Ба бозигарони ин сервер паём нависед"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "Ба дастаи худ нависед"
 
@@ -1423,8 +1468,8 @@ msgstr "Хатогии шабака"
 msgid "New"
 msgstr "Нав"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "Тасвири навбатӣ"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "Профил нест"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "Ягон натиҷа ёфт нашуд."
 
@@ -1528,6 +1573,11 @@ msgstr "Ҳоло ҳеҷ чиз нест — салом гӯед."
 msgid "Notifications"
 msgstr "Огоҳиномаҳо"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "Огоҳиномаҳо: {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "Тафсилоти уқёнус"
@@ -1583,11 +1633,11 @@ msgstr "Кушодани менюи навигатсия"
 msgid "Open theme settings"
 msgstr "Кушодани танзимоти мавзӯъ"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "ё"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "гардиш"
 
@@ -1598,6 +1648,11 @@ msgstr "Дигар"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "Соҳиб"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "Саҳифаи {currentPage} аз {totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "Халабон"
 msgid "PILOT DOWN"
 msgstr "ХАЛАБОН ҲАЛОК ШУД"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "тангаж"
 
@@ -1656,6 +1711,10 @@ msgstr "Бозигарон"
 msgid "Please check your internet connection and try again."
 msgstr "Лутфан пайвасти интернети худро санҷед ва аз нав кӯшиш кунед."
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "Лутфан барои дастрасӣ ба ин манбаъ <0/> бо маълумоти мувофиқ ворид шавед."
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "Лутфан, бори дигар кӯшиш кунед."
@@ -1680,8 +1739,8 @@ msgstr "БАРОИ ПАРВОЗ ENTER ПАХШ КУНЕД"
 msgid "Press it…"
 msgstr "Онро пахш кунед…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "Тасвири қаблӣ"
 
@@ -1787,6 +1846,11 @@ msgstr "Хориҷ кардан"
 msgid "Remove access rule"
 msgstr "Хориҷ кардани қоидаи дастрасӣ"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "Қоидаи дастрасӣ барои «{0}» нест карда шавад?"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "Дастрасиро хориҷ кардан?"
@@ -1826,7 +1890,7 @@ msgstr "Аз нав оғоз кардани супориш"
 msgid "Result"
 msgstr "Натиҷа"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "Идома додан"
 
@@ -1846,7 +1910,7 @@ msgstr "Чаппа"
 msgid "Right to Left"
 msgstr "Аз рост ба чап"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "крен"
 
@@ -1868,7 +1932,7 @@ msgstr "Ғалт ба рост"
 msgid "Rookie"
 msgstr "Навкор"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "Сатрҳо дар як саҳифа"
 
@@ -1951,15 +2015,24 @@ msgstr "Самти сайтро интихоб кунед"
 msgid "Select theme preference"
 msgstr "Афзалияти мавзӯъро интихоб кунед"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "интихобшуда"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "Интихобшуда: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "Фиристодан"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "Бори дигар фиристодан"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "Фиристодани паём"
 
@@ -2011,7 +2084,7 @@ msgstr "Сарчашма ва таъиноти манзилро таъин ку�
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "Васеъ"
 msgid "SPD BK"
 msgstr "ТОР.ҲВ"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "тормози ҳавоӣ"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "Якшанбе"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "ДУШМАНРО МЕБИНАМ"
 msgid "Task"
 msgstr "Вазифа"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "Даста"
 
@@ -2181,13 +2255,17 @@ msgstr "Шартҳо ва шартномаҳо"
 msgid "That code is incorrect or has expired."
 msgstr "Он рамз нодуруст аст ё мӯҳлаташ гузаштааст."
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "Бозӣ дар паси ин меню идома дорад."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "Муҳтавои дархостшуда ёфт нашуд."
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "Сомона ҳоло дастрас нест."
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "Танзимоти мавзӯъ"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Ин лобӣ пайвасти бозии шуморо ба мизбони дигар ({redirectHost}) мефиристад. Танҳо дар сурате идома диҳед, ки ба ин сервер эътимод доред."
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "Ин саҳифа ҳанӯз сохта нашудааст."
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "газ"
 
@@ -2225,13 +2307,17 @@ msgstr "Панҷшанбе"
 msgid "Tightest sustained turn speed"
 msgstr "Суръати тангтарин гардиши устувор"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "хамшавӣ"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "Вақти рӯз"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "Ба куҷо"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "Калиди дастрасии худро истифода баред"
 msgid "User"
 msgstr "Корбар"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "Рамзи тасдиқ"
 
@@ -2368,7 +2454,7 @@ msgstr "Тасдиқ ноком шуд"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "Тасдиқ кардан"
 
@@ -2390,7 +2476,12 @@ msgstr "Собиқадор"
 msgid "Video thumbnail"
 msgstr "Эскизи видео"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "Тамошои видео: {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "намо"
 
@@ -2402,8 +2493,8 @@ msgstr "Намоиш"
 msgid "View all"
 msgstr "Ҳамаро дидан"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "Ҳама огоҳиҳоро дидан"
 
@@ -2419,11 +2510,16 @@ msgstr "ИНТИЗОРИ ҲАРИФ"
 msgid "WAVE OFF"
 msgstr "ФУРУДРО БЕКОР КУН"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "Мо рамзи тасдиқро ба <0>{0}</0> фиристодем. Барои тасдиқи суроғаи почтаи электронии худ рамзро дар поён ворид кунед."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "Мо ба зудӣ дубора онлайн хоҳем буд."
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "силоҳ"
 
@@ -2470,7 +2566,7 @@ msgstr "Сервери ҷаҳон"
 msgid "World server not reachable"
 msgstr "Сервери ҷаҳон дастнорас аст"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "инҳироф"
 
@@ -2493,6 +2589,10 @@ msgstr "ШУМО"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "Шумо ба ин бахш дастрасӣ надоред."
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "Шумо иҷозати зарурӣ надоред <0/>барои дидани ин манбаъ."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

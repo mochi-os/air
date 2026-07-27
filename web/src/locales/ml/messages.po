@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക."
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, one {# തിരഞ്ഞെടുത്തു} other {# തിരഞ്ഞെടുത്തു}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} പേർ പറക്കുന്നു"
 msgid "{0}/{1} players"
 msgstr "{0}/{1} കളിക്കാർ"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "{entityLabel} പേര്"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "{name}-ന്റെ മത്സരം"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, one {{entityName} തിരഞ്ഞെടുത്തു} other {{manyName} തിരഞ്ഞെടുത്തു}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, one {# {entityName} തിരഞ്ഞെടുത്തു. ബൾക്ക് പ്രവർത്തന ടൂൾബാർ ലഭ്യമാണ്.} other {# {manyName} തിരഞ്ഞെടുത്തു. ബൾക്ക് പ്രവർത്തന ടൂൾബാർ ലഭ്യമാണ്.}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, one {# തിരഞ്ഞെടുത്തു} other {# തിരഞ്ഞെടുത്തു}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, one {# തിരഞ്ഞെടുത്ത {entityName} എന്നതിനുള്ള ബൾക്ക് പ്രവർത്തനങ്ങൾ} other {# തിരഞ്ഞെടുത്ത {manyName} എന്നതിനുള്ള ബൾക്ക് പ്രവർത്തനങ്ങൾ}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "അക്ഷങ്ങൾ"
 msgid "Axis {i}"
 msgstr "അക്ഷം {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "പുറകോട്ട്"
 
@@ -239,9 +264,9 @@ msgstr "പുറകോട്ട്"
 msgid "Back"
 msgstr "തിരികെ"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "ഹോമിലേക്ക് മടങ്ങുക"
 
@@ -290,7 +315,7 @@ msgstr "താൽപ്പര്യം വർദ്ധിപ്പിക്ക�
 msgid "Bots"
 msgstr "ബോട്ടുകൾ"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "ബ്രേക്കുകൾ"
 
@@ -331,7 +356,7 @@ msgstr "ക്യാമറ ദൂരം"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "ഈ അറിയിപ്പിനുള്ള വിഭാഗം"
 msgid "Change notification category"
 msgstr "അറിയിപ്പ് വിഭാഗം മാറ്റുക"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "പിന്തുടരൽ കാഴ്ച:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "ചാറ്റ്"
 
@@ -436,28 +461,29 @@ msgstr "മായ്ക്കുക"
 msgid "Clear all"
 msgstr "എല്ലാം മായ്ക്കുക"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "ഫിൽട്ടറുകൾ മായ്ക്കുക"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "തിരഞ്ഞെടുപ്പ് മായ്ക്കുക"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "തിരഞ്ഞെടുപ്പ് മായ്ക്കുക (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "അടയ്ക്കുക"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "നാവിഗേഷൻ അടയ്ക്കുക"
 
@@ -470,7 +496,7 @@ msgstr "പാനൽ അടയ്ക്കുക"
 msgid "Close search"
 msgstr "തിരയൽ അടയ്ക്കുക"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "കൂടുതൽ അടുത്ത്"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "കാഴ്ച മാറ്റുക"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "ഇരുണ്ടത്"
@@ -724,8 +751,8 @@ msgstr "ദൂര LOD"
 msgid "Done"
 msgstr "പൂർത്തിയായി"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "ഡൗൺലോഡ്"
 
@@ -733,7 +760,7 @@ msgstr "ഡൗൺലോഡ്"
 msgid "Download failed"
 msgstr "ഡൗൺലോഡ് പരാജയപ്പെട്ടു"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "വലിക്കുക"
 
@@ -793,15 +820,15 @@ msgstr "നിങ്ങളുടെ ഓതെന്റിക്കേറ്റ�
 msgid "Environment"
 msgstr "പരിസരം"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "എല്ലാവരും"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "മത്സരത്തിൽ നിന്ന് പുറത്തുകടക്കുക"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "ദൗത്യം അവസാനിപ്പിക്കുക"
 
@@ -836,6 +863,14 @@ msgstr "F/A-18C അവലംബം"
 msgid "Failed to add account"
 msgstr "അക്കൗണ്ട് ചേർക്കുന്നതിൽ പരാജയപ്പെട്ടു"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "ചിത്രം ലോഡ് ചെയ്യാനായില്ല"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "വീഡിയോ ലോഡ് ചെയ്യാനായില്ല"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "അക്കൗണ്ട് നീക്കം ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു"
@@ -868,7 +903,7 @@ msgstr "നിങ്ങളുടെ അക്കൗണ്ട് മാറ്റ�
 msgid "Finished"
 msgstr "പൂർത്തിയായി"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "ഫയർ"
 
@@ -880,7 +915,7 @@ msgstr "സ്ഥിര കീകൾ"
 msgid "FLAMEOUT"
 msgstr "ഫ്ലേംഔട്ട്"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "ഫ്ലെയറുകൾ"
 
@@ -969,7 +1004,7 @@ msgstr "പൂർണ്ണ ലേഔട്ട്"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "ഗിയർ"
 
@@ -981,29 +1016,29 @@ msgstr "ഗിയർ"
 msgid "General"
 msgstr "പൊതുവായവ"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "തിരികെ പോകുക"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "ആദ്യ പേജിലേക്ക് പോകുക"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "അവസാന പേജിലേക്ക് പോകുക"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "അടുത്ത പേജിലേക്ക് പോകുക"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "പേജ് {pageNumber}-ലേക്ക് പോകുക"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "മുൻ പേജിലേക്ക് പോകുക"
 
@@ -1053,7 +1088,7 @@ msgstr "ചരിത്രം"
 msgid "Home"
 msgstr "ഹോം"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "കൊളുത്ത്"
 
@@ -1072,6 +1107,11 @@ msgstr "HUD ഉയര സ്രോതസ്സ്"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "HUD ലളിതമാക്കൽ"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "ചിത്ര വ്യൂവർ: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "അജയ്യത"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "അജയ്യത (മനുഷ്യ കളിക്കാർക്ക് മാത്രം)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "നിങ്ങൾ തിരയുന്ന പേജ് <0/>നിലവിലില്ല അല്ലെങ്കിൽ നീക്കംചെയ്തിരിക്കാം."
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "വൈകി"
 msgid "Launch (catapult)"
 msgstr "വിക്ഷേപണം (കാറ്റപൾട്ട്)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "ലോഞ്ച് / ലക്ഷ്യം"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200-ൽ നിരപ്പ്, ചക്രം താഴെ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "ലൈറ്റ്"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "വിളക്കുകൾ"
 
@@ -1325,7 +1370,7 @@ msgstr "താഴ്ന്ന സ്ട്രാറ്റസ്"
 msgid "M to close"
 msgstr "അടയ്ക്കാൻ M"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "ഭൂപടം"
 
@@ -1333,8 +1378,8 @@ msgstr "ഭൂപടം"
 msgid "Map"
 msgstr "ഭൂപടം"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "എല്ലാം വായിച്ചതായി അടയാളപ്പെടുത്തുക"
@@ -1357,7 +1402,7 @@ msgstr "മത്സരങ്ങൾ"
 msgid "Medium"
 msgstr "ഇടത്തരം"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "മെനു"
 
@@ -1366,7 +1411,7 @@ msgstr "മെനു"
 msgid "Menu"
 msgstr "മെനു"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "എല്ലാവർക്കും മെസ്സേജ് അയയ്ക്കുക"
 
@@ -1374,7 +1419,7 @@ msgstr "എല്ലാവർക്കും മെസ്സേജ് അയയ�
 msgid "Message players on this server"
 msgstr "ഈ സെർവറിലെ കളിക്കാർക്ക് സന്ദേശം അയയ്ക്കുക"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "നിങ്ങളുടെ ടീമിന് മെസ്സേജ് അയയ്ക്കുക"
 
@@ -1423,8 +1468,8 @@ msgstr "നെറ്റ്‌വർക്ക് പിശക്"
 msgid "New"
 msgstr "പുതിയത്"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "അടുത്ത ചിത്രം"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "പ്രൊഫൈൽ ഇല്ല"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "ഫലങ്ങളൊന്നും കണ്ടെത്തിയില്ല."
 
@@ -1528,6 +1573,11 @@ msgstr "ഇതുവരെ ഒന്നുമില്ല — ഹലോ പറ�
 msgid "Notifications"
 msgstr "അറിയിപ്പുകൾ"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "അറിയിപ്പുകൾ: {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "സമുദ്ര വിശദാംശം"
@@ -1583,11 +1633,11 @@ msgstr "navigation മെനു തുറക്കുക"
 msgid "Open theme settings"
 msgstr "തീം സെറ്റിങ്ങുകൾ തുറക്കുക"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "അല്ലെങ്കിൽ"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "ഭ്രമണം"
 
@@ -1598,6 +1648,11 @@ msgstr "മറ്റുള്ളവ"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "ഉടമ"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "പേജ് {currentPage} / {totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "പൈലറ്റ്"
 msgid "PILOT DOWN"
 msgstr "പൈലറ്റ് കൊല്ലപ്പെട്ടു"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "പിച്ച്"
 
@@ -1656,6 +1711,10 @@ msgstr "കളിക്കാർ"
 msgid "Please check your internet connection and try again."
 msgstr "നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക."
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "ഈ ഉറവിടം ആക്‌സസ് ചെയ്യാൻ <0/> ഉചിതമായ ക്രെഡൻഷ്യലുകൾ ഉപയോഗിച്ച് ലോഗിൻ ചെയ്യുക."
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "ദയവായി വീണ്ടും ശ്രമിക്കുക."
@@ -1680,8 +1739,8 @@ msgstr "പറന്നുയരാൻ ENTER അമർത്തുക"
 msgid "Press it…"
 msgstr "ബട്ടൺ അമർത്തുക…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "മുമ്പത്തെ ഫോട്ടോ"
 
@@ -1787,6 +1846,11 @@ msgstr "നീക്കം ചെയ്യുക (അടുത്ത അറി�
 msgid "Remove access rule"
 msgstr "ആക്സസ് നീക്കം ചെയ്യണോ?"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "\"{0}\" എന്നതിനുള്ള ആക്‌സസ് നിയമം നീക്കംചെയ്യണോ?"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "അക്കൗണ്ട് നീക്കം ചെയ്യണോ?"
@@ -1826,7 +1890,7 @@ msgstr "ദൗത്യം പുനരാരംഭിക്കുക"
 msgid "Result"
 msgstr "ഫലം"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "പുനരാരംഭിക്കുക"
 
@@ -1846,7 +1910,7 @@ msgstr "വിപരീതം"
 msgid "Right to Left"
 msgstr "വലത്തുനിന്ന് ഇടത്തേക്ക്"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "റോൾ"
 
@@ -1868,7 +1932,7 @@ msgstr "റോൾ വലത്തേക്ക്"
 msgid "Rookie"
 msgstr "തുടക്കക്കാരൻ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "ഒരു പേജിലെ വരികൾ"
 
@@ -1951,15 +2015,24 @@ msgstr "സൈറ്റ് ദിശ തിരഞ്ഞെടുക്കുക"
 msgid "Select theme preference"
 msgstr "തീം മുൻഗണന തിരഞ്ഞെടുക്കുക"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "തിരഞ്ഞെടുത്തു"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "തിരഞ്ഞെടുത്തത്: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "അയയ്ക്കുക"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "വീണ്ടും അയയ്ക്കുക"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "ചാറ്റ് അയയ്ക്കുക"
 
@@ -2011,7 +2084,7 @@ msgstr "ഉത്ഭവവും ലക്ഷ്യസ്ഥാനവും സ�
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "വിശാലം"
 msgid "SPD BK"
 msgstr "ഏ.ബ്ര"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "ഏർ ബ്രേക്ക്"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "ഞായറാഴ്ച"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "ശത്രു ദൃഷ്ടിയിൽ"
 msgid "Task"
 msgstr "ടാസ്ക്"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "ടീം"
 
@@ -2181,13 +2255,17 @@ msgstr "നിബന്ധനകളും വ്യവസ്ഥകളും"
 msgid "That code is incorrect or has expired."
 msgstr "ആ കോഡ് തെറ്റാണ് അല്ലെങ്കിൽ കാലഹരണപ്പെട്ടു."
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "ഈ മെനുവിന് പിന്നിൽ മത്സരം തുടരുന്നു."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "അഭ്യർത്ഥിച്ച ഉള്ളടക്കം കണ്ടെത്താനായില്ല."
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "സൈറ്റ് ഈ നിമിഷം ലഭ്യമല്ല."
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "തീം ക്രമീകരണങ്ങൾ"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "ഈ ലോബി നിങ്ങളുടെ ഗെയിം കണക്ഷൻ മറ്റൊരു സെർവറിലേക്ക് ({redirectHost}) തിരിച്ചുവിടുന്നു. ഈ സെർവറിനെ വിശ്വസിക്കുന്നെങ്കിൽ മാത്രം തുടരുക."
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "ഈ പേജ് ഇതുവരെ സൃഷ്ടിച്ചിട്ടില്ല."
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "ത്രോട്ടിൽ"
 
@@ -2225,13 +2307,17 @@ msgstr "വ്യാഴാഴ്ച"
 msgid "Tightest sustained turn speed"
 msgstr "ഏറ്റവും ഇറുകിയ സുസ്ഥിര തിരിവ് വേഗത"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "ചരിക്കുക"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "ദിവസത്തിലെ സമയം"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "എവിടേക്ക്"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "നിങ്ങളുടെ പാസ്‌കീ ഉപയോഗിക�
 msgid "User"
 msgstr "ഉപയോക്താവ്"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "സ്ഥിരീകരണ കോഡ്"
 
@@ -2368,7 +2454,7 @@ msgstr "സ്ഥിരീകരണം പരാജയപ്പെട്ടു"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "സ്ഥിരീകരിക്കുക"
 
@@ -2390,7 +2476,12 @@ msgstr "വെറ്ററൻ"
 msgid "Video thumbnail"
 msgstr "വീഡിയോ തംബ്നെയിൽ"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "വീഡിയോ വ്യൂവർ: {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "കാഴ്ച"
 
@@ -2402,8 +2493,8 @@ msgstr "കാണുക"
 msgid "View all"
 msgstr "എല്ലാം കാണുക"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "എല്ലാ അറിയിപ്പുകളും കാണുക"
 
@@ -2419,11 +2510,16 @@ msgstr "എതിരാളിക്കായി കാത്തിരിക്�
 msgid "WAVE OFF"
 msgstr "ഗോ എറൗണ്ട്"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "ഞങ്ങൾ <0>{0}</0> എന്നതിലേക്ക് ഒരു പരിശോധനാ കോഡ് അയച്ചു. നിങ്ങളുടെ ഇമെയിൽ വിലാസം പരിശോധിക്കാൻ താഴെ കോഡ് നൽകുക."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "ഞങ്ങൾ ഉടൻ വീണ്ടും ഓൺലൈൻ ആകും."
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "ആയുധം"
 
@@ -2470,7 +2566,7 @@ msgstr "വേൾഡ് സെർവർ"
 msgid "World server not reachable"
 msgstr "വേൾഡ് സെർവറിലേക്ക് എത്താനാകുന്നില്ല"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "യാവ്"
 
@@ -2493,6 +2589,10 @@ msgstr "നിങ്ങൾ"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "ഈ വിഭാഗത്തിലേക്ക് നിങ്ങൾക്ക് പ്രവേശനമില്ല."
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "ഈ ഉറവിടം കാണാൻ <0/>നിങ്ങൾക്ക് ആവശ്യമായ അനുമതിയില്ല."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "कृपया आफ्नो इन्टरनेट जडान जाँच गरी पुनः प्रयास गर्नुहोस्।"
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, one {# चयन गरिएको} other {# चयन गरिएको}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} उडिरहेका छन्"
 msgid "{0}/{1} players"
 msgstr "{0}/{1} खेलाडी"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "{entityLabel} नाम"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "{name}को म्याच"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, one {{entityName} चयन गरियो} other {{manyName} चयन गरियो}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, one {# {entityName} चयन गरियो। बल्क कार्य उपकरणपट्टी उपलब्ध छ।} other {# {manyName} चयन गरियो। बल्क कार्य उपकरणपट्टी उपलब्ध छ।}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, one {# चयन गरिएको} other {# चयन गरिएको}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, one {# चयनित {entityName} का लागि बल्क कार्यहरू} other {# चयनित {manyName} का लागि बल्क कार्यहरू}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "अक्षहरू"
 msgid "Axis {i}"
 msgstr "अक्ष {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "पछाडि"
 
@@ -239,9 +264,9 @@ msgstr "पछाडि"
 msgid "Back"
 msgstr "पछाडि"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "गृहमा फर्कनुहोस्"
 
@@ -290,7 +315,7 @@ msgstr "रुचि बढाउनुहोस्"
 msgid "Bots"
 msgstr "बोटहरू"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "ब्रेक"
 
@@ -331,7 +356,7 @@ msgstr "क्यामेरा दूरी"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "यस सूचनाका लागि श्रेणी"
 msgid "Change notification category"
 msgstr "सूचना श्रेणी परिवर्तन गर्नुहोस्"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "पछ्याउने दृश्य:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "च्याट"
 
@@ -436,28 +461,29 @@ msgstr "खाली गर्नुहोस्"
 msgid "Clear all"
 msgstr "सबै खाली गर्नुहोस्"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "फिल्टरहरू खाली गर्नुहोस्"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "चयन खाली गर्नुहोस्"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "चयन खाली गर्नुहोस् (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "बन्द गर्नुहोस्"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "नेभिगेसन बन्द गर्नुहोस्"
 
@@ -470,7 +496,7 @@ msgstr "प्यानल बन्द गर्नुहोस्"
 msgid "Close search"
 msgstr "खोजी बन्द गर्नुहोस्"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "नजिक"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "दृश्य परिवर्तन"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "अँध्यारो"
@@ -724,8 +751,8 @@ msgstr "दूरी LOD"
 msgid "Done"
 msgstr "सम्पन्न"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "डाउनलोड"
 
@@ -733,7 +760,7 @@ msgstr "डाउनलोड"
 msgid "Download failed"
 msgstr "डाउनलोड असफल भयो"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "तान्नुहोस्"
 
@@ -793,15 +820,15 @@ msgstr "आफ्नो प्रमाणक कोड हाल्नुहो
 msgid "Environment"
 msgstr "वातावरण"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "सबै"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "म्याचबाट बाहिर निस्कनुहोस्"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "मिसन छोड्नुहोस्"
 
@@ -836,6 +863,14 @@ msgstr "F/A-18C सन्दर्भ"
 msgid "Failed to add account"
 msgstr "खाता थप्न असफल"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "छवि लोड गर्न असफल"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "भिडियो लोड गर्न असफल"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "खाता हटाउन असफल"
@@ -868,7 +903,7 @@ msgstr "आफ्नो खाता सार्ने काम सम्प�
 msgid "Finished"
 msgstr "समाप्त"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "फायर"
 
@@ -880,7 +915,7 @@ msgstr "स्थिर कुञ्जीहरू"
 msgid "FLAMEOUT"
 msgstr "फ्लेमआउट"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "फ्लेयर"
 
@@ -969,7 +1004,7 @@ msgstr "पूर्ण लेआउट"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "गियर"
 
@@ -981,29 +1016,29 @@ msgstr "गियर"
 msgid "General"
 msgstr "सामान्य"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "फर्कनुहोस्"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "पहिलो पृष्ठमा जानुहोस्"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "अन्तिम पृष्ठमा जानुहोस्"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "अर्को पृष्ठमा जानुहोस्"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "पृष्ठ {pageNumber} मा जानुहोस्"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "अघिल्लो पृष्ठमा जानुहोस्"
 
@@ -1053,7 +1088,7 @@ msgstr "इतिहास"
 msgid "Home"
 msgstr "होम"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "हुक"
 
@@ -1072,6 +1107,11 @@ msgstr "HUD उचाइ स्रोत"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "HUD सरलीकरण"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "छवि दर्शक: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "अभेद्य"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "अभेद्य (मानव खेलाडीहरू मात्र)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "तपाईंले खोज्नुभएको पृष्ठ <0/>अवस्थित छैन वा हटाइएको हुन सक्छ।"
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "ढिलो"
 msgid "Launch (catapult)"
 msgstr "प्रक्षेपण (क्याटापल्ट)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "उडान / लक्ष्य"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200 मा समतल, पाङ्ग्रा तल"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "उज्यालो"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "बत्ती"
 
@@ -1325,7 +1370,7 @@ msgstr "न्यून स्ट्र्याटस"
 msgid "M to close"
 msgstr "M बन्द गर्न"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "नक्सा"
 
@@ -1333,8 +1378,8 @@ msgstr "नक्सा"
 msgid "Map"
 msgstr "नक्सा"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "सबै पढिएको रूपमा चिन्ह लगाउनुहोस्"
@@ -1357,7 +1402,7 @@ msgstr "खेलहरू"
 msgid "Medium"
 msgstr "मध्यम"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "मेनु"
 
@@ -1366,7 +1411,7 @@ msgstr "मेनु"
 msgid "Menu"
 msgstr "मेनु"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "सबैलाई मेसेज गर्नुहोस्"
 
@@ -1374,7 +1419,7 @@ msgstr "सबैलाई मेसेज गर्नुहोस्"
 msgid "Message players on this server"
 msgstr "यो सर्भरका खेलाडीहरूलाई सन्देश पठाउनुहोस्"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "आफ्नो टिमलाई मेसेज गर्नुहोस्"
 
@@ -1423,8 +1468,8 @@ msgstr "नेटवर्क त्रुटि"
 msgid "New"
 msgstr "नयाँ"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "अर्को तस्बिर"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "कुनै प्रोफाइल छैन"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "कुनै नतिजा भेटिएन।"
 
@@ -1528,6 +1573,11 @@ msgstr "अहिलेसम्म केही छैन — नमस्त�
 msgid "Notifications"
 msgstr "सूचनाहरू"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "सूचनाहरू: {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "महासागर विवरण"
@@ -1583,11 +1633,11 @@ msgstr "नेभिगेसन मेनु खोल्नुहोस्"
 msgid "Open theme settings"
 msgstr "थिम सेटिङ खोल्नुहोस्"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "वा"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "परिक्रमा"
 
@@ -1598,6 +1648,11 @@ msgstr "अन्य"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "मालिक"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "पृष्ठ {currentPage} / {totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "पाइलट"
 msgid "PILOT DOWN"
 msgstr "पाइलट मारिए"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "पिच"
 
@@ -1656,6 +1711,10 @@ msgstr "खेलाडीहरू"
 msgid "Please check your internet connection and try again."
 msgstr "कृपया आफ्नो इन्टरनेट जडान जाँच गरी पुनः प्रयास गर्नुहोस्।"
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "यो स्रोतमा पहुँच गर्न <0/> कृपया उपयुक्त प्रमाणहरूसँग लग इन गर्नुहोस्।"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "कृपया फेरि प्रयास गर्नुहोस्।"
@@ -1680,8 +1739,8 @@ msgstr "उडानको लागि ENTER थिच्नुहोस्"
 msgid "Press it…"
 msgstr "बटन थिच्नुहोस्…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "अघिल्लो तस्बिर"
 
@@ -1787,6 +1846,11 @@ msgstr "हटाउनुहोस्"
 msgid "Remove access rule"
 msgstr "पहुँच नियम हटाउनुहोस्"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "\"{0}\" का लागि पहुँच नियम हटाउने?"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "पहुँच हटाउने?"
@@ -1826,7 +1890,7 @@ msgstr "मिसन पुनः सुरु"
 msgid "Result"
 msgstr "नतिजा"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "पुनः सुरु गर्नुहोस्"
 
@@ -1846,7 +1910,7 @@ msgstr "उल्टो"
 msgid "Right to Left"
 msgstr "दायाँदेखि बायाँ"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "रोल"
 
@@ -1868,7 +1932,7 @@ msgstr "रोल दायाँ"
 msgid "Rookie"
 msgstr "सिकारु"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "प्रति पृष्ठ पङ्क्तिहरू"
 
@@ -1951,15 +2015,24 @@ msgstr "साइट दिशा छान्नुहोस्"
 msgid "Select theme preference"
 msgstr "थिम प्राथमिकता छान्नुहोस्"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "चयन गरिएको"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "छानिएको: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "पठाउनुहोस्"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "फेरि पठाउनुहोस्"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "च्याट पठाउनुहोस्"
 
@@ -2011,7 +2084,7 @@ msgstr "उत्पत्ति र गन्तव्य सेट गर्�
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "विशाल"
 msgid "SPD BK"
 msgstr "ग.अव"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "गति अवरोधक"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "आइतबार"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "शत्रु देखियो"
 msgid "Task"
 msgstr "कार्य"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "टोली"
 
@@ -2181,13 +2255,17 @@ msgstr "नियम र सर्तहरू"
 msgid "That code is incorrect or has expired."
 msgstr "त्यो कोड गलत छ वा म्याद सकिएको छ।"
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "यो मेनुपछाडि म्याच जारी रहन्छ।"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "अनुरोध गरिएको सामग्री फेला परेन।"
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "साइट यस समयमा उपलब्ध छैन।"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "थिम सेटिङहरू"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "यो लबीले तपाईंको गेम जडानलाई फरक सर्भर ({redirectHost}) मा पुनर्निर्देशित गर्दैछ। यो सर्भरमाथि विश्वास गर्नुहुन्छ भने मात्र जारी राख्नुहोस्।"
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "यो पृष्ठ अझै सिर्जना गरिएको छैन।"
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "थ्रोटल"
 
@@ -2225,13 +2307,17 @@ msgstr "बिहीबार"
 msgid "Tightest sustained turn speed"
 msgstr "सबैभन्दा साँघुरो निरन्तर मोड गति"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "ढल्काउनु"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "दिनको समय"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "सम्म"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "आफ्नो पासकी प्रयोग गर्नुहो
 msgid "User"
 msgstr "प्रयोगकर्ता"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "प्रमाणीकरण कोड"
 
@@ -2368,7 +2454,7 @@ msgstr "प्रमाणीकरण असफल भयो"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "प्रमाणित गर्नुहोस्"
 
@@ -2390,7 +2476,12 @@ msgstr "अनुभवी"
 msgid "Video thumbnail"
 msgstr "भिडियो थम्बनेल"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "भिडियो दर्शक: {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "दृश्य"
 
@@ -2402,8 +2493,8 @@ msgstr "हेर्नुहोस्"
 msgid "View all"
 msgstr "सबै हेर्नुहोस्"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "सबै सूचना हेर्नुहोस्"
 
@@ -2419,11 +2510,16 @@ msgstr "प्रतिद्वन्द्वीको प्रतीक्�
 msgid "WAVE OFF"
 msgstr "गो अराउन्ड"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "हामीले <0>{0}</0> मा प्रमाणीकरण कोड पठायौं। आफ्नो इमेल ठेगाना प्रमाणित गर्न तल कोड प्रविष्ट गर्नुहोस्।"
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "हामी छिट्टै फेरि अनलाइन हुनेछौँ।"
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "हतियार"
 
@@ -2470,7 +2566,7 @@ msgstr "वर्ल्ड सर्भर"
 msgid "World server not reachable"
 msgstr "वर्ल्ड सर्भरसम्म पुग्न सकिएन"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "या"
 
@@ -2493,6 +2589,10 @@ msgstr "तपाईं"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "तपाईंसँग यो खण्डमा पहुँच छैन।"
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "यो स्रोत हेर्न <0/>तपाईंसँग आवश्यक अनुमति छैन।"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

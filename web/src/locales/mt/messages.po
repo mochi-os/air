@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Jekk jogħġbok iċċekkja l-konnessjoni tal-internet tiegħek u erġa' pprova."
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, one {# magħżul} few {# magħżula} many {# magħżula} other {# magħżula}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} qed itiru"
 msgid "{0}/{1} players"
 msgstr "{0}/{1} plejers"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "Isem ta' {entityLabel}"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "Il-partita ta' {name}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, one {{entityName} magħżul} few {{manyName} magħżula} many {{manyName} magħżula} other {{manyName} magħżula}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, one {# {entityName} magħżul. Il-barra tal-għodod għall-azzjonijiet bl-ingrossa hija disponibbli.} few {# {manyName} magħżula. Il-barra tal-għodod għall-azzjonijiet bl-ingrossa hija disponibbli.} many {# {manyName} magħżula. Il-barra tal-għodod għall-azzjonijiet bl-ingrossa hija disponibbli.} other {# {manyName} magħżula. Il-barra tal-għodod għall-azzjonijiet bl-ingrossa hija disponibbli.}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, one {# magħżula} few {# magħżula} many {# magħżula} other {# magħżula}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, one {Azzjonijiet bl-ingrossa għal # {entityName} magħżul} few {Azzjonijiet bl-ingrossa għal # {manyName} magħżula} many {Azzjonijiet bl-ingrossa għal # {manyName} magħżula} other {Azzjonijiet bl-ingrossa għal # {manyName} magħżula}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "Assi"
 msgid "Axis {i}"
 msgstr "Assi {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "lura"
 
@@ -239,9 +264,9 @@ msgstr "lura"
 msgid "Back"
 msgstr "Lura"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "Lura għall-paġna ewlenija"
 
@@ -290,7 +315,7 @@ msgstr "Saħħaħ l-interess"
 msgid "Bots"
 msgstr "Bots"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "freni"
 
@@ -331,7 +356,7 @@ msgstr "Distanza tal-kamera"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "Kategorija għal din in-notifika"
 msgid "Change notification category"
 msgstr "Ibdel il-kategorija tan-notifika"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "Veduta tal-insegwiment:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "chat"
 
@@ -436,28 +461,29 @@ msgstr "Naddaf"
 msgid "Clear all"
 msgstr "Naddaf kollox"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "Naddaf il-filtri"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "Naddaf l-għażla"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "Naddaf l-għażla (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Agħlaq"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "Agħlaq in-navigazzjoni"
 
@@ -470,7 +496,7 @@ msgstr "Agħlaq il-pannell"
 msgid "Close search"
 msgstr "Agħlaq it-tiftix"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "eqreb"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "Ibdel il-veduta"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "Skur"
@@ -724,8 +751,8 @@ msgstr "LOD tad-distanza"
 msgid "Done"
 msgstr "Lest"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "Niżżel"
 
@@ -733,7 +760,7 @@ msgstr "Niżżel"
 msgid "Download failed"
 msgstr "It-tniżżil falla"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "Iġbed"
 
@@ -793,15 +820,15 @@ msgstr "Daħħal il-kodiċi tal-awtentikatur tiegħek"
 msgid "Environment"
 msgstr "Ambjent"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "Kulħadd"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "Oħroġ mill-partita"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "Oħroġ mill-missjoni"
 
@@ -836,6 +863,14 @@ msgstr "Referenza tal-F/A-18C"
 msgid "Failed to add account"
 msgstr "Ma rnexxiex jiżdied il-kont"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "Ma rnexxielux jitgħabba l-istampa"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "Ma rnexxielux jitgħabba l-vidjo"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "Ma rnexxiex jitneħħa l-kont"
@@ -868,7 +903,7 @@ msgstr "Lesti t-trasferiment tal-kont tiegħek"
 msgid "Finished"
 msgstr "Spiċċat"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "spara"
 
@@ -880,7 +915,7 @@ msgstr "Ċwievet fissi"
 msgid "FLAMEOUT"
 msgstr "MAGNA MITFIJA"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "flares"
 
@@ -969,7 +1004,7 @@ msgstr "Layout sħiħ"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "Inżul"
 
@@ -981,29 +1016,29 @@ msgstr "GEAR"
 msgid "General"
 msgstr "Ġenerali"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "Lura"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "Mur l-ewwel paġna"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "Mur l-aħħar paġna"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "Mur il-paġna li jmiss"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "Mur fil-paġna {pageNumber}"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "Mur il-paġna ta' qabel"
 
@@ -1053,7 +1088,7 @@ msgstr "Storja"
 msgid "Home"
 msgstr "Paġna ewlenija"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "ganċ"
 
@@ -1072,6 +1107,11 @@ msgstr "Sors tal-altitudni tal-HUD"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "Simplifikazzjoni tal-HUD"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "Viewer tal-istampi: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "INVULNERABBLI"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "Invulnerabbli (plejers umani biss)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "Jidher li l-paġna li qed tfittex <0/>ma teżistix jew tneħħiet."
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "TARD"
 msgid "Launch (catapult)"
 msgstr "Tluq (katapulta)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "tlugħ / mira"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "LIVELL F’1200, ROTI ’L ISFEL"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "Ċar"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "dwal"
 
@@ -1325,7 +1370,7 @@ msgstr "Stratus baxx"
 msgid "M to close"
 msgstr "M biex tagħlaq"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "mappa"
 
@@ -1333,8 +1378,8 @@ msgstr "mappa"
 msgid "Map"
 msgstr "Mappa"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "Immarka kollox bħala maqru"
@@ -1357,7 +1402,7 @@ msgstr "Logħbiet"
 msgid "Medium"
 msgstr "Medju"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "menu"
 
@@ -1366,7 +1411,7 @@ msgstr "menu"
 msgid "Menu"
 msgstr "Menu"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "Ibgħat messaġġ lil kulħadd"
 
@@ -1374,7 +1419,7 @@ msgstr "Ibgħat messaġġ lil kulħadd"
 msgid "Message players on this server"
 msgstr "Ibgħat messaġġ lill-plejers fuq dan is-server"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "Ibgħat messaġġ lit-tim tiegħek"
 
@@ -1423,8 +1468,8 @@ msgstr "Żball tan-network"
 msgid "New"
 msgstr "Ġdid"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "Stampa li jmiss"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "L-ebda profil"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "Ma nstabu l-ebda riżultati."
 
@@ -1528,6 +1573,11 @@ msgstr "Għad m'hawn xejn — għid hello."
 msgid "Notifications"
 msgstr "Notifiki"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "Notifiki: {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "Dettall tal-oċean"
@@ -1583,11 +1633,11 @@ msgstr "Iftaħ menu tan-navigazzjoni"
 msgid "Open theme settings"
 msgstr "Iftaħ settings tat-tema"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "jew"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "orbita"
 
@@ -1598,6 +1648,11 @@ msgstr "Oħra"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "Sid"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "Paġna {currentPage} minn {totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "Bdot"
 msgid "PILOT DOWN"
 msgstr "BDOT MEJJET"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "pitch"
 
@@ -1656,6 +1711,10 @@ msgstr "Plejers"
 msgid "Please check your internet connection and try again."
 msgstr "Jekk jogħġbok iċċekkja l-konnessjoni tal-internet tiegħek u erġa' pprova."
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "Jekk jogħġbok idħol bil-kredenzjali xierqa <0/> biex taċċessa din ir-riżorsa."
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "Erġa' pprova."
@@ -1680,8 +1739,8 @@ msgstr "AGĦFAS ENTER BIEX TITLAQ"
 msgid "Press it…"
 msgstr "Agħfas il-buttuna…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "Stampa preċedenti"
 
@@ -1787,6 +1846,11 @@ msgstr "Neħħi"
 msgid "Remove access rule"
 msgstr "Neħħi r-regola tal-aċċess"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "Tneħħi r-regola ta' aċċess għal \"{0}\"?"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "Tneħħi l-aċċess?"
@@ -1826,7 +1890,7 @@ msgstr "Erġa’ ibda l-missjoni"
 msgid "Result"
 msgstr "Riżultat"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "Kompli"
 
@@ -1846,7 +1910,7 @@ msgstr "Maqlub"
 msgid "Right to Left"
 msgstr "Lemin għal Xellug"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "roll"
 
@@ -1868,7 +1932,7 @@ msgstr "Roll lejn il-lemin"
 msgid "Rookie"
 msgstr "Prinċipjant"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "Ringieli kull paġna"
 
@@ -1951,15 +2015,24 @@ msgstr "Agħżel direzzjoni tas-sit"
 msgid "Select theme preference"
 msgstr "Agħżel preferenza tat-tema"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "magħżula"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "Magħżul: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "Ibgħat"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "Ibgħat mill-ġdid"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "Ibgħat messaġġ"
 
@@ -2011,7 +2084,7 @@ msgstr "Issettja oriġini u destinazzjoni"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "Wiesa'"
 msgid "SPD BK"
 msgstr "FRN.VL"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "fren tal-veloċità"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "Il-Ħadd"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "NARA L-GĦADU"
 msgid "Task"
 msgstr "Kompitu"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "Tim"
 
@@ -2181,13 +2255,17 @@ msgstr "Termini u kondizzjonijiet"
 msgid "That code is incorrect or has expired."
 msgstr "Dak il-kodiċi mhux korrett jew skada."
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "Il-partita tkompli wara dan il-menu."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "Il-kontenut mitlub ma setax jinstab."
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "Is-sit mhuwiex disponibbli bħalissa."
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "Settings tat-Tema"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Din il-lobby qed tibgħat il-konnessjoni tal-logħba tiegħek lejn server ieħor ({redirectHost}). Kompli biss jekk tafda dan is-server."
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "Din il-paġna għadha ma nħolqotx."
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "throttle"
 
@@ -2225,13 +2307,17 @@ msgstr "Il-Ħamis"
 msgid "Tightest sustained turn speed"
 msgstr "Veloċità tal-aktar dawra sostnuta stretta"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "mejjel"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "Ħin tal-jum"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "Lejn"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "Uża l-passkey tiegħek"
 msgid "User"
 msgstr "Utent"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "Kodiċi ta' verifika"
 
@@ -2368,7 +2454,7 @@ msgstr "Verifika falliet"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "Ivverifika"
 
@@ -2390,7 +2476,12 @@ msgstr "Veteran"
 msgid "Video thumbnail"
 msgstr "Thumbnail tal-vidjo"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "Viewer tal-vidjo: {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "veduta"
 
@@ -2402,8 +2493,8 @@ msgstr "Ara"
 msgid "View all"
 msgstr "Ara kollox"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "Ara n-notifiki kollha"
 
@@ -2419,11 +2510,16 @@ msgstr "STENNIJA GĦALL-AVVERSARJU"
 msgid "WAVE OFF"
 msgstr "WAQQAF L-INŻUL"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "Bgħatna kodiċi ta' verifika lil <0>{0}</0>. Daħħal il-kodiċi hawn taħt biex tivverifika l-indirizz elettroniku tiegħek."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "Nerġgħu nkunu online dalwaqt."
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "arma"
 
@@ -2470,7 +2566,7 @@ msgstr "Server tad-dinja"
 msgid "World server not reachable"
 msgstr "Is-server tad-dinja ma jistax jintlaħaq"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "yaw"
 
@@ -2493,6 +2589,10 @@ msgstr "INT"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "M'għandekx aċċess għal din it-taqsima."
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "M'għandekx il-permess meħtieġ <0/>biex tara din ir-riżorsa."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

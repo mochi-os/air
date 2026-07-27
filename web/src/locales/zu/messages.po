@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Sicela uhlole uxhumano lwakho lwe-inthanethi bese uzama futhi."
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, one {# kukhethiwe} other {# kukhethiwe}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} bayandiza"
 msgid "{0}/{1} players"
 msgstr "abadlali {0}/{1}"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "Igama le-{entityLabel}"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "Umdlalo ka-{name}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, one {{entityName} ekhethiwe} other {{manyName} ezikhethiwe}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, one {# {entityName} ekhethiwe. Ibha yezenzo eziningi iyatholakala.} other {# {manyName} ezikhethiwe. Ibha yezenzo eziningi iyatholakala.}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, one {# okukhethiwe} other {# okukhethiwe}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, one {Izenzo eziningi ze-{entityName} engu-# ekhethiwe} other {Izenzo eziningi ze-{manyName} ezingu-# ezikhethiwe}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "Ama-axis"
 msgid "Axis {i}"
 msgstr "I-axis {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "emuva"
 
@@ -239,9 +264,9 @@ msgstr "emuva"
 msgid "Back"
 msgstr "Emuva"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "Buyela ekhaya"
 
@@ -290,7 +315,7 @@ msgstr "Khulisa intshisekelo"
 msgid "Bots"
 msgstr "Amabhothi"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "amabhuleki"
 
@@ -331,7 +356,7 @@ msgstr "Ibanga lekhamera"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "Isigaba salesi saziso"
 msgid "Change notification category"
 msgstr "Shintsha isigaba sesaziso"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "Umbono wokujaha:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "ingxoxo"
 
@@ -436,28 +461,29 @@ msgstr "Sula"
 msgid "Clear all"
 msgstr "Sula konke"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "Sula izihlungi"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "Sula ukukhetha"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "Sula ukukhetha (i-Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Vala"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "Vala ukuzulazula"
 
@@ -470,7 +496,7 @@ msgstr "Vala iphaneli"
 msgid "Close search"
 msgstr "Vala usesho"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "sondela"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "Shintsha umbono"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "Kumnyama"
@@ -724,8 +751,8 @@ msgstr "I-LOD yebanga"
 msgid "Done"
 msgstr "Kwenziwe"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "Landa"
 
@@ -733,7 +760,7 @@ msgstr "Landa"
 msgid "Download failed"
 msgstr "Ukulanda kuhlulekile"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "Hudula"
 
@@ -793,15 +820,15 @@ msgstr "Faka ikhodi yakho yesiqinisekisi"
 msgid "Environment"
 msgstr "Okuzungezile"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "Bonke"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "Phuma emdlalweni"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "Phuma emsebenzini"
 
@@ -836,6 +863,14 @@ msgstr "Inkomba ye-F/A-18C"
 msgid "Failed to add account"
 msgstr "Kuhlulekile ukungeza i-akhawunti"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "Yehlulekile ukulayisha isithombe"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "Yehlulekile ukulayisha ividiyo"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "Kuhlulekile ukususa i-akhawunti"
@@ -868,7 +903,7 @@ msgstr "Qeda ukudlulisa i-akhawunti yakho"
 msgid "Finished"
 msgstr "Kuqediwe"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "dubula"
 
@@ -880,7 +915,7 @@ msgstr "Okhiye abangaguquki"
 msgid "FLAMEOUT"
 msgstr "INJINI ICIMILE"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "amalangabi"
 
@@ -969,7 +1004,7 @@ msgstr "Isakhiwo esiphelele"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "Igiya"
 
@@ -981,29 +1016,29 @@ msgstr "IGIYA"
 msgid "General"
 msgstr "Okujwayelekile"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "Buyela"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "Yiya ekhasini lokuqala"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "Yiya ekhasini lokugcina"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "Yiya ekhasini elilandelayo"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "Yiya ekhasini {pageNumber}"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "Yiya ekhasini elingaphambilini"
 
@@ -1053,7 +1088,7 @@ msgstr "Umlando"
 msgid "Home"
 msgstr "Ikhaya"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "Ihuku"
 
@@ -1072,6 +1107,11 @@ msgstr "Umthombo wokuphakama we-HUD"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "Yenza i-HUD ibe lula"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "Isibonisi sesithombe: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "AKALIMALI"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "Akalimali (abadlali abangabantu kuphela)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "Kubonakala sengathi ikhasi olifunayo <0/>alikho noma lisusiwe."
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "SEKWEPHUZILE"
 msgid "Launch (catapult)"
 msgstr "Ndulula (ikhathaphali)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "suka / ithagethi"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "LINGANISA KU-1200, YEHLISA AMASONDO"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "Okukhanyayo"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "izibani"
 
@@ -1325,7 +1370,7 @@ msgstr "I-stratus ephansi"
 msgid "M to close"
 msgstr "M ukuvala"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "imephu"
 
@@ -1333,8 +1378,8 @@ msgstr "imephu"
 msgid "Map"
 msgstr "Imephu"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "Maka konke njengokufundiwe"
@@ -1357,7 +1402,7 @@ msgstr "Imidlalo"
 msgid "Medium"
 msgstr "Maphakathi"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "imenyu"
 
@@ -1366,7 +1411,7 @@ msgstr "imenyu"
 msgid "Menu"
 msgstr "Imenyu"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "Thumela umlayezo kubo bonke"
 
@@ -1374,7 +1419,7 @@ msgstr "Thumela umlayezo kubo bonke"
 msgid "Message players on this server"
 msgstr "Thumela umlayezo kubadlali kule seva"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "Thumela umlayezo eqenjini lakho"
 
@@ -1423,8 +1468,8 @@ msgstr "Iphutha lenethiwekhi"
 msgid "New"
 msgstr "Okusha"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "Isithombe esilandelayo"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "Awukho umbiko womsebenzisi"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "Imiphumela ayitholakali."
 
@@ -1528,6 +1573,11 @@ msgstr "Akukho lutho okwamanje — yisho sawubona."
 msgid "Notifications"
 msgstr "Izaziso"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "Izaziso: {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "Imininingwane yolwandle"
@@ -1583,11 +1633,11 @@ msgstr "Vula imenyu yokuzulazula"
 msgid "Open theme settings"
 msgstr "Vula izilungiselelo zetimu"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "noma"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "jikeleza"
 
@@ -1598,6 +1648,11 @@ msgstr "Okunye"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "Umnikazi"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "Ikhasi {currentPage} kwangu-{totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "Umshayeli webhanoyi"
 msgid "PILOT DOWN"
 msgstr "UMSHAYELI UBULEWE"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "gobisa"
 
@@ -1656,6 +1711,10 @@ msgstr "Abadlali"
 msgid "Please check your internet connection and try again."
 msgstr "Sicela uhlole uxhumano lwakho lwe-inthanethi bese uzama futhi."
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "Sicela ungene ngemininingwane efanele <0/> ukuze ufinyelele le nsiza."
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "Sicela uzame futhi."
@@ -1680,8 +1739,8 @@ msgstr "CINDEZELA U-ENTER UKUZE UNDIZE"
 msgid "Press it…"
 msgstr "Yicindezele…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "Isithombe esedlule"
 
@@ -1787,6 +1846,11 @@ msgstr "Khipha"
 msgid "Remove access rule"
 msgstr "Khipha umthetho wokufinyelela"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "Susa umthetho wokufinyelela we-\"{0}\"?"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "Khipha ukufinyelela?"
@@ -1826,7 +1890,7 @@ msgstr "Qala kabusha umsebenzi"
 msgid "Result"
 msgstr "Umphumela"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "Qhubeka"
 
@@ -1846,7 +1910,7 @@ msgstr "Kuguquliwe"
 msgid "Right to Left"
 msgstr "Kusuka Kwesokudla Kuya Kwesokunxele"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "gingqa"
 
@@ -1868,7 +1932,7 @@ msgstr "I-roll kwesokudla"
 msgid "Rookie"
 msgstr "Osaqalayo"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "Imigqa ekhasini ngalinye"
 
@@ -1951,15 +2015,24 @@ msgstr "Khetha umkhondo wesayithi"
 msgid "Select theme preference"
 msgstr "Khetha okuncamelayo kwendikimba"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "okukhethiwe"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "Ekhethiwe: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "Thumela"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "Thumela futhi"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "Thumela umlayezo"
 
@@ -2011,7 +2084,7 @@ msgstr "Misa indawo yokuqala neyokuya"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "Ukukhula"
 msgid "SPD BK"
 msgstr "IB.MO"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "ibhuleki yomoya"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "ISonto"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "NGIBONA ISITHA"
 msgid "Task"
 msgstr "Umsebenzi"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "Iqembu"
 
@@ -2181,13 +2255,17 @@ msgstr "Imibandela nemigomo"
 msgid "That code is incorrect or has expired."
 msgstr "Leyo khodi ayilungile noma isiphelelwe yisikhathi."
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "Umdlalo uyaqhubeka ngemuva kwale menyu."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "Okuqukethwe okuceliwe akutholakalanga."
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "Isayithi ayitholakali okwamanje."
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "Izilungiselelo Zendikimba"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Le lobby ithumela uxhumano lwakho lomdlalo kumsingathi ohlukile ({redirectHost}). Qhubeka kuphela uma uyithemba le seva."
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "Leli khasi alikadalwa."
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "ijubane"
 
@@ -2225,13 +2307,17 @@ msgstr "ULwesine"
 msgid "Tightest sustained turn speed"
 msgstr "Isivinini sokujika okuqhubekayo okuqinile kakhulu"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "thambekisa"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "Isikhathi sosuku"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "Kuya"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "Sebenzisa i-passkey yakho"
 msgid "User"
 msgstr "Umsebenzisi"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "Ikhodi yokuqinisekiswa"
 
@@ -2368,7 +2454,7 @@ msgstr "Ukuqinisekiswa kuhlulekile"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "Qinisekisa"
 
@@ -2390,7 +2476,12 @@ msgstr "Onesipiliyoni"
 msgid "Video thumbnail"
 msgstr "Isithombe esincane sevidiyo"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "Isibonisi sevidiyo: {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "umbono"
 
@@ -2402,8 +2493,8 @@ msgstr "Buka"
 msgid "View all"
 msgstr "Buka konke"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "Buka zonke izaziso"
 
@@ -2419,11 +2510,16 @@ msgstr "KULINDELWE IMBANGI"
 msgid "WAVE OFF"
 msgstr "WAVE OFF"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "Sithumele ikhodi yokuqinisekisa ku-<0>{0}</0>. Faka ikhodi ngezansi ukuze uqinisekise ikheli lakho le-imeyili."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "Sizobuya ku-inthanethi maduze."
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "isikhali"
 
@@ -2470,7 +2566,7 @@ msgstr "Iseva yomhlaba"
 msgid "World server not reachable"
 msgstr "Iseva yomhlaba ayifinyeleleki"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "phendula"
 
@@ -2493,6 +2589,10 @@ msgstr "WENA"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "Awunakho ukufinyelela kule ngxenye."
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "Awunayo imvume edingekayo <0/>yokubuka le nsiza."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

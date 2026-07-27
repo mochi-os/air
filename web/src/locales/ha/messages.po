@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Da fatan a duba haɗin intanet ɗinka sannan a sake gwadawa."
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, one {# zaɓaɓɓe} other {# zaɓaɓɓu}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} suna shawagi"
 msgid "{0}/{1} players"
 msgstr "{0}/{1} 'yan wasa"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "Sunan {entityLabel}"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "Wasan {name}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, one {An zaɓi {entityName}} other {An zaɓi {manyName}}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, one {An zaɓi {entityName} #. Sandar ayyuka masu yawa tana samuwa.} other {An zaɓi {manyName} #. Sandar ayyuka masu yawa tana samuwa.}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, one {# an zaɓa} other {# an zaɓa}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, one {Ayyuka masu yawa don {entityName} # da aka zaɓa} other {Ayyuka masu yawa don {manyName} # da aka zaɓa}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "Aksis"
 msgid "Axis {i}"
 msgstr "Aksis {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "baya"
 
@@ -239,9 +264,9 @@ msgstr "baya"
 msgid "Back"
 msgstr "Komawa"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "Komawa gida"
 
@@ -290,7 +315,7 @@ msgstr "Ƙara sha'awa"
 msgid "Bots"
 msgstr "Bots"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "birki"
 
@@ -331,7 +356,7 @@ msgstr "Nisan kyamara"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "Rukuni don wannan sanarwa"
 msgid "Change notification category"
 msgstr "Sauya rukunin sanarwa"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "Kallon bi:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "hira"
 
@@ -436,28 +461,29 @@ msgstr "Share"
 msgid "Clear all"
 msgstr "Share duka"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "Share filters"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "Share zaɓi"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "Share zaɓi (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Rufe"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "Rufe navigation"
 
@@ -470,7 +496,7 @@ msgstr "Rufe panel"
 msgid "Close search"
 msgstr "Rufe bincike"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "kusa"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "Sauya kallo"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "Duhu"
@@ -724,8 +751,8 @@ msgstr "LOD na nisa"
 msgid "Done"
 msgstr "An gama"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "Sauke"
 
@@ -733,7 +760,7 @@ msgstr "Sauke"
 msgid "Download failed"
 msgstr "Saukarwa ta gaza"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "Ja"
 
@@ -793,15 +820,15 @@ msgstr "Shigar da lambar mai tantancewarka"
 msgid "Environment"
 msgstr "Muhalli"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "Kowa"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "Fita daga wasan"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "Bar manufa"
 
@@ -836,6 +863,14 @@ msgstr "Ma'aunin F/A-18C"
 msgid "Failed to add account"
 msgstr "An gaza ƙara account"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "An kasa loda hoton"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "An kasa loda bidiyon"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "An gaza cire account"
@@ -868,7 +903,7 @@ msgstr "Kammala ƙaurar asusunka"
 msgid "Finished"
 msgstr "An gama"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "harba"
 
@@ -880,7 +915,7 @@ msgstr "Kafaffun maɓallai"
 msgid "FLAMEOUT"
 msgstr "INJIN YA MUTU"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "fitilu"
 
@@ -969,7 +1004,7 @@ msgstr "Cikakken layout"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "ƙafafu"
 
@@ -981,29 +1016,29 @@ msgstr "ƘAFAFU"
 msgid "General"
 msgstr "Gabaɗaya"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "Komawa baya"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "Tafi shafi na farko"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "Tafi shafi na ƙarshe"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "Tafi shafi na gaba"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "Je shafi {pageNumber}"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "Tafi shafi na baya"
 
@@ -1053,7 +1088,7 @@ msgstr "Tarihi"
 msgid "Home"
 msgstr "Gida"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "Ƙugiya"
 
@@ -1072,6 +1107,11 @@ msgstr "Tushen tsayin HUD"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "Sauƙaƙa HUD"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "Mai duba hoto: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "BA YA RAUNUWA"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "Ba ya raunuwa (’yan wasa mutane kawai)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "Da alama shafin da kake nema <0/>babu shi ko an cire shi."
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "A MAKARE"
 msgid "Launch (catapult)"
 msgstr "Harba (majajjawa)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "harba / kama"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "DAIDAITA A 1200, SAUKAR DA ƘAFAFU"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "Haske"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "fitilu"
 
@@ -1325,7 +1370,7 @@ msgstr "Stratus na ƙasa"
 msgid "M to close"
 msgstr "M don rufewa"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "taswira"
 
@@ -1333,8 +1378,8 @@ msgstr "taswira"
 msgid "Map"
 msgstr "Taswira"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "Yi alama duka a matsayin karanta"
@@ -1357,7 +1402,7 @@ msgstr "Wasanni"
 msgid "Medium"
 msgstr "Matsakaici"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "menu"
 
@@ -1366,7 +1411,7 @@ msgstr "menu"
 msgid "Menu"
 msgstr "Menu"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "Aika saƙo ga kowa"
 
@@ -1374,7 +1419,7 @@ msgstr "Aika saƙo ga kowa"
 msgid "Message players on this server"
 msgstr "Aika saƙo ga 'yan wasa a wannan sabar"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "Aika saƙo ga ƙungiyarka"
 
@@ -1423,8 +1468,8 @@ msgstr "Kuskuren hanyar sadarwa"
 msgid "New"
 msgstr "Sabon"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "Hoton na gaba"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "Babu profile"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "Ba a sami sakamako ba."
 
@@ -1528,6 +1573,11 @@ msgstr "Babu komai tukuna — a ce sannu."
 msgid "Notifications"
 msgstr "Sanarwa"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "Sanarwa: {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "Bayanin teku"
@@ -1583,11 +1633,11 @@ msgstr "Buɗe menu ɗin navigation"
 msgid "Open theme settings"
 msgstr "Buɗe saitunan theme"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "ko"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "kewaya"
 
@@ -1598,6 +1648,11 @@ msgstr "Sauran"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "Mai shi"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "Shafi {currentPage} na {totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "Matuƙi"
 msgid "PILOT DOWN"
 msgstr "MATUKI YA MUTU"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "ɗagawa"
 
@@ -1656,6 +1711,10 @@ msgstr "'Yan wasa"
 msgid "Please check your internet connection and try again."
 msgstr "Da fatan a duba haɗin intanet ɗinka sannan a sake gwadawa."
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "Da fatan za a shiga da bayanan da suka dace <0/> don samun damar wannan albarkatun."
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "Da fatan za a sake gwadawa."
@@ -1680,8 +1739,8 @@ msgstr "DANNA ENTER DON TASHI"
 msgid "Press it…"
 msgstr "Danna shi…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "Hoton da ya gabata"
 
@@ -1787,6 +1846,11 @@ msgstr "Cire"
 msgid "Remove access rule"
 msgstr "Cire ka'idar shiga"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "A cire ka'idar shiga don \"{0}\"?"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "A cire damar shiga?"
@@ -1826,7 +1890,7 @@ msgstr "Sake fara manufa"
 msgid "Result"
 msgstr "Sakamako"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "Ci gaba"
 
@@ -1846,7 +1910,7 @@ msgstr "Juyayye"
 msgid "Right to Left"
 msgstr "Daga Dama zuwa Hagu"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "birgima"
 
@@ -1868,7 +1932,7 @@ msgstr "Karkata dama"
 msgid "Rookie"
 msgstr "Sabon shiga"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "Layuka kowane shafi"
 
@@ -1951,15 +2015,24 @@ msgstr "Zaɓi alkiblar shafin"
 msgid "Select theme preference"
 msgstr "Zaɓi zaɓin theme"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "an zaɓa"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "An zaɓa: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "Aika"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "Aika kuma"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "Aika saƙo"
 
@@ -2011,7 +2084,7 @@ msgstr "Saita tushe da makoma"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "Faffaka"
 msgid "SPD BK"
 msgstr "BRK IS"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "birki iska"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "Lahadi"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "NA HANGO MAƘIYI"
 msgid "Task"
 msgstr "Aiki"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "Tawaga"
 
@@ -2181,13 +2255,17 @@ msgstr "Sharuɗɗa da yanayi"
 msgid "That code is incorrect or has expired."
 msgstr "Wannan lambar ba daidai ba ce ko kuma ta kare."
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "Wasan na ci gaba a bayan wannan menu."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "Ba a iya samun abun cikin da aka nema ba."
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "Shafin ba ya samuwa a yanzu."
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "Saitunan Theme"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Wannan ɗakin jira yana aika haɗin wasanka zuwa wani mai masauki dabam ({redirectHost}). Ka ci gaba kawai idan ka amince da wannan sabar."
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "Ba a ƙirƙiri wannan shafin ba tukuna."
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "ƙarfi"
 
@@ -2225,13 +2307,17 @@ msgstr "Alhamis"
 msgid "Tightest sustained turn speed"
 msgstr "Gudun juyi mai dorewa mafi ƙunci"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "jingina"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "Lokacin rana"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "Zuwa"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "Yi amfani da maɓallin shiganka"
 msgid "User"
 msgstr "Mai amfani"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "Lambar tabbatarwa"
 
@@ -2368,7 +2454,7 @@ msgstr "Tabbatarwa ya gaza"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "Tabbatar"
 
@@ -2390,7 +2476,12 @@ msgstr "Gogagge"
 msgid "Video thumbnail"
 msgstr "Ƙaramin hoton bidiyo"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "Mai duba bidiyo: {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "kallo"
 
@@ -2402,8 +2493,8 @@ msgstr "Kalla"
 msgid "View all"
 msgstr "Kalli duka"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "Kalli duk sanarwa"
 
@@ -2419,11 +2510,16 @@ msgstr "ANA JIRAN ABOKIN KARAWA"
 msgid "WAVE OFF"
 msgstr "DAKATAR DA SAUKA"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "Mun aika lambar tabbatarwa zuwa <0>{0}</0>. Shigar da lambar a ƙasa don tabbatar da adireshin imel ɗinka."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "Za mu dawo online ba da daɗewa ba."
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "makami"
 
@@ -2470,7 +2566,7 @@ msgstr "Sabar duniya"
 msgid "World server not reachable"
 msgstr "Ba a iya kaiwa ga sabar duniya ba"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "karkata"
 
@@ -2493,6 +2589,10 @@ msgstr "KAI"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "Ba ka da damar shiga wannan sashe ba."
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "Ba ka da izinin da ake buƙata <0/>don duba wannan albarkatun."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

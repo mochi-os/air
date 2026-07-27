@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตของคุณแล้วลองอีกครั้ง"
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, one {เลือกแล้ว #} other {เลือกแล้ว #}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} คนกำลังบิน"
 msgid "{0}/{1} players"
 msgstr "ผู้เล่น {0}/{1} คน"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "ชื่อ {entityLabel}"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "แมตช์ของ {name}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, one {เลือก {entityName} แล้ว} other {เลือก {manyName} แล้ว}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, one {เลือก {entityName} # รายการแล้ว แถบเครื่องมือดำเนินการเป็นกลุ่มพร้อมใช้งาน} other {เลือก {manyName} # รายการแล้ว แถบเครื่องมือดำเนินการเป็นกลุ่มพร้อมใช้งาน}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, one {# ที่เลือก} other {# ที่เลือก}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, one {การดำเนินการเป็นกลุ่มสำหรับ {entityName} # รายการที่เลือก} other {การดำเนินการเป็นกลุ่มสำหรับ {manyName} # รายการที่เลือก}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "แกน"
 msgid "Axis {i}"
 msgstr "แกน {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "ถอยออก"
 
@@ -239,9 +264,9 @@ msgstr "ถอยออก"
 msgid "Back"
 msgstr "ย้อนกลับ"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "กลับไปหน้าหลัก"
 
@@ -290,7 +315,7 @@ msgstr "เพิ่มความสนใจ"
 msgid "Bots"
 msgstr "บอท"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "เบรก"
 
@@ -331,7 +356,7 @@ msgstr "ระยะกล้อง"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "หมวดหมู่สำหรับการแจ้งเตื
 msgid "Change notification category"
 msgstr "เปลี่ยนหมวดหมู่การแจ้งเตือน"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "มุมมองไล่ตาม:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "แชท"
 
@@ -436,28 +461,29 @@ msgstr "ล้าง"
 msgid "Clear all"
 msgstr "ล้างทั้งหมด"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "ล้างตัวกรอง"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "ล้างการเลือก"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "ล้างการเลือก (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "ปิด"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "ปิดการนำทาง"
 
@@ -470,7 +496,7 @@ msgstr "ปิดแผง"
 msgid "Close search"
 msgstr "ปิดการค้นหา"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "เข้าใกล้"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "สลับมุมมอง"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "มืด"
@@ -724,8 +751,8 @@ msgstr "LOD ตามระยะ"
 msgid "Done"
 msgstr "เสร็จสิ้น"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "ดาวน์โหลด"
 
@@ -733,7 +760,7 @@ msgstr "ดาวน์โหลด"
 msgid "Download failed"
 msgstr "ดาวน์โหลดไม่สำเร็จ"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "ลาก"
 
@@ -793,15 +820,15 @@ msgstr "ป้อนรหัสจากแอปยืนยันตัวต
 msgid "Environment"
 msgstr "สภาพแวดล้อม"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "ทุกคน"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "ออกจากแมตช์"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "ออกจากภารกิจ"
 
@@ -836,6 +863,14 @@ msgstr "ข้อมูลอ้างอิง F/A-18C"
 msgid "Failed to add account"
 msgstr "ไม่สามารถเพิ่มบัญชีได้"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "โหลดรูปภาพไม่สำเร็จ"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "โหลดวิดีโอไม่สำเร็จ"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "ไม่สามารถเอาบัญชีออกได้"
@@ -868,7 +903,7 @@ msgstr "เสร็จสิ้นการย้ายบัญชี"
 msgid "Finished"
 msgstr "จบแล้ว"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "ยิง"
 
@@ -880,7 +915,7 @@ msgstr "ปุ่มตายตัว"
 msgid "FLAMEOUT"
 msgstr "เครื่องดับ"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "พลุล่อ"
 
@@ -969,7 +1004,7 @@ msgstr "เลย์เอาต์เต็ม"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "ฐานล้อ"
 
@@ -981,29 +1016,29 @@ msgstr "ล้อ"
 msgid "General"
 msgstr "ทั่วไป"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "กลับ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "ไปหน้าแรก"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "ไปหน้าสุดท้าย"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "ไปหน้าถัดไป"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "ไปที่หน้า {pageNumber}"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "ไปหน้าก่อนหน้า"
 
@@ -1053,7 +1088,7 @@ msgstr "ประวัติ"
 msgid "Home"
 msgstr "หน้าหลัก"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "ตะขอ"
 
@@ -1072,6 +1107,11 @@ msgstr "แหล่งข้อมูลความสูงของ HUD"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "ลดรายละเอียด HUD"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "โปรแกรมดูรูปภาพ: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "อมตะ"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "อมตะ (เฉพาะผู้เล่นมนุษย์)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "ดูเหมือนว่าหน้าที่คุณกำลังมองหา <0/>ไม่มีอยู่หรืออาจถูกลบไปแล้ว"
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "ช้า"
 msgid "Launch (catapult)"
 msgstr "การปล่อยตัว (เครื่องดีด)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "ปล่อยตัว / ล็อกเป้า"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "ระดับที่ 1200 ลดล้อ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "สว่าง"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "ไฟ"
 
@@ -1325,7 +1370,7 @@ msgstr "สเตรตัสต่ำ"
 msgid "M to close"
 msgstr "M เพื่อปิด"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "แผนที่"
 
@@ -1333,8 +1378,8 @@ msgstr "แผนที่"
 msgid "Map"
 msgstr "แผนที่"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด"
@@ -1357,7 +1402,7 @@ msgstr "แมตช์"
 msgid "Medium"
 msgstr "กลาง"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "เมนู"
 
@@ -1366,7 +1411,7 @@ msgstr "เมนู"
 msgid "Menu"
 msgstr "เมนู"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "ส่งข้อความถึงทุกคน"
 
@@ -1374,7 +1419,7 @@ msgstr "ส่งข้อความถึงทุกคน"
 msgid "Message players on this server"
 msgstr "ส่งข้อความถึงผู้เล่นบนเซิร์ฟเวอร์นี้"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "ส่งข้อความถึงทีมของคุณ"
 
@@ -1423,8 +1468,8 @@ msgstr "ข้อผิดพลาดของเครือข่าย"
 msgid "New"
 msgstr "ใหม่"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "รูปถัดไป"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "ไม่มีโปรไฟล์"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "ไม่พบผลลัพธ์"
 
@@ -1528,6 +1573,11 @@ msgstr "ยังไม่มีข้อความ ลองทักทา�
 msgid "Notifications"
 msgstr "การแจ้งเตือน"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "การแจ้งเตือน: {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "รายละเอียดมหาสมุทร"
@@ -1583,11 +1633,11 @@ msgstr "เปิดเมนูการนำทาง"
 msgid "Open theme settings"
 msgstr "เปิดการตั้งค่าธีม"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "หรือ"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "หมุนรอบ"
 
@@ -1598,6 +1648,11 @@ msgstr "อื่น ๆ"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "เจ้าของ"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "หน้า {currentPage} จาก {totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "นักบิน"
 msgid "PILOT DOWN"
 msgstr "นักบินเสียชีวิต"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "ก้มเงย"
 
@@ -1656,6 +1711,10 @@ msgstr "ผู้เล่น"
 msgid "Please check your internet connection and try again."
 msgstr "โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตของคุณแล้วลองอีกครั้ง"
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "โปรดเข้าสู่ระบบด้วยข้อมูลรับรองที่เหมาะสม <0/> เพื่อเข้าถึงทรัพยากรนี้"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "โปรดลองอีกครั้ง"
@@ -1680,8 +1739,8 @@ msgstr "กด ENTER เพื่อปล่อยตัว"
 msgid "Press it…"
 msgstr "กดเลย…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "รูปก่อนหน้า"
 
@@ -1787,6 +1846,11 @@ msgstr "ลบ"
 msgid "Remove access rule"
 msgstr "ลบกฎการเข้าถึง"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "นำกฎการเข้าถึงสำหรับ \"{0}\" ออกหรือไม่"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "ลบสิทธิ์การเข้าถึง?"
@@ -1826,7 +1890,7 @@ msgstr "เริ่มภารกิจใหม่"
 msgid "Result"
 msgstr "ผล"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "ดำเนินการต่อ"
 
@@ -1846,7 +1910,7 @@ msgstr "กลับด้าน"
 msgid "Right to Left"
 msgstr "ขวาไปซ้าย"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "ม้วนตัว"
 
@@ -1868,7 +1932,7 @@ msgstr "โรลขวา"
 msgid "Rookie"
 msgstr "มือใหม่"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "แถวต่อหน้า"
 
@@ -1951,15 +2015,24 @@ msgstr "เลือกทิศทางไซต์"
 msgid "Select theme preference"
 msgstr "เลือกการตั้งค่าธีม"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "ที่เลือก"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "เลือก: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "ส่ง"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "ส่งอีกครั้ง"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "ส่งแชท"
 
@@ -2011,7 +2084,7 @@ msgstr "ตั้งค่าต้นทางและปลายทาง"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "กว้างขวาง"
 msgid "SPD BK"
 msgstr "เบ.ลม"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "เบรกลม"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "วันอาทิตย์"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "เห็นข้าศึกแล้ว"
 msgid "Task"
 msgstr "งาน"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "ทีม"
 
@@ -2181,13 +2255,17 @@ msgstr "ข้อกำหนดและเงื่อนไข"
 msgid "That code is incorrect or has expired."
 msgstr "รหัสนั้นไม่ถูกต้องหรือหมดอายุแล้ว"
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "แมตช์ยังดำเนินต่ออยู่หลังเมนูนี้"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "ไม่พบเนื้อหาที่ร้องขอ"
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "ไซต์ไม่พร้อมใช้งานในขณะนี้"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "การตั้งค่าธีม"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "ล็อบบี้นี้กำลังส่งการเชื่อมต่อเกมของคุณไปยังโฮสต์อื่น ({redirectHost}) ดำเนินการต่อเฉพาะเมื่อคุณเชื่อถือเซิร์ฟเวอร์นี้เท่านั้น"
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "ยังไม่ได้สร้างหน้านี้"
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "คันเร่ง"
 
@@ -2225,13 +2307,17 @@ msgstr "วันพฤหัสบดี"
 msgid "Tightest sustained turn speed"
 msgstr "ความเร็วเลี้ยวต่อเนื่องแคบที่สุด"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "เอียง"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "ช่วงเวลาของวัน"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "ไปยัง"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "ใช้พาสคีย์ของคุณ"
 msgid "User"
 msgstr "ผู้ใช้"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "รหัสยืนยัน"
 
@@ -2368,7 +2454,7 @@ msgstr "การยืนยันไม่สำเร็จ"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "ยืนยัน"
 
@@ -2390,7 +2476,12 @@ msgstr "มือเก๋า"
 msgid "Video thumbnail"
 msgstr "ภาพย่อวิดีโอ"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "โปรแกรมดูวิดีโอ: {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "มุมมอง"
 
@@ -2402,8 +2493,8 @@ msgstr "ดู"
 msgid "View all"
 msgstr "ดูทั้งหมด"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "ดูการแจ้งเตือนทั้งหมด"
 
@@ -2419,11 +2510,16 @@ msgstr "กำลังรอคู่ต่อสู้"
 msgid "WAVE OFF"
 msgstr "โกอะราวด์"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "เราส่งรหัสยืนยันไปที่ <0>{0}</0> แล้ว ป้อนรหัสด้านล่างเพื่อยืนยันที่อยู่อีเมลของคุณ"
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "เราจะกลับมาออนไลน์เร็วๆ นี้"
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "อาวุธ"
 
@@ -2470,7 +2566,7 @@ msgstr "เซิร์ฟเวอร์โลก"
 msgid "World server not reachable"
 msgstr "เข้าถึงเซิร์ฟเวอร์โลกไม่ได้"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "หันเห"
 
@@ -2493,6 +2589,10 @@ msgstr "คุณ"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "คุณไม่มีสิทธิ์เข้าถึงส่วนนี้"
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "คุณไม่มีสิทธิ์ที่จำเป็น <0/>ในการดูทรัพยากรนี้"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

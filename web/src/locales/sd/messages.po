@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "مهرباني ڪري پنهنجو انٽرنيٽ ڪنيڪشن چيڪ ڪريو ۽ ٻيهر ڪوشش ڪريو."
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, one {# چونڊيل} other {# چونڊيل}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} اڏامي رهيا آهن"
 msgid "{0}/{1} players"
 msgstr "{0}/{1} رانديگر"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "{entityLabel} جو نالو"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "{name} جو ميچ"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, one {{entityName} چونڊيو ويو} other {{manyName} چونڊيا ويا}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, one {# {entityName} چونڊيو ويو. وڏي پيماني تي عمل جي ٽول بار دستياب آهي.} other {# {manyName} چونڊيا ويا. وڏي پيماني تي عمل جي ٽول بار دستياب آهي.}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, one {# چونڊيل} other {# چونڊيل}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, one {# چونڊيل {entityName} لاءِ وڏي پيماني تي عمل} other {# چونڊيل {manyName} لاءِ وڏي پيماني تي عمل}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "محور"
 msgid "Axis {i}"
 msgstr "محور {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "پوئتي"
 
@@ -239,9 +264,9 @@ msgstr "پوئتي"
 msgid "Back"
 msgstr "واپس"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "گهر ڏانهن واپس"
 
@@ -290,7 +315,7 @@ msgstr "دلچسپي وڌايو"
 msgid "Bots"
 msgstr "بوٽ"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "بريڪ"
 
@@ -331,7 +356,7 @@ msgstr "ڪيمرا جو مفاصلو"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "هن اطلاع لاءِ زمرو"
 msgid "Change notification category"
 msgstr "اطلاع جو زمرو تبديل ڪريو"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "تعاقب وارو منظر:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "چيٽ"
 
@@ -436,28 +461,29 @@ msgstr "صاف ڪريو"
 msgid "Clear all"
 msgstr "سڀ صاف ڪريو"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "فلٽر صاف ڪريو"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "انتخاب صاف ڪريو"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "انتخاب صاف ڪريو (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "بند ڪريو"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "نيويگيشن بند ڪريو"
 
@@ -470,7 +496,7 @@ msgstr "پينل بند ڪريو"
 msgid "Close search"
 msgstr "ڳولا بند ڪريو"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "ويجهو"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "منظر مٽايو"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "اونداهو"
@@ -724,8 +751,8 @@ msgstr "مفاصلو LOD"
 msgid "Done"
 msgstr "مڪمل"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "ڊائون لوڊ"
 
@@ -733,7 +760,7 @@ msgstr "ڊائون لوڊ"
 msgid "Download failed"
 msgstr "ڊائون لوڊ ناڪام ٿيو"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "ڇڪيو"
 
@@ -793,15 +820,15 @@ msgstr "پنهنجو تصديق ڪندڙ ڪوڊ داخل ڪريو"
 msgid "Environment"
 msgstr "ماحول"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "سڀئي"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "ميچ مان نڪرو"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "مشن ڇڏيو"
 
@@ -836,6 +863,14 @@ msgstr "F/A-18C حوالو"
 msgid "Failed to add account"
 msgstr "اڪائونٽ شامل ڪرڻ ۾ ناڪام"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "تصوير لوڊ ٿي نه سگهيو"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "وڊيو لوڊ ٿي نه سگهيو"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "اڪائونٽ هٽائڻ ۾ ناڪام"
@@ -868,7 +903,7 @@ msgstr "پنهنجو اڪائونٽ منتقل ڪرڻ پورو ڪريو"
 msgid "Finished"
 msgstr "پورو ٿيو"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "فائر"
 
@@ -880,7 +915,7 @@ msgstr "مقرر ڪنجيون"
 msgid "FLAMEOUT"
 msgstr "فليم آئوٽ"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "شعلا"
 
@@ -969,7 +1004,7 @@ msgstr "مڪمل ليئوٽ"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "گيئر"
 
@@ -981,29 +1016,29 @@ msgstr "گيئر"
 msgid "General"
 msgstr "عام"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "واپس"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "پهرين صفحي تي وڃو"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "آخري صفحي تي وڃو"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "ايندڙ صفحي تي وڃو"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "صفحو {pageNumber} ڏانهن وڃو"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "پوئين صفحي تي وڃو"
 
@@ -1053,7 +1088,7 @@ msgstr "تاريخ"
 msgid "Home"
 msgstr "گهر"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "ڪُنڍو"
 
@@ -1072,6 +1107,11 @@ msgstr "HUD اوچائي جو ذريعو"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "HUD سادو ڪريو"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "تصوير ڏسڻ وارو: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "ناقابل نقصان"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "ناقابل نقصان (رڳو انساني رانديگر)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "لڳي ٿو ته جيڪو صفحو توھان ڳولي رھيا آھيو <0/>اھو موجود ناھي يا ھٽايو ويو آھي."
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "دير"
 msgid "Launch (catapult)"
 msgstr "اُڇلاءُ (ڪيٽاپلٽ)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "اُڏام / نشانو"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200 تي برابر، ڦيٿا هيٺ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "روشن"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "بتيون"
 
@@ -1325,7 +1370,7 @@ msgstr "گهٽ اسٽريٽس"
 msgid "M to close"
 msgstr "بند ڪرڻ لاءِ M"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "نقشو"
 
@@ -1333,8 +1378,8 @@ msgstr "نقشو"
 msgid "Map"
 msgstr "نقشو"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "سڀ پڙهيل طور نشانبر ڪريو"
@@ -1357,7 +1402,7 @@ msgstr "ميچون"
 msgid "Medium"
 msgstr "وچولو"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "مينيو"
 
@@ -1366,7 +1411,7 @@ msgstr "مينيو"
 msgid "Menu"
 msgstr "مينيو"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "سڀني کي پيغام موڪليو"
 
@@ -1374,7 +1419,7 @@ msgstr "سڀني کي پيغام موڪليو"
 msgid "Message players on this server"
 msgstr "هن سرور جي رانديگرن کي پيغام موڪليو"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "پنهنجي ٽيم کي پيغام موڪليو"
 
@@ -1423,8 +1468,8 @@ msgstr "نيٽ ورڪ جي خرابي"
 msgid "New"
 msgstr "نئون"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "اڳيون تصوير"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "ڪو پروفائيل نه آهي"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "ڪو نتيجو نه مليو."
 
@@ -1528,6 +1573,11 @@ msgstr "اڃا ڪجهه ناهي — سلام چئو."
 msgid "Notifications"
 msgstr "اطلاعون"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "اطلاعون: {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "سمنڊ جو تفصيل"
@@ -1583,11 +1633,11 @@ msgstr "نيويگيشن مينيو کوليو"
 msgid "Open theme settings"
 msgstr "ٿيم سيٽنگون کوليو"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "يا"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "مدار"
 
@@ -1598,6 +1648,11 @@ msgstr "ٻيو"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "مالڪ"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "صفحو {currentPage} مان {totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "پائلٽ"
 msgid "PILOT DOWN"
 msgstr "پائلٽ مارجي ويو"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "پچ"
 
@@ -1656,6 +1711,10 @@ msgstr "رانديگر"
 msgid "Please check your internet connection and try again."
 msgstr "مهرباني ڪري پنهنجو انٽرنيٽ ڪنيڪشن چيڪ ڪريو ۽ ٻيهر ڪوشش ڪريو."
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "مهرباني ڪري ھن وسيلي تائين رسائي لاءِ <0/> مناسب سندن سان لاگ ان ٿيو."
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "مهرباني ڪري ٻيهر ڪوشش ڪريو."
@@ -1680,8 +1739,8 @@ msgstr "اُڏامَ لاءِ Enter دٻايو"
 msgid "Press it…"
 msgstr "بٽڻ دٻايو…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "پوئيون تصوير"
 
@@ -1787,6 +1846,11 @@ msgstr "هٽايو"
 msgid "Remove access rule"
 msgstr "رسائي قاعدو هٽايو"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "\"{0}\" لاءِ رسائي جو قاعدو هٽايو؟"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "رسائي هٽائجي؟"
@@ -1826,7 +1890,7 @@ msgstr "مشن ٻيهر شروع ڪريو"
 msgid "Result"
 msgstr "نتيجو"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "ٻيهر شروع ڪريو"
 
@@ -1846,7 +1910,7 @@ msgstr "اُبتو"
 msgid "Right to Left"
 msgstr "ساڄي کان کاٻي"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "رول"
 
@@ -1868,7 +1932,7 @@ msgstr "رول ساڄي"
 msgid "Rookie"
 msgstr "سيکڙاٽ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "هر صفحي تي قطارون"
 
@@ -1951,15 +2015,24 @@ msgstr "سائيٽ جي طرف چونڊيو"
 msgid "Select theme preference"
 msgstr "ٿيم جي ترجيح چونڊيو"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "چونڊيل"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "چونڊيل: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "موڪليو"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "ٻيهر موڪليو"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "پيغام موڪليو"
 
@@ -2011,7 +2084,7 @@ msgstr "اصل ۽ منزل مقرر ڪريو"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "ڪشادو"
 msgid "SPD BK"
 msgstr "ه.بر"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "هوائي بريڪ"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "آچر"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "دشمن نظر ۾"
 msgid "Task"
 msgstr "ڪم"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "ٽيم"
 
@@ -2181,13 +2255,17 @@ msgstr "شرطون ۽ ضابطا"
 msgid "That code is incorrect or has expired."
 msgstr "اهو ڪوڊ غلط آهي يا ختم ٿي ويو آهي."
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "ميچ هن مينيو جي پويان جاري آهي."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "گهربل مواد نه ملي سگهيو."
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "سائيٽ ھن وقت دستياب ناهي."
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "ٿيم سيٽنگون"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "هي لابي توهان جي راند جو ڪنيڪشن هڪ ٻئي ميزبان ({redirectHost}) ڏانهن موڪلي رهيو آهي. صرف تڏهن جاري رکو جڏهن توهان هن سرور تي ڀروسو ڪريو ٿا."
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "هي صفحو اڃا نه ٺاهيو ويو آهي."
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "ٿروٽل"
 
@@ -2225,13 +2307,17 @@ msgstr "خميس"
 msgid "Tightest sustained turn speed"
 msgstr "تنگ ترين مسلسل موڙ جي رفتار"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "جهڪاءُ"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "ڏينهن جو وقت"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "ڏانھن"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "پنهنجي پاس ڪي استعمال ڪريو"
 msgid "User"
 msgstr "صارف"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "تصديق ڪوڊ"
 
@@ -2368,7 +2454,7 @@ msgstr "تصديق ناڪام ٿي"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "تصديق ڪريو"
 
@@ -2390,7 +2476,12 @@ msgstr "تجربيڪار"
 msgid "Video thumbnail"
 msgstr "وڊيو ٿمب نيل"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "وڊيو ڏسڻ وارو: {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "منظر"
 
@@ -2402,8 +2493,8 @@ msgstr "ڏسو"
 msgid "View all"
 msgstr "سڀ ڏسو"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "سڀ اطلاع ڏسو"
 
@@ -2419,11 +2510,16 @@ msgstr "مخالف جو انتظار"
 msgid "WAVE OFF"
 msgstr "لهڻ روڪيو"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "اسان تصديقي ڪوڊ <0>{0}</0> تي موڪليو. پنھنجو اي ميل پتو تصديق ڪرڻ لاءِ ھيٺ ڪوڊ داخل ڪريو."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "اسان جلد ٻيھر آن لائن ايندا."
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "هٿيار"
 
@@ -2470,7 +2566,7 @@ msgstr "ورلڊ سرور"
 msgid "World server not reachable"
 msgstr "ورلڊ سرور تائين پهچ ناهي"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "ياو"
 
@@ -2493,6 +2589,10 @@ msgstr "تون"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "توهان کي هن حصي تائين رسائي ناهي."
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "توھان وٽ ھي وسيلو ڏسڻ لاءِ <0/>ضروري اجازت ناھي."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Thoir sùil air a' cheangal eadar-lìn agad agus feuch ris a-rithist."
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, one {# air a thaghadh} two {# air an taghadh} few {# air an taghadh} other {# air an taghadh}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} ag itealaich"
 msgid "{0}/{1} players"
 msgstr "{0}/{1} cluicheadairean"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "Ainm {entityLabel}"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "Am maids aig {name}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, one {{entityName} air a thaghadh} two {{manyName} air an taghadh} few {{manyName} air an taghadh} other {{manyName} air an taghadh}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, one {# {entityName} air a thaghadh. Tha bàr-inneal nan gnìomhan mòr-chuid ri fhaighinn.} two {# {manyName} air an taghadh. Tha bàr-inneal nan gnìomhan mòr-chuid ri fhaighinn.} few {# {manyName} air an taghadh. Tha bàr-inneal nan gnìomhan mòr-chuid ri fhaighinn.} other {# {manyName} air an taghadh. Tha bàr-inneal nan gnìomhan mòr-chuid ri fhaighinn.}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, one {# air an taghadh} two {# air an taghadh} few {# air an taghadh} other {# air an taghadh}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, one {Gnìomhan mòr-chuid airson # {entityName} a thaghadh} two {Gnìomhan mòr-chuid airson # {manyName} a thaghadh} few {Gnìomhan mòr-chuid airson # {manyName} a thaghadh} other {Gnìomhan mòr-chuid airson # {manyName} a thaghadh}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "Aislean"
 msgid "Axis {i}"
 msgstr "Aiseal {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "air ais"
 
@@ -239,9 +264,9 @@ msgstr "air ais"
 msgid "Back"
 msgstr "Air ais"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "Air ais dhan dachaigh"
 
@@ -290,7 +315,7 @@ msgstr "Brosnaich ùidh"
 msgid "Bots"
 msgstr "Botaichean"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "brèicichean"
 
@@ -331,7 +356,7 @@ msgstr "Astar a' chamara"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "Roinn airson a' bhratha seo"
 msgid "Change notification category"
 msgstr "Atharraich roinn nam brathan"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "Sealladh tòir:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "cabadaich"
 
@@ -436,28 +461,29 @@ msgstr "Falamhaich"
 msgid "Clear all"
 msgstr "Falamhaich a h-uile"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "Falamhaich criathragan"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "Falamhaich an taghadh"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "Falamhaich an taghadh (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Dùin"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "Dùin an t-seòladaireachd"
 
@@ -470,7 +496,7 @@ msgstr "Dùin am panail"
 msgid "Close search"
 msgstr "Dùin an lorg"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "nas fhaisge"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "Cuairtich an sealladh"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "Dorcha"
@@ -724,8 +751,8 @@ msgstr "LOD astair"
 msgid "Done"
 msgstr "Deiseil"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "Luchdaich a-nuas"
 
@@ -733,7 +760,7 @@ msgstr "Luchdaich a-nuas"
 msgid "Download failed"
 msgstr "Dh’fhàillig an luchdadh a-nuas"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "Slaod"
 
@@ -793,15 +820,15 @@ msgstr "Cuir a-steach còd na h-aplacaid dearbhaidh agad"
 msgid "Environment"
 msgstr "Àrainneachd"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "A h-uile duine"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "Fàg am maids"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "Fàg am misean"
 
@@ -836,6 +863,14 @@ msgstr "Iomradh F/A-18C"
 msgid "Failed to add account"
 msgstr "Cha b' urrainn an cunntas a chur ris"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "Dh'fhàillig luchdachadh an deilbh"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "Dh'fhàillig luchdachadh a' video"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "Cha b' urrainn an cunntas a thoirt air falbh"
@@ -868,7 +903,7 @@ msgstr "Crìochnaich gluasad do chunntas"
 msgid "Finished"
 msgstr "Crìochnaichte"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "loisg"
 
@@ -880,7 +915,7 @@ msgstr "Iuchraichean socraichte"
 msgid "FLAMEOUT"
 msgstr "MÙCHADH"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "lasraichean"
 
@@ -969,7 +1004,7 @@ msgstr "Làn-chruth"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "uidheam"
 
@@ -981,29 +1016,29 @@ msgstr "GÈAR"
 msgid "General"
 msgstr "Coitcheann"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "Air ais"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "Rach dhan chiad duilleag"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "Rach dhan duilleag mu dheireadh"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "Rach dhan ath dhuilleag"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "Rach gu duilleag {pageNumber}"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "Rach dhan duilleag roimhe"
 
@@ -1053,7 +1088,7 @@ msgstr "Eachdraidh"
 msgid "Home"
 msgstr "Dachaigh"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "dubhan"
 
@@ -1072,6 +1107,11 @@ msgstr "Tùs àirde HUD"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "Simpleachadh HUD"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "Sealladair dhealbhan: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "DO-LEÒNTA"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "Do-leònta (cluicheadairean daonna a-mhàin)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "Tha coltas nach eil an duilleag a tha thu a' sireadh <0/>ann no gun deach a toirt air falbh."
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "FADALACH"
 msgid "Launch (catapult)"
 msgstr "Cur air bhog (catapult)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "cur air bhog / targaid"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "CÒMHNARD AIG 1200, UIDHEAM SÌOS"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "Soilleir"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "solais"
 
@@ -1325,7 +1370,7 @@ msgstr "Stratus ìosal"
 msgid "M to close"
 msgstr "M gus dùnadh"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "mapa"
 
@@ -1333,8 +1378,8 @@ msgstr "mapa"
 msgid "Map"
 msgstr "Mapa"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "Comharraich gach nì mar leughte"
@@ -1357,7 +1402,7 @@ msgstr "Geamannan"
 msgid "Medium"
 msgstr "Meadhanach"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "clàr-taice"
 
@@ -1366,7 +1411,7 @@ msgstr "clàr-taice"
 msgid "Menu"
 msgstr "Clàr-taice"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "Cuir teachdaireachd dhan a h-uile duine"
 
@@ -1374,7 +1419,7 @@ msgstr "Cuir teachdaireachd dhan a h-uile duine"
 msgid "Message players on this server"
 msgstr "Cuir teachdaireachd gu cluicheadairean an fhrithealaiche seo"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "Cuir teachdaireachd dhan sgioba agad"
 
@@ -1423,8 +1468,8 @@ msgstr "Mearachd lìonraidh"
 msgid "New"
 msgstr "Ùr"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "An ath dhealbh"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "Gun phròifil"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "Cha deach toraidhean a lorg."
 
@@ -1528,6 +1573,11 @@ msgstr "Chan eil dad ann fhathast — can halò."
 msgid "Notifications"
 msgstr "Brathan"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "Brathan: {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "Mion-fhiosrachadh cuain"
@@ -1583,11 +1633,11 @@ msgstr "Fosgail clàr-taice na seòladaireachd"
 msgid "Open theme settings"
 msgstr "Fosgail roghainnean an ùrlair"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "no"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "cuairt"
 
@@ -1598,6 +1648,11 @@ msgstr "Eile"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "Sealbhadair"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "Duilleag {currentPage} à {totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "Pìleat"
 msgid "PILOT DOWN"
 msgstr "PÌLEAT MARBH"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "claonadh"
 
@@ -1656,6 +1711,10 @@ msgstr "Cluicheadairean"
 msgid "Please check your internet connection and try again."
 msgstr "Thoir sùil air a' cheangal eadar-lìn agad agus feuch ris a-rithist."
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "Clàraich a-steach le teisteanas iomchaidh <0/> gus an goireas seo inntrigeadh."
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "Feuch ris a-rithist."
@@ -1680,8 +1739,8 @@ msgstr "BRÙTH ENTER GUS FALBH"
 msgid "Press it…"
 msgstr "Brùth e…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "An dealbh roimhe"
 
@@ -1787,6 +1846,11 @@ msgstr "Thoir air falbh"
 msgid "Remove access rule"
 msgstr "Thoir an riaghailt cothraim air falbh"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "A bheil thu airson riaghailt inntrigidh \"{0}\" a thoirt air falbh?"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "Thoir an cothrom air falbh?"
@@ -1826,7 +1890,7 @@ msgstr "Ath-thòisich am misean"
 msgid "Result"
 msgstr "Toradh"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "Lean ort"
 
@@ -1846,7 +1910,7 @@ msgstr "Tionndaichte"
 msgid "Right to Left"
 msgstr "Deas gu Clì"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "roiligeadh"
 
@@ -1868,7 +1932,7 @@ msgstr "Rolladh gu deas"
 msgid "Rookie"
 msgstr "Tòisiche"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "Sreathan gach duilleag"
 
@@ -1951,15 +2015,24 @@ msgstr "Tagh comhair na làraich"
 msgid "Select theme preference"
 msgstr "Tagh roghainn an ùrlair"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "air an taghadh"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "Air a thaghadh: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "Cuir"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "Cuir a-rithist"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "Cuir teachdaireachd"
 
@@ -2011,7 +2084,7 @@ msgstr "Suidhich tùs is ceann-uidhe"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "Farsaing"
 msgid "SPD BK"
 msgstr "BRADH"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "brèic adhair"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "Didòmhnaich"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "CHÌ MI AN NÀMHAID"
 msgid "Task"
 msgstr "Gnìomh"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "Sgioba"
 
@@ -2181,13 +2255,17 @@ msgstr "Teirmichean is cùmhnantan"
 msgid "That code is incorrect or has expired."
 msgstr "Tha an còd sin ceàrr no air a dhol à bann."
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "Tha am maids a' leantainn air cùlaibh a' chlàir-taice seo."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "Cha b' urrainn dhuinn an t-susbaint a chaidh iarraidh a lorg."
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "Chan eil an làrach ri fhaighinn an-dràsta."
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "Roghainnean an ùrlair"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Tha an lobaidh seo a' cur a' cheangail geama agad gu òstair eadar-dhealaichte ({redirectHost}). Na lean air adhart ach ma tha earbsa agad san fhrithealaiche seo."
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "Cha deach an duilleag seo a chruthachadh fhathast."
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "cumhachd"
 
@@ -2225,13 +2307,17 @@ msgstr "Diardaoin"
 msgid "Tightest sustained turn speed"
 msgstr "Astar an tionndaidh sheasmhaich as teinne"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "aomadh"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "Àm an latha"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "Gu"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "Cleachd an iuchair-inntrigidh agad"
 msgid "User"
 msgstr "Cleachdaiche"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "Còd dearbhaidh"
 
@@ -2368,7 +2454,7 @@ msgstr "Dh'fhàillig an dearbhadh"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "Dearbh"
 
@@ -2390,7 +2476,12 @@ msgstr "Eòlach"
 msgid "Video thumbnail"
 msgstr "Dealbhag video"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "Sealladair video: {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "sealladh"
 
@@ -2402,8 +2493,8 @@ msgstr "Seall"
 msgid "View all"
 msgstr "Seall a h-uile"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "Seall a h-uile brath"
 
@@ -2419,11 +2510,16 @@ msgstr "A' FEITHEAMH RI NÀMHAID"
 msgid "WAVE OFF"
 msgstr "SGUIR DHEN LAIGHE"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "Chuir sinn còd dearbhaidh gu <0>{0}</0>. Cuir a-steach an còd gu h-ìosal gus an seòladh puist-d agad a dhearbhadh."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "Bidh sinn air ais air-loidhne goirid."
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "arm"
 
@@ -2470,7 +2566,7 @@ msgstr "Frithealaiche saoghail"
 msgid "World server not reachable"
 msgstr "Cha ruigear frithealaiche an t-saoghail"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "fiaradh"
 
@@ -2493,6 +2589,10 @@ msgstr "THUSA"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "Chan eil cead-inntrigidh agad dhan earrann seo."
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "Chan eil an cead riatanach agad <0/>gus an goireas seo fhaicinn."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
