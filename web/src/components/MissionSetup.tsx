@@ -1497,11 +1497,23 @@ export function MissionSetup({
   // is you against each other — created, offered, joined, and never paused by
   // one participant. The vocabulary is load-bearing, not decorative.
   const [dialog, setDialog] = useState<string | null>(null)
+  const fromFlight = useRef(false)
   useEffect(() => {
-    if (settingsNonce) setDialog('settings') // the Esc menu's Settings button lands here
+    if (settingsNonce) {
+      fromFlight.current = true // remember the visit is a detour from flight
+      setDialog('settings')
+    }
   }, [settingsNonce])
   const identity = useIdentityName()
-  const close = () => setDialog(null)
+  const close = () => {
+    // Settings reached from the Esc menu is a detour: ANY dismissal (Done, Esc,
+    // backdrop) returns to flight rather than stranding the player on the front
+    // page with one more Resume click to make.
+    const back = fromFlight.current && dialog === 'settings' && gameInProgress
+    fromFlight.current = false
+    setDialog(null)
+    if (back) onResume()
+  }
   // The label must describe what Fly actually does: a joust ignores the start
   // selector entirely (the engine spawns both jets at the merge), so showing
   // the start read as a deck start that then began airborne.
