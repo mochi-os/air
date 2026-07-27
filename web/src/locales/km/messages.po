@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "សូមពិនិត្យការតភ្ជាប់អ៊ីនធឺណិតរបស់អ្នក រួចព្យាយាមម្តងទៀត។"
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, other {# បានជ្រើសរើស}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} នាក់កំពុងហោះ"
 msgid "{0}/{1} players"
 msgstr "អ្នកលេង {0}/{1}"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "ឈ្មោះ {entityLabel}"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "ការប្រកួតរបស់ {name}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, other {បានជ្រើសរើស {manyName}}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, other {បានជ្រើសរើស # {manyName}។ របារឧបករណ៍សកម្មភាពជាបណ្តុំអាចប្រើបាន។}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, other {# បានជ្រើសរើស}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, other {សកម្មភាពជាបណ្តុំសម្រាប់ {manyName} # ដែលបានជ្រើសរើស}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "អ័ក្ស"
 msgid "Axis {i}"
 msgstr "អ័ក្ស {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "ថយក្រោយ"
 
@@ -239,9 +264,9 @@ msgstr "ថយក្រោយ"
 msgid "Back"
 msgstr "ត្រឡប់"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "ត្រឡប់ទៅទំព័រដើម"
 
@@ -290,7 +315,7 @@ msgstr "បង្កើនចំណាប់អារម្មណ៍"
 msgid "Bots"
 msgstr "រូបយន្ត"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "ហ្វ្រាំង"
 
@@ -331,7 +356,7 @@ msgstr "ចម្ងាយកាមេរ៉ា"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "ប្រភេទសម្រាប់ការជូនដំណឹង
 msgid "Change notification category"
 msgstr "ប្ដូរប្រភេទការជូនដំណឹង"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "ទិដ្ឋភាពតាមដាន:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "ឆាត"
 
@@ -436,28 +461,29 @@ msgstr "សម្អាត"
 msgid "Clear all"
 msgstr "សម្អាតទាំងអស់"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "សម្អាតតម្រង"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "សម្អាតការជ្រើសរើស"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "សម្អាតការជ្រើសរើស (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "បិទ"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "បិទការនាំផ្លូវ"
 
@@ -470,7 +496,7 @@ msgstr "បិទផ្ទាំង"
 msgid "Close search"
 msgstr "បិទការស្វែងរក"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "ខិតជិត"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "ប្តូរទិដ្ឋភាព"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "ងងឹត"
@@ -724,8 +751,8 @@ msgstr "LOD តាមចម្ងាយ"
 msgid "Done"
 msgstr "រួចរាល់"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "ទាញយក"
 
@@ -733,7 +760,7 @@ msgstr "ទាញយក"
 msgid "Download failed"
 msgstr "ការទាញយកបានបរាជ័យ"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "អូស"
 
@@ -793,15 +820,15 @@ msgstr "បញ្ចូលកូដ authenticator របស់អ្នក"
 msgid "Environment"
 msgstr "បរិយាកាស"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "គ្រប់គ្នា"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "ចាកចេញពីការប្រកួត"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "ចាកចេញពីបេសកកម្ម"
 
@@ -836,6 +863,14 @@ msgstr "យោង F/A-18C"
 msgid "Failed to add account"
 msgstr "បរាជ័យក្នុងការបន្ថែមគណនី"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "បរាជ័យក្នុងការផ្ទុករូបភាព"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "បរាជ័យក្នុងការផ្ទុកវីដេអូ"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "បរាជ័យក្នុងការដកគណនី"
@@ -868,7 +903,7 @@ msgstr "បញ្ចប់ការផ្លាស់ប្តូរគណនី
 msgid "Finished"
 msgstr "បញ្ចប់"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "បាញ់"
 
@@ -880,7 +915,7 @@ msgstr "គ្រាប់ចុចថេរ"
 msgid "FLAMEOUT"
 msgstr "ម៉ាស៊ីនរលត់"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "គ្រាប់ភ្លើង"
 
@@ -969,7 +1004,7 @@ msgstr "ប្លង់ពេញលេញ"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "កង់ចុះចត"
 
@@ -981,29 +1016,29 @@ msgstr "ហ្គៀ"
 msgid "General"
 msgstr "ទូទៅ"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "ត្រឡប់ក្រោយ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "ទៅទំព័រដំបូង"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "ទៅទំព័រចុងក្រោយ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "ទៅទំព័របន្ទាប់"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "ទៅទំព័រ {pageNumber}"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "ទៅទំព័រមុន"
 
@@ -1053,7 +1088,7 @@ msgstr "ប្រវត្តិ"
 msgid "Home"
 msgstr "ដើម"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "ទំពក់"
 
@@ -1072,6 +1107,11 @@ msgstr "ប្រភពរយៈកម្ពស់ HUD"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "សម្រួល HUD"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "កម្មវិធីមើលរូបភាព៖ {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "មិនអាចរងរបួសបាន"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "មិនអាចរងរបួសបាន (តែអ្នកលេងជាមនុស្សប៉ុណ្ណោះ)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "ហាក់ដូចជាទំព័រដែលអ្នកកំពុងស្វែងរក <0/>មិនមាន ឬត្រូវបានលុបចេញ។"
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "យឺត"
 msgid "Launch (catapult)"
 msgstr "ការបាញ់ចេញ (កាតាពុល)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "ហោះឡើង / គោលដៅ"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "រាបស្មើនៅ 1200 ទម្លាក់កង់"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "ភ្លឺ"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "ភ្លើង"
 
@@ -1325,7 +1370,7 @@ msgstr "ស្ត្រាទុសទាប"
 msgid "M to close"
 msgstr "M ដើម្បីបិទ"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "ផែនទី"
 
@@ -1333,8 +1378,8 @@ msgstr "ផែនទី"
 msgid "Map"
 msgstr "ផែនទី"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "សម្គាល់ទាំងអស់ថាបានអាន"
@@ -1357,7 +1402,7 @@ msgstr "ការប្រកួត"
 msgid "Medium"
 msgstr "មធ្យម"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "ម៉ឺនុយ"
 
@@ -1366,7 +1411,7 @@ msgstr "ម៉ឺនុយ"
 msgid "Menu"
 msgstr "ម៉ឺនុយ"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "ផ្ញើសារទៅគ្រប់គ្នា"
 
@@ -1374,7 +1419,7 @@ msgstr "ផ្ញើសារទៅគ្រប់គ្នា"
 msgid "Message players on this server"
 msgstr "ផ្ញើសារទៅកាន់អ្នកលេងនៅលើម៉ាស៊ីនមេនេះ"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "ផ្ញើសារទៅក្រុមរបស់អ្នក"
 
@@ -1423,8 +1468,8 @@ msgstr "កំហុសបណ្តាញ"
 msgid "New"
 msgstr "ថ្មី"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "រូបភាពបន្ទាប់"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "មិនមានប្រវត្តិរូប"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "រកមិនឃើញលទ្ធផល។"
 
@@ -1528,6 +1573,11 @@ msgstr "មិនទាន់មានអ្វីនៅឡើយទេ សូ�
 msgid "Notifications"
 msgstr "ការជូនដំណឹង"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "ការជូនដំណឹង៖ {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "ព័ត៌មានលម្អិតមហាសមុទ្រ"
@@ -1583,11 +1633,11 @@ msgstr "បើកម៉ឺនុយរុករក"
 msgid "Open theme settings"
 msgstr "បើកការកំណត់រចនាប័ទ្ម"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "ឬ"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "គោចរ"
 
@@ -1598,6 +1648,11 @@ msgstr "ផ្សេងទៀត"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "ម្ចាស់"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "ទំព័រ {currentPage} នៃ {totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "អ្នកបើកយន្តហោះ"
 msgid "PILOT DOWN"
 msgstr "អ្នកបើកបរស្លាប់"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "ងើប-ផ្កាប់"
 
@@ -1656,6 +1711,10 @@ msgstr "អ្នកលេង"
 msgid "Please check your internet connection and try again."
 msgstr "សូមពិនិត្យការតភ្ជាប់អ៊ីនធឺណិតរបស់អ្នក រួចព្យាយាមម្តងទៀត។"
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "សូមចូលដោយប្រើព័ត៌មានសម្គាល់ត្រឹមត្រូវ <0/> ដើម្បីចូលប្រើធនធាននេះ។"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "សូមព្យាយាមម្តងទៀត។"
@@ -1680,8 +1739,8 @@ msgstr "ចុច ENTER ដើម្បីហោះឡើង"
 msgid "Press it…"
 msgstr "ចុចវា…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "រូបភាពមុន"
 
@@ -1787,6 +1846,11 @@ msgstr "យកចេញ"
 msgid "Remove access rule"
 msgstr "យកច្បាប់ចូលប្រើចេញ"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "លុបច្បាប់ចូលប្រើសម្រាប់ \"{0}\"?"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "យកសិទ្ធិចូលប្រើចេញ?"
@@ -1826,7 +1890,7 @@ msgstr "ចាប់ផ្តើមបេសកកម្មឡើងវិញ"
 msgid "Result"
 msgstr "លទ្ធផល"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "បន្ត"
 
@@ -1846,7 +1910,7 @@ msgstr "បញ្ច្រាស"
 msgid "Right to Left"
 msgstr "ស្តាំទៅឆ្វេង"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "រមៀល"
 
@@ -1868,7 +1932,7 @@ msgstr "រមៀលទៅស្តាំ"
 msgid "Rookie"
 msgstr "អ្នកថ្មី"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "ជួរក្នុងមួយទំព័រ"
 
@@ -1951,15 +2015,24 @@ msgstr "ជ្រើសរើសទិសដៅគេហទំព័រ"
 msgid "Select theme preference"
 msgstr "ជ្រើសរើសចំណូលចិត្តរូបរាង"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "បានជ្រើសរើស"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "បានជ្រើសរើស៖ <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "ផ្ញើ"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "ផ្ញើម្តងទៀត"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "ផ្ញើសារ"
 
@@ -2011,7 +2084,7 @@ msgstr "កំណត់ចំណុចចេញដំណើរ និងគោ�
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "ធំទូលាយ"
 msgid "SPD BK"
 msgstr "ហ.ល"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "ហ្វ្រាំងល្បឿន"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "ថ្ងៃអាទិត្យ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "ឃើញសត្រូវហើយ"
 msgid "Task"
 msgstr "កិច្ចការ"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "ក្រុម"
 
@@ -2181,13 +2255,17 @@ msgstr "លក្ខខណ្ឌ"
 msgid "That code is incorrect or has expired."
 msgstr "កូដនោះមិនត្រឹមត្រូវ ឬផុតកំណត់ហើយ។"
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "ការប្រកួតបន្តនៅពីក្រោយម៉ឺនុយនេះ។"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "រកមិនឃើញខ្លឹមសារដែលបានស្នើសុំទេ។"
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "គេហទំព័រមិនអាចប្រើបាននៅពេលនេះទេ។"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "ការកំណត់រូបរាង"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "បន្ទប់រង់ចាំនេះកំពុងបញ្ជូនការតភ្ជាប់ហ្គេមរបស់អ្នកទៅម៉ាស៊ីនមេផ្សេង ({redirectHost})។ បន្តតែក្នុងករណីដែលអ្នកទុកចិត្តម៉ាស៊ីនមេនេះ។"
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "ទំព័រនេះមិនទាន់ត្រូវបានបង្កើតទេ។"
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "បង្កើនល្បឿន"
 
@@ -2225,13 +2307,17 @@ msgstr "ថ្ងៃព្រហស្បតិ៍"
 msgid "Tightest sustained turn speed"
 msgstr "ល្បឿនបត់ជាប់លាប់តឹងបំផុត"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "ផ្អៀង"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "ពេលវេលានៃថ្ងៃ"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "ទៅ"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "ប្រើ passkey របស់អ្នក"
 msgid "User"
 msgstr "អ្នកប្រើប្រាស់"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "កូដផ្ទៀងផ្ទាត់"
 
@@ -2368,7 +2454,7 @@ msgstr "ការផ្ទៀងផ្ទាត់បរាជ័យ"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "ផ្ទៀងផ្ទាត់"
 
@@ -2390,7 +2476,12 @@ msgstr "ជើងចាស់"
 msgid "Video thumbnail"
 msgstr "រូបភាពតូចវីដេអូ"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "កម្មវិធីមើលវីដេអូ៖ {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "ទិដ្ឋភាព"
 
@@ -2402,8 +2493,8 @@ msgstr "មើល"
 msgid "View all"
 msgstr "មើលទាំងអស់"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "មើលការជូនដំណឹងទាំងអស់"
 
@@ -2419,11 +2510,16 @@ msgstr "កំពុងរង់ចាំគូប្រកួត"
 msgid "WAVE OFF"
 msgstr "បោះបង់ការចុះចត"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "យើងបានផ្ញើលេខកូដផ្ទៀងផ្ទាត់ទៅ <0>{0}</0>។ បញ្ចូលលេខកូដខាងក្រោមដើម្បីផ្ទៀងផ្ទាត់អាសយដ្ឋានអ៊ីមែលរបស់អ្នក។"
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "យើងនឹងត្រឡប់មកដំណើរការវិញឆាប់ៗនេះ។"
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "អាវុធ"
 
@@ -2470,7 +2566,7 @@ msgstr "ម៉ាស៊ីនមេពិភព"
 msgid "World server not reachable"
 msgstr "មិនអាចភ្ជាប់ទៅម៉ាស៊ីនមេពិភពបានទេ"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "ងាក"
 
@@ -2493,6 +2589,10 @@ msgstr "អ្នក"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "អ្នកមិនមានសិទ្ធិចូលប្រើផ្នែកនេះទេ។"
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "អ្នកមិនមានការអនុញ្ញាតចាំបាច់ <0/>ដើម្បីមើលធនធាននេះទេ។"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

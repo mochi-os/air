@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "እባክዎ የበይነመረብ ግንኙነትዎን አረጋግጠው እንደገና ይሞክሩ።"
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, one {# ተመርጧል} other {# ተመርጠዋል}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} በበረራ ላይ"
 msgid "{0}/{1} players"
 msgstr "{0}/{1} ተጫዋቾች"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "የ{entityLabel} ስም"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "የ{name} ግጥሚያ"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, one {{entityName} ተመርጧል} other {{manyName} ተመርጠዋል}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, one {# {entityName} ተመርጧል። የጅምላ እርምጃ አሞሌ ይገኛል።} other {# {manyName} ተመርጠዋል። የጅምላ እርምጃ አሞሌ ይገኛል።}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, one {# ተመርጠዋል} other {# ተመርጠዋል}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, one {ለ# የተመረጠ {entityName} የጅምላ እርምጃዎች} other {ለ# የተመረጡ {manyName} የጅምላ እርምጃዎች}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "ዘንጎች"
 msgid "Axis {i}"
 msgstr "ዘንግ {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "ወደኋላ"
 
@@ -239,9 +264,9 @@ msgstr "ወደኋላ"
 msgid "Back"
 msgstr "ተመለስ"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "ወደ መነሻ ተመለስ"
 
@@ -290,7 +315,7 @@ msgstr "ፍላጎትን አሳድግ"
 msgid "Bots"
 msgstr "ቦቶች"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "ፍሬን"
 
@@ -331,7 +356,7 @@ msgstr "የካሜራ ርቀት"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "ለዚህ ማሳወቂያ ምድብ"
 msgid "Change notification category"
 msgstr "የማሳወቂያ ምድብ ለውጥ"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "የክትትል እይታ:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "ቻት"
 
@@ -436,28 +461,29 @@ msgstr "አጽዳ"
 msgid "Clear all"
 msgstr "ሁሉንም አጽዳ"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "ማጣሪያዎችን አጽዳ"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "ምርጫ አጽዳ"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "ምርጫ አጽዳ (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "ዝጋ"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "ማሰሻን ዝጋ"
 
@@ -470,7 +496,7 @@ msgstr "ፓኔሉን ዝጋ"
 msgid "Close search"
 msgstr "ፍለጋን ዝጋ"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "ቅርብ"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "እይታ ቀይር"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "ጨለማ"
@@ -724,8 +751,8 @@ msgstr "የርቀት LOD"
 msgid "Done"
 msgstr "ተጠናቅቋል"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "አውርድ"
 
@@ -733,7 +760,7 @@ msgstr "አውርድ"
 msgid "Download failed"
 msgstr "ማውረድ አልተሳካም"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "መጎተት"
 
@@ -793,15 +820,15 @@ msgstr "የአረጋጋጭዎን ኮድ ያስገቡ"
 msgid "Environment"
 msgstr "አካባቢ"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "ሁሉም"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "ከግጥሚያው ውጣ"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "ተልዕኮ ውጣ"
 
@@ -836,6 +863,14 @@ msgstr "የF/A-18C ማጣቀሻ"
 msgid "Failed to add account"
 msgstr "መለያ መጨመር አልተሳካም"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "ምስሉን መጫን አልተሳካም"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "ቪዲዮውን መጫን አልተሳካም"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "መለያን ማስወገድ አልተሳካም"
@@ -868,7 +903,7 @@ msgstr "የመለያ ዝውውርን አጠናቅ"
 msgid "Finished"
 msgstr "ተጠናቋል"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "ተኩስ"
 
@@ -880,7 +915,7 @@ msgstr "ቋሚ ቁልፎች"
 msgid "FLAMEOUT"
 msgstr "ሞተር ጠፍቷል"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "ችቦዎች"
 
@@ -969,7 +1004,7 @@ msgstr "ሙሉ አቀማመጥ"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "ማረፊያ ጎማ"
 
@@ -981,29 +1016,29 @@ msgstr "ጎማ"
 msgid "General"
 msgstr "አጠቃላይ"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "ተመለስ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "ወደ መጀመሪያ ገጽ ሂድ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "ወደ መጨረሻ ገጽ ሂድ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "ወደ ቀጣይ ገጽ ሂድ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "ወደ ገጽ {pageNumber} ሂድ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "ወደ ቀዳሚ ገጽ ሂድ"
 
@@ -1053,7 +1088,7 @@ msgstr "ታሪክ"
 msgid "Home"
 msgstr "መነሻ"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "መንጠቆ"
 
@@ -1072,6 +1107,11 @@ msgstr "የHUD ከፍታ ምንጭ"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "የHUD ማሳያ ማቅለል"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "የምስል መመልከቻ፦ {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "የማይጎዳ"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "የማይጎዳ (ለሰው ተጫዋቾች ብቻ)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "የሚፈልጉት ገጽ <0/>የለም ወይም ተወግዷል።"
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "ዘግይቷል"
 msgid "Launch (catapult)"
 msgstr "ማስወንጨፍ (ወንጭፍ)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "ማምጠቅ / ዒላማ"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "በ1200 ቀጥ በል፣ መንኮራኩር አውርድ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "ብርሃን"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "መብራቶች"
 
@@ -1325,7 +1370,7 @@ msgstr "ዝቅተኛ ስትራተስ"
 msgid "M to close"
 msgstr "ለመዝጋት M"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "ካርታ"
 
@@ -1333,8 +1378,8 @@ msgstr "ካርታ"
 msgid "Map"
 msgstr "ካርታ"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "ሁሉንም እንደተነበበ ምልክት አድርግ"
@@ -1357,7 +1402,7 @@ msgstr "ግጥሚያዎች"
 msgid "Medium"
 msgstr "መካከለኛ"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "ምናሌ"
 
@@ -1366,7 +1411,7 @@ msgstr "ምናሌ"
 msgid "Menu"
 msgstr "ምናሌ"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "ለሁሉም መልእክት ላክ"
 
@@ -1374,7 +1419,7 @@ msgstr "ለሁሉም መልእክት ላክ"
 msgid "Message players on this server"
 msgstr "በዚህ አገልጋይ ላይ ላሉ ተጫዋቾች መልእክት ይላኩ"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "ለቡድንህ መልእክት ላክ"
 
@@ -1423,8 +1468,8 @@ msgstr "የአውታረ መረብ ስህተት"
 msgid "New"
 msgstr "አዲስ"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "ቀጣይ ምስል"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "ምንም መገለጫ የለም"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "ምንም ውጤቶች አልተገኙም።"
 
@@ -1528,6 +1573,11 @@ msgstr "እስካሁን ምንም የለም — ሰላም ይበሉ።"
 msgid "Notifications"
 msgstr "ማሳወቂያዎች"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "ማሳወቂያዎች፦ {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "የውቅያኖስ ዝርዝር"
@@ -1583,11 +1633,11 @@ msgstr "የዳሰሳ ምናሌን ክፈት"
 msgid "Open theme settings"
 msgstr "የገጽታ ቅንብሮችን ክፈት"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "ወይም"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "ዙረት"
 
@@ -1598,6 +1648,11 @@ msgstr "ሌላ"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "ባለቤት"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "ገጽ {currentPage} ከ{totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "አብራሪ"
 msgid "PILOT DOWN"
 msgstr "አብራሪ ተገደለ"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "ወደ ላይ/ታች"
 
@@ -1656,6 +1711,10 @@ msgstr "ተጫዋቾች"
 msgid "Please check your internet connection and try again."
 msgstr "እባክዎ የበይነመረብ ግንኙነትዎን አረጋግጠው እንደገና ይሞክሩ።"
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "ይህን መርጃ ለመድረስ እባክዎ በተገቢው መረጃ <0/> ይግቡ።"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "እባክዎ እንደገና ይሞክሩ።"
@@ -1680,8 +1739,8 @@ msgstr "ለመነሳት ENTER ይጫኑ"
 msgid "Press it…"
 msgstr "አዝራሩን ተጫን…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "ቀዳሚ ምስል"
 
@@ -1787,6 +1846,11 @@ msgstr "አስወግድ"
 msgid "Remove access rule"
 msgstr "የድረሳ ህግ አስወግድ"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "የ\"{0}\" የመዳረሻ ደንብ ይወገድ?"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "ድረሳ ይወገድ?"
@@ -1826,7 +1890,7 @@ msgstr "ተልዕኮ እንደገና ጀምር"
 msgid "Result"
 msgstr "ውጤት"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "ይቀጥሉ"
 
@@ -1846,7 +1910,7 @@ msgstr "የተገለበጠ"
 msgid "Right to Left"
 msgstr "ከቀኝ ወደ ግራ"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "ማንከባለል"
 
@@ -1868,7 +1932,7 @@ msgstr "ሮል ወደ ቀኝ"
 msgid "Rookie"
 msgstr "ጀማሪ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "በገጽ ያሉ ረድፎች"
 
@@ -1951,15 +2015,24 @@ msgstr "የጣቢያ አቅጣጫ ይምረጡ"
 msgid "Select theme preference"
 msgstr "የገጽታ ምርጫ ይምረጡ"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "ተመርጠዋል"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "ተመርጧል: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "ላክ"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "እንደገና ላክ"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "ቻት ላክ"
 
@@ -2011,7 +2084,7 @@ msgstr "መነሻ እና መድረሻ ያዘጋጁ"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "ሰፊ"
 msgid "SPD BK"
 msgstr "አ.ብ"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "የአየር ብሬክ"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "እሁድ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "ጠላት አየሁ"
 msgid "Task"
 msgstr "ተግባር"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "ቡድን"
 
@@ -2181,13 +2255,17 @@ msgstr "ውሎችና መመሪያዎች"
 msgid "That code is incorrect or has expired."
 msgstr "ያ ኮድ የተሳሳተ ነው ወይም ጊዜው አልፎበታል።"
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "ግጥሚያው ከዚህ ምናሌ በስተጀርባ ይቀጥላል።"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "የተጠየቀው ይዘት ሊገኝ አልቻለም።"
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "ጣቢያው በአሁኑ ጊዜ አይገኝም።"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "የገጽታ ቅንብሮች"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "ይህ ሎቢ የጨዋታ ግንኙነትዎን ወደ የተለየ አስተናጋጅ ({redirectHost}) እየላከ ነው። ይህን አገልጋይ የሚያምኑት ከሆነ ብቻ ይቀጥሉ።"
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "ይህ ገጽ ገና አልተፈጠረም።"
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "ፍጥነት"
 
@@ -2225,13 +2307,17 @@ msgstr "ሐሙስ"
 msgid "Tightest sustained turn speed"
 msgstr "እጅግ ጠባብ ቀጣይ የመታጠፍ ፍጥነት"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "ማዘንበል"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "የቀኑ ሰዓት"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "ወደ"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "የይለፍ ቁልፍዎን ይጠቀሙ"
 msgid "User"
 msgstr "ተጠቃሚ"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "የማረጋገጫ ኮድ"
 
@@ -2368,7 +2454,7 @@ msgstr "ማረጋገጫ አልተሳካም"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "ያረጋግጡ"
 
@@ -2390,7 +2476,12 @@ msgstr "አንጋፋ"
 msgid "Video thumbnail"
 msgstr "የቪዲዮ ጥፍር ምስል"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "የቪዲዮ መመልከቻ፦ {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "እይታ"
 
@@ -2402,8 +2493,8 @@ msgstr "ይመልከቱ"
 msgid "View all"
 msgstr "ሁሉንም ይመልከቱ"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "ሁሉንም ማሳወቂያዎች ይመልከቱ"
 
@@ -2419,11 +2510,16 @@ msgstr "ተቃዋሚ በመጠበቅ ላይ"
 msgid "WAVE OFF"
 msgstr "ጎ አራውንድ"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "የማረጋገጫ ኮድ ወደ <0>{0}</0> ልከናል። የኢሜይል አድራሻዎን ለማረጋገጥ ኮዱን ከታች ያስገቡ።"
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "በቅርቡ ወደ መስመር እንመለሳለን።"
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "መሣሪያ"
 
@@ -2470,7 +2566,7 @@ msgstr "የዓለም አገልጋይ"
 msgid "World server not reachable"
 msgstr "የዓለም አገልጋይ ሊደረስበት አልተቻለም"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "ማወዛወዝ"
 
@@ -2493,6 +2589,10 @@ msgstr "አንተ"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "የዚህ ክፍል መዳረሻ የለዎትም።"
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "ይህን መርጃ ለማየት <0/>አስፈላጊው ፈቃድ የለዎትም።"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

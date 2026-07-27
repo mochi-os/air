@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "გთხოვთ, შეამოწმოთ ინტერნეტთან კავშირი და სცადოთ ხელახლა."
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, other {# გაყიდვა}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} ფრენაშია"
 msgid "{0}/{1} players"
 msgstr "{0}/{1} მოთამაშე"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "{entityLabel}-ის სახელი"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "{name}-ის მატჩი"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, other {არჩეულია {manyName}}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, other {არჩეულია # {manyName}. მასობრივი მოქმედებების ზოლი ხელმისაწვდომია.}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, other {# არჩეული}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, other {მასობრივი მოქმედებები # არჩეული {manyName}-სთვის}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "ღერძები"
 msgid "Axis {i}"
 msgstr "ღერძი {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "უკან"
 
@@ -239,9 +264,9 @@ msgstr "უკან"
 msgid "Back"
 msgstr "უკან"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "მთავარზე დაბრუნება"
 
@@ -290,7 +315,7 @@ msgstr "ინტერესის გაძლიერება"
 msgid "Bots"
 msgstr "ბოტები"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "მუხრუჭები"
 
@@ -331,7 +356,7 @@ msgstr "კამერის მანძილი"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "ამ შეტყობინების კატეგორია"
 msgid "Change notification category"
 msgstr "შეტყობინების კატეგორიის შეცვლა"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "დევნის ხედი:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "ჩატი"
 
@@ -436,28 +461,29 @@ msgstr "გასუფთავება"
 msgid "Clear all"
 msgstr "ყველაფრის გასუფთავება"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "ფილტრების გასუფთავება"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "არჩევის გასუფთავება"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "არჩევის გასუფთავება (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "დახურვა"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "ნავიგაციის დახურვა"
 
@@ -470,7 +496,7 @@ msgstr "პანელის დახურვა"
 msgid "Close search"
 msgstr "ძიების დახურვა"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "ახლოს"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "ხედის გადართვა"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "ბნელი"
@@ -724,8 +751,8 @@ msgstr "მანძილის LOD"
 msgid "Done"
 msgstr "მზადაა"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "ჩამოტვირთვა"
 
@@ -733,7 +760,7 @@ msgstr "ჩამოტვირთვა"
 msgid "Download failed"
 msgstr "ჩამოტვირთვა ვერ მოხერხდა"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "გადათრევა"
 
@@ -793,15 +820,15 @@ msgstr "შეიყვანეთ თქვენი authenticator-ის კ�
 msgid "Environment"
 msgstr "გარემო"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "ყველა"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "მატჩიდან გასვლა"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "მისიიდან გასვლა"
 
@@ -836,6 +863,14 @@ msgstr "F/A-18C საცნობარო"
 msgid "Failed to add account"
 msgstr "ანგარიშის დამატება ვერ მოხერხდა"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "სურათის ჩატვირთვა ვერ მოხერხდა"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "ვიდეოს ჩატვირთვა ვერ მოხერხდა"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "ანგარიშის წაშლა ვერ მოხერხდა"
@@ -868,7 +903,7 @@ msgstr "დაასრულეთ ანგარიშის გადატ�
 msgid "Finished"
 msgstr "დასრულდა"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "სროლა"
 
@@ -880,7 +915,7 @@ msgstr "ფიქსირებული კლავიშები"
 msgid "FLAMEOUT"
 msgstr "ალის ჩაქრობა"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "სატყუარები"
 
@@ -969,7 +1004,7 @@ msgstr "სრული განლაგება"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "შასი"
 
@@ -981,29 +1016,29 @@ msgstr "შასი"
 msgid "General"
 msgstr "ზოგადი"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "უკან"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "პირველ გვერდზე გადასვლა"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "ბოლო გვერდზე გადასვლა"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "შემდეგ გვერდზე გადასვლა"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "გვერდი {pageNumber}-ზე გადასვლა"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "წინა გვერდზე გადასვლა"
 
@@ -1053,7 +1088,7 @@ msgstr "ისტორია"
 msgid "Home"
 msgstr "მთავარი"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "კაუჭი"
 
@@ -1072,6 +1107,11 @@ msgstr "HUD-ის სიმაღლის წყარო"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "HUD-ის გამარტივება"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "სურათის მნახველი: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "უკვდავი"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "უკვდავი (მხოლოდ ადამიანი მოთამაშეები)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "როგორც ჩანს, გვერდი, რომელსაც ეძებთ, <0/>არ არსებობს ან წაშლილია."
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "ᲒᲕᲘᲐᲜ"
 msgid "Launch (catapult)"
 msgstr "გაშვება (კატაპულტი)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "აფრენა / სამიზნე"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "ᲡᲬᲝᲠᲐᲓ 1200-ᲖᲔ, ᲨᲐᲡᲘ ᲥᲕᲔᲕᲘᲗ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "ღია"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "შუქები"
 
@@ -1325,7 +1370,7 @@ msgstr "დაბალი სტრატუსი"
 msgid "M to close"
 msgstr "M დასახურად"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "რუკა"
 
@@ -1333,8 +1378,8 @@ msgstr "რუკა"
 msgid "Map"
 msgstr "რუკა"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "ყველას წაკითხულად მონიშვნა"
@@ -1357,7 +1402,7 @@ msgstr "მატჩები"
 msgid "Medium"
 msgstr "საშუალო"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "მენიუ"
 
@@ -1366,7 +1411,7 @@ msgstr "მენიუ"
 msgid "Menu"
 msgstr "მენიუ"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "მისწერე ყველას"
 
@@ -1374,7 +1419,7 @@ msgstr "მისწერე ყველას"
 msgid "Message players on this server"
 msgstr "მისწერეთ ამ სერვერის მოთამაშეებს"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "მისწერე შენს გუნდს"
 
@@ -1423,8 +1468,8 @@ msgstr "ქსელის შეცდომა"
 msgid "New"
 msgstr "ახალი"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "შემდეგი სურათი"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "პროფილი არ არის"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "შედეგები ვერ მოიძებნა."
 
@@ -1528,6 +1573,11 @@ msgstr "ჯერ არაფერია — მიესალმეთ."
 msgid "Notifications"
 msgstr "შეტყობინებები"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "შეტყობინებები: {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "ოკეანის დეტალიზაცია"
@@ -1583,11 +1633,11 @@ msgstr "ნავიგაციის მენიუს გახსნა"
 msgid "Open theme settings"
 msgstr "თემის პარამეტრების გახსნა"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "ან"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "ბრუნვა"
 
@@ -1598,6 +1648,11 @@ msgstr "სხვა"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "მფლობელი"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "გვერდი {currentPage} / {totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "პილოტი"
 msgid "PILOT DOWN"
 msgstr "პილოტი დაიღუპა"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "ტანგაჟი"
 
@@ -1656,6 +1711,10 @@ msgstr "მოთამაშეები"
 msgid "Please check your internet connection and try again."
 msgstr "გთხოვთ, შეამოწმოთ ინტერნეტთან კავშირი და სცადოთ ხელახლა."
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "ამ რესურსზე წვდომისთვის <0/> გთხოვთ, შეხვიდეთ შესაბამისი მონაცემებით."
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "გთხოვთ, კიდევ სცადეთ."
@@ -1680,8 +1739,8 @@ msgstr "ასაფრენად დააჭირე ENTER"
 msgid "Press it…"
 msgstr "დააჭირეთ მას…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "წინა სურათი"
 
@@ -1787,6 +1846,11 @@ msgstr "წაშლა"
 msgid "Remove access rule"
 msgstr "წვდომის წესის წაშლა"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "წავშალოთ წვდომის წესი „{0}“-ისთვის?"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "წვდომის წაშლა?"
@@ -1826,7 +1890,7 @@ msgstr "მისიის თავიდან დაწყება"
 msgid "Result"
 msgstr "შედეგი"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "გაგრძელება"
 
@@ -1846,7 +1910,7 @@ msgstr "შებრუნებული"
 msgid "Right to Left"
 msgstr "მარჯვნიდან მარცხნივ"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "კრენი"
 
@@ -1868,7 +1932,7 @@ msgstr "კრენი მარჯვნივ"
 msgid "Rookie"
 msgstr "ახალბედა"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "სტრიქონები გვერდზე"
 
@@ -1951,15 +2015,24 @@ msgstr "აირჩიეთ საიტის მიმართულებ�
 msgid "Select theme preference"
 msgstr "აირჩიეთ თემის პრიორიტეტი"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "არჩეული"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "არჩეული: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "გაგზავნა"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "თავიდან გაგზავნა"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "შეტყობინების გაგზავნა"
 
@@ -2011,7 +2084,7 @@ msgstr "წყაროს და დანიშნულების დაყ
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "ფართო"
 msgid "SPD BK"
 msgstr "სმ"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "სიჩქარის მუხრუჭი"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "კვირა"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "მტერს ვხედავ"
 msgid "Task"
 msgstr "ამოცანა"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "გუნდი"
 
@@ -2181,13 +2255,17 @@ msgstr "წესები და პირობები"
 msgid "That code is incorrect or has expired."
 msgstr "ეს კოდი არასწორია ან ვადაგასულია."
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "მატჩი ამ მენიუს მიღმა გრძელდება."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "მოთხოვნილი კონტენტი ვერ მოიძებნა."
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "საიტი ამჟამად მიუწვდომელია."
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "თემის პარამეტრები"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "ეს ლობი თქვენს თამაშის კავშირს სხვა სერვერზე ({redirectHost}) გადამისამართებს. გააგრძელეთ მხოლოდ იმ შემთხვევაში, თუ ამ სერვერს ენდობით."
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "ეს გვერდი ჯერ არ შექმნილა."
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "გაზი"
 
@@ -2225,13 +2307,17 @@ msgstr "ხუთშაბათი"
 msgid "Tightest sustained turn speed"
 msgstr "ყველაზე მჭიდრო მდგრადი მოხვევის სიჩქარე"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "დახრა"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "დღის დრო"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "სად"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "გამოიყენეთ თქვენი passkey"
 msgid "User"
 msgstr "გამოიყენება წასაკითხი ID-ებისთვის, როგორიცაა {0}-1, {1}-2"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "შემოწმება"
 
@@ -2368,7 +2454,7 @@ msgstr "შემოწმების კოდი გაიგზავნა"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "შემოწმებული"
 
@@ -2390,7 +2476,12 @@ msgstr "ვეტერანი"
 msgid "Video thumbnail"
 msgstr "ვერსია {0} შეიქმნა."
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "ვიდეოს მნახველი: {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "ხედი"
 
@@ -2402,8 +2493,8 @@ msgstr "ვიდეოს ესკიზი"
 msgid "View all"
 msgstr "ნახვა"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "ყველას ნახვა"
 
@@ -2419,11 +2510,16 @@ msgstr "ველოდებით მოწინააღმდეგეს"
 msgid "WAVE OFF"
 msgstr "შეწყვიტე დაფრენა"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "გავაგზავნეთ დამადასტურებელი კოდი მისამართზე <0>{0}</0>. შეიყვანეთ კოდი ქვემოთ თქვენი ელფოსტის დასადასტურებლად."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "ვერ ვიპოვეთ აპები თქვენთვის. ეს მოულოდნელია."
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "იარაღი"
 
@@ -2470,7 +2566,7 @@ msgstr "სამყაროს სერვერი"
 msgid "World server not reachable"
 msgstr "სამყაროს სერვერი მიუწვდომელია"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "მობრუნება"
 
@@ -2493,6 +2589,10 @@ msgstr "თქვენ"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "ამ განყოფილებაზე წვდომა არ გაქვთ."
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "თქვენ არ გაქვთ საჭირო ნებართვა <0/>ამ რესურსის სანახავად."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

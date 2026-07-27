@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "ກະລຸນາກວດສອບການເຊື່ອມຕໍ່ອິນເຕີເນັດຂອງທ່ານ ແລະ ລອງໃໝ່ອີກຄັ້ງ."
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, other {# ເລືອກແລ້ວ}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} ຄົນກຳລັງບິນ"
 msgid "{0}/{1} players"
 msgstr "ຜູ້ຫຼິ້ນ {0}/{1}"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "ຊື່ {entityLabel}"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "ການແຂ່ງຂັນຂອງ {name}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, other {ເລືອກ {manyName} ແລ້ວ}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, other {ເລືອກ # {manyName} ແລ້ວ. ແຖບເຄື່ອງມືການດຳເນີນການເປັນກຸ່ມພ້ອມໃຊ້ງານ.}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, other {# ເລືອກແລ້ວ}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, other {ການດຳເນີນການເປັນກຸ່ມສຳລັບ {manyName} # ທີ່ເລືອກ}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "ແກນ"
 msgid "Axis {i}"
 msgstr "ແກນ {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "ກັບຄືນ"
 
@@ -239,9 +264,9 @@ msgstr "ກັບຄືນ"
 msgid "Back"
 msgstr "ກັບຄືນ"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "ກັບໄປໜ້າຫຼັກ"
 
@@ -290,7 +315,7 @@ msgstr "ເພີ່ມຄວາມສົນໃຈ"
 msgid "Bots"
 msgstr "ຫຸ່ນຍົນ"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "ເບຣກ"
 
@@ -331,7 +356,7 @@ msgstr "ໄລຍະຫ່າງກ້ອງ"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "ໝວດໝູ່ສຳລັບການແຈ້ງເຕືອນນ
 msgid "Change notification category"
 msgstr "ປ່ຽນໝວດໝູ່ການແຈ້ງເຕືອນ"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "ມຸມໄລ່ຕາມ:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "ແຊັດ"
 
@@ -436,28 +461,29 @@ msgstr "ລ້າງ"
 msgid "Clear all"
 msgstr "ລ້າງທັງໝົດ"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "ລ້າງຕົວກອງ"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "ລ້າງການເລືອກ"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "ລ້າງການເລືອກ (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "ປິດ"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "ປິດການນຳທາງ"
 
@@ -470,7 +496,7 @@ msgstr "ປິດແຜງ"
 msgid "Close search"
 msgstr "ປິດການຄົ້ນຫາ"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "ໃກ້ຂຶ້ນ"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "ສະຫຼັບມຸມມອງ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "ມືດ"
@@ -724,8 +751,8 @@ msgstr "LOD ໄລຍະທາງ"
 msgid "Done"
 msgstr "ສຳເລັດແລ້ວ"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "ດາວໂຫຼດ"
 
@@ -733,7 +760,7 @@ msgstr "ດາວໂຫຼດ"
 msgid "Download failed"
 msgstr "ດາວໂຫຼດບໍ່ສຳເລັດ"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "ລາກ"
 
@@ -793,15 +820,15 @@ msgstr "ໃສ່ລະຫັດ authenticator ຂອງທ່ານ"
 msgid "Environment"
 msgstr "ແວດລ້ອມ"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "ທຸກຄົນ"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "ອອກຈາກການແຂ່ງຂັນ"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "ອອກຈາກພາລະກິດ"
 
@@ -836,6 +863,14 @@ msgstr "ຄ່າອ້າງອີງ F/A-18C"
 msgid "Failed to add account"
 msgstr "ເພີ່ມບັນຊີລົ້ມເຫຼວ"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "ໂຫຼດຮູບພາບບໍ່ສຳເລັດ"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "ໂຫຼດວິດີໂອບໍ່ສຳເລັດ"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "ຍ້າຍບັນຊີລົ້ມເຫຼວ"
@@ -868,7 +903,7 @@ msgstr "ສຳເລັດການຍ້າຍບັນຊີ"
 msgid "Finished"
 msgstr "ຈົບແລ້ວ"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "ຍິງ"
 
@@ -880,7 +915,7 @@ msgstr "ປຸ່ມຄົງທີ່"
 msgid "FLAMEOUT"
 msgstr "ເຄື່ອງດັບ"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "ພະລຸ"
 
@@ -969,7 +1004,7 @@ msgstr "ຮູບແບບເຕັມ"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "ລໍ້"
 
@@ -981,29 +1016,29 @@ msgstr "ລໍ້"
 msgid "General"
 msgstr "ທົ່ວໄປ"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "ກັບໄປ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "ໄປໜ້າທຳອິດ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "ໄປໜ້າສຸດທ້າຍ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "ໄປໜ້າຖັດໄປ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "ໄປຫາໜ້າ {pageNumber}"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "ໄປໜ້າກ່ອນໜ້າ"
 
@@ -1053,7 +1088,7 @@ msgstr "ປະຫວັດ"
 msgid "Home"
 msgstr "ໜ້າຫຼັກ"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "ຂໍ"
 
@@ -1072,6 +1107,11 @@ msgstr "ແຫຼ່ງຄວາມສູງ HUD"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "ຫຼຸດລາຍລະອຽດ HUD"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "ຕົວເບິ່ງຮູບພາບ: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "ອະມະຕະ"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "ອະມະຕະ (ສະເພາະຜູ້ຫຼິ້ນມະນຸດ)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "ເບິ່ງຄືວ່າໜ້າທີ່ທ່ານກຳລັງຊອກຫາ <0/>ບໍ່ມີ ຫຼື ອາດຖືກລຶບອອກແລ້ວ."
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "ຊ້າ"
 msgid "Launch (catapult)"
 msgstr "ການປ່ອຍຕົວ (ກາຕາປຸນ)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "ບິນຂຶ້ນ / ເປົ້າໝາຍ"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "ຮາບພຽງທີ່ 1200, ລໍ້ລົງ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "ສະຫວ່າງ"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "ໄຟ"
 
@@ -1325,7 +1370,7 @@ msgstr "ເມກຊັ້ນຕ່ຳ"
 msgid "M to close"
 msgstr "M ເພື່ອປິດ"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "ແຜນທີ່"
 
@@ -1333,8 +1378,8 @@ msgstr "ແຜນທີ່"
 msgid "Map"
 msgstr "ແຜນທີ່"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "ໝາຍທັງໝົດເປັນອ່ານແລ້ວ"
@@ -1357,7 +1402,7 @@ msgstr "ການແຂ່ງຂັນ"
 msgid "Medium"
 msgstr "ກາງ"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "ເມນູ"
 
@@ -1366,7 +1411,7 @@ msgstr "ເມນູ"
 msgid "Menu"
 msgstr "ເມນູ"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "ສົ່ງຂໍ້ຄວາມຫາທຸກຄົນ"
 
@@ -1374,7 +1419,7 @@ msgstr "ສົ່ງຂໍ້ຄວາມຫາທຸກຄົນ"
 msgid "Message players on this server"
 msgstr "ສົ່ງຂໍ້ຄວາມຫາຜູ້ຫຼິ້ນໃນເຊີບເວີນີ້"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "ສົ່ງຂໍ້ຄວາມຫາທີມຂອງທ່ານ"
 
@@ -1423,8 +1468,8 @@ msgstr "ຂໍ້ຜິດພາດເຄືອຂ່າຍ"
 msgid "New"
 msgstr "ໃໝ່"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "ຮູບຕໍ່ໄປ"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "ບໍ່ມີໂປຣໄຟລ໌"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "ບໍ່ພົບຜົນ."
 
@@ -1528,6 +1573,11 @@ msgstr "ຍັງບໍ່ມີຫຍັງເທື່ອ ລອງທັກ�
 msgid "Notifications"
 msgstr "ການແຈ້ງເຕືອນ"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "ການແຈ້ງເຕືອນ: {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "ລາຍລະອຽດມະຫາສະໝຸດ"
@@ -1583,11 +1633,11 @@ msgstr "ເປີດເມນູການນຳທາງ"
 msgid "Open theme settings"
 msgstr "ເປີດການຕັ້ງຄ່າທີມ"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "ຫຼື"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "ໝູນອ້ອມ"
 
@@ -1598,6 +1648,11 @@ msgstr "ອື່ນໆ"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "ເຈົ້າຂອງ"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "ໜ້າ {currentPage} ຈາກ {totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "ນັກບິນ"
 msgid "PILOT DOWN"
 msgstr "ນັກບິນເສຍຊີວິດ"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "ກົ້ມເງີຍ"
 
@@ -1656,6 +1711,10 @@ msgstr "ຜູ້ຫຼິ້ນ"
 msgid "Please check your internet connection and try again."
 msgstr "ກະລຸນາກວດສອບການເຊື່ອມຕໍ່ອິນເຕີເນັດຂອງທ່ານ ແລະ ລອງໃໝ່ອີກຄັ້ງ."
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "ກະລຸນາເຂົ້າສູ່ລະບົບດ້ວຍຂໍ້ມູນປະຈຳຕົວທີ່ເໝາະສົມ <0/> ເພື່ອເຂົ້າເຖິງຊັບພະຍາກອນນີ້."
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "ກະລຸນາລອງໃໝ່."
@@ -1680,8 +1739,8 @@ msgstr "ກົດ ENTER ເພື່ອບິນຂຶ້ນ"
 msgid "Press it…"
 msgstr "ກົດມັນ…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "ຮູບກ່ອນໜ້າ"
 
@@ -1787,6 +1846,11 @@ msgstr "ລຶບອອກ"
 msgid "Remove access rule"
 msgstr "ລຶບກົດການເຂົ້າເຖິງ"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "ລຶບກົດການເຂົ້າເຖິງສຳລັບ \"{0}\" ບໍ?"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "ລຶບການເຂົ້າເຖິງ?"
@@ -1826,7 +1890,7 @@ msgstr "ເລີ່ມພາລະກິດໃໝ່"
 msgid "Result"
 msgstr "ຜົນ"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "ສືບຕໍ່"
 
@@ -1846,7 +1910,7 @@ msgstr "ປີ້ນກັບ"
 msgid "Right to Left"
 msgstr "ຂວາໄປຊ້າຍ"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "ກິ້ງ"
 
@@ -1868,7 +1932,7 @@ msgstr "ອຽງຂວາ"
 msgid "Rookie"
 msgstr "ມືໃໝ່"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "ແຖວຕໍ່ໜ້າ"
 
@@ -1951,15 +2015,24 @@ msgstr "ເລືອກທິດທາງເວັບໄຊ"
 msgid "Select theme preference"
 msgstr "ເລືອກຄວາມຕ້ອງການຮູບແບບ"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "ເລືອກແລ້ວ"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "ເລືອກແລ້ວ: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "ສົ່ງ"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "ສົ່ງອີກຄັ້ງ"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "ສົ່ງຂໍ້ຄວາມ"
 
@@ -2011,7 +2084,7 @@ msgstr "ຕັ້ງຕົ້ນທາງແລະປາຍທາງ"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "ກວ້າງຂວາງ"
 msgid "SPD BK"
 msgstr "ບ.ອກ"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "ເບຣກອາກາດ"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "ວັນອາທິດ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "ເຫັນສັດຕູແລ້ວ"
 msgid "Task"
 msgstr "ໜ້າວຽກ"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "ທີມ"
 
@@ -2181,13 +2255,17 @@ msgstr "ຂໍ້ກຳນົດແລະເງື່ອນໄຂ"
 msgid "That code is incorrect or has expired."
 msgstr "ລະຫັດນັ້ນບໍ່ຖືກຕ້ອງ ຫຼື ໝົດອາຍຸແລ້ວ."
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "ການແຂ່ງຂັນຍັງດຳເນີນຕໍ່ຢູ່ຫຼັງເມນູນີ້."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "ບໍ່ພົບເນື້ອຫາທີ່ຮ້ອງຂໍ."
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "ເວັບໄຊທ໌ບໍ່ສາມາດໃຊ້ໄດ້ໃນຂະນະນີ້."
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "ການຕັ້ງຄ່າຮູບແບບ"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "ລັອບບີ້ນີ້ກຳລັງປ່ຽນເສັ້ນທາງການເຊື່ອມຕໍ່ເກມຂອງທ່ານໄປຫາເຊີບເວີອື່ນ ({redirectHost}). ສືບຕໍ່ພຽງແຕ່ຖ້າທ່ານໄວ້ວາງໃຈເຊີບເວີນີ້."
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "ໜ້ານີ້ຍັງບໍ່ໄດ້ຖືກສ້າງຂຶ້ນ."
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "ຄັນເລັ່ງ"
 
@@ -2225,13 +2307,17 @@ msgstr "ວັນພະຫັດ"
 msgid "Tightest sustained turn speed"
 msgstr "ຄວາມໄວການລ້ຽວຕໍ່ເນື່ອງແຄບສຸດ"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "ອຽງ"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "ເວລາຂອງມື້"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "ໄປ"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "ໃຊ້ passkey ຂອງທ່ານ"
 msgid "User"
 msgstr "ຜູ້ໃຊ້"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "ລະຫັດການຢືນຢັນ"
 
@@ -2368,7 +2454,7 @@ msgstr "ການຢືນຢັນລົ້ມເຫຼວ"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "ຢືນຢັນ"
 
@@ -2390,7 +2476,12 @@ msgstr "ມືເກົ່າ"
 msgid "Video thumbnail"
 msgstr "ຮູບຫຍໍ້ວິດີໂອ"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "ຕົວເບິ່ງວິດີໂອ: {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "ມຸມມອງ"
 
@@ -2402,8 +2493,8 @@ msgstr "ເບິ່ງ"
 msgid "View all"
 msgstr "ເບິ່ງທັງໝົດ"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "ເບິ່ງການແຈ້ງເຕືອນທັງໝົດ"
 
@@ -2419,11 +2510,16 @@ msgstr "ກຳລັງລໍຖ້າຄູ່ຕໍ່ສູ້"
 msgid "WAVE OFF"
 msgstr "ຍົກເລີກການລົງຈອດ"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "ພວກເຮົາໄດ້ສົ່ງລະຫັດຢືນຢັນໄປທີ່ <0>{0}</0>. ປ້ອນລະຫັດຂ້າງລຸ່ມນີ້ເພື່ອຢືນຢັນທີ່ຢູ່ອີເມວຂອງທ່ານ."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "ພວກເຮົາຈະກັບມາອອນລາຍໃນບໍ່ຊ້າ."
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "ອາວຸດ"
 
@@ -2470,7 +2566,7 @@ msgstr "ເຊີບເວີໂລກ"
 msgid "World server not reachable"
 msgstr "ບໍ່ສາມາດເຊື່ອມຕໍ່ຫາເຊີບເວີໂລກໄດ້"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "ສ່າຍ"
 
@@ -2493,6 +2589,10 @@ msgstr "ເຈົ້າ"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "ທ່ານບໍ່ມີສິດເຂົ້າເຖິງພາກສ່ວນນີ້."
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "ທ່ານບໍ່ມີສິດທີ່ຈຳເປັນ <0/>ໃນການເບິ່ງຊັບພະຍາກອນນີ້."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

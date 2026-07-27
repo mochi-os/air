@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr ""
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, one {# vald} other {# valde}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr ""
 msgid "{0}/{1} players"
 msgstr ""
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "{entityLabel}-namn"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr ""
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, one {{entityName} vald} other {{manyName} valde}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, one {# {entityName} vald. Verktøylinja for massehandlingar er tilgjengeleg.} other {# {manyName} valde. Verktøylinja for massehandlingar er tilgjengeleg.}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, one {# valde} other {# valde}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, one {Massehandlingar for # vald {entityName}} other {Massehandlingar for # valde {manyName}}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -45,7 +70,7 @@ msgstr "VAIER 1"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:42
 msgid "12 hours"
-msgstr ""
+msgstr "12 timar"
 
 #: src/components/MissionSetup.tsx:679
 msgid "15,000 AMSL"
@@ -57,7 +82,7 @@ msgstr "VAIER 2"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:41
 msgid "24 hours"
-msgstr ""
+msgstr "24 timar"
 
 #: src/components/GameCanvas.tsx:56
 msgid "3 WIRE"
@@ -69,35 +94,35 @@ msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:51
 msgid "Absolute (date and time)"
-msgstr ""
+msgstr "Absolutt (dato og tid)"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:60
 msgid "Access denied"
-msgstr ""
+msgstr "Tilgang nekta"
 
 #: ../../../lib/web/src/features/errors/forbidden.tsx:16
 msgid "Access Forbidden"
-msgstr ""
+msgstr "Tilgang nekta"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:192
 msgid "Access level"
-msgstr ""
+msgstr "Tilgangsnivå"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:216
 msgid "Account added"
-msgstr ""
+msgstr "Konto lagt til"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:232
 msgid "Account removed"
-msgstr ""
+msgstr "Konto fjerna"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:126
 msgid "Account type"
-msgstr ""
+msgstr "Kontotype"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:242
 msgid "Account verified"
-msgstr ""
+msgstr "Konto stadfesta"
 
 #: src/components/MissionSetup.tsx:1166
 #: src/components/MissionSetup.tsx:1526
@@ -112,49 +137,49 @@ msgstr ""
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:196
 msgid "Add"
-msgstr ""
+msgstr "Legg til"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:120
 msgid "Add a new account"
-msgstr ""
+msgstr "Legg til ein ny konto"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:148
 msgid "Add access"
-msgstr ""
+msgstr "Legg til tilgang"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:119
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:288
 msgid "Add account"
-msgstr ""
+msgstr "Legg til konto"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:297
 msgid "Add an account to receive notifications and use services."
-msgstr ""
+msgstr "Legg til ein konto for å motta varsel og bruke tenester."
 
 #: ../../../lib/web/src/features/accounts/account-picker.tsx:101
 msgid "Add new account"
-msgstr ""
+msgstr "Legg til ny konto"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
 msgid "Add tag..."
-msgstr ""
+msgstr "Legg til etikett..."
 
 #: ../../../lib/web/src/components/layout/team-switcher.tsx:83
 msgid "Add team/app"
-msgstr ""
+msgstr "Legg til team/app"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:162
 msgid "Add to existing notifications"
-msgstr ""
+msgstr "Legg til i eksisterande varsel"
 
 #: ../../../lib/web/src/components/view-tabs.tsx:87
 #: ../../../lib/web/src/components/view-tabs.tsx:93
 msgid "Add view"
-msgstr ""
+msgstr "Legg til visning"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:71
 msgid "Adjust the appearance and layout to suit your preferences."
-msgstr ""
+msgstr "Juster utsjånaden og oppsettet etter ynska dine."
 
 #: src/components/MissionSetup.tsx:1373
 msgid "Afterburner"
@@ -162,7 +187,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:41
 msgid "AI"
-msgstr ""
+msgstr "KI"
 
 #: src/components/MissionSetup.tsx:407
 #: src/components/MissionSetup.tsx:1134
@@ -183,7 +208,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:163
 msgid "All"
-msgstr ""
+msgstr "Alle"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:159
 msgid "An error occurred"
@@ -204,7 +229,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
-msgstr ""
+msgstr "Er du sikker på at du vil logge ut? Du må logge inn att for å få tilgang til kontoen din."
 
 #: src/components/MissionSetup.tsx:122
 #: src/components/MissionSetup.tsx:151
@@ -213,7 +238,7 @@ msgstr "Fangkrok"
 
 #: ../../../lib/web/src/components/data-table/column-header.tsx:59
 msgid "Asc"
-msgstr ""
+msgstr "Stig"
 
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
@@ -221,7 +246,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Authenticator code"
-msgstr ""
+msgstr "Autentiseringskode"
 
 #: src/components/MissionSetup.tsx:278
 msgid "Axes"
@@ -231,17 +256,17 @@ msgstr ""
 msgid "Axis {i}"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr ""
 
 #: ../../../lib/web/src/components/place-picker.tsx:155
 msgid "Back"
-msgstr ""
+msgstr "Tilbake"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr ""
 
@@ -284,13 +309,13 @@ msgstr "BOLTER"
 #: ../../../lib/web/src/components/post-tags.tsx:180
 #: ../../../lib/web/src/components/post-tags.tsx:192
 msgid "Boost interest"
-msgstr ""
+msgstr "Auk interesse"
 
 #: src/components/Multiplayer.tsx:370
 msgid "Bots"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr ""
 
@@ -331,12 +356,12 @@ msgstr ""
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
 msgid "Cancel"
-msgstr ""
+msgstr "Avbryt"
 
 #: src/components/MissionSetup.tsx:164
 #: src/components/MissionSetup.tsx:512
@@ -373,24 +398,24 @@ msgstr "Katapult"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx:143
 msgid "Category for this notification"
-msgstr ""
+msgstr "Kategori for dette varselet"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx:124
 #: ../../../lib/web/src/components/notification-category-button.tsx:135
 msgid "Change notification category"
-msgstr ""
+msgstr "Endre varselkategori"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:159
 msgid "Chat"
-msgstr ""
+msgstr "Prat"
 
 #: src/components/MissionSetup.tsx:160
 msgid "Chat to everyone"
@@ -403,24 +428,24 @@ msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:328
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
-msgstr ""
+msgstr "Vel mellom standard utvida, kompakt med berre ikon eller fullt oppsett"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:270
 msgid "Choose between inset, floating, or standard sidebar layout"
-msgstr ""
+msgstr "Vel mellom innfelt, flytande eller standard sidestolpeoppsett"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:371
 msgid "Choose between left-to-right or right-to-left site direction"
-msgstr ""
+msgstr "Vel mellom venstre-til-høgre eller høgre-til-venstre sideretning"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:226
 msgid "Choose between system preference, light mode, or dark mode"
-msgstr ""
+msgstr "Vel mellom systeminnstilling, lys modus eller mørk modus"
 
 #: ../../../lib/web/src/components/language-picker.tsx:300
 #: ../../../lib/web/src/components/language-picker.tsx:307
 msgid "Choose language"
-msgstr ""
+msgstr "Vel språk"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:269
 #: ../../../lib/web/src/components/colour-picker.tsx:350
@@ -430,36 +455,37 @@ msgstr ""
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
 #: src/components/Multiplayer.tsx:301
 msgid "Clear"
-msgstr ""
+msgstr "Tøm"
 
 #: ../../../lib/web/src/components/filter-bar.tsx:73
 msgid "Clear all"
-msgstr ""
+msgstr "Tøm alle"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
-msgstr ""
+msgstr "Tøm filter"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
-msgstr ""
+msgstr "Tøm utval"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
-msgstr ""
+msgstr "Tøm utval (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
-msgstr ""
+msgstr "Lat att"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
-msgstr ""
+msgstr "Lat att navigeringa"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx:265
 #: ../../../lib/web/src/components/layout/right-panel.tsx:268
@@ -468,9 +494,9 @@ msgstr ""
 
 #: ../../../lib/web/src/components/header-search.tsx:54
 msgid "Close search"
-msgstr ""
+msgstr "Lat att søket"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr ""
 
@@ -487,15 +513,15 @@ msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:39
 msgid "Collapse sidebar"
-msgstr ""
+msgstr "Klapp saman sidestolpen"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:96
 msgid "Comfortable"
-msgstr ""
+msgstr "Romsleg"
 
 #: ../../../lib/web/src/components/coming-soon.tsx:12
 msgid "Coming Soon!"
-msgstr ""
+msgstr "Kjem snart!"
 
 #: src/components/GameCanvas.tsx:96
 msgid "COMMENCING"
@@ -504,12 +530,12 @@ msgstr "PÅBYRJAR"
 #: ../../../lib/web/src/components/config-drawer.tsx:315
 #: ../../../lib/web/src/lib/preference-utils.ts:95
 msgid "Compact"
-msgstr ""
+msgstr "Kompakt"
 
 #: ../../../lib/web/src/components/place-picker.tsx:159
 #: ../../../lib/web/src/components/travelling-picker.tsx:316
 msgid "Confirm"
-msgstr ""
+msgstr "Stadfest"
 
 #: src/components/MissionSetup.tsx:1054
 msgid "Connect"
@@ -525,16 +551,16 @@ msgstr ""
 
 #: ../../../lib/web/src/lib/query-client.ts:81
 msgid "Content not modified"
-msgstr ""
+msgstr "Innhald ikkje endra"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx:149
 msgid "Contextual information and details."
-msgstr ""
+msgstr "Kontekstinformasjon og detaljar."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
 #: src/components/Multiplayer.tsx:220
 msgid "Continue"
-msgstr ""
+msgstr "Hald fram"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:352
 msgid "Continue with {label}"
@@ -542,7 +568,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/ui/copy-button.tsx:63
 msgid "Copy"
-msgstr ""
+msgstr "Kopier"
 
 #: src/components/MissionSetup.tsx:648
 msgid "Corner speed (best instant turn)"
@@ -554,7 +580,7 @@ msgstr ""
 
 #: ../../../lib/web/src/features/document/document-page.tsx:84
 msgid "Could not load this document. Please try again later."
-msgstr ""
+msgstr "Kunne ikkje lasta dette dokumentet. Prøv igjen seinare."
 
 #: src/components/MissionSetup.tsx:891
 msgid "Could not send the message"
@@ -601,7 +627,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/colour-picker.tsx:260
 msgid "Custom"
-msgstr ""
+msgstr "Tilpassa"
 
 #: src/components/GameCanvas.tsx:60
 msgid "CUT"
@@ -613,9 +639,10 @@ msgid "Cycle view"
 msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
-msgstr ""
+msgstr "Mørk"
 
 #: ../../../lib/web/src/components/layout/nav-user.tsx:91
 #: ../../../lib/web/src/components/layout/nav-user.tsx:154
@@ -623,7 +650,7 @@ msgstr ""
 #: ../../../lib/web/src/components/profile-dropdown.tsx:87
 #: ../../../lib/web/src/components/profile-dropdown.tsx:123
 msgid "Dark mode"
-msgstr ""
+msgstr "Mørk modus"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:240
 msgid "Data conflict"
@@ -631,7 +658,7 @@ msgstr ""
 
 #: src/components/MatchHistory.tsx:103
 msgid "Date"
-msgstr ""
+msgstr "Dato"
 
 #: src/components/MissionSetup.tsx:1236
 #: src/components/Multiplayer.tsx:297
@@ -649,19 +676,19 @@ msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:310
 msgid "Default"
-msgstr ""
+msgstr "Standard"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:172
 msgid "Default AI account"
-msgstr ""
+msgstr "Standard KI-konto"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:99
 msgid "Delete your account on the old server"
-msgstr ""
+msgstr "Slett kontoen din på den gamle tenaren"
 
 #: ../../../lib/web/src/components/data-table/column-header.tsx:63
 msgid "Desc"
-msgstr ""
+msgstr "Sink"
 
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Descending"
@@ -669,7 +696,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx:148
 msgid "Details Panel"
-msgstr ""
+msgstr "Detaljpanel"
 
 #: src/components/MissionSetup.tsx:345
 #: src/components/MissionSetup.tsx:388
@@ -685,11 +712,11 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:72
 #: ../../../lib/web/src/lib/preference-utils.ts:84
 msgid "Detect from web browser"
-msgstr ""
+msgstr "Oppdag frå nettlesaren"
 
 #: src/components/MissionSetup.tsx:247
 msgid "Device"
-msgstr ""
+msgstr "Eining"
 
 #: src/components/Multiplayer.tsx:200
 msgid "Different game host"
@@ -697,7 +724,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:340
 msgid "Direction"
-msgstr ""
+msgstr "Retning"
 
 #: src/components/MissionSetup.tsx:259
 msgid "disconnected"
@@ -705,16 +732,16 @@ msgstr ""
 
 #: src/components/MatchHistory.tsx:59
 msgid "Disconnected"
-msgstr ""
+msgstr "Fråkopla"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:79
 #: ../../../lib/web/src/components/restore-banner.tsx:85
 msgid "Dismiss"
-msgstr ""
+msgstr "Avvis"
 
 #: ../../../lib/web/src/components/ui/sidebar.tsx:238
 msgid "Displays the mobile sidebar."
-msgstr ""
+msgstr "Viser mobil sidestolpe."
 
 #: src/components/MissionSetup.tsx:1361
 msgid "Distance LOD"
@@ -722,18 +749,18 @@ msgstr ""
 
 #: src/components/MissionSetup.tsx:1666
 msgid "Done"
-msgstr ""
+msgstr "Ferdig"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
-msgstr ""
+msgstr "Last ned"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:68
 msgid "Download failed"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr ""
 
@@ -747,7 +774,7 @@ msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:146
 msgid "Dyslexia-friendly"
-msgstr ""
+msgstr "Dyslektikarvenleg"
 
 #: src/components/GameCanvas.tsx:97
 msgid "EARLY"
@@ -767,7 +794,7 @@ msgstr "SKOTEN UT"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
-msgstr ""
+msgstr "E-postkode"
 
 #: src/components/Multiplayer.tsx:436
 msgid "empty"
@@ -793,15 +820,15 @@ msgstr ""
 msgid "Environment"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "Forlat oppdrag"
 
@@ -814,7 +841,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:39
 msgid "Expand sidebar"
-msgstr ""
+msgstr "Utvid sidestolpe"
 
 #: src/components/MissionSetup.tsx:1335
 msgid "Exterior detail"
@@ -826,7 +853,7 @@ msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:136
 msgid "Extra large"
-msgstr ""
+msgstr "Ekstra stor"
 
 #: src/components/MissionSetup.tsx:667
 msgid "F/A-18C reference"
@@ -834,19 +861,27 @@ msgstr ""
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:225
 msgid "Failed to add account"
-msgstr ""
+msgstr "Klarte ikkje leggja til konto"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "Kunne ikkje lasta biletet"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "Kunne ikkje lasta videoen"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
-msgstr ""
+msgstr "Klarte ikkje fjerna konto"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:257
 msgid "Failed to send verification code"
-msgstr ""
+msgstr "Klarte ikkje senda stadfestingskode"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx:111
 msgid "Failed to update category"
-msgstr ""
+msgstr "Klarte ikkje oppdatera kategori"
 
 #: src/components/GameCanvas.tsx:58
 msgid "FAIR"
@@ -862,13 +897,13 @@ msgstr ""
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
-msgstr ""
+msgstr "Fullfør flyttinga av kontoen din"
 
 #: src/components/MatchHistory.tsx:60
 msgid "Finished"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr ""
 
@@ -880,7 +915,7 @@ msgstr ""
 msgid "FLAMEOUT"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr ""
 
@@ -904,7 +939,7 @@ msgstr "FLYKJERNEN SVIKTA"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
-msgstr ""
+msgstr "Flytande"
 
 #: src/components/MissionSetup.tsx:1558
 #: src/components/MissionSetup.tsx:1599
@@ -921,11 +956,11 @@ msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:63
 msgid "Friday"
-msgstr ""
+msgstr "Fredag"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:153
 msgid "From"
-msgstr ""
+msgstr "Frå"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:94
 #: ../../../lib/web/src/lib/preference-utils.ts:104
@@ -934,7 +969,7 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:132
 #: ../../../lib/web/src/lib/preference-utils.ts:143
 msgid "From theme"
-msgstr ""
+msgstr "Frå tema"
 
 #: src/components/MissionSetup.tsx:1142
 #: src/components/Multiplayer.tsx:312
@@ -969,7 +1004,7 @@ msgstr ""
 msgid "Furball"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr ""
 
@@ -979,33 +1014,33 @@ msgstr ""
 
 #: src/components/MissionSetup.tsx:1608
 msgid "General"
-msgstr ""
+msgstr "Generelt"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
-msgstr ""
+msgstr "Gå til første side"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
-msgstr ""
+msgstr "Gå til siste side"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
-msgstr ""
+msgstr "Gå til neste side"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
-msgstr ""
+msgstr "Gå til førre side"
 
 #: src/components/MissionSetup.tsx:1611
 msgid "Graphics"
@@ -1013,7 +1048,7 @@ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:162
 msgid "Group"
-msgstr ""
+msgstr "Gruppe"
 
 #: src/components/GameCanvas.tsx:24
 msgid "GUN"
@@ -1026,7 +1061,7 @@ msgstr "Kanonar"
 
 #: ../../../lib/web/src/components/data-table/column-header.tsx:70
 msgid "Hide"
-msgstr ""
+msgstr "Skjul"
 
 #: ../../../lib/web/src/components/password-input.tsx:27
 msgid "Hide password"
@@ -1044,16 +1079,16 @@ msgstr ""
 #: src/components/MissionSetup.tsx:1576
 #: src/components/MissionSetup.tsx:1671
 msgid "History"
-msgstr ""
+msgstr "Historikk"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:90
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:158
 #: ../../../lib/web/src/components/layout/top-bar.tsx:71
 #: ../../../lib/web/src/components/layout/top-bar.tsx:100
 msgid "Home"
-msgstr ""
+msgstr "Heim"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr ""
 
@@ -1063,7 +1098,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:44
 msgid "Hot"
-msgstr ""
+msgstr "Het"
 
 #: src/components/MissionSetup.tsx:166
 msgid "HUD altitude source"
@@ -1072,6 +1107,11 @@ msgstr ""
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr ""
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "Biletvisar: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1084,15 +1124,15 @@ msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:252
 msgid "Inset"
-msgstr ""
+msgstr "Innfelt"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
-msgstr ""
+msgstr "Interesser"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:245
 msgid "Invalid verification code"
-msgstr ""
+msgstr "Ugyldig stadfestingskode"
 
 #: src/components/MissionSetup.tsx:272
 msgid "Invert pitch"
@@ -1106,6 +1146,10 @@ msgstr ""
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr ""
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "Det ser ut til at sida du leitar etter <0/>ikkje finst eller er fjerna."
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1175,7 +1219,7 @@ msgstr "Understell"
 #: ../../../lib/web/src/lib/preference-utils.ts:108
 #: ../../../lib/web/src/lib/preference-utils.ts:135
 msgid "Large"
-msgstr ""
+msgstr "Stor"
 
 #: src/components/GameCanvas.tsx:98
 msgid "LATE"
@@ -1186,7 +1230,7 @@ msgstr "SEIN"
 msgid "Launch (catapult)"
 msgstr "Utskyting (katapult)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr ""
 
@@ -1201,7 +1245,7 @@ msgstr ""
 #: ../../../lib/web/src/components/learn-more.tsx:33
 #: ../../../lib/web/src/components/learn-more.tsx:38
 msgid "Learn more"
-msgstr ""
+msgstr "Lær meir"
 
 #: src/components/MissionSetup.tsx:1074
 msgid "Leave server"
@@ -1217,18 +1261,19 @@ msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:354
 msgid "Left to Right"
-msgstr ""
+msgstr "Venstre til høgre"
 
 #: src/components/GameCanvas.tsx:100
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "PLANT I 1200, HJUL UTE"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
-msgstr ""
+msgstr "Lyst"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "lys"
 
@@ -1247,7 +1292,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx:35
 msgid "Load more"
-msgstr ""
+msgstr "Last fleire"
 
 #: src/components/GameCanvas.tsx:49
 msgid "LOADING"
@@ -1255,7 +1300,7 @@ msgstr "LASTAR"
 
 #: ../../../lib/web/src/components/ui/loading-content.tsx:29
 msgid "Loading content…"
-msgstr ""
+msgstr "Lastar inn innhald…"
 
 #: src/components/GameCanvas.tsx:67
 msgid "LOADING FAILED"
@@ -1264,7 +1309,7 @@ msgstr "LASTING MISLUKKAST"
 #: ../../../lib/web/src/components/ui/load-more.tsx:35
 #: ../../../lib/web/src/features/document/document-page.tsx:90
 msgid "Loading..."
-msgstr ""
+msgstr "Lastar..."
 
 #: ../../../lib/web/src/components/layout/nav-user.tsx:101
 #: ../../../lib/web/src/components/layout/nav-user.tsx:167
@@ -1274,19 +1319,19 @@ msgstr ""
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:26
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:28
 msgid "Log out"
-msgstr ""
+msgstr "Logg ut"
 
 #: ../../../lib/web/src/hooks/use-logout.ts:19
 msgid "Logged out (with errors)"
-msgstr ""
+msgstr "Logga ut (med feil)"
 
 #: ../../../lib/web/src/hooks/use-logout.ts:17
 msgid "Logged out successfully"
-msgstr ""
+msgstr "Logga ut"
 
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:28
 msgid "Logging out…"
-msgstr ""
+msgstr "Loggar ut…"
 
 #: src/components/MissionSetup.tsx:111
 msgid "Look"
@@ -1325,7 +1370,7 @@ msgstr ""
 msgid "M to close"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr ""
 
@@ -1333,11 +1378,11 @@ msgstr ""
 msgid "Map"
 msgstr ""
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
-msgstr ""
+msgstr "Merk alle som lesne"
 
 #: src/components/MissionSetup.tsx:405
 msgid "Master"
@@ -1355,18 +1400,18 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:107
 #: src/components/MissionSetup.tsx:1313
 msgid "Medium"
-msgstr ""
+msgstr "Middels"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr ""
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:173
 #: src/components/MissionSetup.tsx:161
 msgid "Menu"
-msgstr ""
+msgstr "Meny"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr ""
 
@@ -1374,13 +1419,13 @@ msgstr ""
 msgid "Message players on this server"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:85
 msgid "Metric"
-msgstr ""
+msgstr "Metrisk"
 
 #: src/components/MissionSetup.tsx:778
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
@@ -1404,7 +1449,7 @@ msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:59
 msgid "Monday"
-msgstr ""
+msgstr "Måndag"
 
 #: src/components/MissionSetup.tsx:345
 msgid "Move it…"
@@ -1421,12 +1466,12 @@ msgstr ""
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:43
 msgid "New"
-msgstr ""
+msgstr "Ny"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
-msgstr ""
+msgstr "Neste bilete"
 
 #: src/components/MissionSetup.tsx:1237
 #: src/components/Multiplayer.tsx:298
@@ -1435,15 +1480,15 @@ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:160
 msgid "No access rules configured. Add rules to control who can access this resource."
-msgstr ""
+msgstr "Ingen tilgangsreglar er sette opp. Legg til reglar for å styra kven som har tilgang til denne ressursen."
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:295
 msgid "No connected accounts"
-msgstr ""
+msgstr "Ingen tilkopla kontoar"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
-msgstr ""
+msgstr "Ingen grupper tilgjengelege"
 
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
@@ -1459,28 +1504,28 @@ msgstr ""
 
 #: ../../../lib/web/src/components/place-picker.tsx:132
 msgid "No places found"
-msgstr ""
+msgstr "Ingen stader funne"
 
 #: ../../../lib/web/src/components/profile-dropdown.tsx:58
 msgid "No profile"
-msgstr ""
+msgstr "Inga profil"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
-msgstr ""
+msgstr "Ingen treff funne."
 
 #: ../../../lib/web/src/components/timezone-select.tsx:67
 msgid "No time zone found."
-msgstr ""
+msgstr "Inga tidssone funne."
 
 #: ../../../lib/web/src/components/notification-category-button.tsx:147
 msgid "No topic record yet — try again after the next notification."
-msgstr ""
+msgstr "Inga emneoppføring enno — prøv igjen etter neste varsel."
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:206
 msgid "No users found"
-msgstr ""
+msgstr "Ingen brukarar funne"
 
 #: src/components/MissionSetup.tsx:903
 #: src/components/Multiplayer.tsx:418
@@ -1498,7 +1543,7 @@ msgstr "INGEN KARAKTER"
 #: src/components/MissionSetup.tsx:369
 #: src/components/MissionSetup.tsx:1247
 msgid "None"
-msgstr ""
+msgstr "Ingen"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:134
 msgid "Normal"
@@ -1514,7 +1559,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:146
 msgid "Not set"
-msgstr ""
+msgstr "Ikkje sett"
 
 #: src/components/MissionSetup.tsx:903
 msgid "Nothing yet — say hello."
@@ -1526,7 +1571,12 @@ msgstr ""
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:257
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:261
 msgid "Notifications"
-msgstr ""
+msgstr "Varsel"
+
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "Varsel: {0}"
 
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
@@ -1548,11 +1598,11 @@ msgstr ""
 
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:16
 msgid "Oops! Page Not Found!"
-msgstr ""
+msgstr "Ups! Side ikkje funne!"
 
 #: src/components/Multiplayer.tsx:435
 msgid "Open"
-msgstr ""
+msgstr "Opna"
 
 #: src/components/Multiplayer.tsx:287
 msgid "Open — anyone may join or leave"
@@ -1561,7 +1611,7 @@ msgstr ""
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:156
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:166
 msgid "Open account actions"
-msgstr ""
+msgstr "Opna kontohandlingar"
 
 #: ../../../lib/web/src/components/layout/nav-group.tsx:202
 #: ../../../lib/web/src/components/layout/nav-group.tsx:207
@@ -1571,37 +1621,42 @@ msgstr ""
 #: ../../../lib/web/src/components/layout/top-bar.tsx:63
 #: ../../../lib/web/src/components/layout/top-bar.tsx:68
 msgid "Open navigation"
-msgstr ""
+msgstr "Opna navigasjon"
 
 #: ../../../lib/web/src/components/layout/top-nav.tsx:38
 #: ../../../lib/web/src/components/layout/top-nav.tsx:44
 msgid "Open navigation menu"
-msgstr ""
+msgstr "Opna navigasjonsmeny"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:57
 #: ../../../lib/web/src/components/config-drawer.tsx:65
 msgid "Open theme settings"
-msgstr ""
+msgstr "Opna temainnstillingar"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr ""
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:166
 msgid "Other"
-msgstr ""
+msgstr "Anna"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
-msgstr ""
+msgstr "Eigar"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "Side {currentPage} av {totalPages}"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
-msgstr ""
+msgstr "Nykel"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:209
 msgid "Passkey verification failed. Please try again."
@@ -1609,7 +1664,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/restore-banner.tsx:135
 msgid "Passkeys"
-msgstr ""
+msgstr "Tilgangsnøklar"
 
 #: src/components/MissionSetup.tsx:845
 #: src/components/Multiplayer.tsx:90
@@ -1627,7 +1682,7 @@ msgstr ""
 msgid "PILOT DOWN"
 msgstr "PILOT DREPEN"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr ""
 
@@ -1656,6 +1711,10 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr ""
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "Logg inn med rett legitimasjon <0/> for å få tilgang til denne ressursen."
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr ""
@@ -1680,20 +1739,20 @@ msgstr "TRYKK ENTER FOR Å LETTE"
 msgid "Press it…"
 msgstr ""
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
-msgstr ""
+msgstr "Førre bilete"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx:27
 #: ../../../lib/web/src/features/document/document-page.tsx:44
 msgid "Privacy"
-msgstr ""
+msgstr "Personvern"
 
 #: ../../../lib/web/src/components/layout/nav-user.tsx:137
 #: ../../../lib/web/src/components/profile-dropdown.tsx:114
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: src/components/GameCanvas.tsx:95
 msgid "PUSH TIME"
@@ -1717,11 +1776,11 @@ msgstr ""
 
 #: ../../../lib/web/src/components/restore-banner.tsx:107
 msgid "Re-link your accounts on this server"
-msgstr ""
+msgstr "Kople kontoane dine til denne tenaren på nytt"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:129
 msgid "Re-register your passkeys on this server"
-msgstr ""
+msgstr "Registrer tilgangsnøklane dine på nytt på denne tenaren"
 
 #: src/components/GameCanvas.tsx:36
 msgid "REARMED"
@@ -1734,7 +1793,7 @@ msgstr "Nylege"
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:216
 #: ../../../lib/web/src/components/search-entity-page.tsx:242
 msgid "Recommended"
-msgstr ""
+msgstr "Tilrådd"
 
 #: src/components/Multiplayer.tsx:466
 msgid "Red"
@@ -1746,12 +1805,12 @@ msgstr "Raude bots"
 
 #: ../../../lib/web/src/components/layout/authenticated-layout.tsx:133
 msgid "Redirecting to login."
-msgstr ""
+msgstr "Omdirigerer til innlogging."
 
 #: ../../../lib/web/src/components/post-tags.tsx:200
 #: ../../../lib/web/src/components/post-tags.tsx:212
 msgid "Reduce interest"
-msgstr ""
+msgstr "Reduser interesse"
 
 #: src/components/MissionSetup.tsx:661
 msgid "Reference"
@@ -1759,7 +1818,7 @@ msgstr ""
 
 #: src/components/Multiplayer.tsx:264
 msgid "Refresh"
-msgstr ""
+msgstr "Oppdater"
 
 #: src/components/MissionSetup.tsx:511
 msgid "Refueling probe"
@@ -1771,30 +1830,35 @@ msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
-msgstr ""
+msgstr "Relativ (5m, 3t, 2d)"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:49
 msgid "Relative within 24 hours, else absolute"
-msgstr ""
+msgstr "Relativ innan 24 timar, elles absolutt"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:265
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
-msgstr ""
+msgstr "Fjern"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:247
 #: ../../../lib/web/src/features/access/access-list.tsx:253
 msgid "Remove access rule"
-msgstr ""
+msgstr "Fjern tilgangsregel"
+
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "Fjerne tilgangsregel for «{0}»?"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
-msgstr ""
+msgstr "Fjern tilgang?"
 
 #: ../../../lib/web/src/components/post-tags.tsx:220
 #: ../../../lib/web/src/components/post-tags.tsx:232
 msgid "Remove interest"
-msgstr ""
+msgstr "Fjern interesse"
 
 #: src/components/MissionSetup.tsx:812
 msgid "Rendering by <0>three.js</0> (MIT licence)."
@@ -1808,15 +1872,15 @@ msgstr ""
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
 #: src/components/MissionSetup.tsx:1659
 msgid "Reset"
-msgstr ""
+msgstr "Tilbakestill"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:84
 msgid "Reset all settings to default values"
-msgstr ""
+msgstr "Tilbakestill alle innstillingar til standardverdiar"
 
 #: src/components/MissionSetup.tsx:1325
 msgid "Resolution"
-msgstr ""
+msgstr "Oppløysing"
 
 #: src/components/MissionSetup.tsx:1550
 msgid "Restart mission"
@@ -1826,9 +1890,9 @@ msgstr "Start oppdrag på nytt"
 msgid "Result"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
-msgstr ""
+msgstr "Hald fram"
 
 #: src/components/MissionSetup.tsx:1546
 msgid "Resume mission"
@@ -1844,9 +1908,9 @@ msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:361
 msgid "Right to Left"
-msgstr ""
+msgstr "Høgre til venstre"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr ""
 
@@ -1868,9 +1932,9 @@ msgstr ""
 msgid "Rookie"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
-msgstr ""
+msgstr "Rader per side"
 
 #: src/components/GameCanvas.tsx:53
 msgid "RUN UP ENGINE"
@@ -1878,12 +1942,12 @@ msgstr "FULL KRAFT"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:64
 msgid "Saturday"
-msgstr ""
+msgstr "Laurdag"
 
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
-msgstr ""
+msgstr "Lagre"
 
 #: src/components/MissionSetup.tsx:676
 msgid "Sea level"
@@ -1891,75 +1955,84 @@ msgstr ""
 
 #: ../../../lib/web/src/components/place-picker.tsx:85
 msgid "Search for a place"
-msgstr ""
+msgstr "Søk etter ein stad"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:250
 msgid "Search for destination..."
-msgstr ""
+msgstr "Søk etter destinasjon..."
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:183
 msgid "Search for origin..."
-msgstr ""
+msgstr "Søk etter opphav..."
 
 #: ../../../lib/web/src/components/timezone-select.tsx:65
 msgid "Search time zone..."
-msgstr ""
+msgstr "Søk i tidssone..."
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:173
 msgid "Search users"
-msgstr ""
+msgstr "Søk i brukarar"
 
 #: ../../../lib/web/src/components/person-picker.tsx:324
 msgid "Search..."
-msgstr ""
+msgstr "Søk..."
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:174
 #: ../../../lib/web/src/components/search-entity-page.tsx:200
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
-msgstr ""
+msgstr "Søkjer..."
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:150
 msgid "Select a user, group, or other rule to grant access."
-msgstr ""
+msgstr "Vel ein brukar, gruppe eller annan regel for å gje tilgang."
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:273
 msgid "Select access rule"
-msgstr ""
+msgstr "Vel tilgangsregel"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:129
 msgid "Select account type"
-msgstr ""
+msgstr "Vel kontotype"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:231
 msgid "Select group"
-msgstr ""
+msgstr "Vel gruppe"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:304
 msgid "Select layout style"
-msgstr ""
+msgstr "Vel oppsettstil"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:246
 msgid "Select sidebar style"
-msgstr ""
+msgstr "Vel sidestolpestil"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:348
 msgid "Select site direction"
-msgstr ""
+msgstr "Vel sideretning"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:202
 msgid "Select theme preference"
-msgstr ""
+msgstr "Vel temapreferanse"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "valde"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "Vald: <0>{0}</0>"
 
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr ""
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr ""
 
@@ -1969,12 +2042,12 @@ msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:145
 msgid "Serif"
-msgstr ""
+msgstr "Antikva"
 
 #: src/components/MatchHistory.tsx:106
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
-msgstr ""
+msgstr "Tenar"
 
 #: src/components/MissionSetup.tsx:898
 msgid "Server chat"
@@ -1988,7 +2061,7 @@ msgstr ""
 #: ../../../lib/web/src/components/server-documents-footer.tsx:19
 #: ../../../lib/web/src/features/document/document-page.tsx:40
 msgid "Server rules"
-msgstr ""
+msgstr "Tenarreglar"
 
 #: src/components/GameCanvas.tsx:69
 msgid "SESSION ENDED"
@@ -2004,18 +2077,18 @@ msgstr ""
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:147
 msgid "Set origin and destination"
-msgstr ""
+msgstr "Set opphav og mål"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:93
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:99
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
-msgstr ""
+msgstr "Innstillingar"
 
 #: src/components/MissionSetup.tsx:1367
 msgid "Shadows"
@@ -2027,13 +2100,13 @@ msgstr ""
 
 #: ../../../lib/web/src/components/ui/load-more.tsx:39
 msgid "Showing {totalShown} of {total}"
-msgstr ""
+msgstr "Viser {totalShown} av {total}"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:238
 #: ../../../lib/web/src/components/config-drawer.tsx:262
 #: ../../../lib/web/src/components/ui/sidebar.tsx:237
 msgid "Sidebar"
-msgstr ""
+msgstr "Sidestolpe"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:105
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:111
@@ -2042,7 +2115,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/layout/authenticated-layout.tsx:131
 msgid "Signing out..."
-msgstr ""
+msgstr "Loggar ut..."
 
 #: src/components/MissionSetup.tsx:646
 msgid "Single-engine best climb (Vyse, afterburner)"
@@ -2050,12 +2123,12 @@ msgstr ""
 
 #: ../../../lib/web/src/components/skip-to-main.tsx:11
 msgid "Skip to Main"
-msgstr ""
+msgstr "Hopp til hovudinnhald"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:106
 #: ../../../lib/web/src/lib/preference-utils.ts:133
 msgid "Small"
-msgstr ""
+msgstr "Liten"
 
 #: src/components/MissionSetup.tsx:425
 #: src/components/MissionSetup.tsx:1614
@@ -2064,13 +2137,13 @@ msgstr "Lyd"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:97
 msgid "Spacious"
-msgstr ""
+msgstr "Romsleg"
 
 #: src/components/GameCanvas.tsx:28
 msgid "SPD BK"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr ""
 
@@ -2102,7 +2175,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
-msgstr ""
+msgstr "Følg med likevel!"
 
 #: src/components/MissionSetup.tsx:642
 msgid "Steepest climb (Vx, 100% thrust)"
@@ -2118,13 +2191,14 @@ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:191
 msgid "Subject"
-msgstr ""
+msgstr "Emne"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:65
 msgid "Sunday"
-msgstr ""
+msgstr "Sundag"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2136,12 +2210,12 @@ msgstr ""
 
 #: ../../../lib/web/src/components/tag-input.tsx:94
 msgid "Tag"
-msgstr ""
+msgstr "Etikett"
 
 #: ../../../lib/web/src/components/post-tags.tsx:101
 #: ../../../lib/web/src/components/post-tags.tsx:115
 msgid "Tags"
-msgstr ""
+msgstr "Etikettar"
 
 #: src/components/GameCanvas.tsx:90
 msgid "TALLY"
@@ -2151,9 +2225,9 @@ msgstr ""
 msgid "Task"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
-msgstr ""
+msgstr "Lag"
 
 #: src/components/GameCanvas.tsx:87
 msgid "TEAM"
@@ -2170,18 +2244,18 @@ msgstr "Lag — raud mot blå"
 
 #: ../../../lib/web/src/components/layout/team-switcher.tsx:63
 msgid "Teams/Apps"
-msgstr ""
+msgstr "Lag/Appar"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx:23
 #: ../../../lib/web/src/features/document/document-page.tsx:42
 msgid "Terms and conditions"
-msgstr ""
+msgstr "Vilkår"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:195
 msgid "That code is incorrect or has expired."
 msgstr ""
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr ""
 
@@ -2189,19 +2263,27 @@ msgstr ""
 msgid "The requested content could not be found."
 msgstr ""
 
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "Nettstaden er ikkje tilgjengeleg for augeblinken."
+
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
-msgstr ""
+msgstr "Tema"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:69
 msgid "Theme Settings"
-msgstr ""
+msgstr "Temainnstillingar"
 
 #: src/components/Multiplayer.tsx:203
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr ""
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "Denne sida er ikkje oppretta enno."
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr ""
 
@@ -2219,13 +2301,13 @@ msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:62
 msgid "Thursday"
-msgstr ""
+msgstr "Torsdag"
 
 #: src/components/MissionSetup.tsx:650
 msgid "Tightest sustained turn speed"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr ""
 
@@ -2233,9 +2315,13 @@ msgstr ""
 msgid "Time of day"
 msgstr ""
 
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "Til"
+
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
-msgstr ""
+msgstr "Slå kolonner av/på"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx:233
 #: ../../../lib/web/src/components/layout/right-panel.tsx:236
@@ -2257,12 +2343,12 @@ msgstr ""
 #: ../../../lib/web/src/components/ui/sidebar.tsx:332
 #: ../../../lib/web/src/components/ui/sidebar.tsx:335
 msgid "Toggle Sidebar"
-msgstr ""
+msgstr "Slå sidestolpe av/på"
 
 #: ../../../lib/web/src/components/theme-switch.tsx:37
 #: ../../../lib/web/src/components/theme-switch.tsx:41
 msgid "Toggle theme"
-msgstr ""
+msgstr "Slå tema av/på"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:74
 msgid "Too many requests"
@@ -2270,7 +2356,7 @@ msgstr ""
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:45
 msgid "Top"
-msgstr ""
+msgstr "Topp"
 
 #: src/components/MissionSetup.tsx:1379
 msgid "Tracers"
@@ -2278,34 +2364,34 @@ msgstr ""
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:145
 msgid "Travelling"
-msgstr ""
+msgstr "Reiser"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:190
 #: ../../../lib/web/src/components/search-entity-page.tsx:216
 msgid "Try adjusting your search terms"
-msgstr ""
+msgstr "Prøv å justere søkjeorda"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:140
 #: ../../../lib/web/src/features/errors/general-error.tsx:180
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:19
 msgid "Try again"
-msgstr ""
+msgstr "Prøv igjen"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:60
 msgid "Tuesday"
-msgstr ""
+msgstr "Tysdag"
 
 #: ../../../lib/web/src/components/command-menu.tsx:52
 msgid "Type a command or search..."
-msgstr ""
+msgstr "Skriv ein kommando eller søk..."
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:191
 msgid "Type to search users"
-msgstr ""
+msgstr "Skriv for å søkje etter brukarar"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:183
 msgid "Type to search..."
-msgstr ""
+msgstr "Skriv for å søkje..."
 
 #: src/components/MissionSetup.tsx:1317
 msgid "Ultra"
@@ -2318,19 +2404,19 @@ msgstr ""
 #: ../../../lib/web/src/lib/auth-manager.ts:85
 #: ../../../lib/web/src/lib/auth-manager.ts:97
 msgid "Unable to redirect to login. Please try again."
-msgstr ""
+msgstr "Kunne ikkje omdirigere til innlogging. Prøv igjen."
 
 #: ../../../lib/web/src/components/notification-category-button.tsx:155
 msgid "Unassigned"
-msgstr ""
+msgstr "Ikkje tildelt"
 
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:16
 msgid "Unauthorized Access"
-msgstr ""
+msgstr "Ikkje autorisert tilgang"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:87
 msgid "United States"
-msgstr ""
+msgstr "USA"
 
 #: src/components/MissionSetup.tsx:1268
 #: src/components/Multiplayer.tsx:351
@@ -2344,7 +2430,7 @@ msgstr ""
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:135
 msgid "Unverified"
-msgstr ""
+msgstr "Ikkje stadfesta"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:338
 msgid "Use your passkey"
@@ -2352,29 +2438,29 @@ msgstr ""
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
-msgstr ""
+msgstr "Brukar"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
-msgstr ""
+msgstr "Stadfestingskode"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:255
 msgid "Verification code sent"
-msgstr ""
+msgstr "Stadfestingskode sendt"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:248
 msgid "Verification failed"
-msgstr ""
+msgstr "Stadfesting mislukkast"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
-msgstr ""
+msgstr "Stadfest"
 
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:61
 msgid "Verify email address"
-msgstr ""
+msgstr "Stadfest e-postadresse"
 
 #: src/components/MissionSetup.tsx:692
 msgid "Vertical"
@@ -2388,28 +2474,33 @@ msgstr ""
 
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
-msgstr ""
+msgstr "Videominiatyrbilete"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "Videovisar: {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr ""
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
 msgid "View"
-msgstr ""
+msgstr "Vis"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:177
 msgid "View all"
-msgstr ""
+msgstr "Vis alle"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
-msgstr ""
+msgstr "Vis alle varsel"
 
 #: src/components/MissionSetup.tsx:508
 msgid "Views"
-msgstr ""
+msgstr "Visingar"
 
 #: src/components/GameCanvas.tsx:30
 msgid "WAITING FOR OPPONENT"
@@ -2419,11 +2510,16 @@ msgstr ""
 msgid "WAVE OFF"
 msgstr "AVBRYT LANDING"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "Vi sende ein stadfestingskode til <0>{0}</0>. Skriv inn koden nedanfor for å stadfeste e-postadressa di."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
-msgstr ""
+msgstr "Me er snart tilbake."
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr ""
 
@@ -2442,11 +2538,11 @@ msgstr ""
 
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:13
 msgid "Website is under maintenance!"
-msgstr ""
+msgstr "Nettstaden er under vedlikehald!"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:61
 msgid "Wednesday"
-msgstr ""
+msgstr "Onsdag"
 
 #: src/components/MissionSetup.tsx:124
 #: src/components/MissionSetup.tsx:153
@@ -2470,7 +2566,7 @@ msgstr ""
 msgid "World server not reachable"
 msgstr ""
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr ""
 
@@ -2494,9 +2590,13 @@ msgstr ""
 msgid "You do not have access to this section."
 msgstr ""
 
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "Du har ikkje nødvendig løyve <0/>til å sjå denne ressursen."
+
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
-msgstr ""
+msgstr "Kontoen din vart flytta hit frå {source}. Inntil du slettar han der, kan meldingar og varsel nå begge tenarane, noko av innhaldet ditt blir framleis servert frå den gamle tenaren, og følgjarar kan ta nokre minutt å finne deg her."
 
 #: src/components/MatchHistory.tsx:72
 msgid "Your multiplayer matches appear here once you've flown one."

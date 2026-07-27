@@ -18,6 +18,11 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Интернет байланышыңызды текшерип, кайра аракет кылыңыз."
 
+#. placeholder {0}: selectedValues.size
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
+msgid "{0, plural, one {# selected} other {# selected}}"
+msgstr "{0, plural, one {# тандалган} other {# тандалган}}"
+
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:909
@@ -35,9 +40,29 @@ msgstr "{0} учууда"
 msgid "{0}/{1} players"
 msgstr "{0}/{1} оюнчу"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+msgid "{entityLabel} name"
+msgstr "{entityLabel} аты"
+
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "{name} матчы"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
+msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
+msgstr "{selectedCount, plural, one {{entityName} тандалды} other {{manyName} тандалды}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:52
+msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
+msgstr "{selectedCount, plural, one {# {entityName} тандалды. Жапырт аракеттер панели жеткиликтүү.} other {# {manyName} тандалды. Жапырт аракеттер панели жеткиликтүү.}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:202
+msgid "{selectedCount, plural, one {# selected} other {# selected}}"
+msgstr "{selectedCount, plural, one {# тандалды} other {# тандалды}}"
+
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
+msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr "{selectedCount, plural, one {# тандалган {entityName} үчүн жапырт аракеттер} other {# тандалган {manyName} үчүн жапырт аракеттер}}"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -231,7 +256,7 @@ msgstr "Осьтор"
 msgid "Axis {i}"
 msgstr "Ось {i}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "back"
 msgstr "артка"
 
@@ -239,9 +264,9 @@ msgstr "артка"
 msgid "Back"
 msgstr "Артка"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
+#: ../../../lib/web/src/features/errors/forbidden.tsx:28
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:28
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
 msgstr "Башкы бетке кайтуу"
 
@@ -290,7 +315,7 @@ msgstr "Кызыгууну күчөтүү"
 msgid "Bots"
 msgstr "Боттор"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "brakes"
 msgstr "тормоздор"
 
@@ -331,7 +356,7 @@ msgstr "Камера аралыгы"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:263
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:89
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
 #: src/components/Multiplayer.tsx:211
 #: src/components/Multiplayer.tsx:453
@@ -380,11 +405,11 @@ msgstr "Бул эскертүү үчүн категория"
 msgid "Change notification category"
 msgstr "Эскертүү категориясын өзгөртүү"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Chase view:"
 msgstr "Кубалоо көрүнүшү:"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "chat"
 msgstr "чат"
 
@@ -436,28 +461,29 @@ msgstr "Тазалоо"
 msgid "Clear all"
 msgstr "Баарын тазалоо"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:140
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "Чыпкаларды тазалоо"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:167
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
 msgid "Clear selection"
 msgstr "Тандоону тазалоо"
 
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:168
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:185
 msgid "Clear selection (Escape)"
 msgstr "Тандоону тазалоо (Escape)"
 
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:354
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Жабуу"
 
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:107
-#: ../../../lib/web/src/components/layout/app-sidebar.tsx:112
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
+#: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
 msgid "Close navigation"
 msgstr "Багыттоону жабуу"
 
@@ -470,7 +496,7 @@ msgstr "Панелди жабуу"
 msgid "Close search"
 msgstr "Издөөнү жабуу"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:315
 msgid "closer"
 msgstr "жакыныраак"
 
@@ -613,6 +639,7 @@ msgid "Cycle view"
 msgstr "Көрүнүштү алмаштыруу"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
 msgstr "Караңгы"
@@ -724,8 +751,8 @@ msgstr "Аралык LOD"
 msgid "Done"
 msgstr "Бүттү"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:338
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:348
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
 msgstr "Жүктөп алуу"
 
@@ -733,7 +760,7 @@ msgstr "Жүктөп алуу"
 msgid "Download failed"
 msgstr "Жүктөп алуу ишке ашкан жок"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "Drag"
 msgstr "Сүйрөө"
 
@@ -793,15 +820,15 @@ msgstr "Authenticator кодун киргизиңиз"
 msgid "Environment"
 msgstr "Чөйрө"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Everyone"
 msgstr "Баары"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit match"
 msgstr "Матчтан чыгуу"
 
-#: src/components/GameCanvas.tsx:282
+#: src/components/GameCanvas.tsx:289
 msgid "Exit mission"
 msgstr "Тапшырмадан чыгуу"
 
@@ -836,6 +863,14 @@ msgstr "F/A-18C маалымдамасы"
 msgid "Failed to add account"
 msgstr "Эсеп кошуу ишке ашкан жок"
 
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load image"
+msgstr "Сүрөттү жүктөө мүмкүн болбоду"
+
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+msgid "Failed to load video"
+msgstr "Видеону жүктөө мүмкүн болбоду"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "Эсепти алып салуу ишке ашкан жок"
@@ -868,7 +903,7 @@ msgstr "Аккаунтуңузду көчүрүүнү аяктаңыз"
 msgid "Finished"
 msgstr "Аяктады"
 
-#: src/components/GameCanvas.tsx:295
+#: src/components/GameCanvas.tsx:302
 msgid "fire"
 msgstr "атуу"
 
@@ -880,7 +915,7 @@ msgstr "Туруктуу баскычтар"
 msgid "FLAMEOUT"
 msgstr "ЖАЛЫН ӨЧҮҮ"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "flares"
 msgstr "флерлер"
 
@@ -969,7 +1004,7 @@ msgstr "Толук жайгашуу"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "gear"
 msgstr "Шасси"
 
@@ -981,29 +1016,29 @@ msgstr "ШАССИ"
 msgid "General"
 msgstr "Жалпы"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:24
-#: ../../../lib/web/src/features/errors/not-found-error.tsx:24
-#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:24
+#: ../../../lib/web/src/features/errors/forbidden.tsx:26
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:26
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "Артка"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:78
+#: ../../../lib/web/src/components/data-table/pagination.tsx:82
 msgid "Go to first page"
 msgstr "Биринчи бетке өтүү"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:124
+#: ../../../lib/web/src/components/data-table/pagination.tsx:128
 msgid "Go to last page"
 msgstr "Акыркы бетке өтүү"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:115
+#: ../../../lib/web/src/components/data-table/pagination.tsx:119
 msgid "Go to next page"
 msgstr "Кийинки бетке өтүү"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:102
+#: ../../../lib/web/src/components/data-table/pagination.tsx:106
 msgid "Go to page {pageNumber}"
 msgstr "{pageNumber} барагына өтүү"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:87
+#: ../../../lib/web/src/components/data-table/pagination.tsx:91
 msgid "Go to previous page"
 msgstr "Мурунку бетке өтүү"
 
@@ -1053,7 +1088,7 @@ msgstr "Тарых"
 msgid "Home"
 msgstr "Башкы бет"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "hook"
 msgstr "Илмек"
 
@@ -1072,6 +1107,11 @@ msgstr "HUD бийиктик булагы"
 #: src/components/MissionSetup.tsx:167
 msgid "HUD declutter"
 msgstr "HUD жөнөкөйлөтүү"
+
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+msgid "Image viewer: {0}"
+msgstr "Сүрөт көрсөткүч: {0}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:86
 msgid "Imperial"
@@ -1106,6 +1146,10 @@ msgstr "ӨЛБӨС"
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "Өлбөс (адам оюнчулар гана)"
+
+#: ../../../lib/web/src/features/errors/not-found-error.tsx:18
+msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
+msgstr "Сиз издеген бет <0/>жок же өчүрүлгөн окшойт."
 
 #: src/components/Multiplayer.tsx:488
 msgid "Join"
@@ -1186,7 +1230,7 @@ msgstr "КЕЧ"
 msgid "Launch (catapult)"
 msgstr "Учуруу (катапульта)"
 
-#: src/components/GameCanvas.tsx:297
+#: src/components/GameCanvas.tsx:304
 msgid "launch / target"
 msgstr "учуу / бута"
 
@@ -1224,11 +1268,12 @@ msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200ДӨ ТҮЗ, ШАССИ ТӨМӨН"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
 msgstr "Жарык"
 
-#: src/components/GameCanvas.tsx:298
+#: src/components/GameCanvas.tsx:305
 msgid "lights"
 msgstr "оттор"
 
@@ -1325,7 +1370,7 @@ msgstr "Төмөнкү стратус"
 msgid "M to close"
 msgstr "Жабуу үчүн M"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:307
 msgid "map"
 msgstr "карта"
 
@@ -1333,8 +1378,8 @@ msgstr "карта"
 msgid "Map"
 msgstr "Карта"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:92
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:99
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "Баарын окулду деп белгилөө"
@@ -1357,7 +1402,7 @@ msgstr "Матчтар"
 msgid "Medium"
 msgstr "Орточо"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:308
 msgid "menu"
 msgstr "меню"
 
@@ -1366,7 +1411,7 @@ msgstr "меню"
 msgid "Menu"
 msgstr "Меню"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
 msgstr "Баарына жазыңыз"
 
@@ -1374,7 +1419,7 @@ msgstr "Баарына жазыңыз"
 msgid "Message players on this server"
 msgstr "Бул сервердеги оюнчуларга кат жазыңыз"
 
-#: src/components/GameCanvas.tsx:214
+#: src/components/GameCanvas.tsx:221
 msgid "Message your team"
 msgstr "Командаңызга жазыңыз"
 
@@ -1423,8 +1468,8 @@ msgstr "Тармак катасы"
 msgid "New"
 msgstr "Жаңы"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:388
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:393
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
 msgstr "Кийинки сүрөт"
 
@@ -1466,7 +1511,7 @@ msgid "No profile"
 msgstr "Профиль жок"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:90
+#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "Натыйжалар табылган жок."
 
@@ -1528,6 +1573,11 @@ msgstr "Азырынча эч нерсе жок — салам айтыңыз."
 msgid "Notifications"
 msgstr "Билдирмелер"
 
+#. placeholder {0}: unread.length
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+msgid "Notifications: {0}"
+msgstr "Билдирүүлөр: {0}"
+
 #: src/components/MissionSetup.tsx:1343
 msgid "Ocean detail"
 msgstr "Океан деталдары"
@@ -1583,11 +1633,11 @@ msgstr "Навигация менюсун ачуу"
 msgid "Open theme settings"
 msgstr "Тема жөндөөлөрүн ачуу"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "or"
 msgstr "же"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:313
 msgid "orbit"
 msgstr "айлануу"
 
@@ -1598,6 +1648,11 @@ msgstr "Башка"
 #: ../../../lib/web/src/features/access/access-list.tsx:217
 msgid "Owner"
 msgstr "Ээси"
+
+#: ../../../lib/web/src/components/data-table/pagination.tsx:43
+#: ../../../lib/web/src/components/data-table/pagination.tsx:71
+msgid "Page {currentPage} of {totalPages}"
+msgstr "{totalPages} беттин {currentPage} бети"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:334
 msgid "Passkey"
@@ -1627,7 +1682,7 @@ msgstr "Учкуч"
 msgid "PILOT DOWN"
 msgstr "УЧКУЧ КАЗА БОЛДУ"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "pitch"
 msgstr "тангаж"
 
@@ -1656,6 +1711,10 @@ msgstr "Оюнчулар"
 msgid "Please check your internet connection and try again."
 msgstr "Интернет байланышыңызды текшерип, кайра аракет кылыңыз."
 
+#: ../../../lib/web/src/features/errors/unauthorized-error.tsx:18
+msgid "Please log in with the appropriate credentials <0/> to access this resource."
+msgstr "Бул ресурска жетүү үчүн <0/> тиешелүү эсептик маалыматтар менен кириңиз."
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:83
 msgid "Please try again."
 msgstr "Кайра аракет кылыңыз."
@@ -1680,8 +1739,8 @@ msgstr "УЧУУ ҮЧҮН ENTER БАСЫҢЫЗ"
 msgid "Press it…"
 msgstr "Аны басыңыз…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:378
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
 msgid "Previous image"
 msgstr "Мурунку сүрөт"
 
@@ -1787,6 +1846,11 @@ msgstr "Алуу"
 msgid "Remove access rule"
 msgstr "Кирүү эрежесин алуу"
 
+#. placeholder {0}: formatSubject(subject, data.name)
+#: ../../../lib/web/src/features/access/access-list.tsx:259
+msgid "Remove access rule for \"{0}\"?"
+msgstr "\"{0}\" үчүн жетүү эрежеси өчүрүлсүнбү?"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:257
 msgid "Remove access?"
 msgstr "Кирүүнү аласызбы?"
@@ -1826,7 +1890,7 @@ msgstr "Тапшырманы кайра баштоо"
 msgid "Result"
 msgstr "Жыйынтык"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Resume"
 msgstr "Улантуу"
 
@@ -1846,7 +1910,7 @@ msgstr "Тескери"
 msgid "Right to Left"
 msgstr "Оңдон солго"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "roll"
 msgstr "крен"
 
@@ -1868,7 +1932,7 @@ msgstr "Крен оңго"
 msgid "Rookie"
 msgstr "Үйрөнчүк"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:63
+#: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "Бир барактагы саптар"
 
@@ -1951,15 +2015,24 @@ msgstr "Сайттын багытын тандоо"
 msgid "Select theme preference"
 msgstr "Тема жөндөөсүн тандоо"
 
+#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
+msgid "selected"
+msgstr "тандалды"
+
+#. placeholder {0}: getSelectedName()
+#: ../../../lib/web/src/features/access/access-dialog.tsx:309
+msgid "Selected: <0>{0}</0>"
+msgstr "Тандалган: <0>{0}</0>"
+
 #: src/components/MissionSetup.tsx:933
 msgid "Send"
 msgstr "Жөнөтүү"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:98
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:100
 msgid "Send again"
 msgstr "Кайра жөнөтүү"
 
-#: src/components/GameCanvas.tsx:253
+#: src/components/GameCanvas.tsx:260
 msgid "Send chat"
 msgstr "Билдирүү жөнөтүү"
 
@@ -2011,7 +2084,7 @@ msgstr "Чыгуу жана баруу жерин коюу"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 #: src/components/MissionSetup.tsx:1572
 #: src/components/MissionSetup.tsx:1604
 msgid "Settings"
@@ -2070,7 +2143,7 @@ msgstr "Кенен"
 msgid "SPD BK"
 msgstr "АБ Т"
 
-#: src/components/GameCanvas.tsx:299
+#: src/components/GameCanvas.tsx:306
 msgid "speed brake"
 msgstr "аба тормозу"
 
@@ -2125,6 +2198,7 @@ msgid "Sunday"
 msgstr "Жекшемби"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
 msgid "System"
@@ -2151,7 +2225,7 @@ msgstr "ДУШМАН КӨРҮНДҮ"
 msgid "Task"
 msgstr "Тапшырма"
 
-#: src/components/GameCanvas.tsx:209
+#: src/components/GameCanvas.tsx:216
 msgid "Team"
 msgstr "Команда"
 
@@ -2181,13 +2255,17 @@ msgstr "Эрежелер жана шарттар"
 msgid "That code is incorrect or has expired."
 msgstr "Бул код туура эмес же мөөнөтү бүткөн."
 
-#: src/components/GameCanvas.tsx:286
+#: src/components/GameCanvas.tsx:293
 msgid "The match continues behind this menu."
 msgstr "Матч бул менюнун артында уланат."
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:68
 msgid "The requested content could not be found."
 msgstr "Суралган мазмун табылган жок."
+
+#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
+msgid "The site is not available at the moment."
+msgstr "Сайт учурда жеткиликсиз."
 
 #: ../../../lib/web/src/components/config-drawer.tsx:194
 msgid "Theme"
@@ -2201,7 +2279,11 @@ msgstr "Тема жөндөөлөрү"
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Бул лобби оюн туташууңузду башка серверге ({redirectHost}) багыттап жатат. Бул серверге ишенсеңиз гана улантыңыз."
 
-#: src/components/GameCanvas.tsx:295
+#: ../../../lib/web/src/components/coming-soon.tsx:14
+msgid "This page has not been created yet."
+msgstr "Бул бет азырынча түзүлө элек."
+
+#: src/components/GameCanvas.tsx:302
 msgid "throttle"
 msgstr "газ"
 
@@ -2225,13 +2307,17 @@ msgstr "Бейшемби"
 msgid "Tightest sustained turn speed"
 msgstr "Эң тар туруктуу бурулуу ылдамдыгы"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "эңкейтүү"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
 msgstr "Күндүн убактысы"
+
+#: ../../../lib/web/src/components/travelling-picker.tsx:220
+msgid "To"
+msgstr "Кайда"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:37
 msgid "Toggle columns"
@@ -2354,7 +2440,7 @@ msgstr "Passkey колдонуңуз"
 msgid "User"
 msgstr "Колдонуучу"
 
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:71
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:73
 msgid "Verification code"
 msgstr "Текшерүү коду"
 
@@ -2368,7 +2454,7 @@ msgstr "Текшерүү ишке ашкан жок"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:388
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
-#: ../../../lib/web/src/features/accounts/account-verify.tsx:109
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "Текшерүү"
 
@@ -2390,7 +2476,12 @@ msgstr "Ардагер"
 msgid "Video thumbnail"
 msgstr "Видеонун эскизи"
 
-#: src/components/GameCanvas.tsx:300
+#. placeholder {0}: currentMedia.name
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+msgid "Video viewer: {0}"
+msgstr "Видео көрсөткүч: {0}"
+
+#: src/components/GameCanvas.tsx:307
 msgid "view"
 msgstr "көрүнүш"
 
@@ -2402,8 +2493,8 @@ msgstr "Көрүү"
 msgid "View all"
 msgstr "Бардыгын көрүү"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:105
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
 msgid "View all notifications"
 msgstr "Бардык эскертүүлөрдү көрүү"
 
@@ -2419,11 +2510,16 @@ msgstr "АТААНДАШ КҮТҮЛҮҮДӨ"
 msgid "WAVE OFF"
 msgstr "КОНУУНУ ТОКТОТ"
 
+#. placeholder {0}: account.identifier
+#: ../../../lib/web/src/features/accounts/account-verify.tsx:63
+msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
+msgstr "Биз <0>{0}</0> дарегине ырастоо кодун жөнөттүк. Электрондук почтаңызды ырастоо үчүн кодду төмөндө киргизиңиз."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
 msgid "We'll be back online shortly."
 msgstr "Биз бат эле кайра онлайн болобуз."
 
-#: src/components/GameCanvas.tsx:296
+#: src/components/GameCanvas.tsx:303
 msgid "weapon"
 msgstr "курал"
 
@@ -2470,7 +2566,7 @@ msgstr "Дүйнө сервери"
 msgid "World server not reachable"
 msgstr "Дүйнө сервери жеткиликсиз"
 
-#: src/components/GameCanvas.tsx:294
+#: src/components/GameCanvas.tsx:301
 msgid "yaw"
 msgstr "рыскоо"
 
@@ -2493,6 +2589,10 @@ msgstr "СИЗ"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "Сизде бул бөлүмгө кирүү мүмкүнчүлүгү жок."
+
+#: ../../../lib/web/src/features/errors/forbidden.tsx:18
+msgid "You don't have necessary permission <0/>to view this resource."
+msgstr "Бул ресурсту көрүү үчүн <0/>сизде керектүү уруксат жок."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
