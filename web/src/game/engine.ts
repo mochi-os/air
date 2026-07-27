@@ -3487,9 +3487,11 @@ function draw_hud(dt){
 	if(crash_t>0){ hctx.textAlign="center"; hctx.fillStyle="#ff5040"; hctx.font="bold 36px monospace"; hctx.fillText(translate("CRASHED"),cx,cy-60); return; }
 	if(crash_t<=0 && ownship.waving && net_notice_t<=0 && ((performance.now()-(ownship.wavet||0))%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call; the LSO grade / BOLTER / REARMED all go through the notice slot now (#72), so this is the only direct centre-banner draw left
 	if(test_active){ hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="13px monospace"; hctx.fillText("TEST  "+test_active.name, 14, 28); }
-	if(DEV_MODE && carrier_model){   // developer mode: live nose-wheel deck position (Ctrl+C copies) + a dashed view centreline for eyeballing alignment
+	if(DEV_MODE){   // mission elapsed time, on the SAME base as the flight recording — so a moment you noticed reads straight off the ACMI timeline
+		const whole=Math.max(0,Math.floor(sim_time));
 		hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="14px monospace";
-		hctx.fillText(here_text(), 14, 46);
+		hctx.fillText(String(Math.floor(whole/60))+":"+String(whole%60).padStart(2,"0"), 14, 46); }
+	if(DEV_MODE && carrier_model){   // developer mode: the deck measuring cursor and the &probe raycast. The nose-wheel readout and the dashed view centreline were deck-alignment scaffolding and are gone — Ctrl+C still copies the position
 		if(dev_probe && performance.now()-dev_probe_t>1000){ dev_probe_t=performance.now();
 			const rc=new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(dev_probe.x*2-1, -(dev_probe.y*2-1)), camera);
 			const hits=rc.intersectObject(carrier_model.parent||carrier_model, true);
@@ -3509,7 +3511,7 @@ function draw_hud(dt){
 			const dx2=dfa*CARRIER_C+dla*CARRIER_S, dz2=-dfa*CARRIER_S+dla*CARRIER_C;
 			dev_cursor.rotation.y=Math.atan2(-dz2,dx2);
 			dev_cursor.position.set(bx, deck_y_at(carrier_model,bx,bz,CARRIER.deckY)+0.06, bz); dev_cursor.visible=true; }
-		hctx.save(); hctx.strokeStyle="rgba(127,200,255,0.55)"; hctx.lineWidth=1; hctx.setLineDash([7,7]); hctx.beginPath(); hctx.moveTo(cx,0); hctx.lineTo(cx,HH); hctx.stroke(); hctx.restore(); }
+		}
 	if(net_notice_t<=0){ const ls=launch_status(); if(ls>0) hud_message(translate(ls===2?"PRESS ENTER TO LAUNCH":"RUN UP ENGINE")); }   // transient notices own the centre banner — never draw two messages on top of each other
 	if(cfg.view!=="hud" && cfg.view!=="cockpit"){ return; }
 	hctx.lineWidth=1.5; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.font="13px monospace";
