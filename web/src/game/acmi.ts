@@ -93,7 +93,7 @@ export class Recorder {
   private samples: Sample[] = []
   private last = -1
   constructor(
-    private window = 600, // seconds kept
+    private window = 0, // seconds kept; 0 = the WHOLE flight (a debrief wants the takeoff, not the last few minutes)
     private rate = 10 // samples per second
   ) {}
 
@@ -108,6 +108,7 @@ export class Recorder {
     if (this.last >= 0 && time - this.last < 1 / this.rate) return
     this.last = time
     this.samples.push({ time, objects })
+    if (!this.window) return // whole-flight recording: ~35 KB per minute of a two-ship, so an hour still fits comfortably in memory
     const cut = time - this.window
     let drop = 0
     while (drop < this.samples.length && this.samples[drop].time < cut) drop++

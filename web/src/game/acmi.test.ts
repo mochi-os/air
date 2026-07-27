@@ -85,14 +85,20 @@ describe('Recorder', () => {
     expect(r.length).toBeLessThan(12) // ~10 Hz kept
   })
 
-  it('drops samples older than the window, bounding memory', () => {
+  it('keeps the WHOLE flight by default — a debrief wants the takeoff too', () => {
+    const r = new Recorder()
+    for (let i = 0; i < 2000; i++) r.add(i * 0.2, [jet()]) // 400 s of flight
+    expect(r.length).toBe(2000) // nothing discarded, however long the sortie runs
+  })
+
+  it('drops samples older than the window when one is set', () => {
     const r = new Recorder(5, 10)
     for (let i = 0; i < 2000; i++) r.add(i * 0.1, [jet()])
     expect(r.length).toBeLessThanOrEqual(52) // 5 s at 10 Hz, plus the boundary
   })
 
   it('re-bases time so a rolled buffer starts at zero', () => {
-    const r = new Recorder(5, 10)
+    const r = new Recorder(5, 10) // an explicit window, so the buffer rolls
     for (let i = 0; i < 200; i++) r.add(i * 0.1, [jet()])
     const text = r.render(new Date('2026-07-27T14:32:00Z'), 'Joust')
     expect(text).toContain('#0\n')
