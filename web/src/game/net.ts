@@ -17,6 +17,7 @@ import { frame, frames } from './framing'
 import { sanitizeWrap, minimumImage, fold } from './wrap'
 import { cbor_encode, cbor_decode } from './cbor'
 import { parseDarts, type Dart } from './darts'
+export { crossHost } from './host'
 
 const PROTOCOL = 1
 
