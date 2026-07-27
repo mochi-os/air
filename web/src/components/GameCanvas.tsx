@@ -109,12 +109,14 @@ export function GameCanvas({
   onExit,
   onReady,
   onSettings,
+  flying,
 }: {
   config?: MissionConfig
   join?: NetJoin | null
   onExit?: () => void
   onReady?: (handle: GameHandle) => void
   onSettings?: () => void
+  flying?: boolean
 }) {
   const stageRef = useRef<HTMLCanvasElement>(null)
   const handleRef = useRef<GameHandle | null>(null)
@@ -157,6 +159,13 @@ export function GameCanvas({
     // Mount once; config is captured at launch (a new mission remounts via key).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Re-entering flight from the front page (Resume mission) closes the Esc
+  // popup: it stayed open - and paused - behind the menu, so Resume appeared
+  // to land back on the escape menu instead of flying.
+  useEffect(() => {
+    if (flying) setMenu(false)
+  }, [flying])
 
   // The popup pauses single player; a multiplayer server flies on regardless.
   useEffect(() => {
