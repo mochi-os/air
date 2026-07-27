@@ -15,7 +15,7 @@ import {
   record as net_record,
   type Join as NetJoin,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_burst, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step } from './flight'
+import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_burst, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode } from './flight'
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_horn, audio_seeker, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -2585,7 +2585,7 @@ function recording_sample(){
 			name:"FA-18C", label, colour, kind:"Air+FixedWing", mode }); };
 	add(ownship,1,cfg.callsign||"Player","Blue");
 	if(!MULTIPLAYER&&has_enemy&&bandit.group&&bandit.group.visible)
-		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain&&globalThis.bandit_mode?globalThis.bandit_mode():undefined);
+		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?(bandit_mode()||undefined):undefined);   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
 		const team=net.teams.get(slot)||"";
 		add(st,10+slot,st.name||net.names.get(slot)||"",team==="red"?"Red":team==="blue"?"Blue":"Orange"); } }
