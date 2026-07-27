@@ -2572,11 +2572,14 @@ function recording_sample(){
 	if(!running||!cfg.record||game_paused) return;
 	const list=[];
 	const degrees=(v)=>v*180/Math.PI;
-	const attitude=(st)=>{ const fwd=st.fwd, up=st.up, right=st.right;
-		return { yaw:(degrees(Math.atan2(fwd.x,-fwd.z))+360)%360,
-			pitch:degrees(Math.asin(THREE.MathUtils.clamp(fwd.y,-1,1))),
-			roll:degrees(Math.atan2(right.y,up.y)) }; };
-	const add=(st,id,label,colour,mode)=>{ if(!st||!st.pos) return;
+	// Only the OWNSHIP carries a full basis; make_state gives bandits and extras
+	// fwd plus a scalar bank (reading .right.y there killed the frame loop, and
+	// every earlier test happened to be free flight, so nothing exercised it).
+	const attitude=(st)=>({
+		yaw:(degrees(Math.atan2(st.fwd.x,-st.fwd.z))+360)%360,
+		pitch:degrees(Math.asin(THREE.MathUtils.clamp(st.fwd.y,-1,1))),
+		roll:(st.up&&st.right)?degrees(Math.atan2(st.right.y,st.up.y)):degrees(st.bank||0) });
+	const add=(st,id,label,colour,mode)=>{ if(!st||!st.pos||!st.fwd) return;   // a half-built state must never take the frame loop down with it
 		const a=attitude(st);
 		list.push({ id, x:st.pos.x, y:st.pos.y, z:st.pos.z, roll:a.roll, pitch:a.pitch, yaw:a.yaw,
 			name:"FA-18C", label, colour, kind:"Air+FixedWing", mode }); };
