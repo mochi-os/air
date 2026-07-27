@@ -12,7 +12,7 @@
 // authenticated app connection.
 
 import { createAppClient } from '@mochi/web'
-import { SIZE } from './flight'
+import { SIZE, STATE } from './flight'
 import { frame, frames } from './framing'
 import { sanitizeWrap, minimumImage, fold } from './wrap'
 import { cbor_encode, cbor_decode } from './cbor'
@@ -585,7 +585,8 @@ export class Net {
           if (!bad) {
             for (let i = 57; i < SIZE; i++) {
               let v = view.getUint16(57 * 8 + (i - 57) * 2, true) / 65535 // the uint16 tail is always finite
-              if (i === SIZE - 1) v *= 8000 // Loss, kg
+              if (i === STATE.loss) v *= 8000 // Loss, kg — BY INDEX: scaling "the last word" broke when #78 appended the gear words after Loss (strut damage arrived x8000, Loss unscaled)
+              if (i === SIZE - 1) v = (v - 0.5) * 3 // Pitchwash, signed rad/s off the unit-interval wire mapping
               expanded[i] = v
             }
             core = expanded
