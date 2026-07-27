@@ -29,6 +29,7 @@ import nimitz_model_url from '../assets/nimitz.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import { asset as asset_bytes, progress as load_progress } from './preload'
 import { createAppClient } from '@mochi/web'
+import { Recorder } from './acmi'
 
 export type GameConfig = Record<string, unknown>
 
@@ -36,6 +37,7 @@ export interface GameHandle {
   stop: () => void
   resume: (config?: GameConfig) => void
   exit: () => void                              // the old Esc: suspend to the mission menu (leaves the match in multiplayer)
+  recording: () => { text: string; session: string; kind: string } | null   // the buffered flight recording, rendered as ACMI (#212)
   pause: (on: boolean) => void                  // the menu popup's single-player freeze (#84)
   chat: (text: string, scope: string) => void   // send one match-chat line (#84)
   scope: () => string                           // the default chat scope: "team" in a teams match, else "all"
@@ -73,7 +75,7 @@ export function startGame({
   let __raf = 0
 
 // ============================================================================ config
-const cfg = { render_scale:1.0, dyn_res:true, ocean_segments:256, exterior_detail:3, lod:true, extra_aircraft:0,   // dyn_res defaults ON (#148): slow machines self-tune render_scale down to 0.45 instead of stuttering
+const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, exterior_detail:3, lod:true, extra_aircraft:0,   // dyn_res defaults ON (#148): slow machines self-tune render_scale down to 0.45 instead of stuttering
 	tracers:true, missiles:true, flares:true, shadows:false, clouds:"none", afterburner:true,
 	view:"hud", invert:false, framerate:false, sens:1.0,
 	task:"joust", start:"carrier", tod:"day", help:false };
@@ -124,6 +126,7 @@ function copy_here(){   // dev (Ctrl+C): the live position line to the clipboard
 Object.assign(cfg, config);   // mission-setup menu overrides defaults — the server-backed config store is the single source (the joust_cfg_v1 localStorage era silently no-opped in the sandboxed shell and shadowed the store outside it)
 sanitize_cfg();
 cfg.view="hud";   // start in HUD (view 2); 1-5 select views, V swaps cockpit/HUD
+
 let running=false, has_enemy=true;
 const MULTIPLAYER=!!join;            // in a live match the map/P must never freeze the world
 if(MULTIPLAYER){ cfg.task="joust"; cfg.extra_aircraft=0; cfg.missiles=false; cfg.cheats={}; }   // multiplayer: air start, no local AI; the match rules from the welcome may re-allow missiles and set the match cheats (the menu's own cheats never leak into a match)
@@ -2559,6 +2562,36 @@ function read_input(dt){
 }
 
 let sim_time=0;
+// Flight recorder (#212): a rolling buffer saved from the History page. The
+// bot's doctrine state rides along in developer builds only — free to capture
+// (the brain runs in-process in wasm for a local joust) but it is the AI's
+// hand, so a shipped replay does not show it.
+const recorder=new Recorder();
+let record_started=null, record_session="";
+function recording_sample(){
+	if(!running||!cfg.record||game_paused) return;
+	const list=[];
+	const degrees=(v)=>v*180/Math.PI;
+	const attitude=(st)=>{ const fwd=st.fwd, up=st.up, right=st.right;
+		return { yaw:(degrees(Math.atan2(fwd.x,-fwd.z))+360)%360,
+			pitch:degrees(Math.asin(THREE.MathUtils.clamp(fwd.y,-1,1))),
+			roll:degrees(Math.atan2(right.y,up.y)) }; };
+	const add=(st,id,label,colour,mode)=>{ if(!st||!st.pos) return;
+		const a=attitude(st);
+		list.push({ id, x:st.pos.x, y:st.pos.y, z:st.pos.z, roll:a.roll, pitch:a.pitch, yaw:a.yaw,
+			name:"FA-18C", label, colour, kind:"Air+FixedWing", mode }); };
+	add(ownship,1,cfg.callsign||"Player","Blue");
+	if(!MULTIPLAYER&&has_enemy&&bandit.group&&bandit.group.visible)
+		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain&&globalThis.bandit_mode?globalThis.bandit_mode():undefined);
+	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
+		const team=net.teams.get(slot)||"";
+		add(st,10+slot,st.name||net.names.get(slot)||"",team==="red"?"Red":team==="blue"?"Blue":"Orange"); } }
+	recorder.add(sim_time,list); }
+// recording_file renders what is buffered; null when nothing was captured.
+function recording_file(){
+	if(!recorder.length||!record_started) return null;
+	const kind=cfg.task==="joust"?("joust-"+(cfg.bandit||"veteran")):"flight";
+	return { text:recorder.render(record_started,"Mochi Air — "+kind), session:record_session, kind }; }
 const _q=new THREE.Quaternion(), _fwd=new THREE.Vector3(), _up=new THREE.Vector3(), _right=new THREE.Vector3();
 function start_launch(){ launch_flag=true; ownship.trapped=false; ownship.throttle=Math.max(ownship.throttle,0.9); }   // requests the shot; the core fires it while attached to the shuttle (caller gates on launch_status()===2)
 let atc_on=false, atc_alpha=0;   // Approach Power Compensator (#202): engaged flag + last-frame alpha for the rate term
@@ -2698,7 +2731,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view,
+	atc:atc_on, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, record:(()=>{ const r=recording_file(); return r?{lines:r.text.split(String.fromCharCode(10)).length, session:r.session, kind:r.kind, bot:/Doctrine=/.test(r.text)}:null; })(),
 	rig:(()=>{ const r=(ownship.group.userData.rig||[]).filter(e=>e.gauge!==undefined); return { bound:r.filter(e=>e.object).length, total:r.length, missing:r.filter(e=>!e.object).map(e=>e.name) }; })(),
 	screens:(()=>{ const out={}; const v=new THREE.Vector3();   // where each driven gauge lands on screen (css px): crops for visual verification
 		for(const e of ownship.group.userData.rig||[]){ if(e.gauge===undefined||!e.object) continue;
@@ -2816,6 +2849,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.gear=1-out[STATE.extension]; ownship.speedbrake=out[STATE.speedbrake];
 	ownship.surfaces={ stabL:out[STATE.stabilator], stabR:out[STATE.stabilator+1], flapL:out[STATE.flaperon], flapR:out[STATE.flaperon+1], rudder:out[STATE.rudder], slat:out[STATE.slat] };   // live FCS deflections, rad — the rig scrubs surfaces from these
 	update_gauges(out);   // cockpit instruments (#99)
+	recording_sample();
 	screens_update();
 	if(TEST_SCENARIOS){ const _sp=Math.hypot(out[3],out[4],out[5])||1, D=180/Math.PI;   // telemetry row (Shift+T dumps)
 		telemetry.push([ (out[STATE.time]||0).toFixed(3), input.pitch.toFixed(3), (Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*D).toFixed(2), (out[STATE.alpha]*D).toFixed(2), (out[12]*D).toFixed(2), out[STATE.nz].toFixed(3), (out[STATE.cas]*1.944).toFixed(1), (out[STATE.stabilator]*D).toFixed(2) ]);   // attitude from the body axis: the velocity-derived form is garbage below ~5 kt
@@ -3874,10 +3908,11 @@ function comm(text,colour){ comms.push({ text:String(text).slice(0,80), colour, 
 function chat_scope(){ return (net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams")?"team":"all"; }
 function exit_match(){ if(!running) return; running=false;
 	if(MULTIPLAYER) net_finish("left");
-	else if(cfg.task==="joust" && (own_kills>0||own_deaths>0)) net_record({   // local jousts belong in the history too — same table, world "local"; free flight stays unrecorded (no result to record)
-		world:"local", session:"local-"+mission_began, mode:"joust", team:"",
-		started:mission_began, ended:Date.now(), reason:own_kills>0?"victory":"killed",
-		players:"2", kills:own_kills, deaths:own_deaths,
+	else net_record({   // EVERY completed flight is history (#212): a scoreless sortie or a carrier approach is exactly the one you want the recording of, and the cheat flag is data on the row, never a filter
+		world:"local", session:"local-"+mission_began, mode:cfg.task==="joust"?"joust":"free", team:"",
+		started:mission_began, ended:Date.now(),
+		reason:own_kills>0?"victory":(own_deaths>0?"killed":"flown"),
+		players:cfg.task==="joust"?"2":"1", kills:own_kills, deaths:own_deaths,
 		cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0 });
 	if(onExit) onExit(); }
 let mission_began=Date.now();   // local session identity for the history's replay-dedup key
@@ -4134,6 +4169,7 @@ function start_mission(){
 	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
 	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0;   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
 	on_config=onConfig||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
+	recorder.clear(); record_started=new Date(); record_session="local-"+mission_began;   // a fresh recording per mission (#212)
 	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,
 	// chase camera at the given azimuth/elevation. Judging water needs an external low view.
 	const shotp=DEV_MODE?new URLSearchParams(window.location.search).get("shot"):null;
@@ -4249,6 +4285,7 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
     try { stage.focus() } catch { /* ignore */ }
   }
   return { stop, resume,
+    recording: recording_file,   // the History page renders and saves it (#212)
     exit: exit_match,
     pause: (on) => { menu_hold = !!on },   // the Esc popup: freezes the SP world (game_paused gates on !MULTIPLAYER — it cannot freeze a server) without the P-pause banner/controls
     chat: (words, scope) => { if (MULTIPLAYER && net && running) net.chat(String(words).slice(0, 200), scope) },

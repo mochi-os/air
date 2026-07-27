@@ -125,7 +125,7 @@ msgid "Account verified"
 msgstr "حساب تایید شو"
 
 #: src/components/MissionSetup.tsx:1166
-#: src/components/MissionSetup.tsx:1526
+#: src/components/MissionSetup.tsx:1539
 #: src/components/Multiplayer.tsx:378
 msgid "Ace"
 msgstr "اتل"
@@ -421,7 +421,7 @@ msgstr "چټ"
 msgid "Chat to everyone"
 msgstr "له ټولو سره چیټ"
 
-#: src/components/MatchHistory.tsx:141
+#: src/components/MatchHistory.tsx:167
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "چیټونه"
@@ -582,6 +582,10 @@ msgstr "سيالۍ جوړه نه شوه"
 msgid "Could not load this document. Please try again later."
 msgstr "دا سند نشي پورته کیدلی. مهرباني وکړئ وروسته بیا هڅه وکړئ."
 
+#: src/components/MatchHistory.tsx:181
+msgid "Could not save the recording"
+msgstr "ثبت خوندي نه شو"
+
 #: src/components/MissionSetup.tsx:891
 msgid "Could not send the message"
 msgstr "پیغام ونه لېږل شو"
@@ -610,8 +614,8 @@ msgstr "جوړه کړئ او والوځئ"
 msgid "Create match"
 msgstr "سيالۍ جوړه کړئ"
 
-#: src/components/MissionSetup.tsx:1564
-#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1577
+#: src/components/MissionSetup.tsx:1598
 msgid "Create mission"
 msgstr "ماموریت جوړول"
 
@@ -656,7 +660,7 @@ msgstr "تیاره حالت"
 msgid "Data conflict"
 msgstr "د ډېټا ټکر"
 
-#: src/components/MatchHistory.tsx:103
+#: src/components/MatchHistory.tsx:128
 msgid "Date"
 msgstr "نېټه"
 
@@ -665,8 +669,8 @@ msgstr "نېټه"
 msgid "Day"
 msgstr "ورځ"
 
-#: src/components/MatchHistory.tsx:93
 #: src/components/MatchHistory.tsx:118
+#: src/components/MatchHistory.tsx:143
 msgid "Deaths"
 msgstr "مړینې"
 
@@ -730,7 +734,7 @@ msgstr "لوری"
 msgid "disconnected"
 msgstr "بېل شوی"
 
-#: src/components/MatchHistory.tsx:59
+#: src/components/MatchHistory.tsx:84
 msgid "Disconnected"
 msgstr "پرېکړل شوی"
 
@@ -747,7 +751,7 @@ msgstr "موبایل څنګې پټۍ ښیي."
 msgid "Distance LOD"
 msgstr "د واټن LOD"
 
-#: src/components/MissionSetup.tsx:1666
+#: src/components/MissionSetup.tsx:1679
 msgid "Done"
 msgstr "ترسره شو"
 
@@ -899,7 +903,7 @@ msgstr "جګړه پیل شوه"
 msgid "Finish moving your account"
 msgstr "د خپل حساب لیږد پای ته ورسوئ"
 
-#: src/components/MatchHistory.tsx:60
+#: src/components/MatchHistory.tsx:85
 msgid "Finished"
 msgstr "بشپړ شو"
 
@@ -941,8 +945,8 @@ msgstr "د الوتنې زړی ناکام شو"
 msgid "Floating"
 msgstr "ځړیدلی"
 
-#: src/components/MissionSetup.tsx:1558
-#: src/components/MissionSetup.tsx:1599
+#: src/components/MissionSetup.tsx:1571
+#: src/components/MissionSetup.tsx:1612
 msgid "Fly"
 msgstr "الوتنه"
 
@@ -1000,7 +1004,7 @@ msgstr "د تیلو پروب"
 msgid "Full layout"
 msgstr "بشپړ ترتیب"
 
-#: src/components/MatchHistory.tsx:50
+#: src/components/MatchHistory.tsx:75
 msgid "Furball"
 msgstr "Furball"
 
@@ -1012,7 +1016,7 @@ msgstr "ګیر"
 msgid "GEAR"
 msgstr "ګيار"
 
-#: src/components/MissionSetup.tsx:1608
+#: src/components/MissionSetup.tsx:1621
 msgid "General"
 msgstr "عمومي"
 
@@ -1042,7 +1046,7 @@ msgstr "{pageNumber} پاڼې ته لاړ شئ"
 msgid "Go to previous page"
 msgstr "تیر پاڼې ته ولاړ شه"
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1624
 msgid "Graphics"
 msgstr "ګرافیک"
 
@@ -1076,8 +1080,8 @@ msgstr "لوړ"
 msgid "High stratus"
 msgstr "لوړ سټراتوس"
 
-#: src/components/MissionSetup.tsx:1576
-#: src/components/MissionSetup.tsx:1671
+#: src/components/MissionSetup.tsx:1589
+#: src/components/MissionSetup.tsx:1684
 msgid "History"
 msgstr "تاریخچه"
 
@@ -1156,7 +1160,7 @@ msgid "Join"
 msgstr "یوځای شئ"
 
 #: src/components/MissionSetup.tsx:1024
-#: src/components/MissionSetup.tsx:1568
+#: src/components/MissionSetup.tsx:1581
 msgid "Join server"
 msgstr "سرور سره یوځای شئ"
 
@@ -1164,8 +1168,8 @@ msgstr "سرور سره یوځای شئ"
 msgid "JOINED"
 msgstr "یوځای شو"
 
-#: src/components/MatchHistory.tsx:51
-#: src/components/MissionSetup.tsx:1531
+#: src/components/MatchHistory.tsx:76
+#: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
 msgstr "مبارزه"
@@ -1178,15 +1182,15 @@ msgstr "مبارزه — 1v1، څوک چې لومړی وغورځوي، هغه ګ
 msgid "Joust against AI player"
 msgstr "له AI لوبغاړي سره مبارزه"
 
-#: src/components/MissionSetup.tsx:1617
+#: src/components/MissionSetup.tsx:1630
 msgid "Joystick"
 msgstr "جوی سټیک"
 
-#: src/components/MatchHistory.tsx:96
+#: src/components/MatchHistory.tsx:121
 msgid "K/D"
 msgstr "K/D"
 
-#: src/components/MissionSetup.tsx:1620
+#: src/components/MissionSetup.tsx:1633
 msgid "Keys"
 msgstr "کیلۍ"
 
@@ -1194,8 +1198,8 @@ msgstr "کیلۍ"
 msgid "KILL"
 msgstr "وژنه"
 
-#: src/components/MatchHistory.tsx:90
 #: src/components/MatchHistory.tsx:115
+#: src/components/MatchHistory.tsx:140
 msgid "Kills"
 msgstr "وژنې"
 
@@ -1251,7 +1255,7 @@ msgstr "نور زده کړئ"
 msgid "Leave server"
 msgstr "سرور پریښودل"
 
-#: src/components/MatchHistory.tsx:58
+#: src/components/MatchHistory.tsx:83
 msgid "Left"
 msgstr "ووت"
 
@@ -1392,7 +1396,7 @@ msgstr "اصلي"
 msgid "Match type"
 msgstr "د سيالۍ ډول"
 
-#: src/components/MatchHistory.tsx:87
+#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "لوبې"
@@ -1443,7 +1447,7 @@ msgstr "میزایلونه"
 msgid "Missiles allowed"
 msgstr "توغنديو ته اجازه ده"
 
-#: src/components/MatchHistory.tsx:109
+#: src/components/MatchHistory.tsx:134
 msgid "Mode"
 msgstr "حالت"
 
@@ -1494,7 +1498,7 @@ msgstr "هیڅ ډلې شتون نلري"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "جوی سټیک ونه موندل شو — د راویښولو لپاره یې هره تڼۍ کېکاږئ."
 
-#: src/components/MatchHistory.tsx:71
+#: src/components/MatchHistory.tsx:96
 msgid "No matches yet"
 msgstr "تر اوسه هېڅ لوبه نشته"
 
@@ -1673,7 +1677,7 @@ msgid "pilot"
 msgstr "پیلوټ"
 
 #: src/components/MissionSetup.tsx:1164
-#: src/components/MissionSetup.tsx:1524
+#: src/components/MissionSetup.tsx:1537
 #: src/components/Multiplayer.tsx:376
 msgid "Pilot"
 msgstr "پیلوټ"
@@ -1702,7 +1706,7 @@ msgstr "پیچ پورته"
 msgid "PLATFORM"
 msgstr "پلیټ فارم"
 
-#: src/components/MatchHistory.tsx:112
+#: src/components/MatchHistory.tsx:137
 msgid "Players"
 msgstr "لوبغاړي"
 
@@ -1795,6 +1799,19 @@ msgstr "وروستي"
 msgid "Recommended"
 msgstr "سپارښتل شوی"
 
+#: src/components/MissionSetup.tsx:1459
+msgid "Record flights"
+msgstr "الوتنې ثبتول"
+
+#: src/components/MatchHistory.tsx:186
+#: src/components/MissionSetup.tsx:1453
+msgid "Recording"
+msgstr "ثبتول"
+
+#: src/components/MatchHistory.tsx:180
+msgid "Recording saved"
+msgstr "ثبت خوندي شو"
+
 #: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "سور"
@@ -1870,7 +1887,7 @@ msgstr "بریښنالیک بیا واستوئ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1659
+#: src/components/MissionSetup.tsx:1672
 msgid "Reset"
 msgstr "بیا تنظیم"
 
@@ -1882,11 +1899,11 @@ msgstr "ټول تنظیمات د ډیفالټ ارزښتونو ته بیرته �
 msgid "Resolution"
 msgstr "حل"
 
-#: src/components/MissionSetup.tsx:1550
+#: src/components/MissionSetup.tsx:1563
 msgid "Restart mission"
 msgstr "ماموریت بیا پیل"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:146
 msgid "Result"
 msgstr "پایله"
 
@@ -1894,7 +1911,7 @@ msgstr "پایله"
 msgid "Resume"
 msgstr "بیا پیلول"
 
-#: src/components/MissionSetup.tsx:1546
+#: src/components/MissionSetup.tsx:1559
 msgid "Resume mission"
 msgstr "ماموریت ته دوام"
 
@@ -1927,7 +1944,7 @@ msgid "Roll right"
 msgstr "رول ښي"
 
 #: src/components/MissionSetup.tsx:1163
-#: src/components/MissionSetup.tsx:1523
+#: src/components/MissionSetup.tsx:1536
 #: src/components/Multiplayer.tsx:375
 msgid "Rookie"
 msgstr "تازه کار"
@@ -2044,7 +2061,7 @@ msgstr "بریښنالیک ولېږئ"
 msgid "Serif"
 msgstr "سيريف"
 
-#: src/components/MatchHistory.tsx:106
+#: src/components/MatchHistory.tsx:131
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "سرور"
@@ -2085,8 +2102,8 @@ msgstr "سرچینه او منزل وټاکئ"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1572
-#: src/components/MissionSetup.tsx:1604
+#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1617
 msgid "Settings"
 msgstr "ترتیبات"
 
@@ -2131,7 +2148,7 @@ msgid "Small"
 msgstr "کوچنی"
 
 #: src/components/MissionSetup.tsx:425
-#: src/components/MissionSetup.tsx:1614
+#: src/components/MissionSetup.tsx:1627
 msgid "Sound"
 msgstr "غږ"
 
@@ -2233,7 +2250,7 @@ msgstr "ټیم"
 msgid "TEAM"
 msgstr "ټیم"
 
-#: src/components/MatchHistory.tsx:52
+#: src/components/MatchHistory.tsx:77
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "ټيمونه"
@@ -2467,7 +2484,7 @@ msgid "Vertical"
 msgstr "عمودي"
 
 #: src/components/MissionSetup.tsx:1165
-#: src/components/MissionSetup.tsx:1525
+#: src/components/MissionSetup.tsx:1538
 #: src/components/Multiplayer.tsx:377
 msgid "Veteran"
 msgstr "تجربه کار"
@@ -2598,7 +2615,7 @@ msgstr "تاسو د دې سرچینې لیدو لپاره <0/>اړینه اجا�
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "ستاسو حساب له {source} دلته لیږدول شوی. تر هغه چې تاسو هلته یې ړنګ نه کړئ، پیغامونه او خبرتیاوې ممکن دواړه سرورونو ته ورسیږي، ستاسو د مینځپانګې یوه برخه لاهم له پخوانی سرور نه چمتو کیږي، او تعقیبونکي ممکن دلته ستاسو موندلو لپاره یو شیبه وخت ولري."
 
-#: src/components/MatchHistory.tsx:72
+#: src/components/MatchHistory.tsx:97
 msgid "Your multiplayer matches appear here once you've flown one."
 msgstr "ستاسو د څو لوبغاړو لوبې به دلته څرګندې شي کله چې یوه الوتنه وکړئ."
 

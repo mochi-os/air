@@ -125,7 +125,7 @@ msgid "Account verified"
 msgstr "Tili vahvistettu"
 
 #: src/components/MissionSetup.tsx:1166
-#: src/components/MissionSetup.tsx:1526
+#: src/components/MissionSetup.tsx:1539
 #: src/components/Multiplayer.tsx:378
 msgid "Ace"
 msgstr "Ässä"
@@ -421,7 +421,7 @@ msgstr "Keskustelu"
 msgid "Chat to everyone"
 msgstr "Chat kaikille"
 
-#: src/components/MatchHistory.tsx:141
+#: src/components/MatchHistory.tsx:167
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Huijaukset"
@@ -582,6 +582,10 @@ msgstr "Ottelun luominen epäonnistui"
 msgid "Could not load this document. Please try again later."
 msgstr "Tätä dokumenttia ei voitu ladata. Yritä myöhemmin uudelleen."
 
+#: src/components/MatchHistory.tsx:181
+msgid "Could not save the recording"
+msgstr "Tallenteen tallentaminen epäonnistui"
+
 #: src/components/MissionSetup.tsx:891
 msgid "Could not send the message"
 msgstr "Viestin lähettäminen epäonnistui"
@@ -610,8 +614,8 @@ msgstr "Luo ja lennä"
 msgid "Create match"
 msgstr "Luo ottelu"
 
-#: src/components/MissionSetup.tsx:1564
-#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1577
+#: src/components/MissionSetup.tsx:1598
 msgid "Create mission"
 msgstr "Luo tehtävä"
 
@@ -656,7 +660,7 @@ msgstr "Tumma tila"
 msgid "Data conflict"
 msgstr "Tietoristiriita"
 
-#: src/components/MatchHistory.tsx:103
+#: src/components/MatchHistory.tsx:128
 msgid "Date"
 msgstr "Päivämäärä"
 
@@ -665,8 +669,8 @@ msgstr "Päivämäärä"
 msgid "Day"
 msgstr "Päivä"
 
-#: src/components/MatchHistory.tsx:93
 #: src/components/MatchHistory.tsx:118
+#: src/components/MatchHistory.tsx:143
 msgid "Deaths"
 msgstr "Kuolemat"
 
@@ -730,7 +734,7 @@ msgstr "Suunta"
 msgid "disconnected"
 msgstr "irrotettu"
 
-#: src/components/MatchHistory.tsx:59
+#: src/components/MatchHistory.tsx:84
 msgid "Disconnected"
 msgstr "Ei yhteyttä"
 
@@ -747,7 +751,7 @@ msgstr "Näyttää mobiilisivupalkin."
 msgid "Distance LOD"
 msgstr "Etäisyys-LOD"
 
-#: src/components/MissionSetup.tsx:1666
+#: src/components/MissionSetup.tsx:1679
 msgid "Done"
 msgstr "Valmis"
 
@@ -899,7 +903,7 @@ msgstr "TAISTELU ALKAA"
 msgid "Finish moving your account"
 msgstr "Viimeistele tilin siirto"
 
-#: src/components/MatchHistory.tsx:60
+#: src/components/MatchHistory.tsx:85
 msgid "Finished"
 msgstr "Päättyi"
 
@@ -941,8 +945,8 @@ msgstr "LENTOYTIMEN VIRHE"
 msgid "Floating"
 msgstr "Kelluva"
 
-#: src/components/MissionSetup.tsx:1558
-#: src/components/MissionSetup.tsx:1599
+#: src/components/MissionSetup.tsx:1571
+#: src/components/MissionSetup.tsx:1612
 msgid "Fly"
 msgstr "Lennä"
 
@@ -1000,7 +1004,7 @@ msgstr "Polttoainepuomi"
 msgid "Full layout"
 msgstr "Täysi asettelu"
 
-#: src/components/MatchHistory.tsx:50
+#: src/components/MatchHistory.tsx:75
 msgid "Furball"
 msgstr "Furball"
 
@@ -1012,7 +1016,7 @@ msgstr "laskuteline"
 msgid "GEAR"
 msgstr "TELINE"
 
-#: src/components/MissionSetup.tsx:1608
+#: src/components/MissionSetup.tsx:1621
 msgid "General"
 msgstr "Yleiset"
 
@@ -1042,7 +1046,7 @@ msgstr "Siirry sivulle {pageNumber}"
 msgid "Go to previous page"
 msgstr "Siirry edelliselle sivulle"
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1624
 msgid "Graphics"
 msgstr "Grafiikka"
 
@@ -1076,8 +1080,8 @@ msgstr "Korkea"
 msgid "High stratus"
 msgstr "Korkea kerrospilvi"
 
-#: src/components/MissionSetup.tsx:1576
-#: src/components/MissionSetup.tsx:1671
+#: src/components/MissionSetup.tsx:1589
+#: src/components/MissionSetup.tsx:1684
 msgid "History"
 msgstr "Historia"
 
@@ -1156,7 +1160,7 @@ msgid "Join"
 msgstr "Liity"
 
 #: src/components/MissionSetup.tsx:1024
-#: src/components/MissionSetup.tsx:1568
+#: src/components/MissionSetup.tsx:1581
 msgid "Join server"
 msgstr "Liity palvelimeen"
 
@@ -1164,8 +1168,8 @@ msgstr "Liity palvelimeen"
 msgid "JOINED"
 msgstr "LIITTYI"
 
-#: src/components/MatchHistory.tsx:51
-#: src/components/MissionSetup.tsx:1531
+#: src/components/MatchHistory.tsx:76
+#: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
 msgstr "Kaksintaistelu"
@@ -1178,15 +1182,15 @@ msgstr "Kaksintaistelu — 1v1, ensimmäinen pudotus voittaa"
 msgid "Joust against AI player"
 msgstr "Kaksintaistelu tekoälypelaajaa vastaan"
 
-#: src/components/MissionSetup.tsx:1617
+#: src/components/MissionSetup.tsx:1630
 msgid "Joystick"
 msgstr "Sauvaohjain"
 
-#: src/components/MatchHistory.tsx:96
+#: src/components/MatchHistory.tsx:121
 msgid "K/D"
 msgstr "K/D"
 
-#: src/components/MissionSetup.tsx:1620
+#: src/components/MissionSetup.tsx:1633
 msgid "Keys"
 msgstr "Näppäimet"
 
@@ -1194,8 +1198,8 @@ msgstr "Näppäimet"
 msgid "KILL"
 msgstr "PUDOTUS"
 
-#: src/components/MatchHistory.tsx:90
 #: src/components/MatchHistory.tsx:115
+#: src/components/MatchHistory.tsx:140
 msgid "Kills"
 msgstr "Tapot"
 
@@ -1251,7 +1255,7 @@ msgstr "Lue lisää"
 msgid "Leave server"
 msgstr "Poistu palvelimelta"
 
-#: src/components/MatchHistory.tsx:58
+#: src/components/MatchHistory.tsx:83
 msgid "Left"
 msgstr "Poistui"
 
@@ -1392,7 +1396,7 @@ msgstr "Yleinen"
 msgid "Match type"
 msgstr "Ottelutyyppi"
 
-#: src/components/MatchHistory.tsx:87
+#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Ottelut"
@@ -1443,7 +1447,7 @@ msgstr "Ohjukset"
 msgid "Missiles allowed"
 msgstr "Ohjukset sallittu"
 
-#: src/components/MatchHistory.tsx:109
+#: src/components/MatchHistory.tsx:134
 msgid "Mode"
 msgstr "Tila"
 
@@ -1494,7 +1498,7 @@ msgstr "Ei saatavilla olevia ryhmiä"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Sauvaohjainta ei havaittu — herätä se painamalla mitä tahansa sen painiketta."
 
-#: src/components/MatchHistory.tsx:71
+#: src/components/MatchHistory.tsx:96
 msgid "No matches yet"
 msgstr "Ei vielä otteluita"
 
@@ -1673,7 +1677,7 @@ msgid "pilot"
 msgstr "lentäjä"
 
 #: src/components/MissionSetup.tsx:1164
-#: src/components/MissionSetup.tsx:1524
+#: src/components/MissionSetup.tsx:1537
 #: src/components/Multiplayer.tsx:376
 msgid "Pilot"
 msgstr "Lentäjä"
@@ -1702,7 +1706,7 @@ msgstr "Nokka ylös"
 msgid "PLATFORM"
 msgstr "TASANNE"
 
-#: src/components/MatchHistory.tsx:112
+#: src/components/MatchHistory.tsx:137
 msgid "Players"
 msgstr "Pelaajat"
 
@@ -1795,6 +1799,19 @@ msgstr "Viimeisimmät"
 msgid "Recommended"
 msgstr "Suositeltu"
 
+#: src/components/MissionSetup.tsx:1459
+msgid "Record flights"
+msgstr "Tallenna lennot"
+
+#: src/components/MatchHistory.tsx:186
+#: src/components/MissionSetup.tsx:1453
+msgid "Recording"
+msgstr "Tallennus"
+
+#: src/components/MatchHistory.tsx:180
+msgid "Recording saved"
+msgstr "Tallenne tallennettu"
+
 #: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "Punainen"
@@ -1870,7 +1887,7 @@ msgstr "Lähetä sähköposti uudelleen"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1659
+#: src/components/MissionSetup.tsx:1672
 msgid "Reset"
 msgstr "Nollaa"
 
@@ -1882,11 +1899,11 @@ msgstr "Palauta kaikki asetukset oletusarvoihin"
 msgid "Resolution"
 msgstr "Ratkaisu"
 
-#: src/components/MissionSetup.tsx:1550
+#: src/components/MissionSetup.tsx:1563
 msgid "Restart mission"
 msgstr "Käynnistä tehtävä uudelleen"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:146
 msgid "Result"
 msgstr "Tulos"
 
@@ -1894,7 +1911,7 @@ msgstr "Tulos"
 msgid "Resume"
 msgstr "Jatka"
 
-#: src/components/MissionSetup.tsx:1546
+#: src/components/MissionSetup.tsx:1559
 msgid "Resume mission"
 msgstr "Jatka tehtävää"
 
@@ -1927,7 +1944,7 @@ msgid "Roll right"
 msgstr "Kallistus oikealle"
 
 #: src/components/MissionSetup.tsx:1163
-#: src/components/MissionSetup.tsx:1523
+#: src/components/MissionSetup.tsx:1536
 #: src/components/Multiplayer.tsx:375
 msgid "Rookie"
 msgstr "Aloittelija"
@@ -2044,7 +2061,7 @@ msgstr "Lähetä sähköposti"
 msgid "Serif"
 msgstr "Pääteviivallinen"
 
-#: src/components/MatchHistory.tsx:106
+#: src/components/MatchHistory.tsx:131
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Palvelin"
@@ -2085,8 +2102,8 @@ msgstr "Aseta lähtöpaikka ja määränpää"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1572
-#: src/components/MissionSetup.tsx:1604
+#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1617
 msgid "Settings"
 msgstr "Asetukset"
 
@@ -2131,7 +2148,7 @@ msgid "Small"
 msgstr "Pieni"
 
 #: src/components/MissionSetup.tsx:425
-#: src/components/MissionSetup.tsx:1614
+#: src/components/MissionSetup.tsx:1627
 msgid "Sound"
 msgstr "Ääni"
 
@@ -2233,7 +2250,7 @@ msgstr "Tiimi"
 msgid "TEAM"
 msgstr "TIIMI"
 
-#: src/components/MatchHistory.tsx:52
+#: src/components/MatchHistory.tsx:77
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Joukkueet"
@@ -2467,7 +2484,7 @@ msgid "Vertical"
 msgstr "Pystysuora"
 
 #: src/components/MissionSetup.tsx:1165
-#: src/components/MissionSetup.tsx:1525
+#: src/components/MissionSetup.tsx:1538
 #: src/components/Multiplayer.tsx:377
 msgid "Veteran"
 msgstr "Veteraani"
@@ -2598,7 +2615,7 @@ msgstr "Sinulla ei ole tarvittavaa käyttöoikeutta <0/>tämän resurssin tarkas
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Tilisi siirrettiin tänne kohteesta {source}. Kunnes poistat sen sieltä, viestit ja ilmoitukset voivat tavoittaa molemmat palvelimet, osa sisällöstäsi toimitetaan edelleen vanhalta palvelimelta ja seuraajillasi voi kestää muutama minuutti löytää sinut täältä."
 
-#: src/components/MatchHistory.tsx:72
+#: src/components/MatchHistory.tsx:97
 msgid "Your multiplayer matches appear here once you've flown one."
 msgstr "Moninpeliottelusi näkyvät täällä, kun olet lentänyt yhden."
 

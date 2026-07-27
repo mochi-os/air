@@ -820,6 +820,7 @@ export async function record(match: {
 // participant count as a string; cheated is 0/1).
 export interface MatchRow {
   world: string
+  session: string
   mode: string
   team: string
   started: number

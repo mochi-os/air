@@ -125,7 +125,7 @@ msgid "Account verified"
 msgstr "Đã xác minh tài khoản"
 
 #: src/components/MissionSetup.tsx:1166
-#: src/components/MissionSetup.tsx:1526
+#: src/components/MissionSetup.tsx:1539
 #: src/components/Multiplayer.tsx:378
 msgid "Ace"
 msgstr "Cao thủ"
@@ -421,7 +421,7 @@ msgstr "Trò chuyện"
 msgid "Chat to everyone"
 msgstr "Chat với tất cả"
 
-#: src/components/MatchHistory.tsx:141
+#: src/components/MatchHistory.tsx:167
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Cheat"
@@ -582,6 +582,10 @@ msgstr "Không thể tạo trận đấu"
 msgid "Could not load this document. Please try again later."
 msgstr "Không thể tải tài liệu này. Vui lòng thử lại sau."
 
+#: src/components/MatchHistory.tsx:181
+msgid "Could not save the recording"
+msgstr "Không thể lưu bản ghi"
+
 #: src/components/MissionSetup.tsx:891
 msgid "Could not send the message"
 msgstr "Không thể gửi tin nhắn"
@@ -610,8 +614,8 @@ msgstr "Tạo và bay ngay"
 msgid "Create match"
 msgstr "Tạo trận đấu"
 
-#: src/components/MissionSetup.tsx:1564
-#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1577
+#: src/components/MissionSetup.tsx:1598
 msgid "Create mission"
 msgstr "Tạo nhiệm vụ"
 
@@ -656,7 +660,7 @@ msgstr "Chế độ tối"
 msgid "Data conflict"
 msgstr "Xung đột dữ liệu"
 
-#: src/components/MatchHistory.tsx:103
+#: src/components/MatchHistory.tsx:128
 msgid "Date"
 msgstr "Ngày"
 
@@ -665,8 +669,8 @@ msgstr "Ngày"
 msgid "Day"
 msgstr "Ban ngày"
 
-#: src/components/MatchHistory.tsx:93
 #: src/components/MatchHistory.tsx:118
+#: src/components/MatchHistory.tsx:143
 msgid "Deaths"
 msgstr "Tử vong"
 
@@ -730,7 +734,7 @@ msgstr "Hướng"
 msgid "disconnected"
 msgstr "đã ngắt kết nối"
 
-#: src/components/MatchHistory.tsx:59
+#: src/components/MatchHistory.tsx:84
 msgid "Disconnected"
 msgstr "Đã ngắt kết nối"
 
@@ -747,7 +751,7 @@ msgstr "Hiển thị thanh bên di động."
 msgid "Distance LOD"
 msgstr "LOD theo khoảng cách"
 
-#: src/components/MissionSetup.tsx:1666
+#: src/components/MissionSetup.tsx:1679
 msgid "Done"
 msgstr "Xong"
 
@@ -899,7 +903,7 @@ msgstr "TRẬN CHIẾN BẮT ĐẦU"
 msgid "Finish moving your account"
 msgstr "Hoàn tất việc chuyển tài khoản của bạn"
 
-#: src/components/MatchHistory.tsx:60
+#: src/components/MatchHistory.tsx:85
 msgid "Finished"
 msgstr "Đã kết thúc"
 
@@ -941,8 +945,8 @@ msgstr "LÕI BAY BỊ LỖI"
 msgid "Floating"
 msgstr "Nổi"
 
-#: src/components/MissionSetup.tsx:1558
-#: src/components/MissionSetup.tsx:1599
+#: src/components/MissionSetup.tsx:1571
+#: src/components/MissionSetup.tsx:1612
 msgid "Fly"
 msgstr "Bay"
 
@@ -1000,7 +1004,7 @@ msgstr "Cần tiếp nhiên liệu"
 msgid "Full layout"
 msgstr "Bố cục đầy đủ"
 
-#: src/components/MatchHistory.tsx:50
+#: src/components/MatchHistory.tsx:75
 msgid "Furball"
 msgstr "Furball"
 
@@ -1012,7 +1016,7 @@ msgstr "Càng"
 msgid "GEAR"
 msgstr "CÀNG"
 
-#: src/components/MissionSetup.tsx:1608
+#: src/components/MissionSetup.tsx:1621
 msgid "General"
 msgstr "Chung"
 
@@ -1042,7 +1046,7 @@ msgstr "Đến trang {pageNumber}"
 msgid "Go to previous page"
 msgstr "Đến trang trước"
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1624
 msgid "Graphics"
 msgstr "Đồ họa"
 
@@ -1076,8 +1080,8 @@ msgstr "Cao"
 msgid "High stratus"
 msgstr "Mây tầng cao"
 
-#: src/components/MissionSetup.tsx:1576
-#: src/components/MissionSetup.tsx:1671
+#: src/components/MissionSetup.tsx:1589
+#: src/components/MissionSetup.tsx:1684
 msgid "History"
 msgstr "Lịch sử"
 
@@ -1156,7 +1160,7 @@ msgid "Join"
 msgstr "Tham gia"
 
 #: src/components/MissionSetup.tsx:1024
-#: src/components/MissionSetup.tsx:1568
+#: src/components/MissionSetup.tsx:1581
 msgid "Join server"
 msgstr "Tham gia máy chủ"
 
@@ -1164,8 +1168,8 @@ msgstr "Tham gia máy chủ"
 msgid "JOINED"
 msgstr "ĐÃ THAM GIA"
 
-#: src/components/MatchHistory.tsx:51
-#: src/components/MissionSetup.tsx:1531
+#: src/components/MatchHistory.tsx:76
+#: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
 msgstr "Đối đầu"
@@ -1178,15 +1182,15 @@ msgstr "Đấu tay đôi — 1v1, ai bắn hạ trước sẽ thắng"
 msgid "Joust against AI player"
 msgstr "Đấu tay đôi với người chơi AI"
 
-#: src/components/MissionSetup.tsx:1617
+#: src/components/MissionSetup.tsx:1630
 msgid "Joystick"
 msgstr "Cần điều khiển"
 
-#: src/components/MatchHistory.tsx:96
+#: src/components/MatchHistory.tsx:121
 msgid "K/D"
 msgstr "K/D"
 
-#: src/components/MissionSetup.tsx:1620
+#: src/components/MissionSetup.tsx:1633
 msgid "Keys"
 msgstr "Phím"
 
@@ -1194,8 +1198,8 @@ msgstr "Phím"
 msgid "KILL"
 msgstr "BẮN HẠ"
 
-#: src/components/MatchHistory.tsx:90
 #: src/components/MatchHistory.tsx:115
+#: src/components/MatchHistory.tsx:140
 msgid "Kills"
 msgstr "Bắn hạ"
 
@@ -1251,7 +1255,7 @@ msgstr "Tìm hiểu thêm"
 msgid "Leave server"
 msgstr "Rời máy chủ"
 
-#: src/components/MatchHistory.tsx:58
+#: src/components/MatchHistory.tsx:83
 msgid "Left"
 msgstr "Đã rời"
 
@@ -1392,7 +1396,7 @@ msgstr "Tổng thể"
 msgid "Match type"
 msgstr "Loại trận đấu"
 
-#: src/components/MatchHistory.tsx:87
+#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Trận đấu"
@@ -1443,7 +1447,7 @@ msgstr "Tên lửa"
 msgid "Missiles allowed"
 msgstr "Cho phép tên lửa"
 
-#: src/components/MatchHistory.tsx:109
+#: src/components/MatchHistory.tsx:134
 msgid "Mode"
 msgstr "Chế độ"
 
@@ -1494,7 +1498,7 @@ msgstr "Không có nhóm nào"
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Không phát hiện cần điều khiển nào — nhấn nút bất kỳ trên đó để đánh thức nó."
 
-#: src/components/MatchHistory.tsx:71
+#: src/components/MatchHistory.tsx:96
 msgid "No matches yet"
 msgstr "Chưa có trận đấu nào"
 
@@ -1673,7 +1677,7 @@ msgid "pilot"
 msgstr "phi công"
 
 #: src/components/MissionSetup.tsx:1164
-#: src/components/MissionSetup.tsx:1524
+#: src/components/MissionSetup.tsx:1537
 #: src/components/Multiplayer.tsx:376
 msgid "Pilot"
 msgstr "Phi công"
@@ -1702,7 +1706,7 @@ msgstr "Ngóc lên"
 msgid "PLATFORM"
 msgstr "BỆ"
 
-#: src/components/MatchHistory.tsx:112
+#: src/components/MatchHistory.tsx:137
 msgid "Players"
 msgstr "Người chơi"
 
@@ -1795,6 +1799,19 @@ msgstr "Gần đây"
 msgid "Recommended"
 msgstr "Được đề xuất"
 
+#: src/components/MissionSetup.tsx:1459
+msgid "Record flights"
+msgstr "Ghi lại chuyến bay"
+
+#: src/components/MatchHistory.tsx:186
+#: src/components/MissionSetup.tsx:1453
+msgid "Recording"
+msgstr "Bản ghi"
+
+#: src/components/MatchHistory.tsx:180
+msgid "Recording saved"
+msgstr "Đã lưu bản ghi"
+
 #: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "Đỏ"
@@ -1870,7 +1887,7 @@ msgstr "Gửi lại email"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1659
+#: src/components/MissionSetup.tsx:1672
 msgid "Reset"
 msgstr "Đặt lại"
 
@@ -1882,11 +1899,11 @@ msgstr "Đặt lại tất cả cài đặt về giá trị mặc định"
 msgid "Resolution"
 msgstr "Cách giải quyết"
 
-#: src/components/MissionSetup.tsx:1550
+#: src/components/MissionSetup.tsx:1563
 msgid "Restart mission"
 msgstr "Khởi động lại nhiệm vụ"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:146
 msgid "Result"
 msgstr "Kết quả"
 
@@ -1894,7 +1911,7 @@ msgstr "Kết quả"
 msgid "Resume"
 msgstr "Tiếp tục"
 
-#: src/components/MissionSetup.tsx:1546
+#: src/components/MissionSetup.tsx:1559
 msgid "Resume mission"
 msgstr "Tiếp tục nhiệm vụ"
 
@@ -1927,7 +1944,7 @@ msgid "Roll right"
 msgstr "Lăn phải"
 
 #: src/components/MissionSetup.tsx:1163
-#: src/components/MissionSetup.tsx:1523
+#: src/components/MissionSetup.tsx:1536
 #: src/components/Multiplayer.tsx:375
 msgid "Rookie"
 msgstr "Tân binh"
@@ -2044,7 +2061,7 @@ msgstr "Gửi email"
 msgid "Serif"
 msgstr "Có chân"
 
-#: src/components/MatchHistory.tsx:106
+#: src/components/MatchHistory.tsx:131
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Máy chủ"
@@ -2085,8 +2102,8 @@ msgstr "Đặt điểm xuất phát và điểm đến"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1572
-#: src/components/MissionSetup.tsx:1604
+#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1617
 msgid "Settings"
 msgstr "Cài đặt"
 
@@ -2131,7 +2148,7 @@ msgid "Small"
 msgstr "Nhỏ"
 
 #: src/components/MissionSetup.tsx:425
-#: src/components/MissionSetup.tsx:1614
+#: src/components/MissionSetup.tsx:1627
 msgid "Sound"
 msgstr "Âm thanh"
 
@@ -2233,7 +2250,7 @@ msgstr "Đội"
 msgid "TEAM"
 msgstr "ĐỘI"
 
-#: src/components/MatchHistory.tsx:52
+#: src/components/MatchHistory.tsx:77
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Đội"
@@ -2467,7 +2484,7 @@ msgid "Vertical"
 msgstr "Thẳng đứng"
 
 #: src/components/MissionSetup.tsx:1165
-#: src/components/MissionSetup.tsx:1525
+#: src/components/MissionSetup.tsx:1538
 #: src/components/Multiplayer.tsx:377
 msgid "Veteran"
 msgstr "Kỳ cựu"
@@ -2598,7 +2615,7 @@ msgstr "Bạn không có quyền cần thiết <0/>để xem tài nguyên này."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Tài khoản của bạn đã được chuyển đến đây từ {source}. Cho đến khi bạn xóa nó ở đó, tin nhắn và thông báo có thể đến cả hai máy chủ, một số nội dung của bạn vẫn được phục vụ từ máy chủ cũ và người theo dõi có thể mất vài phút để tìm thấy bạn ở đây."
 
-#: src/components/MatchHistory.tsx:72
+#: src/components/MatchHistory.tsx:97
 msgid "Your multiplayer matches appear here once you've flown one."
 msgstr "Các trận đấu nhiều người chơi của bạn sẽ xuất hiện ở đây sau khi bạn bay một trận."
 
