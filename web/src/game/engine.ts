@@ -2594,7 +2594,7 @@ function recording_sample(){
 function recording_file(){
 	if(!recorder.length||!record_started) return null;
 	const kind=cfg.task==="joust"?("joust-"+(cfg.bandit||"veteran")):"flight";
-	return { text:recorder.render(record_started,"Mochi Air — "+kind), session:record_session, kind }; }
+	return { text:recorder.render(record_started,"Mochi Air: "+kind), session:record_session, kind }; }
 const _q=new THREE.Quaternion(), _fwd=new THREE.Vector3(), _up=new THREE.Vector3(), _right=new THREE.Vector3();
 function start_launch(){ launch_flag=true; ownship.trapped=false; ownship.throttle=Math.max(ownship.throttle,0.9); }   // requests the shot; the core fires it while attached to the shuttle (caller gates on launch_status()===2)
 let atc_on=false, atc_alpha=0;   // Approach Power Compensator (#202): engaged flag + last-frame alpha for the rate term
