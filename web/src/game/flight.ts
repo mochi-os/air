@@ -20,7 +20,7 @@ import flight_wasm_url from '../assets/flight.wasm?url'
 import { asset } from './preload'
 
 // Encoded state layout (float64 words).
-export const SIZE = 109 // 57 base + 40 element losses + 8 channel jams + lost mass + 3 gear-leg damages (#78)
+export const SIZE = 110 // 57 base + 40 element losses + 8 channel jams + lost mass + 3 gear-leg damages (#78) + pitch-damper washout (appended LAST so no earlier index moved)
 export const STATE = {
   position: 0, // x y z
   velocity: 3,
@@ -55,13 +55,13 @@ export const STATE = {
   // so it moves whenever the encoded state grows. #78's three gear words pushed
   // Size to 109 and this tail was left at 106, silently reading gear damage as
   // alpha/nz and nz as the throttle spool (#133 found it via a dead CAS box).
-  alpha: 109,
-  beta: 110,
-  nz: 111,
-  mach: 112,
-  cas: 113,
-  power: 114, // achieved spool fraction across the airframe's engines
-  stage: 115, // achieved reheat stage
+  alpha: 110,
+  beta: 111,
+  nz: 112,
+  mach: 113,
+  cas: 114,
+  power: 115, // achieved spool fraction across the airframe's engines
+  stage: 116, // achieved reheat stage
 } as const
 const EXTRA = 7
 
