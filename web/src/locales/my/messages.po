@@ -25,17 +25,17 @@ msgid "{0} created “{1}”"
 msgstr "{0} က “{1}” ကို ဖန်တီးခဲ့သည်"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:281
+#: src/components/Multiplayer.tsx:256
 msgid "{0} flying"
 msgstr "{0} ဦး ပျံသန်းနေသည်"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:462
+#: src/components/Multiplayer.tsx:437
 msgid "{0}/{1} players"
 msgstr "{0}/{1} ကစားသမား"
 
-#: src/components/Multiplayer.tsx:190
+#: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "{name}၏ ပွဲ"
 
@@ -101,7 +101,7 @@ msgstr "အကောင့် အတည်ပြုပြီး"
 
 #: src/components/MissionSetup.tsx:1166
 #: src/components/MissionSetup.tsx:1526
-#: src/components/Multiplayer.tsx:403
+#: src/components/Multiplayer.tsx:378
 msgid "Ace"
 msgstr "ထိပ်တန်း"
 
@@ -269,11 +269,11 @@ msgstr "အကောင်းဆုံးစဉ်ဆက်ကွေ့ဝို
 msgid "BINGO FUEL"
 msgstr "လောင်စာ ဘင်ဂို"
 
-#: src/components/Multiplayer.tsx:501
+#: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "အပြာ"
 
-#: src/components/Multiplayer.tsx:395
+#: src/components/Multiplayer.tsx:370
 msgid "Blue bots"
 msgstr "အပြာ ဘော့များ"
 
@@ -286,7 +286,7 @@ msgstr "BOLTER"
 msgid "Boost interest"
 msgstr "စိတ်ဝင်စားမှု မြှင့်တင်မည်"
 
-#: src/components/Multiplayer.tsx:395
+#: src/components/Multiplayer.tsx:370
 msgid "Bots"
 msgstr "ဘော့တ်များ"
 
@@ -315,7 +315,7 @@ msgid "CALL THE BALL"
 msgstr "ဘောလုံးကိုကြေညာပါ"
 
 #: src/components/MissionSetup.tsx:1441
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:240
 msgid "Callsign"
 msgstr "ခေါ်ဆိုအမည်"
 
@@ -333,8 +333,8 @@ msgstr "ကင်မရာအကွာအဝေး"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
 #: src/components/MissionSetup.tsx:493
-#: src/components/Multiplayer.tsx:236
-#: src/components/Multiplayer.tsx:478
+#: src/components/Multiplayer.tsx:211
+#: src/components/Multiplayer.tsx:453
 msgid "Cancel"
 msgstr "မလုပ်တော့ပါ"
 
@@ -428,7 +428,7 @@ msgstr "ဘာသာစကား ရွေးချယ်ပါ"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:326
+#: src/components/Multiplayer.tsx:301
 msgid "Clear"
 msgstr "ရှင်းမည်"
 
@@ -515,7 +515,7 @@ msgstr "အတည်ပြုမည်"
 msgid "Connect"
 msgstr "ချိတ်ဆက်"
 
-#: src/components/Multiplayer.tsx:284
+#: src/components/Multiplayer.tsx:259
 msgid "Connecting…"
 msgstr "ချိတ်ဆက်နေသည်…"
 
@@ -532,7 +532,7 @@ msgid "Contextual information and details."
 msgstr "ဆက်စပ်အချက်အလက်နှင့် အသေးစိတ်များ။"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:245
+#: src/components/Multiplayer.tsx:220
 msgid "Continue"
 msgstr "ဆက်လက်လုပ်ဆောင်မည်"
 
@@ -548,7 +548,7 @@ msgstr "ကူးမည်"
 msgid "Corner speed (best instant turn)"
 msgstr "ကော်နာအမြန်နှုန်း (အကောင်းဆုံးချက်ချင်းကွေ့ဝိုက်မှု)"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:179
 msgid "Could not create the match"
 msgstr "ပွဲစဉ် ဖန်တီး၍ မရပါ"
 
@@ -576,11 +576,11 @@ msgstr "ထိုအကောင့်ဖြင့် အတည်ပြု၍�
 msgid "CRASHED"
 msgstr "ပျက်ကျ"
 
-#: src/components/Multiplayer.tsx:434
+#: src/components/Multiplayer.tsx:409
 msgid "Create and fly"
 msgstr "ဖန်တီးပြီး ပျံသန်းမည်"
 
-#: src/components/Multiplayer.tsx:299
+#: src/components/Multiplayer.tsx:274
 msgid "Create match"
 msgstr "ပွဲစဉ် ဖန်တီးမည်"
 
@@ -595,7 +595,7 @@ msgid "Credits"
 msgstr "ကျေးဇူးတင်လွှာ"
 
 #: src/components/MissionSetup.tsx:1248
-#: src/components/Multiplayer.tsx:327
+#: src/components/Multiplayer.tsx:302
 msgid "Cumulus"
 msgstr "ကျူမြူလပ်စ်"
 
@@ -634,7 +634,7 @@ msgid "Date"
 msgstr "ရက်စွဲ"
 
 #: src/components/MissionSetup.tsx:1236
-#: src/components/Multiplayer.tsx:322
+#: src/components/Multiplayer.tsx:297
 msgid "Day"
 msgstr "နေ့"
 
@@ -691,7 +691,7 @@ msgstr "Web browser မှ ရှာဖွေဖော်ထုတ်မည်"
 msgid "Device"
 msgstr "ကိရိယာ"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:200
 msgid "Different game host"
 msgstr "မတူညီသော ဂိမ်းဆာဗာ"
 
@@ -737,7 +737,7 @@ msgstr "ဒေါင်းလုဒ် မအောင်မြင်ပါ"
 msgid "Drag"
 msgstr "ဆွဲ"
 
-#: src/components/Multiplayer.tsx:399
+#: src/components/Multiplayer.tsx:374
 msgid "Drone"
 msgstr "ဒရုန်း"
 
@@ -769,7 +769,7 @@ msgstr "ခုန်ထွက်"
 msgid "Email code"
 msgstr "အီးမေးလ် ကုဒ်"
 
-#: src/components/Multiplayer.tsx:461
+#: src/components/Multiplayer.tsx:436
 msgid "empty"
 msgstr "ဗလာ"
 
@@ -937,7 +937,7 @@ msgid "From theme"
 msgstr "အပြင်အဆင်မှ"
 
 #: src/components/MissionSetup.tsx:1142
-#: src/components/Multiplayer.tsx:337
+#: src/components/Multiplayer.tsx:312
 msgid "Fuel"
 msgstr "လောင်စာ"
 
@@ -1037,7 +1037,7 @@ msgid "High"
 msgstr "မြင့်"
 
 #: src/components/MissionSetup.tsx:1249
-#: src/components/Multiplayer.tsx:328
+#: src/components/Multiplayer.tsx:303
 msgid "High stratus"
 msgstr "အမြင့် စထရေးတပ်စ်"
 
@@ -1103,11 +1103,11 @@ msgid "INVULNERABLE"
 msgstr "မသေနိုင်"
 
 #: src/components/MissionSetup.tsx:1262
-#: src/components/Multiplayer.tsx:366
+#: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "မသေနိုင် (လူသားကစားသမားများသာ)"
 
-#: src/components/Multiplayer.tsx:513
+#: src/components/Multiplayer.tsx:488
 msgid "Join"
 msgstr "ဝင်ရန်"
 
@@ -1122,11 +1122,11 @@ msgstr "ဝင်လာသည်"
 
 #: src/components/MatchHistory.tsx:51
 #: src/components/MissionSetup.tsx:1531
-#: src/components/Multiplayer.tsx:460
+#: src/components/Multiplayer.tsx:435
 msgid "Joust"
 msgstr "မျက်နှာချင်းဆိုင်တိုက်ပွဲ"
 
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:288
 msgid "Joust — 1v1, first kill wins"
 msgstr "တစ်ဦးချင်းတိုက်ပွဲ — 1v1၊ အရင်ပစ်ချသူ အနိုင်ရသည်"
 
@@ -1194,7 +1194,7 @@ msgstr "ပျံတက် / ပစ်မှတ်"
 msgid "Layout"
 msgstr "အပြင်အဆင်"
 
-#: src/components/Multiplayer.tsx:350
+#: src/components/Multiplayer.tsx:325
 msgid "lb"
 msgstr "lb"
 
@@ -1317,7 +1317,7 @@ msgid "Low"
 msgstr "နိမ့်"
 
 #: src/components/MissionSetup.tsx:1250
-#: src/components/Multiplayer.tsx:329
+#: src/components/Multiplayer.tsx:304
 msgid "Low stratus"
 msgstr "အနိမ့် စထရေးတပ်စ်"
 
@@ -1343,7 +1343,7 @@ msgstr "အားလုံးကို ဖတ်ပြီးအဖြစ် မ�
 msgid "Master"
 msgstr "ပင်မ"
 
-#: src/components/Multiplayer.tsx:309
+#: src/components/Multiplayer.tsx:284
 msgid "Match type"
 msgstr "ပွဲစဉ်အမျိုးအစား"
 
@@ -1394,7 +1394,7 @@ msgstr "ဒုံးကျည်"
 msgid "Missiles"
 msgstr "ဒုံးကျည်များ"
 
-#: src/components/Multiplayer.tsx:356
+#: src/components/Multiplayer.tsx:331
 msgid "Missiles allowed"
 msgstr "ဒုံးကျည် ခွင့်ပြုသည်"
 
@@ -1410,7 +1410,7 @@ msgstr "တနင်္လာ"
 msgid "Move it…"
 msgstr "ဝင်ရိုးကို ရွှေ့ပါ…"
 
-#: src/components/Multiplayer.tsx:213
+#: src/components/Multiplayer.tsx:188
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer အတွက် WebTransport လိုအပ်ပြီး ဤဘရောက်ဇာက ၎င်းကို မထောက်ပံ့သေးပါ။"
 
@@ -1429,7 +1429,7 @@ msgid "Next image"
 msgstr "နောက်ပုံ"
 
 #: src/components/MissionSetup.tsx:1237
-#: src/components/Multiplayer.tsx:323
+#: src/components/Multiplayer.tsx:298
 msgid "Night"
 msgstr "ည"
 
@@ -1453,7 +1453,7 @@ msgstr "ဂျွိုက်စတစ် မတွေ့ပါ — နိုး
 msgid "No matches yet"
 msgstr "ပွဲများ မရှိသေးပါ"
 
-#: src/components/Multiplayer.tsx:443
+#: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
 msgstr "ဖွင့်ထားသော ပွဲစဉ် မရှိပါ — တစ်ခု ဖန်တီးပါ။"
 
@@ -1483,7 +1483,7 @@ msgid "No users found"
 msgstr "သုံးစွဲသူများ မတွေ့ပါ"
 
 #: src/components/MissionSetup.tsx:903
-#: src/components/Multiplayer.tsx:443
+#: src/components/Multiplayer.tsx:418
 msgid "No world server."
 msgstr "ကမ္ဘာ့ဆာဗာ မရှိပါ။"
 
@@ -1550,11 +1550,11 @@ msgstr "လေယာဉ်ပြေးလမ်းပေါ်"
 msgid "Oops! Page Not Found!"
 msgstr "အိုး! စာမျက်နှာ မတွေ့ပါ!"
 
-#: src/components/Multiplayer.tsx:460
+#: src/components/Multiplayer.tsx:435
 msgid "Open"
 msgstr "ဖွင့်"
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:287
 msgid "Open — anyone may join or leave"
 msgstr "ဖွင့်ထား — မည်သူမဆို ဝင်ထွက်နိုင်သည်"
 
@@ -1612,14 +1612,14 @@ msgid "Passkeys"
 msgstr "Passkey များ"
 
 #: src/components/MissionSetup.tsx:845
-#: src/components/Multiplayer.tsx:115
-#: src/components/Multiplayer.tsx:270
+#: src/components/Multiplayer.tsx:90
+#: src/components/Multiplayer.tsx:245
 msgid "pilot"
 msgstr "လေယာဉ်မှူး"
 
 #: src/components/MissionSetup.tsx:1164
 #: src/components/MissionSetup.tsx:1524
-#: src/components/Multiplayer.tsx:401
+#: src/components/Multiplayer.tsx:376
 msgid "Pilot"
 msgstr "လေယာဉ်မှူး"
 
@@ -1736,11 +1736,11 @@ msgstr "မကြာသေးမီ"
 msgid "Recommended"
 msgstr "အကြံပြုထား"
 
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "အနီ"
 
-#: src/components/Multiplayer.tsx:395
+#: src/components/Multiplayer.tsx:370
 msgid "Red bots"
 msgstr "အနီ ဘော့များ"
 
@@ -1757,7 +1757,7 @@ msgstr "စိတ်ဝင်စားမှု လျှော့ချ"
 msgid "Reference"
 msgstr "ကိုးကားချက်"
 
-#: src/components/Multiplayer.tsx:289
+#: src/components/Multiplayer.tsx:264
 msgid "Refresh"
 msgstr "ပြန်စစ်ဆေး"
 
@@ -1864,7 +1864,7 @@ msgstr "ညာသို့ ယိမ်းလဲ"
 
 #: src/components/MissionSetup.tsx:1163
 #: src/components/MissionSetup.tsx:1523
-#: src/components/Multiplayer.tsx:400
+#: src/components/Multiplayer.tsx:375
 msgid "Rookie"
 msgstr "လူသစ်"
 
@@ -2160,11 +2160,11 @@ msgid "TEAM"
 msgstr "အသင်း"
 
 #: src/components/MatchHistory.tsx:52
-#: src/components/Multiplayer.tsx:460
+#: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "အသင်းများ"
 
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:289
 msgid "Teams — red versus blue"
 msgstr "အသင်းများ — အနီ vs အပြာ"
 
@@ -2197,7 +2197,7 @@ msgstr "အပြင်အဆင်"
 msgid "Theme Settings"
 msgstr "အပြင်အဆင် ဆက်တင်များ"
 
-#: src/components/Multiplayer.tsx:228
+#: src/components/Multiplayer.tsx:203
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "ဤအခန်းသည် သင့်ဂိမ်းချိတ်ဆက်မှုကို အခြားဆာဗာ ({redirectHost}) သို့ လမ်းကြောင်းပြောင်းနေသည်။ ဤဆာဗာကို ယုံကြည်မှသာ ဆက်လုပ်ပါ။"
 
@@ -2333,12 +2333,12 @@ msgid "United States"
 msgstr "အမေရိကန်ပြည်ထောင်စု"
 
 #: src/components/MissionSetup.tsx:1268
-#: src/components/Multiplayer.tsx:376
+#: src/components/Multiplayer.tsx:351
 msgid "Unlimited ammunition"
 msgstr "ခဲယမ်း အကန့်အသတ်မရှိ"
 
 #: src/components/MissionSetup.tsx:1274
-#: src/components/Multiplayer.tsx:386
+#: src/components/Multiplayer.tsx:361
 msgid "Unlimited fuel"
 msgstr "လောင်စာဆီ အကန့်အသတ်မရှိ"
 
@@ -2382,7 +2382,7 @@ msgstr "ဒေါင်လိုက်"
 
 #: src/components/MissionSetup.tsx:1165
 #: src/components/MissionSetup.tsx:1525
-#: src/components/Multiplayer.tsx:402
+#: src/components/Multiplayer.tsx:377
 msgid "Veteran"
 msgstr "ဝါရင့်"
 
@@ -2436,7 +2436,7 @@ msgstr "လက်နက် ရွေးချယ်မှု"
 msgid "Weapons"
 msgstr "လက်နက်များ"
 
-#: src/components/Multiplayer.tsx:319
+#: src/components/Multiplayer.tsx:294
 msgid "Weather"
 msgstr "ရာသီဥတု"
 
@@ -2461,12 +2461,12 @@ msgstr "တောင်ပံခေါက်ခြင်း"
 msgid "WINS"
 msgstr "နိုင်ပြီ"
 
-#: src/components/Multiplayer.tsx:254
+#: src/components/Multiplayer.tsx:229
 msgid "World server"
 msgstr "ကမ္ဘာ့ဆာဗာ"
 
 #: src/components/MissionSetup.tsx:891
-#: src/components/Multiplayer.tsx:128
+#: src/components/Multiplayer.tsx:103
 msgid "World server not reachable"
 msgstr "ကမ္ဘာ့ဆာဗာသို့ ချိတ်ဆက်၍မရပါ"
 
@@ -2502,7 +2502,7 @@ msgstr "သင်၏အကောင့်ကို {source} မှ ဤနေရ�
 msgid "Your multiplayer matches appear here once you've flown one."
 msgstr "သင်တစ်ပွဲကစားပြီးသည်နှင့် သင့်၏ မာလ်တီပလေယာပွဲများ ဤနေရာတွင် ပေါ်လာမည်။"
 
-#: src/components/Multiplayer.tsx:455
+#: src/components/Multiplayer.tsx:430
 msgid "your offer"
 msgstr "သင့်ကမ်းလှမ်းချက်"
 

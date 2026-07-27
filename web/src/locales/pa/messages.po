@@ -25,17 +25,17 @@ msgid "{0} created “{1}”"
 msgstr "{0} ਨੇ “{1}” ਬਣਾਇਆ"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:281
+#: src/components/Multiplayer.tsx:256
 msgid "{0} flying"
 msgstr "{0} ਉੱਡ ਰਹੇ ਹਨ"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:462
+#: src/components/Multiplayer.tsx:437
 msgid "{0}/{1} players"
 msgstr "{0}/{1} ਖਿਡਾਰੀ"
 
-#: src/components/Multiplayer.tsx:190
+#: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "{name} ਦਾ ਮੈਚ"
 
@@ -101,7 +101,7 @@ msgstr "ਖਾਤਾ ਤਸਦੀਕ ਕੀਤਾ ਗਿਆ"
 
 #: src/components/MissionSetup.tsx:1166
 #: src/components/MissionSetup.tsx:1526
-#: src/components/Multiplayer.tsx:403
+#: src/components/Multiplayer.tsx:378
 msgid "Ace"
 msgstr "ਉਸਤਾਦ"
 
@@ -269,11 +269,11 @@ msgstr "ਸਭ ਤੋਂ ਵਧੀਆ ਲਗਾਤਾਰ ਮੋੜ ਗਤੀ"
 msgid "BINGO FUEL"
 msgstr "ਬਿੰਗੋ ਈਂਧਨ"
 
-#: src/components/Multiplayer.tsx:501
+#: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "ਨੀਲਾ"
 
-#: src/components/Multiplayer.tsx:395
+#: src/components/Multiplayer.tsx:370
 msgid "Blue bots"
 msgstr "ਨੀਲੇ ਬੋਟ"
 
@@ -286,7 +286,7 @@ msgstr "ਬੋਲਟਰ"
 msgid "Boost interest"
 msgstr "ਦਿਲਚਸਪੀ ਵਧਾਓ"
 
-#: src/components/Multiplayer.tsx:395
+#: src/components/Multiplayer.tsx:370
 msgid "Bots"
 msgstr "ਬੋਟ"
 
@@ -315,7 +315,7 @@ msgid "CALL THE BALL"
 msgstr "ਬਾਲ ਦੱਸੋ"
 
 #: src/components/MissionSetup.tsx:1441
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:240
 msgid "Callsign"
 msgstr "ਕਾਲਸਾਈਨ"
 
@@ -333,8 +333,8 @@ msgstr "ਕੈਮਰਾ ਦੂਰੀ"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
 #: src/components/MissionSetup.tsx:493
-#: src/components/Multiplayer.tsx:236
-#: src/components/Multiplayer.tsx:478
+#: src/components/Multiplayer.tsx:211
+#: src/components/Multiplayer.tsx:453
 msgid "Cancel"
 msgstr "ਰੱਦ ਕਰੋ"
 
@@ -428,7 +428,7 @@ msgstr "ਭਾਸ਼ਾ ਚੁਣੋ"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:326
+#: src/components/Multiplayer.tsx:301
 msgid "Clear"
 msgstr "ਸਾਫ਼ ਕਰੋ"
 
@@ -515,7 +515,7 @@ msgstr "ਪੁਸ਼ਟੀ ਕਰੋ"
 msgid "Connect"
 msgstr "ਜੁੜੋ"
 
-#: src/components/Multiplayer.tsx:284
+#: src/components/Multiplayer.tsx:259
 msgid "Connecting…"
 msgstr "ਕਨੈਕਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ…"
 
@@ -532,7 +532,7 @@ msgid "Contextual information and details."
 msgstr "ਪ੍ਰਸੰਗਿਕ ਜਾਣਕਾਰੀ ਅਤੇ ਵੇਰਵੇ।"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:245
+#: src/components/Multiplayer.tsx:220
 msgid "Continue"
 msgstr "ਜਾਰੀ ਰੱਖੋ"
 
@@ -548,7 +548,7 @@ msgstr "ਕਾਪੀ ਕਰੋ"
 msgid "Corner speed (best instant turn)"
 msgstr "ਕੋਨਾ ਗਤੀ (ਸਭ ਤੋਂ ਵਧੀਆ ਤਤਕਾਲ ਮੋੜ)"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:179
 msgid "Could not create the match"
 msgstr "ਮੈਚ ਨਹੀਂ ਬਣਾਇਆ ਜਾ ਸਕਿਆ"
 
@@ -576,11 +576,11 @@ msgstr "ਉਸ ਖਾਤੇ ਨਾਲ ਪੁਸ਼ਟੀ ਨਹੀਂ ਕੀਤ�
 msgid "CRASHED"
 msgstr "ਡਿੱਗ ਪਿਆ"
 
-#: src/components/Multiplayer.tsx:434
+#: src/components/Multiplayer.tsx:409
 msgid "Create and fly"
 msgstr "ਬਣਾਓ ਅਤੇ ਉਡਾਣ ਭਰੋ"
 
-#: src/components/Multiplayer.tsx:299
+#: src/components/Multiplayer.tsx:274
 msgid "Create match"
 msgstr "ਮੈਚ ਬਣਾਓ"
 
@@ -595,7 +595,7 @@ msgid "Credits"
 msgstr "ਸਿਹਰਾ"
 
 #: src/components/MissionSetup.tsx:1248
-#: src/components/Multiplayer.tsx:327
+#: src/components/Multiplayer.tsx:302
 msgid "Cumulus"
 msgstr "ਕਿਊਮੁਲਸ"
 
@@ -634,7 +634,7 @@ msgid "Date"
 msgstr "ਮਿਤੀ"
 
 #: src/components/MissionSetup.tsx:1236
-#: src/components/Multiplayer.tsx:322
+#: src/components/Multiplayer.tsx:297
 msgid "Day"
 msgstr "ਦਿਨ"
 
@@ -691,7 +691,7 @@ msgstr "ਵੈੱਬ ਬ੍ਰਾਊਜ਼ਰ ਤੋਂ ਪਛਾਣੋ"
 msgid "Device"
 msgstr "ਡਿਵਾਈਸ"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:200
 msgid "Different game host"
 msgstr "ਵੱਖਰਾ ਗੇਮ ਸਰਵਰ"
 
@@ -737,7 +737,7 @@ msgstr "ਡਾਊਨਲੋਡ ਅਸਫਲ ਰਿਹਾ"
 msgid "Drag"
 msgstr "ਖਿੱਚੋ"
 
-#: src/components/Multiplayer.tsx:399
+#: src/components/Multiplayer.tsx:374
 msgid "Drone"
 msgstr "ਡਰੋਨ"
 
@@ -769,7 +769,7 @@ msgstr "ਇਜੈਕਟ ਹੋਇਆ"
 msgid "Email code"
 msgstr "ਈਮੇਲ ਕੋਡ"
 
-#: src/components/Multiplayer.tsx:461
+#: src/components/Multiplayer.tsx:436
 msgid "empty"
 msgstr "ਖਾਲੀ"
 
@@ -937,7 +937,7 @@ msgid "From theme"
 msgstr "ਥੀਮ ਤੋਂ"
 
 #: src/components/MissionSetup.tsx:1142
-#: src/components/Multiplayer.tsx:337
+#: src/components/Multiplayer.tsx:312
 msgid "Fuel"
 msgstr "ਈਂਧਨ"
 
@@ -1037,7 +1037,7 @@ msgid "High"
 msgstr "ਉੱਚ"
 
 #: src/components/MissionSetup.tsx:1249
-#: src/components/Multiplayer.tsx:328
+#: src/components/Multiplayer.tsx:303
 msgid "High stratus"
 msgstr "ਉੱਚ ਸਟ੍ਰੇਟਸ"
 
@@ -1103,11 +1103,11 @@ msgid "INVULNERABLE"
 msgstr "ਅਜਿੱਤ"
 
 #: src/components/MissionSetup.tsx:1262
-#: src/components/Multiplayer.tsx:366
+#: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "ਅਜਿੱਤ (ਸਿਰਫ਼ ਮਨੁੱਖੀ ਖਿਡਾਰੀ)"
 
-#: src/components/Multiplayer.tsx:513
+#: src/components/Multiplayer.tsx:488
 msgid "Join"
 msgstr "ਸ਼ਾਮਲ ਹੋਵੋ"
 
@@ -1122,11 +1122,11 @@ msgstr "ਸ਼ਾਮਲ ਹੋਇਆ"
 
 #: src/components/MatchHistory.tsx:51
 #: src/components/MissionSetup.tsx:1531
-#: src/components/Multiplayer.tsx:460
+#: src/components/Multiplayer.tsx:435
 msgid "Joust"
 msgstr "ਜੌਸਟ"
 
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:288
 msgid "Joust — 1v1, first kill wins"
 msgstr "ਦਵੰਦ ਯੁੱਧ — 1v1, ਪਹਿਲਾਂ ਡੇਗਣ ਵਾਲਾ ਜਿੱਤਦਾ ਹੈ"
 
@@ -1194,7 +1194,7 @@ msgstr "ਲਾਂਚ / ਨਿਸ਼ਾਨਾ"
 msgid "Layout"
 msgstr "ਚੈਟ ਛੱਡ ਦਿੱਤੀ"
 
-#: src/components/Multiplayer.tsx:350
+#: src/components/Multiplayer.tsx:325
 msgid "lb"
 msgstr "lb"
 
@@ -1317,7 +1317,7 @@ msgid "Low"
 msgstr "ਨੀਵਾਂ"
 
 #: src/components/MissionSetup.tsx:1250
-#: src/components/Multiplayer.tsx:329
+#: src/components/Multiplayer.tsx:304
 msgid "Low stratus"
 msgstr "ਨੀਵਾਂ ਸਟ੍ਰੇਟਸ"
 
@@ -1343,7 +1343,7 @@ msgstr "ਸਾਰੇ ਪੜ੍ਹੇ ਵਜੋਂ ਮਾਰਕ ਕਰੋ"
 msgid "Master"
 msgstr "ਮਾਸਟਰ"
 
-#: src/components/Multiplayer.tsx:309
+#: src/components/Multiplayer.tsx:284
 msgid "Match type"
 msgstr "ਮੈਚ ਦੀ ਕਿਸਮ"
 
@@ -1394,7 +1394,7 @@ msgstr "ਮਿਜ਼ਾਈਲ"
 msgid "Missiles"
 msgstr "ਮਿਜ਼ਾਈਲਾਂ"
 
-#: src/components/Multiplayer.tsx:356
+#: src/components/Multiplayer.tsx:331
 msgid "Missiles allowed"
 msgstr "ਮਿਜ਼ਾਈਲਾਂ ਦੀ ਇਜਾਜ਼ਤ"
 
@@ -1410,7 +1410,7 @@ msgstr "ਸੋਮਵਾਰ"
 msgid "Move it…"
 msgstr "ਧੁਰੇ ਨੂੰ ਹਿਲਾਓ…"
 
-#: src/components/Multiplayer.tsx:213
+#: src/components/Multiplayer.tsx:188
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "ਮਲਟੀਪਲੇਅਰ ਲਈ WebTransport ਚਾਹੀਦਾ ਹੈ, ਜੋ ਇਹ ਬ੍ਰਾਊਜ਼ਰ ਅਜੇ ਸਪੋਰਟ ਨਹੀਂ ਕਰਦਾ।"
 
@@ -1429,7 +1429,7 @@ msgid "Next image"
 msgstr "ਅਗਲੀ ਤਸਵੀਰ"
 
 #: src/components/MissionSetup.tsx:1237
-#: src/components/Multiplayer.tsx:323
+#: src/components/Multiplayer.tsx:298
 msgid "Night"
 msgstr "ਰਾਤ"
 
@@ -1453,7 +1453,7 @@ msgstr "ਕੋਈ ਜੋਇਸਟਿਕ ਨਹੀਂ ਮਿਲਿਆ — ਇਸ�
 msgid "No matches yet"
 msgstr "ਹਾਲੇ ਕੋਈ ਮੈਚ ਨਹੀਂ"
 
-#: src/components/Multiplayer.tsx:443
+#: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
 msgstr "ਕੋਈ ਖੁੱਲ੍ਹਾ ਮੈਚ ਨਹੀਂ — ਇੱਕ ਬਣਾਓ।"
 
@@ -1483,7 +1483,7 @@ msgid "No users found"
 msgstr "ਕੋਈ ਯੂਜ਼ਰ ਨਹੀਂ ਮਿਲੇ"
 
 #: src/components/MissionSetup.tsx:903
-#: src/components/Multiplayer.tsx:443
+#: src/components/Multiplayer.tsx:418
 msgid "No world server."
 msgstr "ਕੋਈ ਵਰਲਡ ਸਰਵਰ ਨਹੀਂ।"
 
@@ -1550,11 +1550,11 @@ msgstr "ਰਨਵੇ ਉੱਤੇ"
 msgid "Oops! Page Not Found!"
 msgstr "ਓਹੋ! ਪੇਜ ਨਹੀਂ ਮਿਲਿਆ!"
 
-#: src/components/Multiplayer.tsx:460
+#: src/components/Multiplayer.tsx:435
 msgid "Open"
 msgstr "ਖੋਲ੍ਹੋ"
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:287
 msgid "Open — anyone may join or leave"
 msgstr "ਖੁੱਲ੍ਹਾ — ਕੋਈ ਵੀ ਸ਼ਾਮਲ ਹੋ ਸਕਦਾ ਹੈ ਜਾਂ ਛੱਡ ਸਕਦਾ ਹੈ"
 
@@ -1612,14 +1612,14 @@ msgid "Passkeys"
 msgstr "ਪਾਸਕੀਆਂ"
 
 #: src/components/MissionSetup.tsx:845
-#: src/components/Multiplayer.tsx:115
-#: src/components/Multiplayer.tsx:270
+#: src/components/Multiplayer.tsx:90
+#: src/components/Multiplayer.tsx:245
 msgid "pilot"
 msgstr "ਪਾਇਲਟ"
 
 #: src/components/MissionSetup.tsx:1164
 #: src/components/MissionSetup.tsx:1524
-#: src/components/Multiplayer.tsx:401
+#: src/components/Multiplayer.tsx:376
 msgid "Pilot"
 msgstr "ਪਾਇਲਟ"
 
@@ -1736,11 +1736,11 @@ msgstr "ਹਾਲੀਆ"
 msgid "Recommended"
 msgstr "ਸਿਫ਼ਾਰਸ਼ ਕੀਤੇ"
 
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "ਲਾਲ"
 
-#: src/components/Multiplayer.tsx:395
+#: src/components/Multiplayer.tsx:370
 msgid "Red bots"
 msgstr "ਲਾਲ ਬੋਟ"
 
@@ -1757,7 +1757,7 @@ msgstr "ਦਿਲਚਸਪੀ ਘਟਾਓ"
 msgid "Reference"
 msgstr "ਹਵਾਲਾ"
 
-#: src/components/Multiplayer.tsx:289
+#: src/components/Multiplayer.tsx:264
 msgid "Refresh"
 msgstr "ਰਿਫਰੈਸ਼"
 
@@ -1864,7 +1864,7 @@ msgstr "ਰੋਲ ਸੱਜੇ"
 
 #: src/components/MissionSetup.tsx:1163
 #: src/components/MissionSetup.tsx:1523
-#: src/components/Multiplayer.tsx:400
+#: src/components/Multiplayer.tsx:375
 msgid "Rookie"
 msgstr "ਸਿਖਾਂਦਰੂ"
 
@@ -2160,11 +2160,11 @@ msgid "TEAM"
 msgstr "ਟੀਮ"
 
 #: src/components/MatchHistory.tsx:52
-#: src/components/Multiplayer.tsx:460
+#: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "ਟੀਮਾਂ"
 
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:289
 msgid "Teams — red versus blue"
 msgstr "ਟੀਮਾਂ — ਲਾਲ ਬਨਾਮ ਨੀਲਾ"
 
@@ -2197,7 +2197,7 @@ msgstr "theme"
 msgid "Theme Settings"
 msgstr "theme ਸੈਟਿੰਗਾਂ"
 
-#: src/components/Multiplayer.tsx:228
+#: src/components/Multiplayer.tsx:203
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "ਇਹ ਲਾਬੀ ਤੁਹਾਡੇ ਗੇਮ ਕਨੈਕਸ਼ਨ ਨੂੰ ਕਿਸੇ ਵੱਖਰੇ ਸਰਵਰ ({redirectHost}) 'ਤੇ ਭੇਜ ਰਹੀ ਹੈ। ਸਿਰਫ਼ ਤਾਂ ਹੀ ਜਾਰੀ ਰੱਖੋ ਜੇ ਤੁਸੀਂ ਇਸ ਸਰਵਰ 'ਤੇ ਭਰੋਸਾ ਕਰਦੇ ਹੋ।"
 
@@ -2333,12 +2333,12 @@ msgid "United States"
 msgstr "ਸੰਯੁਕਤ ਰਾਜ"
 
 #: src/components/MissionSetup.tsx:1268
-#: src/components/Multiplayer.tsx:376
+#: src/components/Multiplayer.tsx:351
 msgid "Unlimited ammunition"
 msgstr "ਅਸੀਮਤ ਗੋਲਾ-ਬਾਰੂਦ"
 
 #: src/components/MissionSetup.tsx:1274
-#: src/components/Multiplayer.tsx:386
+#: src/components/Multiplayer.tsx:361
 msgid "Unlimited fuel"
 msgstr "ਅਸੀਮਤ ਬਾਲਣ"
 
@@ -2382,7 +2382,7 @@ msgstr "ਲੰਬਕਾਰੀ"
 
 #: src/components/MissionSetup.tsx:1165
 #: src/components/MissionSetup.tsx:1525
-#: src/components/Multiplayer.tsx:402
+#: src/components/Multiplayer.tsx:377
 msgid "Veteran"
 msgstr "ਤਜਰਬੇਕਾਰ"
 
@@ -2436,7 +2436,7 @@ msgstr "ਹਥਿਆਰ ਚੋਣ"
 msgid "Weapons"
 msgstr "ਹਥਿਆਰ"
 
-#: src/components/Multiplayer.tsx:319
+#: src/components/Multiplayer.tsx:294
 msgid "Weather"
 msgstr "ਮੌਸਮ"
 
@@ -2461,12 +2461,12 @@ msgstr "ਖੰਭ ਮੋੜਨਾ"
 msgid "WINS"
 msgstr "ਜੇਤੂ"
 
-#: src/components/Multiplayer.tsx:254
+#: src/components/Multiplayer.tsx:229
 msgid "World server"
 msgstr "ਵਰਲਡ ਸਰਵਰ"
 
 #: src/components/MissionSetup.tsx:891
-#: src/components/Multiplayer.tsx:128
+#: src/components/Multiplayer.tsx:103
 msgid "World server not reachable"
 msgstr "ਵਰਲਡ ਸਰਵਰ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਹੋ ਰਹੀ"
 
@@ -2502,7 +2502,7 @@ msgstr "ਤੁਹਾਡਾ ਖਾਤਾ {source} ਤੋਂ ਇੱਥੇ ਲਿ�
 msgid "Your multiplayer matches appear here once you've flown one."
 msgstr "ਤੁਹਾਡੇ ਵੱਲੋਂ ਇੱਕ ਖੇਡਣ ਤੋਂ ਬਾਅਦ ਤੁਹਾਡੇ ਮਲਟੀਪਲੇਅਰ ਮੈਚ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੇ।"
 
-#: src/components/Multiplayer.tsx:455
+#: src/components/Multiplayer.tsx:430
 msgid "your offer"
 msgstr "ਤੁਹਾਡੀ ਪੇਸ਼ਕਸ਼"
 

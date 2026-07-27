@@ -25,17 +25,17 @@ msgid "{0} created “{1}”"
 msgstr "{0} ได้สร้าง “{1}”"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:281
+#: src/components/Multiplayer.tsx:256
 msgid "{0} flying"
 msgstr "{0} คนกำลังบิน"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:462
+#: src/components/Multiplayer.tsx:437
 msgid "{0}/{1} players"
 msgstr "ผู้เล่น {0}/{1} คน"
 
-#: src/components/Multiplayer.tsx:190
+#: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
 msgstr "แมตช์ของ {name}"
 
@@ -101,7 +101,7 @@ msgstr "ยืนยันบัญชีแล้ว"
 
 #: src/components/MissionSetup.tsx:1166
 #: src/components/MissionSetup.tsx:1526
-#: src/components/Multiplayer.tsx:403
+#: src/components/Multiplayer.tsx:378
 msgid "Ace"
 msgstr "เสืออากาศ"
 
@@ -269,11 +269,11 @@ msgstr "ความเร็วเลี้ยวต่อเนื่องท
 msgid "BINGO FUEL"
 msgstr "เชื้อเพลิงบิงโก"
 
-#: src/components/Multiplayer.tsx:501
+#: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "น้ำเงิน"
 
-#: src/components/Multiplayer.tsx:395
+#: src/components/Multiplayer.tsx:370
 msgid "Blue bots"
 msgstr "บอทน้ำเงิน"
 
@@ -286,7 +286,7 @@ msgstr "โบลเตอร์"
 msgid "Boost interest"
 msgstr "เพิ่มความสนใจ"
 
-#: src/components/Multiplayer.tsx:395
+#: src/components/Multiplayer.tsx:370
 msgid "Bots"
 msgstr "บอท"
 
@@ -315,7 +315,7 @@ msgid "CALL THE BALL"
 msgstr "แจ้งบอล"
 
 #: src/components/MissionSetup.tsx:1441
-#: src/components/Multiplayer.tsx:265
+#: src/components/Multiplayer.tsx:240
 msgid "Callsign"
 msgstr "นามเรียกขาน"
 
@@ -333,8 +333,8 @@ msgstr "ระยะกล้อง"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:89
 #: src/components/MissionSetup.tsx:493
-#: src/components/Multiplayer.tsx:236
-#: src/components/Multiplayer.tsx:478
+#: src/components/Multiplayer.tsx:211
+#: src/components/Multiplayer.tsx:453
 msgid "Cancel"
 msgstr "ยกเลิก"
 
@@ -428,7 +428,7 @@ msgstr "เลือกภาษา"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:326
+#: src/components/Multiplayer.tsx:301
 msgid "Clear"
 msgstr "ล้าง"
 
@@ -515,7 +515,7 @@ msgstr "ยืนยัน"
 msgid "Connect"
 msgstr "เชื่อมต่อ"
 
-#: src/components/Multiplayer.tsx:284
+#: src/components/Multiplayer.tsx:259
 msgid "Connecting…"
 msgstr "กำลังเชื่อมต่อ…"
 
@@ -532,7 +532,7 @@ msgid "Contextual information and details."
 msgstr "ข้อมูลบริบทและรายละเอียด"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:245
+#: src/components/Multiplayer.tsx:220
 msgid "Continue"
 msgstr "ดำเนินการต่อ"
 
@@ -548,7 +548,7 @@ msgstr "คัดลอก"
 msgid "Corner speed (best instant turn)"
 msgstr "ความเร็วคอร์เนอร์ (เลี้ยวฉับพลันดีที่สุด)"
 
-#: src/components/Multiplayer.tsx:204
+#: src/components/Multiplayer.tsx:179
 msgid "Could not create the match"
 msgstr "สร้างแมตช์ไม่สำเร็จ"
 
@@ -576,11 +576,11 @@ msgstr "ไม่สามารถยืนยันด้วยบัญชี
 msgid "CRASHED"
 msgstr "ตกแล้ว"
 
-#: src/components/Multiplayer.tsx:434
+#: src/components/Multiplayer.tsx:409
 msgid "Create and fly"
 msgstr "สร้างแล้วบินเลย"
 
-#: src/components/Multiplayer.tsx:299
+#: src/components/Multiplayer.tsx:274
 msgid "Create match"
 msgstr "สร้างแมตช์"
 
@@ -595,7 +595,7 @@ msgid "Credits"
 msgstr "เครดิต"
 
 #: src/components/MissionSetup.tsx:1248
-#: src/components/Multiplayer.tsx:327
+#: src/components/Multiplayer.tsx:302
 msgid "Cumulus"
 msgstr "เมฆคิวมูลัส"
 
@@ -634,7 +634,7 @@ msgid "Date"
 msgstr "วันที่"
 
 #: src/components/MissionSetup.tsx:1236
-#: src/components/Multiplayer.tsx:322
+#: src/components/Multiplayer.tsx:297
 msgid "Day"
 msgstr "กลางวัน"
 
@@ -691,7 +691,7 @@ msgstr "ตรวจจับจากเว็บเบราว์เซอร
 msgid "Device"
 msgstr "อุปกรณ์"
 
-#: src/components/Multiplayer.tsx:225
+#: src/components/Multiplayer.tsx:200
 msgid "Different game host"
 msgstr "โฮสต์เกมอื่น"
 
@@ -737,7 +737,7 @@ msgstr "ดาวน์โหลดไม่สำเร็จ"
 msgid "Drag"
 msgstr "ลาก"
 
-#: src/components/Multiplayer.tsx:399
+#: src/components/Multiplayer.tsx:374
 msgid "Drone"
 msgstr "โดรน"
 
@@ -769,7 +769,7 @@ msgstr "ดีดตัวแล้ว"
 msgid "Email code"
 msgstr "รหัสอีเมล"
 
-#: src/components/Multiplayer.tsx:461
+#: src/components/Multiplayer.tsx:436
 msgid "empty"
 msgstr "ว่าง"
 
@@ -937,7 +937,7 @@ msgid "From theme"
 msgstr "จากธีม"
 
 #: src/components/MissionSetup.tsx:1142
-#: src/components/Multiplayer.tsx:337
+#: src/components/Multiplayer.tsx:312
 msgid "Fuel"
 msgstr "เชื้อเพลิง"
 
@@ -1037,7 +1037,7 @@ msgid "High"
 msgstr "สูง"
 
 #: src/components/MissionSetup.tsx:1249
-#: src/components/Multiplayer.tsx:328
+#: src/components/Multiplayer.tsx:303
 msgid "High stratus"
 msgstr "สเตรตัสสูง"
 
@@ -1103,11 +1103,11 @@ msgid "INVULNERABLE"
 msgstr "อมตะ"
 
 #: src/components/MissionSetup.tsx:1262
-#: src/components/Multiplayer.tsx:366
+#: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "อมตะ (เฉพาะผู้เล่นมนุษย์)"
 
-#: src/components/Multiplayer.tsx:513
+#: src/components/Multiplayer.tsx:488
 msgid "Join"
 msgstr "เข้าร่วม"
 
@@ -1122,11 +1122,11 @@ msgstr "เข้าร่วมแล้ว"
 
 #: src/components/MatchHistory.tsx:51
 #: src/components/MissionSetup.tsx:1531
-#: src/components/Multiplayer.tsx:460
+#: src/components/Multiplayer.tsx:435
 msgid "Joust"
 msgstr "ประจัญหน้า"
 
-#: src/components/Multiplayer.tsx:313
+#: src/components/Multiplayer.tsx:288
 msgid "Joust — 1v1, first kill wins"
 msgstr "ดวล — 1v1 ใครยิงตกก่อนชนะ"
 
@@ -1194,7 +1194,7 @@ msgstr "ปล่อยตัว / ล็อกเป้า"
 msgid "Layout"
 msgstr "เลย์เอาต์"
 
-#: src/components/Multiplayer.tsx:350
+#: src/components/Multiplayer.tsx:325
 msgid "lb"
 msgstr "lb"
 
@@ -1317,7 +1317,7 @@ msgid "Low"
 msgstr "ต่ำ"
 
 #: src/components/MissionSetup.tsx:1250
-#: src/components/Multiplayer.tsx:329
+#: src/components/Multiplayer.tsx:304
 msgid "Low stratus"
 msgstr "สเตรตัสต่ำ"
 
@@ -1343,7 +1343,7 @@ msgstr "ทำเครื่องหมายว่าอ่านแล้ว
 msgid "Master"
 msgstr "มาสเตอร์"
 
-#: src/components/Multiplayer.tsx:309
+#: src/components/Multiplayer.tsx:284
 msgid "Match type"
 msgstr "ประเภทแมตช์"
 
@@ -1394,7 +1394,7 @@ msgstr "ขีปนาวุธ"
 msgid "Missiles"
 msgstr "จรวด"
 
-#: src/components/Multiplayer.tsx:356
+#: src/components/Multiplayer.tsx:331
 msgid "Missiles allowed"
 msgstr "ใช้มิสไซล์ได้"
 
@@ -1410,7 +1410,7 @@ msgstr "วันจันทร์"
 msgid "Move it…"
 msgstr "ขยับเลย…"
 
-#: src/components/Multiplayer.tsx:213
+#: src/components/Multiplayer.tsx:188
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "โหมดผู้เล่นหลายคนต้องใช้ WebTransport ซึ่งเบราว์เซอร์นี้ยังไม่รองรับ"
 
@@ -1429,7 +1429,7 @@ msgid "Next image"
 msgstr "รูปถัดไป"
 
 #: src/components/MissionSetup.tsx:1237
-#: src/components/Multiplayer.tsx:323
+#: src/components/Multiplayer.tsx:298
 msgid "Night"
 msgstr "กลางคืน"
 
@@ -1453,7 +1453,7 @@ msgstr "ไม่พบจอยสติ๊ก — กดปุ่มใดก�
 msgid "No matches yet"
 msgstr "ยังไม่มีแมตช์"
 
-#: src/components/Multiplayer.tsx:443
+#: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
 msgstr "ยังไม่มีแมตช์ที่เปิดอยู่ — สร้างเลย"
 
@@ -1483,7 +1483,7 @@ msgid "No users found"
 msgstr "ไม่พบผู้ใช้"
 
 #: src/components/MissionSetup.tsx:903
-#: src/components/Multiplayer.tsx:443
+#: src/components/Multiplayer.tsx:418
 msgid "No world server."
 msgstr "ไม่มีเซิร์ฟเวอร์โลก"
 
@@ -1550,11 +1550,11 @@ msgstr "บนรันเวย์"
 msgid "Oops! Page Not Found!"
 msgstr "ขออภัย! ไม่พบหน้านี้!"
 
-#: src/components/Multiplayer.tsx:460
+#: src/components/Multiplayer.tsx:435
 msgid "Open"
 msgstr "เปิด"
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:287
 msgid "Open — anyone may join or leave"
 msgstr "เปิด — ใครก็เข้าร่วมหรือออกได้"
 
@@ -1612,14 +1612,14 @@ msgid "Passkeys"
 msgstr "พาสคีย์"
 
 #: src/components/MissionSetup.tsx:845
-#: src/components/Multiplayer.tsx:115
-#: src/components/Multiplayer.tsx:270
+#: src/components/Multiplayer.tsx:90
+#: src/components/Multiplayer.tsx:245
 msgid "pilot"
 msgstr "นักบิน"
 
 #: src/components/MissionSetup.tsx:1164
 #: src/components/MissionSetup.tsx:1524
-#: src/components/Multiplayer.tsx:401
+#: src/components/Multiplayer.tsx:376
 msgid "Pilot"
 msgstr "นักบิน"
 
@@ -1736,11 +1736,11 @@ msgstr "ล่าสุด"
 msgid "Recommended"
 msgstr "แนะนำ"
 
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:466
 msgid "Red"
 msgstr "แดง"
 
-#: src/components/Multiplayer.tsx:395
+#: src/components/Multiplayer.tsx:370
 msgid "Red bots"
 msgstr "บอทแดง"
 
@@ -1757,7 +1757,7 @@ msgstr "ลดความสนใจ"
 msgid "Reference"
 msgstr "อ้างอิง"
 
-#: src/components/Multiplayer.tsx:289
+#: src/components/Multiplayer.tsx:264
 msgid "Refresh"
 msgstr "รีเฟรช"
 
@@ -1864,7 +1864,7 @@ msgstr "โรลขวา"
 
 #: src/components/MissionSetup.tsx:1163
 #: src/components/MissionSetup.tsx:1523
-#: src/components/Multiplayer.tsx:400
+#: src/components/Multiplayer.tsx:375
 msgid "Rookie"
 msgstr "มือใหม่"
 
@@ -2160,11 +2160,11 @@ msgid "TEAM"
 msgstr "ทีม"
 
 #: src/components/MatchHistory.tsx:52
-#: src/components/Multiplayer.tsx:460
+#: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "ทีม"
 
-#: src/components/Multiplayer.tsx:314
+#: src/components/Multiplayer.tsx:289
 msgid "Teams — red versus blue"
 msgstr "ทีม — แดงปะทะน้ำเงิน"
 
@@ -2197,7 +2197,7 @@ msgstr "ธีม"
 msgid "Theme Settings"
 msgstr "การตั้งค่าธีม"
 
-#: src/components/Multiplayer.tsx:228
+#: src/components/Multiplayer.tsx:203
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "ล็อบบี้นี้กำลังส่งการเชื่อมต่อเกมของคุณไปยังโฮสต์อื่น ({redirectHost}) ดำเนินการต่อเฉพาะเมื่อคุณเชื่อถือเซิร์ฟเวอร์นี้เท่านั้น"
 
@@ -2333,12 +2333,12 @@ msgid "United States"
 msgstr "สหรัฐอเมริกา"
 
 #: src/components/MissionSetup.tsx:1268
-#: src/components/Multiplayer.tsx:376
+#: src/components/Multiplayer.tsx:351
 msgid "Unlimited ammunition"
 msgstr "กระสุนไม่จำกัด"
 
 #: src/components/MissionSetup.tsx:1274
-#: src/components/Multiplayer.tsx:386
+#: src/components/Multiplayer.tsx:361
 msgid "Unlimited fuel"
 msgstr "เชื้อเพลิงไม่จำกัด"
 
@@ -2382,7 +2382,7 @@ msgstr "แนวดิ่ง"
 
 #: src/components/MissionSetup.tsx:1165
 #: src/components/MissionSetup.tsx:1525
-#: src/components/Multiplayer.tsx:402
+#: src/components/Multiplayer.tsx:377
 msgid "Veteran"
 msgstr "มือเก๋า"
 
@@ -2436,7 +2436,7 @@ msgstr "เลือกอาวุธ"
 msgid "Weapons"
 msgstr "อาวุธ"
 
-#: src/components/Multiplayer.tsx:319
+#: src/components/Multiplayer.tsx:294
 msgid "Weather"
 msgstr "สภาพอากาศ"
 
@@ -2461,12 +2461,12 @@ msgstr "พับปีก"
 msgid "WINS"
 msgstr "ชนะ"
 
-#: src/components/Multiplayer.tsx:254
+#: src/components/Multiplayer.tsx:229
 msgid "World server"
 msgstr "เซิร์ฟเวอร์โลก"
 
 #: src/components/MissionSetup.tsx:891
-#: src/components/Multiplayer.tsx:128
+#: src/components/Multiplayer.tsx:103
 msgid "World server not reachable"
 msgstr "เข้าถึงเซิร์ฟเวอร์โลกไม่ได้"
 
@@ -2502,7 +2502,7 @@ msgstr "บัญชีของคุณถูกย้ายมาที่น
 msgid "Your multiplayer matches appear here once you've flown one."
 msgstr "แมตช์ผู้เล่นหลายคนของคุณจะปรากฏที่นี่หลังจากที่คุณบินไปแล้วหนึ่งครั้ง"
 
-#: src/components/Multiplayer.tsx:455
+#: src/components/Multiplayer.tsx:430
 msgid "your offer"
 msgstr "ข้อเสนอของคุณ"
 
