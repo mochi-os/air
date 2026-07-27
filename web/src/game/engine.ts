@@ -3460,7 +3460,7 @@ function draw_hud(dt){
 	// ---- conformal symbology (#133): 5° pitch ladder referenced to the velocity
 	// vector, zenith/nadir, gun cross (A/A only), waterline (landing), the
 	// velocity vector with its 8° limit, E-bracket, and ILS deviation bars.
-	const ppd=HH*(view_zoom||1)/45;               // true pixels per degree at the camera's current field
+	const ppd=HH/camera.fov;                      // true pixels per degree at the camera's LIVE field (tracks the pit's wide base and the zoom ease alike)
 	const pa=(ownship.gear??1)<0.5;               // landing symbology gate (gear down)
 	let fpm=null;
 	const bore=glass?(proj_dir(ownship.fwd)||[cx,cy]):[cx,cy];   // boresight on screen — shared by the conformal block AND the A/A weapon block below (was const inside the former: the 9M seeker threw and killed the frame loop)
@@ -3516,8 +3516,9 @@ function draw_hud(dt){
 	// ---- E bracket (#86): the PA-mode AoA error bracket, left of the velocity vector.
 	// FPM centred = on-speed 8.1°; fast pushes the bracket DOWN under the FPM.
 	if(fpm && pa && !ownship.grounded){
-		const off=THREE.MathUtils.clamp((8.1-(ownship.aoa??8.1))*(HH/45),-3.5*(HH/45),3.5*(HH/45));
-		const bx=fpm[0]-30, by=fpm[1]+off, half=1.2*(HH/45);
+		const dpp=ppd/(view_zoom||1);   // zoom-independent degrees->px, tracking the view's base field
+		const off=THREE.MathUtils.clamp((8.1-(ownship.aoa??8.1))*dpp,-3.5*dpp,3.5*dpp);
+		const bx=fpm[0]-30, by=fpm[1]+off, half=1.2*dpp;
 		hctx.beginPath(); hctx.moveTo(bx+7,by-half); hctx.lineTo(bx,by-half); hctx.lineTo(bx,by+half); hctx.lineTo(bx+7,by+half);
 		hctx.moveTo(bx,by); hctx.lineTo(bx+5,by); hctx.stroke(); }   // centre tick marks on-speed
 
@@ -4162,7 +4163,8 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 	if(map_on&&running){ const pad=read_gamepad(); if(pad) scan_zoom(pad,pad_bindings(pad)); }   // the map pauses the world (read_input stops): poll the wheel here so it still zooms the map
 	if(!map_on&&zoom_wheel&&running&&!game_paused) zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(3,zoom_wheel*4*dt),cfg.view==="chase"?0.5:1,4);   // axis-form wheels steer the target too
 	view_zoom+=(zoom_target-view_zoom)*Math.min(1,dt*10);   // ease toward the notch target — direct FOV steps read as jerky
-	{ const fov=45/view_zoom; if(Math.abs(camera.fov-fov)>0.01){ camera.fov=fov; camera.updateProjectionMatrix(); cockpit_cam.fov=fov; cockpit_cam.updateProjectionMatrix(); } }
+	{ const base=cfg.view==="cockpit"?72:45;   // wide field in the pit — at 45° the glareshield swallowed the canopy; 45° elsewhere keeps the HUD's 1:1 glideslope
+		const fov=base/view_zoom; if(Math.abs(camera.fov-fov)>0.01){ camera.fov=fov; camera.updateProjectionMatrix(); cockpit_cam.fov=fov; cockpit_cam.updateProjectionMatrix(); } }
 	if(ocean){ ocean.position.x=camera.position.x; ocean.position.z=camera.position.z; }
 	sky.position.copy(camera.position); stars.position.copy(camera.position);
 	// Resize BEFORE rendering: setSize clears the drawing buffer, so a dyn-res
