@@ -107,6 +107,7 @@ interface Core {
   bandit_mirror?(state: Uint8Array): string
   bandit_menace?(shots: Uint8Array, count: number): string
   bandit_step?(state: Uint8Array): number
+  bandit_mode?(): string
 }
 
 declare global {
@@ -335,6 +336,12 @@ export function bandit_step(): { state: Float64Array; fire: boolean; flare: bool
   const flags = core.bandit_step(bandit_bytes)
   if (typeof flags !== 'number' || flags < 0) return null
   return { state: bandit_out, fire: (flags & 1) !== 0, flare: (flags & 2) !== 0 }
+}
+
+// bandit_mode reports the brain's chosen manoeuvre (press, defense, spiral...)
+// for the flight recorder's developer-only doctrine channel (#212/#206).
+export function bandit_mode(): string {
+  return core?.bandit_mode ? core.bandit_mode() : ''
 }
 
 export function battle_hulk(index: number, aircraft: string): boolean {
