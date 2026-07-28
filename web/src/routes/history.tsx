@@ -37,6 +37,5 @@ function History() {
 
 export const Route = createFileRoute('/history')({
   component: History,
-  validateSearch: (search: Record<string, unknown>): { developer?: string } =>
-    search.developer ? { developer: String(search.developer) } : {},
+  validateSearch: (search: Record<string, unknown>) => search,
 })
