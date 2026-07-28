@@ -421,7 +421,7 @@ msgstr "Gumzo"
 msgid "Chat to everyone"
 msgstr "Gumzo na wote"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Udanganyifu"
@@ -582,7 +582,7 @@ msgstr "Imeshindikana kuunda mechi"
 msgid "Could not load this document. Please try again later."
 msgstr "Haikuweza kupakia hati hii. Tafadhali jaribu tena baadaye."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Imeshindikana kuhifadhi rekodi"
 
@@ -660,7 +660,7 @@ msgstr "Hali ya giza"
 msgid "Data conflict"
 msgstr "Mgongano wa data"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Tarehe"
 
@@ -669,8 +669,8 @@ msgstr "Tarehe"
 msgid "Day"
 msgstr "Mchana"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Vifo"
 
@@ -734,7 +734,7 @@ msgstr "Mwelekeo"
 msgid "disconnected"
 msgstr "imekatika"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Imetenganishwa"
 
@@ -903,7 +903,7 @@ msgstr "PAMBANO LIMEANZA"
 msgid "Finish moving your account"
 msgstr "Maliza kuhamisha akaunti yako"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Imekamilika"
 
@@ -941,9 +941,17 @@ msgstr "Tambarare"
 msgid "FLIGHT CORE FAILED"
 msgstr "KIINI CHA NDEGE KIMESHINDWA"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Safari za ndege"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Inayoelea"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Umeruka"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Ruka"
 msgid "Framerate"
 msgstr "Kasi ya fremu"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Kuruka huru"
@@ -1004,7 +1013,7 @@ msgstr "Kifaa cha mafuta"
 msgid "Full layout"
 msgstr "Mpangilio kamili"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Jiunge na seva"
 msgid "JOINED"
 msgstr "AMEJIUNGA"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Pambano dhidi ya mchezaji wa AI"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Vitufe"
 msgid "KILL"
 msgstr "UMEUA"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Umeuawa"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Mauaji"
 
@@ -1255,7 +1268,7 @@ msgstr "Jifunze zaidi"
 msgid "Leave server"
 msgstr "Ondoka kwenye seva"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Aliondoka"
 
@@ -1396,7 +1409,6 @@ msgstr "Jumla"
 msgid "Match type"
 msgstr "Aina ya mechi"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Mechi"
@@ -1447,7 +1459,7 @@ msgstr "Makombora"
 msgid "Missiles allowed"
 msgstr "Makombora yanaruhusiwa"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Hali"
 
@@ -1490,6 +1502,10 @@ msgstr "Hakuna sheria za ufikiaji zilizosanidiwa. Ongeza sheria kudhibiti nani a
 msgid "No connected accounts"
 msgstr "Hakuna akaunti zilizounganishwa"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Bado hakuna safari za ndege"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Hakuna vikundi vinavyopatikana"
@@ -1497,10 +1513,6 @@ msgstr "Hakuna vikundi vinavyopatikana"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Hakuna joystick iliyotambuliwa — bonyeza kitufe chochote juu yake ili kuiamsha."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Bado hakuna mechi"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Pitch juu"
 msgid "PLATFORM"
 msgstr "JUKWAA"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Wachezaji"
 
@@ -1803,12 +1815,12 @@ msgstr "Inapendekezwa"
 msgid "Record flights"
 msgstr "Rekodi safari za ndege"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Kurekodi"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Rekodi imehifadhiwa"
 
@@ -1903,7 +1915,7 @@ msgstr "Utatuzi"
 msgid "Restart mission"
 msgstr "Anzisha upya misheni"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Matokeo"
 
@@ -2061,7 +2073,7 @@ msgstr "Tuma barua pepe"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Seva"
@@ -2250,7 +2262,7 @@ msgstr "Timu"
 msgid "TEAM"
 msgstr "TIMU"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Timu"
@@ -2327,6 +2339,10 @@ msgstr "Mwendo wa mzunguko endelevu mkazo zaidi"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "inamisha"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Muda"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Wima"
 msgid "Veteran"
 msgstr "Mkongwe"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Ushindi"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Kijipicha cha video"
@@ -2615,9 +2635,9 @@ msgstr "Huna ruhusa inayohitajika <0/>ya kutazama rasilimali hii."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Akaunti yako ilihamishiwa hapa kutoka {source}. Mpaka uifute hapo, ujumbe na arifa zinaweza kufikia seva zote mbili, baadhi ya maudhui yako bado yanatolewa kutoka seva ya zamani, na wafuasi wanaweza kuchukua dakika chache kukupata hapa."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Mechi zako za wachezaji wengi zitaonekana hapa baada ya kuruka moja."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Safari zako za ndege zitaonekana hapa ukishafanya moja."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

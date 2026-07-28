@@ -421,7 +421,7 @@ msgstr "चैट"
 msgid "Chat to everyone"
 msgstr "सभे से चैट"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "चीट"
@@ -582,7 +582,7 @@ msgstr "मैच ना बन पावल"
 msgid "Could not load this document. Please try again later."
 msgstr "एह दस्तावेज के लोड ना कर सकल। बाद में फिर कोशिश करीं।"
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "रिकॉर्डिंग सेव ना हो सकल"
 
@@ -660,7 +660,7 @@ msgstr "गहिरा मोड"
 msgid "Data conflict"
 msgstr "डेटा में टकराव"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "तारीख"
 
@@ -669,8 +669,8 @@ msgstr "तारीख"
 msgid "Day"
 msgstr "दिन"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "मौत"
 
@@ -734,7 +734,7 @@ msgstr "दिशा"
 msgid "disconnected"
 msgstr "डिस्कनेक्ट हो गइल"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "जुड़ल नइखे"
 
@@ -903,7 +903,7 @@ msgstr "लड़ाई शुरू भइल"
 msgid "Finish moving your account"
 msgstr "आपन खाता हिलावल पूरा करीं"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "खतम भइल"
 
@@ -941,9 +941,17 @@ msgstr "सपाट"
 msgid "FLIGHT CORE FAILED"
 msgstr "उड़ान कोर फेल हो गइल"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "उड़ान"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "तैरत"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "उड़ल"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "उड़ीं"
 msgid "Framerate"
 msgstr "फ्रेमरेट"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "मुक्त उड़ान"
@@ -1004,7 +1013,7 @@ msgstr "ईंधन जांच"
 msgid "Full layout"
 msgstr "पूरा लेआउट"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "सर्वर से जुड़ीं"
 msgid "JOINED"
 msgstr "जुड़ गइलें"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "AI खिलाड़ी के खिलाफ द्वंद्व"
 msgid "Joystick"
 msgstr "जॉयस्टिक"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "कुंजी"
 msgid "KILL"
 msgstr "मार गिरावल"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "मारल गइल"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "किल"
 
@@ -1255,7 +1268,7 @@ msgstr "अउरी जानीं"
 msgid "Leave server"
 msgstr "सर्वर छोड़ीं"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "छोड़ि देलस"
 
@@ -1396,7 +1409,6 @@ msgstr "मुख्य"
 msgid "Match type"
 msgstr "मैच के किसिम"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "मैच"
@@ -1447,7 +1459,7 @@ msgstr "मिसाइल"
 msgid "Missiles allowed"
 msgstr "मिसाइल के इजाजत बा"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "मोड"
 
@@ -1490,6 +1502,10 @@ msgstr "कौनो पहुँच नियम सेट नइखे। ए 
 msgid "No connected accounts"
 msgstr "कौनो जुड़ल खाता नइखे"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "अबहीं तक कौनो उड़ान नइखे"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "कौनो ग्रुप उपलब्ध नइखे"
@@ -1497,10 +1513,6 @@ msgstr "कौनो ग्रुप उपलब्ध नइखे"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "कवनो जॉयस्टिक ना मिलल — एकरा के जगावे खातिर कवनो बटन दबाईं।"
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "अबले कवनो मैच नइखे"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "पिच ऊपर"
 msgid "PLATFORM"
 msgstr "प्लेटफार्म"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "खिलाड़ी"
 
@@ -1803,12 +1815,12 @@ msgstr "सिफारिश कइल"
 msgid "Record flights"
 msgstr "उड़ान रिकॉर्ड करीं"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "रिकॉर्डिंग"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "रिकॉर्डिंग सेव भइल"
 
@@ -1903,7 +1915,7 @@ msgstr "समाधान"
 msgid "Restart mission"
 msgstr "मिशन फेर से शुरू करीं"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "नतीजा"
 
@@ -2061,7 +2073,7 @@ msgstr "ईमेल भेजीं"
 msgid "Serif"
 msgstr "सेरिफ़"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "सर्वर"
@@ -2250,7 +2262,7 @@ msgstr "टीम"
 msgid "TEAM"
 msgstr "टीम"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "टीम सभ"
@@ -2327,6 +2339,10 @@ msgstr "सबसे तंग सतत मोड़ रफ्तार"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "झुकाव"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "समय"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "खड़ा"
 msgid "Veteran"
 msgstr "अनुभवी"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "जीत"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "वीडियो थंबनेल"
@@ -2615,9 +2635,9 @@ msgstr "ई संसाधन देखे खातिर <0/>रउआ लग
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "आपन खाता {source} से इहाँ हिलावल गइल। जब तक उहाँ से ना मेटाईं, संदेश आ सूचना दुनो सर्वर पर पहुँच सकेला, कुछ सामग्री पुरान सर्वर से आवत रही, आ फॉलोअर्स के इहाँ ढूंढे में कुछ मिनट लाग सकेला।"
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "रउआ के मल्टीप्लेयर मैच इहाँ लउकी जब रउआ एक ठो उड़ा लेब।"
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "एक बेर उड़ान भरला के बाद रउआ के उड़ान इहाँ देखाई दीहें।"
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

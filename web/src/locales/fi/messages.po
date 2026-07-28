@@ -421,7 +421,7 @@ msgstr "Keskustelu"
 msgid "Chat to everyone"
 msgstr "Chat kaikille"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Huijaukset"
@@ -582,7 +582,7 @@ msgstr "Ottelun luominen epäonnistui"
 msgid "Could not load this document. Please try again later."
 msgstr "Tätä dokumenttia ei voitu ladata. Yritä myöhemmin uudelleen."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Tallenteen tallentaminen epäonnistui"
 
@@ -660,7 +660,7 @@ msgstr "Tumma tila"
 msgid "Data conflict"
 msgstr "Tietoristiriita"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Päivämäärä"
 
@@ -669,8 +669,8 @@ msgstr "Päivämäärä"
 msgid "Day"
 msgstr "Päivä"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Kuolemat"
 
@@ -734,7 +734,7 @@ msgstr "Suunta"
 msgid "disconnected"
 msgstr "irrotettu"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Ei yhteyttä"
 
@@ -903,7 +903,7 @@ msgstr "TAISTELU ALKAA"
 msgid "Finish moving your account"
 msgstr "Viimeistele tilin siirto"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Päättyi"
 
@@ -941,9 +941,17 @@ msgstr "Litteä"
 msgid "FLIGHT CORE FAILED"
 msgstr "LENTOYTIMEN VIRHE"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Lennot"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Kelluva"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Lennetty"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Lennä"
 msgid "Framerate"
 msgstr "Kuvataajuus"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Vapaa lento"
@@ -1004,7 +1013,7 @@ msgstr "Polttoainepuomi"
 msgid "Full layout"
 msgstr "Täysi asettelu"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Liity palvelimeen"
 msgid "JOINED"
 msgstr "LIITTYI"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Kaksintaistelu tekoälypelaajaa vastaan"
 msgid "Joystick"
 msgstr "Sauvaohjain"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Näppäimet"
 msgid "KILL"
 msgstr "PUDOTUS"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Tapettu"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Tapot"
 
@@ -1255,7 +1268,7 @@ msgstr "Lue lisää"
 msgid "Leave server"
 msgstr "Poistu palvelimelta"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Poistui"
 
@@ -1396,7 +1409,6 @@ msgstr "Yleinen"
 msgid "Match type"
 msgstr "Ottelutyyppi"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Ottelut"
@@ -1447,7 +1459,7 @@ msgstr "Ohjukset"
 msgid "Missiles allowed"
 msgstr "Ohjukset sallittu"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Tila"
 
@@ -1490,6 +1502,10 @@ msgstr "Käyttöoikeussääntöjä ei ole määritetty. Lisää sääntöjä hal
 msgid "No connected accounts"
 msgstr "Ei yhdistettyjä tilejä"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Ei vielä lentoja"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Ei saatavilla olevia ryhmiä"
@@ -1497,10 +1513,6 @@ msgstr "Ei saatavilla olevia ryhmiä"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Sauvaohjainta ei havaittu — herätä se painamalla mitä tahansa sen painiketta."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Ei vielä otteluita"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Nokka ylös"
 msgid "PLATFORM"
 msgstr "TASANNE"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Pelaajat"
 
@@ -1803,12 +1815,12 @@ msgstr "Suositeltu"
 msgid "Record flights"
 msgstr "Tallenna lennot"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Tallennus"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Tallenne tallennettu"
 
@@ -1903,7 +1915,7 @@ msgstr "Ratkaisu"
 msgid "Restart mission"
 msgstr "Käynnistä tehtävä uudelleen"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Tulos"
 
@@ -2061,7 +2073,7 @@ msgstr "Lähetä sähköposti"
 msgid "Serif"
 msgstr "Pääteviivallinen"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Palvelin"
@@ -2250,7 +2262,7 @@ msgstr "Tiimi"
 msgid "TEAM"
 msgstr "TIIMI"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Joukkueet"
@@ -2327,6 +2339,10 @@ msgstr "Tiukin jatkuvan käännöksen nopeus"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "kallistus"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Aika"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Pystysuora"
 msgid "Veteran"
 msgstr "Veteraani"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Voitto"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Videon pikkukuva"
@@ -2615,9 +2635,9 @@ msgstr "Sinulla ei ole tarvittavaa käyttöoikeutta <0/>tämän resurssin tarkas
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Tilisi siirrettiin tänne kohteesta {source}. Kunnes poistat sen sieltä, viestit ja ilmoitukset voivat tavoittaa molemmat palvelimet, osa sisällöstäsi toimitetaan edelleen vanhalta palvelimelta ja seuraajillasi voi kestää muutama minuutti löytää sinut täältä."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Moninpeliottelusi näkyvät täällä, kun olet lentänyt yhden."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Lentosi näkyvät täällä, kun olet lentänyt yhden."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

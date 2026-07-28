@@ -421,7 +421,7 @@ msgstr "Sohbet"
 msgid "Chat to everyone"
 msgstr "Herkesle sohbet"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Hileler"
@@ -582,7 +582,7 @@ msgstr "Maç oluşturulamadı"
 msgid "Could not load this document. Please try again later."
 msgstr "Bu belge yüklenemedi. Lütfen daha sonra tekrar deneyin."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Uçuş kaydı kaydedilemedi"
 
@@ -660,7 +660,7 @@ msgstr "Koyu mod"
 msgid "Data conflict"
 msgstr "Veri çakışması"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Tarih"
 
@@ -669,8 +669,8 @@ msgstr "Tarih"
 msgid "Day"
 msgstr "Gündüz"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Ölümler"
 
@@ -734,7 +734,7 @@ msgstr "Yön"
 msgid "disconnected"
 msgstr "bağlantısı kesildi"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Bağlantı kesildi"
 
@@ -903,7 +903,7 @@ msgstr "DÖVÜŞ BAŞLADI"
 msgid "Finish moving your account"
 msgstr "Hesap taşımayı tamamlayın"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Tamamlandı"
 
@@ -941,9 +941,17 @@ msgstr "Düz"
 msgid "FLIGHT CORE FAILED"
 msgstr "UÇUŞ ÇEKİRDEĞİ ARIZALANDI"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Uçuşlar"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Kayan"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Uçuldu"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Uç"
 msgid "Framerate"
 msgstr "Kare hızı"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Serbest uçuş"
@@ -1004,7 +1013,7 @@ msgstr "Yakıt iğnesi"
 msgid "Full layout"
 msgstr "Tam düzen"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Sunucuya katıl"
 msgid "JOINED"
 msgstr "KATILDI"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Yapay zekâ oyuncusuna karşı düello"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Tuşlar"
 msgid "KILL"
 msgstr "DÜŞÜRDÜN"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Düşürüldü"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Öldürme"
 
@@ -1255,7 +1268,7 @@ msgstr "Daha fazla bilgi"
 msgid "Leave server"
 msgstr "Sunucudan ayrıl"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Ayrıldı"
 
@@ -1396,7 +1409,6 @@ msgstr "Genel"
 msgid "Match type"
 msgstr "Maç türü"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Maçlar"
@@ -1447,7 +1459,7 @@ msgstr "Füzeler"
 msgid "Missiles allowed"
 msgstr "Füzeler serbest"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Mod"
 
@@ -1490,6 +1502,10 @@ msgstr "Erişim kuralı yapılandırılmamış. Bu kaynağa kimin erişebileceğ
 msgid "No connected accounts"
 msgstr "Bağlı hesap yok"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Henüz uçuş yok"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Grup yok"
@@ -1497,10 +1513,6 @@ msgstr "Grup yok"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Joystick algılanmadı — uyandırmak için üzerindeki herhangi bir düğmeye basın."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Henüz maç yok"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Yukarı yunuslama"
 msgid "PLATFORM"
 msgstr "PLATFORM"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Oyuncular"
 
@@ -1803,12 +1815,12 @@ msgstr "Önerilen"
 msgid "Record flights"
 msgstr "Uçuşları kaydet"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Kayıt"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Uçuş kaydı kaydedildi"
 
@@ -1903,7 +1915,7 @@ msgstr "Çözünürlük"
 msgid "Restart mission"
 msgstr "Görevi yeniden başlat"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Sonuç"
 
@@ -2061,7 +2073,7 @@ msgstr "E-posta gönder"
 msgid "Serif"
 msgstr "Tırnaklı"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Sunucu"
@@ -2250,7 +2262,7 @@ msgstr "Takım"
 msgid "TEAM"
 msgstr "TAKIM"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Takımlar"
@@ -2327,6 +2339,10 @@ msgstr "En dar sürekli dönüş hızı"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "eğme"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Süre"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Dikey"
 msgid "Veteran"
 msgstr "Kıdemli"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Zafer"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Video küçük resmi"
@@ -2615,9 +2635,9 @@ msgstr "Bu kaynağı görüntülemek için <0/>gerekli izniniz yok."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Hesabınız {source} adresinden buraya taşındı. Orada silene kadar mesajlar ve bildirimler her iki sunucuya da ulaşabilir, bazı içerikleriniz eski sunucudan sunulmaya devam eder ve takipçileriniz sizi burada bulmak için birkaç dakika bekleyebilir."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Çok oyunculu maçların bir uçuş yaptıktan sonra burada görünür."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Bir uçuş yaptığınızda uçuşlarınız burada görünür."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

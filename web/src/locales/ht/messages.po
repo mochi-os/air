@@ -421,7 +421,7 @@ msgstr "Chat"
 msgid "Chat to everyone"
 msgstr "Chat ak tout moun"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Trich"
@@ -582,7 +582,7 @@ msgstr "Nou pa t kapab kreye match la"
 msgid "Could not load this document. Please try again later."
 msgstr "Pa t kapab chaje dokiman sa a. Tanpri eseye ankò pita."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Nou pa t ka sove anrejistreman an"
 
@@ -660,7 +660,7 @@ msgstr "Mòd fonse"
 msgid "Data conflict"
 msgstr "Konfli done"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Dat"
 
@@ -669,8 +669,8 @@ msgstr "Dat"
 msgid "Day"
 msgstr "Jou"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Lanmò"
 
@@ -734,7 +734,7 @@ msgstr "Direksyon"
 msgid "disconnected"
 msgstr "dekonekte"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Dekonekte"
 
@@ -903,7 +903,7 @@ msgstr "BATAY LA KÒMANSE"
 msgid "Finish moving your account"
 msgstr "Fini deplase kont ou"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Fini"
 
@@ -941,9 +941,17 @@ msgstr "Plat"
 msgid "FLIGHT CORE FAILED"
 msgstr "NWAYO VÒL LA ECHWE"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Vòl"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Flotan"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Vole"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Vole"
 msgid "Framerate"
 msgstr "To imaj"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Vòl lib"
@@ -1004,7 +1013,7 @@ msgstr "Sond gaz"
 msgid "Full layout"
 msgstr "Layout konplè"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Antre nan sèvè"
 msgid "JOINED"
 msgstr "ANTRE"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Duèl kont yon jwè AI"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Touch"
 msgid "KILL"
 msgstr "ELIMINE"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Touye"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Touye"
 
@@ -1255,7 +1268,7 @@ msgstr "Aprann plis"
 msgid "Leave server"
 msgstr "Kite sèvè"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Kite"
 
@@ -1396,7 +1409,6 @@ msgstr "Prensipal"
 msgid "Match type"
 msgstr "Kalite match"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Match"
@@ -1447,7 +1459,7 @@ msgstr "Misil yo"
 msgid "Missiles allowed"
 msgstr "Misil otorize"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Mòd"
 
@@ -1490,6 +1502,10 @@ msgstr "Pa gen règ aksè konfigire. Ajoute règ pou kontwole kiyès ki ka jwenn
 msgid "No connected accounts"
 msgstr "Pa gen kont konekte"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Poko gen vòl"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Pa gen gwoup disponib"
@@ -1497,10 +1513,6 @@ msgstr "Pa gen gwoup disponib"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Pa gen okenn joystick ki detekte — peze nenpòt bouton sou li pou reveye l."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Poko gen match"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Nen anwo"
 msgid "PLATFORM"
 msgstr "PLATFÒM"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Jwè"
 
@@ -1803,12 +1815,12 @@ msgstr "Rekòmande"
 msgid "Record flights"
 msgstr "Anrejistre vòl yo"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Anrejistreman"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Anrejistreman an sove"
 
@@ -1903,7 +1915,7 @@ msgstr "Rezolisyon"
 msgid "Restart mission"
 msgstr "Rekòmanse misyon"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Rezilta"
 
@@ -2061,7 +2073,7 @@ msgstr "Voye imèl"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Sèvè"
@@ -2250,7 +2262,7 @@ msgstr "Ekip"
 msgid "TEAM"
 msgstr "EKIP"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Ekip"
@@ -2327,6 +2339,10 @@ msgstr "Pi sere vitès vire soutni"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "panche"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Tan"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Vètikal"
 msgid "Veteran"
 msgstr "Veteran"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Viktwa"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Imaj videyo"
@@ -2615,9 +2635,9 @@ msgstr "Ou pa gen pèmisyon nesesè a <0/>pou w wè resous sa a."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Kont ou te deplase isit la depi {source}. Jiskaske ou efase li la, mesaj ak notifikasyon yo ka rive sou de sèvè yo, yon pati nan kontni ou ap kontinye sèvi depi ansyen sèvè a, epi moun k ap swiv ou yo ka pran kèk minit pou jwenn ou isit la."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Match miltijwè ou yo ap parèt isit la lè ou fin vole youn."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Vòl ou yo ap parèt isit la lè ou fin fè youn."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

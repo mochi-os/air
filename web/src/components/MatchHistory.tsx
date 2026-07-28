@@ -3,9 +3,9 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// The History tab: this player's recorded multiplayer matches (match_list),
-// a summary line over honest (non-cheated) matches plus a table of the recent
-// ones. Raw mode/reason enums are mapped to labels before display.
+// The History tab: every flight this player has recorded (match_list), with a
+// career summary aggregated SERVER-side over all of them and a table of the
+// fifty most recent. Raw mode/reason enums are mapped to labels before display.
 
 import { useEffect, useState } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -19,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from '@mochi/web/components/ui/table'
-import { history, type MatchRow } from '../game/net'
+import { history, type MatchRow, type MatchTotals } from '../game/net'
 import { Button } from '@mochi/web/components/ui/button'
 import { toast } from '@mochi/web'
 import { shellSaveBlob } from '@mochi/web'
@@ -62,11 +62,14 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
   const replay = recording?.() ?? null
   const { formatDateTime, formatNumber } = useFormat()
   const [matches, setMatches] = useState<MatchRow[] | null>(null)
+  const [totals, setTotals] = useState<MatchTotals | null>(null)
 
   useEffect(() => {
     let live = true
-    history().then((rows) => {
-      if (live) setMatches(rows)
+    history().then((result) => {
+      if (!live) return
+      setMatches(result.matches)
+      setTotals(result.totals)
     })
     return () => {
       live = false
@@ -78,6 +81,7 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
       furball: t`Furball`,
       joust: t`Joust`,
       teams: t`Teams`,
+      free: t`Free flight`,
     }
     return labels[mode] ?? mode.charAt(0).toUpperCase() + mode.slice(1)
   }
@@ -86,6 +90,9 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
       left: t`Left`,
       gone: t`Disconnected`,
       finished: t`Finished`,
+      flown: t`Flown`,
+      victory: t`Victory`,
+      killed: t`Killed`,
     }
     return labels[reason] ?? reason.charAt(0).toUpperCase() + reason.slice(1)
   }
@@ -96,23 +103,34 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
     return (
       <EmptyState
         icon={History}
-        title={t`No matches yet`}
-        description={t`Your multiplayer matches appear here once you've flown one.`}
+        title={t`No flights yet`}
+        description={t`Your flights appear here once you've flown one.`}
       />
     )
   }
 
-  // Summary over honest (non-cheated) matches so a stat line stays honest.
-  const honest = matches.filter((m) => !m.cheated)
-  const kills = honest.reduce((sum, m) => sum + m.kills, 0)
-  const deaths = honest.reduce((sum, m) => sum + m.deaths, 0)
+  // Career totals come from the SERVER's aggregate over every recorded flight.
+  // Summing the rows on screen counted only the fifty most recent, which now
+  // that every flight records a row is a small and shrinking fraction of them.
+  // Cheated flights are INCLUDED: this is the player's own logbook, not a
+  // leaderboard, and excluding them made the summary contradict the table.
+  const flights = totals?.flights ?? matches.length
+  const kills = totals?.kills ?? 0
+  const deaths = totals?.deaths ?? 0
+  const seconds = totals?.seconds ?? 0
   const ratio = deaths ? kills / deaths : kills
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.round((seconds % 3600) / 60)
 
   return (
     <div className='space-y-4'>
       <div className='text-muted-foreground flex flex-wrap gap-x-4 gap-y-1 text-sm'>
         <span>
-          <Trans>Matches</Trans>: {formatNumber(honest.length)}
+          <Trans>Flights</Trans>: {formatNumber(flights)}
+        </span>
+        <span>
+          <Trans>Time</Trans>: {hours ? `${formatNumber(hours)} h ` : ''}
+          {formatNumber(minutes)} min
         </span>
         <span>
           <Trans>Kills</Trans>: {formatNumber(kills)}
@@ -123,6 +141,7 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
         <span>
           <Trans>K/D</Trans>: {formatNumber(ratio, 2)}
         </span>
+
       </div>
       <Table>
         <TableHeader>

@@ -421,7 +421,7 @@ msgstr "Ìjíròrò"
 msgid "Chat to everyone"
 msgstr "Ìfọ̀rọ̀wérọ̀ pẹ̀lú gbogbo ènìyàn"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Àwọn ẹ̀tàn"
@@ -582,7 +582,7 @@ msgstr "A kò lè ṣẹ̀dá ìdíje náà"
 msgid "Could not load this document. Please try again later."
 msgstr "Kò lè kó ìwé yìí. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "A kò lè fi àkọsílẹ̀ náà pamọ́"
 
@@ -660,7 +660,7 @@ msgstr "Ọ̀nà òkùnkùn"
 msgid "Data conflict"
 msgstr "Ìtakora dátà"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Ọjọ́"
 
@@ -669,8 +669,8 @@ msgstr "Ọjọ́"
 msgid "Day"
 msgstr "Ọ̀sán"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Ikú"
 
@@ -734,7 +734,7 @@ msgstr "Ìtọ́sọ́nà"
 msgid "disconnected"
 msgstr "asopọ̀ ti já"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Ti ge asopọ̀"
 
@@ -903,7 +903,7 @@ msgstr "ÌJÀ TI BẸ̀RẸ̀"
 msgid "Finish moving your account"
 msgstr "Pari gbigbe akonti rẹ"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Ó parí"
 
@@ -941,9 +941,17 @@ msgstr "Pẹ̀tẹ́lẹ̀"
 msgid "FLIGHT CORE FAILED"
 msgstr "KÓRÒ ÒFURUFÚ KÙNÀ"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Àwọn ìfò"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Léfòfò"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Ó fò"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Fò"
 msgid "Framerate"
 msgstr "Framerate"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Ìfò òmìnira"
@@ -1004,7 +1013,7 @@ msgstr "Ọpá epo"
 msgid "Full layout"
 msgstr "Àtòjọ kíkún"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Dara pọ̀ mọ́ olùpèsè"
 msgid "JOINED"
 msgstr "TI DARAPỌ̀"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Ìjà ojúkojú pẹ̀lú òṣèré AI"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Àwọn bọtìnì"
 msgid "KILL"
 msgstr "O PA Á"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "A pa á"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Ìpànìyàn"
 
@@ -1255,7 +1268,7 @@ msgstr "Kọ́ síwájú"
 msgid "Leave server"
 msgstr "Fi olùpèsè sílẹ̀"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Ó kúrò"
 
@@ -1396,7 +1409,6 @@ msgstr "Gbogbogbo"
 msgid "Match type"
 msgstr "Irú ìdíje"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Àwọn eré"
@@ -1447,7 +1459,7 @@ msgstr "Àwọn misáìlì"
 msgid "Missiles allowed"
 msgstr "A gba àwọn mísáìlì láàyè"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Ọ̀nà"
 
@@ -1490,6 +1502,10 @@ msgstr "A kò ṣètò àwọn òfin àyè kankan. Fi àwọn òfin kún láti �
 msgid "No connected accounts"
 msgstr "Kò sí ìròyìn tó sopọ̀"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Kò sí ìfò kankan síbẹ̀"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Kò sí ẹgbẹ́ tó wà"
@@ -1497,10 +1513,6 @@ msgstr "Kò sí ẹgbẹ́ tó wà"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Kò sí joystick tí a rí — tẹ bọtìnì èyíkéyìí lórí rẹ̀ láti jí i."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Kò sí eré kankan síbẹ̀"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Pitch sókè"
 msgid "PLATFORM"
 msgstr "PÈPÉLE"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Àwọn eléré"
 
@@ -1803,12 +1815,12 @@ msgstr "Tí a dábàá"
 msgid "Record flights"
 msgstr "Ṣàkọsílẹ̀ àwọn ìfò"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Àkọsílẹ̀"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "A ti fi àkọsílẹ̀ pamọ́"
 
@@ -1903,7 +1915,7 @@ msgstr "Ìpinnu"
 msgid "Restart mission"
 msgstr "Tún iṣẹ́ bẹ̀rẹ̀"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Àbájáde"
 
@@ -2061,7 +2073,7 @@ msgstr "Fi ímeèlì ránṣẹ́"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Sáfà"
@@ -2250,7 +2262,7 @@ msgstr "Ẹgbẹ́"
 msgid "TEAM"
 msgstr "ẸGBẸ́"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Àwọn ẹgbẹ́"
@@ -2327,6 +2339,10 @@ msgstr "Ìyára ìyípo tó dúró tó há jù"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "ìtẹ̀"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Àkókò"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Òòró"
 msgid "Veteran"
 msgstr "Ògbólógbòó"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Ìṣẹ́gun"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Àwòrán kékeré fídíò"
@@ -2615,9 +2635,9 @@ msgstr "O kò ní àṣẹ tó yẹ <0/>láti wo ohun àmúlò yìí."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "A gbe akonti rẹ wá ibi lati {source}. Titi iwọ o fi pa rẹ nibẹ, awọn ifiranṣẹ ati awọn iwifunni le de olupin mejeeji, diẹ ninu akoonu rẹ tẹsiwaju lati sin lati olupin atijọ, ati awọn olutẹle le gba iṣẹju diẹ lati wa ọ nibi."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Àwọn eré oníṣeré púpọ̀ rẹ yóò farahàn níbí lẹ́yìn tí o bá ti fò ọ̀kan."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Àwọn ìfò rẹ yóò farahàn níbí lẹ́yìn tí o bá ti fò ẹ̀ẹ̀kan."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

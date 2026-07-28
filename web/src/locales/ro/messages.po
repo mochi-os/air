@@ -421,7 +421,7 @@ msgstr "Chat"
 msgid "Chat to everyone"
 msgstr "Chat cu toți"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Cheat-uri"
@@ -582,7 +582,7 @@ msgstr "Meciul nu a putut fi creat"
 msgid "Could not load this document. Please try again later."
 msgstr "Nu s-a putut încărca acest document. Încearcă din nou mai târziu."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Înregistrarea nu a putut fi salvată"
 
@@ -660,7 +660,7 @@ msgstr "Mod întunecat"
 msgid "Data conflict"
 msgstr "Conflict de date"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Dată"
 
@@ -669,8 +669,8 @@ msgstr "Dată"
 msgid "Day"
 msgstr "Zi"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Morți"
 
@@ -734,7 +734,7 @@ msgstr "Direcție"
 msgid "disconnected"
 msgstr "deconectat"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Deconectat"
 
@@ -903,7 +903,7 @@ msgstr "LUPTA A ÎNCEPUT"
 msgid "Finish moving your account"
 msgstr "Finalizați mutarea contului dvs."
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Finalizat"
 
@@ -941,9 +941,17 @@ msgstr "Plat"
 msgid "FLIGHT CORE FAILED"
 msgstr "NUCLEUL DE ZBOR A EȘUAT"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Zboruri"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Flotant"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Zburat"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Zboară"
 msgid "Framerate"
 msgstr "Rată de cadre"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Zbor liber"
@@ -1004,7 +1013,7 @@ msgstr "Sondă de combustibil"
 msgid "Full layout"
 msgstr "Aspect complet"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Alătură-te unui server"
 msgid "JOINED"
 msgstr "S-A ALĂTURAT"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Duel împotriva unui jucător AI"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Taste"
 msgid "KILL"
 msgstr "DOBORÂRE"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Doborât"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Doborâri"
 
@@ -1255,7 +1268,7 @@ msgstr "Află mai multe"
 msgid "Leave server"
 msgstr "Părăsește serverul"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Părăsit"
 
@@ -1396,7 +1409,6 @@ msgstr "General"
 msgid "Match type"
 msgstr "Tip de meci"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Meciuri"
@@ -1447,7 +1459,7 @@ msgstr "Rachete"
 msgid "Missiles allowed"
 msgstr "Rachete permise"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Mod"
 
@@ -1490,6 +1502,10 @@ msgstr "Nu sunt configurate reguli de acces. Adaugă reguli pentru a controla ci
 msgid "No connected accounts"
 msgstr "Niciun cont conectat"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Încă niciun zbor"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Niciun grup disponibil"
@@ -1497,10 +1513,6 @@ msgstr "Niciun grup disponibil"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Niciun joystick detectat — apasă orice buton de pe el pentru a-l trezi."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Încă niciun meci"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Tangaj în sus"
 msgid "PLATFORM"
 msgstr "PLATFORMĂ"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Jucători"
 
@@ -1803,12 +1815,12 @@ msgstr "Recomandat"
 msgid "Record flights"
 msgstr "Înregistrează zborurile"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Înregistrare"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Înregistrarea a fost salvată"
 
@@ -1903,7 +1915,7 @@ msgstr "Rezoluție"
 msgid "Restart mission"
 msgstr "Repornește misiunea"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Rezultat"
 
@@ -2061,7 +2073,7 @@ msgstr "Trimite email"
 msgid "Serif"
 msgstr "Cu serife"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Server"
@@ -2250,7 +2262,7 @@ msgstr "Echipă"
 msgid "TEAM"
 msgstr "ECHIPĂ"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Echipe"
@@ -2327,6 +2339,10 @@ msgstr "Viteza celui mai strâns viraj susținut"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "înclinare"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Timp"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Vertical"
 msgid "Veteran"
 msgstr "Veteran"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Victorie"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Miniatură video"
@@ -2615,9 +2635,9 @@ msgstr "Nu aveți permisiunea necesară <0/>pentru a vizualiza această resursă
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Contul dvs. a fost mutat aici de la {source}. Până când îl ștergeți de acolo, mesajele și notificările pot ajunge pe ambele servere, o parte din conținutul dvs. continuă să fie servit de pe serverul vechi, iar urmăritorii pot avea nevoie de câteva minute pentru a vă găsi aici."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Meciurile tale multiplayer apar aici după ce zbori unul."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Zborurile tale apar aici după ce efectuezi unul."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

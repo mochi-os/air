@@ -421,7 +421,7 @@ msgstr "聊天"
 msgid "Chat to everyone"
 msgstr "全體聊天"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "作弊"
@@ -582,7 +582,7 @@ msgstr "無法建立對戰"
 msgid "Could not load this document. Please try again later."
 msgstr "無法載入此文件,請稍後再試。"
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "無法儲存飛行記錄"
 
@@ -660,7 +660,7 @@ msgstr "深色模式"
 msgid "Data conflict"
 msgstr "資料衝突"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "日期"
 
@@ -669,8 +669,8 @@ msgstr "日期"
 msgid "Day"
 msgstr "白天"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "死亡"
 
@@ -734,7 +734,7 @@ msgstr "方向"
 msgid "disconnected"
 msgstr "已斷線"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "已斷線"
 
@@ -903,7 +903,7 @@ msgstr "戰鬥開始"
 msgid "Finish moving your account"
 msgstr "完成帳號遷移"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "已結束"
 
@@ -941,9 +941,17 @@ msgstr "扁平"
 msgid "FLIGHT CORE FAILED"
 msgstr "飛行核心故障"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "飛行次數"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "浮動"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "已飛行"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "起飛"
 msgid "Framerate"
 msgstr "影格率"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "自由飛行"
@@ -1004,7 +1013,7 @@ msgstr "加油探管"
 msgid "Full layout"
 msgstr "完整版面"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "混戰"
 
@@ -1168,7 +1177,7 @@ msgstr "加入伺服器"
 msgid "JOINED"
 msgstr "已加入"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "與 AI 玩家決鬥"
 msgid "Joystick"
 msgstr "搖桿"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "按鍵"
 msgid "KILL"
 msgstr "擊落"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "被擊落"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "擊落"
 
@@ -1255,7 +1268,7 @@ msgstr "深入了解"
 msgid "Leave server"
 msgstr "離開伺服器"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "已離開"
 
@@ -1396,7 +1409,6 @@ msgstr "主音量"
 msgid "Match type"
 msgstr "對戰類型"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "對局"
@@ -1447,7 +1459,7 @@ msgstr "飛彈"
 msgid "Missiles allowed"
 msgstr "允許飛彈"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "模式"
 
@@ -1490,6 +1502,10 @@ msgstr "未設定存取規則。新增規則以控制誰可以存取此資源。
 msgid "No connected accounts"
 msgstr "無已連接的帳戶"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "尚無飛行記錄"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "無可用的群組"
@@ -1497,10 +1513,6 @@ msgstr "無可用的群組"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "未偵測到搖桿——按下搖桿上的任意按鈕以喚醒它。"
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "尚無對局"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "上仰"
 msgid "PLATFORM"
 msgstr "平台"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "玩家"
 
@@ -1803,12 +1815,12 @@ msgstr "推薦"
 msgid "Record flights"
 msgstr "記錄飛行"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "飛行記錄"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "飛行記錄已儲存"
 
@@ -1903,7 +1915,7 @@ msgstr "解決方式"
 msgid "Restart mission"
 msgstr "重新開始任務"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "結果"
 
@@ -2061,7 +2073,7 @@ msgstr "傳送郵件"
 msgid "Serif"
 msgstr "襯線體"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "伺服器"
@@ -2250,7 +2262,7 @@ msgstr "團隊"
 msgid "TEAM"
 msgstr "隊伍"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "團隊戰"
@@ -2327,6 +2339,10 @@ msgstr "最緊持續轉彎速度"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "傾斜"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "時長"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "垂直"
 msgid "Veteran"
 msgstr "老兵"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "勝利"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "影片縮圖"
@@ -2615,9 +2635,9 @@ msgstr "您沒有檢視此資源 <0/>所需的權限。"
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "您的帳號已從 {source} 遷移至此。在您於該處刪除帳號之前，訊息和通知可能會同時到達兩個伺服器，部分內容仍由舊伺服器提供，追蹤者可能需要幾分鐘才能在此找到您。"
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "完成一次飛行後，你的多人對局將顯示於此。"
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "飛行一次後，你的飛行記錄會顯示在這裡。"
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

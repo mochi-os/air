@@ -421,7 +421,7 @@ msgstr "Pokalbis"
 msgid "Chat to everyone"
 msgstr "Pokalbis su visais"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Sukčiavimai"
@@ -582,7 +582,7 @@ msgstr "Nepavyko sukurti mačo"
 msgid "Could not load this document. Please try again later."
 msgstr "Nepavyko įkelti šio dokumento. Pabandykite dar kartą vėliau."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Nepavyko išsaugoti įrašo"
 
@@ -660,7 +660,7 @@ msgstr "Tamsus režimas"
 msgid "Data conflict"
 msgstr "Duomenų konfliktas"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Data"
 
@@ -669,8 +669,8 @@ msgstr "Data"
 msgid "Day"
 msgstr "Diena"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Žūtys"
 
@@ -734,7 +734,7 @@ msgstr "Kryptis"
 msgid "disconnected"
 msgstr "atjungta"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Atjungta"
 
@@ -903,7 +903,7 @@ msgstr "KOVA PRASIDEDA"
 msgid "Finish moving your account"
 msgstr "Užbaikite paskyros perkėlimą"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Baigta"
 
@@ -941,9 +941,17 @@ msgstr "Plokščia"
 msgid "FLIGHT CORE FAILED"
 msgstr "SKRYDŽIO BRANDUOLIO KLAIDA"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Skrydžiai"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Plaukiojantis"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Skrista"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Skristi"
 msgid "Framerate"
 msgstr "Kadrų dažnis"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Laisvas skrydis"
@@ -1004,7 +1013,7 @@ msgstr "Degalų zondas"
 msgid "Full layout"
 msgstr "Pilnas išdėstymas"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Prisijungti prie serverio"
 msgid "JOINED"
 msgstr "PRISIJUNGĖ"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Dvikova prieš AI žaidėją"
 msgid "Joystick"
 msgstr "Vairasvirtė"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Klavišai"
 msgid "KILL"
 msgstr "NUMUŠIMAS"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Numuštas"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Numušimai"
 
@@ -1255,7 +1268,7 @@ msgstr "Sužinoti daugiau"
 msgid "Leave server"
 msgstr "Palikti serverį"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Išėjo"
 
@@ -1396,7 +1409,6 @@ msgstr "Bendras"
 msgid "Match type"
 msgstr "Mačo tipas"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Rungtynės"
@@ -1447,7 +1459,7 @@ msgstr "Raketos"
 msgid "Missiles allowed"
 msgstr "Raketos leidžiamos"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Režimas"
 
@@ -1490,6 +1502,10 @@ msgstr "Prieigos taisyklių nesukonfigūruota. Pridėkite taisykles, kad valdytu
 msgid "No connected accounts"
 msgstr "Nėra prijungtų paskyrų"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Kol kas nėra skrydžių"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Grupių nėra"
@@ -1497,10 +1513,6 @@ msgstr "Grupių nėra"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Vairasvirtė neaptikta — paspauskite bet kurį jos mygtuką, kad ją pažadintumėte."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Kol kas nėra rungtynių"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Tangažas aukštyn"
 msgid "PLATFORM"
 msgstr "PLATFORMA"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Žaidėjai"
 
@@ -1803,12 +1815,12 @@ msgstr "Rekomenduojama"
 msgid "Record flights"
 msgstr "Įrašyti skrydžius"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Įrašymas"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Įrašas išsaugotas"
 
@@ -1903,7 +1915,7 @@ msgstr "Sprendimas"
 msgid "Restart mission"
 msgstr "Paleisti misiją iš naujo"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Rezultatas"
 
@@ -2061,7 +2073,7 @@ msgstr "Siųsti el. laišką"
 msgid "Serif"
 msgstr "Serifinis"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Serveris"
@@ -2250,7 +2262,7 @@ msgstr "Komanda"
 msgid "TEAM"
 msgstr "KOMANDA"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Komandos"
@@ -2327,6 +2339,10 @@ msgstr "Aštriausio išlaikomo posūkio greitis"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "pakreipti"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Laikas"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Vertikalus"
 msgid "Veteran"
 msgstr "Veteranas"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Pergalė"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Vaizdo įrašo miniatiūra"
@@ -2615,9 +2635,9 @@ msgstr "Neturite reikiamo leidimo <0/>peržiūrėti šį išteklių."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Jūsų paskyra buvo perkelta čia iš {source}. Kol jos ten neištrinate, žinutės ir pranešimai gali pasiekti abu serverius, dalis jūsų turinio toliau pateikiama iš senojo serverio, o pasekėjams gali prireikti kelių minučių jus rasti čia."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Jūsų kelių žaidėjų rungtynės atsiras čia, kai sužaisite bent vienas."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Jūsų skrydžiai bus rodomi čia, kai atliksite pirmąjį."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

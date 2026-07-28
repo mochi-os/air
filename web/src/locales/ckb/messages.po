@@ -421,7 +421,7 @@ msgstr "گفتوگۆ"
 msgid "Chat to everyone"
 msgstr "چات بۆ هەمووان"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "چیتەکان"
@@ -582,7 +582,7 @@ msgstr "نەتوانرا یارییەکە دروست بکرێت"
 msgid "Could not load this document. Please try again later."
 msgstr "ئەم دۆکومێنتە نەخوێنرایەوە. تکایە دواتر هەوڵ بدە."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "نەتوانرا تۆمارەکە پاشەکەوت بکرێت"
 
@@ -660,7 +660,7 @@ msgstr "دۆخی تاریک"
 msgid "Data conflict"
 msgstr "ناکۆکی داتا"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "بەروار"
 
@@ -669,8 +669,8 @@ msgstr "بەروار"
 msgid "Day"
 msgstr "ڕۆژ"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "مردنەکان"
 
@@ -734,7 +734,7 @@ msgstr "ئاراستە"
 msgid "disconnected"
 msgstr "پچڕاوە"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "پەیوەست نییە"
 
@@ -903,7 +903,7 @@ msgstr "شەڕ دەستی پێکرد"
 msgid "Finish moving your account"
 msgstr "گواستنەوەی هەژمارەکەت تەواو بکە"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "تەواوبوو"
 
@@ -941,9 +941,17 @@ msgstr "تەخت"
 msgid "FLIGHT CORE FAILED"
 msgstr "ناوکی فڕین سەرکەوتوو نەبوو"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "فڕینەکان"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "سەرشانی"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "فڕی"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "فڕین"
 msgid "Framerate"
 msgstr "ڕێژەی فرەیم"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "فڕینی ئازاد"
@@ -1004,7 +1013,7 @@ msgstr "پرۆبی سووتەمەنی"
 msgid "Full layout"
 msgstr "ڕێکخستنی تەواو"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "بەشداری ڕاژە"
 msgid "JOINED"
 msgstr "بەشداری کرد"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "شەڕی تاکبەتاک دژی یاریزانی AI"
 msgid "Joystick"
 msgstr "جۆیستیک"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "کلیلەکان"
 msgid "KILL"
 msgstr "کوشتن"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "کوژرا"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "کوشتنەکان"
 
@@ -1255,7 +1268,7 @@ msgstr "زیاتر بزانە"
 msgid "Leave server"
 msgstr "جێهێشتنی ڕاژە"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "ڕۆیشت"
 
@@ -1396,7 +1409,6 @@ msgstr "سەرەکی"
 msgid "Match type"
 msgstr "جۆری یاری"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "یارییەکان"
@@ -1447,7 +1459,7 @@ msgstr "موشەکەکان"
 msgid "Missiles allowed"
 msgstr "مووشەک ڕێگەپێدراوە"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "دۆخ"
 
@@ -1490,6 +1502,10 @@ msgstr "هیچ ڕێسایەکی دەستڕاگەیشتن ڕێکنەخراوە. �
 msgid "No connected accounts"
 msgstr "هیچ هەژمارێکی پەیوەندیدراو نییە"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "هێشتا هیچ فڕینێک نییە"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "هیچ گرووپێک بەردەست نییە"
@@ -1497,10 +1513,6 @@ msgstr "هیچ گرووپێک بەردەست نییە"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "هیچ جۆیستیکێک نەدۆزرایەوە — بۆ خەبەرکردنەوەی هەر دوگمەیەکی لێبدە."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "تا ئێستا هیچ یارییەک نییە"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "لووت بۆ سەرەوە"
 msgid "PLATFORM"
 msgstr "سەکۆ"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "یاریزانان"
 
@@ -1803,12 +1815,12 @@ msgstr "پێشنیازکراو"
 msgid "Record flights"
 msgstr "تۆمارکردنی فڕینەکان"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "تۆمارکردن"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "تۆمارەکە پاشەکەوتکرا"
 
@@ -1903,7 +1915,7 @@ msgstr "چارەسەر"
 msgid "Restart mission"
 msgstr "دەستپێکردنەوەی ئەرک"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "ئەنجام"
 
@@ -2061,7 +2073,7 @@ msgstr "ئیمەیڵ بنێرە"
 msgid "Serif"
 msgstr "سێریف"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "ڕاژەکار"
@@ -2250,7 +2262,7 @@ msgstr "تیم"
 msgid "TEAM"
 msgstr "تیم"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "تیمەکان"
@@ -2327,6 +2339,10 @@ msgstr "تەسکترین خێرایی سووڕانەوەی بەردەوام"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "خوارکردنەوە"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "کات"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "ستوونی"
 msgid "Veteran"
 msgstr "بەئەزموون"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "سەرکەوتن"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "وێنۆکەی ڤیدیۆ"
@@ -2615,9 +2635,9 @@ msgstr "مۆڵەتی پێویستت نییە <0/>بۆ بینینی ئەم سەر
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "هەژمارەکەت لە {source} بۆ ئێرە گواستراوەتەوە. تا کاتێک ئەوێ بیسڕیتەوە، پەیام و ئاگادارکردنەوەکان دەتوانن بگەنە هەردوو سێرڤەرەکە، بەشێک لە ناوەڕۆکەکەت لە سێرڤەری کۆنەکەوە دەمێنێتەوە، و بەدواداچووەکانت دەتوانن چەند خولەکێک بخایەن تا بیتدۆزنەوە."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "یارییە فرەیاریزانەکانت لێرە دەردەکەون دوای ئەوەی یەکێکیان بفڕیت."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "دوای ئەوەی یەکێک دەفڕیت، فڕینەکانت لێرە دەردەکەون."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

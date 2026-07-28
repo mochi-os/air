@@ -421,7 +421,7 @@ msgstr "Chat"
 msgid "Chat to everyone"
 msgstr "Chat naar iedereen"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Cheats"
@@ -582,7 +582,7 @@ msgstr "Kon de match niet aanmaken"
 msgid "Could not load this document. Please try again later."
 msgstr "Kan dit document niet laden. Probeer het later opnieuw."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Kon de opname niet opslaan"
 
@@ -660,7 +660,7 @@ msgstr "Donkere modus"
 msgid "Data conflict"
 msgstr "Gegevensconflict"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Datum"
 
@@ -669,8 +669,8 @@ msgstr "Datum"
 msgid "Day"
 msgstr "Dag"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Doden"
 
@@ -734,7 +734,7 @@ msgstr "Richting"
 msgid "disconnected"
 msgstr "losgekoppeld"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Verbinding verbroken"
 
@@ -903,7 +903,7 @@ msgstr "HET GEVECHT IS BEGONNEN"
 msgid "Finish moving your account"
 msgstr "Voltooi het verplaatsen van uw account"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Voltooid"
 
@@ -941,9 +941,17 @@ msgstr "Plat"
 msgid "FLIGHT CORE FAILED"
 msgstr "VLUCHTKERN MISLUKT"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Vluchten"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Zwevend"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Gevlogen"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Vliegen"
 msgid "Framerate"
 msgstr "Beeldsnelheid"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Vrije vlucht"
@@ -1004,7 +1013,7 @@ msgstr "Brandstofsonde"
 msgid "Full layout"
 msgstr "Volledige lay-out"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Deelnemen aan server"
 msgid "JOINED"
 msgstr "DOET MEE"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Duel tegen AI-speler"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Toetsen"
 msgid "KILL"
 msgstr "KILL"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Neergehaald"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Neerhalingen"
 
@@ -1255,7 +1268,7 @@ msgstr "Meer informatie"
 msgid "Leave server"
 msgstr "Server verlaten"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Verlaten"
 
@@ -1396,7 +1409,6 @@ msgstr "Master"
 msgid "Match type"
 msgstr "Matchtype"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Wedstrijden"
@@ -1447,7 +1459,7 @@ msgstr "Raketten"
 msgid "Missiles allowed"
 msgstr "Raketten toegestaan"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Modus"
 
@@ -1490,6 +1502,10 @@ msgstr "Geen toegangsregels geconfigureerd. Voeg regels toe om te bepalen wie to
 msgid "No connected accounts"
 msgstr "Geen gekoppelde accounts"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Nog geen vluchten"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Geen groepen beschikbaar"
@@ -1497,10 +1513,6 @@ msgstr "Geen groepen beschikbaar"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Geen joystick gedetecteerd — druk op een willekeurige knop erop om hem wakker te maken."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Nog geen wedstrijden"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Pitch omhoog"
 msgid "PLATFORM"
 msgstr "PLATFORM"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Spelers"
 
@@ -1803,12 +1815,12 @@ msgstr "Aanbevolen"
 msgid "Record flights"
 msgstr "Vluchten opnemen"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Opname"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Opname opgeslagen"
 
@@ -1903,7 +1915,7 @@ msgstr "Oplossing"
 msgid "Restart mission"
 msgstr "Missie herstarten"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Resultaat"
 
@@ -2061,7 +2073,7 @@ msgstr "E-mail verzenden"
 msgid "Serif"
 msgstr "Schreefletter"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Server"
@@ -2250,7 +2262,7 @@ msgstr "Team"
 msgid "TEAM"
 msgstr "TEAM"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Teams"
@@ -2327,6 +2339,10 @@ msgstr "Krapste aanhoudende bochtsnelheid"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "kantelen"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Tijd"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Verticaal"
 msgid "Veteran"
 msgstr "Veteraan"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Overwinning"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Videominiatuur"
@@ -2615,9 +2635,9 @@ msgstr "Je hebt niet de benodigde toestemming <0/>om deze bron te bekijken."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Uw account is hier naartoe verplaatst van {source}. Totdat u het daar verwijdert, kunnen berichten en meldingen beide servers bereiken, wordt een deel van uw inhoud nog steeds geleverd vanuit de oude server en kunnen volgers een paar minuten nodig hebben om u hier te vinden."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Je multiplayer-wedstrijden verschijnen hier zodra je er een hebt gespeeld."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Je vluchten verschijnen hier zodra je er een hebt gevlogen."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

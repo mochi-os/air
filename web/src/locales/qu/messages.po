@@ -421,7 +421,7 @@ msgstr "Chat"
 msgid "Chat to everyone"
 msgstr "Llapanwan chat"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Trampakuna"
@@ -582,7 +582,7 @@ msgstr "Manam pukllayta ruray atikurqachu"
 msgid "Could not load this document. Please try again later."
 msgstr "Kay documento mana cargasqa karqachu. Qhipaman ruway."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Manam grabasqata waqaychayta atikurqachu"
 
@@ -660,7 +660,7 @@ msgstr "Tutayaq layapi"
 msgid "Data conflict"
 msgstr "Datukunap awqanakuynin"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "P'unchaw"
 
@@ -669,8 +669,8 @@ msgstr "P'unchaw"
 msgid "Day"
 msgstr "P'unchay"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Wañuykuna"
 
@@ -734,7 +734,7 @@ msgstr "Imayna"
 msgid "disconnected"
 msgstr "t'aqasqa"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Mana tinkichisqa"
 
@@ -903,7 +903,7 @@ msgstr "AWQANAKUY QALLARIN"
 msgid "Finish moving your account"
 msgstr "Cuenta-ykita apaykachay tukuchiy"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Tukupun"
 
@@ -941,9 +941,17 @@ msgstr "Pampa"
 msgid "FLIGHT CORE FAILED"
 msgstr "PHAWAY SUNQU MANA ATIRQANCHU"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Phawaykuna"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Phawaq"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Phawasqa"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Phaway"
 msgid "Framerate"
 msgstr "Framerate"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Qispi phaway"
@@ -1004,7 +1013,7 @@ msgstr "Combustible probe"
 msgid "Full layout"
 msgstr "Hunt'asqa layout"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Servidorman yaykuy"
 msgid "JOINED"
 msgstr "YAYKUN"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "AI pukllaqwan maqanakuy"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Teclakuna"
 msgid "KILL"
 msgstr "URMACHISQA"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Wañuchisqa"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Wañuchiykuna"
 
@@ -1255,7 +1268,7 @@ msgstr "Aswan yachay"
 msgid "Leave server"
 msgstr "Servidormanta lloqsiy"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Lluqsipun"
 
@@ -1396,7 +1409,6 @@ msgstr "Principal"
 msgid "Match type"
 msgstr "Pukllay laya"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Pukllaykuna"
@@ -1447,7 +1459,7 @@ msgstr "Misilkuna"
 msgid "Missiles allowed"
 msgstr "Misilkuna saqisqa"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Modo"
 
@@ -1490,6 +1502,10 @@ msgstr "Mana yaykuy kamachiy churasqa. Kamachiykunata yapay pichus kay recursoma
 msgid "No connected accounts"
 msgstr "Mana huñusqa cuentakuna"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Manaraq phawaykuna kanchu"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Mana grupokuna atikuq"
@@ -1497,10 +1513,6 @@ msgstr "Mana grupokuna atikuq"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Mana joystick tarisqachu — rikch'arichinapaq ima botonnintapas ñit'iy."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Manaraq pukllaykuna kanchu"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Pitch hanaqman"
 msgid "PLATFORM"
 msgstr "PLATAFURMA"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Pukllaqkuna"
 
@@ -1803,12 +1815,12 @@ msgstr "Munasqa"
 msgid "Record flights"
 msgstr "Phawaykunata grabay"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Grabay"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Grabasqa waqaychasqa"
 
@@ -1903,7 +1915,7 @@ msgstr "Resolución"
 msgid "Restart mission"
 msgstr "Misión kutimanta qallariy"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Resultado"
 
@@ -2061,7 +2073,7 @@ msgstr "Email apachiy"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Servidor"
@@ -2250,7 +2262,7 @@ msgstr "Huñu"
 msgid "TEAM"
 msgstr "EQUIPO"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Equipokuna"
@@ -2327,6 +2339,10 @@ msgstr "Aswan k'iski takyasqa muyuy velocidad"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "k'iray"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Pacha"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Sayaq"
 msgid "Veteran"
 msgstr "Veterano"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Atipay"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Vidiyup uñanchanan"
@@ -2615,9 +2635,9 @@ msgstr "Kay ruwanata qhawanaykipaq <0/>manam saqiyniyki kanchu."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Cuenta-yki {source} llaqtamanta kaypi churasqa karqan. Chaypeqa manaraj qichuykiptiyki, willakuykuna hinaspa sut'ichakuykuna iskay serverkunaman chayayta atinku, imaymayki wakin ñawpaq servermanta kamachikapusqanmi kachkan, hinaspa qhatiqniykim kaypi tarisunkaypaq huk minutokunata suyayta atinku."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Achka pukllaqwan pukllayniykikuna kaypi rikhurinqa huk phaway ruwasqayki qhipanta."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Phawaykunaykiqa kaypi rikhurinqa huk kutita phawaqtiyki."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

@@ -421,7 +421,7 @@ msgstr "Còmhradh"
 msgid "Chat to everyone"
 msgstr "Cabadaich ris a h-uile duine"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Cleasan"
@@ -582,7 +582,7 @@ msgstr "Cha b' urrainn dhuinn am maids a chruthachadh"
 msgid "Could not load this document. Please try again later."
 msgstr "Cha b' urrainn an sgrìobhainn seo a luchdachadh. Feuch ris a-rithist nas anmoiche."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Cha b’ urrainn dhuinn an clàradh a shàbhaladh"
 
@@ -660,7 +660,7 @@ msgstr "Modh dorcha"
 msgid "Data conflict"
 msgstr "Còmhstri dàta"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Ceann-là"
 
@@ -669,8 +669,8 @@ msgstr "Ceann-là"
 msgid "Day"
 msgstr "Latha"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Bàsan"
 
@@ -734,7 +734,7 @@ msgstr "Comhair"
 msgid "disconnected"
 msgstr "dì-cheangailte"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Gun cheangal"
 
@@ -903,7 +903,7 @@ msgstr "THA AN T-SABAID A' DOL"
 msgid "Finish moving your account"
 msgstr "Crìochnaich gluasad do chunntas"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Crìochnaichte"
 
@@ -941,9 +941,17 @@ msgstr "Còmhnard"
 msgid "FLIGHT CORE FAILED"
 msgstr "DH'FHÀILLIG AN CRIDHE ITEALAICH"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Itealanan"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "A' fleòdradh"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Air itealaich"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Itealaich"
 msgid "Framerate"
 msgstr "Reat fhrèamaichean"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Itealan saor"
@@ -1004,7 +1013,7 @@ msgstr "Probha connaidh"
 msgid "Full layout"
 msgstr "Làn-chruth"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Gabh pàirt ann am frithealaiche"
 msgid "JOINED"
 msgstr "AIR TIGHINN A-STEACH"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Còmhrag-dithis an aghaidh cluicheadair AI"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Iuchraichean"
 msgid "KILL"
 msgstr "MARBHADH"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Air a mharbhadh"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Marbhadh"
 
@@ -1255,7 +1268,7 @@ msgstr "Barrachd fiosrachaidh"
 msgid "Leave server"
 msgstr "Fàg am frithealaiche"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Dh'fhalbh"
 
@@ -1396,7 +1409,6 @@ msgstr "Coitcheann"
 msgid "Match type"
 msgstr "Seòrsa maidse"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Geamannan"
@@ -1447,7 +1459,7 @@ msgstr "Rocaidean"
 msgid "Missiles allowed"
 msgstr "Urchraichean ceadaichte"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Modh"
 
@@ -1490,6 +1502,10 @@ msgstr "Cha deach riaghailtean cothraim a chur air dòigh. Cuir riaghailtean ris
 msgid "No connected accounts"
 msgstr "Chan eil cunntasan ceangailte"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Chan eil itealanan ann fhathast"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Chan eil buidhnean rim faotainn"
@@ -1497,10 +1513,6 @@ msgstr "Chan eil buidhnean rim faotainn"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Cha deach joystick a lorg — brùth putan sam bith air gus a dhùsgadh."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Gun gheamannan fhathast"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Sròn suas"
 msgid "PLATFORM"
 msgstr "ÀRD-ÙRLAR"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Cluicheadairean"
 
@@ -1803,12 +1815,12 @@ msgstr "Air a mholadh"
 msgid "Record flights"
 msgstr "Clàraich itealanan"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Clàradh"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Chaidh an clàradh a shàbhaladh"
 
@@ -1903,7 +1915,7 @@ msgstr "Rùn"
 msgid "Restart mission"
 msgstr "Ath-thòisich am misean"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Toradh"
 
@@ -2061,7 +2073,7 @@ msgstr "Cuir post-d"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Frithealaiche"
@@ -2250,7 +2262,7 @@ msgstr "Sgioba"
 msgid "TEAM"
 msgstr "SGIOBA"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Sgiobaidhean"
@@ -2327,6 +2339,10 @@ msgstr "Astar an tionndaidh sheasmhaich as teinne"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "aomadh"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Ùine"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Dìreach"
 msgid "Veteran"
 msgstr "Eòlach"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Buaidh"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Dealbhag video"
@@ -2615,9 +2635,9 @@ msgstr "Chan eil an cead riatanach agad <0/>gus an goireas seo fhaicinn."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Chaidh do chunntas a ghluasad an seo à {source}. Gus an sguab thu às e an sin, faodaidh teachdaireachdan agus brathan ruighinn air an dà fhrithealaiche, bidh cuid den susbaint agad ga frithealadh bhon t-seann fhrithealaiche, agus faodaidh luchd-leantainn beagan mhionaidean a ghabhail gus do lorg an seo."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Nochdaidh na geamannan ioma-chluicheadair agad an seo nuair a bhios tu air fear a sgèith."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Nochdaidh na h-itealanan agad an seo às dèidh dhut fear a dhèanamh."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

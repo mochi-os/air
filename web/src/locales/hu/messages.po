@@ -421,7 +421,7 @@ msgstr "Csevegés"
 msgid "Chat to everyone"
 msgstr "Csevegés mindenkivel"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Csalások"
@@ -582,7 +582,7 @@ msgstr "Nem sikerült létrehozni a meccset"
 msgid "Could not load this document. Please try again later."
 msgstr "Nem sikerült betölteni ezt a dokumentumot. Kérjük, próbáld meg később."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Nem sikerült menteni a felvételt"
 
@@ -660,7 +660,7 @@ msgstr "Sötét mód"
 msgid "Data conflict"
 msgstr "Adatütközés"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Dátum"
 
@@ -669,8 +669,8 @@ msgstr "Dátum"
 msgid "Day"
 msgstr "Nappal"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Halálok"
 
@@ -734,7 +734,7 @@ msgstr "Irány"
 msgid "disconnected"
 msgstr "leválasztva"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Leválasztva"
 
@@ -903,7 +903,7 @@ msgstr "KEZDŐDIK A HARC"
 msgid "Finish moving your account"
 msgstr "Fejezze be a fiók áthelyezését"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Befejezve"
 
@@ -941,9 +941,17 @@ msgstr "Lapos"
 msgid "FLIGHT CORE FAILED"
 msgstr "REPÜLÉSI MAG HIBA"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Repülések"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Lebegő"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Repülve"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Repülés"
 msgid "Framerate"
 msgstr "Képkockasebesség"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Szabad repülés"
@@ -1004,7 +1013,7 @@ msgstr "Üzemanyag-szonda"
 msgid "Full layout"
 msgstr "Teljes elrendezés"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Csatlakozás kiszolgálóhoz"
 msgid "JOINED"
 msgstr "CSATLAKOZOTT"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Párbaj AI játékos ellen"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Billentyűk"
 msgid "KILL"
 msgstr "LELÖVÉS"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Lelőve"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Kilövések"
 
@@ -1255,7 +1268,7 @@ msgstr "Tudjon meg többet"
 msgid "Leave server"
 msgstr "Kiszolgáló elhagyása"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Kilépett"
 
@@ -1396,7 +1409,6 @@ msgstr "Fő hangerő"
 msgid "Match type"
 msgstr "Meccs típusa"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Meccsek"
@@ -1447,7 +1459,7 @@ msgstr "Rakéták"
 msgid "Missiles allowed"
 msgstr "Rakéták engedélyezve"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Mód"
 
@@ -1490,6 +1502,10 @@ msgstr "Nincsenek konfigurált hozzáférési szabályok. Adjon hozzá szabályo
 msgid "No connected accounts"
 msgstr "Nincsenek csatlakoztatott fiókok"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Még nincsenek repülések"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Nincsenek elérhető csoportok"
@@ -1497,10 +1513,6 @@ msgstr "Nincsenek elérhető csoportok"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Nem található joystick — nyomjon meg rajta egy gombot, hogy felébressze."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Még nincsenek meccsek"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Bólintás fel"
 msgid "PLATFORM"
 msgstr "PLATFORM"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Játékosok"
 
@@ -1803,12 +1815,12 @@ msgstr "Ajánlott"
 msgid "Record flights"
 msgstr "Repülések rögzítése"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Felvétel"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "A felvétel mentve"
 
@@ -1903,7 +1915,7 @@ msgstr "Megoldás"
 msgid "Restart mission"
 msgstr "Küldetés újraindítása"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Eredmény"
 
@@ -2061,7 +2073,7 @@ msgstr "E-mail küldése"
 msgid "Serif"
 msgstr "Talpas"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Kiszolgáló"
@@ -2250,7 +2262,7 @@ msgstr "Csapat"
 msgid "TEAM"
 msgstr "CSAPAT"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Csapatok"
@@ -2327,6 +2339,10 @@ msgstr "Legszűkebb tartós fordulási sebesség"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "döntés"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Idő"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Függőleges"
 msgid "Veteran"
 msgstr "Veterán"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Győzelem"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Videó indexképe"
@@ -2615,9 +2635,9 @@ msgstr "Nincs meg a szükséges engedélye <0/>az erőforrás megtekintéséhez.
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Fiókja ide lett áthelyezve innen: {source}. Amíg nem törli onnan, az üzenetek és értesítések mindkét szerverre eljuthatnak, tartalmának egy része továbbra is a régi szerverről lesz kiszolgálva, és a követőknek néhány percbe telhet, mire megtalálják Önt itt."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "A többjátékos meccseid itt jelennek meg, miután lejátszottál egyet."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "A repüléseid itt jelennek meg, ha teljesítettél egyet."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

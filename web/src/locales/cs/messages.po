@@ -421,7 +421,7 @@ msgstr "Chat"
 msgid "Chat to everyone"
 msgstr "Chat všem"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Cheaty"
@@ -582,7 +582,7 @@ msgstr "Zápas se nepodařilo vytvořit"
 msgid "Could not load this document. Please try again later."
 msgstr "Tento dokument nelze načíst. Zkuste to prosím později."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Záznam se nepodařilo uložit"
 
@@ -660,7 +660,7 @@ msgstr "Tmavý režim"
 msgid "Data conflict"
 msgstr "Konflikt dat"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Datum"
 
@@ -669,8 +669,8 @@ msgstr "Datum"
 msgid "Day"
 msgstr "Den"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Smrti"
 
@@ -734,7 +734,7 @@ msgstr "Směr"
 msgid "disconnected"
 msgstr "odpojeno"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Odpojeno"
 
@@ -903,7 +903,7 @@ msgstr "BOJ ZAČÍNÁ"
 msgid "Finish moving your account"
 msgstr "Dokončit přesun účtu"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Dokončeno"
 
@@ -941,9 +941,17 @@ msgstr "Plochá"
 msgid "FLIGHT CORE FAILED"
 msgstr "SELHÁNÍ LETOVÉHO JÁDRA"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Lety"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Plovoucí"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Odlétáno"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Letět"
 msgid "Framerate"
 msgstr "Snímková frekvence"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Volný let"
@@ -1004,7 +1013,7 @@ msgstr "Palivová sonda"
 msgid "Full layout"
 msgstr "Plné rozvržení"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Připojit se k serveru"
 msgid "JOINED"
 msgstr "SE PŘIPOJIL"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Souboj proti AI hráči"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Klávesy"
 msgid "KILL"
 msgstr "SESTŘEL"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Zabit"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Zabití"
 
@@ -1255,7 +1268,7 @@ msgstr "Zjistit více"
 msgid "Leave server"
 msgstr "Opustit server"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Odešel"
 
@@ -1396,7 +1409,6 @@ msgstr "Hlavní"
 msgid "Match type"
 msgstr "Typ zápasu"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Zápasy"
@@ -1447,7 +1459,7 @@ msgstr "Rakety"
 msgid "Missiles allowed"
 msgstr "Rakety povoleny"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Režim"
 
@@ -1490,6 +1502,10 @@ msgstr "Nejsou nakonfigurována žádná pravidla přístupu. Přidejte pravidla
 msgid "No connected accounts"
 msgstr "Žádné připojené účty"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Zatím žádné lety"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Žádné skupiny k dispozici"
@@ -1497,10 +1513,6 @@ msgstr "Žádné skupiny k dispozici"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Nebyl zjištěn žádný joystick — stiskněte na něm libovolné tlačítko, aby se probudil."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Zatím žádné zápasy"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Klopení nahoru"
 msgid "PLATFORM"
 msgstr "PLATFORMA"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Hráči"
 
@@ -1803,12 +1815,12 @@ msgstr "Doporučené"
 msgid "Record flights"
 msgstr "Zaznamenávat lety"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Záznam"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Záznam uložen"
 
@@ -1903,7 +1915,7 @@ msgstr "Rozlišení"
 msgid "Restart mission"
 msgstr "Restartovat misi"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Výsledek"
 
@@ -2061,7 +2073,7 @@ msgstr "Odeslat e-mail"
 msgid "Serif"
 msgstr "Patkové"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Server"
@@ -2250,7 +2262,7 @@ msgstr "Tým"
 msgid "TEAM"
 msgstr "TÝM"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Týmy"
@@ -2327,6 +2339,10 @@ msgstr "Rychlost nejtěsnějšího ustáleného zatáčení"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "naklonit"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Čas"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Vertikální"
 msgid "Veteran"
 msgstr "Veterán"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Vítězství"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Náhled videa"
@@ -2615,9 +2635,9 @@ msgstr "Nemáte potřebné oprávnění <0/>k zobrazení tohoto zdroje."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Váš účet byl přesunut sem z {source}. Dokud ho tam nesmažete, zprávy a upozornění mohou dosahovat na oba servery, část vašeho obsahu je nadále obsluhována ze starého serveru a sledující vás mohou potřebovat několik minut, než vás zde najdou."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Vaše zápasy pro více hráčů se zde zobrazí, jakmile nějaký odehrajete."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Vaše lety se zobrazí zde, jakmile nějaký odletíte."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

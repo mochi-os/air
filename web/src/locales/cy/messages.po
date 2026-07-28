@@ -421,7 +421,7 @@ msgstr "Sgwrs"
 msgid "Chat to everyone"
 msgstr "Sgwrs â phawb"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Twyllau"
@@ -582,7 +582,7 @@ msgstr "Methu creu'r gêm"
 msgid "Could not load this document. Please try again later."
 msgstr "Methwyd llwytho'r ddogfen hon. Rhowch gynnig arni eto yn nes ymlaen."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Methwyd â chadw'r recordiad"
 
@@ -660,7 +660,7 @@ msgstr "Modd tywyll"
 msgid "Data conflict"
 msgstr "Gwrthdaro data"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Dyddiad"
 
@@ -669,8 +669,8 @@ msgstr "Dyddiad"
 msgid "Day"
 msgstr "Dydd"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Marwolaethau"
 
@@ -734,7 +734,7 @@ msgstr "Cyfeiriad"
 msgid "disconnected"
 msgstr "wedi datgysylltu"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Wedi datgysylltu"
 
@@ -903,7 +903,7 @@ msgstr "I'R GAD"
 msgid "Finish moving your account"
 msgstr "Gorffennwch symud eich cyfrif"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Gorffennwyd"
 
@@ -941,9 +941,17 @@ msgstr "Gwastad"
 msgid "FLIGHT CORE FAILED"
 msgstr "METHODD Y CRAIDD HEDFAN"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Hediadau"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Arnofiol"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Hedfanwyd"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Hedfan"
 msgid "Framerate"
 msgstr "Cyfradd fframiau"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Hedfan rhydd"
@@ -1004,7 +1013,7 @@ msgstr "Chwiliedydd tanwydd"
 msgid "Full layout"
 msgstr "Cynllun llawn"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Ymuno â gweinydd"
 msgid "JOINED"
 msgstr "WEDI YMUNO"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Gornest yn erbyn chwaraewr AI"
 msgid "Joystick"
 msgstr "Ffon reoli"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Bysellau"
 msgid "KILL"
 msgstr "LLADDIAD"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Lladdwyd"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Lladdiadau"
 
@@ -1255,7 +1268,7 @@ msgstr "Dysgu mwy"
 msgid "Leave server"
 msgstr "Gadael y gweinydd"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Gadawodd"
 
@@ -1396,7 +1409,6 @@ msgstr "Cyffredinol"
 msgid "Match type"
 msgstr "Math o gêm"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Gemau"
@@ -1447,7 +1459,7 @@ msgstr "Taflegrau"
 msgid "Missiles allowed"
 msgstr "Caniateir taflegrau"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Modd"
 
@@ -1490,6 +1502,10 @@ msgstr "Dim rheolau mynediad wedi'u ffurfweddu. Ychwanegwch reolau i reoli pwy s
 msgid "No connected accounts"
 msgstr "Dim cyfrifon wedi'u cysylltu"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Dim hediadau eto"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Dim grwpiau ar gael"
@@ -1497,10 +1513,6 @@ msgstr "Dim grwpiau ar gael"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Heb ganfod ffon reoli — pwyswch unrhyw fotwm arni i'w deffro."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Dim gemau eto"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Trwyn i fyny"
 msgid "PLATFORM"
 msgstr "PLATFFORM"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Chwaraewyr"
 
@@ -1803,12 +1815,12 @@ msgstr "Argymhellir"
 msgid "Record flights"
 msgstr "Recordio hediadau"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Recordio"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Recordiad wedi'i gadw"
 
@@ -1903,7 +1915,7 @@ msgstr "Datrysiad"
 msgid "Restart mission"
 msgstr "Ailgychwyn y genhadaeth"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Canlyniad"
 
@@ -2061,7 +2073,7 @@ msgstr "Anfon e-bost"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Gweinydd"
@@ -2250,7 +2262,7 @@ msgstr "Tîm"
 msgid "TEAM"
 msgstr "TÎM"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Timau"
@@ -2327,6 +2339,10 @@ msgstr "Cyflymder tro parhaus tynnaf"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "gogwyddo"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Amser"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Fertigol"
 msgid "Veteran"
 msgstr "Profiadol"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Buddugoliaeth"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Bawd fideo"
@@ -2615,9 +2635,9 @@ msgstr "Nid oes gennych y caniatâd angenrheidiol <0/>i weld yr adnodd hwn."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Symudwyd eich cyfrif yma o {source}. Hyd nes y byddwch yn ei ddileu yno, gall negeseuon a hysbysiadau gyrraedd y ddau weinydd, gall peth o'ch cynnwys barhau i gael ei weini o'r hen weinydd, a gall dilynwyr gymryd ychydig funudau i ddod o hyd i chi yma."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Bydd eich gemau aml-chwaraewr yn ymddangos yma unwaith i chi hedfan un."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Bydd eich hediadau yn ymddangos yma ar ôl i chi hedfan un."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

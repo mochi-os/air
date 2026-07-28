@@ -421,7 +421,7 @@ msgstr "Чат"
 msgid "Chat to everyone"
 msgstr "Бүгдтэй чатлах"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Читүүд"
@@ -582,7 +582,7 @@ msgstr "Тоглолт үүсгэж чадсангүй"
 msgid "Could not load this document. Please try again later."
 msgstr "Энэ баримт бичгийг ачаалж чадсангүй. Дараа дахин оролдоно уу."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Бичлэгийг хадгалж чадсангүй"
 
@@ -660,7 +660,7 @@ msgstr "Харанхуй горим"
 msgid "Data conflict"
 msgstr "Өгөгдлийн зөрчил"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Огноо"
 
@@ -669,8 +669,8 @@ msgstr "Огноо"
 msgid "Day"
 msgstr "Өдөр"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Үхэл"
 
@@ -734,7 +734,7 @@ msgstr "Чиглэл"
 msgid "disconnected"
 msgstr "салгагдсан"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Салгагдсан"
 
@@ -903,7 +903,7 @@ msgstr "ТУЛААН ЭХЭЛЛЭЭ"
 msgid "Finish moving your account"
 msgstr "Бүртгэлээ шилжүүлэхийг дуусгана уу"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Дууссан"
 
@@ -941,9 +941,17 @@ msgstr "Хавтгай"
 msgid "FLIGHT CORE FAILED"
 msgstr "НИСЛЭГИЙН ЦӨМ АМЖИЛТГҮЙ"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Нислэгүүд"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Хөвөгч"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Ниссэн"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Нисэх"
 msgid "Framerate"
 msgstr "Кадрын давтамж"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Чөлөөт нислэг"
@@ -1004,7 +1013,7 @@ msgstr "Түлшний зонд"
 msgid "Full layout"
 msgstr "Бүрэн зохион байгуулалт"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Сервэрт нэгдэх"
 msgid "JOINED"
 msgstr "НЭГДЛЭЭ"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "AI тоглогчийн эсрэг тулаан"
 msgid "Joystick"
 msgstr "Жойстик"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Товчлуур"
 msgid "KILL"
 msgstr "АЛАЛТ"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Алагдсан"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Алалт"
 
@@ -1255,7 +1268,7 @@ msgstr "Илүү ихийг мэдэх"
 msgid "Leave server"
 msgstr "Сервэрээс гарах"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Гарсан"
 
@@ -1396,7 +1409,6 @@ msgstr "Ерөнхий"
 msgid "Match type"
 msgstr "Тоглолтын төрөл"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Тоглолт"
@@ -1447,7 +1459,7 @@ msgstr "Пуужингууд"
 msgid "Missiles allowed"
 msgstr "Пуужин зөвшөөрөгдсөн"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Горим"
 
@@ -1490,6 +1502,10 @@ msgstr "Хандалтын дүрэм тохируулагдаагүй байн�
 msgid "No connected accounts"
 msgstr "Холбогдсон бүртгэл байхгүй"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Одоогоор нислэг алга"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Боломжит групп байхгүй"
@@ -1497,10 +1513,6 @@ msgstr "Боломжит групп байхгүй"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Жойстик илрээгүй — сэрээхийн тулд түүний дурын товчийг дарна уу."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Одоогоор тоглолт алга"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Тангаж дээш"
 msgid "PLATFORM"
 msgstr "ТАВЦАН"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Тоглогчид"
 
@@ -1803,12 +1815,12 @@ msgstr "Зөвлөмжтэй"
 msgid "Record flights"
 msgstr "Нислэгийг бичих"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Бичлэг"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Бичлэгийг хадгаллаа"
 
@@ -1903,7 +1915,7 @@ msgstr "Тогтоол"
 msgid "Restart mission"
 msgstr "Даалгаврыг дахин эхлүүлэх"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Үр дүн"
 
@@ -2061,7 +2073,7 @@ msgstr "Имэйл илгээх"
 msgid "Serif"
 msgstr "Сериф"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Сервер"
@@ -2250,7 +2262,7 @@ msgstr "Баг"
 msgid "TEAM"
 msgstr "БАГ"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Багууд"
@@ -2327,6 +2339,10 @@ msgstr "Хамгийн нарийн тогтвортой эргэлтийн ху
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "налуу"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Хугацаа"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Босоо"
 msgid "Veteran"
 msgstr "Туршлагатай"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Ялалт"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Видеоны жижиг зураг"
@@ -2615,9 +2635,9 @@ msgstr "Танд энэ нөөцийг үзэх <0/>шаардлагатай з�
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Таны бүртгэл {source}-с энд шилжсэн. Тэнд устгах хүртэл мессеж, мэдэгдлүүд хоёр сервер рүү хүрч болно, таны зарим контент хуучин серверээс ирсээр байж болно, дагагчид таныг эндээс олоход хэдэн минут зарцуулж магадгүй."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Таны олон тоглогчтой тоглолтууд нэгийг тоглосны дараа энд харагдана."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Та нэг удаа нисмэгц нислэгүүд чинь энд харагдана."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

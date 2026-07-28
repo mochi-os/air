@@ -421,7 +421,7 @@ msgstr "Chat"
 msgid "Chat to everyone"
 msgstr "Chat an alle"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Cheats"
@@ -582,7 +582,7 @@ msgstr "Match konnte nicht erstellt werden"
 msgid "Could not load this document. Please try again later."
 msgstr "Dieses Dokument konnte nicht geladen werden. Bitte versuchen Sie es später erneut."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Aufzeichnung konnte nicht gespeichert werden"
 
@@ -660,7 +660,7 @@ msgstr "Dunkler Modus"
 msgid "Data conflict"
 msgstr "Datenkonflikt"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Datum"
 
@@ -669,8 +669,8 @@ msgstr "Datum"
 msgid "Day"
 msgstr "Tag"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Tode"
 
@@ -734,7 +734,7 @@ msgstr "Richtung"
 msgid "disconnected"
 msgstr "getrennt"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Getrennt"
 
@@ -903,7 +903,7 @@ msgstr "KAMPF FREI"
 msgid "Finish moving your account"
 msgstr "Kontoumzug abschließen"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Beendet"
 
@@ -941,9 +941,17 @@ msgstr "Flach"
 msgid "FLIGHT CORE FAILED"
 msgstr "FLUGKERN FEHLGESCHLAGEN"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Flüge"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Schwebend"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Geflogen"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Fliegen"
 msgid "Framerate"
 msgstr "Bildrate"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Freier Flug"
@@ -1004,7 +1013,7 @@ msgstr "Tanksonde"
 msgid "Full layout"
 msgstr "Vollständiges Layout"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Server beitreten"
 msgid "JOINED"
 msgstr "IST BEIGETRETEN"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Duell gegen KI-Spieler"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Tasten"
 msgid "KILL"
 msgstr "ABSCHUSS"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Abgeschossen"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Abschüsse"
 
@@ -1255,7 +1268,7 @@ msgstr "Mehr erfahren"
 msgid "Leave server"
 msgstr "Server verlassen"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Verlassen"
 
@@ -1396,7 +1409,6 @@ msgstr "Master"
 msgid "Match type"
 msgstr "Match-Typ"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Partien"
@@ -1447,7 +1459,7 @@ msgstr "Raketen"
 msgid "Missiles allowed"
 msgstr "Raketen erlaubt"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Modus"
 
@@ -1490,6 +1502,10 @@ msgstr "Keine Zugriffsregeln konfiguriert. Fügen Sie Regeln hinzu, um den Zugri
 msgid "No connected accounts"
 msgstr "Keine verbundenen Konten"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Noch keine Flüge"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Keine Gruppen verfügbar"
@@ -1497,10 +1513,6 @@ msgstr "Keine Gruppen verfügbar"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Kein Joystick erkannt — zum Aufwecken einen beliebigen Knopf darauf drücken."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Noch keine Partien"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Nicken nach oben"
 msgid "PLATFORM"
 msgstr "PLATTFORM"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Spieler"
 
@@ -1803,12 +1815,12 @@ msgstr "Empfohlen"
 msgid "Record flights"
 msgstr "Flüge aufzeichnen"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Aufzeichnung"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Aufzeichnung gespeichert"
 
@@ -1903,7 +1915,7 @@ msgstr "Auflösung"
 msgid "Restart mission"
 msgstr "Mission neu starten"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Ergebnis"
 
@@ -2061,7 +2073,7 @@ msgstr "E-Mail senden"
 msgid "Serif"
 msgstr "Serife"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Server"
@@ -2250,7 +2262,7 @@ msgstr "Team"
 msgid "TEAM"
 msgstr "TEAM"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Teams"
@@ -2327,6 +2339,10 @@ msgstr "Engste stationäre Kurvengeschwindigkeit"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "neigen"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Zeit"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Senkrecht"
 msgid "Veteran"
 msgstr "Veteran"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Sieg"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Video-Vorschaubild"
@@ -2615,9 +2635,9 @@ msgstr "Sie haben nicht die erforderliche Berechtigung, <0/>um diese Ressource a
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Ihr Konto wurde von {source} hierher verschoben. Bis Sie es dort löschen, können Nachrichten und Benachrichtigungen beide Server erreichen, ein Teil Ihrer Inhalte wird weiterhin vom alten Server bereitgestellt, und Follower benötigen möglicherweise ein paar Minuten, um Sie hier zu finden."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Deine Mehrspieler-Partien erscheinen hier, sobald du eine geflogen hast."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Ihre Flüge erscheinen hier, sobald Sie einen geflogen haben."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

@@ -421,7 +421,7 @@ msgstr "チャット"
 msgid "Chat to everyone"
 msgstr "全体チャット"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "チート"
@@ -582,7 +582,7 @@ msgstr "マッチを作成できませんでした"
 msgid "Could not load this document. Please try again later."
 msgstr "このドキュメントを読み込めませんでした。後ほどもう一度お試しください。"
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "記録を保存できませんでした"
 
@@ -660,7 +660,7 @@ msgstr "ダークモード"
 msgid "Data conflict"
 msgstr "データの競合"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "日付"
 
@@ -669,8 +669,8 @@ msgstr "日付"
 msgid "Day"
 msgstr "昼"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "デス"
 
@@ -734,7 +734,7 @@ msgstr "方向"
 msgid "disconnected"
 msgstr "切断"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "切断済み"
 
@@ -903,7 +903,7 @@ msgstr "戦闘開始"
 msgid "Finish moving your account"
 msgstr "アカウントの移行を完了する"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "終了"
 
@@ -941,9 +941,17 @@ msgstr "フラット"
 msgid "FLIGHT CORE FAILED"
 msgstr "飛行コア障害"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "フライト数"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "フローティング"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "飛行"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "飛行"
 msgid "Framerate"
 msgstr "フレームレート"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "フリーフライト"
@@ -1004,7 +1013,7 @@ msgstr "給油プローブ"
 msgid "Full layout"
 msgstr "フルレイアウト"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "乱戦"
 
@@ -1168,7 +1177,7 @@ msgstr "サーバーに参加"
 msgid "JOINED"
 msgstr "参加"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "AIプレイヤーと一騎打ち"
 msgid "Joystick"
 msgstr "ジョイスティック"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "キー"
 msgid "KILL"
 msgstr "撃墜"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "被撃墜"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "撃墜"
 
@@ -1255,7 +1268,7 @@ msgstr "詳細"
 msgid "Leave server"
 msgstr "サーバーから退出"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "退出"
 
@@ -1396,7 +1409,6 @@ msgstr "マスター"
 msgid "Match type"
 msgstr "マッチタイプ"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "試合数"
@@ -1447,7 +1459,7 @@ msgstr "ミサイル"
 msgid "Missiles allowed"
 msgstr "ミサイル使用可"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "モード"
 
@@ -1490,6 +1502,10 @@ msgstr "アクセスルールが設定されていません。このリソース
 msgid "No connected accounts"
 msgstr "接続されたアカウントがありません"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "まだフライトがありません"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "利用可能なグループがありません"
@@ -1497,10 +1513,6 @@ msgstr "利用可能なグループがありません"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "ジョイスティックが検出されません — いずれかのボタンを押して認識させてください。"
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "まだ試合がありません"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "ピッチアップ"
 msgid "PLATFORM"
 msgstr "プラットフォーム"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "プレイヤー数"
 
@@ -1803,12 +1815,12 @@ msgstr "おすすめ"
 msgid "Record flights"
 msgstr "フライトを記録する"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "記録"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "記録を保存しました"
 
@@ -1903,7 +1915,7 @@ msgstr "解決"
 msgid "Restart mission"
 msgstr "ミッション再開始"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "結果"
 
@@ -2061,7 +2073,7 @@ msgstr "メールを送信"
 msgid "Serif"
 msgstr "セリフ"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "サーバー"
@@ -2250,7 +2262,7 @@ msgstr "チーム"
 msgid "TEAM"
 msgstr "チーム"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "チーム戦"
@@ -2327,6 +2339,10 @@ msgstr "最小持続旋回速度"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "チルト"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "時間"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "垂直"
 msgid "Veteran"
 msgstr "ベテラン"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "勝利"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "動画のサムネイル"
@@ -2615,9 +2635,9 @@ msgstr "このリソースを表示するために <0/>必要な権限があり�
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "アカウントが{source}からここに移行されました。そちらで削除するまで、メッセージや通知が両方のサーバーに届く場合があり、一部のコンテンツは旧サーバーから引き続き提供され、フォロワーがここであなたを見つけるまで数分かかる場合があります。"
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "マルチプレイヤーの試合を1回プレイすると、ここに表示されます。"
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "フライトを1回行うと、ここに表示されます。"
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"
