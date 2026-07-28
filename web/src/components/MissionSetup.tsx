@@ -55,7 +55,7 @@ import {
 // The fields each tab owns, for the per-tab Reset (the joystick tab also clears
 // the per-device maps so built-in defaults apply again).
 const TAB_FIELDS: Record<string, string[]> = {
-  mission: ['task', 'start', 'cat', 'world', 'aircraft', 'bandit', 'fuel', 'missiles', 'flares', 'cheats', 'tod', 'clouds', 'extra_aircraft'],
+  mission: ['task', 'start', 'cat', 'world', 'aircraft', 'bandit', 'fuel', 'missiles', 'cheats', 'tod', 'clouds', 'extra_aircraft'],
   general: ['callsign', 'record'],
   controls: ['invert', 'joystick', 'sticks'],
   keys: ['keys'],
@@ -1157,12 +1157,6 @@ function MissionPanel({
   label={<Trans>Missiles</Trans>}
   checked={config.missiles}
   onChange={(v) => set('missiles', v)}
-/>
-<SwitchRow
-  id='flares'
-  label={<Trans>Flares</Trans>}
-  checked={config.flares}
-  onChange={(v) => set('flares', v)}
 />
 <SectionLabel>
   <Trans>Fuel</Trans>

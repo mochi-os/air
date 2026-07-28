@@ -57,7 +57,6 @@ export interface MissionConfig {
   afterburner: boolean
   tracers: boolean
   missiles: boolean
-  flares: boolean
   sound: boolean
   volume: Record<string, number> // Sound-tab mixer, percent per bus: master, engine, aircraft, weapons, environment, alerts
   invert: boolean
@@ -97,7 +96,6 @@ export const DEFAULT_CONFIG: MissionConfig = {
   afterburner: true,
   tracers: true,
   missiles: true,
-  flares: true,
   sound: true,
   volume: { master: 80, engine: 100, aircraft: 100, weapons: 100, environment: 100, alerts: 100 },
   invert: false,
