@@ -77,6 +77,12 @@
   line-height: 1.5;
   max-width: 90vw;
 }
-.air-game #help b {
+.air-game #help b,
+.air-game #help kbd {
   color: var(--hud-green);
+}
+/* Key legends use <kbd> for its meaning, not its default rendering: inherit
+   the panel's font so the HUD looks exactly as it did when these were <b>. */
+.air-game #help kbd {
+  font: inherit;
 }

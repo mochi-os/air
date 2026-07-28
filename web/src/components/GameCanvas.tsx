@@ -297,21 +297,24 @@ export function GameCanvas({
         </div>
       )}
       <div className='panel' id='help' ref={helpRef}>
-        <b>W/S</b> <Trans>pitch</Trans> · <b>A/D</b>{' '}
-        <Trans>roll</Trans> · <b>Q/E</b> <Trans>yaw</Trans> · <b>[/]</b>{' '}
-        <Trans>throttle</Trans> · <b>Space</b> <Trans>fire</Trans> · <b>X</b>{' '}
-        <Trans>weapon</Trans> · <b>Enter</b>{' '}
-        <Trans>launch / target</Trans> · <b>F</b> <Trans>flares</Trans> · <b>G</b>{' '}
-        <Trans>gear</Trans> · <b>H</b> <Trans>hook</Trans> · <b>P</b> {'ATC'} · <b>L</b> <Trans>lights</Trans> ·{' '}
-        <b>B</b> <Trans>brakes</Trans> · <b>/</b> <Trans>speed brake</Trans> ·{' '}
-        <b>1</b>–<b>5</b>/<b>V</b> <Trans>view</Trans> · <b>M</b> <Trans>map</Trans> ·{' '}
-        <b>T</b> <Trans>chat</Trans> · <b>Esc</b> <Trans>menu</Trans>
+        {/* Key legends are <kbd>, the element that means "keyboard input";
+            the action beside each one is prose and stays wrapped. Two <b>
+            below are emphasis on translated text, not keys, so they stay <b>. */}
+        <kbd>W/S</kbd> <Trans>pitch</Trans> · <kbd>A/D</kbd>{' '}
+        <Trans>roll</Trans> · <kbd>Q/E</kbd> <Trans>yaw</Trans> · <kbd>[/]</kbd>{' '}
+        <Trans>throttle</Trans> · <kbd>Space</kbd> <Trans>fire</Trans> · <kbd>X</kbd>{' '}
+        <Trans>weapon</Trans> · <kbd>Enter</kbd>{' '}
+        <Trans>launch / target</Trans> · <kbd>F</kbd> <Trans>flares</Trans> · <kbd>G</kbd>{' '}
+        <Trans>gear</Trans> · <kbd>H</kbd> <Trans>hook</Trans> · <kbd>P</kbd> {'ATC'} · <kbd>L</kbd> <Trans>lights</Trans> ·{' '}
+        <kbd>B</kbd> <Trans>brakes</Trans> · <kbd>/</kbd> <Trans>speed brake</Trans> ·{' '}
+        <kbd>1</kbd>–<kbd>5</kbd>/<kbd>V</kbd> <Trans>view</Trans> · <kbd>M</kbd> <Trans>map</Trans> ·{' '}
+        <kbd>T</kbd> <Trans>chat</Trans> · <kbd>Esc</kbd> <Trans>menu</Trans>
         <br />
         <b>
           <Trans>Chase view:</Trans>
         </b>{' '}
-        <b><Trans>Drag</Trans></b> <Trans>or</Trans> <b>←→</b> <Trans>orbit</Trans> · <b>↑↓</b>{' '}
-        <Trans>tilt</Trans> · <b>−</b> <Trans>back</Trans> · <b>=</b>{' '}
+        <b><Trans>Drag</Trans></b> <Trans>or</Trans> <kbd>←→</kbd> <Trans>orbit</Trans> · <kbd>↑↓</kbd>{' '}
+        <Trans>tilt</Trans> · <kbd>−</kbd> <Trans>back</Trans> · <kbd>=</kbd>{' '}
         <Trans>closer</Trans>
       </div>
     </div>

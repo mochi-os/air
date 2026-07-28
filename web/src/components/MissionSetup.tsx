@@ -738,6 +738,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: attribution name, required verbatim by the source licence */}
               Sketchfab
             </a>{' '}
             ·{' '}
@@ -747,6 +748,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: attribution name, required verbatim by the source licence */}
               CC BY 4.0
             </a>
           </p>
@@ -762,6 +764,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: attribution name, required verbatim by the source licence */}
               Sketchfab
             </a>{' '}
             ·{' '}
@@ -771,6 +774,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: attribution name, required verbatim by the source licence */}
               CC BY 4.0
             </a>
           </p>
@@ -787,6 +791,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: attribution name, required verbatim by the source licence */}
               Copernicus
             </a>{' '}
             ·{' '}
@@ -796,6 +801,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: attribution name, required verbatim by the source licence */}
               OpenStreetMap
             </a>{' '}
             ·{' '}
@@ -805,6 +811,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: attribution name, required verbatim by the source licence */}
               NOAA NCCOS
             </a>
           </p>
@@ -818,6 +825,7 @@ function CreditsDialog() {
               target='_blank'
               rel='noopener noreferrer'
             >
+              {/* jsx-text-ok: attribution name, required verbatim by the source licence */}
               three.js
             </a>
           </p>
@@ -1550,6 +1558,7 @@ export function MissionSetup({
   return (
     <div className='bg-background fixed inset-0 z-50 flex items-center justify-center overflow-auto p-6'>
       <div className='w-full max-w-md'>
+        {/* jsx-text-ok: the game's name, verbatim in every locale */}
         <h1 className='mb-8 text-4xl font-semibold tracking-tight'>Air</h1>
         <div className='flex flex-col gap-2'>
           {gameInProgress ? (
