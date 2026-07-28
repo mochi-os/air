@@ -40,7 +40,7 @@ import {
 } from '../lib/config'
 import { useIdentityName } from '../lib/config-store'
 import { Multiplayer } from './Multiplayer'
-import { MatchHistory, type Replay } from './MatchHistory'
+import { Link } from '@tanstack/react-router'
 import { KEY_DEFAULTS, pretty } from '../game/keys'
 import {
   default_server,
@@ -1478,9 +1478,6 @@ export function MissionSetup({
   tab,
   onTabChange,
   settingsNonce = 0,
-  recording,
-  historyOpen = false,
-  onHistory,
   gameInProgress,
   onStart,
   onJoin,
@@ -1492,9 +1489,6 @@ export function MissionSetup({
   tab: string
   onTabChange: (tab: string) => void
   settingsNonce?: number
-  recording?: () => Replay | null // the engine's in-memory flight recording (#212)
-  historyOpen?: boolean // History is a routed page, so the URL owns whether it is open
-  onHistory?: (open: boolean) => void
   gameInProgress: boolean
   onStart: () => void
   onJoin: (join: Join) => void
@@ -1597,9 +1591,11 @@ export function MissionSetup({
             <Settings className='size-4' />
             <Trans>Settings</Trans>
           </Button>
-          <Button type='button' variant='outline' className='h-12 justify-start text-base' onClick={() => onHistory?.(true)}>
-            <History className='size-4' />
-            <Trans>History</Trans>
+          <Button type='button' variant='outline' className='h-12 justify-start text-base' asChild>
+            <Link to='/history'>
+              <History className='size-4' />
+              <Trans>History</Trans>
+            </Link>
           </Button>
           <div className='mt-2 flex gap-2'>
             <ReferenceDialog />
@@ -1694,26 +1690,6 @@ export function MissionSetup({
         </div>
       </MenuDialog>
 
-      {/* History is a PAGE, not a dialog (like the server's match list): every
-          flight records a row now, so the table outgrows a dialog in both
-          directions — too narrow for the columns plus the download button, too
-          short for more than a handful of flights. */}
-      {historyOpen ? (
-        <div className='bg-background fixed inset-0 z-50 overflow-auto p-6'>
-          <div className='mx-auto w-full max-w-5xl'>
-            <div className='mb-4 flex items-center justify-between'>
-              <h2 className='text-2xl font-semibold tracking-tight'>
-                <Trans>History</Trans>
-              </h2>
-              <Button type='button' variant='outline' onClick={() => onHistory?.(false)}>
-                <X className='size-4' />
-                <Trans>Close</Trans>
-              </Button>
-            </div>
-            <MatchHistory recording={recording} />
-          </div>
-        </div>
-      ) : null}
 
       <ServerFlow open={dialog === 'server'} onClose={close} config={config} set={set} onChange={onChange} onJoin={onJoin} />
     </div>
