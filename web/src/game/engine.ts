@@ -2726,7 +2726,12 @@ function check_collisions(){   // ownship vs sea / buildings / structures / carr
 		const h=deck_y_at(carrier_model,p.x,p.z,-1e9);   // the flat deck is a landing surface (ground floor); only the taller island superstructure is an obstacle here
 		if(h>CARRIER.deckY+4 && p.y<h) return crash_ownship("island");   // flew into the island superstructure
 	}
-	if(has_enemy && wrap_distance(p,bandit.pos)<14){ explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z); bandit.pos.set(3000,2400,-1000); return crash_ownship("midair"); }
+	// A midair kills BOTH. This drew an explosion on the bandit and then merely
+	// relocated it — damage intact, no consequence — so the player watched it
+	// blow up and it flew on. bandit_destroy is the real thing (explosion,
+	// respawn, fresh hulk); no kill is credited, because flying into someone is
+	// not shooting them down.
+	if(has_enemy && wrap_distance(p,bandit.pos)<14){ bandit_destroy(); return crash_ownship("midair"); }
 	for(const ex of extras){ if(wrap_distance(p,ex.pos)<14){ explosion_at(ex.pos.x,ex.pos.y,ex.pos.z);
 		const a=Math.random()*Math.PI*2, r=3000+Math.random()*4000; ex.pos.set(Math.cos(a)*r,1600+Math.random()*2400,Math.sin(a)*r); return crash_ownship("collision"); } }
 }
