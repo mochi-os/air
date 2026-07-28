@@ -2372,7 +2372,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("probe")){ ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; notice(ownship.probeTarget?translate("PROBE OUT"):translate("PROBE IN")); }   // refueling probe (real limit is ~300 KCAS — procedural, not enforced)
 		if(ch===key_of("fold")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.foldTarget=(ownship.foldTarget??0)>0.5?0:1; notice(ownship.foldTarget?translate("WINGS FOLDING"):translate("WINGS SPREADING")); } else notice(translate("WINGS LOCKED")); }   // wing fold — ground only, taxi speeds; the outer panels carry the ailerons and outer slats with them
 		if(ch===key_of("canopy")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.canopyTarget=(ownship.canopyTarget??0)>0.5?0:1; notice(ownship.canopyTarget?translate("CANOPY OPEN"):translate("CANOPY CLOSED")); } else notice(translate("CANOPY LOCKED")); }   // Shift+C: canopy — ground only, taxi speeds (NATOPS closes it before takeoff; ~60 kt operation wind limit)
-		if(ch===key_of("flares") && cfg.flares && ownship.cm>0 && (ownship.squish??0)<0.1){ dispense_flares(ownship); if(!cheat("ammunition")) ownship.cm--; flare_flag=true; audio_flare(); }   // plain F only — Shift+F is the probe (self-guarded, NOT an else-chain: an inserted handler between the pair once re-aimed the else and Shift+F dropped flares). Weight-on-wheels inhibits the dispenser, as the real ALE-47 does — no pyrotechnics on the deck
+		if(ch===key_of("flares") && ownship.cm>0 && (ownship.squish??0)<0.1){ dispense_flares(ownship); if(!cheat("ammunition")) ownship.cm--; flare_flag=true; audio_flare(); }   // plain F only — Shift+F is the probe (self-guarded, NOT an else-chain: an inserted handler between the pair once re-aimed the else and Shift+F dropped flares). Weight-on-wheels inhibits the dispenser, as the real ALE-47 does — no pyrotechnics on the deck
 		const dev_parked=DEV_MODE && on_ground() && (ownship.speed??0)<1;   // J/L/O are nudge keys in this state
 		if(ch===key_of("eject") && !dev_parked && crash_t<=0 && !ejected){   // ejection handle: three pulls inside 1.25 s — the zero-zero seat works everywhere
 			if(sim_time-eject_at>1.25) eject_taps=0;
@@ -3119,7 +3119,7 @@ function fly_bandit(dt){
 			bandit.group.quaternion.copy(_q);
 			bandit.group.position.copy(bandit.pos);
 			if(bandit.merging&&(wrap_distance(bandit.pos,ownship.pos)<500||bandit.fwd.dot(_v.subVectors(ownship.pos,bandit.pos))<0)) bandit.merging=false;   // keep the merge flag honest for the SP weapons hold
-			if(step.flare&&cfg.flares){ dispense_flares(bandit); bandit.flared_at=sim_time; }
+			if(step.flare){ dispense_flares(bandit); bandit.flared_at=sim_time; }
 			const fired=fire_gun(bandit,ownship,"bandit",dt,step.fire&&!weapons_hold);   // the joust hold binds BOTH jets: the brain may pull its trigger on the run-in, but nothing leaves the barrel before the merge (#87 — the player's trigger has always been gated; the bandit's never was)
 			if(fired>0 && !cheat("invulnerable")){ const verdict=battle_burst(-1,battle_pose(bandit),null,fired,1,battle_tick);
 				if(verdict.hits>0){ hit_flash=Math.min(1,hit_flash+0.25*verdict.hits); audio_hit(verdict.hits); } }
@@ -3138,7 +3138,7 @@ function fly_bandit(dt){
 	}
 	const threatened = rng<1800 && ownship.fwd.dot(to_own.clone().multiplyScalar(-1).normalize())>0.5; // ownship pointing at bandit from behind-ish
 	if(bandit.break_t<=0){ const a=Math.random()*Math.PI*2; bandit.break_dir.set(Math.cos(a),0,Math.sin(a)); bandit.break_t=threatened?(2+Math.random()*2):(5+Math.random()*5);
-		if(threatened && cfg.flares){ dispense_flares(bandit); bandit.flared_at=sim_time; } }
+		if(threatened){ dispense_flares(bandit); bandit.flared_at=sim_time; } }
 	const b=bandit.break_dir.clone(); b.x+=Math.sin(sim_time*0.7)*0.6; b.z+=Math.cos(sim_time*0.9)*0.6;
 	if(bandit.pos.length()>5500) b.addScaledVector(bandit.pos.clone().negate().setY(0).normalize(),1.2);
 	hold_altitude(b,bandit,1400,3600); steer(bandit,b,dt,threatened?0.5:0.34,1.2); apply_orientation(bandit);
@@ -3275,7 +3275,7 @@ function step_world(dt){ sim_time+=dt;
 	update_pool_ballistic(tracers,dt,9.8,0); update_missiles(dt);
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96);
 	_live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts);
-	tr_pts.visible=cfg.tracers; fl_pts.visible=cfg.flares;
+	tr_pts.visible=cfg.tracers; fl_pts.visible=true;   // flares are no longer a mission setting: dispensing is always allowed, and wasting them is the player's business
 	update_anim(dt);
 	update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights(); update_shuttles(); update_jbds(dt);
 	if(carrier_ols && !ownship.trapped && ((ownship.hook??0)>0.5 || (ownship.gear??1)<0.5)){   // LSO watch: accumulate glideslope/lineup deviation through the in-close portion of a pass, and call the waveoff — the LSO waves off ANY unlandable pass, not just a low one
@@ -4059,7 +4059,7 @@ function net_event(e){ const slot=Number(e.slot);
 		if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st&&st.msl>0){ st.msl--; update_rails(st,st.msl); } }   // his wingtip empties as he shoots
 		break;
 	case "fighton": weapons_hold=false; notice(translate("FIGHT'S ON")); break;   // the server saw the merge (#87)
-	case "flare": if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st&&cfg.flares) dispense_flares(st); } break;
+	case "flare": if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st) dispense_flares(st); } break;
 	case "hit": if(net&&slot===net.slot&&e.count){ hit_flash=Math.min(1,hit_flash+0.25*Number(e.count)); audio_hit(Number(e.count)); } break;   // the server says rounds are landing on us
 	case "eject": case "pilot":
 		if(net&&slot===net.slot) notice(translate(e.kind==="eject"?"EJECTED":"PILOT DOWN"));
