@@ -139,7 +139,7 @@ let running=false, has_enemy=true;
 const MULTIPLAYER=!!join;            // in a live match the map/P must never freeze the world
 if(MULTIPLAYER){ cfg.task="joust"; cfg.extra_aircraft=0; cfg.missiles=false; cfg.cheats={}; }   // multiplayer: air start, no local AI; the match rules from the welcome may re-allow missiles and set the match cheats (the menu's own cheats never leak into a match)
 const cheat=(name)=>!!(cfg.cheats&&cfg.cheats[name]);   // mission cheats: invulnerable (humans only — the server enforces it in multiplayer), ammunition, fuel
-const DEV_MODE=new URLSearchParams(location.search).get("developer")==="1";   // &developer=1: landing/trap test autopilot (Shift+1..0), deck align (0), stab cycle (Shift+E), cloud A/B (Shift+X), position copy (Shift+P), and ALL query hooks (?fly/clouds/tod/harm/view/start/sweep/shot/cat/glassdebug) — outside developer mode none of the scaffolding parses (#105)
+const DEV_MODE=(new URLSearchParams(location.search).get("developer")||"").replace(/"/g,"")==="1";   // tolerant of BOTH ?developer=1 and the ?developer="1" the router writes when it round-trips the flag through a navigation (search values are JSON-encoded)   // &developer=1: landing/trap test autopilot (Shift+1..0), deck align (0), stab cycle (Shift+E), cloud A/B (Shift+X), position copy (Shift+P), and ALL query hooks (?fly/clouds/tod/harm/view/start/sweep/shot/cat/glassdebug) — outside developer mode none of the scaffolding parses (#105)
 const GLASS_DEBUG=DEV_MODE&&new URLSearchParams(location.search).get("glassdebug")==="1";   // magenta outline of the HUD-glass clip quad
 // Benchmark overrides (#148, developer mode only): &ssaa=1.0 / &msaa=0 / &dynres=0|1
 // pin the startup-read quality knobs so a single build can A/B each one; &bench=S
