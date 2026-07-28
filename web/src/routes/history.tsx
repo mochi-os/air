@@ -24,7 +24,7 @@ function History() {
             knows that history.back() is a silent no-op inside the shell's
             sandboxed iframe. A bespoke Link to '/' had none of that. */}
         <div className='mb-4 flex items-center gap-3'>
-          <BackButton label={t`Back`} onFallback={() => void navigate({ to: '/' })} />
+          <BackButton label={t`Back`} onFallback={() => void navigate({ to: '/', search: (prev) => prev })} />
           <h2 className='text-2xl font-semibold tracking-tight'>
             <Trans>History</Trans>
           </h2>
@@ -35,4 +35,8 @@ function History() {
   )
 }
 
-export const Route = createFileRoute('/history')({ component: History })
+export const Route = createFileRoute('/history')({
+  component: History,
+  validateSearch: (search: Record<string, unknown>): { developer?: string } =>
+    search.developer ? { developer: String(search.developer) } : {},
+})

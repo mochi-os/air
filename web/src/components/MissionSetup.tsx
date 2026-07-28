@@ -1598,7 +1598,7 @@ export function MissionSetup({
             <Trans>Settings</Trans>
           </Button>
           <Button type='button' variant='outline' className='h-12 justify-start text-base' asChild>
-            <Link to='/history'>
+            <Link to='/history' search={(prev) => prev}>
               <History className='size-4' />
               <Trans>History</Trans>
             </Link>
