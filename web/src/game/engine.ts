@@ -131,7 +131,7 @@ let running=false, has_enemy=true;
 const MULTIPLAYER=!!join;            // in a live match the map/P must never freeze the world
 if(MULTIPLAYER){ cfg.task="joust"; cfg.extra_aircraft=0; cfg.missiles=false; cfg.cheats={}; }   // multiplayer: air start, no local AI; the match rules from the welcome may re-allow missiles and set the match cheats (the menu's own cheats never leak into a match)
 const cheat=(name)=>!!(cfg.cheats&&cfg.cheats[name]);   // mission cheats: invulnerable (humans only — the server enforces it in multiplayer), ammunition, fuel
-const DEV_MODE=new URLSearchParams(location.search).get("developer")==="1";   // &developer=1: landing/trap test autopilot (Shift+1..0), deck align (0), stab cycle (Shift+E), telemetry (Shift+T), cloud A/B (Shift+X), position copy (Shift+P), and ALL query hooks (?fly/clouds/tod/harm/view/start/sweep/shot/cat/glassdebug) — outside developer mode none of the scaffolding parses (#105)
+const DEV_MODE=new URLSearchParams(location.search).get("developer")==="1";   // &developer=1: landing/trap test autopilot (Shift+1..0), deck align (0), stab cycle (Shift+E), cloud A/B (Shift+X), position copy (Shift+P), and ALL query hooks (?fly/clouds/tod/harm/view/start/sweep/shot/cat/glassdebug) — outside developer mode none of the scaffolding parses (#105)
 const GLASS_DEBUG=DEV_MODE&&new URLSearchParams(location.search).get("glassdebug")==="1";   // magenta outline of the HUD-glass clip quad
 // Benchmark overrides (#148, developer mode only): &ssaa=1.0 / &msaa=0 / &dynres=0|1
 // pin the startup-read quality knobs so a single build can A/B each one; &bench=S
@@ -2375,7 +2375,6 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 				crash_ownship(); } }
 		if(TEST_SCENARIOS && e.shiftKey && /^Digit\d$/.test(k)){ start_test((+k.slice(5)+9)%10); }   // Shift+1..0: scripted landing test scenarios (dev-only)
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyE"){ stab_cycle=(stab_cycle+1)%8; notice("STAB ANGLE "+stab_cycle); }   // Shift+E (dev): stab orientation cycle, +90° per press — the user reports the correct number
-		if(TEST_SCENARIOS && e.shiftKey && k==="KeyT"){ telemetry_dump(); }   // Shift+T (dev): download the handling telemetry ring
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyA"){ const rig=ownship.group.userData.rig||[];   // Shift+A (dev): rig calibration — cycle subsystems, sweeping the active one 0..1
 			rig_sweep = rig_sweep+1 > rig.length ? 0 : rig_sweep+1;
 			notice(rig_sweep ? "RIG SWEEP: "+rig[rig_sweep-1].name : "RIG SWEEP OFF"); }
@@ -2586,11 +2585,19 @@ function recording_sample(){
 		yaw:(degrees(Math.atan2(st.fwd.x,-st.fwd.z))+360)%360,
 		pitch:degrees(Math.asin(THREE.MathUtils.clamp(st.fwd.y,-1,1))),
 		roll:(st.up&&st.right)?degrees(Math.atan2(st.right.y,st.up.y)):degrees(st.bank||0) });
-	const add=(st,id,label,colour,mode)=>{ if(!st||!st.pos||!st.fwd) return;   // a half-built state must never take the frame loop down with it
+	const add=(st,id,label,colour,mode,data)=>{ if(!st||!st.pos||!st.fwd) return;   // a half-built state must never take the frame loop down with it
 		const a=attitude(st);
 		list.push({ id, x:st.pos.x, y:st.pos.y, z:st.pos.z, roll:a.roll, pitch:a.pitch, yaw:a.yaw,
-			name:"FA-18C", label, colour, kind:"Air+FixedWing", mode }); };
-	add(ownship,1,cfg.callsign||"Player","Blue");
+			name:"FA-18C", label, colour, kind:"Air+FixedWing", mode, data }); };
+	// The ownship's flight data comes from the instrument tail the gauges read
+	// (#216) — TacView graphs AOA/G/TAS/IAS/Mach natively, which is what turns a
+	// replay into the handling trace the old CSV telemetry carried. The
+	// control-law channels stay behind developer mode with the doctrine one.
+	const out=last_out;
+	const data=out?{ aoa:(out[STATE.alpha]||0)/D2R, g:out[STATE.nz]||0, tas:ownship.speed||0,
+		ias:out[STATE.cas]||0, mach:out[STATE.mach]||0,
+		...(DEV_MODE?{ stick:last_controls?last_controls.pitch:0, stabilator:(out[STATE.stabilator]||0)/D2R }:{}) }:undefined;
+	add(ownship,1,cfg.callsign||"Player","Blue",undefined,data);
 	if(!MULTIPLAYER&&has_enemy&&bandit.group&&bandit.group.visible)
 		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?(bandit_mode()||undefined):undefined);   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
@@ -2861,9 +2868,6 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	update_gauges(out);   // cockpit instruments (#99)
 	recording_sample();
 	screens_update();
-	if(TEST_SCENARIOS){ const _sp=Math.hypot(out[3],out[4],out[5])||1, D=180/Math.PI;   // telemetry row (Shift+T dumps)
-		telemetry.push([ (out[STATE.time]||0).toFixed(3), input.pitch.toFixed(3), (Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*D).toFixed(2), (out[STATE.alpha]*D).toFixed(2), (out[12]*D).toFixed(2), out[STATE.nz].toFixed(3), (out[STATE.cas]*1.944).toFixed(1), (out[STATE.stabilator]*D).toFixed(2) ]);   // attitude from the body axis: the velocity-derived form is garbage below ~5 kt
-		if(telemetry.length>7200) telemetry.shift(); }
 	ownship.grounded=out[STATE.wow]>0.5;
 	core_catapult=out[STATE.catapult]; core_stroke=out[STATE.stroke];
 	if(core_catapult>=0 && core_catapult<SHIP.shuttles.length) cat_idx=core_catapult;   // the active cat follows whichever shuttle the crew hooked you onto — without this, taxiing to another cat towed the wrong shuttle mesh
@@ -3116,13 +3120,6 @@ function fly_bandit_stricken(dt){
 let rig_sweep=0;   // dev calibration (Shift+A): 0 = off, n = sweep the nth rig entry of the ownship
 let stab_cycle=0;   // dev calibration (Shift+E): adds n×90° about the stab hinge so the user can identify the correct orientation
 const client=createAppClient({ appName: 'air' })
-const telemetry=[];   // dev (Shift+T): rolling ~2 min of stick/attitude/alpha/q/nz/cas/stab rows for handling analysis
-function telemetry_dump(){ if(!telemetry.length) return;
-	const csv="time,stick,attitude,alpha,q,nz,cas,stab\n"+telemetry.map(r=>r.join(",")).join("\n");
-	const n=telemetry.length;
-	client.post("/-/telemetry/save", { data: csv }).then(   // the sandboxed shell drops blob downloads, so store server-side (a fresh telemetry row per save — the rolling buffer keeps recording)
-		()=>notice("TELEMETRY SAVED ("+n+" rows)"),
-		()=>notice("TELEMETRY SAVE FAILED")); }
 function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.userData.rig) return;
 	const sweeping=(st===ownship&&rig_sweep>0)?g.userData.rig[rig_sweep-1]:null;
 	const AXES={ x:new THREE.Vector3(1,0,0), y:new THREE.Vector3(0,1,0), z:new THREE.Vector3(0,0,1) };

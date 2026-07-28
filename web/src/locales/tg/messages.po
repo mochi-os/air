@@ -25,7 +25,7 @@ msgstr "{0, plural, one {# интихобшуда} other {# интихобшуд
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:917
 msgid "{0} created “{1}”"
 msgstr "{0} «{1}»-ро эҷод кард"
 
@@ -104,7 +104,7 @@ msgstr "Дастрасӣ рад карда шуд"
 msgid "Access Forbidden"
 msgstr "Дастрасӣ манъ аст"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:192
+#: ../../../lib/web/src/features/access/access-list.tsx:197
 msgid "Access level"
 msgstr "Сатҳи дастрасӣ"
 
@@ -124,8 +124,8 @@ msgstr "Намуди ҳисоб"
 msgid "Account verified"
 msgstr "Ҳисоб тасдиқ карда шуд"
 
-#: src/components/MissionSetup.tsx:1166
-#: src/components/MissionSetup.tsx:1539
+#: src/components/MissionSetup.tsx:1174
+#: src/components/MissionSetup.tsx:1547
 #: src/components/Multiplayer.tsx:378
 msgid "Ace"
 msgstr "Устод"
@@ -135,6 +135,7 @@ msgstr "Устод"
 msgid "Acquire target"
 msgstr "Гирифтани ҳадаф"
 
+#: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:196
 msgid "Add"
 msgstr "Илова кардан"
@@ -177,11 +178,15 @@ msgstr "Илова ба огоҳиномаҳои мавҷуда"
 msgid "Add view"
 msgstr "Иловаи намуд"
 
+#: ../../../lib/web/src/features/access/access-dialog.tsx:332
+msgid "Adding..."
+msgstr "Илова шуда истодааст..."
+
 #: ../../../lib/web/src/components/config-drawer.tsx:71
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Намуд ва тарҳбандиро мувофиқи хости худ танзим кунед."
 
-#: src/components/MissionSetup.tsx:1373
+#: src/components/MissionSetup.tsx:1381
 msgid "Afterburner"
 msgstr "Форсаж"
 
@@ -190,11 +195,11 @@ msgid "AI"
 msgstr "AI"
 
 #: src/components/MissionSetup.tsx:407
-#: src/components/MissionSetup.tsx:1134
+#: src/components/MissionSetup.tsx:1142
 msgid "Aircraft"
 msgstr "Ҳавопаймо"
 
-#: src/components/MissionSetup.tsx:754
+#: src/components/MissionSetup.tsx:756
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Киштии ҳавопаймобар <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> аз <1>Muhamad Mirza Arrafi</1> (Sketchfab), таҳти иҷозатномаи <2>CC BY 4.0</2>. Тағйир дода шуд: андоза иваз карда шуд, самт иваз карда шуд, то сатҳи об ғарқ карда шуд ва барои веб содда карда шуд."
 
@@ -217,6 +222,10 @@ msgstr "Хатогӣ рух дод"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "Хатогии ғайричашмдошт рух дод"
+
+#: ../../../lib/web/src/features/access/access-list.tsx:45
+msgid "Anyone"
+msgstr "Ҳар кас"
 
 #: src/components/MissionSetup.tsx:123
 #: src/components/MissionSetup.tsx:152
@@ -244,6 +253,10 @@ msgstr "Афзоянда"
 msgid "Ascending"
 msgstr "Афзоишёбанда"
 
+#: ../../../lib/web/src/features/access/access-list.tsx:46
+msgid "Authenticated users"
+msgstr ""
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Authenticator code"
 msgstr "Коди Authenticator"
@@ -256,7 +269,7 @@ msgstr "Меҳварҳо"
 msgid "Axis {i}"
 msgstr "Меҳвари {i}"
 
-#: src/components/GameCanvas.tsx:314
+#: src/components/GameCanvas.tsx:317
 msgid "back"
 msgstr "ақиб"
 
@@ -270,7 +283,7 @@ msgstr "Бозгашт"
 msgid "Back to home"
 msgstr "Бозгашт ба саҳифаи асосӣ"
 
-#: src/components/MissionSetup.tsx:1157
+#: src/components/MissionSetup.tsx:1165
 msgid "Bandit"
 msgstr "Ҳавопаймои душман"
 
@@ -315,7 +328,7 @@ msgstr "Афзоиши таваҷҷуҳ"
 msgid "Bots"
 msgstr "Ботҳо"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:309
 msgid "brakes"
 msgstr "тормозҳо"
 
@@ -339,7 +352,7 @@ msgstr "Тугмаҳо"
 msgid "CALL THE BALL"
 msgstr "ТӮБРО ЭЪЛОН КУН"
 
-#: src/components/MissionSetup.tsx:1441
+#: src/components/MissionSetup.tsx:1449
 #: src/components/Multiplayer.tsx:240
 msgid "Callsign"
 msgstr "Тахаллус"
@@ -354,7 +367,7 @@ msgstr "Масофаи камера"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:248
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
-#: ../../../lib/web/src/features/access/access-list.tsx:263
+#: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
@@ -368,31 +381,31 @@ msgstr "Бекор кардан"
 msgid "Canopy"
 msgstr "Фонуси кабина"
 
-#: src/components/MissionSetup.tsx:944
+#: src/components/MissionSetup.tsx:952
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1205
+#: src/components/MissionSetup.tsx:1213
 msgid "Case I (day)"
 msgstr "Ҳолат I (рӯз)"
 
-#: src/components/MissionSetup.tsx:945
+#: src/components/MissionSetup.tsx:953
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1206
+#: src/components/MissionSetup.tsx:1214
 msgid "Case II (weather)"
 msgstr "Ҳолат II (обу ҳаво)"
 
-#: src/components/MissionSetup.tsx:946
+#: src/components/MissionSetup.tsx:954
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1207
+#: src/components/MissionSetup.tsx:1215
 msgid "Case III (night)"
 msgstr "Ҳолат III (шаб)"
 
-#: src/components/MissionSetup.tsx:1213
+#: src/components/MissionSetup.tsx:1221
 msgid "Catapult"
 msgstr "Катапулта"
 
@@ -405,11 +418,11 @@ msgstr "Категория барои ин огоҳинома"
 msgid "Change notification category"
 msgstr "Тағйири категорияи огоҳинома"
 
-#: src/components/GameCanvas.tsx:311
+#: src/components/GameCanvas.tsx:314
 msgid "Chase view:"
 msgstr "Намои таъқиб:"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:311
 msgid "chat"
 msgstr "чат"
 
@@ -421,10 +434,14 @@ msgstr "Чат"
 msgid "Chat to everyone"
 msgstr "Чат бо ҳама"
 
-#: src/components/MatchHistory.tsx:189
-#: src/components/MissionSetup.tsx:1257
+#: src/components/MatchHistory.tsx:196
+#: src/components/MissionSetup.tsx:1265
 msgid "Cheats"
 msgstr "Читҳо"
+
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:198
+msgid "Check \"All\" to see your past notifications."
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:328
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
@@ -496,11 +513,11 @@ msgstr "Панелро пӯшидан"
 msgid "Close search"
 msgstr "Пӯшидани ҷустуҷӯ"
 
-#: src/components/GameCanvas.tsx:315
+#: src/components/GameCanvas.tsx:318
 msgid "closer"
 msgstr "наздиктар"
 
-#: src/components/MissionSetup.tsx:1241
+#: src/components/MissionSetup.tsx:1249
 msgid "Clouds"
 msgstr "Абрҳо"
 
@@ -537,7 +554,7 @@ msgstr "Паймон"
 msgid "Confirm"
 msgstr "Тасдиқ"
 
-#: src/components/MissionSetup.tsx:1054
+#: src/components/MissionSetup.tsx:1062
 msgid "Connect"
 msgstr "Пайваст"
 
@@ -582,11 +599,11 @@ msgstr "Матч эҷод карда нашуд"
 msgid "Could not load this document. Please try again later."
 msgstr "Ин ҳуҷҷатро бор карда натавонист. Лутфан баъдтар такрор кунед."
 
-#: src/components/MatchHistory.tsx:203
+#: src/components/MatchHistory.tsx:210
 msgid "Could not save the recording"
 msgstr "Сабт захира карда нашуд"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:899
 msgid "Could not send the message"
 msgstr "Паём фиристода нашуд"
 
@@ -614,8 +631,8 @@ msgstr "Эҷод кунед ва парвоз кунед"
 msgid "Create match"
 msgstr "Матч эҷод кунед"
 
-#: src/components/MissionSetup.tsx:1577
-#: src/components/MissionSetup.tsx:1598
+#: src/components/MissionSetup.tsx:1586
+#: src/components/MissionSetup.tsx:1607
 msgid "Create mission"
 msgstr "Эҷоди супориш"
 
@@ -624,7 +641,7 @@ msgstr "Эҷоди супориш"
 msgid "Credits"
 msgstr "Муаллифон"
 
-#: src/components/MissionSetup.tsx:1248
+#: src/components/MissionSetup.tsx:1256
 #: src/components/Multiplayer.tsx:302
 msgid "Cumulus"
 msgstr "Абри тӯдагӣ"
@@ -660,17 +677,17 @@ msgstr "Ҳолати торик"
 msgid "Data conflict"
 msgstr "Ихтилофи маълумот"
 
-#: src/components/MatchHistory.tsx:150
+#: src/components/MatchHistory.tsx:157
 msgid "Date"
 msgstr "Сана"
 
-#: src/components/MissionSetup.tsx:1236
+#: src/components/MissionSetup.tsx:1244
 #: src/components/Multiplayer.tsx:297
 msgid "Day"
 msgstr "Рӯз"
 
-#: src/components/MatchHistory.tsx:139
-#: src/components/MatchHistory.tsx:165
+#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:172
 msgid "Deaths"
 msgstr "Маргҳо"
 
@@ -730,6 +747,10 @@ msgstr "Мизбони дигари бозӣ"
 msgid "Direction"
 msgstr "Самт"
 
+#: ../../../lib/web/src/components/person-picker.tsx:214
+msgid "Directory"
+msgstr ""
+
 #: src/components/MissionSetup.tsx:259
 msgid "disconnected"
 msgstr "ҷудо шудааст"
@@ -747,11 +768,11 @@ msgstr "Рад кардан"
 msgid "Displays the mobile sidebar."
 msgstr "Панели канории мобилиро намоиш медиҳад."
 
-#: src/components/MissionSetup.tsx:1361
+#: src/components/MissionSetup.tsx:1369
 msgid "Distance LOD"
 msgstr "LOD-и масофа"
 
-#: src/components/MissionSetup.tsx:1679
+#: src/components/MissionSetup.tsx:1688
 msgid "Done"
 msgstr "Иҷро шуд"
 
@@ -764,7 +785,7 @@ msgstr "Боргирӣ"
 msgid "Download failed"
 msgstr "Боргирӣ ноком шуд"
 
-#: src/components/GameCanvas.tsx:313
+#: src/components/GameCanvas.tsx:316
 msgid "Drag"
 msgstr "Кашидан"
 
@@ -772,7 +793,7 @@ msgstr "Кашидан"
 msgid "Drone"
 msgstr "Дрон"
 
-#: src/components/MissionSetup.tsx:1355
+#: src/components/MissionSetup.tsx:1363
 msgid "Dynamic resolution"
 msgstr "Возеҳияти динамикӣ"
 
@@ -847,11 +868,11 @@ msgstr "Васеъ кардан"
 msgid "Expand sidebar"
 msgstr "Васеъ кардани панели канорӣ"
 
-#: src/components/MissionSetup.tsx:1335
+#: src/components/MissionSetup.tsx:1343
 msgid "Exterior detail"
 msgstr "Тафсилоти берунӣ"
 
-#: src/components/MissionSetup.tsx:1127
+#: src/components/MissionSetup.tsx:1135
 msgid "Extra aircraft"
 msgstr "Ҳавопаймоҳои иловагӣ"
 
@@ -907,7 +928,7 @@ msgstr "Интиқоли ҳисобро анҷом диҳед"
 msgid "Finished"
 msgstr "Тамом шуд"
 
-#: src/components/GameCanvas.tsx:302
+#: src/components/GameCanvas.tsx:305
 msgid "fire"
 msgstr "оташ"
 
@@ -919,13 +940,13 @@ msgstr "Тугмаҳои доимӣ"
 msgid "FLAMEOUT"
 msgstr "АЛАНГА ХОМӮШ"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:307
 msgid "flares"
 msgstr "машъалҳо"
 
 #: src/components/MissionSetup.tsx:120
 #: src/components/MissionSetup.tsx:149
-#: src/components/MissionSetup.tsx:1391
+#: src/components/MissionSetup.tsx:1399
 msgid "Flares"
 msgstr "Машъалҳо"
 
@@ -941,7 +962,7 @@ msgstr "Ҳамвор"
 msgid "FLIGHT CORE FAILED"
 msgstr "ЯДРОИ ПАРВОЗ АЗ КОР МОНД"
 
-#: src/components/MatchHistory.tsx:129
+#: src/components/MatchHistory.tsx:137
 msgid "Flights"
 msgstr "Парвозҳо"
 
@@ -953,23 +974,27 @@ msgstr "Шинокунанда"
 msgid "Flown"
 msgstr "Парвоз шуд"
 
-#: src/components/MissionSetup.tsx:1571
-#: src/components/MissionSetup.tsx:1612
+#: src/components/MissionSetup.tsx:1580
+#: src/components/MissionSetup.tsx:1621
 msgid "Fly"
 msgstr "Парвоз"
 
-#: src/components/MissionSetup.tsx:1397
+#: src/components/MissionSetup.tsx:1405
 msgid "Framerate"
 msgstr "Суръати кадрҳо"
 
 #: src/components/MatchHistory.tsx:84
-#: src/components/MissionSetup.tsx:1122
+#: src/components/MissionSetup.tsx:1130
 msgid "Free flight"
 msgstr "Парвози озод"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:63
 msgid "Friday"
 msgstr "Ҷумъа"
+
+#: ../../../lib/web/src/components/person-picker.tsx:207
+msgid "Friends"
+msgstr "Дӯстон"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:153
 msgid "From"
@@ -984,7 +1009,7 @@ msgstr "Аз"
 msgid "From theme"
 msgstr "Аз мавзӯъ"
 
-#: src/components/MissionSetup.tsx:1142
+#: src/components/MissionSetup.tsx:1150
 #: src/components/Multiplayer.tsx:312
 msgid "Fuel"
 msgstr "Сӯзишворӣ"
@@ -1017,7 +1042,7 @@ msgstr "Тарҳбандии пурра"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:308
 msgid "gear"
 msgstr "шасси"
 
@@ -1025,7 +1050,7 @@ msgstr "шасси"
 msgid "GEAR"
 msgstr "ШАССИ"
 
-#: src/components/MissionSetup.tsx:1621
+#: src/components/MissionSetup.tsx:1630
 msgid "General"
 msgstr "Умумӣ"
 
@@ -1055,13 +1080,18 @@ msgstr "Ба саҳифаи {pageNumber} гузаштан"
 msgid "Go to previous page"
 msgstr "Ба саҳифаи қаблӣ рафтан"
 
-#: src/components/MissionSetup.tsx:1624
+#: src/components/MissionSetup.tsx:1633
 msgid "Graphics"
 msgstr "Графика"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:162
 msgid "Group"
 msgstr "Гурӯҳ"
+
+#. placeholder {0}: name || subject.slice(1)
+#: ../../../lib/web/src/features/access/access-list.tsx:68
+msgid "Group: {0}"
+msgstr ""
 
 #: src/components/GameCanvas.tsx:24
 msgid "GUN"
@@ -1080,17 +1110,17 @@ msgstr "Пинҳон кардан"
 msgid "Hide password"
 msgstr "Пинҳон кардани рамз"
 
-#: src/components/MissionSetup.tsx:1315
+#: src/components/MissionSetup.tsx:1323
 msgid "High"
 msgstr "Баланд"
 
-#: src/components/MissionSetup.tsx:1249
+#: src/components/MissionSetup.tsx:1257
 #: src/components/Multiplayer.tsx:303
 msgid "High stratus"
 msgstr "Абри қабатии баланд"
 
-#: src/components/MissionSetup.tsx:1589
-#: src/components/MissionSetup.tsx:1684
+#: src/components/MissionSetup.tsx:1598
+#: src/components/MissionSetup.tsx:1693
 msgid "History"
 msgstr "Таърих"
 
@@ -1101,7 +1131,7 @@ msgstr "Таърих"
 msgid "Home"
 msgstr "Хона"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:308
 msgid "hook"
 msgstr "Қалмоқ"
 
@@ -1130,8 +1160,8 @@ msgstr "Тамошои тасвир: {0}"
 msgid "Imperial"
 msgstr "Империалӣ"
 
-#: src/components/MissionSetup.tsx:941
-#: src/components/MissionSetup.tsx:1202
+#: src/components/MissionSetup.tsx:949
+#: src/components/MissionSetup.tsx:1210
 msgid "In air"
 msgstr "Дар ҳаво"
 
@@ -1155,7 +1185,7 @@ msgstr "Баръакс кардани фароз"
 msgid "INVULNERABLE"
 msgstr "ОСЕБНОПАЗИР"
 
-#: src/components/MissionSetup.tsx:1262
+#: src/components/MissionSetup.tsx:1270
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "Осебнопазир (танҳо бозигарони инсонӣ)"
@@ -1168,8 +1198,8 @@ msgstr "Чунин ба назар мерасад, ки саҳифае, ки ш�
 msgid "Join"
 msgstr "Ҳамроҳ шудан"
 
-#: src/components/MissionSetup.tsx:1024
-#: src/components/MissionSetup.tsx:1581
+#: src/components/MissionSetup.tsx:1032
+#: src/components/MissionSetup.tsx:1590
 msgid "Join server"
 msgstr "Ҳамроҳ шудан ба сервер"
 
@@ -1178,7 +1208,7 @@ msgid "JOINED"
 msgstr "ҲАМРОҲ ШУД"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1544
+#: src/components/MissionSetup.tsx:1552
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
 msgstr "Дуэл"
@@ -1187,19 +1217,19 @@ msgstr "Дуэл"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Дуэл — 1v1, кӣ аввал ҳарифро занад, ғолиб мешавад"
 
-#: src/components/MissionSetup.tsx:1123
+#: src/components/MissionSetup.tsx:1131
 msgid "Joust against AI player"
 msgstr "Дуэл бар зидди бозигари AI"
 
-#: src/components/MissionSetup.tsx:1630
+#: src/components/MissionSetup.tsx:1639
 msgid "Joystick"
 msgstr "Ҷойстик"
 
-#: src/components/MatchHistory.tsx:142
+#: src/components/MatchHistory.tsx:149
 msgid "K/D"
 msgstr "K/D"
 
-#: src/components/MissionSetup.tsx:1633
+#: src/components/MissionSetup.tsx:1642
 msgid "Keys"
 msgstr "Тугмаҳо"
 
@@ -1211,8 +1241,8 @@ msgstr "КУШТОР"
 msgid "Killed"
 msgstr "Кушта шуд"
 
-#: src/components/MatchHistory.tsx:136
-#: src/components/MatchHistory.tsx:162
+#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:169
 msgid "Kills"
 msgstr "Куштаҳо"
 
@@ -1247,7 +1277,7 @@ msgstr "ДЕР"
 msgid "Launch (catapult)"
 msgstr "Партоб (катапулт)"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:307
 msgid "launch / target"
 msgstr "партоб / ҳадаф"
 
@@ -1264,7 +1294,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Маълумоти бештар"
 
-#: src/components/MissionSetup.tsx:1074
+#: src/components/MissionSetup.tsx:1082
 msgid "Leave server"
 msgstr "Тарк кардани сервер"
 
@@ -1280,6 +1310,10 @@ msgstr "БАРОМАД"
 msgid "Left to Right"
 msgstr "Аз чап ба рост"
 
+#: ../../../lib/web/src/components/post-tags.tsx:72
+msgid "Letters, numbers, spaces, and hyphens only"
+msgstr ""
+
 #: src/components/GameCanvas.tsx:100
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "ДАР 1200 ҲАМВОР, ЧАРХҲО ПОЁН"
@@ -1290,7 +1324,7 @@ msgstr "ДАР 1200 ҲАМВОР, ЧАРХҲО ПОЁН"
 msgid "Light"
 msgstr "Равшан"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:308
 msgid "lights"
 msgstr "чароғҳо"
 
@@ -1303,7 +1337,7 @@ msgstr "Чароғҳо"
 msgid "LIGHTS"
 msgstr "ЧАРОҒҲО"
 
-#: src/components/MissionSetup.tsx:1145
+#: src/components/MissionSetup.tsx:1153
 msgid "Load"
 msgstr "Захира"
 
@@ -1374,11 +1408,11 @@ msgstr "Нигоҳ ба рост"
 msgid "Look up"
 msgstr "Нигоҳ ба боло"
 
-#: src/components/MissionSetup.tsx:1311
+#: src/components/MissionSetup.tsx:1319
 msgid "Low"
 msgstr "Паст"
 
-#: src/components/MissionSetup.tsx:1250
+#: src/components/MissionSetup.tsx:1258
 #: src/components/Multiplayer.tsx:304
 msgid "Low stratus"
 msgstr "Абри қабатии паст"
@@ -1387,7 +1421,7 @@ msgstr "Абри қабатии паст"
 msgid "M to close"
 msgstr "M барои пӯшидан"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "харита"
 
@@ -1409,16 +1443,16 @@ msgstr "Умумӣ"
 msgid "Match type"
 msgstr "Навъи матч"
 
-#: src/components/MissionSetup.tsx:1068
+#: src/components/MissionSetup.tsx:1076
 msgid "Matches"
 msgstr "Бозиҳо"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1313
+#: src/components/MissionSetup.tsx:1321
 msgid "Medium"
 msgstr "Миёна"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:311
 msgid "menu"
 msgstr "меню"
 
@@ -1431,7 +1465,7 @@ msgstr "Меню"
 msgid "Message everyone"
 msgstr "Ба ҳама нависед"
 
-#: src/components/MissionSetup.tsx:926
+#: src/components/MissionSetup.tsx:934
 msgid "Message players on this server"
 msgstr "Ба бозигарони ин сервер паём нависед"
 
@@ -1443,7 +1477,7 @@ msgstr "Ба дастаи худ нависед"
 msgid "Metric"
 msgstr "Метрӣ"
 
-#: src/components/MissionSetup.tsx:778
+#: src/components/MissionSetup.tsx:782
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Харитаи Атолли Мидвей — тасвирҳо дорои маълумоти тағйирёфтаи <0>Copernicus Sentinel-2</0> мебошанд (2026); геометрияи майдони ҳавоӣ (хатти парвоз, роҳҳои ҳаракат, майдончаҳо) © ҳиссагузорони <1>OpenStreetMap</1>, таҳти иҷозатномаи <2>ODbL</2>; маълумоти хатти соҳил ва рифҳо аз <3>NOAA NCCOS</3> (моликияти умумӣ)."
 
@@ -1451,7 +1485,7 @@ msgstr "Харитаи Атолли Мидвей — тасвирҳо дорои
 msgid "MISSILE"
 msgstr "МУШАК"
 
-#: src/components/MissionSetup.tsx:1385
+#: src/components/MissionSetup.tsx:1393
 msgid "Missiles"
 msgstr "Мушакҳо"
 
@@ -1459,7 +1493,7 @@ msgstr "Мушакҳо"
 msgid "Missiles allowed"
 msgstr "Ракетаҳо иҷозат дода шудаанд"
 
-#: src/components/MatchHistory.tsx:156
+#: src/components/MatchHistory.tsx:163
 msgid "Mode"
 msgstr "Ҳолат"
 
@@ -1489,12 +1523,12 @@ msgstr "Нав"
 msgid "Next image"
 msgstr "Тасвири навбатӣ"
 
-#: src/components/MissionSetup.tsx:1237
+#: src/components/MissionSetup.tsx:1245
 #: src/components/Multiplayer.tsx:298
 msgid "Night"
 msgstr "Шаб"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:160
+#: ../../../lib/web/src/features/access/access-list.tsx:165
 msgid "No access rules configured. Add rules to control who can access this resource."
 msgstr "Ягон қоидаи дастрасӣ танзим нашудааст. Барои назорати касе ки ба ин манбаъ дастрасӣ дорад қоидаҳо илова кунед."
 
@@ -1513,6 +1547,10 @@ msgstr "Ягон гурӯҳ дастрас нест"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ягон ҷойстик муайян нашуд — барои бедор кардани он ягон тугмаи онро пахш кунед."
+
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
+msgid "No notifications yet"
+msgstr ""
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1543,7 +1581,7 @@ msgstr "Ягон сабти мавзӯъ ҳоло нест — пас аз ог�
 msgid "No users found"
 msgstr "Ягон корбар ёфт нашуд"
 
-#: src/components/MissionSetup.tsx:903
+#: src/components/MissionSetup.tsx:911
 #: src/components/Multiplayer.tsx:418
 msgid "No world server."
 msgstr "Сервери ҷаҳон нест."
@@ -1557,7 +1595,7 @@ msgstr "БЕ БАҲО"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:315
 #: src/components/MissionSetup.tsx:369
-#: src/components/MissionSetup.tsx:1247
+#: src/components/MissionSetup.tsx:1255
 msgid "None"
 msgstr "Ҳеҷ кадом"
 
@@ -1577,7 +1615,7 @@ msgstr "Ёфт нашуд"
 msgid "Not set"
 msgstr "Танзим нашудааст"
 
-#: src/components/MissionSetup.tsx:903
+#: src/components/MissionSetup.tsx:911
 msgid "Nothing yet — say hello."
 msgstr "Ҳоло ҳеҷ чиз нест — салом гӯед."
 
@@ -1594,7 +1632,7 @@ msgstr "Огоҳиномаҳо"
 msgid "Notifications: {0}"
 msgstr "Огоҳиномаҳо: {0}"
 
-#: src/components/MissionSetup.tsx:1343
+#: src/components/MissionSetup.tsx:1351
 msgid "Ocean detail"
 msgstr "Тафсилоти уқёнус"
 
@@ -1602,13 +1640,13 @@ msgstr "Тафсилоти уқёнус"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:943
-#: src/components/MissionSetup.tsx:1204
+#: src/components/MissionSetup.tsx:951
+#: src/components/MissionSetup.tsx:1212
 msgid "On carrier"
 msgstr "Дар киштӣ"
 
-#: src/components/MissionSetup.tsx:942
-#: src/components/MissionSetup.tsx:1203
+#: src/components/MissionSetup.tsx:950
+#: src/components/MissionSetup.tsx:1211
 msgid "On runway"
 msgstr "Дар хати парвоз"
 
@@ -1634,6 +1672,10 @@ msgstr "Кушодани амалҳои ҳисоб"
 msgid "Open actions"
 msgstr "Кушодани амалҳо"
 
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:133
+msgid "Open menu"
+msgstr "Кушодани меню"
+
 #: ../../../lib/web/src/components/layout/top-bar.tsx:63
 #: ../../../lib/web/src/components/layout/top-bar.tsx:68
 msgid "Open navigation"
@@ -1649,11 +1691,11 @@ msgstr "Кушодани менюи навигатсия"
 msgid "Open theme settings"
 msgstr "Кушодани танзимоти мавзӯъ"
 
-#: src/components/GameCanvas.tsx:313
+#: src/components/GameCanvas.tsx:316
 msgid "or"
 msgstr "ё"
 
-#: src/components/GameCanvas.tsx:313
+#: src/components/GameCanvas.tsx:316
 msgid "orbit"
 msgstr "гардиш"
 
@@ -1661,7 +1703,7 @@ msgstr "гардиш"
 msgid "Other"
 msgstr "Дигар"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:217
+#: ../../../lib/web/src/features/access/access-list.tsx:222
 msgid "Owner"
 msgstr "Соҳиб"
 
@@ -1682,14 +1724,14 @@ msgstr "Тасдиқи калиди дастрасӣ ноком шуд. Лутф
 msgid "Passkeys"
 msgstr "Калидҳои дастрасӣ"
 
-#: src/components/MissionSetup.tsx:845
+#: src/components/MissionSetup.tsx:853
 #: src/components/Multiplayer.tsx:90
 #: src/components/Multiplayer.tsx:245
 msgid "pilot"
 msgstr "халабон"
 
-#: src/components/MissionSetup.tsx:1164
-#: src/components/MissionSetup.tsx:1537
+#: src/components/MissionSetup.tsx:1172
+#: src/components/MissionSetup.tsx:1545
 #: src/components/Multiplayer.tsx:376
 msgid "Pilot"
 msgstr "Халабон"
@@ -1698,7 +1740,7 @@ msgstr "Халабон"
 msgid "PILOT DOWN"
 msgstr "ХАЛАБОН ҲАЛОК ШУД"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:303
 msgid "pitch"
 msgstr "тангаж"
 
@@ -1718,7 +1760,7 @@ msgstr "Фароз ба боло"
 msgid "PLATFORM"
 msgstr "ПЛАТФОРМА"
 
-#: src/components/MatchHistory.tsx:159
+#: src/components/MatchHistory.tsx:166
 msgid "Players"
 msgstr "Бозигарон"
 
@@ -1739,7 +1781,7 @@ msgstr "Лутфан, бори дигар кӯшиш кунед."
 msgid "Please wait a moment and try again."
 msgstr "Лутфан каме интизор шавед ва аз нав кӯшиш кунед."
 
-#: src/components/MissionSetup.tsx:1298
+#: src/components/MissionSetup.tsx:1306
 msgid "Preset"
 msgstr "Танзими пешакӣ"
 
@@ -1769,6 +1811,10 @@ msgstr "Махфият"
 #: ../../../lib/web/src/components/profile-dropdown.tsx:114
 msgid "Profile"
 msgstr "Профил"
+
+#: ../../../lib/web/src/components/person-picker.tsx:200
+msgid "Project members"
+msgstr ""
 
 #: src/components/GameCanvas.tsx:95
 msgid "PUSH TIME"
@@ -1802,7 +1848,7 @@ msgstr "Калидҳои дастрасии худро дар ин сервер 
 msgid "REARMED"
 msgstr "АЗ НАВ МУСАЛЛАҲ ШУД"
 
-#: src/components/MissionSetup.tsx:1029
+#: src/components/MissionSetup.tsx:1037
 msgid "Recent"
 msgstr "Охирин"
 
@@ -1811,16 +1857,16 @@ msgstr "Охирин"
 msgid "Recommended"
 msgstr "Тавсияшуда"
 
-#: src/components/MissionSetup.tsx:1459
+#: src/components/MissionSetup.tsx:1467
 msgid "Record flights"
 msgstr "Парвозҳоро сабт кардан"
 
-#: src/components/MatchHistory.tsx:208
-#: src/components/MissionSetup.tsx:1453
+#: src/components/MatchHistory.tsx:215
+#: src/components/MissionSetup.tsx:1461
 msgid "Recording"
 msgstr "Сабт"
 
-#: src/components/MatchHistory.tsx:202
+#: src/components/MatchHistory.tsx:209
 msgid "Recording saved"
 msgstr "Сабт захира шуд"
 
@@ -1865,22 +1911,22 @@ msgstr "Нисбӣ (5д, 3с, 2р)"
 msgid "Relative within 24 hours, else absolute"
 msgstr "Нисбӣ дар 24 соат, дар акси ҳол мутлақ"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:265
+#: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
 msgstr "Хориҷ кардан"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:247
-#: ../../../lib/web/src/features/access/access-list.tsx:253
+#: ../../../lib/web/src/features/access/access-list.tsx:252
+#: ../../../lib/web/src/features/access/access-list.tsx:258
 msgid "Remove access rule"
 msgstr "Хориҷ кардани қоидаи дастрасӣ"
 
 #. placeholder {0}: formatSubject(subject, data.name)
-#: ../../../lib/web/src/features/access/access-list.tsx:259
+#: ../../../lib/web/src/features/access/access-list.tsx:264
 msgid "Remove access rule for \"{0}\"?"
 msgstr "Қоидаи дастрасӣ барои «{0}» нест карда шавад?"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:257
+#: ../../../lib/web/src/features/access/access-list.tsx:262
 msgid "Remove access?"
 msgstr "Дастрасиро хориҷ кардан?"
 
@@ -1889,7 +1935,7 @@ msgstr "Дастрасиро хориҷ кардан?"
 msgid "Remove interest"
 msgstr "Хориҷ кардани шавқу ҳавас"
 
-#: src/components/MissionSetup.tsx:812
+#: src/components/MissionSetup.tsx:819
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Рендеринг тавассути <0>three.js</0> (иҷозатномаи MIT)."
 
@@ -1899,7 +1945,7 @@ msgstr "Мактубро дубора фиристед"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1672
+#: src/components/MissionSetup.tsx:1681
 msgid "Reset"
 msgstr "Барқарорсозӣ"
 
@@ -1907,15 +1953,15 @@ msgstr "Барқарорсозӣ"
 msgid "Reset all settings to default values"
 msgstr "Барқарорсозии ҳамаи танзимот ба қиматҳои нобаёнӣ"
 
-#: src/components/MissionSetup.tsx:1325
+#: src/components/MissionSetup.tsx:1333
 msgid "Resolution"
 msgstr "Қарор"
 
-#: src/components/MissionSetup.tsx:1563
+#: src/components/MissionSetup.tsx:1572
 msgid "Restart mission"
 msgstr "Аз нав оғоз кардани супориш"
 
-#: src/components/MatchHistory.tsx:168
+#: src/components/MatchHistory.tsx:175
 msgid "Result"
 msgstr "Натиҷа"
 
@@ -1923,7 +1969,7 @@ msgstr "Натиҷа"
 msgid "Resume"
 msgstr "Идома додан"
 
-#: src/components/MissionSetup.tsx:1559
+#: src/components/MissionSetup.tsx:1568
 msgid "Resume mission"
 msgstr "Идома додани супориш"
 
@@ -1939,7 +1985,7 @@ msgstr "Чаппа"
 msgid "Right to Left"
 msgstr "Аз рост ба чап"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:304
 msgid "roll"
 msgstr "крен"
 
@@ -1955,8 +2001,8 @@ msgstr "Ғалт ба чап"
 msgid "Roll right"
 msgstr "Ғалт ба рост"
 
-#: src/components/MissionSetup.tsx:1163
-#: src/components/MissionSetup.tsx:1536
+#: src/components/MissionSetup.tsx:1171
+#: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:375
 msgid "Rookie"
 msgstr "Навкор"
@@ -2053,7 +2099,7 @@ msgstr "интихобшуда"
 msgid "Selected: <0>{0}</0>"
 msgstr "Интихобшуда: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:933
+#: src/components/MissionSetup.tsx:941
 msgid "Send"
 msgstr "Фиристодан"
 
@@ -2073,12 +2119,12 @@ msgstr "Имейл фиристодан"
 msgid "Serif"
 msgstr "Сериф"
 
-#: src/components/MatchHistory.tsx:153
-#: src/components/MissionSetup.tsx:1042
+#: src/components/MatchHistory.tsx:160
+#: src/components/MissionSetup.tsx:1050
 msgid "Server"
 msgstr "Сервер"
 
-#: src/components/MissionSetup.tsx:898
+#: src/components/MissionSetup.tsx:906
 msgid "Server chat"
 msgstr "Чати сервер"
 
@@ -2114,12 +2160,12 @@ msgstr "Сарчашма ва таъиноти манзилро таъин ку�
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1585
-#: src/components/MissionSetup.tsx:1617
+#: src/components/MissionSetup.tsx:1594
+#: src/components/MissionSetup.tsx:1626
 msgid "Settings"
 msgstr "Танзимот"
 
-#: src/components/MissionSetup.tsx:1367
+#: src/components/MissionSetup.tsx:1375
 msgid "Shadows"
 msgstr "Сояҳо"
 
@@ -2160,7 +2206,7 @@ msgid "Small"
 msgstr "Хурд"
 
 #: src/components/MissionSetup.tsx:425
-#: src/components/MissionSetup.tsx:1627
+#: src/components/MissionSetup.tsx:1636
 msgid "Sound"
 msgstr "Садо"
 
@@ -2172,7 +2218,7 @@ msgstr "Васеъ"
 msgid "SPD BK"
 msgstr "ТОР.ҲВ"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:309
 msgid "speed brake"
 msgstr "тормози ҳавоӣ"
 
@@ -2198,7 +2244,7 @@ msgstr "Вомондагӣ, тоза (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "Вомондагӣ, ҳолати нишаст (Vs0)"
 
-#: src/components/MissionSetup.tsx:1176
+#: src/components/MissionSetup.tsx:1184
 msgid "Start"
 msgstr "Оғоз"
 
@@ -2218,7 +2264,7 @@ msgstr "Тундтарин авҷгирӣ (Vx, форсаж)"
 msgid "STRUCTURE"
 msgstr "СОХТОР"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:191
+#: ../../../lib/web/src/features/access/access-list.tsx:196
 msgid "Subject"
 msgstr "Мавзӯъ"
 
@@ -2241,6 +2287,14 @@ msgstr "ХАРИТАИ ТАКТИКӢ"
 msgid "Tag"
 msgstr "Барчасп"
 
+#: ../../../lib/web/src/components/post-tags.tsx:76
+msgid "Tag already exists"
+msgstr "Барчасп аллакай вуҷуд дорад"
+
+#: ../../../lib/web/src/components/post-tags.tsx:68
+msgid "Tag must be 50 characters or less"
+msgstr ""
+
 #: ../../../lib/web/src/components/post-tags.tsx:101
 #: ../../../lib/web/src/components/post-tags.tsx:115
 msgid "Tags"
@@ -2250,7 +2304,7 @@ msgstr "Барчаспҳо"
 msgid "TALLY"
 msgstr "ДУШМАНРО МЕБИНАМ"
 
-#: src/components/MissionSetup.tsx:1116
+#: src/components/MissionSetup.tsx:1124
 msgid "Task"
 msgstr "Вазифа"
 
@@ -2312,7 +2366,7 @@ msgstr "Ин лобӣ пайвасти бозии шуморо ба мизбон
 msgid "This page has not been created yet."
 msgstr "Ин саҳифа ҳанӯз сохта нашудааст."
 
-#: src/components/GameCanvas.tsx:302
+#: src/components/GameCanvas.tsx:305
 msgid "throttle"
 msgstr "газ"
 
@@ -2336,15 +2390,15 @@ msgstr "Панҷшанбе"
 msgid "Tightest sustained turn speed"
 msgstr "Суръати тангтарин гардиши устувор"
 
-#: src/components/GameCanvas.tsx:314
+#: src/components/GameCanvas.tsx:317
 msgid "tilt"
 msgstr "хамшавӣ"
 
-#: src/components/MatchHistory.tsx:132
+#: src/components/MatchHistory.tsx:140
 msgid "Time"
 msgstr "Вақт"
 
-#: src/components/MissionSetup.tsx:1230
+#: src/components/MissionSetup.tsx:1238
 msgid "Time of day"
 msgstr "Вақти рӯз"
 
@@ -2391,7 +2445,7 @@ msgstr "Дархостҳои аз ҳад зиёд"
 msgid "Top"
 msgstr "Боло"
 
-#: src/components/MissionSetup.tsx:1379
+#: src/components/MissionSetup.tsx:1387
 msgid "Tracers"
 msgstr "Тирҳои равшанкунанда"
 
@@ -2426,7 +2480,7 @@ msgstr "Барои ҷустуҷӯи корбарон чоп кунед"
 msgid "Type to search..."
 msgstr "Барои ҷустуҷӯ чоп кунед..."
 
-#: src/components/MissionSetup.tsx:1317
+#: src/components/MissionSetup.tsx:1325
 msgid "Ultra"
 msgstr "Ултра"
 
@@ -2451,12 +2505,12 @@ msgstr "Дастрасии иҷозат додашуда не"
 msgid "United States"
 msgstr "Иёлоти Муттаҳида"
 
-#: src/components/MissionSetup.tsx:1268
+#: src/components/MissionSetup.tsx:1276
 #: src/components/Multiplayer.tsx:351
 msgid "Unlimited ammunition"
 msgstr "Муҳимоти номаҳдуд"
 
-#: src/components/MissionSetup.tsx:1274
+#: src/components/MissionSetup.tsx:1282
 #: src/components/Multiplayer.tsx:361
 msgid "Unlimited fuel"
 msgstr "Сӯзишвории номаҳдуд"
@@ -2469,6 +2523,7 @@ msgstr "Тасдиқ нашудааст"
 msgid "Use your passkey"
 msgstr "Калиди дастрасии худро истифода баред"
 
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:86
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
 msgstr "Корбар"
@@ -2499,8 +2554,8 @@ msgstr "Тасдиқи суроғаи почтаи электронӣ"
 msgid "Vertical"
 msgstr "Амудӣ"
 
-#: src/components/MissionSetup.tsx:1165
-#: src/components/MissionSetup.tsx:1538
+#: src/components/MissionSetup.tsx:1173
+#: src/components/MissionSetup.tsx:1546
 #: src/components/Multiplayer.tsx:377
 msgid "Veteran"
 msgstr "Собиқадор"
@@ -2518,7 +2573,7 @@ msgstr "Эскизи видео"
 msgid "Video viewer: {0}"
 msgstr "Тамошои видео: {0}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:310
 msgid "view"
 msgstr "намо"
 
@@ -2556,7 +2611,11 @@ msgstr "Мо рамзи тасдиқро ба <0>{0}</0> фиристодем. �
 msgid "We'll be back online shortly."
 msgstr "Мо ба зудӣ дубора онлайн хоҳем буд."
 
-#: src/components/GameCanvas.tsx:303
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:197
+msgid "We'll notify you when something important happens."
+msgstr ""
+
+#: src/components/GameCanvas.tsx:306
 msgid "weapon"
 msgstr "силоҳ"
 
@@ -2598,12 +2657,12 @@ msgstr "ҒОЛИБ"
 msgid "World server"
 msgstr "Сервери ҷаҳон"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:899
 #: src/components/Multiplayer.tsx:103
 msgid "World server not reachable"
 msgstr "Сервери ҷаҳон дастнорас аст"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:304
 msgid "yaw"
 msgstr "инҳироф"
 
@@ -2630,6 +2689,10 @@ msgstr "Шумо ба ин бахш дастрасӣ надоред."
 #: ../../../lib/web/src/features/errors/forbidden.tsx:18
 msgid "You don't have necessary permission <0/>to view this resource."
 msgstr "Шумо иҷозати зарурӣ надоред <0/>барои дидани ин манбаъ."
+
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
+msgid "You're all caught up!"
+msgstr ""
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

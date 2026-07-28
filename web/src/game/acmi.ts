@@ -32,6 +32,20 @@ export interface Recorded {
   colour: 'Blue' | 'Red' | 'Orange'
   kind: string // TacView type tag, e.g. Air+FixedWing
   mode?: string // bot doctrine state — developer builds only
+  data?: Flight // per-sample flight data: TacView graphs these natively
+}
+
+// Flight is the standard ACMI telemetry set. TacView knows these property
+// names and plots them, which is what makes a recording a handling-analysis
+// tool and not just a 3D replay (#216).
+export interface Flight {
+  aoa?: number // degrees
+  g?: number // load factor
+  tas?: number // true airspeed, m/s
+  ias?: number // indicated/calibrated airspeed, m/s
+  mach?: number
+  stick?: number // control-law channels: developer builds only
+  stabilator?: number // degrees
 }
 
 // position converts the flat world's metres to the degrees ACMI carries.
@@ -75,6 +89,18 @@ export function acmi(samples: Sample[], started: Date, title: string): string {
         round(o.yaw, 1),
       ].join('|')
       let line = `${o.id.toString(16)},T=${transform}`
+      // Flight data rides on the same line. These change every sample, so they
+      // are never delta-suppressed the way the identity properties are.
+      const d = o.data
+      if (d) {
+        if (d.aoa !== undefined) line += `,AOA=${round(d.aoa, 2)}`
+        if (d.g !== undefined) line += `,G=${round(d.g, 2)}`
+        if (d.tas !== undefined) line += `,TAS=${round(d.tas, 1)}`
+        if (d.ias !== undefined) line += `,IAS=${round(d.ias, 1)}`
+        if (d.mach !== undefined) line += `,Mach=${round(d.mach, 3)}`
+        if (d.stick !== undefined) line += `,Stick=${round(d.stick, 3)}`
+        if (d.stabilator !== undefined) line += `,Stabilator=${round(d.stabilator, 2)}`
+      }
       const properties = `${o.name}|${o.label}|${o.colour}|${o.kind}|${o.mode ?? ''}`
       if (declared.get(o.id) !== properties) {
         declared.set(o.id, properties)
