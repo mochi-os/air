@@ -421,7 +421,7 @@ msgstr "Bisedë"
 msgid "Chat to everyone"
 msgstr "Chat me të gjithë"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Mashtrime"
@@ -582,7 +582,7 @@ msgstr "Ndeshja nuk u krijua dot"
 msgid "Could not load this document. Please try again later."
 msgstr "Nuk mund të ngarkohej ky dokument. Provo më vonë."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Regjistrimi nuk u ruajt dot"
 
@@ -660,7 +660,7 @@ msgstr "Modë e errët"
 msgid "Data conflict"
 msgstr "Konflikt të dhënash"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Data"
 
@@ -669,8 +669,8 @@ msgstr "Data"
 msgid "Day"
 msgstr "Ditë"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Vdekjet"
 
@@ -734,7 +734,7 @@ msgstr "Drejtimi"
 msgid "disconnected"
 msgstr "i shkëputur"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "I shkëputur"
 
@@ -903,7 +903,7 @@ msgstr "LUFTA FILLOI"
 msgid "Finish moving your account"
 msgstr "Përfundoni lëvizjen e llogarisë suaj"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Përfundoi"
 
@@ -941,9 +941,17 @@ msgstr "I sheshtë"
 msgid "FLIGHT CORE FAILED"
 msgstr "BËRTHAMA E FLUTURIMIT DËSHTOI"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Fluturimet"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Pluskues"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Fluturuar"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Fluturo"
 msgid "Framerate"
 msgstr "Frekuencë e kuadrove"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Fluturim i lirë"
@@ -1004,7 +1013,7 @@ msgstr "Sonda e karburantit"
 msgid "Full layout"
 msgstr "Paraqitje e plotë"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Bashkohu me serverin"
 msgid "JOINED"
 msgstr "U BASHKUA"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Duel kundër lojtarit AI"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Tastet"
 msgid "KILL"
 msgstr "VRASJE"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "I vrarë"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Vrasjet"
 
@@ -1255,7 +1268,7 @@ msgstr "Mëso më shumë"
 msgid "Leave server"
 msgstr "Lër serverin"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "U largua"
 
@@ -1396,7 +1409,6 @@ msgstr "Kryesori"
 msgid "Match type"
 msgstr "Lloji i ndeshjes"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Ndeshjet"
@@ -1447,7 +1459,7 @@ msgstr "Raketa"
 msgid "Missiles allowed"
 msgstr "Raketat lejohen"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Modaliteti"
 
@@ -1490,6 +1502,10 @@ msgstr "Asnjë rregull qasjeje i konfiguruar. Shto rregulla për të kontrolluar
 msgid "No connected accounts"
 msgstr "Asnjë llogari e lidhur"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Ende asnjë fluturim"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Asnjë grup i disponueshëm"
@@ -1497,10 +1513,6 @@ msgstr "Asnjë grup i disponueshëm"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Nuk u zbulua asnjë joystick — shtypni çfarëdo butoni në të për ta zgjuar."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Ende asnjë ndeshje"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Pjerrësi lart"
 msgid "PLATFORM"
 msgstr "PLATFORMË"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Lojtarët"
 
@@ -1803,12 +1815,12 @@ msgstr "I rekomanduar"
 msgid "Record flights"
 msgstr "Regjistro fluturimet"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Regjistrimi"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Regjistrimi u ruajt"
 
@@ -1903,7 +1915,7 @@ msgstr "Rezolucioni"
 msgid "Restart mission"
 msgstr "Rinis misionin"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Rezultati"
 
@@ -2061,7 +2073,7 @@ msgstr "Dërgo email"
 msgid "Serif"
 msgstr "Me serif"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Serveri"
@@ -2250,7 +2262,7 @@ msgstr "Ekipi"
 msgid "TEAM"
 msgstr "SKUADRA"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Ekipe"
@@ -2327,6 +2339,10 @@ msgstr "Shpejtësia e kthesës më të ngushtë të qëndrueshme"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "anim"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Koha"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Vertikale"
 msgid "Veteran"
 msgstr "Veteran"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Fitore"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Miniatura e videos"
@@ -2615,9 +2635,9 @@ msgstr "Nuk keni lejen e nevojshme <0/>për ta parë këtë burim."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Llogaria juaj u zhvendos këtu nga {source}. Derisa ta fshini atje, mesazhet dhe njoftimet mund të arrijnë në të dy serverët, një pjesë e përmbajtjes suaj vazhdon të shërbejë nga serveri i vjetër dhe ndjekësit mund të kenë nevojë për disa minuta që t'ju gjejnë këtu."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Ndeshjet tuaja shumëlojtarëshe shfaqen këtu pasi të fluturoni një."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Fluturimet tuaja shfaqen këtu pasi të keni bërë një."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

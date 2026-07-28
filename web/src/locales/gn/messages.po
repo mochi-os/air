@@ -421,7 +421,7 @@ msgstr "Chat"
 msgid "Chat to everyone"
 msgstr "Chat opavavéndi"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Trucos"
@@ -582,7 +582,7 @@ msgstr "Ndaikatúi oñemoheñói pe partida"
 msgid "Could not load this document. Please try again later."
 msgstr "Ndaikatúi oñemyenyhẽ ko documento. Eha'ã jeýta upéi."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Ndaikatúi oñeñongatu pe grabación"
 
@@ -660,7 +660,7 @@ msgstr "Yvotypaha mode"
 msgid "Data conflict"
 msgstr "Mba'ekuaarã joavy"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Ára"
 
@@ -669,8 +669,8 @@ msgstr "Ára"
 msgid "Day"
 msgstr "Ára"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Mano"
 
@@ -734,7 +734,7 @@ msgstr "Direccióna"
 msgid "disconnected"
 msgstr "desconectado"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Ndojuajúi"
 
@@ -903,7 +903,7 @@ msgstr "OÑEPYRŨ ÑORAIRÕ"
 msgid "Finish moving your account"
 msgstr "Oñepyrũ nde cuenta mbojuaju"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Opa"
 
@@ -941,9 +941,17 @@ msgstr "Ipe"
 msgid "FLIGHT CORE FAILED"
 msgstr "VEVE APYTERE OJEJAVY"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Veve"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Oguatáva"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Oveve"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Oveve"
 msgid "Framerate"
 msgstr "Framerate"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Veve sãso"
@@ -1004,7 +1013,7 @@ msgstr "Combustible probe"
 msgid "Full layout"
 msgstr "Layout iguasúva"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Servidor-pe jeike"
 msgid "JOINED"
 msgstr "OIKE"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Ñorairõ peteĩ jugador AI ndive"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Tecla-kuéra"
 msgid "KILL"
 msgstr "JEJUKA"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Ojejuka"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Juka"
 
@@ -1255,7 +1268,7 @@ msgstr "Eikuaave"
 msgid "Leave server"
 msgstr "Servidor jeheja"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Osẽ"
 
@@ -1396,7 +1409,6 @@ msgstr "General"
 msgid "Match type"
 msgstr "Partida lája"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Ñembosaráikuéra"
@@ -1447,7 +1459,7 @@ msgstr "Misil-kuéra"
 msgid "Missiles allowed"
 msgstr "Misil ikatu ojepuru"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Modo"
 
@@ -1490,6 +1502,10 @@ msgstr "Ndaiporivéi reglas oñembosako'íva. Embojuaju reglas remohenondévo m�
 msgid "No connected accounts"
 msgstr "Ndaipóri cuenta ojuajúva"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Ndaipóri veve gueteri"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Ndaipóri grupos oĩva"
@@ -1497,10 +1513,6 @@ msgstr "Ndaipóri grupos oĩva"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ndojejuhúi joystick — epoko oimeraẽ botón-re embopáy hag̃ua."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Ndaipóri gueteri ñembosarái"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Tĩ yvate gotyo"
 msgid "PLATFORM"
 msgstr "PLATAFÓRMA"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Ñembosaráihára"
 
@@ -1803,12 +1815,12 @@ msgstr "Ojeporavóva"
 msgid "Record flights"
 msgstr "Egraba umi veve"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Grabación"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Grabación oñeñongatýma"
 
@@ -1903,7 +1915,7 @@ msgstr "Resolución"
 msgid "Restart mission"
 msgstr "Misión ñepyrũjey"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Resultado"
 
@@ -2061,7 +2073,7 @@ msgstr "Emondo email"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Mohendaha"
@@ -2250,7 +2262,7 @@ msgstr "Aty"
 msgid "TEAM"
 msgstr "EQUIPO"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Atykuéra"
@@ -2327,6 +2339,10 @@ msgstr "Jere ojejoko pya'eha po'ivéva"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "jeroja"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Aravo"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Oñembo'y"
 msgid "Veteran"
 msgstr "Veterano"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Pu'aka"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Video ta'ãnga'i"
@@ -2615,9 +2635,9 @@ msgstr "Nderehecháiva ko mba'e <0/>ndaipóri ne ñemoneĩ."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Nde cuenta oiko ko'ápe {source} guive. Peve reipe'a upépe, marandu ha mba'emimi ikatu ogueru servidor mokõive-pe, nde mba'e mba'eapo ambuéva ohasave ypykue servidor guive, ha erekopy'araka'e minutopi peve reko'ata ko'ápe."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Nde ñembosaráikuéra multijugador ojehecháta ko'ápe reveve peteĩ rire."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Nde veve osẽta ko'ápe reveve rire peteĩ."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

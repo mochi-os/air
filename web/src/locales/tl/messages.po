@@ -421,7 +421,7 @@ msgstr "Chat"
 msgid "Chat to everyone"
 msgstr "Chat sa lahat"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Cheats"
@@ -582,7 +582,7 @@ msgstr "Hindi nagawa ang match"
 msgid "Could not load this document. Please try again later."
 msgstr "Hindi ma-load ang document na ito. Subukan muli mamaya."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Hindi na-save ang recording"
 
@@ -660,7 +660,7 @@ msgstr "Madilim na mode"
 msgid "Data conflict"
 msgstr "Salungatan sa data"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Petsa"
 
@@ -669,8 +669,8 @@ msgstr "Petsa"
 msgid "Day"
 msgstr "Araw"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Namatay"
 
@@ -734,7 +734,7 @@ msgstr "Direksyon"
 msgid "disconnected"
 msgstr "nadiskonekta"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Nadiskonekta"
 
@@ -903,7 +903,7 @@ msgstr "LABAN NA"
 msgid "Finish moving your account"
 msgstr "Tapusin ang paglipat ng iyong account"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Natapos"
 
@@ -941,9 +941,17 @@ msgstr "Patag"
 msgid "FLIGHT CORE FAILED"
 msgstr "NABIGO ANG FLIGHT CORE"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Mga paglipad"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Floating"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Lumipad"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Lumipad"
 msgid "Framerate"
 msgstr "Framerate"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Malayang paglipad"
@@ -1004,7 +1013,7 @@ msgstr "Probe ng gatong"
 msgid "Full layout"
 msgstr "Buong layout"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Sumali sa server"
 msgid "JOINED"
 msgstr "SUMALI"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Duel laban sa AI player"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Mga key"
 msgid "KILL"
 msgstr "KILL"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Nabagsak"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Napatay"
 
@@ -1255,7 +1268,7 @@ msgstr "Matuto pa"
 msgid "Leave server"
 msgstr "Umalis sa server"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Umalis"
 
@@ -1396,7 +1409,6 @@ msgstr "Pangkalahatan"
 msgid "Match type"
 msgstr "Uri ng match"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Mga laban"
@@ -1447,7 +1459,7 @@ msgstr "Mga misil"
 msgid "Missiles allowed"
 msgstr "Puwede ang missiles"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Mode"
 
@@ -1490,6 +1502,10 @@ msgstr "Walang naka-configure na access rule. Magdagdag ng mga rule upang kontro
 msgid "No connected accounts"
 msgstr "Walang nakakonektang account"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Wala pang paglipad"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Walang available na grupo"
@@ -1497,10 +1513,6 @@ msgstr "Walang available na grupo"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Walang na-detect na joystick — pindutin ang kahit anong button nito para gisingin ito."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Wala pang laban"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Pitch pataas"
 msgid "PLATFORM"
 msgstr "PLATAPORMA"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Mga manlalaro"
 
@@ -1803,12 +1815,12 @@ msgstr "Inirerekomenda"
 msgid "Record flights"
 msgstr "I-record ang mga paglipad"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Pag-record"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Na-save ang recording"
 
@@ -1903,7 +1915,7 @@ msgstr "Resolusyon"
 msgid "Restart mission"
 msgstr "I-restart ang misyon"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Resulta"
 
@@ -2061,7 +2073,7 @@ msgstr "Magpadala ng email"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Server"
@@ -2250,7 +2262,7 @@ msgstr "Team"
 msgid "TEAM"
 msgstr "TEAM"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Mga koponan"
@@ -2327,6 +2339,10 @@ msgstr "Bilis ng pinakamasikip na tuloy-tuloy na pagliko"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "ikiling"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Oras"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Patayo"
 msgid "Veteran"
 msgstr "Beterano"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Tagumpay"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Thumbnail ng video"
@@ -2615,9 +2635,9 @@ msgstr "Wala kang kinakailangang pahintulot <0/>upang tingnan ang mapagkukunang 
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Ang iyong account ay inilipat dito mula sa {source}. Hanggang hindi mo ito binubura doon, ang mga mensahe at abiso ay maaaring maabot ang parehong mga server, ang ilan sa iyong nilalaman ay patuloy na pinaglilingkuran mula sa lumang server, at ang mga tagasunod ay maaaring maglaan ng ilang minuto upang mahanap ka dito."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Lalabas dito ang iyong mga multiplayer na laban kapag nakalipad ka na ng isa."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Lilitaw dito ang iyong mga paglipad kapag nakalipad ka na ng isa."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

@@ -110,7 +110,15 @@ def match_list(a):
 	if not a.user:
 		return {"data": {"matches": []}}
 	matches = mochi.db.rows("select world, session, mode, team, started, ended, reason, players, kills, deaths, cheated from matches order by started desc limit 50")
-	return {"data": {"matches": matches}}
+	# Totals are aggregated over EVERY row, not the fifty listed: the table is a
+	# recent-flights view, the summary is a career. Cheated flights count too —
+	# this is the player's own logbook, not a leaderboard, and excluding them
+	# just made the summary disagree with the table above it.
+	# started/ended are epoch MILLISECONDS (the client stamps them with
+	# Date.now), so the duration divides by 1000: summed raw it read 125 hours
+	# for an evening's flying.
+	totals = mochi.db.row("select count(*) as flights, sum(ended - started) / 1000 as seconds, sum(kills) as kills, sum(deaths) as deaths, sum(cheated) as cheated from matches")
+	return {"data": {"matches": matches, "totals": totals}}
 
 def telemetry_save(a):
 	# Development telemetry sink (Shift+T): browser downloads don't work from

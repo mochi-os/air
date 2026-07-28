@@ -421,7 +421,7 @@ msgstr "அரட்டை"
 msgid "Chat to everyone"
 msgstr "அனைவருடனும் அரட்டை"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "ஏமாற்றுகள்"
@@ -582,7 +582,7 @@ msgstr "போட்டியை உருவாக்க முடியவி�
 msgid "Could not load this document. Please try again later."
 msgstr "இந்த ஆவணத்தை ஏற்ற முடியவில்லை. பிறகு மீண்டும் முயற்சிக்கவும்."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "பதிவைச் சேமிக்க முடியவில்லை"
 
@@ -660,7 +660,7 @@ msgstr "இருள் முறை"
 msgid "Data conflict"
 msgstr "தரவு முரண்பாடு"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "தேதி"
 
@@ -669,8 +669,8 @@ msgstr "தேதி"
 msgid "Day"
 msgstr "பகல்"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "இறப்புகள்"
 
@@ -734,7 +734,7 @@ msgstr "திசை"
 msgid "disconnected"
 msgstr "துண்டிக்கப்பட்டது"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "துண்டிக்கப்பட்டது"
 
@@ -903,7 +903,7 @@ msgstr "சண்டை தொடங்கியது"
 msgid "Finish moving your account"
 msgstr "கணக்கை நகர்த்துவதை முடிக்கவும்"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "முடிந்தது"
 
@@ -941,9 +941,17 @@ msgstr "தட்டையானது"
 msgid "FLIGHT CORE FAILED"
 msgstr "பறப்பு மையம் தோல்வி"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "பறப்புகள்"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "மிதக்கும்"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "பறந்தது"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "பறத்தல்"
 msgid "Framerate"
 msgstr "சட்ட விகிதம்"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "சுதந்திர பறப்பு"
@@ -1004,7 +1013,7 @@ msgstr "எரிபொருள் குழாய்"
 msgid "Full layout"
 msgstr "முழு தளவமைப்பு"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "சேவையகத்தில் சேர்"
 msgid "JOINED"
 msgstr "சேர்ந்தார்"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "AI வீரருடன் டூயல்"
 msgid "Joystick"
 msgstr "ஜாய்ஸ்டிக்"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "விசைகள்"
 msgid "KILL"
 msgstr "வீழ்த்தல்"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "வீழ்த்தப்பட்டது"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "வீழ்த்தல்கள்"
 
@@ -1255,7 +1268,7 @@ msgstr "மேலும் அறிய"
 msgid "Leave server"
 msgstr "சேவையகத்தை விட்டு வெளியேறு"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "வெளியேறினார்"
 
@@ -1396,7 +1409,6 @@ msgstr "முதன்மை"
 msgid "Match type"
 msgstr "போட்டி வகை"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "போட்டிகள்"
@@ -1447,7 +1459,7 @@ msgstr "ஏவுகணைகள்"
 msgid "Missiles allowed"
 msgstr "ஏவுகணைகள் அனுமதி"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "பயன்முறை"
 
@@ -1490,6 +1502,10 @@ msgstr "அணுகல் விதிகள் எதுவும் கட்
 msgid "No connected accounts"
 msgstr "இணைக்கப்பட்ட கணக்குகள் இல்லை"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "இதுவரை பறப்புகள் இல்லை"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "குழுக்கள் கிடைக்கவில்லை"
@@ -1497,10 +1513,6 @@ msgstr "குழுக்கள் கிடைக்கவில்லை"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "ஜாய்ஸ்டிக் எதுவும் கண்டறியப்படவில்லை — அதை எழுப்ப அதில் ஏதேனும் ஒரு பொத்தானை அழுத்தவும்."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "இதுவரை போட்டிகள் இல்லை"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "பிட்ச் மேலே"
 msgid "PLATFORM"
 msgstr "மேடை"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "வீரர்கள்"
 
@@ -1803,12 +1815,12 @@ msgstr "பரிந்துரைக்கப்பட்டது"
 msgid "Record flights"
 msgstr "பறப்புகளைப் பதிவு செய்"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "பதிவு"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "பதிவு சேமிக்கப்பட்டது"
 
@@ -1903,7 +1915,7 @@ msgstr "தீர்வு"
 msgid "Restart mission"
 msgstr "பணியை மீண்டும் தொடங்கு"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "முடிவு"
 
@@ -2061,7 +2073,7 @@ msgstr "மின்னஞ்சல் அனுப்பு"
 msgid "Serif"
 msgstr "செரிஃப்"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "சர்வர்"
@@ -2250,7 +2262,7 @@ msgstr "டீம்"
 msgid "TEAM"
 msgstr "அணி"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "அணிகள்"
@@ -2327,6 +2339,10 @@ msgstr "மிக இறுக்கமான நிலையான திரு
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "சாய்வு"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "நேரம்"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "செங்குத்து"
 msgid "Veteran"
 msgstr "அனுபவசாலி"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "வெற்றி"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "வீடியோ சிறுபடம்"
@@ -2615,9 +2635,9 @@ msgstr "இந்த ஆதாரத்தைப் பார்க்க <0/>�
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "உங்கள் கணக்கு {source} இலிருந்து இங்கே நகர்த்தப்பட்டது. நீங்கள் அதை அங்கே நீக்கும் வரை, செய்திகளும் அறிவிப்புகளும் இரண்டு சேவையகங்களையும் அடையலாம், உங்கள் சில உள்ளடக்கம் பழைய சேவையகத்தில் இருந்து தொடர்ந்து வழங்கப்படும், மேலும் உங்கள் பின்தொடர்பவர்கள் இங்கே உங்களை கண்டுபிடிக்க சில நிமிடங்கள் ஆகலாம்."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "நீங்கள் ஒரு பறப்பை மேற்கொண்ட பிறகு உங்கள் பலவீரர் போட்டிகள் இங்கே தோன்றும்."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "நீங்கள் ஒருமுறை பறந்தவுடன் உங்கள் பறப்புகள் இங்கே தோன்றும்."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

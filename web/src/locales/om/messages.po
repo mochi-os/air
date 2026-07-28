@@ -421,7 +421,7 @@ msgstr "Chaattii"
 msgid "Chat to everyone"
 msgstr "Hunda waliin chaatii"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Gowwoomsaa"
@@ -582,7 +582,7 @@ msgstr "Dorgommii uumuun hin milkoofne"
 msgid "Could not load this document. Please try again later."
 msgstr "Galmee kana fe'uu hin dandeenye. Booda yaali."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Galmeen olkaa'amuu hin dandeenye"
 
@@ -660,7 +660,7 @@ msgstr "Akkaataa dukkanaa"
 msgid "Data conflict"
 msgstr "Walitti bu'iinsa deetaa"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Guyyaa"
 
@@ -669,8 +669,8 @@ msgstr "Guyyaa"
 msgid "Day"
 msgstr "Guyyaa"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Du'aa"
 
@@ -734,7 +734,7 @@ msgstr "Kallatti"
 msgid "disconnected"
 msgstr "addaan citee"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Hidhaan citeera"
 
@@ -903,7 +903,7 @@ msgstr "LOLLI JALQABAME"
 msgid "Finish moving your account"
 msgstr "Akkaawuntii kee jijjiiruu fixadhu"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Xumurame"
 
@@ -941,9 +941,17 @@ msgstr "Diriiraa"
 msgid "FLIGHT CORE FAILED"
 msgstr "HANDHUURRI BALALII HIN MILKOOFNE"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Balaliiwwan"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Bilisa"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Balali'e"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Balali’i"
 msgid "Framerate"
 msgstr "Saffisa fireemii"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Balalii bilisaa"
@@ -1004,7 +1013,7 @@ msgstr "Ulaagaa boba'aa"
 msgid "Full layout"
 msgstr "Bocii guutuu"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Sarvara seeni"
 msgid "JOINED"
 msgstr "SEENEERA"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Wal-lola taphataa AI waliin"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Furtuuwwan"
 msgid "KILL"
 msgstr "AJJEECHAA"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Ajjeefame"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Ajjeechaa"
 
@@ -1255,7 +1268,7 @@ msgstr "Caalaatti baradhu"
 msgid "Leave server"
 msgstr "Sarvara irraa ba’i"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Ba'e"
 
@@ -1396,7 +1409,6 @@ msgstr "Waliigala"
 msgid "Match type"
 msgstr "Gosa dorgommii"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Dorgommii"
@@ -1447,7 +1459,7 @@ msgstr "Miisaayiloota"
 msgid "Missiles allowed"
 msgstr "Misaa'elonni ni hayyamamu"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Moodii"
 
@@ -1490,6 +1502,10 @@ msgstr "Seerri itti seenumsaa hin qindaa'amne. Eenyu qabeenya kana itti seenuu d
 msgid "No connected accounts"
 msgstr "Akkaawuntiiwwan walqabsiifaman hin jiran"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Ammatti balalii hin jiru"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Garreen hin jiran"
@@ -1497,10 +1513,6 @@ msgstr "Garreen hin jiran"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Joystick tokkollee hin argamne — dammaqsuuf qabduu isaa kamiyyuu dhiibi."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Hanga ammaatti dorgommiin hin jiru"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Pitch ol"
 msgid "PLATFORM"
 msgstr "WALTAJJII"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Taphattoota"
 
@@ -1803,12 +1815,12 @@ msgstr "Yaadachifame"
 msgid "Record flights"
 msgstr "Balalii galmeessi"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Galmeessa"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Galmeen olkaa'ame"
 
@@ -1903,7 +1915,7 @@ msgstr "Furmaata"
 msgid "Restart mission"
 msgstr "Ergama irra deebi’ii jalqabi"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Bu'aa"
 
@@ -2061,7 +2073,7 @@ msgstr "Imeelii ergi"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Sarvarii"
@@ -2250,7 +2262,7 @@ msgstr "Garee"
 msgid "TEAM"
 msgstr "GAREE"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Gareewwan"
@@ -2327,6 +2339,10 @@ msgstr "Saffisa goruu itti-fufaa cimaa"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "dabsuu"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Yeroo"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Ol-ka'aa"
 msgid "Veteran"
 msgstr "Ogeessa"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Injifannoo"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Suuraa duraa viidiyoo"
@@ -2615,9 +2635,9 @@ msgstr "Qabeenya kana ilaaluuf <0/>hayyama barbaachisu hin qabdu."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Akkaawuntiin kee {source} irraa as fidame. Achitti haqtee hanga fixtutti, ergaawwan fi beeksisawwan sarvara lamaaniyyuu ga'uu danda'u, qabeenyi kee tokko tokko sarvaraa durii irraa tajaajilamu itti fufa, fi hordoftonni si argachuu dhaaf daqiiqaawwan muraasa fudhachuu danda'u."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Dorgommiiwwan taphattoota hedduu kee erga tokko taphattee booda asitti mul'atu."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Balaliiwwan kee erga tokko balaliitee as ni mul'atu."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

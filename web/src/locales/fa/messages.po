@@ -421,7 +421,7 @@ msgstr "گفت‌وگو"
 msgid "Chat to everyone"
 msgstr "چت با همه"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "چیت‌ها"
@@ -582,7 +582,7 @@ msgstr "مسابقه ایجاد نشد"
 msgid "Could not load this document. Please try again later."
 msgstr "بارگذاری این سند ممکن نشد. لطفاً بعداً دوباره تلاش کنید."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "ضبط ذخیره نشد"
 
@@ -660,7 +660,7 @@ msgstr "حالت تیره"
 msgid "Data conflict"
 msgstr "تعارض داده‌ها"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "تاریخ"
 
@@ -669,8 +669,8 @@ msgstr "تاریخ"
 msgid "Day"
 msgstr "روز"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "مرگ‌ها"
 
@@ -734,7 +734,7 @@ msgstr "جهت"
 msgid "disconnected"
 msgstr "قطع شده"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "قطع شده"
 
@@ -903,7 +903,7 @@ msgstr "نبرد آغاز شد"
 msgid "Finish moving your account"
 msgstr "انتقال حساب کاربری خود را تکمیل کنید"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "پایان یافت"
 
@@ -941,9 +941,17 @@ msgstr "تخت"
 msgid "FLIGHT CORE FAILED"
 msgstr "هسته پرواز خراب شد"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "پروازها"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "شناور"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "پرواز شد"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "پرواز"
 msgid "Framerate"
 msgstr "نرخ فریم"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "پرواز آزاد"
@@ -1004,7 +1013,7 @@ msgstr "میله سوخت‌گیری"
 msgid "Full layout"
 msgstr "چیدمان کامل"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "پیوستن به سرور"
 msgid "JOINED"
 msgstr "پیوست"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "دوئل در برابر بازیکن هوش مصنوعی"
 msgid "Joystick"
 msgstr "جوی‌استیک"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "کلیدها"
 msgid "KILL"
 msgstr "سرنگونی"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "کشته شد"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "کشته‌ها"
 
@@ -1255,7 +1268,7 @@ msgstr "اطلاعات بیشتر"
 msgid "Leave server"
 msgstr "خروج از سرور"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "ترک کرد"
 
@@ -1396,7 +1409,6 @@ msgstr "اصلی"
 msgid "Match type"
 msgstr "نوع مسابقه"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "مسابقات"
@@ -1447,7 +1459,7 @@ msgstr "موشک‌ها"
 msgid "Missiles allowed"
 msgstr "موشک‌ها مجاز هستند"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "حالت"
 
@@ -1490,6 +1502,10 @@ msgstr "هیچ قاعده دسترسی پیکربندی نشده است. برا�
 msgid "No connected accounts"
 msgstr "هیچ حساب متصلی وجود ندارد"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "هنوز پروازی وجود ندارد"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "هیچ گروهی در دسترس نیست"
@@ -1497,10 +1513,6 @@ msgstr "هیچ گروهی در دسترس نیست"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "جوی‌استیکی شناسایی نشد — برای بیدار کردن آن، یکی از دکمه‌هایش را فشار دهید."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "هنوز مسابقه‌ای نیست"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "دماغه بالا"
 msgid "PLATFORM"
 msgstr "سکو"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "بازیکنان"
 
@@ -1803,12 +1815,12 @@ msgstr "توصیه‌شده"
 msgid "Record flights"
 msgstr "ضبط پروازها"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "ضبط"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "ضبط ذخیره شد"
 
@@ -1903,7 +1915,7 @@ msgstr "رفع"
 msgid "Restart mission"
 msgstr "شروع مجدد مأموریت"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "نتیجه"
 
@@ -2061,7 +2073,7 @@ msgstr "ارسال ایمیل"
 msgid "Serif"
 msgstr "سریف"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "سرور"
@@ -2250,7 +2262,7 @@ msgstr "تیم"
 msgid "TEAM"
 msgstr "تیم"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "تیم‌ها"
@@ -2327,6 +2339,10 @@ msgstr "تنگ‌ترین سرعت گردش پایدار"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "شیب"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "زمان"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "عمودی"
 msgid "Veteran"
 msgstr "کهنه‌کار"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "پیروزی"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "بندانگشتی ویدیو"
@@ -2615,9 +2635,9 @@ msgstr "شما مجوز لازم <0/>برای مشاهده این منبع را 
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "حساب کاربری شما از {source} به اینجا منتقل شده است. تا زمانی که آن را آنجا حذف نکنید، پیام‌ها و اعلان‌ها ممکن است به هر دو سرور برسند، بخشی از محتوای شما همچنان از سرور قدیمی ارائه می‌شود، و دنبال‌کنندگان ممکن است چند دقیقه‌ای طول بکشد تا شما را اینجا پیدا کنند."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "مسابقات چندنفره شما پس از اینکه یکی را پرواز کنید اینجا نمایش داده می‌شوند."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "پس از انجام نخستین پرواز، پروازهای شما اینجا نمایش داده می‌شوند."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

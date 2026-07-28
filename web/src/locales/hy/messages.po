@@ -421,7 +421,7 @@ msgstr "Զրույցի ID"
 msgid "Chat to everyone"
 msgstr "Չատ բոլորի հետ"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Չիթեր"
@@ -582,7 +582,7 @@ msgstr "Չհաջողվեց ստեղծել խաղը"
 msgid "Could not load this document. Please try again later."
 msgstr "Չհաջողվեց բեռնել այս փաստաթուղթը։ Խնդրում ենք փորձել ավելի ուշ։"
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Չհաջողվեց պահպանել գրանցումը"
 
@@ -660,7 +660,7 @@ msgstr "Վահանակ"
 msgid "Data conflict"
 msgstr "Տվյալների կոնֆլիկտ"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Ամսաթվի ձևաչափ"
 
@@ -669,8 +669,8 @@ msgstr "Ամսաթվի ձևաչափ"
 msgid "Day"
 msgstr "Ցերեկ"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Մահեր"
 
@@ -734,7 +734,7 @@ msgstr "Ուղղություն"
 msgid "disconnected"
 msgstr "անջատված"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Անջատված"
 
@@ -903,7 +903,7 @@ msgstr "ՄԱՐՏԸ ՍԿՍՎԵՑ"
 msgid "Finish moving your account"
 msgstr "Ավարտեք ձեր հաշվի տեղափոխությունը"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Ավարտվեց"
 
@@ -941,9 +941,17 @@ msgstr "Հարթ"
 msgid "FLIGHT CORE FAILED"
 msgstr "ԹՌԻՉՔԻ ՄԻՋՈՒԿԸ ՁԱԽՈՂՎԵՑ"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Թռիչքներ"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Լողացող"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Թռավ"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Թռչել"
 msgid "Framerate"
 msgstr "Կադրերի հաճախություն"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Ազատ թռիչք"
@@ -1004,7 +1013,7 @@ msgstr "Վառելիքի զոնդ"
 msgid "Full layout"
 msgstr "Ամբողջական դասավորություն"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Միանալ սերվերին"
 msgid "JOINED"
 msgstr "ՄԻԱՑԱՎ"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Մենամարտ AI խաղացողի դեմ"
 msgid "Joystick"
 msgstr "Ջոյստիկ"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Ստեղներ"
 msgid "KILL"
 msgstr "ԽՈՑՈՒՄ"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Խոցվեց"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Խոցումներ"
 
@@ -1255,7 +1268,7 @@ msgstr "Թողեք ակնարկ"
 msgid "Leave server"
 msgstr "Լքել սերվերը"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Լքեց"
 
@@ -1396,7 +1409,6 @@ msgstr "Ընդհանուր"
 msgid "Match type"
 msgstr "Խաղի տեսակ"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Խաղեր"
@@ -1447,7 +1459,7 @@ msgstr "Հրթիռներ"
 msgid "Missiles allowed"
 msgstr "Հրթիռները թույլատրված են"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Ռեժիմ"
 
@@ -1490,6 +1502,10 @@ msgstr "Մուտքի կանոններ կարգավորված չեն։ Ավելա
 msgid "No connected accounts"
 msgstr "Կապակցված հաշիվներ չկան"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Դեռ թռիչքներ չկան"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Հասանելի խմբեր չկան"
@@ -1497,10 +1513,6 @@ msgstr "Հասանելի խմբեր չկան"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ջոյստիկ չի հայտնաբերվել — այն արթնացնելու համար սեղմեք դրա որևէ կոճակ։"
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Դեռ խաղեր չկան"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Քիթը վերև"
 msgid "PLATFORM"
 msgstr "ՀԱՐԹԱԿ"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Խաղացողներ"
 
@@ -1803,12 +1815,12 @@ msgstr "Առաջարկվող"
 msgid "Record flights"
 msgstr "Գրանցել թռիչքները"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Գրանցում"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Գրանցումը պահպանվեց"
 
@@ -1903,7 +1915,7 @@ msgstr "Թողարկում"
 msgid "Restart mission"
 msgstr "Վերսկսել առաքելությունը"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Արդյունք"
 
@@ -2061,7 +2073,7 @@ msgstr "Ուղարկել էլ. փոստ"
 msgid "Serif"
 msgstr "Սերիֆ"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Սերվեր"
@@ -2250,7 +2262,7 @@ msgstr "Թիմ"
 msgid "TEAM"
 msgstr "ԹԻՄ"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Թիմեր"
@@ -2327,6 +2339,10 @@ msgstr "Ամենասեղմ կայուն շրջադարձի արագությու�
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "թեքել"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Ժամանակ"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Ուղղաձիգ"
 msgid "Veteran"
 msgstr "Վետերան"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Հաղթանակ"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Տեսանյութի մանրապատկեր"
@@ -2615,9 +2635,9 @@ msgstr "Դուք չունեք անհրաժեշտ թույլտվություն <0
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Ձեր հաշիվը տեղափոխվել է այստեղ {source}-ից: Մինչ այն ջնջեք այնտեղ, հաղորդագրություններն ու ծանուցումները կարող են հասնել երկու սերվերներին, ձեր որոշ բովանդակություն դեռ մատուցվում է հին սերվերից, և հետևորդները կարող են մի քանի րոպե պահանջել ձեզ գտնելու համար:"
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Ձեր բազմախաղացող խաղերն այստեղ կհայտնվեն, հենց որ մեկը խաղաք։"
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Ձեր թռիչքները կհայտնվեն այստեղ, երբ մեկը կատարեք։"
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

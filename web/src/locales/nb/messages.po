@@ -421,7 +421,7 @@ msgstr "Chat"
 msgid "Chat to everyone"
 msgstr "Chat til alle"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Juks"
@@ -582,7 +582,7 @@ msgstr "Kunne ikke opprette kampen"
 msgid "Could not load this document. Please try again later."
 msgstr "Kunne ikke laste dette dokumentet. Prøv igjen senere."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Kunne ikke lagre opptaket"
 
@@ -660,7 +660,7 @@ msgstr "Mørkt utseende"
 msgid "Data conflict"
 msgstr "Datakonflikt"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Dato"
 
@@ -669,8 +669,8 @@ msgstr "Dato"
 msgid "Day"
 msgstr "Dag"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Dødsfall"
 
@@ -734,7 +734,7 @@ msgstr "Retning"
 msgid "disconnected"
 msgstr "frakoblet"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Frakoblet"
 
@@ -903,7 +903,7 @@ msgstr "KAMPEN ER I GANG"
 msgid "Finish moving your account"
 msgstr "Fullfør flyttingen av kontoen din"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Fullført"
 
@@ -941,9 +941,17 @@ msgstr "Flat"
 msgid "FLIGHT CORE FAILED"
 msgstr "FLYKJERNEN SVIKTET"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Flyginger"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Flytende"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Fløyet"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Fly"
 msgid "Framerate"
 msgstr "Bildefrekvens"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Fri flyging"
@@ -1004,7 +1013,7 @@ msgstr "Drivstoffsonde"
 msgid "Full layout"
 msgstr "Fullt oppsett"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Bli med på server"
 msgid "JOINED"
 msgstr "BLE MED"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Duell mot AI-spiller"
 msgid "Joystick"
 msgstr "Styrespak"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Taster"
 msgid "KILL"
 msgstr "NEDSKYTING"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Skutt ned"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Nedskytninger"
 
@@ -1255,7 +1268,7 @@ msgstr "Les mer"
 msgid "Leave server"
 msgstr "Forlat server"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Forlot"
 
@@ -1396,7 +1409,6 @@ msgstr "Master"
 msgid "Match type"
 msgstr "Kamptype"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Kamper"
@@ -1447,7 +1459,7 @@ msgstr "Missiler"
 msgid "Missiles allowed"
 msgstr "Missiler tillatt"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Modus"
 
@@ -1490,6 +1502,10 @@ msgstr "Ingen tilgangsregler konfigurert. Legg til regler for å styre hvem som 
 msgid "No connected accounts"
 msgstr "Ingen tilkoblede kontoer"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Ingen flyginger ennå"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Ingen grupper tilgjengelig"
@@ -1497,10 +1513,6 @@ msgstr "Ingen grupper tilgjengelig"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ingen styrespak funnet — trykk på en knapp på den for å vekke den."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Ingen kamper ennå"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Stamping opp"
 msgid "PLATFORM"
 msgstr "PLATTFORM"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Spillere"
 
@@ -1803,12 +1815,12 @@ msgstr "Anbefalt"
 msgid "Record flights"
 msgstr "Ta opp flyginger"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Opptak"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Opptaket er lagret"
 
@@ -1903,7 +1915,7 @@ msgstr "Løsning"
 msgid "Restart mission"
 msgstr "Start oppdrag på nytt"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Resultat"
 
@@ -2061,7 +2073,7 @@ msgstr "Send e-post"
 msgid "Serif"
 msgstr "Antikva"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Server"
@@ -2250,7 +2262,7 @@ msgstr "Lag"
 msgid "TEAM"
 msgstr "LAG"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Lag"
@@ -2327,6 +2339,10 @@ msgstr "Trangeste vedvarende svinghastighet"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "vipp"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Tid"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Loddrett"
 msgid "Veteran"
 msgstr "Veteran"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Seier"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Videominiatyr"
@@ -2615,9 +2635,9 @@ msgstr "Du har ikke nødvendig tillatelse <0/>til å se denne ressursen."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Kontoen din ble flyttet hit fra {source}. Inntil du sletter den der, kan meldinger og varsler nå begge serverne, noe av innholdet ditt fortsetter å bli levert fra den gamle serveren, og følgerne dine kan trenge noen minutter på å finne deg her."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Flerspillerkampene dine vises her når du har spilt én."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Flygingene dine vises her når du har fløyet en."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

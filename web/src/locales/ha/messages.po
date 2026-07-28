@@ -421,7 +421,7 @@ msgstr "Hira"
 msgid "Chat to everyone"
 msgstr "Hira da kowa"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Magudi"
@@ -582,7 +582,7 @@ msgstr "An kasa ƙirƙirar wasan"
 msgid "Could not load this document. Please try again later."
 msgstr "Ba a iya loda wannan takarda ba. Da fatan a sake gwadawa daga baya."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "An kasa adana rikodin"
 
@@ -660,7 +660,7 @@ msgstr "Yanayin duhu"
 msgid "Data conflict"
 msgstr "Rikicin bayanai"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Kwanan wata"
 
@@ -669,8 +669,8 @@ msgstr "Kwanan wata"
 msgid "Day"
 msgstr "Rana"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Mutuwa"
 
@@ -734,7 +734,7 @@ msgstr "Hanya"
 msgid "disconnected"
 msgstr "an yanke haɗi"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "An cire haɗi"
 
@@ -903,7 +903,7 @@ msgstr "FADA YA FARA"
 msgid "Finish moving your account"
 msgstr "Kammala ƙaurar asusunka"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "An gama"
 
@@ -941,9 +941,17 @@ msgstr "Lebur"
 msgid "FLIGHT CORE FAILED"
 msgstr "CIBIYAR JIRGIN TA GAZA"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Tashi"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Mai yawo"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "An tashi"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Tashi"
 msgid "Framerate"
 msgstr "Yawan firam"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Tashi cikin 'yanci"
@@ -1004,7 +1013,7 @@ msgstr "Sandar mai"
 msgid "Full layout"
 msgstr "Cikakken layout"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Shiga sabar"
 msgid "JOINED"
 msgstr "YA SHIGA"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Karawa da ɗan wasan AI"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Maɓallai"
 msgid "KILL"
 msgstr "KASHE"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "An kashe"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Kisa"
 
@@ -1255,7 +1268,7 @@ msgstr "Ƙara koyo"
 msgid "Leave server"
 msgstr "Bar sabar"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Ya bar"
 
@@ -1396,7 +1409,6 @@ msgstr "Gaba ɗaya"
 msgid "Match type"
 msgstr "Nau'in wasa"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Wasanni"
@@ -1447,7 +1459,7 @@ msgstr "Makamai masu linzami"
 msgid "Missiles allowed"
 msgstr "An yarda da makamai masu linzami"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Yanayi"
 
@@ -1490,6 +1502,10 @@ msgstr "Ba a saita ka'idojin shiga ba. Ƙara ka'idoji don sarrafa wanda zai iya 
 msgid "No connected accounts"
 msgstr "Babu accounts da aka haɗa"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Babu tashi tukuna"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Babu ƙungiyoyi"
@@ -1497,10 +1513,6 @@ msgstr "Babu ƙungiyoyi"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ba a gano joystick ba — danna kowane maɓalli a kansa don farkar da shi."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Babu wasanni tukuna"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Hanci sama"
 msgid "PLATFORM"
 msgstr "DANDALI"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "'Yan wasa"
 
@@ -1803,12 +1815,12 @@ msgstr "An ba da shawara"
 msgid "Record flights"
 msgstr "Yi rikodin tashi"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Rikodi"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "An adana rikodin"
 
@@ -1903,7 +1915,7 @@ msgstr "Warwarewa"
 msgid "Restart mission"
 msgstr "Sake fara manufa"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Sakamako"
 
@@ -2061,7 +2073,7 @@ msgstr "Aika email"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Sabar"
@@ -2250,7 +2262,7 @@ msgstr "Tawaga"
 msgid "TEAM"
 msgstr "ƘUNGIYA"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Ƙungiyoyi"
@@ -2327,6 +2339,10 @@ msgstr "Gudun juyi mai dorewa mafi ƙunci"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "jingina"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Lokaci"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "A tsaye"
 msgid "Veteran"
 msgstr "Gogagge"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Nasara"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Ƙaramin hoton bidiyo"
@@ -2615,9 +2635,9 @@ msgstr "Ba ka da izinin da ake buƙata <0/>don duba wannan albarkatun."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "An ƙauri asusunka zuwa nan daga {source}. Sai ka goge shi a can, saƙonni da sanarwa na iya kai ga uwar garken biyu, wasu abubuwan ka suna ci gaba da samarwa daga tsohon uwar garken, kuma mabiyanka na iya ɗaukar 'yan mintoci don su same ka nan."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Wasannin ku na 'yan wasa da yawa za su bayyana a nan da zarar kun tashi sama ɗaya."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Tashinku zai bayyana a nan bayan kun yi ɗaya."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

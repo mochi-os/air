@@ -421,7 +421,7 @@ msgstr "Obrolan"
 msgid "Chat to everyone"
 msgstr "Chat menyang kabeh"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Cheat"
@@ -582,7 +582,7 @@ msgstr "Ora bisa nggawe pertandhingan"
 msgid "Could not load this document. Please try again later."
 msgstr "Ora bisa muat dokumen iki. Coba manèh mengko."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Rekaman ora bisa disimpen"
 
@@ -660,7 +660,7 @@ msgstr "Mode peteng"
 msgid "Data conflict"
 msgstr "Konflik data"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Tanggal"
 
@@ -669,8 +669,8 @@ msgstr "Tanggal"
 msgid "Day"
 msgstr "Rina"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Mati"
 
@@ -734,7 +734,7 @@ msgstr "Arah"
 msgid "disconnected"
 msgstr "pedhot"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Pedhot"
 
@@ -903,7 +903,7 @@ msgstr "TARUNG DIWIWITI"
 msgid "Finish moving your account"
 msgstr "Rampungna mindah akun sampeyan"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Rampung"
 
@@ -941,9 +941,17 @@ msgstr "Rata"
 msgid "FLIGHT CORE FAILED"
 msgstr "INTI PENERBANGAN GAGAL"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Penerbangan"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Ngambang"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Mabur"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Mabur"
 msgid "Framerate"
 msgstr "Framerate"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Mabur bebas"
@@ -1004,7 +1013,7 @@ msgstr "Probe bahan bakar"
 msgid "Full layout"
 msgstr "Tata letak penuh"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Gabung server"
 msgid "JOINED"
 msgstr "MLEBU"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Duel nglawan pemain AI"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Tombol"
 msgid "KILL"
 msgstr "KILL"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Dipateni"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Mateni"
 
@@ -1255,7 +1268,7 @@ msgstr "Sinau luwih"
 msgid "Leave server"
 msgstr "Ninggal server"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Metu"
 
@@ -1396,7 +1409,6 @@ msgstr "Utama"
 msgid "Match type"
 msgstr "Jinis pertandhingan"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Pertandhingan"
@@ -1447,7 +1459,7 @@ msgstr "Misil"
 msgid "Missiles allowed"
 msgstr "Rudal diidinake"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Mode"
 
@@ -1490,6 +1502,10 @@ msgstr "Ora ana aturan akses disetel. Tambahaké aturan kanggo ngatur sapa sing 
 msgid "No connected accounts"
 msgstr "Ora ana akun disambungaké"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Durung ana penerbangan"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Ora ana grup kasedhiya"
@@ -1497,10 +1513,6 @@ msgstr "Ora ana grup kasedhiya"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Joystick ora kedeteksi — pencet tombol apa waé ing joystick kanggo nggugah."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Durung ana pertandhingan"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Pitch munggah"
 msgid "PLATFORM"
 msgstr "PLATFORM"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Pamain"
 
@@ -1803,12 +1815,12 @@ msgstr "Disaranaké"
 msgid "Record flights"
 msgstr "Ngrekam penerbangan"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Rekaman"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Rekaman kasimpen"
 
@@ -1903,7 +1915,7 @@ msgstr "Resolusi"
 msgid "Restart mission"
 msgstr "Mbaleni misi"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Asil"
 
@@ -2061,7 +2073,7 @@ msgstr "Kirim email"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Server"
@@ -2250,7 +2262,7 @@ msgstr "Tim"
 msgid "TEAM"
 msgstr "TIM"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Tim"
@@ -2327,6 +2339,10 @@ msgstr "Kacepetan belok ajeg paling rapet"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "miring"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Wektu"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Jejeg"
 msgid "Veteran"
 msgstr "Veteran"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Menang"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Thumbnail video"
@@ -2615,9 +2635,9 @@ msgstr "Sampeyan ora duwe idin sing dibutuhake <0/>kanggo ndeleng sumber daya ik
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Akun sampeyan dipindah mrene saka {source}. Nganti sampeyan mbusak ana, pesen lan notifikasi bisa tekan loro-lorone server, sawetara konten sampeyan tetep dilayani saka server lawas, lan pengikut bisa butuh sawetara menit kanggo nemokake sampeyan ing kene."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Pertandhingan multipemain sampeyan bakal katon ing kene sawise sampeyan main siji."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Penerbanganmu bakal muncul ing kéné sawisé kowé mabur sepisan."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

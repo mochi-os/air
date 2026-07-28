@@ -421,7 +421,7 @@ msgstr "แชท"
 msgid "Chat to everyone"
 msgstr "แชทกับทุกคน"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "สูตรโกง"
@@ -582,7 +582,7 @@ msgstr "สร้างแมตช์ไม่สำเร็จ"
 msgid "Could not load this document. Please try again later."
 msgstr "ไม่สามารถโหลดเอกสารนี้ได้ โปรดลองอีกครั้งในภายหลัง"
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "ไม่สามารถบันทึกไฟล์การบินได้"
 
@@ -660,7 +660,7 @@ msgstr "โหมดมืด"
 msgid "Data conflict"
 msgstr "ข้อมูลขัดแย้งกัน"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "วันที่"
 
@@ -669,8 +669,8 @@ msgstr "วันที่"
 msgid "Day"
 msgstr "กลางวัน"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "ตาย"
 
@@ -734,7 +734,7 @@ msgstr "ทิศทาง"
 msgid "disconnected"
 msgstr "ตัดการเชื่อมต่อแล้ว"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "ตัดการเชื่อมต่อแล้ว"
 
@@ -903,7 +903,7 @@ msgstr "การต่อสู้เริ่มแล้ว"
 msgid "Finish moving your account"
 msgstr "เสร็จสิ้นการย้ายบัญชี"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "จบแล้ว"
 
@@ -941,9 +941,17 @@ msgstr "แบน"
 msgid "FLIGHT CORE FAILED"
 msgstr "แกนการบินล้มเหลว"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "เที่ยวบิน"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "ลอย"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "บินแล้ว"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "บิน"
 msgid "Framerate"
 msgstr "อัตราเฟรม"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "บินอิสระ"
@@ -1004,7 +1013,7 @@ msgstr "ท่อรับเชื้อเพลิง"
 msgid "Full layout"
 msgstr "เลย์เอาต์เต็ม"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "เข้าร่วมเซิร์ฟเวอร์"
 msgid "JOINED"
 msgstr "เข้าร่วมแล้ว"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "ดวลกับผู้เล่น AI"
 msgid "Joystick"
 msgstr "จอยสติ๊ก"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "ปุ่มกด"
 msgid "KILL"
 msgstr "สังหาร"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "ถูกยิงตก"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "สังหาร"
 
@@ -1255,7 +1268,7 @@ msgstr "เรียนรู้เพิ่มเติม"
 msgid "Leave server"
 msgstr "ออกจากเซิร์ฟเวอร์"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "ออกจากเกม"
 
@@ -1396,7 +1409,6 @@ msgstr "มาสเตอร์"
 msgid "Match type"
 msgstr "ประเภทแมตช์"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "แมตช์"
@@ -1447,7 +1459,7 @@ msgstr "จรวด"
 msgid "Missiles allowed"
 msgstr "ใช้มิสไซล์ได้"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "โหมด"
 
@@ -1490,6 +1502,10 @@ msgstr "ยังไม่ได้ตั้งกฎการเข้าถึ
 msgid "No connected accounts"
 msgstr "ไม่มีบัญชีที่เชื่อมต่อ"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "ยังไม่มีเที่ยวบิน"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "ไม่มีกลุ่มที่ใช้งานได้"
@@ -1497,10 +1513,6 @@ msgstr "ไม่มีกลุ่มที่ใช้งานได้"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "ไม่พบจอยสติ๊ก — กดปุ่มใดก็ได้บนจอยสติ๊กเพื่อปลุกให้ทำงาน"
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "ยังไม่มีแมตช์"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "พิตช์ขึ้น"
 msgid "PLATFORM"
 msgstr "แพลตฟอร์ม"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "ผู้เล่น"
 
@@ -1803,12 +1815,12 @@ msgstr "แนะนำ"
 msgid "Record flights"
 msgstr "บันทึกการบิน"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "การบันทึก"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "บันทึกไฟล์การบินแล้ว"
 
@@ -1903,7 +1915,7 @@ msgstr "การแก้ปัญหา"
 msgid "Restart mission"
 msgstr "เริ่มภารกิจใหม่"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "ผล"
 
@@ -2061,7 +2073,7 @@ msgstr "ส่งอีเมล"
 msgid "Serif"
 msgstr "เซริฟ"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "เซิร์ฟเวอร์"
@@ -2250,7 +2262,7 @@ msgstr "ทีม"
 msgid "TEAM"
 msgstr "ทีม"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "ทีม"
@@ -2327,6 +2339,10 @@ msgstr "ความเร็วเลี้ยวต่อเนื่องแ
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "เอียง"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "เวลา"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "แนวดิ่ง"
 msgid "Veteran"
 msgstr "มือเก๋า"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "ชัยชนะ"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "ภาพย่อวิดีโอ"
@@ -2615,9 +2635,9 @@ msgstr "คุณไม่มีสิทธิ์ที่จำเป็น <0
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "บัญชีของคุณถูกย้ายมาที่นี่จาก {source} จนกว่าคุณจะลบออกที่นั่น ข้อความและการแจ้งเตือนอาจไปถึงทั้งสองเซิร์ฟเวอร์ เนื้อหาบางส่วนของคุณยังคงให้บริการจากเซิร์ฟเวอร์เดิม และผู้ติดตามอาจต้องใช้เวลาสักครู่เพื่อพบคุณที่นี่"
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "แมตช์ผู้เล่นหลายคนของคุณจะปรากฏที่นี่หลังจากที่คุณบินไปแล้วหนึ่งครั้ง"
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "เที่ยวบินของคุณจะแสดงที่นี่เมื่อคุณบินครั้งแรกแล้ว"
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

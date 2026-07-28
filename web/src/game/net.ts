@@ -834,14 +834,26 @@ export interface MatchRow {
 
 // history reads this player's recorded matches, most recent first. Empty for an
 // anonymous visitor or on error — the view renders that as "no matches yet".
-export async function history(): Promise<MatchRow[]> {
+// Totals are aggregated server-side over EVERY recorded flight — the matches
+// list is capped at fifty, so summing what is on screen understates a career.
+export interface MatchTotals {
+  flights: number
+  seconds: number
+  kills: number
+  deaths: number
+  cheated: number
+}
+
+export async function history(): Promise<{ matches: MatchRow[]; totals: MatchTotals | null }> {
   try {
     const res = (await client.get('/-/match/list')) as {
-      data?: { matches?: MatchRow[] }
+      data?: { matches?: MatchRow[]; totals?: MatchTotals }
       matches?: MatchRow[]
+      totals?: MatchTotals
     }
-    return res?.data?.matches ?? res?.matches ?? []
+    const body = res?.data ?? res
+    return { matches: body?.matches ?? [], totals: body?.totals ?? null }
   } catch {
-    return []
+    return { matches: [], totals: null }
   }
 }

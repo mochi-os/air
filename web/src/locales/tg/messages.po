@@ -421,7 +421,7 @@ msgstr "Чат"
 msgid "Chat to everyone"
 msgstr "Чат бо ҳама"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Читҳо"
@@ -582,7 +582,7 @@ msgstr "Матч эҷод карда нашуд"
 msgid "Could not load this document. Please try again later."
 msgstr "Ин ҳуҷҷатро бор карда натавонист. Лутфан баъдтар такрор кунед."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Сабт захира карда нашуд"
 
@@ -660,7 +660,7 @@ msgstr "Ҳолати торик"
 msgid "Data conflict"
 msgstr "Ихтилофи маълумот"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Сана"
 
@@ -669,8 +669,8 @@ msgstr "Сана"
 msgid "Day"
 msgstr "Рӯз"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Маргҳо"
 
@@ -734,7 +734,7 @@ msgstr "Самт"
 msgid "disconnected"
 msgstr "ҷудо шудааст"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Ҷудо шуда"
 
@@ -903,7 +903,7 @@ msgstr "ҶАНГ ОҒОЗ ШУД"
 msgid "Finish moving your account"
 msgstr "Интиқоли ҳисобро анҷом диҳед"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Тамом шуд"
 
@@ -941,9 +941,17 @@ msgstr "Ҳамвор"
 msgid "FLIGHT CORE FAILED"
 msgstr "ЯДРОИ ПАРВОЗ АЗ КОР МОНД"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Парвозҳо"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Шинокунанда"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Парвоз шуд"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Парвоз"
 msgid "Framerate"
 msgstr "Суръати кадрҳо"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Парвози озод"
@@ -1004,7 +1013,7 @@ msgstr "Зонди сӯзишворӣ"
 msgid "Full layout"
 msgstr "Тарҳбандии пурра"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Ҳамроҳ шудан ба сервер"
 msgid "JOINED"
 msgstr "ҲАМРОҲ ШУД"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Дуэл бар зидди бозигари AI"
 msgid "Joystick"
 msgstr "Ҷойстик"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Тугмаҳо"
 msgid "KILL"
 msgstr "КУШТОР"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Кушта шуд"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Куштаҳо"
 
@@ -1255,7 +1268,7 @@ msgstr "Маълумоти бештар"
 msgid "Leave server"
 msgstr "Тарк кардани сервер"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Баромад"
 
@@ -1396,7 +1409,6 @@ msgstr "Умумӣ"
 msgid "Match type"
 msgstr "Навъи матч"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Бозиҳо"
@@ -1447,7 +1459,7 @@ msgstr "Мушакҳо"
 msgid "Missiles allowed"
 msgstr "Ракетаҳо иҷозат дода шудаанд"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Ҳолат"
 
@@ -1490,6 +1502,10 @@ msgstr "Ягон қоидаи дастрасӣ танзим нашудааст. 
 msgid "No connected accounts"
 msgstr "Ягон ҳисоби пайвастшуда нест"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Ҳанӯз парвоз нест"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Ягон гурӯҳ дастрас нест"
@@ -1497,10 +1513,6 @@ msgstr "Ягон гурӯҳ дастрас нест"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ягон ҷойстик муайян нашуд — барои бедор кардани он ягон тугмаи онро пахш кунед."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Ҳоло бозӣ нест"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Фароз ба боло"
 msgid "PLATFORM"
 msgstr "ПЛАТФОРМА"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Бозигарон"
 
@@ -1803,12 +1815,12 @@ msgstr "Тавсияшуда"
 msgid "Record flights"
 msgstr "Парвозҳоро сабт кардан"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Сабт"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Сабт захира шуд"
 
@@ -1903,7 +1915,7 @@ msgstr "Қарор"
 msgid "Restart mission"
 msgstr "Аз нав оғоз кардани супориш"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Натиҷа"
 
@@ -2061,7 +2073,7 @@ msgstr "Имейл фиристодан"
 msgid "Serif"
 msgstr "Сериф"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Сервер"
@@ -2250,7 +2262,7 @@ msgstr "Даста"
 msgid "TEAM"
 msgstr "ДАСТА"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Дастаҳо"
@@ -2327,6 +2339,10 @@ msgstr "Суръати тангтарин гардиши устувор"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "хамшавӣ"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Вақт"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Амудӣ"
 msgid "Veteran"
 msgstr "Собиқадор"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Ғалаба"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Эскизи видео"
@@ -2615,9 +2635,9 @@ msgstr "Шумо иҷозати зарурӣ надоред <0/>барои ди�
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Ҳисоби шумо аз {source} ба ин ҷо интиқол дода шуд. То он гоҳ, ки онро дар он ҷо нест накунед, паёмҳо ва огоҳиҳо метавонанд ба ҳарду сервер расанд, қисмати муайяни мазмуни шумо аз сервери кӯҳна хизмат медиҳад ва пайравон метавонанд чанд дақиқа вақт барои ёфтани шумо дар ин ҷо сарф кунанд."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Бозиҳои бисёрбозигари шумо пас аз як парвоз дар ин ҷо пайдо мешаванд."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Парвозҳои шумо пас аз як парвоз дар ин ҷо пайдо мешаванд."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

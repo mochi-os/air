@@ -421,7 +421,7 @@ msgstr "الدردشة"
 msgid "Chat to everyone"
 msgstr "الدردشة مع الجميع"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "الغش"
@@ -582,7 +582,7 @@ msgstr "تعذّر إنشاء المباراة"
 msgid "Could not load this document. Please try again later."
 msgstr "تعذّر تحميل هذا المستند. يرجى المحاولة مرة أخرى لاحقاً."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "تعذّر حفظ التسجيل"
 
@@ -660,7 +660,7 @@ msgstr "الوضع الداكن"
 msgid "Data conflict"
 msgstr "تعارض في البيانات"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "التاريخ"
 
@@ -669,8 +669,8 @@ msgstr "التاريخ"
 msgid "Day"
 msgstr "نهار"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "الوفيات"
 
@@ -734,7 +734,7 @@ msgstr "الاتجاه"
 msgid "disconnected"
 msgstr "غير متصل"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "غير متصل"
 
@@ -903,7 +903,7 @@ msgstr "بدأ القتال"
 msgid "Finish moving your account"
 msgstr "أتمم نقل حسابك"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "انتهت"
 
@@ -941,9 +941,17 @@ msgstr "مسطح"
 msgid "FLIGHT CORE FAILED"
 msgstr "فشل نواة الطيران"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "الرحلات"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "عائم"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "تم الطيران"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "طيران"
 msgid "Framerate"
 msgstr "معدل الإطارات"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "طيران حر"
@@ -1004,7 +1013,7 @@ msgstr "مسبار التزود بالوقود"
 msgid "Full layout"
 msgstr "تخطيط كامل"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "الانضمام إلى خادم"
 msgid "JOINED"
 msgstr "انضم"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "مبارزة ضد لاعب ذكاء اصطناعي"
 msgid "Joystick"
 msgstr "عصا التحكم"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "المفاتيح"
 msgid "KILL"
 msgstr "إسقاط"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "أُسقط"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "الإسقاطات"
 
@@ -1255,7 +1268,7 @@ msgstr "اعرف المزيد"
 msgid "Leave server"
 msgstr "مغادرة الخادم"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "غادر"
 
@@ -1396,7 +1409,6 @@ msgstr "الرئيسي"
 msgid "Match type"
 msgstr "نوع المباراة"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "المباريات"
@@ -1447,7 +1459,7 @@ msgstr "صواريخ"
 msgid "Missiles allowed"
 msgstr "مسموح بالصواريخ"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "الوضع"
 
@@ -1490,6 +1502,10 @@ msgstr "لم يتم تكوين قواعد وصول. أضف قواعد للتحك
 msgid "No connected accounts"
 msgstr "لا توجد حسابات متصلة"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "لا توجد رحلات بعد"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "لا توجد مجموعات متاحة"
@@ -1497,10 +1513,6 @@ msgstr "لا توجد مجموعات متاحة"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "لم يتم اكتشاف عصا تحكم — اضغط أي زر عليها لإيقاظها."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "لا توجد مباريات بعد"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "رفع المقدمة"
 msgid "PLATFORM"
 msgstr "المنصة"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "اللاعبون"
 
@@ -1803,12 +1815,12 @@ msgstr "موصى به"
 msgid "Record flights"
 msgstr "تسجيل الرحلات"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "التسجيل"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "تم حفظ التسجيل"
 
@@ -1903,7 +1915,7 @@ msgstr "القرار"
 msgid "Restart mission"
 msgstr "إعادة بدء المهمة"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "النتيجة"
 
@@ -2061,7 +2073,7 @@ msgstr "إرسال بريد إلكتروني"
 msgid "Serif"
 msgstr "سيريف"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "الخادم"
@@ -2250,7 +2262,7 @@ msgstr "الفريق"
 msgid "TEAM"
 msgstr "الفريق"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "فرق"
@@ -2327,6 +2339,10 @@ msgstr "أضيق سرعة انعطاف مستمر"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "إمالة"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "الوقت"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "عمودي"
 msgid "Veteran"
 msgstr "محنك"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "انتصار"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "صورة مصغرة للفيديو"
@@ -2615,9 +2635,9 @@ msgstr "ليس لديك الإذن اللازم <0/>لعرض هذا المورد
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "تم نقل حسابك إلى هنا من {source}. حتى تحذفه من هناك، قد تصل الرسائل والإشعارات إلى كلا الخادمين، وقد يظل بعض محتواك يُقدَّم من الخادم القديم، وقد يستغرق المتابعون بضع دقائق للعثور عليك هنا."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "ستظهر مباريات اللعب الجماعي الخاصة بك هنا بمجرد أن تخوض إحداها."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "ستظهر رحلاتك هنا بمجرد أن تطير واحدة."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

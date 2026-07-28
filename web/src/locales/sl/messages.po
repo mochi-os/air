@@ -421,7 +421,7 @@ msgstr "Klepet"
 msgid "Chat to everyone"
 msgstr "Klepet z vsemi"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Goljufije"
@@ -582,7 +582,7 @@ msgstr "Tekme ni bilo mogoče ustvariti"
 msgid "Could not load this document. Please try again later."
 msgstr "Tega dokumenta ni bilo mogoče naložiti. Poskusite znova kasneje."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Posnetka ni bilo mogoče shraniti"
 
@@ -660,7 +660,7 @@ msgstr "Temni način"
 msgid "Data conflict"
 msgstr "Konflikt podatkov"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Datum"
 
@@ -669,8 +669,8 @@ msgstr "Datum"
 msgid "Day"
 msgstr "Dan"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Smrti"
 
@@ -734,7 +734,7 @@ msgstr "Smer"
 msgid "disconnected"
 msgstr "odklopljen"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Prekinjena povezava"
 
@@ -903,7 +903,7 @@ msgstr "BOJ SE ZAČENJA"
 msgid "Finish moving your account"
 msgstr "Dokončajte selitev računa"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Končano"
 
@@ -941,9 +941,17 @@ msgstr "Ploščato"
 msgid "FLIGHT CORE FAILED"
 msgstr "OKVARA LETALNEGA JEDRA"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Leti"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Plavajoče"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Odletel"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Leti"
 msgid "Framerate"
 msgstr "Hitrost sličic"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Prosti let"
@@ -1004,7 +1013,7 @@ msgstr "Sonda za gorivo"
 msgid "Full layout"
 msgstr "Polna postavitev"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Pridruži se strežniku"
 msgid "JOINED"
 msgstr "SE JE PRIDRUŽIL"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Dvoboj proti igralcu AI"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Tipke"
 msgid "KILL"
 msgstr "SESTRELITEV"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Sestreljen"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Sestreli"
 
@@ -1255,7 +1268,7 @@ msgstr "Več informacij"
 msgid "Leave server"
 msgstr "Zapusti strežnik"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Odšel"
 
@@ -1396,7 +1409,6 @@ msgstr "Glavna"
 msgid "Match type"
 msgstr "Vrsta tekme"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Tekme"
@@ -1447,7 +1459,7 @@ msgstr "Rakete"
 msgid "Missiles allowed"
 msgstr "Rakete dovoljene"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Način"
 
@@ -1490,6 +1502,10 @@ msgstr "Pravila dostopa niso nastavljena. Dodajte pravila za nadzor dostopa do t
 msgid "No connected accounts"
 msgstr "Ni povezanih računov"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Še ni letov"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Ni razpoložljivih skupin"
@@ -1497,10 +1513,6 @@ msgstr "Ni razpoložljivih skupin"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Noben joystick ni zaznan — pritisnite katerikoli gumb na njem, da ga prebudite."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Še ni tekem"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Naklon gor"
 msgid "PLATFORM"
 msgstr "PLATFORMA"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Igralci"
 
@@ -1803,12 +1815,12 @@ msgstr "Priporočeno"
 msgid "Record flights"
 msgstr "Snemaj lete"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Snemanje"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Posnetek je shranjen"
 
@@ -1903,7 +1915,7 @@ msgstr "Resolucija"
 msgid "Restart mission"
 msgstr "Znova zaženi misijo"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Rezultat"
 
@@ -2061,7 +2073,7 @@ msgstr "Pošlji e-pošto"
 msgid "Serif"
 msgstr "Serifna"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Strežnik"
@@ -2250,7 +2262,7 @@ msgstr "Ekipa"
 msgid "TEAM"
 msgstr "EKIPA"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Ekipe"
@@ -2327,6 +2339,10 @@ msgstr "Hitrost najostrejšega vzdržnega zavoja"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "nagibanje"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Čas"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Navpično"
 msgid "Veteran"
 msgstr "Veteran"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Zmaga"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Sličica videoposnetka"
@@ -2615,9 +2635,9 @@ msgstr "Nimate potrebnega dovoljenja <0/>za ogled tega vira."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Vaš račun je bil preseljen sem iz {source}. Dokler ga tam ne izbrišete, sporočila in obvestila morda dosežejo oba strežnika, del vaše vsebine se še naprej streže s starega strežnika in sledilci bodo morda potrebovali nekaj minut, da vas najdejo tukaj."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Vaše večigralske tekme se prikažejo tukaj, ko odletite prvo."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Vaši leti se prikažejo tukaj, ko opravite prvega."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

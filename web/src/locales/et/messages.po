@@ -421,7 +421,7 @@ msgstr "Vestlus"
 msgid "Chat to everyone"
 msgstr "Vestlus kõigiga"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Petukoodid"
@@ -582,7 +582,7 @@ msgstr "Matši loomine ebaõnnestus"
 msgid "Could not load this document. Please try again later."
 msgstr "Selle dokumendi laadimine ebaõnnestus. Palun proovi hiljem uuesti."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Salvestist ei õnnestunud salvestada"
 
@@ -660,7 +660,7 @@ msgstr "Tume režiim"
 msgid "Data conflict"
 msgstr "Andmekonflikt"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Kuupäev"
 
@@ -669,8 +669,8 @@ msgstr "Kuupäev"
 msgid "Day"
 msgstr "Päev"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Surmad"
 
@@ -734,7 +734,7 @@ msgstr "Suund"
 msgid "disconnected"
 msgstr "lahti ühendatud"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Ühendus puudub"
 
@@ -903,7 +903,7 @@ msgstr "LAHING ALGAS"
 msgid "Finish moving your account"
 msgstr "Lõpeta konto koliminen"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Lõpetatud"
 
@@ -941,9 +941,17 @@ msgstr "Lame"
 msgid "FLIGHT CORE FAILED"
 msgstr "LENNUTUUMA TÕRGE"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Lennud"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Hõljuv"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Lennatud"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Lenda"
 msgid "Framerate"
 msgstr "Kaadrisagedus"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Vaba lend"
@@ -1004,7 +1013,7 @@ msgstr "Kütusesond"
 msgid "Full layout"
 msgstr "Täislaotus"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Liitu serveriga"
 msgid "JOINED"
 msgstr "LIITUS"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Duell AI-mängija vastu"
 msgid "Joystick"
 msgstr "Juhtkang"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Klahvid"
 msgid "KILL"
 msgstr "TAPP"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Tapetud"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Tapmised"
 
@@ -1255,7 +1268,7 @@ msgstr "Loe rohkem"
 msgid "Leave server"
 msgstr "Lahku serverist"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Lahkus"
 
@@ -1396,7 +1409,6 @@ msgstr "Üldine"
 msgid "Match type"
 msgstr "Matši tüüp"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Matšid"
@@ -1447,7 +1459,7 @@ msgstr "Raketid"
 msgid "Missiles allowed"
 msgstr "Raketid lubatud"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Režiim"
 
@@ -1490,6 +1502,10 @@ msgstr "Juurdepääsureegleid pole seadistatud. Lisa reeglid, et määrata, kes 
 msgid "No connected accounts"
 msgstr "Seotud kontosid pole"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Lende veel pole"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Saadaolevaid gruppe pole"
@@ -1497,10 +1513,6 @@ msgstr "Saadaolevaid gruppe pole"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Juhtkangi ei tuvastatud — selle äratamiseks vajuta suvalist nuppu."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Veel pole matše"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Nina üles"
 msgid "PLATFORM"
 msgstr "PLATVORM"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Mängijad"
 
@@ -1803,12 +1815,12 @@ msgstr "Soovitatud"
 msgid "Record flights"
 msgstr "Lendude salvestamine"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Salvestamine"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Salvestis salvestatud"
 
@@ -1903,7 +1915,7 @@ msgstr "Resolutsioon"
 msgid "Restart mission"
 msgstr "Taaskäivita missioon"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Tulemus"
 
@@ -2061,7 +2073,7 @@ msgstr "Saada e-kiri"
 msgid "Serif"
 msgstr "Seriif"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Server"
@@ -2250,7 +2262,7 @@ msgstr "Tiim"
 msgid "TEAM"
 msgstr "TIIM"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Tiimid"
@@ -2327,6 +2339,10 @@ msgstr "Kitsaima püsipöörde kiirus"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "kallutus"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Aeg"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Vertikaalne"
 msgid "Veteran"
 msgstr "Veteran"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Võit"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Video pisipilt"
@@ -2615,9 +2635,9 @@ msgstr "Teil pole vajalikku luba <0/>selle ressursi vaatamiseks."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Sinu konto liideti siia asukohast {source}. Kuni sa selle sealt ei kustuta, võivad sõnumid ja teavitused jõuda mõlemale serverile, osa sinu sisust tarbitakse jätkuvalt vanalt serverilt ning jälgijatel võib kuluda mõni minut, et sind siit leida."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Sinu mitme mängija matšid ilmuvad siia, kui oled ühe lennanud."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Sinu lennud ilmuvad siia, kui oled ühe lennanud."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

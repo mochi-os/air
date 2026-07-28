@@ -421,7 +421,7 @@ msgstr "Txata"
 msgid "Chat to everyone"
 msgstr "Txata guztiekin"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Trikimailuak"
@@ -582,7 +582,7 @@ msgstr "Ezin izan da partida sortu"
 msgid "Could not load this document. Please try again later."
 msgstr "Ezin izan da dokumentu hau kargatu. Saiatu berriro geroago."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Ezin izan da grabaketa gorde"
 
@@ -660,7 +660,7 @@ msgstr "Modu iluna"
 msgid "Data conflict"
 msgstr "Datu-gatazka"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Data"
 
@@ -669,8 +669,8 @@ msgstr "Data"
 msgid "Day"
 msgstr "Eguna"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Heriotzak"
 
@@ -734,7 +734,7 @@ msgstr "Norabidea"
 msgid "disconnected"
 msgstr "deskonektatuta"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Deskonektatuta"
 
@@ -903,7 +903,7 @@ msgstr "BORROKA HASI DA"
 msgid "Finish moving your account"
 msgstr "Amaitu kontuaren mugiketa"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Amaituta"
 
@@ -941,9 +941,17 @@ msgstr "Laua"
 msgid "FLIGHT CORE FAILED"
 msgstr "HEGALDI-NUKLEOAK HUTS EGIN DU"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Hegaldiak"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Flotatzailea"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Hegan egina"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Hegan"
 msgid "Framerate"
 msgstr "Fotograma-tasa"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Hegaldi librea"
@@ -1004,7 +1013,7 @@ msgstr "Erregai-zunda"
 msgid "Full layout"
 msgstr "Diseinu osoa"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Elkartu zerbitzarira"
 msgid "JOINED"
 msgstr "BATU DA"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Duelua AA jokalariaren aurka"
 msgid "Joystick"
 msgstr "Joystick-a"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Teklak"
 msgid "KILL"
 msgstr "ERAITSITA"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Hilda"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Hilketak"
 
@@ -1255,7 +1268,7 @@ msgstr "Ikasi gehiago"
 msgid "Leave server"
 msgstr "Irten zerbitzaritik"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Irten da"
 
@@ -1396,7 +1409,6 @@ msgstr "Orokorra"
 msgid "Match type"
 msgstr "Partida mota"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Partidak"
@@ -1447,7 +1459,7 @@ msgstr "Misilak"
 msgid "Missiles allowed"
 msgstr "Misilak baimenduta"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Modua"
 
@@ -1490,6 +1502,10 @@ msgstr "Ez da sarbide-araurik konfiguratu. Gehitu arauak baliabide honetara nork
 msgid "No connected accounts"
 msgstr "Konektatutako konturik ez"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Oraindik hegaldirik ez"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Ez dago talde erabilgarririk"
@@ -1497,10 +1513,6 @@ msgstr "Ez dago talde erabilgarririk"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ez da joystickik detektatu — esnatzeko, sakatu bertako edozein botoi."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Oraindik ez dago partidarik"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Sudurra gora"
 msgid "PLATFORM"
 msgstr "PLATAFORMA"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Jokalariak"
 
@@ -1803,12 +1815,12 @@ msgstr "Gomendatua"
 msgid "Record flights"
 msgstr "Grabatu hegaldiak"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Grabaketa"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Grabaketa gordeta"
 
@@ -1903,7 +1915,7 @@ msgstr "Bereizmena"
 msgid "Restart mission"
 msgstr "Berrabiarazi misioa"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Emaitza"
 
@@ -2061,7 +2073,7 @@ msgstr "Bidali emaila"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Zerbitzaria"
@@ -2250,7 +2262,7 @@ msgstr "Taldea"
 msgid "TEAM"
 msgstr "TALDEA"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Taldeak"
@@ -2327,6 +2339,10 @@ msgstr "Bira jarraitu estuenaren abiadura"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "makurtu"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Denbora"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Bertikala"
 msgid "Veteran"
 msgstr "Beteranoa"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Garaipena"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Bideoaren miniatura"
@@ -2615,9 +2635,9 @@ msgstr "Ez duzu beharrezko baimenik <0/>baliabide hau ikusteko."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Zure kontua {source}-etik hona mugitu da. Han ezabatu arte, mezuak eta jakinarazpenak bi zerbitzarietara irits daitezke, zure edukiaren zati bat zerbitzari zaharretik ematen jarraitzen du, eta jarraitzaileek minutu batzuk behar izan ditzakete zu hemen aurkitzeko."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Zure jokalari anitzeko partidak hemen agertuko dira bat jokatu ondoren."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Zure hegaldiak hemen agertuko dira bat egin ondoren."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

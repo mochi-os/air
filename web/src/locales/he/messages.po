@@ -421,7 +421,7 @@ msgstr "צ'אט"
 msgid "Chat to everyone"
 msgstr "צ'אט לכולם"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "צ'יטים"
@@ -582,7 +582,7 @@ msgstr "לא ניתן היה ליצור את המשחק"
 msgid "Could not load this document. Please try again later."
 msgstr "לא ניתן היה לטעון מסמך זה. אנא נסה שוב מאוחר יותר."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "לא ניתן היה לשמור את ההקלטה"
 
@@ -660,7 +660,7 @@ msgstr "מצב כהה"
 msgid "Data conflict"
 msgstr "התנגשות נתונים"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "תאריך"
 
@@ -669,8 +669,8 @@ msgstr "תאריך"
 msgid "Day"
 msgstr "יום"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "מיתות"
 
@@ -734,7 +734,7 @@ msgstr "כיוון"
 msgid "disconnected"
 msgstr "מנותק"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "מנותק"
 
@@ -903,7 +903,7 @@ msgstr "הקרב החל"
 msgid "Finish moving your account"
 msgstr "סיים את העברת החשבון"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "הסתיים"
 
@@ -941,9 +941,17 @@ msgstr "שטוח"
 msgid "FLIGHT CORE FAILED"
 msgstr "ליבת הטיסה נכשלה"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "טיסות"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "צף"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "טס"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "טוס"
 msgid "Framerate"
 msgstr "קצב פריימים"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "טיסה חופשית"
@@ -1004,7 +1013,7 @@ msgstr "מוט תדלוק"
 msgid "Full layout"
 msgstr "פריסה מלאה"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "הצטרף לשרת"
 msgid "JOINED"
 msgstr "הצטרף"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "דו-קרב נגד שחקן AI"
 msgid "Joystick"
 msgstr "ג'ויסטיק"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "מקשים"
 msgid "KILL"
 msgstr "חיסול"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "נהרג"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "הריגות"
 
@@ -1255,7 +1268,7 @@ msgstr "מידע נוסף"
 msgid "Leave server"
 msgstr "עזוב את השרת"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "עזב"
 
@@ -1396,7 +1409,6 @@ msgstr "ראשי"
 msgid "Match type"
 msgstr "סוג משחק"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "משחקים"
@@ -1447,7 +1459,7 @@ msgstr "טילים"
 msgid "Missiles allowed"
 msgstr "טילים מותרים"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "מצב"
 
@@ -1490,6 +1502,10 @@ msgstr "לא הוגדרו כללי גישה. הוסף כללים כדי לשלו
 msgid "No connected accounts"
 msgstr "אין חשבונות מקושרים"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "עדיין אין טיסות"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "אין קבוצות זמינות"
@@ -1497,10 +1513,6 @@ msgstr "אין קבוצות זמינות"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "לא זוהה ג'ויסטיק — לחץ על כפתור כלשהו עליו כדי להעיר אותו."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "אין עדיין משחקים"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "חרטום למעלה"
 msgid "PLATFORM"
 msgstr "פלטפורמה"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "שחקנים"
 
@@ -1803,12 +1815,12 @@ msgstr "מומלץ"
 msgid "Record flights"
 msgstr "הקלטת טיסות"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "הקלטה"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "ההקלטה נשמרה"
 
@@ -1903,7 +1915,7 @@ msgstr "פתרון"
 msgid "Restart mission"
 msgstr "הפעל משימה מחדש"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "תוצאה"
 
@@ -2061,7 +2073,7 @@ msgstr "שלח אימייל"
 msgid "Serif"
 msgstr "סריף"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "שרת"
@@ -2250,7 +2262,7 @@ msgstr "צוות"
 msgid "TEAM"
 msgstr "קבוצה"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "קבוצות"
@@ -2327,6 +2339,10 @@ msgstr "מהירות פנייה מתמשכת הדוקה ביותר"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "הטיה"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "זמן"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "אנכי"
 msgid "Veteran"
 msgstr "ותיק"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "ניצחון"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "תמונה ממוזערת של הסרטון"
@@ -2615,9 +2635,9 @@ msgstr "אין לך את ההרשאה הנדרשת <0/>כדי להציג את ה
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "חשבונך הועבר לכאן מ-{source}. עד שתמחק אותו שם, הודעות והתראות עשויות להגיע לשני השרתים, חלק מהתוכן שלך ממשיך להיות מוגש מהשרת הישן, ועוקבים עשויים לקחת מספר דקות למצוא אותך כאן."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "משחקי מרובה המשתתפים שלך יופיעו כאן לאחר שתטוס באחד."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "הטיסות שלך יופיעו כאן לאחר שתטוס אחת."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

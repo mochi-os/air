@@ -421,7 +421,7 @@ msgstr "Chat"
 msgid "Chat to everyone"
 msgstr "Chat bo hemûyan"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Hîle"
@@ -582,7 +582,7 @@ msgstr "Maç nehat çêkirin"
 msgid "Could not load this document. Please try again later."
 msgstr "Ev belge nikarîbû were barkirin. Ji kerema xwe re paşê dîsa biceribîne."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Qeyd nehat tomarkirin"
 
@@ -660,7 +660,7 @@ msgstr "Awayê tarî"
 msgid "Data conflict"
 msgstr "Nakokiya daneyan"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Dîrok"
 
@@ -669,8 +669,8 @@ msgstr "Dîrok"
 msgid "Day"
 msgstr "Roj"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Mirin"
 
@@ -734,7 +734,7 @@ msgstr "Arasteyî"
 msgid "disconnected"
 msgstr "veqetandî"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Veqetandî"
 
@@ -903,7 +903,7 @@ msgstr "ŞER DEST PÊ KIR"
 msgid "Finish moving your account"
 msgstr "Veguheztina hesabê xwe biqedînin"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Qediya"
 
@@ -941,9 +941,17 @@ msgstr "Tasî"
 msgid "FLIGHT CORE FAILED"
 msgstr "NAVIKA FIRÎNÊ TÊK ÇÛ"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Firîn"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Belavbûyî"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Firiya"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Bifire"
 msgid "Framerate"
 msgstr "Rêjeya çarçoveyan"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Firîna azad"
@@ -1004,7 +1013,7 @@ msgstr "Proba sotemeniyê"
 msgid "Full layout"
 msgstr "Bargeyê tev"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Beşdarî rajekar be"
 msgid "JOINED"
 msgstr "TEVLÎ BÛ"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Duel li dijî lîstikvanê AI"
 msgid "Joystick"
 msgstr "Joystick"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Bişkok"
 msgid "KILL"
 msgstr "KUŞTIN"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Hat kuştin"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Kuştin"
 
@@ -1255,7 +1268,7 @@ msgstr "Zêdetir bizane"
 msgid "Leave server"
 msgstr "Ji rajekar derkeve"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Derket"
 
@@ -1396,7 +1409,6 @@ msgstr "Giştî"
 msgid "Match type"
 msgstr "Cureyê maçê"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Meç"
@@ -1447,7 +1459,7 @@ msgstr "Mûşek"
 msgid "Missiles allowed"
 msgstr "Destûra mûşekan heye"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Mod"
 
@@ -1490,6 +1502,10 @@ msgstr "Tu rêzikên destpêkirinê nehatine mîhengkirin. Rêzikan zêde bike d
 msgid "No connected accounts"
 msgstr "Tu hesabên girêdayî tune"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Hêj tu firîn tune"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Tu kom berdest nîn in"
@@ -1497,10 +1513,6 @@ msgstr "Tu kom berdest nîn in"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Joystick nehat dîtin — pêl bişkokeke wê bike da ku hişyar bibe."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Hê tu meç tune"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Poz ber bi jor"
 msgid "PLATFORM"
 msgstr "PLATFORM"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Lîstikvan"
 
@@ -1803,12 +1815,12 @@ msgstr "Pêşniyarkirî"
 msgid "Record flights"
 msgstr "Firînan qeyd bike"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Qeydkirin"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Qeyd hate tomarkirin"
 
@@ -1903,7 +1915,7 @@ msgstr "Çareserî"
 msgid "Restart mission"
 msgstr "Peywirê ji nû ve dest pê bike"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Encam"
 
@@ -2061,7 +2073,7 @@ msgstr "E-nameyê bişîne"
 msgid "Serif"
 msgstr "Serîf"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Server"
@@ -2250,7 +2262,7 @@ msgstr "Tîm"
 msgid "TEAM"
 msgstr "TÎM"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Tîm"
@@ -2327,6 +2339,10 @@ msgstr "Leza zivirîna domdar a herî teng"
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "xwarkirin"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Dem"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Stûnî"
 msgid "Veteran"
 msgstr "Ezmûndar"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Serkeftin"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Wêneya pêşgir a vîdeoyê"
@@ -2615,9 +2635,9 @@ msgstr "Destûra pêwîst a te tune <0/>ji bo dîtina vê çavkaniyê."
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Hesabê we ji {source} hat vir veguheztin. Heya ku hûn wê li wir jênebin, peyam û agahdarî dikarin gihîjin her du servaran, hin naveroka we ji serverê kevn tê dayîn û şopîner dibe ku çend hûrdeman hewce bikin ku we li vir bibînin."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Piştî ku te meçeke pirlîstikvan lîst, ew ê li vir xuya bibin."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Piştî ku tu yekê bifirî, firînên te dê li vir xuya bibin."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"

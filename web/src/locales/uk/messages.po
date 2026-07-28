@@ -421,7 +421,7 @@ msgstr "Чат"
 msgid "Chat to everyone"
 msgstr "Чат з усіма"
 
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:189
 #: src/components/MissionSetup.tsx:1257
 msgid "Cheats"
 msgstr "Чити"
@@ -582,7 +582,7 @@ msgstr "Не вдалося створити матч"
 msgid "Could not load this document. Please try again later."
 msgstr "Не вдалося завантажити цей документ. Спробуйте пізніше."
 
-#: src/components/MatchHistory.tsx:181
+#: src/components/MatchHistory.tsx:203
 msgid "Could not save the recording"
 msgstr "Не вдалося зберегти запис"
 
@@ -660,7 +660,7 @@ msgstr "Темний режим"
 msgid "Data conflict"
 msgstr "Конфлікт даних"
 
-#: src/components/MatchHistory.tsx:128
+#: src/components/MatchHistory.tsx:150
 msgid "Date"
 msgstr "Дата"
 
@@ -669,8 +669,8 @@ msgstr "Дата"
 msgid "Day"
 msgstr "День"
 
-#: src/components/MatchHistory.tsx:118
-#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:139
+#: src/components/MatchHistory.tsx:165
 msgid "Deaths"
 msgstr "Смерті"
 
@@ -734,7 +734,7 @@ msgstr "Напрямок"
 msgid "disconnected"
 msgstr "від'єднано"
 
-#: src/components/MatchHistory.tsx:84
+#: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Відключено"
 
@@ -903,7 +903,7 @@ msgstr "БІЙ ПОЧАВСЯ"
 msgid "Finish moving your account"
 msgstr "Завершіть переміщення облікового запису"
 
-#: src/components/MatchHistory.tsx:85
+#: src/components/MatchHistory.tsx:92
 msgid "Finished"
 msgstr "Завершено"
 
@@ -941,9 +941,17 @@ msgstr "Плаский"
 msgid "FLIGHT CORE FAILED"
 msgstr "ЗБІЙ ПОЛЬОТНОГО ЯДРА"
 
+#: src/components/MatchHistory.tsx:129
+msgid "Flights"
+msgstr "Польоти"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:257
 msgid "Floating"
 msgstr "Плаваючий"
+
+#: src/components/MatchHistory.tsx:93
+msgid "Flown"
+msgstr "Завершено"
 
 #: src/components/MissionSetup.tsx:1571
 #: src/components/MissionSetup.tsx:1612
@@ -954,6 +962,7 @@ msgstr "Політ"
 msgid "Framerate"
 msgstr "Частота кадрів"
 
+#: src/components/MatchHistory.tsx:84
 #: src/components/MissionSetup.tsx:1122
 msgid "Free flight"
 msgstr "Вільний політ"
@@ -1004,7 +1013,7 @@ msgstr "Паливна штанга"
 msgid "Full layout"
 msgstr "Повний макет"
 
-#: src/components/MatchHistory.tsx:75
+#: src/components/MatchHistory.tsx:81
 msgid "Furball"
 msgstr "Furball"
 
@@ -1168,7 +1177,7 @@ msgstr "Приєднатися до сервера"
 msgid "JOINED"
 msgstr "ПРИЄДНАВСЯ"
 
-#: src/components/MatchHistory.tsx:76
+#: src/components/MatchHistory.tsx:82
 #: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
@@ -1186,7 +1195,7 @@ msgstr "Дуель проти ШІ-гравця"
 msgid "Joystick"
 msgstr "Джойстик"
 
-#: src/components/MatchHistory.tsx:121
+#: src/components/MatchHistory.tsx:142
 msgid "K/D"
 msgstr "K/D"
 
@@ -1198,8 +1207,12 @@ msgstr "Клавіші"
 msgid "KILL"
 msgstr "ЗБИТО"
 
-#: src/components/MatchHistory.tsx:115
-#: src/components/MatchHistory.tsx:140
+#: src/components/MatchHistory.tsx:95
+msgid "Killed"
+msgstr "Збито"
+
+#: src/components/MatchHistory.tsx:136
+#: src/components/MatchHistory.tsx:162
 msgid "Kills"
 msgstr "Збиття"
 
@@ -1255,7 +1268,7 @@ msgstr "Дізнатися більше"
 msgid "Leave server"
 msgstr "Покинути сервер"
 
-#: src/components/MatchHistory.tsx:83
+#: src/components/MatchHistory.tsx:90
 msgid "Left"
 msgstr "Покинув"
 
@@ -1396,7 +1409,6 @@ msgstr "Загальна"
 msgid "Match type"
 msgstr "Тип матчу"
 
-#: src/components/MatchHistory.tsx:112
 #: src/components/MissionSetup.tsx:1068
 msgid "Matches"
 msgstr "Матчі"
@@ -1447,7 +1459,7 @@ msgstr "Ракети"
 msgid "Missiles allowed"
 msgstr "Ракети дозволені"
 
-#: src/components/MatchHistory.tsx:134
+#: src/components/MatchHistory.tsx:156
 msgid "Mode"
 msgstr "Режим"
 
@@ -1490,6 +1502,10 @@ msgstr "Правила доступу не налаштовано. Додайт�
 msgid "No connected accounts"
 msgstr "Немає підключених облікових записів"
 
+#: src/components/MatchHistory.tsx:106
+msgid "No flights yet"
+msgstr "Польотів ще немає"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Немає доступних груп"
@@ -1497,10 +1513,6 @@ msgstr "Немає доступних груп"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Джойстик не виявлено — натисніть на ньому будь-яку кнопку, щоб він прокинувся."
-
-#: src/components/MatchHistory.tsx:96
-msgid "No matches yet"
-msgstr "Матчів ще немає"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1706,7 +1718,7 @@ msgstr "Тангаж вгору"
 msgid "PLATFORM"
 msgstr "ПЛАТФОРМА"
 
-#: src/components/MatchHistory.tsx:137
+#: src/components/MatchHistory.tsx:159
 msgid "Players"
 msgstr "Гравці"
 
@@ -1803,12 +1815,12 @@ msgstr "Рекомендоване"
 msgid "Record flights"
 msgstr "Записувати польоти"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:208
 #: src/components/MissionSetup.tsx:1453
 msgid "Recording"
 msgstr "Запис"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:202
 msgid "Recording saved"
 msgstr "Запис збережено"
 
@@ -1903,7 +1915,7 @@ msgstr "Вирішення"
 msgid "Restart mission"
 msgstr "Перезапустити місію"
 
-#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:168
 msgid "Result"
 msgstr "Результат"
 
@@ -2061,7 +2073,7 @@ msgstr "Надіслати лист"
 msgid "Serif"
 msgstr "Із засічками"
 
-#: src/components/MatchHistory.tsx:131
+#: src/components/MatchHistory.tsx:153
 #: src/components/MissionSetup.tsx:1042
 msgid "Server"
 msgstr "Сервер"
@@ -2250,7 +2262,7 @@ msgstr "Команда"
 msgid "TEAM"
 msgstr "КОМАНДА"
 
-#: src/components/MatchHistory.tsx:77
+#: src/components/MatchHistory.tsx:83
 #: src/components/Multiplayer.tsx:435
 msgid "Teams"
 msgstr "Команди"
@@ -2327,6 +2339,10 @@ msgstr "Швидкість найтіснішого усталеного роз�
 #: src/components/GameCanvas.tsx:314
 msgid "tilt"
 msgstr "нахил"
+
+#: src/components/MatchHistory.tsx:132
+msgid "Time"
+msgstr "Час"
 
 #: src/components/MissionSetup.tsx:1230
 msgid "Time of day"
@@ -2489,6 +2505,10 @@ msgstr "Вертикально"
 msgid "Veteran"
 msgstr "Ветеран"
 
+#: src/components/MatchHistory.tsx:94
+msgid "Victory"
+msgstr "Перемога"
+
 #: ../../../lib/web/src/components/attachment-gallery.tsx:79
 msgid "Video thumbnail"
 msgstr "Мініатюра відео"
@@ -2615,9 +2635,9 @@ msgstr "У вас немає потрібного дозволу, <0/>щоб п�
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Ваш обліковий запис переміщено сюди з {source}. Поки ви не видалите його там, повідомлення та сповіщення можуть надходити на обидва сервери, частина вашого вмісту продовжить надаватися зі старого сервера, а підписникам може знадобитися кілька хвилин, щоб знайти вас тут."
 
-#: src/components/MatchHistory.tsx:97
-msgid "Your multiplayer matches appear here once you've flown one."
-msgstr "Ваші мережеві матчі з'являться тут після першого вильоту."
+#: src/components/MatchHistory.tsx:107
+msgid "Your flights appear here once you've flown one."
+msgstr "Ваші польоти з'являться тут після першого вильоту."
 
 #: src/components/Multiplayer.tsx:430
 msgid "your offer"
