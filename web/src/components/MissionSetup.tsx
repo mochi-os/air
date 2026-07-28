@@ -1479,6 +1479,8 @@ export function MissionSetup({
   onTabChange,
   settingsNonce = 0,
   recording,
+  historyOpen = false,
+  onHistory,
   gameInProgress,
   onStart,
   onJoin,
@@ -1491,6 +1493,8 @@ export function MissionSetup({
   onTabChange: (tab: string) => void
   settingsNonce?: number
   recording?: () => Replay | null // the engine's in-memory flight recording (#212)
+  historyOpen?: boolean // History is a routed page, so the URL owns whether it is open
+  onHistory?: (open: boolean) => void
   gameInProgress: boolean
   onStart: () => void
   onJoin: (join: Join) => void
@@ -1593,7 +1597,7 @@ export function MissionSetup({
             <Settings className='size-4' />
             <Trans>Settings</Trans>
           </Button>
-          <Button type='button' variant='outline' className='h-12 justify-start text-base' onClick={() => setDialog('history')}>
+          <Button type='button' variant='outline' className='h-12 justify-start text-base' onClick={() => onHistory?.(true)}>
             <History className='size-4' />
             <Trans>History</Trans>
           </Button>
@@ -1694,14 +1698,14 @@ export function MissionSetup({
           flight records a row now, so the table outgrows a dialog in both
           directions — too narrow for the columns plus the download button, too
           short for more than a handful of flights. */}
-      {dialog === 'history' ? (
+      {historyOpen ? (
         <div className='bg-background fixed inset-0 z-50 overflow-auto p-6'>
           <div className='mx-auto w-full max-w-5xl'>
             <div className='mb-4 flex items-center justify-between'>
               <h2 className='text-2xl font-semibold tracking-tight'>
                 <Trans>History</Trans>
               </h2>
-              <Button type='button' variant='outline' onClick={close}>
+              <Button type='button' variant='outline' onClick={() => onHistory?.(false)}>
                 <X className='size-4' />
                 <Trans>Close</Trans>
               </Button>

@@ -138,7 +138,7 @@ msgid "Account verified"
 msgstr "حساب تأیید شد"
 
 #: src/components/MissionSetup.tsx:1174
-#: src/components/MissionSetup.tsx:1547
+#: src/components/MissionSetup.tsx:1551
 #: src/components/Multiplayer.tsx:378
 msgid "Ace"
 msgstr "تک‌خال"
@@ -479,7 +479,7 @@ msgstr "گفت‌وگو"
 msgid "Chat to everyone"
 msgstr "چت با همه"
 
-#: src/components/MatchHistory.tsx:196
+#: src/components/MatchHistory.tsx:178
 #: src/components/MissionSetup.tsx:1265
 msgid "Cheats"
 msgstr "چیت‌ها"
@@ -545,6 +545,7 @@ msgstr "پاک کردن انتخاب (Escape)"
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
+#: src/components/MissionSetup.tsx:1710
 msgid "Close"
 msgstr "بستن"
 
@@ -676,8 +677,8 @@ msgstr "مسابقه ایجاد نشد"
 msgid "Could not load this document. Please try again later."
 msgstr "بارگذاری این سند ممکن نشد. لطفاً بعداً دوباره تلاش کنید."
 
-#: src/components/MatchHistory.tsx:217
-#: src/components/MatchHistory.tsx:223
+#: src/components/MatchHistory.tsx:219
+#: src/components/MatchHistory.tsx:225
 msgid "Could not save the recording"
 msgstr "ضبط ذخیره نشد"
 
@@ -714,8 +715,8 @@ msgstr "ایجاد و پرواز"
 msgid "Create match"
 msgstr "ایجاد مسابقه"
 
-#: src/components/MissionSetup.tsx:1586
-#: src/components/MissionSetup.tsx:1607
+#: src/components/MissionSetup.tsx:1590
+#: src/components/MissionSetup.tsx:1611
 msgid "Create mission"
 msgstr "ایجاد مأموریت"
 
@@ -869,7 +870,7 @@ msgstr "نوار کناری موبایل را نمایش می‌دهد."
 msgid "Distance LOD"
 msgstr "LOD فاصله"
 
-#: src/components/MissionSetup.tsx:1688
+#: src/components/MissionSetup.tsx:1692
 msgid "Done"
 msgstr "انجام شد"
 
@@ -1096,8 +1097,8 @@ msgstr "شناور"
 msgid "Flown"
 msgstr "پرواز شد"
 
-#: src/components/MissionSetup.tsx:1580
-#: src/components/MissionSetup.tsx:1621
+#: src/components/MissionSetup.tsx:1584
+#: src/components/MissionSetup.tsx:1625
 msgid "Fly"
 msgstr "پرواز"
 
@@ -1172,7 +1173,7 @@ msgstr "ارابه"
 msgid "GEAR"
 msgstr "ارابه"
 
-#: src/components/MissionSetup.tsx:1630
+#: src/components/MissionSetup.tsx:1634
 msgid "General"
 msgstr "عمومی"
 
@@ -1202,7 +1203,7 @@ msgstr "رفتن به صفحه {pageNumber}"
 msgid "Go to previous page"
 msgstr "رفتن به صفحه قبل"
 
-#: src/components/MissionSetup.tsx:1633
+#: src/components/MissionSetup.tsx:1637
 msgid "Graphics"
 msgstr "گرافیک"
 
@@ -1241,8 +1242,8 @@ msgstr "بالا"
 msgid "High stratus"
 msgstr "استراتوس بالا"
 
-#: src/components/MissionSetup.tsx:1598
-#: src/components/MissionSetup.tsx:1693
+#: src/components/MissionSetup.tsx:1602
+#: src/components/MissionSetup.tsx:1706
 msgid "History"
 msgstr "تاریخچه"
 
@@ -1337,7 +1338,7 @@ msgid "Join"
 msgstr "پیوستن"
 
 #: src/components/MissionSetup.tsx:1032
-#: src/components/MissionSetup.tsx:1590
+#: src/components/MissionSetup.tsx:1594
 msgid "Join server"
 msgstr "پیوستن به سرور"
 
@@ -1346,7 +1347,7 @@ msgid "JOINED"
 msgstr "پیوست"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1552
+#: src/components/MissionSetup.tsx:1556
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
 msgstr "دوئل"
@@ -1359,7 +1360,7 @@ msgstr "دوئل — 1v1، اولین سرنگونی برنده است"
 msgid "Joust against AI player"
 msgstr "دوئل در برابر بازیکن هوش مصنوعی"
 
-#: src/components/MissionSetup.tsx:1639
+#: src/components/MissionSetup.tsx:1643
 msgid "Joystick"
 msgstr "جوی‌استیک"
 
@@ -1371,7 +1372,7 @@ msgstr "همین حالا"
 msgid "K/D"
 msgstr "K/D"
 
-#: src/components/MissionSetup.tsx:1642
+#: src/components/MissionSetup.tsx:1646
 msgid "Keys"
 msgstr "کلیدها"
 
@@ -1911,7 +1912,7 @@ msgid "pilot"
 msgstr "خلبان"
 
 #: src/components/MissionSetup.tsx:1172
-#: src/components/MissionSetup.tsx:1545
+#: src/components/MissionSetup.tsx:1549
 #: src/components/Multiplayer.tsx:376
 msgid "Pilot"
 msgstr "خلبان"
@@ -2049,12 +2050,12 @@ msgstr "در حال اتصال مجدد ({retries})..."
 msgid "Record flights"
 msgstr "ضبط پروازها"
 
-#: src/components/MatchHistory.tsx:229
+#: src/components/MatchHistory.tsx:231
 #: src/components/MissionSetup.tsx:1461
 msgid "Recording"
 msgstr "ضبط"
 
-#: src/components/MatchHistory.tsx:222
+#: src/components/MatchHistory.tsx:224
 msgid "Recording saved"
 msgstr "ضبط ذخیره شد"
 
@@ -2139,7 +2140,7 @@ msgstr "ارسال مجدد ایمیل"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1681
+#: src/components/MissionSetup.tsx:1685
 msgid "Reset"
 msgstr "بازنشانی"
 
@@ -2156,7 +2157,7 @@ msgstr "بازنشانی همه تنظیمات به مقادیر پیش‌فرض
 msgid "Resolution"
 msgstr "رفع"
 
-#: src/components/MissionSetup.tsx:1572
+#: src/components/MissionSetup.tsx:1576
 msgid "Restart mission"
 msgstr "شروع مجدد مأموریت"
 
@@ -2168,7 +2169,7 @@ msgstr "نتیجه"
 msgid "Resume"
 msgstr "ازسرگیری"
 
-#: src/components/MissionSetup.tsx:1568
+#: src/components/MissionSetup.tsx:1572
 msgid "Resume mission"
 msgstr "ادامه مأموریت"
 
@@ -2201,7 +2202,7 @@ msgid "Roll right"
 msgstr "غلت به راست"
 
 #: src/components/MissionSetup.tsx:1171
-#: src/components/MissionSetup.tsx:1544
+#: src/components/MissionSetup.tsx:1548
 #: src/components/Multiplayer.tsx:375
 msgid "Rookie"
 msgstr "تازه‌کار"
@@ -2392,8 +2393,8 @@ msgstr "تنظیم مبدأ و مقصد"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1594
-#: src/components/MissionSetup.tsx:1626
+#: src/components/MissionSetup.tsx:1598
+#: src/components/MissionSetup.tsx:1630
 msgid "Settings"
 msgstr "تنظیمات"
 
@@ -2438,7 +2439,7 @@ msgid "Small"
 msgstr "کوچک"
 
 #: src/components/MissionSetup.tsx:425
-#: src/components/MissionSetup.tsx:1636
+#: src/components/MissionSetup.tsx:1640
 msgid "Sound"
 msgstr "صدا"
 
@@ -2801,7 +2802,7 @@ msgid "Vertical"
 msgstr "عمودی"
 
 #: src/components/MissionSetup.tsx:1173
-#: src/components/MissionSetup.tsx:1546
+#: src/components/MissionSetup.tsx:1550
 #: src/components/Multiplayer.tsx:377
 msgid "Veteran"
 msgstr "کهنه‌کار"
