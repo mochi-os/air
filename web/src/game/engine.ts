@@ -30,6 +30,7 @@ import fa18c_model_url from '../assets/fa18c.glb?url'
 import { asset as asset_bytes, progress as load_progress } from './preload'
 import { createAppClient } from '@mochi/web'
 import { Recorder } from './acmi'
+import { recording_store } from './net'
 
 export type GameConfig = Record<string, unknown>
 
@@ -3923,6 +3924,11 @@ function exit_match(){ if(!running) return; running=false;
 		reason:own_kills>0?"victory":(own_deaths>0?"killed":"flown"),
 		players:cfg.task==="joust"?"2":"1", kills:own_kills, deaths:own_deaths,
 		cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0 });
+	// ...then upload the recording against that row, so it outlives the session
+	// (#213). Deliberately after net_record and unawaited: the row must exist
+	// for the save to bind to, and the menu should never wait on an upload.
+	if(!MULTIPLAYER){ const replay=recording_file();
+		if(replay) setTimeout(()=>void recording_store(replay.session,mission_began,replay.text),600); }
 	if(onExit) onExit(); }
 let mission_began=Date.now();   // local session identity for the history's replay-dedup key
 let own_kills=0, own_deaths=0, match_started=0;
