@@ -357,8 +357,8 @@ export function battle_burst(
   rounds: number,
   identity: number,
   tick: number,
-): { hits: number; mask: number } {
-  if (!core) return { hits: 0, mask: 0 }
+): { hits: number; mask: number; impacts: { x: number; y: number; z: number }[] } {
+  if (!core) return { hits: 0, mask: 0, impacts: [] }
   const b = battle_input
   b[0] = target
   b[1] = shooter.position.x; b[2] = shooter.position.y; b[3] = shooter.position.z
@@ -372,7 +372,14 @@ export function battle_burst(
   b[20] = shooter.velocity?.x ?? 0; b[21] = shooter.velocity?.y ?? 0; b[22] = shooter.velocity?.z ?? 0
   b[23] = aim?.velocity?.x ?? 0; b[24] = aim?.velocity?.y ?? 0; b[25] = aim?.velocity?.z ?? 0
   core.burst(battle_input_bytes, battle_output_bytes)
-  return { hits: battle_output[0], mask: battle_output[1] }
+  // [hits, mask, count, x|y|z per impact] — impacts are in the TARGET's body
+  // frame, so the caller rotates them onto the airframe it draws (#217).
+  const count = Math.min(battle_output[2] || 0, 8)
+  const impacts: { x: number; y: number; z: number }[] = []
+  for (let n = 0; n < count; n++) {
+    impacts.push({ x: battle_output[3 + 3 * n], y: battle_output[4 + 3 * n], z: battle_output[5 + 3 * n] })
+  }
+  return { hits: battle_output[0], mask: battle_output[1], impacts }
 }
 
 // battle_blast detonates a missile warhead at a world point against a target.
