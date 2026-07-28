@@ -114,7 +114,7 @@ const AXIS_ROWS: { id: string; label: ReactNode }[] = [
 const LEVERS = new Set(['throttle', 'speedbrake']) // lever-style rows: min-to-max meter + reverse toggle
 
 const BUTTON_ROWS: { id: string; label: ReactNode }[] = [
-  { id: 'guns', label: <Trans>Guns</Trans> },
+  { id: 'guns', label: <Trans>Fire weapon</Trans> },   // the trigger serves the SELECTED weapon (engine.ts: guns in GUN mode, a 9M in 9M mode), so 'Guns' named only half of what it does
   { id: 'select', label: <Trans>Weapon select</Trans> },
   { id: 'acquire', label: <Trans>Acquire target</Trans> },
   { id: 'flares', label: <Trans>Flares</Trans> },
@@ -143,7 +143,7 @@ const KEY_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'yaw.right', label: <Trans>Yaw right</Trans> },
   { id: 'throttle.up', label: <Trans>Throttle up</Trans> },
   { id: 'throttle.down', label: <Trans>Throttle down</Trans> },
-  { id: 'guns', label: <Trans>Guns</Trans> },
+  { id: 'guns', label: <Trans>Fire weapon</Trans> },   // the trigger serves the SELECTED weapon (engine.ts: guns in GUN mode, a 9M in 9M mode), so 'Guns' named only half of what it does
   { id: 'select', label: <Trans>Weapon select</Trans> },
   { id: 'acquire', label: <Trans>Acquire target</Trans> },
   { id: 'flares', label: <Trans>Flares</Trans> },
