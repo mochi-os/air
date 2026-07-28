@@ -877,7 +877,6 @@ const GEAR_RATE=0.5;   // extend/retract speed of the 0..1 visual progress for a
 const DROOP=30*D2R;    // PA trailing-edge droop (NATOPS flaps HALF on the ground: TEF 30°, aileron droop 30°) — the rest pose of the flap family for gear-down aircraft the core doesn't fly; the ownship's comes live from the FCS (Droop.Angle in the flight core)
 const SLAT_PA=12*D2R;  // parked/gear-down LEF droop for aircraft without FCS data (NATOPS flaps HALF: LEF 12°) — the ownship's comes live from the alpha schedule
 const _NWS=75*D2R;      // nosewheel steering throw (NWS HI 75°; LOW is 22.5° — the speed washout stands in for the mode switch, mirroring Gear.Nose.Steer in the flight core)
-function model_tint(hex){ return hex===0xb04a3a?0xff9a86 : hex===0x7f8a96?0xdde3ea : 0xffffff; }   // light team tints (white = untouched)
 function normalise_model(scene, spec){ scene.updateMatrixWorld(true);
 	const box=new THREE.Box3().setFromObject(scene), size=box.getSize(new THREE.Vector3()), ctr=box.getCenter(new THREE.Vector3());
 	const s=spec.length/Math.max(size.x,size.y,size.z,1e-3);
@@ -921,9 +920,17 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	const loaded=fleet[kind]; if(!loaded||g.userData.hasModel===kind) return; g.userData.hasModel=kind;
 	g.children.forEach(c=>{ if(c.userData.body||c.userData.glass) c.visible=false; });   // hide procedural shell, keep afterburner cones
 	const previous=g.children.find(c=>c.userData&&c.userData.model); if(previous) g.remove(previous);   // aircraft swap: drop the old airframe
-	const m=loaded.proto.clone(true); m.userData.model=true; const tint=model_tint(g.userData.tint||0xffffff);
-	m.traverse(o=>{ if(o.isMesh){ o.userData.modelmesh=true; o.castShadow=cfg.shadows;
-		if(tint!==0xffffff && o.material && o.material.color){ o.material=o.material.clone(); o.material.color=o.material.color.clone().multiply(new THREE.Color(tint)); } } });
+	// NO team tint on a modelled airframe (#210). The red bandit and pale-grey
+	// traffic were identification aids from the procedural-shell era, when every
+	// jet was untextured geometry and colour was the only way to tell them
+	// apart. Multiplied over the F/A-18C's own livery it just stains the
+	// paintwork, and it was inconsistent besides (multiplayer tinted by real
+	// team, the single-player bandit was always red). Identification is a
+	// SENSOR job, as in the real jet: the HUD boxes the designated target and
+	// draws the locator line to it off-boresight, and the map colours contacts
+	// by side. The airframe wears its own paint.
+	const m=loaded.proto.clone(true); m.userData.model=true;
+	m.traverse(o=>{ if(o.isMesh){ o.userData.modelmesh=true; o.castShadow=cfg.shadows; } });
 	const spec=AIRCRAFT_MODELS[kind]||{};
 	if(spec.hide) m.traverse(o=>{ if(o.name&&spec.hide.test(o.name)) o.visible=false; });   // per-aircraft junk meshes (helper cubes etc.)
 	g.userData.flames=spec.flames||undefined;
