@@ -1690,9 +1690,26 @@ export function MissionSetup({
         </div>
       </MenuDialog>
 
-      <MenuDialog open={dialog === 'history'} onClose={close} title={<Trans>History</Trans>}>
-        <MatchHistory recording={recording} />
-      </MenuDialog>
+      {/* History is a PAGE, not a dialog (like the server's match list): every
+          flight records a row now, so the table outgrows a dialog in both
+          directions — too narrow for the columns plus the download button, too
+          short for more than a handful of flights. */}
+      {dialog === 'history' ? (
+        <div className='bg-background fixed inset-0 z-50 overflow-auto p-6'>
+          <div className='mx-auto w-full max-w-5xl'>
+            <div className='mb-4 flex items-center justify-between'>
+              <h2 className='text-2xl font-semibold tracking-tight'>
+                <Trans>History</Trans>
+              </h2>
+              <Button type='button' variant='outline' onClick={close}>
+                <X className='size-4' />
+                <Trans>Close</Trans>
+              </Button>
+            </div>
+            <MatchHistory recording={recording} />
+          </div>
+        </div>
+      ) : null}
 
       <ServerFlow open={dialog === 'server'} onClose={close} config={config} set={set} onChange={onChange} onJoin={onJoin} />
     </div>
