@@ -755,7 +755,7 @@ function merge_geometries(geos){ let total=0; const parts=geos.map(g=>(g.index?g
 // while make_jet still used both, so every mission start threw ab_geo-not-defined.)
 const ab_geo=new THREE.ConeGeometry(0.3,2.6,12); ab_geo.rotateZ(Math.PI/2);
 const ab_mat=new THREE.MeshBasicMaterial({color:0xffaa44,transparent:true,opacity:0.8,blending:THREE.AdditiveBlending,depthWrite:false,fog:false});
-function make_jet(tint){ const g=new THREE.Group(); g.userData.tint=tint;   // afterburner cones only — the airframe is the loaded GLB (no procedural fallback)
+function make_jet(){ const g=new THREE.Group();   // afterburner cones only — the airframe is the loaded GLB (no procedural fallback). NO team colour: every jet wears the F/A-18C's own livery, and identification is the HUD's and the map's job (#210)
 	for(const side of [1,-1]){ const ab=new THREE.Mesh(ab_geo,ab_mat); ab.position.set(-9.3,-0.37,side*0.48); ab.userData.ab=true; g.add(ab); } return g; }   // at the Hornet's twin nozzles (Y raised from -0.95 after the gear extended the model bbox, shifting normalise's centre up ~0.58)
 
 // ============================================================================ aircraft GLB models (cosmetic only)
@@ -1617,7 +1617,7 @@ function bandit_destroy(){ explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
 	battle_hulk(0,"fa18c"); bandit.harm={thrust:0,wing:0,killed:false,burning:false};
 	notice(translate("KILL")); }
 let aircraft_lights=null;
-ownship.group=make_jet(0x9aa6b2); bandit.group=make_jet(0xb04a3a); scene.add(ownship.group,bandit.group);
+ownship.group=make_jet(); bandit.group=make_jet(); scene.add(ownship.group,bandit.group);
 ownship.group.userData.player=true; layer_own_group(ownship.group);
 build_aircraft_lights(); layer_own_group(ownship.group);   // the nav lights/strobes/landing spot just joined the group — layer them too
 
@@ -2302,7 +2302,7 @@ generate_world();
 const extras=[];
 function sync_extras(n){ while(extras.length<n){ const a=Math.random()*Math.PI*2,r=2000+Math.random()*4000;
 	const st=make_state(new THREE.Vector3(Math.cos(a)*r,1600+Math.random()*2400,Math.sin(a)*r),new THREE.Vector3(-Math.sin(a),0,Math.cos(a)),170+Math.random()*60);
-	st.group=make_jet(0x7f8a96); scene.add(st.group); extras.push(st); if(model_active) apply_model_to(st.group); }
+	st.group=make_jet(); scene.add(st.group); extras.push(st); if(model_active) apply_model_to(st.group); }
 	while(extras.length>n){ const st=extras.pop(); scene.remove(st.group); st.group.traverse(o=>{ if(o.isMesh&&o.material&&o.material.dispose)o.material.dispose(); }); } }
 
 // ---- input ----
@@ -3966,7 +3966,7 @@ function apply_livery(group, team){
 }
 function remote_for(slot){ let st=remotes.get(slot); if(st) return st;
 	if(![...remotes.values()].includes(bandit)) st=bandit;
-	else { st=make_state(new THREE.Vector3(0,3000,0),new THREE.Vector3(1,0,0),200); st.group=make_jet(0xb04a3a); scene.add(st.group); if(model_active) apply_model_to(st.group); }
+	else { st=make_state(new THREE.Vector3(0,3000,0),new THREE.Vector3(1,0,0),200); st.group=make_jet(); scene.add(st.group); if(model_active) apply_model_to(st.group); }
 	remotes.set(slot,st); st.group.visible=true; st.msl=st.msl??2; update_rails(st,st.msl); return st; }
 function remote_drop(slot){ const st=remotes.get(slot); if(!st) return; remotes.delete(slot); audio_remote_drop("r"+slot);
 	if(st===bandit){ st.group.visible=false; }
