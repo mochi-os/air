@@ -9,7 +9,7 @@ def database_create():
 	# already per-user, so no account column is needed. `updated` versions each
 	# key as an LWW-register so writes converge under multi-host replication.
 	mochi.db.execute("create table if not exists settings (name text not null primary key, value text not null, updated integer not null)")
-	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, created integer not null)")
+	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, created integer not null, recording text not null default '', recorded integer not null default 0, pinned integer not null default 0)")
 	# A match is identified by where and when it ran; the unique index makes the
 	# dedup atomic (insert ... on conflict do nothing) instead of a racy check-
 	# then-insert.
@@ -18,6 +18,17 @@ def database_create():
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
+	if version == 7:
+		# Flight recordings (#213): the attachment id, its stored size, and the
+		# pin that exempts it from pruning.
+		columns = [c["name"] for c in mochi.db.table("matches")]
+		if "recording" not in columns:
+			mochi.db.execute("alter table matches add column recording text not null default ''")
+		if "recorded" not in columns:
+			mochi.db.execute("alter table matches add column recorded integer not null default 0")
+		if "pinned" not in columns:
+			mochi.db.execute("alter table matches add column pinned integer not null default 0")
+
 	if version == 6:
 		# The dev CSV telemetry is gone (#216): the flight recorder now carries
 		# the same channels as standard ACMI properties, which TacView graphs,
@@ -114,7 +125,7 @@ def match_record(a):
 def match_list(a):
 	if not a.user:
 		return {"data": {"matches": []}}
-	matches = mochi.db.rows("select world, session, mode, team, started, ended, reason, players, kills, deaths, cheated from matches order by started desc limit 50")
+	matches = mochi.db.rows("select world, session, mode, team, started, ended, reason, players, kills, deaths, cheated, recording, recorded, pinned from matches order by started desc limit 50")
 	# Totals are aggregated over EVERY row, not the fifty listed: the table is a
 	# recent-flights view, the summary is a career. Cheated flights count too —
 	# this is the player's own logbook, not a leaderboard, and excluding them
@@ -125,3 +136,84 @@ def match_list(a):
 	totals = mochi.db.row("select count(*) as flights, sum(ended - started) / 1000 as seconds, sum(kills) as kills, sum(deaths) as deaths, sum(cheated) as cheated from matches")
 	return {"data": {"matches": matches, "totals": totals}}
 
+# ---- flight recordings (#213) ----
+# Recordings are ATTACHMENTS bound to their match row, not rows in a table of
+# their own: the attachment system already owns bytes, and its multipart path
+# sidesteps the 1 MB non-multipart body cap that a base64 field would hit.
+# They are stored gzipped (~3:1 on ACMI, measured) and the client inflates on
+# download, so the player still receives a plain .acmi TacView opens.
+
+# How many recordings a player keeps, and the byte budget, whichever binds
+# first. Age-based expiry was rejected: someone who flies twice a month would
+# lose their best fight to a 30-day rule. A pinned recording is exempt.
+RECORDINGS_KEPT = 25
+RECORDINGS_BYTES = 50 * 1024 * 1024
+
+# recording_save() -> {"data": {"saved": bool}}: store the gzipped ACMI for one
+# of this player's own matches. Multipart, so the field carries megabytes.
+def recording_save(a):
+	if not a.user or not a.user.identity.id:
+		a.error.label(401, "errors.not_logged_in")
+		return
+	session = a.input("session", "")[:64]
+	started = whole(a, "started")
+	if not session:
+		a.error.label(400, "errors.missing_field")
+		return
+	row = mochi.db.row("select id from matches where session = ? and started = ?", session, started)
+	if not row:
+		a.error.label(404, "errors.not_found")   # a recording with no flight to hang on is an orphan by construction
+		return
+	saved = mochi.attachment.save(row["id"], "recording", [], [], [])
+	if not saved:
+		return {"data": {"saved": False}}
+	mochi.db.execute("update matches set recording = ?, recorded = ? where id = ?", saved[0]["id"], saved[0].get("size", 0), row["id"])
+	recordings_prune(row["id"])
+	return {"data": {"saved": True}}
+
+# recordings_prune drops the oldest unpinned recordings once either budget is
+# exceeded. Called after each save, so the store is self-limiting.
+def recordings_prune(keep):
+	rows = mochi.db.rows("select id, recording, recorded, pinned from matches where recording != '' order by recorded desc")
+	total = 0
+	kept = 0
+	for row in rows:
+		if row["pinned"]:
+			continue   # pinned recordings count against nothing and are never dropped
+		kept = kept + 1
+		total = total + row["recorded"]
+		if row["id"] == keep:
+			continue
+		if kept > RECORDINGS_KEPT or total > RECORDINGS_BYTES:
+			mochi.attachment.clear(row["id"])
+			mochi.db.execute("update matches set recording = '', recorded = 0 where id = ?", row["id"])
+
+# recording_pin() -> {"data": {"pinned": bool}}: mark a recording to survive
+# pruning, or release it.
+def recording_pin(a):
+	if not a.user or not a.user.identity.id:
+		a.error.label(401, "errors.not_logged_in")
+		return
+	session = a.input("session", "")[:64]
+	started = whole(a, "started")
+	pinned = 1 if a.input("pinned", "") == "true" else 0
+	mochi.db.execute("update matches set pinned = ? where session = ? and started = ?", pinned, session, started)
+	return {"data": {"pinned": pinned == 1}}
+
+# recording_fetch: serve a stored recording's bytes. The gate IS this action —
+# a.write.attachment performs no access check of its own — so it authorises on
+# a.user and binds the attachment to a match row this player actually owns.
+# (The app DB is per-user, so "in my matches table" IS the ownership test.)
+def recording_fetch(a):
+	if not a.user or not a.user.identity.id:
+		a.error.label(401, "errors.not_logged_in")
+		return
+	attachment = a.input("id", "")
+	details = mochi.attachment.get(attachment)
+	if not details:
+		a.error.label(404, "errors.not_found")
+		return
+	if not mochi.db.exists("select 1 from matches where id = ?", details.get("object", "")):
+		a.error.label(404, "errors.not_found")   # not one of my flights: indistinguishable from absent, deliberately
+		return
+	a.write.attachment(attachment)

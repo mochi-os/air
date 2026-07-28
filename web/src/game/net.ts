@@ -821,6 +821,9 @@ export async function record(match: {
 export interface MatchRow {
   world: string
   session: string
+  recording: string // attachment id, '' when nothing is stored
+  recorded: number // stored bytes
+  pinned: number // 1 = exempt from pruning
   mode: string
   team: string
   started: number
@@ -836,6 +839,47 @@ export interface MatchRow {
 // anonymous visitor or on error — the view renders that as "no matches yet".
 // Totals are aggregated server-side over EVERY recorded flight — the matches
 // list is capped at fifty, so summing what is on screen understates a career.
+// recording_store uploads a gzipped ACMI for a finished flight. Multipart, so
+// the megabytes go in a field rather than a JSON body (the 1 MB non-multipart
+// cap would reject anything but the shortest sortie).
+export async function recording_store(session: string, started: number, text: string): Promise<boolean> {
+  try {
+    const gz = new Blob([text]).stream().pipeThrough(new CompressionStream('gzip'))
+    const body = new FormData()
+    body.append('session', session)
+    body.append('started', String(started))
+    // The type matters: a typeless Blob arrives as a part the attachment API does not take as a file.
+    const bytes = await new Response(gz).arrayBuffer()
+    body.append('recording', new Blob([bytes], { type: 'application/gzip' }), 'flight.acmi.gz')
+    const res = (await client.post('/-/recording/save', body)) as { data?: { saved?: boolean } }
+    return !!(res?.data?.saved ?? (res as { saved?: boolean })?.saved)
+  } catch {
+    return false // best effort: the player can still save the in-memory copy
+  }
+}
+
+// recording_load fetches a stored recording and inflates it back to ACMI text.
+export async function recording_load(id: string): Promise<string | null> {
+  try {
+    const res = await client.instance.get('/-/recording/fetch', {
+      params: { id },
+      responseType: 'blob',
+    })
+    const stream = (res.data as Blob).stream().pipeThrough(new DecompressionStream('gzip'))
+    return await new Response(stream).text()
+  } catch {
+    return null
+  }
+}
+
+export async function recording_pin(session: string, started: number, pinned: boolean): Promise<void> {
+  try {
+    await client.post('/-/recording/pin', { session, started: String(started), pinned: String(pinned) })
+  } catch {
+    /* best effort */
+  }
+}
+
 export interface MatchTotals {
   flights: number
   seconds: number

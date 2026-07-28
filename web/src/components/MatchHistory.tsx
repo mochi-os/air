@@ -19,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from '@mochi/web/components/ui/table'
-import { history, type MatchRow, type MatchTotals } from '../game/net'
+import { history, recording_load, type MatchRow, type MatchTotals } from '../game/net'
 import { Button } from '@mochi/web/components/ui/button'
 import { toast } from '@mochi/web'
 import { shellSaveBlob } from '@mochi/web'
@@ -198,17 +198,31 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
                 ) : null}
               </TableCell>
               <TableCell className='text-right'>
-                {replay && replay.session === m.session ? (
+                {m.recording || (replay && replay.session === m.session) ? (
                   <Button
                     type='button'
                     variant='outline'
                     size='sm'
                     onClick={() =>
-                      void save(replay, m.started, (ok) =>
-                        ok
-                          ? toast.success(t`Recording saved`)
-                          : toast.error(t`Could not save the recording`)
-                      )
+                      void (async () => {
+                        // Prefer the row's STORED copy: it exists for every
+                        // flight, not just this session's, which is the whole
+                        // point of keeping them server-side (#213). The
+                        // in-memory buffer is the fallback for a flight whose
+                        // upload has not landed yet.
+                        const text =
+                          (m.recording ? await recording_load(m.recording) : null) ??
+                          (replay && replay.session === m.session ? replay.text : null)
+                        if (!text) {
+                          toast.error(t`Could not save the recording`)
+                          return
+                        }
+                        save({ text, session: m.session, kind: m.mode }, m.started, (ok) =>
+                          ok
+                            ? toast.success(t`Recording saved`)
+                            : toast.error(t`Could not save the recording`)
+                        )
+                      })()
                     }
                   >
                     <Download className='size-4' />
