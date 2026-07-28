@@ -174,12 +174,15 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
             <TableHead>
               <Trans>Result</Trans>
             </TableHead>
+            <TableHead>
+              <Trans>Cheats</Trans>
+            </TableHead>
             <TableHead />
           </TableRow>
         </TableHeader>
         <TableBody>
           {matches.map((m, i) => (
-            <TableRow key={i}>
+            <TableRow key={i} className='group'>
               <TableCell>{formatDateTime(new Date(m.started))}</TableCell>
               <TableCell>{serverName(m.world)}</TableCell>
               <TableCell>{modeLabel(m.mode)}</TableCell>
@@ -188,14 +191,9 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
               </TableCell>
               <TableCell className='text-right'>{formatNumber(m.kills)}</TableCell>
               <TableCell className='text-right'>{formatNumber(m.deaths)}</TableCell>
-              <TableCell>
-                {reasonLabel(m.reason)}
-                {m.cheated ? (
-                  <span className='text-muted-foreground ml-2 inline-flex items-center gap-1 text-xs'>
-                    <ShieldAlert className='size-3' />
-                    <Trans>Cheats</Trans>
-                  </span>
-                ) : null}
+              <TableCell>{reasonLabel(m.reason)}</TableCell>
+              <TableCell className='text-muted-foreground'>
+                {m.cheated ? <ShieldAlert className='size-4' /> : null}
               </TableCell>
               <TableCell className='text-right'>
                 {m.recording || (replay && replay.session === m.session) ? (
@@ -203,6 +201,10 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
                     type='button'
                     variant='outline'
                     size='sm'
+                    // Revealed on hover (and kept for keyboard focus, which
+                    // hover alone would strand): a button on every row competes
+                    // with the flight data for attention.
+                    className='opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100'
                     onClick={() =>
                       void (async () => {
                         // Prefer the row's STORED copy: it exists for every
