@@ -60,8 +60,6 @@ function Index() {
 
   const inFlight = started && !menuOpen
   const [settingsNonce, setSettingsNonce] = useState(0)
-  const { page } = Route.useSearch()
-  const navigate = Route.useNavigate()
 
   // Hide the shell chrome while in flight; the hook's heartbeat lets the shell
   // restore it automatically if air crashes or is closed.
@@ -119,9 +117,6 @@ function Index() {
           onTabChange={(t) => setTab(t as SetupTab)}
           settingsNonce={settingsNonce}
           gameInProgress={started}
-          recording={() => gameRef.current?.recording?.() ?? null}
-          historyOpen={page === 'history'}
-          onHistory={(open) => void navigate({ search: open ? { page: 'history' } : {} })}
           onStart={() => {
             setJoin(null)
             setGameKey((k) => k + 1)
@@ -150,10 +145,8 @@ function Index() {
 
 export const Route = createFileRoute('/')({
   component: Index,
-  // History is a PAGE, so it lives in the URL: ?page=history gives it a back
-  // button, a reload that returns to it, and a shareable address. The dialogs
-  // deliberately do NOT — a settings tab in the URL was noise, and the user
-  // said so. A legacy ?tab= is accepted and ignored: old links must not error.
-  validateSearch: (search: Record<string, unknown>): { page?: 'history' } =>
-    search.page === 'history' ? { page: 'history' } : {},
+  // History is its own ROUTE (/history, declared in app.json like the root), so
+  // nothing about it belongs in this route's search. A legacy ?tab= or
+  // ?page=history is accepted and ignored: old links must not error.
+  validateSearch: (): Record<string, never> => ({}),
 })

@@ -138,7 +138,7 @@ msgid "Account verified"
 msgstr "അക്കൗണ്ട് പരിശോധിച്ചുറപ്പിച്ചു"
 
 #: src/components/MissionSetup.tsx:1174
-#: src/components/MissionSetup.tsx:1551
+#: src/components/MissionSetup.tsx:1545
 #: src/components/Multiplayer.tsx:378
 msgid "Ace"
 msgstr "എയ്സ്"
@@ -311,6 +311,7 @@ msgid "back"
 msgstr "പുറകോട്ട്"
 
 #: ../../../lib/web/src/components/place-picker.tsx:156
+#: src/routes/history.tsx:28
 msgid "Back"
 msgstr "തിരികെ"
 
@@ -545,7 +546,6 @@ msgstr "തിരഞ്ഞെടുപ്പ് മായ്ക്കുക (Esc
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
-#: src/components/MissionSetup.tsx:1710
 msgid "Close"
 msgstr "അടയ്ക്കുക"
 
@@ -715,8 +715,8 @@ msgstr "സൃഷ്ടിച്ച് പറക്കുക"
 msgid "Create match"
 msgstr "മത്സരം സൃഷ്ടിക്കുക"
 
-#: src/components/MissionSetup.tsx:1590
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1584
+#: src/components/MissionSetup.tsx:1607
 msgid "Create mission"
 msgstr "ദൗത്യം സൃഷ്ടിക്കുക"
 
@@ -870,7 +870,7 @@ msgstr "മൊബൈൽ സൈഡ്‌ബാർ പ്രദർശിപ്പ�
 msgid "Distance LOD"
 msgstr "ദൂര LOD"
 
-#: src/components/MissionSetup.tsx:1692
+#: src/components/MissionSetup.tsx:1688
 msgid "Done"
 msgstr "പൂർത്തിയായി"
 
@@ -1097,8 +1097,8 @@ msgstr "ഫ്ലോട്ടിംഗ്"
 msgid "Flown"
 msgstr "പറന്നു"
 
-#: src/components/MissionSetup.tsx:1584
-#: src/components/MissionSetup.tsx:1625
+#: src/components/MissionSetup.tsx:1578
+#: src/components/MissionSetup.tsx:1621
 msgid "Fly"
 msgstr "പറക്കുക"
 
@@ -1173,7 +1173,7 @@ msgstr "ഗിയർ"
 msgid "GEAR"
 msgstr "ഗിയർ"
 
-#: src/components/MissionSetup.tsx:1634
+#: src/components/MissionSetup.tsx:1630
 msgid "General"
 msgstr "പൊതുവായവ"
 
@@ -1203,7 +1203,7 @@ msgstr "പേജ് {pageNumber}-ലേക്ക് പോകുക"
 msgid "Go to previous page"
 msgstr "മുൻ പേജിലേക്ക് പോകുക"
 
-#: src/components/MissionSetup.tsx:1637
+#: src/components/MissionSetup.tsx:1633
 msgid "Graphics"
 msgstr "ഗ്രാഫിക്സ്"
 
@@ -1242,8 +1242,8 @@ msgstr "ഉയർന്നത്"
 msgid "High stratus"
 msgstr "ഉയർന്ന സ്ട്രാറ്റസ്"
 
-#: src/components/MissionSetup.tsx:1602
-#: src/components/MissionSetup.tsx:1706
+#: src/components/MissionSetup.tsx:1597
+#: src/routes/history.tsx:23
 msgid "History"
 msgstr "ചരിത്രം"
 
@@ -1338,7 +1338,7 @@ msgid "Join"
 msgstr "ചേരുക"
 
 #: src/components/MissionSetup.tsx:1032
-#: src/components/MissionSetup.tsx:1594
+#: src/components/MissionSetup.tsx:1588
 msgid "Join server"
 msgstr "സെർവറിൽ ചേരുക"
 
@@ -1347,7 +1347,7 @@ msgid "JOINED"
 msgstr "ചേർന്നു"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1556
+#: src/components/MissionSetup.tsx:1550
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
 msgstr "ദ്വന്ദ്വം"
@@ -1360,7 +1360,7 @@ msgstr "ദ്വന്ദ്വയുദ്ധം — 1v1, ആദ്യം വ�
 msgid "Joust against AI player"
 msgstr "AI കളിക്കാരനെതിരെ ദ്വന്ദ്വയുദ്ധം"
 
-#: src/components/MissionSetup.tsx:1643
+#: src/components/MissionSetup.tsx:1639
 msgid "Joystick"
 msgstr "ജോയ്സ്റ്റിക്ക്"
 
@@ -1372,7 +1372,7 @@ msgstr "ഇപ്പോൾ"
 msgid "K/D"
 msgstr "K/D"
 
-#: src/components/MissionSetup.tsx:1646
+#: src/components/MissionSetup.tsx:1642
 msgid "Keys"
 msgstr "കീകൾ"
 
@@ -1912,7 +1912,7 @@ msgid "pilot"
 msgstr "പൈലറ്റ്"
 
 #: src/components/MissionSetup.tsx:1172
-#: src/components/MissionSetup.tsx:1549
+#: src/components/MissionSetup.tsx:1543
 #: src/components/Multiplayer.tsx:376
 msgid "Pilot"
 msgstr "പൈലറ്റ്"
@@ -2140,7 +2140,7 @@ msgstr "ഇമെയിൽ വീണ്ടും അയയ്ക്കുക"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1685
+#: src/components/MissionSetup.tsx:1681
 msgid "Reset"
 msgstr "എല്ലാ സെറ്റിങ്ങുകളും ഡിഫോൾട്ട് മൂല്യങ്ങളിലേക്ക് റീസെറ്റ് ചെയ്യുക"
 
@@ -2157,7 +2157,7 @@ msgstr "മുൻഗണനകൾ റീസെറ്റ് ചെയ്യണോ?
 msgid "Resolution"
 msgstr "പരിഹരിക്കുക"
 
-#: src/components/MissionSetup.tsx:1576
+#: src/components/MissionSetup.tsx:1570
 msgid "Restart mission"
 msgstr "ദൗത്യം പുനരാരംഭിക്കുക"
 
@@ -2169,7 +2169,7 @@ msgstr "ഫലം"
 msgid "Resume"
 msgstr "പുനരാരംഭിക്കുക"
 
-#: src/components/MissionSetup.tsx:1572
+#: src/components/MissionSetup.tsx:1566
 msgid "Resume mission"
 msgstr "ദൗത്യം തുടരുക"
 
@@ -2202,7 +2202,7 @@ msgid "Roll right"
 msgstr "റോൾ വലത്തേക്ക്"
 
 #: src/components/MissionSetup.tsx:1171
-#: src/components/MissionSetup.tsx:1548
+#: src/components/MissionSetup.tsx:1542
 #: src/components/Multiplayer.tsx:375
 msgid "Rookie"
 msgstr "തുടക്കക്കാരൻ"
@@ -2393,8 +2393,8 @@ msgstr "ഉത്ഭവവും ലക്ഷ്യസ്ഥാനവും സ�
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1598
-#: src/components/MissionSetup.tsx:1630
+#: src/components/MissionSetup.tsx:1592
+#: src/components/MissionSetup.tsx:1626
 msgid "Settings"
 msgstr "ക്രമീകരണങ്ങൾ"
 
@@ -2439,7 +2439,7 @@ msgid "Small"
 msgstr "ചെറുത്"
 
 #: src/components/MissionSetup.tsx:425
-#: src/components/MissionSetup.tsx:1640
+#: src/components/MissionSetup.tsx:1636
 msgid "Sound"
 msgstr "ശബ്ദം"
 
@@ -2802,7 +2802,7 @@ msgid "Vertical"
 msgstr "ലംബം"
 
 #: src/components/MissionSetup.tsx:1173
-#: src/components/MissionSetup.tsx:1550
+#: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:377
 msgid "Veteran"
 msgstr "വെറ്ററൻ"

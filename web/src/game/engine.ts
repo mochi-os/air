@@ -44,6 +44,13 @@ export interface GameHandle {
   scope: () => string                           // the default chat scope: "team" in a teams match, else "all"
 }
 
+// The buffered flight, reachable WITHOUT a game handle: the History page is its
+// own route and cannot see the index route's handle. startGame publishes its
+// accessor here rather than the recorder being lifted out of the closure it
+// shares with the whole engine.
+let live_recording: () => { text: string; session: string; kind: string } | null = () => null
+export function recording() { return live_recording() }
+
 export function startGame({
   stage,
   hud,
@@ -4213,7 +4220,7 @@ function start_mission(){
 	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
 	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0;   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
 	on_config=onConfig||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
-	recorder.clear(); record_started=new Date(); record_session="local-"+mission_began;   // a fresh recording per mission (#212)
+	recorder.clear(); record_started=new Date(); record_session="local-"+mission_began; live_recording=recording_file;   // a fresh recording per mission (#212)
 	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,
 	// chase camera at the given azimuth/elevation. Judging water needs an external low view.
 	const shotp=DEV_MODE?new URLSearchParams(window.location.search).get("shot"):null;
@@ -4329,7 +4336,7 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
     try { stage.focus() } catch { /* ignore */ }
   }
   return { stop, resume,
-    recording: recording_file,   // the History page renders and saves it (#212)
+    recording: recording_file,   // kept on the handle for callers that already hold one
     exit: exit_match,
     pause: (on) => { menu_hold = !!on },   // the Esc popup: freezes the SP world (game_paused gates on !MULTIPLAYER — it cannot freeze a server) without the P-pause banner/controls
     chat: (words, scope) => { if (MULTIPLAYER && net && running) net.chat(String(words).slice(0, 200), scope) },
