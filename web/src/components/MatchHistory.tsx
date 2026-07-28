@@ -119,8 +119,16 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
   const deaths = totals?.deaths ?? 0
   const seconds = totals?.seconds ?? 0
   const ratio = deaths ? kills / deaths : kills
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.round((seconds % 3600) / 60)
+  // M:SS under an hour, H:MM:SS past it — the same clock the flight recorder
+  // and the developer overlay show, so a duration reads the same everywhere.
+  const clock = (total: number): string => {
+    const whole = Math.max(0, Math.round(total))
+    const hh = Math.floor(whole / 3600)
+    const mm = Math.floor((whole % 3600) / 60)
+    const ss = whole % 60
+    const pad = (v: number) => String(v).padStart(2, '0')
+    return hh ? `${hh}:${pad(mm)}:${pad(ss)}` : `${mm}:${pad(ss)}`
+  }
 
   return (
     <div className='space-y-4'>
@@ -129,8 +137,7 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
           <Trans>Flights</Trans>: {formatNumber(flights)}
         </span>
         <span>
-          <Trans>Time</Trans>: {hours ? `${formatNumber(hours)} h ` : ''}
-          {formatNumber(minutes)} min
+          <Trans>Time</Trans>: {clock(seconds)}
         </span>
         <span>
           <Trans>Kills</Trans>: {formatNumber(kills)}
