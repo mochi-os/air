@@ -4,6 +4,17 @@
 # This file is part of Mochi, licensed under the GNU AGPL v3 with the
 # Mochi Application Interface Exception - see license.txt and license-exception.md.
 
+# decimal(value) -> bool: whether value is a non-empty ASCII decimal string.
+# This is what .isdigit() was reached for, but isdigit() also accepts Unicode
+# digit forms (Arabic-Indic "٣", Devanagari "३") that int() rejects,
+# which aborts the action as a 500 instead of taking the guard's else branch.
+def decimal(value):
+    if not value:
+        return False
+    for c in value.elems():
+        if c not in "0123456789":
+            return False
+    return True
 def database_create():
 	# Per-key mission/graphics settings for the signed-in user. The app DB is
 	# already per-user, so no account column is needed. `updated` versions each
@@ -96,7 +107,7 @@ def config_save(a):
 # exists), so a buggy client's post would 500 instead of degrading.
 def whole(a, name):
 	value = a.input(name, "0") or "0"
-	return int(value) if value.isdigit() else 0
+	return int(value) if decimal(value) else 0
 
 # match_record() -> {"data": {"recorded": bool}}: store this player's own view of a finished multiplayer match.
 def match_record(a):
