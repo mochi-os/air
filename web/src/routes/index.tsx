@@ -148,5 +148,9 @@ export const Route = createFileRoute('/')({
   // History is its own ROUTE (/history, declared in app.json like the root), so
   // nothing about it belongs in this route's search. A legacy ?tab= or
   // ?page=history is accepted and ignored: old links must not error.
-  validateSearch: (): Record<string, never> => ({}),
+  // developer=1 is kept: validateSearch STRIPS anything it does not return, so
+  // navigating to History and back was silently dropping the flag and taking
+  // the developer overlay, doctrine channel and dev hooks with it.
+  validateSearch: (search: Record<string, unknown>): { developer?: string } =>
+    search.developer ? { developer: String(search.developer) } : {},
 })
