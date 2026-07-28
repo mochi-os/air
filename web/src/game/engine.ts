@@ -2654,13 +2654,19 @@ function hit_sparks(x,y,z){ _spark_count++;
 	// with them swallowed the whole aircraft. A cannon strike is a small, very
 	// brief spark shower — a dozen bright points, gone inside a fifth of a
 	// second, which is what leaves a line of flashes walking down a target.
-	for(let i=0;i<10;i++){ const k=pool_spawn(tracers); if(k<0) break;
-		const core=i<3;   // hot core, then thrown sparks
-		const a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=core?(1+Math.random()*2):(7+Math.random()*16);
-		tracers.px[k]=x; tracers.py[k]=y; tracers.pz[k]=z;
+	// Sized by TRIAL: the first cut used the smoke pool (particle size 70) and
+	// swallowed the whole aircraft; the correction to the tracer pool (size 4,
+	// constant on screen) overshot the other way and could not be seen at all
+	// in a real fight. The pool is right — a strike is a small bright thing —
+	// so the flash reads through COUNT and DWELL instead: a dense cluster that
+	// lasts long enough for the eye to catch it between frames.
+	for(let i=0;i<22;i++){ const k=pool_spawn(tracers); if(k<0) break;
+		const core=i<9;   // a tight hot core, then sparks thrown off it
+		const a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=core?(0.6+Math.random()*1.6):(9+Math.random()*20);
+		tracers.px[k]=x+(Math.random()-0.5)*0.5; tracers.py[k]=y+(Math.random()-0.5)*0.5; tracers.pz[k]=z+(Math.random()-0.5)*0.5;
 		tracers.vx[k]=Math.cos(a)*Math.cos(e)*sp; tracers.vy[k]=Math.sin(e)*sp*0.6+1.5; tracers.vz[k]=Math.sin(a)*Math.cos(e)*sp;
-		tracers.ttl[k]=tracers.life[k]=core?(0.06+Math.random()*0.05):(0.12+Math.random()*0.14);
-		if(core){ tracers.r[k]=1.0; tracers.g[k]=0.97; tracers.b[k]=0.85; }   // white-hot at the point of impact
+		tracers.ttl[k]=tracers.life[k]=core?(0.16+Math.random()*0.10):(0.22+Math.random()*0.20);
+		if(core){ tracers.r[k]=1.0; tracers.g[k]=0.97; tracers.b[k]=0.88; }   // white-hot at the point of impact
 		else { tracers.r[k]=1.0; tracers.g[k]=0.5+Math.random()*0.3; tracers.b[k]=0.10; } } }   // amber sparks thrown off it
 function explosion_at(x,y,z){
 	audio_explosion(Math.hypot(x-ownship.pos.x,y-ownship.pos.y,z-ownship.pos.z)); for(let i=0;i<64;i++){ const k=pool_spawn(smoke); if(k<0) break;
