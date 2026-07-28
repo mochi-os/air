@@ -7,27 +7,27 @@
 // same way the root page is. It is a DESTINATION, not an overlay, so it has no
 // Close button: Back is how you leave a page.
 
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { Trans } from '@lingui/react/macro'
-import { ArrowLeft } from 'lucide-react'
-import { Button } from '@mochi/web/components/ui/button'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { BackButton } from '@mochi/web/components/layout/back-button'
 import { MatchHistory } from '../components/MatchHistory'
 import { recording } from '../game/engine'
 
 function History() {
+  const { t } = useLingui()
+  const navigate = useNavigate()
   return (
     <div className='bg-background min-h-screen overflow-auto p-6'>
       <div className='mx-auto w-full max-w-5xl'>
-        <div className='mb-4 flex items-center justify-between'>
+        {/* The SHARED back button, not a hand-rolled one: it returns to
+            wherever you came from, falls back to the menu on a deep link, and
+            knows that history.back() is a silent no-op inside the shell's
+            sandboxed iframe. A bespoke Link to '/' had none of that. */}
+        <div className='mb-4 flex items-center gap-3'>
+          <BackButton label={t`Back`} onFallback={() => void navigate({ to: '/' })} />
           <h2 className='text-2xl font-semibold tracking-tight'>
             <Trans>History</Trans>
           </h2>
-          <Button asChild type='button' variant='outline'>
-            <Link to='/'>
-              <ArrowLeft className='size-4' />
-              <Trans>Back</Trans>
-            </Link>
-          </Button>
         </div>
         <MatchHistory recording={recording} />
       </div>
