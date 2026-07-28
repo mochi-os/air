@@ -25,7 +25,7 @@ msgstr "{0, plural, one {# נבחר} two {# נבחרו} many {# נבחרו} othe
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:917
 msgid "{0} created “{1}”"
 msgstr "{0} יצר את “{1}”"
 
@@ -104,7 +104,7 @@ msgstr "הגישה נדחתה"
 msgid "Access Forbidden"
 msgstr "הגישה אסורה"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:192
+#: ../../../lib/web/src/features/access/access-list.tsx:197
 msgid "Access level"
 msgstr "רמת גישה"
 
@@ -124,8 +124,8 @@ msgstr "סוג חשבון"
 msgid "Account verified"
 msgstr "החשבון אומת"
 
-#: src/components/MissionSetup.tsx:1166
-#: src/components/MissionSetup.tsx:1539
+#: src/components/MissionSetup.tsx:1174
+#: src/components/MissionSetup.tsx:1547
 #: src/components/Multiplayer.tsx:378
 msgid "Ace"
 msgstr "אס"
@@ -135,6 +135,7 @@ msgstr "אס"
 msgid "Acquire target"
 msgstr "נעילת מטרה"
 
+#: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:196
 msgid "Add"
 msgstr "הוספה"
@@ -177,11 +178,15 @@ msgstr "הוסף להתראות קיימות"
 msgid "Add view"
 msgstr "הוסף תצוגה"
 
+#: ../../../lib/web/src/features/access/access-dialog.tsx:332
+msgid "Adding..."
+msgstr "מוסיף..."
+
 #: ../../../lib/web/src/components/config-drawer.tsx:71
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "התאם את המראה והפריסה להעדפותיך."
 
-#: src/components/MissionSetup.tsx:1373
+#: src/components/MissionSetup.tsx:1381
 msgid "Afterburner"
 msgstr "מבער אחורי"
 
@@ -190,11 +195,11 @@ msgid "AI"
 msgstr "AI"
 
 #: src/components/MissionSetup.tsx:407
-#: src/components/MissionSetup.tsx:1134
+#: src/components/MissionSetup.tsx:1142
 msgid "Aircraft"
 msgstr "מטוס"
 
-#: src/components/MissionSetup.tsx:754
+#: src/components/MissionSetup.tsx:756
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "נושאת מטוסים <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> מאת <1>Muhamad Mirza Arrafi</1> (Sketchfab), ברישיון <2>CC BY 4.0</2>. שונתה: שונה קנה המידה, כוונה מחדש, הוטבעה עד קו המים, ופושטה עבור הרשת."
 
@@ -217,6 +222,10 @@ msgstr "אירעה שגיאה"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "אירעה שגיאה בלתי צפויה"
+
+#: ../../../lib/web/src/features/access/access-list.tsx:45
+msgid "Anyone"
+msgstr "כל אחד"
 
 #: src/components/MissionSetup.tsx:123
 #: src/components/MissionSetup.tsx:152
@@ -244,6 +253,10 @@ msgstr "עולה"
 msgid "Ascending"
 msgstr "סדר עולה"
 
+#: ../../../lib/web/src/features/access/access-list.tsx:46
+msgid "Authenticated users"
+msgstr ""
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Authenticator code"
 msgstr "קוד אימות"
@@ -256,7 +269,7 @@ msgstr "צירים"
 msgid "Axis {i}"
 msgstr "ציר {i}"
 
-#: src/components/GameCanvas.tsx:314
+#: src/components/GameCanvas.tsx:317
 msgid "back"
 msgstr "אחורה"
 
@@ -270,7 +283,7 @@ msgstr "חזור"
 msgid "Back to home"
 msgstr "חזרה לבית"
 
-#: src/components/MissionSetup.tsx:1157
+#: src/components/MissionSetup.tsx:1165
 msgid "Bandit"
 msgstr "מטוס אויב"
 
@@ -315,7 +328,7 @@ msgstr "הגבר עניין"
 msgid "Bots"
 msgstr "בוטים"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:309
 msgid "brakes"
 msgstr "בלמים"
 
@@ -339,7 +352,7 @@ msgstr "כפתורים"
 msgid "CALL THE BALL"
 msgstr "הכרז על הכדור"
 
-#: src/components/MissionSetup.tsx:1441
+#: src/components/MissionSetup.tsx:1449
 #: src/components/Multiplayer.tsx:240
 msgid "Callsign"
 msgstr "אות קריאה"
@@ -354,7 +367,7 @@ msgstr "מרחק המצלמה"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:248
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
-#: ../../../lib/web/src/features/access/access-list.tsx:263
+#: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
@@ -368,31 +381,31 @@ msgstr "ביטול"
 msgid "Canopy"
 msgstr "חופה"
 
-#: src/components/MissionSetup.tsx:944
+#: src/components/MissionSetup.tsx:952
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1205
+#: src/components/MissionSetup.tsx:1213
 msgid "Case I (day)"
 msgstr "מקרה I (יום)"
 
-#: src/components/MissionSetup.tsx:945
+#: src/components/MissionSetup.tsx:953
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1206
+#: src/components/MissionSetup.tsx:1214
 msgid "Case II (weather)"
 msgstr "מקרה II (מזג אוויר)"
 
-#: src/components/MissionSetup.tsx:946
+#: src/components/MissionSetup.tsx:954
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1207
+#: src/components/MissionSetup.tsx:1215
 msgid "Case III (night)"
 msgstr "מקרה III (לילה)"
 
-#: src/components/MissionSetup.tsx:1213
+#: src/components/MissionSetup.tsx:1221
 msgid "Catapult"
 msgstr "מקלעת שיגור"
 
@@ -405,11 +418,11 @@ msgstr "קטגוריה עבור התראה זו"
 msgid "Change notification category"
 msgstr "שנה קטגוריית התראה"
 
-#: src/components/GameCanvas.tsx:311
+#: src/components/GameCanvas.tsx:314
 msgid "Chase view:"
 msgstr "תצוגת מרדף:"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:311
 msgid "chat"
 msgstr "צ'אט"
 
@@ -421,10 +434,14 @@ msgstr "צ'אט"
 msgid "Chat to everyone"
 msgstr "צ'אט לכולם"
 
-#: src/components/MatchHistory.tsx:189
-#: src/components/MissionSetup.tsx:1257
+#: src/components/MatchHistory.tsx:196
+#: src/components/MissionSetup.tsx:1265
 msgid "Cheats"
 msgstr "צ'יטים"
+
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:198
+msgid "Check \"All\" to see your past notifications."
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:328
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
@@ -496,11 +513,11 @@ msgstr "סגור פנל"
 msgid "Close search"
 msgstr "סגור חיפוש"
 
-#: src/components/GameCanvas.tsx:315
+#: src/components/GameCanvas.tsx:318
 msgid "closer"
 msgstr "קרוב יותר"
 
-#: src/components/MissionSetup.tsx:1241
+#: src/components/MissionSetup.tsx:1249
 msgid "Clouds"
 msgstr "עננים"
 
@@ -537,7 +554,7 @@ msgstr "מצומצם"
 msgid "Confirm"
 msgstr "אישור"
 
-#: src/components/MissionSetup.tsx:1054
+#: src/components/MissionSetup.tsx:1062
 msgid "Connect"
 msgstr "התחבר"
 
@@ -582,11 +599,11 @@ msgstr "לא ניתן היה ליצור את המשחק"
 msgid "Could not load this document. Please try again later."
 msgstr "לא ניתן היה לטעון מסמך זה. אנא נסה שוב מאוחר יותר."
 
-#: src/components/MatchHistory.tsx:203
+#: src/components/MatchHistory.tsx:210
 msgid "Could not save the recording"
 msgstr "לא ניתן היה לשמור את ההקלטה"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:899
 msgid "Could not send the message"
 msgstr "לא ניתן היה לשלוח את ההודעה"
 
@@ -614,8 +631,8 @@ msgstr "יצירה וטיסה"
 msgid "Create match"
 msgstr "יצירת משחק"
 
-#: src/components/MissionSetup.tsx:1577
-#: src/components/MissionSetup.tsx:1598
+#: src/components/MissionSetup.tsx:1586
+#: src/components/MissionSetup.tsx:1607
 msgid "Create mission"
 msgstr "צור משימה"
 
@@ -624,7 +641,7 @@ msgstr "צור משימה"
 msgid "Credits"
 msgstr "קרדיטים"
 
-#: src/components/MissionSetup.tsx:1248
+#: src/components/MissionSetup.tsx:1256
 #: src/components/Multiplayer.tsx:302
 msgid "Cumulus"
 msgstr "קומולוס"
@@ -660,17 +677,17 @@ msgstr "מצב כהה"
 msgid "Data conflict"
 msgstr "התנגשות נתונים"
 
-#: src/components/MatchHistory.tsx:150
+#: src/components/MatchHistory.tsx:157
 msgid "Date"
 msgstr "תאריך"
 
-#: src/components/MissionSetup.tsx:1236
+#: src/components/MissionSetup.tsx:1244
 #: src/components/Multiplayer.tsx:297
 msgid "Day"
 msgstr "יום"
 
-#: src/components/MatchHistory.tsx:139
-#: src/components/MatchHistory.tsx:165
+#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:172
 msgid "Deaths"
 msgstr "מיתות"
 
@@ -730,6 +747,10 @@ msgstr "מארח משחק אחר"
 msgid "Direction"
 msgstr "כיוון"
 
+#: ../../../lib/web/src/components/person-picker.tsx:214
+msgid "Directory"
+msgstr ""
+
 #: src/components/MissionSetup.tsx:259
 msgid "disconnected"
 msgstr "מנותק"
@@ -747,11 +768,11 @@ msgstr "סגור"
 msgid "Displays the mobile sidebar."
 msgstr "מציג את סרגל הצד למובייל."
 
-#: src/components/MissionSetup.tsx:1361
+#: src/components/MissionSetup.tsx:1369
 msgid "Distance LOD"
 msgstr "LOD לפי מרחק"
 
-#: src/components/MissionSetup.tsx:1679
+#: src/components/MissionSetup.tsx:1688
 msgid "Done"
 msgstr "בוצע"
 
@@ -764,7 +785,7 @@ msgstr "הורדה"
 msgid "Download failed"
 msgstr "ההורדה נכשלה"
 
-#: src/components/GameCanvas.tsx:313
+#: src/components/GameCanvas.tsx:316
 msgid "Drag"
 msgstr "גרירה"
 
@@ -772,7 +793,7 @@ msgstr "גרירה"
 msgid "Drone"
 msgstr "רחפן"
 
-#: src/components/MissionSetup.tsx:1355
+#: src/components/MissionSetup.tsx:1363
 msgid "Dynamic resolution"
 msgstr "רזולוציה דינמית"
 
@@ -847,11 +868,11 @@ msgstr "הרחבה"
 msgid "Expand sidebar"
 msgstr "הרחב סרגל צד"
 
-#: src/components/MissionSetup.tsx:1335
+#: src/components/MissionSetup.tsx:1343
 msgid "Exterior detail"
 msgstr "פירוט חיצוני"
 
-#: src/components/MissionSetup.tsx:1127
+#: src/components/MissionSetup.tsx:1135
 msgid "Extra aircraft"
 msgstr "מטוסים נוספים"
 
@@ -907,7 +928,7 @@ msgstr "סיים את העברת החשבון"
 msgid "Finished"
 msgstr "הסתיים"
 
-#: src/components/GameCanvas.tsx:302
+#: src/components/GameCanvas.tsx:305
 msgid "fire"
 msgstr "ירי"
 
@@ -919,13 +940,13 @@ msgstr "מקשים קבועים"
 msgid "FLAMEOUT"
 msgstr "כיבוי מנוע"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:307
 msgid "flares"
 msgstr "נורי תעתוע"
 
 #: src/components/MissionSetup.tsx:120
 #: src/components/MissionSetup.tsx:149
-#: src/components/MissionSetup.tsx:1391
+#: src/components/MissionSetup.tsx:1399
 msgid "Flares"
 msgstr "נורי תעתוע"
 
@@ -941,7 +962,7 @@ msgstr "שטוח"
 msgid "FLIGHT CORE FAILED"
 msgstr "ליבת הטיסה נכשלה"
 
-#: src/components/MatchHistory.tsx:129
+#: src/components/MatchHistory.tsx:137
 msgid "Flights"
 msgstr "טיסות"
 
@@ -953,23 +974,27 @@ msgstr "צף"
 msgid "Flown"
 msgstr "טס"
 
-#: src/components/MissionSetup.tsx:1571
-#: src/components/MissionSetup.tsx:1612
+#: src/components/MissionSetup.tsx:1580
+#: src/components/MissionSetup.tsx:1621
 msgid "Fly"
 msgstr "טוס"
 
-#: src/components/MissionSetup.tsx:1397
+#: src/components/MissionSetup.tsx:1405
 msgid "Framerate"
 msgstr "קצב פריימים"
 
 #: src/components/MatchHistory.tsx:84
-#: src/components/MissionSetup.tsx:1122
+#: src/components/MissionSetup.tsx:1130
 msgid "Free flight"
 msgstr "טיסה חופשית"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:63
 msgid "Friday"
 msgstr "שישי"
+
+#: ../../../lib/web/src/components/person-picker.tsx:207
+msgid "Friends"
+msgstr "חברים"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:153
 msgid "From"
@@ -984,7 +1009,7 @@ msgstr "מאת"
 msgid "From theme"
 msgstr "מערכת נושא"
 
-#: src/components/MissionSetup.tsx:1142
+#: src/components/MissionSetup.tsx:1150
 #: src/components/Multiplayer.tsx:312
 msgid "Fuel"
 msgstr "דלק"
@@ -1017,7 +1042,7 @@ msgstr "פריסה מלאה"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:308
 msgid "gear"
 msgstr "כן נסע"
 
@@ -1025,7 +1050,7 @@ msgstr "כן נסע"
 msgid "GEAR"
 msgstr "כן"
 
-#: src/components/MissionSetup.tsx:1621
+#: src/components/MissionSetup.tsx:1630
 msgid "General"
 msgstr "כללי"
 
@@ -1055,13 +1080,18 @@ msgstr "מעבר לעמוד {pageNumber}"
 msgid "Go to previous page"
 msgstr "עבור לדף הקודם"
 
-#: src/components/MissionSetup.tsx:1624
+#: src/components/MissionSetup.tsx:1633
 msgid "Graphics"
 msgstr "גרפיקה"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:162
 msgid "Group"
 msgstr "קבוצה"
+
+#. placeholder {0}: name || subject.slice(1)
+#: ../../../lib/web/src/features/access/access-list.tsx:68
+msgid "Group: {0}"
+msgstr ""
 
 #: src/components/GameCanvas.tsx:24
 msgid "GUN"
@@ -1080,17 +1110,17 @@ msgstr "הסתר"
 msgid "Hide password"
 msgstr "הסתרת הסיסמה"
 
-#: src/components/MissionSetup.tsx:1315
+#: src/components/MissionSetup.tsx:1323
 msgid "High"
 msgstr "גבוה"
 
-#: src/components/MissionSetup.tsx:1249
+#: src/components/MissionSetup.tsx:1257
 #: src/components/Multiplayer.tsx:303
 msgid "High stratus"
 msgstr "סטרטוס גבוה"
 
-#: src/components/MissionSetup.tsx:1589
-#: src/components/MissionSetup.tsx:1684
+#: src/components/MissionSetup.tsx:1598
+#: src/components/MissionSetup.tsx:1693
 msgid "History"
 msgstr "היסטוריה"
 
@@ -1101,7 +1131,7 @@ msgstr "היסטוריה"
 msgid "Home"
 msgstr "בית"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:308
 msgid "hook"
 msgstr "וו"
 
@@ -1130,8 +1160,8 @@ msgstr "מציג תמונות: {0}"
 msgid "Imperial"
 msgstr "אימפריאלי"
 
-#: src/components/MissionSetup.tsx:941
-#: src/components/MissionSetup.tsx:1202
+#: src/components/MissionSetup.tsx:949
+#: src/components/MissionSetup.tsx:1210
 msgid "In air"
 msgstr "באוויר"
 
@@ -1155,7 +1185,7 @@ msgstr "היפוך עלרוד"
 msgid "INVULNERABLE"
 msgstr "בלתי פגיע"
 
-#: src/components/MissionSetup.tsx:1262
+#: src/components/MissionSetup.tsx:1270
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "בלתי פגיע (שחקנים אנושיים בלבד)"
@@ -1168,8 +1198,8 @@ msgstr "נראה שהדף שאתה מחפש <0/>אינו קיים או שהוס�
 msgid "Join"
 msgstr "הצטרפות"
 
-#: src/components/MissionSetup.tsx:1024
-#: src/components/MissionSetup.tsx:1581
+#: src/components/MissionSetup.tsx:1032
+#: src/components/MissionSetup.tsx:1590
 msgid "Join server"
 msgstr "הצטרף לשרת"
 
@@ -1178,7 +1208,7 @@ msgid "JOINED"
 msgstr "הצטרף"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1544
+#: src/components/MissionSetup.tsx:1552
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
 msgstr "דו-קרב"
@@ -1187,19 +1217,19 @@ msgstr "דו-קרב"
 msgid "Joust — 1v1, first kill wins"
 msgstr "דו-קרב — 1v1, ההריגה הראשונה מנצחת"
 
-#: src/components/MissionSetup.tsx:1123
+#: src/components/MissionSetup.tsx:1131
 msgid "Joust against AI player"
 msgstr "דו-קרב נגד שחקן AI"
 
-#: src/components/MissionSetup.tsx:1630
+#: src/components/MissionSetup.tsx:1639
 msgid "Joystick"
 msgstr "ג'ויסטיק"
 
-#: src/components/MatchHistory.tsx:142
+#: src/components/MatchHistory.tsx:149
 msgid "K/D"
 msgstr "K/D"
 
-#: src/components/MissionSetup.tsx:1633
+#: src/components/MissionSetup.tsx:1642
 msgid "Keys"
 msgstr "מקשים"
 
@@ -1211,8 +1241,8 @@ msgstr "חיסול"
 msgid "Killed"
 msgstr "נהרג"
 
-#: src/components/MatchHistory.tsx:136
-#: src/components/MatchHistory.tsx:162
+#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:169
 msgid "Kills"
 msgstr "הריגות"
 
@@ -1247,7 +1277,7 @@ msgstr "מאוחר"
 msgid "Launch (catapult)"
 msgstr "שיגור (קטפולטה)"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:307
 msgid "launch / target"
 msgstr "שיגור / נעילה"
 
@@ -1264,7 +1294,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "מידע נוסף"
 
-#: src/components/MissionSetup.tsx:1074
+#: src/components/MissionSetup.tsx:1082
 msgid "Leave server"
 msgstr "עזוב את השרת"
 
@@ -1280,6 +1310,10 @@ msgstr "עזב"
 msgid "Left to Right"
 msgstr "משמאל לימין"
 
+#: ../../../lib/web/src/components/post-tags.tsx:72
+msgid "Letters, numbers, spaces, and hyphens only"
+msgstr ""
+
 #: src/components/GameCanvas.tsx:100
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "ישר ב־1200, גלגלים למטה"
@@ -1290,7 +1324,7 @@ msgstr "ישר ב־1200, גלגלים למטה"
 msgid "Light"
 msgstr "בהיר"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:308
 msgid "lights"
 msgstr "אורות"
 
@@ -1303,7 +1337,7 @@ msgstr "אורות"
 msgid "LIGHTS"
 msgstr "אורות"
 
-#: src/components/MissionSetup.tsx:1145
+#: src/components/MissionSetup.tsx:1153
 msgid "Load"
 msgstr "כמות"
 
@@ -1374,11 +1408,11 @@ msgstr "מבט ימינה"
 msgid "Look up"
 msgstr "מבט למעלה"
 
-#: src/components/MissionSetup.tsx:1311
+#: src/components/MissionSetup.tsx:1319
 msgid "Low"
 msgstr "נמוך"
 
-#: src/components/MissionSetup.tsx:1250
+#: src/components/MissionSetup.tsx:1258
 #: src/components/Multiplayer.tsx:304
 msgid "Low stratus"
 msgstr "סטרטוס נמוך"
@@ -1387,7 +1421,7 @@ msgstr "סטרטוס נמוך"
 msgid "M to close"
 msgstr "M לסגירה"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "מפה"
 
@@ -1409,16 +1443,16 @@ msgstr "ראשי"
 msgid "Match type"
 msgstr "סוג משחק"
 
-#: src/components/MissionSetup.tsx:1068
+#: src/components/MissionSetup.tsx:1076
 msgid "Matches"
 msgstr "משחקים"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1313
+#: src/components/MissionSetup.tsx:1321
 msgid "Medium"
 msgstr "בינוני"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:311
 msgid "menu"
 msgstr "תפריט"
 
@@ -1431,7 +1465,7 @@ msgstr "תפריט"
 msgid "Message everyone"
 msgstr "הודעה לכולם"
 
-#: src/components/MissionSetup.tsx:926
+#: src/components/MissionSetup.tsx:934
 msgid "Message players on this server"
 msgstr "שליחת הודעה לשחקנים בשרת הזה"
 
@@ -1443,7 +1477,7 @@ msgstr "הודעה לקבוצה שלך"
 msgid "Metric"
 msgstr "מטרי"
 
-#: src/components/MissionSetup.tsx:778
+#: src/components/MissionSetup.tsx:782
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "מפת אטול מידווי — התצלומים מכילים נתוני <0>Copernicus Sentinel-2</0> ששונו (2026); גאומטריית שדה התעופה (מסלול המראה, נתיבי הסעה, מדרכות חנייה) © תורמי <1>OpenStreetMap</1>, ברישיון <2>ODbL</2>; נתוני קו החוף והשונית מ־<3>NOAA NCCOS</3> (נחלת הכלל)."
 
@@ -1451,7 +1485,7 @@ msgstr "מפת אטול מידווי — התצלומים מכילים נתונ�
 msgid "MISSILE"
 msgstr "טיל"
 
-#: src/components/MissionSetup.tsx:1385
+#: src/components/MissionSetup.tsx:1393
 msgid "Missiles"
 msgstr "טילים"
 
@@ -1459,7 +1493,7 @@ msgstr "טילים"
 msgid "Missiles allowed"
 msgstr "טילים מותרים"
 
-#: src/components/MatchHistory.tsx:156
+#: src/components/MatchHistory.tsx:163
 msgid "Mode"
 msgstr "מצב"
 
@@ -1489,12 +1523,12 @@ msgstr "חדש"
 msgid "Next image"
 msgstr "התמונה הבאה"
 
-#: src/components/MissionSetup.tsx:1237
+#: src/components/MissionSetup.tsx:1245
 #: src/components/Multiplayer.tsx:298
 msgid "Night"
 msgstr "לילה"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:160
+#: ../../../lib/web/src/features/access/access-list.tsx:165
 msgid "No access rules configured. Add rules to control who can access this resource."
 msgstr "לא הוגדרו כללי גישה. הוסף כללים כדי לשלוט במי יכול לגשת למשאב זה."
 
@@ -1513,6 +1547,10 @@ msgstr "אין קבוצות זמינות"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "לא זוהה ג'ויסטיק — לחץ על כפתור כלשהו עליו כדי להעיר אותו."
+
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
+msgid "No notifications yet"
+msgstr ""
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1543,7 +1581,7 @@ msgstr "עדיין אין רשומת נושא — נסה שוב לאחר ההת�
 msgid "No users found"
 msgstr "לא נמצאו משתמשים"
 
-#: src/components/MissionSetup.tsx:903
+#: src/components/MissionSetup.tsx:911
 #: src/components/Multiplayer.tsx:418
 msgid "No world server."
 msgstr "אין שרת עולם."
@@ -1557,7 +1595,7 @@ msgstr "ללא ציון"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:315
 #: src/components/MissionSetup.tsx:369
-#: src/components/MissionSetup.tsx:1247
+#: src/components/MissionSetup.tsx:1255
 msgid "None"
 msgstr "ללא"
 
@@ -1577,7 +1615,7 @@ msgstr "לא נמצא"
 msgid "Not set"
 msgstr "לא הוגדר"
 
-#: src/components/MissionSetup.tsx:903
+#: src/components/MissionSetup.tsx:911
 msgid "Nothing yet — say hello."
 msgstr "עדיין אין כאן כלום — תגידו שלום."
 
@@ -1594,7 +1632,7 @@ msgstr "התראות"
 msgid "Notifications: {0}"
 msgstr "התראות: {0}"
 
-#: src/components/MissionSetup.tsx:1343
+#: src/components/MissionSetup.tsx:1351
 msgid "Ocean detail"
 msgstr "פירוט אוקיינוס"
 
@@ -1602,13 +1640,13 @@ msgstr "פירוט אוקיינוס"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:943
-#: src/components/MissionSetup.tsx:1204
+#: src/components/MissionSetup.tsx:951
+#: src/components/MissionSetup.tsx:1212
 msgid "On carrier"
 msgstr "על נושאת המטוסים"
 
-#: src/components/MissionSetup.tsx:942
-#: src/components/MissionSetup.tsx:1203
+#: src/components/MissionSetup.tsx:950
+#: src/components/MissionSetup.tsx:1211
 msgid "On runway"
 msgstr "על המסלול"
 
@@ -1634,6 +1672,10 @@ msgstr "פתח פעולות חשבון"
 msgid "Open actions"
 msgstr "פתיחת פעולות"
 
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:133
+msgid "Open menu"
+msgstr "פתח תפריט"
+
 #: ../../../lib/web/src/components/layout/top-bar.tsx:63
 #: ../../../lib/web/src/components/layout/top-bar.tsx:68
 msgid "Open navigation"
@@ -1649,11 +1691,11 @@ msgstr "פתח תפריט ניווט"
 msgid "Open theme settings"
 msgstr "פתח הגדרות ערכת נושא"
 
-#: src/components/GameCanvas.tsx:313
+#: src/components/GameCanvas.tsx:316
 msgid "or"
 msgstr "או"
 
-#: src/components/GameCanvas.tsx:313
+#: src/components/GameCanvas.tsx:316
 msgid "orbit"
 msgstr "הקפה"
 
@@ -1661,7 +1703,7 @@ msgstr "הקפה"
 msgid "Other"
 msgstr "אחר"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:217
+#: ../../../lib/web/src/features/access/access-list.tsx:222
 msgid "Owner"
 msgstr "בעלים"
 
@@ -1682,14 +1724,14 @@ msgstr "אימות מפתח הגישה נכשל. נסה שוב."
 msgid "Passkeys"
 msgstr "מפתחות גישה"
 
-#: src/components/MissionSetup.tsx:845
+#: src/components/MissionSetup.tsx:853
 #: src/components/Multiplayer.tsx:90
 #: src/components/Multiplayer.tsx:245
 msgid "pilot"
 msgstr "טייס"
 
-#: src/components/MissionSetup.tsx:1164
-#: src/components/MissionSetup.tsx:1537
+#: src/components/MissionSetup.tsx:1172
+#: src/components/MissionSetup.tsx:1545
 #: src/components/Multiplayer.tsx:376
 msgid "Pilot"
 msgstr "טייס"
@@ -1698,7 +1740,7 @@ msgstr "טייס"
 msgid "PILOT DOWN"
 msgstr "טייס נהרג"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:303
 msgid "pitch"
 msgstr "עלרוד"
 
@@ -1718,7 +1760,7 @@ msgstr "חרטום למעלה"
 msgid "PLATFORM"
 msgstr "פלטפורמה"
 
-#: src/components/MatchHistory.tsx:159
+#: src/components/MatchHistory.tsx:166
 msgid "Players"
 msgstr "שחקנים"
 
@@ -1739,7 +1781,7 @@ msgstr "אנא נסה שוב."
 msgid "Please wait a moment and try again."
 msgstr "יש להמתין מעט ולנסות שוב."
 
-#: src/components/MissionSetup.tsx:1298
+#: src/components/MissionSetup.tsx:1306
 msgid "Preset"
 msgstr "הגדרה מראש"
 
@@ -1769,6 +1811,10 @@ msgstr "פרטיות"
 #: ../../../lib/web/src/components/profile-dropdown.tsx:114
 msgid "Profile"
 msgstr "פרופיל"
+
+#: ../../../lib/web/src/components/person-picker.tsx:200
+msgid "Project members"
+msgstr ""
 
 #: src/components/GameCanvas.tsx:95
 msgid "PUSH TIME"
@@ -1802,7 +1848,7 @@ msgstr "רשמו מחדש את מפתחות הגישה שלכם בשרת הזה"
 msgid "REARMED"
 msgstr "חומש מחדש"
 
-#: src/components/MissionSetup.tsx:1029
+#: src/components/MissionSetup.tsx:1037
 msgid "Recent"
 msgstr "אחרונים"
 
@@ -1811,16 +1857,16 @@ msgstr "אחרונים"
 msgid "Recommended"
 msgstr "מומלץ"
 
-#: src/components/MissionSetup.tsx:1459
+#: src/components/MissionSetup.tsx:1467
 msgid "Record flights"
 msgstr "הקלטת טיסות"
 
-#: src/components/MatchHistory.tsx:208
-#: src/components/MissionSetup.tsx:1453
+#: src/components/MatchHistory.tsx:215
+#: src/components/MissionSetup.tsx:1461
 msgid "Recording"
 msgstr "הקלטה"
 
-#: src/components/MatchHistory.tsx:202
+#: src/components/MatchHistory.tsx:209
 msgid "Recording saved"
 msgstr "ההקלטה נשמרה"
 
@@ -1865,22 +1911,22 @@ msgstr "יחסי (5 דקות, 3 שעות, 2 ימים)"
 msgid "Relative within 24 hours, else absolute"
 msgstr "יחסי בתוך 24 שעות, אחרת מוחלט"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:265
+#: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
 msgstr "הסר"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:247
-#: ../../../lib/web/src/features/access/access-list.tsx:253
+#: ../../../lib/web/src/features/access/access-list.tsx:252
+#: ../../../lib/web/src/features/access/access-list.tsx:258
 msgid "Remove access rule"
 msgstr "הסר כלל גישה"
 
 #. placeholder {0}: formatSubject(subject, data.name)
-#: ../../../lib/web/src/features/access/access-list.tsx:259
+#: ../../../lib/web/src/features/access/access-list.tsx:264
 msgid "Remove access rule for \"{0}\"?"
 msgstr "להסיר את כלל הגישה עבור \"{0}\"?"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:257
+#: ../../../lib/web/src/features/access/access-list.tsx:262
 msgid "Remove access?"
 msgstr "להסיר גישה?"
 
@@ -1889,7 +1935,7 @@ msgstr "להסיר גישה?"
 msgid "Remove interest"
 msgstr "הסר עניין"
 
-#: src/components/MissionSetup.tsx:812
+#: src/components/MissionSetup.tsx:819
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "רינדור באמצעות <0>three.js</0> (רישיון MIT)."
 
@@ -1899,7 +1945,7 @@ msgstr "שלח את האימייל שוב"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1672
+#: src/components/MissionSetup.tsx:1681
 msgid "Reset"
 msgstr "אפס"
 
@@ -1907,15 +1953,15 @@ msgstr "אפס"
 msgid "Reset all settings to default values"
 msgstr "אפס את כל ההגדרות לערכי ברירת המחדל"
 
-#: src/components/MissionSetup.tsx:1325
+#: src/components/MissionSetup.tsx:1333
 msgid "Resolution"
 msgstr "פתרון"
 
-#: src/components/MissionSetup.tsx:1563
+#: src/components/MissionSetup.tsx:1572
 msgid "Restart mission"
 msgstr "הפעל משימה מחדש"
 
-#: src/components/MatchHistory.tsx:168
+#: src/components/MatchHistory.tsx:175
 msgid "Result"
 msgstr "תוצאה"
 
@@ -1923,7 +1969,7 @@ msgstr "תוצאה"
 msgid "Resume"
 msgstr "המשך"
 
-#: src/components/MissionSetup.tsx:1559
+#: src/components/MissionSetup.tsx:1568
 msgid "Resume mission"
 msgstr "המשך משימה"
 
@@ -1939,7 +1985,7 @@ msgstr "הפוך"
 msgid "Right to Left"
 msgstr "מימין לשמאל"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:304
 msgid "roll"
 msgstr "גלגול"
 
@@ -1955,8 +2001,8 @@ msgstr "גלגול שמאלה"
 msgid "Roll right"
 msgstr "גלגול ימינה"
 
-#: src/components/MissionSetup.tsx:1163
-#: src/components/MissionSetup.tsx:1536
+#: src/components/MissionSetup.tsx:1171
+#: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:375
 msgid "Rookie"
 msgstr "טירון"
@@ -2053,7 +2099,7 @@ msgstr "נבחרו"
 msgid "Selected: <0>{0}</0>"
 msgstr "נבחר: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:933
+#: src/components/MissionSetup.tsx:941
 msgid "Send"
 msgstr "שליחה"
 
@@ -2073,12 +2119,12 @@ msgstr "שלח אימייל"
 msgid "Serif"
 msgstr "סריף"
 
-#: src/components/MatchHistory.tsx:153
-#: src/components/MissionSetup.tsx:1042
+#: src/components/MatchHistory.tsx:160
+#: src/components/MissionSetup.tsx:1050
 msgid "Server"
 msgstr "שרת"
 
-#: src/components/MissionSetup.tsx:898
+#: src/components/MissionSetup.tsx:906
 msgid "Server chat"
 msgstr "צ'אט השרת"
 
@@ -2114,12 +2160,12 @@ msgstr "קבע מקור ויעד"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1585
-#: src/components/MissionSetup.tsx:1617
+#: src/components/MissionSetup.tsx:1594
+#: src/components/MissionSetup.tsx:1626
 msgid "Settings"
 msgstr "הגדרות"
 
-#: src/components/MissionSetup.tsx:1367
+#: src/components/MissionSetup.tsx:1375
 msgid "Shadows"
 msgstr "צללים"
 
@@ -2160,7 +2206,7 @@ msgid "Small"
 msgstr "קטן"
 
 #: src/components/MissionSetup.tsx:425
-#: src/components/MissionSetup.tsx:1627
+#: src/components/MissionSetup.tsx:1636
 msgid "Sound"
 msgstr "צליל"
 
@@ -2172,7 +2218,7 @@ msgstr "מרווח"
 msgid "SPD BK"
 msgstr "בל\"א"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:309
 msgid "speed brake"
 msgstr "בלם אוויר"
 
@@ -2198,7 +2244,7 @@ msgstr "הזדקרות, נקי (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "הזדקרות, תצורת נחיתה (Vs0)"
 
-#: src/components/MissionSetup.tsx:1176
+#: src/components/MissionSetup.tsx:1184
 msgid "Start"
 msgstr "התחל"
 
@@ -2218,7 +2264,7 @@ msgstr "טיפוס תלול ביותר (Vx, מבער אחורי)"
 msgid "STRUCTURE"
 msgstr "מבנה"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:191
+#: ../../../lib/web/src/features/access/access-list.tsx:196
 msgid "Subject"
 msgstr "נושא"
 
@@ -2241,6 +2287,14 @@ msgstr "מפה טקטית"
 msgid "Tag"
 msgstr "תגית"
 
+#: ../../../lib/web/src/components/post-tags.tsx:76
+msgid "Tag already exists"
+msgstr "התגית כבר קיימת"
+
+#: ../../../lib/web/src/components/post-tags.tsx:68
+msgid "Tag must be 50 characters or less"
+msgstr ""
+
 #: ../../../lib/web/src/components/post-tags.tsx:101
 #: ../../../lib/web/src/components/post-tags.tsx:115
 msgid "Tags"
@@ -2250,7 +2304,7 @@ msgstr "תגיות"
 msgid "TALLY"
 msgstr "רואה את האויב"
 
-#: src/components/MissionSetup.tsx:1116
+#: src/components/MissionSetup.tsx:1124
 msgid "Task"
 msgstr "מטלה"
 
@@ -2312,7 +2366,7 @@ msgstr "הלובי הזה שולח את חיבור המשחק שלך למארח 
 msgid "This page has not been created yet."
 msgstr "הדף הזה עדיין לא נוצר."
 
-#: src/components/GameCanvas.tsx:302
+#: src/components/GameCanvas.tsx:305
 msgid "throttle"
 msgstr "מצערת"
 
@@ -2336,15 +2390,15 @@ msgstr "יום חמישי"
 msgid "Tightest sustained turn speed"
 msgstr "מהירות פנייה מתמשכת הדוקה ביותר"
 
-#: src/components/GameCanvas.tsx:314
+#: src/components/GameCanvas.tsx:317
 msgid "tilt"
 msgstr "הטיה"
 
-#: src/components/MatchHistory.tsx:132
+#: src/components/MatchHistory.tsx:140
 msgid "Time"
 msgstr "זמן"
 
-#: src/components/MissionSetup.tsx:1230
+#: src/components/MissionSetup.tsx:1238
 msgid "Time of day"
 msgstr "שעת היום"
 
@@ -2391,7 +2445,7 @@ msgstr "יותר מדי בקשות"
 msgid "Top"
 msgstr "ראש"
 
-#: src/components/MissionSetup.tsx:1379
+#: src/components/MissionSetup.tsx:1387
 msgid "Tracers"
 msgstr "כדורים נתבים"
 
@@ -2426,7 +2480,7 @@ msgstr "הקלד לחיפוש משתמשים"
 msgid "Type to search..."
 msgstr "הקלד לחיפוש..."
 
-#: src/components/MissionSetup.tsx:1317
+#: src/components/MissionSetup.tsx:1325
 msgid "Ultra"
 msgstr "אולטרה"
 
@@ -2451,12 +2505,12 @@ msgstr "גישה לא מורשית"
 msgid "United States"
 msgstr "ארצות הברית"
 
-#: src/components/MissionSetup.tsx:1268
+#: src/components/MissionSetup.tsx:1276
 #: src/components/Multiplayer.tsx:351
 msgid "Unlimited ammunition"
 msgstr "תחמושת אינסופית"
 
-#: src/components/MissionSetup.tsx:1274
+#: src/components/MissionSetup.tsx:1282
 #: src/components/Multiplayer.tsx:361
 msgid "Unlimited fuel"
 msgstr "דלק אינסופי"
@@ -2469,6 +2523,7 @@ msgstr "לא מאומת"
 msgid "Use your passkey"
 msgstr "השתמש במפתח הגישה שלך"
 
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:86
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
 msgstr "משתמש"
@@ -2499,8 +2554,8 @@ msgstr "אמת כתובת אימייל"
 msgid "Vertical"
 msgstr "אנכי"
 
-#: src/components/MissionSetup.tsx:1165
-#: src/components/MissionSetup.tsx:1538
+#: src/components/MissionSetup.tsx:1173
+#: src/components/MissionSetup.tsx:1546
 #: src/components/Multiplayer.tsx:377
 msgid "Veteran"
 msgstr "ותיק"
@@ -2518,7 +2573,7 @@ msgstr "תמונה ממוזערת של הסרטון"
 msgid "Video viewer: {0}"
 msgstr "מציג וידאו: {0}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:310
 msgid "view"
 msgstr "תצוגה"
 
@@ -2556,7 +2611,11 @@ msgstr "שלחנו קוד אימות אל <0>{0}</0>. הזן את הקוד למ�
 msgid "We'll be back online shortly."
 msgstr "נחזור להיות מקוונים בקרוב."
 
-#: src/components/GameCanvas.tsx:303
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:197
+msgid "We'll notify you when something important happens."
+msgstr ""
+
+#: src/components/GameCanvas.tsx:306
 msgid "weapon"
 msgstr "חימוש"
 
@@ -2598,12 +2657,12 @@ msgstr "מנצח"
 msgid "World server"
 msgstr "שרת עולם"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:899
 #: src/components/Multiplayer.tsx:103
 msgid "World server not reachable"
 msgstr "לא ניתן להגיע לשרת העולם"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:304
 msgid "yaw"
 msgstr "סבסוב"
 
@@ -2630,6 +2689,10 @@ msgstr "אין לך גישה לאזור זה."
 #: ../../../lib/web/src/features/errors/forbidden.tsx:18
 msgid "You don't have necessary permission <0/>to view this resource."
 msgstr "אין לך את ההרשאה הנדרשת <0/>כדי להציג את המשאב הזה."
+
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
+msgid "You're all caught up!"
+msgstr ""
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

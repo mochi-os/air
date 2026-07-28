@@ -71,6 +71,48 @@ describe('acmi', () => {
     expect(text).toContain('Doctrine=defense')
   })
 
+  it('writes the standard flight-data properties TacView graphs', () => {
+    const text = acmi(
+      [{ time: 0, objects: [jet({ data: { aoa: 8.1, g: 1.02, tas: 220, ias: 205, mach: 0.64 } })] }],
+      new Date('2026-07-27T14:32:00Z'),
+      'Joust'
+    )
+    expect(text).toContain('AOA=8.1')
+    expect(text).toContain('G=1.02')
+    expect(text).toContain('TAS=220')
+    expect(text).toContain('IAS=205')
+    expect(text).toContain('Mach=0.64')
+  })
+
+  it('repeats flight data every sample — it is not identity, it changes', () => {
+    const text = acmi(
+      [
+        { time: 0, objects: [jet({ data: { aoa: 8.1 } })] },
+        { time: 0.1, objects: [jet({ data: { aoa: 9.4 } })] },
+      ],
+      new Date('2026-07-27T14:32:00Z'),
+      'Joust'
+    )
+    expect(text).toContain('AOA=8.1')
+    expect(text).toContain('AOA=9.4')
+  })
+
+  it('carries the control-law channels when a developer build supplies them', () => {
+    const text = acmi(
+      [{ time: 0, objects: [jet({ data: { stick: -0.42, stabilator: 3.75 } })] }],
+      new Date(),
+      'Joust'
+    )
+    expect(text).toContain('Stick=-0.42')
+    expect(text).toContain('Stabilator=3.75')
+  })
+
+  it('omits flight data entirely when none is supplied', () => {
+    const text = acmi([{ time: 0, objects: [jet()] }], new Date(), 'Joust')
+    expect(text).not.toContain('AOA=')
+    expect(text).not.toContain('Stick=')
+  })
+
   it('omits the doctrine channel when absent (shipped builds)', () => {
     const text = acmi([{ time: 0, objects: [jet()] }], new Date(), 'Joust')
     expect(text).not.toContain('Doctrine=')

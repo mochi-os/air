@@ -14,11 +14,16 @@ def database_create():
 	# dedup atomic (insert ... on conflict do nothing) instead of a racy check-
 	# then-insert.
 	mochi.db.execute("create unique index if not exists matches_replay on matches(world, session, started)")
-	mochi.db.execute("create table if not exists telemetry (name text not null primary key, value text not null, created integer not null)")
 
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
+	if version == 6:
+		# The dev CSV telemetry is gone (#216): the flight recorder now carries
+		# the same channels as standard ACMI properties, which TacView graphs,
+		# so the table had nothing left to hold. Dropped rather than orphaned.
+		mochi.db.execute("drop table if exists telemetry")
+
 	if version == 5:
 		# Atomic match dedup (#191 review): the check-then-insert could let two
 		# concurrent retries both pass the existence check and insert duplicates.
@@ -120,20 +125,3 @@ def match_list(a):
 	totals = mochi.db.row("select count(*) as flights, sum(ended - started) / 1000 as seconds, sum(kills) as kills, sum(deaths) as deaths, sum(cheated) as cheated from matches")
 	return {"data": {"matches": matches, "totals": totals}}
 
-def telemetry_save(a):
-	# Development telemetry sink (Shift+T): browser downloads don't work from
-	# the sandboxed shell, so the client posts the CSV here instead.
-	# Authenticated only — as a public class-level action this ran as the
-	# app's FIRST ADMINISTRATOR, so any anonymous caller could write ~1MB
-	# rows into the admin's settings table (the public-runs-as-owner trap).
-	if not a.user or not a.user.identity.id:
-		a.error.label(401, "errors.not_logged_in")
-		return
-	data = a.input("data", "")[:2000000]
-	now = mochi.time.now()
-	# A uid key, not "telemetry-" + timestamp: two saves within the same second
-	# collided on the primary key and raised an unhandled DB error. `created`
-	# still carries the time for ordering.
-	name = mochi.uid()
-	mochi.db.execute("insert into telemetry (name, value, created) values (?, ?, ?)", name, data, now)
-	return {"data": {"name": name, "rows": len(data.split("\n"))}}

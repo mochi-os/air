@@ -25,7 +25,7 @@ msgstr "{0, plural, one {# изабрано} few {# изабрана} other {# �
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:917
 msgid "{0} created “{1}”"
 msgstr "{0} је направио „{1}”"
 
@@ -104,7 +104,7 @@ msgstr "Приступ одбијен"
 msgid "Access Forbidden"
 msgstr "Приступ забрањен"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:192
+#: ../../../lib/web/src/features/access/access-list.tsx:197
 msgid "Access level"
 msgstr "Ниво приступа"
 
@@ -124,8 +124,8 @@ msgstr "Тип налога"
 msgid "Account verified"
 msgstr "Налог верификован"
 
-#: src/components/MissionSetup.tsx:1166
-#: src/components/MissionSetup.tsx:1539
+#: src/components/MissionSetup.tsx:1174
+#: src/components/MissionSetup.tsx:1547
 #: src/components/Multiplayer.tsx:378
 msgid "Ace"
 msgstr "Ас"
@@ -135,6 +135,7 @@ msgstr "Ас"
 msgid "Acquire target"
 msgstr "Закључај мету"
 
+#: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:196
 msgid "Add"
 msgstr "Додај"
@@ -177,11 +178,15 @@ msgstr "Додај постојећим обавештењима"
 msgid "Add view"
 msgstr "Додај приказ"
 
+#: ../../../lib/web/src/features/access/access-dialog.tsx:332
+msgid "Adding..."
+msgstr "Додавање..."
+
 #: ../../../lib/web/src/components/config-drawer.tsx:71
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Прилагодите изглед и распоред према вашим жељама."
 
-#: src/components/MissionSetup.tsx:1373
+#: src/components/MissionSetup.tsx:1381
 msgid "Afterburner"
 msgstr "Допунско сагоревање"
 
@@ -190,11 +195,11 @@ msgid "AI"
 msgstr "AI"
 
 #: src/components/MissionSetup.tsx:407
-#: src/components/MissionSetup.tsx:1134
+#: src/components/MissionSetup.tsx:1142
 msgid "Aircraft"
 msgstr "Авион"
 
-#: src/components/MissionSetup.tsx:754
+#: src/components/MissionSetup.tsx:756
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Носач авиона <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> аутора <1>Muhamad Mirza Arrafi</1> (Sketchfab), лиценцирано под <2>CC BY 4.0</2>. Измењено: промењена размера, промењена оријентација, потопљено до водене линије и поједностављено за веб."
 
@@ -217,6 +222,10 @@ msgstr "Дошло је до грешке"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "Дошло је до неочекиване грешке"
+
+#: ../../../lib/web/src/features/access/access-list.tsx:45
+msgid "Anyone"
+msgstr "Било ко"
 
 #: src/components/MissionSetup.tsx:123
 #: src/components/MissionSetup.tsx:152
@@ -244,6 +253,10 @@ msgstr "Раст."
 msgid "Ascending"
 msgstr "Растуће"
 
+#: ../../../lib/web/src/features/access/access-list.tsx:46
+msgid "Authenticated users"
+msgstr ""
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Authenticator code"
 msgstr "Authenticator код"
@@ -256,7 +269,7 @@ msgstr "Осе"
 msgid "Axis {i}"
 msgstr "Оса {i}"
 
-#: src/components/GameCanvas.tsx:314
+#: src/components/GameCanvas.tsx:317
 msgid "back"
 msgstr "назад"
 
@@ -270,7 +283,7 @@ msgstr "Назад"
 msgid "Back to home"
 msgstr "Назад на почетну"
 
-#: src/components/MissionSetup.tsx:1157
+#: src/components/MissionSetup.tsx:1165
 msgid "Bandit"
 msgstr "Бандит"
 
@@ -315,7 +328,7 @@ msgstr "Појачај интересовање"
 msgid "Bots"
 msgstr "Ботови"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:309
 msgid "brakes"
 msgstr "кочнице"
 
@@ -339,7 +352,7 @@ msgstr "Дугмад"
 msgid "CALL THE BALL"
 msgstr "ЈАВИ ЛОПТУ"
 
-#: src/components/MissionSetup.tsx:1441
+#: src/components/MissionSetup.tsx:1449
 #: src/components/Multiplayer.tsx:240
 msgid "Callsign"
 msgstr "Позивни знак"
@@ -354,7 +367,7 @@ msgstr "Удаљеност камере"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:248
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
-#: ../../../lib/web/src/features/access/access-list.tsx:263
+#: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
@@ -368,31 +381,31 @@ msgstr "Откажи"
 msgid "Canopy"
 msgstr "Поклопац кабине"
 
-#: src/components/MissionSetup.tsx:944
+#: src/components/MissionSetup.tsx:952
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1205
+#: src/components/MissionSetup.tsx:1213
 msgid "Case I (day)"
 msgstr "Случај I (дан)"
 
-#: src/components/MissionSetup.tsx:945
+#: src/components/MissionSetup.tsx:953
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1206
+#: src/components/MissionSetup.tsx:1214
 msgid "Case II (weather)"
 msgstr "Случај II (време)"
 
-#: src/components/MissionSetup.tsx:946
+#: src/components/MissionSetup.tsx:954
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1207
+#: src/components/MissionSetup.tsx:1215
 msgid "Case III (night)"
 msgstr "Случај III (ноћ)"
 
-#: src/components/MissionSetup.tsx:1213
+#: src/components/MissionSetup.tsx:1221
 msgid "Catapult"
 msgstr "Катапулт"
 
@@ -405,11 +418,11 @@ msgstr "Категорија за ово обавештење"
 msgid "Change notification category"
 msgstr "Промени категорију обавештења"
 
-#: src/components/GameCanvas.tsx:311
+#: src/components/GameCanvas.tsx:314
 msgid "Chase view:"
 msgstr "Поглед праћења:"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:311
 msgid "chat"
 msgstr "чет"
 
@@ -421,10 +434,14 @@ msgstr "Разговор"
 msgid "Chat to everyone"
 msgstr "Чет са свима"
 
-#: src/components/MatchHistory.tsx:189
-#: src/components/MissionSetup.tsx:1257
+#: src/components/MatchHistory.tsx:196
+#: src/components/MissionSetup.tsx:1265
 msgid "Cheats"
 msgstr "Читови"
+
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:198
+msgid "Check \"All\" to see your past notifications."
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:328
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
@@ -496,11 +513,11 @@ msgstr "Затвори панел"
 msgid "Close search"
 msgstr "Затвори претрагу"
 
-#: src/components/GameCanvas.tsx:315
+#: src/components/GameCanvas.tsx:318
 msgid "closer"
 msgstr "ближе"
 
-#: src/components/MissionSetup.tsx:1241
+#: src/components/MissionSetup.tsx:1249
 msgid "Clouds"
 msgstr "Облаци"
 
@@ -537,7 +554,7 @@ msgstr "Компактно"
 msgid "Confirm"
 msgstr "Потврди"
 
-#: src/components/MissionSetup.tsx:1054
+#: src/components/MissionSetup.tsx:1062
 msgid "Connect"
 msgstr "Повежи"
 
@@ -582,11 +599,11 @@ msgstr "Није могуће направити меч"
 msgid "Could not load this document. Please try again later."
 msgstr "Није могуће учитати овај документ. Покушајте поново касније."
 
-#: src/components/MatchHistory.tsx:203
+#: src/components/MatchHistory.tsx:210
 msgid "Could not save the recording"
 msgstr "Није могуће сачувати снимак"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:899
 msgid "Could not send the message"
 msgstr "Слање поруке није успело"
 
@@ -614,8 +631,8 @@ msgstr "Направи и полети"
 msgid "Create match"
 msgstr "Направи меч"
 
-#: src/components/MissionSetup.tsx:1577
-#: src/components/MissionSetup.tsx:1598
+#: src/components/MissionSetup.tsx:1586
+#: src/components/MissionSetup.tsx:1607
 msgid "Create mission"
 msgstr "Направи мисију"
 
@@ -624,7 +641,7 @@ msgstr "Направи мисију"
 msgid "Credits"
 msgstr "Заслуге"
 
-#: src/components/MissionSetup.tsx:1248
+#: src/components/MissionSetup.tsx:1256
 #: src/components/Multiplayer.tsx:302
 msgid "Cumulus"
 msgstr "Кумулус"
@@ -660,17 +677,17 @@ msgstr "Тамни режим"
 msgid "Data conflict"
 msgstr "Конфликт података"
 
-#: src/components/MatchHistory.tsx:150
+#: src/components/MatchHistory.tsx:157
 msgid "Date"
 msgstr "Датум"
 
-#: src/components/MissionSetup.tsx:1236
+#: src/components/MissionSetup.tsx:1244
 #: src/components/Multiplayer.tsx:297
 msgid "Day"
 msgstr "Дан"
 
-#: src/components/MatchHistory.tsx:139
-#: src/components/MatchHistory.tsx:165
+#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:172
 msgid "Deaths"
 msgstr "Смрти"
 
@@ -730,6 +747,10 @@ msgstr "Други домаћин игре"
 msgid "Direction"
 msgstr "Смер"
 
+#: ../../../lib/web/src/components/person-picker.tsx:214
+msgid "Directory"
+msgstr ""
+
 #: src/components/MissionSetup.tsx:259
 msgid "disconnected"
 msgstr "није повезан"
@@ -747,11 +768,11 @@ msgstr "Одбаци"
 msgid "Displays the mobile sidebar."
 msgstr "Приказује мобилну бочну траку."
 
-#: src/components/MissionSetup.tsx:1361
+#: src/components/MissionSetup.tsx:1369
 msgid "Distance LOD"
 msgstr "LOD удаљености"
 
-#: src/components/MissionSetup.tsx:1679
+#: src/components/MissionSetup.tsx:1688
 msgid "Done"
 msgstr "Готово"
 
@@ -764,7 +785,7 @@ msgstr "Преузми"
 msgid "Download failed"
 msgstr "Преузимање није успело"
 
-#: src/components/GameCanvas.tsx:313
+#: src/components/GameCanvas.tsx:316
 msgid "Drag"
 msgstr "Превуци"
 
@@ -772,7 +793,7 @@ msgstr "Превуци"
 msgid "Drone"
 msgstr "Дрон"
 
-#: src/components/MissionSetup.tsx:1355
+#: src/components/MissionSetup.tsx:1363
 msgid "Dynamic resolution"
 msgstr "Динамичка резолуција"
 
@@ -847,11 +868,11 @@ msgstr "Прошири"
 msgid "Expand sidebar"
 msgstr "Прошири бочну траку"
 
-#: src/components/MissionSetup.tsx:1335
+#: src/components/MissionSetup.tsx:1343
 msgid "Exterior detail"
 msgstr "Детаљи спољашњости"
 
-#: src/components/MissionSetup.tsx:1127
+#: src/components/MissionSetup.tsx:1135
 msgid "Extra aircraft"
 msgstr "Додатни авиони"
 
@@ -907,7 +928,7 @@ msgstr "Завршите премештање налога"
 msgid "Finished"
 msgstr "Завршено"
 
-#: src/components/GameCanvas.tsx:302
+#: src/components/GameCanvas.tsx:305
 msgid "fire"
 msgstr "паљба"
 
@@ -919,13 +940,13 @@ msgstr "Фиксни тастери"
 msgid "FLAMEOUT"
 msgstr "ГАШЕЊЕ"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:307
 msgid "flares"
 msgstr "светлице"
 
 #: src/components/MissionSetup.tsx:120
 #: src/components/MissionSetup.tsx:149
-#: src/components/MissionSetup.tsx:1391
+#: src/components/MissionSetup.tsx:1399
 msgid "Flares"
 msgstr "Бакље"
 
@@ -941,7 +962,7 @@ msgstr "Равно"
 msgid "FLIGHT CORE FAILED"
 msgstr "ОТКАЗ ЛЕТНОГ ЈЕЗГРА"
 
-#: src/components/MatchHistory.tsx:129
+#: src/components/MatchHistory.tsx:137
 msgid "Flights"
 msgstr "Летови"
 
@@ -953,23 +974,27 @@ msgstr "Плутајуће"
 msgid "Flown"
 msgstr "Одлетано"
 
-#: src/components/MissionSetup.tsx:1571
-#: src/components/MissionSetup.tsx:1612
+#: src/components/MissionSetup.tsx:1580
+#: src/components/MissionSetup.tsx:1621
 msgid "Fly"
 msgstr "Полети"
 
-#: src/components/MissionSetup.tsx:1397
+#: src/components/MissionSetup.tsx:1405
 msgid "Framerate"
 msgstr "Број кадрова"
 
 #: src/components/MatchHistory.tsx:84
-#: src/components/MissionSetup.tsx:1122
+#: src/components/MissionSetup.tsx:1130
 msgid "Free flight"
 msgstr "Слободан лет"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:63
 msgid "Friday"
 msgstr "Петак"
+
+#: ../../../lib/web/src/components/person-picker.tsx:207
+msgid "Friends"
+msgstr "Пријатељи"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:153
 msgid "From"
@@ -984,7 +1009,7 @@ msgstr "Од"
 msgid "From theme"
 msgstr "Из теме"
 
-#: src/components/MissionSetup.tsx:1142
+#: src/components/MissionSetup.tsx:1150
 #: src/components/Multiplayer.tsx:312
 msgid "Fuel"
 msgstr "Гориво"
@@ -1017,7 +1042,7 @@ msgstr "Пуни распоред"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:308
 msgid "gear"
 msgstr "Стајни трап"
 
@@ -1025,7 +1050,7 @@ msgstr "Стајни трап"
 msgid "GEAR"
 msgstr "ШАСИЈА"
 
-#: src/components/MissionSetup.tsx:1621
+#: src/components/MissionSetup.tsx:1630
 msgid "General"
 msgstr "Опште"
 
@@ -1055,13 +1080,18 @@ msgstr "Иди на страницу {pageNumber}"
 msgid "Go to previous page"
 msgstr "Иди на претходну страницу"
 
-#: src/components/MissionSetup.tsx:1624
+#: src/components/MissionSetup.tsx:1633
 msgid "Graphics"
 msgstr "Графика"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:162
 msgid "Group"
 msgstr "Група"
+
+#. placeholder {0}: name || subject.slice(1)
+#: ../../../lib/web/src/features/access/access-list.tsx:68
+msgid "Group: {0}"
+msgstr ""
 
 #: src/components/GameCanvas.tsx:24
 msgid "GUN"
@@ -1080,17 +1110,17 @@ msgstr "Сакриј"
 msgid "Hide password"
 msgstr "Сакриј лозинку"
 
-#: src/components/MissionSetup.tsx:1315
+#: src/components/MissionSetup.tsx:1323
 msgid "High"
 msgstr "Висок"
 
-#: src/components/MissionSetup.tsx:1249
+#: src/components/MissionSetup.tsx:1257
 #: src/components/Multiplayer.tsx:303
 msgid "High stratus"
 msgstr "Високи стратус"
 
-#: src/components/MissionSetup.tsx:1589
-#: src/components/MissionSetup.tsx:1684
+#: src/components/MissionSetup.tsx:1598
+#: src/components/MissionSetup.tsx:1693
 msgid "History"
 msgstr "Историја"
 
@@ -1101,7 +1131,7 @@ msgstr "Историја"
 msgid "Home"
 msgstr "Почетна"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:308
 msgid "hook"
 msgstr "Кука"
 
@@ -1130,8 +1160,8 @@ msgstr "Прегледач слика: {0}"
 msgid "Imperial"
 msgstr "Империјалне"
 
-#: src/components/MissionSetup.tsx:941
-#: src/components/MissionSetup.tsx:1202
+#: src/components/MissionSetup.tsx:949
+#: src/components/MissionSetup.tsx:1210
 msgid "In air"
 msgstr "У ваздуху"
 
@@ -1155,7 +1185,7 @@ msgstr "Обрни пропињање"
 msgid "INVULNERABLE"
 msgstr "НЕРАЊИВ"
 
-#: src/components/MissionSetup.tsx:1262
+#: src/components/MissionSetup.tsx:1270
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "Нерањив (само за људске играче)"
@@ -1168,8 +1198,8 @@ msgstr "Изгледа да страница коју тражите <0/>не п
 msgid "Join"
 msgstr "Придружи се"
 
-#: src/components/MissionSetup.tsx:1024
-#: src/components/MissionSetup.tsx:1581
+#: src/components/MissionSetup.tsx:1032
+#: src/components/MissionSetup.tsx:1590
 msgid "Join server"
 msgstr "Придружи се серверу"
 
@@ -1178,7 +1208,7 @@ msgid "JOINED"
 msgstr "СЕ ПРИДРУЖИО"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1544
+#: src/components/MissionSetup.tsx:1552
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
 msgstr "Двобој"
@@ -1187,19 +1217,19 @@ msgstr "Двобој"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Дуел — 1v1, прво обарање побеђује"
 
-#: src/components/MissionSetup.tsx:1123
+#: src/components/MissionSetup.tsx:1131
 msgid "Joust against AI player"
 msgstr "Дуел против AI играча"
 
-#: src/components/MissionSetup.tsx:1630
+#: src/components/MissionSetup.tsx:1639
 msgid "Joystick"
 msgstr "Џојстик"
 
-#: src/components/MatchHistory.tsx:142
+#: src/components/MatchHistory.tsx:149
 msgid "K/D"
 msgstr "K/D"
 
-#: src/components/MissionSetup.tsx:1633
+#: src/components/MissionSetup.tsx:1642
 msgid "Keys"
 msgstr "Тастери"
 
@@ -1211,8 +1241,8 @@ msgstr "ОБАРАЊЕ"
 msgid "Killed"
 msgstr "Убијен"
 
-#: src/components/MatchHistory.tsx:136
-#: src/components/MatchHistory.tsx:162
+#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:169
 msgid "Kills"
 msgstr "Убиства"
 
@@ -1247,7 +1277,7 @@ msgstr "КАСНО"
 msgid "Launch (catapult)"
 msgstr "Лансирање (катапулт)"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:307
 msgid "launch / target"
 msgstr "старт / мета"
 
@@ -1264,7 +1294,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Сазнајте више"
 
-#: src/components/MissionSetup.tsx:1074
+#: src/components/MissionSetup.tsx:1082
 msgid "Leave server"
 msgstr "Напусти сервер"
 
@@ -1280,6 +1310,10 @@ msgstr "ЈЕ НАПУСТИО"
 msgid "Left to Right"
 msgstr "Слева надесно"
 
+#: ../../../lib/web/src/components/post-tags.tsx:72
+msgid "Letters, numbers, spaces, and hyphens only"
+msgstr ""
+
 #: src/components/GameCanvas.tsx:100
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "РАВНО НА 1200, СТАЈНИ ТРАП ДОЛЕ"
@@ -1290,7 +1324,7 @@ msgstr "РАВНО НА 1200, СТАЈНИ ТРАП ДОЛЕ"
 msgid "Light"
 msgstr "Светло"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:308
 msgid "lights"
 msgstr "светла"
 
@@ -1303,7 +1337,7 @@ msgstr "Светла"
 msgid "LIGHTS"
 msgstr "СВЕТЛА"
 
-#: src/components/MissionSetup.tsx:1145
+#: src/components/MissionSetup.tsx:1153
 msgid "Load"
 msgstr "Залиха"
 
@@ -1374,11 +1408,11 @@ msgstr "Поглед десно"
 msgid "Look up"
 msgstr "Поглед горе"
 
-#: src/components/MissionSetup.tsx:1311
+#: src/components/MissionSetup.tsx:1319
 msgid "Low"
 msgstr "Низак"
 
-#: src/components/MissionSetup.tsx:1250
+#: src/components/MissionSetup.tsx:1258
 #: src/components/Multiplayer.tsx:304
 msgid "Low stratus"
 msgstr "Ниски стратус"
@@ -1387,7 +1421,7 @@ msgstr "Ниски стратус"
 msgid "M to close"
 msgstr "M за затварање"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "мапа"
 
@@ -1409,16 +1443,16 @@ msgstr "Главна"
 msgid "Match type"
 msgstr "Тип меча"
 
-#: src/components/MissionSetup.tsx:1068
+#: src/components/MissionSetup.tsx:1076
 msgid "Matches"
 msgstr "Мечеви"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1313
+#: src/components/MissionSetup.tsx:1321
 msgid "Medium"
 msgstr "Средње"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:311
 msgid "menu"
 msgstr "мени"
 
@@ -1431,7 +1465,7 @@ msgstr "Мени"
 msgid "Message everyone"
 msgstr "Пиши свима"
 
-#: src/components/MissionSetup.tsx:926
+#: src/components/MissionSetup.tsx:934
 msgid "Message players on this server"
 msgstr "Пишите играчима на овом серверу"
 
@@ -1443,7 +1477,7 @@ msgstr "Пиши свом тиму"
 msgid "Metric"
 msgstr "Метричке"
 
-#: src/components/MissionSetup.tsx:778
+#: src/components/MissionSetup.tsx:782
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Мапа атола Мидвеј — снимци садрже измењене податке <0>Copernicus Sentinel-2</0> (2026); геометрија аеродрома (писта, рулне стазе, платформе) © сарадници <1>OpenStreetMap</1>, лиценцирано под <2>ODbL</2>; подаци о обали и гребенима из <3>NOAA NCCOS</3> (јавни домен)."
 
@@ -1451,7 +1485,7 @@ msgstr "Мапа атола Мидвеј — снимци садрже изме�
 msgid "MISSILE"
 msgstr "РАКЕТА"
 
-#: src/components/MissionSetup.tsx:1385
+#: src/components/MissionSetup.tsx:1393
 msgid "Missiles"
 msgstr "Ракете"
 
@@ -1459,7 +1493,7 @@ msgstr "Ракете"
 msgid "Missiles allowed"
 msgstr "Ракете дозвољене"
 
-#: src/components/MatchHistory.tsx:156
+#: src/components/MatchHistory.tsx:163
 msgid "Mode"
 msgstr "Режим"
 
@@ -1489,12 +1523,12 @@ msgstr "Ново"
 msgid "Next image"
 msgstr "Следећа слика"
 
-#: src/components/MissionSetup.tsx:1237
+#: src/components/MissionSetup.tsx:1245
 #: src/components/Multiplayer.tsx:298
 msgid "Night"
 msgstr "Ноћ"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:160
+#: ../../../lib/web/src/features/access/access-list.tsx:165
 msgid "No access rules configured. Add rules to control who can access this resource."
 msgstr "Нема конфигурисаних правила приступа. Додајте правила да контролишете ко може да приступи овом ресурсу."
 
@@ -1513,6 +1547,10 @@ msgstr "Нема доступних група"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Није откривен ниједан џојстик — притисните било које дугме на њему да га пробудите."
+
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
+msgid "No notifications yet"
+msgstr ""
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1543,7 +1581,7 @@ msgstr "Још нема записа теме — покушајте понов�
 msgid "No users found"
 msgstr "Нема пронађених корисника"
 
-#: src/components/MissionSetup.tsx:903
+#: src/components/MissionSetup.tsx:911
 #: src/components/Multiplayer.tsx:418
 msgid "No world server."
 msgstr "Нема сервера света."
@@ -1557,7 +1595,7 @@ msgstr "БЕЗ ОЦЕНЕ"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:315
 #: src/components/MissionSetup.tsx:369
-#: src/components/MissionSetup.tsx:1247
+#: src/components/MissionSetup.tsx:1255
 msgid "None"
 msgstr "Ништа"
 
@@ -1577,7 +1615,7 @@ msgstr "Није пронађено"
 msgid "Not set"
 msgstr "Није постављено"
 
-#: src/components/MissionSetup.tsx:903
+#: src/components/MissionSetup.tsx:911
 msgid "Nothing yet — say hello."
 msgstr "Још увек нема ничега — поздравите се."
 
@@ -1594,7 +1632,7 @@ msgstr "Обавештења"
 msgid "Notifications: {0}"
 msgstr "Обавештења: {0}"
 
-#: src/components/MissionSetup.tsx:1343
+#: src/components/MissionSetup.tsx:1351
 msgid "Ocean detail"
 msgstr "Детаљи океана"
 
@@ -1602,13 +1640,13 @@ msgstr "Детаљи океана"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:943
-#: src/components/MissionSetup.tsx:1204
+#: src/components/MissionSetup.tsx:951
+#: src/components/MissionSetup.tsx:1212
 msgid "On carrier"
 msgstr "На носачу"
 
-#: src/components/MissionSetup.tsx:942
-#: src/components/MissionSetup.tsx:1203
+#: src/components/MissionSetup.tsx:950
+#: src/components/MissionSetup.tsx:1211
 msgid "On runway"
 msgstr "На писти"
 
@@ -1634,6 +1672,10 @@ msgstr "Отвори акције налога"
 msgid "Open actions"
 msgstr "Отвори радње"
 
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:133
+msgid "Open menu"
+msgstr "Отвори мени"
+
 #: ../../../lib/web/src/components/layout/top-bar.tsx:63
 #: ../../../lib/web/src/components/layout/top-bar.tsx:68
 msgid "Open navigation"
@@ -1649,11 +1691,11 @@ msgstr "Отвори навигациони мени"
 msgid "Open theme settings"
 msgstr "Отвори подешавања теме"
 
-#: src/components/GameCanvas.tsx:313
+#: src/components/GameCanvas.tsx:316
 msgid "or"
 msgstr "или"
 
-#: src/components/GameCanvas.tsx:313
+#: src/components/GameCanvas.tsx:316
 msgid "orbit"
 msgstr "кружење"
 
@@ -1661,7 +1703,7 @@ msgstr "кружење"
 msgid "Other"
 msgstr "Друго"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:217
+#: ../../../lib/web/src/features/access/access-list.tsx:222
 msgid "Owner"
 msgstr "Власник"
 
@@ -1682,14 +1724,14 @@ msgstr "Провера приступног кључа није успела. П
 msgid "Passkeys"
 msgstr "Passkey-еви"
 
-#: src/components/MissionSetup.tsx:845
+#: src/components/MissionSetup.tsx:853
 #: src/components/Multiplayer.tsx:90
 #: src/components/Multiplayer.tsx:245
 msgid "pilot"
 msgstr "пилот"
 
-#: src/components/MissionSetup.tsx:1164
-#: src/components/MissionSetup.tsx:1537
+#: src/components/MissionSetup.tsx:1172
+#: src/components/MissionSetup.tsx:1545
 #: src/components/Multiplayer.tsx:376
 msgid "Pilot"
 msgstr "Пилот"
@@ -1698,7 +1740,7 @@ msgstr "Пилот"
 msgid "PILOT DOWN"
 msgstr "ПИЛОТ ПОГИНУО"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:303
 msgid "pitch"
 msgstr "пропињање"
 
@@ -1718,7 +1760,7 @@ msgstr "Пропињање нагоре"
 msgid "PLATFORM"
 msgstr "ПЛАТФОРМА"
 
-#: src/components/MatchHistory.tsx:159
+#: src/components/MatchHistory.tsx:166
 msgid "Players"
 msgstr "Играчи"
 
@@ -1739,7 +1781,7 @@ msgstr "Покушајте поново."
 msgid "Please wait a moment and try again."
 msgstr "Сачекајте тренутак и покушајте поново."
 
-#: src/components/MissionSetup.tsx:1298
+#: src/components/MissionSetup.tsx:1306
 msgid "Preset"
 msgstr "Поставка"
 
@@ -1769,6 +1811,10 @@ msgstr "Приватност"
 #: ../../../lib/web/src/components/profile-dropdown.tsx:114
 msgid "Profile"
 msgstr "Профил"
+
+#: ../../../lib/web/src/components/person-picker.tsx:200
+msgid "Project members"
+msgstr ""
 
 #: src/components/GameCanvas.tsx:95
 msgid "PUSH TIME"
@@ -1802,7 +1848,7 @@ msgstr "Поново региструјте своје приступне кљу
 msgid "REARMED"
 msgstr "ПОНОВО НАОРУЖАН"
 
-#: src/components/MissionSetup.tsx:1029
+#: src/components/MissionSetup.tsx:1037
 msgid "Recent"
 msgstr "Недавно"
 
@@ -1811,16 +1857,16 @@ msgstr "Недавно"
 msgid "Recommended"
 msgstr "Препоручено"
 
-#: src/components/MissionSetup.tsx:1459
+#: src/components/MissionSetup.tsx:1467
 msgid "Record flights"
 msgstr "Снимај летове"
 
-#: src/components/MatchHistory.tsx:208
-#: src/components/MissionSetup.tsx:1453
+#: src/components/MatchHistory.tsx:215
+#: src/components/MissionSetup.tsx:1461
 msgid "Recording"
 msgstr "Снимање"
 
-#: src/components/MatchHistory.tsx:202
+#: src/components/MatchHistory.tsx:209
 msgid "Recording saved"
 msgstr "Снимак је сачуван"
 
@@ -1865,22 +1911,22 @@ msgstr "Релативно (5м, 3ч, 2д)"
 msgid "Relative within 24 hours, else absolute"
 msgstr "Релативно у оквиру 24 сата, иначе апсолутно"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:265
+#: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
 msgstr "Уклони"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:247
-#: ../../../lib/web/src/features/access/access-list.tsx:253
+#: ../../../lib/web/src/features/access/access-list.tsx:252
+#: ../../../lib/web/src/features/access/access-list.tsx:258
 msgid "Remove access rule"
 msgstr "Уклони правило приступа"
 
 #. placeholder {0}: formatSubject(subject, data.name)
-#: ../../../lib/web/src/features/access/access-list.tsx:259
+#: ../../../lib/web/src/features/access/access-list.tsx:264
 msgid "Remove access rule for \"{0}\"?"
 msgstr "Уклонити правило приступа за „{0}“?"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:257
+#: ../../../lib/web/src/features/access/access-list.tsx:262
 msgid "Remove access?"
 msgstr "Уклонити приступ?"
 
@@ -1889,7 +1935,7 @@ msgstr "Уклонити приступ?"
 msgid "Remove interest"
 msgstr "Уклони интересовање"
 
-#: src/components/MissionSetup.tsx:812
+#: src/components/MissionSetup.tsx:819
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Рендеровање помоћу <0>three.js</0> (MIT лиценца)."
 
@@ -1899,7 +1945,7 @@ msgstr "Поново пошаљи имејл"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1672
+#: src/components/MissionSetup.tsx:1681
 msgid "Reset"
 msgstr "Ресетуј"
 
@@ -1907,15 +1953,15 @@ msgstr "Ресетуј"
 msgid "Reset all settings to default values"
 msgstr "Ресетуј сва подешавања на подразумеване вредности"
 
-#: src/components/MissionSetup.tsx:1325
+#: src/components/MissionSetup.tsx:1333
 msgid "Resolution"
 msgstr "Резолуција"
 
-#: src/components/MissionSetup.tsx:1563
+#: src/components/MissionSetup.tsx:1572
 msgid "Restart mission"
 msgstr "Поново покрени мисију"
 
-#: src/components/MatchHistory.tsx:168
+#: src/components/MatchHistory.tsx:175
 msgid "Result"
 msgstr "Резултат"
 
@@ -1923,7 +1969,7 @@ msgstr "Резултат"
 msgid "Resume"
 msgstr "Настави"
 
-#: src/components/MissionSetup.tsx:1559
+#: src/components/MissionSetup.tsx:1568
 msgid "Resume mission"
 msgstr "Настави мисију"
 
@@ -1939,7 +1985,7 @@ msgstr "Обрнуто"
 msgid "Right to Left"
 msgstr "С десна на лево"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:304
 msgid "roll"
 msgstr "ваљање"
 
@@ -1955,8 +2001,8 @@ msgstr "Ваљање улево"
 msgid "Roll right"
 msgstr "Ваљање удесно"
 
-#: src/components/MissionSetup.tsx:1163
-#: src/components/MissionSetup.tsx:1536
+#: src/components/MissionSetup.tsx:1171
+#: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:375
 msgid "Rookie"
 msgstr "Почетник"
@@ -2053,7 +2099,7 @@ msgstr "изабрано"
 msgid "Selected: <0>{0}</0>"
 msgstr "Изабрано: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:933
+#: src/components/MissionSetup.tsx:941
 msgid "Send"
 msgstr "Пошаљи"
 
@@ -2073,12 +2119,12 @@ msgstr "Пошаљи имејл"
 msgid "Serif"
 msgstr "Сериф"
 
-#: src/components/MatchHistory.tsx:153
-#: src/components/MissionSetup.tsx:1042
+#: src/components/MatchHistory.tsx:160
+#: src/components/MissionSetup.tsx:1050
 msgid "Server"
 msgstr "Сервер"
 
-#: src/components/MissionSetup.tsx:898
+#: src/components/MissionSetup.tsx:906
 msgid "Server chat"
 msgstr "Ћаскање на серверу"
 
@@ -2114,12 +2160,12 @@ msgstr "Постави полазиште и одредиште"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1585
-#: src/components/MissionSetup.tsx:1617
+#: src/components/MissionSetup.tsx:1594
+#: src/components/MissionSetup.tsx:1626
 msgid "Settings"
 msgstr "Поставке"
 
-#: src/components/MissionSetup.tsx:1367
+#: src/components/MissionSetup.tsx:1375
 msgid "Shadows"
 msgstr "Сенке"
 
@@ -2160,7 +2206,7 @@ msgid "Small"
 msgstr "Мало"
 
 #: src/components/MissionSetup.tsx:425
-#: src/components/MissionSetup.tsx:1627
+#: src/components/MissionSetup.tsx:1636
 msgid "Sound"
 msgstr "Звук"
 
@@ -2172,7 +2218,7 @@ msgstr "Простран"
 msgid "SPD BK"
 msgstr "ВАЗ.КОЧ"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:309
 msgid "speed brake"
 msgstr "ваздушна кочница"
 
@@ -2198,7 +2244,7 @@ msgstr "Превлачење, чиста конфигурација (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "Превлачење, слетна конфигурација (Vs0)"
 
-#: src/components/MissionSetup.tsx:1176
+#: src/components/MissionSetup.tsx:1184
 msgid "Start"
 msgstr "Почни"
 
@@ -2218,7 +2264,7 @@ msgstr "Најстрмије пењање (Vx, форсаж)"
 msgid "STRUCTURE"
 msgstr "СТРУКТУРА"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:191
+#: ../../../lib/web/src/features/access/access-list.tsx:196
 msgid "Subject"
 msgstr "Тема"
 
@@ -2241,6 +2287,14 @@ msgstr "ТАКТИЧКА МАПА"
 msgid "Tag"
 msgstr "Ознака"
 
+#: ../../../lib/web/src/components/post-tags.tsx:76
+msgid "Tag already exists"
+msgstr "Ознака већ постоји"
+
+#: ../../../lib/web/src/components/post-tags.tsx:68
+msgid "Tag must be 50 characters or less"
+msgstr ""
+
 #: ../../../lib/web/src/components/post-tags.tsx:101
 #: ../../../lib/web/src/components/post-tags.tsx:115
 msgid "Tags"
@@ -2250,7 +2304,7 @@ msgstr "Ознаке"
 msgid "TALLY"
 msgstr "ВИДИМ НЕПРИЈАТЕЉА"
 
-#: src/components/MissionSetup.tsx:1116
+#: src/components/MissionSetup.tsx:1124
 msgid "Task"
 msgstr "Задатак"
 
@@ -2312,7 +2366,7 @@ msgstr "Овај лоби шаље вашу игровну везу другом
 msgid "This page has not been created yet."
 msgstr "Ова страница још није направљена."
 
-#: src/components/GameCanvas.tsx:302
+#: src/components/GameCanvas.tsx:305
 msgid "throttle"
 msgstr "гас"
 
@@ -2336,15 +2390,15 @@ msgstr "Четвртак"
 msgid "Tightest sustained turn speed"
 msgstr "Брзина најтешњег одрживог заокрета"
 
-#: src/components/GameCanvas.tsx:314
+#: src/components/GameCanvas.tsx:317
 msgid "tilt"
 msgstr "нагињање"
 
-#: src/components/MatchHistory.tsx:132
+#: src/components/MatchHistory.tsx:140
 msgid "Time"
 msgstr "Време"
 
-#: src/components/MissionSetup.tsx:1230
+#: src/components/MissionSetup.tsx:1238
 msgid "Time of day"
 msgstr "Доба дана"
 
@@ -2391,7 +2445,7 @@ msgstr "Превише захтева"
 msgid "Top"
 msgstr "Врх"
 
-#: src/components/MissionSetup.tsx:1379
+#: src/components/MissionSetup.tsx:1387
 msgid "Tracers"
 msgstr "Трасери"
 
@@ -2426,7 +2480,7 @@ msgstr "Куцај да би тражио кориснике"
 msgid "Type to search..."
 msgstr "Куцај да би тражио..."
 
-#: src/components/MissionSetup.tsx:1317
+#: src/components/MissionSetup.tsx:1325
 msgid "Ultra"
 msgstr "Ултра"
 
@@ -2451,12 +2505,12 @@ msgstr "Неовлашћен приступ"
 msgid "United States"
 msgstr "Сједињене Америчке Државе"
 
-#: src/components/MissionSetup.tsx:1268
+#: src/components/MissionSetup.tsx:1276
 #: src/components/Multiplayer.tsx:351
 msgid "Unlimited ammunition"
 msgstr "Неограничена муниција"
 
-#: src/components/MissionSetup.tsx:1274
+#: src/components/MissionSetup.tsx:1282
 #: src/components/Multiplayer.tsx:361
 msgid "Unlimited fuel"
 msgstr "Неограничено гориво"
@@ -2469,6 +2523,7 @@ msgstr "Непроверено"
 msgid "Use your passkey"
 msgstr "Користите свој приступни кључ"
 
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:86
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
 msgstr "Корисник"
@@ -2499,8 +2554,8 @@ msgstr "Верификуј адресу е-поште"
 msgid "Vertical"
 msgstr "Вертикално"
 
-#: src/components/MissionSetup.tsx:1165
-#: src/components/MissionSetup.tsx:1538
+#: src/components/MissionSetup.tsx:1173
+#: src/components/MissionSetup.tsx:1546
 #: src/components/Multiplayer.tsx:377
 msgid "Veteran"
 msgstr "Ветеран"
@@ -2518,7 +2573,7 @@ msgstr "Сличица видеа"
 msgid "Video viewer: {0}"
 msgstr "Прегледач видеа: {0}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:310
 msgid "view"
 msgstr "поглед"
 
@@ -2556,7 +2611,11 @@ msgstr "Послали смо кôд за потврду на <0>{0}</0>. Уне
 msgid "We'll be back online shortly."
 msgstr "Бићемо поново на мрежи ускоро."
 
-#: src/components/GameCanvas.tsx:303
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:197
+msgid "We'll notify you when something important happens."
+msgstr ""
+
+#: src/components/GameCanvas.tsx:306
 msgid "weapon"
 msgstr "оружје"
 
@@ -2598,12 +2657,12 @@ msgstr "ПОБЕЂУЈЕ"
 msgid "World server"
 msgstr "Сервер света"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:899
 #: src/components/Multiplayer.tsx:103
 msgid "World server not reachable"
 msgstr "Сервер света није доступан"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:304
 msgid "yaw"
 msgstr "скретање"
 
@@ -2630,6 +2689,10 @@ msgstr "Немате приступ овом одељку."
 #: ../../../lib/web/src/features/errors/forbidden.tsx:18
 msgid "You don't have necessary permission <0/>to view this resource."
 msgstr "Немате потребну дозволу <0/>за приказ овог ресурса."
+
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
+msgid "You're all caught up!"
+msgstr ""
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

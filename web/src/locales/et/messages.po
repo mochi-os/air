@@ -25,7 +25,7 @@ msgstr "{0, plural, one {# valitud} other {# valitud}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:917
 msgid "{0} created “{1}”"
 msgstr "{0} lõi „{1}“"
 
@@ -104,7 +104,7 @@ msgstr "Juurdepääs keelatud"
 msgid "Access Forbidden"
 msgstr "Juurdepääs keelatud"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:192
+#: ../../../lib/web/src/features/access/access-list.tsx:197
 msgid "Access level"
 msgstr "Juurdepääsu tase"
 
@@ -124,8 +124,8 @@ msgstr "Konto tüüp"
 msgid "Account verified"
 msgstr "Konto kinnitatud"
 
-#: src/components/MissionSetup.tsx:1166
-#: src/components/MissionSetup.tsx:1539
+#: src/components/MissionSetup.tsx:1174
+#: src/components/MissionSetup.tsx:1547
 #: src/components/Multiplayer.tsx:378
 msgid "Ace"
 msgstr "Äss"
@@ -135,6 +135,7 @@ msgstr "Äss"
 msgid "Acquire target"
 msgstr "Lukusta sihtmärk"
 
+#: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:196
 msgid "Add"
 msgstr "Lisa"
@@ -177,11 +178,15 @@ msgstr "Lisa olemasolevatele teavitustele"
 msgid "Add view"
 msgstr "Lisa vaade"
 
+#: ../../../lib/web/src/features/access/access-dialog.tsx:332
+msgid "Adding..."
+msgstr "Lisamine..."
+
 #: ../../../lib/web/src/components/config-drawer.tsx:71
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Kohanda välimust ja paigutust oma eelistuste järgi."
 
-#: src/components/MissionSetup.tsx:1373
+#: src/components/MissionSetup.tsx:1381
 msgid "Afterburner"
 msgstr "Järelpõleti"
 
@@ -190,11 +195,11 @@ msgid "AI"
 msgstr "AI"
 
 #: src/components/MissionSetup.tsx:407
-#: src/components/MissionSetup.tsx:1134
+#: src/components/MissionSetup.tsx:1142
 msgid "Aircraft"
 msgstr "Lennuk"
 
-#: src/components/MissionSetup.tsx:754
+#: src/components/MissionSetup.tsx:756
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Lennukikandja <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> autor <1>Muhamad Mirza Arrafi</1> (Sketchfab), litsentsitud <2>CC BY 4.0</2> alusel. Muudetud: ümber skaleeritud, ümber orienteeritud, uputatud veeliinini ja veebi jaoks lihtsustatud."
 
@@ -217,6 +222,10 @@ msgstr "Tekkis viga"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:256
 msgid "An unexpected error occurred"
 msgstr "Tekkis ootamatu viga"
+
+#: ../../../lib/web/src/features/access/access-list.tsx:45
+msgid "Anyone"
+msgstr "Kõik"
 
 #: src/components/MissionSetup.tsx:123
 #: src/components/MissionSetup.tsx:152
@@ -244,6 +253,10 @@ msgstr "Tõusev"
 msgid "Ascending"
 msgstr "Kasvav"
 
+#: ../../../lib/web/src/features/access/access-list.tsx:46
+msgid "Authenticated users"
+msgstr ""
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Authenticator code"
 msgstr "Autentija kood"
@@ -256,7 +269,7 @@ msgstr "Teljed"
 msgid "Axis {i}"
 msgstr "Telg {i}"
 
-#: src/components/GameCanvas.tsx:314
+#: src/components/GameCanvas.tsx:317
 msgid "back"
 msgstr "kaugemale"
 
@@ -270,7 +283,7 @@ msgstr "Tagasi"
 msgid "Back to home"
 msgstr "Tagasi avalehele"
 
-#: src/components/MissionSetup.tsx:1157
+#: src/components/MissionSetup.tsx:1165
 msgid "Bandit"
 msgstr "Bandiit"
 
@@ -315,7 +328,7 @@ msgstr "Tõsta huvi"
 msgid "Bots"
 msgstr "Botid"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:309
 msgid "brakes"
 msgstr "pidurid"
 
@@ -339,7 +352,7 @@ msgstr "Nupud"
 msgid "CALL THE BALL"
 msgstr "TEATA PALL"
 
-#: src/components/MissionSetup.tsx:1441
+#: src/components/MissionSetup.tsx:1449
 #: src/components/Multiplayer.tsx:240
 msgid "Callsign"
 msgstr "Kutsung"
@@ -354,7 +367,7 @@ msgstr "Kaamera kaugus"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:248
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
-#: ../../../lib/web/src/features/access/access-list.tsx:263
+#: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:188
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:493
@@ -368,31 +381,31 @@ msgstr "Tühista"
 msgid "Canopy"
 msgstr "Kabiinikate"
 
-#: src/components/MissionSetup.tsx:944
+#: src/components/MissionSetup.tsx:952
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1205
+#: src/components/MissionSetup.tsx:1213
 msgid "Case I (day)"
 msgstr "Juhtum I (päev)"
 
-#: src/components/MissionSetup.tsx:945
+#: src/components/MissionSetup.tsx:953
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1206
+#: src/components/MissionSetup.tsx:1214
 msgid "Case II (weather)"
 msgstr "Juhtum II (ilm)"
 
-#: src/components/MissionSetup.tsx:946
+#: src/components/MissionSetup.tsx:954
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1207
+#: src/components/MissionSetup.tsx:1215
 msgid "Case III (night)"
 msgstr "Juhtum III (öö)"
 
-#: src/components/MissionSetup.tsx:1213
+#: src/components/MissionSetup.tsx:1221
 msgid "Catapult"
 msgstr "Katapult"
 
@@ -405,11 +418,11 @@ msgstr "Selle teavituse kategooria"
 msgid "Change notification category"
 msgstr "Muuda teavituse kategooriat"
 
-#: src/components/GameCanvas.tsx:311
+#: src/components/GameCanvas.tsx:314
 msgid "Chase view:"
 msgstr "Jälitusvaade:"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:311
 msgid "chat"
 msgstr "vestlus"
 
@@ -421,10 +434,14 @@ msgstr "Vestlus"
 msgid "Chat to everyone"
 msgstr "Vestlus kõigiga"
 
-#: src/components/MatchHistory.tsx:189
-#: src/components/MissionSetup.tsx:1257
+#: src/components/MatchHistory.tsx:196
+#: src/components/MissionSetup.tsx:1265
 msgid "Cheats"
 msgstr "Petukoodid"
+
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:198
+msgid "Check \"All\" to see your past notifications."
+msgstr ""
 
 #: ../../../lib/web/src/components/config-drawer.tsx:328
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
@@ -496,11 +513,11 @@ msgstr "Sulge paneel"
 msgid "Close search"
 msgstr "Sulge otsing"
 
-#: src/components/GameCanvas.tsx:315
+#: src/components/GameCanvas.tsx:318
 msgid "closer"
 msgstr "lähemale"
 
-#: src/components/MissionSetup.tsx:1241
+#: src/components/MissionSetup.tsx:1249
 msgid "Clouds"
 msgstr "Pilved"
 
@@ -537,7 +554,7 @@ msgstr "Kompaktne"
 msgid "Confirm"
 msgstr "Kinnita"
 
-#: src/components/MissionSetup.tsx:1054
+#: src/components/MissionSetup.tsx:1062
 msgid "Connect"
 msgstr "Ühenda"
 
@@ -582,11 +599,11 @@ msgstr "Matši loomine ebaõnnestus"
 msgid "Could not load this document. Please try again later."
 msgstr "Selle dokumendi laadimine ebaõnnestus. Palun proovi hiljem uuesti."
 
-#: src/components/MatchHistory.tsx:203
+#: src/components/MatchHistory.tsx:210
 msgid "Could not save the recording"
 msgstr "Salvestist ei õnnestunud salvestada"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:899
 msgid "Could not send the message"
 msgstr "Sõnumit ei õnnestunud saata"
 
@@ -614,8 +631,8 @@ msgstr "Loo ja lenda"
 msgid "Create match"
 msgstr "Loo matš"
 
-#: src/components/MissionSetup.tsx:1577
-#: src/components/MissionSetup.tsx:1598
+#: src/components/MissionSetup.tsx:1586
+#: src/components/MissionSetup.tsx:1607
 msgid "Create mission"
 msgstr "Loo missioon"
 
@@ -624,7 +641,7 @@ msgstr "Loo missioon"
 msgid "Credits"
 msgstr "Autorid"
 
-#: src/components/MissionSetup.tsx:1248
+#: src/components/MissionSetup.tsx:1256
 #: src/components/Multiplayer.tsx:302
 msgid "Cumulus"
 msgstr "Rünkpilved"
@@ -660,17 +677,17 @@ msgstr "Tume režiim"
 msgid "Data conflict"
 msgstr "Andmekonflikt"
 
-#: src/components/MatchHistory.tsx:150
+#: src/components/MatchHistory.tsx:157
 msgid "Date"
 msgstr "Kuupäev"
 
-#: src/components/MissionSetup.tsx:1236
+#: src/components/MissionSetup.tsx:1244
 #: src/components/Multiplayer.tsx:297
 msgid "Day"
 msgstr "Päev"
 
-#: src/components/MatchHistory.tsx:139
-#: src/components/MatchHistory.tsx:165
+#: src/components/MatchHistory.tsx:146
+#: src/components/MatchHistory.tsx:172
 msgid "Deaths"
 msgstr "Surmad"
 
@@ -730,6 +747,10 @@ msgstr "Teine mänguhost"
 msgid "Direction"
 msgstr "Suund"
 
+#: ../../../lib/web/src/components/person-picker.tsx:214
+msgid "Directory"
+msgstr ""
+
 #: src/components/MissionSetup.tsx:259
 msgid "disconnected"
 msgstr "lahti ühendatud"
@@ -747,11 +768,11 @@ msgstr "Sulge"
 msgid "Displays the mobile sidebar."
 msgstr "Kuvab mobiilse külgriba."
 
-#: src/components/MissionSetup.tsx:1361
+#: src/components/MissionSetup.tsx:1369
 msgid "Distance LOD"
 msgstr "Kauguse LOD"
 
-#: src/components/MissionSetup.tsx:1679
+#: src/components/MissionSetup.tsx:1688
 msgid "Done"
 msgstr "Tehtud"
 
@@ -764,7 +785,7 @@ msgstr "Laadi alla"
 msgid "Download failed"
 msgstr "Allalaadimine ebaõnnestus"
 
-#: src/components/GameCanvas.tsx:313
+#: src/components/GameCanvas.tsx:316
 msgid "Drag"
 msgstr "Lohista"
 
@@ -772,7 +793,7 @@ msgstr "Lohista"
 msgid "Drone"
 msgstr "Droon"
 
-#: src/components/MissionSetup.tsx:1355
+#: src/components/MissionSetup.tsx:1363
 msgid "Dynamic resolution"
 msgstr "Dünaamiline eraldusvõime"
 
@@ -847,11 +868,11 @@ msgstr "Laienda"
 msgid "Expand sidebar"
 msgstr "Laienda külgriba"
 
-#: src/components/MissionSetup.tsx:1335
+#: src/components/MissionSetup.tsx:1343
 msgid "Exterior detail"
 msgstr "Välisdetailsus"
 
-#: src/components/MissionSetup.tsx:1127
+#: src/components/MissionSetup.tsx:1135
 msgid "Extra aircraft"
 msgstr "Lisalennukid"
 
@@ -907,7 +928,7 @@ msgstr "Lõpeta konto koliminen"
 msgid "Finished"
 msgstr "Lõpetatud"
 
-#: src/components/GameCanvas.tsx:302
+#: src/components/GameCanvas.tsx:305
 msgid "fire"
 msgstr "tulista"
 
@@ -919,13 +940,13 @@ msgstr "Fikseeritud klahvid"
 msgid "FLAMEOUT"
 msgstr "KUSTUMINE"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:307
 msgid "flares"
 msgstr "soojuslõksud"
 
 #: src/components/MissionSetup.tsx:120
 #: src/components/MissionSetup.tsx:149
-#: src/components/MissionSetup.tsx:1391
+#: src/components/MissionSetup.tsx:1399
 msgid "Flares"
 msgstr "Soojuslõksud"
 
@@ -941,7 +962,7 @@ msgstr "Lame"
 msgid "FLIGHT CORE FAILED"
 msgstr "LENNUTUUMA TÕRGE"
 
-#: src/components/MatchHistory.tsx:129
+#: src/components/MatchHistory.tsx:137
 msgid "Flights"
 msgstr "Lennud"
 
@@ -953,23 +974,27 @@ msgstr "Hõljuv"
 msgid "Flown"
 msgstr "Lennatud"
 
-#: src/components/MissionSetup.tsx:1571
-#: src/components/MissionSetup.tsx:1612
+#: src/components/MissionSetup.tsx:1580
+#: src/components/MissionSetup.tsx:1621
 msgid "Fly"
 msgstr "Lenda"
 
-#: src/components/MissionSetup.tsx:1397
+#: src/components/MissionSetup.tsx:1405
 msgid "Framerate"
 msgstr "Kaadrisagedus"
 
 #: src/components/MatchHistory.tsx:84
-#: src/components/MissionSetup.tsx:1122
+#: src/components/MissionSetup.tsx:1130
 msgid "Free flight"
 msgstr "Vaba lend"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:63
 msgid "Friday"
 msgstr "Reede"
+
+#: ../../../lib/web/src/components/person-picker.tsx:207
+msgid "Friends"
+msgstr "Sõbrad"
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:153
 msgid "From"
@@ -984,7 +1009,7 @@ msgstr "Saatja"
 msgid "From theme"
 msgstr "Teemast"
 
-#: src/components/MissionSetup.tsx:1142
+#: src/components/MissionSetup.tsx:1150
 #: src/components/Multiplayer.tsx:312
 msgid "Fuel"
 msgstr "Kütus"
@@ -1017,7 +1042,7 @@ msgstr "Täislaotus"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:308
 msgid "gear"
 msgstr "telik"
 
@@ -1025,7 +1050,7 @@ msgstr "telik"
 msgid "GEAR"
 msgstr "ŠASSII"
 
-#: src/components/MissionSetup.tsx:1621
+#: src/components/MissionSetup.tsx:1630
 msgid "General"
 msgstr "Üldine"
 
@@ -1055,13 +1080,18 @@ msgstr "Mine lehele {pageNumber}"
 msgid "Go to previous page"
 msgstr "Mine eelmisele lehele"
 
-#: src/components/MissionSetup.tsx:1624
+#: src/components/MissionSetup.tsx:1633
 msgid "Graphics"
 msgstr "Graafika"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:162
 msgid "Group"
 msgstr "Grupp"
+
+#. placeholder {0}: name || subject.slice(1)
+#: ../../../lib/web/src/features/access/access-list.tsx:68
+msgid "Group: {0}"
+msgstr ""
 
 #: src/components/GameCanvas.tsx:24
 msgid "GUN"
@@ -1080,17 +1110,17 @@ msgstr "Peida"
 msgid "Hide password"
 msgstr "Peida parool"
 
-#: src/components/MissionSetup.tsx:1315
+#: src/components/MissionSetup.tsx:1323
 msgid "High"
 msgstr "Kõrge"
 
-#: src/components/MissionSetup.tsx:1249
+#: src/components/MissionSetup.tsx:1257
 #: src/components/Multiplayer.tsx:303
 msgid "High stratus"
 msgstr "Kõrged kihtpilved"
 
-#: src/components/MissionSetup.tsx:1589
-#: src/components/MissionSetup.tsx:1684
+#: src/components/MissionSetup.tsx:1598
+#: src/components/MissionSetup.tsx:1693
 msgid "History"
 msgstr "Ajalugu"
 
@@ -1101,7 +1131,7 @@ msgstr "Ajalugu"
 msgid "Home"
 msgstr "Avaleht"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:308
 msgid "hook"
 msgstr "konks"
 
@@ -1130,8 +1160,8 @@ msgstr "Pildivaatur: {0}"
 msgid "Imperial"
 msgstr "Imperiaal"
 
-#: src/components/MissionSetup.tsx:941
-#: src/components/MissionSetup.tsx:1202
+#: src/components/MissionSetup.tsx:949
+#: src/components/MissionSetup.tsx:1210
 msgid "In air"
 msgstr "Õhus"
 
@@ -1155,7 +1185,7 @@ msgstr "Pööra länge ümber"
 msgid "INVULNERABLE"
 msgstr "HAAVAMATU"
 
-#: src/components/MissionSetup.tsx:1262
+#: src/components/MissionSetup.tsx:1270
 #: src/components/Multiplayer.tsx:341
 msgid "Invulnerable (human players only)"
 msgstr "Haavamatu (ainult inimmängijad)"
@@ -1168,8 +1198,8 @@ msgstr "Näib, et otsitavat lehte <0/>pole olemas või on see eemaldatud."
 msgid "Join"
 msgstr "Liitu"
 
-#: src/components/MissionSetup.tsx:1024
-#: src/components/MissionSetup.tsx:1581
+#: src/components/MissionSetup.tsx:1032
+#: src/components/MissionSetup.tsx:1590
 msgid "Join server"
 msgstr "Liitu serveriga"
 
@@ -1178,7 +1208,7 @@ msgid "JOINED"
 msgstr "LIITUS"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1544
+#: src/components/MissionSetup.tsx:1552
 #: src/components/Multiplayer.tsx:435
 msgid "Joust"
 msgstr "Duell"
@@ -1187,19 +1217,19 @@ msgstr "Duell"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duell — 1v1, esimene tapp võidab"
 
-#: src/components/MissionSetup.tsx:1123
+#: src/components/MissionSetup.tsx:1131
 msgid "Joust against AI player"
 msgstr "Duell AI-mängija vastu"
 
-#: src/components/MissionSetup.tsx:1630
+#: src/components/MissionSetup.tsx:1639
 msgid "Joystick"
 msgstr "Juhtkang"
 
-#: src/components/MatchHistory.tsx:142
+#: src/components/MatchHistory.tsx:149
 msgid "K/D"
 msgstr "K/D"
 
-#: src/components/MissionSetup.tsx:1633
+#: src/components/MissionSetup.tsx:1642
 msgid "Keys"
 msgstr "Klahvid"
 
@@ -1211,8 +1241,8 @@ msgstr "TAPP"
 msgid "Killed"
 msgstr "Tapetud"
 
-#: src/components/MatchHistory.tsx:136
-#: src/components/MatchHistory.tsx:162
+#: src/components/MatchHistory.tsx:143
+#: src/components/MatchHistory.tsx:169
 msgid "Kills"
 msgstr "Tapmised"
 
@@ -1247,7 +1277,7 @@ msgstr "HILJA"
 msgid "Launch (catapult)"
 msgstr "Start (katapult)"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:307
 msgid "launch / target"
 msgstr "start / lukustus"
 
@@ -1264,7 +1294,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Loe rohkem"
 
-#: src/components/MissionSetup.tsx:1074
+#: src/components/MissionSetup.tsx:1082
 msgid "Leave server"
 msgstr "Lahku serverist"
 
@@ -1280,6 +1310,10 @@ msgstr "LAHKUS"
 msgid "Left to Right"
 msgstr "Vasakult paremale"
 
+#: ../../../lib/web/src/components/post-tags.tsx:72
+msgid "Letters, numbers, spaces, and hyphens only"
+msgstr ""
+
 #: src/components/GameCanvas.tsx:100
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "TASANE 1200 PEAL, TELIK ALLA"
@@ -1290,7 +1324,7 @@ msgstr "TASANE 1200 PEAL, TELIK ALLA"
 msgid "Light"
 msgstr "Hele"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:308
 msgid "lights"
 msgstr "tuled"
 
@@ -1303,7 +1337,7 @@ msgstr "Tuled"
 msgid "LIGHTS"
 msgstr "TULED"
 
-#: src/components/MissionSetup.tsx:1145
+#: src/components/MissionSetup.tsx:1153
 msgid "Load"
 msgstr "Kogus"
 
@@ -1374,11 +1408,11 @@ msgstr "Vaata paremale"
 msgid "Look up"
 msgstr "Vaata üles"
 
-#: src/components/MissionSetup.tsx:1311
+#: src/components/MissionSetup.tsx:1319
 msgid "Low"
 msgstr "Madal"
 
-#: src/components/MissionSetup.tsx:1250
+#: src/components/MissionSetup.tsx:1258
 #: src/components/Multiplayer.tsx:304
 msgid "Low stratus"
 msgstr "Madalad kihtpilved"
@@ -1387,7 +1421,7 @@ msgstr "Madalad kihtpilved"
 msgid "M to close"
 msgstr "M sulgemiseks"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "kaart"
 
@@ -1409,16 +1443,16 @@ msgstr "Üldine"
 msgid "Match type"
 msgstr "Matši tüüp"
 
-#: src/components/MissionSetup.tsx:1068
+#: src/components/MissionSetup.tsx:1076
 msgid "Matches"
 msgstr "Matšid"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1313
+#: src/components/MissionSetup.tsx:1321
 msgid "Medium"
 msgstr "Keskmine"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:311
 msgid "menu"
 msgstr "menüü"
 
@@ -1431,7 +1465,7 @@ msgstr "Menüü"
 msgid "Message everyone"
 msgstr "Kirjuta kõigile"
 
-#: src/components/MissionSetup.tsx:926
+#: src/components/MissionSetup.tsx:934
 msgid "Message players on this server"
 msgstr "Saada sõnum selle serveri mängijatele"
 
@@ -1443,7 +1477,7 @@ msgstr "Kirjuta oma tiimile"
 msgid "Metric"
 msgstr "Meetermõõdustik"
 
-#: src/components/MissionSetup.tsx:778
+#: src/components/MissionSetup.tsx:782
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway atolli kaart — pildid sisaldavad muudetud <0>Copernicus Sentinel-2</0> andmeid (2026); lennuvälja geomeetria (lennurada, ruleerimisteed, perroonid) © <1>OpenStreetMap</1> kaastöölised, litsentsitud <2>ODbL</2> alusel; ranniku- ja rifiandmed pärinevad <3>NOAA NCCOS</3>-lt (avalik omand)."
 
@@ -1451,7 +1485,7 @@ msgstr "Midway atolli kaart — pildid sisaldavad muudetud <0>Copernicus Sentine
 msgid "MISSILE"
 msgstr "RAKETT"
 
-#: src/components/MissionSetup.tsx:1385
+#: src/components/MissionSetup.tsx:1393
 msgid "Missiles"
 msgstr "Raketid"
 
@@ -1459,7 +1493,7 @@ msgstr "Raketid"
 msgid "Missiles allowed"
 msgstr "Raketid lubatud"
 
-#: src/components/MatchHistory.tsx:156
+#: src/components/MatchHistory.tsx:163
 msgid "Mode"
 msgstr "Režiim"
 
@@ -1489,12 +1523,12 @@ msgstr "Uus"
 msgid "Next image"
 msgstr "Järgmine pilt"
 
-#: src/components/MissionSetup.tsx:1237
+#: src/components/MissionSetup.tsx:1245
 #: src/components/Multiplayer.tsx:298
 msgid "Night"
 msgstr "Öö"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:160
+#: ../../../lib/web/src/features/access/access-list.tsx:165
 msgid "No access rules configured. Add rules to control who can access this resource."
 msgstr "Juurdepääsureegleid pole seadistatud. Lisa reeglid, et määrata, kes pääseb sellele ressursile ligi."
 
@@ -1513,6 +1547,10 @@ msgstr "Saadaolevaid gruppe pole"
 #: src/components/MissionSetup.tsx:266
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Juhtkangi ei tuvastatud — selle äratamiseks vajuta suvalist nuppu."
+
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
+msgid "No notifications yet"
+msgstr ""
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
@@ -1543,7 +1581,7 @@ msgstr "Teemakirjet veel pole — proovi uuesti pärast järgmist teavitust."
 msgid "No users found"
 msgstr "Kasutajaid ei leitud"
 
-#: src/components/MissionSetup.tsx:903
+#: src/components/MissionSetup.tsx:911
 #: src/components/Multiplayer.tsx:418
 msgid "No world server."
 msgstr "Maailmaserverit pole."
@@ -1557,7 +1595,7 @@ msgstr "HINDETA"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:315
 #: src/components/MissionSetup.tsx:369
-#: src/components/MissionSetup.tsx:1247
+#: src/components/MissionSetup.tsx:1255
 msgid "None"
 msgstr "Puudub"
 
@@ -1577,7 +1615,7 @@ msgstr "Ei leitud"
 msgid "Not set"
 msgstr "Pole määratud"
 
-#: src/components/MissionSetup.tsx:903
+#: src/components/MissionSetup.tsx:911
 msgid "Nothing yet — say hello."
 msgstr "Veel pole midagi — ütle tere."
 
@@ -1594,7 +1632,7 @@ msgstr "Teavitused"
 msgid "Notifications: {0}"
 msgstr "Teatised: {0}"
 
-#: src/components/MissionSetup.tsx:1343
+#: src/components/MissionSetup.tsx:1351
 msgid "Ocean detail"
 msgstr "Ookeani detailsus"
 
@@ -1602,13 +1640,13 @@ msgstr "Ookeani detailsus"
 msgid "OK"
 msgstr "OK"
 
-#: src/components/MissionSetup.tsx:943
-#: src/components/MissionSetup.tsx:1204
+#: src/components/MissionSetup.tsx:951
+#: src/components/MissionSetup.tsx:1212
 msgid "On carrier"
 msgstr "Lennukikandjal"
 
-#: src/components/MissionSetup.tsx:942
-#: src/components/MissionSetup.tsx:1203
+#: src/components/MissionSetup.tsx:950
+#: src/components/MissionSetup.tsx:1211
 msgid "On runway"
 msgstr "Lennurajal"
 
@@ -1634,6 +1672,10 @@ msgstr "Ava konto tegevused"
 msgid "Open actions"
 msgstr "Ava toimingud"
 
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:133
+msgid "Open menu"
+msgstr "Ava menüü"
+
 #: ../../../lib/web/src/components/layout/top-bar.tsx:63
 #: ../../../lib/web/src/components/layout/top-bar.tsx:68
 msgid "Open navigation"
@@ -1649,11 +1691,11 @@ msgstr "Ava navigatsioonimenüü"
 msgid "Open theme settings"
 msgstr "Ava teema seaded"
 
-#: src/components/GameCanvas.tsx:313
+#: src/components/GameCanvas.tsx:316
 msgid "or"
 msgstr "või"
 
-#: src/components/GameCanvas.tsx:313
+#: src/components/GameCanvas.tsx:316
 msgid "orbit"
 msgstr "tiirlemine"
 
@@ -1661,7 +1703,7 @@ msgstr "tiirlemine"
 msgid "Other"
 msgstr "Muu"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:217
+#: ../../../lib/web/src/features/access/access-list.tsx:222
 msgid "Owner"
 msgstr "Omanik"
 
@@ -1682,14 +1724,14 @@ msgstr "Pääsuvõtmega kinnitamine ebaõnnestus. Proovige uuesti."
 msgid "Passkeys"
 msgstr "Pääsuvõtmed"
 
-#: src/components/MissionSetup.tsx:845
+#: src/components/MissionSetup.tsx:853
 #: src/components/Multiplayer.tsx:90
 #: src/components/Multiplayer.tsx:245
 msgid "pilot"
 msgstr "piloot"
 
-#: src/components/MissionSetup.tsx:1164
-#: src/components/MissionSetup.tsx:1537
+#: src/components/MissionSetup.tsx:1172
+#: src/components/MissionSetup.tsx:1545
 #: src/components/Multiplayer.tsx:376
 msgid "Pilot"
 msgstr "Piloot"
@@ -1698,7 +1740,7 @@ msgstr "Piloot"
 msgid "PILOT DOWN"
 msgstr "PILOOT HUKKUNUD"
 
-#: src/components/GameCanvas.tsx:300
+#: src/components/GameCanvas.tsx:303
 msgid "pitch"
 msgstr "kalle"
 
@@ -1718,7 +1760,7 @@ msgstr "Nina üles"
 msgid "PLATFORM"
 msgstr "PLATVORM"
 
-#: src/components/MatchHistory.tsx:159
+#: src/components/MatchHistory.tsx:166
 msgid "Players"
 msgstr "Mängijad"
 
@@ -1739,7 +1781,7 @@ msgstr "Proovi uuesti."
 msgid "Please wait a moment and try again."
 msgstr "Palun oota hetk ja proovi uuesti."
 
-#: src/components/MissionSetup.tsx:1298
+#: src/components/MissionSetup.tsx:1306
 msgid "Preset"
 msgstr "Eelseade"
 
@@ -1769,6 +1811,10 @@ msgstr "Privaatsus"
 #: ../../../lib/web/src/components/profile-dropdown.tsx:114
 msgid "Profile"
 msgstr "Profiil"
+
+#: ../../../lib/web/src/components/person-picker.tsx:200
+msgid "Project members"
+msgstr ""
 
 #: src/components/GameCanvas.tsx:95
 msgid "PUSH TIME"
@@ -1802,7 +1848,7 @@ msgstr "Registreerige oma pääsuvõtmed selles serveris uuesti"
 msgid "REARMED"
 msgstr "TAASRELVASTATUD"
 
-#: src/components/MissionSetup.tsx:1029
+#: src/components/MissionSetup.tsx:1037
 msgid "Recent"
 msgstr "Hiljutised"
 
@@ -1811,16 +1857,16 @@ msgstr "Hiljutised"
 msgid "Recommended"
 msgstr "Soovitatud"
 
-#: src/components/MissionSetup.tsx:1459
+#: src/components/MissionSetup.tsx:1467
 msgid "Record flights"
 msgstr "Lendude salvestamine"
 
-#: src/components/MatchHistory.tsx:208
-#: src/components/MissionSetup.tsx:1453
+#: src/components/MatchHistory.tsx:215
+#: src/components/MissionSetup.tsx:1461
 msgid "Recording"
 msgstr "Salvestamine"
 
-#: src/components/MatchHistory.tsx:202
+#: src/components/MatchHistory.tsx:209
 msgid "Recording saved"
 msgstr "Salvestis salvestatud"
 
@@ -1865,22 +1911,22 @@ msgstr "Suhteline (5m, 3h, 2d)"
 msgid "Relative within 24 hours, else absolute"
 msgstr "Suhteline 24 tunni jooksul, muidu absoluutne"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:265
+#: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
 msgstr "Eemalda"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:247
-#: ../../../lib/web/src/features/access/access-list.tsx:253
+#: ../../../lib/web/src/features/access/access-list.tsx:252
+#: ../../../lib/web/src/features/access/access-list.tsx:258
 msgid "Remove access rule"
 msgstr "Eemalda juurdepääsureegel"
 
 #. placeholder {0}: formatSubject(subject, data.name)
-#: ../../../lib/web/src/features/access/access-list.tsx:259
+#: ../../../lib/web/src/features/access/access-list.tsx:264
 msgid "Remove access rule for \"{0}\"?"
 msgstr "Kas eemaldada juurdepääsureegel „{0}“ jaoks?"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:257
+#: ../../../lib/web/src/features/access/access-list.tsx:262
 msgid "Remove access?"
 msgstr "Kas eemaldada juurdepääs?"
 
@@ -1889,7 +1935,7 @@ msgstr "Kas eemaldada juurdepääs?"
 msgid "Remove interest"
 msgstr "Eemalda huvi"
 
-#: src/components/MissionSetup.tsx:812
+#: src/components/MissionSetup.tsx:819
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Renderdamine <0>three.js</0> abil (MIT litsents)."
 
@@ -1899,7 +1945,7 @@ msgstr "Saada e-kiri uuesti"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:86
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:81
-#: src/components/MissionSetup.tsx:1672
+#: src/components/MissionSetup.tsx:1681
 msgid "Reset"
 msgstr "Lähtesta"
 
@@ -1907,15 +1953,15 @@ msgstr "Lähtesta"
 msgid "Reset all settings to default values"
 msgstr "Lähtesta kõik seaded vaikeväärtustele"
 
-#: src/components/MissionSetup.tsx:1325
+#: src/components/MissionSetup.tsx:1333
 msgid "Resolution"
 msgstr "Resolutsioon"
 
-#: src/components/MissionSetup.tsx:1563
+#: src/components/MissionSetup.tsx:1572
 msgid "Restart mission"
 msgstr "Taaskäivita missioon"
 
-#: src/components/MatchHistory.tsx:168
+#: src/components/MatchHistory.tsx:175
 msgid "Result"
 msgstr "Tulemus"
 
@@ -1923,7 +1969,7 @@ msgstr "Tulemus"
 msgid "Resume"
 msgstr "Jätka"
 
-#: src/components/MissionSetup.tsx:1559
+#: src/components/MissionSetup.tsx:1568
 msgid "Resume mission"
 msgstr "Jätka missiooni"
 
@@ -1939,7 +1985,7 @@ msgstr "Ümberpööratud"
 msgid "Right to Left"
 msgstr "Paremalt vasakule"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:304
 msgid "roll"
 msgstr "kreen"
 
@@ -1955,8 +2001,8 @@ msgstr "Kalle vasakule"
 msgid "Roll right"
 msgstr "Kalle paremale"
 
-#: src/components/MissionSetup.tsx:1163
-#: src/components/MissionSetup.tsx:1536
+#: src/components/MissionSetup.tsx:1171
+#: src/components/MissionSetup.tsx:1544
 #: src/components/Multiplayer.tsx:375
 msgid "Rookie"
 msgstr "Algaja"
@@ -2053,7 +2099,7 @@ msgstr "valitud"
 msgid "Selected: <0>{0}</0>"
 msgstr "Valitud: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:933
+#: src/components/MissionSetup.tsx:941
 msgid "Send"
 msgstr "Saada"
 
@@ -2073,12 +2119,12 @@ msgstr "Saada e-kiri"
 msgid "Serif"
 msgstr "Seriif"
 
-#: src/components/MatchHistory.tsx:153
-#: src/components/MissionSetup.tsx:1042
+#: src/components/MatchHistory.tsx:160
+#: src/components/MissionSetup.tsx:1050
 msgid "Server"
 msgstr "Server"
 
-#: src/components/MissionSetup.tsx:898
+#: src/components/MissionSetup.tsx:906
 msgid "Server chat"
 msgstr "Serveri vestlus"
 
@@ -2114,12 +2160,12 @@ msgstr "Määra lähtekoht ja sihtkoht"
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1585
-#: src/components/MissionSetup.tsx:1617
+#: src/components/MissionSetup.tsx:1594
+#: src/components/MissionSetup.tsx:1626
 msgid "Settings"
 msgstr "Seaded"
 
-#: src/components/MissionSetup.tsx:1367
+#: src/components/MissionSetup.tsx:1375
 msgid "Shadows"
 msgstr "Varjud"
 
@@ -2160,7 +2206,7 @@ msgid "Small"
 msgstr "Väike"
 
 #: src/components/MissionSetup.tsx:425
-#: src/components/MissionSetup.tsx:1627
+#: src/components/MissionSetup.tsx:1636
 msgid "Sound"
 msgstr "Heli"
 
@@ -2172,7 +2218,7 @@ msgstr "Avar"
 msgid "SPD BK"
 msgstr "ÕHUP"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:309
 msgid "speed brake"
 msgstr "õhupidur"
 
@@ -2198,7 +2244,7 @@ msgstr "Stall, puhas konfiguratsioon (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "Stall, maandumiskonfiguratsioon (Vs0)"
 
-#: src/components/MissionSetup.tsx:1176
+#: src/components/MissionSetup.tsx:1184
 msgid "Start"
 msgstr "Alusta"
 
@@ -2218,7 +2264,7 @@ msgstr "Järsim tõus (Vx, järelpõleti)"
 msgid "STRUCTURE"
 msgstr "STRUKTUUR"
 
-#: ../../../lib/web/src/features/access/access-list.tsx:191
+#: ../../../lib/web/src/features/access/access-list.tsx:196
 msgid "Subject"
 msgstr "Teema"
 
@@ -2241,6 +2287,14 @@ msgstr "TAKTIKALINE KAART"
 msgid "Tag"
 msgstr "Silt"
 
+#: ../../../lib/web/src/components/post-tags.tsx:76
+msgid "Tag already exists"
+msgstr "Silt on juba olemas"
+
+#: ../../../lib/web/src/components/post-tags.tsx:68
+msgid "Tag must be 50 characters or less"
+msgstr ""
+
 #: ../../../lib/web/src/components/post-tags.tsx:101
 #: ../../../lib/web/src/components/post-tags.tsx:115
 msgid "Tags"
@@ -2250,7 +2304,7 @@ msgstr "Sildid"
 msgid "TALLY"
 msgstr "NÄEN VAENLAST"
 
-#: src/components/MissionSetup.tsx:1116
+#: src/components/MissionSetup.tsx:1124
 msgid "Task"
 msgstr "Ülesanne"
 
@@ -2312,7 +2366,7 @@ msgstr "See lobi saadab sinu mänguühenduse teise hosti ({redirectHost}). Jätk
 msgid "This page has not been created yet."
 msgstr "Seda lehte pole veel loodud."
 
-#: src/components/GameCanvas.tsx:302
+#: src/components/GameCanvas.tsx:305
 msgid "throttle"
 msgstr "gaas"
 
@@ -2336,15 +2390,15 @@ msgstr "Neljapäev"
 msgid "Tightest sustained turn speed"
 msgstr "Kitsaima püsipöörde kiirus"
 
-#: src/components/GameCanvas.tsx:314
+#: src/components/GameCanvas.tsx:317
 msgid "tilt"
 msgstr "kallutus"
 
-#: src/components/MatchHistory.tsx:132
+#: src/components/MatchHistory.tsx:140
 msgid "Time"
 msgstr "Aeg"
 
-#: src/components/MissionSetup.tsx:1230
+#: src/components/MissionSetup.tsx:1238
 msgid "Time of day"
 msgstr "Kellaaeg"
 
@@ -2391,7 +2445,7 @@ msgstr "Liiga palju päringuid"
 msgid "Top"
 msgstr "Üles"
 
-#: src/components/MissionSetup.tsx:1379
+#: src/components/MissionSetup.tsx:1387
 msgid "Tracers"
 msgstr "Trasseerkuulid"
 
@@ -2426,7 +2480,7 @@ msgstr "Kirjuta kasutajate otsimiseks"
 msgid "Type to search..."
 msgstr "Kirjuta otsimiseks..."
 
-#: src/components/MissionSetup.tsx:1317
+#: src/components/MissionSetup.tsx:1325
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -2451,12 +2505,12 @@ msgstr "Volitamata juurdepääs"
 msgid "United States"
 msgstr "Ameerika Ühendriigid"
 
-#: src/components/MissionSetup.tsx:1268
+#: src/components/MissionSetup.tsx:1276
 #: src/components/Multiplayer.tsx:351
 msgid "Unlimited ammunition"
 msgstr "Piiramatu laskemoon"
 
-#: src/components/MissionSetup.tsx:1274
+#: src/components/MissionSetup.tsx:1282
 #: src/components/Multiplayer.tsx:361
 msgid "Unlimited fuel"
 msgstr "Piiramatu kütus"
@@ -2469,6 +2523,7 @@ msgstr "Kontrollimata"
 msgid "Use your passkey"
 msgstr "Kasutage oma pääsuvõtit"
 
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:86
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
 msgstr "Kasutaja"
@@ -2499,8 +2554,8 @@ msgstr "Kontrolli e-posti aadressi"
 msgid "Vertical"
 msgstr "Vertikaalne"
 
-#: src/components/MissionSetup.tsx:1165
-#: src/components/MissionSetup.tsx:1538
+#: src/components/MissionSetup.tsx:1173
+#: src/components/MissionSetup.tsx:1546
 #: src/components/Multiplayer.tsx:377
 msgid "Veteran"
 msgstr "Veteran"
@@ -2518,7 +2573,7 @@ msgstr "Video pisipilt"
 msgid "Video viewer: {0}"
 msgstr "Videovaatur: {0}"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:310
 msgid "view"
 msgstr "vaade"
 
@@ -2556,7 +2611,11 @@ msgstr "Saatsime kinnituskoodi aadressile <0>{0}</0>. Sisestage kood allpool, et
 msgid "We'll be back online shortly."
 msgstr "Oleme peagi taas võrgus."
 
-#: src/components/GameCanvas.tsx:303
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:197
+msgid "We'll notify you when something important happens."
+msgstr ""
+
+#: src/components/GameCanvas.tsx:306
 msgid "weapon"
 msgstr "relv"
 
@@ -2598,12 +2657,12 @@ msgstr "VÕIDAB"
 msgid "World server"
 msgstr "Maailmaserver"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:899
 #: src/components/Multiplayer.tsx:103
 msgid "World server not reachable"
 msgstr "Maailmaserver pole kättesaadav"
 
-#: src/components/GameCanvas.tsx:301
+#: src/components/GameCanvas.tsx:304
 msgid "yaw"
 msgstr "pööre"
 
@@ -2630,6 +2689,10 @@ msgstr "Sul puudub juurdepääs sellele jaotisele."
 #: ../../../lib/web/src/features/errors/forbidden.tsx:18
 msgid "You don't have necessary permission <0/>to view this resource."
 msgstr "Teil pole vajalikku luba <0/>selle ressursi vaatamiseks."
+
+#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
+msgid "You're all caught up!"
+msgstr ""
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
