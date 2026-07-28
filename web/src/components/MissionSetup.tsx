@@ -55,12 +55,12 @@ import {
 // The fields each tab owns, for the per-tab Reset (the joystick tab also clears
 // the per-device maps so built-in defaults apply again).
 const TAB_FIELDS: Record<string, string[]> = {
-  mission: ['task', 'start', 'cat', 'world', 'aircraft', 'bandit', 'fuel', 'cheats', 'tod', 'clouds', 'extra_aircraft'],
+  mission: ['task', 'start', 'cat', 'world', 'aircraft', 'bandit', 'fuel', 'missiles', 'flares', 'cheats', 'tod', 'clouds', 'extra_aircraft'],
   general: ['callsign', 'record'],
   controls: ['invert', 'joystick', 'sticks'],
   keys: ['keys'],
   sound: ['sound', 'volume'],
-  graphics: ['render_scale', 'dyn_res', 'lod', 'shadows', 'exterior_detail', 'ocean_segments', 'extra_aircraft', 'afterburner', 'tracers', 'missiles', 'flares', 'framerate'],
+  graphics: ['render_scale', 'dyn_res', 'lod', 'shadows', 'exterior_detail', 'ocean_segments', 'afterburner', 'tracers', 'framerate'],   // missiles, flares and the stale extra_aircraft entry all moved to the mission tab: they are rules of the fight, not rendering choices
 }
 
 function SectionLabel({ children }: { children: ReactNode }) {
@@ -1147,6 +1147,24 @@ function MissionPanel({
   onChange={(v) => set('extra_aircraft', v)}
 />
 <SectionLabel>
+  <Trans>Armament</Trans>
+</SectionLabel>
+{/* Whether weapons EXIST is a rule of the fight, like the opponent's skill or
+    the fuel load. These lived under Graphics beside render scale, so a
+    guns-only joust was configured on entirely the wrong tab. */}
+<SwitchRow
+  id='missiles'
+  label={<Trans>Missiles</Trans>}
+  checked={config.missiles}
+  onChange={(v) => set('missiles', v)}
+/>
+<SwitchRow
+  id='flares'
+  label={<Trans>Flares</Trans>}
+  checked={config.flares}
+  onChange={(v) => set('flares', v)}
+/>
+<SectionLabel>
   <Trans>Fuel</Trans>
 </SectionLabel>
 <SliderRow
@@ -1387,18 +1405,6 @@ function GraphicsPanel({
     label={<Trans>Tracers</Trans>}
     checked={config.tracers}
     onChange={(v) => set('tracers', v)}
-  />
-  <SwitchRow
-    id='missiles'
-    label={<Trans>Missiles</Trans>}
-    checked={config.missiles}
-    onChange={(v) => set('missiles', v)}
-  />
-  <SwitchRow
-    id='flares'
-    label={<Trans>Flares</Trans>}
-    checked={config.flares}
-    onChange={(v) => set('flares', v)}
   />
   <SwitchRow
     id='framerate'
