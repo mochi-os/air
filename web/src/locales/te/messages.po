@@ -34,15 +34,24 @@ msgstr "{0} “{1}”ని సృష్టించారు"
 msgid "{0} flying"
 msgstr "{0} మంది ఎగురుతున్నారు"
 
+#. placeholder {0}: item.label
+#: ../../../lib/web/src/components/config-drawer.tsx:160
+msgid "{0} option preview"
+msgstr ""
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
 #: src/components/Multiplayer.tsx:437
 msgid "{0}/{1} players"
 msgstr "{0}/{1} ఆటగాళ్లు"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:174
 msgid "{entityLabel} name"
 msgstr "{entityLabel} పేరు"
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:99
+msgid "{entityLabel} name is required"
+msgstr ""
 
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
@@ -63,6 +72,10 @@ msgstr "{selectedCount, plural, one {# ఎంచుకోబడింది} oth
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
 msgstr "{selectedCount, plural, one {# ఎంచుకున్న {entityName} కోసం బల్క్ చర్యలు} other {# ఎంచుకున్న {manyName} కోసం బల్క్ చర్యలు}}"
+
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
+msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
+msgstr ""
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -157,11 +170,12 @@ msgstr "ఖాతాను జోడించండి"
 msgid "Add an account to receive notifications and use services."
 msgstr "నోటిఫికేషన్‌లను అందుకోవడానికి మరియు సేవలను ఉపయోగించడానికి ఖాతాను జోడించండి."
 
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:101
+#: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
 msgstr "కొత్త ఖాతాను జోడించండి"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
+#: ../../../lib/web/src/components/tag-input.tsx:40
 msgid "Add tag..."
 msgstr "ట్యాగ్‌ను జోడించండి..."
 
@@ -182,7 +196,7 @@ msgstr "వీక్షణను జోడించండి"
 msgid "Adding..."
 msgstr "జోడిస్తోంది..."
 
-#: ../../../lib/web/src/components/config-drawer.tsx:71
+#: ../../../lib/web/src/components/config-drawer.tsx:72
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "మీ ప్రాధాన్యతలకు తగినట్లుగా రూపం మరియు లేఅవుట్‌ను సర్దుబాటు చేయండి."
 
@@ -215,6 +229,11 @@ msgstr "హెచ్చరికలు"
 msgid "All"
 msgstr "అన్నీ"
 
+#. placeholder {0}: entityLabel.toLowerCase()
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
+msgid "Allow anyone to search for {0}"
+msgstr ""
+
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:159
 msgid "An error occurred"
 msgstr "లోపం సంభవించింది"
@@ -223,9 +242,18 @@ msgstr "లోపం సంభవించింది"
 msgid "An unexpected error occurred"
 msgstr "ఊహించని లోపం సంభవించింది"
 
+#: ../../../lib/web/src/features/accounts/types.ts:16
+msgid "Android push"
+msgstr ""
+
 #: ../../../lib/web/src/features/access/access-list.tsx:45
+#: ../../../lib/web/src/features/access/types.ts:42
 msgid "Anyone"
 msgstr "ఎవరైనా"
+
+#: ../../../lib/web/src/features/access/types.ts:41
+msgid "Anyone who is logged in"
+msgstr ""
 
 #: src/components/MissionSetup.tsx:123
 #: src/components/MissionSetup.tsx:152
@@ -254,12 +282,21 @@ msgid "Ascending"
 msgstr "ఆరోహణ"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
+#: ../../../lib/web/src/features/access/types.ts:41
 msgid "Authenticated users"
-msgstr ""
+msgstr "ప్రామాణీకరించిన వినియోగదారులు"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Authenticator code"
 msgstr "ఆథెంటికేటర్ కోడ్"
+
+#: ../../../lib/web/src/components/entity-avatar.tsx:99
+msgid "Avatar"
+msgstr "అవతార్"
+
+#: ../../../lib/web/src/components/entity-avatar.tsx:99
+msgid "Avatar for {name}"
+msgstr ""
 
 #: src/components/MissionSetup.tsx:278
 msgid "Axes"
@@ -273,7 +310,7 @@ msgstr "అక్షం {i}"
 msgid "back"
 msgstr "వెనుకకు"
 
-#: ../../../lib/web/src/components/place-picker.tsx:155
+#: ../../../lib/web/src/components/place-picker.tsx:156
 msgid "Back"
 msgstr "వెనుకకు"
 
@@ -286,6 +323,10 @@ msgstr "హోమ్‌కు తిరిగి వెళ్ళండి"
 #: src/components/MissionSetup.tsx:1165
 msgid "Bandit"
 msgstr "శత్రు విమానం"
+
+#: ../../../lib/web/src/components/entity-banner.tsx:17
+msgid "Banner"
+msgstr "బ్యానర్"
 
 #: src/components/MissionSetup.tsx:644
 msgid "Best climb (Vy, 100% thrust)"
@@ -340,6 +381,10 @@ msgstr "ఎడమకు తిరుగు"
 msgid "BREAK RIGHT"
 msgstr "కుడికి తిరుగు"
 
+#: ../../../lib/web/src/features/accounts/types.ts:13
+msgid "Browser notifications"
+msgstr "బ్రౌజర్ నోటిఫికేషన్‌లు"
+
 #: src/components/MissionSetup.tsx:373
 msgid "Button {i}"
 msgstr "బటన్ {i}"
@@ -364,7 +409,7 @@ msgstr "కెమెరా దూరం"
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:248
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:249
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:268
@@ -441,21 +486,21 @@ msgstr "చీట్స్"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:198
 msgid "Check \"All\" to see your past notifications."
-msgstr ""
+msgstr "గత నోటిఫికేషన్‌లను చూడటానికి \"అన్నీ\" ఎంచుకోండి."
 
-#: ../../../lib/web/src/components/config-drawer.tsx:328
+#: ../../../lib/web/src/components/config-drawer.tsx:329
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
 msgstr "డిఫాల్ట్ విస్తరించిన, కాంపాక్ట్ చిహ్నం-మాత్రమే, లేదా పూర్తి లేఅవుట్ మోడ్ మధ్య ఎంచుకోండి"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:270
+#: ../../../lib/web/src/components/config-drawer.tsx:271
 msgid "Choose between inset, floating, or standard sidebar layout"
 msgstr "ఇన్‌సెట్, ఫ్లోటింగ్, లేదా ప్రామాణిక సైడ్‌బార్ లేఅవుట్ మధ్య ఎంచుకోండి"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:371
+#: ../../../lib/web/src/components/config-drawer.tsx:372
 msgid "Choose between left-to-right or right-to-left site direction"
 msgstr "ఎడమ నుండి కుడికి లేదా కుడి నుండి ఎడమకి సైట్ దిశ మధ్య ఎంచుకోండి"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:226
+#: ../../../lib/web/src/components/config-drawer.tsx:227
 msgid "Choose between system preference, light mode, or dark mode"
 msgstr "సిస్టమ్ ప్రాధాన్యత, లైట్ మోడ్, లేదా డార్క్ మోడ్ మధ్య ఎంచుకోండి"
 
@@ -464,8 +509,8 @@ msgstr "సిస్టమ్ ప్రాధాన్యత, లైట్ మ�
 msgid "Choose language"
 msgstr "భాషను ఎంచుకోండి"
 
-#: ../../../lib/web/src/components/colour-picker.tsx:269
-#: ../../../lib/web/src/components/colour-picker.tsx:350
+#: ../../../lib/web/src/components/colour-picker.tsx:270
+#: ../../../lib/web/src/components/colour-picker.tsx:351
 #: ../../../lib/web/src/components/travelling-picker.tsx:164
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
@@ -474,13 +519,17 @@ msgstr "భాషను ఎంచుకోండి"
 msgid "Clear"
 msgstr "క్లియర్ చేయండి"
 
-#: ../../../lib/web/src/components/filter-bar.tsx:73
+#: ../../../lib/web/src/components/filter-bar.tsx:74
 msgid "Clear all"
 msgstr "అన్నీ క్లియర్ చేయండి"
 
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "ఫిల్టర్‌లను క్లియర్ చేయండి"
+
+#: ../../../lib/web/src/components/search-input.tsx:26
+msgid "Clear search"
+msgstr "శోధనను క్లియర్ చేయండి"
 
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
@@ -540,16 +589,20 @@ msgstr "సౌకర్యవంతమైన"
 msgid "Coming Soon!"
 msgstr "త్వరలో వస్తోంది!"
 
+#: ../../../lib/web/src/components/ui/command.tsx:34
+msgid "Command Palette"
+msgstr ""
+
 #: src/components/GameCanvas.tsx:96
 msgid "COMMENCING"
 msgstr "ప్రారంభిస్తున్నాను"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:315
+#: ../../../lib/web/src/components/config-drawer.tsx:316
 #: ../../../lib/web/src/lib/preference-utils.ts:95
 msgid "Compact"
 msgstr "కాంపాక్ట్"
 
-#: ../../../lib/web/src/components/place-picker.tsx:159
+#: ../../../lib/web/src/components/place-picker.tsx:160
 #: ../../../lib/web/src/components/travelling-picker.tsx:316
 msgid "Confirm"
 msgstr "నిర్ధారించండి"
@@ -558,6 +611,18 @@ msgstr "నిర్ధారించండి"
 msgid "Connect"
 msgstr "కనెక్ట్"
 
+#: ../../../lib/web/src/lib/chat-ui.ts:18
+msgid "Connected"
+msgstr "కనెక్ట్ చేయబడింది"
+
+#: ../../../lib/web/src/features/accounts/account-manager.tsx:191
+msgid "Connected accounts"
+msgstr "కనెక్ట్ చేయబడిన ఖాతాలు"
+
+#: ../../../lib/web/src/lib/chat-ui.ts:21
+msgid "Connecting..."
+msgstr "కనెక్ట్ అవుతోంది..."
+
 #: src/components/Multiplayer.tsx:259
 msgid "Connecting…"
 msgstr "కనెక్ట్ అవుతోంది…"
@@ -565,6 +630,10 @@ msgstr "కనెక్ట్ అవుతోంది…"
 #: src/components/GameCanvas.tsx:66
 msgid "CONNECTION FAILED"
 msgstr "కనెక్షన్ విఫలమైంది"
+
+#: ../../../lib/web/src/lib/handle-server-error.ts:18
+msgid "Content not found."
+msgstr "కంటెంట్ కనుగొనబడలేదు."
 
 #: ../../../lib/web/src/lib/query-client.ts:81
 msgid "Content not modified"
@@ -583,7 +652,15 @@ msgstr "కొనసాగించండి"
 msgid "Continue with {label}"
 msgstr "{label}తో కొనసాగించండి"
 
-#: ../../../lib/web/src/components/ui/copy-button.tsx:63
+#: ../../../lib/web/src/lib/toast-utils.ts:42
+msgid "Copied"
+msgstr "కాపీ అయింది"
+
+#: ../../../lib/web/src/components/ui/copy-button.tsx:25
+msgid "Copied to clipboard"
+msgstr "క్లిప్‌బోర్డ్‌కి కాపీ చేయబడింది"
+
+#: ../../../lib/web/src/components/ui/copy-button.tsx:64
 msgid "Copy"
 msgstr "కాపీ చేయండి"
 
@@ -599,7 +676,8 @@ msgstr "మ్యాచ్‌ను సృష్టించలేకపోయ�
 msgid "Could not load this document. Please try again later."
 msgstr "ఈ పత్రాన్ని లోడ్ చేయలేకపోయింది. దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి."
 
-#: src/components/MatchHistory.tsx:210
+#: src/components/MatchHistory.tsx:217
+#: src/components/MatchHistory.tsx:223
 msgid "Could not save the recording"
 msgstr "రికార్డింగ్‌ను సేవ్ చేయలేకపోయాం"
 
@@ -623,6 +701,11 @@ msgstr "ఆ ఖాతాతో ధృవీకరించడం సాధ్య
 msgid "CRASHED"
 msgstr "కూలిపోయింది"
 
+#. placeholder {0}: entityLabel.toLowerCase()
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
+msgid "Create {0}"
+msgstr ""
+
 #: src/components/Multiplayer.tsx:409
 msgid "Create and fly"
 msgstr "సృష్టించి ఎగరండి"
@@ -636,6 +719,10 @@ msgstr "మ్యాచ్ సృష్టించండి"
 msgid "Create mission"
 msgstr "మిషన్ సృష్టించు"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:258
+msgid "Creating..."
+msgstr "సృష్టిస్తోంది..."
+
 #: src/components/MissionSetup.tsx:719
 #: src/components/MissionSetup.tsx:725
 msgid "Credits"
@@ -646,7 +733,11 @@ msgstr "క్రెడిట్స్"
 msgid "Cumulus"
 msgstr "క్యుములస్"
 
-#: ../../../lib/web/src/components/colour-picker.tsx:260
+#: ../../../lib/web/src/components/map-view.tsx:208
+msgid "Current location"
+msgstr "ప్రస్తుత స్థానం"
+
+#: ../../../lib/web/src/components/colour-picker.tsx:261
 msgid "Custom"
 msgstr "అనుకూల"
 
@@ -659,7 +750,7 @@ msgstr "ప్రమాదకరం"
 msgid "Cycle view"
 msgstr "వీక్షణ మార్చు"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/config-drawer.tsx:219
 #: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
@@ -695,7 +786,7 @@ msgstr "మరణాలు"
 msgid "DECK POSITION SAVED"
 msgstr "డెక్ స్థానం సేవ్ చేయబడింది"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:310
+#: ../../../lib/web/src/components/config-drawer.tsx:311
 msgid "Default"
 msgstr "డిఫాల్ట్"
 
@@ -714,6 +805,10 @@ msgstr "అవరోహణ"
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Descending"
 msgstr "అవరోహణ"
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:83
+msgid "Description"
+msgstr "వివరణ"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx:148
 msgid "Details Panel"
@@ -743,18 +838,20 @@ msgstr "పరికరం"
 msgid "Different game host"
 msgstr "వేరే గేమ్ హోస్ట్"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:340
+#: ../../../lib/web/src/components/config-drawer.tsx:341
 msgid "Direction"
 msgstr "దిశ"
 
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
-msgstr ""
+msgstr "డైరెక్టరీ"
 
 #: src/components/MissionSetup.tsx:259
 msgid "disconnected"
 msgstr "డిస్‌కనెక్ట్ అయింది"
 
+#: ../../../lib/web/src/lib/chat-ui.ts:25
+#: ../../../lib/web/src/lib/chat-ui.ts:29
 #: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "డిస్‌కనెక్ట్ అయింది"
@@ -817,6 +914,10 @@ msgstr "ఎజెక్ట్"
 msgid "EJECTED"
 msgstr "ఎజెక్ట్ అయ్యారు"
 
+#: ../../../lib/web/src/features/accounts/types.ts:15
+msgid "Email"
+msgstr "ఇమెయిల్"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "ఇమెయిల్ కోడ్"
@@ -872,6 +973,10 @@ msgstr "సైడ్‌బార్‌ను విస్తరించండ�
 msgid "Exterior detail"
 msgstr "బాహ్య వివరాలు"
 
+#: ../../../lib/web/src/features/accounts/types.ts:22
+msgid "External URL"
+msgstr "బాహ్య URL"
+
 #: src/components/MissionSetup.tsx:1135
 msgid "Extra aircraft"
 msgstr "అదనపు విమానాలు"
@@ -887,6 +992,19 @@ msgstr "F/A-18C సూచన"
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:225
 msgid "Failed to add account"
 msgstr "ఖాతాను జోడించడంలో విఫలమైంది"
+
+#: ../../../lib/web/src/components/tag-input.tsx:39
+msgid "Failed to add tag"
+msgstr "ట్యాగ్‌ను జోడించడంలో విఫలమైంది"
+
+#: ../../../lib/web/src/components/ui/copy-button.tsx:26
+#: ../../../lib/web/src/lib/toast-utils.ts:44
+msgid "Failed to copy"
+msgstr "కాపీ చేయడంలో విఫలమైంది"
+
+#: ../../../lib/web/src/hooks/use-load-more.ts:74
+msgid "Failed to load"
+msgstr "లోడ్ చేయడంలో విఫలమైంది"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
 msgid "Failed to load image"
@@ -919,6 +1037,10 @@ msgstr "FCS"
 #: src/components/GameCanvas.tsx:31
 msgid "FIGHT'S ON"
 msgstr "పోరాటం మొదలైంది"
+
+#: ../../../lib/web/src/components/data-table/toolbar.tsx:30
+msgid "Filter..."
+msgstr "ఫిల్టర్..."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -966,7 +1088,7 @@ msgstr "ఫ్లైట్ కోర్ విఫలమైంది"
 msgid "Flights"
 msgstr "విమానాలు"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:257
+#: ../../../lib/web/src/components/config-drawer.tsx:258
 msgid "Floating"
 msgstr "ఫ్లోటింగ్"
 
@@ -1034,7 +1156,7 @@ msgstr "ఇంధనం తక్కువ"
 msgid "Fuel probe"
 msgstr "ఇంధన ప్రోబ్"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:320
+#: ../../../lib/web/src/components/config-drawer.tsx:321
 msgid "Full layout"
 msgstr "పూర్తి లేఅవుట్"
 
@@ -1091,7 +1213,7 @@ msgstr "గ్రూప్"
 #. placeholder {0}: name || subject.slice(1)
 #: ../../../lib/web/src/features/access/access-list.tsx:68
 msgid "Group: {0}"
-msgstr ""
+msgstr "సమూహం: {0}"
 
 #: src/components/GameCanvas.tsx:24
 msgid "GUN"
@@ -1165,13 +1287,29 @@ msgstr "ఇంపీరియల్"
 msgid "In air"
 msgstr "గాలిలో"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:252
+#: ../../../lib/web/src/features/access/types.ts:42
+msgid "Including anonymous users"
+msgstr ""
+
+#: ../../../lib/web/src/components/faceless-avatar.tsx:69
+msgid "Initials avatar"
+msgstr ""
+
+#: ../../../lib/web/src/components/faceless-avatar.tsx:69
+msgid "Initials avatar for {name}"
+msgstr ""
+
+#: ../../../lib/web/src/components/config-drawer.tsx:253
 msgid "Inset"
 msgstr "ఇన్‌సెట్"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
 msgstr "ఆసక్తులు"
+
+#: ../../../lib/web/src/components/tag-input.tsx:38
+msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
+msgstr ""
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:245
 msgid "Invalid verification code"
@@ -1224,6 +1362,10 @@ msgstr "AI ప్లేయర్‌తో ద్వంద్వ యుద్ధ�
 #: src/components/MissionSetup.tsx:1639
 msgid "Joystick"
 msgstr "జాయ్‌స్టిక్"
+
+#: ../../../lib/web/src/lib/locale-format.ts:62
+msgid "Just now"
+msgstr "ఇప్పుడే"
 
 #: src/components/MatchHistory.tsx:149
 msgid "K/D"
@@ -1281,7 +1423,7 @@ msgstr "ప్రయోగం (కేటాపుల్ట్)"
 msgid "launch / target"
 msgstr "లాంచ్ / లక్ష్యం"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:286
+#: ../../../lib/web/src/components/config-drawer.tsx:287
 msgid "Layout"
 msgstr "లేఅవుట్"
 
@@ -1306,19 +1448,19 @@ msgstr "నిష్క్రమించారు"
 msgid "LEFT"
 msgstr "వెళ్లిపోయారు"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:354
+#: ../../../lib/web/src/components/config-drawer.tsx:355
 msgid "Left to Right"
 msgstr "ఎడమ నుండి కుడికి"
 
 #: ../../../lib/web/src/components/post-tags.tsx:72
 msgid "Letters, numbers, spaces, and hyphens only"
-msgstr ""
+msgstr "అక్షరాలు, సంఖ్యలు, ఖాళీలు, హైఫన్‌లు మాత్రమే"
 
 #: src/components/GameCanvas.tsx:100
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200 వద్ద సమతలం, చక్రాలు కిందకు"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/config-drawer.tsx:214
 #: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
@@ -1421,6 +1563,10 @@ msgstr "తక్కువ స్ట్రాటస్"
 msgid "M to close"
 msgstr "మూసివేయడానికి M"
 
+#: ../../../lib/web/src/features/accounts/account-manager.tsx:192
+msgid "Manage your connected accounts for notifications and services."
+msgstr ""
+
 #: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "పటం"
@@ -1446,6 +1592,10 @@ msgstr "మ్యాచ్ రకం"
 #: src/components/MissionSetup.tsx:1076
 msgid "Matches"
 msgstr "మ్యాచ్‌లు"
+
+#: ../../../lib/web/src/features/accounts/types.ts:17
+msgid "MCP server"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
 #: src/components/MissionSetup.tsx:1321
@@ -1493,6 +1643,10 @@ msgstr "క్షిపణులు"
 msgid "Missiles allowed"
 msgstr "మిసైల్స్‌కు అనుమతి"
 
+#: ../../../lib/web/src/features/accounts/types.ts:23
+msgid "Mochi web"
+msgstr "Mochi వెబ్"
+
 #: src/components/MatchHistory.tsx:163
 msgid "Mode"
 msgstr "మోడ్"
@@ -1508,6 +1662,14 @@ msgstr "దాన్ని కదిలించండి…"
 #: src/components/Multiplayer.tsx:188
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "మల్టీప్లేయర్‌కు WebTransport అవసరం, ఈ బ్రౌజర్ దానికి ఇంకా మద్దతు ఇవ్వడం లేదు."
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
+msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
+msgstr ""
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:100
+msgid "Name must be 1000 characters or less"
+msgstr "పేరు 1000 క్యారెక్టర్‌లు లేదా అంతకంటే తక్కువ ఉండాలి"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:53
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:303
@@ -1550,19 +1712,28 @@ msgstr "జాయ్‌స్టిక్ ఏదీ గుర్తించబ�
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "No notifications yet"
-msgstr ""
+msgstr "ఇంకా నోటిఫికేషన్‌లు లేవు"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
 msgstr "ఓపెన్ మ్యాచ్‌లు లేవు — ఒకటి సృష్టించండి."
 
-#: ../../../lib/web/src/components/place-picker.tsx:132
+#: ../../../lib/web/src/components/person-picker.tsx:84
+msgid "No people found"
+msgstr "ఎవరూ కనుగొనబడలేదు"
+
+#: ../../../lib/web/src/components/place-picker.tsx:133
 msgid "No places found"
 msgstr "ప్రాంతాలు ఏవీ కనుగొనబడలేదు"
 
 #: ../../../lib/web/src/components/profile-dropdown.tsx:58
 msgid "No profile"
 msgstr "ప్రొఫైల్ లేదు"
+
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:82
+#: ../../../lib/web/src/components/search-entity-page.tsx:73
+msgid "No results found"
+msgstr "ఫలితాలు కనుగొనబడలేదు"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
@@ -1590,6 +1761,7 @@ msgstr "వరల్డ్ సర్వర్ లేదు."
 msgid "NO-GRADE"
 msgstr "గ్రేడ్ లేదు"
 
+#: ../../../lib/web/src/components/colour-picker.tsx:345
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
@@ -1640,6 +1812,10 @@ msgstr "సముద్ర వివరాలు"
 msgid "OK"
 msgstr "OK"
 
+#: ../../../lib/web/src/components/filter-bar.tsx:35
+msgid "On"
+msgstr "ఆన్"
+
 #: src/components/MissionSetup.tsx:951
 #: src/components/MissionSetup.tsx:1212
 msgid "On carrier"
@@ -1686,8 +1862,8 @@ msgstr "నావిగేషన్‌ను ఓపెన్ చేయండి"
 msgid "Open navigation menu"
 msgstr "నావిగేషన్ మెనుని ఓపెన్ చేయండి"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:57
-#: ../../../lib/web/src/components/config-drawer.tsx:65
+#: ../../../lib/web/src/components/config-drawer.tsx:58
+#: ../../../lib/web/src/components/config-drawer.tsx:66
 msgid "Open theme settings"
 msgstr "థీమ్ సెట్టింగ్‌లను ఓపెన్ చేయండి"
 
@@ -1723,6 +1899,10 @@ msgstr "పాస్‌కీ ధృవీకరణ విఫలమైంది.
 #: ../../../lib/web/src/components/restore-banner.tsx:135
 msgid "Passkeys"
 msgstr "పాస్‌కీలు"
+
+#: ../../../lib/web/src/components/date-picker.tsx:20
+msgid "Pick a date"
+msgstr "తేదీని ఎంచుకోండి"
 
 #: src/components/MissionSetup.tsx:853
 #: src/components/Multiplayer.tsx:90
@@ -1814,6 +1994,10 @@ msgstr "ప్రొఫైల్"
 
 #: ../../../lib/web/src/components/person-picker.tsx:200
 msgid "Project members"
+msgstr "ప్రాజెక్ట్ సభ్యులు"
+
+#: ../../../lib/web/src/features/accounts/types.ts:21
+msgid "Push notification"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:95
@@ -1852,21 +2036,25 @@ msgstr "తిరిగి ఆయుధసజ్జం"
 msgid "Recent"
 msgstr "ఇటీవలి"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:216
-#: ../../../lib/web/src/components/search-entity-page.tsx:242
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:217
+#: ../../../lib/web/src/components/search-entity-page.tsx:243
 msgid "Recommended"
 msgstr "రికమెండ్ చేయబడింది"
+
+#: ../../../lib/web/src/lib/chat-ui.ts:21
+msgid "Reconnecting ({retries})..."
+msgstr ""
 
 #: src/components/MissionSetup.tsx:1467
 msgid "Record flights"
 msgstr "విమానాలను రికార్డ్ చేయండి"
 
-#: src/components/MatchHistory.tsx:215
+#: src/components/MatchHistory.tsx:229
 #: src/components/MissionSetup.tsx:1461
 msgid "Recording"
 msgstr "రికార్డింగ్"
 
-#: src/components/MatchHistory.tsx:209
+#: src/components/MatchHistory.tsx:222
 msgid "Recording saved"
 msgstr "రికార్డింగ్ సేవ్ చేయబడింది"
 
@@ -1916,6 +2104,12 @@ msgstr "24 గంటల్లో సాపేక్ష, లేకపోతే �
 msgid "Remove"
 msgstr "తొలగించండి"
 
+#. placeholder {0}: filter.label
+#: ../../../lib/web/src/components/filter-bar.tsx:56
+#: ../../../lib/web/src/components/filter-bar.tsx:62
+msgid "Remove {0} filter"
+msgstr "{0} ఫిల్టర్‌ను తొలగించండి"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:252
 #: ../../../lib/web/src/features/access/access-list.tsx:258
 msgid "Remove access rule"
@@ -1943,13 +2137,18 @@ msgstr "రెండరింగ్ <0>three.js</0> ద్వారా (MIT ల�
 msgid "Resend email"
 msgstr "ఇమెయిల్‌ను మళ్లీ పంపండి"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:86
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:81
+#: ../../../lib/web/src/components/config-drawer.tsx:87
+#: ../../../lib/web/src/components/data-table/toolbar.tsx:82
 #: src/components/MissionSetup.tsx:1681
 msgid "Reset"
 msgstr "రీసెట్"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:84
+#: ../../../lib/web/src/components/config-drawer.tsx:122
+#: ../../../lib/web/src/components/config-drawer.tsx:127
+msgid "Reset {title}"
+msgstr ""
+
+#: ../../../lib/web/src/components/config-drawer.tsx:85
 msgid "Reset all settings to default values"
 msgstr "అన్ని సెట్టింగ్‌లను డిఫాల్ట్ విలువలకు రీసెట్ చేయండి"
 
@@ -1981,7 +2180,7 @@ msgstr "మెనుకి తిరిగి వెళ్లు"
 msgid "Reversed"
 msgstr "విలోమం"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:361
+#: ../../../lib/web/src/components/config-drawer.tsx:362
 msgid "Right to Left"
 msgstr "కుడి నుండి ఎడమకు"
 
@@ -2028,9 +2227,23 @@ msgstr "సేవ్ చేయండి"
 msgid "Sea level"
 msgstr "సముద్ర మట్టం"
 
-#: ../../../lib/web/src/components/place-picker.tsx:85
+#: ../../../lib/web/src/components/filter-bar.tsx:32
+#: ../../../lib/web/src/components/header-search.tsx:22
+#: ../../../lib/web/src/components/search.tsx:18
+msgid "Search"
+msgstr "శోధన"
+
+#: ../../../lib/web/src/components/ui/command.tsx:35
+msgid "Search for a command to run..."
+msgstr ""
+
+#: ../../../lib/web/src/components/place-picker.tsx:86
 msgid "Search for a place"
 msgstr "ఒక ప్రదేశాన్ని శోధించండి"
+
+#: ../../../lib/web/src/components/place-picker.tsx:50
+msgid "Search for a place..."
+msgstr ""
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:250
 msgid "Search for destination..."
@@ -2049,14 +2262,21 @@ msgid "Search users"
 msgstr "యూజర్లను శోధించండి"
 
 #: ../../../lib/web/src/components/person-picker.tsx:324
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:81
+#: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "శోధించండి..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:174
-#: ../../../lib/web/src/components/search-entity-page.tsx:200
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:175
+#: ../../../lib/web/src/components/search-entity-page.tsx:201
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
 msgstr "శోధిస్తోంది..."
+
+#. placeholder {0}: item.label.toLowerCase()
+#: ../../../lib/web/src/components/config-drawer.tsx:149
+msgid "Select {0}"
+msgstr ""
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:150
 msgid "Select a user, group, or other rule to grant access."
@@ -2066,6 +2286,10 @@ msgstr "యాక్సెస్ ఇవ్వడానికి ఒక యూజ
 msgid "Select access rule"
 msgstr "యాక్సెస్ నియమాన్ని ఎంచుకోండి"
 
+#: ../../../lib/web/src/features/accounts/account-picker.tsx:34
+msgid "Select account"
+msgstr ""
+
 #: ../../../lib/web/src/features/accounts/account-add.tsx:129
 msgid "Select account type"
 msgstr "ఖాతా రకాన్ని ఎంచుకోండి"
@@ -2074,19 +2298,27 @@ msgstr "ఖాతా రకాన్ని ఎంచుకోండి"
 msgid "Select group"
 msgstr "గ్రూప్‌ను ఎంచుకోండి"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:304
+#: ../../../lib/web/src/components/config-drawer.tsx:305
 msgid "Select layout style"
 msgstr "లేఅవుట్ స్టైల్‌ను ఎంచుకోండి"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:246
+#: ../../../lib/web/src/components/place-picker.tsx:49
+msgid "Select location"
+msgstr "స్థానాన్ని ఎంచుకోండి"
+
+#: ../../../lib/web/src/components/person-picker.tsx:83
+msgid "Select person..."
+msgstr ""
+
+#: ../../../lib/web/src/components/config-drawer.tsx:247
 msgid "Select sidebar style"
 msgstr "సైడ్‌బార్ స్టైల్‌ను ఎంచుకోండి"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:348
+#: ../../../lib/web/src/components/config-drawer.tsx:349
 msgid "Select site direction"
 msgstr "సైట్ దిశను ఎంచుకోండి"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:202
+#: ../../../lib/web/src/components/config-drawer.tsx:203
 msgid "Select theme preference"
 msgstr "థీమ్ ప్రాధాన్యతను ఎంచుకోండి"
 
@@ -2177,8 +2409,8 @@ msgstr "పాస్‌వర్డ్‌ను చూపు"
 msgid "Showing {totalShown} of {total}"
 msgstr "{total}లో {totalShown} చూపిస్తోంది"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:238
-#: ../../../lib/web/src/components/config-drawer.tsx:262
+#: ../../../lib/web/src/components/config-drawer.tsx:239
+#: ../../../lib/web/src/components/config-drawer.tsx:263
 #: ../../../lib/web/src/components/ui/sidebar.tsx:237
 msgid "Sidebar"
 msgstr "సైడ్‌బార్"
@@ -2268,11 +2500,16 @@ msgstr "నిర్మాణం"
 msgid "Subject"
 msgstr "విషయం"
 
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:83
+#: ../../../lib/web/src/components/search-entity-page.tsx:74
+msgid "Subscribe"
+msgstr "చందా చేరండి"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:65
 msgid "Sunday"
 msgstr "ఆదివారం"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/config-drawer.tsx:209
 #: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
@@ -2283,7 +2520,7 @@ msgstr "సిస్టమ్"
 msgid "TACTICAL MAP"
 msgstr "వ్యూహాత్మక మ్యాప్"
 
-#: ../../../lib/web/src/components/tag-input.tsx:94
+#: ../../../lib/web/src/components/tag-input.tsx:95
 msgid "Tag"
 msgstr "ట్యాగ్"
 
@@ -2293,7 +2530,7 @@ msgstr "ట్యాగ్ ఇప్పటికే ఉంది"
 
 #: ../../../lib/web/src/components/post-tags.tsx:68
 msgid "Tag must be 50 characters or less"
-msgstr ""
+msgstr "ట్యాగ్ 50 అక్షరాలు లేదా తక్కువ ఉండాలి"
 
 #: ../../../lib/web/src/components/post-tags.tsx:101
 #: ../../../lib/web/src/components/post-tags.tsx:115
@@ -2350,11 +2587,11 @@ msgstr "అభ్యర్థించిన కంటెంట్ కనుగ�
 msgid "The site is not available at the moment."
 msgstr "సైట్ ప్రస్తుతం అందుబాటులో లేదు."
 
-#: ../../../lib/web/src/components/config-drawer.tsx:194
+#: ../../../lib/web/src/components/config-drawer.tsx:195
 msgid "Theme"
 msgstr "థీమ్"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:69
+#: ../../../lib/web/src/components/config-drawer.tsx:70
 msgid "Theme Settings"
 msgstr "థీమ్ సెట్టింగ్‌లు"
 
@@ -2453,8 +2690,8 @@ msgstr "ట్రేసర్‌లు"
 msgid "Travelling"
 msgstr "ప్రయాణిస్తోంది"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:190
-#: ../../../lib/web/src/components/search-entity-page.tsx:216
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:191
+#: ../../../lib/web/src/components/search-entity-page.tsx:217
 msgid "Try adjusting your search terms"
 msgstr "మీ శోధన పదాలను సర్దుబాటు చేయడం ప్రయత్నించండి"
 
@@ -2501,9 +2738,18 @@ msgstr "కేటాయించబడలేదు"
 msgid "Unauthorized Access"
 msgstr "అనుమతి లేని యాక్సెస్"
 
+#: ../../../lib/web/src/lib/request.ts:133
+#: ../../../lib/web/src/lib/request.ts:206
+msgid "Unexpected API error"
+msgstr "ఊహించని API లోపం"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:87
 msgid "United States"
 msgstr "యునైటెడ్ స్టేట్స్"
+
+#: ../../../lib/web/src/features/accounts/types.ts:29
+msgid "Unknown"
+msgstr "తెలియదు"
 
 #: src/components/MissionSetup.tsx:1276
 #: src/components/Multiplayer.tsx:351
@@ -2598,6 +2844,10 @@ msgstr "వీక్షణలు"
 msgid "WAITING FOR OPPONENT"
 msgstr "ప్రత్యర్థి కోసం వేచి ఉంది"
 
+#: ../../../lib/web/src/components/filter-bar.tsx:35
+msgid "Watched"
+msgstr "వాచ్ చేయబడింది"
+
 #: src/components/GameCanvas.tsx:62
 msgid "WAVE OFF"
 msgstr "గో అరౌండ్"
@@ -2613,7 +2863,7 @@ msgstr "మేము త్వరలోనే తిరిగి ఆన్‌ల
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:197
 msgid "We'll notify you when something important happens."
-msgstr ""
+msgstr "ముఖ్యమైనది ఏదైనా జరిగినప్పుడు మేము మీకు తెలియజేస్తాము."
 
 #: src/components/GameCanvas.tsx:306
 msgid "weapon"
@@ -2690,9 +2940,13 @@ msgstr "ఈ విభాగానికి మీకు యాక్సెస్
 msgid "You don't have necessary permission <0/>to view this resource."
 msgstr "ఈ వనరును వీక్షించడానికి <0/>మీకు అవసరమైన అనుమతి లేదు."
 
+#: ../../../lib/web/src/lib/show-submitted-data.tsx:9
+msgid "You submitted the following values:"
+msgstr ""
+
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "You're all caught up!"
-msgstr ""
+msgstr "మీరు అన్నీ చూశారు!"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

@@ -34,15 +34,24 @@ msgstr "{0} létrehozta a következőt: „{1}”"
 msgid "{0} flying"
 msgstr "{0} a levegőben"
 
+#. placeholder {0}: item.label
+#: ../../../lib/web/src/components/config-drawer.tsx:160
+msgid "{0} option preview"
+msgstr ""
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
 #: src/components/Multiplayer.tsx:437
 msgid "{0}/{1} players"
 msgstr "{0}/{1} játékos"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:174
 msgid "{entityLabel} name"
 msgstr "{entityLabel} neve"
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:99
+msgid "{entityLabel} name is required"
+msgstr ""
 
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
@@ -63,6 +72,10 @@ msgstr "{selectedCount, plural, one {# kiválasztva} other {# kiválasztva}}"
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
 msgstr "{selectedCount, plural, one {Tömeges műveletek # kiválasztott {entityName} elemre} other {Tömeges műveletek # kiválasztott {manyName} elemre}}"
+
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
+msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
+msgstr ""
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -157,11 +170,12 @@ msgstr "Fiók hozzáadása"
 msgid "Add an account to receive notifications and use services."
 msgstr "Adjon hozzá egy fiókot az értesítések fogadásához és a szolgáltatások használatához."
 
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:101
+#: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
 msgstr "Új fiók hozzáadása"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
+#: ../../../lib/web/src/components/tag-input.tsx:40
 msgid "Add tag..."
 msgstr "Címke hozzáadása..."
 
@@ -182,7 +196,7 @@ msgstr "Nézet hozzáadása"
 msgid "Adding..."
 msgstr "Hozzáadás..."
 
-#: ../../../lib/web/src/components/config-drawer.tsx:71
+#: ../../../lib/web/src/components/config-drawer.tsx:72
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Igazítsa a megjelenést és az elrendezést a saját igényei szerint."
 
@@ -215,6 +229,11 @@ msgstr "Figyelmeztetések"
 msgid "All"
 msgstr "Összes"
 
+#. placeholder {0}: entityLabel.toLowerCase()
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
+msgid "Allow anyone to search for {0}"
+msgstr ""
+
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:159
 msgid "An error occurred"
 msgstr "Hiba történt"
@@ -223,9 +242,18 @@ msgstr "Hiba történt"
 msgid "An unexpected error occurred"
 msgstr "Váratlan hiba történt"
 
+#: ../../../lib/web/src/features/accounts/types.ts:16
+msgid "Android push"
+msgstr ""
+
 #: ../../../lib/web/src/features/access/access-list.tsx:45
+#: ../../../lib/web/src/features/access/types.ts:42
 msgid "Anyone"
 msgstr "Bárki"
+
+#: ../../../lib/web/src/features/access/types.ts:41
+msgid "Anyone who is logged in"
+msgstr ""
 
 #: src/components/MissionSetup.tsx:123
 #: src/components/MissionSetup.tsx:152
@@ -254,12 +282,21 @@ msgid "Ascending"
 msgstr "Növekvő"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
+#: ../../../lib/web/src/features/access/types.ts:41
 msgid "Authenticated users"
-msgstr ""
+msgstr "Bejelentkezett felhasználók"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Authenticator code"
 msgstr "Hitelesítő kód"
+
+#: ../../../lib/web/src/components/entity-avatar.tsx:99
+msgid "Avatar"
+msgstr "Profilkép"
+
+#: ../../../lib/web/src/components/entity-avatar.tsx:99
+msgid "Avatar for {name}"
+msgstr ""
 
 #: src/components/MissionSetup.tsx:278
 msgid "Axes"
@@ -273,7 +310,7 @@ msgstr "{i}. tengely"
 msgid "back"
 msgstr "hátra"
 
-#: ../../../lib/web/src/components/place-picker.tsx:155
+#: ../../../lib/web/src/components/place-picker.tsx:156
 msgid "Back"
 msgstr "Vissza"
 
@@ -286,6 +323,10 @@ msgstr "Vissza a kezdőlapra"
 #: src/components/MissionSetup.tsx:1165
 msgid "Bandit"
 msgstr "Bandita"
+
+#: ../../../lib/web/src/components/entity-banner.tsx:17
+msgid "Banner"
+msgstr "Fejléckép"
 
 #: src/components/MissionSetup.tsx:644
 msgid "Best climb (Vy, 100% thrust)"
@@ -340,6 +381,10 @@ msgstr "BREAK BALRA"
 msgid "BREAK RIGHT"
 msgstr "BREAK JOBBRA"
 
+#: ../../../lib/web/src/features/accounts/types.ts:13
+msgid "Browser notifications"
+msgstr "Böngészőértesítések"
+
 #: src/components/MissionSetup.tsx:373
 msgid "Button {i}"
 msgstr "{i}. gomb"
@@ -364,7 +409,7 @@ msgstr "Kameratávolság"
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:248
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:249
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:268
@@ -441,21 +486,21 @@ msgstr "Csalások"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:198
 msgid "Check \"All\" to see your past notifications."
-msgstr ""
+msgstr "Jelölje be az „Összes” lehetőséget a korábbi értesítésekhez."
 
-#: ../../../lib/web/src/components/config-drawer.tsx:328
+#: ../../../lib/web/src/components/config-drawer.tsx:329
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
 msgstr "Választhat alapértelmezett kibontott, kompakt csak ikonos vagy teljes elrendezési mód között"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:270
+#: ../../../lib/web/src/components/config-drawer.tsx:271
 msgid "Choose between inset, floating, or standard sidebar layout"
 msgstr "Választhat beágyazott, lebegő vagy szabványos oldalsáv-elrendezés között"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:371
+#: ../../../lib/web/src/components/config-drawer.tsx:372
 msgid "Choose between left-to-right or right-to-left site direction"
 msgstr "Választhat balról jobbra vagy jobbról balra olvasási irány között"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:226
+#: ../../../lib/web/src/components/config-drawer.tsx:227
 msgid "Choose between system preference, light mode, or dark mode"
 msgstr "Választhat rendszerbeállítás, világos vagy sötét mód között"
 
@@ -464,8 +509,8 @@ msgstr "Választhat rendszerbeállítás, világos vagy sötét mód között"
 msgid "Choose language"
 msgstr "Nyelv kiválasztása"
 
-#: ../../../lib/web/src/components/colour-picker.tsx:269
-#: ../../../lib/web/src/components/colour-picker.tsx:350
+#: ../../../lib/web/src/components/colour-picker.tsx:270
+#: ../../../lib/web/src/components/colour-picker.tsx:351
 #: ../../../lib/web/src/components/travelling-picker.tsx:164
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
@@ -474,13 +519,17 @@ msgstr "Nyelv kiválasztása"
 msgid "Clear"
 msgstr "Törlés"
 
-#: ../../../lib/web/src/components/filter-bar.tsx:73
+#: ../../../lib/web/src/components/filter-bar.tsx:74
 msgid "Clear all"
 msgstr "Összes törlése"
 
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "Szűrők törlése"
+
+#: ../../../lib/web/src/components/search-input.tsx:26
+msgid "Clear search"
+msgstr "Keresés törlése"
 
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
@@ -540,16 +589,20 @@ msgstr "Kényelmes"
 msgid "Coming Soon!"
 msgstr "Hamarosan!"
 
+#: ../../../lib/web/src/components/ui/command.tsx:34
+msgid "Command Palette"
+msgstr ""
+
 #: src/components/GameCanvas.tsx:96
 msgid "COMMENCING"
 msgstr "MEGKEZDEM"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:315
+#: ../../../lib/web/src/components/config-drawer.tsx:316
 #: ../../../lib/web/src/lib/preference-utils.ts:95
 msgid "Compact"
 msgstr "Kompakt"
 
-#: ../../../lib/web/src/components/place-picker.tsx:159
+#: ../../../lib/web/src/components/place-picker.tsx:160
 #: ../../../lib/web/src/components/travelling-picker.tsx:316
 msgid "Confirm"
 msgstr "Megerősítés"
@@ -558,6 +611,18 @@ msgstr "Megerősítés"
 msgid "Connect"
 msgstr "Csatlakozás"
 
+#: ../../../lib/web/src/lib/chat-ui.ts:18
+msgid "Connected"
+msgstr "Csatlakoztatva"
+
+#: ../../../lib/web/src/features/accounts/account-manager.tsx:191
+msgid "Connected accounts"
+msgstr "Csatlakoztatott fiókok"
+
+#: ../../../lib/web/src/lib/chat-ui.ts:21
+msgid "Connecting..."
+msgstr "Csatlakozás…"
+
 #: src/components/Multiplayer.tsx:259
 msgid "Connecting…"
 msgstr "Kapcsolódás…"
@@ -565,6 +630,10 @@ msgstr "Kapcsolódás…"
 #: src/components/GameCanvas.tsx:66
 msgid "CONNECTION FAILED"
 msgstr "SIKERTELEN KAPCSOLÓDÁS"
+
+#: ../../../lib/web/src/lib/handle-server-error.ts:18
+msgid "Content not found."
+msgstr "A tartalom nem található."
 
 #: ../../../lib/web/src/lib/query-client.ts:81
 msgid "Content not modified"
@@ -583,7 +652,15 @@ msgstr "Folytatás"
 msgid "Continue with {label}"
 msgstr "Folytatás a következővel: {label}"
 
-#: ../../../lib/web/src/components/ui/copy-button.tsx:63
+#: ../../../lib/web/src/lib/toast-utils.ts:42
+msgid "Copied"
+msgstr "Másolva"
+
+#: ../../../lib/web/src/components/ui/copy-button.tsx:25
+msgid "Copied to clipboard"
+msgstr "A vágólapra másolva"
+
+#: ../../../lib/web/src/components/ui/copy-button.tsx:64
 msgid "Copy"
 msgstr "Másolás"
 
@@ -599,7 +676,8 @@ msgstr "Nem sikerült létrehozni a meccset"
 msgid "Could not load this document. Please try again later."
 msgstr "Nem sikerült betölteni ezt a dokumentumot. Kérjük, próbáld meg később."
 
-#: src/components/MatchHistory.tsx:210
+#: src/components/MatchHistory.tsx:217
+#: src/components/MatchHistory.tsx:223
 msgid "Could not save the recording"
 msgstr "Nem sikerült menteni a felvételt"
 
@@ -623,6 +701,11 @@ msgstr "Nem sikerült ellenőrizni azzal a fiókkal. Kérjük, próbálja újra.
 msgid "CRASHED"
 msgstr "LEZUHANT"
 
+#. placeholder {0}: entityLabel.toLowerCase()
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
+msgid "Create {0}"
+msgstr ""
+
 #: src/components/Multiplayer.tsx:409
 msgid "Create and fly"
 msgstr "Létrehozás és repülés"
@@ -636,6 +719,10 @@ msgstr "Meccs létrehozása"
 msgid "Create mission"
 msgstr "Küldetés létrehozása"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:258
+msgid "Creating..."
+msgstr "Létrehozás..."
+
 #: src/components/MissionSetup.tsx:719
 #: src/components/MissionSetup.tsx:725
 msgid "Credits"
@@ -646,7 +733,11 @@ msgstr "Stáblista"
 msgid "Cumulus"
 msgstr "Gomolyfelhő"
 
-#: ../../../lib/web/src/components/colour-picker.tsx:260
+#: ../../../lib/web/src/components/map-view.tsx:208
+msgid "Current location"
+msgstr "Jelenlegi hely"
+
+#: ../../../lib/web/src/components/colour-picker.tsx:261
 msgid "Custom"
 msgstr "Egyéni"
 
@@ -659,7 +750,7 @@ msgstr "VESZÉLYES"
 msgid "Cycle view"
 msgstr "Nézet váltása"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/config-drawer.tsx:219
 #: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
@@ -695,7 +786,7 @@ msgstr "Halálok"
 msgid "DECK POSITION SAVED"
 msgstr "FEDÉLZETI POZÍCIÓ MENTVE"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:310
+#: ../../../lib/web/src/components/config-drawer.tsx:311
 msgid "Default"
 msgstr "Alapértelmezett"
 
@@ -714,6 +805,10 @@ msgstr "Csökkenő"
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Descending"
 msgstr "Csökkenő"
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:83
+msgid "Description"
+msgstr "Leírás"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx:148
 msgid "Details Panel"
@@ -743,18 +838,20 @@ msgstr "Eszköz"
 msgid "Different game host"
 msgstr "Másik játékkiszolgáló"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:340
+#: ../../../lib/web/src/components/config-drawer.tsx:341
 msgid "Direction"
 msgstr "Irány"
 
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
-msgstr ""
+msgstr "Címtár"
 
 #: src/components/MissionSetup.tsx:259
 msgid "disconnected"
 msgstr "leválasztva"
 
+#: ../../../lib/web/src/lib/chat-ui.ts:25
+#: ../../../lib/web/src/lib/chat-ui.ts:29
 #: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Leválasztva"
@@ -817,6 +914,10 @@ msgstr "Katapultálás"
 msgid "EJECTED"
 msgstr "KATAPULTÁLT"
 
+#: ../../../lib/web/src/features/accounts/types.ts:15
+msgid "Email"
+msgstr "E-mail"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "E-mail kód"
@@ -872,6 +973,10 @@ msgstr "Oldalsáv kibontása"
 msgid "Exterior detail"
 msgstr "Külső részletesség"
 
+#: ../../../lib/web/src/features/accounts/types.ts:22
+msgid "External URL"
+msgstr "Külső URL"
+
 #: src/components/MissionSetup.tsx:1135
 msgid "Extra aircraft"
 msgstr "További repülőgépek"
@@ -887,6 +992,19 @@ msgstr "F/A-18C referencia"
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:225
 msgid "Failed to add account"
 msgstr "Nem sikerült hozzáadni a fiókot"
+
+#: ../../../lib/web/src/components/tag-input.tsx:39
+msgid "Failed to add tag"
+msgstr "Nem sikerült hozzáadni a címkét"
+
+#: ../../../lib/web/src/components/ui/copy-button.tsx:26
+#: ../../../lib/web/src/lib/toast-utils.ts:44
+msgid "Failed to copy"
+msgstr "Nem sikerült másolni"
+
+#: ../../../lib/web/src/hooks/use-load-more.ts:74
+msgid "Failed to load"
+msgstr "Nem sikerült betölteni"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
 msgid "Failed to load image"
@@ -919,6 +1037,10 @@ msgstr "FCS"
 #: src/components/GameCanvas.tsx:31
 msgid "FIGHT'S ON"
 msgstr "KEZDŐDIK A HARC"
+
+#: ../../../lib/web/src/components/data-table/toolbar.tsx:30
+msgid "Filter..."
+msgstr "Szűrés…"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -966,7 +1088,7 @@ msgstr "REPÜLÉSI MAG HIBA"
 msgid "Flights"
 msgstr "Repülések"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:257
+#: ../../../lib/web/src/components/config-drawer.tsx:258
 msgid "Floating"
 msgstr "Lebegő"
 
@@ -1034,7 +1156,7 @@ msgstr "KEVÉS ÜZEMANYAG"
 msgid "Fuel probe"
 msgstr "Üzemanyag-szonda"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:320
+#: ../../../lib/web/src/components/config-drawer.tsx:321
 msgid "Full layout"
 msgstr "Teljes elrendezés"
 
@@ -1091,7 +1213,7 @@ msgstr "Csoport"
 #. placeholder {0}: name || subject.slice(1)
 #: ../../../lib/web/src/features/access/access-list.tsx:68
 msgid "Group: {0}"
-msgstr ""
+msgstr "Csoport: {0}"
 
 #: src/components/GameCanvas.tsx:24
 msgid "GUN"
@@ -1165,13 +1287,29 @@ msgstr "Angolszász"
 msgid "In air"
 msgstr "Levegőben"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:252
+#: ../../../lib/web/src/features/access/types.ts:42
+msgid "Including anonymous users"
+msgstr ""
+
+#: ../../../lib/web/src/components/faceless-avatar.tsx:69
+msgid "Initials avatar"
+msgstr ""
+
+#: ../../../lib/web/src/components/faceless-avatar.tsx:69
+msgid "Initials avatar for {name}"
+msgstr ""
+
+#: ../../../lib/web/src/components/config-drawer.tsx:253
 msgid "Inset"
 msgstr "Beillesztett"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
 msgstr "Érdeklődések"
+
+#: ../../../lib/web/src/components/tag-input.tsx:38
+msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
+msgstr ""
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:245
 msgid "Invalid verification code"
@@ -1224,6 +1362,10 @@ msgstr "Párbaj AI játékos ellen"
 #: src/components/MissionSetup.tsx:1639
 msgid "Joystick"
 msgstr "Joystick"
+
+#: ../../../lib/web/src/lib/locale-format.ts:62
+msgid "Just now"
+msgstr "Épp most"
 
 #: src/components/MatchHistory.tsx:149
 msgid "K/D"
@@ -1281,7 +1423,7 @@ msgstr "Indítás (katapult)"
 msgid "launch / target"
 msgstr "indítás / befogás"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:286
+#: ../../../lib/web/src/components/config-drawer.tsx:287
 msgid "Layout"
 msgstr "Elrendezés"
 
@@ -1306,19 +1448,19 @@ msgstr "Kilépett"
 msgid "LEFT"
 msgstr "KILÉPETT"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:354
+#: ../../../lib/web/src/components/config-drawer.tsx:355
 msgid "Left to Right"
 msgstr "Balról jobbra"
 
 #: ../../../lib/web/src/components/post-tags.tsx:72
 msgid "Letters, numbers, spaces, and hyphens only"
-msgstr ""
+msgstr "Csak betűk, számok, szóközök és kötőjelek"
 
 #: src/components/GameCanvas.tsx:100
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "TARTS 1200-AT, FUTÓMŰ KI"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/config-drawer.tsx:214
 #: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
@@ -1421,6 +1563,10 @@ msgstr "Alacsony rétegfelhő"
 msgid "M to close"
 msgstr "M a bezáráshoz"
 
+#: ../../../lib/web/src/features/accounts/account-manager.tsx:192
+msgid "Manage your connected accounts for notifications and services."
+msgstr ""
+
 #: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "térkép"
@@ -1446,6 +1592,10 @@ msgstr "Meccs típusa"
 #: src/components/MissionSetup.tsx:1076
 msgid "Matches"
 msgstr "Meccsek"
+
+#: ../../../lib/web/src/features/accounts/types.ts:17
+msgid "MCP server"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
 #: src/components/MissionSetup.tsx:1321
@@ -1493,6 +1643,10 @@ msgstr "Rakéták"
 msgid "Missiles allowed"
 msgstr "Rakéták engedélyezve"
 
+#: ../../../lib/web/src/features/accounts/types.ts:23
+msgid "Mochi web"
+msgstr ""
+
 #: src/components/MatchHistory.tsx:163
 msgid "Mode"
 msgstr "Mód"
@@ -1508,6 +1662,14 @@ msgstr "Mozdítsa meg…"
 #: src/components/Multiplayer.tsx:188
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "A többjátékos módhoz WebTransport szükséges, amit ez a böngésző még nem támogat."
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
+msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
+msgstr ""
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:100
+msgid "Name must be 1000 characters or less"
+msgstr "A név legfeljebb 1000 karakter lehet"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:53
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:303
@@ -1550,19 +1712,28 @@ msgstr "Nem található joystick — nyomjon meg rajta egy gombot, hogy felébre
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "No notifications yet"
-msgstr ""
+msgstr "Még nincsenek értesítések"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
 msgstr "Nincs nyílt meccs — hozz létre egyet!"
 
-#: ../../../lib/web/src/components/place-picker.tsx:132
+#: ../../../lib/web/src/components/person-picker.tsx:84
+msgid "No people found"
+msgstr "Nem találhatók személyek"
+
+#: ../../../lib/web/src/components/place-picker.tsx:133
 msgid "No places found"
 msgstr "Nem találhatók helyek"
 
 #: ../../../lib/web/src/components/profile-dropdown.tsx:58
 msgid "No profile"
 msgstr "Nincs profil"
+
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:82
+#: ../../../lib/web/src/components/search-entity-page.tsx:73
+msgid "No results found"
+msgstr "Nincs találat"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
@@ -1590,6 +1761,7 @@ msgstr "Nincs világszerver."
 msgid "NO-GRADE"
 msgstr "NINCS OSZTÁLYZAT"
 
+#: ../../../lib/web/src/components/colour-picker.tsx:345
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
@@ -1640,6 +1812,10 @@ msgstr "Óceán részletessége"
 msgid "OK"
 msgstr "OK"
 
+#: ../../../lib/web/src/components/filter-bar.tsx:35
+msgid "On"
+msgstr "Be"
+
 #: src/components/MissionSetup.tsx:951
 #: src/components/MissionSetup.tsx:1212
 msgid "On carrier"
@@ -1686,8 +1862,8 @@ msgstr "Navigáció megnyitása"
 msgid "Open navigation menu"
 msgstr "Navigációs menü megnyitása"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:57
-#: ../../../lib/web/src/components/config-drawer.tsx:65
+#: ../../../lib/web/src/components/config-drawer.tsx:58
+#: ../../../lib/web/src/components/config-drawer.tsx:66
 msgid "Open theme settings"
 msgstr "Téma beállításainak megnyitása"
 
@@ -1723,6 +1899,10 @@ msgstr "A hozzáférési kulcs ellenőrzése sikertelen. Próbálja újra."
 #: ../../../lib/web/src/components/restore-banner.tsx:135
 msgid "Passkeys"
 msgstr "Passkey-ek"
+
+#: ../../../lib/web/src/components/date-picker.tsx:20
+msgid "Pick a date"
+msgstr "Válasszon dátumot"
 
 #: src/components/MissionSetup.tsx:853
 #: src/components/Multiplayer.tsx:90
@@ -1814,6 +1994,10 @@ msgstr "Profil"
 
 #: ../../../lib/web/src/components/person-picker.tsx:200
 msgid "Project members"
+msgstr "Projekttagok"
+
+#: ../../../lib/web/src/features/accounts/types.ts:21
+msgid "Push notification"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:95
@@ -1852,21 +2036,25 @@ msgstr "ÚJRAFEGYVEREZVE"
 msgid "Recent"
 msgstr "Legutóbbi"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:216
-#: ../../../lib/web/src/components/search-entity-page.tsx:242
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:217
+#: ../../../lib/web/src/components/search-entity-page.tsx:243
 msgid "Recommended"
 msgstr "Ajánlott"
+
+#: ../../../lib/web/src/lib/chat-ui.ts:21
+msgid "Reconnecting ({retries})..."
+msgstr ""
 
 #: src/components/MissionSetup.tsx:1467
 msgid "Record flights"
 msgstr "Repülések rögzítése"
 
-#: src/components/MatchHistory.tsx:215
+#: src/components/MatchHistory.tsx:229
 #: src/components/MissionSetup.tsx:1461
 msgid "Recording"
 msgstr "Felvétel"
 
-#: src/components/MatchHistory.tsx:209
+#: src/components/MatchHistory.tsx:222
 msgid "Recording saved"
 msgstr "A felvétel mentve"
 
@@ -1916,6 +2104,12 @@ msgstr "24 órán belül relatív, egyébként abszolút"
 msgid "Remove"
 msgstr "Eltávolítás"
 
+#. placeholder {0}: filter.label
+#: ../../../lib/web/src/components/filter-bar.tsx:56
+#: ../../../lib/web/src/components/filter-bar.tsx:62
+msgid "Remove {0} filter"
+msgstr "{0} szűrő eltávolítása"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:252
 #: ../../../lib/web/src/features/access/access-list.tsx:258
 msgid "Remove access rule"
@@ -1943,13 +2137,18 @@ msgstr "A megjelenítést a <0>three.js</0> végzi (MIT licenc)."
 msgid "Resend email"
 msgstr "E-mail újraküldése"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:86
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:81
+#: ../../../lib/web/src/components/config-drawer.tsx:87
+#: ../../../lib/web/src/components/data-table/toolbar.tsx:82
 #: src/components/MissionSetup.tsx:1681
 msgid "Reset"
 msgstr "Visszaállítás"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:84
+#: ../../../lib/web/src/components/config-drawer.tsx:122
+#: ../../../lib/web/src/components/config-drawer.tsx:127
+msgid "Reset {title}"
+msgstr ""
+
+#: ../../../lib/web/src/components/config-drawer.tsx:85
 msgid "Reset all settings to default values"
 msgstr "Minden beállítás visszaállítása alapértelmezett értékekre"
 
@@ -1981,7 +2180,7 @@ msgstr "Vissza a menübe"
 msgid "Reversed"
 msgstr "Fordított"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:361
+#: ../../../lib/web/src/components/config-drawer.tsx:362
 msgid "Right to Left"
 msgstr "Jobbról balra"
 
@@ -2028,9 +2227,23 @@ msgstr "Mentés"
 msgid "Sea level"
 msgstr "Tengerszint"
 
-#: ../../../lib/web/src/components/place-picker.tsx:85
+#: ../../../lib/web/src/components/filter-bar.tsx:32
+#: ../../../lib/web/src/components/header-search.tsx:22
+#: ../../../lib/web/src/components/search.tsx:18
+msgid "Search"
+msgstr "Keresés"
+
+#: ../../../lib/web/src/components/ui/command.tsx:35
+msgid "Search for a command to run..."
+msgstr ""
+
+#: ../../../lib/web/src/components/place-picker.tsx:86
 msgid "Search for a place"
 msgstr "Hely keresése"
+
+#: ../../../lib/web/src/components/place-picker.tsx:50
+msgid "Search for a place..."
+msgstr ""
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:250
 msgid "Search for destination..."
@@ -2049,14 +2262,21 @@ msgid "Search users"
 msgstr "Felhasználók keresése"
 
 #: ../../../lib/web/src/components/person-picker.tsx:324
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:81
+#: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "Keresés..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:174
-#: ../../../lib/web/src/components/search-entity-page.tsx:200
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:175
+#: ../../../lib/web/src/components/search-entity-page.tsx:201
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
 msgstr "Keresés folyamatban..."
+
+#. placeholder {0}: item.label.toLowerCase()
+#: ../../../lib/web/src/components/config-drawer.tsx:149
+msgid "Select {0}"
+msgstr ""
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:150
 msgid "Select a user, group, or other rule to grant access."
@@ -2066,6 +2286,10 @@ msgstr "Válasszon felhasználót, csoportot vagy más szabályt a hozzáférés
 msgid "Select access rule"
 msgstr "Hozzáférési szabály kiválasztása"
 
+#: ../../../lib/web/src/features/accounts/account-picker.tsx:34
+msgid "Select account"
+msgstr ""
+
 #: ../../../lib/web/src/features/accounts/account-add.tsx:129
 msgid "Select account type"
 msgstr "Fióktípus kiválasztása"
@@ -2074,19 +2298,27 @@ msgstr "Fióktípus kiválasztása"
 msgid "Select group"
 msgstr "Csoport kiválasztása"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:304
+#: ../../../lib/web/src/components/config-drawer.tsx:305
 msgid "Select layout style"
 msgstr "Elrendezési stílus kiválasztása"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:246
+#: ../../../lib/web/src/components/place-picker.tsx:49
+msgid "Select location"
+msgstr "Hely kiválasztása"
+
+#: ../../../lib/web/src/components/person-picker.tsx:83
+msgid "Select person..."
+msgstr ""
+
+#: ../../../lib/web/src/components/config-drawer.tsx:247
 msgid "Select sidebar style"
 msgstr "Oldalsáv stílusának kiválasztása"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:348
+#: ../../../lib/web/src/components/config-drawer.tsx:349
 msgid "Select site direction"
 msgstr "Oldalirány kiválasztása"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:202
+#: ../../../lib/web/src/components/config-drawer.tsx:203
 msgid "Select theme preference"
 msgstr "Téma beállításának kiválasztása"
 
@@ -2177,8 +2409,8 @@ msgstr "Jelszó megjelenítése"
 msgid "Showing {totalShown} of {total}"
 msgstr "{totalShown} megjelenítve a következőből: {total}"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:238
-#: ../../../lib/web/src/components/config-drawer.tsx:262
+#: ../../../lib/web/src/components/config-drawer.tsx:239
+#: ../../../lib/web/src/components/config-drawer.tsx:263
 #: ../../../lib/web/src/components/ui/sidebar.tsx:237
 msgid "Sidebar"
 msgstr "Oldalsáv"
@@ -2268,11 +2500,16 @@ msgstr "SZERKEZET"
 msgid "Subject"
 msgstr "Tárgy"
 
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:83
+#: ../../../lib/web/src/components/search-entity-page.tsx:74
+msgid "Subscribe"
+msgstr "Feliratkozás"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:65
 msgid "Sunday"
 msgstr "Vasárnap"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/config-drawer.tsx:209
 #: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
@@ -2283,7 +2520,7 @@ msgstr "Rendszer"
 msgid "TACTICAL MAP"
 msgstr "TAKTIKAI TÉRKÉP"
 
-#: ../../../lib/web/src/components/tag-input.tsx:94
+#: ../../../lib/web/src/components/tag-input.tsx:95
 msgid "Tag"
 msgstr "Címke"
 
@@ -2293,7 +2530,7 @@ msgstr "A címke már létezik"
 
 #: ../../../lib/web/src/components/post-tags.tsx:68
 msgid "Tag must be 50 characters or less"
-msgstr ""
+msgstr "A címke legfeljebb 50 karakter lehet"
 
 #: ../../../lib/web/src/components/post-tags.tsx:101
 #: ../../../lib/web/src/components/post-tags.tsx:115
@@ -2350,11 +2587,11 @@ msgstr "A kért tartalom nem található."
 msgid "The site is not available at the moment."
 msgstr "Az oldal jelenleg nem érhető el."
 
-#: ../../../lib/web/src/components/config-drawer.tsx:194
+#: ../../../lib/web/src/components/config-drawer.tsx:195
 msgid "Theme"
 msgstr "Téma"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:69
+#: ../../../lib/web/src/components/config-drawer.tsx:70
 msgid "Theme Settings"
 msgstr "Témabeállítások"
 
@@ -2453,8 +2690,8 @@ msgstr "Nyomjelzők"
 msgid "Travelling"
 msgstr "Utazás"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:190
-#: ../../../lib/web/src/components/search-entity-page.tsx:216
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:191
+#: ../../../lib/web/src/components/search-entity-page.tsx:217
 msgid "Try adjusting your search terms"
 msgstr "Próbálja módosítani a keresési kifejezéseket"
 
@@ -2501,9 +2738,18 @@ msgstr "Hozzárendelés nélküli"
 msgid "Unauthorized Access"
 msgstr "Engedély nélküli hozzáférés"
 
+#: ../../../lib/web/src/lib/request.ts:133
+#: ../../../lib/web/src/lib/request.ts:206
+msgid "Unexpected API error"
+msgstr "Váratlan API-hiba"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:87
 msgid "United States"
 msgstr "Egyesült Államok"
+
+#: ../../../lib/web/src/features/accounts/types.ts:29
+msgid "Unknown"
+msgstr "Ismeretlen"
 
 #: src/components/MissionSetup.tsx:1276
 #: src/components/Multiplayer.tsx:351
@@ -2598,6 +2844,10 @@ msgstr "Megtekintések"
 msgid "WAITING FOR OPPONENT"
 msgstr "VÁRAKOZÁS AZ ELLENFÉLRE"
 
+#: ../../../lib/web/src/components/filter-bar.tsx:35
+msgid "Watched"
+msgstr "Figyelt"
+
 #: src/components/GameCanvas.tsx:62
 msgid "WAVE OFF"
 msgstr "ÁTSTARTOLÁS"
@@ -2613,7 +2863,7 @@ msgstr "Hamarosan újra elérhetők leszünk."
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:197
 msgid "We'll notify you when something important happens."
-msgstr ""
+msgstr "Értesítjük, ha valami fontos történik."
 
 #: src/components/GameCanvas.tsx:306
 msgid "weapon"
@@ -2690,9 +2940,13 @@ msgstr "Nincs hozzáférése ehhez a részhez."
 msgid "You don't have necessary permission <0/>to view this resource."
 msgstr "Nincs meg a szükséges engedélye <0/>az erőforrás megtekintéséhez."
 
+#: ../../../lib/web/src/lib/show-submitted-data.tsx:9
+msgid "You submitted the following values:"
+msgstr ""
+
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "You're all caught up!"
-msgstr ""
+msgstr "Mindent elolvasott!"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

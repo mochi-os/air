@@ -34,15 +34,24 @@ msgstr "{0} nyieun “{1}”"
 msgid "{0} flying"
 msgstr "{0} keur ngapung"
 
+#. placeholder {0}: item.label
+#: ../../../lib/web/src/components/config-drawer.tsx:160
+msgid "{0} option preview"
+msgstr ""
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
 #: src/components/Multiplayer.tsx:437
 msgid "{0}/{1} players"
 msgstr "{0}/{1} pamaén"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:174
 msgid "{entityLabel} name"
 msgstr "Ngaran {entityLabel}"
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:99
+msgid "{entityLabel} name is required"
+msgstr ""
 
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
@@ -63,6 +72,10 @@ msgstr "{selectedCount, plural, one {# dipilih} other {# dipilih}}"
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
 msgstr "{selectedCount, plural, one {Aksi masal pikeun # {entityName} anu dipilih} other {Aksi masal pikeun # {manyName} anu dipilih}}"
+
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
+msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
+msgstr ""
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -157,11 +170,12 @@ msgstr "Tambah akun"
 msgid "Add an account to receive notifications and use services."
 msgstr "Tambah akun pikeun narima béwara jeung maké layanan."
 
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:101
+#: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
 msgstr "Tambah akun anyar"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
+#: ../../../lib/web/src/components/tag-input.tsx:40
 msgid "Add tag..."
 msgstr "Tambah tag..."
 
@@ -182,7 +196,7 @@ msgstr "Tambah view"
 msgid "Adding..."
 msgstr "Nambahan..."
 
-#: ../../../lib/web/src/components/config-drawer.tsx:71
+#: ../../../lib/web/src/components/config-drawer.tsx:72
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Atur tampilan jeung tata letak luyu jeung karep anjeun."
 
@@ -215,6 +229,11 @@ msgstr "Peringatan"
 msgid "All"
 msgstr "Sadaya"
 
+#. placeholder {0}: entityLabel.toLowerCase()
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
+msgid "Allow anyone to search for {0}"
+msgstr ""
+
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:159
 msgid "An error occurred"
 msgstr "Aya kasalahan"
@@ -223,9 +242,18 @@ msgstr "Aya kasalahan"
 msgid "An unexpected error occurred"
 msgstr "Aya kasalahan anu teu disangka-sangka"
 
+#: ../../../lib/web/src/features/accounts/types.ts:16
+msgid "Android push"
+msgstr ""
+
 #: ../../../lib/web/src/features/access/access-list.tsx:45
+#: ../../../lib/web/src/features/access/types.ts:42
 msgid "Anyone"
 msgstr "Saha waé"
+
+#: ../../../lib/web/src/features/access/types.ts:41
+msgid "Anyone who is logged in"
+msgstr ""
 
 #: src/components/MissionSetup.tsx:123
 #: src/components/MissionSetup.tsx:152
@@ -254,12 +282,21 @@ msgid "Ascending"
 msgstr "Naek"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
+#: ../../../lib/web/src/features/access/types.ts:41
 msgid "Authenticated users"
-msgstr ""
+msgstr "Pamaké anu diverifikasi"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Authenticator code"
 msgstr "Kode authenticator"
+
+#: ../../../lib/web/src/components/entity-avatar.tsx:99
+msgid "Avatar"
+msgstr "Avatar"
+
+#: ../../../lib/web/src/components/entity-avatar.tsx:99
+msgid "Avatar for {name}"
+msgstr ""
 
 #: src/components/MissionSetup.tsx:278
 msgid "Axes"
@@ -273,7 +310,7 @@ msgstr "Sumbu {i}"
 msgid "back"
 msgstr "balik"
 
-#: ../../../lib/web/src/components/place-picker.tsx:155
+#: ../../../lib/web/src/components/place-picker.tsx:156
 msgid "Back"
 msgstr "Tukang"
 
@@ -286,6 +323,10 @@ msgstr "Balik ka imah"
 #: src/components/MissionSetup.tsx:1165
 msgid "Bandit"
 msgstr "Pesawat musuh"
+
+#: ../../../lib/web/src/components/entity-banner.tsx:17
+msgid "Banner"
+msgstr ""
 
 #: src/components/MissionSetup.tsx:644
 msgid "Best climb (Vy, 100% thrust)"
@@ -340,6 +381,10 @@ msgstr "MÉNGKOL KÉNCA"
 msgid "BREAK RIGHT"
 msgstr "MÉNGKOL KATUHU"
 
+#: ../../../lib/web/src/features/accounts/types.ts:13
+msgid "Browser notifications"
+msgstr "Béwara browser"
+
 #: src/components/MissionSetup.tsx:373
 msgid "Button {i}"
 msgstr "Tombol {i}"
@@ -364,7 +409,7 @@ msgstr "Jarak kaméra"
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:248
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:249
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:268
@@ -441,21 +486,21 @@ msgstr "Cheat"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:198
 msgid "Check \"All\" to see your past notifications."
-msgstr ""
+msgstr "Cék \"Sadayana\" pikeun ningali wawaran baheula."
 
-#: ../../../lib/web/src/components/config-drawer.tsx:328
+#: ../../../lib/web/src/components/config-drawer.tsx:329
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
 msgstr "Pilih antara dibuka standar, kompak ngan ikon, atawa modeu tata letak pinuh"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:270
+#: ../../../lib/web/src/components/config-drawer.tsx:271
 msgid "Choose between inset, floating, or standard sidebar layout"
 msgstr "Pilih antara sidebar inset, ngambang, atawa standar"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:371
+#: ../../../lib/web/src/components/config-drawer.tsx:372
 msgid "Choose between left-to-right or right-to-left site direction"
 msgstr "Pilih antara arah situs kénca-ka-katuhu atawa katuhu-ka-kénca"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:226
+#: ../../../lib/web/src/components/config-drawer.tsx:227
 msgid "Choose between system preference, light mode, or dark mode"
 msgstr "Pilih antara préferénsi sistem, modeu caang, atawa modeu poék"
 
@@ -464,8 +509,8 @@ msgstr "Pilih antara préferénsi sistem, modeu caang, atawa modeu poék"
 msgid "Choose language"
 msgstr "Pilih basa"
 
-#: ../../../lib/web/src/components/colour-picker.tsx:269
-#: ../../../lib/web/src/components/colour-picker.tsx:350
+#: ../../../lib/web/src/components/colour-picker.tsx:270
+#: ../../../lib/web/src/components/colour-picker.tsx:351
 #: ../../../lib/web/src/components/travelling-picker.tsx:164
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
@@ -474,13 +519,17 @@ msgstr "Pilih basa"
 msgid "Clear"
 msgstr "Bersihkeun"
 
-#: ../../../lib/web/src/components/filter-bar.tsx:73
+#: ../../../lib/web/src/components/filter-bar.tsx:74
 msgid "Clear all"
 msgstr "Bersihkeun sadaya"
 
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "Bersihkeun saringan"
+
+#: ../../../lib/web/src/components/search-input.tsx:26
+msgid "Clear search"
+msgstr "Bersihkeun panéangan"
 
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
@@ -540,16 +589,20 @@ msgstr "Lugina"
 msgid "Coming Soon!"
 msgstr "Geura Datang!"
 
+#: ../../../lib/web/src/components/ui/command.tsx:34
+msgid "Command Palette"
+msgstr ""
+
 #: src/components/GameCanvas.tsx:96
 msgid "COMMENCING"
 msgstr "NGAMIMITIAN"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:315
+#: ../../../lib/web/src/components/config-drawer.tsx:316
 #: ../../../lib/web/src/lib/preference-utils.ts:95
 msgid "Compact"
 msgstr "Kompak"
 
-#: ../../../lib/web/src/components/place-picker.tsx:159
+#: ../../../lib/web/src/components/place-picker.tsx:160
 #: ../../../lib/web/src/components/travelling-picker.tsx:316
 msgid "Confirm"
 msgstr "Konfirmasi"
@@ -558,6 +611,18 @@ msgstr "Konfirmasi"
 msgid "Connect"
 msgstr "Sambungkeun"
 
+#: ../../../lib/web/src/lib/chat-ui.ts:18
+msgid "Connected"
+msgstr "Tersambung"
+
+#: ../../../lib/web/src/features/accounts/account-manager.tsx:191
+msgid "Connected accounts"
+msgstr "Akun tersambung"
+
+#: ../../../lib/web/src/lib/chat-ui.ts:21
+msgid "Connecting..."
+msgstr "Nyambungkeun..."
+
 #: src/components/Multiplayer.tsx:259
 msgid "Connecting…"
 msgstr "Nyambungkeun…"
@@ -565,6 +630,10 @@ msgstr "Nyambungkeun…"
 #: src/components/GameCanvas.tsx:66
 msgid "CONNECTION FAILED"
 msgstr "SAMBUNGAN GAGAL"
+
+#: ../../../lib/web/src/lib/handle-server-error.ts:18
+msgid "Content not found."
+msgstr "Eusi teu kapanggih."
 
 #: ../../../lib/web/src/lib/query-client.ts:81
 msgid "Content not modified"
@@ -583,7 +652,15 @@ msgstr "Teruskeun"
 msgid "Continue with {label}"
 msgstr "Teraskeun nganggo {label}"
 
-#: ../../../lib/web/src/components/ui/copy-button.tsx:63
+#: ../../../lib/web/src/lib/toast-utils.ts:42
+msgid "Copied"
+msgstr "Disalin"
+
+#: ../../../lib/web/src/components/ui/copy-button.tsx:25
+msgid "Copied to clipboard"
+msgstr "Disalin ka clipboard"
+
+#: ../../../lib/web/src/components/ui/copy-button.tsx:64
 msgid "Copy"
 msgstr "Salin"
 
@@ -599,7 +676,8 @@ msgstr "Teu bisa nyieun patandingan"
 msgid "Could not load this document. Please try again later."
 msgstr "Teu bisa ngamuat dokumén ieu. Mangga cobian deui engké."
 
-#: src/components/MatchHistory.tsx:210
+#: src/components/MatchHistory.tsx:217
+#: src/components/MatchHistory.tsx:223
 msgid "Could not save the recording"
 msgstr "Rekaman teu bisa disimpen"
 
@@ -623,6 +701,11 @@ msgstr "Teu tiasa diverifikasi nganggo akun éta. Mangga cobian deui."
 msgid "CRASHED"
 msgstr "RAGRAG"
 
+#. placeholder {0}: entityLabel.toLowerCase()
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
+msgid "Create {0}"
+msgstr ""
+
 #: src/components/Multiplayer.tsx:409
 msgid "Create and fly"
 msgstr "Jieun jeung hiber"
@@ -636,6 +719,10 @@ msgstr "Jieun patandingan"
 msgid "Create mission"
 msgstr "Jieun misi"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:258
+msgid "Creating..."
+msgstr "Ngajieun..."
+
 #: src/components/MissionSetup.tsx:719
 #: src/components/MissionSetup.tsx:725
 msgid "Credits"
@@ -646,7 +733,11 @@ msgstr "Kredit"
 msgid "Cumulus"
 msgstr "Cumulus"
 
-#: ../../../lib/web/src/components/colour-picker.tsx:260
+#: ../../../lib/web/src/components/map-view.tsx:208
+msgid "Current location"
+msgstr "Lokasi ayeuna"
+
+#: ../../../lib/web/src/components/colour-picker.tsx:261
 msgid "Custom"
 msgstr "Adat"
 
@@ -659,7 +750,7 @@ msgstr "BAHAYA"
 msgid "Cycle view"
 msgstr "Ganti témpoan"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/config-drawer.tsx:219
 #: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
@@ -695,7 +786,7 @@ msgstr "Paéh"
 msgid "DECK POSITION SAVED"
 msgstr "POSISI DEK DISIMPEN"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:310
+#: ../../../lib/web/src/components/config-drawer.tsx:311
 msgid "Default"
 msgstr "Standar"
 
@@ -714,6 +805,10 @@ msgstr "Turun"
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Descending"
 msgstr "Turun"
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:83
+msgid "Description"
+msgstr "Pedaran"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx:148
 msgid "Details Panel"
@@ -743,18 +838,20 @@ msgstr "Pakakas"
 msgid "Different game host"
 msgstr "Host kaulinan nu béda"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:340
+#: ../../../lib/web/src/components/config-drawer.tsx:341
 msgid "Direction"
 msgstr "Arah"
 
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
-msgstr ""
+msgstr "Diréktori"
 
 #: src/components/MissionSetup.tsx:259
 msgid "disconnected"
 msgstr "teu nyambung"
 
+#: ../../../lib/web/src/lib/chat-ui.ts:25
+#: ../../../lib/web/src/lib/chat-ui.ts:29
 #: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "Pegat"
@@ -817,6 +914,10 @@ msgstr "Mental kaluar"
 msgid "EJECTED"
 msgstr "MENTAL KALUAR"
 
+#: ../../../lib/web/src/features/accounts/types.ts:15
+msgid "Email"
+msgstr "Surélék"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "Kode surélék"
@@ -872,6 +973,10 @@ msgstr "Lugar sidebar"
 msgid "Exterior detail"
 msgstr "Détil luar"
 
+#: ../../../lib/web/src/features/accounts/types.ts:22
+msgid "External URL"
+msgstr "URL Éksternal"
+
 #: src/components/MissionSetup.tsx:1135
 msgid "Extra aircraft"
 msgstr "Pesawat tambahan"
@@ -887,6 +992,19 @@ msgstr "Rujukan F/A-18C"
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:225
 msgid "Failed to add account"
 msgstr "Gagal nambahkeun akun"
+
+#: ../../../lib/web/src/components/tag-input.tsx:39
+msgid "Failed to add tag"
+msgstr "Gagal nambahkeun tag"
+
+#: ../../../lib/web/src/components/ui/copy-button.tsx:26
+#: ../../../lib/web/src/lib/toast-utils.ts:44
+msgid "Failed to copy"
+msgstr "Gagal nyalin"
+
+#: ../../../lib/web/src/hooks/use-load-more.ts:74
+msgid "Failed to load"
+msgstr "Gagal mungkahan"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
 msgid "Failed to load image"
@@ -919,6 +1037,10 @@ msgstr "FCS"
 #: src/components/GameCanvas.tsx:31
 msgid "FIGHT'S ON"
 msgstr "TARUNG DIMIMITIAN"
+
+#: ../../../lib/web/src/components/data-table/toolbar.tsx:30
+msgid "Filter..."
+msgstr "Saring..."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -966,7 +1088,7 @@ msgstr "INTI HIBER GAGAL"
 msgid "Flights"
 msgstr "Hiber"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:257
+#: ../../../lib/web/src/components/config-drawer.tsx:258
 msgid "Floating"
 msgstr "Ngambang"
 
@@ -1034,7 +1156,7 @@ msgstr "BAHAN BAKAR SAEUTIK"
 msgid "Fuel probe"
 msgstr "Probe suluh"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:320
+#: ../../../lib/web/src/components/config-drawer.tsx:321
 msgid "Full layout"
 msgstr "Tata letak lengkep"
 
@@ -1091,7 +1213,7 @@ msgstr "Grup"
 #. placeholder {0}: name || subject.slice(1)
 #: ../../../lib/web/src/features/access/access-list.tsx:68
 msgid "Group: {0}"
-msgstr ""
+msgstr "Grup: {0}"
 
 #: src/components/GameCanvas.tsx:24
 msgid "GUN"
@@ -1165,13 +1287,29 @@ msgstr "Imperial"
 msgid "In air"
 msgstr "Di hawa"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:252
+#: ../../../lib/web/src/features/access/types.ts:42
+msgid "Including anonymous users"
+msgstr ""
+
+#: ../../../lib/web/src/components/faceless-avatar.tsx:69
+msgid "Initials avatar"
+msgstr ""
+
+#: ../../../lib/web/src/components/faceless-avatar.tsx:69
+msgid "Initials avatar for {name}"
+msgstr ""
+
+#: ../../../lib/web/src/components/config-drawer.tsx:253
 msgid "Inset"
 msgstr "Sisipan"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
 msgstr "Minat"
+
+#: ../../../lib/web/src/components/tag-input.tsx:38
+msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
+msgstr ""
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:245
 msgid "Invalid verification code"
@@ -1224,6 +1362,10 @@ msgstr "Duel ngalawan pamaén AI"
 #: src/components/MissionSetup.tsx:1639
 msgid "Joystick"
 msgstr "Joystick"
+
+#: ../../../lib/web/src/lib/locale-format.ts:62
+msgid "Just now"
+msgstr "Nembé"
 
 #: src/components/MatchHistory.tsx:149
 msgid "K/D"
@@ -1281,7 +1423,7 @@ msgstr "Luncurkeun (katapel)"
 msgid "launch / target"
 msgstr "luncurkeun / target"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:286
+#: ../../../lib/web/src/components/config-drawer.tsx:287
 msgid "Layout"
 msgstr "Tata letak"
 
@@ -1306,19 +1448,19 @@ msgstr "Kaluar"
 msgid "LEFT"
 msgstr "KALUAR"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:354
+#: ../../../lib/web/src/components/config-drawer.tsx:355
 msgid "Left to Right"
 msgstr "Kénca ka Katuhu"
 
 #: ../../../lib/web/src/components/post-tags.tsx:72
 msgid "Letters, numbers, spaces, and hyphens only"
-msgstr ""
+msgstr "Ngan hurup, angka, spasi, jeung tanda hubung"
 
 #: src/components/GameCanvas.tsx:100
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "RATA DINA 1200, RODA TURUN"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/config-drawer.tsx:214
 #: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
@@ -1421,6 +1563,10 @@ msgstr "Stratus handap"
 msgid "M to close"
 msgstr "M pikeun nutup"
 
+#: ../../../lib/web/src/features/accounts/account-manager.tsx:192
+msgid "Manage your connected accounts for notifications and services."
+msgstr ""
+
 #: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "peta"
@@ -1446,6 +1592,10 @@ msgstr "Jinis patandingan"
 #: src/components/MissionSetup.tsx:1076
 msgid "Matches"
 msgstr "Patandingan"
+
+#: ../../../lib/web/src/features/accounts/types.ts:17
+msgid "MCP server"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
 #: src/components/MissionSetup.tsx:1321
@@ -1493,6 +1643,10 @@ msgstr "Misil"
 msgid "Missiles allowed"
 msgstr "Misil diidinan"
 
+#: ../../../lib/web/src/features/accounts/types.ts:23
+msgid "Mochi web"
+msgstr ""
+
 #: src/components/MatchHistory.tsx:163
 msgid "Mode"
 msgstr "Mode"
@@ -1508,6 +1662,14 @@ msgstr "Obahkeun…"
 #: src/components/Multiplayer.tsx:188
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer merlukeun WebTransport, anu can dirojong ku browser ieu."
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
+msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
+msgstr ""
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:100
+msgid "Name must be 1000 characters or less"
+msgstr "Ngaran kudu 1000 karakter atawa kurang"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:53
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:303
@@ -1550,19 +1712,28 @@ msgstr "Teu aya joystick nu kadeteksi — pencét tombol naon waé pikeun ngahud
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "No notifications yet"
-msgstr ""
+msgstr "Can aya wawaran"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
 msgstr "Euweuh patandingan nu kabuka — jieun hiji."
 
-#: ../../../lib/web/src/components/place-picker.tsx:132
+#: ../../../lib/web/src/components/person-picker.tsx:84
+msgid "No people found"
+msgstr "Teu manggih jalma"
+
+#: ../../../lib/web/src/components/place-picker.tsx:133
 msgid "No places found"
 msgstr "Teu manggih tempat"
 
 #: ../../../lib/web/src/components/profile-dropdown.tsx:58
 msgid "No profile"
 msgstr "Euweuh profil"
+
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:82
+#: ../../../lib/web/src/components/search-entity-page.tsx:73
+msgid "No results found"
+msgstr "Teu aya hasil"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
@@ -1590,6 +1761,7 @@ msgstr "Euweuh server dunya."
 msgid "NO-GRADE"
 msgstr "TEU AYA PEUNTEUN"
 
+#: ../../../lib/web/src/components/colour-picker.tsx:345
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
@@ -1640,6 +1812,10 @@ msgstr "Détil sagara"
 msgid "OK"
 msgstr "OK"
 
+#: ../../../lib/web/src/components/filter-bar.tsx:35
+msgid "On"
+msgstr "Hurung"
+
 #: src/components/MissionSetup.tsx:951
 #: src/components/MissionSetup.tsx:1212
 msgid "On carrier"
@@ -1686,8 +1862,8 @@ msgstr "Buka navigasi"
 msgid "Open navigation menu"
 msgstr "Buka menu navigasi"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:57
-#: ../../../lib/web/src/components/config-drawer.tsx:65
+#: ../../../lib/web/src/components/config-drawer.tsx:58
+#: ../../../lib/web/src/components/config-drawer.tsx:66
 msgid "Open theme settings"
 msgstr "Buka setélan tema"
 
@@ -1723,6 +1899,10 @@ msgstr "Pamariksaan konci akses gagal. Mangga cobian deui."
 #: ../../../lib/web/src/components/restore-banner.tsx:135
 msgid "Passkeys"
 msgstr "Passkey"
+
+#: ../../../lib/web/src/components/date-picker.tsx:20
+msgid "Pick a date"
+msgstr "Pilih tanggal"
 
 #: src/components/MissionSetup.tsx:853
 #: src/components/Multiplayer.tsx:90
@@ -1814,6 +1994,10 @@ msgstr "Profil"
 
 #: ../../../lib/web/src/components/person-picker.tsx:200
 msgid "Project members"
+msgstr "Anggota proyék"
+
+#: ../../../lib/web/src/features/accounts/types.ts:21
+msgid "Push notification"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:95
@@ -1852,21 +2036,25 @@ msgstr "DIPAKARANGAN DEUI"
 msgid "Recent"
 msgstr "Anyar"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:216
-#: ../../../lib/web/src/components/search-entity-page.tsx:242
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:217
+#: ../../../lib/web/src/components/search-entity-page.tsx:243
 msgid "Recommended"
 msgstr "Direkomendasikeun"
+
+#: ../../../lib/web/src/lib/chat-ui.ts:21
+msgid "Reconnecting ({retries})..."
+msgstr ""
 
 #: src/components/MissionSetup.tsx:1467
 msgid "Record flights"
 msgstr "Rékam hiber"
 
-#: src/components/MatchHistory.tsx:215
+#: src/components/MatchHistory.tsx:229
 #: src/components/MissionSetup.tsx:1461
 msgid "Recording"
 msgstr "Rekaman"
 
-#: src/components/MatchHistory.tsx:209
+#: src/components/MatchHistory.tsx:222
 msgid "Recording saved"
 msgstr "Rekaman disimpen"
 
@@ -1916,6 +2104,12 @@ msgstr "Rélatif dina 24 jam, salian éta absolut"
 msgid "Remove"
 msgstr "Pupus"
 
+#. placeholder {0}: filter.label
+#: ../../../lib/web/src/components/filter-bar.tsx:56
+#: ../../../lib/web/src/components/filter-bar.tsx:62
+msgid "Remove {0} filter"
+msgstr "Cabut filter {0}"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:252
 #: ../../../lib/web/src/features/access/access-list.tsx:258
 msgid "Remove access rule"
@@ -1943,13 +2137,18 @@ msgstr "Réndering ku <0>three.js</0> (lisénsi MIT)."
 msgid "Resend email"
 msgstr "Kirim deui email"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:86
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:81
+#: ../../../lib/web/src/components/config-drawer.tsx:87
+#: ../../../lib/web/src/components/data-table/toolbar.tsx:82
 #: src/components/MissionSetup.tsx:1681
 msgid "Reset"
 msgstr "Atur ulang"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:84
+#: ../../../lib/web/src/components/config-drawer.tsx:122
+#: ../../../lib/web/src/components/config-drawer.tsx:127
+msgid "Reset {title}"
+msgstr ""
+
+#: ../../../lib/web/src/components/config-drawer.tsx:85
 msgid "Reset all settings to default values"
 msgstr "Setel ulang sakabéh setélan ka nilai baku"
 
@@ -1981,7 +2180,7 @@ msgstr "Balik ka menu"
 msgid "Reversed"
 msgstr "Kabalik"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:361
+#: ../../../lib/web/src/components/config-drawer.tsx:362
 msgid "Right to Left"
 msgstr "Katuhu ka Kénca"
 
@@ -2028,9 +2227,23 @@ msgstr "Simpen"
 msgid "Sea level"
 msgstr "Permukaan laut"
 
-#: ../../../lib/web/src/components/place-picker.tsx:85
+#: ../../../lib/web/src/components/filter-bar.tsx:32
+#: ../../../lib/web/src/components/header-search.tsx:22
+#: ../../../lib/web/src/components/search.tsx:18
+msgid "Search"
+msgstr "Paluruh"
+
+#: ../../../lib/web/src/components/ui/command.tsx:35
+msgid "Search for a command to run..."
+msgstr ""
+
+#: ../../../lib/web/src/components/place-picker.tsx:86
 msgid "Search for a place"
 msgstr "Paluruh tempat"
+
+#: ../../../lib/web/src/components/place-picker.tsx:50
+msgid "Search for a place..."
+msgstr ""
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:250
 msgid "Search for destination..."
@@ -2049,14 +2262,21 @@ msgid "Search users"
 msgstr "Paluruh pamaké"
 
 #: ../../../lib/web/src/components/person-picker.tsx:324
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:81
+#: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "Paluruh..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:174
-#: ../../../lib/web/src/components/search-entity-page.tsx:200
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:175
+#: ../../../lib/web/src/components/search-entity-page.tsx:201
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
 msgstr "Maluruh..."
+
+#. placeholder {0}: item.label.toLowerCase()
+#: ../../../lib/web/src/components/config-drawer.tsx:149
+msgid "Select {0}"
+msgstr ""
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:150
 msgid "Select a user, group, or other rule to grant access."
@@ -2066,6 +2286,10 @@ msgstr "Pilih pamaké, grup, atawa aturan séjén pikeun ngabikeun aksés."
 msgid "Select access rule"
 msgstr "Pilih aturan aksés"
 
+#: ../../../lib/web/src/features/accounts/account-picker.tsx:34
+msgid "Select account"
+msgstr ""
+
 #: ../../../lib/web/src/features/accounts/account-add.tsx:129
 msgid "Select account type"
 msgstr "Pilih jenis akun"
@@ -2074,19 +2298,27 @@ msgstr "Pilih jenis akun"
 msgid "Select group"
 msgstr "Pilih grup"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:304
+#: ../../../lib/web/src/components/config-drawer.tsx:305
 msgid "Select layout style"
 msgstr "Pilih gaya tata letak"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:246
+#: ../../../lib/web/src/components/place-picker.tsx:49
+msgid "Select location"
+msgstr "Pilih lokasi"
+
+#: ../../../lib/web/src/components/person-picker.tsx:83
+msgid "Select person..."
+msgstr ""
+
+#: ../../../lib/web/src/components/config-drawer.tsx:247
 msgid "Select sidebar style"
 msgstr "Pilih gaya sidebar"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:348
+#: ../../../lib/web/src/components/config-drawer.tsx:349
 msgid "Select site direction"
 msgstr "Pilih arah situs"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:202
+#: ../../../lib/web/src/components/config-drawer.tsx:203
 msgid "Select theme preference"
 msgstr "Pilih préferénsi téma"
 
@@ -2177,8 +2409,8 @@ msgstr "Tembongkeun kecap konci"
 msgid "Showing {totalShown} of {total}"
 msgstr "Némbongkeun {totalShown} ti {total}"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:238
-#: ../../../lib/web/src/components/config-drawer.tsx:262
+#: ../../../lib/web/src/components/config-drawer.tsx:239
+#: ../../../lib/web/src/components/config-drawer.tsx:263
 #: ../../../lib/web/src/components/ui/sidebar.tsx:237
 msgid "Sidebar"
 msgstr "Bar sisi"
@@ -2268,11 +2500,16 @@ msgstr "STRUKTUR"
 msgid "Subject"
 msgstr "Subjek"
 
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:83
+#: ../../../lib/web/src/components/search-entity-page.tsx:74
+msgid "Subscribe"
+msgstr "Langgan"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:65
 msgid "Sunday"
 msgstr "Minggu"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/config-drawer.tsx:209
 #: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
@@ -2283,7 +2520,7 @@ msgstr "Sistem"
 msgid "TACTICAL MAP"
 msgstr "PETA TAKTIS"
 
-#: ../../../lib/web/src/components/tag-input.tsx:94
+#: ../../../lib/web/src/components/tag-input.tsx:95
 msgid "Tag"
 msgstr "Tag"
 
@@ -2293,7 +2530,7 @@ msgstr "Tag tos aya"
 
 #: ../../../lib/web/src/components/post-tags.tsx:68
 msgid "Tag must be 50 characters or less"
-msgstr ""
+msgstr "Tag kudu 50 karakter atawa kurang"
 
 #: ../../../lib/web/src/components/post-tags.tsx:101
 #: ../../../lib/web/src/components/post-tags.tsx:115
@@ -2350,11 +2587,11 @@ msgstr "Eusi anu dipénta teu kapanggih."
 msgid "The site is not available at the moment."
 msgstr "Situs ieu teu sayogi ayeuna."
 
-#: ../../../lib/web/src/components/config-drawer.tsx:194
+#: ../../../lib/web/src/components/config-drawer.tsx:195
 msgid "Theme"
 msgstr "Téma"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:69
+#: ../../../lib/web/src/components/config-drawer.tsx:70
 msgid "Theme Settings"
 msgstr "Setélan Téma"
 
@@ -2453,8 +2690,8 @@ msgstr "Tracers"
 msgid "Travelling"
 msgstr "Lalampahan"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:190
-#: ../../../lib/web/src/components/search-entity-page.tsx:216
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:191
+#: ../../../lib/web/src/components/search-entity-page.tsx:217
 msgid "Try adjusting your search terms"
 msgstr "Cobian luyukeun istilah pamilarian anjeun"
 
@@ -2501,9 +2738,18 @@ msgstr "Teu ditugaskeun"
 msgid "Unauthorized Access"
 msgstr "Aksés Teu Diidinan"
 
+#: ../../../lib/web/src/lib/request.ts:133
+#: ../../../lib/web/src/lib/request.ts:206
+msgid "Unexpected API error"
+msgstr "Kasalahan API anu teu disangka"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:87
 msgid "United States"
 msgstr "Amérika Serikat"
+
+#: ../../../lib/web/src/features/accounts/types.ts:29
+msgid "Unknown"
+msgstr "Teu dipikanyaho"
 
 #: src/components/MissionSetup.tsx:1276
 #: src/components/Multiplayer.tsx:351
@@ -2598,6 +2844,10 @@ msgstr "Tampilan"
 msgid "WAITING FOR OPPONENT"
 msgstr "NGADAGOAN LAWAN"
 
+#: ../../../lib/web/src/components/filter-bar.tsx:35
+msgid "Watched"
+msgstr "Diawas"
+
 #: src/components/GameCanvas.tsx:62
 msgid "WAVE OFF"
 msgstr "GO AROUND"
@@ -2613,7 +2863,7 @@ msgstr "Kami bakal balik online sakedap deui."
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:197
 msgid "We'll notify you when something important happens."
-msgstr ""
+msgstr "Kami bakal ngabaran anjeun lamun aya anu penting."
 
 #: src/components/GameCanvas.tsx:306
 msgid "weapon"
@@ -2690,9 +2940,13 @@ msgstr "Anjeun teu gaduh aksés kana bagian ieu."
 msgid "You don't have necessary permission <0/>to view this resource."
 msgstr "Anjeun teu gaduh idin anu diperyogikeun <0/>pikeun ningali sumber ieu."
 
+#: ../../../lib/web/src/lib/show-submitted-data.tsx:9
+msgid "You submitted the following values:"
+msgstr ""
+
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "You're all caught up!"
-msgstr ""
+msgstr "Anjeun geus maca sadayana!"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

@@ -34,15 +34,24 @@ msgstr "{0} “{1}” তৈরি করেছেন"
 msgid "{0} flying"
 msgstr "{0} জন উড়ছেন"
 
+#. placeholder {0}: item.label
+#: ../../../lib/web/src/components/config-drawer.tsx:160
+msgid "{0} option preview"
+msgstr ""
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
 #: src/components/Multiplayer.tsx:437
 msgid "{0}/{1} players"
 msgstr "{0}/{1} খেলোয়াড়"
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:174
 msgid "{entityLabel} name"
 msgstr "{entityLabel} নাম"
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:99
+msgid "{entityLabel} name is required"
+msgstr ""
 
 #: src/components/Multiplayer.tsx:165
 msgid "{name}'s match"
@@ -63,6 +72,10 @@ msgstr "{selectedCount, plural, one {# নির্বাচিত} other {# ন
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
 msgstr "{selectedCount, plural, one {# নির্বাচিত {entityName} এর জন্য বাল্ক ক্রিয়া} other {# নির্বাচিত {manyName} এর জন্য বাল্ক ক্রিয়া}}"
+
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
+msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
+msgstr ""
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -157,11 +170,12 @@ msgstr "অ্যাকাউন্ট যোগ করুন"
 msgid "Add an account to receive notifications and use services."
 msgstr "নোটিফিকেশন পেতে এবং পরিষেবা ব্যবহার করতে একটি অ্যাকাউন্ট যোগ করুন।"
 
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:101
+#: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
 msgstr "নতুন অ্যাকাউন্ট যোগ করুন"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
+#: ../../../lib/web/src/components/tag-input.tsx:40
 msgid "Add tag..."
 msgstr "ট্যাগ যোগ করুন..."
 
@@ -182,7 +196,7 @@ msgstr "ভিউ যোগ করুন"
 msgid "Adding..."
 msgstr "যোগ করা হচ্ছে..."
 
-#: ../../../lib/web/src/components/config-drawer.tsx:71
+#: ../../../lib/web/src/components/config-drawer.tsx:72
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "আপনার পছন্দ অনুযায়ী চেহারা এবং লেআউট সমন্বয় করুন।"
 
@@ -215,6 +229,11 @@ msgstr "সতর্কতা"
 msgid "All"
 msgstr "সব"
 
+#. placeholder {0}: entityLabel.toLowerCase()
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
+msgid "Allow anyone to search for {0}"
+msgstr ""
+
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:159
 msgid "An error occurred"
 msgstr "একটি ত্রুটি ঘটেছে"
@@ -223,9 +242,18 @@ msgstr "একটি ত্রুটি ঘটেছে"
 msgid "An unexpected error occurred"
 msgstr "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে"
 
+#: ../../../lib/web/src/features/accounts/types.ts:16
+msgid "Android push"
+msgstr ""
+
 #: ../../../lib/web/src/features/access/access-list.tsx:45
+#: ../../../lib/web/src/features/access/types.ts:42
 msgid "Anyone"
 msgstr "যে কেউ"
+
+#: ../../../lib/web/src/features/access/types.ts:41
+msgid "Anyone who is logged in"
+msgstr ""
 
 #: src/components/MissionSetup.tsx:123
 #: src/components/MissionSetup.tsx:152
@@ -254,12 +282,21 @@ msgid "Ascending"
 msgstr "ঊর্ধ্বক্রম"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
+#: ../../../lib/web/src/features/access/types.ts:41
 msgid "Authenticated users"
-msgstr ""
+msgstr "প্রমাণীকৃত ব্যবহারকারী"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Authenticator code"
 msgstr "অথেন্টিকেটর কোড"
+
+#: ../../../lib/web/src/components/entity-avatar.tsx:99
+msgid "Avatar"
+msgstr "অবতার"
+
+#: ../../../lib/web/src/components/entity-avatar.tsx:99
+msgid "Avatar for {name}"
+msgstr ""
 
 #: src/components/MissionSetup.tsx:278
 msgid "Axes"
@@ -273,7 +310,7 @@ msgstr "অক্ষ {i}"
 msgid "back"
 msgstr "পিছনে"
 
-#: ../../../lib/web/src/components/place-picker.tsx:155
+#: ../../../lib/web/src/components/place-picker.tsx:156
 msgid "Back"
 msgstr "ফিরে যান"
 
@@ -286,6 +323,10 @@ msgstr "হোমে ফিরে যান"
 #: src/components/MissionSetup.tsx:1165
 msgid "Bandit"
 msgstr "শত্রু বিমান"
+
+#: ../../../lib/web/src/components/entity-banner.tsx:17
+msgid "Banner"
+msgstr "ব্যানার"
 
 #: src/components/MissionSetup.tsx:644
 msgid "Best climb (Vy, 100% thrust)"
@@ -340,6 +381,10 @@ msgstr "বাঁয়ে কাটো"
 msgid "BREAK RIGHT"
 msgstr "ডানে কাটো"
 
+#: ../../../lib/web/src/features/accounts/types.ts:13
+msgid "Browser notifications"
+msgstr "ব্রাউজার নোটিফিকেশন"
+
 #: src/components/MissionSetup.tsx:373
 msgid "Button {i}"
 msgstr "বোতাম {i}"
@@ -364,7 +409,7 @@ msgstr "ক্যামেরার দূরত্ব"
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:248
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:249
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:268
@@ -441,21 +486,21 @@ msgstr "চিট"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:198
 msgid "Check \"All\" to see your past notifications."
-msgstr ""
+msgstr "আপনার পুরনো বিজ্ঞপ্তি দেখতে \"সব\" নির্বাচন করুন।"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:328
+#: ../../../lib/web/src/components/config-drawer.tsx:329
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
 msgstr "ডিফল্ট বিস্তৃত, কম্প্যাক্ট আইকন-অনলি, বা সম্পূর্ণ লেআউট মোডের মধ্যে বেছে নিন"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:270
+#: ../../../lib/web/src/components/config-drawer.tsx:271
 msgid "Choose between inset, floating, or standard sidebar layout"
 msgstr "ইনসেট, ফ্লোটিং, বা স্ট্যান্ডার্ড সাইডবার লেআউটের মধ্যে বেছে নিন"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:371
+#: ../../../lib/web/src/components/config-drawer.tsx:372
 msgid "Choose between left-to-right or right-to-left site direction"
 msgstr "বাম-থেকে-ডান বা ডান-থেকে-বাম সাইট ডিরেকশনের মধ্যে বেছে নিন"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:226
+#: ../../../lib/web/src/components/config-drawer.tsx:227
 msgid "Choose between system preference, light mode, or dark mode"
 msgstr "সিস্টেম পছন্দ, লাইট মোড, বা ডার্ক মোডের মধ্যে বেছে নিন"
 
@@ -464,8 +509,8 @@ msgstr "সিস্টেম পছন্দ, লাইট মোড, বা �
 msgid "Choose language"
 msgstr "ভাষা বেছে নিন"
 
-#: ../../../lib/web/src/components/colour-picker.tsx:269
-#: ../../../lib/web/src/components/colour-picker.tsx:350
+#: ../../../lib/web/src/components/colour-picker.tsx:270
+#: ../../../lib/web/src/components/colour-picker.tsx:351
 #: ../../../lib/web/src/components/travelling-picker.tsx:164
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
@@ -474,13 +519,17 @@ msgstr "ভাষা বেছে নিন"
 msgid "Clear"
 msgstr "পরিষ্কার করুন"
 
-#: ../../../lib/web/src/components/filter-bar.tsx:73
+#: ../../../lib/web/src/components/filter-bar.tsx:74
 msgid "Clear all"
 msgstr "সব পরিষ্কার করুন"
 
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
 msgstr "ফিল্টার পরিষ্কার করুন"
+
+#: ../../../lib/web/src/components/search-input.tsx:26
+msgid "Clear search"
+msgstr "অনুসন্ধান পরিষ্কার করুন"
 
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:181
@@ -540,16 +589,20 @@ msgstr "আরামদায়ক"
 msgid "Coming Soon!"
 msgstr "শীঘ্রই আসছে!"
 
+#: ../../../lib/web/src/components/ui/command.tsx:34
+msgid "Command Palette"
+msgstr ""
+
 #: src/components/GameCanvas.tsx:96
 msgid "COMMENCING"
 msgstr "শুরু করছি"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:315
+#: ../../../lib/web/src/components/config-drawer.tsx:316
 #: ../../../lib/web/src/lib/preference-utils.ts:95
 msgid "Compact"
 msgstr "কম্প্যাক্ট"
 
-#: ../../../lib/web/src/components/place-picker.tsx:159
+#: ../../../lib/web/src/components/place-picker.tsx:160
 #: ../../../lib/web/src/components/travelling-picker.tsx:316
 msgid "Confirm"
 msgstr "নিশ্চিত করুন"
@@ -558,6 +611,18 @@ msgstr "নিশ্চিত করুন"
 msgid "Connect"
 msgstr "সংযোগ"
 
+#: ../../../lib/web/src/lib/chat-ui.ts:18
+msgid "Connected"
+msgstr "সংযুক্ত"
+
+#: ../../../lib/web/src/features/accounts/account-manager.tsx:191
+msgid "Connected accounts"
+msgstr "সংযুক্ত অ্যাকাউন্ট"
+
+#: ../../../lib/web/src/lib/chat-ui.ts:21
+msgid "Connecting..."
+msgstr "সংযোগ করা হচ্ছে..."
+
 #: src/components/Multiplayer.tsx:259
 msgid "Connecting…"
 msgstr "সংযোগ হচ্ছে…"
@@ -565,6 +630,10 @@ msgstr "সংযোগ হচ্ছে…"
 #: src/components/GameCanvas.tsx:66
 msgid "CONNECTION FAILED"
 msgstr "সংযোগ ব্যর্থ হয়েছে"
+
+#: ../../../lib/web/src/lib/handle-server-error.ts:18
+msgid "Content not found."
+msgstr "বিষয়বস্তু পাওয়া যায়নি।"
 
 #: ../../../lib/web/src/lib/query-client.ts:81
 msgid "Content not modified"
@@ -583,7 +652,15 @@ msgstr "চালিয়ে যান"
 msgid "Continue with {label}"
 msgstr "{label} দিয়ে চালিয়ে যান"
 
-#: ../../../lib/web/src/components/ui/copy-button.tsx:63
+#: ../../../lib/web/src/lib/toast-utils.ts:42
+msgid "Copied"
+msgstr "কপি করা হয়েছে"
+
+#: ../../../lib/web/src/components/ui/copy-button.tsx:25
+msgid "Copied to clipboard"
+msgstr "ক্লিপবোর্ডে কপি করা হয়েছে"
+
+#: ../../../lib/web/src/components/ui/copy-button.tsx:64
 msgid "Copy"
 msgstr "কপি করুন"
 
@@ -599,7 +676,8 @@ msgstr "ম্যাচ তৈরি করা যায়নি"
 msgid "Could not load this document. Please try again later."
 msgstr "এই ডকুমেন্টটি লোড করা যায়নি। অনুগ্রহ করে পরে আবার চেষ্টা করুন।"
 
-#: src/components/MatchHistory.tsx:210
+#: src/components/MatchHistory.tsx:217
+#: src/components/MatchHistory.tsx:223
 msgid "Could not save the recording"
 msgstr "রেকর্ডিং সংরক্ষণ করা যায়নি"
 
@@ -623,6 +701,11 @@ msgstr "ওই অ্যাকাউন্ট দিয়ে যাচাই �
 msgid "CRASHED"
 msgstr "বিধ্বস্ত"
 
+#. placeholder {0}: entityLabel.toLowerCase()
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
+msgid "Create {0}"
+msgstr ""
+
 #: src/components/Multiplayer.tsx:409
 msgid "Create and fly"
 msgstr "তৈরি করে উড়ুন"
@@ -636,6 +719,10 @@ msgstr "ম্যাচ তৈরি করুন"
 msgid "Create mission"
 msgstr "মিশন তৈরি"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:258
+msgid "Creating..."
+msgstr "তৈরি করা হচ্ছে..."
+
 #: src/components/MissionSetup.tsx:719
 #: src/components/MissionSetup.tsx:725
 msgid "Credits"
@@ -646,7 +733,11 @@ msgstr "কৃতিত্ব"
 msgid "Cumulus"
 msgstr "কিউমুলাস"
 
-#: ../../../lib/web/src/components/colour-picker.tsx:260
+#: ../../../lib/web/src/components/map-view.tsx:208
+msgid "Current location"
+msgstr "বর্তমান অবস্থান"
+
+#: ../../../lib/web/src/components/colour-picker.tsx:261
 msgid "Custom"
 msgstr "কাস্টম"
 
@@ -659,7 +750,7 @@ msgstr "বিপজ্জনক"
 msgid "Cycle view"
 msgstr "দৃশ্য পরিবর্তন"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/config-drawer.tsx:219
 #: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
@@ -695,7 +786,7 @@ msgstr "মৃত্যু"
 msgid "DECK POSITION SAVED"
 msgstr "ডেক অবস্থান সংরক্ষিত"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:310
+#: ../../../lib/web/src/components/config-drawer.tsx:311
 msgid "Default"
 msgstr "ডিফল্ট"
 
@@ -714,6 +805,10 @@ msgstr "অধঃক্রম"
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Descending"
 msgstr "অধঃক্রম"
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:83
+msgid "Description"
+msgstr "বিবরণ"
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx:148
 msgid "Details Panel"
@@ -743,18 +838,20 @@ msgstr "ডিভাইস"
 msgid "Different game host"
 msgstr "ভিন্ন গেম হোস্ট"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:340
+#: ../../../lib/web/src/components/config-drawer.tsx:341
 msgid "Direction"
 msgstr "দিক"
 
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
-msgstr ""
+msgstr "ডিরেক্টরি"
 
 #: src/components/MissionSetup.tsx:259
 msgid "disconnected"
 msgstr "সংযোগ বিচ্ছিন্ন"
 
+#: ../../../lib/web/src/lib/chat-ui.ts:25
+#: ../../../lib/web/src/lib/chat-ui.ts:29
 #: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr "সংযোগ বিচ্ছিন্ন"
@@ -817,6 +914,10 @@ msgstr "ইজেক্ট"
 msgid "EJECTED"
 msgstr "উৎক্ষিপ্ত"
 
+#: ../../../lib/web/src/features/accounts/types.ts:15
+msgid "Email"
+msgstr "ইমেইল"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr "ইমেইল কোড"
@@ -872,6 +973,10 @@ msgstr "সাইডবার প্রসারিত করুন"
 msgid "Exterior detail"
 msgstr "বাহ্যিক বিবরণ"
 
+#: ../../../lib/web/src/features/accounts/types.ts:22
+msgid "External URL"
+msgstr "বাহ্যিক URL"
+
 #: src/components/MissionSetup.tsx:1135
 msgid "Extra aircraft"
 msgstr "অতিরিক্ত বিমান"
@@ -887,6 +992,19 @@ msgstr "F/A-18C তথ্যসূত্র"
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:225
 msgid "Failed to add account"
 msgstr "অ্যাকাউন্ট যোগ করতে ব্যর্থ"
+
+#: ../../../lib/web/src/components/tag-input.tsx:39
+msgid "Failed to add tag"
+msgstr "ট্যাগ যোগ করতে ব্যর্থ"
+
+#: ../../../lib/web/src/components/ui/copy-button.tsx:26
+#: ../../../lib/web/src/lib/toast-utils.ts:44
+msgid "Failed to copy"
+msgstr "কপি করতে ব্যর্থ"
+
+#: ../../../lib/web/src/hooks/use-load-more.ts:74
+msgid "Failed to load"
+msgstr "লোড করতে ব্যর্থ"
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
 msgid "Failed to load image"
@@ -919,6 +1037,10 @@ msgstr "FCS"
 #: src/components/GameCanvas.tsx:31
 msgid "FIGHT'S ON"
 msgstr "লড়াই শুরু"
+
+#: ../../../lib/web/src/components/data-table/toolbar.tsx:30
+msgid "Filter..."
+msgstr "ফিল্টার..."
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 msgid "Finish moving your account"
@@ -966,7 +1088,7 @@ msgstr "ফ্লাইট কোর ব্যর্থ"
 msgid "Flights"
 msgstr "উড়ান"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:257
+#: ../../../lib/web/src/components/config-drawer.tsx:258
 msgid "Floating"
 msgstr "ফ্লোটিং"
 
@@ -1034,7 +1156,7 @@ msgstr "জ্বালানি কম"
 msgid "Fuel probe"
 msgstr "জ্বালানি প্রোব"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:320
+#: ../../../lib/web/src/components/config-drawer.tsx:321
 msgid "Full layout"
 msgstr "সম্পূর্ণ লেআউট"
 
@@ -1091,7 +1213,7 @@ msgstr "গ্রুপ"
 #. placeholder {0}: name || subject.slice(1)
 #: ../../../lib/web/src/features/access/access-list.tsx:68
 msgid "Group: {0}"
-msgstr ""
+msgstr "গোষ্ঠী: {0}"
 
 #: src/components/GameCanvas.tsx:24
 msgid "GUN"
@@ -1165,13 +1287,29 @@ msgstr "ইম্পেরিয়াল"
 msgid "In air"
 msgstr "আকাশে"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:252
+#: ../../../lib/web/src/features/access/types.ts:42
+msgid "Including anonymous users"
+msgstr ""
+
+#: ../../../lib/web/src/components/faceless-avatar.tsx:69
+msgid "Initials avatar"
+msgstr ""
+
+#: ../../../lib/web/src/components/faceless-avatar.tsx:69
+msgid "Initials avatar for {name}"
+msgstr ""
+
+#: ../../../lib/web/src/components/config-drawer.tsx:253
 msgid "Inset"
 msgstr "ইনসেট"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
 msgstr "আগ্রহসমূহ"
+
+#: ../../../lib/web/src/components/tag-input.tsx:38
+msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
+msgstr ""
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:245
 msgid "Invalid verification code"
@@ -1224,6 +1362,10 @@ msgstr "AI খেলোয়াড়ের বিরুদ্ধে দ্ব�
 #: src/components/MissionSetup.tsx:1639
 msgid "Joystick"
 msgstr "জয়স্টিক"
+
+#: ../../../lib/web/src/lib/locale-format.ts:62
+msgid "Just now"
+msgstr "এইমাত্র"
 
 #: src/components/MatchHistory.tsx:149
 msgid "K/D"
@@ -1281,7 +1423,7 @@ msgstr "উৎক্ষেপণ (ক্যাটাপাল্ট)"
 msgid "launch / target"
 msgstr "লঞ্চ / টার্গেট"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:286
+#: ../../../lib/web/src/components/config-drawer.tsx:287
 msgid "Layout"
 msgstr "লেআউট"
 
@@ -1306,19 +1448,19 @@ msgstr "ছেড়ে গেছে"
 msgid "LEFT"
 msgstr "চলে গেছেন"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:354
+#: ../../../lib/web/src/components/config-drawer.tsx:355
 msgid "Left to Right"
 msgstr "বাম থেকে ডান"
 
 #: ../../../lib/web/src/components/post-tags.tsx:72
 msgid "Letters, numbers, spaces, and hyphens only"
-msgstr ""
+msgstr "শুধু অক্ষর, সংখ্যা, স্পেস এবং হাইফেন"
 
 #: src/components/GameCanvas.tsx:100
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200-এ সমতল, চাকা নামাও"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/config-drawer.tsx:214
 #: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
@@ -1421,6 +1563,10 @@ msgstr "নিম্ন স্ট্র্যাটাস"
 msgid "M to close"
 msgstr "বন্ধ করতে M"
 
+#: ../../../lib/web/src/features/accounts/account-manager.tsx:192
+msgid "Manage your connected accounts for notifications and services."
+msgstr ""
+
 #: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "মানচিত্র"
@@ -1446,6 +1592,10 @@ msgstr "ম্যাচের ধরন"
 #: src/components/MissionSetup.tsx:1076
 msgid "Matches"
 msgstr "ম্যাচ"
+
+#: ../../../lib/web/src/features/accounts/types.ts:17
+msgid "MCP server"
+msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
 #: src/components/MissionSetup.tsx:1321
@@ -1493,6 +1643,10 @@ msgstr "মিসাইল"
 msgid "Missiles allowed"
 msgstr "মিসাইল অনুমোদিত"
 
+#: ../../../lib/web/src/features/accounts/types.ts:23
+msgid "Mochi web"
+msgstr "Mochi ওয়েব"
+
 #: src/components/MatchHistory.tsx:163
 msgid "Mode"
 msgstr "মোড"
@@ -1508,6 +1662,14 @@ msgstr "অক্ষটি নাড়ান…"
 #: src/components/Multiplayer.tsx:188
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "মাল্টিপ্লেয়ারের জন্য WebTransport প্রয়োজন, যা এই ব্রাউজার এখনও সাপোর্ট করে না।"
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
+msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
+msgstr ""
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:100
+msgid "Name must be 1000 characters or less"
+msgstr "নাম অবশ্যই ১০০০ অক্ষর বা তার কম হতে হবে"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:53
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:303
@@ -1550,19 +1712,28 @@ msgstr "কোনো জয়স্টিক শনাক্ত হয়নি
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "No notifications yet"
-msgstr ""
+msgstr "এখনও কোনও বিজ্ঞপ্তি নেই"
 
 #: src/components/Multiplayer.tsx:418
 msgid "No open matches — create one."
 msgstr "কোনো উন্মুক্ত ম্যাচ নেই — একটি তৈরি করুন।"
 
-#: ../../../lib/web/src/components/place-picker.tsx:132
+#: ../../../lib/web/src/components/person-picker.tsx:84
+msgid "No people found"
+msgstr "কোনো ব্যক্তি পাওয়া যায়নি"
+
+#: ../../../lib/web/src/components/place-picker.tsx:133
 msgid "No places found"
 msgstr "কোনো স্থান পাওয়া যায়নি"
 
 #: ../../../lib/web/src/components/profile-dropdown.tsx:58
 msgid "No profile"
 msgstr "কোনো প্রোফাইল নেই"
+
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:82
+#: ../../../lib/web/src/components/search-entity-page.tsx:73
+msgid "No results found"
+msgstr "কোনও ফলাফল পাওয়া যায়নি"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
@@ -1590,6 +1761,7 @@ msgstr "কোনো ওয়ার্ল্ড সার্ভার নেই
 msgid "NO-GRADE"
 msgstr "কোনো গ্রেড নেই"
 
+#: ../../../lib/web/src/components/colour-picker.tsx:345
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
@@ -1640,6 +1812,10 @@ msgstr "সমুদ্রের বিবরণ"
 msgid "OK"
 msgstr "OK"
 
+#: ../../../lib/web/src/components/filter-bar.tsx:35
+msgid "On"
+msgstr "চালু"
+
 #: src/components/MissionSetup.tsx:951
 #: src/components/MissionSetup.tsx:1212
 msgid "On carrier"
@@ -1686,8 +1862,8 @@ msgstr "নেভিগেশন খুলুন"
 msgid "Open navigation menu"
 msgstr "নেভিগেশন মেনু খুলুন"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:57
-#: ../../../lib/web/src/components/config-drawer.tsx:65
+#: ../../../lib/web/src/components/config-drawer.tsx:58
+#: ../../../lib/web/src/components/config-drawer.tsx:66
 msgid "Open theme settings"
 msgstr "থিম সেটিংস খুলুন"
 
@@ -1723,6 +1899,10 @@ msgstr "পাসকি যাচাই ব্যর্থ হয়েছে।
 #: ../../../lib/web/src/components/restore-banner.tsx:135
 msgid "Passkeys"
 msgstr "পাসকি"
+
+#: ../../../lib/web/src/components/date-picker.tsx:20
+msgid "Pick a date"
+msgstr "একটি তারিখ বাছুন"
 
 #: src/components/MissionSetup.tsx:853
 #: src/components/Multiplayer.tsx:90
@@ -1814,6 +1994,10 @@ msgstr "প্রোফাইল"
 
 #: ../../../lib/web/src/components/person-picker.tsx:200
 msgid "Project members"
+msgstr "প্রকল্পের সদস্য"
+
+#: ../../../lib/web/src/features/accounts/types.ts:21
+msgid "Push notification"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:95
@@ -1852,21 +2036,25 @@ msgstr "পুনরায় অস্ত্রসজ্জিত"
 msgid "Recent"
 msgstr "সাম্প্রতিক"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:216
-#: ../../../lib/web/src/components/search-entity-page.tsx:242
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:217
+#: ../../../lib/web/src/components/search-entity-page.tsx:243
 msgid "Recommended"
 msgstr "সুপারিশকৃত"
+
+#: ../../../lib/web/src/lib/chat-ui.ts:21
+msgid "Reconnecting ({retries})..."
+msgstr ""
 
 #: src/components/MissionSetup.tsx:1467
 msgid "Record flights"
 msgstr "উড়ান রেকর্ড করুন"
 
-#: src/components/MatchHistory.tsx:215
+#: src/components/MatchHistory.tsx:229
 #: src/components/MissionSetup.tsx:1461
 msgid "Recording"
 msgstr "রেকর্ডিং"
 
-#: src/components/MatchHistory.tsx:209
+#: src/components/MatchHistory.tsx:222
 msgid "Recording saved"
 msgstr "রেকর্ডিং সংরক্ষিত হয়েছে"
 
@@ -1916,6 +2104,12 @@ msgstr "২৪ ঘণ্টার মধ্যে আপেক্ষিক, অ�
 msgid "Remove"
 msgstr "সরান"
 
+#. placeholder {0}: filter.label
+#: ../../../lib/web/src/components/filter-bar.tsx:56
+#: ../../../lib/web/src/components/filter-bar.tsx:62
+msgid "Remove {0} filter"
+msgstr "{0} ফিল্টার সরান"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:252
 #: ../../../lib/web/src/features/access/access-list.tsx:258
 msgid "Remove access rule"
@@ -1943,13 +2137,18 @@ msgstr "রেন্ডারিং <0>three.js</0> দ্বারা (MIT ল�
 msgid "Resend email"
 msgstr "ইমেল আবার পাঠান"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:86
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:81
+#: ../../../lib/web/src/components/config-drawer.tsx:87
+#: ../../../lib/web/src/components/data-table/toolbar.tsx:82
 #: src/components/MissionSetup.tsx:1681
 msgid "Reset"
 msgstr "রিসেট"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:84
+#: ../../../lib/web/src/components/config-drawer.tsx:122
+#: ../../../lib/web/src/components/config-drawer.tsx:127
+msgid "Reset {title}"
+msgstr ""
+
+#: ../../../lib/web/src/components/config-drawer.tsx:85
 msgid "Reset all settings to default values"
 msgstr "সমস্ত সেটিংস ডিফল্ট মানে রিসেট করুন"
 
@@ -1981,7 +2180,7 @@ msgstr "মেনুতে ফিরুন"
 msgid "Reversed"
 msgstr "উল্টানো"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:361
+#: ../../../lib/web/src/components/config-drawer.tsx:362
 msgid "Right to Left"
 msgstr "ডান থেকে বাম"
 
@@ -2028,9 +2227,23 @@ msgstr "সংরক্ষণ করুন"
 msgid "Sea level"
 msgstr "সমুদ্রপৃষ্ঠ"
 
-#: ../../../lib/web/src/components/place-picker.tsx:85
+#: ../../../lib/web/src/components/filter-bar.tsx:32
+#: ../../../lib/web/src/components/header-search.tsx:22
+#: ../../../lib/web/src/components/search.tsx:18
+msgid "Search"
+msgstr "অনুসন্ধান"
+
+#: ../../../lib/web/src/components/ui/command.tsx:35
+msgid "Search for a command to run..."
+msgstr ""
+
+#: ../../../lib/web/src/components/place-picker.tsx:86
 msgid "Search for a place"
 msgstr "একটি স্থান অনুসন্ধান করুন"
+
+#: ../../../lib/web/src/components/place-picker.tsx:50
+msgid "Search for a place..."
+msgstr ""
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:250
 msgid "Search for destination..."
@@ -2049,14 +2262,21 @@ msgid "Search users"
 msgstr "ব্যবহারকারী অনুসন্ধান করুন"
 
 #: ../../../lib/web/src/components/person-picker.tsx:324
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:81
+#: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "অনুসন্ধান করুন..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:174
-#: ../../../lib/web/src/components/search-entity-page.tsx:200
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:175
+#: ../../../lib/web/src/components/search-entity-page.tsx:201
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
 msgstr "অনুসন্ধান করা হচ্ছে..."
+
+#. placeholder {0}: item.label.toLowerCase()
+#: ../../../lib/web/src/components/config-drawer.tsx:149
+msgid "Select {0}"
+msgstr ""
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:150
 msgid "Select a user, group, or other rule to grant access."
@@ -2066,6 +2286,10 @@ msgstr "অ্যাক্সেস দিতে একজন ব্যবহা
 msgid "Select access rule"
 msgstr "অ্যাক্সেস নিয়ম নির্বাচন করুন"
 
+#: ../../../lib/web/src/features/accounts/account-picker.tsx:34
+msgid "Select account"
+msgstr ""
+
 #: ../../../lib/web/src/features/accounts/account-add.tsx:129
 msgid "Select account type"
 msgstr "অ্যাকাউন্টের ধরন নির্বাচন করুন"
@@ -2074,19 +2298,27 @@ msgstr "অ্যাকাউন্টের ধরন নির্বাচন 
 msgid "Select group"
 msgstr "গ্রুপ নির্বাচন করুন"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:304
+#: ../../../lib/web/src/components/config-drawer.tsx:305
 msgid "Select layout style"
 msgstr "লেআউট স্টাইল নির্বাচন করুন"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:246
+#: ../../../lib/web/src/components/place-picker.tsx:49
+msgid "Select location"
+msgstr "অবস্থান নির্বাচন করুন"
+
+#: ../../../lib/web/src/components/person-picker.tsx:83
+msgid "Select person..."
+msgstr ""
+
+#: ../../../lib/web/src/components/config-drawer.tsx:247
 msgid "Select sidebar style"
 msgstr "সাইডবার স্টাইল নির্বাচন করুন"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:348
+#: ../../../lib/web/src/components/config-drawer.tsx:349
 msgid "Select site direction"
 msgstr "সাইটের দিক নির্বাচন করুন"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:202
+#: ../../../lib/web/src/components/config-drawer.tsx:203
 msgid "Select theme preference"
 msgstr "থিম পছন্দ নির্বাচন করুন"
 
@@ -2177,8 +2409,8 @@ msgstr "পাসওয়ার্ড দেখান"
 msgid "Showing {totalShown} of {total}"
 msgstr "{total} এর মধ্যে {totalShown} দেখানো হচ্ছে"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:238
-#: ../../../lib/web/src/components/config-drawer.tsx:262
+#: ../../../lib/web/src/components/config-drawer.tsx:239
+#: ../../../lib/web/src/components/config-drawer.tsx:263
 #: ../../../lib/web/src/components/ui/sidebar.tsx:237
 msgid "Sidebar"
 msgstr "সাইডবার"
@@ -2268,11 +2500,16 @@ msgstr "কাঠামো"
 msgid "Subject"
 msgstr "বিষয়"
 
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:83
+#: ../../../lib/web/src/components/search-entity-page.tsx:74
+msgid "Subscribe"
+msgstr "সাবস্ক্রাইব করুন"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:65
 msgid "Sunday"
 msgstr "রবিবার"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/config-drawer.tsx:209
 #: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
@@ -2283,7 +2520,7 @@ msgstr "সিস্টেম"
 msgid "TACTICAL MAP"
 msgstr "কৌশলগত মানচিত্র"
 
-#: ../../../lib/web/src/components/tag-input.tsx:94
+#: ../../../lib/web/src/components/tag-input.tsx:95
 msgid "Tag"
 msgstr "ট্যাগ"
 
@@ -2293,7 +2530,7 @@ msgstr "ট্যাগ ইতিমধ্যে বিদ্যমান"
 
 #: ../../../lib/web/src/components/post-tags.tsx:68
 msgid "Tag must be 50 characters or less"
-msgstr ""
+msgstr "ট্যাগ ৫০ অক্ষর বা তার কম হতে হবে"
 
 #: ../../../lib/web/src/components/post-tags.tsx:101
 #: ../../../lib/web/src/components/post-tags.tsx:115
@@ -2350,11 +2587,11 @@ msgstr "অনুরোধ করা কনটেন্ট খুঁজে প�
 msgid "The site is not available at the moment."
 msgstr "সাইটটি এই মুহূর্তে উপলব্ধ নয়।"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:194
+#: ../../../lib/web/src/components/config-drawer.tsx:195
 msgid "Theme"
 msgstr "থিম"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:69
+#: ../../../lib/web/src/components/config-drawer.tsx:70
 msgid "Theme Settings"
 msgstr "থিম সেটিংস"
 
@@ -2453,8 +2690,8 @@ msgstr "ট্রেসার"
 msgid "Travelling"
 msgstr "ভ্রমণরত"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:190
-#: ../../../lib/web/src/components/search-entity-page.tsx:216
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:191
+#: ../../../lib/web/src/components/search-entity-page.tsx:217
 msgid "Try adjusting your search terms"
 msgstr "আপনার অনুসন্ধান শর্তাবলী সমন্বয় করার চেষ্টা করুন"
 
@@ -2501,9 +2738,18 @@ msgstr "অ্যাসাইন করা হয়নি"
 msgid "Unauthorized Access"
 msgstr "অননুমোদিত অ্যাক্সেস"
 
+#: ../../../lib/web/src/lib/request.ts:133
+#: ../../../lib/web/src/lib/request.ts:206
+msgid "Unexpected API error"
+msgstr "অপ্রত্যাশিত API ত্রুটি"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:87
 msgid "United States"
 msgstr "যুক্তরাষ্ট্র"
+
+#: ../../../lib/web/src/features/accounts/types.ts:29
+msgid "Unknown"
+msgstr "অজানা"
 
 #: src/components/MissionSetup.tsx:1276
 #: src/components/Multiplayer.tsx:351
@@ -2598,6 +2844,10 @@ msgstr "ভিউ"
 msgid "WAITING FOR OPPONENT"
 msgstr "প্রতিপক্ষের অপেক্ষায়"
 
+#: ../../../lib/web/src/components/filter-bar.tsx:35
+msgid "Watched"
+msgstr "দেখা হচ্ছে"
+
 #: src/components/GameCanvas.tsx:62
 msgid "WAVE OFF"
 msgstr "গো অ্যারাউন্ড"
@@ -2613,7 +2863,7 @@ msgstr "আমরা শীঘ্রই আবার অনলাইনে ফ�
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:197
 msgid "We'll notify you when something important happens."
-msgstr ""
+msgstr "গুরুত্বপূর্ণ কিছু ঘটলে আমরা আপনাকে জানাব।"
 
 #: src/components/GameCanvas.tsx:306
 msgid "weapon"
@@ -2690,9 +2940,13 @@ msgstr "এই বিভাগে আপনার অ্যাক্সেস �
 msgid "You don't have necessary permission <0/>to view this resource."
 msgstr "এই রিসোর্স দেখার জন্য <0/>আপনার প্রয়োজনীয় অনুমতি নেই।"
 
+#: ../../../lib/web/src/lib/show-submitted-data.tsx:9
+msgid "You submitted the following values:"
+msgstr ""
+
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "You're all caught up!"
-msgstr ""
+msgstr "আপনি সব দেখে ফেলেছেন!"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:91
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

@@ -34,14 +34,23 @@ msgstr ""
 msgid "{0} flying"
 msgstr ""
 
+#. placeholder {0}: item.label
+#: ../../../lib/web/src/components/config-drawer.tsx:160
+msgid "{0} option preview"
+msgstr ""
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
 #: src/components/Multiplayer.tsx:437
 msgid "{0}/{1} players"
 msgstr ""
 
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:173
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:174
 msgid "{entityLabel} name"
+msgstr ""
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:99
+msgid "{entityLabel} name is required"
 msgstr ""
 
 #: src/components/Multiplayer.tsx:165
@@ -62,6 +71,10 @@ msgstr ""
 
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:149
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
+msgstr ""
+
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
+msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:54
@@ -157,11 +170,12 @@ msgstr ""
 msgid "Add an account to receive notifications and use services."
 msgstr ""
 
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:101
+#: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
 msgstr ""
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
+#: ../../../lib/web/src/components/tag-input.tsx:40
 msgid "Add tag..."
 msgstr ""
 
@@ -182,7 +196,7 @@ msgstr ""
 msgid "Adding..."
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:71
+#: ../../../lib/web/src/components/config-drawer.tsx:72
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr ""
 
@@ -215,6 +229,11 @@ msgstr ""
 msgid "All"
 msgstr ""
 
+#. placeholder {0}: entityLabel.toLowerCase()
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
+msgid "Allow anyone to search for {0}"
+msgstr ""
+
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:159
 msgid "An error occurred"
 msgstr ""
@@ -223,8 +242,17 @@ msgstr ""
 msgid "An unexpected error occurred"
 msgstr ""
 
+#: ../../../lib/web/src/features/accounts/types.ts:16
+msgid "Android push"
+msgstr ""
+
 #: ../../../lib/web/src/features/access/access-list.tsx:45
+#: ../../../lib/web/src/features/access/types.ts:42
 msgid "Anyone"
+msgstr ""
+
+#: ../../../lib/web/src/features/access/types.ts:41
+msgid "Anyone who is logged in"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:123
@@ -254,11 +282,20 @@ msgid "Ascending"
 msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
+#: ../../../lib/web/src/features/access/types.ts:41
 msgid "Authenticated users"
 msgstr ""
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:315
 msgid "Authenticator code"
+msgstr ""
+
+#: ../../../lib/web/src/components/entity-avatar.tsx:99
+msgid "Avatar"
+msgstr ""
+
+#: ../../../lib/web/src/components/entity-avatar.tsx:99
+msgid "Avatar for {name}"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:278
@@ -273,7 +310,7 @@ msgstr ""
 msgid "back"
 msgstr ""
 
-#: ../../../lib/web/src/components/place-picker.tsx:155
+#: ../../../lib/web/src/components/place-picker.tsx:156
 msgid "Back"
 msgstr ""
 
@@ -285,6 +322,10 @@ msgstr ""
 
 #: src/components/MissionSetup.tsx:1165
 msgid "Bandit"
+msgstr ""
+
+#: ../../../lib/web/src/components/entity-banner.tsx:17
+msgid "Banner"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:644
@@ -340,6 +381,10 @@ msgstr ""
 msgid "BREAK RIGHT"
 msgstr ""
 
+#: ../../../lib/web/src/features/accounts/types.ts:13
+msgid "Browser notifications"
+msgstr ""
+
 #: src/components/MissionSetup.tsx:373
 msgid "Button {i}"
 msgstr ""
@@ -364,7 +409,7 @@ msgstr ""
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
-#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:248
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:249
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
 #: ../../../lib/web/src/features/access/access-dialog.tsx:328
 #: ../../../lib/web/src/features/access/access-list.tsx:268
@@ -443,19 +488,19 @@ msgstr ""
 msgid "Check \"All\" to see your past notifications."
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:328
+#: ../../../lib/web/src/components/config-drawer.tsx:329
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:270
+#: ../../../lib/web/src/components/config-drawer.tsx:271
 msgid "Choose between inset, floating, or standard sidebar layout"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:371
+#: ../../../lib/web/src/components/config-drawer.tsx:372
 msgid "Choose between left-to-right or right-to-left site direction"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:226
+#: ../../../lib/web/src/components/config-drawer.tsx:227
 msgid "Choose between system preference, light mode, or dark mode"
 msgstr ""
 
@@ -464,8 +509,8 @@ msgstr ""
 msgid "Choose language"
 msgstr ""
 
-#: ../../../lib/web/src/components/colour-picker.tsx:269
-#: ../../../lib/web/src/components/colour-picker.tsx:350
+#: ../../../lib/web/src/components/colour-picker.tsx:270
+#: ../../../lib/web/src/components/colour-picker.tsx:351
 #: ../../../lib/web/src/components/travelling-picker.tsx:164
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
@@ -474,12 +519,16 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
-#: ../../../lib/web/src/components/filter-bar.tsx:73
+#: ../../../lib/web/src/components/filter-bar.tsx:74
 msgid "Clear all"
 msgstr ""
 
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
 msgid "Clear filters"
+msgstr ""
+
+#: ../../../lib/web/src/components/search-input.tsx:26
+msgid "Clear search"
 msgstr ""
 
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:177
@@ -540,16 +589,20 @@ msgstr ""
 msgid "Coming Soon!"
 msgstr ""
 
+#: ../../../lib/web/src/components/ui/command.tsx:34
+msgid "Command Palette"
+msgstr ""
+
 #: src/components/GameCanvas.tsx:96
 msgid "COMMENCING"
 msgstr "BEGINNE ANFLUG"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:315
+#: ../../../lib/web/src/components/config-drawer.tsx:316
 #: ../../../lib/web/src/lib/preference-utils.ts:95
 msgid "Compact"
 msgstr ""
 
-#: ../../../lib/web/src/components/place-picker.tsx:159
+#: ../../../lib/web/src/components/place-picker.tsx:160
 #: ../../../lib/web/src/components/travelling-picker.tsx:316
 msgid "Confirm"
 msgstr ""
@@ -558,12 +611,28 @@ msgstr ""
 msgid "Connect"
 msgstr "Verbinden"
 
+#: ../../../lib/web/src/lib/chat-ui.ts:18
+msgid "Connected"
+msgstr ""
+
+#: ../../../lib/web/src/features/accounts/account-manager.tsx:191
+msgid "Connected accounts"
+msgstr ""
+
+#: ../../../lib/web/src/lib/chat-ui.ts:21
+msgid "Connecting..."
+msgstr ""
+
 #: src/components/Multiplayer.tsx:259
 msgid "Connecting…"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:66
 msgid "CONNECTION FAILED"
+msgstr ""
+
+#: ../../../lib/web/src/lib/handle-server-error.ts:18
+msgid "Content not found."
 msgstr ""
 
 #: ../../../lib/web/src/lib/query-client.ts:81
@@ -583,7 +652,15 @@ msgstr ""
 msgid "Continue with {label}"
 msgstr ""
 
-#: ../../../lib/web/src/components/ui/copy-button.tsx:63
+#: ../../../lib/web/src/lib/toast-utils.ts:42
+msgid "Copied"
+msgstr ""
+
+#: ../../../lib/web/src/components/ui/copy-button.tsx:25
+msgid "Copied to clipboard"
+msgstr ""
+
+#: ../../../lib/web/src/components/ui/copy-button.tsx:64
 msgid "Copy"
 msgstr ""
 
@@ -599,7 +676,8 @@ msgstr ""
 msgid "Could not load this document. Please try again later."
 msgstr ""
 
-#: src/components/MatchHistory.tsx:210
+#: src/components/MatchHistory.tsx:217
+#: src/components/MatchHistory.tsx:223
 msgid "Could not save the recording"
 msgstr "Aufzeichnung konnte nicht gespeichert werden"
 
@@ -623,6 +701,11 @@ msgstr ""
 msgid "CRASHED"
 msgstr "ABGESTÜRZT"
 
+#. placeholder {0}: entityLabel.toLowerCase()
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
+msgid "Create {0}"
+msgstr ""
+
 #: src/components/Multiplayer.tsx:409
 msgid "Create and fly"
 msgstr ""
@@ -636,6 +719,10 @@ msgstr ""
 msgid "Create mission"
 msgstr "Mission erstellen"
 
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:258
+msgid "Creating..."
+msgstr ""
+
 #: src/components/MissionSetup.tsx:719
 #: src/components/MissionSetup.tsx:725
 msgid "Credits"
@@ -646,7 +733,11 @@ msgstr ""
 msgid "Cumulus"
 msgstr ""
 
-#: ../../../lib/web/src/components/colour-picker.tsx:260
+#: ../../../lib/web/src/components/map-view.tsx:208
+msgid "Current location"
+msgstr ""
+
+#: ../../../lib/web/src/components/colour-picker.tsx:261
 msgid "Custom"
 msgstr ""
 
@@ -659,7 +750,7 @@ msgstr "GEFÄHRLICH"
 msgid "Cycle view"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:218
+#: ../../../lib/web/src/components/config-drawer.tsx:219
 #: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:20
 msgid "Dark"
@@ -695,7 +786,7 @@ msgstr ""
 msgid "DECK POSITION SAVED"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:310
+#: ../../../lib/web/src/components/config-drawer.tsx:311
 msgid "Default"
 msgstr ""
 
@@ -713,6 +804,10 @@ msgstr ""
 
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Descending"
+msgstr ""
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:83
+msgid "Description"
 msgstr ""
 
 #: ../../../lib/web/src/components/layout/right-panel.tsx:148
@@ -743,7 +838,7 @@ msgstr ""
 msgid "Different game host"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:340
+#: ../../../lib/web/src/components/config-drawer.tsx:341
 msgid "Direction"
 msgstr ""
 
@@ -755,6 +850,8 @@ msgstr ""
 msgid "disconnected"
 msgstr ""
 
+#: ../../../lib/web/src/lib/chat-ui.ts:25
+#: ../../../lib/web/src/lib/chat-ui.ts:29
 #: src/components/MatchHistory.tsx:91
 msgid "Disconnected"
 msgstr ""
@@ -817,6 +914,10 @@ msgstr ""
 msgid "EJECTED"
 msgstr "KATAPULTIERT"
 
+#: ../../../lib/web/src/features/accounts/types.ts:15
+msgid "Email"
+msgstr ""
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:289
 msgid "Email code"
 msgstr ""
@@ -872,6 +973,10 @@ msgstr ""
 msgid "Exterior detail"
 msgstr ""
 
+#: ../../../lib/web/src/features/accounts/types.ts:22
+msgid "External URL"
+msgstr ""
+
 #: src/components/MissionSetup.tsx:1135
 msgid "Extra aircraft"
 msgstr ""
@@ -886,6 +991,19 @@ msgstr ""
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:225
 msgid "Failed to add account"
+msgstr ""
+
+#: ../../../lib/web/src/components/tag-input.tsx:39
+msgid "Failed to add tag"
+msgstr ""
+
+#: ../../../lib/web/src/components/ui/copy-button.tsx:26
+#: ../../../lib/web/src/lib/toast-utils.ts:44
+msgid "Failed to copy"
+msgstr ""
+
+#: ../../../lib/web/src/hooks/use-load-more.ts:74
+msgid "Failed to load"
 msgstr ""
 
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
@@ -918,6 +1036,10 @@ msgstr ""
 
 #: src/components/GameCanvas.tsx:31
 msgid "FIGHT'S ON"
+msgstr ""
+
+#: ../../../lib/web/src/components/data-table/toolbar.tsx:30
+msgid "Filter..."
 msgstr ""
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
@@ -966,7 +1088,7 @@ msgstr "FLUGKERN FEHLGESCHLAGEN"
 msgid "Flights"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:257
+#: ../../../lib/web/src/components/config-drawer.tsx:258
 msgid "Floating"
 msgstr ""
 
@@ -1034,7 +1156,7 @@ msgstr ""
 msgid "Fuel probe"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:320
+#: ../../../lib/web/src/components/config-drawer.tsx:321
 msgid "Full layout"
 msgstr ""
 
@@ -1165,12 +1287,28 @@ msgstr ""
 msgid "In air"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:252
+#: ../../../lib/web/src/features/access/types.ts:42
+msgid "Including anonymous users"
+msgstr ""
+
+#: ../../../lib/web/src/components/faceless-avatar.tsx:69
+msgid "Initials avatar"
+msgstr ""
+
+#: ../../../lib/web/src/components/faceless-avatar.tsx:69
+msgid "Initials avatar for {name}"
+msgstr ""
+
+#: ../../../lib/web/src/components/config-drawer.tsx:253
 msgid "Inset"
 msgstr ""
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
+msgstr ""
+
+#: ../../../lib/web/src/components/tag-input.tsx:38
+msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
 msgstr ""
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:245
@@ -1223,6 +1361,10 @@ msgstr ""
 
 #: src/components/MissionSetup.tsx:1639
 msgid "Joystick"
+msgstr ""
+
+#: ../../../lib/web/src/lib/locale-format.ts:62
+msgid "Just now"
 msgstr ""
 
 #: src/components/MatchHistory.tsx:149
@@ -1281,7 +1423,7 @@ msgstr "Start (Katapult)"
 msgid "launch / target"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:286
+#: ../../../lib/web/src/components/config-drawer.tsx:287
 msgid "Layout"
 msgstr ""
 
@@ -1306,7 +1448,7 @@ msgstr ""
 msgid "LEFT"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:354
+#: ../../../lib/web/src/components/config-drawer.tsx:355
 msgid "Left to Right"
 msgstr ""
 
@@ -1318,7 +1460,7 @@ msgstr ""
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200 HALTEN, FAHRWERK RAUS"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:213
+#: ../../../lib/web/src/components/config-drawer.tsx:214
 #: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:19
 msgid "Light"
@@ -1421,6 +1563,10 @@ msgstr ""
 msgid "M to close"
 msgstr ""
 
+#: ../../../lib/web/src/features/accounts/account-manager.tsx:192
+msgid "Manage your connected accounts for notifications and services."
+msgstr ""
+
 #: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr ""
@@ -1445,6 +1591,10 @@ msgstr ""
 
 #: src/components/MissionSetup.tsx:1076
 msgid "Matches"
+msgstr ""
+
+#: ../../../lib/web/src/features/accounts/types.ts:17
+msgid "MCP server"
 msgstr ""
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
@@ -1493,6 +1643,10 @@ msgstr ""
 msgid "Missiles allowed"
 msgstr ""
 
+#: ../../../lib/web/src/features/accounts/types.ts:23
+msgid "Mochi web"
+msgstr ""
+
 #: src/components/MatchHistory.tsx:163
 msgid "Mode"
 msgstr ""
@@ -1507,6 +1661,14 @@ msgstr ""
 
 #: src/components/Multiplayer.tsx:188
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
+msgstr ""
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
+msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
+msgstr ""
+
+#: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:100
+msgid "Name must be 1000 characters or less"
 msgstr ""
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:53
@@ -1556,12 +1718,21 @@ msgstr ""
 msgid "No open matches — create one."
 msgstr ""
 
-#: ../../../lib/web/src/components/place-picker.tsx:132
+#: ../../../lib/web/src/components/person-picker.tsx:84
+msgid "No people found"
+msgstr ""
+
+#: ../../../lib/web/src/components/place-picker.tsx:133
 msgid "No places found"
 msgstr ""
 
 #: ../../../lib/web/src/components/profile-dropdown.tsx:58
 msgid "No profile"
+msgstr ""
+
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:82
+#: ../../../lib/web/src/components/search-entity-page.tsx:73
+msgid "No results found"
 msgstr ""
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
@@ -1590,6 +1761,7 @@ msgstr ""
 msgid "NO-GRADE"
 msgstr "KEINE WERTUNG"
 
+#: ../../../lib/web/src/components/colour-picker.tsx:345
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
@@ -1640,6 +1812,10 @@ msgstr ""
 msgid "OK"
 msgstr "OK"
 
+#: ../../../lib/web/src/components/filter-bar.tsx:35
+msgid "On"
+msgstr ""
+
 #: src/components/MissionSetup.tsx:951
 #: src/components/MissionSetup.tsx:1212
 msgid "On carrier"
@@ -1686,8 +1862,8 @@ msgstr ""
 msgid "Open navigation menu"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:57
-#: ../../../lib/web/src/components/config-drawer.tsx:65
+#: ../../../lib/web/src/components/config-drawer.tsx:58
+#: ../../../lib/web/src/components/config-drawer.tsx:66
 msgid "Open theme settings"
 msgstr ""
 
@@ -1722,6 +1898,10 @@ msgstr ""
 
 #: ../../../lib/web/src/components/restore-banner.tsx:135
 msgid "Passkeys"
+msgstr ""
+
+#: ../../../lib/web/src/components/date-picker.tsx:20
+msgid "Pick a date"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:853
@@ -1816,6 +1996,10 @@ msgstr ""
 msgid "Project members"
 msgstr ""
 
+#: ../../../lib/web/src/features/accounts/types.ts:21
+msgid "Push notification"
+msgstr ""
+
 #: src/components/GameCanvas.tsx:95
 msgid "PUSH TIME"
 msgstr "ANFLUGZEIT"
@@ -1852,21 +2036,25 @@ msgstr ""
 msgid "Recent"
 msgstr "Zuletzt"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:216
-#: ../../../lib/web/src/components/search-entity-page.tsx:242
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:217
+#: ../../../lib/web/src/components/search-entity-page.tsx:243
 msgid "Recommended"
+msgstr ""
+
+#: ../../../lib/web/src/lib/chat-ui.ts:21
+msgid "Reconnecting ({retries})..."
 msgstr ""
 
 #: src/components/MissionSetup.tsx:1467
 msgid "Record flights"
 msgstr "Flüge aufzeichnen"
 
-#: src/components/MatchHistory.tsx:215
+#: src/components/MatchHistory.tsx:229
 #: src/components/MissionSetup.tsx:1461
 msgid "Recording"
 msgstr "Aufzeichnung"
 
-#: src/components/MatchHistory.tsx:209
+#: src/components/MatchHistory.tsx:222
 msgid "Recording saved"
 msgstr "Aufzeichnung gespeichert"
 
@@ -1916,6 +2104,12 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
+#. placeholder {0}: filter.label
+#: ../../../lib/web/src/components/filter-bar.tsx:56
+#: ../../../lib/web/src/components/filter-bar.tsx:62
+msgid "Remove {0} filter"
+msgstr ""
+
 #: ../../../lib/web/src/features/access/access-list.tsx:252
 #: ../../../lib/web/src/features/access/access-list.tsx:258
 msgid "Remove access rule"
@@ -1943,13 +2137,18 @@ msgstr ""
 msgid "Resend email"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:86
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:81
+#: ../../../lib/web/src/components/config-drawer.tsx:87
+#: ../../../lib/web/src/components/data-table/toolbar.tsx:82
 #: src/components/MissionSetup.tsx:1681
 msgid "Reset"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:84
+#: ../../../lib/web/src/components/config-drawer.tsx:122
+#: ../../../lib/web/src/components/config-drawer.tsx:127
+msgid "Reset {title}"
+msgstr ""
+
+#: ../../../lib/web/src/components/config-drawer.tsx:85
 msgid "Reset all settings to default values"
 msgstr ""
 
@@ -1981,7 +2180,7 @@ msgstr ""
 msgid "Reversed"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:361
+#: ../../../lib/web/src/components/config-drawer.tsx:362
 msgid "Right to Left"
 msgstr ""
 
@@ -2028,8 +2227,22 @@ msgstr ""
 msgid "Sea level"
 msgstr ""
 
-#: ../../../lib/web/src/components/place-picker.tsx:85
+#: ../../../lib/web/src/components/filter-bar.tsx:32
+#: ../../../lib/web/src/components/header-search.tsx:22
+#: ../../../lib/web/src/components/search.tsx:18
+msgid "Search"
+msgstr ""
+
+#: ../../../lib/web/src/components/ui/command.tsx:35
+msgid "Search for a command to run..."
+msgstr ""
+
+#: ../../../lib/web/src/components/place-picker.tsx:86
 msgid "Search for a place"
+msgstr ""
+
+#: ../../../lib/web/src/components/place-picker.tsx:50
+msgid "Search for a place..."
 msgstr ""
 
 #: ../../../lib/web/src/components/travelling-picker.tsx:250
@@ -2049,13 +2262,20 @@ msgid "Search users"
 msgstr ""
 
 #: ../../../lib/web/src/components/person-picker.tsx:324
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:81
+#: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr ""
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:174
-#: ../../../lib/web/src/components/search-entity-page.tsx:200
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:175
+#: ../../../lib/web/src/components/search-entity-page.tsx:201
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
+msgstr ""
+
+#. placeholder {0}: item.label.toLowerCase()
+#: ../../../lib/web/src/components/config-drawer.tsx:149
+msgid "Select {0}"
 msgstr ""
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:150
@@ -2066,6 +2286,10 @@ msgstr ""
 msgid "Select access rule"
 msgstr ""
 
+#: ../../../lib/web/src/features/accounts/account-picker.tsx:34
+msgid "Select account"
+msgstr ""
+
 #: ../../../lib/web/src/features/accounts/account-add.tsx:129
 msgid "Select account type"
 msgstr ""
@@ -2074,19 +2298,27 @@ msgstr ""
 msgid "Select group"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:304
+#: ../../../lib/web/src/components/config-drawer.tsx:305
 msgid "Select layout style"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:246
+#: ../../../lib/web/src/components/place-picker.tsx:49
+msgid "Select location"
+msgstr ""
+
+#: ../../../lib/web/src/components/person-picker.tsx:83
+msgid "Select person..."
+msgstr ""
+
+#: ../../../lib/web/src/components/config-drawer.tsx:247
 msgid "Select sidebar style"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:348
+#: ../../../lib/web/src/components/config-drawer.tsx:349
 msgid "Select site direction"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:202
+#: ../../../lib/web/src/components/config-drawer.tsx:203
 msgid "Select theme preference"
 msgstr ""
 
@@ -2177,8 +2409,8 @@ msgstr ""
 msgid "Showing {totalShown} of {total}"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:238
-#: ../../../lib/web/src/components/config-drawer.tsx:262
+#: ../../../lib/web/src/components/config-drawer.tsx:239
+#: ../../../lib/web/src/components/config-drawer.tsx:263
 #: ../../../lib/web/src/components/ui/sidebar.tsx:237
 msgid "Sidebar"
 msgstr ""
@@ -2268,11 +2500,16 @@ msgstr ""
 msgid "Subject"
 msgstr ""
 
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:83
+#: ../../../lib/web/src/components/search-entity-page.tsx:74
+msgid "Subscribe"
+msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:65
 msgid "Sunday"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:208
+#: ../../../lib/web/src/components/config-drawer.tsx:209
 #: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:21
 #: ../../../lib/web/src/lib/preference-utils.ts:144
@@ -2283,7 +2520,7 @@ msgstr ""
 msgid "TACTICAL MAP"
 msgstr ""
 
-#: ../../../lib/web/src/components/tag-input.tsx:94
+#: ../../../lib/web/src/components/tag-input.tsx:95
 msgid "Tag"
 msgstr ""
 
@@ -2350,11 +2587,11 @@ msgstr ""
 msgid "The site is not available at the moment."
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:194
+#: ../../../lib/web/src/components/config-drawer.tsx:195
 msgid "Theme"
 msgstr ""
 
-#: ../../../lib/web/src/components/config-drawer.tsx:69
+#: ../../../lib/web/src/components/config-drawer.tsx:70
 msgid "Theme Settings"
 msgstr ""
 
@@ -2453,8 +2690,8 @@ msgstr ""
 msgid "Travelling"
 msgstr ""
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:190
-#: ../../../lib/web/src/components/search-entity-page.tsx:216
+#: ../../../lib/web/src/components/search-entity-dialog.tsx:191
+#: ../../../lib/web/src/components/search-entity-page.tsx:217
 msgid "Try adjusting your search terms"
 msgstr ""
 
@@ -2501,8 +2738,17 @@ msgstr ""
 msgid "Unauthorized Access"
 msgstr ""
 
+#: ../../../lib/web/src/lib/request.ts:133
+#: ../../../lib/web/src/lib/request.ts:206
+msgid "Unexpected API error"
+msgstr ""
+
 #: ../../../lib/web/src/lib/preference-utils.ts:87
 msgid "United States"
+msgstr ""
+
+#: ../../../lib/web/src/features/accounts/types.ts:29
+msgid "Unknown"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:1276
@@ -2598,6 +2844,10 @@ msgstr ""
 msgid "WAITING FOR OPPONENT"
 msgstr ""
 
+#: ../../../lib/web/src/components/filter-bar.tsx:35
+msgid "Watched"
+msgstr ""
+
 #: src/components/GameCanvas.tsx:62
 msgid "WAVE OFF"
 msgstr "DURCHSTARTEN"
@@ -2688,6 +2938,10 @@ msgstr ""
 
 #: ../../../lib/web/src/features/errors/forbidden.tsx:18
 msgid "You don't have necessary permission <0/>to view this resource."
+msgstr ""
+
+#: ../../../lib/web/src/lib/show-submitted-data.tsx:9
+msgid "You submitted the following values:"
 msgstr ""
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
