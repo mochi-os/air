@@ -2632,6 +2632,29 @@ function leak_trail(pos,rate,vx,_vy,vz){ if(Math.random()>Math.min(1,rate)) retu
 	smoke.px[k]=pos.x-((vx||0)*0.06);smoke.py[k]=pos.y-0.4;smoke.pz[k]=pos.z-((vz||0)*0.06);
 	smoke.vx[k]=(Math.random()-0.5)*3;smoke.vy[k]=(Math.random()-0.5)*3;smoke.vz[k]=(Math.random()-0.5)*3;
 	smoke.ttl[k]=smoke.life[k]=1.1+Math.random()*0.7; smoke.r[k]=0.95;smoke.g[k]=0.96;smoke.b[k]=0.98; }
+// hit_sparks: the flash where a round strikes an airframe (#217). Real cannon
+// strikes are a brief white-hot flash with sparks thrown along the round's
+// path, gone in well under a tenth of a second — so these are short-lived,
+// additive, and slightly random in size, and a burst walking across the target
+// leaves the line of flashes the pilot actually sees.
+let _spark_count=0;   // dev: how many strike flashes have been spawned
+if(DEV_MODE) (globalThis as any).dev_close=(m)=>{ const d=+m||200;   // dev (?developer=1 only): park the bandit dead ahead at d metres — gunnery and hit-flash checks need a target in range, and flying onto one by hand is not a test
+	bandit.pos.copy(ownship.pos).addScaledVector(ownship.fwd,d); bandit.fwd.copy(ownship.fwd); bandit.speed=ownship.speed;
+	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
+function hit_sparks(x,y,z){ _spark_count++;
+	// The TRACER pool, not the smoke pool: smoke particles are sized for
+	// explosion clouds (70 against the tracer's 4) and one strike flash drawn
+	// with them swallowed the whole aircraft. A cannon strike is a small, very
+	// brief spark shower — a dozen bright points, gone inside a fifth of a
+	// second, which is what leaves a line of flashes walking down a target.
+	for(let i=0;i<10;i++){ const k=pool_spawn(tracers); if(k<0) break;
+		const core=i<3;   // hot core, then thrown sparks
+		const a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=core?(1+Math.random()*2):(7+Math.random()*16);
+		tracers.px[k]=x; tracers.py[k]=y; tracers.pz[k]=z;
+		tracers.vx[k]=Math.cos(a)*Math.cos(e)*sp; tracers.vy[k]=Math.sin(e)*sp*0.6+1.5; tracers.vz[k]=Math.sin(a)*Math.cos(e)*sp;
+		tracers.ttl[k]=tracers.life[k]=core?(0.06+Math.random()*0.05):(0.12+Math.random()*0.14);
+		if(core){ tracers.r[k]=1.0; tracers.g[k]=0.97; tracers.b[k]=0.85; }   // white-hot at the point of impact
+		else { tracers.r[k]=1.0; tracers.g[k]=0.5+Math.random()*0.3; tracers.b[k]=0.10; } } }   // amber sparks thrown off it
 function explosion_at(x,y,z){
 	audio_explosion(Math.hypot(x-ownship.pos.x,y-ownship.pos.y,z-ownship.pos.z)); for(let i=0;i<64;i++){ const k=pool_spawn(smoke); if(k<0) break;
 	const fire=i<28, a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=fire?(9+Math.random()*40):(3+Math.random()*15);
@@ -2749,7 +2772,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, record:(()=>{ const r=recording_file(); return r?{lines:r.text.split(String.fromCharCode(10)).length, session:r.session, kind:r.kind, bot:/Doctrine=/.test(r.text)}:null; })(),
+	atc:atc_on, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count, record:(()=>{ const r=recording_file(); return r?{lines:r.text.split(String.fromCharCode(10)).length, session:r.session, kind:r.kind, bot:/Doctrine=/.test(r.text)}:null; })(),
 	rig:(()=>{ const r=(ownship.group.userData.rig||[]).filter(e=>e.gauge!==undefined); return { bound:r.filter(e=>e.object).length, total:r.length, missing:r.filter(e=>!e.object).map(e=>e.name) }; })(),
 	screens:(()=>{ const out={}; const v=new THREE.Vector3();   // where each driven gauge lands on screen (css px): crops for visual verification
 		for(const e of ownship.group.userData.rig||[]){ if(e.gauge===undefined||!e.object) continue;
@@ -3223,7 +3246,13 @@ function step_world(dt){ sim_time+=dt;
 	// player guns
 	{ const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,input.guns&&!weapons_hold&&!ownship.launching&&(ownship.gear??0)>0.98);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock) or before the joust merge; in multiplayer the tracers are local, the damage is the server's
 		if(fired>0&&!MULTIPLAYER){ const pose=battle_pose(ownship);
-			if(has_enemy) battle_burst(0,pose,battle_aim(bandit),fired,0,battle_tick);
+			if(has_enemy){ const verdict=battle_burst(0,pose,battle_aim(bandit),fired,0,battle_tick);
+				// The impacts come back in the BANDIT's body frame — rotate them onto
+				// the airframe as drawn, so a flash sits on the wing it actually hit
+				// rather than at the aircraft's centre.
+				for(const p of verdict.impacts){ const w=_v.set(p.x,p.y,p.z).applyQuaternion(bandit.group.quaternion).add(bandit.group.position);
+					hit_sparks(w.x,w.y,w.z); }
+				if(verdict.hits>0) audio_hit(Math.min(verdict.hits,4)); }
 			for(let i=0;i<extras.length&&i<8;i++) battle_burst(1+i,pose,battle_aim(extras[i]),fired,0,battle_tick); } }
 	update_pool_ballistic(tracers,dt,9.8,0); update_missiles(dt);
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96);
