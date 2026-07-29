@@ -175,7 +175,7 @@ def recording_save(a):
 	if not row:
 		a.error.label(404, "errors.not_found")   # a recording with no flight to hang on is an orphan by construction
 		return
-	saved = mochi.attachment.save(row["id"], "recording", [], [], [])
+	saved = mochi.attachment.save(row["id"], "recording", [], [])
 	if not saved:
 		return {"data": {"saved": False}}
 	mochi.db.execute("update matches set recording = ?, recorded = ? where id = ?", saved[0]["id"], saved[0].get("size", 0), row["id"])
