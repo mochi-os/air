@@ -150,4 +150,26 @@ describe('Recorder', () => {
   it('renders nothing when empty', () => {
     expect(new Recorder().render(new Date(), 'x')).toBe('')
   })
+  it('carries fuel every sample and rounds only when they change', () => {
+    const text = acmi(
+      [
+        { time: 0, objects: [jet({ data: { fuel: 4900, rounds: 578 } })] },
+        { time: 0.1, objects: [jet({ data: { fuel: 4880.4, rounds: 578 } })] },
+        { time: 0.2, objects: [jet({ data: { fuel: 4860, rounds: 520 } })] },
+      ],
+      new Date('2026-07-29T00:00:00Z'),
+      'debrief'
+    )
+    const lines = text.split('\n').filter((l) => l.startsWith('1,T='))
+    expect(lines).toHaveLength(3)
+    // FuelWeight is the standard ACMI name, so TacView plots it unaided.
+    expect(lines[0]).toContain('FuelWeight=4900')
+    expect(lines[1]).toContain('FuelWeight=4880.4')
+    expect(lines[2]).toContain('FuelWeight=4860')
+    // Rounds hold still for whole minutes: written on change, not every sample.
+    expect(lines[0]).toContain('Rounds=578')
+    expect(lines[1]).not.toContain('Rounds=')
+    expect(lines[2]).toContain('Rounds=520')
+  })
+
 })

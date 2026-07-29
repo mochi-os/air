@@ -44,6 +44,8 @@ export interface Flight {
   tas?: number // true airspeed, m/s
   ias?: number // indicated/calibrated airspeed, m/s
   mach?: number
+  fuel?: number // kilograms remaining — ACMI's standard FuelWeight, which TacView plots like any other channel
+  rounds?: number // gun rounds remaining
   stick?: number // control-law channels: developer builds only
   stabilator?: number // degrees
 }
@@ -76,6 +78,7 @@ export function acmi(samples: Sample[], started: Date, title: string): string {
   // they change — ACMI is a delta format, and repeating them every frame
   // multiplies the file size for no information.
   const declared = new Map<number, string>()
+  const counted = new Map<number, number>() // last written round count, per object
   for (const sample of samples) {
     out.push(`#${round(sample.time, 2)}`)
     for (const o of sample.objects) {
@@ -98,6 +101,15 @@ export function acmi(samples: Sample[], started: Date, title: string): string {
         if (d.tas !== undefined) line += `,TAS=${round(d.tas, 1)}`
         if (d.ias !== undefined) line += `,IAS=${round(d.ias, 1)}`
         if (d.mach !== undefined) line += `,Mach=${round(d.mach, 3)}`
+        if (d.fuel !== undefined) line += `,FuelWeight=${round(d.fuel, 1)}`
+        // Rounds are delta-suppressed, unlike the rest: they hold still for
+        // whole minutes and then step during a burst, so writing them every
+        // sample would be pure padding. Written on change, which is also
+        // exactly where a debrief looks - the samples that moved are the shots.
+        if (d.rounds !== undefined && counted.get(o.id) !== d.rounds) {
+          counted.set(o.id, d.rounds)
+          line += `,Rounds=${Math.round(d.rounds)}`
+        }
         if (d.stick !== undefined) line += `,Stick=${round(d.stick, 3)}`
         if (d.stabilator !== undefined) line += `,Stabilator=${round(d.stabilator, 2)}`
       }
