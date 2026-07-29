@@ -1422,9 +1422,17 @@ function windsock_texture(){ const c=document.createElement("canvas"); c.width=8
 function pool(max){ return { px:new Float32Array(max),py:new Float32Array(max),pz:new Float32Array(max), vx:new Float32Array(max),vy:new Float32Array(max),vz:new Float32Array(max),
 	life:new Float32Array(max),ttl:new Float32Array(max), r:new Float32Array(max),g:new Float32Array(max),b:new Float32Array(max), active:new Uint8Array(max), max, next:0 }; }
 function pool_spawn(p){ for(let i=0;i<p.max;i++){ const k=(p.next+i)%p.max; if(!p.active[k]){ p.next=(k+1)%p.max; p.active[k]=1; return k; } } return -1; }
-const TR_MAX=4000,FL_MAX=2500,SM_MAX=3000;
-const tracers=pool(TR_MAX),flares=pool(FL_MAX),smoke=pool(SM_MAX);
+const TR_MAX=4000,FL_MAX=2500,SM_MAX=3000,ST_MAX=1200;
+const tracers=pool(TR_MAX),flares=pool(FL_MAX),smoke=pool(SM_MAX),strikes=pool(ST_MAX);
 const tr_pts=make_points(TR_MAX,4,false,glow), fl_pts=make_points(FL_MAX,26,true,glow), sm_pts=make_points(SM_MAX,70,false,soft);   // tracers: small + NORMAL blend (additive blew the colour out to white against bright sky)
+// Strike flashes get their OWN pool, and it is ADDITIVE. Borrowing the tracer
+// pool inherited that pool's normal blending, which is right for a tracer (a
+// lit round, read against bright sky) and wrong for an impact: a flash is
+// emissive, and normal-blended it came out the same dull amber as the tracer
+// that caused it — indistinguishable from the stream, over both a grey
+// airframe and the sky. Borrowing also inherited `tr_pts.visible=cfg.tracers`,
+// so switching tracers off silently switched hit flashes off with them.
+const strike_pts=make_points(ST_MAX,9,true,glow);
 function flush_points(p,pts){ const pos=pts.geometry.attributes.position.array,col=pts.geometry.attributes.color.array; let n=0;
 	for(let i=0;i<p.max;i++){ if(!p.active[i]) continue; const o=n*3; pos[o]=p.px[i];pos[o+1]=p.py[i];pos[o+2]=p.pz[i];
 		const f=Math.max(0,p.life[i]/p.ttl[i]); col[o]=p.r[i]*f;col[o+1]=p.g[i]*f;col[o+2]=p.b[i]*f; n++; }
@@ -2320,8 +2328,8 @@ let cam_az=0, cam_el=0.22, cam_dist=24, cam_psi=0;
 let head_az=0, head_el=0, head_drag=false, head_keys=false;   // cockpit head look (#99): mouse-drag or arrow keys, snap back on release
 let view_zoom=1, zoom_target=1, zoom_wheel=0;   // optical zoom: notches move the TARGET, the view eases after it (stepping the FOV directly read as jerky); per-view values persist in the config (zoom_<view>, #209)
 let zoom_save=0;   // debounce handle for persisting the zoom
-function zoom_floor(){ return cfg.view==="chase"?0.5:1; }   // chase may zoom OUT past 1x (45°→90° wide); first-person floors at 1x
-function zoom_recall(v){ return THREE.MathUtils.clamp(Number(cfg["zoom_"+v])||1, v==="chase"?0.5:1, 4); }
+function zoom_floor(){ return cfg.view==="chase"?0.5:0.6; }   // chase zooms out to 90° wide; first person to ~75°, which is nearer what a pilot actually takes in than the 45° a 1x floor pinned it to
+function zoom_recall(v){ return THREE.MathUtils.clamp(Number(cfg["zoom_"+v])||1, v==="chase"?0.5:0.6, 4); }
 function zoom_persist(){   // remember the setting per view, debounced past the notch flurry
 	const view=cfg.view, value=()=>Math.round(zoom_target*100)/100;   // the view is captured at SCHEDULE time: a swap inside the debounce window otherwise files this zoom under the view just switched TO
 	if(zoom_save) clearTimeout(zoom_save);
@@ -2393,6 +2401,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 			if(k==="Digit4") set_view("flypast");    // 4 Flypast
 			if(k==="Digit5") set_view("padlock"); }  // 5 Padlock
 		if(ch===key_of("view")) set_view(cfg.view==="cockpit"?"hud":"cockpit");   // V: Cockpit↔HUD fast-swap (any other view → Cockpit)
+		if(ch===key_of("view.reset")) view_reset();   // 0: put THIS view back to its defaults — zoom, head, and the chase orbit
 		if(ch===key_of("zoom.in")&&(map_on||cfg.view!=="chase")) zoom_step(1);     // =/− zoom every view optically; chase keeps them for the orbit distance, its wheel already zooms. Edge-triggered here, and HELD keys sweep continuously from read_input below
 		if(ch===key_of("zoom.out")&&(map_on||cfg.view!=="chase")) zoom_step(-1);
 		if(ch===key_of("map")){ map_on=!map_on; map_el.style.display=map_on?"block":"none"; if(map_on){ map_px=0; map_pz=0; map_resize(); } }   // reopening always returns centred on own aircraft
@@ -2428,7 +2437,17 @@ stage.addEventListener("pointerup",end_drag,{ signal });
 // zoom_step: one discrete notch of zoom (trim-wheel button pulse or scroll notch).
 function zoom_step(direction){
 	if(map_on){ map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,-direction),MAP_RANGE_MIN,MAP_RANGE_MAX); return; }
-	if(running){ zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.25,direction),zoom_floor(),4); zoom_persist(); } }
+	if(running){ zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.5,direction),zoom_floor(),4); zoom_persist(); } }   // 1.25 -> 1.5 per notch: floor to ceiling in ~5 notches instead of ~8
+// view_reset returns the CURRENT view to how it starts: zoom back to 1x, the
+// head back to boresight, and the chase orbit back to its shoulder. Per-view,
+// not global — resetting the cockpit should not disturb a chase framing the
+// player set up earlier, and the zoom is persisted per view anyway (#209).
+function view_reset(){
+	if(map_on){ map_range=MAP_RANGE_DEFAULT; return; }
+	zoom_target=THREE.MathUtils.clamp(1,zoom_floor(),4); zoom_persist();
+	head_az=0; head_el=0; head_keys=false;
+	if(cfg.view==="chase"){ cam_az=0; cam_el=0.22; cam_dist=24; }
+}
 // scan_zoom: the trim-wheel notch buttons, edge-detected. Called from read_input
 // in flight AND from frame() while the map is up — the SP map pauses the world,
 // so read_input stops and the wheel went dead over the map without this.
@@ -2442,7 +2461,7 @@ stage.addEventListener("wheel",e=>{ e.preventDefault();   // scroll = zoom (any 
 	if(!running||game_paused) return;
 	const notch=-e.deltaY/(e.deltaMode===1?3:100);   // deltaMode 1 = lines (Firefox), else pixels; scroll up = zoom in
 	if(map_on){ map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.30,-notch),MAP_RANGE_MIN,MAP_RANGE_MAX); return; }
-	zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.30,notch),zoom_floor(),4); zoom_persist();
+	zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.5,notch),zoom_floor(),4); zoom_persist();
 },{ signal, passive:false });
 stage.addEventListener("pointercancel",end_drag,{ signal });
 // Remappable input actions (#74): defaults here, user overrides in cfg.keys
@@ -2451,7 +2470,7 @@ stage.addEventListener("pointercancel",end_drag,{ signal });
 const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.left":"KeyA", "yaw.right":"KeyE", "yaw.left":"KeyQ",
 	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash",
 	gear:"KeyG", hook:"KeyH", atc:"KeyP", lights:"KeyL", flares:"KeyF", eject:"KeyJ", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"KeyV", select:"KeyX", altitude:"KeyK", reject:"KeyU", acquire:"Enter",
-	probe:"Shift+KeyF", canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares
+	probe:"Shift+KeyF", canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
@@ -2602,8 +2621,13 @@ function recording_sample(){
 	// replay into the handling trace the old CSV telemetry carried. The
 	// control-law channels stay behind developer mode with the doctrine one.
 	const out=last_out;
+	// Fuel and rounds ride in the SHIPPED recording, not behind developer mode:
+	// "what did that fight cost me" is a debrief question every pilot asks, and
+	// without them the answer was unrecoverable once the mission ended. Fuel is
+	// kg straight from the state (the gauge is what multiplies to pounds).
 	const data=out?{ aoa:(out[STATE.alpha]||0)/D2R, g:out[STATE.nz]||0, tas:ownship.speed||0,
 		ias:out[STATE.cas]||0, mach:out[STATE.mach]||0,
+		fuel:out[STATE.fuel]||0, rounds:ownship.rounds??0,
 		...(DEV_MODE?{ stick:last_controls?last_controls.pitch:0, stabilator:(out[STATE.stabilator]||0)/D2R }:{}) }:undefined;
 	add(ownship,1,cfg.callsign||"Player","Blue",undefined,data);
 	if(!MULTIPLAYER&&has_enemy&&bandit.group&&bandit.group.visible)
@@ -2648,26 +2672,28 @@ let _spark_count=0;   // dev: how many strike flashes have been spawned
 if(DEV_MODE) (globalThis as any).dev_close=(m)=>{ const d=+m||200;   // dev (?developer=1 only): park the bandit dead ahead at d metres — gunnery and hit-flash checks need a target in range, and flying onto one by hand is not a test
 	bandit.pos.copy(ownship.pos).addScaledVector(ownship.fwd,d); bandit.fwd.copy(ownship.fwd); bandit.speed=ownship.speed;
 	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
-function hit_sparks(x,y,z){ _spark_count++;
-	// The TRACER pool, not the smoke pool: smoke particles are sized for
-	// explosion clouds (70 against the tracer's 4) and one strike flash drawn
-	// with them swallowed the whole aircraft. A cannon strike is a small, very
-	// brief spark shower — a dozen bright points, gone inside a fifth of a
-	// second, which is what leaves a line of flashes walking down a target.
-	// Sized by TRIAL: the first cut used the smoke pool (particle size 70) and
-	// swallowed the whole aircraft; the correction to the tracer pool (size 4,
-	// constant on screen) overshot the other way and could not be seen at all
-	// in a real fight. The pool is right — a strike is a small bright thing —
-	// so the flash reads through COUNT and DWELL instead: a dense cluster that
-	// lasts long enough for the eye to catch it between frames.
-	for(let i=0;i<22;i++){ const k=pool_spawn(tracers); if(k<0) break;
+function hit_sparks(x,y,z,vx,vy,vz){ _spark_count++;
+	// Sized by TRIAL, three times over. The smoke pool (particle size 70)
+	// swallowed the whole aircraft; the tracer pool (size 4, normal-blended)
+	// could not be seen at all in a real fight; count and dwell alone did not
+	// rescue it, because the problem was never the number of particles. A
+	// normal-blended flash the same colour and size as the tracer that caused
+	// it does not read as an impact — it reads as more tracer. So the flash now
+	// has its own ADDITIVE pool at a middle size: emissive, so it brightens
+	// whatever it lands on, which is what makes a strike on a grey airframe
+	// legible where a subtractive smudge was not.
+	for(let i=0;i<22;i++){ const k=pool_spawn(strikes); if(k<0) break;
 		const core=i<9;   // a tight hot core, then sparks thrown off it
 		const a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=core?(0.6+Math.random()*1.6):(9+Math.random()*20);
-		tracers.px[k]=x+(Math.random()-0.5)*0.5; tracers.py[k]=y+(Math.random()-0.5)*0.5; tracers.pz[k]=z+(Math.random()-0.5)*0.5;
-		tracers.vx[k]=Math.cos(a)*Math.cos(e)*sp; tracers.vy[k]=Math.sin(e)*sp*0.6+1.5; tracers.vz[k]=Math.sin(a)*Math.cos(e)*sp;
-		tracers.ttl[k]=tracers.life[k]=core?(0.16+Math.random()*0.10):(0.22+Math.random()*0.20);
-		if(core){ tracers.r[k]=1.0; tracers.g[k]=0.97; tracers.b[k]=0.88; }   // white-hot at the point of impact
-		else { tracers.r[k]=1.0; tracers.g[k]=0.5+Math.random()*0.3; tracers.b[k]=0.10; } } }   // amber sparks thrown off it
+		strikes.px[k]=x+(Math.random()-0.5)*0.5; strikes.py[k]=y+(Math.random()-0.5)*0.5; strikes.pz[k]=z+(Math.random()-0.5)*0.5;
+		// Carry the TARGET's velocity: sparks are shed BY the airframe, so they
+		// leave at its speed plus the ejecta. Spawned at rest in world space they
+		// hung where the round struck while the jet flew on at ~220 m/s, so every
+		// flash trailed tens of metres behind the aircraft that produced it.
+		strikes.vx[k]=(vx||0)+Math.cos(a)*Math.cos(e)*sp; strikes.vy[k]=(vy||0)+Math.sin(e)*sp*0.6+1.5; strikes.vz[k]=(vz||0)+Math.sin(a)*Math.cos(e)*sp;
+		strikes.ttl[k]=strikes.life[k]=core?(0.16+Math.random()*0.10):(0.22+Math.random()*0.20);
+		if(core){ strikes.r[k]=1.0; strikes.g[k]=0.97; strikes.b[k]=0.88; }   // white-hot at the point of impact
+		else { strikes.r[k]=1.0; strikes.g[k]=0.5+Math.random()*0.3; strikes.b[k]=0.10; } } }   // amber sparks thrown off it
 function explosion_at(x,y,z){
 	audio_explosion(Math.hypot(x-ownship.pos.x,y-ownship.pos.y,z-ownship.pos.z)); for(let i=0;i<64;i++){ const k=pool_spawn(smoke); if(k<0) break;
 	const fire=i<28, a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=fire?(9+Math.random()*40):(3+Math.random()*15);
@@ -2790,7 +2816,12 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count, record:(()=>{ const r=recording_file(); return r?{lines:r.text.split(String.fromCharCode(10)).length, session:r.session, kind:r.kind, bot:/Doctrine=/.test(r.text)}:null; })(),
+	atc:atc_on, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count, record:(()=>{ const r=recording_file(); if(!r) return null; const lines=r.text.split(String.fromCharCode(10));
+		return {lines:lines.length, session:r.session, kind:r.kind, bot:/Doctrine=/.test(r.text),
+			// The ownship's last data line: proves a channel actually plumbs
+			// through at runtime, which a unit test on the renderer cannot.
+			sample:(()=>{const d=lines.filter(l=>l.indexOf("1,T=")===0);return d[d.length-1]||"";})()};
+	})(),
 	rig:(()=>{ const r=(ownship.group.userData.rig||[]).filter(e=>e.gauge!==undefined); return { bound:r.filter(e=>e.object).length, total:r.length, missing:r.filter(e=>!e.object).map(e=>e.name) }; })(),
 	screens:(()=>{ const out={}; const v=new THREE.Vector3();   // where each driven gauge lands on screen (css px): crops for visual verification
 		for(const e of ownship.group.userData.rig||[]){ if(e.gauge===undefined||!e.object) continue;
@@ -3085,7 +3116,32 @@ function fly_player(dt){
 	if(MULTIPLAYER && render_offset.lengthSq()>1e-8){ render_offset.multiplyScalar(Math.max(0,1-dt*7)); ownship.group.position.add(render_offset); }   // the correction shows as a ~150 ms visual decay, never a physics change
 	check_collisions();
 }
+// bandit_wrecked: the bandit against the same world the PLAYER is checked
+// against — terrain height, buildings, masts, the deck — not just a flat sea
+// line. The client owned obstacle collision for the ownship alone, so a bot
+// could fly through an island, a hangar or the carrier island untouched while
+// the same geometry killed the player instantly.
+function bandit_wrecked(){
+	const p=bandit.pos;
+	const floor=ground_height(p.x,p.z);
+	if(p.y<=(floor>-1e8?floor+2:6)) return true;   // terrain, deck, runway, apron — or open sea, which reports no surface
+	for(const b of obstacles.buildings){ if(p.y<b.topY+2 && p.x>b.minx&&p.x<b.maxx&&p.z>b.minz&&p.z<b.maxz && pip(p.x,p.z,b.pts)) return true; }
+	for(const m of obstacles.posts){ if(p.y<m.y1 && Math.hypot(p.x-m.x,p.z-m.z)<m.r+4) return true; }
+	if(carrier_model && p.y<80 && Math.abs(p.x-CARRIER.x)<160 && Math.abs(p.z-CARRIER.z)<160){
+		const h=deck_y_at(carrier_model,p.x,p.z,-1e9);   // the flat deck is a landing surface (the height check above owns it); only the taller superstructure is an obstacle
+		if(h>CARRIER.deckY+4 && p.y<h) return true; }
+	return false;
+}
 function fly_bandit(dt){
+	// The sea finishes a bandit whichever brain is flying it. This check lived
+	// only in the STRICKEN path, so a healthy bandit that flew itself into the
+	// water was caught nowhere — and the flight core has no ground, so it just
+	// kept descending for the rest of the mission. One recorded joust had it
+	// 81 km below sea level four minutes later, still reporting "cruise", with
+	// the target box pointing dutifully straight down while the player hunted
+	// for it at twenty feet. Counted as the player's kill, as the stricken
+	// path counts it: flying an opponent into the ground is a kill.
+	if(bandit_wrecked()){ own_kills++; bandit_destroy(); return; }
 	if(bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5)) return fly_bandit_stricken(dt);
 	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&!fly_bandit.tried){   // lazy: the core loads async and start_mission races it — arm the brain on the first frame the core is ready
 		fly_bandit.tried=true;
@@ -3116,6 +3172,15 @@ function fly_bandit(dt){
 			bandit.reheat=Math.max(w[STATE.engine+1],w[STATE.engine+3]);   // achieved reheat: the flare-seduction burner factor reads it
 			_q.set(w[7],w[8],w[9],w[6]);   // words are W,X,Y,Z; three.js wants x,y,z,w
 			bandit.fwd.set(1,0,0).applyQuaternion(_q);
+			// The full basis, same convention as the ownship. The brain bandit
+			// flies the real model, so it HAS a roll — but only fwd was read
+			// back, leaving body_offset to fall back on a world-up basis (gun
+			// hit flashes landed on the wrong part of a rolled airframe) and
+			// the recorder to fall back on the kinematic AI's stale scalar
+			// bank, which for a brain bandit never updates: every recording so
+			// far shows it flying without ever rolling.
+			(bandit.up??=new THREE.Vector3()).set(0,1,0).applyQuaternion(_q);
+			(bandit.right??=new THREE.Vector3()).set(0,0,1).applyQuaternion(_q);
 			bandit.group.quaternion.copy(_q);
 			bandit.group.position.copy(bandit.pos);
 			if(bandit.merging&&(wrap_distance(bandit.pos,ownship.pos)<500||bandit.fwd.dot(_v.subVectors(ownship.pos,bandit.pos))<0)) bandit.merging=false;   // keep the merge flag honest for the SP weapons hold
@@ -3157,7 +3222,6 @@ function fly_bandit_stricken(dt){
 	else { const d=bandit.break_dir.clone(); d.y=-0.5; steer(bandit,d,dt,0.9,1.5); bandit.speed=Math.max(120,bandit.speed-30*dt); }   // wing gone: rolling descent
 	apply_orientation(bandit);
 	burn_trail(bandit.pos,Math.max(harm.burning?1:0,harm.wing),bandit.velx,bandit.vely,bandit.velz);
-	if(bandit.pos.y<=6){ own_kills++; bandit_destroy(); }
 }
 let rig_sweep=0;   // dev calibration (Shift+A): 0 = off, n = sweep the nth rig entry of the ownship
 let stab_cycle=0;   // dev calibration (Shift+E): adds n×90° about the stab hinge so the user can identify the correct orientation
@@ -3269,13 +3333,13 @@ function step_world(dt){ sim_time+=dt;
 				// the airframe as drawn, so a flash sits on the wing it actually hit
 				// rather than at the aircraft's centre.
 				for(const p of verdict.impacts){ const w=_v.set(p.x,p.y,p.z).applyQuaternion(bandit.group.quaternion).add(bandit.group.position);
-					hit_sparks(w.x,w.y,w.z); }
+					hit_sparks(w.x,w.y,w.z,bandit.velx??bandit.fwd.x*bandit.speed,bandit.vely??bandit.fwd.y*bandit.speed,bandit.velz??bandit.fwd.z*bandit.speed); }
 				if(verdict.hits>0) audio_hit(Math.min(verdict.hits,4)); }
 			for(let i=0;i<extras.length&&i<8;i++) battle_burst(1+i,pose,battle_aim(extras[i]),fired,0,battle_tick); } }
 	update_pool_ballistic(tracers,dt,9.8,0); update_missiles(dt);
-	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96);
-	_live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts);
-	tr_pts.visible=cfg.tracers; fl_pts.visible=true;   // flares are no longer a mission setting: dispensing is always allowed, and wasting them is the player's business
+	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96); update_pool_ballistic(strikes,dt,9.8,0);   // no drag, exactly as these behaved in the tracer pool: the change here is legibility, not motion
+	_live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts)+flush_points(strikes,strike_pts);
+	tr_pts.visible=cfg.tracers; fl_pts.visible=true; strike_pts.visible=true;   // flares are no longer a mission setting (dispensing is always allowed); a strike flash is not a tracer, so it stays on with tracers switched off
 	update_anim(dt);
 	update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights(); update_shuttles(); update_jbds(dt);
 	if(carrier_ols && !ownship.trapped && ((ownship.hook??0)>0.5 || (ownship.gear??1)<0.5)){   // LSO watch: accumulate glideslope/lineup deviation through the in-close portion of a pass, and call the waveoff — the LSO waves off ANY unlandable pass, not just a low one
@@ -3381,7 +3445,7 @@ function reset_ownship(){
 function update_camera(dt){
 	const firstPerson = (cfg.view==="hud");
 	ownship.group.visible=(!firstPerson) || cfg.view==="cockpit";   // in cockpit view the airframe RENDERS (near pass); the layer split keeps it out of the world passes
-	if(cfg.view==="cockpit" && !map_on){   // arrow-key head look, sharing head_az/el with the mouse drag; held arrows hold the pose, release snaps back
+	if(cfg.view!=="chase" && !map_on){   // arrow/hat head look in BOTH first-person views — chase keeps the arrows for its orbit. The clamps are the pilot's: ±150° azimuth (checking six over the shoulder, as far as the straps allow) and -60°/+80° elevation
 		const hr=dt*1.6;
 		const daz=(((keys.has("ArrowLeft")||pad_looks.left)?1:0)-((keys.has("ArrowRight")||pad_looks.right)?1:0))*hr;
 		const del=(((keys.has("ArrowUp")||pad_looks.up)?1:0)-((keys.has("ArrowDown")||pad_looks.down)?1:0))*hr;   // ↑ looks up (head_el positive = up; the compose carries the sign); the castle joins the arrows in both views
@@ -3390,7 +3454,7 @@ function update_camera(dt){
 	}
 	if(cfg.view!=="chase" || map_on){   // HELD zoom keys sweep the optical zoom (the keydown edge gives the first notch; this carries the hold). Chase in flight is excluded: there −/= dolly the orbit below
 		const zk=(k)=>keys.has(key_of(k).replace(/^Shift\+/,""));
-		const sweep=((zk("zoom.in")?1:0)-(zk("zoom.out")?1:0))*dt*1.6;
+		const sweep=((zk("zoom.in")?1:0)-(zk("zoom.out")?1:0))*dt*2.6;   // held sweep quickened to match the coarser notch
 		if(sweep&&running&&!game_paused){ if(map_on) map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,-sweep),MAP_RANGE_MIN,MAP_RANGE_MAX);
 			else { zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(2.4,sweep),zoom_floor(),4); zoom_persist(); } } }
 	if(cfg.view==="chase" && !map_on){   // keyboard orbit (shares cam_az/el with the mouse drag): ←→ azimuth, ↑↓ elevation, −/= zoom — keys.md §5; with the map up, −/= zoom the map instead
@@ -3400,8 +3464,13 @@ function update_camera(dt){
 		if(keys.has("Minus")) cam_dist=Math.min(140,cam_dist+zr);           // - back
 		if(keys.has("Equal")) cam_dist=Math.max(14,cam_dist-zr);            // = in — floor clears the airframe: ~10 m bounding radius about the orbit centre + the 3 m near plane + margin, so the camera can never cut inside the jet (#116)
 	}
-	if(firstPerson){ const eye=body_offset(ownship,3.0,0.6,0); camera.position.copy(eye); camera.up.copy(ownship.up);
-		camera.lookAt(eye.clone().addScaledVector(ownship.fwd,200)); }
+	if(firstPerson){ const eye=body_offset(ownship,3.0,0.6,0); camera.position.copy(eye);
+		// Same head compose as the cockpit, not a bare lookAt: this view is a
+		// pilot without the airframe in the way, so the head turns here too,
+		// and the quaternion form is what keeps roll coupled correctly near
+		// the pitch poles where lookAt fumbles it.
+		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el)).multiply(CAMFIX);
+		if(!head_drag&&!head_keys){ head_az*=Math.max(0,1-dt*5); head_el*=Math.max(0,1-dt*5); } }
 	else if(cfg.view==="cockpit"){ const at=ownship.group.userData.eye||{x:3.0,y:0.6};   // calibrated from the modeled pilot head once the GLB resolves
 		const eye=body_offset(ownship,at.x,at.y,0); camera.position.copy(eye);
 		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el)).multiply(CAMFIX);   // quaternion compose: lookAt fumbles roll coupling near +80° pitch
@@ -3471,7 +3540,7 @@ const map_el=map; const mctx=map_el.getContext("2d"); let map_on=false;
 const help_el=help;
 function map_resize(){ const dpr=Math.min(devicePixelRatio||1,2); map_el.width=innerWidth*dpr; map_el.height=innerHeight*dpr; map_el.style.width=innerWidth+"px"; map_el.style.height=innerHeight+"px"; mctx.setTransform(dpr,0,0,dpr,0,0); }
 const NM=1852;
-let map_range=40000; const MAP_RANGE_MIN=5*NM, MAP_RANGE_MAX=100*NM;   // half-width of the map view in metres; − / = / mouse wheel zoom
+const MAP_RANGE_DEFAULT=40000; let map_range=MAP_RANGE_DEFAULT; const MAP_RANGE_MIN=5*NM, MAP_RANGE_MAX=100*NM;   // half-width of the map view in metres; − / = / mouse wheel zoom
 let map_px=0, map_pz=0;   // arrow-key pan offset from own aircraft (world metres); cleared on map open so it reopens centred
 function draw_map(){ const W=innerWidth,H=innerHeight; mctx.clearRect(0,0,W,H);
 	const cxp=W/2, cyp=H/2, s=Math.min(W,H)*0.46/map_range;
@@ -3521,7 +3590,6 @@ function draw_map(){ const W=innerWidth,H=innerHeight; mctx.clearRect(0,0,W,H);
 addEventListener("resize",()=>{ if(map_on) map_resize(); },{ signal });
 map_el.addEventListener("wheel",e=>{ e.preventDefault(); map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,Math.sign(e.deltaY)),MAP_RANGE_MIN,MAP_RANGE_MAX); },{ signal, passive:false });   // wheel down = zoom out (map only — chase zoom deliberately stays on −/=)
 
-let last_range=0;
 // #133 real-HUD state: weapon master mode (cycled by the select key; the
 // trigger fires the SELECTED weapon like the real stick), the HUD control
 // panel's BARO/RDR altitude switch, the REJ 1 declutter, and the sticky
@@ -3535,7 +3603,14 @@ function draw_hud(dt){
 	hctx.shadowColor="rgba(0,0,0,0.85)"; hctx.shadowBlur=3; hctx.shadowOffsetX=0; hctx.shadowOffsetY=0;   // dark halo behind every HUD glyph/line so it stays readable over any background
 	const cx=HW/2, cy=HH/2;
 	const glass=(cfg.view==="cockpit")?glass_rect():null;   // #99: flight symbology binds to the combining glass in cockpit view
-	const flight_symbols=cfg.view!=="cockpit"||!!glass;     // head turned away from the glass: the symbology simply isn't in view
+	// The combining glass is bolted to the airframe, not to the pilot's head. In
+	// cockpit view the glass rectangle already answers this — turn away and it
+	// is off screen. HUD view has no cockpit to occlude it, so now that the head
+	// moves there too the same truth has to be stated directly: the symbology
+	// fades out as the head leaves boresight and is gone by ~25° off, which is
+	// about where a real HUD's field of view runs out.
+	const boresight=Math.hypot(head_az,head_el);
+	const flight_symbols=(cfg.view==="cockpit")?!!glass:(cfg.view!=="hud"||boresight<0.44);
 	if(crash_t>0){ hctx.textAlign="center"; hctx.fillStyle="#ff5040"; hctx.font="bold 36px monospace"; hctx.fillText(translate("CRASHED"),cx,cy-60); return; }
 	if(crash_t<=0 && ownship.waving && net_notice_t<=0 && ((performance.now()-(ownship.wavet||0))%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call; the LSO grade / BOLTER / REARMED all go through the notice slot now (#72), so this is the only direct centre-banner draw left
 	if(test_active){ hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="13px monospace"; hctx.fillText("TEST  "+test_active.name, 14, 28); }
@@ -3648,10 +3723,23 @@ function draw_hud(dt){
 	// target, boxes nothing else, and draws no amber).
 	const authentic=cfg.view==="cockpit";
 	let boxed=null; let rng=1500; let vc=0;   // vc: closure to the boxed target, m/s (+ = closing) — the data block and the breakaway cue share it
-	if(has_enemy){ rng=wrap_distance(ownship.pos,bandit.pos); boxed=bandit;
-		if(dt>0) vc=(last_range-rng)/dt; last_range=rng; }
+	// Closure from the two VELOCITY vectors along the line of sight, not by
+	// differencing range between render frames. The flight cores advance on a
+	// fixed 60 Hz accumulator while the display runs at whatever rate it runs
+	// at, so above 60 fps the range simply did not change on the frames that
+	// stepped nothing: the difference quotient alternated between zero and
+	// roughly double the true closure, every frame. That fed the time of
+	// flight the director pipper leads on, so the pipper shook — and flipped
+	// between two positions fast enough to read as two pippers.
+	const closure=(one,two)=>{ const to=new THREE.Vector3(wrap_axis(two.pos.x-one.pos.x),two.pos.y-one.pos.y,wrap_axis(two.pos.z-one.pos.z));
+		if(to.lengthSq()<1e-6) return 0;
+		to.normalize();
+		const mine=new THREE.Vector3(one.velx??one.fwd.x*one.speed,one.vely??one.fwd.y*one.speed,one.velz??one.fwd.z*one.speed);
+		const his=new THREE.Vector3(two.velx??two.fwd.x*two.speed,two.vely??two.fwd.y*two.speed,two.velz??two.fwd.z*two.speed);
+		return mine.sub(his).dot(to); };   // + = closing
+	if(has_enemy){ rng=wrap_distance(ownship.pos,bandit.pos); boxed=bandit; vc=closure(ownship,bandit); }
 	else if(MULTIPLAYER&&net){ const dst=remotes.get(designated);   // the pilot's acquisition, not auto-nearest: designate/step/undesignate on the acquire key like the real ACM flow
-		if(dst&&dst.group.visible){ boxed=dst; rng=wrap_distance(ownship.pos,dst.pos); if(dt>0) vc=(last_range-rng)/dt; last_range=rng; }
+		if(dst&&dst.group.visible){ boxed=dst; rng=wrap_distance(ownship.pos,dst.pos); vc=closure(ownship,dst); }
 		else designated=-1; }
 
 	// 9M seeker tone (#73): the growl/lock audio tracks the seeker itself, not
