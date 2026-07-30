@@ -1585,7 +1585,13 @@ function body_offset(st,x,y,z){ const up=st.up||world_up; const right=st.right||
 // ownship = player
 const ownship=make_state(new THREE.Vector3(CARRIER.x+70,CARRIER.deckY+1.8,CARRIER.z-6),new THREE.Vector3(1,0,0),0);
 ownship.player=true; ownship.q=new THREE.Quaternion(); ownship.up=new THREE.Vector3(0,1,0); ownship.right=new THREE.Vector3(0,0,1);
-ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.burner=0; ownship.rounds=578; ownship.msl=2; ownship.cm=60; ownship.aoa=0; ownship.gload=1;
+// magazine: AIM-9s aboard. Four in single player (the real jet's tips plus one
+// LAU-127 dual-rail pair) — but the airframe models only the wingtip rails, so
+// missiles three and four launch from a visibly clean jet and the stores
+// mass/drag covers at most the two tips; #226 owns doing stores properly.
+// Multiplayer stays at two until the match rules own the loadout.
+function magazine(){ return MULTIPLAYER?2:4; }
+ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.burner=0; ownship.rounds=578; ownship.msl=magazine(); ownship.cm=60; ownship.aoa=0; ownship.gload=1;
 ownship.launching=false;
 // init quaternion from initial fwd
 (()=>{ const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
@@ -2950,7 +2956,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	const wire=out[STATE.wire];
 	if(wire>=0&&prev_wire<0){ ownship.trapped=true; ownship.wire=wire+1; ownship.grade=lso_grade(); ownship.turned=false; ownship.taxied=false; notice(translate(ownship.grade)+", "+translate(ownship.wire+" WIRE"), 8); }
 	if(ownship.trapped&&!ownship.turned&&ownship.speed<0.5){ ownship.turned=true;   // chocked and chained: the deck crew turn the jet around and service it (#128)
-		ownship.rounds=578; ownship.msl=cfg.missiles?2:0; ownship.cm=60; update_rails(ownship,cfg.missiles?2:0);
+		ownship.rounds=578; ownship.msl=cfg.missiles?magazine():0; ownship.cm=60; update_rails(ownship,cfg.missiles?magazine():0);
 		const b=flight_get(); b[STATE.fuel]=FUEL(); flight_set(b); }
 	if(ownship.turned&&!ownship.taxied&&ownship.speed>4){ ownship.taxied=true; notice(translate("REARMED")); }   // announce the rearm only once the player TAXIES clear of the trap — so it never lands on top of the LSO grade at the stop (#72)   // end the LSO grade banner so REARMED replaces it cleanly instead of overprinting it (#72)
 	else if(wire<0&&prev_wire>=0){ ownship.trapped=false; }
@@ -2964,7 +2970,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	if(!ownship.grounded && ownship.speed>50) ownship.flown=true;
 	if(ownship.flown && ownship.grounded && !ownship.trapped && ownship.speed<0.5 && on_strip(ownship.pos)){
 		ownship.flown=false; ownship.turned=true; ownship.taxied=false;
-		ownship.rounds=578; ownship.msl=cfg.missiles?2:0; ownship.cm=60; update_rails(ownship,cfg.missiles?2:0);
+		ownship.rounds=578; ownship.msl=cfg.missiles?magazine():0; ownship.cm=60; update_rails(ownship,cfg.missiles?magazine():0);
 		const b=flight_get(); b[STATE.fuel]=FUEL(); flight_set(b); }
 }
 function on_strip(p){   // point inside any paved capsule (the airfield strips; the carrier deck is not one)
@@ -3368,7 +3374,7 @@ function reset_ownship(){
 	bandit_acc=0;   // no stale fixed-step debt across spawns
 	designated=-1;   // a respawn drops the acquisition
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
-	ownship.rounds=578; ownship.msl=2; ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; ownship.lights=(cfg.tod!=="day");   // lights default on at night, off by day — two AIM-9Ms: what the wingtips actually carry
+	ownship.rounds=578; ownship.msl=magazine(); ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; ownship.lights=(cfg.tod!=="day");   // lights default on at night, off by day — two AIM-9Ms: what the wingtips actually carry
 	update_rails(ownship, cfg.missiles?2:0); update_rails(bandit, cfg.missiles?2:0);
 	ownship.grounded=false; ownship.touch=null; ownship.pass={gs:0,az:0,n:0}; ownship.grade=""; ownship.waved=false; ownship.groove=false; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
 	test_active=null;   // a test scenario must not keep driving across a crash respawn (it would fly the fresh spawn straight into the deck, forever)
