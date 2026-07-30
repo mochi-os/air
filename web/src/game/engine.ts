@@ -1475,7 +1475,7 @@ const missiles=[]; for(let i=0;i<MSL_MAX;i++){ const m=new THREE.Mesh(missile_ge
 		burn:0,flew:0,sx:0,sy:0,sz:0,loose:false,blind:0,lx:0,ly:0,lz:0,window:false}); }   // AIM-9M state (#126): boost, arming, seeker sight line, broken lock, and a swallowed flare's fall point
 function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) return false;
 	let sp=local_offset(st,1,-0.8,0);   // fallback: near the nose
-	if(st.group&&st.msl>0){ const rail=st.group.getObjectByName(MISSILE_NODES[st.msl-1]);   // the rail about to empty (the caller decrements after) — the missile departs the WINGTIP, not the centreline
+	if(st.group&&st.msl>0){ const rail=st.group.getObjectByName(MISSILE_NODES[(st.msl-1)%MISSILE_NODES.length]);   // the rail about to empty, ALTERNATING the two modelled wingtips for the LAU-127 rounds beyond them (#226): indexing msl-1 directly walked off the node list for rounds four and three, missed the lookup, and fired them from the nose fallback — visibly out of the cockpit
 		if(rail){ rail.getWorldPosition(_v); sp={x:_v.x,y:_v.y,z:_v.z}; } }
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30);   // off the rail at aircraft speed; the Mk 36 does the rest
@@ -2458,8 +2458,8 @@ function scan_zoom(pad,bind){
 	for(const [action,list] of Object.entries(bind.buttons)){ if(action!=="zoom.in"&&action!=="zoom.out") continue;
 		for(const index of String(list).split(",")){ const b=+index;
 			if(!(b>=0)||b>=pad.buttons.length) continue;
-			const down=pad.buttons[b].pressed, was=pad_buttons[b]||false;
-			if(down!==was){ pad_buttons[b]=down; if(down) zoom_step(action==="zoom.in"?1:-1); } } } }
+			const down=pad.buttons[b].pressed, was=pad_buttons[action+"/"+b]||false;
+			if(down!==was){ pad_buttons[action+"/"+b]=down; if(down) zoom_step(action==="zoom.in"?1:-1); } } } }
 stage.addEventListener("wheel",e=>{ e.preventDefault();   // scroll = zoom (any mouse wheel; the VelocityOne trim wheel in DIGITAL mode arrives as button pulses instead — see zoom.in/zoom.out)
 	if(!running||game_paused) return;
 	const notch=-e.deltaY/(e.deltaMode===1?3:100);   // deltaMode 1 = lines (Firefox), else pixels; scroll up = zoom in
@@ -2477,7 +2477,7 @@ const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
-const pad_buttons=[];
+const pad_buttons={};   // edge state per ACTION+BUTTON, not per button: the default binds share button 17 between guns and the wheel brake, and a per-button edge let whichever action processed first consume the press and starve the other (the joystick trigger fired a missile only when guns happened to win)
 const pad_levers={};   // per-purpose lever state: armed on the first deliberate sweep
 function throttle_from_lever(){   // mission start: seed the throttle from the physical lever when one is bound, and arm it so it tracks from the first frame
 	const pad=read_gamepad(); if(!pad) return;
@@ -2564,14 +2564,14 @@ function read_input(dt){
 			if(action.startsWith("look.")){ if(down) pad_looks[action.slice(5)]=true; continue; }   // look directions are level state for the camera, not key events
 			if(action==="guns"){   // held fire stays a LEVEL read (any bound button, immune to another button's release) — but the PRESS also replays the keydown edge, because in 9M the launch lives on that edge and the joystick trigger otherwise could not fire a missile at all. Keydown only, never keyup: a synthetic keyup could kill a hold carried by another button or the keyboard
 				if(down){ pad_guns=true;
-					if(!pad_buttons[b]){ pad_buttons[b]=true; const bindText=key_of("guns");
+					if(!pad_buttons["guns/"+b]){ pad_buttons["guns/"+b]=true; const bindText=key_of("guns");
 						if(bindText){ const shift=bindText.startsWith("Shift+"), code=bindText.replace("Shift+","");
 							for(const target of [window, document, stage]) target.dispatchEvent(new KeyboardEvent("keydown",{ code, shiftKey:shift, bubbles:true })); } } }
-				else pad_buttons[b]=false;
+				else pad_buttons["guns/"+b]=false;
 				continue; }
 			if(action==="zoom.in"||action==="zoom.out") continue;   // notch zoom is scanned by scan_zoom (also polled while the map pauses the world)
-			const was=pad_buttons[b]||false;   // other actions replay their CURRENT key: synthetic keydown on press, keyup on release, so held actions (brakes) work and pad binds follow key remaps
-			if(down!==was){ pad_buttons[b]=down; const bindText=key_of(action);
+			const was=pad_buttons[action+"/"+b]||false;   // other actions replay their CURRENT key: synthetic keydown on press, keyup on release, so held actions (brakes) work and pad binds follow key remaps
+			if(down!==was){ pad_buttons[action+"/"+b]=down; const bindText=key_of(action);
 				if(bindText){ const shift=bindText.startsWith("Shift+"), code=bindText.replace("Shift+","");
 					for(const target of [window, document, stage]) target.dispatchEvent(new KeyboardEvent(down?"keydown":"keyup",{ code, shiftKey:shift, bubbles:true })); } } }
 	}
