@@ -2556,7 +2556,13 @@ function read_input(dt){
 			if(!(b>=0)||b>=pad.buttons.length) continue;
 			const down=pad.buttons[b].pressed;
 			if(action.startsWith("look.")){ if(down) pad_looks[action.slice(5)]=true; continue; }   // look directions are level state for the camera, not key events
-			if(action==="guns"){ if(down) pad_guns=true; continue; }   // guns too: held fire from any bound button, immune to another button's release
+			if(action==="guns"){   // held fire stays a LEVEL read (any bound button, immune to another button's release) — but the PRESS also replays the keydown edge, because in 9M the launch lives on that edge and the joystick trigger otherwise could not fire a missile at all. Keydown only, never keyup: a synthetic keyup could kill a hold carried by another button or the keyboard
+				if(down){ pad_guns=true;
+					if(!pad_buttons[b]){ pad_buttons[b]=true; const bindText=key_of("guns");
+						if(bindText){ const shift=bindText.startsWith("Shift+"), code=bindText.replace("Shift+","");
+							for(const target of [window, document, stage]) target.dispatchEvent(new KeyboardEvent("keydown",{ code, shiftKey:shift, bubbles:true })); } } }
+				else pad_buttons[b]=false;
+				continue; }
 			if(action==="zoom.in"||action==="zoom.out") continue;   // notch zoom is scanned by scan_zoom (also polled while the map pauses the world)
 			const was=pad_buttons[b]||false;   // other actions replay their CURRENT key: synthetic keydown on press, keyup on release, so held actions (brakes) work and pad binds follow key remaps
 			if(down!==was){ pad_buttons[b]=down; const bindText=key_of(action);
