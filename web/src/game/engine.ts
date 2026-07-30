@@ -83,7 +83,7 @@ export function startGame({
   let __raf = 0
 
 // ============================================================================ config
-const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, exterior_detail:3, lod:true, extra_aircraft:0,   // dyn_res defaults ON (#148): slow machines self-tune render_scale down to 0.45 instead of stuttering
+const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, exterior_detail:3, lod:true,   // dyn_res defaults ON (#148): slow machines self-tune render_scale down to 0.45 instead of stuttering
 	tracers:true, missiles:true, flares:true, shadows:false, clouds:"none", afterburner:true,
 	view:"hud", invert:false, framerate:false, sens:1.0,
 	task:"joust", start:"carrier", tod:"day", help:false };
@@ -137,7 +137,7 @@ cfg.view="hud";   // start in HUD (view 2); 1-5 select views, V swaps cockpit/HU
 
 let running=false, has_enemy=true;
 const MULTIPLAYER=!!join;            // in a live match the map/P must never freeze the world
-if(MULTIPLAYER){ cfg.task="joust"; cfg.extra_aircraft=0; cfg.missiles=false; cfg.cheats={}; }   // multiplayer: air start, no local AI; the match rules from the welcome may re-allow missiles and set the match cheats (the menu's own cheats never leak into a match)
+if(MULTIPLAYER){ cfg.task="joust"; cfg.missiles=false; cfg.cheats={}; }   // multiplayer: air start, no local AI; the match rules from the welcome may re-allow missiles and set the match cheats (the menu's own cheats never leak into a match)
 const cheat=(name)=>!!(cfg.cheats&&cfg.cheats[name]);   // mission cheats: invulnerable (humans only — the server enforces it in multiplayer), ammunition, fuel
 const DEV_MODE=(new URLSearchParams(location.search).get("developer")||"").replace(/"/g,"")==="1";   // tolerant of BOTH ?developer=1 and the ?developer="1" the router writes when it round-trips the flag through a navigation (search values are JSON-encoded)   // &developer=1: landing/trap test autopilot (Shift+1..0), deck align (0), stab cycle (Shift+E), cloud A/B (Shift+X), position copy (Shift+P), and ALL query hooks (?fly/clouds/tod/harm/view/start/sweep/shot/cat/glassdebug) — outside developer mode none of the scaffolding parses (#105)
 const GLASS_DEBUG=DEV_MODE&&new URLSearchParams(location.search).get("glassdebug")==="1";   // magenta outline of the HUD-glass clip quad
@@ -1175,8 +1175,8 @@ function ddi_draw(sc, gz){
 const MISSILE_NODES=["Object_145","Object_542"];   // the two wingtip AIM-9 NODES in the fa18c GLB (the mesh-level names Object_114/29 are not in the scene graph — a silent getObjectByName miss); LAU-7 rails stay with the wing. Hidden per missiles-remaining for empty rails after firing, or entirely on a guns-only loadout
 function update_rails(st,count){ if(!st.group) return;
 	for(let i=0;i<MISSILE_NODES.length;i++){ const node=st.group.getObjectByName(MISSILE_NODES[i]); if(node) node.visible=i<count; } }
-function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); extras.forEach(s=>apply_model_to(s.group)); position_aircraft_lights(); calibrate_eye();
-	update_rails(ownship, cfg.missiles?ownship.msl:0); update_rails(bandit, cfg.missiles?2:0); extras.forEach(s=>update_rails(s,2)); }   // re-pin the ownship lights to the real airframe; rails reflect the loadout
+function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); position_aircraft_lights(); calibrate_eye();
+	update_rails(ownship, cfg.missiles?ownship.msl:0); update_rails(bandit, cfg.missiles?2:0); }   // re-pin the ownship lights to the real airframe; rails reflect the loadout
 // --- minimal GLB container surgery (so we never trigger the loader's blob-URL texture path) ---
 function glb_split(ab){ const dv=new DataView(ab); if(dv.getUint32(0,true)!==0x46546C67) throw new Error("not a GLB");
 	let o=12; const jsonLen=dv.getUint32(o,true); o+=8; const json=JSON.parse(new TextDecoder().decode(new Uint8Array(ab,o,jsonLen))); o+=jsonLen;
@@ -1568,7 +1568,7 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active) continue; 
 // ============================================================================ flight
 const world_up=new THREE.Vector3(0,1,0);
 function make_state(pos,fwd,speed){ return { pos:pos.clone(), fwd:fwd.clone().normalize(), speed, bank:0, group:null,
-	break_t:0, break_dir:new THREE.Vector3(1,0,0), circle_phase:Math.random()*Math.PI*2, circle_radius:1500+Math.random()*2500, circle_alt:1600+Math.random()*2200, velx:0,vely:0,velz:0, gear:1, gearTarget:1, hook:0, hookTarget:0, speedbrake:0, speedbrakeTarget:0 }; }   // gear 0=down 1=up, hook 0=stowed 1=deployed, speedbrake 0=stowed 1=deployed (default clean for bandits/extras)
+	break_t:0, break_dir:new THREE.Vector3(1,0,0), velx:0,vely:0,velz:0, gear:1, gearTarget:1, hook:0, hookTarget:0, speedbrake:0, speedbrakeTarget:0 }; }   // gear 0=down 1=up, hook 0=stowed 1=deployed, speedbrake 0=stowed 1=deployed (default clean for the bandit)
 function steer(st,desired,dt,max_rate,max_bank){ desired.normalize(); const ang=st.fwd.angleTo(desired); const max=max_rate*dt;
 	if(ang>1e-4){ const axis=new THREE.Vector3().crossVectors(st.fwd,desired).normalize(); st.fwd.applyAxisAngle(axis,Math.min(ang,max)).normalize(); }
 	const horiz=new THREE.Vector3(desired.x-st.fwd.x,0,desired.z-st.fwd.z); const side=new THREE.Vector3().crossVectors(world_up,st.fwd);
@@ -1625,7 +1625,7 @@ function battle_aim(st){ const q=st.group?st.group.quaternion:ownship.q;
 function battle_pose(st){ const up=st.up||world_up; return { position:{x:st.pos.x+st.fwd.x*6,y:st.pos.y+st.fwd.y*6,z:st.pos.z+st.fwd.z*6},
 	forward:{x:st.fwd.x,y:st.fwd.y,z:st.fwd.z}, up:{x:up.x,y:up.y,z:up.z},
 	velocity:{x:st.velx??st.fwd.x*st.speed,y:st.vely??st.fwd.y*st.speed,z:st.velz??st.fwd.z*st.speed} }; }   // the shooter's velocity rides on every round
-function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c"); for(let i=0;i<extras.length&&i<8;i++) battle_hulk(1+i,"fa18c");   // battle_rigged: mission start races the async wasm load and battle_hulk silently no-ops until the core lands — the frame loop retries until the rig takes (an unrigged hulk made the bandit UNHITTABLE: every gun burst and missile blast on him no-opped for the whole mission)
+function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c");   // battle_rigged: mission start races the async wasm load and battle_hulk silently no-ops until the core lands — the frame loop retries until the rig takes (an unrigged hulk made the bandit UNHITTABLE: every gun burst and missile blast on him no-opped for the whole mission)
 	bandit.harm={thrust:0,wing:0,killed:false,burning:false}; battle_reset=true; }
 function bandit_destroy(){ explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
 	bandit.pos.set(3000,2400,-1000); bandit.fwd.set(-0.3,0,1).normalize(); bandit.merging=(cfg.task==="joust");
@@ -2315,12 +2315,6 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		ind.fast.opacity = lit?THREE.MathUtils.clamp((-devd-0.4)/0.5,0,1):0;
 		ind.donut.opacity= lit?THREE.MathUtils.clamp(1-(Math.abs(devd)-0.5)/0.5,0,1):0; } }
 generate_world();
-const extras=[];
-function sync_extras(n){ while(extras.length<n){ const a=Math.random()*Math.PI*2,r=2000+Math.random()*4000;
-	const st=make_state(new THREE.Vector3(Math.cos(a)*r,1600+Math.random()*2400,Math.sin(a)*r),new THREE.Vector3(-Math.sin(a),0,Math.cos(a)),170+Math.random()*60);
-	st.group=make_jet(); scene.add(st.group); extras.push(st); if(model_active) apply_model_to(st.group); }
-	while(extras.length>n){ const st=extras.pop(); scene.remove(st.group); st.group.traverse(o=>{ if(o.isMesh&&o.material&&o.material.dispose)o.material.dispose(); }); } }
-
 // ---- input ----
 const input={ pitch:0, roll:0, yaw:0, guns:false, brake:false };
 const keys=new Set();
@@ -2605,7 +2599,7 @@ function recording_sample(){
 	if(!running||!cfg.record||game_paused) return;
 	const list=[];
 	const degrees=(v)=>v*180/Math.PI;
-	// Only the OWNSHIP carries a full basis; make_state gives bandits and extras
+	// Only the OWNSHIP carries a full basis; make_state gives the legacy bandit
 	// fwd plus a scalar bank (reading .right.y there killed the frame loop, and
 	// every earlier test happened to be free flight, so nothing exercised it).
 	const attitude=(st)=>({
@@ -2764,8 +2758,6 @@ function check_collisions(){   // ownship vs sea / buildings / structures / carr
 	// respawn, fresh hulk); no kill is credited, because flying into someone is
 	// not shooting them down.
 	if(has_enemy && wrap_distance(p,bandit.pos)<14){ bandit_destroy(); return crash_ownship("midair"); }
-	for(const ex of extras){ if(wrap_distance(p,ex.pos)<14){ explosion_at(ex.pos.x,ex.pos.y,ex.pos.z);
-		const a=Math.random()*Math.PI*2, r=3000+Math.random()*4000; ex.pos.set(Math.cos(a)*r,1600+Math.random()*2400,Math.sin(a)*r); return crash_ownship("collision"); } }
 }
 function lso_grade(){   // LSO pass grade from the in-close deviations and the touchdown: OK / FAIR / NO-GRADE / CUT
 	const p=ownship.pass||{gs:0,az:0,n:0}, t=ownship.touch||{sink:0,bank:0,fa:0};
@@ -3075,11 +3067,6 @@ function fly_player(dt){
 			const range=Math.hypot(rdx,rdy,rdz)||1;
 			const closure=-((bandit.velx-ownship.velx)*rdx+(bandit.vely-ownship.vely)*rdy+(bandit.velz-ownship.velz)*rdz)/range;
 			audio_remote("bandit", bandit.pos.x, bandit.pos.y, bandit.pos.z, closure, false); }
-		for(let i=0;i<extras.length&&i<8;i++){ const base=6+(1+i)*8;   // neutral traffic: burning or exploding per its hulk
-			const ex=extras[i]; const glow=Math.max(battle[base],battle[base+1],battle[base+2]>0?1:0);
-			if(glow>0) burn_trail(ex.pos,glow,ex.velx,ex.vely,ex.velz);
-			if((battle[base+4]&BATTLE.explode)||battle[base+3]>0){ explosion_at(ex.pos.x,ex.pos.y,ex.pos.z);
-				ex.pos.set((Math.random()-0.5)*16000,1800+Math.random()*2200,(Math.random()-0.5)*16000); battle_hulk(1+i,"fa18c"); } }
 		burn_trail(ownship.pos,Math.max(own_burn[0],own_burn[1],own_burning?1:0),ownship.velx,ownship.vely,ownship.velz);
 		if(own_leak>0.05) leak_trail(ownship.pos,own_leak,ownship.velx,ownship.vely,ownship.velz);
 		if(battle[4]&BATTLE.explode){ ownship.grade=""; return crash_ownship("fire"); }   // the fuel fire's fuse ran out
@@ -3290,7 +3277,7 @@ function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.user
 		sw.object.quaternion.copy(sw.base);
 		if(Math.abs(st.steer??0)>0.001) sw.object.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(sw.axis,st.steer)); } }   // st.steer = the slewed, authority-blended state from update_anim (LOW 22.5° at taxi, HI near standstill, ~23°/s actuator rate)
 function ease_to(cur,tgt,dt){ const d=tgt-cur; return Math.abs(d)>1e-4 ? cur+Math.sign(d)*Math.min(Math.abs(d),GEAR_RATE*dt) : tgt; }
-function update_anim(dt){ for(const st of [ownship,bandit,...extras]){
+function update_anim(dt){ for(const st of [ownship,bandit]){
 	const owned=st===ownship&&flight_active;   // the core's actuators drive ownship gear + speedbrake progress (sync_core); don't ease over them
 	const settled=(st===ownship)?(ownship.grounded?1:0):0;   // weight on wheels: the drawn oleo compresses (squat scrub); remotes stay unloaded for now
 	st.squish=(st.squish??0)+THREE.MathUtils.clamp(settled-(st.squish??0),-3*dt,3*dt);
@@ -3318,13 +3305,10 @@ function update_anim(dt){ for(const st of [ownship,bandit,...extras]){
 function step_world(dt){ sim_time+=dt;
 	marshal_watch();
 	fly_player(dt); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
-	for(const st of extras){ st.circle_phase+=dt*(st.speed/st.circle_radius);
-		const tgt=new THREE.Vector3(Math.cos(st.circle_phase)*st.circle_radius,st.circle_alt+Math.sin(st.circle_phase*0.5)*200,Math.sin(st.circle_phase)*st.circle_radius);
-		steer(st,tgt.sub(st.pos),dt,0.3,1.0); apply_orientation(st); }
 	const flick=0.6+Math.random()*0.4; const set_ab=(g,on)=>{
 		if(g.userData.flames) return;   // this airframe's burner look is its own nozzle glow — no cones, no flame boxes
 		g.children.forEach(c=>{ if(c.userData.ab){ c.visible=on; c.scale.z=flick; c.material.opacity=on?0.55+Math.random()*0.35:0; } }); };
-	set_ab(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15); set_ab(bandit.group,cfg.afterburner); extras.forEach(st=>set_ab(st.group,cfg.afterburner));   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
+	set_ab(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15); set_ab(bandit.group,cfg.afterburner);   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
 	// player guns
 	{ const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,input.guns&&!weapons_hold&&!ownship.launching&&(ownship.gear??0)>0.98);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock) or before the joust merge; in multiplayer the tracers are local, the damage is the server's
 		if(fired>0&&!MULTIPLAYER){ const pose=battle_pose(ownship);
@@ -3334,8 +3318,7 @@ function step_world(dt){ sim_time+=dt;
 				// rather than at the aircraft's centre.
 				for(const p of verdict.impacts){ const w=_v.set(p.x,p.y,p.z).applyQuaternion(bandit.group.quaternion).add(bandit.group.position);
 					hit_sparks(w.x,w.y,w.z,bandit.velx??bandit.fwd.x*bandit.speed,bandit.vely??bandit.fwd.y*bandit.speed,bandit.velz??bandit.fwd.z*bandit.speed); }
-				if(verdict.hits>0) audio_hit(Math.min(verdict.hits,4)); }
-			for(let i=0;i<extras.length&&i<8;i++) battle_burst(1+i,pose,battle_aim(extras[i]),fired,0,battle_tick); } }
+				if(verdict.hits>0) audio_hit(Math.min(verdict.hits,4)); } } }
 	update_pool_ballistic(tracers,dt,9.8,0); update_missiles(dt);
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96); update_pool_ballistic(strikes,dt,9.8,0);   // no drag, exactly as these behaved in the tracer pool: the change here is legibility, not motion
 	_live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts)+flush_points(strikes,strike_pts);
@@ -4038,7 +4021,7 @@ function set_view(v){
 	cockpit_hidden();
 }
 function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow=cfg.shadows;
-	const setc=g=>g.traverse(c=>{ if(c.isMesh&&(c.userData.body||c.userData.modelmesh))c.castShadow=cfg.shadows; }); setc(ownship.group); setc(bandit.group); extras.forEach(s=>setc(s.group)); }
+	const setc=g=>g.traverse(c=>{ if(c.isMesh&&(c.userData.body||c.userData.modelmesh))c.castShadow=cfg.shadows; }); setc(ownship.group); setc(bandit.group); }
 
 // ============================================================================ multiplayer
 // The server is authoritative (world/games/air runs the same placeholder
@@ -4312,7 +4295,6 @@ function start_mission(){
 	apply_time_of_day(cfg.tod); apply_effects();
 	apply_clouds(); if(cloud_active()) size_rt();   // runs even for "none": zeroes the overcast/shadow uniforms on the ocean and sky
 	has_enemy=(cfg.task==="joust")&&!MULTIPLAYER; bandit.group.visible=has_enemy;   // multiplayer: the bandit airframe is a remote player's, posed from snapshots
-	sync_extras(cfg.extra_aircraft);
 	reset_ownship(); apply_size();
 	menu_hold=false; map_on=false; map_el.style.display="none";
 	loading=!assets_ready(); loading_t0=performance.now();   // hold the LOADING screen until every async asset is in — no piecemeal pop-in of carrier/airfield/airframe
