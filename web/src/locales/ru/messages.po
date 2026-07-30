@@ -73,6 +73,10 @@ msgstr "{selectedCount, plural, one {# выбрано} few {# выбрано} ma
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
 msgstr "{selectedCount, plural, one {Массовые действия для # выбранного {entityName}} few {Массовые действия для # выбранных {manyName}} many {Массовые действия для # выбранных {manyName}} other {Массовые действия для # выбранного {manyName}}}"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:52
+msgid "{sentLabel} of {totalLabel}"
+msgstr "{sentLabel} из {totalLabel}"
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Открыть меню (# непрочитанное уведомление)} few {Открыть меню (# непрочитанных уведомления)} many {Открыть меню (# непрочитанных уведомлений)} other {Открыть меню (# непрочитанного уведомления)}}"
@@ -852,11 +856,11 @@ msgstr "Каталог"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:300
 msgid "Discard"
-msgstr ""
+msgstr "Отменить"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:298
 msgid "Discard draft?"
-msgstr ""
+msgstr "Отменить черновик?"
 
 #: src/components/MissionSetup.tsx:259
 msgid "disconnected"
@@ -1995,6 +1999,10 @@ msgstr "Предыдущее изображение"
 msgid "Privacy"
 msgstr "Конфиденциальность"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:50
+msgid "Processing…"
+msgstr "Обработка…"
+
 #: ../../../lib/web/src/components/layout/nav-user.tsx:137
 #: ../../../lib/web/src/components/profile-dropdown.tsx:114
 msgid "Profile"
@@ -2183,7 +2191,7 @@ msgstr "Продолжить миссию"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:249
 msgid "Retry"
-msgstr ""
+msgstr "Повторить"
 
 #: src/components/MissionSetup.tsx:513
 msgid "Return to menu"
@@ -2778,6 +2786,10 @@ msgstr "Бесконечное топливо"
 msgid "Unverified"
 msgstr "Не подтверждено"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:34
+msgid "Upload progress"
+msgstr "Ход загрузки"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:338
 msgid "Use your passkey"
 msgstr "Используйте свой ключ доступа"
@@ -2967,7 +2979,7 @@ msgstr "Ваш аккаунт был перенесён сюда с {source}. П
 
 #: ../../../lib/web/src/components/comment-composer.tsx:291
 msgid "Your attachments will be lost."
-msgstr ""
+msgstr "Ваши вложения будут потеряны."
 
 #: src/components/MatchHistory.tsx:107
 msgid "Your flights appear here once you've flown one."
@@ -2979,11 +2991,11 @@ msgstr "ваше предложение"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:289
 msgid "Your text and attachments will be lost."
-msgstr ""
+msgstr "Ваш текст и вложения будут потеряны."
 
 #: ../../../lib/web/src/components/comment-composer.tsx:292
 msgid "Your text will be lost."
-msgstr ""
+msgstr "Ваш текст будет потерян."
 
 #: src/components/MissionSetup.tsx:112
 msgid "Zoom"

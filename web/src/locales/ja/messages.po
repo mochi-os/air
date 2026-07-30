@@ -73,6 +73,10 @@ msgstr "{selectedCount, plural, one {# 件を選択中} other {# 件を選択中
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
 msgstr "{selectedCount, plural, one {選択中の {entityName} # 件の一括操作} other {選択中の {manyName} # 件の一括操作}}"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:52
+msgid "{sentLabel} of {totalLabel}"
+msgstr "{sentLabel} / {totalLabel}"
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {メニューを開く（未読の通知 # 件）} other {メニューを開く（未読の通知 # 件）}}"
@@ -852,11 +856,11 @@ msgstr "ディレクトリ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:300
 msgid "Discard"
-msgstr ""
+msgstr "破棄"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:298
 msgid "Discard draft?"
-msgstr ""
+msgstr "下書きを破棄しますか？"
 
 #: src/components/MissionSetup.tsx:259
 msgid "disconnected"
@@ -1995,6 +1999,10 @@ msgstr "前の画像"
 msgid "Privacy"
 msgstr "プライバシー"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:50
+msgid "Processing…"
+msgstr "処理中…"
+
 #: ../../../lib/web/src/components/layout/nav-user.tsx:137
 #: ../../../lib/web/src/components/profile-dropdown.tsx:114
 msgid "Profile"
@@ -2183,7 +2191,7 @@ msgstr "ミッション再開"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:249
 msgid "Retry"
-msgstr ""
+msgstr "再試行"
 
 #: src/components/MissionSetup.tsx:513
 msgid "Return to menu"
@@ -2778,6 +2786,10 @@ msgstr "燃料無限"
 msgid "Unverified"
 msgstr "未認証"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:34
+msgid "Upload progress"
+msgstr "アップロードの進行状況"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:338
 msgid "Use your passkey"
 msgstr "パスキーを使用"
@@ -2967,7 +2979,7 @@ msgstr "アカウントが{source}からここに移行されました。そち�
 
 #: ../../../lib/web/src/components/comment-composer.tsx:291
 msgid "Your attachments will be lost."
-msgstr ""
+msgstr "添付ファイルは失われます。"
 
 #: src/components/MatchHistory.tsx:107
 msgid "Your flights appear here once you've flown one."
@@ -2979,11 +2991,11 @@ msgstr "あなたの募集"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:289
 msgid "Your text and attachments will be lost."
-msgstr ""
+msgstr "入力したテキストと添付ファイルは失われます。"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:292
 msgid "Your text will be lost."
-msgstr ""
+msgstr "入力したテキストは失われます。"
 
 #: src/components/MissionSetup.tsx:112
 msgid "Zoom"

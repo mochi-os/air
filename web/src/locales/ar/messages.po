@@ -73,6 +73,10 @@ msgstr "{selectedCount, plural, zero {# محدد} one {# محدد} two {# محد
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
 msgstr "{selectedCount, plural, zero {إجراءات مجمعة لـ {manyName}} one {إجراءات مجمعة لـ {entityName} واحد محدد} two {إجراءات مجمعة لـ {manyName} محددين} few {إجراءات مجمعة لـ # {manyName} محددة} many {إجراءات مجمعة لـ # {manyName} محددًا} other {إجراءات مجمعة لـ # {manyName} محدد}}"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:52
+msgid "{sentLabel} of {totalLabel}"
+msgstr "{sentLabel} من {totalLabel}"
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, zero {فتح القائمة (لا إشعارات غير مقروءة)} one {فتح القائمة (إشعار واحد غير مقروء)} two {فتح القائمة (إشعاران غير مقروءين)} few {فتح القائمة (# إشعارات غير مقروءة)} many {فتح القائمة (# إشعارًا غير مقروء)} other {فتح القائمة (# إشعار غير مقروء)}}"
@@ -852,11 +856,11 @@ msgstr "الدليل"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:300
 msgid "Discard"
-msgstr ""
+msgstr "تجاهل"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:298
 msgid "Discard draft?"
-msgstr ""
+msgstr "تجاهل المسودة؟"
 
 #: src/components/MissionSetup.tsx:259
 msgid "disconnected"
@@ -1995,6 +1999,10 @@ msgstr "الصورة السابقة"
 msgid "Privacy"
 msgstr "الخصوصية"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:50
+msgid "Processing…"
+msgstr "جارٍ المعالجة…"
+
 #: ../../../lib/web/src/components/layout/nav-user.tsx:137
 #: ../../../lib/web/src/components/profile-dropdown.tsx:114
 msgid "Profile"
@@ -2183,7 +2191,7 @@ msgstr "استئناف المهمة"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:249
 msgid "Retry"
-msgstr ""
+msgstr "إعادة المحاولة"
 
 #: src/components/MissionSetup.tsx:513
 msgid "Return to menu"
@@ -2778,6 +2786,10 @@ msgstr "وقود غير محدود"
 msgid "Unverified"
 msgstr "غير محقق"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:34
+msgid "Upload progress"
+msgstr "تقدّم الرفع"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:338
 msgid "Use your passkey"
 msgstr "استخدم مفتاح المرور الخاص بك"
@@ -2967,7 +2979,7 @@ msgstr "تم نقل حسابك إلى هنا من {source}. حتى تحذفه م
 
 #: ../../../lib/web/src/components/comment-composer.tsx:291
 msgid "Your attachments will be lost."
-msgstr ""
+msgstr "سيتم فقدان مرفقاتك."
 
 #: src/components/MatchHistory.tsx:107
 msgid "Your flights appear here once you've flown one."
@@ -2979,11 +2991,11 @@ msgstr "عرضك"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:289
 msgid "Your text and attachments will be lost."
-msgstr ""
+msgstr "سيتم فقدان نصك ومرفقاتك."
 
 #: ../../../lib/web/src/components/comment-composer.tsx:292
 msgid "Your text will be lost."
-msgstr ""
+msgstr "سيُفقد النص."
 
 #: src/components/MissionSetup.tsx:112
 msgid "Zoom"
