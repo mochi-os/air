@@ -73,6 +73,10 @@ msgstr "{selectedCount, plural, one {# ընտրված} other {# ընտրված}}
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
 msgstr "{selectedCount, plural, one {Զանգվածային գործողություններ # ընտրված {entityName}-ի համար} other {Զանգվածային գործողություններ # ընտրված {manyName}-ի համար}}"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:52
+msgid "{sentLabel} of {totalLabel}"
+msgstr "{sentLabel}՝ {totalLabel}-ից"
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Բացել ընտրացանկը (# չկարդացված ծանուցում)} other {Բացել ընտրացանկը (# չկարդացված ծանուցում)}}"
@@ -852,11 +856,11 @@ msgstr "Տեղեկագիրք"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:300
 msgid "Discard"
-msgstr ""
+msgstr "Հրաժարվել"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:298
 msgid "Discard draft?"
-msgstr ""
+msgstr "Հրաժարվե՞լ սևագրից։"
 
 #: src/components/MissionSetup.tsx:259
 msgid "disconnected"
@@ -1995,6 +1999,10 @@ msgstr "Նախորդ նկարը"
 msgid "Privacy"
 msgstr "Գաղտնիություն"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:50
+msgid "Processing…"
+msgstr "Մշակվում է…"
+
 #: ../../../lib/web/src/components/layout/nav-user.tsx:137
 #: ../../../lib/web/src/components/profile-dropdown.tsx:114
 msgid "Profile"
@@ -2183,7 +2191,7 @@ msgstr "Շարունակել առաքելությունը"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:249
 msgid "Retry"
-msgstr ""
+msgstr "Կրկին փորձել"
 
 #: src/components/MissionSetup.tsx:513
 msgid "Return to menu"
@@ -2778,6 +2786,10 @@ msgstr "Անսահմանափակ վառելիք"
 msgid "Unverified"
 msgstr "Չստուգված"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:34
+msgid "Upload progress"
+msgstr "Վերբեռնման ընթացքը"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:338
 msgid "Use your passkey"
 msgstr "Օգտագործեք ձեր անցաբանալին"
@@ -2967,7 +2979,7 @@ msgstr "Ձեր հաշիվը տեղափոխվել է այստեղ {source}-ից: 
 
 #: ../../../lib/web/src/components/comment-composer.tsx:291
 msgid "Your attachments will be lost."
-msgstr ""
+msgstr "Ձեր կցորդները կկորչեն։"
 
 #: src/components/MatchHistory.tsx:107
 msgid "Your flights appear here once you've flown one."
@@ -2979,11 +2991,11 @@ msgstr "ձեր առաջարկը"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:289
 msgid "Your text and attachments will be lost."
-msgstr ""
+msgstr "Ձեր տեքստը և կցորդները կկորչեն։"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:292
 msgid "Your text will be lost."
-msgstr ""
+msgstr "Քո տեքստը կկորչի։"
 
 #: src/components/MissionSetup.tsx:112
 msgid "Zoom"

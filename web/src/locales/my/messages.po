@@ -73,6 +73,10 @@ msgstr "{selectedCount, plural, other {# ခု ရွေးထားသည်}}
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
 msgstr "{selectedCount, plural, other {ရွေးချယ်ထားသော {manyName} # ခုအတွက် အစုလိုက်လုပ်ဆောင်ချက်များ}}"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:52
+msgid "{sentLabel} of {totalLabel}"
+msgstr "{totalLabel} အနက် {sentLabel}"
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, other {မီနူးဖွင့်ရန် (မဖတ်ရသေးသော အကြောင်းကြားချက် # ခု)}}"
@@ -852,11 +856,11 @@ msgstr "လမ်းညွှန်"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:300
 msgid "Discard"
-msgstr ""
+msgstr "ဖျက်ပစ်ရန်"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:298
 msgid "Discard draft?"
-msgstr ""
+msgstr "မူကြမ်းကို ဖျက်ပစ်မလား။"
 
 #: src/components/MissionSetup.tsx:259
 msgid "disconnected"
@@ -1995,6 +1999,10 @@ msgstr "ယခင်ပုံ"
 msgid "Privacy"
 msgstr "ကိုယ်ရေးကိုယ်တာ"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:50
+msgid "Processing…"
+msgstr "လုပ်ဆောင်နေသည်…"
+
 #: ../../../lib/web/src/components/layout/nav-user.tsx:137
 #: ../../../lib/web/src/components/profile-dropdown.tsx:114
 msgid "Profile"
@@ -2183,7 +2191,7 @@ msgstr "မစ်ရှင်ဆက်လုပ်"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:249
 msgid "Retry"
-msgstr ""
+msgstr "ထပ်စမ်းကြည့်ပါ"
 
 #: src/components/MissionSetup.tsx:513
 msgid "Return to menu"
@@ -2778,6 +2786,10 @@ msgstr "လောင်စာဆီ အကန့်အသတ်မရှိ"
 msgid "Unverified"
 msgstr "အတည်ပြုမထား"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:34
+msgid "Upload progress"
+msgstr "အပ်လုဒ်တိုးတက်မှု"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:338
 msgid "Use your passkey"
 msgstr "သင့်ပတ်စ်ကီးကို သုံးပါ"
@@ -2967,7 +2979,7 @@ msgstr "သင်၏အကောင့်ကို {source} မှ ဤနေရ�
 
 #: ../../../lib/web/src/components/comment-composer.tsx:291
 msgid "Your attachments will be lost."
-msgstr ""
+msgstr "သင့်ပူးတွဲဖိုင်များ ပျောက်ဆုံးသွားပါမည်။"
 
 #: src/components/MatchHistory.tsx:107
 msgid "Your flights appear here once you've flown one."
@@ -2979,11 +2991,11 @@ msgstr "သင့်ကမ်းလှမ်းချက်"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:289
 msgid "Your text and attachments will be lost."
-msgstr ""
+msgstr "သင့်စာသားနှင့် ပူးတွဲဖိုင်များ ပျောက်ဆုံးသွားပါမည်။"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:292
 msgid "Your text will be lost."
-msgstr ""
+msgstr "သင်၏ စာသား ပျောက်ဆုံးသွားပါမည်။"
 
 #: src/components/MissionSetup.tsx:112
 msgid "Zoom"

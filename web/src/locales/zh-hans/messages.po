@@ -73,6 +73,10 @@ msgstr "{selectedCount, plural, one {# 项已选择} other {# 项已选择}}"
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
 msgstr "{selectedCount, plural, one {对已选择的 # 个 {entityName} 执行批量操作} other {对已选择的 # 个 {manyName} 执行批量操作}}"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:52
+msgid "{sentLabel} of {totalLabel}"
+msgstr "{sentLabel} / {totalLabel}"
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {打开菜单（# 条未读通知）} other {打开菜单（# 条未读通知）}}"
@@ -852,11 +856,11 @@ msgstr "目录"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:300
 msgid "Discard"
-msgstr ""
+msgstr "放弃"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:298
 msgid "Discard draft?"
-msgstr ""
+msgstr "放弃草稿?"
 
 #: src/components/MissionSetup.tsx:259
 msgid "disconnected"
@@ -1995,6 +1999,10 @@ msgstr "上一张图片"
 msgid "Privacy"
 msgstr "隐私"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:50
+msgid "Processing…"
+msgstr "处理中…"
+
 #: ../../../lib/web/src/components/layout/nav-user.tsx:137
 #: ../../../lib/web/src/components/profile-dropdown.tsx:114
 msgid "Profile"
@@ -2183,7 +2191,7 @@ msgstr "继续任务"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:249
 msgid "Retry"
-msgstr ""
+msgstr "重试"
 
 #: src/components/MissionSetup.tsx:513
 msgid "Return to menu"
@@ -2778,6 +2786,10 @@ msgstr "无限燃料"
 msgid "Unverified"
 msgstr "未验证"
 
+#: ../../../lib/web/src/components/ui/upload-progress.tsx:34
+msgid "Upload progress"
+msgstr "上传进度"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx:338
 msgid "Use your passkey"
 msgstr "使用您的通行密钥"
@@ -2967,7 +2979,7 @@ msgstr "您的账户已从 {source} 迁移至此。在您于那里删除之前�
 
 #: ../../../lib/web/src/components/comment-composer.tsx:291
 msgid "Your attachments will be lost."
-msgstr ""
+msgstr "您的附件将丢失。"
 
 #: src/components/MatchHistory.tsx:107
 msgid "Your flights appear here once you've flown one."
@@ -2979,11 +2991,11 @@ msgstr "你的邀请"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:289
 msgid "Your text and attachments will be lost."
-msgstr ""
+msgstr "您的文本和附件将丢失。"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:292
 msgid "Your text will be lost."
-msgstr ""
+msgstr "你的内容将会丢失。"
 
 #: src/components/MissionSetup.tsx:112
 msgid "Zoom"
