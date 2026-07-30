@@ -1627,10 +1627,13 @@ function battle_pose(st){ const up=st.up||world_up; return { position:{x:st.pos.
 	velocity:{x:st.velx??st.fwd.x*st.speed,y:st.vely??st.fwd.y*st.speed,z:st.velz??st.fwd.z*st.speed} }; }   // the shooter's velocity rides on every round
 function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c");   // battle_rigged: mission start races the async wasm load and battle_hulk silently no-ops until the core lands — the frame loop retries until the rig takes (an unrigged hulk made the bandit UNHITTABLE: every gun burst and missile blast on him no-opped for the whole mission)
 	bandit.harm={thrust:0,wing:0,killed:false,burning:false}; battle_reset=true; }
+// bandit_destroy ends the DUEL: a joust is one fight to one kill, so the bandit
+// does not respawn — the sky stays empty and the pilot ends the mission from
+// the menu (and launches another if they want one). The endless-rematch loop
+// this replaces made a victory feel like a lap counter. The match row and the
+// recording are written at exit as always; the kill is already on the counters.
 function bandit_destroy(){ explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
-	bandit.pos.set(3000,2400,-1000); bandit.fwd.set(-0.3,0,1).normalize(); bandit.merging=(cfg.task==="joust");
-	if(bandit_brain) bandit_spawn(bandit.pos, {x:bandit.fwd.x*200, y:0, z:bandit.fwd.z*200});
-	battle_hulk(0,"fa18c"); bandit.harm={thrust:0,wing:0,killed:false,burning:false};
+	has_enemy=false; bandit.group.visible=false;
 	notice(translate("KILL")); }
 let aircraft_lights=null;
 ownship.group=make_jet(); bandit.group=make_jet(); scene.add(ownship.group,bandit.group);
@@ -2697,6 +2700,7 @@ function explosion_at(x,y,z){
 	if(fire){ smoke.r[k]=1.0; smoke.g[k]=0.42+Math.random()*0.25; smoke.b[k]=0.08; } else { smoke.r[k]=0.30; smoke.g[k]=0.30; smoke.b[k]=0.32; } } }
 function crash_ownship(why){ if(crash_t>0) return; crash_t=3.0;
 	if(!MULTIPLAYER) own_deaths++;   // local deaths count too — the history records the joust honestly (multiplayer's arrive via the net death event)
+	if(has_enemy){ has_enemy=false; bandit.group.visible=false; }   // the duel is decided the other way: the winner stands down rather than circling a respawning target (has_enemy is never true in multiplayer, where the airframe belongs to a remote player)
 	(globalThis as any).dev_crash=why||"?"; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z); ownship.group.visible=false; ownship.speed=0; }
 function over_runway(p){ const r=obstacles.runway; if(!r) return false; const dx=p.x-r.x, dz=p.z-r.z;
 	return Math.abs(dx*r.fx+dz*r.fz)<r.hl && Math.abs(dx*r.fz-dz*r.fx)<r.hw; }
@@ -2755,7 +2759,7 @@ function check_collisions(){   // ownship vs sea / buildings / structures / carr
 	// A midair kills BOTH. This drew an explosion on the bandit and then merely
 	// relocated it — damage intact, no consequence — so the player watched it
 	// blow up and it flew on. bandit_destroy is the real thing (explosion,
-	// respawn, fresh hulk); no kill is credited, because flying into someone is
+	// duel over); no kill is credited, because flying into someone is
 	// not shooting them down.
 	if(has_enemy && wrap_distance(p,bandit.pos)<14){ bandit_destroy(); return crash_ownship("midair"); }
 }
