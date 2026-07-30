@@ -1484,6 +1484,18 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 		m.sx=(target.pos.x-m.px)/d; m.sy=(target.pos.y-m.py)/d; m.sz=(target.pos.z-m.pz)/d; }
 	return true; }
 const _v=new THREE.Vector3();
+// trigger_missile: the 9M edge of the fire trigger, shared by the keyboard's
+// keydown and the pad trigger's press. The pad path CALLS this rather than
+// synthesising a Space keydown: the synthetic event (sent with deliberately no
+// matching keyup, to protect held fire) wedged Space into the held-keys set,
+// after which BOTH the real key and the trigger skipped the edge block until a
+// real press-release cleared it — the trigger "only worked after pressing
+// space, which did nothing".
+function trigger_missile(){
+	if(master!=="9m" || weapons_hold || ownship.launching || (ownship.gear??0)<=0.98 || !cfg.missiles || ownship.msl<=0) return;
+	if(MULTIPLAYER) missile_flag=true;
+	if(launch_missile(ownship,MULTIPLAYER?(remotes.get(designated)||remote_nearest()):(has_enemy?bandit:null))){ if(!cheat("ammunition")) ownship.msl--; audio_launch(); update_rails(ownship,ownship.msl); }
+}
 function update_missiles(dt){ for(const m of missiles){ if(!m.active) continue; m.life-=dt; m.flew+=dt;
 	if(DEV_MODE&&m.target){ const md=wrap_distance({x:m.px,y:m.py,z:m.pz},m.target.pos); if(md<(m.least??1e9)) m.least=md; }   // terminal telemetry for dev_missiles
 	const post=(why)=>{ if(DEV_MODE){ const log=(globalThis as any).dev_missiles=(globalThis as any).dev_missiles||[]; log.push({why, least:+(m.least??-1).toFixed(1), flew:+m.flew.toFixed(1), loose:!!m.loose, broke:m.why||"", at:m.at??-1, mask:m.mask??-1, killed:!!m.killed}); } };
@@ -2376,9 +2388,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("select")){ master=master==="gun"?"9m":master==="9m"?"nav":"gun"; }   // weapon select (#133): GUN -> 9M -> NAV -> GUN; the HUD master mode follows
 		if(ch===key_of("altitude")){ alt_radar=!alt_radar; }   // HUD altitude switch: BARO <-> RDR
 		if(ch===key_of("reject")){ declutter=(declutter+1)%3; }     // the three-position symbology reject switch: NORM -> REJ 1 -> REJ 2 (NATOPS 2.13.4.8.1)
-		if(ch===key_of("guns") && master==="9m" && !weapons_hold && !ownship.launching && (ownship.gear??0)>0.98 && cfg.missiles && ownship.msl>0){
-			if(MULTIPLAYER) missile_flag=true;   // one trigger, weapon-selected: in 9M the trigger launches (the real Hornet's trigger fires the selected A/A weapon)
-			if(launch_missile(ownship,MULTIPLAYER?(remotes.get(designated)||remote_nearest()):(has_enemy?bandit:null))){ if(!cheat("ammunition")) ownship.msl--; audio_launch(); update_rails(ownship,ownship.msl); } }   // the visual missile chases the acquisition when one exists (the server's seeker judges the real damage)
+		if(ch===key_of("guns")) trigger_missile();   // one trigger, weapon-selected: in 9M the trigger launches (the real Hornet's trigger fires the selected A/A weapon) chases the acquisition when one exists (the server's seeker judges the real damage)
 		if(TEST_SCENARIOS && e.ctrlKey && k==="KeyC"){ copy_here(); notice("POSITION COPIED"); }   // dev (Ctrl+C): the live position line to the clipboard — for identifying deck locations (spots, markings) by taxiing onto them
 		if(ch===key_of("probe")){ ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; notice(ownship.probeTarget?translate("PROBE OUT"):translate("PROBE IN")); }   // refueling probe (real limit is ~300 KCAS — procedural, not enforced)
 		if(ch===key_of("fold")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.foldTarget=(ownship.foldTarget??0)>0.5?0:1; notice(ownship.foldTarget?translate("WINGS FOLDING"):translate("WINGS SPREADING")); } else notice(translate("WINGS LOCKED")); }   // wing fold — ground only, taxi speeds; the outer panels carry the ailerons and outer slats with them
@@ -2562,11 +2572,9 @@ function read_input(dt){
 			if(!(b>=0)||b>=pad.buttons.length) continue;
 			const down=pad.buttons[b].pressed;
 			if(action.startsWith("look.")){ if(down) pad_looks[action.slice(5)]=true; continue; }   // look directions are level state for the camera, not key events
-			if(action==="guns"){   // held fire stays a LEVEL read (any bound button, immune to another button's release) — but the PRESS also replays the keydown edge, because in 9M the launch lives on that edge and the joystick trigger otherwise could not fire a missile at all. Keydown only, never keyup: a synthetic keyup could kill a hold carried by another button or the keyboard
+			if(action==="guns"){   // held fire stays a LEVEL read (any bound button, immune to another button's release); the PRESS edge calls the 9M launch DIRECTLY — no synthetic key event, which wedged Space into the held-keys set and froze the edge for keyboard and trigger alike
 				if(down){ pad_guns=true;
-					if(!pad_buttons["guns/"+b]){ pad_buttons["guns/"+b]=true; const bindText=key_of("guns");
-						if(bindText){ const shift=bindText.startsWith("Shift+"), code=bindText.replace("Shift+","");
-							for(const target of [window, document, stage]) target.dispatchEvent(new KeyboardEvent("keydown",{ code, shiftKey:shift, bubbles:true })); } } }
+					if(!pad_buttons["guns/"+b]){ pad_buttons["guns/"+b]=true; trigger_missile(); } }
 				else pad_buttons["guns/"+b]=false;
 				continue; }
 			if(action==="zoom.in"||action==="zoom.out") continue;   // notch zoom is scanned by scan_zoom (also polled while the map pauses the world)
@@ -2824,7 +2832,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count, record:(()=>{ const r=recording_file(); if(!r) return null; const lines=r.text.split(String.fromCharCode(10));
+	atc:atc_on, missiles:!!cfg.missiles, hold:weapons_hold, master, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count, record:(()=>{ const r=recording_file(); if(!r) return null; const lines=r.text.split(String.fromCharCode(10));
 		return {lines:lines.length, session:r.session, kind:r.kind, bot:/Doctrine=/.test(r.text),
 			// The ownship's last data line: proves a channel actually plumbs
 			// through at runtime, which a unit test on the renderer cannot.
