@@ -55,12 +55,12 @@ import {
 // The fields each tab owns, for the per-tab Reset (the joystick tab also clears
 // the per-device maps so built-in defaults apply again).
 const TAB_FIELDS: Record<string, string[]> = {
-  mission: ['task', 'start', 'cat', 'world', 'aircraft', 'bandit', 'fuel', 'missiles', 'cheats', 'tod', 'clouds', 'extra_aircraft'],
+  mission: ['task', 'start', 'cat', 'world', 'aircraft', 'bandit', 'fuel', 'missiles', 'cheats', 'tod', 'clouds'],
   general: ['callsign', 'record'],
   controls: ['invert', 'joystick', 'sticks'],
   keys: ['keys'],
   sound: ['sound', 'volume'],
-  graphics: ['render_scale', 'dyn_res', 'lod', 'shadows', 'exterior_detail', 'ocean_segments', 'afterburner', 'tracers', 'framerate'],   // missiles, flares and the stale extra_aircraft entry all moved to the mission tab: they are rules of the fight, not rendering choices
+  graphics: ['render_scale', 'dyn_res', 'lod', 'shadows', 'exterior_detail', 'ocean_segments', 'afterburner', 'tracers', 'framerate'],   // missiles moved to the mission tab: they are a rule of the fight, not a rendering choice
 }
 
 function SectionLabel({ children }: { children: ReactNode }) {
@@ -1130,21 +1130,6 @@ function MissionPanel({
     { value: 'free', label: <Trans>Free flight</Trans> },
     { value: 'joust', label: <Trans>Joust against AI player</Trans> },
   ]}
-/>
-<SectionLabel>
-  <Trans>Extra aircraft</Trans>
-</SectionLabel>
-{/* Ambient traffic is WORLD CONTENT, not a rendering preference: it belongs
-    with the sortie for the same reason the weather does, and the moment it
-    becomes pattern traffic to time an interval against it is unambiguously
-    mission. Multiplayer forces it to zero — the match rules own that sky. */}
-<SliderRow
-  label={<Trans>Aircraft</Trans>}
-  value={config.extra_aircraft}
-  min={0}
-  max={40}
-  step={1}
-  onChange={(v) => set('extra_aircraft', v)}
 />
 <SectionLabel>
   <Trans>Armament</Trans>
