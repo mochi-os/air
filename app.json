@@ -12,9 +12,11 @@
 	"architecture": {"engine": "starlark", "version": 4},
 	"execute": ["air.star"],
 
+	"require": {"version": {"minimum": "0.4.227"}},
+
 	"database": {
 		"file": "air.db",
-		"schema": 7,
+		"schema": 8,
 		"create": {"function": "database_create"},
 		"upgrade": {"function": "database_upgrade"},
 	},

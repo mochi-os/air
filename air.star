@@ -29,6 +29,22 @@ def database_create():
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
+	if version == 8:
+		# Recordings move out of core's attachment store into plain file storage
+		# at "recordings/<match id>", with the match's own recording/recorded
+		# columns as metadata. Relocate existing recordings across the transition
+		# bridge and rewrite the marker to the match id; a recording whose bytes
+		# are already gone just clears its marker (recordings are transient).
+		rows = mochi.db.rows("select id, recording from matches where recording != ''") or []
+		for row in rows:
+			if row["recording"] == row["id"]:
+				continue
+			old = mochi.attachment.path(row["recording"])
+			if old:
+				mochi.file.move(old, "recordings/" + row["id"])
+				mochi.db.execute("update matches set recording = ? where id = ?", row["id"], row["id"])
+			else:
+				mochi.db.execute("update matches set recording = '', recorded = 0 where id = ?", row["id"])
 	if version == 7:
 		# Flight recordings (#213): the attachment id, its stored size, and the
 		# pin that exempts it from pruning.
@@ -175,10 +191,14 @@ def recording_save(a):
 	if not row:
 		a.error.label(404, "errors.not_found")   # a recording with no flight to hang on is an orphan by construction
 		return
-	saved = mochi.attachment.save(row["id"], "recording", [], [])
-	if not saved:
+	# A match has exactly one recording, so it needs no attachment machinery:
+	# the bytes go straight to file storage at "recordings/<match id>", and the
+	# match row's own recording/recorded columns are the metadata. recording
+	# holds the match id as the "present" marker.
+	size = a.upload("recording", "recordings/" + row["id"])
+	if not size:
 		return {"data": {"saved": False}}
-	mochi.db.execute("update matches set recording = ?, recorded = ? where id = ?", saved[0]["id"], saved[0].get("size", 0), row["id"])
+	mochi.db.execute("update matches set recording = ?, recorded = ? where id = ?", row["id"], size, row["id"])
 	recordings_prune(row["id"])
 	return {"data": {"saved": True}}
 
@@ -196,7 +216,7 @@ def recordings_prune(keep):
 		if row["id"] == keep:
 			continue
 		if kept > RECORDINGS_KEPT or total > RECORDINGS_BYTES:
-			mochi.attachment.clear(row["id"])
+			mochi.file.delete("recordings/" + row["id"])
 			mochi.db.execute("update matches set recording = '', recorded = 0 where id = ?", row["id"])
 
 # recording_pin() -> {"data": {"pinned": bool}}: mark a recording to survive
@@ -212,19 +232,16 @@ def recording_pin(a):
 	return {"data": {"pinned": pinned == 1}}
 
 # recording_fetch: serve a stored recording's bytes. The gate IS this action —
-# a.write.attachment performs no access check of its own — so it authorises on
-# a.user and binds the attachment to a match row this player actually owns.
-# (The app DB is per-user, so "in my matches table" IS the ownership test.)
+# a.write.file performs no access check of its own — so it authorises on a.user
+# and binds the recording to a match this player actually owns. (The app DB is
+# per-user, so "in my matches table" IS the ownership test.) The recording id is
+# the match id; the bytes live at "recordings/<match id>".
 def recording_fetch(a):
 	if not a.user or not a.user.identity.id:
 		a.error.label(401, "errors.not_logged_in")
 		return
-	attachment = a.input("id", "")
-	details = mochi.attachment.get(attachment)
-	if not details:
-		a.error.label(404, "errors.not_found")
+	match = a.input("id", "")
+	if not mochi.db.exists("select 1 from matches where id = ? and recording != ''", match):
+		a.error.label(404, "errors.not_found")   # not one of my flights, or no recording: indistinguishable from absent, deliberately
 		return
-	if not mochi.db.exists("select 1 from matches where id = ?", details.get("object", "")):
-		a.error.label(404, "errors.not_found")   # not one of my flights: indistinguishable from absent, deliberately
-		return
-	a.write.attachment(attachment)
+	a.write.file("recordings/" + match)
