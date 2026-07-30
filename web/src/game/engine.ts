@@ -1585,12 +1585,12 @@ function body_offset(st,x,y,z){ const up=st.up||world_up; const right=st.right||
 // ownship = player
 const ownship=make_state(new THREE.Vector3(CARRIER.x+70,CARRIER.deckY+1.8,CARRIER.z-6),new THREE.Vector3(1,0,0),0);
 ownship.player=true; ownship.q=new THREE.Quaternion(); ownship.up=new THREE.Vector3(0,1,0); ownship.right=new THREE.Vector3(0,0,1);
-// magazine: AIM-9s aboard. Four in single player (the real jet's tips plus one
-// LAU-127 dual-rail pair) — but the airframe models only the wingtip rails, so
-// missiles three and four launch from a visibly clean jet and the stores
-// mass/drag covers at most the two tips; #226 owns doing stores properly.
-// Multiplayer stays at two until the match rules own the loadout.
-function magazine(){ return MULTIPLAYER?2:4; }
+// magazine: AIM-9s aboard — four everywhere, the real jet's tips plus one
+// LAU-127 dual-rail pair (the server arms the same four, and validates). The
+// airframe models only the wingtip rails, so missiles three and four launch
+// from a visibly clean jet and the stores mass/drag covers at most the two
+// tips; #226 owns doing stores properly.
+function magazine(){ return 4; }
 ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.burner=0; ownship.rounds=578; ownship.msl=magazine(); ownship.cm=60; ownship.aoa=0; ownship.gload=1;
 ownship.launching=false;
 // init quaternion from initial fwd
@@ -4104,7 +4104,7 @@ function apply_livery(group, team){
 function remote_for(slot){ let st=remotes.get(slot); if(st) return st;
 	if(![...remotes.values()].includes(bandit)) st=bandit;
 	else { st=make_state(new THREE.Vector3(0,3000,0),new THREE.Vector3(1,0,0),200); st.group=make_jet(); scene.add(st.group); if(model_active) apply_model_to(st.group); }
-	remotes.set(slot,st); st.group.visible=true; st.msl=st.msl??2; update_rails(st,st.msl); return st; }
+	remotes.set(slot,st); st.group.visible=true; st.msl=st.msl??magazine(); update_rails(st,st.msl); return st; }
 function remote_drop(slot){ const st=remotes.get(slot); if(!st) return; remotes.delete(slot); audio_remote_drop("r"+slot);
 	if(st===bandit){ st.group.visible=false; }
 	else { scene.remove(st.group); st.group.traverse(o=>{ if(o.isMesh&&o.material&&o.material.dispose)o.material.dispose(); }); } }
@@ -4140,7 +4140,7 @@ function net_event(e){ const slot=Number(e.slot);
 		break;
 	case "respawn":
 		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; update_rails(ownship, cfg.missiles?ownship.msl:0); }   // in a joust the match-starting double-respawn releases the waiting room
-		else { const st=remotes.get(slot); if(st){ st.msl=2; update_rails(st,st.msl); } }   // a fresh jet comes with fresh rails
+		else { const st=remotes.get(slot); if(st){ st.msl=magazine(); update_rails(st,st.msl); } }   // a fresh jet comes with fresh rails
 		break;
 	case "missile":
 		if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st&&st.msl>0){ st.msl--; update_rails(st,st.msl); } }   // his wingtip empties as he shoots
