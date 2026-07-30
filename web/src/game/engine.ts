@@ -15,7 +15,7 @@ import {
   record as net_record,
   type Join as NetJoin,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_burst, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode } from './flight'
+import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode } from './flight'
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_horn, audio_seeker, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -1633,7 +1633,7 @@ function apply_harm(kind){ const words=flight_get(); if(!words) return;
 	if(kind==="fire"){   // ...then rake the jet from astern through the real battle path: the kindle roll lights the fire honestly (visual verification of the burn trail, #78)
 		const pose={ position:{x:ownship.pos.x-ownship.fwd.x*300, y:ownship.pos.y-ownship.fwd.y*300, z:ownship.pos.z-ownship.fwd.z*300},
 			forward:{x:ownship.fwd.x,y:ownship.fwd.y,z:ownship.fwd.z}, up:{x:ownship.up.x,y:ownship.up.y,z:ownship.up.z} };
-		for(let volley=0;volley<6;volley++) battle_burst(-1,pose,null,40,1,battle_tick+volley); } }
+		for(let volley=0;volley<6;volley++) battle_volley(1,{...pose,velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz}},40,battle_tick+volley); } }   // real rounds now: they arrive over the next frames
 let own_burn=[0,0], own_burning=false, own_leak=0;   // ownship condition mirrored from progress()
 let eject_taps=0, eject_at=0, eject_flag=false, ejected=false;
 bandit.harm={ thrust:0, wing:0, killed:false, burning:false };   // zonal summary driving the AI
@@ -2832,7 +2832,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:!!cfg.missiles, hold:weapons_hold, master, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count, record:(()=>{ const r=recording_file(); if(!r) return null; const lines=r.text.split(String.fromCharCode(10));
+	atc:atc_on, missiles:!!cfg.missiles, hold:weapons_hold, master, harm:{...bandit.harm}, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count, record:(()=>{ const r=recording_file(); if(!r) return null; const lines=r.text.split(String.fromCharCode(10));
 		return {lines:lines.length, session:r.session, kind:r.kind, bot:/Doctrine=/.test(r.text),
 			// The ownship's last data line: proves a channel actually plumbs
 			// through at runtime, which a unit test on the renderer cannot.
@@ -3083,6 +3083,14 @@ function fly_player(dt){
 		if(sweep_pending&&ownship.group.userData.rig){ const i=ownship.group.userData.rig.findIndex(r=>r.name===sweep_pending);
 			if(i>=0){ rig_sweep=i+1; } sweep_pending=null; }
 		if(!battle_rigged) battle_rig();   // the mission-start rig raced the wasm load and no-opped: retry until it takes
+		// Fly the airborne gun rounds one step (#real-TOF): arrivals are judged
+		// against where everyone IS this frame, so a break after the trigger is
+		// a real defence. Sparks land where ownship rounds strike the bandit;
+		// the flash and thud are the bandit's rounds arriving on us.
+		{ const flown=battle_fly(Math.min(dt,0.1), !!cheat("invulnerable"), (has_enemy&&bandit.group.visible)?battle_aim(bandit):null);
+			for(const p of flown.impacts){ const w=_v.set(p.x,p.y,p.z).applyQuaternion(bandit.group.quaternion).add(bandit.group.position);
+				hit_sparks(w.x,w.y,w.z,bandit.velx??bandit.fwd.x*bandit.speed,bandit.vely??bandit.fwd.y*bandit.speed,bandit.velz??bandit.fwd.z*bandit.speed); }
+			if(flown.own>0){ hit_flash=Math.min(1,hit_flash+0.25*flown.own); audio_hit(Math.min(flown.own,4)); } }
 		const battle=battle_progress(ownship.throttle,battle_tick++,battle_reset); battle_reset=false;
 		own_burn[0]=battle[0]; own_burn[1]=battle[1]; own_burning=battle[2]>0; own_leak=battle[5];
 		if(has_enemy){ const h=bandit.harm; h.thrust=battle[11]; h.wing=battle[12]; h.killed=battle[9]>0; h.burning=battle[8]>0;
@@ -3197,8 +3205,7 @@ function fly_bandit(dt){
 			if(bandit.merging&&(wrap_distance(bandit.pos,ownship.pos)<500||bandit.fwd.dot(_v.subVectors(ownship.pos,bandit.pos))<0)) bandit.merging=false;   // keep the merge flag honest for the SP weapons hold
 			if(step.flare){ dispense_flares(bandit); bandit.flared_at=sim_time; }
 			const fired=fire_gun(bandit,ownship,"bandit",dt,step.fire&&!weapons_hold);   // the joust hold binds BOTH jets: the brain may pull its trigger on the run-in, but nothing leaves the barrel before the merge (#87 — the player's trigger has always been gated; the bandit's never was)
-			if(fired>0 && !cheat("invulnerable")){ const verdict=battle_burst(-1,battle_pose(bandit),null,fired,1,battle_tick);
-				if(verdict.hits>0){ hit_flash=Math.min(1,hit_flash+0.25*verdict.hits); audio_hit(verdict.hits); } }
+			if(fired>0 && !cheat("invulnerable")){ battle_volley(1,battle_pose(bandit),fired,battle_tick); }   // real rounds: arrival, and the hit feedback, come from battle_fly
 		}
 		return;   // the brain owns the bandit even on a zero-step render frame (above 60 fps most frames step 0 or 1) — falling through would hand those frames to the legacy AI
 	}
@@ -3208,8 +3215,7 @@ function fly_bandit(dt){
 		if(rng<500 || to_own.dot(bandit.fwd)<0){ bandit.merging=false; }
 		else { steer(bandit,to_own.clone(),dt,0.3,1.0); apply_orientation(bandit);
 			const fired=weapons_hold?0:fire_gun(bandit,ownship,"bandit",dt);   // legacy AI: no head-on gunnery during the run-in — the hold binds both jets
-			if(fired>0 && !cheat("invulnerable")){ const verdict=battle_burst(-1,battle_pose(bandit),null,fired,1,battle_tick);
-				if(verdict.hits>0){ hit_flash=Math.min(1,hit_flash+0.25*verdict.hits); audio_hit(verdict.hits); } }
+			if(fired>0 && !cheat("invulnerable")){ battle_volley(1,battle_pose(bandit),fired,battle_tick); }   // real rounds: arrival, and the hit feedback, come from battle_fly
 			return; }
 	}
 	const threatened = rng<1800 && ownship.fwd.dot(to_own.clone().multiplyScalar(-1).normalize())>0.5; // ownship pointing at bandit from behind-ish
@@ -3221,8 +3227,7 @@ function fly_bandit(dt){
 	// bandit guns at ownship: the burst lands in the flight core's damage
 	// state, so the jet genuinely flies worse after every hit
 	{ const fired=weapons_hold?0:fire_gun(bandit,ownship,"bandit",dt);
-		if(fired>0 && !cheat("invulnerable")){ const verdict=battle_burst(-1,battle_pose(bandit),null,fired,1,battle_tick);
-			if(verdict.hits>0){ hit_flash=Math.min(1,hit_flash+0.25*verdict.hits); audio_hit(verdict.hits); } } }
+		if(fired>0 && !cheat("invulnerable")) battle_volley(1,battle_pose(bandit),fired,battle_tick); }   // real rounds: arrival via battle_fly
 }
 
 // Degraded bandit flying: pilot dead = a frozen shallow dive; a lost wing =
@@ -3335,14 +3340,7 @@ function step_world(dt){ sim_time+=dt;
 	set_ab(ownship.group,cfg.afterburner&&(ownship.stage??(((ownship.burner??0)>0)?1:0))>0.15); set_ab(bandit.group,cfg.afterburner);   // ownship: the ACHIEVED reheat stage (the burner takes ~half a second to light and quench)
 	// player guns
 	{ const fired=fire_gun(ownship,MULTIPLAYER?null:bandit,"own",dt,input.guns&&!weapons_hold&&!ownship.launching&&(ownship.gear??0)>0.98);   // weapons safe unless the gear is fully up (a weight-on-wheels-style interlock) or before the joust merge; in multiplayer the tracers are local, the damage is the server's
-		if(fired>0&&!MULTIPLAYER){ const pose=battle_pose(ownship);
-			if(has_enemy){ const verdict=battle_burst(0,pose,battle_aim(bandit),fired,0,battle_tick);
-				// The impacts come back in the BANDIT's body frame — rotate them onto
-				// the airframe as drawn, so a flash sits on the wing it actually hit
-				// rather than at the aircraft's centre.
-				for(const p of verdict.impacts){ const w=_v.set(p.x,p.y,p.z).applyQuaternion(bandit.group.quaternion).add(bandit.group.position);
-					hit_sparks(w.x,w.y,w.z,bandit.velx??bandit.fwd.x*bandit.speed,bandit.vely??bandit.fwd.y*bandit.speed,bandit.velz??bandit.fwd.z*bandit.speed); }
-				if(verdict.hits>0) audio_hit(Math.min(verdict.hits,4)); } } }
+		if(fired>0&&!MULTIPLAYER){ battle_volley(0,battle_pose(ownship),fired,battle_tick); } }
 	update_pool_ballistic(tracers,dt,9.8,0); update_missiles(dt);
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96); update_pool_ballistic(strikes,dt,9.8,0);   // no drag, exactly as these behaved in the tracer pool: the change here is legibility, not motion
 	_live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts)+flush_points(strikes,strike_pts);

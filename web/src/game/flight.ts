@@ -99,7 +99,8 @@ interface Core {
   approach(x: number, y: number, z: number, dx: number, dz: number, slope: number, fuel: number): number
   clear(): string
   hulk(index: number, aircraft: string): boolean
-  burst(input: Uint8Array, output: Uint8Array): number
+  volley(input: Uint8Array, output: Uint8Array): number
+  fly(input: Uint8Array, output: Uint8Array): number
   blast(input: Uint8Array, output: Uint8Array): boolean
   progress(input: Uint8Array, output: Uint8Array): void
   bandit_init?(config: string): string
@@ -348,38 +349,55 @@ export function battle_hulk(index: number, aircraft: string): boolean {
   return !!core?.hulk(index, aircraft)
 }
 
-// battle_burst fires rounds at a target: -1 = the ownship model (the
-// bandit shooting the player), else a hulk index. Returns hits + events.
-export function battle_burst(
-  target: number,
-  shooter: { position: { x: number; y: number; z: number }; forward: { x: number; y: number; z: number }; up: { x: number; y: number; z: number }; velocity?: { x: number; y: number; z: number } },
-  aim: Aim | null,
-  rounds: number,
+// battle_volley fires REAL rounds into the shared airborne set: identity 0 =
+// the ownship shooting, 1 = the bandit. battle_fly resolves them tick by tick.
+export function battle_volley(
   identity: number,
+  shooter: { position: { x: number; y: number; z: number }; forward: { x: number; y: number; z: number }; up: { x: number; y: number; z: number }; right?: { x: number; y: number; z: number }; velocity?: { x: number; y: number; z: number } },
+  rounds: number,
   tick: number,
-): { hits: number; mask: number; impacts: { x: number; y: number; z: number }[] } {
-  if (!core) return { hits: 0, mask: 0, impacts: [] }
+): void {
+  if (!core) return
   const b = battle_input
-  b[0] = target
+  b[0] = identity
   b[1] = shooter.position.x; b[2] = shooter.position.y; b[3] = shooter.position.z
   b[4] = shooter.forward.x; b[5] = shooter.forward.y; b[6] = shooter.forward.z
   b[7] = shooter.up.x; b[8] = shooter.up.y; b[9] = shooter.up.z
+  // right = forward x up when the caller carries no basis
+  const rx = shooter.right?.x ?? shooter.forward.y * shooter.up.z - shooter.forward.z * shooter.up.y
+  const ry = shooter.right?.y ?? shooter.forward.z * shooter.up.x - shooter.forward.x * shooter.up.z
+  const rz = shooter.right?.z ?? shooter.forward.x * shooter.up.y - shooter.forward.y * shooter.up.x
+  b[10] = rx; b[11] = ry; b[12] = rz
+  b[13] = shooter.velocity?.x ?? 0; b[14] = shooter.velocity?.y ?? 0; b[15] = shooter.velocity?.z ?? 0
+  b[16] = rounds; b[17] = tick
+  core.volley(battle_input_bytes, battle_output_bytes)
+}
+
+// battle_fly advances every airborne round one step: rounds from the ownship
+// resolve against the bandit hulk (when aim is present), the bandit's against
+// the ownship model. Impacts are in the BANDIT's body frame.
+export function battle_fly(
+  dt: number,
+  invulnerable: boolean,
+  aim: Aim | null,
+): { bandit: number; own: number; impacts: { x: number; y: number; z: number }[] } {
+  if (!core) return { bandit: 0, own: 0, impacts: [] }
+  const b = battle_input
+  b[0] = dt
+  b[1] = invulnerable ? 1 : 0
+  b[2] = aim ? 1 : 0
   if (aim) {
-    b[10] = aim.position.x; b[11] = aim.position.y; b[12] = aim.position.z
-    b[13] = aim.quaternion.w; b[14] = aim.quaternion.x; b[15] = aim.quaternion.y; b[16] = aim.quaternion.z
+    b[3] = aim.position.x; b[4] = aim.position.y; b[5] = aim.position.z
+    b[6] = aim.quaternion.w; b[7] = aim.quaternion.x; b[8] = aim.quaternion.y; b[9] = aim.quaternion.z
+    b[10] = aim.velocity?.x ?? 0; b[11] = aim.velocity?.y ?? 0; b[12] = aim.velocity?.z ?? 0
   }
-  b[17] = rounds; b[18] = identity; b[19] = tick
-  b[20] = shooter.velocity?.x ?? 0; b[21] = shooter.velocity?.y ?? 0; b[22] = shooter.velocity?.z ?? 0
-  b[23] = aim?.velocity?.x ?? 0; b[24] = aim?.velocity?.y ?? 0; b[25] = aim?.velocity?.z ?? 0
-  core.burst(battle_input_bytes, battle_output_bytes)
-  // [hits, mask, count, x|y|z per impact] — impacts are in the TARGET's body
-  // frame, so the caller rotates them onto the airframe it draws (#217).
+  core.fly(battle_input_bytes, battle_output_bytes)
   const count = Math.min(battle_output[2] || 0, 8)
   const impacts: { x: number; y: number; z: number }[] = []
   for (let n = 0; n < count; n++) {
     impacts.push({ x: battle_output[3 + 3 * n], y: battle_output[4 + 3 * n], z: battle_output[5 + 3 * n] })
   }
-  return { hits: battle_output[0], mask: battle_output[1], impacts }
+  return { bandit: battle_output[0], own: battle_output[1], impacts }
 }
 
 // battle_blast detonates a missile warhead at a world point against a target.
