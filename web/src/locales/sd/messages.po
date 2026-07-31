@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:204
+#: ../../../lib/web/src/lib/error-normalizer.ts:236
 msgid "Please check your internet connection and try again."
 msgstr "مهرباني ڪري پنهنجو انٽرنيٽ ڪنيڪشن چيڪ ڪريو ۽ ٻيهر ڪوشش ڪريو."
 
@@ -81,7 +81,7 @@ msgstr "{selectedCount, plural, one {# چونڊيل {entityName} لاءِ وڏي
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{totalLabel} مان {sentLabel}"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:148
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {مينيو کوليو (# اڻ پڙهيل اطلاع)} other {مينيو کوليو (# اڻ پڙهيل اطلاعون)}}"
 
@@ -259,11 +259,11 @@ msgstr "سڀ"
 msgid "Allow anyone to search for {0}"
 msgstr "ڪنھن کي به {0} ڳولڻ جي اجازت ڏيو"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:159
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:178
 msgid "An error occurred"
 msgstr "هڪ خرابي پيش آئي"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:256
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:275
 msgid "An unexpected error occurred"
 msgstr "هڪ غير متوقع خرابي پيش آئي"
 
@@ -803,7 +803,7 @@ msgstr "اونداهو"
 msgid "Dark mode"
 msgstr "اونداهو موڊ"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:240
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:259
 msgid "Data conflict"
 msgstr "ڊيٽا جو ٽڪراءُ"
 
@@ -1293,7 +1293,7 @@ msgid "History"
 msgstr "تاريخ"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:90
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:158
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:175
 #: ../../../lib/web/src/components/layout/top-bar.tsx:71
 #: ../../../lib/web/src/components/layout/top-bar.tsx:100
 msgid "Home"
@@ -1656,7 +1656,7 @@ msgstr "وچولو"
 msgid "menu"
 msgstr "مينيو"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:173
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:190
 #: src/components/MissionSetup.tsx:161
 msgid "Menu"
 msgstr "مينيو"
@@ -1726,7 +1726,7 @@ msgid "Name must be 1000 characters or less"
 msgstr "نالو 1000 اکرن يا گهٽ هجڻ گهرجي"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:53
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:303
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:322
 msgid "Network error"
 msgstr "نيٽ ورڪ جي خرابي"
 
@@ -1912,7 +1912,7 @@ msgstr "اڪائونٽ ڪارناما کوليو"
 msgid "Open actions"
 msgstr "ڪارروايون کوليو"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:133
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:149
 msgid "Open menu"
 msgstr "مينيو کوليو"
 
@@ -2010,7 +2010,7 @@ msgstr "رانديگر"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:95
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:304
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:323
 msgid "Please check your internet connection and try again."
 msgstr "مهرباني ڪري پنهنجو انٽرنيٽ ڪنيڪشن چيڪ ڪريو ۽ ٻيهر ڪوشش ڪريو."
 
@@ -2452,8 +2452,8 @@ msgstr "سرور"
 msgid "Server chat"
 msgstr "سرور چيٽ"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:260
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:286
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:279
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:305
 msgid "Server error"
 msgstr "سرور جي خرابي"
 
@@ -2466,7 +2466,7 @@ msgstr "سرور جا ضابطا"
 msgid "SESSION ENDED"
 msgstr "سيشن ختم ٿيو"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:210
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:229
 msgid "Session expired. Please log in again."
 msgstr "سيشن ختم ٿي ويو. مهرباني ڪري ٻيهر لاگ ان ٿيو."
 
@@ -2478,8 +2478,8 @@ msgstr "مقرر ڪريو"
 msgid "Set origin and destination"
 msgstr "اصل ۽ منزل مقرر ڪريو"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:93
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:99
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:109
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:115
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
@@ -2507,8 +2507,8 @@ msgstr "{total} مان {totalShown} ڏيکاري رهيو آھي"
 msgid "Sidebar"
 msgstr "سائيڊبار"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:105
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:111
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:121
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:127
 msgid "Sign out"
 msgstr "سائن آئوٽ ڪريو"
 
@@ -2675,6 +2675,14 @@ msgstr "ميچ هن مينيو جي پويان جاري آهي."
 msgid "The requested content could not be found."
 msgstr "گهربل مواد نه ملي سگهيو."
 
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:152
+#~ msgid "The server returned a web page instead of data, which usually means the address was wrong."
+#~ msgstr ""
+
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:152
+msgid "The server returned a web page instead of data."
+msgstr "سرور ڊيٽا جي بجاءِ ويب پيج موٽايو."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
 msgid "The site is not available at the moment."
 msgstr "سائيٽ ھن وقت دستياب ناهي."
@@ -2817,7 +2825,7 @@ msgstr "ڳولڻ لاءِ ٽائپ ڪريو..."
 msgid "Ultra"
 msgstr "الٽرا"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:282
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:301
 msgid "Unable to connect to remote server"
 msgstr "ريموٽ سرور سان ڳنڍڻ ناممڪن"
 
@@ -2869,7 +2877,7 @@ msgstr "اپلوڊ جي پيش رفت"
 msgid "Use your passkey"
 msgstr "پنهنجي پاس ڪي استعمال ڪريو"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:86
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:102
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
 msgstr "صارف"

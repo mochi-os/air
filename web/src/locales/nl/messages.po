@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:204
+#: ../../../lib/web/src/lib/error-normalizer.ts:236
 msgid "Please check your internet connection and try again."
 msgstr "Controleer je internetverbinding en probeer het opnieuw."
 
@@ -81,7 +81,7 @@ msgstr "{selectedCount, plural, one {Bulkacties voor # geselecteerd {entityName}
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel} van {totalLabel}"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:148
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Menu openen (# ongelezen melding)} other {Menu openen (# ongelezen meldingen)}}"
 
@@ -259,11 +259,11 @@ msgstr "Alles"
 msgid "Allow anyone to search for {0}"
 msgstr "Iedereen laten zoeken naar {0}"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:159
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:178
 msgid "An error occurred"
 msgstr "Er is een fout opgetreden"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:256
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:275
 msgid "An unexpected error occurred"
 msgstr "Er is een onverwachte fout opgetreden"
 
@@ -803,7 +803,7 @@ msgstr "Donker"
 msgid "Dark mode"
 msgstr "Donkere modus"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:240
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:259
 msgid "Data conflict"
 msgstr "Gegevensconflict"
 
@@ -1293,7 +1293,7 @@ msgid "History"
 msgstr "Geschiedenis"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:90
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:158
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:175
 #: ../../../lib/web/src/components/layout/top-bar.tsx:71
 #: ../../../lib/web/src/components/layout/top-bar.tsx:100
 msgid "Home"
@@ -1656,7 +1656,7 @@ msgstr "Gemiddeld"
 msgid "menu"
 msgstr "menu"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:173
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:190
 #: src/components/MissionSetup.tsx:161
 msgid "Menu"
 msgstr "Menu"
@@ -1726,7 +1726,7 @@ msgid "Name must be 1000 characters or less"
 msgstr "Naam mag maximaal 1000 tekens bevatten"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:53
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:303
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:322
 msgid "Network error"
 msgstr "Netwerkfout"
 
@@ -1912,7 +1912,7 @@ msgstr "Account-acties openen"
 msgid "Open actions"
 msgstr "Acties openen"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:133
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:149
 msgid "Open menu"
 msgstr "Menu openen"
 
@@ -2010,7 +2010,7 @@ msgstr "Spelers"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:95
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:304
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:323
 msgid "Please check your internet connection and try again."
 msgstr "Controleer je internetverbinding en probeer het opnieuw."
 
@@ -2452,8 +2452,8 @@ msgstr "Server"
 msgid "Server chat"
 msgstr "Serverchat"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:260
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:286
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:279
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:305
 msgid "Server error"
 msgstr "Serverfout"
 
@@ -2466,7 +2466,7 @@ msgstr "Serverregels"
 msgid "SESSION ENDED"
 msgstr "SESSIE BEËINDIGD"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:210
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:229
 msgid "Session expired. Please log in again."
 msgstr "Sessie verlopen. Log opnieuw in."
 
@@ -2478,8 +2478,8 @@ msgstr "Instellen"
 msgid "Set origin and destination"
 msgstr "Vertrek en bestemming instellen"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:93
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:99
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:109
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:115
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
@@ -2507,8 +2507,8 @@ msgstr "Toont {totalShown} van {total}"
 msgid "Sidebar"
 msgstr "Zijbalk"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:105
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:111
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:121
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:127
 msgid "Sign out"
 msgstr "Afmelden"
 
@@ -2675,6 +2675,14 @@ msgstr "De match gaat door achter dit menu."
 msgid "The requested content could not be found."
 msgstr "De opgevraagde inhoud kon niet worden gevonden."
 
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:152
+#~ msgid "The server returned a web page instead of data, which usually means the address was wrong."
+#~ msgstr ""
+
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:152
+msgid "The server returned a web page instead of data."
+msgstr "De server heeft een webpagina teruggestuurd in plaats van gegevens."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
 msgid "The site is not available at the moment."
 msgstr "De site is momenteel niet beschikbaar."
@@ -2817,7 +2825,7 @@ msgstr "Typ om te zoeken..."
 msgid "Ultra"
 msgstr "Ultra"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:282
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:301
 msgid "Unable to connect to remote server"
 msgstr "Kan geen verbinding maken met externe server"
 
@@ -2869,7 +2877,7 @@ msgstr "Uploadvoortgang"
 msgid "Use your passkey"
 msgstr "Gebruik je passkey"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:86
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:102
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
 msgstr "Gebruiker"

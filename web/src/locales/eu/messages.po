@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:204
+#: ../../../lib/web/src/lib/error-normalizer.ts:236
 msgid "Please check your internet connection and try again."
 msgstr "Egiaztatu zure interneteko konexioa eta saiatu berriro."
 
@@ -81,7 +81,7 @@ msgstr "{selectedCount, plural, one {Hautatutako # {entityName}(r)en ekintza mas
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel} / {totalLabel}"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:148
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Ireki menua (irakurri gabeko # jakinarazpen)} other {Ireki menua (irakurri gabeko # jakinarazpen)}}"
 
@@ -259,11 +259,11 @@ msgstr "Guztiak"
 msgid "Allow anyone to search for {0}"
 msgstr "Baimendu edonork {0} bilatzea"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:159
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:178
 msgid "An error occurred"
 msgstr "Errore bat gertatu da"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:256
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:275
 msgid "An unexpected error occurred"
 msgstr "Ustekabeko errore bat gertatu da"
 
@@ -803,7 +803,7 @@ msgstr "Iluna"
 msgid "Dark mode"
 msgstr "Modu iluna"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:240
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:259
 msgid "Data conflict"
 msgstr "Datu-gatazka"
 
@@ -1293,7 +1293,7 @@ msgid "History"
 msgstr "Historia"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:90
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:158
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:175
 #: ../../../lib/web/src/components/layout/top-bar.tsx:71
 #: ../../../lib/web/src/components/layout/top-bar.tsx:100
 msgid "Home"
@@ -1656,7 +1656,7 @@ msgstr "Ertaina"
 msgid "menu"
 msgstr "menua"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:173
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:190
 #: src/components/MissionSetup.tsx:161
 msgid "Menu"
 msgstr "Menua"
@@ -1726,7 +1726,7 @@ msgid "Name must be 1000 characters or less"
 msgstr "Izenak 1000 karaktere edo gutxiago izan behar ditu"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:53
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:303
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:322
 msgid "Network error"
 msgstr "Sareko errorea"
 
@@ -1912,7 +1912,7 @@ msgstr "Ireki kontuaren ekintzak"
 msgid "Open actions"
 msgstr "Ireki ekintzak"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:133
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:149
 msgid "Open menu"
 msgstr "Ireki menua"
 
@@ -2010,7 +2010,7 @@ msgstr "Jokalariak"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:95
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:304
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:323
 msgid "Please check your internet connection and try again."
 msgstr "Egiaztatu zure interneteko konexioa eta saiatu berriro."
 
@@ -2452,8 +2452,8 @@ msgstr "Zerbitzaria"
 msgid "Server chat"
 msgstr "Zerbitzariko txata"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:260
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:286
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:279
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:305
 msgid "Server error"
 msgstr "Zerbitzariaren errorea"
 
@@ -2466,7 +2466,7 @@ msgstr "Zerbitzariaren arauak"
 msgid "SESSION ENDED"
 msgstr "SAIOA AMAITU DA"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:210
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:229
 msgid "Session expired. Please log in again."
 msgstr "Saioa iraungi da. Hasi saioa berriro."
 
@@ -2478,8 +2478,8 @@ msgstr "Ezarri"
 msgid "Set origin and destination"
 msgstr "Ezarri jatorria eta helmuga"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:93
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:99
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:109
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:115
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
@@ -2507,8 +2507,8 @@ msgstr "{total}etik {totalShown} erakusten"
 msgid "Sidebar"
 msgstr "Alboko barra"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:105
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:111
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:121
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:127
 msgid "Sign out"
 msgstr "Amaitu saioa"
 
@@ -2675,6 +2675,14 @@ msgstr "Partidak menu honen atzean jarraitzen du."
 msgid "The requested content could not be found."
 msgstr "Eskatutako edukia ezin izan da aurkitu."
 
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:152
+#~ msgid "The server returned a web page instead of data, which usually means the address was wrong."
+#~ msgstr ""
+
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:152
+msgid "The server returned a web page instead of data."
+msgstr "Zerbitzariak web-orri bat itzuli du datuen ordez."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
 msgid "The site is not available at the moment."
 msgstr "Gunea ez dago erabilgarri une honetan."
@@ -2817,7 +2825,7 @@ msgstr "Idatzi bilatzeko..."
 msgid "Ultra"
 msgstr "Ultra"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:282
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:301
 msgid "Unable to connect to remote server"
 msgstr "Ezin izan da urruneko zerbitzarira konektatu"
 
@@ -2869,7 +2877,7 @@ msgstr "Igoeraren aurrerapena"
 msgid "Use your passkey"
 msgstr "Erabili zure sarbide-gakoa"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:86
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:102
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
 msgstr "Erabiltzailea"

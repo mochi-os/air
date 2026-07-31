@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:204
+#: ../../../lib/web/src/lib/error-normalizer.ts:236
 msgid "Please check your internet connection and try again."
 msgstr "Jekk jogħġbok iċċekkja l-konnessjoni tal-internet tiegħek u erġa' pprova."
 
@@ -81,7 +81,7 @@ msgstr "{selectedCount, plural, one {Azzjonijiet bl-ingrossa għal # {entityName
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel} minn {totalLabel}"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:148
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Iftaħ il-menu (# notifika mhux moqrija)} few {Iftaħ il-menu (# notifiki mhux moqrija)} many {Iftaħ il-menu (# notifiki mhux moqrija)} other {Iftaħ il-menu (# notifiki mhux moqrija)}}"
 
@@ -259,11 +259,11 @@ msgstr "Kollha"
 msgid "Allow anyone to search for {0}"
 msgstr "Ħalli lil kulħadd ifittex {0}"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:159
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:178
 msgid "An error occurred"
 msgstr "Seħħet żball"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:256
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:275
 msgid "An unexpected error occurred"
 msgstr "Seħħ żball mhux mistenni"
 
@@ -803,7 +803,7 @@ msgstr "Skur"
 msgid "Dark mode"
 msgstr "Modalità skura"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:240
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:259
 msgid "Data conflict"
 msgstr "Kunflitt fid-dejta"
 
@@ -1293,7 +1293,7 @@ msgid "History"
 msgstr "Storja"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:90
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:158
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:175
 #: ../../../lib/web/src/components/layout/top-bar.tsx:71
 #: ../../../lib/web/src/components/layout/top-bar.tsx:100
 msgid "Home"
@@ -1656,7 +1656,7 @@ msgstr "Medju"
 msgid "menu"
 msgstr "menu"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:173
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:190
 #: src/components/MissionSetup.tsx:161
 msgid "Menu"
 msgstr "Menu"
@@ -1726,7 +1726,7 @@ msgid "Name must be 1000 characters or less"
 msgstr "L-isem irid ikun ta' 1000 karattru jew inqas"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:53
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:303
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:322
 msgid "Network error"
 msgstr "Żball tan-network"
 
@@ -1912,7 +1912,7 @@ msgstr "Iftaħ azzjonijiet tal-kont"
 msgid "Open actions"
 msgstr "Iftaħ l-azzjonijiet"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:133
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:149
 msgid "Open menu"
 msgstr "Iftaħ menu"
 
@@ -2010,7 +2010,7 @@ msgstr "Plejers"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:95
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:304
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:323
 msgid "Please check your internet connection and try again."
 msgstr "Jekk jogħġbok iċċekkja l-konnessjoni tal-internet tiegħek u erġa' pprova."
 
@@ -2452,8 +2452,8 @@ msgstr "Server"
 msgid "Server chat"
 msgstr "Chat tas-server"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:260
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:286
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:279
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:305
 msgid "Server error"
 msgstr "Żball tas-server"
 
@@ -2466,7 +2466,7 @@ msgstr "Regoli tas-server"
 msgid "SESSION ENDED"
 msgstr "IS-SESSJONI NTEMMET"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:210
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:229
 msgid "Session expired. Please log in again."
 msgstr "Is-sessjoni skadiet. Jekk jogħġbok erġa' idħol."
 
@@ -2478,8 +2478,8 @@ msgstr "Issettja"
 msgid "Set origin and destination"
 msgstr "Issettja oriġini u destinazzjoni"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:93
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:99
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:109
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:115
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
@@ -2507,8 +2507,8 @@ msgstr "Qed juri {totalShown} minn {total}"
 msgid "Sidebar"
 msgstr "Barra tal-ġenb"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:105
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:111
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:121
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:127
 msgid "Sign out"
 msgstr "Oħroġ"
 
@@ -2675,6 +2675,14 @@ msgstr "Il-partita tkompli wara dan il-menu."
 msgid "The requested content could not be found."
 msgstr "Il-kontenut mitlub ma setax jinstab."
 
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:152
+#~ msgid "The server returned a web page instead of data, which usually means the address was wrong."
+#~ msgstr ""
+
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:152
+msgid "The server returned a web page instead of data."
+msgstr "Is-server irritorna paġna web minflok data."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
 msgid "The site is not available at the moment."
 msgstr "Is-sit mhuwiex disponibbli bħalissa."
@@ -2817,7 +2825,7 @@ msgstr "Ittajpja biex tfittex..."
 msgid "Ultra"
 msgstr "Ultra"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:282
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:301
 msgid "Unable to connect to remote server"
 msgstr "Ma jistax jaqbad mas-server remot"
 
@@ -2869,7 +2877,7 @@ msgstr "Il-progress tat-tlugħ"
 msgid "Use your passkey"
 msgstr "Uża l-passkey tiegħek"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:86
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:102
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
 msgstr "Utent"
