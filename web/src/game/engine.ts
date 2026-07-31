@@ -3786,9 +3786,16 @@ function draw_hud(dt){
 				// It was inverted (growing on closure, against its own comment)
 				// and scaled to 3,000 METRES, so it read backwards and barely
 				// moved inside actual gun range.
-				const fraction=THREE.MathUtils.clamp(rng/914,0,1);
+				// Full scale 1,500 m (raised from 914, 2026-07-31): with real
+				// time of flight the gun genuinely reaches past a kilometre —
+				// head-on the closure carries the target INTO the stream — and
+				// the pilot rightly complained the ring sat pegged at ranges
+				// where a pass shot existed. 1,500 m is the round's working
+				// reach across geometries; the 1,000 ft tick keeps the
+				// no-closer cue.
+				const fraction=THREE.MathUtils.clamp(rng/1500,0,1);
 				hctx.lineWidth=2.5; hctx.beginPath(); hctx.arc(pip[0],pip[1],15,-Math.PI/2,-Math.PI/2+fraction*Math.PI*2); hctx.stroke();
-				const tick=-Math.PI/2+(305/914)*Math.PI*2;   // 1,000 ft of 3,000: the no-closer cue on the same dial
+				const tick=-Math.PI/2+(305/1500)*Math.PI*2;   // 1,000 ft of 3,000: the no-closer cue on the same dial
 				hctx.beginPath(); hctx.moveTo(pip[0]+Math.cos(tick)*12,pip[1]+Math.sin(tick)*12); hctx.lineTo(pip[0]+Math.cos(tick)*18,pip[1]+Math.sin(tick)*18); hctx.stroke(); hctx.lineWidth=1.5;
 				const miss=Math.hypot(wrap_axis(impact.x-boxed.pos.x),impact.y-boxed.pos.y,wrap_axis(impact.z-boxed.pos.z));   // predicted miss: the pipper point IS the burst's arrival pulled back by his motion, so its distance from him is where the rounds land
 				if(rng<900&&miss<12&&!brk&&!weapons_hold&&ownship.rounds>0&&(sim_time*5)%2<1){ hctx.font="16px monospace"; hctx.textAlign="center";   // the director commands the shot only on a VALID solution — in range AND the stream landing on the airframe, not merely a track
