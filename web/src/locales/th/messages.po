@@ -57,6 +57,10 @@ msgstr "ต้องระบุชื่อ{entityLabel}"
 msgid "{name}'s match"
 msgstr "แมตช์ของ {name}"
 
+#: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:29
+msgid "{opponentName} offered a draw"
+msgstr "{opponentName} เสนอเสมอ"
+
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
 msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
 msgstr "{selectedCount, plural, one {เลือก {entityName} แล้ว} other {เลือก {manyName} แล้ว}}"
@@ -80,6 +84,11 @@ msgstr "{sentLabel} จาก {totalLabel}"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {เปิดเมนู (การแจ้งเตือนที่ยังไม่ได้อ่าน # รายการ)} other {เปิดเมนู (การแจ้งเตือนที่ยังไม่ได้อ่าน # รายการ)}}"
+
+#. placeholder {0}: countDeepChildren(object.id)
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx:421
+msgid "+{0} nested"
+msgstr "+{0} ที่ซ้อนกัน"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -112,6 +121,10 @@ msgstr "30,000 AMSL"
 #: ../../../lib/web/src/lib/preference-utils.ts:51
 msgid "Absolute (date and time)"
 msgstr "สัมบูรณ์ (วันที่และเวลา)"
+
+#: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:45
+msgid "Accept"
+msgstr "ยอมรับ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:60
 msgid "Access denied"
@@ -152,6 +165,7 @@ msgstr "เสืออากาศ"
 msgid "Acquire target"
 msgstr "ล็อกเป้าหมาย"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:717
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:196
 msgid "Add"
@@ -173,6 +187,14 @@ msgstr "เพิ่มบัญชี"
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:297
 msgid "Add an account to receive notifications and use services."
 msgstr "เพิ่มบัญชีเพื่อรับการแจ้งเตือนและใช้บริการ"
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:687
+msgid "Add checklist item"
+msgstr "เพิ่มรายการเช็คลิสต์"
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:705
+msgid "Add item..."
+msgstr "เพิ่มรายการ..."
 
 #: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
@@ -356,6 +378,11 @@ msgstr "ความเร็วเลี้ยวต่อเนื่องท
 msgid "BINGO FUEL"
 msgstr "เชื้อเพลิงบิงโก"
 
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:156
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:166
+msgid "Blocked navigation to untrusted link"
+msgstr "บล็อกการนำทางไปยังลิงก์ที่ไม่น่าเชื่อถือ"
+
 #: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "น้ำเงิน"
@@ -495,6 +522,10 @@ msgstr "สูตรโกง"
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:198
 msgid "Check \"All\" to see your past notifications."
 msgstr "เลือก \"ทั้งหมด\" เพื่อดูการแจ้งเตือนที่ผ่านมา"
+
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:38
+msgid "Choose a game from the sidebar or start a new one."
+msgstr "เลือกเกมจากแถบด้านข้างหรือเริ่มเกมใหม่"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:329
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
@@ -794,6 +825,10 @@ msgstr "ตาย"
 msgid "DECK POSITION SAVED"
 msgstr "บันทึกตำแหน่งบนดาดฟ้าแล้ว"
 
+#: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:41
+msgid "Decline"
+msgstr "ปฏิเสธ"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:311
 msgid "Default"
 msgstr "ค่าเริ่มต้น"
@@ -802,7 +837,7 @@ msgstr "ค่าเริ่มต้น"
 msgid "Default AI account"
 msgstr "บัญชี AI เริ่มต้น"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:99
+#: ../../../lib/web/src/components/restore-banner.tsx:115
 msgid "Delete your account on the old server"
 msgstr "ลบบัญชีของคุณบนเซิร์ฟเวอร์เดิม"
 
@@ -872,8 +907,8 @@ msgstr "ตัดการเชื่อมต่อแล้ว"
 msgid "Disconnected"
 msgstr "ตัดการเชื่อมต่อแล้ว"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:79
-#: ../../../lib/web/src/components/restore-banner.tsx:85
+#: ../../../lib/web/src/components/restore-banner.tsx:94
+#: ../../../lib/web/src/components/restore-banner.tsx:100
 msgid "Dismiss"
 msgstr "ปิด"
 
@@ -1054,7 +1089,7 @@ msgstr "การต่อสู้เริ่มแล้ว"
 msgid "Filter..."
 msgstr "กรอง..."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:88
+#: ../../../lib/web/src/components/restore-banner.tsx:103
 msgid "Finish moving your account"
 msgstr "เสร็จสิ้นการย้ายบัญชี"
 
@@ -1317,6 +1352,10 @@ msgstr "ฝังเข้าด้านใน"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
 msgstr "ความสนใจ"
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:550
+msgid "Invalid date"
+msgstr "วันที่ไม่ถูกต้อง"
 
 #: ../../../lib/web/src/components/tag-input.tsx:38
 msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
@@ -1586,8 +1625,8 @@ msgstr "แผนที่"
 msgid "Map"
 msgstr "แผนที่"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:118
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:125
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด"
@@ -1621,6 +1660,10 @@ msgstr "เมนู"
 #: src/components/MissionSetup.tsx:161
 msgid "Menu"
 msgstr "เมนู"
+
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:35
+msgid "Message"
+msgstr "ข้อความ"
 
 #: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
@@ -1691,6 +1734,11 @@ msgstr "ข้อผิดพลาดของเครือข่าย"
 msgid "New"
 msgstr "ใหม่"
 
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:42
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:54
+msgid "New game"
+msgstr "เกมใหม่"
+
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
@@ -1713,6 +1761,10 @@ msgstr "ไม่มีบัญชีที่เชื่อมต่อ"
 msgid "No flights yet"
 msgstr "ยังไม่มีเที่ยวบิน"
 
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:51
+msgid "No games yet"
+msgstr "ยังไม่มีเกม"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "ไม่มีกลุ่มที่ใช้งานได้"
@@ -1729,6 +1781,7 @@ msgstr "ยังไม่มีการแจ้งเตือน"
 msgid "No open matches — create one."
 msgstr "ยังไม่มีแมตช์ที่เปิดอยู่ — สร้างเลย"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:336
 #: ../../../lib/web/src/components/person-picker.tsx:84
 msgid "No people found"
 msgstr "ไม่พบผู้คน"
@@ -1811,7 +1864,7 @@ msgid "Notifications"
 msgstr "การแจ้งเตือน"
 
 #. placeholder {0}: unread.length
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:111
 msgid "Notifications: {0}"
 msgstr "การแจ้งเตือน: {0}"
 
@@ -1907,7 +1960,7 @@ msgstr "พาสคีย์"
 msgid "Passkey verification failed. Please try again."
 msgstr "การยืนยันด้วยพาสคีย์ล้มเหลว โปรดลองอีกครั้ง"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:135
+#: ../../../lib/web/src/components/restore-banner.tsx:152
 msgid "Passkeys"
 msgstr "พาสคีย์"
 
@@ -2036,11 +2089,11 @@ msgstr "ล้อขวา"
 msgid "Raised"
 msgstr "ยกขึ้น"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:107
+#: ../../../lib/web/src/components/restore-banner.tsx:124
 msgid "Re-link your accounts on this server"
 msgstr "เชื่อมโยงบัญชีของคุณใหม่บนเซิร์ฟเวอร์นี้"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:129
+#: ../../../lib/web/src/components/restore-banner.tsx:146
 msgid "Re-register your passkeys on this server"
 msgstr "ลงทะเบียนพาสคีย์ของคุณใหม่บนเซิร์ฟเวอร์นี้"
 
@@ -2145,6 +2198,10 @@ msgstr "ลบสิทธิ์การเข้าถึง?"
 #: ../../../lib/web/src/components/post-tags.tsx:232
 msgid "Remove interest"
 msgstr "ลบความสนใจ"
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:671
+msgid "Remove item"
+msgstr "ลบรายการ"
 
 #: src/components/MissionSetup.tsx:819
 msgid "Rendering by <0>three.js</0> (MIT licence)."
@@ -2299,6 +2356,10 @@ msgstr "กำลังค้นหา..."
 msgid "Select {0}"
 msgstr "เลือก{0}"
 
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:37
+msgid "Select a game"
+msgstr "เลือกเกม"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:150
 msgid "Select a user, group, or other rule to grant access."
 msgstr "เลือกผู้ใช้ กลุ่ม หรือกฎอื่นเพื่อให้สิทธิ์การเข้าถึง"
@@ -2343,6 +2404,11 @@ msgstr "เลือกทิศทางไซต์"
 msgid "Select theme preference"
 msgstr "เลือกการตั้งค่าธีม"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:252
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:335
+msgid "Select..."
+msgstr "เลือก..."
+
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
 msgid "selected"
 msgstr "ที่เลือก"
@@ -2367,6 +2433,11 @@ msgstr "ส่งแชท"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:307
 msgid "Send email"
 msgstr "ส่งอีเมล"
+
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:52
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:61
+msgid "Send message"
+msgstr "ส่งข้อความ"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:145
 msgid "Serif"
@@ -2730,6 +2801,10 @@ msgstr "วันอังคาร"
 msgid "Type a command or search..."
 msgstr "พิมพ์คำสั่งหรือค้นหา..."
 
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:39
+msgid "Type a message…"
+msgstr "พิมพ์ข้อความ…"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:191
 msgid "Type to search users"
 msgstr "พิมพ์เพื่อค้นหาผู้ใช้"
@@ -2856,8 +2931,8 @@ msgstr "ดู"
 msgid "View all"
 msgstr "ดูทั้งหมด"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:131
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:139
 msgid "View all notifications"
 msgstr "ดูการแจ้งเตือนทั้งหมด"
 
@@ -2973,7 +3048,7 @@ msgstr "คุณส่งค่าต่อไปนี้:"
 msgid "You're all caught up!"
 msgstr "คุณดูครบแล้ว!"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:91
+#: ../../../lib/web/src/components/restore-banner.tsx:106
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "บัญชีของคุณถูกย้ายมาที่นี่จาก {source} จนกว่าคุณจะลบออกที่นั่น ข้อความและการแจ้งเตือนอาจไปถึงทั้งสองเซิร์ฟเวอร์ เนื้อหาบางส่วนของคุณยังคงให้บริการจากเซิร์ฟเวอร์เดิม และผู้ติดตามอาจต้องใช้เวลาสักครู่เพื่อพบคุณที่นี่"
 

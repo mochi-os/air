@@ -57,6 +57,10 @@ msgstr "Ime {entityLabel} je obvezno"
 msgid "{name}'s match"
 msgstr "Tekma igralca {name}"
 
+#: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:29
+msgid "{opponentName} offered a draw"
+msgstr "{opponentName} je ponudil neodločeno"
+
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
 msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
 msgstr "{selectedCount, plural, one {{entityName} izbran} two {{manyName} izbrana} few {{manyName} izbrani} other {{manyName} izbranih}}"
@@ -80,6 +84,11 @@ msgstr "{sentLabel} od {totalLabel}"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Odpri meni (# neprebrano obvestilo)} two {Odpri meni (# neprebrani obvestili)} few {Odpri meni (# neprebrana obvestila)} other {Odpri meni (# neprebranih obvestil)}}"
+
+#. placeholder {0}: countDeepChildren(object.id)
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx:421
+msgid "+{0} nested"
+msgstr "+{0} gnezdenih"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -112,6 +121,10 @@ msgstr "30,000 AMSL"
 #: ../../../lib/web/src/lib/preference-utils.ts:51
 msgid "Absolute (date and time)"
 msgstr "Absolutno (datum in čas)"
+
+#: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:45
+msgid "Accept"
+msgstr "Sprejmi"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:60
 msgid "Access denied"
@@ -152,6 +165,7 @@ msgstr "As"
 msgid "Acquire target"
 msgstr "Zakleni cilj"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:717
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:196
 msgid "Add"
@@ -173,6 +187,14 @@ msgstr "Dodaj račun"
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:297
 msgid "Add an account to receive notifications and use services."
 msgstr "Dodajte račun za prejemanje obvestil in uporabo storitev."
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:687
+msgid "Add checklist item"
+msgstr "Dodaj element kontrolnega seznama"
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:705
+msgid "Add item..."
+msgstr "Dodaj element ..."
 
 #: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
@@ -356,6 +378,11 @@ msgstr "Hitrost najboljšega vzdržnega zavoja"
 msgid "BINGO FUEL"
 msgstr "BINGO GORIVO"
 
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:156
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:166
+msgid "Blocked navigation to untrusted link"
+msgstr "Blokirana navigacija do nezaupanja vredne povezave"
+
 #: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "Modri"
@@ -495,6 +522,10 @@ msgstr "Goljufije"
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:198
 msgid "Check \"All\" to see your past notifications."
 msgstr "Označite »Vse«, da vidite pretekla obvestila."
+
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:38
+msgid "Choose a game from the sidebar or start a new one."
+msgstr "Izberite igro iz stranske vrstice ali začnite novo."
 
 #: ../../../lib/web/src/components/config-drawer.tsx:329
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
@@ -794,6 +825,10 @@ msgstr "Smrti"
 msgid "DECK POSITION SAVED"
 msgstr "POLOŽAJ NA KROVU SHRANJEN"
 
+#: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:41
+msgid "Decline"
+msgstr "Zavrni"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:311
 msgid "Default"
 msgstr "Privzeto"
@@ -802,7 +837,7 @@ msgstr "Privzeto"
 msgid "Default AI account"
 msgstr "Privzeti AI račun"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:99
+#: ../../../lib/web/src/components/restore-banner.tsx:115
 msgid "Delete your account on the old server"
 msgstr "Izbrišite račun na starem strežniku"
 
@@ -872,8 +907,8 @@ msgstr "odklopljen"
 msgid "Disconnected"
 msgstr "Prekinjena povezava"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:79
-#: ../../../lib/web/src/components/restore-banner.tsx:85
+#: ../../../lib/web/src/components/restore-banner.tsx:94
+#: ../../../lib/web/src/components/restore-banner.tsx:100
 msgid "Dismiss"
 msgstr "Opusti"
 
@@ -1054,7 +1089,7 @@ msgstr "BOJ SE ZAČENJA"
 msgid "Filter..."
 msgstr "Filtriraj..."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:88
+#: ../../../lib/web/src/components/restore-banner.tsx:103
 msgid "Finish moving your account"
 msgstr "Dokončajte selitev računa"
 
@@ -1317,6 +1352,10 @@ msgstr "Notranje"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
 msgstr "Zanimanja"
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:550
+msgid "Invalid date"
+msgstr "Neveljaven datum"
 
 #: ../../../lib/web/src/components/tag-input.tsx:38
 msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
@@ -1586,8 +1625,8 @@ msgstr "zemljevid"
 msgid "Map"
 msgstr "Zemljevid"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:118
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:125
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "Označi vse kot prebrano"
@@ -1621,6 +1660,10 @@ msgstr "meni"
 #: src/components/MissionSetup.tsx:161
 msgid "Menu"
 msgstr "Meni"
+
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:35
+msgid "Message"
+msgstr "Sporočilo"
 
 #: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
@@ -1691,6 +1734,11 @@ msgstr "Napaka omrežja"
 msgid "New"
 msgstr "Novo"
 
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:42
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:54
+msgid "New game"
+msgstr "Nova igra"
+
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
@@ -1713,6 +1761,10 @@ msgstr "Ni povezanih računov"
 msgid "No flights yet"
 msgstr "Še ni letov"
 
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:51
+msgid "No games yet"
+msgstr "Še ni iger"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "Ni razpoložljivih skupin"
@@ -1729,6 +1781,7 @@ msgstr "Še ni obvestil"
 msgid "No open matches — create one."
 msgstr "Ni odprtih tekem — ustvari novo."
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:336
 #: ../../../lib/web/src/components/person-picker.tsx:84
 msgid "No people found"
 msgstr "Oseb ni mogoče najti"
@@ -1811,7 +1864,7 @@ msgid "Notifications"
 msgstr "Obvestila"
 
 #. placeholder {0}: unread.length
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:111
 msgid "Notifications: {0}"
 msgstr "Obvestila: {0}"
 
@@ -1907,7 +1960,7 @@ msgstr "Geslo-ključ"
 msgid "Passkey verification failed. Please try again."
 msgstr "Preverjanje ključa za dostop ni uspelo. Poskusite znova."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:135
+#: ../../../lib/web/src/components/restore-banner.tsx:152
 msgid "Passkeys"
 msgstr "Geslo-ključi"
 
@@ -2036,11 +2089,11 @@ msgstr "D PODVOZJE"
 msgid "Raised"
 msgstr "Dvignjeno"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:107
+#: ../../../lib/web/src/components/restore-banner.tsx:124
 msgid "Re-link your accounts on this server"
 msgstr "Znova povežite račune na tem strežniku"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:129
+#: ../../../lib/web/src/components/restore-banner.tsx:146
 msgid "Re-register your passkeys on this server"
 msgstr "Znova registrirajte svoje ključe za dostop na tem strežniku"
 
@@ -2145,6 +2198,10 @@ msgstr "Odstrani dostop?"
 #: ../../../lib/web/src/components/post-tags.tsx:232
 msgid "Remove interest"
 msgstr "Odstrani interes"
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:671
+msgid "Remove item"
+msgstr "Odstrani element"
 
 #: src/components/MissionSetup.tsx:819
 msgid "Rendering by <0>three.js</0> (MIT licence)."
@@ -2299,6 +2356,10 @@ msgstr "Iskanje..."
 msgid "Select {0}"
 msgstr "Izberi {0}"
 
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:37
+msgid "Select a game"
+msgstr "Izberite igro"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:150
 msgid "Select a user, group, or other rule to grant access."
 msgstr "Izberite uporabnika, skupino ali drugo pravilo za dodelitev dostopa."
@@ -2343,6 +2404,11 @@ msgstr "Izberi smer strani"
 msgid "Select theme preference"
 msgstr "Izberi nastavitve teme"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:252
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:335
+msgid "Select..."
+msgstr "Izberi..."
+
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
 msgid "selected"
 msgstr "izbrano"
@@ -2367,6 +2433,11 @@ msgstr "Pošlji sporočilo"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:307
 msgid "Send email"
 msgstr "Pošlji e-pošto"
+
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:52
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:61
+msgid "Send message"
+msgstr "Pošlji sporočilo"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:145
 msgid "Serif"
@@ -2730,6 +2801,10 @@ msgstr "Torek"
 msgid "Type a command or search..."
 msgstr "Vnesi ukaz ali iskanje..."
 
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:39
+msgid "Type a message…"
+msgstr "Vnesi sporočilo…"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:191
 msgid "Type to search users"
 msgstr "Vnesi za iskanje uporabnikov"
@@ -2856,8 +2931,8 @@ msgstr "Pogled"
 msgid "View all"
 msgstr "Prikaži vse"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:131
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:139
 msgid "View all notifications"
 msgstr "Prikaži vsa obvestila"
 
@@ -2973,7 +3048,7 @@ msgstr "Poslali ste naslednje vrednosti:"
 msgid "You're all caught up!"
 msgstr "Vse ste prebrali!"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:91
+#: ../../../lib/web/src/components/restore-banner.tsx:106
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Vaš račun je bil preseljen sem iz {source}. Dokler ga tam ne izbrišete, sporočila in obvestila morda dosežejo oba strežnika, del vaše vsebine se še naprej streže s starega strežnika in sledilci bodo morda potrebovali nekaj minut, da vas najdejo tukaj."
 

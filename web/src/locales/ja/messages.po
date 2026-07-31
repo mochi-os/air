@@ -57,6 +57,10 @@ msgstr "{entityLabel}の名前は必須です"
 msgid "{name}'s match"
 msgstr "{name}のマッチ"
 
+#: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:29
+msgid "{opponentName} offered a draw"
+msgstr "{opponentName}が引き分けを提案しました"
+
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
 msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
 msgstr "{selectedCount, plural, one {{entityName} を選択中} other {{manyName} を選択中}}"
@@ -80,6 +84,11 @@ msgstr "{sentLabel} / {totalLabel}"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {メニューを開く（未読の通知 # 件）} other {メニューを開く（未読の通知 # 件）}}"
+
+#. placeholder {0}: countDeepChildren(object.id)
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx:421
+msgid "+{0} nested"
+msgstr "+{0} 件のネスト"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -112,6 +121,10 @@ msgstr "30,000 AMSL"
 #: ../../../lib/web/src/lib/preference-utils.ts:51
 msgid "Absolute (date and time)"
 msgstr "絶対 (日付と時刻)"
+
+#: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:45
+msgid "Accept"
+msgstr "承認"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:60
 msgid "Access denied"
@@ -152,6 +165,7 @@ msgstr "エース"
 msgid "Acquire target"
 msgstr "ターゲット捕捉"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:717
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:196
 msgid "Add"
@@ -173,6 +187,14 @@ msgstr "アカウントを追加"
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:297
 msgid "Add an account to receive notifications and use services."
 msgstr "通知を受け取り、サービスを利用するには、アカウントを追加してください。"
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:687
+msgid "Add checklist item"
+msgstr "項目を追加"
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:705
+msgid "Add item..."
+msgstr "項目を追加…"
 
 #: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
@@ -356,6 +378,11 @@ msgstr "最良持続旋回速度"
 msgid "BINGO FUEL"
 msgstr "ビンゴ燃料"
 
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:156
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:166
+msgid "Blocked navigation to untrusted link"
+msgstr "信頼できないリンクへの遷移をブロックしました"
+
 #: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "青"
@@ -495,6 +522,10 @@ msgstr "チート"
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:198
 msgid "Check \"All\" to see your past notifications."
 msgstr "過去の通知を見るには「すべて」を選択してください。"
+
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:38
+msgid "Choose a game from the sidebar or start a new one."
+msgstr "サイドバーからゲームを選ぶか、新しいゲームを始めてください。"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:329
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
@@ -794,6 +825,10 @@ msgstr "デス"
 msgid "DECK POSITION SAVED"
 msgstr "デッキ位置を保存しました"
 
+#: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:41
+msgid "Decline"
+msgstr "拒否"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:311
 msgid "Default"
 msgstr "デフォルト"
@@ -802,7 +837,7 @@ msgstr "デフォルト"
 msgid "Default AI account"
 msgstr "デフォルト AI アカウント"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:99
+#: ../../../lib/web/src/components/restore-banner.tsx:115
 msgid "Delete your account on the old server"
 msgstr "旧サーバーのアカウントを削除する"
 
@@ -872,8 +907,8 @@ msgstr "切断"
 msgid "Disconnected"
 msgstr "切断済み"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:79
-#: ../../../lib/web/src/components/restore-banner.tsx:85
+#: ../../../lib/web/src/components/restore-banner.tsx:94
+#: ../../../lib/web/src/components/restore-banner.tsx:100
 msgid "Dismiss"
 msgstr "閉じる"
 
@@ -1054,7 +1089,7 @@ msgstr "戦闘開始"
 msgid "Filter..."
 msgstr "絞り込み..."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:88
+#: ../../../lib/web/src/components/restore-banner.tsx:103
 msgid "Finish moving your account"
 msgstr "アカウントの移行を完了する"
 
@@ -1317,6 +1352,10 @@ msgstr "インセット"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
 msgstr "興味"
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:550
+msgid "Invalid date"
+msgstr "無効な日付"
 
 #: ../../../lib/web/src/components/tag-input.tsx:38
 msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
@@ -1586,8 +1625,8 @@ msgstr "マップ"
 msgid "Map"
 msgstr "マップ"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:118
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:125
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "すべて既読にする"
@@ -1621,6 +1660,10 @@ msgstr "メニュー"
 #: src/components/MissionSetup.tsx:161
 msgid "Menu"
 msgstr "メニュー"
+
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:35
+msgid "Message"
+msgstr "メッセージ"
 
 #: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
@@ -1691,6 +1734,11 @@ msgstr "ネットワークエラー"
 msgid "New"
 msgstr "新規"
 
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:42
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:54
+msgid "New game"
+msgstr "新しいゲーム"
+
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
@@ -1713,6 +1761,10 @@ msgstr "接続されたアカウントがありません"
 msgid "No flights yet"
 msgstr "まだフライトがありません"
 
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:51
+msgid "No games yet"
+msgstr "まだゲームがありません"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "利用可能なグループがありません"
@@ -1729,6 +1781,7 @@ msgstr "通知はまだありません"
 msgid "No open matches — create one."
 msgstr "オープンマッチはありません。作成しましょう。"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:336
 #: ../../../lib/web/src/components/person-picker.tsx:84
 msgid "No people found"
 msgstr "人が見つかりません"
@@ -1811,7 +1864,7 @@ msgid "Notifications"
 msgstr "通知"
 
 #. placeholder {0}: unread.length
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:111
 msgid "Notifications: {0}"
 msgstr "通知: {0}"
 
@@ -1907,7 +1960,7 @@ msgstr "パスキー"
 msgid "Passkey verification failed. Please try again."
 msgstr "パスキーの認証に失敗しました。もう一度お試しください。"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:135
+#: ../../../lib/web/src/components/restore-banner.tsx:152
 msgid "Passkeys"
 msgstr "パスキー"
 
@@ -2036,11 +2089,11 @@ msgstr "右脚"
 msgid "Raised"
 msgstr "浮き出し"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:107
+#: ../../../lib/web/src/components/restore-banner.tsx:124
 msgid "Re-link your accounts on this server"
 msgstr "このサーバーでアカウントを再リンクする"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:129
+#: ../../../lib/web/src/components/restore-banner.tsx:146
 msgid "Re-register your passkeys on this server"
 msgstr "このサーバーでパスキーを再登録してください"
 
@@ -2145,6 +2198,10 @@ msgstr "アクセスを削除しますか?"
 #: ../../../lib/web/src/components/post-tags.tsx:232
 msgid "Remove interest"
 msgstr "関心を削除"
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:671
+msgid "Remove item"
+msgstr "項目を削除"
 
 #: src/components/MissionSetup.tsx:819
 msgid "Rendering by <0>three.js</0> (MIT licence)."
@@ -2299,6 +2356,10 @@ msgstr "検索中..."
 msgid "Select {0}"
 msgstr "{0}を選択"
 
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:37
+msgid "Select a game"
+msgstr "ゲームを選択"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:150
 msgid "Select a user, group, or other rule to grant access."
 msgstr "アクセスを付与するユーザー、グループ、または他のルールを選択してください。"
@@ -2343,6 +2404,11 @@ msgstr "サイトの表示方向を選択"
 msgid "Select theme preference"
 msgstr "テーマの設定を選択"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:252
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:335
+msgid "Select..."
+msgstr "選択…"
+
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
 msgid "selected"
 msgstr "件を選択中"
@@ -2367,6 +2433,11 @@ msgstr "チャットを送信"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:307
 msgid "Send email"
 msgstr "メールを送信"
+
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:52
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:61
+msgid "Send message"
+msgstr "メッセージを送信"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:145
 msgid "Serif"
@@ -2730,6 +2801,10 @@ msgstr "火曜日"
 msgid "Type a command or search..."
 msgstr "コマンドを入力または検索…"
 
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:39
+msgid "Type a message…"
+msgstr "メッセージを入力…"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:191
 msgid "Type to search users"
 msgstr "入力してユーザーを検索"
@@ -2856,8 +2931,8 @@ msgstr "ビュー"
 msgid "View all"
 msgstr "すべて表示"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:131
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:139
 msgid "View all notifications"
 msgstr "すべての通知を表示"
 
@@ -2973,7 +3048,7 @@ msgstr "次の値を送信しました:"
 msgid "You're all caught up!"
 msgstr "すべて確認済みです。"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:91
+#: ../../../lib/web/src/components/restore-banner.tsx:106
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "アカウントが{source}からここに移行されました。そちらで削除するまで、メッセージや通知が両方のサーバーに届く場合があり、一部のコンテンツは旧サーバーから引き続き提供され、フォロワーがここであなたを見つけるまで数分かかる場合があります。"
 

@@ -57,6 +57,10 @@ msgstr "{entityLabel} جو نالو گھربل آهي"
 msgid "{name}'s match"
 msgstr "{name} جو ميچ"
 
+#: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:29
+msgid "{opponentName} offered a draw"
+msgstr "{opponentName} ڊرا جي پيشڪش ڪئي"
+
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:210
 msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
 msgstr "{selectedCount, plural, one {{entityName} چونڊيو ويو} other {{manyName} چونڊيا ويا}}"
@@ -80,6 +84,11 @@ msgstr "{totalLabel} مان {sentLabel}"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {مينيو کوليو (# اڻ پڙهيل اطلاع)} other {مينيو کوليو (# اڻ پڙهيل اطلاعون)}}"
+
+#. placeholder {0}: countDeepChildren(object.id)
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx:421
+msgid "+{0} nested"
+msgstr "+{0} اندروني"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -112,6 +121,10 @@ msgstr "30,000 AMSL"
 #: ../../../lib/web/src/lib/preference-utils.ts:51
 msgid "Absolute (date and time)"
 msgstr "مطلق (تاريخ ۽ وقت)"
+
+#: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:45
+msgid "Accept"
+msgstr "قبول ڪريو"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:60
 msgid "Access denied"
@@ -152,6 +165,7 @@ msgstr "استاد"
 msgid "Acquire target"
 msgstr "نشانو لاڪ ڪريو"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:717
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:196
 msgid "Add"
@@ -173,6 +187,14 @@ msgstr "اڪائونٽ شامل ڪريو"
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:297
 msgid "Add an account to receive notifications and use services."
 msgstr "اطلاع وصول ڪرڻ ۽ خدمتون استعمال ڪرڻ لاءِ اڪائونٽ شامل ڪريو."
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:687
+msgid "Add checklist item"
+msgstr "چيڪ لسٽ شيءِ شامل ڪريو"
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:705
+msgid "Add item..."
+msgstr "شيءِ شامل ڪريو..."
 
 #: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
@@ -356,6 +378,11 @@ msgstr "بهترين مسلسل موڙ جي رفتار"
 msgid "BINGO FUEL"
 msgstr "بنگو ٻارڻ"
 
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:156
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:166
+msgid "Blocked navigation to untrusted link"
+msgstr "غير قابل اعتماد لنڪ ڏانهن ناقابل اعتماد ناقابل تشريح روڪي"
+
 #: src/components/Multiplayer.tsx:476
 msgid "Blue"
 msgstr "نيرو"
@@ -495,6 +522,10 @@ msgstr "چيٽس"
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:198
 msgid "Check \"All\" to see your past notifications."
 msgstr "پنھنجون اڳوڻيون اطلاعون ڏسڻ لاءِ \"سڀ\" چونڊيو."
+
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:38
+msgid "Choose a game from the sidebar or start a new one."
+msgstr "سائڊبار مان راند چونڊيو يا نئين شروع ڪريو."
 
 #: ../../../lib/web/src/components/config-drawer.tsx:329
 msgid "Choose between default expanded, compact icon-only, or full layout mode"
@@ -794,6 +825,10 @@ msgstr "موتون"
 msgid "DECK POSITION SAVED"
 msgstr "ڊيڪ پوزيشن محفوظ ٿي وئي"
 
+#: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:41
+msgid "Decline"
+msgstr "رد ڪريو"
+
 #: ../../../lib/web/src/components/config-drawer.tsx:311
 msgid "Default"
 msgstr "ڊفالٽ"
@@ -802,7 +837,7 @@ msgstr "ڊفالٽ"
 msgid "Default AI account"
 msgstr "ڊفالٽ AI اڪائونٽ"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:99
+#: ../../../lib/web/src/components/restore-banner.tsx:115
 msgid "Delete your account on the old server"
 msgstr "پراڻي سرور تي پنهنجو اڪائونٽ ختم ڪريو"
 
@@ -872,8 +907,8 @@ msgstr "ڊسڪنيڪٽ ٿيل"
 msgid "Disconnected"
 msgstr "ڳنڍيل ناهي"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:79
-#: ../../../lib/web/src/components/restore-banner.tsx:85
+#: ../../../lib/web/src/components/restore-banner.tsx:94
+#: ../../../lib/web/src/components/restore-banner.tsx:100
 msgid "Dismiss"
 msgstr "رد ڪريو"
 
@@ -1054,7 +1089,7 @@ msgstr "ويڙهه شروع ٿي"
 msgid "Filter..."
 msgstr "فلٽر..."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:88
+#: ../../../lib/web/src/components/restore-banner.tsx:103
 msgid "Finish moving your account"
 msgstr "پنهنجو اڪائونٽ منتقل ڪرڻ پورو ڪريو"
 
@@ -1317,6 +1352,10 @@ msgstr "اندر"
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
 msgstr "دلچسپيون"
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:550
+msgid "Invalid date"
+msgstr "غلط تاريخ"
 
 #: ../../../lib/web/src/components/tag-input.tsx:38
 msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
@@ -1586,8 +1625,8 @@ msgstr "نقشو"
 msgid "Map"
 msgstr "نقشو"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:93
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:100
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:118
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:125
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:224
 msgid "Mark all as read"
 msgstr "سڀ پڙهيل طور نشانبر ڪريو"
@@ -1621,6 +1660,10 @@ msgstr "مينيو"
 #: src/components/MissionSetup.tsx:161
 msgid "Menu"
 msgstr "مينيو"
+
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:35
+msgid "Message"
+msgstr "پيغام"
 
 #: src/components/GameCanvas.tsx:221
 msgid "Message everyone"
@@ -1691,6 +1734,11 @@ msgstr "نيٽ ورڪ جي خرابي"
 msgid "New"
 msgstr "نئون"
 
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:42
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:54
+msgid "New game"
+msgstr "نئين گيم"
+
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Next image"
@@ -1713,6 +1761,10 @@ msgstr "ڪو ڳنڍيل اڪائونٽ نه آهي"
 msgid "No flights yet"
 msgstr "اڃا ڪا اڏام ناهي"
 
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:51
+msgid "No games yet"
+msgstr "اڃا ڪا گيم نه آهي"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:241
 msgid "No groups available"
 msgstr "ڪو گروپ دستياب ناهي"
@@ -1729,6 +1781,7 @@ msgstr "اڃا ڪا اطلاع ناهي"
 msgid "No open matches — create one."
 msgstr "ڪو به کليل ميچ ناهي — هڪ ٺاهيو."
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:336
 #: ../../../lib/web/src/components/person-picker.tsx:84
 msgid "No people found"
 msgstr "ڪو ماڻهو نه مليو"
@@ -1811,7 +1864,7 @@ msgid "Notifications"
 msgstr "اطلاعون"
 
 #. placeholder {0}: unread.length
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:86
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:111
 msgid "Notifications: {0}"
 msgstr "اطلاعون: {0}"
 
@@ -1907,7 +1960,7 @@ msgstr "پاس ڪيئي"
 msgid "Passkey verification failed. Please try again."
 msgstr "پاس ڪي جي تصديق ناڪام ٿي. مهرباني ڪري ٻيهر ڪوشش ڪريو."
 
-#: ../../../lib/web/src/components/restore-banner.tsx:135
+#: ../../../lib/web/src/components/restore-banner.tsx:152
 msgid "Passkeys"
 msgstr "پاسي ڪيز"
 
@@ -2036,11 +2089,11 @@ msgstr "ساڄو گيئر"
 msgid "Raised"
 msgstr "مٿي ٿيل"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:107
+#: ../../../lib/web/src/components/restore-banner.tsx:124
 msgid "Re-link your accounts on this server"
 msgstr "هن سرور تي پنهنجا اڪائونٽ ٻيهر ڳنڍيو"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:129
+#: ../../../lib/web/src/components/restore-banner.tsx:146
 msgid "Re-register your passkeys on this server"
 msgstr "هن سرور تي پنهنجون پاسي ڪيز ٻيهر رجسٽر ڪريو"
 
@@ -2145,6 +2198,10 @@ msgstr "رسائي هٽائجي؟"
 #: ../../../lib/web/src/components/post-tags.tsx:232
 msgid "Remove interest"
 msgstr "دلچسپي هٽايو"
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:671
+msgid "Remove item"
+msgstr "شيءِ هٽايو"
 
 #: src/components/MissionSetup.tsx:819
 msgid "Rendering by <0>three.js</0> (MIT licence)."
@@ -2299,6 +2356,10 @@ msgstr "ڳولي رهيو آهي..."
 msgid "Select {0}"
 msgstr "{0} چونڊيو"
 
+#: ../../../lib/web/src/components/game/game-empty-state.tsx:37
+msgid "Select a game"
+msgstr "هڪ گيم چونڊيو"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:150
 msgid "Select a user, group, or other rule to grant access."
 msgstr "رسائي ڏيڻ لاءِ هڪ يوزر، گروپ، يا ٻيو قاعدو چونڊيو."
@@ -2343,6 +2404,11 @@ msgstr "سائيٽ جي طرف چونڊيو"
 msgid "Select theme preference"
 msgstr "ٿيم جي ترجيح چونڊيو"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:252
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:335
+msgid "Select..."
+msgstr "چونڊيو..."
+
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:216
 msgid "selected"
 msgstr "چونڊيل"
@@ -2367,6 +2433,11 @@ msgstr "پيغام موڪليو"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:307
 msgid "Send email"
 msgstr "اي ميل موڪليو"
+
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:52
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:61
+msgid "Send message"
+msgstr "پيغام موڪليو"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:145
 msgid "Serif"
@@ -2730,6 +2801,10 @@ msgstr "اڱارو"
 msgid "Type a command or search..."
 msgstr "ھدايت ٽائپ ڪريو يا ڳوليو..."
 
+#: ../../../lib/web/src/components/game/game-chat-input.tsx:39
+msgid "Type a message…"
+msgstr "پيغام ٽائپ ڪريو…"
+
 #: ../../../lib/web/src/features/access/access-dialog.tsx:191
 msgid "Type to search users"
 msgstr "صارفن کي ڳولڻ لاءِ ٽائپ ڪريو"
@@ -2856,8 +2931,8 @@ msgstr "ڏسو"
 msgid "View all"
 msgstr "سڀ ڏسو"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:106
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:114
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:131
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:139
 msgid "View all notifications"
 msgstr "سڀ اطلاع ڏسو"
 
@@ -2973,7 +3048,7 @@ msgstr "توھان ھيٺيان قدر موڪليا:"
 msgid "You're all caught up!"
 msgstr "توھان سڀ ڏسي ورتو!"
 
-#: ../../../lib/web/src/components/restore-banner.tsx:91
+#: ../../../lib/web/src/components/restore-banner.tsx:106
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "توهان جو اڪائونٽ {source} کان هتي منتقل ڪيو ويو. جيستائين توهان اتي ان کي نه ختم ڪيو، پيغام ۽ اطلاع ٻنهي سرورن تي پهچي سگهن ٿا، توهان جو ڪجهه مواد اڃا به پراڻي سرور کان فراهم ٿئي ٿو، ۽ پيروڪارن کي هتي توهان کي ڳولڻ ۾ ڪجهه منٽ لڳي سگهن ٿا."
 
