@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:204
+#: ../../../lib/web/src/lib/error-normalizer.ts:236
 msgid "Please check your internet connection and try again."
 msgstr "សូមពិនិត្យការតភ្ជាប់អ៊ីនធឺណិតរបស់អ្នក រួចព្យាយាមម្តងទៀត។"
 
@@ -81,7 +81,7 @@ msgstr "{selectedCount, plural, other {សកម្មភាពជាបណ្�
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel} នៃ {totalLabel}"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:148
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, other {បើកម៉ឺនុយ (ការជូនដំណឹងមិនទាន់អាន # )}}"
 
@@ -259,11 +259,11 @@ msgstr "ទាំងអស់"
 msgid "Allow anyone to search for {0}"
 msgstr "អនុញ្ញាតឱ្យនរណាម្នាក់ស្វែងរក {0}"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:159
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:178
 msgid "An error occurred"
 msgstr "មានកំហុសកើតឡើង"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:256
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:275
 msgid "An unexpected error occurred"
 msgstr "មានកំហុសដែលមិនបានរំពឹងទុកកើតឡើង"
 
@@ -803,7 +803,7 @@ msgstr "ងងឹត"
 msgid "Dark mode"
 msgstr "របៀបងងឹត"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:240
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:259
 msgid "Data conflict"
 msgstr "ទំនាស់ទិន្នន័យ"
 
@@ -1293,7 +1293,7 @@ msgid "History"
 msgstr "ប្រវត្តិ"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:90
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:158
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:175
 #: ../../../lib/web/src/components/layout/top-bar.tsx:71
 #: ../../../lib/web/src/components/layout/top-bar.tsx:100
 msgid "Home"
@@ -1656,7 +1656,7 @@ msgstr "មធ្យម"
 msgid "menu"
 msgstr "ម៉ឺនុយ"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:173
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:190
 #: src/components/MissionSetup.tsx:161
 msgid "Menu"
 msgstr "ម៉ឺនុយ"
@@ -1726,7 +1726,7 @@ msgid "Name must be 1000 characters or less"
 msgstr "ឈ្មោះត្រូវតែមាន 1000 តួអក្សរ ឬតិចជាង"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:53
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:303
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:322
 msgid "Network error"
 msgstr "កំហុសបណ្តាញ"
 
@@ -1912,7 +1912,7 @@ msgstr "បើកសកម្មភាពគណនី"
 msgid "Open actions"
 msgstr "បើកសកម្មភាព"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:133
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:149
 msgid "Open menu"
 msgstr "បើកម៉ឺនុយ"
 
@@ -2010,7 +2010,7 @@ msgstr "អ្នកលេង"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:95
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:304
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:323
 msgid "Please check your internet connection and try again."
 msgstr "សូមពិនិត្យការតភ្ជាប់អ៊ីនធឺណិតរបស់អ្នក រួចព្យាយាមម្តងទៀត។"
 
@@ -2452,8 +2452,8 @@ msgstr "ម៉ាស៊ីនមេ"
 msgid "Server chat"
 msgstr "ការជជែកម៉ាស៊ីនមេ"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:260
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:286
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:279
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:305
 msgid "Server error"
 msgstr "កំហុសម៉ាស៊ីនមេ"
 
@@ -2466,7 +2466,7 @@ msgstr "ច្បាប់ម៉ាស៊ីនមេ"
 msgid "SESSION ENDED"
 msgstr "វគ្គបានបញ្ចប់"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:210
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:229
 msgid "Session expired. Please log in again."
 msgstr "សម័យប្រើប្រាស់បានផុតកំណត់។ សូមចូលម្តងទៀត។"
 
@@ -2478,8 +2478,8 @@ msgstr "កំណត់"
 msgid "Set origin and destination"
 msgstr "កំណត់ចំណុចចេញដំណើរ និងគោលដៅ"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:93
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:99
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:109
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:115
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
@@ -2507,8 +2507,8 @@ msgstr "កំពុងបង្ហាញ {totalShown} នៃ {total}"
 msgid "Sidebar"
 msgstr "របារចំហៀង"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:105
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:111
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:121
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:127
 msgid "Sign out"
 msgstr "ចេញ"
 
@@ -2675,6 +2675,14 @@ msgstr "ការប្រកួតបន្តនៅពីក្រោយម៉
 msgid "The requested content could not be found."
 msgstr "រកមិនឃើញខ្លឹមសារដែលបានស្នើសុំទេ។"
 
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:152
+#~ msgid "The server returned a web page instead of data, which usually means the address was wrong."
+#~ msgstr ""
+
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:152
+msgid "The server returned a web page instead of data."
+msgstr "ម៉ាស៊ីនមេបានបញ្ជូនត្រឡប់ទំព័របណ្តាញជំនួសឱ្យទិន្នន័យ។"
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
 msgid "The site is not available at the moment."
 msgstr "គេហទំព័រមិនអាចប្រើបាននៅពេលនេះទេ។"
@@ -2817,7 +2825,7 @@ msgstr "វាយដើម្បីស្វែងរក..."
 msgid "Ultra"
 msgstr "អ៊ុលត្រា"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:282
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:301
 msgid "Unable to connect to remote server"
 msgstr "មិនអាចតភ្ជាប់ទៅម៉ាស៊ីនមេពីចម្ងាយបានទេ"
 
@@ -2869,7 +2877,7 @@ msgstr "វឌ្ឍនភាពនៃការផ្ទុកឡើង"
 msgid "Use your passkey"
 msgstr "ប្រើ passkey របស់អ្នក"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:86
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:102
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
 msgstr "អ្នកប្រើប្រាស់"

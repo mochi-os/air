@@ -29,12 +29,13 @@ def database_create():
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
-	if version == 8:
-		# Recordings move out of core's attachment store into plain file storage
-		# at "recordings/<match id>", with the match's own recording/recorded
-		# columns as metadata. Relocate existing recordings across the transition
-		# bridge and rewrite the marker to the match id; a recording whose bytes
-		# are already gone just clears its marker (recordings are transient).
+	if version == 8 or version == 9:
+		# Recordings live in plain file storage at "recordings/<match id>", with
+		# the match's own recording/recorded columns as metadata. Relocate any
+		# recording still held by the transition bridge and rewrite the marker to
+		# the match id; one whose bytes are already gone just clears its marker
+		# (recordings are transient). A match already carrying its own id as the
+		# marker is skipped, so the step runs at either version.
 		rows = mochi.db.rows("select id, recording from matches where recording != ''") or []
 		for row in rows:
 			if row["recording"] == row["id"]:

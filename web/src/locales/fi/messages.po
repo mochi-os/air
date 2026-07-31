@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:204
+#: ../../../lib/web/src/lib/error-normalizer.ts:236
 msgid "Please check your internet connection and try again."
 msgstr "Tarkista internetyhteytesi ja yritä uudelleen."
 
@@ -81,7 +81,7 @@ msgstr "{selectedCount, plural, one {Joukkotoiminnot # valitulle {entityName}} o
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel} / {totalLabel}"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:148
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Avaa valikko (# lukematon ilmoitus)} other {Avaa valikko (# lukematonta ilmoitusta)}}"
 
@@ -259,11 +259,11 @@ msgstr "Kaikki"
 msgid "Allow anyone to search for {0}"
 msgstr "Salli kenen tahansa hakea {0}"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:159
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:178
 msgid "An error occurred"
 msgstr "Tapahtui virhe"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:256
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:275
 msgid "An unexpected error occurred"
 msgstr "Tapahtui odottamaton virhe"
 
@@ -803,7 +803,7 @@ msgstr "Tumma"
 msgid "Dark mode"
 msgstr "Tumma tila"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:240
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:259
 msgid "Data conflict"
 msgstr "Tietoristiriita"
 
@@ -1293,7 +1293,7 @@ msgid "History"
 msgstr "Historia"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:90
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:158
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:175
 #: ../../../lib/web/src/components/layout/top-bar.tsx:71
 #: ../../../lib/web/src/components/layout/top-bar.tsx:100
 msgid "Home"
@@ -1656,7 +1656,7 @@ msgstr "Keskikoko"
 msgid "menu"
 msgstr "valikko"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:173
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:190
 #: src/components/MissionSetup.tsx:161
 msgid "Menu"
 msgstr "Valikko"
@@ -1726,7 +1726,7 @@ msgid "Name must be 1000 characters or less"
 msgstr "Nimen on oltava enintään 1000 merkkiä"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:53
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:303
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:322
 msgid "Network error"
 msgstr "Verkkovirhe"
 
@@ -1912,7 +1912,7 @@ msgstr "Avaa tilin toiminnot"
 msgid "Open actions"
 msgstr "Avaa toiminnot"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:133
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:149
 msgid "Open menu"
 msgstr "Avaa valikko"
 
@@ -2010,7 +2010,7 @@ msgstr "Pelaajat"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:95
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:304
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:323
 msgid "Please check your internet connection and try again."
 msgstr "Tarkista internetyhteytesi ja yritä uudelleen."
 
@@ -2452,8 +2452,8 @@ msgstr "Palvelin"
 msgid "Server chat"
 msgstr "Palvelimen chat"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:260
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:286
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:279
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:305
 msgid "Server error"
 msgstr "Palvelinvirhe"
 
@@ -2466,7 +2466,7 @@ msgstr "Palvelimen säännöt"
 msgid "SESSION ENDED"
 msgstr "ISTUNTO PÄÄTTYI"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:210
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:229
 msgid "Session expired. Please log in again."
 msgstr "Istunto on vanhentunut. Kirjaudu sisään uudelleen."
 
@@ -2478,8 +2478,8 @@ msgstr "Aseta"
 msgid "Set origin and destination"
 msgstr "Aseta lähtöpaikka ja määränpää"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:93
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:99
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:109
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:115
 #: ../../../lib/web/src/components/layout/nav-user.tsx:84
 #: ../../../lib/web/src/components/layout/nav-user.tsx:148
 #: ../../../lib/web/src/components/layout/nav-user.tsx:198
@@ -2507,8 +2507,8 @@ msgstr "Näytetään {totalShown} / {total}"
 msgid "Sidebar"
 msgstr "Sivupalkki"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:105
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:111
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:121
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:127
 msgid "Sign out"
 msgstr "Kirjaudu ulos"
 
@@ -2675,6 +2675,14 @@ msgstr "Ottelu jatkuu tämän valikon takana."
 msgid "The requested content could not be found."
 msgstr "Pyydettyä sisältöä ei löytynyt."
 
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:152
+#~ msgid "The server returned a web page instead of data, which usually means the address was wrong."
+#~ msgstr ""
+
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:152
+msgid "The server returned a web page instead of data."
+msgstr "Palvelin palautti verkkosivun tietojen sijaan."
+
 #: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
 msgid "The site is not available at the moment."
 msgstr "Sivusto ei ole tällä hetkellä käytettävissä."
@@ -2817,7 +2825,7 @@ msgstr "Kirjoita hakeaksesi..."
 msgid "Ultra"
 msgstr "Ultra"
 
-#: ../../../lib/web/src/lib/api-response-interceptors.ts:282
+#: ../../../lib/web/src/lib/api-response-interceptors.ts:301
 msgid "Unable to connect to remote server"
 msgstr "Etäpalvelimeen ei saatu yhteyttä"
 
@@ -2869,7 +2877,7 @@ msgstr "Latauksen edistyminen"
 msgid "Use your passkey"
 msgstr "Käytä avainkoodiasi"
 
-#: ../../../lib/web/src/components/layout/mochi-menu.tsx:86
+#: ../../../lib/web/src/components/layout/mochi-menu.tsx:102
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
 msgstr "Käyttäjä"
