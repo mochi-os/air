@@ -72,7 +72,7 @@ export interface WorldSession {
   created: number
   state: string
   permanent?: boolean
-  owner?: string // the creator's pilot token: an unjoined session with an owner is an OFFER (#77)
+  mine?: boolean // this poll's own pilot made it (#77): the server matches our token rather than publishing anyone's
   offer?: boolean
 }
 

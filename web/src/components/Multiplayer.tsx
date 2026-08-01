@@ -419,13 +419,13 @@ export function Multiplayer({
           </div>
         )}
         {[...sessions]
-          .sort((a, b) => Number(!!pilot && b.owner === pilot) - Number(!!pilot && a.owner === pilot)) // your own offer pins to the top
+          .sort((a, b) => Number(!!b.mine) - Number(!!a.mine)) // your own offer pins to the top
           .map((s) => (
-          <div key={s.session} className={'flex items-center justify-between gap-3 p-3' + (pilot && s.owner === pilot ? ' bg-muted/40' : '')}>
+          <div key={s.session} className={'flex items-center justify-between gap-3 p-3' + (s.mine ? ' bg-muted/40' : '')}>
             <div className='min-w-0'>
               <div className='truncate text-sm font-medium'>
                 {s.label || s.mode}
-                {pilot && s.owner === pilot && (
+                {s.mine && (
                   <span className='text-muted-foreground ml-2 text-xs font-normal'>
                     · <Trans>your offer</Trans>
                   </span>
@@ -440,7 +440,7 @@ export function Multiplayer({
               </div>
             </div>
             <div className='flex shrink-0 gap-2'>
-              {pilot && s.owner === pilot && !s.offer === false && (
+              {pilot && s.mine && s.offer && (
                 <Button
                   type='button'
                   variant='outline'
