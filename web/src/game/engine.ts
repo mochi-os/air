@@ -13,6 +13,7 @@ import * as THREE from 'three'
 import {
   connect as net_dial,
   record as net_record,
+  recording_store,
   type Join as NetJoin,
 } from './net'
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode } from './flight'
@@ -28,9 +29,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import nimitz_model_url from '../assets/nimitz.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import { asset as asset_bytes, progress as load_progress } from './preload'
-import { createAppClient } from '@mochi/web'
 import { Recorder } from './acmi'
-import { recording_store } from './net'
 
 export type GameConfig = Record<string, unknown>
 
@@ -3241,7 +3240,6 @@ function fly_bandit_stricken(dt){
 }
 let rig_sweep=0;   // dev calibration (Shift+A): 0 = off, n = sweep the nth rig entry of the ownship
 let stab_cycle=0;   // dev calibration (Shift+E): adds n×90° about the stab hinge so the user can identify the correct orientation
-const client=createAppClient({ appName: 'air' })
 function apply_anim(st){ const g=st.group; if(!g||!g.userData.gearMixer||!g.userData.rig) return;
 	const sweeping=(st===ownship&&rig_sweep>0)?g.userData.rig[rig_sweep-1]:null;
 	const AXES={ x:new THREE.Vector3(1,0,0), y:new THREE.Vector3(0,1,0), z:new THREE.Vector3(0,0,1) };
@@ -3602,7 +3600,7 @@ map_el.addEventListener("wheel",e=>{ e.preventDefault(); map_range=THREE.MathUti
 let master="gun", alt_radar=false, declutter=0, peak_g=1;   // declutter: 0 NORM, 1 REJ 1, 2 REJ 2
 function dir_at(headFwd, rightH, yawRad, pitchRad){ const d=headFwd.clone().applyAxisAngle(world_up,yawRad); d.applyAxisAngle(rightH,pitchRad); return d; }
 function hud_message(text){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="20px monospace"; hctx.fillText(text, HW/2, HH/2+180); }   // shared centre banner for important messages (RUN UP ENGINE / PRESS SPACE TO LAUNCH / N WIRE)
-function draw_hud(dt){
+function draw_hud(){
 	hctx.clearRect(0,0,HW,HH);
 	GR=cfg.tod==="day"?"#23e57d":"#15b85f";   // daytime brightness up — the muted night green washes out against a sunlit sea/sky
 	hctx.shadowColor="rgba(0,0,0,0.85)"; hctx.shadowBlur=3; hctx.shadowOffsetX=0; hctx.shadowOffsetY=0;   // dark halo behind every HUD glyph/line so it stays readable over any background
@@ -3628,7 +3626,9 @@ function draw_hud(dt){
 			const rc=new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(dev_probe.x*2-1, -(dev_probe.y*2-1)), camera);
 			const hits=rc.intersectObject(carrier_model.parent||carrier_model, true);
 			if(hits.length){ const h=hits[0]; const fa2=carrier_fore_aft(h.point.x,h.point.z), la2=carrier_lateral(h.point.x,h.point.z);
-				dev_probe_text="probe: fa="+fa2.toFixed(1)+" lat="+la2.toFixed(1)+" y="+h.point.y.toFixed(2)+" mesh="+(h.object.name||"?")+" mat="+((h.object as THREE.Mesh & {material?:{name?:string}}).material?.name||"?"); }
+				dev_probe_text="probe: fa="+fa2.toFixed(1)+" lat="+la2.toFixed(1)+" y="+h.point.y.toFixed(2)+" mesh="+(h.object.name||"?")+" mat="+((h.object as THREE.Mesh & {material?:{name?:string}}).material?.name||"?")
+					+" geo="+((h.object as THREE.Mesh).geometry?.type||"?")+" kind="+h.object.type+" parents="+(()=>{ const chain:string[]=[]; let o:THREE.Object3D|null=h.object.parent; while(o&&chain.length<4){ chain.push(o.name||o.type); o=o.parent; } return chain.join("<"); })()
+					+" at="+h.object.getWorldPosition(new THREE.Vector3()).toArray().map(v=>v.toFixed(1)).join(","); }
 			else dev_probe_text="probe: no hit"; }
 		if(dev_probe_text){ hctx.fillStyle="#ff80ff"; hctx.fillText(dev_probe_text, 14, 64); }
 		if(!dev_cursor){ const cmat=new THREE.MeshBasicMaterial({color:0x7fc8ff,side:THREE.DoubleSide,depthTest:false});
@@ -4410,7 +4410,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 	refresh_perf(dt); dynamic_res(dt);
 	render_frame();
 	stage.style.cursor=(running && !game_paused)?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused
-	if(running){ draw_hud(dt);
+	if(running){ draw_hud();
 		if(net_notice_t>0){ net_notice_t-=dt; hud_message(net_notice); } } else hctx.clearRect(0,0,HW,HH);
 	if(map_on){ const zf=Math.pow(2.2,dt), pr=map_range*dt*0.9;   // held − zooms out, = zooms in (smooth; wheel does notches); arrows pan, scaled to the zoom
 		if(keys.has("Minus")) map_range=Math.min(MAP_RANGE_MAX,map_range*zf);

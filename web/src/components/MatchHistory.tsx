@@ -10,7 +10,7 @@
 import { useEffect, useState } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { Download, History, ShieldAlert } from 'lucide-react'
-import { EmptyState, useFormat } from '@mochi/web'
+import { EmptyState, shellSaveBlob, toast, useFormat } from '@mochi/web'
 import {
   Table,
   TableBody,
@@ -21,8 +21,6 @@ import {
 } from '@mochi/web/components/ui/table'
 import { history, recording_load, type MatchRow, type MatchTotals } from '../game/net'
 import { Button } from '@mochi/web/components/ui/button'
-import { toast } from '@mochi/web'
-import { shellSaveBlob } from '@mochi/web'
 
 // Replay is the in-memory recording the engine still holds for this session's
 // flights (#212). Nothing is stored server-side yet, so only rows flown since
