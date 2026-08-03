@@ -1255,34 +1255,30 @@ function MissionPanel({
     { value: 'low_stratus', label: <Trans>Low stratus</Trans> },
   ]}
 />
-{true && (
-  <>
-    {/* a MATCH takes its cheats from the creator's rules instead — these are the mission's */}
-    <SectionLabel>
-      <Trans>Cheats</Trans>
-    </SectionLabel>
-    <div className='space-y-2'>
-      <SwitchRow
-        id='cheat-invulnerable'
-        label={<Trans>Invulnerable (human players only)</Trans>}
-        checked={!!(config.cheats ?? {}).invulnerable}
-        onChange={(v) => setCheat('invulnerable', v)}
-      />
-      <SwitchRow
-        id='cheat-ammunition'
-        label={<Trans>Unlimited ammunition</Trans>}
-        checked={!!(config.cheats ?? {}).ammunition}
-        onChange={(v) => setCheat('ammunition', v)}
-      />
-      <SwitchRow
-        id='cheat-fuel'
-        label={<Trans>Unlimited fuel</Trans>}
-        checked={!!(config.cheats ?? {}).fuel}
-        onChange={(v) => setCheat('fuel', v)}
-      />
-    </div>
-  </>
-)}
+{/* a MATCH takes its cheats from the creator's rules instead — these are the mission's */}
+<SectionLabel>
+  <Trans>Cheats</Trans>
+</SectionLabel>
+<div className='space-y-2'>
+  <SwitchRow
+    id='cheat-invulnerable'
+    label={<Trans>Invulnerable (human players only)</Trans>}
+    checked={!!(config.cheats ?? {}).invulnerable}
+    onChange={(v) => setCheat('invulnerable', v)}
+  />
+  <SwitchRow
+    id='cheat-ammunition'
+    label={<Trans>Unlimited ammunition</Trans>}
+    checked={!!(config.cheats ?? {}).ammunition}
+    onChange={(v) => setCheat('ammunition', v)}
+  />
+  <SwitchRow
+    id='cheat-fuel'
+    label={<Trans>Unlimited fuel</Trans>}
+    checked={!!(config.cheats ?? {}).fuel}
+    onChange={(v) => setCheat('fuel', v)}
+  />
+</div>
     </>
   )
 }
