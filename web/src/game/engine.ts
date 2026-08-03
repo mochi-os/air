@@ -2423,6 +2423,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("lights") && !dev_parked){ ownship.lights=!ownship.lights; }   // aircraft position/strobe/landing lights
 
 		if(ch===key_of("brake.speed")){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
+		if(ch===key_of("flaps")){ flap_select=(flap_select+1)%3; notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // N: the flap switch AUTO/HALF/FULL (verbatim like the annunciators: cockpit switch legends read English everywhere)
 		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; audio_servo(); }   // G: landing gear up/down — only once airborne, never on deck/runway
 		if(ch===key_of("atc")){ if(atc_on) atc_on=false; else if(ownship.gearTarget<0.5 && !on_ground()){ atc_on=true; atc_alpha=ownship.aoa;   // gearTarget 0=down 1=up — the polarity was inverted here, so ATC only ever engaged CLEAN and refused on every real approach
 			if(pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; } } }   // P: Approach Power Compensator (#202) — engages only in the landing configuration (gear down, airborne); toggling off is always allowed. Engaging takes the throttle back from an armed physical lever (same as the keyboard keys at the throttling take-back) — a lever is armed from mission start, so without this ATC disengaged the same frame it engaged; the next DELIBERATE lever sweep re-arms and disengages, the real jet's throttle-grip force-override
@@ -2480,7 +2481,7 @@ stage.addEventListener("pointercancel",end_drag,{ signal });
 // (the menu's Keys tab). Joystick buttons bind to ACTIONS and replay the
 // action's current key as a synthetic event, so pad binds follow key remaps.
 const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.left":"KeyA", "yaw.right":"KeyE", "yaw.left":"KeyQ",
-	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash",
+	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash", "trim.up":"Period", "trim.down":"Comma", flaps:"KeyN",
 	gear:"KeyG", hook:"KeyH", atc:"KeyP", lights:"KeyL", flares:"KeyF", eject:"KeyJ", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"KeyV", select:"KeyX", altitude:"KeyK", reject:"KeyU", acquire:"Enter",
 	probe:"Shift+KeyF", canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
@@ -2524,6 +2525,7 @@ function pad_axis(pad,i){ const v=pad.axes[i]??0;   // raw ±1, no calibration: 
 	const dz=Math.abs(v)<0.05?0:(v-Math.sign(v)*0.05)/0.95;   // small centre deadzone against electrical jitter
 	return Math.sign(dz)*Math.pow(Math.abs(dz),1.25);   // gentle expo: fine control near centre, full authority at the stops
 }
+let flap_select=0;   // the flap switch: 0 AUTO (the FCS virtual schedule), 1 HALF, 2 FULL — cycled on the flaps key, sent with every control sample
 function read_input(dt){
 	let tp=0,tr=0,ty=0;   // target axis deflections from the held keys (flight is W/S/A/D/Q/E only — arrows look/orbit, keys.md §2/§5)
 	if(keys.has(key_of("pitch.up"))) tp+=1;   // pull / nose up
@@ -2587,7 +2589,9 @@ function read_input(dt){
 	input.roll=Math.abs(pr)>Math.abs(key_axes.roll)?pr:key_axes.roll;
 	input.yaw=Math.abs(py)>Math.abs(key_axes.yaw)?py:key_axes.yaw;
 	if(pad) scan_zoom(pad,pad_bindings(pad));
-	input.guns=(keys.has(key_of("guns"))||pad_guns)&&master==="gun";   // the trigger serves the SELECTED weapon (#133): guns only in GUN input.brake=keys.has(key_of("brake.wheel"));   // the trigger's gear-down brake role comes from its brake.wheel BINDING, not hidden logic   // B: wheel brakes, held (both mains together); joystick trigger fires too
+	input.guns=(keys.has(key_of("guns"))||pad_guns)&&master==="gun";   // the trigger serves the SELECTED weapon (#133): guns only in GUN
+	input.trim=(keys.has(key_of("trim.up"))?1:0)-(keys.has(key_of("trim.down"))?1:0);   // . / , held: the pitch trim switch (UA attitude datum, PA alpha datum)
+	input.brake=keys.has(key_of("brake.wheel"));   // B: wheel brakes, held (both mains together); the joystick trigger's ground brake role comes from its brake.wheel BINDING, not hidden logic
 	if(DEV_MODE && on_ground() && (ownship.speed??0)<1){   // dev measuring cursor: nudge the readout point off the nose wheel while parked (the eject/lights/override keys are gated off in this state)
 		const step=dt*1.2, turn=dt*2.5;
 		if(keys.has("KeyI")) dev_nudge.fa+=step; if(keys.has("KeyK")) dev_nudge.fa-=step;
@@ -2679,6 +2683,7 @@ function leak_trail(pos,rate,vx,_vy,vz){ if(Math.random()>Math.min(1,rate)) retu
 	smoke.px[k]=pos.x-((vx||0)*0.06);smoke.py[k]=pos.y-0.4;smoke.pz[k]=pos.z-((vz||0)*0.06);
 	smoke.vx[k]=(Math.random()-0.5)*3;smoke.vy[k]=(Math.random()-0.5)*3;smoke.vz[k]=(Math.random()-0.5)*3;
 	smoke.ttl[k]=smoke.life[k]=1.1+Math.random()*0.7; smoke.r[k]=0.95;smoke.g[k]=0.96;smoke.b[k]=0.98; }
+let hud_pa=false;   // the virtual flap switch's HUD mirror (see the landing-symbology gate)
 // hit_sparks: the flash where a round strikes an airframe (#217). Real cannon
 // strikes are a brief white-hot flash with sparks thrown along the round's
 // path, gone in well under a tenth of a second — so these are short-lived,
@@ -2831,7 +2836,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:!!cfg.missiles, hold:weapons_hold, master, harm:{...bandit.harm}, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count, record:(()=>{ const r=recording_file(); if(!r) return null; const lines=r.text.split(String.fromCharCode(10));
+	atc:atc_on, missiles:!!cfg.missiles, hold:weapons_hold, master, brake:!!input.brake, harm:{...bandit.harm}, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count, record:(()=>{ const r=recording_file(); if(!r) return null; const lines=r.text.split(String.fromCharCode(10));
 		return {lines:lines.length, session:r.session, kind:r.kind, bot:/Doctrine=/.test(r.text),
 			// The ownship's last data line: proves a channel actually plumbs
 			// through at runtime, which a unit test on the renderer cannot.
@@ -3070,6 +3075,7 @@ function fly_player(dt){
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake || (sim_time<test_idle && test_brake && !ownship.wire),   // scenario rollout: the scripted pilot rides the brakes only on a runway (test_brake); the carrier's wire and the bolter's power stop the jet instead (a hands-off free roll ran 1.4 km off the runway end into the lagoon) — but NEVER on a wire: locked mains under the 3 g runout slammed the nose and rolled the trap over (the live-traced 37-degree topple)
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,
+		trim:input.trim||0, flap:flap_select,
 		launch:launch_flag, override:keys.has("KeyO")&&!(DEV_MODE&&on_ground()), sequence:++control_sequence };
 	flight_stores((ownship.msl>=1?1:0)|(ownship.msl>=2?2:0));   // wingtip stores follow the magazine every frame (idempotent): firing sheds 86 kg and its carriage drag in the core; respawns re-arm through the same line
 	const out=flight_frame(controls,dt);
@@ -3467,7 +3473,13 @@ function update_camera(dt){
 		if(keys.has("Minus")) cam_dist=Math.min(140,cam_dist+zr);           // - back
 		if(keys.has("Equal")) cam_dist=Math.max(14,cam_dist-zr);            // = in — floor clears the airframe: ~10 m bounding radius about the orbit centre + the 3 m near plane + margin, so the camera can never cut inside the jet (#116)
 	}
-	if(firstPerson){ const eye=body_offset(ownship,3.0,0.6,0); camera.position.copy(eye);
+	// Aerodynamic buffet, the seat cue: the core grades the LEX/stall shake
+	// (STATE.buffet) and the seat views ride it — a small white-noise jitter
+	// whose amplitude squares with intensity, so onset is a tremble and the
+	// deep stall is a proper airframe shake. Outside views stay steady.
+	const buffet_amp=(()=>{ const b=last_out?(last_out[STATE.buffet]||0):0; return b*b*0.055; })();
+	const buffet_jitter=(eye)=>{ if(buffet_amp>1e-4){ eye.x+=(Math.random()*2-1)*buffet_amp; eye.y+=(Math.random()*2-1)*buffet_amp; eye.z+=(Math.random()*2-1)*buffet_amp; } return eye; };
+	if(firstPerson){ const eye=buffet_jitter(body_offset(ownship,3.0,0.6,0)); camera.position.copy(eye);
 		// Same head compose as the cockpit, not a bare lookAt: this view is a
 		// pilot without the airframe in the way, so the head turns here too,
 		// and the quaternion form is what keeps roll coupled correctly near
@@ -3475,7 +3487,7 @@ function update_camera(dt){
 		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el)).multiply(CAMFIX);
 		if(!head_drag&&!head_keys){ head_az*=Math.max(0,1-dt*5); head_el*=Math.max(0,1-dt*5); } }
 	else if(cfg.view==="cockpit"){ const at=ownship.group.userData.eye||{x:3.0,y:0.6};   // calibrated from the modeled pilot head once the GLB resolves
-		const eye=body_offset(ownship,at.x,at.y,0); camera.position.copy(eye);
+		const eye=buffet_jitter(body_offset(ownship,at.x,at.y,0)); camera.position.copy(eye);
 		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el)).multiply(CAMFIX);   // quaternion compose: lookAt fumbles roll coupling near +80° pitch
 		if(!head_drag&&!head_keys){ head_az*=Math.max(0,1-dt*5); head_el*=Math.max(0,1-dt*5); } }
 	else if(cfg.view==="padlock"){ const eye=camera_floor(body_offset(ownship,-12,4,0)); camera.position.copy(eye); camera.up.set(0,1,0);
@@ -3628,7 +3640,8 @@ function draw_hud(){
 			if(hits.length){ const h=hits[0]; const fa2=carrier_fore_aft(h.point.x,h.point.z), la2=carrier_lateral(h.point.x,h.point.z);
 				dev_probe_text="probe: fa="+fa2.toFixed(1)+" lat="+la2.toFixed(1)+" y="+h.point.y.toFixed(2)+" mesh="+(h.object.name||"?")+" mat="+((h.object as THREE.Mesh & {material?:{name?:string}}).material?.name||"?")
 					+" geo="+((h.object as THREE.Mesh).geometry?.type||"?")+" kind="+h.object.type+" parents="+(()=>{ const chain:string[]=[]; let o:THREE.Object3D|null=h.object.parent; while(o&&chain.length<4){ chain.push(o.name||o.type); o=o.parent; } return chain.join("<"); })()
-					+" at="+h.object.getWorldPosition(new THREE.Vector3()).toArray().map(v=>v.toFixed(1)).join(","); }
+					+" at="+h.object.getWorldPosition(new THREE.Vector3()).toArray().map(v=>v.toFixed(1)).join(",")
+					+" box="+JSON.stringify(((h.object as THREE.Mesh).geometry as any)?.parameters||{})+" colour="+(((h.object as THREE.Mesh).material as any)?.color?.getHexString?.()||"?"); }
 			else dev_probe_text="probe: no hit"; }
 		if(dev_probe_text){ hctx.fillStyle="#ff80ff"; hctx.fillText(dev_probe_text, 14, 64); }
 		if(!dev_cursor){ const cmat=new THREE.MeshBasicMaterial({color:0x7fc8ff,side:THREE.DoubleSide,depthTest:false});
@@ -3642,7 +3655,8 @@ function draw_hud(){
 			const dfa=Math.cos(hd), dla=-Math.sin(hd);   // deck-frame heading (+ = port) -> world direction, same transform as the offset
 			const dx2=dfa*CARRIER_C+dla*CARRIER_S, dz2=-dfa*CARRIER_S+dla*CARRIER_C;
 			dev_cursor.rotation.y=Math.atan2(-dz2,dx2);
-			dev_cursor.position.set(bx, deck_y_at(carrier_model,bx,bz,CARRIER.deckY)+0.06, bz); dev_cursor.visible=true; }
+			const cursor_y=deck_y_at(carrier_model,bx,bz,-1e9);   // the measuring cursor belongs to the DECK: off the ship the fallback (deck height) hangs it in the sky over the island runway
+			dev_cursor.position.set(bx, cursor_y+0.06, bz); dev_cursor.visible=cursor_y>-1e8; }
 		}
 	if(net_notice_t<=0){ const ls=launch_status(); if(ls>0) hud_message(translate(ls===2?"PRESS ENTER TO LAUNCH":"RUN UP ENGINE")); }   // transient notices own the centre banner — never draw two messages on top of each other
 	if(cfg.view!=="hud" && cfg.view!=="cockpit"){ return; }
@@ -3653,7 +3667,14 @@ function draw_hud(){
 	// vector, zenith/nadir, gun cross (A/A only), waterline (landing), the
 	// velocity vector with its 8° limit, E-bracket, and ILS deviation bars.
 	const ppd=HH/camera.fov;                      // true pixels per degree at the camera's LIVE field (tracks the pit's wide base and the zoom ease alike)
-	const pa=(ownship.gear??1)<0.5;               // landing symbology gate (gear down)
+	// Landing symbology follows the FLAP state, not the gear handle — the same
+	// virtual flap switch as the FCS law (flight/fcs.go): HALF/FULL armed with
+	// the gear below 125 m/s CAS, AUTO passing 92.6 clean (180 KCAS) or 135
+	// dirty. Mirrored here because the law state never crosses the wire.
+	{ const geardown=(ownship.gear??1)<0.5, kcas=ownship.cas??ownship.speed;
+		if(hud_pa){ if((!geardown&&kcas>92.6)||kcas>135) hud_pa=false; }
+		else if(geardown&&kcas<125) hud_pa=true; }
+	const pa=hud_pa;                              // landing symbology gate (flaps HALF/FULL)
 	let fpm=null;
 	const bore=glass?(proj_dir(ownship.fwd)||[cx,cy]):[cx,cy];   // boresight on screen — shared by the conformal block AND the A/A weapon block below (was const inside the former: the 9M seeker threw and killed the frame loop)
 	if(glass){ hctx.save(); glass_clip(glass); }
@@ -3934,7 +3955,8 @@ function draw_hud(){
 	if(ownship.gear<0.99){ hctx.fillStyle=ownship.gear<0.02?GR:AM; hctx.fillText(translate("GEAR"),HW-40,HH-70); }   // GEAR + HOOK stay in every view: no panel lights exist yet (#99), and a gear-up trap is a game-ender
 	if((ownship.hook??0)>0.01){ hctx.fillStyle=(ownship.hook??0)>0.98?GR:AM; hctx.fillText(translate("HOOK"),HW-40,HH-52); }
 	if(!authentic){   // the rest is hud-view furniture: the real HUD carries no configuration legend (#133)
-	if((ownship.speedbrake??0)>0.02){ hctx.fillStyle=AM; hctx.fillText(translate("SPD BK"),HW-40,HH-88); }   // amber whenever the air brake is out (keys.md §3)
+	if((ownship.speedbrake??0)>0.02){ hctx.fillStyle=AM; hctx.fillText(translate("SPD BK"),HW-40,HH-88); }
+	if(flap_select>0){ hctx.fillStyle=GR; hctx.fillText(translate(flap_select===1?"FLAPS HALF":"FLAPS FULL"),HW-40,HH-124); }   // the switch's non-AUTO positions only: AUTO is the silent default   // amber whenever the air brake is out (keys.md §3)
 	if(stab_cycle>0){ hctx.fillStyle=AM; hctx.fillText("STAB "+stab_cycle,HW-40,HH-108); }   // Shift+E calibration state
 	if(ownship.lights){ hctx.fillStyle=GR; hctx.fillText(translate("LIGHTS"),HW-40,HH-34); }   // below HOOK
 	if((ownship.probe??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("PROBE"),HW-40,HH-22); }   // below LIGHTS
@@ -4214,7 +4236,7 @@ function net_frame(dt){
 	const c=last_controls;
 	const sample={ pitch:c?c.pitch:input.pitch*cfg.sens, roll:c?c.roll:input.roll*cfg.sens, yaw:c?c.yaw:input.yaw*cfg.sens,
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
-		reheat:ownship.burner??0, brake:input.brake,
+		reheat:ownship.burner??0, brake:input.brake, trim:input.trim||0, flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
 		override:c?c.override:false,
 		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, missile:missile_flag, eject:eject_flag };
