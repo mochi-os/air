@@ -979,7 +979,29 @@ function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_7
 		const lo=new THREE.Vector3(Infinity,Infinity,Infinity), hi=new THREE.Vector3(-Infinity,-Infinity,-Infinity), c=new THREE.Vector3();
 		for(let k=0;k<8;k++){ c.set(k&1?box.max.x:box.min.x, k&2?box.max.y:box.min.y, k&4?box.max.z:box.min.z);
 			c.applyMatrix4(mesh.matrixWorld); ownship.group.worldToLocal(c); lo.min(c); hi.max(c); }
-		ownship.group.userData.glass={ x:(lo.x+hi.x)/2, y:(lo.y+hi.y)/2, hw:(hi.z-lo.z)/2, hh:(hi.y-lo.y)/2 }; }   // body-frame pane: x fore-aft, y up, half-extents across the span and vertically
+		ownship.group.userData.glass={ x:(lo.x+hi.x)/2, y:(lo.y+hi.y)/2, hw:(hi.z-lo.z)/2, hh:(hi.y-lo.y)/2 };   // body-frame pane: x fore-aft, y up, half-extents across the span and vertically
+		// The pane's OUTLINE, not its box: the combining glass is an octagon
+		// with sloped upper corners, and a rectangular clip lets symbology
+		// float on sky at those corners (#16). Convex-hull the pane's own
+		// vertices in the span/height plane, pre-clipped at the visible glass
+		// line (the mesh runs down behind the glareshield, where a 2D overlay
+		// cannot be occluded by geometry).
+		{ const pos=mesh.geometry.attributes.position, pts=[];
+			for(let k=0;k<pos.count;k++){ c.set(pos.getX(k),pos.getY(k),pos.getZ(k));
+				c.applyMatrix4(mesh.matrixWorld); ownship.group.worldToLocal(c); pts.push([c.z,c.y,c.x]); }
+			pts.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+			const cross=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);
+			const half=(list)=>{ const out=[]; for(const p of list){
+				while(out.length>1&&cross(out[out.length-2],out[out.length-1],p)<=0) out.pop(); out.push(p); } return out; };
+			const lower=half(pts), upper=half(pts.slice().reverse());
+			let hull=lower.slice(0,-1).concat(upper.slice(0,-1));
+			const floor=ownship.group.userData.glass.y-ownship.group.userData.glass.hh*0.42;   // the visible glass line — same raise glass_rect always applied
+			const clipped=[];
+			for(let k=0;k<hull.length;k++){ const a=hull[k], b=hull[(k+1)%hull.length];
+				if(a[1]>=floor) clipped.push(a);
+				if((a[1]>=floor)!==(b[1]>=floor)){ const f=(floor-a[1])/(b[1]-a[1]);
+					clipped.push([a[0]+(b[0]-a[0])*f, floor, a[2]+(b[2]-a[2])*f]); } }
+			if(clipped.length>=3) ownship.group.userData.outline=clipped; } }   // [z, y, x] per hull vertex, group frame
 	try{ build_indexer(ownship.group); }catch(e){ build_error=String(e&&e.message||e); }
 	console.warn("cockpit eye", ownship.group.userData.eye.x.toFixed(2), ownship.group.userData.eye.y.toFixed(2)); }
 // AoA indexer (#99): the GLB ships the brightness knob but no indexer lights, so
@@ -1075,32 +1097,36 @@ function surface_fit(g,box){
 	const cy=(box.lo.y+box.hi.y)/2, cz=(box.lo.z+box.hi.z)/2, hh=Math.max((box.hi.y-box.lo.y)/2,0.02);
 	const rc=new THREE.Raycaster(); rc.layers.mask=-1; rc.far=3;
 	const eyeW=g.localToWorld(new THREE.Vector3(eye.x,eye.y,0));
+	let cover=null;
 	const probe=(y)=>{ const pW=g.localToWorld(new THREE.Vector3(box.lo.x,y,cz));
 		rc.set(eyeW,pW.sub(eyeW).normalize());
 		for(const h of rc.intersectObject(g,true)){ if(h.object.userData.overlay) continue;
 			const p=g.worldToLocal(h.point.clone());
-			if(p.x>=box.lo.x-0.12&&p.x<=box.hi.x+0.02) return p.x; }   // the full-panel smoked cover sits up to ~9 cm proud of the recessed plates; hits nearer still (stick, levers) are REAL occluders — the overlay belongs behind them
+			if(p.x>=box.lo.x-0.12&&p.x<=box.hi.x+0.02){ cover=cover||h.object; return p.x; } }   // the full-panel smoked cover sits up to ~9 cm proud of the recessed plates; hits nearer still (stick, levers) are REAL occluders — the overlay belongs behind them
 		return null; };
 	const xm=probe(cy); if(xm==null) return null;
 	const xt=probe(cy+hh*0.8)??xm, xb=probe(cy-hh*0.8)??xm;
 	const pW=g.localToWorld(new THREE.Vector3(box.lo.x,cy,cz)); rc.set(eyeW,pW.sub(eyeW).normalize());   // diagnostic: the full surface stack on the centre sightline
 	const stack=rc.intersectObject(g,true).slice(0,8).map(h=>{ const p=g.worldToLocal(h.point.clone());
 		return +p.x.toFixed(3)+" "+(h.object.name||h.object.type)+"/"+(((h.object as THREE.Mesh).material as THREE.Material&{name?:string})?.name||"?"); });
-	return { x:xm, tilt:Math.atan2(xt-xb,1.6*hh), stack }; }
-// surface_pose orients a +Z-facing geometry onto the fitted surface: width
-// along the span, height up the measured lean, normal out toward the pilot.
-// The cover sits well NEARER the eye than the recessed plate the geometry was
-// sized against, so the overlay is projected along the design-eye sightline —
-// centre slid toward the eye and scaled by the distance ratio — to subtend
-// exactly the aperture, staying inside the bezel.
-function surface_pose(g,mesh,box,fit){
-	const tilt=fit?fit.tilt:0, eye=g.userData.eye;
-	const cy=(box.lo.y+box.hi.y)/2, cz=(box.lo.z+box.hi.z)/2;
-	const t=(fit&&eye)?(fit.x-eye.x)/((box.lo.x+box.hi.x)/2-eye.x):1;
+	return { x:xm, tilt:Math.atan2(xt-xb,1.6*hh), stack, cover }; }
+// (Two placement refinements were tried against captures and refuted: sliding
+// and scaling the quad along the eye sightline to subtend the recessed plate
+// put it visibly OFF the bezel outline, and hunting the cover glass for a
+// per-screen pane sub-mesh found none — the cover is one merged mesh. The
+// seated placement, measured against grid-overlaid captures, is the plate
+// box's own y/z at the fitted cover surface, with a few millimetres of
+// hand-measured bias below.)
+// surface_pose orients a +Z-facing geometry onto the fitted surface at the
+// given centre: width along the span, height up the measured lean, normal out
+// toward the pilot. The centre comes from aperture_fit (the visible opening),
+// never slid or scaled — the frame the pilot aligns against lives at the
+// cover depth, so projecting the recessed plate toward the eye lands the
+// overlay OFF the frame (the misalignment the first fit shipped).
+function surface_pose(mesh,x,tilt,cy,cz){
 	const X=new THREE.Vector3(0,0,1), Y=new THREE.Vector3(Math.sin(tilt),Math.cos(tilt),0), N=new THREE.Vector3().crossVectors(X,Y);
 	mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X,Y,N));
-	mesh.scale.setScalar(t);
-	mesh.position.set(fit?fit.x:box.lo.x, eye?eye.y+(cy-eye.y)*t:cy, eye?cz*t:cz).addScaledVector(N,0.003);   // the eye sits on the z centreline
+	mesh.position.set(x,cy,cz).addScaledVector(N,0.003);
 	mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN); }
 function build_radalt(g){
 	if(g.userData.radalt&&g.userData.radalt.mesh.parent) return;
@@ -1116,7 +1142,8 @@ function build_radalt(g){
 	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
 	const mesh=new THREE.Mesh(new THREE.CircleGeometry(0.040,36),
 		new THREE.MeshBasicMaterial({ map:tex, side:THREE.DoubleSide, toneMapped:false }));
-	surface_pose(g,mesh,box,surface_fit(g,box));
+	const fit=surface_fit(g,box);
+	surface_pose(mesh,fit?fit.x:box.lo.x,fit?fit.tilt:0,(box.lo.y+box.hi.y)/2,(box.lo.z+box.hi.z)/2);
 	g.add(mesh);
 	g.userData.radalt={ mesh, canvas, tex, last:0 };
 	radalt_draw(g.userData.radalt, 1e9); }
@@ -1147,17 +1174,20 @@ function build_screens(g){
 	for(const [name,display] of spec){ const node=g.getObjectByName(name); if(!node) continue;
 		const box=node_box(g,node); if(!box) continue;
 		const fit=surface_fit(g,box);
-		const w=(box.hi.z-box.lo.z)*0.92, h=(box.hi.y-box.lo.y)*0.92/Math.cos(fit?fit.tilt:0);   // just inside the bezel; height measured up the lean
+		const tilt=fit?fit.tilt:0;
+		const cy=(box.lo.y+box.hi.y)/2+0.002, cz=(box.lo.z+box.hi.z)/2-0.002;   // the recess reads a hair up-left of the plate box in grid captures
+		const w=(box.hi.z-box.lo.z)*0.92, h=(box.hi.y-box.lo.y)*0.92/Math.cos(tilt);
 		const canvas=document.createElement("canvas"); canvas.width=canvas.height=512;
 		const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;   // the default filter would REGENERATE mipmaps on every upload
 		const flat=DEV_MODE&&new URLSearchParams(location.search).get("ddiflat");   // &ddiflat=1: untextured magenta quads — separates a mesh-render problem from a texture problem
 		const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h),
 			flat?new THREE.MeshBasicMaterial({ color:0xff00ff, side:THREE.DoubleSide })
 			:new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, side:THREE.DoubleSide }));
-		surface_pose(g,mesh,box,fit);
+		surface_pose(mesh,fit?fit.x:box.lo.x,tilt,cy,cz);
 		g.add(mesh);
-		list.push({ mesh, canvas, tex, display, height:h, fit:fit?[+fit.x.toFixed(3),+(fit.tilt/D2R).toFixed(1)]:null, stack:fit?fit.stack:null,
+		list.push({ mesh, canvas, tex, display, height:h, fit:fit?[+fit.x.toFixed(3),+(tilt/D2R).toFixed(1)]:null, stack:fit?fit.stack:null,
 			box:[box.lo.x,box.lo.y,box.lo.z,box.hi.x,box.hi.y,box.hi.z].map(n=>+n.toFixed(3)) }); }
+	if(DEV_MODE) (globalThis as Record<string,unknown>).ddi_geometry=list.map(sc=>({ display:sc.display, at:sc.mesh.position.toArray().map(n=>+(n as number).toFixed(3)), box:sc.box }));   // placement diagnostics that survive dev_probe churn
 	if(list.length){ g.userData.screens=list; for(const sc of list) ddi_blit(sc); } }
 // ---- DDI/AMPCD paging (#99): per-display page state drawn by size-agnostic
 // renderers in a 512-logical space — every consumer (the pit quads now; the
@@ -3882,7 +3912,7 @@ const ddi_face=document.createElement("canvas");
 let ddi_view_last=0, ddi_view_rect=null;
 function draw_ddi_view(){
 	const d=ddi_focus(), dpr=Math.min(devicePixelRatio||1,2);
-	const size=Math.min(HW,HH)*0.92, px=Math.round(size*dpr);
+	const size=Math.min(HW,HH)*0.86, px=Math.round(size*dpr);   // margins hold the physical pushbuttons
 	hctx.save(); hctx.shadowBlur=0;
 	hctx.fillStyle="#101214"; hctx.fillRect(0,0,HW,HH);   // opaque matte — the GL canvas beneath still holds the last world frame
 	if(ddi_face.width!==px){ ddi_face.width=ddi_face.height=px; ddi_view_last=0; }
@@ -3892,13 +3922,25 @@ function draw_ddi_view(){
 	ddi_view_rect={ ox, oy, size };
 	hctx.drawImage(ddi_face,ox,oy,size,size);
 	hctx.strokeStyle="#2a2f33"; hctx.lineWidth=2; hctx.strokeRect(ox-1,oy-1,size+2,size+2);   // bezel line
-	hctx.fillStyle="#8fa0aa"; hctx.font="13px monospace"; hctx.textAlign="left"; hctx.textBaseline="middle";
-	hctx.fillText(d==="center"?"AMPCD":d==="left"?"LEFT DDI":"RIGHT DDI", ox, Math.max(12,oy/2));   // cockpit legend — English by the annunciator policy
+	// the twenty physical pushbuttons ringing the bezel, outside the face at
+	// their slot positions — the legends inside the face edge sit adjacent to
+	// them, as on the real display. Caps are click targets too.
+	const u=size/512, capW=64*u, capH=26*u, gap=8*u;
+	hctx.fillStyle="#1d2327"; hctx.strokeStyle="#39434b"; hctx.lineWidth=1.5;
+	for(let pb=1;pb<=20;pb++){ let bx,by,w,h;
+		if(pb<=5){ bx=ox-gap-capH/2; by=oy+(96+80*(5-pb))*u; w=capH; h=capW; }
+		else if(pb<=10){ bx=ox+(96+80*(pb-6))*u; by=oy-gap-capH/2; w=capW; h=capH; }
+		else if(pb<=15){ bx=ox+size+gap+capH/2; by=oy+(96+80*(pb-11))*u; w=capH; h=capW; }
+		else { bx=ox+(96+80*(20-pb))*u; by=oy+size+gap+capH/2; w=capW; h=capH; }
+		hctx.fillRect(bx-w/2,by-h/2,w,h); hctx.strokeRect(bx-w/2,by-h/2,w,h); }
+	hctx.fillStyle="#8fa0aa"; hctx.font="13px monospace"; hctx.textAlign="right"; hctx.textBaseline="middle";
+	hctx.fillText(d==="center"?"AMPCD":d==="left"?"LEFT DDI":"RIGHT DDI", ox-gap-capH-10, oy+8);   // cockpit legend — English by the annunciator policy; clear of the button columns
 	hctx.restore(); }
-function ddi_view_click(e){   // screen-space bezel press — same 512-space button bands as the pit
+function ddi_view_click(e){   // screen-space bezel press — the same 512-space bands as the pit; cap clicks just outside the face clamp into their edge band
 	if(!ddi_view_rect) return;
-	const lx=(e.clientX-ddi_view_rect.ox)/ddi_view_rect.size*512, ly=(e.clientY-ddi_view_rect.oy)/ddi_view_rect.size*512;
-	if(lx<0||ly<0||lx>512||ly>512) return;
+	let lx=(e.clientX-ddi_view_rect.ox)/ddi_view_rect.size*512, ly=(e.clientY-ddi_view_rect.oy)/ddi_view_rect.size*512;
+	if(lx<-44||ly<-44||lx>556||ly>556) return;
+	lx=THREE.MathUtils.clamp(lx,1,511); ly=THREE.MathUtils.clamp(ly,1,511);
 	if(ddi_press(ddi_focus(),button_of(lx,ly))) ddi_view_last=0; }   // redraw NOW — a press must answer this frame
 function draw_hud(){
 	hctx.clearRect(0,0,HW,HH);
@@ -4731,7 +4773,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 	// resized buffer is repainted below before the compositor ever sees it.
 	refresh_perf(dt); dynamic_res(dt);
 	render_frame();
-	stage.style.cursor=(running && !game_paused)?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused
+	stage.style.cursor=(running && !game_paused && cfg.view!=="ddi")?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused — and head-down, where the mouse IS the hand on the bezel
 	if(running){ draw_hud();
 		if(net_notice_t>0){ net_notice_t-=dt; hud_message(net_notice); } } else hctx.clearRect(0,0,HW,HH);
 	if(map_on){ const zf=Math.pow(2.2,dt), pr=map_range*dt*0.9;   // held − zooms out, = zooms in (smooth; wheel does notches); arrows pan, scaled to the zoom

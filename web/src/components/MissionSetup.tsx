@@ -102,6 +102,21 @@ function useGamepads(): PadState[] {
   return pads
 }
 
+// Binding rows are grouped so the lists read as a cockpit rather than a wall:
+// the same six groups order both the key and the button panels, and a group
+// with no rows in a panel simply doesn't appear there.
+const GROUP_ORDER = ['flight', 'trim', 'weapons', 'aircraft', 'view', 'comms'] as const
+type Group = (typeof GROUP_ORDER)[number]
+const GROUP_TITLES: Record<Group, ReactNode> = {
+  flight: <Trans>Flight</Trans>,
+  trim: <Trans>Trim</Trans>,
+  weapons: <Trans>Weapons</Trans>,
+  aircraft: <Trans>Aircraft</Trans>,
+  view: <Trans>View</Trans>,
+  comms: <Trans>Communication</Trans>,
+}
+type Row = { id: string; label: ReactNode; group: Group }
+
 const AXIS_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'pitch', label: <Trans>Pitch</Trans> },
   { id: 'roll', label: <Trans>Roll</Trans> },
@@ -109,68 +124,79 @@ const AXIS_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'throttle', label: <Trans>Throttle</Trans> },
   { id: 'speedbrake', label: <Trans>Speed brake</Trans> },
   { id: 'look', label: <Trans>Look</Trans> }, // an axis PAIR: the chosen index is horizontal, the next one up is vertical
+  { id: 'trim', label: <Trans>Trim hat</Trans> }, // an axis PAIR too (a POV that reports as two axes): forward = nose down, the aviation convention
   { id: 'zoom', label: <Trans>Zoom</Trans> }, // spring-centred wheel: deflection = zoom rate on the view (or the map when open)
 ]
 const LEVERS = new Set(['throttle', 'speedbrake']) // lever-style rows: min-to-max meter + reverse toggle
 
-const BUTTON_ROWS: { id: string; label: ReactNode }[] = [
-  { id: 'guns', label: <Trans>Fire weapon</Trans> },   // the trigger serves the SELECTED weapon (engine.ts: guns in GUN mode, a 9M in 9M mode), so 'Guns' named only half of what it does
-  { id: 'select', label: <Trans>Weapon select</Trans> },
-  { id: 'acquire', label: <Trans>Acquire target</Trans> },
-  { id: 'flares', label: <Trans>Flares</Trans> },
-  { id: 'gear', label: <Trans>Landing gear</Trans> },
-  { id: 'hook', label: <Trans>Arrestor hook</Trans> },
-  { id: 'atc', label: <Trans>Approach power (ATC)</Trans> },
-  { id: 'brake.wheel', label: <Trans>Wheel brakes</Trans> },
-  { id: 'brake.speed', label: <Trans>Speed brake</Trans> },
-  { id: 'trim.up', label: <Trans>Trim nose up</Trans> },
-  { id: 'trim.down', label: <Trans>Trim nose down</Trans> },
-  { id: 'flaps', label: <Trans>Flaps</Trans> },
-  { id: 'launch', label: <Trans>Launch (catapult)</Trans> },
-  { id: 'lights', label: <Trans>Lights</Trans> },
-  { id: 'view', label: <Trans>Cycle view</Trans> },
-  { id: 'look.up', label: <Trans>Look up</Trans> },
-  { id: 'look.down', label: <Trans>Look down</Trans> },
-  { id: 'look.left', label: <Trans>Look left</Trans> },
-  { id: 'look.right', label: <Trans>Look right</Trans> },
-  { id: 'zoom.in', label: <Trans>Zoom in</Trans> },
-  { id: 'zoom.out', label: <Trans>Zoom out</Trans> },
+const BUTTON_ROWS: Row[] = [
+  { id: 'brake.speed', label: <Trans>Speed brake</Trans>, group: 'flight' },
+  { id: 'brake.wheel', label: <Trans>Wheel brakes</Trans>, group: 'flight' },
+  { id: 'override', label: <Trans>Override G limit</Trans>, group: 'flight' },
+  { id: 'trim.up', label: <Trans>Trim nose up</Trans>, group: 'trim' },
+  { id: 'trim.down', label: <Trans>Trim nose down</Trans>, group: 'trim' },
+  { id: 'trim.left', label: <Trans>Trim roll left</Trans>, group: 'trim' },
+  { id: 'trim.right', label: <Trans>Trim roll right</Trans>, group: 'trim' },
+  { id: 'guns', label: <Trans>Fire weapon</Trans>, group: 'weapons' },   // the trigger serves the SELECTED weapon (engine.ts: guns in GUN mode, a 9M in 9M mode), so 'Guns' named only half of what it does
+  { id: 'select', label: <Trans>Select weapon</Trans>, group: 'weapons' },
+  { id: 'acquire', label: <Trans>Acquire target</Trans>, group: 'weapons' },
+  { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },   // the id stays 'flares' (the action); the label is the real dispenser's name
+  { id: 'flaps.extend', label: <Trans>Extend flaps</Trans>, group: 'aircraft' },
+  { id: 'flaps.retract', label: <Trans>Retract flaps</Trans>, group: 'aircraft' },
+  { id: 'gear', label: <Trans>Landing gear</Trans>, group: 'aircraft' },
+  { id: 'hook', label: <Trans>Arrestor hook</Trans>, group: 'aircraft' },
+  { id: 'atc', label: <Trans>Approach power (ATC)</Trans>, group: 'aircraft' },
+  { id: 'launch', label: <Trans>Launch (catapult)</Trans>, group: 'aircraft' },
+  { id: 'lights', label: <Trans>Lights</Trans>, group: 'aircraft' },
+  { id: 'view', label: <Trans>Cycle view</Trans>, group: 'view' },
+  { id: 'look.up', label: <Trans>Look up</Trans>, group: 'view' },
+  { id: 'look.down', label: <Trans>Look down</Trans>, group: 'view' },
+  { id: 'look.left', label: <Trans>Look left</Trans>, group: 'view' },
+  { id: 'look.right', label: <Trans>Look right</Trans>, group: 'view' },
+  { id: 'zoom.in', label: <Trans>Zoom in</Trans>, group: 'view' },
+  { id: 'zoom.out', label: <Trans>Zoom out</Trans>, group: 'view' },
 ]
 
-const KEY_ROWS: { id: string; label: ReactNode }[] = [
-  { id: 'pitch.up', label: <Trans>Pitch up</Trans> },
-  { id: 'pitch.down', label: <Trans>Pitch down</Trans> },
-  { id: 'roll.left', label: <Trans>Roll left</Trans> },
-  { id: 'roll.right', label: <Trans>Roll right</Trans> },
-  { id: 'yaw.left', label: <Trans>Yaw left</Trans> },
-  { id: 'yaw.right', label: <Trans>Yaw right</Trans> },
-  { id: 'throttle.up', label: <Trans>Throttle up</Trans> },
-  { id: 'throttle.down', label: <Trans>Throttle down</Trans> },
-  { id: 'guns', label: <Trans>Fire weapon</Trans> },   // the trigger serves the SELECTED weapon (engine.ts: guns in GUN mode, a 9M in 9M mode), so 'Guns' named only half of what it does
-  { id: 'select', label: <Trans>Weapon select</Trans> },
-  { id: 'acquire', label: <Trans>Acquire target</Trans> },
-  { id: 'flares', label: <Trans>Flares</Trans> },
-  { id: 'gear', label: <Trans>Landing gear</Trans> },
-  { id: 'hook', label: <Trans>Arrestor hook</Trans> },
-  { id: 'atc', label: <Trans>Approach power (ATC)</Trans> },
-  { id: 'brake.wheel', label: <Trans>Wheel brakes</Trans> },
-  { id: 'brake.speed', label: <Trans>Speed brake</Trans> },
-  { id: 'trim.up', label: <Trans>Trim nose up</Trans> },
-  { id: 'trim.down', label: <Trans>Trim nose down</Trans> },
-  { id: 'flaps', label: <Trans>Flaps</Trans> },
-  { id: 'launch', label: <Trans>Launch (catapult)</Trans> },
-  { id: 'lights', label: <Trans>Lights</Trans> },
-  { id: 'eject', label: <Trans>Eject</Trans> },
-  { id: 'map', label: <Trans>Map</Trans> },
-  { id: 'chat', label: <Trans>Chat</Trans> },
-  { id: 'shout', label: <Trans>Chat to everyone</Trans> },
-  { id: 'menu', label: <Trans>Menu</Trans> },
-  { id: 'view', label: <Trans>Cycle view</Trans> },
-  { id: 'probe', label: <Trans>Fuel probe</Trans> },
-  { id: 'canopy', label: <Trans>Canopy</Trans> },
-  { id: 'fold', label: <Trans>Wing fold</Trans> },
-  { id: 'altitude', label: <Trans>HUD altitude source</Trans> },
-  { id: 'reject', label: <Trans>HUD declutter</Trans> },
+const KEY_ROWS: Row[] = [
+  { id: 'pitch.up', label: <Trans>Pitch up</Trans>, group: 'flight' },
+  { id: 'pitch.down', label: <Trans>Pitch down</Trans>, group: 'flight' },
+  { id: 'roll.left', label: <Trans>Roll left</Trans>, group: 'flight' },
+  { id: 'roll.right', label: <Trans>Roll right</Trans>, group: 'flight' },
+  { id: 'yaw.left', label: <Trans>Yaw left</Trans>, group: 'flight' },
+  { id: 'yaw.right', label: <Trans>Yaw right</Trans>, group: 'flight' },
+  { id: 'throttle.up', label: <Trans>Throttle up</Trans>, group: 'flight' },
+  { id: 'throttle.down', label: <Trans>Throttle down</Trans>, group: 'flight' },
+  { id: 'brake.speed', label: <Trans>Speed brake</Trans>, group: 'flight' },
+  { id: 'brake.wheel', label: <Trans>Wheel brakes</Trans>, group: 'flight' },
+  { id: 'brake.parking', label: <Trans>Parking brake</Trans>, group: 'flight' },
+  { id: 'override', label: <Trans>Override G limit</Trans>, group: 'flight' },
+  { id: 'trim.up', label: <Trans>Trim nose up</Trans>, group: 'trim' },
+  { id: 'trim.down', label: <Trans>Trim nose down</Trans>, group: 'trim' },
+  { id: 'trim.left', label: <Trans>Trim roll left</Trans>, group: 'trim' },
+  { id: 'trim.right', label: <Trans>Trim roll right</Trans>, group: 'trim' },
+  { id: 'trim.reset', label: <Trans>Reset trim</Trans>, group: 'trim' },
+  { id: 'guns', label: <Trans>Fire weapon</Trans>, group: 'weapons' },
+  { id: 'select', label: <Trans>Select weapon</Trans>, group: 'weapons' },
+  { id: 'acquire', label: <Trans>Acquire target</Trans>, group: 'weapons' },
+  { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },
+  { id: 'flaps.extend', label: <Trans>Extend flaps</Trans>, group: 'aircraft' },
+  { id: 'flaps.retract', label: <Trans>Retract flaps</Trans>, group: 'aircraft' },
+  { id: 'gear', label: <Trans>Landing gear</Trans>, group: 'aircraft' },
+  { id: 'hook', label: <Trans>Arrestor hook</Trans>, group: 'aircraft' },
+  { id: 'atc', label: <Trans>Approach power (ATC)</Trans>, group: 'aircraft' },
+  { id: 'probe', label: <Trans>Fuel probe</Trans>, group: 'aircraft' },
+  { id: 'canopy', label: <Trans>Canopy</Trans>, group: 'aircraft' },
+  { id: 'fold', label: <Trans>Wing fold</Trans>, group: 'aircraft' },
+  { id: 'lights', label: <Trans>Lights</Trans>, group: 'aircraft' },
+  { id: 'launch', label: <Trans>Launch (catapult)</Trans>, group: 'aircraft' },
+  { id: 'eject', label: <Trans>Eject</Trans>, group: 'aircraft' },
+  { id: 'view', label: <Trans>Cycle view</Trans>, group: 'view' },
+  { id: 'altitude', label: <Trans>HUD altitude source</Trans>, group: 'view' },
+  { id: 'reject', label: <Trans>HUD declutter</Trans>, group: 'view' },
+  { id: 'map', label: <Trans>Map</Trans>, group: 'view' },
+  { id: 'chat', label: <Trans>Chat</Trans>, group: 'comms' },
+  { id: 'shout', label: <Trans>Chat to everyone</Trans>, group: 'comms' },
+  { id: 'menu', label: <Trans>Menu</Trans>, group: 'comms' },
 ]
 
 // The joystick tab: device picker, aircraft-axis sources, button actions —
@@ -358,8 +384,14 @@ function JoystickPanel({
       <SectionLabel>
         <Trans>Buttons</Trans>
       </SectionLabel>
-      <div className='grid gap-y-1 text-sm'>
-        {BUTTON_ROWS.map(({ id, label }) => {
+      {GROUP_ORDER.map((group) => {
+        const rows = BUTTON_ROWS.filter((r) => r.group === group)
+        if (!rows.length) return null
+        return (
+          <div key={group} className='mb-2'>
+            <div className='text-muted-foreground mt-2 mb-1 text-xs font-medium tracking-wide uppercase'>{GROUP_TITLES[group]}</div>
+            <div className='grid gap-y-1 text-sm'>
+        {rows.map(({ id, label }) => {
           const value = buttons[id] ?? ''
           const held = pad && value !== '' && pad.buttons[Number(value)]
           return (
@@ -397,7 +429,10 @@ function JoystickPanel({
             </div>
           )
         })}
-      </div>
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -483,8 +518,14 @@ function KeysPanel({
   }, [arming]) // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div>
-      <div className='grid gap-x-8 gap-y-1 text-sm sm:grid-cols-2'>
-        {KEY_ROWS.map(({ id, label }) => (
+      {GROUP_ORDER.map((group) => {
+        const rows = KEY_ROWS.filter((r) => r.group === group)
+        if (!rows.length) return null
+        return (
+          <div key={group} className='mb-2'>
+            <div className='text-muted-foreground mt-2 mb-1 text-xs font-medium tracking-wide uppercase'>{GROUP_TITLES[group]}</div>
+            <div className='grid gap-x-8 gap-y-1 text-sm sm:grid-cols-2'>
+        {rows.map(({ id, label }) => (
           <div key={id} className='flex items-center justify-between gap-2 py-0.5'>
             <span>{label}</span>
             <span className='flex items-center gap-1'>
@@ -506,17 +547,22 @@ function KeysPanel({
             </span>
           </div>
         ))}
-      </div>
+            </div>
+          </div>
+        )
+      })}
       <SectionLabel>
         <Trans>Fixed keys</Trans>
       </SectionLabel>
+      {/* Genuinely fixed keys only. The probe, canopy and menu rows used to be
+          listed here as well as being rebindable above, and the probe entry
+          still read Shift+F after that chord became flaps-retract — a settings
+          screen that lies is worse than one that says less. */}
       <div className='grid gap-x-8 text-sm sm:grid-cols-2'>
         <ControlRow action={<Trans>Views</Trans>} keys={<><Key>1</Key>–<Key>5</Key></>} />
+        <ControlRow action={<Trans>Reset view</Trans>} keys={<Key>0</Key>} />
         <ControlRow action={<Trans>Look / orbit</Trans>} keys={<><Key>←</Key><Key>→</Key><Key>↑</Key><Key>↓</Key></>} />
         <ControlRow action={<Trans>Camera distance</Trans>} keys={<><Key>−</Key><Key>=</Key></>} />
-        <ControlRow action={<Trans>Refueling probe</Trans>} keys={<><Key>Shift</Key>+<Key>F</Key></>} />
-        <ControlRow action={<Trans>Canopy</Trans>} keys={<><Key>Shift</Key>+<Key>C</Key></>} />
-        <ControlRow action={<Trans>Return to menu</Trans>} keys={<Key>Esc</Key>} />
       </div>
     </div>
   )

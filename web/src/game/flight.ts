@@ -20,7 +20,7 @@ import flight_wasm_url from '../assets/flight.wasm?url'
 import { asset } from './preload'
 
 // Encoded state layout (float64 words).
-export const SIZE = 112 // 57 base + 40 element losses + 8 channel jams + lost mass + 3 gear-leg damages (#78) + pitch-damper washout + PA trim datum + buffet (appended LAST so no earlier index moved)
+export const SIZE = 113 // 57 base + 40 element losses + 8 channel jams + lost mass + 3 gear-leg damages (#78) + pitch-damper washout + PA trim datum + buffet (appended LAST so no earlier index moved)
 export const STATE = {
   position: 0, // x y z
   velocity: 3,
@@ -53,17 +53,18 @@ export const STATE = {
   loss: 105, // shed structure mass, kg
   datum: 110, // PA trim bias, rad of alpha (the pitch trim switch, landing configuration)
   buffet: 111, // aerodynamic buffet intensity 0..1 — the seat-of-pants shake cue
+  bank: 112, // roll-trim datum, differential-flaperon stick fraction (the hat's roll half)
   // Instrument tail appended by frame()/get() — starts at flight.Size (encode.go),
   // so it moves whenever the encoded state grows. #78's three gear words pushed
   // Size to 109 and this tail was left at 106, silently reading gear damage as
   // alpha/nz and nz as the throttle spool (#133 found it via a dead CAS box).
-  alpha: 112,
-  beta: 113,
-  nz: 114,
-  mach: 115,
-  cas: 116,
-  power: 117, // achieved spool fraction across the airframe's engines
-  stage: 118, // achieved reheat stage
+  alpha: 113,
+  beta: 114,
+  nz: 115,
+  mach: 116,
+  cas: 117,
+  power: 118, // achieved spool fraction across the airframe's engines
+  stage: 119, // achieved reheat stage
 } as const
 const EXTRA = 7
 
@@ -79,7 +80,9 @@ export interface Controls {
   throttle: number
   speedbrake: number
   reheat: number // commanded afterburner-zone fraction 0..1 (0 = dry); the core quantizes to the five F404 zones
-  trim: number // -1..1 held trim rate, +1 = nose-up
+  trim: number // -1..1 held pitch-trim rate, +1 = nose-up
+  lean: number // -1..1 held roll-trim rate, +1 = right wing down
+  reset: boolean // one-shot: zero the trim datums, re-datum the hold
   flap: number // flap switch: 0 AUTO, 1 HALF, 2 FULL
   brake: boolean
   gear: boolean
@@ -127,7 +130,7 @@ let failure: string | null = null
 
 // Preallocated boundary buffers: the same memory every frame, viewed as
 // bytes for the copy and floats for access.
-const input = new Float64Array(11)
+const input = new Float64Array(12)
 const input_bytes = new Uint8Array(input.buffer)
 const output = new Float64Array(SIZE + EXTRA)
 const output_bytes = new Uint8Array(output.buffer)
@@ -214,12 +217,14 @@ function fill(controls: Controls, count: number): void {
     (controls.hook ? 8 : 0) |
     (controls.launch ? 16 : 0) |
     (controls.override ? 32 : 0) |
-    (controls.probe ? 64 : 0)
+    (controls.probe ? 64 : 0) |
+    (controls.reset ? 128 : 0)
   input[6] = controls.sequence
   input[7] = count
   input[8] = controls.reheat   // analog reheat (flag bit 1 retired)
   input[9] = controls.trim
   input[10] = controls.flap
+  input[11] = controls.lean
 }
 
 let accumulator = 0

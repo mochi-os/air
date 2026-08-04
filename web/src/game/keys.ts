@@ -23,22 +23,28 @@ export const KEY_DEFAULTS: Record<string, string> = {
   acquire: 'Enter',
   launch: 'Enter',
   'brake.wheel': 'KeyB',
+  'brake.parking': 'Shift+KeyB',
   'trim.up': 'Period',
   'trim.down': 'Comma',
-  flaps: 'KeyN',
+  'trim.left': 'Shift+Comma',
+  'trim.right': 'Shift+Period',
+  'trim.reset': 'None',
+  'flaps.extend': 'KeyF',
+  'flaps.retract': 'Shift+KeyF',
+  override: 'KeyO',
   'brake.speed': 'Slash',
   gear: 'KeyG',
   hook: 'KeyH',
   atc: 'KeyP',
   lights: 'KeyL',
-  flares: 'KeyF',
+  flares: 'KeyC',
   eject: 'KeyJ',
   map: 'KeyM',
   chat: 'KeyT',
   shout: 'Shift+KeyT',
   menu: 'Escape',
-  view: 'KeyV',
-  probe: 'Shift+KeyF',
+  view: 'None',
+  probe: 'KeyR',
   canopy: 'Shift+KeyC',
   fold: 'Shift+KeyW',
   altitude: 'KeyK',
@@ -49,6 +55,13 @@ export const KEY_DEFAULTS: Record<string, string> = {
 // key's own printed name); '—' for an unbound action.
 export function pretty(code: string): string {
   if (!code || code === 'None') return '—'
+  // Chords are stored as "Shift+<code>" — prettify the code half and keep the
+  // modifier, or the settings screen shows raw KeyboardEvent codes back to the
+  // player ("Shift+KeyB" where the key cap says B).
+  if (code.includes('+')) {
+    const parts = code.split('+')
+    return parts.slice(0, -1).concat(pretty(parts[parts.length - 1])).join('+')
+  }
   const table: Record<string, string> = {
     Space: 'Space',
     Enter: 'Enter',
