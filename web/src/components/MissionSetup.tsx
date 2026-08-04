@@ -1073,9 +1073,15 @@ function ServerFlow({
     )
   }
   return (
-    <div className='bg-background fixed inset-0 z-50 overflow-auto p-6'>
-      <div className='mx-auto flex w-full max-w-5xl flex-col gap-6 lg:flex-row'>
-        <div className='min-w-0 flex-1'>
+    // The page OWNS the viewport height: a full-height flex column whose two
+    // columns fill it, each scrolling its own overflow. Previously the page
+    // scrolled as one block and both columns were content-height, so a server
+    // with a handful of matches drew everything squashed against the top with
+    // the rest of the screen empty — and the chat, which asks for h-full, had
+    // no height to fill.
+    <div className='bg-background fixed inset-0 z-50 flex flex-col p-6'>
+      <div className='mx-auto flex min-h-0 w-full max-w-5xl flex-1 flex-col gap-6 lg:flex-row'>
+        <div className='flex min-h-0 min-w-0 flex-1 flex-col'>
           <div className='mb-4 flex items-center justify-between'>
             <div>
               <h2 className='text-2xl font-semibold tracking-tight'>
@@ -1103,7 +1109,7 @@ function ServerFlow({
             }}
           />
         </div>
-        <div className='flex h-96 w-full flex-col lg:h-auto lg:w-80'>
+        <div className='flex min-h-0 w-full flex-col max-lg:h-96 lg:w-80'>
           <LobbyChat server={config.world} callsign={config.callsign} />
         </div>
       </div>

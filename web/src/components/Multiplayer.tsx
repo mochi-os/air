@@ -192,7 +192,10 @@ export function Multiplayer({
 
   const redirectHost = redirect?.host ?? ''
   return (
-    <div className='space-y-4'>
+    // A full-height flex column: the controls and the create form size to
+    // their content, and the match list takes whatever is left and scrolls —
+    // so the panel fills the server page instead of stacking at the top.
+    <div className='flex h-full flex-col gap-4'>
       <Dialog open={!!redirect} onOpenChange={(open) => !open && setRedirect(null)}>
         <DialogContent>
           <DialogHeader>
@@ -412,7 +415,7 @@ export function Multiplayer({
         </div>
       )}
 
-      <div className='divide-y rounded-md border'>
+      <div className='min-h-0 flex-1 divide-y overflow-y-auto rounded-md border'>
         {sessions.length === 0 && (
           <div className='text-muted-foreground p-4 text-sm'>
             {status ? <Trans>No open matches — create one.</Trans> : <Trans>No world server.</Trans>}
