@@ -1168,13 +1168,13 @@ function MissionPanel({
       <Trans>Bandit</Trans>
     </SectionLabel>
     <Choice
-      value={String(config.bandit || 'veteran')}
-      onChange={(v) => set('bandit', v as 'rookie' | 'pilot' | 'veteran' | 'ace')}
+      value={String(config.bandit || 'ace')}
+      onChange={(v) => set('bandit', v as 'novice' | 'pilot' | 'ace' | 'superhuman')}
       options={[
-        { value: 'rookie', label: <Trans>Rookie</Trans> },
+        { value: 'novice', label: <Trans>Novice</Trans> },
         { value: 'pilot', label: <Trans>Pilot</Trans> },
-        { value: 'veteran', label: <Trans>Veteran</Trans> },
         { value: 'ace', label: <Trans>Ace</Trans> },
+        { value: 'superhuman', label: <Trans>Superhuman</Trans> },
       ]}
     />
   </>
@@ -1526,15 +1526,15 @@ export function MissionSetup({
   // Composed from msgids the bandit selector and task label already carry, so
   // every locale is covered with no new translation surface.
   const BANDITS: Record<string, ReactNode> = {
-    rookie: <Trans>Rookie</Trans>,
+    novice: <Trans>Novice</Trans>,
     pilot: <Trans>Pilot</Trans>,
-    veteran: <Trans>Veteran</Trans>,
     ace: <Trans>Ace</Trans>,
+    superhuman: <Trans>Superhuman</Trans>,
   }
   const started =
     config.task === 'joust' ? (
       <>
-        <Trans>Joust</Trans> · {BANDITS[String(config.bandit || 'veteran')] ?? BANDITS.veteran}
+        <Trans>Joust</Trans> · {BANDITS[String(config.bandit || 'ace')] ?? BANDITS.ace}
       </>
     ) : (
       STARTS[config.start === 'landing' ? 'case2' : config.start]

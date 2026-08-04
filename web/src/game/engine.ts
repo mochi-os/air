@@ -2659,7 +2659,7 @@ function recording_sample(){
 // recording_file renders what is buffered; null when nothing was captured.
 function recording_file(){
 	if(!recorder.length||!record_started) return null;
-	const kind=cfg.task==="joust"?("joust-"+(cfg.bandit||"veteran")):"flight";
+	const kind=cfg.task==="joust"?("joust-"+(cfg.bandit||"ace")):"flight";
 	return { text:recorder.render(record_started,"Mochi Air: "+kind), session:record_session, kind }; }
 const _q=new THREE.Quaternion(), _fwd=new THREE.Vector3(), _up=new THREE.Vector3(), _right=new THREE.Vector3();
 function start_launch(){ launch_flag=true; ownship.trapped=false; ownship.throttle=Math.max(ownship.throttle,0.9); }   // requests the shot; the core fires it while attached to the shuttle (caller gates on launch_status()===2)
@@ -3169,7 +3169,7 @@ function fly_bandit(dt){
 	if(bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5)) return fly_bandit_stricken(dt);
 	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&!fly_bandit.tried){   // lazy: the core loads async and start_mission races it — arm the brain on the first frame the core is ready
 		fly_bandit.tried=true;
-		bandit_brain=bandit_init({ level: cfg.bandit||"veteran", seed: 7, wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night", missiles: !!cfg.missiles });   // missiles: what the PLAYER can fire — the bandit's defensive doctrine reacts to it (#211 flare gate)
+		bandit_brain=bandit_init({ level: cfg.bandit||"ace", seed: 7, wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night", missiles: !!cfg.missiles });   // missiles: what the PLAYER can fire — the bandit's defensive doctrine reacts to it (#211 flare gate)
 		if(bandit_brain) bandit_spawn(bandit.pos, {x:bandit.fwd.x*bandit.speed, y:0, z:bandit.fwd.z*bandit.speed});
 	}
 	if(bandit_brain){   // the wasm brain: mirror the player in, step the second core, read the bandit back (#125 phase 2)
