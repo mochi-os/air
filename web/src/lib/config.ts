@@ -36,7 +36,7 @@ export interface MissionConfig {
   task: 'free' | 'joust' // multiplayer is no longer a task: a MATCH is joined from the server page (#77)
   fuel: number
   record: boolean // record flights for replay download
-  bandit: 'rookie' | 'pilot' | 'veteran' | 'ace'
+  bandit: 'novice' | 'pilot' | 'ace' | 'superhuman'
   aircraft: 'fa18c' // one shipping aircraft today; the field + catalogue stay so a second type re-adds cleanly (client AIRCRAFT_MODELS, world aircraft.Get, and the menu picker)
   joystick: string // menu-selected stick id ('' = first connected)
   sticks: Record<string, StickBindings> // per-device axis/button maps, keyed by pad id
@@ -69,7 +69,7 @@ export interface MissionConfig {
 // Mirrors the engine's defaults so the menu reflects what an unconfigured game uses.
 export const DEFAULT_CONFIG: MissionConfig = {
   task: 'joust',
-  bandit: 'veteran',
+  bandit: 'ace',
   fuel: 10800, // full internal — combat loads are a slider pull away
   record: true, // flight recorder (#212): always running, saved from History
   aircraft: 'fa18c',

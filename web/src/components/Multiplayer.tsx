@@ -83,8 +83,8 @@ export function Multiplayer({
   const [clouds, setClouds] = useState('none')
   const [missiles, setMissiles] = useState(false)
   const [cheats, setCheats] = useState<Record<string, boolean>>({}) // invulnerable (humans only), ammunition, fuel
-  const [bots, setBots] = useState<Record<string, number>>({ drone: 0, rookie: 0, pilot: 0, veteran: 0, ace: 0 }) // server-flown aircraft per skill level; drones cruise, the rest fight (also the 100-player verification lever)
-  const [blueBots, setBlueBots] = useState<Record<string, number>>({ drone: 0, rookie: 0, pilot: 0, veteran: 0, ace: 0 }) // teams mode: the blue side's bots (the row above places red's)
+  const [bots, setBots] = useState<Record<string, number>>({ drone: 0, novice: 0, pilot: 0, ace: 0, superhuman: 0 }) // server-flown aircraft per skill level; drones cruise, the rest fight (also the 100-player verification lever)
+  const [blueBots, setBlueBots] = useState<Record<string, number>>({ drone: 0, novice: 0, pilot: 0, ace: 0, superhuman: 0 }) // teams mode: the blue side's bots (the row above places red's)
   const [fuel, setFuel] = useState(6000) // spawn load in POUNDS, like the IFEI
   const address = normalize_server(server || default_server())
   const name = (callsign || identity || t`pilot`).slice(0, 32)
@@ -165,7 +165,7 @@ export function Multiplayer({
         label: t`${name}'s match`,
         name,
         capacity: mode === 'joust' ? 2 : 0,
-        // bots: per-level counts {drone, rookie, ...}; the teams mode places them per side. Fuel in pounds; cheats: {invulnerable, ammunition, fuel}.
+        // bots: per-level counts {drone, novice, ...}; the teams mode places them per side. Fuel in pounds; cheats: {invulnerable, ammunition, fuel}.
         parameters: { tod, clouds, missiles, bots: mode === 'teams' ? { red: bots, blue: blueBots } : bots, fuel, cheats },
       })
       enter({
@@ -372,10 +372,10 @@ export function Multiplayer({
                     {(
                       [
                         ['drone', t`Drone`],
-                        ['rookie', t`Rookie`],
+                        ['novice', t`Novice`],
                         ['pilot', t`Pilot`],
-                        ['veteran', t`Veteran`],
                         ['ace', t`Ace`],
+                        ['superhuman', t`Superhuman`],
                       ] as const
                     ).map(([level, label]) => (
                       <div key={level} className='flex items-center gap-1'>
