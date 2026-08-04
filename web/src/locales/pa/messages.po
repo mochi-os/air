@@ -154,9 +154,9 @@ msgstr "ਖਾਤੇ ਦੀ ਕਿਸਮ"
 msgid "Account verified"
 msgstr "ਖਾਤਾ ਤਸਦੀਕ ਕੀਤਾ ਗਿਆ"
 
-#: src/components/MissionSetup.tsx:1177
-#: src/components/MissionSetup.tsx:1532
-#: src/components/Multiplayer.tsx:378
+#: src/components/MissionSetup.tsx:1176
+#: src/components/MissionSetup.tsx:1531
+#: src/components/Multiplayer.tsx:377
 msgid "Ace"
 msgstr "ਉਸਤਾਦ"
 
@@ -494,8 +494,8 @@ msgid "Catapult"
 msgstr "ਕੈਟਾਪਲਟ"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx:102
-msgid "Category for this notification"
-msgstr "ਇਸ ਨੋਟੀਫਿਕੇਸ਼ਨ ਲਈ ਸ਼੍ਰੇਣੀ"
+msgid "Category for these notifications"
+msgstr "ਇਹਨਾਂ ਨੋਟੀਫਿਕੇਸ਼ਨਾਂ ਲਈ ਸ਼੍ਰੇਣੀ"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx:83
 #: ../../../lib/web/src/components/notification-category-button.tsx:94
@@ -1653,6 +1653,10 @@ msgstr "ਨੀਵਾਂ ਸਟ੍ਰੇਟਸ"
 msgid "M to close"
 msgstr "ਬੰਦ ਕਰਨ ਲਈ M"
 
+#: ../../../lib/web/src/components/notification-category-button.tsx:130
+msgid "Manage categories"
+msgstr "ਸ਼੍ਰੇਣੀਆਂ ਦਾ ਪ੍ਰਬੰਧਨ ਕਰੋ"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:192
 msgid "Manage your connected accounts for notifications and services."
 msgstr "ਸੂਚਨਾਵਾਂ ਅਤੇ ਸੇਵਾਵਾਂ ਲਈ ਆਪਣੇ ਜੁੜੇ ਖਾਤਿਆਂ ਦਾ ਪ੍ਰਬੰਧ ਕਰੋ।"
@@ -1857,7 +1861,7 @@ msgstr "ਕੋਈ ਨਤੀਜੇ ਨਹੀਂ ਮਿਲੇ।"
 msgid "No time zone found."
 msgstr "ਕੋਈ ਟਾਈਮ ਜ਼ੋਨ ਨਹੀਂ ਮਿਲਿਆ।"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:106
+#: ../../../lib/web/src/components/notification-category-button.tsx:109
 msgid "No topic record yet — try again after the next notification."
 msgstr "ਅਜੇ ਕੋਈ ਟੌਪਿਕ ਰਿਕਾਰਡ ਨਹੀਂ — ਅਗਲੇ ਨੋਟੀਫਿਕੇਸ਼ਨ ਤੋਂ ਬਾਅਦ ਫਿਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
 
@@ -1920,6 +1924,12 @@ msgstr "ਨੋਟੀਫਿਕੇਸ਼ਨ"
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:195
 msgid "Notifications: {0}"
 msgstr "ਸੂਚਨਾਵਾਂ: {0}"
+
+#: src/components/MissionSetup.tsx:1174
+#: src/components/MissionSetup.tsx:1529
+#: src/components/Multiplayer.tsx:375
+msgid "Novice"
+msgstr "ਨਵਾਂ ਸਿਖਾਂਦਰੂ"
 
 #: src/components/MissionSetup.tsx:1350
 msgid "Ocean detail"
@@ -2346,12 +2356,6 @@ msgstr "ਰੋਲ ਖੱਬੇ"
 msgid "Roll right"
 msgstr "ਰੋਲ ਸੱਜੇ"
 
-#: src/components/MissionSetup.tsx:1174
-#: src/components/MissionSetup.tsx:1529
-#: src/components/Multiplayer.tsx:375
-msgid "Rookie"
-msgstr "ਸਿਖਾਂਦਰੂ"
-
 #: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "ਪ੍ਰਤੀ ਪੇਜ ਕਤਾਰਾਂ"
@@ -2695,6 +2699,12 @@ msgstr "ਗਾਹਕ ਬਣੋ"
 msgid "Sunday"
 msgstr "ਐਤਵਾਰ"
 
+#: src/components/MissionSetup.tsx:1177
+#: src/components/MissionSetup.tsx:1532
+#: src/components/Multiplayer.tsx:378
+msgid "Superhuman"
+msgstr "ਅਤਿਮਾਨਵ"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:27
 msgid "Switch to view 1-9"
 msgstr "ਦ੍ਰਿਸ਼ 1-9 'ਤੇ ਜਾਓ"
@@ -2943,7 +2953,7 @@ msgstr "ਰਿਮੋਟ ਸਰਵਰ ਨਾਲ ਕਨੈਕਟ ਨਹੀਂ ਹ�
 msgid "Unable to redirect to login. Please try again."
 msgstr "ਲੌਗਇਨ 'ਤੇ ਰੀਡਾਇਰੈਕਟ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ। ਕਿਰਪਾ ਕਰਕੇ ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
 
-#: ../../../lib/web/src/components/notification-category-button.tsx:114
+#: ../../../lib/web/src/components/notification-category-button.tsx:117
 msgid "Unassigned"
 msgstr "ਨਾ ਨਿਰਧਾਰਤ"
 
@@ -3020,12 +3030,6 @@ msgstr "ਈਮੇਲ ਪਤੇ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ"
 #: src/components/MissionSetup.tsx:698
 msgid "Vertical"
 msgstr "ਲੰਬਕਾਰੀ"
-
-#: src/components/MissionSetup.tsx:1176
-#: src/components/MissionSetup.tsx:1531
-#: src/components/Multiplayer.tsx:377
-msgid "Veteran"
-msgstr "ਤਜਰਬੇਕਾਰ"
 
 #: src/components/MatchHistory.tsx:92
 msgid "Victory"
