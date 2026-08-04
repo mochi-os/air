@@ -119,7 +119,7 @@ export function GameCanvas({
   onExit?: () => void
   onReady?: (handle: GameHandle) => void
   onSettings?: () => void
-  onConfig?: (partial: Record<string, number>) => void
+  onConfig?: (partial: Record<string, number | string>) => void
   flying?: boolean
 }) {
   const stageRef = useRef<HTMLCanvasElement>(null)
@@ -157,7 +157,7 @@ export function GameCanvas({
       config,
       join,
       onExit,
-      onConfig: (partial: Record<string, number>) => onConfigRef.current?.(partial),
+      onConfig: (partial: Record<string, number | string>) => onConfigRef.current?.(partial),
       onMenu: () => setMenu((open) => !open), // Esc toggles the popup (#84)
       onChat: (scope) => setChat(scope),
       translate,

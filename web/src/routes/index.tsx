@@ -94,8 +94,9 @@ function Index() {
           }}
           flying={inFlight}
           onConfig={(partial) => {
-            // Engine-side setting changes (per-view zoom) merge into the same
-            // persisted config the menu owns — one store, one save path.
+            // Engine-side setting changes (per-view zoom, the DDI view's
+            // remembered display) merge into the same persisted config the
+            // menu owns — one store, one save path.
             setConfig({ ...config, ...partial })
           }}
           onSettings={() => {
