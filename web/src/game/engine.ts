@@ -719,6 +719,7 @@ const acc_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,
 			gl_FragColor=mix(w>0.0?cur:avg,hist,w); }` });   // rejected pixels fall back to the neighbourhood mean — the old blur, exactly where it is still needed
 const acc_scene=new THREE.Scene(); acc_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),acc_mat));
 function render_frame(){
+	if(cfg.view==="ddi") return;   // head-down: the opaque 2D panel covers the screen — skip the world passes entirely (the sim and audio run on; set_view marks cloud history stale for the return cut)
 	{ const f=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion), u=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion);
 		audio_listener(camera.position.x,camera.position.y,camera.position.z,f.x,f.y,f.z,u.x,u.y,u.z); }
 	// Cockpit split (#99), stateless per frame so nothing can strand a stale mask:
@@ -1005,7 +1006,7 @@ function build_indexer(g){
 	box.position.set(glass.x-0.055, glass.y-glass.hh*0.35, -(glass.hw-0.008));   // just inside the pane's LEFT edge and nearer the pilot — outboard of it the HUD frame post swallows it
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
 	build_lamps(g);
-	if(SCREENS_WIP){ build_radalt(g); build_screens(g); } }   // parked OFF: their proud-quad placement never rendered under the headless harness; reopen with live-browser iteration, where placement feedback is immediate (#99 follow-up)
+	build_radalt(g); build_screens(g); }
 // Cockpit lamps (#99 realism): the GLB models no annunciators, so the indexer's
 // unlit-quad pattern extends to the fire/caution row on the glareshield and the
 // gear lights beside the handle. All state the lamps need already exists.
@@ -1050,21 +1051,73 @@ function lamps_update(out){
 // painted into the face texture, so a live canvas disc covers it — APN-194
 // style dial measured from that face, needle below 5000 ft, OFF flag above.
 const RADALT_DIAL=[[0,35],[100,52],[200,70],[300,103],[400,149],[600,202],[800,235],[1000,280],[3000,305],[5000,325]];
+// node_box: the node's own geometry corners in the GROUP frame (the pattern
+// calibrate_eye uses for the glass pane). A world Box3 tilts with the parked
+// heading, and its centre sits inside the housing DEPTH — placing "proud"
+// quads from that centre buried them behind the painted faces, which is what
+// kept these builders parked.
+function node_box(g,node){
+	const lo=new THREE.Vector3(Infinity,Infinity,Infinity), hi=new THREE.Vector3(-Infinity,-Infinity,-Infinity), c=new THREE.Vector3(); let any=false;
+	node.traverse(o=>{ if(!o.isMesh||!o.geometry) return; any=true;
+		o.geometry.computeBoundingBox(); const b=o.geometry.boundingBox;
+		for(let k=0;k<8;k++){ c.set(k&1?b.max.x:b.min.x, k&2?b.max.y:b.min.y, k&4?b.max.z:b.min.z);
+			c.applyMatrix4(o.matrixWorld); g.worldToLocal(c); lo.min(c); hi.max(c); } });
+	return any?{lo,hi}:null; }
+// surface_fit: the surface the pilot actually SEES over an aperture, by
+// raycast from the calibrated eye. The named screen/gauge nodes are the
+// recessed plates; each sits behind a smoked cover glass in a DIFFERENT node
+// — opaque black, nearer the eye — so a quad placed off the plate loses the
+// depth test to the cover and renders buried (what parked these builders).
+// Three rays (top/centre/bottom of the aperture) give the cover's x and the
+// panel's lean; overlays go just proud of THAT, tilted to match.
+function surface_fit(g,box){
+	const eye=g.userData.eye; if(!eye) return null;
+	const cy=(box.lo.y+box.hi.y)/2, cz=(box.lo.z+box.hi.z)/2, hh=Math.max((box.hi.y-box.lo.y)/2,0.02);
+	const rc=new THREE.Raycaster(); rc.layers.mask=-1; rc.far=3;
+	const eyeW=g.localToWorld(new THREE.Vector3(eye.x,eye.y,0));
+	const probe=(y)=>{ const pW=g.localToWorld(new THREE.Vector3(box.lo.x,y,cz));
+		rc.set(eyeW,pW.sub(eyeW).normalize());
+		for(const h of rc.intersectObject(g,true)){ if(h.object.userData.overlay) continue;
+			const p=g.worldToLocal(h.point.clone());
+			if(p.x>=box.lo.x-0.12&&p.x<=box.hi.x+0.02) return p.x; }   // the full-panel smoked cover sits up to ~9 cm proud of the recessed plates; hits nearer still (stick, levers) are REAL occluders — the overlay belongs behind them
+		return null; };
+	const xm=probe(cy); if(xm==null) return null;
+	const xt=probe(cy+hh*0.8)??xm, xb=probe(cy-hh*0.8)??xm;
+	const pW=g.localToWorld(new THREE.Vector3(box.lo.x,cy,cz)); rc.set(eyeW,pW.sub(eyeW).normalize());   // diagnostic: the full surface stack on the centre sightline
+	const stack=rc.intersectObject(g,true).slice(0,8).map(h=>{ const p=g.worldToLocal(h.point.clone());
+		return +p.x.toFixed(3)+" "+(h.object.name||h.object.type)+"/"+(((h.object as THREE.Mesh).material as THREE.Material&{name?:string})?.name||"?"); });
+	return { x:xm, tilt:Math.atan2(xt-xb,1.6*hh), stack }; }
+// surface_pose orients a +Z-facing geometry onto the fitted surface: width
+// along the span, height up the measured lean, normal out toward the pilot.
+// The cover sits well NEARER the eye than the recessed plate the geometry was
+// sized against, so the overlay is projected along the design-eye sightline —
+// centre slid toward the eye and scaled by the distance ratio — to subtend
+// exactly the aperture, staying inside the bezel.
+function surface_pose(g,mesh,box,fit){
+	const tilt=fit?fit.tilt:0, eye=g.userData.eye;
+	const cy=(box.lo.y+box.hi.y)/2, cz=(box.lo.z+box.hi.z)/2;
+	const t=(fit&&eye)?(fit.x-eye.x)/((box.lo.x+box.hi.x)/2-eye.x):1;
+	const X=new THREE.Vector3(0,0,1), Y=new THREE.Vector3(Math.sin(tilt),Math.cos(tilt),0), N=new THREE.Vector3().crossVectors(X,Y);
+	mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X,Y,N));
+	mesh.scale.setScalar(t);
+	mesh.position.set(fit?fit.x:box.lo.x, eye?eye.y+(cy-eye.y)*t:cy, eye?cz*t:cz).addScaledVector(N,0.003);   // the eye sits on the z centreline
+	mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN); }
 function build_radalt(g){
 	if(g.userData.radalt&&g.userData.radalt.mesh.parent) return;
-	const face=g.getObjectByName("Object_1372"); const eye=g.userData.eye;
-	if(!face||!eye) return;
-	const box=new THREE.Box3().setFromObject(face), c=box.getCenter(new THREE.Vector3());
-	g.worldToLocal(c);
+	// The GLB has no radar-altimeter face node — the Object_1372 this builder
+	// originally covered turned out to be the full-panel cover glass, so the
+	// dial's true panel position is still unmeasured. &radalt=y,z (dev) places
+	// the disc at those panel coordinates for live calibration; until the spot
+	// is measured, no disc ships.
+	const at=DEV_MODE&&new URLSearchParams(location.search).get("radalt"); if(!at) return;
+	const [y,z]=at.split(",").map(Number); if(!isFinite(y)||!isFinite(z)) return;
+	const box={ lo:new THREE.Vector3(6.20,y-0.04,z-0.04), hi:new THREE.Vector3(6.25,y+0.04,z+0.04) };
 	const canvas=document.createElement("canvas"); canvas.width=canvas.height=160;
-	const tex=new THREE.CanvasTexture(canvas);
+	const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;
 	const mesh=new THREE.Mesh(new THREE.CircleGeometry(0.040,36),
 		new THREE.MeshBasicMaterial({ map:tex, side:THREE.DoubleSide, toneMapped:false }));
-	mesh.position.copy(c);
-	const at=g.localToWorld(new THREE.Vector3(eye.x,eye.y,0));   // lookAt wants WORLD space; eye is group-local
-	g.add(mesh); mesh.lookAt(at); g.remove(mesh);
-	mesh.position.addScaledVector(new THREE.Vector3(eye.x-c.x,eye.y-c.y,-c.z).normalize(),0.004);   // proud of the painted face
-	mesh.layers.set(LAYER_OWN); g.add(mesh);
+	surface_pose(g,mesh,box,surface_fit(g,box));
+	g.add(mesh);
 	g.userData.radalt={ mesh, canvas, tex, last:0 };
 	radalt_draw(g.userData.radalt, 1e9); }
 function radalt_draw(r, agl){
@@ -1083,41 +1136,133 @@ function radalt_draw(r, agl){
 		x.strokeStyle="#f0f0e8"; x.lineWidth=4;
 		x.beginPath(); x.moveTo(C-Math.cos(ang)*10,C-Math.sin(ang)*10); x.lineTo(C+Math.cos(ang)*54,C+Math.sin(ang)*54); x.stroke(); }
 	r.tex.needsUpdate=true; }
-// DDI/MPCD pages (#99 realism): the three screen meshes exist but are bare dark
-// glass; each gets its own cloned unlit material and canvas — engine page left,
-// ADI right, HSI with the carrier TACAN on the MPCD. Redrawn throttled, and
-// only while the cockpit view is up.
+// DDI/AMPCD screens (#99): the three screen meshes exist in the GLB but are
+// bare dark glass; each gets a canvas quad proud of its pane, drawn by the
+// shared page renderers below. left/right are the monochrome DDIs, center the
+// colour-capable AMPCD.
 function build_screens(g){
 	if(g.userData.screens&&g.userData.screens.every(sc=>sc.mesh.parent)) return;
-	const spec=[ ["Object_1045","eng"], ["Object_1048","adi"], ["Object_1051","hsi"] ];
+	const spec=[ ["Object_1045","left"], ["Object_1048","right"], ["Object_1051","center"] ];
 	const list=[];
-	const eye=g.userData.eye||{x:3.0,y:0.6};
-	for(const [name,page] of spec){ const node=g.getObjectByName(name); if(!node) continue;
-		const box=new THREE.Box3().setFromObject(node), c=box.getCenter(new THREE.Vector3()), sz=box.getSize(new THREE.Vector3());
-		g.worldToLocal(c);
-		const w=Math.max(sz.x,sz.z)*0.92, h=sz.y*0.92;   // just inside the bezel
+	for(const [name,display] of spec){ const node=g.getObjectByName(name); if(!node) continue;
+		const box=node_box(g,node); if(!box) continue;
+		const fit=surface_fit(g,box);
+		const w=(box.hi.z-box.lo.z)*0.92, h=(box.hi.y-box.lo.y)*0.92/Math.cos(fit?fit.tilt:0);   // just inside the bezel; height measured up the lean
 		const canvas=document.createElement("canvas"); canvas.width=canvas.height=512;
-		const tex=new THREE.CanvasTexture(canvas);
+		const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false;   // the default filter would REGENERATE mipmaps on every upload
+		const flat=DEV_MODE&&new URLSearchParams(location.search).get("ddiflat");   // &ddiflat=1: untextured magenta quads — separates a mesh-render problem from a texture problem
 		const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h),
-			new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, side:THREE.DoubleSide }));
-		mesh.position.copy(c);
-		const at=g.localToWorld(new THREE.Vector3(eye.x,eye.y,0));   // face the pilot, proud of the recess glass
-		g.add(mesh); mesh.lookAt(at);
-		mesh.position.addScaledVector(new THREE.Vector3(eye.x-c.x,eye.y-c.y,-c.z).normalize(),0.006);
-		mesh.layers.set(LAYER_OWN);
-		list.push({ mesh, canvas, tex, page }); }
-	if(list.length) g.userData.screens=list; }
+			flat?new THREE.MeshBasicMaterial({ color:0xff00ff, side:THREE.DoubleSide })
+			:new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, side:THREE.DoubleSide }));
+		surface_pose(g,mesh,box,fit);
+		g.add(mesh);
+		list.push({ mesh, canvas, tex, display, height:h, fit:fit?[+fit.x.toFixed(3),+(fit.tilt/D2R).toFixed(1)]:null, stack:fit?fit.stack:null,
+			box:[box.lo.x,box.lo.y,box.lo.z,box.hi.x,box.hi.y,box.hi.z].map(n=>+n.toFixed(3)) }); }
+	if(list.length){ g.userData.screens=list; for(const sc of list) ddi_blit(sc); } }
+// ---- DDI/AMPCD paging (#99): per-display page state drawn by size-agnostic
+// renderers in a 512-logical space — every consumer (the pit quads now; the
+// full-screen DDI view and HUD repeater later) scales the same draw onto its
+// own canvas at its own resolution. Twenty pushbuttons ring each display (1-5
+// up the left, 6-10 across the top, 11-15 down the right, 16-20 across the
+// bottom right to left); MENU lives at PB18 and alternates the TAC and SUPT
+// menus, like the real jet. Legends are cockpit verbatim — English by the
+// annunciator policy. Menu entries whose page has no backing system yet draw
+// dim and inert, never faked.
+const ddi_state={ left:{page:"eng",menu:""}, right:{page:"adi",menu:""}, center:{page:"hsi",menu:""} };
+let ddi_dirty=false;   // a pushbutton press redraws NOW — the 120 ms cadence would read as a stuck button
+const DDI_MENUS={   // [pushbutton, legend, page] — page "" = not built yet
+	tac:[ [6,"HUD",""],[7,"RDR",""],[8,"SA","sa"],[9,"SMS",""],[10,"EW",""] ],
+	supt:[ [6,"ADI","adi"],[7,"HSI","hsi"],[8,"ENG","eng"],[9,"FUEL",""],[10,"FCS",""],[11,"CHKLST",""],[12,"FPAS",""],[13,"BIT",""],[14,"MUMI",""] ] };
+function button_of(lx,ly){   // 512-space point -> pushbutton number, 0 between slots (five 80 px slots along the 56..456 span of each edge)
+	const slot=v=>{ const k=Math.floor((v-56)/80); return k>=0&&k<5?k:-1; };
+	if(ly<56){ const k=slot(lx); return k<0?0:6+k; }
+	if(lx>456){ const k=slot(ly); return k<0?0:11+k; }
+	if(ly>456){ const k=slot(lx); return k<0?0:20-k; }
+	if(lx<56){ const k=slot(ly); return k<0?0:5-k; }
+	return 0; }
+function ddi_legend(x,pb,text,on,current){   // on=false: dim, inert; current: boxed
+	x.save(); x.font="20px monospace"; x.textBaseline="middle"; x.globalAlpha=on?1:0.4;
+	let tx=0,ty=0;
+	if(pb<=5){ x.textAlign="left"; tx=10; ty=96+80*(5-pb); }
+	else if(pb<=10){ x.textAlign="center"; tx=96+80*(pb-6); ty=30; }
+	else if(pb<=15){ x.textAlign="right"; tx=502; ty=96+80*(pb-11); }
+	else { x.textAlign="center"; tx=96+80*(20-pb); ty=482; }
+	x.fillText(text,tx,ty);
+	if(current){ const w=x.measureText(text).width;
+		const bx=x.textAlign==="left"?tx:x.textAlign==="right"?tx-w:tx-w/2;
+		x.strokeRect(bx-6,ty-14,w+12,28); }
+	x.restore(); }
+function ddi_press(display,pb){   // true when the press did something (consumes the click)
+	const st=ddi_state[display]; if(!st||!pb) return false;
+	if(pb===18){ st.menu=st.menu==="tac"?"supt":"tac"; ddi_dirty=true; return true; }   // MENU alternates the two menus
+	if(st.menu){ const row=DDI_MENUS[st.menu].find(r=>r[0]===pb);
+		if(row&&row[2]){ ddi_state[display]={ page:row[2], menu:"" }; ddi_dirty=true; } return !!(row&&row[2]); }
+	const p=DDI_PAGES[st.page];
+	if(p&&p.press&&p.press(pb,display)){ ddi_dirty=true; return true; }   // page-owned pushbuttons
+	return false; }
+function ddi_render(x,size,display){   // size-agnostic: draws the display's current face into ANY square canvas
+	const s=size/512; x.setTransform(s,0,0,s,0,0);
+	x.globalAlpha=1; x.fillStyle="#050b06"; x.fillRect(0,0,512,512);
+	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="26px monospace"; x.textAlign="center"; x.textBaseline="middle";
+	const st=ddi_state[display];
+	if(st.menu){ x.fillText(st.menu==="tac"?"TAC":"SUPT",256,256);
+		for(const [pb,label,page] of DDI_MENUS[st.menu]) ddi_legend(x,pb,label,!!page,!!page&&page===st.page); }
+	else{ const p=DDI_PAGES[st.page]; if(p) p.draw(x,display); }
+	ddi_legend(x,18,"MENU",true,!!st.menu); }
+function ddi_blit(sc){ const x=sc.canvas.getContext("2d"); ddi_render(x,sc.canvas.width,sc.display); sc.tex.needsUpdate=true; }
+const DDI_STEPS=[256,512,1024];
+const _sv1=new THREE.Vector3(), _sv2=new THREE.Vector3();
 let screens_last=0;
 function screens_update(){
 	const list=ownship.group.userData.screens; if(!list||cfg.view!=="cockpit") return;
-	const now=performance.now(); if(now-screens_last<120) return; screens_last=now;
-	const gz=ownship.gauges||{};
-	for(const sc of list){ ddi_draw(sc, gz); sc.tex.needsUpdate=true; } }
-function ddi_page_frame(x){ x.fillStyle="#050b06"; x.fillRect(0,0,512,512);
-	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="26px monospace"; x.textAlign="center"; x.textBaseline="middle"; }
-function ddi_draw(sc, gz){
-	const x=sc.canvas.getContext("2d"); ddi_page_frame(x);
-	if(sc.page==="eng"){ x.fillText("ENG",256,36);
+	const now=performance.now(); if(!ddi_dirty&&now-screens_last<120) return; screens_last=now; ddi_dirty=false;
+	const dpr=Math.min(devicePixelRatio||1,2);
+	for(const sc of list){
+		// variable resolution: the canvas follows the quad's projected on-screen
+		// height (stepped, with hysteresis against zoom flutter) — crisp zoomed
+		// in for page work, cheap texture uploads zoomed out
+		_sv1.set(0,sc.height/2,0).applyMatrix4(sc.mesh.matrixWorld).project(cockpit_cam);
+		_sv2.set(0,-sc.height/2,0).applyMatrix4(sc.mesh.matrixWorld).project(cockpit_cam);
+		const px=Math.abs(_sv1.y-_sv2.y)*0.5*HH*dpr, cur=sc.canvas.width;
+		if(px>cur*1.15||px<cur*0.45){ const want=DDI_STEPS.find(v=>v>=px)||1024;
+			if(want!==cur) sc.canvas.width=sc.canvas.height=want; }
+		ddi_blit(sc); } }
+// Pages may declare optional handlers beyond draw: press(pb,display) for
+// page-owned bezel buttons, and range(direction)/reset() which the DDI view
+// routes the wheel, −/= and 0 into (wheel-up = range in, the map's wheel
+// semantics; 0 puts the page's transient state back to defaults).
+const DDI_PAGES={ eng:{draw:ddi_eng}, adi:{draw:ddi_adi}, hsi:{draw:ddi_hsi,range:hsi_range,reset:hsi_reset,press:hsi_press},
+	sa:{draw:ddi_sa,range:sa_range,reset:sa_reset,press:sa_press} };
+// ---- HSI page state (#99 pages): ONE nav picture shared by every display
+// showing the format, like the jet's single nav solution. The rose ring sits
+// at HALF the selected scale; DCTR slides the rose down so the scale ahead
+// grows; the TAMMAC-style map underlay is AMPCD-only (the DDIs are monochrome
+// and map-less in the real jet).
+const HSI_SCALES=[5,10,20,40,80,160];
+const hsi_state={ scale:40, dctr:false, map:true };
+function hsi_range(direction){ const i=HSI_SCALES.indexOf(hsi_state.scale);
+	hsi_state.scale=HSI_SCALES[THREE.MathUtils.clamp(i-Math.sign(direction),0,HSI_SCALES.length-1)]; }   // zoom-in steps the scale DOWN
+function hsi_reset(){ hsi_state.scale=40; }   // 0: range to default — DCTR and MAP are pilot layout choices and stay
+function hsi_press(pb,display){
+	if(pb===4){ hsi_range(-1); return true; }   // ↑ scale out
+	if(pb===3){ hsi_range(1); return true; }    // ↓ scale in
+	if(pb===9){ hsi_state.dctr=!hsi_state.dctr; return true; }
+	if(pb===6&&display==="center"){ hsi_state.map=!hsi_state.map; return true; }
+	return false; }
+// ---- SA page state (#99 pages): the datalink-style tactical picture, its own
+// scale independent of the HSI's. It shows exactly what the client already
+// knows — the SP bandit, MP remotes, the boat — never sensor truth the server
+// does not provide (the tactical map is the ceiling on its information).
+const sa_state={ scale:20 };
+function sa_range(direction){ const i=HSI_SCALES.indexOf(sa_state.scale);
+	sa_state.scale=HSI_SCALES[THREE.MathUtils.clamp(i-Math.sign(direction),0,HSI_SCALES.length-1)]; }
+function sa_reset(){ sa_state.scale=20; }
+function sa_press(pb){
+	if(pb===4){ sa_range(-1); return true; }
+	if(pb===3){ sa_range(1); return true; }
+	return false; }
+function ddi_eng(x){ const gz=ownship.gauges||{};
+	x.fillText("ENG",256,36);
 		x.font="24px monospace"; x.textAlign="right";
 		const rows=[["N2 %",gz.rpmL,gz.rpmR,0],["EGT C",gz.egtL,gz.egtR,0],["FF PPH",(gz.flowL||0)*10,(gz.flowR||0)*10,-1],["NOZ %",100*Math.max((0.7-(gz.spoolL||0))/0.55,gz.reheatL||0),100*Math.max((0.7-(gz.spoolR||0))/0.55,gz.reheatR||0),0],["OIL PSI",55+10*(gz.spoolL||0),55+10*(gz.spoolR||0),0]];
 		let y=110;
@@ -1126,9 +1271,9 @@ function ddi_draw(sc, gz){
 			x.textAlign="right"; x.fillText(String(Math.round((L||0)/(round<0?10:1))*(round<0?10:1)),230,y);
 			x.fillText(String(Math.round((R||0)/(round<0?10:1))*(round<0?10:1)),370,y);
 			x.textAlign="left"; x.font="20px monospace"; x.fillText(label,30,y); x.font="24px monospace"; y+=64; }
-		x.textAlign="center"; x.font="24px monospace";
-		x.fillText("FUEL "+Math.round((gz.fuelRaw||0)/10)*10+" LB",256,460); return; }
-	if(sc.page==="adi"){ const bank=gz.bank||0, pitch=gz.pitch||0, ppd=6;
+		x.textAlign="left"; x.font="24px monospace";
+		x.fillText("FUEL "+Math.round((gz.fuelRaw||0)/10)*10+" LB",24,470); }   // left column — clear of the MENU legend
+function ddi_adi(x){ const gz=ownship.gauges||{}; const bank=gz.bank||0, pitch=gz.pitch||0, ppd=6;
 		x.save(); x.translate(256,240); x.rotate(-bank);
 		const off=pitch/D2R*ppd;
 		x.fillStyle="#123a5e"; x.fillRect(-400,-400+off,800,400);   // sky
@@ -1151,16 +1296,41 @@ function ddi_draw(sc, gz){
 			const gs=THREE.MathUtils.clamp(dev.gs,-1,1), az=THREE.MathUtils.clamp(dev.az,-1,1);
 			x.beginPath(); x.moveTo(80,240+gs*120); x.lineTo(140,240+gs*120); x.stroke();
 			x.beginPath(); x.moveTo(256+az*120,340); x.lineTo(256+az*120,400); x.stroke(); }
-		return; }
-	// hsi
-	const hdg=gz.heading||0;
+	}
+function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0;
+	const scale=hsi_state.scale, cy=hsi_state.dctr?356:266, R=196;
+	const ppm=R/(scale*NM/2);   // pixels per metre: the rose ring sits at HALF the selected scale
+	// TAMMAC-style underlay, AMPCD only: the same Midway coastline / airport /
+	// carrier set the tactical map draws, ownship-centred and heading-up, in
+	// muted chart colours so the symbology stays on top of it.
+	if(display==="center"&&hsi_state.map){ x.save();
+		x.beginPath(); x.arc(256,cy,R+34,0,Math.PI*2); x.clip();
+		x.translate(256,cy); x.rotate(-hdg);
+		x.fillStyle="#33402f"; x.strokeStyle="#55684e"; x.lineWidth=1.5;
+		for(const polygon of island_polygons||[]){ x.beginPath();
+			for(let k=0;k<polygon.length;k++){ const sx=wrap_axis(polygon[k][0]-ownship.pos.x)*ppm, sy=wrap_axis(polygon[k][1]-ownship.pos.z)*ppm;
+				if(k===0) x.moveTo(sx,sy); else x.lineTo(sx,sy); }
+			x.closePath(); x.fill(); x.stroke(); }
+		x.strokeStyle="#8a94a0"; x.lineWidth=3;
+		for(const ap of airports||[]){ const ax=wrap_axis(ap.x-ownship.pos.x)*ppm, az=wrap_axis(ap.z-ownship.pos.z)*ppm, len=Math.max(4,1300*ppm);
+			x.beginPath(); x.moveTo(ax-ap.dir.x*len,az-ap.dir.z*len); x.lineTo(ax+ap.dir.x*len,az+ap.dir.z*len); x.stroke(); }
+		{ const kx=wrap_axis(CARRIER.x-ownship.pos.x)*ppm, kz=wrap_axis(CARRIER.z-ownship.pos.z)*ppm;
+			x.fillStyle="#ffd27a"; x.fillRect(kx-6,kz-6,12,12); }   // the boat, in the AMPCD's colour licence
+		x.restore(); }
 	x.fillText(String(Math.round(hdg/D2R+360)%360).padStart(3,"0"),256,30);
-	x.save(); x.translate(256,266);
-	x.strokeStyle="#39e07a"; x.lineWidth=2; x.font="20px monospace";
+	x.save(); x.translate(256,cy);
+	x.strokeStyle="rgba(57,224,122,0.45)"; x.lineWidth=1.5;   // rose ring (half scale) and the quarter-scale ring inside it
+	x.beginPath(); x.arc(0,0,R,0,Math.PI*2); x.stroke();
+	x.strokeStyle="rgba(57,224,122,0.22)";
+	x.beginPath(); x.arc(0,0,R/2,0,Math.PI*2); x.stroke();
+	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="20px monospace"; x.textAlign="center";
 	for(let d=0;d<360;d+=30){ const a=(d*D2R)-hdg-Math.PI/2;
-		const cx=Math.cos(a), cy=Math.sin(a);
-		x.beginPath(); x.moveTo(cx*196,cy*196); x.lineTo(cx*180,cy*180); x.stroke();
-		x.fillText(d%90===0?"NESW"[d/90]:String(d/10),cx*158,cy*158); }
+		const cx=Math.cos(a), cyy=Math.sin(a);
+		x.beginPath(); x.moveTo(cx*196,cyy*196); x.lineTo(cx*180,cyy*180); x.stroke();
+		x.fillText(d%90===0?"NESW"[d/90]:String(d/10),cx*158,cyy*158); }
+	if(gz.track!=null){ const a=gz.track-hdg, tx=Math.sin(a)*R, ty=-Math.cos(a)*R;   // ground-track diamond on the rim — the gap off the lubber line is drift
+		x.lineWidth=2.5;
+		x.beginPath(); x.moveTo(tx,ty-9); x.lineTo(tx+7,ty); x.lineTo(tx,ty+9); x.lineTo(tx-7,ty); x.closePath(); x.stroke(); }
 	const dx=CARRIER.x-ownship.pos.x, dz=CARRIER.z-ownship.pos.z;
 	const brg=Math.atan2(dx,-dz), rel=brg-hdg;   // world bearing in the heading convention, relative to the nose
 	x.rotate(rel); x.strokeStyle="#ffd24a"; x.lineWidth=5;   // TACAN pointer to the boat
@@ -1168,9 +1338,51 @@ function ddi_draw(sc, gz){
 	x.beginPath(); x.moveTo(-12,-172); x.lineTo(0,-196); x.lineTo(12,-172); x.stroke();
 	x.restore();
 	x.strokeStyle="#39e07a"; x.lineWidth=3;   // ownship symbol
-	x.beginPath(); x.moveTo(256,246); x.lineTo(246,282); x.lineTo(266,282); x.closePath(); x.stroke();
-	x.font="22px monospace"; x.textAlign="center";
-	x.fillText("TCN "+(Math.hypot(dx,dz)/1852).toFixed(1)+" NM",256,486); }
+	x.beginPath(); x.moveTo(256,cy-20); x.lineTo(246,cy+16); x.lineTo(266,cy+16); x.closePath(); x.stroke();
+	ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false);   // range scale arrows, the scale value between them
+	x.fillStyle="#39e07a"; x.font="20px monospace"; x.textAlign="left";
+	x.fillText(String(scale),14,216);
+	if(display==="center") ddi_legend(x,6,"MAP",true,hsi_state.map);
+	ddi_legend(x,9,"DCTR",true,hsi_state.dctr);
+	if(gz.ground>50) x.fillText("GS "+Math.round(gz.ground),24,64);
+	const rngnm=Math.hypot(dx,dz)/NM;   // TACAN block: bearing / range / minutes to the boat at present groundspeed — two short lines in the corner, clear of the MENU legend
+	x.font="20px monospace";
+	x.fillText("TCN "+String(Math.round(brg/D2R+360)%360).padStart(3,"0"),24,458);
+	let tline=rngnm.toFixed(1)+" NM";
+	if(gz.ground>50) tline+="  "+Math.max(0,Math.round(rngnm/gz.ground*60))+" MIN";
+	x.fillText(tline,24,486); }
+function ddi_sa(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0;
+	const scale=sa_state.scale, cy=266, R=196, ppm=R/(scale*NM/2);
+	const colour=display==="center";   // team colours on the AMPCD; the DDIs stay monochrome green
+	x.fillText(String(Math.round(hdg/D2R+360)%360).padStart(3,"0"),256,30);
+	x.save(); x.translate(256,cy);
+	x.strokeStyle="rgba(57,224,122,0.45)"; x.lineWidth=1.5;   // half- and quarter-scale rings, ticks only — the SA picture stays uncluttered, the HSI owns full nav
+	x.beginPath(); x.arc(0,0,R,0,Math.PI*2); x.stroke();
+	x.strokeStyle="rgba(57,224,122,0.22)";
+	x.beginPath(); x.arc(0,0,R/2,0,Math.PI*2); x.stroke();
+	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="18px monospace"; x.textAlign="center";
+	for(let d=0;d<360;d+=30){ const a=(d*D2R)-hdg-Math.PI/2;
+		x.beginPath(); x.moveTo(Math.cos(a)*196,Math.sin(a)*196); x.lineTo(Math.cos(a)*184,Math.sin(a)*184); x.stroke();
+		if(d===0) x.fillText("N",Math.cos(a)*166,Math.sin(a)*166+6); }
+	x.rotate(-hdg);   // heading-up frame: contacts draw at their north-up offsets
+	const jet=(wx,wz,fx,fz,c,label)=>{ const dx=wrap_axis(wx-ownship.pos.x)*ppm, dz=wrap_axis(wz-ownship.pos.z)*ppm;
+		if(Math.hypot(dx,dz)>R+14) return;   // outside the scale: not shown, like the real format
+		const fl=Math.hypot(fx,fz)||1, ux=fx/fl, uz=fz/fl, rx=-uz, rz=ux;
+		x.fillStyle=c; x.beginPath();
+		x.moveTo(dx+ux*11,dz+uz*11); x.lineTo(dx-ux*7+rx*6,dz-uz*7+rz*6); x.lineTo(dx-ux*7-rx*6,dz-uz*7-rz*6); x.closePath(); x.fill();
+		if(label){ x.save(); x.translate(dx,dz); x.rotate(hdg); x.font="14px monospace"; x.fillText(label,0,24); x.restore(); } };   // labels unrotate to stay upright
+	{ const kx=wrap_axis(CARRIER.x-ownship.pos.x)*ppm, kz=wrap_axis(CARRIER.z-ownship.pos.z)*ppm;   // the boat
+		if(Math.hypot(kx,kz)<=R+14){ x.fillStyle=colour?"#ffd27a":"#39e07a"; x.fillRect(kx-5,kz-5,10,10); } }
+	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
+			const team=net.teams.get(slot)||"";
+			jet(st.pos.x,st.pos.z,st.fwd.x,st.fwd.z,colour?(team==="red"?"#ff5a48":team==="blue"?"#5a86ff":"#ffb04a"):"#39e07a",st.name||net.names.get(slot)||""); } }
+	else if(has_enemy&&bandit.group.visible) jet(bandit.pos.x,bandit.pos.z,bandit.fwd.x,bandit.fwd.z,colour?"#ffb04a":"#39e07a","");
+	x.restore();
+	x.strokeStyle=colour?"#ffffff":"#39e07a"; x.lineWidth=3;   // ownship
+	x.beginPath(); x.moveTo(256,cy-14); x.lineTo(248,cy+12); x.lineTo(264,cy+12); x.closePath(); x.stroke();
+	ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false);
+	x.fillStyle="#39e07a"; x.font="20px monospace"; x.textAlign="left";
+	x.fillText(String(scale),14,216); }
 const MISSILE_NODES=["Object_145","Object_542"];   // the two wingtip AIM-9 NODES in the fa18c GLB (the mesh-level names Object_114/29 are not in the scene graph — a silent getObjectByName miss); LAU-7 rails stay with the wing. Hidden per missiles-remaining for empty rails after firing, or entirely on a guns-only loadout
 function update_rails(st,count){ if(!st.group) return;
 	for(let i=0;i<MISSILE_NODES.length;i++){ const node=st.group.getObjectByName(MISSILE_NODES[i]); if(node) node.visible=i<count; } }
@@ -2217,7 +2429,6 @@ function position_aircraft_lights(){   // pin the lights to the real airframe: c
 	else L.nose={x:xmax-3.5, y:-1.2};
 	set(L.landing[0], L.nose.x, L.nose.y, nose.z);   // landing light on the nose gear strut (as on the real Hornet), so it exists only with the gear down
 }
-const SCREENS_WIP=false;   // DDI pages + radar-altimeter disc: built but not yet placed correctly — see build_indexer's tail
 let build_error="";   // first cockpit-builder failure, surfaced via dev_probe
 const instrument_mats=[];   // the two gauge-atlas materials, per loaded model — backlight follows night + the lights switch
 let backlight_state="";
@@ -2306,6 +2517,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 	flow_state={t, fuel:out[STATE.fuel]||0, pph:flow_state.pph};
 	const sL=THREE.MathUtils.clamp(out[STATE.engine]||0,0,1), sR=THREE.MathUtils.clamp(out[STATE.engine+2]||0,0,1);
 	const rL=THREE.MathUtils.clamp(out[STATE.engine+1]||0,0,1), rR=THREE.MathUtils.clamp(out[STATE.engine+3]||0,0,1);
+	const vx=out[STATE.velocity]||0, vz=out[STATE.velocity+2]||0, vh=Math.hypot(vx,vz);   // horizontal velocity: HSI ground track and groundspeed
 	const now=new Date();
 	ownship.gauges={
 		pitch:Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1)),
@@ -2326,7 +2538,8 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		cabin:Math.min(altitude,8000+Math.max(0,altitude-8000)*0.35)*(5.2/50000),   // ECS schedule: sea-level cabin to 8k, then bleed up
 		volts:(sL+sR)>0.03?1.86:1.55,                            // generators 28 V / battery 24 V on the ±143° dual voltmeter
 		clockH:(now.getHours()%12)+now.getMinutes()/60, clockM:now.getMinutes()+now.getSeconds()/60, clockS:now.getSeconds(),
-		casKt:cas, fpm, spoolL:sL, spoolR:sR, reheatL:rL, reheatR:rR, fuelRaw:lbs };
+		casKt:cas, fpm, spoolL:sL, spoolR:sR, reheatL:rL, reheatR:rR, fuelRaw:lbs,
+		track:vh>2?Math.atan2(vx,-vz):null, ground:vh*1.944 };   // track null at taxi speeds — the diamond parks off the rose rather than swinging with tyre scrub
 	lamps_update(out);
 	const ind=ownship.group.userData.indexer;
 	if(ind){ const devd=(out[STATE.alpha]||0)/D2R-8.1;   // Control.Onspeed, the PA on-speed alpha datum (trim.go)
@@ -2409,9 +2622,10 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyX"){ const u=cloud_mat.uniforms.uDebug; u.value=u.value>0.5?0:1; }   // Shift+X (dev, moved off Shift+C for the canopy): keep the cloud render path but zero the cloud contribution — the definitive plumbing-vs-cloud-light A/B
 		else if(!e.shiftKey){ if(k==="Digit1") set_view("cockpit");   // 1 Cockpit — plain digits ONLY: the else fell through for every Shift+Digit, so starting scenario 1 (Shift+1) ALSO flipped the view to cockpit on every landing test (#72)
 			if(k==="Digit2") set_view("hud");        // 2 HUD (default start view)
-			if(k==="Digit3") set_view("chase");      // 3 Chase
-			if(k==="Digit4") set_view("flypast");    // 4 Flypast
-			if(k==="Digit5") set_view("padlock"); }  // 5 Padlock
+			if(k==="Digit3") set_view("ddi");        // 3 DDI — one display full screen; re-press cycles left/right/AMPCD
+			if(k==="Digit4") set_view("chase");      // 4 Chase
+			if(k==="Digit5") set_view("flypast");    // 5 Flypast
+			if(k==="Digit6") set_view("padlock"); }  // 6 Padlock — head-forward views on 1-3, external on 4-6
 		if(ch===key_of("view")) set_view(cfg.view==="cockpit"?"hud":"cockpit");   // V: Cockpit↔HUD fast-swap (any other view → Cockpit)
 		if(ch===key_of("view.reset")) view_reset();   // 0: put THIS view back to its defaults — zoom, head, and the chase orbit
 		if(ch===key_of("zoom.in")&&(map_on||cfg.view!=="chase")) zoom_step(1);     // =/− zoom every view optically; chase keeps them for the orbit distance, its wheel already zooms. Edge-triggered here, and HELD keys sweep continuously from read_input below
@@ -2423,13 +2637,17 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("lights") && !dev_parked){ ownship.lights=!ownship.lights; }   // aircraft position/strobe/landing lights
 
 		if(ch===key_of("brake.speed")){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
-		if(ch===key_of("flaps")){ flap_select=(flap_select+1)%3; notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // N: the flap switch AUTO/HALF/FULL (verbatim like the annunciators: cockpit switch legends read English everywhere)
+		if(ch===key_of("flaps.extend")&&flap_select<2){ flap_select++; notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // F: one notch toward FULL, no wrap — a cycle's worst moment was FULL wrapping to AUTO on short final
+		if(ch===key_of("flaps.retract")&&flap_select>0){ flap_select--; notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // Shift+F: one notch toward AUTO (the switch legends read verbatim English, like the annunciators)
+		if(ch===key_of("brake.parking")){ parking=!parking; notice(translate(parking?"PARK BRAKE":"PARK BRAKE OFF")); }   // Shift+B: strictly manual, like the real handle
+		if(ch===key_of("trim.reset")){ reset_flag=true; }   // unbound by default: zero both trim datums, re-datum the hold
 		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; audio_servo(); }   // G: landing gear up/down — only once airborne, never on deck/runway
 		if(ch===key_of("atc")){ if(atc_on) atc_on=false; else if(ownship.gearTarget<0.5 && !on_ground()){ atc_on=true; atc_alpha=ownship.aoa;   // gearTarget 0=down 1=up — the polarity was inverted here, so ATC only ever engaged CLEAN and refused on every real approach
 			if(pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; } } }   // P: Approach Power Compensator (#202) — engages only in the landing configuration (gear down, airborne); toggling off is always allowed. Engaging takes the throttle back from an armed physical lever (same as the keyboard keys at the throttling take-back) — a lever is armed from mission start, so without this ATC disengaged the same frame it engaged; the next DELIBERATE lever sweep re-arms and disengages, the real jet's throttle-grip force-override
 		if(ch===key_of("menu") && running){ if(onMenu) onMenu(); else exit_match(); } }   // Esc: the in-game menu popup (#84); the popup exits via exit_match, and a host without a popup falls back to the old immediate exit
-	keys.add(k); }, { signal });
-addEventListener("keyup",e=>keys.delete(e.code),{ signal });
+	keys.add(k); if(e.shiftKey) keys.add("Shift+"+k); }, { signal });   // chords live in the held set too: trim's Shift pairs are HELD actions, not edges
+addEventListener("keyup",e=>{ keys.delete(e.code); keys.delete("Shift+"+e.code);
+	if(e.code==="ShiftLeft"||e.code==="ShiftRight") for(const held of [...keys]) if(held.startsWith("Shift+")) keys.delete(held); },{ signal });
 addEventListener("blur",()=>keys.clear(),{ signal });
 addEventListener("pagehide",()=>{ if(MULTIPLAYER) net_finish("left"); },{ signal });   // closing/navigating the tab sends a clean leave — otherwise the QUIC connection lingers as a ghost player (the browser ACKs snapshots even with the page dead)
 
@@ -2437,19 +2655,34 @@ addEventListener("pagehide",()=>{ if(MULTIPLAYER) net_finish("left"); },{ signal
 // cam_az/cam_el with the keyboard orbit and holding on release (no spring-back). Left
 // button only (fire stays Space); never in HUD. Pointer capture — not pointer lock, which
 // the sandboxed shell iframe can block. Zoom stays on -/= (not the wheel), so no wheel handler.
-let dragging=false, drag_x=0, drag_y=0;
-stage.addEventListener("pointerdown",e=>{ if(e.button!==0 || (cfg.view!=="chase"&&cfg.view!=="cockpit")) return;
-	dragging=true; head_drag=(cfg.view==="cockpit"); drag_x=e.clientX; drag_y=e.clientY; try{ stage.setPointerCapture(e.pointerId); }catch(_){ /* pointer capture optional */ } e.preventDefault(); }, { signal });
+let dragging=false, drag_x=0, drag_y=0, press_moved=0;
+stage.addEventListener("pointerdown",e=>{ if(cfg.view==="ddi"){ if(e.button===0&&running&&!map_on) ddi_view_click(e); e.preventDefault(); return; }   // full-screen bezel presses, immediate on the down edge (no drag semantics head-down)
+	if(e.button!==0 || (cfg.view!=="chase"&&cfg.view!=="cockpit")) return;
+	dragging=true; head_drag=(cfg.view==="cockpit"); drag_x=e.clientX; drag_y=e.clientY; press_moved=0; try{ stage.setPointerCapture(e.pointerId); }catch(_){ /* pointer capture optional */ } e.preventDefault(); }, { signal });
 stage.addEventListener("pointermove",e=>{ if(!dragging) return;
-	const dx=e.clientX-drag_x, dy=e.clientY-drag_y; drag_x=e.clientX; drag_y=e.clientY;
+	const dx=e.clientX-drag_x, dy=e.clientY-drag_y; drag_x=e.clientX; drag_y=e.clientY; press_moved+=Math.abs(dx)+Math.abs(dy);
 	const f=0.005;   // radians per pixel (the sensitivity slider is gone: one constant fits, and the setting only ever scaled THIS — players kept reading it as a flight-control gain)
 	if(head_drag){ head_az=THREE.MathUtils.clamp(head_az-dx*f,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+dy*f,-1.047,1.396); return; }   // cockpit head look (#99): ±150° az, −60/+80° el; snap-back runs on release
 	cam_az-=dx*f; cam_el=THREE.MathUtils.clamp(cam_el+dy*f,-1.2,1.45); }, { signal });   // both axes reversed (grab-the-world feel): drag right = orbit left, drag up = camera lowers
 function end_drag(e){ if(!dragging) return; dragging=false; head_drag=false; try{ stage.releasePointerCapture(e.pointerId); }catch(_){ /* release optional */ } }
-stage.addEventListener("pointerup",end_drag,{ signal });
+stage.addEventListener("pointerup",e=>{ const pressed=dragging&&head_drag&&press_moved<6; end_drag(e); if(pressed) pit_click(e); },{ signal });
+// A stationary press-release in the pit is a pushbutton CLICK, not a head look
+// (movement past a few px stays a drag, with its snap-back): raycast the
+// pointer through the near camera at the DDI quads and press the bezel
+// button under the hit.
+const _click_ray=new THREE.Raycaster(); _click_ray.layers.enable(LAYER_OWN);
+const _click_at=new THREE.Vector2();
+function pit_click(e){
+	if(map_on||!running) return;
+	const list=ownship.group.userData.screens; if(!list) return;
+	_click_ray.setFromCamera(_click_at.set((e.clientX/HW)*2-1,-(e.clientY/HH)*2+1),cockpit_cam);
+	const hit=_click_ray.intersectObjects(list.map(sc=>sc.mesh),false)[0]; if(!hit||!hit.uv) return;
+	const sc=list.find(s=>s.mesh===hit.object);
+	if(ddi_press(sc.display,button_of(hit.uv.x*512,(1-hit.uv.y)*512))) screens_update(); }   // dirty redraw NOW — a press must answer this frame
 // zoom_step: one discrete notch of zoom (trim-wheel button pulse or scroll notch).
 function zoom_step(direction){
 	if(map_on){ map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,-direction),MAP_RANGE_MIN,MAP_RANGE_MAX); return; }
+	if(cfg.view==="ddi"){ ddi_range(direction); return; }   // no optical zoom on a flat panel — the notch goes to the focused page's range scale
 	if(running){ zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.5,direction),zoom_floor(),4); zoom_persist(); } }   // 1.25 -> 1.5 per notch: floor to ceiling in ~5 notches instead of ~8
 // view_reset returns the CURRENT view to how it starts: zoom back to 1x, the
 // head back to boresight, and the chase orbit back to its shoulder. Per-view,
@@ -2457,10 +2690,17 @@ function zoom_step(direction){
 // player set up earlier, and the zoom is persisted per view anyway (#209).
 function view_reset(){
 	if(map_on){ map_range=MAP_RANGE_DEFAULT; return; }
+	if(cfg.view==="ddi"){ const p=DDI_PAGES[ddi_state[ddi_focus()].page];
+		if(p&&p.reset){ p.reset(); ddi_dirty=true; ddi_view_last=0; } return; }   // 0 head-down: the focused page's transients back to defaults
 	zoom_target=THREE.MathUtils.clamp(1,zoom_floor(),4); zoom_persist();
 	head_az=0; head_el=0; head_keys=false;
 	if(cfg.view==="chase"){ cam_az=0; cam_el=0.22; cam_dist=24; }
 }
+// ddi_range: wheel and −/= notches head-down go to the focused page's range
+// scale when it declares one; pages without a range concept stay inert.
+function ddi_range(direction){ if(!running) return;
+	const p=DDI_PAGES[ddi_state[ddi_focus()].page];
+	if(p&&p.range){ p.range(direction); ddi_dirty=true; ddi_view_last=0; } }
 // scan_zoom: the trim-wheel notch buttons, edge-detected. Called from read_input
 // in flight AND from frame() while the map is up — the SP map pauses the world,
 // so read_input stops and the wheel went dead over the map without this.
@@ -2474,6 +2714,7 @@ stage.addEventListener("wheel",e=>{ e.preventDefault();   // scroll = zoom (any 
 	if(!running||game_paused) return;
 	const notch=-e.deltaY/(e.deltaMode===1?3:100);   // deltaMode 1 = lines (Firefox), else pixels; scroll up = zoom in
 	if(map_on){ map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.30,-notch),MAP_RANGE_MIN,MAP_RANGE_MAX); return; }
+	if(cfg.view==="ddi"){ ddi_range(Math.sign(notch)); return; }   // wheel-up = range in on the focused page, the map's wheel semantics
 	zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.5,notch),zoom_floor(),4); zoom_persist();
 },{ signal, passive:false });
 stage.addEventListener("pointercancel",end_drag,{ signal });
@@ -2481,9 +2722,9 @@ stage.addEventListener("pointercancel",end_drag,{ signal });
 // (the menu's Keys tab). Joystick buttons bind to ACTIONS and replay the
 // action's current key as a synthetic event, so pad binds follow key remaps.
 const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.left":"KeyA", "yaw.right":"KeyE", "yaw.left":"KeyQ",
-	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash", "trim.up":"Period", "trim.down":"Comma", flaps:"KeyN",
-	gear:"KeyG", hook:"KeyH", atc:"KeyP", lights:"KeyL", flares:"KeyF", eject:"KeyJ", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"KeyV", select:"KeyX", altitude:"KeyK", reject:"KeyU", acquire:"Enter",
-	probe:"Shift+KeyF", canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares
+	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash", "trim.up":"Period", "trim.down":"Comma", "trim.left":"Shift+Comma", "trim.right":"Shift+Period", "trim.reset":"None", "flaps.extend":"KeyF", "flaps.retract":"Shift+KeyF", override:"KeyO", "brake.parking":"Shift+KeyB",
+	gear:"KeyG", hook:"KeyH", probe:"KeyR", atc:"KeyP", lights:"KeyL", flares:"KeyC", eject:"KeyJ", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"None", select:"KeyX", altitude:"KeyK", reject:"KeyU", acquire:"Enter",
+	canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
@@ -2519,13 +2760,16 @@ function pad_bindings(pad){   // resolved axis/button map for THIS stick: the me
 	const defaults=deviceDefaults(pad.id||"");
 	return { axes:{ ...defaults.axes, ...(saved.axes||{}) },
 		buttons: saved.buttons&&Object.keys(saved.buttons).length?saved.buttons:defaults.buttons }; }
-const pad_looks={ up:false, down:false, left:false, right:false };   // castle/hat state, level-read per frame — deliberately NOT synthetic Arrow events (shared codes let a castle release kill a held physical arrow)
+const pad_looks={ up:false, down:false, left:false, right:false };
+const pad_trim={ x:0, y:0 };   // the trim hat pair's level state (x + = right wing down, y + = hat aft = nose up after the sign flip at the read)   // castle/hat state, level-read per frame — deliberately NOT synthetic Arrow events (shared codes let a castle release kill a held physical arrow)
 let pad_guns=false;   // guns level state, same reasoning: a HELD action with possibly several bound buttons must never be synthetic key events
 function pad_axis(pad,i){ const v=pad.axes[i]??0;   // raw ±1, no calibration: the worn-pot centring/throw machinery is gone by decree — modern sticks read clean, and every margin only made dead travel
 	const dz=Math.abs(v)<0.05?0:(v-Math.sign(v)*0.05)/0.95;   // small centre deadzone against electrical jitter
 	return Math.sign(dz)*Math.pow(Math.abs(dz),1.25);   // gentle expo: fine control near centre, full authority at the stops
 }
-let flap_select=0;   // the flap switch: 0 AUTO (the FCS virtual schedule), 1 HALF, 2 FULL — cycled on the flaps key, sent with every control sample
+let flap_select=0;   // the flap switch: 0 AUTO (the FCS virtual schedule), 1 HALF, 2 FULL — notched by the flaps keys, sent with every control sample
+let parking=false;   // the parking brake: forces the wheel-brake input while set, so the idle-thrust creep needs no held key
+let reset_flag=false;   // one-shot trim reset, consumed once the core has stepped with it
 function read_input(dt){
 	let tp=0,tr=0,ty=0;   // target axis deflections from the held keys (flight is W/S/A/D/Q/E only — arrows look/orbit, keys.md §2/§5)
 	if(keys.has(key_of("pitch.up"))) tp+=1;   // pull / nose up
@@ -2557,7 +2801,7 @@ function read_input(dt){
 				ownship.throttle=Math.min(1,lever/0.75); ownship.burner=THREE.MathUtils.clamp((lever-0.75)/0.25,0,1); } }   // lever: 0..75% = idle..MIL, the top quarter sweeps the five AB zones
 		{ const p=pad_lever(pad,bind.axes.speedbrake,"speedbrake");   // speed brake: full forward retracted, aft deployed (deployed at the HIGH raw end; "-" prefix flips)
 			if(p!==null) ownship.speedbrakeTarget=p; }
-		pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_guns=false;
+		pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_guns=false; pad_trim.x=pad_trim.y=0;
 		{ const z=String(bind.axes.zoom??""); zoom_wheel=0;
 			if(z.endsWith("+")){ const zi=Math.abs(parseInt(z,10));   // "N+": half-axis PAIR wheel — each roll direction sweeps its own axis 0..-1 (thumbwheel style)
 				if(pad.axes.length>zi+1){ const back=Math.max(0,-pad.axes[zi]), fore=Math.max(0,-pad.axes[zi+1]);
@@ -2565,6 +2809,9 @@ function read_input(dt){
 					zoom_wheel=Math.abs(v)>0.08?v:0; } }
 			else if(z!==""){ const zi=Math.abs(+z); if(pad.axes.length>zi){ const v=(z.startsWith("-")?-1:1)*pad.axes[zi];
 				zoom_wheel=Math.abs(v)>0.02?v:0; } } }   // plain "N": a rate axis — the VelocityOne's infinite clicky wheel reports rolling SPEED that decays to zero, so single notches are brief small blips: tiny deadband, gain lives at the apply site
+		{ const h=String(bind.axes.trim??""); if(h!==""){ const hi=+h;   // the trim hat pair, thresholded like the look pair — a POV that reports as two axes
+			if(pad.axes.length>hi+1){ const hx=pad.axes[hi], hy=pad.axes[hi+1];
+				pad_trim.x=Math.abs(hx)>0.5?Math.sign(hx):0; pad_trim.y=Math.abs(hy)>0.5?Math.sign(hy):0; } } }
 		{ const h=String(bind.axes.look??""); if(h!==""){ const hi=+h;   // the Look pair (HID: x -1 left +1 right, y -1 up +1 down; the 0.5 threshold covers analog ministicks and digital hats alike)
 			if(pad.axes.length>hi+1){ const hx=pad.axes[hi], hy=pad.axes[hi+1];
 				if(hx<-0.5) pad_looks.left=true; if(hx>0.5) pad_looks.right=true;
@@ -2590,8 +2837,13 @@ function read_input(dt){
 	input.yaw=Math.abs(py)>Math.abs(key_axes.yaw)?py:key_axes.yaw;
 	if(pad) scan_zoom(pad,pad_bindings(pad));
 	input.guns=(keys.has(key_of("guns"))||pad_guns)&&master==="gun";   // the trigger serves the SELECTED weapon (#133): guns only in GUN
-	input.trim=(keys.has(key_of("trim.up"))?1:0)-(keys.has(key_of("trim.down"))?1:0);   // . / , held: the pitch trim switch (UA attitude datum, PA alpha datum)
-	input.brake=keys.has(key_of("brake.wheel"));   // B: wheel brakes, held (both mains together); the joystick trigger's ground brake role comes from its brake.wheel BINDING, not hidden logic
+	const held=(action)=>{ const b=key_of(action); if(!b||b==="None") return false;
+		if(!keys.has(b)) return false;
+		return b.startsWith("Shift+")||!keys.has("Shift+"+b); };   // a live shift-chord owns its bare key: Shift+, is roll trim, not nose-down-with-Shift
+	input.trim=(held("trim.up")?1:0)-(held("trim.down")?1:0);   // . / , held: the pitch trim switch (UA attitude datum, PA alpha datum)
+	input.lean=(held("trim.right")?1:0)-(held("trim.left")?1:0);   // Shift+. / Shift+, held: the hat's roll half — a standing differential-flaperon bias
+	if(pad_trim.x||pad_trim.y){ input.trim=input.trim||-pad_trim.y; input.lean=input.lean||pad_trim.x; }   // the trim HAT (an axis pair, e.g. the VelocityOne castle at 8/9): forward = nose DOWN, the aviation convention
+	input.brake=keys.has(key_of("brake.wheel"))||parking;   // B: wheel brakes, held (both mains together); the joystick trigger's ground brake role comes from its brake.wheel BINDING, not hidden logic
 	if(DEV_MODE && on_ground() && (ownship.speed??0)<1){   // dev measuring cursor: nudge the readout point off the nose wheel while parked (the eject/lights/override keys are gated off in this state)
 		const step=dt*1.2, turn=dt*2.5;
 		if(keys.has("KeyI")) dev_nudge.fa+=step; if(keys.has("KeyK")) dev_nudge.fa-=step;
@@ -2836,7 +3088,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:!!cfg.missiles, hold:weapons_hold, master, brake:!!input.brake, harm:{...bandit.harm}, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count, record:(()=>{ const r=recording_file(); if(!r) return null; const lines=r.text.split(String.fromCharCode(10));
+	atc:atc_on, missiles:!!cfg.missiles, hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count, record:(()=>{ const r=recording_file(); if(!r) return null; const lines=r.text.split(String.fromCharCode(10));
 		return {lines:lines.length, session:r.session, kind:r.kind, bot:/Doctrine=/.test(r.text),
 			// The ownship's last data line: proves a channel actually plumbs
 			// through at runtime, which a unit test on the renderer cannot.
@@ -2850,7 +3102,13 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v
 		return out; })(),
 	gauges:(()=>{ const g=ownship.gauges||{}; const f=v=>v===undefined?null:+(+v).toFixed(3); return { asi:f(g.asi), altitude:f(g.altitude), vsi:f(g.vsi), fuelLbs:f(g.fuelLbs), rpmL:f(g.rpmL), egtL:f(g.egtL), flowL:f(g.flowL), clockH:f(g.clockH) }; })(),
 	indexer:(()=>{ const i=ownship.group.userData.indexer; return i?{ slow:+i.slow.opacity.toFixed(2), donut:+i.donut.opacity.toFixed(2), fast:+i.fast.opacity.toFixed(2) }:null; })(),
-	built:(()=>{ const u=ownship.group.userData; return { indexer:!!u.indexer, lamps:!!u.lamps, radalt:!!u.radalt, screens:(u.screens||[]).length, err:build_error }; })(),
+	built:(()=>{ const u=ownship.group.userData; return { indexer:!!u.indexer, lamps:!!u.lamps, radalt:!!u.radalt, screens:(u.screens||[]).length, err:build_error,
+		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale,
+		faces:["left","right","center"].map(d=>d+":"+(ddi_state[d].menu||ddi_state[d].page)), px:(u.screens||[]).map(sc=>sc.canvas.width),
+		rects:(u.screens||[]).map(sc=>{ const m=sc.mesh, v=new THREE.Vector3(), w=(m.geometry as THREE.PlaneGeometry).parameters.width/2, h=sc.height/2;   // projected quad corners (css px, pilot's view) — aims headless bezel clicks
+			const p=(px_,py_)=>{ v.set(px_,py_,0).applyMatrix4(m.matrixWorld).project(cockpit_cam); return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };
+			return { tl:p(-w,h), br:p(w,-h) }; }),
+		geom:(u.screens||[]).map(sc=>({ at:sc.mesh.position.toArray().map(n=>+n.toFixed(3)), box:sc.box, fit:sc.fit, stack:sc.stack, mask:sc.mesh.layers.mask, vis:sc.mesh.visible })), eye:u.eye, glass:u.glass }; })(),
 	scene:(()=>{ const u=ownship.group.userData; const probe=(o)=>{ if(!o) return null;
 			const p=new THREE.Vector3(); o.getWorldPosition(p);
 			let vis=true, q=o; while(q){ if(!q.visible) vis=false; q=q.parent; }
@@ -3075,11 +3333,11 @@ function fly_player(dt){
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake || (sim_time<test_idle && test_brake && !ownship.wire),   // scenario rollout: the scripted pilot rides the brakes only on a runway (test_brake); the carrier's wire and the bolter's power stop the jet instead (a hands-off free roll ran 1.4 km off the runway end into the lagoon) — but NEVER on a wire: locked mains under the 3 g runout slammed the nose and rolled the trap over (the live-traced 37-degree topple)
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,
-		trim:input.trim||0, flap:flap_select,
-		launch:launch_flag, override:keys.has("KeyO")&&!(DEV_MODE&&on_ground()), sequence:++control_sequence };
+		trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
+		launch:launch_flag, override:keys.has(key_of("override"))&&!(DEV_MODE&&on_ground()), sequence:++control_sequence };
 	flight_stores((ownship.msl>=1?1:0)|(ownship.msl>=2?2:0));   // wingtip stores follow the magazine every frame (idempotent): firing sheds 86 kg and its carriage drag in the core; respawns re-arm through the same line
 	const out=flight_frame(controls,dt);
-	if(flight_steps.value>0) launch_flag=false;   // the edge was consumed by the core
+	if(flight_steps.value>0){ launch_flag=false; reset_flag=false; }   // the edges were consumed by the core
 	last_controls=controls; marked_steps+=flight_steps.value;
 	sync_core(out); last_out=out;
 	if(!MULTIPLAYER){   // SP damage cascade: fires, fuses, sheds — judged by the same Go as the server
@@ -3454,7 +3712,7 @@ function reset_ownship(){
 function update_camera(dt){
 	const firstPerson = (cfg.view==="hud");
 	ownship.group.visible=(!firstPerson) || cfg.view==="cockpit";   // in cockpit view the airframe RENDERS (near pass); the layer split keeps it out of the world passes
-	if(cfg.view!=="chase" && !map_on){   // arrow/hat head look in BOTH first-person views — chase keeps the arrows for its orbit. The clamps are the pilot's: ±150° azimuth (checking six over the shoulder, as far as the straps allow) and -60°/+80° elevation
+	if(cfg.view!=="chase" && cfg.view!=="ddi" && !map_on){   // arrow/hat head look in BOTH first-person views — chase keeps the arrows for its orbit, and head-down DDI work leaves the head where it was. The clamps are the pilot's: ±150° azimuth (checking six over the shoulder, as far as the straps allow) and -60°/+80° elevation
 		const hr=dt*1.6;
 		const daz=(((keys.has("ArrowLeft")||pad_looks.left)?1:0)-((keys.has("ArrowRight")||pad_looks.right)?1:0))*hr;
 		const del=(((keys.has("ArrowUp")||pad_looks.up)?1:0)-((keys.has("ArrowDown")||pad_looks.down)?1:0))*hr;   // ↑ looks up (head_el positive = up; the compose carries the sign); the castle joins the arrows in both views
@@ -3465,7 +3723,7 @@ function update_camera(dt){
 		const zk=(k)=>keys.has(key_of(k).replace(/^Shift\+/,""));
 		const sweep=((zk("zoom.in")?1:0)-(zk("zoom.out")?1:0))*dt*2.6;   // held sweep quickened to match the coarser notch
 		if(sweep&&running&&!game_paused){ if(map_on) map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,-sweep),MAP_RANGE_MIN,MAP_RANGE_MAX);
-			else { zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(2.4,sweep),zoom_floor(),4); zoom_persist(); } } }
+			else if(cfg.view!=="ddi"){ zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(2.4,sweep),zoom_floor(),4); zoom_persist(); } } }
 	if(cfg.view==="chase" && !map_on){   // keyboard orbit (shares cam_az/el with the mouse drag): ←→ azimuth, ↑↓ elevation, −/= zoom — keys.md §5; with the map up, −/= zoom the map instead
 		const ar=dt*0.9, zr=dt*40;
 		cam_az+=(((keys.has("ArrowRight")||pad_looks.right)?1:0)-((keys.has("ArrowLeft")||pad_looks.left)?1:0))*ar;           // ←/→ orbit (keyboard or castle)
@@ -3612,10 +3870,41 @@ map_el.addEventListener("wheel",e=>{ e.preventDefault(); map_range=THREE.MathUti
 let master="gun", alt_radar=false, declutter=0, peak_g=1;   // declutter: 0 NORM, 1 REJ 1, 2 REJ 2
 function dir_at(headFwd, rightH, yawRad, pitchRad){ const d=headFwd.clone().applyAxisAngle(world_up,yawRad); d.applyAxisAngle(rightH,pitchRad); return d; }
 function hud_message(text){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="20px monospace"; hctx.fillText(text, HW/2, HH/2+180); }   // shared centre banner for important messages (RUN UP ENGINE / PRESS SPACE TO LAUNCH / N WIRE)
+// ---- DDI view (#99 follow-on): one display fills the screen, head-down. The
+// face reuses the same size-agnostic page renderers at SCREEN resolution on
+// its own canvas (never the pit's small textures upscaled); the bezel bands
+// become large click targets. The world is not rendered behind the panel —
+// honest head-down time; the sim and audio run on. Re-press 3 cycles the
+// display; the choice persists in the config as cfg.ddi.
+const DDI_ORDER=["left","right","center"];
+function ddi_focus(){ return DDI_ORDER.includes(cfg.ddi)?cfg.ddi:"left"; }
+const ddi_face=document.createElement("canvas");
+let ddi_view_last=0, ddi_view_rect=null;
+function draw_ddi_view(){
+	const d=ddi_focus(), dpr=Math.min(devicePixelRatio||1,2);
+	const size=Math.min(HW,HH)*0.92, px=Math.round(size*dpr);
+	hctx.save(); hctx.shadowBlur=0;
+	hctx.fillStyle="#101214"; hctx.fillRect(0,0,HW,HH);   // opaque matte — the GL canvas beneath still holds the last world frame
+	if(ddi_face.width!==px){ ddi_face.width=ddi_face.height=px; ddi_view_last=0; }
+	if(!ddi_view_last||performance.now()-ddi_view_last>120){ ddi_view_last=performance.now();
+		ddi_render(ddi_face.getContext("2d"),px,d); }
+	const ox=(HW-size)/2, oy=(HH-size)/2;
+	ddi_view_rect={ ox, oy, size };
+	hctx.drawImage(ddi_face,ox,oy,size,size);
+	hctx.strokeStyle="#2a2f33"; hctx.lineWidth=2; hctx.strokeRect(ox-1,oy-1,size+2,size+2);   // bezel line
+	hctx.fillStyle="#8fa0aa"; hctx.font="13px monospace"; hctx.textAlign="left"; hctx.textBaseline="middle";
+	hctx.fillText(d==="center"?"AMPCD":d==="left"?"LEFT DDI":"RIGHT DDI", ox, Math.max(12,oy/2));   // cockpit legend — English by the annunciator policy
+	hctx.restore(); }
+function ddi_view_click(e){   // screen-space bezel press — same 512-space button bands as the pit
+	if(!ddi_view_rect) return;
+	const lx=(e.clientX-ddi_view_rect.ox)/ddi_view_rect.size*512, ly=(e.clientY-ddi_view_rect.oy)/ddi_view_rect.size*512;
+	if(lx<0||ly<0||lx>512||ly>512) return;
+	if(ddi_press(ddi_focus(),button_of(lx,ly))) ddi_view_last=0; }   // redraw NOW — a press must answer this frame
 function draw_hud(){
 	hctx.clearRect(0,0,HW,HH);
 	GR=cfg.tod==="day"?"#23e57d":"#15b85f";   // daytime brightness up — the muted night green washes out against a sunlit sea/sky
 	hctx.shadowColor="rgba(0,0,0,0.85)"; hctx.shadowBlur=3; hctx.shadowOffsetX=0; hctx.shadowOffsetY=0;   // dark halo behind every HUD glyph/line so it stays readable over any background
+	if(cfg.view==="ddi") draw_ddi_view();   // the head-down panel underdraws — banners and notices below stay on top
 	const cx=HW/2, cy=HH/2;
 	const glass=(cfg.view==="cockpit")?glass_rect():null;   // #99: flight symbology binds to the combining glass in cockpit view
 	// The combining glass is bolted to the airframe, not to the pilot's head. In
@@ -3956,7 +4245,13 @@ function draw_hud(){
 	if((ownship.hook??0)>0.01){ hctx.fillStyle=(ownship.hook??0)>0.98?GR:AM; hctx.fillText(translate("HOOK"),HW-40,HH-52); }
 	if(!authentic){   // the rest is hud-view furniture: the real HUD carries no configuration legend (#133)
 	if((ownship.speedbrake??0)>0.02){ hctx.fillStyle=AM; hctx.fillText(translate("SPD BK"),HW-40,HH-88); }
-	if(flap_select>0){ hctx.fillStyle=GR; hctx.fillText(translate(flap_select===1?"FLAPS HALF":"FLAPS FULL"),HW-40,HH-124); }   // the switch's non-AUTO positions only: AUTO is the silent default   // amber whenever the air brake is out (keys.md §3)
+	if(flap_select>0){ hctx.fillStyle=GR; hctx.fillText(translate(flap_select===1?"FLAPS HALF":"FLAPS FULL"),HW-40,HH-124); }   // the switch's non-AUTO positions only: AUTO is the silent default
+	if(parking){ hctx.fillStyle=AM; hctx.fillText(translate("PARK"),HW-40,HH-142); }   // the parking brake holds the mains: amber, like a caution
+	{ const datum=(last_out?last_out[STATE.datum]:0)||0, bank=(last_out?last_out[STATE.bank]:0)||0;   // the trim state, shown only when trimmed away from neutral
+		const parts=[];
+		if(hud_pa&&Math.abs(datum)>0.0025) parts.push(Math.abs(datum*57.3).toFixed(1)+(datum>0?"NU":"ND"));
+		if(Math.abs(bank)>0.004) parts.push(Math.abs(bank*100).toFixed(0)+(bank>0?"RWD":"LWD"));
+		if(parts.length){ hctx.fillStyle=GR; hctx.fillText("TRIM "+parts.join(" "),HW-40,HH-160); } }   // amber whenever the air brake is out (keys.md §3)
 	if(stab_cycle>0){ hctx.fillStyle=AM; hctx.fillText("STAB "+stab_cycle,HW-40,HH-108); }   // Shift+E calibration state
 	if(ownship.lights){ hctx.fillStyle=GR; hctx.fillText(translate("LIGHTS"),HW-40,HH-34); }   // below HOOK
 	if((ownship.probe??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("PROBE"),HW-40,HH-22); }   // below LIGHTS
@@ -4072,6 +4367,9 @@ if(BENCH_PARAMS&&BENCH_PARAMS.get("bench")){
 // ============================================================================ UI / menu
 function cockpit_hidden(){ for(const o of ownship.group.userData.cockpitHide||[]) o.visible = cfg.view!=="cockpit"; }   // hide the pilot's head in first person; every external view keeps him
 function set_view(v){
+	if(v==="ddi" && cfg.view==="ddi"){ const d=DDI_ORDER[(DDI_ORDER.indexOf(ddi_focus())+1)%DDI_ORDER.length];   // re-press cycles left -> right -> AMPCD; the choice persists like zoom_<view>
+		cfg.ddi=d; if(on_config) on_config({ ddi:d }); ddi_view_last=0; return; }
+	if(v==="ddi") ddi_view_last=0;   // entering: draw the remembered display's face this frame
 	if(v==="chase" && cfg.view!=="chase") cam_psi=Math.atan2(ownship.fwd.x,ownship.fwd.z);   // entering chase: reference the orbit to the current heading (no half-compass ease-in)
 	if(v==="chase" && cfg.view==="chase"){ cam_az=0; cam_el=0.22; cam_dist=24; }   // re-press recentres the orbit (keys.md §4)
 	if(v==="flypast") flyby_pos=null;   // (re)seed a fresh flyby each time it's selected
@@ -4236,7 +4534,7 @@ function net_frame(dt){
 	const c=last_controls;
 	const sample={ pitch:c?c.pitch:input.pitch*cfg.sens, roll:c?c.roll:input.roll*cfg.sens, yaw:c?c.yaw:input.yaw*cfg.sens,
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
-		reheat:ownship.burner??0, brake:input.brake, trim:input.trim||0, flap:flap_select,
+		reheat:ownship.burner??0, brake:input.brake, trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
 		override:c?c.override:false,
 		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, missile:missile_flag, eject:eject_flag };
@@ -4351,6 +4649,8 @@ function start_mission(){
 	sweep_pending=devq.get("sweep");   // &sweep=<rig name> — wall-clock sweep of one rig entry (visible motion even in a ~5-frame headless capture)
 	{ const azq=devq.get("az"); if(azq!==null){ set_view("chase"); cam_az=parseFloat(azq)||0; const elq=parseFloat(devq.get("el")||""); if(!isNaN(elq)) cam_el=elq; const dq=parseFloat(devq.get("dist")||""); if(!isNaN(dq)) cam_dist=dq; } }   // &az=<rad>[&el=&dist=] — headless chase-camera pose without relocating (unlike ?shot)
 	{ const pq=devq.get("probe"); if(pq){ const [px,py]=pq.split(",").map(Number); dev_probe={x:px,y:py}; } }   // &probe=x,y (viewport fractions) — raycast that pixel each second and print the hit on the dev HUD (headless artifact identification)
+	{ const dq=devq.get("ddi"); if(dq) for(const part of dq.split(",")){ const [d,p]=part.split(":"); const st=ddi_state[d]; if(!st) continue;
+		if(DDI_PAGES[p]){ st.page=p; st.menu=""; } else if(p==="tac"||p==="supt") st.menu=p; } }   // &ddi=left:eng,center:supt — headless page/menu selection for captures
 	build_ocean(cfg.ocean_segments);
 	apply_time_of_day(cfg.tod); apply_effects();
 	apply_clouds(); if(cloud_active()) size_rt();   // runs even for "none": zeroes the overcast/shadow uniforms on the ocean and sky
