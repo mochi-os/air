@@ -994,7 +994,7 @@ function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_7
 			const half=(list)=>{ const out=[]; for(const p of list){
 				while(out.length>1&&cross(out[out.length-2],out[out.length-1],p)<=0) out.pop(); out.push(p); } return out; };
 			const lower=half(pts), upper=half(pts.slice().reverse());
-			let hull=lower.slice(0,-1).concat(upper.slice(0,-1));
+			const hull=lower.slice(0,-1).concat(upper.slice(0,-1));
 			const floor=ownship.group.userData.glass.y-ownship.group.userData.glass.hh*0.42;   // the visible glass line — same raise glass_rect always applied
 			const clipped=[];
 			for(let k=0;k<hull.length;k++){ const a=hull[k], b=hull[(k+1)%hull.length];
@@ -1025,7 +1025,17 @@ function build_indexer(g){
 	["slow","donut","fast"].forEach((k,i)=>{ const m=new THREE.Mesh(geoms[i],parts[k]);
 		m.rotateY(Math.PI/2);   // face the shapes aft toward the pilot (DoubleSide covers the sign)
 		m.position.set(0,0.028-0.028*i,0); m.layers.set(LAYER_OWN); box.add(m); });
-	box.position.set(glass.x-0.055, glass.y-glass.hh*0.35, -(glass.hw-0.008));   // just inside the pane's LEFT edge and nearer the pilot — outboard of it the HUD frame post swallows it
+	let iy=glass.y-glass.hh*0.35, edge=-(glass.hw-0.008), depth=glass.x-0.055;   // pane box conventions — pre-outline fallback
+	const outline=g.userData.outline;
+	if(outline){ let ymin=Infinity, ymax=-Infinity;   // mount ON the pane, mid-height on its left (#16): the pane is a tilted OCTAGON, and the old box-centre depth put the lights 12 cm aft of the glass — from the eye that point hides behind the HUD frame post
+		for(const p of outline){ if(p[1]<ymin)ymin=p[1]; if(p[1]>ymax)ymax=p[1]; }
+		iy=ymin+(ymax-ymin)*0.55;
+		let zl=Infinity, xl=0;
+		for(let k=0;k<outline.length;k++){ const a=outline[k], b=outline[(k+1)%outline.length];
+			if((a[1]<=iy)!==(b[1]<=iy)){ const f=(iy-a[1])/(b[1]-a[1]); const z=a[0]+(b[0]-a[0])*f;
+				if(z<zl){ zl=z; xl=a[2]+(b[2]-a[2])*f; } } }
+		if(zl<Infinity){ edge=zl+0.021; depth=xl-0.015; } }   // 8 mm clear of the visible edge plus the shapes' ~13 mm half-span; 15 mm proud of the glass surface
+	box.position.set(depth, iy, edge);
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
 	build_lamps(g);
 	build_radalt(g); build_screens(g); }
@@ -2728,6 +2738,7 @@ function view_reset(){
 }
 // ddi_range: wheel and −/= notches head-down go to the focused page's range
 // scale when it declares one; pages without a range concept stay inert.
+let ddi_wheel=0, ddi_stepped=0;   // wheel accumulator + last-step beat: discrete steps from a continuous device
 function ddi_range(direction){ if(!running) return;
 	const p=DDI_PAGES[ddi_state[ddi_focus()].page];
 	if(p&&p.range){ p.range(direction); ddi_dirty=true; ddi_view_last=0; } }
@@ -2744,7 +2755,11 @@ stage.addEventListener("wheel",e=>{ e.preventDefault();   // scroll = zoom (any 
 	if(!running||game_paused) return;
 	const notch=-e.deltaY/(e.deltaMode===1?3:100);   // deltaMode 1 = lines (Firefox), else pixels; scroll up = zoom in
 	if(map_on){ map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.30,-notch),MAP_RANGE_MIN,MAP_RANGE_MAX); return; }
-	if(cfg.view==="ddi"){ ddi_range(Math.sign(notch)); return; }   // wheel-up = range in on the focused page, the map's wheel semantics
+	if(cfg.view==="ddi"){ const now=performance.now();   // wheel-up = range in on the focused page, the map's wheel semantics. A range change is a DISCRETE step, and trackpads / smooth wheels deliver a gesture as dozens of small events plus a momentum tail — accumulate to a full notch, one step per beat, and SWALLOW the tail inside the beat, or a single swipe races through every scale
+		if(now-ddi_stepped<250){ ddi_wheel=0; return; }
+		ddi_wheel+=notch;
+		if(Math.abs(ddi_wheel)>=1){ ddi_range(Math.sign(ddi_wheel)); ddi_wheel=0; ddi_stepped=now; }
+		return; }
 	zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.5,notch),zoom_floor(),4); zoom_persist();
 },{ signal, passive:false });
 stage.addEventListener("pointercancel",end_drag,{ signal });
@@ -3134,6 +3149,9 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v
 	indexer:(()=>{ const i=ownship.group.userData.indexer; return i?{ slow:+i.slow.opacity.toFixed(2), donut:+i.donut.opacity.toFixed(2), fast:+i.fast.opacity.toFixed(2) }:null; })(),
 	built:(()=>{ const u=ownship.group.userData; return { indexer:!!u.indexer, lamps:!!u.lamps, radalt:!!u.radalt, screens:(u.screens||[]).length, err:build_error,
 		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale,
+		mount:(()=>{ const b=u.indexerGroup; if(!b) return null; const v=new THREE.Vector3(); b.children[1].getWorldPosition(v); v.project(cockpit_cam);
+			return { px:[Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)], at:b.position.toArray().map(n=>+n.toFixed(3)) }; })(),
+		outline:(u.outline||[]).map(p=>p.map(n=>+n.toFixed(3))),
 		faces:["left","right","center"].map(d=>d+":"+(ddi_state[d].menu||ddi_state[d].page)), px:(u.screens||[]).map(sc=>sc.canvas.width),
 		rects:(u.screens||[]).map(sc=>{ const m=sc.mesh, v=new THREE.Vector3(), w=(m.geometry as THREE.PlaneGeometry).parameters.width/2, h=sc.height/2;   // projected quad corners (css px, pilot's view) — aims headless bezel clicks
 			const p=(px_,py_)=>{ v.set(px_,py_,0).applyMatrix4(m.matrixWorld).project(cockpit_cam); return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };
@@ -3822,17 +3840,23 @@ function proj_point(v){ _p.copy(v).project(camera); if(_p.z>1) return null; retu
 // the glass — conformal pieces are clipped to this quad, instrument furniture is
 // scaled into it. Returns null when the glass is out of frame (head turned away).
 function glass_rect(){ const at=ownship.group.userData.eye||{x:3.0,y:0.6};
-	const pane=ownship.group.userData.glass;
+	const pane=ownship.group.userData.glass, outline=ownship.group.userData.outline;
 	const gx=pane?pane.x:at.x+0.55, gy=pane?pane.y:at.y+0.055, hw=pane?pane.hw:0.10, hh=pane?pane.hh:0.078;   // the MODELED combining glass when calibrated (Object_1042); hand constants only until the GLB resolves
-	const corners=[[gy+hh,-hw],[gy+hh,hw],[gy-hh*0.42,hw],[gy-hh*0.42,-hw]].map(([y,z])=>proj_point(body_offset(ownship,gx,y,z)));   // bottom edge raised: the pane MESH runs well down behind the glareshield, and the 2D overlay cannot be occluded by geometry — the clip stops at the visible glass line (measured from the boresight eye)
+	// The clip follows the pane's hulled OUTLINE (an octagon — sloped upper
+	// corners) when calibrated; the box quad is only the pre-calibration
+	// fallback. A box clip let ladder numbers float on sky at the corners (#16).
+	const corners=(outline
+		?outline.map(([z,y,x])=>proj_point(body_offset(ownship,x,y,z)))
+		:[[gy+hh,-hw],[gy+hh,hw],[gy-hh*0.42,hw],[gy-hh*0.42,-hw]].map(([y,z])=>proj_point(body_offset(ownship,gx,y,z))));   // bottom edge raised: the pane MESH runs down behind the glareshield, and the 2D overlay cannot be occluded by geometry
 	if(corners.some(c=>!c)) return null;
-	const rcx=(corners[0][0]+corners[1][0]+corners[2][0]+corners[3][0])/4;
-	const rcy=(corners[0][1]+corners[1][1]+corners[2][1]+corners[3][1])/4;
-	const width=Math.hypot(corners[1][0]-corners[0][0],corners[1][1]-corners[0][1]);
+	let rcx=0, rcy=0, xlo=Infinity, xhi=-Infinity;
+	for(const c of corners){ rcx+=c[0]; rcy+=c[1]; if(c[0]<xlo)xlo=c[0]; if(c[0]>xhi)xhi=c[0]; }
+	rcx/=corners.length; rcy/=corners.length;
+	const width=xhi-xlo;
 	if(width<40) return null;   // glancing/edge-on: nothing sensible to draw
 	return { corners, rcx, rcy, scale:width/620 }; }
 function glass_clip(g){ hctx.beginPath(); hctx.moveTo(g.corners[0][0],g.corners[0][1]);
-	for(let i=1;i<4;i++) hctx.lineTo(g.corners[i][0],g.corners[i][1]); hctx.closePath();
+	for(let i=1;i<g.corners.length;i++) hctx.lineTo(g.corners[i][0],g.corners[i][1]); hctx.closePath();
 	if(GLASS_DEBUG){ hctx.save(); hctx.strokeStyle="#ff40ff"; hctx.lineWidth=2; hctx.stroke(); hctx.restore(); }
 	hctx.clip(); }
 function proj_dir(d){ _p.copy(camera.position).addScaledVector(d,1000).project(camera); if(_p.z>1) return null; return [(_p.x*0.5+0.5)*HW,(-_p.y*0.5+0.5)*HH]; }
