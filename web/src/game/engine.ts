@@ -1211,7 +1211,7 @@ function build_screens(g){
 const ddi_state={ left:{page:"eng",menu:""}, right:{page:"adi",menu:""}, center:{page:"hsi",menu:""} };
 let ddi_dirty=false;   // a pushbutton press redraws NOW — the 120 ms cadence would read as a stuck button
 const DDI_MENUS={   // [pushbutton, legend, page] — page "" = not built yet
-	tac:[ [6,"HUD","hud"],[7,"RDR",""],[8,"SA","sa"],[9,"SMS",""],[10,"EW",""] ],
+	tac:[ [6,"HUD","hud"],[7,"RDR",""],[8,"SA","sa"],[9,"SMS",""],[10,"EW","ew"] ],
 	supt:[ [6,"ADI","adi"],[7,"HSI","hsi"],[8,"ENG","eng"],[9,"FUEL","fuel"],[10,"FCS","fcs"],[11,"CHKLST","chklst"],[12,"FPAS",""],[13,"BIT",""],[14,"MUMI",""] ] };
 function button_of(lx,ly){   // 512-space point -> pushbutton number, 0 between slots (five 80 px slots along the 56..456 span of each edge)
 	const slot=v=>{ const k=Math.floor((v-56)/80); return k>=0&&k<5?k:-1; };
@@ -1281,7 +1281,7 @@ function screens_update(){
 // semantics; 0 puts the page's transient state back to defaults).
 const DDI_PAGES={ eng:{draw:ddi_eng}, adi:{draw:ddi_adi}, hsi:{draw:ddi_hsi,range:hsi_range,reset:hsi_reset,press:hsi_press},
 	sa:{draw:ddi_sa,range:sa_range,reset:sa_reset,press:sa_press}, hud:{draw:ddi_hud},
-	fuel:{draw:ddi_fuel,press:fuel_press}, fcs:{draw:ddi_fcs}, chklst:{draw:ddi_chklst} };
+	fuel:{draw:ddi_fuel,press:fuel_press}, fcs:{draw:ddi_fcs}, chklst:{draw:ddi_chklst}, ew:{draw:ddi_ew} };
 // ---- HSI page state (#99 pages): ONE nav picture shared by every display
 // showing the format, like the jet's single nav solution. The rose ring sits
 // at HALF the selected scale; DCTR slides the rose down so the scale ahead
@@ -1503,6 +1503,17 @@ function ddi_fuel(x,display){ const gz=ownship.gauges||{};
 	ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false);   // the arrows step the caret
 	x.font="16px monospace"; x.textAlign="left"; x.fillText(String(fuel_state.bingo),8,216);
 	x.font="13px monospace"; x.fillText("BINGO",8,242); }
+function ddi_ew(x){   // EW (#11): the ALR-67 format frame, REALISTIC for the C by decision — a radar warning receiver is a passive RF sensor, and every missile in this game is an IR AIM-9 that emits nothing, so the real box would show exactly this: a quiet ring. (An MWS-style inbound-dart cue was built and removed here on that ground; the C carries no missile warner.) The page earns its symbols when radar-guided threats arrive with the BVR layer.
+	x.fillText("EW",256,36);
+	const cx=256, cy=266, R=190;
+	x.strokeStyle="rgba(57,224,122,0.45)"; x.lineWidth=1.5;   // aircraft-referenced ring, nose up — lethality bands, not ranges: inside = close
+	x.beginPath(); x.arc(cx,cy,R,0,Math.PI*2); x.stroke();
+	x.strokeStyle="rgba(57,224,122,0.22)";
+	x.beginPath(); x.arc(cx,cy,R*0.5,0,Math.PI*2); x.stroke();
+	x.strokeStyle="#39e07a"; x.lineWidth=2;
+	for(let d=0;d<360;d+=30){ const a=d*D2R-Math.PI/2;
+		x.beginPath(); x.moveTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R); x.lineTo(cx+Math.cos(a)*(R-10),cy+Math.sin(a)*(R-10)); x.stroke(); }
+	x.beginPath(); x.moveTo(cx,cy-14); x.lineTo(cx-8,cy+12); x.lineTo(cx+8,cy+12); x.closePath(); x.stroke(); }   // ownship
 function ddi_chklst(x,display){ const gz=ownship.gauges||{}; const o=last_out||[];   // CHKLST (#8): the real page is an ABBREVIATED memory-jogger, here filtered to systems the game models — and live: each line checks itself off from the sim state, which the real static page cannot do. Cockpit text stays English by the annunciator policy.
 	const colour=display==="center";
 	x.fillText("CHKLST",256,36);
