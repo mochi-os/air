@@ -49,6 +49,7 @@ export const KEY_DEFAULTS: Record<string, string> = {
   fold: 'Shift+KeyW',
   altitude: 'KeyK',
   reject: 'KeyU',
+  repeater: 'KeyI',
 }
 
 // pretty renders a KeyboardEvent.code as its physical key label (a glyph or the
