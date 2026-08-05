@@ -18,6 +18,22 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "অনুগ্রহ করে আপনার ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:302
+msgid " or "
+msgstr " অথবা "
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:228
+msgid "(edited)"
+msgstr "(সম্পাদিত)"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:212
+msgid "(expand)"
+msgstr "(সম্প্রসারণ)"
+
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:774
+msgid "[not set]"
+msgstr "[সেট নয়]"
+
 #. placeholder {0}: selectedValues.size
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
 msgid "{0, plural, one {# selected} other {# selected}}"
@@ -81,6 +97,10 @@ msgstr "{selectedCount, plural, one {# নির্বাচিত {entityName} 
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{totalLabel}-এর মধ্যে {sentLabel}"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:544
+msgid "{totalCount, plural, one {# item} other {# items}}"
+msgstr "{totalCount, plural, one {# আইটেম} other {# আইটেম}}"
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:165
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {মেনু খুলুন (# অপঠিত বিজ্ঞপ্তি)} other {মেনু খুলুন (# অপঠিত বিজ্ঞপ্তি)}}"
@@ -89,6 +109,14 @@ msgstr "{unreadCount, plural, one {মেনু খুলুন (# অপঠি�
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx:421
 msgid "+{0} nested"
 msgstr "+{0} নেস্টেড"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:209
+msgid "+{totalDescendants} more replies"
+msgstr "+{totalDescendants} আরও উত্তর"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:208
+msgid "1 reply"
+msgstr "১টি উত্তর"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -171,9 +199,17 @@ msgstr "টার্গেট লক করুন"
 msgid "Add"
 msgstr "যোগ করুন"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:360
+msgid "Add a comment..."
+msgstr "একটি মন্তব্য যোগ করুন..."
+
 #: ../../../lib/web/src/features/accounts/account-add.tsx:133
 msgid "Add a new account"
 msgstr "একটি নতুন অ্যাকাউন্ট যোগ করুন"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:106
+msgid "Add a new field to this class"
+msgstr "এই ক্লাসে একটি নতুন ফিল্ড যোগ করুন"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:148
 msgid "Add access"
@@ -192,13 +228,30 @@ msgstr "নোটিফিকেশন পেতে এবং পরিষেব
 msgid "Add checklist item"
 msgstr "চেকলিস্ট আইটেম যোগ করুন"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:105
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:233
+msgid "Add field"
+msgstr "ফিল্ড যোগ করুন"
+
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:705
 msgid "Add item..."
 msgstr "আইটেম যোগ করুন..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
+msgid "Add link"
+msgstr "লিঙ্ক যোগ করুন"
+
 #: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
 msgstr "নতুন অ্যাকাউন্ট যোগ করুন"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:292
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:194
+msgid "Add option"
+msgstr "অপশন যোগ করুন"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
 #: ../../../lib/web/src/components/tag-input.tsx:40
@@ -213,6 +266,8 @@ msgstr "টিম/অ্যাপ যোগ করুন"
 msgid "Add to existing notifications"
 msgstr "বিদ্যমান নোটিফিকেশনে যোগ করুন"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:519
 #: ../../../lib/web/src/components/view-tabs.tsx:87
 #: ../../../lib/web/src/components/view-tabs.tsx:93
 msgid "Add view"
@@ -260,6 +315,10 @@ msgstr "সব"
 msgid "Allow anyone to search for {0}"
 msgstr "যে কাউকে {0} খুঁজতে দিন"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:226
+msgid "Allow sort by"
+msgstr "অনুসারে সাজানো অনুমতি দিন"
+
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:178
 msgid "An error occurred"
 msgstr "একটি ত্রুটি ঘটেছে"
@@ -290,6 +349,19 @@ msgstr "অ্যাপ্রোচ পাওয়ার (ATC)"
 msgid "Approach, on-speed (Vapp)"
 msgstr "অভিগমন, নির্দিষ্ট গতিতে (Vapp)"
 
+#. placeholder {0}: deleteTarget?.name
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:271
+msgid "Are you sure you want to delete \"{0}\"?"
+msgstr "আপনি কি নিশ্চিত \"{0}\" মুছতে চান?"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:643
+msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
+msgstr "আপনি কি নিশ্চিত \"{name}\" কলাম মুছতে চান? এটি পূর্বাবস্থায় ফেরানো যাবে না।"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:485
+msgid "Are you sure you want to delete this comment? This will also delete all replies."
+msgstr "আপনি কি নিশ্চিত এই মন্তব্যটি মুছতে চান? এটি সব উত্তরও মুছে ফেলবে।"
+
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "আপনি কি নিশ্চিত লগআউট করতে চান? আপনার অ্যাকাউন্টে অ্যাক্সেস করতে আবার লগইন করতে হবে।"
@@ -310,6 +382,16 @@ msgstr "ঊর্ধ্বক্রম"
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "ঊর্ধ্বক্রম"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:398
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:403
+msgid "Attach comment files"
+msgstr "মন্তব্যের ফাইল সংযুক্ত করুন"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:439
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:444
+msgid "Attach reply files"
+msgstr "উত্তরের ফাইল সংযুক্ত করুন"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
 #: ../../../lib/web/src/features/access/types.ts:41
@@ -383,10 +465,19 @@ msgstr "সেরা টেকসই বাঁকের গতি"
 msgid "BINGO FUEL"
 msgstr "বিঙ্গো জ্বালানি"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:68
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:215
+msgid "Blocked by"
+msgstr "ব্লক করেছে"
+
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:237
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:247
 msgid "Blocked navigation to untrusted link"
 msgstr "অবিশ্বস্ত লিঙ্কে নেভিগেশন ব্লক করা হয়েছে"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:66
+msgid "Blocks"
+msgstr "ব্লক করে"
 
 #: src/components/Multiplayer.tsx:479
 msgid "Blue"
@@ -396,6 +487,10 @@ msgstr "নীল"
 msgid "Blue bots"
 msgstr "নীল বট"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:318
+msgid "Board"
+msgstr "বোর্ড"
+
 #: src/components/GameCanvas.tsx:61
 msgid "BOLTER"
 msgstr "বোল্টার"
@@ -404,6 +499,10 @@ msgstr "বোল্টার"
 #: ../../../lib/web/src/components/post-tags.tsx:192
 msgid "Boost interest"
 msgstr "আগ্রহ বৃদ্ধি করুন"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:405
+msgid "Border colour"
+msgstr "বর্ডারের রঙ"
 
 #: src/components/Multiplayer.tsx:373
 msgid "Bots"
@@ -446,6 +545,10 @@ msgstr "কলসাইন"
 msgid "Camera distance"
 msgstr "ক্যামেরার দূরত্ব"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:249
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
@@ -460,6 +563,16 @@ msgstr "ক্যামেরার দূরত্ব"
 #: src/components/Multiplayer.tsx:456
 msgid "Cancel"
 msgstr "বাতিল করুন"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:415
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:420
+msgid "Cancel comment"
+msgstr "মন্তব্য বাতিল করুন"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:455
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:460
+msgid "Cancel reply"
+msgstr "উত্তর বাতিল করুন"
 
 #: src/components/MissionSetup.tsx:189
 msgid "Canopy"
@@ -527,6 +640,14 @@ msgstr "চিট"
 msgid "Check \"All\" to see your past notifications."
 msgstr "আপনার পুরনো বিজ্ঞপ্তি দেখতে \"সব\" নির্বাচন করুন।"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
+msgid "Checkbox"
+msgstr "চেকবক্স"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:138
+msgid "Checklist"
+msgstr "চেকলিস্ট"
+
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:37
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "সাইডবার থেকে একটি গেম বেছে নিন বা একটি নতুন শুরু করুন।"
@@ -584,12 +705,21 @@ msgstr "নির্বাচন পরিষ্কার করুন"
 msgid "Clear selection (Escape)"
 msgstr "নির্বাচন পরিষ্কার করুন (Escape)"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:485
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:490
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "বন্ধ করুন"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:109
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:113
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:269
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:273
+msgid "Close dialog"
+msgstr "ডায়ালগ বন্ধ করুন"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
@@ -628,6 +758,19 @@ msgstr "সংকুচিত করুন"
 msgid "Collapse sidebar"
 msgstr "সাইডবার সংকুচিত করুন"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:149
+msgid "Colour"
+msgstr "রঙ"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:553
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:558
+msgid "Column actions"
+msgstr "কলামের ক্রিয়া"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Columns group by"
+msgstr "কলাম গ্রুপ করুন"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:96
 msgid "Comfortable"
 msgstr "আরামদায়ক"
@@ -644,6 +787,11 @@ msgstr "কমান্ড প্যালেট"
 msgid "COMMENCING"
 msgstr "শুরু করছি"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:330
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:337
+msgid "Comment actions"
+msgstr "মন্তব্যের ক্রিয়া"
+
 #: src/components/MissionSetup.tsx:116
 msgid "Communication"
 msgstr "যোগাযোগ"
@@ -652,6 +800,14 @@ msgstr "যোগাযোগ"
 #: ../../../lib/web/src/lib/preference-utils.ts:95
 msgid "Compact"
 msgstr "কম্প্যাক্ট"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
+msgid "Configure option settings"
+msgstr "অপশন সেটিংস কনফিগার করুন"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:265
+msgid "Configure view settings"
+msgstr "ভিউ সেটিংস কনফিগার করুন"
 
 #: ../../../lib/web/src/components/place-picker.tsx:160
 #: ../../../lib/web/src/components/travelling-picker.tsx:316
@@ -761,6 +917,14 @@ msgstr "প্রতিব্যবস্থা"
 msgid "CRASHED"
 msgstr "বিধ্বস্ত"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:564
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:703
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:475
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:672
+msgid "Create"
+msgstr "তৈরি করুন"
+
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
 msgid "Create {0}"
@@ -783,6 +947,12 @@ msgstr "মিশন তৈরি"
 msgid "Create new item"
 msgstr "নতুন আইটেম তৈরি করুন"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:56
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:498
+msgid "Created"
+msgstr "তৈরি হয়েছে"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:258
 msgid "Creating..."
 msgstr "তৈরি করা হচ্ছে..."
@@ -829,6 +999,7 @@ msgstr "ডার্ক মোড"
 msgid "Data conflict"
 msgstr "ডেটা দ্বন্দ্ব"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
 #: src/components/MatchHistory.tsx:155
 msgid "Date"
 msgstr "তারিখ"
@@ -858,6 +1029,52 @@ msgstr "ডিফল্ট"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
 msgstr "ডিফল্ট AI অ্যাকাউন্ট"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:485
+msgid "Default sort"
+msgstr "ডিফল্ট সাজানো"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:583
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:644
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:318
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:361
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:486
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:173
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:178
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:227
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:272
+msgid "Delete"
+msgstr "মুছুন"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:270
+msgid "Delete attachment"
+msgstr "অ্যাটাচমেন্ট মুছুন"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:642
+msgid "Delete column"
+msgstr "কলাম মুছুন"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:484
+msgid "Delete comment"
+msgstr "মন্তব্য মুছুন"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:301
+msgid "Delete field"
+msgstr "ফিল্ড মুছুন"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:119
+msgid "Delete option"
+msgstr "অপশন মুছুন"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:279
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:284
+msgid "Delete option {0}"
+msgstr "অপশন {0} মুছুন"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:290
+msgid "Delete view"
+msgstr "ভিউ মুছুন"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:115
 msgid "Delete your account on the old server"
@@ -947,10 +1164,13 @@ msgstr "মোবাইল সাইডবার প্রদর্শন কর
 msgid "Distance LOD"
 msgstr "দূরত্ব LOD"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:306
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
 #: src/components/MissionSetup.tsx:1729
 msgid "Done"
 msgstr "সম্পন্ন"
 
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:214
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
@@ -968,6 +1188,10 @@ msgstr "টেনে আনা"
 msgid "Drone"
 msgstr "ড্রোন"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:67
+msgid "Duplicates"
+msgstr "নকল"
+
 #: src/components/MissionSetup.tsx:1416
 msgid "Dynamic resolution"
 msgstr "ডায়নামিক রেজোলিউশন"
@@ -980,13 +1204,40 @@ msgstr "ডিসলেক্সিয়া-বান্ধব"
 msgid "EARLY"
 msgstr "আগে"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:307
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:352
+msgid "Edit"
+msgstr "সম্পাদনা"
+
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "{label} সম্পাদনা করুন"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+msgid "Edit field"
+msgstr "ফিল্ড সম্পাদনা করুন"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:139
+msgid "Edit field settings"
+msgstr "ফিল্ড সেটিংস সম্পাদনা করুন"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+msgid "Edit option"
+msgstr "বিকল্প সম্পাদনা"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:264
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:269
+msgid "Edit option {0}"
+msgstr "অপশন {0} সম্পাদনা করুন"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:31
 msgid "Edit selected card"
 msgstr "নির্বাচিত কার্ড সম্পাদনা"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+msgid "Edit view"
+msgstr "ভিউ সম্পাদনা করুন"
 
 #: src/components/MissionSetup.tsx:193
 msgid "Eject"
@@ -1085,9 +1336,22 @@ msgstr "ট্যাগ যোগ করতে ব্যর্থ"
 msgid "Failed to copy"
 msgstr "কপি করতে ব্যর্থ"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:137
 #: ../../../lib/web/src/components/options-menu.tsx:99
 msgid "Failed to create link"
 msgstr "লিঙ্ক তৈরি করতে ব্যর্থ"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:110
+msgid "Failed to delete attachment"
+msgstr "সংযুক্তি মুছতে ব্যর্থ"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:207
+msgid "Failed to delete comment"
+msgstr "মন্তব্য মুছতে ব্যর্থ"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:159
+msgid "Failed to delete link"
+msgstr "লিঙ্ক মুছতে ব্যর্থ"
 
 #: ../../../lib/web/src/components/options-menu.tsx:123
 msgid "Failed to get RSS token"
@@ -1109,6 +1373,10 @@ msgstr "ছবি লোড করা যায়নি"
 msgid "Failed to load video"
 msgstr "ভিডিও লোড করা যায়নি"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:170
+msgid "Failed to post comment"
+msgstr "মন্তব্য পোস্ট করতে ব্যর্থ"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "অ্যাকাউন্ট সরাতে ব্যর্থ"
@@ -1121,6 +1389,14 @@ msgstr "RSS অ্যাক্সেস প্রত্যাহার করা
 msgid "Failed to send verification code"
 msgstr "যাচাইকরণ কোড পাঠাতে ব্যর্থ"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:190
+msgid "Failed to update comment"
+msgstr "মন্তব্য আপডেট করতে ব্যর্থ"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:95
+msgid "Failed to upload attachment"
+msgstr "সংযুক্তি আপলোড করতে ব্যর্থ"
+
 #: src/components/GameCanvas.tsx:58
 msgid "FAIR"
 msgstr "মাঝারি"
@@ -1132,6 +1408,12 @@ msgstr "FCS"
 #: src/components/GameCanvas.tsx:31
 msgid "FIGHT'S ON"
 msgstr "লড়াই শুরু"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:567
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:133
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:150
+msgid "Files"
+msgstr "ফাইলসমূহ"
 
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:30
 msgid "Filter..."
@@ -1157,6 +1439,10 @@ msgstr "অস্ত্র ফায়ার করুন"
 #: src/components/MissionSetup.tsx:557
 msgid "Fixed keys"
 msgstr "স্থির কীসমূহ"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:222
+msgid "Flags"
+msgstr "ফ্ল্যাগসমূহ"
 
 #: src/components/GameCanvas.tsx:37
 msgid "FLAMEOUT"
@@ -1308,6 +1594,10 @@ msgstr "গ্রাফিক্স"
 msgid "Group"
 msgstr "গ্রুপ"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Group by"
+msgstr "গ্রুপ অনুসারে"
+
 #. placeholder {0}: name || subject.slice(1)
 #: ../../../lib/web/src/features/access/access-list.tsx:68
 msgid "Group: {0}"
@@ -1366,6 +1656,10 @@ msgstr "HUD উচ্চতার উৎস"
 #: src/components/MissionSetup.tsx:197
 msgid "HUD declutter"
 msgstr "HUD সরলীকরণ"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:153
+msgid "ID"
+msgstr ""
 
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
@@ -1526,6 +1820,7 @@ msgid "launch / target"
 msgstr "লঞ্চ / টার্গেট"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:287
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:312
 msgid "Layout"
 msgstr "লেআউট"
 
@@ -1584,6 +1879,14 @@ msgstr "লাইট"
 #: ../../../lib/web/src/components/options-menu.tsx:190
 msgid "Link"
 msgstr "লিঙ্ক"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:279
+msgid "Links"
+msgstr "লিঙ্কসমূহ"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:324
+msgid "List"
+msgstr "তালিকা"
 
 #: src/components/MissionSetup.tsx:1210
 msgid "Load"
@@ -1674,6 +1977,10 @@ msgstr "ক্যাটেগরি পরিচালনা করুন"
 msgid "Manage your connected accounts for notifications and services."
 msgstr "বিজ্ঞপ্তি ও পরিষেবার জন্য আপনার সংযুক্ত অ্যাকাউন্টগুলি পরিচালনা করুন।"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
+msgid "Manual"
+msgstr "ম্যানুয়াল"
+
 #: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "মানচিত্র"
@@ -1699,6 +2006,10 @@ msgstr "ম্যাচের ধরন"
 #: src/components/MissionSetup.tsx:1136
 msgid "Matches"
 msgstr "ম্যাচ"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:199
+msgid "Maximum length"
+msgstr "সর্বোচ্চ দৈর্ঘ্য"
 
 #: ../../../lib/web/src/features/accounts/types.ts:17
 msgid "MCP server"
@@ -1742,6 +2053,10 @@ msgstr "মেট্রিক"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "মিডওয়ে অ্যাটল মানচিত্র — চিত্রে পরিবর্তিত <0>Copernicus Sentinel-2</0> ডেটা রয়েছে (2026); বিমানঘাঁটির জ্যামিতি (রানওয়ে, ট্যাক্সিওয়ে, অ্যাপ্রন) © <1>OpenStreetMap</1> অবদানকারীগণ, <2>ODbL</2>-এর অধীনে লাইসেন্সপ্রাপ্ত; উপকূলরেখা ও প্রবালপ্রাচীরের ডেটা <3>NOAA NCCOS</3> থেকে (পাবলিক ডোমেইন)।"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:188
+msgid "Minimum length"
+msgstr "ন্যূনতম দৈর্ঘ্য"
+
 #: src/components/GameCanvas.tsx:85
 msgid "MISSILE"
 msgstr "মিসাইল"
@@ -1783,6 +2098,14 @@ msgstr "অক্ষটি নাড়ান…"
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "মাল্টিপ্লেয়ারের জন্য WebTransport প্রয়োজন, যা এই ব্রাউজার এখনও সাপোর্ট করে না।"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:143
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:128
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:299
+msgid "Name"
+msgstr "নাম"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
 msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
 msgstr "নামে কোণ বন্ধনী, ব্যাকস্ল্যাশ, সেমিকোলন, উদ্ধৃতি চিহ্ন বা ব্যাকটিক থাকতে পারবে না"
@@ -1796,6 +2119,7 @@ msgstr "নাম অবশ্যই ১০০০ অক্ষর বা তা�
 msgid "Network error"
 msgstr "নেটওয়ার্ক ত্রুটি"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:460
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:43
 msgid "New"
 msgstr "নতুন"
@@ -1815,9 +2139,21 @@ msgstr "পরবর্তী ছবি"
 msgid "Night"
 msgstr "রাত"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:533
+msgid "No {parentClassNames} to add to"
+msgstr "যোগ করার জন্য কোনো {parentClassNames} নেই"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:165
 msgid "No access rules configured. Add rules to control who can access this resource."
 msgstr "কোনো অ্যাক্সেস নিয়ম কনফিগার করা হয়নি। কে এই রিসোর্স অ্যাক্সেস করতে পারবে তা নিয়ন্ত্রণ করতে নিয়ম যোগ করুন।"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:65
+msgid "No activity yet"
+msgstr "এখনও কোনো কার্যকলাপ নেই"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:450
+msgid "No comments yet"
+msgstr "এখনও কোনো মন্তব্য নেই"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:295
 msgid "No connected accounts"
@@ -1835,9 +2171,17 @@ msgstr "এখনও কোনো গেম নেই"
 msgid "No groups available"
 msgstr "কোনো গ্রুপ উপলব্ধ নেই"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:500
+msgid "No item types can be created yet. Create the required parent items first."
+msgstr "এখনও কোনো আইটেম টাইপ তৈরি করা যাবে না। প্রথমে প্রয়োজনীয় প্যারেন্ট আইটেম তৈরি করুন।"
+
 #: src/components/MissionSetup.tsx:300
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "কোনো জয়স্টিক শনাক্ত হয়নি — জাগাতে এর যেকোনো বোতাম চাপুন।"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:360
+msgid "No matching objects"
+msgstr "কোনো মিলে যাওয়া অবজেক্ট নেই"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "No notifications yet"
@@ -1870,6 +2214,12 @@ msgstr "কোনও ফলাফল পাওয়া যায়নি"
 msgid "No results found."
 msgstr "কোনো ফলাফল পাওয়া যায়নি।"
 
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:845
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:890
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:339
+msgid "No status"
+msgstr "কোনো স্ট্যাটাস নেই"
+
 #: ../../../lib/web/src/components/timezone-select.tsx:67
 msgid "No time zone found."
 msgstr "কোনো টাইম জোন পাওয়া যায়নি।"
@@ -1886,6 +2236,10 @@ msgstr "কোনো অপঠিত বিজ্ঞপ্তি নেই"
 msgid "No users found"
 msgstr "কোনো ব্যবহারকারী পাওয়া যায়নি"
 
+#: ../../../lib/web/src/components/entity/entity-design-preview.tsx:115
+msgid "No views"
+msgstr "কোনো ভিউ নেই"
+
 #: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:421
 msgid "No world server."
@@ -1896,6 +2250,16 @@ msgid "NO-GRADE"
 msgstr "কোনো গ্রেড নেই"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:349
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:516
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:519
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:365
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:391
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:418
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:421
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:497
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
@@ -1921,6 +2285,10 @@ msgstr "খুঁজে পাওয়া যায়নি"
 msgid "Not set"
 msgstr "সেট করা নেই"
 
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:668
+msgid "Nothing found"
+msgstr "কিছুই পাওয়া যায়নি"
+
 #: src/components/MissionSetup.tsx:965
 msgid "Nothing yet — say hello."
 msgstr "এখনও কিছু নেই — হ্যালো বলুন।"
@@ -1943,6 +2311,12 @@ msgstr "বিজ্ঞপ্তি: {0}"
 #: src/components/Multiplayer.tsx:378
 msgid "Novice"
 msgstr "নবীন"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:140
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:54
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:499
+msgid "Number"
+msgstr "সংখ্যা"
 
 #: src/components/MissionSetup.tsx:1404
 msgid "Ocean detail"
@@ -2002,6 +2376,11 @@ msgstr "নেভিগেশন খুলুন"
 msgid "Open navigation menu"
 msgstr "নেভিগেশন মেনু খুলুন"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:108
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:114
+msgid "Open option actions"
+msgstr "অপশন অ্যাকশন খুলুন"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "নির্বাচিত কার্ড খুলুন"
@@ -2010,6 +2389,26 @@ msgstr "নির্বাচিত কার্ড খুলুন"
 #: ../../../lib/web/src/components/config-drawer.tsx:66
 msgid "Open theme settings"
 msgstr "থিম সেটিংস খুলুন"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:280
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:285
+msgid "Open view actions"
+msgstr "ভিউ অ্যাকশন খুলুন"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:150
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:156
+msgid "Open view controls"
+msgstr "ভিউ কন্ট্রোল খুলুন"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:200
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:158
+msgid "Option name"
+msgstr "অপশনের নাম"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:241
+msgid "Options"
+msgstr "অপশন"
 
 #: src/components/GameCanvas.tsx:316
 msgid "or"
@@ -2037,6 +2436,10 @@ msgstr "মালিক"
 msgid "Page {currentPage} of {totalPages}"
 msgstr "পৃষ্ঠা {currentPage} / {totalPages}"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:508
+msgid "Parent"
+msgstr "প্যারেন্ট"
+
 #: src/components/MissionSetup.tsx:172
 msgid "Parking brake"
 msgstr "পার্কিং ব্রেক"
@@ -2052,6 +2455,10 @@ msgstr "পাসকি যাচাই ব্যর্থ হয়েছে।
 #: ../../../lib/web/src/components/restore-banner.tsx:152
 msgid "Passkeys"
 msgstr "পাসকি"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:210
+msgid "Pattern (regex)"
+msgstr "প্যাটার্ন (রেজেক্স)"
 
 #: ../../../lib/web/src/components/date-picker.tsx:20
 msgid "Pick a date"
@@ -2252,6 +2659,10 @@ msgstr "রিফ্রেশ"
 msgid "REJOINING"
 msgstr "ফর্মেশনে ফিরছি"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:65
+msgid "Relates"
+msgstr "সম্পর্কিত"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
 msgstr "আপেক্ষিক (5m, 3h, 2d)"
@@ -2261,6 +2672,8 @@ msgid "Relative within 24 hours, else absolute"
 msgstr "২৪ ঘণ্টার মধ্যে আপেক্ষিক, অন্যথায় পরম"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:236
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:598
 #: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
@@ -2295,9 +2708,41 @@ msgstr "আগ্রহ সরান"
 msgid "Remove item"
 msgstr "আইটেম সরান"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:304
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:309
+msgid "Remove link"
+msgstr "লিঙ্ক সরান"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:575
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:632
+msgid "Rename"
+msgstr "পুনঃনামকরণ করুন"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:610
+msgid "Rename column"
+msgstr "কলাম পুনঃনামকরণ করুন"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:611
+msgid "Rename this board column"
+msgstr "এই বোর্ড কলাম পুনঃনামকরণ করুন"
+
 #: src/components/MissionSetup.tsx:873
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "রেন্ডারিং <0>three.js</0> দ্বারা (MIT লাইসেন্স)।"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:294
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:342
+msgid "Reply"
+msgstr "উত্তর দিন"
+
+#. placeholder {0}: comment.name || comment.author
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:385
+msgid "Reply to {0}..."
+msgstr "{0} কে উত্তর দিন..."
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+msgid "Required"
+msgstr "প্রয়োজনীয়"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:367
 msgid "Resend email"
@@ -2383,6 +2828,15 @@ msgstr "রোল বামে"
 msgid "Roll right"
 msgstr "রোল ডানে"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:169
+msgid "Rows"
+msgstr "সারি"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:379
+msgid "Rows group by"
+msgstr "সারি গ্রুপ করুন"
+
 #: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "প্রতি পৃষ্ঠায় সারি"
@@ -2407,6 +2861,8 @@ msgstr "পূর্ণ শক্তি"
 msgid "Saturday"
 msgstr "শনিবার"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:269
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
@@ -2416,6 +2872,7 @@ msgstr "সংরক্ষণ করুন"
 msgid "Sea level"
 msgstr "সমুদ্রপৃষ্ঠ"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:177
 #: ../../../lib/web/src/components/filter-bar.tsx:32
 #: ../../../lib/web/src/components/header-search.tsx:22
 #: ../../../lib/web/src/components/search.tsx:18
@@ -2442,6 +2899,10 @@ msgstr "গন্তব্য অনুসন্ধান করুন..."
 msgid "Search for origin..."
 msgstr "উৎস অনুসন্ধান করুন..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:337
+msgid "Search objects..."
+msgstr "অবজেক্ট অনুসন্ধান করুন..."
+
 #: ../../../lib/web/src/components/timezone-select.tsx:65
 msgid "Search time zone..."
 msgstr "সময় অঞ্চল অনুসন্ধান করুন..."
@@ -2450,6 +2911,12 @@ msgstr "সময় অঞ্চল অনুসন্ধান করুন...
 msgid "Search users"
 msgstr "ব্যবহারকারী অনুসন্ধান করুন"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:173
+msgid "Search, watch, and sort this view."
+msgstr "এই ভিউ অনুসন্ধান, দেখুন এবং সাজান।"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:181
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:257
 #: ../../../lib/web/src/components/person-picker.tsx:324
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
@@ -2462,10 +2929,18 @@ msgstr "অনুসন্ধান করুন..."
 msgid "Searching..."
 msgstr "অনুসন্ধান করা হচ্ছে..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
+msgid "Select"
+msgstr "নির্বাচন করুন"
+
 #. placeholder {0}: item.label.toLowerCase()
 #: ../../../lib/web/src/components/config-drawer.tsx:149
 msgid "Select {0}"
 msgstr "{0} নির্বাচন করুন"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
+msgid "Select a field"
+msgstr "একটি ফিল্ড নির্বাচন করুন"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:36
 msgid "Select a game"
@@ -2615,6 +3090,14 @@ msgstr "সেটিংস"
 msgid "Shadows"
 msgstr "ছায়া"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:333
+msgid "Show classes"
+msgstr "ক্লাস দেখান"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:434
+msgid "Show fields"
+msgstr "ফিল্ড দেখান"
+
 #: ../../../lib/web/src/components/password-input.tsx:27
 msgid "Show password"
 msgstr "পাসওয়ার্ড দেখান"
@@ -2642,6 +3125,11 @@ msgstr "সাইন আউট"
 msgid "Signing out..."
 msgstr "সাইন আউট করা হচ্ছে..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:180
+msgid "Single line of text only"
+msgstr "শুধুমাত্র একক লাইনের টেক্সট"
+
 #: src/components/MissionSetup.tsx:700
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "একক-ইঞ্জিনে সেরা আরোহণ (Vyse, আফটারবার্নার)"
@@ -2654,6 +3142,10 @@ msgstr "মূল অংশে এড়িয়ে যান"
 #: ../../../lib/web/src/lib/preference-utils.ts:133
 msgid "Small"
 msgstr "ছোট"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:199
+msgid "Sort"
+msgstr "সাজান"
 
 #: src/components/MissionSetup.tsx:468
 #: src/components/MissionSetup.tsx:1677
@@ -2702,6 +3194,10 @@ msgstr "স্টল, অবতরণ বিন্যাস (Vs0)"
 msgid "Start"
 msgstr "শুরু"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:451
+msgid "Start the discussion by adding the first comment."
+msgstr "প্রথম মন্তব্য যোগ করে আলোচনা শুরু করুন।"
+
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "তবে সাথে থাকুন!"
@@ -2721,6 +3217,16 @@ msgstr "কাঠামো"
 #: ../../../lib/web/src/features/access/access-list.tsx:196
 msgid "Subject"
 msgstr "বিষয়"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:431
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:440
+msgid "Submit comment"
+msgstr "মন্তব্য জমা দিন"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:470
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:475
+msgid "Submit reply"
+msgstr "জবাব জমা দিন"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
@@ -2803,6 +3309,10 @@ msgstr "টিম/অ্যাপ"
 #: ../../../lib/web/src/features/document/document-page.tsx:42
 msgid "Terms and conditions"
 msgstr "শর্তাবলী"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:142
+msgid "Text"
+msgstr "টেক্সট"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:195
 msgid "That code is incorrect or has expired."
@@ -2915,6 +3425,11 @@ msgstr "থিম টগল করুন"
 msgid "Toggle view options"
 msgstr "ভিউ বিকল্প টগল করুন"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:190
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:267
+msgid "Toggle watched filter"
+msgstr "watched ফিল্টার টগল করুন"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:74
 msgid "Too many requests"
 msgstr "অনেক বেশি অনুরোধ"
@@ -2973,6 +3488,11 @@ msgstr "আবার চেষ্টা করুন"
 #: ../../../lib/web/src/lib/preference-utils.ts:60
 msgid "Tuesday"
 msgstr "মঙ্গলবার"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:163
+msgid "Type"
+msgstr "ধরন"
 
 #: ../../../lib/web/src/components/command-menu.tsx:52
 msgid "Type a command or search..."
@@ -3038,9 +3558,25 @@ msgstr "সীমাহীন জ্বালানি"
 msgid "Unsubscribe"
 msgstr "আনসাবস্ক্রাইব করুন"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:286
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:103
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:184
+msgid "Untitled"
+msgstr "শিরোনামহীন"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:135
 msgid "Unverified"
 msgstr "যাচাই করা হয়নি"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:500
+msgid "Updated"
+msgstr "আপডেট হয়েছে"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:630
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:259
+msgid "Upload"
+msgstr "আপলোড"
 
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:34
 msgid "Upload progress"
@@ -3050,6 +3586,7 @@ msgstr "আপলোডের অগ্রগতি"
 msgid "Use your passkey"
 msgstr "আপনার পাসকি ব্যবহার করুন"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:143
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
@@ -3112,6 +3649,10 @@ msgstr "সব দেখুন"
 msgid "View all notifications"
 msgstr "সব নোটিফিকেশন দেখুন"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:172
+msgid "View controls"
+msgstr "কন্ট্রোল দেখুন"
+
 #: src/components/MissionSetup.tsx:564
 msgid "Views"
 msgstr "ভিউ"
@@ -3120,9 +3661,14 @@ msgstr "ভিউ"
 msgid "WAITING FOR OPPONENT"
 msgstr "প্রতিপক্ষের অপেক্ষায়"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:271
 #: ../../../lib/web/src/components/filter-bar.tsx:35
 msgid "Watched"
 msgstr "দেখা হচ্ছে"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:194
+msgid "Watched only"
+msgstr "শুধুমাত্র দেখা"
 
 #: src/components/GameCanvas.tsx:62
 msgid "WAVE OFF"

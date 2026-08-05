@@ -18,6 +18,22 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Thoir sùil air a' cheangal eadar-lìn agad agus feuch ris a-rithist."
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:302
+msgid " or "
+msgstr " no "
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:228
+msgid "(edited)"
+msgstr "(deasaichte)"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:212
+msgid "(expand)"
+msgstr "(leudaich)"
+
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:774
+msgid "[not set]"
+msgstr "[gun shuidheachadh]"
+
 #. placeholder {0}: selectedValues.size
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
 msgid "{0, plural, one {# selected} other {# selected}}"
@@ -81,6 +97,10 @@ msgstr "{selectedCount, plural, one {Gnìomhan mòr-chuid airson # {entityName} 
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel} à {totalLabel}"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:544
+msgid "{totalCount, plural, one {# item} other {# items}}"
+msgstr "{totalCount, plural, one {# nì} two {# nì} few {# nithean} other {# nì}}"
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:165
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Fosgail an clàr-taice (# bhrath gun leughadh)} two {Fosgail an clàr-taice (# bhrath gun leughadh)} few {Fosgail an clàr-taice (# brathan gun leughadh)} other {Fosgail an clàr-taice (# brath gun leughadh)}}"
@@ -89,6 +109,14 @@ msgstr "{unreadCount, plural, one {Fosgail an clàr-taice (# bhrath gun leughadh
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx:421
 msgid "+{0} nested"
 msgstr "+{0} neadaichte"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:209
+msgid "+{totalDescendants} more replies"
+msgstr "+{totalDescendants} freagairtean a bharrachd"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:208
+msgid "1 reply"
+msgstr "1 fhreagairt"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -171,9 +199,17 @@ msgstr "Glais targaid"
 msgid "Add"
 msgstr "Cuir ris"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:360
+msgid "Add a comment..."
+msgstr "Cuir beachd ris..."
+
 #: ../../../lib/web/src/features/accounts/account-add.tsx:133
 msgid "Add a new account"
 msgstr "Cuir cunntas ùr ris"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:106
+msgid "Add a new field to this class"
+msgstr "Cuir raon ùr ris a' chlas seo"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:148
 msgid "Add access"
@@ -192,13 +228,30 @@ msgstr "Cuir cunntas ris gus brathan fhaighinn agus seirbheisean a chleachdadh."
 msgid "Add checklist item"
 msgstr "Cuir nì ris an liosta-dearbhaidh"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:105
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:233
+msgid "Add field"
+msgstr "Cuir raon ris"
+
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:705
 msgid "Add item..."
 msgstr "Cuir nì ris..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
+msgid "Add link"
+msgstr "Cuir ceangal ris"
+
 #: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
 msgstr "Cuir cunntas ùr ris"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:292
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:194
+msgid "Add option"
+msgstr "Cuir roghainn ris"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
 #: ../../../lib/web/src/components/tag-input.tsx:40
@@ -213,6 +266,8 @@ msgstr "Cuir sgioba/aplacaid ris"
 msgid "Add to existing notifications"
 msgstr "Cuir ri brathan a tha ann"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:519
 #: ../../../lib/web/src/components/view-tabs.tsx:87
 #: ../../../lib/web/src/components/view-tabs.tsx:93
 msgid "Add view"
@@ -260,6 +315,10 @@ msgstr "Na h-uile"
 msgid "Allow anyone to search for {0}"
 msgstr "Leig le neach sam bith {0} a lorg"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:226
+msgid "Allow sort by"
+msgstr "Ceadaich seòrsachadh a rèir"
+
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:178
 msgid "An error occurred"
 msgstr "Thachair mearachd"
@@ -290,6 +349,19 @@ msgstr "Cumhachd dlùthachaidh (ATC)"
 msgid "Approach, on-speed (Vapp)"
 msgstr "Dlùthachadh, air an astar (Vapp)"
 
+#. placeholder {0}: deleteTarget?.name
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:271
+msgid "Are you sure you want to delete \"{0}\"?"
+msgstr "A bheil thu cinnteach gu bheil thu airson \"{0}\" a sguabadh às?"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:643
+msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
+msgstr "A bheil thu cinnteach gu bheil thu airson an colbh \"{name}\" a sguabadh às? Cha ghabh seo a thilleadh."
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:485
+msgid "Are you sure you want to delete this comment? This will also delete all replies."
+msgstr "A bheil thu cinnteach gu bheil thu airson am beachd seo a sguabadh às? Sguabaidh seo às na freagairtean uile cuideachd."
+
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "A bheil thu cinnteach gu bheil thu airson clàradh a-mach? Feumaidh tu clàradh a-steach a-rithist gus do chunntas inntrigeadh."
@@ -310,6 +382,16 @@ msgstr "Dìreadh"
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "A' dìreadh"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:398
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:403
+msgid "Attach comment files"
+msgstr "Ceangail faidhlichean beachd"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:439
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:444
+msgid "Attach reply files"
+msgstr "Ceangail faidhlichean freagairt"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
 #: ../../../lib/web/src/features/access/types.ts:41
@@ -383,10 +465,19 @@ msgstr "Astar an tionndaidh sheasmhaich as fheàrr"
 msgid "BINGO FUEL"
 msgstr "BINGO CONNADH"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:68
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:215
+msgid "Blocked by"
+msgstr "Bacte le"
+
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:237
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:247
 msgid "Blocked navigation to untrusted link"
 msgstr "Chaidh seòladaireachd gu ceangal neo-earbsach a bhacadh"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:66
+msgid "Blocks"
+msgstr "Blocaichean"
 
 #: src/components/Multiplayer.tsx:479
 msgid "Blue"
@@ -396,6 +487,10 @@ msgstr "Gorm"
 msgid "Blue bots"
 msgstr "Botaichean gorma"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:318
+msgid "Board"
+msgstr "Bòrd"
+
 #: src/components/GameCanvas.tsx:61
 msgid "BOLTER"
 msgstr "BOLTER"
@@ -404,6 +499,10 @@ msgstr "BOLTER"
 #: ../../../lib/web/src/components/post-tags.tsx:192
 msgid "Boost interest"
 msgstr "Brosnaich ùidh"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:405
+msgid "Border colour"
+msgstr "Dath na crìche"
 
 #: src/components/Multiplayer.tsx:373
 msgid "Bots"
@@ -446,6 +545,10 @@ msgstr "Ainm-gairme"
 msgid "Camera distance"
 msgstr "Astar a' chamara"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:249
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
@@ -460,6 +563,16 @@ msgstr "Astar a' chamara"
 #: src/components/Multiplayer.tsx:456
 msgid "Cancel"
 msgstr "Sguir dheth"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:415
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:420
+msgid "Cancel comment"
+msgstr "Sguir den bheachd"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:455
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:460
+msgid "Cancel reply"
+msgstr "Sguir den fhreagairt"
 
 #: src/components/MissionSetup.tsx:189
 msgid "Canopy"
@@ -527,6 +640,14 @@ msgstr "Cleasan"
 msgid "Check \"All\" to see your past notifications."
 msgstr "Tagh \"A h-uile\" gus na brathan a bh' agad fhaicinn."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
+msgid "Checkbox"
+msgstr "Bogsa-cromaige"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:138
+msgid "Checklist"
+msgstr "Liosta-dearbhaidh"
+
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:37
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Tagh geama bhon bhàr-thaobh no tòisich fear ùr."
@@ -584,12 +705,21 @@ msgstr "Falamhaich an taghadh"
 msgid "Clear selection (Escape)"
 msgstr "Falamhaich an taghadh (Escape)"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:485
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:490
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Dùin"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:109
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:113
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:269
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:273
+msgid "Close dialog"
+msgstr "Dùin an còmhradh"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
@@ -628,6 +758,19 @@ msgstr "Lùb a-steach"
 msgid "Collapse sidebar"
 msgstr "Lùb am bàr-thaobh"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:149
+msgid "Colour"
+msgstr "Dath"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:553
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:558
+msgid "Column actions"
+msgstr "Gnìomhan a' chuilbh"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Columns group by"
+msgstr "Cuir colbhan ann am buidhnean a rèir"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:96
 msgid "Comfortable"
 msgstr "Comhfhurtail"
@@ -644,6 +787,11 @@ msgstr "Pailead nan àithnean"
 msgid "COMMENCING"
 msgstr "A’ TÒISEACHADH"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:330
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:337
+msgid "Comment actions"
+msgstr "Gnìomhan beachd"
+
 #: src/components/MissionSetup.tsx:116
 msgid "Communication"
 msgstr "Conaltradh"
@@ -652,6 +800,14 @@ msgstr "Conaltradh"
 #: ../../../lib/web/src/lib/preference-utils.ts:95
 msgid "Compact"
 msgstr "Dùmhail"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
+msgid "Configure option settings"
+msgstr "Rèitich roghainnean roghainn"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:265
+msgid "Configure view settings"
+msgstr "Rèitich roghainnean seallaidh"
 
 #: ../../../lib/web/src/components/place-picker.tsx:160
 #: ../../../lib/web/src/components/travelling-picker.tsx:316
@@ -761,6 +917,14 @@ msgstr "Frith-cheumannan"
 msgid "CRASHED"
 msgstr "SGRIOSTE"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:564
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:703
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:475
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:672
+msgid "Create"
+msgstr "Cruthaich"
+
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
 msgid "Create {0}"
@@ -783,6 +947,12 @@ msgstr "Cruthaich misean"
 msgid "Create new item"
 msgstr "Cruthaich nì ùr"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:56
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:498
+msgid "Created"
+msgstr "Cruthaichte"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:258
 msgid "Creating..."
 msgstr "A' cruthachadh..."
@@ -829,6 +999,7 @@ msgstr "Modh dorcha"
 msgid "Data conflict"
 msgstr "Còmhstri dàta"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
 #: src/components/MatchHistory.tsx:155
 msgid "Date"
 msgstr "Ceann-là"
@@ -858,6 +1029,52 @@ msgstr "Bunaiteach"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
 msgstr "Cunntas AI bunaiteach"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:485
+msgid "Default sort"
+msgstr "Seòrsachadh bunaiteach"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:583
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:644
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:318
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:361
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:486
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:173
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:178
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:227
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:272
+msgid "Delete"
+msgstr "Sguab às"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:270
+msgid "Delete attachment"
+msgstr "Sguab às ceanglachan"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:642
+msgid "Delete column"
+msgstr "Sguab às colbh"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:484
+msgid "Delete comment"
+msgstr "Sguab às beachd"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:301
+msgid "Delete field"
+msgstr "Sguab às raon"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:119
+msgid "Delete option"
+msgstr "Sguab às roghainn"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:279
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:284
+msgid "Delete option {0}"
+msgstr "Sguab às roghainn {0}"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:290
+msgid "Delete view"
+msgstr "Sguab às sealladh"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:115
 msgid "Delete your account on the old server"
@@ -947,10 +1164,13 @@ msgstr "Seallaidh am bàr-thaobh fòn-làimhe."
 msgid "Distance LOD"
 msgstr "LOD astair"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:306
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
 #: src/components/MissionSetup.tsx:1729
 msgid "Done"
 msgstr "Deiseil"
 
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:214
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
@@ -968,6 +1188,10 @@ msgstr "Slaod"
 msgid "Drone"
 msgstr "Dròn"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:67
+msgid "Duplicates"
+msgstr "Dùblaichean"
+
 #: src/components/MissionSetup.tsx:1416
 msgid "Dynamic resolution"
 msgstr "Dùmhlachd ghluasadach"
@@ -980,13 +1204,40 @@ msgstr "Freagarrach do dhisléicse"
 msgid "EARLY"
 msgstr "TRÀTH"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:307
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:352
+msgid "Edit"
+msgstr "Deasaich"
+
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "Deasaich {label}"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+msgid "Edit field"
+msgstr "Deasaich an raon"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:139
+msgid "Edit field settings"
+msgstr "Deasaich roghainnean an raoin"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+msgid "Edit option"
+msgstr "Deasaich an roghainn"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:264
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:269
+msgid "Edit option {0}"
+msgstr "Deasaich an roghainn {0}"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:31
 msgid "Edit selected card"
 msgstr "Deasaich a' chairt thaghte"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+msgid "Edit view"
+msgstr "Deasaich an sealladh"
 
 #: src/components/MissionSetup.tsx:193
 msgid "Eject"
@@ -1085,9 +1336,22 @@ msgstr "Cha b' urrainn taga a chur ris"
 msgid "Failed to copy"
 msgstr "Cha b' urrainn copaigeadh"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:137
 #: ../../../lib/web/src/components/options-menu.tsx:99
 msgid "Failed to create link"
 msgstr "Cha b' urrainn ceangal a chruthachadh"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:110
+msgid "Failed to delete attachment"
+msgstr "Cha b' urrainn ceangaltas a sguabadh às"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:207
+msgid "Failed to delete comment"
+msgstr "Cha b' urrainn am beachd a sguabadh às"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:159
+msgid "Failed to delete link"
+msgstr "Cha b' urrainn ceangal a sguabadh às"
 
 #: ../../../lib/web/src/components/options-menu.tsx:123
 msgid "Failed to get RSS token"
@@ -1109,6 +1373,10 @@ msgstr "Dh'fhàillig luchdachadh an deilbh"
 msgid "Failed to load video"
 msgstr "Dh'fhàillig luchdachadh a' video"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:170
+msgid "Failed to post comment"
+msgstr "Cha b' urrainn beachd a phostadh"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "Cha b' urrainn an cunntas a thoirt air falbh"
@@ -1121,6 +1389,14 @@ msgstr "Cha b' urrainn inntrigeadh RSS a chùl-ghairm"
 msgid "Failed to send verification code"
 msgstr "Cha b' urrainn còd dearbhaidh a chur"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:190
+msgid "Failed to update comment"
+msgstr "Cha b' urrainn am beachd ùrachadh"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:95
+msgid "Failed to upload attachment"
+msgstr "Cha b' urrainn an ceangaltas a luchdadh suas"
+
 #: src/components/GameCanvas.tsx:58
 msgid "FAIR"
 msgstr "MEADHANACH"
@@ -1132,6 +1408,12 @@ msgstr "FCS"
 #: src/components/GameCanvas.tsx:31
 msgid "FIGHT'S ON"
 msgstr "THA AN T-SABAID A' DOL"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:567
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:133
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:150
+msgid "Files"
+msgstr "Faidhlichean"
 
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:30
 msgid "Filter..."
@@ -1157,6 +1439,10 @@ msgstr "Loisg arm"
 #: src/components/MissionSetup.tsx:557
 msgid "Fixed keys"
 msgstr "Iuchraichean socraichte"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:222
+msgid "Flags"
+msgstr "Brataichean"
 
 #: src/components/GameCanvas.tsx:37
 msgid "FLAMEOUT"
@@ -1308,6 +1594,10 @@ msgstr "Grafaigs"
 msgid "Group"
 msgstr "Buidheann"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Group by"
+msgstr "Cuir ann am buidhnean a rèir"
+
 #. placeholder {0}: name || subject.slice(1)
 #: ../../../lib/web/src/features/access/access-list.tsx:68
 msgid "Group: {0}"
@@ -1366,6 +1656,10 @@ msgstr "Tùs àirde HUD"
 #: src/components/MissionSetup.tsx:197
 msgid "HUD declutter"
 msgstr "Simpleachadh HUD"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:153
+msgid "ID"
+msgstr ""
 
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
@@ -1526,6 +1820,7 @@ msgid "launch / target"
 msgstr "cur air bhog / targaid"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:287
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:312
 msgid "Layout"
 msgstr "Cruth"
 
@@ -1584,6 +1879,14 @@ msgstr "SOLAIS"
 #: ../../../lib/web/src/components/options-menu.tsx:190
 msgid "Link"
 msgstr "Ceangal"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:279
+msgid "Links"
+msgstr "Ceanglaichean"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:324
+msgid "List"
+msgstr "Liosta"
 
 #: src/components/MissionSetup.tsx:1210
 msgid "Load"
@@ -1674,6 +1977,10 @@ msgstr "Stiùirich roinnean"
 msgid "Manage your connected accounts for notifications and services."
 msgstr "Stiùirich na cunntasan ceangailte agad airson brathan agus seirbheisean."
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
+msgid "Manual"
+msgstr "Le làimh"
+
 #: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "mapa"
@@ -1699,6 +2006,10 @@ msgstr "Seòrsa maidse"
 #: src/components/MissionSetup.tsx:1136
 msgid "Matches"
 msgstr "Geamannan"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:199
+msgid "Maximum length"
+msgstr "Faid as motha"
 
 #: ../../../lib/web/src/features/accounts/types.ts:17
 msgid "MCP server"
@@ -1742,6 +2053,10 @@ msgstr "Meatraigeach"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Mapa Atal Midway — tha dàta <0>Copernicus Sentinel-2</0> atharraichte anns na h-ìomhaighean (2026); geomatras an raon-adhair (raon-laighe, slighean-tagsaidh, aprain) © luchd-cuideachaidh <1>OpenStreetMap</1>, fo cheadachas <2>ODbL</2>; dàta oirthir agus sgeirean bho <3>NOAA NCCOS</3> (raon poblach)."
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:188
+msgid "Minimum length"
+msgstr "Faid as lugha"
+
 #: src/components/GameCanvas.tsx:85
 msgid "MISSILE"
 msgstr "URCHAIR"
@@ -1783,6 +2098,14 @@ msgstr "Gluais e…"
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Feumaidh am modh ioma-chluicheadair WebTransport ach chan eil am brabhsair seo a' cur taic ris fhathast."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:143
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:128
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:299
+msgid "Name"
+msgstr "Ainm"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
 msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
 msgstr "Chan fhaod camagan uilleach, slais chùil, leth-choilean, comharran-labhairt no cùl-thicichean a bhith san ainm"
@@ -1796,6 +2119,7 @@ msgstr "Feumaidh an t-ainm a bhith 1000 caractaran no nas lugha"
 msgid "Network error"
 msgstr "Mearachd lìonraidh"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:460
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:43
 msgid "New"
 msgstr "Ùr"
@@ -1815,9 +2139,21 @@ msgstr "An ath dhealbh"
 msgid "Night"
 msgstr "Oidhche"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:533
+msgid "No {parentClassNames} to add to"
+msgstr "Chan eil {parentClassNames} ann ri chur ris"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:165
 msgid "No access rules configured. Add rules to control who can access this resource."
 msgstr "Cha deach riaghailtean cothraim a chur air dòigh. Cuir riaghailtean ris airson smachd a chumail air cò aig a tha cothrom an goireas seo."
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:65
+msgid "No activity yet"
+msgstr "Chan eil gnìomhachd ann fhathast"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:450
+msgid "No comments yet"
+msgstr "Chan eil beachdan ann fhathast"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:295
 msgid "No connected accounts"
@@ -1835,9 +2171,17 @@ msgstr "Chan eil geamannan ann fhathast"
 msgid "No groups available"
 msgstr "Chan eil buidhnean rim faotainn"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:500
+msgid "No item types can be created yet. Create the required parent items first."
+msgstr "Chan urrainnear seòrsa nì sam bith a chruthachadh fhathast. Cruthaich na nithean pàrant riatanach an toiseach."
+
 #: src/components/MissionSetup.tsx:300
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Cha deach joystick a lorg — brùth putan sam bith air gus a dhùsgadh."
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:360
+msgid "No matching objects"
+msgstr "Chan eil nithean a' freagairt"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "No notifications yet"
@@ -1870,6 +2214,12 @@ msgstr "Cha deach toradh a lorg"
 msgid "No results found."
 msgstr "Cha deach toraidhean a lorg."
 
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:845
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:890
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:339
+msgid "No status"
+msgstr "Gun chor"
+
 #: ../../../lib/web/src/components/timezone-select.tsx:67
 msgid "No time zone found."
 msgstr "Cha deach roinn-tìde a lorg."
@@ -1886,6 +2236,10 @@ msgstr "Chan eil brathan gun leughadh"
 msgid "No users found"
 msgstr "Cha deach cleachdaichean a lorg"
 
+#: ../../../lib/web/src/components/entity/entity-design-preview.tsx:115
+msgid "No views"
+msgstr "Gun shealladh"
+
 #: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:421
 msgid "No world server."
@@ -1896,6 +2250,16 @@ msgid "NO-GRADE"
 msgstr "GUN ÌRE"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:349
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:516
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:519
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:365
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:391
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:418
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:421
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:497
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
@@ -1921,6 +2285,10 @@ msgstr "Cha deach a lorg"
 msgid "Not set"
 msgstr "Cha deach a shuidheachadh"
 
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:668
+msgid "Nothing found"
+msgstr "Cha deach dad a lorg"
+
 #: src/components/MissionSetup.tsx:965
 msgid "Nothing yet — say hello."
 msgstr "Chan eil dad ann fhathast — can halò."
@@ -1943,6 +2311,12 @@ msgstr "Brathan: {0}"
 #: src/components/Multiplayer.tsx:378
 msgid "Novice"
 msgstr "Neach-tòiseachaidh"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:140
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:54
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:499
+msgid "Number"
+msgstr "Àireamh"
 
 #: src/components/MissionSetup.tsx:1404
 msgid "Ocean detail"
@@ -2002,6 +2376,11 @@ msgstr "Fosgail seòladaireachd"
 msgid "Open navigation menu"
 msgstr "Fosgail clàr-taice na seòladaireachd"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:108
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:114
+msgid "Open option actions"
+msgstr "Fosgail gnìomhan na roghainn"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "Fosgail a' chairt thaghte"
@@ -2010,6 +2389,26 @@ msgstr "Fosgail a' chairt thaghte"
 #: ../../../lib/web/src/components/config-drawer.tsx:66
 msgid "Open theme settings"
 msgstr "Fosgail roghainnean an ùrlair"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:280
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:285
+msgid "Open view actions"
+msgstr "Fosgail gnìomhan an t-seallaidh"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:150
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:156
+msgid "Open view controls"
+msgstr "Fosgail uidheaman an t-seallaidh"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:200
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:158
+msgid "Option name"
+msgstr "Ainm na roghainn"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:241
+msgid "Options"
+msgstr "Roghainnean"
 
 #: src/components/GameCanvas.tsx:316
 msgid "or"
@@ -2037,6 +2436,10 @@ msgstr "Sealbhadair"
 msgid "Page {currentPage} of {totalPages}"
 msgstr "Duilleag {currentPage} à {totalPages}"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:508
+msgid "Parent"
+msgstr "Pàrant"
+
 #: src/components/MissionSetup.tsx:172
 msgid "Parking brake"
 msgstr "Breig-pàircidh"
@@ -2052,6 +2455,10 @@ msgstr "Dh'fhàillig dearbhadh na h-iuchrach-inntrigidh. Feuch ris a-rithist."
 #: ../../../lib/web/src/components/restore-banner.tsx:152
 msgid "Passkeys"
 msgstr "Pasgairean"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:210
+msgid "Pattern (regex)"
+msgstr "Pàtran (regex)"
 
 #: ../../../lib/web/src/components/date-picker.tsx:20
 msgid "Pick a date"
@@ -2252,6 +2659,10 @@ msgstr "Ath-nuadhaich"
 msgid "REJOINING"
 msgstr "AG ATH-AONADH"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:65
+msgid "Relates"
+msgstr "A' buntainn"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
 msgstr "Coimeasach (5m, 3u, 2l)"
@@ -2261,6 +2672,8 @@ msgid "Relative within 24 hours, else absolute"
 msgstr "Coimeasach taobh a-staigh 24 uair, no fuirich absoluteach"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:236
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:598
 #: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
@@ -2295,9 +2708,41 @@ msgstr "Thoir an ùidh air falbh"
 msgid "Remove item"
 msgstr "Thoir an nì air falbh"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:304
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:309
+msgid "Remove link"
+msgstr "Thoir an ceangal air falbh"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:575
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:632
+msgid "Rename"
+msgstr "Cuir ainm ùr air"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:610
+msgid "Rename column"
+msgstr "Cuir ainm ùr air a' cholbh"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:611
+msgid "Rename this board column"
+msgstr "Cuir ainm ùr air colbh a' bhùird seo"
+
 #: src/components/MissionSetup.tsx:873
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Reandaradh le <0>three.js</0> (ceadachas MIT)."
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:294
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:342
+msgid "Reply"
+msgstr "Freagair"
+
+#. placeholder {0}: comment.name || comment.author
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:385
+msgid "Reply to {0}..."
+msgstr "Freagair {0}..."
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+msgid "Required"
+msgstr "Riatanach"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:367
 msgid "Resend email"
@@ -2383,6 +2828,15 @@ msgstr "Rolladh gu clì"
 msgid "Roll right"
 msgstr "Rolladh gu deas"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:169
+msgid "Rows"
+msgstr "Sreathan"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:379
+msgid "Rows group by"
+msgstr "Buidheanaich sreathan a-rèir"
+
 #: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "Sreathan gach duilleag"
@@ -2407,6 +2861,8 @@ msgstr "CUMHACHD IOMLAN"
 msgid "Saturday"
 msgstr "Disathairne"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:269
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
@@ -2416,6 +2872,7 @@ msgstr "Sàbhail"
 msgid "Sea level"
 msgstr "Ìre na mara"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:177
 #: ../../../lib/web/src/components/filter-bar.tsx:32
 #: ../../../lib/web/src/components/header-search.tsx:22
 #: ../../../lib/web/src/components/search.tsx:18
@@ -2442,6 +2899,10 @@ msgstr "Lorg ceann-uidhe..."
 msgid "Search for origin..."
 msgstr "Lorg tùs..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:337
+msgid "Search objects..."
+msgstr "Lorg nithean..."
+
 #: ../../../lib/web/src/components/timezone-select.tsx:65
 msgid "Search time zone..."
 msgstr "Lorg roinn-tìde..."
@@ -2450,6 +2911,12 @@ msgstr "Lorg roinn-tìde..."
 msgid "Search users"
 msgstr "Lorg cleachdaichean"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:173
+msgid "Search, watch, and sort this view."
+msgstr "Lorg, cùm sùil, agus cuir an òrdugh an sealladh seo."
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:181
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:257
 #: ../../../lib/web/src/components/person-picker.tsx:324
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
@@ -2462,10 +2929,18 @@ msgstr "Lorg..."
 msgid "Searching..."
 msgstr "A' lorg..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
+msgid "Select"
+msgstr "Tagh"
+
 #. placeholder {0}: item.label.toLowerCase()
 #: ../../../lib/web/src/components/config-drawer.tsx:149
 msgid "Select {0}"
 msgstr "Tagh {0}"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
+msgid "Select a field"
+msgstr "Tagh raon"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:36
 msgid "Select a game"
@@ -2615,6 +3090,14 @@ msgstr "Roghainnean"
 msgid "Shadows"
 msgstr "Sgàilean"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:333
+msgid "Show classes"
+msgstr "Seall clasaichean"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:434
+msgid "Show fields"
+msgstr "Seall raointean"
+
 #: ../../../lib/web/src/components/password-input.tsx:27
 msgid "Show password"
 msgstr "Seall am facal-faire"
@@ -2642,6 +3125,11 @@ msgstr "Clàraich a-mach"
 msgid "Signing out..."
 msgstr "A' soidhnigeadh a-mach..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:180
+msgid "Single line of text only"
+msgstr "Aon loidhne teacsa a-mhàin"
+
 #: src/components/MissionSetup.tsx:700
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "An dìreadh as fheàrr le aon einnsean (Vyse, iar-losgadh)"
@@ -2654,6 +3142,10 @@ msgstr "Gearr-shlighe dhan phrìomh"
 #: ../../../lib/web/src/lib/preference-utils.ts:133
 msgid "Small"
 msgstr "Beag"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:199
+msgid "Sort"
+msgstr "Seòrsaich"
 
 #: src/components/MissionSetup.tsx:468
 #: src/components/MissionSetup.tsx:1677
@@ -2702,6 +3194,10 @@ msgstr "Stalladh, rèiteachadh laighe (Vs0)"
 msgid "Start"
 msgstr "Tòisich"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:451
+msgid "Start the discussion by adding the first comment."
+msgstr "Tòisich an deasbad le bhith a' cur a' chiad bheachd ris."
+
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Fuirich an dùil ge-tà!"
@@ -2721,6 +3217,16 @@ msgstr "STRUCTAR"
 #: ../../../lib/web/src/features/access/access-list.tsx:196
 msgid "Subject"
 msgstr "Cuspair"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:431
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:440
+msgid "Submit comment"
+msgstr "Cuir a-steach beachd"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:470
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:475
+msgid "Submit reply"
+msgstr "Cuir a-steach freagairt"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
@@ -2803,6 +3309,10 @@ msgstr "Sgiobaidhean/Aplacaidean"
 #: ../../../lib/web/src/features/document/document-page.tsx:42
 msgid "Terms and conditions"
 msgstr "Teirmichean is cùmhnantan"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:142
+msgid "Text"
+msgstr "Teacsa"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:195
 msgid "That code is incorrect or has expired."
@@ -2915,6 +3425,11 @@ msgstr "Toglaich an t-ùrlar"
 msgid "Toggle view options"
 msgstr "Toglaich roghainnean seallaidh"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:190
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:267
+msgid "Toggle watched filter"
+msgstr "Toglaich criathrag fairichte"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:74
 msgid "Too many requests"
 msgstr "Cus iarrtasan"
@@ -2973,6 +3488,11 @@ msgstr "Feuch a-rithist"
 #: ../../../lib/web/src/lib/preference-utils.ts:60
 msgid "Tuesday"
 msgstr "Dimàirt"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:163
+msgid "Type"
+msgstr "Seòrsa"
 
 #: ../../../lib/web/src/components/command-menu.tsx:52
 msgid "Type a command or search..."
@@ -3038,9 +3558,25 @@ msgstr "Connadh gun chrìoch"
 msgid "Unsubscribe"
 msgstr "Dì-fho-sgrìobh"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:286
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:103
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:184
+msgid "Untitled"
+msgstr "Gun tiotal"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:135
 msgid "Unverified"
 msgstr "Gun dearbhadh"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:500
+msgid "Updated"
+msgstr "Ùraichte"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:630
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:259
+msgid "Upload"
+msgstr "Luchdaich suas"
 
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:34
 msgid "Upload progress"
@@ -3050,6 +3586,7 @@ msgstr "Adhartas an luchdaidh suas"
 msgid "Use your passkey"
 msgstr "Cleachd an iuchair-inntrigidh agad"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:143
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
@@ -3112,6 +3649,10 @@ msgstr "Seall a h-uile"
 msgid "View all notifications"
 msgstr "Seall a h-uile brath"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:172
+msgid "View controls"
+msgstr "Smachdan seallaidh"
+
 #: src/components/MissionSetup.tsx:564
 msgid "Views"
 msgstr "Seallaidhean"
@@ -3120,9 +3661,14 @@ msgstr "Seallaidhean"
 msgid "WAITING FOR OPPONENT"
 msgstr "A' FEITHEAMH RI NÀMHAID"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:271
 #: ../../../lib/web/src/components/filter-bar.tsx:35
 msgid "Watched"
 msgstr "Air a chumail sùil air"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:194
+msgid "Watched only"
+msgstr "Air am bheilear a' coimhead a-mhàin"
 
 #: src/components/GameCanvas.tsx:62
 msgid "WAVE OFF"

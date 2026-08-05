@@ -18,6 +18,22 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Verifique sua conexão com a internet e tente novamente."
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:302
+msgid " or "
+msgstr " ou "
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:228
+msgid "(edited)"
+msgstr "(editado)"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:212
+msgid "(expand)"
+msgstr "(expandir)"
+
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:774
+msgid "[not set]"
+msgstr "[não definido]"
+
 #. placeholder {0}: selectedValues.size
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
 msgid "{0, plural, one {# selected} other {# selected}}"
@@ -81,6 +97,10 @@ msgstr "{selectedCount, plural, one {Ações em massa para # {entityName} seleci
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel} de {totalLabel}"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:544
+msgid "{totalCount, plural, one {# item} other {# items}}"
+msgstr "{totalCount, plural, one {# item} other {# itens}}"
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:165
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Abrir menu (# notificação não lida)} other {Abrir menu (# notificações não lidas)}}"
@@ -89,6 +109,14 @@ msgstr "{unreadCount, plural, one {Abrir menu (# notificação não lida)} other
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx:421
 msgid "+{0} nested"
 msgstr "+{0} aninhados"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:209
+msgid "+{totalDescendants} more replies"
+msgstr "+{totalDescendants} mais respostas"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:208
+msgid "1 reply"
+msgstr "1 resposta"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -171,9 +199,17 @@ msgstr "Travar alvo"
 msgid "Add"
 msgstr "Adicionar"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:360
+msgid "Add a comment..."
+msgstr "Adicionar um comentário..."
+
 #: ../../../lib/web/src/features/accounts/account-add.tsx:133
 msgid "Add a new account"
 msgstr "Adicionar uma nova conta"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:106
+msgid "Add a new field to this class"
+msgstr "Adicionar um novo campo a esta classe"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:148
 msgid "Add access"
@@ -192,13 +228,30 @@ msgstr "Adicione uma conta para receber notificações e usar serviços."
 msgid "Add checklist item"
 msgstr "Adicionar item da checklist"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:105
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:233
+msgid "Add field"
+msgstr "Adicionar campo"
+
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:705
 msgid "Add item..."
 msgstr "Adicionar item..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
+msgid "Add link"
+msgstr "Adicionar link"
+
 #: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
 msgstr "Adicionar nova conta"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:292
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:194
+msgid "Add option"
+msgstr "Adicionar opção"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
 #: ../../../lib/web/src/components/tag-input.tsx:40
@@ -213,6 +266,8 @@ msgstr "Adicionar time/aplicativo"
 msgid "Add to existing notifications"
 msgstr "Adicionar às notificações existentes"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:519
 #: ../../../lib/web/src/components/view-tabs.tsx:87
 #: ../../../lib/web/src/components/view-tabs.tsx:93
 msgid "Add view"
@@ -260,6 +315,10 @@ msgstr "Todos"
 msgid "Allow anyone to search for {0}"
 msgstr "Permitir que qualquer pessoa pesquise {0}"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:226
+msgid "Allow sort by"
+msgstr "Permitir ordenar por"
+
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:178
 msgid "An error occurred"
 msgstr "Ocorreu um erro"
@@ -290,6 +349,19 @@ msgstr "Potência de aproximação (ATC)"
 msgid "Approach, on-speed (Vapp)"
 msgstr "Aproximação, na velocidade correta (Vapp)"
 
+#. placeholder {0}: deleteTarget?.name
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:271
+msgid "Are you sure you want to delete \"{0}\"?"
+msgstr "Tem certeza de que deseja excluir \"{0}\"?"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:643
+msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
+msgstr "Tem certeza de que deseja excluir a coluna \"{name}\"? Isto não pode ser desfeito."
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:485
+msgid "Are you sure you want to delete this comment? This will also delete all replies."
+msgstr "Tem certeza de que deseja excluir este comentário? Isto também excluirá todas as respostas."
+
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Tem certeza de que deseja sair? Você precisará entrar novamente para acessar sua conta."
@@ -310,6 +382,16 @@ msgstr "Cresc"
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "Crescente"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:398
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:403
+msgid "Attach comment files"
+msgstr "Anexar arquivos ao comentário"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:439
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:444
+msgid "Attach reply files"
+msgstr "Anexar arquivos à resposta"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
 #: ../../../lib/web/src/features/access/types.ts:41
@@ -383,10 +465,19 @@ msgstr "Melhor velocidade de curva sustentada"
 msgid "BINGO FUEL"
 msgstr "BINGO COMBUSTÍVEL"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:68
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:215
+msgid "Blocked by"
+msgstr "Bloqueado por"
+
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:237
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:247
 msgid "Blocked navigation to untrusted link"
 msgstr "Navegação bloqueada para link não confiável"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:66
+msgid "Blocks"
+msgstr "Bloqueia"
 
 #: src/components/Multiplayer.tsx:479
 msgid "Blue"
@@ -396,6 +487,10 @@ msgstr "Azul"
 msgid "Blue bots"
 msgstr "Bots azuis"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:318
+msgid "Board"
+msgstr "Quadro"
+
 #: src/components/GameCanvas.tsx:61
 msgid "BOLTER"
 msgstr "BOLTER"
@@ -404,6 +499,10 @@ msgstr "BOLTER"
 #: ../../../lib/web/src/components/post-tags.tsx:192
 msgid "Boost interest"
 msgstr "Aumentar interesse"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:405
+msgid "Border colour"
+msgstr "Cor da borda"
 
 #: src/components/Multiplayer.tsx:373
 msgid "Bots"
@@ -446,6 +545,10 @@ msgstr "Indicativo"
 msgid "Camera distance"
 msgstr "Distância da câmera"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:249
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
@@ -460,6 +563,16 @@ msgstr "Distância da câmera"
 #: src/components/Multiplayer.tsx:456
 msgid "Cancel"
 msgstr "Cancelar"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:415
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:420
+msgid "Cancel comment"
+msgstr "Cancelar comentário"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:455
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:460
+msgid "Cancel reply"
+msgstr "Cancelar resposta"
 
 #: src/components/MissionSetup.tsx:189
 msgid "Canopy"
@@ -527,6 +640,14 @@ msgstr "Cheats"
 msgid "Check \"All\" to see your past notifications."
 msgstr "Selecione \"Tudo\" para ver as notificações anteriores."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
+msgid "Checkbox"
+msgstr "Caixa de seleção"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:138
+msgid "Checklist"
+msgstr "Checklist"
+
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:37
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Escolha um jogo na barra lateral ou inicie um novo."
@@ -584,12 +705,21 @@ msgstr "Limpar seleção"
 msgid "Clear selection (Escape)"
 msgstr "Limpar seleção (Escape)"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:485
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:490
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Fechar"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:109
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:113
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:269
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:273
+msgid "Close dialog"
+msgstr "Fechar diálogo"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
@@ -628,6 +758,19 @@ msgstr "Recolher"
 msgid "Collapse sidebar"
 msgstr "Recolher barra lateral"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:149
+msgid "Colour"
+msgstr "Cor"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:553
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:558
+msgid "Column actions"
+msgstr "Ações da coluna"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Columns group by"
+msgstr "Colunas agrupadas por"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:96
 msgid "Comfortable"
 msgstr "Confortável"
@@ -644,6 +787,11 @@ msgstr "Paleta de comandos"
 msgid "COMMENCING"
 msgstr "INICIANDO"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:330
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:337
+msgid "Comment actions"
+msgstr "Ações do comentário"
+
 #: src/components/MissionSetup.tsx:116
 msgid "Communication"
 msgstr ""
@@ -652,6 +800,14 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:95
 msgid "Compact"
 msgstr "Compacto"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
+msgid "Configure option settings"
+msgstr "Configurar definições da opção"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:265
+msgid "Configure view settings"
+msgstr "Configurar definições da visualização"
 
 #: ../../../lib/web/src/components/place-picker.tsx:160
 #: ../../../lib/web/src/components/travelling-picker.tsx:316
@@ -761,6 +917,14 @@ msgstr ""
 msgid "CRASHED"
 msgstr "CAIU"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:564
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:703
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:475
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:672
+msgid "Create"
+msgstr "Criar"
+
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
 msgid "Create {0}"
@@ -783,6 +947,12 @@ msgstr "Criar missão"
 msgid "Create new item"
 msgstr "Criar novo item"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:56
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:498
+msgid "Created"
+msgstr "Criado"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:258
 msgid "Creating..."
 msgstr "Criando..."
@@ -829,6 +999,7 @@ msgstr "Modo escuro"
 msgid "Data conflict"
 msgstr "Conflito de dados"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
 #: src/components/MatchHistory.tsx:155
 msgid "Date"
 msgstr "Data"
@@ -858,6 +1029,52 @@ msgstr "Padrão"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
 msgstr "Conta de IA padrão"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:485
+msgid "Default sort"
+msgstr "Ordenação padrão"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:583
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:644
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:318
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:361
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:486
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:173
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:178
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:227
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:272
+msgid "Delete"
+msgstr "Excluir"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:270
+msgid "Delete attachment"
+msgstr "Excluir anexo"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:642
+msgid "Delete column"
+msgstr "Excluir coluna"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:484
+msgid "Delete comment"
+msgstr "Excluir comentário"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:301
+msgid "Delete field"
+msgstr "Excluir campo"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:119
+msgid "Delete option"
+msgstr "Excluir opção"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:279
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:284
+msgid "Delete option {0}"
+msgstr "Excluir opção {0}"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:290
+msgid "Delete view"
+msgstr "Excluir visualização"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:115
 msgid "Delete your account on the old server"
@@ -947,10 +1164,13 @@ msgstr "Exibe a barra lateral móvel."
 msgid "Distance LOD"
 msgstr "LOD de distância"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:306
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
 #: src/components/MissionSetup.tsx:1729
 msgid "Done"
 msgstr "Pronto"
 
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:214
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
@@ -968,6 +1188,10 @@ msgstr "Arrastar"
 msgid "Drone"
 msgstr "Drone"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:67
+msgid "Duplicates"
+msgstr "Duplica"
+
 #: src/components/MissionSetup.tsx:1416
 msgid "Dynamic resolution"
 msgstr "Resolução dinâmica"
@@ -980,13 +1204,40 @@ msgstr "Adequado para dislexia"
 msgid "EARLY"
 msgstr "CEDO"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:307
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:352
+msgid "Edit"
+msgstr "Editar"
+
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "Editar {label}"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+msgid "Edit field"
+msgstr "Editar campo"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:139
+msgid "Edit field settings"
+msgstr "Editar configurações do campo"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+msgid "Edit option"
+msgstr "Editar opção"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:264
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:269
+msgid "Edit option {0}"
+msgstr "Editar opção {0}"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:31
 msgid "Edit selected card"
 msgstr "Editar cartão selecionado"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+msgid "Edit view"
+msgstr "Editar visualização"
 
 #: src/components/MissionSetup.tsx:193
 msgid "Eject"
@@ -1085,9 +1336,22 @@ msgstr "Falha ao adicionar tag"
 msgid "Failed to copy"
 msgstr "Falha ao copiar"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:137
 #: ../../../lib/web/src/components/options-menu.tsx:99
 msgid "Failed to create link"
 msgstr "Falha ao criar link"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:110
+msgid "Failed to delete attachment"
+msgstr "Falha ao excluir anexo"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:207
+msgid "Failed to delete comment"
+msgstr "Falha ao excluir comentário"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:159
+msgid "Failed to delete link"
+msgstr "Falha ao excluir link"
 
 #: ../../../lib/web/src/components/options-menu.tsx:123
 msgid "Failed to get RSS token"
@@ -1109,6 +1373,10 @@ msgstr "Falha ao carregar a imagem"
 msgid "Failed to load video"
 msgstr "Falha ao carregar o vídeo"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:170
+msgid "Failed to post comment"
+msgstr "Falha ao publicar comentário"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "Falha ao remover conta"
@@ -1121,6 +1389,14 @@ msgstr "Falha ao revogar o acesso RSS"
 msgid "Failed to send verification code"
 msgstr "Falha ao enviar código de verificação"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:190
+msgid "Failed to update comment"
+msgstr "Falha ao atualizar comentário"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:95
+msgid "Failed to upload attachment"
+msgstr "Falha ao enviar anexo"
+
 #: src/components/GameCanvas.tsx:58
 msgid "FAIR"
 msgstr "RAZOÁVEL"
@@ -1132,6 +1408,12 @@ msgstr "FCS"
 #: src/components/GameCanvas.tsx:31
 msgid "FIGHT'S ON"
 msgstr "O COMBATE COMEÇOU"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:567
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:133
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:150
+msgid "Files"
+msgstr "Arquivos"
 
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:30
 msgid "Filter..."
@@ -1157,6 +1439,10 @@ msgstr "Disparar arma"
 #: src/components/MissionSetup.tsx:557
 msgid "Fixed keys"
 msgstr "Teclas fixas"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:222
+msgid "Flags"
+msgstr "Sinalizações"
 
 #: src/components/GameCanvas.tsx:37
 msgid "FLAMEOUT"
@@ -1308,6 +1594,10 @@ msgstr "Gráficos"
 msgid "Group"
 msgstr "Grupo"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Group by"
+msgstr "Agrupar por"
+
 #. placeholder {0}: name || subject.slice(1)
 #: ../../../lib/web/src/features/access/access-list.tsx:68
 msgid "Group: {0}"
@@ -1366,6 +1656,10 @@ msgstr "Fonte de altitude do HUD"
 #: src/components/MissionSetup.tsx:197
 msgid "HUD declutter"
 msgstr "Simplificar HUD"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:153
+msgid "ID"
+msgstr ""
 
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
@@ -1526,6 +1820,7 @@ msgid "launch / target"
 msgstr "lançar / travar"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:287
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:312
 msgid "Layout"
 msgstr "Layout"
 
@@ -1584,6 +1879,14 @@ msgstr "LUZES"
 #: ../../../lib/web/src/components/options-menu.tsx:190
 msgid "Link"
 msgstr "Link"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:279
+msgid "Links"
+msgstr "Links"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:324
+msgid "List"
+msgstr "Lista"
 
 #: src/components/MissionSetup.tsx:1210
 msgid "Load"
@@ -1674,6 +1977,10 @@ msgstr "Gerenciar categorias"
 msgid "Manage your connected accounts for notifications and services."
 msgstr "Gerencie suas contas conectadas para notificações e serviços."
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
+msgid "Manual"
+msgstr "Manual"
+
 #: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "mapa"
@@ -1699,6 +2006,10 @@ msgstr "Tipo de partida"
 #: src/components/MissionSetup.tsx:1136
 msgid "Matches"
 msgstr "Partidas"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:199
+msgid "Maximum length"
+msgstr "Tamanho máximo"
 
 #: ../../../lib/web/src/features/accounts/types.ts:17
 msgid "MCP server"
@@ -1742,6 +2053,10 @@ msgstr "Métrica"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Mapa do Atol de Midway — as imagens contêm dados <0>Copernicus Sentinel-2</0> modificados (2026); geometria do aeródromo (pista, pistas de táxi, pátios) © colaboradores do <1>OpenStreetMap</1>, licenciada sob a <2>ODbL</2>; dados de linha costeira e recifes da <3>NOAA NCCOS</3> (domínio público)."
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:188
+msgid "Minimum length"
+msgstr "Tamanho mínimo"
+
 #: src/components/GameCanvas.tsx:85
 msgid "MISSILE"
 msgstr "MÍSSIL"
@@ -1783,6 +2098,14 @@ msgstr "Mova o eixo…"
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "O multijogador precisa de WebTransport, que este navegador ainda não suporta."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:143
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:128
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:299
+msgid "Name"
+msgstr "Nome"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
 msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
 msgstr "O nome não pode conter colchetes angulares, barra invertida, ponto e vírgula, aspas nem crases"
@@ -1796,6 +2119,7 @@ msgstr "O nome deve ter no máximo 1000 caracteres"
 msgid "Network error"
 msgstr "Erro de rede"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:460
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:43
 msgid "New"
 msgstr "Novo"
@@ -1815,9 +2139,21 @@ msgstr "Próxima imagem"
 msgid "Night"
 msgstr "Noite"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:533
+msgid "No {parentClassNames} to add to"
+msgstr "Não há {parentClassNames} aos quais adicionar"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:165
 msgid "No access rules configured. Add rules to control who can access this resource."
 msgstr "Nenhuma regra de acesso configurada. Adicione regras para controlar quem pode acessar este recurso."
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:65
+msgid "No activity yet"
+msgstr "Ainda não há atividades"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:450
+msgid "No comments yet"
+msgstr "Ainda não há comentários"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:295
 msgid "No connected accounts"
@@ -1835,9 +2171,17 @@ msgstr "Ainda não há jogos"
 msgid "No groups available"
 msgstr "Nenhum grupo disponível"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:500
+msgid "No item types can be created yet. Create the required parent items first."
+msgstr "Nenhum tipo de item pode ser criado ainda. Crie primeiro os itens pais obrigatórios."
+
 #: src/components/MissionSetup.tsx:300
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Nenhum joystick detectado — pressione qualquer botão nele para despertá-lo."
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:360
+msgid "No matching objects"
+msgstr "Nenhum objeto correspondente"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "No notifications yet"
@@ -1870,6 +2214,12 @@ msgstr "Nenhum resultado encontrado"
 msgid "No results found."
 msgstr "Nenhum resultado encontrado."
 
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:845
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:890
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:339
+msgid "No status"
+msgstr "Sem status"
+
 #: ../../../lib/web/src/components/timezone-select.tsx:67
 msgid "No time zone found."
 msgstr "Nenhum fuso horário encontrado."
@@ -1886,6 +2236,10 @@ msgstr "Nenhuma notificação não lida"
 msgid "No users found"
 msgstr "Nenhum usuário encontrado"
 
+#: ../../../lib/web/src/components/entity/entity-design-preview.tsx:115
+msgid "No views"
+msgstr "Sem visualizações"
+
 #: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:421
 msgid "No world server."
@@ -1896,6 +2250,16 @@ msgid "NO-GRADE"
 msgstr "SEM NOTA"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:349
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:516
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:519
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:365
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:391
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:418
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:421
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:497
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
@@ -1921,6 +2285,10 @@ msgstr "Não encontrado"
 msgid "Not set"
 msgstr "Não definido"
 
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:668
+msgid "Nothing found"
+msgstr "Nada encontrado"
+
 #: src/components/MissionSetup.tsx:965
 msgid "Nothing yet — say hello."
 msgstr "Nada por aqui ainda — diga um oi."
@@ -1943,6 +2311,12 @@ msgstr "Notificações: {0}"
 #: src/components/Multiplayer.tsx:378
 msgid "Novice"
 msgstr "Novato"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:140
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:54
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:499
+msgid "Number"
+msgstr "Número"
 
 #: src/components/MissionSetup.tsx:1404
 msgid "Ocean detail"
@@ -2002,6 +2376,11 @@ msgstr "Abrir navegação"
 msgid "Open navigation menu"
 msgstr "Abrir menu de navegação"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:108
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:114
+msgid "Open option actions"
+msgstr "Abrir ações da opção"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "Abrir cartão selecionado"
@@ -2010,6 +2389,26 @@ msgstr "Abrir cartão selecionado"
 #: ../../../lib/web/src/components/config-drawer.tsx:66
 msgid "Open theme settings"
 msgstr "Abrir configurações do tema"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:280
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:285
+msgid "Open view actions"
+msgstr "Abrir ações de visualização"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:150
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:156
+msgid "Open view controls"
+msgstr "Abrir controles de visualização"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:200
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:158
+msgid "Option name"
+msgstr "Nome da opção"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:241
+msgid "Options"
+msgstr "Opções"
 
 #: src/components/GameCanvas.tsx:316
 msgid "or"
@@ -2037,6 +2436,10 @@ msgstr "Proprietário"
 msgid "Page {currentPage} of {totalPages}"
 msgstr "Página {currentPage} de {totalPages}"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:508
+msgid "Parent"
+msgstr "Pai"
+
 #: src/components/MissionSetup.tsx:172
 msgid "Parking brake"
 msgstr ""
@@ -2052,6 +2455,10 @@ msgstr "A verificação da chave de acesso falhou. Tente novamente."
 #: ../../../lib/web/src/components/restore-banner.tsx:152
 msgid "Passkeys"
 msgstr "Chaves de acesso"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:210
+msgid "Pattern (regex)"
+msgstr "Padrão (regex)"
 
 #: ../../../lib/web/src/components/date-picker.tsx:20
 msgid "Pick a date"
@@ -2252,6 +2659,10 @@ msgstr "Atualizar"
 msgid "REJOINING"
 msgstr "REAGRUPANDO"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:65
+msgid "Relates"
+msgstr "Relaciona-se"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
 msgstr "Relativo (5m, 3h, 2d)"
@@ -2261,6 +2672,8 @@ msgid "Relative within 24 hours, else absolute"
 msgstr "Relativo em até 24 horas, caso contrário absoluto"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:236
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:598
 #: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
@@ -2295,9 +2708,41 @@ msgstr "Remover interesse"
 msgid "Remove item"
 msgstr "Remover item"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:304
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:309
+msgid "Remove link"
+msgstr "Remover link"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:575
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:632
+msgid "Rename"
+msgstr "Renomear"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:610
+msgid "Rename column"
+msgstr "Renomear coluna"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:611
+msgid "Rename this board column"
+msgstr "Renomear esta coluna do quadro"
+
 #: src/components/MissionSetup.tsx:873
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Renderização por <0>three.js</0> (licença MIT)."
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:294
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:342
+msgid "Reply"
+msgstr "Responder"
+
+#. placeholder {0}: comment.name || comment.author
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:385
+msgid "Reply to {0}..."
+msgstr "Responder a {0}..."
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+msgid "Required"
+msgstr "Obrigatório"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:367
 msgid "Resend email"
@@ -2383,6 +2828,15 @@ msgstr "Rolagem para a esquerda"
 msgid "Roll right"
 msgstr "Rolagem para a direita"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:169
+msgid "Rows"
+msgstr "Linhas"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:379
+msgid "Rows group by"
+msgstr "Agrupar linhas por"
+
 #: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "Linhas por página"
@@ -2407,6 +2861,8 @@ msgstr "POTÊNCIA MÁXIMA"
 msgid "Saturday"
 msgstr "Sábado"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:269
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
@@ -2416,6 +2872,7 @@ msgstr "Salvar"
 msgid "Sea level"
 msgstr "Nível do mar"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:177
 #: ../../../lib/web/src/components/filter-bar.tsx:32
 #: ../../../lib/web/src/components/header-search.tsx:22
 #: ../../../lib/web/src/components/search.tsx:18
@@ -2442,6 +2899,10 @@ msgstr "Pesquisar destino..."
 msgid "Search for origin..."
 msgstr "Pesquisar origem..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:337
+msgid "Search objects..."
+msgstr "Pesquisar objetos..."
+
 #: ../../../lib/web/src/components/timezone-select.tsx:65
 msgid "Search time zone..."
 msgstr "Pesquisar fuso horário..."
@@ -2450,6 +2911,12 @@ msgstr "Pesquisar fuso horário..."
 msgid "Search users"
 msgstr "Pesquisar usuários"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:173
+msgid "Search, watch, and sort this view."
+msgstr "Pesquise, observe e ordene esta visualização."
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:181
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:257
 #: ../../../lib/web/src/components/person-picker.tsx:324
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
@@ -2462,10 +2929,18 @@ msgstr "Pesquisar..."
 msgid "Searching..."
 msgstr "Pesquisando..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
+msgid "Select"
+msgstr "Selecionar"
+
 #. placeholder {0}: item.label.toLowerCase()
 #: ../../../lib/web/src/components/config-drawer.tsx:149
 msgid "Select {0}"
 msgstr "Selecionar {0}"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
+msgid "Select a field"
+msgstr "Selecionar um campo"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:36
 msgid "Select a game"
@@ -2615,6 +3090,14 @@ msgstr "Configurações"
 msgid "Shadows"
 msgstr "Sombras"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:333
+msgid "Show classes"
+msgstr "Mostrar classes"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:434
+msgid "Show fields"
+msgstr "Mostrar campos"
+
 #: ../../../lib/web/src/components/password-input.tsx:27
 msgid "Show password"
 msgstr "Mostrar senha"
@@ -2642,6 +3125,11 @@ msgstr "Sair"
 msgid "Signing out..."
 msgstr "Saindo..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:180
+msgid "Single line of text only"
+msgstr "Apenas uma linha de texto"
+
 #: src/components/MissionSetup.tsx:700
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Melhor subida monomotor (Vyse, pós-combustor)"
@@ -2654,6 +3142,10 @@ msgstr "Pular para o conteúdo principal"
 #: ../../../lib/web/src/lib/preference-utils.ts:133
 msgid "Small"
 msgstr "Pequeno"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:199
+msgid "Sort"
+msgstr "Ordenar"
 
 #: src/components/MissionSetup.tsx:468
 #: src/components/MissionSetup.tsx:1677
@@ -2702,6 +3194,10 @@ msgstr "Estol, configuração de pouso (Vs0)"
 msgid "Start"
 msgstr "Iniciar"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:451
+msgid "Start the discussion by adding the first comment."
+msgstr "Inicie a discussão adicionando o primeiro comentário."
+
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Mas fique atento!"
@@ -2721,6 +3217,16 @@ msgstr "ESTRUTURA"
 #: ../../../lib/web/src/features/access/access-list.tsx:196
 msgid "Subject"
 msgstr "Assunto"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:431
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:440
+msgid "Submit comment"
+msgstr "Enviar comentário"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:470
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:475
+msgid "Submit reply"
+msgstr "Enviar resposta"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
@@ -2803,6 +3309,10 @@ msgstr "Equipes/Apps"
 #: ../../../lib/web/src/features/document/document-page.tsx:42
 msgid "Terms and conditions"
 msgstr "Termos e condições"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:142
+msgid "Text"
+msgstr "Texto"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:195
 msgid "That code is incorrect or has expired."
@@ -2915,6 +3425,11 @@ msgstr "Alternar tema"
 msgid "Toggle view options"
 msgstr "Alternar opções de visualização"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:190
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:267
+msgid "Toggle watched filter"
+msgstr "Alternar filtro de observados"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:74
 msgid "Too many requests"
 msgstr "Muitas solicitações"
@@ -2973,6 +3488,11 @@ msgstr "Tentar novamente"
 #: ../../../lib/web/src/lib/preference-utils.ts:60
 msgid "Tuesday"
 msgstr "Terça-feira"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:163
+msgid "Type"
+msgstr "Tipo"
 
 #: ../../../lib/web/src/components/command-menu.tsx:52
 msgid "Type a command or search..."
@@ -3038,9 +3558,25 @@ msgstr "Combustível infinito"
 msgid "Unsubscribe"
 msgstr "Cancelar inscrição"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:286
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:103
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:184
+msgid "Untitled"
+msgstr "Sem título"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:135
 msgid "Unverified"
 msgstr "Não verificado"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:500
+msgid "Updated"
+msgstr "Atualizado"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:630
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:259
+msgid "Upload"
+msgstr "Enviar"
 
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:34
 msgid "Upload progress"
@@ -3050,6 +3586,7 @@ msgstr "Progresso do envio"
 msgid "Use your passkey"
 msgstr "Usar sua chave de acesso"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:143
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
@@ -3112,6 +3649,10 @@ msgstr "Ver tudo"
 msgid "View all notifications"
 msgstr "Ver todas as notificações"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:172
+msgid "View controls"
+msgstr "Visualizar controles"
+
 #: src/components/MissionSetup.tsx:564
 msgid "Views"
 msgstr "Visualizações"
@@ -3120,9 +3661,14 @@ msgstr "Visualizações"
 msgid "WAITING FOR OPPONENT"
 msgstr "AGUARDANDO OPONENTE"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:271
 #: ../../../lib/web/src/components/filter-bar.tsx:35
 msgid "Watched"
 msgstr "Observado"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:194
+msgid "Watched only"
+msgstr "Apenas observados"
 
 #: src/components/GameCanvas.tsx:62
 msgid "WAVE OFF"

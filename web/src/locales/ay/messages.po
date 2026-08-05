@@ -18,6 +18,22 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Mira internet conexion ukat wasitat yant'asim."
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:302
+msgid " or "
+msgstr " jan ukax "
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:228
+msgid "(edited)"
+msgstr "(askichata)"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:212
+msgid "(expand)"
+msgstr "(jathiqaña)"
+
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:774
+msgid "[not set]"
+msgstr "[jan uskuta]"
+
 #. placeholder {0}: selectedValues.size
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
 msgid "{0, plural, one {# selected} other {# selected}}"
@@ -81,6 +97,10 @@ msgstr "{selectedCount, plural, one {# ajllita {entityName} taypi luräwinaka} o
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel} / {totalLabel}"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:544
+msgid "{totalCount, plural, one {# item} other {# items}}"
+msgstr "{totalCount, plural, one {# yänaka} other {# yänaka}}"
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:165
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Menu jist'araña (# jan ullt'ata yatiyawi)} other {Menu jist'araña (# jan ullt'ata yatiyawinaka)}}"
@@ -89,6 +109,14 @@ msgstr "{unreadCount, plural, one {Menu jist'araña (# jan ullt'ata yatiyawi)} o
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx:421
 msgid "+{0} nested"
 msgstr "+{0} manqhankiri"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:209
+msgid "+{totalDescendants} more replies"
+msgstr "+{totalDescendants} jiltir jaysawinaka"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:208
+msgid "1 reply"
+msgstr "1 jaysawi"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -171,9 +199,17 @@ msgstr "Chimpu katuña"
 msgid "Add"
 msgstr "Yapxataña"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:360
+msgid "Add a comment..."
+msgstr "Mä comentario yapxataña..."
+
 #: ../../../lib/web/src/features/accounts/account-add.tsx:133
 msgid "Add a new account"
 msgstr "Mä machaq cuenta yapxataña"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:106
+msgid "Add a new field to this class"
+msgstr "Mä machaq campo yapxataña aka classnru"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:148
 msgid "Add access"
@@ -192,13 +228,30 @@ msgstr "Mä cuenta yapxataña yatiyawinaka katuqañataki ukat servicionaka apnaq
 msgid "Add checklist item"
 msgstr "Checklist itim yapxataña"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:105
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:233
+msgid "Add field"
+msgstr "Campo yapxataña"
+
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:705
 msgid "Add item..."
 msgstr "Itim yapxataña..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
+msgid "Add link"
+msgstr "Link yapxataña"
+
 #: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
 msgstr "Machaq cuenta yapxataña"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:292
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:194
+msgid "Add option"
+msgstr "Opción yapxataña"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
 #: ../../../lib/web/src/components/tag-input.tsx:40
@@ -213,6 +266,8 @@ msgstr "Equipo/app yapxataña"
 msgid "Add to existing notifications"
 msgstr "Yatiyaw utjkirinakar yapxataña"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:519
 #: ../../../lib/web/src/components/view-tabs.tsx:87
 #: ../../../lib/web/src/components/view-tabs.tsx:93
 msgid "Add view"
@@ -260,6 +315,10 @@ msgstr "Taqpach"
 msgid "Allow anyone to search for {0}"
 msgstr "Taqinis {0} thaqhañapataki iyawsaña"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:226
+msgid "Allow sort by"
+msgstr "Akhamat ch'ulluwiñ iyawsaña"
+
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:178
 msgid "An error occurred"
 msgstr "Mä juch'a utjawayi"
@@ -290,6 +349,19 @@ msgstr "Jak'achaña ch'ama (ATC)"
 msgid "Approach, on-speed (Vapp)"
 msgstr "Jak'achasiña, waki velocidad (Vapp)"
 
+#. placeholder {0}: deleteTarget?.name
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:271
+msgid "Are you sure you want to delete \"{0}\"?"
+msgstr "Chiqpach \"{0}\" chhaqtayaña munta?"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:643
+msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
+msgstr "Chiqpach \"{name}\" columna chhaqtayaña munta? Akax janiw kuttayaski."
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:485
+msgid "Are you sure you want to delete this comment? This will also delete all replies."
+msgstr "Chiqpach aka comentario chhaqtayaña munta? Akax taqpach jaysawinaks chhaqtayani."
+
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Chiqpach mistuña munta? Wasitat mantañam cuentamar mantañataki."
@@ -310,6 +382,16 @@ msgstr "Asc"
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "Wichhukama"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:398
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:403
+msgid "Attach comment files"
+msgstr "Comentario archivonak apkataña"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:439
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:444
+msgid "Attach reply files"
+msgstr "Jaysawi archivonak apkataña"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
 #: ../../../lib/web/src/features/access/types.ts:41
@@ -383,10 +465,19 @@ msgstr "Suma sarantir muyuña velocidad"
 msgid "BINGO FUEL"
 msgstr "BINGO COMBUSTIBLE"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:68
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:215
+msgid "Blocked by"
+msgstr "Jark'ataw"
+
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:237
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:247
 msgid "Blocked navigation to untrusted link"
 msgstr "Jan iyawsir linkar mantañ jark'ata"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:66
+msgid "Blocks"
+msgstr "Bloquenaka"
 
 #: src/components/Multiplayer.tsx:479
 msgid "Blue"
@@ -396,6 +487,10 @@ msgstr "Larama"
 msgid "Blue bots"
 msgstr "Larama botanaka"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:318
+msgid "Board"
+msgstr "Tabla"
+
 #: src/components/GameCanvas.tsx:61
 msgid "BOLTER"
 msgstr "BOLTER"
@@ -404,6 +499,10 @@ msgstr "BOLTER"
 #: ../../../lib/web/src/components/post-tags.tsx:192
 msgid "Boost interest"
 msgstr "Munawi jiltayaña"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:405
+msgid "Border colour"
+msgstr "Borde colora"
 
 #: src/components/Multiplayer.tsx:373
 msgid "Bots"
@@ -446,6 +545,10 @@ msgstr "Jawsa suti"
 msgid "Camera distance"
 msgstr "Cámaran jayapa"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:249
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
@@ -460,6 +563,16 @@ msgstr "Cámaran jayapa"
 #: src/components/Multiplayer.tsx:456
 msgid "Cancel"
 msgstr "Jaytaña"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:415
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:420
+msgid "Cancel comment"
+msgstr "Comentario jaytaña"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:455
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:460
+msgid "Cancel reply"
+msgstr "Jaysawi jaytaña"
 
 #: src/components/MissionSetup.tsx:189
 msgid "Canopy"
@@ -527,6 +640,14 @@ msgstr "Trampanaka"
 msgid "Check \"All\" to see your past notifications."
 msgstr "\"Taqi\" ukar uñjañataki nayra yatiyawinaka."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
+msgid "Checkbox"
+msgstr "Checkbox"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:138
+msgid "Checklist"
+msgstr "Checklist"
+
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:37
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Mä anatawi ajllxaña sidebar taypita jan ukax mä machaq qalltaña."
@@ -584,12 +705,21 @@ msgstr "Ajllxawi q'umachaña"
 msgid "Clear selection (Escape)"
 msgstr "Ajllxawi q'umachaña (Escape)"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:485
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:490
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Jist'antaña"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:109
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:113
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:269
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:273
+msgid "Close dialog"
+msgstr "Dialogo jist'antaña"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
@@ -628,6 +758,19 @@ msgstr "Pist'aña"
 msgid "Collapse sidebar"
 msgstr "Sidebar jist'antaña"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:149
+msgid "Colour"
+msgstr "Colora"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:553
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:558
+msgid "Column actions"
+msgstr "Tila luräwinaka"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Columns group by"
+msgstr "Columnanaka tantachasi:"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:96
 msgid "Comfortable"
 msgstr "Suma"
@@ -644,6 +787,11 @@ msgstr "Kamachi paleta"
 msgid "COMMENCING"
 msgstr "QALLTAÑA"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:330
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:337
+msgid "Comment actions"
+msgstr "Arxata luräwinaka"
+
 #: src/components/MissionSetup.tsx:116
 msgid "Communication"
 msgstr "Aruskipäwi"
@@ -652,6 +800,14 @@ msgstr "Aruskipäwi"
 #: ../../../lib/web/src/lib/preference-utils.ts:95
 msgid "Compact"
 msgstr "Compacto"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
+msgid "Configure option settings"
+msgstr "Opción wakichawinak askichaña"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:265
+msgid "Configure view settings"
+msgstr "Uñacht'awi wakichawinak askichaña"
 
 #: ../../../lib/web/src/components/place-picker.tsx:160
 #: ../../../lib/web/src/components/travelling-picker.tsx:316
@@ -761,6 +917,14 @@ msgstr "Jark'aqañ luräwinaka"
 msgid "CRASHED"
 msgstr "JALAQATA"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:564
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:703
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:475
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:672
+msgid "Create"
+msgstr "Luraña"
+
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
 msgid "Create {0}"
@@ -783,6 +947,12 @@ msgstr "Misión luraña"
 msgid "Create new item"
 msgstr "Machaq itim luraña"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:56
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:498
+msgid "Created"
+msgstr "Lurata"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:258
 msgid "Creating..."
 msgstr "Lurkasa..."
@@ -829,6 +999,7 @@ msgstr "Ch'amaka modo"
 msgid "Data conflict"
 msgstr "Datanakan ch'axwawipa"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
 #: src/components/MatchHistory.tsx:155
 msgid "Date"
 msgstr "Uru"
@@ -858,6 +1029,52 @@ msgstr "Wakichata"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
 msgstr "Default AI cuenta"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:485
+msgid "Default sort"
+msgstr "Default ch'ulluwi"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:583
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:644
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:318
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:361
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:486
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:173
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:178
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:227
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:272
+msgid "Delete"
+msgstr "Chhaqtayaña"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:270
+msgid "Delete attachment"
+msgstr "Apkatawi chhaqtayaña"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:642
+msgid "Delete column"
+msgstr "Columna chhaqtayaña"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:484
+msgid "Delete comment"
+msgstr "Comentario chhaqtayaña"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:301
+msgid "Delete field"
+msgstr "Campo chhaqtayaña"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:119
+msgid "Delete option"
+msgstr "Opción chhaqtayaña"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:279
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:284
+msgid "Delete option {0}"
+msgstr "Opción {0} chhaqtayaña"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:290
+msgid "Delete view"
+msgstr "Uñacht'awi chhaqtayaña"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:115
 msgid "Delete your account on the old server"
@@ -947,10 +1164,13 @@ msgstr "Móvil sidebar uñacht'ayi."
 msgid "Distance LOD"
 msgstr "Jaya LOD"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:306
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
 #: src/components/MissionSetup.tsx:1729
 msgid "Done"
 msgstr "Tukuyata"
 
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:214
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
@@ -968,6 +1188,10 @@ msgstr "Aytaña"
 msgid "Drone"
 msgstr "Dron"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:67
+msgid "Duplicates"
+msgstr "Paypachayatanaka"
+
 #: src/components/MissionSetup.tsx:1416
 msgid "Dynamic resolution"
 msgstr "Resolución dinámica"
@@ -980,13 +1204,40 @@ msgstr "Dislexia jaqinakataki"
 msgid "EARLY"
 msgstr "NAYRA"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:307
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:352
+msgid "Edit"
+msgstr "Askichaña"
+
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "{label} askichaña"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+msgid "Edit field"
+msgstr "Campo askichaña"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:139
+msgid "Edit field settings"
+msgstr "Campo configuracionanak askichaña"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+msgid "Edit option"
+msgstr "Opción askichaña"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:264
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:269
+msgid "Edit option {0}"
+msgstr "{0} opción askichaña"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:31
 msgid "Edit selected card"
 msgstr "Ajllita tarjeta askichaña"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+msgid "Edit view"
+msgstr "Uñjaña askichaña"
 
 #: src/components/MissionSetup.tsx:193
 msgid "Eject"
@@ -1085,9 +1336,22 @@ msgstr "Janiw tag yapxataña atinkti"
 msgid "Failed to copy"
 msgstr "Janiw copia luraña atinkti"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:137
 #: ../../../lib/web/src/components/options-menu.tsx:99
 msgid "Failed to create link"
 msgstr "Janiw enlace lurña atinkti"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:110
+msgid "Failed to delete attachment"
+msgstr "Janiw archivo apxata chhaqtayaña atinkti"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:207
+msgid "Failed to delete comment"
+msgstr "Janiw comentario chhaqtayaña atinkti"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:159
+msgid "Failed to delete link"
+msgstr "Janiw enlace chhaqtayaña atinkti"
 
 #: ../../../lib/web/src/components/options-menu.tsx:123
 msgid "Failed to get RSS token"
@@ -1109,6 +1373,10 @@ msgstr "Jana uñacht'awi apsuñax janiw walikiti"
 msgid "Failed to load video"
 msgstr "Jana videox apsuñax janiw walikiti"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:170
+msgid "Failed to post comment"
+msgstr "Janiw comentario apaña atinkti"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "Janiw cuenta apsuña atinkti"
@@ -1121,6 +1389,14 @@ msgstr "RSS mantaña jarq'añax jan walikiti"
 msgid "Failed to send verification code"
 msgstr "Janiw verificación código apayaña atinkti"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:190
+msgid "Failed to update comment"
+msgstr "Janiw comentario machaqachaña atinkti"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:95
+msgid "Failed to upload attachment"
+msgstr "Janiw archivo apxata apsuña atinkti"
+
 #: src/components/GameCanvas.tsx:58
 msgid "FAIR"
 msgstr "REGULAR"
@@ -1132,6 +1408,12 @@ msgstr "FCS"
 #: src/components/GameCanvas.tsx:31
 msgid "FIGHT'S ON"
 msgstr "CH'AXWA QALLTIWA"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:567
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:133
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:150
+msgid "Files"
+msgstr "Archivonaka"
 
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:30
 msgid "Filter..."
@@ -1157,6 +1439,10 @@ msgstr "Arma disparaña"
 #: src/components/MissionSetup.tsx:557
 msgid "Fixed keys"
 msgstr "Jani mayjt'ayaña teclanaka"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:222
+msgid "Flags"
+msgstr "Banderanaka"
 
 #: src/components/GameCanvas.tsx:37
 msgid "FLAMEOUT"
@@ -1308,6 +1594,10 @@ msgstr "Gráficos"
 msgid "Group"
 msgstr "Grupo"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Group by"
+msgstr "Akham tamachaña"
+
 #. placeholder {0}: name || subject.slice(1)
 #: ../../../lib/web/src/features/access/access-list.tsx:68
 msgid "Group: {0}"
@@ -1366,6 +1656,10 @@ msgstr "HUD altura jutäwi"
 #: src/components/MissionSetup.tsx:197
 msgid "HUD declutter"
 msgstr "HUD jasaptayaña"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:153
+msgid "ID"
+msgstr ""
 
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
@@ -1526,6 +1820,7 @@ msgid "launch / target"
 msgstr "jaqtaña / chimpu"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:287
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:312
 msgid "Layout"
 msgstr "Diseño"
 
@@ -1584,6 +1879,14 @@ msgstr "QHANANAKA"
 #: ../../../lib/web/src/components/options-menu.tsx:190
 msgid "Link"
 msgstr "Chimpu"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:279
+msgid "Links"
+msgstr "Enlacenaka"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:324
+msgid "List"
+msgstr "Lista"
 
 #: src/components/MissionSetup.tsx:1210
 msgid "Load"
@@ -1674,6 +1977,10 @@ msgstr "Kastanaka apnaqaña"
 msgid "Manage your connected accounts for notifications and services."
 msgstr "Yatiyawinakataki ukat serviciunakataki mayacht'ata cuentanakama apnaqaña."
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
+msgid "Manual"
+msgstr "Manual"
+
 #: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "mapa"
@@ -1699,6 +2006,10 @@ msgstr "Anatäwi kasta"
 #: src/components/MissionSetup.tsx:1136
 msgid "Matches"
 msgstr "Anatawinaka"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:199
+msgid "Maximum length"
+msgstr "Walja jach'awi"
 
 #: ../../../lib/web/src/features/accounts/types.ts:17
 msgid "MCP server"
@@ -1742,6 +2053,10 @@ msgstr "Métrico"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway Atoll mapa — imaginakax <0>Copernicus Sentinel-2</0> mayjt'ayat yänaka apnaqi (2026); aeropuerto geometría (pista, calle de rodaje, plataformanaka) © <1>OpenStreetMap</1> yanapt'irinaka, <2>ODbL</2> ukampi licenciat; lamar thiya ukat arrecife yänakax <3>NOAA NCCOS</3> ukankiwa (dominio público)."
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:188
+msgid "Minimum length"
+msgstr "Pisin jach'awi"
+
 #: src/components/GameCanvas.tsx:85
 msgid "MISSILE"
 msgstr "MISIL"
@@ -1783,6 +2098,14 @@ msgstr "Eje unxtayam…"
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Walja anatirinakatakix WebTransport wakisiwa, aka nabegadorax janiw ukx yanapt'kiti."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:143
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:128
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:299
+msgid "Name"
+msgstr "Suti"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
 msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
 msgstr "Suti janiw esquina llavenaka, kutt'ayiri jalanta, punto y coma, comillanaka jan ukax acento graves uñstayaspa"
@@ -1796,6 +2119,7 @@ msgstr "Suti 1000 sañanaka jan ukax juk'ampi jisk'a"
 msgid "Network error"
 msgstr "Red juch'a"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:460
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:43
 msgid "New"
 msgstr "Machaqa"
@@ -1815,9 +2139,21 @@ msgstr "Arkiri imagen"
 msgid "Night"
 msgstr "Aruma"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:533
+msgid "No {parentClassNames} to add to"
+msgstr "Jan {parentClassNames} yapxatañataki"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:165
 msgid "No access rules configured. Add rules to control who can access this resource."
 msgstr "Jan mantañ kamachi configuratati. Kamachi yapxatma khiti aka recurso mantki uka uñjañataki."
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:65
+msgid "No activity yet"
+msgstr "Janira lurawi"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:450
+msgid "No comments yet"
+msgstr "Janira comentarionaka"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:295
 msgid "No connected accounts"
@@ -1835,9 +2171,17 @@ msgstr "Janira anatawinaka"
 msgid "No groups available"
 msgstr "Jan tamanak utjki"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:500
+msgid "No item types can be created yet. Create the required parent items first."
+msgstr "Janiraw item tipo lurañ atititi. Nayraqat parent itemanak munaski lurma."
+
 #: src/components/MissionSetup.tsx:300
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Janiw joystick jikxatatakiti — sartayañataki kawkir botonsa limt'am."
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:360
+msgid "No matching objects"
+msgstr "Jan jikxatat objectanaka"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "No notifications yet"
@@ -1870,6 +2214,12 @@ msgstr "Janiw kuna uñstawis jikitäkiti"
 msgid "No results found."
 msgstr "Jan resultadonak jikxatasiti."
 
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:845
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:890
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:339
+msgid "No status"
+msgstr "Jan estado"
+
 #: ../../../lib/web/src/components/timezone-select.tsx:67
 msgid "No time zone found."
 msgstr "Tiempo zona jan jikxatasiti."
@@ -1886,6 +2236,10 @@ msgstr "Jan jan ullt'at yatiyawinak"
 msgid "No users found"
 msgstr "Usuarionak jan jikxatasiti"
 
+#: ../../../lib/web/src/components/entity/entity-design-preview.tsx:115
+msgid "No views"
+msgstr "Jan uñjawinak"
+
 #: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:421
 msgid "No world server."
@@ -1896,6 +2250,16 @@ msgid "NO-GRADE"
 msgstr "SIN NOTA"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:349
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:516
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:519
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:365
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:391
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:418
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:421
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:497
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
@@ -1921,6 +2285,10 @@ msgstr "Janiw jikxatatäkiti"
 msgid "Not set"
 msgstr "Jan wakichata"
 
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:668
+msgid "Nothing found"
+msgstr "Jan kunas jikxatasiti"
+
 #: src/components/MissionSetup.tsx:965
 msgid "Nothing yet — say hello."
 msgstr "Janïw kunas utjkiti — aruntasim."
@@ -1943,6 +2311,12 @@ msgstr "Yatiyawinaka: {0}"
 #: src/components/Multiplayer.tsx:378
 msgid "Novice"
 msgstr "Yatiqiri"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:140
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:54
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:499
+msgid "Number"
+msgstr "Jakhu"
 
 #: src/components/MissionSetup.tsx:1404
 msgid "Ocean detail"
@@ -2002,6 +2376,11 @@ msgstr "Navegación jist'arma"
 msgid "Open navigation menu"
 msgstr "Navegación menú jist'arma"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:108
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:114
+msgid "Open option actions"
+msgstr "Opción lurawinak jist'arma"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "Ajllit card jist'arma"
@@ -2010,6 +2389,26 @@ msgstr "Ajllit card jist'arma"
 #: ../../../lib/web/src/components/config-drawer.tsx:66
 msgid "Open theme settings"
 msgstr "Tema configuracionanak jist'arma"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:280
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:285
+msgid "Open view actions"
+msgstr "Uñjawi lurawinak jist'arma"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:150
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:156
+msgid "Open view controls"
+msgstr "Uñjawi controlanak jist'arma"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:200
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:158
+msgid "Option name"
+msgstr "Opción suti"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:241
+msgid "Options"
+msgstr "Opcionanaka"
 
 #: src/components/GameCanvas.tsx:316
 msgid "or"
@@ -2037,6 +2436,10 @@ msgstr "Dueño"
 msgid "Page {currentPage} of {totalPages}"
 msgstr "Jana {currentPage} / {totalPages}"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:508
+msgid "Parent"
+msgstr "Awki"
+
 #: src/components/MissionSetup.tsx:172
 msgid "Parking brake"
 msgstr "Sayañ freno"
@@ -2052,6 +2455,10 @@ msgstr "Passkey yatiyañax jan walikiti. Mira wasitat yant'asma."
 #: ../../../lib/web/src/components/restore-banner.tsx:152
 msgid "Passkeys"
 msgstr "Passkeyanaka"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:210
+msgid "Pattern (regex)"
+msgstr "Patrón (regex)"
 
 #: ../../../lib/web/src/components/date-picker.tsx:20
 msgid "Pick a date"
@@ -2252,6 +2659,10 @@ msgstr "Machaqachama"
 msgid "REJOINING"
 msgstr "TAMARU KUTT'ASKTA"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:65
+msgid "Relates"
+msgstr "Relaciona"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
 msgstr "Relativo (5m, 3h, 2d)"
@@ -2261,6 +2672,8 @@ msgid "Relative within 24 hours, else absolute"
 msgstr "Relativo 24 hora taypi, jan ukax absoluto"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:236
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:598
 #: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
@@ -2295,9 +2708,41 @@ msgstr "Interés aparma"
 msgid "Remove item"
 msgstr "Item aparma"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:304
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:309
+msgid "Remove link"
+msgstr "Mayachaña apaqaña"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:575
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:632
+msgid "Rename"
+msgstr "Suti machaqachama"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:610
+msgid "Rename column"
+msgstr "Columna suti machaqachama"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:611
+msgid "Rename this board column"
+msgstr "Aka board columna suti machaqachama"
+
 #: src/components/MissionSetup.tsx:873
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Renderizado <0>three.js</0> ukampi lurata (MIT licencia)."
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:294
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:342
+msgid "Reply"
+msgstr "Jaysaña"
+
+#. placeholder {0}: comment.name || comment.author
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:385
+msgid "Reply to {0}..."
+msgstr "{0} replyma..."
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+msgid "Required"
+msgstr "Munaski"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:367
 msgid "Resend email"
@@ -2383,6 +2828,15 @@ msgstr "Alabeo ch'iqaru"
 msgid "Roll right"
 msgstr "Alabeo kupiru"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:169
+msgid "Rows"
+msgstr "Filanaka"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:379
+msgid "Rows group by"
+msgstr "Filanak agrupama"
+
 #: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "Página taypi filanaka"
@@ -2407,6 +2861,8 @@ msgstr "TAQI CH'AMA"
 msgid "Saturday"
 msgstr "Kharminthi"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:269
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
@@ -2416,6 +2872,7 @@ msgstr "Imaña"
 msgid "Sea level"
 msgstr "Lamar quta chika"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:177
 #: ../../../lib/web/src/components/filter-bar.tsx:32
 #: ../../../lib/web/src/components/header-search.tsx:22
 #: ../../../lib/web/src/components/search.tsx:18
@@ -2442,6 +2899,10 @@ msgstr "Destino thaqhama..."
 msgid "Search for origin..."
 msgstr "Origen thaqhama..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:337
+msgid "Search objects..."
+msgstr "Objectanak thaqhama..."
+
 #: ../../../lib/web/src/components/timezone-select.tsx:65
 msgid "Search time zone..."
 msgstr "Tiempo zona thaqhama..."
@@ -2450,6 +2911,12 @@ msgstr "Tiempo zona thaqhama..."
 msgid "Search users"
 msgstr "Usuarionak thaqhama"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:173
+msgid "Search, watch, and sort this view."
+msgstr "Aka uñjawi thaqhama, uñjama, ordenma."
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:181
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:257
 #: ../../../lib/web/src/components/person-picker.tsx:324
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
@@ -2462,10 +2929,18 @@ msgstr "Thaqhama..."
 msgid "Searching..."
 msgstr "Thaqhaski..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
+msgid "Select"
+msgstr "Ajllima"
+
 #. placeholder {0}: item.label.toLowerCase()
 #: ../../../lib/web/src/components/config-drawer.tsx:149
 msgid "Select {0}"
 msgstr "{0} ajlliña"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
+msgid "Select a field"
+msgstr "Mä field ajllima"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:36
 msgid "Select a game"
@@ -2615,6 +3090,14 @@ msgstr "Configuración"
 msgid "Shadows"
 msgstr "Ch'iwinaka"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:333
+msgid "Show classes"
+msgstr "Clases uñstayaña"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:434
+msgid "Show fields"
+msgstr "Camponaka uñstayaña"
+
 #: ../../../lib/web/src/components/password-input.tsx:27
 msgid "Show password"
 msgstr "Imantata aru uñacht'ayaña"
@@ -2642,6 +3125,11 @@ msgstr "Mistuña"
 msgid "Signing out..."
 msgstr "Mistuyasa..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:180
+msgid "Single line of text only"
+msgstr "Mä líneaki qillqaña"
+
 #: src/components/MissionSetup.tsx:700
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Mä motorampi suma makhatawi (Vyse, afterburner)"
@@ -2654,6 +3142,10 @@ msgstr "Main ukar saraqaña"
 #: ../../../lib/web/src/lib/preference-utils.ts:133
 msgid "Small"
 msgstr "Jisk'a"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:199
+msgid "Sort"
+msgstr "Sumaña"
 
 #: src/components/MissionSetup.tsx:468
 #: src/components/MissionSetup.tsx:1677
@@ -2702,6 +3194,10 @@ msgstr "Pérdida, aterrizaje wakichawi (Vs0)"
 msgid "Start"
 msgstr "Qalltaña"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:451
+msgid "Start the discussion by adding the first comment."
+msgstr "Discusión qalltam, nayrïr comentario yapxatata."
+
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Suyt'asipkakim!"
@@ -2721,6 +3217,16 @@ msgstr "ESTRUCTURA"
 #: ../../../lib/web/src/features/access/access-list.tsx:196
 msgid "Subject"
 msgstr "Tema"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:431
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:440
+msgid "Submit comment"
+msgstr "Comentario apayaña"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:470
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:475
+msgid "Submit reply"
+msgstr "Kuts apayaña"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
@@ -2803,6 +3309,10 @@ msgstr "Equipos/Apps"
 #: ../../../lib/web/src/features/document/document-page.tsx:42
 msgid "Terms and conditions"
 msgstr "Términos ukat condicionanaka"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:142
+msgid "Text"
+msgstr "Texto"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:195
 msgid "That code is incorrect or has expired."
@@ -2915,6 +3425,11 @@ msgstr "Uñjañ opcionanak cambiaña"
 msgid "Toggle view options"
 msgstr "Uñjat filtro cambiaña"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:190
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:267
+msgid "Toggle watched filter"
+msgstr "Token clipboard ukar copyata"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:74
 msgid "Too many requests"
 msgstr "Walja mayiwinaka"
@@ -2973,6 +3488,11 @@ msgstr "Yaqha thaqhañ términonak yant'am."
 #: ../../../lib/web/src/lib/preference-utils.ts:60
 msgid "Tuesday"
 msgstr "Tipo"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:163
+msgid "Type"
+msgstr "Mä comando qillqam jan ukax thaqham..."
 
 #: ../../../lib/web/src/components/command-menu.tsx:52
 msgid "Type a command or search..."
@@ -3038,9 +3558,25 @@ msgstr "Jan tukusiri combustible"
 msgid "Unsubscribe"
 msgstr "CRM ukatpach suscripción jaytaña?"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:286
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:103
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:184
+msgid "Untitled"
+msgstr "Jan sutini listing"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:135
 msgid "Unverified"
 msgstr "Machaqachaña"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:500
+msgid "Updated"
+msgstr "Machaqachatawa"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:630
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:259
+msgid "Upload"
+msgstr ".json archivo apayaña"
 
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:34
 msgid "Upload progress"
@@ -3050,6 +3586,7 @@ msgstr "Apkatäwi sarantawi"
 msgid "Use your passkey"
 msgstr "Passkey ukma apnaqama"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:143
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
@@ -3112,6 +3649,10 @@ msgstr "Taqi yatiyawinaka uñjaña"
 msgid "View all notifications"
 msgstr "Taqi posts uñjaña"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:172
+msgid "View controls"
+msgstr "Uñjañaki"
+
 #: src/components/MissionSetup.tsx:564
 msgid "Views"
 msgstr "Nuwasiña"
@@ -3120,9 +3661,14 @@ msgstr "Nuwasiña"
 msgid "WAITING FOR OPPONENT"
 msgstr "AWQARU SUYT'ASKI"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:271
 #: ../../../lib/web/src/components/filter-bar.tsx:35
 msgid "Watched"
 msgstr "Uñch'ukita sapa"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:194
+msgid "Watched only"
+msgstr "Uñjatakiw"
 
 #: src/components/GameCanvas.tsx:62
 msgid "WAVE OFF"

@@ -18,6 +18,22 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "זײַט אַזוי גוט קאָנטראָלירט אײַער אינטערנעץ פֿאַרבינדונג און פּרוּווט נאָך אַ מאָל."
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:302
+msgid " or "
+msgstr " אָדער "
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:228
+msgid "(edited)"
+msgstr "(רעדאַגירט)"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:212
+msgid "(expand)"
+msgstr "(פאַרברייטערן)"
+
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:774
+msgid "[not set]"
+msgstr "[נישט געשטעלט]"
+
 #. placeholder {0}: selectedValues.size
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
 msgid "{0, plural, one {# selected} other {# selected}}"
@@ -81,6 +97,10 @@ msgstr "{selectedCount, plural, one {מאַסן־אַקציעס פֿאַר # א�
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel} פֿון {totalLabel}"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:544
+msgid "{totalCount, plural, one {# item} other {# items}}"
+msgstr "{totalCount, plural, one {# איינס} other {# זאַכן}}"
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:165
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {עפֿנט מעניו (# אומגעלײענטע מעלדונג)} other {עפֿנט מעניו (# אומגעלײענטע מעלדונגען)}}"
@@ -89,6 +109,14 @@ msgstr "{unreadCount, plural, one {עפֿנט מעניו (# אומגעלײענט
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx:421
 msgid "+{0} nested"
 msgstr "+{0} אײַנגענעסטלט"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:209
+msgid "+{totalDescendants} more replies"
+msgstr "+{totalDescendants} מער ענטפֿערס"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:208
+msgid "1 reply"
+msgstr "1 ענטפֿער"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -171,9 +199,17 @@ msgstr "פֿאַרכאַפּן ציל"
 msgid "Add"
 msgstr "צולייגן"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:360
+msgid "Add a comment..."
+msgstr "צולייגן אַ קאָמענטאַר..."
+
 #: ../../../lib/web/src/features/accounts/account-add.tsx:133
 msgid "Add a new account"
 msgstr "צולייגן אַ נײַע קאָנטע"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:106
+msgid "Add a new field to this class"
+msgstr "צולייגן אַ נײַע פֿעלד צו דעם קלאַס"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:148
 msgid "Add access"
@@ -192,13 +228,30 @@ msgstr "צולייגן אַ קאָנטע צו באַקומען נאָטיפֿי�
 msgid "Add checklist item"
 msgstr "צולייגן טשעקליסטע פּונקט"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:105
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:233
+msgid "Add field"
+msgstr "צולייגן פֿעלד"
+
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:705
 msgid "Add item..."
 msgstr "צולייגן פּונקט..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
+msgid "Add link"
+msgstr "צולייגן לינק"
+
 #: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
 msgstr "צולייגן נײַע קאָנטע"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:292
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:194
+msgid "Add option"
+msgstr "צולייגן אָפּציע"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
 #: ../../../lib/web/src/components/tag-input.tsx:40
@@ -213,6 +266,8 @@ msgstr "צולייגן מאַנשאַפֿט/אַפּ"
 msgid "Add to existing notifications"
 msgstr "צולייגן צו עקזיסטירנדיקע נאָטיפֿיקאַציעס"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:519
 #: ../../../lib/web/src/components/view-tabs.tsx:87
 #: ../../../lib/web/src/components/view-tabs.tsx:93
 msgid "Add view"
@@ -260,6 +315,10 @@ msgstr "אַלע"
 msgid "Allow anyone to search for {0}"
 msgstr "דערלױבט װעמען עס איז צו זוכן {0}"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:226
+msgid "Allow sort by"
+msgstr "דערלויבן סאָרטירן לויט"
+
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:178
 msgid "An error occurred"
 msgstr "אַ פֿעלער איז פֿאָרגעקומען"
@@ -290,6 +349,19 @@ msgstr "דערנעענטערונג־כּוח (ATC)"
 msgid "Approach, on-speed (Vapp)"
 msgstr "אָנפֿלי, ריכטיקע גיכקײט (Vapp)"
 
+#. placeholder {0}: deleteTarget?.name
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:271
+msgid "Are you sure you want to delete \"{0}\"?"
+msgstr "זענט איר זיכער איר ווילט אויסמעקן \"{0}\"?"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:643
+msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
+msgstr "זענט איר זיכער איר ווילט אויסמעקן די \"{name}\" זײַל? דאָס קען נישט ווערן אומגעקערט."
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:485
+msgid "Are you sure you want to delete this comment? This will also delete all replies."
+msgstr "זענט איר זיכער איר ווילט אויסמעקן דעם קאָמענטאַר? דאָס וועט אויך אויסמעקן אַלע ענטפֿערס."
+
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "זענט איר זיכער איר ווילט אַרויסלאָגן? איר וועט דאַרפֿן ווידער אַרײַנלאָגן צו צוטריט אײַער קאָנטע."
@@ -310,6 +382,16 @@ msgstr "אַויסשטײַגן"
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "אַרויפֿגייענדיק"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:398
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:403
+msgid "Attach comment files"
+msgstr "צוהענקען קאָמענטאַר פֿײַלן"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:439
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:444
+msgid "Attach reply files"
+msgstr "צוהענקען ענטפֿער פֿײַלן"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
 #: ../../../lib/web/src/features/access/types.ts:41
@@ -383,10 +465,19 @@ msgstr "בעסטע אָנגעהאַלטענע דריי־גיכקײט"
 msgid "BINGO FUEL"
 msgstr "בינגאָ ברענשטאָף"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:68
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:215
+msgid "Blocked by"
+msgstr "געבלאָקירט פֿון"
+
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:237
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:247
 msgid "Blocked navigation to untrusted link"
 msgstr "געבלאָקירט נאַוויגאַציע צו אומגעטרויטן לינק"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:66
+msgid "Blocks"
+msgstr "Blocks"
 
 #: src/components/Multiplayer.tsx:479
 msgid "Blue"
@@ -396,6 +487,10 @@ msgstr "בלוי"
 msgid "Blue bots"
 msgstr "בלויע באָטס"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:318
+msgid "Board"
+msgstr "ברעט"
+
 #: src/components/GameCanvas.tsx:61
 msgid "BOLTER"
 msgstr "באָלטער"
@@ -404,6 +499,10 @@ msgstr "באָלטער"
 #: ../../../lib/web/src/components/post-tags.tsx:192
 msgid "Boost interest"
 msgstr "פֿאַרשטאַרקן אינטערעס"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:405
+msgid "Border colour"
+msgstr "ראַנד פֿאַרב"
 
 #: src/components/Multiplayer.tsx:373
 msgid "Bots"
@@ -446,6 +545,10 @@ msgstr "רוף־נאָמען"
 msgid "Camera distance"
 msgstr "קאַמערע-דיסטאַנץ"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:249
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
@@ -460,6 +563,16 @@ msgstr "קאַמערע-דיסטאַנץ"
 #: src/components/Multiplayer.tsx:456
 msgid "Cancel"
 msgstr "אָפּזאָגן"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:415
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:420
+msgid "Cancel comment"
+msgstr "אָפּזאָגן קאָמענטאַר"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:455
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:460
+msgid "Cancel reply"
+msgstr "אָפּזאָגן ענטפֿער"
 
 #: src/components/MissionSetup.tsx:189
 msgid "Canopy"
@@ -527,6 +640,14 @@ msgstr "טשיטס"
 msgid "Check \"All\" to see your past notifications."
 msgstr "קלײַבט אױס \"אַלץ\" צו זען אײַערע פֿריִערדיקע מעלדונגען."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
+msgid "Checkbox"
+msgstr "טשעקבאָקס"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:138
+msgid "Checklist"
+msgstr "טשעקליסטע"
+
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:37
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "קלײַבט אַ שפּיל פֿון דער סײַדבאַר אָדער הייבט אָן אַ נײַע."
@@ -584,12 +705,21 @@ msgstr "רייניקן אויסקלײַב"
 msgid "Clear selection (Escape)"
 msgstr "רייניקן אויסקלײַב (Escape)"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:485
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:490
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "פֿאַרמאַכן"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:109
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:113
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:269
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:273
+msgid "Close dialog"
+msgstr "פֿאַרמאַכן דיאַלאָג"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
@@ -628,6 +758,19 @@ msgstr "צונויפֿקלאַפּן"
 msgid "Collapse sidebar"
 msgstr "צונויפֿקלאַפּן סײַדבאַר"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:149
+msgid "Colour"
+msgstr "פֿאַרב"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:553
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:558
+msgid "Column actions"
+msgstr "זייַל אַקציעס"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Columns group by"
+msgstr "זײַלן גרופּירן לויט"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:96
 msgid "Comfortable"
 msgstr "באַקוועם"
@@ -644,6 +787,11 @@ msgstr "באַפֿעל־פּאַליטרע"
 msgid "COMMENCING"
 msgstr "הייב אָן"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:330
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:337
+msgid "Comment actions"
+msgstr "קאָמענטאַר אַקציעס"
+
 #: src/components/MissionSetup.tsx:116
 msgid "Communication"
 msgstr "קאָמוניקאַציע"
@@ -652,6 +800,14 @@ msgstr "קאָמוניקאַציע"
 #: ../../../lib/web/src/lib/preference-utils.ts:95
 msgid "Compact"
 msgstr "קאָמפּאַקט"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
+msgid "Configure option settings"
+msgstr "קאָנפֿיגורירן אָפּציע אײַנשטעלונגען"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:265
+msgid "Configure view settings"
+msgstr "קאָנפֿיגורירן זעהן אײַנשטעלונגען"
 
 #: ../../../lib/web/src/components/place-picker.tsx:160
 #: ../../../lib/web/src/components/travelling-picker.tsx:316
@@ -761,6 +917,14 @@ msgstr "קעגן־מיטלען"
 msgid "CRASHED"
 msgstr "אַראָפּגעפֿאַלן"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:564
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:703
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:475
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:672
+msgid "Create"
+msgstr "באַשאַפֿן"
+
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
 msgid "Create {0}"
@@ -783,6 +947,12 @@ msgstr "שאַפֿן מיסיע"
 msgid "Create new item"
 msgstr "באַשאַפֿן נײַעם פּונקט"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:56
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:498
+msgid "Created"
+msgstr "באַשאַפֿן"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:258
 msgid "Creating..."
 msgstr "באַשאַפֿן..."
@@ -829,6 +999,7 @@ msgstr "טונקלע מאָדע"
 msgid "Data conflict"
 msgstr "דאַטן־קאָנפֿליקט"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
 #: src/components/MatchHistory.tsx:155
 msgid "Date"
 msgstr "דאַטע"
@@ -858,6 +1029,52 @@ msgstr "פֿאַרשטאַנדלעך"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
 msgstr "פֿאַרשטאַנדלעך AI קאָנטע"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:485
+msgid "Default sort"
+msgstr "פֿאַרשטאַנדלעך סאָרט"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:583
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:644
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:318
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:361
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:486
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:173
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:178
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:227
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:272
+msgid "Delete"
+msgstr "אויסמעקן"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:270
+msgid "Delete attachment"
+msgstr "אויסמעקן בײַלאַגע"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:642
+msgid "Delete column"
+msgstr "אויסמעקן זײַל"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:484
+msgid "Delete comment"
+msgstr "אויסמעקן קאָמענטאַר"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:301
+msgid "Delete field"
+msgstr "אויסמעקן פֿעלד"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:119
+msgid "Delete option"
+msgstr "אויסמעקן אָפּציע"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:279
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:284
+msgid "Delete option {0}"
+msgstr "אויסמעקן אָפּציע {0}"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:290
+msgid "Delete view"
+msgstr "אויסמעקן זעהן"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:115
 msgid "Delete your account on the old server"
@@ -947,10 +1164,13 @@ msgstr "ווײַזט די מאָבילע סײַדבאַר."
 msgid "Distance LOD"
 msgstr "ווייטקייט LOD"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:306
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
 #: src/components/MissionSetup.tsx:1729
 msgid "Done"
 msgstr "געטאָן"
 
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:214
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
@@ -968,6 +1188,10 @@ msgstr "שלעפּן"
 msgid "Drone"
 msgstr "דראָן"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:67
+msgid "Duplicates"
+msgstr "טאָפּלען"
+
 #: src/components/MissionSetup.tsx:1416
 msgid "Dynamic resolution"
 msgstr "דינאַמישע רעזאָלוציע"
@@ -980,13 +1204,40 @@ msgstr "דיסלעקסיע פֿרײַנדלעך"
 msgid "EARLY"
 msgstr "פֿרי"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:307
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:352
+msgid "Edit"
+msgstr "רעדאַקטירן"
+
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "רעדאַקטירן {label}"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+msgid "Edit field"
+msgstr "רעדאַקטירן פֿעלד"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:139
+msgid "Edit field settings"
+msgstr "רעדאַקטירן פֿעלד־הגדרות"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+msgid "Edit option"
+msgstr "רעדאַקטירן אָפּציע"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:264
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:269
+msgid "Edit option {0}"
+msgstr "רעדאַקטירן אָפּציע {0}"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:31
 msgid "Edit selected card"
 msgstr "רעדאַקטירן אויסגעקליבענע קאַרטל"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+msgid "Edit view"
+msgstr "רעדאַקטירן בליק"
 
 #: src/components/MissionSetup.tsx:193
 msgid "Eject"
@@ -1085,9 +1336,22 @@ msgstr "ניט געלונגען צוצוגעבן טאַג"
 msgid "Failed to copy"
 msgstr "ניט געלונגען צו קאָפּירן"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:137
 #: ../../../lib/web/src/components/options-menu.tsx:99
 msgid "Failed to create link"
 msgstr "ניט געלונגען צו שאַפֿן לינק"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:110
+msgid "Failed to delete attachment"
+msgstr "ניט געלונגען צו מעקן בײַלאַגע"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:207
+msgid "Failed to delete comment"
+msgstr "ניט געלונגען צו מעקן קאָמענטאַר"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:159
+msgid "Failed to delete link"
+msgstr "ניט געלונגען צו מעקן לינק"
 
 #: ../../../lib/web/src/components/options-menu.tsx:123
 msgid "Failed to get RSS token"
@@ -1109,6 +1373,10 @@ msgstr "נישט געקאָנט לאָדן דאָס בילד"
 msgid "Failed to load video"
 msgstr "נישט געקאָנט לאָדן דעם ווידעאָ"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:170
+msgid "Failed to post comment"
+msgstr "ניט געלונגען צו פּאָסטן קאָמענטאַר"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "ניט געלונגען צו אַראָפּנעמען קאָנטע"
@@ -1121,6 +1389,14 @@ msgstr "דורכפֿאַל צו רופֿן צוריק RSS צוטריט"
 msgid "Failed to send verification code"
 msgstr "ניט געלונגען צו שיקן פֿאַרזיכערונג־קאָד"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:190
+msgid "Failed to update comment"
+msgstr "ניט געלונגען צו דערהײַנטיקן קאָמענטאַר"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:95
+msgid "Failed to upload attachment"
+msgstr "ניט געלונגען אַרויפֿצולאָדן בײַלאַגע"
+
 #: src/components/GameCanvas.tsx:58
 msgid "FAIR"
 msgstr "מיטלמעסיק"
@@ -1132,6 +1408,12 @@ msgstr "FCS"
 #: src/components/GameCanvas.tsx:31
 msgid "FIGHT'S ON"
 msgstr "דער קאַמף גייט אָן"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:567
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:133
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:150
+msgid "Files"
+msgstr "פֿײַלן"
 
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:30
 msgid "Filter..."
@@ -1157,6 +1439,10 @@ msgstr "שיסן מיטן וואָפֿן"
 #: src/components/MissionSetup.tsx:557
 msgid "Fixed keys"
 msgstr "פֿיקסירטע קלאַווישן"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:222
+msgid "Flags"
+msgstr "פֿאָנען"
 
 #: src/components/GameCanvas.tsx:37
 msgid "FLAMEOUT"
@@ -1308,6 +1594,10 @@ msgstr "גראַפֿיק"
 msgid "Group"
 msgstr "גרופּע"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Group by"
+msgstr "גרופּירן לויט"
+
 #. placeholder {0}: name || subject.slice(1)
 #: ../../../lib/web/src/features/access/access-list.tsx:68
 msgid "Group: {0}"
@@ -1366,6 +1656,10 @@ msgstr "HUD הייך־מקור"
 #: src/components/MissionSetup.tsx:197
 msgid "HUD declutter"
 msgstr "HUD פֿאַרפּשוטערן"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:153
+msgid "ID"
+msgstr ""
 
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
@@ -1526,6 +1820,7 @@ msgid "launch / target"
 msgstr "שטאַרט / ציל"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:287
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:312
 msgid "Layout"
 msgstr "אויסשטעל"
 
@@ -1584,6 +1879,14 @@ msgstr "ליכטער"
 #: ../../../lib/web/src/components/options-menu.tsx:190
 msgid "Link"
 msgstr "לינק"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:279
+msgid "Links"
+msgstr "לינקס"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:324
+msgid "List"
+msgstr "רשימה"
 
 #: src/components/MissionSetup.tsx:1210
 msgid "Load"
@@ -1674,6 +1977,10 @@ msgstr "פֿאַרוואַלטן קאַטעגאָריעס"
 msgid "Manage your connected accounts for notifications and services."
 msgstr "פֿאַרװאַלט אײַערע פֿאַרבונדענע קאָנטעס פֿאַר מעלדונגען און סערװיסן."
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
+msgid "Manual"
+msgstr "מאַנואַל"
+
 #: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "מאַפּע"
@@ -1699,6 +2006,10 @@ msgstr "סאָרט מאַטש"
 #: src/components/MissionSetup.tsx:1136
 msgid "Matches"
 msgstr "מאַטשן"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:199
+msgid "Maximum length"
+msgstr "מאַקסימאַלע לענג"
 
 #: ../../../lib/web/src/features/accounts/types.ts:17
 msgid "MCP server"
@@ -1742,6 +2053,10 @@ msgstr "מעטריש"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "מאַפּע פֿון מידוויי אַטאָל — די בילדער אַנטהאַלטן מאָדיפֿיצירטע <0>Copernicus Sentinel-2</0> דאַטן (2026); די פֿליפֿעלד־געאָמעטריע (לאַנדונג־באַן, טאַקסי־וועגן, אַפּראָנען) © <1>OpenStreetMap</1> בײַשטײַערער, ליצענצירט אונטער <2>ODbL</2>; ברעג־ און ריף־דאַטן פֿון <3>NOAA NCCOS</3> (עפֿנטלעכער דאָמען)."
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:188
+msgid "Minimum length"
+msgstr "מינימאַלע לענג"
+
 #: src/components/GameCanvas.tsx:85
 msgid "MISSILE"
 msgstr "ראַקעטע"
@@ -1783,6 +2098,14 @@ msgstr "באַוועגט עס…"
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "מולטיפּלייער דאַרף WebTransport, וואָס דער בראַוזער שטיצט נאָך נישט."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:143
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:128
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:299
+msgid "Name"
+msgstr "נאָמען"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
 msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
 msgstr "דער נאָמען טאָר ניט אַנטהאַלטן װינקל־קלאַמערן, צוריק־שטריך, האַלב־קאָלאָן, גדולים אָדער בעקטיקן"
@@ -1796,6 +2119,7 @@ msgstr "נאָמען מוז זײַן 1000 כאַראַקטערן אָדער וו
 msgid "Network error"
 msgstr "נעץ פֿעלער"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:460
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:43
 msgid "New"
 msgstr "נײַ"
@@ -1815,9 +2139,21 @@ msgstr "ווײַטערדיק בילד"
 msgid "Night"
 msgstr "נאַכט"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:533
+msgid "No {parentClassNames} to add to"
+msgstr "קיין {parentClassNames} צוצולייגן"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:165
 msgid "No access rules configured. Add rules to control who can access this resource."
 msgstr "קיין צוטריט כּללים קאָנפֿיגורירט. צולייג כּללים צו קאָנטראָלירן ווער קען האָבן צוטריט צו דעם רעסורס."
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:65
+msgid "No activity yet"
+msgstr "נאָך קיין אַקטיוויטעט"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:450
+msgid "No comments yet"
+msgstr "נאָך קיין באַמערקונגען"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:295
 msgid "No connected accounts"
@@ -1835,9 +2171,17 @@ msgstr "נאָך קיין שפּילן"
 msgid "No groups available"
 msgstr "קיין גרופּעס פֿאַראַן"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:500
+msgid "No item types can be created yet. Create the required parent items first."
+msgstr "קיין עלעמענט טיפּן קענען נאָך ניט זײַן באַשאַפֿן. באַשאַף די נייטיקע עלטערן עלעמענטן ערשט."
+
 #: src/components/MissionSetup.tsx:300
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "קיין דזשויסטיק ניט דערקענט — דריקט אַבי וועלכן קנאָפּ אויף אים כּדי אים אויפֿצוּוועקן."
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:360
+msgid "No matching objects"
+msgstr "קיין שטימענדיקע אָביעקטן"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "No notifications yet"
@@ -1870,6 +2214,12 @@ msgstr "קײן רעזולטאַטן נישט געפֿונען"
 msgid "No results found."
 msgstr "קיין רעזולטאַטן ניט געפֿונען."
 
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:845
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:890
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:339
+msgid "No status"
+msgstr "קיין סטאַטוס"
+
 #: ../../../lib/web/src/components/timezone-select.tsx:67
 msgid "No time zone found."
 msgstr "קיין צײַט זאָנע ניט געפֿונען."
@@ -1886,6 +2236,10 @@ msgstr "קיין אומגעלייענטע מעלדונגען"
 msgid "No users found"
 msgstr "קיין באַניצערס ניט געפֿונען"
 
+#: ../../../lib/web/src/components/entity/entity-design-preview.tsx:115
+msgid "No views"
+msgstr "קיין קוקן"
+
 #: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:421
 msgid "No world server."
@@ -1896,6 +2250,16 @@ msgid "NO-GRADE"
 msgstr "אָן צייכן"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:349
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:516
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:519
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:365
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:391
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:418
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:421
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:497
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
@@ -1921,6 +2285,10 @@ msgstr "נישט געפֿונען"
 msgid "Not set"
 msgstr "ניט געשטעלט"
 
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:668
+msgid "Nothing found"
+msgstr "גאָרניט ניט געפֿונען"
+
 #: src/components/MissionSetup.tsx:965
 msgid "Nothing yet — say hello."
 msgstr "נאָך גאָרנישט — זאָג שלום."
@@ -1943,6 +2311,12 @@ msgstr "מעלדונגען: {0}"
 #: src/components/Multiplayer.tsx:378
 msgid "Novice"
 msgstr "אָנהייבער"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:140
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:54
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:499
+msgid "Number"
+msgstr "נומער"
 
 #: src/components/MissionSetup.tsx:1404
 msgid "Ocean detail"
@@ -2002,6 +2376,11 @@ msgstr "עפֿן נאַוויגאַציע"
 msgid "Open navigation menu"
 msgstr "עפֿן נאַוויגאַציע מעניו"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:108
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:114
+msgid "Open option actions"
+msgstr "עפֿן אָפּציע אַקציעס"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "עפֿן אויסגעקליבן קאַרטל"
@@ -2010,6 +2389,26 @@ msgstr "עפֿן אויסגעקליבן קאַרטל"
 #: ../../../lib/web/src/components/config-drawer.tsx:66
 msgid "Open theme settings"
 msgstr "עפֿן טעמע אײַנשטעלונגען"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:280
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:285
+msgid "Open view actions"
+msgstr "עפֿן קוק אַקציעס"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:150
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:156
+msgid "Open view controls"
+msgstr "עפֿן קוק קאָנטראָלן"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:200
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:158
+msgid "Option name"
+msgstr "אָפּציע נאָמען"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:241
+msgid "Options"
+msgstr "אָפּציעס"
 
 #: src/components/GameCanvas.tsx:316
 msgid "or"
@@ -2037,6 +2436,10 @@ msgstr "אייגנטימער"
 msgid "Page {currentPage} of {totalPages}"
 msgstr "זײַט {currentPage} פֿון {totalPages}"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:508
+msgid "Parent"
+msgstr "עלטער"
+
 #: src/components/MissionSetup.tsx:172
 msgid "Parking brake"
 msgstr "פּאַרק-בראָמז"
@@ -2052,6 +2455,10 @@ msgstr "די passkey פֿאַריפֿיצירונג איז דורכגעפֿאַ�
 #: ../../../lib/web/src/components/restore-banner.tsx:152
 msgid "Passkeys"
 msgstr "פּאַסקייס"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:210
+msgid "Pattern (regex)"
+msgstr "מוסטער (regex)"
 
 #: ../../../lib/web/src/components/date-picker.tsx:20
 msgid "Pick a date"
@@ -2252,6 +2659,10 @@ msgstr "דערפֿריש"
 msgid "REJOINING"
 msgstr "צוריק אין פֿאָרמאַציע"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:65
+msgid "Relates"
+msgstr "פֿאַרבונדן"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
 msgstr "רעלאַטיוו (5m, 3h, 2d)"
@@ -2261,6 +2672,8 @@ msgid "Relative within 24 hours, else absolute"
 msgstr "רעלאַטיוו אין 24 שעה, אַנדערש אַבסאָלוט"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:236
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:598
 #: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
@@ -2295,9 +2708,41 @@ msgstr "אַראָפּנעמען אינטערעס"
 msgid "Remove item"
 msgstr "אַראָפּנעמען עלעמענט"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:304
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:309
+msgid "Remove link"
+msgstr "אַראָפּנעמען לינק"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:575
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:632
+msgid "Rename"
+msgstr "איבערטויפֿן"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:610
+msgid "Rename column"
+msgstr "איבערטויפֿן זײַל"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:611
+msgid "Rename this board column"
+msgstr "איבערטויפֿן די ברעט זײַל"
+
 #: src/components/MissionSetup.tsx:873
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "רענדערינג דורך <0>three.js</0> (MIT ליצענץ)."
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:294
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:342
+msgid "Reply"
+msgstr "ענטפֿער"
+
+#. placeholder {0}: comment.name || comment.author
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:385
+msgid "Reply to {0}..."
+msgstr "ענטפֿער צו {0}..."
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+msgid "Required"
+msgstr "נייטיק"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:367
 msgid "Resend email"
@@ -2383,6 +2828,15 @@ msgstr "ראָל לינקס"
 msgid "Roll right"
 msgstr "ראָל רעכטס"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:169
+msgid "Rows"
+msgstr "רייען"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:379
+msgid "Rows group by"
+msgstr "רייען גרופּירן לויט"
+
 #: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "רייען פּער זײַטל"
@@ -2407,6 +2861,8 @@ msgstr "פֿולע קראַפֿט"
 msgid "Saturday"
 msgstr "שבת"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:269
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
@@ -2416,6 +2872,7 @@ msgstr "היט אויף"
 msgid "Sea level"
 msgstr "ים־שפּיגל"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:177
 #: ../../../lib/web/src/components/filter-bar.tsx:32
 #: ../../../lib/web/src/components/header-search.tsx:22
 #: ../../../lib/web/src/components/search.tsx:18
@@ -2442,6 +2899,10 @@ msgstr "זוך נאָך דעסטינאַציע..."
 msgid "Search for origin..."
 msgstr "זוך נאָך אָריגין..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:337
+msgid "Search objects..."
+msgstr "זוך אָביעקטן..."
+
 #: ../../../lib/web/src/components/timezone-select.tsx:65
 msgid "Search time zone..."
 msgstr "זוך צײַט זאָנע..."
@@ -2450,6 +2911,12 @@ msgstr "זוך צײַט זאָנע..."
 msgid "Search users"
 msgstr "זוך באַניצערס"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:173
+msgid "Search, watch, and sort this view."
+msgstr "זוך, קוק, און סאָרטיר דעם קוק."
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:181
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:257
 #: ../../../lib/web/src/components/person-picker.tsx:324
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
@@ -2462,10 +2929,18 @@ msgstr "זוך..."
 msgid "Searching..."
 msgstr "זוכן..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
+msgid "Select"
+msgstr "קלײַב"
+
 #. placeholder {0}: item.label.toLowerCase()
 #: ../../../lib/web/src/components/config-drawer.tsx:149
 msgid "Select {0}"
 msgstr "קלײַבט אױס {0}"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
+msgid "Select a field"
+msgstr "קלײַב אַ פֿעלד"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:36
 msgid "Select a game"
@@ -2615,6 +3090,14 @@ msgstr "אײַנשטעלונגען"
 msgid "Shadows"
 msgstr "שאָטנס"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:333
+msgid "Show classes"
+msgstr "ווײַז קלאַסן"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:434
+msgid "Show fields"
+msgstr "ווײַז פֿעלדער"
+
 #: ../../../lib/web/src/components/password-input.tsx:27
 msgid "Show password"
 msgstr "ווײַזן פּאַראָל"
@@ -2642,6 +3125,11 @@ msgstr "לאָג אַרויס"
 msgid "Signing out..."
 msgstr "ארויסמעלדן זיך..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:180
+msgid "Single line of text only"
+msgstr "בלויז איין שורה טעקסט"
+
 #: src/components/MissionSetup.tsx:700
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "בעסטע שטײַגונג מיט אײן מאָטאָר (Vyse, נאָכברענער)"
@@ -2654,6 +3142,10 @@ msgstr "שפּרינג צו הויפּט"
 #: ../../../lib/web/src/lib/preference-utils.ts:133
 msgid "Small"
 msgstr "קליין"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:199
+msgid "Sort"
+msgstr "סאָרטיר"
 
 #: src/components/MissionSetup.tsx:468
 #: src/components/MissionSetup.tsx:1677
@@ -2702,6 +3194,10 @@ msgstr "הייב־פֿאַרלוסט, לאַנדונג־סטעלונג (Vs0)"
 msgid "Start"
 msgstr "אָנהייבן"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:451
+msgid "Start the discussion by adding the first comment."
+msgstr "הייב אָן די דיסקוסיע מיטן צולייגן דעם ערשטן קאָמענטאַר."
+
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "אָבער בלײַב צוגעבונדן!"
@@ -2721,6 +3217,16 @@ msgstr "סטרוקטור"
 #: ../../../lib/web/src/features/access/access-list.tsx:196
 msgid "Subject"
 msgstr "טעמע"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:431
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:440
+msgid "Submit comment"
+msgstr "געב אונטער קאָמענטאַר"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:470
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:475
+msgid "Submit reply"
+msgstr "געב אונטער ענטפֿער"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
@@ -2803,6 +3309,10 @@ msgstr "מאַנשאַפֿטן/אַפּן"
 #: ../../../lib/web/src/features/document/document-page.tsx:42
 msgid "Terms and conditions"
 msgstr "תּנאָים"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:142
+msgid "Text"
+msgstr "טעקסט"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:195
 msgid "That code is incorrect or has expired."
@@ -2915,6 +3425,11 @@ msgstr "ביט טעמע"
 msgid "Toggle view options"
 msgstr "ביט בליק־אָפּציעס"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:190
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:267
+msgid "Toggle watched filter"
+msgstr "ביט נאָכקוק־פֿילטער"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:74
 msgid "Too many requests"
 msgstr "צו פֿיל בקשות"
@@ -2973,6 +3488,11 @@ msgstr "פּרוּווט נאָך אַ מאָל"
 #: ../../../lib/web/src/lib/preference-utils.ts:60
 msgid "Tuesday"
 msgstr "דינסטיק"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:163
+msgid "Type"
+msgstr "טיפּ"
 
 #: ../../../lib/web/src/components/command-menu.tsx:52
 msgid "Type a command or search..."
@@ -3038,9 +3558,25 @@ msgstr "אומבאַגרענעצטער ברענשטאָף"
 msgid "Unsubscribe"
 msgstr "אַבאַבאָנירן"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:286
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:103
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:184
+msgid "Untitled"
+msgstr "אָן קעפּל"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:135
 msgid "Unverified"
 msgstr "אומפֿאַריפֿיצירט"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:500
+msgid "Updated"
+msgstr "באַנײַט"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:630
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:259
+msgid "Upload"
+msgstr "אַרויפֿלאָדן"
 
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:34
 msgid "Upload progress"
@@ -3050,6 +3586,7 @@ msgstr "אַרויפֿלאָד פּראָגרעס"
 msgid "Use your passkey"
 msgstr "ניצט אײַער passkey"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:143
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
@@ -3112,6 +3649,10 @@ msgstr "זע אַלץ"
 msgid "View all notifications"
 msgstr "זע אַלע נאָטיפֿיקאַציעס"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:172
+msgid "View controls"
+msgstr "בליק־קאָנטראָלן"
+
 #: src/components/MissionSetup.tsx:564
 msgid "Views"
 msgstr "בליקן"
@@ -3120,9 +3661,14 @@ msgstr "בליקן"
 msgid "WAITING FOR OPPONENT"
 msgstr "וואַרטן אויפֿן קעגנער"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:271
 #: ../../../lib/web/src/components/filter-bar.tsx:35
 msgid "Watched"
 msgstr "נאָכגעקוקט"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:194
+msgid "Watched only"
+msgstr "נאָר נאָכגעקוקט"
 
 #: src/components/GameCanvas.tsx:62
 msgid "WAVE OFF"

@@ -18,6 +18,22 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "Ստուգեք ձեր ինտերնետ կապը և կրկին փորձեք։"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:302
+msgid " or "
+msgstr " կամ "
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:228
+msgid "(edited)"
+msgstr "(խմբագրված)"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:212
+msgid "(expand)"
+msgstr "(ընդարձակել)"
+
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:774
+msgid "[not set]"
+msgstr "[չի սահմանվել]"
+
 #. placeholder {0}: selectedValues.size
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
 msgid "{0, plural, one {# selected} other {# selected}}"
@@ -81,6 +97,10 @@ msgstr "{selectedCount, plural, one {Զանգվածային գործողությ
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel}՝ {totalLabel}-ից"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:544
+msgid "{totalCount, plural, one {# item} other {# items}}"
+msgstr "{totalCount, plural, one {# տարր} other {# տարր}}"
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:165
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {Բացել ընտրացանկը (# չկարդացված ծանուցում)} other {Բացել ընտրացանկը (# չկարդացված ծանուցում)}}"
@@ -89,6 +109,14 @@ msgstr "{unreadCount, plural, one {Բացել ընտրացանկը (# չկարդ
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx:421
 msgid "+{0} nested"
 msgstr "+{0} ներդրված"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:209
+msgid "+{totalDescendants} more replies"
+msgstr "+{totalDescendants} ևս պատասխան"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:208
+msgid "1 reply"
+msgstr "1 պատասխան"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -171,8 +199,16 @@ msgstr "Կողպել թիրախը"
 msgid "Add"
 msgstr "Ավելացնել Mochi հոսք"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:360
+msgid "Add a comment..."
+msgstr "Ավելացնել նոր հաշիվ"
+
 #: ../../../lib/web/src/features/accounts/account-add.tsx:133
 msgid "Add a new account"
+msgstr "Ավելացնել նոր դաշտ այս դասին"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:106
+msgid "Add a new field to this class"
 msgstr "Ավելացնել նոր դաշտ այս դասին"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:148
@@ -192,13 +228,30 @@ msgstr "Ավելացնել հավելված լրացուցիչ անվտանգո�
 msgid "Add checklist item"
 msgstr "Ավելացնել դաս"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:105
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:233
+msgid "Add field"
+msgstr "Ավելացնել ֆայլեր"
+
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:705
 msgid "Add item..."
 msgstr "Ավելացնել հղում"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
+msgid "Add link"
+msgstr "Ավելացնել անդամ"
+
 #: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
 msgstr "Ավելացնել տարբերակ"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:292
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:194
+msgid "Add option"
+msgstr "Ավելացնել անցաբառ"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
 #: ../../../lib/web/src/components/tag-input.tsx:40
@@ -213,6 +266,8 @@ msgstr "Ավելացնել տեղեկատու"
 msgid "Add to existing notifications"
 msgstr "Ավելացնել գոյություն ունեցող բաժանորդագրություններին"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:519
 #: ../../../lib/web/src/components/view-tabs.tsx:87
 #: ../../../lib/web/src/components/view-tabs.tsx:93
 msgid "Add view"
@@ -260,6 +315,10 @@ msgstr "Բոլոր CRM-երը"
 msgid "Allow anyone to search for {0}"
 msgstr "Թույլատրել բոլորին որոնել {0}"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:226
+msgid "Allow sort by"
+msgstr "Թույլատրել օգտատերերին տեղադրել հավելվածներ"
+
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:178
 msgid "An error occurred"
 msgstr "Սխալ առաջացավ"
@@ -290,6 +349,19 @@ msgstr "Մոտեցման հզորություն (ATC)"
 msgid "Approach, on-speed (Vapp)"
 msgstr "Մոտեցում, ճիշտ արագությամբ (Vapp)"
 
+#. placeholder {0}: deleteTarget?.name
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:271
+msgid "Are you sure you want to delete \"{0}\"?"
+msgstr "Վստա՞հ եք, որ ուզում եք ջնջել «{0}»-ը։"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:643
+msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
+msgstr "Վստա՞հ եք, որ ուզում եք ջնջել «{name}» սյունակը։ Սա հնարավոր չէ հետարկել։"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:485
+msgid "Are you sure you want to delete this comment? This will also delete all replies."
+msgstr "Վստա՞հ եք, որ ուզում եք ջնջել այս մեկնաբանությունը։ Սա կջնջի նաև բոլոր պատասխանները։ Այս գործողությունն անդառնալի է։"
+
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Վստա՞հ եք, որ ուզում եք դուրս գալ։ Հաշվին հասանելիություն ստանալու համար պետք է նորից մուտք գործեք։"
@@ -310,6 +382,16 @@ msgstr "Կցել մեկնաբանության ֆայլեր"
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "Աճման կարգով"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:398
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:403
+msgid "Attach comment files"
+msgstr "Կցել ֆայլեր"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:439
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:444
+msgid "Attach reply files"
+msgstr "Կցորդը ջնջված է"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
 #: ../../../lib/web/src/features/access/types.ts:41
@@ -383,10 +465,19 @@ msgstr "Լավագույն կայուն շրջադարձի արագությու�
 msgid "BINGO FUEL"
 msgstr "ԲԻՆԳՈ ՎԱՌԵԼԻՔ"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:68
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:215
+msgid "Blocked by"
+msgstr "Արգելափակված է անվստահելի հղման նավարկումը"
+
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:237
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:247
 msgid "Blocked navigation to untrusted link"
 msgstr "Արգելափակվեց անցումը անվստահելի հղման"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:66
+msgid "Blocks"
+msgstr "Հատված"
 
 #: src/components/Multiplayer.tsx:479
 msgid "Blue"
@@ -396,6 +487,10 @@ msgstr "Կապույտ"
 msgid "Blue bots"
 msgstr "Կապույտ բոտեր"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:318
+msgid "Board"
+msgstr "Տախտակի չափ"
+
 #: src/components/GameCanvas.tsx:61
 msgid "BOLTER"
 msgstr "ԲՈԼՏԵՐ"
@@ -404,6 +499,10 @@ msgstr "ԲՈԼՏԵՐ"
 #: ../../../lib/web/src/components/post-tags.tsx:192
 msgid "Boost interest"
 msgstr "Եզրագծի գույն"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:405
+msgid "Border colour"
+msgstr "Աղբյուրը և թիրախը պարտադիր են"
 
 #: src/components/Multiplayer.tsx:373
 msgid "Bots"
@@ -446,6 +545,10 @@ msgstr "Կանչանշան"
 msgid "Camera distance"
 msgstr "Տեսախցիկի հեռավորություն"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:249
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
@@ -460,6 +563,16 @@ msgstr "Տեսախցիկի հեռավորություն"
 #: src/components/Multiplayer.tsx:456
 msgid "Cancel"
 msgstr "Չեղարկել մեկնաբանությունը"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:415
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:420
+msgid "Cancel comment"
+msgstr "Չեղարկել փոխանակումը"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:455
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:460
+msgid "Cancel reply"
+msgstr "Չեղարկել բաժանորդագրությունը"
 
 #: src/components/MissionSetup.tsx:189
 msgid "Canopy"
@@ -527,6 +640,14 @@ msgstr "Չիթեր"
 msgid "Check \"All\" to see your past notifications."
 msgstr "Ընտրեք «Բոլորը»՝ նախորդ ծանուցումները տեսնելու համար։"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
+msgid "Checkbox"
+msgstr "Ստուգվում է միաձուլման կարգավիճակը..."
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:138
+msgid "Checklist"
+msgstr "Մատ — դուք հաղթեցիք։"
+
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:37
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Ընտրեք խաղ կողագոտուց կամ սկսեք նորը։"
@@ -584,12 +705,21 @@ msgstr "Մաքրել ընտրությունը (Escape)"
 msgid "Clear selection (Escape)"
 msgstr "Կլոնավորել"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:485
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:490
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Փակել վահանակը"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:109
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:113
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:269
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:273
+msgid "Close dialog"
+msgstr "Փակել նավարկումը"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
@@ -628,6 +758,19 @@ msgstr "Ծալել"
 msgid "Collapse sidebar"
 msgstr "Ծալել կողագոտին"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:149
+msgid "Colour"
+msgstr "Սյունակները խմբավորել ըստ"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:553
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:558
+msgid "Column actions"
+msgstr "Սյունակի գործողություններ"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Columns group by"
+msgstr "Հարմարավետ"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:96
 msgid "Comfortable"
 msgstr "Շուտով!"
@@ -644,6 +787,11 @@ msgstr "Հրամանների վահանակ"
 msgid "COMMENCING"
 msgstr "ՍԿՍՈՒՄ ԵՄ"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:330
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:337
+msgid "Comment actions"
+msgstr "Մեկնաբանության գործողություններ"
+
 #: src/components/MissionSetup.tsx:116
 msgid "Communication"
 msgstr "Կապ"
@@ -652,6 +800,14 @@ msgstr "Կապ"
 #: ../../../lib/web/src/lib/preference-utils.ts:95
 msgid "Compact"
 msgstr "Ավարտեք Stripe-ի գրանցումը՝ հաստատվելու համար"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
+msgid "Configure option settings"
+msgstr "Կարգավորել տեսքի կարգավորումները"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:265
+msgid "Configure view settings"
+msgstr "Կարգավորեք, թե որ հավելվածն է մշակում յուրաքանչյուր URL ուղի։"
 
 #: ../../../lib/web/src/components/place-picker.tsx:160
 #: ../../../lib/web/src/components/travelling-picker.tsx:316
@@ -761,6 +917,14 @@ msgstr "Հակազդման միջոցներ"
 msgid "CRASHED"
 msgstr "ԿՈՐԾԱՆՎԵՑ"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:564
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:703
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:475
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:672
+msgid "Create"
+msgstr "Ստեղծել CRM"
+
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
 msgid "Create {0}"
@@ -783,6 +947,12 @@ msgstr "Ստեղծել առաքելություն"
 msgid "Create new item"
 msgstr "Ստեղծել նոր էջ"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:56
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:498
+msgid "Created"
+msgstr "Ստեղծված"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:258
 msgid "Creating..."
 msgstr "Ստեղծվում է…"
@@ -829,6 +999,7 @@ msgstr "Վահանակ"
 msgid "Data conflict"
 msgstr "Տվյալների կոնֆլիկտ"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
 #: src/components/MatchHistory.tsx:155
 msgid "Date"
 msgstr "Ամսաթվի ձևաչափ"
@@ -858,6 +1029,52 @@ msgstr "Լռելյայն"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
 msgstr "Լռելյայն AI հաշիվ"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:485
+msgid "Default sort"
+msgstr "Լռելյայն տեսակավորում"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:583
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:644
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:318
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:361
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:486
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:173
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:178
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:227
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:272
+msgid "Delete"
+msgstr "Ջնջել"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:270
+msgid "Delete attachment"
+msgstr "Ջնջել կցորդը"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:642
+msgid "Delete column"
+msgstr "Ջնջել սյունակը"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:484
+msgid "Delete comment"
+msgstr "Ջնջել մեկնաբանությունը"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:301
+msgid "Delete field"
+msgstr "Ջնջել դաշտը"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:119
+msgid "Delete option"
+msgstr "Ջնջել տարբերակը"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:279
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:284
+msgid "Delete option {0}"
+msgstr "Ջնջել {0} տարբերակը"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:290
+msgid "Delete view"
+msgstr "Ջնջել տեսքը"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:115
 msgid "Delete your account on the old server"
@@ -947,10 +1164,13 @@ msgstr "Ցուցադրում է բջջային կողագոտին։"
 msgid "Distance LOD"
 msgstr "Հեռավորության LOD"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:306
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
 #: src/components/MissionSetup.tsx:1729
 msgid "Done"
 msgstr "Կատարված է"
 
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:214
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
@@ -968,6 +1188,10 @@ msgstr "Քաշել"
 msgid "Drone"
 msgstr "Դրոն"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:67
+msgid "Duplicates"
+msgstr "Կրկնօրինակներ"
+
 #: src/components/MissionSetup.tsx:1416
 msgid "Dynamic resolution"
 msgstr "Դինամիկ լուծաչափ"
@@ -980,13 +1204,40 @@ msgstr "Դիսլեքսիայի հարմար"
 msgid "EARLY"
 msgstr "ՎԱՂ"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:307
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:352
+msgid "Edit"
+msgstr "Խմբագրել"
+
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "Խմբագրել {label}"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+msgid "Edit field"
+msgstr "Խմբագրել դաշտը"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:139
+msgid "Edit field settings"
+msgstr "Խմբագրել դաշտի կարգավորումները"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+msgid "Edit option"
+msgstr "Խմբագրել տարբերակը"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:264
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:269
+msgid "Edit option {0}"
+msgstr "Խմբագրել տարբերակ {0}"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:31
 msgid "Edit selected card"
 msgstr "Խմբագրել ընտրված քարտը"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+msgid "Edit view"
+msgstr "Խմբագրել տեսքը"
 
 #: src/components/MissionSetup.tsx:193
 msgid "Eject"
@@ -1085,9 +1336,22 @@ msgstr "Չհաջողվեց ավելացնել պիտակը"
 msgid "Failed to copy"
 msgstr "Չհաջողվեց պատճենել"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:137
 #: ../../../lib/web/src/components/options-menu.tsx:99
 msgid "Failed to create link"
 msgstr "Չհաջողվեց ստեղծել հղումը"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:110
+msgid "Failed to delete attachment"
+msgstr "Չհաջողվեց ջնջել կցորդը"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:207
+msgid "Failed to delete comment"
+msgstr "Չհաջողվեց ջնջել մեկնաբանությունը"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:159
+msgid "Failed to delete link"
+msgstr "Չհաջողվեց ջնջել հղումը"
 
 #: ../../../lib/web/src/components/options-menu.tsx:123
 msgid "Failed to get RSS token"
@@ -1109,6 +1373,10 @@ msgstr "Չհաջողվեց բեռնել պատկերը"
 msgid "Failed to load video"
 msgstr "Չհաջողվեց բեռնել տեսանյութը"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:170
+msgid "Failed to post comment"
+msgstr "Չհաջողվեց հրապարակել մեկնաբանությունը"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "Չհաջողվեց հեռացնել հաշիվը"
@@ -1121,6 +1389,14 @@ msgstr "RSS մուտքի չեղարկումը ձախողվեց"
 msgid "Failed to send verification code"
 msgstr "Չհաջողվեց ուղարկել հաստատման կոդը"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:190
+msgid "Failed to update comment"
+msgstr "Չհաջողվեց թարմացնել մեկնաբանությունը"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:95
+msgid "Failed to upload attachment"
+msgstr "Չհաջողվեց վերբեռնել կցորդը"
+
 #: src/components/GameCanvas.tsx:58
 msgid "FAIR"
 msgstr "ԲԱՎԱՐԱՐ"
@@ -1132,6 +1408,12 @@ msgstr "FCS"
 #: src/components/GameCanvas.tsx:31
 msgid "FIGHT'S ON"
 msgstr "ՄԱՐՏԸ ՍԿՍՎԵՑ"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:567
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:133
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:150
+msgid "Files"
+msgstr "Ֆայլեր"
 
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:30
 msgid "Filter..."
@@ -1157,6 +1439,10 @@ msgstr "Կրակել զենքից"
 #: src/components/MissionSetup.tsx:557
 msgid "Fixed keys"
 msgstr "Ֆիքսված ստեղներ"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:222
+msgid "Flags"
+msgstr "Դրոշներ"
 
 #: src/components/GameCanvas.tsx:37
 msgid "FLAMEOUT"
@@ -1308,6 +1594,10 @@ msgstr "Գրաֆիկա"
 msgid "Group"
 msgstr "Խումբ"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Group by"
+msgstr "Խմբավորել ըստ"
+
 #. placeholder {0}: name || subject.slice(1)
 #: ../../../lib/web/src/features/access/access-list.tsx:68
 msgid "Group: {0}"
@@ -1366,6 +1656,10 @@ msgstr "HUD-ի բարձրության աղբյուր"
 #: src/components/MissionSetup.tsx:197
 msgid "HUD declutter"
 msgstr "HUD-ի պարզեցում"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:153
+msgid "ID"
+msgstr ""
 
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
@@ -1526,6 +1820,7 @@ msgid "launch / target"
 msgstr "արձակում / թիրախ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:287
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:312
 msgid "Layout"
 msgstr "Թողեք մեկնաբանություն..."
 
@@ -1584,6 +1879,14 @@ msgstr "ԼՈՒՅՍԵՐ"
 #: ../../../lib/web/src/components/options-menu.tsx:190
 msgid "Link"
 msgstr "Հղում"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:279
+msgid "Links"
+msgstr "Ցուցակի տեսք"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:324
+msgid "List"
+msgstr "Ցանկ"
 
 #: src/components/MissionSetup.tsx:1210
 msgid "Load"
@@ -1674,6 +1977,10 @@ msgstr "Կառավարել կատեգորիաները"
 msgid "Manage your connected accounts for notifications and services."
 msgstr "Կառավարեք ձեր միացված հաշիվները ծանուցումների և ծառայությունների համար։"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
+msgid "Manual"
+msgstr "Նշել բոլորը կարդացված"
+
 #: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "քարտեզ"
@@ -1699,6 +2006,10 @@ msgstr "Խաղի տեսակ"
 #: src/components/MissionSetup.tsx:1136
 msgid "Matches"
 msgstr "Խաղեր"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:199
+msgid "Maximum length"
+msgstr "Առավելագույն երկարություն"
 
 #: ../../../lib/web/src/features/accounts/types.ts:17
 msgid "MCP server"
@@ -1742,6 +2053,10 @@ msgstr "Microsoft վարձակալ"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Միդուեյ ատոլի քարտեզ — պատկերները պարունակում են ձևափոխված <0>Copernicus Sentinel-2</0> տվյալներ (2026); օդանավակայանի երկրաչափությունը (թռիչքուղի, ղեկավարման ուղիներ, կայանատեղիներ) © <1>OpenStreetMap</1>-ի ներդրողներ, արտոնագրված <2>ODbL</2>-ի ներքո; ափագծի և խութերի տվյալները՝ <3>NOAA NCCOS</3>-ից (հանրային սեփականություն)։"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:188
+msgid "Minimum length"
+msgstr "Նվազագույն երկարություն"
+
 #: src/components/GameCanvas.tsx:85
 msgid "MISSILE"
 msgstr "ՀՐԹԻՌ"
@@ -1783,6 +2098,14 @@ msgstr "Շարժեք այն…"
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Բազմախաղացողի համար անհրաժեշտ է WebTransport, որին այս դիտարկիչը դեռ չի աջակցում։"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:143
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:128
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:299
+msgid "Name"
+msgstr "Անուն"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
 msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
 msgstr "Անունը չի կարող պարունակել անկյունային փակագծեր, հակադարձ շեղագիծ, կետ-ստորակետ, չակերտներ կամ հակադարձ չակերտներ"
@@ -1796,6 +2119,7 @@ msgstr "Անունը պետք է լինի 1000 նիշից ոչ ավելի"
 msgid "Network error"
 msgstr "Ցանցի սխալ"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:460
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:43
 msgid "New"
 msgstr "Նոր"
@@ -1815,9 +2139,21 @@ msgstr "Հաջորդ նկարը"
 msgid "Night"
 msgstr "Գիշեր"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:533
+msgid "No {parentClassNames} to add to"
+msgstr "Ավելացնելու {parentClassNames} չկան"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:165
 msgid "No access rules configured. Add rules to control who can access this resource."
 msgstr "Մուտքի կանոններ կարգավորված չեն։ Ավելացրեք կանոններ՝ կառավարելու, թե ով կարող է մուտք գործել այս ռեսուրսը։"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:65
+msgid "No activity yet"
+msgstr "Դեռ ակտիվություն չկա"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:450
+msgid "No comments yet"
+msgstr "Դեռ մեկնաբանություններ չկան"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:295
 msgid "No connected accounts"
@@ -1835,9 +2171,17 @@ msgstr "Դեռ խաղեր չկան"
 msgid "No groups available"
 msgstr "Հասանելի խմբեր չկան"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:500
+msgid "No item types can be created yet. Create the required parent items first."
+msgstr "Տարրերի տեսակներ դեռ հնարավոր չէ ստեղծել։ Նախ ստեղծեք պահանջվող ծնող տարրերը։"
+
 #: src/components/MissionSetup.tsx:300
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ջոյստիկ չի հայտնաբերվել — այն արթնացնելու համար սեղմեք դրա որևէ կոճակ։"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:360
+msgid "No matching objects"
+msgstr "Համապատասխան օբյեկտներ չկան"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "No notifications yet"
@@ -1870,6 +2214,12 @@ msgstr "Արդյունքներ չեն գտնվել"
 msgid "No results found."
 msgstr "Արդյունքներ չեն գտնվել։"
 
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:845
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:890
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:339
+msgid "No status"
+msgstr "Կարգավիճակ չկա"
+
 #: ../../../lib/web/src/components/timezone-select.tsx:67
 msgid "No time zone found."
 msgstr "Ժամային գոտի չի գտնվել։"
@@ -1886,6 +2236,10 @@ msgstr "Չկարդացված ծանուցումներ չկան"
 msgid "No users found"
 msgstr "Օգտատերեր չեն գտնվել"
 
+#: ../../../lib/web/src/components/entity/entity-design-preview.tsx:115
+msgid "No views"
+msgstr "Դիտումներ չկան"
+
 #: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:421
 msgid "No world server."
@@ -1896,6 +2250,16 @@ msgid "NO-GRADE"
 msgstr "ԱՌԱՆՑ ԳՆԱՀԱՏԱԿԱՆԻ"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:349
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:516
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:519
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:365
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:391
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:418
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:421
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:497
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
@@ -1921,6 +2285,10 @@ msgstr "Չի գտնվել"
 msgid "Not set"
 msgstr "Չի սահմանված"
 
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:668
+msgid "Nothing found"
+msgstr "Ոչինչ չի գտնվել"
+
 #: src/components/MissionSetup.tsx:965
 msgid "Nothing yet — say hello."
 msgstr "Դեռ ոչինչ չկա — բարևեք։"
@@ -1943,6 +2311,12 @@ msgstr "Ծանուցումներ՝ {0}"
 #: src/components/Multiplayer.tsx:378
 msgid "Novice"
 msgstr "Սկսնակ"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:140
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:54
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:499
+msgid "Number"
+msgstr "Թիվ"
 
 #: src/components/MissionSetup.tsx:1404
 msgid "Ocean detail"
@@ -2002,6 +2376,11 @@ msgstr "Բացել նավիգացիան"
 msgid "Open navigation menu"
 msgstr "Բացել նավիգացիոն մենյուն"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:108
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:114
+msgid "Open option actions"
+msgstr "Բացել տարբերակի գործողությունները"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "Բացել ընտրված քարտը"
@@ -2010,6 +2389,26 @@ msgstr "Բացել ընտրված քարտը"
 #: ../../../lib/web/src/components/config-drawer.tsx:66
 msgid "Open theme settings"
 msgstr "Բացել թեմայի կարգավորումները"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:280
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:285
+msgid "Open view actions"
+msgstr "Բացել տեսքի գործողությունները"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:150
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:156
+msgid "Open view controls"
+msgstr "Բացել տեսքի կառավարումը"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:200
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:158
+msgid "Option name"
+msgstr "Տարբերակի անունը"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:241
+msgid "Options"
+msgstr "Տարբերակներ"
 
 #: src/components/GameCanvas.tsx:316
 msgid "or"
@@ -2037,6 +2436,10 @@ msgstr "Սեփականատեր"
 msgid "Page {currentPage} of {totalPages}"
 msgstr "Էջ {currentPage} / {totalPages}"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:508
+msgid "Parent"
+msgstr "Ծնող"
+
 #: src/components/MissionSetup.tsx:172
 msgid "Parking brake"
 msgstr "Կայանման արգելակ"
@@ -2052,6 +2455,10 @@ msgstr "Անցաբանալու ստուգումը ձախողվեց։ Խնդրո�
 #: ../../../lib/web/src/components/restore-banner.tsx:152
 msgid "Passkeys"
 msgstr "Անցաբանալիներ"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:210
+msgid "Pattern (regex)"
+msgstr "Ձևանմուշ (regex)"
 
 #: ../../../lib/web/src/components/date-picker.tsx:20
 msgid "Pick a date"
@@ -2252,6 +2659,10 @@ msgstr "Թարմացնել"
 msgid "REJOINING"
 msgstr "ՎԵՐԱԴԱՌՆՈՒՄ ԵՄ ՇԱՐՔ"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:65
+msgid "Relates"
+msgstr "Կապված է"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
 msgstr "Հարաբերական (5մ, 3ժ, 2օ)"
@@ -2261,6 +2672,8 @@ msgid "Relative within 24 hours, else absolute"
 msgstr "Հարաբերական 24 ժամվա ընթացքում, այլապես՝ բացարձակ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:236
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:598
 #: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
@@ -2295,9 +2708,41 @@ msgstr "Հեռացնել հետաքրքրությունը"
 msgid "Remove item"
 msgstr "Հեռացնել տարրը"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:304
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:309
+msgid "Remove link"
+msgstr "Հեռացնել հղումը"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:575
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:632
+msgid "Rename"
+msgstr "Վերանվանել"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:610
+msgid "Rename column"
+msgstr "Վերանվանել սյունակը"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:611
+msgid "Rename this board column"
+msgstr "Վերանվանել այս տախտակի սյունակը"
+
 #: src/components/MissionSetup.tsx:873
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Ռենդերինգը՝ <0>three.js</0>-ի միջոցով (MIT լիցենզիա)։"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:294
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:342
+msgid "Reply"
+msgstr "Պատասխանել"
+
+#. placeholder {0}: comment.name || comment.author
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:385
+msgid "Reply to {0}..."
+msgstr "Պատասխանել {0}-ին..."
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+msgid "Required"
+msgstr "Պարտադիր է"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:367
 msgid "Resend email"
@@ -2383,6 +2828,15 @@ msgstr "Կրեն ձախ"
 msgid "Roll right"
 msgstr "Կրեն աջ"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:169
+msgid "Rows"
+msgstr "Տողեր"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:379
+msgid "Rows group by"
+msgstr "Տողերը խմբավորվում են ըստ"
+
 #: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "Տողեր մեկ էջում"
@@ -2407,6 +2861,8 @@ msgstr "ԼՐԻՎ ՀԶՈՐՈՒԹՅՈՒՆ"
 msgid "Saturday"
 msgstr "Շաբաթ"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:269
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
@@ -2416,6 +2872,7 @@ msgstr "Պահպանել"
 msgid "Sea level"
 msgstr "Ծովի մակարդակ"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:177
 #: ../../../lib/web/src/components/filter-bar.tsx:32
 #: ../../../lib/web/src/components/header-search.tsx:22
 #: ../../../lib/web/src/components/search.tsx:18
@@ -2442,6 +2899,10 @@ msgstr "Որոնել ուղղություն..."
 msgid "Search for origin..."
 msgstr "Որոնել ծագում..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:337
+msgid "Search objects..."
+msgstr "Որոնել օբյեկտներ..."
+
 #: ../../../lib/web/src/components/timezone-select.tsx:65
 msgid "Search time zone..."
 msgstr "Որոնել ժամային գոտի..."
@@ -2450,6 +2911,12 @@ msgstr "Որոնել ժամային գոտի..."
 msgid "Search users"
 msgstr "Որոնել օգտատերեր"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:173
+msgid "Search, watch, and sort this view."
+msgstr "Որոնել, դիտել և տեսակավորել այս տեսքը։"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:181
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:257
 #: ../../../lib/web/src/components/person-picker.tsx:324
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
@@ -2462,10 +2929,18 @@ msgstr "Որոնում..."
 msgid "Searching..."
 msgstr "Որոնում..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
+msgid "Select"
+msgstr "Ընտրել"
+
 #. placeholder {0}: item.label.toLowerCase()
 #: ../../../lib/web/src/components/config-drawer.tsx:149
 msgid "Select {0}"
 msgstr "Ընտրել {0}"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
+msgid "Select a field"
+msgstr "Ընտրել դաշտ"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:36
 msgid "Select a game"
@@ -2615,6 +3090,14 @@ msgstr "Կարգավորումներ"
 msgid "Shadows"
 msgstr "Ստվերներ"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:333
+msgid "Show classes"
+msgstr "Ցույց տալ դասերը"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:434
+msgid "Show fields"
+msgstr "Ցույց տալ դաշտերը"
+
 #: ../../../lib/web/src/components/password-input.tsx:27
 msgid "Show password"
 msgstr "Ցույց տալ գաղտնաբառը"
@@ -2642,6 +3125,11 @@ msgstr "Դուրս գալ"
 msgid "Signing out..."
 msgstr "Դուրս է գալիս..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:180
+msgid "Single line of text only"
+msgstr "Միայն մեկ տող տեքստ"
+
 #: src/components/MissionSetup.tsx:700
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Լավագույն վերելք մեկ շարժիչով (Vyse, ֆորսաժ)"
@@ -2654,6 +3142,10 @@ msgstr "Բաց թողնել դեպի Հիմնական"
 #: ../../../lib/web/src/lib/preference-utils.ts:133
 msgid "Small"
 msgstr "Փոքր"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:199
+msgid "Sort"
+msgstr "Տեսակավորել"
 
 #: src/components/MissionSetup.tsx:468
 #: src/components/MissionSetup.tsx:1677
@@ -2702,6 +3194,10 @@ msgstr "Պոկում, վայրէջքի կոնֆիգուրացիա (Vs0)"
 msgid "Start"
 msgstr "Սկսել"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:451
+msgid "Start the discussion by adding the first comment."
+msgstr "Սկսեք քննարկումը՝ ավելացնելով առաջին մեկնաբանությունը:"
+
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "Մնացեք միացված, սակայն!"
@@ -2721,6 +3217,16 @@ msgstr "ԿԱՌՈՒՑՎԱԾՔ"
 #: ../../../lib/web/src/features/access/access-list.tsx:196
 msgid "Subject"
 msgstr "Թեմա"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:431
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:440
+msgid "Submit comment"
+msgstr "Ներկայացնել մեկնաբանությունը"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:470
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:475
+msgid "Submit reply"
+msgstr "Ներկայացնել պատասխանը"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
@@ -2803,6 +3309,10 @@ msgstr "Թիմեր/Հավելվածներ"
 #: ../../../lib/web/src/features/document/document-page.tsx:42
 msgid "Terms and conditions"
 msgstr "Պայմաններ և կանոններ"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:142
+msgid "Text"
+msgstr "Տեքստ"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:195
 msgid "That code is incorrect or has expired."
@@ -2915,6 +3425,11 @@ msgstr "Թեմայի փոխարկում"
 msgid "Toggle view options"
 msgstr "Տեսքի տարբերակների փոխարկում"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:190
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:267
+msgid "Toggle watched filter"
+msgstr "Հետևված զտիչի փոխարկում"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:74
 msgid "Too many requests"
 msgstr "Չափազանց շատ հարցումներ"
@@ -2973,6 +3488,11 @@ msgstr "Փորձեք կրկին"
 #: ../../../lib/web/src/lib/preference-utils.ts:60
 msgid "Tuesday"
 msgstr "Երեքշաբթի"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:163
+msgid "Type"
+msgstr "Տեսակ"
 
 #: ../../../lib/web/src/components/command-menu.tsx:52
 msgid "Type a command or search..."
@@ -3038,9 +3558,25 @@ msgstr "Անսահմանափակ վառելիք"
 msgid "Unsubscribe"
 msgstr "Բաժանորդագրությունից հրաժարվել"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:286
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:103
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:184
+msgid "Untitled"
+msgstr "Անվերնագիր"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:135
 msgid "Unverified"
 msgstr "Չստուգված"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:500
+msgid "Updated"
+msgstr "Թարմացված"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:630
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:259
+msgid "Upload"
+msgstr "Վերբեռնել"
 
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:34
 msgid "Upload progress"
@@ -3050,6 +3586,7 @@ msgstr "Վերբեռնման ընթացքը"
 msgid "Use your passkey"
 msgstr "Օգտագործեք ձեր անցաբանալին"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:143
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
@@ -3112,6 +3649,10 @@ msgstr "Դիտել բոլորը"
 msgid "View all notifications"
 msgstr "Դիտել բոլոր ծանուցումները"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:172
+msgid "View controls"
+msgstr "Դիտել կառավարակետերը"
+
 #: src/components/MissionSetup.tsx:564
 msgid "Views"
 msgstr "Դիտումներ"
@@ -3120,9 +3661,14 @@ msgstr "Դիտումներ"
 msgid "WAITING FOR OPPONENT"
 msgstr "ՍՊԱՍՈՒՄ ԵՆՔ ՀԱԿԱՌԱԿՈՐԴԻՆ"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:271
 #: ../../../lib/web/src/components/filter-bar.tsx:35
 msgid "Watched"
 msgstr "Հետևված"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:194
+msgid "Watched only"
+msgstr "Միայն հետևված"
 
 #: src/components/GameCanvas.tsx:62
 msgid "WAVE OFF"

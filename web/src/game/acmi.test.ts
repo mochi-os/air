@@ -172,4 +172,26 @@ describe('Recorder', () => {
     expect(lines[2]).toContain('Rounds=520')
   })
 
+  // The BANDIT's gun on the same channel as mine. Without it a debrief cannot
+  // tell a bandit that shot and missed from one that never fired: both look
+  // identical from the ownship, which is exactly the question the 2026-08-05
+  // superhuman post-mortem could not answer from the recording alone.
+  it('records each aircraft\'s rounds independently', () => {
+    const text = acmi(
+      [
+        { time: 0, objects: [jet({ data: { rounds: 578 } }), jet({ id: 2, label: 'Bandit', colour: 'Red', data: { rounds: 578 } })] },
+        { time: 0.1, objects: [jet({ data: { rounds: 520 } }), jet({ id: 2, label: 'Bandit', colour: 'Red', data: { rounds: 578 } })] },
+        { time: 0.2, objects: [jet({ data: { rounds: 520 } }), jet({ id: 2, label: 'Bandit', colour: 'Red', data: { rounds: 549 } })] },
+      ],
+      new Date('2026-08-05T00:00:00Z'),
+      'debrief'
+    )
+    const mine = text.split('\n').filter((l) => l.startsWith('1,T='))
+    const his = text.split('\n').filter((l) => l.startsWith('2,T='))
+    expect(mine[1]).toContain('Rounds=520')
+    expect(his[1]).not.toContain('Rounds=')   // his counter held while mine moved: the suppression is per aircraft
+    expect(his[2]).toContain('Rounds=549')
+    expect(mine[2]).not.toContain('Rounds=')
+  })
+
 })

@@ -18,6 +18,22 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "దయచేసి మీ ఇంటర్నెట్ కనెక్షన్‌ను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి."
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:302
+msgid " or "
+msgstr " లేదా "
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:228
+msgid "(edited)"
+msgstr "(సవరించబడింది)"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:212
+msgid "(expand)"
+msgstr "(విస్తరించు)"
+
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:774
+msgid "[not set]"
+msgstr "[సెట్ చేయలేదు]"
+
 #. placeholder {0}: selectedValues.size
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
 msgid "{0, plural, one {# selected} other {# selected}}"
@@ -81,6 +97,10 @@ msgstr "{selectedCount, plural, one {# ఎంచుకున్న {entityName} 
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{totalLabel}లో {sentLabel}"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:544
+msgid "{totalCount, plural, one {# item} other {# items}}"
+msgstr "{totalCount, plural, one {# అంశం} other {# అంశాలు}}"
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:165
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {మెనూ తెరవండి (# చదవని నోటిఫికేషన్)} other {మెనూ తెరవండి (# చదవని నోటిఫికేషన్‌లు)}}"
@@ -89,6 +109,14 @@ msgstr "{unreadCount, plural, one {మెనూ తెరవండి (# చద�
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx:421
 msgid "+{0} nested"
 msgstr "+{0} నెస్టెడ్"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:209
+msgid "+{totalDescendants} more replies"
+msgstr "+{totalDescendants} మరిన్ని ప్రత్యుత్తరాలు"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:208
+msgid "1 reply"
+msgstr "1 ప్రత్యుత్తరం"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -171,9 +199,17 @@ msgstr "లక్ష్యాన్ని లాక్ చేయి"
 msgid "Add"
 msgstr "జోడించండి"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:360
+msgid "Add a comment..."
+msgstr "ఒక వ్యాఖ్యను జోడించండి..."
+
 #: ../../../lib/web/src/features/accounts/account-add.tsx:133
 msgid "Add a new account"
 msgstr "కొత్త ఖాతాను జోడించండి"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:106
+msgid "Add a new field to this class"
+msgstr "ఈ క్లాస్‌కి కొత్త ఫీల్డ్‌ను జోడించండి"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:148
 msgid "Add access"
@@ -192,13 +228,30 @@ msgstr "నోటిఫికేషన్‌లను అందుకోవడ�
 msgid "Add checklist item"
 msgstr "చెక్‌లిస్ట్ ఐటెమ్‌ను జోడించండి"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:105
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:233
+msgid "Add field"
+msgstr "ఫీల్డ్‌ను జోడించండి"
+
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:705
 msgid "Add item..."
 msgstr "ఐటెమ్‌ను జోడించండి..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
+msgid "Add link"
+msgstr "లింక్‌ను జోడించండి"
+
 #: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
 msgstr "కొత్త ఖాతాను జోడించండి"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:292
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:194
+msgid "Add option"
+msgstr "ఎంపికను జోడించండి"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
 #: ../../../lib/web/src/components/tag-input.tsx:40
@@ -213,6 +266,8 @@ msgstr "టీమ్/యాప్‌ను జోడించండి"
 msgid "Add to existing notifications"
 msgstr "ప్రస్తుత నోటిఫికేషన్‌లకు జోడించండి"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:519
 #: ../../../lib/web/src/components/view-tabs.tsx:87
 #: ../../../lib/web/src/components/view-tabs.tsx:93
 msgid "Add view"
@@ -260,6 +315,10 @@ msgstr "అన్నీ"
 msgid "Allow anyone to search for {0}"
 msgstr "ఎవరైనా {0} కోసం వెతకడానికి అనుమతించండి"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:226
+msgid "Allow sort by"
+msgstr "వీటి ద్వారా క్రమబద్ధీకరణను అనుమతించండి"
+
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:178
 msgid "An error occurred"
 msgstr "లోపం సంభవించింది"
@@ -290,6 +349,19 @@ msgstr "అప్రోచ్ శక్తి (ATC)"
 msgid "Approach, on-speed (Vapp)"
 msgstr "సమీపనం, సరైన వేగం (Vapp)"
 
+#. placeholder {0}: deleteTarget?.name
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:271
+msgid "Are you sure you want to delete \"{0}\"?"
+msgstr "మీరు \"{0}\"ని తొలగించాలనుకుంటున్నారా?"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:643
+msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
+msgstr "మీరు \"{name}\" కాలమ్‌ను తొలగించాలనుకుంటున్నారా? దీన్ని రద్దు చేయలేరు."
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:485
+msgid "Are you sure you want to delete this comment? This will also delete all replies."
+msgstr "మీరు ఈ వ్యాఖ్యను తొలగించాలనుకుంటున్నారా? ఇది అన్ని ప్రత్యుత్తరాలను కూడా తొలగిస్తుంది."
+
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "మీరు లాగ్ అవుట్ చేయాలనుకుంటున్నారా? మీ ఖాతాను యాక్సెస్ చేయడానికి మీరు మళ్లీ లాగిన్ చేయవలసి ఉంటుంది."
@@ -310,6 +382,16 @@ msgstr "ఆరోహణ"
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "ఆరోహణ"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:398
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:403
+msgid "Attach comment files"
+msgstr "వ్యాఖ్య ఫైల్‌లను జతచేయండి"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:439
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:444
+msgid "Attach reply files"
+msgstr "ప్రత్యుత్తర ఫైల్‌లను జతచేయండి"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
 #: ../../../lib/web/src/features/access/types.ts:41
@@ -383,10 +465,19 @@ msgstr "ఉత్తమ నిలకడ మలుపు వేగం"
 msgid "BINGO FUEL"
 msgstr "బింగో ఇంధనం"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:68
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:215
+msgid "Blocked by"
+msgstr "నిరోధించినది"
+
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:237
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:247
 msgid "Blocked navigation to untrusted link"
 msgstr "నమ్మదగని లింక్‌కి నావిగేషన్ నిరోధించబడింది"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:66
+msgid "Blocks"
+msgstr "నిరోధిస్తుంది"
 
 #: src/components/Multiplayer.tsx:479
 msgid "Blue"
@@ -396,6 +487,10 @@ msgstr "నీలం"
 msgid "Blue bots"
 msgstr "నీలం బాట్లు"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:318
+msgid "Board"
+msgstr "బోర్డు"
+
 #: src/components/GameCanvas.tsx:61
 msgid "BOLTER"
 msgstr "బోల్టర్"
@@ -404,6 +499,10 @@ msgstr "బోల్టర్"
 #: ../../../lib/web/src/components/post-tags.tsx:192
 msgid "Boost interest"
 msgstr "ఆసక్తిని పెంచండి"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:405
+msgid "Border colour"
+msgstr "అంచు రంగు"
 
 #: src/components/Multiplayer.tsx:373
 msgid "Bots"
@@ -446,6 +545,10 @@ msgstr "కాల్ సైన్"
 msgid "Camera distance"
 msgstr "కెమెరా దూరం"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:249
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
@@ -460,6 +563,16 @@ msgstr "కెమెరా దూరం"
 #: src/components/Multiplayer.tsx:456
 msgid "Cancel"
 msgstr "రద్దు చేయండి"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:415
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:420
+msgid "Cancel comment"
+msgstr "వ్యాఖ్యను రద్దు చేయండి"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:455
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:460
+msgid "Cancel reply"
+msgstr "ప్రత్యుత్తరాన్ని రద్దు చేయండి"
 
 #: src/components/MissionSetup.tsx:189
 msgid "Canopy"
@@ -527,6 +640,14 @@ msgstr "చీట్స్"
 msgid "Check \"All\" to see your past notifications."
 msgstr "గత నోటిఫికేషన్‌లను చూడటానికి \"అన్నీ\" ఎంచుకోండి."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
+msgid "Checkbox"
+msgstr "చెక్‌బాక్స్"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:138
+msgid "Checklist"
+msgstr "చెక్‌లిస్ట్"
+
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:37
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "సైడ్‌బార్ నుండి ఆటను ఎంచుకోండి లేదా కొత్తదాన్ని ప్రారంభించండి."
@@ -584,12 +705,21 @@ msgstr "ఎంపికను క్లియర్ చేయండి"
 msgid "Clear selection (Escape)"
 msgstr "ఎంపికను క్లియర్ చేయండి (Escape)"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:485
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:490
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "మూసివేయండి"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:109
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:113
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:269
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:273
+msgid "Close dialog"
+msgstr "డైలాగ్‌ను మూసివేయండి"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
@@ -628,6 +758,19 @@ msgstr "కుదించు"
 msgid "Collapse sidebar"
 msgstr "సైడ్‌బార్‌ను కుదించండి"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:149
+msgid "Colour"
+msgstr "రంగు"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:553
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:558
+msgid "Column actions"
+msgstr "నిలువు వరుస చర్యలు"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Columns group by"
+msgstr "కాలమ్‌లు దీని ద్వారా గ్రూప్ చేయబడతాయి"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:96
 msgid "Comfortable"
 msgstr "సౌకర్యవంతమైన"
@@ -644,6 +787,11 @@ msgstr "కమాండ్ ప్యాలెట్"
 msgid "COMMENCING"
 msgstr "ప్రారంభిస్తున్నాను"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:330
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:337
+msgid "Comment actions"
+msgstr "వ్యాఖ్య చర్యలు"
+
 #: src/components/MissionSetup.tsx:116
 msgid "Communication"
 msgstr "సమాచార ప్రసారం"
@@ -652,6 +800,14 @@ msgstr "సమాచార ప్రసారం"
 #: ../../../lib/web/src/lib/preference-utils.ts:95
 msgid "Compact"
 msgstr "కాంపాక్ట్"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
+msgid "Configure option settings"
+msgstr "ఎంపిక సెట్టింగ్‌లను కాన్ఫిగర్ చేయండి"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:265
+msgid "Configure view settings"
+msgstr "వీక్షణ సెట్టింగ్‌లను కాన్ఫిగర్ చేయండి"
 
 #: ../../../lib/web/src/components/place-picker.tsx:160
 #: ../../../lib/web/src/components/travelling-picker.tsx:316
@@ -761,6 +917,14 @@ msgstr "ప్రతిచర్యలు"
 msgid "CRASHED"
 msgstr "కూలిపోయింది"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:564
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:703
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:475
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:672
+msgid "Create"
+msgstr "సృష్టించండి"
+
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
 msgid "Create {0}"
@@ -783,6 +947,12 @@ msgstr "మిషన్ సృష్టించు"
 msgid "Create new item"
 msgstr "కొత్త ఐటెమ్‌ను సృష్టించండి"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:56
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:498
+msgid "Created"
+msgstr "సృష్టించబడింది"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:258
 msgid "Creating..."
 msgstr "సృష్టిస్తోంది..."
@@ -829,6 +999,7 @@ msgstr "డార్క్ మోడ్"
 msgid "Data conflict"
 msgstr "డేటా వైరుధ్యం"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
 #: src/components/MatchHistory.tsx:155
 msgid "Date"
 msgstr "తేదీ"
@@ -858,6 +1029,52 @@ msgstr "డిఫాల్ట్"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
 msgstr "డిఫాల్ట్ AI ఖాతా"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:485
+msgid "Default sort"
+msgstr "డిఫాల్ట్ క్రమబద్ధీకరణ"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:583
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:644
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:318
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:361
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:486
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:173
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:178
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:227
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:272
+msgid "Delete"
+msgstr "తొలగించండి"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:270
+msgid "Delete attachment"
+msgstr "అటాచ్‌మెంట్‌ను తొలగించండి"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:642
+msgid "Delete column"
+msgstr "కాలమ్‌ను తొలగించండి"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:484
+msgid "Delete comment"
+msgstr "వ్యాఖ్యను తొలగించండి"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:301
+msgid "Delete field"
+msgstr "ఫీల్డ్‌ను తొలగించండి"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:119
+msgid "Delete option"
+msgstr "ఎంపికను తొలగించండి"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:279
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:284
+msgid "Delete option {0}"
+msgstr "ఎంపిక {0}ని తొలగించండి"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:290
+msgid "Delete view"
+msgstr "వీక్షణను తొలగించండి"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:115
 msgid "Delete your account on the old server"
@@ -947,10 +1164,13 @@ msgstr "మొబైల్ సైడ్‌బార్‌ను ప్రదర�
 msgid "Distance LOD"
 msgstr "దూర LOD"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:306
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
 #: src/components/MissionSetup.tsx:1729
 msgid "Done"
 msgstr "పూర్తయింది"
 
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:214
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
@@ -968,6 +1188,10 @@ msgstr "లాగండి"
 msgid "Drone"
 msgstr "డ్రోన్"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:67
+msgid "Duplicates"
+msgstr "నకలు చేస్తుంది"
+
 #: src/components/MissionSetup.tsx:1416
 msgid "Dynamic resolution"
 msgstr "డైనమిక్ రిజల్యూషన్"
@@ -980,13 +1204,40 @@ msgstr "డిస్లెక్సియా-అనుకూలం"
 msgid "EARLY"
 msgstr "త్వరగా"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:307
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:352
+msgid "Edit"
+msgstr "సవరించండి"
+
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "{label} సవరించు"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+msgid "Edit field"
+msgstr "ఫీల్డ్‌ను సవరించండి"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:139
+msgid "Edit field settings"
+msgstr "ఫీల్డ్ సెట్టింగ్‌లను సవరించండి"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+msgid "Edit option"
+msgstr "ఎంపికను సవరించు"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:264
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:269
+msgid "Edit option {0}"
+msgstr "{0} ఎంపికను సవరించండి"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:31
 msgid "Edit selected card"
 msgstr "ఎంచుకున్న కార్డును సవరించు"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+msgid "Edit view"
+msgstr "వీక్షణను సవరించండి"
 
 #: src/components/MissionSetup.tsx:193
 msgid "Eject"
@@ -1085,9 +1336,22 @@ msgstr "ట్యాగ్‌ను జోడించడంలో విఫల�
 msgid "Failed to copy"
 msgstr "కాపీ చేయడంలో విఫలమైంది"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:137
 #: ../../../lib/web/src/components/options-menu.tsx:99
 msgid "Failed to create link"
 msgstr "లింక్‌ను సృష్టించడంలో విఫలమైంది"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:110
+msgid "Failed to delete attachment"
+msgstr "జోడింపును తొలగించడంలో విఫలమైంది"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:207
+msgid "Failed to delete comment"
+msgstr "వ్యాఖ్యను తొలగించడంలో విఫలమైంది"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:159
+msgid "Failed to delete link"
+msgstr "లింక్‌ను తొలగించడంలో విఫలమైంది"
 
 #: ../../../lib/web/src/components/options-menu.tsx:123
 msgid "Failed to get RSS token"
@@ -1109,6 +1373,10 @@ msgstr "చిత్రాన్ని లోడ్ చేయడంలో వి
 msgid "Failed to load video"
 msgstr "వీడియోను లోడ్ చేయడంలో విఫలమైంది"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:170
+msgid "Failed to post comment"
+msgstr "వ్యాఖ్యను పోస్ట్ చేయడంలో విఫలమైంది"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "ఖాతాను తీసివేయడంలో విఫలమైంది"
@@ -1121,6 +1389,14 @@ msgstr "RSS యాక్సెస్ ఉపసంహరించడంలో వ
 msgid "Failed to send verification code"
 msgstr "ధృవీకరణ కోడ్‌ను పంపడంలో విఫలమైంది"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:190
+msgid "Failed to update comment"
+msgstr "వ్యాఖ్యను నవీకరించడంలో విఫలమైంది"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:95
+msgid "Failed to upload attachment"
+msgstr "జోడింపును అప్‌లోడ్ చేయడంలో విఫలమైంది"
+
 #: src/components/GameCanvas.tsx:58
 msgid "FAIR"
 msgstr "సగటు"
@@ -1132,6 +1408,12 @@ msgstr "FCS"
 #: src/components/GameCanvas.tsx:31
 msgid "FIGHT'S ON"
 msgstr "పోరాటం మొదలైంది"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:567
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:133
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:150
+msgid "Files"
+msgstr "ఫైళ్లు"
 
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:30
 msgid "Filter..."
@@ -1157,6 +1439,10 @@ msgstr "ఆయుధంతో కాల్చు"
 #: src/components/MissionSetup.tsx:557
 msgid "Fixed keys"
 msgstr "స్థిర కీలు"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:222
+msgid "Flags"
+msgstr "ఫ్లాగ్‌లు"
 
 #: src/components/GameCanvas.tsx:37
 msgid "FLAMEOUT"
@@ -1308,6 +1594,10 @@ msgstr "గ్రాఫిక్స్"
 msgid "Group"
 msgstr "గ్రూప్"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Group by"
+msgstr "దీని ద్వారా సమూహపరచు"
+
 #. placeholder {0}: name || subject.slice(1)
 #: ../../../lib/web/src/features/access/access-list.tsx:68
 msgid "Group: {0}"
@@ -1366,6 +1656,10 @@ msgstr "HUD ఎత్తు మూలం"
 #: src/components/MissionSetup.tsx:197
 msgid "HUD declutter"
 msgstr "HUD సరళీకరణ"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:153
+msgid "ID"
+msgstr ""
 
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
@@ -1526,6 +1820,7 @@ msgid "launch / target"
 msgstr "లాంచ్ / లక్ష్యం"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:287
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:312
 msgid "Layout"
 msgstr "లేఅవుట్"
 
@@ -1584,6 +1879,14 @@ msgstr "లైట్లు"
 #: ../../../lib/web/src/components/options-menu.tsx:190
 msgid "Link"
 msgstr "లింక్"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:279
+msgid "Links"
+msgstr "లింక్‌లు"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:324
+msgid "List"
+msgstr "జాబితా"
 
 #: src/components/MissionSetup.tsx:1210
 msgid "Load"
@@ -1674,6 +1977,10 @@ msgstr "వర్గాలను నిర్వహించండి"
 msgid "Manage your connected accounts for notifications and services."
 msgstr "నోటిఫికేషన్లు మరియు సేవల కోసం మీ కనెక్ట్ చేసిన ఖాతాలను నిర్వహించండి."
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
+msgid "Manual"
+msgstr "మాన్యువల్"
+
 #: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "పటం"
@@ -1699,6 +2006,10 @@ msgstr "మ్యాచ్ రకం"
 #: src/components/MissionSetup.tsx:1136
 msgid "Matches"
 msgstr "మ్యాచ్‌లు"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:199
+msgid "Maximum length"
+msgstr "గరిష్ట పొడవు"
 
 #: ../../../lib/web/src/features/accounts/types.ts:17
 msgid "MCP server"
@@ -1742,6 +2053,10 @@ msgstr "మెట్రిక్"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "మిడ్‌వే అటోల్ పటం — చిత్రాలలో సవరించిన <0>Copernicus Sentinel-2</0> డేటా ఉంది (2026); విమానాశ్రయ జ్యామితి (రన్‌వే, టాక్సీవేలు, ఆప్రాన్‌లు) © <1>OpenStreetMap</1> సహకారులు, <2>ODbL</2> కింద లైసెన్స్ పొందింది; తీరప్రాంతం మరియు పగడపు దిబ్బ డేటా <3>NOAA NCCOS</3> నుండి (పబ్లిక్ డొమైన్)."
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:188
+msgid "Minimum length"
+msgstr "కనిష్ట పొడవు"
+
 #: src/components/GameCanvas.tsx:85
 msgid "MISSILE"
 msgstr "క్షిపణి"
@@ -1783,6 +2098,14 @@ msgstr "దాన్ని కదిలించండి…"
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "మల్టీప్లేయర్‌కు WebTransport అవసరం, ఈ బ్రౌజర్ దానికి ఇంకా మద్దతు ఇవ్వడం లేదు."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:143
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:128
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:299
+msgid "Name"
+msgstr "పేరు"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
 msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
 msgstr "పేరులో కోణ కుండలీకరణాలు, బ్యాక్‌స్లాష్, సెమికోలన్, కొటేషన్ గుర్తులు లేదా బ్యాక్‌టిక్‌లు ఉండకూడదు"
@@ -1796,6 +2119,7 @@ msgstr "పేరు 1000 క్యారెక్టర్‌లు లేద�
 msgid "Network error"
 msgstr "నెట్‌వర్క్ లోపం"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:460
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:43
 msgid "New"
 msgstr "కొత్తది"
@@ -1815,9 +2139,21 @@ msgstr "తదుపరి చిత్రం"
 msgid "Night"
 msgstr "రాత్రి"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:533
+msgid "No {parentClassNames} to add to"
+msgstr "జోడించడానికి {parentClassNames} లేదు"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:165
 msgid "No access rules configured. Add rules to control who can access this resource."
 msgstr "యాక్సెస్ నియమాలు ఏవీ కాన్ఫిగర్ చేయబడలేదు. ఈ రిసోర్స్‌ను ఎవరు యాక్సెస్ చేయగలరో నియంత్రించడానికి నియమాలను జోడించండి."
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:65
+msgid "No activity yet"
+msgstr "ఇంకా యాక్టివిటీ లేదు"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:450
+msgid "No comments yet"
+msgstr "ఇంకా కామెంట్‌లు లేవు"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:295
 msgid "No connected accounts"
@@ -1835,9 +2171,17 @@ msgstr "ఇంకా గేమ్‌లు లేవు"
 msgid "No groups available"
 msgstr "గ్రూపులు అందుబాటులో లేవు"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:500
+msgid "No item types can be created yet. Create the required parent items first."
+msgstr "ఇంకా ఏ ఐటెం రకాలను సృష్టించలేము. మొదట అవసరమైన పేరెంట్ ఐటెంలను సృష్టించండి."
+
 #: src/components/MissionSetup.tsx:300
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "జాయ్‌స్టిక్ ఏదీ గుర్తించబడలేదు — దాన్ని మేల్కొలపడానికి దానిపై ఏదైనా బటన్ నొక్కండి."
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:360
+msgid "No matching objects"
+msgstr "మ్యాచింగ్ ఆబ్జెక్ట్‌లు లేవు"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "No notifications yet"
@@ -1870,6 +2214,12 @@ msgstr "ఫలితాలు కనుగొనబడలేదు"
 msgid "No results found."
 msgstr "ఫలితాలు ఏవీ కనుగొనబడలేదు."
 
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:845
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:890
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:339
+msgid "No status"
+msgstr "స్థితి లేదు"
+
 #: ../../../lib/web/src/components/timezone-select.tsx:67
 msgid "No time zone found."
 msgstr "టైం జోన్ కనుగొనబడలేదు."
@@ -1886,6 +2236,10 @@ msgstr "చదవని నోటిఫికేషన్‌లు లేవు"
 msgid "No users found"
 msgstr "యూజర్‌లు ఎవరూ కనుగొనబడలేదు"
 
+#: ../../../lib/web/src/components/entity/entity-design-preview.tsx:115
+msgid "No views"
+msgstr "వ్యూస్ లేవు"
+
 #: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:421
 msgid "No world server."
@@ -1896,6 +2250,16 @@ msgid "NO-GRADE"
 msgstr "గ్రేడ్ లేదు"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:349
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:516
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:519
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:365
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:391
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:418
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:421
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:497
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
@@ -1921,6 +2285,10 @@ msgstr "కనుగొనబడలేదు"
 msgid "Not set"
 msgstr "సెట్ చేయబడలేదు"
 
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:668
+msgid "Nothing found"
+msgstr "ఏమీ కనుగొనబడలేదు"
+
 #: src/components/MissionSetup.tsx:965
 msgid "Nothing yet — say hello."
 msgstr "ఇంకా ఏమీ లేదు — హలో చెప్పండి."
@@ -1943,6 +2311,12 @@ msgstr "నోటిఫికేషన్‌లు: {0}"
 #: src/components/Multiplayer.tsx:378
 msgid "Novice"
 msgstr "కొత్తవారు"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:140
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:54
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:499
+msgid "Number"
+msgstr "సంఖ్య"
 
 #: src/components/MissionSetup.tsx:1404
 msgid "Ocean detail"
@@ -2002,6 +2376,11 @@ msgstr "నావిగేషన్‌ను ఓపెన్ చేయండి"
 msgid "Open navigation menu"
 msgstr "నావిగేషన్ మెనుని ఓపెన్ చేయండి"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:108
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:114
+msgid "Open option actions"
+msgstr "ఆప్షన్ చర్యలను ఓపెన్ చేయండి"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "ఎంచుకున్న కార్డును తెరువు"
@@ -2010,6 +2389,26 @@ msgstr "ఎంచుకున్న కార్డును తెరువు"
 #: ../../../lib/web/src/components/config-drawer.tsx:66
 msgid "Open theme settings"
 msgstr "థీమ్ సెట్టింగ్‌లను ఓపెన్ చేయండి"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:280
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:285
+msgid "Open view actions"
+msgstr "వ్యూ చర్యలను ఓపెన్ చేయండి"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:150
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:156
+msgid "Open view controls"
+msgstr "వ్యూ కంట్రోల్స్‌ను ఓపెన్ చేయండి"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:200
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:158
+msgid "Option name"
+msgstr "ఆప్షన్ పేరు"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:241
+msgid "Options"
+msgstr "ఆప్షన్‌లు"
 
 #: src/components/GameCanvas.tsx:316
 msgid "or"
@@ -2037,6 +2436,10 @@ msgstr "ఓనర్"
 msgid "Page {currentPage} of {totalPages}"
 msgstr "పేజీ {currentPage} / {totalPages}"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:508
+msgid "Parent"
+msgstr "పేరెంట్"
+
 #: src/components/MissionSetup.tsx:172
 msgid "Parking brake"
 msgstr "పార్కింగ్ బ్రేక్"
@@ -2052,6 +2455,10 @@ msgstr "పాస్‌కీ ధృవీకరణ విఫలమైంది.
 #: ../../../lib/web/src/components/restore-banner.tsx:152
 msgid "Passkeys"
 msgstr "పాస్‌కీలు"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:210
+msgid "Pattern (regex)"
+msgstr "నమూనా (regex)"
 
 #: ../../../lib/web/src/components/date-picker.tsx:20
 msgid "Pick a date"
@@ -2252,6 +2659,10 @@ msgstr "రిఫ్రెష్"
 msgid "REJOINING"
 msgstr "తిరిగి చేరుతున్నాను"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:65
+msgid "Relates"
+msgstr "సంబంధితం"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
 msgstr "సాపేక్ష (5m, 3h, 2d)"
@@ -2261,6 +2672,8 @@ msgid "Relative within 24 hours, else absolute"
 msgstr "24 గంటల్లో సాపేక్ష, లేకపోతే నిరపేక్ష"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:236
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:598
 #: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
@@ -2295,9 +2708,41 @@ msgstr "ఆసక్తిని తొలగించండి"
 msgid "Remove item"
 msgstr "ఐటెంను తొలగించండి"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:304
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:309
+msgid "Remove link"
+msgstr "లింక్‌ను తీసివేయి"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:575
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:632
+msgid "Rename"
+msgstr "పేరు మార్చండి"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:610
+msgid "Rename column"
+msgstr "కాలమ్ పేరును మార్చండి"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:611
+msgid "Rename this board column"
+msgstr "ఈ బోర్డ్ కాలమ్ పేరును మార్చండి"
+
 #: src/components/MissionSetup.tsx:873
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "రెండరింగ్ <0>three.js</0> ద్వారా (MIT లైసెన్స్)."
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:294
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:342
+msgid "Reply"
+msgstr "రిప్లై"
+
+#. placeholder {0}: comment.name || comment.author
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:385
+msgid "Reply to {0}..."
+msgstr "{0} కి ప్రత్యుత్తరం..."
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+msgid "Required"
+msgstr "అవసరం"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:367
 msgid "Resend email"
@@ -2383,6 +2828,15 @@ msgstr "రోల్ ఎడమకు"
 msgid "Roll right"
 msgstr "రోల్ కుడికి"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:169
+msgid "Rows"
+msgstr "వరుసలు"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:379
+msgid "Rows group by"
+msgstr "వరుసలను దీని ద్వారా గ్రూప్ చేయండి"
+
 #: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "ఒక్కో పేజీకి వరుసలు"
@@ -2407,6 +2861,8 @@ msgstr "పూర్తి శక్తి"
 msgid "Saturday"
 msgstr "శనివారం"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:269
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
@@ -2416,6 +2872,7 @@ msgstr "సేవ్ చేయండి"
 msgid "Sea level"
 msgstr "సముద్ర మట్టం"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:177
 #: ../../../lib/web/src/components/filter-bar.tsx:32
 #: ../../../lib/web/src/components/header-search.tsx:22
 #: ../../../lib/web/src/components/search.tsx:18
@@ -2442,6 +2899,10 @@ msgstr "గమ్యస్థానాన్ని శోధించండి..
 msgid "Search for origin..."
 msgstr "మూలాన్ని శోధించండి..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:337
+msgid "Search objects..."
+msgstr "ఆబ్జెక్ట్‌లను శోధించండి..."
+
 #: ../../../lib/web/src/components/timezone-select.tsx:65
 msgid "Search time zone..."
 msgstr "టైమ్ జోన్‌ను శోధించండి..."
@@ -2450,6 +2911,12 @@ msgstr "టైమ్ జోన్‌ను శోధించండి..."
 msgid "Search users"
 msgstr "యూజర్లను శోధించండి"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:173
+msgid "Search, watch, and sort this view."
+msgstr "ఈ వ్యూను శోధించండి, వాచ్ చేయండి మరియు సార్ట్ చేయండి."
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:181
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:257
 #: ../../../lib/web/src/components/person-picker.tsx:324
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
@@ -2462,10 +2929,18 @@ msgstr "శోధించండి..."
 msgid "Searching..."
 msgstr "శోధిస్తోంది..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
+msgid "Select"
+msgstr "ఎంచుకోండి"
+
 #. placeholder {0}: item.label.toLowerCase()
 #: ../../../lib/web/src/components/config-drawer.tsx:149
 msgid "Select {0}"
 msgstr "{0} ఎంచుకోండి"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
+msgid "Select a field"
+msgstr "ఒక ఫీల్డ్‌ను ఎంచుకోండి"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:36
 msgid "Select a game"
@@ -2615,6 +3090,14 @@ msgstr "సెట్టింగ్‌లు"
 msgid "Shadows"
 msgstr "నీడలు"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:333
+msgid "Show classes"
+msgstr "క్లాస్‌లను చూపించు"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:434
+msgid "Show fields"
+msgstr "ఫీల్డ్‌లను చూపించు"
+
 #: ../../../lib/web/src/components/password-input.tsx:27
 msgid "Show password"
 msgstr "పాస్‌వర్డ్‌ను చూపు"
@@ -2642,6 +3125,11 @@ msgstr "సైన్ అవుట్"
 msgid "Signing out..."
 msgstr "సైన్ అవుట్ అవుతోంది..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:180
+msgid "Single line of text only"
+msgstr "ఒకే లైన్ టెక్స్ట్ మాత్రమే"
+
 #: src/components/MissionSetup.tsx:700
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "ఒకే ఇంజిన్‌తో ఉత్తమ ఆరోహణ (Vyse, ఆఫ్టర్‌బర్నర్)"
@@ -2654,6 +3142,10 @@ msgstr "మెయిన్‌కు దాటవేయండి"
 #: ../../../lib/web/src/lib/preference-utils.ts:133
 msgid "Small"
 msgstr "చిన్నది"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:199
+msgid "Sort"
+msgstr "సార్ట్ చేయండి"
 
 #: src/components/MissionSetup.tsx:468
 #: src/components/MissionSetup.tsx:1677
@@ -2702,6 +3194,10 @@ msgstr "స్టాల్, అవతరణ విన్యాసం (Vs0)"
 msgid "Start"
 msgstr "ప్రారంభించు"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:451
+msgid "Start the discussion by adding the first comment."
+msgstr "మొదటి వ్యాఖ్యను జోడించడం ద్వారా చర్చను ప్రారంభించండి."
+
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "అయితే వేచి ఉండండి!"
@@ -2721,6 +3217,16 @@ msgstr "నిర్మాణం"
 #: ../../../lib/web/src/features/access/access-list.tsx:196
 msgid "Subject"
 msgstr "విషయం"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:431
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:440
+msgid "Submit comment"
+msgstr "వ్యాఖ్యను సమర్పించండి"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:470
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:475
+msgid "Submit reply"
+msgstr "ప్రత్యుత్తరాన్ని సమర్పించండి"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
@@ -2803,6 +3309,10 @@ msgstr "టీమ్‌లు/యాప్‌లు"
 #: ../../../lib/web/src/features/document/document-page.tsx:42
 msgid "Terms and conditions"
 msgstr "నియమాలు మరియు షరతులు"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:142
+msgid "Text"
+msgstr "టెక్స్ట్"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:195
 msgid "That code is incorrect or has expired."
@@ -2915,6 +3425,11 @@ msgstr "థీమ్‌ను టోగుల్ చేయండి"
 msgid "Toggle view options"
 msgstr "వీక్షణ ఎంపికలను టోగుల్ చేయి"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:190
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:267
+msgid "Toggle watched filter"
+msgstr "వాచ్ చేసిన ఫిల్టర్‌ను టోగుల్ చేయండి"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:74
 msgid "Too many requests"
 msgstr "చాలా ఎక్కువ అభ్యర్థనలు"
@@ -2973,6 +3488,11 @@ msgstr "మళ్ళీ ప్రయత్నించండి"
 #: ../../../lib/web/src/lib/preference-utils.ts:60
 msgid "Tuesday"
 msgstr "మంగళవారం"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:163
+msgid "Type"
+msgstr "రకం"
 
 #: ../../../lib/web/src/components/command-menu.tsx:52
 msgid "Type a command or search..."
@@ -3038,9 +3558,25 @@ msgstr "అపరిమిత ఇంధనం"
 msgid "Unsubscribe"
 msgstr "చందా మానివేయండి"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:286
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:103
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:184
+msgid "Untitled"
+msgstr "శీర్షికలేని"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:135
 msgid "Unverified"
 msgstr "ధృవీకరించబడలేదు"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:500
+msgid "Updated"
+msgstr "నవీకరించబడింది"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:630
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:259
+msgid "Upload"
+msgstr "అప్‌లోడ్ చేయండి"
 
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:34
 msgid "Upload progress"
@@ -3050,6 +3586,7 @@ msgstr "అప్‌లోడ్ పురోగతి"
 msgid "Use your passkey"
 msgstr "మీ పాస్‌కీని ఉపయోగించండి"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:143
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
@@ -3112,6 +3649,10 @@ msgstr "అన్నీ వీక్షించండి"
 msgid "View all notifications"
 msgstr "అన్ని నోటిఫికేషన్‌లను వీక్షించండి"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:172
+msgid "View controls"
+msgstr "కంట్రోల్‌లను వీక్షించండి"
+
 #: src/components/MissionSetup.tsx:564
 msgid "Views"
 msgstr "వీక్షణలు"
@@ -3120,9 +3661,14 @@ msgstr "వీక్షణలు"
 msgid "WAITING FOR OPPONENT"
 msgstr "ప్రత్యర్థి కోసం వేచి ఉంది"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:271
 #: ../../../lib/web/src/components/filter-bar.tsx:35
 msgid "Watched"
 msgstr "వాచ్ చేయబడింది"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:194
+msgid "Watched only"
+msgstr "వాచ్ చేసినవి మాత్రమే"
 
 #: src/components/GameCanvas.tsx:62
 msgid "WAVE OFF"

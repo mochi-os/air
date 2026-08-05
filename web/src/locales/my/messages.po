@@ -18,6 +18,22 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "သင့်အင်တာနက်ချိတ်ဆက်မှုကို စစ်ဆေးပြီး ထပ်မံကြိုးစားပါ။"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:302
+msgid " or "
+msgstr " သို့မဟုတ် "
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:228
+msgid "(edited)"
+msgstr "(တည်းဖြတ်ပြီး)"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:212
+msgid "(expand)"
+msgstr "(ချဲ့ရန်)"
+
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:774
+msgid "[not set]"
+msgstr "[မသတ်မှတ်ရသေး]"
+
 #. placeholder {0}: selectedValues.size
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
 msgid "{0, plural, one {# selected} other {# selected}}"
@@ -81,6 +97,10 @@ msgstr "{selectedCount, plural, other {ရွေးချယ်ထားသေ�
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{totalLabel} အနက် {sentLabel}"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:544
+msgid "{totalCount, plural, one {# item} other {# items}}"
+msgstr "{totalCount, plural, other {# ခု}}"
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:165
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, other {မီနူးဖွင့်ရန် (မဖတ်ရသေးသော အကြောင်းကြားချက် # ခု)}}"
@@ -89,6 +109,14 @@ msgstr "{unreadCount, plural, other {မီနူးဖွင့်ရန် (�
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx:421
 msgid "+{0} nested"
 msgstr "+{0} ခု အထပ်လိုက်"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:209
+msgid "+{totalDescendants} more replies"
+msgstr "+{totalDescendants} အကြောင်းပြန်ချက်များ ပိုပါသည်"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:208
+msgid "1 reply"
+msgstr "၁ အကြောင်းပြန်ချက်"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -171,9 +199,17 @@ msgstr "ပစ်မှတ် လော့ခ်လုပ်ရန်"
 msgid "Add"
 msgstr "ထည့်မည်"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:360
+msgid "Add a comment..."
+msgstr "မှတ်ချက်ထည့်ရန်..."
+
 #: ../../../lib/web/src/features/accounts/account-add.tsx:133
 msgid "Add a new account"
 msgstr "အကောင့်အသစ် ထည့်မည်"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:106
+msgid "Add a new field to this class"
+msgstr "ဤ class ထဲသို့ field အသစ်ထည့်မည်"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:148
 msgid "Add access"
@@ -192,13 +228,30 @@ msgstr "အကြောင်းကြားချက်များ ရရှ�
 msgid "Add checklist item"
 msgstr "checklist အရာ ထည့်မည်"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:105
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:233
+msgid "Add field"
+msgstr "field ထည့်မည်"
+
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:705
 msgid "Add item..."
 msgstr "အရာ ထည့်ရန်..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
+msgid "Add link"
+msgstr "လင့်ခ် ထည့်မည်"
+
 #: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
 msgstr "အကောင့်အသစ် ထည့်မည်"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:292
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:194
+msgid "Add option"
+msgstr "ရွေးချယ်စရာ ထည့်မည်"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
 #: ../../../lib/web/src/components/tag-input.tsx:40
@@ -213,6 +266,8 @@ msgstr "အဖွဲ့/app ထည့်မည်"
 msgid "Add to existing notifications"
 msgstr "ရှိပြီးသား အကြောင်းကြားချက်များတွင် ထည့်မည်"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:519
 #: ../../../lib/web/src/components/view-tabs.tsx:87
 #: ../../../lib/web/src/components/view-tabs.tsx:93
 msgid "Add view"
@@ -260,6 +315,10 @@ msgstr "အားလုံး"
 msgid "Allow anyone to search for {0}"
 msgstr "မည်သူမဆို {0} ရှာဖွေခွင့်ပြုရန်"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:226
+msgid "Allow sort by"
+msgstr "စီစဉ်ခွင့်ပြုသည်"
+
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:178
 msgid "An error occurred"
 msgstr "အမှားတစ်ခု ဖြစ်ပွားခဲ့သည်"
@@ -290,6 +349,19 @@ msgstr "ချဉ်းကပ်မှုစွမ်းအား (ATC)"
 msgid "Approach, on-speed (Vapp)"
 msgstr "ချဉ်းကပ်ခြင်း၊ မှန်ကန်အမြန်နှုန်း (Vapp)"
 
+#. placeholder {0}: deleteTarget?.name
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:271
+msgid "Are you sure you want to delete \"{0}\"?"
+msgstr "\"{0}\" ကို ဖျက်မှာသေချာပါသလား?"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:643
+msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
+msgstr "\"{name}\" ကော်လံကို ဖျက်မှာသေချာပါသလား? ပြန်လည်ပြုပြင်၍မရပါ။"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:485
+msgid "Are you sure you want to delete this comment? This will also delete all replies."
+msgstr "ဤမှတ်ချက်ကို ဖျက်မှာသေချာပါသလား? ဤသည် အကြောင်းပြန်ချက်များအားလုံးကိုပါ ဖျက်မည်။"
+
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "log out လုပ်မှာသေချာပါသလား? သင့်အကောင့်ကို ပြန်ဝင်ရန် log in ပြန်လုပ်ရမည်။"
@@ -310,6 +382,16 @@ msgstr "ငယ်စဉ်ကြီးလိုက်"
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "ငယ်စဉ်ကြီးလိုက်"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:398
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:403
+msgid "Attach comment files"
+msgstr "မှတ်ချက်ဖိုင်များ ပူးတွဲမည်"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:439
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:444
+msgid "Attach reply files"
+msgstr "အကြောင်းပြန်ဖိုင်များ ပူးတွဲမည်"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
 #: ../../../lib/web/src/features/access/types.ts:41
@@ -383,10 +465,19 @@ msgstr "အကောင်းဆုံးစဉ်ဆက်ကွေ့ဝို
 msgid "BINGO FUEL"
 msgstr "လောင်စာ ဘင်ဂို"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:68
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:215
+msgid "Blocked by"
+msgstr "ပိတ်ဆို့သူ"
+
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:237
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:247
 msgid "Blocked navigation to untrusted link"
 msgstr "မယုံကြည်ရသော လင့်ခ်သို့ သွားရောက်ခြင်းကို ပိတ်ဆို့ထားသည်"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:66
+msgid "Blocks"
+msgstr "ပိတ်ဆို့မှုများ"
 
 #: src/components/Multiplayer.tsx:479
 msgid "Blue"
@@ -396,6 +487,10 @@ msgstr "အပြာ"
 msgid "Blue bots"
 msgstr "အပြာ ဘော့များ"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:318
+msgid "Board"
+msgstr "ဘုတ်"
+
 #: src/components/GameCanvas.tsx:61
 msgid "BOLTER"
 msgstr "BOLTER"
@@ -404,6 +499,10 @@ msgstr "BOLTER"
 #: ../../../lib/web/src/components/post-tags.tsx:192
 msgid "Boost interest"
 msgstr "စိတ်ဝင်စားမှု မြှင့်တင်မည်"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:405
+msgid "Border colour"
+msgstr "ဘောင်အရောင်"
 
 #: src/components/Multiplayer.tsx:373
 msgid "Bots"
@@ -446,6 +545,10 @@ msgstr "ခေါ်ဆိုအမည်"
 msgid "Camera distance"
 msgstr "ကင်မရာအကွာအဝေး"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:249
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
@@ -460,6 +563,16 @@ msgstr "ကင်မရာအကွာအဝေး"
 #: src/components/Multiplayer.tsx:456
 msgid "Cancel"
 msgstr "မလုပ်တော့ပါ"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:415
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:420
+msgid "Cancel comment"
+msgstr "မှတ်ချက် မလုပ်တော့ပါ"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:455
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:460
+msgid "Cancel reply"
+msgstr "အကြောင်းပြန်ချက် မလုပ်တော့ပါ"
 
 #: src/components/MissionSetup.tsx:189
 msgid "Canopy"
@@ -527,6 +640,14 @@ msgstr "ချိတ်ကုဒ်များ"
 msgid "Check \"All\" to see your past notifications."
 msgstr "ယခင်အကြောင်းကြားချက်များကြည့်ရန် \"အားလုံး\" ကိုရွေးပါ။"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
+msgid "Checkbox"
+msgstr "checkbox"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:138
+msgid "Checklist"
+msgstr "Checklist"
+
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:37
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "ဘေးဘားမှ ဂိမ်းတစ်ခုကို ရွေးချယ်ပါ သို့မဟုတ် အသစ်တစ်ခု စတင်ပါ။"
@@ -584,12 +705,21 @@ msgstr "ရွေးချယ်မှု ရှင်းမည်"
 msgid "Clear selection (Escape)"
 msgstr "ရွေးချယ်မှု ရှင်းမည် (Escape)"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:485
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:490
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "ပိတ်မည်"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:109
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:113
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:269
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:273
+msgid "Close dialog"
+msgstr "dialog ပိတ်မည်"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
@@ -628,6 +758,19 @@ msgstr "ခေါက်သိမ်းရန်"
 msgid "Collapse sidebar"
 msgstr "ဘေးဘား ခေါက်မည်"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:149
+msgid "Colour"
+msgstr "အရောင်"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:553
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:558
+msgid "Column actions"
+msgstr "ကော်လံ လုပ်ဆောင်ချက်များ"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Columns group by"
+msgstr "အုပ်စုဖွဲ့ရန် ကော်လံများ"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:96
 msgid "Comfortable"
 msgstr "အဆင်ပြေသည်"
@@ -644,6 +787,11 @@ msgstr "အမိန့်ပလိတ်"
 msgid "COMMENCING"
 msgstr "စတင်နေသည်"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:330
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:337
+msgid "Comment actions"
+msgstr "မှတ်ချက် လုပ်ဆောင်ချက်များ"
+
 #: src/components/MissionSetup.tsx:116
 msgid "Communication"
 msgstr "ဆက်သွယ်ရေး"
@@ -652,6 +800,14 @@ msgstr "ဆက်သွယ်ရေး"
 #: ../../../lib/web/src/lib/preference-utils.ts:95
 msgid "Compact"
 msgstr "ကျစ်လျစ်"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
+msgid "Configure option settings"
+msgstr "ရွေးချယ်စရာ ဆက်တင်များ ပြင်ဆင်ပါ"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:265
+msgid "Configure view settings"
+msgstr "ကြည့်ရှုမှု ဆက်တင်များ ပြင်ဆင်ပါ"
 
 #: ../../../lib/web/src/components/place-picker.tsx:160
 #: ../../../lib/web/src/components/travelling-picker.tsx:316
@@ -761,6 +917,14 @@ msgstr "တန်ပြန်နည်းလမ်းများ"
 msgid "CRASHED"
 msgstr "ပျက်ကျ"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:564
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:703
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:475
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:672
+msgid "Create"
+msgstr "ဖန်တီးမည်"
+
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
 msgid "Create {0}"
@@ -783,6 +947,12 @@ msgstr "မစ်ရှင်ဖန်တီး"
 msgid "Create new item"
 msgstr "အရာအသစ် ဖန်တီးမည်"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:56
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:498
+msgid "Created"
+msgstr "ဖန်တီးပြီး"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:258
 msgid "Creating..."
 msgstr "ဖန်တီးနေသည်..."
@@ -829,6 +999,7 @@ msgstr "အမှောင်ပုံစံ"
 msgid "Data conflict"
 msgstr "ဒေတာ ကွဲလွဲမှု"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
 #: src/components/MatchHistory.tsx:155
 msgid "Date"
 msgstr "ရက်စွဲ"
@@ -858,6 +1029,52 @@ msgstr "မူရင်း"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
 msgstr "မူရင်း AI အကောင့်"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:485
+msgid "Default sort"
+msgstr "မူရင်း sort"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:583
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:644
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:318
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:361
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:486
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:173
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:178
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:227
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:272
+msgid "Delete"
+msgstr "ဖျက်မည်"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:270
+msgid "Delete attachment"
+msgstr "ပူးတွဲဖိုင် ဖျက်မည်"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:642
+msgid "Delete column"
+msgstr "ကော်လံ ဖျက်မည်"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:484
+msgid "Delete comment"
+msgstr "မှတ်ချက် ဖျက်မည်"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:301
+msgid "Delete field"
+msgstr "field ဖျက်မည်"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:119
+msgid "Delete option"
+msgstr "ရွေးချယ်စရာ ဖျက်မည်"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:279
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:284
+msgid "Delete option {0}"
+msgstr "ရွေးချယ်စရာ {0} ဖျက်မည်"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:290
+msgid "Delete view"
+msgstr "ကြည့်ရှုမှု ဖျက်မည်"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:115
 msgid "Delete your account on the old server"
@@ -947,10 +1164,13 @@ msgstr "မိုဘိုင်း ဘေးဘားကို ပြသသည�
 msgid "Distance LOD"
 msgstr "အကွာအဝေး LOD"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:306
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
 #: src/components/MissionSetup.tsx:1729
 msgid "Done"
 msgstr "ပြီးပါပြီ"
 
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:214
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
@@ -968,6 +1188,10 @@ msgstr "ဆွဲ"
 msgid "Drone"
 msgstr "ဒရုန်း"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:67
+msgid "Duplicates"
+msgstr "ထပ်နေသော"
+
 #: src/components/MissionSetup.tsx:1416
 msgid "Dynamic resolution"
 msgstr "ပြောင်းလဲနိုင်သော ရက်ဆိုလူးရှင်း"
@@ -980,13 +1204,40 @@ msgstr "စာဖတ်ရခက်သူများအတွက်ရိုး
 msgid "EARLY"
 msgstr "စော"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:307
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:352
+msgid "Edit"
+msgstr "တည်းဖြတ်"
+
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "{label} ကို တည်းဖြတ်ပါ"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+msgid "Edit field"
+msgstr "အကွက် တည်းဖြတ်"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:139
+msgid "Edit field settings"
+msgstr "အကွက် ဆက်တင်များ တည်းဖြတ်"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+msgid "Edit option"
+msgstr "ရွေးချယ်မှု တည်းဖြတ်"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:264
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:269
+msgid "Edit option {0}"
+msgstr "ရွေးချယ်မှု {0} တည်းဖြတ်"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:31
 msgid "Edit selected card"
 msgstr "ရွေးချယ်ထားသော ကတ် တည်းဖြတ်"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+msgid "Edit view"
+msgstr "မြင်ကွင်း တည်းဖြတ်"
 
 #: src/components/MissionSetup.tsx:193
 msgid "Eject"
@@ -1085,9 +1336,22 @@ msgstr "တဂ် ထည့်၍ မရပါ"
 msgid "Failed to copy"
 msgstr "ကူးယူ၍ မရပါ"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:137
 #: ../../../lib/web/src/components/options-menu.tsx:99
 msgid "Failed to create link"
 msgstr "လင့် ဖန်တီး၍ မရပါ"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:110
+msgid "Failed to delete attachment"
+msgstr "တွဲဖက်ဖိုင် ဖျက်၍ မရပါ"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:207
+msgid "Failed to delete comment"
+msgstr "မှတ်ချက် ဖျက်၍ မရပါ"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:159
+msgid "Failed to delete link"
+msgstr "လင့် ဖျက်၍ မရပါ"
 
 #: ../../../lib/web/src/components/options-menu.tsx:123
 msgid "Failed to get RSS token"
@@ -1109,6 +1373,10 @@ msgstr "ပုံကို ဖွင့်၍မရပါ"
 msgid "Failed to load video"
 msgstr "ဗီဒီယိုကို ဖွင့်၍မရပါ"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:170
+msgid "Failed to post comment"
+msgstr "မှတ်ချက် တင်၍ မရပါ"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "အကောင့် ဖယ်ရှား၍ မရပါ"
@@ -1121,6 +1389,14 @@ msgstr "RSS အသုံးပြုခွင့် ရုပ်သိမ်း�
 msgid "Failed to send verification code"
 msgstr "အတည်ပြုကုဒ် ပို့၍ မရပါ"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:190
+msgid "Failed to update comment"
+msgstr "မှတ်ချက် ပြင်ဆင်၍ မရပါ"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:95
+msgid "Failed to upload attachment"
+msgstr "တွဲဖက်ဖိုင် တင်၍ မရပါ"
+
 #: src/components/GameCanvas.tsx:58
 msgid "FAIR"
 msgstr "အလယ်အလတ်"
@@ -1132,6 +1408,12 @@ msgstr "FCS"
 #: src/components/GameCanvas.tsx:31
 msgid "FIGHT'S ON"
 msgstr "တိုက်ပွဲ စတင်ပြီ"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:567
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:133
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:150
+msgid "Files"
+msgstr "ဖိုင်များ"
 
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:30
 msgid "Filter..."
@@ -1157,6 +1439,10 @@ msgstr "လက်နက် ပစ်ခတ်ရန်"
 #: src/components/MissionSetup.tsx:557
 msgid "Fixed keys"
 msgstr "ပုံသေခလုတ်များ"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:222
+msgid "Flags"
+msgstr "အလံများ"
 
 #: src/components/GameCanvas.tsx:37
 msgid "FLAMEOUT"
@@ -1308,6 +1594,10 @@ msgstr "ဂရပ်ဖစ်"
 msgid "Group"
 msgstr "အုပ်စု"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Group by"
+msgstr "အလိုက် အုပ်စုဖွဲ့ရန်"
+
 #. placeholder {0}: name || subject.slice(1)
 #: ../../../lib/web/src/features/access/access-list.tsx:68
 msgid "Group: {0}"
@@ -1366,6 +1656,10 @@ msgstr "HUD အမြင့် အရင်းအမြစ်"
 #: src/components/MissionSetup.tsx:197
 msgid "HUD declutter"
 msgstr "HUD ရိုးရှင်းစေခြင်း"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:153
+msgid "ID"
+msgstr ""
 
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
@@ -1526,6 +1820,7 @@ msgid "launch / target"
 msgstr "ပျံတက် / ပစ်မှတ်"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:287
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:312
 msgid "Layout"
 msgstr "အပြင်အဆင်"
 
@@ -1584,6 +1879,14 @@ msgstr "မီးများ"
 #: ../../../lib/web/src/components/options-menu.tsx:190
 msgid "Link"
 msgstr "လင့်ခ်"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:279
+msgid "Links"
+msgstr "လင့်များ"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:324
+msgid "List"
+msgstr "စာရင်း"
 
 #: src/components/MissionSetup.tsx:1210
 msgid "Load"
@@ -1674,6 +1977,10 @@ msgstr "အမျိုးအစားများ စီမံရန်"
 msgid "Manage your connected accounts for notifications and services."
 msgstr "အကြောင်းကြားချက်များနှင့် ဝန်ဆောင်မှုများအတွက် ချိတ်ဆက်ထားသော အကောင့်များကို စီမံပါ။"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
+msgid "Manual"
+msgstr "ကိုယ်တိုင်"
+
 #: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "မြေပုံ"
@@ -1699,6 +2006,10 @@ msgstr "ပွဲစဉ်အမျိုးအစား"
 #: src/components/MissionSetup.tsx:1136
 msgid "Matches"
 msgstr "ပွဲများ"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:199
+msgid "Maximum length"
+msgstr "အများဆုံး အရှည်"
 
 #: ../../../lib/web/src/features/accounts/types.ts:17
 msgid "MCP server"
@@ -1742,6 +2053,10 @@ msgstr "မက်ထရစ်"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway Atoll မြေပုံ — ရုပ်ပုံများတွင် ပြင်ဆင်ထားသော <0>Copernicus Sentinel-2</0> ဒေတာ (2026) ပါဝင်သည်။ လေယာဉ်ကွင်း ဂျီဩမေတြီ (ပြေးလမ်း၊ တက္ကစီလမ်း၊ ရပ်နားကွင်း) © <1>OpenStreetMap</1> ပံ့ပိုးသူများ၊ <2>ODbL</2> ဖြင့် လိုင်စင်ချထားသည်။ ကမ်းရိုးတန်းနှင့် ကျောက်တန်းဒေတာကို <3>NOAA NCCOS</3> မှ (အများပိုင်)။"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:188
+msgid "Minimum length"
+msgstr "အနည်းဆုံး အရှည်"
+
 #: src/components/GameCanvas.tsx:85
 msgid "MISSILE"
 msgstr "ဒုံးကျည်"
@@ -1783,6 +2098,14 @@ msgstr "ဝင်ရိုးကို ရွှေ့ပါ…"
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer အတွက် WebTransport လိုအပ်ပြီး ဤဘရောက်ဇာက ၎င်းကို မထောက်ပံ့သေးပါ။"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:143
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:128
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:299
+msgid "Name"
+msgstr "အမည်"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
 msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
 msgstr "အမည်တွင် ထောင့်ကွင်းများ၊ နောက်ပြန်မျဉ်းစောင်း၊ ဆီမီးကော်လံ၊ ကိုးကားမှတ်များ သို့မဟုတ် backtick များ မပါဝင်ရပါ"
@@ -1796,6 +2119,7 @@ msgstr "အမည်သည် စာလုံး ၁၀၀၀ သို့မဟ
 msgid "Network error"
 msgstr "ကွန်ရက် အမှား"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:460
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:43
 msgid "New"
 msgstr "အသစ်"
@@ -1815,9 +2139,21 @@ msgstr "နောက်ပုံ"
 msgid "Night"
 msgstr "ည"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:533
+msgid "No {parentClassNames} to add to"
+msgstr "ထည့်ရန် {parentClassNames} မရှိပါ"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:165
 msgid "No access rules configured. Add rules to control who can access this resource."
 msgstr "ဝင်ရောက်ခွင့်စည်းမျဉ်းများ မသတ်မှတ်ထားပါ။ ဤအရင်းအမြစ်ကို မည်သူဝင်နိုင်သည်ကို ထိန်းချုပ်ရန် စည်းမျဉ်းများ ထည့်ပါ။"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:65
+msgid "No activity yet"
+msgstr "လှုပ်ရှားမှုများ မရှိသေးပါ"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:450
+msgid "No comments yet"
+msgstr "comment များ မရှိသေးပါ"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:295
 msgid "No connected accounts"
@@ -1835,9 +2171,17 @@ msgstr "ဂိမ်းများ မရှိသေးပါ"
 msgid "No groups available"
 msgstr "အုပ်စုများ မရရှိနိုင်ပါ"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:500
+msgid "No item types can be created yet. Create the required parent items first."
+msgstr "item အမျိုးအစားအသစ်များ မဖန်တီးနိုင်သေးပါ။ လိုအပ်သော parent item များကို ဦးစွာဖန်တီးပါ။"
+
 #: src/components/MissionSetup.tsx:300
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "ဂျွိုက်စတစ် မတွေ့ပါ — နိုးရန် ၎င်းပေါ်ရှိ မည်သည့်ခလုတ်ကိုမဆို နှိပ်ပါ။"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:360
+msgid "No matching objects"
+msgstr "ကိုက်ညီသော object များ မရှိပါ"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "No notifications yet"
@@ -1870,6 +2214,12 @@ msgstr "ရလဒ်မတွေ့ပါ"
 msgid "No results found."
 msgstr "ရလဒ်များ မတွေ့ပါ။"
 
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:845
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:890
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:339
+msgid "No status"
+msgstr "အခြေအနေ မရှိ"
+
 #: ../../../lib/web/src/components/timezone-select.tsx:67
 msgid "No time zone found."
 msgstr "အချိန်ဇုန် မတွေ့ပါ။"
@@ -1886,6 +2236,10 @@ msgstr "ဖတ်မပြီးသေးသော အသိပေးချက�
 msgid "No users found"
 msgstr "သုံးစွဲသူများ မတွေ့ပါ"
 
+#: ../../../lib/web/src/components/entity/entity-design-preview.tsx:115
+msgid "No views"
+msgstr "view များ မရှိ"
+
 #: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:421
 msgid "No world server."
@@ -1896,6 +2250,16 @@ msgid "NO-GRADE"
 msgstr "အဆင့်မရှိ"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:349
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:516
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:519
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:365
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:391
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:418
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:421
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:497
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
@@ -1921,6 +2285,10 @@ msgstr "ရှာမတွေ့ပါ"
 msgid "Not set"
 msgstr "မသတ်မှတ်ထားပါ"
 
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:668
+msgid "Nothing found"
+msgstr "ဘာမှ မတွေ့ပါ"
+
 #: src/components/MissionSetup.tsx:965
 msgid "Nothing yet — say hello."
 msgstr "ဘာမှမရှိသေးပါ — နှုတ်ဆက်လိုက်ပါ။"
@@ -1943,6 +2311,12 @@ msgstr "အကြောင်းကြားချက်များ- {0}"
 #: src/components/Multiplayer.tsx:378
 msgid "Novice"
 msgstr "အစပြုသူ"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:140
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:54
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:499
+msgid "Number"
+msgstr "နံပါတ်"
 
 #: src/components/MissionSetup.tsx:1404
 msgid "Ocean detail"
@@ -2002,6 +2376,11 @@ msgstr "navigation ကို ဖွင့်"
 msgid "Open navigation menu"
 msgstr "navigation menu ကို ဖွင့်"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:108
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:114
+msgid "Open option actions"
+msgstr "ရွေးချယ်စရာ လုပ်ဆောင်ချက်များကို ဖွင့်"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "ရွေးချယ်ထားသော card ကို ဖွင့်"
@@ -2010,6 +2389,26 @@ msgstr "ရွေးချယ်ထားသော card ကို ဖွင့�
 #: ../../../lib/web/src/components/config-drawer.tsx:66
 msgid "Open theme settings"
 msgstr "theme ဆက်တင်များကို ဖွင့်"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:280
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:285
+msgid "Open view actions"
+msgstr "view လုပ်ဆောင်ချက်များကို ဖွင့်"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:150
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:156
+msgid "Open view controls"
+msgstr "view ထိန်းချုပ်မှုများကို ဖွင့်"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:200
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:158
+msgid "Option name"
+msgstr "ရွေးချယ်စရာ အမည်"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:241
+msgid "Options"
+msgstr "ရွေးချယ်စရာများ"
 
 #: src/components/GameCanvas.tsx:316
 msgid "or"
@@ -2037,6 +2436,10 @@ msgstr "ပိုင်ရှင်"
 msgid "Page {currentPage} of {totalPages}"
 msgstr "စာမျက်နှာ {currentPage} / {totalPages}"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:508
+msgid "Parent"
+msgstr "Parent"
+
 #: src/components/MissionSetup.tsx:172
 msgid "Parking brake"
 msgstr "ရပ်နားဘရိတ်"
@@ -2052,6 +2455,10 @@ msgstr "ပတ်စ်ကီးအတည်ပြုခြင်း မအေ�
 #: ../../../lib/web/src/components/restore-banner.tsx:152
 msgid "Passkeys"
 msgstr "Passkey များ"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:210
+msgid "Pattern (regex)"
+msgstr "ပုံစံ (regex)"
 
 #: ../../../lib/web/src/components/date-picker.tsx:20
 msgid "Pick a date"
@@ -2252,6 +2659,10 @@ msgstr "ပြန်စစ်ဆေး"
 msgid "REJOINING"
 msgstr "ပြန်လည်ပူးပေါင်းနေပြီ"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:65
+msgid "Relates"
+msgstr "ဆက်စပ်"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
 msgstr "ဆက်စပ် (5m, 3h, 2d)"
@@ -2261,6 +2672,8 @@ msgid "Relative within 24 hours, else absolute"
 msgstr "၂၄ နာရီအတွင်း ဆက်စပ်၊ ပြင်ပတွင် တိကျသော"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:236
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:598
 #: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
@@ -2295,9 +2708,41 @@ msgstr "စိတ်ဝင်စားမှု ဖယ်ရှား"
 msgid "Remove item"
 msgstr "item ဖယ်ရှား"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:304
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:309
+msgid "Remove link"
+msgstr "လင့်ခ် ဖယ်ရှားရန်"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:575
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:632
+msgid "Rename"
+msgstr "အမည်ပြောင်း"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:610
+msgid "Rename column"
+msgstr "ကော်လံ အမည်ပြောင်း"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:611
+msgid "Rename this board column"
+msgstr "ဤ board column ကို အမည်ပြောင်း"
+
 #: src/components/MissionSetup.tsx:873
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "ပုံဖော်တင်ဆက်မှုကို <0>three.js</0> ဖြင့် ဆောင်ရွက်သည် (MIT လိုင်စင်)။"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:294
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:342
+msgid "Reply"
+msgstr "ပြန်ကြား"
+
+#. placeholder {0}: comment.name || comment.author
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:385
+msgid "Reply to {0}..."
+msgstr "{0} သို့ ပြန်ကြား..."
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+msgid "Required"
+msgstr "လိုအပ်"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:367
 msgid "Resend email"
@@ -2383,6 +2828,15 @@ msgstr "ဘယ်သို့ ယိမ်းလဲ"
 msgid "Roll right"
 msgstr "ညာသို့ ယိမ်းလဲ"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:169
+msgid "Rows"
+msgstr "အတန်းများ"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:379
+msgid "Rows group by"
+msgstr "အတန်းများ စုစည်း"
+
 #: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "စာမျက်နှာတစ်ခုစီ၏ အတန်းများ"
@@ -2407,6 +2861,8 @@ msgstr "အားအပြည့်"
 msgid "Saturday"
 msgstr "စနေနေ့"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:269
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
@@ -2416,6 +2872,7 @@ msgstr "သိမ်းမည်"
 msgid "Sea level"
 msgstr "ပင်လယ်ရေမျက်နှာပြင်"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:177
 #: ../../../lib/web/src/components/filter-bar.tsx:32
 #: ../../../lib/web/src/components/header-search.tsx:22
 #: ../../../lib/web/src/components/search.tsx:18
@@ -2442,6 +2899,10 @@ msgstr "destination ရှာဖွေ..."
 msgid "Search for origin..."
 msgstr "Origin ရှာဖွေ..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:337
+msgid "Search objects..."
+msgstr "Object များ ရှာဖွေ..."
+
 #: ../../../lib/web/src/components/timezone-select.tsx:65
 msgid "Search time zone..."
 msgstr "အချိန်ဇုန် ရှာဖွေ..."
@@ -2450,6 +2911,12 @@ msgstr "အချိန်ဇုန် ရှာဖွေ..."
 msgid "Search users"
 msgstr "သုံးစွဲသူများ ရှာဖွေ"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:173
+msgid "Search, watch, and sort this view."
+msgstr "ဤ view ကို ရှာဖွေ၊ စောင့်ကြည့်ပြီး စီပါ။"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:181
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:257
 #: ../../../lib/web/src/components/person-picker.tsx:324
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
@@ -2462,10 +2929,18 @@ msgstr "ရှာဖွေ..."
 msgid "Searching..."
 msgstr "ရှာဖွေနေသည်..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
+msgid "Select"
+msgstr "ရွေးချယ်"
+
 #. placeholder {0}: item.label.toLowerCase()
 #: ../../../lib/web/src/components/config-drawer.tsx:149
 msgid "Select {0}"
 msgstr "{0} ရွေးပါ"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
+msgid "Select a field"
+msgstr "field တစ်ခုကို ရွေးချယ်ပါ"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:36
 msgid "Select a game"
@@ -2615,6 +3090,14 @@ msgstr "ဆက်တင်များ"
 msgid "Shadows"
 msgstr "အရိပ်များ"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:333
+msgid "Show classes"
+msgstr "Class များ ပြမည်"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:434
+msgid "Show fields"
+msgstr "ကွက်လပ်များ ပြမည်"
+
 #: ../../../lib/web/src/components/password-input.tsx:27
 msgid "Show password"
 msgstr "စကားဝှက်ကို ပြရန်"
@@ -2642,6 +3125,11 @@ msgstr "ထွက်ရန်"
 msgid "Signing out..."
 msgstr "ထွက်နေသည်..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:180
+msgid "Single line of text only"
+msgstr "စာသား တစ်ကြောင်းတည်းသာ"
+
 #: src/components/MissionSetup.tsx:700
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "အင်ဂျင်တစ်လုံး အကောင်းဆုံးတက်နှုန်း (Vyse, အက်ဖ်တာဘာနာ)"
@@ -2654,6 +3142,10 @@ msgstr "Main သို့ ကျော်မည်"
 #: ../../../lib/web/src/lib/preference-utils.ts:133
 msgid "Small"
 msgstr "သေး"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:199
+msgid "Sort"
+msgstr "စီမည်"
 
 #: src/components/MissionSetup.tsx:468
 #: src/components/MissionSetup.tsx:1677
@@ -2702,6 +3194,10 @@ msgstr "စတောလ်၊ ဆင်းသက်သည့်ပုံစံ (
 msgid "Start"
 msgstr "စတင်"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:451
+msgid "Start the discussion by adding the first comment."
+msgstr "ပထမမှတ်ချက် ထည့်၍ ဆွေးနွေးချက် စတင်ပါ။"
+
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "သို့သော် ဆက်လက်စောင့်ကြည့်ပါ။"
@@ -2721,6 +3217,16 @@ msgstr "ကိုယ်ထည်"
 #: ../../../lib/web/src/features/access/access-list.tsx:196
 msgid "Subject"
 msgstr "ခေါင်းစဉ်"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:431
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:440
+msgid "Submit comment"
+msgstr "မှတ်ချက် တင်ပြမည်"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:470
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:475
+msgid "Submit reply"
+msgstr "ပြန်ဖြေချက် တင်ပြမည်"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
@@ -2803,6 +3309,10 @@ msgstr "အဖွဲ့များ/Apps"
 #: ../../../lib/web/src/features/document/document-page.tsx:42
 msgid "Terms and conditions"
 msgstr "စည်းကမ်းချက်များ"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:142
+msgid "Text"
+msgstr "စာသား"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:195
 msgid "That code is incorrect or has expired."
@@ -2915,6 +3425,11 @@ msgstr "အပြင်အဆင် ဖွင့်/ပိတ်"
 msgid "Toggle view options"
 msgstr "ကြည့်ရှုရွေးချယ်စရာ ဖွင့်/ပိတ်"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:190
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:267
+msgid "Toggle watched filter"
+msgstr "ကြည့်ရှုနေသော filter ဖွင့်/ပိတ်"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:74
 msgid "Too many requests"
 msgstr "တောင်းဆိုမှု များလွန်းနေသည်"
@@ -2973,6 +3488,11 @@ msgstr "ပြန်ကြိုးစားပါ"
 #: ../../../lib/web/src/lib/preference-utils.ts:60
 msgid "Tuesday"
 msgstr "အင်္ဂါ"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:163
+msgid "Type"
+msgstr "အမျိုးအစား"
 
 #: ../../../lib/web/src/components/command-menu.tsx:52
 msgid "Type a command or search..."
@@ -3038,9 +3558,25 @@ msgstr "လောင်စာဆီ အကန့်အသတ်မရှိ"
 msgid "Unsubscribe"
 msgstr "Subscribe ဖြုတ်မည်"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:286
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:103
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:184
+msgid "Untitled"
+msgstr "ခေါင်းစဉ်မရှိ"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:135
 msgid "Unverified"
 msgstr "အတည်ပြုမထား"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:500
+msgid "Updated"
+msgstr "အပ်ဒိတ်လုပ်ပြီး"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:630
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:259
+msgid "Upload"
+msgstr "Upload လုပ်မည်"
 
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:34
 msgid "Upload progress"
@@ -3050,6 +3586,7 @@ msgstr "အပ်လုဒ်တိုးတက်မှု"
 msgid "Use your passkey"
 msgstr "သင့်ပတ်စ်ကီးကို သုံးပါ"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:143
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
@@ -3112,6 +3649,10 @@ msgstr "အားလုံး ကြည့်ရှုမည်"
 msgid "View all notifications"
 msgstr "အသိပေးချက်များ အားလုံး ကြည့်ရှုမည်"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:172
+msgid "View controls"
+msgstr "ထိန်းချုပ်မှုများ ကြည့်ရှုမည်"
+
 #: src/components/MissionSetup.tsx:564
 msgid "Views"
 msgstr "ကြည့်ရှုမှုများ"
@@ -3120,9 +3661,14 @@ msgstr "ကြည့်ရှုမှုများ"
 msgid "WAITING FOR OPPONENT"
 msgstr "ပြိုင်ဘက်ကို စောင့်နေသည်"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:271
 #: ../../../lib/web/src/components/filter-bar.tsx:35
 msgid "Watched"
 msgstr "ကြည့်ရှုထား"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:194
+msgid "Watched only"
+msgstr "ကြည့်ရှုထားသောသာ"
 
 #: src/components/GameCanvas.tsx:62
 msgid "WAVE OFF"

@@ -18,6 +18,22 @@ msgstr ""
 msgid "Please check your internet connection and try again."
 msgstr "تکایە پەیوەندی ئینتەرنێتەکەت بپشکنە و دووبارە هەوڵ بدەرەوە."
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:302
+msgid " or "
+msgstr " یان "
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:228
+msgid "(edited)"
+msgstr "(دەستکاریکراو)"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:212
+msgid "(expand)"
+msgstr "(فراوانکردن)"
+
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:774
+msgid "[not set]"
+msgstr "[دانەنراوە]"
+
 #. placeholder {0}: selectedValues.size
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
 msgid "{0, plural, one {# selected} other {# selected}}"
@@ -81,6 +97,10 @@ msgstr "{selectedCount, plural, one {کردارە کۆمەڵییەکان بۆ # 
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel} لە {totalLabel}"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:544
+msgid "{totalCount, plural, one {# item} other {# items}}"
+msgstr "{totalCount, plural, one {# بڕگە} other {# بڕگە}}"
+
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:165
 msgid "{unreadCount, plural, one {Open menu (# unread notification)} other {Open menu (# unread notifications)}}"
 msgstr "{unreadCount, plural, one {پێڕست بکەرەوە (# ئاگادارکردنەوەی نەخوێندراو)} other {پێڕست بکەرەوە (# ئاگادارکردنەوەی نەخوێندراو)}}"
@@ -89,6 +109,14 @@ msgstr "{unreadCount, plural, one {پێڕست بکەرەوە (# ئاگادارک
 #: ../../../lib/web/src/components/entity/entity-board-card.tsx:421
 msgid "+{0} nested"
 msgstr "+{0} ناوەکی"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:209
+msgid "+{totalDescendants} more replies"
+msgstr "+{totalDescendants} وەڵامی زیاتر"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:208
+msgid "1 reply"
+msgstr "١ وەڵام"
 
 #: src/components/GameCanvas.tsx:54
 msgid "1 WIRE"
@@ -171,9 +199,17 @@ msgstr "ئامانج دەستنیشان بکە"
 msgid "Add"
 msgstr "زیادکردن"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:360
+msgid "Add a comment..."
+msgstr "لێدوانێک زیاد بکە..."
+
 #: ../../../lib/web/src/features/accounts/account-add.tsx:133
 msgid "Add a new account"
 msgstr "هەژمارێکی نوێ زیاد بکە"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:106
+msgid "Add a new field to this class"
+msgstr "خانەیەکی نوێ بۆ ئەم پۆلە زیاد بکە"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:148
 msgid "Add access"
@@ -192,13 +228,30 @@ msgstr "هەژمارێک زیاد بکە بۆ وەرگرتنی ئاگادارک�
 msgid "Add checklist item"
 msgstr "زیادکردنی بڕگەی لیستی پشکنین"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:105
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:233
+msgid "Add field"
+msgstr "زیادکردنی خانە"
+
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:705
 msgid "Add item..."
 msgstr "بڕگە زیاد بکە..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
+msgid "Add link"
+msgstr "زیادکردنی بەستەر"
+
 #: ../../../lib/web/src/features/accounts/account-picker.tsx:102
 msgid "Add new account"
 msgstr "زیادکردنی هەژماری نوێ"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:292
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:194
+msgid "Add option"
+msgstr "زیادکردنی هەڵبژاردە"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
 #: ../../../lib/web/src/components/tag-input.tsx:40
@@ -213,6 +266,8 @@ msgstr "زیادکردنی تیم/ئەپ"
 msgid "Add to existing notifications"
 msgstr "زیادکردن بۆ ئاگادارکردنەوە هەبووەکان"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:519
 #: ../../../lib/web/src/components/view-tabs.tsx:87
 #: ../../../lib/web/src/components/view-tabs.tsx:93
 msgid "Add view"
@@ -260,6 +315,10 @@ msgstr "هەموو"
 msgid "Allow anyone to search for {0}"
 msgstr "ڕێگە بە هەموو کەسێک بدە بۆ گەڕان بەدوای {0}"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:226
+msgid "Allow sort by"
+msgstr "ڕێگە بدە بە ڕیزکردن بەپێی"
+
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:178
 msgid "An error occurred"
 msgstr "هەڵەیەک ڕوویدا"
@@ -290,6 +349,19 @@ msgstr "هێزی نزیکبوونەوە (ATC)"
 msgid "Approach, on-speed (Vapp)"
 msgstr "نزیکبوونەوە، لەسەر خێرایی دروست (Vapp)"
 
+#. placeholder {0}: deleteTarget?.name
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:271
+msgid "Are you sure you want to delete \"{0}\"?"
+msgstr "ئایا دڵنیایت لە سڕینەوەی \"{0}\"؟"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:643
+msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
+msgstr "ئایا دڵنیایت لە سڕینەوەی ستوونی \"{name}\"؟ ئەمە ناگەڕێتەوە."
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:485
+msgid "Are you sure you want to delete this comment? This will also delete all replies."
+msgstr "ئایا دڵنیایت لە سڕینەوەی ئەم لێدوانە؟ ئەمە هەروەها هەموو وەڵامەکانیش دەسڕێتەوە."
+
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "ئایا دڵنیایت لە چوونە دەرەوە؟ پێویستە دیسان بچیتە ژوورەوە بۆ گەیشتن بە هەژمارەکەت."
@@ -310,6 +382,16 @@ msgstr "سەرەوە"
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "سەرکەوتوو"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:398
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:403
+msgid "Attach comment files"
+msgstr "هاوپێچکردنی پەڕگەی لێدوان"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:439
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:444
+msgid "Attach reply files"
+msgstr "هاوپێچکردنی پەڕگەی وەڵام"
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
 #: ../../../lib/web/src/features/access/types.ts:41
@@ -383,10 +465,19 @@ msgstr "باشترین خێرایی سووڕانەوەی بەردەوام"
 msgid "BINGO FUEL"
 msgstr "بینگۆ سووتەمەنی"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:68
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:215
+msgid "Blocked by"
+msgstr "بلۆککرا لەلایەن"
+
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:237
 #: ../../../lib/web/src/components/layout/notification-menu.tsx:247
 msgid "Blocked navigation to untrusted link"
 msgstr "ڕێگەنەدرا بە چوون بۆ بەستەری نامتمانە"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:66
+msgid "Blocks"
+msgstr "بلۆکەکان"
 
 #: src/components/Multiplayer.tsx:479
 msgid "Blue"
@@ -396,6 +487,10 @@ msgstr "شین"
 msgid "Blue bots"
 msgstr "بۆتە شینەکان"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:318
+msgid "Board"
+msgstr "تەختە"
+
 #: src/components/GameCanvas.tsx:61
 msgid "BOLTER"
 msgstr "بۆڵتەر"
@@ -404,6 +499,10 @@ msgstr "بۆڵتەر"
 #: ../../../lib/web/src/components/post-tags.tsx:192
 msgid "Boost interest"
 msgstr "بەهێزکردنی بایەخ"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:405
+msgid "Border colour"
+msgstr "ڕەنگی سنوور"
 
 #: src/components/Multiplayer.tsx:373
 msgid "Bots"
@@ -446,6 +545,10 @@ msgstr "ناوی بانگکردن"
 msgid "Camera distance"
 msgstr "دووری کامێرا"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:249
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
 #: ../../../lib/web/src/components/step-up-dialog.tsx:363
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
@@ -460,6 +563,16 @@ msgstr "دووری کامێرا"
 #: src/components/Multiplayer.tsx:456
 msgid "Cancel"
 msgstr "هەڵوەشاندنەوە"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:415
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:420
+msgid "Cancel comment"
+msgstr "هەڵوەشاندنەوەی لێدوان"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:455
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:460
+msgid "Cancel reply"
+msgstr "هەڵوەشاندنەوەی وەڵام"
 
 #: src/components/MissionSetup.tsx:189
 msgid "Canopy"
@@ -527,6 +640,14 @@ msgstr "چیتەکان"
 msgid "Check \"All\" to see your past notifications."
 msgstr "\"هەموو\" هەڵبژێرە بۆ بینینی ئاگادارکردنەوە پێشووەکانت."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
+msgid "Checkbox"
+msgstr "بۆکسی پشکنین"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:138
+msgid "Checklist"
+msgstr "لیستی پشکنین"
+
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:37
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "یارییەک هەڵبژێرە لە لاتەنیشت یان نوێیەک دەست پێ بکە."
@@ -584,12 +705,21 @@ msgstr "پاککردنەوەی هەڵبژاردە"
 msgid "Clear selection (Escape)"
 msgstr "پاککردنەوەی هەڵبژاردە (Escape)"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:485
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:490
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "داخستن"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:109
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:113
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:269
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:273
+msgid "Close dialog"
+msgstr "داخستنی دیالۆگ"
 
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:108
 #: ../../../lib/web/src/components/layout/app-sidebar.tsx:113
@@ -628,6 +758,19 @@ msgstr "داپۆشین"
 msgid "Collapse sidebar"
 msgstr "نوقاندنی لاتەنیشت"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:149
+msgid "Colour"
+msgstr "ڕەنگ"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:553
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:558
+msgid "Column actions"
+msgstr "کردارەکانی ستوون"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Columns group by"
+msgstr "ستوونەکان کۆکراونەتەوە بەپێی"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:96
 msgid "Comfortable"
 msgstr "ئاسوودە"
@@ -644,6 +787,11 @@ msgstr "پەلەتی فەرمان"
 msgid "COMMENCING"
 msgstr "دەستپێدەکەم"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:330
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:337
+msgid "Comment actions"
+msgstr "کردارەکانی سەرنج"
+
 #: src/components/MissionSetup.tsx:116
 msgid "Communication"
 msgstr "پەیوەندی"
@@ -652,6 +800,14 @@ msgstr "پەیوەندی"
 #: ../../../lib/web/src/lib/preference-utils.ts:95
 msgid "Compact"
 msgstr "بچووککراوە"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
+msgid "Configure option settings"
+msgstr "ڕێکخستنی هەڵبژاردە ڕێک بخە"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:265
+msgid "Configure view settings"
+msgstr "ڕێکخستنی ڕوانگە ڕێک بخە"
 
 #: ../../../lib/web/src/components/place-picker.tsx:160
 #: ../../../lib/web/src/components/travelling-picker.tsx:316
@@ -761,6 +917,14 @@ msgstr "ڕێوشوێنی دژە"
 msgid "CRASHED"
 msgstr "تێکشکا"
 
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:564
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:703
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:475
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:672
+msgid "Create"
+msgstr "دروستکردن"
+
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:144
 msgid "Create {0}"
@@ -783,6 +947,12 @@ msgstr "دروستکردنی ئەرک"
 msgid "Create new item"
 msgstr "دروستکردنی بڕگەی نوێ"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:56
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:498
+msgid "Created"
+msgstr "دروستکرا"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:647
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:258
 msgid "Creating..."
 msgstr "دروستکردن..."
@@ -829,6 +999,7 @@ msgstr "دۆخی تاریک"
 msgid "Data conflict"
 msgstr "ناکۆکی داتا"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
 #: src/components/MatchHistory.tsx:155
 msgid "Date"
 msgstr "بەروار"
@@ -858,6 +1029,52 @@ msgstr "بنەڕەت"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
 msgstr "هەژماری بنەڕەتی AI"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:485
+msgid "Default sort"
+msgstr "ڕیزکردنی بنەڕەت"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:583
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:644
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:318
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:361
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:486
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:173
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:178
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:227
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:272
+msgid "Delete"
+msgstr "سڕینەوە"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:270
+msgid "Delete attachment"
+msgstr "سڕینەوەی هاوپێچ"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:642
+msgid "Delete column"
+msgstr "سڕینەوەی ستوون"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:484
+msgid "Delete comment"
+msgstr "سڕینەوەی لێدوان"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:301
+msgid "Delete field"
+msgstr "سڕینەوەی خانە"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:119
+msgid "Delete option"
+msgstr "سڕینەوەی هەڵبژاردە"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:279
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:284
+msgid "Delete option {0}"
+msgstr "سڕینەوەی هەڵبژاردەی {0}"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:290
+msgid "Delete view"
+msgstr "سڕینەوەی ڕوانگە"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:115
 msgid "Delete your account on the old server"
@@ -947,10 +1164,13 @@ msgstr "لاتەنیشتی مۆبایل پیشان دەدات."
 msgid "Distance LOD"
 msgstr "LODی دووری"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:306
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
 #: src/components/MissionSetup.tsx:1729
 msgid "Done"
 msgstr "تەواوبوو"
 
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:214
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
 msgid "Download"
@@ -968,6 +1188,10 @@ msgstr "ڕاکێشان"
 msgid "Drone"
 msgstr "درۆن"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:67
+msgid "Duplicates"
+msgstr "دووبارەکان"
+
 #: src/components/MissionSetup.tsx:1416
 msgid "Dynamic resolution"
 msgstr "ڕەزۆلیوشنی گۆڕاو"
@@ -980,13 +1204,40 @@ msgstr "لەگەڵ دیسلێکسیا گونجاو"
 msgid "EARLY"
 msgstr "زوو"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:307
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:352
+msgid "Edit"
+msgstr "دەستکاری"
+
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "دەستکاری {label}"
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+msgid "Edit field"
+msgstr "دەستکاری خانە"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:139
+msgid "Edit field settings"
+msgstr "دەستکاری ڕێکخستنەکانی خانە"
+
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
+msgid "Edit option"
+msgstr "دەستکاری بژاردە"
+
+#. placeholder {0}: opt.name
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:264
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:269
+msgid "Edit option {0}"
+msgstr "دەستکاری بژاردە {0}"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:31
 msgid "Edit selected card"
 msgstr "دەستکاری کارتی هەڵبژێردراو"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:264
+msgid "Edit view"
+msgstr "دەستکاری بینین"
 
 #: src/components/MissionSetup.tsx:193
 msgid "Eject"
@@ -1085,9 +1336,22 @@ msgstr "زیادکردنی تاگ سەرکەوتوو نەبوو"
 msgid "Failed to copy"
 msgstr "لەبەرگیرایەوە سەرکەوتوو نەبوو"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:137
 #: ../../../lib/web/src/components/options-menu.tsx:99
 msgid "Failed to create link"
 msgstr "دروستکردنی بەستەر سەرکەوتوو نەبوو"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:110
+msgid "Failed to delete attachment"
+msgstr "سڕینەوەی هاوپێچ سەرکەوتوو نەبوو"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:207
+msgid "Failed to delete comment"
+msgstr "سڕینەوەی بۆچوون سەرکەوتوو نەبوو"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:159
+msgid "Failed to delete link"
+msgstr "سڕینەوەی بەستەر سەرکەوتوو نەبوو"
 
 #: ../../../lib/web/src/components/options-menu.tsx:123
 msgid "Failed to get RSS token"
@@ -1109,6 +1373,10 @@ msgstr "وێنەکە بار نەکرا"
 msgid "Failed to load video"
 msgstr "ڤیدیۆکە بار نەکرا"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:170
+msgid "Failed to post comment"
+msgstr "ناردنی بۆچوون سەرکەوتوو نەبوو"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:234
 msgid "Failed to remove account"
 msgstr "لابردنی هەژمار سەرکەوتوو نەبوو"
@@ -1121,6 +1389,14 @@ msgstr "ڕەتکردنەوەی دەستپێگەیشتنی RSS سەرکەوتوو
 msgid "Failed to send verification code"
 msgstr "ناردنی کۆدی پشتڕاستکردنەوە سەرکەوتوو نەبوو"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:190
+msgid "Failed to update comment"
+msgstr "نوێکردنەوەی بۆچوون سەرکەوتوو نەبوو"
+
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:95
+msgid "Failed to upload attachment"
+msgstr "بارکردنی هاوپێچ سەرکەوتوو نەبوو"
+
 #: src/components/GameCanvas.tsx:58
 msgid "FAIR"
 msgstr "مامناوەند"
@@ -1132,6 +1408,12 @@ msgstr "FCS"
 #: src/components/GameCanvas.tsx:31
 msgid "FIGHT'S ON"
 msgstr "شەڕ دەستی پێکرد"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:567
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:133
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:150
+msgid "Files"
+msgstr "فایلەکان"
 
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:30
 msgid "Filter..."
@@ -1157,6 +1439,10 @@ msgstr "چەک بتەقێنە"
 #: src/components/MissionSetup.tsx:557
 msgid "Fixed keys"
 msgstr "کلیلە جێگیرەکان"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:222
+msgid "Flags"
+msgstr "ئاڵاکان"
 
 #: src/components/GameCanvas.tsx:37
 msgid "FLAMEOUT"
@@ -1308,6 +1594,10 @@ msgstr "گرافیک"
 msgid "Group"
 msgstr "گرووپ"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:353
+msgid "Group by"
+msgstr "گرووپکردن بەپێی"
+
 #. placeholder {0}: name || subject.slice(1)
 #: ../../../lib/web/src/features/access/access-list.tsx:68
 msgid "Group: {0}"
@@ -1366,6 +1656,10 @@ msgstr "سەرچاوەی بەرزی HUD"
 #: src/components/MissionSetup.tsx:197
 msgid "HUD declutter"
 msgstr "سادەکردنەوەی HUD"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:153
+msgid "ID"
+msgstr ""
 
 #. placeholder {0}: currentMedia.name
 #: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
@@ -1526,6 +1820,7 @@ msgid "launch / target"
 msgstr "هاویشتن / ئامانج"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:287
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:312
 msgid "Layout"
 msgstr "ڕێکخستن"
 
@@ -1584,6 +1879,14 @@ msgstr "چراکان"
 #: ../../../lib/web/src/components/options-menu.tsx:190
 msgid "Link"
 msgstr "بەستەر"
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:279
+msgid "Links"
+msgstr "بەستەرەکان"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:324
+msgid "List"
+msgstr "لیست"
 
 #: src/components/MissionSetup.tsx:1210
 msgid "Load"
@@ -1674,6 +1977,10 @@ msgstr "بەڕێوەبردنی هاوپۆلەکان"
 msgid "Manage your connected accounts for notifications and services."
 msgstr "هەژمارە بەستراوەکانت بۆ ئاگادارکردنەوە و خزمەتگوزارییەکان بەڕێوە ببە."
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
+msgid "Manual"
+msgstr "دەستی"
+
 #: src/components/GameCanvas.tsx:310
 msgid "map"
 msgstr "نەخشە"
@@ -1699,6 +2006,10 @@ msgstr "جۆری یاری"
 #: src/components/MissionSetup.tsx:1136
 msgid "Matches"
 msgstr "یارییەکان"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:199
+msgid "Maximum length"
+msgstr "زۆرترین درێژی"
 
 #: ../../../lib/web/src/features/accounts/types.ts:17
 msgid "MCP server"
@@ -1742,6 +2053,10 @@ msgstr "مەتری"
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "نەخشەی ئەتۆڵی میدوەی — وێنەکان داتای دەستکاریکراوی <0>Copernicus Sentinel-2</0> لەخۆدەگرن (2026)؛ جیۆمەتری فڕۆکەخانە (باندی فڕین، ڕێگا تاکسییەکان، شوێنەکانی وەستان) © بەشداربووانی <1>OpenStreetMap</1>، مۆڵەتپێدراو بەپێی <2>ODbL</2>؛ داتای کەناری دەریا و ڕیف لە <3>NOAA NCCOS</3> (خاوەندارێتی گشتی)."
 
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:188
+msgid "Minimum length"
+msgstr "کەمترین درێژی"
+
 #: src/components/GameCanvas.tsx:85
 msgid "MISSILE"
 msgstr "مووشەک"
@@ -1783,6 +2098,14 @@ msgstr "تەوەرەکە بجوڵێنە…"
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "فرە یاریزان پێویستی بە WebTransport هەیە، کە ئەم وێبگەڕە هێشتا پشتگیریی ناکات."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:143
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:128
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:299
+msgid "Name"
+msgstr "ناو"
+
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:102
 msgid "Name cannot contain angle brackets, backslash, semicolon, quotes or backticks"
 msgstr "ناو ناتوانێت کەوانەی گۆشەیی، سلاشی پێچەوانە، خاڵ و کۆما، دوانە یان بەکتیک لەخۆ بگرێت"
@@ -1796,6 +2119,7 @@ msgstr "ناو دەبێت ١٠٠٠ نووسە یان کەمتر بێت"
 msgid "Network error"
 msgstr "هەڵەی تۆڕ"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:460
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:43
 msgid "New"
 msgstr "نوێ"
@@ -1815,9 +2139,21 @@ msgstr "وێنەی دواتر"
 msgid "Night"
 msgstr "شەو"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:533
+msgid "No {parentClassNames} to add to"
+msgstr "هیچ {parentClassNames} نییە بۆ زیادکردن بۆی"
+
 #: ../../../lib/web/src/features/access/access-list.tsx:165
 msgid "No access rules configured. Add rules to control who can access this resource."
 msgstr "هیچ ڕێسایەکی دەستڕاگەیشتن ڕێکنەخراوە. ڕێسا زیاد بکە بۆ کۆنترۆڵکردنی ئەوەی کێ دەتوانێت دەستی بەم سەرچاوەیە بگات."
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx:65
+msgid "No activity yet"
+msgstr "هێشتا هیچ چالاکییەک نییە"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:450
+msgid "No comments yet"
+msgstr "هێشتا هیچ بۆچوونێک نییە"
 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:295
 msgid "No connected accounts"
@@ -1835,9 +2171,17 @@ msgstr "هێشتا هیچ یارییەک نییە"
 msgid "No groups available"
 msgstr "هیچ گرووپێک بەردەست نییە"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:500
+msgid "No item types can be created yet. Create the required parent items first."
+msgstr "هێشتا هیچ جۆرە بڕگەیەک ناتوانرێت دروست بکرێت. سەرەتا بڕگە باوانە پێویستەکان دروست بکە."
+
 #: src/components/MissionSetup.tsx:300
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "هیچ جۆیستیکێک نەدۆزرایەوە — بۆ خەبەرکردنەوەی هەر دوگمەیەکی لێبدە."
+
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:360
+msgid "No matching objects"
+msgstr "هیچ تەنێکی هاوسەنگ نییە"
 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:193
 msgid "No notifications yet"
@@ -1870,6 +2214,12 @@ msgstr "هیچ ئەنجامێک نەدۆزرایەوە"
 msgid "No results found."
 msgstr "هیچ ئەنجامێک نەدۆزرایەوە."
 
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:845
+#: ../../../lib/web/src/components/entity/entity-board-container.tsx:890
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:339
+msgid "No status"
+msgstr "هیچ دۆخێک نییە"
+
 #: ../../../lib/web/src/components/timezone-select.tsx:67
 msgid "No time zone found."
 msgstr "هیچ کاتزۆنێک نەدۆزرایەوە."
@@ -1886,6 +2236,10 @@ msgstr "هیچ ئاگادارکردنەوەیەکی نەخوێندراوە نی�
 msgid "No users found"
 msgstr "هیچ بەکارهێنەرێک نەدۆزرایەوە"
 
+#: ../../../lib/web/src/components/entity/entity-design-preview.tsx:115
+msgid "No views"
+msgstr "هیچ بینینێک نییە"
+
 #: src/components/MissionSetup.tsx:965
 #: src/components/Multiplayer.tsx:421
 msgid "No world server."
@@ -1896,6 +2250,16 @@ msgid "NO-GRADE"
 msgstr "بێ نمرە"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:349
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:516
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:519
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:523
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:365
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:388
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:391
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:418
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:421
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:497
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
@@ -1921,6 +2285,10 @@ msgstr "نەدۆزرایەوە"
 msgid "Not set"
 msgstr "دانەنراوە"
 
+#: ../../../lib/web/src/components/entity/entity-tree-view.tsx:668
+msgid "Nothing found"
+msgstr "هیچ نەدۆزرایەوە"
+
 #: src/components/MissionSetup.tsx:965
 msgid "Nothing yet — say hello."
 msgstr "هێشتا هیچ نییە — سڵاو بکە."
@@ -1943,6 +2311,12 @@ msgstr "ئاگادارکردنەوەکان: {0}"
 #: src/components/Multiplayer.tsx:378
 msgid "Novice"
 msgstr "دەستپێکەر"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:140
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:54
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:499
+msgid "Number"
+msgstr "ژمارە"
 
 #: src/components/MissionSetup.tsx:1404
 msgid "Ocean detail"
@@ -2002,6 +2376,11 @@ msgstr "کردنەوەی ڕێدۆزی"
 msgid "Open navigation menu"
 msgstr "کردنەوەی لیستی ڕێدۆزی"
 
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:108
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:114
+msgid "Open option actions"
+msgstr "کردنەوەی کردارەکانی هەڵبژاردە"
+
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "کردنەوەی کارتی هەڵبژێردراو"
@@ -2010,6 +2389,26 @@ msgstr "کردنەوەی کارتی هەڵبژێردراو"
 #: ../../../lib/web/src/components/config-drawer.tsx:66
 msgid "Open theme settings"
 msgstr "کردنەوەی ڕێکخستنەکانی ڕووکار"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:280
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:285
+msgid "Open view actions"
+msgstr "کردنەوەی کردارەکانی بینین"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:150
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:156
+msgid "Open view controls"
+msgstr "کردنەوەی کۆنترۆڵەکانی بینین"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:200
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:158
+msgid "Option name"
+msgstr "ناوی هەڵبژاردە"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:241
+msgid "Options"
+msgstr "هەڵبژاردەکان"
 
 #: src/components/GameCanvas.tsx:316
 msgid "or"
@@ -2037,6 +2436,10 @@ msgstr "خاوەن"
 msgid "Page {currentPage} of {totalPages}"
 msgstr "پەڕەی {currentPage} لە {totalPages}"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:508
+msgid "Parent"
+msgstr "باوان"
+
 #: src/components/MissionSetup.tsx:172
 msgid "Parking brake"
 msgstr "هێنەری وەستان"
@@ -2052,6 +2455,10 @@ msgstr "پشتڕاستکردنەوەی کلیلی تێپەڕبوون سەرکە�
 #: ../../../lib/web/src/components/restore-banner.tsx:152
 msgid "Passkeys"
 msgstr "پاسکییەکان"
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:210
+msgid "Pattern (regex)"
+msgstr "نموونە (regex)"
 
 #: ../../../lib/web/src/components/date-picker.tsx:20
 msgid "Pick a date"
@@ -2252,6 +2659,10 @@ msgstr "نوێکردنەوە"
 msgid "REJOINING"
 msgstr "بۆ ڕیز دەگەڕێمەوە"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:65
+msgid "Relates"
+msgstr "پەیوەندیدارە"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:50
 msgid "Relative (5m, 3h, 2d)"
 msgstr "ڕێژەیی (٥خ، ٣ک، ٢ڕ)"
@@ -2261,6 +2672,8 @@ msgid "Relative within 24 hours, else absolute"
 msgstr "ڕێژەیی لە ماوەی ٢٤ کاتژمێر، ئەگەرنا تەواو"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:236
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:598
 #: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
@@ -2295,9 +2708,41 @@ msgstr "لابردنی بەرژەوەندی"
 msgid "Remove item"
 msgstr "لابردنی بڕگە"
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:304
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:309
+msgid "Remove link"
+msgstr "بەستەر بسڕەوە"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:575
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:632
+msgid "Rename"
+msgstr "ناوگۆڕکردن"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:610
+msgid "Rename column"
+msgstr "ناوگۆڕکردنی ستوون"
+
+#: ../../../lib/web/src/components/entity/entity-board-column.tsx:611
+msgid "Rename this board column"
+msgstr "ناوگۆڕکردنی ئەم ستوونەی تەختە"
+
 #: src/components/MissionSetup.tsx:873
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "ڕێندەرکردن بە <0>three.js</0> ئەنجام دەدرێت (مۆڵەتی MIT)."
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:294
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:342
+msgid "Reply"
+msgstr "وەڵام"
+
+#. placeholder {0}: comment.name || comment.author
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:385
+msgid "Reply to {0}..."
+msgstr "وەڵامدانەوەی {0}..."
+
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+msgid "Required"
+msgstr "پێویست"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:367
 msgid "Resend email"
@@ -2383,6 +2828,15 @@ msgstr "لاردان بۆ چەپ"
 msgid "Roll right"
 msgstr "لاردان بۆ ڕاست"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:169
+msgid "Rows"
+msgstr "ڕیزەکان"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:379
+msgid "Rows group by"
+msgstr "ڕیزەکان گرووپ بکە بە"
+
 #: ../../../lib/web/src/components/data-table/pagination.tsx:65
 msgid "Rows per page"
 msgstr "ڕیزەکان بۆ هەر پەڕەیەک"
@@ -2407,6 +2861,8 @@ msgstr "هێزی تەواو"
 msgid "Saturday"
 msgstr "شەممە"
 
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:269
+#: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
 #: ../../../lib/web/src/components/ui/secret-field.tsx:77
 msgid "Save"
@@ -2416,6 +2872,7 @@ msgstr "پاشەکەوتکردن"
 msgid "Sea level"
 msgstr "ئاستی دەریا"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:177
 #: ../../../lib/web/src/components/filter-bar.tsx:32
 #: ../../../lib/web/src/components/header-search.tsx:22
 #: ../../../lib/web/src/components/search.tsx:18
@@ -2442,6 +2899,10 @@ msgstr "گەڕان بۆ گەیشتنگا..."
 msgid "Search for origin..."
 msgstr "گەڕان بۆ سەرچاوە..."
 
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:337
+msgid "Search objects..."
+msgstr "گەڕانی تەنەکان..."
+
 #: ../../../lib/web/src/components/timezone-select.tsx:65
 msgid "Search time zone..."
 msgstr "گەڕانی کاتزۆن..."
@@ -2450,6 +2911,12 @@ msgstr "گەڕانی کاتزۆن..."
 msgid "Search users"
 msgstr "گەڕانی بەکارهێنەران"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:173
+msgid "Search, watch, and sort this view."
+msgstr "گەڕان، چاودێری و ڕیزکردنی ئەم بینینە."
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:181
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:257
 #: ../../../lib/web/src/components/person-picker.tsx:324
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
@@ -2462,10 +2929,18 @@ msgstr "گەڕان..."
 msgid "Searching..."
 msgstr "گەڕان..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
+msgid "Select"
+msgstr "هەڵبژاردن"
+
 #. placeholder {0}: item.label.toLowerCase()
 #: ../../../lib/web/src/components/config-drawer.tsx:149
 msgid "Select {0}"
 msgstr "{0} هەڵبژێرە"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:362
+msgid "Select a field"
+msgstr "خانەیەک هەڵبژێرە"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:36
 msgid "Select a game"
@@ -2615,6 +3090,14 @@ msgstr "ڕێکخستنەکان"
 msgid "Shadows"
 msgstr "سێبەرەکان"
 
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:333
+msgid "Show classes"
+msgstr "پۆلەکان پیشانبدە"
+
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:434
+msgid "Show fields"
+msgstr "خانەکان پیشانبدە"
+
 #: ../../../lib/web/src/components/password-input.tsx:27
 msgid "Show password"
 msgstr "پیشاندانی وشەی نهێنی"
@@ -2642,6 +3125,11 @@ msgstr "چوونەدەرەوە"
 msgid "Signing out..."
 msgstr "چوونە دەرەوە..."
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:180
+msgid "Single line of text only"
+msgstr "تەنها یەک ڕیز دەق"
+
 #: src/components/MissionSetup.tsx:700
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "باشترین بەرزبوونەوە بە یەک بزوێنەر (Vyse, ئەفتەربەرنەر)"
@@ -2654,6 +3142,10 @@ msgstr "بازدان بۆ سەرەکی"
 #: ../../../lib/web/src/lib/preference-utils.ts:133
 msgid "Small"
 msgstr "بچووک"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:199
+msgid "Sort"
+msgstr "ڕیزکردن"
 
 #: src/components/MissionSetup.tsx:468
 #: src/components/MissionSetup.tsx:1677
@@ -2702,6 +3194,10 @@ msgstr "ستۆڵ، دۆخی نیشتنەوە (Vs0)"
 msgid "Start"
 msgstr "دەستپێکردن"
 
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:451
+msgid "Start the discussion by adding the first comment."
+msgstr "بە زیادکردنی یەکەم لێدوان گفتوگۆ دەستپێبکە."
+
 #: ../../../lib/web/src/components/coming-soon.tsx:15
 msgid "Stay tuned though!"
 msgstr "لەگەڵمان بمێنەوە!"
@@ -2721,6 +3217,16 @@ msgstr "پێکهاتە"
 #: ../../../lib/web/src/features/access/access-list.tsx:196
 msgid "Subject"
 msgstr "بابەت"
+
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:431
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:440
+msgid "Submit comment"
+msgstr "لێدوان بنێرە"
+
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:470
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:475
+msgid "Submit reply"
+msgstr "وەڵام بنێرە"
 
 #: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
@@ -2803,6 +3309,10 @@ msgstr "تیمەکان/ئەپەکان"
 #: ../../../lib/web/src/features/document/document-page.tsx:42
 msgid "Terms and conditions"
 msgstr "مەرج و یاساکان"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:142
+msgid "Text"
+msgstr "دەق"
 
 #: ../../../lib/web/src/components/step-up-dialog.tsx:195
 msgid "That code is incorrect or has expired."
@@ -2915,6 +3425,11 @@ msgstr "گۆڕینی ڕووکار"
 msgid "Toggle view options"
 msgstr "گۆڕینی بژاردەکانی پیشاندان"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:190
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:267
+msgid "Toggle watched filter"
+msgstr "گۆڕینی پاڵێوی چاودێریکراو"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx:74
 msgid "Too many requests"
 msgstr "داواکاری زۆر زیاد"
@@ -2973,6 +3488,11 @@ msgstr "دیسان هەوڵبدە"
 #: ../../../lib/web/src/lib/preference-utils.ts:60
 msgid "Tuesday"
 msgstr "سێشەممە"
+
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:163
+msgid "Type"
+msgstr "جۆر"
 
 #: ../../../lib/web/src/components/command-menu.tsx:52
 msgid "Type a command or search..."
@@ -3038,9 +3558,25 @@ msgstr "سووتەمەنی بێسنوور"
 msgid "Unsubscribe"
 msgstr "بەشداری هەڵبوەشێنەوە"
 
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:286
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:103
+#: ../../../lib/web/src/components/entity/entity-object-links.tsx:184
+msgid "Untitled"
+msgstr "بێ ناونیشان"
+
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:135
 msgid "Unverified"
 msgstr "پشتڕاستنەکراوەتەوە"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
+#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:500
+msgid "Updated"
+msgstr "نوێکرایەوە"
+
+#: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:630
+#: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:259
+msgid "Upload"
+msgstr "بارکردن"
 
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:34
 msgid "Upload progress"
@@ -3050,6 +3586,7 @@ msgstr "پێشکەوتنی بارکردن"
 msgid "Use your passkey"
 msgstr "کلیلی تێپەڕبوونەکەت بەکاربهێنە"
 
+#: ../../../lib/web/src/components/entity/add-field-dialog.tsx:143
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/features/access/access-dialog.tsx:158
 msgid "User"
@@ -3112,6 +3649,10 @@ msgstr "هەمووی ببینە"
 msgid "View all notifications"
 msgstr "هەموو ئاگادارکردنەوەکان ببینە"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:172
+msgid "View controls"
+msgstr "کۆنترۆڵەکانی بینین"
+
 #: src/components/MissionSetup.tsx:564
 msgid "Views"
 msgstr "بینینەکان"
@@ -3120,9 +3661,14 @@ msgstr "بینینەکان"
 msgid "WAITING FOR OPPONENT"
 msgstr "چاوەڕوانی ڕکابەر"
 
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:271
 #: ../../../lib/web/src/components/filter-bar.tsx:35
 msgid "Watched"
 msgstr "چاودێریکراو"
+
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:194
+msgid "Watched only"
+msgstr "تەنها چاودێریکراو"
 
 #: src/components/GameCanvas.tsx:62
 msgid "WAVE OFF"
