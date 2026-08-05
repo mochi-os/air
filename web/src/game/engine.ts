@@ -1211,8 +1211,8 @@ function build_screens(g){
 const ddi_state={ left:{page:"eng",menu:""}, right:{page:"adi",menu:""}, center:{page:"hsi",menu:""} };
 let ddi_dirty=false;   // a pushbutton press redraws NOW — the 120 ms cadence would read as a stuck button
 const DDI_MENUS={   // [pushbutton, legend, page] — page "" = not built yet
-	tac:[ [6,"HUD",""],[7,"RDR",""],[8,"SA","sa"],[9,"SMS",""],[10,"EW",""] ],
-	supt:[ [6,"ADI","adi"],[7,"HSI","hsi"],[8,"ENG","eng"],[9,"FUEL",""],[10,"FCS",""],[11,"CHKLST",""],[12,"FPAS",""],[13,"BIT",""],[14,"MUMI",""] ] };
+	tac:[ [6,"HUD","hud"],[7,"RDR",""],[8,"SA","sa"],[9,"SMS",""],[10,"EW",""] ],
+	supt:[ [6,"ADI","adi"],[7,"HSI","hsi"],[8,"ENG","eng"],[9,"FUEL","fuel"],[10,"FCS","fcs"],[11,"CHKLST","chklst"],[12,"FPAS",""],[13,"BIT",""],[14,"MUMI",""] ] };
 function button_of(lx,ly){   // 512-space point -> pushbutton number, 0 between slots (five 80 px slots along the 56..456 span of each edge)
 	const slot=v=>{ const k=Math.floor((v-56)/80); return k>=0&&k<5?k:-1; };
 	if(ly<56){ const k=slot(lx); return k<0?0:6+k; }
@@ -1253,17 +1253,25 @@ function ddi_blit(sc){ const x=sc.canvas.getContext("2d"); ddi_render(x,sc.canva
 const DDI_STEPS=[256,512,1024];
 const _sv1=new THREE.Vector3(), _sv2=new THREE.Vector3();
 let screens_last=0;
+let repeat="";   // HUD-view corner repeater (#12): "" off, else the display it shows
+function repeat_size(){ return Math.round(Math.min(HW,HH)*0.30); }
 function screens_update(){
-	const list=ownship.group.userData.screens; if(!list||cfg.view!=="cockpit") return;
+	const list=ownship.group.userData.screens; if(!list) return;
+	const pit=cfg.view==="cockpit", rep=(cfg.view==="hud"&&!map_on)?repeat:"";
+	if(!pit&&!rep) return;   // pages redraw only while some consumer is on screen
 	const now=performance.now(); if(!ddi_dirty&&now-screens_last<120) return; screens_last=now; ddi_dirty=false;
 	const dpr=Math.min(devicePixelRatio||1,2);
 	for(const sc of list){
-		// variable resolution: the canvas follows the quad's projected on-screen
-		// height (stepped, with hysteresis against zoom flutter) — crisp zoomed
-		// in for page work, cheap texture uploads zoomed out
-		_sv1.set(0,sc.height/2,0).applyMatrix4(sc.mesh.matrixWorld).project(cockpit_cam);
-		_sv2.set(0,-sc.height/2,0).applyMatrix4(sc.mesh.matrixWorld).project(cockpit_cam);
-		const px=Math.abs(_sv1.y-_sv2.y)*0.5*HH*dpr, cur=sc.canvas.width;
+		if(!pit&&sc.display!==rep) continue;   // repeating: only the shown display spends
+		// variable resolution: the canvas follows the consumer — the quad's
+		// projected on-screen height in the pit (stepped, with hysteresis
+		// against zoom flutter), the panel's size when repeating
+		let px;
+		if(pit){ _sv1.set(0,sc.height/2,0).applyMatrix4(sc.mesh.matrixWorld).project(cockpit_cam);
+			_sv2.set(0,-sc.height/2,0).applyMatrix4(sc.mesh.matrixWorld).project(cockpit_cam);
+			px=Math.abs(_sv1.y-_sv2.y)*0.5*HH*dpr; }
+		else px=repeat_size()*dpr;
+		const cur=sc.canvas.width;
 		if(px>cur*1.15||px<cur*0.45){ const want=DDI_STEPS.find(v=>v>=px)||1024;
 			if(want!==cur) sc.canvas.width=sc.canvas.height=want; }
 		ddi_blit(sc); } }
@@ -1272,7 +1280,8 @@ function screens_update(){
 // routes the wheel, −/= and 0 into (wheel-up = range in, the map's wheel
 // semantics; 0 puts the page's transient state back to defaults).
 const DDI_PAGES={ eng:{draw:ddi_eng}, adi:{draw:ddi_adi}, hsi:{draw:ddi_hsi,range:hsi_range,reset:hsi_reset,press:hsi_press},
-	sa:{draw:ddi_sa,range:sa_range,reset:sa_reset,press:sa_press} };
+	sa:{draw:ddi_sa,range:sa_range,reset:sa_reset,press:sa_press}, hud:{draw:ddi_hud},
+	fuel:{draw:ddi_fuel,press:fuel_press}, fcs:{draw:ddi_fcs}, chklst:{draw:ddi_chklst} };
 // ---- HSI page state (#99 pages): ONE nav picture shared by every display
 // showing the format, like the jet's single nav solution. The rose ring sits
 // at HALF the selected scale; DCTR slides the rose down so the scale ahead
@@ -1301,42 +1310,53 @@ function sa_press(pb){
 	if(pb===4){ sa_range(-1); return true; }
 	if(pb===3){ sa_range(1); return true; }
 	return false; }
-function ddi_eng(x){ const gz=ownship.gauges||{};
+function ddi_eng(x){ const gz=ownship.gauges||{};   // the real format: parameter names down the CENTRE, engine values either side
 	x.fillText("ENG",256,36);
-		x.font="24px monospace"; x.textAlign="right";
-		const rows=[["N2 %",gz.rpmL,gz.rpmR,0],["EGT C",gz.egtL,gz.egtR,0],["FF PPH",(gz.flowL||0)*10,(gz.flowR||0)*10,-1],["NOZ %",100*Math.max((0.7-(gz.spoolL||0))/0.55,gz.reheatL||0),100*Math.max((0.7-(gz.spoolR||0))/0.55,gz.reheatR||0),0],["OIL PSI",55+10*(gz.spoolL||0),55+10*(gz.spoolR||0),0]];
-		let y=110;
-		x.textAlign="center"; x.fillText("L",190,74); x.fillText("R",330,74);
-		for(const [label,L,R,round] of rows){
-			x.textAlign="right"; x.fillText(String(Math.round((L||0)/(round<0?10:1))*(round<0?10:1)),230,y);
-			x.fillText(String(Math.round((R||0)/(round<0?10:1))*(round<0?10:1)),370,y);
-			x.textAlign="left"; x.font="20px monospace"; x.fillText(label,30,y); x.font="24px monospace"; y+=64; }
-		x.textAlign="left"; x.font="24px monospace";
-		x.fillText("FUEL "+Math.round((gz.fuelRaw||0)/10)*10+" LB",24,470); }   // left column — clear of the MENU legend
-function ddi_adi(x){ const gz=ownship.gauges||{}; const bank=gz.bank||0, pitch=gz.pitch||0, ppd=6;
-		x.save(); x.translate(256,240); x.rotate(-bank);
-		const off=pitch/D2R*ppd;
-		x.fillStyle="#123a5e"; x.fillRect(-400,-400+off,800,400);   // sky
-		x.fillStyle="#4a3a20"; x.fillRect(-400,off,800,400);        // ground
-		x.strokeStyle="#e8e8e0"; x.lineWidth=3;
-		x.beginPath(); x.moveTo(-400,off); x.lineTo(400,off); x.stroke();
-		x.fillStyle="#e8e8e0"; x.font="18px monospace";
-		for(let d=-30;d<=30;d+=10){ if(!d) continue; const py=off+d*ppd;
-			x.beginPath(); x.moveTo(-60,py); x.lineTo(60,py); x.stroke();
-			x.textAlign="left"; x.fillText(String(Math.abs(d)),66,py); }
-		x.restore();
-		x.strokeStyle="#39e07a"; x.lineWidth=4;   // waterline
-		x.beginPath(); x.moveTo(196,240); x.lineTo(236,240); x.lineTo(256,252); x.lineTo(276,240); x.lineTo(316,240); x.stroke();
-		x.fillStyle="#39e07a"; x.font="24px monospace";
-		x.textAlign="left"; x.fillText(Math.round(gz.casKt||0)+" KT",26,470);
-		x.textAlign="right"; x.fillText(Math.round(gz.altitude||0)+" FT",486,470);
-		x.textAlign="center"; x.fillText(String(Math.round((gz.heading||0)/D2R+360)%360).padStart(3,"0"),256,36);
-		const dev=approach_deviation();
-		if(dev){ x.strokeStyle="#ffd24a"; x.lineWidth=4;   // ILS needles
-			const gs=THREE.MathUtils.clamp(dev.gs,-1,1), az=THREE.MathUtils.clamp(dev.az,-1,1);
-			x.beginPath(); x.moveTo(80,240+gs*120); x.lineTo(140,240+gs*120); x.stroke();
-			x.beginPath(); x.moveTo(256+az*120,340); x.lineTo(256+az*120,400); x.stroke(); }
-	}
+	x.font="22px monospace";
+	const rows=[["N2 %",gz.rpmL,gz.rpmR,1],["EGT °C",gz.egtL,gz.egtR,1],["FF PPH",(gz.flowL||0)*10,(gz.flowR||0)*10,10],
+		["NOZ %",100*Math.max((0.7-(gz.spoolL||0))/0.55,gz.reheatL||0),100*Math.max((0.7-(gz.spoolR||0))/0.55,gz.reheatR||0),1],
+		["OIL PSI",55+10*(gz.spoolL||0),55+10*(gz.spoolR||0),1]];
+	x.textAlign="center"; x.fillText("L",150,84); x.fillText("R",362,84);
+	let y=140;
+	for(const [label,L,R,q] of rows){
+		x.textAlign="center"; x.font="19px monospace"; x.fillText(label,256,y);
+		x.font="22px monospace"; x.textAlign="right";
+		x.fillText(String(Math.round((L||0)/q)*q),192,y); x.fillText(String(Math.round((R||0)/q)*q),404,y);
+		y+=62; } }   // the fuel total lives on the FUEL page now
+function ddi_adi(x,display){ const gz=ownship.gauges||{}; const bank=gz.bank||0, pitch=gz.pitch||0, ppd=5.2;
+	const colour=display==="center";   // the AMPCD's colour licence; the DDIs shade the ball in green
+	const cx=256, cy=246, R=186;
+	x.save(); x.beginPath(); x.arc(cx,cy,R,0,Math.PI*2); x.clip();   // the attitude BALL, not a full-screen wash
+	x.translate(cx,cy); x.rotate(-bank);
+	const off=pitch/D2R*ppd;
+	x.fillStyle=colour?"#123a5e":"#12351f"; x.fillRect(-280,-280+off,560,280);   // sky
+	x.fillStyle=colour?"#4a3a20":"#050b06"; x.fillRect(-280,off,560,280);        // ground
+	x.strokeStyle=colour?"#e8e8e0":"#39e07a"; x.lineWidth=3;
+	x.beginPath(); x.moveTo(-280,off); x.lineTo(280,off); x.stroke();
+	x.fillStyle=colour?"#e8e8e0":"#39e07a"; x.font="18px monospace"; x.lineWidth=2;
+	for(let d=-30;d<=30;d+=10){ if(!d) continue; const py=off+d*ppd;
+		x.beginPath(); x.moveTo(-60,py); x.lineTo(60,py); x.stroke();
+		x.textAlign="left"; x.fillText(String(Math.abs(d)),66,py); }
+	x.restore();
+	x.strokeStyle="#39e07a"; x.lineWidth=2;   // ball rim, bank scale outside the top arc, pointer at the bank angle
+	x.beginPath(); x.arc(cx,cy,R,0,Math.PI*2); x.stroke();
+	for(const d of [-60,-45,-30,-20,-10,0,10,20,30,45,60]){ const a=-Math.PI/2+d*D2R, i=d===0?16:10;
+		x.beginPath(); x.moveTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R); x.lineTo(cx+Math.cos(a)*(R+i),cy+Math.sin(a)*(R+i)); x.stroke(); }
+	{ const ba=-Math.PI/2-THREE.MathUtils.clamp(bank,-Math.PI/3,Math.PI/3);
+		x.fillStyle="#39e07a";
+		x.beginPath(); x.moveTo(cx+Math.cos(ba)*(R-4),cy+Math.sin(ba)*(R-4)); x.lineTo(cx+Math.cos(ba-0.045)*(R-20),cy+Math.sin(ba-0.045)*(R-20)); x.lineTo(cx+Math.cos(ba+0.045)*(R-20),cy+Math.sin(ba+0.045)*(R-20)); x.closePath(); x.fill(); }
+	x.strokeStyle="#39e07a"; x.lineWidth=4;   // waterline, fixed
+	x.beginPath(); x.moveTo(cx-60,cy); x.lineTo(cx-20,cy); x.lineTo(cx,cy+12); x.lineTo(cx+20,cy); x.lineTo(cx+60,cy); x.stroke();
+	const dev=approach_deviation();
+	if(dev){ x.strokeStyle=colour?"#ffd24a":"#7dff9f"; x.lineWidth=4;   // ICLS needles ride the ball, as on the real format
+		const gs=THREE.MathUtils.clamp(dev.gs,-1,1), az=THREE.MathUtils.clamp(dev.az,-1,1);
+		x.beginPath(); x.moveTo(cx-176,cy+gs*120); x.lineTo(cx-116,cy+gs*120); x.stroke();
+		x.beginPath(); x.moveTo(cx+az*120,cy+94); x.lineTo(cx+az*120,cy+154); x.stroke(); }
+	{ const sy=cy+R-24, s=THREE.MathUtils.clamp(gz.slip||0,-1,1)*26;   // slip ball in the lower ball area
+		x.strokeStyle="#39e07a"; x.lineWidth=2;
+		x.beginPath(); x.moveTo(cx-44,sy); x.lineTo(cx+44,sy); x.stroke();
+		x.beginPath(); x.moveTo(cx-12,sy-10); x.lineTo(cx-12,sy+10); x.moveTo(cx+12,sy-10); x.lineTo(cx+12,sy+10); x.stroke();
+		x.beginPath(); x.arc(cx+s,sy,7,0,Math.PI*2); x.stroke(); } }
 function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0;
 	const scale=hsi_state.scale, cy=hsi_state.dctr?356:266, R=196;
 	const ppm=R/(scale*NM/2);   // pixels per metre: the rose ring sits at HALF the selected scale
@@ -1423,6 +1443,118 @@ function ddi_sa(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0
 	ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false);
 	x.fillStyle="#39e07a"; x.font="20px monospace"; x.textAlign="left";
 	x.fillText(String(scale),14,216); }
+function ddi_hud(x){ const gz=ownship.gauges||{};   // HUD repeater format (#9): the symbol generator's boresight picture at a fixed field — the same numbers the HUD shows, independent of the head and camera (which is why this is a fresh renderer, not a copy of the screen HUD's camera-coupled draw)
+	const ppd=512/26, cx=256, cy=250;   // a 26° square field, about the HUD's own
+	const pitch=(gz.pitch||0)/D2R, bank=gz.bank||0;
+	x.save(); x.beginPath(); x.rect(40,44,432,432); x.clip();   // the picture stays clear of the button bands
+	x.lineWidth=2;
+	x.save(); x.translate(cx,cy); x.rotate(-bank);   // pitch ladder about the boresight
+	for(let p=-30;p<=30;p+=5){ const off=(pitch-p)*ppd; if(Math.abs(off)>230) continue;
+		if(p===0){ x.beginPath(); x.moveTo(-200,off); x.lineTo(-40,off); x.moveTo(40,off); x.lineTo(200,off); x.stroke(); continue; }   // horizon
+		const w=p%10===0?70:40, gap=36;
+		x.save(); if(p<0) x.setLineDash([10,7]);
+		x.beginPath(); x.moveTo(-gap-w,off); x.lineTo(-gap,off); x.moveTo(gap,off); x.lineTo(gap+w,off); x.stroke();
+		x.restore();
+		if(p%10===0){ x.font="17px monospace"; x.textAlign="left"; x.fillText(String(Math.abs(p)),gap+w+6,off);
+			x.textAlign="right"; x.fillText(String(Math.abs(p)),-gap-w-6,off); } }
+	x.restore();
+	{ const vx=cx+(gz.slip||0)*3*ppd, vy=cy+(ownship.aoa||0)*ppd;   // velocity vector: alpha below the waterline, slip across (the repeat of the picture, not a camera projection)
+		const r=9;
+		x.beginPath(); x.arc(vx,vy,r,0,Math.PI*2); x.stroke();
+		x.beginPath(); x.moveTo(vx-r,vy); x.lineTo(vx-r-10,vy); x.moveTo(vx+r,vy); x.lineTo(vx+r+10,vy); x.moveTo(vx,vy-r); x.lineTo(vx,vy-r-8); x.stroke(); }
+	x.beginPath(); x.moveTo(cx-30,cy); x.lineTo(cx-12,cy); x.lineTo(cx-6,cy+8); x.lineTo(cx,cy); x.lineTo(cx+6,cy+8); x.lineTo(cx+12,cy); x.lineTo(cx+30,cy); x.stroke();   // waterline W
+	x.font="24px monospace"; x.textAlign="right";   // airspeed and altitude boxes at the waterline datum
+	x.strokeRect(58,196,96,34); x.fillText(String(Math.round(gz.casKt||0)),144,214);
+	x.strokeRect(360,196,110,34); x.fillText(String(Math.round(gz.altitude||0)),462,214);
+	x.font="20px monospace"; x.textAlign="left";
+	x.fillText("α "+(ownship.aoa||0).toFixed(1),58,254);
+	x.fillText("G  "+(ownship.gload||1).toFixed(1),58,280);
+	x.fillText("M  "+(gz.mach||0).toFixed(2),58,306);
+	x.textAlign="right"; x.fillText(String(Math.round(gz.fpm||0)),470,254);   // VVI under the altitude box
+	x.font="26px monospace"; x.textAlign="center";
+	x.fillText(String(Math.round((gz.heading||0)/D2R+360)%360).padStart(3,"0"),256,70);
+	for(const d of [-45,-30,-20,-10,0,10,20,30,45]){ const a=Math.PI/2+d*D2R, br=180;   // bank scale under the boresight, pointer at the bank angle
+		const i=d===0?14:10;
+		x.beginPath(); x.moveTo(cx+Math.cos(a)*br,cy+Math.sin(a)*br); x.lineTo(cx+Math.cos(a)*(br+i),cy+Math.sin(a)*(br+i)); x.stroke(); }
+	{ const ba=Math.PI/2-THREE.MathUtils.clamp(bank,-45*D2R,45*D2R), br=180;
+		x.beginPath(); x.moveTo(cx+Math.cos(ba)*(br-4),cy+Math.sin(ba)*(br-4)); x.lineTo(cx+Math.cos(ba-0.035)*(br-16),cy+Math.sin(ba-0.035)*(br-16)); x.lineTo(cx+Math.cos(ba+0.035)*(br-16),cy+Math.sin(ba+0.035)*(br-16)); x.closePath(); x.fill(); }
+	x.restore(); }
+// ---- FUEL page state: the bingo caret, stepped from the bezel arrows.
+const fuel_state={ bingo:2000 };
+function fuel_press(pb){
+	if(pb===4){ fuel_state.bingo=Math.min(10000,fuel_state.bingo+500); return true; }
+	if(pb===3){ fuel_state.bingo=Math.max(0,fuel_state.bingo-500); return true; }
+	return false; }
+function ddi_fuel(x,display){ const gz=ownship.gauges||{};
+	const total=Math.round((gz.fuelRaw||0)/10)*10, flow=((gz.flowL||0)+(gz.flowR||0))*10;
+	const low=total<fuel_state.bingo, colour=display==="center";
+	x.fillText("FUEL",256,36);
+	x.strokeStyle="#39e07a"; x.lineWidth=2;   // fuselage outline, the honest TOTAL inside — per-tank quantities are not modeled and are not invented
+	x.beginPath(); x.moveTo(256,86); x.lineTo(292,130); x.lineTo(292,330); x.lineTo(276,364); x.lineTo(236,364); x.lineTo(220,330); x.lineTo(220,130); x.closePath(); x.stroke();
+	if(low&&colour) x.fillStyle="#ffb04a";
+	x.font="30px monospace"; x.textAlign="center"; x.fillText(String(total),256,226);
+	x.font="19px monospace"; x.fillText("LB",256,258);
+	if(low){ x.font="22px monospace"; x.fillText("BINGO",256,304); }   // annunciated under the total while beneath the caret
+	x.fillStyle="#39e07a"; x.font="20px monospace";
+	x.textAlign="right"; x.fillText("FF "+Math.round((gz.flowL||0)*10),190,206);   // per-engine burn either side of the tank
+	x.textAlign="left"; x.fillText("FF "+Math.round((gz.flowR||0)*10),322,206);
+	if(flow>300){ const m=Math.round(total/flow*60);   // endurance at the present burn
+		x.fillText("TIME "+Math.floor(m/60)+"+"+String(m%60).padStart(2,"0"),24,458); }
+	ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false);   // the arrows step the caret
+	x.font="16px monospace"; x.textAlign="left"; x.fillText(String(fuel_state.bingo),8,216);
+	x.font="13px monospace"; x.fillText("BINGO",8,242); }
+function ddi_chklst(x,display){ const gz=ownship.gauges||{}; const o=last_out||[];   // CHKLST (#8): the real page is an ABBREVIATED memory-jogger, here filtered to systems the game models — and live: each line checks itself off from the sim state, which the real static page cannot do. Cockpit text stays English by the annunciator policy.
+	const colour=display==="center";
+	x.fillText("CHKLST",256,36);
+	const wt=Math.round((23590+(gz.fuelRaw||0))/10)*10;   // zero-fuel ≈ 10.7 t: the measured reference brackets 15.6 t at full internal (10,800 lb), so airframe+stores base ≈ 23,590 lb
+	const t=THREE.MathUtils.clamp((wt/2.2046/1000-11.2)/(15.6-11.2),0,1);
+	const vapp=Math.round(126+t*22), vs0=Math.round(113+t*17);   // linear between the Reference dialog's measured endpoints (rows vapp/vs0, 11.2-15.6 t)
+	const flap=["AUTO","HALF","FULL"][flap_select]||"AUTO";
+	const trim=((o[STATE.datum]||0)/D2R);
+	const item=(cx0,y,label,state,ok)=>{
+		if(ok!==null){ x.strokeStyle="#39e07a"; x.lineWidth=2; x.strokeRect(cx0,y-9,18,18);
+			if(ok){ x.beginPath(); x.moveTo(cx0+4,y); x.lineTo(cx0+8,y+5); x.lineTo(cx0+15,y-6); x.stroke(); } }
+		x.font="18px monospace"; x.textAlign="left"; x.fillText(label,cx0+28,y);
+		if(state){ if(colour&&ok===false) x.fillStyle="#ffb04a";
+			x.font="15px monospace"; x.fillText(state,cx0+28,y+20); x.fillStyle="#39e07a"; } };
+	x.font="20px monospace"; x.textAlign="center"; x.fillText("T/O",130,88); x.fillText("LDG",372,88);
+	let y=130;
+	item(44,y,"WINGS","SPREAD",(ownship.fold??0)<0.02); y+=56;
+	item(44,y,"FLAPS","FLAPS "+flap,flap_select===1); y+=56;
+	item(44,y,"TRIM",trim.toFixed(1)+"° NU",trim>0.5); y+=56;
+	item(44,y,"HOOK UP",null,(ownship.hook??0)<0.02); y+=56;
+	item(44,y,"CANOPY",null,(ownship.canopy??ownship.canopyTarget??0)<0.02); y+=56;
+	item(44,y,"PARK BRK","OFF",!parking);
+	y=130;
+	item(286,y,"GEAR","DOWN",(ownship.gear??1)<0.02); y+=56;
+	item(286,y,"FLAPS","FLAPS "+flap,flap_select>0); y+=56;
+	item(286,y,"HOOK","HOOK "+((ownship.hook??0)>0.98?"DN":"UP"),null); y+=56;   // carrier or field decides — state only
+	item(286,y,"ON SPEED","8.1° AOA",null);
+	x.font="20px monospace"; x.textAlign="left";   // under the shorter LDG column — the T/O column runs long
+	x.fillText("WT "+wt+" LB",286,402);
+	x.fillText("VAPP "+vapp,286,430);
+	x.fillText("VS0  "+vs0,286,458); }
+function ddi_fcs(x,display){ const o=last_out||[];   // per-surface truth straight from the flight core's control words; X = the channel's jam word
+	const colour=display==="center";
+	const deg=i=>(o[i]||0)/D2R;
+	const jam=i=>(o[STATE.jam+i]||0)>0.5;
+	x.fillText("FCS",256,36);
+	x.font="20px monospace";
+	const row=(label,v,xx,y,jammed)=>{ const r=Math.round(v);   // round BEFORE the sign, or a -0.3° deflection prints "-0°"
+		x.textAlign="center"; x.fillText(label,xx,y);
+		x.fillText((r<0?"-":"")+Math.abs(r)+"°",xx,y+26);
+		if(jammed){ x.strokeStyle=colour?"#ffb04a":"#39e07a"; x.lineWidth=3;
+			x.beginPath(); x.moveTo(xx-26,y-12); x.lineTo(xx+26,y+38); x.moveTo(xx+26,y-12); x.lineTo(xx-26,y+38); x.stroke();
+			x.strokeStyle="#39e07a"; x.lineWidth=2; } };
+	row("LEF",deg(STATE.slat),110,140,jam(5)); row("LEF",deg(STATE.slat),402,140,jam(5));   // one slat word, both wings
+	row("TEF",deg(STATE.flap),110,216,jam(2)); row("TEF",deg(STATE.flap),402,216,jam(3));
+	row("AIL",deg(STATE.flaperon),110,292,false); row("AIL",deg(STATE.flaperon+1),402,292,false);
+	row("STAB",deg(STATE.stabilator),110,368,jam(0)); row("STAB",deg(STATE.stabilator+1),402,368,jam(1));
+	row("RUD",deg(STATE.rudder),256,368,jam(4));
+	x.textAlign="center"; x.fillText("SPD BRK "+Math.round((o[STATE.speedbrake]||0)*100)+"%",256,110);
+	x.textAlign="left";   // the two trim datums
+	x.fillText("TRIM "+((o[STATE.datum]||0)/D2R).toFixed(1)+"°",24,430);
+	x.fillText("ROLL "+Math.round((o[STATE.bank]||0)*100)+"%",24,458); }
 const MISSILE_NODES=["Object_145","Object_542"];   // the two wingtip AIM-9 NODES in the fa18c GLB (the mesh-level names Object_114/29 are not in the scene graph — a silent getObjectByName miss); LAU-7 rails stay with the wing. Hidden per missiles-remaining for empty rails after firing, or entirely on a guns-only loadout
 function update_rails(st,count){ if(!st.group) return;
 	for(let i=0;i<MISSILE_NODES.length;i++){ const node=st.group.getObjectByName(MISSILE_NODES[i]); if(node) node.visible=i<count; } }
@@ -1694,6 +1826,7 @@ function update_pool_ballistic(p,dt,grav,drag){ for(let i=0;i<p.max;i++){ if(!p.
 	p.px[i]+=p.vx[i]*dt; p.py[i]+=p.vy[i]*dt; p.pz[i]+=p.vz[i]*dt; p.life[i]-=dt; if(p.life[i]<=0||p.py[i]<0) p.active[i]=0; } }
 
 const muzzle=1050; const gun={};
+const MAGAZINE=578;   // the M61's load: the ownship's magazine, and the nominal the bandit's expenditure is reported against
 function fire_gun(st,target,key,dt,force){
 	let active;
 	if(force!==undefined) active=force;
@@ -1701,6 +1834,7 @@ function fire_gun(st,target,key,dt,force){
 	if(!active) return 0; if(st.rounds!==undefined && st.rounds<=0) return 0; if(!cfg.tracers && st===ownship) { /* own-ship tracers suppressed */ } // tracers toggle only affects render
 	const rps=100; gun[key]=(gun[key]||0)+rps*dt;   // M61 Vulcan: 6000 rpm = 100 rounds/sec
 	let fired=0;
+	const spend=(n)=>{ st.spent=(st.spent||0)+n; };   // every shooter's running expenditure, for the recording: the bandit fires from an unlimited magazine, so nothing else records that it shot at all
 	while(gun[key]>=1){ gun[key]-=1; fired++; if(st.rounds!==undefined){ if(st.rounds<=0) break; if(!cheat("ammunition")) st.rounds--; }
 		const tr=(Math.floor(gun[key+"_n"]||0)%5)===0; gun[key+"_n"]=(gun[key+"_n"]||0)+1;
 		if(!tr) continue;   // only 1 in 5 rounds is a visible tracer; the rest fire invisibly
@@ -1711,6 +1845,7 @@ function fire_gun(st,target,key,dt,force){
 		tracers.vz[k]=st.fwd.z*muzzle+(Math.random()-0.5)*spread*muzzle+st.velz;
 		tracers.ttl[k]=tracers.life[k]=1.8;   // ~1.8s @1050m/s -> ~1900m burnout (real 20mm tracer range; no drag in this sim)
 		tracers.r[k]=1.3;tracers.g[k]=0.42;tracers.b[k]=0.1; }   // red-orange; normal-blended (see tr_pts) so the colour reads instead of blowing out white
+	spend(fired);
 	return fired; }
 const _flare_timer={bandit:4.5};
 function dispense_flares(st){ for(let i=0;i<36;i++){ const k=pool_spawn(flares); if(k<0) break; const sp=local_offset(st,-2,-0.3,0);
@@ -1854,7 +1989,7 @@ ownship.player=true; ownship.q=new THREE.Quaternion(); ownship.up=new THREE.Vect
 // from a visibly clean jet and the stores mass/drag covers at most the two
 // tips; #226 owns doing stores properly.
 function magazine(){ return 4; }
-ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.burner=0; ownship.rounds=578; ownship.msl=magazine(); ownship.cm=60; ownship.aoa=0; ownship.gload=1;
+ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.burner=0; ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.cm=60; ownship.aoa=0; ownship.gload=1;
 ownship.launching=false;
 // init quaternion from initial fwd
 (()=>{ const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
@@ -2578,7 +2713,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		cabin:Math.min(altitude,8000+Math.max(0,altitude-8000)*0.35)*(5.2/50000),   // ECS schedule: sea-level cabin to 8k, then bleed up
 		volts:(sL+sR)>0.03?1.86:1.55,                            // generators 28 V / battery 24 V on the ±143° dual voltmeter
 		clockH:(now.getHours()%12)+now.getMinutes()/60, clockM:now.getMinutes()+now.getSeconds()/60, clockS:now.getSeconds(),
-		casKt:cas, fpm, spoolL:sL, spoolR:sR, reheatL:rL, reheatR:rR, fuelRaw:lbs,
+		casKt:cas, fpm, spoolL:sL, spoolR:sR, reheatL:rL, reheatR:rR, fuelRaw:lbs, mach:out[STATE.mach]||0,
 		track:vh>2?Math.atan2(vx,-vz):null, ground:vh*1.944 };   // track null at taxi speeds — the diamond parks off the rose rather than swinging with tyre scrub
 	lamps_update(out);
 	const ind=ownship.group.userData.indexer;
@@ -2666,7 +2801,8 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 			if(k==="Digit4") set_view("chase");      // 4 Chase
 			if(k==="Digit5") set_view("flypast");    // 5 Flypast
 			if(k==="Digit6") set_view("padlock"); }  // 6 Padlock — head-forward views on 1-3, external on 4-6
-		if(ch===key_of("view")) set_view(cfg.view==="cockpit"?"hud":"cockpit");   // V: Cockpit↔HUD fast-swap (any other view → Cockpit)
+		if(ch===key_of("view")) set_view(cfg.view==="cockpit"?"hud":"cockpit");   // Cockpit↔HUD fast-swap (any other view → Cockpit); unbound by default since the number row selects views
+		if(ch===key_of("repeater")&&cfg.view==="hud"){ repeat=repeat===""?"left":repeat==="left"?"right":repeat==="right"?"center":""; ddi_dirty=true; }   // I: corner DDI repeater panel — off -> left DDI -> right DDI -> AMPCD -> off (#12); HUD view only, game furniture by policy
 		if(ch===key_of("view.reset")) view_reset();   // 0: put THIS view back to its defaults — zoom, head, and the chase orbit
 		if(ch===key_of("zoom.in")&&(map_on||cfg.view!=="chase")) zoom_step(1);     // =/− zoom every view optically; chase keeps them for the orbit distance, its wheel already zooms. Edge-triggered here, and HELD keys sweep continuously from read_input below
 		if(ch===key_of("zoom.out")&&(map_on||cfg.view!=="chase")) zoom_step(-1);
@@ -2769,7 +2905,7 @@ stage.addEventListener("pointercancel",end_drag,{ signal });
 const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.left":"KeyA", "yaw.right":"KeyE", "yaw.left":"KeyQ",
 	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash", "trim.up":"Period", "trim.down":"Comma", "trim.left":"Shift+Comma", "trim.right":"Shift+Period", "trim.reset":"None", "flaps.extend":"KeyF", "flaps.retract":"Shift+KeyF", override:"KeyO", "brake.parking":"Shift+KeyB",
 	gear:"KeyG", hook:"KeyH", probe:"KeyR", atc:"KeyP", lights:"KeyL", flares:"KeyC", eject:"KeyJ", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"None", select:"KeyX", altitude:"KeyK", reject:"KeyU", acquire:"Enter",
-	canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares
+	canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0", repeater:"KeyI" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
@@ -2948,7 +3084,8 @@ function recording_sample(){
 		...(DEV_MODE?{ stick:last_controls?last_controls.pitch:0, stabilator:(out[STATE.stabilator]||0)/D2R }:{}) }:undefined;
 	add(ownship,1,cfg.callsign||"Player","Blue",undefined,data);
 	if(!MULTIPLAYER&&has_enemy&&bandit.group&&bandit.group.visible)
-		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?(bandit_mode()||undefined):undefined);   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
+		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?(bandit_mode()||undefined):undefined,
+			{ rounds:Math.max(0,MAGAZINE-(bandit.spent||0)) });   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
 		const team=net.teams.get(slot)||"";
 		add(st,10+slot,st.name||net.names.get(slot)||"",team==="red"?"Red":team==="blue"?"Blue":"Orange"); } }
@@ -3133,7 +3270,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:!!cfg.missiles, hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count, record:(()=>{ const r=recording_file(); if(!r) return null; const lines=r.text.split(String.fromCharCode(10));
+	atc:atc_on, missiles:!!cfg.missiles, hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count, record:(()=>{ const r=recording_file(); if(!r) return null; const lines=r.text.split(String.fromCharCode(10));
 		return {lines:lines.length, session:r.session, kind:r.kind, bot:/Doctrine=/.test(r.text),
 			// The ownship's last data line: proves a channel actually plumbs
 			// through at runtime, which a unit test on the renderer cannot.
@@ -3148,7 +3285,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v
 	gauges:(()=>{ const g=ownship.gauges||{}; const f=v=>v===undefined?null:+(+v).toFixed(3); return { asi:f(g.asi), altitude:f(g.altitude), vsi:f(g.vsi), fuelLbs:f(g.fuelLbs), rpmL:f(g.rpmL), egtL:f(g.egtL), flowL:f(g.flowL), clockH:f(g.clockH) }; })(),
 	indexer:(()=>{ const i=ownship.group.userData.indexer; return i?{ slow:+i.slow.opacity.toFixed(2), donut:+i.donut.opacity.toFixed(2), fast:+i.fast.opacity.toFixed(2) }:null; })(),
 	built:(()=>{ const u=ownship.group.userData; return { indexer:!!u.indexer, lamps:!!u.lamps, radalt:!!u.radalt, screens:(u.screens||[]).length, err:build_error,
-		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale,
+		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale, repeat,
 		mount:(()=>{ const b=u.indexerGroup; if(!b) return null; const v=new THREE.Vector3(); b.children[1].getWorldPosition(v); v.project(cockpit_cam);
 			return { px:[Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)], at:b.position.toArray().map(n=>+n.toFixed(3)) }; })(),
 		outline:(u.outline||[]).map(p=>p.map(n=>+n.toFixed(3))),
@@ -3274,7 +3411,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	const wire=out[STATE.wire];
 	if(wire>=0&&prev_wire<0){ ownship.trapped=true; ownship.wire=wire+1; ownship.grade=lso_grade(); ownship.turned=false; ownship.taxied=false; notice(translate(ownship.grade)+", "+translate(ownship.wire+" WIRE"), 8); }
 	if(ownship.trapped&&!ownship.turned&&ownship.speed<0.5){ ownship.turned=true;   // chocked and chained: the deck crew turn the jet around and service it (#128)
-		ownship.rounds=578; ownship.msl=cfg.missiles?magazine():0; ownship.cm=60; update_rails(ownship,cfg.missiles?magazine():0);
+		ownship.rounds=MAGAZINE; ownship.msl=cfg.missiles?magazine():0; ownship.cm=60; update_rails(ownship,cfg.missiles?magazine():0);
 		const b=flight_get(); b[STATE.fuel]=FUEL(); flight_set(b); }
 	if(ownship.turned&&!ownship.taxied&&ownship.speed>4){ ownship.taxied=true; notice(translate("REARMED")); }   // announce the rearm only once the player TAXIES clear of the trap — so it never lands on top of the LSO grade at the stop (#72)   // end the LSO grade banner so REARMED replaces it cleanly instead of overprinting it (#72)
 	else if(wire<0&&prev_wire>=0){ ownship.trapped=false; }
@@ -3288,7 +3425,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	if(!ownship.grounded && ownship.speed>50) ownship.flown=true;
 	if(ownship.flown && ownship.grounded && !ownship.trapped && ownship.speed<0.5 && on_strip(ownship.pos)){
 		ownship.flown=false; ownship.turned=true; ownship.taxied=false;
-		ownship.rounds=578; ownship.msl=cfg.missiles?magazine():0; ownship.cm=60; update_rails(ownship,cfg.missiles?magazine():0);
+		ownship.rounds=MAGAZINE; ownship.msl=cfg.missiles?magazine():0; ownship.cm=60; update_rails(ownship,cfg.missiles?magazine():0);
 		const b=flight_get(); b[STATE.fuel]=FUEL(); flight_set(b); }
 }
 function on_strip(p){   // point inside any paved capsule (the airfield strips; the carrier deck is not one)
@@ -3689,8 +3826,9 @@ function reset_ownship(){
 	master=cfg.task==="free"?"nav":"gun";   // default master mode per mission: combat spawns fight-ready (a dead trigger at the merge is a trap), free flight powers up in NAV like the real jet
 	bandit_acc=0;   // no stale fixed-step debt across spawns
 	designated=-1;   // a respawn drops the acquisition
+	bandit.spent=0;   // a fresh fight rearms the bandit's recorded expenditure too
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
-	ownship.rounds=578; ownship.msl=magazine(); ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; ownship.lights=(cfg.tod!=="day");   // lights default on at night, off by day — two AIM-9Ms: what the wingtips actually carry
+	ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; ownship.lights=(cfg.tod!=="day");   // lights default on at night, off by day — two AIM-9Ms: what the wingtips actually carry
 	update_rails(ownship, cfg.missiles?2:0); update_rails(bandit, cfg.missiles?2:0);
 	ownship.grounded=false; ownship.touch=null; ownship.pass={gs:0,az:0,n:0}; ownship.grade=""; ownship.waved=false; ownship.groove=false; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
 	test_active=null;   // a test scenario must not keep driving across a crash respawn (it would fly the fresh spawn straight into the deck, forever)
@@ -4362,6 +4500,15 @@ function draw_hud(){
 			hctx.fillStyle="#00000090"; hctx.fillText(c.text,41,cy+1);
 			hctx.fillStyle=c.colour; hctx.fillText(c.text,40,cy); cy+=19; }
 		hctx.restore(); }
+	if(!authentic&&repeat&&!map_on){   // DDI repeater panel (#12): one display's live face in the corner — game furniture, HUD view only; the same canvas the pit textures, sized for the panel by screens_update
+		const sc=(ownship.group.userData.screens||[]).find(s=>s.display===repeat);
+		if(sc){ const size=repeat_size(), ox=HW-size-24, oy=HH-size-24;   // bottom-right: the stores counters own the bottom-left
+			hctx.save(); hctx.shadowBlur=0;
+			hctx.drawImage(sc.canvas,ox,oy,size,size);
+			hctx.strokeStyle="#2a2f33"; hctx.lineWidth=2; hctx.strokeRect(ox-1,oy-1,size+2,size+2);
+			hctx.fillStyle="#8fa0aa"; hctx.font="12px monospace"; hctx.textAlign="left"; hctx.textBaseline="middle";
+			hctx.fillText(repeat==="center"?"AMPCD":repeat==="left"?"LEFT DDI":"RIGHT DDI",ox,oy-10);
+			hctx.restore(); } }
 	if(!authentic){   // stores furniture (hud view): the FULL counter set — the authentic data block shows only the selected weapon, so without these the other weapon's count is invisible; the IFEI fuel belongs to the cockpit panel, kept here for the fullscreen view
 	hctx.fillStyle=input.guns?AM:GR;
 	hctx.fillText(translate("GUN")+"  "+(cheat("ammunition")?"∞":ownship.rounds),40,HH-88); hctx.fillStyle=GR;
