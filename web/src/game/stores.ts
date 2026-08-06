@@ -198,6 +198,73 @@ export function rounds(loadout: Loadout): { station: number; name: string }[] {
   return out
 }
 
+// Visual node names shared by the in-game jet and the setup preview, so the
+// two can never disagree about what hangs where. TIPS maps the airframe
+// GLB's wingtip AIM-9 nodes (sides verified by the index-aware lateral
+// probe: Object_145 is the PORT tip). ANCHORS places AIM-9 rounds cloned
+// onto the outboard stations, in stores.glb/model.glb space (x lateral with
+// POSITIVE x = port, y vertical, z longitudinal): the tip missile mesh
+// translates by (anchor - its own centre).
+export const TIPS: Record<string, string> = { tip9: 'Object_542', tip1: 'Object_145' }
+export const ANCHORS: Record<string, [number, number, number]> = {
+  '9m2': [3.61, -0.38, -1.28],
+  '9m2a': [3.76, -0.42, -1.28],
+  '9m2b': [3.46, -0.42, -1.28],
+  '9m8': [-3.61, -0.38, -1.28],
+  '9m8a': [-3.76, -0.42, -1.28],
+  '9m8b': [-3.46, -0.42, -1.28],
+}
+
+// The setup presents each station as ONE dropdown of meaningful end states
+// with the fixture derived underneath (#17 menu rework): players choose
+// outcomes ("AIM-9", "Fuel tank"), never fixture vocabulary. Entries marked
+// hidden only render when they are the current value — they keep older
+// hand-built slots (a twin with one round) representable without offering
+// them as choices.
+export interface Outcome {
+  id: string
+  slot: Slot
+  hidden?: boolean
+}
+
+export function outcomes(station: number): Outcome[] {
+  if (station === 1 || station === 9) {
+    return [
+      { id: '', slot: { fixture: 'rail', stores: [''] } },
+      { id: '9m', slot: { fixture: 'rail', stores: ['9m'] } },
+    ]
+  }
+  if (station === 2 || station === 8) {
+    return [
+      { id: '', slot: { fixture: '', stores: [] } },
+      { id: '9m', slot: { fixture: 'rail', stores: ['9m'] } },
+      { id: '9m2', slot: { fixture: 'twin', stores: ['9m', '9m'] } },
+      { id: 'pylon', slot: { fixture: 'rail', stores: [''] } },
+      { id: 'twin1', slot: { fixture: 'twin', stores: ['9m', ''] }, hidden: true },
+      { id: 'twin1b', slot: { fixture: 'twin', stores: ['', '9m'] }, hidden: true },
+      { id: 'twin0', slot: { fixture: 'twin', stores: ['', ''] }, hidden: true },
+    ]
+  }
+  if (station === 3 || station === 5 || station === 7) {
+    return [
+      { id: '', slot: { fixture: '', stores: [] } },
+      { id: 'tank', slot: { fixture: 'pylon', stores: ['tank'] } },
+      { id: 'pylon', slot: { fixture: 'pylon', stores: [''] } },
+    ]
+  }
+  return [{ id: '', slot: { fixture: '', stores: [] } }]
+}
+
+// outcome names the entry a station's slot currently matches ('' = the
+// station's empty state; every normalized slot matches something).
+export function outcome(station: number, slot: Slot): string {
+  const key = JSON.stringify(slot)
+  for (const entry of outcomes(station)) {
+    if (JSON.stringify(entry.slot) === key) return entry.id
+  }
+  return ''
+}
+
 // Catalog access: the caller reads the core's raw catalog (flight_catalog)
 // and resolve() adds the name -> bit index map for mask and weight
 // arithmetic.

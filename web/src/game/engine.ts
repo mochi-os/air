@@ -17,7 +17,8 @@ import {
   type Join as NetJoin,
 } from './net'
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode } from './flight'
-import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets } from './stores'
+import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors } from './stores'
+import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
 import { flight_catalog } from './flight'
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_horn, audio_seeker, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
@@ -65,6 +66,7 @@ export function startGame({
   onMenu,
   onChat,
   onConfig,
+  onOver,
   translate = (s) => s,
 }: {
   stage: HTMLCanvasElement
@@ -76,6 +78,7 @@ export function startGame({
   join?: NetJoin | null
   onExit?: () => void
   onConfig?: (partial: Record<string, number>) => void // engine-side setting changes (per-view zoom) flow back for persistence
+  onOver?: (result: { fate: string; struck: number; seconds: number }) => void // the SP mission ended at a crash (#240): how, how wounded, how long
   onMenu?: () => void
   onChat?: (scope: string) => void
   translate?: (text: string) => string
@@ -788,7 +791,7 @@ function make_jet(){ const g=new THREE.Group();   // afterburner cones only — 
 const AIRCRAFT_MODELS={
 	fa18c:{ url:fa18c_model_url, length:17.07, yaw:90, pitch:0, roll:0,
 		cockpitHide:/^Pilot_Head_769$/,   // first person: this subtree is the head+helmet+visor+mask; the body and arms stay on the stick
-		pose:[ { node:"elevator_percent_key_AN_238_100", quaternion:[0,-0.996,0.087,0] } ],   // the stabs' shared parent is authored mid-animation 180°-flipped (planform-reversed stabs); this is its animation END key — the correct frame. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
+		pose:model_pose,   // the stabs' mid-animation-flipped parent correction — SHARED with the setup preview (model.ts POSE) so both prepare the same jet. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
 
 		nose:4.9, wheel:2.85, stance:2.57, squat:0.08, flames:true,   // the model's own glow discs carry the burner look, procedural cones stay off (the nozzle helper-cube mesh was removed from the GLB itself — #94)   // physics nose-gear x + the DEPLOYED drawn nose-wheel x and wheel-bottom drop (three.js pose of the gear animation — the STATIC pose is gear-up on this model and lies about both); squat = clip-fraction scrubbed back under weight so the drawn oleo compresses (~0.4 m of wheel travel per unit fraction at the clip tail)
 		swivel:{ node:"c_gear_AN_lower_134", axis:[0.0012,0.0934,0.9956] },
@@ -796,7 +799,7 @@ const AIRCRAFT_MODELS={
 		       { node:"r_tire_anim_AN__287",        axis:[-0.124,0.992,0.029],   radius:0.377 },
 		       { node:"c_tire_anim_AN_Wheels_132",  axis:[1,0,0],                radius:0.296 } ],   // the nose PAIR's axle is exactly local +x (0.63 m across the pair, circular 0.59 m discs about it) — the deployed-pose world-x read was 13.7° off and made the wheels wobble ("ploughed field"). (Fan-face rotation was implemented and REMOVED: the S-ducts hide the fans from every outside sightline — verified by render — so it was invisible machinery)
 		flame:[ "Afterburner_can_flamesAction_AN_flames_1", "Afterburner_can_flames_rightAction_AN_right_4" ],   // the can-interior flame discs: the modeller's authored effect is a spin about the engine axis (local z) — a radial flame texture churning inside the can. Hidden dry, spinning with each engine's reheat   // nosewheel steering: the lower strut + scissor + wheels swivel about this node-local axis (the strut line in the DEPLOYED gear pose — measured; the gear clip re-poses the node every frame so the steering twist is post-multiplied after the mixer). Axis SIGN set empirically: the offline tire-PCA direction read was ambiguous and picked the wrong sense — the user saw the wheel steer opposite the turn
-		rig:[ { name:"gear",     track:/(^|_)[clr]_(gear|wheel)_AN_/i, drive:"gear" },
+		rig:[ { name:"gear",     track:model_gear, drive:"gear" },   // track family shared with the preview (model.ts GEAR)
 		      { name:"hook",     track:/^Hook_AN_/i, drive:"hook" },
 		      { name:"probe",    track:/^RefuelDoorAction_AN/i, drive:"probe" },   // in-flight refueling probe (starboard nose): door + arm + probe swing on one sequence; Shift+F toggles, ~5 s travel (the cockpit Refuel_Switch tracks have a different prefix and stay untouched)
 		      { name:"canopy",   track:/^Canopy_ParentAction_AN/i, drive:"canopy" },
@@ -1498,7 +1501,7 @@ function fuel_press(pb){
 	return false; }
 function ddi_fuel(x,display){ const gz=ownship.gauges||{};
 	const total=Math.round((gz.fuelRaw||0)/10)*10, ext=Math.round((gz.externalRaw||0)/10)*10, flow=((gz.flowL||0)+(gz.flowR||0))*10;
-	const low=total<fuel_state.bingo, colour=display==="center";
+	const low=(total+ext)<fuel_state.bingo, colour=display==="center";   // the BINGO caret watches TOTAL fuel — externals burn first, so they count (#17)
 	x.fillText("FUEL",256,36);
 	x.strokeStyle="#39e07a"; x.lineWidth=2;   // fuselage outline, the honest INTERNAL total inside — one external figure below it (concurrent transfer drains the tanks in step, so per-tank rows would all read the same)
 	x.beginPath(); x.moveTo(256,86); x.lineTo(292,130); x.lineTo(292,330); x.lineTo(276,364); x.lineTo(236,364); x.lineTo(220,330); x.lineTo(220,130); x.closePath(); x.stroke();
@@ -1616,15 +1619,9 @@ function ddi_fcs(x,display){ const o=last_out||[];   // per-surface truth straig
 	x.fillText("TRIM "+((o[STATE.datum]||0)/D2R).toFixed(1)+"°",24,430);
 	x.fillText("ROLL "+Math.round((o[STATE.bank]||0)*100)+"%",24,458); }
 // ============================================================================ stores (#17): per-station loadout, visuals, firing order
-const TIP_NODES={ tip9:"Object_542", tip1:"Object_145" };   // the two wingtip AIM-9 NODES in the fa18c GLB (the mesh-level names Object_114/29 are not in the scene graph — a silent getObjectByName miss); LAU-7 rails stay with the wing. Side mapping verified by the index-aware lateral probe: Object_145 is the PORT tip (group z -6.03), Object_542 starboard
+const TIP_NODES=stores_tips;   // the two wingtip AIM-9 NODES in the fa18c GLB, sides probe-verified — SHARED with the setup preview via stores.ts so the two can never disagree
 const MISSILE_NODES=[TIP_NODES.tip9, TIP_NODES.tip1];   // legacy tip pair for jets with no known loadout (remotes before the roster carries theirs)
-// Model-space anchors for AIM-9 rounds cloned onto the outboard stations: the
-// tip missile mesh translates by (anchor - its own centre). Coordinates are
-// stores.glb/model.glb space (x lateral, y vertical, z longitudinal), seeded
-// from the split AMRAAM hang points and tuned by capture.
-const ROUND_ANCHORS={   // POSITIVE model x = port (the split tool's verified convention), so station 2 sits at +x
-	"9m2":[ 3.61,-0.38,-1.28], "9m2a":[ 3.76,-0.42,-1.28], "9m2b":[ 3.46,-0.42,-1.28],
-	"9m8":[-3.61,-0.38,-1.28], "9m8a":[-3.76,-0.42,-1.28], "9m8b":[-3.46,-0.42,-1.28] };
+const ROUND_ANCHORS=stores_anchors;   // model-space anchors for AIM-9 rounds cloned onto the outboard stations — also shared with the preview
 const BOT_ARMED=stores_normalize({ 1:{fixture:"rail",stores:["9m"]}, 9:{fixture:"rail",stores:["9m"]} });   // the bot's armed standard stays its CALIBRATED configuration — two wingtips, exactly what the doctrine sweeps flew. Promoting the bot to the full Fox 2 fighter is a deliberate re-sweep, not a side effect (#17 plan, Risks)
 const BOT_CLEAN=stores_normalize({});
 let loadout_rev=0;   // bumped whenever a jet's loadout is (re)assigned — keys the per-frame mask memo
@@ -1708,30 +1705,12 @@ function own_mask(){ const book=stores_catalog(); if(!book) return 0b11;
 function external_capacity(){ const book=stores_catalog(); if(!book) return 0;
 	return stores_weight(ownship.loadout||loadout(), book).fuel; }
 // --- minimal GLB container surgery (so we never trigger the loader's blob-URL texture path) ---
-function glb_split(ab){ const dv=new DataView(ab); if(dv.getUint32(0,true)!==0x46546C67) throw new Error("not a GLB");
-	let o=12; const jsonLen=dv.getUint32(o,true); o+=8; const json=JSON.parse(new TextDecoder().decode(new Uint8Array(ab,o,jsonLen))); o+=jsonLen;
-	let bin=null; if(o<ab.byteLength){ const binLen=dv.getUint32(o,true); o+=8; bin=new Uint8Array(ab.slice(o,o+binLen)); } return {json,bin}; }
-function glb_repack(json,bin){ const js=new TextEncoder().encode(JSON.stringify(json));
-	const jsPad=(4-(js.length%4))%4, jsonLen=js.length+jsPad, binLen=bin?bin.length:0;
-	const total=12+8+jsonLen+(bin?8+binLen:0), out=new Uint8Array(total), dv=new DataView(out.buffer);
-	dv.setUint32(0,0x46546C67,true); dv.setUint32(4,2,true); dv.setUint32(8,total,true);
-	dv.setUint32(12,jsonLen,true); dv.setUint32(16,0x4E4F534A,true);
-	out.set(js,20); for(let i=20+js.length;i<20+jsonLen;i++) out[i]=0x20;
-	if(bin){ const bo=20+jsonLen; dv.setUint32(bo,binLen,true); dv.setUint32(bo+4,0x004E4942,true); out.set(bin,bo+8); }
-	return out.buffer; }
-// Map each material's baseColor image (keyed by material name) so we can re-attach per-material
-// textures after parse: the loader's own texture path builds blob: URLs the sandbox rejects, so we
-// strip textures, parse, then decode each in-process and assign. Solid-colour materials (no
-// baseColorTexture) keep their baseColorFactor, so a multi-material model renders its full livery.
-function model_textures(parts){ const out={}; const images=parts.json.images||[], textures=parts.json.textures||[], bvs=parts.json.bufferViews||[];
-	const image=(ref)=>{ if(!ref||!textures[ref.index]) return null; const t=textures[ref.index];
-		const si=t.source!=null?t.source:(t.extensions&&t.extensions.KHR_texture_basisu?t.extensions.KHR_texture_basisu.source:null);   // KTX2 textures (#200) carry their image in the basisu extension, no top-level source
-		const im=si!=null?images[si]:null; if(!im||im.bufferView==null||!parts.bin) return null;
-		const bv=bvs[im.bufferView]; return { bytes:parts.bin.slice(bv.byteOffset||0,(bv.byteOffset||0)+bv.byteLength), mime:im.mimeType||"image/jpeg" }; };
-	(parts.json.materials||[]).forEach(m=>{ if(!m.name) return;
-		const base=image(m.pbrMetallicRoughness&&m.pbrMetallicRoughness.baseColorTexture), emissive=image(m.emissiveTexture);
-		if(base||emissive) out[m.name]={ base, emissive, hadEmissive:!!m.emissiveTexture }; });
-	return out; }
+// The pure helpers moved to game/model.ts (shared with the setup's loadout
+// preview); glb_split/glb_repack/model_textures are import aliases so every
+// call site here reads as before. Solid-colour materials (no
+// baseColorTexture) keep their baseColorFactor, so a multi-material model
+// renders its full livery.
+const glb_split=model_split, glb_repack=model_repack, model_textures=model_captures;
 async function init_external_model(kind){
 	kind=kind||"fa18c"; const spec=AIRCRAFT_MODELS[kind]||AIRCRAFT_MODELS.fa18c;
 	if(fleet[kind]||fleet_loading[kind]) return fleet_loading[kind]; // one load per aircraft
@@ -2236,7 +2215,7 @@ function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c");   // battle_rigged:
 // the menu (and launches another if they want one). The endless-rematch loop
 // this replaces made a victory feel like a lap counter. The match row and the
 // recording are written at exit as always; the kill is already on the counters.
-function bandit_destroy(){ explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
+function bandit_destroy(){ bandit.fate=bandit.fate||"fire"; bandit.fated=sim_time; explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
 	has_enemy=false; bandit.group.visible=false;
 	notice(translate("KILL")); }
 let aircraft_lights=null;
@@ -3289,11 +3268,18 @@ function recording_sample(){
 	const data=out?{ aoa:(out[STATE.alpha]||0)/D2R, g:out[STATE.nz]||0, tas:ownship.speed||0,
 		ias:out[STATE.cas]||0, mach:out[STATE.mach]||0,
 		fuel:out[STATE.fuel]||0, rounds:ownship.rounds??0,
+		// battle channels (#238): what the fight did to ME, from the same
+		// state the CAS alerts and damage visuals read
+		struck:ownship.struck||0, burning:own_burning||Math.max(own_burn[0],own_burn[1])>0,
+		thrust:((out[STATE.engine_harm]||0)+(out[STATE.engine_harm+1]||0))/2, leak:own_leak||0,
+		...(ownship.fate?{fate:ownship.fate}:{}),
 		...(DEV_MODE?{ stick:last_controls?last_controls.pitch:0, stabilator:(out[STATE.stabilator]||0)/D2R }:{}) }:undefined;
 	add(ownship,1,cfg.callsign||"Player","Blue",undefined,data);
-	if(!MULTIPLAYER&&has_enemy&&bandit.group&&bandit.group.visible)
+	if(!MULTIPLAYER&&bandit.group&&(has_enemy&&bandit.group.visible||(bandit.fated&&sim_time-bandit.fated<1)))   // the grace second writes the corpse's Fate: destruction hides the group before the next sample, and an unrecorded fate was how a debrief argued with the pilot about who killed whom
 		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?(bandit_mode()||undefined):undefined,
-			{ rounds:Math.max(0,MAGAZINE-(bandit.spent||0)) });   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
+			{ rounds:Math.max(0,MAGAZINE-(bandit.spent||0)),
+				struck:bandit.struck||0, burning:!!bandit.harm.burning, thrust:bandit.harm.thrust||0,
+				wing:bandit.harm.wreck||0, ...(bandit.fate?{fate:bandit.fate}:{}) });   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
 		const team=net.teams.get(slot)||"";
 		add(st,10+slot,st.name||net.names.get(slot)||"",team==="red"?"Red":team==="blue"?"Blue":"Orange"); } }
@@ -3306,7 +3292,10 @@ function recording_file(){
 const _q=new THREE.Quaternion(), _fwd=new THREE.Vector3(), _up=new THREE.Vector3(), _right=new THREE.Vector3();
 function start_launch(){ launch_flag=true; ownship.trapped=false; ownship.throttle=Math.max(ownship.throttle,0.9); }   // requests the shot; the core fires it while attached to the shuttle (caller gates on launch_status()===2)
 let atc_on=false, atc_alpha=0;   // Approach Power Compensator (#202): engaged flag + last-frame alpha for the rate term
-let crash_t=0;   // >0 = crashed; counts down to the respawn
+let crash_t=0;   // >0 = crashed; counts down through the fireball
+let mission_done=false;   // SP: the crash ended the mission — the world holds and the menu owns what happens next (#240)
+let mission_zero=0;       // sim_time at mission start, for the outcome line's clock
+let on_over=null;         // app callback: the mission ended with a result
 let hit_flash=0;   // red vignette pulse when rounds land on the ownship
 const audio_prev={launching:false,trapped:false,grounded:false,cautions:0};   // one-shot edge detection (#73)
 let hud_cautions=0;   // caution count published by draw_hud for the master-caution beep
@@ -3365,6 +3354,7 @@ function explosion_at(x,y,z){
 	smoke.ttl[k]=smoke.life[k]=fire?(0.5+Math.random()*0.7):(2.6+Math.random()*2.6);
 	if(fire){ smoke.r[k]=1.0; smoke.g[k]=0.42+Math.random()*0.25; smoke.b[k]=0.08; } else { smoke.r[k]=0.30; smoke.g[k]=0.30; smoke.b[k]=0.32; } } }
 function crash_ownship(why){ if(crash_t>0) return; crash_t=3.0;
+	ownship.fate=ownship.fate||why||"pilot";   // how this life ended, for the recording (#238); the pilot-down path calls with no reason
 	if(!MULTIPLAYER) own_deaths++;   // local deaths count too — the history records the joust honestly (multiplayer's arrive via the net death event)
 	if(has_enemy){ has_enemy=false; bandit.group.visible=false; }   // the duel is decided the other way: the winner stands down rather than circling a respawning target (has_enemy is never true in multiplayer, where the airframe belongs to a remote player)
 	(globalThis as any).dev_crash=why||"?"; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z); ownship.group.visible=false; ownship.speed=0; }
@@ -3623,10 +3613,12 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.speed=Math.hypot(ownship.velx,ownship.vely,ownship.velz);
 	if(ownship.speed>0.5) ownship.vel_dir.set(ownship.velx/ownship.speed,ownship.vely/ownship.speed,ownship.velz/ownship.speed); else ownship.vel_dir.copy(ownship.fwd);
 	ownship.aoa=out[STATE.alpha]*180/Math.PI; ownship.gload=out[STATE.nz]; if(ownship.gload>peak_g) peak_g=ownship.gload;   // sticky peak g for the NATOPS readout (#133)
-	{ const before=ownship.fuel??1e9; ownship.fuel=out[STATE.fuel];   // the tank state, for the IFEI readout and the calls (the infinite-fuel cheat freezes it inside the core: environment.cheat.fuel)
+	{ const beforeInternal=ownship.fuel??1e9, beforeTotal=beforeInternal+(ownship.external??0);   // the tank state, for the IFEI readout and the calls (the infinite-fuel cheat freezes it inside the core: environment.cheat.fuel)
+		ownship.fuel=out[STATE.fuel]; ownship.external=out[STATE.external]||0;
+		const total=ownship.fuel+ownship.external;
 		if(!cheat("fuel")){   // a frozen tank makes the fuel calls meaningless — a light spawn load would otherwise call BINGO at mission start
-			if(before>=BINGO&&ownship.fuel<BINGO) notice(translate("BINGO FUEL"));
-			if(before>=FUELLO&&ownship.fuel<FUELLO) notice(translate("FUEL LO")); } }
+			if(beforeTotal>=BINGO&&total<BINGO) notice(translate("BINGO FUEL"));   // BINGO is a total-fuel caret (#17: externals count — they burn first, so total is what endurance means)
+			if(beforeInternal>=FUELLO&&ownship.fuel<FUELLO) notice(translate("FUEL LO")); } }   // FUEL LO stays an INTERNAL caution: the hardware watches the feed tanks, and externals cannot refill a dry feed
 	ownship.cas=out[STATE.cas];   // calibrated airspeed, m/s — the real jet's HUD speed source
 	ownship.spool=out[STATE.power]; ownship.stage=out[STATE.stage];   // achieved across the airframe's engines, computed core-side
 	ownship.reheats=[out[STATE.engine+1], out[STATE.engine+3]];   // per-engine achieved reheat (flame discs; one burner can die independently)
@@ -3734,8 +3726,15 @@ function verdict(out){   // judge the core's touchdown record: crash conditions 
 }
 function fly_player(dt){
 	if(net_waiting){ hud_message(translate("WAITING FOR OPPONENT")); return; }   // joust waiting room: frozen at the ring, no sim, until the server's match-start respawn
-	if(crash_t>0){ if(MULTIPLAYER){ read_input(dt); return; }   // multiplayer: hold in the fireball until the server's respawn event places us
-		crash_t-=dt; if(crash_t<=0){ crash_t=0; ownship.group.visible=true; reset_ownship(); } return; }   // hold through the fireball, then respawn
+	if(crash_t>0||mission_done){ if(MULTIPLAYER){ read_input(dt); return; }   // multiplayer: hold in the fireball until the server's respawn event places us
+		// Single player: the crash ENDS the mission (#240) — every task, free
+		// flight included. The old silent respawn was worst in a joust, where
+		// the victorious bandit stands down and the fresh jet spawned into an
+		// EMPTY sky; the menu owns what happens next, with the outcome on it.
+		if(!mission_done){ crash_t-=dt;
+			if(crash_t<=0){ crash_t=0; mission_done=true;
+				if(on_over) on_over({ fate:ownship.fate||"crash", struck:ownship.struck||0, seconds:Math.max(0,sim_time-mission_zero) }); } }
+		return; }
 	read_input(dt);
 	ownship.fwd.set(1,0,0).applyQuaternion(ownship.q); ownship.up.set(0,1,0).applyQuaternion(ownship.q); ownship.right.set(0,0,1).applyQuaternion(ownship.q);
 	if(!flight_active){   // bind the core to this mission's world on the first live frame past the loading gate
@@ -3769,10 +3768,12 @@ function fly_player(dt){
 		{ const flown=battle_fly(Math.min(dt,0.1), !!cheat("invulnerable"), (has_enemy&&bandit.group.visible)?battle_aim(bandit):null);
 			for(const p of flown.impacts){ const w=_v.set(p.x,p.y,p.z).applyQuaternion(bandit.group.quaternion).add(bandit.group.position);
 				hit_sparks(w.x,w.y,w.z,bandit.velx??bandit.fwd.x*bandit.speed,bandit.vely??bandit.fwd.y*bandit.speed,bandit.velz??bandit.fwd.z*bandit.speed); }
-			if(flown.own>0){ hit_flash=Math.min(1,hit_flash+0.25*flown.own); audio_hit(Math.min(flown.own,4)); } }
+			if(flown.own>0){ hit_flash=Math.min(1,hit_flash+0.25*flown.own); audio_hit(Math.min(flown.own,4)); }
+			ownship.struck=(ownship.struck||0)+flown.own; bandit.struck=(bandit.struck||0)+flown.bandit; }   // cumulative rounds taken, for the recording (#238): the total survives 10 Hz sampling losslessly
 		const battle=battle_progress(ownship.throttle,battle_tick++,battle_reset); battle_reset=false;
 		own_burn[0]=battle[0]; own_burn[1]=battle[1]; own_burning=battle[2]>0; own_leak=battle[5];
 		if(has_enemy){ const h=bandit.harm; h.thrust=battle[11]; h.wing=battle[12]; h.killed=battle[9]>0; h.burning=battle[8]>0;
+			h.wreck=battle[13]; if(h.killed&&!bandit.fate) bandit.fate="pilot";
 			if(battle[10]&BATTLE.explode){ own_kills++; bandit_destroy(); } }
 		if(has_enemy&&bandit.group.visible){ const rdx=bandit.pos.x-ownship.pos.x, rdy=bandit.pos.y-ownship.pos.y, rdz=bandit.pos.z-ownship.pos.z;
 			const range=Math.hypot(rdx,rdy,rdz)||1;
@@ -4058,6 +4059,7 @@ function reset_ownship(){
 	bandit_acc=0;   // no stale fixed-step debt across spawns
 	designated=-1;   // a respawn drops the acquisition
 	bandit.spent=0;   // a fresh fight rearms the bandit's recorded expenditure too
+	bandit.struck=0; bandit.fate=undefined; ownship.struck=0; ownship.fate=undefined;   // and starts clean battle channels (#238)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
 	ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; ownship.lights=(cfg.tod!=="day");   // lights default on at night, off by day; the magazine is the flown loadout's round count (#17)
 	update_rails(ownship, ownship.msl); update_rails(bandit, missiles_on()?2:0);
@@ -4747,9 +4749,9 @@ function draw_hud(){
 	hctx.fillText("9M  "+(cheat("ammunition")?"∞":ownship.msl),40,HH-70);
 	hctx.fillText(translate("FLARES")+"  "+(cheat("ammunition")?"∞":ownship.cm),40,HH-52);
 	if(cheat("fuel")) hctx.fillText(translate("FUEL")+"  ∞",40,HH-34);   // the tank is frozen: no pounds, no LO/BINGO colours
-	else { const pounds=Math.round((ownship.fuel??0)*2.2046/10)*10;   // the IFEI shows pounds
-		if((ownship.fuel??1e9)<FUELLO) hctx.fillStyle=(sim_time%0.8<0.4)?"#ff5050":"#803030";   // FUEL LO flashes
-		else if((ownship.fuel??1e9)<BINGO) hctx.fillStyle="#ffb050";
+	else { const pounds=Math.round(((ownship.fuel??0)+(ownship.external??0))*2.2046/10)*10;   // the IFEI headline is TOTAL fuel, externals included (#17) — they burn first, so this is the number that counts down from the top
+		if((ownship.fuel??1e9)<FUELLO) hctx.fillStyle=(sim_time%0.8<0.4)?"#ff5050":"#803030";   // FUEL LO flashes (internal — the feed-tank hardware caution)
+		else if(((ownship.fuel??1e9)+(ownship.external??0))<BINGO) hctx.fillStyle="#ffb050";
 		hctx.fillText(translate("FUEL")+"  "+pounds,40,HH-34); hctx.fillStyle=GR; } }
 
 	// ---- catapult prompt ----
@@ -5124,7 +5126,8 @@ function start_mission(){
 	loading=!assets_ready(); loading_t0=performance.now();   // hold the LOADING screen until every async asset is in — no piecemeal pop-in of carrier/airfield/airframe
 	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
 	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0;   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
-	on_config=onConfig||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
+	mission_done=false; mission_zero=sim_time;   // a fresh mission may follow an ended one without a page reload (#240)
+	on_config=onConfig||null; on_over=onOver||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
 	recorder.clear(); record_started=new Date(); record_session="local-"+mission_began; live_recording=recording_file;   // a fresh recording per mission (#212)
 	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,
 	// chase camera at the given azimuth/elevation. Judging water needs an external low view.

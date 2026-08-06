@@ -6,10 +6,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLingui } from '@lingui/react'
 import { msg } from '@lingui/core/macro'
-import { Trans, useLingui as useLinguiMacro } from '@lingui/react/macro'
+import { Plural, Trans, useLingui as useLinguiMacro } from '@lingui/react/macro'
 import { type MessageDescriptor } from '@lingui/core'
 import { Button } from '@mochi/web/components/ui/button'
-import { LogOut, Play, Send, Settings as SettingsIcon } from 'lucide-react'
+import { LogOut, Play, RotateCcw, Send, Settings as SettingsIcon } from 'lucide-react'
 import { startGame, type GameHandle } from '../game/engine'
 import { type Join as NetJoin } from '../game/net'
 import { type MissionConfig } from '../lib/config'
@@ -112,6 +112,7 @@ export function GameCanvas({
   onReady,
   onSettings,
   onConfig,
+  onAgain,
   flying,
 }: {
   config?: MissionConfig
@@ -120,6 +121,7 @@ export function GameCanvas({
   onReady?: (handle: GameHandle) => void
   onSettings?: () => void
   onConfig?: (partial: Record<string, number | string>) => void
+  onAgain?: () => void // remount a fresh mission after this one ended at a crash (#240)
   flying?: boolean
 }) {
   const stageRef = useRef<HTMLCanvasElement>(null)
@@ -130,6 +132,9 @@ export function GameCanvas({
   onConfigRef.current = onConfig
   const chatRef = useRef<HTMLInputElement>(null)
   const [menu, setMenu] = useState(false)
+  // The mission ended at a crash (#240): the engine reports how, and the menu
+  // becomes the end-of-mission surface — outcome line, Fly again, no Resume.
+  const [over, setOver] = useState<{ fate: string; struck: number; seconds: number } | null>(null)
   const [chat, setChat] = useState<string | null>(null) // the open chat prompt's scope, null when closed
   const { t } = useLinguiMacro()
   const hudRef = useRef<HTMLCanvasElement>(null)
@@ -159,6 +164,10 @@ export function GameCanvas({
       onExit,
       onConfig: (partial: Record<string, number | string>) => onConfigRef.current?.(partial),
       onMenu: () => setMenu((open) => !open), // Esc toggles the popup (#84)
+      onOver: (result: { fate: string; struck: number; seconds: number }) => {
+        setOver(result)
+        setMenu(true)
+      },
       onChat: (scope) => setChat(scope),
       translate,
     })
@@ -175,6 +184,13 @@ export function GameCanvas({
   useEffect(() => {
     if (flying) setMenu(false)
   }, [flying])
+
+  // Once the mission has ended the menu is MODAL: there is nothing behind it
+  // but the frozen fireball, so any dismissal (Esc, the settings detour's
+  // return) reopens it rather than stranding the player in a held world.
+  useEffect(() => {
+    if (over && !menu) setMenu(true)
+  }, [over, menu])
 
   // The popup pauses single player; a multiplayer server flies on regardless.
   useEffect(() => {
@@ -236,16 +252,55 @@ export function GameCanvas({
           {/* Same visual language as the front page: card surface, solid primary,
               outline secondaries, leading icons. */}
           <div className='bg-background flex w-72 flex-col gap-2 rounded-lg border p-4 shadow-lg'>
-            <Button
-              className='h-12 justify-start text-base'
-              onClick={() => {
-                setMenu(false)
-                document.documentElement.requestFullscreen?.().catch(() => {}) // back to fullscreen flight; the click is the gesture
-              }}
-            >
-              <Play className='size-4' />
-              <Trans>Resume</Trans>
-            </Button>
+            {over && (
+              <div className='mb-1 text-center'>
+                <p className='text-base font-medium'>
+                  {over.fate === 'pilot' ? (
+                    <Trans>Pilot killed</Trans>
+                  ) : over.fate === 'fire' ? (
+                    <Trans>Destroyed by fire</Trans>
+                  ) : over.fate === 'sea' ? (
+                    <Trans>Flew into the sea</Trans>
+                  ) : over.fate === 'midair' ? (
+                    <Trans>Midair collision</Trans>
+                  ) : (
+                    <Trans>Crashed</Trans>
+                  )}
+                </p>
+                <p className='text-muted-foreground text-sm'>
+                  {over.struck > 0 && (
+                    <>
+                      <Plural value={over.struck} one='# round taken' other='# rounds taken' />
+                      {' · '}
+                    </>
+                  )}
+                  {Math.floor(over.seconds / 60)}:{String(Math.floor(over.seconds % 60)).padStart(2, '0')}
+                </p>
+              </div>
+            )}
+            {over ? (
+              <Button
+                className='h-12 justify-start text-base'
+                onClick={() => {
+                  setOver(null)
+                  onAgain?.()
+                }}
+              >
+                <RotateCcw className='size-4' />
+                <Trans>Fly again</Trans>
+              </Button>
+            ) : (
+              <Button
+                className='h-12 justify-start text-base'
+                onClick={() => {
+                  setMenu(false)
+                  document.documentElement.requestFullscreen?.().catch(() => {}) // back to fullscreen flight; the click is the gesture
+                }}
+              >
+                <Play className='size-4' />
+                <Trans>Resume</Trans>
+              </Button>
+            )}
             {join && (
               <Button
                 type='button'

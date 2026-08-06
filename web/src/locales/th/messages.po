@@ -34,6 +34,11 @@ msgstr "(ขยาย)"
 msgid "[not set]"
 msgstr "[ไม่ได้ตั้ง]"
 
+#. placeholder {0}: over.struck
+#: src/components/GameCanvas.tsx:273
+msgid "{0, plural, one {# round taken} other {# rounds taken}}"
+msgstr "{0, plural, other {โดนยิง # นัด}}"
+
 #. placeholder {0}: selectedValues.size
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
 msgid "{0, plural, one {# selected} other {# selected}}"
@@ -41,7 +46,7 @@ msgstr "{0, plural, one {เลือกแล้ว #} other {เลือก�
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:1127
+#: src/components/MissionSetup.tsx:1130
 msgid "{0} created “{1}”"
 msgstr "{0} ได้สร้าง “{1}”"
 
@@ -51,7 +56,7 @@ msgid "{0} flying"
 msgstr "{0} คนกำลังบิน"
 
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:828
+#: src/components/MissionSetup.tsx:832
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb เกินน้ำหนักปล่อยตัวสูงสุด"
 
@@ -131,7 +136,7 @@ msgstr "สาย 1"
 msgid "12 hours"
 msgstr "12 ชั่วโมง"
 
-#: src/components/MissionSetup.tsx:889
+#: src/components/MissionSetup.tsx:892
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -147,7 +152,7 @@ msgstr "24 ชั่วโมง"
 msgid "3 WIRE"
 msgstr "สาย 3"
 
-#: src/components/MissionSetup.tsx:892
+#: src/components/MissionSetup.tsx:895
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -187,14 +192,14 @@ msgstr "ประเภทบัญชี"
 msgid "Account verified"
 msgstr "ยืนยันบัญชีแล้ว"
 
-#: src/components/MissionSetup.tsx:1389
-#: src/components/MissionSetup.tsx:1744
+#: src/components/MissionSetup.tsx:1392
+#: src/components/MissionSetup.tsx:1747
 #: src/components/Multiplayer.tsx:395
 msgid "Ace"
 msgstr "เสืออากาศ"
 
-#: src/components/MissionSetup.tsx:145
-#: src/components/MissionSetup.tsx:185
+#: src/components/MissionSetup.tsx:146
+#: src/components/MissionSetup.tsx:186
 msgid "Acquire target"
 msgstr "ล็อกเป้าหมาย"
 
@@ -286,7 +291,7 @@ msgstr "กำลังเพิ่ม..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "ปรับลักษณะและรูปแบบให้เหมาะกับความต้องการของคุณ"
 
-#: src/components/MissionSetup.tsx:1593
+#: src/components/MissionSetup.tsx:1596
 msgid "Afterburner"
 msgstr "สันดาปท้าย"
 
@@ -294,20 +299,20 @@ msgstr "สันดาปท้าย"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:117
-#: src/components/MissionSetup.tsx:455
+#: src/components/MissionSetup.tsx:118
+#: src/components/MissionSetup.tsx:456
 msgid "Aircraft"
 msgstr "เครื่องบิน"
 
-#: src/components/MissionSetup.tsx:966
+#: src/components/MissionSetup.tsx:969
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "เรือบรรทุกเครื่องบิน <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> โดย <1>Muhamad Mirza Arrafi</1> (Sketchfab) อนุญาตภายใต้ <2>CC BY 4.0</2> แก้ไข: ปรับขนาดใหม่ ปรับทิศทางใหม่ จมลงถึงแนวระดับน้ำ และปรับให้เรียบง่ายสำหรับเว็บ"
 
-#: src/components/MissionSetup.tsx:940
+#: src/components/MissionSetup.tsx:943
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "โมเดลอากาศยาน <0>“F/A-18C Hornet”</0> โดย <1>CreadorDeMu</1> (Sketchfab) อนุญาตภายใต้ <2>CC BY 4.0</2> แก้ไข: ปรับทิศทางและปรับขนาดใหม่ ลบข้อมูลเท็กซ์เจอร์ที่ไม่ได้ใช้ออก แยกอุปกรณ์ติดตั้งภายนอกออกเป็นไฟล์ต่างหาก และทำเมชฝาครอบหนึ่งชิ้นเป็นภาพสะท้อนกระจก"
 
-#: src/components/MissionSetup.tsx:458
+#: src/components/MissionSetup.tsx:459
 msgid "Alerts"
 msgstr "เสียงเตือน"
 
@@ -345,12 +350,12 @@ msgstr "ใครก็ได้"
 msgid "Anyone who is logged in"
 msgstr "ใครก็ตามที่เข้าสู่ระบบ"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:191
+#: src/components/MissionSetup.tsx:152
+#: src/components/MissionSetup.tsx:192
 msgid "Approach power (ATC)"
 msgstr "กำลังช่วงร่อนลงจอด (ATC)"
 
-#: src/components/MissionSetup.tsx:863
+#: src/components/MissionSetup.tsx:866
 msgid "Approach, on-speed (Vapp)"
 msgstr "เข้าร่อนลง, ความเร็วพอดี (Vapp)"
 
@@ -371,12 +376,12 @@ msgstr "คุณแน่ใจหรือไม่ว่าต้องกา
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ? คุณจะต้องเข้าสู่ระบบอีกครั้งเพื่อเข้าถึงบัญชีของคุณ"
 
-#: src/components/MissionSetup.tsx:1354
+#: src/components/MissionSetup.tsx:1357
 msgid "Armament"
 msgstr "อาวุธ"
 
-#: src/components/MissionSetup.tsx:150
-#: src/components/MissionSetup.tsx:190
+#: src/components/MissionSetup.tsx:151
+#: src/components/MissionSetup.tsx:191
 msgid "Arrestor hook"
 msgstr "ตะขอหยุด"
 
@@ -419,15 +424,15 @@ msgstr "อวาตาร์"
 msgid "Avatar for {name}"
 msgstr "อวาตาร์ของ {name}"
 
-#: src/components/MissionSetup.tsx:317
+#: src/components/MissionSetup.tsx:318
 msgid "Axes"
 msgstr "แกน"
 
-#: src/components/MissionSetup.tsx:358
+#: src/components/MissionSetup.tsx:359
 msgid "Axis {i}"
 msgstr "แกน {i}"
 
-#: src/components/GameCanvas.tsx:317
+#: src/components/GameCanvas.tsx:372
 msgid "back"
 msgstr "ถอยออก"
 
@@ -442,7 +447,7 @@ msgstr "ย้อนกลับ"
 msgid "Back to home"
 msgstr "กลับไปหน้าหลัก"
 
-#: src/components/MissionSetup.tsx:1381
+#: src/components/MissionSetup.tsx:1384
 msgid "Bandit"
 msgstr "ข้าศึก"
 
@@ -450,19 +455,19 @@ msgstr "ข้าศึก"
 msgid "Banner"
 msgstr "แบนเนอร์"
 
-#: src/components/MissionSetup.tsx:854
+#: src/components/MissionSetup.tsx:857
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "ไต่ระดับดีที่สุด (Vy, แรงขับ 100%)"
 
-#: src/components/MissionSetup.tsx:855
+#: src/components/MissionSetup.tsx:858
 msgid "Best climb (Vy, afterburner)"
 msgstr "ไต่ระดับดีที่สุด (Vy, สันดาปท้าย)"
 
-#: src/components/MissionSetup.tsx:857
+#: src/components/MissionSetup.tsx:860
 msgid "Best glide (engines out)"
 msgstr "ร่อนดีที่สุด (เครื่องยนต์ดับ)"
 
-#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:862
 msgid "Best sustained turn speed"
 msgstr "ความเร็วเลี้ยวต่อเนื่องที่ดีที่สุด"
 
@@ -513,7 +518,7 @@ msgstr "สีขอบ"
 msgid "Bots"
 msgstr "บอท"
 
-#: src/components/GameCanvas.tsx:309
+#: src/components/GameCanvas.tsx:364
 msgid "brakes"
 msgstr "เบรก"
 
@@ -529,11 +534,11 @@ msgstr "หักขวา"
 msgid "Browser notifications"
 msgstr "การแจ้งเตือนของเบราว์เซอร์"
 
-#: src/components/MissionSetup.tsx:418
+#: src/components/MissionSetup.tsx:419
 msgid "Button {i}"
 msgstr "ปุ่ม {i}"
 
-#: src/components/MissionSetup.tsx:392
+#: src/components/MissionSetup.tsx:393
 msgid "Buttons"
 msgstr "ปุ่ม"
 
@@ -541,12 +546,12 @@ msgstr "ปุ่ม"
 msgid "CALL THE BALL"
 msgstr "แจ้งบอล"
 
-#: src/components/MissionSetup.tsx:1649
+#: src/components/MissionSetup.tsx:1652
 #: src/components/Multiplayer.tsx:258
 msgid "Callsign"
 msgstr "นามเรียกขาน"
 
-#: src/components/MissionSetup.tsx:572
+#: src/components/MissionSetup.tsx:573
 msgid "Camera distance"
 msgstr "ระยะกล้อง"
 
@@ -563,7 +568,7 @@ msgstr "ระยะกล้อง"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/MissionSetup.tsx:547
+#: src/components/MissionSetup.tsx:548
 #: src/components/Multiplayer.tsx:229
 #: src/components/Multiplayer.tsx:471
 msgid "Cancel"
@@ -579,35 +584,35 @@ msgstr "ยกเลิกความคิดเห็น"
 msgid "Cancel reply"
 msgstr "ยกเลิกการตอบกลับ"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:194
 msgid "Canopy"
 msgstr "ฝาครอบห้องนักบิน"
 
-#: src/components/MissionSetup.tsx:1162
+#: src/components/MissionSetup.tsx:1165
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1429
+#: src/components/MissionSetup.tsx:1432
 msgid "Case I (day)"
 msgstr "กรณี I (กลางวัน)"
 
-#: src/components/MissionSetup.tsx:1163
+#: src/components/MissionSetup.tsx:1166
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1430
+#: src/components/MissionSetup.tsx:1433
 msgid "Case II (weather)"
 msgstr "กรณี II (สภาพอากาศ)"
 
-#: src/components/MissionSetup.tsx:1164
+#: src/components/MissionSetup.tsx:1167
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1431
+#: src/components/MissionSetup.tsx:1434
 msgid "Case III (night)"
 msgstr "กรณี III (กลางคืน)"
 
-#: src/components/MissionSetup.tsx:1437
+#: src/components/MissionSetup.tsx:1440
 msgid "Catapult"
 msgstr "เครื่องดีดส่ง"
 
@@ -615,29 +620,33 @@ msgstr "เครื่องดีดส่ง"
 msgid "Category for these notifications"
 msgstr "หมวดหมู่สำหรับการแจ้งเตือนเหล่านี้"
 
+#: src/components/MissionSetup.tsx:734
+msgid "Centerline"
+msgstr "เส้นกึ่งกลาง"
+
 #: ../../../lib/web/src/components/notification-category-button.tsx:83
 #: ../../../lib/web/src/components/notification-category-button.tsx:94
 msgid "Change notification category"
 msgstr "เปลี่ยนหมวดหมู่การแจ้งเตือน"
 
-#: src/components/GameCanvas.tsx:314
+#: src/components/GameCanvas.tsx:369
 msgid "Chase view:"
 msgstr "มุมมองไล่ตาม:"
 
-#: src/components/GameCanvas.tsx:311
+#: src/components/GameCanvas.tsx:366
 msgid "chat"
 msgstr "แชท"
 
-#: src/components/MissionSetup.tsx:204
+#: src/components/MissionSetup.tsx:205
 msgid "Chat"
 msgstr "แชท"
 
-#: src/components/MissionSetup.tsx:205
+#: src/components/MissionSetup.tsx:206
 msgid "Chat to everyone"
 msgstr "แชทกับทุกคน"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1479
+#: src/components/MissionSetup.tsx:1482
 msgid "Cheats"
 msgstr "สูตรโกง"
 
@@ -744,11 +753,11 @@ msgstr "ปิดแผง / ยกเลิก"
 msgid "Close search"
 msgstr "ปิดการค้นหา"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:373
 msgid "closer"
 msgstr "เข้าใกล้"
 
-#: src/components/MissionSetup.tsx:1465
+#: src/components/MissionSetup.tsx:1468
 msgid "Clouds"
 msgstr "เมฆ"
 
@@ -797,7 +806,7 @@ msgstr "เริ่มเข้าใกล้"
 msgid "Comment actions"
 msgstr "การดำเนินการความคิดเห็น"
 
-#: src/components/MissionSetup.tsx:119
+#: src/components/MissionSetup.tsx:120
 msgid "Communication"
 msgstr "การสื่อสาร"
 
@@ -819,7 +828,7 @@ msgstr "ตั้งค่ามุมมอง"
 msgid "Confirm"
 msgstr "ยืนยัน"
 
-#: src/components/MissionSetup.tsx:1272
+#: src/components/MissionSetup.tsx:1275
 msgid "Connect"
 msgstr "เชื่อมต่อ"
 
@@ -876,7 +885,7 @@ msgstr "คัดลอกไปยังคลิปบอร์ดแล้ว
 msgid "Copy"
 msgstr "คัดลอก"
 
-#: src/components/MissionSetup.tsx:858
+#: src/components/MissionSetup.tsx:861
 msgid "Corner speed (best instant turn)"
 msgstr "ความเร็วคอร์เนอร์ (เลี้ยวฉับพลันดีที่สุด)"
 
@@ -893,7 +902,7 @@ msgstr "ไม่สามารถโหลดเอกสารนี้ได
 msgid "Could not save the recording"
 msgstr "ไม่สามารถบันทึกไฟล์การบินได้"
 
-#: src/components/MissionSetup.tsx:1109
+#: src/components/MissionSetup.tsx:1112
 msgid "Could not send the message"
 msgstr "ไม่สามารถส่งข้อความได้"
 
@@ -913,10 +922,14 @@ msgstr "เริ่มการยืนยันตัวตนอีกคร
 msgid "Couldn't verify with that account. Please try again."
 msgstr "ไม่สามารถยืนยันด้วยบัญชีนั้นได้ โปรดลองอีกครั้ง"
 
-#: src/components/MissionSetup.tsx:146
-#: src/components/MissionSetup.tsx:186
+#: src/components/MissionSetup.tsx:147
+#: src/components/MissionSetup.tsx:187
 msgid "Countermeasures"
 msgstr "มาตรการตอบโต้"
+
+#: src/components/GameCanvas.tsx:267
+msgid "Crashed"
+msgstr "เครื่องตก"
 
 #: src/components/GameCanvas.tsx:50
 msgid "CRASHED"
@@ -943,8 +956,8 @@ msgstr "สร้างแล้วบินเลย"
 msgid "Create match"
 msgstr "สร้างแมตช์"
 
-#: src/components/MissionSetup.tsx:1784
-#: src/components/MissionSetup.tsx:1807
+#: src/components/MissionSetup.tsx:1787
+#: src/components/MissionSetup.tsx:1810
 msgid "Create mission"
 msgstr "สร้างภารกิจ"
 
@@ -962,12 +975,12 @@ msgstr "สร้างแล้ว"
 msgid "Creating..."
 msgstr "กำลังสร้าง..."
 
-#: src/components/MissionSetup.tsx:929
-#: src/components/MissionSetup.tsx:935
+#: src/components/MissionSetup.tsx:932
+#: src/components/MissionSetup.tsx:938
 msgid "Credits"
 msgstr "เครดิต"
 
-#: src/components/MissionSetup.tsx:1472
+#: src/components/MissionSetup.tsx:1475
 #: src/components/Multiplayer.tsx:320
 msgid "Cumulus"
 msgstr "เมฆคิวมูลัส"
@@ -977,6 +990,7 @@ msgid "Current location"
 msgstr "ตำแหน่งปัจจุบัน"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:265
+#: src/components/MissionSetup.tsx:783
 msgid "Custom"
 msgstr "กำหนดเอง"
 
@@ -984,8 +998,8 @@ msgstr "กำหนดเอง"
 msgid "CUT"
 msgstr "อันตราย"
 
-#: src/components/MissionSetup.tsx:154
-#: src/components/MissionSetup.tsx:198
+#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:199
 msgid "Cycle view"
 msgstr "สลับมุมมอง"
 
@@ -1009,7 +1023,7 @@ msgstr "ข้อมูลขัดแย้งกัน"
 msgid "Date"
 msgstr "วันที่"
 
-#: src/components/MissionSetup.tsx:1460
+#: src/components/MissionSetup.tsx:1463
 #: src/components/Multiplayer.tsx:315
 msgid "Day"
 msgstr "กลางวัน"
@@ -1097,12 +1111,16 @@ msgstr "จากมากไปน้อย"
 msgid "Description"
 msgstr "คำอธิบาย"
 
+#: src/components/GameCanvas.tsx:261
+msgid "Destroyed by fire"
+msgstr "ถูกไฟเผาทำลาย"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx:148
 msgid "Details Panel"
 msgstr "แผงรายละเอียด"
 
-#: src/components/MissionSetup.tsx:384
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:385
+#: src/components/MissionSetup.tsx:434
 msgid "Detect"
 msgstr "ตรวจจับ"
 
@@ -1117,7 +1135,7 @@ msgstr "ตรวจจับ"
 msgid "Detect from web browser"
 msgstr "ตรวจจับจากเว็บเบราว์เซอร์"
 
-#: src/components/MissionSetup.tsx:286
+#: src/components/MissionSetup.tsx:287
 msgid "Device"
 msgstr "อุปกรณ์"
 
@@ -1141,7 +1159,7 @@ msgstr "ยกเลิก"
 msgid "Discard draft?"
 msgstr "ยกเลิกฉบับร่างใช่ไหม?"
 
-#: src/components/MissionSetup.tsx:298
+#: src/components/MissionSetup.tsx:299
 msgid "disconnected"
 msgstr "ตัดการเชื่อมต่อแล้ว"
 
@@ -1156,8 +1174,8 @@ msgstr "ตัดการเชื่อมต่อแล้ว"
 msgid "Dismiss"
 msgstr "ปิด"
 
-#: src/components/MissionSetup.tsx:156
-#: src/components/MissionSetup.tsx:200
+#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:201
 msgid "Display repeater"
 msgstr "ตัวทวนหน้าจอ"
 
@@ -1165,13 +1183,13 @@ msgstr "ตัวทวนหน้าจอ"
 msgid "Displays the mobile sidebar."
 msgstr "แสดงแถบด้านข้างบนมือถือ"
 
-#: src/components/MissionSetup.tsx:1581
+#: src/components/MissionSetup.tsx:1584
 msgid "Distance LOD"
 msgstr "LOD ตามระยะ"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1888
+#: src/components/MissionSetup.tsx:1891
 msgid "Done"
 msgstr "เสร็จสิ้น"
 
@@ -1185,7 +1203,7 @@ msgstr "ดาวน์โหลด"
 msgid "Download failed"
 msgstr "ดาวน์โหลดไม่สำเร็จ"
 
-#: src/components/GameCanvas.tsx:316
+#: src/components/GameCanvas.tsx:371
 msgid "Drag"
 msgstr "ลาก"
 
@@ -1201,7 +1219,7 @@ msgstr "ทำซ้ำ"
 msgid "Duration"
 msgstr "ระยะเวลา"
 
-#: src/components/MissionSetup.tsx:1575
+#: src/components/MissionSetup.tsx:1578
 msgid "Dynamic resolution"
 msgstr "ความละเอียดแบบไดนามิก"
 
@@ -1248,7 +1266,7 @@ msgstr "แก้ไขการ์ดที่เลือก"
 msgid "Edit view"
 msgstr "แก้ไขมุมมอง"
 
-#: src/components/MissionSetup.tsx:197
+#: src/components/MissionSetup.tsx:198
 msgid "Eject"
 msgstr "ดีดตัว"
 
@@ -1268,11 +1286,16 @@ msgstr "รหัสอีเมล"
 msgid "empty"
 msgstr "ว่าง"
 
+#: src/components/MissionSetup.tsx:749
+#: src/components/MissionSetup.tsx:754
+msgid "Empty pylon"
+msgstr "ไพลอนว่าง"
+
 #: src/components/GameCanvas.tsx:82
 msgid "ENGAGED"
 msgstr "เข้าโจมตี"
 
-#: src/components/MissionSetup.tsx:454
+#: src/components/MissionSetup.tsx:455
 msgid "Engine"
 msgstr "เครื่องยนต์"
 
@@ -1284,19 +1307,19 @@ msgstr "ป้อนรหัสจากอีเมลของคุณ"
 msgid "Enter your authenticator code"
 msgstr "ป้อนรหัสจากแอปยืนยันตัวตนของคุณ"
 
-#: src/components/MissionSetup.tsx:457
+#: src/components/MissionSetup.tsx:458
 msgid "Environment"
 msgstr "สภาพแวดล้อม"
 
-#: src/components/GameCanvas.tsx:216
+#: src/components/GameCanvas.tsx:232
 msgid "Everyone"
 msgstr "ทุกคน"
 
-#: src/components/GameCanvas.tsx:289
+#: src/components/GameCanvas.tsx:344
 msgid "Exit match"
 msgstr "ออกจากแมตช์"
 
-#: src/components/GameCanvas.tsx:289
+#: src/components/GameCanvas.tsx:344
 msgid "Exit mission"
 msgstr "ออกจากภารกิจ"
 
@@ -1311,12 +1334,12 @@ msgstr "ขยาย"
 msgid "Expand sidebar"
 msgstr "ขยายแถบด้านข้าง"
 
-#: src/components/MissionSetup.tsx:147
-#: src/components/MissionSetup.tsx:187
+#: src/components/MissionSetup.tsx:148
+#: src/components/MissionSetup.tsx:188
 msgid "Extend flaps"
 msgstr "กางแฟลป"
 
-#: src/components/MissionSetup.tsx:1555
+#: src/components/MissionSetup.tsx:1558
 msgid "Exterior detail"
 msgstr "รายละเอียดภายนอก"
 
@@ -1328,7 +1351,7 @@ msgstr "URL ภายนอก"
 msgid "Extra large"
 msgstr "ใหญ่พิเศษ"
 
-#: src/components/MissionSetup.tsx:877
+#: src/components/MissionSetup.tsx:880
 msgid "F/A-18C reference"
 msgstr "ข้อมูลอ้างอิง F/A-18C"
 
@@ -1436,16 +1459,16 @@ msgstr "เสร็จสิ้นการย้ายบัญชี"
 msgid "Finished"
 msgstr "จบแล้ว"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:360
 msgid "fire"
 msgstr "ยิง"
 
-#: src/components/MissionSetup.tsx:143
-#: src/components/MissionSetup.tsx:183
+#: src/components/MissionSetup.tsx:144
+#: src/components/MissionSetup.tsx:184
 msgid "Fire weapon"
 msgstr "ยิงอาวุธ"
 
-#: src/components/MissionSetup.tsx:562
+#: src/components/MissionSetup.tsx:563
 msgid "Fixed keys"
 msgstr "ปุ่มตายตัว"
 
@@ -1457,7 +1480,7 @@ msgstr "Flags"
 msgid "FLAMEOUT"
 msgstr "เครื่องดับ"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:362
 msgid "flares"
 msgstr "พลุล่อ"
 
@@ -1469,7 +1492,11 @@ msgstr "พลุล่อเป้า"
 msgid "Flat"
 msgstr "แบน"
 
-#: src/components/MissionSetup.tsx:114
+#: src/components/GameCanvas.tsx:263
+msgid "Flew into the sea"
+msgstr "บินลงทะเล"
+
+#: src/components/MissionSetup.tsx:115
 msgid "Flight"
 msgstr "การบิน"
 
@@ -1489,21 +1516,25 @@ msgstr "ลอย"
 msgid "Flown"
 msgstr "บินแล้ว"
 
-#: src/components/MissionSetup.tsx:1778
-#: src/components/MissionSetup.tsx:1821
+#: src/components/MissionSetup.tsx:1781
+#: src/components/MissionSetup.tsx:1824
 msgid "Fly"
 msgstr "บิน"
 
-#: src/components/MissionSetup.tsx:762
+#: src/components/GameCanvas.tsx:290
+msgid "Fly again"
+msgstr "บินอีกครั้ง"
+
+#: src/components/MissionSetup.tsx:761
 msgid "Fox 2 fighter"
 msgstr "เครื่องบินขับไล่ Fox 2"
 
-#: src/components/MissionSetup.tsx:1605
+#: src/components/MissionSetup.tsx:1608
 msgid "Framerate"
 msgstr "อัตราเฟรม"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1349
+#: src/components/MissionSetup.tsx:1352
 msgid "Free flight"
 msgstr "บินอิสระ"
 
@@ -1528,7 +1559,7 @@ msgstr "จาก"
 msgid "From theme"
 msgstr "จากธีม"
 
-#: src/components/MissionSetup.tsx:1366
+#: src/components/MissionSetup.tsx:1369
 #: src/components/Multiplayer.tsx:330
 msgid "Fuel"
 msgstr "เชื้อเพลิง"
@@ -1549,11 +1580,11 @@ msgstr "เชื้อเพลิงรั่ว"
 msgid "FUEL LO"
 msgstr "เชื้อเพลิงต่ำ"
 
-#: src/components/MissionSetup.tsx:192
+#: src/components/MissionSetup.tsx:193
 msgid "Fuel probe"
 msgstr "ท่อรับเชื้อเพลิง"
 
-#: src/components/MissionSetup.tsx:728
+#: src/components/MissionSetup.tsx:747
 msgid "Fuel tank"
 msgstr "ถังเชื้อเพลิง"
 
@@ -1565,7 +1596,12 @@ msgstr "เลย์เอาต์เต็ม"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/MissionSetup.tsx:733
+#: src/components/MissionSetup.tsx:735
+msgid "Fuselage"
+msgstr "ลำตัวเครื่องบิน"
+
+#: src/components/GameCanvas.tsx:363
 msgid "gear"
 msgstr "ฐานล้อ"
 
@@ -1573,7 +1609,7 @@ msgstr "ฐานล้อ"
 msgid "GEAR"
 msgstr "ล้อ"
 
-#: src/components/MissionSetup.tsx:1830
+#: src/components/MissionSetup.tsx:1833
 msgid "General"
 msgstr "ทั่วไป"
 
@@ -1603,11 +1639,11 @@ msgstr "ไปที่หน้า {pageNumber}"
 msgid "Go to previous page"
 msgstr "ไปหน้าก่อนหน้า"
 
-#: src/components/MissionSetup.tsx:1833
+#: src/components/MissionSetup.tsx:1836
 msgid "Graphics"
 msgstr "กราฟิก"
 
-#: src/components/MissionSetup.tsx:824
+#: src/components/MissionSetup.tsx:828
 msgid "Gross weight"
 msgstr "น้ำหนักรวม"
 
@@ -1628,7 +1664,7 @@ msgstr "กลุ่ม: {0}"
 msgid "GUN"
 msgstr "ปืนใหญ่"
 
-#: src/components/MissionSetup.tsx:762
+#: src/components/MissionSetup.tsx:760
 msgid "Gun fighter"
 msgstr "เครื่องบินขับไล่ปืนใหญ่"
 
@@ -1640,17 +1676,17 @@ msgstr "ซ่อน"
 msgid "Hide password"
 msgstr "ซ่อนรหัสผ่าน"
 
-#: src/components/MissionSetup.tsx:1535
+#: src/components/MissionSetup.tsx:1538
 msgid "High"
 msgstr "สูง"
 
-#: src/components/MissionSetup.tsx:1473
+#: src/components/MissionSetup.tsx:1476
 #: src/components/Multiplayer.tsx:321
 msgid "High stratus"
 msgstr "สเตรตัสสูง"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1797
+#: src/components/MissionSetup.tsx:1800
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "ประวัติ"
@@ -1662,7 +1698,7 @@ msgstr "ประวัติ"
 msgid "Home"
 msgstr "หน้าหลัก"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:363
 msgid "hook"
 msgstr "ตะขอ"
 
@@ -1674,11 +1710,11 @@ msgstr "ตะขอ"
 msgid "Hot"
 msgstr "ยอดนิยม"
 
-#: src/components/MissionSetup.tsx:201
+#: src/components/MissionSetup.tsx:202
 msgid "HUD altitude source"
 msgstr "แหล่งข้อมูลความสูงของ HUD"
 
-#: src/components/MissionSetup.tsx:202
+#: src/components/MissionSetup.tsx:203
 msgid "HUD declutter"
 msgstr "ลดรายละเอียด HUD"
 
@@ -1695,8 +1731,8 @@ msgstr "โปรแกรมดูรูปภาพ: {0}"
 msgid "Imperial"
 msgstr "อิมพีเรียล"
 
-#: src/components/MissionSetup.tsx:1159
-#: src/components/MissionSetup.tsx:1426
+#: src/components/MissionSetup.tsx:1162
+#: src/components/MissionSetup.tsx:1429
 msgid "In air"
 msgstr "กลางอากาศ"
 
@@ -1732,7 +1768,7 @@ msgstr "แท็กไม่ถูกต้อง: ใช้ได้เฉพ�
 msgid "Invalid verification code"
 msgstr "รหัสยืนยันไม่ถูกต้อง"
 
-#: src/components/MissionSetup.tsx:311
+#: src/components/MissionSetup.tsx:312
 msgid "Invert pitch"
 msgstr "กลับด้านพิตช์"
 
@@ -1740,7 +1776,7 @@ msgstr "กลับด้านพิตช์"
 msgid "INVULNERABLE"
 msgstr "อมตะ"
 
-#: src/components/MissionSetup.tsx:1484
+#: src/components/MissionSetup.tsx:1487
 #: src/components/Multiplayer.tsx:359
 msgid "Invulnerable (human players only)"
 msgstr "อมตะ (เฉพาะผู้เล่นมนุษย์)"
@@ -1753,8 +1789,8 @@ msgstr "ดูเหมือนว่าหน้าที่คุณกำล
 msgid "Join"
 msgstr "เข้าร่วม"
 
-#: src/components/MissionSetup.tsx:1242
-#: src/components/MissionSetup.tsx:1788
+#: src/components/MissionSetup.tsx:1245
+#: src/components/MissionSetup.tsx:1791
 msgid "Join server"
 msgstr "เข้าร่วมเซิร์ฟเวอร์"
 
@@ -1763,7 +1799,7 @@ msgid "JOINED"
 msgstr "เข้าร่วมแล้ว"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1750
+#: src/components/MissionSetup.tsx:1753
 #: src/components/Multiplayer.tsx:453
 msgid "Joust"
 msgstr "ประจัญหน้า"
@@ -1772,11 +1808,11 @@ msgstr "ประจัญหน้า"
 msgid "Joust — 1v1, first kill wins"
 msgstr "ดวล — 1v1 ใครยิงตกก่อนชนะ"
 
-#: src/components/MissionSetup.tsx:1350
+#: src/components/MissionSetup.tsx:1353
 msgid "Joust against AI player"
 msgstr "ดวลกับผู้เล่น AI"
 
-#: src/components/MissionSetup.tsx:1839
+#: src/components/MissionSetup.tsx:1842
 msgid "Joystick"
 msgstr "จอยสติ๊ก"
 
@@ -1792,7 +1828,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "ทางลัดแป้นพิมพ์"
 
-#: src/components/MissionSetup.tsx:1842
+#: src/components/MissionSetup.tsx:1845
 msgid "Keys"
 msgstr "ปุ่มกด"
 
@@ -1821,8 +1857,8 @@ msgstr "ไฟ เครื่องซ้าย"
 msgid "L GEAR"
 msgstr "ล้อซ้าย"
 
-#: src/components/MissionSetup.tsx:149
-#: src/components/MissionSetup.tsx:189
+#: src/components/MissionSetup.tsx:150
+#: src/components/MissionSetup.tsx:190
 msgid "Landing gear"
 msgstr "ล้อลงจอด"
 
@@ -1835,12 +1871,12 @@ msgstr "ใหญ่"
 msgid "LATE"
 msgstr "ช้า"
 
-#: src/components/MissionSetup.tsx:152
-#: src/components/MissionSetup.tsx:196
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:197
 msgid "Launch (catapult)"
 msgstr "การปล่อยตัว (เครื่องดีด)"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:362
 msgid "launch / target"
 msgstr "ปล่อยตัว / ล็อกเป้า"
 
@@ -1858,7 +1894,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "เรียนรู้เพิ่มเติม"
 
-#: src/components/MissionSetup.tsx:1298
+#: src/components/MissionSetup.tsx:1301
 msgid "Leave server"
 msgstr "ออกจากเซิร์ฟเวอร์"
 
@@ -1874,6 +1910,15 @@ msgstr "ออกแล้ว"
 msgid "Left to Right"
 msgstr "ซ้ายไปขวา"
 
+#: src/components/MissionSetup.tsx:731
+#: src/components/MissionSetup.tsx:732
+msgid "Left wing"
+msgstr "ปีกซ้าย"
+
+#: src/components/MissionSetup.tsx:730
+msgid "Left wingtip"
+msgstr "ปลายปีกซ้าย"
+
 #: ../../../lib/web/src/components/post-tags.tsx:72
 msgid "Letters, numbers, spaces, and hyphens only"
 msgstr "ตัวอักษร ตัวเลข เว้นวรรค และยัติภังค์เท่านั้น"
@@ -1888,12 +1933,12 @@ msgstr "ระดับที่ 1200 ลดล้อ"
 msgid "Light"
 msgstr "สว่าง"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:363
 msgid "lights"
 msgstr "ไฟ"
 
-#: src/components/MissionSetup.tsx:153
-#: src/components/MissionSetup.tsx:195
+#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:196
 msgid "Lights"
 msgstr "ไฟ"
 
@@ -1913,7 +1958,7 @@ msgstr "ลิงก์"
 msgid "List"
 msgstr "รายการ"
 
-#: src/components/MissionSetup.tsx:1369
+#: src/components/MissionSetup.tsx:1372
 msgid "Load"
 msgstr "ปริมาณ"
 
@@ -1957,35 +2002,35 @@ msgstr "ออกจากระบบเรียบร้อยแล้ว"
 msgid "Logging out…"
 msgstr "กำลังออกจากระบบ…"
 
-#: src/components/MissionSetup.tsx:129
+#: src/components/MissionSetup.tsx:130
 msgid "Look"
 msgstr "มอง"
 
-#: src/components/MissionSetup.tsx:571
+#: src/components/MissionSetup.tsx:572
 msgid "Look / orbit"
 msgstr "มอง / หมุนรอบ"
 
-#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:159
 msgid "Look down"
 msgstr "มองลง"
 
-#: src/components/MissionSetup.tsx:159
+#: src/components/MissionSetup.tsx:160
 msgid "Look left"
 msgstr "มองซ้าย"
 
-#: src/components/MissionSetup.tsx:160
+#: src/components/MissionSetup.tsx:161
 msgid "Look right"
 msgstr "มองขวา"
 
-#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:158
 msgid "Look up"
 msgstr "มองขึ้น"
 
-#: src/components/MissionSetup.tsx:1531
+#: src/components/MissionSetup.tsx:1534
 msgid "Low"
 msgstr "ต่ำ"
 
-#: src/components/MissionSetup.tsx:1474
+#: src/components/MissionSetup.tsx:1477
 #: src/components/Multiplayer.tsx:322
 msgid "Low stratus"
 msgstr "สเตรตัสต่ำ"
@@ -2006,11 +2051,11 @@ msgstr "จัดการบัญชีที่เชื่อมต่อข
 msgid "Manual"
 msgstr "คู่มือ"
 
-#: src/components/GameCanvas.tsx:310
+#: src/components/GameCanvas.tsx:365
 msgid "map"
 msgstr "แผนที่"
 
-#: src/components/MissionSetup.tsx:203
+#: src/components/MissionSetup.tsx:204
 msgid "Map"
 msgstr "แผนที่"
 
@@ -2020,7 +2065,7 @@ msgstr "แผนที่"
 msgid "Mark all as read"
 msgstr "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด"
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:454
 msgid "Master"
 msgstr "มาสเตอร์"
 
@@ -2028,7 +2073,7 @@ msgstr "มาสเตอร์"
 msgid "Match type"
 msgstr "ประเภทแมตช์"
 
-#: src/components/MissionSetup.tsx:1292
+#: src/components/MissionSetup.tsx:1295
 msgid "Matches"
 msgstr "แมตช์"
 
@@ -2041,16 +2086,16 @@ msgid "MCP server"
 msgstr "เซิร์ฟเวอร์ MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1533
+#: src/components/MissionSetup.tsx:1536
 msgid "Medium"
 msgstr "กลาง"
 
-#: src/components/GameCanvas.tsx:311
+#: src/components/GameCanvas.tsx:366
 msgid "menu"
 msgstr "เมนู"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:207
-#: src/components/MissionSetup.tsx:206
+#: src/components/MissionSetup.tsx:207
 msgid "Menu"
 msgstr "เมนู"
 
@@ -2058,15 +2103,15 @@ msgstr "เมนู"
 msgid "Message"
 msgstr "ข้อความ"
 
-#: src/components/GameCanvas.tsx:221
+#: src/components/GameCanvas.tsx:237
 msgid "Message everyone"
 msgstr "ส่งข้อความถึงทุกคน"
 
-#: src/components/MissionSetup.tsx:1144
+#: src/components/MissionSetup.tsx:1147
 msgid "Message players on this server"
 msgstr "ส่งข้อความถึงผู้เล่นบนเซิร์ฟเวอร์นี้"
 
-#: src/components/GameCanvas.tsx:221
+#: src/components/GameCanvas.tsx:237
 msgid "Message your team"
 msgstr "ส่งข้อความถึงทีมของคุณ"
 
@@ -2074,7 +2119,11 @@ msgstr "ส่งข้อความถึงทีมของคุณ"
 msgid "Metric"
 msgstr "เมตริก"
 
-#: src/components/MissionSetup.tsx:992
+#: src/components/GameCanvas.tsx:265
+msgid "Midair collision"
+msgstr "ชนกันกลางอากาศ"
+
+#: src/components/MissionSetup.tsx:995
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "แผนที่อะทอลล์มิดเวย์ — ภาพถ่ายมีข้อมูล <0>Copernicus Sentinel-2</0> ที่ปรับแก้แล้ว (2026); เรขาคณิตของสนามบิน (ทางวิ่ง ทางขับ ลานจอด) © ผู้ร่วมสร้าง <1>OpenStreetMap</1> ได้รับอนุญาตภายใต้ <2>ODbL</2>; ข้อมูลแนวชายฝั่งและแนวปะการังจาก <3>NOAA NCCOS</3> (สาธารณสมบัติ)."
 
@@ -2111,7 +2160,7 @@ msgstr "วันจันทร์"
 msgid "More options"
 msgstr "ตัวเลือกเพิ่มเติม"
 
-#: src/components/MissionSetup.tsx:384
+#: src/components/MissionSetup.tsx:385
 msgid "Move it…"
 msgstr "ขยับเลย…"
 
@@ -2155,7 +2204,7 @@ msgstr "เกมใหม่"
 msgid "Next image"
 msgstr "รูปถัดไป"
 
-#: src/components/MissionSetup.tsx:1461
+#: src/components/MissionSetup.tsx:1464
 #: src/components/Multiplayer.tsx:316
 msgid "Night"
 msgstr "กลางคืน"
@@ -2196,7 +2245,7 @@ msgstr "ไม่มีกลุ่มที่ใช้งานได้"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "ยังไม่สามารถสร้างประเภทรายการได้ กรุณาสร้างรายการแม่ที่จำเป็นก่อน"
 
-#: src/components/MissionSetup.tsx:305
+#: src/components/MissionSetup.tsx:306
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "ไม่พบจอยสติ๊ก — กดปุ่มใดก็ได้บนจอยสติ๊กเพื่อปลุกให้ทำงาน"
 
@@ -2261,7 +2310,7 @@ msgstr "ไม่พบผู้ใช้"
 msgid "No views"
 msgstr "ไม่มีการเข้าชม"
 
-#: src/components/MissionSetup.tsx:1121
+#: src/components/MissionSetup.tsx:1124
 #: src/components/Multiplayer.tsx:436
 msgid "No world server."
 msgstr "ไม่มีเซิร์ฟเวอร์โลก"
@@ -2284,10 +2333,10 @@ msgstr "ไม่มีเกรด"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:354
-#: src/components/MissionSetup.tsx:414
-#: src/components/MissionSetup.tsx:727
-#: src/components/MissionSetup.tsx:1471
+#: src/components/MissionSetup.tsx:355
+#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:756
+#: src/components/MissionSetup.tsx:1474
 msgid "None"
 msgstr "ไม่มี"
 
@@ -2311,7 +2360,7 @@ msgstr "ยังไม่ได้ตั้งค่า"
 msgid "Nothing found"
 msgstr "ไม่พบสิ่งใด"
 
-#: src/components/MissionSetup.tsx:1121
+#: src/components/MissionSetup.tsx:1124
 msgid "Nothing yet — say hello."
 msgstr "ยังไม่มีข้อความ ลองทักทายกันดูสิ"
 
@@ -2328,8 +2377,8 @@ msgstr "การแจ้งเตือน"
 msgid "Notifications: {0}"
 msgstr "การแจ้งเตือน: {0}"
 
-#: src/components/MissionSetup.tsx:1387
-#: src/components/MissionSetup.tsx:1742
+#: src/components/MissionSetup.tsx:1390
+#: src/components/MissionSetup.tsx:1745
 #: src/components/Multiplayer.tsx:393
 msgid "Novice"
 msgstr "มือใหม่"
@@ -2340,7 +2389,7 @@ msgstr "มือใหม่"
 msgid "Number"
 msgstr "ตัวเลข"
 
-#: src/components/MissionSetup.tsx:1563
+#: src/components/MissionSetup.tsx:1566
 msgid "Ocean detail"
 msgstr "รายละเอียดมหาสมุทร"
 
@@ -2352,13 +2401,13 @@ msgstr "OK"
 msgid "On"
 msgstr "เปิด"
 
-#: src/components/MissionSetup.tsx:1161
-#: src/components/MissionSetup.tsx:1428
+#: src/components/MissionSetup.tsx:1164
+#: src/components/MissionSetup.tsx:1431
 msgid "On carrier"
 msgstr "บนเรือบรรทุกเครื่องบิน"
 
-#: src/components/MissionSetup.tsx:1160
-#: src/components/MissionSetup.tsx:1427
+#: src/components/MissionSetup.tsx:1163
+#: src/components/MissionSetup.tsx:1430
 msgid "On runway"
 msgstr "บนรันเวย์"
 
@@ -2432,11 +2481,11 @@ msgstr "ชื่อตัวเลือก"
 msgid "Options"
 msgstr "ตัวเลือก"
 
-#: src/components/GameCanvas.tsx:316
+#: src/components/GameCanvas.tsx:371
 msgid "or"
 msgstr "หรือ"
 
-#: src/components/GameCanvas.tsx:316
+#: src/components/GameCanvas.tsx:371
 msgid "orbit"
 msgstr "หมุนรอบ"
 
@@ -2444,8 +2493,8 @@ msgstr "หมุนรอบ"
 msgid "Other"
 msgstr "อื่น ๆ"
 
-#: src/components/MissionSetup.tsx:138
-#: src/components/MissionSetup.tsx:177
+#: src/components/MissionSetup.tsx:139
+#: src/components/MissionSetup.tsx:178
 msgid "Override G limit"
 msgstr "ข้ามขีดจำกัด G"
 
@@ -2462,7 +2511,7 @@ msgstr "หน้า {currentPage} จาก {totalPages}"
 msgid "Parent"
 msgstr "แม่"
 
-#: src/components/MissionSetup.tsx:176
+#: src/components/MissionSetup.tsx:177
 msgid "Parking brake"
 msgstr "เบรกจอด"
 
@@ -2486,14 +2535,14 @@ msgstr "รูปแบบ (regex)"
 msgid "Pick a date"
 msgstr "เลือกวันที่"
 
-#: src/components/MissionSetup.tsx:1063
+#: src/components/MissionSetup.tsx:1066
 #: src/components/Multiplayer.tsx:102
 #: src/components/Multiplayer.tsx:263
 msgid "pilot"
 msgstr "นักบิน"
 
-#: src/components/MissionSetup.tsx:1388
-#: src/components/MissionSetup.tsx:1743
+#: src/components/MissionSetup.tsx:1391
+#: src/components/MissionSetup.tsx:1746
 #: src/components/Multiplayer.tsx:394
 msgid "Pilot"
 msgstr "นักบิน"
@@ -2502,19 +2551,23 @@ msgstr "นักบิน"
 msgid "PILOT DOWN"
 msgstr "นักบินเสียชีวิต"
 
-#: src/components/GameCanvas.tsx:303
+#: src/components/GameCanvas.tsx:259
+msgid "Pilot killed"
+msgstr "นักบินเสียชีวิต"
+
+#: src/components/GameCanvas.tsx:358
 msgid "pitch"
 msgstr "ก้มเงย"
 
-#: src/components/MissionSetup.tsx:124
+#: src/components/MissionSetup.tsx:125
 msgid "Pitch"
 msgstr "พิตช์"
 
-#: src/components/MissionSetup.tsx:167
+#: src/components/MissionSetup.tsx:168
 msgid "Pitch down"
 msgstr "พิตช์ลง"
 
-#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:167
 msgid "Pitch up"
 msgstr "พิตช์ขึ้น"
 
@@ -2552,11 +2605,11 @@ msgstr "โพสต์"
 msgid "Posts and comments"
 msgstr "โพสต์และความคิดเห็น"
 
-#: src/components/MissionSetup.tsx:1518
+#: src/components/MissionSetup.tsx:1521
 msgid "Preset"
 msgstr "พรีเซ็ต"
 
-#: src/components/MissionSetup.tsx:541
+#: src/components/MissionSetup.tsx:542
 msgid "Press a key…"
 msgstr "กดปุ่ม…"
 
@@ -2564,7 +2617,7 @@ msgstr "กดปุ่ม…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "กด ENTER เพื่อปล่อยตัว"
 
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:434
 msgid "Press it…"
 msgstr "กดเลย…"
 
@@ -2598,10 +2651,6 @@ msgstr "การแจ้งเตือนแบบพุช"
 msgid "PUSH TIME"
 msgstr "เวลาเข้าใกล้"
 
-#: src/components/MissionSetup.tsx:727
-msgid "Pylon"
-msgstr "ไพลอน"
-
 #: src/components/GameCanvas.tsx:42
 msgid "R ENG"
 msgstr "เครื่องยนต์ขวา"
@@ -2613,10 +2662,6 @@ msgstr "ไฟ เครื่องขวา"
 #: src/components/GameCanvas.tsx:45
 msgid "R GEAR"
 msgstr "ล้อขวา"
-
-#: src/components/MissionSetup.tsx:727
-msgid "Rail"
-msgstr "ราง"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
@@ -2634,7 +2679,7 @@ msgstr "ลงทะเบียนพาสคีย์ของคุณให
 msgid "REARMED"
 msgstr "ติดอาวุธใหม่แล้ว"
 
-#: src/components/MissionSetup.tsx:1247
+#: src/components/MissionSetup.tsx:1250
 msgid "Recent"
 msgstr "ล่าสุด"
 
@@ -2647,12 +2692,12 @@ msgstr "แนะนำ"
 msgid "Reconnecting ({retries})..."
 msgstr "กำลังเชื่อมต่อใหม่ ({retries})..."
 
-#: src/components/MissionSetup.tsx:1667
+#: src/components/MissionSetup.tsx:1670
 msgid "Record flights"
 msgstr "บันทึกการบิน"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:1661
+#: src/components/MissionSetup.tsx:1664
 msgid "Recording"
 msgstr "การบันทึก"
 
@@ -2677,7 +2722,7 @@ msgstr "กำลังเปลี่ยนเส้นทางไปยัง
 msgid "Reduce interest"
 msgstr "ลดความสนใจ"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:874
 msgid "Reference"
 msgstr "อ้างอิง"
 
@@ -2756,7 +2801,7 @@ msgstr "เปลี่ยนชื่อคอลัมน์"
 msgid "Rename this board column"
 msgstr "เปลี่ยนชื่อคอลัมน์ของบอร์ดนี้"
 
-#: src/components/MissionSetup.tsx:1029
+#: src/components/MissionSetup.tsx:1032
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "การเรนเดอร์ใช้ <0>three.js</0> (สัญญาอนุญาต MIT)"
 
@@ -2780,7 +2825,7 @@ msgstr "ส่งอีเมลอีกครั้ง"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1881
+#: src/components/MissionSetup.tsx:1884
 msgid "Reset"
 msgstr "รีเซ็ต"
 
@@ -2793,21 +2838,21 @@ msgstr "รีเซ็ต{title}"
 msgid "Reset all settings to default values"
 msgstr "รีเซ็ตการตั้งค่าทั้งหมดเป็นค่าเริ่มต้น"
 
-#: src/components/MissionSetup.tsx:182
+#: src/components/MissionSetup.tsx:183
 msgid "Reset trim"
 msgstr "รีเซ็ตทริม"
 
-#: src/components/MissionSetup.tsx:155
-#: src/components/MissionSetup.tsx:199
-#: src/components/MissionSetup.tsx:570
+#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:200
+#: src/components/MissionSetup.tsx:571
 msgid "Reset view"
 msgstr "รีเซ็ตมุมมอง"
 
-#: src/components/MissionSetup.tsx:1545
+#: src/components/MissionSetup.tsx:1548
 msgid "Resolution"
 msgstr "การแก้ปัญหา"
 
-#: src/components/MissionSetup.tsx:1770
+#: src/components/MissionSetup.tsx:1773
 msgid "Restart mission"
 msgstr "เริ่มภารกิจใหม่"
 
@@ -2815,16 +2860,16 @@ msgstr "เริ่มภารกิจใหม่"
 msgid "Result"
 msgstr "ผล"
 
-#: src/components/GameCanvas.tsx:247
+#: src/components/GameCanvas.tsx:301
 msgid "Resume"
 msgstr "ดำเนินการต่อ"
 
-#: src/components/MissionSetup.tsx:1766
+#: src/components/MissionSetup.tsx:1769
 msgid "Resume mission"
 msgstr "ดำเนินภารกิจต่อ"
 
-#: src/components/MissionSetup.tsx:148
-#: src/components/MissionSetup.tsx:188
+#: src/components/MissionSetup.tsx:149
+#: src/components/MissionSetup.tsx:189
 msgid "Retract flaps"
 msgstr "เก็บแฟลป"
 
@@ -2832,7 +2877,7 @@ msgstr "เก็บแฟลป"
 msgid "Retry"
 msgstr "ลองอีกครั้ง"
 
-#: src/components/MissionSetup.tsx:368
+#: src/components/MissionSetup.tsx:369
 msgid "Reversed"
 msgstr "กลับด้าน"
 
@@ -2844,19 +2889,28 @@ msgstr "เพิกถอนการเข้าถึง"
 msgid "Right to Left"
 msgstr "ขวาไปซ้าย"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/MissionSetup.tsx:736
+#: src/components/MissionSetup.tsx:737
+msgid "Right wing"
+msgstr "ปีกขวา"
+
+#: src/components/MissionSetup.tsx:738
+msgid "Right wingtip"
+msgstr "ปลายปีกขวา"
+
+#: src/components/GameCanvas.tsx:359
 msgid "roll"
 msgstr "ม้วนตัว"
 
-#: src/components/MissionSetup.tsx:125
+#: src/components/MissionSetup.tsx:126
 msgid "Roll"
 msgstr "โรล"
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:169
 msgid "Roll left"
 msgstr "โรลซ้าย"
 
-#: src/components/MissionSetup.tsx:169
+#: src/components/MissionSetup.tsx:170
 msgid "Roll right"
 msgstr "โรลขวา"
 
@@ -2900,7 +2954,7 @@ msgstr "วันเสาร์"
 msgid "Save"
 msgstr "บันทึก"
 
-#: src/components/MissionSetup.tsx:886
+#: src/components/MissionSetup.tsx:889
 msgid "Sea level"
 msgstr "ระดับน้ำทะเล"
 
@@ -3030,8 +3084,8 @@ msgstr "เลือกทิศทางไซต์"
 msgid "Select theme preference"
 msgstr "เลือกการตั้งค่าธีม"
 
-#: src/components/MissionSetup.tsx:144
-#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:145
+#: src/components/MissionSetup.tsx:185
 msgid "Select weapon"
 msgstr "เลือกอาวุธ"
 
@@ -3049,7 +3103,7 @@ msgstr "ที่เลือก"
 msgid "Selected: <0>{0}</0>"
 msgstr "เลือก: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:1151
+#: src/components/MissionSetup.tsx:1154
 msgid "Send"
 msgstr "ส่ง"
 
@@ -3057,7 +3111,7 @@ msgstr "ส่ง"
 msgid "Send again"
 msgstr "ส่งอีกครั้ง"
 
-#: src/components/GameCanvas.tsx:260
+#: src/components/GameCanvas.tsx:315
 msgid "Send chat"
 msgstr "ส่งแชท"
 
@@ -3075,11 +3129,11 @@ msgid "Serif"
 msgstr "เซริฟ"
 
 #: src/components/MatchHistory.tsx:161
-#: src/components/MissionSetup.tsx:1260
+#: src/components/MissionSetup.tsx:1263
 msgid "Server"
 msgstr "เซิร์ฟเวอร์"
 
-#: src/components/MissionSetup.tsx:1116
+#: src/components/MissionSetup.tsx:1119
 msgid "Server chat"
 msgstr "แชทเซิร์ฟเวอร์"
 
@@ -3101,7 +3155,7 @@ msgstr "เซสชันสิ้นสุดแล้ว"
 msgid "Session expired. Please log in again."
 msgstr "เซสชันหมดอายุ โปรดเข้าสู่ระบบอีกครั้ง"
 
-#: src/components/MissionSetup.tsx:547
+#: src/components/MissionSetup.tsx:548
 msgid "Set"
 msgstr "ตั้งค่า"
 
@@ -3112,13 +3166,13 @@ msgstr "ตั้งค่าต้นทางและปลายทาง"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1792
-#: src/components/MissionSetup.tsx:1826
+#: src/components/GameCanvas.tsx:330
+#: src/components/MissionSetup.tsx:1795
+#: src/components/MissionSetup.tsx:1829
 msgid "Settings"
 msgstr "การตั้งค่า"
 
-#: src/components/MissionSetup.tsx:1587
+#: src/components/MissionSetup.tsx:1590
 msgid "Shadows"
 msgstr "เงา"
 
@@ -3162,7 +3216,7 @@ msgstr "กำลังออกจากระบบ..."
 msgid "Single line of text only"
 msgstr "ข้อความบรรทัดเดียวเท่านั้น"
 
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:859
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "ไต่ระดับดีที่สุดด้วยเครื่องยนต์เดียว (Vyse, สันดาปท้าย)"
 
@@ -3179,8 +3233,8 @@ msgstr "เล็ก"
 msgid "Sort"
 msgstr "เรียงลำดับ"
 
-#: src/components/MissionSetup.tsx:473
-#: src/components/MissionSetup.tsx:1836
+#: src/components/MissionSetup.tsx:474
+#: src/components/MissionSetup.tsx:1839
 msgid "Sound"
 msgstr "เสียง"
 
@@ -3196,17 +3250,17 @@ msgstr "กว้างขวาง"
 msgid "SPD BK"
 msgstr "เบ.ลม"
 
-#: src/components/GameCanvas.tsx:309
+#: src/components/GameCanvas.tsx:364
 msgid "speed brake"
 msgstr "เบรกลม"
 
-#: src/components/MissionSetup.tsx:128
-#: src/components/MissionSetup.tsx:136
-#: src/components/MissionSetup.tsx:174
+#: src/components/MissionSetup.tsx:129
+#: src/components/MissionSetup.tsx:137
+#: src/components/MissionSetup.tsx:175
 msgid "Speed brake"
 msgstr "เบรกลม"
 
-#: src/components/MissionSetup.tsx:912
+#: src/components/MissionSetup.tsx:915
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "ความเร็วเป็น KCAS แสดงเป็นช่วงตั้งแต่เบา (เชื้อเพลิงน้อยที่สุด ไม่ติดอาวุธภายนอก) ถึงหนัก (น้ำหนักรวมสูงสุด) ข้อมูลได้มาจากการทดลองในเกม ความแตกต่างใด ๆ จากอากาศยานจริงสะท้อนถึงข้อผิดพลาดของแบบจำลองการบินในเครื่องจำลอง"
 
@@ -3214,15 +3268,15 @@ msgstr "ความเร็วเป็น KCAS แสดงเป็นช่
 msgid "SPLASH"
 msgstr "ยิงตกแล้ว"
 
-#: src/components/MissionSetup.tsx:861
+#: src/components/MissionSetup.tsx:864
 msgid "Stall, clean (Vs1)"
 msgstr "สตอล, สภาพสะอาด (Vs1)"
 
-#: src/components/MissionSetup.tsx:862
+#: src/components/MissionSetup.tsx:865
 msgid "Stall, landing config (Vs0)"
 msgstr "สตอล, สภาพลงจอด (Vs0)"
 
-#: src/components/MissionSetup.tsx:1400
+#: src/components/MissionSetup.tsx:1403
 msgid "Start"
 msgstr "เริ่ม"
 
@@ -3234,11 +3288,11 @@ msgstr "เริ่มการสนทนาโดยเพิ่มควา
 msgid "Stay tuned though!"
 msgstr "โปรดรอติดตาม!"
 
-#: src/components/MissionSetup.tsx:852
+#: src/components/MissionSetup.tsx:855
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "ไต่ชันที่สุด (Vx, แรงขับ 100%)"
 
-#: src/components/MissionSetup.tsx:853
+#: src/components/MissionSetup.tsx:856
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "ไต่ชันที่สุด (Vx, สันดาปท้าย)"
 
@@ -3269,8 +3323,8 @@ msgstr "ติดตาม"
 msgid "Sunday"
 msgstr "วันอาทิตย์"
 
-#: src/components/MissionSetup.tsx:1390
-#: src/components/MissionSetup.tsx:1745
+#: src/components/MissionSetup.tsx:1393
+#: src/components/MissionSetup.tsx:1748
 #: src/components/Multiplayer.tsx:396
 msgid "Superhuman"
 msgstr "เหนือมนุษย์"
@@ -3312,11 +3366,11 @@ msgstr "แท็ก"
 msgid "TALLY"
 msgstr "เห็นข้าศึกแล้ว"
 
-#: src/components/MissionSetup.tsx:1343
+#: src/components/MissionSetup.tsx:1346
 msgid "Task"
 msgstr "งาน"
 
-#: src/components/GameCanvas.tsx:216
+#: src/components/GameCanvas.tsx:232
 msgid "Team"
 msgstr "ทีม"
 
@@ -3350,7 +3404,7 @@ msgstr "ข้อความ"
 msgid "That code is incorrect or has expired."
 msgstr "รหัสนั้นไม่ถูกต้องหรือหมดอายุแล้ว"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:348
 msgid "The match continues behind this menu."
 msgstr "แมตช์ยังดำเนินต่ออยู่หลังเมนูนี้"
 
@@ -3382,19 +3436,19 @@ msgstr "ล็อบบี้นี้กำลังส่งการเชื
 msgid "This page has not been created yet."
 msgstr "ยังไม่ได้สร้างหน้านี้"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:360
 msgid "throttle"
 msgstr "คันเร่ง"
 
-#: src/components/MissionSetup.tsx:127
+#: src/components/MissionSetup.tsx:128
 msgid "Throttle"
 msgstr "คันเร่ง"
 
-#: src/components/MissionSetup.tsx:173
+#: src/components/MissionSetup.tsx:174
 msgid "Throttle down"
 msgstr "ลดคันเร่ง"
 
-#: src/components/MissionSetup.tsx:172
+#: src/components/MissionSetup.tsx:173
 msgid "Throttle up"
 msgstr "เพิ่มคันเร่ง"
 
@@ -3402,11 +3456,11 @@ msgstr "เพิ่มคันเร่ง"
 msgid "Thursday"
 msgstr "วันพฤหัสบดี"
 
-#: src/components/MissionSetup.tsx:860
+#: src/components/MissionSetup.tsx:863
 msgid "Tightest sustained turn speed"
 msgstr "ความเร็วเลี้ยวต่อเนื่องแคบที่สุด"
 
-#: src/components/GameCanvas.tsx:317
+#: src/components/GameCanvas.tsx:372
 msgid "tilt"
 msgstr "เอียง"
 
@@ -3414,7 +3468,7 @@ msgstr "เอียง"
 msgid "Time"
 msgstr "เวลา"
 
-#: src/components/MissionSetup.tsx:1454
+#: src/components/MissionSetup.tsx:1457
 msgid "Time of day"
 msgstr "ช่วงเวลาของวัน"
 
@@ -3470,7 +3524,7 @@ msgstr "คำขอมากเกินไป"
 msgid "Top"
 msgstr "บนสุด"
 
-#: src/components/MissionSetup.tsx:1599
+#: src/components/MissionSetup.tsx:1602
 msgid "Tracers"
 msgstr "กระสุนส่องวิถี"
 
@@ -3478,31 +3532,31 @@ msgstr "กระสุนส่องวิถี"
 msgid "Travelling"
 msgstr "กำลังเดินทาง"
 
-#: src/components/MissionSetup.tsx:115
+#: src/components/MissionSetup.tsx:116
 msgid "Trim"
 msgstr "ทริม"
 
-#: src/components/MissionSetup.tsx:130
+#: src/components/MissionSetup.tsx:131
 msgid "Trim hat"
 msgstr "หมวกทริม"
 
-#: src/components/MissionSetup.tsx:140
-#: src/components/MissionSetup.tsx:179
+#: src/components/MissionSetup.tsx:141
+#: src/components/MissionSetup.tsx:180
 msgid "Trim nose down"
 msgstr "ทริม: หัวลง"
 
-#: src/components/MissionSetup.tsx:139
-#: src/components/MissionSetup.tsx:178
+#: src/components/MissionSetup.tsx:140
+#: src/components/MissionSetup.tsx:179
 msgid "Trim nose up"
 msgstr "ทริม: หัวขึ้น"
 
-#: src/components/MissionSetup.tsx:141
-#: src/components/MissionSetup.tsx:180
+#: src/components/MissionSetup.tsx:142
+#: src/components/MissionSetup.tsx:181
 msgid "Trim roll left"
 msgstr "ทริม: เอียงซ้าย"
 
-#: src/components/MissionSetup.tsx:142
-#: src/components/MissionSetup.tsx:181
+#: src/components/MissionSetup.tsx:143
+#: src/components/MissionSetup.tsx:182
 msgid "Trim roll right"
 msgstr "ทริม: เอียงขวา"
 
@@ -3520,10 +3574,6 @@ msgstr "ลองอีกครั้ง"
 #: ../../../lib/web/src/lib/preference-utils.ts:60
 msgid "Tuesday"
 msgstr "วันอังคาร"
-
-#: src/components/MissionSetup.tsx:727
-msgid "Twin rail"
-msgstr "รางคู่"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:162
@@ -3546,7 +3596,7 @@ msgstr "พิมพ์เพื่อค้นหาผู้ใช้"
 msgid "Type to search..."
 msgstr "พิมพ์เพื่อค้นหา..."
 
-#: src/components/MissionSetup.tsx:1537
+#: src/components/MissionSetup.tsx:1540
 msgid "Ultra"
 msgstr "อัลตรา"
 
@@ -3580,12 +3630,12 @@ msgstr "สหรัฐอเมริกา"
 msgid "Unknown"
 msgstr "ไม่ทราบ"
 
-#: src/components/MissionSetup.tsx:1490
+#: src/components/MissionSetup.tsx:1493
 #: src/components/Multiplayer.tsx:369
 msgid "Unlimited ammunition"
 msgstr "กระสุนไม่จำกัด"
 
-#: src/components/MissionSetup.tsx:1496
+#: src/components/MissionSetup.tsx:1499
 #: src/components/Multiplayer.tsx:379
 msgid "Unlimited fuel"
 msgstr "เชื้อเพลิงไม่จำกัด"
@@ -3650,7 +3700,7 @@ msgstr "ยืนยัน"
 msgid "Verify email address"
 msgstr "ยืนยันที่อยู่อีเมล"
 
-#: src/components/MissionSetup.tsx:902
+#: src/components/MissionSetup.tsx:905
 msgid "Vertical"
 msgstr "แนวดิ่ง"
 
@@ -3667,12 +3717,12 @@ msgstr "ภาพย่อวิดีโอ"
 msgid "Video viewer: {0}"
 msgstr "โปรแกรมดูวิดีโอ: {0}"
 
-#: src/components/GameCanvas.tsx:310
+#: src/components/GameCanvas.tsx:365
 msgid "view"
 msgstr "มุมมอง"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/MissionSetup.tsx:118
+#: src/components/MissionSetup.tsx:119
 msgid "View"
 msgstr "ดู"
 
@@ -3689,7 +3739,7 @@ msgstr "ดูการแจ้งเตือนทั้งหมด"
 msgid "View controls"
 msgstr "ตัวควบคุมมุมมอง"
 
-#: src/components/MissionSetup.tsx:569
+#: src/components/MissionSetup.tsx:570
 msgid "Views"
 msgstr "การดู"
 
@@ -3723,12 +3773,12 @@ msgstr "เราจะกลับมาออนไลน์เร็วๆ �
 msgid "We'll notify you when something important happens."
 msgstr "เราจะแจ้งให้คุณทราบเมื่อมีเรื่องสำคัญเกิดขึ้น"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:361
 msgid "weapon"
 msgstr "อาวุธ"
 
-#: src/components/MissionSetup.tsx:116
-#: src/components/MissionSetup.tsx:456
+#: src/components/MissionSetup.tsx:117
+#: src/components/MissionSetup.tsx:457
 msgid "Weapons"
 msgstr "อาวุธ"
 
@@ -3744,12 +3794,12 @@ msgstr "เว็บไซต์อยู่ระหว่างการบำ
 msgid "Wednesday"
 msgstr "วันพุธ"
 
-#: src/components/MissionSetup.tsx:137
-#: src/components/MissionSetup.tsx:175
+#: src/components/MissionSetup.tsx:138
+#: src/components/MissionSetup.tsx:176
 msgid "Wheel brakes"
 msgstr "เบรกล้อ"
 
-#: src/components/MissionSetup.tsx:194
+#: src/components/MissionSetup.tsx:195
 msgid "Wing fold"
 msgstr "พับปีก"
 
@@ -3761,24 +3811,24 @@ msgstr "ชนะ"
 msgid "World server"
 msgstr "เซิร์ฟเวอร์โลก"
 
-#: src/components/MissionSetup.tsx:1109
+#: src/components/MissionSetup.tsx:1112
 #: src/components/Multiplayer.tsx:115
 msgid "World server not reachable"
 msgstr "เข้าถึงเซิร์ฟเวอร์โลกไม่ได้"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:359
 msgid "yaw"
 msgstr "หันเห"
 
-#: src/components/MissionSetup.tsx:126
+#: src/components/MissionSetup.tsx:127
 msgid "Yaw"
 msgstr "ยอ"
 
-#: src/components/MissionSetup.tsx:170
+#: src/components/MissionSetup.tsx:171
 msgid "Yaw left"
 msgstr "ยอซ้าย"
 
-#: src/components/MissionSetup.tsx:171
+#: src/components/MissionSetup.tsx:172
 msgid "Yaw right"
 msgstr "ยอขวา"
 
@@ -3822,14 +3872,14 @@ msgstr "ข้อความและไฟล์แนบของคุณจ
 msgid "Your text will be lost."
 msgstr "ข้อความของคุณจะหายไป"
 
-#: src/components/MissionSetup.tsx:131
+#: src/components/MissionSetup.tsx:132
 msgid "Zoom"
 msgstr "ซูม"
 
-#: src/components/MissionSetup.tsx:161
+#: src/components/MissionSetup.tsx:162
 msgid "Zoom in"
 msgstr "ซูมเข้า"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:163
 msgid "Zoom out"
 msgstr "ซูมออก"
