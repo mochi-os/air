@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, expect, it } from 'vitest'
-import { PRESETS, entries, mask, matches, migrate, missiles_loaded, normalize, options, points, rounds, strip, weight, type Catalog, type Fitment } from './stores'
+import { PRESETS, entries, mask, matches, migrate, missiles_loaded, normalize, options, outcome, outcomes, points, rounds, strip, weight, type Catalog, type Fitment } from './stores'
 
 // A catalog mirroring the core's fa18c table (order matters: tips first).
 const FITMENTS: Fitment[] = [
@@ -133,6 +133,38 @@ describe('weight', () => {
   })
   it('gun fighter weighs nothing', () => {
     expect(weight(PRESETS.gun, BOOK)).toEqual({ hardware: 0, fuel: 0 })
+  })
+})
+
+describe('outcomes', () => {
+  it('round-trips every entry on every station', () => {
+    for (let station = 1; station <= 9; station++) {
+      for (const entry of outcomes(station)) {
+        expect(outcome(station, entry.slot)).toBe(entry.id)
+      }
+    }
+  })
+  it('every outcome is a legal, normalize-stable slot', () => {
+    for (let station = 1; station <= 9; station++) {
+      for (const entry of outcomes(station)) {
+        const lo = normalize({ [String(station)]: entry.slot })
+        expect(lo[String(station)]).toEqual(entry.slot)
+      }
+    }
+  })
+  it('every normalized slot resolves to some outcome', () => {
+    // the setup can only write outcomes, but older configs wrote raw slots —
+    // whatever normalize() admits must render as a current value
+    const twin = normalize({ 2: { fixture: 'twin', stores: ['9m', ''] } })
+    expect(outcome(2, twin['2'])).toBe('twin1')
+    expect(outcomes(2).find((o) => o.id === 'twin1')?.hidden).toBe(true)
+  })
+  it('presets are expressible as outcomes', () => {
+    for (const preset of Object.values(PRESETS)) {
+      for (let station = 1; station <= 9; station++) {
+        expect(outcomes(station).some((o) => outcome(station, preset[String(station)]) === o.id)).toBe(true)
+      }
+    }
   })
 })
 

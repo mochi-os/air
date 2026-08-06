@@ -34,6 +34,11 @@ msgstr "(berfireh bike)"
 msgid "[not set]"
 msgstr "[neyî sazkirin]"
 
+#. placeholder {0}: over.struck
+#: src/components/GameCanvas.tsx:273
+msgid "{0, plural, one {# round taken} other {# rounds taken}}"
+msgstr "{0, plural, one {# gule lê ket} other {# gule lê ketin}}"
+
 #. placeholder {0}: selectedValues.size
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
 msgid "{0, plural, one {# selected} other {# selected}}"
@@ -41,7 +46,7 @@ msgstr "{0, plural, one {# hilbijartî} other {# hilbijartî}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:1127
+#: src/components/MissionSetup.tsx:1130
 msgid "{0} created “{1}”"
 msgstr "{0} «{1}» çêkir"
 
@@ -51,7 +56,7 @@ msgid "{0} flying"
 msgstr "{0} difirin"
 
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:828
+#: src/components/MissionSetup.tsx:832
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb ji giraniya avêtinê ya herî zêde bêtir"
 
@@ -131,7 +136,7 @@ msgstr "TÊL 1"
 msgid "12 hours"
 msgstr "12 saet"
 
-#: src/components/MissionSetup.tsx:889
+#: src/components/MissionSetup.tsx:892
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -147,7 +152,7 @@ msgstr "24 saet"
 msgid "3 WIRE"
 msgstr "TÊL 3"
 
-#: src/components/MissionSetup.tsx:892
+#: src/components/MissionSetup.tsx:895
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -187,14 +192,14 @@ msgstr "Cureyê hesabê"
 msgid "Account verified"
 msgstr "Hesab hat piştrastkirin"
 
-#: src/components/MissionSetup.tsx:1389
-#: src/components/MissionSetup.tsx:1744
+#: src/components/MissionSetup.tsx:1392
+#: src/components/MissionSetup.tsx:1747
 #: src/components/Multiplayer.tsx:395
 msgid "Ace"
 msgstr "As"
 
-#: src/components/MissionSetup.tsx:145
-#: src/components/MissionSetup.tsx:185
+#: src/components/MissionSetup.tsx:146
+#: src/components/MissionSetup.tsx:186
 msgid "Acquire target"
 msgstr "Armancê bigire"
 
@@ -286,7 +291,7 @@ msgstr "Tê zêdekirin..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Xuyabûn û rûxsarê li gor tercîhên xwe biguherîne."
 
-#: src/components/MissionSetup.tsx:1593
+#: src/components/MissionSetup.tsx:1596
 msgid "Afterburner"
 msgstr "Afterburner"
 
@@ -294,20 +299,20 @@ msgstr "Afterburner"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:117
-#: src/components/MissionSetup.tsx:455
+#: src/components/MissionSetup.tsx:118
+#: src/components/MissionSetup.tsx:456
 msgid "Aircraft"
 msgstr "Balafir"
 
-#: src/components/MissionSetup.tsx:966
+#: src/components/MissionSetup.tsx:969
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Keştiya balafiran <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> ji aliyê <1>Muhamad Mirza Arrafi</1> ve (Sketchfab), di bin lîsansa <2>CC BY 4.0</2> de. Hatiye guhertin: ji nû ve hat pîvandin, ji nû ve hat arastekirin, heta xeta avê hat binavkirin û ji bo webê hat sadekirin."
 
-#: src/components/MissionSetup.tsx:940
+#: src/components/MissionSetup.tsx:943
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Modela balafirê <0>“F/A-18C Hornet”</0> ji aliyê <1>CreadorDeMu</1> ve (Sketchfab), di bin lîsansa <2>CC BY 4.0</2> de. Hatiye guhertin: ji nû ve hat arastekirin û pîvandin, daneyên tekstûrê yên bêkar hatin rakirin, barên derve yên daliqandî bo pelekî cuda hatin veqetandin, yek mesha shroudê bi kopiyeke neynikî hat guhertin."
 
-#: src/components/MissionSetup.tsx:458
+#: src/components/MissionSetup.tsx:459
 msgid "Alerts"
 msgstr "Hişyarî"
 
@@ -345,12 +350,12 @@ msgstr "Her kes"
 msgid "Anyone who is logged in"
 msgstr "Her kesê ku têketiye"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:191
+#: src/components/MissionSetup.tsx:152
+#: src/components/MissionSetup.tsx:192
 msgid "Approach power (ATC)"
 msgstr "Hêza nêzîkbûnê (ATC)"
 
-#: src/components/MissionSetup.tsx:863
+#: src/components/MissionSetup.tsx:866
 msgid "Approach, on-speed (Vapp)"
 msgstr "Nêzîkbûn, li ser lezê (Vapp)"
 
@@ -371,12 +376,12 @@ msgstr "Tu bawer î ku dixwazî vê şîroveyê jê bibî? Hemû bersiv jî dê 
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Tu bawer î ku dixwazî derkevî? Tu ê hewce bikî ku ji nû ve têkevî da ku gihîştina hesabê xwe bibî."
 
-#: src/components/MissionSetup.tsx:1354
+#: src/components/MissionSetup.tsx:1357
 msgid "Armament"
 msgstr "Çek"
 
-#: src/components/MissionSetup.tsx:150
-#: src/components/MissionSetup.tsx:190
+#: src/components/MissionSetup.tsx:151
+#: src/components/MissionSetup.tsx:191
 msgid "Arrestor hook"
 msgstr "Çengelê rawestandinê"
 
@@ -419,15 +424,15 @@ msgstr "Avatar"
 msgid "Avatar for {name}"
 msgstr "Avatar ji bo {name}"
 
-#: src/components/MissionSetup.tsx:317
+#: src/components/MissionSetup.tsx:318
 msgid "Axes"
 msgstr "Aks"
 
-#: src/components/MissionSetup.tsx:358
+#: src/components/MissionSetup.tsx:359
 msgid "Axis {i}"
 msgstr "Aksa {i}"
 
-#: src/components/GameCanvas.tsx:317
+#: src/components/GameCanvas.tsx:372
 msgid "back"
 msgstr "paş"
 
@@ -442,7 +447,7 @@ msgstr "Vegere"
 msgid "Back to home"
 msgstr "Vegere ser malê"
 
-#: src/components/MissionSetup.tsx:1381
+#: src/components/MissionSetup.tsx:1384
 msgid "Bandit"
 msgstr "Balafira dijmin"
 
@@ -450,19 +455,19 @@ msgstr "Balafira dijmin"
 msgid "Banner"
 msgstr "Banner"
 
-#: src/components/MissionSetup.tsx:854
+#: src/components/MissionSetup.tsx:857
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "Hilkişîna herî baş (Vy, 100% hêz)"
 
-#: src/components/MissionSetup.tsx:855
+#: src/components/MissionSetup.tsx:858
 msgid "Best climb (Vy, afterburner)"
 msgstr "Hilkişîna herî baş (Vy, afterburner)"
 
-#: src/components/MissionSetup.tsx:857
+#: src/components/MissionSetup.tsx:860
 msgid "Best glide (engines out)"
 msgstr "Şemitîna herî baş (motor vemirî)"
 
-#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:862
 msgid "Best sustained turn speed"
 msgstr "Leza zivirîna domdar a herî baş"
 
@@ -513,7 +518,7 @@ msgstr "Rengê sînor"
 msgid "Bots"
 msgstr "Bot"
 
-#: src/components/GameCanvas.tsx:309
+#: src/components/GameCanvas.tsx:364
 msgid "brakes"
 msgstr "fren"
 
@@ -529,11 +534,11 @@ msgstr "BIZIVIRE RASTÊ"
 msgid "Browser notifications"
 msgstr "Agahdariyên geroka"
 
-#: src/components/MissionSetup.tsx:418
+#: src/components/MissionSetup.tsx:419
 msgid "Button {i}"
 msgstr "Bişkoka {i}"
 
-#: src/components/MissionSetup.tsx:392
+#: src/components/MissionSetup.tsx:393
 msgid "Buttons"
 msgstr "Bişkok"
 
@@ -541,12 +546,12 @@ msgstr "Bişkok"
 msgid "CALL THE BALL"
 msgstr "TOPÊ RAGIHÎNE"
 
-#: src/components/MissionSetup.tsx:1649
+#: src/components/MissionSetup.tsx:1652
 #: src/components/Multiplayer.tsx:258
 msgid "Callsign"
 msgstr "Navê bangê"
 
-#: src/components/MissionSetup.tsx:572
+#: src/components/MissionSetup.tsx:573
 msgid "Camera distance"
 msgstr "Dûrahiya kamerayê"
 
@@ -563,7 +568,7 @@ msgstr "Dûrahiya kamerayê"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/MissionSetup.tsx:547
+#: src/components/MissionSetup.tsx:548
 #: src/components/Multiplayer.tsx:229
 #: src/components/Multiplayer.tsx:471
 msgid "Cancel"
@@ -579,35 +584,35 @@ msgstr "Şîroveyê betal bike"
 msgid "Cancel reply"
 msgstr "Bersivê betal bike"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:194
 msgid "Canopy"
 msgstr "Qapaxa kabînê"
 
-#: src/components/MissionSetup.tsx:1162
+#: src/components/MissionSetup.tsx:1165
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1429
+#: src/components/MissionSetup.tsx:1432
 msgid "Case I (day)"
 msgstr "Rewş I (roj)"
 
-#: src/components/MissionSetup.tsx:1163
+#: src/components/MissionSetup.tsx:1166
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1430
+#: src/components/MissionSetup.tsx:1433
 msgid "Case II (weather)"
 msgstr "Rewş II (hewa)"
 
-#: src/components/MissionSetup.tsx:1164
+#: src/components/MissionSetup.tsx:1167
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1431
+#: src/components/MissionSetup.tsx:1434
 msgid "Case III (night)"
 msgstr "Rewş III (şev)"
 
-#: src/components/MissionSetup.tsx:1437
+#: src/components/MissionSetup.tsx:1440
 msgid "Catapult"
 msgstr "Katapult"
 
@@ -615,29 +620,33 @@ msgstr "Katapult"
 msgid "Category for these notifications"
 msgstr "Kategoriya van agahdariyan"
 
+#: src/components/MissionSetup.tsx:734
+msgid "Centerline"
+msgstr "Xeta navîn"
+
 #: ../../../lib/web/src/components/notification-category-button.tsx:83
 #: ../../../lib/web/src/components/notification-category-button.tsx:94
 msgid "Change notification category"
 msgstr "Kategoriya agahdariyê biguherîne"
 
-#: src/components/GameCanvas.tsx:314
+#: src/components/GameCanvas.tsx:369
 msgid "Chase view:"
 msgstr "Dîmena şopandinê:"
 
-#: src/components/GameCanvas.tsx:311
+#: src/components/GameCanvas.tsx:366
 msgid "chat"
 msgstr "chat"
 
-#: src/components/MissionSetup.tsx:204
+#: src/components/MissionSetup.tsx:205
 msgid "Chat"
 msgstr "Chat"
 
-#: src/components/MissionSetup.tsx:205
+#: src/components/MissionSetup.tsx:206
 msgid "Chat to everyone"
 msgstr "Chat bo hemûyan"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1479
+#: src/components/MissionSetup.tsx:1482
 msgid "Cheats"
 msgstr "Hîle"
 
@@ -744,11 +753,11 @@ msgstr "Panelê bigire / betal bike"
 msgid "Close search"
 msgstr "Lêgerînê bigire"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:373
 msgid "closer"
 msgstr "nêziktir"
 
-#: src/components/MissionSetup.tsx:1465
+#: src/components/MissionSetup.tsx:1468
 msgid "Clouds"
 msgstr "Ewr"
 
@@ -797,7 +806,7 @@ msgstr "DEST PÊ DIKIM"
 msgid "Comment actions"
 msgstr "Kiryarên şîroveyê"
 
-#: src/components/MissionSetup.tsx:119
+#: src/components/MissionSetup.tsx:120
 msgid "Communication"
 msgstr "Peywendî"
 
@@ -819,7 +828,7 @@ msgstr "Mîhengên dîtinê biguherîne"
 msgid "Confirm"
 msgstr "Piştrast bike"
 
-#: src/components/MissionSetup.tsx:1272
+#: src/components/MissionSetup.tsx:1275
 msgid "Connect"
 msgstr "Girêdan"
 
@@ -876,7 +885,7 @@ msgstr "Hat kopîkirin li clipboard"
 msgid "Copy"
 msgstr "Kopî bike"
 
-#: src/components/MissionSetup.tsx:858
+#: src/components/MissionSetup.tsx:861
 msgid "Corner speed (best instant turn)"
 msgstr "Leza korner (zivirîna anî ya herî baş)"
 
@@ -893,7 +902,7 @@ msgstr "Ev belge nikarîbû were barkirin. Ji kerema xwe re paşê dîsa bicerib
 msgid "Could not save the recording"
 msgstr "Qeyd nehat tomarkirin"
 
-#: src/components/MissionSetup.tsx:1109
+#: src/components/MissionSetup.tsx:1112
 msgid "Could not send the message"
 msgstr "Peyam nehat şandin"
 
@@ -913,10 +922,14 @@ msgstr "Verastkirina ji nû ve nehate destpêkirin. Ji kerema xwe dîsa bicerib�
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Bi wê hesabê re piştrastkirin pêk nehat. Ji kerema xwe dîsa biceribîne."
 
-#: src/components/MissionSetup.tsx:146
-#: src/components/MissionSetup.tsx:186
+#: src/components/MissionSetup.tsx:147
+#: src/components/MissionSetup.tsx:187
 msgid "Countermeasures"
 msgstr "Tedbîrên dijber"
+
+#: src/components/GameCanvas.tsx:267
+msgid "Crashed"
+msgstr "Balafir ket"
 
 #: src/components/GameCanvas.tsx:50
 msgid "CRASHED"
@@ -943,8 +956,8 @@ msgstr "Çêbike û bifire"
 msgid "Create match"
 msgstr "Maçê çêbike"
 
-#: src/components/MissionSetup.tsx:1784
-#: src/components/MissionSetup.tsx:1807
+#: src/components/MissionSetup.tsx:1787
+#: src/components/MissionSetup.tsx:1810
 msgid "Create mission"
 msgstr "Peywirê çêbike"
 
@@ -962,12 +975,12 @@ msgstr "Hat çêkirin"
 msgid "Creating..."
 msgstr "Tê çêkirin..."
 
-#: src/components/MissionSetup.tsx:929
-#: src/components/MissionSetup.tsx:935
+#: src/components/MissionSetup.tsx:932
+#: src/components/MissionSetup.tsx:938
 msgid "Credits"
 msgstr "Spasî"
 
-#: src/components/MissionSetup.tsx:1472
+#: src/components/MissionSetup.tsx:1475
 #: src/components/Multiplayer.tsx:320
 msgid "Cumulus"
 msgstr "Cumulus"
@@ -977,6 +990,7 @@ msgid "Current location"
 msgstr "Cihê niha"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:265
+#: src/components/MissionSetup.tsx:783
 msgid "Custom"
 msgstr "Taybet"
 
@@ -984,8 +998,8 @@ msgstr "Taybet"
 msgid "CUT"
 msgstr "XETERNAK"
 
-#: src/components/MissionSetup.tsx:154
-#: src/components/MissionSetup.tsx:198
+#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:199
 msgid "Cycle view"
 msgstr "Dîmenê biguhere"
 
@@ -1009,7 +1023,7 @@ msgstr "Nakokiya daneyan"
 msgid "Date"
 msgstr "Dîrok"
 
-#: src/components/MissionSetup.tsx:1460
+#: src/components/MissionSetup.tsx:1463
 #: src/components/Multiplayer.tsx:315
 msgid "Day"
 msgstr "Roj"
@@ -1097,12 +1111,16 @@ msgstr "Daketî"
 msgid "Description"
 msgstr "Şirove"
 
+#: src/components/GameCanvas.tsx:261
+msgid "Destroyed by fire"
+msgstr "Bi agir wêran bû"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx:148
 msgid "Details Panel"
 msgstr "Panela hûragahiyan"
 
-#: src/components/MissionSetup.tsx:384
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:385
+#: src/components/MissionSetup.tsx:434
 msgid "Detect"
 msgstr "Tespît bike"
 
@@ -1117,7 +1135,7 @@ msgstr "Tespît bike"
 msgid "Detect from web browser"
 msgstr "Ji geroka webê tespît bike"
 
-#: src/components/MissionSetup.tsx:286
+#: src/components/MissionSetup.tsx:287
 msgid "Device"
 msgstr "Cîhaz"
 
@@ -1141,7 +1159,7 @@ msgstr "Bavêje"
 msgid "Discard draft?"
 msgstr "Reşnivîs bê avêtin?"
 
-#: src/components/MissionSetup.tsx:298
+#: src/components/MissionSetup.tsx:299
 msgid "disconnected"
 msgstr "veqetandî"
 
@@ -1156,8 +1174,8 @@ msgstr "Veqetandî"
 msgid "Dismiss"
 msgstr "Red bike"
 
-#: src/components/MissionSetup.tsx:156
-#: src/components/MissionSetup.tsx:200
+#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:201
 msgid "Display repeater"
 msgstr "Dubarekera dîmenderê"
 
@@ -1165,13 +1183,13 @@ msgstr "Dubarekera dîmenderê"
 msgid "Displays the mobile sidebar."
 msgstr "Panela kêlekê ya mobîl nîşan dide."
 
-#: src/components/MissionSetup.tsx:1581
+#: src/components/MissionSetup.tsx:1584
 msgid "Distance LOD"
 msgstr "LOD-a dûrahiyê"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1888
+#: src/components/MissionSetup.tsx:1891
 msgid "Done"
 msgstr "Qediya"
 
@@ -1185,7 +1203,7 @@ msgstr "Daxe"
 msgid "Download failed"
 msgstr "Daxistin têk çû"
 
-#: src/components/GameCanvas.tsx:316
+#: src/components/GameCanvas.tsx:371
 msgid "Drag"
 msgstr "Kaşkirin"
 
@@ -1201,7 +1219,7 @@ msgstr "Dubare"
 msgid "Duration"
 msgstr "Demajo"
 
-#: src/components/MissionSetup.tsx:1575
+#: src/components/MissionSetup.tsx:1578
 msgid "Dynamic resolution"
 msgstr "Rezolusyona dînamîk"
 
@@ -1248,7 +1266,7 @@ msgstr "Karta hilbijartî sererast bike"
 msgid "Edit view"
 msgstr "Dîmenê sererast bike"
 
-#: src/components/MissionSetup.tsx:197
+#: src/components/MissionSetup.tsx:198
 msgid "Eject"
 msgstr "Xwe bavêje derve"
 
@@ -1268,11 +1286,16 @@ msgstr "Koda e-nameyê"
 msgid "empty"
 msgstr "vala"
 
+#: src/components/MissionSetup.tsx:749
+#: src/components/MissionSetup.tsx:754
+msgid "Empty pylon"
+msgstr "Pîlona vala"
+
 #: src/components/GameCanvas.tsx:82
 msgid "ENGAGED"
 msgstr "ÊRÎŞ DIKIM"
 
-#: src/components/MissionSetup.tsx:454
+#: src/components/MissionSetup.tsx:455
 msgid "Engine"
 msgstr "Motor"
 
@@ -1284,19 +1307,19 @@ msgstr "Koda ji e-nameya xwe binivîse"
 msgid "Enter your authenticator code"
 msgstr "Koda authenticator-a xwe têkevê"
 
-#: src/components/MissionSetup.tsx:457
+#: src/components/MissionSetup.tsx:458
 msgid "Environment"
 msgstr "Jîngeh"
 
-#: src/components/GameCanvas.tsx:216
+#: src/components/GameCanvas.tsx:232
 msgid "Everyone"
 msgstr "Hemû kes"
 
-#: src/components/GameCanvas.tsx:289
+#: src/components/GameCanvas.tsx:344
 msgid "Exit match"
 msgstr "Ji maçê derkeve"
 
-#: src/components/GameCanvas.tsx:289
+#: src/components/GameCanvas.tsx:344
 msgid "Exit mission"
 msgstr "Ji peywirê derkeve"
 
@@ -1311,12 +1334,12 @@ msgstr "Fireh bike"
 msgid "Expand sidebar"
 msgstr "Bargeyê fireh bike"
 
-#: src/components/MissionSetup.tsx:147
-#: src/components/MissionSetup.tsx:187
+#: src/components/MissionSetup.tsx:148
+#: src/components/MissionSetup.tsx:188
 msgid "Extend flaps"
 msgstr "Flapan vekirin"
 
-#: src/components/MissionSetup.tsx:1555
+#: src/components/MissionSetup.tsx:1558
 msgid "Exterior detail"
 msgstr "Hûrgiliya derve"
 
@@ -1328,7 +1351,7 @@ msgstr "URL ya derveyî"
 msgid "Extra large"
 msgstr "Pir mezin"
 
-#: src/components/MissionSetup.tsx:877
+#: src/components/MissionSetup.tsx:880
 msgid "F/A-18C reference"
 msgstr "Referansa F/A-18C"
 
@@ -1436,16 +1459,16 @@ msgstr "Veguheztina hesabê xwe biqedînin"
 msgid "Finished"
 msgstr "Qediya"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:360
 msgid "fire"
 msgstr "agir"
 
-#: src/components/MissionSetup.tsx:143
-#: src/components/MissionSetup.tsx:183
+#: src/components/MissionSetup.tsx:144
+#: src/components/MissionSetup.tsx:184
 msgid "Fire weapon"
 msgstr "Çekê biteqîne"
 
-#: src/components/MissionSetup.tsx:562
+#: src/components/MissionSetup.tsx:563
 msgid "Fixed keys"
 msgstr "Bişkokên sabît"
 
@@ -1457,7 +1480,7 @@ msgstr "Ala"
 msgid "FLAMEOUT"
 msgstr "VEMIRÎN"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:362
 msgid "flares"
 msgstr "flare"
 
@@ -1469,7 +1492,11 @@ msgstr "FÎŞEK"
 msgid "Flat"
 msgstr "Tasî"
 
-#: src/components/MissionSetup.tsx:114
+#: src/components/GameCanvas.tsx:263
+msgid "Flew into the sea"
+msgstr "Ket deryayê"
+
+#: src/components/MissionSetup.tsx:115
 msgid "Flight"
 msgstr "Firîn"
 
@@ -1489,21 +1516,25 @@ msgstr "Belavbûyî"
 msgid "Flown"
 msgstr "Firiya"
 
-#: src/components/MissionSetup.tsx:1778
-#: src/components/MissionSetup.tsx:1821
+#: src/components/MissionSetup.tsx:1781
+#: src/components/MissionSetup.tsx:1824
 msgid "Fly"
 msgstr "Bifire"
 
-#: src/components/MissionSetup.tsx:762
+#: src/components/GameCanvas.tsx:290
+msgid "Fly again"
+msgstr "Dîsa bifire"
+
+#: src/components/MissionSetup.tsx:761
 msgid "Fox 2 fighter"
 msgstr "Şerkerê Fox 2"
 
-#: src/components/MissionSetup.tsx:1605
+#: src/components/MissionSetup.tsx:1608
 msgid "Framerate"
 msgstr "Rêjeya çarçoveyan"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1349
+#: src/components/MissionSetup.tsx:1352
 msgid "Free flight"
 msgstr "Firîna azad"
 
@@ -1528,7 +1559,7 @@ msgstr "Ji"
 msgid "From theme"
 msgstr "Ji temayê"
 
-#: src/components/MissionSetup.tsx:1366
+#: src/components/MissionSetup.tsx:1369
 #: src/components/Multiplayer.tsx:330
 msgid "Fuel"
 msgstr "Sotemenî"
@@ -1549,11 +1580,11 @@ msgstr "RIJÎNA SOTEMENÎ"
 msgid "FUEL LO"
 msgstr "SOTEMENÎ KÊM"
 
-#: src/components/MissionSetup.tsx:192
+#: src/components/MissionSetup.tsx:193
 msgid "Fuel probe"
 msgstr "Proba sotemeniyê"
 
-#: src/components/MissionSetup.tsx:728
+#: src/components/MissionSetup.tsx:747
 msgid "Fuel tank"
 msgstr "Tanka sotemeniyê"
 
@@ -1565,7 +1596,12 @@ msgstr "Bargeyê tev"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/MissionSetup.tsx:733
+#: src/components/MissionSetup.tsx:735
+msgid "Fuselage"
+msgstr "Laşê balafirê"
+
+#: src/components/GameCanvas.tsx:363
 msgid "gear"
 msgstr "Çerx"
 
@@ -1573,7 +1609,7 @@ msgstr "Çerx"
 msgid "GEAR"
 msgstr "ŞASÎ"
 
-#: src/components/MissionSetup.tsx:1830
+#: src/components/MissionSetup.tsx:1833
 msgid "General"
 msgstr "Giştî"
 
@@ -1603,11 +1639,11 @@ msgstr "Here rûpela {pageNumber}"
 msgid "Go to previous page"
 msgstr "Biçe rûpelê pêşîn"
 
-#: src/components/MissionSetup.tsx:1833
+#: src/components/MissionSetup.tsx:1836
 msgid "Graphics"
 msgstr "Grafîk"
 
-#: src/components/MissionSetup.tsx:824
+#: src/components/MissionSetup.tsx:828
 msgid "Gross weight"
 msgstr "Giraniya giştî"
 
@@ -1628,7 +1664,7 @@ msgstr "Kom: {0}"
 msgid "GUN"
 msgstr "TOP"
 
-#: src/components/MissionSetup.tsx:762
+#: src/components/MissionSetup.tsx:760
 msgid "Gun fighter"
 msgstr "Şerkerê topê"
 
@@ -1640,17 +1676,17 @@ msgstr "Veşêre"
 msgid "Hide password"
 msgstr "Şîfreyê veşêre"
 
-#: src/components/MissionSetup.tsx:1535
+#: src/components/MissionSetup.tsx:1538
 msgid "High"
 msgstr "Bilind"
 
-#: src/components/MissionSetup.tsx:1473
+#: src/components/MissionSetup.tsx:1476
 #: src/components/Multiplayer.tsx:321
 msgid "High stratus"
 msgstr "Stratusa bilind"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1797
+#: src/components/MissionSetup.tsx:1800
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Dîrok"
@@ -1662,7 +1698,7 @@ msgstr "Dîrok"
 msgid "Home"
 msgstr "Mal"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:363
 msgid "hook"
 msgstr "Çengel"
 
@@ -1674,11 +1710,11 @@ msgstr "ÇENG"
 msgid "Hot"
 msgstr "Germ"
 
-#: src/components/MissionSetup.tsx:201
+#: src/components/MissionSetup.tsx:202
 msgid "HUD altitude source"
 msgstr "Çavkaniya bilindahiya HUD"
 
-#: src/components/MissionSetup.tsx:202
+#: src/components/MissionSetup.tsx:203
 msgid "HUD declutter"
 msgstr "Sadekirina HUD"
 
@@ -1695,8 +1731,8 @@ msgstr "Nêrîna wêneyan: {0}"
 msgid "Imperial"
 msgstr "Împeryal"
 
-#: src/components/MissionSetup.tsx:1159
-#: src/components/MissionSetup.tsx:1426
+#: src/components/MissionSetup.tsx:1162
+#: src/components/MissionSetup.tsx:1429
 msgid "In air"
 msgstr "Di hewa de"
 
@@ -1732,7 +1768,7 @@ msgstr "Etîketa nederbasdar: tenê tîp, hejmar, valahî, xêzik û slaş (her�
 msgid "Invalid verification code"
 msgstr "Koda rastandinê nederbasdar"
 
-#: src/components/MissionSetup.tsx:311
+#: src/components/MissionSetup.tsx:312
 msgid "Invert pitch"
 msgstr "Berevajîkirina pitchê"
 
@@ -1740,7 +1776,7 @@ msgstr "Berevajîkirina pitchê"
 msgid "INVULNERABLE"
 msgstr "NEMIR"
 
-#: src/components/MissionSetup.tsx:1484
+#: src/components/MissionSetup.tsx:1487
 #: src/components/Multiplayer.tsx:359
 msgid "Invulnerable (human players only)"
 msgstr "Nemir (tenê ji bo lîstikvanên mirov)"
@@ -1753,8 +1789,8 @@ msgstr "Wisa xuya dike ku rûpela ku tu lê digerî <0/>tune ye an hatiye rakiri
 msgid "Join"
 msgstr "Tevlî bibe"
 
-#: src/components/MissionSetup.tsx:1242
-#: src/components/MissionSetup.tsx:1788
+#: src/components/MissionSetup.tsx:1245
+#: src/components/MissionSetup.tsx:1791
 msgid "Join server"
 msgstr "Beşdarî rajekar be"
 
@@ -1763,7 +1799,7 @@ msgid "JOINED"
 msgstr "TEVLÎ BÛ"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1750
+#: src/components/MissionSetup.tsx:1753
 #: src/components/Multiplayer.tsx:453
 msgid "Joust"
 msgstr "Pevçûn"
@@ -1772,11 +1808,11 @@ msgstr "Pevçûn"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, kuştina yekem bi ser dikeve"
 
-#: src/components/MissionSetup.tsx:1350
+#: src/components/MissionSetup.tsx:1353
 msgid "Joust against AI player"
 msgstr "Duel li dijî lîstikvanê AI"
 
-#: src/components/MissionSetup.tsx:1839
+#: src/components/MissionSetup.tsx:1842
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1792,7 +1828,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Kurtek klavyeyê"
 
-#: src/components/MissionSetup.tsx:1842
+#: src/components/MissionSetup.tsx:1845
 msgid "Keys"
 msgstr "Bişkok"
 
@@ -1821,8 +1857,8 @@ msgstr "AGIR MOTORA ÇEP"
 msgid "L GEAR"
 msgstr "TEKERA ÇEP"
 
-#: src/components/MissionSetup.tsx:149
-#: src/components/MissionSetup.tsx:189
+#: src/components/MissionSetup.tsx:150
+#: src/components/MissionSetup.tsx:190
 msgid "Landing gear"
 msgstr "Tekerên daketinê"
 
@@ -1835,12 +1871,12 @@ msgstr "Mezin"
 msgid "LATE"
 msgstr "DERENG"
 
-#: src/components/MissionSetup.tsx:152
-#: src/components/MissionSetup.tsx:196
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:197
 msgid "Launch (catapult)"
 msgstr "Avêtin (mancenîq)"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:362
 msgid "launch / target"
 msgstr "hilfirîn / armanc"
 
@@ -1858,7 +1894,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Zêdetir bizane"
 
-#: src/components/MissionSetup.tsx:1298
+#: src/components/MissionSetup.tsx:1301
 msgid "Leave server"
 msgstr "Ji rajekar derkeve"
 
@@ -1874,6 +1910,15 @@ msgstr "DERKET"
 msgid "Left to Right"
 msgstr "Ji çepê ber bi rastê"
 
+#: src/components/MissionSetup.tsx:731
+#: src/components/MissionSetup.tsx:732
+msgid "Left wing"
+msgstr "Baskê çepê"
+
+#: src/components/MissionSetup.tsx:730
+msgid "Left wingtip"
+msgstr "Serê baskê çepê"
+
 #: ../../../lib/web/src/components/post-tags.tsx:72
 msgid "Letters, numbers, spaces, and hyphens only"
 msgstr "Tenê tîp, hejmar, valahî û kêşan"
@@ -1888,12 +1933,12 @@ msgstr "LI 1200 RAST, ÇERX DAXÎNE"
 msgid "Light"
 msgstr "Ronî"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:363
 msgid "lights"
 msgstr "çira"
 
-#: src/components/MissionSetup.tsx:153
-#: src/components/MissionSetup.tsx:195
+#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:196
 msgid "Lights"
 msgstr "Çira"
 
@@ -1913,7 +1958,7 @@ msgstr "Lînka"
 msgid "List"
 msgstr "Lîste"
 
-#: src/components/MissionSetup.tsx:1369
+#: src/components/MissionSetup.tsx:1372
 msgid "Load"
 msgstr "Bar"
 
@@ -1957,35 +2002,35 @@ msgstr "Bi serkeftî derket"
 msgid "Logging out…"
 msgstr "Tê derketin…"
 
-#: src/components/MissionSetup.tsx:129
+#: src/components/MissionSetup.tsx:130
 msgid "Look"
 msgstr "Binêre"
 
-#: src/components/MissionSetup.tsx:571
+#: src/components/MissionSetup.tsx:572
 msgid "Look / orbit"
 msgstr "Nêrîn / zivirîn"
 
-#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:159
 msgid "Look down"
 msgstr "Li jêr binêre"
 
-#: src/components/MissionSetup.tsx:159
+#: src/components/MissionSetup.tsx:160
 msgid "Look left"
 msgstr "Li çepê binêre"
 
-#: src/components/MissionSetup.tsx:160
+#: src/components/MissionSetup.tsx:161
 msgid "Look right"
 msgstr "Li rastê binêre"
 
-#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:158
 msgid "Look up"
 msgstr "Li jor binêre"
 
-#: src/components/MissionSetup.tsx:1531
+#: src/components/MissionSetup.tsx:1534
 msgid "Low"
 msgstr "Nizm"
 
-#: src/components/MissionSetup.tsx:1474
+#: src/components/MissionSetup.tsx:1477
 #: src/components/Multiplayer.tsx:322
 msgid "Low stratus"
 msgstr "Stratusa nizm"
@@ -2006,11 +2051,11 @@ msgstr "Hesabên xwe yên girêdayî ji bo agahdarî û xizmetan bi rê ve bibin
 msgid "Manual"
 msgstr "Destî"
 
-#: src/components/GameCanvas.tsx:310
+#: src/components/GameCanvas.tsx:365
 msgid "map"
 msgstr "nexşe"
 
-#: src/components/MissionSetup.tsx:203
+#: src/components/MissionSetup.tsx:204
 msgid "Map"
 msgstr "Nexşe"
 
@@ -2020,7 +2065,7 @@ msgstr "Nexşe"
 msgid "Mark all as read"
 msgstr "Hemû wek xwendî nîşan bike"
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:454
 msgid "Master"
 msgstr "Giştî"
 
@@ -2028,7 +2073,7 @@ msgstr "Giştî"
 msgid "Match type"
 msgstr "Cureyê maçê"
 
-#: src/components/MissionSetup.tsx:1292
+#: src/components/MissionSetup.tsx:1295
 msgid "Matches"
 msgstr "Meç"
 
@@ -2041,16 +2086,16 @@ msgid "MCP server"
 msgstr "Rajekera MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1533
+#: src/components/MissionSetup.tsx:1536
 msgid "Medium"
 msgstr "Navîn"
 
-#: src/components/GameCanvas.tsx:311
+#: src/components/GameCanvas.tsx:366
 msgid "menu"
 msgstr "menû"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:207
-#: src/components/MissionSetup.tsx:206
+#: src/components/MissionSetup.tsx:207
 msgid "Menu"
 msgstr "Menû"
 
@@ -2058,15 +2103,15 @@ msgstr "Menû"
 msgid "Message"
 msgstr "Peyam"
 
-#: src/components/GameCanvas.tsx:221
+#: src/components/GameCanvas.tsx:237
 msgid "Message everyone"
 msgstr "Ji hemûyan re binivîse"
 
-#: src/components/MissionSetup.tsx:1144
+#: src/components/MissionSetup.tsx:1147
 msgid "Message players on this server"
 msgstr "Ji lîstikvanên vê serverê re peyaman bişîne"
 
-#: src/components/GameCanvas.tsx:221
+#: src/components/GameCanvas.tsx:237
 msgid "Message your team"
 msgstr "Ji tîma xwe re binivîse"
 
@@ -2074,7 +2119,11 @@ msgstr "Ji tîma xwe re binivîse"
 msgid "Metric"
 msgstr "Mîtrîk"
 
-#: src/components/MissionSetup.tsx:992
+#: src/components/GameCanvas.tsx:265
+msgid "Midair collision"
+msgstr "Lihevketin li hewayê"
+
+#: src/components/MissionSetup.tsx:995
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Nexşeya Midway Atoll — wêne daneyên <0>Copernicus Sentinel-2</0> yên guhertî dihewîne (2026); geometriya balafirgehê (rêça firîn û daketinê, rêyên texsiyê, apron) © beşdarên <1>OpenStreetMap</1>, di bin <2>ODbL</2> de bi destûr; daneyên peravê û refan ji <3>NOAA NCCOS</3> (domeyna giştî)."
 
@@ -2111,7 +2160,7 @@ msgstr "Duşem"
 msgid "More options"
 msgstr "Vebijarkên zêdetir"
 
-#: src/components/MissionSetup.tsx:384
+#: src/components/MissionSetup.tsx:385
 msgid "Move it…"
 msgstr "Wê bilivîne…"
 
@@ -2155,7 +2204,7 @@ msgstr "Lîstika nû"
 msgid "Next image"
 msgstr "Wêneya pêştir"
 
-#: src/components/MissionSetup.tsx:1461
+#: src/components/MissionSetup.tsx:1464
 #: src/components/Multiplayer.tsx:316
 msgid "Night"
 msgstr "Şev"
@@ -2196,7 +2245,7 @@ msgstr "Tu kom berdest nîn in"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Hêj tu cure babetan nikarin werin afirandin. Pêşî babetên dê yên pêwîst biafirîne."
 
-#: src/components/MissionSetup.tsx:305
+#: src/components/MissionSetup.tsx:306
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Joystick nehat dîtin — pêl bişkokeke wê bike da ku hişyar bibe."
 
@@ -2261,7 +2310,7 @@ msgstr "Tu bikarhêner nehatin dîtin"
 msgid "No views"
 msgstr "Tu dîtin tune"
 
-#: src/components/MissionSetup.tsx:1121
+#: src/components/MissionSetup.tsx:1124
 #: src/components/Multiplayer.tsx:436
 msgid "No world server."
 msgstr "Servera cîhanê tune."
@@ -2284,10 +2333,10 @@ msgstr "BÊ NIMRE"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:354
-#: src/components/MissionSetup.tsx:414
-#: src/components/MissionSetup.tsx:727
-#: src/components/MissionSetup.tsx:1471
+#: src/components/MissionSetup.tsx:355
+#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:756
+#: src/components/MissionSetup.tsx:1474
 msgid "None"
 msgstr "Tu"
 
@@ -2311,7 +2360,7 @@ msgstr "Nehatiye danîn"
 msgid "Nothing found"
 msgstr "Tiştek nehat dîtin"
 
-#: src/components/MissionSetup.tsx:1121
+#: src/components/MissionSetup.tsx:1124
 msgid "Nothing yet — say hello."
 msgstr "Hîn tiştek tune ye — silavê bide."
 
@@ -2328,8 +2377,8 @@ msgstr "Agahdarî"
 msgid "Notifications: {0}"
 msgstr "Agahdarî: {0}"
 
-#: src/components/MissionSetup.tsx:1387
-#: src/components/MissionSetup.tsx:1742
+#: src/components/MissionSetup.tsx:1390
+#: src/components/MissionSetup.tsx:1745
 #: src/components/Multiplayer.tsx:393
 msgid "Novice"
 msgstr "Destpêker"
@@ -2340,7 +2389,7 @@ msgstr "Destpêker"
 msgid "Number"
 msgstr "Hejmar"
 
-#: src/components/MissionSetup.tsx:1563
+#: src/components/MissionSetup.tsx:1566
 msgid "Ocean detail"
 msgstr "Hûrgiliya okyanûsê"
 
@@ -2352,13 +2401,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Vekirî"
 
-#: src/components/MissionSetup.tsx:1161
-#: src/components/MissionSetup.tsx:1428
+#: src/components/MissionSetup.tsx:1164
+#: src/components/MissionSetup.tsx:1431
 msgid "On carrier"
 msgstr "Li ser keştiyê"
 
-#: src/components/MissionSetup.tsx:1160
-#: src/components/MissionSetup.tsx:1427
+#: src/components/MissionSetup.tsx:1163
+#: src/components/MissionSetup.tsx:1430
 msgid "On runway"
 msgstr "Li ser pîstê"
 
@@ -2432,11 +2481,11 @@ msgstr "Navê vebijêrkê"
 msgid "Options"
 msgstr "Vebijêrk"
 
-#: src/components/GameCanvas.tsx:316
+#: src/components/GameCanvas.tsx:371
 msgid "or"
 msgstr "an"
 
-#: src/components/GameCanvas.tsx:316
+#: src/components/GameCanvas.tsx:371
 msgid "orbit"
 msgstr "gerîn"
 
@@ -2444,8 +2493,8 @@ msgstr "gerîn"
 msgid "Other"
 msgstr "Yên din"
 
-#: src/components/MissionSetup.tsx:138
-#: src/components/MissionSetup.tsx:177
+#: src/components/MissionSetup.tsx:139
+#: src/components/MissionSetup.tsx:178
 msgid "Override G limit"
 msgstr "Sînorê G derbaskirin"
 
@@ -2462,7 +2511,7 @@ msgstr "Rûpel {currentPage} ji {totalPages}"
 msgid "Parent"
 msgstr "Dêûbav"
 
-#: src/components/MissionSetup.tsx:176
+#: src/components/MissionSetup.tsx:177
 msgid "Parking brake"
 msgstr "Frena rawestandinê"
 
@@ -2486,14 +2535,14 @@ msgstr "Şablon (regex)"
 msgid "Pick a date"
 msgstr "Dîrokek hilbijêre"
 
-#: src/components/MissionSetup.tsx:1063
+#: src/components/MissionSetup.tsx:1066
 #: src/components/Multiplayer.tsx:102
 #: src/components/Multiplayer.tsx:263
 msgid "pilot"
 msgstr "pîlot"
 
-#: src/components/MissionSetup.tsx:1388
-#: src/components/MissionSetup.tsx:1743
+#: src/components/MissionSetup.tsx:1391
+#: src/components/MissionSetup.tsx:1746
 #: src/components/Multiplayer.tsx:394
 msgid "Pilot"
 msgstr "Pîlot"
@@ -2502,19 +2551,23 @@ msgstr "Pîlot"
 msgid "PILOT DOWN"
 msgstr "PÎLOT HAT KUŞTIN"
 
-#: src/components/GameCanvas.tsx:303
+#: src/components/GameCanvas.tsx:259
+msgid "Pilot killed"
+msgstr "Pîlot hat kuştin"
+
+#: src/components/GameCanvas.tsx:358
 msgid "pitch"
 msgstr "pitch"
 
-#: src/components/MissionSetup.tsx:124
+#: src/components/MissionSetup.tsx:125
 msgid "Pitch"
 msgstr "Pitch"
 
-#: src/components/MissionSetup.tsx:167
+#: src/components/MissionSetup.tsx:168
 msgid "Pitch down"
 msgstr "Poz ber bi jêr"
 
-#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:167
 msgid "Pitch up"
 msgstr "Poz ber bi jor"
 
@@ -2552,11 +2605,11 @@ msgstr "Poste"
 msgid "Posts and comments"
 msgstr "Poste û şîrove"
 
-#: src/components/MissionSetup.tsx:1518
+#: src/components/MissionSetup.tsx:1521
 msgid "Preset"
 msgstr "Pêşmîheng"
 
-#: src/components/MissionSetup.tsx:541
+#: src/components/MissionSetup.tsx:542
 msgid "Press a key…"
 msgstr "Pêl bişkokekê bike…"
 
@@ -2564,7 +2617,7 @@ msgstr "Pêl bişkokekê bike…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "JI BO FIRÎNÊ ENTER BIKIRTÎNE"
 
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:434
 msgid "Press it…"
 msgstr "Pêl wê bike…"
 
@@ -2598,10 +2651,6 @@ msgstr "Agahdariya push"
 msgid "PUSH TIME"
 msgstr "DEMA NÊZÎKBÛNÊ"
 
-#: src/components/MissionSetup.tsx:727
-msgid "Pylon"
-msgstr "Pîlon"
-
 #: src/components/GameCanvas.tsx:42
 msgid "R ENG"
 msgstr "MOTORA RAST"
@@ -2613,10 +2662,6 @@ msgstr "AGIR MOTORA RAST"
 #: src/components/GameCanvas.tsx:45
 msgid "R GEAR"
 msgstr "TEKERA RAST"
-
-#: src/components/MissionSetup.tsx:727
-msgid "Rail"
-msgstr "Rêl"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
@@ -2634,7 +2679,7 @@ msgstr "Mifteyên gihîştinê yên xwe li ser vî rajeyê ji nû ve qeyd bike"
 msgid "REARMED"
 msgstr "JI NÛ VE ÇEKDAR"
 
-#: src/components/MissionSetup.tsx:1247
+#: src/components/MissionSetup.tsx:1250
 msgid "Recent"
 msgstr "Dawî"
 
@@ -2647,12 +2692,12 @@ msgstr "Pêşniyarkirî"
 msgid "Reconnecting ({retries})..."
 msgstr "Ji nû ve girêdan ({retries})..."
 
-#: src/components/MissionSetup.tsx:1667
+#: src/components/MissionSetup.tsx:1670
 msgid "Record flights"
 msgstr "Firînan qeyd bike"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:1661
+#: src/components/MissionSetup.tsx:1664
 msgid "Recording"
 msgstr "Qeydkirin"
 
@@ -2677,7 +2722,7 @@ msgstr "Beralîkirin ber bi têketinê ve."
 msgid "Reduce interest"
 msgstr "Balkêşî kêm bike"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:874
 msgid "Reference"
 msgstr "Referans"
 
@@ -2756,7 +2801,7 @@ msgstr "Navê stûnê biguhere"
 msgid "Rename this board column"
 msgstr "Navê vê stûna paneyê biguhere"
 
-#: src/components/MissionSetup.tsx:1029
+#: src/components/MissionSetup.tsx:1032
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Renderkirin bi <0>three.js</0> e (lîsansa MIT)."
 
@@ -2780,7 +2825,7 @@ msgstr "Dîsa e-nameyê bişîne"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1881
+#: src/components/MissionSetup.tsx:1884
 msgid "Reset"
 msgstr "Bişkojka veguhastinê"
 
@@ -2793,21 +2838,21 @@ msgstr "{title} ji nû ve saz bike"
 msgid "Reset all settings to default values"
 msgstr "Hemû mîhengan ber bi standardan ve veguhêze"
 
-#: src/components/MissionSetup.tsx:182
+#: src/components/MissionSetup.tsx:183
 msgid "Reset trim"
 msgstr "Trîmê sifir bike"
 
-#: src/components/MissionSetup.tsx:155
-#: src/components/MissionSetup.tsx:199
-#: src/components/MissionSetup.tsx:570
+#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:200
+#: src/components/MissionSetup.tsx:571
 msgid "Reset view"
 msgstr "Dîmenê sifir bike"
 
-#: src/components/MissionSetup.tsx:1545
+#: src/components/MissionSetup.tsx:1548
 msgid "Resolution"
 msgstr "Çareserî"
 
-#: src/components/MissionSetup.tsx:1770
+#: src/components/MissionSetup.tsx:1773
 msgid "Restart mission"
 msgstr "Peywirê ji nû ve dest pê bike"
 
@@ -2815,16 +2860,16 @@ msgstr "Peywirê ji nû ve dest pê bike"
 msgid "Result"
 msgstr "Encam"
 
-#: src/components/GameCanvas.tsx:247
+#: src/components/GameCanvas.tsx:301
 msgid "Resume"
 msgstr "Bidomîne"
 
-#: src/components/MissionSetup.tsx:1766
+#: src/components/MissionSetup.tsx:1769
 msgid "Resume mission"
 msgstr "Peywirê bidomîne"
 
-#: src/components/MissionSetup.tsx:148
-#: src/components/MissionSetup.tsx:188
+#: src/components/MissionSetup.tsx:149
+#: src/components/MissionSetup.tsx:189
 msgid "Retract flaps"
 msgstr "Flapan berhevkirin"
 
@@ -2832,7 +2877,7 @@ msgstr "Flapan berhevkirin"
 msgid "Retry"
 msgstr "Dîsa biceribîne"
 
-#: src/components/MissionSetup.tsx:368
+#: src/components/MissionSetup.tsx:369
 msgid "Reversed"
 msgstr "Berevajî"
 
@@ -2844,19 +2889,28 @@ msgstr "Gihîştinê betal bike"
 msgid "Right to Left"
 msgstr "Ji rast ber bi çep"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/MissionSetup.tsx:736
+#: src/components/MissionSetup.tsx:737
+msgid "Right wing"
+msgstr "Baskê rastê"
+
+#: src/components/MissionSetup.tsx:738
+msgid "Right wingtip"
+msgstr "Serê baskê rastê"
+
+#: src/components/GameCanvas.tsx:359
 msgid "roll"
 msgstr "roll"
 
-#: src/components/MissionSetup.tsx:125
+#: src/components/MissionSetup.tsx:126
 msgid "Roll"
 msgstr "Roll"
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:169
 msgid "Roll left"
 msgstr "Meyla çepê"
 
-#: src/components/MissionSetup.tsx:169
+#: src/components/MissionSetup.tsx:170
 msgid "Roll right"
 msgstr "Meyla rastê"
 
@@ -2900,7 +2954,7 @@ msgstr "Şemî"
 msgid "Save"
 msgstr "Tomar bike"
 
-#: src/components/MissionSetup.tsx:886
+#: src/components/MissionSetup.tsx:889
 msgid "Sea level"
 msgstr "Asta deryayê"
 
@@ -3030,8 +3084,8 @@ msgstr "Beralîkirina malperê hilbijêre"
 msgid "Select theme preference"
 msgstr "Tercîha temayê hilbijêre"
 
-#: src/components/MissionSetup.tsx:144
-#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:145
+#: src/components/MissionSetup.tsx:185
 msgid "Select weapon"
 msgstr "Çek hilbijêre"
 
@@ -3049,7 +3103,7 @@ msgstr "hilbijartî"
 msgid "Selected: <0>{0}</0>"
 msgstr "Hilbijartî: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:1151
+#: src/components/MissionSetup.tsx:1154
 msgid "Send"
 msgstr "Bişîne"
 
@@ -3057,7 +3111,7 @@ msgstr "Bişîne"
 msgid "Send again"
 msgstr "Dîsa bişîne"
 
-#: src/components/GameCanvas.tsx:260
+#: src/components/GameCanvas.tsx:315
 msgid "Send chat"
 msgstr "Peyamê bişîne"
 
@@ -3075,11 +3129,11 @@ msgid "Serif"
 msgstr "Serîf"
 
 #: src/components/MatchHistory.tsx:161
-#: src/components/MissionSetup.tsx:1260
+#: src/components/MissionSetup.tsx:1263
 msgid "Server"
 msgstr "Server"
 
-#: src/components/MissionSetup.tsx:1116
+#: src/components/MissionSetup.tsx:1119
 msgid "Server chat"
 msgstr "Çata serverê"
 
@@ -3101,7 +3155,7 @@ msgstr "DANIŞÎN QEDIYA"
 msgid "Session expired. Please log in again."
 msgstr "Danişîn bi dawî bû. Ji kerema xwe dîsa têkeve."
 
-#: src/components/MissionSetup.tsx:547
+#: src/components/MissionSetup.tsx:548
 msgid "Set"
 msgstr "Saz bike"
 
@@ -3112,13 +3166,13 @@ msgstr "Çavkanî û armanc diyar bike"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1792
-#: src/components/MissionSetup.tsx:1826
+#: src/components/GameCanvas.tsx:330
+#: src/components/MissionSetup.tsx:1795
+#: src/components/MissionSetup.tsx:1829
 msgid "Settings"
 msgstr "Mîheng"
 
-#: src/components/MissionSetup.tsx:1587
+#: src/components/MissionSetup.tsx:1590
 msgid "Shadows"
 msgstr "Sî"
 
@@ -3162,7 +3216,7 @@ msgstr "Derketin tê kirin..."
 msgid "Single line of text only"
 msgstr "Tenê rêza yek a nivîsê"
 
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:859
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Hilkişîna herî baş a bi motorekê (Vyse, afterburner)"
 
@@ -3179,8 +3233,8 @@ msgstr "Biçûk"
 msgid "Sort"
 msgstr "Rêz bike"
 
-#: src/components/MissionSetup.tsx:473
-#: src/components/MissionSetup.tsx:1836
+#: src/components/MissionSetup.tsx:474
+#: src/components/MissionSetup.tsx:1839
 msgid "Sound"
 msgstr "Deng"
 
@@ -3196,17 +3250,17 @@ msgstr "Berfireh"
 msgid "SPD BK"
 msgstr "FR.H"
 
-#: src/components/GameCanvas.tsx:309
+#: src/components/GameCanvas.tsx:364
 msgid "speed brake"
 msgstr "frenê hewayê"
 
-#: src/components/MissionSetup.tsx:128
-#: src/components/MissionSetup.tsx:136
-#: src/components/MissionSetup.tsx:174
+#: src/components/MissionSetup.tsx:129
+#: src/components/MissionSetup.tsx:137
+#: src/components/MissionSetup.tsx:175
 msgid "Speed brake"
 msgstr "Frenê Hewayê"
 
-#: src/components/MissionSetup.tsx:912
+#: src/components/MissionSetup.tsx:915
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Lez bi KCAS, wek rêzeyek ji sivik (kêmtirîn sotemenî, bê bar) heta giran (giraniya giştî ya herî zêde). Dane di nav lîstikê de bi ceribandinê hatine bidestxistin. Her cudahiyek ji balafira rastîn xeletiyên modela firînê ya simulatorê nîşan dide."
 
@@ -3214,15 +3268,15 @@ msgstr "Lez bi KCAS, wek rêzeyek ji sivik (kêmtirîn sotemenî, bê bar) heta 
 msgid "SPLASH"
 msgstr "ARMANC HAT XISTIN"
 
-#: src/components/MissionSetup.tsx:861
+#: src/components/MissionSetup.tsx:864
 msgid "Stall, clean (Vs1)"
 msgstr "Stall, paqij (Vs1)"
 
-#: src/components/MissionSetup.tsx:862
+#: src/components/MissionSetup.tsx:865
 msgid "Stall, landing config (Vs0)"
 msgstr "Stall, sazkirina daketinê (Vs0)"
 
-#: src/components/MissionSetup.tsx:1400
+#: src/components/MissionSetup.tsx:1403
 msgid "Start"
 msgstr "Destpêk"
 
@@ -3234,11 +3288,11 @@ msgstr "Bi zêdekirina şîroveya yekem nîqaşê dest pê bike."
 msgid "Stay tuned though!"
 msgstr "Lê li bendê bimîne!"
 
-#: src/components/MissionSetup.tsx:852
+#: src/components/MissionSetup.tsx:855
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Hilkişîna herî asê (Vx, 100% hêz)"
 
-#: src/components/MissionSetup.tsx:853
+#: src/components/MissionSetup.tsx:856
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Hilkişîna herî asê (Vx, afterburner)"
 
@@ -3269,8 +3323,8 @@ msgstr "Abone bibe"
 msgid "Sunday"
 msgstr "Yekşem"
 
-#: src/components/MissionSetup.tsx:1390
-#: src/components/MissionSetup.tsx:1745
+#: src/components/MissionSetup.tsx:1393
+#: src/components/MissionSetup.tsx:1748
 #: src/components/Multiplayer.tsx:396
 msgid "Superhuman"
 msgstr "Sermirovî"
@@ -3312,11 +3366,11 @@ msgstr "Tag"
 msgid "TALLY"
 msgstr "DIJMIN XUYA YE"
 
-#: src/components/MissionSetup.tsx:1343
+#: src/components/MissionSetup.tsx:1346
 msgid "Task"
 msgstr "Erk"
 
-#: src/components/GameCanvas.tsx:216
+#: src/components/GameCanvas.tsx:232
 msgid "Team"
 msgstr "Tîm"
 
@@ -3350,7 +3404,7 @@ msgstr "Nivîs"
 msgid "That code is incorrect or has expired."
 msgstr "Ew kod çewt e an dema wê qediyaye."
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:348
 msgid "The match continues behind this menu."
 msgstr "Maç li pişt vê menuyê didome."
 
@@ -3382,19 +3436,19 @@ msgstr "Ev lobî girêdana lîstika te dişîne hosteke din ({redirectHost}). Te
 msgid "This page has not been created yet."
 msgstr "Ev rûpel hîna nehatiye çêkirin."
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:360
 msgid "throttle"
 msgstr "gaz"
 
-#: src/components/MissionSetup.tsx:127
+#: src/components/MissionSetup.tsx:128
 msgid "Throttle"
 msgstr "Gaz"
 
-#: src/components/MissionSetup.tsx:173
+#: src/components/MissionSetup.tsx:174
 msgid "Throttle down"
 msgstr "Gazê kêm bike"
 
-#: src/components/MissionSetup.tsx:172
+#: src/components/MissionSetup.tsx:173
 msgid "Throttle up"
 msgstr "Gazê zêde bike"
 
@@ -3402,11 +3456,11 @@ msgstr "Gazê zêde bike"
 msgid "Thursday"
 msgstr "Pêncşem"
 
-#: src/components/MissionSetup.tsx:860
+#: src/components/MissionSetup.tsx:863
 msgid "Tightest sustained turn speed"
 msgstr "Leza zivirîna domdar a herî teng"
 
-#: src/components/GameCanvas.tsx:317
+#: src/components/GameCanvas.tsx:372
 msgid "tilt"
 msgstr "xwarkirin"
 
@@ -3414,7 +3468,7 @@ msgstr "xwarkirin"
 msgid "Time"
 msgstr "Dem"
 
-#: src/components/MissionSetup.tsx:1454
+#: src/components/MissionSetup.tsx:1457
 msgid "Time of day"
 msgstr "Dema rojê"
 
@@ -3470,7 +3524,7 @@ msgstr "Daxwazên pir zêde"
 msgid "Top"
 msgstr "Jor"
 
-#: src/components/MissionSetup.tsx:1599
+#: src/components/MissionSetup.tsx:1602
 msgid "Tracers"
 msgstr "Guleyên şopdar"
 
@@ -3478,31 +3532,31 @@ msgstr "Guleyên şopdar"
 msgid "Travelling"
 msgstr "Rêwîtî"
 
-#: src/components/MissionSetup.tsx:115
+#: src/components/MissionSetup.tsx:116
 msgid "Trim"
 msgstr "Trîm"
 
-#: src/components/MissionSetup.tsx:130
+#: src/components/MissionSetup.tsx:131
 msgid "Trim hat"
 msgstr "Kumê trîmê"
 
-#: src/components/MissionSetup.tsx:140
-#: src/components/MissionSetup.tsx:179
+#: src/components/MissionSetup.tsx:141
+#: src/components/MissionSetup.tsx:180
 msgid "Trim nose down"
 msgstr "Trîm: poz jêr"
 
-#: src/components/MissionSetup.tsx:139
-#: src/components/MissionSetup.tsx:178
+#: src/components/MissionSetup.tsx:140
+#: src/components/MissionSetup.tsx:179
 msgid "Trim nose up"
 msgstr "Trîm: poz jor"
 
-#: src/components/MissionSetup.tsx:141
-#: src/components/MissionSetup.tsx:180
+#: src/components/MissionSetup.tsx:142
+#: src/components/MissionSetup.tsx:181
 msgid "Trim roll left"
 msgstr "Trîm: gêrkirina çepê"
 
-#: src/components/MissionSetup.tsx:142
-#: src/components/MissionSetup.tsx:181
+#: src/components/MissionSetup.tsx:143
+#: src/components/MissionSetup.tsx:182
 msgid "Trim roll right"
 msgstr "Trîm: gêrkirina rastê"
 
@@ -3520,10 +3574,6 @@ msgstr "Dîsa biceribîne"
 #: ../../../lib/web/src/lib/preference-utils.ts:60
 msgid "Tuesday"
 msgstr "Sêşem"
-
-#: src/components/MissionSetup.tsx:727
-msgid "Twin rail"
-msgstr "Rêla ducar"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:162
@@ -3546,7 +3596,7 @@ msgstr "Ji bo lêgerîna bikarhêneran binivîse"
 msgid "Type to search..."
 msgstr "Ji bo lêgerînê binivîse..."
 
-#: src/components/MissionSetup.tsx:1537
+#: src/components/MissionSetup.tsx:1540
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3580,12 +3630,12 @@ msgstr "Dewletên Yekbûyî"
 msgid "Unknown"
 msgstr "Nediyar"
 
-#: src/components/MissionSetup.tsx:1490
+#: src/components/MissionSetup.tsx:1493
 #: src/components/Multiplayer.tsx:369
 msgid "Unlimited ammunition"
 msgstr "Cebilxaneya bêsînor"
 
-#: src/components/MissionSetup.tsx:1496
+#: src/components/MissionSetup.tsx:1499
 #: src/components/Multiplayer.tsx:379
 msgid "Unlimited fuel"
 msgstr "Sotemeniya bêsînor"
@@ -3650,7 +3700,7 @@ msgstr "Verifîke bike"
 msgid "Verify email address"
 msgstr "Navnîşana e-nameyê verifîke bike"
 
-#: src/components/MissionSetup.tsx:902
+#: src/components/MissionSetup.tsx:905
 msgid "Vertical"
 msgstr "Stûnî"
 
@@ -3667,12 +3717,12 @@ msgstr "Wêneya pêşgir a vîdeoyê"
 msgid "Video viewer: {0}"
 msgstr "Nêrîna vîdyoyan: {0}"
 
-#: src/components/GameCanvas.tsx:310
+#: src/components/GameCanvas.tsx:365
 msgid "view"
 msgstr "dîmen"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/MissionSetup.tsx:118
+#: src/components/MissionSetup.tsx:119
 msgid "View"
 msgstr "Bibîne"
 
@@ -3689,7 +3739,7 @@ msgstr "Hemû agahdariyan bibîne"
 msgid "View controls"
 msgstr "Kontrolên dîtinê"
 
-#: src/components/MissionSetup.tsx:569
+#: src/components/MissionSetup.tsx:570
 msgid "Views"
 msgstr "Dîtin"
 
@@ -3723,12 +3773,12 @@ msgstr "Em ê di demek nêzîk de online vegerin."
 msgid "We'll notify you when something important happens."
 msgstr "Dema tiştekî girîng qewime em ê te agahdar bikin."
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:361
 msgid "weapon"
 msgstr "çek"
 
-#: src/components/MissionSetup.tsx:116
-#: src/components/MissionSetup.tsx:456
+#: src/components/MissionSetup.tsx:117
+#: src/components/MissionSetup.tsx:457
 msgid "Weapons"
 msgstr "Çek"
 
@@ -3744,12 +3794,12 @@ msgstr "Malper di rewşa lêkirinê de ye!"
 msgid "Wednesday"
 msgstr "Çarşem"
 
-#: src/components/MissionSetup.tsx:137
-#: src/components/MissionSetup.tsx:175
+#: src/components/MissionSetup.tsx:138
+#: src/components/MissionSetup.tsx:176
 msgid "Wheel brakes"
 msgstr "Frena teker"
 
-#: src/components/MissionSetup.tsx:194
+#: src/components/MissionSetup.tsx:195
 msgid "Wing fold"
 msgstr "Qatkirina baskan"
 
@@ -3761,24 +3811,24 @@ msgstr "BI SER KET"
 msgid "World server"
 msgstr "Servera cîhanê"
 
-#: src/components/MissionSetup.tsx:1109
+#: src/components/MissionSetup.tsx:1112
 #: src/components/Multiplayer.tsx:115
 msgid "World server not reachable"
 msgstr "Gihîştina servera cîhanê ne pêkan e"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:359
 msgid "yaw"
 msgstr "yaw"
 
-#: src/components/MissionSetup.tsx:126
+#: src/components/MissionSetup.tsx:127
 msgid "Yaw"
 msgstr "Yaw"
 
-#: src/components/MissionSetup.tsx:170
+#: src/components/MissionSetup.tsx:171
 msgid "Yaw left"
 msgstr "Poz ber bi çepê"
 
-#: src/components/MissionSetup.tsx:171
+#: src/components/MissionSetup.tsx:172
 msgid "Yaw right"
 msgstr "Poz ber bi rastê"
 
@@ -3822,14 +3872,14 @@ msgstr "Nivîs û pêvekên te wê winda bibin."
 msgid "Your text will be lost."
 msgstr "Nivîsa te dê winda bibe."
 
-#: src/components/MissionSetup.tsx:131
+#: src/components/MissionSetup.tsx:132
 msgid "Zoom"
 msgstr "Zûm"
 
-#: src/components/MissionSetup.tsx:161
+#: src/components/MissionSetup.tsx:162
 msgid "Zoom in"
 msgstr "Nêzîk bike"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:163
 msgid "Zoom out"
 msgstr "Dûr bike"

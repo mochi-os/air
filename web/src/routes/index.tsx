@@ -99,6 +99,12 @@ function Index() {
             // menu owns — one store, one save path.
             setConfig({ ...config, ...partial })
           }}
+          onAgain={() => {
+            // Fly again after the mission ended at a crash (#240): a fresh
+            // mount, same setup — the same path Restart mission takes.
+            setGameKey((k) => k + 1)
+            enterFlight()
+          }}
           onSettings={() => {
             // Settings over a paused mission: reuse the one menu surface rather
             // than a second copy of every panel. Resume returns to flight. The

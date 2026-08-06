@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, expect, it } from 'vitest'
-import { acmi, position, Recorder, MIDWAY, type Recorded } from './acmi'
+import { acmi, position, Recorder, MIDWAY, type Recorded, type Sample } from './acmi'
 
 const jet = (over: Partial<Recorded> = {}): Recorded => ({
   id: 1,
@@ -194,4 +194,22 @@ describe('Recorder', () => {
     expect(mine[2]).not.toContain('Rounds=')
   })
 
+})
+
+it('battle channels are delta-suppressed and the fate is written once', () => {
+  const at = (time: number, struck: number, fate?: string): Sample => ({
+    time,
+    objects: [
+      {
+        id: 1, x: 0, y: 1000, z: 0, roll: 0, pitch: 0, yaw: 0,
+        name: 'FA-18C', label: 'P', colour: 'Blue', kind: 'Air+FixedWing',
+        data: { struck, burning: false, thrust: 0, ...(fate ? { fate } : {}) },
+      },
+    ],
+  })
+  const text = acmi([at(0, 0), at(0.1, 0), at(0.2, 7), at(0.3, 7), at(0.4, 7, 'pilot')], new Date(0), 't')
+  const struck = text.split('\n').filter((l) => l.includes('Struck='))
+  expect(struck).toHaveLength(3) // 0, the step to 7, and the fate line (the channel group rewrites on any change)
+  expect(struck[1]).toContain('Struck=7')
+  expect(text.split('\n').filter((l) => l.includes('Fate=pilot'))).toHaveLength(1)
 })

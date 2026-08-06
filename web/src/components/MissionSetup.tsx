@@ -5,7 +5,7 @@
 
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { Check, History, LogIn, Pencil, Play, RotateCcw, Send, Settings, TriangleAlert, Users, X } from 'lucide-react'
+import { Check, ChevronDown, ChevronRight, History, LogIn, Pencil, Play, RotateCcw, Send, Settings, TriangleAlert, Users, X } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
 import { getErrorMessage } from '@mochi/web'
 
@@ -43,8 +43,9 @@ import { useIdentityName } from '../lib/config-store'
 import { Multiplayer } from './Multiplayer'
 import { Link } from '@tanstack/react-router'
 import { KEY_DEFAULTS, pretty } from '../game/keys'
-import { STATIONS, PRESETS, points, options, matches, normalize, weight, resolve, type Catalog } from '../game/stores'
+import { PRESETS, matches, normalize, outcome, outcomes, weight, resolve, type Catalog } from '../game/stores'
 import { flight_catalog, flight_load } from '../game/flight'
+import { LoadoutPreview } from './LoadoutPreview'
 import {
   default_server,
   normalize_server,
@@ -683,16 +684,18 @@ function ControlRow({ action, keys }: { action: ReactNode; keys: ReactNode }) {
   )
 }
 
-// The loadout editor (#17): preset buttons, the nine-station strip (fixture
-// dropdown, then one store dropdown per fixture point — tips show the store
-// only, their rail is integral; cheek stations render disabled), and the live
-// gross weight with the overweight warning (warn, never clamp). Structure
-// comes from game/stores.ts; every number comes from the flight core's
-// catalog, loaded on demand so the menu works before any mission starts.
-// Edits build ONE new loadout and call onChange once — never per-field.
-// When `allowed` is false (a guns-only match rule) missile options are ABSENT
-// — not greyed — and a station whose only stores are missiles locks empty;
-// the persisted choice is never written back.
+// The loadout editor (#17, reworked for first-time readability): the live
+// head-on jet on top — a station choice reads on the aircraft itself — then
+// the three presets with plain one-line descriptions, and the per-station
+// editor folded behind "Customize loadout". Inside, stations are labelled by
+// POSITION ("Left wingtip", "Centerline"…, the NATOPS number as a small
+// annotation) and each offers ONE dropdown of meaningful end states with the
+// fixture derived underneath (game/stores.ts outcomes) — players choose
+// "AIM-9" or "Fuel tank", never rail-versus-pylon vocabulary. Numbers come
+// from the flight core's catalog, loaded on demand so the menu works before
+// any mission starts. Edits build ONE new loadout and call onChange once.
+// When `allowed` is false (a guns-only match rule) missile outcomes are
+// ABSENT — not greyed; the persisted choice is never written back.
 function Armament({
   stores,
   fuel,
@@ -704,12 +707,12 @@ function Armament({
   allowed: boolean
   onChange: (stores: Record<string, StationSlot>) => void
 }) {
-  const { t } = useLingui()
   const read = () => {
     const raw = flight_catalog('fa18c')
     return raw ? resolve(raw) : null
   }
   const [book, setBook] = useState<Catalog | null>(read)
+  const [custom, setCustom] = useState(false)
   useEffect(() => {
     if (book) return
     let gone = false
@@ -723,24 +726,41 @@ function Armament({
   }, [book])
   const loadout = normalize(stores)
   const preset = matches(loadout)
-  const fixtureLabel = (id: string): string =>
-    id === 'rail' ? t`Rail` : id === 'twin' ? t`Twin rail` : id === 'pylon' ? t`Pylon` : t`None`
-  const storeLabel = (id: string): string => (id === '9m' ? 'AIM-9' : id === 'tank' ? t`Fuel tank` : '—')
-  const setStation = (station: number, slot: StationSlot) => {
-    onChange({ ...loadout, [String(station)]: slot })
+  const positions: Record<number, ReactNode> = {
+    1: <Trans>Left wingtip</Trans>,
+    2: <Trans>Left wing</Trans>,
+    3: <Trans>Left wing</Trans>,
+    4: <Trans>Fuselage</Trans>,
+    5: <Trans>Centerline</Trans>,
+    6: <Trans>Fuselage</Trans>,
+    7: <Trans>Right wing</Trans>,
+    8: <Trans>Right wing</Trans>,
+    9: <Trans>Right wingtip</Trans>,
   }
-  const setFixture = (station: number, fixture: string) => {
-    const previous = loadout[String(station)]
-    // Remap the points, keeping compatible stores: a rail round survives the
-    // upgrade to a twin as point 1; a downsize keeps what fits.
-    const stores = Array.from({ length: points(fixture) }, (_, p) => {
-      const kept = previous.stores[p] ?? ''
-      return options(station, fixture).includes(kept) ? kept : ''
-    })
-    setStation(station, { fixture, stores })
+  const label = (id: string): ReactNode => {
+    switch (id) {
+      case '9m':
+        return 'AIM-9' // designations verbatim, like the Reference dialog's V-speeds
+      case '9m2':
+        return '2× AIM-9' // jsx-text-ok: a count and a designation, no prose
+      case 'tank':
+        return <Trans>Fuel tank</Trans>
+      case 'pylon':
+        return <Trans>Empty pylon</Trans>
+      case 'twin1':
+      case 'twin1b':
+        return 'AIM-9' // legacy hand-built twin with one round: shown, never offered
+      case 'twin0':
+        return <Trans>Empty pylon</Trans>
+      default:
+        return <Trans>None</Trans>
+    }
   }
-  const choices = (station: number, fixture: string): string[] =>
-    options(station, fixture).filter((id) => allowed || id !== '9m')
+  const presets: { name: 'gun' | 'fox2' | 'cap'; title: ReactNode }[] = [
+    { name: 'gun', title: <Trans>Gun fighter</Trans> },
+    { name: 'fox2', title: <Trans>Fox 2 fighter</Trans> },
+    { name: 'cap', title: 'CAP' },
+  ]
   const w = book ? weight(loadout, book) : { hardware: 0, fuel: 0 }
   const gross = book ? Math.round(((book.empty + w.hardware + w.fuel) * 2.2046 + fuel) / 10) * 10 : 0
   // NATOPS flying-qualities boundary for routine catapult technique: at or
@@ -749,75 +769,59 @@ function Armament({
   const LAUNCH = 48000
   return (
     <div className='space-y-3'>
+      <LoadoutPreview stores={loadout} />
       <div className='flex flex-wrap gap-2'>
-        {(['gun', 'fox2', 'cap'] as const).map((name) => (
-          <Button
-            key={name}
-            type='button'
-            size='sm'
-            variant='outline'
-            onClick={() => onChange(structuredClone(PRESETS[name]))}
-          >
-            {preset === name && <Check className='size-4' />}
-            {name === 'gun' ? <Trans>Gun fighter</Trans> : name === 'fox2' ? <Trans>Fox 2 fighter</Trans> : 'CAP'}
+        {presets.map((entry) => (
+          <Button key={entry.name} type='button' variant='outline' size='sm' onClick={() => onChange(structuredClone(PRESETS[entry.name]))}>
+            {preset === entry.name && <Check className='size-4' />}
+            {entry.title}
           </Button>
         ))}
       </div>
-      <div className='grid grid-cols-3 gap-x-3 gap-y-2'>
-        {Array.from({ length: 9 }, (_, i) => i + 1).map((station) => {
-          const slot = loadout[String(station)]
-          const fixtures = STATIONS[station].fixtures
-          const locked = !!STATIONS[station].locked
-          const dead = fixtures.length === 1 && fixtures[0] === ''
-          return (
-            <div key={station} className='space-y-1'>
-              <div className='text-muted-foreground text-xs'>{station}</div>
-              {!locked && !dead && (
-                <Select value={slot.fixture || 'none'} onValueChange={(v) => setFixture(station, v === 'none' ? '' : v)}>
-                  <SelectTrigger size='sm' className='w-full'>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {fixtures.map((id) => (
-                      <SelectItem key={id || 'none'} value={id || 'none'}>
-                        {fixtureLabel(id)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-              {dead && <div className='text-muted-foreground/60 py-1.5 text-sm'>—</div>}
-              {slot.stores.map((id, p) => {
-                const open = choices(station, slot.fixture)
-                const usable = open.length > 1
-                return (
+      <Button type='button' variant='ghost' size='sm' onClick={() => setCustom(!custom)}>
+        {custom ? <ChevronDown className='size-4' /> : <ChevronRight className='size-4' />}
+        <Trans>Custom</Trans>
+      </Button>
+      {custom && (
+        <div className='grid grid-cols-3 gap-x-3 gap-y-2'>
+          {Array.from({ length: 9 }, (_, i) => i + 1).map((station) => {
+            const slot = loadout[String(station)]
+            const open = outcomes(station).filter((o) => allowed || !o.slot.stores.includes('9m'))
+            const current = outcome(station, slot)
+            const usable = open.filter((o) => !o.hidden || o.id === current)
+            const dead = usable.length <= 1
+            return (
+              <div key={station} className='space-y-1'>
+                <div className='text-muted-foreground text-xs'>
+                  {positions[station]} <span className='opacity-60'>{station}</span>
+                </div>
+                {dead ? (
+                  <div className='text-muted-foreground/60 py-1.5 text-sm'>—</div>
+                ) : (
                   <Select
-                    key={p}
-                    value={id || 'none'}
-                    disabled={!usable}
+                    value={current || 'none'}
                     onValueChange={(v) => {
-                      const next = slot.stores.slice()
-                      next[p] = v === 'none' ? '' : v
-                      setStation(station, { fixture: slot.fixture, stores: next })
+                      const picked = open.find((o) => (o.id || 'none') === v)
+                      if (picked) onChange({ ...loadout, [String(station)]: structuredClone(picked.slot) })
                     }}
                   >
                     <SelectTrigger size='sm' className='w-full'>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {open.map((sid) => (
-                        <SelectItem key={sid || 'none'} value={sid || 'none'}>
-                          {storeLabel(sid)}
+                      {usable.map((o) => (
+                        <SelectItem key={o.id || 'none'} value={o.id || 'none'}>
+                          {label(o.id)}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                )
-              })}
-            </div>
-          )
-        })}
-      </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
       {book && (
         <div className='text-sm'>
           {/* jsx-text-ok: LB is the cockpit's own unit annunciation, verbatim like the IFEI */}
@@ -833,7 +837,6 @@ function Armament({
     </div>
   )
 }
-
 // The measured F/A-18C performance reference (#89): every number flown out of
 // the flight model by tools/vspeeds.sh (world repo) — rerun it after flight
 // changes and update these cells. Cells are TRUE KCAS, matching the HUD box:

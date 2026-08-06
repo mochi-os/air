@@ -46,6 +46,19 @@ export interface Flight {
   mach?: number
   fuel?: number // kilograms remaining — ACMI's standard FuelWeight, which TacView plots like any other channel
   rounds?: number // gun rounds remaining
+  // The battle channels (#238): the wasm battle module computes all of these
+  // every frame, drives the HUD and effects with them, and used to discard
+  // them - two debriefs in a row were materially wrong for it (a walked burst
+  // that riddled the player read as "missed with everything" at 9 Hz, and a
+  // jet ridden down crippled read as controlled flight into the sea). Struck
+  // is CUMULATIVE rounds taken, so sampling loses nothing: the total is the
+  // total, and its steps are the hits.
+  struck?: number // cumulative rounds taken
+  burning?: boolean // an engine or fuel fire is alight
+  thrust?: number // thrust fraction lost, 0..1
+  wing?: number // structural element loss, summed
+  leak?: number // fuel loss, kg/s
+  fate?: string // how this life ended: pilot / fire / sea / midair / building / post / island / verdict / probe
   stick?: number // control-law channels: developer builds only
   stabilator?: number // degrees
 }
@@ -79,6 +92,7 @@ export function acmi(samples: Sample[], started: Date, title: string): string {
   // multiplies the file size for no information.
   const declared = new Map<number, string>()
   const counted = new Map<number, number>() // last written round count, per object
+  const battled = new Map<number, string>() // last written battle channels, per object
   for (const sample of samples) {
     out.push(`#${round(sample.time, 2)}`)
     for (const o of sample.objects) {
@@ -109,6 +123,21 @@ export function acmi(samples: Sample[], started: Date, title: string): string {
         if (d.rounds !== undefined && counted.get(o.id) !== d.rounds) {
           counted.set(o.id, d.rounds)
           line += `,Rounds=${Math.round(d.rounds)}`
+        }
+        // The battle channels are delta-suppressed together: they hold for
+        // minutes and step at hits, which is exactly where a debrief looks.
+        {
+          let battle = ''
+          if (d.struck !== undefined) battle += `,Struck=${Math.round(d.struck)}`
+          if (d.burning !== undefined) battle += `,Burning=${d.burning ? 1 : 0}`
+          if (d.thrust !== undefined) battle += `,Thrust=${round(d.thrust, 2)}`
+          if (d.wing !== undefined) battle += `,Wing=${round(d.wing, 2)}`
+          if (d.leak !== undefined) battle += `,Leak=${round(d.leak, 2)}`
+          if (d.fate !== undefined) battle += `,Fate=${d.fate}`
+          if (battle && battled.get(o.id) !== battle) {
+            battled.set(o.id, battle)
+            line += battle
+          }
         }
         if (d.stick !== undefined) line += `,Stick=${round(d.stick, 3)}`
         if (d.stabilator !== undefined) line += `,Stabilator=${round(d.stabilator, 2)}`

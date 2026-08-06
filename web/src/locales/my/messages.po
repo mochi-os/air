@@ -34,6 +34,11 @@ msgstr "(ချဲ့ရန်)"
 msgid "[not set]"
 msgstr "[မသတ်မှတ်ရသေး]"
 
+#. placeholder {0}: over.struck
+#: src/components/GameCanvas.tsx:273
+msgid "{0, plural, one {# round taken} other {# rounds taken}}"
+msgstr "{0, plural, other {ကျည် # တောင့် ထိမှန်သည်}}"
+
 #. placeholder {0}: selectedValues.size
 #: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
 msgid "{0, plural, one {# selected} other {# selected}}"
@@ -41,7 +46,7 @@ msgstr "{0, plural, other {# ရွေးထား}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:1127
+#: src/components/MissionSetup.tsx:1130
 msgid "{0} created “{1}”"
 msgstr "{0} က “{1}” ကို ဖန်တီးခဲ့သည်"
 
@@ -51,7 +56,7 @@ msgid "{0} flying"
 msgstr "{0} ဦး ပျံသန်းနေသည်"
 
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:828
+#: src/components/MissionSetup.tsx:832
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb အများဆုံးလွှတ်တင်အလေးချိန်ထက် ပိုနေသည်"
 
@@ -131,7 +136,7 @@ msgstr "ကြိုး 1"
 msgid "12 hours"
 msgstr "၁၂ နာရီ"
 
-#: src/components/MissionSetup.tsx:889
+#: src/components/MissionSetup.tsx:892
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -147,7 +152,7 @@ msgstr "၂၄ နာရီ"
 msgid "3 WIRE"
 msgstr "ကြိုး 3"
 
-#: src/components/MissionSetup.tsx:892
+#: src/components/MissionSetup.tsx:895
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -187,14 +192,14 @@ msgstr "အကောင့်အမျိုးအစား"
 msgid "Account verified"
 msgstr "အကောင့် အတည်ပြုပြီး"
 
-#: src/components/MissionSetup.tsx:1389
-#: src/components/MissionSetup.tsx:1744
+#: src/components/MissionSetup.tsx:1392
+#: src/components/MissionSetup.tsx:1747
 #: src/components/Multiplayer.tsx:395
 msgid "Ace"
 msgstr "ထိပ်တန်း"
 
-#: src/components/MissionSetup.tsx:145
-#: src/components/MissionSetup.tsx:185
+#: src/components/MissionSetup.tsx:146
+#: src/components/MissionSetup.tsx:186
 msgid "Acquire target"
 msgstr "ပစ်မှတ် လော့ခ်လုပ်ရန်"
 
@@ -286,7 +291,7 @@ msgstr "ထည့်နေသည်..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "သင့်စိတ်ကြိုက်အတိုင်း အသွင်အပြင်နှင့် အပြင်အဆင်ကို ချိန်ညှိပါ။"
 
-#: src/components/MissionSetup.tsx:1593
+#: src/components/MissionSetup.tsx:1596
 msgid "Afterburner"
 msgstr "နောက်တိုးအရှိန်"
 
@@ -294,20 +299,20 @@ msgstr "နောက်တိုးအရှိန်"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:117
-#: src/components/MissionSetup.tsx:455
+#: src/components/MissionSetup.tsx:118
+#: src/components/MissionSetup.tsx:456
 msgid "Aircraft"
 msgstr "လေယာဉ်"
 
-#: src/components/MissionSetup.tsx:966
+#: src/components/MissionSetup.tsx:969
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "လေယာဉ်တင်သင်္ဘော <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>၊ <1>Muhamad Mirza Arrafi</1> မှ (Sketchfab)၊ <2>CC BY 4.0</2> အောက်တွင် လိုင်စင်ရရှိထားသည်။ ပြင်ဆင်ထားသည်- အရွယ်အစား ပြန်လည်ချိန်ညှိ၍ ဦးတည်ရာကို ပြန်လည်ပြောင်းလဲကာ ရေမျက်နှာပြင်အထိ နစ်မြုပ်စေပြီး ဝဘ်အတွက် ရိုးရှင်းအောင် ပြုလုပ်ထားသည်။"
 
-#: src/components/MissionSetup.tsx:940
+#: src/components/MissionSetup.tsx:943
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "လေယာဉ်ပုံစံ <0>“F/A-18C Hornet”</0>၊ ဖန်တီးသူ <1>CreadorDeMu</1> (Sketchfab)၊ <2>CC BY 4.0</2> လိုင်စင်ဖြင့်။ ပြင်ဆင်ထားသည်- ဦးတည်ရာနှင့် အရွယ်အစားကို ပြန်လည်ချိန်ညှိ၍ အသုံးမပြုသော texture ဒေတာများကို ဖယ်ရှားကာ ပြင်ပတွဲချိတ်ပစ္စည်းများကို သီးခြားဖိုင်အဖြစ် ခွဲထုတ်ပြီး shroud mesh တစ်ခုကို မှန်ပြောင်းပြန်ပုံစံသို့ ပြောင်းလဲထားသည်။"
 
-#: src/components/MissionSetup.tsx:458
+#: src/components/MissionSetup.tsx:459
 msgid "Alerts"
 msgstr "သတိပေးချက်များ"
 
@@ -345,12 +350,12 @@ msgstr "မည်သူမဆို"
 msgid "Anyone who is logged in"
 msgstr "ဝင်ရောက်ထားသူ မည်သူမဆို"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:191
+#: src/components/MissionSetup.tsx:152
+#: src/components/MissionSetup.tsx:192
 msgid "Approach power (ATC)"
 msgstr "ချဉ်းကပ်မှုစွမ်းအား (ATC)"
 
-#: src/components/MissionSetup.tsx:863
+#: src/components/MissionSetup.tsx:866
 msgid "Approach, on-speed (Vapp)"
 msgstr "ချဉ်းကပ်ခြင်း၊ မှန်ကန်အမြန်နှုန်း (Vapp)"
 
@@ -371,12 +376,12 @@ msgstr "ဤမှတ်ချက်ကို ဖျက်မှာသေချ�
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "log out လုပ်မှာသေချာပါသလား? သင့်အကောင့်ကို ပြန်ဝင်ရန် log in ပြန်လုပ်ရမည်။"
 
-#: src/components/MissionSetup.tsx:1354
+#: src/components/MissionSetup.tsx:1357
 msgid "Armament"
 msgstr "လက်နက်"
 
-#: src/components/MissionSetup.tsx:150
-#: src/components/MissionSetup.tsx:190
+#: src/components/MissionSetup.tsx:151
+#: src/components/MissionSetup.tsx:191
 msgid "Arrestor hook"
 msgstr "တားဆီးချိတ်"
 
@@ -419,15 +424,15 @@ msgstr "အသွင်ပုံ"
 msgid "Avatar for {name}"
 msgstr "{name} အတွက် အသွင်ပုံ"
 
-#: src/components/MissionSetup.tsx:317
+#: src/components/MissionSetup.tsx:318
 msgid "Axes"
 msgstr "ဝင်ရိုးများ"
 
-#: src/components/MissionSetup.tsx:358
+#: src/components/MissionSetup.tsx:359
 msgid "Axis {i}"
 msgstr "ဝင်ရိုး {i}"
 
-#: src/components/GameCanvas.tsx:317
+#: src/components/GameCanvas.tsx:372
 msgid "back"
 msgstr "နောက်သို့"
 
@@ -442,7 +447,7 @@ msgstr "နောက်သို့"
 msgid "Back to home"
 msgstr "ပင်မစာမျက်နှာ သို့ပြန်သွားရန်"
 
-#: src/components/MissionSetup.tsx:1381
+#: src/components/MissionSetup.tsx:1384
 msgid "Bandit"
 msgstr "ရန်သူ့လေယာဉ်"
 
@@ -450,19 +455,19 @@ msgstr "ရန်သူ့လေယာဉ်"
 msgid "Banner"
 msgstr "ပိုစတာ"
 
-#: src/components/MissionSetup.tsx:854
+#: src/components/MissionSetup.tsx:857
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "အကောင်းဆုံးတက်နှုန်း (Vy, 100% တွန်းအား)"
 
-#: src/components/MissionSetup.tsx:855
+#: src/components/MissionSetup.tsx:858
 msgid "Best climb (Vy, afterburner)"
 msgstr "အကောင်းဆုံးတက်နှုန်း (Vy, အက်ဖ်တာဘာနာ)"
 
-#: src/components/MissionSetup.tsx:857
+#: src/components/MissionSetup.tsx:860
 msgid "Best glide (engines out)"
 msgstr "အကောင်းဆုံးလွင့်ဆင်းမှု (အင်ဂျင်များရပ်)"
 
-#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:862
 msgid "Best sustained turn speed"
 msgstr "အကောင်းဆုံးစဉ်ဆက်ကွေ့ဝိုက်မှုအမြန်နှုန်း"
 
@@ -513,7 +518,7 @@ msgstr "ဘောင်အရောင်"
 msgid "Bots"
 msgstr "ဘော့တ်များ"
 
-#: src/components/GameCanvas.tsx:309
+#: src/components/GameCanvas.tsx:364
 msgid "brakes"
 msgstr "ဘရိတ်"
 
@@ -529,11 +534,11 @@ msgstr "ညာဘက် အမြန်ကွေ့"
 msgid "Browser notifications"
 msgstr "Browser အကြောင်းကြားချက်များ"
 
-#: src/components/MissionSetup.tsx:418
+#: src/components/MissionSetup.tsx:419
 msgid "Button {i}"
 msgstr "ခလုတ် {i}"
 
-#: src/components/MissionSetup.tsx:392
+#: src/components/MissionSetup.tsx:393
 msgid "Buttons"
 msgstr "ခလုတ်များ"
 
@@ -541,12 +546,12 @@ msgstr "ခလုတ်များ"
 msgid "CALL THE BALL"
 msgstr "ဘောလုံးကိုကြေညာပါ"
 
-#: src/components/MissionSetup.tsx:1649
+#: src/components/MissionSetup.tsx:1652
 #: src/components/Multiplayer.tsx:258
 msgid "Callsign"
 msgstr "ခေါ်ဆိုအမည်"
 
-#: src/components/MissionSetup.tsx:572
+#: src/components/MissionSetup.tsx:573
 msgid "Camera distance"
 msgstr "ကင်မရာအကွာအဝေး"
 
@@ -563,7 +568,7 @@ msgstr "ကင်မရာအကွာအဝေး"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/MissionSetup.tsx:547
+#: src/components/MissionSetup.tsx:548
 #: src/components/Multiplayer.tsx:229
 #: src/components/Multiplayer.tsx:471
 msgid "Cancel"
@@ -579,35 +584,35 @@ msgstr "မှတ်ချက် မလုပ်တော့ပါ"
 msgid "Cancel reply"
 msgstr "အကြောင်းပြန်ချက် မလုပ်တော့ပါ"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:194
 msgid "Canopy"
 msgstr "လေယာဉ်ခန်းအဖုံး"
 
-#: src/components/MissionSetup.tsx:1162
+#: src/components/MissionSetup.tsx:1165
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1429
+#: src/components/MissionSetup.tsx:1432
 msgid "Case I (day)"
 msgstr "ဖြစ်ရပ် I (နေ့)"
 
-#: src/components/MissionSetup.tsx:1163
+#: src/components/MissionSetup.tsx:1166
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1430
+#: src/components/MissionSetup.tsx:1433
 msgid "Case II (weather)"
 msgstr "ဖြစ်ရပ် II (မိုးလေဝသ)"
 
-#: src/components/MissionSetup.tsx:1164
+#: src/components/MissionSetup.tsx:1167
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1431
+#: src/components/MissionSetup.tsx:1434
 msgid "Case III (night)"
 msgstr "ဖြစ်ရပ် III (ည)"
 
-#: src/components/MissionSetup.tsx:1437
+#: src/components/MissionSetup.tsx:1440
 msgid "Catapult"
 msgstr "ကက်တာပတ်"
 
@@ -615,29 +620,33 @@ msgstr "ကက်တာပတ်"
 msgid "Category for these notifications"
 msgstr "ဤအကြောင်းကြားချက်များအတွက် အမျိုးအစား"
 
+#: src/components/MissionSetup.tsx:734
+msgid "Centerline"
+msgstr "အလယ်မျဉ်း"
+
 #: ../../../lib/web/src/components/notification-category-button.tsx:83
 #: ../../../lib/web/src/components/notification-category-button.tsx:94
 msgid "Change notification category"
 msgstr "အကြောင်းကြားချက် အမျိုးအစား ပြောင်းမည်"
 
-#: src/components/GameCanvas.tsx:314
+#: src/components/GameCanvas.tsx:369
 msgid "Chase view:"
 msgstr "လိုက်ကြည့်မြင်ကွင်း:"
 
-#: src/components/GameCanvas.tsx:311
+#: src/components/GameCanvas.tsx:366
 msgid "chat"
 msgstr "ချတ်"
 
-#: src/components/MissionSetup.tsx:204
+#: src/components/MissionSetup.tsx:205
 msgid "Chat"
 msgstr "စကားပြောခန်း"
 
-#: src/components/MissionSetup.tsx:205
+#: src/components/MissionSetup.tsx:206
 msgid "Chat to everyone"
 msgstr "အားလုံးနှင့် ချတ်"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1479
+#: src/components/MissionSetup.tsx:1482
 msgid "Cheats"
 msgstr "ချိတ်ကုဒ်များ"
 
@@ -744,11 +753,11 @@ msgstr "panel ပိတ်မည် / မလုပ်တော့ပါ"
 msgid "Close search"
 msgstr "ရှာဖွေမှု ပိတ်မည်"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:373
 msgid "closer"
 msgstr "ပိုနီး"
 
-#: src/components/MissionSetup.tsx:1465
+#: src/components/MissionSetup.tsx:1468
 msgid "Clouds"
 msgstr "တိမ်များ"
 
@@ -797,7 +806,7 @@ msgstr "စတင်နေသည်"
 msgid "Comment actions"
 msgstr "မှတ်ချက် လုပ်ဆောင်ချက်များ"
 
-#: src/components/MissionSetup.tsx:119
+#: src/components/MissionSetup.tsx:120
 msgid "Communication"
 msgstr "ဆက်သွယ်ရေး"
 
@@ -819,7 +828,7 @@ msgstr "ကြည့်ရှုမှု ဆက်တင်များ ပြ�
 msgid "Confirm"
 msgstr "အတည်ပြုမည်"
 
-#: src/components/MissionSetup.tsx:1272
+#: src/components/MissionSetup.tsx:1275
 msgid "Connect"
 msgstr "ချိတ်ဆက်"
 
@@ -876,7 +885,7 @@ msgstr "ကလစ်ဘုတ်သို့ ကူးပြီး"
 msgid "Copy"
 msgstr "ကူးမည်"
 
-#: src/components/MissionSetup.tsx:858
+#: src/components/MissionSetup.tsx:861
 msgid "Corner speed (best instant turn)"
 msgstr "ကော်နာအမြန်နှုန်း (အကောင်းဆုံးချက်ချင်းကွေ့ဝိုက်မှု)"
 
@@ -893,7 +902,7 @@ msgstr "ဤစာရွက်စာတမ်းကို ဖွင့်၍ မ�
 msgid "Could not save the recording"
 msgstr "မှတ်တမ်းကို သိမ်းဆည်း၍ မရပါ"
 
-#: src/components/MissionSetup.tsx:1109
+#: src/components/MissionSetup.tsx:1112
 msgid "Could not send the message"
 msgstr "မက်ဆေ့ချ်ကို ပို့၍မရပါ"
 
@@ -913,10 +922,14 @@ msgstr "ပြန်လည်အတည်ပြုခြင်းကို စ�
 msgid "Couldn't verify with that account. Please try again."
 msgstr "ထိုအကောင့်ဖြင့် အတည်ပြု၍မရပါ။ ကျေးဇူးပြု၍ ထပ်မံကြိုးစားပါ။"
 
-#: src/components/MissionSetup.tsx:146
-#: src/components/MissionSetup.tsx:186
+#: src/components/MissionSetup.tsx:147
+#: src/components/MissionSetup.tsx:187
 msgid "Countermeasures"
 msgstr "တန်ပြန်နည်းလမ်းများ"
+
+#: src/components/GameCanvas.tsx:267
+msgid "Crashed"
+msgstr "ပျက်ကျသည်"
 
 #: src/components/GameCanvas.tsx:50
 msgid "CRASHED"
@@ -943,8 +956,8 @@ msgstr "ဖန်တီးပြီး ပျံသန်းမည်"
 msgid "Create match"
 msgstr "ပွဲစဉ် ဖန်တီးမည်"
 
-#: src/components/MissionSetup.tsx:1784
-#: src/components/MissionSetup.tsx:1807
+#: src/components/MissionSetup.tsx:1787
+#: src/components/MissionSetup.tsx:1810
 msgid "Create mission"
 msgstr "မစ်ရှင်ဖန်တီး"
 
@@ -962,12 +975,12 @@ msgstr "ဖန်တီးပြီး"
 msgid "Creating..."
 msgstr "ဖန်တီးနေသည်..."
 
-#: src/components/MissionSetup.tsx:929
-#: src/components/MissionSetup.tsx:935
+#: src/components/MissionSetup.tsx:932
+#: src/components/MissionSetup.tsx:938
 msgid "Credits"
 msgstr "ကျေးဇူးတင်လွှာ"
 
-#: src/components/MissionSetup.tsx:1472
+#: src/components/MissionSetup.tsx:1475
 #: src/components/Multiplayer.tsx:320
 msgid "Cumulus"
 msgstr "ကျူမြူလပ်စ်"
@@ -977,6 +990,7 @@ msgid "Current location"
 msgstr "လက်ရှိတည်နေရာ"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:265
+#: src/components/MissionSetup.tsx:783
 msgid "Custom"
 msgstr "စိတ်ကြိုက်"
 
@@ -984,8 +998,8 @@ msgstr "စိတ်ကြိုက်"
 msgid "CUT"
 msgstr "အန္တရာယ်ရှိ"
 
-#: src/components/MissionSetup.tsx:154
-#: src/components/MissionSetup.tsx:198
+#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:199
 msgid "Cycle view"
 msgstr "မြင်ကွင်းပြောင်း"
 
@@ -1009,7 +1023,7 @@ msgstr "ဒေတာ ကွဲလွဲမှု"
 msgid "Date"
 msgstr "ရက်စွဲ"
 
-#: src/components/MissionSetup.tsx:1460
+#: src/components/MissionSetup.tsx:1463
 #: src/components/Multiplayer.tsx:315
 msgid "Day"
 msgstr "နေ့"
@@ -1097,12 +1111,16 @@ msgstr "ကြီးစဉ်ငယ်လိုက်"
 msgid "Description"
 msgstr "ဖော်ပြချက်"
 
+#: src/components/GameCanvas.tsx:261
+msgid "Destroyed by fire"
+msgstr "မီးလောင်၍ ပျက်စီးသည်"
+
 #: ../../../lib/web/src/components/layout/right-panel.tsx:148
 msgid "Details Panel"
 msgstr "အသေးစိတ် Panel"
 
-#: src/components/MissionSetup.tsx:384
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:385
+#: src/components/MissionSetup.tsx:434
 msgid "Detect"
 msgstr "ဖော်ထုတ်မည်"
 
@@ -1117,7 +1135,7 @@ msgstr "ဖော်ထုတ်မည်"
 msgid "Detect from web browser"
 msgstr "Web browser မှ ရှာဖွေဖော်ထုတ်မည်"
 
-#: src/components/MissionSetup.tsx:286
+#: src/components/MissionSetup.tsx:287
 msgid "Device"
 msgstr "ကိရိယာ"
 
@@ -1141,7 +1159,7 @@ msgstr "ဖျက်ပစ်ရန်"
 msgid "Discard draft?"
 msgstr "မူကြမ်းကို ဖျက်ပစ်မလား။"
 
-#: src/components/MissionSetup.tsx:298
+#: src/components/MissionSetup.tsx:299
 msgid "disconnected"
 msgstr "ချိတ်ဆက်မှုပြတ်"
 
@@ -1156,8 +1174,8 @@ msgstr "ချိတ်ဆက်မှု ပြတ်တောက်ပြီ�
 msgid "Dismiss"
 msgstr "ပယ်မည်"
 
-#: src/components/MissionSetup.tsx:156
-#: src/components/MissionSetup.tsx:200
+#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:201
 msgid "Display repeater"
 msgstr "မျက်နှာပြင် ထပ်ပြကိရိယာ"
 
@@ -1165,13 +1183,13 @@ msgstr "မျက်နှာပြင် ထပ်ပြကိရိယာ"
 msgid "Displays the mobile sidebar."
 msgstr "မိုဘိုင်း ဘေးဘားကို ပြသသည်။"
 
-#: src/components/MissionSetup.tsx:1581
+#: src/components/MissionSetup.tsx:1584
 msgid "Distance LOD"
 msgstr "အကွာအဝေး LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1888
+#: src/components/MissionSetup.tsx:1891
 msgid "Done"
 msgstr "ပြီးပါပြီ"
 
@@ -1185,7 +1203,7 @@ msgstr "ဒေါင်းလုဒ်"
 msgid "Download failed"
 msgstr "ဒေါင်းလုဒ် မအောင်မြင်ပါ"
 
-#: src/components/GameCanvas.tsx:316
+#: src/components/GameCanvas.tsx:371
 msgid "Drag"
 msgstr "ဆွဲ"
 
@@ -1201,7 +1219,7 @@ msgstr "ထပ်နေသော"
 msgid "Duration"
 msgstr "ကြာချိန်"
 
-#: src/components/MissionSetup.tsx:1575
+#: src/components/MissionSetup.tsx:1578
 msgid "Dynamic resolution"
 msgstr "ပြောင်းလဲနိုင်သော ရက်ဆိုလူးရှင်း"
 
@@ -1248,7 +1266,7 @@ msgstr "ရွေးချယ်ထားသော ကတ် တည်းဖြ�
 msgid "Edit view"
 msgstr "မြင်ကွင်း တည်းဖြတ်"
 
-#: src/components/MissionSetup.tsx:197
+#: src/components/MissionSetup.tsx:198
 msgid "Eject"
 msgstr "ခုန်ထွက်မည်"
 
@@ -1268,11 +1286,16 @@ msgstr "အီးမေးလ် ကုဒ်"
 msgid "empty"
 msgstr "ဗလာ"
 
+#: src/components/MissionSetup.tsx:749
+#: src/components/MissionSetup.tsx:754
+msgid "Empty pylon"
+msgstr "ပိုင်လွန်အလွတ်"
+
 #: src/components/GameCanvas.tsx:82
 msgid "ENGAGED"
 msgstr "တိုက်ခိုက်နေပြီ"
 
-#: src/components/MissionSetup.tsx:454
+#: src/components/MissionSetup.tsx:455
 msgid "Engine"
 msgstr "အင်ဂျင်"
 
@@ -1284,19 +1307,19 @@ msgstr "သင့်အီးမေးလ်မှ ကုဒ်ကို ထည�
 msgid "Enter your authenticator code"
 msgstr "သင့်အထောက်အထားစိစစ်ရေးကုဒ်ကို ထည့်ပါ"
 
-#: src/components/MissionSetup.tsx:457
+#: src/components/MissionSetup.tsx:458
 msgid "Environment"
 msgstr "ပတ်ဝန်းကျင်"
 
-#: src/components/GameCanvas.tsx:216
+#: src/components/GameCanvas.tsx:232
 msgid "Everyone"
 msgstr "အားလုံး"
 
-#: src/components/GameCanvas.tsx:289
+#: src/components/GameCanvas.tsx:344
 msgid "Exit match"
 msgstr "ပွဲမှ ထွက်ရန်"
 
-#: src/components/GameCanvas.tsx:289
+#: src/components/GameCanvas.tsx:344
 msgid "Exit mission"
 msgstr "မစ်ရှင်မှထွက်"
 
@@ -1311,12 +1334,12 @@ msgstr "ချဲ့ရန်"
 msgid "Expand sidebar"
 msgstr "ဘေးဘားကို ချဲ့ပါ"
 
-#: src/components/MissionSetup.tsx:147
-#: src/components/MissionSetup.tsx:187
+#: src/components/MissionSetup.tsx:148
+#: src/components/MissionSetup.tsx:188
 msgid "Extend flaps"
 msgstr "ဖလက်ပ် ဖြန့်ထုတ်"
 
-#: src/components/MissionSetup.tsx:1555
+#: src/components/MissionSetup.tsx:1558
 msgid "Exterior detail"
 msgstr "အပြင်ဘက် အသေးစိတ်"
 
@@ -1328,7 +1351,7 @@ msgstr "ပြင်ပ URL"
 msgid "Extra large"
 msgstr "အလွန်ကြီး"
 
-#: src/components/MissionSetup.tsx:877
+#: src/components/MissionSetup.tsx:880
 msgid "F/A-18C reference"
 msgstr "F/A-18C ကိုးကားချက်"
 
@@ -1436,16 +1459,16 @@ msgstr "အကောင့်ရွှေ့ပြောင်းခြင်း
 msgid "Finished"
 msgstr "ပြီးဆုံးသည်"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:360
 msgid "fire"
 msgstr "ပစ်ခတ်"
 
-#: src/components/MissionSetup.tsx:143
-#: src/components/MissionSetup.tsx:183
+#: src/components/MissionSetup.tsx:144
+#: src/components/MissionSetup.tsx:184
 msgid "Fire weapon"
 msgstr "လက်နက် ပစ်ခတ်ရန်"
 
-#: src/components/MissionSetup.tsx:562
+#: src/components/MissionSetup.tsx:563
 msgid "Fixed keys"
 msgstr "ပုံသေခလုတ်များ"
 
@@ -1457,7 +1480,7 @@ msgstr "အလံများ"
 msgid "FLAMEOUT"
 msgstr "မီးတောက်ငြိမ်း"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:362
 msgid "flares"
 msgstr "မီးပန်းများ"
 
@@ -1469,7 +1492,11 @@ msgstr "မီးပန်းများ"
 msgid "Flat"
 msgstr "ပြားသော"
 
-#: src/components/MissionSetup.tsx:114
+#: src/components/GameCanvas.tsx:263
+msgid "Flew into the sea"
+msgstr "ပင်လယ်ထဲသို့ ထိုးကျသည်"
+
+#: src/components/MissionSetup.tsx:115
 msgid "Flight"
 msgstr "ပျံသန်းမှု"
 
@@ -1489,21 +1516,25 @@ msgstr "လွင့်မျော"
 msgid "Flown"
 msgstr "ပျံသန်းပြီး"
 
-#: src/components/MissionSetup.tsx:1778
-#: src/components/MissionSetup.tsx:1821
+#: src/components/MissionSetup.tsx:1781
+#: src/components/MissionSetup.tsx:1824
 msgid "Fly"
 msgstr "ပျံသန်း"
 
-#: src/components/MissionSetup.tsx:762
+#: src/components/GameCanvas.tsx:290
+msgid "Fly again"
+msgstr "ထပ်ပျံသန်းမည်"
+
+#: src/components/MissionSetup.tsx:761
 msgid "Fox 2 fighter"
 msgstr "Fox 2 တိုက်လေယာဉ်"
 
-#: src/components/MissionSetup.tsx:1605
+#: src/components/MissionSetup.tsx:1608
 msgid "Framerate"
 msgstr "ဖရိမ်နှုန်း"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1349
+#: src/components/MissionSetup.tsx:1352
 msgid "Free flight"
 msgstr "လွတ်လပ်စွာ ပျံသန်းခြင်း"
 
@@ -1528,7 +1559,7 @@ msgstr "မှ"
 msgid "From theme"
 msgstr "အပြင်အဆင်မှ"
 
-#: src/components/MissionSetup.tsx:1366
+#: src/components/MissionSetup.tsx:1369
 #: src/components/Multiplayer.tsx:330
 msgid "Fuel"
 msgstr "လောင်စာ"
@@ -1549,11 +1580,11 @@ msgstr "လောင်စာယိုစိမ့်"
 msgid "FUEL LO"
 msgstr "လောင်စာနည်း"
 
-#: src/components/MissionSetup.tsx:192
+#: src/components/MissionSetup.tsx:193
 msgid "Fuel probe"
 msgstr "လောင်စာပရုပ်"
 
-#: src/components/MissionSetup.tsx:728
+#: src/components/MissionSetup.tsx:747
 msgid "Fuel tank"
 msgstr "လောင်စာတိုင်ကီ"
 
@@ -1565,7 +1596,12 @@ msgstr "အပြည့် အပြင်အဆင်"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/MissionSetup.tsx:733
+#: src/components/MissionSetup.tsx:735
+msgid "Fuselage"
+msgstr "လေယာဉ်ကိုယ်ထည်"
+
+#: src/components/GameCanvas.tsx:363
 msgid "gear"
 msgstr "ဆင်းသက်ဘီး"
 
@@ -1573,7 +1609,7 @@ msgstr "ဆင်းသက်ဘီး"
 msgid "GEAR"
 msgstr "ဂီယာ"
 
-#: src/components/MissionSetup.tsx:1830
+#: src/components/MissionSetup.tsx:1833
 msgid "General"
 msgstr "အထွေထွေ"
 
@@ -1603,11 +1639,11 @@ msgstr "စာမျက်နှာ {pageNumber} သို့သွားပါ"
 msgid "Go to previous page"
 msgstr "ယခင်စာမျက်နှာသို့"
 
-#: src/components/MissionSetup.tsx:1833
+#: src/components/MissionSetup.tsx:1836
 msgid "Graphics"
 msgstr "ဂရပ်ဖစ်"
 
-#: src/components/MissionSetup.tsx:824
+#: src/components/MissionSetup.tsx:828
 msgid "Gross weight"
 msgstr "စုစုပေါင်းအလေးချိန်"
 
@@ -1628,7 +1664,7 @@ msgstr "အုပ်စု- {0}"
 msgid "GUN"
 msgstr "သေနတ်"
 
-#: src/components/MissionSetup.tsx:762
+#: src/components/MissionSetup.tsx:760
 msgid "Gun fighter"
 msgstr "အမြောက်တိုက်လေယာဉ်"
 
@@ -1640,17 +1676,17 @@ msgstr "ဝှက်"
 msgid "Hide password"
 msgstr "စကားဝှက်ကို ဖျောက်ရန်"
 
-#: src/components/MissionSetup.tsx:1535
+#: src/components/MissionSetup.tsx:1538
 msgid "High"
 msgstr "မြင့်"
 
-#: src/components/MissionSetup.tsx:1473
+#: src/components/MissionSetup.tsx:1476
 #: src/components/Multiplayer.tsx:321
 msgid "High stratus"
 msgstr "အမြင့် စထရေးတပ်စ်"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1797
+#: src/components/MissionSetup.tsx:1800
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "မှတ်တမ်း"
@@ -1662,7 +1698,7 @@ msgstr "မှတ်တမ်း"
 msgid "Home"
 msgstr "ပင်မ"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:363
 msgid "hook"
 msgstr "ချိတ်"
 
@@ -1674,11 +1710,11 @@ msgstr "ချိတ်"
 msgid "Hot"
 msgstr "လူကြိုက်များ"
 
-#: src/components/MissionSetup.tsx:201
+#: src/components/MissionSetup.tsx:202
 msgid "HUD altitude source"
 msgstr "HUD အမြင့် အရင်းအမြစ်"
 
-#: src/components/MissionSetup.tsx:202
+#: src/components/MissionSetup.tsx:203
 msgid "HUD declutter"
 msgstr "HUD ရိုးရှင်းစေခြင်း"
 
@@ -1695,8 +1731,8 @@ msgstr "ပုံကြည့်ရှုစနစ်- {0}"
 msgid "Imperial"
 msgstr "အင်ပီးရီးယယ်"
 
-#: src/components/MissionSetup.tsx:1159
-#: src/components/MissionSetup.tsx:1426
+#: src/components/MissionSetup.tsx:1162
+#: src/components/MissionSetup.tsx:1429
 msgid "In air"
 msgstr "လေထဲတွင်"
 
@@ -1732,7 +1768,7 @@ msgstr "မမှန်ကန်သော အညွှန်း- စာလုံ
 msgid "Invalid verification code"
 msgstr "မမှန်ကန်သော အတည်ပြု ကုဒ်"
 
-#: src/components/MissionSetup.tsx:311
+#: src/components/MissionSetup.tsx:312
 msgid "Invert pitch"
 msgstr "မော့ချ ပြောင်းပြန်"
 
@@ -1740,7 +1776,7 @@ msgstr "မော့ချ ပြောင်းပြန်"
 msgid "INVULNERABLE"
 msgstr "မသေနိုင်"
 
-#: src/components/MissionSetup.tsx:1484
+#: src/components/MissionSetup.tsx:1487
 #: src/components/Multiplayer.tsx:359
 msgid "Invulnerable (human players only)"
 msgstr "မသေနိုင် (လူသားကစားသမားများသာ)"
@@ -1753,8 +1789,8 @@ msgstr "သင်ရှာဖွေနေသော စာမျက်နှာ�
 msgid "Join"
 msgstr "ဝင်ရန်"
 
-#: src/components/MissionSetup.tsx:1242
-#: src/components/MissionSetup.tsx:1788
+#: src/components/MissionSetup.tsx:1245
+#: src/components/MissionSetup.tsx:1791
 msgid "Join server"
 msgstr "ဆာဗာသို့ဝင်"
 
@@ -1763,7 +1799,7 @@ msgid "JOINED"
 msgstr "ဝင်လာသည်"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1750
+#: src/components/MissionSetup.tsx:1753
 #: src/components/Multiplayer.tsx:453
 msgid "Joust"
 msgstr "မျက်နှာချင်းဆိုင်တိုက်ပွဲ"
@@ -1772,11 +1808,11 @@ msgstr "မျက်နှာချင်းဆိုင်တိုက်ပွ
 msgid "Joust — 1v1, first kill wins"
 msgstr "တစ်ဦးချင်းတိုက်ပွဲ — 1v1၊ အရင်ပစ်ချသူ အနိုင်ရသည်"
 
-#: src/components/MissionSetup.tsx:1350
+#: src/components/MissionSetup.tsx:1353
 msgid "Joust against AI player"
 msgstr "AI ကစားသမားနှင့် တစ်ဦးချင်းတိုက်ပွဲ"
 
-#: src/components/MissionSetup.tsx:1839
+#: src/components/MissionSetup.tsx:1842
 msgid "Joystick"
 msgstr "ဂျွိုက်စတစ်"
 
@@ -1792,7 +1828,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "ကီးဘုတ် ဖြတ်လမ်းများ"
 
-#: src/components/MissionSetup.tsx:1842
+#: src/components/MissionSetup.tsx:1845
 msgid "Keys"
 msgstr "ခလုတ်များ"
 
@@ -1821,8 +1857,8 @@ msgstr "ဘယ်အင်ဂျင် မီး"
 msgid "L GEAR"
 msgstr "ဘယ်ဘီး"
 
-#: src/components/MissionSetup.tsx:149
-#: src/components/MissionSetup.tsx:189
+#: src/components/MissionSetup.tsx:150
+#: src/components/MissionSetup.tsx:190
 msgid "Landing gear"
 msgstr "ဆင်းသက်ဂီယာ"
 
@@ -1835,12 +1871,12 @@ msgstr "ကြီး"
 msgid "LATE"
 msgstr "နောက်ကျ"
 
-#: src/components/MissionSetup.tsx:152
-#: src/components/MissionSetup.tsx:196
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:197
 msgid "Launch (catapult)"
 msgstr "ပစ်လွှတ်ခြင်း (ကတ်တာပတ်)"
 
-#: src/components/GameCanvas.tsx:307
+#: src/components/GameCanvas.tsx:362
 msgid "launch / target"
 msgstr "ပျံတက် / ပစ်မှတ်"
 
@@ -1858,7 +1894,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "ပိုလေ့လာ"
 
-#: src/components/MissionSetup.tsx:1298
+#: src/components/MissionSetup.tsx:1301
 msgid "Leave server"
 msgstr "ဆာဗာမှထွက်"
 
@@ -1874,6 +1910,15 @@ msgstr "ထွက်သွားသည်"
 msgid "Left to Right"
 msgstr "ဘယ်မှ ညာသို့"
 
+#: src/components/MissionSetup.tsx:731
+#: src/components/MissionSetup.tsx:732
+msgid "Left wing"
+msgstr "ဘယ်တောင်ပံ"
+
+#: src/components/MissionSetup.tsx:730
+msgid "Left wingtip"
+msgstr "ဘယ်တောင်ပံထိပ်"
+
 #: ../../../lib/web/src/components/post-tags.tsx:72
 msgid "Letters, numbers, spaces, and hyphens only"
 msgstr "စာလုံး၊ ဂဏန်း၊ ကွက်လပ်နှင့် အလျားတံသာ"
@@ -1888,12 +1933,12 @@ msgstr "1200 တွင်ညီအောင်၊ ဘီးချပါ"
 msgid "Light"
 msgstr "အလင်း"
 
-#: src/components/GameCanvas.tsx:308
+#: src/components/GameCanvas.tsx:363
 msgid "lights"
 msgstr "မီးများ"
 
-#: src/components/MissionSetup.tsx:153
-#: src/components/MissionSetup.tsx:195
+#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:196
 msgid "Lights"
 msgstr "မီးများ"
 
@@ -1913,7 +1958,7 @@ msgstr "လင့်များ"
 msgid "List"
 msgstr "စာရင်း"
 
-#: src/components/MissionSetup.tsx:1369
+#: src/components/MissionSetup.tsx:1372
 msgid "Load"
 msgstr "ပမာဏ"
 
@@ -1957,35 +2002,35 @@ msgstr "အောင်မြင်စွာ ထွက်ပြီးပါပ�
 msgid "Logging out…"
 msgstr "ထွက်နေသည်…"
 
-#: src/components/MissionSetup.tsx:129
+#: src/components/MissionSetup.tsx:130
 msgid "Look"
 msgstr "ကြည့်"
 
-#: src/components/MissionSetup.tsx:571
+#: src/components/MissionSetup.tsx:572
 msgid "Look / orbit"
 msgstr "ကြည့်ရှု / ဝိုင်းပတ်"
 
-#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:159
 msgid "Look down"
 msgstr "အောက်သို့ကြည့်"
 
-#: src/components/MissionSetup.tsx:159
+#: src/components/MissionSetup.tsx:160
 msgid "Look left"
 msgstr "ဘယ်သို့ကြည့်"
 
-#: src/components/MissionSetup.tsx:160
+#: src/components/MissionSetup.tsx:161
 msgid "Look right"
 msgstr "ညာသို့ကြည့်"
 
-#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:158
 msgid "Look up"
 msgstr "အပေါ်သို့ကြည့်"
 
-#: src/components/MissionSetup.tsx:1531
+#: src/components/MissionSetup.tsx:1534
 msgid "Low"
 msgstr "နိမ့်"
 
-#: src/components/MissionSetup.tsx:1474
+#: src/components/MissionSetup.tsx:1477
 #: src/components/Multiplayer.tsx:322
 msgid "Low stratus"
 msgstr "အနိမ့် စထရေးတပ်စ်"
@@ -2006,11 +2051,11 @@ msgstr "အကြောင်းကြားချက်များနှင့
 msgid "Manual"
 msgstr "ကိုယ်တိုင်"
 
-#: src/components/GameCanvas.tsx:310
+#: src/components/GameCanvas.tsx:365
 msgid "map"
 msgstr "မြေပုံ"
 
-#: src/components/MissionSetup.tsx:203
+#: src/components/MissionSetup.tsx:204
 msgid "Map"
 msgstr "မြေပုံ"
 
@@ -2020,7 +2065,7 @@ msgstr "မြေပုံ"
 msgid "Mark all as read"
 msgstr "အားလုံးကို ဖတ်ပြီးအဖြစ် မှတ်"
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:454
 msgid "Master"
 msgstr "ပင်မ"
 
@@ -2028,7 +2073,7 @@ msgstr "ပင်မ"
 msgid "Match type"
 msgstr "ပွဲစဉ်အမျိုးအစား"
 
-#: src/components/MissionSetup.tsx:1292
+#: src/components/MissionSetup.tsx:1295
 msgid "Matches"
 msgstr "ပွဲများ"
 
@@ -2041,16 +2086,16 @@ msgid "MCP server"
 msgstr "MCP ဆာဗာ"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1533
+#: src/components/MissionSetup.tsx:1536
 msgid "Medium"
 msgstr "အလယ်အလတ်"
 
-#: src/components/GameCanvas.tsx:311
+#: src/components/GameCanvas.tsx:366
 msgid "menu"
 msgstr "မီနူး"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:207
-#: src/components/MissionSetup.tsx:206
+#: src/components/MissionSetup.tsx:207
 msgid "Menu"
 msgstr "မီနူး"
 
@@ -2058,15 +2103,15 @@ msgstr "မီနူး"
 msgid "Message"
 msgstr "မက်ဆေ့ဂျ်"
 
-#: src/components/GameCanvas.tsx:221
+#: src/components/GameCanvas.tsx:237
 msgid "Message everyone"
 msgstr "အားလုံးကို စာပို့ပါ"
 
-#: src/components/MissionSetup.tsx:1144
+#: src/components/MissionSetup.tsx:1147
 msgid "Message players on this server"
 msgstr "ဤဆာဗာပေါ်ရှိ ကစားသမားများထံ မက်ဆေ့ချ်ပို့ပါ"
 
-#: src/components/GameCanvas.tsx:221
+#: src/components/GameCanvas.tsx:237
 msgid "Message your team"
 msgstr "သင့်အသင်းကို စာပို့ပါ"
 
@@ -2074,7 +2119,11 @@ msgstr "သင့်အသင်းကို စာပို့ပါ"
 msgid "Metric"
 msgstr "မက်ထရစ်"
 
-#: src/components/MissionSetup.tsx:992
+#: src/components/GameCanvas.tsx:265
+msgid "Midair collision"
+msgstr "လေထဲတွင် တိုက်မိသည်"
+
+#: src/components/MissionSetup.tsx:995
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway Atoll မြေပုံ — ရုပ်ပုံများတွင် ပြင်ဆင်ထားသော <0>Copernicus Sentinel-2</0> ဒေတာ (2026) ပါဝင်သည်။ လေယာဉ်ကွင်း ဂျီဩမေတြီ (ပြေးလမ်း၊ တက္ကစီလမ်း၊ ရပ်နားကွင်း) © <1>OpenStreetMap</1> ပံ့ပိုးသူများ၊ <2>ODbL</2> ဖြင့် လိုင်စင်ချထားသည်။ ကမ်းရိုးတန်းနှင့် ကျောက်တန်းဒေတာကို <3>NOAA NCCOS</3> မှ (အများပိုင်)။"
 
@@ -2111,7 +2160,7 @@ msgstr "တနင်္လာ"
 msgid "More options"
 msgstr "နောက်ထပ် ရွေးချယ်စရာများ"
 
-#: src/components/MissionSetup.tsx:384
+#: src/components/MissionSetup.tsx:385
 msgid "Move it…"
 msgstr "ဝင်ရိုးကို ရွှေ့ပါ…"
 
@@ -2155,7 +2204,7 @@ msgstr "ဂိမ်းအသစ်"
 msgid "Next image"
 msgstr "နောက်ပုံ"
 
-#: src/components/MissionSetup.tsx:1461
+#: src/components/MissionSetup.tsx:1464
 #: src/components/Multiplayer.tsx:316
 msgid "Night"
 msgstr "ည"
@@ -2196,7 +2245,7 @@ msgstr "အုပ်စုများ မရရှိနိုင်ပါ"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "item အမျိုးအစားအသစ်များ မဖန်တီးနိုင်သေးပါ။ လိုအပ်သော parent item များကို ဦးစွာဖန်တီးပါ။"
 
-#: src/components/MissionSetup.tsx:305
+#: src/components/MissionSetup.tsx:306
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "ဂျွိုက်စတစ် မတွေ့ပါ — နိုးရန် ၎င်းပေါ်ရှိ မည်သည့်ခလုတ်ကိုမဆို နှိပ်ပါ။"
 
@@ -2261,7 +2310,7 @@ msgstr "သုံးစွဲသူများ မတွေ့ပါ"
 msgid "No views"
 msgstr "view များ မရှိ"
 
-#: src/components/MissionSetup.tsx:1121
+#: src/components/MissionSetup.tsx:1124
 #: src/components/Multiplayer.tsx:436
 msgid "No world server."
 msgstr "ကမ္ဘာ့ဆာဗာ မရှိပါ။"
@@ -2284,10 +2333,10 @@ msgstr "အဆင့်မရှိ"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:354
-#: src/components/MissionSetup.tsx:414
-#: src/components/MissionSetup.tsx:727
-#: src/components/MissionSetup.tsx:1471
+#: src/components/MissionSetup.tsx:355
+#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:756
+#: src/components/MissionSetup.tsx:1474
 msgid "None"
 msgstr "မရှိ"
 
@@ -2311,7 +2360,7 @@ msgstr "မသတ်မှတ်ထားပါ"
 msgid "Nothing found"
 msgstr "ဘာမှ မတွေ့ပါ"
 
-#: src/components/MissionSetup.tsx:1121
+#: src/components/MissionSetup.tsx:1124
 msgid "Nothing yet — say hello."
 msgstr "ဘာမှမရှိသေးပါ — နှုတ်ဆက်လိုက်ပါ။"
 
@@ -2328,8 +2377,8 @@ msgstr "အသိပေးချက်များ"
 msgid "Notifications: {0}"
 msgstr "အကြောင်းကြားချက်များ- {0}"
 
-#: src/components/MissionSetup.tsx:1387
-#: src/components/MissionSetup.tsx:1742
+#: src/components/MissionSetup.tsx:1390
+#: src/components/MissionSetup.tsx:1745
 #: src/components/Multiplayer.tsx:393
 msgid "Novice"
 msgstr "အစပြုသူ"
@@ -2340,7 +2389,7 @@ msgstr "အစပြုသူ"
 msgid "Number"
 msgstr "နံပါတ်"
 
-#: src/components/MissionSetup.tsx:1563
+#: src/components/MissionSetup.tsx:1566
 msgid "Ocean detail"
 msgstr "သမုဒ္ဒရာ အသေးစိတ်"
 
@@ -2352,13 +2401,13 @@ msgstr "OK"
 msgid "On"
 msgstr "ဖွင့်"
 
-#: src/components/MissionSetup.tsx:1161
-#: src/components/MissionSetup.tsx:1428
+#: src/components/MissionSetup.tsx:1164
+#: src/components/MissionSetup.tsx:1431
 msgid "On carrier"
 msgstr "လေယာဉ်တင်သင်္ဘောပေါ်"
 
-#: src/components/MissionSetup.tsx:1160
-#: src/components/MissionSetup.tsx:1427
+#: src/components/MissionSetup.tsx:1163
+#: src/components/MissionSetup.tsx:1430
 msgid "On runway"
 msgstr "လေယာဉ်ပြေးလမ်းပေါ်"
 
@@ -2432,11 +2481,11 @@ msgstr "ရွေးချယ်စရာ အမည်"
 msgid "Options"
 msgstr "ရွေးချယ်စရာများ"
 
-#: src/components/GameCanvas.tsx:316
+#: src/components/GameCanvas.tsx:371
 msgid "or"
 msgstr "သို့မဟုတ်"
 
-#: src/components/GameCanvas.tsx:316
+#: src/components/GameCanvas.tsx:371
 msgid "orbit"
 msgstr "ဝိုင်းပတ်"
 
@@ -2444,8 +2493,8 @@ msgstr "ဝိုင်းပတ်"
 msgid "Other"
 msgstr "အခြား"
 
-#: src/components/MissionSetup.tsx:138
-#: src/components/MissionSetup.tsx:177
+#: src/components/MissionSetup.tsx:139
+#: src/components/MissionSetup.tsx:178
 msgid "Override G limit"
 msgstr "G ကန့်သတ်ချက် ကျော်လွန်"
 
@@ -2462,7 +2511,7 @@ msgstr "စာမျက်နှာ {currentPage} / {totalPages}"
 msgid "Parent"
 msgstr "Parent"
 
-#: src/components/MissionSetup.tsx:176
+#: src/components/MissionSetup.tsx:177
 msgid "Parking brake"
 msgstr "ရပ်နားဘရိတ်"
 
@@ -2486,14 +2535,14 @@ msgstr "ပုံစံ (regex)"
 msgid "Pick a date"
 msgstr "ရက်စွဲရွေးပါ"
 
-#: src/components/MissionSetup.tsx:1063
+#: src/components/MissionSetup.tsx:1066
 #: src/components/Multiplayer.tsx:102
 #: src/components/Multiplayer.tsx:263
 msgid "pilot"
 msgstr "လေယာဉ်မှူး"
 
-#: src/components/MissionSetup.tsx:1388
-#: src/components/MissionSetup.tsx:1743
+#: src/components/MissionSetup.tsx:1391
+#: src/components/MissionSetup.tsx:1746
 #: src/components/Multiplayer.tsx:394
 msgid "Pilot"
 msgstr "လေယာဉ်မှူး"
@@ -2502,19 +2551,23 @@ msgstr "လေယာဉ်မှူး"
 msgid "PILOT DOWN"
 msgstr "လေယာဉ်မှူးကျဆုံး"
 
-#: src/components/GameCanvas.tsx:303
+#: src/components/GameCanvas.tsx:259
+msgid "Pilot killed"
+msgstr "လေယာဉ်မှူး ကျဆုံးသည်"
+
+#: src/components/GameCanvas.tsx:358
 msgid "pitch"
 msgstr "မော့ငုံ့"
 
-#: src/components/MissionSetup.tsx:124
+#: src/components/MissionSetup.tsx:125
 msgid "Pitch"
 msgstr "မော့ချ"
 
-#: src/components/MissionSetup.tsx:167
+#: src/components/MissionSetup.tsx:168
 msgid "Pitch down"
 msgstr "မော့ချ အောက်သို့"
 
-#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:167
 msgid "Pitch up"
 msgstr "မော့ချ အပေါ်သို့"
 
@@ -2552,11 +2605,11 @@ msgstr "ပို့စ်များ"
 msgid "Posts and comments"
 msgstr "ပို့စ်နှင့် comment များ"
 
-#: src/components/MissionSetup.tsx:1518
+#: src/components/MissionSetup.tsx:1521
 msgid "Preset"
 msgstr "ကြိုတင်သတ်မှတ်ချက်"
 
-#: src/components/MissionSetup.tsx:541
+#: src/components/MissionSetup.tsx:542
 msgid "Press a key…"
 msgstr "ခလုတ်တစ်ခု နှိပ်ပါ…"
 
@@ -2564,7 +2617,7 @@ msgstr "ခလုတ်တစ်ခု နှိပ်ပါ…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ပျံတက်ရန် ENTER နှိပ်ပါ"
 
-#: src/components/MissionSetup.tsx:433
+#: src/components/MissionSetup.tsx:434
 msgid "Press it…"
 msgstr "၎င်းကို နှိပ်ပါ…"
 
@@ -2598,10 +2651,6 @@ msgstr "Push အကြောင်းကြားချက်"
 msgid "PUSH TIME"
 msgstr "ချဉ်းကပ်ချိန်"
 
-#: src/components/MissionSetup.tsx:727
-msgid "Pylon"
-msgstr "ပိုင်လွန်"
-
 #: src/components/GameCanvas.tsx:42
 msgid "R ENG"
 msgstr "ညာအင်ဂျင်"
@@ -2613,10 +2662,6 @@ msgstr "ညာအင်ဂျင် မီး"
 #: src/components/GameCanvas.tsx:45
 msgid "R GEAR"
 msgstr "ညာဘီး"
-
-#: src/components/MissionSetup.tsx:727
-msgid "Rail"
-msgstr "ရေးလ်"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
@@ -2634,7 +2679,7 @@ msgstr "ဤဆာဗာတွင် သင်၏ passkey များကို �
 msgid "REARMED"
 msgstr "လက်နက်ပြန်တပ်ပြီး"
 
-#: src/components/MissionSetup.tsx:1247
+#: src/components/MissionSetup.tsx:1250
 msgid "Recent"
 msgstr "မကြာသေးမီ"
 
@@ -2647,12 +2692,12 @@ msgstr "အကြံပြုထား"
 msgid "Reconnecting ({retries})..."
 msgstr "ပြန်လည်ချိတ်ဆက်နေသည် ({retries})..."
 
-#: src/components/MissionSetup.tsx:1667
+#: src/components/MissionSetup.tsx:1670
 msgid "Record flights"
 msgstr "ပျံသန်းမှုများကို မှတ်တမ်းတင်ရန်"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:1661
+#: src/components/MissionSetup.tsx:1664
 msgid "Recording"
 msgstr "မှတ်တမ်းတင်ခြင်း"
 
@@ -2677,7 +2722,7 @@ msgstr "Login သို့ redirect လုပ်နေသည်။"
 msgid "Reduce interest"
 msgstr "စိတ်ဝင်စားမှု လျှော့ချ"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:874
 msgid "Reference"
 msgstr "ကိုးကားချက်"
 
@@ -2756,7 +2801,7 @@ msgstr "ကော်လံ အမည်ပြောင်း"
 msgid "Rename this board column"
 msgstr "ဤ board column ကို အမည်ပြောင်း"
 
-#: src/components/MissionSetup.tsx:1029
+#: src/components/MissionSetup.tsx:1032
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "ပုံဖော်တင်ဆက်မှုကို <0>three.js</0> ဖြင့် ဆောင်ရွက်သည် (MIT လိုင်စင်)။"
 
@@ -2780,7 +2825,7 @@ msgstr "အီးမေးလ်ပြန်ပို့ရန်"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1881
+#: src/components/MissionSetup.tsx:1884
 msgid "Reset"
 msgstr "ပြန်စတင်"
 
@@ -2793,21 +2838,21 @@ msgstr "{title} ပြန်လည်သတ်မှတ်ရန်"
 msgid "Reset all settings to default values"
 msgstr "ဆက်တင်အားလုံးကို ပုံသေတန်ဖိုးများသို့ ပြန်ထား"
 
-#: src/components/MissionSetup.tsx:182
+#: src/components/MissionSetup.tsx:183
 msgid "Reset trim"
 msgstr "ထရင်မ် ပြန်လည်သတ်မှတ်"
 
-#: src/components/MissionSetup.tsx:155
-#: src/components/MissionSetup.tsx:199
-#: src/components/MissionSetup.tsx:570
+#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:200
+#: src/components/MissionSetup.tsx:571
 msgid "Reset view"
 msgstr "မြင်ကွင်း ပြန်လည်သတ်မှတ်"
 
-#: src/components/MissionSetup.tsx:1545
+#: src/components/MissionSetup.tsx:1548
 msgid "Resolution"
 msgstr "ဖြေရှင်းချက်"
 
-#: src/components/MissionSetup.tsx:1770
+#: src/components/MissionSetup.tsx:1773
 msgid "Restart mission"
 msgstr "မစ်ရှင်ပြန်စ"
 
@@ -2815,16 +2860,16 @@ msgstr "မစ်ရှင်ပြန်စ"
 msgid "Result"
 msgstr "ရလဒ်"
 
-#: src/components/GameCanvas.tsx:247
+#: src/components/GameCanvas.tsx:301
 msgid "Resume"
 msgstr "ဆက်လုပ်"
 
-#: src/components/MissionSetup.tsx:1766
+#: src/components/MissionSetup.tsx:1769
 msgid "Resume mission"
 msgstr "မစ်ရှင်ဆက်လုပ်"
 
-#: src/components/MissionSetup.tsx:148
-#: src/components/MissionSetup.tsx:188
+#: src/components/MissionSetup.tsx:149
+#: src/components/MissionSetup.tsx:189
 msgid "Retract flaps"
 msgstr "ဖလက်ပ် သိမ်းသွင်း"
 
@@ -2832,7 +2877,7 @@ msgstr "ဖလက်ပ် သိမ်းသွင်း"
 msgid "Retry"
 msgstr "ထပ်စမ်းကြည့်ပါ"
 
-#: src/components/MissionSetup.tsx:368
+#: src/components/MissionSetup.tsx:369
 msgid "Reversed"
 msgstr "ပြောင်းပြန်"
 
@@ -2844,19 +2889,28 @@ msgstr "အသုံးပြုခွင့် ရုပ်သိမ်းရ�
 msgid "Right to Left"
 msgstr "ညာမှ ဘယ်သို့"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/MissionSetup.tsx:736
+#: src/components/MissionSetup.tsx:737
+msgid "Right wing"
+msgstr "ညာတောင်ပံ"
+
+#: src/components/MissionSetup.tsx:738
+msgid "Right wingtip"
+msgstr "ညာတောင်ပံထိပ်"
+
+#: src/components/GameCanvas.tsx:359
 msgid "roll"
 msgstr "ယိမ်း"
 
-#: src/components/MissionSetup.tsx:125
+#: src/components/MissionSetup.tsx:126
 msgid "Roll"
 msgstr "ယိမ်းလဲ"
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:169
 msgid "Roll left"
 msgstr "ဘယ်သို့ ယိမ်းလဲ"
 
-#: src/components/MissionSetup.tsx:169
+#: src/components/MissionSetup.tsx:170
 msgid "Roll right"
 msgstr "ညာသို့ ယိမ်းလဲ"
 
@@ -2900,7 +2954,7 @@ msgstr "စနေနေ့"
 msgid "Save"
 msgstr "သိမ်းမည်"
 
-#: src/components/MissionSetup.tsx:886
+#: src/components/MissionSetup.tsx:889
 msgid "Sea level"
 msgstr "ပင်လယ်ရေမျက်နှာပြင်"
 
@@ -3030,8 +3084,8 @@ msgstr "ဆိုက်ဦးတည်ရာကို ရွေးပါ"
 msgid "Select theme preference"
 msgstr "အပြင်အဆင် ဦးစားပေးကို ရွေးပါ"
 
-#: src/components/MissionSetup.tsx:144
-#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:145
+#: src/components/MissionSetup.tsx:185
 msgid "Select weapon"
 msgstr "လက်နက် ရွေးချယ်"
 
@@ -3049,7 +3103,7 @@ msgstr "ရွေးချယ်ထားသည်"
 msgid "Selected: <0>{0}</0>"
 msgstr "ရွေးထား: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:1151
+#: src/components/MissionSetup.tsx:1154
 msgid "Send"
 msgstr "ပို့ရန်"
 
@@ -3057,7 +3111,7 @@ msgstr "ပို့ရန်"
 msgid "Send again"
 msgstr "ထပ်ပို့ပါ"
 
-#: src/components/GameCanvas.tsx:260
+#: src/components/GameCanvas.tsx:315
 msgid "Send chat"
 msgstr "ချတ်ပို့ရန်"
 
@@ -3075,11 +3129,11 @@ msgid "Serif"
 msgstr "ဆာရစ်ဖ်"
 
 #: src/components/MatchHistory.tsx:161
-#: src/components/MissionSetup.tsx:1260
+#: src/components/MissionSetup.tsx:1263
 msgid "Server"
 msgstr "ဆာဗာ"
 
-#: src/components/MissionSetup.tsx:1116
+#: src/components/MissionSetup.tsx:1119
 msgid "Server chat"
 msgstr "ဆာဗာချတ်"
 
@@ -3101,7 +3155,7 @@ msgstr "စက်ရှင် ပြီးဆုံးပါပြီ"
 msgid "Session expired. Please log in again."
 msgstr "စက်ရှင်သက်တမ်း ကုန်သွားပါပြီ။ ကျေးဇူးပြု၍ ထပ်မံ အကောင့်ဝင်ပါ။"
 
-#: src/components/MissionSetup.tsx:547
+#: src/components/MissionSetup.tsx:548
 msgid "Set"
 msgstr "သတ်မှတ်မည်"
 
@@ -3112,13 +3166,13 @@ msgstr "မူရင်းနှင့် ဦးတည်ရာ သတ်မှ�
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1792
-#: src/components/MissionSetup.tsx:1826
+#: src/components/GameCanvas.tsx:330
+#: src/components/MissionSetup.tsx:1795
+#: src/components/MissionSetup.tsx:1829
 msgid "Settings"
 msgstr "ဆက်တင်များ"
 
-#: src/components/MissionSetup.tsx:1587
+#: src/components/MissionSetup.tsx:1590
 msgid "Shadows"
 msgstr "အရိပ်များ"
 
@@ -3162,7 +3216,7 @@ msgstr "ထွက်နေသည်..."
 msgid "Single line of text only"
 msgstr "စာသား တစ်ကြောင်းတည်းသာ"
 
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:859
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "အင်ဂျင်တစ်လုံး အကောင်းဆုံးတက်နှုန်း (Vyse, အက်ဖ်တာဘာနာ)"
 
@@ -3179,8 +3233,8 @@ msgstr "သေး"
 msgid "Sort"
 msgstr "စီမည်"
 
-#: src/components/MissionSetup.tsx:473
-#: src/components/MissionSetup.tsx:1836
+#: src/components/MissionSetup.tsx:474
+#: src/components/MissionSetup.tsx:1839
 msgid "Sound"
 msgstr "အသံ"
 
@@ -3196,17 +3250,17 @@ msgstr "ကျယ်ပြန့်သော"
 msgid "SPD BK"
 msgstr "လေ.ဘ"
 
-#: src/components/GameCanvas.tsx:309
+#: src/components/GameCanvas.tsx:364
 msgid "speed brake"
 msgstr "လေကြောင်းဘရိတ်"
 
-#: src/components/MissionSetup.tsx:128
-#: src/components/MissionSetup.tsx:136
-#: src/components/MissionSetup.tsx:174
+#: src/components/MissionSetup.tsx:129
+#: src/components/MissionSetup.tsx:137
+#: src/components/MissionSetup.tsx:175
 msgid "Speed brake"
 msgstr "လေကြောင်းဘရိတ်"
 
-#: src/components/MissionSetup.tsx:912
+#: src/components/MissionSetup.tsx:915
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "အမြန်နှုန်းများကို KCAS ဖြင့်၊ ပေါ့ပါးသော (လောင်စာအနည်းဆုံး၊ ပြင်ပတပ်ဆင်ပစ္စည်းမရှိ) မှ လေးလံသော (အများဆုံးစုစုပေါင်းအလေးချိန်) အထိ အပိုင်းအခြားအဖြစ်။ ဒေတာကို ဂိမ်းအတွင်း စမ်းသပ်၍ ရရှိထားသည်။ တကယ့်လေယာဉ်နှင့် ကွာခြားချက်များသည် ဆင်မြူလေတာ၏ ပျံသန်းမှုပုံစံအမှားများကို ထင်ဟပ်သည်။"
 
@@ -3214,15 +3268,15 @@ msgstr "အမြန်နှုန်းများကို KCAS ဖြင့
 msgid "SPLASH"
 msgstr "ပစ်ချလိုက်ပြီ"
 
-#: src/components/MissionSetup.tsx:861
+#: src/components/MissionSetup.tsx:864
 msgid "Stall, clean (Vs1)"
 msgstr "စတောလ်၊ သန့်ရှင်းသောပုံစံ (Vs1)"
 
-#: src/components/MissionSetup.tsx:862
+#: src/components/MissionSetup.tsx:865
 msgid "Stall, landing config (Vs0)"
 msgstr "စတောလ်၊ ဆင်းသက်သည့်ပုံစံ (Vs0)"
 
-#: src/components/MissionSetup.tsx:1400
+#: src/components/MissionSetup.tsx:1403
 msgid "Start"
 msgstr "စတင်"
 
@@ -3234,11 +3288,11 @@ msgstr "ပထမမှတ်ချက် ထည့်၍ ဆွေးနွေ�
 msgid "Stay tuned though!"
 msgstr "သို့သော် ဆက်လက်စောင့်ကြည့်ပါ။"
 
-#: src/components/MissionSetup.tsx:852
+#: src/components/MissionSetup.tsx:855
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "အမတ်စောက်ဆုံးတက်နှုန်း (Vx, 100% တွန်းအား)"
 
-#: src/components/MissionSetup.tsx:853
+#: src/components/MissionSetup.tsx:856
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "အမတ်စောက်ဆုံးတက်နှုန်း (Vx, အက်ဖ်တာဘာနာ)"
 
@@ -3269,8 +3323,8 @@ msgstr "Subscribe လုပ်မည်"
 msgid "Sunday"
 msgstr "တနင်္ဂနွေ"
 
-#: src/components/MissionSetup.tsx:1390
-#: src/components/MissionSetup.tsx:1745
+#: src/components/MissionSetup.tsx:1393
+#: src/components/MissionSetup.tsx:1748
 #: src/components/Multiplayer.tsx:396
 msgid "Superhuman"
 msgstr "လူသားထက်သာ"
@@ -3312,11 +3366,11 @@ msgstr "တက်ဂ်များ"
 msgid "TALLY"
 msgstr "ရန်သူတွေ့ပြီ"
 
-#: src/components/MissionSetup.tsx:1343
+#: src/components/MissionSetup.tsx:1346
 msgid "Task"
 msgstr "လုပ်ငန်း"
 
-#: src/components/GameCanvas.tsx:216
+#: src/components/GameCanvas.tsx:232
 msgid "Team"
 msgstr "အဖွဲ့"
 
@@ -3350,7 +3404,7 @@ msgstr "စာသား"
 msgid "That code is incorrect or has expired."
 msgstr "ထိုကုဒ်မှားနေသည် သို့မဟုတ် သက်တမ်းကုန်သွားပြီ။"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:348
 msgid "The match continues behind this menu."
 msgstr "ဤမီနူးနောက်ကွယ်တွင် ပွဲဆက်လက်ဆင်နွှဲနေသည်။"
 
@@ -3382,19 +3436,19 @@ msgstr "ဤအခန်းသည် သင့်ဂိမ်းချိတ်�
 msgid "This page has not been created yet."
 msgstr "ဤစာမျက်နှာကို မဖန်တီးရသေးပါ။"
 
-#: src/components/GameCanvas.tsx:305
+#: src/components/GameCanvas.tsx:360
 msgid "throttle"
 msgstr "အရှိန်"
 
-#: src/components/MissionSetup.tsx:127
+#: src/components/MissionSetup.tsx:128
 msgid "Throttle"
 msgstr "အရှိန်ထိန်း"
 
-#: src/components/MissionSetup.tsx:173
+#: src/components/MissionSetup.tsx:174
 msgid "Throttle down"
 msgstr "အရှိန်လျှော့"
 
-#: src/components/MissionSetup.tsx:172
+#: src/components/MissionSetup.tsx:173
 msgid "Throttle up"
 msgstr "အရှိန်တိုး"
 
@@ -3402,11 +3456,11 @@ msgstr "အရှိန်တိုး"
 msgid "Thursday"
 msgstr "ကြာသပတေး"
 
-#: src/components/MissionSetup.tsx:860
+#: src/components/MissionSetup.tsx:863
 msgid "Tightest sustained turn speed"
 msgstr "အကျဉ်းဆုံးစဉ်ဆက်ကွေ့ဝိုက်မှုအမြန်နှုန်း"
 
-#: src/components/GameCanvas.tsx:317
+#: src/components/GameCanvas.tsx:372
 msgid "tilt"
 msgstr "စောင်း"
 
@@ -3414,7 +3468,7 @@ msgstr "စောင်း"
 msgid "Time"
 msgstr "အချိန်"
 
-#: src/components/MissionSetup.tsx:1454
+#: src/components/MissionSetup.tsx:1457
 msgid "Time of day"
 msgstr "နေ့အချိန်"
 
@@ -3470,7 +3524,7 @@ msgstr "တောင်းဆိုမှု များလွန်းနေ�
 msgid "Top"
 msgstr "ထိပ်"
 
-#: src/components/MissionSetup.tsx:1599
+#: src/components/MissionSetup.tsx:1602
 msgid "Tracers"
 msgstr "ခြေရာခံကျည်များ"
 
@@ -3478,31 +3532,31 @@ msgstr "ခြေရာခံကျည်များ"
 msgid "Travelling"
 msgstr "ခရီးသွားနေသည်"
 
-#: src/components/MissionSetup.tsx:115
+#: src/components/MissionSetup.tsx:116
 msgid "Trim"
 msgstr "ထရင်မ်"
 
-#: src/components/MissionSetup.tsx:130
+#: src/components/MissionSetup.tsx:131
 msgid "Trim hat"
 msgstr "ထရင်မ် ဦးထုပ်"
 
-#: src/components/MissionSetup.tsx:140
-#: src/components/MissionSetup.tsx:179
+#: src/components/MissionSetup.tsx:141
+#: src/components/MissionSetup.tsx:180
 msgid "Trim nose down"
 msgstr "ထရင်မ်- နှာခေါင်း အောက်"
 
-#: src/components/MissionSetup.tsx:139
-#: src/components/MissionSetup.tsx:178
+#: src/components/MissionSetup.tsx:140
+#: src/components/MissionSetup.tsx:179
 msgid "Trim nose up"
 msgstr "ထရင်မ်- နှာခေါင်း အပေါ်"
 
-#: src/components/MissionSetup.tsx:141
-#: src/components/MissionSetup.tsx:180
+#: src/components/MissionSetup.tsx:142
+#: src/components/MissionSetup.tsx:181
 msgid "Trim roll left"
 msgstr "ထရင်မ်- ဘယ်စောင်း"
 
-#: src/components/MissionSetup.tsx:142
-#: src/components/MissionSetup.tsx:181
+#: src/components/MissionSetup.tsx:143
+#: src/components/MissionSetup.tsx:182
 msgid "Trim roll right"
 msgstr "ထရင်မ်- ညာစောင်း"
 
@@ -3520,10 +3574,6 @@ msgstr "ပြန်ကြိုးစားပါ"
 #: ../../../lib/web/src/lib/preference-utils.ts:60
 msgid "Tuesday"
 msgstr "အင်္ဂါ"
-
-#: src/components/MissionSetup.tsx:727
-msgid "Twin rail"
-msgstr "ရေးလ်နှစ်ထပ်"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:162
@@ -3546,7 +3596,7 @@ msgstr "သုံးစွဲသူရှာရန် ရိုက်ပါ"
 msgid "Type to search..."
 msgstr "ရှာရန် ရိုက်ပါ..."
 
-#: src/components/MissionSetup.tsx:1537
+#: src/components/MissionSetup.tsx:1540
 msgid "Ultra"
 msgstr "အာထရာ"
 
@@ -3580,12 +3630,12 @@ msgstr "အမေရိကန်ပြည်ထောင်စု"
 msgid "Unknown"
 msgstr "မသိရသော"
 
-#: src/components/MissionSetup.tsx:1490
+#: src/components/MissionSetup.tsx:1493
 #: src/components/Multiplayer.tsx:369
 msgid "Unlimited ammunition"
 msgstr "ခဲယမ်း အကန့်အသတ်မရှိ"
 
-#: src/components/MissionSetup.tsx:1496
+#: src/components/MissionSetup.tsx:1499
 #: src/components/Multiplayer.tsx:379
 msgid "Unlimited fuel"
 msgstr "လောင်စာဆီ အကန့်အသတ်မရှိ"
@@ -3650,7 +3700,7 @@ msgstr "အတည်ပြုမည်"
 msgid "Verify email address"
 msgstr "အီးမေးလ် လိပ်စာ အတည်ပြုမည်"
 
-#: src/components/MissionSetup.tsx:902
+#: src/components/MissionSetup.tsx:905
 msgid "Vertical"
 msgstr "ဒေါင်လိုက်"
 
@@ -3667,12 +3717,12 @@ msgstr "ဗီဒီယို thumbnail"
 msgid "Video viewer: {0}"
 msgstr "ဗီဒီယိုကြည့်ရှုစနစ်- {0}"
 
-#: src/components/GameCanvas.tsx:310
+#: src/components/GameCanvas.tsx:365
 msgid "view"
 msgstr "မြင်ကွင်း"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/MissionSetup.tsx:118
+#: src/components/MissionSetup.tsx:119
 msgid "View"
 msgstr "ကြည့်ရှုမည်"
 
@@ -3689,7 +3739,7 @@ msgstr "အသိပေးချက်များ အားလုံး ကြ�
 msgid "View controls"
 msgstr "ထိန်းချုပ်မှုများ ကြည့်ရှုမည်"
 
-#: src/components/MissionSetup.tsx:569
+#: src/components/MissionSetup.tsx:570
 msgid "Views"
 msgstr "ကြည့်ရှုမှုများ"
 
@@ -3723,12 +3773,12 @@ msgstr "မကြာမီ ပြန်လည် online ဖြစ်လာပါ
 msgid "We'll notify you when something important happens."
 msgstr "အရေးကြီးတာတစ်ခုခုဖြစ်ရင် အကြောင်းကြားပါမယ်။"
 
-#: src/components/GameCanvas.tsx:306
+#: src/components/GameCanvas.tsx:361
 msgid "weapon"
 msgstr "လက်နက်"
 
-#: src/components/MissionSetup.tsx:116
-#: src/components/MissionSetup.tsx:456
+#: src/components/MissionSetup.tsx:117
+#: src/components/MissionSetup.tsx:457
 msgid "Weapons"
 msgstr "လက်နက်များ"
 
@@ -3744,12 +3794,12 @@ msgstr "ဝက်ဘ်ဆိုက်ကို ပြုပြင်နေပ�
 msgid "Wednesday"
 msgstr "ဗုဒ္ဓဟူး"
 
-#: src/components/MissionSetup.tsx:137
-#: src/components/MissionSetup.tsx:175
+#: src/components/MissionSetup.tsx:138
+#: src/components/MissionSetup.tsx:176
 msgid "Wheel brakes"
 msgstr "ဘီးဘရိတ်"
 
-#: src/components/MissionSetup.tsx:194
+#: src/components/MissionSetup.tsx:195
 msgid "Wing fold"
 msgstr "တောင်ပံခေါက်ခြင်း"
 
@@ -3761,24 +3811,24 @@ msgstr "နိုင်ပြီ"
 msgid "World server"
 msgstr "ကမ္ဘာ့ဆာဗာ"
 
-#: src/components/MissionSetup.tsx:1109
+#: src/components/MissionSetup.tsx:1112
 #: src/components/Multiplayer.tsx:115
 msgid "World server not reachable"
 msgstr "ကမ္ဘာ့ဆာဗာသို့ ချိတ်ဆက်၍မရပါ"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:359
 msgid "yaw"
 msgstr "လှည့်"
 
-#: src/components/MissionSetup.tsx:126
+#: src/components/MissionSetup.tsx:127
 msgid "Yaw"
 msgstr "ဝဲယာလှည့်"
 
-#: src/components/MissionSetup.tsx:170
+#: src/components/MissionSetup.tsx:171
 msgid "Yaw left"
 msgstr "ဘယ်သို့လှည့်"
 
-#: src/components/MissionSetup.tsx:171
+#: src/components/MissionSetup.tsx:172
 msgid "Yaw right"
 msgstr "ညာသို့လှည့်"
 
@@ -3822,14 +3872,14 @@ msgstr "သင့်စာသားနှင့် ပူးတွဲဖို�
 msgid "Your text will be lost."
 msgstr "သင်၏ စာသား ပျောက်ဆုံးသွားပါမည်။"
 
-#: src/components/MissionSetup.tsx:131
+#: src/components/MissionSetup.tsx:132
 msgid "Zoom"
 msgstr "ဇူးမ်"
 
-#: src/components/MissionSetup.tsx:161
+#: src/components/MissionSetup.tsx:162
 msgid "Zoom in"
 msgstr "ဇူးမ်ချဲ့ရန်"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:163
 msgid "Zoom out"
 msgstr "ဇူးမ်ချုံ့ရန်"
