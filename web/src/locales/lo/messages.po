@@ -46,7 +46,7 @@ msgstr "{0, plural, other {# ເລືອກແລ້ວ}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:1130
+#: src/components/MissionSetup.tsx:1139
 msgid "{0} created “{1}”"
 msgstr "{0} ໄດ້ສ້າງ “{1}”"
 
@@ -56,7 +56,7 @@ msgid "{0} flying"
 msgstr "{0} ຄົນກຳລັງບິນ"
 
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:832
+#: src/components/MissionSetup.tsx:841
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb ເກີນນໍ້າໜັກປ່ອຍສູງສຸດ"
 
@@ -136,7 +136,7 @@ msgstr "ສາຍ 1"
 msgid "12 hours"
 msgstr "12 ຊົ່ວໂມງ"
 
-#: src/components/MissionSetup.tsx:892
+#: src/components/MissionSetup.tsx:901
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -152,7 +152,7 @@ msgstr "24 ຊົ່ວໂມງ"
 msgid "3 WIRE"
 msgstr "ສາຍ 3"
 
-#: src/components/MissionSetup.tsx:895
+#: src/components/MissionSetup.tsx:904
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -192,8 +192,8 @@ msgstr "ປະເພດບັນຊີ"
 msgid "Account verified"
 msgstr "ບັນຊີຢືນຢັນແລ້ວ"
 
-#: src/components/MissionSetup.tsx:1392
-#: src/components/MissionSetup.tsx:1747
+#: src/components/MissionSetup.tsx:1376
+#: src/components/MissionSetup.tsx:1748
 #: src/components/Multiplayer.tsx:395
 msgid "Ace"
 msgstr "ຍອດຝີມື"
@@ -291,7 +291,7 @@ msgstr "ກຳລັງເພີ່ມ..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "ປັບຮູບລັກສະນະ ແລະ ໂຄງສ້າງໃຫ້ເໝາະກັບຄວາມມັກຂອງທ່ານ."
 
-#: src/components/MissionSetup.tsx:1596
+#: src/components/MissionSetup.tsx:1597
 msgid "Afterburner"
 msgstr "ການເຜົາໄໝ້ທ້າຍ"
 
@@ -304,11 +304,11 @@ msgstr "AI"
 msgid "Aircraft"
 msgstr "ເຮືອບິນ"
 
-#: src/components/MissionSetup.tsx:969
+#: src/components/MissionSetup.tsx:978
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "ເຮືອບັນທຸກເຮືອບິນ <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> ໂດຍ <1>Muhamad Mirza Arrafi</1> (Sketchfab) ອະນຸຍາດພາຍໃຕ້ <2>CC BY 4.0</2>. ດັດແກ້ແລ້ວ: ປັບຂະໜາດຄືນໃໝ່, ປັບທິດທາງຄືນໃໝ່, ຈົມລົງເຖິງເສັ້ນນ້ຳ, ແລະ ເຮັດໃຫ້ຮຽບງ່າຍຂຶ້ນສຳລັບເວັບ."
 
-#: src/components/MissionSetup.tsx:943
+#: src/components/MissionSetup.tsx:952
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "ໂມເດລເຮືອບິນ <0>“F/A-18C Hornet”</0> ໂດຍ <1>CreadorDeMu</1> (Sketchfab), ໄດ້ຮັບອະນຸຍາດພາຍໃຕ້ <2>CC BY 4.0</2>. ດັດແກ້ແລ້ວ: ປັບທິດທາງ ແລະ ປັບຂະໜາດຄືນໃໝ່, ລຶບຂໍ້ມູນເທັກສະເຈີທີ່ບໍ່ໄດ້ໃຊ້ອອກ, ແຍກອຸປະກອນຕິດຕັ້ງພາຍນອກອອກເປັນໄຟລ໌ຕ່າງຫາກ, ແລະ ສະທ້ອນເມສ shroud ອັນໜຶ່ງແບບກະຈົກ."
 
@@ -355,7 +355,7 @@ msgstr "ໃຜກໍໄດ້ທີ່ເຂົ້າສູ່ລະບົບ"
 msgid "Approach power (ATC)"
 msgstr "ກຳລັງເຂົ້າຈອດ (ATC)"
 
-#: src/components/MissionSetup.tsx:866
+#: src/components/MissionSetup.tsx:875
 msgid "Approach, on-speed (Vapp)"
 msgstr "ການເຂົ້າຮ່ອນ, ຄວາມໄວທີ່ຖືກຕ້ອງ (Vapp)"
 
@@ -375,10 +375,6 @@ msgstr "ທ່ານແນ່ໃຈບໍວ່າຕ້ອງການລົບ
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:27
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "ທ່ານແນ່ໃຈບໍວ່າຕ້ອງການອອກຈາກລະບົບ? ທ່ານຈະຕ້ອງເຂົ້າສູ່ລະບົບອີກຄັ້ງເພື່ອເຂົ້າເຖິງບັນຊີຂອງທ່ານ."
-
-#: src/components/MissionSetup.tsx:1357
-msgid "Armament"
-msgstr "ອາວຸດ"
 
 #: src/components/MissionSetup.tsx:151
 #: src/components/MissionSetup.tsx:191
@@ -447,7 +443,7 @@ msgstr "ກັບຄືນ"
 msgid "Back to home"
 msgstr "ກັບໄປໜ້າຫຼັກ"
 
-#: src/components/MissionSetup.tsx:1384
+#: src/components/MissionSetup.tsx:1368
 msgid "Bandit"
 msgstr "ເຮືອບິນສັດຕູ"
 
@@ -455,19 +451,19 @@ msgstr "ເຮືອບິນສັດຕູ"
 msgid "Banner"
 msgstr "ປ້າຍ"
 
-#: src/components/MissionSetup.tsx:857
+#: src/components/MissionSetup.tsx:866
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "ໄຕ່ລະດັບດີສຸດ (Vy, ແຮງຂັບ 100%)"
 
-#: src/components/MissionSetup.tsx:858
+#: src/components/MissionSetup.tsx:867
 msgid "Best climb (Vy, afterburner)"
 msgstr "ໄຕ່ລະດັບດີສຸດ (Vy, ການເຜົາໄໝ້ເສີມ)"
 
-#: src/components/MissionSetup.tsx:860
+#: src/components/MissionSetup.tsx:869
 msgid "Best glide (engines out)"
 msgstr "ຮ່ອນດີສຸດ (ເຄື່ອງຈັກດັບ)"
 
-#: src/components/MissionSetup.tsx:862
+#: src/components/MissionSetup.tsx:871
 msgid "Best sustained turn speed"
 msgstr "ຄວາມໄວການລ້ຽວຕໍ່ເນື່ອງທີ່ດີສຸດ"
 
@@ -546,7 +542,7 @@ msgstr "ປຸ່ມ"
 msgid "CALL THE BALL"
 msgstr "ແຈ້ງບານ"
 
-#: src/components/MissionSetup.tsx:1652
+#: src/components/MissionSetup.tsx:1653
 #: src/components/Multiplayer.tsx:258
 msgid "Callsign"
 msgstr "ຊື່ເອີ້ນ"
@@ -588,31 +584,31 @@ msgstr "ຍົກເລີກການຕອບກັບ"
 msgid "Canopy"
 msgstr "ຝາຄອບຫ້ອງນັກບິນ"
 
-#: src/components/MissionSetup.tsx:1165
+#: src/components/MissionSetup.tsx:1174
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1432
+#: src/components/MissionSetup.tsx:1416
 msgid "Case I (day)"
 msgstr "ກໍລະນີ I (ກາງເວັນ)"
 
-#: src/components/MissionSetup.tsx:1166
+#: src/components/MissionSetup.tsx:1175
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1433
+#: src/components/MissionSetup.tsx:1417
 msgid "Case II (weather)"
 msgstr "ກໍລະນີ II (ອາກາດ)"
 
-#: src/components/MissionSetup.tsx:1167
+#: src/components/MissionSetup.tsx:1176
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1434
+#: src/components/MissionSetup.tsx:1418
 msgid "Case III (night)"
 msgstr "ກໍລະນີ III (ກາງຄືນ)"
 
-#: src/components/MissionSetup.tsx:1440
+#: src/components/MissionSetup.tsx:1424
 msgid "Catapult"
 msgstr "ກາຕາປູນ"
 
@@ -620,7 +616,7 @@ msgstr "ກາຕາປູນ"
 msgid "Category for these notifications"
 msgstr "ໝວດໝູ່ສຳລັບການແຈ້ງເຕືອນເຫຼົ່ານີ້"
 
-#: src/components/MissionSetup.tsx:734
+#: src/components/MissionSetup.tsx:738
 msgid "Centerline"
 msgstr "ເສັ້ນກາງ"
 
@@ -646,7 +642,7 @@ msgid "Chat to everyone"
 msgstr "ແຊັດຫາທຸກຄົນ"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1482
+#: src/components/MissionSetup.tsx:1483
 msgid "Cheats"
 msgstr "ສູດໂກງ"
 
@@ -757,7 +753,7 @@ msgstr "ປິດການຄົ້ນຫາ"
 msgid "closer"
 msgstr "ໃກ້ຂຶ້ນ"
 
-#: src/components/MissionSetup.tsx:1468
+#: src/components/MissionSetup.tsx:1452
 msgid "Clouds"
 msgstr "ເມກ"
 
@@ -828,7 +824,7 @@ msgstr "ກຳນົດຄ່າການຕັ້ງຄ່າມຸມມອງ
 msgid "Confirm"
 msgstr "ຢືນຢັນ"
 
-#: src/components/MissionSetup.tsx:1275
+#: src/components/MissionSetup.tsx:1284
 msgid "Connect"
 msgstr "ເຊື່ອມຕໍ່"
 
@@ -885,7 +881,7 @@ msgstr "ສຳເນົາໄປຄລິບບອດແລ້ວ"
 msgid "Copy"
 msgstr "ສຳເນົາ"
 
-#: src/components/MissionSetup.tsx:861
+#: src/components/MissionSetup.tsx:870
 msgid "Corner speed (best instant turn)"
 msgstr "ຄວາມໄວມູມ (ການລ້ຽວທັນທີທີ່ດີສຸດ)"
 
@@ -902,7 +898,7 @@ msgstr "ບໍ່ສາມາດໂຫລດເອກະສານນີ້ໄດ
 msgid "Could not save the recording"
 msgstr "ບໍ່ສາມາດບັນທຶກໄຟລ໌ການບິນໄດ້"
 
-#: src/components/MissionSetup.tsx:1112
+#: src/components/MissionSetup.tsx:1121
 msgid "Could not send the message"
 msgstr "ບໍ່ສາມາດສົ່ງຂໍ້ຄວາມໄດ້"
 
@@ -956,8 +952,8 @@ msgstr "ສ້າງແລ້ວບິນ"
 msgid "Create match"
 msgstr "ສ້າງແມັດ"
 
-#: src/components/MissionSetup.tsx:1787
-#: src/components/MissionSetup.tsx:1810
+#: src/components/MissionSetup.tsx:1788
+#: src/components/MissionSetup.tsx:1811
 msgid "Create mission"
 msgstr "ສ້າງພາລະກິດ"
 
@@ -975,12 +971,12 @@ msgstr "ສ້າງແລ້ວ"
 msgid "Creating..."
 msgstr "ກຳລັງສ້າງ..."
 
-#: src/components/MissionSetup.tsx:932
-#: src/components/MissionSetup.tsx:938
+#: src/components/MissionSetup.tsx:941
+#: src/components/MissionSetup.tsx:947
 msgid "Credits"
 msgstr "ຜູ້ມີສ່ວນຮ່ວມ"
 
-#: src/components/MissionSetup.tsx:1475
+#: src/components/MissionSetup.tsx:1459
 #: src/components/Multiplayer.tsx:320
 msgid "Cumulus"
 msgstr "ເມກກ້ອນ"
@@ -990,7 +986,7 @@ msgid "Current location"
 msgstr "ຕຳແໜ່ງປັດຈຸບັນ"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:265
-#: src/components/MissionSetup.tsx:783
+#: src/components/MissionSetup.tsx:791
 msgid "Custom"
 msgstr "ກຳນົດເອງ"
 
@@ -1023,7 +1019,7 @@ msgstr "ຂໍ້ມູນຂັດແຍ່ງກັນ"
 msgid "Date"
 msgstr "ວັນທີ"
 
-#: src/components/MissionSetup.tsx:1463
+#: src/components/MissionSetup.tsx:1447
 #: src/components/Multiplayer.tsx:315
 msgid "Day"
 msgstr "ກາງເວັນ"
@@ -1183,13 +1179,13 @@ msgstr "ຕົວເຮັດຊ້ຳໜ້າຈໍ"
 msgid "Displays the mobile sidebar."
 msgstr "ສະແດງແຖບຂ້າງມືຖື."
 
-#: src/components/MissionSetup.tsx:1584
+#: src/components/MissionSetup.tsx:1585
 msgid "Distance LOD"
 msgstr "LOD ໄລຍະທາງ"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1891
+#: src/components/MissionSetup.tsx:1892
 msgid "Done"
 msgstr "ສຳເລັດແລ້ວ"
 
@@ -1219,7 +1215,7 @@ msgstr "ຊ້ຳກັນ"
 msgid "Duration"
 msgstr "ໄລຍະເວລາ"
 
-#: src/components/MissionSetup.tsx:1578
+#: src/components/MissionSetup.tsx:1579
 msgid "Dynamic resolution"
 msgstr "ຄວາມລະອຽດແບບໄດນາມິກ"
 
@@ -1286,8 +1282,8 @@ msgstr "ລະຫັດອີເມວ"
 msgid "empty"
 msgstr "ຫວ່າງ"
 
-#: src/components/MissionSetup.tsx:749
-#: src/components/MissionSetup.tsx:754
+#: src/components/MissionSetup.tsx:753
+#: src/components/MissionSetup.tsx:758
 msgid "Empty pylon"
 msgstr "ໄພລອນເປົ່າ"
 
@@ -1339,7 +1335,7 @@ msgstr "ຂະຫຍາຍແຖບຂ້າງ"
 msgid "Extend flaps"
 msgstr "ຟລັບອອກ"
 
-#: src/components/MissionSetup.tsx:1558
+#: src/components/MissionSetup.tsx:1559
 msgid "Exterior detail"
 msgstr "ລາຍລະອຽດພາຍນອກ"
 
@@ -1351,7 +1347,7 @@ msgstr "URL ພາຍນອກ"
 msgid "Extra large"
 msgstr "ໃຫຍ່ພິເສດ"
 
-#: src/components/MissionSetup.tsx:880
+#: src/components/MissionSetup.tsx:889
 msgid "F/A-18C reference"
 msgstr "ຄ່າອ້າງອີງ F/A-18C"
 
@@ -1516,8 +1512,8 @@ msgstr "ລອຍຕົວ"
 msgid "Flown"
 msgstr "ບິນແລ້ວ"
 
-#: src/components/MissionSetup.tsx:1781
-#: src/components/MissionSetup.tsx:1824
+#: src/components/MissionSetup.tsx:1782
+#: src/components/MissionSetup.tsx:1825
 msgid "Fly"
 msgstr "ບິນ"
 
@@ -1525,16 +1521,16 @@ msgstr "ບິນ"
 msgid "Fly again"
 msgstr "ບິນອີກຄັ້ງ"
 
-#: src/components/MissionSetup.tsx:761
+#: src/components/MissionSetup.tsx:765
 msgid "Fox 2 fighter"
 msgstr "ເຮືອບິນລົບ Fox 2"
 
-#: src/components/MissionSetup.tsx:1608
+#: src/components/MissionSetup.tsx:1609
 msgid "Framerate"
 msgstr "ອັດຕາເຟຣມ"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1352
+#: src/components/MissionSetup.tsx:1361
 msgid "Free flight"
 msgstr "ການບິນອິດສະຫຼະ"
 
@@ -1559,7 +1555,6 @@ msgstr "ຈາກ"
 msgid "From theme"
 msgstr "ຈາກຮູບແບບ"
 
-#: src/components/MissionSetup.tsx:1369
 #: src/components/Multiplayer.tsx:330
 msgid "Fuel"
 msgstr "ນ້ຳມັນເຊື້ອໄຟ"
@@ -1584,7 +1579,7 @@ msgstr "ນ້ຳມັນໜ້ອຍ"
 msgid "Fuel probe"
 msgstr "ຫົວສູບນໍ້າມັນ"
 
-#: src/components/MissionSetup.tsx:747
+#: src/components/MissionSetup.tsx:751
 msgid "Fuel tank"
 msgstr "ຖັງນໍ້າມັນ"
 
@@ -1596,8 +1591,8 @@ msgstr "ຮູບແບບເຕັມ"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:733
-#: src/components/MissionSetup.tsx:735
+#: src/components/MissionSetup.tsx:737
+#: src/components/MissionSetup.tsx:739
 msgid "Fuselage"
 msgstr "ລຳຕົວເຮືອບິນ"
 
@@ -1609,7 +1604,7 @@ msgstr "ລໍ້"
 msgid "GEAR"
 msgstr "ລໍ້"
 
-#: src/components/MissionSetup.tsx:1833
+#: src/components/MissionSetup.tsx:1834
 msgid "General"
 msgstr "ທົ່ວໄປ"
 
@@ -1639,11 +1634,11 @@ msgstr "ໄປຫາໜ້າ {pageNumber}"
 msgid "Go to previous page"
 msgstr "ໄປໜ້າກ່ອນໜ້າ"
 
-#: src/components/MissionSetup.tsx:1836
+#: src/components/MissionSetup.tsx:1837
 msgid "Graphics"
 msgstr "ກຣາຟິກ"
 
-#: src/components/MissionSetup.tsx:828
+#: src/components/MissionSetup.tsx:837
 msgid "Gross weight"
 msgstr "ນໍ້າໜັກລວມ"
 
@@ -1664,7 +1659,7 @@ msgstr "ກຸ່ມ: {0}"
 msgid "GUN"
 msgstr "ປືນ"
 
-#: src/components/MissionSetup.tsx:760
+#: src/components/MissionSetup.tsx:764
 msgid "Gun fighter"
 msgstr "ເຮືອບິນລົບປືນໃຫຍ່"
 
@@ -1676,17 +1671,17 @@ msgstr "ເຊື່ອງ"
 msgid "Hide password"
 msgstr "ເຊື່ອງລະຫັດຜ່ານ"
 
-#: src/components/MissionSetup.tsx:1538
+#: src/components/MissionSetup.tsx:1539
 msgid "High"
 msgstr "ສູງ"
 
-#: src/components/MissionSetup.tsx:1476
+#: src/components/MissionSetup.tsx:1460
 #: src/components/Multiplayer.tsx:321
 msgid "High stratus"
 msgstr "ເມກຊັ້ນສູງ"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1800
+#: src/components/MissionSetup.tsx:1801
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "ປະຫວັດ"
@@ -1731,8 +1726,8 @@ msgstr "ຕົວເບິ່ງຮູບພາບ: {0}"
 msgid "Imperial"
 msgstr "ອິມພີຣຽລ"
 
-#: src/components/MissionSetup.tsx:1162
-#: src/components/MissionSetup.tsx:1429
+#: src/components/MissionSetup.tsx:1171
+#: src/components/MissionSetup.tsx:1413
 msgid "In air"
 msgstr "ຢູ່ໃນອາກາດ"
 
@@ -1756,6 +1751,10 @@ msgstr "ປະທັບໃນ"
 msgid "Interests"
 msgstr "ຄວາມສົນໃຈ"
 
+#: src/components/MissionSetup.tsx:833
+msgid "Internal fuel"
+msgstr "ນໍ້າມັນພາຍໃນ"
+
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:550
 msgid "Invalid date"
 msgstr "ວັນທີ່ບໍ່ຖືກຕ້ອງ"
@@ -1776,7 +1775,7 @@ msgstr "ກັບທິດກົ້ມເງີຍ"
 msgid "INVULNERABLE"
 msgstr "ອະມະຕະ"
 
-#: src/components/MissionSetup.tsx:1487
+#: src/components/MissionSetup.tsx:1488
 #: src/components/Multiplayer.tsx:359
 msgid "Invulnerable (human players only)"
 msgstr "ອະມະຕະ (ສະເພາະຜູ້ຫຼິ້ນມະນຸດ)"
@@ -1789,8 +1788,8 @@ msgstr "ເບິ່ງຄືວ່າໜ້າທີ່ທ່ານກຳລັ
 msgid "Join"
 msgstr "ເຂົ້າຮ່ວມ"
 
-#: src/components/MissionSetup.tsx:1245
-#: src/components/MissionSetup.tsx:1791
+#: src/components/MissionSetup.tsx:1254
+#: src/components/MissionSetup.tsx:1792
 msgid "Join server"
 msgstr "ເຂົ້າຮ່ວມເຊີບເວີ"
 
@@ -1799,7 +1798,7 @@ msgid "JOINED"
 msgstr "ເຂົ້າຮ່ວມແລ້ວ"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1753
+#: src/components/MissionSetup.tsx:1754
 #: src/components/Multiplayer.tsx:453
 msgid "Joust"
 msgstr "ການປະທະ"
@@ -1808,11 +1807,11 @@ msgstr "ການປະທະ"
 msgid "Joust — 1v1, first kill wins"
 msgstr "ຕໍ່ສູ້ຕົວຕໍ່ຕົວ — 1v1, ຍິງຕົກກ່ອນຊະນະ"
 
-#: src/components/MissionSetup.tsx:1353
-msgid "Joust against AI player"
-msgstr "ຕໍ່ສູ້ຕົວຕໍ່ຕົວກັບຜູ້ຫຼິ້ນ AI"
+#: src/components/MissionSetup.tsx:1362
+msgid "Joust 1v1"
+msgstr "ຕໍ່ສູ້ຕົວຕໍ່ຕົວ 1v1"
 
-#: src/components/MissionSetup.tsx:1842
+#: src/components/MissionSetup.tsx:1843
 msgid "Joystick"
 msgstr "ຈອຍສະຕິກ"
 
@@ -1828,7 +1827,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "ປຸ່ມລັດແປ້ນພິມ"
 
-#: src/components/MissionSetup.tsx:1845
+#: src/components/MissionSetup.tsx:1846
 msgid "Keys"
 msgstr "ປຸ່ມກົດ"
 
@@ -1894,7 +1893,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "ຮຽນຮູ້ເພີ່ມເຕີມ"
 
-#: src/components/MissionSetup.tsx:1301
+#: src/components/MissionSetup.tsx:1310
 msgid "Leave server"
 msgstr "ອອກຈາກເຊີບເວີ"
 
@@ -1910,12 +1909,12 @@ msgstr "ອອກແລ້ວ"
 msgid "Left to Right"
 msgstr "ຊ້າຍຫາຂວາ"
 
-#: src/components/MissionSetup.tsx:731
-#: src/components/MissionSetup.tsx:732
+#: src/components/MissionSetup.tsx:735
+#: src/components/MissionSetup.tsx:736
 msgid "Left wing"
 msgstr "ປີກຊ້າຍ"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:734
 msgid "Left wingtip"
 msgstr "ປາຍປີກຊ້າຍ"
 
@@ -1958,10 +1957,6 @@ msgstr "ລິ້ງ"
 msgid "List"
 msgstr "ລາຍຊື່"
 
-#: src/components/MissionSetup.tsx:1372
-msgid "Load"
-msgstr "ປະລິມານ"
-
 #: ../../../lib/web/src/components/ui/load-more.tsx:35
 msgid "Load more"
 msgstr "ໂຫຼດເພີ່ມ"
@@ -1982,6 +1977,10 @@ msgstr "ການໂຫຼດລົ້ມເຫຼວ"
 #: ../../../lib/web/src/features/document/document-page.tsx:90
 msgid "Loading..."
 msgstr "ກຳລັງໂຫຼດ..."
+
+#: src/components/MissionSetup.tsx:1465
+msgid "Loadout"
+msgstr "ການບັນທຸກ"
 
 #: ../../../lib/web/src/components/profile-dropdown.tsx:69
 #: ../../../lib/web/src/components/profile-dropdown.tsx:98
@@ -2026,11 +2025,11 @@ msgstr "ເບິ່ງຂວາ"
 msgid "Look up"
 msgstr "ເບິ່ງຂຶ້ນເທິງ"
 
-#: src/components/MissionSetup.tsx:1534
+#: src/components/MissionSetup.tsx:1535
 msgid "Low"
 msgstr "ຕ່ຳ"
 
-#: src/components/MissionSetup.tsx:1477
+#: src/components/MissionSetup.tsx:1461
 #: src/components/Multiplayer.tsx:322
 msgid "Low stratus"
 msgstr "ເມກຊັ້ນຕ່ຳ"
@@ -2073,7 +2072,7 @@ msgstr "ຫຼັກ"
 msgid "Match type"
 msgstr "ປະເພດແມັດ"
 
-#: src/components/MissionSetup.tsx:1295
+#: src/components/MissionSetup.tsx:1304
 msgid "Matches"
 msgstr "ການແຂ່ງຂັນ"
 
@@ -2086,7 +2085,7 @@ msgid "MCP server"
 msgstr "ເຊີບເວີ MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1536
+#: src/components/MissionSetup.tsx:1537
 msgid "Medium"
 msgstr "ກາງ"
 
@@ -2107,7 +2106,7 @@ msgstr "ຂໍ້ຄວາມ"
 msgid "Message everyone"
 msgstr "ສົ່ງຂໍ້ຄວາມຫາທຸກຄົນ"
 
-#: src/components/MissionSetup.tsx:1147
+#: src/components/MissionSetup.tsx:1156
 msgid "Message players on this server"
 msgstr "ສົ່ງຂໍ້ຄວາມຫາຜູ້ຫຼິ້ນໃນເຊີບເວີນີ້"
 
@@ -2123,7 +2122,7 @@ msgstr "ແມັດຕຣິກ"
 msgid "Midair collision"
 msgstr "ຊົນກັນກາງອາກາດ"
 
-#: src/components/MissionSetup.tsx:995
+#: src/components/MissionSetup.tsx:1004
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "ແຜນທີ່ເກາະ Midway Atoll — ຮູບພາບປະກອບມີຂໍ້ມູນ <0>Copernicus Sentinel-2</0> ທີ່ຖືກດັດແກ້ (2026); ຮູບຊົງຂອງສະໜາມບິນ (ທາງແລ່ນ, ທາງຂັບເຄື່ອນ, ລານຈອດ) © ຜູ້ປະກອບສ່ວນ <1>OpenStreetMap</1>, ອະນຸຍາດພາຍໃຕ້ <2>ODbL</2>; ຂໍ້ມູນແຄມຝັ່ງ ແລະ ແນວປະກາລັງ ຈາກ <3>NOAA NCCOS</3> (ສາທາລະນະສົມບັດ)."
 
@@ -2204,7 +2203,7 @@ msgstr "ເກມໃໝ່"
 msgid "Next image"
 msgstr "ຮູບຕໍ່ໄປ"
 
-#: src/components/MissionSetup.tsx:1464
+#: src/components/MissionSetup.tsx:1448
 #: src/components/Multiplayer.tsx:316
 msgid "Night"
 msgstr "ກາງຄືນ"
@@ -2310,7 +2309,7 @@ msgstr "ບໍ່ພົບຜູ້ໃຊ້"
 msgid "No views"
 msgstr "ບໍ່ມີການເບິ່ງ"
 
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1133
 #: src/components/Multiplayer.tsx:436
 msgid "No world server."
 msgstr "ບໍ່ມີເຊີບເວີໂລກ."
@@ -2335,8 +2334,8 @@ msgstr "ບໍ່ມີຄະແນນ"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:355
 #: src/components/MissionSetup.tsx:415
-#: src/components/MissionSetup.tsx:756
-#: src/components/MissionSetup.tsx:1474
+#: src/components/MissionSetup.tsx:760
+#: src/components/MissionSetup.tsx:1458
 msgid "None"
 msgstr "ບໍ່ມີ"
 
@@ -2360,7 +2359,7 @@ msgstr "ບໍ່ໄດ້ຕັ້ງຄ່າ"
 msgid "Nothing found"
 msgstr "ບໍ່ພົບຫຍັງ"
 
-#: src/components/MissionSetup.tsx:1124
+#: src/components/MissionSetup.tsx:1133
 msgid "Nothing yet — say hello."
 msgstr "ຍັງບໍ່ມີຫຍັງເທື່ອ ລອງທັກທາຍກັນເບິ່ງ"
 
@@ -2377,8 +2376,8 @@ msgstr "ການແຈ້ງເຕືອນ"
 msgid "Notifications: {0}"
 msgstr "ການແຈ້ງເຕືອນ: {0}"
 
-#: src/components/MissionSetup.tsx:1390
-#: src/components/MissionSetup.tsx:1745
+#: src/components/MissionSetup.tsx:1374
+#: src/components/MissionSetup.tsx:1746
 #: src/components/Multiplayer.tsx:393
 msgid "Novice"
 msgstr "ຜູ້ເລີ່ມຕົ້ນ"
@@ -2389,7 +2388,7 @@ msgstr "ຜູ້ເລີ່ມຕົ້ນ"
 msgid "Number"
 msgstr "ຕົວເລກ"
 
-#: src/components/MissionSetup.tsx:1566
+#: src/components/MissionSetup.tsx:1567
 msgid "Ocean detail"
 msgstr "ລາຍລະອຽດມະຫາສະໝຸດ"
 
@@ -2401,13 +2400,13 @@ msgstr "OK"
 msgid "On"
 msgstr "ເປີດ"
 
-#: src/components/MissionSetup.tsx:1164
-#: src/components/MissionSetup.tsx:1431
+#: src/components/MissionSetup.tsx:1173
+#: src/components/MissionSetup.tsx:1415
 msgid "On carrier"
 msgstr "ເທິງເຮືອບັນທຸກ"
 
-#: src/components/MissionSetup.tsx:1163
-#: src/components/MissionSetup.tsx:1430
+#: src/components/MissionSetup.tsx:1172
+#: src/components/MissionSetup.tsx:1414
 msgid "On runway"
 msgstr "ເທິງທາງແລ່ນ"
 
@@ -2535,14 +2534,14 @@ msgstr "ຮູບແບບ (regex)"
 msgid "Pick a date"
 msgstr "ເລືອກວັນທີ"
 
-#: src/components/MissionSetup.tsx:1066
+#: src/components/MissionSetup.tsx:1075
 #: src/components/Multiplayer.tsx:102
 #: src/components/Multiplayer.tsx:263
 msgid "pilot"
 msgstr "ນັກບິນ"
 
-#: src/components/MissionSetup.tsx:1391
-#: src/components/MissionSetup.tsx:1746
+#: src/components/MissionSetup.tsx:1375
+#: src/components/MissionSetup.tsx:1747
 #: src/components/Multiplayer.tsx:394
 msgid "Pilot"
 msgstr "ນັກບິນ"
@@ -2605,7 +2604,7 @@ msgstr "ໂພສ"
 msgid "Posts and comments"
 msgstr "ໂພສແລະຄຳເຫັນ"
 
-#: src/components/MissionSetup.tsx:1521
+#: src/components/MissionSetup.tsx:1522
 msgid "Preset"
 msgstr "ຄ່າຕັ້ງລ່ວງໜ້າ"
 
@@ -2679,7 +2678,7 @@ msgstr "ລົງທະບຽນກະແຈຜ່ານຂອງທ່ານຄ
 msgid "REARMED"
 msgstr "ຕິດອາວຸດໃໝ່ແລ້ວ"
 
-#: src/components/MissionSetup.tsx:1250
+#: src/components/MissionSetup.tsx:1259
 msgid "Recent"
 msgstr "ຫຼ້າສຸດ"
 
@@ -2692,12 +2691,12 @@ msgstr "ແນະນຳ"
 msgid "Reconnecting ({retries})..."
 msgstr "ກຳລັງເຊື່ອມຕໍ່ໃໝ່ ({retries})..."
 
-#: src/components/MissionSetup.tsx:1670
+#: src/components/MissionSetup.tsx:1671
 msgid "Record flights"
 msgstr "ບັນທຶກການບິນ"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:1664
+#: src/components/MissionSetup.tsx:1665
 msgid "Recording"
 msgstr "ການບັນທຶກ"
 
@@ -2722,7 +2721,7 @@ msgstr "ກຳລັງປ່ຽນເສັ້ນທາງໄປຫາການ
 msgid "Reduce interest"
 msgstr "ຫຼຸດດອກເບ້ຍ"
 
-#: src/components/MissionSetup.tsx:874
+#: src/components/MissionSetup.tsx:883
 msgid "Reference"
 msgstr "ຄ່າອ້າງອີງ"
 
@@ -2801,7 +2800,7 @@ msgstr "ປ່ຽນຊື່ຄໍລຳ"
 msgid "Rename this board column"
 msgstr "ປ່ຽນຊື່ຄໍລຳກະດານນີ້"
 
-#: src/components/MissionSetup.tsx:1032
+#: src/components/MissionSetup.tsx:1041
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "ການເຣນເດີໂດຍ <0>three.js</0> (ໃບອະນຸຍາດ MIT)."
 
@@ -2825,7 +2824,7 @@ msgstr "ສົ່ງອີເມວອີກຄັ້ງ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1884
+#: src/components/MissionSetup.tsx:1885
 msgid "Reset"
 msgstr "ຣີເຊັດ"
 
@@ -2848,11 +2847,11 @@ msgstr "ຣີເຊັດທຣິມ"
 msgid "Reset view"
 msgstr "ຣີເຊັດມຸມມອງ"
 
-#: src/components/MissionSetup.tsx:1548
+#: src/components/MissionSetup.tsx:1549
 msgid "Resolution"
 msgstr "ຄວາມລະອຽດ"
 
-#: src/components/MissionSetup.tsx:1773
+#: src/components/MissionSetup.tsx:1774
 msgid "Restart mission"
 msgstr "ເລີ່ມພາລະກິດໃໝ່"
 
@@ -2864,7 +2863,7 @@ msgstr "ຜົນ"
 msgid "Resume"
 msgstr "ສືບຕໍ່"
 
-#: src/components/MissionSetup.tsx:1769
+#: src/components/MissionSetup.tsx:1770
 msgid "Resume mission"
 msgstr "ສືບຕໍ່ພາລະກິດ"
 
@@ -2889,12 +2888,12 @@ msgstr "ຖອນການເຂົ້າເຖິງ"
 msgid "Right to Left"
 msgstr "ຂວາໄປຊ້າຍ"
 
-#: src/components/MissionSetup.tsx:736
-#: src/components/MissionSetup.tsx:737
+#: src/components/MissionSetup.tsx:740
+#: src/components/MissionSetup.tsx:741
 msgid "Right wing"
 msgstr "ປີກຂວາ"
 
-#: src/components/MissionSetup.tsx:738
+#: src/components/MissionSetup.tsx:742
 msgid "Right wingtip"
 msgstr "ປາຍປີກຂວາ"
 
@@ -2954,7 +2953,7 @@ msgstr "ວັນເສົາ"
 msgid "Save"
 msgstr "ບັນທຶກ"
 
-#: src/components/MissionSetup.tsx:889
+#: src/components/MissionSetup.tsx:898
 msgid "Sea level"
 msgstr "ລະດັບນ້ຳທະເລ"
 
@@ -3103,7 +3102,7 @@ msgstr "ເລືອກແລ້ວ"
 msgid "Selected: <0>{0}</0>"
 msgstr "ເລືອກແລ້ວ: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:1154
+#: src/components/MissionSetup.tsx:1163
 msgid "Send"
 msgstr "ສົ່ງ"
 
@@ -3129,11 +3128,11 @@ msgid "Serif"
 msgstr "ເຊຣິບ"
 
 #: src/components/MatchHistory.tsx:161
-#: src/components/MissionSetup.tsx:1263
+#: src/components/MissionSetup.tsx:1272
 msgid "Server"
 msgstr "ເຊີບເວີ"
 
-#: src/components/MissionSetup.tsx:1119
+#: src/components/MissionSetup.tsx:1128
 msgid "Server chat"
 msgstr "ແຊັດເຊີບເວີ"
 
@@ -3167,12 +3166,12 @@ msgstr "ຕັ້ງຕົ້ນທາງແລະປາຍທາງ"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:330
-#: src/components/MissionSetup.tsx:1795
-#: src/components/MissionSetup.tsx:1829
+#: src/components/MissionSetup.tsx:1796
+#: src/components/MissionSetup.tsx:1830
 msgid "Settings"
 msgstr "ການຕັ້ງຄ່າ"
 
-#: src/components/MissionSetup.tsx:1590
+#: src/components/MissionSetup.tsx:1591
 msgid "Shadows"
 msgstr "ເງົາ"
 
@@ -3216,7 +3215,7 @@ msgstr "ກຳລັງອອກຈາກລະບົບ..."
 msgid "Single line of text only"
 msgstr "ບັນທັດດຽວຂອງຂໍ້ຄວາມເທົ່ານັ້ນ"
 
-#: src/components/MissionSetup.tsx:859
+#: src/components/MissionSetup.tsx:868
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "ໄຕ່ລະດັບດີສຸດດ້ວຍເຄື່ອງຈັກດຽວ (Vyse, ການເຜົາໄໝ້ເສີມ)"
 
@@ -3234,7 +3233,7 @@ msgid "Sort"
 msgstr "ຈັດລຽງ"
 
 #: src/components/MissionSetup.tsx:474
-#: src/components/MissionSetup.tsx:1839
+#: src/components/MissionSetup.tsx:1840
 msgid "Sound"
 msgstr "ສຽງ"
 
@@ -3260,7 +3259,7 @@ msgstr "ເບຣກອາກາດ"
 msgid "Speed brake"
 msgstr "ເບຣກອາກາດ"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:924
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "ຄວາມໄວເປັນ KCAS, ເປັນຊ່ວງຈາກເບົາ (ນ້ຳມັນຕ່ຳສຸດ, ບໍ່ມີພາລະບັນທຸກ) ຫາໜັກ (ນ້ຳໜັກລວມສູງສຸດ). ຂໍ້ມູນໄດ້ມາຈາກການທົດລອງໃນເກມ. ຄວາມແຕກຕ່າງໃດໆຈາກເຮືອບິນຈິງແມ່ນສະທ້ອນຄວາມຜິດພາດຂອງແບບຈຳລອງການບິນ."
 
@@ -3268,15 +3267,15 @@ msgstr "ຄວາມໄວເປັນ KCAS, ເປັນຊ່ວງຈາກ�
 msgid "SPLASH"
 msgstr "ຍິງຕົກແລ້ວ"
 
-#: src/components/MissionSetup.tsx:864
+#: src/components/MissionSetup.tsx:873
 msgid "Stall, clean (Vs1)"
 msgstr "ຊະງັກ, ຮູບແບບສະອາດ (Vs1)"
 
-#: src/components/MissionSetup.tsx:865
+#: src/components/MissionSetup.tsx:874
 msgid "Stall, landing config (Vs0)"
 msgstr "ຊະງັກ, ຮູບແບບລົງຈອດ (Vs0)"
 
-#: src/components/MissionSetup.tsx:1403
+#: src/components/MissionSetup.tsx:1387
 msgid "Start"
 msgstr "ເລີ່ມ"
 
@@ -3288,11 +3287,11 @@ msgstr "ເລີ່ມການສົນທະນາໂດຍການເພີ
 msgid "Stay tuned though!"
 msgstr "ຕິດຕາມຕໍ່ໄປ!"
 
-#: src/components/MissionSetup.tsx:855
+#: src/components/MissionSetup.tsx:864
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "ໄຕ່ລະດັບຊັນສຸດ (Vx, ແຮງຂັບ 100%)"
 
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:865
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "ໄຕ່ລະດັບຊັນສຸດ (Vx, ການເຜົາໄໝ້ເສີມ)"
 
@@ -3323,8 +3322,8 @@ msgstr "ສະໝັກສະມາຊິກ"
 msgid "Sunday"
 msgstr "ວັນອາທິດ"
 
-#: src/components/MissionSetup.tsx:1393
-#: src/components/MissionSetup.tsx:1748
+#: src/components/MissionSetup.tsx:1377
+#: src/components/MissionSetup.tsx:1749
 #: src/components/Multiplayer.tsx:396
 msgid "Superhuman"
 msgstr "ເໜືອມະນຸດ"
@@ -3366,7 +3365,7 @@ msgstr "ແທັກ"
 msgid "TALLY"
 msgstr "ເຫັນສັດຕູແລ້ວ"
 
-#: src/components/MissionSetup.tsx:1346
+#: src/components/MissionSetup.tsx:1355
 msgid "Task"
 msgstr "ໜ້າວຽກ"
 
@@ -3456,7 +3455,7 @@ msgstr "ເພີ່ມຄັນເລັ່ງ"
 msgid "Thursday"
 msgstr "ວັນພະຫັດ"
 
-#: src/components/MissionSetup.tsx:863
+#: src/components/MissionSetup.tsx:872
 msgid "Tightest sustained turn speed"
 msgstr "ຄວາມໄວການລ້ຽວຕໍ່ເນື່ອງແຄບສຸດ"
 
@@ -3468,7 +3467,7 @@ msgstr "ອຽງ"
 msgid "Time"
 msgstr "ເວລາ"
 
-#: src/components/MissionSetup.tsx:1457
+#: src/components/MissionSetup.tsx:1441
 msgid "Time of day"
 msgstr "ເວລາຂອງມື້"
 
@@ -3524,7 +3523,7 @@ msgstr "ມີຄຳຮ້ອງຂໍຫຼາຍເກີນໄປ"
 msgid "Top"
 msgstr "ເທິງ"
 
-#: src/components/MissionSetup.tsx:1602
+#: src/components/MissionSetup.tsx:1603
 msgid "Tracers"
 msgstr "ກະສຸນສ່ອງແສງ"
 
@@ -3596,7 +3595,7 @@ msgstr "ພິມເພື່ອຄົ້ນຫາຜູ້ໃຊ້"
 msgid "Type to search..."
 msgstr "ພິມເພື່ອຄົ້ນຫາ..."
 
-#: src/components/MissionSetup.tsx:1540
+#: src/components/MissionSetup.tsx:1541
 msgid "Ultra"
 msgstr "ສູງສຸດ"
 
@@ -3630,12 +3629,12 @@ msgstr "ສະຫະລັດອາເມລິກາ"
 msgid "Unknown"
 msgstr "ບໍ່ຮູ້ຈັກ"
 
-#: src/components/MissionSetup.tsx:1493
+#: src/components/MissionSetup.tsx:1494
 #: src/components/Multiplayer.tsx:369
 msgid "Unlimited ammunition"
 msgstr "ກະສຸນບໍ່ຈຳກັດ"
 
-#: src/components/MissionSetup.tsx:1499
+#: src/components/MissionSetup.tsx:1500
 #: src/components/Multiplayer.tsx:379
 msgid "Unlimited fuel"
 msgstr "ນ້ຳມັນບໍ່ຈຳກັດ"
@@ -3700,7 +3699,7 @@ msgstr "ຢືນຢັນ"
 msgid "Verify email address"
 msgstr "ຢືນຢັນທີ່ຢູ່ອີເມວ"
 
-#: src/components/MissionSetup.tsx:905
+#: src/components/MissionSetup.tsx:914
 msgid "Vertical"
 msgstr "ແນວຕັ້ງ"
 
@@ -3811,7 +3810,7 @@ msgstr "ຊະນະ"
 msgid "World server"
 msgstr "ເຊີບເວີໂລກ"
 
-#: src/components/MissionSetup.tsx:1112
+#: src/components/MissionSetup.tsx:1121
 #: src/components/Multiplayer.tsx:115
 msgid "World server not reachable"
 msgstr "ບໍ່ສາມາດເຊື່ອມຕໍ່ຫາເຊີບເວີໂລກໄດ້"

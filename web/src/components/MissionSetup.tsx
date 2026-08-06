@@ -5,7 +5,7 @@
 
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { Check, ChevronDown, ChevronRight, History, LogIn, Pencil, Play, RotateCcw, Send, Settings, TriangleAlert, Users, X } from 'lucide-react'
+import { Check, History, LogIn, Pencil, Play, RotateCcw, Send, Settings, TriangleAlert, Users, X } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
 import { getErrorMessage } from '@mochi/web'
 
@@ -701,18 +701,22 @@ function Armament({
   fuel,
   allowed,
   onChange,
+  onFuel,
+  onPreset,
 }: {
   stores: Record<string, StationSlot>
   fuel: number
   allowed: boolean
   onChange: (stores: Record<string, StationSlot>) => void
+  onFuel: (fuel: number) => void
+  onPreset: (stores: Record<string, StationSlot>, fuel: number) => void
 }) {
   const read = () => {
     const raw = flight_catalog('fa18c')
     return raw ? resolve(raw) : null
   }
   const [book, setBook] = useState<Catalog | null>(read)
-  const [custom, setCustom] = useState(false)
+  const [custom, setCustom] = useState(() => matches(normalize(stores)) === '') // a custom loadout opens its settings on entry; presets start folded
   useEffect(() => {
     if (book) return
     let gone = false
@@ -740,16 +744,16 @@ function Armament({
   const label = (id: string): ReactNode => {
     switch (id) {
       case '9m':
-        return 'AIM-9' // designations verbatim, like the Reference dialog's V-speeds
+        return 'AIM-9M' // designations verbatim, like the Reference dialog's V-speeds
       case '9m2':
-        return '2× AIM-9' // jsx-text-ok: a count and a designation, no prose
+        return '2× AIM-9M' // jsx-text-ok: a count and a designation, no prose
       case 'tank':
         return <Trans>Fuel tank</Trans>
       case 'pylon':
         return <Trans>Empty pylon</Trans>
       case 'twin1':
       case 'twin1b':
-        return 'AIM-9' // legacy hand-built twin with one round: shown, never offered
+        return 'AIM-9M' // legacy hand-built twin with one round: shown, never offered
       case 'twin0':
         return <Trans>Empty pylon</Trans>
       default:
@@ -761,6 +765,10 @@ function Armament({
     { name: 'fox2', title: <Trans>Fox 2 fighter</Trans> },
     { name: 'cap', title: 'CAP' },
   ]
+  // A preset press SEEDS the fuel load (the duel standard for the fighters,
+  // full internal for CAP); the checkmark keeps tracking stores only, so the
+  // slider stays freely overridable without un-checking the preset.
+  const FUELS = { gun: 6000, fox2: 6000, cap: 10800 }
   const w = book ? weight(loadout, book) : { hardware: 0, fuel: 0 }
   const gross = book ? Math.round(((book.empty + w.hardware + w.fuel) * 2.2046 + fuel) / 10) * 10 : 0
   // NATOPS flying-qualities boundary for routine catapult technique: at or
@@ -772,19 +780,23 @@ function Armament({
       <LoadoutPreview stores={loadout} />
       <div className='flex flex-wrap gap-2'>
         {presets.map((entry) => (
-          <Button key={entry.name} type='button' variant='outline' size='sm' onClick={() => onChange(structuredClone(PRESETS[entry.name]))}>
+          <Button key={entry.name} type='button' variant='outline' size='sm' onClick={() => onPreset(structuredClone(PRESETS[entry.name]), FUELS[entry.name])}>
             {preset === entry.name && <Check className='size-4' />}
             {entry.title}
           </Button>
         ))}
+        {/* Custom rides the preset row: it carries the check when the loadout
+            matches no preset, and toggles the station strip — which stays open
+            across preset presses, so pressing each preset SHOWS its contents
+            in the dropdowns below. */}
+        <Button type='button' variant='outline' size='sm' onClick={() => setCustom(!custom)}>
+          {preset === '' && <Check className='size-4' />}
+          <Trans>Custom</Trans>
+        </Button>
       </div>
-      <Button type='button' variant='ghost' size='sm' onClick={() => setCustom(!custom)}>
-        {custom ? <ChevronDown className='size-4' /> : <ChevronRight className='size-4' />}
-        <Trans>Custom</Trans>
-      </Button>
-      {custom && (
-        <div className='grid grid-cols-3 gap-x-3 gap-y-2'>
-          {Array.from({ length: 9 }, (_, i) => i + 1).map((station) => {
+      {custom &&
+        (() => {
+          const cell = (station: number) => {
             const slot = loadout[String(station)]
             const open = outcomes(station).filter((o) => allowed || !o.slot.stores.includes('9m'))
             const current = outcome(station, slot)
@@ -819,9 +831,20 @@ function Armament({
                 )}
               </div>
             )
-          })}
-        </div>
-      )}
+          }
+          // Three columns MIRRORING the nose-on jet above: head-on, the
+          // jet's right wing is on the viewer's LEFT. Each column runs
+          // wingtip at the top to fuselage at the bottom; the centerline
+          // bottom-aligns with the fuselage row.
+          return (
+            <div className='grid grid-cols-3 gap-x-3'>
+              <div className='space-y-2'>{[9, 8, 7, 6].map(cell)}</div>
+              <div className='flex flex-col justify-end'>{[5].map(cell)}</div>
+              <div className='space-y-2'>{[1, 2, 3, 4].map(cell)}</div>
+            </div>
+          )
+        })()}
+      <SliderRow label={<Trans>Internal fuel</Trans>} value={fuel} min={1500} max={10800} step={100} decimals={0} suffix=' lb' onChange={onFuel} />
       {book && (
         <div className='text-sm'>
           {/* jsx-text-ok: LB is the cockpit's own unit annunciation, verbatim like the IFEI */}
@@ -1341,7 +1364,7 @@ function MissionPanel({
   onChange: (config: MissionConfig) => void
 }) {
   return (
-    <>
+    <div>
 <SectionLabel>
   <Trans>Task</Trans>
 </SectionLabel>
@@ -1350,33 +1373,8 @@ function MissionPanel({
   onChange={(v) => set('task', v)}
   options={[
     { value: 'free', label: <Trans>Free flight</Trans> },
-    { value: 'joust', label: <Trans>Joust against AI player</Trans> },
+    { value: 'joust', label: <Trans>Joust 1v1</Trans> },
   ]}
-/>
-<SectionLabel>
-  <Trans>Armament</Trans>
-</SectionLabel>
-{/* The loadout (#17) is a rule of the fight, like the opponent's skill or the
-    fuel load. Presets are one-tap fills; the strip edits per station; the
-    joust derives missiles-allowed from whether any missile is loaded. */}
-<Armament
-  stores={config.stores}
-  fuel={Number(config.fuel) || 10800}
-  allowed={true}
-  onChange={(v) => set('stores', v)}
-/>
-<SectionLabel>
-  <Trans>Fuel</Trans>
-</SectionLabel>
-<SliderRow
-  label={<Trans>Load</Trans>}
-  value={Number(config.fuel) || 10800}
-  min={1500}
-  max={10800}
-  step={100}
-  decimals={0}
-  suffix=' lb'
-  onChange={(v) => set('fuel', v)}
 />
 {config.task === 'joust' && (
   <>
@@ -1477,6 +1475,23 @@ function MissionPanel({
     { value: 'low_stratus', label: <Trans>Low stratus</Trans> },
   ]}
 />
+<SectionLabel>
+  <Trans>Loadout</Trans>
+</SectionLabel>
+{/* The loadout (#17) is a rule of the fight, like the opponent's skill.
+    Presets are one-tap fills that also SEED the fuel load (freely
+    overridable after, like the Start cases seed weather); the strip edits
+    per station; the joust derives missiles-allowed from whether any missile
+    is loaded. onPreset writes stores AND fuel in ONE config patch — two
+    set() calls in a batch clobber each other. */}
+<Armament
+  stores={config.stores}
+  fuel={Number(config.fuel) || 10800}
+  allowed={true}
+  onChange={(v) => set('stores', v)}
+  onFuel={(v) => set('fuel', v)}
+  onPreset={(stores, fuel) => onChange({ ...config, stores, fuel })}
+/>
 {/* a MATCH takes its cheats from the creator's rules instead — these are the mission's */}
 <SectionLabel>
   <Trans>Cheats</Trans>
@@ -1501,7 +1516,7 @@ function MissionPanel({
     onChange={(v) => setCheat('fuel', v)}
   />
 </div>
-    </>
+    </div>
   )
 }
 
