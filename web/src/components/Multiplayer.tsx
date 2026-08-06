@@ -52,6 +52,33 @@ function Option({
   )
 }
 
+// deviations lists a match's NON-standard settings as stable keys in the
+// canonical order — weapons, time, weather, cheats (#19). Standard is
+// missiles/day/no clouds/no cheats; a fully standard match returns nothing.
+// The creator's fuel choice is deliberately absent: every player picks their
+// own load, and the creator's is not the joiners' business.
+function deviations(parameters: Record<string, unknown> | undefined): string[] {
+  const out: string[] = []
+  if (!parameters) return out
+  if (parameters.missiles === false) out.push('guns')
+  if (parameters.tod === 'night') out.push('night')
+  if (parameters.clouds === 'cumulus' || parameters.clouds === 'high_stratus' || parameters.clouds === 'low_stratus') out.push(String(parameters.clouds))
+  const cheats = (parameters.cheats ?? {}) as Record<string, unknown>
+  for (const key of ['invulnerable', 'ammunition', 'fuel']) if (cheats[key] === true) out.push('cheat.' + key)
+  return out
+}
+
+const DEVIATIONS: Record<string, React.ReactNode> = {
+  guns: <Trans>Guns only</Trans>,
+  night: <Trans>Night</Trans>,
+  cumulus: <Trans>Cumulus</Trans>,
+  high_stratus: <Trans>High stratus</Trans>,
+  low_stratus: <Trans>Low stratus</Trans>,
+  'cheat.invulnerable': <Trans>Invulnerable</Trans>,
+  'cheat.ammunition': <Trans>Unlimited ammunition</Trans>,
+  'cheat.fuel': <Trans>Unlimited fuel</Trans>,
+}
+
 export function Multiplayer({
   server,
   callsign,
@@ -456,6 +483,19 @@ export function Multiplayer({
                   {(s.players ?? []).length}/{s.capacity} players
                 </Trans>
               </div>
+              {/* Non-standard settings only (#19), canonical order — weapons,
+                  time, weather, cheats. A fully standard match shows nothing:
+                  the absence IS the signal. */}
+              {deviations(s.parameters).length > 0 && (
+                <div className='text-muted-foreground truncate text-xs'>
+                  {deviations(s.parameters).map((key, i) => (
+                    <span key={key}>
+                      {i > 0 && ', '}
+                      {DEVIATIONS[key]}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
             <div className='flex shrink-0 gap-2'>
               {pilot && s.mine && s.offer && (

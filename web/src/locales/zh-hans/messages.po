@@ -46,17 +46,17 @@ msgstr "{0, plural, one {已选 #} other {已选 #}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:1139
+#: src/components/MissionSetup.tsx:1153
 msgid "{0} created “{1}”"
 msgstr "{0} 创建了“{1}”"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:274
+#: src/components/Multiplayer.tsx:301
 msgid "{0} flying"
 msgstr "{0} 人飞行中"
 
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:841
+#: src/components/MissionSetup.tsx:855
 msgid "{0} lb over maximum launch weight"
 msgstr "超出最大弹射重量 {0} lb"
 
@@ -67,7 +67,7 @@ msgstr "{0} 选项预览"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:455
+#: src/components/Multiplayer.tsx:482
 msgid "{0}/{1} players"
 msgstr "{0}/{1} 名玩家"
 
@@ -79,7 +79,7 @@ msgstr "{entityLabel}名称"
 msgid "{entityLabel} name is required"
 msgstr "{entityLabel}名称为必填项"
 
-#: src/components/Multiplayer.tsx:180
+#: src/components/Multiplayer.tsx:207
 msgid "{name}'s match"
 msgstr "{name}的对局"
 
@@ -136,7 +136,7 @@ msgstr "1号阻拦索"
 msgid "12 hours"
 msgstr "12 小时"
 
-#: src/components/MissionSetup.tsx:901
+#: src/components/MissionSetup.tsx:915
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -152,7 +152,7 @@ msgstr "24 小时"
 msgid "3 WIRE"
 msgstr "3号阻拦索"
 
-#: src/components/MissionSetup.tsx:904
+#: src/components/MissionSetup.tsx:918
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -192,9 +192,9 @@ msgstr "账户类型"
 msgid "Account verified"
 msgstr "账户已验证"
 
-#: src/components/MissionSetup.tsx:1376
-#: src/components/MissionSetup.tsx:1748
-#: src/components/Multiplayer.tsx:395
+#: src/components/MissionSetup.tsx:1390
+#: src/components/MissionSetup.tsx:1762
+#: src/components/Multiplayer.tsx:422
 msgid "Ace"
 msgstr "王牌"
 
@@ -291,7 +291,7 @@ msgstr "添加中..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "调整外观和布局以符合你的偏好。"
 
-#: src/components/MissionSetup.tsx:1597
+#: src/components/MissionSetup.tsx:1611
 msgid "Afterburner"
 msgstr "加力燃烧器"
 
@@ -304,11 +304,11 @@ msgstr "AI"
 msgid "Aircraft"
 msgstr "机体"
 
-#: src/components/MissionSetup.tsx:978
+#: src/components/MissionSetup.tsx:992
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "航空母舰 <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>，作者 <1>Muhamad Mirza Arrafi</1>（Sketchfab），采用 <2>CC BY 4.0</2> 许可。已修改：重新缩放，重新调整朝向，下沉至吃水线，并针对网页进行了简化。"
 
-#: src/components/MissionSetup.tsx:952
+#: src/components/MissionSetup.tsx:966
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "飞机模型 <0>“F/A-18C Hornet”</0>，由 <1>CreadorDeMu</1>（Sketchfab）制作，依据 <2>CC BY 4.0</2> 许可。已修改：重新定向并重新缩放，移除了未使用的纹理数据，外挂物拆分至单独文件，一个护罩网格做了镜像处理。"
 
@@ -355,7 +355,7 @@ msgstr "任何已登录的人"
 msgid "Approach power (ATC)"
 msgstr "进近功率 (ATC)"
 
-#: src/components/MissionSetup.tsx:875
+#: src/components/MissionSetup.tsx:889
 msgid "Approach, on-speed (Vapp)"
 msgstr "进近，标准速度 (Vapp)"
 
@@ -443,7 +443,7 @@ msgstr "返回"
 msgid "Back to home"
 msgstr "返回首页"
 
-#: src/components/MissionSetup.tsx:1368
+#: src/components/MissionSetup.tsx:1382
 msgid "Bandit"
 msgstr "敌机"
 
@@ -451,19 +451,19 @@ msgstr "敌机"
 msgid "Banner"
 msgstr "横幅"
 
-#: src/components/MissionSetup.tsx:866
+#: src/components/MissionSetup.tsx:880
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "最佳爬升 (Vy, 100% 推力)"
 
-#: src/components/MissionSetup.tsx:867
+#: src/components/MissionSetup.tsx:881
 msgid "Best climb (Vy, afterburner)"
 msgstr "最佳爬升 (Vy, 加力)"
 
-#: src/components/MissionSetup.tsx:869
+#: src/components/MissionSetup.tsx:883
 msgid "Best glide (engines out)"
 msgstr "最佳滑翔（发动机停车）"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:885
 msgid "Best sustained turn speed"
 msgstr "最佳持续转弯速度"
 
@@ -485,11 +485,11 @@ msgstr "已阻止跳转到不可信链接"
 msgid "Blocks"
 msgstr "阻止"
 
-#: src/components/Multiplayer.tsx:494
+#: src/components/Multiplayer.tsx:534
 msgid "Blue"
 msgstr "蓝队"
 
-#: src/components/Multiplayer.tsx:388
+#: src/components/Multiplayer.tsx:415
 msgid "Blue bots"
 msgstr "蓝队机器人"
 
@@ -510,7 +510,7 @@ msgstr "提升兴趣"
 msgid "Border colour"
 msgstr "边框颜色"
 
-#: src/components/Multiplayer.tsx:388
+#: src/components/Multiplayer.tsx:415
 msgid "Bots"
 msgstr "人机"
 
@@ -542,8 +542,8 @@ msgstr "按钮"
 msgid "CALL THE BALL"
 msgstr "报告灯球"
 
-#: src/components/MissionSetup.tsx:1653
-#: src/components/Multiplayer.tsx:258
+#: src/components/MissionSetup.tsx:1667
+#: src/components/Multiplayer.tsx:285
 msgid "Callsign"
 msgstr "呼号"
 
@@ -565,8 +565,8 @@ msgstr "镜头距离"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:548
-#: src/components/Multiplayer.tsx:229
-#: src/components/Multiplayer.tsx:471
+#: src/components/Multiplayer.tsx:256
+#: src/components/Multiplayer.tsx:511
 msgid "Cancel"
 msgstr "取消"
 
@@ -584,31 +584,31 @@ msgstr "取消回复"
 msgid "Canopy"
 msgstr "座舱盖"
 
-#: src/components/MissionSetup.tsx:1174
+#: src/components/MissionSetup.tsx:1188
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1416
+#: src/components/MissionSetup.tsx:1430
 msgid "Case I (day)"
 msgstr "情况 I (昼间)"
 
-#: src/components/MissionSetup.tsx:1175
+#: src/components/MissionSetup.tsx:1189
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1417
+#: src/components/MissionSetup.tsx:1431
 msgid "Case II (weather)"
 msgstr "情况 II (气象)"
 
-#: src/components/MissionSetup.tsx:1176
+#: src/components/MissionSetup.tsx:1190
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1418
+#: src/components/MissionSetup.tsx:1432
 msgid "Case III (night)"
 msgstr "情况 III (夜间)"
 
-#: src/components/MissionSetup.tsx:1424
+#: src/components/MissionSetup.tsx:1438
 msgid "Catapult"
 msgstr "弹射器"
 
@@ -642,7 +642,7 @@ msgid "Chat to everyone"
 msgstr "全体聊天"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1483
+#: src/components/MissionSetup.tsx:1497
 msgid "Cheats"
 msgstr "作弊"
 
@@ -689,7 +689,7 @@ msgstr "选择语言"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:319
+#: src/components/Multiplayer.tsx:346
 msgid "Clear"
 msgstr "清除"
 
@@ -753,7 +753,7 @@ msgstr "关闭搜索"
 msgid "closer"
 msgstr "拉近"
 
-#: src/components/MissionSetup.tsx:1452
+#: src/components/MissionSetup.tsx:1466
 msgid "Clouds"
 msgstr "云"
 
@@ -824,7 +824,7 @@ msgstr "配置视图设置"
 msgid "Confirm"
 msgstr "确认"
 
-#: src/components/MissionSetup.tsx:1284
+#: src/components/MissionSetup.tsx:1298
 msgid "Connect"
 msgstr "连接"
 
@@ -840,7 +840,7 @@ msgstr "已连接的账户"
 msgid "Connecting..."
 msgstr "正在连接..."
 
-#: src/components/Multiplayer.tsx:277
+#: src/components/Multiplayer.tsx:304
 msgid "Connecting…"
 msgstr "连接中…"
 
@@ -861,7 +861,7 @@ msgid "Contextual information and details."
 msgstr "上下文信息和详情。"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:265
 msgid "Continue"
 msgstr "继续"
 
@@ -881,11 +881,11 @@ msgstr "已复制到剪贴板"
 msgid "Copy"
 msgstr "复制"
 
-#: src/components/MissionSetup.tsx:870
+#: src/components/MissionSetup.tsx:884
 msgid "Corner speed (best instant turn)"
 msgstr "角点速度（最佳瞬时转弯）"
 
-#: src/components/Multiplayer.tsx:194
+#: src/components/Multiplayer.tsx:221
 msgid "Could not create the match"
 msgstr "无法创建对局"
 
@@ -898,7 +898,7 @@ msgstr "无法加载此文档。请稍后重试。"
 msgid "Could not save the recording"
 msgstr "无法保存飞行记录"
 
-#: src/components/MissionSetup.tsx:1121
+#: src/components/MissionSetup.tsx:1135
 msgid "Could not send the message"
 msgstr "无法发送消息"
 
@@ -944,16 +944,16 @@ msgstr "创建"
 msgid "Create {0}"
 msgstr "创建{0}"
 
-#: src/components/Multiplayer.tsx:427
+#: src/components/Multiplayer.tsx:454
 msgid "Create and fly"
 msgstr "创建并起飞"
 
-#: src/components/Multiplayer.tsx:292
+#: src/components/Multiplayer.tsx:319
 msgid "Create match"
 msgstr "创建对局"
 
-#: src/components/MissionSetup.tsx:1788
-#: src/components/MissionSetup.tsx:1811
+#: src/components/MissionSetup.tsx:1802
+#: src/components/MissionSetup.tsx:1825
 msgid "Create mission"
 msgstr "创建任务"
 
@@ -971,13 +971,14 @@ msgstr "已创建"
 msgid "Creating..."
 msgstr "创建中..."
 
-#: src/components/MissionSetup.tsx:941
-#: src/components/MissionSetup.tsx:947
+#: src/components/MissionSetup.tsx:955
+#: src/components/MissionSetup.tsx:961
 msgid "Credits"
 msgstr "鸣谢"
 
-#: src/components/MissionSetup.tsx:1459
-#: src/components/Multiplayer.tsx:320
+#: src/components/MissionSetup.tsx:1473
+#: src/components/Multiplayer.tsx:74
+#: src/components/Multiplayer.tsx:347
 msgid "Cumulus"
 msgstr "积云"
 
@@ -986,7 +987,7 @@ msgid "Current location"
 msgstr "当前位置"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:265
-#: src/components/MissionSetup.tsx:791
+#: src/components/MissionSetup.tsx:794
 msgid "Custom"
 msgstr "自定义"
 
@@ -1019,8 +1020,8 @@ msgstr "数据冲突"
 msgid "Date"
 msgstr "日期"
 
-#: src/components/MissionSetup.tsx:1447
-#: src/components/Multiplayer.tsx:315
+#: src/components/MissionSetup.tsx:1461
+#: src/components/Multiplayer.tsx:342
 msgid "Day"
 msgstr "白天"
 
@@ -1135,7 +1136,7 @@ msgstr "从浏览器检测"
 msgid "Device"
 msgstr "设备"
 
-#: src/components/Multiplayer.tsx:218
+#: src/components/Multiplayer.tsx:245
 msgid "Different game host"
 msgstr "不同的游戏主机"
 
@@ -1179,13 +1180,13 @@ msgstr "显示复示器"
 msgid "Displays the mobile sidebar."
 msgstr "显示移动端侧边栏。"
 
-#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1599
 msgid "Distance LOD"
 msgstr "距离 LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1892
+#: src/components/MissionSetup.tsx:1906
 msgid "Done"
 msgstr "完成"
 
@@ -1203,7 +1204,7 @@ msgstr "下载失败"
 msgid "Drag"
 msgstr "拖动"
 
-#: src/components/Multiplayer.tsx:392
+#: src/components/Multiplayer.tsx:419
 msgid "Drone"
 msgstr "无人机"
 
@@ -1215,7 +1216,7 @@ msgstr "重复"
 msgid "Duration"
 msgstr "时长"
 
-#: src/components/MissionSetup.tsx:1579
+#: src/components/MissionSetup.tsx:1593
 msgid "Dynamic resolution"
 msgstr "动态分辨率"
 
@@ -1278,7 +1279,7 @@ msgstr "邮箱"
 msgid "Email code"
 msgstr "邮箱验证码"
 
-#: src/components/Multiplayer.tsx:454
+#: src/components/Multiplayer.tsx:481
 msgid "empty"
 msgstr "空"
 
@@ -1335,7 +1336,7 @@ msgstr "展开侧边栏"
 msgid "Extend flaps"
 msgstr "放襟翼"
 
-#: src/components/MissionSetup.tsx:1559
+#: src/components/MissionSetup.tsx:1573
 msgid "Exterior detail"
 msgstr "外部细节"
 
@@ -1347,7 +1348,7 @@ msgstr "外部 URL"
 msgid "Extra large"
 msgstr "特大"
 
-#: src/components/MissionSetup.tsx:889
+#: src/components/MissionSetup.tsx:903
 msgid "F/A-18C reference"
 msgstr "F/A-18C 参考"
 
@@ -1512,8 +1513,8 @@ msgstr "浮动"
 msgid "Flown"
 msgstr "已飞行"
 
-#: src/components/MissionSetup.tsx:1782
-#: src/components/MissionSetup.tsx:1825
+#: src/components/MissionSetup.tsx:1796
+#: src/components/MissionSetup.tsx:1839
 msgid "Fly"
 msgstr "起飞"
 
@@ -1525,12 +1526,12 @@ msgstr "再飞一次"
 msgid "Fox 2 fighter"
 msgstr "Fox 2 战斗机"
 
-#: src/components/MissionSetup.tsx:1609
+#: src/components/MissionSetup.tsx:1623
 msgid "Framerate"
 msgstr "帧率"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1361
+#: src/components/MissionSetup.tsx:1375
 msgid "Free flight"
 msgstr "自由飞行"
 
@@ -1555,7 +1556,7 @@ msgstr "来自"
 msgid "From theme"
 msgstr "来自主题"
 
-#: src/components/Multiplayer.tsx:330
+#: src/components/Multiplayer.tsx:357
 msgid "Fuel"
 msgstr "燃油"
 
@@ -1604,7 +1605,7 @@ msgstr "起落架"
 msgid "GEAR"
 msgstr "起落架"
 
-#: src/components/MissionSetup.tsx:1834
+#: src/components/MissionSetup.tsx:1848
 msgid "General"
 msgstr "常规"
 
@@ -1634,11 +1635,11 @@ msgstr "跳转到第 {pageNumber} 页"
 msgid "Go to previous page"
 msgstr "跳转到上一页"
 
-#: src/components/MissionSetup.tsx:1837
+#: src/components/MissionSetup.tsx:1851
 msgid "Graphics"
 msgstr "画面"
 
-#: src/components/MissionSetup.tsx:837
+#: src/components/MissionSetup.tsx:851
 msgid "Gross weight"
 msgstr "总重量"
 
@@ -1663,6 +1664,10 @@ msgstr "机炮"
 msgid "Gun fighter"
 msgstr "机炮战斗机"
 
+#: src/components/Multiplayer.tsx:72
+msgid "Guns only"
+msgstr "仅机炮"
+
 #: ../../../lib/web/src/components/data-table/column-header.tsx:70
 msgid "Hide"
 msgstr "隐藏"
@@ -1671,17 +1676,18 @@ msgstr "隐藏"
 msgid "Hide password"
 msgstr "隐藏密码"
 
-#: src/components/MissionSetup.tsx:1539
+#: src/components/MissionSetup.tsx:1553
 msgid "High"
 msgstr "高"
 
-#: src/components/MissionSetup.tsx:1460
-#: src/components/Multiplayer.tsx:321
+#: src/components/MissionSetup.tsx:1474
+#: src/components/Multiplayer.tsx:75
+#: src/components/Multiplayer.tsx:348
 msgid "High stratus"
 msgstr "高层云"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1801
+#: src/components/MissionSetup.tsx:1815
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "历史"
@@ -1726,8 +1732,8 @@ msgstr "图片查看器：{0}"
 msgid "Imperial"
 msgstr "英制"
 
-#: src/components/MissionSetup.tsx:1171
-#: src/components/MissionSetup.tsx:1413
+#: src/components/MissionSetup.tsx:1185
+#: src/components/MissionSetup.tsx:1427
 msgid "In air"
 msgstr "空中"
 
@@ -1751,7 +1757,7 @@ msgstr "嵌入"
 msgid "Interests"
 msgstr "兴趣"
 
-#: src/components/MissionSetup.tsx:833
+#: src/components/MissionSetup.tsx:847
 msgid "Internal fuel"
 msgstr "机内燃油"
 
@@ -1771,12 +1777,16 @@ msgstr "验证码无效"
 msgid "Invert pitch"
 msgstr "反转俯仰"
 
+#: src/components/Multiplayer.tsx:77
+msgid "Invulnerable"
+msgstr "无敌"
+
 #: src/components/GameCanvas.tsx:35
 msgid "INVULNERABLE"
 msgstr "无敌"
 
-#: src/components/MissionSetup.tsx:1488
-#: src/components/Multiplayer.tsx:359
+#: src/components/MissionSetup.tsx:1502
+#: src/components/Multiplayer.tsx:386
 msgid "Invulnerable (human players only)"
 msgstr "无敌（仅限人类玩家）"
 
@@ -1784,12 +1794,12 @@ msgstr "无敌（仅限人类玩家）"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "您查找的页面 <0/>不存在或可能已被移除。"
 
-#: src/components/Multiplayer.tsx:506
+#: src/components/Multiplayer.tsx:546
 msgid "Join"
 msgstr "加入"
 
-#: src/components/MissionSetup.tsx:1254
-#: src/components/MissionSetup.tsx:1792
+#: src/components/MissionSetup.tsx:1268
+#: src/components/MissionSetup.tsx:1806
 msgid "Join server"
 msgstr "加入服务器"
 
@@ -1798,20 +1808,20 @@ msgid "JOINED"
 msgstr "已加入"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1754
-#: src/components/Multiplayer.tsx:453
+#: src/components/MissionSetup.tsx:1768
+#: src/components/Multiplayer.tsx:480
 msgid "Joust"
 msgstr "对决"
 
-#: src/components/Multiplayer.tsx:306
+#: src/components/Multiplayer.tsx:333
 msgid "Joust — 1v1, first kill wins"
 msgstr "决斗 — 1v1，先击落者获胜"
 
-#: src/components/MissionSetup.tsx:1362
+#: src/components/MissionSetup.tsx:1376
 msgid "Joust 1v1"
 msgstr "决斗 1v1"
 
-#: src/components/MissionSetup.tsx:1843
+#: src/components/MissionSetup.tsx:1857
 msgid "Joystick"
 msgstr "摇杆"
 
@@ -1827,7 +1837,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "键盘快捷键"
 
-#: src/components/MissionSetup.tsx:1846
+#: src/components/MissionSetup.tsx:1860
 msgid "Keys"
 msgstr "按键"
 
@@ -1884,7 +1894,7 @@ msgstr "弹射 / 锁定"
 msgid "Layout"
 msgstr "布局"
 
-#: src/components/Multiplayer.tsx:343
+#: src/components/Multiplayer.tsx:370
 msgid "lb"
 msgstr "磅"
 
@@ -1893,7 +1903,7 @@ msgstr "磅"
 msgid "Learn more"
 msgstr "了解更多"
 
-#: src/components/MissionSetup.tsx:1310
+#: src/components/MissionSetup.tsx:1324
 msgid "Leave server"
 msgstr "离开服务器"
 
@@ -1978,7 +1988,7 @@ msgstr "加载失败"
 msgid "Loading..."
 msgstr "加载中..."
 
-#: src/components/MissionSetup.tsx:1465
+#: src/components/MissionSetup.tsx:1479
 msgid "Loadout"
 msgstr "挂载"
 
@@ -2025,12 +2035,13 @@ msgstr "向右看"
 msgid "Look up"
 msgstr "向上看"
 
-#: src/components/MissionSetup.tsx:1535
+#: src/components/MissionSetup.tsx:1549
 msgid "Low"
 msgstr "低"
 
-#: src/components/MissionSetup.tsx:1461
-#: src/components/Multiplayer.tsx:322
+#: src/components/MissionSetup.tsx:1475
+#: src/components/Multiplayer.tsx:76
+#: src/components/Multiplayer.tsx:349
 msgid "Low stratus"
 msgstr "低层云"
 
@@ -2068,11 +2079,11 @@ msgstr "全部标为已读"
 msgid "Master"
 msgstr "主音量"
 
-#: src/components/Multiplayer.tsx:302
+#: src/components/Multiplayer.tsx:329
 msgid "Match type"
 msgstr "对局类型"
 
-#: src/components/MissionSetup.tsx:1304
+#: src/components/MissionSetup.tsx:1318
 msgid "Matches"
 msgstr "对局"
 
@@ -2085,7 +2096,7 @@ msgid "MCP server"
 msgstr "MCP 服务器"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1537
+#: src/components/MissionSetup.tsx:1551
 msgid "Medium"
 msgstr "中"
 
@@ -2106,7 +2117,7 @@ msgstr "消息"
 msgid "Message everyone"
 msgstr "向所有人发送消息"
 
-#: src/components/MissionSetup.tsx:1156
+#: src/components/MissionSetup.tsx:1170
 msgid "Message players on this server"
 msgstr "给此服务器上的玩家发消息"
 
@@ -2122,7 +2133,7 @@ msgstr "公制"
 msgid "Midair collision"
 msgstr "空中相撞"
 
-#: src/components/MissionSetup.tsx:1004
+#: src/components/MissionSetup.tsx:1018
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "中途岛环礁地图 — 影像包含经过修改的 <0>Copernicus Sentinel-2</0> 数据（2026）；机场几何数据（跑道、滑行道、停机坪）© <1>OpenStreetMap</1> 贡献者，依据 <2>ODbL</2> 授权；海岸线和珊瑚礁数据来自 <3>NOAA NCCOS</3>（公有领域）。"
 
@@ -2134,7 +2145,7 @@ msgstr "最小长度"
 msgid "MISSILE"
 msgstr "导弹"
 
-#: src/components/Multiplayer.tsx:349
+#: src/components/Multiplayer.tsx:376
 msgid "Missiles allowed"
 msgstr "允许导弹"
 
@@ -2163,7 +2174,7 @@ msgstr "更多选项"
 msgid "Move it…"
 msgstr "移动它…"
 
-#: src/components/Multiplayer.tsx:203
+#: src/components/Multiplayer.tsx:230
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "多人游戏需要 WebTransport，此浏览器尚不支持。"
 
@@ -2203,8 +2214,9 @@ msgstr "新游戏"
 msgid "Next image"
 msgstr "下一张图片"
 
-#: src/components/MissionSetup.tsx:1448
-#: src/components/Multiplayer.tsx:316
+#: src/components/MissionSetup.tsx:1462
+#: src/components/Multiplayer.tsx:73
+#: src/components/Multiplayer.tsx:343
 msgid "Night"
 msgstr "夜晚"
 
@@ -2256,7 +2268,7 @@ msgstr "无匹配的对象"
 msgid "No notifications yet"
 msgstr "暂无通知"
 
-#: src/components/Multiplayer.tsx:436
+#: src/components/Multiplayer.tsx:463
 msgid "No open matches — create one."
 msgstr "暂无开放的对局，创建一个吧。"
 
@@ -2309,8 +2321,8 @@ msgstr "未找到用户"
 msgid "No views"
 msgstr "无浏览量"
 
-#: src/components/MissionSetup.tsx:1133
-#: src/components/Multiplayer.tsx:436
+#: src/components/MissionSetup.tsx:1147
+#: src/components/Multiplayer.tsx:463
 msgid "No world server."
 msgstr "没有世界服务器。"
 
@@ -2335,7 +2347,7 @@ msgstr "无评分"
 #: src/components/MissionSetup.tsx:355
 #: src/components/MissionSetup.tsx:415
 #: src/components/MissionSetup.tsx:760
-#: src/components/MissionSetup.tsx:1458
+#: src/components/MissionSetup.tsx:1472
 msgid "None"
 msgstr "无"
 
@@ -2359,7 +2371,7 @@ msgstr "未设置"
 msgid "Nothing found"
 msgstr "未找到任何内容"
 
-#: src/components/MissionSetup.tsx:1133
+#: src/components/MissionSetup.tsx:1147
 msgid "Nothing yet — say hello."
 msgstr "还没有消息，来打个招呼吧。"
 
@@ -2376,9 +2388,9 @@ msgstr "通知"
 msgid "Notifications: {0}"
 msgstr "通知：{0}"
 
-#: src/components/MissionSetup.tsx:1374
-#: src/components/MissionSetup.tsx:1746
-#: src/components/Multiplayer.tsx:393
+#: src/components/MissionSetup.tsx:1388
+#: src/components/MissionSetup.tsx:1760
+#: src/components/Multiplayer.tsx:420
 msgid "Novice"
 msgstr "新手"
 
@@ -2388,7 +2400,7 @@ msgstr "新手"
 msgid "Number"
 msgstr "数字"
 
-#: src/components/MissionSetup.tsx:1567
+#: src/components/MissionSetup.tsx:1581
 msgid "Ocean detail"
 msgstr "海洋细节"
 
@@ -2400,13 +2412,13 @@ msgstr "OK"
 msgid "On"
 msgstr "开启"
 
-#: src/components/MissionSetup.tsx:1173
-#: src/components/MissionSetup.tsx:1415
+#: src/components/MissionSetup.tsx:1187
+#: src/components/MissionSetup.tsx:1429
 msgid "On carrier"
 msgstr "航母上"
 
-#: src/components/MissionSetup.tsx:1172
-#: src/components/MissionSetup.tsx:1414
+#: src/components/MissionSetup.tsx:1186
+#: src/components/MissionSetup.tsx:1428
 msgid "On runway"
 msgstr "跑道上"
 
@@ -2414,11 +2426,11 @@ msgstr "跑道上"
 msgid "Oops! Page Not Found!"
 msgstr "抱歉!页面未找到!"
 
-#: src/components/Multiplayer.tsx:453
+#: src/components/Multiplayer.tsx:480
 msgid "Open"
 msgstr "打开"
 
-#: src/components/Multiplayer.tsx:305
+#: src/components/Multiplayer.tsx:332
 msgid "Open — anyone may join or leave"
 msgstr "开放 — 任何人都可以加入或退出"
 
@@ -2534,15 +2546,15 @@ msgstr "模式(正则表达式)"
 msgid "Pick a date"
 msgstr "选择日期"
 
-#: src/components/MissionSetup.tsx:1075
-#: src/components/Multiplayer.tsx:102
-#: src/components/Multiplayer.tsx:263
+#: src/components/MissionSetup.tsx:1089
+#: src/components/Multiplayer.tsx:129
+#: src/components/Multiplayer.tsx:290
 msgid "pilot"
 msgstr "飞行员"
 
-#: src/components/MissionSetup.tsx:1375
-#: src/components/MissionSetup.tsx:1747
-#: src/components/Multiplayer.tsx:394
+#: src/components/MissionSetup.tsx:1389
+#: src/components/MissionSetup.tsx:1761
+#: src/components/Multiplayer.tsx:421
 msgid "Pilot"
 msgstr "飞行员"
 
@@ -2604,7 +2616,7 @@ msgstr "帖子"
 msgid "Posts and comments"
 msgstr "帖子和评论"
 
-#: src/components/MissionSetup.tsx:1522
+#: src/components/MissionSetup.tsx:1536
 msgid "Preset"
 msgstr "预设"
 
@@ -2678,7 +2690,7 @@ msgstr "在此服务器上重新注册您的通行密钥"
 msgid "REARMED"
 msgstr "已重新武装"
 
-#: src/components/MissionSetup.tsx:1259
+#: src/components/MissionSetup.tsx:1273
 msgid "Recent"
 msgstr "最近"
 
@@ -2691,12 +2703,12 @@ msgstr "推荐"
 msgid "Reconnecting ({retries})..."
 msgstr "正在重新连接 ({retries})..."
 
-#: src/components/MissionSetup.tsx:1671
+#: src/components/MissionSetup.tsx:1685
 msgid "Record flights"
 msgstr "记录飞行"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:1665
+#: src/components/MissionSetup.tsx:1679
 msgid "Recording"
 msgstr "飞行记录"
 
@@ -2704,11 +2716,11 @@ msgstr "飞行记录"
 msgid "Recording saved"
 msgstr "飞行记录已保存"
 
-#: src/components/Multiplayer.tsx:484
+#: src/components/Multiplayer.tsx:524
 msgid "Red"
 msgstr "红队"
 
-#: src/components/Multiplayer.tsx:388
+#: src/components/Multiplayer.tsx:415
 msgid "Red bots"
 msgstr "红队机器人"
 
@@ -2721,11 +2733,11 @@ msgstr "正在重定向到登录。"
 msgid "Reduce interest"
 msgstr "降低兴趣"
 
-#: src/components/MissionSetup.tsx:883
+#: src/components/MissionSetup.tsx:897
 msgid "Reference"
 msgstr "参考"
 
-#: src/components/Multiplayer.tsx:282
+#: src/components/Multiplayer.tsx:309
 msgid "Refresh"
 msgstr "刷新"
 
@@ -2800,7 +2812,7 @@ msgstr "重命名列"
 msgid "Rename this board column"
 msgstr "重命名此看板列"
 
-#: src/components/MissionSetup.tsx:1041
+#: src/components/MissionSetup.tsx:1055
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "渲染由 <0>three.js</0> 提供（MIT 许可）。"
 
@@ -2824,7 +2836,7 @@ msgstr "重新发送邮件"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1885
+#: src/components/MissionSetup.tsx:1899
 msgid "Reset"
 msgstr "重置"
 
@@ -2847,11 +2859,11 @@ msgstr "重置配平"
 msgid "Reset view"
 msgstr "重置视角"
 
-#: src/components/MissionSetup.tsx:1549
+#: src/components/MissionSetup.tsx:1563
 msgid "Resolution"
 msgstr "解决方式"
 
-#: src/components/MissionSetup.tsx:1774
+#: src/components/MissionSetup.tsx:1788
 msgid "Restart mission"
 msgstr "重新开始任务"
 
@@ -2863,7 +2875,7 @@ msgstr "结果"
 msgid "Resume"
 msgstr "继续"
 
-#: src/components/MissionSetup.tsx:1770
+#: src/components/MissionSetup.tsx:1784
 msgid "Resume mission"
 msgstr "继续任务"
 
@@ -2953,7 +2965,7 @@ msgstr "星期六"
 msgid "Save"
 msgstr "保存"
 
-#: src/components/MissionSetup.tsx:898
+#: src/components/MissionSetup.tsx:912
 msgid "Sea level"
 msgstr "海平面"
 
@@ -3102,7 +3114,7 @@ msgstr "项已选择"
 msgid "Selected: <0>{0}</0>"
 msgstr "已选择: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:1163
+#: src/components/MissionSetup.tsx:1177
 msgid "Send"
 msgstr "发送"
 
@@ -3128,11 +3140,11 @@ msgid "Serif"
 msgstr "衬线体"
 
 #: src/components/MatchHistory.tsx:161
-#: src/components/MissionSetup.tsx:1272
+#: src/components/MissionSetup.tsx:1286
 msgid "Server"
 msgstr "服务器"
 
-#: src/components/MissionSetup.tsx:1128
+#: src/components/MissionSetup.tsx:1142
 msgid "Server chat"
 msgstr "服务器聊天"
 
@@ -3166,12 +3178,12 @@ msgstr "设置起点和终点"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:330
-#: src/components/MissionSetup.tsx:1796
-#: src/components/MissionSetup.tsx:1830
+#: src/components/MissionSetup.tsx:1810
+#: src/components/MissionSetup.tsx:1844
 msgid "Settings"
 msgstr "设置"
 
-#: src/components/MissionSetup.tsx:1591
+#: src/components/MissionSetup.tsx:1605
 msgid "Shadows"
 msgstr "阴影"
 
@@ -3215,7 +3227,7 @@ msgstr "正在退出..."
 msgid "Single line of text only"
 msgstr "仅限单行文本"
 
-#: src/components/MissionSetup.tsx:868
+#: src/components/MissionSetup.tsx:882
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "单发最佳爬升 (Vyse, 加力)"
 
@@ -3233,7 +3245,7 @@ msgid "Sort"
 msgstr "排序"
 
 #: src/components/MissionSetup.tsx:474
-#: src/components/MissionSetup.tsx:1840
+#: src/components/MissionSetup.tsx:1854
 msgid "Sound"
 msgstr "声音"
 
@@ -3259,7 +3271,7 @@ msgstr "减速板"
 msgid "Speed brake"
 msgstr "减速板"
 
-#: src/components/MissionSetup.tsx:924
+#: src/components/MissionSetup.tsx:938
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "速度以 KCAS 表示，为从轻载（最少燃油、无外挂）到重载（最大总重）的范围。数据在游戏中通过实验得出。与真实飞机的任何差异均反映模拟器飞行模型的误差。"
 
@@ -3267,15 +3279,15 @@ msgstr "速度以 KCAS 表示，为从轻载（最少燃油、无外挂）到重
 msgid "SPLASH"
 msgstr "目标已击落"
 
-#: src/components/MissionSetup.tsx:873
+#: src/components/MissionSetup.tsx:887
 msgid "Stall, clean (Vs1)"
 msgstr "失速，光洁 (Vs1)"
 
-#: src/components/MissionSetup.tsx:874
+#: src/components/MissionSetup.tsx:888
 msgid "Stall, landing config (Vs0)"
 msgstr "失速，着陆构型 (Vs0)"
 
-#: src/components/MissionSetup.tsx:1387
+#: src/components/MissionSetup.tsx:1401
 msgid "Start"
 msgstr "开始"
 
@@ -3287,11 +3299,11 @@ msgstr "添加第一条评论以开始讨论。"
 msgid "Stay tuned though!"
 msgstr "敬请期待!"
 
-#: src/components/MissionSetup.tsx:864
+#: src/components/MissionSetup.tsx:878
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "最陡爬升 (Vx, 100% 推力)"
 
-#: src/components/MissionSetup.tsx:865
+#: src/components/MissionSetup.tsx:879
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "最陡爬升 (Vx, 加力)"
 
@@ -3322,9 +3334,9 @@ msgstr "订阅"
 msgid "Sunday"
 msgstr "星期日"
 
-#: src/components/MissionSetup.tsx:1377
-#: src/components/MissionSetup.tsx:1749
-#: src/components/Multiplayer.tsx:396
+#: src/components/MissionSetup.tsx:1391
+#: src/components/MissionSetup.tsx:1763
+#: src/components/Multiplayer.tsx:423
 msgid "Superhuman"
 msgstr "超人"
 
@@ -3365,7 +3377,7 @@ msgstr "标签"
 msgid "TALLY"
 msgstr "发现敌机"
 
-#: src/components/MissionSetup.tsx:1355
+#: src/components/MissionSetup.tsx:1369
 msgid "Task"
 msgstr "目标"
 
@@ -3378,11 +3390,11 @@ msgid "TEAM"
 msgstr "队伍"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:453
+#: src/components/Multiplayer.tsx:480
 msgid "Teams"
 msgstr "团队战"
 
-#: src/components/Multiplayer.tsx:307
+#: src/components/Multiplayer.tsx:334
 msgid "Teams — red versus blue"
 msgstr "团队战 — 红队对蓝队"
 
@@ -3427,7 +3439,7 @@ msgstr "主题"
 msgid "Theme Settings"
 msgstr "主题设置"
 
-#: src/components/Multiplayer.tsx:221
+#: src/components/Multiplayer.tsx:248
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "此大厅正在将你的游戏连接转到另一个主机（{redirectHost}）。只有在你信任此服务器时才继续。"
 
@@ -3455,7 +3467,7 @@ msgstr "加大油门"
 msgid "Thursday"
 msgstr "星期四"
 
-#: src/components/MissionSetup.tsx:872
+#: src/components/MissionSetup.tsx:886
 msgid "Tightest sustained turn speed"
 msgstr "最紧持续转弯速度"
 
@@ -3467,7 +3479,7 @@ msgstr "倾斜"
 msgid "Time"
 msgstr "时长"
 
-#: src/components/MissionSetup.tsx:1441
+#: src/components/MissionSetup.tsx:1455
 msgid "Time of day"
 msgstr "时段"
 
@@ -3523,7 +3535,7 @@ msgstr "请求次数过多"
 msgid "Top"
 msgstr "顶部"
 
-#: src/components/MissionSetup.tsx:1603
+#: src/components/MissionSetup.tsx:1617
 msgid "Tracers"
 msgstr "曳光弹"
 
@@ -3595,7 +3607,7 @@ msgstr "输入以搜索用户"
 msgid "Type to search..."
 msgstr "输入以搜索..."
 
-#: src/components/MissionSetup.tsx:1541
+#: src/components/MissionSetup.tsx:1555
 msgid "Ultra"
 msgstr "超高"
 
@@ -3629,13 +3641,15 @@ msgstr "美国"
 msgid "Unknown"
 msgstr "未知"
 
-#: src/components/MissionSetup.tsx:1494
-#: src/components/Multiplayer.tsx:369
+#: src/components/MissionSetup.tsx:1508
+#: src/components/Multiplayer.tsx:78
+#: src/components/Multiplayer.tsx:396
 msgid "Unlimited ammunition"
 msgstr "无限弹药"
 
-#: src/components/MissionSetup.tsx:1500
-#: src/components/Multiplayer.tsx:379
+#: src/components/MissionSetup.tsx:1514
+#: src/components/Multiplayer.tsx:79
+#: src/components/Multiplayer.tsx:406
 msgid "Unlimited fuel"
 msgstr "无限燃料"
 
@@ -3699,7 +3713,7 @@ msgstr "验证"
 msgid "Verify email address"
 msgstr "验证邮箱地址"
 
-#: src/components/MissionSetup.tsx:914
+#: src/components/MissionSetup.tsx:928
 msgid "Vertical"
 msgstr "垂直"
 
@@ -3781,7 +3795,7 @@ msgstr "武器"
 msgid "Weapons"
 msgstr "武器"
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:339
 msgid "Weather"
 msgstr "天气"
 
@@ -3806,12 +3820,12 @@ msgstr "机翼折叠"
 msgid "WINS"
 msgstr "获胜"
 
-#: src/components/Multiplayer.tsx:247
+#: src/components/Multiplayer.tsx:274
 msgid "World server"
 msgstr "世界服务器"
 
-#: src/components/MissionSetup.tsx:1121
-#: src/components/Multiplayer.tsx:115
+#: src/components/MissionSetup.tsx:1135
+#: src/components/Multiplayer.tsx:142
 msgid "World server not reachable"
 msgstr "无法连接世界服务器"
 
@@ -3859,7 +3873,7 @@ msgstr "您的附件将丢失。"
 msgid "Your flights appear here once you've flown one."
 msgstr "飞行一次后，你的飞行记录会显示在这里。"
 
-#: src/components/Multiplayer.tsx:448
+#: src/components/Multiplayer.tsx:475
 msgid "your offer"
 msgstr "你的邀请"
 
