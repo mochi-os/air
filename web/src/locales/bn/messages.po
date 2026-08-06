@@ -41,14 +41,19 @@ msgstr "{0, plural, one {# নির্বাচিত} other {# নির্ব
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:971
+#: src/components/MissionSetup.tsx:1127
 msgid "{0} created “{1}”"
 msgstr "{0} “{1}” তৈরি করেছেন"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:259
+#: src/components/Multiplayer.tsx:274
 msgid "{0} flying"
 msgstr "{0} জন উড়ছেন"
+
+#. placeholder {0}: gross - LAUNCH
+#: src/components/MissionSetup.tsx:828
+msgid "{0} lb over maximum launch weight"
+msgstr "{0} lb সর্বোচ্চ উৎক্ষেপণ ওজনের বেশি"
 
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
@@ -57,7 +62,7 @@ msgstr "{0} বিকল্পের প্রিভিউ"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:440
+#: src/components/Multiplayer.tsx:455
 msgid "{0}/{1} players"
 msgstr "{0}/{1} খেলোয়াড়"
 
@@ -69,7 +74,7 @@ msgstr "{entityLabel} নাম"
 msgid "{entityLabel} name is required"
 msgstr "{entityLabel}-এর নাম আবশ্যক"
 
-#: src/components/Multiplayer.tsx:165
+#: src/components/Multiplayer.tsx:180
 msgid "{name}'s match"
 msgstr "{name}-এর ম্যাচ"
 
@@ -126,7 +131,7 @@ msgstr "তার 1"
 msgid "12 hours"
 msgstr "১২ ঘণ্টা"
 
-#: src/components/MissionSetup.tsx:733
+#: src/components/MissionSetup.tsx:889
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -142,7 +147,7 @@ msgstr "২৪ ঘণ্টা"
 msgid "3 WIRE"
 msgstr "তার 3"
 
-#: src/components/MissionSetup.tsx:736
+#: src/components/MissionSetup.tsx:892
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -182,14 +187,14 @@ msgstr "অ্যাকাউন্টের ধরন"
 msgid "Account verified"
 msgstr "অ্যাকাউন্ট যাচাই করা হয়েছে"
 
-#: src/components/MissionSetup.tsx:1230
-#: src/components/MissionSetup.tsx:1585
-#: src/components/Multiplayer.tsx:380
+#: src/components/MissionSetup.tsx:1389
+#: src/components/MissionSetup.tsx:1744
+#: src/components/Multiplayer.tsx:395
 msgid "Ace"
 msgstr "টেক্কা"
 
-#: src/components/MissionSetup.tsx:142
-#: src/components/MissionSetup.tsx:181
+#: src/components/MissionSetup.tsx:145
+#: src/components/MissionSetup.tsx:185
 msgid "Acquire target"
 msgstr "টার্গেট লক করুন"
 
@@ -247,7 +252,7 @@ msgstr "নতুন অ্যাকাউন্ট যোগ করুন"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:292
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:291
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:194
 msgid "Add option"
@@ -281,7 +286,7 @@ msgstr "যোগ করা হচ্ছে..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "আপনার পছন্দ অনুযায়ী চেহারা এবং লেআউট সমন্বয় করুন।"
 
-#: src/components/MissionSetup.tsx:1434
+#: src/components/MissionSetup.tsx:1593
 msgid "Afterburner"
 msgstr "আফটারবার্নার"
 
@@ -289,20 +294,20 @@ msgstr "আফটারবার্নার"
 msgid "AI"
 msgstr "এআই"
 
-#: src/components/MissionSetup.tsx:114
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:117
+#: src/components/MissionSetup.tsx:455
 msgid "Aircraft"
 msgstr "বিমান"
 
-#: src/components/MissionSetup.tsx:810
+#: src/components/MissionSetup.tsx:966
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "বিমানবাহী রণতরী <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> <1>Muhamad Mirza Arrafi</1> দ্বারা (Sketchfab), <2>CC BY 4.0</2> এর অধীনে লাইসেন্সপ্রাপ্ত। পরিবর্তিত: পুনরায় মাপ করা হয়েছে, অভিমুখ পরিবর্তন করা হয়েছে, জলরেখা পর্যন্ত ডোবানো হয়েছে, এবং ওয়েবের জন্য সরলীকৃত করা হয়েছে।"
 
-#: src/components/MissionSetup.tsx:784
+#: src/components/MissionSetup.tsx:940
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "বিমানের মডেল <0>“F/A-18C Hornet”</0> <1>CreadorDeMu</1> দ্বারা (Sketchfab), <2>CC BY 4.0</2> এর অধীনে লাইসেন্সপ্রাপ্ত। পরিবর্তিত: অভিমুখ পরিবর্তন ও পুনরায় মাপ করা হয়েছে, অব্যবহৃত টেক্সচার ডেটা সরানো হয়েছে, বাহ্যিক ভারগুলি আলাদা ফাইলে পৃথক করা হয়েছে, একটি শ্রাউড মেশ আয়নার মতো উল্টে নেওয়া হয়েছে।"
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:458
 msgid "Alerts"
 msgstr "সতর্কতা"
 
@@ -315,7 +320,7 @@ msgstr "সব"
 msgid "Allow anyone to search for {0}"
 msgstr "যে কাউকে {0} খুঁজতে দিন"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:226
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
 msgid "Allow sort by"
 msgstr "অনুসারে সাজানো অনুমতি দিন"
 
@@ -340,12 +345,12 @@ msgstr "যে কেউ"
 msgid "Anyone who is logged in"
 msgstr "যে কেউ লগ ইন করেছেন"
 
-#: src/components/MissionSetup.tsx:148
-#: src/components/MissionSetup.tsx:187
+#: src/components/MissionSetup.tsx:151
+#: src/components/MissionSetup.tsx:191
 msgid "Approach power (ATC)"
 msgstr "অ্যাপ্রোচ পাওয়ার (ATC)"
 
-#: src/components/MissionSetup.tsx:707
+#: src/components/MissionSetup.tsx:863
 msgid "Approach, on-speed (Vapp)"
 msgstr "অভিগমন, নির্দিষ্ট গতিতে (Vapp)"
 
@@ -366,12 +371,12 @@ msgstr "আপনি কি নিশ্চিত এই মন্তব্য�
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "আপনি কি নিশ্চিত লগআউট করতে চান? আপনার অ্যাকাউন্টে অ্যাক্সেস করতে আবার লগইন করতে হবে।"
 
-#: src/components/MissionSetup.tsx:1195
+#: src/components/MissionSetup.tsx:1354
 msgid "Armament"
 msgstr "অস্ত্রসজ্জা"
 
-#: src/components/MissionSetup.tsx:147
-#: src/components/MissionSetup.tsx:186
+#: src/components/MissionSetup.tsx:150
+#: src/components/MissionSetup.tsx:190
 msgid "Arrestor hook"
 msgstr "প্রতিরোধক হুক"
 
@@ -414,11 +419,11 @@ msgstr "অবতার"
 msgid "Avatar for {name}"
 msgstr "{name}-এর অবতার"
 
-#: src/components/MissionSetup.tsx:312
+#: src/components/MissionSetup.tsx:317
 msgid "Axes"
 msgstr "অক্ষসমূহ"
 
-#: src/components/MissionSetup.tsx:353
+#: src/components/MissionSetup.tsx:358
 msgid "Axis {i}"
 msgstr "অক্ষ {i}"
 
@@ -437,7 +442,7 @@ msgstr "ফিরে যান"
 msgid "Back to home"
 msgstr "হোমে ফিরে যান"
 
-#: src/components/MissionSetup.tsx:1222
+#: src/components/MissionSetup.tsx:1381
 msgid "Bandit"
 msgstr "শত্রু বিমান"
 
@@ -445,19 +450,19 @@ msgstr "শত্রু বিমান"
 msgid "Banner"
 msgstr "ব্যানার"
 
-#: src/components/MissionSetup.tsx:698
+#: src/components/MissionSetup.tsx:854
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "সেরা আরোহণ (Vy, 100% থ্রাস্ট)"
 
-#: src/components/MissionSetup.tsx:699
+#: src/components/MissionSetup.tsx:855
 msgid "Best climb (Vy, afterburner)"
 msgstr "সেরা আরোহণ (Vy, আফটারবার্নার)"
 
-#: src/components/MissionSetup.tsx:701
+#: src/components/MissionSetup.tsx:857
 msgid "Best glide (engines out)"
 msgstr "সেরা গ্লাইড (ইঞ্জিন বন্ধ)"
 
-#: src/components/MissionSetup.tsx:703
+#: src/components/MissionSetup.tsx:859
 msgid "Best sustained turn speed"
 msgstr "সেরা টেকসই বাঁকের গতি"
 
@@ -479,11 +484,11 @@ msgstr "অবিশ্বস্ত লিঙ্কে নেভিগেশন 
 msgid "Blocks"
 msgstr "ব্লক করে"
 
-#: src/components/Multiplayer.tsx:479
+#: src/components/Multiplayer.tsx:494
 msgid "Blue"
 msgstr "নীল"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Blue bots"
 msgstr "নীল বট"
 
@@ -504,7 +509,7 @@ msgstr "আগ্রহ বৃদ্ধি করুন"
 msgid "Border colour"
 msgstr "বর্ডারের রঙ"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Bots"
 msgstr "বট"
 
@@ -524,11 +529,11 @@ msgstr "ডানে কাটো"
 msgid "Browser notifications"
 msgstr "ব্রাউজার নোটিফিকেশন"
 
-#: src/components/MissionSetup.tsx:413
+#: src/components/MissionSetup.tsx:418
 msgid "Button {i}"
 msgstr "বোতাম {i}"
 
-#: src/components/MissionSetup.tsx:387
+#: src/components/MissionSetup.tsx:392
 msgid "Buttons"
 msgstr "বোতামসমূহ"
 
@@ -536,12 +541,12 @@ msgstr "বোতামসমূহ"
 msgid "CALL THE BALL"
 msgstr "বল ঘোষণা করো"
 
-#: src/components/MissionSetup.tsx:1490
-#: src/components/Multiplayer.tsx:243
+#: src/components/MissionSetup.tsx:1649
+#: src/components/Multiplayer.tsx:258
 msgid "Callsign"
 msgstr "কলসাইন"
 
-#: src/components/MissionSetup.tsx:567
+#: src/components/MissionSetup.tsx:572
 msgid "Camera distance"
 msgstr "ক্যামেরার দূরত্ব"
 
@@ -558,9 +563,9 @@ msgstr "ক্যামেরার দূরত্ব"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/MissionSetup.tsx:542
-#: src/components/Multiplayer.tsx:214
-#: src/components/Multiplayer.tsx:456
+#: src/components/MissionSetup.tsx:547
+#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:471
 msgid "Cancel"
 msgstr "বাতিল করুন"
 
@@ -574,35 +579,35 @@ msgstr "মন্তব্য বাতিল করুন"
 msgid "Cancel reply"
 msgstr "উত্তর বাতিল করুন"
 
-#: src/components/MissionSetup.tsx:189
+#: src/components/MissionSetup.tsx:193
 msgid "Canopy"
 msgstr "ক্যানোপি"
 
-#: src/components/MissionSetup.tsx:1006
+#: src/components/MissionSetup.tsx:1162
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1270
+#: src/components/MissionSetup.tsx:1429
 msgid "Case I (day)"
 msgstr "কেস I (দিন)"
 
-#: src/components/MissionSetup.tsx:1007
+#: src/components/MissionSetup.tsx:1163
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1271
+#: src/components/MissionSetup.tsx:1430
 msgid "Case II (weather)"
 msgstr "কেস II (আবহাওয়া)"
 
-#: src/components/MissionSetup.tsx:1008
+#: src/components/MissionSetup.tsx:1164
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1272
+#: src/components/MissionSetup.tsx:1431
 msgid "Case III (night)"
 msgstr "কেস III (রাত)"
 
-#: src/components/MissionSetup.tsx:1278
+#: src/components/MissionSetup.tsx:1437
 msgid "Catapult"
 msgstr "ক্যাটাপল্ট"
 
@@ -623,16 +628,16 @@ msgstr "অনুসরণ দৃশ্য:"
 msgid "chat"
 msgstr "চ্যাট"
 
-#: src/components/MissionSetup.tsx:199
+#: src/components/MissionSetup.tsx:204
 msgid "Chat"
 msgstr "চ্যাট"
 
-#: src/components/MissionSetup.tsx:200
+#: src/components/MissionSetup.tsx:205
 msgid "Chat to everyone"
 msgstr "সবার সাথে চ্যাট"
 
-#: src/components/MatchHistory.tsx:176
-#: src/components/MissionSetup.tsx:1320
+#: src/components/MatchHistory.tsx:179
+#: src/components/MissionSetup.tsx:1479
 msgid "Cheats"
 msgstr "চিট"
 
@@ -679,7 +684,7 @@ msgstr "ভাষা বেছে নিন"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:304
+#: src/components/Multiplayer.tsx:319
 msgid "Clear"
 msgstr "পরিষ্কার করুন"
 
@@ -743,7 +748,7 @@ msgstr "অনুসন্ধান বন্ধ করুন"
 msgid "closer"
 msgstr "আরও কাছে"
 
-#: src/components/MissionSetup.tsx:1306
+#: src/components/MissionSetup.tsx:1465
 msgid "Clouds"
 msgstr "মেঘ"
 
@@ -792,7 +797,7 @@ msgstr "শুরু করছি"
 msgid "Comment actions"
 msgstr "মন্তব্যের ক্রিয়া"
 
-#: src/components/MissionSetup.tsx:116
+#: src/components/MissionSetup.tsx:119
 msgid "Communication"
 msgstr "যোগাযোগ"
 
@@ -814,7 +819,7 @@ msgstr "ভিউ সেটিংস কনফিগার করুন"
 msgid "Confirm"
 msgstr "নিশ্চিত করুন"
 
-#: src/components/MissionSetup.tsx:1116
+#: src/components/MissionSetup.tsx:1272
 msgid "Connect"
 msgstr "সংযোগ"
 
@@ -830,7 +835,7 @@ msgstr "সংযুক্ত অ্যাকাউন্ট"
 msgid "Connecting..."
 msgstr "সংযোগ করা হচ্ছে..."
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:277
 msgid "Connecting…"
 msgstr "সংযোগ হচ্ছে…"
 
@@ -851,7 +856,7 @@ msgid "Contextual information and details."
 msgstr "প্রাসঙ্গিক তথ্য এবং বিবরণ।"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:238
 msgid "Continue"
 msgstr "চালিয়ে যান"
 
@@ -871,11 +876,11 @@ msgstr "ক্লিপবোর্ডে কপি করা হয়েছে
 msgid "Copy"
 msgstr "কপি করুন"
 
-#: src/components/MissionSetup.tsx:702
+#: src/components/MissionSetup.tsx:858
 msgid "Corner speed (best instant turn)"
 msgstr "কর্নার গতি (সেরা তাৎক্ষণিক বাঁক)"
 
-#: src/components/Multiplayer.tsx:179
+#: src/components/Multiplayer.tsx:194
 msgid "Could not create the match"
 msgstr "ম্যাচ তৈরি করা যায়নি"
 
@@ -883,12 +888,12 @@ msgstr "ম্যাচ তৈরি করা যায়নি"
 msgid "Could not load this document. Please try again later."
 msgstr "এই ডকুমেন্টটি লোড করা যায়নি। অনুগ্রহ করে পরে আবার চেষ্টা করুন।"
 
-#: src/components/MatchHistory.tsx:217
-#: src/components/MatchHistory.tsx:223
+#: src/components/MatchHistory.tsx:226
+#: src/components/MatchHistory.tsx:232
 msgid "Could not save the recording"
 msgstr "রেকর্ডিং সংরক্ষণ করা যায়নি"
 
-#: src/components/MissionSetup.tsx:953
+#: src/components/MissionSetup.tsx:1109
 msgid "Could not send the message"
 msgstr "বার্তাটি পাঠানো যায়নি"
 
@@ -908,8 +913,8 @@ msgstr "পুনরায় প্রমাণীকরণ শুরু কর
 msgid "Couldn't verify with that account. Please try again."
 msgstr "ওই অ্যাকাউন্ট দিয়ে যাচাই করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
 
-#: src/components/MissionSetup.tsx:143
-#: src/components/MissionSetup.tsx:182
+#: src/components/MissionSetup.tsx:146
+#: src/components/MissionSetup.tsx:186
 msgid "Countermeasures"
 msgstr "প্রতিব্যবস্থা"
 
@@ -930,16 +935,16 @@ msgstr "তৈরি করুন"
 msgid "Create {0}"
 msgstr "{0} তৈরি করুন"
 
-#: src/components/Multiplayer.tsx:412
+#: src/components/Multiplayer.tsx:427
 msgid "Create and fly"
 msgstr "তৈরি করে উড়ুন"
 
-#: src/components/Multiplayer.tsx:277
+#: src/components/Multiplayer.tsx:292
 msgid "Create match"
 msgstr "ম্যাচ তৈরি করুন"
 
-#: src/components/MissionSetup.tsx:1625
-#: src/components/MissionSetup.tsx:1648
+#: src/components/MissionSetup.tsx:1784
+#: src/components/MissionSetup.tsx:1807
 msgid "Create mission"
 msgstr "মিশন তৈরি"
 
@@ -957,13 +962,13 @@ msgstr "তৈরি হয়েছে"
 msgid "Creating..."
 msgstr "তৈরি করা হচ্ছে..."
 
-#: src/components/MissionSetup.tsx:773
-#: src/components/MissionSetup.tsx:779
+#: src/components/MissionSetup.tsx:929
+#: src/components/MissionSetup.tsx:935
 msgid "Credits"
 msgstr "কৃতিত্ব"
 
-#: src/components/MissionSetup.tsx:1313
-#: src/components/Multiplayer.tsx:305
+#: src/components/MissionSetup.tsx:1472
+#: src/components/Multiplayer.tsx:320
 msgid "Cumulus"
 msgstr "কিউমুলাস"
 
@@ -979,8 +984,8 @@ msgstr "কাস্টম"
 msgid "CUT"
 msgstr "বিপজ্জনক"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:194
+#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:198
 msgid "Cycle view"
 msgstr "দৃশ্য পরিবর্তন"
 
@@ -1004,13 +1009,13 @@ msgstr "ডেটা দ্বন্দ্ব"
 msgid "Date"
 msgstr "তারিখ"
 
-#: src/components/MissionSetup.tsx:1301
-#: src/components/Multiplayer.tsx:300
+#: src/components/MissionSetup.tsx:1460
+#: src/components/Multiplayer.tsx:315
 msgid "Day"
 msgstr "দিন"
 
 #: src/components/MatchHistory.tsx:144
-#: src/components/MatchHistory.tsx:170
+#: src/components/MatchHistory.tsx:173
 msgid "Deaths"
 msgstr "মৃত্যু"
 
@@ -1058,7 +1063,7 @@ msgstr "কলাম মুছুন"
 msgid "Delete comment"
 msgstr "মন্তব্য মুছুন"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:301
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:300
 msgid "Delete field"
 msgstr "ফিল্ড মুছুন"
 
@@ -1067,8 +1072,8 @@ msgid "Delete option"
 msgstr "অপশন মুছুন"
 
 #. placeholder {0}: opt.name
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:279
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:284
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:278
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:283
 msgid "Delete option {0}"
 msgstr "অপশন {0} মুছুন"
 
@@ -1096,8 +1101,8 @@ msgstr "বিবরণ"
 msgid "Details Panel"
 msgstr "বিবরণ প্যানেল"
 
-#: src/components/MissionSetup.tsx:379
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:384
+#: src/components/MissionSetup.tsx:433
 msgid "Detect"
 msgstr "শনাক্ত করুন"
 
@@ -1112,11 +1117,11 @@ msgstr "শনাক্ত করুন"
 msgid "Detect from web browser"
 msgstr "ওয়েব ব্রাউজার থেকে শনাক্ত করুন"
 
-#: src/components/MissionSetup.tsx:281
+#: src/components/MissionSetup.tsx:286
 msgid "Device"
 msgstr "ডিভাইস"
 
-#: src/components/Multiplayer.tsx:203
+#: src/components/Multiplayer.tsx:218
 msgid "Different game host"
 msgstr "ভিন্ন গেম হোস্ট"
 
@@ -1136,7 +1141,7 @@ msgstr "বাতিল করুন"
 msgid "Discard draft?"
 msgstr "খসড়া বাতিল করবেন?"
 
-#: src/components/MissionSetup.tsx:293
+#: src/components/MissionSetup.tsx:298
 msgid "disconnected"
 msgstr "সংযোগ বিচ্ছিন্ন"
 
@@ -1151,8 +1156,8 @@ msgstr "সংযোগ বিচ্ছিন্ন"
 msgid "Dismiss"
 msgstr "বাতিল করুন"
 
-#: src/components/MissionSetup.tsx:152
-#: src/components/MissionSetup.tsx:195
+#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:200
 msgid "Display repeater"
 msgstr "ডিসপ্লে রিপিটার"
 
@@ -1160,13 +1165,13 @@ msgstr "ডিসপ্লে রিপিটার"
 msgid "Displays the mobile sidebar."
 msgstr "মোবাইল সাইডবার প্রদর্শন করে।"
 
-#: src/components/MissionSetup.tsx:1422
+#: src/components/MissionSetup.tsx:1581
 msgid "Distance LOD"
 msgstr "দূরত্ব LOD"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:306
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1729
+#: src/components/MissionSetup.tsx:1888
 msgid "Done"
 msgstr "সম্পন্ন"
 
@@ -1184,7 +1189,7 @@ msgstr "ডাউনলোড ব্যর্থ হয়েছে"
 msgid "Drag"
 msgstr "টেনে আনা"
 
-#: src/components/Multiplayer.tsx:377
+#: src/components/Multiplayer.tsx:392
 msgid "Drone"
 msgstr "ড্রোন"
 
@@ -1192,7 +1197,11 @@ msgstr "ড্রোন"
 msgid "Duplicates"
 msgstr "নকল"
 
-#: src/components/MissionSetup.tsx:1416
+#: src/components/MatchHistory.tsx:158
+msgid "Duration"
+msgstr "সময়কাল"
+
+#: src/components/MissionSetup.tsx:1575
 msgid "Dynamic resolution"
 msgstr "ডায়নামিক রেজোলিউশন"
 
@@ -1213,11 +1222,11 @@ msgstr "সম্পাদনা"
 msgid "Edit {label}"
 msgstr "{label} সম্পাদনা করুন"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:137
 msgid "Edit field"
 msgstr "ফিল্ড সম্পাদনা করুন"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:139
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
 msgid "Edit field settings"
 msgstr "ফিল্ড সেটিংস সম্পাদনা করুন"
 
@@ -1226,8 +1235,8 @@ msgid "Edit option"
 msgstr "বিকল্প সম্পাদনা"
 
 #. placeholder {0}: opt.name
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:264
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:269
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:263
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:268
 msgid "Edit option {0}"
 msgstr "অপশন {0} সম্পাদনা করুন"
 
@@ -1239,7 +1248,7 @@ msgstr "নির্বাচিত কার্ড সম্পাদনা"
 msgid "Edit view"
 msgstr "ভিউ সম্পাদনা করুন"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:197
 msgid "Eject"
 msgstr "ইজেক্ট"
 
@@ -1255,7 +1264,7 @@ msgstr "ইমেইল"
 msgid "Email code"
 msgstr "ইমেইল কোড"
 
-#: src/components/Multiplayer.tsx:439
+#: src/components/Multiplayer.tsx:454
 msgid "empty"
 msgstr "খালি"
 
@@ -1263,7 +1272,7 @@ msgstr "খালি"
 msgid "ENGAGED"
 msgstr "আক্রমণ করছি"
 
-#: src/components/MissionSetup.tsx:449
+#: src/components/MissionSetup.tsx:454
 msgid "Engine"
 msgstr "ইঞ্জিন"
 
@@ -1275,7 +1284,7 @@ msgstr "আপনার ইমেল থেকে পাওয়া কোড�
 msgid "Enter your authenticator code"
 msgstr "আপনার প্রমাণীকরণকারী কোড লিখুন"
 
-#: src/components/MissionSetup.tsx:452
+#: src/components/MissionSetup.tsx:457
 msgid "Environment"
 msgstr "পরিবেশ"
 
@@ -1302,12 +1311,12 @@ msgstr "প্রসারিত করুন"
 msgid "Expand sidebar"
 msgstr "সাইডবার প্রসারিত করুন"
 
-#: src/components/MissionSetup.tsx:144
-#: src/components/MissionSetup.tsx:183
+#: src/components/MissionSetup.tsx:147
+#: src/components/MissionSetup.tsx:187
 msgid "Extend flaps"
 msgstr "ফ্ল্যাপ খোলা"
 
-#: src/components/MissionSetup.tsx:1396
+#: src/components/MissionSetup.tsx:1555
 msgid "Exterior detail"
 msgstr "বাহ্যিক বিবরণ"
 
@@ -1319,7 +1328,7 @@ msgstr "বাহ্যিক URL"
 msgid "Extra large"
 msgstr "অতিরিক্ত বড়"
 
-#: src/components/MissionSetup.tsx:721
+#: src/components/MissionSetup.tsx:877
 msgid "F/A-18C reference"
 msgstr "F/A-18C তথ্যসূত্র"
 
@@ -1431,16 +1440,16 @@ msgstr "সম্পন্ন"
 msgid "fire"
 msgstr "ফায়ার"
 
-#: src/components/MissionSetup.tsx:140
-#: src/components/MissionSetup.tsx:179
+#: src/components/MissionSetup.tsx:143
+#: src/components/MissionSetup.tsx:183
 msgid "Fire weapon"
 msgstr "অস্ত্র ফায়ার করুন"
 
-#: src/components/MissionSetup.tsx:557
+#: src/components/MissionSetup.tsx:562
 msgid "Fixed keys"
 msgstr "স্থির কীসমূহ"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:222
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:221
 msgid "Flags"
 msgstr "ফ্ল্যাগসমূহ"
 
@@ -1460,7 +1469,7 @@ msgstr "ফ্লেয়ার"
 msgid "Flat"
 msgstr "সমতল"
 
-#: src/components/MissionSetup.tsx:111
+#: src/components/MissionSetup.tsx:114
 msgid "Flight"
 msgstr "উড়ান"
 
@@ -1480,17 +1489,21 @@ msgstr "ফ্লোটিং"
 msgid "Flown"
 msgstr "উড়েছে"
 
-#: src/components/MissionSetup.tsx:1619
-#: src/components/MissionSetup.tsx:1662
+#: src/components/MissionSetup.tsx:1778
+#: src/components/MissionSetup.tsx:1821
 msgid "Fly"
 msgstr "উড়ান"
 
-#: src/components/MissionSetup.tsx:1446
+#: src/components/MissionSetup.tsx:762
+msgid "Fox 2 fighter"
+msgstr "Fox 2 যোদ্ধা"
+
+#: src/components/MissionSetup.tsx:1605
 msgid "Framerate"
 msgstr "ফ্রেমরেট"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1190
+#: src/components/MissionSetup.tsx:1349
 msgid "Free flight"
 msgstr "মুক্ত উড়ান"
 
@@ -1515,8 +1528,8 @@ msgstr "থেকে"
 msgid "From theme"
 msgstr "থিম থেকে"
 
-#: src/components/MissionSetup.tsx:1207
-#: src/components/Multiplayer.tsx:315
+#: src/components/MissionSetup.tsx:1366
+#: src/components/Multiplayer.tsx:330
 msgid "Fuel"
 msgstr "জ্বালানি"
 
@@ -1536,9 +1549,13 @@ msgstr "জ্বালানি লিক"
 msgid "FUEL LO"
 msgstr "জ্বালানি কম"
 
-#: src/components/MissionSetup.tsx:188
+#: src/components/MissionSetup.tsx:192
 msgid "Fuel probe"
 msgstr "জ্বালানি প্রোব"
+
+#: src/components/MissionSetup.tsx:728
+msgid "Fuel tank"
+msgstr "জ্বালানি ট্যাংক"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:321
 msgid "Full layout"
@@ -1556,7 +1573,7 @@ msgstr "ল্যান্ডিং গিয়ার"
 msgid "GEAR"
 msgstr "গিয়ার"
 
-#: src/components/MissionSetup.tsx:1671
+#: src/components/MissionSetup.tsx:1830
 msgid "General"
 msgstr "সাধারণ"
 
@@ -1586,9 +1603,13 @@ msgstr "{pageNumber} নম্বর পৃষ্ঠায় যান"
 msgid "Go to previous page"
 msgstr "পূর্ববর্তী পেজে যান"
 
-#: src/components/MissionSetup.tsx:1674
+#: src/components/MissionSetup.tsx:1833
 msgid "Graphics"
 msgstr "গ্রাফিক্স"
+
+#: src/components/MissionSetup.tsx:824
+msgid "Gross weight"
+msgstr "মোট ওজন"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:162
 msgid "Group"
@@ -1607,6 +1628,10 @@ msgstr "গোষ্ঠী: {0}"
 msgid "GUN"
 msgstr "কামান"
 
+#: src/components/MissionSetup.tsx:762
+msgid "Gun fighter"
+msgstr "কামান যোদ্ধা"
+
 #: ../../../lib/web/src/components/data-table/column-header.tsx:70
 msgid "Hide"
 msgstr "লুকান"
@@ -1615,17 +1640,17 @@ msgstr "লুকান"
 msgid "Hide password"
 msgstr "পাসওয়ার্ড লুকান"
 
-#: src/components/MissionSetup.tsx:1376
+#: src/components/MissionSetup.tsx:1535
 msgid "High"
 msgstr "উচ্চ"
 
-#: src/components/MissionSetup.tsx:1314
-#: src/components/Multiplayer.tsx:306
+#: src/components/MissionSetup.tsx:1473
+#: src/components/Multiplayer.tsx:321
 msgid "High stratus"
 msgstr "উচ্চ স্ট্র্যাটাস"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1638
+#: src/components/MissionSetup.tsx:1797
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "ইতিহাস"
@@ -1649,15 +1674,15 @@ msgstr "হুক"
 msgid "Hot"
 msgstr "জনপ্রিয়"
 
-#: src/components/MissionSetup.tsx:196
+#: src/components/MissionSetup.tsx:201
 msgid "HUD altitude source"
 msgstr "HUD উচ্চতার উৎস"
 
-#: src/components/MissionSetup.tsx:197
+#: src/components/MissionSetup.tsx:202
 msgid "HUD declutter"
 msgstr "HUD সরলীকরণ"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:153
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:152
 msgid "ID"
 msgstr ""
 
@@ -1670,8 +1695,8 @@ msgstr "ছবি দর্শক: {0}"
 msgid "Imperial"
 msgstr "ইম্পেরিয়াল"
 
-#: src/components/MissionSetup.tsx:1003
-#: src/components/MissionSetup.tsx:1267
+#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1426
 msgid "In air"
 msgstr "আকাশে"
 
@@ -1707,7 +1732,7 @@ msgstr "অবৈধ ট্যাগ: শুধুমাত্র অক্ষ�
 msgid "Invalid verification code"
 msgstr "অবৈধ যাচাইকরণ কোড"
 
-#: src/components/MissionSetup.tsx:306
+#: src/components/MissionSetup.tsx:311
 msgid "Invert pitch"
 msgstr "পিচ উল্টান"
 
@@ -1715,8 +1740,8 @@ msgstr "পিচ উল্টান"
 msgid "INVULNERABLE"
 msgstr "অপরাজেয়"
 
-#: src/components/MissionSetup.tsx:1325
-#: src/components/Multiplayer.tsx:344
+#: src/components/MissionSetup.tsx:1484
+#: src/components/Multiplayer.tsx:359
 msgid "Invulnerable (human players only)"
 msgstr "অপরাজেয় (শুধু মানব খেলোয়াড়)"
 
@@ -1724,12 +1749,12 @@ msgstr "অপরাজেয় (শুধু মানব খেলোয়�
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "আপনি যে পৃষ্ঠাটি খুঁজছেন <0/>সেটি নেই বা সরিয়ে ফেলা হয়েছে।"
 
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:506
 msgid "Join"
 msgstr "যোগ দিন"
 
-#: src/components/MissionSetup.tsx:1086
-#: src/components/MissionSetup.tsx:1629
+#: src/components/MissionSetup.tsx:1242
+#: src/components/MissionSetup.tsx:1788
 msgid "Join server"
 msgstr "সার্ভারে যোগ দিন"
 
@@ -1738,20 +1763,20 @@ msgid "JOINED"
 msgstr "যোগ দিয়েছেন"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1591
-#: src/components/Multiplayer.tsx:438
+#: src/components/MissionSetup.tsx:1750
+#: src/components/Multiplayer.tsx:453
 msgid "Joust"
 msgstr "জাউস্ট"
 
-#: src/components/Multiplayer.tsx:291
+#: src/components/Multiplayer.tsx:306
 msgid "Joust — 1v1, first kill wins"
 msgstr "দ্বৈরথ — 1v1, প্রথম কিলেই জয়"
 
-#: src/components/MissionSetup.tsx:1191
+#: src/components/MissionSetup.tsx:1350
 msgid "Joust against AI player"
 msgstr "AI খেলোয়াড়ের বিরুদ্ধে দ্বৈরথ"
 
-#: src/components/MissionSetup.tsx:1680
+#: src/components/MissionSetup.tsx:1839
 msgid "Joystick"
 msgstr "জয়স্টিক"
 
@@ -1767,7 +1792,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "কীবোর্ড শর্টকাট"
 
-#: src/components/MissionSetup.tsx:1683
+#: src/components/MissionSetup.tsx:1842
 msgid "Keys"
 msgstr "কী"
 
@@ -1780,7 +1805,7 @@ msgid "Killed"
 msgstr "নিহত"
 
 #: src/components/MatchHistory.tsx:141
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:170
 msgid "Kills"
 msgstr "কিল"
 
@@ -1796,8 +1821,8 @@ msgstr "বাম ইঞ্জিন আগুন"
 msgid "L GEAR"
 msgstr "বাম গিয়ার"
 
-#: src/components/MissionSetup.tsx:146
-#: src/components/MissionSetup.tsx:185
+#: src/components/MissionSetup.tsx:149
+#: src/components/MissionSetup.tsx:189
 msgid "Landing gear"
 msgstr "ল্যান্ডিং গিয়ার"
 
@@ -1810,8 +1835,8 @@ msgstr "বড়"
 msgid "LATE"
 msgstr "দেরি"
 
-#: src/components/MissionSetup.tsx:149
-#: src/components/MissionSetup.tsx:192
+#: src/components/MissionSetup.tsx:152
+#: src/components/MissionSetup.tsx:196
 msgid "Launch (catapult)"
 msgstr "উৎক্ষেপণ (ক্যাটাপাল্ট)"
 
@@ -1824,7 +1849,7 @@ msgstr "লঞ্চ / টার্গেট"
 msgid "Layout"
 msgstr "লেআউট"
 
-#: src/components/Multiplayer.tsx:328
+#: src/components/Multiplayer.tsx:343
 msgid "lb"
 msgstr "lb"
 
@@ -1833,7 +1858,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "আরও জানুন"
 
-#: src/components/MissionSetup.tsx:1142
+#: src/components/MissionSetup.tsx:1298
 msgid "Leave server"
 msgstr "সার্ভার ত্যাগ"
 
@@ -1867,8 +1892,8 @@ msgstr "হালকা"
 msgid "lights"
 msgstr "বাতি"
 
-#: src/components/MissionSetup.tsx:150
-#: src/components/MissionSetup.tsx:191
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:195
 msgid "Lights"
 msgstr "বাতি"
 
@@ -1888,7 +1913,7 @@ msgstr "লিঙ্কসমূহ"
 msgid "List"
 msgstr "তালিকা"
 
-#: src/components/MissionSetup.tsx:1210
+#: src/components/MissionSetup.tsx:1369
 msgid "Load"
 msgstr "পরিমাণ"
 
@@ -1932,36 +1957,36 @@ msgstr "সফলভাবে লগ আউট"
 msgid "Logging out…"
 msgstr "লগ আউট হচ্ছে…"
 
-#: src/components/MissionSetup.tsx:126
+#: src/components/MissionSetup.tsx:129
 msgid "Look"
 msgstr "তাকান"
 
-#: src/components/MissionSetup.tsx:566
+#: src/components/MissionSetup.tsx:571
 msgid "Look / orbit"
 msgstr "দৃষ্টি / অরবিট"
 
-#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:158
 msgid "Look down"
 msgstr "নিচে তাকান"
 
-#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:159
 msgid "Look left"
 msgstr "বামে তাকান"
 
-#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:160
 msgid "Look right"
 msgstr "ডানে তাকান"
 
-#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:157
 msgid "Look up"
 msgstr "উপরে তাকান"
 
-#: src/components/MissionSetup.tsx:1372
+#: src/components/MissionSetup.tsx:1531
 msgid "Low"
 msgstr "নিম্ন"
 
-#: src/components/MissionSetup.tsx:1315
-#: src/components/Multiplayer.tsx:307
+#: src/components/MissionSetup.tsx:1474
+#: src/components/Multiplayer.tsx:322
 msgid "Low stratus"
 msgstr "নিম্ন স্ট্র্যাটাস"
 
@@ -1985,7 +2010,7 @@ msgstr "ম্যানুয়াল"
 msgid "map"
 msgstr "মানচিত্র"
 
-#: src/components/MissionSetup.tsx:198
+#: src/components/MissionSetup.tsx:203
 msgid "Map"
 msgstr "মানচিত্র"
 
@@ -1995,19 +2020,19 @@ msgstr "মানচিত্র"
 msgid "Mark all as read"
 msgstr "সবগুলি পঠিত হিসেবে চিহ্নিত করুন"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:453
 msgid "Master"
 msgstr "মাস্টার"
 
-#: src/components/Multiplayer.tsx:287
+#: src/components/Multiplayer.tsx:302
 msgid "Match type"
 msgstr "ম্যাচের ধরন"
 
-#: src/components/MissionSetup.tsx:1136
+#: src/components/MissionSetup.tsx:1292
 msgid "Matches"
 msgstr "ম্যাচ"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:199
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:198
 msgid "Maximum length"
 msgstr "সর্বোচ্চ দৈর্ঘ্য"
 
@@ -2016,7 +2041,7 @@ msgid "MCP server"
 msgstr "MCP সার্ভার"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1374
+#: src/components/MissionSetup.tsx:1533
 msgid "Medium"
 msgstr "মাঝারি"
 
@@ -2025,7 +2050,7 @@ msgid "menu"
 msgstr "মেনু"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:207
-#: src/components/MissionSetup.tsx:201
+#: src/components/MissionSetup.tsx:206
 msgid "Menu"
 msgstr "মেনু"
 
@@ -2037,7 +2062,7 @@ msgstr "বার্তা"
 msgid "Message everyone"
 msgstr "সবাইকে মেসেজ করুন"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1144
 msgid "Message players on this server"
 msgstr "এই সার্ভারের খেলোয়াড়দের বার্তা পাঠান"
 
@@ -2049,11 +2074,11 @@ msgstr "আপনার টিমকে মেসেজ করুন"
 msgid "Metric"
 msgstr "মেট্রিক"
 
-#: src/components/MissionSetup.tsx:836
+#: src/components/MissionSetup.tsx:992
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "মিডওয়ে অ্যাটল মানচিত্র — চিত্রে পরিবর্তিত <0>Copernicus Sentinel-2</0> ডেটা রয়েছে (2026); বিমানঘাঁটির জ্যামিতি (রানওয়ে, ট্যাক্সিওয়ে, অ্যাপ্রন) © <1>OpenStreetMap</1> অবদানকারীগণ, <2>ODbL</2>-এর অধীনে লাইসেন্সপ্রাপ্ত; উপকূলরেখা ও প্রবালপ্রাচীরের ডেটা <3>NOAA NCCOS</3> থেকে (পাবলিক ডোমেইন)।"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:188
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:187
 msgid "Minimum length"
 msgstr "ন্যূনতম দৈর্ঘ্য"
 
@@ -2061,11 +2086,7 @@ msgstr "ন্যূনতম দৈর্ঘ্য"
 msgid "MISSILE"
 msgstr "মিসাইল"
 
-#: src/components/MissionSetup.tsx:1202
-msgid "Missiles"
-msgstr "মিসাইল"
-
-#: src/components/Multiplayer.tsx:334
+#: src/components/Multiplayer.tsx:349
 msgid "Missiles allowed"
 msgstr "মিসাইল অনুমোদিত"
 
@@ -2073,7 +2094,7 @@ msgstr "মিসাইল অনুমোদিত"
 msgid "Mochi web"
 msgstr "Mochi ওয়েব"
 
-#: src/components/MatchHistory.tsx:161
+#: src/components/MatchHistory.tsx:164
 msgid "Mode"
 msgstr "মোড"
 
@@ -2090,17 +2111,17 @@ msgstr "সোমবার"
 msgid "More options"
 msgstr "আরও বিকল্প"
 
-#: src/components/MissionSetup.tsx:379
+#: src/components/MissionSetup.tsx:384
 msgid "Move it…"
 msgstr "অক্ষটি নাড়ান…"
 
-#: src/components/Multiplayer.tsx:188
+#: src/components/Multiplayer.tsx:203
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "মাল্টিপ্লেয়ারের জন্য WebTransport প্রয়োজন, যা এই ব্রাউজার এখনও সাপোর্ট করে না।"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:143
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:142
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:128
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:299
 msgid "Name"
@@ -2134,8 +2155,8 @@ msgstr "নতুন গেম"
 msgid "Next image"
 msgstr "পরবর্তী ছবি"
 
-#: src/components/MissionSetup.tsx:1302
-#: src/components/Multiplayer.tsx:301
+#: src/components/MissionSetup.tsx:1461
+#: src/components/Multiplayer.tsx:316
 msgid "Night"
 msgstr "রাত"
 
@@ -2175,7 +2196,7 @@ msgstr "কোনো গ্রুপ উপলব্ধ নেই"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "এখনও কোনো আইটেম টাইপ তৈরি করা যাবে না। প্রথমে প্রয়োজনীয় প্যারেন্ট আইটেম তৈরি করুন।"
 
-#: src/components/MissionSetup.tsx:300
+#: src/components/MissionSetup.tsx:305
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "কোনো জয়স্টিক শনাক্ত হয়নি — জাগাতে এর যেকোনো বোতাম চাপুন।"
 
@@ -2187,7 +2208,7 @@ msgstr "কোনো মিলে যাওয়া অবজেক্ট ন�
 msgid "No notifications yet"
 msgstr "এখনও কোনও বিজ্ঞপ্তি নেই"
 
-#: src/components/Multiplayer.tsx:421
+#: src/components/Multiplayer.tsx:436
 msgid "No open matches — create one."
 msgstr "কোনো উন্মুক্ত ম্যাচ নেই — একটি তৈরি করুন।"
 
@@ -2240,8 +2261,8 @@ msgstr "কোনো ব্যবহারকারী পাওয়া যা
 msgid "No views"
 msgstr "কোনো ভিউ নেই"
 
-#: src/components/MissionSetup.tsx:965
-#: src/components/Multiplayer.tsx:421
+#: src/components/MissionSetup.tsx:1121
+#: src/components/Multiplayer.tsx:436
 msgid "No world server."
 msgstr "কোনো ওয়ার্ল্ড সার্ভার নেই।"
 
@@ -2263,9 +2284,10 @@ msgstr "কোনো গ্রেড নেই"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:349
-#: src/components/MissionSetup.tsx:409
-#: src/components/MissionSetup.tsx:1312
+#: src/components/MissionSetup.tsx:354
+#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:727
+#: src/components/MissionSetup.tsx:1471
 msgid "None"
 msgstr "কোনোটি নয়"
 
@@ -2289,7 +2311,7 @@ msgstr "সেট করা নেই"
 msgid "Nothing found"
 msgstr "কিছুই পাওয়া যায়নি"
 
-#: src/components/MissionSetup.tsx:965
+#: src/components/MissionSetup.tsx:1121
 msgid "Nothing yet — say hello."
 msgstr "এখনও কিছু নেই — হ্যালো বলুন।"
 
@@ -2306,9 +2328,9 @@ msgstr "বিজ্ঞপ্তি"
 msgid "Notifications: {0}"
 msgstr "বিজ্ঞপ্তি: {0}"
 
-#: src/components/MissionSetup.tsx:1228
-#: src/components/MissionSetup.tsx:1583
-#: src/components/Multiplayer.tsx:378
+#: src/components/MissionSetup.tsx:1387
+#: src/components/MissionSetup.tsx:1742
+#: src/components/Multiplayer.tsx:393
 msgid "Novice"
 msgstr "নবীন"
 
@@ -2318,7 +2340,7 @@ msgstr "নবীন"
 msgid "Number"
 msgstr "সংখ্যা"
 
-#: src/components/MissionSetup.tsx:1404
+#: src/components/MissionSetup.tsx:1563
 msgid "Ocean detail"
 msgstr "সমুদ্রের বিবরণ"
 
@@ -2330,13 +2352,13 @@ msgstr "OK"
 msgid "On"
 msgstr "চালু"
 
-#: src/components/MissionSetup.tsx:1005
-#: src/components/MissionSetup.tsx:1269
+#: src/components/MissionSetup.tsx:1161
+#: src/components/MissionSetup.tsx:1428
 msgid "On carrier"
 msgstr "রণতরীতে"
 
-#: src/components/MissionSetup.tsx:1004
-#: src/components/MissionSetup.tsx:1268
+#: src/components/MissionSetup.tsx:1160
+#: src/components/MissionSetup.tsx:1427
 msgid "On runway"
 msgstr "রানওয়েতে"
 
@@ -2344,11 +2366,11 @@ msgstr "রানওয়েতে"
 msgid "Oops! Page Not Found!"
 msgstr "ওহ! পৃষ্ঠাটি পাওয়া যায়নি!"
 
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:453
 msgid "Open"
 msgstr "খুলুন"
 
-#: src/components/Multiplayer.tsx:290
+#: src/components/Multiplayer.tsx:305
 msgid "Open — anyone may join or leave"
 msgstr "উন্মুক্ত — যে কেউ যোগ দিতে বা ছেড়ে যেতে পারে"
 
@@ -2406,7 +2428,7 @@ msgid "Option name"
 msgstr "অপশনের নাম"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:241
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:240
 msgid "Options"
 msgstr "অপশন"
 
@@ -2422,8 +2444,8 @@ msgstr "প্রদক্ষিণ"
 msgid "Other"
 msgstr "অন্যান্য"
 
-#: src/components/MissionSetup.tsx:135
-#: src/components/MissionSetup.tsx:173
+#: src/components/MissionSetup.tsx:138
+#: src/components/MissionSetup.tsx:177
 msgid "Override G limit"
 msgstr "G সীমা অগ্রাহ্য"
 
@@ -2440,7 +2462,7 @@ msgstr "পৃষ্ঠা {currentPage} / {totalPages}"
 msgid "Parent"
 msgstr "প্যারেন্ট"
 
-#: src/components/MissionSetup.tsx:172
+#: src/components/MissionSetup.tsx:176
 msgid "Parking brake"
 msgstr "পার্কিং ব্রেক"
 
@@ -2456,7 +2478,7 @@ msgstr "পাসকি যাচাই ব্যর্থ হয়েছে।
 msgid "Passkeys"
 msgstr "পাসকি"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:210
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:209
 msgid "Pattern (regex)"
 msgstr "প্যাটার্ন (রেজেক্স)"
 
@@ -2464,15 +2486,15 @@ msgstr "প্যাটার্ন (রেজেক্স)"
 msgid "Pick a date"
 msgstr "একটি তারিখ বাছুন"
 
-#: src/components/MissionSetup.tsx:907
-#: src/components/Multiplayer.tsx:90
-#: src/components/Multiplayer.tsx:248
+#: src/components/MissionSetup.tsx:1063
+#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:263
 msgid "pilot"
 msgstr "পাইলট"
 
-#: src/components/MissionSetup.tsx:1229
-#: src/components/MissionSetup.tsx:1584
-#: src/components/Multiplayer.tsx:379
+#: src/components/MissionSetup.tsx:1388
+#: src/components/MissionSetup.tsx:1743
+#: src/components/Multiplayer.tsx:394
 msgid "Pilot"
 msgstr "পাইলট"
 
@@ -2484,15 +2506,15 @@ msgstr "পাইলট নিহত"
 msgid "pitch"
 msgstr "পিচ"
 
-#: src/components/MissionSetup.tsx:121
+#: src/components/MissionSetup.tsx:124
 msgid "Pitch"
 msgstr "পিচ"
 
-#: src/components/MissionSetup.tsx:163
+#: src/components/MissionSetup.tsx:167
 msgid "Pitch down"
 msgstr "পিচ নিচে"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:166
 msgid "Pitch up"
 msgstr "পিচ উপরে"
 
@@ -2500,7 +2522,7 @@ msgstr "পিচ উপরে"
 msgid "PLATFORM"
 msgstr "প্ল্যাটফর্ম"
 
-#: src/components/MatchHistory.tsx:164
+#: src/components/MatchHistory.tsx:167
 msgid "Players"
 msgstr "খেলোয়াড়"
 
@@ -2530,11 +2552,11 @@ msgstr "পোস্টসমূহ"
 msgid "Posts and comments"
 msgstr "পোস্ট ও মন্তব্য"
 
-#: src/components/MissionSetup.tsx:1359
+#: src/components/MissionSetup.tsx:1518
 msgid "Preset"
 msgstr "প্রিসেট"
 
-#: src/components/MissionSetup.tsx:536
+#: src/components/MissionSetup.tsx:541
 msgid "Press a key…"
 msgstr "একটি কী চাপুন…"
 
@@ -2542,7 +2564,7 @@ msgstr "একটি কী চাপুন…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "উড্ডয়নের জন্য ENTER চাপুন"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:433
 msgid "Press it…"
 msgstr "বোতামটি চাপুন…"
 
@@ -2576,6 +2598,10 @@ msgstr "পুশ বিজ্ঞপ্তি"
 msgid "PUSH TIME"
 msgstr "অ্যাপ্রোচ সময়"
 
+#: src/components/MissionSetup.tsx:727
+msgid "Pylon"
+msgstr "পাইলন"
+
 #: src/components/GameCanvas.tsx:42
 msgid "R ENG"
 msgstr "ডান ইঞ্জিন"
@@ -2587,6 +2613,10 @@ msgstr "ডান ইঞ্জিন আগুন"
 #: src/components/GameCanvas.tsx:45
 msgid "R GEAR"
 msgstr "ডান গিয়ার"
+
+#: src/components/MissionSetup.tsx:727
+msgid "Rail"
+msgstr "রেল"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
@@ -2604,7 +2634,7 @@ msgstr "এই সার্ভারে আপনার পাসকি পু�
 msgid "REARMED"
 msgstr "পুনরায় অস্ত্রসজ্জিত"
 
-#: src/components/MissionSetup.tsx:1091
+#: src/components/MissionSetup.tsx:1247
 msgid "Recent"
 msgstr "সাম্প্রতিক"
 
@@ -2617,24 +2647,24 @@ msgstr "সুপারিশকৃত"
 msgid "Reconnecting ({retries})..."
 msgstr "পুনরায় সংযোগ করা হচ্ছে ({retries})..."
 
-#: src/components/MissionSetup.tsx:1508
+#: src/components/MissionSetup.tsx:1667
 msgid "Record flights"
 msgstr "উড়ান রেকর্ড করুন"
 
-#: src/components/MatchHistory.tsx:229
-#: src/components/MissionSetup.tsx:1502
+#: src/components/MatchHistory.tsx:238
+#: src/components/MissionSetup.tsx:1661
 msgid "Recording"
 msgstr "রেকর্ডিং"
 
-#: src/components/MatchHistory.tsx:222
+#: src/components/MatchHistory.tsx:231
 msgid "Recording saved"
 msgstr "রেকর্ডিং সংরক্ষিত হয়েছে"
 
-#: src/components/Multiplayer.tsx:469
+#: src/components/Multiplayer.tsx:484
 msgid "Red"
 msgstr "লাল"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Red bots"
 msgstr "লাল বট"
 
@@ -2647,11 +2677,11 @@ msgstr "লগইনে রিডাইরেক্ট করা হচ্ছে
 msgid "Reduce interest"
 msgstr "আগ্রহ কমান"
 
-#: src/components/MissionSetup.tsx:715
+#: src/components/MissionSetup.tsx:871
 msgid "Reference"
 msgstr "তথ্যসূত্র"
 
-#: src/components/Multiplayer.tsx:267
+#: src/components/Multiplayer.tsx:282
 msgid "Refresh"
 msgstr "রিফ্রেশ"
 
@@ -2726,7 +2756,7 @@ msgstr "কলাম পুনঃনামকরণ করুন"
 msgid "Rename this board column"
 msgstr "এই বোর্ড কলাম পুনঃনামকরণ করুন"
 
-#: src/components/MissionSetup.tsx:873
+#: src/components/MissionSetup.tsx:1029
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "রেন্ডারিং <0>three.js</0> দ্বারা (MIT লাইসেন্স)।"
 
@@ -2740,7 +2770,7 @@ msgstr "উত্তর দিন"
 msgid "Reply to {0}..."
 msgstr "{0} কে উত্তর দিন..."
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:224
 msgid "Required"
 msgstr "প্রয়োজনীয়"
 
@@ -2750,7 +2780,7 @@ msgstr "ইমেল আবার পাঠান"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1722
+#: src/components/MissionSetup.tsx:1881
 msgid "Reset"
 msgstr "রিসেট"
 
@@ -2763,23 +2793,25 @@ msgstr "{title} রিসেট করুন"
 msgid "Reset all settings to default values"
 msgstr "সমস্ত সেটিংস ডিফল্ট মানে রিসেট করুন"
 
-#: src/components/MissionSetup.tsx:178
+#: src/components/MissionSetup.tsx:182
 msgid "Reset trim"
 msgstr "ট্রিম রিসেট"
 
-#: src/components/MissionSetup.tsx:565
+#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:199
+#: src/components/MissionSetup.tsx:570
 msgid "Reset view"
 msgstr "দৃশ্য রিসেট"
 
-#: src/components/MissionSetup.tsx:1386
+#: src/components/MissionSetup.tsx:1545
 msgid "Resolution"
 msgstr "রেজোলিউশন"
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1770
 msgid "Restart mission"
 msgstr "মিশন পুনরায় শুরু"
 
-#: src/components/MatchHistory.tsx:173
+#: src/components/MatchHistory.tsx:176
 msgid "Result"
 msgstr "ফলাফল"
 
@@ -2787,12 +2819,12 @@ msgstr "ফলাফল"
 msgid "Resume"
 msgstr "পুনরায় শুরু করুন"
 
-#: src/components/MissionSetup.tsx:1607
+#: src/components/MissionSetup.tsx:1766
 msgid "Resume mission"
 msgstr "মিশন চালিয়ে যান"
 
-#: src/components/MissionSetup.tsx:145
-#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:148
+#: src/components/MissionSetup.tsx:188
 msgid "Retract flaps"
 msgstr "ফ্ল্যাপ গোটানো"
 
@@ -2800,7 +2832,7 @@ msgstr "ফ্ল্যাপ গোটানো"
 msgid "Retry"
 msgstr "আবার চেষ্টা করুন"
 
-#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:368
 msgid "Reversed"
 msgstr "উল্টানো"
 
@@ -2816,20 +2848,20 @@ msgstr "ডান থেকে বাম"
 msgid "roll"
 msgstr "রোল"
 
-#: src/components/MissionSetup.tsx:122
+#: src/components/MissionSetup.tsx:125
 msgid "Roll"
 msgstr "রোল"
 
-#: src/components/MissionSetup.tsx:164
+#: src/components/MissionSetup.tsx:168
 msgid "Roll left"
 msgstr "রোল বামে"
 
-#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:169
 msgid "Roll right"
 msgstr "রোল ডানে"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:169
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:168
 msgid "Rows"
 msgstr "সারি"
 
@@ -2868,7 +2900,7 @@ msgstr "শনিবার"
 msgid "Save"
 msgstr "সংরক্ষণ করুন"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:886
 msgid "Sea level"
 msgstr "সমুদ্রপৃষ্ঠ"
 
@@ -2998,8 +3030,8 @@ msgstr "সাইটের দিক নির্বাচন করুন"
 msgid "Select theme preference"
 msgstr "থিম পছন্দ নির্বাচন করুন"
 
-#: src/components/MissionSetup.tsx:141
-#: src/components/MissionSetup.tsx:180
+#: src/components/MissionSetup.tsx:144
+#: src/components/MissionSetup.tsx:184
 msgid "Select weapon"
 msgstr "অস্ত্র নির্বাচন"
 
@@ -3017,7 +3049,7 @@ msgstr "নির্বাচিত"
 msgid "Selected: <0>{0}</0>"
 msgstr "নির্বাচিত: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:995
+#: src/components/MissionSetup.tsx:1151
 msgid "Send"
 msgstr "পাঠান"
 
@@ -3042,12 +3074,12 @@ msgstr "বার্তা পাঠান"
 msgid "Serif"
 msgstr "সেরিফ"
 
-#: src/components/MatchHistory.tsx:158
-#: src/components/MissionSetup.tsx:1104
+#: src/components/MatchHistory.tsx:161
+#: src/components/MissionSetup.tsx:1260
 msgid "Server"
 msgstr "সার্ভার"
 
-#: src/components/MissionSetup.tsx:960
+#: src/components/MissionSetup.tsx:1116
 msgid "Server chat"
 msgstr "সার্ভার চ্যাট"
 
@@ -3069,7 +3101,7 @@ msgstr "সেশন শেষ হয়েছে"
 msgid "Session expired. Please log in again."
 msgstr "সেশনের মেয়াদ শেষ হয়ে গেছে। অনুগ্রহ করে আবার লগ ইন করুন।"
 
-#: src/components/MissionSetup.tsx:542
+#: src/components/MissionSetup.tsx:547
 msgid "Set"
 msgstr "সেট করুন"
 
@@ -3081,12 +3113,12 @@ msgstr "উৎস ও গন্তব্য সেট করুন"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1633
-#: src/components/MissionSetup.tsx:1667
+#: src/components/MissionSetup.tsx:1792
+#: src/components/MissionSetup.tsx:1826
 msgid "Settings"
 msgstr "সেটিংস"
 
-#: src/components/MissionSetup.tsx:1428
+#: src/components/MissionSetup.tsx:1587
 msgid "Shadows"
 msgstr "ছায়া"
 
@@ -3126,11 +3158,11 @@ msgid "Signing out..."
 msgstr "সাইন আউট করা হচ্ছে..."
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:180
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:179
 msgid "Single line of text only"
 msgstr "শুধুমাত্র একক লাইনের টেক্সট"
 
-#: src/components/MissionSetup.tsx:700
+#: src/components/MissionSetup.tsx:856
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "একক-ইঞ্জিনে সেরা আরোহণ (Vyse, আফটারবার্নার)"
 
@@ -3147,8 +3179,8 @@ msgstr "ছোট"
 msgid "Sort"
 msgstr "সাজান"
 
-#: src/components/MissionSetup.tsx:468
-#: src/components/MissionSetup.tsx:1677
+#: src/components/MissionSetup.tsx:473
+#: src/components/MissionSetup.tsx:1836
 msgid "Sound"
 msgstr "শব্দ"
 
@@ -3168,13 +3200,13 @@ msgstr "বা.ব্র"
 msgid "speed brake"
 msgstr "বায়ু ব্রেক"
 
-#: src/components/MissionSetup.tsx:125
-#: src/components/MissionSetup.tsx:133
-#: src/components/MissionSetup.tsx:170
+#: src/components/MissionSetup.tsx:128
+#: src/components/MissionSetup.tsx:136
+#: src/components/MissionSetup.tsx:174
 msgid "Speed brake"
 msgstr "বায়ু ব্রেক"
 
-#: src/components/MissionSetup.tsx:756
+#: src/components/MissionSetup.tsx:912
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "KCAS-এ গতি, হালকা (সর্বনিম্ন জ্বালানি, কোনো বাহ্যিক বোঝা নেই) থেকে ভারী (সর্বোচ্চ মোট ওজন) পর্যন্ত একটি পরিসর হিসেবে। তথ্য খেলার মধ্যে পরীক্ষামূলকভাবে সংগৃহীত। প্রকৃত বিমানের সঙ্গে যেকোনো পার্থক্য সিমুলেটরের উড়ান মডেলের ত্রুটি প্রতিফলিত করে।"
 
@@ -3182,15 +3214,15 @@ msgstr "KCAS-এ গতি, হালকা (সর্বনিম্ন জ্�
 msgid "SPLASH"
 msgstr "লক্ষ্য ভূপাতিত"
 
-#: src/components/MissionSetup.tsx:705
+#: src/components/MissionSetup.tsx:861
 msgid "Stall, clean (Vs1)"
 msgstr "স্টল, পরিচ্ছন্ন (Vs1)"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:862
 msgid "Stall, landing config (Vs0)"
 msgstr "স্টল, অবতরণ বিন্যাস (Vs0)"
 
-#: src/components/MissionSetup.tsx:1241
+#: src/components/MissionSetup.tsx:1400
 msgid "Start"
 msgstr "শুরু"
 
@@ -3202,11 +3234,11 @@ msgstr "প্রথম মন্তব্য যোগ করে আলোচ�
 msgid "Stay tuned though!"
 msgstr "তবে সাথে থাকুন!"
 
-#: src/components/MissionSetup.tsx:696
+#: src/components/MissionSetup.tsx:852
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "খাড়াতম আরোহণ (Vx, 100% থ্রাস্ট)"
 
-#: src/components/MissionSetup.tsx:697
+#: src/components/MissionSetup.tsx:853
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "খাড়াতম আরোহণ (Vx, আফটারবার্নার)"
 
@@ -3237,9 +3269,9 @@ msgstr "সাবস্ক্রাইব করুন"
 msgid "Sunday"
 msgstr "রবিবার"
 
-#: src/components/MissionSetup.tsx:1231
-#: src/components/MissionSetup.tsx:1586
-#: src/components/Multiplayer.tsx:381
+#: src/components/MissionSetup.tsx:1390
+#: src/components/MissionSetup.tsx:1745
+#: src/components/Multiplayer.tsx:396
 msgid "Superhuman"
 msgstr "অতিমানব"
 
@@ -3280,7 +3312,7 @@ msgstr "ট্যাগ"
 msgid "TALLY"
 msgstr "শত্রু নজরে"
 
-#: src/components/MissionSetup.tsx:1184
+#: src/components/MissionSetup.tsx:1343
 msgid "Task"
 msgstr "কাজ"
 
@@ -3293,11 +3325,11 @@ msgid "TEAM"
 msgstr "টিম"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:453
 msgid "Teams"
 msgstr "দল"
 
-#: src/components/Multiplayer.tsx:292
+#: src/components/Multiplayer.tsx:307
 msgid "Teams — red versus blue"
 msgstr "দল — লাল বনাম নীল"
 
@@ -3342,7 +3374,7 @@ msgstr "থিম"
 msgid "Theme Settings"
 msgstr "থিম সেটিংস"
 
-#: src/components/Multiplayer.tsx:206
+#: src/components/Multiplayer.tsx:221
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "এই লবি আপনার গেম সংযোগটি একটি ভিন্ন হোস্টে ({redirectHost}) পাঠাচ্ছে। কেবল তখনই এগিয়ে যান যদি আপনি এই সার্ভারকে বিশ্বাস করেন।"
 
@@ -3354,15 +3386,15 @@ msgstr "এই পৃষ্ঠাটি এখনও তৈরি হয়ন�
 msgid "throttle"
 msgstr "থ্রটল"
 
-#: src/components/MissionSetup.tsx:124
+#: src/components/MissionSetup.tsx:127
 msgid "Throttle"
 msgstr "থ্রটল"
 
-#: src/components/MissionSetup.tsx:169
+#: src/components/MissionSetup.tsx:173
 msgid "Throttle down"
 msgstr "থ্রটল কমান"
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:172
 msgid "Throttle up"
 msgstr "থ্রটল বাড়ান"
 
@@ -3370,7 +3402,7 @@ msgstr "থ্রটল বাড়ান"
 msgid "Thursday"
 msgstr "বৃহস্পতিবার"
 
-#: src/components/MissionSetup.tsx:704
+#: src/components/MissionSetup.tsx:860
 msgid "Tightest sustained turn speed"
 msgstr "সংকীর্ণতম টেকসই বাঁকের গতি"
 
@@ -3382,7 +3414,7 @@ msgstr "কাত"
 msgid "Time"
 msgstr "সময়"
 
-#: src/components/MissionSetup.tsx:1295
+#: src/components/MissionSetup.tsx:1454
 msgid "Time of day"
 msgstr "দিনের সময়"
 
@@ -3438,7 +3470,7 @@ msgstr "অনেক বেশি অনুরোধ"
 msgid "Top"
 msgstr "উপরে"
 
-#: src/components/MissionSetup.tsx:1440
+#: src/components/MissionSetup.tsx:1599
 msgid "Tracers"
 msgstr "ট্রেসার"
 
@@ -3446,31 +3478,31 @@ msgstr "ট্রেসার"
 msgid "Travelling"
 msgstr "ভ্রমণরত"
 
-#: src/components/MissionSetup.tsx:112
+#: src/components/MissionSetup.tsx:115
 msgid "Trim"
 msgstr "ট্রিম"
 
-#: src/components/MissionSetup.tsx:127
+#: src/components/MissionSetup.tsx:130
 msgid "Trim hat"
 msgstr "ট্রিম টুপি"
 
-#: src/components/MissionSetup.tsx:137
-#: src/components/MissionSetup.tsx:175
+#: src/components/MissionSetup.tsx:140
+#: src/components/MissionSetup.tsx:179
 msgid "Trim nose down"
 msgstr "ট্রিম: নাক নিচে"
 
-#: src/components/MissionSetup.tsx:136
-#: src/components/MissionSetup.tsx:174
+#: src/components/MissionSetup.tsx:139
+#: src/components/MissionSetup.tsx:178
 msgid "Trim nose up"
 msgstr "ট্রিম: নাক উপরে"
 
-#: src/components/MissionSetup.tsx:138
-#: src/components/MissionSetup.tsx:176
+#: src/components/MissionSetup.tsx:141
+#: src/components/MissionSetup.tsx:180
 msgid "Trim roll left"
 msgstr "ট্রিম: বামে হেলা"
 
-#: src/components/MissionSetup.tsx:139
-#: src/components/MissionSetup.tsx:177
+#: src/components/MissionSetup.tsx:142
+#: src/components/MissionSetup.tsx:181
 msgid "Trim roll right"
 msgstr "ট্রিম: ডানে হেলা"
 
@@ -3489,8 +3521,12 @@ msgstr "আবার চেষ্টা করুন"
 msgid "Tuesday"
 msgstr "মঙ্গলবার"
 
+#: src/components/MissionSetup.tsx:727
+msgid "Twin rail"
+msgstr "জোড়া রেল"
+
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:163
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:162
 msgid "Type"
 msgstr "ধরন"
 
@@ -3510,7 +3546,7 @@ msgstr "ব্যবহারকারী অনুসন্ধান করত�
 msgid "Type to search..."
 msgstr "অনুসন্ধান করতে টাইপ করুন..."
 
-#: src/components/MissionSetup.tsx:1378
+#: src/components/MissionSetup.tsx:1537
 msgid "Ultra"
 msgstr "আল্ট্রা"
 
@@ -3544,13 +3580,13 @@ msgstr "যুক্তরাষ্ট্র"
 msgid "Unknown"
 msgstr "অজানা"
 
-#: src/components/MissionSetup.tsx:1331
-#: src/components/Multiplayer.tsx:354
+#: src/components/MissionSetup.tsx:1490
+#: src/components/Multiplayer.tsx:369
 msgid "Unlimited ammunition"
 msgstr "সীমাহীন গোলাবারুদ"
 
-#: src/components/MissionSetup.tsx:1337
-#: src/components/Multiplayer.tsx:364
+#: src/components/MissionSetup.tsx:1496
+#: src/components/Multiplayer.tsx:379
 msgid "Unlimited fuel"
 msgstr "সীমাহীন জ্বালানি"
 
@@ -3614,7 +3650,7 @@ msgstr "যাচাই করুন"
 msgid "Verify email address"
 msgstr "ইমেল ঠিকানা যাচাই করুন"
 
-#: src/components/MissionSetup.tsx:746
+#: src/components/MissionSetup.tsx:902
 msgid "Vertical"
 msgstr "উল্লম্ব"
 
@@ -3636,7 +3672,7 @@ msgid "view"
 msgstr "দৃশ্য"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/MissionSetup.tsx:115
+#: src/components/MissionSetup.tsx:118
 msgid "View"
 msgstr "দেখুন"
 
@@ -3653,7 +3689,7 @@ msgstr "সব নোটিফিকেশন দেখুন"
 msgid "View controls"
 msgstr "কন্ট্রোল দেখুন"
 
-#: src/components/MissionSetup.tsx:564
+#: src/components/MissionSetup.tsx:569
 msgid "Views"
 msgstr "ভিউ"
 
@@ -3691,12 +3727,12 @@ msgstr "গুরুত্বপূর্ণ কিছু ঘটলে আমর
 msgid "weapon"
 msgstr "অস্ত্র"
 
-#: src/components/MissionSetup.tsx:113
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:116
+#: src/components/MissionSetup.tsx:456
 msgid "Weapons"
 msgstr "অস্ত্র"
 
-#: src/components/Multiplayer.tsx:297
+#: src/components/Multiplayer.tsx:312
 msgid "Weather"
 msgstr "আবহাওয়া"
 
@@ -3708,12 +3744,12 @@ msgstr "ওয়েবসাইট রক্ষণাবেক্ষণাধ�
 msgid "Wednesday"
 msgstr "বুধবার"
 
-#: src/components/MissionSetup.tsx:134
-#: src/components/MissionSetup.tsx:171
+#: src/components/MissionSetup.tsx:137
+#: src/components/MissionSetup.tsx:175
 msgid "Wheel brakes"
 msgstr "চাকার ব্রেক"
 
-#: src/components/MissionSetup.tsx:190
+#: src/components/MissionSetup.tsx:194
 msgid "Wing fold"
 msgstr "ডানা ভাঁজ"
 
@@ -3721,12 +3757,12 @@ msgstr "ডানা ভাঁজ"
 msgid "WINS"
 msgstr "জয়ী"
 
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:247
 msgid "World server"
 msgstr "ওয়ার্ল্ড সার্ভার"
 
-#: src/components/MissionSetup.tsx:953
-#: src/components/Multiplayer.tsx:103
+#: src/components/MissionSetup.tsx:1109
+#: src/components/Multiplayer.tsx:115
 msgid "World server not reachable"
 msgstr "ওয়ার্ল্ড সার্ভারে পৌঁছানো যাচ্ছে না"
 
@@ -3734,15 +3770,15 @@ msgstr "ওয়ার্ল্ড সার্ভারে পৌঁছান�
 msgid "yaw"
 msgstr "ইয়ো"
 
-#: src/components/MissionSetup.tsx:123
+#: src/components/MissionSetup.tsx:126
 msgid "Yaw"
 msgstr "ইয়াও"
 
-#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:170
 msgid "Yaw left"
 msgstr "ইয়াও বামে"
 
-#: src/components/MissionSetup.tsx:167
+#: src/components/MissionSetup.tsx:171
 msgid "Yaw right"
 msgstr "ইয়াও ডানে"
 
@@ -3774,7 +3810,7 @@ msgstr "আপনার সংযুক্তিগুলি হারিয়�
 msgid "Your flights appear here once you've flown one."
 msgstr "একটি উড়ান সম্পন্ন করলে আপনার উড়ানগুলি এখানে দেখা যাবে।"
 
-#: src/components/Multiplayer.tsx:433
+#: src/components/Multiplayer.tsx:448
 msgid "your offer"
 msgstr "আপনার প্রস্তাব"
 
@@ -3786,14 +3822,14 @@ msgstr "আপনার লেখা ও সংযুক্তিগুলি �
 msgid "Your text will be lost."
 msgstr "আপনার লেখা হারিয়ে যাবে।"
 
-#: src/components/MissionSetup.tsx:128
+#: src/components/MissionSetup.tsx:131
 msgid "Zoom"
 msgstr "জুম"
 
-#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:161
 msgid "Zoom in"
 msgstr "জুম ইন"
 
-#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:162
 msgid "Zoom out"
 msgstr "জুম আউট"

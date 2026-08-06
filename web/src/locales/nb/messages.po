@@ -41,14 +41,19 @@ msgstr "{0, plural, one {# valgt} other {# valgt}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:971
+#: src/components/MissionSetup.tsx:1127
 msgid "{0} created “{1}”"
 msgstr "{0} opprettet «{1}»"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:259
+#: src/components/Multiplayer.tsx:274
 msgid "{0} flying"
 msgstr "{0} flyr"
+
+#. placeholder {0}: gross - LAUNCH
+#: src/components/MissionSetup.tsx:828
+msgid "{0} lb over maximum launch weight"
+msgstr "{0} lb over maksimal utskytingsvekt"
 
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
@@ -57,7 +62,7 @@ msgstr "Forhåndsvisning av {0}-alternativet"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:440
+#: src/components/Multiplayer.tsx:455
 msgid "{0}/{1} players"
 msgstr "{0}/{1} spillere"
 
@@ -69,7 +74,7 @@ msgstr "{entityLabel}-navn"
 msgid "{entityLabel} name is required"
 msgstr "{entityLabel}-navn er påkrevd"
 
-#: src/components/Multiplayer.tsx:165
+#: src/components/Multiplayer.tsx:180
 msgid "{name}'s match"
 msgstr "{name}s match"
 
@@ -126,7 +131,7 @@ msgstr "VAIER 1"
 msgid "12 hours"
 msgstr "12 timer"
 
-#: src/components/MissionSetup.tsx:733
+#: src/components/MissionSetup.tsx:889
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -142,7 +147,7 @@ msgstr "24 timer"
 msgid "3 WIRE"
 msgstr "VAIER 3"
 
-#: src/components/MissionSetup.tsx:736
+#: src/components/MissionSetup.tsx:892
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -182,14 +187,14 @@ msgstr "Kontotype"
 msgid "Account verified"
 msgstr "Konto bekreftet"
 
-#: src/components/MissionSetup.tsx:1230
-#: src/components/MissionSetup.tsx:1585
-#: src/components/Multiplayer.tsx:380
+#: src/components/MissionSetup.tsx:1389
+#: src/components/MissionSetup.tsx:1744
+#: src/components/Multiplayer.tsx:395
 msgid "Ace"
 msgstr "Ess"
 
-#: src/components/MissionSetup.tsx:142
-#: src/components/MissionSetup.tsx:181
+#: src/components/MissionSetup.tsx:145
+#: src/components/MissionSetup.tsx:185
 msgid "Acquire target"
 msgstr "Lås mål"
 
@@ -247,7 +252,7 @@ msgstr "Legg til ny konto"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:292
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:291
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:194
 msgid "Add option"
@@ -281,7 +286,7 @@ msgstr "Legger til …"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Juster utseendet og layouten etter dine preferanser."
 
-#: src/components/MissionSetup.tsx:1434
+#: src/components/MissionSetup.tsx:1593
 msgid "Afterburner"
 msgstr "Etterbrenner"
 
@@ -289,20 +294,20 @@ msgstr "Etterbrenner"
 msgid "AI"
 msgstr "KI"
 
-#: src/components/MissionSetup.tsx:114
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:117
+#: src/components/MissionSetup.tsx:455
 msgid "Aircraft"
 msgstr "Fly"
 
-#: src/components/MissionSetup.tsx:810
+#: src/components/MissionSetup.tsx:966
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Hangarskip <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> av <1>Muhamad Mirza Arrafi</1> (Sketchfab), lisensiert under <2>CC BY 4.0</2>. Endret: skalert på nytt, omorientert, senket til vannlinjen og forenklet for nettet."
 
-#: src/components/MissionSetup.tsx:784
+#: src/components/MissionSetup.tsx:940
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Flymodell <0>“F/A-18C Hornet”</0> av <1>CreadorDeMu</1> (Sketchfab), lisensiert under <2>CC BY 4.0</2>. Endret: omorientert og skalert på nytt, ubrukte teksturdata fjernet, eksterne opphengte laster skilt ut i en egen fil, ett deksel-mesh speilvendt."
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:458
 msgid "Alerts"
 msgstr "Varsler"
 
@@ -315,7 +320,7 @@ msgstr "Alle"
 msgid "Allow anyone to search for {0}"
 msgstr "Tillat alle å søke etter {0}"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:226
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
 msgid "Allow sort by"
 msgstr "Tillat sortering etter"
 
@@ -340,12 +345,12 @@ msgstr "Alle"
 msgid "Anyone who is logged in"
 msgstr "Alle som er logget inn"
 
-#: src/components/MissionSetup.tsx:148
-#: src/components/MissionSetup.tsx:187
+#: src/components/MissionSetup.tsx:151
+#: src/components/MissionSetup.tsx:191
 msgid "Approach power (ATC)"
 msgstr "Innflygingseffekt (ATC)"
 
-#: src/components/MissionSetup.tsx:707
+#: src/components/MissionSetup.tsx:863
 msgid "Approach, on-speed (Vapp)"
 msgstr "Innflyging, på riktig fart (Vapp)"
 
@@ -366,12 +371,12 @@ msgstr "Er du sikker på at du vil slette denne kommentaren? Dette vil også sle
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Er du sikker på at du vil logge ut? Du må logge inn igjen for å få tilgang til kontoen din."
 
-#: src/components/MissionSetup.tsx:1195
+#: src/components/MissionSetup.tsx:1354
 msgid "Armament"
 msgstr "Bevæpning"
 
-#: src/components/MissionSetup.tsx:147
-#: src/components/MissionSetup.tsx:186
+#: src/components/MissionSetup.tsx:150
+#: src/components/MissionSetup.tsx:190
 msgid "Arrestor hook"
 msgstr "Fangkrok"
 
@@ -414,11 +419,11 @@ msgstr "Avatar"
 msgid "Avatar for {name}"
 msgstr "Avatar for {name}"
 
-#: src/components/MissionSetup.tsx:312
+#: src/components/MissionSetup.tsx:317
 msgid "Axes"
 msgstr "Akser"
 
-#: src/components/MissionSetup.tsx:353
+#: src/components/MissionSetup.tsx:358
 msgid "Axis {i}"
 msgstr "Akse {i}"
 
@@ -437,7 +442,7 @@ msgstr "Tilbake"
 msgid "Back to home"
 msgstr "Tilbake til start"
 
-#: src/components/MissionSetup.tsx:1222
+#: src/components/MissionSetup.tsx:1381
 msgid "Bandit"
 msgstr "Banditt"
 
@@ -445,19 +450,19 @@ msgstr "Banditt"
 msgid "Banner"
 msgstr "Banner"
 
-#: src/components/MissionSetup.tsx:698
+#: src/components/MissionSetup.tsx:854
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "Beste stigning (Vy, 100% skyvekraft)"
 
-#: src/components/MissionSetup.tsx:699
+#: src/components/MissionSetup.tsx:855
 msgid "Best climb (Vy, afterburner)"
 msgstr "Beste stigning (Vy, etterbrenner)"
 
-#: src/components/MissionSetup.tsx:701
+#: src/components/MissionSetup.tsx:857
 msgid "Best glide (engines out)"
 msgstr "Beste glid (motorstopp)"
 
-#: src/components/MissionSetup.tsx:703
+#: src/components/MissionSetup.tsx:859
 msgid "Best sustained turn speed"
 msgstr "Beste vedvarende svinghastighet"
 
@@ -479,11 +484,11 @@ msgstr "Blokkerte navigasjon til ikke-pålitelig lenke"
 msgid "Blocks"
 msgstr "Blokkerer"
 
-#: src/components/Multiplayer.tsx:479
+#: src/components/Multiplayer.tsx:494
 msgid "Blue"
 msgstr "Blå"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Blue bots"
 msgstr "Blå bots"
 
@@ -504,7 +509,7 @@ msgstr "Øk interesse"
 msgid "Border colour"
 msgstr "Kantfarge"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Bots"
 msgstr "Boter"
 
@@ -524,11 +529,11 @@ msgstr "BREAK HØYRE"
 msgid "Browser notifications"
 msgstr "Nettleservarsler"
 
-#: src/components/MissionSetup.tsx:413
+#: src/components/MissionSetup.tsx:418
 msgid "Button {i}"
 msgstr "Knapp {i}"
 
-#: src/components/MissionSetup.tsx:387
+#: src/components/MissionSetup.tsx:392
 msgid "Buttons"
 msgstr "Knapper"
 
@@ -536,12 +541,12 @@ msgstr "Knapper"
 msgid "CALL THE BALL"
 msgstr "MELD BALLEN"
 
-#: src/components/MissionSetup.tsx:1490
-#: src/components/Multiplayer.tsx:243
+#: src/components/MissionSetup.tsx:1649
+#: src/components/Multiplayer.tsx:258
 msgid "Callsign"
 msgstr "Kallesignal"
 
-#: src/components/MissionSetup.tsx:567
+#: src/components/MissionSetup.tsx:572
 msgid "Camera distance"
 msgstr "Kameraavstand"
 
@@ -558,9 +563,9 @@ msgstr "Kameraavstand"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/MissionSetup.tsx:542
-#: src/components/Multiplayer.tsx:214
-#: src/components/Multiplayer.tsx:456
+#: src/components/MissionSetup.tsx:547
+#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:471
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -574,35 +579,35 @@ msgstr "Avbryt kommentar"
 msgid "Cancel reply"
 msgstr "Avbryt svar"
 
-#: src/components/MissionSetup.tsx:189
+#: src/components/MissionSetup.tsx:193
 msgid "Canopy"
 msgstr "Kanopi"
 
-#: src/components/MissionSetup.tsx:1006
+#: src/components/MissionSetup.tsx:1162
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1270
+#: src/components/MissionSetup.tsx:1429
 msgid "Case I (day)"
 msgstr "Tilfelle I (dag)"
 
-#: src/components/MissionSetup.tsx:1007
+#: src/components/MissionSetup.tsx:1163
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1271
+#: src/components/MissionSetup.tsx:1430
 msgid "Case II (weather)"
 msgstr "Tilfelle II (vær)"
 
-#: src/components/MissionSetup.tsx:1008
+#: src/components/MissionSetup.tsx:1164
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1272
+#: src/components/MissionSetup.tsx:1431
 msgid "Case III (night)"
 msgstr "Tilfelle III (natt)"
 
-#: src/components/MissionSetup.tsx:1278
+#: src/components/MissionSetup.tsx:1437
 msgid "Catapult"
 msgstr "Katapult"
 
@@ -623,16 +628,16 @@ msgstr "Følgevisning:"
 msgid "chat"
 msgstr "chat"
 
-#: src/components/MissionSetup.tsx:199
+#: src/components/MissionSetup.tsx:204
 msgid "Chat"
 msgstr "Chat"
 
-#: src/components/MissionSetup.tsx:200
+#: src/components/MissionSetup.tsx:205
 msgid "Chat to everyone"
 msgstr "Chat til alle"
 
-#: src/components/MatchHistory.tsx:176
-#: src/components/MissionSetup.tsx:1320
+#: src/components/MatchHistory.tsx:179
+#: src/components/MissionSetup.tsx:1479
 msgid "Cheats"
 msgstr "Juks"
 
@@ -679,7 +684,7 @@ msgstr "Velg språk"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:304
+#: src/components/Multiplayer.tsx:319
 msgid "Clear"
 msgstr "Tøm"
 
@@ -743,7 +748,7 @@ msgstr "Lukk søk"
 msgid "closer"
 msgstr "nærmere"
 
-#: src/components/MissionSetup.tsx:1306
+#: src/components/MissionSetup.tsx:1465
 msgid "Clouds"
 msgstr "Skyer"
 
@@ -792,7 +797,7 @@ msgstr "PÅBEGYNNER"
 msgid "Comment actions"
 msgstr "Kommentarhandlinger"
 
-#: src/components/MissionSetup.tsx:116
+#: src/components/MissionSetup.tsx:119
 msgid "Communication"
 msgstr "Kommunikasjon"
 
@@ -814,7 +819,7 @@ msgstr "Konfigurer visningsinnstillinger"
 msgid "Confirm"
 msgstr "Bekreft"
 
-#: src/components/MissionSetup.tsx:1116
+#: src/components/MissionSetup.tsx:1272
 msgid "Connect"
 msgstr "Koble til"
 
@@ -830,7 +835,7 @@ msgstr "Tilkoblede kontoer"
 msgid "Connecting..."
 msgstr "Kobler til..."
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:277
 msgid "Connecting…"
 msgstr "Kobler til…"
 
@@ -851,7 +856,7 @@ msgid "Contextual information and details."
 msgstr "Kontekstuell informasjon og detaljer."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:238
 msgid "Continue"
 msgstr "Fortsett"
 
@@ -871,11 +876,11 @@ msgstr "Kopiert til utklippstavlen"
 msgid "Copy"
 msgstr "Kopier"
 
-#: src/components/MissionSetup.tsx:702
+#: src/components/MissionSetup.tsx:858
 msgid "Corner speed (best instant turn)"
 msgstr "Hjørnehastighet (beste momentane sving)"
 
-#: src/components/Multiplayer.tsx:179
+#: src/components/Multiplayer.tsx:194
 msgid "Could not create the match"
 msgstr "Kunne ikke opprette kampen"
 
@@ -883,12 +888,12 @@ msgstr "Kunne ikke opprette kampen"
 msgid "Could not load this document. Please try again later."
 msgstr "Kunne ikke laste dette dokumentet. Prøv igjen senere."
 
-#: src/components/MatchHistory.tsx:217
-#: src/components/MatchHistory.tsx:223
+#: src/components/MatchHistory.tsx:226
+#: src/components/MatchHistory.tsx:232
 msgid "Could not save the recording"
 msgstr "Kunne ikke lagre opptaket"
 
-#: src/components/MissionSetup.tsx:953
+#: src/components/MissionSetup.tsx:1109
 msgid "Could not send the message"
 msgstr "Kunne ikke sende meldingen"
 
@@ -908,8 +913,8 @@ msgstr "Kunne ikke starte ny autentisering. Prøv igjen."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Kunne ikke verifisere med den kontoen. Prøv igjen."
 
-#: src/components/MissionSetup.tsx:143
-#: src/components/MissionSetup.tsx:182
+#: src/components/MissionSetup.tsx:146
+#: src/components/MissionSetup.tsx:186
 msgid "Countermeasures"
 msgstr "Mottiltak"
 
@@ -930,16 +935,16 @@ msgstr "Opprett"
 msgid "Create {0}"
 msgstr "Opprett {0}"
 
-#: src/components/Multiplayer.tsx:412
+#: src/components/Multiplayer.tsx:427
 msgid "Create and fly"
 msgstr "Opprett og fly"
 
-#: src/components/Multiplayer.tsx:277
+#: src/components/Multiplayer.tsx:292
 msgid "Create match"
 msgstr "Opprett kamp"
 
-#: src/components/MissionSetup.tsx:1625
-#: src/components/MissionSetup.tsx:1648
+#: src/components/MissionSetup.tsx:1784
+#: src/components/MissionSetup.tsx:1807
 msgid "Create mission"
 msgstr "Opprett oppdrag"
 
@@ -957,13 +962,13 @@ msgstr "Opprettet"
 msgid "Creating..."
 msgstr "Oppretter …"
 
-#: src/components/MissionSetup.tsx:773
-#: src/components/MissionSetup.tsx:779
+#: src/components/MissionSetup.tsx:929
+#: src/components/MissionSetup.tsx:935
 msgid "Credits"
 msgstr "Medvirkende"
 
-#: src/components/MissionSetup.tsx:1313
-#: src/components/Multiplayer.tsx:305
+#: src/components/MissionSetup.tsx:1472
+#: src/components/Multiplayer.tsx:320
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -979,8 +984,8 @@ msgstr "Tilpasset"
 msgid "CUT"
 msgstr "FARLIG"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:194
+#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:198
 msgid "Cycle view"
 msgstr "Bytt visning"
 
@@ -1004,13 +1009,13 @@ msgstr "Datakonflikt"
 msgid "Date"
 msgstr "Dato"
 
-#: src/components/MissionSetup.tsx:1301
-#: src/components/Multiplayer.tsx:300
+#: src/components/MissionSetup.tsx:1460
+#: src/components/Multiplayer.tsx:315
 msgid "Day"
 msgstr "Dag"
 
 #: src/components/MatchHistory.tsx:144
-#: src/components/MatchHistory.tsx:170
+#: src/components/MatchHistory.tsx:173
 msgid "Deaths"
 msgstr "Dødsfall"
 
@@ -1058,7 +1063,7 @@ msgstr "Slett kolonne"
 msgid "Delete comment"
 msgstr "Slett kommentar"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:301
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:300
 msgid "Delete field"
 msgstr "Slett felt"
 
@@ -1067,8 +1072,8 @@ msgid "Delete option"
 msgstr "Slett alternativ"
 
 #. placeholder {0}: opt.name
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:279
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:284
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:278
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:283
 msgid "Delete option {0}"
 msgstr "Slett alternativ {0}"
 
@@ -1096,8 +1101,8 @@ msgstr "Beskrivelse"
 msgid "Details Panel"
 msgstr "Detaljpanel"
 
-#: src/components/MissionSetup.tsx:379
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:384
+#: src/components/MissionSetup.tsx:433
 msgid "Detect"
 msgstr "Oppdag"
 
@@ -1112,11 +1117,11 @@ msgstr "Oppdag"
 msgid "Detect from web browser"
 msgstr "Oppdag fra nettleser"
 
-#: src/components/MissionSetup.tsx:281
+#: src/components/MissionSetup.tsx:286
 msgid "Device"
 msgstr "Enhet"
 
-#: src/components/Multiplayer.tsx:203
+#: src/components/Multiplayer.tsx:218
 msgid "Different game host"
 msgstr "Annen spillvert"
 
@@ -1136,7 +1141,7 @@ msgstr "Forkast"
 msgid "Discard draft?"
 msgstr "Forkaste utkastet?"
 
-#: src/components/MissionSetup.tsx:293
+#: src/components/MissionSetup.tsx:298
 msgid "disconnected"
 msgstr "frakoblet"
 
@@ -1151,8 +1156,8 @@ msgstr "Frakoblet"
 msgid "Dismiss"
 msgstr "Lukk"
 
-#: src/components/MissionSetup.tsx:152
-#: src/components/MissionSetup.tsx:195
+#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:200
 msgid "Display repeater"
 msgstr "Skjermrepeater"
 
@@ -1160,13 +1165,13 @@ msgstr "Skjermrepeater"
 msgid "Displays the mobile sidebar."
 msgstr "Viser sidefeltet for mobil."
 
-#: src/components/MissionSetup.tsx:1422
+#: src/components/MissionSetup.tsx:1581
 msgid "Distance LOD"
 msgstr "Avstands-LOD"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:306
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1729
+#: src/components/MissionSetup.tsx:1888
 msgid "Done"
 msgstr "Ferdig"
 
@@ -1184,7 +1189,7 @@ msgstr "Nedlastingen mislyktes"
 msgid "Drag"
 msgstr "Dra"
 
-#: src/components/Multiplayer.tsx:377
+#: src/components/Multiplayer.tsx:392
 msgid "Drone"
 msgstr "Drone"
 
@@ -1192,7 +1197,11 @@ msgstr "Drone"
 msgid "Duplicates"
 msgstr "Dupliserer"
 
-#: src/components/MissionSetup.tsx:1416
+#: src/components/MatchHistory.tsx:158
+msgid "Duration"
+msgstr "Varighet"
+
+#: src/components/MissionSetup.tsx:1575
 msgid "Dynamic resolution"
 msgstr "Dynamisk oppløsning"
 
@@ -1213,11 +1222,11 @@ msgstr "Rediger"
 msgid "Edit {label}"
 msgstr "Rediger {label}"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:137
 msgid "Edit field"
 msgstr "Rediger felt"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:139
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
 msgid "Edit field settings"
 msgstr "Rediger feltinnstillinger"
 
@@ -1226,8 +1235,8 @@ msgid "Edit option"
 msgstr "Rediger valg"
 
 #. placeholder {0}: opt.name
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:264
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:269
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:263
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:268
 msgid "Edit option {0}"
 msgstr "Rediger alternativ {0}"
 
@@ -1239,7 +1248,7 @@ msgstr "Rediger valgt kort"
 msgid "Edit view"
 msgstr "Rediger visning"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:197
 msgid "Eject"
 msgstr "Skyt ut"
 
@@ -1255,7 +1264,7 @@ msgstr "E-post"
 msgid "Email code"
 msgstr "E-postkode"
 
-#: src/components/Multiplayer.tsx:439
+#: src/components/Multiplayer.tsx:454
 msgid "empty"
 msgstr "tom"
 
@@ -1263,7 +1272,7 @@ msgstr "tom"
 msgid "ENGAGED"
 msgstr "ANGRIPER"
 
-#: src/components/MissionSetup.tsx:449
+#: src/components/MissionSetup.tsx:454
 msgid "Engine"
 msgstr "Motor"
 
@@ -1275,7 +1284,7 @@ msgstr "Skriv inn koden fra e-posten din"
 msgid "Enter your authenticator code"
 msgstr "Skriv inn autentiseringskoden din"
 
-#: src/components/MissionSetup.tsx:452
+#: src/components/MissionSetup.tsx:457
 msgid "Environment"
 msgstr "Omgivelser"
 
@@ -1302,12 +1311,12 @@ msgstr "Utvid"
 msgid "Expand sidebar"
 msgstr "Utvid sidefelt"
 
-#: src/components/MissionSetup.tsx:144
-#: src/components/MissionSetup.tsx:183
+#: src/components/MissionSetup.tsx:147
+#: src/components/MissionSetup.tsx:187
 msgid "Extend flaps"
 msgstr "Flaps ut"
 
-#: src/components/MissionSetup.tsx:1396
+#: src/components/MissionSetup.tsx:1555
 msgid "Exterior detail"
 msgstr "Eksteriørdetaljer"
 
@@ -1319,7 +1328,7 @@ msgstr "Ekstern URL"
 msgid "Extra large"
 msgstr "Ekstra stor"
 
-#: src/components/MissionSetup.tsx:721
+#: src/components/MissionSetup.tsx:877
 msgid "F/A-18C reference"
 msgstr "F/A-18C referanse"
 
@@ -1431,16 +1440,16 @@ msgstr "Fullført"
 msgid "fire"
 msgstr "skyt"
 
-#: src/components/MissionSetup.tsx:140
-#: src/components/MissionSetup.tsx:179
+#: src/components/MissionSetup.tsx:143
+#: src/components/MissionSetup.tsx:183
 msgid "Fire weapon"
 msgstr "Avfyr våpen"
 
-#: src/components/MissionSetup.tsx:557
+#: src/components/MissionSetup.tsx:562
 msgid "Fixed keys"
 msgstr "Faste taster"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:222
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:221
 msgid "Flags"
 msgstr "Flagg"
 
@@ -1460,7 +1469,7 @@ msgstr "FAKLER"
 msgid "Flat"
 msgstr "Flat"
 
-#: src/components/MissionSetup.tsx:111
+#: src/components/MissionSetup.tsx:114
 msgid "Flight"
 msgstr "Flyging"
 
@@ -1480,17 +1489,21 @@ msgstr "Flytende"
 msgid "Flown"
 msgstr "Fløyet"
 
-#: src/components/MissionSetup.tsx:1619
-#: src/components/MissionSetup.tsx:1662
+#: src/components/MissionSetup.tsx:1778
+#: src/components/MissionSetup.tsx:1821
 msgid "Fly"
 msgstr "Fly"
 
-#: src/components/MissionSetup.tsx:1446
+#: src/components/MissionSetup.tsx:762
+msgid "Fox 2 fighter"
+msgstr "Fox 2-jager"
+
+#: src/components/MissionSetup.tsx:1605
 msgid "Framerate"
 msgstr "Bildefrekvens"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1190
+#: src/components/MissionSetup.tsx:1349
 msgid "Free flight"
 msgstr "Fri flyging"
 
@@ -1515,8 +1528,8 @@ msgstr "Fra"
 msgid "From theme"
 msgstr "Fra tema"
 
-#: src/components/MissionSetup.tsx:1207
-#: src/components/Multiplayer.tsx:315
+#: src/components/MissionSetup.tsx:1366
+#: src/components/Multiplayer.tsx:330
 msgid "Fuel"
 msgstr "Drivstoff"
 
@@ -1536,9 +1549,13 @@ msgstr "DRIVSTOFFLEKK"
 msgid "FUEL LO"
 msgstr "LITE DRIVSTOFF"
 
-#: src/components/MissionSetup.tsx:188
+#: src/components/MissionSetup.tsx:192
 msgid "Fuel probe"
 msgstr "Drivstoffsonde"
+
+#: src/components/MissionSetup.tsx:728
+msgid "Fuel tank"
+msgstr "Drivstofftank"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:321
 msgid "Full layout"
@@ -1556,7 +1573,7 @@ msgstr "Understell"
 msgid "GEAR"
 msgstr "STELL"
 
-#: src/components/MissionSetup.tsx:1671
+#: src/components/MissionSetup.tsx:1830
 msgid "General"
 msgstr "Generelt"
 
@@ -1586,9 +1603,13 @@ msgstr "Gå til side {pageNumber}"
 msgid "Go to previous page"
 msgstr "Gå til forrige side"
 
-#: src/components/MissionSetup.tsx:1674
+#: src/components/MissionSetup.tsx:1833
 msgid "Graphics"
 msgstr "Grafikk"
+
+#: src/components/MissionSetup.tsx:824
+msgid "Gross weight"
+msgstr "Totalvekt"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:162
 msgid "Group"
@@ -1607,6 +1628,10 @@ msgstr "Gruppe: {0}"
 msgid "GUN"
 msgstr "KANON"
 
+#: src/components/MissionSetup.tsx:762
+msgid "Gun fighter"
+msgstr "Kanonjager"
+
 #: ../../../lib/web/src/components/data-table/column-header.tsx:70
 msgid "Hide"
 msgstr "Skjul"
@@ -1615,17 +1640,17 @@ msgstr "Skjul"
 msgid "Hide password"
 msgstr "Skjul passord"
 
-#: src/components/MissionSetup.tsx:1376
+#: src/components/MissionSetup.tsx:1535
 msgid "High"
 msgstr "Høy"
 
-#: src/components/MissionSetup.tsx:1314
-#: src/components/Multiplayer.tsx:306
+#: src/components/MissionSetup.tsx:1473
+#: src/components/Multiplayer.tsx:321
 msgid "High stratus"
 msgstr "Høy stratus"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1638
+#: src/components/MissionSetup.tsx:1797
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Historikk"
@@ -1649,15 +1674,15 @@ msgstr "KROK"
 msgid "Hot"
 msgstr "Populært"
 
-#: src/components/MissionSetup.tsx:196
+#: src/components/MissionSetup.tsx:201
 msgid "HUD altitude source"
 msgstr "HUD-høydekilde"
 
-#: src/components/MissionSetup.tsx:197
+#: src/components/MissionSetup.tsx:202
 msgid "HUD declutter"
 msgstr "HUD-forenkling"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:153
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:152
 msgid "ID"
 msgstr ""
 
@@ -1670,8 +1695,8 @@ msgstr "Bildeviser: {0}"
 msgid "Imperial"
 msgstr "Imperialsk"
 
-#: src/components/MissionSetup.tsx:1003
-#: src/components/MissionSetup.tsx:1267
+#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1426
 msgid "In air"
 msgstr "I luften"
 
@@ -1707,7 +1732,7 @@ msgstr "Ugyldig etikett: kun bokstaver, tall, mellomrom, bindestreker og skråst
 msgid "Invalid verification code"
 msgstr "Ugyldig bekreftelseskode"
 
-#: src/components/MissionSetup.tsx:306
+#: src/components/MissionSetup.tsx:311
 msgid "Invert pitch"
 msgstr "Inverter stamping"
 
@@ -1715,8 +1740,8 @@ msgstr "Inverter stamping"
 msgid "INVULNERABLE"
 msgstr "USÅRBAR"
 
-#: src/components/MissionSetup.tsx:1325
-#: src/components/Multiplayer.tsx:344
+#: src/components/MissionSetup.tsx:1484
+#: src/components/Multiplayer.tsx:359
 msgid "Invulnerable (human players only)"
 msgstr "Usårbar (kun menneskelige spillere)"
 
@@ -1724,12 +1749,12 @@ msgstr "Usårbar (kun menneskelige spillere)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Det ser ut til at siden du leter etter <0/>ikke finnes eller er blitt fjernet."
 
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:506
 msgid "Join"
 msgstr "Bli med"
 
-#: src/components/MissionSetup.tsx:1086
-#: src/components/MissionSetup.tsx:1629
+#: src/components/MissionSetup.tsx:1242
+#: src/components/MissionSetup.tsx:1788
 msgid "Join server"
 msgstr "Bli med på server"
 
@@ -1738,20 +1763,20 @@ msgid "JOINED"
 msgstr "BLE MED"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1591
-#: src/components/Multiplayer.tsx:438
+#: src/components/MissionSetup.tsx:1750
+#: src/components/Multiplayer.tsx:453
 msgid "Joust"
 msgstr "Dyst"
 
-#: src/components/Multiplayer.tsx:291
+#: src/components/Multiplayer.tsx:306
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duell — 1v1, første nedskyting vinner"
 
-#: src/components/MissionSetup.tsx:1191
+#: src/components/MissionSetup.tsx:1350
 msgid "Joust against AI player"
 msgstr "Duell mot AI-spiller"
 
-#: src/components/MissionSetup.tsx:1680
+#: src/components/MissionSetup.tsx:1839
 msgid "Joystick"
 msgstr "Styrespak"
 
@@ -1767,7 +1792,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Tastatursnarveier"
 
-#: src/components/MissionSetup.tsx:1683
+#: src/components/MissionSetup.tsx:1842
 msgid "Keys"
 msgstr "Taster"
 
@@ -1780,7 +1805,7 @@ msgid "Killed"
 msgstr "Skutt ned"
 
 #: src/components/MatchHistory.tsx:141
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:170
 msgid "Kills"
 msgstr "Nedskytninger"
 
@@ -1796,8 +1821,8 @@ msgstr "BRANN V MOTOR"
 msgid "L GEAR"
 msgstr "V HJUL"
 
-#: src/components/MissionSetup.tsx:146
-#: src/components/MissionSetup.tsx:185
+#: src/components/MissionSetup.tsx:149
+#: src/components/MissionSetup.tsx:189
 msgid "Landing gear"
 msgstr "Understell"
 
@@ -1810,8 +1835,8 @@ msgstr "Stor"
 msgid "LATE"
 msgstr "SEN"
 
-#: src/components/MissionSetup.tsx:149
-#: src/components/MissionSetup.tsx:192
+#: src/components/MissionSetup.tsx:152
+#: src/components/MissionSetup.tsx:196
 msgid "Launch (catapult)"
 msgstr "Utskyting (katapult)"
 
@@ -1824,7 +1849,7 @@ msgstr "start / mål"
 msgid "Layout"
 msgstr "Oppsett"
 
-#: src/components/Multiplayer.tsx:328
+#: src/components/Multiplayer.tsx:343
 msgid "lb"
 msgstr "lb"
 
@@ -1833,7 +1858,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Les mer"
 
-#: src/components/MissionSetup.tsx:1142
+#: src/components/MissionSetup.tsx:1298
 msgid "Leave server"
 msgstr "Forlat server"
 
@@ -1867,8 +1892,8 @@ msgstr "Lys"
 msgid "lights"
 msgstr "lys"
 
-#: src/components/MissionSetup.tsx:150
-#: src/components/MissionSetup.tsx:191
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:195
 msgid "Lights"
 msgstr "Lys"
 
@@ -1888,7 +1913,7 @@ msgstr "Lenker"
 msgid "List"
 msgstr "Liste"
 
-#: src/components/MissionSetup.tsx:1210
+#: src/components/MissionSetup.tsx:1369
 msgid "Load"
 msgstr "Mengde"
 
@@ -1932,36 +1957,36 @@ msgstr "Logget ut"
 msgid "Logging out…"
 msgstr "Logger ut …"
 
-#: src/components/MissionSetup.tsx:126
+#: src/components/MissionSetup.tsx:129
 msgid "Look"
 msgstr "Se"
 
-#: src/components/MissionSetup.tsx:566
+#: src/components/MissionSetup.tsx:571
 msgid "Look / orbit"
 msgstr "Se / bane"
 
-#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:158
 msgid "Look down"
 msgstr "Se ned"
 
-#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:159
 msgid "Look left"
 msgstr "Se til venstre"
 
-#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:160
 msgid "Look right"
 msgstr "Se til høyre"
 
-#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:157
 msgid "Look up"
 msgstr "Se opp"
 
-#: src/components/MissionSetup.tsx:1372
+#: src/components/MissionSetup.tsx:1531
 msgid "Low"
 msgstr "Lav"
 
-#: src/components/MissionSetup.tsx:1315
-#: src/components/Multiplayer.tsx:307
+#: src/components/MissionSetup.tsx:1474
+#: src/components/Multiplayer.tsx:322
 msgid "Low stratus"
 msgstr "Lav stratus"
 
@@ -1985,7 +2010,7 @@ msgstr "Manuell"
 msgid "map"
 msgstr "kart"
 
-#: src/components/MissionSetup.tsx:198
+#: src/components/MissionSetup.tsx:203
 msgid "Map"
 msgstr "Kart"
 
@@ -1995,19 +2020,19 @@ msgstr "Kart"
 msgid "Mark all as read"
 msgstr "Merk alle som lest"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:453
 msgid "Master"
 msgstr "Master"
 
-#: src/components/Multiplayer.tsx:287
+#: src/components/Multiplayer.tsx:302
 msgid "Match type"
 msgstr "Kamptype"
 
-#: src/components/MissionSetup.tsx:1136
+#: src/components/MissionSetup.tsx:1292
 msgid "Matches"
 msgstr "Kamper"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:199
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:198
 msgid "Maximum length"
 msgstr "Maks. lengde"
 
@@ -2016,7 +2041,7 @@ msgid "MCP server"
 msgstr "MCP-server"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1374
+#: src/components/MissionSetup.tsx:1533
 msgid "Medium"
 msgstr "Middels"
 
@@ -2025,7 +2050,7 @@ msgid "menu"
 msgstr "meny"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:207
-#: src/components/MissionSetup.tsx:201
+#: src/components/MissionSetup.tsx:206
 msgid "Menu"
 msgstr "Meny"
 
@@ -2037,7 +2062,7 @@ msgstr "Melding"
 msgid "Message everyone"
 msgstr "Skriv til alle"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1144
 msgid "Message players on this server"
 msgstr "Send melding til spillere på denne serveren"
 
@@ -2049,11 +2074,11 @@ msgstr "Skriv til laget ditt"
 msgid "Metric"
 msgstr "Metrisk"
 
-#: src/components/MissionSetup.tsx:836
+#: src/components/MissionSetup.tsx:992
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Kart over Midway Atoll — bildene inneholder modifiserte <0>Copernicus Sentinel-2</0>-data (2026); flyplassgeometri (rullebane, taksebaner, oppstillingsplasser) © <1>OpenStreetMap</1>-bidragsytere, lisensiert under <2>ODbL</2>; kystlinje- og revdata fra <3>NOAA NCCOS</3> (offentlig eiendom)."
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:188
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:187
 msgid "Minimum length"
 msgstr "Min. lengde"
 
@@ -2061,11 +2086,7 @@ msgstr "Min. lengde"
 msgid "MISSILE"
 msgstr "MISSIL"
 
-#: src/components/MissionSetup.tsx:1202
-msgid "Missiles"
-msgstr "Missiler"
-
-#: src/components/Multiplayer.tsx:334
+#: src/components/Multiplayer.tsx:349
 msgid "Missiles allowed"
 msgstr "Missiler tillatt"
 
@@ -2073,7 +2094,7 @@ msgstr "Missiler tillatt"
 msgid "Mochi web"
 msgstr "Mochi web"
 
-#: src/components/MatchHistory.tsx:161
+#: src/components/MatchHistory.tsx:164
 msgid "Mode"
 msgstr "Modus"
 
@@ -2090,17 +2111,17 @@ msgstr "Mandag"
 msgid "More options"
 msgstr "Flere alternativer"
 
-#: src/components/MissionSetup.tsx:379
+#: src/components/MissionSetup.tsx:384
 msgid "Move it…"
 msgstr "Beveg aksen…"
 
-#: src/components/Multiplayer.tsx:188
+#: src/components/Multiplayer.tsx:203
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Flerspiller krever WebTransport, som denne nettleseren ikke støtter ennå."
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:143
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:142
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:128
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:299
 msgid "Name"
@@ -2134,8 +2155,8 @@ msgstr "Nytt spill"
 msgid "Next image"
 msgstr "Neste bilde"
 
-#: src/components/MissionSetup.tsx:1302
-#: src/components/Multiplayer.tsx:301
+#: src/components/MissionSetup.tsx:1461
+#: src/components/Multiplayer.tsx:316
 msgid "Night"
 msgstr "Natt"
 
@@ -2175,7 +2196,7 @@ msgstr "Ingen grupper tilgjengelig"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Ingen elementtyper kan opprettes ennå. Opprett de nødvendige overordnede elementene først."
 
-#: src/components/MissionSetup.tsx:300
+#: src/components/MissionSetup.tsx:305
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ingen styrespak funnet — trykk på en knapp på den for å vekke den."
 
@@ -2187,7 +2208,7 @@ msgstr "Ingen samsvarende objekter"
 msgid "No notifications yet"
 msgstr "Ingen varsler ennå"
 
-#: src/components/Multiplayer.tsx:421
+#: src/components/Multiplayer.tsx:436
 msgid "No open matches — create one."
 msgstr "Ingen åpne kamper — opprett en."
 
@@ -2240,8 +2261,8 @@ msgstr "Ingen brukere funnet"
 msgid "No views"
 msgstr "Ingen visninger"
 
-#: src/components/MissionSetup.tsx:965
-#: src/components/Multiplayer.tsx:421
+#: src/components/MissionSetup.tsx:1121
+#: src/components/Multiplayer.tsx:436
 msgid "No world server."
 msgstr "Ingen verdensserver."
 
@@ -2263,9 +2284,10 @@ msgstr "INGEN KARAKTER"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:349
-#: src/components/MissionSetup.tsx:409
-#: src/components/MissionSetup.tsx:1312
+#: src/components/MissionSetup.tsx:354
+#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:727
+#: src/components/MissionSetup.tsx:1471
 msgid "None"
 msgstr "Ingen"
 
@@ -2289,7 +2311,7 @@ msgstr "Ikke satt"
 msgid "Nothing found"
 msgstr "Ingenting funnet"
 
-#: src/components/MissionSetup.tsx:965
+#: src/components/MissionSetup.tsx:1121
 msgid "Nothing yet — say hello."
 msgstr "Ingenting ennå — si hei."
 
@@ -2306,9 +2328,9 @@ msgstr "Varsler"
 msgid "Notifications: {0}"
 msgstr "Varsler: {0}"
 
-#: src/components/MissionSetup.tsx:1228
-#: src/components/MissionSetup.tsx:1583
-#: src/components/Multiplayer.tsx:378
+#: src/components/MissionSetup.tsx:1387
+#: src/components/MissionSetup.tsx:1742
+#: src/components/Multiplayer.tsx:393
 msgid "Novice"
 msgstr "Nybegynner"
 
@@ -2318,7 +2340,7 @@ msgstr "Nybegynner"
 msgid "Number"
 msgstr "Tall"
 
-#: src/components/MissionSetup.tsx:1404
+#: src/components/MissionSetup.tsx:1563
 msgid "Ocean detail"
 msgstr "Havdetaljer"
 
@@ -2330,13 +2352,13 @@ msgstr "OK"
 msgid "On"
 msgstr "På"
 
-#: src/components/MissionSetup.tsx:1005
-#: src/components/MissionSetup.tsx:1269
+#: src/components/MissionSetup.tsx:1161
+#: src/components/MissionSetup.tsx:1428
 msgid "On carrier"
 msgstr "På hangarskip"
 
-#: src/components/MissionSetup.tsx:1004
-#: src/components/MissionSetup.tsx:1268
+#: src/components/MissionSetup.tsx:1160
+#: src/components/MissionSetup.tsx:1427
 msgid "On runway"
 msgstr "På rullebane"
 
@@ -2344,11 +2366,11 @@ msgstr "På rullebane"
 msgid "Oops! Page Not Found!"
 msgstr "Ups! Side ikke funnet!"
 
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:453
 msgid "Open"
 msgstr "Åpne"
 
-#: src/components/Multiplayer.tsx:290
+#: src/components/Multiplayer.tsx:305
 msgid "Open — anyone may join or leave"
 msgstr "Åpen — alle kan bli med eller forlate"
 
@@ -2406,7 +2428,7 @@ msgid "Option name"
 msgstr "Valgnavn"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:241
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:240
 msgid "Options"
 msgstr "Valg"
 
@@ -2422,8 +2444,8 @@ msgstr "bane"
 msgid "Other"
 msgstr "Annet"
 
-#: src/components/MissionSetup.tsx:135
-#: src/components/MissionSetup.tsx:173
+#: src/components/MissionSetup.tsx:138
+#: src/components/MissionSetup.tsx:177
 msgid "Override G limit"
 msgstr "Overstyr G-grense"
 
@@ -2440,7 +2462,7 @@ msgstr "Side {currentPage} av {totalPages}"
 msgid "Parent"
 msgstr "Overordnet"
 
-#: src/components/MissionSetup.tsx:172
+#: src/components/MissionSetup.tsx:176
 msgid "Parking brake"
 msgstr "Parkeringsbrems"
 
@@ -2456,7 +2478,7 @@ msgstr "Verifisering med passnøkkel mislyktes. Prøv igjen."
 msgid "Passkeys"
 msgstr "Passnøkler"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:210
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:209
 msgid "Pattern (regex)"
 msgstr "Mønster (regex)"
 
@@ -2464,15 +2486,15 @@ msgstr "Mønster (regex)"
 msgid "Pick a date"
 msgstr "Velg en dato"
 
-#: src/components/MissionSetup.tsx:907
-#: src/components/Multiplayer.tsx:90
-#: src/components/Multiplayer.tsx:248
+#: src/components/MissionSetup.tsx:1063
+#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:263
 msgid "pilot"
 msgstr "pilot"
 
-#: src/components/MissionSetup.tsx:1229
-#: src/components/MissionSetup.tsx:1584
-#: src/components/Multiplayer.tsx:379
+#: src/components/MissionSetup.tsx:1388
+#: src/components/MissionSetup.tsx:1743
+#: src/components/Multiplayer.tsx:394
 msgid "Pilot"
 msgstr "Pilot"
 
@@ -2484,15 +2506,15 @@ msgstr "PILOT DREPT"
 msgid "pitch"
 msgstr "stamp"
 
-#: src/components/MissionSetup.tsx:121
+#: src/components/MissionSetup.tsx:124
 msgid "Pitch"
 msgstr "Stamping"
 
-#: src/components/MissionSetup.tsx:163
+#: src/components/MissionSetup.tsx:167
 msgid "Pitch down"
 msgstr "Stamping ned"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:166
 msgid "Pitch up"
 msgstr "Stamping opp"
 
@@ -2500,7 +2522,7 @@ msgstr "Stamping opp"
 msgid "PLATFORM"
 msgstr "PLATTFORM"
 
-#: src/components/MatchHistory.tsx:164
+#: src/components/MatchHistory.tsx:167
 msgid "Players"
 msgstr "Spillere"
 
@@ -2530,11 +2552,11 @@ msgstr "Innlegg"
 msgid "Posts and comments"
 msgstr "Innlegg og kommentarer"
 
-#: src/components/MissionSetup.tsx:1359
+#: src/components/MissionSetup.tsx:1518
 msgid "Preset"
 msgstr "Forhåndsinnstilling"
 
-#: src/components/MissionSetup.tsx:536
+#: src/components/MissionSetup.tsx:541
 msgid "Press a key…"
 msgstr "Trykk på en tast…"
 
@@ -2542,7 +2564,7 @@ msgstr "Trykk på en tast…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "TRYKK ENTER FOR Å LETTE"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:433
 msgid "Press it…"
 msgstr "Trykk på den…"
 
@@ -2576,6 +2598,10 @@ msgstr "Push-varsel"
 msgid "PUSH TIME"
 msgstr "INNFLYGINGSTID"
 
+#: src/components/MissionSetup.tsx:727
+msgid "Pylon"
+msgstr "Pylon"
+
 #: src/components/GameCanvas.tsx:42
 msgid "R ENG"
 msgstr "H MOTOR"
@@ -2587,6 +2613,10 @@ msgstr "BRANN H MOTOR"
 #: src/components/GameCanvas.tsx:45
 msgid "R GEAR"
 msgstr "H HJUL"
+
+#: src/components/MissionSetup.tsx:727
+msgid "Rail"
+msgstr "Skinne"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
@@ -2604,7 +2634,7 @@ msgstr "Registrer tilgangsnøklene dine på nytt på denne serveren"
 msgid "REARMED"
 msgstr "GJENBEVÆPNET"
 
-#: src/components/MissionSetup.tsx:1091
+#: src/components/MissionSetup.tsx:1247
 msgid "Recent"
 msgstr "Nylige"
 
@@ -2617,24 +2647,24 @@ msgstr "Anbefalt"
 msgid "Reconnecting ({retries})..."
 msgstr "Kobler til igjen ({retries})..."
 
-#: src/components/MissionSetup.tsx:1508
+#: src/components/MissionSetup.tsx:1667
 msgid "Record flights"
 msgstr "Ta opp flyginger"
 
-#: src/components/MatchHistory.tsx:229
-#: src/components/MissionSetup.tsx:1502
+#: src/components/MatchHistory.tsx:238
+#: src/components/MissionSetup.tsx:1661
 msgid "Recording"
 msgstr "Opptak"
 
-#: src/components/MatchHistory.tsx:222
+#: src/components/MatchHistory.tsx:231
 msgid "Recording saved"
 msgstr "Opptaket er lagret"
 
-#: src/components/Multiplayer.tsx:469
+#: src/components/Multiplayer.tsx:484
 msgid "Red"
 msgstr "Rød"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Red bots"
 msgstr "Røde bots"
 
@@ -2647,11 +2677,11 @@ msgstr "Omdirigerer til innlogging."
 msgid "Reduce interest"
 msgstr "Reduser interesse"
 
-#: src/components/MissionSetup.tsx:715
+#: src/components/MissionSetup.tsx:871
 msgid "Reference"
 msgstr "Referanse"
 
-#: src/components/Multiplayer.tsx:267
+#: src/components/Multiplayer.tsx:282
 msgid "Refresh"
 msgstr "Oppdater"
 
@@ -2726,7 +2756,7 @@ msgstr "Gi kolonnen nytt navn"
 msgid "Rename this board column"
 msgstr "Gi denne tavlekolonnen nytt navn"
 
-#: src/components/MissionSetup.tsx:873
+#: src/components/MissionSetup.tsx:1029
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Gjengivelse med <0>three.js</0> (MIT-lisens)."
 
@@ -2740,7 +2770,7 @@ msgstr "Svar"
 msgid "Reply to {0}..."
 msgstr "Svar til {0}..."
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:224
 msgid "Required"
 msgstr "Påkrevd"
 
@@ -2750,7 +2780,7 @@ msgstr "Send e-post på nytt"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1722
+#: src/components/MissionSetup.tsx:1881
 msgid "Reset"
 msgstr "Tilbakestill"
 
@@ -2763,23 +2793,25 @@ msgstr "Tilbakestill {title}"
 msgid "Reset all settings to default values"
 msgstr "Tilbakestill alle innstillinger til standardverdier"
 
-#: src/components/MissionSetup.tsx:178
+#: src/components/MissionSetup.tsx:182
 msgid "Reset trim"
 msgstr "Nullstill trim"
 
-#: src/components/MissionSetup.tsx:565
+#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:199
+#: src/components/MissionSetup.tsx:570
 msgid "Reset view"
 msgstr "Nullstill visning"
 
-#: src/components/MissionSetup.tsx:1386
+#: src/components/MissionSetup.tsx:1545
 msgid "Resolution"
 msgstr "Løsning"
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1770
 msgid "Restart mission"
 msgstr "Start oppdrag på nytt"
 
-#: src/components/MatchHistory.tsx:173
+#: src/components/MatchHistory.tsx:176
 msgid "Result"
 msgstr "Resultat"
 
@@ -2787,12 +2819,12 @@ msgstr "Resultat"
 msgid "Resume"
 msgstr "Gjenoppta"
 
-#: src/components/MissionSetup.tsx:1607
+#: src/components/MissionSetup.tsx:1766
 msgid "Resume mission"
 msgstr "Fortsett oppdrag"
 
-#: src/components/MissionSetup.tsx:145
-#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:148
+#: src/components/MissionSetup.tsx:188
 msgid "Retract flaps"
 msgstr "Flaps inn"
 
@@ -2800,7 +2832,7 @@ msgstr "Flaps inn"
 msgid "Retry"
 msgstr "Prøv igjen"
 
-#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:368
 msgid "Reversed"
 msgstr "Omvendt"
 
@@ -2816,20 +2848,20 @@ msgstr "Høyre mot venstre"
 msgid "roll"
 msgstr "rull"
 
-#: src/components/MissionSetup.tsx:122
+#: src/components/MissionSetup.tsx:125
 msgid "Roll"
 msgstr "Rulling"
 
-#: src/components/MissionSetup.tsx:164
+#: src/components/MissionSetup.tsx:168
 msgid "Roll left"
 msgstr "Rulling venstre"
 
-#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:169
 msgid "Roll right"
 msgstr "Rulling høyre"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:169
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:168
 msgid "Rows"
 msgstr "Rader"
 
@@ -2868,7 +2900,7 @@ msgstr "Lørdag"
 msgid "Save"
 msgstr "Lagre"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:886
 msgid "Sea level"
 msgstr "Havnivå"
 
@@ -2998,8 +3030,8 @@ msgstr "Velg nettstedsretning"
 msgid "Select theme preference"
 msgstr "Velg temapreferanse"
 
-#: src/components/MissionSetup.tsx:141
-#: src/components/MissionSetup.tsx:180
+#: src/components/MissionSetup.tsx:144
+#: src/components/MissionSetup.tsx:184
 msgid "Select weapon"
 msgstr "Velg våpen"
 
@@ -3017,7 +3049,7 @@ msgstr "valgt"
 msgid "Selected: <0>{0}</0>"
 msgstr "Valgt: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:995
+#: src/components/MissionSetup.tsx:1151
 msgid "Send"
 msgstr "Send"
 
@@ -3042,12 +3074,12 @@ msgstr "Send melding"
 msgid "Serif"
 msgstr "Antikva"
 
-#: src/components/MatchHistory.tsx:158
-#: src/components/MissionSetup.tsx:1104
+#: src/components/MatchHistory.tsx:161
+#: src/components/MissionSetup.tsx:1260
 msgid "Server"
 msgstr "Server"
 
-#: src/components/MissionSetup.tsx:960
+#: src/components/MissionSetup.tsx:1116
 msgid "Server chat"
 msgstr "Serverchat"
 
@@ -3069,7 +3101,7 @@ msgstr "ØKT AVSLUTTET"
 msgid "Session expired. Please log in again."
 msgstr "Økten er utløpt. Logg inn på nytt."
 
-#: src/components/MissionSetup.tsx:542
+#: src/components/MissionSetup.tsx:547
 msgid "Set"
 msgstr "Angi"
 
@@ -3081,12 +3113,12 @@ msgstr "Angi opprinnelse og destinasjon"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1633
-#: src/components/MissionSetup.tsx:1667
+#: src/components/MissionSetup.tsx:1792
+#: src/components/MissionSetup.tsx:1826
 msgid "Settings"
 msgstr "Innstillinger"
 
-#: src/components/MissionSetup.tsx:1428
+#: src/components/MissionSetup.tsx:1587
 msgid "Shadows"
 msgstr "Skygger"
 
@@ -3126,11 +3158,11 @@ msgid "Signing out..."
 msgstr "Logger ut ..."
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:180
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:179
 msgid "Single line of text only"
 msgstr "Bare én tekstlinje"
 
-#: src/components/MissionSetup.tsx:700
+#: src/components/MissionSetup.tsx:856
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Beste stigning med én motor (Vyse, etterbrenner)"
 
@@ -3147,8 +3179,8 @@ msgstr "Liten"
 msgid "Sort"
 msgstr "Sorter"
 
-#: src/components/MissionSetup.tsx:468
-#: src/components/MissionSetup.tsx:1677
+#: src/components/MissionSetup.tsx:473
+#: src/components/MissionSetup.tsx:1836
 msgid "Sound"
 msgstr "Lyd"
 
@@ -3168,13 +3200,13 @@ msgstr "FBRMS"
 msgid "speed brake"
 msgstr "fartbrems"
 
-#: src/components/MissionSetup.tsx:125
-#: src/components/MissionSetup.tsx:133
-#: src/components/MissionSetup.tsx:170
+#: src/components/MissionSetup.tsx:128
+#: src/components/MissionSetup.tsx:136
+#: src/components/MissionSetup.tsx:174
 msgid "Speed brake"
 msgstr "Fartbrems"
 
-#: src/components/MissionSetup.tsx:756
+#: src/components/MissionSetup.tsx:912
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Hastigheter i KCAS, som et område fra lett (minimum drivstoff, uten ytre last) til tung (maksimal totalvekt). Data er utledet eksperimentelt i spillet. Eventuelle avvik fra det virkelige flyet skyldes feil i simulatorens flymodell."
 
@@ -3182,15 +3214,15 @@ msgstr "Hastigheter i KCAS, som et område fra lett (minimum drivstoff, uten ytr
 msgid "SPLASH"
 msgstr "MÅL NEDSKUTT"
 
-#: src/components/MissionSetup.tsx:705
+#: src/components/MissionSetup.tsx:861
 msgid "Stall, clean (Vs1)"
 msgstr "Steiling, ren konfigurasjon (Vs1)"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:862
 msgid "Stall, landing config (Vs0)"
 msgstr "Steiling, landingskonfigurasjon (Vs0)"
 
-#: src/components/MissionSetup.tsx:1241
+#: src/components/MissionSetup.tsx:1400
 msgid "Start"
 msgstr "Start"
 
@@ -3202,11 +3234,11 @@ msgstr "Start diskusjonen ved å legge til den første kommentaren."
 msgid "Stay tuned though!"
 msgstr "Følg med likevel!"
 
-#: src/components/MissionSetup.tsx:696
+#: src/components/MissionSetup.tsx:852
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Bratteste stigning (Vx, 100% skyvekraft)"
 
-#: src/components/MissionSetup.tsx:697
+#: src/components/MissionSetup.tsx:853
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Bratteste stigning (Vx, etterbrenner)"
 
@@ -3237,9 +3269,9 @@ msgstr "Abonner"
 msgid "Sunday"
 msgstr "Søndag"
 
-#: src/components/MissionSetup.tsx:1231
-#: src/components/MissionSetup.tsx:1586
-#: src/components/Multiplayer.tsx:381
+#: src/components/MissionSetup.tsx:1390
+#: src/components/MissionSetup.tsx:1745
+#: src/components/Multiplayer.tsx:396
 msgid "Superhuman"
 msgstr "Overmenneskelig"
 
@@ -3280,7 +3312,7 @@ msgstr "Etiketter"
 msgid "TALLY"
 msgstr "FIENDE I SIKTE"
 
-#: src/components/MissionSetup.tsx:1184
+#: src/components/MissionSetup.tsx:1343
 msgid "Task"
 msgstr "Oppgave"
 
@@ -3293,11 +3325,11 @@ msgid "TEAM"
 msgstr "LAG"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:453
 msgid "Teams"
 msgstr "Lag"
 
-#: src/components/Multiplayer.tsx:292
+#: src/components/Multiplayer.tsx:307
 msgid "Teams — red versus blue"
 msgstr "Lag — rød mot blå"
 
@@ -3342,7 +3374,7 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Temainnstillinger"
 
-#: src/components/Multiplayer.tsx:206
+#: src/components/Multiplayer.tsx:221
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Denne lobbyen sender spilltilkoblingen din til en annen vert ({redirectHost}). Fortsett bare hvis du stoler på denne serveren."
 
@@ -3354,15 +3386,15 @@ msgstr "Denne siden er ikke opprettet ennå."
 msgid "throttle"
 msgstr "gass"
 
-#: src/components/MissionSetup.tsx:124
+#: src/components/MissionSetup.tsx:127
 msgid "Throttle"
 msgstr "Gass"
 
-#: src/components/MissionSetup.tsx:169
+#: src/components/MissionSetup.tsx:173
 msgid "Throttle down"
 msgstr "Gass ned"
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:172
 msgid "Throttle up"
 msgstr "Gass opp"
 
@@ -3370,7 +3402,7 @@ msgstr "Gass opp"
 msgid "Thursday"
 msgstr "Torsdag"
 
-#: src/components/MissionSetup.tsx:704
+#: src/components/MissionSetup.tsx:860
 msgid "Tightest sustained turn speed"
 msgstr "Trangeste vedvarende svinghastighet"
 
@@ -3382,7 +3414,7 @@ msgstr "vipp"
 msgid "Time"
 msgstr "Tid"
 
-#: src/components/MissionSetup.tsx:1295
+#: src/components/MissionSetup.tsx:1454
 msgid "Time of day"
 msgstr "Tid på døgnet"
 
@@ -3438,7 +3470,7 @@ msgstr "For mange forespørsler"
 msgid "Top"
 msgstr "Topp"
 
-#: src/components/MissionSetup.tsx:1440
+#: src/components/MissionSetup.tsx:1599
 msgid "Tracers"
 msgstr "Sporlys"
 
@@ -3446,31 +3478,31 @@ msgstr "Sporlys"
 msgid "Travelling"
 msgstr "På reise"
 
-#: src/components/MissionSetup.tsx:112
+#: src/components/MissionSetup.tsx:115
 msgid "Trim"
 msgstr "Trim"
 
-#: src/components/MissionSetup.tsx:127
+#: src/components/MissionSetup.tsx:130
 msgid "Trim hat"
 msgstr "Trim-hatt"
 
-#: src/components/MissionSetup.tsx:137
-#: src/components/MissionSetup.tsx:175
+#: src/components/MissionSetup.tsx:140
+#: src/components/MissionSetup.tsx:179
 msgid "Trim nose down"
 msgstr "Trim: nese ned"
 
-#: src/components/MissionSetup.tsx:136
-#: src/components/MissionSetup.tsx:174
+#: src/components/MissionSetup.tsx:139
+#: src/components/MissionSetup.tsx:178
 msgid "Trim nose up"
 msgstr "Trim: nese opp"
 
-#: src/components/MissionSetup.tsx:138
-#: src/components/MissionSetup.tsx:176
+#: src/components/MissionSetup.tsx:141
+#: src/components/MissionSetup.tsx:180
 msgid "Trim roll left"
 msgstr "Trim: krengning venstre"
 
-#: src/components/MissionSetup.tsx:139
-#: src/components/MissionSetup.tsx:177
+#: src/components/MissionSetup.tsx:142
+#: src/components/MissionSetup.tsx:181
 msgid "Trim roll right"
 msgstr "Trim: krengning høyre"
 
@@ -3489,8 +3521,12 @@ msgstr "Prøv igjen"
 msgid "Tuesday"
 msgstr "Tirsdag"
 
+#: src/components/MissionSetup.tsx:727
+msgid "Twin rail"
+msgstr "Dobbeltskinne"
+
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:163
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:162
 msgid "Type"
 msgstr "Type"
 
@@ -3510,7 +3546,7 @@ msgstr "Skriv for å søke i brukere"
 msgid "Type to search..."
 msgstr "Skriv for å søke ..."
 
-#: src/components/MissionSetup.tsx:1378
+#: src/components/MissionSetup.tsx:1537
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3544,13 +3580,13 @@ msgstr "USA"
 msgid "Unknown"
 msgstr "Ukjent"
 
-#: src/components/MissionSetup.tsx:1331
-#: src/components/Multiplayer.tsx:354
+#: src/components/MissionSetup.tsx:1490
+#: src/components/Multiplayer.tsx:369
 msgid "Unlimited ammunition"
 msgstr "Ubegrenset ammunisjon"
 
-#: src/components/MissionSetup.tsx:1337
-#: src/components/Multiplayer.tsx:364
+#: src/components/MissionSetup.tsx:1496
+#: src/components/Multiplayer.tsx:379
 msgid "Unlimited fuel"
 msgstr "Ubegrenset drivstoff"
 
@@ -3614,7 +3650,7 @@ msgstr "Verifiser"
 msgid "Verify email address"
 msgstr "Verifiser e-postadresse"
 
-#: src/components/MissionSetup.tsx:746
+#: src/components/MissionSetup.tsx:902
 msgid "Vertical"
 msgstr "Loddrett"
 
@@ -3636,7 +3672,7 @@ msgid "view"
 msgstr "visning"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/MissionSetup.tsx:115
+#: src/components/MissionSetup.tsx:118
 msgid "View"
 msgstr "Vis"
 
@@ -3653,7 +3689,7 @@ msgstr "Vis alle varsler"
 msgid "View controls"
 msgstr "Visningskontroller"
 
-#: src/components/MissionSetup.tsx:564
+#: src/components/MissionSetup.tsx:569
 msgid "Views"
 msgstr "Visninger"
 
@@ -3691,12 +3727,12 @@ msgstr "Vi gir deg beskjed når noe viktig skjer."
 msgid "weapon"
 msgstr "våpen"
 
-#: src/components/MissionSetup.tsx:113
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:116
+#: src/components/MissionSetup.tsx:456
 msgid "Weapons"
 msgstr "Våpen"
 
-#: src/components/Multiplayer.tsx:297
+#: src/components/Multiplayer.tsx:312
 msgid "Weather"
 msgstr "Vær"
 
@@ -3708,12 +3744,12 @@ msgstr "Nettstedet er under vedlikehold!"
 msgid "Wednesday"
 msgstr "Onsdag"
 
-#: src/components/MissionSetup.tsx:134
-#: src/components/MissionSetup.tsx:171
+#: src/components/MissionSetup.tsx:137
+#: src/components/MissionSetup.tsx:175
 msgid "Wheel brakes"
 msgstr "Hjulbremser"
 
-#: src/components/MissionSetup.tsx:190
+#: src/components/MissionSetup.tsx:194
 msgid "Wing fold"
 msgstr "Vingefolding"
 
@@ -3721,12 +3757,12 @@ msgstr "Vingefolding"
 msgid "WINS"
 msgstr "VINNER"
 
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:247
 msgid "World server"
 msgstr "Verdensserver"
 
-#: src/components/MissionSetup.tsx:953
-#: src/components/Multiplayer.tsx:103
+#: src/components/MissionSetup.tsx:1109
+#: src/components/Multiplayer.tsx:115
 msgid "World server not reachable"
 msgstr "Verdensserveren er ikke tilgjengelig"
 
@@ -3734,15 +3770,15 @@ msgstr "Verdensserveren er ikke tilgjengelig"
 msgid "yaw"
 msgstr "gir"
 
-#: src/components/MissionSetup.tsx:123
+#: src/components/MissionSetup.tsx:126
 msgid "Yaw"
 msgstr "Giring"
 
-#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:170
 msgid "Yaw left"
 msgstr "Giring venstre"
 
-#: src/components/MissionSetup.tsx:167
+#: src/components/MissionSetup.tsx:171
 msgid "Yaw right"
 msgstr "Giring høyre"
 
@@ -3774,7 +3810,7 @@ msgstr "Vedleggene dine går tapt."
 msgid "Your flights appear here once you've flown one."
 msgstr "Flygingene dine vises her når du har fløyet en."
 
-#: src/components/Multiplayer.tsx:433
+#: src/components/Multiplayer.tsx:448
 msgid "your offer"
 msgstr "tilbudet ditt"
 
@@ -3786,14 +3822,14 @@ msgstr "Teksten og vedleggene dine går tapt."
 msgid "Your text will be lost."
 msgstr "Teksten din vil gå tapt."
 
-#: src/components/MissionSetup.tsx:128
+#: src/components/MissionSetup.tsx:131
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:161
 msgid "Zoom in"
 msgstr "Zoom inn"
 
-#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:162
 msgid "Zoom out"
 msgstr "Zoom ut"

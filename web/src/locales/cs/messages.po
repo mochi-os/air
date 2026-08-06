@@ -41,14 +41,19 @@ msgstr "{0, plural, one {# vybráno} few {# vybráno} other {# vybráno}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:971
+#: src/components/MissionSetup.tsx:1127
 msgid "{0} created “{1}”"
 msgstr "{0} vytvořil(a) „{1}“"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:259
+#: src/components/Multiplayer.tsx:274
 msgid "{0} flying"
 msgstr "{0} ve vzduchu"
+
+#. placeholder {0}: gross - LAUNCH
+#: src/components/MissionSetup.tsx:828
+msgid "{0} lb over maximum launch weight"
+msgstr "{0} lb nad maximální startovní hmotností"
 
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
@@ -57,7 +62,7 @@ msgstr "Náhled možnosti {0}"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:440
+#: src/components/Multiplayer.tsx:455
 msgid "{0}/{1} players"
 msgstr "{0}/{1} hráčů"
 
@@ -69,7 +74,7 @@ msgstr "Název {entityLabel}"
 msgid "{entityLabel} name is required"
 msgstr "Název {entityLabel} je povinný"
 
-#: src/components/Multiplayer.tsx:165
+#: src/components/Multiplayer.tsx:180
 msgid "{name}'s match"
 msgstr "Zápas hráče {name}"
 
@@ -126,7 +131,7 @@ msgstr "LANO 1"
 msgid "12 hours"
 msgstr "12 hodin"
 
-#: src/components/MissionSetup.tsx:733
+#: src/components/MissionSetup.tsx:889
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -142,7 +147,7 @@ msgstr "24 hodin"
 msgid "3 WIRE"
 msgstr "LANO 3"
 
-#: src/components/MissionSetup.tsx:736
+#: src/components/MissionSetup.tsx:892
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -182,14 +187,14 @@ msgstr "Typ účtu"
 msgid "Account verified"
 msgstr "Účet ověřen"
 
-#: src/components/MissionSetup.tsx:1230
-#: src/components/MissionSetup.tsx:1585
-#: src/components/Multiplayer.tsx:380
+#: src/components/MissionSetup.tsx:1389
+#: src/components/MissionSetup.tsx:1744
+#: src/components/Multiplayer.tsx:395
 msgid "Ace"
 msgstr "Eso"
 
-#: src/components/MissionSetup.tsx:142
-#: src/components/MissionSetup.tsx:181
+#: src/components/MissionSetup.tsx:145
+#: src/components/MissionSetup.tsx:185
 msgid "Acquire target"
 msgstr "Zaměřit cíl"
 
@@ -247,7 +252,7 @@ msgstr "Přidat nový účet"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:292
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:291
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:194
 msgid "Add option"
@@ -281,7 +286,7 @@ msgstr "Přidávání..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Upravte vzhled a rozvržení podle svých preferencí."
 
-#: src/components/MissionSetup.tsx:1434
+#: src/components/MissionSetup.tsx:1593
 msgid "Afterburner"
 msgstr "Přídavné spalování"
 
@@ -289,20 +294,20 @@ msgstr "Přídavné spalování"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:114
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:117
+#: src/components/MissionSetup.tsx:455
 msgid "Aircraft"
 msgstr "Letadlo"
 
-#: src/components/MissionSetup.tsx:810
+#: src/components/MissionSetup.tsx:966
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Letadlová loď <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> od <1>Muhamad Mirza Arrafi</1> (Sketchfab), licencováno pod <2>CC BY 4.0</2>. Upraveno: změněno měřítko, změněna orientace, ponořeno k čáře ponoru a zjednodušeno pro web."
 
-#: src/components/MissionSetup.tsx:784
+#: src/components/MissionSetup.tsx:940
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Model letadla <0>“F/A-18C Hornet”</0> od <1>CreadorDeMu</1> (Sketchfab), licencováno pod <2>CC BY 4.0</2>. Upraveno: změněna orientace a měřítko, odstraněna nepoužívaná texturová data, vnější podvěsy vyčleněny do samostatného souboru, jeden mesh krytu zrcadlově převrácen."
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:458
 msgid "Alerts"
 msgstr "Výstrahy"
 
@@ -315,7 +320,7 @@ msgstr "Vše"
 msgid "Allow anyone to search for {0}"
 msgstr "Umožnit komukoli vyhledat {0}"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:226
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
 msgid "Allow sort by"
 msgstr "Povolit řazení podle"
 
@@ -340,12 +345,12 @@ msgstr "Kdokoli"
 msgid "Anyone who is logged in"
 msgstr "Kdokoli, kdo je přihlášen"
 
-#: src/components/MissionSetup.tsx:148
-#: src/components/MissionSetup.tsx:187
+#: src/components/MissionSetup.tsx:151
+#: src/components/MissionSetup.tsx:191
 msgid "Approach power (ATC)"
 msgstr "Výkon při přiblížení (ATC)"
 
-#: src/components/MissionSetup.tsx:707
+#: src/components/MissionSetup.tsx:863
 msgid "Approach, on-speed (Vapp)"
 msgstr "Přiblížení, na rychlosti (Vapp)"
 
@@ -366,12 +371,12 @@ msgstr "Opravdu chcete smazat tento komentář? Smažou se i všechny odpovědi.
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Opravdu se chcete odhlásit? Pro přístup ke svému účtu se budete muset znovu přihlásit."
 
-#: src/components/MissionSetup.tsx:1195
+#: src/components/MissionSetup.tsx:1354
 msgid "Armament"
 msgstr "Výzbroj"
 
-#: src/components/MissionSetup.tsx:147
-#: src/components/MissionSetup.tsx:186
+#: src/components/MissionSetup.tsx:150
+#: src/components/MissionSetup.tsx:190
 msgid "Arrestor hook"
 msgstr "Záchytný hák"
 
@@ -414,11 +419,11 @@ msgstr "Avatar"
 msgid "Avatar for {name}"
 msgstr "Avatar uživatele {name}"
 
-#: src/components/MissionSetup.tsx:312
+#: src/components/MissionSetup.tsx:317
 msgid "Axes"
 msgstr "Osy"
 
-#: src/components/MissionSetup.tsx:353
+#: src/components/MissionSetup.tsx:358
 msgid "Axis {i}"
 msgstr "Osa {i}"
 
@@ -437,7 +442,7 @@ msgstr "Zpět"
 msgid "Back to home"
 msgstr "Zpět na úvod"
 
-#: src/components/MissionSetup.tsx:1222
+#: src/components/MissionSetup.tsx:1381
 msgid "Bandit"
 msgstr "Bandita"
 
@@ -445,19 +450,19 @@ msgstr "Bandita"
 msgid "Banner"
 msgstr "Banner"
 
-#: src/components/MissionSetup.tsx:698
+#: src/components/MissionSetup.tsx:854
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "Nejlepší stoupání (Vy, 100% tahu)"
 
-#: src/components/MissionSetup.tsx:699
+#: src/components/MissionSetup.tsx:855
 msgid "Best climb (Vy, afterburner)"
 msgstr "Nejlepší stoupání (Vy, přídavné spalování)"
 
-#: src/components/MissionSetup.tsx:701
+#: src/components/MissionSetup.tsx:857
 msgid "Best glide (engines out)"
 msgstr "Nejlepší klouzání (motory vypnuté)"
 
-#: src/components/MissionSetup.tsx:703
+#: src/components/MissionSetup.tsx:859
 msgid "Best sustained turn speed"
 msgstr "Nejlepší rychlost ustáleného zatáčení"
 
@@ -479,11 +484,11 @@ msgstr "Navigace na nedůvěryhodný odkaz zablokována"
 msgid "Blocks"
 msgstr "Blokuje"
 
-#: src/components/Multiplayer.tsx:479
+#: src/components/Multiplayer.tsx:494
 msgid "Blue"
 msgstr "Modří"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Blue bots"
 msgstr "Modří boti"
 
@@ -504,7 +509,7 @@ msgstr "Zvýšit zájem"
 msgid "Border colour"
 msgstr "Barva okraje"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Bots"
 msgstr "Boti"
 
@@ -524,11 +529,11 @@ msgstr "OSTŘE DOPRAVA"
 msgid "Browser notifications"
 msgstr "Oznámení prohlížeče"
 
-#: src/components/MissionSetup.tsx:413
+#: src/components/MissionSetup.tsx:418
 msgid "Button {i}"
 msgstr "Tlačítko {i}"
 
-#: src/components/MissionSetup.tsx:387
+#: src/components/MissionSetup.tsx:392
 msgid "Buttons"
 msgstr "Tlačítka"
 
@@ -536,12 +541,12 @@ msgstr "Tlačítka"
 msgid "CALL THE BALL"
 msgstr "OHLAS MÍČ"
 
-#: src/components/MissionSetup.tsx:1490
-#: src/components/Multiplayer.tsx:243
+#: src/components/MissionSetup.tsx:1649
+#: src/components/Multiplayer.tsx:258
 msgid "Callsign"
 msgstr "Volací znak"
 
-#: src/components/MissionSetup.tsx:567
+#: src/components/MissionSetup.tsx:572
 msgid "Camera distance"
 msgstr "Vzdálenost kamery"
 
@@ -558,9 +563,9 @@ msgstr "Vzdálenost kamery"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/MissionSetup.tsx:542
-#: src/components/Multiplayer.tsx:214
-#: src/components/Multiplayer.tsx:456
+#: src/components/MissionSetup.tsx:547
+#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:471
 msgid "Cancel"
 msgstr "Zrušit"
 
@@ -574,35 +579,35 @@ msgstr "Zrušit komentář"
 msgid "Cancel reply"
 msgstr "Zrušit odpověď"
 
-#: src/components/MissionSetup.tsx:189
+#: src/components/MissionSetup.tsx:193
 msgid "Canopy"
 msgstr "Překryt kabiny"
 
-#: src/components/MissionSetup.tsx:1006
+#: src/components/MissionSetup.tsx:1162
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1270
+#: src/components/MissionSetup.tsx:1429
 msgid "Case I (day)"
 msgstr "Případ I (den)"
 
-#: src/components/MissionSetup.tsx:1007
+#: src/components/MissionSetup.tsx:1163
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1271
+#: src/components/MissionSetup.tsx:1430
 msgid "Case II (weather)"
 msgstr "Případ II (počasí)"
 
-#: src/components/MissionSetup.tsx:1008
+#: src/components/MissionSetup.tsx:1164
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1272
+#: src/components/MissionSetup.tsx:1431
 msgid "Case III (night)"
 msgstr "Případ III (noc)"
 
-#: src/components/MissionSetup.tsx:1278
+#: src/components/MissionSetup.tsx:1437
 msgid "Catapult"
 msgstr "Katapult"
 
@@ -623,16 +628,16 @@ msgstr "Pohled zezadu:"
 msgid "chat"
 msgstr "chat"
 
-#: src/components/MissionSetup.tsx:199
+#: src/components/MissionSetup.tsx:204
 msgid "Chat"
 msgstr "Chat"
 
-#: src/components/MissionSetup.tsx:200
+#: src/components/MissionSetup.tsx:205
 msgid "Chat to everyone"
 msgstr "Chat všem"
 
-#: src/components/MatchHistory.tsx:176
-#: src/components/MissionSetup.tsx:1320
+#: src/components/MatchHistory.tsx:179
+#: src/components/MissionSetup.tsx:1479
 msgid "Cheats"
 msgstr "Cheaty"
 
@@ -679,7 +684,7 @@ msgstr "Vyberte jazyk"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:304
+#: src/components/Multiplayer.tsx:319
 msgid "Clear"
 msgstr "Vymazat"
 
@@ -743,7 +748,7 @@ msgstr "Zavřít hledání"
 msgid "closer"
 msgstr "blíž"
 
-#: src/components/MissionSetup.tsx:1306
+#: src/components/MissionSetup.tsx:1465
 msgid "Clouds"
 msgstr "Mraky"
 
@@ -792,7 +797,7 @@ msgstr "ZAHAJUJI"
 msgid "Comment actions"
 msgstr "Akce komentáře"
 
-#: src/components/MissionSetup.tsx:116
+#: src/components/MissionSetup.tsx:119
 msgid "Communication"
 msgstr "Komunikace"
 
@@ -814,7 +819,7 @@ msgstr "Nakonfigurovat nastavení zobrazení"
 msgid "Confirm"
 msgstr "Potvrdit"
 
-#: src/components/MissionSetup.tsx:1116
+#: src/components/MissionSetup.tsx:1272
 msgid "Connect"
 msgstr "Připojit"
 
@@ -830,7 +835,7 @@ msgstr "Připojené účty"
 msgid "Connecting..."
 msgstr "Připojování..."
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:277
 msgid "Connecting…"
 msgstr "Připojování…"
 
@@ -851,7 +856,7 @@ msgid "Contextual information and details."
 msgstr "Kontextové informace a podrobnosti."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:238
 msgid "Continue"
 msgstr "Pokračovat"
 
@@ -871,11 +876,11 @@ msgstr "Zkopírováno do schránky"
 msgid "Copy"
 msgstr "Kopírovat"
 
-#: src/components/MissionSetup.tsx:702
+#: src/components/MissionSetup.tsx:858
 msgid "Corner speed (best instant turn)"
 msgstr "Rohová rychlost (nejlepší okamžité zatáčení)"
 
-#: src/components/Multiplayer.tsx:179
+#: src/components/Multiplayer.tsx:194
 msgid "Could not create the match"
 msgstr "Zápas se nepodařilo vytvořit"
 
@@ -883,12 +888,12 @@ msgstr "Zápas se nepodařilo vytvořit"
 msgid "Could not load this document. Please try again later."
 msgstr "Tento dokument nelze načíst. Zkuste to prosím později."
 
-#: src/components/MatchHistory.tsx:217
-#: src/components/MatchHistory.tsx:223
+#: src/components/MatchHistory.tsx:226
+#: src/components/MatchHistory.tsx:232
 msgid "Could not save the recording"
 msgstr "Záznam se nepodařilo uložit"
 
-#: src/components/MissionSetup.tsx:953
+#: src/components/MissionSetup.tsx:1109
 msgid "Could not send the message"
 msgstr "Zprávu se nepodařilo odeslat"
 
@@ -908,8 +913,8 @@ msgstr "Opětovné ověření se nepodařilo zahájit. Zkuste to prosím znovu."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "S tímto účtem se nepodařilo ověřit. Zkuste to prosím znovu."
 
-#: src/components/MissionSetup.tsx:143
-#: src/components/MissionSetup.tsx:182
+#: src/components/MissionSetup.tsx:146
+#: src/components/MissionSetup.tsx:186
 msgid "Countermeasures"
 msgstr "Protiopatření"
 
@@ -930,16 +935,16 @@ msgstr "Vytvořit"
 msgid "Create {0}"
 msgstr "Vytvořit {0}"
 
-#: src/components/Multiplayer.tsx:412
+#: src/components/Multiplayer.tsx:427
 msgid "Create and fly"
 msgstr "Vytvořit a letět"
 
-#: src/components/Multiplayer.tsx:277
+#: src/components/Multiplayer.tsx:292
 msgid "Create match"
 msgstr "Vytvořit zápas"
 
-#: src/components/MissionSetup.tsx:1625
-#: src/components/MissionSetup.tsx:1648
+#: src/components/MissionSetup.tsx:1784
+#: src/components/MissionSetup.tsx:1807
 msgid "Create mission"
 msgstr "Vytvořit misi"
 
@@ -957,13 +962,13 @@ msgstr "Vytvořeno"
 msgid "Creating..."
 msgstr "Vytváření..."
 
-#: src/components/MissionSetup.tsx:773
-#: src/components/MissionSetup.tsx:779
+#: src/components/MissionSetup.tsx:929
+#: src/components/MissionSetup.tsx:935
 msgid "Credits"
 msgstr "Tvůrci"
 
-#: src/components/MissionSetup.tsx:1313
-#: src/components/Multiplayer.tsx:305
+#: src/components/MissionSetup.tsx:1472
+#: src/components/Multiplayer.tsx:320
 msgid "Cumulus"
 msgstr "Kumulus"
 
@@ -979,8 +984,8 @@ msgstr "Vlastní"
 msgid "CUT"
 msgstr "NEBEZPEČNÉ"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:194
+#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:198
 msgid "Cycle view"
 msgstr "Přepnout pohled"
 
@@ -1004,13 +1009,13 @@ msgstr "Konflikt dat"
 msgid "Date"
 msgstr "Datum"
 
-#: src/components/MissionSetup.tsx:1301
-#: src/components/Multiplayer.tsx:300
+#: src/components/MissionSetup.tsx:1460
+#: src/components/Multiplayer.tsx:315
 msgid "Day"
 msgstr "Den"
 
 #: src/components/MatchHistory.tsx:144
-#: src/components/MatchHistory.tsx:170
+#: src/components/MatchHistory.tsx:173
 msgid "Deaths"
 msgstr "Smrti"
 
@@ -1058,7 +1063,7 @@ msgstr "Smazat sloupec"
 msgid "Delete comment"
 msgstr "Smazat komentář"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:301
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:300
 msgid "Delete field"
 msgstr "Smazat pole"
 
@@ -1067,8 +1072,8 @@ msgid "Delete option"
 msgstr "Smazat možnost"
 
 #. placeholder {0}: opt.name
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:279
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:284
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:278
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:283
 msgid "Delete option {0}"
 msgstr "Smazat možnost {0}"
 
@@ -1096,8 +1101,8 @@ msgstr "Popis"
 msgid "Details Panel"
 msgstr "Panel podrobností"
 
-#: src/components/MissionSetup.tsx:379
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:384
+#: src/components/MissionSetup.tsx:433
 msgid "Detect"
 msgstr "Detekovat"
 
@@ -1112,11 +1117,11 @@ msgstr "Detekovat"
 msgid "Detect from web browser"
 msgstr "Detekovat z webového prohlížeče"
 
-#: src/components/MissionSetup.tsx:281
+#: src/components/MissionSetup.tsx:286
 msgid "Device"
 msgstr "Zařízení"
 
-#: src/components/Multiplayer.tsx:203
+#: src/components/Multiplayer.tsx:218
 msgid "Different game host"
 msgstr "Jiný herní hostitel"
 
@@ -1136,7 +1141,7 @@ msgstr "Zahodit"
 msgid "Discard draft?"
 msgstr "Zahodit koncept?"
 
-#: src/components/MissionSetup.tsx:293
+#: src/components/MissionSetup.tsx:298
 msgid "disconnected"
 msgstr "odpojeno"
 
@@ -1151,8 +1156,8 @@ msgstr "Odpojeno"
 msgid "Dismiss"
 msgstr "Zavřít"
 
-#: src/components/MissionSetup.tsx:152
-#: src/components/MissionSetup.tsx:195
+#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:200
 msgid "Display repeater"
 msgstr "Opakovač displeje"
 
@@ -1160,13 +1165,13 @@ msgstr "Opakovač displeje"
 msgid "Displays the mobile sidebar."
 msgstr "Zobrazí mobilní postranní panel."
 
-#: src/components/MissionSetup.tsx:1422
+#: src/components/MissionSetup.tsx:1581
 msgid "Distance LOD"
 msgstr "LOD vzdálenosti"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:306
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1729
+#: src/components/MissionSetup.tsx:1888
 msgid "Done"
 msgstr "Hotovo"
 
@@ -1184,7 +1189,7 @@ msgstr "Stahování se nezdařilo"
 msgid "Drag"
 msgstr "Přetáhnout"
 
-#: src/components/Multiplayer.tsx:377
+#: src/components/Multiplayer.tsx:392
 msgid "Drone"
 msgstr "Dron"
 
@@ -1192,7 +1197,11 @@ msgstr "Dron"
 msgid "Duplicates"
 msgstr "Duplikuje"
 
-#: src/components/MissionSetup.tsx:1416
+#: src/components/MatchHistory.tsx:158
+msgid "Duration"
+msgstr "Délka"
+
+#: src/components/MissionSetup.tsx:1575
 msgid "Dynamic resolution"
 msgstr "Dynamické rozlišení"
 
@@ -1213,11 +1222,11 @@ msgstr "Upravit"
 msgid "Edit {label}"
 msgstr "Upravit {label}"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:137
 msgid "Edit field"
 msgstr "Upravit pole"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:139
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
 msgid "Edit field settings"
 msgstr "Upravit nastavení pole"
 
@@ -1226,8 +1235,8 @@ msgid "Edit option"
 msgstr "Upravit možnost"
 
 #. placeholder {0}: opt.name
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:264
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:269
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:263
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:268
 msgid "Edit option {0}"
 msgstr "Upravit možnost {0}"
 
@@ -1239,7 +1248,7 @@ msgstr "Upravit vybranou kartu"
 msgid "Edit view"
 msgstr "Upravit pohled"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:197
 msgid "Eject"
 msgstr "Katapultáž"
 
@@ -1255,7 +1264,7 @@ msgstr "E-mail"
 msgid "Email code"
 msgstr "E-mailový kód"
 
-#: src/components/Multiplayer.tsx:439
+#: src/components/Multiplayer.tsx:454
 msgid "empty"
 msgstr "prázdná"
 
@@ -1263,7 +1272,7 @@ msgstr "prázdná"
 msgid "ENGAGED"
 msgstr "ÚTOČÍM"
 
-#: src/components/MissionSetup.tsx:449
+#: src/components/MissionSetup.tsx:454
 msgid "Engine"
 msgstr "Motor"
 
@@ -1275,7 +1284,7 @@ msgstr "Zadejte kód z vašeho e-mailu"
 msgid "Enter your authenticator code"
 msgstr "Zadejte kód z autentizační aplikace"
 
-#: src/components/MissionSetup.tsx:452
+#: src/components/MissionSetup.tsx:457
 msgid "Environment"
 msgstr "Prostředí"
 
@@ -1302,12 +1311,12 @@ msgstr "Rozbalit"
 msgid "Expand sidebar"
 msgstr "Rozbalit postranní panel"
 
-#: src/components/MissionSetup.tsx:144
-#: src/components/MissionSetup.tsx:183
+#: src/components/MissionSetup.tsx:147
+#: src/components/MissionSetup.tsx:187
 msgid "Extend flaps"
 msgstr "Vysunout klapky"
 
-#: src/components/MissionSetup.tsx:1396
+#: src/components/MissionSetup.tsx:1555
 msgid "Exterior detail"
 msgstr "Detail exteriéru"
 
@@ -1319,7 +1328,7 @@ msgstr "Externí URL"
 msgid "Extra large"
 msgstr "Velmi velké"
 
-#: src/components/MissionSetup.tsx:721
+#: src/components/MissionSetup.tsx:877
 msgid "F/A-18C reference"
 msgstr "Referenční údaje F/A-18C"
 
@@ -1431,16 +1440,16 @@ msgstr "Dokončeno"
 msgid "fire"
 msgstr "palba"
 
-#: src/components/MissionSetup.tsx:140
-#: src/components/MissionSetup.tsx:179
+#: src/components/MissionSetup.tsx:143
+#: src/components/MissionSetup.tsx:183
 msgid "Fire weapon"
 msgstr "Zahájit palbu"
 
-#: src/components/MissionSetup.tsx:557
+#: src/components/MissionSetup.tsx:562
 msgid "Fixed keys"
 msgstr "Pevné klávesy"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:222
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:221
 msgid "Flags"
 msgstr "Příznaky"
 
@@ -1460,7 +1469,7 @@ msgstr "SVĚTLICE"
 msgid "Flat"
 msgstr "Plochá"
 
-#: src/components/MissionSetup.tsx:111
+#: src/components/MissionSetup.tsx:114
 msgid "Flight"
 msgstr "Let"
 
@@ -1480,17 +1489,21 @@ msgstr "Plovoucí"
 msgid "Flown"
 msgstr "Odlétáno"
 
-#: src/components/MissionSetup.tsx:1619
-#: src/components/MissionSetup.tsx:1662
+#: src/components/MissionSetup.tsx:1778
+#: src/components/MissionSetup.tsx:1821
 msgid "Fly"
 msgstr "Letět"
 
-#: src/components/MissionSetup.tsx:1446
+#: src/components/MissionSetup.tsx:762
+msgid "Fox 2 fighter"
+msgstr "Stíhačka Fox 2"
+
+#: src/components/MissionSetup.tsx:1605
 msgid "Framerate"
 msgstr "Snímková frekvence"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1190
+#: src/components/MissionSetup.tsx:1349
 msgid "Free flight"
 msgstr "Volný let"
 
@@ -1515,8 +1528,8 @@ msgstr "Od"
 msgid "From theme"
 msgstr "Z motivu"
 
-#: src/components/MissionSetup.tsx:1207
-#: src/components/Multiplayer.tsx:315
+#: src/components/MissionSetup.tsx:1366
+#: src/components/Multiplayer.tsx:330
 msgid "Fuel"
 msgstr "Palivo"
 
@@ -1536,9 +1549,13 @@ msgstr "ÚNIK PALIVA"
 msgid "FUEL LO"
 msgstr "MÁLO PALIVA"
 
-#: src/components/MissionSetup.tsx:188
+#: src/components/MissionSetup.tsx:192
 msgid "Fuel probe"
 msgstr "Palivová sonda"
+
+#: src/components/MissionSetup.tsx:728
+msgid "Fuel tank"
+msgstr "Palivová nádrž"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:321
 msgid "Full layout"
@@ -1556,7 +1573,7 @@ msgstr "podvozek"
 msgid "GEAR"
 msgstr "PODVOZEK"
 
-#: src/components/MissionSetup.tsx:1671
+#: src/components/MissionSetup.tsx:1830
 msgid "General"
 msgstr "Obecné"
 
@@ -1586,9 +1603,13 @@ msgstr "Přejít na stránku {pageNumber}"
 msgid "Go to previous page"
 msgstr "Přejít na předchozí stránku"
 
-#: src/components/MissionSetup.tsx:1674
+#: src/components/MissionSetup.tsx:1833
 msgid "Graphics"
 msgstr "Grafika"
+
+#: src/components/MissionSetup.tsx:824
+msgid "Gross weight"
+msgstr "Celková hmotnost"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:162
 msgid "Group"
@@ -1607,6 +1628,10 @@ msgstr "Skupina: {0}"
 msgid "GUN"
 msgstr "KANÓN"
 
+#: src/components/MissionSetup.tsx:762
+msgid "Gun fighter"
+msgstr "Kanonová stíhačka"
+
 #: ../../../lib/web/src/components/data-table/column-header.tsx:70
 msgid "Hide"
 msgstr "Skrýt"
@@ -1615,17 +1640,17 @@ msgstr "Skrýt"
 msgid "Hide password"
 msgstr "Skrýt heslo"
 
-#: src/components/MissionSetup.tsx:1376
+#: src/components/MissionSetup.tsx:1535
 msgid "High"
 msgstr "Vysoká"
 
-#: src/components/MissionSetup.tsx:1314
-#: src/components/Multiplayer.tsx:306
+#: src/components/MissionSetup.tsx:1473
+#: src/components/Multiplayer.tsx:321
 msgid "High stratus"
 msgstr "Vysoký stratus"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1638
+#: src/components/MissionSetup.tsx:1797
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Historie"
@@ -1649,15 +1674,15 @@ msgstr "HÁK"
 msgid "Hot"
 msgstr "Žhavé"
 
-#: src/components/MissionSetup.tsx:196
+#: src/components/MissionSetup.tsx:201
 msgid "HUD altitude source"
 msgstr "Zdroj výšky pro HUD"
 
-#: src/components/MissionSetup.tsx:197
+#: src/components/MissionSetup.tsx:202
 msgid "HUD declutter"
 msgstr "Zjednodušení HUD"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:153
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:152
 msgid "ID"
 msgstr ""
 
@@ -1670,8 +1695,8 @@ msgstr "Prohlížeč obrázků: {0}"
 msgid "Imperial"
 msgstr "Imperiální"
 
-#: src/components/MissionSetup.tsx:1003
-#: src/components/MissionSetup.tsx:1267
+#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1426
 msgid "In air"
 msgstr "Ve vzduchu"
 
@@ -1707,7 +1732,7 @@ msgstr "Neplatný štítek: pouze písmena, číslice, mezery, pomlčky a lomít
 msgid "Invalid verification code"
 msgstr "Neplatný ověřovací kód"
 
-#: src/components/MissionSetup.tsx:306
+#: src/components/MissionSetup.tsx:311
 msgid "Invert pitch"
 msgstr "Obrátit klopení"
 
@@ -1715,8 +1740,8 @@ msgstr "Obrátit klopení"
 msgid "INVULNERABLE"
 msgstr "NEZRANITELNOST"
 
-#: src/components/MissionSetup.tsx:1325
-#: src/components/Multiplayer.tsx:344
+#: src/components/MissionSetup.tsx:1484
+#: src/components/Multiplayer.tsx:359
 msgid "Invulnerable (human players only)"
 msgstr "Nezranitelnost (pouze lidští hráči)"
 
@@ -1724,12 +1749,12 @@ msgstr "Nezranitelnost (pouze lidští hráči)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Zdá se, že stránka, kterou hledáte, <0/>neexistuje nebo byla odebrána."
 
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:506
 msgid "Join"
 msgstr "Připojit se"
 
-#: src/components/MissionSetup.tsx:1086
-#: src/components/MissionSetup.tsx:1629
+#: src/components/MissionSetup.tsx:1242
+#: src/components/MissionSetup.tsx:1788
 msgid "Join server"
 msgstr "Připojit se k serveru"
 
@@ -1738,20 +1763,20 @@ msgid "JOINED"
 msgstr "SE PŘIPOJIL"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1591
-#: src/components/Multiplayer.tsx:438
+#: src/components/MissionSetup.tsx:1750
+#: src/components/Multiplayer.tsx:453
 msgid "Joust"
 msgstr "Klání"
 
-#: src/components/Multiplayer.tsx:291
+#: src/components/Multiplayer.tsx:306
 msgid "Joust — 1v1, first kill wins"
 msgstr "Souboj — 1v1, první sestřel vyhrává"
 
-#: src/components/MissionSetup.tsx:1191
+#: src/components/MissionSetup.tsx:1350
 msgid "Joust against AI player"
 msgstr "Souboj proti AI hráči"
 
-#: src/components/MissionSetup.tsx:1680
+#: src/components/MissionSetup.tsx:1839
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1767,7 +1792,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Klávesové zkratky"
 
-#: src/components/MissionSetup.tsx:1683
+#: src/components/MissionSetup.tsx:1842
 msgid "Keys"
 msgstr "Klávesy"
 
@@ -1780,7 +1805,7 @@ msgid "Killed"
 msgstr "Zabit"
 
 #: src/components/MatchHistory.tsx:141
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:170
 msgid "Kills"
 msgstr "Zabití"
 
@@ -1796,8 +1821,8 @@ msgstr "POŽÁR L MOT"
 msgid "L GEAR"
 msgstr "PODVOZEK L"
 
-#: src/components/MissionSetup.tsx:146
-#: src/components/MissionSetup.tsx:185
+#: src/components/MissionSetup.tsx:149
+#: src/components/MissionSetup.tsx:189
 msgid "Landing gear"
 msgstr "Podvozek"
 
@@ -1810,8 +1835,8 @@ msgstr "Velké"
 msgid "LATE"
 msgstr "POZDĚ"
 
-#: src/components/MissionSetup.tsx:149
-#: src/components/MissionSetup.tsx:192
+#: src/components/MissionSetup.tsx:152
+#: src/components/MissionSetup.tsx:196
 msgid "Launch (catapult)"
 msgstr "Vypuštění (katapult)"
 
@@ -1824,7 +1849,7 @@ msgstr "start / zaměření"
 msgid "Layout"
 msgstr "Rozvržení"
 
-#: src/components/Multiplayer.tsx:328
+#: src/components/Multiplayer.tsx:343
 msgid "lb"
 msgstr "lb"
 
@@ -1833,7 +1858,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Zjistit více"
 
-#: src/components/MissionSetup.tsx:1142
+#: src/components/MissionSetup.tsx:1298
 msgid "Leave server"
 msgstr "Opustit server"
 
@@ -1867,8 +1892,8 @@ msgstr "Světlý"
 msgid "lights"
 msgstr "světla"
 
-#: src/components/MissionSetup.tsx:150
-#: src/components/MissionSetup.tsx:191
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:195
 msgid "Lights"
 msgstr "Světla"
 
@@ -1888,7 +1913,7 @@ msgstr "Odkazy"
 msgid "List"
 msgstr "Seznam"
 
-#: src/components/MissionSetup.tsx:1210
+#: src/components/MissionSetup.tsx:1369
 msgid "Load"
 msgstr "Zásoba"
 
@@ -1932,36 +1957,36 @@ msgstr "Úspěšně odhlášeno"
 msgid "Logging out…"
 msgstr "Odhlašování…"
 
-#: src/components/MissionSetup.tsx:126
+#: src/components/MissionSetup.tsx:129
 msgid "Look"
 msgstr "Pohled"
 
-#: src/components/MissionSetup.tsx:566
+#: src/components/MissionSetup.tsx:571
 msgid "Look / orbit"
 msgstr "Pohled / orbita"
 
-#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:158
 msgid "Look down"
 msgstr "Pohled dolů"
 
-#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:159
 msgid "Look left"
 msgstr "Pohled doleva"
 
-#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:160
 msgid "Look right"
 msgstr "Pohled doprava"
 
-#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:157
 msgid "Look up"
 msgstr "Pohled nahoru"
 
-#: src/components/MissionSetup.tsx:1372
+#: src/components/MissionSetup.tsx:1531
 msgid "Low"
 msgstr "Nízká"
 
-#: src/components/MissionSetup.tsx:1315
-#: src/components/Multiplayer.tsx:307
+#: src/components/MissionSetup.tsx:1474
+#: src/components/Multiplayer.tsx:322
 msgid "Low stratus"
 msgstr "Nízký stratus"
 
@@ -1985,7 +2010,7 @@ msgstr "Ručně"
 msgid "map"
 msgstr "mapa"
 
-#: src/components/MissionSetup.tsx:198
+#: src/components/MissionSetup.tsx:203
 msgid "Map"
 msgstr "Mapa"
 
@@ -1995,19 +2020,19 @@ msgstr "Mapa"
 msgid "Mark all as read"
 msgstr "Označit vše jako přečtené"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:453
 msgid "Master"
 msgstr "Hlavní"
 
-#: src/components/Multiplayer.tsx:287
+#: src/components/Multiplayer.tsx:302
 msgid "Match type"
 msgstr "Typ zápasu"
 
-#: src/components/MissionSetup.tsx:1136
+#: src/components/MissionSetup.tsx:1292
 msgid "Matches"
 msgstr "Zápasy"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:199
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:198
 msgid "Maximum length"
 msgstr "Maximální délka"
 
@@ -2016,7 +2041,7 @@ msgid "MCP server"
 msgstr "Server MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1374
+#: src/components/MissionSetup.tsx:1533
 msgid "Medium"
 msgstr "Střední"
 
@@ -2025,7 +2050,7 @@ msgid "menu"
 msgstr "menu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:207
-#: src/components/MissionSetup.tsx:201
+#: src/components/MissionSetup.tsx:206
 msgid "Menu"
 msgstr "Nabídka"
 
@@ -2037,7 +2062,7 @@ msgstr "Zpráva"
 msgid "Message everyone"
 msgstr "Napište všem"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1144
 msgid "Message players on this server"
 msgstr "Napište hráčům na tomto serveru"
 
@@ -2049,11 +2074,11 @@ msgstr "Napište svému týmu"
 msgid "Metric"
 msgstr "Metrika"
 
-#: src/components/MissionSetup.tsx:836
+#: src/components/MissionSetup.tsx:992
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Mapa atolu Midway — snímky obsahují upravená data <0>Copernicus Sentinel-2</0> (2026); geometrie letiště (dráha, pojezdové dráhy, odbavovací plochy) © přispěvatelé <1>OpenStreetMap</1>, licencováno pod <2>ODbL</2>; data o pobřeží a útesech od <3>NOAA NCCOS</3> (volné dílo)."
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:188
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:187
 msgid "Minimum length"
 msgstr "Minimální délka"
 
@@ -2061,11 +2086,7 @@ msgstr "Minimální délka"
 msgid "MISSILE"
 msgstr "RAKETA"
 
-#: src/components/MissionSetup.tsx:1202
-msgid "Missiles"
-msgstr "Rakety"
-
-#: src/components/Multiplayer.tsx:334
+#: src/components/Multiplayer.tsx:349
 msgid "Missiles allowed"
 msgstr "Rakety povoleny"
 
@@ -2073,7 +2094,7 @@ msgstr "Rakety povoleny"
 msgid "Mochi web"
 msgstr "Mochi web"
 
-#: src/components/MatchHistory.tsx:161
+#: src/components/MatchHistory.tsx:164
 msgid "Mode"
 msgstr "Režim"
 
@@ -2090,17 +2111,17 @@ msgstr "Pondělí"
 msgid "More options"
 msgstr "Další možnosti"
 
-#: src/components/MissionSetup.tsx:379
+#: src/components/MissionSetup.tsx:384
 msgid "Move it…"
 msgstr "Pohněte osou…"
 
-#: src/components/Multiplayer.tsx:188
+#: src/components/Multiplayer.tsx:203
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer vyžaduje WebTransport, který tento prohlížeč zatím nepodporuje."
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:143
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:142
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:128
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:299
 msgid "Name"
@@ -2134,8 +2155,8 @@ msgstr "Nová hra"
 msgid "Next image"
 msgstr "Další obrázek"
 
-#: src/components/MissionSetup.tsx:1302
-#: src/components/Multiplayer.tsx:301
+#: src/components/MissionSetup.tsx:1461
+#: src/components/Multiplayer.tsx:316
 msgid "Night"
 msgstr "Noc"
 
@@ -2175,7 +2196,7 @@ msgstr "Žádné skupiny k dispozici"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Zatím nelze vytvořit žádné typy položek. Nejprve vytvořte potřebné nadřazené položky."
 
-#: src/components/MissionSetup.tsx:300
+#: src/components/MissionSetup.tsx:305
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Nebyl zjištěn žádný joystick — stiskněte na něm libovolné tlačítko, aby se probudil."
 
@@ -2187,7 +2208,7 @@ msgstr "Žádné odpovídající objekty"
 msgid "No notifications yet"
 msgstr "Zatím žádná oznámení"
 
-#: src/components/Multiplayer.tsx:421
+#: src/components/Multiplayer.tsx:436
 msgid "No open matches — create one."
 msgstr "Žádné otevřené zápasy — vytvořte nový."
 
@@ -2240,8 +2261,8 @@ msgstr "Žádní uživatelé nenalezeni"
 msgid "No views"
 msgstr "Žádná zobrazení"
 
-#: src/components/MissionSetup.tsx:965
-#: src/components/Multiplayer.tsx:421
+#: src/components/MissionSetup.tsx:1121
+#: src/components/Multiplayer.tsx:436
 msgid "No world server."
 msgstr "Žádný server světa."
 
@@ -2263,9 +2284,10 @@ msgstr "BEZ HODNOCENÍ"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:349
-#: src/components/MissionSetup.tsx:409
-#: src/components/MissionSetup.tsx:1312
+#: src/components/MissionSetup.tsx:354
+#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:727
+#: src/components/MissionSetup.tsx:1471
 msgid "None"
 msgstr "Žádné"
 
@@ -2289,7 +2311,7 @@ msgstr "Nenastaveno"
 msgid "Nothing found"
 msgstr "Nic nenalezeno"
 
-#: src/components/MissionSetup.tsx:965
+#: src/components/MissionSetup.tsx:1121
 msgid "Nothing yet — say hello."
 msgstr "Zatím nic — pozdravte ostatní."
 
@@ -2306,9 +2328,9 @@ msgstr "Oznámení"
 msgid "Notifications: {0}"
 msgstr "Oznámení: {0}"
 
-#: src/components/MissionSetup.tsx:1228
-#: src/components/MissionSetup.tsx:1583
-#: src/components/Multiplayer.tsx:378
+#: src/components/MissionSetup.tsx:1387
+#: src/components/MissionSetup.tsx:1742
+#: src/components/Multiplayer.tsx:393
 msgid "Novice"
 msgstr "Začátečník"
 
@@ -2318,7 +2340,7 @@ msgstr "Začátečník"
 msgid "Number"
 msgstr "Číslo"
 
-#: src/components/MissionSetup.tsx:1404
+#: src/components/MissionSetup.tsx:1563
 msgid "Ocean detail"
 msgstr "Detail oceánu"
 
@@ -2330,13 +2352,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Zapnuto"
 
-#: src/components/MissionSetup.tsx:1005
-#: src/components/MissionSetup.tsx:1269
+#: src/components/MissionSetup.tsx:1161
+#: src/components/MissionSetup.tsx:1428
 msgid "On carrier"
 msgstr "Na letadlové lodi"
 
-#: src/components/MissionSetup.tsx:1004
-#: src/components/MissionSetup.tsx:1268
+#: src/components/MissionSetup.tsx:1160
+#: src/components/MissionSetup.tsx:1427
 msgid "On runway"
 msgstr "Na ranveji"
 
@@ -2344,11 +2366,11 @@ msgstr "Na ranveji"
 msgid "Oops! Page Not Found!"
 msgstr "Jejda! Stránka nenalezena!"
 
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:453
 msgid "Open"
 msgstr "Otevřít"
 
-#: src/components/Multiplayer.tsx:290
+#: src/components/Multiplayer.tsx:305
 msgid "Open — anyone may join or leave"
 msgstr "Otevřený — kdokoli se může připojit nebo odejít"
 
@@ -2406,7 +2428,7 @@ msgid "Option name"
 msgstr "Název možnosti"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:241
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:240
 msgid "Options"
 msgstr "Možnosti"
 
@@ -2422,8 +2444,8 @@ msgstr "obíhat"
 msgid "Other"
 msgstr "Ostatní"
 
-#: src/components/MissionSetup.tsx:135
-#: src/components/MissionSetup.tsx:173
+#: src/components/MissionSetup.tsx:138
+#: src/components/MissionSetup.tsx:177
 msgid "Override G limit"
 msgstr "Obejít limit G"
 
@@ -2440,7 +2462,7 @@ msgstr "Stránka {currentPage} z {totalPages}"
 msgid "Parent"
 msgstr "Rodič"
 
-#: src/components/MissionSetup.tsx:172
+#: src/components/MissionSetup.tsx:176
 msgid "Parking brake"
 msgstr "Parkovací brzda"
 
@@ -2456,7 +2478,7 @@ msgstr "Ověření přístupového klíče se nezdařilo. Zkuste to prosím znov
 msgid "Passkeys"
 msgstr "Přístupové klíče"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:210
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:209
 msgid "Pattern (regex)"
 msgstr "Vzor (regex)"
 
@@ -2464,15 +2486,15 @@ msgstr "Vzor (regex)"
 msgid "Pick a date"
 msgstr "Vyberte datum"
 
-#: src/components/MissionSetup.tsx:907
-#: src/components/Multiplayer.tsx:90
-#: src/components/Multiplayer.tsx:248
+#: src/components/MissionSetup.tsx:1063
+#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:263
 msgid "pilot"
 msgstr "pilot"
 
-#: src/components/MissionSetup.tsx:1229
-#: src/components/MissionSetup.tsx:1584
-#: src/components/Multiplayer.tsx:379
+#: src/components/MissionSetup.tsx:1388
+#: src/components/MissionSetup.tsx:1743
+#: src/components/Multiplayer.tsx:394
 msgid "Pilot"
 msgstr "Pilot"
 
@@ -2484,15 +2506,15 @@ msgstr "PILOT ZABIT"
 msgid "pitch"
 msgstr "klopení"
 
-#: src/components/MissionSetup.tsx:121
+#: src/components/MissionSetup.tsx:124
 msgid "Pitch"
 msgstr "Klopení"
 
-#: src/components/MissionSetup.tsx:163
+#: src/components/MissionSetup.tsx:167
 msgid "Pitch down"
 msgstr "Klopení dolů"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:166
 msgid "Pitch up"
 msgstr "Klopení nahoru"
 
@@ -2500,7 +2522,7 @@ msgstr "Klopení nahoru"
 msgid "PLATFORM"
 msgstr "PLATFORMA"
 
-#: src/components/MatchHistory.tsx:164
+#: src/components/MatchHistory.tsx:167
 msgid "Players"
 msgstr "Hráči"
 
@@ -2530,11 +2552,11 @@ msgstr "Příspěvky"
 msgid "Posts and comments"
 msgstr "Příspěvky a komentáře"
 
-#: src/components/MissionSetup.tsx:1359
+#: src/components/MissionSetup.tsx:1518
 msgid "Preset"
 msgstr "Předvolba"
 
-#: src/components/MissionSetup.tsx:536
+#: src/components/MissionSetup.tsx:541
 msgid "Press a key…"
 msgstr "Stiskněte klávesu…"
 
@@ -2542,7 +2564,7 @@ msgstr "Stiskněte klávesu…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "STISKNI ENTER PRO START"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:433
 msgid "Press it…"
 msgstr "Stiskněte tlačítko…"
 
@@ -2576,6 +2598,10 @@ msgstr "Push oznámení"
 msgid "PUSH TIME"
 msgstr "ČAS PŘIBLÍŽENÍ"
 
+#: src/components/MissionSetup.tsx:727
+msgid "Pylon"
+msgstr "Pylon"
+
 #: src/components/GameCanvas.tsx:42
 msgid "R ENG"
 msgstr "P MOTOR"
@@ -2587,6 +2613,10 @@ msgstr "POŽÁR P MOT"
 #: src/components/GameCanvas.tsx:45
 msgid "R GEAR"
 msgstr "PODVOZEK P"
+
+#: src/components/MissionSetup.tsx:727
+msgid "Rail"
+msgstr "Lišta"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
@@ -2604,7 +2634,7 @@ msgstr "Znovu zaregistrujte své přístupové klíče na tomto serveru"
 msgid "REARMED"
 msgstr "PŘEZBROJEN"
 
-#: src/components/MissionSetup.tsx:1091
+#: src/components/MissionSetup.tsx:1247
 msgid "Recent"
 msgstr "Nedávné"
 
@@ -2617,24 +2647,24 @@ msgstr "Doporučené"
 msgid "Reconnecting ({retries})..."
 msgstr "Opětovné připojování ({retries})..."
 
-#: src/components/MissionSetup.tsx:1508
+#: src/components/MissionSetup.tsx:1667
 msgid "Record flights"
 msgstr "Zaznamenávat lety"
 
-#: src/components/MatchHistory.tsx:229
-#: src/components/MissionSetup.tsx:1502
+#: src/components/MatchHistory.tsx:238
+#: src/components/MissionSetup.tsx:1661
 msgid "Recording"
 msgstr "Záznam"
 
-#: src/components/MatchHistory.tsx:222
+#: src/components/MatchHistory.tsx:231
 msgid "Recording saved"
 msgstr "Záznam uložen"
 
-#: src/components/Multiplayer.tsx:469
+#: src/components/Multiplayer.tsx:484
 msgid "Red"
 msgstr "Červení"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Red bots"
 msgstr "Červení boti"
 
@@ -2647,11 +2677,11 @@ msgstr "Přesměrování na přihlášení."
 msgid "Reduce interest"
 msgstr "Snížit zájem"
 
-#: src/components/MissionSetup.tsx:715
+#: src/components/MissionSetup.tsx:871
 msgid "Reference"
 msgstr "Reference"
 
-#: src/components/Multiplayer.tsx:267
+#: src/components/Multiplayer.tsx:282
 msgid "Refresh"
 msgstr "Obnovit"
 
@@ -2726,7 +2756,7 @@ msgstr "Přejmenovat sloupec"
 msgid "Rename this board column"
 msgstr "Přejmenovat tento sloupec tabule"
 
-#: src/components/MissionSetup.tsx:873
+#: src/components/MissionSetup.tsx:1029
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Vykreslování zajišťuje <0>three.js</0> (licence MIT)."
 
@@ -2740,7 +2770,7 @@ msgstr "Odpovědět"
 msgid "Reply to {0}..."
 msgstr "Odpovědět {0}..."
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:224
 msgid "Required"
 msgstr "Povinné"
 
@@ -2750,7 +2780,7 @@ msgstr "Odeslat e-mail znovu"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1722
+#: src/components/MissionSetup.tsx:1881
 msgid "Reset"
 msgstr "Resetovat"
 
@@ -2763,23 +2793,25 @@ msgstr "Obnovit {title}"
 msgid "Reset all settings to default values"
 msgstr "Obnovit všechna nastavení na výchozí hodnoty"
 
-#: src/components/MissionSetup.tsx:178
+#: src/components/MissionSetup.tsx:182
 msgid "Reset trim"
 msgstr "Vynulovat vyvážení"
 
-#: src/components/MissionSetup.tsx:565
+#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:199
+#: src/components/MissionSetup.tsx:570
 msgid "Reset view"
 msgstr "Vynulovat pohled"
 
-#: src/components/MissionSetup.tsx:1386
+#: src/components/MissionSetup.tsx:1545
 msgid "Resolution"
 msgstr "Rozlišení"
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1770
 msgid "Restart mission"
 msgstr "Restartovat misi"
 
-#: src/components/MatchHistory.tsx:173
+#: src/components/MatchHistory.tsx:176
 msgid "Result"
 msgstr "Výsledek"
 
@@ -2787,12 +2819,12 @@ msgstr "Výsledek"
 msgid "Resume"
 msgstr "Pokračovat"
 
-#: src/components/MissionSetup.tsx:1607
+#: src/components/MissionSetup.tsx:1766
 msgid "Resume mission"
 msgstr "Pokračovat v misi"
 
-#: src/components/MissionSetup.tsx:145
-#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:148
+#: src/components/MissionSetup.tsx:188
 msgid "Retract flaps"
 msgstr "Zasunout klapky"
 
@@ -2800,7 +2832,7 @@ msgstr "Zasunout klapky"
 msgid "Retry"
 msgstr "Zkusit znovu"
 
-#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:368
 msgid "Reversed"
 msgstr "Obrácené"
 
@@ -2816,20 +2848,20 @@ msgstr "Zprava doleva"
 msgid "roll"
 msgstr "klonění"
 
-#: src/components/MissionSetup.tsx:122
+#: src/components/MissionSetup.tsx:125
 msgid "Roll"
 msgstr "Klonění"
 
-#: src/components/MissionSetup.tsx:164
+#: src/components/MissionSetup.tsx:168
 msgid "Roll left"
 msgstr "Klonění doleva"
 
-#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:169
 msgid "Roll right"
 msgstr "Klonění doprava"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:169
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:168
 msgid "Rows"
 msgstr "Řádky"
 
@@ -2868,7 +2900,7 @@ msgstr "Sobota"
 msgid "Save"
 msgstr "Uložit"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:886
 msgid "Sea level"
 msgstr "Hladina moře"
 
@@ -2998,8 +3030,8 @@ msgstr "Vyberte směr písma"
 msgid "Select theme preference"
 msgstr "Vyberte preferenci motivu"
 
-#: src/components/MissionSetup.tsx:141
-#: src/components/MissionSetup.tsx:180
+#: src/components/MissionSetup.tsx:144
+#: src/components/MissionSetup.tsx:184
 msgid "Select weapon"
 msgstr "Vybrat zbraň"
 
@@ -3017,7 +3049,7 @@ msgstr "vybráno"
 msgid "Selected: <0>{0}</0>"
 msgstr "Vybráno: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:995
+#: src/components/MissionSetup.tsx:1151
 msgid "Send"
 msgstr "Odeslat"
 
@@ -3042,12 +3074,12 @@ msgstr "Odeslat zprávu"
 msgid "Serif"
 msgstr "Patkové"
 
-#: src/components/MatchHistory.tsx:158
-#: src/components/MissionSetup.tsx:1104
+#: src/components/MatchHistory.tsx:161
+#: src/components/MissionSetup.tsx:1260
 msgid "Server"
 msgstr "Server"
 
-#: src/components/MissionSetup.tsx:960
+#: src/components/MissionSetup.tsx:1116
 msgid "Server chat"
 msgstr "Chat serveru"
 
@@ -3069,7 +3101,7 @@ msgstr "RELACE UKONČENA"
 msgid "Session expired. Please log in again."
 msgstr "Platnost relace vypršela. Přihlaste se znovu."
 
-#: src/components/MissionSetup.tsx:542
+#: src/components/MissionSetup.tsx:547
 msgid "Set"
 msgstr "Nastavit"
 
@@ -3081,12 +3113,12 @@ msgstr "Nastavit výchozí bod a cíl"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1633
-#: src/components/MissionSetup.tsx:1667
+#: src/components/MissionSetup.tsx:1792
+#: src/components/MissionSetup.tsx:1826
 msgid "Settings"
 msgstr "Nastavení"
 
-#: src/components/MissionSetup.tsx:1428
+#: src/components/MissionSetup.tsx:1587
 msgid "Shadows"
 msgstr "Stíny"
 
@@ -3126,11 +3158,11 @@ msgid "Signing out..."
 msgstr "Odhlašování..."
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:180
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:179
 msgid "Single line of text only"
 msgstr "Pouze jeden řádek textu"
 
-#: src/components/MissionSetup.tsx:700
+#: src/components/MissionSetup.tsx:856
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Nejlepší stoupání s jedním motorem (Vyse, přídavné spalování)"
 
@@ -3147,8 +3179,8 @@ msgstr "Malé"
 msgid "Sort"
 msgstr "Třídit"
 
-#: src/components/MissionSetup.tsx:468
-#: src/components/MissionSetup.tsx:1677
+#: src/components/MissionSetup.tsx:473
+#: src/components/MissionSetup.tsx:1836
 msgid "Sound"
 msgstr "Zvuk"
 
@@ -3168,13 +3200,13 @@ msgstr "VZD BR"
 msgid "speed brake"
 msgstr "vzdušná brzda"
 
-#: src/components/MissionSetup.tsx:125
-#: src/components/MissionSetup.tsx:133
-#: src/components/MissionSetup.tsx:170
+#: src/components/MissionSetup.tsx:128
+#: src/components/MissionSetup.tsx:136
+#: src/components/MissionSetup.tsx:174
 msgid "Speed brake"
 msgstr "Vzdušná brzda"
 
-#: src/components/MissionSetup.tsx:756
+#: src/components/MissionSetup.tsx:912
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Rychlosti v KCAS, jako rozsah od lehkého (minimum paliva, bez podvěsů) po těžké (maximální hmotnost). Data získána experimentálně ve hře. Jakékoli odchylky od skutečného letadla odrážejí chyby letového modelu simulátoru."
 
@@ -3182,15 +3214,15 @@ msgstr "Rychlosti v KCAS, jako rozsah od lehkého (minimum paliva, bez podvěsů
 msgid "SPLASH"
 msgstr "CÍL SESTŘELEN"
 
-#: src/components/MissionSetup.tsx:705
+#: src/components/MissionSetup.tsx:861
 msgid "Stall, clean (Vs1)"
 msgstr "Pád, čistá konfigurace (Vs1)"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:862
 msgid "Stall, landing config (Vs0)"
 msgstr "Pád, přistávací konfigurace (Vs0)"
 
-#: src/components/MissionSetup.tsx:1241
+#: src/components/MissionSetup.tsx:1400
 msgid "Start"
 msgstr "Start"
 
@@ -3202,11 +3234,11 @@ msgstr "Začněte diskusi přidáním prvního komentáře."
 msgid "Stay tuned though!"
 msgstr "Zůstaňte ale naladěni!"
 
-#: src/components/MissionSetup.tsx:696
+#: src/components/MissionSetup.tsx:852
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Nejstrmější stoupání (Vx, 100% tahu)"
 
-#: src/components/MissionSetup.tsx:697
+#: src/components/MissionSetup.tsx:853
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Nejstrmější stoupání (Vx, přídavné spalování)"
 
@@ -3237,9 +3269,9 @@ msgstr "Odebírat"
 msgid "Sunday"
 msgstr "Neděle"
 
-#: src/components/MissionSetup.tsx:1231
-#: src/components/MissionSetup.tsx:1586
-#: src/components/Multiplayer.tsx:381
+#: src/components/MissionSetup.tsx:1390
+#: src/components/MissionSetup.tsx:1745
+#: src/components/Multiplayer.tsx:396
 msgid "Superhuman"
 msgstr "Nadčlověk"
 
@@ -3280,7 +3312,7 @@ msgstr "Štítky"
 msgid "TALLY"
 msgstr "VIDÍM NEPŘÍTELE"
 
-#: src/components/MissionSetup.tsx:1184
+#: src/components/MissionSetup.tsx:1343
 msgid "Task"
 msgstr "Úkol"
 
@@ -3293,11 +3325,11 @@ msgid "TEAM"
 msgstr "TÝM"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:453
 msgid "Teams"
 msgstr "Týmy"
 
-#: src/components/Multiplayer.tsx:292
+#: src/components/Multiplayer.tsx:307
 msgid "Teams — red versus blue"
 msgstr "Týmy — červení proti modrým"
 
@@ -3342,7 +3374,7 @@ msgstr "Motiv"
 msgid "Theme Settings"
 msgstr "Nastavení motivu"
 
-#: src/components/Multiplayer.tsx:206
+#: src/components/Multiplayer.tsx:221
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Toto lobby posílá vaše herní připojení na jiného hostitele ({redirectHost}). Pokračujte pouze tehdy, pokud tomuto serveru důvěřujete."
 
@@ -3354,15 +3386,15 @@ msgstr "Tato stránka zatím nebyla vytvořena."
 msgid "throttle"
 msgstr "plyn"
 
-#: src/components/MissionSetup.tsx:124
+#: src/components/MissionSetup.tsx:127
 msgid "Throttle"
 msgstr "Plyn"
 
-#: src/components/MissionSetup.tsx:169
+#: src/components/MissionSetup.tsx:173
 msgid "Throttle down"
 msgstr "Ubrat plyn"
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:172
 msgid "Throttle up"
 msgstr "Přidat plyn"
 
@@ -3370,7 +3402,7 @@ msgstr "Přidat plyn"
 msgid "Thursday"
 msgstr "Čtvrtek"
 
-#: src/components/MissionSetup.tsx:704
+#: src/components/MissionSetup.tsx:860
 msgid "Tightest sustained turn speed"
 msgstr "Rychlost nejtěsnějšího ustáleného zatáčení"
 
@@ -3382,7 +3414,7 @@ msgstr "naklonit"
 msgid "Time"
 msgstr "Čas"
 
-#: src/components/MissionSetup.tsx:1295
+#: src/components/MissionSetup.tsx:1454
 msgid "Time of day"
 msgstr "Denní doba"
 
@@ -3438,7 +3470,7 @@ msgstr "Příliš mnoho požadavků"
 msgid "Top"
 msgstr "Nahoru"
 
-#: src/components/MissionSetup.tsx:1440
+#: src/components/MissionSetup.tsx:1599
 msgid "Tracers"
 msgstr "Svítící střely"
 
@@ -3446,31 +3478,31 @@ msgstr "Svítící střely"
 msgid "Travelling"
 msgstr "Cestuje se"
 
-#: src/components/MissionSetup.tsx:112
+#: src/components/MissionSetup.tsx:115
 msgid "Trim"
 msgstr "Vyvážení"
 
-#: src/components/MissionSetup.tsx:127
+#: src/components/MissionSetup.tsx:130
 msgid "Trim hat"
 msgstr "Klobouček vyvážení"
 
-#: src/components/MissionSetup.tsx:137
-#: src/components/MissionSetup.tsx:175
+#: src/components/MissionSetup.tsx:140
+#: src/components/MissionSetup.tsx:179
 msgid "Trim nose down"
 msgstr "Vyvážení: příď dolů"
 
-#: src/components/MissionSetup.tsx:136
-#: src/components/MissionSetup.tsx:174
+#: src/components/MissionSetup.tsx:139
+#: src/components/MissionSetup.tsx:178
 msgid "Trim nose up"
 msgstr "Vyvážení: příď nahoru"
 
-#: src/components/MissionSetup.tsx:138
-#: src/components/MissionSetup.tsx:176
+#: src/components/MissionSetup.tsx:141
+#: src/components/MissionSetup.tsx:180
 msgid "Trim roll left"
 msgstr "Vyvážení: náklon vlevo"
 
-#: src/components/MissionSetup.tsx:139
-#: src/components/MissionSetup.tsx:177
+#: src/components/MissionSetup.tsx:142
+#: src/components/MissionSetup.tsx:181
 msgid "Trim roll right"
 msgstr "Vyvážení: náklon vpravo"
 
@@ -3489,8 +3521,12 @@ msgstr "Zkusit znovu"
 msgid "Tuesday"
 msgstr "Úterý"
 
+#: src/components/MissionSetup.tsx:727
+msgid "Twin rail"
+msgstr "Dvojitá lišta"
+
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:163
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:162
 msgid "Type"
 msgstr "Typ"
 
@@ -3510,7 +3546,7 @@ msgstr "Napište pro hledání uživatelů"
 msgid "Type to search..."
 msgstr "Napište pro hledání..."
 
-#: src/components/MissionSetup.tsx:1378
+#: src/components/MissionSetup.tsx:1537
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3544,13 +3580,13 @@ msgstr "Spojené státy"
 msgid "Unknown"
 msgstr "Neznámý"
 
-#: src/components/MissionSetup.tsx:1331
-#: src/components/Multiplayer.tsx:354
+#: src/components/MissionSetup.tsx:1490
+#: src/components/Multiplayer.tsx:369
 msgid "Unlimited ammunition"
 msgstr "Neomezená munice"
 
-#: src/components/MissionSetup.tsx:1337
-#: src/components/Multiplayer.tsx:364
+#: src/components/MissionSetup.tsx:1496
+#: src/components/Multiplayer.tsx:379
 msgid "Unlimited fuel"
 msgstr "Neomezené palivo"
 
@@ -3614,7 +3650,7 @@ msgstr "Ověřit"
 msgid "Verify email address"
 msgstr "Ověřit e-mailovou adresu"
 
-#: src/components/MissionSetup.tsx:746
+#: src/components/MissionSetup.tsx:902
 msgid "Vertical"
 msgstr "Vertikální"
 
@@ -3636,7 +3672,7 @@ msgid "view"
 msgstr "pohled"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/MissionSetup.tsx:115
+#: src/components/MissionSetup.tsx:118
 msgid "View"
 msgstr "Zobrazit"
 
@@ -3653,7 +3689,7 @@ msgstr "Zobrazit všechna oznámení"
 msgid "View controls"
 msgstr "Zobrazit ovládací prvky"
 
-#: src/components/MissionSetup.tsx:564
+#: src/components/MissionSetup.tsx:569
 msgid "Views"
 msgstr "Zobrazení"
 
@@ -3691,12 +3727,12 @@ msgstr "Dáme vám vědět, až se stane něco důležitého."
 msgid "weapon"
 msgstr "zbraň"
 
-#: src/components/MissionSetup.tsx:113
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:116
+#: src/components/MissionSetup.tsx:456
 msgid "Weapons"
 msgstr "Zbraně"
 
-#: src/components/Multiplayer.tsx:297
+#: src/components/Multiplayer.tsx:312
 msgid "Weather"
 msgstr "Počasí"
 
@@ -3708,12 +3744,12 @@ msgstr "Web je v režimu údržby!"
 msgid "Wednesday"
 msgstr "Středa"
 
-#: src/components/MissionSetup.tsx:134
-#: src/components/MissionSetup.tsx:171
+#: src/components/MissionSetup.tsx:137
+#: src/components/MissionSetup.tsx:175
 msgid "Wheel brakes"
 msgstr "Kolové brzdy"
 
-#: src/components/MissionSetup.tsx:190
+#: src/components/MissionSetup.tsx:194
 msgid "Wing fold"
 msgstr "Sklápění křídel"
 
@@ -3721,12 +3757,12 @@ msgstr "Sklápění křídel"
 msgid "WINS"
 msgstr "VÍTĚZÍ"
 
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:247
 msgid "World server"
 msgstr "Server světa"
 
-#: src/components/MissionSetup.tsx:953
-#: src/components/Multiplayer.tsx:103
+#: src/components/MissionSetup.tsx:1109
+#: src/components/Multiplayer.tsx:115
 msgid "World server not reachable"
 msgstr "Server světa je nedostupný"
 
@@ -3734,15 +3770,15 @@ msgstr "Server světa je nedostupný"
 msgid "yaw"
 msgstr "zatáčení"
 
-#: src/components/MissionSetup.tsx:123
+#: src/components/MissionSetup.tsx:126
 msgid "Yaw"
 msgstr "Zatáčení"
 
-#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:170
 msgid "Yaw left"
 msgstr "Bočení doleva"
 
-#: src/components/MissionSetup.tsx:167
+#: src/components/MissionSetup.tsx:171
 msgid "Yaw right"
 msgstr "Bočení doprava"
 
@@ -3774,7 +3810,7 @@ msgstr "Vaše přílohy budou ztraceny."
 msgid "Your flights appear here once you've flown one."
 msgstr "Vaše lety se zobrazí zde, jakmile nějaký odletíte."
 
-#: src/components/Multiplayer.tsx:433
+#: src/components/Multiplayer.tsx:448
 msgid "your offer"
 msgstr "vaše nabídka"
 
@@ -3786,14 +3822,14 @@ msgstr "Váš text a přílohy budou ztraceny."
 msgid "Your text will be lost."
 msgstr "Váš text bude ztracen."
 
-#: src/components/MissionSetup.tsx:128
+#: src/components/MissionSetup.tsx:131
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:161
 msgid "Zoom in"
 msgstr "Přiblížit"
 
-#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:162
 msgid "Zoom out"
 msgstr "Oddálit"

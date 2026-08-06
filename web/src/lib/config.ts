@@ -3,12 +3,22 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
+import { PRESETS } from '../game/stores'
+
 // One joystick's bindings: which pad axis drives each aircraft axis ('' = none),
 // and which pad button provides each action ('' = none). Missing entries fall
 // back to the engine's built-in device defaults.
 export interface StickBindings {
   axes: Record<string, string>
   buttons: Record<string, string>
+}
+
+// One station's loadout: the fixture choice and one store id per fixture
+// point. The full shape lives in game/stores.ts (normalize, presets, firing
+// order); the config only persists it.
+export interface StationSlot {
+  fixture: string
+  stores: string[]
 }
 
 // Built-in per-device bindings — the SINGLE source: the engine's pad_bindings and
@@ -55,7 +65,7 @@ export interface MissionConfig {
   shadows: boolean
   afterburner: boolean
   tracers: boolean
-  missiles: boolean
+  stores: Record<string, StationSlot> // per-station loadout (#17), station number -> slot; replaced the missiles boolean (legacy saves migrate in the store's load merge)
   sound: boolean
   volume: Record<string, number> // Sound-tab mixer, percent per bus: master, engine, aircraft, weapons, environment, alerts
   invert: boolean
@@ -63,7 +73,8 @@ export interface MissionConfig {
   world: string
   callsign: string
   cheats: Record<string, boolean> // invulnerable (humans only), ammunition, fuel — mission cheats; a multiplayer match takes its own set from the creator
-  [key: string]: string | number | boolean | Record<string, string> | Record<string, number> | Record<string, boolean> | Record<string, StickBindings>
+  rules: Record<string, boolean> // the creator's persisted match rules (#17): missiles (default on)
+  [key: string]: string | number | boolean | Record<string, string> | Record<string, number> | Record<string, boolean> | Record<string, StickBindings> | Record<string, StationSlot>
 }
 
 // Mirrors the engine's defaults so the menu reflects what an unconfigured game uses.
@@ -93,7 +104,7 @@ export const DEFAULT_CONFIG: MissionConfig = {
   shadows: false,
   afterburner: true,
   tracers: true,
-  missiles: true,
+  stores: PRESETS.fox2, // new players fly the Fox 2 fighter preset — symmetric against the armed bot standard (#17, decided 2026-08-05)
   sound: true,
   volume: { master: 80, engine: 100, aircraft: 100, weapons: 100, environment: 100, alerts: 100 },
   invert: false,
@@ -101,6 +112,7 @@ export const DEFAULT_CONFIG: MissionConfig = {
   world: '',
   callsign: '',
   cheats: {},
+  rules: {},
 }
 
 export type GraphicsPreset = 'low' | 'med' | 'high' | 'ultra'

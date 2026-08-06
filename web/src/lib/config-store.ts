@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { createAppClient, useShellStorage } from '@mochi/web'
 import { DEFAULT_CONFIG, type MissionConfig } from './config'
 import { loadOutcome, PendingConfig } from './config-persist'
+import { migrate, normalize } from '../game/stores'
 
 const client = createAppClient({ appName: 'air' })
 
@@ -160,7 +161,13 @@ export function useMissionConfig(): [
         if (saveTimer.current) clearTimeout(saveTimer.current)
         void saveConfig(pending.current())
       } else if (outcome === 'apply' && saved) {
-        setStored({ ...DEFAULT_CONFIG, ...saved } as MissionConfig)
+        // Legacy saves carry the retired missiles boolean and no stores map:
+        // migrate to the matching preset (#17). Any saved stores map is
+        // normalized so a stale or hand-edited shape cannot reach the engine.
+        const legacy = saved as MissionConfig & { missiles?: boolean }
+        const stores = normalize(legacy.stores ?? migrate(legacy.missiles !== false))
+        delete legacy.missiles
+        setStored({ ...DEFAULT_CONFIG, ...legacy, stores } as MissionConfig)
       } else {
         void saveConfig(pending.current()) // first run on this account — seed the server
       }

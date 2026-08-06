@@ -18,9 +18,10 @@ import { getErrorMessage } from '@mochi/web'
 import wasm_exec_url from '../assets/wasm_exec.js?url'
 import flight_wasm_url from '../assets/flight.wasm?url'
 import { asset } from './preload'
+import type { Fitment } from './stores'
 
 // Encoded state layout (float64 words).
-export const SIZE = 113 // 57 base + 40 element losses + 8 channel jams + lost mass + 3 gear-leg damages (#78) + pitch-damper washout + PA trim datum + buffet (appended LAST so no earlier index moved)
+export const SIZE = 114 // 57 base + 40 element losses + 8 channel jams + lost mass + 3 gear-leg damages (#78) + pitch-damper washout + PA trim datum + buffet + roll-trim datum + external-tank fuel (#17; appended LAST so no earlier index moved)
 export const STATE = {
   position: 0, // x y z
   velocity: 3,
@@ -54,17 +55,18 @@ export const STATE = {
   datum: 110, // PA trim bias, rad of alpha (the pitch trim switch, landing configuration)
   buffet: 111, // aerodynamic buffet intensity 0..1 — the seat-of-pants shake cue
   bank: 112, // roll-trim datum, differential-flaperon stick fraction (the hat's roll half)
+  external: 113, // external-tank fuel, kg over the attached tanks (#17) — burns before internal
   // Instrument tail appended by frame()/get() — starts at flight.Size (encode.go),
   // so it moves whenever the encoded state grows. #78's three gear words pushed
   // Size to 109 and this tail was left at 106, silently reading gear damage as
   // alpha/nz and nz as the throttle spool (#133 found it via a dead CAS box).
-  alpha: 113,
-  beta: 114,
-  nz: 115,
-  mach: 116,
-  cas: 117,
-  power: 118, // achieved spool fraction across the airframe's engines
-  stage: 119, // achieved reheat stage
+  alpha: 114,
+  beta: 115,
+  nz: 116,
+  mach: 117,
+  cas: 118,
+  power: 119, // achieved spool fraction across the airframe's engines
+  stage: 120, // achieved reheat stage
 } as const
 const EXTRA = 7
 
@@ -103,6 +105,7 @@ interface Core {
   ack(sequence: number, state: Uint8Array): number
   level(x: number, y: number, z: number, dx: number, dz: number, speed: number, fuel: number): string
   stores(mask: number): string
+  catalog(aircraft: string): string
   approach(x: number, y: number, z: number, dx: number, dz: number, slope: number, fuel: number): number
   clear(): string
   hulk(index: number, aircraft: string): boolean
@@ -137,10 +140,17 @@ const output_bytes = new Uint8Array(output.buffer)
 const exchange = new Float64Array(SIZE)
 const exchange_bytes = new Uint8Array(exchange.buffer)
 
-// flight_load fetches and starts the wasm core; call once at boot. Failure
-// is loud and terminal — there is no TypeScript physics to fall back to.
-export async function flight_load(): Promise<void> {
-  if (core || failure) return
+// flight_load fetches and starts the wasm core; idempotent and single-flight
+// (the setup menu boots it for the loadout catalog while the engine boots it
+// for the mission — two concurrent instantiations would race). Failure is
+// loud and terminal — there is no TypeScript physics to fall back to.
+let loading: Promise<void> | null = null
+export function flight_load(): Promise<void> {
+  if (core || failure) return Promise.resolve()
+  loading ??= load_core()
+  return loading
+}
+async function load_core(): Promise<void> {
   try {
     await new Promise<void>((resolve, reject) => {
       if (globalThis.Go) return resolve()
@@ -440,11 +450,25 @@ export function battle_progress(throttle: number, tick: number, reset: boolean):
   return battle_output
 }
 
-// flight_stores sets the attached external-store bitmask (bit i = wingtip
-// station i): the engine clears bits as missiles depart, dropping their mass
-// and carriage drag in the core.
+// flight_stores sets the attached-store bitmask over the airframe's fitment
+// catalog (bit i = catalog entry i): the engine asserts the flown loadout and
+// clears bits as stores depart, dropping their mass and carriage drag in the
+// core. Tanks fill on the off-to-on transition and clamp on departure.
 export function flight_stores(mask: number): void {
   core?.stores(mask)
+}
+
+// flight_catalog reads the named aircraft's fitment catalog from the core:
+// the mask bit order, per-entry mass/drag/fuel, the default (bare) mask, and
+// the internal fuel capacity and empty mass for gross-weight arithmetic.
+export function flight_catalog(aircraft: string): { stores: Fitment[]; default: number; internal: number; empty: number } | null {
+  const raw = core?.catalog(aircraft)
+  if (!raw) return null
+  try {
+    return JSON.parse(raw) as { stores: Fitment[]; default: number; internal: number; empty: number }
+  } catch {
+    return null
+  }
 }
 
 // flight_approach places the model on a trimmed on-speed descent — the landing

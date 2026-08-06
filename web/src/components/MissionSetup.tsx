@@ -5,7 +5,7 @@
 
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { Check, History, LogIn, Pencil, Play, RotateCcw, Send, Settings, Users, X } from 'lucide-react'
+import { Check, History, LogIn, Pencil, Play, RotateCcw, Send, Settings, TriangleAlert, Users, X } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
 import { getErrorMessage } from '@mochi/web'
 
@@ -35,6 +35,7 @@ import {
   GRAPHICS_PRESETS,
   type GraphicsPreset,
   type MissionConfig,
+  type StationSlot,
   type StickBindings,
   deviceDefaults,
 } from '../lib/config'
@@ -42,6 +43,8 @@ import { useIdentityName } from '../lib/config-store'
 import { Multiplayer } from './Multiplayer'
 import { Link } from '@tanstack/react-router'
 import { KEY_DEFAULTS, pretty } from '../game/keys'
+import { STATIONS, PRESETS, points, options, matches, normalize, weight, resolve, type Catalog } from '../game/stores'
+import { flight_catalog, flight_load } from '../game/flight'
 import {
   default_server,
   normalize_server,
@@ -55,7 +58,7 @@ import {
 // The fields each tab owns, for the per-tab Reset (the joystick tab also clears
 // the per-device maps so built-in defaults apply again).
 const TAB_FIELDS: Record<string, string[]> = {
-  mission: ['task', 'start', 'cat', 'world', 'aircraft', 'bandit', 'fuel', 'missiles', 'cheats', 'tod', 'clouds'],
+  mission: ['task', 'start', 'cat', 'world', 'aircraft', 'bandit', 'fuel', 'stores', 'cheats', 'tod', 'clouds'],
   general: ['callsign', 'record'],
   controls: ['invert', 'joystick', 'sticks'],
   keys: ['keys'],
@@ -680,6 +683,157 @@ function ControlRow({ action, keys }: { action: ReactNode; keys: ReactNode }) {
   )
 }
 
+// The loadout editor (#17): preset buttons, the nine-station strip (fixture
+// dropdown, then one store dropdown per fixture point — tips show the store
+// only, their rail is integral; cheek stations render disabled), and the live
+// gross weight with the overweight warning (warn, never clamp). Structure
+// comes from game/stores.ts; every number comes from the flight core's
+// catalog, loaded on demand so the menu works before any mission starts.
+// Edits build ONE new loadout and call onChange once — never per-field.
+// When `allowed` is false (a guns-only match rule) missile options are ABSENT
+// — not greyed — and a station whose only stores are missiles locks empty;
+// the persisted choice is never written back.
+function Armament({
+  stores,
+  fuel,
+  allowed,
+  onChange,
+}: {
+  stores: Record<string, StationSlot>
+  fuel: number
+  allowed: boolean
+  onChange: (stores: Record<string, StationSlot>) => void
+}) {
+  const { t } = useLingui()
+  const read = () => {
+    const raw = flight_catalog('fa18c')
+    return raw ? resolve(raw) : null
+  }
+  const [book, setBook] = useState<Catalog | null>(read)
+  useEffect(() => {
+    if (book) return
+    let gone = false
+    void flight_load().then(() => {
+      if (!gone) setBook(read())
+    })
+    return () => {
+      gone = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [book])
+  const loadout = normalize(stores)
+  const preset = matches(loadout)
+  const fixtureLabel = (id: string): string =>
+    id === 'rail' ? t`Rail` : id === 'twin' ? t`Twin rail` : id === 'pylon' ? t`Pylon` : t`None`
+  const storeLabel = (id: string): string => (id === '9m' ? 'AIM-9' : id === 'tank' ? t`Fuel tank` : '—')
+  const setStation = (station: number, slot: StationSlot) => {
+    onChange({ ...loadout, [String(station)]: slot })
+  }
+  const setFixture = (station: number, fixture: string) => {
+    const previous = loadout[String(station)]
+    // Remap the points, keeping compatible stores: a rail round survives the
+    // upgrade to a twin as point 1; a downsize keeps what fits.
+    const stores = Array.from({ length: points(fixture) }, (_, p) => {
+      const kept = previous.stores[p] ?? ''
+      return options(station, fixture).includes(kept) ? kept : ''
+    })
+    setStation(station, { fixture, stores })
+  }
+  const choices = (station: number, fixture: string): string[] =>
+    options(station, fixture).filter((id) => allowed || id !== '9m')
+  const w = book ? weight(loadout, book) : { hardware: 0, fuel: 0 }
+  const gross = book ? Math.round(((book.empty + w.hardware + w.fuel) * 2.2046 + fuel) / 10) * 10 : 0
+  // NATOPS flying-qualities boundary for routine catapult technique: at or
+  // below 48,000 lb a hands-off rotation is benign. No v1 loadout can reach
+  // it (the warning arms when heavier stores arrive); warn, never clamp.
+  const LAUNCH = 48000
+  return (
+    <div className='space-y-3'>
+      <div className='flex flex-wrap gap-2'>
+        {(['gun', 'fox2', 'cap'] as const).map((name) => (
+          <Button
+            key={name}
+            type='button'
+            size='sm'
+            variant='outline'
+            onClick={() => onChange(structuredClone(PRESETS[name]))}
+          >
+            {preset === name && <Check className='size-4' />}
+            {name === 'gun' ? <Trans>Gun fighter</Trans> : name === 'fox2' ? <Trans>Fox 2 fighter</Trans> : 'CAP'}
+          </Button>
+        ))}
+      </div>
+      <div className='grid grid-cols-3 gap-x-3 gap-y-2'>
+        {Array.from({ length: 9 }, (_, i) => i + 1).map((station) => {
+          const slot = loadout[String(station)]
+          const fixtures = STATIONS[station].fixtures
+          const locked = !!STATIONS[station].locked
+          const dead = fixtures.length === 1 && fixtures[0] === ''
+          return (
+            <div key={station} className='space-y-1'>
+              <div className='text-muted-foreground text-xs'>{station}</div>
+              {!locked && !dead && (
+                <Select value={slot.fixture || 'none'} onValueChange={(v) => setFixture(station, v === 'none' ? '' : v)}>
+                  <SelectTrigger size='sm' className='w-full'>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {fixtures.map((id) => (
+                      <SelectItem key={id || 'none'} value={id || 'none'}>
+                        {fixtureLabel(id)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+              {dead && <div className='text-muted-foreground/60 py-1.5 text-sm'>—</div>}
+              {slot.stores.map((id, p) => {
+                const open = choices(station, slot.fixture)
+                const usable = open.length > 1
+                return (
+                  <Select
+                    key={p}
+                    value={id || 'none'}
+                    disabled={!usable}
+                    onValueChange={(v) => {
+                      const next = slot.stores.slice()
+                      next[p] = v === 'none' ? '' : v
+                      setStation(station, { fixture: slot.fixture, stores: next })
+                    }}
+                  >
+                    <SelectTrigger size='sm' className='w-full'>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {open.map((sid) => (
+                        <SelectItem key={sid || 'none'} value={sid || 'none'}>
+                          {storeLabel(sid)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )
+              })}
+            </div>
+          )
+        })}
+      </div>
+      {book && (
+        <div className='text-sm'>
+          {/* jsx-text-ok: LB is the cockpit's own unit annunciation, verbatim like the IFEI */}
+          <Trans>Gross weight</Trans> {gross} lb
+          {gross > LAUNCH && (
+            <div className='mt-1 flex items-center gap-1.5 text-amber-500'>
+              <TriangleAlert className='size-4' />
+              <Trans>{gross - LAUNCH} lb over maximum launch weight</Trans>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // The measured F/A-18C performance reference (#89): every number flown out of
 // the flight model by tools/vspeeds.sh (world repo) — rerun it after flight
 // changes and update these cells. Cells are TRUE KCAS, matching the HUD box:
@@ -1145,6 +1299,9 @@ function ServerFlow({
             </Button>
           </div>
           <Multiplayer
+            rules={config.rules}
+            onRules={(rules) => set('rules', rules)}
+            stores={config.stores}
             hideServer
             pilot={pilot}
             server={config.world}
@@ -1196,14 +1353,14 @@ function MissionPanel({
 <SectionLabel>
   <Trans>Armament</Trans>
 </SectionLabel>
-{/* Whether weapons EXIST is a rule of the fight, like the opponent's skill or
-    the fuel load. These lived under Graphics beside render scale, so a
-    guns-only joust was configured on entirely the wrong tab. */}
-<SwitchRow
-  id='missiles'
-  label={<Trans>Missiles</Trans>}
-  checked={config.missiles}
-  onChange={(v) => set('missiles', v)}
+{/* The loadout (#17) is a rule of the fight, like the opponent's skill or the
+    fuel load. Presets are one-tap fills; the strip edits per station; the
+    joust derives missiles-allowed from whether any missile is loaded. */}
+<Armament
+  stores={config.stores}
+  fuel={Number(config.fuel) || 10800}
+  allowed={true}
+  onChange={(v) => set('stores', v)}
 />
 <SectionLabel>
   <Trans>Fuel</Trans>

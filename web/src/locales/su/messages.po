@@ -41,14 +41,19 @@ msgstr "{0, plural, one {# dipilih} other {# dipilih}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:971
+#: src/components/MissionSetup.tsx:1127
 msgid "{0} created “{1}”"
 msgstr "{0} nyieun “{1}”"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:259
+#: src/components/Multiplayer.tsx:274
 msgid "{0} flying"
 msgstr "{0} keur ngapung"
+
+#. placeholder {0}: gross - LAUNCH
+#: src/components/MissionSetup.tsx:828
+msgid "{0} lb over maximum launch weight"
+msgstr "{0} lb leuwih ti beurat peluncuran maksimum"
 
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
@@ -57,7 +62,7 @@ msgstr "Sawangan pilihan {0}"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:440
+#: src/components/Multiplayer.tsx:455
 msgid "{0}/{1} players"
 msgstr "{0}/{1} pamaén"
 
@@ -69,7 +74,7 @@ msgstr "Ngaran {entityLabel}"
 msgid "{entityLabel} name is required"
 msgstr "Ngaran {entityLabel} diperlukeun"
 
-#: src/components/Multiplayer.tsx:165
+#: src/components/Multiplayer.tsx:180
 msgid "{name}'s match"
 msgstr "Pertandingan {name}"
 
@@ -126,7 +131,7 @@ msgstr "KABEL 1"
 msgid "12 hours"
 msgstr "12 jam"
 
-#: src/components/MissionSetup.tsx:733
+#: src/components/MissionSetup.tsx:889
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -142,7 +147,7 @@ msgstr "24 jam"
 msgid "3 WIRE"
 msgstr "KABEL 3"
 
-#: src/components/MissionSetup.tsx:736
+#: src/components/MissionSetup.tsx:892
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -182,14 +187,14 @@ msgstr "Tipe akun"
 msgid "Account verified"
 msgstr "Akun diverifikasi"
 
-#: src/components/MissionSetup.tsx:1230
-#: src/components/MissionSetup.tsx:1585
-#: src/components/Multiplayer.tsx:380
+#: src/components/MissionSetup.tsx:1389
+#: src/components/MissionSetup.tsx:1744
+#: src/components/Multiplayer.tsx:395
 msgid "Ace"
 msgstr "As"
 
-#: src/components/MissionSetup.tsx:142
-#: src/components/MissionSetup.tsx:181
+#: src/components/MissionSetup.tsx:145
+#: src/components/MissionSetup.tsx:185
 msgid "Acquire target"
 msgstr "Konci target"
 
@@ -247,7 +252,7 @@ msgstr "Tambah akun anyar"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:292
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:291
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:194
 msgid "Add option"
@@ -281,7 +286,7 @@ msgstr "Nambahan..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Atur tampilan jeung tata letak luyu jeung karep anjeun."
 
-#: src/components/MissionSetup.tsx:1434
+#: src/components/MissionSetup.tsx:1593
 msgid "Afterburner"
 msgstr "Afterburner"
 
@@ -289,20 +294,20 @@ msgstr "Afterburner"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/MissionSetup.tsx:114
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:117
+#: src/components/MissionSetup.tsx:455
 msgid "Aircraft"
 msgstr "Pesawat"
 
-#: src/components/MissionSetup.tsx:810
+#: src/components/MissionSetup.tsx:966
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Kapal pangbawa pesawat <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> ku <1>Muhamad Mirza Arrafi</1> (Sketchfab), dilisensikeun dina <2>CC BY 4.0</2>. Dirobih: disakalakeun deui, arahna dirobih, dikeleumkeun nepi ka permukaan cai, sarta disederhanakeun pikeun wéb."
 
-#: src/components/MissionSetup.tsx:784
+#: src/components/MissionSetup.tsx:940
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Modél pesawat <0>“F/A-18C Hornet”</0> ku <1>CreadorDeMu</1> (Sketchfab), dilisénsian dina <2>CC BY 4.0</2>. Dirobah: diarahkeun deui jeung diskalakeun deui, data tékstur nu teu dipaké dipiceun, muatan luar dipisahkeun kana file nu misah, hiji mesh panutup dieunteungkeun."
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:458
 msgid "Alerts"
 msgstr "Peringatan"
 
@@ -315,7 +320,7 @@ msgstr "Sadaya"
 msgid "Allow anyone to search for {0}"
 msgstr "Idinan saha waé milarian {0}"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:226
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
 msgid "Allow sort by"
 msgstr "Idinkeun urutkeun ku"
 
@@ -340,12 +345,12 @@ msgstr "Saha waé"
 msgid "Anyone who is logged in"
 msgstr "Saha waé anu asup"
 
-#: src/components/MissionSetup.tsx:148
-#: src/components/MissionSetup.tsx:187
+#: src/components/MissionSetup.tsx:151
+#: src/components/MissionSetup.tsx:191
 msgid "Approach power (ATC)"
 msgstr "Daya pendekatan (ATC)"
 
-#: src/components/MissionSetup.tsx:707
+#: src/components/MissionSetup.tsx:863
 msgid "Approach, on-speed (Vapp)"
 msgstr "Ngadeukeutan, dina laju (Vapp)"
 
@@ -366,12 +371,12 @@ msgstr "Anjeun yakin hayang ngahapus koméntar ieu? Ieu ogé bakal ngahapus sada
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Anjeun yakin hayang log out? Anjeun kudu log in deui pikeun ngaksés akun anjeun."
 
-#: src/components/MissionSetup.tsx:1195
+#: src/components/MissionSetup.tsx:1354
 msgid "Armament"
 msgstr "Pakarang"
 
-#: src/components/MissionSetup.tsx:147
-#: src/components/MissionSetup.tsx:186
+#: src/components/MissionSetup.tsx:150
+#: src/components/MissionSetup.tsx:190
 msgid "Arrestor hook"
 msgstr "Kait panahan"
 
@@ -414,11 +419,11 @@ msgstr "Avatar"
 msgid "Avatar for {name}"
 msgstr "Avatar pikeun {name}"
 
-#: src/components/MissionSetup.tsx:312
+#: src/components/MissionSetup.tsx:317
 msgid "Axes"
 msgstr "Sumbu"
 
-#: src/components/MissionSetup.tsx:353
+#: src/components/MissionSetup.tsx:358
 msgid "Axis {i}"
 msgstr "Sumbu {i}"
 
@@ -437,7 +442,7 @@ msgstr "Tukang"
 msgid "Back to home"
 msgstr "Balik ka imah"
 
-#: src/components/MissionSetup.tsx:1222
+#: src/components/MissionSetup.tsx:1381
 msgid "Bandit"
 msgstr "Pesawat musuh"
 
@@ -445,19 +450,19 @@ msgstr "Pesawat musuh"
 msgid "Banner"
 msgstr "Spanduk"
 
-#: src/components/MissionSetup.tsx:698
+#: src/components/MissionSetup.tsx:854
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "Tanjakan pangalusna (Vy, dorongan 100%)"
 
-#: src/components/MissionSetup.tsx:699
+#: src/components/MissionSetup.tsx:855
 msgid "Best climb (Vy, afterburner)"
 msgstr "Tanjakan pangalusna (Vy, afterburner)"
 
-#: src/components/MissionSetup.tsx:701
+#: src/components/MissionSetup.tsx:857
 msgid "Best glide (engines out)"
 msgstr "Ngalayang pangalusna (mesin pareum)"
 
-#: src/components/MissionSetup.tsx:703
+#: src/components/MissionSetup.tsx:859
 msgid "Best sustained turn speed"
 msgstr "Laju belok teteg pangalusna"
 
@@ -479,11 +484,11 @@ msgstr "Navigasi ka link nu teu dipercaya diblokir"
 msgid "Blocks"
 msgstr "Blok"
 
-#: src/components/Multiplayer.tsx:479
+#: src/components/Multiplayer.tsx:494
 msgid "Blue"
 msgstr "Biru"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Blue bots"
 msgstr "Bot biru"
 
@@ -504,7 +509,7 @@ msgstr "Tingkatkeun minat"
 msgid "Border colour"
 msgstr "Warna pinggir"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Bots"
 msgstr "Bot"
 
@@ -524,11 +529,11 @@ msgstr "MÉNGKOL KATUHU"
 msgid "Browser notifications"
 msgstr "Béwara browser"
 
-#: src/components/MissionSetup.tsx:413
+#: src/components/MissionSetup.tsx:418
 msgid "Button {i}"
 msgstr "Tombol {i}"
 
-#: src/components/MissionSetup.tsx:387
+#: src/components/MissionSetup.tsx:392
 msgid "Buttons"
 msgstr "Tombol"
 
@@ -536,12 +541,12 @@ msgstr "Tombol"
 msgid "CALL THE BALL"
 msgstr "LAPORKEUN BAL"
 
-#: src/components/MissionSetup.tsx:1490
-#: src/components/Multiplayer.tsx:243
+#: src/components/MissionSetup.tsx:1649
+#: src/components/Multiplayer.tsx:258
 msgid "Callsign"
 msgstr "Tanda panggilan"
 
-#: src/components/MissionSetup.tsx:567
+#: src/components/MissionSetup.tsx:572
 msgid "Camera distance"
 msgstr "Jarak kaméra"
 
@@ -558,9 +563,9 @@ msgstr "Jarak kaméra"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/MissionSetup.tsx:542
-#: src/components/Multiplayer.tsx:214
-#: src/components/Multiplayer.tsx:456
+#: src/components/MissionSetup.tsx:547
+#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:471
 msgid "Cancel"
 msgstr "Batalkeun"
 
@@ -574,35 +579,35 @@ msgstr "Batalkeun koméntar"
 msgid "Cancel reply"
 msgstr "Batalkeun balesan"
 
-#: src/components/MissionSetup.tsx:189
+#: src/components/MissionSetup.tsx:193
 msgid "Canopy"
 msgstr "Kanopi"
 
-#: src/components/MissionSetup.tsx:1006
+#: src/components/MissionSetup.tsx:1162
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1270
+#: src/components/MissionSetup.tsx:1429
 msgid "Case I (day)"
 msgstr "Kasus I (beurang)"
 
-#: src/components/MissionSetup.tsx:1007
+#: src/components/MissionSetup.tsx:1163
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1271
+#: src/components/MissionSetup.tsx:1430
 msgid "Case II (weather)"
 msgstr "Kasus II (cuaca)"
 
-#: src/components/MissionSetup.tsx:1008
+#: src/components/MissionSetup.tsx:1164
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1272
+#: src/components/MissionSetup.tsx:1431
 msgid "Case III (night)"
 msgstr "Kasus III (peuting)"
 
-#: src/components/MissionSetup.tsx:1278
+#: src/components/MissionSetup.tsx:1437
 msgid "Catapult"
 msgstr "Katapel"
 
@@ -623,16 +628,16 @@ msgstr "Tetempoan ngudag:"
 msgid "chat"
 msgstr "chat"
 
-#: src/components/MissionSetup.tsx:199
+#: src/components/MissionSetup.tsx:204
 msgid "Chat"
 msgstr "Chat"
 
-#: src/components/MissionSetup.tsx:200
+#: src/components/MissionSetup.tsx:205
 msgid "Chat to everyone"
 msgstr "Chat ka sadayana"
 
-#: src/components/MatchHistory.tsx:176
-#: src/components/MissionSetup.tsx:1320
+#: src/components/MatchHistory.tsx:179
+#: src/components/MissionSetup.tsx:1479
 msgid "Cheats"
 msgstr "Cheat"
 
@@ -679,7 +684,7 @@ msgstr "Pilih basa"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:304
+#: src/components/Multiplayer.tsx:319
 msgid "Clear"
 msgstr "Bersihkeun"
 
@@ -743,7 +748,7 @@ msgstr "Tutup panéangan"
 msgid "closer"
 msgstr "leuwih deukeut"
 
-#: src/components/MissionSetup.tsx:1306
+#: src/components/MissionSetup.tsx:1465
 msgid "Clouds"
 msgstr "Méga"
 
@@ -792,7 +797,7 @@ msgstr "NGAMIMITIAN"
 msgid "Comment actions"
 msgstr "Peta koméntar"
 
-#: src/components/MissionSetup.tsx:116
+#: src/components/MissionSetup.tsx:119
 msgid "Communication"
 msgstr "Komunikasi"
 
@@ -814,7 +819,7 @@ msgstr "Atur setélan view"
 msgid "Confirm"
 msgstr "Konfirmasi"
 
-#: src/components/MissionSetup.tsx:1116
+#: src/components/MissionSetup.tsx:1272
 msgid "Connect"
 msgstr "Sambungkeun"
 
@@ -830,7 +835,7 @@ msgstr "Akun tersambung"
 msgid "Connecting..."
 msgstr "Nyambungkeun..."
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:277
 msgid "Connecting…"
 msgstr "Nyambungkeun…"
 
@@ -851,7 +856,7 @@ msgid "Contextual information and details."
 msgstr "Inpormasi konteks jeung détil."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:238
 msgid "Continue"
 msgstr "Teruskeun"
 
@@ -871,11 +876,11 @@ msgstr "Disalin ka clipboard"
 msgid "Copy"
 msgstr "Salin"
 
-#: src/components/MissionSetup.tsx:702
+#: src/components/MissionSetup.tsx:858
 msgid "Corner speed (best instant turn)"
 msgstr "Laju juru (belok saharita pangalusna)"
 
-#: src/components/Multiplayer.tsx:179
+#: src/components/Multiplayer.tsx:194
 msgid "Could not create the match"
 msgstr "Teu bisa nyieun patandingan"
 
@@ -883,12 +888,12 @@ msgstr "Teu bisa nyieun patandingan"
 msgid "Could not load this document. Please try again later."
 msgstr "Teu bisa ngamuat dokumén ieu. Mangga cobian deui engké."
 
-#: src/components/MatchHistory.tsx:217
-#: src/components/MatchHistory.tsx:223
+#: src/components/MatchHistory.tsx:226
+#: src/components/MatchHistory.tsx:232
 msgid "Could not save the recording"
 msgstr "Rekaman teu bisa disimpen"
 
-#: src/components/MissionSetup.tsx:953
+#: src/components/MissionSetup.tsx:1109
 msgid "Could not send the message"
 msgstr "Pesen teu bisa dikirim"
 
@@ -908,8 +913,8 @@ msgstr "Teu bisa ngamimitian pamariksaan deui. Mangga cobian deui."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Teu tiasa diverifikasi nganggo akun éta. Mangga cobian deui."
 
-#: src/components/MissionSetup.tsx:143
-#: src/components/MissionSetup.tsx:182
+#: src/components/MissionSetup.tsx:146
+#: src/components/MissionSetup.tsx:186
 msgid "Countermeasures"
 msgstr "Tindakan lawan"
 
@@ -930,16 +935,16 @@ msgstr "Jieun"
 msgid "Create {0}"
 msgstr "Jieun {0}"
 
-#: src/components/Multiplayer.tsx:412
+#: src/components/Multiplayer.tsx:427
 msgid "Create and fly"
 msgstr "Jieun jeung hiber"
 
-#: src/components/Multiplayer.tsx:277
+#: src/components/Multiplayer.tsx:292
 msgid "Create match"
 msgstr "Jieun patandingan"
 
-#: src/components/MissionSetup.tsx:1625
-#: src/components/MissionSetup.tsx:1648
+#: src/components/MissionSetup.tsx:1784
+#: src/components/MissionSetup.tsx:1807
 msgid "Create mission"
 msgstr "Jieun misi"
 
@@ -957,13 +962,13 @@ msgstr "Dijieun"
 msgid "Creating..."
 msgstr "Ngajieun..."
 
-#: src/components/MissionSetup.tsx:773
-#: src/components/MissionSetup.tsx:779
+#: src/components/MissionSetup.tsx:929
+#: src/components/MissionSetup.tsx:935
 msgid "Credits"
 msgstr "Kredit"
 
-#: src/components/MissionSetup.tsx:1313
-#: src/components/Multiplayer.tsx:305
+#: src/components/MissionSetup.tsx:1472
+#: src/components/Multiplayer.tsx:320
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -979,8 +984,8 @@ msgstr "Adat"
 msgid "CUT"
 msgstr "BAHAYA"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:194
+#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:198
 msgid "Cycle view"
 msgstr "Ganti témpoan"
 
@@ -1004,13 +1009,13 @@ msgstr "Konflik data"
 msgid "Date"
 msgstr "Tanggal"
 
-#: src/components/MissionSetup.tsx:1301
-#: src/components/Multiplayer.tsx:300
+#: src/components/MissionSetup.tsx:1460
+#: src/components/Multiplayer.tsx:315
 msgid "Day"
 msgstr "Beurang"
 
 #: src/components/MatchHistory.tsx:144
-#: src/components/MatchHistory.tsx:170
+#: src/components/MatchHistory.tsx:173
 msgid "Deaths"
 msgstr "Paéh"
 
@@ -1058,7 +1063,7 @@ msgstr "Hapus kolom"
 msgid "Delete comment"
 msgstr "Hapus koméntar"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:301
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:300
 msgid "Delete field"
 msgstr "Hapus field"
 
@@ -1067,8 +1072,8 @@ msgid "Delete option"
 msgstr "Hapus pilihan"
 
 #. placeholder {0}: opt.name
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:279
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:284
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:278
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:283
 msgid "Delete option {0}"
 msgstr "Hapus pilihan {0}"
 
@@ -1096,8 +1101,8 @@ msgstr "Pedaran"
 msgid "Details Panel"
 msgstr "Panel Détil"
 
-#: src/components/MissionSetup.tsx:379
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:384
+#: src/components/MissionSetup.tsx:433
 msgid "Detect"
 msgstr "Deteksi"
 
@@ -1112,11 +1117,11 @@ msgstr "Deteksi"
 msgid "Detect from web browser"
 msgstr "Deteksi ti browser web"
 
-#: src/components/MissionSetup.tsx:281
+#: src/components/MissionSetup.tsx:286
 msgid "Device"
 msgstr "Pakakas"
 
-#: src/components/Multiplayer.tsx:203
+#: src/components/Multiplayer.tsx:218
 msgid "Different game host"
 msgstr "Host kaulinan nu béda"
 
@@ -1136,7 +1141,7 @@ msgstr "Piceun"
 msgid "Discard draft?"
 msgstr "Piceun draf?"
 
-#: src/components/MissionSetup.tsx:293
+#: src/components/MissionSetup.tsx:298
 msgid "disconnected"
 msgstr "teu nyambung"
 
@@ -1151,8 +1156,8 @@ msgstr "Pegat"
 msgid "Dismiss"
 msgstr "Pasini"
 
-#: src/components/MissionSetup.tsx:152
-#: src/components/MissionSetup.tsx:195
+#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:200
 msgid "Display repeater"
 msgstr "Pangulang tampilan"
 
@@ -1160,13 +1165,13 @@ msgstr "Pangulang tampilan"
 msgid "Displays the mobile sidebar."
 msgstr "Mintonkeun sidebar mobile."
 
-#: src/components/MissionSetup.tsx:1422
+#: src/components/MissionSetup.tsx:1581
 msgid "Distance LOD"
 msgstr "LOD jarak"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:306
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1729
+#: src/components/MissionSetup.tsx:1888
 msgid "Done"
 msgstr "Beres"
 
@@ -1184,7 +1189,7 @@ msgstr "Gagal ngunduh"
 msgid "Drag"
 msgstr "Séréd"
 
-#: src/components/Multiplayer.tsx:377
+#: src/components/Multiplayer.tsx:392
 msgid "Drone"
 msgstr "Drone"
 
@@ -1192,7 +1197,11 @@ msgstr "Drone"
 msgid "Duplicates"
 msgstr "Duplikat"
 
-#: src/components/MissionSetup.tsx:1416
+#: src/components/MatchHistory.tsx:158
+msgid "Duration"
+msgstr "Lilana"
+
+#: src/components/MissionSetup.tsx:1575
 msgid "Dynamic resolution"
 msgstr "Résolusi dinamis"
 
@@ -1213,11 +1222,11 @@ msgstr "Édit"
 msgid "Edit {label}"
 msgstr "Édit {label}"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:137
 msgid "Edit field"
 msgstr "Édit widang"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:139
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
 msgid "Edit field settings"
 msgstr "Édit setélan widang"
 
@@ -1226,8 +1235,8 @@ msgid "Edit option"
 msgstr "Édit pilihan"
 
 #. placeholder {0}: opt.name
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:264
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:269
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:263
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:268
 msgid "Edit option {0}"
 msgstr "Édit pilihan {0}"
 
@@ -1239,7 +1248,7 @@ msgstr "Édit kartu nu dipilih"
 msgid "Edit view"
 msgstr "Édit tinggalan"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:197
 msgid "Eject"
 msgstr "Mental kaluar"
 
@@ -1255,7 +1264,7 @@ msgstr "Surélék"
 msgid "Email code"
 msgstr "Kode surélék"
 
-#: src/components/Multiplayer.tsx:439
+#: src/components/Multiplayer.tsx:454
 msgid "empty"
 msgstr "kosong"
 
@@ -1263,7 +1272,7 @@ msgstr "kosong"
 msgid "ENGAGED"
 msgstr "KEUR NYERANG"
 
-#: src/components/MissionSetup.tsx:449
+#: src/components/MissionSetup.tsx:454
 msgid "Engine"
 msgstr "Mesin"
 
@@ -1275,7 +1284,7 @@ msgstr "Lebetkeun kode tina email anjeun"
 msgid "Enter your authenticator code"
 msgstr "Lebetkeun kode aplikasi pamariksa"
 
-#: src/components/MissionSetup.tsx:452
+#: src/components/MissionSetup.tsx:457
 msgid "Environment"
 msgstr "Lingkungan"
 
@@ -1302,12 +1311,12 @@ msgstr "Buka"
 msgid "Expand sidebar"
 msgstr "Lugar sidebar"
 
-#: src/components/MissionSetup.tsx:144
-#: src/components/MissionSetup.tsx:183
+#: src/components/MissionSetup.tsx:147
+#: src/components/MissionSetup.tsx:187
 msgid "Extend flaps"
 msgstr "Flap kaluar"
 
-#: src/components/MissionSetup.tsx:1396
+#: src/components/MissionSetup.tsx:1555
 msgid "Exterior detail"
 msgstr "Détil luar"
 
@@ -1319,7 +1328,7 @@ msgstr "URL Éksternal"
 msgid "Extra large"
 msgstr "Gedé pisan"
 
-#: src/components/MissionSetup.tsx:721
+#: src/components/MissionSetup.tsx:877
 msgid "F/A-18C reference"
 msgstr "Rujukan F/A-18C"
 
@@ -1431,16 +1440,16 @@ msgstr "Réngsé"
 msgid "fire"
 msgstr "témbak"
 
-#: src/components/MissionSetup.tsx:140
-#: src/components/MissionSetup.tsx:179
+#: src/components/MissionSetup.tsx:143
+#: src/components/MissionSetup.tsx:183
 msgid "Fire weapon"
 msgstr "Témbakkeun pakarang"
 
-#: src/components/MissionSetup.tsx:557
+#: src/components/MissionSetup.tsx:562
 msgid "Fixed keys"
 msgstr "Tombol tetep"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:222
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:221
 msgid "Flags"
 msgstr "Bandéra"
 
@@ -1460,7 +1469,7 @@ msgstr "SUAR"
 msgid "Flat"
 msgstr "Datar"
 
-#: src/components/MissionSetup.tsx:111
+#: src/components/MissionSetup.tsx:114
 msgid "Flight"
 msgstr "Hiber"
 
@@ -1480,17 +1489,21 @@ msgstr "Ngambang"
 msgid "Flown"
 msgstr "Geus hiber"
 
-#: src/components/MissionSetup.tsx:1619
-#: src/components/MissionSetup.tsx:1662
+#: src/components/MissionSetup.tsx:1778
+#: src/components/MissionSetup.tsx:1821
 msgid "Fly"
 msgstr "Ngapung"
 
-#: src/components/MissionSetup.tsx:1446
+#: src/components/MissionSetup.tsx:762
+msgid "Fox 2 fighter"
+msgstr "Pesawat tempur Fox 2"
+
+#: src/components/MissionSetup.tsx:1605
 msgid "Framerate"
 msgstr "Framerate"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1190
+#: src/components/MissionSetup.tsx:1349
 msgid "Free flight"
 msgstr "Hiber bébas"
 
@@ -1515,8 +1528,8 @@ msgstr "Ti"
 msgid "From theme"
 msgstr "Tina téma"
 
-#: src/components/MissionSetup.tsx:1207
-#: src/components/Multiplayer.tsx:315
+#: src/components/MissionSetup.tsx:1366
+#: src/components/Multiplayer.tsx:330
 msgid "Fuel"
 msgstr "Bahan bakar"
 
@@ -1536,9 +1549,13 @@ msgstr "BBM BOCOR"
 msgid "FUEL LO"
 msgstr "BAHAN BAKAR SAEUTIK"
 
-#: src/components/MissionSetup.tsx:188
+#: src/components/MissionSetup.tsx:192
 msgid "Fuel probe"
 msgstr "Probe suluh"
+
+#: src/components/MissionSetup.tsx:728
+msgid "Fuel tank"
+msgstr "Tangki suluh"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:321
 msgid "Full layout"
@@ -1556,7 +1573,7 @@ msgstr "Roda badarat"
 msgid "GEAR"
 msgstr "RODA"
 
-#: src/components/MissionSetup.tsx:1671
+#: src/components/MissionSetup.tsx:1830
 msgid "General"
 msgstr "Umum"
 
@@ -1586,9 +1603,13 @@ msgstr "Buka kaca {pageNumber}"
 msgid "Go to previous page"
 msgstr "Ka kaca saméméhna"
 
-#: src/components/MissionSetup.tsx:1674
+#: src/components/MissionSetup.tsx:1833
 msgid "Graphics"
 msgstr "Grafik"
+
+#: src/components/MissionSetup.tsx:824
+msgid "Gross weight"
+msgstr "Beurat total"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:162
 msgid "Group"
@@ -1607,6 +1628,10 @@ msgstr "Grup: {0}"
 msgid "GUN"
 msgstr "BEDIL"
 
+#: src/components/MissionSetup.tsx:762
+msgid "Gun fighter"
+msgstr "Pesawat tempur mariem"
+
 #: ../../../lib/web/src/components/data-table/column-header.tsx:70
 msgid "Hide"
 msgstr "Sumputkeun"
@@ -1615,17 +1640,17 @@ msgstr "Sumputkeun"
 msgid "Hide password"
 msgstr "Sumputkeun kecap konci"
 
-#: src/components/MissionSetup.tsx:1376
+#: src/components/MissionSetup.tsx:1535
 msgid "High"
 msgstr "Luhur"
 
-#: src/components/MissionSetup.tsx:1314
-#: src/components/Multiplayer.tsx:306
+#: src/components/MissionSetup.tsx:1473
+#: src/components/Multiplayer.tsx:321
 msgid "High stratus"
 msgstr "Stratus luhur"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1638
+#: src/components/MissionSetup.tsx:1797
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Riwayat"
@@ -1649,15 +1674,15 @@ msgstr "KAIT"
 msgid "Hot"
 msgstr "Panas"
 
-#: src/components/MissionSetup.tsx:196
+#: src/components/MissionSetup.tsx:201
 msgid "HUD altitude source"
 msgstr "Sumber kaluhuran HUD"
 
-#: src/components/MissionSetup.tsx:197
+#: src/components/MissionSetup.tsx:202
 msgid "HUD declutter"
 msgstr "Basajankeun HUD"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:153
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:152
 msgid "ID"
 msgstr ""
 
@@ -1670,8 +1695,8 @@ msgstr "Panempo gambar: {0}"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/MissionSetup.tsx:1003
-#: src/components/MissionSetup.tsx:1267
+#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1426
 msgid "In air"
 msgstr "Di hawa"
 
@@ -1707,7 +1732,7 @@ msgstr "Tag teu valid: ngan hurup, angka, spasi, tanda hubung, jeung garis mirin
 msgid "Invalid verification code"
 msgstr "Kode vérifikasi teu sah"
 
-#: src/components/MissionSetup.tsx:306
+#: src/components/MissionSetup.tsx:311
 msgid "Invert pitch"
 msgstr "Balikkeun pitch"
 
@@ -1715,8 +1740,8 @@ msgstr "Balikkeun pitch"
 msgid "INVULNERABLE"
 msgstr "KEBAL"
 
-#: src/components/MissionSetup.tsx:1325
-#: src/components/Multiplayer.tsx:344
+#: src/components/MissionSetup.tsx:1484
+#: src/components/Multiplayer.tsx:359
 msgid "Invulnerable (human players only)"
 msgstr "Kebal (ngan pamaén manusa)"
 
@@ -1724,12 +1749,12 @@ msgstr "Kebal (ngan pamaén manusa)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Sigana kaca anu ditéangan ku anjeun <0/>henteu aya atawa geus dipiceun."
 
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:506
 msgid "Join"
 msgstr "Gabung"
 
-#: src/components/MissionSetup.tsx:1086
-#: src/components/MissionSetup.tsx:1629
+#: src/components/MissionSetup.tsx:1242
+#: src/components/MissionSetup.tsx:1788
 msgid "Join server"
 msgstr "Gabung ka server"
 
@@ -1738,20 +1763,20 @@ msgid "JOINED"
 msgstr "GABUNG"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1591
-#: src/components/Multiplayer.tsx:438
+#: src/components/MissionSetup.tsx:1750
+#: src/components/Multiplayer.tsx:453
 msgid "Joust"
 msgstr "Joust"
 
-#: src/components/Multiplayer.tsx:291
+#: src/components/Multiplayer.tsx:306
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, nu maéhan pangheulana meunang"
 
-#: src/components/MissionSetup.tsx:1191
+#: src/components/MissionSetup.tsx:1350
 msgid "Joust against AI player"
 msgstr "Duel ngalawan pamaén AI"
 
-#: src/components/MissionSetup.tsx:1680
+#: src/components/MissionSetup.tsx:1839
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1767,7 +1792,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Pintasan keyboard"
 
-#: src/components/MissionSetup.tsx:1683
+#: src/components/MissionSetup.tsx:1842
 msgid "Keys"
 msgstr "Tombol"
 
@@ -1780,7 +1805,7 @@ msgid "Killed"
 msgstr "Ditelasan"
 
 #: src/components/MatchHistory.tsx:141
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:170
 msgid "Kills"
 msgstr "Bunuh"
 
@@ -1796,8 +1821,8 @@ msgstr "SEUNEU MESIN KÉNCA"
 msgid "L GEAR"
 msgstr "RODA KÉNCA"
 
-#: src/components/MissionSetup.tsx:146
-#: src/components/MissionSetup.tsx:185
+#: src/components/MissionSetup.tsx:149
+#: src/components/MissionSetup.tsx:189
 msgid "Landing gear"
 msgstr "Roda badarat"
 
@@ -1810,8 +1835,8 @@ msgstr "Gedé"
 msgid "LATE"
 msgstr "TELAT"
 
-#: src/components/MissionSetup.tsx:149
-#: src/components/MissionSetup.tsx:192
+#: src/components/MissionSetup.tsx:152
+#: src/components/MissionSetup.tsx:196
 msgid "Launch (catapult)"
 msgstr "Luncurkeun (katapel)"
 
@@ -1824,7 +1849,7 @@ msgstr "luncurkeun / target"
 msgid "Layout"
 msgstr "Tata letak"
 
-#: src/components/Multiplayer.tsx:328
+#: src/components/Multiplayer.tsx:343
 msgid "lb"
 msgstr "lb"
 
@@ -1833,7 +1858,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Diajar deui"
 
-#: src/components/MissionSetup.tsx:1142
+#: src/components/MissionSetup.tsx:1298
 msgid "Leave server"
 msgstr "Kaluar ti server"
 
@@ -1867,8 +1892,8 @@ msgstr "Caang"
 msgid "lights"
 msgstr "lampu"
 
-#: src/components/MissionSetup.tsx:150
-#: src/components/MissionSetup.tsx:191
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:195
 msgid "Lights"
 msgstr "Lampu"
 
@@ -1888,7 +1913,7 @@ msgstr "Tautan"
 msgid "List"
 msgstr "Daptar"
 
-#: src/components/MissionSetup.tsx:1210
+#: src/components/MissionSetup.tsx:1369
 msgid "Load"
 msgstr "Jumlah"
 
@@ -1932,36 +1957,36 @@ msgstr "Hasil kaluar"
 msgid "Logging out…"
 msgstr "Keur kaluar…"
 
-#: src/components/MissionSetup.tsx:126
+#: src/components/MissionSetup.tsx:129
 msgid "Look"
 msgstr "Tingali"
 
-#: src/components/MissionSetup.tsx:566
+#: src/components/MissionSetup.tsx:571
 msgid "Look / orbit"
 msgstr "Tingali / orbit"
 
-#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:158
 msgid "Look down"
 msgstr "Tingali ka handap"
 
-#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:159
 msgid "Look left"
 msgstr "Tingali ka kénca"
 
-#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:160
 msgid "Look right"
 msgstr "Tingali ka katuhu"
 
-#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:157
 msgid "Look up"
 msgstr "Tingali ka luhur"
 
-#: src/components/MissionSetup.tsx:1372
+#: src/components/MissionSetup.tsx:1531
 msgid "Low"
 msgstr "Handap"
 
-#: src/components/MissionSetup.tsx:1315
-#: src/components/Multiplayer.tsx:307
+#: src/components/MissionSetup.tsx:1474
+#: src/components/Multiplayer.tsx:322
 msgid "Low stratus"
 msgstr "Stratus handap"
 
@@ -1985,7 +2010,7 @@ msgstr "Manual"
 msgid "map"
 msgstr "peta"
 
-#: src/components/MissionSetup.tsx:198
+#: src/components/MissionSetup.tsx:203
 msgid "Map"
 msgstr "Peta"
 
@@ -1995,19 +2020,19 @@ msgstr "Peta"
 msgid "Mark all as read"
 msgstr "Tandaan sadayana sakumaha dibaca"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:453
 msgid "Master"
 msgstr "Utama"
 
-#: src/components/Multiplayer.tsx:287
+#: src/components/Multiplayer.tsx:302
 msgid "Match type"
 msgstr "Jinis patandingan"
 
-#: src/components/MissionSetup.tsx:1136
+#: src/components/MissionSetup.tsx:1292
 msgid "Matches"
 msgstr "Patandingan"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:199
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:198
 msgid "Maximum length"
 msgstr "Panjang maksimum"
 
@@ -2016,7 +2041,7 @@ msgid "MCP server"
 msgstr "Server MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1374
+#: src/components/MissionSetup.tsx:1533
 msgid "Medium"
 msgstr "Sedeng"
 
@@ -2025,7 +2050,7 @@ msgid "menu"
 msgstr "menu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:207
-#: src/components/MissionSetup.tsx:201
+#: src/components/MissionSetup.tsx:206
 msgid "Menu"
 msgstr "Menu"
 
@@ -2037,7 +2062,7 @@ msgstr "Pesen"
 msgid "Message everyone"
 msgstr "Kirim pesen ka sadayana"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1144
 msgid "Message players on this server"
 msgstr "Kirim pesen ka pamaén dina server ieu"
 
@@ -2049,11 +2074,11 @@ msgstr "Kirim pesen ka tim anjeun"
 msgid "Metric"
 msgstr "Métrik"
 
-#: src/components/MissionSetup.tsx:836
+#: src/components/MissionSetup.tsx:992
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Peta Atol Midway — citra ngandung data <0>Copernicus Sentinel-2</0> anu dirobih (2026); géométri lapangan terbang (landasan pacu, jalur taksi, apron) © kontributor <1>OpenStreetMap</1>, dilisensikeun dina <2>ODbL</2>; data garis basisir jeung karang ti <3>NOAA NCCOS</3> (domain publik)."
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:188
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:187
 msgid "Minimum length"
 msgstr "Panjang minimum"
 
@@ -2061,11 +2086,7 @@ msgstr "Panjang minimum"
 msgid "MISSILE"
 msgstr "RUDAL"
 
-#: src/components/MissionSetup.tsx:1202
-msgid "Missiles"
-msgstr "Misil"
-
-#: src/components/Multiplayer.tsx:334
+#: src/components/Multiplayer.tsx:349
 msgid "Missiles allowed"
 msgstr "Misil diidinan"
 
@@ -2073,7 +2094,7 @@ msgstr "Misil diidinan"
 msgid "Mochi web"
 msgstr "Mochi web"
 
-#: src/components/MatchHistory.tsx:161
+#: src/components/MatchHistory.tsx:164
 msgid "Mode"
 msgstr "Mode"
 
@@ -2090,17 +2111,17 @@ msgstr "Senén"
 msgid "More options"
 msgstr "Pilihan séjén"
 
-#: src/components/MissionSetup.tsx:379
+#: src/components/MissionSetup.tsx:384
 msgid "Move it…"
 msgstr "Obahkeun…"
 
-#: src/components/Multiplayer.tsx:188
+#: src/components/Multiplayer.tsx:203
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer merlukeun WebTransport, anu can dirojong ku browser ieu."
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:143
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:142
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:128
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:299
 msgid "Name"
@@ -2134,8 +2155,8 @@ msgstr "Game anyar"
 msgid "Next image"
 msgstr "Gambar salajengna"
 
-#: src/components/MissionSetup.tsx:1302
-#: src/components/Multiplayer.tsx:301
+#: src/components/MissionSetup.tsx:1461
+#: src/components/Multiplayer.tsx:316
 msgid "Night"
 msgstr "Peuting"
 
@@ -2175,7 +2196,7 @@ msgstr "Teu aya grup"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Teu aya jenis item nu bisa dijieun. Jieun heula item kolot nu diperlukeun."
 
-#: src/components/MissionSetup.tsx:300
+#: src/components/MissionSetup.tsx:305
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Teu aya joystick nu kadeteksi — pencét tombol naon waé pikeun ngahudangkeunana."
 
@@ -2187,7 +2208,7 @@ msgstr "Teu aya objék cocog"
 msgid "No notifications yet"
 msgstr "Can aya wawaran"
 
-#: src/components/Multiplayer.tsx:421
+#: src/components/Multiplayer.tsx:436
 msgid "No open matches — create one."
 msgstr "Euweuh patandingan nu kabuka — jieun hiji."
 
@@ -2240,8 +2261,8 @@ msgstr "Teu manggih pamaké"
 msgid "No views"
 msgstr "Teu aya tempoan"
 
-#: src/components/MissionSetup.tsx:965
-#: src/components/Multiplayer.tsx:421
+#: src/components/MissionSetup.tsx:1121
+#: src/components/Multiplayer.tsx:436
 msgid "No world server."
 msgstr "Euweuh server dunya."
 
@@ -2263,9 +2284,10 @@ msgstr "TEU AYA PEUNTEUN"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:349
-#: src/components/MissionSetup.tsx:409
-#: src/components/MissionSetup.tsx:1312
+#: src/components/MissionSetup.tsx:354
+#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:727
+#: src/components/MissionSetup.tsx:1471
 msgid "None"
 msgstr "Euweuh"
 
@@ -2289,7 +2311,7 @@ msgstr "Teu disetel"
 msgid "Nothing found"
 msgstr "Teu manggih nanaon"
 
-#: src/components/MissionSetup.tsx:965
+#: src/components/MissionSetup.tsx:1121
 msgid "Nothing yet — say hello."
 msgstr "Can aya nanaon — ucapkeun halo."
 
@@ -2306,9 +2328,9 @@ msgstr "Bewara"
 msgid "Notifications: {0}"
 msgstr "Wawaran: {0}"
 
-#: src/components/MissionSetup.tsx:1228
-#: src/components/MissionSetup.tsx:1583
-#: src/components/Multiplayer.tsx:378
+#: src/components/MissionSetup.tsx:1387
+#: src/components/MissionSetup.tsx:1742
+#: src/components/Multiplayer.tsx:393
 msgid "Novice"
 msgstr "Pamula"
 
@@ -2318,7 +2340,7 @@ msgstr "Pamula"
 msgid "Number"
 msgstr "Wilangan"
 
-#: src/components/MissionSetup.tsx:1404
+#: src/components/MissionSetup.tsx:1563
 msgid "Ocean detail"
 msgstr "Détil sagara"
 
@@ -2330,13 +2352,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Hurung"
 
-#: src/components/MissionSetup.tsx:1005
-#: src/components/MissionSetup.tsx:1269
+#: src/components/MissionSetup.tsx:1161
+#: src/components/MissionSetup.tsx:1428
 msgid "On carrier"
 msgstr "Dina kapal indung"
 
-#: src/components/MissionSetup.tsx:1004
-#: src/components/MissionSetup.tsx:1268
+#: src/components/MissionSetup.tsx:1160
+#: src/components/MissionSetup.tsx:1427
 msgid "On runway"
 msgstr "Dina landasan"
 
@@ -2344,11 +2366,11 @@ msgstr "Dina landasan"
 msgid "Oops! Page Not Found!"
 msgstr "Aduh! Kaca Teu Kapanggih!"
 
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:453
 msgid "Open"
 msgstr "Buka"
 
-#: src/components/Multiplayer.tsx:290
+#: src/components/Multiplayer.tsx:305
 msgid "Open — anyone may join or leave"
 msgstr "Kabuka — saha waé bisa gabung atawa kaluar"
 
@@ -2406,7 +2428,7 @@ msgid "Option name"
 msgstr "Ngaran pilihan"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:241
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:240
 msgid "Options"
 msgstr "Pilihan"
 
@@ -2422,8 +2444,8 @@ msgstr "ngurilingan"
 msgid "Other"
 msgstr "Séjén"
 
-#: src/components/MissionSetup.tsx:135
-#: src/components/MissionSetup.tsx:173
+#: src/components/MissionSetup.tsx:138
+#: src/components/MissionSetup.tsx:177
 msgid "Override G limit"
 msgstr "Ngaliwatan wates G"
 
@@ -2440,7 +2462,7 @@ msgstr "Kaca {currentPage} ti {totalPages}"
 msgid "Parent"
 msgstr "Kolot"
 
-#: src/components/MissionSetup.tsx:172
+#: src/components/MissionSetup.tsx:176
 msgid "Parking brake"
 msgstr "Rem parkir"
 
@@ -2456,7 +2478,7 @@ msgstr "Pamariksaan konci akses gagal. Mangga cobian deui."
 msgid "Passkeys"
 msgstr "Passkey"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:210
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:209
 msgid "Pattern (regex)"
 msgstr "Pola (regex)"
 
@@ -2464,15 +2486,15 @@ msgstr "Pola (regex)"
 msgid "Pick a date"
 msgstr "Pilih tanggal"
 
-#: src/components/MissionSetup.tsx:907
-#: src/components/Multiplayer.tsx:90
-#: src/components/Multiplayer.tsx:248
+#: src/components/MissionSetup.tsx:1063
+#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:263
 msgid "pilot"
 msgstr "pilot"
 
-#: src/components/MissionSetup.tsx:1229
-#: src/components/MissionSetup.tsx:1584
-#: src/components/Multiplayer.tsx:379
+#: src/components/MissionSetup.tsx:1388
+#: src/components/MissionSetup.tsx:1743
+#: src/components/Multiplayer.tsx:394
 msgid "Pilot"
 msgstr "Pilot"
 
@@ -2484,15 +2506,15 @@ msgstr "PILOT TIWAS"
 msgid "pitch"
 msgstr "unggeuk"
 
-#: src/components/MissionSetup.tsx:121
+#: src/components/MissionSetup.tsx:124
 msgid "Pitch"
 msgstr "Pitch"
 
-#: src/components/MissionSetup.tsx:163
+#: src/components/MissionSetup.tsx:167
 msgid "Pitch down"
 msgstr "Pitch ka handap"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:166
 msgid "Pitch up"
 msgstr "Pitch ka luhur"
 
@@ -2500,7 +2522,7 @@ msgstr "Pitch ka luhur"
 msgid "PLATFORM"
 msgstr "PLATFORM"
 
-#: src/components/MatchHistory.tsx:164
+#: src/components/MatchHistory.tsx:167
 msgid "Players"
 msgstr "Pamaén"
 
@@ -2530,11 +2552,11 @@ msgstr "Pos"
 msgid "Posts and comments"
 msgstr "Pos jeung koméntar"
 
-#: src/components/MissionSetup.tsx:1359
+#: src/components/MissionSetup.tsx:1518
 msgid "Preset"
 msgstr "Préset"
 
-#: src/components/MissionSetup.tsx:536
+#: src/components/MissionSetup.tsx:541
 msgid "Press a key…"
 msgstr "Pencét tombol…"
 
@@ -2542,7 +2564,7 @@ msgstr "Pencét tombol…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "PENCET ENTER PIKEUN HIBER"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:433
 msgid "Press it…"
 msgstr "Pencét éta…"
 
@@ -2576,6 +2598,10 @@ msgstr "Wawaran push"
 msgid "PUSH TIME"
 msgstr "WAKTU PENDEKATAN"
 
+#: src/components/MissionSetup.tsx:727
+msgid "Pylon"
+msgstr "Pilon"
+
 #: src/components/GameCanvas.tsx:42
 msgid "R ENG"
 msgstr "MESIN KATUHU"
@@ -2587,6 +2613,10 @@ msgstr "SEUNEU MESIN KATUHU"
 #: src/components/GameCanvas.tsx:45
 msgid "R GEAR"
 msgstr "RODA KATUHU"
+
+#: src/components/MissionSetup.tsx:727
+msgid "Rail"
+msgstr "Rel"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
@@ -2604,7 +2634,7 @@ msgstr "Daptarkeun deui konci akses anjeun dina ieu server"
 msgid "REARMED"
 msgstr "DIPAKARANGAN DEUI"
 
-#: src/components/MissionSetup.tsx:1091
+#: src/components/MissionSetup.tsx:1247
 msgid "Recent"
 msgstr "Anyar"
 
@@ -2617,24 +2647,24 @@ msgstr "Direkomendasikeun"
 msgid "Reconnecting ({retries})..."
 msgstr "Nyambungkeun deui ({retries})..."
 
-#: src/components/MissionSetup.tsx:1508
+#: src/components/MissionSetup.tsx:1667
 msgid "Record flights"
 msgstr "Rékam hiber"
 
-#: src/components/MatchHistory.tsx:229
-#: src/components/MissionSetup.tsx:1502
+#: src/components/MatchHistory.tsx:238
+#: src/components/MissionSetup.tsx:1661
 msgid "Recording"
 msgstr "Rekaman"
 
-#: src/components/MatchHistory.tsx:222
+#: src/components/MatchHistory.tsx:231
 msgid "Recording saved"
 msgstr "Rekaman disimpen"
 
-#: src/components/Multiplayer.tsx:469
+#: src/components/Multiplayer.tsx:484
 msgid "Red"
 msgstr "Beureum"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Red bots"
 msgstr "Bot beureum"
 
@@ -2647,11 +2677,11 @@ msgstr "Ngalihkeun ka login."
 msgid "Reduce interest"
 msgstr "Kurangan minat"
 
-#: src/components/MissionSetup.tsx:715
+#: src/components/MissionSetup.tsx:871
 msgid "Reference"
 msgstr "Rujukan"
 
-#: src/components/Multiplayer.tsx:267
+#: src/components/Multiplayer.tsx:282
 msgid "Refresh"
 msgstr "Seger"
 
@@ -2726,7 +2756,7 @@ msgstr "Ganti ngaran kolom"
 msgid "Rename this board column"
 msgstr "Ganti ngaran kolom papan ieu"
 
-#: src/components/MissionSetup.tsx:873
+#: src/components/MissionSetup.tsx:1029
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Réndering ku <0>three.js</0> (lisénsi MIT)."
 
@@ -2740,7 +2770,7 @@ msgstr "Bales"
 msgid "Reply to {0}..."
 msgstr "Bales ka {0}..."
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:224
 msgid "Required"
 msgstr "Peryogi"
 
@@ -2750,7 +2780,7 @@ msgstr "Kirim deui email"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1722
+#: src/components/MissionSetup.tsx:1881
 msgid "Reset"
 msgstr "Atur ulang"
 
@@ -2763,23 +2793,25 @@ msgstr "Setel ulang {title}"
 msgid "Reset all settings to default values"
 msgstr "Setel ulang sakabéh setélan ka nilai baku"
 
-#: src/components/MissionSetup.tsx:178
+#: src/components/MissionSetup.tsx:182
 msgid "Reset trim"
 msgstr "Reset trim"
 
-#: src/components/MissionSetup.tsx:565
+#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:199
+#: src/components/MissionSetup.tsx:570
 msgid "Reset view"
 msgstr "Reset tampilan"
 
-#: src/components/MissionSetup.tsx:1386
+#: src/components/MissionSetup.tsx:1545
 msgid "Resolution"
 msgstr "Resolusi"
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1770
 msgid "Restart mission"
 msgstr "Mimitian deui misi"
 
-#: src/components/MatchHistory.tsx:173
+#: src/components/MatchHistory.tsx:176
 msgid "Result"
 msgstr "Hasil"
 
@@ -2787,12 +2819,12 @@ msgstr "Hasil"
 msgid "Resume"
 msgstr "Tuluykeun"
 
-#: src/components/MissionSetup.tsx:1607
+#: src/components/MissionSetup.tsx:1766
 msgid "Resume mission"
 msgstr "Teruskeun misi"
 
-#: src/components/MissionSetup.tsx:145
-#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:148
+#: src/components/MissionSetup.tsx:188
 msgid "Retract flaps"
 msgstr "Flap asup"
 
@@ -2800,7 +2832,7 @@ msgstr "Flap asup"
 msgid "Retry"
 msgstr "Cobian deui"
 
-#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:368
 msgid "Reversed"
 msgstr "Kabalik"
 
@@ -2816,20 +2848,20 @@ msgstr "Katuhu ka Kénca"
 msgid "roll"
 msgstr "guling"
 
-#: src/components/MissionSetup.tsx:122
+#: src/components/MissionSetup.tsx:125
 msgid "Roll"
 msgstr "Roll"
 
-#: src/components/MissionSetup.tsx:164
+#: src/components/MissionSetup.tsx:168
 msgid "Roll left"
 msgstr "Roll ka kénca"
 
-#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:169
 msgid "Roll right"
 msgstr "Roll ka katuhu"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:169
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:168
 msgid "Rows"
 msgstr "Baris"
 
@@ -2868,7 +2900,7 @@ msgstr "Saptu"
 msgid "Save"
 msgstr "Simpen"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:886
 msgid "Sea level"
 msgstr "Permukaan laut"
 
@@ -2998,8 +3030,8 @@ msgstr "Pilih arah situs"
 msgid "Select theme preference"
 msgstr "Pilih préferénsi téma"
 
-#: src/components/MissionSetup.tsx:141
-#: src/components/MissionSetup.tsx:180
+#: src/components/MissionSetup.tsx:144
+#: src/components/MissionSetup.tsx:184
 msgid "Select weapon"
 msgstr "Pilih pakarang"
 
@@ -3017,7 +3049,7 @@ msgstr "dipilih"
 msgid "Selected: <0>{0}</0>"
 msgstr "Dipilih: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:995
+#: src/components/MissionSetup.tsx:1151
 msgid "Send"
 msgstr "Kirim"
 
@@ -3042,12 +3074,12 @@ msgstr "Kirim pesen"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchHistory.tsx:158
-#: src/components/MissionSetup.tsx:1104
+#: src/components/MatchHistory.tsx:161
+#: src/components/MissionSetup.tsx:1260
 msgid "Server"
 msgstr "Server"
 
-#: src/components/MissionSetup.tsx:960
+#: src/components/MissionSetup.tsx:1116
 msgid "Server chat"
 msgstr "Chat server"
 
@@ -3069,7 +3101,7 @@ msgstr "SESI RÉNGSÉ"
 msgid "Session expired. Please log in again."
 msgstr "Sési parantos kadaluwarsa. Mangga asup deui."
 
-#: src/components/MissionSetup.tsx:542
+#: src/components/MissionSetup.tsx:547
 msgid "Set"
 msgstr "Setél"
 
@@ -3081,12 +3113,12 @@ msgstr "Atur asal jeung tujuan"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1633
-#: src/components/MissionSetup.tsx:1667
+#: src/components/MissionSetup.tsx:1792
+#: src/components/MissionSetup.tsx:1826
 msgid "Settings"
 msgstr "Setélan"
 
-#: src/components/MissionSetup.tsx:1428
+#: src/components/MissionSetup.tsx:1587
 msgid "Shadows"
 msgstr "Kalangkang"
 
@@ -3126,11 +3158,11 @@ msgid "Signing out..."
 msgstr "Kaluar..."
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:180
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:179
 msgid "Single line of text only"
 msgstr "Hiji baris téks wungkul"
 
-#: src/components/MissionSetup.tsx:700
+#: src/components/MissionSetup.tsx:856
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Tanjakan pangalusna hiji mesin (Vyse, afterburner)"
 
@@ -3147,8 +3179,8 @@ msgstr "Leutik"
 msgid "Sort"
 msgstr "Sortir"
 
-#: src/components/MissionSetup.tsx:468
-#: src/components/MissionSetup.tsx:1677
+#: src/components/MissionSetup.tsx:473
+#: src/components/MissionSetup.tsx:1836
 msgid "Sound"
 msgstr "Sora"
 
@@ -3168,13 +3200,13 @@ msgstr "R.HAWA"
 msgid "speed brake"
 msgstr "rem hawa"
 
-#: src/components/MissionSetup.tsx:125
-#: src/components/MissionSetup.tsx:133
-#: src/components/MissionSetup.tsx:170
+#: src/components/MissionSetup.tsx:128
+#: src/components/MissionSetup.tsx:136
+#: src/components/MissionSetup.tsx:174
 msgid "Speed brake"
 msgstr "Rem hawa"
 
-#: src/components/MissionSetup.tsx:756
+#: src/components/MissionSetup.tsx:912
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Laju dina KCAS, salaku rentang ti énténg (bahan bakar minimum, teu mawa muatan) nepi ka beurat (beurat maksimum). Data dimeunangkeun sacara ékspérimén di jero kaulinan. Bédana naon waé ti pesawat asli ngagambarkeun kasalahan modél hiber simulator."
 
@@ -3182,15 +3214,15 @@ msgstr "Laju dina KCAS, salaku rentang ti énténg (bahan bakar minimum, teu maw
 msgid "SPLASH"
 msgstr "SASARAN ANCUR"
 
-#: src/components/MissionSetup.tsx:705
+#: src/components/MissionSetup.tsx:861
 msgid "Stall, clean (Vs1)"
 msgstr "Stall, konfigurasi beresih (Vs1)"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:862
 msgid "Stall, landing config (Vs0)"
 msgstr "Stall, konfigurasi badarat (Vs0)"
 
-#: src/components/MissionSetup.tsx:1241
+#: src/components/MissionSetup.tsx:1400
 msgid "Start"
 msgstr "Mimitian"
 
@@ -3202,11 +3234,11 @@ msgstr "Mimitian diskusi ku nambahkeun koméntar nu munggaran."
 msgid "Stay tuned though!"
 msgstr "Tapi tetep nyimak!"
 
-#: src/components/MissionSetup.tsx:696
+#: src/components/MissionSetup.tsx:852
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Tanjakan pangcuramna (Vx, dorongan 100%)"
 
-#: src/components/MissionSetup.tsx:697
+#: src/components/MissionSetup.tsx:853
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Tanjakan pangcuramna (Vx, afterburner)"
 
@@ -3237,9 +3269,9 @@ msgstr "Langgan"
 msgid "Sunday"
 msgstr "Minggu"
 
-#: src/components/MissionSetup.tsx:1231
-#: src/components/MissionSetup.tsx:1586
-#: src/components/Multiplayer.tsx:381
+#: src/components/MissionSetup.tsx:1390
+#: src/components/MissionSetup.tsx:1745
+#: src/components/Multiplayer.tsx:396
 msgid "Superhuman"
 msgstr "Leuwih ti manusa"
 
@@ -3280,7 +3312,7 @@ msgstr "Tag"
 msgid "TALLY"
 msgstr "MUSUH KATÉMBONG"
 
-#: src/components/MissionSetup.tsx:1184
+#: src/components/MissionSetup.tsx:1343
 msgid "Task"
 msgstr "Tugas"
 
@@ -3293,11 +3325,11 @@ msgid "TEAM"
 msgstr "TIM"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:453
 msgid "Teams"
 msgstr "Tim"
 
-#: src/components/Multiplayer.tsx:292
+#: src/components/Multiplayer.tsx:307
 msgid "Teams — red versus blue"
 msgstr "Tim — beureum lawan biru"
 
@@ -3342,7 +3374,7 @@ msgstr "Téma"
 msgid "Theme Settings"
 msgstr "Setélan Téma"
 
-#: src/components/Multiplayer.tsx:206
+#: src/components/Multiplayer.tsx:221
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Lobi ieu ngirim koneksi kaulinan anjeun ka host nu béda ({redirectHost}). Teruskeun ngan lamun anjeun percaya ka ieu server."
 
@@ -3354,15 +3386,15 @@ msgstr "Kaca ieu can dijieun."
 msgid "throttle"
 msgstr "gas"
 
-#: src/components/MissionSetup.tsx:124
+#: src/components/MissionSetup.tsx:127
 msgid "Throttle"
 msgstr "Throttle"
 
-#: src/components/MissionSetup.tsx:169
+#: src/components/MissionSetup.tsx:173
 msgid "Throttle down"
 msgstr "Kurangan throttle"
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:172
 msgid "Throttle up"
 msgstr "Tambah throttle"
 
@@ -3370,7 +3402,7 @@ msgstr "Tambah throttle"
 msgid "Thursday"
 msgstr "Kemis"
 
-#: src/components/MissionSetup.tsx:704
+#: src/components/MissionSetup.tsx:860
 msgid "Tightest sustained turn speed"
 msgstr "Laju belok teteg pangheureutna"
 
@@ -3382,7 +3414,7 @@ msgstr "déngdék"
 msgid "Time"
 msgstr "Waktu"
 
-#: src/components/MissionSetup.tsx:1295
+#: src/components/MissionSetup.tsx:1454
 msgid "Time of day"
 msgstr "Waktu poé"
 
@@ -3438,7 +3470,7 @@ msgstr "Seueur teuing pamundut"
 msgid "Top"
 msgstr "Luhur"
 
-#: src/components/MissionSetup.tsx:1440
+#: src/components/MissionSetup.tsx:1599
 msgid "Tracers"
 msgstr "Tracers"
 
@@ -3446,31 +3478,31 @@ msgstr "Tracers"
 msgid "Travelling"
 msgstr "Lalampahan"
 
-#: src/components/MissionSetup.tsx:112
+#: src/components/MissionSetup.tsx:115
 msgid "Trim"
 msgstr "Trim"
 
-#: src/components/MissionSetup.tsx:127
+#: src/components/MissionSetup.tsx:130
 msgid "Trim hat"
 msgstr "Topi trim"
 
-#: src/components/MissionSetup.tsx:137
-#: src/components/MissionSetup.tsx:175
+#: src/components/MissionSetup.tsx:140
+#: src/components/MissionSetup.tsx:179
 msgid "Trim nose down"
 msgstr "Trim: irung ka handap"
 
-#: src/components/MissionSetup.tsx:136
-#: src/components/MissionSetup.tsx:174
+#: src/components/MissionSetup.tsx:139
+#: src/components/MissionSetup.tsx:178
 msgid "Trim nose up"
 msgstr "Trim: irung ka luhur"
 
-#: src/components/MissionSetup.tsx:138
-#: src/components/MissionSetup.tsx:176
+#: src/components/MissionSetup.tsx:141
+#: src/components/MissionSetup.tsx:180
 msgid "Trim roll left"
 msgstr "Trim: gulung kénca"
 
-#: src/components/MissionSetup.tsx:139
-#: src/components/MissionSetup.tsx:177
+#: src/components/MissionSetup.tsx:142
+#: src/components/MissionSetup.tsx:181
 msgid "Trim roll right"
 msgstr "Trim: gulung katuhu"
 
@@ -3489,8 +3521,12 @@ msgstr "Cobian deui"
 msgid "Tuesday"
 msgstr "Salasa"
 
+#: src/components/MissionSetup.tsx:727
+msgid "Twin rail"
+msgstr "Rel ganda"
+
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:163
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:162
 msgid "Type"
 msgstr "Tipe"
 
@@ -3510,7 +3546,7 @@ msgstr "Ketik pikeun néangan pamaké"
 msgid "Type to search..."
 msgstr "Ketik pikeun néangan..."
 
-#: src/components/MissionSetup.tsx:1378
+#: src/components/MissionSetup.tsx:1537
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3544,13 +3580,13 @@ msgstr "Amérika Serikat"
 msgid "Unknown"
 msgstr "Teu dipikanyaho"
 
-#: src/components/MissionSetup.tsx:1331
-#: src/components/Multiplayer.tsx:354
+#: src/components/MissionSetup.tsx:1490
+#: src/components/Multiplayer.tsx:369
 msgid "Unlimited ammunition"
 msgstr "Amunisi taya watesna"
 
-#: src/components/MissionSetup.tsx:1337
-#: src/components/Multiplayer.tsx:364
+#: src/components/MissionSetup.tsx:1496
+#: src/components/Multiplayer.tsx:379
 msgid "Unlimited fuel"
 msgstr "Bahan bakar taya watesna"
 
@@ -3614,7 +3650,7 @@ msgstr "Verifikasi"
 msgid "Verify email address"
 msgstr "Verifikasi alamat email"
 
-#: src/components/MissionSetup.tsx:746
+#: src/components/MissionSetup.tsx:902
 msgid "Vertical"
 msgstr "Tegak"
 
@@ -3636,7 +3672,7 @@ msgid "view"
 msgstr "tetempoan"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/MissionSetup.tsx:115
+#: src/components/MissionSetup.tsx:118
 msgid "View"
 msgstr "Tingali"
 
@@ -3653,7 +3689,7 @@ msgstr "Tingali sagala bewara"
 msgid "View controls"
 msgstr "Kontrol tampilan"
 
-#: src/components/MissionSetup.tsx:564
+#: src/components/MissionSetup.tsx:569
 msgid "Views"
 msgstr "Tampilan"
 
@@ -3691,12 +3727,12 @@ msgstr "Kami bakal ngabaran anjeun lamun aya anu penting."
 msgid "weapon"
 msgstr "pakarang"
 
-#: src/components/MissionSetup.tsx:113
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:116
+#: src/components/MissionSetup.tsx:456
 msgid "Weapons"
 msgstr "Pakarang"
 
-#: src/components/Multiplayer.tsx:297
+#: src/components/Multiplayer.tsx:312
 msgid "Weather"
 msgstr "Cuaca"
 
@@ -3708,12 +3744,12 @@ msgstr "Situs keur dipigawé!"
 msgid "Wednesday"
 msgstr "Rebo"
 
-#: src/components/MissionSetup.tsx:134
-#: src/components/MissionSetup.tsx:171
+#: src/components/MissionSetup.tsx:137
+#: src/components/MissionSetup.tsx:175
 msgid "Wheel brakes"
 msgstr "Rem roda"
 
-#: src/components/MissionSetup.tsx:190
+#: src/components/MissionSetup.tsx:194
 msgid "Wing fold"
 msgstr "Tilep jangjang"
 
@@ -3721,12 +3757,12 @@ msgstr "Tilep jangjang"
 msgid "WINS"
 msgstr "MEUNANG"
 
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:247
 msgid "World server"
 msgstr "Server dunya"
 
-#: src/components/MissionSetup.tsx:953
-#: src/components/Multiplayer.tsx:103
+#: src/components/MissionSetup.tsx:1109
+#: src/components/Multiplayer.tsx:115
 msgid "World server not reachable"
 msgstr "Server dunya teu kahontal"
 
@@ -3734,15 +3770,15 @@ msgstr "Server dunya teu kahontal"
 msgid "yaw"
 msgstr "oléng"
 
-#: src/components/MissionSetup.tsx:123
+#: src/components/MissionSetup.tsx:126
 msgid "Yaw"
 msgstr "Yaw"
 
-#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:170
 msgid "Yaw left"
 msgstr "Yaw ka kénca"
 
-#: src/components/MissionSetup.tsx:167
+#: src/components/MissionSetup.tsx:171
 msgid "Yaw right"
 msgstr "Yaw ka katuhu"
 
@@ -3774,7 +3810,7 @@ msgstr "Lampiran anjeun bakal leungit."
 msgid "Your flights appear here once you've flown one."
 msgstr "Hiber anjeun bakal némbongan di dieu sanggeus anjeun hiber sakali."
 
-#: src/components/Multiplayer.tsx:433
+#: src/components/Multiplayer.tsx:448
 msgid "your offer"
 msgstr "tawaran anjeun"
 
@@ -3786,14 +3822,14 @@ msgstr "Téks sareng lampiran anjeun bakal leungit."
 msgid "Your text will be lost."
 msgstr "Téks anjeun bakal leungit."
 
-#: src/components/MissionSetup.tsx:128
+#: src/components/MissionSetup.tsx:131
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:161
 msgid "Zoom in"
 msgstr "Gedéan"
 
-#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:162
 msgid "Zoom out"
 msgstr "Leutikan"
