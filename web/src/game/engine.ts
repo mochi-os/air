@@ -1300,7 +1300,8 @@ function screens_update(){
 		else px=repeat_size()*dpr;
 		const cur=sc.canvas.width;
 		if(px>cur*1.15||px<cur*0.45){ const want=DDI_STEPS.find(v=>v>=px)||1024;
-			if(want!==cur) sc.canvas.width=sc.canvas.height=want; }
+			if(want!==cur){ sc.canvas.width=sc.canvas.height=want;
+				sc.tex.dispose(); } }   // WebGL2 canvas textures get immutable texStorage2D storage at first upload; without a dispose a resized canvas texSubImage2Ds into one corner of the old allocation and the rest of the face keeps stale texels
 		ddi_blit(sc); } }
 // Pages may declare optional handlers beyond draw: press(pb,display) for
 // page-owned bezel buttons, and range(direction)/reset() which the DDI view
