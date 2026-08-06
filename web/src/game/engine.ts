@@ -1223,6 +1223,19 @@ function build_screens(g){
 // annunciator policy. Menu entries whose page has no backing system yet draw
 // dim and inert, never faked.
 const ddi_state={ left:{page:"eng",menu:""}, right:{page:"adi",menu:""}, center:{page:"hsi",menu:""} };
+// Master-mode display recall (#15): the real avionics remember a display
+// configuration PER MASTER MODE and restore it when the mode is selected —
+// there is no per-mission-phase page card in NATOPS. Families: A/A (gun and
+// 9m share one, as in the jet) and NAV. Seeds are fleet convention minus the
+// radar we don't model: A/A = SMS/SA/HSI, NAV = CHKLST/FUEL/HSI (recovery
+//-case starts pre-set NAV's right display to ADI — the pilot would have
+// configured for the approach). Page selections record into the CURRENT
+// family, so a switch away and back restores what you had.
+const ddi_sets={ aa:{left:"sms",right:"sa",center:"hsi"}, nav:{left:"chklst",right:"fuel",center:"hsi"} };
+function ddi_family(){ return master==="nav"?"nav":"aa"; }
+function ddi_recall(){ const set=ddi_sets[ddi_family()]; for(const d of ["left","right","center"]) ddi_state[d]={ page:set[d], menu:"" }; ddi_dirty=true; }
+function ddi_show(display,page){ ddi_state[display]={ page, menu:"" }; ddi_sets[ddi_family()][display]=page; ddi_dirty=true; }
+function set_master(m){ const before=ddi_family(); master=m; if(ddi_family()!==before) ddi_recall(); }
 let ddi_dirty=false;   // a pushbutton press redraws NOW — the 120 ms cadence would read as a stuck button
 const DDI_MENUS={   // [pushbutton, legend, page] — page "" = not built yet
 	tac:[ [6,"HUD","hud"],[7,"RDR",""],[8,"SA","sa"],[9,"SMS","sms"],[10,"EW","ew"] ],
@@ -1250,7 +1263,7 @@ function ddi_press(display,pb){   // true when the press did something (consumes
 	const st=ddi_state[display]; if(!st||!pb) return false;
 	if(pb===18){ st.menu=st.menu==="tac"?"supt":"tac"; ddi_dirty=true; return true; }   // MENU alternates the two menus
 	if(st.menu){ const row=DDI_MENUS[st.menu].find(r=>r[0]===pb);
-		if(row&&row[2]){ ddi_state[display]={ page:row[2], menu:"" }; ddi_dirty=true; } return !!(row&&row[2]); }
+		if(row&&row[2]){ ddi_show(display,row[2]); } return !!(row&&row[2]); }   // menu picks record into the master mode's set (#15)
 	const p=DDI_PAGES[st.page];
 	if(p&&p.press&&p.press(pb,display)){ ddi_dirty=true; return true; }   // page-owned pushbuttons
 	return false; }
@@ -2954,7 +2967,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		const ch=(e.shiftKey?"Shift+":"")+k;   // full chord — remappable actions match this, so a shift-chord never fires the bare-key action and vice versa
 		if(ch===key_of("launch") && launch_status()===2){ if((ownship.fold??0)>0.02) notice(translate("SPREAD WINGS")); else start_launch(); }   // only when spotted on the cat, lined up, at full power — and never with the wings folded
 		if(ch===key_of("acquire") && MULTIPLAYER && !on_ground()) acquire_target();   // ACM acquisition (in flight, Enter is free — the catapult owns it only on deck); single-player auto-designates the lone bandit
-		if(ch===key_of("select")){ master=master==="gun"?"9m":master==="9m"?"nav":"gun"; }   // weapon select (#133): GUN -> 9M -> NAV -> GUN; the HUD master mode follows
+		if(ch===key_of("select")){ set_master(master==="gun"?"9m":master==="9m"?"nav":"gun"); }   // weapon select (#133): GUN -> 9M -> NAV -> GUN; the HUD master mode follows, and crossing the A/A-NAV boundary recalls that mode's displays (#15)
 		if(ch===key_of("altitude")){ alt_radar=!alt_radar; }   // HUD altitude switch: BARO <-> RDR
 		if(ch===key_of("reject")){ declutter=(declutter+1)%3; notice(translate(["HUD NORM","HUD REJ 1","HUD REJ 2"][declutter])); }     // the three-position symbology reject switch (NATOPS 2.13.4.8.1) — unbound by default: re-pressing 2 cycles it; the action stays for players who want a dedicated key or button
 		if(ch===key_of("guns")) trigger_missile();   // one trigger, weapon-selected: in 9M the trigger launches (the real Hornet's trigger fires the selected A/A weapon) chases the acquisition when one exists (the server's seeker judges the real damage)
@@ -4067,6 +4080,8 @@ function reset_ownship(){
 	ownship.grounded=false; ownship.touch=null; ownship.pass={gs:0,az:0,n:0}; ownship.grade=""; ownship.waved=false; ownship.groove=false; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
 	test_active=null;   // a test scenario must not keep driving across a crash respawn (it would fly the fresh spawn straight into the deck, forever)
 	const st=mission_start();
+	if(st==="case1"||st==="case2"||st==="case3") ddi_sets.nav.right="adi";   // spawned on approach: the pilot set up for instrument work before we hand over (#15)
+	ddi_recall();   // a fresh pit shows the spawn master mode's display set
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
 	else if(st==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
@@ -5117,7 +5132,7 @@ function start_mission(){
 	{ const azq=devq.get("az"); if(azq!==null){ set_view("chase"); cam_az=parseFloat(azq)||0; const elq=parseFloat(devq.get("el")||""); if(!isNaN(elq)) cam_el=elq; const dq=parseFloat(devq.get("dist")||""); if(!isNaN(dq)) cam_dist=dq; } }   // &az=<rad>[&el=&dist=] — headless chase-camera pose without relocating (unlike ?shot)
 	{ const pq=devq.get("probe"); if(pq){ const [px,py]=pq.split(",").map(Number); dev_probe={x:px,y:py}; } }   // &probe=x,y (viewport fractions) — raycast that pixel each second and print the hit on the dev HUD (headless artifact identification)
 	{ const dq=devq.get("ddi"); if(dq) for(const part of dq.split(",")){ const [d,p]=part.split(":"); const st=ddi_state[d]; if(!st) continue;
-		if(DDI_PAGES[p]){ st.page=p; st.menu=""; } else if(p==="tac"||p==="supt") st.menu=p; } }   // &ddi=left:eng,center:supt — headless page/menu selection for captures
+		if(DDI_PAGES[p]){ ddi_show(d,p); } else if(p==="tac"||p==="supt") st.menu=p; } }   // &ddi=left:eng,center:supt — headless page/menu selection for captures; records into the mode set like a real pick (#15)
 	build_ocean(cfg.ocean_segments);
 	apply_time_of_day(cfg.tod); apply_effects();
 	apply_clouds(); if(cloud_active()) size_rt();   // runs even for "none": zeroes the overcast/shadow uniforms on the ocean and sky
