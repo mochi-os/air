@@ -110,23 +110,24 @@ export function normalize(raw: unknown): Loadout {
   return out
 }
 
-// PRESETS are one-tap fills (#17, decided 2026-08-05): Gun fighter (no
-// stores — the pure gunfight), Fox 2 fighter (4× AIM-9, tips + outboard
-// singles), CAP (Fox 2 fighter + centerline tank). Contents are data;
-// weapon-era presets accumulate, mission presets evolve.
+// PRESETS are one-tap fills (#17): Gun fighter (no stores — the pure
+// gunfight), Fox 2 fighter (6× AIM-9M — tips plus outboard twins, decided
+// 2026-08-06, superseding the 4-round transitional fit), CAP (Fox 2 fighter
+// + centerline tank). Contents are data; weapon-era presets accumulate,
+// mission presets evolve.
 export const PRESETS: Record<string, Loadout> = {
   gun: normalize({}),
   fox2: normalize({
     1: { fixture: 'rail', stores: ['9m'] },
-    2: { fixture: 'rail', stores: ['9m'] },
-    8: { fixture: 'rail', stores: ['9m'] },
+    2: { fixture: 'twin', stores: ['9m', '9m'] },
+    8: { fixture: 'twin', stores: ['9m', '9m'] },
     9: { fixture: 'rail', stores: ['9m'] },
   }),
   cap: normalize({
     1: { fixture: 'rail', stores: ['9m'] },
-    2: { fixture: 'rail', stores: ['9m'] },
+    2: { fixture: 'twin', stores: ['9m', '9m'] },
     5: { fixture: 'pylon', stores: ['tank'] },
-    8: { fixture: 'rail', stores: ['9m'] },
+    8: { fixture: 'twin', stores: ['9m', '9m'] },
     9: { fixture: 'rail', stores: ['9m'] },
   }),
 }

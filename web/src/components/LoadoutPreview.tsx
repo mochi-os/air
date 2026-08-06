@@ -112,7 +112,7 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
     if (!host) return
     let gone = false
     const width = host.clientWidth || 480
-    const height = 190
+    const height = 130
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true })
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
     renderer.setSize(width, height)
@@ -140,9 +140,12 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
       wrap.rotation.y = Math.PI / 2
       wrap.scale.setScalar(10 / Math.max(size.x, size.y, size.z, 1e-3))
       scene.add(wrap)
-      const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 100)
-      camera.position.set(9.5, 1.9, 0)
-      camera.lookAt(0, -0.15, 0)
+      // Nose-on from slightly BELOW: the belly is where the stores hang, and
+      // a from-above eye hid the centerline tank behind the nose. The narrow
+      // lens fills the panel with the wingspan without fisheye at this range.
+      const camera = new THREE.PerspectiveCamera(18, width / height, 0.1, 100)
+      camera.position.set(9.0, -0.85, 0)
+      camera.lookAt(0, -0.38, 0)
       state.current = { renderer, scene, camera, jet }
       dress(jet, wanted.current)
       renderer.render(scene, camera)
@@ -163,5 +166,5 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
     s.renderer.render(s.scene, s.camera)
   }, [stores])
 
-  return <div ref={mount} className='bg-muted/30 h-[190px] w-full overflow-hidden rounded-lg' />
+  return <div ref={mount} className='h-[130px] w-full overflow-hidden' />
 }

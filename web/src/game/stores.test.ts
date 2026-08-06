@@ -53,12 +53,12 @@ describe('normalize', () => {
 })
 
 describe('presets', () => {
-  it('fox2 is four rounds, tips plus outboard singles', () => {
-    expect(rounds(PRESETS.fox2).map((r) => r.name)).toEqual(['tip9', 'tip1', '9m8', '9m2'])
+  it('fox2 is six rounds, tips plus outboard twins', () => {
+    expect(rounds(PRESETS.fox2).map((r) => r.name)).toEqual(['tip9', 'tip1', '9m8a', '9m2a', '9m8b', '9m2b'])
   })
   it('cap adds the centerline tank to fox2', () => {
     expect(PRESETS.cap['5']).toEqual({ fixture: 'pylon', stores: ['tank'] })
-    expect(rounds(PRESETS.cap)).toHaveLength(4)
+    expect(rounds(PRESETS.cap)).toHaveLength(6)
   })
   it('gun carries nothing', () => {
     expect(rounds(PRESETS.gun)).toHaveLength(0)
@@ -67,7 +67,7 @@ describe('presets', () => {
   it('matches recognises presets and rejects customs', () => {
     expect(matches(PRESETS.cap)).toBe('cap')
     const custom = structuredClone(PRESETS.fox2)
-    custom['2'].stores[0] = ''
+    custom['2'].stores[1] = ''
     expect(matches(custom)).toBe('')
   })
   it('migrate maps the retired boolean', () => {
@@ -97,7 +97,7 @@ describe('strip', () => {
     const lo = strip(PRESETS.cap)
     expect(missiles_loaded(lo)).toBe(false)
     expect(lo['5']).toEqual({ fixture: 'pylon', stores: ['tank'] })
-    expect(lo['2']).toEqual({ fixture: 'rail', stores: [''] }) // the rail stays, empty and draggy
+    expect(lo['2']).toEqual({ fixture: 'twin', stores: ['', ''] }) // the twin stays, empty and draggy
   })
 })
 
@@ -113,9 +113,9 @@ describe('mask', () => {
     const one = mask(PRESETS.fox2, 1, BOOK) // tip9 departs first
     expect(one & bit('tip9')).toBeFalsy()
     expect(one & bit('tip1')).toBeTruthy()
-    const spent = mask(PRESETS.fox2, 4, BOOK)
-    expect(spent & (bit('tip1') | bit('tip9') | bit('9m2') | bit('9m8'))).toBe(0)
-    expect(spent & bit('rail2')).toBeTruthy() // empty rails stay, with their drag
+    const spent = mask(PRESETS.fox2, 6, BOOK)
+    expect(spent & (bit('tip1') | bit('tip9') | bit('9m2a') | bit('9m2b') | bit('9m8a') | bit('9m8b'))).toBe(0)
+    expect(spent & bit('twin2')).toBeTruthy() // empty twins stay, with their drag
   })
   it('keeps tanks and fixtures regardless of fired count', () => {
     const bits = mask(PRESETS.cap, 4, BOOK)
@@ -127,8 +127,8 @@ describe('mask', () => {
 describe('weight', () => {
   it('sums hardware and tank capacity', () => {
     const w = weight(PRESETS.cap, BOOK)
-    // 2 tips + 2 outboard rounds + 2 rails + pylon + tank
-    expect(w.hardware).toBe(86 * 4 + 179 * 2 + 120 + 158)
+    // 2 tips + 4 twin rounds + 2 twin adapters + pylon + tank
+    expect(w.hardware).toBe(86 * 6 + 290 * 2 + 120 + 158)
     expect(w.fuel).toBe(1010)
   })
   it('gun fighter weighs nothing', () => {

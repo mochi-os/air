@@ -1622,7 +1622,7 @@ function ddi_fcs(x,display){ const o=last_out||[];   // per-surface truth straig
 const TIP_NODES=stores_tips;   // the two wingtip AIM-9 NODES in the fa18c GLB, sides probe-verified — SHARED with the setup preview via stores.ts so the two can never disagree
 const MISSILE_NODES=[TIP_NODES.tip9, TIP_NODES.tip1];   // legacy tip pair for jets with no known loadout (remotes before the roster carries theirs)
 const ROUND_ANCHORS=stores_anchors;   // model-space anchors for AIM-9 rounds cloned onto the outboard stations — also shared with the preview
-const BOT_ARMED=stores_normalize({ 1:{fixture:"rail",stores:["9m"]}, 9:{fixture:"rail",stores:["9m"]} });   // the bot's armed standard stays its CALIBRATED configuration — two wingtips, exactly what the doctrine sweeps flew. Promoting the bot to the full Fox 2 fighter is a deliberate re-sweep, not a side effect (#17 plan, Risks)
+const BOT_ARMED=stores_presets.fox2;   // the bot's armed standard IS the Fox 2 fighter (decided 2026-08-06): six AIM-9Ms carried; the brain's calibrated two-round discipline fires from them in SMS order (opening it is #25's re-sweep)
 const BOT_CLEAN=stores_normalize({});
 let loadout_rev=0;   // bumped whenever a jet's loadout is (re)assigned — keys the per-frame mask memo
 let stores_book=null;   // the resolved fitment catalog, read from the core once it boots
@@ -1630,6 +1630,7 @@ function stores_catalog(){ if(!stores_book){ const raw=flight_catalog(own_aircra
 function loadout(){ return missiles_rule?cfg.stores:stores_strip(cfg.stores); }   // the FLOWN loadout: the match rule clamps the spawn, never the persisted choice
 function missiles_on(){ return missiles_rule&&missiles_loaded(cfg.stores); }   // the derived flag that replaced cfg.missiles: joust rule (bandit arms when the player does), SHOOT cue, dev probe
 function loadout_racked(lo){ for(let s=2;s<=8;s++){ const slot=lo&&lo[String(s)]; if(slot&&slot.fixture) return true; } return false; }
+function bandit_remaining(){ return missiles_on()?stores_rounds(BOT_ARMED).length:0; }   // the SP bandit CARRIES the full armed standard and never expends it (its brain is guns-only; bandit.spent counts gun rounds); server bots decrement their own masks
 function assign_loadout(st,lo){ st.loadout=lo; loadout_rev++; if(loadout_racked(lo)) void init_stores_model(); apply_stores(st); }
 // apply_stores rebuilds a jet's store visuals from its loadout: fixtures and
 // tanks from the split stores.glb (per-station nodes in the airframe's own
@@ -1688,7 +1689,7 @@ function update_rails(st,count){ if(!st.group) return;
 	for(const [name,node] of Object.entries((st.racks&&st.racks.nodes)||{})){ if(name.startsWith("9m")) node.visible=live.has(name); } }
 function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); position_aircraft_lights(); calibrate_eye();
 	assign_loadout(ownship, loadout()); assign_loadout(bandit, missiles_on()?BOT_ARMED:BOT_CLEAN);
-	update_rails(ownship, ownship.msl); update_rails(bandit, missiles_on()?2:0); }   // re-pin the ownship lights to the real airframe; rails reflect the loadout
+	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining()); }   // re-pin the ownship lights to the real airframe; rails reflect the loadout
 // own_mask is the core attach bitmask for the ownship's flown loadout with the
 // expended rounds cleared — memoised on (loadout revision, remaining count) so
 // the per-frame sync allocates nothing. Before the catalog is readable the
@@ -4062,7 +4063,7 @@ function reset_ownship(){
 	bandit.struck=0; bandit.fate=undefined; ownship.struck=0; ownship.fate=undefined;   // and starts clean battle channels (#238)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
 	ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; ownship.lights=(cfg.tod!=="day");   // lights default on at night, off by day; the magazine is the flown loadout's round count (#17)
-	update_rails(ownship, ownship.msl); update_rails(bandit, missiles_on()?2:0);
+	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining());
 	ownship.grounded=false; ownship.touch=null; ownship.pass={gs:0,az:0,n:0}; ownship.grade=""; ownship.waved=false; ownship.groove=false; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
 	test_active=null;   // a test scenario must not keep driving across a crash respawn (it would fly the fresh spawn straight into the deck, forever)
 	const st=mission_start();
