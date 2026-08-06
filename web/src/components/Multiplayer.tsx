@@ -60,6 +60,9 @@ export function Multiplayer({
   onJoin,
   pilot,
   hideServer,
+  rules,
+  onRules,
+  stores,
 }: {
   server: string
   callsign: string
@@ -68,6 +71,9 @@ export function Multiplayer({
   onJoin: (join: Join) => void
   pilot?: string // this player's stable offer token (#77)
   hideServer?: boolean // the server page owns the address and the callsign (Settings does): show only the match list and its controls
+  rules?: Record<string, boolean> // the creator's persisted match rules (#17): today just missiles (default on)
+  onRules?: (rules: Record<string, boolean>) => void
+  stores?: Record<string, { fixture: string; stores: string[] }> // the player's persisted loadout, sent as the join request (#17)
 }) {
   const { t } = useLingui()
   const identity = useIdentityName()
@@ -81,7 +87,13 @@ export function Multiplayer({
   const [mode, setMode] = useState<'furball' | 'joust' | 'teams'>('furball')
   const [tod, setTod] = useState<'day' | 'night'>('day')
   const [clouds, setClouds] = useState('none')
-  const [missiles, setMissiles] = useState(false)
+  // The missiles rule defaults ON and persists per-creator (#17, decided
+  // 2026-08-05): the switch seeds from the saved rules and writes back.
+  const [missiles, setMissilesState] = useState(rules?.missiles !== false)
+  const setMissiles = (value: boolean) => {
+    setMissilesState(value)
+    onRules?.({ ...rules, missiles: value })
+  }
   const [cheats, setCheats] = useState<Record<string, boolean>>({}) // invulnerable (humans only), ammunition, fuel
   const [bots, setBots] = useState<Record<string, number>>({ drone: 0, novice: 0, pilot: 0, ace: 0, superhuman: 0 }) // server-flown aircraft per skill level; drones cruise, the rest fight (also the 100-player verification lever)
   const [blueBots, setBlueBots] = useState<Record<string, number>>({ drone: 0, novice: 0, pilot: 0, ace: 0, superhuman: 0 }) // teams mode: the blue side's bots (the row above places red's)
@@ -131,13 +143,16 @@ export function Multiplayer({
 
   // enter gates every join on a cross-host check: if the lobby is redirecting
   // the game connection to a different host, confirm before dialling it.
+  // Every join carries the persisted loadout as the request (#17); the server
+  // clamps it against the match rules and spawns the granted result.
   const enter = useCallback(
     (params: Join) => {
+      const request = { ...params, stores }
       const other = crossHost(params.address, address)
-      if (other) setRedirect({ host: other, proceed: () => onJoin(params) })
-      else onJoin(params)
+      if (other) setRedirect({ host: other, proceed: () => onJoin(request) })
+      else onJoin(request)
     },
-    [address, onJoin]
+    [address, onJoin, stores]
   )
 
   const join = useCallback(

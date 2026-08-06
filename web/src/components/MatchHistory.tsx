@@ -154,6 +154,9 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
             <TableHead>
               <Trans>Date</Trans>
             </TableHead>
+            <TableHead className='text-right'>
+              <Trans>Duration</Trans>
+            </TableHead>
             <TableHead>
               <Trans>Server</Trans>
             </TableHead>
@@ -182,6 +185,12 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
           {matches.map((m, i) => (
             <TableRow key={i} className='group'>
               <TableCell>{formatDateTime(new Date(m.started))}</TableCell>
+              {/* started/ended are epoch milliseconds, stamped by the client
+                  and summed server-side for the career total above — so the
+                  row reads on the same clock as the summary. */}
+              <TableCell className='text-right tabular-nums'>
+                {m.ended > m.started ? clock((m.ended - m.started) / 1000) : '—'}
+              </TableCell>
               <TableCell>{serverName(m.world)}</TableCell>
               <TableCell>{modeLabel(m.mode)}</TableCell>
               <TableCell className='text-right'>

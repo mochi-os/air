@@ -41,14 +41,19 @@ msgstr "{0, plural, zero {# محدد} one {# محدد} two {# محدد} few {# �
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:971
+#: src/components/MissionSetup.tsx:1127
 msgid "{0} created “{1}”"
 msgstr "{0} أنشأ «{1}»"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:259
+#: src/components/Multiplayer.tsx:274
 msgid "{0} flying"
 msgstr "{0} في الجو"
+
+#. placeholder {0}: gross - LAUNCH
+#: src/components/MissionSetup.tsx:828
+msgid "{0} lb over maximum launch weight"
+msgstr "{0} lb فوق الحد الأقصى لوزن الإطلاق"
 
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
@@ -57,7 +62,7 @@ msgstr "معاينة خيار {0}"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:440
+#: src/components/Multiplayer.tsx:455
 msgid "{0}/{1} players"
 msgstr "{0}/{1} لاعبين"
 
@@ -69,7 +74,7 @@ msgstr "اسم {entityLabel}"
 msgid "{entityLabel} name is required"
 msgstr "اسم {entityLabel} مطلوب"
 
-#: src/components/Multiplayer.tsx:165
+#: src/components/Multiplayer.tsx:180
 msgid "{name}'s match"
 msgstr "مباراة {name}"
 
@@ -126,7 +131,7 @@ msgstr "سلك 1"
 msgid "12 hours"
 msgstr "12 ساعة"
 
-#: src/components/MissionSetup.tsx:733
+#: src/components/MissionSetup.tsx:889
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -142,7 +147,7 @@ msgstr "24 ساعة"
 msgid "3 WIRE"
 msgstr "سلك 3"
 
-#: src/components/MissionSetup.tsx:736
+#: src/components/MissionSetup.tsx:892
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -182,14 +187,14 @@ msgstr "نوع الحساب"
 msgid "Account verified"
 msgstr "تم التحقق من الحساب"
 
-#: src/components/MissionSetup.tsx:1230
-#: src/components/MissionSetup.tsx:1585
-#: src/components/Multiplayer.tsx:380
+#: src/components/MissionSetup.tsx:1389
+#: src/components/MissionSetup.tsx:1744
+#: src/components/Multiplayer.tsx:395
 msgid "Ace"
 msgstr "آس"
 
-#: src/components/MissionSetup.tsx:142
-#: src/components/MissionSetup.tsx:181
+#: src/components/MissionSetup.tsx:145
+#: src/components/MissionSetup.tsx:185
 msgid "Acquire target"
 msgstr "التقاط الهدف"
 
@@ -247,7 +252,7 @@ msgstr "إضافة حساب جديد"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:292
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:291
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:194
 msgid "Add option"
@@ -281,7 +286,7 @@ msgstr "جارٍ الإضافة..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "اضبط المظهر والتخطيط ليناسب تفضيلاتك."
 
-#: src/components/MissionSetup.tsx:1434
+#: src/components/MissionSetup.tsx:1593
 msgid "Afterburner"
 msgstr "الحارق اللاحق"
 
@@ -289,20 +294,20 @@ msgstr "الحارق اللاحق"
 msgid "AI"
 msgstr "الذكاء الاصطناعي"
 
-#: src/components/MissionSetup.tsx:114
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:117
+#: src/components/MissionSetup.tsx:455
 msgid "Aircraft"
 msgstr "الطائرة"
 
-#: src/components/MissionSetup.tsx:810
+#: src/components/MissionSetup.tsx:966
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "حاملة طائرات <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> بواسطة <1>Muhamad Mirza Arrafi</1> (Sketchfab)، مرخّصة بموجب <2>CC BY 4.0</2>. مُعدّلة: أُعيد قياسها، وأُعيد توجيهها، وغُمرت حتى خط الماء، وبُسّطت للويب."
 
-#: src/components/MissionSetup.tsx:784
+#: src/components/MissionSetup.tsx:940
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "نموذج طائرة <0>“F/A-18C Hornet”</0> بواسطة <1>CreadorDeMu</1> (Sketchfab)، مرخّص بموجب <2>CC BY 4.0</2>. مُعدّل: أُعيد توجيهه وقياسه، وأُزيلت بيانات الإكساء غير المستخدمة، وفُصلت الحمولات الخارجية في ملف منفصل، وعُكست إحدى شبكات الغلاف مرآتيًا."
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:458
 msgid "Alerts"
 msgstr "التنبيهات"
 
@@ -315,7 +320,7 @@ msgstr "الكل"
 msgid "Allow anyone to search for {0}"
 msgstr "السماح لأي شخص بالبحث عن {0}"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:226
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
 msgid "Allow sort by"
 msgstr "السماح بالترتيب حسب"
 
@@ -340,12 +345,12 @@ msgstr "أي شخص"
 msgid "Anyone who is logged in"
 msgstr "أي شخص مسجّل الدخول"
 
-#: src/components/MissionSetup.tsx:148
-#: src/components/MissionSetup.tsx:187
+#: src/components/MissionSetup.tsx:151
+#: src/components/MissionSetup.tsx:191
 msgid "Approach power (ATC)"
 msgstr "قدرة الاقتراب (ATC)"
 
-#: src/components/MissionSetup.tsx:707
+#: src/components/MissionSetup.tsx:863
 msgid "Approach, on-speed (Vapp)"
 msgstr "اقتراب، على السرعة المقررة (Vapp)"
 
@@ -366,12 +371,12 @@ msgstr "هل أنت متأكد من حذف هذا التعليق؟ سيؤدي ذ
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "هل أنت متأكد من تسجيل الخروج؟ ستحتاج إلى تسجيل الدخول مرة أخرى للوصول إلى حسابك."
 
-#: src/components/MissionSetup.tsx:1195
+#: src/components/MissionSetup.tsx:1354
 msgid "Armament"
 msgstr "التسليح"
 
-#: src/components/MissionSetup.tsx:147
-#: src/components/MissionSetup.tsx:186
+#: src/components/MissionSetup.tsx:150
+#: src/components/MissionSetup.tsx:190
 msgid "Arrestor hook"
 msgstr "خطاف الإيقاف"
 
@@ -414,11 +419,11 @@ msgstr "الصورة الرمزية"
 msgid "Avatar for {name}"
 msgstr "صورة {name} الرمزية"
 
-#: src/components/MissionSetup.tsx:312
+#: src/components/MissionSetup.tsx:317
 msgid "Axes"
 msgstr "المحاور"
 
-#: src/components/MissionSetup.tsx:353
+#: src/components/MissionSetup.tsx:358
 msgid "Axis {i}"
 msgstr "المحور {i}"
 
@@ -437,7 +442,7 @@ msgstr "رجوع"
 msgid "Back to home"
 msgstr "العودة إلى الرئيسية"
 
-#: src/components/MissionSetup.tsx:1222
+#: src/components/MissionSetup.tsx:1381
 msgid "Bandit"
 msgstr "طائرة معادية"
 
@@ -445,19 +450,19 @@ msgstr "طائرة معادية"
 msgid "Banner"
 msgstr "اللافتة"
 
-#: src/components/MissionSetup.tsx:698
+#: src/components/MissionSetup.tsx:854
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "أفضل صعود (Vy، دفع 100%)"
 
-#: src/components/MissionSetup.tsx:699
+#: src/components/MissionSetup.tsx:855
 msgid "Best climb (Vy, afterburner)"
 msgstr "أفضل صعود (Vy، الحارق اللاحق)"
 
-#: src/components/MissionSetup.tsx:701
+#: src/components/MissionSetup.tsx:857
 msgid "Best glide (engines out)"
 msgstr "أفضل انزلاق (المحركات متوقفة)"
 
-#: src/components/MissionSetup.tsx:703
+#: src/components/MissionSetup.tsx:859
 msgid "Best sustained turn speed"
 msgstr "أفضل سرعة انعطاف مستمر"
 
@@ -479,11 +484,11 @@ msgstr "تم حظر الانتقال إلى رابط غير موثوق"
 msgid "Blocks"
 msgstr "يحظر"
 
-#: src/components/Multiplayer.tsx:479
+#: src/components/Multiplayer.tsx:494
 msgid "Blue"
 msgstr "الأزرق"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Blue bots"
 msgstr "بوتات زرقاء"
 
@@ -504,7 +509,7 @@ msgstr "تعزيز الاهتمام"
 msgid "Border colour"
 msgstr "لون الحدود"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Bots"
 msgstr "البوتات"
 
@@ -524,11 +529,11 @@ msgstr "انعطف يمينًا"
 msgid "Browser notifications"
 msgstr "إشعارات المتصفح"
 
-#: src/components/MissionSetup.tsx:413
+#: src/components/MissionSetup.tsx:418
 msgid "Button {i}"
 msgstr "الزر {i}"
 
-#: src/components/MissionSetup.tsx:387
+#: src/components/MissionSetup.tsx:392
 msgid "Buttons"
 msgstr "الأزرار"
 
@@ -536,12 +541,12 @@ msgstr "الأزرار"
 msgid "CALL THE BALL"
 msgstr "أعلن الكرة"
 
-#: src/components/MissionSetup.tsx:1490
-#: src/components/Multiplayer.tsx:243
+#: src/components/MissionSetup.tsx:1649
+#: src/components/Multiplayer.tsx:258
 msgid "Callsign"
 msgstr "رمز النداء"
 
-#: src/components/MissionSetup.tsx:567
+#: src/components/MissionSetup.tsx:572
 msgid "Camera distance"
 msgstr "مسافة الكاميرا"
 
@@ -558,9 +563,9 @@ msgstr "مسافة الكاميرا"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/MissionSetup.tsx:542
-#: src/components/Multiplayer.tsx:214
-#: src/components/Multiplayer.tsx:456
+#: src/components/MissionSetup.tsx:547
+#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:471
 msgid "Cancel"
 msgstr "إلغاء"
 
@@ -574,35 +579,35 @@ msgstr "إلغاء التعليق"
 msgid "Cancel reply"
 msgstr "إلغاء الرد"
 
-#: src/components/MissionSetup.tsx:189
+#: src/components/MissionSetup.tsx:193
 msgid "Canopy"
 msgstr "قبة القمرة"
 
-#: src/components/MissionSetup.tsx:1006
+#: src/components/MissionSetup.tsx:1162
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1270
+#: src/components/MissionSetup.tsx:1429
 msgid "Case I (day)"
 msgstr "حالة I (نهار)"
 
-#: src/components/MissionSetup.tsx:1007
+#: src/components/MissionSetup.tsx:1163
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1271
+#: src/components/MissionSetup.tsx:1430
 msgid "Case II (weather)"
 msgstr "حالة II (طقس)"
 
-#: src/components/MissionSetup.tsx:1008
+#: src/components/MissionSetup.tsx:1164
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1272
+#: src/components/MissionSetup.tsx:1431
 msgid "Case III (night)"
 msgstr "حالة III (ليل)"
 
-#: src/components/MissionSetup.tsx:1278
+#: src/components/MissionSetup.tsx:1437
 msgid "Catapult"
 msgstr "المقلاع"
 
@@ -623,16 +628,16 @@ msgstr "منظر المطاردة:"
 msgid "chat"
 msgstr "دردشة"
 
-#: src/components/MissionSetup.tsx:199
+#: src/components/MissionSetup.tsx:204
 msgid "Chat"
 msgstr "الدردشة"
 
-#: src/components/MissionSetup.tsx:200
+#: src/components/MissionSetup.tsx:205
 msgid "Chat to everyone"
 msgstr "الدردشة مع الجميع"
 
-#: src/components/MatchHistory.tsx:176
-#: src/components/MissionSetup.tsx:1320
+#: src/components/MatchHistory.tsx:179
+#: src/components/MissionSetup.tsx:1479
 msgid "Cheats"
 msgstr "الغش"
 
@@ -679,7 +684,7 @@ msgstr "اختر اللغة"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:304
+#: src/components/Multiplayer.tsx:319
 msgid "Clear"
 msgstr "مسح"
 
@@ -743,7 +748,7 @@ msgstr "إغلاق البحث"
 msgid "closer"
 msgstr "أقرب"
 
-#: src/components/MissionSetup.tsx:1306
+#: src/components/MissionSetup.tsx:1465
 msgid "Clouds"
 msgstr "السحب"
 
@@ -792,7 +797,7 @@ msgstr "بدء الاقتراب"
 msgid "Comment actions"
 msgstr "إجراءات التعليق"
 
-#: src/components/MissionSetup.tsx:116
+#: src/components/MissionSetup.tsx:119
 msgid "Communication"
 msgstr "الاتصالات"
 
@@ -814,7 +819,7 @@ msgstr "تكوين إعدادات العرض"
 msgid "Confirm"
 msgstr "تأكيد"
 
-#: src/components/MissionSetup.tsx:1116
+#: src/components/MissionSetup.tsx:1272
 msgid "Connect"
 msgstr "اتصال"
 
@@ -830,7 +835,7 @@ msgstr "الحسابات المتصلة"
 msgid "Connecting..."
 msgstr "جارٍ الاتصال..."
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:277
 msgid "Connecting…"
 msgstr "جارٍ الاتصال…"
 
@@ -851,7 +856,7 @@ msgid "Contextual information and details."
 msgstr "معلومات وتفاصيل سياقية."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:238
 msgid "Continue"
 msgstr "متابعة"
 
@@ -871,11 +876,11 @@ msgstr "تم النسخ إلى الحافظة"
 msgid "Copy"
 msgstr "نسخ"
 
-#: src/components/MissionSetup.tsx:702
+#: src/components/MissionSetup.tsx:858
 msgid "Corner speed (best instant turn)"
 msgstr "سرعة الزاوية (أفضل انعطاف لحظي)"
 
-#: src/components/Multiplayer.tsx:179
+#: src/components/Multiplayer.tsx:194
 msgid "Could not create the match"
 msgstr "تعذّر إنشاء المباراة"
 
@@ -883,12 +888,12 @@ msgstr "تعذّر إنشاء المباراة"
 msgid "Could not load this document. Please try again later."
 msgstr "تعذّر تحميل هذا المستند. يرجى المحاولة مرة أخرى لاحقاً."
 
-#: src/components/MatchHistory.tsx:217
-#: src/components/MatchHistory.tsx:223
+#: src/components/MatchHistory.tsx:226
+#: src/components/MatchHistory.tsx:232
 msgid "Could not save the recording"
 msgstr "تعذّر حفظ التسجيل"
 
-#: src/components/MissionSetup.tsx:953
+#: src/components/MissionSetup.tsx:1109
 msgid "Could not send the message"
 msgstr "تعذر إرسال الرسالة"
 
@@ -908,8 +913,8 @@ msgstr "تعذّر بدء إعادة المصادقة. يرجى المحاولة
 msgid "Couldn't verify with that account. Please try again."
 msgstr "تعذّر التحقق باستخدام هذا الحساب. يرجى المحاولة مرة أخرى."
 
-#: src/components/MissionSetup.tsx:143
-#: src/components/MissionSetup.tsx:182
+#: src/components/MissionSetup.tsx:146
+#: src/components/MissionSetup.tsx:186
 msgid "Countermeasures"
 msgstr "إجراءات مضادة"
 
@@ -930,16 +935,16 @@ msgstr "إنشاء"
 msgid "Create {0}"
 msgstr "إنشاء {0}"
 
-#: src/components/Multiplayer.tsx:412
+#: src/components/Multiplayer.tsx:427
 msgid "Create and fly"
 msgstr "إنشاء وتحليق"
 
-#: src/components/Multiplayer.tsx:277
+#: src/components/Multiplayer.tsx:292
 msgid "Create match"
 msgstr "إنشاء مباراة"
 
-#: src/components/MissionSetup.tsx:1625
-#: src/components/MissionSetup.tsx:1648
+#: src/components/MissionSetup.tsx:1784
+#: src/components/MissionSetup.tsx:1807
 msgid "Create mission"
 msgstr "إنشاء مهمة"
 
@@ -957,13 +962,13 @@ msgstr "تم الإنشاء"
 msgid "Creating..."
 msgstr "جارٍ الإنشاء..."
 
-#: src/components/MissionSetup.tsx:773
-#: src/components/MissionSetup.tsx:779
+#: src/components/MissionSetup.tsx:929
+#: src/components/MissionSetup.tsx:935
 msgid "Credits"
 msgstr "شكر وتقدير"
 
-#: src/components/MissionSetup.tsx:1313
-#: src/components/Multiplayer.tsx:305
+#: src/components/MissionSetup.tsx:1472
+#: src/components/Multiplayer.tsx:320
 msgid "Cumulus"
 msgstr "سحب ركامية"
 
@@ -979,8 +984,8 @@ msgstr "مخصص"
 msgid "CUT"
 msgstr "خطير"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:194
+#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:198
 msgid "Cycle view"
 msgstr "تبديل المنظر"
 
@@ -1004,13 +1009,13 @@ msgstr "تعارض في البيانات"
 msgid "Date"
 msgstr "التاريخ"
 
-#: src/components/MissionSetup.tsx:1301
-#: src/components/Multiplayer.tsx:300
+#: src/components/MissionSetup.tsx:1460
+#: src/components/Multiplayer.tsx:315
 msgid "Day"
 msgstr "نهار"
 
 #: src/components/MatchHistory.tsx:144
-#: src/components/MatchHistory.tsx:170
+#: src/components/MatchHistory.tsx:173
 msgid "Deaths"
 msgstr "الوفيات"
 
@@ -1058,7 +1063,7 @@ msgstr "حذف العمود"
 msgid "Delete comment"
 msgstr "حذف التعليق"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:301
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:300
 msgid "Delete field"
 msgstr "حذف الحقل"
 
@@ -1067,8 +1072,8 @@ msgid "Delete option"
 msgstr "حذف الخيار"
 
 #. placeholder {0}: opt.name
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:279
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:284
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:278
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:283
 msgid "Delete option {0}"
 msgstr "حذف الخيار {0}"
 
@@ -1096,8 +1101,8 @@ msgstr "الوصف"
 msgid "Details Panel"
 msgstr "لوحة التفاصيل"
 
-#: src/components/MissionSetup.tsx:379
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:384
+#: src/components/MissionSetup.tsx:433
 msgid "Detect"
 msgstr "اكتشاف"
 
@@ -1112,11 +1117,11 @@ msgstr "اكتشاف"
 msgid "Detect from web browser"
 msgstr "اكتشاف من متصفح الويب"
 
-#: src/components/MissionSetup.tsx:281
+#: src/components/MissionSetup.tsx:286
 msgid "Device"
 msgstr "جهاز"
 
-#: src/components/Multiplayer.tsx:203
+#: src/components/Multiplayer.tsx:218
 msgid "Different game host"
 msgstr "مضيف لعبة مختلف"
 
@@ -1136,7 +1141,7 @@ msgstr "تجاهل"
 msgid "Discard draft?"
 msgstr "تجاهل المسودة؟"
 
-#: src/components/MissionSetup.tsx:293
+#: src/components/MissionSetup.tsx:298
 msgid "disconnected"
 msgstr "غير متصل"
 
@@ -1151,8 +1156,8 @@ msgstr "غير متصل"
 msgid "Dismiss"
 msgstr "تجاهل"
 
-#: src/components/MissionSetup.tsx:152
-#: src/components/MissionSetup.tsx:195
+#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:200
 msgid "Display repeater"
 msgstr "مكرر الشاشة"
 
@@ -1160,13 +1165,13 @@ msgstr "مكرر الشاشة"
 msgid "Displays the mobile sidebar."
 msgstr "يعرض الشريط الجانبي للهاتف."
 
-#: src/components/MissionSetup.tsx:1422
+#: src/components/MissionSetup.tsx:1581
 msgid "Distance LOD"
 msgstr "مستوى تفاصيل المسافة (LOD)"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:306
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1729
+#: src/components/MissionSetup.tsx:1888
 msgid "Done"
 msgstr "منتهٍ"
 
@@ -1184,7 +1189,7 @@ msgstr "فشل التنزيل"
 msgid "Drag"
 msgstr "سحب"
 
-#: src/components/Multiplayer.tsx:377
+#: src/components/Multiplayer.tsx:392
 msgid "Drone"
 msgstr "درون"
 
@@ -1192,7 +1197,11 @@ msgstr "درون"
 msgid "Duplicates"
 msgstr "يكرر"
 
-#: src/components/MissionSetup.tsx:1416
+#: src/components/MatchHistory.tsx:158
+msgid "Duration"
+msgstr "المدة"
+
+#: src/components/MissionSetup.tsx:1575
 msgid "Dynamic resolution"
 msgstr "الدقة الديناميكية"
 
@@ -1213,11 +1222,11 @@ msgstr "تعديل"
 msgid "Edit {label}"
 msgstr "تعديل {label}"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:137
 msgid "Edit field"
 msgstr "تعديل الحقل"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:139
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
 msgid "Edit field settings"
 msgstr "تعديل إعدادات الحقل"
 
@@ -1226,8 +1235,8 @@ msgid "Edit option"
 msgstr "تعديل الخيار"
 
 #. placeholder {0}: opt.name
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:264
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:269
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:263
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:268
 msgid "Edit option {0}"
 msgstr "تعديل الخيار {0}"
 
@@ -1239,7 +1248,7 @@ msgstr "تعديل البطاقة المحددة"
 msgid "Edit view"
 msgstr "تعديل العرض"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:197
 msgid "Eject"
 msgstr "قذف"
 
@@ -1255,7 +1264,7 @@ msgstr "بريد إلكتروني"
 msgid "Email code"
 msgstr "رمز البريد الإلكتروني"
 
-#: src/components/Multiplayer.tsx:439
+#: src/components/Multiplayer.tsx:454
 msgid "empty"
 msgstr "فارغة"
 
@@ -1263,7 +1272,7 @@ msgstr "فارغة"
 msgid "ENGAGED"
 msgstr "اشتباك"
 
-#: src/components/MissionSetup.tsx:449
+#: src/components/MissionSetup.tsx:454
 msgid "Engine"
 msgstr "المحرك"
 
@@ -1275,7 +1284,7 @@ msgstr "أدخل الرمز من بريدك الإلكتروني"
 msgid "Enter your authenticator code"
 msgstr "أدخل رمز تطبيق المصادقة"
 
-#: src/components/MissionSetup.tsx:452
+#: src/components/MissionSetup.tsx:457
 msgid "Environment"
 msgstr "المحيط"
 
@@ -1302,12 +1311,12 @@ msgstr "توسيع"
 msgid "Expand sidebar"
 msgstr "توسيع الشريط الجانبي"
 
-#: src/components/MissionSetup.tsx:144
-#: src/components/MissionSetup.tsx:183
+#: src/components/MissionSetup.tsx:147
+#: src/components/MissionSetup.tsx:187
 msgid "Extend flaps"
 msgstr "إخراج القلابات"
 
-#: src/components/MissionSetup.tsx:1396
+#: src/components/MissionSetup.tsx:1555
 msgid "Exterior detail"
 msgstr "التفاصيل الخارجية"
 
@@ -1319,7 +1328,7 @@ msgstr "URL خارجي"
 msgid "Extra large"
 msgstr "كبير جداً"
 
-#: src/components/MissionSetup.tsx:721
+#: src/components/MissionSetup.tsx:877
 msgid "F/A-18C reference"
 msgstr "مرجع F/A-18C"
 
@@ -1431,16 +1440,16 @@ msgstr "انتهت"
 msgid "fire"
 msgstr "إطلاق النار"
 
-#: src/components/MissionSetup.tsx:140
-#: src/components/MissionSetup.tsx:179
+#: src/components/MissionSetup.tsx:143
+#: src/components/MissionSetup.tsx:183
 msgid "Fire weapon"
 msgstr "إطلاق السلاح"
 
-#: src/components/MissionSetup.tsx:557
+#: src/components/MissionSetup.tsx:562
 msgid "Fixed keys"
 msgstr "مفاتيح ثابتة"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:222
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:221
 msgid "Flags"
 msgstr "الأعلام"
 
@@ -1460,7 +1469,7 @@ msgstr "شعلات"
 msgid "Flat"
 msgstr "مسطح"
 
-#: src/components/MissionSetup.tsx:111
+#: src/components/MissionSetup.tsx:114
 msgid "Flight"
 msgstr "الطيران"
 
@@ -1480,17 +1489,21 @@ msgstr "عائم"
 msgid "Flown"
 msgstr "تم الطيران"
 
-#: src/components/MissionSetup.tsx:1619
-#: src/components/MissionSetup.tsx:1662
+#: src/components/MissionSetup.tsx:1778
+#: src/components/MissionSetup.tsx:1821
 msgid "Fly"
 msgstr "طيران"
 
-#: src/components/MissionSetup.tsx:1446
+#: src/components/MissionSetup.tsx:762
+msgid "Fox 2 fighter"
+msgstr "مقاتلة Fox 2"
+
+#: src/components/MissionSetup.tsx:1605
 msgid "Framerate"
 msgstr "معدل الإطارات"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1190
+#: src/components/MissionSetup.tsx:1349
 msgid "Free flight"
 msgstr "طيران حر"
 
@@ -1515,8 +1528,8 @@ msgstr "من"
 msgid "From theme"
 msgstr "من السمة"
 
-#: src/components/MissionSetup.tsx:1207
-#: src/components/Multiplayer.tsx:315
+#: src/components/MissionSetup.tsx:1366
+#: src/components/Multiplayer.tsx:330
 msgid "Fuel"
 msgstr "الوقود"
 
@@ -1536,9 +1549,13 @@ msgstr "تسرب وقود"
 msgid "FUEL LO"
 msgstr "الوقود منخفض"
 
-#: src/components/MissionSetup.tsx:188
+#: src/components/MissionSetup.tsx:192
 msgid "Fuel probe"
 msgstr "مسبار التزود بالوقود"
+
+#: src/components/MissionSetup.tsx:728
+msgid "Fuel tank"
+msgstr "خزان وقود"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:321
 msgid "Full layout"
@@ -1556,7 +1573,7 @@ msgstr "هيكل الهبوط"
 msgid "GEAR"
 msgstr "عجلات"
 
-#: src/components/MissionSetup.tsx:1671
+#: src/components/MissionSetup.tsx:1830
 msgid "General"
 msgstr "عام"
 
@@ -1586,9 +1603,13 @@ msgstr "الانتقال إلى الصفحة {pageNumber}"
 msgid "Go to previous page"
 msgstr "الانتقال إلى الصفحة السابقة"
 
-#: src/components/MissionSetup.tsx:1674
+#: src/components/MissionSetup.tsx:1833
 msgid "Graphics"
 msgstr "الرسوميات"
+
+#: src/components/MissionSetup.tsx:824
+msgid "Gross weight"
+msgstr "الوزن الإجمالي"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:162
 msgid "Group"
@@ -1607,6 +1628,10 @@ msgstr "المجموعة: {0}"
 msgid "GUN"
 msgstr "مدفع"
 
+#: src/components/MissionSetup.tsx:762
+msgid "Gun fighter"
+msgstr "مقاتلة مدفع"
+
 #: ../../../lib/web/src/components/data-table/column-header.tsx:70
 msgid "Hide"
 msgstr "إخفاء"
@@ -1615,17 +1640,17 @@ msgstr "إخفاء"
 msgid "Hide password"
 msgstr "إخفاء كلمة المرور"
 
-#: src/components/MissionSetup.tsx:1376
+#: src/components/MissionSetup.tsx:1535
 msgid "High"
 msgstr "عالٍ"
 
-#: src/components/MissionSetup.tsx:1314
-#: src/components/Multiplayer.tsx:306
+#: src/components/MissionSetup.tsx:1473
+#: src/components/Multiplayer.tsx:321
 msgid "High stratus"
 msgstr "سحب طبقية مرتفعة"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1638
+#: src/components/MissionSetup.tsx:1797
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "السجل"
@@ -1649,15 +1674,15 @@ msgstr "خطاف"
 msgid "Hot"
 msgstr "رائج"
 
-#: src/components/MissionSetup.tsx:196
+#: src/components/MissionSetup.tsx:201
 msgid "HUD altitude source"
 msgstr "مصدر الارتفاع في HUD"
 
-#: src/components/MissionSetup.tsx:197
+#: src/components/MissionSetup.tsx:202
 msgid "HUD declutter"
 msgstr "تبسيط HUD"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:153
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:152
 msgid "ID"
 msgstr ""
 
@@ -1670,8 +1695,8 @@ msgstr "عارض الصور: {0}"
 msgid "Imperial"
 msgstr "إمبراطوري"
 
-#: src/components/MissionSetup.tsx:1003
-#: src/components/MissionSetup.tsx:1267
+#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1426
 msgid "In air"
 msgstr "في الجو"
 
@@ -1707,7 +1732,7 @@ msgstr "وسم غير صالح: أحرف وأرقام ومسافات وشرطا�
 msgid "Invalid verification code"
 msgstr "رمز التحقق غير صالح"
 
-#: src/components/MissionSetup.tsx:306
+#: src/components/MissionSetup.tsx:311
 msgid "Invert pitch"
 msgstr "عكس الميل"
 
@@ -1715,8 +1740,8 @@ msgstr "عكس الميل"
 msgid "INVULNERABLE"
 msgstr "حصانة"
 
-#: src/components/MissionSetup.tsx:1325
-#: src/components/Multiplayer.tsx:344
+#: src/components/MissionSetup.tsx:1484
+#: src/components/Multiplayer.tsx:359
 msgid "Invulnerable (human players only)"
 msgstr "حصانة (للاعبين البشريين فقط)"
 
@@ -1724,12 +1749,12 @@ msgstr "حصانة (للاعبين البشريين فقط)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "يبدو أن الصفحة التي تبحث عنها <0/>غير موجودة أو ربما تمت إزالتها."
 
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:506
 msgid "Join"
 msgstr "انضمام"
 
-#: src/components/MissionSetup.tsx:1086
-#: src/components/MissionSetup.tsx:1629
+#: src/components/MissionSetup.tsx:1242
+#: src/components/MissionSetup.tsx:1788
 msgid "Join server"
 msgstr "الانضمام إلى خادم"
 
@@ -1738,20 +1763,20 @@ msgid "JOINED"
 msgstr "انضم"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1591
-#: src/components/Multiplayer.tsx:438
+#: src/components/MissionSetup.tsx:1750
+#: src/components/Multiplayer.tsx:453
 msgid "Joust"
 msgstr "مبارزة"
 
-#: src/components/Multiplayer.tsx:291
+#: src/components/Multiplayer.tsx:306
 msgid "Joust — 1v1, first kill wins"
 msgstr "مبارزة — 1v1، أول إسقاط يحسم الفوز"
 
-#: src/components/MissionSetup.tsx:1191
+#: src/components/MissionSetup.tsx:1350
 msgid "Joust against AI player"
 msgstr "مبارزة ضد لاعب ذكاء اصطناعي"
 
-#: src/components/MissionSetup.tsx:1680
+#: src/components/MissionSetup.tsx:1839
 msgid "Joystick"
 msgstr "عصا التحكم"
 
@@ -1767,7 +1792,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "اختصارات لوحة المفاتيح"
 
-#: src/components/MissionSetup.tsx:1683
+#: src/components/MissionSetup.tsx:1842
 msgid "Keys"
 msgstr "المفاتيح"
 
@@ -1780,7 +1805,7 @@ msgid "Killed"
 msgstr "أُسقط"
 
 #: src/components/MatchHistory.tsx:141
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:170
 msgid "Kills"
 msgstr "الإسقاطات"
 
@@ -1796,8 +1821,8 @@ msgstr "حريق محرك أيسر"
 msgid "L GEAR"
 msgstr "عجلة يسرى"
 
-#: src/components/MissionSetup.tsx:146
-#: src/components/MissionSetup.tsx:185
+#: src/components/MissionSetup.tsx:149
+#: src/components/MissionSetup.tsx:189
 msgid "Landing gear"
 msgstr "عجلات الهبوط"
 
@@ -1810,8 +1835,8 @@ msgstr "كبير"
 msgid "LATE"
 msgstr "متأخر"
 
-#: src/components/MissionSetup.tsx:149
-#: src/components/MissionSetup.tsx:192
+#: src/components/MissionSetup.tsx:152
+#: src/components/MissionSetup.tsx:196
 msgid "Launch (catapult)"
 msgstr "إطلاق (منجنيق)"
 
@@ -1824,7 +1849,7 @@ msgstr "إطلاق / استهداف"
 msgid "Layout"
 msgstr "التخطيط"
 
-#: src/components/Multiplayer.tsx:328
+#: src/components/Multiplayer.tsx:343
 msgid "lb"
 msgstr "lb"
 
@@ -1833,7 +1858,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "اعرف المزيد"
 
-#: src/components/MissionSetup.tsx:1142
+#: src/components/MissionSetup.tsx:1298
 msgid "Leave server"
 msgstr "مغادرة الخادم"
 
@@ -1867,8 +1892,8 @@ msgstr "فاتح"
 msgid "lights"
 msgstr "أضواء"
 
-#: src/components/MissionSetup.tsx:150
-#: src/components/MissionSetup.tsx:191
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:195
 msgid "Lights"
 msgstr "أضواء"
 
@@ -1888,7 +1913,7 @@ msgstr "الروابط"
 msgid "List"
 msgstr "قائمة"
 
-#: src/components/MissionSetup.tsx:1210
+#: src/components/MissionSetup.tsx:1369
 msgid "Load"
 msgstr "الكمية"
 
@@ -1932,36 +1957,36 @@ msgstr "تم تسجيل الخروج بنجاح"
 msgid "Logging out…"
 msgstr "جاري تسجيل الخروج…"
 
-#: src/components/MissionSetup.tsx:126
+#: src/components/MissionSetup.tsx:129
 msgid "Look"
 msgstr "النظر"
 
-#: src/components/MissionSetup.tsx:566
+#: src/components/MissionSetup.tsx:571
 msgid "Look / orbit"
 msgstr "النظر / الدوران"
 
-#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:158
 msgid "Look down"
 msgstr "النظر لأسفل"
 
-#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:159
 msgid "Look left"
 msgstr "النظر لليسار"
 
-#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:160
 msgid "Look right"
 msgstr "النظر لليمين"
 
-#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:157
 msgid "Look up"
 msgstr "النظر لأعلى"
 
-#: src/components/MissionSetup.tsx:1372
+#: src/components/MissionSetup.tsx:1531
 msgid "Low"
 msgstr "منخفض"
 
-#: src/components/MissionSetup.tsx:1315
-#: src/components/Multiplayer.tsx:307
+#: src/components/MissionSetup.tsx:1474
+#: src/components/Multiplayer.tsx:322
 msgid "Low stratus"
 msgstr "سحب طبقية منخفضة"
 
@@ -1985,7 +2010,7 @@ msgstr "يدوي"
 msgid "map"
 msgstr "خريطة"
 
-#: src/components/MissionSetup.tsx:198
+#: src/components/MissionSetup.tsx:203
 msgid "Map"
 msgstr "الخريطة"
 
@@ -1995,19 +2020,19 @@ msgstr "الخريطة"
 msgid "Mark all as read"
 msgstr "وضع علامة مقروء على الكل"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:453
 msgid "Master"
 msgstr "الرئيسي"
 
-#: src/components/Multiplayer.tsx:287
+#: src/components/Multiplayer.tsx:302
 msgid "Match type"
 msgstr "نوع المباراة"
 
-#: src/components/MissionSetup.tsx:1136
+#: src/components/MissionSetup.tsx:1292
 msgid "Matches"
 msgstr "المباريات"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:199
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:198
 msgid "Maximum length"
 msgstr "الطول الأقصى"
 
@@ -2016,7 +2041,7 @@ msgid "MCP server"
 msgstr "خادم MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1374
+#: src/components/MissionSetup.tsx:1533
 msgid "Medium"
 msgstr "متوسط"
 
@@ -2025,7 +2050,7 @@ msgid "menu"
 msgstr "قائمة"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:207
-#: src/components/MissionSetup.tsx:201
+#: src/components/MissionSetup.tsx:206
 msgid "Menu"
 msgstr "القائمة"
 
@@ -2037,7 +2062,7 @@ msgstr "رسالة"
 msgid "Message everyone"
 msgstr "راسل الجميع"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1144
 msgid "Message players on this server"
 msgstr "راسل اللاعبين على هذا الخادم"
 
@@ -2049,11 +2074,11 @@ msgstr "راسل فريقك"
 msgid "Metric"
 msgstr "متري"
 
-#: src/components/MissionSetup.tsx:836
+#: src/components/MissionSetup.tsx:992
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "خريطة جزيرة ميدواي المرجانية — تحتوي الصور على بيانات <0>Copernicus Sentinel-2</0> معدّلة (2026)؛ هندسة المطار (المدرج، ممرات السير، ساحات الوقوف) © مساهمي <1>OpenStreetMap</1>، مرخّصة بموجب <2>ODbL</2>؛ بيانات الساحل والشعاب المرجانية من <3>NOAA NCCOS</3> (ملكية عامة)."
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:188
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:187
 msgid "Minimum length"
 msgstr "الطول الأدنى"
 
@@ -2061,11 +2086,7 @@ msgstr "الطول الأدنى"
 msgid "MISSILE"
 msgstr "صاروخ"
 
-#: src/components/MissionSetup.tsx:1202
-msgid "Missiles"
-msgstr "صواريخ"
-
-#: src/components/Multiplayer.tsx:334
+#: src/components/Multiplayer.tsx:349
 msgid "Missiles allowed"
 msgstr "مسموح بالصواريخ"
 
@@ -2073,7 +2094,7 @@ msgstr "مسموح بالصواريخ"
 msgid "Mochi web"
 msgstr "Mochi على الويب"
 
-#: src/components/MatchHistory.tsx:161
+#: src/components/MatchHistory.tsx:164
 msgid "Mode"
 msgstr "الوضع"
 
@@ -2090,17 +2111,17 @@ msgstr "الاثنين"
 msgid "More options"
 msgstr "خيارات أخرى"
 
-#: src/components/MissionSetup.tsx:379
+#: src/components/MissionSetup.tsx:384
 msgid "Move it…"
 msgstr "حرّك المحور…"
 
-#: src/components/Multiplayer.tsx:188
+#: src/components/Multiplayer.tsx:203
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "يتطلب اللعب متعدد اللاعبين WebTransport، وهذا المتصفح لا يدعمه بعد."
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:143
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:142
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:128
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:299
 msgid "Name"
@@ -2134,8 +2155,8 @@ msgstr "لعبة جديدة"
 msgid "Next image"
 msgstr "الصورة التالية"
 
-#: src/components/MissionSetup.tsx:1302
-#: src/components/Multiplayer.tsx:301
+#: src/components/MissionSetup.tsx:1461
+#: src/components/Multiplayer.tsx:316
 msgid "Night"
 msgstr "ليل"
 
@@ -2175,7 +2196,7 @@ msgstr "لا توجد مجموعات متاحة"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "لا يمكن إنشاء أنواع عناصر بعد. أنشئ العناصر الأصلية المطلوبة أولاً."
 
-#: src/components/MissionSetup.tsx:300
+#: src/components/MissionSetup.tsx:305
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "لم يتم اكتشاف عصا تحكم — اضغط أي زر عليها لإيقاظها."
 
@@ -2187,7 +2208,7 @@ msgstr "لا توجد كائنات مطابقة"
 msgid "No notifications yet"
 msgstr "لا إشعارات بعد"
 
-#: src/components/Multiplayer.tsx:421
+#: src/components/Multiplayer.tsx:436
 msgid "No open matches — create one."
 msgstr "لا توجد مباريات مفتوحة — أنشئ واحدة."
 
@@ -2240,8 +2261,8 @@ msgstr "لم يتم العثور على مستخدمين"
 msgid "No views"
 msgstr "لا توجد عروض"
 
-#: src/components/MissionSetup.tsx:965
-#: src/components/Multiplayer.tsx:421
+#: src/components/MissionSetup.tsx:1121
+#: src/components/Multiplayer.tsx:436
 msgid "No world server."
 msgstr "لا يوجد خادم عالم."
 
@@ -2263,9 +2284,10 @@ msgstr "بدون تقدير"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:349
-#: src/components/MissionSetup.tsx:409
-#: src/components/MissionSetup.tsx:1312
+#: src/components/MissionSetup.tsx:354
+#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:727
+#: src/components/MissionSetup.tsx:1471
 msgid "None"
 msgstr "لا شيء"
 
@@ -2289,7 +2311,7 @@ msgstr "غير محدد"
 msgid "Nothing found"
 msgstr "لم يتم العثور على شيء"
 
-#: src/components/MissionSetup.tsx:965
+#: src/components/MissionSetup.tsx:1121
 msgid "Nothing yet — say hello."
 msgstr "لا شيء بعد — قل مرحبًا."
 
@@ -2306,9 +2328,9 @@ msgstr "الإشعارات"
 msgid "Notifications: {0}"
 msgstr "الإشعارات: {0}"
 
-#: src/components/MissionSetup.tsx:1228
-#: src/components/MissionSetup.tsx:1583
-#: src/components/Multiplayer.tsx:378
+#: src/components/MissionSetup.tsx:1387
+#: src/components/MissionSetup.tsx:1742
+#: src/components/Multiplayer.tsx:393
 msgid "Novice"
 msgstr "مبتدئ"
 
@@ -2318,7 +2340,7 @@ msgstr "مبتدئ"
 msgid "Number"
 msgstr "الرقم"
 
-#: src/components/MissionSetup.tsx:1404
+#: src/components/MissionSetup.tsx:1563
 msgid "Ocean detail"
 msgstr "تفاصيل المحيط"
 
@@ -2330,13 +2352,13 @@ msgstr "OK"
 msgid "On"
 msgstr "مفعّل"
 
-#: src/components/MissionSetup.tsx:1005
-#: src/components/MissionSetup.tsx:1269
+#: src/components/MissionSetup.tsx:1161
+#: src/components/MissionSetup.tsx:1428
 msgid "On carrier"
 msgstr "على الحاملة"
 
-#: src/components/MissionSetup.tsx:1004
-#: src/components/MissionSetup.tsx:1268
+#: src/components/MissionSetup.tsx:1160
+#: src/components/MissionSetup.tsx:1427
 msgid "On runway"
 msgstr "على المدرج"
 
@@ -2344,11 +2366,11 @@ msgstr "على المدرج"
 msgid "Oops! Page Not Found!"
 msgstr "عذراً! الصفحة غير موجودة!"
 
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:453
 msgid "Open"
 msgstr "مفتوح"
 
-#: src/components/Multiplayer.tsx:290
+#: src/components/Multiplayer.tsx:305
 msgid "Open — anyone may join or leave"
 msgstr "مفتوحة — يمكن لأي شخص الانضمام أو المغادرة"
 
@@ -2406,7 +2428,7 @@ msgid "Option name"
 msgstr "اسم الخيار"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:241
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:240
 msgid "Options"
 msgstr "خيارات"
 
@@ -2422,8 +2444,8 @@ msgstr "دوران"
 msgid "Other"
 msgstr "أخرى"
 
-#: src/components/MissionSetup.tsx:135
-#: src/components/MissionSetup.tsx:173
+#: src/components/MissionSetup.tsx:138
+#: src/components/MissionSetup.tsx:177
 msgid "Override G limit"
 msgstr "تجاوز حد G"
 
@@ -2440,7 +2462,7 @@ msgstr "صفحة {currentPage} من {totalPages}"
 msgid "Parent"
 msgstr "الأصل"
 
-#: src/components/MissionSetup.tsx:172
+#: src/components/MissionSetup.tsx:176
 msgid "Parking brake"
 msgstr "فرملة الوقوف"
 
@@ -2456,7 +2478,7 @@ msgstr "فشل التحقق من مفتاح المرور. يرجى المحاو�
 msgid "Passkeys"
 msgstr "مفاتيح المرور"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:210
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:209
 msgid "Pattern (regex)"
 msgstr "النمط (تعبير منتظم)"
 
@@ -2464,15 +2486,15 @@ msgstr "النمط (تعبير منتظم)"
 msgid "Pick a date"
 msgstr "اختر تاريخًا"
 
-#: src/components/MissionSetup.tsx:907
-#: src/components/Multiplayer.tsx:90
-#: src/components/Multiplayer.tsx:248
+#: src/components/MissionSetup.tsx:1063
+#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:263
 msgid "pilot"
 msgstr "طيار"
 
-#: src/components/MissionSetup.tsx:1229
-#: src/components/MissionSetup.tsx:1584
-#: src/components/Multiplayer.tsx:379
+#: src/components/MissionSetup.tsx:1388
+#: src/components/MissionSetup.tsx:1743
+#: src/components/Multiplayer.tsx:394
 msgid "Pilot"
 msgstr "طيار"
 
@@ -2484,15 +2506,15 @@ msgstr "سقط الطيار"
 msgid "pitch"
 msgstr "انعطاف"
 
-#: src/components/MissionSetup.tsx:121
+#: src/components/MissionSetup.tsx:124
 msgid "Pitch"
 msgstr "الميل"
 
-#: src/components/MissionSetup.tsx:163
+#: src/components/MissionSetup.tsx:167
 msgid "Pitch down"
 msgstr "خفض المقدمة"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:166
 msgid "Pitch up"
 msgstr "رفع المقدمة"
 
@@ -2500,7 +2522,7 @@ msgstr "رفع المقدمة"
 msgid "PLATFORM"
 msgstr "المنصة"
 
-#: src/components/MatchHistory.tsx:164
+#: src/components/MatchHistory.tsx:167
 msgid "Players"
 msgstr "اللاعبون"
 
@@ -2530,11 +2552,11 @@ msgstr "المنشورات"
 msgid "Posts and comments"
 msgstr "المنشورات والتعليقات"
 
-#: src/components/MissionSetup.tsx:1359
+#: src/components/MissionSetup.tsx:1518
 msgid "Preset"
 msgstr "إعداد مسبق"
 
-#: src/components/MissionSetup.tsx:536
+#: src/components/MissionSetup.tsx:541
 msgid "Press a key…"
 msgstr "اضغط مفتاحًا…"
 
@@ -2542,7 +2564,7 @@ msgstr "اضغط مفتاحًا…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "اضغط Enter للإطلاق"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:433
 msgid "Press it…"
 msgstr "اضغط الزر…"
 
@@ -2576,6 +2598,10 @@ msgstr "إشعار فوري"
 msgid "PUSH TIME"
 msgstr "وقت الاقتراب"
 
+#: src/components/MissionSetup.tsx:727
+msgid "Pylon"
+msgstr "حامل"
+
 #: src/components/GameCanvas.tsx:42
 msgid "R ENG"
 msgstr "محرك أيمن"
@@ -2587,6 +2613,10 @@ msgstr "حريق محرك أيمن"
 #: src/components/GameCanvas.tsx:45
 msgid "R GEAR"
 msgstr "عجلة يمنى"
+
+#: src/components/MissionSetup.tsx:727
+msgid "Rail"
+msgstr "سكة"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
@@ -2604,7 +2634,7 @@ msgstr "أعد تسجيل مفاتيح المرور على هذا الخادم"
 msgid "REARMED"
 msgstr "أعيد التسليح"
 
-#: src/components/MissionSetup.tsx:1091
+#: src/components/MissionSetup.tsx:1247
 msgid "Recent"
 msgstr "الأخيرة"
 
@@ -2617,24 +2647,24 @@ msgstr "موصى به"
 msgid "Reconnecting ({retries})..."
 msgstr "جارٍ إعادة الاتصال ({retries})..."
 
-#: src/components/MissionSetup.tsx:1508
+#: src/components/MissionSetup.tsx:1667
 msgid "Record flights"
 msgstr "تسجيل الرحلات"
 
-#: src/components/MatchHistory.tsx:229
-#: src/components/MissionSetup.tsx:1502
+#: src/components/MatchHistory.tsx:238
+#: src/components/MissionSetup.tsx:1661
 msgid "Recording"
 msgstr "التسجيل"
 
-#: src/components/MatchHistory.tsx:222
+#: src/components/MatchHistory.tsx:231
 msgid "Recording saved"
 msgstr "تم حفظ التسجيل"
 
-#: src/components/Multiplayer.tsx:469
+#: src/components/Multiplayer.tsx:484
 msgid "Red"
 msgstr "الأحمر"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Red bots"
 msgstr "بوتات حمراء"
 
@@ -2647,11 +2677,11 @@ msgstr "جاري إعادة التوجيه إلى تسجيل الدخول."
 msgid "Reduce interest"
 msgstr "تقليل الاهتمام"
 
-#: src/components/MissionSetup.tsx:715
+#: src/components/MissionSetup.tsx:871
 msgid "Reference"
 msgstr "مرجع"
 
-#: src/components/Multiplayer.tsx:267
+#: src/components/Multiplayer.tsx:282
 msgid "Refresh"
 msgstr "تحديث"
 
@@ -2726,7 +2756,7 @@ msgstr "إعادة تسمية العمود"
 msgid "Rename this board column"
 msgstr "إعادة تسمية عمود اللوحة هذا"
 
-#: src/components/MissionSetup.tsx:873
+#: src/components/MissionSetup.tsx:1029
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "التصيير بواسطة <0>three.js</0> (رخصة MIT)."
 
@@ -2740,7 +2770,7 @@ msgstr "رد"
 msgid "Reply to {0}..."
 msgstr "الرد على {0}..."
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:224
 msgid "Required"
 msgstr "مطلوب"
 
@@ -2750,7 +2780,7 @@ msgstr "إعادة إرسال البريد الإلكتروني"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1722
+#: src/components/MissionSetup.tsx:1881
 msgid "Reset"
 msgstr "إعادة تعيين"
 
@@ -2763,23 +2793,25 @@ msgstr "إعادة تعيين {title}"
 msgid "Reset all settings to default values"
 msgstr "إعادة تعيين كل الإعدادات إلى القيم الافتراضية"
 
-#: src/components/MissionSetup.tsx:178
+#: src/components/MissionSetup.tsx:182
 msgid "Reset trim"
 msgstr "إعادة ضبط الموازنة"
 
-#: src/components/MissionSetup.tsx:565
+#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:199
+#: src/components/MissionSetup.tsx:570
 msgid "Reset view"
 msgstr "إعادة ضبط العرض"
 
-#: src/components/MissionSetup.tsx:1386
+#: src/components/MissionSetup.tsx:1545
 msgid "Resolution"
 msgstr "القرار"
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1770
 msgid "Restart mission"
 msgstr "إعادة بدء المهمة"
 
-#: src/components/MatchHistory.tsx:173
+#: src/components/MatchHistory.tsx:176
 msgid "Result"
 msgstr "النتيجة"
 
@@ -2787,12 +2819,12 @@ msgstr "النتيجة"
 msgid "Resume"
 msgstr "استئناف"
 
-#: src/components/MissionSetup.tsx:1607
+#: src/components/MissionSetup.tsx:1766
 msgid "Resume mission"
 msgstr "استئناف المهمة"
 
-#: src/components/MissionSetup.tsx:145
-#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:148
+#: src/components/MissionSetup.tsx:188
 msgid "Retract flaps"
 msgstr "سحب القلابات"
 
@@ -2800,7 +2832,7 @@ msgstr "سحب القلابات"
 msgid "Retry"
 msgstr "إعادة المحاولة"
 
-#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:368
 msgid "Reversed"
 msgstr "معكوس"
 
@@ -2816,20 +2848,20 @@ msgstr "من اليمين إلى اليسار"
 msgid "roll"
 msgstr "تدحرج"
 
-#: src/components/MissionSetup.tsx:122
+#: src/components/MissionSetup.tsx:125
 msgid "Roll"
 msgstr "اللفّ"
 
-#: src/components/MissionSetup.tsx:164
+#: src/components/MissionSetup.tsx:168
 msgid "Roll left"
 msgstr "اللف لليسار"
 
-#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:169
 msgid "Roll right"
 msgstr "اللف لليمين"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:169
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:168
 msgid "Rows"
 msgstr "الصفوف"
 
@@ -2868,7 +2900,7 @@ msgstr "السبت"
 msgid "Save"
 msgstr "حفظ"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:886
 msgid "Sea level"
 msgstr "مستوى سطح البحر"
 
@@ -2998,8 +3030,8 @@ msgstr "اختر اتجاه الموقع"
 msgid "Select theme preference"
 msgstr "اختر تفضيل السمة"
 
-#: src/components/MissionSetup.tsx:141
-#: src/components/MissionSetup.tsx:180
+#: src/components/MissionSetup.tsx:144
+#: src/components/MissionSetup.tsx:184
 msgid "Select weapon"
 msgstr "اختيار السلاح"
 
@@ -3017,7 +3049,7 @@ msgstr "محدد"
 msgid "Selected: <0>{0}</0>"
 msgstr "المحدد: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:995
+#: src/components/MissionSetup.tsx:1151
 msgid "Send"
 msgstr "إرسال"
 
@@ -3042,12 +3074,12 @@ msgstr "إرسال رسالة"
 msgid "Serif"
 msgstr "سيريف"
 
-#: src/components/MatchHistory.tsx:158
-#: src/components/MissionSetup.tsx:1104
+#: src/components/MatchHistory.tsx:161
+#: src/components/MissionSetup.tsx:1260
 msgid "Server"
 msgstr "الخادم"
 
-#: src/components/MissionSetup.tsx:960
+#: src/components/MissionSetup.tsx:1116
 msgid "Server chat"
 msgstr "دردشة الخادم"
 
@@ -3069,7 +3101,7 @@ msgstr "انتهت الجلسة"
 msgid "Session expired. Please log in again."
 msgstr "انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى."
 
-#: src/components/MissionSetup.tsx:542
+#: src/components/MissionSetup.tsx:547
 msgid "Set"
 msgstr "تعيين"
 
@@ -3081,12 +3113,12 @@ msgstr "تعيين المنشأ والوجهة"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1633
-#: src/components/MissionSetup.tsx:1667
+#: src/components/MissionSetup.tsx:1792
+#: src/components/MissionSetup.tsx:1826
 msgid "Settings"
 msgstr "الإعدادات"
 
-#: src/components/MissionSetup.tsx:1428
+#: src/components/MissionSetup.tsx:1587
 msgid "Shadows"
 msgstr "الظلال"
 
@@ -3126,11 +3158,11 @@ msgid "Signing out..."
 msgstr "جاري تسجيل الخروج..."
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:180
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:179
 msgid "Single line of text only"
 msgstr "سطر واحد من النص فقط"
 
-#: src/components/MissionSetup.tsx:700
+#: src/components/MissionSetup.tsx:856
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "أفضل صعود بمحرك واحد (Vyse، الحارق اللاحق)"
 
@@ -3147,8 +3179,8 @@ msgstr "صغير"
 msgid "Sort"
 msgstr "ترتيب"
 
-#: src/components/MissionSetup.tsx:468
-#: src/components/MissionSetup.tsx:1677
+#: src/components/MissionSetup.tsx:473
+#: src/components/MissionSetup.tsx:1836
 msgid "Sound"
 msgstr "الصوت"
 
@@ -3168,13 +3200,13 @@ msgstr "ك.هـ"
 msgid "speed brake"
 msgstr "كابح هوائي"
 
-#: src/components/MissionSetup.tsx:125
-#: src/components/MissionSetup.tsx:133
-#: src/components/MissionSetup.tsx:170
+#: src/components/MissionSetup.tsx:128
+#: src/components/MissionSetup.tsx:136
+#: src/components/MissionSetup.tsx:174
 msgid "Speed brake"
 msgstr "كابح هوائي"
 
-#: src/components/MissionSetup.tsx:756
+#: src/components/MissionSetup.tsx:912
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "السرعات بوحدة KCAS، كنطاق من الخفيف (أدنى وقود، بدون حمولة) إلى الثقيل (أقصى وزن إجمالي). البيانات مستمدة تجريبياً داخل اللعبة. أي اختلافات عن الطائرة الحقيقية تعكس أخطاء نموذج الطيران في المحاكي."
 
@@ -3182,15 +3214,15 @@ msgstr "السرعات بوحدة KCAS، كنطاق من الخفيف (أدنى 
 msgid "SPLASH"
 msgstr "أسقطت الهدف"
 
-#: src/components/MissionSetup.tsx:705
+#: src/components/MissionSetup.tsx:861
 msgid "Stall, clean (Vs1)"
 msgstr "انهيار، نظيف (Vs1)"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:862
 msgid "Stall, landing config (Vs0)"
 msgstr "انهيار، تكوين الهبوط (Vs0)"
 
-#: src/components/MissionSetup.tsx:1241
+#: src/components/MissionSetup.tsx:1400
 msgid "Start"
 msgstr "ابدأ"
 
@@ -3202,11 +3234,11 @@ msgstr "ابدأ النقاش بإضافة التعليق الأول."
 msgid "Stay tuned though!"
 msgstr "ابقَ على اتصال!"
 
-#: src/components/MissionSetup.tsx:696
+#: src/components/MissionSetup.tsx:852
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "أشدّ صعود (Vx، دفع 100%)"
 
-#: src/components/MissionSetup.tsx:697
+#: src/components/MissionSetup.tsx:853
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "أشدّ صعود (Vx، الحارق اللاحق)"
 
@@ -3237,9 +3269,9 @@ msgstr "اشتراك"
 msgid "Sunday"
 msgstr "الأحد"
 
-#: src/components/MissionSetup.tsx:1231
-#: src/components/MissionSetup.tsx:1586
-#: src/components/Multiplayer.tsx:381
+#: src/components/MissionSetup.tsx:1390
+#: src/components/MissionSetup.tsx:1745
+#: src/components/Multiplayer.tsx:396
 msgid "Superhuman"
 msgstr "خارق"
 
@@ -3280,7 +3312,7 @@ msgstr "الوسوم"
 msgid "TALLY"
 msgstr "أرى العدو"
 
-#: src/components/MissionSetup.tsx:1184
+#: src/components/MissionSetup.tsx:1343
 msgid "Task"
 msgstr "وظيفة"
 
@@ -3293,11 +3325,11 @@ msgid "TEAM"
 msgstr "الفريق"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:453
 msgid "Teams"
 msgstr "فرق"
 
-#: src/components/Multiplayer.tsx:292
+#: src/components/Multiplayer.tsx:307
 msgid "Teams — red versus blue"
 msgstr "فرق — الأحمر ضد الأزرق"
 
@@ -3342,7 +3374,7 @@ msgstr "السمة"
 msgid "Theme Settings"
 msgstr "إعدادات السمة"
 
-#: src/components/Multiplayer.tsx:206
+#: src/components/Multiplayer.tsx:221
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "ترسل هذه الرَّدهة اتصال لعبتك إلى مضيف مختلف ({redirectHost}). تابع فقط إذا كنت تثق بهذا الخادم."
 
@@ -3354,15 +3386,15 @@ msgstr "لم يتم إنشاء هذه الصفحة بعد."
 msgid "throttle"
 msgstr "خانق"
 
-#: src/components/MissionSetup.tsx:124
+#: src/components/MissionSetup.tsx:127
 msgid "Throttle"
 msgstr "الخانق"
 
-#: src/components/MissionSetup.tsx:169
+#: src/components/MissionSetup.tsx:173
 msgid "Throttle down"
 msgstr "خفض الخانق"
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:172
 msgid "Throttle up"
 msgstr "رفع الخانق"
 
@@ -3370,7 +3402,7 @@ msgstr "رفع الخانق"
 msgid "Thursday"
 msgstr "الخميس"
 
-#: src/components/MissionSetup.tsx:704
+#: src/components/MissionSetup.tsx:860
 msgid "Tightest sustained turn speed"
 msgstr "أضيق سرعة انعطاف مستمر"
 
@@ -3382,7 +3414,7 @@ msgstr "إمالة"
 msgid "Time"
 msgstr "الوقت"
 
-#: src/components/MissionSetup.tsx:1295
+#: src/components/MissionSetup.tsx:1454
 msgid "Time of day"
 msgstr "وقت اليوم"
 
@@ -3438,7 +3470,7 @@ msgstr "طلبات كثيرة جدًا"
 msgid "Top"
 msgstr "الأعلى"
 
-#: src/components/MissionSetup.tsx:1440
+#: src/components/MissionSetup.tsx:1599
 msgid "Tracers"
 msgstr "الطلقات الكاشفة"
 
@@ -3446,31 +3478,31 @@ msgstr "الطلقات الكاشفة"
 msgid "Travelling"
 msgstr "السفر"
 
-#: src/components/MissionSetup.tsx:112
+#: src/components/MissionSetup.tsx:115
 msgid "Trim"
 msgstr "الموازنة"
 
-#: src/components/MissionSetup.tsx:127
+#: src/components/MissionSetup.tsx:130
 msgid "Trim hat"
 msgstr "قبعة الموازنة"
 
-#: src/components/MissionSetup.tsx:137
-#: src/components/MissionSetup.tsx:175
+#: src/components/MissionSetup.tsx:140
+#: src/components/MissionSetup.tsx:179
 msgid "Trim nose down"
 msgstr "موازنة: الأنف لأسفل"
 
-#: src/components/MissionSetup.tsx:136
-#: src/components/MissionSetup.tsx:174
+#: src/components/MissionSetup.tsx:139
+#: src/components/MissionSetup.tsx:178
 msgid "Trim nose up"
 msgstr "موازنة: الأنف لأعلى"
 
-#: src/components/MissionSetup.tsx:138
-#: src/components/MissionSetup.tsx:176
+#: src/components/MissionSetup.tsx:141
+#: src/components/MissionSetup.tsx:180
 msgid "Trim roll left"
 msgstr "موازنة: ميل لليسار"
 
-#: src/components/MissionSetup.tsx:139
-#: src/components/MissionSetup.tsx:177
+#: src/components/MissionSetup.tsx:142
+#: src/components/MissionSetup.tsx:181
 msgid "Trim roll right"
 msgstr "موازنة: ميل لليمين"
 
@@ -3489,8 +3521,12 @@ msgstr "حاول مرة أخرى"
 msgid "Tuesday"
 msgstr "الثلاثاء"
 
+#: src/components/MissionSetup.tsx:727
+msgid "Twin rail"
+msgstr "سكة مزدوجة"
+
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:163
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:162
 msgid "Type"
 msgstr "النوع"
 
@@ -3510,7 +3546,7 @@ msgstr "اكتب للبحث عن مستخدمين"
 msgid "Type to search..."
 msgstr "اكتب للبحث..."
 
-#: src/components/MissionSetup.tsx:1378
+#: src/components/MissionSetup.tsx:1537
 msgid "Ultra"
 msgstr "فائق"
 
@@ -3544,13 +3580,13 @@ msgstr "الولايات المتحدة"
 msgid "Unknown"
 msgstr "غير معروف"
 
-#: src/components/MissionSetup.tsx:1331
-#: src/components/Multiplayer.tsx:354
+#: src/components/MissionSetup.tsx:1490
+#: src/components/Multiplayer.tsx:369
 msgid "Unlimited ammunition"
 msgstr "ذخيرة غير محدودة"
 
-#: src/components/MissionSetup.tsx:1337
-#: src/components/Multiplayer.tsx:364
+#: src/components/MissionSetup.tsx:1496
+#: src/components/Multiplayer.tsx:379
 msgid "Unlimited fuel"
 msgstr "وقود غير محدود"
 
@@ -3614,7 +3650,7 @@ msgstr "تحقق"
 msgid "Verify email address"
 msgstr "التحقق من عنوان البريد الإلكتروني"
 
-#: src/components/MissionSetup.tsx:746
+#: src/components/MissionSetup.tsx:902
 msgid "Vertical"
 msgstr "عمودي"
 
@@ -3636,7 +3672,7 @@ msgid "view"
 msgstr "منظر"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/MissionSetup.tsx:115
+#: src/components/MissionSetup.tsx:118
 msgid "View"
 msgstr "عرض"
 
@@ -3653,7 +3689,7 @@ msgstr "عرض جميع الإشعارات"
 msgid "View controls"
 msgstr "عناصر تحكم العرض"
 
-#: src/components/MissionSetup.tsx:564
+#: src/components/MissionSetup.tsx:569
 msgid "Views"
 msgstr "المشاهدات"
 
@@ -3691,12 +3727,12 @@ msgstr "سنُعلمك عند حدوث شيء مهم."
 msgid "weapon"
 msgstr "سلاح"
 
-#: src/components/MissionSetup.tsx:113
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:116
+#: src/components/MissionSetup.tsx:456
 msgid "Weapons"
 msgstr "الأسلحة"
 
-#: src/components/Multiplayer.tsx:297
+#: src/components/Multiplayer.tsx:312
 msgid "Weather"
 msgstr "الطقس"
 
@@ -3708,12 +3744,12 @@ msgstr "الموقع قيد الصيانة!"
 msgid "Wednesday"
 msgstr "الأربعاء"
 
-#: src/components/MissionSetup.tsx:134
-#: src/components/MissionSetup.tsx:171
+#: src/components/MissionSetup.tsx:137
+#: src/components/MissionSetup.tsx:175
 msgid "Wheel brakes"
 msgstr "فرامل العجلات"
 
-#: src/components/MissionSetup.tsx:190
+#: src/components/MissionSetup.tsx:194
 msgid "Wing fold"
 msgstr "طي الجناح"
 
@@ -3721,12 +3757,12 @@ msgstr "طي الجناح"
 msgid "WINS"
 msgstr "يفوز"
 
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:247
 msgid "World server"
 msgstr "خادم العالم"
 
-#: src/components/MissionSetup.tsx:953
-#: src/components/Multiplayer.tsx:103
+#: src/components/MissionSetup.tsx:1109
+#: src/components/Multiplayer.tsx:115
 msgid "World server not reachable"
 msgstr "تعذّر الوصول إلى خادم العالم"
 
@@ -3734,15 +3770,15 @@ msgstr "تعذّر الوصول إلى خادم العالم"
 msgid "yaw"
 msgstr "انعراج"
 
-#: src/components/MissionSetup.tsx:123
+#: src/components/MissionSetup.tsx:126
 msgid "Yaw"
 msgstr "الانعراج"
 
-#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:170
 msgid "Yaw left"
 msgstr "الانعراج لليسار"
 
-#: src/components/MissionSetup.tsx:167
+#: src/components/MissionSetup.tsx:171
 msgid "Yaw right"
 msgstr "الانعراج لليمين"
 
@@ -3774,7 +3810,7 @@ msgstr "سيتم فقدان مرفقاتك."
 msgid "Your flights appear here once you've flown one."
 msgstr "ستظهر رحلاتك هنا بمجرد أن تطير واحدة."
 
-#: src/components/Multiplayer.tsx:433
+#: src/components/Multiplayer.tsx:448
 msgid "your offer"
 msgstr "عرضك"
 
@@ -3786,14 +3822,14 @@ msgstr "سيتم فقدان نصك ومرفقاتك."
 msgid "Your text will be lost."
 msgstr "سيُفقد النص."
 
-#: src/components/MissionSetup.tsx:128
+#: src/components/MissionSetup.tsx:131
 msgid "Zoom"
 msgstr "زوم"
 
-#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:161
 msgid "Zoom in"
 msgstr "تكبير"
 
-#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:162
 msgid "Zoom out"
 msgstr "تصغير"

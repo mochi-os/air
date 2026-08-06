@@ -74,6 +74,7 @@ export interface WorldSession {
   permanent?: boolean
   mine?: boolean // this poll's own pilot made it (#77): the server matches our token rather than publishing anyone's
   offer?: boolean
+  parameters?: Record<string, unknown> // curated rules subset (#17/#19): missiles, tod, clouds — what a joiner cares about before entering
 }
 
 // normalize_server turns user input like "host", "host:4433" or a full URL
@@ -193,6 +194,7 @@ export interface Join {
   session: string
   name: string
   team?: string // teams mode side choice ('red'/'blue'); absent = the server assigns the smaller side
+  stores?: Record<string, { fixture: string; stores: string[] }> // the requested loadout (#17); the server validates against the catalog and the match rules and spawns the granted result
 }
 
 // ---------------------------------------------------------------- connection
@@ -291,6 +293,7 @@ export class Net {
   private glide = new Map<number, { x: number; y: number; z: number; ox: number; oy: number; oz: number; at: number }>() // per-slot discontinuity smoothing: raw stream memory + decaying offset
   names = new Map<number, string>() // slot -> callsign (welcome + roster events)
   teams = new Map<number, string>() // slot -> side ('red'/'blue'; teams mode roster events)
+  racks = new Map<number, Record<string, { fixture: string; stores: string[] }>>() // slot -> granted loadout (#17, roster events) — how remotes render each other's stores
   score: Record<string, number> = {} // teams mode running score (welcome + kill events)
   darts: Dart[] = [] // the recipient's nearest server missiles, from the poses datagram — the engine renders every dart another player fired
   dartsAt = 0 // arrival time of the dart set (performance.now()), for dead reckoning
@@ -587,7 +590,8 @@ export class Net {
             for (let i = 57; i < SIZE; i++) {
               let v = view.getUint16(57 * 8 + (i - 57) * 2, true) / 65535 // the uint16 tail is always finite
               if (i === STATE.loss) v *= 8000 // Loss, kg — BY INDEX: scaling "the last word" broke when #78 appended the gear words after Loss (strut damage arrived x8000, Loss unscaled)
-              if (i === SIZE - 1) v = (v - 0.5) * 3 // Pitchwash, signed rad/s off the unit-interval wire mapping
+              if (i === STATE.loss + 4) v = (v - 0.5) * 3 // Pitchwash, signed rad/s off the unit-interval wire mapping — BY INDEX for the same reason: "SIZE - 1" silently slid onto the roll-trim datum when buffet and bank were appended
+              if (i === STATE.external) v *= 8000 // external-tank fuel, kg — same scale as Loss
               expanded[i] = v
             }
             core = expanded
@@ -610,6 +614,7 @@ export class Net {
         if (ev.kind === 'roster' && validSlot(ev.slot)) {
           this.names.set(ev.slot as number, String(ev.name ?? ''))   // names arrive out of the hot path (#81)
           if (ev.team) this.teams.set(ev.slot as number, String(ev.team))
+          if (ev.stores && typeof ev.stores === 'object') this.racks.set(ev.slot as number, ev.stores as Record<string, { fixture: string; stores: string[] }>)
         }
         if (ev.kind === 'kill' && ev.score) this.score = finiteScore(ev.score)
         if (ev.kind === 'kill' && validSlot(ev.slot)) {   // scores are counted, not shipped per snapshot (#81)
@@ -749,7 +754,7 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
     const writer = stream.writable.getWriter() as WritableStreamDefaultWriter<Uint8Array>
     const reader = stream.readable.getReader() as ReadableStreamDefaultReader<Uint8Array>
     await writer.write(
-      frame(cbor_encode({ kind: 'join', session: join.session, name: join.name, team: join.team ?? '', protocol: PROTOCOL }))
+      frame(cbor_encode({ kind: 'join', session: join.session, name: join.name, team: join.team ?? '', stores: join.stores ?? {}, protocol: PROTOCOL }))
     )
     // The handshake and the established connection share ONE bounded frame
     // reader (the same size caps and chunk-queue apply to the welcome/refuse):

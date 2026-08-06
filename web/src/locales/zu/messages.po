@@ -41,14 +41,19 @@ msgstr "{0, plural, one {# kukhethiwe} other {# kukhethiwe}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:971
+#: src/components/MissionSetup.tsx:1127
 msgid "{0} created “{1}”"
 msgstr "{0} udale “{1}”"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:259
+#: src/components/Multiplayer.tsx:274
 msgid "{0} flying"
 msgstr "{0} bayandiza"
+
+#. placeholder {0}: gross - LAUNCH
+#: src/components/MissionSetup.tsx:828
+msgid "{0} lb over maximum launch weight"
+msgstr "{0} lb ngaphezu kwesisindo esikhulu sokwethulwa"
 
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
@@ -57,7 +62,7 @@ msgstr "Ukubuka kuqala kwenketho {0}"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:440
+#: src/components/Multiplayer.tsx:455
 msgid "{0}/{1} players"
 msgstr "abadlali {0}/{1}"
 
@@ -69,7 +74,7 @@ msgstr "Igama le-{entityLabel}"
 msgid "{entityLabel} name is required"
 msgstr "Igama le-{entityLabel} liyadingeka"
 
-#: src/components/Multiplayer.tsx:165
+#: src/components/Multiplayer.tsx:180
 msgid "{name}'s match"
 msgstr "Umdlalo ka-{name}"
 
@@ -126,7 +131,7 @@ msgstr "UCINGO 1"
 msgid "12 hours"
 msgstr "Amahora angu-12"
 
-#: src/components/MissionSetup.tsx:733
+#: src/components/MissionSetup.tsx:889
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -142,7 +147,7 @@ msgstr "Amahora angu-24"
 msgid "3 WIRE"
 msgstr "UCINGO 3"
 
-#: src/components/MissionSetup.tsx:736
+#: src/components/MissionSetup.tsx:892
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -182,14 +187,14 @@ msgstr "Uhlobo lwe-akhawunti"
 msgid "Account verified"
 msgstr "I-akhawunti iqinisekisiwe"
 
-#: src/components/MissionSetup.tsx:1230
-#: src/components/MissionSetup.tsx:1585
-#: src/components/Multiplayer.tsx:380
+#: src/components/MissionSetup.tsx:1389
+#: src/components/MissionSetup.tsx:1744
+#: src/components/Multiplayer.tsx:395
 msgid "Ace"
 msgstr "Ingcweti"
 
-#: src/components/MissionSetup.tsx:142
-#: src/components/MissionSetup.tsx:181
+#: src/components/MissionSetup.tsx:145
+#: src/components/MissionSetup.tsx:185
 msgid "Acquire target"
 msgstr "Khiya ithagethi"
 
@@ -247,7 +252,7 @@ msgstr "Engeza i-akhawunti entsha"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:292
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:291
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:94
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:194
 msgid "Add option"
@@ -281,7 +286,7 @@ msgstr "Iyengeza..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Lungisa ukubukeka nesakhiwo ukuze kuhambelane nezintandokazi zakho."
 
-#: src/components/MissionSetup.tsx:1434
+#: src/components/MissionSetup.tsx:1593
 msgid "Afterburner"
 msgstr "I-afterburner"
 
@@ -289,20 +294,20 @@ msgstr "I-afterburner"
 msgid "AI"
 msgstr "I-AI"
 
-#: src/components/MissionSetup.tsx:114
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:117
+#: src/components/MissionSetup.tsx:455
 msgid "Aircraft"
 msgstr "Ibhanoyi"
 
-#: src/components/MissionSetup.tsx:810
+#: src/components/MissionSetup.tsx:966
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Umkhumbi othwala izindiza <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> ka-<1>Muhamad Mirza Arrafi</1> (Sketchfab), onelayisensi ngaphansi kwe-<2>CC BY 4.0</2>. Kushintshiwe: kwashintshwa usayizi, kwaqondiswa kabusha, kwacwiliswa kwaze kwafika emugqeni wamanzi, futhi kwenziwa lula ukuze kulungele iwebhu."
 
-#: src/components/MissionSetup.tsx:784
+#: src/components/MissionSetup.tsx:940
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Imodeli yendiza <0>“F/A-18C Hornet”</0> eyenziwe ngu-<1>CreadorDeMu</1> (Sketchfab), inikezwe ilayisensi ngaphansi kwe-<2>CC BY 4.0</2>. Kushintshiwe: kwaqondiswa kabusha futhi kwashintshwa usayizi, kwasuswa idatha yethekhisha engasetshenzisiwe, imithwalo yangaphandle yahlukaniswa yafakwa efayeleni elihlukile, kanti imeshi eyodwa yesembozo yenziwa yaba umfanekiso wesibuko."
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:458
 msgid "Alerts"
 msgstr "Izexwayiso"
 
@@ -315,7 +320,7 @@ msgstr "Konke"
 msgid "Allow anyone to search for {0}"
 msgstr "Vumela noma ubani asesha i-{0}"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:226
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
 msgid "Allow sort by"
 msgstr "Vumela ukuhlunga nge"
 
@@ -340,12 +345,12 @@ msgstr "Noma ubani"
 msgid "Anyone who is logged in"
 msgstr "Noma ubani ongenile"
 
-#: src/components/MissionSetup.tsx:148
-#: src/components/MissionSetup.tsx:187
+#: src/components/MissionSetup.tsx:151
+#: src/components/MissionSetup.tsx:191
 msgid "Approach power (ATC)"
 msgstr "Amandla okusondela (ATC)"
 
-#: src/components/MissionSetup.tsx:707
+#: src/components/MissionSetup.tsx:863
 msgid "Approach, on-speed (Vapp)"
 msgstr "Ukusondela, ngesivinini esifanele (Vapp)"
 
@@ -366,12 +371,12 @@ msgstr "Uqinisekile ufuna ukususa lo mbono? Lokhu kuzosusa nazo zonke izimpendul
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Uqinisekile ufuna ukuphuma? Kuzodingeka ungene futhi ukuze ufinyelele i-akhawunti yakho."
 
-#: src/components/MissionSetup.tsx:1195
+#: src/components/MissionSetup.tsx:1354
 msgid "Armament"
 msgstr "Izikhali zempi"
 
-#: src/components/MissionSetup.tsx:147
-#: src/components/MissionSetup.tsx:186
+#: src/components/MissionSetup.tsx:150
+#: src/components/MissionSetup.tsx:190
 msgid "Arrestor hook"
 msgstr "Ihhuku lokumisa"
 
@@ -414,11 +419,11 @@ msgstr "I-avatar"
 msgid "Avatar for {name}"
 msgstr "I-avatar ka-{name}"
 
-#: src/components/MissionSetup.tsx:312
+#: src/components/MissionSetup.tsx:317
 msgid "Axes"
 msgstr "Ama-axis"
 
-#: src/components/MissionSetup.tsx:353
+#: src/components/MissionSetup.tsx:358
 msgid "Axis {i}"
 msgstr "I-axis {i}"
 
@@ -437,7 +442,7 @@ msgstr "Emuva"
 msgid "Back to home"
 msgstr "Buyela ekhaya"
 
-#: src/components/MissionSetup.tsx:1222
+#: src/components/MissionSetup.tsx:1381
 msgid "Bandit"
 msgstr "Isitha"
 
@@ -445,19 +450,19 @@ msgstr "Isitha"
 msgid "Banner"
 msgstr "Ibhena"
 
-#: src/components/MissionSetup.tsx:698
+#: src/components/MissionSetup.tsx:854
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "Ukukhuphuka okungcono kakhulu (Vy, 100% umfutho)"
 
-#: src/components/MissionSetup.tsx:699
+#: src/components/MissionSetup.tsx:855
 msgid "Best climb (Vy, afterburner)"
 msgstr "Ukukhuphuka okungcono kakhulu (Vy, i-afterburner)"
 
-#: src/components/MissionSetup.tsx:701
+#: src/components/MissionSetup.tsx:857
 msgid "Best glide (engines out)"
 msgstr "Ukuntweza okungcono kakhulu (izinjini zicimile)"
 
-#: src/components/MissionSetup.tsx:703
+#: src/components/MissionSetup.tsx:859
 msgid "Best sustained turn speed"
 msgstr "Isivinini esingcono sokujika okuqhubekayo"
 
@@ -479,11 +484,11 @@ msgstr "Kuvinjelwe ukuya esixhumanisini esingathembekile"
 msgid "Blocks"
 msgstr "Iyavimba"
 
-#: src/components/Multiplayer.tsx:479
+#: src/components/Multiplayer.tsx:494
 msgid "Blue"
 msgstr "Oluhlaza okwesibhakabhaka"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Blue bots"
 msgstr "Amabhothi aluhlaza okwesibhakabhaka"
 
@@ -504,7 +509,7 @@ msgstr "Khulisa intshisekelo"
 msgid "Border colour"
 msgstr "Umbala womngcele"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Bots"
 msgstr "Amabhothi"
 
@@ -524,11 +529,11 @@ msgstr "JIKA KWESOKUDLA"
 msgid "Browser notifications"
 msgstr "Izaziso zebhrawuza"
 
-#: src/components/MissionSetup.tsx:413
+#: src/components/MissionSetup.tsx:418
 msgid "Button {i}"
 msgstr "Inkinobho {i}"
 
-#: src/components/MissionSetup.tsx:387
+#: src/components/MissionSetup.tsx:392
 msgid "Buttons"
 msgstr "Izinkinobho"
 
@@ -536,12 +541,12 @@ msgstr "Izinkinobho"
 msgid "CALL THE BALL"
 msgstr "MEMEZELA IBHOLA"
 
-#: src/components/MissionSetup.tsx:1490
-#: src/components/Multiplayer.tsx:243
+#: src/components/MissionSetup.tsx:1649
+#: src/components/Multiplayer.tsx:258
 msgid "Callsign"
 msgstr "Igama lokubiza"
 
-#: src/components/MissionSetup.tsx:567
+#: src/components/MissionSetup.tsx:572
 msgid "Camera distance"
 msgstr "Ibanga lekhamera"
 
@@ -558,9 +563,9 @@ msgstr "Ibanga lekhamera"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/MissionSetup.tsx:542
-#: src/components/Multiplayer.tsx:214
-#: src/components/Multiplayer.tsx:456
+#: src/components/MissionSetup.tsx:547
+#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:471
 msgid "Cancel"
 msgstr "Khansela"
 
@@ -574,35 +579,35 @@ msgstr "Khansela umbono"
 msgid "Cancel reply"
 msgstr "Khansela impendulo"
 
-#: src/components/MissionSetup.tsx:189
+#: src/components/MissionSetup.tsx:193
 msgid "Canopy"
 msgstr "I-canopy"
 
-#: src/components/MissionSetup.tsx:1006
+#: src/components/MissionSetup.tsx:1162
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1270
+#: src/components/MissionSetup.tsx:1429
 msgid "Case I (day)"
 msgstr "Isimo I (imini)"
 
-#: src/components/MissionSetup.tsx:1007
+#: src/components/MissionSetup.tsx:1163
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1271
+#: src/components/MissionSetup.tsx:1430
 msgid "Case II (weather)"
 msgstr "Isimo II (isimo sezulu)"
 
-#: src/components/MissionSetup.tsx:1008
+#: src/components/MissionSetup.tsx:1164
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1272
+#: src/components/MissionSetup.tsx:1431
 msgid "Case III (night)"
 msgstr "Isimo III (ubusuku)"
 
-#: src/components/MissionSetup.tsx:1278
+#: src/components/MissionSetup.tsx:1437
 msgid "Catapult"
 msgstr "Ikhatapulthi"
 
@@ -623,16 +628,16 @@ msgstr "Umbono wokujaha:"
 msgid "chat"
 msgstr "ingxoxo"
 
-#: src/components/MissionSetup.tsx:199
+#: src/components/MissionSetup.tsx:204
 msgid "Chat"
 msgstr "Ingxoxo"
 
-#: src/components/MissionSetup.tsx:200
+#: src/components/MissionSetup.tsx:205
 msgid "Chat to everyone"
 msgstr "Ingxoxo nabo bonke"
 
-#: src/components/MatchHistory.tsx:176
-#: src/components/MissionSetup.tsx:1320
+#: src/components/MatchHistory.tsx:179
+#: src/components/MissionSetup.tsx:1479
 msgid "Cheats"
 msgstr "Ukukopela"
 
@@ -679,7 +684,7 @@ msgstr "Khetha ulimi"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:304
+#: src/components/Multiplayer.tsx:319
 msgid "Clear"
 msgstr "Sula"
 
@@ -743,7 +748,7 @@ msgstr "Vala usesho"
 msgid "closer"
 msgstr "sondela"
 
-#: src/components/MissionSetup.tsx:1306
+#: src/components/MissionSetup.tsx:1465
 msgid "Clouds"
 msgstr "Amafu"
 
@@ -792,7 +797,7 @@ msgstr "NGIYAQALA"
 msgid "Comment actions"
 msgstr "Izenzo zokuphawula"
 
-#: src/components/MissionSetup.tsx:116
+#: src/components/MissionSetup.tsx:119
 msgid "Communication"
 msgstr "Ukuxhumana"
 
@@ -814,7 +819,7 @@ msgstr "Cushwa izilungiselelo zombukiso"
 msgid "Confirm"
 msgstr "Qinisekisa"
 
-#: src/components/MissionSetup.tsx:1116
+#: src/components/MissionSetup.tsx:1272
 msgid "Connect"
 msgstr "Xhuma"
 
@@ -830,7 +835,7 @@ msgstr "Ama-akhawunti axhunyiwe"
 msgid "Connecting..."
 msgstr "Iyaxhuma..."
 
-#: src/components/Multiplayer.tsx:262
+#: src/components/Multiplayer.tsx:277
 msgid "Connecting…"
 msgstr "Iyaxhuma…"
 
@@ -851,7 +856,7 @@ msgid "Contextual information and details."
 msgstr "Ulwazi nemininingwane yomongo."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:238
 msgid "Continue"
 msgstr "Qhubeka"
 
@@ -871,11 +876,11 @@ msgstr "Kukopishelwe kwi-clipboard"
 msgid "Copy"
 msgstr "Kopisha"
 
-#: src/components/MissionSetup.tsx:702
+#: src/components/MissionSetup.tsx:858
 msgid "Corner speed (best instant turn)"
 msgstr "Isivinini sekhona (ukujika okusheshayo okungcono)"
 
-#: src/components/Multiplayer.tsx:179
+#: src/components/Multiplayer.tsx:194
 msgid "Could not create the match"
 msgstr "Akukwazekanga ukudala umdlalo"
 
@@ -883,12 +888,12 @@ msgstr "Akukwazekanga ukudala umdlalo"
 msgid "Could not load this document. Please try again later."
 msgstr "Akukwazanga ukulayisha le dokhumenti. Sicela uzame futhi kamuva."
 
-#: src/components/MatchHistory.tsx:217
-#: src/components/MatchHistory.tsx:223
+#: src/components/MatchHistory.tsx:226
+#: src/components/MatchHistory.tsx:232
 msgid "Could not save the recording"
 msgstr "Akukwazekanga ukulondoloza irekhodi"
 
-#: src/components/MissionSetup.tsx:953
+#: src/components/MissionSetup.tsx:1109
 msgid "Could not send the message"
 msgstr "Akukwazekanga ukuthumela umlayezo"
 
@@ -908,8 +913,8 @@ msgstr "Ayikwazanga ukuqala ukuqinisekiswa kabusha. Sicela uzame futhi."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Ayikwazanga ukuqinisekisa ngaleyo akhawunti. Sicela uzame futhi."
 
-#: src/components/MissionSetup.tsx:143
-#: src/components/MissionSetup.tsx:182
+#: src/components/MissionSetup.tsx:146
+#: src/components/MissionSetup.tsx:186
 msgid "Countermeasures"
 msgstr "Izinyathelo zokuvimbela"
 
@@ -930,16 +935,16 @@ msgstr "Dala"
 msgid "Create {0}"
 msgstr "Dala {0}"
 
-#: src/components/Multiplayer.tsx:412
+#: src/components/Multiplayer.tsx:427
 msgid "Create and fly"
 msgstr "Dala bese undiza"
 
-#: src/components/Multiplayer.tsx:277
+#: src/components/Multiplayer.tsx:292
 msgid "Create match"
 msgstr "Dala umdlalo"
 
-#: src/components/MissionSetup.tsx:1625
-#: src/components/MissionSetup.tsx:1648
+#: src/components/MissionSetup.tsx:1784
+#: src/components/MissionSetup.tsx:1807
 msgid "Create mission"
 msgstr "Dala umsebenzi"
 
@@ -957,13 +962,13 @@ msgstr "Kudaliwe"
 msgid "Creating..."
 msgstr "Kuyadalwa..."
 
-#: src/components/MissionSetup.tsx:773
-#: src/components/MissionSetup.tsx:779
+#: src/components/MissionSetup.tsx:929
+#: src/components/MissionSetup.tsx:935
 msgid "Credits"
 msgstr "Abanikele"
 
-#: src/components/MissionSetup.tsx:1313
-#: src/components/Multiplayer.tsx:305
+#: src/components/MissionSetup.tsx:1472
+#: src/components/Multiplayer.tsx:320
 msgid "Cumulus"
 msgstr "I-cumulus"
 
@@ -979,8 +984,8 @@ msgstr "Okuzenzelwe"
 msgid "CUT"
 msgstr "INGOZI"
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:194
+#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:198
 msgid "Cycle view"
 msgstr "Shintsha umbono"
 
@@ -1004,13 +1009,13 @@ msgstr "Ukungqubuzana kwedatha"
 msgid "Date"
 msgstr "Usuku"
 
-#: src/components/MissionSetup.tsx:1301
-#: src/components/Multiplayer.tsx:300
+#: src/components/MissionSetup.tsx:1460
+#: src/components/Multiplayer.tsx:315
 msgid "Day"
 msgstr "Imini"
 
 #: src/components/MatchHistory.tsx:144
-#: src/components/MatchHistory.tsx:170
+#: src/components/MatchHistory.tsx:173
 msgid "Deaths"
 msgstr "Ukufa"
 
@@ -1058,7 +1063,7 @@ msgstr "Susa ikholomu"
 msgid "Delete comment"
 msgstr "Susa umbono"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:301
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:300
 msgid "Delete field"
 msgstr "Susa inkambu"
 
@@ -1067,8 +1072,8 @@ msgid "Delete option"
 msgstr "Susa inketho"
 
 #. placeholder {0}: opt.name
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:279
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:284
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:278
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:283
 msgid "Delete option {0}"
 msgstr "Susa inketho {0}"
 
@@ -1096,8 +1101,8 @@ msgstr "Incazelo"
 msgid "Details Panel"
 msgstr "Iphaneli Yemininingwane"
 
-#: src/components/MissionSetup.tsx:379
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:384
+#: src/components/MissionSetup.tsx:433
 msgid "Detect"
 msgstr "Thola"
 
@@ -1112,11 +1117,11 @@ msgstr "Thola"
 msgid "Detect from web browser"
 msgstr "Bona kusuka kubhrawuza ye-web"
 
-#: src/components/MissionSetup.tsx:281
+#: src/components/MissionSetup.tsx:286
 msgid "Device"
 msgstr "Idivayisi"
 
-#: src/components/Multiplayer.tsx:203
+#: src/components/Multiplayer.tsx:218
 msgid "Different game host"
 msgstr "Umsingathi womdlalo ohlukile"
 
@@ -1136,7 +1141,7 @@ msgstr "Lahla"
 msgid "Discard draft?"
 msgstr "Lahla uhlaka?"
 
-#: src/components/MissionSetup.tsx:293
+#: src/components/MissionSetup.tsx:298
 msgid "disconnected"
 msgstr "ayixhunyiwe"
 
@@ -1151,8 +1156,8 @@ msgstr "Kunqanyuliwe"
 msgid "Dismiss"
 msgstr "Cashisa"
 
-#: src/components/MissionSetup.tsx:152
-#: src/components/MissionSetup.tsx:195
+#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:200
 msgid "Display repeater"
 msgstr "Isiphindi sesibonisi"
 
@@ -1160,13 +1165,13 @@ msgstr "Isiphindi sesibonisi"
 msgid "Displays the mobile sidebar."
 msgstr "Ibonisa ibha eseceleni yefoni."
 
-#: src/components/MissionSetup.tsx:1422
+#: src/components/MissionSetup.tsx:1581
 msgid "Distance LOD"
 msgstr "I-LOD yebanga"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:306
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1729
+#: src/components/MissionSetup.tsx:1888
 msgid "Done"
 msgstr "Kwenziwe"
 
@@ -1184,7 +1189,7 @@ msgstr "Ukulanda kuhlulekile"
 msgid "Drag"
 msgstr "Hudula"
 
-#: src/components/Multiplayer.tsx:377
+#: src/components/Multiplayer.tsx:392
 msgid "Drone"
 msgstr "Idroni"
 
@@ -1192,7 +1197,11 @@ msgstr "Idroni"
 msgid "Duplicates"
 msgstr "Iphinda kabili"
 
-#: src/components/MissionSetup.tsx:1416
+#: src/components/MatchHistory.tsx:158
+msgid "Duration"
+msgstr "Ubude besikhathi"
+
+#: src/components/MissionSetup.tsx:1575
 msgid "Dynamic resolution"
 msgstr "Isixazululo esiguquguqukayo"
 
@@ -1213,11 +1222,11 @@ msgstr "Hlela"
 msgid "Edit {label}"
 msgstr "Hlela {label}"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:137
 msgid "Edit field"
 msgstr "Hlela inkambu"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:139
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:138
 msgid "Edit field settings"
 msgstr "Hlela izilungiselelo zenkambu"
 
@@ -1226,8 +1235,8 @@ msgid "Edit option"
 msgstr "Hlela inketho"
 
 #. placeholder {0}: opt.name
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:264
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:269
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:263
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:268
 msgid "Edit option {0}"
 msgstr "Hlela inketho engu-{0}"
 
@@ -1239,7 +1248,7 @@ msgstr "Hlela ikhadi elikhethiwe"
 msgid "Edit view"
 msgstr "Hlela umbukiso"
 
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:197
 msgid "Eject"
 msgstr "Ukukhishwa"
 
@@ -1255,7 +1264,7 @@ msgstr "I-imeyili"
 msgid "Email code"
 msgstr "Ikhodi ye-imeyili"
 
-#: src/components/Multiplayer.tsx:439
+#: src/components/Multiplayer.tsx:454
 msgid "empty"
 msgstr "ayinamuntu"
 
@@ -1263,7 +1272,7 @@ msgstr "ayinamuntu"
 msgid "ENGAGED"
 msgstr "NGIYAHLASELA"
 
-#: src/components/MissionSetup.tsx:449
+#: src/components/MissionSetup.tsx:454
 msgid "Engine"
 msgstr "Injini"
 
@@ -1275,7 +1284,7 @@ msgstr "Faka ikhodi evela ku-imeyili yakho"
 msgid "Enter your authenticator code"
 msgstr "Faka ikhodi yakho yesiqinisekisi"
 
-#: src/components/MissionSetup.tsx:452
+#: src/components/MissionSetup.tsx:457
 msgid "Environment"
 msgstr "Okuzungezile"
 
@@ -1302,12 +1311,12 @@ msgstr "Nweba"
 msgid "Expand sidebar"
 msgstr "Nweba ibha eseceleni"
 
-#: src/components/MissionSetup.tsx:144
-#: src/components/MissionSetup.tsx:183
+#: src/components/MissionSetup.tsx:147
+#: src/components/MissionSetup.tsx:187
 msgid "Extend flaps"
 msgstr "Ama-flaps phandle"
 
-#: src/components/MissionSetup.tsx:1396
+#: src/components/MissionSetup.tsx:1555
 msgid "Exterior detail"
 msgstr "Imininingwane yangaphandle"
 
@@ -1319,7 +1328,7 @@ msgstr "I-URL yangaphandle"
 msgid "Extra large"
 msgstr "Okukhulu kakhulu"
 
-#: src/components/MissionSetup.tsx:721
+#: src/components/MissionSetup.tsx:877
 msgid "F/A-18C reference"
 msgstr "Inkomba ye-F/A-18C"
 
@@ -1431,16 +1440,16 @@ msgstr "Kuqediwe"
 msgid "fire"
 msgstr "dubula"
 
-#: src/components/MissionSetup.tsx:140
-#: src/components/MissionSetup.tsx:179
+#: src/components/MissionSetup.tsx:143
+#: src/components/MissionSetup.tsx:183
 msgid "Fire weapon"
 msgstr "Dubula ngesikhali"
 
-#: src/components/MissionSetup.tsx:557
+#: src/components/MissionSetup.tsx:562
 msgid "Fixed keys"
 msgstr "Okhiye abangaguquki"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:222
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:221
 msgid "Flags"
 msgstr "Amafulegi"
 
@@ -1460,7 +1469,7 @@ msgstr "AMALANGABI"
 msgid "Flat"
 msgstr "Isicaba"
 
-#: src/components/MissionSetup.tsx:111
+#: src/components/MissionSetup.tsx:114
 msgid "Flight"
 msgstr "Ukundiza"
 
@@ -1480,17 +1489,21 @@ msgstr "Kuntwebezelayo"
 msgid "Flown"
 msgstr "Kundiziwe"
 
-#: src/components/MissionSetup.tsx:1619
-#: src/components/MissionSetup.tsx:1662
+#: src/components/MissionSetup.tsx:1778
+#: src/components/MissionSetup.tsx:1821
 msgid "Fly"
 msgstr "Ndiza"
 
-#: src/components/MissionSetup.tsx:1446
+#: src/components/MissionSetup.tsx:762
+msgid "Fox 2 fighter"
+msgstr "Indiza yempi ye-Fox 2"
+
+#: src/components/MissionSetup.tsx:1605
 msgid "Framerate"
 msgstr "Izinga lefreyimu"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1190
+#: src/components/MissionSetup.tsx:1349
 msgid "Free flight"
 msgstr "Ukundiza okukhululekile"
 
@@ -1515,8 +1528,8 @@ msgstr "Kusukela"
 msgid "From theme"
 msgstr "Kusukela endikimbeni"
 
-#: src/components/MissionSetup.tsx:1207
-#: src/components/Multiplayer.tsx:315
+#: src/components/MissionSetup.tsx:1366
+#: src/components/Multiplayer.tsx:330
 msgid "Fuel"
 msgstr "Uphethiloli"
 
@@ -1536,9 +1549,13 @@ msgstr "UKUVUZA KWAMAFUTHA"
 msgid "FUEL LO"
 msgstr "UPHETHILOLI UPHANSI"
 
-#: src/components/MissionSetup.tsx:188
+#: src/components/MissionSetup.tsx:192
 msgid "Fuel probe"
 msgstr "Iprobhu kaphethiloli"
+
+#: src/components/MissionSetup.tsx:728
+msgid "Fuel tank"
+msgstr "Ithangi likaphethiloli"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:321
 msgid "Full layout"
@@ -1556,7 +1573,7 @@ msgstr "Igiya"
 msgid "GEAR"
 msgstr "IGIYA"
 
-#: src/components/MissionSetup.tsx:1671
+#: src/components/MissionSetup.tsx:1830
 msgid "General"
 msgstr "Okujwayelekile"
 
@@ -1586,9 +1603,13 @@ msgstr "Yiya ekhasini {pageNumber}"
 msgid "Go to previous page"
 msgstr "Yiya ekhasini elingaphambilini"
 
-#: src/components/MissionSetup.tsx:1674
+#: src/components/MissionSetup.tsx:1833
 msgid "Graphics"
 msgstr "Imidwebo"
+
+#: src/components/MissionSetup.tsx:824
+msgid "Gross weight"
+msgstr "Isisindo esiphelele"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx:162
 msgid "Group"
@@ -1607,6 +1628,10 @@ msgstr "Iqembu: {0}"
 msgid "GUN"
 msgstr "ISIBHAMU"
 
+#: src/components/MissionSetup.tsx:762
+msgid "Gun fighter"
+msgstr "Indiza yempi yombayimbayi"
+
 #: ../../../lib/web/src/components/data-table/column-header.tsx:70
 msgid "Hide"
 msgstr "Fihla"
@@ -1615,17 +1640,17 @@ msgstr "Fihla"
 msgid "Hide password"
 msgstr "Fihla iphasiwedi"
 
-#: src/components/MissionSetup.tsx:1376
+#: src/components/MissionSetup.tsx:1535
 msgid "High"
 msgstr "Okuphezulu"
 
-#: src/components/MissionSetup.tsx:1314
-#: src/components/Multiplayer.tsx:306
+#: src/components/MissionSetup.tsx:1473
+#: src/components/Multiplayer.tsx:321
 msgid "High stratus"
 msgstr "I-stratus ephakeme"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1638
+#: src/components/MissionSetup.tsx:1797
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Umlando"
@@ -1649,15 +1674,15 @@ msgstr "IHUKU"
 msgid "Hot"
 msgstr "Okushisayo"
 
-#: src/components/MissionSetup.tsx:196
+#: src/components/MissionSetup.tsx:201
 msgid "HUD altitude source"
 msgstr "Umthombo wokuphakama we-HUD"
 
-#: src/components/MissionSetup.tsx:197
+#: src/components/MissionSetup.tsx:202
 msgid "HUD declutter"
 msgstr "Yenza i-HUD ibe lula"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:153
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:152
 msgid "ID"
 msgstr ""
 
@@ -1670,8 +1695,8 @@ msgstr "Isibonisi sesithombe: {0}"
 msgid "Imperial"
 msgstr "Yobukhosi"
 
-#: src/components/MissionSetup.tsx:1003
-#: src/components/MissionSetup.tsx:1267
+#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1426
 msgid "In air"
 msgstr "Emoyeni"
 
@@ -1707,7 +1732,7 @@ msgstr "Ithegi engavumelekile: izinhlamvu, izinombolo, izikhala, ohayifeni nemid
 msgid "Invalid verification code"
 msgstr "Ikhodi yokuqinisekisa engalungile"
 
-#: src/components/MissionSetup.tsx:306
+#: src/components/MissionSetup.tsx:311
 msgid "Invert pitch"
 msgstr "Guqulela i-pitch"
 
@@ -1715,8 +1740,8 @@ msgstr "Guqulela i-pitch"
 msgid "INVULNERABLE"
 msgstr "AKALIMALI"
 
-#: src/components/MissionSetup.tsx:1325
-#: src/components/Multiplayer.tsx:344
+#: src/components/MissionSetup.tsx:1484
+#: src/components/Multiplayer.tsx:359
 msgid "Invulnerable (human players only)"
 msgstr "Akalimali (abadlali abangabantu kuphela)"
 
@@ -1724,12 +1749,12 @@ msgstr "Akalimali (abadlali abangabantu kuphela)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Kubonakala sengathi ikhasi olifunayo <0/>alikho noma lisusiwe."
 
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:506
 msgid "Join"
 msgstr "Joyina"
 
-#: src/components/MissionSetup.tsx:1086
-#: src/components/MissionSetup.tsx:1629
+#: src/components/MissionSetup.tsx:1242
+#: src/components/MissionSetup.tsx:1788
 msgid "Join server"
 msgstr "Joyina iseva"
 
@@ -1738,20 +1763,20 @@ msgid "JOINED"
 msgstr "UJOYINILE"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1591
-#: src/components/Multiplayer.tsx:438
+#: src/components/MissionSetup.tsx:1750
+#: src/components/Multiplayer.tsx:453
 msgid "Joust"
 msgstr "Umqhudelwano"
 
-#: src/components/Multiplayer.tsx:291
+#: src/components/Multiplayer.tsx:306
 msgid "Joust — 1v1, first kill wins"
 msgstr "Umlo wababili — 1v1, obulala kuqala uyanqoba"
 
-#: src/components/MissionSetup.tsx:1191
+#: src/components/MissionSetup.tsx:1350
 msgid "Joust against AI player"
 msgstr "Umlo wababili nomdlali we-AI"
 
-#: src/components/MissionSetup.tsx:1680
+#: src/components/MissionSetup.tsx:1839
 msgid "Joystick"
 msgstr "I-joystick"
 
@@ -1767,7 +1792,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Izinqamuleli zekhibhodi"
 
-#: src/components/MissionSetup.tsx:1683
+#: src/components/MissionSetup.tsx:1842
 msgid "Keys"
 msgstr "Okhiye"
 
@@ -1780,7 +1805,7 @@ msgid "Killed"
 msgstr "Ubulewe"
 
 #: src/components/MatchHistory.tsx:141
-#: src/components/MatchHistory.tsx:167
+#: src/components/MatchHistory.tsx:170
 msgid "Kills"
 msgstr "Ukubulala"
 
@@ -1796,8 +1821,8 @@ msgstr "UMLILO INJ SOBUNXELE"
 msgid "L GEAR"
 msgstr "IGIYA SOBUNXELE"
 
-#: src/components/MissionSetup.tsx:146
-#: src/components/MissionSetup.tsx:185
+#: src/components/MissionSetup.tsx:149
+#: src/components/MissionSetup.tsx:189
 msgid "Landing gear"
 msgstr "Amasondo okuhlala"
 
@@ -1810,8 +1835,8 @@ msgstr "Okukhulu"
 msgid "LATE"
 msgstr "SEKWEPHUZILE"
 
-#: src/components/MissionSetup.tsx:149
-#: src/components/MissionSetup.tsx:192
+#: src/components/MissionSetup.tsx:152
+#: src/components/MissionSetup.tsx:196
 msgid "Launch (catapult)"
 msgstr "Ndulula (ikhathaphali)"
 
@@ -1824,7 +1849,7 @@ msgstr "suka / ithagethi"
 msgid "Layout"
 msgstr "Isakhiwo"
 
-#: src/components/Multiplayer.tsx:328
+#: src/components/Multiplayer.tsx:343
 msgid "lb"
 msgstr "lb"
 
@@ -1833,7 +1858,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Funda kabanzi"
 
-#: src/components/MissionSetup.tsx:1142
+#: src/components/MissionSetup.tsx:1298
 msgid "Leave server"
 msgstr "Shiya iseva"
 
@@ -1867,8 +1892,8 @@ msgstr "Okukhanyayo"
 msgid "lights"
 msgstr "izibani"
 
-#: src/components/MissionSetup.tsx:150
-#: src/components/MissionSetup.tsx:191
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:195
 msgid "Lights"
 msgstr "Izibani"
 
@@ -1888,7 +1913,7 @@ msgstr "Izixhumanisi"
 msgid "List"
 msgstr "Uhla"
 
-#: src/components/MissionSetup.tsx:1210
+#: src/components/MissionSetup.tsx:1369
 msgid "Load"
 msgstr "Inani"
 
@@ -1932,36 +1957,36 @@ msgstr "Uphume ngempumelelo"
 msgid "Logging out…"
 msgstr "Iyaphuma…"
 
-#: src/components/MissionSetup.tsx:126
+#: src/components/MissionSetup.tsx:129
 msgid "Look"
 msgstr "Buka"
 
-#: src/components/MissionSetup.tsx:566
+#: src/components/MissionSetup.tsx:571
 msgid "Look / orbit"
 msgstr "Buka / zungeza"
 
-#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:158
 msgid "Look down"
 msgstr "Buka phansi"
 
-#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:159
 msgid "Look left"
 msgstr "Buka kwesokunxele"
 
-#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:160
 msgid "Look right"
 msgstr "Buka kwesokudla"
 
-#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:157
 msgid "Look up"
 msgstr "Buka phezulu"
 
-#: src/components/MissionSetup.tsx:1372
+#: src/components/MissionSetup.tsx:1531
 msgid "Low"
 msgstr "Okuphansi"
 
-#: src/components/MissionSetup.tsx:1315
-#: src/components/Multiplayer.tsx:307
+#: src/components/MissionSetup.tsx:1474
+#: src/components/Multiplayer.tsx:322
 msgid "Low stratus"
 msgstr "I-stratus ephansi"
 
@@ -1985,7 +2010,7 @@ msgstr "Mathupha"
 msgid "map"
 msgstr "imephu"
 
-#: src/components/MissionSetup.tsx:198
+#: src/components/MissionSetup.tsx:203
 msgid "Map"
 msgstr "Imephu"
 
@@ -1995,19 +2020,19 @@ msgstr "Imephu"
 msgid "Mark all as read"
 msgstr "Maka konke njengokufundiwe"
 
-#: src/components/MissionSetup.tsx:448
+#: src/components/MissionSetup.tsx:453
 msgid "Master"
 msgstr "Okuphelele"
 
-#: src/components/Multiplayer.tsx:287
+#: src/components/Multiplayer.tsx:302
 msgid "Match type"
 msgstr "Uhlobo lomdlalo"
 
-#: src/components/MissionSetup.tsx:1136
+#: src/components/MissionSetup.tsx:1292
 msgid "Matches"
 msgstr "Imidlalo"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:199
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:198
 msgid "Maximum length"
 msgstr "Ubude obukhulu"
 
@@ -2016,7 +2041,7 @@ msgid "MCP server"
 msgstr "Iseva ye-MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1374
+#: src/components/MissionSetup.tsx:1533
 msgid "Medium"
 msgstr "Maphakathi"
 
@@ -2025,7 +2050,7 @@ msgid "menu"
 msgstr "imenyu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:207
-#: src/components/MissionSetup.tsx:201
+#: src/components/MissionSetup.tsx:206
 msgid "Menu"
 msgstr "Imenyu"
 
@@ -2037,7 +2062,7 @@ msgstr "Umyalezo"
 msgid "Message everyone"
 msgstr "Thumela umlayezo kubo bonke"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1144
 msgid "Message players on this server"
 msgstr "Thumela umlayezo kubadlali kule seva"
 
@@ -2049,11 +2074,11 @@ msgstr "Thumela umlayezo eqenjini lakho"
 msgid "Metric"
 msgstr "Imethrikhi"
 
-#: src/components/MissionSetup.tsx:836
+#: src/components/MissionSetup.tsx:992
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Ibalazwe le-Midway Atoll — izithombe ziqukethe idatha ye-<0>Copernicus Sentinel-2</0> elungisiwe (2026); ubunjalo besikhumulo sezindiza (indlela yokundiza, imizila yokuhamba kwezindiza, izindawo zokupaka) © abanikeli be-<1>OpenStreetMap</1>, elinelayisensi ngaphansi kwe-<2>ODbL</2>; idatha yogu neriphu ivela ku-<3>NOAA NCCOS</3> (indawo yomphakathi)."
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:188
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:187
 msgid "Minimum length"
 msgstr "Ubude obuncane"
 
@@ -2061,11 +2086,7 @@ msgstr "Ubude obuncane"
 msgid "MISSILE"
 msgstr "UMCIBISHOLO"
 
-#: src/components/MissionSetup.tsx:1202
-msgid "Missiles"
-msgstr "Imicibisholo"
-
-#: src/components/Multiplayer.tsx:334
+#: src/components/Multiplayer.tsx:349
 msgid "Missiles allowed"
 msgstr "Imicibisholo ivunyelwe"
 
@@ -2073,7 +2094,7 @@ msgstr "Imicibisholo ivunyelwe"
 msgid "Mochi web"
 msgstr "Iwebhu ye-Mochi"
 
-#: src/components/MatchHistory.tsx:161
+#: src/components/MatchHistory.tsx:164
 msgid "Mode"
 msgstr "Imodi"
 
@@ -2090,17 +2111,17 @@ msgstr "UMsombuluko"
 msgid "More options"
 msgstr "Eziningi izinketho"
 
-#: src/components/MissionSetup.tsx:379
+#: src/components/MissionSetup.tsx:384
 msgid "Move it…"
 msgstr "Yinyakazise…"
 
-#: src/components/Multiplayer.tsx:188
+#: src/components/Multiplayer.tsx:203
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Umdlalo wabadlali abaningi udinga i-WebTransport, kodwa lesi siphequluli asikayisekeli."
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:118
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:614
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:143
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:142
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:128
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:299
 msgid "Name"
@@ -2134,8 +2155,8 @@ msgstr "Umdlalo omusha"
 msgid "Next image"
 msgstr "Isithombe esilandelayo"
 
-#: src/components/MissionSetup.tsx:1302
-#: src/components/Multiplayer.tsx:301
+#: src/components/MissionSetup.tsx:1461
+#: src/components/Multiplayer.tsx:316
 msgid "Night"
 msgstr "Ubusuku"
 
@@ -2175,7 +2196,7 @@ msgstr "Awekho amaqembu atholakalayo"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Azikho izinhlobo zezinto ezingadalwa okwamanje. Dala izinto zomzali ezidingekayo kuqala."
 
-#: src/components/MissionSetup.tsx:300
+#: src/components/MissionSetup.tsx:305
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ayikho i-joystick etholakele — cindezela noma iyiphi inkinobho kuyo ukuze uyivuse."
 
@@ -2187,7 +2208,7 @@ msgstr "Azikho izinto ezifanayo"
 msgid "No notifications yet"
 msgstr "Azikho izaziso okwamanje"
 
-#: src/components/Multiplayer.tsx:421
+#: src/components/Multiplayer.tsx:436
 msgid "No open matches — create one."
 msgstr "Ayikho imidlalo evulekile — dala owodwa."
 
@@ -2240,8 +2261,8 @@ msgstr "Abakho abasebenzisi abatholakele"
 msgid "No views"
 msgstr "Akukho ukubukwa"
 
-#: src/components/MissionSetup.tsx:965
-#: src/components/Multiplayer.tsx:421
+#: src/components/MissionSetup.tsx:1121
+#: src/components/Multiplayer.tsx:436
 msgid "No world server."
 msgstr "Ayikho iseva yomhlaba."
 
@@ -2263,9 +2284,10 @@ msgstr "ALIKHO IBANGA"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:349
-#: src/components/MissionSetup.tsx:409
-#: src/components/MissionSetup.tsx:1312
+#: src/components/MissionSetup.tsx:354
+#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:727
+#: src/components/MissionSetup.tsx:1471
 msgid "None"
 msgstr "Lutho"
 
@@ -2289,7 +2311,7 @@ msgstr "Akusethiwe"
 msgid "Nothing found"
 msgstr "Akukho okutholakele"
 
-#: src/components/MissionSetup.tsx:965
+#: src/components/MissionSetup.tsx:1121
 msgid "Nothing yet — say hello."
 msgstr "Akukho lutho okwamanje — yisho sawubona."
 
@@ -2306,9 +2328,9 @@ msgstr "Izaziso"
 msgid "Notifications: {0}"
 msgstr "Izaziso: {0}"
 
-#: src/components/MissionSetup.tsx:1228
-#: src/components/MissionSetup.tsx:1583
-#: src/components/Multiplayer.tsx:378
+#: src/components/MissionSetup.tsx:1387
+#: src/components/MissionSetup.tsx:1742
+#: src/components/Multiplayer.tsx:393
 msgid "Novice"
 msgstr "Umqalayo"
 
@@ -2318,7 +2340,7 @@ msgstr "Umqalayo"
 msgid "Number"
 msgstr "Inombolo"
 
-#: src/components/MissionSetup.tsx:1404
+#: src/components/MissionSetup.tsx:1563
 msgid "Ocean detail"
 msgstr "Imininingwane yolwandle"
 
@@ -2330,13 +2352,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Kuvuliwe"
 
-#: src/components/MissionSetup.tsx:1005
-#: src/components/MissionSetup.tsx:1269
+#: src/components/MissionSetup.tsx:1161
+#: src/components/MissionSetup.tsx:1428
 msgid "On carrier"
 msgstr "Emkhunjini"
 
-#: src/components/MissionSetup.tsx:1004
-#: src/components/MissionSetup.tsx:1268
+#: src/components/MissionSetup.tsx:1160
+#: src/components/MissionSetup.tsx:1427
 msgid "On runway"
 msgstr "Endleleni yokundiza"
 
@@ -2344,11 +2366,11 @@ msgstr "Endleleni yokundiza"
 msgid "Oops! Page Not Found!"
 msgstr "Yini! Ikhasi Alitholakali!"
 
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:453
 msgid "Open"
 msgstr "Vula"
 
-#: src/components/Multiplayer.tsx:290
+#: src/components/Multiplayer.tsx:305
 msgid "Open — anyone may join or leave"
 msgstr "Uvulekile — noma ubani angangena noma aphume"
 
@@ -2406,7 +2428,7 @@ msgid "Option name"
 msgstr "Igama lenketho"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:168
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:241
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:240
 msgid "Options"
 msgstr "Izinketho"
 
@@ -2422,8 +2444,8 @@ msgstr "jikeleza"
 msgid "Other"
 msgstr "Okunye"
 
-#: src/components/MissionSetup.tsx:135
-#: src/components/MissionSetup.tsx:173
+#: src/components/MissionSetup.tsx:138
+#: src/components/MissionSetup.tsx:177
 msgid "Override G limit"
 msgstr "Ukweqa umkhawulo we-G"
 
@@ -2440,7 +2462,7 @@ msgstr "Ikhasi {currentPage} kwangu-{totalPages}"
 msgid "Parent"
 msgstr "Umzali"
 
-#: src/components/MissionSetup.tsx:172
+#: src/components/MissionSetup.tsx:176
 msgid "Parking brake"
 msgstr "Ibhuleki yokupaka"
 
@@ -2456,7 +2478,7 @@ msgstr "Ukuqinisekiswa kwe-passkey kuhlulekile. Sicela uzame futhi."
 msgid "Passkeys"
 msgstr "Ama-passkey"
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:210
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:209
 msgid "Pattern (regex)"
 msgstr "Iphethini (i-regex)"
 
@@ -2464,15 +2486,15 @@ msgstr "Iphethini (i-regex)"
 msgid "Pick a date"
 msgstr "Khetha usuku"
 
-#: src/components/MissionSetup.tsx:907
-#: src/components/Multiplayer.tsx:90
-#: src/components/Multiplayer.tsx:248
+#: src/components/MissionSetup.tsx:1063
+#: src/components/Multiplayer.tsx:102
+#: src/components/Multiplayer.tsx:263
 msgid "pilot"
 msgstr "umshayeli webhanoyi"
 
-#: src/components/MissionSetup.tsx:1229
-#: src/components/MissionSetup.tsx:1584
-#: src/components/Multiplayer.tsx:379
+#: src/components/MissionSetup.tsx:1388
+#: src/components/MissionSetup.tsx:1743
+#: src/components/Multiplayer.tsx:394
 msgid "Pilot"
 msgstr "Umshayeli webhanoyi"
 
@@ -2484,15 +2506,15 @@ msgstr "UMSHAYELI UBULEWE"
 msgid "pitch"
 msgstr "gobisa"
 
-#: src/components/MissionSetup.tsx:121
+#: src/components/MissionSetup.tsx:124
 msgid "Pitch"
 msgstr "I-pitch"
 
-#: src/components/MissionSetup.tsx:163
+#: src/components/MissionSetup.tsx:167
 msgid "Pitch down"
 msgstr "I-pitch phansi"
 
-#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:166
 msgid "Pitch up"
 msgstr "I-pitch phezulu"
 
@@ -2500,7 +2522,7 @@ msgstr "I-pitch phezulu"
 msgid "PLATFORM"
 msgstr "INKUNDLA"
 
-#: src/components/MatchHistory.tsx:164
+#: src/components/MatchHistory.tsx:167
 msgid "Players"
 msgstr "Abadlali"
 
@@ -2530,11 +2552,11 @@ msgstr "Okuthunyelwe"
 msgid "Posts and comments"
 msgstr "Okwabiwayo namazwana"
 
-#: src/components/MissionSetup.tsx:1359
+#: src/components/MissionSetup.tsx:1518
 msgid "Preset"
 msgstr "Okumiswe ngaphambili"
 
-#: src/components/MissionSetup.tsx:536
+#: src/components/MissionSetup.tsx:541
 msgid "Press a key…"
 msgstr "Cindezela ukhiye…"
 
@@ -2542,7 +2564,7 @@ msgstr "Cindezela ukhiye…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "CINDEZELA U-ENTER UKUZE UNDIZE"
 
-#: src/components/MissionSetup.tsx:428
+#: src/components/MissionSetup.tsx:433
 msgid "Press it…"
 msgstr "Yicindezele…"
 
@@ -2576,6 +2598,10 @@ msgstr "Isaziso se-push"
 msgid "PUSH TIME"
 msgstr "ISIKHATHI SOKUSONDELA"
 
+#: src/components/MissionSetup.tsx:727
+msgid "Pylon"
+msgstr "Iphayiloni"
+
 #: src/components/GameCanvas.tsx:42
 msgid "R ENG"
 msgstr "INJINI SOKUDLA"
@@ -2587,6 +2613,10 @@ msgstr "UMLILO INJ SOKUDLA"
 #: src/components/GameCanvas.tsx:45
 msgid "R GEAR"
 msgstr "IGIYA SOKUDLA"
+
+#: src/components/MissionSetup.tsx:727
+msgid "Rail"
+msgstr "Ireyili"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
@@ -2604,7 +2634,7 @@ msgstr "Phinda ubhalise okhiye bakho bokungena kule seva"
 msgid "REARMED"
 msgstr "UHLONYISWE KABUSHA"
 
-#: src/components/MissionSetup.tsx:1091
+#: src/components/MissionSetup.tsx:1247
 msgid "Recent"
 msgstr "Kwakamuva"
 
@@ -2617,24 +2647,24 @@ msgstr "Kunconywayo"
 msgid "Reconnecting ({retries})..."
 msgstr "Iyaxhuma kabusha ({retries})..."
 
-#: src/components/MissionSetup.tsx:1508
+#: src/components/MissionSetup.tsx:1667
 msgid "Record flights"
 msgstr "Qopha ukundiza"
 
-#: src/components/MatchHistory.tsx:229
-#: src/components/MissionSetup.tsx:1502
+#: src/components/MatchHistory.tsx:238
+#: src/components/MissionSetup.tsx:1661
 msgid "Recording"
 msgstr "Ukuqopha"
 
-#: src/components/MatchHistory.tsx:222
+#: src/components/MatchHistory.tsx:231
 msgid "Recording saved"
 msgstr "Irekhodi lilondoloziwe"
 
-#: src/components/Multiplayer.tsx:469
+#: src/components/Multiplayer.tsx:484
 msgid "Red"
 msgstr "Obomvu"
 
-#: src/components/Multiplayer.tsx:373
+#: src/components/Multiplayer.tsx:388
 msgid "Red bots"
 msgstr "Amabhothi abomvu"
 
@@ -2647,11 +2677,11 @@ msgstr "Iqondisa kabusha ekungeneni."
 msgid "Reduce interest"
 msgstr "Yehlisa intshisekelo"
 
-#: src/components/MissionSetup.tsx:715
+#: src/components/MissionSetup.tsx:871
 msgid "Reference"
 msgstr "Inkomba"
 
-#: src/components/Multiplayer.tsx:267
+#: src/components/Multiplayer.tsx:282
 msgid "Refresh"
 msgstr "Vuselela"
 
@@ -2726,7 +2756,7 @@ msgstr "Qamba kabusha ikholomu"
 msgid "Rename this board column"
 msgstr "Qamba kabusha leli kholomu lebhodi"
 
-#: src/components/MissionSetup.tsx:873
+#: src/components/MissionSetup.tsx:1029
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Ukurenda kwenziwa nge-<0>three.js</0> (ilayisensi ye-MIT)."
 
@@ -2740,7 +2770,7 @@ msgstr "Phendula"
 msgid "Reply to {0}..."
 msgstr "Phendula ku-{0}..."
 
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:225
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:224
 msgid "Required"
 msgstr "Kuyadingeka"
 
@@ -2750,7 +2780,7 @@ msgstr "Thumela i-imeyili futhi"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1722
+#: src/components/MissionSetup.tsx:1881
 msgid "Reset"
 msgstr "Setha kabusha"
 
@@ -2763,23 +2793,25 @@ msgstr "Setha kabusha i-{title}"
 msgid "Reset all settings to default values"
 msgstr "Setha kabusha zonke izilungiselelo emanani okuzenzakalelayo"
 
-#: src/components/MissionSetup.tsx:178
+#: src/components/MissionSetup.tsx:182
 msgid "Reset trim"
 msgstr "Setha kabusha i-trim"
 
-#: src/components/MissionSetup.tsx:565
+#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:199
+#: src/components/MissionSetup.tsx:570
 msgid "Reset view"
 msgstr "Setha kabusha umbukiso"
 
-#: src/components/MissionSetup.tsx:1386
+#: src/components/MissionSetup.tsx:1545
 msgid "Resolution"
 msgstr "Isixazululo"
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1770
 msgid "Restart mission"
 msgstr "Qala kabusha umsebenzi"
 
-#: src/components/MatchHistory.tsx:173
+#: src/components/MatchHistory.tsx:176
 msgid "Result"
 msgstr "Umphumela"
 
@@ -2787,12 +2819,12 @@ msgstr "Umphumela"
 msgid "Resume"
 msgstr "Qhubeka"
 
-#: src/components/MissionSetup.tsx:1607
+#: src/components/MissionSetup.tsx:1766
 msgid "Resume mission"
 msgstr "Qhubeka nomsebenzi"
 
-#: src/components/MissionSetup.tsx:145
-#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:148
+#: src/components/MissionSetup.tsx:188
 msgid "Retract flaps"
 msgstr "Ama-flaps phakathi"
 
@@ -2800,7 +2832,7 @@ msgstr "Ama-flaps phakathi"
 msgid "Retry"
 msgstr "Zama futhi"
 
-#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:368
 msgid "Reversed"
 msgstr "Kuguquliwe"
 
@@ -2816,20 +2848,20 @@ msgstr "Kusuka Kwesokudla Kuya Kwesokunxele"
 msgid "roll"
 msgstr "gingqa"
 
-#: src/components/MissionSetup.tsx:122
+#: src/components/MissionSetup.tsx:125
 msgid "Roll"
 msgstr "I-roll"
 
-#: src/components/MissionSetup.tsx:164
+#: src/components/MissionSetup.tsx:168
 msgid "Roll left"
 msgstr "I-roll kwesokunxele"
 
-#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:169
 msgid "Roll right"
 msgstr "I-roll kwesokudla"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:150
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:169
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:168
 msgid "Rows"
 msgstr "Imigqa"
 
@@ -2868,7 +2900,7 @@ msgstr "UMgqibelo"
 msgid "Save"
 msgstr "Londoloza"
 
-#: src/components/MissionSetup.tsx:730
+#: src/components/MissionSetup.tsx:886
 msgid "Sea level"
 msgstr "Izinga lolwandle"
 
@@ -2998,8 +3030,8 @@ msgstr "Khetha umkhondo wesayithi"
 msgid "Select theme preference"
 msgstr "Khetha okuncamelayo kwendikimba"
 
-#: src/components/MissionSetup.tsx:141
-#: src/components/MissionSetup.tsx:180
+#: src/components/MissionSetup.tsx:144
+#: src/components/MissionSetup.tsx:184
 msgid "Select weapon"
 msgstr "Khetha isikhali"
 
@@ -3017,7 +3049,7 @@ msgstr "okukhethiwe"
 msgid "Selected: <0>{0}</0>"
 msgstr "Ekhethiwe: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:995
+#: src/components/MissionSetup.tsx:1151
 msgid "Send"
 msgstr "Thumela"
 
@@ -3042,12 +3074,12 @@ msgstr "Thumela umyalezo"
 msgid "Serif"
 msgstr "I-Serif"
 
-#: src/components/MatchHistory.tsx:158
-#: src/components/MissionSetup.tsx:1104
+#: src/components/MatchHistory.tsx:161
+#: src/components/MissionSetup.tsx:1260
 msgid "Server"
 msgstr "Iseva"
 
-#: src/components/MissionSetup.tsx:960
+#: src/components/MissionSetup.tsx:1116
 msgid "Server chat"
 msgstr "Ingxoxo yeseva"
 
@@ -3069,7 +3101,7 @@ msgstr "ISESHINI IPHELILE"
 msgid "Session expired. Please log in again."
 msgstr "Iseshini iphelelwe yisikhathi. Sicela uphinde ungene ngemvume."
 
-#: src/components/MissionSetup.tsx:542
+#: src/components/MissionSetup.tsx:547
 msgid "Set"
 msgstr "Setha"
 
@@ -3081,12 +3113,12 @@ msgstr "Misa indawo yokuqala neyokuya"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:275
-#: src/components/MissionSetup.tsx:1633
-#: src/components/MissionSetup.tsx:1667
+#: src/components/MissionSetup.tsx:1792
+#: src/components/MissionSetup.tsx:1826
 msgid "Settings"
 msgstr "Izilungiselelo"
 
-#: src/components/MissionSetup.tsx:1428
+#: src/components/MissionSetup.tsx:1587
 msgid "Shadows"
 msgstr "Imithunzi"
 
@@ -3126,11 +3158,11 @@ msgid "Signing out..."
 msgstr "Kuyaphunywa..."
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:161
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:180
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:179
 msgid "Single line of text only"
 msgstr "Umugqa owodwa wombhalo kuphela"
 
-#: src/components/MissionSetup.tsx:700
+#: src/components/MissionSetup.tsx:856
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Ukukhuphuka okungcono ngenjini eyodwa (Vyse, i-afterburner)"
 
@@ -3147,8 +3179,8 @@ msgstr "Okuncane"
 msgid "Sort"
 msgstr "Hlunga"
 
-#: src/components/MissionSetup.tsx:468
-#: src/components/MissionSetup.tsx:1677
+#: src/components/MissionSetup.tsx:473
+#: src/components/MissionSetup.tsx:1836
 msgid "Sound"
 msgstr "Umsindo"
 
@@ -3168,13 +3200,13 @@ msgstr "IB.MO"
 msgid "speed brake"
 msgstr "ibhuleki yomoya"
 
-#: src/components/MissionSetup.tsx:125
-#: src/components/MissionSetup.tsx:133
-#: src/components/MissionSetup.tsx:170
+#: src/components/MissionSetup.tsx:128
+#: src/components/MissionSetup.tsx:136
+#: src/components/MissionSetup.tsx:174
 msgid "Speed brake"
 msgstr "Ibhuleki yomoya"
 
-#: src/components/MissionSetup.tsx:756
+#: src/components/MissionSetup.tsx:912
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Izivinini zise-KCAS, njengebanga elisuka kokulula (uphethiloli omncane, ayikho impahla yangaphandle) kuya kokusindayo (isisindo esiphelele esiphezulu). Idatha itholwe ngokuhlola kugeyimu. Noma yimuphi umehluko endizeni yangempela ubonisa amaphutha emodeli yokundiza yesimuletha."
 
@@ -3182,15 +3214,15 @@ msgstr "Izivinini zise-KCAS, njengebanga elisuka kokulula (uphethiloli omncane, 
 msgid "SPLASH"
 msgstr "NGIYIWISILE"
 
-#: src/components/MissionSetup.tsx:705
+#: src/components/MissionSetup.tsx:861
 msgid "Stall, clean (Vs1)"
 msgstr "I-stall, kuhlanzekile (Vs1)"
 
-#: src/components/MissionSetup.tsx:706
+#: src/components/MissionSetup.tsx:862
 msgid "Stall, landing config (Vs0)"
 msgstr "I-stall, isimo sokwehla (Vs0)"
 
-#: src/components/MissionSetup.tsx:1241
+#: src/components/MissionSetup.tsx:1400
 msgid "Start"
 msgstr "Qala"
 
@@ -3202,11 +3234,11 @@ msgstr "Qala ingxoxo ngokwengeza amazwana okuqala."
 msgid "Stay tuned though!"
 msgstr "Kodwa hlala ulindile!"
 
-#: src/components/MissionSetup.tsx:696
+#: src/components/MissionSetup.tsx:852
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Ukukhuphuka okumthambeke kakhulu (Vx, 100% umfutho)"
 
-#: src/components/MissionSetup.tsx:697
+#: src/components/MissionSetup.tsx:853
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Ukukhuphuka okumthambeke kakhulu (Vx, i-afterburner)"
 
@@ -3237,9 +3269,9 @@ msgstr "Bhalisa"
 msgid "Sunday"
 msgstr "ISonto"
 
-#: src/components/MissionSetup.tsx:1231
-#: src/components/MissionSetup.tsx:1586
-#: src/components/Multiplayer.tsx:381
+#: src/components/MissionSetup.tsx:1390
+#: src/components/MissionSetup.tsx:1745
+#: src/components/Multiplayer.tsx:396
 msgid "Superhuman"
 msgstr "Ongaphezu komuntu"
 
@@ -3280,7 +3312,7 @@ msgstr "Amathegi"
 msgid "TALLY"
 msgstr "NGIBONA ISITHA"
 
-#: src/components/MissionSetup.tsx:1184
+#: src/components/MissionSetup.tsx:1343
 msgid "Task"
 msgstr "Umsebenzi"
 
@@ -3293,11 +3325,11 @@ msgid "TEAM"
 msgstr "IQEMBU"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:438
+#: src/components/Multiplayer.tsx:453
 msgid "Teams"
 msgstr "Amaqembu"
 
-#: src/components/Multiplayer.tsx:292
+#: src/components/Multiplayer.tsx:307
 msgid "Teams — red versus blue"
 msgstr "Amaqembu — obomvu ngokumelene noluhlaza okwesibhakabhaka"
 
@@ -3342,7 +3374,7 @@ msgstr "Indikimba"
 msgid "Theme Settings"
 msgstr "Izilungiselelo Zendikimba"
 
-#: src/components/Multiplayer.tsx:206
+#: src/components/Multiplayer.tsx:221
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Le lobby ithumela uxhumano lwakho lomdlalo kumsingathi ohlukile ({redirectHost}). Qhubeka kuphela uma uyithemba le seva."
 
@@ -3354,15 +3386,15 @@ msgstr "Leli khasi alikadalwa."
 msgid "throttle"
 msgstr "ijubane"
 
-#: src/components/MissionSetup.tsx:124
+#: src/components/MissionSetup.tsx:127
 msgid "Throttle"
 msgstr "I-throttle"
 
-#: src/components/MissionSetup.tsx:169
+#: src/components/MissionSetup.tsx:173
 msgid "Throttle down"
 msgstr "Yehlisa i-throttle"
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:172
 msgid "Throttle up"
 msgstr "Khuphula i-throttle"
 
@@ -3370,7 +3402,7 @@ msgstr "Khuphula i-throttle"
 msgid "Thursday"
 msgstr "ULwesine"
 
-#: src/components/MissionSetup.tsx:704
+#: src/components/MissionSetup.tsx:860
 msgid "Tightest sustained turn speed"
 msgstr "Isivinini sokujika okuqhubekayo okuqinile kakhulu"
 
@@ -3382,7 +3414,7 @@ msgstr "thambekisa"
 msgid "Time"
 msgstr "Isikhathi"
 
-#: src/components/MissionSetup.tsx:1295
+#: src/components/MissionSetup.tsx:1454
 msgid "Time of day"
 msgstr "Isikhathi sosuku"
 
@@ -3438,7 +3470,7 @@ msgstr "Izicelo eziningi kakhulu"
 msgid "Top"
 msgstr "Phezulu"
 
-#: src/components/MissionSetup.tsx:1440
+#: src/components/MissionSetup.tsx:1599
 msgid "Tracers"
 msgstr "Izinhlamvu ezikhanyayo"
 
@@ -3446,31 +3478,31 @@ msgstr "Izinhlamvu ezikhanyayo"
 msgid "Travelling"
 msgstr "Kuyahanjwa"
 
-#: src/components/MissionSetup.tsx:112
+#: src/components/MissionSetup.tsx:115
 msgid "Trim"
 msgstr "I-trim"
 
-#: src/components/MissionSetup.tsx:127
+#: src/components/MissionSetup.tsx:130
 msgid "Trim hat"
 msgstr "Isigqoko se-trim"
 
-#: src/components/MissionSetup.tsx:137
-#: src/components/MissionSetup.tsx:175
+#: src/components/MissionSetup.tsx:140
+#: src/components/MissionSetup.tsx:179
 msgid "Trim nose down"
 msgstr "I-trim: ikhala phansi"
 
-#: src/components/MissionSetup.tsx:136
-#: src/components/MissionSetup.tsx:174
+#: src/components/MissionSetup.tsx:139
+#: src/components/MissionSetup.tsx:178
 msgid "Trim nose up"
 msgstr "I-trim: ikhala phezulu"
 
-#: src/components/MissionSetup.tsx:138
-#: src/components/MissionSetup.tsx:176
+#: src/components/MissionSetup.tsx:141
+#: src/components/MissionSetup.tsx:180
 msgid "Trim roll left"
 msgstr "I-trim: ukutsheka kwesokunxele"
 
-#: src/components/MissionSetup.tsx:139
-#: src/components/MissionSetup.tsx:177
+#: src/components/MissionSetup.tsx:142
+#: src/components/MissionSetup.tsx:181
 msgid "Trim roll right"
 msgstr "I-trim: ukutsheka kwesokudla"
 
@@ -3489,8 +3521,12 @@ msgstr "Zama futhi"
 msgid "Tuesday"
 msgstr "ULwesibili"
 
+#: src/components/MissionSetup.tsx:727
+msgid "Twin rail"
+msgstr "Ireyili ephindwe kabili"
+
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:130
-#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:163
+#: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:162
 msgid "Type"
 msgstr "Uhlobo"
 
@@ -3510,7 +3546,7 @@ msgstr "Thayipha ukuze useshe abasebenzisi"
 msgid "Type to search..."
 msgstr "Thayipha ukuze useshe..."
 
-#: src/components/MissionSetup.tsx:1378
+#: src/components/MissionSetup.tsx:1537
 msgid "Ultra"
 msgstr "Ephezulu kakhulu"
 
@@ -3544,13 +3580,13 @@ msgstr "I-United States"
 msgid "Unknown"
 msgstr "Akwaziwa"
 
-#: src/components/MissionSetup.tsx:1331
-#: src/components/Multiplayer.tsx:354
+#: src/components/MissionSetup.tsx:1490
+#: src/components/Multiplayer.tsx:369
 msgid "Unlimited ammunition"
 msgstr "Izinhlamvu ezingenamkhawulo"
 
-#: src/components/MissionSetup.tsx:1337
-#: src/components/Multiplayer.tsx:364
+#: src/components/MissionSetup.tsx:1496
+#: src/components/Multiplayer.tsx:379
 msgid "Unlimited fuel"
 msgstr "Amafutha angenamkhawulo"
 
@@ -3614,7 +3650,7 @@ msgstr "Qinisekisa"
 msgid "Verify email address"
 msgstr "Qinisekisa ikheli le-imeyili"
 
-#: src/components/MissionSetup.tsx:746
+#: src/components/MissionSetup.tsx:902
 msgid "Vertical"
 msgstr "Okuqonde phezulu"
 
@@ -3636,7 +3672,7 @@ msgid "view"
 msgstr "umbono"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/MissionSetup.tsx:115
+#: src/components/MissionSetup.tsx:118
 msgid "View"
 msgstr "Buka"
 
@@ -3653,7 +3689,7 @@ msgstr "Buka zonke izaziso"
 msgid "View controls"
 msgstr "Buka izilawuli"
 
-#: src/components/MissionSetup.tsx:564
+#: src/components/MissionSetup.tsx:569
 msgid "Views"
 msgstr "Ukubukwa"
 
@@ -3691,12 +3727,12 @@ msgstr "Sizokwazisa uma kwenzeka okuthile okubalulekile."
 msgid "weapon"
 msgstr "isikhali"
 
-#: src/components/MissionSetup.tsx:113
-#: src/components/MissionSetup.tsx:451
+#: src/components/MissionSetup.tsx:116
+#: src/components/MissionSetup.tsx:456
 msgid "Weapons"
 msgstr "Izikhali"
 
-#: src/components/Multiplayer.tsx:297
+#: src/components/Multiplayer.tsx:312
 msgid "Weather"
 msgstr "Isimo sezulu"
 
@@ -3708,12 +3744,12 @@ msgstr "Iwebhusayithi ingaphansi kwezilungiselelo!"
 msgid "Wednesday"
 msgstr "ULwesithathu"
 
-#: src/components/MissionSetup.tsx:134
-#: src/components/MissionSetup.tsx:171
+#: src/components/MissionSetup.tsx:137
+#: src/components/MissionSetup.tsx:175
 msgid "Wheel brakes"
 msgstr "Amabhuleki amasondo"
 
-#: src/components/MissionSetup.tsx:190
+#: src/components/MissionSetup.tsx:194
 msgid "Wing fold"
 msgstr "Ukugoqwa kwamaphiko"
 
@@ -3721,12 +3757,12 @@ msgstr "Ukugoqwa kwamaphiko"
 msgid "WINS"
 msgstr "UYANQOBA"
 
-#: src/components/Multiplayer.tsx:232
+#: src/components/Multiplayer.tsx:247
 msgid "World server"
 msgstr "Iseva yomhlaba"
 
-#: src/components/MissionSetup.tsx:953
-#: src/components/Multiplayer.tsx:103
+#: src/components/MissionSetup.tsx:1109
+#: src/components/Multiplayer.tsx:115
 msgid "World server not reachable"
 msgstr "Iseva yomhlaba ayifinyeleleki"
 
@@ -3734,15 +3770,15 @@ msgstr "Iseva yomhlaba ayifinyeleleki"
 msgid "yaw"
 msgstr "phendula"
 
-#: src/components/MissionSetup.tsx:123
+#: src/components/MissionSetup.tsx:126
 msgid "Yaw"
 msgstr "I-yaw"
 
-#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:170
 msgid "Yaw left"
 msgstr "I-yaw kwesokunxele"
 
-#: src/components/MissionSetup.tsx:167
+#: src/components/MissionSetup.tsx:171
 msgid "Yaw right"
 msgstr "I-yaw kwesokudla"
 
@@ -3774,7 +3810,7 @@ msgstr "Okunamathiselwe kwakho kuzolahleka."
 msgid "Your flights appear here once you've flown one."
 msgstr "Ukundiza kwakho kuzobonakala lapha uma usundizile kanye."
 
-#: src/components/Multiplayer.tsx:433
+#: src/components/Multiplayer.tsx:448
 msgid "your offer"
 msgstr "umnikelo wakho"
 
@@ -3786,14 +3822,14 @@ msgstr "Umbhalo nokunamathiselwe kwakho kuzolahleka."
 msgid "Your text will be lost."
 msgstr "Umbhalo wakho uzolahleka."
 
-#: src/components/MissionSetup.tsx:128
+#: src/components/MissionSetup.tsx:131
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:161
 msgid "Zoom in"
 msgstr "Sondeza"
 
-#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:162
 msgid "Zoom out"
 msgstr "Hlehlisa"
