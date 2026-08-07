@@ -3733,7 +3733,17 @@ function flight_world(){
 		wires:SHIP.wires.map(fa=>({ a:{x:fa+SHIP.halfspan*STRIP_ULAT, y:0, z:strip_lat(fa)-SHIP.halfspan*STRIP_UFA}, b:{x:fa-SHIP.halfspan*STRIP_ULAT, y:0, z:strip_lat(fa)+SHIP.halfspan*STRIP_UFA} })) };   // pendants span SQUARE TO THE LANDING STRIP, as a real angled deck rigs them (the hook crosses them perpendicular on rollout); ship-axis-aligned wires skewed the catch geometry. NOT the topple fix — that was the world-side wing-leveler (#72 scenario 9) — but correct regardless
 	const cl=CLOUDS[cfg.clouds];
 	const cloud=(cl&&cl.flat<0.5)?{ base:cl.base, top:cl.top, high:cl.high, convective:1, gate:{ minimum:cl.gate[0], maximum:cl.gate[1] } }:undefined;   // #122: convective presets bump and lift; stratiform decks are STABLE air and stay deliberately smooth
-	return { aircraft:cfg.aircraft||"fa18c", environment:{ seed:1, wrap:WORLD_WRAP, cloud, cheat:{ fuel:cheat("fuel") } }, world:{ sea:0, fields, carrier } };
+	// Wind (#44): ~25 kt from 070° — the Midway trades the deck already faces
+	// (yaw:20 aims the bow into them). This single key activates the whole of
+	// flight/wind.go — shear, veer, gusts, and the carrier burble — which had
+	// never run: Environment.Wind was assigned nowhere. Vector points WHERE
+	// THE AIR MOVES: from 070° means toward 250°, i.e. -x*sin(70°),+z... the
+	// core's frame has -z north, so blowing-toward-250° is x=-sin(250°+180°)…
+	// measured empirically instead: HUD wind arrow and drift on the 070° bow
+	// must read a HEADWIND on deck. 12.9 m/s ≈ 25 kt.
+	let wind={ x:-12.9*Math.sin(70*D2R), z:12.9*Math.cos(70*D2R) };   // blowing FROM 070 toward 250 in the world frame (x east, z south)
+	if(DEV_MODE){ const w=new URLSearchParams(location.search).get("wind"); if(w!==null){ const knots=parseFloat(w)||0; const scale=knots*0.5144/12.9; wind={ x:wind.x*scale, z:wind.z*scale }; } }   // &wind=<knots> (0 = calm) — headless A/B isolation of wind effects (#44)
+	return { aircraft:cfg.aircraft||"fa18c", environment:{ seed:1, wrap:WORLD_WRAP, cloud, wind, cheat:{ fuel:cheat("fuel") } }, world:{ sea:0, fields, carrier } };
 }
 function sync_core(out){   // core state -> the ownship object every consumer reads (HUD, cameras, weapons, LSO)
 	ownship.pos.set(out[STATE.position],out[STATE.position+1],out[STATE.position+2]);
