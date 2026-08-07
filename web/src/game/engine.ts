@@ -17,7 +17,7 @@ import {
   type Join as NetJoin,
 } from './net'
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode } from './flight'
-import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits } from './stores'
+import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release } from './stores'
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
 import { flight_catalog } from './flight'
 import { deviceDefaults } from '../lib/config'
@@ -1773,6 +1773,18 @@ function jettison_stations(stations, what){
 	assign_loadout(ownship,next);
 	ownship.msl=Math.max(0,(ownship.msl|0)-gone);
 	update_rails(ownship,ownship.msl);
+	// The release envelope (#43, NATOPS fig 4-4 jettison columns: 575 KCAS /
+	// Mach 0.95, +1 to +2 g). Outside it the departing store can strike the
+	// airframe — a deterministic dent and overstress per offending station.
+	// SP only: in multiplayer the server's Jettison applies the same strike
+	// authoritatively (world/games/air/stores.go release_severity — in sync).
+	if(!MULTIPLAYER){
+		const speed=Math.max((ownship.cas||0)*1.9438/stores_release.knots, (((ownship.gauges&&ownship.gauges.mach)||0))/stores_release.mach);
+		const g=ownship.gload||1;
+		const severity=Math.max(0,speed-1)+0.5*Math.max(0,Math.max(stores_release.low-g,g-stores_release.high));
+		if(severity>0){ const words=flight_get(); if(words){ const struck=Math.min(1,2*severity);
+			for(let s=0;s<dropped.length;s++){ words[STATE.drag]+=0.05*struck; words[STATE.stress]+=2*severity; }
+			flight_set(words); } } }
 	if(net) net.jettison(dropped.map(station=>({ station, what })));
 	return true; }
 // Emergency jettison: the striped button — held through the whole sequence,
@@ -1787,20 +1799,25 @@ function emergency_update(dt, pressed){
 	emergency.timer-=dt;
 	if(emergency.timer<=0){ if(jettison_stations(EMERGENCY_PAIRS[emergency.step],"rack")&&!emergency.said){ emergency.said=true; notice(translate("EMERG JETT")); }   // the wing stations are behind the pilot — say that the button worked
 		emergency.step++; emergency.timer=0.3; } }
-// Carriage limits (#18, decided 2026-08-05): each store's g/speed envelope is
-// factual data (stores LIMITS); exceedance accumulates per-station harm and
-// past threshold the attachment FAILS — the store departs involuntarily
-// through the same path, the sudden asymmetry itself the pilot's first cue.
+// Carriage limits (#18/#43): each store's envelope is NATOPS figure 4-4 data
+// (stores LIMITS, keyed by entry name — the centreline tank genuinely differs
+// from the wing stations). The limit is two-sided, KCAS or Mach whichever is
+// less; there is NO store g limit (LBA — the airframe's own placard governs),
+// and missiles/rails/pylons carry no limit at all. Exceedance accumulates
+// per-station harm and past threshold the attachment FAILS — the store
+// departs involuntarily through the same path, the sudden asymmetry itself
+// the pilot's first cue.
 function carriage_update(dt){
 	if(!running||ownship.grounded||!ownship.loadout) return;
-	const cas=(ownship.cas||0)*1.9438, g=Math.abs(ownship.gload||1);   // knots CAS from the core's pitot source
+	const cas=(ownship.cas||0)*1.9438, mach=(ownship.gauges&&ownship.gauges.mach)||0;   // knots CAS + Mach from the core's own air data
 	const harm=ownship.carriage||(ownship.carriage={});
 	for(let station=2;station<=8;station++){
 		const slot=ownship.loadout[String(station)]; if(!slot||!slot.fixture) continue;
 		let worst=0;
 		for(const name of stores_entries(station,slot)){
-			const limit=stores_limits[name.replace(/[0-9ab]+$/,"")]; if(!limit) continue;
-			worst=Math.max(worst, g/limit.g, cas/limit.knots); }
+			const limit=stores_limits[name]; if(!limit) continue;
+			if(limit.knots) worst=Math.max(worst, cas/limit.knots);
+			if(limit.mach) worst=Math.max(worst, mach/limit.mach); }
 		if(worst<=1) continue;
 		harm[station]=(harm[station]||0)+(worst-1)*dt*2.5;   // ~6 s at 7% over, faster the deeper the breach
 		if(harm[station]>=1){ delete harm[station]; jettison_stations([station],"rack"); } } }

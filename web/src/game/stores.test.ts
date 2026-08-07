@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, expect, it } from 'vitest'
-import { LIMITS, PRESETS, entries, jettison, mask, matches, migrate, missiles_loaded, normalize, options, outcome, outcomes, points, rounds, strip, weight, type Catalog, type Fitment } from './stores'
+import { LIMITS, RELEASE, PRESETS, entries, jettison, mask, matches, migrate, missiles_loaded, normalize, options, outcome, outcomes, points, rounds, strip, weight, type Catalog, type Fitment } from './stores'
 
 // A catalog mirroring the core's fa18c table (order matters: tips first).
 const FITMENTS: Fitment[] = [
@@ -119,11 +119,23 @@ describe('jettison', () => {
     expect(jettison(PRESETS.cap, 0, 'rack')).toEqual(PRESETS.cap)
     expect(jettison(PRESETS.cap, 12, 'stores')).toEqual(PRESETS.cap)
   })
-  it('every jettisonable catalog entry carries a carriage limit', () => {
+  it('carriage limits are NATOPS figure 4-4: tanks only, per station, no g term', () => {
+    // Air-to-air missiles, rails and pylons are inside the basic-aircraft
+    // envelope (4.1.2, figure 4-3 title block) — an entry for them would shed
+    // racks in a failure mode the real jet does not have.
     for (const f of FITMENTS) {
-      if (f.name.startsWith('tip')) continue
-      expect(LIMITS[f.name.replace(/[0-9ab]+$/, '')]).toBeDefined()
+      if (f.fuel > 0) {
+        expect(LIMITS[f.name]).toBeDefined()
+      } else {
+        expect(LIMITS[f.name]).toBeUndefined()
+        expect(LIMITS[f.name.replace(/[0-9ab]+$/, '')]).toBeUndefined()
+      }
     }
+    expect(LIMITS.tank3).toEqual({ knots: 635, mach: 1.6 })
+    expect(LIMITS.tank7).toEqual({ knots: 635, mach: 1.6 })
+    expect(LIMITS.tank5).toEqual({ mach: 1.8 }) // the centreline has NO KCAS figure — the airframe's own envelope is the airspeed side
+    for (const limit of Object.values(LIMITS)) expect('g' in limit).toBe(false) // LBA: no store g limit exists
+    expect(RELEASE).toEqual({ knots: 575, mach: 0.95, low: 1.0, high: 2.0 }) // the figure's jettison half
   })
 })
 

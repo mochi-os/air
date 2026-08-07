@@ -48,6 +48,7 @@ export const STATE = {
   time: 55,
   engine_harm: 45, // per-engine thrust loss × 4 (#78 damage words)
   leak: 49, // fuel loss, kg/s
+  drag: 50, // added parasitic drag area, m² (dents, strikes)
   element: 57, // per-element loss 0..1 × 40 (zero = pristine)
   jam: 97, // per-channel restriction 0..1 × 8 (stabL, stabR, flapL, flapR, rudder, slat, brake)
   gear_harm: 106, // per-strut damage 0..1 × 3 (nose, left, right) — tyre blown past 0.3, leg folded past 0.7 (#78)
