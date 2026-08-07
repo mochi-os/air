@@ -28,7 +28,7 @@ const levels: Record<string, number> = { master: 1, engine: 1, aircraft: 1, weap
 const SHOT_BUS: Record<string, Bus> = {
   gun: 'weapons', explosion: 'weapons', launch: 'weapons', flare: 'weapons',
   hit: 'aircraft', catapult: 'aircraft', trap: 'aircraft', touchdown: 'aircraft', servo: 'aircraft', eject: 'aircraft',
-  caution: 'alerts', horn: 'alerts', law: 'alerts',
+  caution: 'alerts', warning: 'alerts', horn: 'alerts', law: 'alerts',
 }
 function bus(name: Bus): GainNode {
   return buses[name] ?? (master as GainNode)
@@ -386,6 +386,19 @@ async function bake(): Promise<void> {
     beep(0)
     beep(0.28)
   })
+  // Master WARNING: three fast high beeps — the red tier (FIRE and kin) is
+  // explicitly not backed by the caution tone (NATOPS 2.17.3), so it gets
+  // its own urgent voice. Synthesized like everything else — no recordings.
+  shots.warning = await render(0.6, (d, r) => {
+    const beep = (at: number) => {
+      const base = Math.floor(at * r)
+      for (let i = 0; i < r * 0.12 && base + i < d.length; i++)
+        d[base + i] += Math.sin((i / r) * 2 * Math.PI * 1600) * Math.min(1, i / (r * 0.006)) * decay(i, r, 0.1) * 0.4
+    }
+    beep(0)
+    beep(0.18)
+    beep(0.36)
+  })
   // Gear warning horn: a slow insistent low beep (looped while active).
   shots.horn = await render(1.0, (d, r) => {
     for (let i = 0; i < r * 0.55; i++) d[i] = Math.sin((i / r) * 2 * Math.PI * 250) * Math.min(1, i / (r * 0.01), (r * 0.55 - i) / (r * 0.02)) * 0.3
@@ -511,6 +524,9 @@ export function audio_eject(): void {
 export function audio_caution(): void {
   play('caution', 0.8)
 }
+export function audio_warning(): void {
+  play('warning', 0.95)
+}
 
 // audio_seeker drives the 9M tone each frame: 0 silent, 1 growl, 2 lock.
 export function audio_seeker(state: number): void {
@@ -521,8 +537,15 @@ export function audio_seeker(state: number): void {
   seeker.gain.gain.setTargetAtTime(state === 0 ? 0 : lock ? 0.1 : 0.032, t, 0.05)
 }
 
+// The low-altitude warning REPEATS while the condition holds (NATOPS
+// 2.12.5.1: "continuously repeated until reset"), like the gear horn.
+let lawAt = 0
 export function audio_law(): void {
-  play('law', 0.9)
+  if (!context || context.state !== 'running') return
+  if (now() - lawAt > 1.6) {
+    lawAt = now()
+    play('law', 0.9)
+  }
 }
 
 // The gear horn repeats while the condition holds.
