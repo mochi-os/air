@@ -217,6 +217,7 @@ export interface RemotePose {
   speedbrake: number
   reheat: number
   fire: boolean
+  burning: boolean
 }
 
 interface Snapshot {
@@ -367,6 +368,18 @@ export class Net {
     }
     this.glide.set(slot, { x, y, z, ox, oy, oz, at: now })
     return { ...pose, position: [this.rewrap(x + ox), y + oy, this.rewrap(z + oz)] }
+  }
+
+  // self is the player's OWN latest pose. The server sends it first in every
+  // poses datagram precisely so the client can read its own server-side truth,
+  // but slots() skips it (nobody draws their own jet from the wire), so the
+  // damage it carries — engine fires, the fuel fire, the leak — had no reader
+  // at all in multiplayer (#40). Newest sample, not interpolated: this feeds
+  // annunciation and trails, not a rendered position.
+  self(): RemotePose | null {
+    const ring = this.slot >= 0 ? this.rings.get(this.slot) : undefined
+    if (!ring || !ring.length) return null
+    return ring[ring.length - 1].pose
   }
 
   remote(slot: number): RemotePose | null {
@@ -545,6 +558,7 @@ export class Net {
             hook: !!(flags & 4),
             fire: !!(flags & 8),
             pilot: !!(flags & 16),
+            burning: !!(flags & 32),
             reheat: view.getUint8(base + 27) / 255,
             speedbrake: view.getUint8(base + 28) / 255,
             burn: [view.getUint8(base + 29) / 255, view.getUint8(base + 30) / 255],
