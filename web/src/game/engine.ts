@@ -1632,11 +1632,20 @@ function ddi_fcs(x,display){ const o=last_out||[];   // per-surface truth straig
 			x.beginPath(); x.moveTo(xx-26,y-12); x.lineTo(xx+26,y+38); x.moveTo(xx+26,y-12); x.lineTo(xx-26,y+38); x.stroke();
 			x.strokeStyle="#39e07a"; x.lineWidth=2; } };
 	row("LEF",deg(STATE.slat),110,140,jam(5)); row("LEF",deg(STATE.slat),402,140,jam(5));   // one slat word, both wings
-	row("TEF",deg(STATE.flap),110,216,jam(2)); row("TEF",deg(STATE.flap),402,216,jam(3));
-	row("AIL",deg(STATE.flaperon),110,292,false); row("AIL",deg(STATE.flaperon+1),402,292,false);
+	// The jam words are per ACTUATOR (flight/damage.go: 0/1 stabilator, 2/3
+	// FLAPERON, 4 rudder, 5 slat, 6 speedbrake) — there is no flap channel at
+	// all. The X belonged on the AIL rows, which show the genuinely frozen
+	// surface; it sat on TEF, whose number keeps moving because Fcs.Flap is a
+	// readout the flaperon actuator already carries (aero.go). The page the
+	// pilot opens to identify a failure named the wrong surface (#48).
+	row("TEF",deg(STATE.flap),110,216,false); row("TEF",deg(STATE.flap),402,216,false);
+	row("AIL",deg(STATE.flaperon),110,292,jam(2)); row("AIL",deg(STATE.flaperon+1),402,292,jam(3));
 	row("STAB",deg(STATE.stabilator),110,368,jam(0)); row("STAB",deg(STATE.stabilator+1),402,368,jam(1));
 	row("RUD",deg(STATE.rudder),256,368,jam(4));
 	x.textAlign="center"; x.fillText("SPD BRK "+Math.round((o[STATE.speedbrake]||0)*100)+"%",256,110);
+	if(jam(6)){ x.strokeStyle=colour?"#ffb04a":"#39e07a"; x.lineWidth=3;   // the speedbrake actuator jams too (battle plumbing damage) and showed nothing
+		x.beginPath(); x.moveTo(150,92); x.lineTo(362,122); x.moveTo(362,92); x.lineTo(150,122); x.stroke();
+		x.strokeStyle="#39e07a"; x.lineWidth=2; }
 	x.textAlign="left";   // the two trim datums
 	x.fillText("TRIM "+((o[STATE.datum]||0)/D2R).toFixed(1)+"°",24,430);
 	x.fillText("ROLL "+Math.round((o[STATE.bank]||0)*100)+"%",24,458); }
@@ -2130,7 +2139,7 @@ function fire_gun(st,target,key,dt,force){
 	const rps=100; gun[key]=(gun[key]||0)+rps*dt;   // M61 Vulcan: 6000 rpm = 100 rounds/sec
 	let fired=0;
 	const spend=(n)=>{ st.spent=(st.spent||0)+n; };   // every shooter's running expenditure, for the recording: the bandit fires from an unlimited magazine, so nothing else records that it shot at all
-	while(gun[key]>=1){ gun[key]-=1; fired++; if(st.rounds!==undefined){ if(st.rounds<=0) break; if(!cheat("ammunition")) st.rounds--; }
+	while(gun[key]>=1){ gun[key]-=1; fired++; if(st.rounds!==undefined){ if(st.rounds<=0) break; st.rounds--; if(cheat("ammunition")) st.rounds=MAGAZINE; }   // infinite AMMUNITION, not a gun that stops counting (#258): the round is spent and the magazine refills, mirroring the server, so expenditure stays observable and the two counters cannot drift
 		const tr=(Math.floor(gun[key+"_n"]||0)%5)===0; gun[key+"_n"]=(gun[key+"_n"]||0)+1;
 		if(!tr) continue;   // only 1 in 5 rounds is a visible tracer; the rest fire invisibly
 		const k=pool_spawn(tracers); if(k<0) break; const sp=body_offset(st,6.53,0.43,0.0);   // the M61 port: nose-top centreline, ~0.9 m ahead of and ~0.12 m below the pilot's eye (runtime-calibrated at 5.61/0.55 from Pilot_Head_769) — matches the server's hitscan muzzle
@@ -2318,6 +2327,8 @@ function apply_harm(kind){ const words=flight_get(); if(!words) return;
 	if(kind==="engine"){ words[STATE.engine_harm]=0.8; }
 	if(kind==="leak"){ words[STATE.leak]=2.0; }
 	if(kind==="jam"){ words[STATE.jam+4]=1; }   // rudder frozen
+	if(kind==="aileron"){ words[STATE.jam+2]=1; }   // left flaperon frozen — the FCS page must X the AIL row, not TEF (#48)
+	if(kind==="brake"){ words[STATE.jam+6]=1; }   // speedbrake actuator frozen
 	if(kind==="gear"){ words[STATE.gear_harm+1]=0.8; }   // left main folded (#78)
 	if(kind==="fire"){ words[STATE.engine_harm]=0.9; words[STATE.engine_harm+1]=0.9; }   // pre-damaged engines...
 	flight_set(words);
@@ -3639,7 +3650,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] },   // #47 diagnostics   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
+	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect,   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
 	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
 	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS
 		racks:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>[n,o.visible])),
@@ -5318,13 +5329,16 @@ function start_mission(){
 	sweep_pending=devq.get("sweep");   // &sweep=<rig name> — wall-clock sweep of one rig entry (visible motion even in a ~5-frame headless capture)
 	{ const azq=devq.get("az"); if(azq!==null){ set_view("chase"); cam_az=parseFloat(azq)||0; const elq=parseFloat(devq.get("el")||""); if(!isNaN(elq)) cam_el=elq; const dq=parseFloat(devq.get("dist")||""); if(!isNaN(dq)) cam_dist=dq; } }   // &az=<rad>[&el=&dist=] — headless chase-camera pose without relocating (unlike ?shot)
 	{ const pq=devq.get("probe"); if(pq){ const [px,py]=pq.split(",").map(Number); dev_probe={x:px,y:py}; } }   // &probe=x,y (viewport fractions) — raycast that pixel each second and print the hit on the dev HUD (headless artifact identification)
-	{ const dq=devq.get("ddi"); if(dq) for(const part of dq.split(",")){ const [d,p]=part.split(":"); const st=ddi_state[d]; if(!st) continue;
-		if(DDI_PAGES[p]){ ddi_show(d,p); } else if(p==="tac"||p==="supt") st.menu=p; } }   // &ddi=left:eng,center:supt — headless page/menu selection for captures; records into the mode set like a real pick (#15)
 	build_ocean(cfg.ocean_segments);
 	apply_time_of_day(cfg.tod); apply_effects();
 	apply_clouds(); if(cloud_active()) size_rt();   // runs even for "none": zeroes the overcast/shadow uniforms on the ocean and sky
 	has_enemy=(cfg.task==="joust")&&!MULTIPLAYER; bandit.group.visible=has_enemy;   // multiplayer: the bandit airframe is a remote player's, posed from snapshots
+	// The &ddi page hook applies AFTER reset_ownship (#48): the case start's
+	// master-mode recall (#15) otherwise clobbered it, so headless captures
+	// silently got the recalled set instead of the pages they asked for.
 	reset_ownship(); apply_size();
+	{ const dq=devq.get("ddi"); if(dq) for(const part of dq.split(",")){ const [d,p]=part.split(":"); const st=ddi_state[d]; if(!st) continue;
+		if(DDI_PAGES[p]){ ddi_show(d,p); } else if(p==="tac"||p==="supt") st.menu=p; } }   // &ddi=left:eng,center:supt — headless page/menu selection for captures; records into the mode set like a real pick (#15)
 	menu_hold=false; map_on=false; map_el.style.display="none";
 	loading=!assets_ready(); loading_t0=performance.now();   // hold the LOADING screen until every async asset is in — no piecemeal pop-in of carrier/airfield/airframe
 	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
