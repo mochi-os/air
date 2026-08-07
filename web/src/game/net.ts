@@ -294,6 +294,7 @@ export class Net {
   names = new Map<number, string>() // slot -> callsign (welcome + roster events)
   teams = new Map<number, string>() // slot -> side ('red'/'blue'; teams mode roster events)
   racks = new Map<number, Record<string, { fixture: string; stores: string[] }>>() // slot -> granted loadout (#17, roster events) — how remotes render each other's stores
+  racksRevision = 0 // bumped on every roster stores update (#18) — the engine re-applies remote loadouts when it moves, so a mid-flight jettison shows
   score: Record<string, number> = {} // teams mode running score (welcome + kill events)
   darts: Dart[] = [] // the recipient's nearest server missiles, from the poses datagram — the engine renders every dart another player fired
   dartsAt = 0 // arrival time of the dart set (performance.now()), for dead reckoning
@@ -472,6 +473,16 @@ export class Net {
     } catch { /* already gone */ }
   }
 
+  // jettison reports a stores departure (#18): station numbers with 'stores'
+  // or 'rack' semantics. The server validates (removal only, never the tips),
+  // updates the granted loadout, and re-emits the roster — every client's
+  // rendering of this jet follows from that one authoritative event.
+  jettison(stations: { station: number; what: string }[]) {
+    try {
+      this.writer?.write(frame(cbor_encode({ kind: 'jettison', stations })))
+    } catch { /* already gone */ }
+  }
+
   leave() {
     this.closed = true
     try {
@@ -614,7 +625,10 @@ export class Net {
         if (ev.kind === 'roster' && validSlot(ev.slot)) {
           this.names.set(ev.slot as number, String(ev.name ?? ''))   // names arrive out of the hot path (#81)
           if (ev.team) this.teams.set(ev.slot as number, String(ev.team))
-          if (ev.stores && typeof ev.stores === 'object') this.racks.set(ev.slot as number, ev.stores as Record<string, { fixture: string; stores: string[] }>)
+          if (ev.stores && typeof ev.stores === 'object') {
+            this.racks.set(ev.slot as number, ev.stores as Record<string, { fixture: string; stores: string[] }>)
+            this.racksRevision++
+          }
         }
         if (ev.kind === 'kill' && ev.score) this.score = finiteScore(ev.score)
         if (ev.kind === 'kill' && validSlot(ev.slot)) {   // scores are counted, not shipped per snapshot (#81)

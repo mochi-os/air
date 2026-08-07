@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, expect, it } from 'vitest'
-import { PRESETS, entries, mask, matches, migrate, missiles_loaded, normalize, options, outcome, outcomes, points, rounds, strip, weight, type Catalog, type Fitment } from './stores'
+import { LIMITS, PRESETS, entries, jettison, mask, matches, migrate, missiles_loaded, normalize, options, outcome, outcomes, points, rounds, strip, weight, type Catalog, type Fitment } from './stores'
 
 // A catalog mirroring the core's fa18c table (order matters: tips first).
 const FITMENTS: Fitment[] = [
@@ -98,6 +98,32 @@ describe('strip', () => {
     expect(missiles_loaded(lo)).toBe(false)
     expect(lo['5']).toEqual({ fixture: 'pylon', stores: ['tank'] })
     expect(lo['2']).toEqual({ fixture: 'twin', stores: ['', ''] }) // the twin stays, empty and draggy
+  })
+})
+
+describe('jettison', () => {
+  it('stores drop empties the mounts and keeps the fixture', () => {
+    const lo = jettison(PRESETS.cap, 5, 'stores')
+    expect(lo['5']).toEqual({ fixture: 'pylon', stores: [''] })
+    expect(lo['2']).toEqual(PRESETS.cap['2']) // untouched stations survive verbatim
+  })
+  it('rack drop clears the fixture with everything on it', () => {
+    const lo = jettison(PRESETS.cap, 2, 'rack')
+    expect(lo['2']).toEqual({ fixture: '', stores: [] })
+  })
+  it('wingtips never jettison', () => {
+    const lo = jettison(PRESETS.fox2, 9, 'rack')
+    expect(lo['9']).toEqual(PRESETS.fox2['9'])
+  })
+  it('cheek and out-of-range stations are refused untouched', () => {
+    expect(jettison(PRESETS.cap, 0, 'rack')).toEqual(PRESETS.cap)
+    expect(jettison(PRESETS.cap, 12, 'stores')).toEqual(PRESETS.cap)
+  })
+  it('every jettisonable catalog entry carries a carriage limit', () => {
+    for (const f of FITMENTS) {
+      if (f.name.startsWith('tip')) continue
+      expect(LIMITS[f.name.replace(/[0-9ab]+$/, '')]).toBeDefined()
+    }
   })
 })
 
