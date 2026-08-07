@@ -180,17 +180,25 @@ export function jettison(loadout: Loadout, station: number, what: 'stores' | 'ra
   return normalize(out) // a cleared fixture exposes zero points — keep the shape legal
 }
 
-// LIMITS carries each store's carriage envelope (NATOPS-order figures): the
-// symmetric load factor and calibrated airspeed the attachment tolerates.
-// Exceedance accumulates per-station harm; past threshold the attachment
-// fails and the store departs through the same separation path (#18).
-export const LIMITS: Record<string, { g: number; knots: number }> = {
-  tank: { g: 5.5, knots: 600 },
-  rail: { g: 7.3, knots: 700 },
-  twin: { g: 7.3, knots: 700 },
-  pylon: { g: 7.3, knots: 700 },
-  '9m': { g: 7.3, knots: 700 },
+// LIMITS carries each store's carriage envelope, keyed by catalog entry name,
+// straight from NATOPS figure 4-4 (A1-F18AC-NFM-000, "MAXIMUM KCAS OR IMN
+// WHICHEVER IS LESS"): wing tanks 635 KCAS / Mach 1.6; the centreline tank
+// Mach 1.8 with NO KCAS figure (note 5 + 4.1.3.1 item 22.b) — the airspeed
+// side is the basic aircraft's own envelope. Acceleration is "LBA — limit
+// basic aircraft": tanks carry NO store g limit, and air-to-air missiles,
+// rails and pylons appear in figure 4-3's basic-aircraft definition with no
+// restriction at all, so they have no entry here (an entry below the FCS's
+// own 7.5 g placard shed AIM-9 racks in a failure mode the jet does not
+// have). Exceedance accumulates per-station harm; past threshold the
+// attachment fails and the store departs through the same separation path
+// (#18). JETTISON is the same figure's other half: a deliberate drop is
+// clean only below 575 KCAS / Mach 0.95 between +1 and +2 g.
+export const LIMITS: Record<string, { knots?: number; mach?: number }> = {
+  tank3: { knots: 635, mach: 1.6 },
+  tank7: { knots: 635, mach: 1.6 },
+  tank5: { mach: 1.8 },
 }
+export const RELEASE = { knots: 575, mach: 0.95, low: 1.0, high: 2.0 }
 
 // rounds lists the missile catalog entries in the authentic SMS priority
 // order (researched 2026-08-05): wingtips first, alternating to the opposite
