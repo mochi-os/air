@@ -1082,8 +1082,11 @@ function build_lamps(g){
 function lamps_update(out){
 	const l=ownship.group.userData.lamps; if(!l) return;
 	const ext=out[STATE.extension]||0, harmL=out[STATE.engine_harm]||0, harmR=out[STATE.engine_harm+1]||0;
-	const fuel=(out[STATE.fuel]||0)*2.2046, leak=out[STATE.leak]||0;
-	l.fireL.material.opacity=harmL>0.85?1:0; l.fireR.material.opacity=harmR>0.85?1:0;
+	const fuel=(out[STATE.fuel]||0)*2.2046, leak=Math.max(out[STATE.leak]||0, own_leak);
+	// The FIRE warnings read FIRE, not thrust loss (#40): three cannon hits on a
+	// turbine reach full harm with nothing alight, and the red light is the most
+	// action-forcing cue in the cockpit — it must not cry wolf.
+	l.fireL.material.opacity=(own_burn[0]>0||own_burning)?1:0; l.fireR.material.opacity=(own_burn[1]>0||own_burning)?1:0;
 	l.caution.material.opacity=(leak>0||fuel<800||Math.max(harmL,harmR)>0.5)?1:0;
 	if(l.transit){ const moving=ext>0.02&&ext<0.98;
 		l.transit.material.opacity=moving?1:0;
@@ -3570,7 +3573,8 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
+	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) },   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
+	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
 	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS
 		racks:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>[n,o.visible])),
 		lateral:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>{ let mesh=null; o.traverse(x=>{ if(!mesh&&x.isMesh) mesh=x; });
@@ -5152,6 +5156,15 @@ function net_frame(dt){
 	}
 	{ const mine=net.teams.get(net.slot)||"";
 		if(ownship.livery!==mine&&model_active){ apply_livery(ownship.group,mine); ownship.livery=mine; } }
+	// The ownship's own damage, from the server's copy of it (#40). Single
+	// player fills these from the local battle cascade; multiplayer never did,
+	// so the pilot's own fire warnings, flame and fuel mist were the only ones
+	// in the match nobody could see.
+	{ const mine=net.self();
+		if(mine){ own_burn[0]=mine.burn[0]; own_burn[1]=mine.burn[1]; own_burning=!!mine.burning; own_leak=mine.leak;
+			if(mine.alive){ const worst=Math.max(own_burn[0],own_burn[1],own_burning?1:0);
+				if(worst>0) burn_trail(ownship.pos,worst,ownship.velx,ownship.vely,ownship.velz);
+				if(own_leak>0.1) leak_trail(ownship.pos,own_leak,ownship.velx,ownship.vely,ownship.velz); } } }
 	const seen=new Set();
 	for(const slot of net.slots()){ const pose=net.remote(slot); if(!pose) continue; seen.add(slot);
 		const st=remote_for(slot);
