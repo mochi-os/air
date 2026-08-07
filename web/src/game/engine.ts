@@ -21,7 +21,7 @@ import { normalize as stores_normalize, migrate as stores_migrate, strip as stor
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
 import { flight_catalog } from './flight'
 import { deviceDefaults } from '../lib/config'
-import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_horn, audio_seeker, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
+import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
@@ -1087,7 +1087,7 @@ function lamps_update(out){
 	// turbine reach full harm with nothing alight, and the red light is the most
 	// action-forcing cue in the cockpit — it must not cry wolf.
 	l.fireL.material.opacity=(own_burn[0]>0||own_burning)?1:0; l.fireR.material.opacity=(own_burn[1]>0||own_burning)?1:0;
-	l.caution.material.opacity=(leak>0||fuel<800||Math.max(harmL,harmR)>0.5)?1:0;
+	l.caution.material.opacity=caution_lamp?1:0;   // the latched MASTER CAUTION (#47) — its OWN conditions disagreed with the stack (a pounds/kg mix left FUEL LO dark)
 	if(l.transit){ const moving=ext>0.02&&ext<0.98;
 		l.transit.material.opacity=moving?1:0;
 		const green=ext>0.98?1:0; l.nose.material.opacity=green; l.left.material.opacity=green; l.right.material.opacity=green; }
@@ -1184,9 +1184,14 @@ function radalt_draw(r, agl){
 		x.beginPath(); x.moveTo(C+Math.cos(a)*66,C+Math.sin(a)*66); x.lineTo(C+Math.cos(a)*58,C+Math.sin(a)*58); x.stroke();
 		if(inner) x.fillText(String(ft/100),C+Math.cos(a)*46,C+Math.sin(a)*46); }
 	x.font="9px monospace"; x.fillText("RADAR ALT",C,C-22); x.fillText("X100 FT",C,C+24);
+	{ const a=(dial(RADALT_DIAL,250)/D2R-90)*D2R;   // the low-altitude index bug at 250 ft (#47, NATOPS 2.12.5.4.4)
+		x.fillStyle="#e8c832"; x.beginPath();
+		x.moveTo(C+Math.cos(a)*70,C+Math.sin(a)*70); x.lineTo(C+Math.cos(a-0.08)*58,C+Math.sin(a-0.08)*58); x.lineTo(C+Math.cos(a+0.08)*58,C+Math.sin(a+0.08)*58); x.closePath(); x.fill();
+		x.fillStyle="#d8d8d0"; }
 	const off=agl>5000;
 	if(off){ x.fillStyle="#a02020"; x.fillRect(C-18,C+34,36,14); x.fillStyle="#fff"; x.font="10px monospace"; x.fillText("OFF",C,C+41); }
 	else{ const ang=(dial(RADALT_DIAL,Math.max(0,agl))/D2R-90)*D2R;
+		if(agl<250){ x.fillStyle="#c02020"; x.beginPath(); x.arc(C+30,C-30,7,0,7); x.fill(); x.fillStyle="#d8d8d0"; }   // the red LOW warning lamp on the gauge (#47, NATOPS 2.12.5.4.3)
 		x.strokeStyle="#f0f0e8"; x.lineWidth=4;
 		x.beginPath(); x.moveTo(C-Math.cos(ang)*10,C-Math.sin(ang)*10); x.lineTo(C+Math.cos(ang)*54,C+Math.sin(ang)*54); x.stroke(); }
 	r.tex.needsUpdate=true; }
@@ -3124,6 +3129,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("brake.parking")){ parking=!parking; notice(translate(parking?"PARK BRAKE":"PARK BRAKE OFF")); }   // Shift+B: strictly manual, like the real handle
 		if(ch===key_of("trim.reset")){ reset_flag=true; }   // unbound by default: zero both trim datums, re-datum the hold
 		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; audio_servo(); }   // G: landing gear up/down — only once airborne, never on deck/runway
+		if(ch===key_of("caution.reset")) caution_lamp=false;   // the pressed-out MASTER CAUTION (NATOPS 2.17.2.1); the next NEW caution re-lights it
 		if(ch===key_of("jettison.tanks") && !dev_parked){   // J: punch the tanks — selective STORES drop, gear-up interlock as the real panel (#18). A refused press SAYS so — a silent no-op reads as broken
 			if(on_ground()||(ownship.gearTarget??1)<0.5) notice(translate("JETTISON: GEAR"));   // gearTarget: 0=down 1=up (make_state) — refuse on deck or gear down
 			else if(!jettison_stations([3,5,7],"stores")) notice(translate("NO TANKS")); }
@@ -3221,7 +3227,7 @@ const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.
 	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash", "trim.up":"Period", "trim.down":"Comma", "trim.left":"Shift+Comma", "trim.right":"Shift+Period", "trim.reset":"None", "flaps.extend":"KeyF", "flaps.retract":"Shift+KeyF", override:"KeyO", "brake.parking":"Shift+KeyB",
 	gear:"KeyG", hook:"KeyH", probe:"KeyR", atc:"KeyP", lights:"KeyL", flares:"KeyC", eject:"Shift+KeyE", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"None", select:"KeyX", altitude:"KeyK", reject:"None", acquire:"Enter",
 	canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0", repeater:"KeyI",
-	"jettison.tanks":"KeyJ", "jettison.emergency":"Shift+KeyJ" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares. J is the jettison family; eject moved to triple-Escape (a pilot reaching for "jettison" must never punch out)
+	"jettison.tanks":"KeyJ", "jettison.emergency":"Shift+KeyJ", "caution.reset":"Shift+KeyM" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares. J is the jettison family; eject moved to triple-Escape (a pilot reaching for "jettison" must never punch out)
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
@@ -3427,7 +3433,43 @@ let mission_zero=0;       // sim_time at mission start, for the outcome line's c
 let on_over=null;         // app callback: the mission ended with a result
 let hit_flash=0;   // red vignette pulse when rounds land on the ownship
 const audio_prev={launching:false,trapped:false,grounded:false,cautions:0};   // one-shot edge detection (#73)
-let hud_cautions=0;   // caution count published by draw_hud for the master-caution beep
+// ---- Master caution/warning model (#47): the caution SET is built in the
+// sim step, keyed and view-independent — the tone, the glareshield lamp, and
+// the HUD stack read this one source. It was a count published by draw_hud:
+// dead in every view that returns before the stack (chase, map, and the
+// head-down DDI view — the one mode where the ear is the only channel), and
+// blind to escalation (L ENG catching fire kept the count at one). NATOPS
+// 2.17.2.1: the tone fires when ANY caution comes ON (a new KEY), the light
+// goes out when PRESSED, and later cautions re-arm it. Warnings (red tier)
+// carry their own tone — explicitly not backed by the caution beep (2.17.3).
+let caution_list=[];        // [key, label, red] rows, sim-step fresh — the renderers' source
+let caution_keys=new Set(); // keys present last step (the new-key edge)
+let caution_lamp=false;     // the glareshield MASTER CAUTION: latched by a new caution, cleared by the reset key, re-lit by the next new one
+let bingo_nag=0;            // the 30 s BINGO repeat (NATOPS 2.2.10.4: the alert sounds every 30 s until acted on)
+function cautions_update(){
+	const rows=[]; const core=last_out;
+	const push=(key,red)=>rows.push([key,translate(key),!!red]);
+	if((ownship.fuel??1)<=0) push("FLAMEOUT",true);
+	if(own_burning) push("FUEL FIRE",true);
+	if(own_burn[0]>0) push("L ENG FIRE",true); else if(core&&core[STATE.engine_harm]>0.55) push("L ENG");
+	if(own_burn[1]>0) push("R ENG FIRE",true); else if(core&&core[STATE.engine_harm+1]>0.55) push("R ENG");
+	if((core&&core[STATE.leak]>0.1)||own_leak>0.1) push("FUEL LEAK");
+	if(!cheat("fuel")){ const total=(ownship.fuel??0)+(ownship.external??0);
+		if(ownship.fuel!==undefined&&ownship.fuel<FUELLO) push("FUEL LO");
+		else if(total>0&&total<BINGO) push("BINGO"); }   // FUEL LO supersedes BINGO on the stack, as the deeper state
+	if(core) for(let leg=0;leg<3;leg++){ const harm=core[STATE.gear_harm+leg]; if(harm>0.3) push(["NOSE GEAR","L GEAR","R GEAR"][leg],harm>0.7); }
+	if(core){ let jammed=false; for(let c=0;c<8;c++) if(core[STATE.jam+c]>0.2) jammed=true; if(jammed) push("FCS");
+		let torn=false; for(let e=0;e<40;e++) if(core[STATE.element+e]>0.6) torn=true;
+		if(torn||core[STATE.stress]>2) push("STRUCTURE"); }
+	caution_list=rows;
+	let freshCaution=false, freshWarning=false;
+	for(const [key,,red] of rows) if(!caution_keys.has(key)){ if(red) freshWarning=true; else freshCaution=true; }
+	caution_keys=new Set(rows.map(r=>r[0]));
+	if(freshWarning){ caution_lamp=true; audio_warning(); }
+	else if(freshCaution){ caution_lamp=true; audio_caution(); }
+	if(!rows.length) caution_lamp=false;   // a clean jet clears the latch (the reset key clears it earlier)
+	const bingo=rows.some(r=>r[0]==="BINGO"||r[0]==="FUEL LO");
+	if(bingo){ bingo_nag+=1/60; if(bingo_nag>=30){ bingo_nag=0; audio_caution(); } } else bingo_nag=0; }
 let law_armed=true;   // radar-altimeter low-altitude warning: one aural per descent through the bug
 let last_out=null;   // the core's latest output words: the HUD caution panel reads damage straight from them
 // burn_trail: flame + black smoke from a burning aircraft, rate by intensity.
@@ -3597,7 +3639,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) },   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
+	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] },   // #47 diagnostics   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
 	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
 	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS
 		racks:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>[n,o.visible])),
@@ -3942,10 +3984,10 @@ function fly_player(dt){
 		if(ownship.grounded&&!audio_prev.grounded&&!ownship.trapped&&ownship.speed>30) audio_touchdown();
 		audio_horn((ownship.gearTarget??0)>0.5&&ownship.pos.y<300&&ownship.speed<95&&!ownship.grounded&&!ownship.launching);
 		{ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;   // radar-altimeter low-altitude warning: descending through 250 ft AGL clean — the "altitude, altitude" moment; the gear coming down declares the descent deliberate
-			if(law_armed&&agl<250&&(ownship.vely??0)<-2&&!ownship.grounded&&!ownship.launching&&crash_t<=0&&(ownship.gearTarget??0)>0.5) { audio_law(); law_armed=false; }
+			if(law_armed&&agl<250&&(ownship.vely??0)<-2&&!ownship.grounded&&!ownship.launching&&crash_t<=0&&(ownship.gearTarget??0)>0.5) { audio_law(); }   // repeats while below the index (#47) — it played once and went silent for the rest of the descent
 			else if(agl>400) law_armed=true; }
-		if(hud_cautions>audio_prev.cautions) audio_caution();
-		audio_prev.launching=!!ownship.launching; audio_prev.trapped=!!ownship.trapped; audio_prev.grounded=!!ownship.grounded; audio_prev.cautions=hud_cautions;
+		cautions_update();   // #47: keyed, view-independent — the tone lives HERE, not in draw_hud
+		audio_prev.launching=!!ownship.launching; audio_prev.trapped=!!ownship.trapped; audio_prev.grounded=!!ownship.grounded;
 	}
 	if(out[STATE.contact]>=0){ flight_clear(); ownship.group.position.copy(ownship.pos); return crash_ownship("probe"); }   // crash probe: any non-permitted airframe contact
 	if(out[STATE.touch]>0.5){ const crashed=verdict(out); flight_clear(); if(crashed) return; }
@@ -4849,21 +4891,10 @@ function draw_hud(){
 	// ---- caution panel (#78): red for fires and the pilot, amber for degraded systems ----
 	// Read straight from the core's damage words, so it works identically in SP and MP.
 	// Annunciator text stays English by policy — real Hornet cockpits do worldwide.
-	{ const cautions=[]; const RD="#ff5050"; const core=last_out;
-		if((ownship.fuel??1)<=0) cautions.push([translate("FLAMEOUT"),RD]);   // the throttle bar shows the HAND's lever; this shows the dead engines
-		if(own_burning) cautions.push([translate("FUEL FIRE"),RD]);
-		if(own_burn[0]>0) cautions.push([translate("L ENG FIRE"),RD]); else if(core&&core[STATE.engine_harm]>0.55) cautions.push([translate("L ENG"),AM]);
-		if(own_burn[1]>0) cautions.push([translate("R ENG FIRE"),RD]); else if(core&&core[STATE.engine_harm+1]>0.55) cautions.push([translate("R ENG"),AM]);
-		if((core&&core[STATE.leak]>0.1)||own_leak>0.1) cautions.push([translate("FUEL LEAK"),AM]);
-		if(core) for(let leg=0;leg<3;leg++){ const harm=core[STATE.gear_harm+leg]; if(harm>0.3){ const label=["NOSE GEAR","L GEAR","R GEAR"][leg];
-			cautions.push([translate(label),harm>0.7?RD:AM]); } }   // blown tyre amber, folded leg red (#78)
-		if(core){ let jammed=false; for(let c=0;c<8;c++) if(core[STATE.jam+c]>0.2) jammed=true; if(jammed) cautions.push([translate("FCS"),AM]);
-			let torn=false; for(let e=0;e<40;e++) if(core[STATE.element+e]>0.6) torn=true;
-			if(torn||core[STATE.stress]>2) cautions.push([translate("STRUCTURE"),AM]); }
+	{ const RD="#ff5050";   // the stack renders the sim-step model (#47) — building it here left the tone dead outside this view
 		hctx.textAlign="left"; hctx.font="13px monospace";
-		hud_cautions=cautions.length;
 		let cy=HH-118;
-		for(const [label,colour] of cautions){ hctx.fillStyle=colour; hctx.fillText(label,40,cy); cy-=18; }
+		for(const [,label,red] of caution_list){ hctx.fillStyle=red?RD:AM; hctx.fillText(label,40,cy); cy-=18; }
 	}
 	if(hit_flash>0){ hctx.fillStyle="rgba(255,32,32,"+(hit_flash*0.28).toFixed(3)+")"; hctx.fillRect(0,0,HW,HH); }   // rounds are landing on us
 

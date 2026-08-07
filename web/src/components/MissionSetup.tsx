@@ -147,6 +147,7 @@ const BUTTON_ROWS: Row[] = [
   { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },   // the id stays 'flares' (the action); the label is the real dispenser's name
   { id: 'jettison.tanks', label: <Trans>Jettison tanks</Trans>, group: 'weapons' },
   { id: 'jettison.emergency', label: <Trans>Emergency jettison (hold)</Trans>, group: 'weapons' },
+  { id: 'caution.reset', label: <Trans>Reset master caution</Trans>, group: 'aircraft' },
   { id: 'flaps.extend', label: <Trans>Extend flaps</Trans>, group: 'aircraft' },
   { id: 'flaps.retract', label: <Trans>Retract flaps</Trans>, group: 'aircraft' },
   { id: 'gear', label: <Trans>Landing gear</Trans>, group: 'aircraft' },
@@ -189,6 +190,7 @@ const KEY_ROWS: Row[] = [
   { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },
   { id: 'jettison.tanks', label: <Trans>Jettison tanks</Trans>, group: 'weapons' },
   { id: 'jettison.emergency', label: <Trans>Emergency jettison (hold)</Trans>, group: 'weapons' },
+  { id: 'caution.reset', label: <Trans>Reset master caution</Trans>, group: 'aircraft' },
   { id: 'flaps.extend', label: <Trans>Extend flaps</Trans>, group: 'aircraft' },
   { id: 'flaps.retract', label: <Trans>Retract flaps</Trans>, group: 'aircraft' },
   { id: 'gear', label: <Trans>Landing gear</Trans>, group: 'aircraft' },
