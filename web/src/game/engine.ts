@@ -2976,6 +2976,13 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 	flow_state={t, fuel:out[STATE.fuel]||0, pph:flow_state.pph};
 	const sL=THREE.MathUtils.clamp(out[STATE.engine]||0,0,1), sR=THREE.MathUtils.clamp(out[STATE.engine+2]||0,0,1);
 	const rL=THREE.MathUtils.clamp(out[STATE.engine+1]||0,0,1), rR=THREE.MathUtils.clamp(out[STATE.engine+3]||0,0,1);
+	// The instruments read what the DAMAGED engine actually does (#41): the core
+	// keeps spool as the commanded thrust basis and scales output by health, so
+	// the gauges scale the same way — a dead core windmills near 35% N2 with a
+	// cooling can, instead of showing 99%/810°C on the page the pilot opens to
+	// find out which engine is gone (NATOPS 15.1).
+	const hL=1-THREE.MathUtils.clamp(out[STATE.engine_harm]||0,0,1), hR=1-THREE.MathUtils.clamp(out[STATE.engine_harm+1]||0,0,1);
+	const gL=sL*hL, gR=sR*hR, bL=rL*hL, bR=rR*hR;   // health-weighted spool/reheat: the gauges' and the effects' drive
 	const vx=out[STATE.velocity]||0, vz=out[STATE.velocity+2]||0, vh=Math.hypot(vx,vz);   // horizontal velocity: HSI ground track and groundspeed
 	const now=new Date();
 	ownship.gauges={
@@ -2989,15 +2996,15 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		asi:dial(ASI_DIAL,cas), altitude,
 		vsi:dial(VSI_DIAL,fpm),
 		fuelLbs:Math.min(lbs,21000),
-		rpmL:65+34*sL, rpmR:65+34*sR,                            // F404 N2: ground idle ~65 %, military 99
-		egtL:450+360*sL+140*rL, egtR:450+360*sR+140*rR,          // °C, F404-shaped: idle ~450, military ~810, max reheat ~950
-		flowL:THREE.MathUtils.clamp(flow_state.pph*((0.12+sL+3.4*rL)/((0.12+sL+3.4*rL)+(0.12+sR+3.4*rR)))/10,0,999),   // the honest measured total, split by each engine's own demand — a dead engine's counter winds down
-		flowR:THREE.MathUtils.clamp(flow_state.pph*((0.12+sR+3.4*rR)/((0.12+sL+3.4*rL)+(0.12+sR+3.4*rR)))/10,0,999),
-		hyd:(sL+sR)>0.03?2.83:0,                                 // ~3000 psi on the 0-5k arc while either pump turns
+		rpmL:35+(30+34*gL)*hL, rpmR:35+(30+34*gR)*hR,            // F404 N2: ground idle ~65 %, military 99; a dead core windmills near 35
+		egtL:300+(150+360*gL)*hL+140*bL, egtR:300+(150+360*gR)*hR+140*bR,   // °C, F404-shaped: idle ~450, military ~810, max reheat ~950; a dead can cools toward 300
+		flowL:THREE.MathUtils.clamp(flow_state.pph*((0.12*hL+gL+3.4*bL)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1))/10,0,999),   // the honest measured total, split by each engine's own health-weighted demand — a dead engine's counter winds to zero, matching the core's burn (#41)
+		flowR:THREE.MathUtils.clamp(flow_state.pph*((0.12*hR+gR+3.4*bR)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1))/10,0,999),
+		hyd:(gL+gR)>0.03?2.83:0,                                 // ~3000 psi on the 0-5k arc while either healthy pump turns (an engine failure takes its side's circuit, NATOPS 15.4)
 		cabin:Math.min(altitude,8000+Math.max(0,altitude-8000)*0.35)*(5.2/50000),   // ECS schedule: sea-level cabin to 8k, then bleed up
-		volts:(sL+sR)>0.03?1.86:1.55,                            // generators 28 V / battery 24 V on the ±143° dual voltmeter
+		volts:(gL+gR)>0.03?1.86:1.55,                            // generators 28 V / battery 24 V on the ±143° dual voltmeter
 		clockH:(now.getHours()%12)+now.getMinutes()/60, clockM:now.getMinutes()+now.getSeconds()/60, clockS:now.getSeconds(),
-		casKt:cas, fpm, spoolL:sL, spoolR:sR, reheatL:rL, reheatR:rR, fuelRaw:lbs, externalRaw:extlbs, mach:out[STATE.mach]||0,
+		casKt:cas, fpm, spoolL:gL, spoolR:gR, reheatL:bL, reheatR:bR, fuelRaw:lbs, externalRaw:extlbs, mach:out[STATE.mach]||0,
 		track:vh>2?Math.atan2(vx,-vz):null, ground:vh*1.944 };   // track null at taxi speeds — the diamond parks off the rose rather than swinging with tyre scrub
 	lamps_update(out);
 	const ind=ownship.group.userData.indexer;
@@ -3727,7 +3734,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 			if(beforeInternal>=FUELLO&&ownship.fuel<FUELLO) notice(translate("FUEL LO")); } }   // FUEL LO stays an INTERNAL caution: the hardware watches the feed tanks, and externals cannot refill a dry feed
 	ownship.cas=out[STATE.cas];   // calibrated airspeed, m/s — the real jet's HUD speed source
 	ownship.spool=out[STATE.power]; ownship.stage=out[STATE.stage];   // achieved across the airframe's engines, computed core-side
-	ownship.reheats=[out[STATE.engine+1], out[STATE.engine+3]];   // per-engine achieved reheat (flame discs; one burner can die independently)
+	ownship.reheats=[out[STATE.engine+1]*(1-Math.min(1,out[STATE.engine_harm]||0)), out[STATE.engine+3]*(1-Math.min(1,out[STATE.engine_harm+1]||0))];   // per-engine achieved reheat, health-weighted (#41): a dead engine's flame disc stops and its nozzle glow dies with it
 	ownship.gear=1-out[STATE.extension]; ownship.speedbrake=out[STATE.speedbrake];
 	ownship.surfaces={ stabL:out[STATE.stabilator], stabR:out[STATE.stabilator+1], flapL:out[STATE.flaperon], flapR:out[STATE.flaperon+1], rudder:out[STATE.rudder], slat:out[STATE.slat] };   // live FCS deflections, rad — the rig scrubs surfaces from these
 	update_gauges(out);   // cockpit instruments (#99)
