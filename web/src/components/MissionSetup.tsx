@@ -145,6 +145,8 @@ const BUTTON_ROWS: Row[] = [
   { id: 'select', label: <Trans>Select weapon</Trans>, group: 'weapons' },
   { id: 'acquire', label: <Trans>Acquire target</Trans>, group: 'weapons' },
   { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },   // the id stays 'flares' (the action); the label is the real dispenser's name
+  { id: 'jettison.tanks', label: <Trans>Jettison tanks</Trans>, group: 'weapons' },
+  { id: 'jettison.emergency', label: <Trans>Emergency jettison (hold)</Trans>, group: 'weapons' },
   { id: 'flaps.extend', label: <Trans>Extend flaps</Trans>, group: 'aircraft' },
   { id: 'flaps.retract', label: <Trans>Retract flaps</Trans>, group: 'aircraft' },
   { id: 'gear', label: <Trans>Landing gear</Trans>, group: 'aircraft' },
@@ -185,6 +187,8 @@ const KEY_ROWS: Row[] = [
   { id: 'select', label: <Trans>Select weapon</Trans>, group: 'weapons' },
   { id: 'acquire', label: <Trans>Acquire target</Trans>, group: 'weapons' },
   { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },
+  { id: 'jettison.tanks', label: <Trans>Jettison tanks</Trans>, group: 'weapons' },
+  { id: 'jettison.emergency', label: <Trans>Emergency jettison (hold)</Trans>, group: 'weapons' },
   { id: 'flaps.extend', label: <Trans>Extend flaps</Trans>, group: 'aircraft' },
   { id: 'flaps.retract', label: <Trans>Retract flaps</Trans>, group: 'aircraft' },
   { id: 'gear', label: <Trans>Landing gear</Trans>, group: 'aircraft' },
@@ -875,18 +879,24 @@ function Armament({
 // descriptive phrase around each is translated. id is the stable React key
 // (the label is now a translated node, not a plain string).
 const REFERENCE_ROWS: { id: string; label: ReactNode; cells: [string, string, string] }[] = [
-  { id: 'vx-mil', label: <Trans>Steepest climb (Vx, 100% thrust)</Trans>, cells: ['250-393', '312-391', '337-339'] },
-  { id: 'vx-ab', label: <Trans>Steepest climb (Vx, afterburner)</Trans>, cells: ['Vertical', '267-463', '260-346'] },
-  { id: 'vy-mil', label: <Trans>Best climb (Vy, 100% thrust)</Trans>, cells: ['510-563', '454-460', '343-345'] },
-  { id: 'vy-ab', label: <Trans>Best climb (Vy, afterburner)</Trans>, cells: ['526-609', '466-471', '353-354'] },
-  { id: 'vyse', label: <Trans>Single-engine best climb (Vyse, afterburner)</Trans>, cells: ['404-475', '211-360', '144-338'] },
-  { id: 'glide', label: <Trans>Best glide (engines out)</Trans>, cells: ['238-282', '242-287', '249-300'] },
-  { id: 'corner', label: <Trans>Corner speed (best instant turn)</Trans>, cells: ['298-396', '338-401', '330-348'] },
-  { id: 'sustained', label: <Trans>Best sustained turn speed</Trans>, cells: ['363-484', '402-437', '328-329'] },
-  { id: 'tightest', label: <Trans>Tightest sustained turn speed</Trans>, cells: ['167-214', '167-254', '213-215'] },
-  { id: 'vs1', label: <Trans>Stall, clean (Vs1)</Trans>, cells: ['159-186', '159-187', '160-190'] },
-  { id: 'vs0', label: <Trans>Stall, landing config (Vs0)</Trans>, cells: ['113-130', '111-130', '—'] },
-  { id: 'vapp', label: <Trans>Approach, on-speed (Vapp)</Trans>, cells: ['126-148', '126-148', '—'] },
+  // Regenerated 2026-08-07 against today's flight model (tools/vspeeds.sh,
+  // corner acceptance stabilised first — the old cells were recalibration
+  // history, corner reading 298 where the jet flies 339). Each cell is
+  // light-to-heavy (11.2 t minimum-fuel to 15.6 t full-internal), and the
+  // heavy figure is written second even where it is the LOWER speed — the
+  // column meaning outranks ascending cosmetics.
+  { id: 'vx-mil', label: <Trans>Steepest climb (Vx, 100% thrust)</Trans>, cells: ['186-318', '270-337', '284-343'] },
+  { id: 'vx-ab', label: <Trans>Steepest climb (Vx, afterburner)</Trans>, cells: ['Vertical', '229-219', '192-259'] },
+  { id: 'vy-mil', label: <Trans>Best climb (Vy, 100% thrust)</Trans>, cells: ['562-576', '445-387', '342-348'] },
+  { id: 'vy-ab', label: <Trans>Best climb (Vy, afterburner)</Trans>, cells: ['600-530', '463-475', '354-273'] },
+  { id: 'vyse', label: <Trans>Single-engine best climb (Vyse, afterburner)</Trans>, cells: ['359-433', '366-232', '178-199'] },
+  { id: 'glide', label: <Trans>Best glide (engines out)</Trans>, cells: ['223-263', '225-266', '229-274'] },
+  { id: 'corner', label: <Trans>Corner speed (best instant turn)</Trans>, cells: ['339-386', '337-392', '336-340'] },
+  { id: 'sustained', label: <Trans>Best sustained turn speed</Trans>, cells: ['373-470', '408-437', '326-328'] },
+  { id: 'tightest', label: <Trans>Tightest sustained turn speed</Trans>, cells: ['167-196', '173-197', '186-201'] },
+  { id: 'vs1', label: <Trans>Stall, clean (Vs1)</Trans>, cells: ['159-186', '159-187', '161-191'] },
+  { id: 'vs0', label: <Trans>Stall, landing config (Vs0)</Trans>, cells: ['110-126', '108-126', '—'] },
+  { id: 'vapp', label: <Trans>Approach, on-speed (Vapp)</Trans>, cells: ['126-148', '126-147', '—'] },
 ]
 
 function ReferenceDialog() {

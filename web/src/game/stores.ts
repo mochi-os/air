@@ -167,6 +167,31 @@ export function strip(loadout: Loadout): Loadout {
   return out
 }
 
+// jettison returns a new loadout with a station's departure applied: 'stores'
+// empties the mounts and the fixture stays, 'rack' clears the fixture with
+// everything on it (the real RACK/LCHR position — rail missiles leave only
+// this way, the rail has no ejector). Wingtips (1/9) never jettison.
+export function jettison(loadout: Loadout, station: number, what: 'stores' | 'rack'): Loadout {
+  const out = normalize(loadout)
+  if (station < 2 || station > 8) return out
+  const slot = out[String(station)]
+  slot.stores = slot.stores.map(() => '')
+  if (what === 'rack') slot.fixture = ''
+  return normalize(out) // a cleared fixture exposes zero points — keep the shape legal
+}
+
+// LIMITS carries each store's carriage envelope (NATOPS-order figures): the
+// symmetric load factor and calibrated airspeed the attachment tolerates.
+// Exceedance accumulates per-station harm; past threshold the attachment
+// fails and the store departs through the same separation path (#18).
+export const LIMITS: Record<string, { g: number; knots: number }> = {
+  tank: { g: 5.5, knots: 600 },
+  rail: { g: 7.3, knots: 700 },
+  twin: { g: 7.3, knots: 700 },
+  pylon: { g: 7.3, knots: 700 },
+  '9m': { g: 7.3, knots: 700 },
+}
+
 // rounds lists the missile catalog entries in the authentic SMS priority
 // order (researched 2026-08-05): wingtips first, alternating to the opposite
 // station at the same priority level before stepping inboard — starboard tip

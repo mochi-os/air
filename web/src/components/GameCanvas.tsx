@@ -69,6 +69,9 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'SESSION ENDED': msg`SESSION ENDED`,
   KILL: msg`KILL`,
   EJECTED: msg`EJECTED`,
+  'JETTISON: GEAR': msg`JETTISON: GEAR`,
+  'NO TANKS': msg`NO TANKS`,
+  'EMERG JETT': msg`EMERG JETT`,
   'PILOT DOWN': msg`PILOT DOWN`,
   // The caution-panel annunciators (L ENG FIRE, FUEL LEAK, FCS, STRUCTURE, …)
   // are deliberately NOT in this catalog: real F/A-18 annunciators read in

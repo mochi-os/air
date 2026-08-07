@@ -17,7 +17,7 @@ import {
   type Join as NetJoin,
 } from './net'
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode } from './flight'
-import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors } from './stores'
+import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits } from './stores'
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
 import { flight_catalog } from './flight'
 import { deviceDefaults } from '../lib/config'
@@ -1585,7 +1585,7 @@ function ddi_chklst(x,display){ const gz=ownship.gauges||{}; const o=last_out||[
 	const hardware=book?stores_weight(ownship.loadout||loadout(),book).hardware:0;   // pylons, rails, rounds, dry tanks — the flown loadout's hardware (#17)
 	const wt=Math.round((((book?book.empty:10700)+hardware)*2.2046+(gz.fuelRaw||0)+(gz.externalRaw||0))/10)*10;   // empty jet + loadout hardware + internal + external — the honest gross
 	const t=Math.max(0,(wt/2.2046/1000-11.2)/(15.6-11.2));   // linear on the Reference dialog's measured 11.2-15.6 t interval, EXTRAPOLATED above it: a tanked jet flies past the clean bracket and clamping under-read its speeds
-	const vapp=Math.round(126+t*22), vs0=Math.round(113+t*17);   // linear between the Reference dialog's measured endpoints (rows vapp/vs0, 11.2-15.6 t)
+	const vapp=Math.round(126+t*22), vs0=Math.round(110+t*16);   // linear between the Reference dialog's measured endpoints (rows vapp/vs0, 11.2-15.6 t — re-based 2026-08-07 with the regenerated table)
 	const flap=["AUTO","HALF","FULL"][flap_select]||"AUTO";
 	const trim=((o[STATE.datum]||0)/D2R);
 	const item=(cx0,y,label,state,ok)=>{
@@ -1719,6 +1719,88 @@ function own_mask(){ const book=stores_catalog(); if(!book) return 0b11;
 // deck crew's fill line and the setup's gross-weight arithmetic both use it.
 function external_capacity(){ const book=stores_catalog(); if(!book) return 0;
 	return stores_weight(ownship.loadout||loadout(), book).fuel; }
+// ---- Jettison (#18): ONE separation path shared by the pilot's commands and
+// carriage-limit failures. The loadout edit flows to the core (mass, drag,
+// external fuel clamp) through the per-frame flight_stores sync; departing
+// pieces become free-falling debris; multiplayer learns through the jettison
+// wire event and the server's roster re-emit.
+const falling=[];   // free-falling jettisoned pieces: {piece, vel, spin, age}
+function separate_debris(st, names){
+	const nodes=(st.racks&&st.racks.nodes)||{};
+	for(const name of names){ const node=nodes[name]; if(!node||!node.visible||!node.parent) continue;
+		const piece=node.clone(true);
+		node.parent.updateWorldMatrix(true,false);
+		piece.applyMatrix4(node.parent.matrixWorld);   // keep the world pose after reparenting to the scene
+		piece.traverse(o=>{ o.layers.enable(0); });   // the jet's meshes live on the own-group layer; free-falling debris is world furniture — back onto the default layer every camera renders
+		scene.add(piece);
+		const vel=st.vel_dir?st.vel_dir.clone().multiplyScalar((st.speed||0)*0.99):new THREE.Vector3();
+		vel.y-=2;   // the ejector cartridge's downward punch — the store leaves the airframe's shadow so the separation is SEEN
+		falling.push({ piece, vel, spin:new THREE.Vector3((Math.random()-0.5)*2,(Math.random()-0.5)*2,(Math.random()-0.5)*4), age:0 }); } }
+function falling_update(dt){
+	for(let i=falling.length-1;i>=0;i--){ const f=falling[i]; f.age+=dt;
+		f.vel.y-=9.81*dt; f.vel.multiplyScalar(1-0.03*dt);   // streamlined stores decelerate gently — they fall away below and aft, in view for seconds, as on the real jettison footage
+		f.piece.position.addScaledVector(f.vel,dt);
+		f.piece.rotation.x+=f.spin.x*dt; f.piece.rotation.y+=f.spin.y*dt; f.piece.rotation.z+=f.spin.z*dt;
+		if(f.age>15||f.piece.position.y<0){ scene.remove(f.piece); falling.splice(i,1); } } }
+// departure_names lists the catalog entries a jettison removes from a slot —
+// the debris to spawn. 'stores' keeps the fixture hardware on the jet.
+function departure_names(station, slot, what){
+	const out=[];
+	for(const name of stores_entries(station,slot)){
+		if(name.startsWith("tip")) continue;
+		if(what==="stores"&&(name.startsWith("rail")||name.startsWith("twin")||name.startsWith("pylon"))) continue;
+		out.push(name); }
+	return out; }
+// jettison_stations applies a departure to the ownship and tells the server.
+// what: 'stores' drops the mounts, 'rack' the fixture and all on it.
+function jettison_stations(stations, what){
+	if(!running||ownship.grounded) return false;
+	const lo=ownship.loadout||loadout();
+	let next=lo; const dropped=[], debris=[];
+	for(const station of stations){
+		const slot=lo[String(station)]; if(!slot||!slot.fixture) continue;
+		const names=departure_names(station,slot,what); if(!names.length) continue;
+		dropped.push(station); debris.push(...names);
+		next=stores_jettison(next,station,what); }
+	if(!dropped.length) return false;
+	separate_debris(ownship, debris);
+	const before=stores_rounds(lo), fired=Math.max(0,before.length-Math.max(0,ownship.msl|0));
+	const live=new Set(stores_rounds(next).map(r=>r.name));
+	const gone=before.slice(fired).filter(r=>!live.has(r.name)).length;   // live rounds that left on their racks
+	assign_loadout(ownship,next);
+	ownship.msl=Math.max(0,(ownship.msl|0)-gone);
+	update_rails(ownship,ownship.msl);
+	if(net) net.jettison(dropped.map(station=>({ station, what })));
+	return true; }
+// Emergency jettison: the striped button — held through the whole sequence,
+// pairs 2+8 then 3+7 then the centerline, RACK/LCHR semantics, weight off
+// wheels the only interlock (as the real button, NATOPS 2.17.1.1).
+const EMERGENCY_PAIRS=[[2,8],[3,7],[5]];
+const emergency={ held:false, step:0, timer:0, said:false };
+function emergency_update(dt, pressed){
+	if(!pressed){ emergency.held=false; return; }
+	if(!emergency.held){ emergency.held=true; emergency.step=0; emergency.timer=0; emergency.said=false; }
+	if(emergency.step>=EMERGENCY_PAIRS.length) return;
+	emergency.timer-=dt;
+	if(emergency.timer<=0){ if(jettison_stations(EMERGENCY_PAIRS[emergency.step],"rack")&&!emergency.said){ emergency.said=true; notice(translate("EMERG JETT")); }   // the wing stations are behind the pilot — say that the button worked
+		emergency.step++; emergency.timer=0.3; } }
+// Carriage limits (#18, decided 2026-08-05): each store's g/speed envelope is
+// factual data (stores LIMITS); exceedance accumulates per-station harm and
+// past threshold the attachment FAILS — the store departs involuntarily
+// through the same path, the sudden asymmetry itself the pilot's first cue.
+function carriage_update(dt){
+	if(!running||ownship.grounded||!ownship.loadout) return;
+	const cas=(ownship.cas||0)*1.9438, g=Math.abs(ownship.gload||1);   // knots CAS from the core's pitot source
+	const harm=ownship.carriage||(ownship.carriage={});
+	for(let station=2;station<=8;station++){
+		const slot=ownship.loadout[String(station)]; if(!slot||!slot.fixture) continue;
+		let worst=0;
+		for(const name of stores_entries(station,slot)){
+			const limit=stores_limits[name.replace(/[0-9ab]+$/,"")]; if(!limit) continue;
+			worst=Math.max(worst, g/limit.g, cas/limit.knots); }
+		if(worst<=1) continue;
+		harm[station]=(harm[station]||0)+(worst-1)*dt*2.5;   // ~6 s at 7% over, faster the deeper the breach
+		if(harm[station]>=1){ delete harm[station]; jettison_stations([station],"rack"); } } }
 // --- minimal GLB container surgery (so we never trigger the loader's blob-URL texture path) ---
 // The pure helpers moved to game/model.ts (shared with the setup's loadout
 // preview); glb_split/glb_repack/model_textures are import aliases so every
@@ -2059,6 +2141,10 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30);   // off the rail at aircraft speed; the Mk 36 does the rest
 	m.life=20; m.target=target; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.prate=undefined;
+	if(target){ const dx=wrap_axis(target.pos.x-st.pos.x), dy=target.pos.y-st.pos.y, dz=wrap_axis(target.pos.z-st.pos.z); const d=Math.hypot(dx,dy,dz)||1;
+		const tail=target.fwd?Math.max(0,(dx*target.fwd.x+dy*target.fwd.y+dz*target.fwd.z)/d):0;
+		const floor=0.15+0.35*THREE.MathUtils.clamp(target.reheat??0,0,1);
+		if(d>5000*(floor+(1-floor)*tail)){ m.loose=true; if(DEV_MODE) m.why="cold"; } }   // launched without acquisition (#255): the round departs ballistic — the seeker never had him, exactly as the lock tone warned
 	if(target){ const d=Math.hypot(target.pos.x-m.px,target.pos.y-m.py,target.pos.z-m.pz)||1;
 		m.sx=(target.pos.x-m.px)/d; m.sy=(target.pos.y-m.py)/d; m.sz=(target.pos.z-m.pz)/d; }
 	return true; }
@@ -2215,7 +2301,7 @@ function apply_harm(kind){ const words=flight_get(); if(!words) return;
 			forward:{x:ownship.fwd.x,y:ownship.fwd.y,z:ownship.fwd.z}, up:{x:ownship.up.x,y:ownship.up.y,z:ownship.up.z} };
 		for(let volley=0;volley<6;volley++) battle_volley(1,{...pose,velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz}},40,battle_tick+volley); } }   // real rounds now: they arrive over the next frames
 let own_burn=[0,0], own_burning=false, own_leak=0;   // ownship condition mirrored from progress()
-let eject_taps=0, eject_at=0, eject_flag=false, ejected=false;
+let eject_flag=false, ejected=false;
 bandit.harm={ thrust:0, wing:0, killed:false, burning:false };   // zonal summary driving the AI
 function battle_aim(st){ const q=st.group?st.group.quaternion:ownship.q;
 	return { position:{x:st.pos.x,y:st.pos.y,z:st.pos.z}, quaternion:{w:q.w,x:q.x,y:q.y,z:q.z},
@@ -2978,15 +3064,12 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("canopy")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.canopyTarget=(ownship.canopyTarget??0)>0.5?0:1; notice(ownship.canopyTarget?translate("CANOPY OPEN"):translate("CANOPY CLOSED")); } else notice(translate("CANOPY LOCKED")); }   // Shift+C: canopy — ground only, taxi speeds (NATOPS closes it before takeoff; ~60 kt operation wind limit)
 		if(ch===key_of("flares") && ownship.cm>0 && (ownship.squish??0)<0.1){ dispense_flares(ownship); if(!cheat("ammunition")) ownship.cm--; flare_flag=true; audio_flare(); }   // plain F only — Shift+F is the probe (self-guarded, NOT an else-chain: an inserted handler between the pair once re-aimed the else and Shift+F dropped flares). Weight-on-wheels inhibits the dispenser, as the real ALE-47 does — no pyrotechnics on the deck
 		const dev_parked=DEV_MODE && on_ground() && (ownship.speed??0)<1;   // J/L/O are nudge keys in this state
-		if(ch===key_of("eject") && !dev_parked && crash_t<=0 && !ejected){   // ejection handle: three pulls inside 1.25 s — the zero-zero seat works everywhere
-			if(sim_time-eject_at>1.25) eject_taps=0;
-			eject_at=sim_time; eject_taps++;
-			if(eject_taps>=3){ eject_taps=0; ejected=true; audio_eject();
-				if(MULTIPLAYER) eject_flag=true;   // the server scores the eject and wrecks the jet
-				notice(translate("EJECTED"));
-				crash_ownship(); } }
+		if(ch===key_of("eject") && !dev_parked && crash_t<=0 && !ejected){   // ejection handle: one deliberate Shift+E chord — the zero-zero seat works everywhere. Moved off plain J (a pilot reaching for "jettison" must never punch out) and off a tap count (untypeable in the Keys tab)
+			ejected=true; audio_eject();
+			if(MULTIPLAYER) eject_flag=true;   // the server scores the eject and wrecks the jet
+			crash_ownship(); }   // the red centre banner announces it — no notice-line duplicate
 		if(TEST_SCENARIOS && e.shiftKey && /^Digit\d$/.test(k)){ start_test((+k.slice(5)+9)%10); }   // Shift+1..0: scripted landing test scenarios (dev-only)
-		if(TEST_SCENARIOS && e.shiftKey && k==="KeyE"){ stab_cycle=(stab_cycle+1)%8; notice("STAB ANGLE "+stab_cycle); }   // Shift+E (dev): stab orientation cycle, +90° per press — the user reports the correct number
+		if(TEST_SCENARIOS && e.shiftKey && k==="KeyY"){ stab_cycle=(stab_cycle+1)%8; notice("STAB ANGLE "+stab_cycle); }   // Shift+Y (dev): stab orientation cycle, +90° per press — the user reports the correct number
 		if(TEST_SCENARIOS && e.shiftKey && k==="KeyA"){ const rig=ownship.group.userData.rig||[];   // Shift+A (dev): rig calibration — cycle subsystems, sweeping the active one 0..1
 			rig_sweep = rig_sweep+1 > rig.length ? 0 : rig_sweep+1;
 			notice(rig_sweep ? "RIG SWEEP: "+rig[rig_sweep-1].name : "RIG SWEEP OFF"); }
@@ -3014,6 +3097,9 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("brake.parking")){ parking=!parking; notice(translate(parking?"PARK BRAKE":"PARK BRAKE OFF")); }   // Shift+B: strictly manual, like the real handle
 		if(ch===key_of("trim.reset")){ reset_flag=true; }   // unbound by default: zero both trim datums, re-datum the hold
 		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; audio_servo(); }   // G: landing gear up/down — only once airborne, never on deck/runway
+		if(ch===key_of("jettison.tanks") && !dev_parked){   // J: punch the tanks — selective STORES drop, gear-up interlock as the real panel (#18). A refused press SAYS so — a silent no-op reads as broken
+			if(on_ground()||(ownship.gearTarget??1)<0.5) notice(translate("JETTISON: GEAR"));   // gearTarget: 0=down 1=up (make_state) — refuse on deck or gear down
+			else if(!jettison_stations([3,5,7],"stores")) notice(translate("NO TANKS")); }
 		if(ch===key_of("atc")){ if(atc_on) atc_on=false; else if(ownship.gearTarget<0.5 && !on_ground()){ atc_on=true; atc_alpha=ownship.aoa;   // gearTarget 0=down 1=up — the polarity was inverted here, so ATC only ever engaged CLEAN and refused on every real approach
 			if(pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; } } }   // P: Approach Power Compensator (#202) — engages only in the landing configuration (gear down, airborne); toggling off is always allowed. Engaging takes the throttle back from an armed physical lever (same as the keyboard keys at the throttling take-back) — a lever is armed from mission start, so without this ATC disengaged the same frame it engaged; the next DELIBERATE lever sweep re-arms and disengages, the real jet's throttle-grip force-override
 		if(ch===key_of("menu") && running){ if(onMenu) onMenu(); else exit_match(); } }   // Esc: the in-game menu popup (#84); the popup exits via exit_match, and a host without a popup falls back to the old immediate exit
@@ -3106,8 +3192,9 @@ stage.addEventListener("pointercancel",end_drag,{ signal });
 // action's current key as a synthetic event, so pad binds follow key remaps.
 const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.left":"KeyA", "yaw.right":"KeyE", "yaw.left":"KeyQ",
 	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash", "trim.up":"Period", "trim.down":"Comma", "trim.left":"Shift+Comma", "trim.right":"Shift+Period", "trim.reset":"None", "flaps.extend":"KeyF", "flaps.retract":"Shift+KeyF", override:"KeyO", "brake.parking":"Shift+KeyB",
-	gear:"KeyG", hook:"KeyH", probe:"KeyR", atc:"KeyP", lights:"KeyL", flares:"KeyC", eject:"KeyJ", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"None", select:"KeyX", altitude:"KeyK", reject:"None", acquire:"Enter",
-	canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0", repeater:"KeyI" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares
+	gear:"KeyG", hook:"KeyH", probe:"KeyR", atc:"KeyP", lights:"KeyL", flares:"KeyC", eject:"Shift+KeyE", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"None", select:"KeyX", altitude:"KeyK", reject:"None", acquire:"Enter",
+	canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0", repeater:"KeyI",
+	"jettison.tanks":"KeyJ", "jettison.emergency":"Shift+KeyJ" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares. J is the jettison family; eject moved to triple-Escape (a pilot reaching for "jettison" must never punch out)
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
@@ -3484,7 +3571,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
 	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
-	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name),   // #17 diagnostics: the flown loadout, the live core mask, and each store node's visibility
+	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS
 		racks:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>[n,o.visible])),
 		lateral:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>{ let mesh=null; o.traverse(x=>{ if(!mesh&&x.isMesh) mesh=x; });
 			if(!mesh||!mesh.geometry||!mesh.geometry.attributes.position) return [n,null];
@@ -3770,6 +3857,8 @@ function fly_player(dt){
 	if(flight_steps.value>0){ launch_flag=false; reset_flag=false; }   // the edges were consumed by the core
 	last_controls=controls; marked_steps+=flight_steps.value;
 	sync_core(out); last_out=out;
+	emergency_update(dt, keys.has(key_of("jettison.emergency")));   // #18: the held striped button — pairs release while held
+	carriage_update(dt); falling_update(dt);
 	if(!MULTIPLAYER){   // SP damage cascade: fires, fuses, sheds — judged by the same Go as the server
 		if(harm_pending&&battle_tick>2){ apply_harm(harm_pending); harm_pending=null; }   // frame-gated: headless captures render only a handful of frames
 		if(livery_pending&&model_active){ apply_livery(ownship.group,livery_pending); apply_livery(bandit.group,livery_pending==="red"?"blue":"red"); livery_pending=null; }
@@ -4069,7 +4158,7 @@ function step_world(dt){ sim_time+=dt;
 function reset_ownship(){
 	test_idle=0; _test_power=0;   // a respawn ends any scenario rollout grace — the lever and brakes are the pilot's again
 	hist_valid=false;   // spawn/respawn teleports the camera — a cut for the cloud accumulation history
-	battle_rig(); ejected=false; eject_taps=0; hit_flash=0; own_burn=[0,0]; own_burning=false; own_leak=0; peak_g=1;   // a fresh jet, a fresh fight (#78)
+	battle_rig(); ejected=false; hit_flash=0; own_burn=[0,0]; own_burning=false; own_leak=0; peak_g=1;   // a fresh jet, a fresh fight (#78)
 	master=cfg.task==="free"?"nav":"gun";   // default master mode per mission: combat spawns fight-ready (a dead trigger at the merge is a trap), free flight powers up in NAV like the real jet
 	bandit_acc=0;   // no stale fixed-step debt across spawns
 	designated=-1;   // a respawn drops the acquisition
@@ -4368,7 +4457,7 @@ function draw_hud(){
 	// about where a real HUD's field of view runs out.
 	const boresight=Math.hypot(head_az,head_el);
 	const flight_symbols=(cfg.view==="cockpit")?!!glass:(cfg.view!=="hud"||boresight<0.44);
-	if(crash_t>0){ hctx.textAlign="center"; hctx.fillStyle="#ff5040"; hctx.font="bold 36px monospace"; hctx.fillText(translate("CRASHED"),cx,cy-60); return; }
+	if(crash_t>0){ hctx.textAlign="center"; hctx.fillStyle="#ff5040"; hctx.font="bold 36px monospace"; hctx.fillText(translate(ejected?"EJECTED":"CRASHED"),cx,cy-60); return; }   // a fired seat is an ejection, not a crash — same banner, honest word
 	if(crash_t<=0 && ownship.waving && net_notice_t<=0 && ((performance.now()-(ownship.wavet||0))%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call; the LSO grade / BOLTER / REARMED all go through the notice slot now (#72), so this is the only direct centre-banner draw left
 	if(test_active){ hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="13px monospace"; hctx.fillText("TEST  "+test_active.name, 14, 28); }
 	if(DEV_MODE){   // mission elapsed time, on the SAME base as the flight recording — so a moment you noticed reads straight off the ACMI timeline
@@ -4515,7 +4604,13 @@ function draw_hud(){
 	// from the glass, exactly like the real headset.
 	let lockon=false;
 	if(master==="9m"&&!pa&&boxed){ const to=_v.set(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)); const d=to.length()||1; to.multiplyScalar(1/d);
-		lockon=ownship.fwd.dot(to)>0.866&&d<7000; }
+		// Plume-conditioned acquisition (#255), mirroring the server: a
+		// burner-lit nose is lockable to half the envelope, a cold one only
+		// close aboard — rear aspect keeps the full reach. The tone tells
+		// the truth about what the seeker can actually hold.
+		const tail=boxed.fwd?Math.max(0,to.dot(boxed.fwd)):0;
+		const floor=0.15+0.35*THREE.MathUtils.clamp(boxed.reheat??0,0,1);
+		lockon=ownship.fwd.dot(to)>0.866&&d<5000*(floor+(1-floor)*tail); }
 	audio_seeker(game_paused?0:(master==="9m"&&!pa?(lockon?2:1):0));
 
 	// ---- A/A weapon symbology (#133): GUN = funnel free / director pipper on a
@@ -4913,15 +5008,27 @@ function remote_for(slot){ let st=remotes.get(slot); if(st) return st;
 	remotes.set(slot,st); st.group.visible=true;
 	remote_racks(st,slot);   // the roster's granted loadout, when it has already arrived (#17)
 	st.msl=st.msl??(st.loadout?stores_rounds(st.loadout).length:magazine()); update_rails(st,st.msl); return st; }
-// remote_racks applies a remote jet's roster loadout once known: the roster
-// event can land before or after the first pose, so both paths call this and
-// it applies exactly once per jet.
-function remote_racks(st,slot){ if(st.loadout||!net) return;
+// remote_racks applies a remote jet's roster loadout: the roster event can
+// land before or after the first pose, so both paths call this. A LATER
+// roster with different stores is a jettison (#18) — the vanished pieces
+// fall away and the new loadout applies.
+function remote_racks(st,slot){ if(!net) return;
 	const lo=net.racks&&net.racks.get(slot);
 	if(!lo) return;
-	assign_loadout(st, stores_normalize(lo));
+	const next=stores_normalize(lo);
+	if(st.loadout){
+		if(JSON.stringify(st.loadout)===JSON.stringify(next)) return;
+		const gone=[];
+		for(let station=2;station<=8;station++){
+			const before=st.loadout[String(station)]; if(!before||!before.fixture) continue;
+			const keep=new Set(stores_entries(station,next[String(station)]||{fixture:"",stores:[]}));
+			for(const name of stores_entries(station,before)) if(!keep.has(name)) gone.push(name); }
+		separate_debris(st, gone); }
+	assign_loadout(st, next);
 	if(st.msl===undefined) st.msl=stores_rounds(st.loadout).length;
+	else st.msl=Math.min(st.msl, stores_rounds(st.loadout).length);
 	update_rails(st, st.msl); }
+let racks_seen=0;   // the net racksRevision already applied to the remote fleet
 function remote_drop(slot){ const st=remotes.get(slot); if(!st) return; remotes.delete(slot); audio_remote_drop("r"+slot);
 	if(st===bandit){ st.group.visible=false; }
 	else { scene.remove(st.group); st.group.traverse(o=>{ if(o.isMesh&&o.material&&o.material.dispose)o.material.dispose(); }); } }
@@ -4966,7 +5073,7 @@ function net_event(e){ const slot=Number(e.slot);
 	case "flare": if(net&&slot!==net.slot){ const st=remotes.get(slot); if(st) dispense_flares(st); } break;
 	case "hit": if(net&&slot===net.slot&&e.count){ hit_flash=Math.min(1,hit_flash+0.25*Number(e.count)); audio_hit(Number(e.count)); } break;   // the server says rounds are landing on us
 	case "eject": case "pilot":
-		if(net&&slot===net.slot) notice(translate(e.kind==="eject"?"EJECTED":"PILOT DOWN"));
+		if(net&&slot===net.slot&&!(e.kind==="eject"&&ejected)) notice(translate(e.kind==="eject"?"EJECTED":"PILOT DOWN"));   // our own eject already shows the banner
 		break;   // the airframe flies on as a wreck; the kill event handles scoring and the fireball
 	case "explode": { const st=(net&&slot===net.slot)?ownship:remotes.get(slot); if(st) explosion_at(st.pos.x,st.pos.y,st.pos.z); break; }
 	case "splash": if(Array.isArray(e.position)) explosion_at(e.position[0],e.position[1],e.position[2]); break;   // a wreck met the sea
@@ -5006,7 +5113,8 @@ function net_end(reason,results){ if(session_over) return;
 	else notice(translate("SESSION ENDED"));
 	setTimeout(()=>{ if(running){ running=false; if(onExit) onExit(); } },1800); }
 function net_frame(dt){
-	for(const [slot,st] of remotes.entries()){ if(!st.loadout) remote_racks(st,slot); }   // a roster event can land after the first pose — adopt the granted loadout when it arrives (#17); early-out once known
+	{ const moved=net&&racks_seen!==net.racksRevision; if(moved) racks_seen=net.racksRevision;
+		for(const [slot,st] of remotes.entries()){ if(!st.loadout||moved) remote_racks(st,slot); } }   // adopt a late roster grant (#17); re-apply on any stores change — a mid-flight jettison (#18)
 	const c=last_controls;
 	const sample={ pitch:c?c.pitch:input.pitch*cfg.sens, roll:c?c.roll:input.roll*cfg.sens, yaw:c?c.yaw:input.yaw*cfg.sens,
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
