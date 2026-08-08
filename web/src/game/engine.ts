@@ -1665,7 +1665,7 @@ function stores_catalog(){ if(!stores_book){ const raw=flight_catalog(own_aircra
 function loadout(){ return missiles_rule?cfg.stores:stores_strip(cfg.stores); }   // the FLOWN loadout: the match rule clamps the spawn, never the persisted choice
 function missiles_on(){ return missiles_rule&&missiles_loaded(cfg.stores); }   // the derived flag that replaced cfg.missiles: joust rule (bandit arms when the player does), SHOOT cue, dev probe
 function loadout_racked(lo){ for(let s=2;s<=8;s++){ const slot=lo&&lo[String(s)]; if(slot&&slot.fixture) return true; } return false; }
-function bandit_remaining(){ return missiles_on()?stores_rounds(BOT_ARMED).length:0; }   // the SP bandit CARRIES the full armed standard and never expends it (its brain is guns-only; bandit.spent counts gun rounds); server bots decrement their own masks
+function bandit_remaining(){ return missiles_on()?stores_rounds(BOT_ARMED).length:0; }   // the SP bandit CARRIES the full armed standard of missiles and never expends them (its brain is guns-only; the gun draws from a real 578-round belt, #233); server bots decrement their own masks
 function assign_loadout(st,lo){ st.loadout=lo; loadout_rev++; if(loadout_racked(lo)) void init_stores_model(); apply_stores(st); }
 // apply_stores rebuilds a jet's store visuals from its loadout: fixtures and
 // tanks from the split stores.glb (per-station nodes in the airframe's own
@@ -2142,7 +2142,7 @@ function fire_gun(st,target,key,dt,force){
 	if(!active) return 0; if(st.rounds!==undefined && st.rounds<=0) return 0; if(!cfg.tracers && st===ownship) { /* own-ship tracers suppressed */ } // tracers toggle only affects render
 	const rps=100; gun[key]=(gun[key]||0)+rps*dt;   // M61 Vulcan: 6000 rpm = 100 rounds/sec
 	let fired=0;
-	const spend=(n)=>{ st.spent=(st.spent||0)+n; };   // every shooter's running expenditure, for the recording: the bandit fires from an unlimited magazine, so nothing else records that it shot at all
+	const spend=(n)=>{ st.spent=(st.spent||0)+n; };   // every shooter's running expenditure: survives the ammunition cheat's refill (#258), so what was actually fired stays observable
 	while(gun[key]>=1){ gun[key]-=1; fired++; if(st.rounds!==undefined){ if(st.rounds<=0) break; st.rounds--; if(cheat("ammunition")) st.rounds=MAGAZINE; }   // infinite AMMUNITION, not a gun that stops counting (#258): the round is spent and the magazine refills, mirroring the server, so expenditure stays observable and the two counters cannot drift
 		const tr=(Math.floor(gun[key+"_n"]||0)%5)===0; gun[key+"_n"]=(gun[key+"_n"]||0)+1;
 		if(!tr) continue;   // only 1 in 5 rounds is a visible tracer; the rest fire invisibly
@@ -2343,6 +2343,7 @@ function apply_harm(kind){ const words=flight_get(); if(!words) return;
 let own_burn=[0,0], own_burning=false, own_leak=0;   // ownship condition mirrored from progress()
 let eject_flag=false, ejected=false;
 bandit.harm={ thrust:0, wing:0, killed:false, burning:false };   // zonal summary driving the AI
+bandit.rounds=MAGAZINE;   // the bandit fires from the same 578-round M61 load as the ownship (#233) — fire_gun enforces it. Dry, it keeps pressing its attacks with a silent gun: the brain never learns the belt state, which is what a real pilot out of rounds would do rather than concede
 function battle_aim(st){ const q=st.group?st.group.quaternion:ownship.q;
 	return { position:{x:st.pos.x,y:st.pos.y,z:st.pos.z}, quaternion:{w:q.w,x:q.x,y:q.y,z:q.z},
 		velocity:{x:st.velx??st.fwd.x*st.speed,y:st.vely??st.fwd.y*st.speed,z:st.velz??st.fwd.z*st.speed} }; }   // the target's motion carries it across the rounds' flight
@@ -3465,7 +3466,7 @@ function recording_sample(){
 	add(ownship,1,cfg.callsign||"Player","Blue",undefined,data);
 	if(!MULTIPLAYER&&bandit.group&&(has_enemy&&bandit.group.visible||(bandit.fated&&sim_time-bandit.fated<1)))   // the grace second writes the corpse's Fate: destruction hides the group before the next sample, and an unrecorded fate was how a debrief argued with the pilot about who killed whom
 		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?(bandit_mode()||undefined):undefined,
-			{ rounds:Math.max(0,MAGAZINE-(bandit.spent||0)),
+			{ rounds:bandit.rounds??0,   // the true belt (#233), same counter as the ownship's — no longer a nominal derived from expenditure
 				struck:bandit.struck||0, burning:!!bandit.harm.burning, thrust:bandit.harm.thrust||0,
 				wing:bandit.harm.wreck||0, ...(bandit.fate?{fate:bandit.fate}:{}) });   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
@@ -4296,7 +4297,7 @@ function reset_ownship(){
 	master=cfg.task==="free"?"nav":"gun";   // default master mode per mission: combat spawns fight-ready (a dead trigger at the merge is a trap), free flight powers up in NAV like the real jet
 	bandit_acc=0;   // no stale fixed-step debt across spawns
 	designated=-1;   // a respawn drops the acquisition
-	bandit.spent=0;   // a fresh fight rearms the bandit's recorded expenditure too
+	bandit.spent=0; bandit.rounds=MAGAZINE;   // a fresh fight rearms the bandit: full belt, clean expenditure
 	bandit.struck=0; bandit.fate=undefined; ownship.struck=0; ownship.fate=undefined;   // and starts clean battle channels (#238)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
 	ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.cm=60; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; ownship.lights=(cfg.tod!=="day");   // lights default on at night, off by day; the magazine is the flown loadout's round count (#17)

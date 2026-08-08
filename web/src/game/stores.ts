@@ -22,6 +22,7 @@ export interface Fitment {
   mass: number // kg (dry mass for tanks)
   area: number // m² flat plate
   fuel: number // kg usable capacity; 0 = dry store
+  lateral: number // m buttline arm, signed port-negative — asymmetry arithmetic
 }
 
 // One station's configuration. fixture: "" none | "rail" single launcher
@@ -348,4 +349,19 @@ export function weight(loadout: Loadout, book: Catalog): { hardware: number; fue
     }
   }
   return { hardware, fuel }
+}
+
+// asymmetry sums the loadout's lateral moment in kg·m, signed port-negative,
+// tanks full like weight(). NATOPS 4.1.5 states its limits in ft·lb — the
+// display converts (kg·m × 7.233).
+export function asymmetry(loadout: Loadout, book: Catalog): number {
+  let moment = 0
+  for (let station = 1; station <= 9; station++) {
+    for (const name of entries(station, loadout[String(station)] ?? { fixture: '', stores: [] })) {
+      const bit = book.index.get(name)
+      if (bit === undefined) continue
+      moment += (book.stores[bit].mass + book.stores[bit].fuel) * (book.stores[bit].lateral ?? 0)
+    }
+  }
+  return moment
 }
