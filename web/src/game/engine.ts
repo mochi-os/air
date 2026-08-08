@@ -21,7 +21,7 @@ import { normalize as stores_normalize, migrate as stores_migrate, strip as stor
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
 import { flight_catalog } from './flight'
 import { deviceDefaults } from '../lib/config'
-import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
+import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
@@ -124,7 +124,8 @@ function sanitize_cfg(){   // runs after every config merge (the server-backed s
 	cfg.stores=stores_normalize(cfg.stores&&Object.keys(cfg.stores).length?cfg.stores:stores_migrate(cfg.missiles!==false));   // #17: legacy configs carry the retired missiles boolean — map it to its preset; any stores map is normalized so a stale shape cannot reach the loadout paths
 	delete cfg.missiles; }
 let dev_cursor=null;   // the measuring-cursor ring on deck (dev mode)
-let dev_probe=null, dev_probe_text="", dev_probe_t=0;   // &probe pixel raycast state
+let dev_probe=null, dev_probe_text="", dev_probe_t=0;
+let departure_drive=[0,0];   // the departure tone's last drive (#53): [yaw intensity 0..1, steady-alpha flag] — headless verification reads it from dev_probe   // &probe pixel raycast state
 const dev_nudge={fa:0,lat:0,hd:0};   // dev measuring-cursor offset from the nose wheel (I/K fore-aft, J/L port-stbd, U/O heading while parked); the readout and Ctrl+C include it
 function here_text(){   // dev: the deck point under the NOSE WHEEL (plus the nudge offset) in carrier-local coordinates — the same frame AND reference point as the shuttle table (a value can be compared with or pasted as a cat spot directly)
 	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
@@ -3694,7 +3695,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0),   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
+	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1),   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
 	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
 	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS
 		racks:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>[n,o.visible])),
@@ -4397,7 +4398,9 @@ function update_camera(dt){
 	// (STATE.buffet) and the seat views ride it — a small white-noise jitter
 	// whose amplitude squares with intensity, so onset is a tremble and the
 	// deep stall is a proper airframe shake. Outside views stay steady.
-	const buffet_amp=(()=>{ const b=last_out?(last_out[STATE.buffet]||0):0; return b*b*0.055; })();
+	const buffet_b=last_out?(last_out[STATE.buffet]||0):0;
+	const buffet_amp=buffet_b*buffet_b*0.055;
+	const buffet_rot=buffet_b*buffet_b*0.0026;   // HUD view (#234): ±0.15° of attitude noise at the limit — translation is invisible there (no near geometry, centimetres of eye motion give no parallax against distant scenery), so the world gets a whisper of tremble against the screen-fixed symbology, whose own pixel shake in draw_hud carries the cue
 	const buffet_jitter=(eye)=>{ if(buffet_amp>1e-4){ eye.x+=(Math.random()*2-1)*buffet_amp; eye.y+=(Math.random()*2-1)*buffet_amp; eye.z+=(Math.random()*2-1)*buffet_amp; } return eye; };
 	if(firstPerson){ const eye=buffet_jitter(body_offset(ownship,3.0,0.6,0)); camera.position.copy(eye);
 		// Same head compose as the cockpit, not a bare lookAt: this view is a
@@ -4405,6 +4408,7 @@ function update_camera(dt){
 		// and the quaternion form is what keeps roll coupled correctly near
 		// the pitch poles where lookAt fumbles it.
 		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el)).multiply(CAMFIX);
+		if(buffet_rot>1e-5) camera.quaternion.multiply(_headq.setFromAxisAngle(_zaxis,(Math.random()*2-1)*buffet_rot)).multiply(_pitq.setFromAxisAngle(_yaxis,(Math.random()*2-1)*buffet_rot));   // the temps are free again after the compose consumed them
 		}
 	else if(cfg.view==="cockpit"){ const at=ownship.group.userData.eye||{x:3.0,y:0.6};   // calibrated from the modeled pilot head once the GLB resolves
 		const eye=buffet_jitter(body_offset(ownship,at.x,at.y,0)); camera.position.copy(eye);
@@ -4581,7 +4585,16 @@ function ddi_view_click(e){   // screen-space bezel press — the same 512-space
 	lx=THREE.MathUtils.clamp(lx,1,511); ly=THREE.MathUtils.clamp(ly,1,511);
 	if(ddi_press(ddi_focus(),button_of(lx,ly))) ddi_view_last=0; }   // redraw NOW — a press must answer this frame
 function draw_hud(){
+	{ const dpr=Math.min(devicePixelRatio||1,2); hctx.setTransform(dpr,0,0,dpr,0,0); }   // re-assert the base each frame: the buffet shake below leaves a translated transform behind, and early returns must not accumulate it
 	hctx.clearRect(0,0,HW,HH);
+	// Buffet on the combiner (#234): in HUD view the seat cue is carried by the
+	// SYMBOLOGY — the camera's centimetre translation is invisible with no near
+	// geometry, but the combining glass is bolted to the shaking airframe. Same
+	// squared law as the seat views, scaled to ~1% of viewport height at the
+	// limit: ~1 px tremble at onset, ~12 px at the stall on a 1200 px view —
+	// hard to read in deep buffet, which is the warning working.
+	if(cfg.view==="hud"){ const b=last_out?(last_out[STATE.buffet]||0):0; const a=b*b*0.010*HH;
+		if(a>0.2) hctx.translate((Math.random()*2-1)*a,(Math.random()*2-1)*a); }
 	GR=cfg.tod==="day"?"#23e57d":"#15b85f";   // daytime brightness up — the muted night green washes out against a sunlit sea/sky
 	hctx.shadowColor="rgba(0,0,0,0.85)"; hctx.shadowBlur=3; hctx.shadowOffsetX=0; hctx.shadowOffsetY=0;   // dark halo behind every HUD glyph/line so it stays readable over any background
 	if(cfg.view==="ddi") draw_ddi_view();   // the head-down panel underdraws — banners and notices below stay on top
@@ -4750,6 +4763,13 @@ function draw_hud(){
 		const floor=0.15+0.35*THREE.MathUtils.clamp(boxed.reheat??0,0,1);
 		lockon=ownship.fwd.dot(to)>0.866&&d<5000*(floor+(1-floor)*tail); }
 	audio_seeker(game_paused?0:(master==="9m"&&!pa?(lockon?2:1):0));
+	// Departure / AoA warning tone (NATOPS 2.8.2.5, #53): yaw-rate intensity
+	// from the 40°/s onset to the 60°/s ceiling, steady above 35° AoA. Ground
+	// excluded — a HI-mode nosewheel turn yaws faster than the onset.
+	{ const o=last_out||[]; const yawrate=Math.abs(o[STATE.omega+1]||0)*57.2958, aoadeg=(o[STATE.alpha]||0)*57.2958;
+		const airborne=!ownship.grounded&&!game_paused&&crash_t<=0;
+		departure_drive=[airborne&&yawrate>40?+Math.min(1,(yawrate-40)/20).toFixed(2):0, airborne&&aoadeg>35?1:0];
+		audio_departure(departure_drive[0], departure_drive[1]===1); }
 
 	// ---- A/A weapon symbology (#133): GUN = funnel free / director pipper on a
 	// boxed target, with the gun cross above; 9M = seeker circle + SHOOT cue.
