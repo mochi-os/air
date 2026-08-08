@@ -93,6 +93,9 @@ export interface Controls {
   probe: boolean // refuelling probe out (drag; the real ~300 KCAS limit stays procedural)
   launch: boolean
   override: boolean
+  dump: boolean // fuel dump switch: the core drains toward the bingo floor while on
+  port: boolean // port engine fuel OFF (the fire drill / runaway shutdown)
+  starboard: boolean // starboard engine fuel OFF
   sequence: number
 }
 
@@ -229,7 +232,10 @@ function fill(controls: Controls, count: number): void {
     (controls.launch ? 16 : 0) |
     (controls.override ? 32 : 0) |
     (controls.probe ? 64 : 0) |
-    (controls.reset ? 128 : 0)
+    (controls.reset ? 128 : 0) |
+    (controls.dump ? 1 : 0) |
+    (controls.port ? 256 : 0) |
+    (controls.starboard ? 512 : 0)
   input[6] = controls.sequence
   input[7] = count
   input[8] = controls.reheat   // analog reheat (flag bit 1 retired)
@@ -442,11 +448,12 @@ export function battle_blast(target: number, point: { x: number; y: number; z: n
 // 0-5 ownship (fire L, fire R, burning, killed, mask, leak);
 // 6+i*8.. per hulk (fire L, fire R, burning, killed, mask, thrust loss,
 // wing loss, element total).
-export function battle_progress(throttle: number, tick: number, reset: boolean): Float64Array {
+export function battle_progress(throttle: number, tick: number, reset: boolean, secure: number): Float64Array {
   if (!core) return battle_output
   battle_input[0] = throttle
   battle_input[1] = tick
   battle_input[2] = reset ? 1 : 0
+  battle_input[3] = secure // per-engine fuel-off bitmask (1 port, 2 starboard): the fire drill starves a secured engine's fire at any throttle
   core.progress(battle_input_bytes, battle_output_bytes)
   return battle_output
 }

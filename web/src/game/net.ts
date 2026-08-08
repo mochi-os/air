@@ -248,6 +248,9 @@ export interface InputSample {
   gear: boolean
   hook: boolean
   override: boolean
+  dump: boolean
+  port: boolean // per-engine fuel OFF, engine 0
+  starboard: boolean
   fire: boolean
   flare: boolean
   missile: boolean

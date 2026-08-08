@@ -125,7 +125,8 @@ function sanitize_cfg(){   // runs after every config merge (the server-backed s
 	delete cfg.missiles; }
 let dev_cursor=null;   // the measuring-cursor ring on deck (dev mode)
 let dev_probe=null, dev_probe_text="", dev_probe_t=0;
-let departure_drive=[0,0];   // the departure tone's last drive (#53): [yaw intensity 0..1, steady-alpha flag] — headless verification reads it from dev_probe   // &probe pixel raycast state
+let departure_drive=[0,0];   // the departure tone's last drive (#53): [yaw intensity 0..1, steady-alpha flag] — headless verification reads it from dev_probe
+let fuel_dump=false; const secured=[false,false];   // #54: the DUMP switch and the per-engine fuel cutoffs (port, starboard) — toggles, cleared at every spawn   // &probe pixel raycast state
 const dev_nudge={fa:0,lat:0,hd:0};   // dev measuring-cursor offset from the nose wheel (I/K fore-aft, J/L port-stbd, U/O heading while parked); the readout and Ctrl+C include it
 function here_text(){   // dev: the deck point under the NOSE WHEEL (plus the nudge offset) in carrier-local coordinates — the same frame AND reference point as the shuttle table (a value can be compared with or pasted as a cat spot directly)
 	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
@@ -1248,7 +1249,7 @@ function set_master(m){ const before=ddi_family(); master=m; if(ddi_family()!==b
 let ddi_dirty=false;   // a pushbutton press redraws NOW — the 120 ms cadence would read as a stuck button
 const DDI_MENUS={   // [pushbutton, legend, page] — page "" = not built yet
 	tac:[ [6,"HUD","hud"],[7,"RDR",""],[8,"SA","sa"],[9,"SMS","sms"],[10,"EW","ew"] ],
-	supt:[ [6,"ADI","adi"],[7,"HSI","hsi"],[8,"ENG","eng"],[9,"FUEL","fuel"],[10,"FCS","fcs"],[11,"CHKLST","chklst"],[12,"FPAS",""],[13,"BIT",""],[14,"MUMI",""] ] };
+	supt:[ [6,"ADI","adi"],[7,"HSI","hsi"],[8,"ENG","eng"],[9,"FUEL","fuel"],[10,"FCS","fcs"],[11,"CHKLST","chklst"],[12,"FPAS","fpas"],[13,"BIT",""],[14,"MUMI",""] ] };
 function button_of(lx,ly){   // 512-space point -> pushbutton number, 0 between slots (five 80 px slots along the 56..456 span of each edge)
 	const slot=v=>{ const k=Math.floor((v-56)/80); return k>=0&&k<5?k:-1; };
 	if(ly<56){ const k=slot(lx); return k<0?0:6+k; }
@@ -1318,7 +1319,7 @@ function screens_update(){
 // semantics; 0 puts the page's transient state back to defaults).
 const DDI_PAGES={ eng:{draw:ddi_eng}, adi:{draw:ddi_adi}, hsi:{draw:ddi_hsi,range:hsi_range,reset:hsi_reset,press:hsi_press},
 	sa:{draw:ddi_sa,range:sa_range,reset:sa_reset,press:sa_press}, hud:{draw:ddi_hud},
-	fuel:{draw:ddi_fuel,press:fuel_press}, fcs:{draw:ddi_fcs}, chklst:{draw:ddi_chklst}, ew:{draw:ddi_ew}, sms:{draw:ddi_sms} };
+	fuel:{draw:ddi_fuel,press:fuel_press}, fcs:{draw:ddi_fcs}, chklst:{draw:ddi_chklst}, ew:{draw:ddi_ew}, sms:{draw:ddi_sms}, fpas:{draw:ddi_fpas} };
 // ---- HSI page state (#99 pages): ONE nav picture shared by every display
 // showing the format, like the jet's single nav solution. The rose ring sits
 // at HALF the selected scale; DCTR slides the rose down so the scale ahead
@@ -1517,6 +1518,44 @@ function ddi_hud(x){ const gz=ownship.gauges||{};   // HUD repeater format (#9):
 		x.beginPath(); x.moveTo(cx+Math.cos(ba)*(br-4),cy+Math.sin(ba)*(br-4)); x.lineTo(cx+Math.cos(ba-0.035)*(br-16),cy+Math.sin(ba-0.035)*(br-16)); x.lineTo(cx+Math.cos(ba+0.035)*(br-16),cy+Math.sin(ba+0.035)*(br-16)); x.closePath(); x.fill(); }
 	x.restore(); }
 // ---- FUEL page state: the bingo caret, stepped from the bezel arrows.
+// fpas_home is the FPAS arrival computation (#54): distance and time to the
+// carrier at present groundspeed, and the fuel state on arrival at the
+// present measured burn. Null while the numbers cannot mean anything —
+// on deck, hovering, or with the engines not burning.
+function fpas_home(){ const gz=ownship.gauges||{};
+	const gs=gz.ground||0, pph=flow_state.pph;
+	if(ownship.grounded||gs<60||pph<200||cheat("fuel")) return null;
+	const dist=Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),wrap_axis(CARRIER.z-ownship.pos.z))/1852;
+	const hours=dist/gs;
+	const arrive=(gz.fuelRaw||0)+(gz.externalRaw||0)-pph*hours;
+	return { dist, hours, arrive };
+}
+function ddi_fpas(x,display){ const gz=ownship.gauges||{};   // FPAS (#8 menu promise, built at #54): the real page advises best-efficiency cruise; this one carries the decision the game is actually about — endurance and range to the 2,000 lb reserve at the PRESENT burn and speed, and the fuel state on arrival back at the boat. Cockpit text stays English by the annunciator policy.
+	const colour=display==="center";
+	x.fillText("FPAS",256,36);
+	const total=(gz.fuelRaw||0)+(gz.externalRaw||0), pph=flow_state.pph, gs=gz.ground||0;
+	const hm=h=>Math.floor(h)+"+"+String(Math.floor((h%1)*60)).padStart(2,"0");
+	const row=(label,value,y)=>{ x.font="20px monospace"; x.textAlign="left"; x.fillText(label,60,y); x.fillText(value,190,y); };
+	x.font="20px monospace"; x.textAlign="center"; x.fillText("RANGE",256,96);
+	if(pph>200){
+		const spare=Math.max(0,total-2000), hours=spare/pph;
+		row("FLOW",Math.round(pph/10)*10+" PPH",140);
+		row("",gs>60?(pph/gs).toFixed(1)+" LB/NM":"--- LB/NM",168);
+		row("TIME",hm(hours)+" TO 2000",210);
+		row("RANGE",gs>60?Math.round(hours*gs)+" NM TO 2000":"---",238);
+	} else { x.font="20px monospace"; x.textAlign="center"; x.fillText("ENGINES DEAD",256,180); }
+	x.font="20px monospace"; x.textAlign="center"; x.fillText("HOME",256,300);
+	const home=fpas_home();
+	if(home){
+		const low=home.arrive<=2000;
+		row("DIST",home.dist.toFixed(0)+" NM",344);
+		row("TIME",hm(home.hours),372);
+		if(low&&colour) x.fillStyle="#ffb04a";
+		row("FUEL",Math.round(home.arrive/10)*10+" LB",400);
+		if(low){ x.font="22px monospace"; x.textAlign="center"; x.fillText("HOME FUEL",256,436); }
+		x.fillStyle="#39e07a";
+	} else { x.font="20px monospace"; x.textAlign="center"; x.fillText("---",256,360); }
+}
 const fuel_state={ bingo:2000 };
 function fuel_press(pb){
 	if(pb===4){ fuel_state.bingo=Math.min(10000,fuel_state.bingo+500); return true; }
@@ -1532,6 +1571,7 @@ function ddi_fuel(x,display){ const gz=ownship.gauges||{};
 	x.font="30px monospace"; x.textAlign="center"; x.fillText(String(total),256,226);
 	x.font="19px monospace"; x.fillText("LB",256,258);
 	if(low){ x.font="22px monospace"; x.fillText("BINGO",256,304); }   // annunciated under the total while beneath the caret
+	if(fuel_dump){ if(colour) x.fillStyle="#ffb04a"; x.font="22px monospace"; x.fillText("DUMP",256,336); x.fillStyle="#39e07a"; }   // #54: the switch is ON — fuel is going overboard
 	x.fillStyle="#39e07a"; x.font="20px monospace";
 	x.textAlign="right"; x.fillText("FF "+Math.round((gz.flowL||0)*10),190,206);   // per-engine burn either side of the tank
 	x.textAlign="left"; x.fillText("FF "+Math.round((gz.flowR||0)*10),322,206);
@@ -3064,6 +3104,7 @@ generate_world();
 const input={ pitch:0, roll:0, yaw:0, guns:false, brake:false };
 const keys=new Set();
 let cam_az=0, cam_el=0.22, cam_dist=24, cam_psi=0;
+let buffet_env=0;   // low-passed buffet intensity (#234): the seat cue's shared envelope — the camera writes it each frame, draw_hud reads it
 let head_az=0, head_el=0, head_drag=false;   // cockpit head look (#99): mouse-drag or arrow keys. The head HOLDS where it is left, like the chase orbit — 0 (view.reset) recenters
 let view_zoom=1, zoom_target=1, zoom_wheel=0;   // optical zoom: notches move the TARGET, the view eases after it (stepping the FOV directly read as jerky); per-view values persist in the config (zoom_<view>, #209)
 let zoom_save=0;   // debounce handle for persisting the zoom
@@ -3185,6 +3226,9 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("trim.reset")){ reset_flag=true; }   // unbound by default: zero both trim datums, re-datum the hold
 		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; audio_servo(); }   // G: landing gear up/down — only once airborne, never on deck/runway
 		if(ch===key_of("caution.reset")) caution_lamp=false;   // the pressed-out MASTER CAUTION (NATOPS 2.17.2.1); the next NEW caution re-lights it
+		if(ch===key_of("dump")){ fuel_dump=!fuel_dump; notice("FUEL DUMP "+(fuel_dump?"ON":"OFF")); }   // #54: NATOPS 2.2.7 — the drain and its bingo floor live in the core; annunciator vocabulary stays English
+		if(ch===key_of("secure.port")){ secured[0]=!secured[0]; notice(secured[0]?"L ENG SECURED":"L ENG RELIGHT"); }   // #54: per-engine fuel OFF (NATOPS 15.1) — securing a burning engine starves its fire while the other keeps fighting
+		if(ch===key_of("secure.starboard")){ secured[1]=!secured[1]; notice(secured[1]?"R ENG SECURED":"R ENG RELIGHT"); }
 		if(ch===key_of("jettison.tanks") && !dev_parked){   // J: punch the tanks — selective STORES drop, gear-up interlock as the real panel (#18). A refused press SAYS so — a silent no-op reads as broken
 			if(on_ground()||(ownship.gearTarget??1)<0.5) notice(translate("JETTISON: GEAR"));   // gearTarget: 0=down 1=up (make_state) — refuse on deck or gear down
 			else if(!jettison_stations([3,5,7],"stores")) notice(translate("NO TANKS")); }
@@ -3282,7 +3326,7 @@ const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.
 	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash", "trim.up":"Period", "trim.down":"Comma", "trim.left":"Shift+Comma", "trim.right":"Shift+Period", "trim.reset":"None", "flaps.extend":"KeyF", "flaps.retract":"Shift+KeyF", override:"KeyO", "brake.parking":"Shift+KeyB",
 	gear:"KeyG", hook:"KeyH", probe:"KeyR", atc:"KeyP", lights:"KeyL", flares:"KeyC", eject:"Shift+KeyE", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"None", select:"KeyX", altitude:"KeyK", reject:"None", acquire:"Enter",
 	canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0", repeater:"KeyI",
-	"jettison.tanks":"KeyJ", "jettison.emergency":"Shift+KeyJ", "caution.reset":"Shift+KeyM" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares. J is the jettison family; eject moved to triple-Escape (a pilot reaching for "jettison" must never punch out)
+	"jettison.tanks":"KeyJ", "jettison.emergency":"Shift+KeyJ", "caution.reset":"Shift+KeyM", dump:"Shift+KeyD", "secure.port":"Shift+Digit1", "secure.starboard":"Shift+Digit2" };   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares. J is the jettison family; eject moved to triple-Escape (a pilot reaching for "jettison" must never punch out)
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
@@ -3512,6 +3556,7 @@ function cautions_update(){
 	if(!cheat("fuel")){ const total=(ownship.fuel??0)+(ownship.external??0);
 		if(ownship.fuel!==undefined&&ownship.fuel<FUELLO) push("FUEL LO");
 		else if(total>0&&total<BINGO) push("BINGO"); }   // FUEL LO supersedes BINGO on the stack, as the deeper state
+	{ const home=fpas_home(); if(home&&home.arrive<=2000) push("HOME FUEL"); }   // FPAS (#54, NATOPS 2.3.1.2): calculated fuel on arrival back at the boat has reached the 2,000 lb reserve
 	if(core) for(let leg=0;leg<3;leg++){ const harm=core[STATE.gear_harm+leg]; if(harm>0.3) push(["NOSE GEAR","L GEAR","R GEAR"][leg],harm>0.7); }
 	if(core){ let jammed=false; for(let c=0;c<8;c++) if(core[STATE.jam+c]>0.2) jammed=true; if(jammed) push("FCS");
 		let torn=false; for(let e=0;e<40;e++) if(core[STATE.element+e]>0.6) torn=true;
@@ -3695,7 +3740,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1),   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
+	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
 	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
 	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS
 		racks:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>[n,o.visible])),
@@ -3987,7 +4032,8 @@ function fly_player(dt){
 		reheat:ownship.burner??0, brake:input.brake || (sim_time<test_idle && test_brake && !ownship.wire),   // scenario rollout: the scripted pilot rides the brakes only on a runway (test_brake); the carrier's wire and the bolter's power stop the jet instead (a hands-off free roll ran 1.4 km off the runway end into the lagoon) — but NEVER on a wire: locked mains under the 3 g runout slammed the nose and rolled the trap over (the live-traced 37-degree topple)
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,
 		trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
-		launch:launch_flag, override:keys.has(key_of("override"))&&!(DEV_MODE&&on_ground()), sequence:++control_sequence };
+		launch:launch_flag, override:keys.has(key_of("override"))&&!(DEV_MODE&&on_ground()),
+		dump:fuel_dump, port:secured[0], starboard:secured[1], sequence:++control_sequence };
 	flight_stores(own_mask());   // the flown loadout follows the magazine every frame (idempotent): firing sheds each round's mass and carriage drag in the core in the SMS order; respawns re-arm through the same line, and a tank bit's off-to-on transition fills it (#17)
 	const out=flight_frame(controls,dt);
 	if(flight_steps.value>0){ launch_flag=false; reset_flag=false; }   // the edges were consumed by the core
@@ -4010,7 +4056,7 @@ function fly_player(dt){
 				hit_sparks(w.x,w.y,w.z,bandit.velx??bandit.fwd.x*bandit.speed,bandit.vely??bandit.fwd.y*bandit.speed,bandit.velz??bandit.fwd.z*bandit.speed); }
 			if(flown.own>0){ hit_flash=Math.min(1,hit_flash+0.25*flown.own); audio_hit(Math.min(flown.own,4)); }
 			ownship.struck=(ownship.struck||0)+flown.own; bandit.struck=(bandit.struck||0)+flown.bandit; }   // cumulative rounds taken, for the recording (#238): the total survives 10 Hz sampling losslessly
-		const battle=battle_progress(ownship.throttle,battle_tick++,battle_reset); battle_reset=false;
+		const battle=battle_progress(ownship.throttle,battle_tick++,battle_reset,(secured[0]?1:0)|(secured[1]?2:0)); battle_reset=false;
 		own_burn[0]=battle[0]; own_burn[1]=battle[1]; own_burning=battle[2]>0; own_leak=battle[5];
 		if(has_enemy){ const h=bandit.harm; h.thrust=battle[11]; h.wing=battle[12]; h.killed=battle[9]>0; h.burning=battle[8]>0;
 			h.wreck=battle[13]; if(h.killed&&!bandit.fate) bandit.fate="pilot";
@@ -4310,6 +4356,7 @@ function reset_ownship(){
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
 	pattern=null;   // ...and any visual-pattern procedure (#50)
+	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
 	else if(st==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
 		ownship.pos.set(ap.start.x,ap.start.y,ap.start.z); ownship.fwd.copy(ap.dir).normalize(); ownship.speed=0; ownship.throttle=0;
@@ -4396,11 +4443,20 @@ function update_camera(dt){
 	}
 	// Aerodynamic buffet, the seat cue: the core grades the LEX/stall shake
 	// (STATE.buffet) and the seat views ride it — a small white-noise jitter
-	// whose amplitude squares with intensity, so onset is a tremble and the
-	// deep stall is a proper airframe shake. Outside views stay steady.
+	// whose amplitude cubes with the ENVELOPED intensity, so onset is a
+	// gradual tremble and the deep stall is a firm shake. Outside views stay
+	// steady.
+	// The envelope, then a cubed law (#234 tuning): the core's channel ramps
+	// with alpha, so a brisk pull crosses the whole onset band in a fraction
+	// of a second and the raw value arrives as a step — the shake snapped on
+	// and read as violent. The low-pass gives it a ~0.4 s fade-in/out, and the
+	// cube keeps the low end near-imperceptible so the tremble grows instead
+	// of appearing.
 	const buffet_b=last_out?(last_out[STATE.buffet]||0):0;
-	const buffet_amp=buffet_b*buffet_b*0.055;
-	const buffet_rot=buffet_b*buffet_b*0.0026;   // HUD view (#234): ±0.15° of attitude noise at the limit — translation is invisible there (no near geometry, centimetres of eye motion give no parallax against distant scenery), so the world gets a whisper of tremble against the screen-fixed symbology, whose own pixel shake in draw_hud carries the cue
+	buffet_env+=(buffet_b-buffet_env)*Math.min(1,dt*4);
+	const buffet_cue=buffet_env*buffet_env*buffet_env;
+	const buffet_amp=buffet_cue*0.009;
+	const buffet_rot=buffet_cue*0.0008;   // HUD view (#234): ±0.05° of attitude noise at the limit — translation is invisible there (no near geometry, centimetres of eye motion give no parallax against distant scenery), so the world gets a whisper of tremble against the screen-fixed symbology, whose own pixel shake in draw_hud carries the cue
 	const buffet_jitter=(eye)=>{ if(buffet_amp>1e-4){ eye.x+=(Math.random()*2-1)*buffet_amp; eye.y+=(Math.random()*2-1)*buffet_amp; eye.z+=(Math.random()*2-1)*buffet_amp; } return eye; };
 	if(firstPerson){ const eye=buffet_jitter(body_offset(ownship,3.0,0.6,0)); camera.position.copy(eye);
 		// Same head compose as the cockpit, not a bare lookAt: this view is a
@@ -4590,10 +4646,13 @@ function draw_hud(){
 	// Buffet on the combiner (#234): in HUD view the seat cue is carried by the
 	// SYMBOLOGY — the camera's centimetre translation is invisible with no near
 	// geometry, but the combining glass is bolted to the shaking airframe. Same
-	// squared law as the seat views, scaled to ~1% of viewport height at the
-	// limit: ~1 px tremble at onset, ~12 px at the stall on a 1200 px view —
-	// hard to read in deep buffet, which is the warning working.
-	if(cfg.view==="hud"){ const b=last_out?(last_out[STATE.buffet]||0):0; const a=b*b*0.010*HH;
+	// enveloped cubed law as the seat views (buffet_env fades the onset in over
+	// ~0.4 s — the raw channel arrives as a step on a brisk pull), scaled to
+	// 0.3% of viewport height at the limit: ~3-4 px at the stall on a 1200 px
+	// view. A HINT, never a hindrance (the user's words, after three rounds
+	// of tuning down from 12 px): the symbology must stay fully readable at
+	// every buffet depth — the cue is peripheral, like the real shake.
+	if(cfg.view==="hud"){ const a=buffet_env*buffet_env*buffet_env*0.003*HH;
 		if(a>0.2) hctx.translate((Math.random()*2-1)*a,(Math.random()*2-1)*a); }
 	GR=cfg.tod==="day"?"#23e57d":"#15b85f";   // daytime brightness up — the muted night green washes out against a sunlit sea/sky
 	hctx.shadowColor="rgba(0,0,0,0.85)"; hctx.shadowBlur=3; hctx.shadowOffsetX=0; hctx.shadowOffsetY=0;   // dark halo behind every HUD glyph/line so it stays readable over any background
@@ -5267,7 +5326,7 @@ function net_frame(dt){
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake, trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
-		override:c?c.override:false,
+		override:c?c.override:false, dump:fuel_dump, port:secured[0], starboard:secured[1],
 		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, missile:missile_flag, eject:eject_flag };
 	const sequence=net.input(sample);
 	if(sequence>0){ flare_flag=false; missile_flag=false; eject_flag=false; }
