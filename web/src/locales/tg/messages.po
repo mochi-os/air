@@ -46,7 +46,7 @@ msgstr "{0, plural, one {# интихобшуда} other {# интихобшуд
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:1165
+#: src/components/MissionSetup.tsx:1185
 msgid "{0} created “{1}”"
 msgstr "{0} «{1}»-ро эҷод кард"
 
@@ -55,8 +55,13 @@ msgstr "{0} «{1}»-ро эҷод кард"
 msgid "{0} flying"
 msgstr "{0} дар парвоз"
 
+#. placeholder {0}: moment - CATAPULT
+#: src/components/MissionSetup.tsx:881
+msgid "{0} ft·lb over the catapult asymmetry limit"
+msgstr "{0} ft·lb аз ҳадди носимметрии катапулта зиёд"
+
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:861
+#: src/components/MissionSetup.tsx:869
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb аз вазни ҳадди аксари сар додан зиёд"
 
@@ -152,7 +157,7 @@ msgstr "ТРОС 1"
 msgid "12 hours"
 msgstr "12 соат"
 
-#: src/components/MissionSetup.tsx:927
+#: src/components/MissionSetup.tsx:947
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -168,7 +173,7 @@ msgstr "24 соат"
 msgid "3 WIRE"
 msgstr "ТРОС 3"
 
-#: src/components/MissionSetup.tsx:930
+#: src/components/MissionSetup.tsx:950
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -208,8 +213,8 @@ msgstr "Намуди ҳисоб"
 msgid "Account verified"
 msgstr "Ҳисоб тасдиқ карда шуд"
 
-#: src/components/MissionSetup.tsx:1402
-#: src/components/MissionSetup.tsx:1774
+#: src/components/MissionSetup.tsx:1422
+#: src/components/MissionSetup.tsx:1795
 #: src/components/Multiplayer.tsx:422
 msgid "Ace"
 msgstr "Устод"
@@ -307,7 +312,7 @@ msgstr "Илова шуда истодааст..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Намуд ва тарҳбандиро мувофиқи хости худ танзим кунед."
 
-#: src/components/MissionSetup.tsx:1623
+#: src/components/MissionSetup.tsx:1644
 msgid "Afterburner"
 msgstr "Форсаж"
 
@@ -320,11 +325,11 @@ msgstr "AI"
 msgid "Aircraft"
 msgstr "Ҳавопаймо"
 
-#: src/components/MissionSetup.tsx:1004
+#: src/components/MissionSetup.tsx:1024
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Киштии ҳавопаймобар <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> аз <1>Muhamad Mirza Arrafi</1> (Sketchfab), таҳти иҷозатномаи <2>CC BY 4.0</2>. Тағйир дода шуд: андоза иваз карда шуд, самт иваз карда шуд, то сатҳи об ғарқ карда шуд ва барои веб содда карда шуд."
 
-#: src/components/MissionSetup.tsx:978
+#: src/components/MissionSetup.tsx:998
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Модели ҳавопаймо <0>“F/A-18C Hornet”</0> аз ҷониби <1>CreadorDeMu</1> (Sketchfab), таҳти иҷозатномаи <2>CC BY 4.0</2>. Тағйир дода шуд: самт ва андоза иваз карда шуданд, маълумоти текстураи истифоданашуда нест карда шуд, овезаҳои беруна ба файли алоҳида ҷудо карда шуданд, як меши ғилоф бо нусхаи оинавӣ иваз карда шуд."
 
@@ -371,7 +376,7 @@ msgstr "Ҳар касе ки ворид шудааст"
 msgid "Approach power (ATC)"
 msgstr "Қувваи наздикшавӣ (ATC)"
 
-#: src/components/MissionSetup.tsx:901
+#: src/components/MissionSetup.tsx:921
 msgid "Approach, on-speed (Vapp)"
 msgstr "Наздикшавӣ, дар суръати дуруст (Vapp)"
 
@@ -405,6 +410,10 @@ msgstr "Афзоянда"
 msgid "Ascending"
 msgstr "Афзоишёбанда"
 
+#: src/components/MissionSetup.tsx:875
+msgid "Asymmetry"
+msgstr "Носимметрӣ"
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:398
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:403
 msgid "Attach comment files"
@@ -420,7 +429,7 @@ msgstr "Замимаи файлҳои ҷавоб"
 msgid "Authenticated users"
 msgstr "Корбарони тасдиқшуда"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:315
+#: ../../../lib/web/src/components/step-up-dialog.tsx:329
 msgid "Authenticator code"
 msgstr "Коди Authenticator"
 
@@ -459,7 +468,7 @@ msgstr "Бозгашт"
 msgid "Back to home"
 msgstr "Бозгашт ба саҳифаи асосӣ"
 
-#: src/components/MissionSetup.tsx:1394
+#: src/components/MissionSetup.tsx:1414
 msgid "Bandit"
 msgstr "Ҳавопаймои душман"
 
@@ -471,19 +480,19 @@ msgstr "Баннер"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "ПОЁНТАР АЗ 250 — ШАССИ ВА БОЛҲО"
 
-#: src/components/MissionSetup.tsx:892
+#: src/components/MissionSetup.tsx:912
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "Беҳтарин авҷгирӣ (Vy, 100% рониш)"
 
-#: src/components/MissionSetup.tsx:893
+#: src/components/MissionSetup.tsx:913
 msgid "Best climb (Vy, afterburner)"
 msgstr "Беҳтарин авҷгирӣ (Vy, форсаж)"
 
-#: src/components/MissionSetup.tsx:895
+#: src/components/MissionSetup.tsx:915
 msgid "Best glide (engines out)"
 msgstr "Беҳтарин лағжиш (муҳаррикҳо хомӯш)"
 
-#: src/components/MissionSetup.tsx:897
+#: src/components/MissionSetup.tsx:917
 msgid "Best sustained turn speed"
 msgstr "Суръати беҳтарин гардиши устувор"
 
@@ -566,7 +575,7 @@ msgstr "Тугмаҳо"
 msgid "CALL THE BALL"
 msgstr "ТӮБРО ЭЪЛОН КУН"
 
-#: src/components/MissionSetup.tsx:1679
+#: src/components/MissionSetup.tsx:1700
 #: src/components/Multiplayer.tsx:285
 msgid "Callsign"
 msgstr "Тахаллус"
@@ -580,7 +589,7 @@ msgstr "Масофаи камера"
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
-#: ../../../lib/web/src/components/step-up-dialog.tsx:363
+#: ../../../lib/web/src/components/step-up-dialog.tsx:377
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:249
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
@@ -608,31 +617,31 @@ msgstr "Бекор кардани ҷавоб"
 msgid "Canopy"
 msgstr "Фонуси кабина"
 
-#: src/components/MissionSetup.tsx:1200
+#: src/components/MissionSetup.tsx:1220
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1442
+#: src/components/MissionSetup.tsx:1462
 msgid "Case I (day)"
 msgstr "Ҳолат I (рӯз)"
 
-#: src/components/MissionSetup.tsx:1201
+#: src/components/MissionSetup.tsx:1221
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1443
+#: src/components/MissionSetup.tsx:1463
 msgid "Case II (weather)"
 msgstr "Ҳолат II (обу ҳаво)"
 
-#: src/components/MissionSetup.tsx:1202
+#: src/components/MissionSetup.tsx:1222
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1444
+#: src/components/MissionSetup.tsx:1464
 msgid "Case III (night)"
 msgstr "Ҳолат III (шаб)"
 
-#: src/components/MissionSetup.tsx:1450
+#: src/components/MissionSetup.tsx:1470
 msgid "Catapult"
 msgstr "Катапулта"
 
@@ -640,7 +649,7 @@ msgstr "Катапулта"
 msgid "Category for these notifications"
 msgstr "Категория барои ин огоҳиномаҳо"
 
-#: src/components/MissionSetup.tsx:744
+#: src/components/MissionSetup.tsx:746
 msgid "Centerline"
 msgstr "Хатти марказӣ"
 
@@ -666,7 +675,7 @@ msgid "Chat to everyone"
 msgstr "Чат бо ҳама"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1509
+#: src/components/MissionSetup.tsx:1530
 msgid "Cheats"
 msgstr "Читҳо"
 
@@ -777,7 +786,7 @@ msgstr "Пӯшидани ҷустуҷӯ"
 msgid "closer"
 msgstr "наздиктар"
 
-#: src/components/MissionSetup.tsx:1478
+#: src/components/MissionSetup.tsx:1498
 msgid "Clouds"
 msgstr "Абрҳо"
 
@@ -848,7 +857,7 @@ msgstr "Танзимоти намуд"
 msgid "Confirm"
 msgstr "Тасдиқ"
 
-#: src/components/MissionSetup.tsx:1310
+#: src/components/MissionSetup.tsx:1330
 msgid "Connect"
 msgstr "Пайваст"
 
@@ -889,7 +898,7 @@ msgstr "Маълумоти заминавӣ ва тафсилот."
 msgid "Continue"
 msgstr "Идома"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:352
+#: ../../../lib/web/src/components/step-up-dialog.tsx:366
 msgid "Continue with {label}"
 msgstr "Бо {label} идома диҳед"
 
@@ -905,7 +914,7 @@ msgstr "Ба буфер нусхабардорӣ шуд"
 msgid "Copy"
 msgstr "Нусхабардорӣ"
 
-#: src/components/MissionSetup.tsx:896
+#: src/components/MissionSetup.tsx:916
 msgid "Corner speed (best instant turn)"
 msgstr "Суръати кунҷӣ (беҳтарин гардиши фаврӣ)"
 
@@ -922,7 +931,7 @@ msgstr "Ин ҳуҷҷатро бор карда натавонист. Лутфа
 msgid "Could not save the recording"
 msgstr "Сабт захира карда нашуд"
 
-#: src/components/MissionSetup.tsx:1147
+#: src/components/MissionSetup.tsx:1167
 msgid "Could not send the message"
 msgstr "Паём фиристода нашуд"
 
@@ -930,15 +939,15 @@ msgstr "Паём фиристода нашуд"
 msgid "Couldn't load notifications"
 msgstr "Огоҳиномаҳоро бор кардан нашуд"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:184
+#: ../../../lib/web/src/components/step-up-dialog.tsx:193
 msgid "Couldn't send the code. Please try again."
 msgstr "Рамзро фиристодан имконнопазир буд. Лутфан, аз нав кӯшиш кунед."
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:136
+#: ../../../lib/web/src/components/step-up-dialog.tsx:145
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Аз нав аутентификатсияро оғоз кардан имконнопазир буд. Лутфан, аз нав кӯшиш кунед."
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:221
+#: ../../../lib/web/src/components/step-up-dialog.tsx:235
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Бо он ҳисоб тасдиқ кардан имконнопазир буд. Лутфан, бори дигар кӯшиш кунед."
 
@@ -976,8 +985,8 @@ msgstr "Эҷод кунед ва парвоз кунед"
 msgid "Create match"
 msgstr "Матч эҷод кунед"
 
-#: src/components/MissionSetup.tsx:1814
-#: src/components/MissionSetup.tsx:1837
+#: src/components/MissionSetup.tsx:1835
+#: src/components/MissionSetup.tsx:1858
 msgid "Create mission"
 msgstr "Эҷоди супориш"
 
@@ -995,12 +1004,12 @@ msgstr "Эҷодшуда"
 msgid "Creating..."
 msgstr "Эҷод карда истодааст..."
 
-#: src/components/MissionSetup.tsx:967
-#: src/components/MissionSetup.tsx:973
+#: src/components/MissionSetup.tsx:987
+#: src/components/MissionSetup.tsx:993
 msgid "Credits"
 msgstr "Муаллифон"
 
-#: src/components/MissionSetup.tsx:1485
+#: src/components/MissionSetup.tsx:1505
 #: src/components/Multiplayer.tsx:74
 #: src/components/Multiplayer.tsx:347
 msgid "Cumulus"
@@ -1011,7 +1020,7 @@ msgid "Current location"
 msgstr "Ҷойгиршавии ҷорӣ"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:265
-#: src/components/MissionSetup.tsx:800
+#: src/components/MissionSetup.tsx:808
 msgid "Custom"
 msgstr "Танзимшаванда"
 
@@ -1044,7 +1053,7 @@ msgstr "Ихтилофи маълумот"
 msgid "Date"
 msgstr "Сана"
 
-#: src/components/MissionSetup.tsx:1473
+#: src/components/MissionSetup.tsx:1493
 #: src/components/Multiplayer.tsx:342
 msgid "Day"
 msgstr "Рӯз"
@@ -1208,13 +1217,13 @@ msgstr "Такроркунандаи экран"
 msgid "Displays the mobile sidebar."
 msgstr "Панели канории мобилиро намоиш медиҳад."
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1632
 msgid "Distance LOD"
 msgstr "LOD-и масофа"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1918
+#: src/components/MissionSetup.tsx:1939
 msgid "Done"
 msgstr "Иҷро шуд"
 
@@ -1248,7 +1257,7 @@ msgstr "Такрорҳо"
 msgid "Duration"
 msgstr "Давомнокӣ"
 
-#: src/components/MissionSetup.tsx:1605
+#: src/components/MissionSetup.tsx:1626
 msgid "Dynamic resolution"
 msgstr "Возеҳияти динамикӣ"
 
@@ -1307,7 +1316,7 @@ msgstr "КАТАПУЛТА ШУД"
 msgid "Email"
 msgstr "Имейл"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:289
+#: ../../../lib/web/src/components/step-up-dialog.tsx:303
 msgid "Email code"
 msgstr "Рамзи email"
 
@@ -1324,8 +1333,8 @@ msgstr "Партофтани изтирорӣ (нигоҳ доред)"
 msgid "empty"
 msgstr "холӣ"
 
-#: src/components/MissionSetup.tsx:759
-#: src/components/MissionSetup.tsx:764
+#: src/components/MissionSetup.tsx:761
+#: src/components/MissionSetup.tsx:766
 msgid "Empty pylon"
 msgstr "Пилони холӣ"
 
@@ -1337,11 +1346,11 @@ msgstr "ҲУҶУМ МЕКУНАМ"
 msgid "Engine"
 msgstr "Муҳаррик"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:299
+#: ../../../lib/web/src/components/step-up-dialog.tsx:313
 msgid "Enter the code from your email"
 msgstr "Рамзро аз почтаи электронии худ ворид кунед"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:324
+#: ../../../lib/web/src/components/step-up-dialog.tsx:338
 msgid "Enter your authenticator code"
 msgstr "Рамзи аутентификатори худро ворид кунед"
 
@@ -1377,7 +1386,7 @@ msgstr "Васеъ кардани панели канорӣ"
 msgid "Extend flaps"
 msgstr "Флапҳоро баровардан"
 
-#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1606
 msgid "Exterior detail"
 msgstr "Тафсилоти берунӣ"
 
@@ -1389,7 +1398,7 @@ msgstr "URL-и берунӣ"
 msgid "Extra large"
 msgstr "Хеле калон"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:935
 msgid "F/A-18C reference"
 msgstr "Истиноди F/A-18C"
 
@@ -1554,8 +1563,8 @@ msgstr "Шинокунанда"
 msgid "Flown"
 msgstr "Парвоз шуд"
 
-#: src/components/MissionSetup.tsx:1808
-#: src/components/MissionSetup.tsx:1851
+#: src/components/MissionSetup.tsx:1829
+#: src/components/MissionSetup.tsx:1872
 msgid "Fly"
 msgstr "Парвоз"
 
@@ -1563,16 +1572,16 @@ msgstr "Парвоз"
 msgid "Fly again"
 msgstr "Боз парвоз кунед"
 
-#: src/components/MissionSetup.tsx:771
+#: src/components/MissionSetup.tsx:773
 msgid "Fox 2 fighter"
 msgstr "Ҷангандаи Fox 2"
 
-#: src/components/MissionSetup.tsx:1635
+#: src/components/MissionSetup.tsx:1656
 msgid "Framerate"
 msgstr "Суръати кадрҳо"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1387
+#: src/components/MissionSetup.tsx:1407
 msgid "Free flight"
 msgstr "Парвози озод"
 
@@ -1621,7 +1630,7 @@ msgstr "СӮЗИШВОРӢ КАМ"
 msgid "Fuel probe"
 msgstr "Зонди сӯзишворӣ"
 
-#: src/components/MissionSetup.tsx:757
+#: src/components/MissionSetup.tsx:759
 msgid "Fuel tank"
 msgstr "Боки сӯзишворӣ"
 
@@ -1633,8 +1642,8 @@ msgstr "Тарҳбандии пурра"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:743
 #: src/components/MissionSetup.tsx:745
+#: src/components/MissionSetup.tsx:747
 msgid "Fuselage"
 msgstr "Фюзеляж"
 
@@ -1646,7 +1655,7 @@ msgstr "шасси"
 msgid "GEAR"
 msgstr "ШАССИ"
 
-#: src/components/MissionSetup.tsx:1860
+#: src/components/MissionSetup.tsx:1881
 msgid "General"
 msgstr "Умумӣ"
 
@@ -1676,11 +1685,11 @@ msgstr "Ба саҳифаи {pageNumber} гузаштан"
 msgid "Go to previous page"
 msgstr "Ба саҳифаи қаблӣ рафтан"
 
-#: src/components/MissionSetup.tsx:1863
+#: src/components/MissionSetup.tsx:1884
 msgid "Graphics"
 msgstr "Графика"
 
-#: src/components/MissionSetup.tsx:857
+#: src/components/MissionSetup.tsx:865
 msgid "Gross weight"
 msgstr "Вазни умумӣ"
 
@@ -1701,7 +1710,7 @@ msgstr "Гурӯҳ: {0}"
 msgid "GUN"
 msgstr "ТӮП"
 
-#: src/components/MissionSetup.tsx:770
+#: src/components/MissionSetup.tsx:772
 msgid "Gun fighter"
 msgstr "Ҷангандаи тӯпдор"
 
@@ -1717,18 +1726,18 @@ msgstr "Пинҳон кардан"
 msgid "Hide password"
 msgstr "Пинҳон кардани рамз"
 
-#: src/components/MissionSetup.tsx:1565
+#: src/components/MissionSetup.tsx:1586
 msgid "High"
 msgstr "Баланд"
 
-#: src/components/MissionSetup.tsx:1486
+#: src/components/MissionSetup.tsx:1506
 #: src/components/Multiplayer.tsx:75
 #: src/components/Multiplayer.tsx:348
 msgid "High stratus"
 msgstr "Абри қабатии баланд"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1827
+#: src/components/MissionSetup.tsx:1848
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Таърих"
@@ -1773,8 +1782,8 @@ msgstr "Тамошои тасвир: {0}"
 msgid "Imperial"
 msgstr "Империалӣ"
 
-#: src/components/MissionSetup.tsx:1197
-#: src/components/MissionSetup.tsx:1439
+#: src/components/MissionSetup.tsx:1217
+#: src/components/MissionSetup.tsx:1459
 msgid "In air"
 msgstr "Дар ҳаво"
 
@@ -1798,7 +1807,7 @@ msgstr "Дохилӣ"
 msgid "Interests"
 msgstr "Шавқҳо"
 
-#: src/components/MissionSetup.tsx:853
+#: src/components/MissionSetup.tsx:861
 msgid "Internal fuel"
 msgstr "Сӯзишвории дохилӣ"
 
@@ -1826,7 +1835,7 @@ msgstr "Осебнопазир"
 msgid "INVULNERABLE"
 msgstr "ОСЕБНОПАЗИР"
 
-#: src/components/MissionSetup.tsx:1514
+#: src/components/MissionSetup.tsx:1535
 #: src/components/Multiplayer.tsx:386
 msgid "Invulnerable (human players only)"
 msgstr "Осебнопазир (танҳо бозигарони инсонӣ)"
@@ -1848,8 +1857,8 @@ msgstr "ПАРТОФТАН: ШАССИ"
 msgid "Join"
 msgstr "Ҳамроҳ шудан"
 
-#: src/components/MissionSetup.tsx:1280
-#: src/components/MissionSetup.tsx:1818
+#: src/components/MissionSetup.tsx:1300
+#: src/components/MissionSetup.tsx:1839
 msgid "Join server"
 msgstr "Ҳамроҳ шудан ба сервер"
 
@@ -1858,7 +1867,7 @@ msgid "JOINED"
 msgstr "ҲАМРОҲ ШУД"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1780
+#: src/components/MissionSetup.tsx:1801
 #: src/components/Multiplayer.tsx:480
 msgid "Joust"
 msgstr "Дуэл"
@@ -1867,11 +1876,11 @@ msgstr "Дуэл"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Дуэл — 1v1, кӣ аввал ҳарифро занад, ғолиб мешавад"
 
-#: src/components/MissionSetup.tsx:1388
+#: src/components/MissionSetup.tsx:1408
 msgid "Joust 1v1"
 msgstr "Дуэл 1v1"
 
-#: src/components/MissionSetup.tsx:1869
+#: src/components/MissionSetup.tsx:1890
 msgid "Joystick"
 msgstr "Ҷойстик"
 
@@ -1887,7 +1896,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Миёнбурҳои клавиатура"
 
-#: src/components/MissionSetup.tsx:1872
+#: src/components/MissionSetup.tsx:1893
 msgid "Keys"
 msgstr "Тугмаҳо"
 
@@ -1953,7 +1962,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Маълумоти бештар"
 
-#: src/components/MissionSetup.tsx:1336
+#: src/components/MissionSetup.tsx:1356
 msgid "Leave server"
 msgstr "Тарк кардани сервер"
 
@@ -1969,12 +1978,12 @@ msgstr "БАРОМАД"
 msgid "Left to Right"
 msgstr "Аз чап ба рост"
 
-#: src/components/MissionSetup.tsx:741
-#: src/components/MissionSetup.tsx:742
+#: src/components/MissionSetup.tsx:743
+#: src/components/MissionSetup.tsx:744
 msgid "Left wing"
 msgstr "Боли чап"
 
-#: src/components/MissionSetup.tsx:740
+#: src/components/MissionSetup.tsx:742
 msgid "Left wingtip"
 msgstr "Нӯги боли чап"
 
@@ -2038,7 +2047,7 @@ msgstr "БОРКУНӢ НОКОМ ШУД"
 msgid "Loading..."
 msgstr "Бор карда мешавад..."
 
-#: src/components/MissionSetup.tsx:1491
+#: src/components/MissionSetup.tsx:1511
 msgid "Loadout"
 msgstr "Бор"
 
@@ -2085,11 +2094,11 @@ msgstr "Нигоҳ ба рост"
 msgid "Look up"
 msgstr "Нигоҳ ба боло"
 
-#: src/components/MissionSetup.tsx:1561
+#: src/components/MissionSetup.tsx:1582
 msgid "Low"
 msgstr "Паст"
 
-#: src/components/MissionSetup.tsx:1487
+#: src/components/MissionSetup.tsx:1507
 #: src/components/Multiplayer.tsx:76
 #: src/components/Multiplayer.tsx:349
 msgid "Low stratus"
@@ -2133,7 +2142,7 @@ msgstr "Умумӣ"
 msgid "Match type"
 msgstr "Навъи матч"
 
-#: src/components/MissionSetup.tsx:1330
+#: src/components/MissionSetup.tsx:1350
 msgid "Matches"
 msgstr "Бозиҳо"
 
@@ -2146,7 +2155,7 @@ msgid "MCP server"
 msgstr "Сервери MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1563
+#: src/components/MissionSetup.tsx:1584
 msgid "Medium"
 msgstr "Миёна"
 
@@ -2167,7 +2176,7 @@ msgstr "Паём"
 msgid "Message everyone"
 msgstr "Ба ҳама нависед"
 
-#: src/components/MissionSetup.tsx:1182
+#: src/components/MissionSetup.tsx:1202
 msgid "Message players on this server"
 msgstr "Ба бозигарони ин сервер паём нависед"
 
@@ -2183,7 +2192,7 @@ msgstr "Метрӣ"
 msgid "Midair collision"
 msgstr "Бархӯрд дар ҳаво"
 
-#: src/components/MissionSetup.tsx:1030
+#: src/components/MissionSetup.tsx:1050
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Харитаи Атолли Мидвей — тасвирҳо дорои маълумоти тағйирёфтаи <0>Copernicus Sentinel-2</0> мебошанд (2026); геометрияи майдони ҳавоӣ (хатти парвоз, роҳҳои ҳаракат, майдончаҳо) © ҳиссагузорони <1>OpenStreetMap</1>, таҳти иҷозатномаи <2>ODbL</2>; маълумоти хатти соҳил ва рифҳо аз <3>NOAA NCCOS</3> (моликияти умумӣ)."
 
@@ -2264,7 +2273,7 @@ msgstr "Бозии нав"
 msgid "Next image"
 msgstr "Тасвири навбатӣ"
 
-#: src/components/MissionSetup.tsx:1474
+#: src/components/MissionSetup.tsx:1494
 #: src/components/Multiplayer.tsx:73
 #: src/components/Multiplayer.tsx:343
 msgid "Night"
@@ -2375,7 +2384,7 @@ msgstr "Ягон корбар ёфт нашуд"
 msgid "No views"
 msgstr "Ягон намоиш нест"
 
-#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1179
 #: src/components/Multiplayer.tsx:463
 msgid "No world server."
 msgstr "Сервери ҷаҳон нест."
@@ -2400,8 +2409,8 @@ msgstr "БЕ БАҲО"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:361
 #: src/components/MissionSetup.tsx:421
-#: src/components/MissionSetup.tsx:766
-#: src/components/MissionSetup.tsx:1484
+#: src/components/MissionSetup.tsx:768
+#: src/components/MissionSetup.tsx:1504
 msgid "None"
 msgstr "Ҳеҷ кадом"
 
@@ -2425,7 +2434,7 @@ msgstr "Танзим нашудааст"
 msgid "Nothing found"
 msgstr "Чизе ёфт нашуд"
 
-#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1179
 msgid "Nothing yet — say hello."
 msgstr "Ҳоло ҳеҷ чиз нест — салом гӯед."
 
@@ -2442,8 +2451,8 @@ msgstr "Огоҳиномаҳо"
 msgid "Notifications: {0}"
 msgstr "Огоҳиномаҳо: {0}"
 
-#: src/components/MissionSetup.tsx:1400
-#: src/components/MissionSetup.tsx:1772
+#: src/components/MissionSetup.tsx:1420
+#: src/components/MissionSetup.tsx:1793
 #: src/components/Multiplayer.tsx:420
 msgid "Novice"
 msgstr "Навомӯз"
@@ -2454,7 +2463,7 @@ msgstr "Навомӯз"
 msgid "Number"
 msgstr "Рақам"
 
-#: src/components/MissionSetup.tsx:1593
+#: src/components/MissionSetup.tsx:1614
 msgid "Ocean detail"
 msgstr "Тафсилоти уқёнус"
 
@@ -2466,13 +2475,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Фаъол"
 
-#: src/components/MissionSetup.tsx:1199
-#: src/components/MissionSetup.tsx:1441
+#: src/components/MissionSetup.tsx:1219
+#: src/components/MissionSetup.tsx:1461
 msgid "On carrier"
 msgstr "Дар киштӣ"
 
-#: src/components/MissionSetup.tsx:1198
-#: src/components/MissionSetup.tsx:1440
+#: src/components/MissionSetup.tsx:1218
+#: src/components/MissionSetup.tsx:1460
 msgid "On runway"
 msgstr "Дар хати парвоз"
 
@@ -2580,11 +2589,11 @@ msgstr "Волидайн"
 msgid "Parking brake"
 msgstr "Тормози таваққуф"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:334
+#: ../../../lib/web/src/components/step-up-dialog.tsx:348
 msgid "Passkey"
 msgstr "Калиди дастрасӣ"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:209
+#: ../../../lib/web/src/components/step-up-dialog.tsx:218
 msgid "Passkey verification failed. Please try again."
 msgstr "Тасдиқи калиди дастрасӣ ноком шуд. Лутфан, аз нав кӯшиш кунед."
 
@@ -2600,14 +2609,14 @@ msgstr "Намуна (regex)"
 msgid "Pick a date"
 msgstr "Санаро интихоб кунед"
 
-#: src/components/MissionSetup.tsx:1101
+#: src/components/MissionSetup.tsx:1121
 #: src/components/Multiplayer.tsx:129
 #: src/components/Multiplayer.tsx:290
 msgid "pilot"
 msgstr "халабон"
 
-#: src/components/MissionSetup.tsx:1401
-#: src/components/MissionSetup.tsx:1773
+#: src/components/MissionSetup.tsx:1421
+#: src/components/MissionSetup.tsx:1794
 #: src/components/Multiplayer.tsx:421
 msgid "Pilot"
 msgstr "Халабон"
@@ -2670,7 +2679,7 @@ msgstr "Постҳо"
 msgid "Posts and comments"
 msgstr "Постҳо ва шарҳҳо"
 
-#: src/components/MissionSetup.tsx:1548
+#: src/components/MissionSetup.tsx:1569
 msgid "Preset"
 msgstr "Танзими пешакӣ"
 
@@ -2744,7 +2753,7 @@ msgstr "Калидҳои дастрасии худро дар ин сервер 
 msgid "REARMED"
 msgstr "АЗ НАВ МУСАЛЛАҲ ШУД"
 
-#: src/components/MissionSetup.tsx:1285
+#: src/components/MissionSetup.tsx:1305
 msgid "Recent"
 msgstr "Охирин"
 
@@ -2757,12 +2766,12 @@ msgstr "Тавсияшуда"
 msgid "Reconnecting ({retries})..."
 msgstr "Аз нав пайваст шуда истодааст ({retries})..."
 
-#: src/components/MissionSetup.tsx:1697
+#: src/components/MissionSetup.tsx:1718
 msgid "Record flights"
 msgstr "Парвозҳоро сабт кардан"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:1691
+#: src/components/MissionSetup.tsx:1712
 msgid "Recording"
 msgstr "Сабт"
 
@@ -2787,7 +2796,7 @@ msgstr "Тағйир ба воридшавӣ."
 msgid "Reduce interest"
 msgstr "Кам кардани шавқу ҳавас"
 
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:929
 msgid "Reference"
 msgstr "Истинод"
 
@@ -2866,7 +2875,7 @@ msgstr "Тағйири номи сутун"
 msgid "Rename this board column"
 msgstr "Тағйири номи ин сутуни тахта"
 
-#: src/components/MissionSetup.tsx:1067
+#: src/components/MissionSetup.tsx:1087
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Рендеринг тавассути <0>three.js</0> (иҷозатномаи MIT)."
 
@@ -2884,13 +2893,13 @@ msgstr "Ҷавоб ба {0}..."
 msgid "Required"
 msgstr "Талаб карда мешавад"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:367
+#: ../../../lib/web/src/components/step-up-dialog.tsx:381
 msgid "Resend email"
 msgstr "Мактубро дубора фиристед"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1911
+#: src/components/MissionSetup.tsx:1932
 msgid "Reset"
 msgstr "Барқарорсозӣ"
 
@@ -2918,11 +2927,11 @@ msgstr "Тримро сифр кардан"
 msgid "Reset view"
 msgstr "Намоишро сифр кардан"
 
-#: src/components/MissionSetup.tsx:1575
+#: src/components/MissionSetup.tsx:1596
 msgid "Resolution"
 msgstr "Қарор"
 
-#: src/components/MissionSetup.tsx:1800
+#: src/components/MissionSetup.tsx:1821
 msgid "Restart mission"
 msgstr "Аз нав оғоз кардани супориш"
 
@@ -2934,7 +2943,7 @@ msgstr "Натиҷа"
 msgid "Resume"
 msgstr "Идома додан"
 
-#: src/components/MissionSetup.tsx:1796
+#: src/components/MissionSetup.tsx:1817
 msgid "Resume mission"
 msgstr "Идома додани супориш"
 
@@ -2959,12 +2968,12 @@ msgstr "Дастрасиро бекор кунед"
 msgid "Right to Left"
 msgstr "Аз рост ба чап"
 
-#: src/components/MissionSetup.tsx:746
-#: src/components/MissionSetup.tsx:747
+#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:749
 msgid "Right wing"
 msgstr "Боли рост"
 
-#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:750
 msgid "Right wingtip"
 msgstr "Нӯги боли рост"
 
@@ -3024,7 +3033,7 @@ msgstr "Шанбе"
 msgid "Save"
 msgstr "Захира"
 
-#: src/components/MissionSetup.tsx:924
+#: src/components/MissionSetup.tsx:944
 msgid "Sea level"
 msgstr "Сатҳи баҳр"
 
@@ -3173,7 +3182,7 @@ msgstr "интихобшуда"
 msgid "Selected: <0>{0}</0>"
 msgstr "Интихобшуда: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:1189
+#: src/components/MissionSetup.tsx:1209
 msgid "Send"
 msgstr "Фиристодан"
 
@@ -3185,7 +3194,7 @@ msgstr "Бори дигар фиристодан"
 msgid "Send chat"
 msgstr "Фиристодани паём"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:307
+#: ../../../lib/web/src/components/step-up-dialog.tsx:321
 msgid "Send email"
 msgstr "Имейл фиристодан"
 
@@ -3199,11 +3208,11 @@ msgid "Serif"
 msgstr "Сериф"
 
 #: src/components/MatchHistory.tsx:161
-#: src/components/MissionSetup.tsx:1298
+#: src/components/MissionSetup.tsx:1318
 msgid "Server"
 msgstr "Сервер"
 
-#: src/components/MissionSetup.tsx:1154
+#: src/components/MissionSetup.tsx:1174
 msgid "Server chat"
 msgstr "Чати сервер"
 
@@ -3237,12 +3246,12 @@ msgstr "Сарчашма ва таъиноти манзилро таъин ку�
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:340
-#: src/components/MissionSetup.tsx:1822
-#: src/components/MissionSetup.tsx:1856
+#: src/components/MissionSetup.tsx:1843
+#: src/components/MissionSetup.tsx:1877
 msgid "Settings"
 msgstr "Танзимот"
 
-#: src/components/MissionSetup.tsx:1617
+#: src/components/MissionSetup.tsx:1638
 msgid "Shadows"
 msgstr "Сояҳо"
 
@@ -3286,7 +3295,7 @@ msgstr "Аз ҳисоб баромадан..."
 msgid "Single line of text only"
 msgstr "Танҳо як сатри матн"
 
-#: src/components/MissionSetup.tsx:894
+#: src/components/MissionSetup.tsx:914
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Беҳтарин авҷгирӣ бо як муҳаррик (Vyse, форсаж)"
 
@@ -3304,7 +3313,7 @@ msgid "Sort"
 msgstr "Мураттаб кардан"
 
 #: src/components/MissionSetup.tsx:480
-#: src/components/MissionSetup.tsx:1866
+#: src/components/MissionSetup.tsx:1887
 msgid "Sound"
 msgstr "Садо"
 
@@ -3330,7 +3339,7 @@ msgstr "тормози ҳавоӣ"
 msgid "Speed brake"
 msgstr "Тормози ҳавоӣ"
 
-#: src/components/MissionSetup.tsx:950
+#: src/components/MissionSetup.tsx:970
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Суръатҳо бо KCAS, ҳамчун маҳдуда аз сабук (сӯзишвории ҳадди ақал, бе бори берунӣ) то вазнин (вазни умумии ҳадди аксар). Маълумот дар дохили бозӣ ба таври таҷрибавӣ ба даст оварда шудааст. Ҳама гуна фарқият аз ҳавопаймои воқеӣ хатогиҳои модели парвози симуляторро инъикос мекунад."
 
@@ -3338,15 +3347,15 @@ msgstr "Суръатҳо бо KCAS, ҳамчун маҳдуда аз сабук 
 msgid "SPLASH"
 msgstr "ҲАДАФ НОБУД ШУД"
 
-#: src/components/MissionSetup.tsx:899
+#: src/components/MissionSetup.tsx:919
 msgid "Stall, clean (Vs1)"
 msgstr "Вомондагӣ, тоза (Vs1)"
 
-#: src/components/MissionSetup.tsx:900
+#: src/components/MissionSetup.tsx:920
 msgid "Stall, landing config (Vs0)"
 msgstr "Вомондагӣ, ҳолати нишаст (Vs0)"
 
-#: src/components/MissionSetup.tsx:1413
+#: src/components/MissionSetup.tsx:1433
 msgid "Start"
 msgstr "Оғоз"
 
@@ -3358,11 +3367,11 @@ msgstr "Сӯҳбатро бо илова кардани шарҳи аввал о
 msgid "Stay tuned though!"
 msgstr "Аммо мунтазир бошед!"
 
-#: src/components/MissionSetup.tsx:890
+#: src/components/MissionSetup.tsx:910
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Тундтарин авҷгирӣ (Vx, 100% рониш)"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:911
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Тундтарин авҷгирӣ (Vx, форсаж)"
 
@@ -3393,8 +3402,8 @@ msgstr "Обуна шудан"
 msgid "Sunday"
 msgstr "Якшанбе"
 
-#: src/components/MissionSetup.tsx:1403
-#: src/components/MissionSetup.tsx:1775
+#: src/components/MissionSetup.tsx:1423
+#: src/components/MissionSetup.tsx:1796
 #: src/components/Multiplayer.tsx:423
 msgid "Superhuman"
 msgstr "Фавқулбашар"
@@ -3436,7 +3445,7 @@ msgstr "Барчаспҳо"
 msgid "TALLY"
 msgstr "ДУШМАНРО МЕБИНАМ"
 
-#: src/components/MissionSetup.tsx:1381
+#: src/components/MissionSetup.tsx:1401
 msgid "Task"
 msgstr "Вазифа"
 
@@ -3470,7 +3479,7 @@ msgstr "Шартҳо ва шартномаҳо"
 msgid "Text"
 msgstr "Матн"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:195
+#: ../../../lib/web/src/components/step-up-dialog.tsx:204
 msgid "That code is incorrect or has expired."
 msgstr "Он рамз нодуруст аст ё мӯҳлаташ гузаштааст."
 
@@ -3526,7 +3535,7 @@ msgstr "Зиёд кардани газ"
 msgid "Thursday"
 msgstr "Панҷшанбе"
 
-#: src/components/MissionSetup.tsx:898
+#: src/components/MissionSetup.tsx:918
 msgid "Tightest sustained turn speed"
 msgstr "Суръати тангтарин гардиши устувор"
 
@@ -3538,7 +3547,7 @@ msgstr "хамшавӣ"
 msgid "Time"
 msgstr "Вақт"
 
-#: src/components/MissionSetup.tsx:1467
+#: src/components/MissionSetup.tsx:1487
 msgid "Time of day"
 msgstr "Вақти рӯз"
 
@@ -3594,7 +3603,7 @@ msgstr "Дархостҳои аз ҳад зиёд"
 msgid "Top"
 msgstr "Боло"
 
-#: src/components/MissionSetup.tsx:1629
+#: src/components/MissionSetup.tsx:1650
 msgid "Tracers"
 msgstr "Тирҳои равшанкунанда"
 
@@ -3666,7 +3675,7 @@ msgstr "Барои ҷустуҷӯи корбарон чоп кунед"
 msgid "Type to search..."
 msgstr "Барои ҷустуҷӯ чоп кунед..."
 
-#: src/components/MissionSetup.tsx:1567
+#: src/components/MissionSetup.tsx:1588
 msgid "Ultra"
 msgstr "Ултра"
 
@@ -3700,13 +3709,13 @@ msgstr "Иёлоти Муттаҳида"
 msgid "Unknown"
 msgstr "Номаълум"
 
-#: src/components/MissionSetup.tsx:1520
+#: src/components/MissionSetup.tsx:1541
 #: src/components/Multiplayer.tsx:78
 #: src/components/Multiplayer.tsx:396
 msgid "Unlimited ammunition"
 msgstr "Муҳимоти номаҳдуд"
 
-#: src/components/MissionSetup.tsx:1526
+#: src/components/MissionSetup.tsx:1547
 #: src/components/Multiplayer.tsx:79
 #: src/components/Multiplayer.tsx:406
 msgid "Unlimited fuel"
@@ -3740,7 +3749,7 @@ msgstr "Бор кардан"
 msgid "Upload progress"
 msgstr "Рафти боркунӣ"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:338
+#: ../../../lib/web/src/components/step-up-dialog.tsx:352
 msgid "Use your passkey"
 msgstr "Калиди дастрасии худро истифода баред"
 
@@ -3762,7 +3771,7 @@ msgstr "Рамзи тасдиқ фиристода шуд"
 msgid "Verification failed"
 msgstr "Тасдиқ ноком шуд"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:388
+#: ../../../lib/web/src/components/step-up-dialog.tsx:402
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
@@ -3772,7 +3781,7 @@ msgstr "Тасдиқ кардан"
 msgid "Verify email address"
 msgstr "Тасдиқи суроғаи почтаи электронӣ"
 
-#: src/components/MissionSetup.tsx:940
+#: src/components/MissionSetup.tsx:960
 msgid "Vertical"
 msgstr "Амудӣ"
 
@@ -3883,7 +3892,7 @@ msgstr "ҒОЛИБ"
 msgid "World server"
 msgstr "Сервери ҷаҳон"
 
-#: src/components/MissionSetup.tsx:1147
+#: src/components/MissionSetup.tsx:1167
 #: src/components/Multiplayer.tsx:142
 msgid "World server not reachable"
 msgstr "Сервери ҷаҳон дастнорас аст"

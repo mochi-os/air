@@ -46,7 +46,7 @@ msgstr "{0, plural, zero {# wedi'i ddewis} one {# wedi'i ddewis} two {# wedi'u d
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:1165
+#: src/components/MissionSetup.tsx:1185
 msgid "{0} created “{1}”"
 msgstr "Creodd {0} “{1}”"
 
@@ -55,8 +55,13 @@ msgstr "Creodd {0} “{1}”"
 msgid "{0} flying"
 msgstr "{0} yn hedfan"
 
+#. placeholder {0}: moment - CATAPULT
+#: src/components/MissionSetup.tsx:881
+msgid "{0} ft·lb over the catapult asymmetry limit"
+msgstr "{0} ft·lb dros derfyn anghymesuredd y catapwlt"
+
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:861
+#: src/components/MissionSetup.tsx:869
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb dros yr uchafswm pwysau lansio"
 
@@ -152,7 +157,7 @@ msgstr "CEBL 1"
 msgid "12 hours"
 msgstr "12 awr"
 
-#: src/components/MissionSetup.tsx:927
+#: src/components/MissionSetup.tsx:947
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -168,7 +173,7 @@ msgstr "24 awr"
 msgid "3 WIRE"
 msgstr "CEBL 3"
 
-#: src/components/MissionSetup.tsx:930
+#: src/components/MissionSetup.tsx:950
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -208,8 +213,8 @@ msgstr "Math o gyfrif"
 msgid "Account verified"
 msgstr "Cyfrif wedi'i wirio"
 
-#: src/components/MissionSetup.tsx:1402
-#: src/components/MissionSetup.tsx:1774
+#: src/components/MissionSetup.tsx:1422
+#: src/components/MissionSetup.tsx:1795
 #: src/components/Multiplayer.tsx:422
 msgid "Ace"
 msgstr "Âs"
@@ -307,7 +312,7 @@ msgstr "Yn ychwanegu..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Addaswch yr ymddangosiad a'r cynllun i siwtio'ch dewisiadau."
 
-#: src/components/MissionSetup.tsx:1623
+#: src/components/MissionSetup.tsx:1644
 msgid "Afterburner"
 msgstr "Ôl-losgydd"
 
@@ -320,11 +325,11 @@ msgstr "AI"
 msgid "Aircraft"
 msgstr "Awyren"
 
-#: src/components/MissionSetup.tsx:1004
+#: src/components/MissionSetup.tsx:1024
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Cludydd awyrennau <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> gan <1>Muhamad Mirza Arrafi</1> (Sketchfab), trwyddedwyd o dan <2>CC BY 4.0</2>. Addaswyd: ail-raddiwyd, ailgyfeiriwyd, suddwyd i lawr at y llinell ddŵr, a symleiddiwyd ar gyfer y we."
 
-#: src/components/MissionSetup.tsx:978
+#: src/components/MissionSetup.tsx:998
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Model awyren <0>“F/A-18C Hornet”</0> gan <1>CreadorDeMu</1> (Sketchfab), wedi'i drwyddedu o dan <2>CC BY 4.0</2>. Addaswyd: ailgyfeiriwyd ac ail-raddiwyd, tynnwyd data gwead nas defnyddir, gwahanwyd y llwythi allanol i ffeil ar wahân, adlewyrchwyd un rhwyll orchudd."
 
@@ -371,7 +376,7 @@ msgstr "Unrhyw un sydd wedi mewngofnodi"
 msgid "Approach power (ATC)"
 msgstr "Pŵer dynesu (ATC)"
 
-#: src/components/MissionSetup.tsx:901
+#: src/components/MissionSetup.tsx:921
 msgid "Approach, on-speed (Vapp)"
 msgstr "Agosáu, ar gyflymder (Vapp)"
 
@@ -405,6 +410,10 @@ msgstr "Esg"
 msgid "Ascending"
 msgstr "Esgynnol"
 
+#: src/components/MissionSetup.tsx:875
+msgid "Asymmetry"
+msgstr "Anghymesuredd"
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:398
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:403
 msgid "Attach comment files"
@@ -420,7 +429,7 @@ msgstr "Atodi ffeiliau ateb"
 msgid "Authenticated users"
 msgstr "Defnyddwyr dilysedig"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:315
+#: ../../../lib/web/src/components/step-up-dialog.tsx:329
 msgid "Authenticator code"
 msgstr "Cod dilyswr"
 
@@ -459,7 +468,7 @@ msgstr "Yn ôl"
 msgid "Back to home"
 msgstr "Yn ôl i’r cartref"
 
-#: src/components/MissionSetup.tsx:1394
+#: src/components/MissionSetup.tsx:1414
 msgid "Bandit"
 msgstr "Gelyn"
 
@@ -471,19 +480,19 @@ msgstr "Baner"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "O DAN 250 — OLWYNION A FFLAPIAU"
 
-#: src/components/MissionSetup.tsx:892
+#: src/components/MissionSetup.tsx:912
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "Dringo gorau (Vy, 100% gwthiad)"
 
-#: src/components/MissionSetup.tsx:893
+#: src/components/MissionSetup.tsx:913
 msgid "Best climb (Vy, afterburner)"
 msgstr "Dringo gorau (Vy, ôl-losgydd)"
 
-#: src/components/MissionSetup.tsx:895
+#: src/components/MissionSetup.tsx:915
 msgid "Best glide (engines out)"
 msgstr "Gleidio gorau (peiriannau wedi diffodd)"
 
-#: src/components/MissionSetup.tsx:897
+#: src/components/MissionSetup.tsx:917
 msgid "Best sustained turn speed"
 msgstr "Cyflymder tro parhaus gorau"
 
@@ -566,7 +575,7 @@ msgstr "Botymau"
 msgid "CALL THE BALL"
 msgstr "GALWCH Y BÊL"
 
-#: src/components/MissionSetup.tsx:1679
+#: src/components/MissionSetup.tsx:1700
 #: src/components/Multiplayer.tsx:285
 msgid "Callsign"
 msgstr "Arwydd galw"
@@ -580,7 +589,7 @@ msgstr "Pellter y camera"
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
-#: ../../../lib/web/src/components/step-up-dialog.tsx:363
+#: ../../../lib/web/src/components/step-up-dialog.tsx:377
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:249
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
@@ -608,31 +617,31 @@ msgstr "Canslo ateb"
 msgid "Canopy"
 msgstr "Canopi"
 
-#: src/components/MissionSetup.tsx:1200
+#: src/components/MissionSetup.tsx:1220
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1442
+#: src/components/MissionSetup.tsx:1462
 msgid "Case I (day)"
 msgstr "Achos I (dydd)"
 
-#: src/components/MissionSetup.tsx:1201
+#: src/components/MissionSetup.tsx:1221
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1443
+#: src/components/MissionSetup.tsx:1463
 msgid "Case II (weather)"
 msgstr "Achos II (tywydd)"
 
-#: src/components/MissionSetup.tsx:1202
+#: src/components/MissionSetup.tsx:1222
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1444
+#: src/components/MissionSetup.tsx:1464
 msgid "Case III (night)"
 msgstr "Achos III (nos)"
 
-#: src/components/MissionSetup.tsx:1450
+#: src/components/MissionSetup.tsx:1470
 msgid "Catapult"
 msgstr "Catapwlt"
 
@@ -640,7 +649,7 @@ msgstr "Catapwlt"
 msgid "Category for these notifications"
 msgstr "Categori ar gyfer yr hysbysiadau hyn"
 
-#: src/components/MissionSetup.tsx:744
+#: src/components/MissionSetup.tsx:746
 msgid "Centerline"
 msgstr "Llinell ganol"
 
@@ -666,7 +675,7 @@ msgid "Chat to everyone"
 msgstr "Sgwrs â phawb"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1509
+#: src/components/MissionSetup.tsx:1530
 msgid "Cheats"
 msgstr "Twyllau"
 
@@ -777,7 +786,7 @@ msgstr "Cau chwiliad"
 msgid "closer"
 msgstr "agosach"
 
-#: src/components/MissionSetup.tsx:1478
+#: src/components/MissionSetup.tsx:1498
 msgid "Clouds"
 msgstr "Cymylau"
 
@@ -848,7 +857,7 @@ msgstr "Ffurfweddu gosodiadau golwg"
 msgid "Confirm"
 msgstr "Cadarnhau"
 
-#: src/components/MissionSetup.tsx:1310
+#: src/components/MissionSetup.tsx:1330
 msgid "Connect"
 msgstr "Cysylltu"
 
@@ -889,7 +898,7 @@ msgstr "Gwybodaeth a manylion cyd-destunol."
 msgid "Continue"
 msgstr "Parhau"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:352
+#: ../../../lib/web/src/components/step-up-dialog.tsx:366
 msgid "Continue with {label}"
 msgstr "Parhau gyda {label}"
 
@@ -905,7 +914,7 @@ msgstr "Wedi'i gopïo i'r clipfwrdd"
 msgid "Copy"
 msgstr "Copïo"
 
-#: src/components/MissionSetup.tsx:896
+#: src/components/MissionSetup.tsx:916
 msgid "Corner speed (best instant turn)"
 msgstr "Cyflymder cornel (tro sydyn gorau)"
 
@@ -922,7 +931,7 @@ msgstr "Methwyd llwytho'r ddogfen hon. Rhowch gynnig arni eto yn nes ymlaen."
 msgid "Could not save the recording"
 msgstr "Methwyd â chadw'r recordiad"
 
-#: src/components/MissionSetup.tsx:1147
+#: src/components/MissionSetup.tsx:1167
 msgid "Could not send the message"
 msgstr "Methwyd anfon y neges"
 
@@ -930,15 +939,15 @@ msgstr "Methwyd anfon y neges"
 msgid "Couldn't load notifications"
 msgstr "Methwyd llwytho hysbysiadau"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:184
+#: ../../../lib/web/src/components/step-up-dialog.tsx:193
 msgid "Couldn't send the code. Please try again."
 msgstr "Methwyd anfon y cod. Rhowch gynnig arall arni."
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:136
+#: ../../../lib/web/src/components/step-up-dialog.tsx:145
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Methwyd dechrau ailddilysu. Rhowch gynnig arall arni."
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:221
+#: ../../../lib/web/src/components/step-up-dialog.tsx:235
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Methwyd dilysu gyda'r cyfrif hwnnw. Rhowch gynnig arall arni."
 
@@ -976,8 +985,8 @@ msgstr "Creu a hedfan"
 msgid "Create match"
 msgstr "Creu gêm"
 
-#: src/components/MissionSetup.tsx:1814
-#: src/components/MissionSetup.tsx:1837
+#: src/components/MissionSetup.tsx:1835
+#: src/components/MissionSetup.tsx:1858
 msgid "Create mission"
 msgstr "Creu cenhadaeth"
 
@@ -995,12 +1004,12 @@ msgstr "Wedi'i greu"
 msgid "Creating..."
 msgstr "Yn creu..."
 
-#: src/components/MissionSetup.tsx:967
-#: src/components/MissionSetup.tsx:973
+#: src/components/MissionSetup.tsx:987
+#: src/components/MissionSetup.tsx:993
 msgid "Credits"
 msgstr "Diolchiadau"
 
-#: src/components/MissionSetup.tsx:1485
+#: src/components/MissionSetup.tsx:1505
 #: src/components/Multiplayer.tsx:74
 #: src/components/Multiplayer.tsx:347
 msgid "Cumulus"
@@ -1011,7 +1020,7 @@ msgid "Current location"
 msgstr "Lleoliad presennol"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:265
-#: src/components/MissionSetup.tsx:800
+#: src/components/MissionSetup.tsx:808
 msgid "Custom"
 msgstr "Wedi'i addasu"
 
@@ -1044,7 +1053,7 @@ msgstr "Gwrthdaro data"
 msgid "Date"
 msgstr "Dyddiad"
 
-#: src/components/MissionSetup.tsx:1473
+#: src/components/MissionSetup.tsx:1493
 #: src/components/Multiplayer.tsx:342
 msgid "Day"
 msgstr "Dydd"
@@ -1208,13 +1217,13 @@ msgstr "Ailadroddwr sgrin"
 msgid "Displays the mobile sidebar."
 msgstr "Yn dangos y bar ochr symudol."
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1632
 msgid "Distance LOD"
 msgstr "LOD pellter"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1918
+#: src/components/MissionSetup.tsx:1939
 msgid "Done"
 msgstr "Wedi gorffen"
 
@@ -1248,7 +1257,7 @@ msgstr "Dyblygion"
 msgid "Duration"
 msgstr "Hyd"
 
-#: src/components/MissionSetup.tsx:1605
+#: src/components/MissionSetup.tsx:1626
 msgid "Dynamic resolution"
 msgstr "Cydraniad deinamig"
 
@@ -1307,7 +1316,7 @@ msgstr "TAFLWYD ALLAN"
 msgid "Email"
 msgstr "E-bost"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:289
+#: ../../../lib/web/src/components/step-up-dialog.tsx:303
 msgid "Email code"
 msgstr "Cod e-bost"
 
@@ -1324,8 +1333,8 @@ msgstr "Gollwng brys (dal)"
 msgid "empty"
 msgstr "gwag"
 
-#: src/components/MissionSetup.tsx:759
-#: src/components/MissionSetup.tsx:764
+#: src/components/MissionSetup.tsx:761
+#: src/components/MissionSetup.tsx:766
 msgid "Empty pylon"
 msgstr "Peilon gwag"
 
@@ -1337,11 +1346,11 @@ msgstr "DWI'N YMOSOD"
 msgid "Engine"
 msgstr "Injan"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:299
+#: ../../../lib/web/src/components/step-up-dialog.tsx:313
 msgid "Enter the code from your email"
 msgstr "Rhowch y cod o'ch e-bost"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:324
+#: ../../../lib/web/src/components/step-up-dialog.tsx:338
 msgid "Enter your authenticator code"
 msgstr "Rhowch god eich ap dilysu"
 
@@ -1377,7 +1386,7 @@ msgstr "Ehangu'r bar ochr"
 msgid "Extend flaps"
 msgstr "Estyn fflapiau"
 
-#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1606
 msgid "Exterior detail"
 msgstr "Manylion allanol"
 
@@ -1389,7 +1398,7 @@ msgstr "URL allanol"
 msgid "Extra large"
 msgstr "Ychwanegol o fawr"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:935
 msgid "F/A-18C reference"
 msgstr "Cyfeirnod F/A-18C"
 
@@ -1554,8 +1563,8 @@ msgstr "Arnofiol"
 msgid "Flown"
 msgstr "Hedfanwyd"
 
-#: src/components/MissionSetup.tsx:1808
-#: src/components/MissionSetup.tsx:1851
+#: src/components/MissionSetup.tsx:1829
+#: src/components/MissionSetup.tsx:1872
 msgid "Fly"
 msgstr "Hedfan"
 
@@ -1563,16 +1572,16 @@ msgstr "Hedfan"
 msgid "Fly again"
 msgstr "Hedfan eto"
 
-#: src/components/MissionSetup.tsx:771
+#: src/components/MissionSetup.tsx:773
 msgid "Fox 2 fighter"
 msgstr "Ymladdwr Fox 2"
 
-#: src/components/MissionSetup.tsx:1635
+#: src/components/MissionSetup.tsx:1656
 msgid "Framerate"
 msgstr "Cyfradd fframiau"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1387
+#: src/components/MissionSetup.tsx:1407
 msgid "Free flight"
 msgstr "Hedfan rhydd"
 
@@ -1621,7 +1630,7 @@ msgstr "TANWYDD ISEL"
 msgid "Fuel probe"
 msgstr "Chwiliedydd tanwydd"
 
-#: src/components/MissionSetup.tsx:757
+#: src/components/MissionSetup.tsx:759
 msgid "Fuel tank"
 msgstr "Tanc tanwydd"
 
@@ -1633,8 +1642,8 @@ msgstr "Cynllun llawn"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:743
 #: src/components/MissionSetup.tsx:745
+#: src/components/MissionSetup.tsx:747
 msgid "Fuselage"
 msgstr "Corff yr awyren"
 
@@ -1646,7 +1655,7 @@ msgstr "olwynion"
 msgid "GEAR"
 msgstr "GÊR"
 
-#: src/components/MissionSetup.tsx:1860
+#: src/components/MissionSetup.tsx:1881
 msgid "General"
 msgstr "Cyffredinol"
 
@@ -1676,11 +1685,11 @@ msgstr "Mynd i dudalen {pageNumber}"
 msgid "Go to previous page"
 msgstr "Mynd i'r dudalen flaenorol"
 
-#: src/components/MissionSetup.tsx:1863
+#: src/components/MissionSetup.tsx:1884
 msgid "Graphics"
 msgstr "Graffeg"
 
-#: src/components/MissionSetup.tsx:857
+#: src/components/MissionSetup.tsx:865
 msgid "Gross weight"
 msgstr "Pwysau gros"
 
@@ -1701,7 +1710,7 @@ msgstr "Grŵp: {0}"
 msgid "GUN"
 msgstr "GWN"
 
-#: src/components/MissionSetup.tsx:770
+#: src/components/MissionSetup.tsx:772
 msgid "Gun fighter"
 msgstr "Ymladdwr gwn"
 
@@ -1717,18 +1726,18 @@ msgstr "Cuddio"
 msgid "Hide password"
 msgstr "Cuddio'r cyfrinair"
 
-#: src/components/MissionSetup.tsx:1565
+#: src/components/MissionSetup.tsx:1586
 msgid "High"
 msgstr "Uchel"
 
-#: src/components/MissionSetup.tsx:1486
+#: src/components/MissionSetup.tsx:1506
 #: src/components/Multiplayer.tsx:75
 #: src/components/Multiplayer.tsx:348
 msgid "High stratus"
 msgstr "Stratws uchel"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1827
+#: src/components/MissionSetup.tsx:1848
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Hanes"
@@ -1773,8 +1782,8 @@ msgstr "Gwyliwr delweddau: {0}"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/MissionSetup.tsx:1197
-#: src/components/MissionSetup.tsx:1439
+#: src/components/MissionSetup.tsx:1217
+#: src/components/MissionSetup.tsx:1459
 msgid "In air"
 msgstr "Yn yr awyr"
 
@@ -1798,7 +1807,7 @@ msgstr "Mewnol"
 msgid "Interests"
 msgstr "Diddordebau"
 
-#: src/components/MissionSetup.tsx:853
+#: src/components/MissionSetup.tsx:861
 msgid "Internal fuel"
 msgstr "Tanwydd mewnol"
 
@@ -1826,7 +1835,7 @@ msgstr "Anorchfygol"
 msgid "INVULNERABLE"
 msgstr "ANARCHOLLADWY"
 
-#: src/components/MissionSetup.tsx:1514
+#: src/components/MissionSetup.tsx:1535
 #: src/components/Multiplayer.tsx:386
 msgid "Invulnerable (human players only)"
 msgstr "Anarcholladwy (chwaraewyr dynol yn unig)"
@@ -1848,8 +1857,8 @@ msgstr "GOLLWNG: GÊR GLANIO"
 msgid "Join"
 msgstr "Ymuno"
 
-#: src/components/MissionSetup.tsx:1280
-#: src/components/MissionSetup.tsx:1818
+#: src/components/MissionSetup.tsx:1300
+#: src/components/MissionSetup.tsx:1839
 msgid "Join server"
 msgstr "Ymuno â gweinydd"
 
@@ -1858,7 +1867,7 @@ msgid "JOINED"
 msgstr "WEDI YMUNO"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1780
+#: src/components/MissionSetup.tsx:1801
 #: src/components/Multiplayer.tsx:480
 msgid "Joust"
 msgstr "Joust"
@@ -1867,11 +1876,11 @@ msgstr "Joust"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Gornest — 1v1, y lladdiad cyntaf sy'n ennill"
 
-#: src/components/MissionSetup.tsx:1388
+#: src/components/MissionSetup.tsx:1408
 msgid "Joust 1v1"
 msgstr "Gornest 1v1"
 
-#: src/components/MissionSetup.tsx:1869
+#: src/components/MissionSetup.tsx:1890
 msgid "Joystick"
 msgstr "Ffon reoli"
 
@@ -1887,7 +1896,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Llwybrau byr bysellfwrdd"
 
-#: src/components/MissionSetup.tsx:1872
+#: src/components/MissionSetup.tsx:1893
 msgid "Keys"
 msgstr "Bysellau"
 
@@ -1953,7 +1962,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Dysgu mwy"
 
-#: src/components/MissionSetup.tsx:1336
+#: src/components/MissionSetup.tsx:1356
 msgid "Leave server"
 msgstr "Gadael y gweinydd"
 
@@ -1969,12 +1978,12 @@ msgstr "WEDI GADAEL"
 msgid "Left to Right"
 msgstr "Chwith i'r Dde"
 
-#: src/components/MissionSetup.tsx:741
-#: src/components/MissionSetup.tsx:742
+#: src/components/MissionSetup.tsx:743
+#: src/components/MissionSetup.tsx:744
 msgid "Left wing"
 msgstr "Adain chwith"
 
-#: src/components/MissionSetup.tsx:740
+#: src/components/MissionSetup.tsx:742
 msgid "Left wingtip"
 msgstr "Blaen yr adain chwith"
 
@@ -2038,7 +2047,7 @@ msgstr "METHODD Y LLWYTHO"
 msgid "Loading..."
 msgstr "Yn llwytho..."
 
-#: src/components/MissionSetup.tsx:1491
+#: src/components/MissionSetup.tsx:1511
 msgid "Loadout"
 msgstr "Llwyth"
 
@@ -2085,11 +2094,11 @@ msgstr "Edrych i'r dde"
 msgid "Look up"
 msgstr "Edrych i fyny"
 
-#: src/components/MissionSetup.tsx:1561
+#: src/components/MissionSetup.tsx:1582
 msgid "Low"
 msgstr "Isel"
 
-#: src/components/MissionSetup.tsx:1487
+#: src/components/MissionSetup.tsx:1507
 #: src/components/Multiplayer.tsx:76
 #: src/components/Multiplayer.tsx:349
 msgid "Low stratus"
@@ -2133,7 +2142,7 @@ msgstr "Cyffredinol"
 msgid "Match type"
 msgstr "Math o gêm"
 
-#: src/components/MissionSetup.tsx:1330
+#: src/components/MissionSetup.tsx:1350
 msgid "Matches"
 msgstr "Gemau"
 
@@ -2146,7 +2155,7 @@ msgid "MCP server"
 msgstr "Gweinydd MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1563
+#: src/components/MissionSetup.tsx:1584
 msgid "Medium"
 msgstr "Canolig"
 
@@ -2167,7 +2176,7 @@ msgstr "Neges"
 msgid "Message everyone"
 msgstr "Anfonwch neges at bawb"
 
-#: src/components/MissionSetup.tsx:1182
+#: src/components/MissionSetup.tsx:1202
 msgid "Message players on this server"
 msgstr "Anfonwch neges at chwaraewyr ar y gweinydd hwn"
 
@@ -2183,7 +2192,7 @@ msgstr "Metrig"
 msgid "Midair collision"
 msgstr "Gwrthdrawiad yn yr awyr"
 
-#: src/components/MissionSetup.tsx:1030
+#: src/components/MissionSetup.tsx:1050
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Map Atol Midway — mae'r delweddau'n cynnwys data <0>Copernicus Sentinel-2</0> wedi'i addasu (2026); geometreg y maes awyr (rhedfa, tacsiffyrdd, apronau) © cyfranwyr <1>OpenStreetMap</1>, wedi'i drwyddedu o dan <2>ODbL</2>; data'r arfordir a'r riffiau gan <3>NOAA NCCOS</3> (parth cyhoeddus)."
 
@@ -2264,7 +2273,7 @@ msgstr "Gêm newydd"
 msgid "Next image"
 msgstr "Delwedd nesaf"
 
-#: src/components/MissionSetup.tsx:1474
+#: src/components/MissionSetup.tsx:1494
 #: src/components/Multiplayer.tsx:73
 #: src/components/Multiplayer.tsx:343
 msgid "Night"
@@ -2375,7 +2384,7 @@ msgstr "Heb ddod o hyd i ddefnyddwyr"
 msgid "No views"
 msgstr "Dim golygiadau"
 
-#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1179
 #: src/components/Multiplayer.tsx:463
 msgid "No world server."
 msgstr "Dim gweinydd byd."
@@ -2400,8 +2409,8 @@ msgstr "DIM GRADD"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:361
 #: src/components/MissionSetup.tsx:421
-#: src/components/MissionSetup.tsx:766
-#: src/components/MissionSetup.tsx:1484
+#: src/components/MissionSetup.tsx:768
+#: src/components/MissionSetup.tsx:1504
 msgid "None"
 msgstr "Dim"
 
@@ -2425,7 +2434,7 @@ msgstr "Heb ei osod"
 msgid "Nothing found"
 msgstr "Heb ddod o hyd i ddim"
 
-#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1179
 msgid "Nothing yet — say hello."
 msgstr "Dim byd eto — dywedwch helô."
 
@@ -2442,8 +2451,8 @@ msgstr "Hysbysiadau"
 msgid "Notifications: {0}"
 msgstr "Hysbysiadau: {0}"
 
-#: src/components/MissionSetup.tsx:1400
-#: src/components/MissionSetup.tsx:1772
+#: src/components/MissionSetup.tsx:1420
+#: src/components/MissionSetup.tsx:1793
 #: src/components/Multiplayer.tsx:420
 msgid "Novice"
 msgstr "Dechreuwr"
@@ -2454,7 +2463,7 @@ msgstr "Dechreuwr"
 msgid "Number"
 msgstr "Rhif"
 
-#: src/components/MissionSetup.tsx:1593
+#: src/components/MissionSetup.tsx:1614
 msgid "Ocean detail"
 msgstr "Manylion y cefnfor"
 
@@ -2466,13 +2475,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Ymlaen"
 
-#: src/components/MissionSetup.tsx:1199
-#: src/components/MissionSetup.tsx:1441
+#: src/components/MissionSetup.tsx:1219
+#: src/components/MissionSetup.tsx:1461
 msgid "On carrier"
 msgstr "Ar y cludwr"
 
-#: src/components/MissionSetup.tsx:1198
-#: src/components/MissionSetup.tsx:1440
+#: src/components/MissionSetup.tsx:1218
+#: src/components/MissionSetup.tsx:1460
 msgid "On runway"
 msgstr "Ar y rhedfa"
 
@@ -2580,11 +2589,11 @@ msgstr "Rhiant"
 msgid "Parking brake"
 msgstr "Brêc parcio"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:334
+#: ../../../lib/web/src/components/step-up-dialog.tsx:348
 msgid "Passkey"
 msgstr "Pasallwedd"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:209
+#: ../../../lib/web/src/components/step-up-dialog.tsx:218
 msgid "Passkey verification failed. Please try again."
 msgstr "Methodd dilysu'r allwedd mynediad. Rhowch gynnig arall arni."
 
@@ -2600,14 +2609,14 @@ msgstr "Patrwm (regex)"
 msgid "Pick a date"
 msgstr "Dewiswch ddyddiad"
 
-#: src/components/MissionSetup.tsx:1101
+#: src/components/MissionSetup.tsx:1121
 #: src/components/Multiplayer.tsx:129
 #: src/components/Multiplayer.tsx:290
 msgid "pilot"
 msgstr "peilot"
 
-#: src/components/MissionSetup.tsx:1401
-#: src/components/MissionSetup.tsx:1773
+#: src/components/MissionSetup.tsx:1421
+#: src/components/MissionSetup.tsx:1794
 #: src/components/Multiplayer.tsx:421
 msgid "Pilot"
 msgstr "Peilot"
@@ -2670,7 +2679,7 @@ msgstr "Postiadau"
 msgid "Posts and comments"
 msgstr "Postiadau a sylwadau"
 
-#: src/components/MissionSetup.tsx:1548
+#: src/components/MissionSetup.tsx:1569
 msgid "Preset"
 msgstr "Rhagosodiad"
 
@@ -2744,7 +2753,7 @@ msgstr "Ailgofrestrwch eich allweddi mynediad ar y gweinydd hwn"
 msgid "REARMED"
 msgstr "AILARFOGWYD"
 
-#: src/components/MissionSetup.tsx:1285
+#: src/components/MissionSetup.tsx:1305
 msgid "Recent"
 msgstr "Diweddar"
 
@@ -2757,12 +2766,12 @@ msgstr "Argymhellir"
 msgid "Reconnecting ({retries})..."
 msgstr "Ailgysylltu ({retries})..."
 
-#: src/components/MissionSetup.tsx:1697
+#: src/components/MissionSetup.tsx:1718
 msgid "Record flights"
 msgstr "Recordio hediadau"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:1691
+#: src/components/MissionSetup.tsx:1712
 msgid "Recording"
 msgstr "Recordio"
 
@@ -2787,7 +2796,7 @@ msgstr "Yn ailgyfeirio i'r mewngofnodi."
 msgid "Reduce interest"
 msgstr "Lleihau diddordeb"
 
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:929
 msgid "Reference"
 msgstr "Cyfeirnod"
 
@@ -2866,7 +2875,7 @@ msgstr "Ailenwi colofn"
 msgid "Rename this board column"
 msgstr "Ailenwi'r golofn bwrdd hon"
 
-#: src/components/MissionSetup.tsx:1067
+#: src/components/MissionSetup.tsx:1087
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Rendro gan <0>three.js</0> (trwydded MIT)."
 
@@ -2884,13 +2893,13 @@ msgstr "Ymateb i {0}..."
 msgid "Required"
 msgstr "Gofynnol"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:367
+#: ../../../lib/web/src/components/step-up-dialog.tsx:381
 msgid "Resend email"
 msgstr "Ailanfon yr e-bost"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1911
+#: src/components/MissionSetup.tsx:1932
 msgid "Reset"
 msgstr "Ailosod"
 
@@ -2918,11 +2927,11 @@ msgstr "Ailosod y trim"
 msgid "Reset view"
 msgstr "Ailosod yr olwg"
 
-#: src/components/MissionSetup.tsx:1575
+#: src/components/MissionSetup.tsx:1596
 msgid "Resolution"
 msgstr "Datrysiad"
 
-#: src/components/MissionSetup.tsx:1800
+#: src/components/MissionSetup.tsx:1821
 msgid "Restart mission"
 msgstr "Ailgychwyn y genhadaeth"
 
@@ -2934,7 +2943,7 @@ msgstr "Canlyniad"
 msgid "Resume"
 msgstr "Ailddechrau"
 
-#: src/components/MissionSetup.tsx:1796
+#: src/components/MissionSetup.tsx:1817
 msgid "Resume mission"
 msgstr "Parhau’r genhadaeth"
 
@@ -2959,12 +2968,12 @@ msgstr "Dirymu mynediad"
 msgid "Right to Left"
 msgstr "De i'r Chwith"
 
-#: src/components/MissionSetup.tsx:746
-#: src/components/MissionSetup.tsx:747
+#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:749
 msgid "Right wing"
 msgstr "Adain dde"
 
-#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:750
 msgid "Right wingtip"
 msgstr "Blaen yr adain dde"
 
@@ -3024,7 +3033,7 @@ msgstr "Dydd Sadwrn"
 msgid "Save"
 msgstr "Cadw"
 
-#: src/components/MissionSetup.tsx:924
+#: src/components/MissionSetup.tsx:944
 msgid "Sea level"
 msgstr "Lefel y môr"
 
@@ -3173,7 +3182,7 @@ msgstr "wedi'u dewis"
 msgid "Selected: <0>{0}</0>"
 msgstr "Dewiswyd: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:1189
+#: src/components/MissionSetup.tsx:1209
 msgid "Send"
 msgstr "Anfon"
 
@@ -3185,7 +3194,7 @@ msgstr "Anfon eto"
 msgid "Send chat"
 msgstr "Anfon neges"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:307
+#: ../../../lib/web/src/components/step-up-dialog.tsx:321
 msgid "Send email"
 msgstr "Anfon e-bost"
 
@@ -3199,11 +3208,11 @@ msgid "Serif"
 msgstr "Serif"
 
 #: src/components/MatchHistory.tsx:161
-#: src/components/MissionSetup.tsx:1298
+#: src/components/MissionSetup.tsx:1318
 msgid "Server"
 msgstr "Gweinydd"
 
-#: src/components/MissionSetup.tsx:1154
+#: src/components/MissionSetup.tsx:1174
 msgid "Server chat"
 msgstr "Sgwrs y gweinydd"
 
@@ -3237,12 +3246,12 @@ msgstr "Gosod tarddiad a chyrchfan"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:340
-#: src/components/MissionSetup.tsx:1822
-#: src/components/MissionSetup.tsx:1856
+#: src/components/MissionSetup.tsx:1843
+#: src/components/MissionSetup.tsx:1877
 msgid "Settings"
 msgstr "Gosodiadau"
 
-#: src/components/MissionSetup.tsx:1617
+#: src/components/MissionSetup.tsx:1638
 msgid "Shadows"
 msgstr "Cysgodion"
 
@@ -3286,7 +3295,7 @@ msgstr "Yn allgofnodi..."
 msgid "Single line of text only"
 msgstr "Un llinell o destun yn unig"
 
-#: src/components/MissionSetup.tsx:894
+#: src/components/MissionSetup.tsx:914
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Dringo gorau un peiriant (Vyse, ôl-losgydd)"
 
@@ -3304,7 +3313,7 @@ msgid "Sort"
 msgstr "Trefnu"
 
 #: src/components/MissionSetup.tsx:480
-#: src/components/MissionSetup.tsx:1866
+#: src/components/MissionSetup.tsx:1887
 msgid "Sound"
 msgstr "Sain"
 
@@ -3330,7 +3339,7 @@ msgstr "brêc aer"
 msgid "Speed brake"
 msgstr "Brêc aer"
 
-#: src/components/MissionSetup.tsx:950
+#: src/components/MissionSetup.tsx:970
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Cyflymderau mewn KCAS, fel ystod o ysgafn (isafswm tanwydd, dim llwythi allanol) i drwm (uchafswm crynswth). Data wedi'i ddeillio'n arbrofol yn y gêm. Mae unrhyw wahaniaethau o'r awyren go iawn yn adlewyrchu gwallau ym model hedfan yr efelychydd."
 
@@ -3338,15 +3347,15 @@ msgstr "Cyflymderau mewn KCAS, fel ystod o ysgafn (isafswm tanwydd, dim llwythi 
 msgid "SPLASH"
 msgstr "TARGED I LAWR"
 
-#: src/components/MissionSetup.tsx:899
+#: src/components/MissionSetup.tsx:919
 msgid "Stall, clean (Vs1)"
 msgstr "Stôl, glân (Vs1)"
 
-#: src/components/MissionSetup.tsx:900
+#: src/components/MissionSetup.tsx:920
 msgid "Stall, landing config (Vs0)"
 msgstr "Stôl, cyfluniad glanio (Vs0)"
 
-#: src/components/MissionSetup.tsx:1413
+#: src/components/MissionSetup.tsx:1433
 msgid "Start"
 msgstr "Dechrau"
 
@@ -3358,11 +3367,11 @@ msgstr "Cychwynnwch y drafodaeth drwy ychwanegu'r sylw cyntaf."
 msgid "Stay tuned though!"
 msgstr "Cadwch lygad serch hynny!"
 
-#: src/components/MissionSetup.tsx:890
+#: src/components/MissionSetup.tsx:910
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Dringo serthaf (Vx, 100% gwthiad)"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:911
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Dringo serthaf (Vx, ôl-losgydd)"
 
@@ -3393,8 +3402,8 @@ msgstr "Tanysgrifio"
 msgid "Sunday"
 msgstr "Dydd Sul"
 
-#: src/components/MissionSetup.tsx:1403
-#: src/components/MissionSetup.tsx:1775
+#: src/components/MissionSetup.tsx:1423
+#: src/components/MissionSetup.tsx:1796
 #: src/components/Multiplayer.tsx:423
 msgid "Superhuman"
 msgstr "Goruwchddynol"
@@ -3436,7 +3445,7 @@ msgstr "Tagiau"
 msgid "TALLY"
 msgstr "GELYN YN Y GOLWG"
 
-#: src/components/MissionSetup.tsx:1381
+#: src/components/MissionSetup.tsx:1401
 msgid "Task"
 msgstr "Tasg"
 
@@ -3470,7 +3479,7 @@ msgstr "Telerau ac amodau"
 msgid "Text"
 msgstr "Testun"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:195
+#: ../../../lib/web/src/components/step-up-dialog.tsx:204
 msgid "That code is incorrect or has expired."
 msgstr "Mae'r cod hwnnw'n anghywir neu wedi dod i ben."
 
@@ -3526,7 +3535,7 @@ msgstr "Mwy o sbardun"
 msgid "Thursday"
 msgstr "Dydd Iau"
 
-#: src/components/MissionSetup.tsx:898
+#: src/components/MissionSetup.tsx:918
 msgid "Tightest sustained turn speed"
 msgstr "Cyflymder tro parhaus tynnaf"
 
@@ -3538,7 +3547,7 @@ msgstr "gogwyddo"
 msgid "Time"
 msgstr "Amser"
 
-#: src/components/MissionSetup.tsx:1467
+#: src/components/MissionSetup.tsx:1487
 msgid "Time of day"
 msgstr "Amser y dydd"
 
@@ -3594,7 +3603,7 @@ msgstr "Gormod o geisiadau"
 msgid "Top"
 msgstr "Brig"
 
-#: src/components/MissionSetup.tsx:1629
+#: src/components/MissionSetup.tsx:1650
 msgid "Tracers"
 msgstr "Bwledi olrhain"
 
@@ -3666,7 +3675,7 @@ msgstr "Teipiwch i chwilio defnyddwyr"
 msgid "Type to search..."
 msgstr "Teipiwch i chwilio..."
 
-#: src/components/MissionSetup.tsx:1567
+#: src/components/MissionSetup.tsx:1588
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3700,13 +3709,13 @@ msgstr "Yr Unol Daleithiau"
 msgid "Unknown"
 msgstr "Anhysbys"
 
-#: src/components/MissionSetup.tsx:1520
+#: src/components/MissionSetup.tsx:1541
 #: src/components/Multiplayer.tsx:78
 #: src/components/Multiplayer.tsx:396
 msgid "Unlimited ammunition"
 msgstr "Bwledi diderfyn"
 
-#: src/components/MissionSetup.tsx:1526
+#: src/components/MissionSetup.tsx:1547
 #: src/components/Multiplayer.tsx:79
 #: src/components/Multiplayer.tsx:406
 msgid "Unlimited fuel"
@@ -3740,7 +3749,7 @@ msgstr "Llwytho i fyny"
 msgid "Upload progress"
 msgstr "Cynnydd llwytho i fyny"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:338
+#: ../../../lib/web/src/components/step-up-dialog.tsx:352
 msgid "Use your passkey"
 msgstr "Defnyddiwch eich allwedd mynediad"
 
@@ -3762,7 +3771,7 @@ msgstr "Cod dilysu wedi'i anfon"
 msgid "Verification failed"
 msgstr "Dilysiad wedi methu"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:388
+#: ../../../lib/web/src/components/step-up-dialog.tsx:402
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
@@ -3772,7 +3781,7 @@ msgstr "Dilysu"
 msgid "Verify email address"
 msgstr "Dilysu cyfeiriad e-bost"
 
-#: src/components/MissionSetup.tsx:940
+#: src/components/MissionSetup.tsx:960
 msgid "Vertical"
 msgstr "Fertigol"
 
@@ -3883,7 +3892,7 @@ msgstr "YN ENNILL"
 msgid "World server"
 msgstr "Gweinydd byd"
 
-#: src/components/MissionSetup.tsx:1147
+#: src/components/MissionSetup.tsx:1167
 #: src/components/Multiplayer.tsx:142
 msgid "World server not reachable"
 msgstr "Methu cyrraedd y gweinydd byd"

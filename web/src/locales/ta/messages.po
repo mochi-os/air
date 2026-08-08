@@ -46,7 +46,7 @@ msgstr "{0, plural, one {# தேர்ந்தெடுக்கப்பட�
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:1165
+#: src/components/MissionSetup.tsx:1185
 msgid "{0} created “{1}”"
 msgstr "{0} “{1}” என்பதை உருவாக்கினார்"
 
@@ -55,8 +55,13 @@ msgstr "{0} “{1}” என்பதை உருவாக்கினார்
 msgid "{0} flying"
 msgstr "{0} பேர் பறக்கின்றனர்"
 
+#. placeholder {0}: moment - CATAPULT
+#: src/components/MissionSetup.tsx:881
+msgid "{0} ft·lb over the catapult asymmetry limit"
+msgstr "கவண் சமச்சீரின்மை வரம்பை விட {0} ft·lb அதிகம்"
+
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:861
+#: src/components/MissionSetup.tsx:869
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb அதிகபட்ச ஏவல் எடையை விட அதிகம்"
 
@@ -152,7 +157,7 @@ msgstr "கம்பி 1"
 msgid "12 hours"
 msgstr "12 மணிநேரம்"
 
-#: src/components/MissionSetup.tsx:927
+#: src/components/MissionSetup.tsx:947
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -168,7 +173,7 @@ msgstr "24 மணிநேரம்"
 msgid "3 WIRE"
 msgstr "கம்பி 3"
 
-#: src/components/MissionSetup.tsx:930
+#: src/components/MissionSetup.tsx:950
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -208,8 +213,8 @@ msgstr "கணக்கு வகை"
 msgid "Account verified"
 msgstr "கணக்கு சரிபார்க்கப்பட்டது"
 
-#: src/components/MissionSetup.tsx:1402
-#: src/components/MissionSetup.tsx:1774
+#: src/components/MissionSetup.tsx:1422
+#: src/components/MissionSetup.tsx:1795
 #: src/components/Multiplayer.tsx:422
 msgid "Ace"
 msgstr "ஏஸ்"
@@ -307,7 +312,7 @@ msgstr "சேர்க்கிறது..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "உங்கள் விருப்பங்களுக்கு ஏற்ப தோற்றத்தையும் தளவமைப்பையும் சரிசெய்யவும்."
 
-#: src/components/MissionSetup.tsx:1623
+#: src/components/MissionSetup.tsx:1644
 msgid "Afterburner"
 msgstr "ஆஃப்டர்பர்னர்"
 
@@ -320,11 +325,11 @@ msgstr "AI"
 msgid "Aircraft"
 msgstr "விமானம்"
 
-#: src/components/MissionSetup.tsx:1004
+#: src/components/MissionSetup.tsx:1024
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "விமானந்தாங்கிக் கப்பல் <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> — <1>Muhamad Mirza Arrafi</1> (Sketchfab) உருவாக்கியது, <2>CC BY 4.0</2> இன் கீழ் உரிமம் பெற்றது. மாற்றப்பட்டது: அளவு மாற்றப்பட்டது, திசை மாற்றப்பட்டது, நீர்மட்டம் வரை மூழ்கடிக்கப்பட்டது, இணையத்திற்காக எளிமைப்படுத்தப்பட்டது."
 
-#: src/components/MissionSetup.tsx:978
+#: src/components/MissionSetup.tsx:998
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "விமான மாதிரி <0>“F/A-18C Hornet”</0>, <1>CreadorDeMu</1> (Sketchfab) உருவாக்கியது, <2>CC BY 4.0</2> உரிமத்தின் கீழ். மாற்றப்பட்டது: திசை மாற்றப்பட்டது மற்றும் அளவு மாற்றப்பட்டது, பயன்படுத்தப்படாத டெக்ஸ்சர் தரவு நீக்கப்பட்டது, வெளிப்புற இணைப்புச் சுமைகள் தனி கோப்பாகப் பிரிக்கப்பட்டன, ஒரு உறை மெஷ் கண்ணாடிப் பிரதிபலிப்பாக மாற்றப்பட்டது."
 
@@ -371,7 +376,7 @@ msgstr "உள்நுழைந்த யாரும்"
 msgid "Approach power (ATC)"
 msgstr "அணுகல் சக்தி (ATC)"
 
-#: src/components/MissionSetup.tsx:901
+#: src/components/MissionSetup.tsx:921
 msgid "Approach, on-speed (Vapp)"
 msgstr "அணுகல், சரியான வேகத்தில் (Vapp)"
 
@@ -405,6 +410,10 @@ msgstr "ஏறு"
 msgid "Ascending"
 msgstr "ஏறுவரிசை"
 
+#: src/components/MissionSetup.tsx:875
+msgid "Asymmetry"
+msgstr "சமச்சீரின்மை"
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:398
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:403
 msgid "Attach comment files"
@@ -420,7 +429,7 @@ msgstr "பதிலளிப்பு கோப்புகளை இணை"
 msgid "Authenticated users"
 msgstr "அங்கீகரிக்கப்பட்ட பயனர்கள்"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:315
+#: ../../../lib/web/src/components/step-up-dialog.tsx:329
 msgid "Authenticator code"
 msgstr "அங்கீகரிப்பு குறியீடு"
 
@@ -459,7 +468,7 @@ msgstr "பின்"
 msgid "Back to home"
 msgstr "முகப்புக்குத் திரும்பு"
 
-#: src/components/MissionSetup.tsx:1394
+#: src/components/MissionSetup.tsx:1414
 msgid "Bandit"
 msgstr "எதிரி விமானம்"
 
@@ -471,19 +480,19 @@ msgstr "பேனர்"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250க்கு கீழ் — கியர் மற்றும் ஃபிளாப்"
 
-#: src/components/MissionSetup.tsx:892
+#: src/components/MissionSetup.tsx:912
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "சிறந்த ஏற்றம் (Vy, 100% உந்துவிசை)"
 
-#: src/components/MissionSetup.tsx:893
+#: src/components/MissionSetup.tsx:913
 msgid "Best climb (Vy, afterburner)"
 msgstr "சிறந்த ஏற்றம் (Vy, ஆஃப்டர்பர்னர்)"
 
-#: src/components/MissionSetup.tsx:895
+#: src/components/MissionSetup.tsx:915
 msgid "Best glide (engines out)"
 msgstr "சிறந்த சறுக்கல் (எஞ்சின்கள் அணைந்த)"
 
-#: src/components/MissionSetup.tsx:897
+#: src/components/MissionSetup.tsx:917
 msgid "Best sustained turn speed"
 msgstr "சிறந்த நிலையான திருப்ப வேகம்"
 
@@ -566,7 +575,7 @@ msgstr "பொத்தான்கள்"
 msgid "CALL THE BALL"
 msgstr "பந்தை அறிவி"
 
-#: src/components/MissionSetup.tsx:1679
+#: src/components/MissionSetup.tsx:1700
 #: src/components/Multiplayer.tsx:285
 msgid "Callsign"
 msgstr "அழைப்புப் பெயர்"
@@ -580,7 +589,7 @@ msgstr "கேமரா தூரம்"
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
-#: ../../../lib/web/src/components/step-up-dialog.tsx:363
+#: ../../../lib/web/src/components/step-up-dialog.tsx:377
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:249
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
@@ -608,31 +617,31 @@ msgstr "பதிலளிப்பை ரத்துசெய்"
 msgid "Canopy"
 msgstr "கேனோபி"
 
-#: src/components/MissionSetup.tsx:1200
+#: src/components/MissionSetup.tsx:1220
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1442
+#: src/components/MissionSetup.tsx:1462
 msgid "Case I (day)"
 msgstr "நிலை I (பகல்)"
 
-#: src/components/MissionSetup.tsx:1201
+#: src/components/MissionSetup.tsx:1221
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1443
+#: src/components/MissionSetup.tsx:1463
 msgid "Case II (weather)"
 msgstr "நிலை II (வானிலை)"
 
-#: src/components/MissionSetup.tsx:1202
+#: src/components/MissionSetup.tsx:1222
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1444
+#: src/components/MissionSetup.tsx:1464
 msgid "Case III (night)"
 msgstr "நிலை III (இரவு)"
 
-#: src/components/MissionSetup.tsx:1450
+#: src/components/MissionSetup.tsx:1470
 msgid "Catapult"
 msgstr "கவண்பொறி"
 
@@ -640,7 +649,7 @@ msgstr "கவண்பொறி"
 msgid "Category for these notifications"
 msgstr "இந்த அறிவிப்புகளுக்கான வகை"
 
-#: src/components/MissionSetup.tsx:744
+#: src/components/MissionSetup.tsx:746
 msgid "Centerline"
 msgstr "மைய கோடு"
 
@@ -666,7 +675,7 @@ msgid "Chat to everyone"
 msgstr "அனைவருடனும் அரட்டை"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1509
+#: src/components/MissionSetup.tsx:1530
 msgid "Cheats"
 msgstr "ஏமாற்றுகள்"
 
@@ -777,7 +786,7 @@ msgstr "தேடலை மூடு"
 msgid "closer"
 msgstr "அருகில்"
 
-#: src/components/MissionSetup.tsx:1478
+#: src/components/MissionSetup.tsx:1498
 msgid "Clouds"
 msgstr "மேகங்கள்"
 
@@ -848,7 +857,7 @@ msgstr "காட்சி அமைப்புகளை உள்ளமைக�
 msgid "Confirm"
 msgstr "உறுதிசெய்"
 
-#: src/components/MissionSetup.tsx:1310
+#: src/components/MissionSetup.tsx:1330
 msgid "Connect"
 msgstr "இணை"
 
@@ -889,7 +898,7 @@ msgstr "சூழல் சார்ந்த தகவல் மற்றும
 msgid "Continue"
 msgstr "தொடர்"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:352
+#: ../../../lib/web/src/components/step-up-dialog.tsx:366
 msgid "Continue with {label}"
 msgstr "{label} மூலம் தொடரவும்"
 
@@ -905,7 +914,7 @@ msgstr "கிளிப்போர்டுக்கு நகலெடுக�
 msgid "Copy"
 msgstr "நகலெடு"
 
-#: src/components/MissionSetup.tsx:896
+#: src/components/MissionSetup.tsx:916
 msgid "Corner speed (best instant turn)"
 msgstr "மூலை வேகம் (சிறந்த உடனடி திருப்பம்)"
 
@@ -922,7 +931,7 @@ msgstr "இந்த ஆவணத்தை ஏற்ற முடியவில
 msgid "Could not save the recording"
 msgstr "பதிவைச் சேமிக்க முடியவில்லை"
 
-#: src/components/MissionSetup.tsx:1147
+#: src/components/MissionSetup.tsx:1167
 msgid "Could not send the message"
 msgstr "செய்தியை அனுப்ப முடியவில்லை"
 
@@ -930,15 +939,15 @@ msgstr "செய்தியை அனுப்ப முடியவில்�
 msgid "Couldn't load notifications"
 msgstr "அறிவிப்புகளை ஏற்ற முடியவில்லை"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:184
+#: ../../../lib/web/src/components/step-up-dialog.tsx:193
 msgid "Couldn't send the code. Please try again."
 msgstr "குறியீட்டை அனுப்ப முடியவில்லை. மீண்டும் முயற்சிக்கவும்."
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:136
+#: ../../../lib/web/src/components/step-up-dialog.tsx:145
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "மறுஅங்கீகாரத்தைத் தொடங்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்."
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:221
+#: ../../../lib/web/src/components/step-up-dialog.tsx:235
 msgid "Couldn't verify with that account. Please try again."
 msgstr "அந்தக் கணக்கைச் சரிபார்க்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்."
 
@@ -976,8 +985,8 @@ msgstr "உருவாக்கிப் பற"
 msgid "Create match"
 msgstr "போட்டியை உருவாக்கு"
 
-#: src/components/MissionSetup.tsx:1814
-#: src/components/MissionSetup.tsx:1837
+#: src/components/MissionSetup.tsx:1835
+#: src/components/MissionSetup.tsx:1858
 msgid "Create mission"
 msgstr "பணி உருவாக்கு"
 
@@ -995,12 +1004,12 @@ msgstr "உருவாக்கப்பட்டது"
 msgid "Creating..."
 msgstr "உருவாக்குகிறது..."
 
-#: src/components/MissionSetup.tsx:967
-#: src/components/MissionSetup.tsx:973
+#: src/components/MissionSetup.tsx:987
+#: src/components/MissionSetup.tsx:993
 msgid "Credits"
 msgstr "பங்களிப்பாளர்கள்"
 
-#: src/components/MissionSetup.tsx:1485
+#: src/components/MissionSetup.tsx:1505
 #: src/components/Multiplayer.tsx:74
 #: src/components/Multiplayer.tsx:347
 msgid "Cumulus"
@@ -1011,7 +1020,7 @@ msgid "Current location"
 msgstr "தற்போதைய இடம்"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:265
-#: src/components/MissionSetup.tsx:800
+#: src/components/MissionSetup.tsx:808
 msgid "Custom"
 msgstr "தனிப்பயன்"
 
@@ -1044,7 +1053,7 @@ msgstr "தரவு முரண்பாடு"
 msgid "Date"
 msgstr "தேதி"
 
-#: src/components/MissionSetup.tsx:1473
+#: src/components/MissionSetup.tsx:1493
 #: src/components/Multiplayer.tsx:342
 msgid "Day"
 msgstr "பகல்"
@@ -1208,13 +1217,13 @@ msgstr "காட்சி ரிப்பீட்டர்"
 msgid "Displays the mobile sidebar."
 msgstr "மொபைல் பக்கப்பட்டியைக் காட்டுகிறது."
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1632
 msgid "Distance LOD"
 msgstr "தூர LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1918
+#: src/components/MissionSetup.tsx:1939
 msgid "Done"
 msgstr "முடிந்தது"
 
@@ -1248,7 +1257,7 @@ msgstr "நகலெடுக்கிறது"
 msgid "Duration"
 msgstr "கால அளவு"
 
-#: src/components/MissionSetup.tsx:1605
+#: src/components/MissionSetup.tsx:1626
 msgid "Dynamic resolution"
 msgstr "மாறும் தெளிவுத்திறன்"
 
@@ -1307,7 +1316,7 @@ msgstr "வெளியேறினார்"
 msgid "Email"
 msgstr "மின்னஞ்சல்"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:289
+#: ../../../lib/web/src/components/step-up-dialog.tsx:303
 msgid "Email code"
 msgstr "மின்னஞ்சல் குறியீடு"
 
@@ -1324,8 +1333,8 @@ msgstr "அவசர வீச்சு (பிடித்திரு)"
 msgid "empty"
 msgstr "காலி"
 
-#: src/components/MissionSetup.tsx:759
-#: src/components/MissionSetup.tsx:764
+#: src/components/MissionSetup.tsx:761
+#: src/components/MissionSetup.tsx:766
 msgid "Empty pylon"
 msgstr "காலியான பைலான்"
 
@@ -1337,11 +1346,11 @@ msgstr "தாக்குகிறேன்"
 msgid "Engine"
 msgstr "இயந்திரம்"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:299
+#: ../../../lib/web/src/components/step-up-dialog.tsx:313
 msgid "Enter the code from your email"
 msgstr "உங்கள் மின்னஞ்சலில் உள்ள குறியீட்டை உள்ளிடவும்"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:324
+#: ../../../lib/web/src/components/step-up-dialog.tsx:338
 msgid "Enter your authenticator code"
 msgstr "உங்கள் அங்கீகரிப்பான் குறியீட்டை உள்ளிடவும்"
 
@@ -1377,7 +1386,7 @@ msgstr "பக்கப்பட்டியை விரிவாக்கு"
 msgid "Extend flaps"
 msgstr "ஃபிளாப் வெளியே"
 
-#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1606
 msgid "Exterior detail"
 msgstr "வெளிப்புற விவரம்"
 
@@ -1389,7 +1398,7 @@ msgstr "வெளிப்புற URL"
 msgid "Extra large"
 msgstr "மிகப் பெரியது"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:935
 msgid "F/A-18C reference"
 msgstr "F/A-18C குறிப்பு"
 
@@ -1554,8 +1563,8 @@ msgstr "மிதக்கும்"
 msgid "Flown"
 msgstr "பறந்தது"
 
-#: src/components/MissionSetup.tsx:1808
-#: src/components/MissionSetup.tsx:1851
+#: src/components/MissionSetup.tsx:1829
+#: src/components/MissionSetup.tsx:1872
 msgid "Fly"
 msgstr "பறத்தல்"
 
@@ -1563,16 +1572,16 @@ msgstr "பறத்தல்"
 msgid "Fly again"
 msgstr "மீண்டும் பறக்கவும்"
 
-#: src/components/MissionSetup.tsx:771
+#: src/components/MissionSetup.tsx:773
 msgid "Fox 2 fighter"
 msgstr "Fox 2 போர் விமானம்"
 
-#: src/components/MissionSetup.tsx:1635
+#: src/components/MissionSetup.tsx:1656
 msgid "Framerate"
 msgstr "சட்ட விகிதம்"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1387
+#: src/components/MissionSetup.tsx:1407
 msgid "Free flight"
 msgstr "சுதந்திர பறப்பு"
 
@@ -1621,7 +1630,7 @@ msgstr "எரிபொருள் குறைவு"
 msgid "Fuel probe"
 msgstr "எரிபொருள் குழாய்"
 
-#: src/components/MissionSetup.tsx:757
+#: src/components/MissionSetup.tsx:759
 msgid "Fuel tank"
 msgstr "எரிபொருள் தொட்டி"
 
@@ -1633,8 +1642,8 @@ msgstr "முழு தளவமைப்பு"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:743
 #: src/components/MissionSetup.tsx:745
+#: src/components/MissionSetup.tsx:747
 msgid "Fuselage"
 msgstr "விமான உடல்"
 
@@ -1646,7 +1655,7 @@ msgstr "சக்கரம்"
 msgid "GEAR"
 msgstr "கியர்"
 
-#: src/components/MissionSetup.tsx:1860
+#: src/components/MissionSetup.tsx:1881
 msgid "General"
 msgstr "பொது"
 
@@ -1676,11 +1685,11 @@ msgstr "பக்கம் {pageNumber}-க்குச் செல்"
 msgid "Go to previous page"
 msgstr "முந்தைய பக்கத்திற்குச் செல்"
 
-#: src/components/MissionSetup.tsx:1863
+#: src/components/MissionSetup.tsx:1884
 msgid "Graphics"
 msgstr "வரைகலை"
 
-#: src/components/MissionSetup.tsx:857
+#: src/components/MissionSetup.tsx:865
 msgid "Gross weight"
 msgstr "மொத்த எடை"
 
@@ -1701,7 +1710,7 @@ msgstr "குழு: {0}"
 msgid "GUN"
 msgstr "பீரங்கி"
 
-#: src/components/MissionSetup.tsx:770
+#: src/components/MissionSetup.tsx:772
 msgid "Gun fighter"
 msgstr "பீரங்கி போர் விமானம்"
 
@@ -1717,18 +1726,18 @@ msgstr "மறை"
 msgid "Hide password"
 msgstr "கடவுச்சொல்லை மறை"
 
-#: src/components/MissionSetup.tsx:1565
+#: src/components/MissionSetup.tsx:1586
 msgid "High"
 msgstr "உயர்ந்த"
 
-#: src/components/MissionSetup.tsx:1486
+#: src/components/MissionSetup.tsx:1506
 #: src/components/Multiplayer.tsx:75
 #: src/components/Multiplayer.tsx:348
 msgid "High stratus"
 msgstr "உயர் அடுக்கு மேகம்"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1827
+#: src/components/MissionSetup.tsx:1848
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "வரலாறு"
@@ -1773,8 +1782,8 @@ msgstr "பட காட்சி: {0}"
 msgid "Imperial"
 msgstr "இம்பீரியல்"
 
-#: src/components/MissionSetup.tsx:1197
-#: src/components/MissionSetup.tsx:1439
+#: src/components/MissionSetup.tsx:1217
+#: src/components/MissionSetup.tsx:1459
 msgid "In air"
 msgstr "காற்றில்"
 
@@ -1798,7 +1807,7 @@ msgstr "உள்ளமைக்கப்பட்ட"
 msgid "Interests"
 msgstr "ஆர்வங்கள்"
 
-#: src/components/MissionSetup.tsx:853
+#: src/components/MissionSetup.tsx:861
 msgid "Internal fuel"
 msgstr "உள் எரிபொருள்"
 
@@ -1826,7 +1835,7 @@ msgstr "காயமடையாத"
 msgid "INVULNERABLE"
 msgstr "காயமடையாமை"
 
-#: src/components/MissionSetup.tsx:1514
+#: src/components/MissionSetup.tsx:1535
 #: src/components/Multiplayer.tsx:386
 msgid "Invulnerable (human players only)"
 msgstr "காயமடையாமை (மனித வீரர்களுக்கு மட்டும்)"
@@ -1848,8 +1857,8 @@ msgstr "வீச்சு: தரையிறங்கு சக்கரம்
 msgid "Join"
 msgstr "சேர்"
 
-#: src/components/MissionSetup.tsx:1280
-#: src/components/MissionSetup.tsx:1818
+#: src/components/MissionSetup.tsx:1300
+#: src/components/MissionSetup.tsx:1839
 msgid "Join server"
 msgstr "சேவையகத்தில் சேர்"
 
@@ -1858,7 +1867,7 @@ msgid "JOINED"
 msgstr "சேர்ந்தார்"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1780
+#: src/components/MissionSetup.tsx:1801
 #: src/components/Multiplayer.tsx:480
 msgid "Joust"
 msgstr "நேருக்குநேர் மோதல்"
@@ -1867,11 +1876,11 @@ msgstr "நேருக்குநேர் மோதல்"
 msgid "Joust — 1v1, first kill wins"
 msgstr "டூயல் — 1v1, முதலில் வீழ்த்துபவர் வெற்றி"
 
-#: src/components/MissionSetup.tsx:1388
+#: src/components/MissionSetup.tsx:1408
 msgid "Joust 1v1"
 msgstr "டூயல் 1v1"
 
-#: src/components/MissionSetup.tsx:1869
+#: src/components/MissionSetup.tsx:1890
 msgid "Joystick"
 msgstr "ஜாய்ஸ்டிக்"
 
@@ -1887,7 +1896,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "விசைப்பலகை குறுக்குவழிகள்"
 
-#: src/components/MissionSetup.tsx:1872
+#: src/components/MissionSetup.tsx:1893
 msgid "Keys"
 msgstr "விசைகள்"
 
@@ -1953,7 +1962,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "மேலும் அறிய"
 
-#: src/components/MissionSetup.tsx:1336
+#: src/components/MissionSetup.tsx:1356
 msgid "Leave server"
 msgstr "சேவையகத்தை விட்டு வெளியேறு"
 
@@ -1969,12 +1978,12 @@ msgstr "வெளியேறினார்"
 msgid "Left to Right"
 msgstr "இடமிருந்து வலம்"
 
-#: src/components/MissionSetup.tsx:741
-#: src/components/MissionSetup.tsx:742
+#: src/components/MissionSetup.tsx:743
+#: src/components/MissionSetup.tsx:744
 msgid "Left wing"
 msgstr "இடது இறக்கை"
 
-#: src/components/MissionSetup.tsx:740
+#: src/components/MissionSetup.tsx:742
 msgid "Left wingtip"
 msgstr "இடது இறக்கையின் நுனி"
 
@@ -2038,7 +2047,7 @@ msgstr "ஏற்றுதல் தோல்வி"
 msgid "Loading..."
 msgstr "ஏற்றுகிறது..."
 
-#: src/components/MissionSetup.tsx:1491
+#: src/components/MissionSetup.tsx:1511
 msgid "Loadout"
 msgstr "சுமை"
 
@@ -2085,11 +2094,11 @@ msgstr "வலப்புறம் பார்க்க"
 msgid "Look up"
 msgstr "மேலே பார்க்க"
 
-#: src/components/MissionSetup.tsx:1561
+#: src/components/MissionSetup.tsx:1582
 msgid "Low"
 msgstr "குறைந்த"
 
-#: src/components/MissionSetup.tsx:1487
+#: src/components/MissionSetup.tsx:1507
 #: src/components/Multiplayer.tsx:76
 #: src/components/Multiplayer.tsx:349
 msgid "Low stratus"
@@ -2133,7 +2142,7 @@ msgstr "முதன்மை"
 msgid "Match type"
 msgstr "போட்டி வகை"
 
-#: src/components/MissionSetup.tsx:1330
+#: src/components/MissionSetup.tsx:1350
 msgid "Matches"
 msgstr "போட்டிகள்"
 
@@ -2146,7 +2155,7 @@ msgid "MCP server"
 msgstr "MCP சேவையகம்"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1563
+#: src/components/MissionSetup.tsx:1584
 msgid "Medium"
 msgstr "நடுத்தரம்"
 
@@ -2167,7 +2176,7 @@ msgstr "செய்தி"
 msgid "Message everyone"
 msgstr "அனைவருக்கும் செய்தி அனுப்புங்கள்"
 
-#: src/components/MissionSetup.tsx:1182
+#: src/components/MissionSetup.tsx:1202
 msgid "Message players on this server"
 msgstr "இந்த சர்வரில் உள்ள வீரர்களுக்கு செய்தி அனுப்புங்கள்"
 
@@ -2183,7 +2192,7 @@ msgstr "மெட்ரிக்"
 msgid "Midair collision"
 msgstr "நடுவானில் மோதல்"
 
-#: src/components/MissionSetup.tsx:1030
+#: src/components/MissionSetup.tsx:1050
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "மிட்வே பவளத்தீவு வரைபடம் — படங்களில் மாற்றப்பட்ட <0>Copernicus Sentinel-2</0> தரவு உள்ளது (2026); விமானத்தள வடிவியல் (ஓடுபாதை, நகர்வுப் பாதைகள், நிறுத்துமிடங்கள்) © <1>OpenStreetMap</1> பங்களிப்பாளர்கள், <2>ODbL</2> கீழ் உரிமம் பெற்றது; கடற்கரை மற்றும் பவளப்பாறை தரவு <3>NOAA NCCOS</3> இலிருந்து (பொதுக் களம்)."
 
@@ -2264,7 +2273,7 @@ msgstr "புதிய விளையாட்டு"
 msgid "Next image"
 msgstr "அடுத்த படம்"
 
-#: src/components/MissionSetup.tsx:1474
+#: src/components/MissionSetup.tsx:1494
 #: src/components/Multiplayer.tsx:73
 #: src/components/Multiplayer.tsx:343
 msgid "Night"
@@ -2375,7 +2384,7 @@ msgstr "பயனர்கள் எதுவும் கிடைக்கவ�
 msgid "No views"
 msgstr "காட்சிகள் இல்லை"
 
-#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1179
 #: src/components/Multiplayer.tsx:463
 msgid "No world server."
 msgstr "உலக சேவையகம் இல்லை."
@@ -2400,8 +2409,8 @@ msgstr "கிரேடு இல்லை"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:361
 #: src/components/MissionSetup.tsx:421
-#: src/components/MissionSetup.tsx:766
-#: src/components/MissionSetup.tsx:1484
+#: src/components/MissionSetup.tsx:768
+#: src/components/MissionSetup.tsx:1504
 msgid "None"
 msgstr "ஒன்றுமில்லை"
 
@@ -2425,7 +2434,7 @@ msgstr "அமைக்கப்படவில்லை"
 msgid "Nothing found"
 msgstr "எதுவும் கிடைக்கவில்லை"
 
-#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1179
 msgid "Nothing yet — say hello."
 msgstr "இன்னும் எதுவும் இல்லை — ஹலோ சொல்லுங்கள்."
 
@@ -2442,8 +2451,8 @@ msgstr "அறிவிப்புகள்"
 msgid "Notifications: {0}"
 msgstr "அறிவிப்புகள்: {0}"
 
-#: src/components/MissionSetup.tsx:1400
-#: src/components/MissionSetup.tsx:1772
+#: src/components/MissionSetup.tsx:1420
+#: src/components/MissionSetup.tsx:1793
 #: src/components/Multiplayer.tsx:420
 msgid "Novice"
 msgstr "புதியவர்"
@@ -2454,7 +2463,7 @@ msgstr "புதியவர்"
 msgid "Number"
 msgstr "எண்"
 
-#: src/components/MissionSetup.tsx:1593
+#: src/components/MissionSetup.tsx:1614
 msgid "Ocean detail"
 msgstr "கடல் விவரம்"
 
@@ -2466,13 +2475,13 @@ msgstr "OK"
 msgid "On"
 msgstr "இயக்கத்தில்"
 
-#: src/components/MissionSetup.tsx:1199
-#: src/components/MissionSetup.tsx:1441
+#: src/components/MissionSetup.tsx:1219
+#: src/components/MissionSetup.tsx:1461
 msgid "On carrier"
 msgstr "தாங்கி கப்பலில்"
 
-#: src/components/MissionSetup.tsx:1198
-#: src/components/MissionSetup.tsx:1440
+#: src/components/MissionSetup.tsx:1218
+#: src/components/MissionSetup.tsx:1460
 msgid "On runway"
 msgstr "ஓடுபாதையில்"
 
@@ -2580,11 +2589,11 @@ msgstr "பெற்றோர்"
 msgid "Parking brake"
 msgstr "நிறுத்த பிரேக்"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:334
+#: ../../../lib/web/src/components/step-up-dialog.tsx:348
 msgid "Passkey"
 msgstr "கடவுக்குறி"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:209
+#: ../../../lib/web/src/components/step-up-dialog.tsx:218
 msgid "Passkey verification failed. Please try again."
 msgstr "கடவுவிசை சரிபார்ப்பு தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்."
 
@@ -2600,14 +2609,14 @@ msgstr "வடிவம் (regex)"
 msgid "Pick a date"
 msgstr "தேதியைத் தேர்ந்தெடுக்கவும்"
 
-#: src/components/MissionSetup.tsx:1101
+#: src/components/MissionSetup.tsx:1121
 #: src/components/Multiplayer.tsx:129
 #: src/components/Multiplayer.tsx:290
 msgid "pilot"
 msgstr "விமானி"
 
-#: src/components/MissionSetup.tsx:1401
-#: src/components/MissionSetup.tsx:1773
+#: src/components/MissionSetup.tsx:1421
+#: src/components/MissionSetup.tsx:1794
 #: src/components/Multiplayer.tsx:421
 msgid "Pilot"
 msgstr "விமானி"
@@ -2670,7 +2679,7 @@ msgstr "பதிவுகள்"
 msgid "Posts and comments"
 msgstr "பதிவுகள் மற்றும் கருத்துகள்"
 
-#: src/components/MissionSetup.tsx:1548
+#: src/components/MissionSetup.tsx:1569
 msgid "Preset"
 msgstr "முன்னமைவு"
 
@@ -2744,7 +2753,7 @@ msgstr "இந்த சேவையகத்தில் உங்கள் க
 msgid "REARMED"
 msgstr "மீண்டும் ஆயுதம் ஏற்றப்பட்டது"
 
-#: src/components/MissionSetup.tsx:1285
+#: src/components/MissionSetup.tsx:1305
 msgid "Recent"
 msgstr "சமீபத்திய"
 
@@ -2757,12 +2766,12 @@ msgstr "பரிந்துரைக்கப்பட்டது"
 msgid "Reconnecting ({retries})..."
 msgstr "மீண்டும் இணைக்கிறது ({retries})..."
 
-#: src/components/MissionSetup.tsx:1697
+#: src/components/MissionSetup.tsx:1718
 msgid "Record flights"
 msgstr "பறப்புகளைப் பதிவு செய்"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:1691
+#: src/components/MissionSetup.tsx:1712
 msgid "Recording"
 msgstr "பதிவு"
 
@@ -2787,7 +2796,7 @@ msgstr "உள்நுழைவுக்கு redirect ஆகிறது."
 msgid "Reduce interest"
 msgstr "ஆர்வத்தைக் குறைக்கவும்"
 
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:929
 msgid "Reference"
 msgstr "குறிப்பு"
 
@@ -2866,7 +2875,7 @@ msgstr "நெடுவரிசையின் பெயரை மாற்ற�
 msgid "Rename this board column"
 msgstr "இந்த போர்டு நெடுவரிசையின் பெயரை மாற்று"
 
-#: src/components/MissionSetup.tsx:1067
+#: src/components/MissionSetup.tsx:1087
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "காட்சியாக்கம் <0>three.js</0> மூலம் (MIT உரிமம்)."
 
@@ -2884,13 +2893,13 @@ msgstr "{0} க்கு பதிலளி..."
 msgid "Required"
 msgstr "தேவை"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:367
+#: ../../../lib/web/src/components/step-up-dialog.tsx:381
 msgid "Resend email"
 msgstr "மின்னஞ்சலை மீண்டும் அனுப்பு"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1911
+#: src/components/MissionSetup.tsx:1932
 msgid "Reset"
 msgstr "மீட்டமை"
 
@@ -2918,11 +2927,11 @@ msgstr "ட்ரிம் மீட்டமை"
 msgid "Reset view"
 msgstr "காட்சியை மீட்டமை"
 
-#: src/components/MissionSetup.tsx:1575
+#: src/components/MissionSetup.tsx:1596
 msgid "Resolution"
 msgstr "தீர்வு"
 
-#: src/components/MissionSetup.tsx:1800
+#: src/components/MissionSetup.tsx:1821
 msgid "Restart mission"
 msgstr "பணியை மீண்டும் தொடங்கு"
 
@@ -2934,7 +2943,7 @@ msgstr "முடிவு"
 msgid "Resume"
 msgstr "தொடர்"
 
-#: src/components/MissionSetup.tsx:1796
+#: src/components/MissionSetup.tsx:1817
 msgid "Resume mission"
 msgstr "பணியைத் தொடர்"
 
@@ -2959,12 +2968,12 @@ msgstr "அணுகலை நீக்கு"
 msgid "Right to Left"
 msgstr "வலமிருந்து இடம்"
 
-#: src/components/MissionSetup.tsx:746
-#: src/components/MissionSetup.tsx:747
+#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:749
 msgid "Right wing"
 msgstr "வலது இறக்கை"
 
-#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:750
 msgid "Right wingtip"
 msgstr "வலது இறக்கையின் நுனி"
 
@@ -3024,7 +3033,7 @@ msgstr "சனிக்கிழமை"
 msgid "Save"
 msgstr "சேமி"
 
-#: src/components/MissionSetup.tsx:924
+#: src/components/MissionSetup.tsx:944
 msgid "Sea level"
 msgstr "கடல் மட்டம்"
 
@@ -3173,7 +3182,7 @@ msgstr "தேர்ந்தெடுக்கப்பட்டது"
 msgid "Selected: <0>{0}</0>"
 msgstr "தேர்ந்தெடுக்கப்பட்டது: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:1189
+#: src/components/MissionSetup.tsx:1209
 msgid "Send"
 msgstr "அனுப்பு"
 
@@ -3185,7 +3194,7 @@ msgstr "மீண்டும் அனுப்பு"
 msgid "Send chat"
 msgstr "செய்தி அனுப்பு"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:307
+#: ../../../lib/web/src/components/step-up-dialog.tsx:321
 msgid "Send email"
 msgstr "மின்னஞ்சல் அனுப்பு"
 
@@ -3199,11 +3208,11 @@ msgid "Serif"
 msgstr "செரிஃப்"
 
 #: src/components/MatchHistory.tsx:161
-#: src/components/MissionSetup.tsx:1298
+#: src/components/MissionSetup.tsx:1318
 msgid "Server"
 msgstr "சர்வர்"
 
-#: src/components/MissionSetup.tsx:1154
+#: src/components/MissionSetup.tsx:1174
 msgid "Server chat"
 msgstr "சர்வர் அரட்டை"
 
@@ -3237,12 +3246,12 @@ msgstr "துவக்கம் மற்றும் சேருமிடத�
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:340
-#: src/components/MissionSetup.tsx:1822
-#: src/components/MissionSetup.tsx:1856
+#: src/components/MissionSetup.tsx:1843
+#: src/components/MissionSetup.tsx:1877
 msgid "Settings"
 msgstr "அமைப்புகள்"
 
-#: src/components/MissionSetup.tsx:1617
+#: src/components/MissionSetup.tsx:1638
 msgid "Shadows"
 msgstr "நிழல்கள்"
 
@@ -3286,7 +3295,7 @@ msgstr "வெளியேறுகிறது..."
 msgid "Single line of text only"
 msgstr "ஒரே வரி உரை மட்டும்"
 
-#: src/components/MissionSetup.tsx:894
+#: src/components/MissionSetup.tsx:914
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "ஒற்றை எஞ்சின் சிறந்த ஏற்றம் (Vyse, ஆஃப்டர்பர்னர்)"
 
@@ -3304,7 +3313,7 @@ msgid "Sort"
 msgstr "வரிசைப்படுத்து"
 
 #: src/components/MissionSetup.tsx:480
-#: src/components/MissionSetup.tsx:1866
+#: src/components/MissionSetup.tsx:1887
 msgid "Sound"
 msgstr "ஒலி"
 
@@ -3330,7 +3339,7 @@ msgstr "வேக தடுப்பி"
 msgid "Speed brake"
 msgstr "வேக தடுப்பி"
 
-#: src/components/MissionSetup.tsx:950
+#: src/components/MissionSetup.tsx:970
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "வேகங்கள் KCAS-இல், இலகுவான (குறைந்தபட்ச எரிபொருள், சரக்கு இல்லை) நிலையிலிருந்து கனமான (அதிகபட்ச மொத்த எடை) வரையிலான வரம்பாக. தரவு விளையாட்டில் சோதனை முறையில் பெறப்பட்டது. உண்மையான விமானத்திலிருந்து ஏதேனும் வேறுபாடுகள் உருவகப்படுத்தியின் பறப்பு மாதிரி பிழைகளைப் பிரதிபலிக்கின்றன."
 
@@ -3338,15 +3347,15 @@ msgstr "வேகங்கள் KCAS-இல், இலகுவான (கு�
 msgid "SPLASH"
 msgstr "இலக்கு வீழ்த்தப்பட்டது"
 
-#: src/components/MissionSetup.tsx:899
+#: src/components/MissionSetup.tsx:919
 msgid "Stall, clean (Vs1)"
 msgstr "ஸ்டால், சுத்தமான (Vs1)"
 
-#: src/components/MissionSetup.tsx:900
+#: src/components/MissionSetup.tsx:920
 msgid "Stall, landing config (Vs0)"
 msgstr "ஸ்டால், தரையிறங்கும் அமைப்பு (Vs0)"
 
-#: src/components/MissionSetup.tsx:1413
+#: src/components/MissionSetup.tsx:1433
 msgid "Start"
 msgstr "தொடங்கு"
 
@@ -3358,11 +3367,11 @@ msgstr "முதல் கருத்தை சேர்த்து விவ
 msgid "Stay tuned though!"
 msgstr "எனினும் காத்திருங்கள்!"
 
-#: src/components/MissionSetup.tsx:890
+#: src/components/MissionSetup.tsx:910
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "மிகச் செங்குத்தான ஏற்றம் (Vx, 100% உந்துவிசை)"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:911
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "மிகச் செங்குத்தான ஏற்றம் (Vx, ஆஃப்டர்பர்னர்)"
 
@@ -3393,8 +3402,8 @@ msgstr "சந்தாதாராக"
 msgid "Sunday"
 msgstr "ஞாயிற்றுக்கிழமை"
 
-#: src/components/MissionSetup.tsx:1403
-#: src/components/MissionSetup.tsx:1775
+#: src/components/MissionSetup.tsx:1423
+#: src/components/MissionSetup.tsx:1796
 #: src/components/Multiplayer.tsx:423
 msgid "Superhuman"
 msgstr "மனிதனுக்கு அப்பால்"
@@ -3436,7 +3445,7 @@ msgstr "டேக்குகள்"
 msgid "TALLY"
 msgstr "எதிரி பார்வையில்"
 
-#: src/components/MissionSetup.tsx:1381
+#: src/components/MissionSetup.tsx:1401
 msgid "Task"
 msgstr "செய்பணி"
 
@@ -3470,7 +3479,7 @@ msgstr "விதிமுறைகள் மற்றும் நிபந்�
 msgid "Text"
 msgstr "உரை"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:195
+#: ../../../lib/web/src/components/step-up-dialog.tsx:204
 msgid "That code is incorrect or has expired."
 msgstr "அந்தக் குறியீடு தவறானது அல்லது காலாவதியாகிவிட்டது."
 
@@ -3526,7 +3535,7 @@ msgstr "த்ரொட்டில் அதிகரிக்க"
 msgid "Thursday"
 msgstr "வியாழக்கிழமை"
 
-#: src/components/MissionSetup.tsx:898
+#: src/components/MissionSetup.tsx:918
 msgid "Tightest sustained turn speed"
 msgstr "மிக இறுக்கமான நிலையான திருப்ப வேகம்"
 
@@ -3538,7 +3547,7 @@ msgstr "சாய்வு"
 msgid "Time"
 msgstr "நேரம்"
 
-#: src/components/MissionSetup.tsx:1467
+#: src/components/MissionSetup.tsx:1487
 msgid "Time of day"
 msgstr "நாளின் நேரம்"
 
@@ -3594,7 +3603,7 @@ msgstr "மிக அதிகமான கோரிக்கைகள்"
 msgid "Top"
 msgstr "மேல்"
 
-#: src/components/MissionSetup.tsx:1629
+#: src/components/MissionSetup.tsx:1650
 msgid "Tracers"
 msgstr "சுவடு குண்டுகள்"
 
@@ -3666,7 +3675,7 @@ msgstr "பயனர்களை தேட தட்டச்சு செய்
 msgid "Type to search..."
 msgstr "தேட தட்டச்சு செய்..."
 
-#: src/components/MissionSetup.tsx:1567
+#: src/components/MissionSetup.tsx:1588
 msgid "Ultra"
 msgstr "அல்ட்ரா"
 
@@ -3700,13 +3709,13 @@ msgstr "ஐக்கிய அமெரிக்கா"
 msgid "Unknown"
 msgstr "தெரியாதது"
 
-#: src/components/MissionSetup.tsx:1520
+#: src/components/MissionSetup.tsx:1541
 #: src/components/Multiplayer.tsx:78
 #: src/components/Multiplayer.tsx:396
 msgid "Unlimited ammunition"
 msgstr "வரம்பற்ற வெடிமருந்து"
 
-#: src/components/MissionSetup.tsx:1526
+#: src/components/MissionSetup.tsx:1547
 #: src/components/Multiplayer.tsx:79
 #: src/components/Multiplayer.tsx:406
 msgid "Unlimited fuel"
@@ -3740,7 +3749,7 @@ msgstr "பதிவேற்று"
 msgid "Upload progress"
 msgstr "பதிவேற்ற முன்னேற்றம்"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:338
+#: ../../../lib/web/src/components/step-up-dialog.tsx:352
 msgid "Use your passkey"
 msgstr "உங்கள் கடவுவிசையைப் பயன்படுத்தவும்"
 
@@ -3762,7 +3771,7 @@ msgstr "சரிபார்ப்பு குறியீடு அனுப�
 msgid "Verification failed"
 msgstr "சரிபார்ப்பு தோல்வியடைந்தது"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:388
+#: ../../../lib/web/src/components/step-up-dialog.tsx:402
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
@@ -3772,7 +3781,7 @@ msgstr "சரிபார்"
 msgid "Verify email address"
 msgstr "மின்னஞ்சல் முகவரியை சரிபார்"
 
-#: src/components/MissionSetup.tsx:940
+#: src/components/MissionSetup.tsx:960
 msgid "Vertical"
 msgstr "செங்குத்து"
 
@@ -3883,7 +3892,7 @@ msgstr "வெற்றி"
 msgid "World server"
 msgstr "உலக சேவையகம்"
 
-#: src/components/MissionSetup.tsx:1147
+#: src/components/MissionSetup.tsx:1167
 #: src/components/Multiplayer.tsx:142
 msgid "World server not reachable"
 msgstr "உலக சேவையகத்தை அடைய முடியவில்லை"
