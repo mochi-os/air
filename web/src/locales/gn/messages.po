@@ -46,7 +46,7 @@ msgstr "{0, plural, one {# poravopyre} other {# poravopyre}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:1165
+#: src/components/MissionSetup.tsx:1185
 msgid "{0} created “{1}”"
 msgstr "{0} ojapo “{1}”"
 
@@ -55,8 +55,13 @@ msgstr "{0} ojapo “{1}”"
 msgid "{0} flying"
 msgstr "{0} oveve"
 
+#. placeholder {0}: moment - CATAPULT
+#: src/components/MissionSetup.tsx:881
+msgid "{0} ft·lb over the catapult asymmetry limit"
+msgstr "{0} ft·lb katapulta ndojojoáiva rembe'y ári"
+
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:861
+#: src/components/MissionSetup.tsx:869
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb ohasáva pohýi tuichavéva oñemondo hag̃ua"
 
@@ -152,7 +157,7 @@ msgstr "CABLE 1"
 msgid "12 hours"
 msgstr "12 aravo"
 
-#: src/components/MissionSetup.tsx:927
+#: src/components/MissionSetup.tsx:947
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -168,7 +173,7 @@ msgstr "24 aravo"
 msgid "3 WIRE"
 msgstr "CABLE 3"
 
-#: src/components/MissionSetup.tsx:930
+#: src/components/MissionSetup.tsx:950
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -208,8 +213,8 @@ msgstr "Tetãygua peteĩchagua"
 msgid "Account verified"
 msgstr "Tetãygua oñemoneĩma"
 
-#: src/components/MissionSetup.tsx:1402
-#: src/components/MissionSetup.tsx:1774
+#: src/components/MissionSetup.tsx:1422
+#: src/components/MissionSetup.tsx:1795
 #: src/components/Multiplayer.tsx:422
 msgid "Ace"
 msgstr "As"
@@ -307,7 +312,7 @@ msgstr "Embojuajuhína..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Embojeko ne ojeguáva ha tape eipotaháicha."
 
-#: src/components/MissionSetup.tsx:1623
+#: src/components/MissionSetup.tsx:1644
 msgid "Afterburner"
 msgstr "Posquemador"
 
@@ -320,11 +325,11 @@ msgstr "IA"
 msgid "Aircraft"
 msgstr "Avión"
 
-#: src/components/MissionSetup.tsx:1004
+#: src/components/MissionSetup.tsx:1024
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Mba’yru-veve rerahaha <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> ojapo <1>Muhamad Mirza Arrafi</1> (Sketchfab), oñemboguata <2>CC BY 4.0</2> rehe. Oñemoambue: oñemomichĩ jey, oñembohape jey, oñemoñemi y renda peve, ha oñemosimplifika web peg̃uarã."
 
-#: src/components/MissionSetup.tsx:978
+#: src/components/MissionSetup.tsx:998
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Avión ta’anga <0>“F/A-18C Hornet”</0>, <1>CreadorDeMu</1> ojapo va’ekue (Sketchfab), licencia <2>CC BY 4.0</2> reheve. Oñemoambue: oñembohape jey ha oñemomichĩ jey, oñenohẽ umi textura dato ojeporu’ỹva, umi carga okapegua oñemohenda ambue archivo-pe, ha peteĩ malla carenado rehegua oñemoespejo."
 
@@ -371,7 +376,7 @@ msgstr "Oimeraẽva oikéva"
 msgid "Approach power (ATC)"
 msgstr "Mbarete ñembojarã (ATC)"
 
-#: src/components/MissionSetup.tsx:901
+#: src/components/MissionSetup.tsx:921
 msgid "Approach, on-speed (Vapp)"
 msgstr "Ñemboja, pya'e hendápe (Vapp)"
 
@@ -405,6 +410,10 @@ msgstr "Ojupíva"
 msgid "Ascending"
 msgstr "Ojupíva"
 
+#: src/components/MissionSetup.tsx:875
+msgid "Asymmetry"
+msgstr "Ndojojoáiva"
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:398
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:403
 msgid "Attach comment files"
@@ -420,7 +429,7 @@ msgstr "Embojuaju mbohovái archivokuéra"
 msgid "Authenticated users"
 msgstr "Puruhára oñemoañetéva"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:315
+#: ../../../lib/web/src/components/step-up-dialog.tsx:329
 msgid "Authenticator code"
 msgstr "Authenticator código"
 
@@ -459,7 +468,7 @@ msgstr "Tapykuépe"
 msgid "Back to home"
 msgstr "Eju jey ógape"
 
-#: src/components/MissionSetup.tsx:1394
+#: src/components/MissionSetup.tsx:1414
 msgid "Bandit"
 msgstr "Bandido"
 
@@ -471,19 +480,19 @@ msgstr "Banner"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250 GUÝPE — TREN HA FLAPS"
 
-#: src/components/MissionSetup.tsx:892
+#: src/components/MissionSetup.tsx:912
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "Jupi iporãvéva (Vy, 100% mbarete)"
 
-#: src/components/MissionSetup.tsx:893
+#: src/components/MissionSetup.tsx:913
 msgid "Best climb (Vy, afterburner)"
 msgstr "Jupi iporãvéva (Vy, posquemador)"
 
-#: src/components/MissionSetup.tsx:895
+#: src/components/MissionSetup.tsx:915
 msgid "Best glide (engines out)"
 msgstr "Veve iporãvéva (motorkuéra oguéva)"
 
-#: src/components/MissionSetup.tsx:897
+#: src/components/MissionSetup.tsx:917
 msgid "Best sustained turn speed"
 msgstr "Jere ojejoko pya'eha iporãvéva"
 
@@ -566,7 +575,7 @@ msgstr "Botón-kuéra"
 msgid "CALL THE BALL"
 msgstr "EMOMBE’U PELOTA"
 
-#: src/components/MissionSetup.tsx:1679
+#: src/components/MissionSetup.tsx:1700
 #: src/components/Multiplayer.tsx:285
 msgid "Callsign"
 msgstr "Ñehenói réra"
@@ -580,7 +589,7 @@ msgstr "Cámara mombyrykue"
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
-#: ../../../lib/web/src/components/step-up-dialog.tsx:363
+#: ../../../lib/web/src/components/step-up-dialog.tsx:377
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:249
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
@@ -608,31 +617,31 @@ msgstr "Heja mbohovái"
 msgid "Canopy"
 msgstr "Cúpula"
 
-#: src/components/MissionSetup.tsx:1200
+#: src/components/MissionSetup.tsx:1220
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1442
+#: src/components/MissionSetup.tsx:1462
 msgid "Case I (day)"
 msgstr "Kaso I (ára)"
 
-#: src/components/MissionSetup.tsx:1201
+#: src/components/MissionSetup.tsx:1221
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1443
+#: src/components/MissionSetup.tsx:1463
 msgid "Case II (weather)"
 msgstr "Kaso II (arapytu)"
 
-#: src/components/MissionSetup.tsx:1202
+#: src/components/MissionSetup.tsx:1222
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1444
+#: src/components/MissionSetup.tsx:1464
 msgid "Case III (night)"
 msgstr "Kaso III (pyhare)"
 
-#: src/components/MissionSetup.tsx:1450
+#: src/components/MissionSetup.tsx:1470
 msgid "Catapult"
 msgstr "Katapulta"
 
@@ -640,7 +649,7 @@ msgstr "Katapulta"
 msgid "Category for these notifications"
 msgstr "Categoría ko'ã ñe'ẽmondo-pegua"
 
-#: src/components/MissionSetup.tsx:744
+#: src/components/MissionSetup.tsx:746
 msgid "Centerline"
 msgstr "Línea mbytegua"
 
@@ -666,7 +675,7 @@ msgid "Chat to everyone"
 msgstr "Chat opavavéndi"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1509
+#: src/components/MissionSetup.tsx:1530
 msgid "Cheats"
 msgstr "Trucos"
 
@@ -777,7 +786,7 @@ msgstr "Mboty jeheka"
 msgid "closer"
 msgstr "aguĩve"
 
-#: src/components/MissionSetup.tsx:1478
+#: src/components/MissionSetup.tsx:1498
 msgid "Clouds"
 msgstr "Arai"
 
@@ -848,7 +857,7 @@ msgstr "Embohekombo'e view hekombo'e"
 msgid "Confirm"
 msgstr "Emoneĩ"
 
-#: src/components/MissionSetup.tsx:1310
+#: src/components/MissionSetup.tsx:1330
 msgid "Connect"
 msgstr "Ojoaju"
 
@@ -889,7 +898,7 @@ msgstr "Marandu rehegua ha detalle."
 msgid "Continue"
 msgstr "Tenonde"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:352
+#: ../../../lib/web/src/components/step-up-dialog.tsx:366
 msgid "Continue with {label}"
 msgstr "Eku tenonde {label} ndive"
 
@@ -905,7 +914,7 @@ msgstr "Oñekopiáma clipboard-pe"
 msgid "Copy"
 msgstr "Kopia"
 
-#: src/components/MissionSetup.tsx:896
+#: src/components/MissionSetup.tsx:916
 msgid "Corner speed (best instant turn)"
 msgstr "Pya'eha yképe (jere iporãvéva sapy'agua)"
 
@@ -922,7 +931,7 @@ msgstr "Ndaikatúi oñemyenyhẽ ko documento. Eha'ã jeýta upéi."
 msgid "Could not save the recording"
 msgstr "Ndaikatúi oñeñongatu pe grabación"
 
-#: src/components/MissionSetup.tsx:1147
+#: src/components/MissionSetup.tsx:1167
 msgid "Could not send the message"
 msgstr "Ndaikatúi oñemondo pe marandu"
 
@@ -930,15 +939,15 @@ msgstr "Ndaikatúi oñemondo pe marandu"
 msgid "Couldn't load notifications"
 msgstr "Ndaikatúi omyanyhẽ marandu"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:184
+#: ../../../lib/web/src/components/step-up-dialog.tsx:193
 msgid "Couldn't send the code. Please try again."
 msgstr "Ndaikatúi oñemondo pe código. Eñehaʼã jey."
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:136
+#: ../../../lib/web/src/components/step-up-dialog.tsx:145
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Ndaikatúi oñepyrũ ñemoneʼẽ jey. Eñehaʼã jey."
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:221
+#: ../../../lib/web/src/components/step-up-dialog.tsx:235
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Ndaikatúi ojehechajey upe mba'ete ndive. Eha'ã jey."
 
@@ -976,8 +985,8 @@ msgstr "Emoheñói ha eveve"
 msgid "Create match"
 msgstr "Emoheñói partida"
 
-#: src/components/MissionSetup.tsx:1814
-#: src/components/MissionSetup.tsx:1837
+#: src/components/MissionSetup.tsx:1835
+#: src/components/MissionSetup.tsx:1858
 msgid "Create mission"
 msgstr "Misión apo"
 
@@ -995,12 +1004,12 @@ msgstr "Oñembojeguáma"
 msgid "Creating..."
 msgstr "Embojeguávahína..."
 
-#: src/components/MissionSetup.tsx:967
-#: src/components/MissionSetup.tsx:973
+#: src/components/MissionSetup.tsx:987
+#: src/components/MissionSetup.tsx:993
 msgid "Credits"
 msgstr "Créditos"
 
-#: src/components/MissionSetup.tsx:1485
+#: src/components/MissionSetup.tsx:1505
 #: src/components/Multiplayer.tsx:74
 #: src/components/Multiplayer.tsx:347
 msgid "Cumulus"
@@ -1011,7 +1020,7 @@ msgid "Current location"
 msgstr "Tenda ag̃agua"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:265
-#: src/components/MissionSetup.tsx:800
+#: src/components/MissionSetup.tsx:808
 msgid "Custom"
 msgstr "Ñemomba'e"
 
@@ -1044,7 +1053,7 @@ msgstr "Mba'ekuaarã joavy"
 msgid "Date"
 msgstr "Ára"
 
-#: src/components/MissionSetup.tsx:1473
+#: src/components/MissionSetup.tsx:1493
 #: src/components/Multiplayer.tsx:342
 msgid "Day"
 msgstr "Ára"
@@ -1208,13 +1217,13 @@ msgstr "Pantalla mbojoapyha"
 msgid "Displays the mobile sidebar."
 msgstr "Ohechauka mobile sidebar."
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1632
 msgid "Distance LOD"
 msgstr "LOD mombyry"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1918
+#: src/components/MissionSetup.tsx:1939
 msgid "Done"
 msgstr "Apopyre"
 
@@ -1248,7 +1257,7 @@ msgstr "Duplicados"
 msgid "Duration"
 msgstr "Aravoʼi"
 
-#: src/components/MissionSetup.tsx:1605
+#: src/components/MissionSetup.tsx:1626
 msgid "Dynamic resolution"
 msgstr "Resolución dinámica"
 
@@ -1307,7 +1316,7 @@ msgstr "OPO OKÁPE"
 msgid "Email"
 msgstr "Email"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:289
+#: ../../../lib/web/src/components/step-up-dialog.tsx:303
 msgid "Email code"
 msgstr "Código email"
 
@@ -1324,8 +1333,8 @@ msgstr "Poi pya'e (jejoko)"
 msgid "empty"
 msgstr "nandi"
 
-#: src/components/MissionSetup.tsx:759
-#: src/components/MissionSetup.tsx:764
+#: src/components/MissionSetup.tsx:761
+#: src/components/MissionSetup.tsx:766
 msgid "Empty pylon"
 msgstr "Pylon nandi"
 
@@ -1337,11 +1346,11 @@ msgstr "ANDYRY HESE"
 msgid "Engine"
 msgstr "Motor"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:299
+#: ../../../lib/web/src/components/step-up-dialog.tsx:313
 msgid "Enter the code from your email"
 msgstr "Emoinge code ne email-pegua"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:324
+#: ../../../lib/web/src/components/step-up-dialog.tsx:338
 msgid "Enter your authenticator code"
 msgstr "Emoinge nde código autenticador rehegua"
 
@@ -1377,7 +1386,7 @@ msgstr "Embotuicha sidebar"
 msgid "Extend flaps"
 msgstr "Flaps ñemosẽ"
 
-#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1606
 msgid "Exterior detail"
 msgstr "Detalle okapegua"
 
@@ -1389,7 +1398,7 @@ msgstr "URL okápe"
 msgid "Extra large"
 msgstr "Tuichavéva"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:935
 msgid "F/A-18C reference"
 msgstr "F/A-18C techapyrã"
 
@@ -1554,8 +1563,8 @@ msgstr "Oguatáva"
 msgid "Flown"
 msgstr "Oveve"
 
-#: src/components/MissionSetup.tsx:1808
-#: src/components/MissionSetup.tsx:1851
+#: src/components/MissionSetup.tsx:1829
+#: src/components/MissionSetup.tsx:1872
 msgid "Fly"
 msgstr "Oveve"
 
@@ -1563,16 +1572,16 @@ msgstr "Oveve"
 msgid "Fly again"
 msgstr "Eveve jey"
 
-#: src/components/MissionSetup.tsx:771
+#: src/components/MissionSetup.tsx:773
 msgid "Fox 2 fighter"
 msgstr "Fox 2 ñorairõhára"
 
-#: src/components/MissionSetup.tsx:1635
+#: src/components/MissionSetup.tsx:1656
 msgid "Framerate"
 msgstr "Framerate"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1387
+#: src/components/MissionSetup.tsx:1407
 msgid "Free flight"
 msgstr "Veve sãso"
 
@@ -1621,7 +1630,7 @@ msgstr "COMBUSTIBLE SA'I"
 msgid "Fuel probe"
 msgstr "Combustible probe"
 
-#: src/components/MissionSetup.tsx:757
+#: src/components/MissionSetup.tsx:759
 msgid "Fuel tank"
 msgstr "Combustible ryru"
 
@@ -1633,8 +1642,8 @@ msgstr "Layout iguasúva"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:743
 #: src/components/MissionSetup.tsx:745
+#: src/components/MissionSetup.tsx:747
 msgid "Fuselage"
 msgstr "Hete"
 
@@ -1646,7 +1655,7 @@ msgstr "tren"
 msgid "GEAR"
 msgstr "TREN"
 
-#: src/components/MissionSetup.tsx:1860
+#: src/components/MissionSetup.tsx:1881
 msgid "General"
 msgstr "Tekorapy"
 
@@ -1676,11 +1685,11 @@ msgstr "Tereho kuatiarogue {pageNumber}-pe"
 msgid "Go to previous page"
 msgstr "Mboyvegua kuatiaroguépe"
 
-#: src/components/MissionSetup.tsx:1863
+#: src/components/MissionSetup.tsx:1884
 msgid "Graphics"
 msgstr "Gráficos"
 
-#: src/components/MissionSetup.tsx:857
+#: src/components/MissionSetup.tsx:865
 msgid "Gross weight"
 msgstr "Pohýi oĩmbáva"
 
@@ -1701,7 +1710,7 @@ msgstr "Aty: {0}"
 msgid "GUN"
 msgstr "MBOKA"
 
-#: src/components/MissionSetup.tsx:770
+#: src/components/MissionSetup.tsx:772
 msgid "Gun fighter"
 msgstr "Mboka ñorairõhára"
 
@@ -1717,18 +1726,18 @@ msgstr "Emokañy"
 msgid "Hide password"
 msgstr "Eñomi pe pareha"
 
-#: src/components/MissionSetup.tsx:1565
+#: src/components/MissionSetup.tsx:1586
 msgid "High"
 msgstr "Yvate"
 
-#: src/components/MissionSetup.tsx:1486
+#: src/components/MissionSetup.tsx:1506
 #: src/components/Multiplayer.tsx:75
 #: src/components/Multiplayer.tsx:348
 msgid "High stratus"
 msgstr "Estrato yvate"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1827
+#: src/components/MissionSetup.tsx:1848
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Tembiasakue"
@@ -1773,8 +1782,8 @@ msgstr "Ta'anga jehecha: {0}"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/MissionSetup.tsx:1197
-#: src/components/MissionSetup.tsx:1439
+#: src/components/MissionSetup.tsx:1217
+#: src/components/MissionSetup.tsx:1459
 msgid "In air"
 msgstr "Yvytúpe"
 
@@ -1798,7 +1807,7 @@ msgstr "Ipype"
 msgid "Interests"
 msgstr "Oikotevevakuéra"
 
-#: src/components/MissionSetup.tsx:853
+#: src/components/MissionSetup.tsx:861
 msgid "Internal fuel"
 msgstr "Combustible hyepypegua"
 
@@ -1826,7 +1835,7 @@ msgstr "Ndaikatúiva oñehundi"
 msgid "INVULNERABLE"
 msgstr "NDAIKATÚI OÑEMBYAI"
 
-#: src/components/MissionSetup.tsx:1514
+#: src/components/MissionSetup.tsx:1535
 #: src/components/Multiplayer.tsx:386
 msgid "Invulnerable (human players only)"
 msgstr "Ndaikatúi oñembyai (yvypóra ojugáva añónte)"
@@ -1848,8 +1857,8 @@ msgstr "POI: PYTA"
 msgid "Join"
 msgstr "Eike"
 
-#: src/components/MissionSetup.tsx:1280
-#: src/components/MissionSetup.tsx:1818
+#: src/components/MissionSetup.tsx:1300
+#: src/components/MissionSetup.tsx:1839
 msgid "Join server"
 msgstr "Servidor-pe jeike"
 
@@ -1858,7 +1867,7 @@ msgid "JOINED"
 msgstr "OIKE"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1780
+#: src/components/MissionSetup.tsx:1801
 #: src/components/Multiplayer.tsx:480
 msgid "Joust"
 msgstr "Justa"
@@ -1867,11 +1876,11 @@ msgstr "Justa"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Ñorairõ — 1v1, ojukáva raẽva ogana"
 
-#: src/components/MissionSetup.tsx:1388
+#: src/components/MissionSetup.tsx:1408
 msgid "Joust 1v1"
 msgstr "Ñorairõ 1v1"
 
-#: src/components/MissionSetup.tsx:1869
+#: src/components/MissionSetup.tsx:1890
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1887,7 +1896,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Teclado mboypýi"
 
-#: src/components/MissionSetup.tsx:1872
+#: src/components/MissionSetup.tsx:1893
 msgid "Keys"
 msgstr "Tecla-kuéra"
 
@@ -1953,7 +1962,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Eikuaave"
 
-#: src/components/MissionSetup.tsx:1336
+#: src/components/MissionSetup.tsx:1356
 msgid "Leave server"
 msgstr "Servidor jeheja"
 
@@ -1969,12 +1978,12 @@ msgstr "OSẼ"
 msgid "Left to Right"
 msgstr "Asu gotyo Akatúa peve"
 
-#: src/components/MissionSetup.tsx:741
-#: src/components/MissionSetup.tsx:742
+#: src/components/MissionSetup.tsx:743
+#: src/components/MissionSetup.tsx:744
 msgid "Left wing"
 msgstr "Pepo asu"
 
-#: src/components/MissionSetup.tsx:740
+#: src/components/MissionSetup.tsx:742
 msgid "Left wingtip"
 msgstr "Pepo asu apỹi"
 
@@ -2038,7 +2047,7 @@ msgstr "MBOGUEJY OJAVY"
 msgid "Loading..."
 msgstr "Ojembogue..."
 
-#: src/components/MissionSetup.tsx:1491
+#: src/components/MissionSetup.tsx:1511
 msgid "Loadout"
 msgstr "Mba'e reraha"
 
@@ -2085,11 +2094,11 @@ msgstr "Ma'ẽ akatúa gotyo"
 msgid "Look up"
 msgstr "Ma'ẽ yvate gotyo"
 
-#: src/components/MissionSetup.tsx:1561
+#: src/components/MissionSetup.tsx:1582
 msgid "Low"
 msgstr "Yvýpe"
 
-#: src/components/MissionSetup.tsx:1487
+#: src/components/MissionSetup.tsx:1507
 #: src/components/Multiplayer.tsx:76
 #: src/components/Multiplayer.tsx:349
 msgid "Low stratus"
@@ -2133,7 +2142,7 @@ msgstr "General"
 msgid "Match type"
 msgstr "Partida lája"
 
-#: src/components/MissionSetup.tsx:1330
+#: src/components/MissionSetup.tsx:1350
 msgid "Matches"
 msgstr "Ñembosaráikuéra"
 
@@ -2146,7 +2155,7 @@ msgid "MCP server"
 msgstr "MCP mohendaha"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1563
+#: src/components/MissionSetup.tsx:1584
 msgid "Medium"
 msgstr "Mbyte"
 
@@ -2167,7 +2176,7 @@ msgstr "Mensaje"
 msgid "Message everyone"
 msgstr "Ehai opavavépe"
 
-#: src/components/MissionSetup.tsx:1182
+#: src/components/MissionSetup.tsx:1202
 msgid "Message players on this server"
 msgstr "Emondo marandu ko servidor-pegua jugadorkuérape"
 
@@ -2183,7 +2192,7 @@ msgstr "Métrico"
 msgid "Midair collision"
 msgstr "Oñembota árape"
 
-#: src/components/MissionSetup.tsx:1030
+#: src/components/MissionSetup.tsx:1050
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway Atoll mapa — ta'angakuéra oguereko <0>Copernicus Sentinel-2</0> mba'ekuaarã oñemoambuéva (2026); aeropuerto rysýi (pista, taxiway, apron) © <1>OpenStreetMap</1> pytyvõhakuéra, lisénsia <2>ODbL</2> guýpe; y rembe'y ha arrecife mba'ekuaarã <3>NOAA NCCOS</3>-gui (dominio público)."
 
@@ -2264,7 +2273,7 @@ msgstr "Ñembosarái pyahu"
 msgid "Next image"
 msgstr "Ta'anga oseguíva"
 
-#: src/components/MissionSetup.tsx:1474
+#: src/components/MissionSetup.tsx:1494
 #: src/components/Multiplayer.tsx:73
 #: src/components/Multiplayer.tsx:343
 msgid "Night"
@@ -2375,7 +2384,7 @@ msgstr "Ndojejuhúi usuarios"
 msgid "No views"
 msgstr "Ndaipóri jehecha"
 
-#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1179
 #: src/components/Multiplayer.tsx:463
 msgid "No world server."
 msgstr "Ndaipóri mohendahavusu arapygua."
@@ -2400,8 +2409,8 @@ msgstr "SIN NOTA"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:361
 #: src/components/MissionSetup.tsx:421
-#: src/components/MissionSetup.tsx:766
-#: src/components/MissionSetup.tsx:1484
+#: src/components/MissionSetup.tsx:768
+#: src/components/MissionSetup.tsx:1504
 msgid "None"
 msgstr "Mba'eve"
 
@@ -2425,7 +2434,7 @@ msgstr "Noñemoĩri"
 msgid "Nothing found"
 msgstr "Ndojejuhúi mba'eve"
 
-#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1179
 msgid "Nothing yet — say hello."
 msgstr "Ne'ĩra gueteri mba'eve — emomaitei."
 
@@ -2442,8 +2451,8 @@ msgstr "Ñehenói"
 msgid "Notifications: {0}"
 msgstr "Marandu: {0}"
 
-#: src/components/MissionSetup.tsx:1400
-#: src/components/MissionSetup.tsx:1772
+#: src/components/MissionSetup.tsx:1420
+#: src/components/MissionSetup.tsx:1793
 #: src/components/Multiplayer.tsx:420
 msgid "Novice"
 msgstr "Oñepyrũva"
@@ -2454,7 +2463,7 @@ msgstr "Oñepyrũva"
 msgid "Number"
 msgstr "Papapy"
 
-#: src/components/MissionSetup.tsx:1593
+#: src/components/MissionSetup.tsx:1614
 msgid "Ocean detail"
 msgstr "Detalle yguasu"
 
@@ -2466,13 +2475,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Myendy"
 
-#: src/components/MissionSetup.tsx:1199
-#: src/components/MissionSetup.tsx:1441
+#: src/components/MissionSetup.tsx:1219
+#: src/components/MissionSetup.tsx:1461
 msgid "On carrier"
 msgstr "Portaaviones ári"
 
-#: src/components/MissionSetup.tsx:1198
-#: src/components/MissionSetup.tsx:1440
+#: src/components/MissionSetup.tsx:1218
+#: src/components/MissionSetup.tsx:1460
 msgid "On runway"
 msgstr "Pista ári"
 
@@ -2580,11 +2589,11 @@ msgstr "Sy/ru"
 msgid "Parking brake"
 msgstr "Freno ñembopyta"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:334
+#: ../../../lib/web/src/components/step-up-dialog.tsx:348
 msgid "Passkey"
 msgstr "Jeike rape"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:209
+#: ../../../lib/web/src/components/step-up-dialog.tsx:218
 msgid "Passkey verification failed. Please try again."
 msgstr "Passkey ñemyatã ndoikói. Eñehaʼã jey."
 
@@ -2600,14 +2609,14 @@ msgstr "Tape (regex)"
 msgid "Pick a date"
 msgstr "Eiporavo peteĩ ára"
 
-#: src/components/MissionSetup.tsx:1101
+#: src/components/MissionSetup.tsx:1121
 #: src/components/Multiplayer.tsx:129
 #: src/components/Multiplayer.tsx:290
 msgid "pilot"
 msgstr "piloto"
 
-#: src/components/MissionSetup.tsx:1401
-#: src/components/MissionSetup.tsx:1773
+#: src/components/MissionSetup.tsx:1421
+#: src/components/MissionSetup.tsx:1794
 #: src/components/Multiplayer.tsx:421
 msgid "Pilot"
 msgstr "Piloto"
@@ -2670,7 +2679,7 @@ msgstr "Marandu"
 msgid "Posts and comments"
 msgstr "Marandu ha comentarios"
 
-#: src/components/MissionSetup.tsx:1548
+#: src/components/MissionSetup.tsx:1569
 msgid "Preset"
 msgstr "Preset"
 
@@ -2744,7 +2753,7 @@ msgstr "Emoinge jey nde passkeys ko servidor-pe"
 msgid "REARMED"
 msgstr "OÑEARMÁ JEY"
 
-#: src/components/MissionSetup.tsx:1285
+#: src/components/MissionSetup.tsx:1305
 msgid "Recent"
 msgstr "Ramoiteve"
 
@@ -2757,12 +2766,12 @@ msgstr "Ojeporavóva"
 msgid "Reconnecting ({retries})..."
 msgstr "Ojoajujey ({retries})..."
 
-#: src/components/MissionSetup.tsx:1697
+#: src/components/MissionSetup.tsx:1718
 msgid "Record flights"
 msgstr "Egraba umi veve"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:1691
+#: src/components/MissionSetup.tsx:1712
 msgid "Recording"
 msgstr "Grabación"
 
@@ -2787,7 +2796,7 @@ msgstr "Oñembojevyhína login-pe."
 msgid "Reduce interest"
 msgstr "Embogue ñembyeko'ói"
 
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:929
 msgid "Reference"
 msgstr "Techapyrã"
 
@@ -2866,7 +2875,7 @@ msgstr "Embohera jey columna"
 msgid "Rename this board column"
 msgstr "Embohera jey ko board columna"
 
-#: src/components/MissionSetup.tsx:1067
+#: src/components/MissionSetup.tsx:1087
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "<0>three.js</0> ojapo renderizado (licencia MIT)."
 
@@ -2884,13 +2893,13 @@ msgstr "Embohovái {0}-pe..."
 msgid "Required"
 msgstr "Oñeikotevẽ"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:367
+#: ../../../lib/web/src/components/step-up-dialog.tsx:381
 msgid "Resend email"
 msgstr "Embou jey ñe'ẽveve"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1911
+#: src/components/MissionSetup.tsx:1932
 msgid "Reset"
 msgstr "Embojevy"
 
@@ -2918,11 +2927,11 @@ msgstr "Trim ñemboguevi"
 msgid "Reset view"
 msgstr "Ñehecha ñemboguevi"
 
-#: src/components/MissionSetup.tsx:1575
+#: src/components/MissionSetup.tsx:1596
 msgid "Resolution"
 msgstr "Resolución"
 
-#: src/components/MissionSetup.tsx:1800
+#: src/components/MissionSetup.tsx:1821
 msgid "Restart mission"
 msgstr "Misión ñepyrũjey"
 
@@ -2934,7 +2943,7 @@ msgstr "Resultado"
 msgid "Resume"
 msgstr "Eñepyrũ jey"
 
-#: src/components/MissionSetup.tsx:1796
+#: src/components/MissionSetup.tsx:1817
 msgid "Resume mission"
 msgstr "Misión ku’ejey"
 
@@ -2959,12 +2968,12 @@ msgstr "Emboyke jeike"
 msgid "Right to Left"
 msgstr "Akatúa guive Asú peve"
 
-#: src/components/MissionSetup.tsx:746
-#: src/components/MissionSetup.tsx:747
+#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:749
 msgid "Right wing"
 msgstr "Pepo akatúa"
 
-#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:750
 msgid "Right wingtip"
 msgstr "Pepo akatúa apỹi"
 
@@ -3024,7 +3033,7 @@ msgstr "Arapokõi"
 msgid "Save"
 msgstr "Ñongatu"
 
-#: src/components/MissionSetup.tsx:924
+#: src/components/MissionSetup.tsx:944
 msgid "Sea level"
 msgstr "Para ape"
 
@@ -3173,7 +3182,7 @@ msgstr "poravopyre"
 msgid "Selected: <0>{0}</0>"
 msgstr "Poravopyre: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:1189
+#: src/components/MissionSetup.tsx:1209
 msgid "Send"
 msgstr "Emondo"
 
@@ -3185,7 +3194,7 @@ msgstr "Emondo jey"
 msgid "Send chat"
 msgstr "Emondo marandu"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:307
+#: ../../../lib/web/src/components/step-up-dialog.tsx:321
 msgid "Send email"
 msgstr "Emondo email"
 
@@ -3199,11 +3208,11 @@ msgid "Serif"
 msgstr "Serif"
 
 #: src/components/MatchHistory.tsx:161
-#: src/components/MissionSetup.tsx:1298
+#: src/components/MissionSetup.tsx:1318
 msgid "Server"
 msgstr "Mohendaha"
 
-#: src/components/MissionSetup.tsx:1154
+#: src/components/MissionSetup.tsx:1174
 msgid "Server chat"
 msgstr "Servidor ñomongeta"
 
@@ -3237,12 +3246,12 @@ msgstr "Emoĩ ñepyrũmby ha ohohaguã"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:340
-#: src/components/MissionSetup.tsx:1822
-#: src/components/MissionSetup.tsx:1856
+#: src/components/MissionSetup.tsx:1843
+#: src/components/MissionSetup.tsx:1877
 msgid "Settings"
 msgstr "Ñemboheko"
 
-#: src/components/MissionSetup.tsx:1617
+#: src/components/MissionSetup.tsx:1638
 msgid "Shadows"
 msgstr "Kuarahy'ã"
 
@@ -3286,7 +3295,7 @@ msgstr "Sesionhápe oñesẽva..."
 msgid "Single line of text only"
 msgstr "Petei tai mante"
 
-#: src/components/MissionSetup.tsx:894
+#: src/components/MissionSetup.tsx:914
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Jupi iporãvéva peteĩ motórpe (Vyse, posquemador)"
 
@@ -3304,7 +3313,7 @@ msgid "Sort"
 msgstr "Embojo'a"
 
 #: src/components/MissionSetup.tsx:480
-#: src/components/MissionSetup.tsx:1866
+#: src/components/MissionSetup.tsx:1887
 msgid "Sound"
 msgstr "Pu"
 
@@ -3330,7 +3339,7 @@ msgstr "aerofreno"
 msgid "Speed brake"
 msgstr "Aerofreno"
 
-#: src/components/MissionSetup.tsx:950
+#: src/components/MissionSetup.tsx:970
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Pya'eha KCAS-pe, vevýigui (combustible michĩvéva, carga'ỹre) pohýi peve (peso máximo). Umi datos ojejuhu experimento rupive ñembosaráipe. Opa mba'e iñambuéva aeronave añeteguágui ohechauka simulador veve modelo javy."
 
@@ -3338,15 +3347,15 @@ msgstr "Pya'eha KCAS-pe, vevýigui (combustible michĩvéva, carga'ỹre) pohýi
 msgid "SPLASH"
 msgstr "OÑEHUNDI"
 
-#: src/components/MissionSetup.tsx:899
+#: src/components/MissionSetup.tsx:919
 msgid "Stall, clean (Vs1)"
 msgstr "Pérdida, potĩ (Vs1)"
 
-#: src/components/MissionSetup.tsx:900
+#: src/components/MissionSetup.tsx:920
 msgid "Stall, landing config (Vs0)"
 msgstr "Pérdida, ñeguejyrã (Vs0)"
 
-#: src/components/MissionSetup.tsx:1413
+#: src/components/MissionSetup.tsx:1433
 msgid "Start"
 msgstr "Ñepyrũ"
 
@@ -3358,11 +3367,11 @@ msgstr "Eñepyrũ ñomongeta embojuaju peteĩha ñe'ẽmbyre."
 msgid "Stay tuned though!"
 msgstr "Ema'ẽ gueteri!"
 
-#: src/components/MissionSetup.tsx:890
+#: src/components/MissionSetup.tsx:910
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Jupi oñembo'yvéva (Vx, 100% mbarete)"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:911
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Jupi oñembo'yvéva (Vx, posquemador)"
 
@@ -3393,8 +3402,8 @@ msgstr "Eñemboaty"
 msgid "Sunday"
 msgstr "Arateĩ"
 
-#: src/components/MissionSetup.tsx:1403
-#: src/components/MissionSetup.tsx:1775
+#: src/components/MissionSetup.tsx:1423
+#: src/components/MissionSetup.tsx:1796
 #: src/components/Multiplayer.tsx:423
 msgid "Superhuman"
 msgstr "Yvypóra rasa"
@@ -3436,7 +3445,7 @@ msgstr "Tagskuéra"
 msgid "TALLY"
 msgstr "AHECHA AMOTARE'Ỹ"
 
-#: src/components/MissionSetup.tsx:1381
+#: src/components/MissionSetup.tsx:1401
 msgid "Task"
 msgstr "Tembiapo"
 
@@ -3470,7 +3479,7 @@ msgstr "Ñe'ẽmecha ha tekorosã rehegua"
 msgid "Text"
 msgstr "Tai"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:195
+#: ../../../lib/web/src/components/step-up-dialog.tsx:204
 msgid "That code is incorrect or has expired."
 msgstr "Upe código ndoikoporãi térã hiʼaravoʼimáma."
 
@@ -3526,7 +3535,7 @@ msgstr "Acelerador jupi"
 msgid "Thursday"
 msgstr "Yvateára"
 
-#: src/components/MissionSetup.tsx:898
+#: src/components/MissionSetup.tsx:918
 msgid "Tightest sustained turn speed"
 msgstr "Jere ojejoko pya'eha po'ivéva"
 
@@ -3538,7 +3547,7 @@ msgstr "jeroja"
 msgid "Time"
 msgstr "Aravo"
 
-#: src/components/MissionSetup.tsx:1467
+#: src/components/MissionSetup.tsx:1487
 msgid "Time of day"
 msgstr "Ára aravo"
 
@@ -3594,7 +3603,7 @@ msgstr "Hetaiterei mba'ejerure"
 msgid "Top"
 msgstr "Yvate"
 
-#: src/components/MissionSetup.tsx:1629
+#: src/components/MissionSetup.tsx:1650
 msgid "Tracers"
 msgstr "Trazadora"
 
@@ -3666,7 +3675,7 @@ msgstr "Ehai eheka mboapurevahára"
 msgid "Type to search..."
 msgstr "Ehai eheka..."
 
-#: src/components/MissionSetup.tsx:1567
+#: src/components/MissionSetup.tsx:1588
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3700,13 +3709,13 @@ msgstr "Estados Unidos"
 msgid "Unknown"
 msgstr "Ojekuaa'ỹva"
 
-#: src/components/MissionSetup.tsx:1520
+#: src/components/MissionSetup.tsx:1541
 #: src/components/Multiplayer.tsx:78
 #: src/components/Multiplayer.tsx:396
 msgid "Unlimited ammunition"
 msgstr "Mboka ra'ỹi opave'ỹva"
 
-#: src/components/MissionSetup.tsx:1526
+#: src/components/MissionSetup.tsx:1547
 #: src/components/Multiplayer.tsx:79
 #: src/components/Multiplayer.tsx:406
 msgid "Unlimited fuel"
@@ -3740,7 +3749,7 @@ msgstr "Ehupi"
 msgid "Upload progress"
 msgstr "Jehupi jeku'e"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:338
+#: ../../../lib/web/src/components/step-up-dialog.tsx:352
 msgid "Use your passkey"
 msgstr "Eipuru nde passkey"
 
@@ -3762,7 +3771,7 @@ msgstr "Verificación código mondopyre"
 msgid "Verification failed"
 msgstr "Verificación ndoiporãi"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:388
+#: ../../../lib/web/src/components/step-up-dialog.tsx:402
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
@@ -3772,7 +3781,7 @@ msgstr "Ehesa'ỹijo"
 msgid "Verify email address"
 msgstr "Ehesa'ỹijo email tape"
 
-#: src/components/MissionSetup.tsx:940
+#: src/components/MissionSetup.tsx:960
 msgid "Vertical"
 msgstr "Oñembo'y"
 
@@ -3883,7 +3892,7 @@ msgstr "OGANA"
 msgid "World server"
 msgstr "Mohendahavusu arapygua"
 
-#: src/components/MissionSetup.tsx:1147
+#: src/components/MissionSetup.tsx:1167
 #: src/components/Multiplayer.tsx:142
 msgid "World server not reachable"
 msgstr "Ndaikatúi ojehupyty mohendahavusu arapygua"

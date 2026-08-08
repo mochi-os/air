@@ -46,7 +46,7 @@ msgstr "{0, plural, one {# seçili} other {# seçili}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:1165
+#: src/components/MissionSetup.tsx:1185
 msgid "{0} created “{1}”"
 msgstr "{0}, “{1}” oluşturdu"
 
@@ -55,8 +55,13 @@ msgstr "{0}, “{1}” oluşturdu"
 msgid "{0} flying"
 msgstr "{0} kişi uçuyor"
 
+#. placeholder {0}: moment - CATAPULT
+#: src/components/MissionSetup.tsx:881
+msgid "{0} ft·lb over the catapult asymmetry limit"
+msgstr "Katapult asimetri sınırının {0} ft·lb üzerinde"
+
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:861
+#: src/components/MissionSetup.tsx:869
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb azami fırlatma ağırlığının üzerinde"
 
@@ -152,7 +157,7 @@ msgstr "HALAT 1"
 msgid "12 hours"
 msgstr "12 saat"
 
-#: src/components/MissionSetup.tsx:927
+#: src/components/MissionSetup.tsx:947
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -168,7 +173,7 @@ msgstr "24 saat"
 msgid "3 WIRE"
 msgstr "HALAT 3"
 
-#: src/components/MissionSetup.tsx:930
+#: src/components/MissionSetup.tsx:950
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -208,8 +213,8 @@ msgstr "Hesap türü"
 msgid "Account verified"
 msgstr "Hesap doğrulandı"
 
-#: src/components/MissionSetup.tsx:1402
-#: src/components/MissionSetup.tsx:1774
+#: src/components/MissionSetup.tsx:1422
+#: src/components/MissionSetup.tsx:1795
 #: src/components/Multiplayer.tsx:422
 msgid "Ace"
 msgstr "As"
@@ -307,7 +312,7 @@ msgstr "Ekleniyor..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Görünüm ve düzeni tercihlerinize göre ayarlayın."
 
-#: src/components/MissionSetup.tsx:1623
+#: src/components/MissionSetup.tsx:1644
 msgid "Afterburner"
 msgstr "Art yakıcı"
 
@@ -320,11 +325,11 @@ msgstr "Yapay zekâ"
 msgid "Aircraft"
 msgstr "Uçak"
 
-#: src/components/MissionSetup.tsx:1004
+#: src/components/MissionSetup.tsx:1024
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Uçak gemisi <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>, <1>Muhamad Mirza Arrafi</1> tarafından (Sketchfab), <2>CC BY 4.0</2> lisansı altında lisanslanmıştır. Değiştirildi: yeniden ölçeklendirildi, yeniden yönlendirildi, su hattına kadar batırıldı ve web için sadeleştirildi."
 
-#: src/components/MissionSetup.tsx:978
+#: src/components/MissionSetup.tsx:998
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Uçak modeli <0>“F/A-18C Hornet”</0>, <1>CreadorDeMu</1> (Sketchfab) tarafından, <2>CC BY 4.0</2> lisansı altında. Değiştirildi: yeniden yönlendirildi ve yeniden ölçeklendirildi, kullanılmayan doku verileri kaldırıldı, dış yükler ayrı bir dosyaya ayrıldı, bir muhafaza mesh'i aynalandı."
 
@@ -371,7 +376,7 @@ msgstr "Giriş yapmış herkes"
 msgid "Approach power (ATC)"
 msgstr "Yaklaşma gücü (ATC)"
 
-#: src/components/MissionSetup.tsx:901
+#: src/components/MissionSetup.tsx:921
 msgid "Approach, on-speed (Vapp)"
 msgstr "Yaklaşma, hedef hızda (Vapp)"
 
@@ -405,6 +410,10 @@ msgstr "Artan"
 msgid "Ascending"
 msgstr "Artan"
 
+#: src/components/MissionSetup.tsx:875
+msgid "Asymmetry"
+msgstr "Asimetri"
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:398
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:403
 msgid "Attach comment files"
@@ -420,7 +429,7 @@ msgstr "Yanıt dosyalarını ekle"
 msgid "Authenticated users"
 msgstr "Kimliği doğrulanmış kullanıcılar"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:315
+#: ../../../lib/web/src/components/step-up-dialog.tsx:329
 msgid "Authenticator code"
 msgstr "Authenticator kodu"
 
@@ -459,7 +468,7 @@ msgstr "Geri"
 msgid "Back to home"
 msgstr "Ana sayfaya dön"
 
-#: src/components/MissionSetup.tsx:1394
+#: src/components/MissionSetup.tsx:1414
 msgid "Bandit"
 msgstr "Düşman uçağı"
 
@@ -471,19 +480,19 @@ msgstr "Afiş"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250 ALTINDA — İNİŞ TAKIMI VE FLAP"
 
-#: src/components/MissionSetup.tsx:892
+#: src/components/MissionSetup.tsx:912
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "En iyi tırmanış (Vy, 100% itki)"
 
-#: src/components/MissionSetup.tsx:893
+#: src/components/MissionSetup.tsx:913
 msgid "Best climb (Vy, afterburner)"
 msgstr "En iyi tırmanış (Vy, art yakıcı)"
 
-#: src/components/MissionSetup.tsx:895
+#: src/components/MissionSetup.tsx:915
 msgid "Best glide (engines out)"
 msgstr "En iyi süzülüş (motorlar kapalı)"
 
-#: src/components/MissionSetup.tsx:897
+#: src/components/MissionSetup.tsx:917
 msgid "Best sustained turn speed"
 msgstr "En iyi sürekli dönüş hızı"
 
@@ -566,7 +575,7 @@ msgstr "Düğmeler"
 msgid "CALL THE BALL"
 msgstr "TOPU BILDIR"
 
-#: src/components/MissionSetup.tsx:1679
+#: src/components/MissionSetup.tsx:1700
 #: src/components/Multiplayer.tsx:285
 msgid "Callsign"
 msgstr "Çağrı işareti"
@@ -580,7 +589,7 @@ msgstr "Kamera mesafesi"
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
-#: ../../../lib/web/src/components/step-up-dialog.tsx:363
+#: ../../../lib/web/src/components/step-up-dialog.tsx:377
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:249
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
@@ -608,31 +617,31 @@ msgstr "Yanıtı iptal et"
 msgid "Canopy"
 msgstr "Kanopi"
 
-#: src/components/MissionSetup.tsx:1200
+#: src/components/MissionSetup.tsx:1220
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1442
+#: src/components/MissionSetup.tsx:1462
 msgid "Case I (day)"
 msgstr "Durum I (gündüz)"
 
-#: src/components/MissionSetup.tsx:1201
+#: src/components/MissionSetup.tsx:1221
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1443
+#: src/components/MissionSetup.tsx:1463
 msgid "Case II (weather)"
 msgstr "Durum II (hava)"
 
-#: src/components/MissionSetup.tsx:1202
+#: src/components/MissionSetup.tsx:1222
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1444
+#: src/components/MissionSetup.tsx:1464
 msgid "Case III (night)"
 msgstr "Durum III (gece)"
 
-#: src/components/MissionSetup.tsx:1450
+#: src/components/MissionSetup.tsx:1470
 msgid "Catapult"
 msgstr "Katapult"
 
@@ -640,7 +649,7 @@ msgstr "Katapult"
 msgid "Category for these notifications"
 msgstr "Bu bildirimler için kategori"
 
-#: src/components/MissionSetup.tsx:744
+#: src/components/MissionSetup.tsx:746
 msgid "Centerline"
 msgstr "Merkez hattı"
 
@@ -666,7 +675,7 @@ msgid "Chat to everyone"
 msgstr "Herkesle sohbet"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1509
+#: src/components/MissionSetup.tsx:1530
 msgid "Cheats"
 msgstr "Hileler"
 
@@ -777,7 +786,7 @@ msgstr "Aramayı kapat"
 msgid "closer"
 msgstr "yakınlaş"
 
-#: src/components/MissionSetup.tsx:1478
+#: src/components/MissionSetup.tsx:1498
 msgid "Clouds"
 msgstr "Bulutlar"
 
@@ -848,7 +857,7 @@ msgstr "Görünüm ayarlarını yapılandır"
 msgid "Confirm"
 msgstr "Onayla"
 
-#: src/components/MissionSetup.tsx:1310
+#: src/components/MissionSetup.tsx:1330
 msgid "Connect"
 msgstr "Bağlan"
 
@@ -889,7 +898,7 @@ msgstr "Bağlamsal bilgi ve ayrıntılar."
 msgid "Continue"
 msgstr "Devam et"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:352
+#: ../../../lib/web/src/components/step-up-dialog.tsx:366
 msgid "Continue with {label}"
 msgstr "{label} ile devam et"
 
@@ -905,7 +914,7 @@ msgstr "Panoya kopyalandı"
 msgid "Copy"
 msgstr "Kopyala"
 
-#: src/components/MissionSetup.tsx:896
+#: src/components/MissionSetup.tsx:916
 msgid "Corner speed (best instant turn)"
 msgstr "Köşe hızı (en iyi ani dönüş)"
 
@@ -922,7 +931,7 @@ msgstr "Bu belge yüklenemedi. Lütfen daha sonra tekrar deneyin."
 msgid "Could not save the recording"
 msgstr "Uçuş kaydı kaydedilemedi"
 
-#: src/components/MissionSetup.tsx:1147
+#: src/components/MissionSetup.tsx:1167
 msgid "Could not send the message"
 msgstr "Mesaj gönderilemedi"
 
@@ -930,15 +939,15 @@ msgstr "Mesaj gönderilemedi"
 msgid "Couldn't load notifications"
 msgstr "Bildirimler yüklenemedi"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:184
+#: ../../../lib/web/src/components/step-up-dialog.tsx:193
 msgid "Couldn't send the code. Please try again."
 msgstr "Kod gönderilemedi. Lütfen tekrar deneyin."
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:136
+#: ../../../lib/web/src/components/step-up-dialog.tsx:145
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Yeniden kimlik doğrulama başlatılamadı. Lütfen tekrar deneyin."
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:221
+#: ../../../lib/web/src/components/step-up-dialog.tsx:235
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Bu hesapla doğrulama yapılamadı. Lütfen tekrar deneyin."
 
@@ -976,8 +985,8 @@ msgstr "Oluştur ve uç"
 msgid "Create match"
 msgstr "Maç oluştur"
 
-#: src/components/MissionSetup.tsx:1814
-#: src/components/MissionSetup.tsx:1837
+#: src/components/MissionSetup.tsx:1835
+#: src/components/MissionSetup.tsx:1858
 msgid "Create mission"
 msgstr "Görev oluştur"
 
@@ -995,12 +1004,12 @@ msgstr "Oluşturuldu"
 msgid "Creating..."
 msgstr "Oluşturuluyor..."
 
-#: src/components/MissionSetup.tsx:967
-#: src/components/MissionSetup.tsx:973
+#: src/components/MissionSetup.tsx:987
+#: src/components/MissionSetup.tsx:993
 msgid "Credits"
 msgstr "Künye"
 
-#: src/components/MissionSetup.tsx:1485
+#: src/components/MissionSetup.tsx:1505
 #: src/components/Multiplayer.tsx:74
 #: src/components/Multiplayer.tsx:347
 msgid "Cumulus"
@@ -1011,7 +1020,7 @@ msgid "Current location"
 msgstr "Mevcut konum"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:265
-#: src/components/MissionSetup.tsx:800
+#: src/components/MissionSetup.tsx:808
 msgid "Custom"
 msgstr "Özel"
 
@@ -1044,7 +1053,7 @@ msgstr "Veri çakışması"
 msgid "Date"
 msgstr "Tarih"
 
-#: src/components/MissionSetup.tsx:1473
+#: src/components/MissionSetup.tsx:1493
 #: src/components/Multiplayer.tsx:342
 msgid "Day"
 msgstr "Gündüz"
@@ -1208,13 +1217,13 @@ msgstr "Ekran tekrarlayıcı"
 msgid "Displays the mobile sidebar."
 msgstr "Mobil kenar çubuğunu görüntüler."
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1632
 msgid "Distance LOD"
 msgstr "Mesafe LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1918
+#: src/components/MissionSetup.tsx:1939
 msgid "Done"
 msgstr "Tamamlandı"
 
@@ -1248,7 +1257,7 @@ msgstr "Yinelenenler"
 msgid "Duration"
 msgstr "Süre"
 
-#: src/components/MissionSetup.tsx:1605
+#: src/components/MissionSetup.tsx:1626
 msgid "Dynamic resolution"
 msgstr "Dinamik çözünürlük"
 
@@ -1307,7 +1316,7 @@ msgstr "FIRLATILDI"
 msgid "Email"
 msgstr "E-posta"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:289
+#: ../../../lib/web/src/components/step-up-dialog.tsx:303
 msgid "Email code"
 msgstr "E-posta kodu"
 
@@ -1324,8 +1333,8 @@ msgstr "Acil atma (basılı tut)"
 msgid "empty"
 msgstr "boş"
 
-#: src/components/MissionSetup.tsx:759
-#: src/components/MissionSetup.tsx:764
+#: src/components/MissionSetup.tsx:761
+#: src/components/MissionSetup.tsx:766
 msgid "Empty pylon"
 msgstr "Boş pilon"
 
@@ -1337,11 +1346,11 @@ msgstr "ANGAJE OLDUM"
 msgid "Engine"
 msgstr "Motor"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:299
+#: ../../../lib/web/src/components/step-up-dialog.tsx:313
 msgid "Enter the code from your email"
 msgstr "E-postanızdaki kodu girin"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:324
+#: ../../../lib/web/src/components/step-up-dialog.tsx:338
 msgid "Enter your authenticator code"
 msgstr "Kimlik doğrulayıcı kodunuzu girin"
 
@@ -1377,7 +1386,7 @@ msgstr "Kenar çubuğunu genişlet"
 msgid "Extend flaps"
 msgstr "Flapları aç"
 
-#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1606
 msgid "Exterior detail"
 msgstr "Dış detay"
 
@@ -1389,7 +1398,7 @@ msgstr "Harici URL"
 msgid "Extra large"
 msgstr "Çok büyük"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:935
 msgid "F/A-18C reference"
 msgstr "F/A-18C referansı"
 
@@ -1554,8 +1563,8 @@ msgstr "Kayan"
 msgid "Flown"
 msgstr "Uçuldu"
 
-#: src/components/MissionSetup.tsx:1808
-#: src/components/MissionSetup.tsx:1851
+#: src/components/MissionSetup.tsx:1829
+#: src/components/MissionSetup.tsx:1872
 msgid "Fly"
 msgstr "Uç"
 
@@ -1563,16 +1572,16 @@ msgstr "Uç"
 msgid "Fly again"
 msgstr "Tekrar uç"
 
-#: src/components/MissionSetup.tsx:771
+#: src/components/MissionSetup.tsx:773
 msgid "Fox 2 fighter"
 msgstr "Fox 2 avcısı"
 
-#: src/components/MissionSetup.tsx:1635
+#: src/components/MissionSetup.tsx:1656
 msgid "Framerate"
 msgstr "Kare hızı"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1387
+#: src/components/MissionSetup.tsx:1407
 msgid "Free flight"
 msgstr "Serbest uçuş"
 
@@ -1621,7 +1630,7 @@ msgstr "YAKIT AZ"
 msgid "Fuel probe"
 msgstr "Yakıt iğnesi"
 
-#: src/components/MissionSetup.tsx:757
+#: src/components/MissionSetup.tsx:759
 msgid "Fuel tank"
 msgstr "Yakıt tankı"
 
@@ -1633,8 +1642,8 @@ msgstr "Tam düzen"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:743
 #: src/components/MissionSetup.tsx:745
+#: src/components/MissionSetup.tsx:747
 msgid "Fuselage"
 msgstr "Gövde"
 
@@ -1646,7 +1655,7 @@ msgstr "iniş takımı"
 msgid "GEAR"
 msgstr "İNİŞ TAKIMI"
 
-#: src/components/MissionSetup.tsx:1860
+#: src/components/MissionSetup.tsx:1881
 msgid "General"
 msgstr "Genel"
 
@@ -1676,11 +1685,11 @@ msgstr "{pageNumber}. sayfaya git"
 msgid "Go to previous page"
 msgstr "Önceki sayfaya git"
 
-#: src/components/MissionSetup.tsx:1863
+#: src/components/MissionSetup.tsx:1884
 msgid "Graphics"
 msgstr "Grafik"
 
-#: src/components/MissionSetup.tsx:857
+#: src/components/MissionSetup.tsx:865
 msgid "Gross weight"
 msgstr "Toplam ağırlık"
 
@@ -1701,7 +1710,7 @@ msgstr "Grup: {0}"
 msgid "GUN"
 msgstr "TOP"
 
-#: src/components/MissionSetup.tsx:770
+#: src/components/MissionSetup.tsx:772
 msgid "Gun fighter"
 msgstr "Top avcısı"
 
@@ -1717,18 +1726,18 @@ msgstr "Gizle"
 msgid "Hide password"
 msgstr "Parolayı gizle"
 
-#: src/components/MissionSetup.tsx:1565
+#: src/components/MissionSetup.tsx:1586
 msgid "High"
 msgstr "Yüksek"
 
-#: src/components/MissionSetup.tsx:1486
+#: src/components/MissionSetup.tsx:1506
 #: src/components/Multiplayer.tsx:75
 #: src/components/Multiplayer.tsx:348
 msgid "High stratus"
 msgstr "Yüksek stratus"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1827
+#: src/components/MissionSetup.tsx:1848
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Geçmiş"
@@ -1773,8 +1782,8 @@ msgstr "Görsel görüntüleyici: {0}"
 msgid "Imperial"
 msgstr "İngiliz birim sistemi"
 
-#: src/components/MissionSetup.tsx:1197
-#: src/components/MissionSetup.tsx:1439
+#: src/components/MissionSetup.tsx:1217
+#: src/components/MissionSetup.tsx:1459
 msgid "In air"
 msgstr "Havada"
 
@@ -1798,7 +1807,7 @@ msgstr "İç"
 msgid "Interests"
 msgstr "İlgi alanları"
 
-#: src/components/MissionSetup.tsx:853
+#: src/components/MissionSetup.tsx:861
 msgid "Internal fuel"
 msgstr "Dahili yakıt"
 
@@ -1826,7 +1835,7 @@ msgstr "Yaralanmaz"
 msgid "INVULNERABLE"
 msgstr "ÖLÜMSÜZ"
 
-#: src/components/MissionSetup.tsx:1514
+#: src/components/MissionSetup.tsx:1535
 #: src/components/Multiplayer.tsx:386
 msgid "Invulnerable (human players only)"
 msgstr "Ölümsüz (yalnızca insan oyuncular)"
@@ -1848,8 +1857,8 @@ msgstr "ATMA: İNİŞ TAKIMI"
 msgid "Join"
 msgstr "Katıl"
 
-#: src/components/MissionSetup.tsx:1280
-#: src/components/MissionSetup.tsx:1818
+#: src/components/MissionSetup.tsx:1300
+#: src/components/MissionSetup.tsx:1839
 msgid "Join server"
 msgstr "Sunucuya katıl"
 
@@ -1858,7 +1867,7 @@ msgid "JOINED"
 msgstr "KATILDI"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1780
+#: src/components/MissionSetup.tsx:1801
 #: src/components/Multiplayer.tsx:480
 msgid "Joust"
 msgstr "Düello"
@@ -1867,11 +1876,11 @@ msgstr "Düello"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Düello — 1v1, ilk düşüren kazanır"
 
-#: src/components/MissionSetup.tsx:1388
+#: src/components/MissionSetup.tsx:1408
 msgid "Joust 1v1"
 msgstr "Düello 1v1"
 
-#: src/components/MissionSetup.tsx:1869
+#: src/components/MissionSetup.tsx:1890
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1887,7 +1896,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Klavye kısayolları"
 
-#: src/components/MissionSetup.tsx:1872
+#: src/components/MissionSetup.tsx:1893
 msgid "Keys"
 msgstr "Tuşlar"
 
@@ -1953,7 +1962,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Daha fazla bilgi"
 
-#: src/components/MissionSetup.tsx:1336
+#: src/components/MissionSetup.tsx:1356
 msgid "Leave server"
 msgstr "Sunucudan ayrıl"
 
@@ -1969,12 +1978,12 @@ msgstr "AYRILDI"
 msgid "Left to Right"
 msgstr "Soldan sağa"
 
-#: src/components/MissionSetup.tsx:741
-#: src/components/MissionSetup.tsx:742
+#: src/components/MissionSetup.tsx:743
+#: src/components/MissionSetup.tsx:744
 msgid "Left wing"
 msgstr "Sol kanat"
 
-#: src/components/MissionSetup.tsx:740
+#: src/components/MissionSetup.tsx:742
 msgid "Left wingtip"
 msgstr "Sol kanat ucu"
 
@@ -2038,7 +2047,7 @@ msgstr "YÜKLEME BAŞARISIZ"
 msgid "Loading..."
 msgstr "Yükleniyor..."
 
-#: src/components/MissionSetup.tsx:1491
+#: src/components/MissionSetup.tsx:1511
 msgid "Loadout"
 msgstr "Teçhizat"
 
@@ -2085,11 +2094,11 @@ msgstr "Sağa bak"
 msgid "Look up"
 msgstr "Yukarı bak"
 
-#: src/components/MissionSetup.tsx:1561
+#: src/components/MissionSetup.tsx:1582
 msgid "Low"
 msgstr "Düşük"
 
-#: src/components/MissionSetup.tsx:1487
+#: src/components/MissionSetup.tsx:1507
 #: src/components/Multiplayer.tsx:76
 #: src/components/Multiplayer.tsx:349
 msgid "Low stratus"
@@ -2133,7 +2142,7 @@ msgstr "Genel"
 msgid "Match type"
 msgstr "Maç türü"
 
-#: src/components/MissionSetup.tsx:1330
+#: src/components/MissionSetup.tsx:1350
 msgid "Matches"
 msgstr "Maçlar"
 
@@ -2146,7 +2155,7 @@ msgid "MCP server"
 msgstr "MCP sunucusu"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1563
+#: src/components/MissionSetup.tsx:1584
 msgid "Medium"
 msgstr "Orta"
 
@@ -2167,7 +2176,7 @@ msgstr "Mesaj"
 msgid "Message everyone"
 msgstr "Herkese mesaj yaz"
 
-#: src/components/MissionSetup.tsx:1182
+#: src/components/MissionSetup.tsx:1202
 msgid "Message players on this server"
 msgstr "Bu sunucudaki oyunculara mesaj gönder"
 
@@ -2183,7 +2192,7 @@ msgstr "Metrik"
 msgid "Midair collision"
 msgstr "Havada çarpışma"
 
-#: src/components/MissionSetup.tsx:1030
+#: src/components/MissionSetup.tsx:1050
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway Adaları haritası — görüntüler değiştirilmiş <0>Copernicus Sentinel-2</0> verileri içerir (2026); havaalanı geometrisi (pist, taksi yolları, apronlar) © <1>OpenStreetMap</1> katkıda bulunanlar, <2>ODbL</2> lisansı altında; kıyı şeridi ve resif verileri <3>NOAA NCCOS</3> kaynaklıdır (kamu malı)."
 
@@ -2264,7 +2273,7 @@ msgstr "Yeni oyun"
 msgid "Next image"
 msgstr "Sonraki görsel"
 
-#: src/components/MissionSetup.tsx:1474
+#: src/components/MissionSetup.tsx:1494
 #: src/components/Multiplayer.tsx:73
 #: src/components/Multiplayer.tsx:343
 msgid "Night"
@@ -2375,7 +2384,7 @@ msgstr "Kullanıcı bulunamadı"
 msgid "No views"
 msgstr "Görüntüleme yok"
 
-#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1179
 #: src/components/Multiplayer.tsx:463
 msgid "No world server."
 msgstr "Dünya sunucusu yok."
@@ -2400,8 +2409,8 @@ msgstr "NOT VERİLMEDİ"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:361
 #: src/components/MissionSetup.tsx:421
-#: src/components/MissionSetup.tsx:766
-#: src/components/MissionSetup.tsx:1484
+#: src/components/MissionSetup.tsx:768
+#: src/components/MissionSetup.tsx:1504
 msgid "None"
 msgstr "Yok"
 
@@ -2425,7 +2434,7 @@ msgstr "Ayarlanmamış"
 msgid "Nothing found"
 msgstr "Bir şey bulunamadı"
 
-#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1179
 msgid "Nothing yet — say hello."
 msgstr "Henüz bir şey yok — merhaba de!"
 
@@ -2442,8 +2451,8 @@ msgstr "Bildirimler"
 msgid "Notifications: {0}"
 msgstr "Bildirimler: {0}"
 
-#: src/components/MissionSetup.tsx:1400
-#: src/components/MissionSetup.tsx:1772
+#: src/components/MissionSetup.tsx:1420
+#: src/components/MissionSetup.tsx:1793
 #: src/components/Multiplayer.tsx:420
 msgid "Novice"
 msgstr "Acemi"
@@ -2454,7 +2463,7 @@ msgstr "Acemi"
 msgid "Number"
 msgstr "Sayı"
 
-#: src/components/MissionSetup.tsx:1593
+#: src/components/MissionSetup.tsx:1614
 msgid "Ocean detail"
 msgstr "Okyanus detayı"
 
@@ -2466,13 +2475,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Açık"
 
-#: src/components/MissionSetup.tsx:1199
-#: src/components/MissionSetup.tsx:1441
+#: src/components/MissionSetup.tsx:1219
+#: src/components/MissionSetup.tsx:1461
 msgid "On carrier"
 msgstr "Uçak gemisinde"
 
-#: src/components/MissionSetup.tsx:1198
-#: src/components/MissionSetup.tsx:1440
+#: src/components/MissionSetup.tsx:1218
+#: src/components/MissionSetup.tsx:1460
 msgid "On runway"
 msgstr "Pistte"
 
@@ -2580,11 +2589,11 @@ msgstr "Üst"
 msgid "Parking brake"
 msgstr "Park freni"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:334
+#: ../../../lib/web/src/components/step-up-dialog.tsx:348
 msgid "Passkey"
 msgstr "Geçiş anahtarı"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:209
+#: ../../../lib/web/src/components/step-up-dialog.tsx:218
 msgid "Passkey verification failed. Please try again."
 msgstr "Geçiş anahtarı doğrulaması başarısız oldu. Lütfen tekrar deneyin."
 
@@ -2600,14 +2609,14 @@ msgstr "Desen (regex)"
 msgid "Pick a date"
 msgstr "Bir tarih seçin"
 
-#: src/components/MissionSetup.tsx:1101
+#: src/components/MissionSetup.tsx:1121
 #: src/components/Multiplayer.tsx:129
 #: src/components/Multiplayer.tsx:290
 msgid "pilot"
 msgstr "pilot"
 
-#: src/components/MissionSetup.tsx:1401
-#: src/components/MissionSetup.tsx:1773
+#: src/components/MissionSetup.tsx:1421
+#: src/components/MissionSetup.tsx:1794
 #: src/components/Multiplayer.tsx:421
 msgid "Pilot"
 msgstr "Pilot"
@@ -2670,7 +2679,7 @@ msgstr "Gönderiler"
 msgid "Posts and comments"
 msgstr "Gönderiler ve yorumlar"
 
-#: src/components/MissionSetup.tsx:1548
+#: src/components/MissionSetup.tsx:1569
 msgid "Preset"
 msgstr "Ön ayar"
 
@@ -2744,7 +2753,7 @@ msgstr "Bu sunucuda parola anahtarlarınızı yeniden kaydedin"
 msgid "REARMED"
 msgstr "YENİDEN SİLAHLANDIRILDI"
 
-#: src/components/MissionSetup.tsx:1285
+#: src/components/MissionSetup.tsx:1305
 msgid "Recent"
 msgstr "Son"
 
@@ -2757,12 +2766,12 @@ msgstr "Önerilen"
 msgid "Reconnecting ({retries})..."
 msgstr "Yeniden bağlanıyor ({retries})..."
 
-#: src/components/MissionSetup.tsx:1697
+#: src/components/MissionSetup.tsx:1718
 msgid "Record flights"
 msgstr "Uçuşları kaydet"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:1691
+#: src/components/MissionSetup.tsx:1712
 msgid "Recording"
 msgstr "Kayıt"
 
@@ -2787,7 +2796,7 @@ msgstr "Girişe yönlendiriliyor."
 msgid "Reduce interest"
 msgstr "İlgiyi azalt"
 
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:929
 msgid "Reference"
 msgstr "Referans"
 
@@ -2866,7 +2875,7 @@ msgstr "Sütunu yeniden adlandır"
 msgid "Rename this board column"
 msgstr "Bu pano sütununu yeniden adlandır"
 
-#: src/components/MissionSetup.tsx:1067
+#: src/components/MissionSetup.tsx:1087
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Render, <0>three.js</0> ile yapılır (MIT lisansı)."
 
@@ -2884,13 +2893,13 @@ msgstr "{0} kullanıcısına yanıt ver..."
 msgid "Required"
 msgstr "Gerekli"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:367
+#: ../../../lib/web/src/components/step-up-dialog.tsx:381
 msgid "Resend email"
 msgstr "E-postayı yeniden gönder"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1911
+#: src/components/MissionSetup.tsx:1932
 msgid "Reset"
 msgstr "Sıfırla"
 
@@ -2918,11 +2927,11 @@ msgstr "Trimi sıfırla"
 msgid "Reset view"
 msgstr "Görünümü sıfırla"
 
-#: src/components/MissionSetup.tsx:1575
+#: src/components/MissionSetup.tsx:1596
 msgid "Resolution"
 msgstr "Çözünürlük"
 
-#: src/components/MissionSetup.tsx:1800
+#: src/components/MissionSetup.tsx:1821
 msgid "Restart mission"
 msgstr "Görevi yeniden başlat"
 
@@ -2934,7 +2943,7 @@ msgstr "Sonuç"
 msgid "Resume"
 msgstr "Sürdür"
 
-#: src/components/MissionSetup.tsx:1796
+#: src/components/MissionSetup.tsx:1817
 msgid "Resume mission"
 msgstr "Göreve devam et"
 
@@ -2959,12 +2968,12 @@ msgstr "Erişimi iptal et"
 msgid "Right to Left"
 msgstr "Sağdan sola"
 
-#: src/components/MissionSetup.tsx:746
-#: src/components/MissionSetup.tsx:747
+#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:749
 msgid "Right wing"
 msgstr "Sağ kanat"
 
-#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:750
 msgid "Right wingtip"
 msgstr "Sağ kanat ucu"
 
@@ -3024,7 +3033,7 @@ msgstr "Cumartesi"
 msgid "Save"
 msgstr "Kaydet"
 
-#: src/components/MissionSetup.tsx:924
+#: src/components/MissionSetup.tsx:944
 msgid "Sea level"
 msgstr "Deniz seviyesi"
 
@@ -3173,7 +3182,7 @@ msgstr "seçildi"
 msgid "Selected: <0>{0}</0>"
 msgstr "Seçili: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:1189
+#: src/components/MissionSetup.tsx:1209
 msgid "Send"
 msgstr "Gönder"
 
@@ -3185,7 +3194,7 @@ msgstr "Tekrar gönder"
 msgid "Send chat"
 msgstr "Mesaj gönder"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:307
+#: ../../../lib/web/src/components/step-up-dialog.tsx:321
 msgid "Send email"
 msgstr "E-posta gönder"
 
@@ -3199,11 +3208,11 @@ msgid "Serif"
 msgstr "Tırnaklı"
 
 #: src/components/MatchHistory.tsx:161
-#: src/components/MissionSetup.tsx:1298
+#: src/components/MissionSetup.tsx:1318
 msgid "Server"
 msgstr "Sunucu"
 
-#: src/components/MissionSetup.tsx:1154
+#: src/components/MissionSetup.tsx:1174
 msgid "Server chat"
 msgstr "Sunucu sohbeti"
 
@@ -3237,12 +3246,12 @@ msgstr "Başlangıç ve hedef belirle"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:340
-#: src/components/MissionSetup.tsx:1822
-#: src/components/MissionSetup.tsx:1856
+#: src/components/MissionSetup.tsx:1843
+#: src/components/MissionSetup.tsx:1877
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: src/components/MissionSetup.tsx:1617
+#: src/components/MissionSetup.tsx:1638
 msgid "Shadows"
 msgstr "Gölgeler"
 
@@ -3286,7 +3295,7 @@ msgstr "Çıkış yapılıyor..."
 msgid "Single line of text only"
 msgstr "Yalnızca tek satır metin"
 
-#: src/components/MissionSetup.tsx:894
+#: src/components/MissionSetup.tsx:914
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Tek motorlu en iyi tırmanış (Vyse, art yakıcı)"
 
@@ -3304,7 +3313,7 @@ msgid "Sort"
 msgstr "Sırala"
 
 #: src/components/MissionSetup.tsx:480
-#: src/components/MissionSetup.tsx:1866
+#: src/components/MissionSetup.tsx:1887
 msgid "Sound"
 msgstr "Ses"
 
@@ -3330,7 +3339,7 @@ msgstr "hız freni"
 msgid "Speed brake"
 msgstr "Hız freni"
 
-#: src/components/MissionSetup.tsx:950
+#: src/components/MissionSetup.tsx:970
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Hızlar KCAS cinsinden, hafiften (minimum yakıt, harici yük yok) ağıra (maksimum brüt ağırlık) uzanan bir aralık olarak. Veriler oyun içinde deneysel olarak elde edilmiştir. Gerçek uçaktan herhangi bir fark, simülatör uçuş modeli hatalarını yansıtır."
 
@@ -3338,15 +3347,15 @@ msgstr "Hızlar KCAS cinsinden, hafiften (minimum yakıt, harici yük yok) ağı
 msgid "SPLASH"
 msgstr "HEDEF DÜŞÜRÜLDÜ"
 
-#: src/components/MissionSetup.tsx:899
+#: src/components/MissionSetup.tsx:919
 msgid "Stall, clean (Vs1)"
 msgstr "Perdövites, temiz (Vs1)"
 
-#: src/components/MissionSetup.tsx:900
+#: src/components/MissionSetup.tsx:920
 msgid "Stall, landing config (Vs0)"
 msgstr "Perdövites, iniş konfigürasyonu (Vs0)"
 
-#: src/components/MissionSetup.tsx:1413
+#: src/components/MissionSetup.tsx:1433
 msgid "Start"
 msgstr "Başlat"
 
@@ -3358,11 +3367,11 @@ msgstr "İlk yorumu ekleyerek tartışmayı başlat."
 msgid "Stay tuned though!"
 msgstr "Yine de takipte kal!"
 
-#: src/components/MissionSetup.tsx:890
+#: src/components/MissionSetup.tsx:910
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "En dik tırmanış (Vx, 100% itki)"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:911
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "En dik tırmanış (Vx, art yakıcı)"
 
@@ -3393,8 +3402,8 @@ msgstr "Abone ol"
 msgid "Sunday"
 msgstr "Pazar"
 
-#: src/components/MissionSetup.tsx:1403
-#: src/components/MissionSetup.tsx:1775
+#: src/components/MissionSetup.tsx:1423
+#: src/components/MissionSetup.tsx:1796
 #: src/components/Multiplayer.tsx:423
 msgid "Superhuman"
 msgstr "İnsanüstü"
@@ -3436,7 +3445,7 @@ msgstr "Etiketler"
 msgid "TALLY"
 msgstr "DÜŞMANI GÖRÜYORUM"
 
-#: src/components/MissionSetup.tsx:1381
+#: src/components/MissionSetup.tsx:1401
 msgid "Task"
 msgstr "Vazife"
 
@@ -3470,7 +3479,7 @@ msgstr "Şartlar ve koşullar"
 msgid "Text"
 msgstr "Metin"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:195
+#: ../../../lib/web/src/components/step-up-dialog.tsx:204
 msgid "That code is incorrect or has expired."
 msgstr "Bu kod yanlış veya süresi dolmuş."
 
@@ -3526,7 +3535,7 @@ msgstr "Gazı artır"
 msgid "Thursday"
 msgstr "Perşembe"
 
-#: src/components/MissionSetup.tsx:898
+#: src/components/MissionSetup.tsx:918
 msgid "Tightest sustained turn speed"
 msgstr "En dar sürekli dönüş hızı"
 
@@ -3538,7 +3547,7 @@ msgstr "eğme"
 msgid "Time"
 msgstr "Süre"
 
-#: src/components/MissionSetup.tsx:1467
+#: src/components/MissionSetup.tsx:1487
 msgid "Time of day"
 msgstr "Günün saati"
 
@@ -3594,7 +3603,7 @@ msgstr "Çok fazla istek"
 msgid "Top"
 msgstr "Üst"
 
-#: src/components/MissionSetup.tsx:1629
+#: src/components/MissionSetup.tsx:1650
 msgid "Tracers"
 msgstr "İzli mermiler"
 
@@ -3666,7 +3675,7 @@ msgstr "Kullanıcı aramak için yaz"
 msgid "Type to search..."
 msgstr "Aramak için yaz..."
 
-#: src/components/MissionSetup.tsx:1567
+#: src/components/MissionSetup.tsx:1588
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3700,13 +3709,13 @@ msgstr "Amerika Birleşik Devletleri"
 msgid "Unknown"
 msgstr "Bilinmiyor"
 
-#: src/components/MissionSetup.tsx:1520
+#: src/components/MissionSetup.tsx:1541
 #: src/components/Multiplayer.tsx:78
 #: src/components/Multiplayer.tsx:396
 msgid "Unlimited ammunition"
 msgstr "Sınırsız mühimmat"
 
-#: src/components/MissionSetup.tsx:1526
+#: src/components/MissionSetup.tsx:1547
 #: src/components/Multiplayer.tsx:79
 #: src/components/Multiplayer.tsx:406
 msgid "Unlimited fuel"
@@ -3740,7 +3749,7 @@ msgstr "Yükle"
 msgid "Upload progress"
 msgstr "Yükleme ilerlemesi"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:338
+#: ../../../lib/web/src/components/step-up-dialog.tsx:352
 msgid "Use your passkey"
 msgstr "Geçiş anahtarınızı kullanın"
 
@@ -3762,7 +3771,7 @@ msgstr "Doğrulama kodu gönderildi"
 msgid "Verification failed"
 msgstr "Doğrulama başarısız"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:388
+#: ../../../lib/web/src/components/step-up-dialog.tsx:402
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
@@ -3772,7 +3781,7 @@ msgstr "Doğrula"
 msgid "Verify email address"
 msgstr "E-posta adresini doğrula"
 
-#: src/components/MissionSetup.tsx:940
+#: src/components/MissionSetup.tsx:960
 msgid "Vertical"
 msgstr "Dikey"
 
@@ -3883,7 +3892,7 @@ msgstr "KAZANDI"
 msgid "World server"
 msgstr "Dünya sunucusu"
 
-#: src/components/MissionSetup.tsx:1147
+#: src/components/MissionSetup.tsx:1167
 #: src/components/Multiplayer.tsx:142
 msgid "World server not reachable"
 msgstr "Dünya sunucusuna ulaşılamıyor"

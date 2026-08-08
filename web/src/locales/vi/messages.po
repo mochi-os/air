@@ -46,7 +46,7 @@ msgstr "{0, plural, one {# đã chọn} other {# đã chọn}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:1165
+#: src/components/MissionSetup.tsx:1185
 msgid "{0} created “{1}”"
 msgstr "{0} đã tạo “{1}”"
 
@@ -55,8 +55,13 @@ msgstr "{0} đã tạo “{1}”"
 msgid "{0} flying"
 msgstr "{0} đang bay"
 
+#. placeholder {0}: moment - CATAPULT
+#: src/components/MissionSetup.tsx:881
+msgid "{0} ft·lb over the catapult asymmetry limit"
+msgstr "{0} ft·lb vượt giới hạn bất đối xứng của máy phóng"
+
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:861
+#: src/components/MissionSetup.tsx:869
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb vượt trọng lượng phóng tối đa"
 
@@ -152,7 +157,7 @@ msgstr "CÁP 1"
 msgid "12 hours"
 msgstr "12 giờ"
 
-#: src/components/MissionSetup.tsx:927
+#: src/components/MissionSetup.tsx:947
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -168,7 +173,7 @@ msgstr "24 giờ"
 msgid "3 WIRE"
 msgstr "CÁP 3"
 
-#: src/components/MissionSetup.tsx:930
+#: src/components/MissionSetup.tsx:950
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -208,8 +213,8 @@ msgstr "Loại tài khoản"
 msgid "Account verified"
 msgstr "Đã xác minh tài khoản"
 
-#: src/components/MissionSetup.tsx:1402
-#: src/components/MissionSetup.tsx:1774
+#: src/components/MissionSetup.tsx:1422
+#: src/components/MissionSetup.tsx:1795
 #: src/components/Multiplayer.tsx:422
 msgid "Ace"
 msgstr "Cao thủ"
@@ -307,7 +312,7 @@ msgstr "Đang thêm..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Điều chỉnh giao diện và bố cục theo sở thích của bạn."
 
-#: src/components/MissionSetup.tsx:1623
+#: src/components/MissionSetup.tsx:1644
 msgid "Afterburner"
 msgstr "Buồng đốt sau"
 
@@ -320,11 +325,11 @@ msgstr "AI"
 msgid "Aircraft"
 msgstr "Máy bay"
 
-#: src/components/MissionSetup.tsx:1004
+#: src/components/MissionSetup.tsx:1024
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Tàu sân bay <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> của <1>Muhamad Mirza Arrafi</1> (Sketchfab), được cấp phép theo <2>CC BY 4.0</2>. Đã chỉnh sửa: thay đổi tỉ lệ, thay đổi hướng, hạ xuống ngang mực nước, và đơn giản hóa cho web."
 
-#: src/components/MissionSetup.tsx:978
+#: src/components/MissionSetup.tsx:998
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Mô hình máy bay <0>“F/A-18C Hornet”</0> của <1>CreadorDeMu</1> (Sketchfab), được cấp phép theo <2>CC BY 4.0</2>. Đã chỉnh sửa: thay đổi hướng và tỉ lệ, loại bỏ dữ liệu texture không sử dụng, tách các thiết bị treo ngoài thành tệp riêng, lật gương một lưới vỏ chụp."
 
@@ -371,7 +376,7 @@ msgstr "Bất kỳ ai đã đăng nhập"
 msgid "Approach power (ATC)"
 msgstr "Công suất tiếp cận (ATC)"
 
-#: src/components/MissionSetup.tsx:901
+#: src/components/MissionSetup.tsx:921
 msgid "Approach, on-speed (Vapp)"
 msgstr "Tiếp cận, đúng tốc độ (Vapp)"
 
@@ -405,6 +410,10 @@ msgstr "Tăng dần"
 msgid "Ascending"
 msgstr "Tăng dần"
 
+#: src/components/MissionSetup.tsx:875
+msgid "Asymmetry"
+msgstr "Bất đối xứng"
+
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:398
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:403
 msgid "Attach comment files"
@@ -420,7 +429,7 @@ msgstr "Đính kèm tệp phản hồi"
 msgid "Authenticated users"
 msgstr "Người dùng đã xác thực"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:315
+#: ../../../lib/web/src/components/step-up-dialog.tsx:329
 msgid "Authenticator code"
 msgstr "Mã xác thực"
 
@@ -459,7 +468,7 @@ msgstr "Quay lại"
 msgid "Back to home"
 msgstr "Về trang chủ"
 
-#: src/components/MissionSetup.tsx:1394
+#: src/components/MissionSetup.tsx:1414
 msgid "Bandit"
 msgstr "Máy bay địch"
 
@@ -471,19 +480,19 @@ msgstr "Biểu ngữ"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "DƯỚI 250 — CÀNG VÀ CÁNH TÀ"
 
-#: src/components/MissionSetup.tsx:892
+#: src/components/MissionSetup.tsx:912
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "Lấy độ cao tốt nhất (Vy, 100% lực đẩy)"
 
-#: src/components/MissionSetup.tsx:893
+#: src/components/MissionSetup.tsx:913
 msgid "Best climb (Vy, afterburner)"
 msgstr "Lấy độ cao tốt nhất (Vy, buồng đốt tăng lực)"
 
-#: src/components/MissionSetup.tsx:895
+#: src/components/MissionSetup.tsx:915
 msgid "Best glide (engines out)"
 msgstr "Lượn tốt nhất (tắt động cơ)"
 
-#: src/components/MissionSetup.tsx:897
+#: src/components/MissionSetup.tsx:917
 msgid "Best sustained turn speed"
 msgstr "Tốc độ vòng lượn duy trì tốt nhất"
 
@@ -566,7 +575,7 @@ msgstr "Nút"
 msgid "CALL THE BALL"
 msgstr "BÁO BÓNG"
 
-#: src/components/MissionSetup.tsx:1679
+#: src/components/MissionSetup.tsx:1700
 #: src/components/Multiplayer.tsx:285
 msgid "Callsign"
 msgstr "Biệt danh"
@@ -580,7 +589,7 @@ msgstr "Khoảng cách camera"
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
-#: ../../../lib/web/src/components/step-up-dialog.tsx:363
+#: ../../../lib/web/src/components/step-up-dialog.tsx:377
 #: ../../../lib/web/src/components/travelling-picker.tsx:308
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:249
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:132
@@ -608,31 +617,31 @@ msgstr "Hủy phản hồi"
 msgid "Canopy"
 msgstr "Nắp buồng lái"
 
-#: src/components/MissionSetup.tsx:1200
+#: src/components/MissionSetup.tsx:1220
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1442
+#: src/components/MissionSetup.tsx:1462
 msgid "Case I (day)"
 msgstr "Trường hợp I (ngày)"
 
-#: src/components/MissionSetup.tsx:1201
+#: src/components/MissionSetup.tsx:1221
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1443
+#: src/components/MissionSetup.tsx:1463
 msgid "Case II (weather)"
 msgstr "Trường hợp II (thời tiết)"
 
-#: src/components/MissionSetup.tsx:1202
+#: src/components/MissionSetup.tsx:1222
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1444
+#: src/components/MissionSetup.tsx:1464
 msgid "Case III (night)"
 msgstr "Trường hợp III (đêm)"
 
-#: src/components/MissionSetup.tsx:1450
+#: src/components/MissionSetup.tsx:1470
 msgid "Catapult"
 msgstr "Máy phóng"
 
@@ -640,7 +649,7 @@ msgstr "Máy phóng"
 msgid "Category for these notifications"
 msgstr "Danh mục cho các thông báo này"
 
-#: src/components/MissionSetup.tsx:744
+#: src/components/MissionSetup.tsx:746
 msgid "Centerline"
 msgstr "Đường trung tâm"
 
@@ -666,7 +675,7 @@ msgid "Chat to everyone"
 msgstr "Chat với tất cả"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1509
+#: src/components/MissionSetup.tsx:1530
 msgid "Cheats"
 msgstr "Cheat"
 
@@ -777,7 +786,7 @@ msgstr "Đóng tìm kiếm"
 msgid "closer"
 msgstr "lại gần"
 
-#: src/components/MissionSetup.tsx:1478
+#: src/components/MissionSetup.tsx:1498
 msgid "Clouds"
 msgstr "Mây"
 
@@ -848,7 +857,7 @@ msgstr "Cấu hình chế độ xem"
 msgid "Confirm"
 msgstr "Xác nhận"
 
-#: src/components/MissionSetup.tsx:1310
+#: src/components/MissionSetup.tsx:1330
 msgid "Connect"
 msgstr "Kết nối"
 
@@ -889,7 +898,7 @@ msgstr "Thông tin và chi tiết theo ngữ cảnh."
 msgid "Continue"
 msgstr "Tiếp tục"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:352
+#: ../../../lib/web/src/components/step-up-dialog.tsx:366
 msgid "Continue with {label}"
 msgstr "Tiếp tục với {label}"
 
@@ -905,7 +914,7 @@ msgstr "Đã sao chép vào bộ nhớ tạm"
 msgid "Copy"
 msgstr "Sao chép"
 
-#: src/components/MissionSetup.tsx:896
+#: src/components/MissionSetup.tsx:916
 msgid "Corner speed (best instant turn)"
 msgstr "Tốc độ góc (vòng lượn tức thời tốt nhất)"
 
@@ -922,7 +931,7 @@ msgstr "Không thể tải tài liệu này. Vui lòng thử lại sau."
 msgid "Could not save the recording"
 msgstr "Không thể lưu bản ghi"
 
-#: src/components/MissionSetup.tsx:1147
+#: src/components/MissionSetup.tsx:1167
 msgid "Could not send the message"
 msgstr "Không thể gửi tin nhắn"
 
@@ -930,15 +939,15 @@ msgstr "Không thể gửi tin nhắn"
 msgid "Couldn't load notifications"
 msgstr "Không thể tải thông báo"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:184
+#: ../../../lib/web/src/components/step-up-dialog.tsx:193
 msgid "Couldn't send the code. Please try again."
 msgstr "Không thể gửi mã. Vui lòng thử lại."
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:136
+#: ../../../lib/web/src/components/step-up-dialog.tsx:145
 msgid "Couldn't start re-authentication. Please try again."
 msgstr "Không thể bắt đầu xác thực lại. Vui lòng thử lại."
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:221
+#: ../../../lib/web/src/components/step-up-dialog.tsx:235
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Không thể xác minh bằng tài khoản đó. Vui lòng thử lại."
 
@@ -976,8 +985,8 @@ msgstr "Tạo và bay ngay"
 msgid "Create match"
 msgstr "Tạo trận đấu"
 
-#: src/components/MissionSetup.tsx:1814
-#: src/components/MissionSetup.tsx:1837
+#: src/components/MissionSetup.tsx:1835
+#: src/components/MissionSetup.tsx:1858
 msgid "Create mission"
 msgstr "Tạo nhiệm vụ"
 
@@ -995,12 +1004,12 @@ msgstr "Đã tạo"
 msgid "Creating..."
 msgstr "Đang tạo..."
 
-#: src/components/MissionSetup.tsx:967
-#: src/components/MissionSetup.tsx:973
+#: src/components/MissionSetup.tsx:987
+#: src/components/MissionSetup.tsx:993
 msgid "Credits"
 msgstr "Ghi nhận"
 
-#: src/components/MissionSetup.tsx:1485
+#: src/components/MissionSetup.tsx:1505
 #: src/components/Multiplayer.tsx:74
 #: src/components/Multiplayer.tsx:347
 msgid "Cumulus"
@@ -1011,7 +1020,7 @@ msgid "Current location"
 msgstr "Vị trí hiện tại"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:265
-#: src/components/MissionSetup.tsx:800
+#: src/components/MissionSetup.tsx:808
 msgid "Custom"
 msgstr "Tùy chỉnh"
 
@@ -1044,7 +1053,7 @@ msgstr "Xung đột dữ liệu"
 msgid "Date"
 msgstr "Ngày"
 
-#: src/components/MissionSetup.tsx:1473
+#: src/components/MissionSetup.tsx:1493
 #: src/components/Multiplayer.tsx:342
 msgid "Day"
 msgstr "Ban ngày"
@@ -1208,13 +1217,13 @@ msgstr "Bộ lặp màn hình"
 msgid "Displays the mobile sidebar."
 msgstr "Hiển thị thanh bên di động."
 
-#: src/components/MissionSetup.tsx:1611
+#: src/components/MissionSetup.tsx:1632
 msgid "Distance LOD"
 msgstr "LOD theo khoảng cách"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:1918
+#: src/components/MissionSetup.tsx:1939
 msgid "Done"
 msgstr "Xong"
 
@@ -1248,7 +1257,7 @@ msgstr "Trùng lặp"
 msgid "Duration"
 msgstr "Thời lượng"
 
-#: src/components/MissionSetup.tsx:1605
+#: src/components/MissionSetup.tsx:1626
 msgid "Dynamic resolution"
 msgstr "Độ phân giải động"
 
@@ -1307,7 +1316,7 @@ msgstr "PHÓNG GHẾ"
 msgid "Email"
 msgstr "Email"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:289
+#: ../../../lib/web/src/components/step-up-dialog.tsx:303
 msgid "Email code"
 msgstr "Mã email"
 
@@ -1324,8 +1333,8 @@ msgstr "Vứt khẩn cấp (giữ)"
 msgid "empty"
 msgstr "trống"
 
-#: src/components/MissionSetup.tsx:759
-#: src/components/MissionSetup.tsx:764
+#: src/components/MissionSetup.tsx:761
+#: src/components/MissionSetup.tsx:766
 msgid "Empty pylon"
 msgstr "Giá treo trống"
 
@@ -1337,11 +1346,11 @@ msgstr "VÀO CÔNG KÍCH"
 msgid "Engine"
 msgstr "Động cơ"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:299
+#: ../../../lib/web/src/components/step-up-dialog.tsx:313
 msgid "Enter the code from your email"
 msgstr "Nhập mã từ email của bạn"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:324
+#: ../../../lib/web/src/components/step-up-dialog.tsx:338
 msgid "Enter your authenticator code"
 msgstr "Nhập mã từ ứng dụng xác thực của bạn"
 
@@ -1377,7 +1386,7 @@ msgstr "Mở rộng thanh bên"
 msgid "Extend flaps"
 msgstr "Thả cánh tà"
 
-#: src/components/MissionSetup.tsx:1585
+#: src/components/MissionSetup.tsx:1606
 msgid "Exterior detail"
 msgstr "Chi tiết bên ngoài"
 
@@ -1389,7 +1398,7 @@ msgstr "URL bên ngoài"
 msgid "Extra large"
 msgstr "Rất lớn"
 
-#: src/components/MissionSetup.tsx:915
+#: src/components/MissionSetup.tsx:935
 msgid "F/A-18C reference"
 msgstr "Tham chiếu F/A-18C"
 
@@ -1554,8 +1563,8 @@ msgstr "Nổi"
 msgid "Flown"
 msgstr "Đã bay"
 
-#: src/components/MissionSetup.tsx:1808
-#: src/components/MissionSetup.tsx:1851
+#: src/components/MissionSetup.tsx:1829
+#: src/components/MissionSetup.tsx:1872
 msgid "Fly"
 msgstr "Bay"
 
@@ -1563,16 +1572,16 @@ msgstr "Bay"
 msgid "Fly again"
 msgstr "Bay lại"
 
-#: src/components/MissionSetup.tsx:771
+#: src/components/MissionSetup.tsx:773
 msgid "Fox 2 fighter"
 msgstr "Tiêm kích Fox 2"
 
-#: src/components/MissionSetup.tsx:1635
+#: src/components/MissionSetup.tsx:1656
 msgid "Framerate"
 msgstr "Tốc độ khung hình"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1387
+#: src/components/MissionSetup.tsx:1407
 msgid "Free flight"
 msgstr "Bay tự do"
 
@@ -1621,7 +1630,7 @@ msgstr "NHIÊN LIỆU THẤP"
 msgid "Fuel probe"
 msgstr "Cần tiếp nhiên liệu"
 
-#: src/components/MissionSetup.tsx:757
+#: src/components/MissionSetup.tsx:759
 msgid "Fuel tank"
 msgstr "Thùng nhiên liệu"
 
@@ -1633,8 +1642,8 @@ msgstr "Bố cục đầy đủ"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:743
 #: src/components/MissionSetup.tsx:745
+#: src/components/MissionSetup.tsx:747
 msgid "Fuselage"
 msgstr "Thân máy bay"
 
@@ -1646,7 +1655,7 @@ msgstr "Càng"
 msgid "GEAR"
 msgstr "CÀNG"
 
-#: src/components/MissionSetup.tsx:1860
+#: src/components/MissionSetup.tsx:1881
 msgid "General"
 msgstr "Chung"
 
@@ -1676,11 +1685,11 @@ msgstr "Đến trang {pageNumber}"
 msgid "Go to previous page"
 msgstr "Đến trang trước"
 
-#: src/components/MissionSetup.tsx:1863
+#: src/components/MissionSetup.tsx:1884
 msgid "Graphics"
 msgstr "Đồ họa"
 
-#: src/components/MissionSetup.tsx:857
+#: src/components/MissionSetup.tsx:865
 msgid "Gross weight"
 msgstr "Tổng trọng lượng"
 
@@ -1701,7 +1710,7 @@ msgstr "Nhóm: {0}"
 msgid "GUN"
 msgstr "SÚNG"
 
-#: src/components/MissionSetup.tsx:770
+#: src/components/MissionSetup.tsx:772
 msgid "Gun fighter"
 msgstr "Tiêm kích pháo"
 
@@ -1717,18 +1726,18 @@ msgstr "Ẩn"
 msgid "Hide password"
 msgstr "Ẩn mật khẩu"
 
-#: src/components/MissionSetup.tsx:1565
+#: src/components/MissionSetup.tsx:1586
 msgid "High"
 msgstr "Cao"
 
-#: src/components/MissionSetup.tsx:1486
+#: src/components/MissionSetup.tsx:1506
 #: src/components/Multiplayer.tsx:75
 #: src/components/Multiplayer.tsx:348
 msgid "High stratus"
 msgstr "Mây tầng cao"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:1827
+#: src/components/MissionSetup.tsx:1848
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Lịch sử"
@@ -1773,8 +1782,8 @@ msgstr "Trình xem ảnh: {0}"
 msgid "Imperial"
 msgstr "Hệ Anh"
 
-#: src/components/MissionSetup.tsx:1197
-#: src/components/MissionSetup.tsx:1439
+#: src/components/MissionSetup.tsx:1217
+#: src/components/MissionSetup.tsx:1459
 msgid "In air"
 msgstr "Trên không"
 
@@ -1798,7 +1807,7 @@ msgstr "Lõm vào"
 msgid "Interests"
 msgstr "Sở thích"
 
-#: src/components/MissionSetup.tsx:853
+#: src/components/MissionSetup.tsx:861
 msgid "Internal fuel"
 msgstr "Nhiên liệu trong thân"
 
@@ -1826,7 +1835,7 @@ msgstr "Bất tử"
 msgid "INVULNERABLE"
 msgstr "BẤT TỬ"
 
-#: src/components/MissionSetup.tsx:1514
+#: src/components/MissionSetup.tsx:1535
 #: src/components/Multiplayer.tsx:386
 msgid "Invulnerable (human players only)"
 msgstr "Bất tử (chỉ người chơi thật)"
@@ -1848,8 +1857,8 @@ msgstr "VỨT: CÀNG ĐÁP"
 msgid "Join"
 msgstr "Tham gia"
 
-#: src/components/MissionSetup.tsx:1280
-#: src/components/MissionSetup.tsx:1818
+#: src/components/MissionSetup.tsx:1300
+#: src/components/MissionSetup.tsx:1839
 msgid "Join server"
 msgstr "Tham gia máy chủ"
 
@@ -1858,7 +1867,7 @@ msgid "JOINED"
 msgstr "ĐÃ THAM GIA"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1780
+#: src/components/MissionSetup.tsx:1801
 #: src/components/Multiplayer.tsx:480
 msgid "Joust"
 msgstr "Đối đầu"
@@ -1867,11 +1876,11 @@ msgstr "Đối đầu"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Đấu tay đôi — 1v1, ai bắn hạ trước sẽ thắng"
 
-#: src/components/MissionSetup.tsx:1388
+#: src/components/MissionSetup.tsx:1408
 msgid "Joust 1v1"
 msgstr "Đấu tay đôi 1v1"
 
-#: src/components/MissionSetup.tsx:1869
+#: src/components/MissionSetup.tsx:1890
 msgid "Joystick"
 msgstr "Cần điều khiển"
 
@@ -1887,7 +1896,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Phím tắt"
 
-#: src/components/MissionSetup.tsx:1872
+#: src/components/MissionSetup.tsx:1893
 msgid "Keys"
 msgstr "Phím"
 
@@ -1953,7 +1962,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Tìm hiểu thêm"
 
-#: src/components/MissionSetup.tsx:1336
+#: src/components/MissionSetup.tsx:1356
 msgid "Leave server"
 msgstr "Rời máy chủ"
 
@@ -1969,12 +1978,12 @@ msgstr "ĐÃ RỜI ĐI"
 msgid "Left to Right"
 msgstr "Trái sang phải"
 
-#: src/components/MissionSetup.tsx:741
-#: src/components/MissionSetup.tsx:742
+#: src/components/MissionSetup.tsx:743
+#: src/components/MissionSetup.tsx:744
 msgid "Left wing"
 msgstr "Cánh trái"
 
-#: src/components/MissionSetup.tsx:740
+#: src/components/MissionSetup.tsx:742
 msgid "Left wingtip"
 msgstr "Đầu cánh trái"
 
@@ -2038,7 +2047,7 @@ msgstr "TẢI THẤT BẠI"
 msgid "Loading..."
 msgstr "Đang tải..."
 
-#: src/components/MissionSetup.tsx:1491
+#: src/components/MissionSetup.tsx:1511
 msgid "Loadout"
 msgstr "Trang bị"
 
@@ -2085,11 +2094,11 @@ msgstr "Nhìn phải"
 msgid "Look up"
 msgstr "Nhìn lên"
 
-#: src/components/MissionSetup.tsx:1561
+#: src/components/MissionSetup.tsx:1582
 msgid "Low"
 msgstr "Thấp"
 
-#: src/components/MissionSetup.tsx:1487
+#: src/components/MissionSetup.tsx:1507
 #: src/components/Multiplayer.tsx:76
 #: src/components/Multiplayer.tsx:349
 msgid "Low stratus"
@@ -2133,7 +2142,7 @@ msgstr "Tổng thể"
 msgid "Match type"
 msgstr "Loại trận đấu"
 
-#: src/components/MissionSetup.tsx:1330
+#: src/components/MissionSetup.tsx:1350
 msgid "Matches"
 msgstr "Trận đấu"
 
@@ -2146,7 +2155,7 @@ msgid "MCP server"
 msgstr "Máy chủ MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1563
+#: src/components/MissionSetup.tsx:1584
 msgid "Medium"
 msgstr "Vừa"
 
@@ -2167,7 +2176,7 @@ msgstr "Tin nhắn"
 msgid "Message everyone"
 msgstr "Nhắn tin cho tất cả"
 
-#: src/components/MissionSetup.tsx:1182
+#: src/components/MissionSetup.tsx:1202
 msgid "Message players on this server"
 msgstr "Nhắn tin cho người chơi trên máy chủ này"
 
@@ -2183,7 +2192,7 @@ msgstr "Hệ mét"
 msgid "Midair collision"
 msgstr "Va chạm trên không"
 
-#: src/components/MissionSetup.tsx:1030
+#: src/components/MissionSetup.tsx:1050
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Bản đồ đảo san hô Midway — hình ảnh chứa dữ liệu <0>Copernicus Sentinel-2</0> đã chỉnh sửa (2026); hình học sân bay (đường băng, đường lăn, sân đỗ) © những người đóng góp <1>OpenStreetMap</1>, cấp phép theo <2>ODbL</2>; dữ liệu đường bờ biển và rạn san hô từ <3>NOAA NCCOS</3> (phạm vi công cộng)."
 
@@ -2264,7 +2273,7 @@ msgstr "Trò chơi mới"
 msgid "Next image"
 msgstr "Hình tiếp theo"
 
-#: src/components/MissionSetup.tsx:1474
+#: src/components/MissionSetup.tsx:1494
 #: src/components/Multiplayer.tsx:73
 #: src/components/Multiplayer.tsx:343
 msgid "Night"
@@ -2375,7 +2384,7 @@ msgstr "Không tìm thấy người dùng nào"
 msgid "No views"
 msgstr "Không có lượt xem"
 
-#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1179
 #: src/components/Multiplayer.tsx:463
 msgid "No world server."
 msgstr "Không có máy chủ thế giới."
@@ -2400,8 +2409,8 @@ msgstr "KHÔNG XẾP LOẠI"
 #: ../../../lib/web/src/lib/preference-utils.ts:125
 #: src/components/MissionSetup.tsx:361
 #: src/components/MissionSetup.tsx:421
-#: src/components/MissionSetup.tsx:766
-#: src/components/MissionSetup.tsx:1484
+#: src/components/MissionSetup.tsx:768
+#: src/components/MissionSetup.tsx:1504
 msgid "None"
 msgstr "Không có"
 
@@ -2425,7 +2434,7 @@ msgstr "Chưa đặt"
 msgid "Nothing found"
 msgstr "Không tìm thấy gì"
 
-#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1179
 msgid "Nothing yet — say hello."
 msgstr "Chưa có gì — hãy chào hỏi nhé."
 
@@ -2442,8 +2451,8 @@ msgstr "Thông báo"
 msgid "Notifications: {0}"
 msgstr "Thông báo: {0}"
 
-#: src/components/MissionSetup.tsx:1400
-#: src/components/MissionSetup.tsx:1772
+#: src/components/MissionSetup.tsx:1420
+#: src/components/MissionSetup.tsx:1793
 #: src/components/Multiplayer.tsx:420
 msgid "Novice"
 msgstr "Người mới"
@@ -2454,7 +2463,7 @@ msgstr "Người mới"
 msgid "Number"
 msgstr "Số"
 
-#: src/components/MissionSetup.tsx:1593
+#: src/components/MissionSetup.tsx:1614
 msgid "Ocean detail"
 msgstr "Chi tiết đại dương"
 
@@ -2466,13 +2475,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Bật"
 
-#: src/components/MissionSetup.tsx:1199
-#: src/components/MissionSetup.tsx:1441
+#: src/components/MissionSetup.tsx:1219
+#: src/components/MissionSetup.tsx:1461
 msgid "On carrier"
 msgstr "Trên tàu sân bay"
 
-#: src/components/MissionSetup.tsx:1198
-#: src/components/MissionSetup.tsx:1440
+#: src/components/MissionSetup.tsx:1218
+#: src/components/MissionSetup.tsx:1460
 msgid "On runway"
 msgstr "Trên đường băng"
 
@@ -2580,11 +2589,11 @@ msgstr "Cha"
 msgid "Parking brake"
 msgstr "Phanh đỗ"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:334
+#: ../../../lib/web/src/components/step-up-dialog.tsx:348
 msgid "Passkey"
 msgstr "Mã khóa"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:209
+#: ../../../lib/web/src/components/step-up-dialog.tsx:218
 msgid "Passkey verification failed. Please try again."
 msgstr "Xác minh mã khóa không thành công. Vui lòng thử lại."
 
@@ -2600,14 +2609,14 @@ msgstr "Mẫu (biểu thức chính quy)"
 msgid "Pick a date"
 msgstr "Chọn ngày"
 
-#: src/components/MissionSetup.tsx:1101
+#: src/components/MissionSetup.tsx:1121
 #: src/components/Multiplayer.tsx:129
 #: src/components/Multiplayer.tsx:290
 msgid "pilot"
 msgstr "phi công"
 
-#: src/components/MissionSetup.tsx:1401
-#: src/components/MissionSetup.tsx:1773
+#: src/components/MissionSetup.tsx:1421
+#: src/components/MissionSetup.tsx:1794
 #: src/components/Multiplayer.tsx:421
 msgid "Pilot"
 msgstr "Phi công"
@@ -2670,7 +2679,7 @@ msgstr "Bài viết"
 msgid "Posts and comments"
 msgstr "Bài viết và bình luận"
 
-#: src/components/MissionSetup.tsx:1548
+#: src/components/MissionSetup.tsx:1569
 msgid "Preset"
 msgstr "Cài đặt sẵn"
 
@@ -2744,7 +2753,7 @@ msgstr "Đăng ký lại mã khóa của bạn trên máy chủ này"
 msgid "REARMED"
 msgstr "ĐÃ NẠP LẠI VŨ KHÍ"
 
-#: src/components/MissionSetup.tsx:1285
+#: src/components/MissionSetup.tsx:1305
 msgid "Recent"
 msgstr "Gần đây"
 
@@ -2757,12 +2766,12 @@ msgstr "Được đề xuất"
 msgid "Reconnecting ({retries})..."
 msgstr "Đang kết nối lại ({retries})..."
 
-#: src/components/MissionSetup.tsx:1697
+#: src/components/MissionSetup.tsx:1718
 msgid "Record flights"
 msgstr "Ghi lại chuyến bay"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:1691
+#: src/components/MissionSetup.tsx:1712
 msgid "Recording"
 msgstr "Bản ghi"
 
@@ -2787,7 +2796,7 @@ msgstr "Đang chuyển hướng đến đăng nhập."
 msgid "Reduce interest"
 msgstr "Giảm sự quan tâm"
 
-#: src/components/MissionSetup.tsx:909
+#: src/components/MissionSetup.tsx:929
 msgid "Reference"
 msgstr "Tham chiếu"
 
@@ -2866,7 +2875,7 @@ msgstr "Đổi tên cột"
 msgid "Rename this board column"
 msgstr "Đổi tên cột bảng này"
 
-#: src/components/MissionSetup.tsx:1067
+#: src/components/MissionSetup.tsx:1087
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Kết xuất đồ họa bằng <0>three.js</0> (giấy phép MIT)."
 
@@ -2884,13 +2893,13 @@ msgstr "Trả lời {0}..."
 msgid "Required"
 msgstr "Bắt buộc"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:367
+#: ../../../lib/web/src/components/step-up-dialog.tsx:381
 msgid "Resend email"
 msgstr "Gửi lại email"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:1911
+#: src/components/MissionSetup.tsx:1932
 msgid "Reset"
 msgstr "Đặt lại"
 
@@ -2918,11 +2927,11 @@ msgstr "Đặt lại trim"
 msgid "Reset view"
 msgstr "Đặt lại góc nhìn"
 
-#: src/components/MissionSetup.tsx:1575
+#: src/components/MissionSetup.tsx:1596
 msgid "Resolution"
 msgstr "Cách giải quyết"
 
-#: src/components/MissionSetup.tsx:1800
+#: src/components/MissionSetup.tsx:1821
 msgid "Restart mission"
 msgstr "Khởi động lại nhiệm vụ"
 
@@ -2934,7 +2943,7 @@ msgstr "Kết quả"
 msgid "Resume"
 msgstr "Tiếp tục"
 
-#: src/components/MissionSetup.tsx:1796
+#: src/components/MissionSetup.tsx:1817
 msgid "Resume mission"
 msgstr "Tiếp tục nhiệm vụ"
 
@@ -2959,12 +2968,12 @@ msgstr "Thu hồi quyền truy cập"
 msgid "Right to Left"
 msgstr "Phải sang trái"
 
-#: src/components/MissionSetup.tsx:746
-#: src/components/MissionSetup.tsx:747
+#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:749
 msgid "Right wing"
 msgstr "Cánh phải"
 
-#: src/components/MissionSetup.tsx:748
+#: src/components/MissionSetup.tsx:750
 msgid "Right wingtip"
 msgstr "Đầu cánh phải"
 
@@ -3024,7 +3033,7 @@ msgstr "Thứ bảy"
 msgid "Save"
 msgstr "Lưu"
 
-#: src/components/MissionSetup.tsx:924
+#: src/components/MissionSetup.tsx:944
 msgid "Sea level"
 msgstr "Mực nước biển"
 
@@ -3173,7 +3182,7 @@ msgstr "đã chọn"
 msgid "Selected: <0>{0}</0>"
 msgstr "Đã chọn: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:1189
+#: src/components/MissionSetup.tsx:1209
 msgid "Send"
 msgstr "Gửi"
 
@@ -3185,7 +3194,7 @@ msgstr "Gửi lại"
 msgid "Send chat"
 msgstr "Gửi tin nhắn"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:307
+#: ../../../lib/web/src/components/step-up-dialog.tsx:321
 msgid "Send email"
 msgstr "Gửi email"
 
@@ -3199,11 +3208,11 @@ msgid "Serif"
 msgstr "Có chân"
 
 #: src/components/MatchHistory.tsx:161
-#: src/components/MissionSetup.tsx:1298
+#: src/components/MissionSetup.tsx:1318
 msgid "Server"
 msgstr "Máy chủ"
 
-#: src/components/MissionSetup.tsx:1154
+#: src/components/MissionSetup.tsx:1174
 msgid "Server chat"
 msgstr "Trò chuyện trên máy chủ"
 
@@ -3237,12 +3246,12 @@ msgstr "Đặt điểm xuất phát và điểm đến"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:340
-#: src/components/MissionSetup.tsx:1822
-#: src/components/MissionSetup.tsx:1856
+#: src/components/MissionSetup.tsx:1843
+#: src/components/MissionSetup.tsx:1877
 msgid "Settings"
 msgstr "Cài đặt"
 
-#: src/components/MissionSetup.tsx:1617
+#: src/components/MissionSetup.tsx:1638
 msgid "Shadows"
 msgstr "Bóng đổ"
 
@@ -3286,7 +3295,7 @@ msgstr "Đang đăng xuất..."
 msgid "Single line of text only"
 msgstr "Chỉ một dòng văn bản"
 
-#: src/components/MissionSetup.tsx:894
+#: src/components/MissionSetup.tsx:914
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Lấy độ cao tốt nhất một động cơ (Vyse, buồng đốt tăng lực)"
 
@@ -3304,7 +3313,7 @@ msgid "Sort"
 msgstr "Sắp xếp"
 
 #: src/components/MissionSetup.tsx:480
-#: src/components/MissionSetup.tsx:1866
+#: src/components/MissionSetup.tsx:1887
 msgid "Sound"
 msgstr "Âm thanh"
 
@@ -3330,7 +3339,7 @@ msgstr "phanh tốc độ"
 msgid "Speed brake"
 msgstr "Phanh tốc độ"
 
-#: src/components/MissionSetup.tsx:950
+#: src/components/MissionSetup.tsx:970
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Tốc độ theo KCAS, dưới dạng khoảng từ nhẹ (nhiên liệu tối thiểu, không mang tải ngoài) đến nặng (trọng lượng tối đa). Dữ liệu thu được bằng thực nghiệm trong trò chơi. Mọi khác biệt so với máy bay thật phản ánh sai số của mô hình bay của trình mô phỏng."
 
@@ -3338,15 +3347,15 @@ msgstr "Tốc độ theo KCAS, dưới dạng khoảng từ nhẹ (nhiên liệu
 msgid "SPLASH"
 msgstr "ĐÃ HẠ MỤC TIÊU"
 
-#: src/components/MissionSetup.tsx:899
+#: src/components/MissionSetup.tsx:919
 msgid "Stall, clean (Vs1)"
 msgstr "Thất tốc, cấu hình sạch (Vs1)"
 
-#: src/components/MissionSetup.tsx:900
+#: src/components/MissionSetup.tsx:920
 msgid "Stall, landing config (Vs0)"
 msgstr "Thất tốc, cấu hình hạ cánh (Vs0)"
 
-#: src/components/MissionSetup.tsx:1413
+#: src/components/MissionSetup.tsx:1433
 msgid "Start"
 msgstr "Bắt đầu"
 
@@ -3358,11 +3367,11 @@ msgstr "Bắt đầu thảo luận bằng cách thêm bình luận đầu tiên.
 msgid "Stay tuned though!"
 msgstr "Hãy đón xem nhé!"
 
-#: src/components/MissionSetup.tsx:890
+#: src/components/MissionSetup.tsx:910
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Lấy độ cao dốc nhất (Vx, 100% lực đẩy)"
 
-#: src/components/MissionSetup.tsx:891
+#: src/components/MissionSetup.tsx:911
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Lấy độ cao dốc nhất (Vx, buồng đốt tăng lực)"
 
@@ -3393,8 +3402,8 @@ msgstr "Đăng ký"
 msgid "Sunday"
 msgstr "Chủ nhật"
 
-#: src/components/MissionSetup.tsx:1403
-#: src/components/MissionSetup.tsx:1775
+#: src/components/MissionSetup.tsx:1423
+#: src/components/MissionSetup.tsx:1796
 #: src/components/Multiplayer.tsx:423
 msgid "Superhuman"
 msgstr "Siêu phàm"
@@ -3436,7 +3445,7 @@ msgstr "Các thẻ"
 msgid "TALLY"
 msgstr "ĐÃ THẤY ĐỊCH"
 
-#: src/components/MissionSetup.tsx:1381
+#: src/components/MissionSetup.tsx:1401
 msgid "Task"
 msgstr "Tác vụ"
 
@@ -3470,7 +3479,7 @@ msgstr "Điều khoản và điều kiện"
 msgid "Text"
 msgstr "Văn bản"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:195
+#: ../../../lib/web/src/components/step-up-dialog.tsx:204
 msgid "That code is incorrect or has expired."
 msgstr "Mã đó không đúng hoặc đã hết hạn."
 
@@ -3526,7 +3535,7 @@ msgstr "Tăng ga"
 msgid "Thursday"
 msgstr "Thứ năm"
 
-#: src/components/MissionSetup.tsx:898
+#: src/components/MissionSetup.tsx:918
 msgid "Tightest sustained turn speed"
 msgstr "Tốc độ vòng lượn duy trì gắt nhất"
 
@@ -3538,7 +3547,7 @@ msgstr "nghiêng"
 msgid "Time"
 msgstr "Thời gian"
 
-#: src/components/MissionSetup.tsx:1467
+#: src/components/MissionSetup.tsx:1487
 msgid "Time of day"
 msgstr "Thời điểm trong ngày"
 
@@ -3594,7 +3603,7 @@ msgstr "Quá nhiều yêu cầu"
 msgid "Top"
 msgstr "Đầu"
 
-#: src/components/MissionSetup.tsx:1629
+#: src/components/MissionSetup.tsx:1650
 msgid "Tracers"
 msgstr "Đạn vạch đường"
 
@@ -3666,7 +3675,7 @@ msgstr "Nhập để tìm người dùng"
 msgid "Type to search..."
 msgstr "Nhập để tìm kiếm..."
 
-#: src/components/MissionSetup.tsx:1567
+#: src/components/MissionSetup.tsx:1588
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3700,13 +3709,13 @@ msgstr "Hoa Kỳ"
 msgid "Unknown"
 msgstr "Không rõ"
 
-#: src/components/MissionSetup.tsx:1520
+#: src/components/MissionSetup.tsx:1541
 #: src/components/Multiplayer.tsx:78
 #: src/components/Multiplayer.tsx:396
 msgid "Unlimited ammunition"
 msgstr "Đạn dược vô hạn"
 
-#: src/components/MissionSetup.tsx:1526
+#: src/components/MissionSetup.tsx:1547
 #: src/components/Multiplayer.tsx:79
 #: src/components/Multiplayer.tsx:406
 msgid "Unlimited fuel"
@@ -3740,7 +3749,7 @@ msgstr "Tải lên"
 msgid "Upload progress"
 msgstr "Tiến trình tải lên"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:338
+#: ../../../lib/web/src/components/step-up-dialog.tsx:352
 msgid "Use your passkey"
 msgstr "Dùng mã khóa của bạn"
 
@@ -3762,7 +3771,7 @@ msgstr "Đã gửi mã xác minh"
 msgid "Verification failed"
 msgstr "Xác minh thất bại"
 
-#: ../../../lib/web/src/components/step-up-dialog.tsx:388
+#: ../../../lib/web/src/components/step-up-dialog.tsx:402
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:172
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
@@ -3772,7 +3781,7 @@ msgstr "Xác minh"
 msgid "Verify email address"
 msgstr "Xác minh địa chỉ email"
 
-#: src/components/MissionSetup.tsx:940
+#: src/components/MissionSetup.tsx:960
 msgid "Vertical"
 msgstr "Thẳng đứng"
 
@@ -3883,7 +3892,7 @@ msgstr "THẮNG"
 msgid "World server"
 msgstr "Máy chủ thế giới"
 
-#: src/components/MissionSetup.tsx:1147
+#: src/components/MissionSetup.tsx:1167
 #: src/components/Multiplayer.tsx:142
 msgid "World server not reachable"
 msgstr "Không thể kết nối máy chủ thế giới"
