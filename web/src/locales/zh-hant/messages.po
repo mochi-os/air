@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "請檢查您的網際網路連線後再試一次。"
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[未設定]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, other {中彈 # 發}}"
 
@@ -444,7 +444,7 @@ msgstr "軸"
 msgid "Axis {i}"
 msgstr "軸 {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "返回"
 
@@ -466,6 +466,10 @@ msgstr "敵機"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "橫幅"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "低於250 — 起落架和襟翼"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "邊框顏色"
 msgid "Bots"
 msgstr "電腦玩家"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "剎車"
 
@@ -541,6 +545,10 @@ msgstr "向左急轉"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "向右急轉"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "準備好即可轉彎"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "中線"
 msgid "Change notification category"
 msgstr "變更通知類別"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "追逐視角："
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "聊天"
 
@@ -765,7 +773,7 @@ msgstr "關閉面板 / 取消"
 msgid "Close search"
 msgstr "關閉搜尋"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "拉近"
 
@@ -939,7 +947,7 @@ msgstr "無法使用該帳戶進行驗證。請重試。"
 msgid "Countermeasures"
 msgstr "對抗措施"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "墜毀"
 
@@ -1124,7 +1132,7 @@ msgstr "降冪"
 msgid "Description"
 msgstr "說明"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "起火燒毀"
 
@@ -1163,6 +1171,10 @@ msgstr "方向"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "目錄"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "放起落架"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "下載"
 msgid "Download failed"
 msgstr "下載失敗"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "順風邊 600英尺"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "拖曳"
 
@@ -1333,15 +1349,15 @@ msgstr "請輸入您的驗證器代碼"
 msgid "Environment"
 msgstr "環境"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "所有人"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "離開對戰"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "退出任務"
 
@@ -1481,7 +1497,7 @@ msgstr "完成帳號遷移"
 msgid "Finished"
 msgstr "已結束"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "開火"
 
@@ -1502,7 +1518,7 @@ msgstr "標記"
 msgid "FLAMEOUT"
 msgstr "發動機熄火"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "熱焰彈"
 
@@ -1514,7 +1530,7 @@ msgstr "熱焰彈"
 msgid "Flat"
 msgstr "扁平"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "墜入大海"
 
@@ -1543,7 +1559,7 @@ msgstr "已飛行"
 msgid "Fly"
 msgstr "起飛"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "再飛一次"
 
@@ -1622,7 +1638,7 @@ msgstr "混戰"
 msgid "Fuselage"
 msgstr "機身"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "起落架"
 
@@ -1724,7 +1740,7 @@ msgstr "記錄"
 msgid "Home"
 msgstr "首頁"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "尾鉤"
 
@@ -1919,7 +1935,7 @@ msgstr "延遲"
 msgid "Launch (catapult)"
 msgstr "彈射起飛 (彈射器)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "彈射 / 鎖定"
 
@@ -1976,7 +1992,7 @@ msgstr "1200保持平飛,放起落架"
 msgid "Light"
 msgstr "淺色"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "燈光"
 
@@ -2095,7 +2111,7 @@ msgstr "管理用於通知和服務的已連結帳戶。"
 msgid "Manual"
 msgstr "手動"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "地圖"
 
@@ -2134,7 +2150,7 @@ msgstr "MCP 伺服器"
 msgid "Medium"
 msgstr "中"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "選單"
 
@@ -2147,7 +2163,7 @@ msgstr "選單"
 msgid "Message"
 msgstr "訊息"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "傳訊息給所有人"
 
@@ -2155,7 +2171,7 @@ msgstr "傳訊息給所有人"
 msgid "Message players on this server"
 msgstr "傳訊息給此伺服器上的玩家"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "傳訊息給你的隊伍"
 
@@ -2163,7 +2179,7 @@ msgstr "傳訊息給你的隊伍"
 msgid "Metric"
 msgstr "公制"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "空中相撞"
 
@@ -2530,11 +2546,11 @@ msgstr "選項名稱"
 msgid "Options"
 msgstr "選項"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "或"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "環繞"
 
@@ -2600,11 +2616,11 @@ msgstr "飛行員"
 msgid "PILOT DOWN"
 msgstr "飛行員陣亡"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "飛行員陣亡"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "俯仰"
 
@@ -2914,7 +2930,7 @@ msgstr "重新開始任務"
 msgid "Result"
 msgstr "結果"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "恢復"
 
@@ -2952,7 +2968,7 @@ msgstr "右翼"
 msgid "Right wingtip"
 msgstr "右翼尖"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "滾轉"
 
@@ -3165,7 +3181,7 @@ msgstr "傳送"
 msgid "Send again"
 msgstr "重新傳送"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "傳送訊息"
 
@@ -3220,7 +3236,7 @@ msgstr "設定出發地與目的地"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "寬鬆"
 msgid "SPD BK"
 msgstr "減速板"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "減速板"
 
@@ -3424,7 +3440,7 @@ msgstr "發現敵機"
 msgid "Task"
 msgstr "目標"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "團隊"
 
@@ -3458,7 +3474,7 @@ msgstr "文字"
 msgid "That code is incorrect or has expired."
 msgstr "該代碼不正確或已過期。"
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "選單開啟時對戰仍會繼續。"
 
@@ -3490,7 +3506,7 @@ msgstr "此大廳正在將你的遊戲連線轉到另一個主機（{redirectHos
 msgid "This page has not been created yet."
 msgstr "此頁面尚未建立。"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "油門"
 
@@ -3514,7 +3530,7 @@ msgstr "星期四"
 msgid "Tightest sustained turn speed"
 msgstr "最緊持續轉彎速度"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "傾斜"
 
@@ -3773,7 +3789,7 @@ msgstr "影片縮圖"
 msgid "Video viewer: {0}"
 msgstr "影片檢視器：{0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "視角"
 
@@ -3829,7 +3845,7 @@ msgstr "我們很快就會恢復上線。"
 msgid "We'll notify you when something important happens."
 msgstr "有重要事項時我們會通知您。"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "武器"
 
@@ -3872,7 +3888,7 @@ msgstr "世界伺服器"
 msgid "World server not reachable"
 msgstr "無法連上世界伺服器"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "偏航"
 

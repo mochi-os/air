@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "Skontrolujte pripojenie na internet a skúste to znova."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[nenastavené]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Dostalo # zásah} few {Dostalo # zásahy} many {Dostalo # zásahu} other {Dostalo # zásahov}}"
 
@@ -444,7 +444,7 @@ msgstr "Osi"
 msgid "Axis {i}"
 msgstr "Os {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "späť"
 
@@ -466,6 +466,10 @@ msgstr "Bandita"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Banner"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "POD 250 — PODVOZOK A KLAPKY"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "Farba okraja"
 msgid "Bots"
 msgstr "Boti"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "brzdy"
 
@@ -541,6 +545,10 @@ msgstr "OSTRO DOĽAVA"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "OSTRO DOPRAVA"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "ZATÁČKA AŽ BUDEŠ PRIPRAVENÝ"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "Stredová os"
 msgid "Change notification category"
 msgstr "Zmeniť kategóriu notifikácie"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "Prenasledovací pohľad:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "chat"
 
@@ -765,7 +773,7 @@ msgstr "Zavrieť panel / zrušiť"
 msgid "Close search"
 msgstr "Zavrieť vyhľadávanie"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "bližšie"
 
@@ -939,7 +947,7 @@ msgstr "S týmto účtom sa nepodarilo overiť. Skúste to znova."
 msgid "Countermeasures"
 msgstr "Protiopatrenia"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "Zrútilo sa"
 
@@ -1124,7 +1132,7 @@ msgstr "Zostupne"
 msgid "Description"
 msgstr "Popis"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "Zničené požiarom"
 
@@ -1163,6 +1171,10 @@ msgstr "Smer"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "Adresár"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "VYSUŇ PODVOZOK"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "Stiahnuť"
 msgid "Download failed"
 msgstr "Sťahovanie zlyhalo"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "PO VETRE 600 STÔP"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "Ťahať"
 
@@ -1333,15 +1349,15 @@ msgstr "Zadajte kód z autentifikačnej aplikácie"
 msgid "Environment"
 msgstr "Prostredie"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "Všetci"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "Opustiť zápas"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "Ukončiť misiu"
 
@@ -1481,7 +1497,7 @@ msgstr "Dokončite presun účtu"
 msgid "Finished"
 msgstr "Dokončený"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "streľba"
 
@@ -1502,7 +1518,7 @@ msgstr "Príznaky"
 msgid "FLAMEOUT"
 msgstr "ZHASNUTIE"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "svetlice"
 
@@ -1514,7 +1530,7 @@ msgstr "SVETLICE"
 msgid "Flat"
 msgstr "Plochý"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "Spadlo do mora"
 
@@ -1543,7 +1559,7 @@ msgstr "Dokončený"
 msgid "Fly"
 msgstr "Letieť"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "Letieť znova"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Trup"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "Podvozok"
 
@@ -1724,7 +1740,7 @@ msgstr "História"
 msgid "Home"
 msgstr "Domov"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "Hák"
 
@@ -1919,7 +1935,7 @@ msgstr "NESKORO"
 msgid "Launch (catapult)"
 msgstr "Vypustenie (katapult)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "štart / cieľ"
 
@@ -1976,7 +1992,7 @@ msgstr "VYROVNAŤ V 1200, PODVOZOK DOLE"
 msgid "Light"
 msgstr "Svetlý"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "svetlá"
 
@@ -2095,7 +2111,7 @@ msgstr "Spravujte svoje pripojené účty pre oznámenia a služby."
 msgid "Manual"
 msgstr "Manuálne"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "mapa"
 
@@ -2134,7 +2150,7 @@ msgstr "Server MCP"
 msgid "Medium"
 msgstr "Stredné"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "ponuka"
 
@@ -2147,7 +2163,7 @@ msgstr "Ponuka"
 msgid "Message"
 msgstr "Správa"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "Napíšte všetkým"
 
@@ -2155,7 +2171,7 @@ msgstr "Napíšte všetkým"
 msgid "Message players on this server"
 msgstr "Napíšte hráčom na tomto serveri"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "Napíšte svojmu tímu"
 
@@ -2163,7 +2179,7 @@ msgstr "Napíšte svojmu tímu"
 msgid "Metric"
 msgstr "Metrické"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "Zrážka vo vzduchu"
 
@@ -2530,11 +2546,11 @@ msgstr "Názov možnosti"
 msgid "Options"
 msgstr "Možnosti"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "alebo"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "obeh"
 
@@ -2600,11 +2616,11 @@ msgstr "Pilot"
 msgid "PILOT DOWN"
 msgstr "PILOT ZABITÝ"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "Pilot zabitý"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "klopenie"
 
@@ -2914,7 +2930,7 @@ msgstr "Reštartovať misiu"
 msgid "Result"
 msgstr "Výsledok"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "Pokračovať"
 
@@ -2952,7 +2968,7 @@ msgstr "Pravé krídlo"
 msgid "Right wingtip"
 msgstr "Koniec pravého krídla"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "klonenie"
 
@@ -3165,7 +3181,7 @@ msgstr "Odoslať"
 msgid "Send again"
 msgstr "Odoslať znova"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "Napísať správu"
 
@@ -3220,7 +3236,7 @@ msgstr "Nastaviť pôvod a cieľ"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "Priestranné"
 msgid "SPD BK"
 msgstr "AER.BR"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "aerodynamická brzda"
 
@@ -3424,7 +3440,7 @@ msgstr "VIDÍM NEPRIATEĽA"
 msgid "Task"
 msgstr "Úloha"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "Tím"
 
@@ -3458,7 +3474,7 @@ msgstr "Text"
 msgid "That code is incorrect or has expired."
 msgstr "Tento kód je nesprávny alebo vypršal."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "Zápas pokračuje za týmto menu."
 
@@ -3490,7 +3506,7 @@ msgstr "Toto lobby presmerúva vaše herné pripojenie na iného hostiteľa ({re
 msgid "This page has not been created yet."
 msgstr "Táto stránka zatiaľ nebola vytvorená."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "plyn"
 
@@ -3514,7 +3530,7 @@ msgstr "Štvrtok"
 msgid "Tightest sustained turn speed"
 msgstr "Rýchlosť najtesnejšej udržateľnej zatáčky"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "sklon"
 
@@ -3773,7 +3789,7 @@ msgstr "Miniatúra videa"
 msgid "Video viewer: {0}"
 msgstr "Prehliadač videí: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "pohľad"
 
@@ -3829,7 +3845,7 @@ msgstr "Čoskoro sa vrátime online."
 msgid "We'll notify you when something important happens."
 msgstr "Dáme vám vedieť, keď sa stane niečo dôležité."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "zbraň"
 
@@ -3872,7 +3888,7 @@ msgstr "Server sveta"
 msgid "World server not reachable"
 msgstr "Server sveta je nedostupný"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "zatáčanie"
 

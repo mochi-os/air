@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "Seiceáil do nasc idirlín agus bain triail eile as."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[gan socrú]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Bhuail # urchar é} two {Bhuail # urchar é} few {Bhuail # urchar é} many {Bhuail # n-urchar é} other {Bhuail # urchar é}}"
 
@@ -444,7 +444,7 @@ msgstr "Aiseanna"
 msgid "Axis {i}"
 msgstr "Ais {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "ar ais"
 
@@ -466,6 +466,10 @@ msgstr "Namhaid"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Meirge"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "FAOI 250 — FEARAS AGUS CLIATHÁIN"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "Dath na himlíne"
 msgid "Bots"
 msgstr "Botaí"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "coscáin"
 
@@ -541,6 +545,10 @@ msgstr "CAS AR CHLÉ"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "CAS AR DHEIS"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "CAS NUAIR ATÁ TÚ RÉIDH"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "Líne láir"
 msgid "Change notification category"
 msgstr "Athraigh catagóir an fhógra"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "Amharc tóraíochta:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "comhrá"
 
@@ -765,7 +773,7 @@ msgstr "Dún painéal / cealaigh"
 msgid "Close search"
 msgstr "Dún cuardach"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "níos gaire"
 
@@ -939,7 +947,7 @@ msgstr "Níorbh fhéidir fíorú leis an gcuntas sin. Bain triail eile as le do 
 msgid "Countermeasures"
 msgstr "Frithbhearta"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "Tuairteáilte"
 
@@ -1124,7 +1132,7 @@ msgstr "Íslitheach"
 msgid "Description"
 msgstr "Cur síos"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "Scriosta ag dóiteán"
 
@@ -1163,6 +1171,10 @@ msgstr "Treo"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "Eolaire"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "FEARAS SÍOS"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "Íoslódáil"
 msgid "Download failed"
 msgstr "Theip ar an íoslódáil"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "LE GAOTH 600 TROIGH"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "Tarraing"
 
@@ -1333,15 +1349,15 @@ msgstr "Cuir isteach cód d'aip fhíordheimhnithe"
 msgid "Environment"
 msgstr "Timpeallacht"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "Gach duine"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "Fág an cluiche"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "Fág an misean"
 
@@ -1481,7 +1497,7 @@ msgstr "Críochnaigh aistriú do chuntas"
 msgid "Finished"
 msgstr "Críochnaithe"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "scaoil"
 
@@ -1502,7 +1518,7 @@ msgstr "Bratacha"
 msgid "FLAMEOUT"
 msgstr "MÚCHADH"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "bladhmanna"
 
@@ -1514,7 +1530,7 @@ msgstr "LASÁIN"
 msgid "Flat"
 msgstr "Cothrom"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "D'eitil isteach san fharraige"
 
@@ -1543,7 +1559,7 @@ msgstr "Eitilte"
 msgid "Fly"
 msgstr "Eitil"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "Eitil arís"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Cabhail"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "fearas"
 
@@ -1724,7 +1740,7 @@ msgstr "Stair"
 msgid "Home"
 msgstr "Baile"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "crúca"
 
@@ -1919,7 +1935,7 @@ msgstr "DÉANACH"
 msgid "Launch (catapult)"
 msgstr "Seoladh (catapult)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "lainseáil / aimsiú"
 
@@ -1976,7 +1992,7 @@ msgstr "COTHROM AG 1200, FEARAS SÍOS"
 msgid "Light"
 msgstr "Geal"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "soilse"
 
@@ -2095,7 +2111,7 @@ msgstr "Bainistigh do chuntais nasctha le haghaidh fógraí agus seirbhísí."
 msgid "Manual"
 msgstr "Láimhe"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "léarscáil"
 
@@ -2134,7 +2150,7 @@ msgstr "Freastalaí MCP"
 msgid "Medium"
 msgstr "Meánach"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "roghchlár"
 
@@ -2147,7 +2163,7 @@ msgstr "Roghchlár"
 msgid "Message"
 msgstr "Teachtaireacht"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "Seol teachtaireacht chuig gach duine"
 
@@ -2155,7 +2171,7 @@ msgstr "Seol teachtaireacht chuig gach duine"
 msgid "Message players on this server"
 msgstr "Seol teachtaireacht chuig imreoirí ar an bhfreastalaí seo"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "Seol teachtaireacht chuig d'fhoireann"
 
@@ -2163,7 +2179,7 @@ msgstr "Seol teachtaireacht chuig d'fhoireann"
 msgid "Metric"
 msgstr "Méadrach"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "Imbhualadh san aer"
 
@@ -2530,11 +2546,11 @@ msgstr "Ainm rogha"
 msgid "Options"
 msgstr "Roghanna"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "nó"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "fithis"
 
@@ -2600,11 +2616,11 @@ msgstr "Píolóta"
 msgid "PILOT DOWN"
 msgstr "PÍOLÓTA MARBH"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "Maraíodh an píolóta"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "claonadh"
 
@@ -2914,7 +2930,7 @@ msgstr "Atosaigh an misean"
 msgid "Result"
 msgstr "Toradh"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "Lean ar aghaidh"
 
@@ -2952,7 +2968,7 @@ msgstr "Sciathán deas"
 msgid "Right wingtip"
 msgstr "Barr an sciatháin dheis"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "rolladh"
 
@@ -3165,7 +3181,7 @@ msgstr "Seol"
 msgid "Send again"
 msgstr "Seol arís"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "Seol teachtaireacht"
 
@@ -3220,7 +3236,7 @@ msgstr "Socraigh an bunús agus an ceann scríbe"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "Spáslach"
 msgid "SPD BK"
 msgstr "CSCAE"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "coscán aeir"
 
@@ -3424,7 +3440,7 @@ msgstr "FEICIM AN NAMHAID"
 msgid "Task"
 msgstr "Tasc"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "Foireann"
 
@@ -3458,7 +3474,7 @@ msgstr "Téacs"
 msgid "That code is incorrect or has expired."
 msgstr "Tá an cód sin mícheart nó tá sé imithe in éag."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "Leanann an cluiche ar aghaidh taobh thiar den roghchlár seo."
 
@@ -3490,7 +3506,7 @@ msgstr "Tá an forsheomra seo ag seoladh do nasc cluiche chuig óstach difriúil
 msgid "This page has not been created yet."
 msgstr "Níor cruthaíodh an leathanach seo fós."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "scóig"
 
@@ -3514,7 +3530,7 @@ msgstr "Déardaoin"
 msgid "Tightest sustained turn speed"
 msgstr "Luas casta mharthanaigh is dlúithe"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "claon"
 
@@ -3773,7 +3789,7 @@ msgstr "Mionsamhail físeáin"
 msgid "Video viewer: {0}"
 msgstr "Amharcán físeán: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "amharc"
 
@@ -3829,7 +3845,7 @@ msgstr "Beimid ar ais ar líne go luath."
 msgid "We'll notify you when something important happens."
 msgstr "Cuirfimid in iúl duit nuair a tharlaíonn rud tábhachtach."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "arm"
 
@@ -3872,7 +3888,7 @@ msgstr "Freastalaí domhain"
 msgid "World server not reachable"
 msgstr "Ní féidir teacht ar an bhfreastalaí domhain"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "fiaradh"
 

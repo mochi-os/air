@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "인터넷 연결을 확인하고 다시 시도하세요."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[설정 안 됨]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, other {#발 피탄}}"
 
@@ -444,7 +444,7 @@ msgstr "축"
 msgid "Axis {i}"
 msgstr "축 {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "뒤로"
 
@@ -466,6 +466,10 @@ msgstr "적기"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "배너"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "250 이하 — 기어와 플랩"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "테두리 색상"
 msgid "Bots"
 msgstr "봇"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "브레이크"
 
@@ -541,6 +545,10 @@ msgstr "좌측 급선회"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "우측 급선회"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "준비되면 브레이크"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "중심선"
 msgid "Change notification category"
 msgstr "알림 카테고리 변경"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "추적 시점:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "채팅"
 
@@ -765,7 +773,7 @@ msgstr "패널 닫기 / 취소"
 msgid "Close search"
 msgstr "검색 닫기"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "가까이"
 
@@ -939,7 +947,7 @@ msgstr "해당 계정으로 인증하지 못했습니다. 다시 시도해 주�
 msgid "Countermeasures"
 msgstr "대응 수단"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "추락"
 
@@ -1124,7 +1132,7 @@ msgstr "내림차순"
 msgid "Description"
 msgstr "설명"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "화재로 파괴됨"
 
@@ -1163,6 +1171,10 @@ msgstr "방향"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "디렉터리"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "기어 다운"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "다운로드"
 msgid "Download failed"
 msgstr "다운로드 실패"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "다운윈드 600피트"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "드래그"
 
@@ -1333,15 +1349,15 @@ msgstr "인증 앱 코드를 입력하세요"
 msgid "Environment"
 msgstr "환경"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "전체"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "매치 나가기"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "미션 종료"
 
@@ -1481,7 +1497,7 @@ msgstr "계정 이전 완료"
 msgid "Finished"
 msgstr "종료"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "발사"
 
@@ -1502,7 +1518,7 @@ msgstr "플래그"
 msgid "FLAMEOUT"
 msgstr "플레임아웃"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "플레어"
 
@@ -1514,7 +1530,7 @@ msgstr "플레어"
 msgid "Flat"
 msgstr "평면"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "바다에 충돌"
 
@@ -1543,7 +1559,7 @@ msgstr "비행"
 msgid "Fly"
 msgstr "비행"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "다시 비행하기"
 
@@ -1622,7 +1638,7 @@ msgstr "난투"
 msgid "Fuselage"
 msgstr "동체"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "기어"
 
@@ -1724,7 +1740,7 @@ msgstr "기록"
 msgid "Home"
 msgstr "홈"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "후크"
 
@@ -1919,7 +1935,7 @@ msgstr "늦음"
 msgid "Launch (catapult)"
 msgstr "발진 (캐터펄트)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "발진 / 포착"
 
@@ -1976,7 +1992,7 @@ msgstr "1200 수평, 기어 다운"
 msgid "Light"
 msgstr "라이트"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "등화"
 
@@ -2095,7 +2111,7 @@ msgstr "알림과 서비스를 위한 연결된 계정을 관리하세요."
 msgid "Manual"
 msgstr "수동"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "지도"
 
@@ -2134,7 +2150,7 @@ msgstr "MCP 서버"
 msgid "Medium"
 msgstr "보통"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "메뉴"
 
@@ -2147,7 +2163,7 @@ msgstr "메뉴"
 msgid "Message"
 msgstr "메시지"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "모두에게 메시지 보내기"
 
@@ -2155,7 +2171,7 @@ msgstr "모두에게 메시지 보내기"
 msgid "Message players on this server"
 msgstr "이 서버의 플레이어에게 메시지 보내기"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "팀에게 메시지 보내기"
 
@@ -2163,7 +2179,7 @@ msgstr "팀에게 메시지 보내기"
 msgid "Metric"
 msgstr "측정 항목"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "공중 충돌"
 
@@ -2530,11 +2546,11 @@ msgstr "옵션 이름"
 msgid "Options"
 msgstr "옵션"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "또는"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "선회"
 
@@ -2600,11 +2616,11 @@ msgstr "파일럿"
 msgid "PILOT DOWN"
 msgstr "조종사 사망"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "조종사 사망"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "피치"
 
@@ -2914,7 +2930,7 @@ msgstr "미션 재시작"
 msgid "Result"
 msgstr "결과"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "재개"
 
@@ -2952,7 +2968,7 @@ msgstr "오른쪽 날개"
 msgid "Right wingtip"
 msgstr "오른쪽 날개 끝"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "롤"
 
@@ -3165,7 +3181,7 @@ msgstr "보내기"
 msgid "Send again"
 msgstr "다시 보내기"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "채팅 보내기"
 
@@ -3220,7 +3236,7 @@ msgstr "출발지와 도착지 설정"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "여유로운"
 msgid "SPD BK"
 msgstr "감속판"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "감속판"
 
@@ -3424,7 +3440,7 @@ msgstr "적기 확인"
 msgid "Task"
 msgstr "과제"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "팀"
 
@@ -3458,7 +3474,7 @@ msgstr "텍스트"
 msgid "That code is incorrect or has expired."
 msgstr "코드가 올바르지 않거나 만료되었습니다."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "메뉴가 열려 있어도 매치는 계속 진행됩니다."
 
@@ -3490,7 +3506,7 @@ msgstr "이 로비가 게임 연결을 다른 호스트({redirectHost})로 전�
 msgid "This page has not been created yet."
 msgstr "이 페이지는 아직 만들어지지 않았어요."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "스로틀"
 
@@ -3514,7 +3530,7 @@ msgstr "목요일"
 msgid "Tightest sustained turn speed"
 msgstr "최소 반경 지속 선회 속도"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "기울이기"
 
@@ -3773,7 +3789,7 @@ msgstr "동영상 미리보기 이미지"
 msgid "Video viewer: {0}"
 msgstr "동영상 뷰어: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "시점"
 
@@ -3829,7 +3845,7 @@ msgstr "곧 다시 온라인으로 돌아올게요."
 msgid "We'll notify you when something important happens."
 msgstr "중요한 일이 생기면 알려드릴게요."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "무기"
 
@@ -3872,7 +3888,7 @@ msgstr "월드 서버"
 msgid "World server not reachable"
 msgstr "월드 서버에 연결할 수 없습니다"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "요"
 

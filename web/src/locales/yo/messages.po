@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "Jọ̀wọ́ ṣàyẹ̀wò ìsopọ̀ íntánẹ́ẹ̀tì rẹ kí o sì gbìyànjú lẹ́ẹ̀kan sí i."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[kò sí]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, other {Ó gba ọta ìbọn #}}"
 
@@ -444,7 +444,7 @@ msgstr "Àwọn axis"
 msgid "Axis {i}"
 msgstr "Axis {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "padà"
 
@@ -466,6 +466,10 @@ msgstr "Ọ̀tá"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Banner"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "LÁBẸ́ 250 — KẸ̀KẸ́ ÀTI ÌYẸ́"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "Àwọ̀ ààlà"
 msgid "Bots"
 msgstr "Àwọn bọ́ọ̀tì"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "breki"
 
@@ -541,6 +545,10 @@ msgstr "YÀ SÓSÌ"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "YÀ SỌ́TÚN"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "YÍPADÀ NÍGBÀ TÍ O BÁ ṢETÁN"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "Ìlà àárín"
 msgid "Change notification category"
 msgstr "Yí ẹ̀ka ìfitónilétí padà"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "Ìwòran ìlépa:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "ìfọ̀rọ̀wérọ̀"
 
@@ -765,7 +773,7 @@ msgstr "Tì pánẹ́ẹ̀lì / fagilé"
 msgid "Close search"
 msgstr "Ti àwárí"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "súnmọ́ síi"
 
@@ -939,7 +947,7 @@ msgstr "A kò lè fọwọ́sí pẹ̀lú àkàùntì yẹn. Jọ̀wọ́ gbìy�
 msgid "Countermeasures"
 msgstr "Àwọn ìdènà"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "Ó ṣubú lulẹ̀"
 
@@ -1124,7 +1132,7 @@ msgstr "Sọkalẹ̀"
 msgid "Description"
 msgstr "Àpèjúwe"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "Iná jó ọkọ̀ run"
 
@@ -1163,6 +1171,10 @@ msgstr "Ìtọ́sọ́nà"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "Àtòjọ"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "SỌ KẸ̀KẸ́ SÍLẸ̀"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "Gbà sílẹ̀"
 msgid "Download failed"
 msgstr "Ìgbasílẹ̀ kùnà"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "PẸ̀LÚ AFẸ́FẸ́ ẸSẸ̀ 600"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "Fàa"
 
@@ -1333,15 +1349,15 @@ msgstr "Tẹ kóòdù authenticator rẹ"
 msgid "Environment"
 msgstr "Àyíká"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "Gbogbo ènìyàn"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "Kúrò nínú ìdíje"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "Jáde nínú iṣẹ́"
 
@@ -1481,7 +1497,7 @@ msgstr "Pari gbigbe akonti rẹ"
 msgid "Finished"
 msgstr "Ó parí"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "yìnbọn"
 
@@ -1502,7 +1518,7 @@ msgstr "Àwọn àsíá"
 msgid "FLAMEOUT"
 msgstr "ẸNJINNI KÚ"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "iná àbò"
 
@@ -1514,7 +1530,7 @@ msgstr "ÌTÀNÁ"
 msgid "Flat"
 msgstr "Pẹ̀tẹ́lẹ̀"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "Ó fò sínú òkun"
 
@@ -1543,7 +1559,7 @@ msgstr "Ó fò"
 msgid "Fly"
 msgstr "Fò"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "Tún fò"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Ara ọkọ̀"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "Ẹsẹ̀"
 
@@ -1724,7 +1740,7 @@ msgstr "Ìtàn"
 msgid "Home"
 msgstr "Ilé"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "Ìkọ̀"
 
@@ -1919,7 +1935,7 @@ msgstr "PẸ́"
 msgid "Launch (catapult)"
 msgstr "Ta (kàtápù)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "gbéra / àfojúsùn"
 
@@ -1976,7 +1992,7 @@ msgstr "DỌ́GBA NÍ 1200, SỌ ÀGBÁ KALẸ̀"
 msgid "Light"
 msgstr "Ìmọ́lẹ̀"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "àwọn ìmọ́lẹ̀"
 
@@ -2095,7 +2111,7 @@ msgstr "Ṣàkóso àwọn àkáǹtì rẹ tí a ti sopọ̀ fún ìfitónilét�
 msgid "Manual"
 msgstr "Ìwé ìtọ́nisọ́nà"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "máàpù"
 
@@ -2134,7 +2150,7 @@ msgstr "Sáà MCP"
 msgid "Medium"
 msgstr "Àárín"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "àkójọ"
 
@@ -2147,7 +2163,7 @@ msgstr "Ìtòlẹ́sẹẹsẹ"
 msgid "Message"
 msgstr "Ìránṣẹ́"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "Fi ìfìránṣẹ́ sí gbogbo ènìyàn"
 
@@ -2155,7 +2171,7 @@ msgstr "Fi ìfìránṣẹ́ sí gbogbo ènìyàn"
 msgid "Message players on this server"
 msgstr "Fi ìfiránṣẹ́ ránṣẹ́ sí àwọn òṣèré lórí olùpín yìí"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "Fi ìfìránṣẹ́ sí ẹgbẹ́ rẹ"
 
@@ -2163,7 +2179,7 @@ msgstr "Fi ìfìránṣẹ́ sí ẹgbẹ́ rẹ"
 msgid "Metric"
 msgstr "Òṣùwọ̀n"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "Ìkọlù ní òfuurufú"
 
@@ -2530,11 +2546,11 @@ msgstr "Orúkọ àṣàyàn"
 msgid "Options"
 msgstr "Àwọn àṣàyàn"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "tàbí"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "yíká"
 
@@ -2600,11 +2616,11 @@ msgstr "Awakọ̀ òfuurufú"
 msgid "PILOT DOWN"
 msgstr "AWAKỌ̀ TI KÚ"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "Wọ́n pa awakọ̀ òfuurufú"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "gòkè-sọ̀kalẹ̀"
 
@@ -2914,7 +2930,7 @@ msgstr "Tún iṣẹ́ bẹ̀rẹ̀"
 msgid "Result"
 msgstr "Àbájáde"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "Tẹ̀síwájú"
 
@@ -2952,7 +2968,7 @@ msgstr "Ìyẹ́ apá ọ̀tún"
 msgid "Right wingtip"
 msgstr "Orí ìyẹ́ apá ọ̀tún"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "yíyí"
 
@@ -3165,7 +3181,7 @@ msgstr "Firánṣẹ́"
 msgid "Send again"
 msgstr "Fi ránṣẹ́ lẹ́ẹ̀kan sí i"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "Fi ìfìránṣẹ́ ránṣẹ́"
 
@@ -3220,7 +3236,7 @@ msgstr "Ṣètò ibi tí o ti wá àti ibi tí o ń lọ"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "Àáyè"
 msgid "SPD BK"
 msgstr "BR.AF"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "breki àfẹ́fẹ́"
 
@@ -3424,7 +3440,7 @@ msgstr "MO RÍ Ọ̀TÁ"
 msgid "Task"
 msgstr "Iṣẹ́-ṣíṣe"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "Ẹgbẹ́"
 
@@ -3458,7 +3474,7 @@ msgstr "Ọ̀rọ̀"
 msgid "That code is incorrect or has expired."
 msgstr "Kóòdù yẹn kò tọ̀nà tàbí ó ti pé."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "Ìdíje ń tẹ̀síwájú lẹ́yìn mẹ́nù yìí."
 
@@ -3490,7 +3506,7 @@ msgstr "Lobby yìí ń fi ìsopọ̀ eré rẹ ránṣẹ́ sí àgbàlejò tó 
 msgid "This page has not been created yet."
 msgstr "A kò tí ì ṣẹ̀dá ojú-ìwé yìí."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "agbára"
 
@@ -3514,7 +3530,7 @@ msgstr "Ọjọ́bọ̀"
 msgid "Tightest sustained turn speed"
 msgstr "Ìyára ìyípo tó dúró tó há jù"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "ìtẹ̀"
 
@@ -3773,7 +3789,7 @@ msgstr "Àwòrán kékeré fídíò"
 msgid "Video viewer: {0}"
 msgstr "Ẹ̀rọ ìwo fídíò: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "ìwòran"
 
@@ -3829,7 +3845,7 @@ msgstr "A ó padà sí lójú-ọ̀nà láìpẹ́."
 msgid "We'll notify you when something important happens."
 msgstr "A ó sọ fún ọ nígbà tí ohun pàtàkì bá ṣẹlẹ̀."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "ohun ìjà"
 
@@ -3872,7 +3888,7 @@ msgstr "Olùpín ayé"
 msgid "World server not reachable"
 msgstr "A kò lè dé ọ̀dọ̀ olùpín ayé"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "yíyà"
 

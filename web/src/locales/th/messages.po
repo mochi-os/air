@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตของคุณแล้วลองอีกครั้ง"
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[ไม่ได้ตั้ง]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, other {โดนยิง # นัด}}"
 
@@ -444,7 +444,7 @@ msgstr "แกน"
 msgid "Axis {i}"
 msgstr "แกน {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "ถอยออก"
 
@@ -466,6 +466,10 @@ msgstr "ข้าศึก"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "แบนเนอร์"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "ต่ำกว่า 250 — ฐานล้อและแฟลป"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "สีขอบ"
 msgid "Bots"
 msgstr "บอท"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "เบรก"
 
@@ -541,6 +545,10 @@ msgstr "หักซ้าย"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "หักขวา"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "เลี้ยวเมื่อพร้อม"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "เส้นกึ่งกลาง"
 msgid "Change notification category"
 msgstr "เปลี่ยนหมวดหมู่การแจ้งเตือน"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "มุมมองไล่ตาม:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "แชท"
 
@@ -765,7 +773,7 @@ msgstr "ปิดแผง / ยกเลิก"
 msgid "Close search"
 msgstr "ปิดการค้นหา"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "เข้าใกล้"
 
@@ -939,7 +947,7 @@ msgstr "ไม่สามารถยืนยันด้วยบัญชี
 msgid "Countermeasures"
 msgstr "มาตรการตอบโต้"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "เครื่องตก"
 
@@ -1124,7 +1132,7 @@ msgstr "จากมากไปน้อย"
 msgid "Description"
 msgstr "คำอธิบาย"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "ถูกไฟเผาทำลาย"
 
@@ -1163,6 +1171,10 @@ msgstr "ทิศทาง"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "ไดเรกทอรี"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "ลดฐานล้อ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "ดาวน์โหลด"
 msgid "Download failed"
 msgstr "ดาวน์โหลดไม่สำเร็จ"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "ตามลม 600 ฟุต"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "ลาก"
 
@@ -1333,15 +1349,15 @@ msgstr "ป้อนรหัสจากแอปยืนยันตัวต
 msgid "Environment"
 msgstr "สภาพแวดล้อม"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "ทุกคน"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "ออกจากแมตช์"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "ออกจากภารกิจ"
 
@@ -1481,7 +1497,7 @@ msgstr "เสร็จสิ้นการย้ายบัญชี"
 msgid "Finished"
 msgstr "จบแล้ว"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "ยิง"
 
@@ -1502,7 +1518,7 @@ msgstr "Flags"
 msgid "FLAMEOUT"
 msgstr "เครื่องดับ"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "พลุล่อ"
 
@@ -1514,7 +1530,7 @@ msgstr "พลุล่อเป้า"
 msgid "Flat"
 msgstr "แบน"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "บินลงทะเล"
 
@@ -1543,7 +1559,7 @@ msgstr "บินแล้ว"
 msgid "Fly"
 msgstr "บิน"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "บินอีกครั้ง"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "ลำตัวเครื่องบิน"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "ฐานล้อ"
 
@@ -1724,7 +1740,7 @@ msgstr "ประวัติ"
 msgid "Home"
 msgstr "หน้าหลัก"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "ตะขอ"
 
@@ -1919,7 +1935,7 @@ msgstr "ช้า"
 msgid "Launch (catapult)"
 msgstr "การปล่อยตัว (เครื่องดีด)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "ปล่อยตัว / ล็อกเป้า"
 
@@ -1976,7 +1992,7 @@ msgstr "ระดับที่ 1200 ลดล้อ"
 msgid "Light"
 msgstr "สว่าง"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "ไฟ"
 
@@ -2095,7 +2111,7 @@ msgstr "จัดการบัญชีที่เชื่อมต่อข
 msgid "Manual"
 msgstr "คู่มือ"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "แผนที่"
 
@@ -2134,7 +2150,7 @@ msgstr "เซิร์ฟเวอร์ MCP"
 msgid "Medium"
 msgstr "กลาง"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "เมนู"
 
@@ -2147,7 +2163,7 @@ msgstr "เมนู"
 msgid "Message"
 msgstr "ข้อความ"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "ส่งข้อความถึงทุกคน"
 
@@ -2155,7 +2171,7 @@ msgstr "ส่งข้อความถึงทุกคน"
 msgid "Message players on this server"
 msgstr "ส่งข้อความถึงผู้เล่นบนเซิร์ฟเวอร์นี้"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "ส่งข้อความถึงทีมของคุณ"
 
@@ -2163,7 +2179,7 @@ msgstr "ส่งข้อความถึงทีมของคุณ"
 msgid "Metric"
 msgstr "เมตริก"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "ชนกันกลางอากาศ"
 
@@ -2530,11 +2546,11 @@ msgstr "ชื่อตัวเลือก"
 msgid "Options"
 msgstr "ตัวเลือก"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "หรือ"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "หมุนรอบ"
 
@@ -2600,11 +2616,11 @@ msgstr "นักบิน"
 msgid "PILOT DOWN"
 msgstr "นักบินเสียชีวิต"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "นักบินเสียชีวิต"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "ก้มเงย"
 
@@ -2914,7 +2930,7 @@ msgstr "เริ่มภารกิจใหม่"
 msgid "Result"
 msgstr "ผล"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "ดำเนินการต่อ"
 
@@ -2952,7 +2968,7 @@ msgstr "ปีกขวา"
 msgid "Right wingtip"
 msgstr "ปลายปีกขวา"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "ม้วนตัว"
 
@@ -3165,7 +3181,7 @@ msgstr "ส่ง"
 msgid "Send again"
 msgstr "ส่งอีกครั้ง"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "ส่งแชท"
 
@@ -3220,7 +3236,7 @@ msgstr "ตั้งค่าต้นทางและปลายทาง"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "กว้างขวาง"
 msgid "SPD BK"
 msgstr "เบ.ลม"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "เบรกลม"
 
@@ -3424,7 +3440,7 @@ msgstr "เห็นข้าศึกแล้ว"
 msgid "Task"
 msgstr "งาน"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "ทีม"
 
@@ -3458,7 +3474,7 @@ msgstr "ข้อความ"
 msgid "That code is incorrect or has expired."
 msgstr "รหัสนั้นไม่ถูกต้องหรือหมดอายุแล้ว"
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "แมตช์ยังดำเนินต่ออยู่หลังเมนูนี้"
 
@@ -3490,7 +3506,7 @@ msgstr "ล็อบบี้นี้กำลังส่งการเชื
 msgid "This page has not been created yet."
 msgstr "ยังไม่ได้สร้างหน้านี้"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "คันเร่ง"
 
@@ -3514,7 +3530,7 @@ msgstr "วันพฤหัสบดี"
 msgid "Tightest sustained turn speed"
 msgstr "ความเร็วเลี้ยวต่อเนื่องแคบที่สุด"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "เอียง"
 
@@ -3773,7 +3789,7 @@ msgstr "ภาพย่อวิดีโอ"
 msgid "Video viewer: {0}"
 msgstr "โปรแกรมดูวิดีโอ: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "มุมมอง"
 
@@ -3829,7 +3845,7 @@ msgstr "เราจะกลับมาออนไลน์เร็วๆ �
 msgid "We'll notify you when something important happens."
 msgstr "เราจะแจ้งให้คุณทราบเมื่อมีเรื่องสำคัญเกิดขึ้น"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "อาวุธ"
 
@@ -3872,7 +3888,7 @@ msgstr "เซิร์ฟเวอร์โลก"
 msgid "World server not reachable"
 msgstr "เข้าถึงเซิร์ฟเวอร์โลกไม่ได้"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "หันเห"
 

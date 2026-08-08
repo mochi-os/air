@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "እባክዎ የበይነመረብ ግንኙነትዎን አረጋግጠው እንደገና ይሞክሩ።"
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[አልተዘጋጀም]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {በ# ጥይት ተመታ} other {በ# ጥይት ተመታ}}"
 
@@ -444,7 +444,7 @@ msgstr "ዘንጎች"
 msgid "Axis {i}"
 msgstr "ዘንግ {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "ወደኋላ"
 
@@ -466,6 +466,10 @@ msgstr "ጠላት"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "ሰንደቅ"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "ከ250 በታች — ማረፊያና ፍላፕ"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "የጠርዝ ቀለም"
 msgid "Bots"
 msgstr "ቦቶች"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "ፍሬን"
 
@@ -541,6 +545,10 @@ msgstr "ወደ ግራ ታጠፍ"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "ወደ ቀኝ ታጠፍ"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "ዝግጁ ሲሆኑ ይሰብሩ"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "መሃል መስመር"
 msgid "Change notification category"
 msgstr "የማሳወቂያ ምድብ ለውጥ"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "የክትትል እይታ:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "ቻት"
 
@@ -765,7 +773,7 @@ msgstr "ፓነል ዝጋ / ሰርዝ"
 msgid "Close search"
 msgstr "ፍለጋን ዝጋ"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "ቅርብ"
 
@@ -939,7 +947,7 @@ msgstr "በዚያ መለያ ማረጋገጥ አልተቻለም። እባክዎ �
 msgid "Countermeasures"
 msgstr "መከላከያ እርምጃዎች"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "ተከሰከሰ"
 
@@ -1124,7 +1132,7 @@ msgstr "ከላይ ወደ ታች"
 msgid "Description"
 msgstr "መግለጫ"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "በእሳት ወድሟል"
 
@@ -1163,6 +1171,10 @@ msgstr "አቅጣጫ"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "ማውጫ"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "ማረፊያ አውርድ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "አውርድ"
 msgid "Download failed"
 msgstr "ማውረድ አልተሳካም"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "ወደታች 600 ጫማ"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "መጎተት"
 
@@ -1333,15 +1349,15 @@ msgstr "የአረጋጋጭዎን ኮድ ያስገቡ"
 msgid "Environment"
 msgstr "አካባቢ"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "ሁሉም"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "ከግጥሚያው ውጣ"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "ተልዕኮ ውጣ"
 
@@ -1481,7 +1497,7 @@ msgstr "የመለያ ዝውውርን አጠናቅ"
 msgid "Finished"
 msgstr "ተጠናቋል"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "ተኩስ"
 
@@ -1502,7 +1518,7 @@ msgstr "ባንዲራዎች"
 msgid "FLAMEOUT"
 msgstr "ሞተር ጠፍቷል"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "ችቦዎች"
 
@@ -1514,7 +1530,7 @@ msgstr "ብልጭታዎች"
 msgid "Flat"
 msgstr "ጠፍጣፋ"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "በርሮ ባሕር ውስጥ ገባ"
 
@@ -1543,7 +1559,7 @@ msgstr "በርሯል"
 msgid "Fly"
 msgstr "በር"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "እንደገና ብረር"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "የአውሮፕላን አካል"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "ማረፊያ ጎማ"
 
@@ -1724,7 +1740,7 @@ msgstr "ታሪክ"
 msgid "Home"
 msgstr "መነሻ"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "መንጠቆ"
 
@@ -1919,7 +1935,7 @@ msgstr "ዘግይቷል"
 msgid "Launch (catapult)"
 msgstr "ማስወንጨፍ (ወንጭፍ)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "ማምጠቅ / ዒላማ"
 
@@ -1976,7 +1992,7 @@ msgstr "በ1200 ቀጥ በል፣ መንኮራኩር አውርድ"
 msgid "Light"
 msgstr "ብርሃን"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "መብራቶች"
 
@@ -2095,7 +2111,7 @@ msgstr "ለማሳወቂያዎችና አገልግሎቶች የተገናኙ መለ
 msgid "Manual"
 msgstr "በእጅ"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "ካርታ"
 
@@ -2134,7 +2150,7 @@ msgstr "የMCP አገልጋይ"
 msgid "Medium"
 msgstr "መካከለኛ"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "ምናሌ"
 
@@ -2147,7 +2163,7 @@ msgstr "ምናሌ"
 msgid "Message"
 msgstr "መልዕክት"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "ለሁሉም መልእክት ላክ"
 
@@ -2155,7 +2171,7 @@ msgstr "ለሁሉም መልእክት ላክ"
 msgid "Message players on this server"
 msgstr "በዚህ አገልጋይ ላይ ላሉ ተጫዋቾች መልእክት ይላኩ"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "ለቡድንህ መልእክት ላክ"
 
@@ -2163,7 +2179,7 @@ msgstr "ለቡድንህ መልእክት ላክ"
 msgid "Metric"
 msgstr "ሜትሪክ"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "በአየር ላይ ግጭት"
 
@@ -2530,11 +2546,11 @@ msgstr "የአማራጭ ስም"
 msgid "Options"
 msgstr "አማራጮች"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "ወይም"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "ዙረት"
 
@@ -2600,11 +2616,11 @@ msgstr "አብራሪ"
 msgid "PILOT DOWN"
 msgstr "አብራሪ ተገደለ"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "አብራሪው ተገደለ"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "ወደ ላይ/ታች"
 
@@ -2914,7 +2930,7 @@ msgstr "ተልዕኮ እንደገና ጀምር"
 msgid "Result"
 msgstr "ውጤት"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "ይቀጥሉ"
 
@@ -2952,7 +2968,7 @@ msgstr "የቀኝ ክንፍ"
 msgid "Right wingtip"
 msgstr "የቀኝ ክንፍ ጫፍ"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "ማንከባለል"
 
@@ -3165,7 +3181,7 @@ msgstr "ላክ"
 msgid "Send again"
 msgstr "እንደገና ላክ"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "ቻት ላክ"
 
@@ -3220,7 +3236,7 @@ msgstr "መነሻ እና መድረሻ ያዘጋጁ"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "ሰፊ"
 msgid "SPD BK"
 msgstr "አ.ብ"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "የአየር ብሬክ"
 
@@ -3424,7 +3440,7 @@ msgstr "ጠላት አየሁ"
 msgid "Task"
 msgstr "ተግባር"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "ቡድን"
 
@@ -3458,7 +3474,7 @@ msgstr "ጽሁፍ"
 msgid "That code is incorrect or has expired."
 msgstr "ያ ኮድ የተሳሳተ ነው ወይም ጊዜው አልፎበታል።"
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "ግጥሚያው ከዚህ ምናሌ በስተጀርባ ይቀጥላል።"
 
@@ -3490,7 +3506,7 @@ msgstr "ይህ ሎቢ የጨዋታ ግንኙነትዎን ወደ የተለየ አ
 msgid "This page has not been created yet."
 msgstr "ይህ ገጽ ገና አልተፈጠረም።"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "ፍጥነት"
 
@@ -3514,7 +3530,7 @@ msgstr "ሐሙስ"
 msgid "Tightest sustained turn speed"
 msgstr "እጅግ ጠባብ ቀጣይ የመታጠፍ ፍጥነት"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "ማዘንበል"
 
@@ -3773,7 +3789,7 @@ msgstr "የቪዲዮ ጥፍር ምስል"
 msgid "Video viewer: {0}"
 msgstr "የቪዲዮ መመልከቻ፦ {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "እይታ"
 
@@ -3829,7 +3845,7 @@ msgstr "በቅርቡ ወደ መስመር እንመለሳለን።"
 msgid "We'll notify you when something important happens."
 msgstr "አስፈላጊ ነገር ሲከሰት እናሳውቅዎታለን።"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "መሣሪያ"
 
@@ -3872,7 +3888,7 @@ msgstr "የዓለም አገልጋይ"
 msgid "World server not reachable"
 msgstr "የዓለም አገልጋይ ሊደረስበት አልተቻለም"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "ማወዛወዝ"
 

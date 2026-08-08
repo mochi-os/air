@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "Mangga priksa sambungan internet sampeyan lan coba maneh."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[ora disetel]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, other {Kena # peluru}}"
 
@@ -444,7 +444,7 @@ msgstr "Sumbu"
 msgid "Axis {i}"
 msgstr "Sumbu {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "mundur"
 
@@ -466,6 +466,10 @@ msgstr "Pesawat mungsuh"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Spanduk"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "NGISOR 250 — RODA LAN FLAP"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "Warna pinggir"
 msgid "Bots"
 msgstr "Bot"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "rem"
 
@@ -541,6 +545,10 @@ msgstr "MENGGOK NGIWA"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "MENGGOK NENGEN"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "BELOK YEN WIS SIAP"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "Garis tengah"
 msgid "Change notification category"
 msgstr "Ganti kategori pemberitahuan"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "Tampilan mburu:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "chat"
 
@@ -765,7 +773,7 @@ msgstr "Tutup panel / batal"
 msgid "Close search"
 msgstr "Tutup panggolékan"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "luwih cedhak"
 
@@ -939,7 +947,7 @@ msgstr "Ora bisa verifikasi nganggo akun kasebut. Mangga coba maneh."
 msgid "Countermeasures"
 msgstr "Tindakan tandhingan"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "Pesawate tiba"
 
@@ -1124,7 +1132,7 @@ msgstr "Mudhun"
 msgid "Description"
 msgstr "Katrangan"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "Ancur amarga kobongan"
 
@@ -1163,6 +1171,10 @@ msgstr "Arah"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "Direktori"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "RODA MUDHUN"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "Undhuh"
 msgid "Download failed"
 msgstr "Gagal ngundhuh"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "SEARAH ANGIN 600 KAKI"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "Seret"
 
@@ -1333,15 +1349,15 @@ msgstr "Lebokna kode authenticator sampeyan"
 msgid "Environment"
 msgstr "Lingkungan"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "Kabeh"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "Metu saka pertandhingan"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "Metu saka misi"
 
@@ -1481,7 +1497,7 @@ msgstr "Rampungna mindah akun sampeyan"
 msgid "Finished"
 msgstr "Rampung"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "tembak"
 
@@ -1502,7 +1518,7 @@ msgstr "Bendera"
 msgid "FLAMEOUT"
 msgstr "MESIN MATI"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "suar"
 
@@ -1514,7 +1530,7 @@ msgstr "SUAR"
 msgid "Flat"
 msgstr "Rata"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "Tiba ing segara"
 
@@ -1543,7 +1559,7 @@ msgstr "Mabur"
 msgid "Fly"
 msgstr "Mabur"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "Mabur maneh"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Awak pesawat"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "Roda"
 
@@ -1724,7 +1740,7 @@ msgstr "Riwayat"
 msgid "Home"
 msgstr "Ngarep"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "Kait"
 
@@ -1919,7 +1935,7 @@ msgstr "TELAT"
 msgid "Launch (catapult)"
 msgstr "Luncurké (katapel)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "mabur / target"
 
@@ -1976,7 +1992,7 @@ msgstr "RATA ING 1200, RODHA MUDHUN"
 msgid "Light"
 msgstr "Padhang"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "lampu"
 
@@ -2095,7 +2111,7 @@ msgstr "Atur akun sing wis disambungake kanggo notifikasi lan layanan."
 msgid "Manual"
 msgstr "Manual"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "peta"
 
@@ -2134,7 +2150,7 @@ msgstr "Server MCP"
 msgid "Medium"
 msgstr "Sedheng"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "menu"
 
@@ -2147,7 +2163,7 @@ msgstr "Menu"
 msgid "Message"
 msgstr "Pesen"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "Kirim pesen menyang kabeh"
 
@@ -2155,7 +2171,7 @@ msgstr "Kirim pesen menyang kabeh"
 msgid "Message players on this server"
 msgstr "Kirim pesen menyang pemain ing server iki"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "Kirim pesen menyang timmu"
 
@@ -2163,7 +2179,7 @@ msgstr "Kirim pesen menyang timmu"
 msgid "Metric"
 msgstr "Metrik"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "Tabrakan ing awang-awang"
 
@@ -2530,11 +2546,11 @@ msgstr "Jeneng opsi"
 msgid "Options"
 msgstr "Opsi"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "utawa"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "orbit"
 
@@ -2600,11 +2616,11 @@ msgstr "Pilot"
 msgid "PILOT DOWN"
 msgstr "PILOT TIWAS"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "Pilot tiwas"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "pitch"
 
@@ -2914,7 +2930,7 @@ msgstr "Mbaleni misi"
 msgid "Result"
 msgstr "Asil"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "Lanjutaké"
 
@@ -2952,7 +2968,7 @@ msgstr "Swiwi tengen"
 msgid "Right wingtip"
 msgstr "Pucuk swiwi tengen"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "roll"
 
@@ -3165,7 +3181,7 @@ msgstr "Kirim"
 msgid "Send again"
 msgstr "Kirim maneh"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "Kirim chat"
 
@@ -3220,7 +3236,7 @@ msgstr "Atur asal lan tujuan"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "Jembar"
 msgid "SPD BK"
 msgstr "REM U"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "rem udara"
 
@@ -3424,7 +3440,7 @@ msgstr "MUNGSUH KATON"
 msgid "Task"
 msgstr "Tugas"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "Tim"
 
@@ -3458,7 +3474,7 @@ msgstr "Teks"
 msgid "That code is incorrect or has expired."
 msgstr "Kode kasebut salah utawa wis kadaluwarsa."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "Pertandhingan tetep mlaku ing mburi menu iki."
 
@@ -3490,7 +3506,7 @@ msgstr "Lobi iki ngalihake sambungan game sampeyan menyang host liya ({redirectH
 msgid "This page has not been created yet."
 msgstr "Kaca iki durung digawe."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "throttle"
 
@@ -3514,7 +3530,7 @@ msgstr "Kemis"
 msgid "Tightest sustained turn speed"
 msgstr "Kacepetan belok ajeg paling rapet"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "miring"
 
@@ -3773,7 +3789,7 @@ msgstr "Thumbnail video"
 msgid "Video viewer: {0}"
 msgstr "Panampil video: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "tampilan"
 
@@ -3829,7 +3845,7 @@ msgstr "Awaké dhéwé bakal online manèh sedhilut."
 msgid "We'll notify you when something important happens."
 msgstr "Kita bakal ngabari sampeyan yen ana sing penting."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "gaman"
 
@@ -3872,7 +3888,7 @@ msgstr "Server donya"
 msgid "World server not reachable"
 msgstr "Server donya ora bisa digayuh"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "yaw"
 

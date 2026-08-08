@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "مهرباني ڪري پنهنجو انٽرنيٽ ڪنيڪشن چيڪ ڪريو ۽ ٻيهر ڪوشش ڪريو."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[نه مقرر]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# گولي لڳي} other {# گوليون لڳيون}}"
 
@@ -444,7 +444,7 @@ msgstr "محور"
 msgid "Axis {i}"
 msgstr "محور {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "پوئتي"
 
@@ -466,6 +466,10 @@ msgstr "دشمن جو جهاز"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "بينر"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "250 کان گھٽ — ڦيٿا ۽ فليپ"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "ڪناري جو رنگ"
 msgid "Bots"
 msgstr "بوٽ"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "بريڪ"
 
@@ -541,6 +545,10 @@ msgstr "کاٻي مُڙ"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "ساڄي مُڙ"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "تيار ٿيڻ تي موڙيو"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "مرڪزي ليڪ"
 msgid "Change notification category"
 msgstr "اطلاع جو زمرو تبديل ڪريو"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "تعاقب وارو منظر:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "چيٽ"
 
@@ -765,7 +773,7 @@ msgstr "پينل بند ڪريو / منسوخ"
 msgid "Close search"
 msgstr "ڳولا بند ڪريو"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "ويجهو"
 
@@ -939,7 +947,7 @@ msgstr "ان اڪائونٽ سان تصديق نه ٿي سگهي. مهرباني
 msgid "Countermeasures"
 msgstr "جوابي قدم"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "ڪري پيو"
 
@@ -1124,7 +1132,7 @@ msgstr "وڌيڪ کان گهٽ"
 msgid "Description"
 msgstr "تفصيل"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "باهه ۾ تباهه ٿيو"
 
@@ -1163,6 +1171,10 @@ msgstr "هدايت"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "ڊائريڪٽري"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "ڦيٿا هيٺ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "ڊائون لوڊ"
 msgid "Download failed"
 msgstr "ڊائون لوڊ ناڪام ٿيو"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "هوا سان 600 فوٽ"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "ڇڪيو"
 
@@ -1333,15 +1349,15 @@ msgstr "پنهنجو تصديق ڪندڙ ڪوڊ داخل ڪريو"
 msgid "Environment"
 msgstr "ماحول"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "سڀئي"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "ميچ مان نڪرو"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "مشن ڇڏيو"
 
@@ -1481,7 +1497,7 @@ msgstr "پنهنجو اڪائونٽ منتقل ڪرڻ پورو ڪريو"
 msgid "Finished"
 msgstr "پورو ٿيو"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "فائر"
 
@@ -1502,7 +1518,7 @@ msgstr "نشان"
 msgid "FLAMEOUT"
 msgstr "فليم آئوٽ"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "شعلا"
 
@@ -1514,7 +1530,7 @@ msgstr "فليئر"
 msgid "Flat"
 msgstr "هموار"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "سمنڊ ۾ وڃي ڪريو"
 
@@ -1543,7 +1559,7 @@ msgstr "اڏاميو"
 msgid "Fly"
 msgstr "اڏام"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "ٻيهر اڏام ڀريو"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "جهاز جو ڌڙ"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "گيئر"
 
@@ -1724,7 +1740,7 @@ msgstr "تاريخ"
 msgid "Home"
 msgstr "گهر"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "ڪُنڍو"
 
@@ -1919,7 +1935,7 @@ msgstr "دير"
 msgid "Launch (catapult)"
 msgstr "اُڇلاءُ (ڪيٽاپلٽ)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "اُڏام / نشانو"
 
@@ -1976,7 +1992,7 @@ msgstr "1200 تي برابر، ڦيٿا هيٺ"
 msgid "Light"
 msgstr "روشن"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "بتيون"
 
@@ -2095,7 +2111,7 @@ msgstr "اطلاعن ۽ خدمتن لاءِ پنھنجا ڳنڍيل اڪائون
 msgid "Manual"
 msgstr "دستي"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "نقشو"
 
@@ -2134,7 +2150,7 @@ msgstr "MCP سرور"
 msgid "Medium"
 msgstr "وچولو"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "مينيو"
 
@@ -2147,7 +2163,7 @@ msgstr "مينيو"
 msgid "Message"
 msgstr "پيغام"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "سڀني کي پيغام موڪليو"
 
@@ -2155,7 +2171,7 @@ msgstr "سڀني کي پيغام موڪليو"
 msgid "Message players on this server"
 msgstr "هن سرور جي رانديگرن کي پيغام موڪليو"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "پنهنجي ٽيم کي پيغام موڪليو"
 
@@ -2163,7 +2179,7 @@ msgstr "پنهنجي ٽيم کي پيغام موڪليو"
 msgid "Metric"
 msgstr "ميٽرڪ"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "هوا ۾ ٽڪر"
 
@@ -2530,11 +2546,11 @@ msgstr "اختيار جو نالو"
 msgid "Options"
 msgstr "اختيار"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "يا"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "مدار"
 
@@ -2600,11 +2616,11 @@ msgstr "پائلٽ"
 msgid "PILOT DOWN"
 msgstr "پائلٽ مارجي ويو"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "پائلٽ مارجي ويو"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "پچ"
 
@@ -2914,7 +2930,7 @@ msgstr "مشن ٻيهر شروع ڪريو"
 msgid "Result"
 msgstr "نتيجو"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "ٻيهر شروع ڪريو"
 
@@ -2952,7 +2968,7 @@ msgstr "ساڄو پر"
 msgid "Right wingtip"
 msgstr "ساڄي پر جي چوٽي"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "رول"
 
@@ -3165,7 +3181,7 @@ msgstr "موڪليو"
 msgid "Send again"
 msgstr "ٻيهر موڪليو"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "پيغام موڪليو"
 
@@ -3220,7 +3236,7 @@ msgstr "اصل ۽ منزل مقرر ڪريو"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "ڪشادو"
 msgid "SPD BK"
 msgstr "ه.بر"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "هوائي بريڪ"
 
@@ -3424,7 +3440,7 @@ msgstr "دشمن نظر ۾"
 msgid "Task"
 msgstr "ڪم"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "ٽيم"
 
@@ -3458,7 +3474,7 @@ msgstr "ٽيڪسٽ"
 msgid "That code is incorrect or has expired."
 msgstr "اهو ڪوڊ غلط آهي يا ختم ٿي ويو آهي."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "ميچ هن مينيو جي پويان جاري آهي."
 
@@ -3490,7 +3506,7 @@ msgstr "هي لابي توهان جي راند جو ڪنيڪشن هڪ ٻئي م�
 msgid "This page has not been created yet."
 msgstr "هي صفحو اڃا نه ٺاهيو ويو آهي."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "ٿروٽل"
 
@@ -3514,7 +3530,7 @@ msgstr "خميس"
 msgid "Tightest sustained turn speed"
 msgstr "تنگ ترين مسلسل موڙ جي رفتار"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "جهڪاءُ"
 
@@ -3773,7 +3789,7 @@ msgstr "وڊيو ٿمب نيل"
 msgid "Video viewer: {0}"
 msgstr "وڊيو ڏسڻ وارو: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "منظر"
 
@@ -3829,7 +3845,7 @@ msgstr "اسان جلد ٻيھر آن لائن ايندا."
 msgid "We'll notify you when something important happens."
 msgstr "جڏھن ڪا اھم ڳالھ ٿيندي ته اسان توھان کي ٻڌائينداسين."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "هٿيار"
 
@@ -3872,7 +3888,7 @@ msgstr "ورلڊ سرور"
 msgid "World server not reachable"
 msgstr "ورلڊ سرور تائين پهچ ناهي"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "ياو"
 

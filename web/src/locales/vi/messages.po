@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "Vui lòng kiểm tra kết nối internet và thử lại."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[chưa đặt]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, other {Trúng # viên đạn}}"
 
@@ -444,7 +444,7 @@ msgstr "Trục"
 msgid "Axis {i}"
 msgstr "Trục {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "ra xa"
 
@@ -466,6 +466,10 @@ msgstr "Máy bay địch"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Biểu ngữ"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "DƯỚI 250 — CÀNG VÀ CÁNH TÀ"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "Màu viền"
 msgid "Bots"
 msgstr "Bot"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "phanh"
 
@@ -541,6 +545,10 @@ msgstr "NGOẶT TRÁI GẤP"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "NGOẶT PHẢI GẤP"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "VÒNG KHI SẴN SÀNG"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "Đường trung tâm"
 msgid "Change notification category"
 msgstr "Đổi danh mục thông báo"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "Góc nhìn bám đuôi:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "chat"
 
@@ -765,7 +773,7 @@ msgstr "Đóng bảng / hủy"
 msgid "Close search"
 msgstr "Đóng tìm kiếm"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "lại gần"
 
@@ -939,7 +947,7 @@ msgstr "Không thể xác minh bằng tài khoản đó. Vui lòng thử lại."
 msgid "Countermeasures"
 msgstr "Biện pháp đối phó"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "Đã rơi"
 
@@ -1124,7 +1132,7 @@ msgstr "Giảm dần"
 msgid "Description"
 msgstr "Mô tả"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "Bị lửa thiêu rụi"
 
@@ -1163,6 +1171,10 @@ msgstr "Hướng"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "Danh bạ"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "HẠ CÀNG"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "Tải xuống"
 msgid "Download failed"
 msgstr "Tải xuống thất bại"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "XUÔI GIÓ 600 BỘ"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "Kéo"
 
@@ -1333,15 +1349,15 @@ msgstr "Nhập mã từ ứng dụng xác thực của bạn"
 msgid "Environment"
 msgstr "Môi trường"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "Tất cả"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "Rời trận đấu"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "Thoát nhiệm vụ"
 
@@ -1481,7 +1497,7 @@ msgstr "Hoàn tất việc chuyển tài khoản của bạn"
 msgid "Finished"
 msgstr "Đã kết thúc"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "bắn"
 
@@ -1502,7 +1518,7 @@ msgstr "Cờ"
 msgid "FLAMEOUT"
 msgstr "CHẾT MÁY"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "pháo sáng"
 
@@ -1514,7 +1530,7 @@ msgstr "PHÁO SÁNG"
 msgid "Flat"
 msgstr "Phẳng"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "Lao xuống biển"
 
@@ -1543,7 +1559,7 @@ msgstr "Đã bay"
 msgid "Fly"
 msgstr "Bay"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "Bay lại"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Thân máy bay"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "Càng"
 
@@ -1724,7 +1740,7 @@ msgstr "Lịch sử"
 msgid "Home"
 msgstr "Trang chủ"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "Móc"
 
@@ -1919,7 +1935,7 @@ msgstr "MUỘN"
 msgid "Launch (catapult)"
 msgstr "Phóng (máy phóng)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "phóng / mục tiêu"
 
@@ -1976,7 +1992,7 @@ msgstr "GIỮ 1200, THẢ CÀNG"
 msgid "Light"
 msgstr "Sáng"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "đèn"
 
@@ -2095,7 +2111,7 @@ msgstr "Quản lý các tài khoản đã kết nối của bạn để nhận t
 msgid "Manual"
 msgstr "Thủ công"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "bản đồ"
 
@@ -2134,7 +2150,7 @@ msgstr "Máy chủ MCP"
 msgid "Medium"
 msgstr "Vừa"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "trình đơn"
 
@@ -2147,7 +2163,7 @@ msgstr "Menu"
 msgid "Message"
 msgstr "Tin nhắn"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "Nhắn tin cho tất cả"
 
@@ -2155,7 +2171,7 @@ msgstr "Nhắn tin cho tất cả"
 msgid "Message players on this server"
 msgstr "Nhắn tin cho người chơi trên máy chủ này"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "Nhắn tin cho đội của bạn"
 
@@ -2163,7 +2179,7 @@ msgstr "Nhắn tin cho đội của bạn"
 msgid "Metric"
 msgstr "Hệ mét"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "Va chạm trên không"
 
@@ -2530,11 +2546,11 @@ msgstr "Tên tuỳ chọn"
 msgid "Options"
 msgstr "Tuỳ chọn"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "hoặc"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "xoay quanh"
 
@@ -2600,11 +2616,11 @@ msgstr "Phi công"
 msgid "PILOT DOWN"
 msgstr "PHI CÔNG TỬ TRẬN"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "Phi công thiệt mạng"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "chúc ngóc"
 
@@ -2914,7 +2930,7 @@ msgstr "Khởi động lại nhiệm vụ"
 msgid "Result"
 msgstr "Kết quả"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "Tiếp tục"
 
@@ -2952,7 +2968,7 @@ msgstr "Cánh phải"
 msgid "Right wingtip"
 msgstr "Đầu cánh phải"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "lăn"
 
@@ -3165,7 +3181,7 @@ msgstr "Gửi"
 msgid "Send again"
 msgstr "Gửi lại"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "Gửi tin nhắn"
 
@@ -3220,7 +3236,7 @@ msgstr "Đặt điểm xuất phát và điểm đến"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "Rộng rãi"
 msgid "SPD BK"
 msgstr "PH.TĐ"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "phanh tốc độ"
 
@@ -3424,7 +3440,7 @@ msgstr "ĐÃ THẤY ĐỊCH"
 msgid "Task"
 msgstr "Tác vụ"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "Đội"
 
@@ -3458,7 +3474,7 @@ msgstr "Văn bản"
 msgid "That code is incorrect or has expired."
 msgstr "Mã đó không đúng hoặc đã hết hạn."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "Trận đấu vẫn tiếp tục phía sau menu này."
 
@@ -3490,7 +3506,7 @@ msgstr "Sảnh chờ này đang gửi kết nối trò chơi của bạn đến 
 msgid "This page has not been created yet."
 msgstr "Trang này chưa được tạo."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "ga"
 
@@ -3514,7 +3530,7 @@ msgstr "Thứ năm"
 msgid "Tightest sustained turn speed"
 msgstr "Tốc độ vòng lượn duy trì gắt nhất"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "nghiêng"
 
@@ -3773,7 +3789,7 @@ msgstr "Hình thu nhỏ video"
 msgid "Video viewer: {0}"
 msgstr "Trình xem video: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "góc nhìn"
 
@@ -3829,7 +3845,7 @@ msgstr "Chúng tôi sẽ trở lại trực tuyến sớm."
 msgid "We'll notify you when something important happens."
 msgstr "Chúng tôi sẽ thông báo khi có điều gì quan trọng xảy ra."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "vũ khí"
 
@@ -3872,7 +3888,7 @@ msgstr "Máy chủ thế giới"
 msgid "World server not reachable"
 msgstr "Không thể kết nối máy chủ thế giới"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "đảo lái"
 

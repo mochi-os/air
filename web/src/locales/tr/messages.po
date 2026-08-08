@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "Lütfen internet bağlantınızı kontrol edip tekrar deneyin."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[ayarlanmamış]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# isabet alındı} other {# isabet alındı}}"
 
@@ -444,7 +444,7 @@ msgstr "Eksenler"
 msgid "Axis {i}"
 msgstr "Eksen {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "geri"
 
@@ -466,6 +466,10 @@ msgstr "Düşman uçağı"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Afiş"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "250 ALTINDA — İNİŞ TAKIMI VE FLAP"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "Kenarlık rengi"
 msgid "Bots"
 msgstr "Botlar"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "frenler"
 
@@ -541,6 +545,10 @@ msgstr "SOLA KIR"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "SAĞA KIR"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "HAZIR OLUNCA DÖN"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "Merkez hattı"
 msgid "Change notification category"
 msgstr "Bildirim kategorisini değiştir"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "Takip görünümü:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "sohbet"
 
@@ -765,7 +773,7 @@ msgstr "Paneli kapat / iptal et"
 msgid "Close search"
 msgstr "Aramayı kapat"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "yakınlaş"
 
@@ -939,7 +947,7 @@ msgstr "Bu hesapla doğrulama yapılamadı. Lütfen tekrar deneyin."
 msgid "Countermeasures"
 msgstr "Karşı tedbirler"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "Düştü"
 
@@ -1124,7 +1132,7 @@ msgstr "Azalan"
 msgid "Description"
 msgstr "Açıklama"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "Yangında yok oldu"
 
@@ -1163,6 +1171,10 @@ msgstr "Yön"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "Dizin"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "İNİŞ TAKIMINI İNDİR"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "İndir"
 msgid "Download failed"
 msgstr "İndirme başarısız oldu"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "RÜZGAR ALTI 600 FİT"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "Sürükle"
 
@@ -1333,15 +1349,15 @@ msgstr "Kimlik doğrulayıcı kodunuzu girin"
 msgid "Environment"
 msgstr "Ortam"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "Herkes"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "Maçtan çık"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "Görevden çık"
 
@@ -1481,7 +1497,7 @@ msgstr "Hesap taşımayı tamamlayın"
 msgid "Finished"
 msgstr "Tamamlandı"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "ateş"
 
@@ -1502,7 +1518,7 @@ msgstr "Bayraklar"
 msgid "FLAMEOUT"
 msgstr "ALEV SÖNMESİ"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "flare"
 
@@ -1514,7 +1530,7 @@ msgstr "FİŞEKLER"
 msgid "Flat"
 msgstr "Düz"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "Denize çakıldı"
 
@@ -1543,7 +1559,7 @@ msgstr "Uçuldu"
 msgid "Fly"
 msgstr "Uç"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "Tekrar uç"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Gövde"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "iniş takımı"
 
@@ -1724,7 +1740,7 @@ msgstr "Geçmiş"
 msgid "Home"
 msgstr "Ana sayfa"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "Kanca"
 
@@ -1919,7 +1935,7 @@ msgstr "GEÇ"
 msgid "Launch (catapult)"
 msgstr "Fırlatma (katapult)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "fırlat / hedef"
 
@@ -1976,7 +1992,7 @@ msgstr "1200’DE DÜZ, INIŞ TAKIMI AÇ"
 msgid "Light"
 msgstr "Açık"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "ışıklar"
 
@@ -2095,7 +2111,7 @@ msgstr "Bildirimler ve hizmetler için bağlı hesaplarınızı yönetin."
 msgid "Manual"
 msgstr "Elle"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "harita"
 
@@ -2134,7 +2150,7 @@ msgstr "MCP sunucusu"
 msgid "Medium"
 msgstr "Orta"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "menü"
 
@@ -2147,7 +2163,7 @@ msgstr "Menü"
 msgid "Message"
 msgstr "Mesaj"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "Herkese mesaj yaz"
 
@@ -2155,7 +2171,7 @@ msgstr "Herkese mesaj yaz"
 msgid "Message players on this server"
 msgstr "Bu sunucudaki oyunculara mesaj gönder"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "Takımına mesaj yaz"
 
@@ -2163,7 +2179,7 @@ msgstr "Takımına mesaj yaz"
 msgid "Metric"
 msgstr "Metrik"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "Havada çarpışma"
 
@@ -2530,11 +2546,11 @@ msgstr "Seçenek adı"
 msgid "Options"
 msgstr "Seçenekler"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "veya"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "yörünge"
 
@@ -2600,11 +2616,11 @@ msgstr "Pilot"
 msgid "PILOT DOWN"
 msgstr "PİLOT ÖLDÜ"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "Pilot öldürüldü"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "yunuslama"
 
@@ -2914,7 +2930,7 @@ msgstr "Görevi yeniden başlat"
 msgid "Result"
 msgstr "Sonuç"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "Sürdür"
 
@@ -2952,7 +2968,7 @@ msgstr "Sağ kanat"
 msgid "Right wingtip"
 msgstr "Sağ kanat ucu"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "yuvarlanma"
 
@@ -3165,7 +3181,7 @@ msgstr "Gönder"
 msgid "Send again"
 msgstr "Tekrar gönder"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "Mesaj gönder"
 
@@ -3220,7 +3236,7 @@ msgstr "Başlangıç ve hedef belirle"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "Geniş"
 msgid "SPD BK"
 msgstr "HIZ FR"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "hız freni"
 
@@ -3424,7 +3440,7 @@ msgstr "DÜŞMANI GÖRÜYORUM"
 msgid "Task"
 msgstr "Vazife"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "Takım"
 
@@ -3458,7 +3474,7 @@ msgstr "Metin"
 msgid "That code is incorrect or has expired."
 msgstr "Bu kod yanlış veya süresi dolmuş."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "Maç bu menünün arkasında devam ediyor."
 
@@ -3490,7 +3506,7 @@ msgstr "Bu lobi oyun bağlantınızı farklı bir ana makineye ({redirectHost}) 
 msgid "This page has not been created yet."
 msgstr "Bu sayfa henüz oluşturulmadı."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "gaz"
 
@@ -3514,7 +3530,7 @@ msgstr "Perşembe"
 msgid "Tightest sustained turn speed"
 msgstr "En dar sürekli dönüş hızı"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "eğme"
 
@@ -3773,7 +3789,7 @@ msgstr "Video küçük resmi"
 msgid "Video viewer: {0}"
 msgstr "Video görüntüleyici: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "görünüm"
 
@@ -3829,7 +3845,7 @@ msgstr "Kısa süre içinde tekrar çevrimiçi olacağız."
 msgid "We'll notify you when something important happens."
 msgstr "Önemli bir şey olduğunda size bildireceğiz."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "silah"
 
@@ -3872,7 +3888,7 @@ msgstr "Dünya sunucusu"
 msgid "World server not reachable"
 msgstr "Dünya sunucusuna ulaşılamıyor"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "sapma"
 

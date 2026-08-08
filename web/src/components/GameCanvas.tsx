@@ -102,6 +102,13 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   PLATFORM: msg`PLATFORM`,
   'LEVEL AT 1200, DIRTY UP': msg`LEVEL AT 1200, DIRTY UP`,
   'CALL THE BALL': msg`CALL THE BALL`,
+  'BREAK WHEN READY': msg`BREAK WHEN READY`,
+  'BELOW 250 — GEAR AND FLAPS': msg`BELOW 250 — GEAR AND FLAPS`,
+  'DIRTY UP': msg`DIRTY UP`,
+  'DOWNWIND 600 FEET': msg`DOWNWIND 600 FEET`,
+  // HORNET / BALL / CLARA / AUTO are deliberately absent: the type name and
+  // the ball-call code words are spoken verbatim on every deck, like the
+  // annunciators above — it is the surrounding call that localises.
 }
 
 // Mounts the imperative Three.js engine onto its canvases and tears it down on
