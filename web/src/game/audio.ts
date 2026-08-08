@@ -54,6 +54,7 @@ interface Voice {
 const engines: { whine: OscillatorNode; second: OscillatorNode; whineGain: GainNode; rumble: BiquadFilterNode; hiss: BiquadFilterNode; hissGain: GainNode; gain: GainNode }[] = []
 let burner: Voice | null = null
 let seeker: { osc: OscillatorNode; gain: GainNode } | null = null
+let departure: { osc: OscillatorNode; gain: GainNode } | null = null
 let wind: { source: AudioBufferSourceNode; filter: BiquadFilterNode; gain: GainNode } | null = null
 let buffet: Voice | null = null
 let fire: Voice | null = null
@@ -196,6 +197,21 @@ function build(): void {
     osc.connect(gain).connect(bus('weapons'))
     osc.start()
     seeker = { osc, gain }
+  }
+
+  // Departure / AoA warning tone (NATOPS 2.8.2.5): a steady tone above 35°
+  // AoA, and a pitch that rises with yaw rate from its 40°/s onset to the
+  // 60°/s ceiling — the aural cue for the one departure the FCS does not
+  // prevent (#53).
+  {
+    const osc = c.createOscillator()
+    osc.type = 'sawtooth'
+    osc.frequency.value = 500
+    const gain = c.createGain()
+    gain.gain.value = 0
+    osc.connect(gain).connect(bus('alerts'))
+    osc.start()
+    departure = { osc, gain }
   }
 
   // Airflow: white noise through a speed-tracking lowpass.
@@ -526,6 +542,18 @@ export function audio_caution(): void {
 }
 export function audio_warning(): void {
   play('warning', 0.95)
+}
+
+// audio_departure drives the departure/AoA warning each frame (NATOPS
+// 2.8.2.5): yawing is the 0..1 intensity from the 40°/s onset to the 60°/s
+// ceiling (tone pitch rises with it); steady holds the constant above-35°-AoA
+// tone. Both zero = silent.
+export function audio_departure(yawing: number, steady: boolean): void {
+  if (!departure || !context || context.state !== 'running') return
+  const t = now()
+  const active = steady || yawing > 0
+  departure.osc.frequency.setTargetAtTime(yawing > 0 ? 500 + 500 * Math.min(yawing, 1) : 600, t, 0.05)
+  departure.gain.gain.setTargetAtTime(active ? 0.07 : 0, t, 0.05)
 }
 
 // audio_seeker drives the 9M tone each frame: 0 silent, 1 growl, 2 lock.
