@@ -1586,12 +1586,13 @@ function ddi_ew(x){   // EW (#11): the ALR-67 format frame, REALISTIC for the C 
 	for(let d=0;d<360;d+=30){ const a=d*D2R-Math.PI/2;
 		x.beginPath(); x.moveTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R); x.lineTo(cx+Math.cos(a)*(R-10),cy+Math.sin(a)*(R-10)); x.stroke(); }
 	x.beginPath(); x.moveTo(cx,cy-14); x.lineTo(cx-8,cy+12); x.lineTo(cx+8,cy+12); x.closePath(); x.stroke(); }   // ownship
+function gross_weight(){ const gz=ownship.gauges||{}; const book=stores_catalog();   // empty jet + loadout hardware + internal + external, lb — the honest live gross the CHKLST judges (#8, #51)
+	const hardware=book?stores_weight(ownship.loadout||loadout(),book).hardware:0;   // pylons, rails, rounds, dry tanks — the flown loadout's hardware (#17)
+	return Math.round((((book?book.empty:10700)+hardware)*2.2046+(gz.fuelRaw||0)+(gz.externalRaw||0))/10)*10; }
 function ddi_chklst(x,display){ const gz=ownship.gauges||{}; const o=last_out||[];   // CHKLST (#8): the real page is an ABBREVIATED memory-jogger, here filtered to systems the game models — and live: each line checks itself off from the sim state, which the real static page cannot do. Cockpit text stays English by the annunciator policy.
 	const colour=display==="center";
 	x.fillText("CHKLST",256,36);
-	const book=stores_catalog();
-	const hardware=book?stores_weight(ownship.loadout||loadout(),book).hardware:0;   // pylons, rails, rounds, dry tanks — the flown loadout's hardware (#17)
-	const wt=Math.round((((book?book.empty:10700)+hardware)*2.2046+(gz.fuelRaw||0)+(gz.externalRaw||0))/10)*10;   // empty jet + loadout hardware + internal + external — the honest gross
+	const wt=gross_weight();
 	const t=Math.max(0,(wt/2.2046/1000-11.2)/(15.6-11.2));   // linear on the Reference dialog's measured 11.2-15.6 t interval, EXTRAPOLATED above it: a tanked jet flies past the clean bracket and clamping under-read its speeds
 	const vapp=Math.round(126+t*22), vs0=Math.round(110+t*16);   // linear between the Reference dialog's measured endpoints (rows vapp/vs0, 11.2-15.6 t — re-based 2026-08-07 with the regenerated table)
 	const flap=["AUTO","HALF","FULL"][flap_select]||"AUTO";
@@ -1610,11 +1611,14 @@ function ddi_chklst(x,display){ const gz=ownship.gauges||{}; const o=last_out||[
 	item(44,y,"HOOK UP",null,(ownship.hook??0)<0.02); y+=56;
 	item(44,y,"CANOPY",null,(ownship.canopy??ownship.canopyTarget??0)<0.02); y+=56;
 	item(44,y,"PARK BRK","OFF",!parking);
+	x.font="20px monospace"; x.textAlign="left";   // NATOPS 8.2.7 catapult power: below the 44,000 lb weight board the technique is the pilot's choice of MIL / MIL-MAX / MAX; 45,000 and above requires MAX. Data, not automation — the power stays in the pilot's hand
+	x.fillText("CAT "+(wt>=45000?"MAX":"MIL/MAX"),44,458);
 	y=130;
 	item(286,y,"GEAR","DOWN",(ownship.gear??1)<0.02); y+=56;
 	item(286,y,"FLAPS","FLAPS "+flap,flap_select>0); y+=56;
 	item(286,y,"HOOK","HOOK "+((ownship.hook??0)>0.98?"DN":"UP"),null); y+=56;   // carrier or field decides — state only
-	item(286,y,"ON SPEED","8.1° AOA",null);
+	item(286,y,"ON SPEED","8.1° AOA",null); y+=56;
+	item(286,y,"LDG WT","MAX 33000",wt<=33000);   // NATOPS 4.1.7: carrier landing 33,000 lb unrestricted (34,000 absolute, with restrictions) — the box ticks when the live gross is legal to trap
 	x.font="20px monospace"; x.textAlign="left";   // under the shorter LDG column — the T/O column runs long
 	x.fillText("WT "+wt+" LB",286,402);
 	x.fillText("VAPP "+vapp,286,430);
@@ -2652,9 +2656,9 @@ function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
 			gpos.push(p.x,y+0.75,p.z); gcol.push(1,1,1); papi.push({mesh:m,x:p.x,y:y+0.75,z:p.z,set:setAng[i]});
 			obstacles.posts.push({x:p.x,z:p.z,r:2.2,y1:y+1.6}); }
 		const pg=new THREE.BufferGeometry(); pg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(gpos),3)); pg.setAttribute("color",new THREE.BufferAttribute(new Float32Array(gcol),3));
-		const papiPts=new THREE.Points(pg,new THREE.PointsMaterial({size:13,map:light_dot,vertexColors:true,transparent:true,blending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:true})); papiPts.frustumCulled=false; papiPts.visible=false; scene.add(papiPts);   // base: normal-blended so the red reads red in daylight (additive washed it pale-orange)
+		const papiPts=new THREE.Points(pg,new THREE.PointsMaterial({size:7,map:light_dot,vertexColors:true,transparent:true,blending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:false})); papiPts.frustumCulled=false; papiPts.visible=false; scene.add(papiPts);   // base: normal-blended so the red reads red in daylight (additive washed it pale-orange). SCREEN-SPACE like the OLS meatball: world-sized (13 m) discs read as giant red balls from the runway in daylight
 		const wg=new THREE.BufferGeometry(); wg.setAttribute("position",pg.getAttribute("position")); wg.setAttribute("color",new THREE.BufferAttribute(new Float32Array(gcol.length),3));
-		const papiWhite=new THREE.Points(wg,new THREE.PointsMaterial({size:13,map:light_dot,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true})); papiWhite.frustumCulled=false; papiWhite.visible=false; scene.add(papiWhite);   // additive boost lit ONLY on the white units, so they punch through bright daylight (red units stay normal-blended)
+		const papiWhite=new THREE.Points(wg,new THREE.PointsMaterial({size:7,map:light_dot,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:false})); papiWhite.frustumCulled=false; papiWhite.visible=false; scene.add(papiWhite);   // additive boost lit ONLY on the white units, so they punch through bright daylight (red units stay normal-blended)
 		return {papi,papiPts,papiWhite,cx:tdz.x,cz:tdz.z,bx:beam.x,bz:beam.z}; }
 	const thrP=new THREE.Vector3(o.x,y,o.z).addScaledVector(fwd,-L/2);        // -y end: approach for heading H, fly +fwd, left=-right, beam back along -fwd
 	const thrM=new THREE.Vector3(o.x,y,o.z).addScaledVector(fwd, L/2);        // +y end: approach for heading H+180, fly -fwd, left=+right, beam along +fwd
@@ -3689,7 +3693,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2),   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
+	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0),   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
 	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
 	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS
 		racks:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>[n,o.visible])),
@@ -3807,7 +3811,7 @@ function test_drive(){   // hold the prescribed approach exactly; hand control b
 // the world, delivers state on spawns/resets, and syncs its output back onto
 // the ownship object every rendered frame.
 const physics_strips=[];   // paved capsules, collected as the airfields build
-const FUEL=()=>THREE.MathUtils.clamp((cfg.fuel||10800)/2.2046,500,4900);   // spawn fuel: the menu slider speaks POUNDS like the IFEI, the sim burns kilograms (default full internal, 10,800 lb ≈ 4,900 kg)
+const FUEL=()=>THREE.MathUtils.clamp((cfg.fuel||10800)/2.2046,500,4900);   // spawn fuel: the menu slider speaks POUNDS like the IFEI, the sim burns kilograms (default full internal, 10,800 lb ≈ 4,900 kg; the START selector seeds the slider per start — recovery cases arrive light, #51)
 const BINGO=1361, FUELLO=726;   // kg: the 3,000 lb bingo call and the ~1,600 lb hardware FUEL LO caution
 let flight_active=false, control_sequence=0, launch_flag=false, core_catapult=-1, core_stroke=-1, prev_wire=-1, prev_wow=false;
 let last_controls=null, marked_steps=0;   // multiplayer prediction: the sample the core flew this frame + fixed steps since the last mark
