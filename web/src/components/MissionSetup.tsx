@@ -38,12 +38,13 @@ import {
   type StationSlot,
   type StickBindings,
   deviceDefaults,
+  seedStart,
 } from '../lib/config'
 import { useIdentityName } from '../lib/config-store'
 import { Multiplayer } from './Multiplayer'
 import { Link } from '@tanstack/react-router'
 import { KEY_DEFAULTS, pretty } from '../game/keys'
-import { PRESETS, matches, normalize, outcome, outcomes, weight, resolve, type Catalog } from '../game/stores'
+import { PRESETS, asymmetry, matches, normalize, outcome, outcomes, weight, resolve, type Catalog } from '../game/stores'
 import { flight_catalog, flight_load } from '../game/flight'
 import { LoadoutPreview } from './LoadoutPreview'
 import {
@@ -706,6 +707,7 @@ function Armament({
   stores,
   fuel,
   allowed,
+  catapult,
   onChange,
   onFuel,
   onPreset,
@@ -713,6 +715,7 @@ function Armament({
   stores: Record<string, StationSlot>
   fuel: number
   allowed: boolean
+  catapult: boolean
   onChange: (stores: Record<string, StationSlot>) => void
   onFuel: (fuel: number) => void
   onPreset: (stores: Record<string, StationSlot>, fuel: number) => void
@@ -781,6 +784,12 @@ function Armament({
   // below 48,000 lb a hands-off rotation is benign. No v1 loadout can reach
   // it (the warning arms when heavier stores arrive); warn, never clamp.
   const LAUNCH = 48000
+  // NATOPS 4.1.5 lateral asymmetry, kg·m → ft·lb: the jet genuinely flies
+  // the moment (each store's mass sits at its buttline), so an uneven fill
+  // gets its readout — and its 6,000 ft·lb catapult limit when the mission
+  // starts on the cat. Warn, never clamp, like the launch weight above.
+  const moment = book ? Math.round((Math.abs(asymmetry(loadout, book)) * 7.233) / 10) * 10 : 0
+  const CATAPULT = 6000
   return (
     <div className='space-y-3'>
       <LoadoutPreview stores={loadout} />
@@ -859,6 +868,18 @@ function Armament({
             <div className='mt-1 flex items-center gap-1.5 text-amber-500'>
               <TriangleAlert className='size-4' />
               <Trans>{gross - LAUNCH} lb over maximum launch weight</Trans>
+            </div>
+          )}
+          {moment > 0 && (
+            <div className='mt-1'>
+              {/* jsx-text-ok: ft·lb is the unit annunciation, verbatim like lb above */}
+              <Trans>Asymmetry</Trans> {moment} ft·lb
+            </div>
+          )}
+          {catapult && moment > CATAPULT && (
+            <div className='mt-1 flex items-center gap-1.5 text-amber-500'>
+              <TriangleAlert className='size-4' />
+              <Trans>{moment - CATAPULT} ft·lb over the catapult asymmetry limit</Trans>
             </div>
           )}
         </div>
@@ -1415,25 +1436,13 @@ function MissionPanel({
     <Choice
       value={config.start === 'landing' ? 'case2' : config.start}
       onChange={(v) => {
-        // A recovery case IS a weather definition: picking one seeds the
-        // authentic conditions in the controls just below — visibly, and
-        // freely overridable (a day Case III profile is a real training
-        // sortie, and a clear-night Case III is its own famous misery).
-        // One onChange with every seeded field: consecutive set() calls
-        // each spread the RENDER's config, so the last would revert the
-        // start (the same React-batch clobber the cheats ref works around).
-        const seeded = { ...config, start: v }
-        if (v === 'case1') {
-          seeded.tod = 'day'
-          seeded.clouds = 'none'
-        } else if (v === 'case2') {
-          seeded.tod = 'day'
-          seeded.clouds = 'low_stratus'
-        } else if (v === 'case3') {
-          seeded.tod = 'night'
-          seeded.clouds = 'low_stratus'
-        }
-        onChange(seeded)
+        // A recovery case IS a weather definition — and a fuel state:
+        // picking one seeds the authentic conditions and the arrival gas
+        // (seedStart), visibly and freely overridable. One onChange with
+        // every seeded field: consecutive set() calls each spread the
+        // RENDER's config, so the last would revert the start (the same
+        // React-batch clobber the cheats ref works around).
+        onChange(seedStart(config, v as MissionConfig['start']))
       }}
       options={[
         { value: 'air', label: <Trans>In air</Trans> },
@@ -1500,6 +1509,7 @@ function MissionPanel({
   stores={config.stores}
   fuel={Number(config.fuel) || 10800}
   allowed={true}
+  catapult={config.start === 'carrier'}
   onChange={(v) => set('stores', v)}
   onFuel={(v) => set('fuel', v)}
   onPreset={(stores, fuel) => onChange({ ...config, stores, fuel })}

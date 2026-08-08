@@ -4,28 +4,28 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, expect, it } from 'vitest'
-import { LIMITS, RELEASE, PRESETS, entries, jettison, mask, matches, migrate, missiles_loaded, normalize, options, outcome, outcomes, points, rounds, strip, weight, type Catalog, type Fitment } from './stores'
+import { LIMITS, RELEASE, PRESETS, asymmetry, entries, jettison, mask, matches, migrate, missiles_loaded, normalize, options, outcome, outcomes, points, rounds, strip, weight, type Catalog, type Fitment } from './stores'
 
 // A catalog mirroring the core's fa18c table (order matters: tips first).
 const FITMENTS: Fitment[] = [
-  { name: 'tip1', station: 1, mass: 86, area: 0.05, fuel: 0 },
-  { name: 'tip9', station: 9, mass: 86, area: 0.05, fuel: 0 },
-  { name: 'rail2', station: 2, mass: 179, area: 0.04, fuel: 0 },
-  { name: 'twin2', station: 2, mass: 290, area: 0.06, fuel: 0 },
-  { name: '9m2', station: 2, mass: 86, area: 0.05, fuel: 0 },
-  { name: '9m2a', station: 2, mass: 86, area: 0.05, fuel: 0 },
-  { name: '9m2b', station: 2, mass: 86, area: 0.05, fuel: 0 },
-  { name: 'rail8', station: 8, mass: 179, area: 0.04, fuel: 0 },
-  { name: 'twin8', station: 8, mass: 290, area: 0.06, fuel: 0 },
-  { name: '9m8', station: 8, mass: 86, area: 0.05, fuel: 0 },
-  { name: '9m8a', station: 8, mass: 86, area: 0.05, fuel: 0 },
-  { name: '9m8b', station: 8, mass: 86, area: 0.05, fuel: 0 },
-  { name: 'pylon3', station: 3, mass: 136, area: 0.03, fuel: 0 },
-  { name: 'tank3', station: 3, mass: 158, area: 0.07, fuel: 1010 },
-  { name: 'pylon7', station: 7, mass: 136, area: 0.03, fuel: 0 },
-  { name: 'tank7', station: 7, mass: 158, area: 0.07, fuel: 1010 },
-  { name: 'pylon5', station: 5, mass: 120, area: 0.03, fuel: 0 },
-  { name: 'tank5', station: 5, mass: 158, area: 0.07, fuel: 1010 },
+  { name: 'tip1', station: 1, mass: 86, area: 0.05, fuel: 0, lateral: -5.94 },
+  { name: 'tip9', station: 9, mass: 86, area: 0.05, fuel: 0, lateral: 5.94 },
+  { name: 'rail2', station: 2, mass: 179, area: 0.04, fuel: 0, lateral: -3.35 },
+  { name: 'twin2', station: 2, mass: 290, area: 0.06, fuel: 0, lateral: -3.35 },
+  { name: '9m2', station: 2, mass: 86, area: 0.05, fuel: 0, lateral: -3.35 },
+  { name: '9m2a', station: 2, mass: 86, area: 0.05, fuel: 0, lateral: -3.5 },
+  { name: '9m2b', station: 2, mass: 86, area: 0.05, fuel: 0, lateral: -3.2 },
+  { name: 'rail8', station: 8, mass: 179, area: 0.04, fuel: 0, lateral: 3.35 },
+  { name: 'twin8', station: 8, mass: 290, area: 0.06, fuel: 0, lateral: 3.35 },
+  { name: '9m8', station: 8, mass: 86, area: 0.05, fuel: 0, lateral: 3.35 },
+  { name: '9m8a', station: 8, mass: 86, area: 0.05, fuel: 0, lateral: 3.5 },
+  { name: '9m8b', station: 8, mass: 86, area: 0.05, fuel: 0, lateral: 3.2 },
+  { name: 'pylon3', station: 3, mass: 136, area: 0.03, fuel: 0, lateral: -2.24 },
+  { name: 'tank3', station: 3, mass: 158, area: 0.07, fuel: 1010, lateral: -2.24 },
+  { name: 'pylon7', station: 7, mass: 136, area: 0.03, fuel: 0, lateral: 2.24 },
+  { name: 'tank7', station: 7, mass: 158, area: 0.07, fuel: 1010, lateral: 2.24 },
+  { name: 'pylon5', station: 5, mass: 120, area: 0.03, fuel: 0, lateral: 0 },
+  { name: 'tank5', station: 5, mass: 158, area: 0.07, fuel: 1010, lateral: 0 },
 ]
 const BOOK: Catalog = {
   stores: FITMENTS,
@@ -171,6 +171,28 @@ describe('weight', () => {
   })
   it('gun fighter weighs nothing', () => {
     expect(weight(PRESETS.gun, BOOK)).toEqual({ hardware: 0, fuel: 0 })
+  })
+})
+
+describe('asymmetry', () => {
+  it('is zero for the symmetric presets', () => {
+    expect(asymmetry(PRESETS.gun, BOOK)).toBeCloseTo(0)
+    expect(asymmetry(PRESETS.fox2, BOOK)).toBeCloseTo(0)
+    expect(asymmetry(PRESETS.cap, BOOK)).toBeCloseTo(0)
+  })
+  it('one full tank to port is the NATOPS example — over every landing limit', () => {
+    // Tank on 3, bare pylon on 7: the pylons cancel and the moment is the
+    // full tank alone, (158 + 1010) kg × 2.24 m = -2616 kg·m ≈ 18,900 ft·lb —
+    // legal in flight (26,000), illegal for any carrier landing (17,000).
+    const lopsided = normalize({ 3: { fixture: 'pylon', stores: ['tank'] }, 7: { fixture: 'pylon', stores: [] } })
+    const moment = asymmetry(lopsided, BOOK)
+    expect(moment).toBeCloseTo(-(158 + 1010) * 2.24, 5)
+    expect(Math.abs(moment) * 7.233).toBeGreaterThan(17000)
+    expect(Math.abs(moment) * 7.233).toBeLessThan(26000)
+  })
+  it('a lone tip missile stays inside the catapult limit', () => {
+    const odd = normalize({ 9: { fixture: 'rail', stores: ['9m'] } })
+    expect(Math.abs(asymmetry(odd, BOOK)) * 7.233).toBeLessThan(6000)
   })
 })
 

@@ -77,6 +77,32 @@ export interface MissionConfig {
   [key: string]: string | number | boolean | Record<string, string> | Record<string, number> | Record<string, boolean> | Record<string, StickBindings> | Record<string, StationSlot>
 }
 
+// seedStart applies a start choice with everything that choice defines: the
+// recovery cases seed their authentic weather, and every start seeds the fuel
+// that fits it — a pattern entry arrives with mission-end gas (NATOPS 4.1.7:
+// full internal is over the 33,000 lb carrier landing limit before a single
+// missile hangs), a launch leaves with full tanks. All of it stays freely
+// overridable in the controls below the selector; re-picking a start re-seeds.
+export function seedStart(config: MissionConfig, start: MissionConfig['start']): MissionConfig {
+  const seeded = { ...config, start }
+  if (start === 'case1') {
+    seeded.tod = 'day'
+    seeded.clouds = 'none'
+    seeded.fuel = 4500
+  } else if (start === 'case2') {
+    seeded.tod = 'day'
+    seeded.clouds = 'low_stratus'
+    seeded.fuel = 4500
+  } else if (start === 'case3') {
+    seeded.tod = 'night'
+    seeded.clouds = 'low_stratus'
+    seeded.fuel = 4500
+  } else {
+    seeded.fuel = 10800
+  }
+  return seeded
+}
+
 // Mirrors the engine's defaults so the menu reflects what an unconfigured game uses.
 export const DEFAULT_CONFIG: MissionConfig = {
   task: 'joust',
