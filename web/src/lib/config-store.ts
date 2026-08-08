@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { createAppClient, useShellStorage } from '@mochi/web'
+import { createAppClient, useAuthStore, useShellStorage } from '@mochi/web'
 import { DEFAULT_CONFIG, type MissionConfig } from './config'
 import { loadOutcome, PendingConfig } from './config-persist'
 import { migrate, normalize } from '../game/stores'
@@ -50,8 +50,10 @@ function resolve_identity(): void {
   // iframe the origin is opaque, so credentials:'same-origin' sends no cookies
   // and /_/identity answers 401 — it only appeared to work in a bare-app
   // harness. The client carries the shell's token, which core accepts.
-  client
-    .get<{ identity?: { name?: string } }>('/_/identity', { baseURL: '/' })
+  authenticated()
+    .then(() =>
+      client.get<{ identity?: { name?: string } }>('/_/identity', { baseURL: '/' })
+    ) // same race as loadConfig: fired before the shell's token lands, this went out bare and the callsign default stayed blank
     .then((res) => unwrap<{ identity?: { name?: string } }>(res)) // the client may hand back the body or {data}: unwrap knows both, as loadConfig does
     .then((body) => {
       const name = body?.identity?.name
@@ -79,11 +81,33 @@ export function useIdentityName(): string {
   return name
 }
 
+// Wait for the auth store to finish initializing before any config request.
+// The shell delivers the app token by postMessage AFTER the React tree mounts,
+// so a config/load fired from the route's first effect races it: the request
+// goes out bare, 401s, config_identity stays empty — and an empty identity
+// silently drops EVERY save for the rest of the session, while the
+// shell-storage cache makes each edit look saved. The next session's load then
+// applies the server's stale config over the cache, which read as "the menu
+// keeps forgetting the start I picked". Timing decides the race, so it forgot
+// intermittently.
+function authenticated(): Promise<void> {
+  return new Promise((resolve) => {
+    if (useAuthStore.getState().isInitialized) return resolve()
+    const stop = useAuthStore.subscribe((state) => {
+      if (state.isInitialized) {
+        stop()
+        resolve()
+      }
+    })
+  })
+}
+
 // Load the signed-in user's saved settings from the app database. Returns the
 // stored keys, or null when nothing is saved yet (anonymous, or a fresh account)
 // so the caller can seed the server from its current state.
 export async function loadConfig(): Promise<Partial<MissionConfig> | null> {
   try {
+    await authenticated()
     const res = await client.get<ConfigPayload | { data: ConfigPayload }>(
       '/-/config/load'
     )
