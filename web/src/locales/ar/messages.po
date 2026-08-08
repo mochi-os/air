@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[غير محدد]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, zero {# إصابات} one {# إصابة} two {# إصابة} few {# إصابات} many {# إصابة} other {# إصابة}}"
 
@@ -444,7 +444,7 @@ msgstr "المحاور"
 msgid "Axis {i}"
 msgstr "المحور {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "للخلف"
 
@@ -466,6 +466,10 @@ msgstr "طائرة معادية"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "اللافتة"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "أقل من 250 — العجلات والقلابات"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "لون الحدود"
 msgid "Bots"
 msgstr "البوتات"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "فرامل"
 
@@ -541,6 +545,10 @@ msgstr "انعطف يسارًا"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "انعطف يمينًا"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "انعطف عند الاستعداد"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "خط الوسط"
 msgid "Change notification category"
 msgstr "تغيير فئة الإشعار"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "منظر المطاردة:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "دردشة"
 
@@ -765,7 +773,7 @@ msgstr "إغلاق اللوحة / إلغاء"
 msgid "Close search"
 msgstr "إغلاق البحث"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "أقرب"
 
@@ -939,7 +947,7 @@ msgstr "تعذّر التحقق باستخدام هذا الحساب. يرجى �
 msgid "Countermeasures"
 msgstr "إجراءات مضادة"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "تحطّمت الطائرة"
 
@@ -1124,7 +1132,7 @@ msgstr "تنازلي"
 msgid "Description"
 msgstr "الوصف"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "دمّرها الحريق"
 
@@ -1163,6 +1171,10 @@ msgstr "الاتجاه"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "الدليل"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "أنزل العجلات"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "تنزيل"
 msgid "Download failed"
 msgstr "فشل التنزيل"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "مع الريح 600 قدم"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "سحب"
 
@@ -1333,15 +1349,15 @@ msgstr "أدخل رمز تطبيق المصادقة"
 msgid "Environment"
 msgstr "المحيط"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "الجميع"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "مغادرة المباراة"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "إنهاء المهمة"
 
@@ -1481,7 +1497,7 @@ msgstr "أتمم نقل حسابك"
 msgid "Finished"
 msgstr "انتهت"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "إطلاق النار"
 
@@ -1502,7 +1518,7 @@ msgstr "الأعلام"
 msgid "FLAMEOUT"
 msgstr "انطفاء المحرك"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "مشاعل"
 
@@ -1514,7 +1530,7 @@ msgstr "شعلات"
 msgid "Flat"
 msgstr "مسطح"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "ارتطمت بالبحر"
 
@@ -1543,7 +1559,7 @@ msgstr "تم الطيران"
 msgid "Fly"
 msgstr "طيران"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "حلّق مجددًا"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "جسم الطائرة"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "هيكل الهبوط"
 
@@ -1724,7 +1740,7 @@ msgstr "السجل"
 msgid "Home"
 msgstr "الرئيسية"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "خطاف"
 
@@ -1919,7 +1935,7 @@ msgstr "متأخر"
 msgid "Launch (catapult)"
 msgstr "إطلاق (منجنيق)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "إطلاق / استهداف"
 
@@ -1976,7 +1992,7 @@ msgstr "حافظ على 1200، أنزل العجلات"
 msgid "Light"
 msgstr "فاتح"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "أضواء"
 
@@ -2095,7 +2111,7 @@ msgstr "إدارة حساباتك المتصلة للإشعارات والخدم
 msgid "Manual"
 msgstr "يدوي"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "خريطة"
 
@@ -2134,7 +2150,7 @@ msgstr "خادم MCP"
 msgid "Medium"
 msgstr "متوسط"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "قائمة"
 
@@ -2147,7 +2163,7 @@ msgstr "القائمة"
 msgid "Message"
 msgstr "رسالة"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "راسل الجميع"
 
@@ -2155,7 +2171,7 @@ msgstr "راسل الجميع"
 msgid "Message players on this server"
 msgstr "راسل اللاعبين على هذا الخادم"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "راسل فريقك"
 
@@ -2163,7 +2179,7 @@ msgstr "راسل فريقك"
 msgid "Metric"
 msgstr "متري"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "تصادم جوي"
 
@@ -2530,11 +2546,11 @@ msgstr "اسم الخيار"
 msgid "Options"
 msgstr "خيارات"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "أو"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "دوران"
 
@@ -2600,11 +2616,11 @@ msgstr "طيار"
 msgid "PILOT DOWN"
 msgstr "سقط الطيار"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "قُتل الطيار"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "انعطاف"
 
@@ -2914,7 +2930,7 @@ msgstr "إعادة بدء المهمة"
 msgid "Result"
 msgstr "النتيجة"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "استئناف"
 
@@ -2952,7 +2968,7 @@ msgstr "الجناح الأيمن"
 msgid "Right wingtip"
 msgstr "طرف الجناح الأيمن"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "تدحرج"
 
@@ -3165,7 +3181,7 @@ msgstr "إرسال"
 msgid "Send again"
 msgstr "إرسال مرة أخرى"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "إرسال رسالة"
 
@@ -3220,7 +3236,7 @@ msgstr "تعيين المنشأ والوجهة"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "واسع"
 msgid "SPD BK"
 msgstr "ك.هـ"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "كابح هوائي"
 
@@ -3424,7 +3440,7 @@ msgstr "أرى العدو"
 msgid "Task"
 msgstr "وظيفة"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "الفريق"
 
@@ -3458,7 +3474,7 @@ msgstr "نص"
 msgid "That code is incorrect or has expired."
 msgstr "هذا الرمز غير صحيح أو انتهت صلاحيته."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "تستمر المباراة خلف هذه القائمة."
 
@@ -3490,7 +3506,7 @@ msgstr "ترسل هذه الرَّدهة اتصال لعبتك إلى مضيف �
 msgid "This page has not been created yet."
 msgstr "لم يتم إنشاء هذه الصفحة بعد."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "خانق"
 
@@ -3514,7 +3530,7 @@ msgstr "الخميس"
 msgid "Tightest sustained turn speed"
 msgstr "أضيق سرعة انعطاف مستمر"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "إمالة"
 
@@ -3773,7 +3789,7 @@ msgstr "صورة مصغرة للفيديو"
 msgid "Video viewer: {0}"
 msgstr "عارض الفيديو: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "منظر"
 
@@ -3829,7 +3845,7 @@ msgstr "سنعود للاتصال قريبًا."
 msgid "We'll notify you when something important happens."
 msgstr "سنُعلمك عند حدوث شيء مهم."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "سلاح"
 
@@ -3872,7 +3888,7 @@ msgstr "خادم العالم"
 msgid "World server not reachable"
 msgstr "تعذّر الوصول إلى خادم العالم"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "انعراج"
 

@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "გთხოვთ, შეამოწმოთ ინტერნეტთან კავშირი და სცადოთ ხელახლა."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[არ არის მითითებული]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {მოხვდა # ტყვია} other {მოხვდა # ტყვია}}"
 
@@ -444,7 +444,7 @@ msgstr "ღერძები"
 msgid "Axis {i}"
 msgstr "ღერძი {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "უკან"
 
@@ -466,6 +466,10 @@ msgstr "მტერი"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "ბანერი"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "250-ზე ქვემოთ — შასი და ფრთები"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "კონტურის ფერი"
 msgid "Bots"
 msgstr "ბოტები"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "მუხრუჭები"
 
@@ -541,6 +545,10 @@ msgstr "მკვეთრად მარცხნივ"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "მკვეთრად მარჯვნივ"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "მოტრიალდი მზადყოფნისას"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "ცენტრალური ხაზი"
 msgid "Change notification category"
 msgstr "შეტყობინების კატეგორიის შეცვლა"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "დევნის ხედი:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "ჩატი"
 
@@ -765,7 +773,7 @@ msgstr "პანელის დახურვა / გაუქმება"
 msgid "Close search"
 msgstr "ძიების დახურვა"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "ახლოს"
 
@@ -939,7 +947,7 @@ msgstr "ამ ანგარიშით ვერ მოხერხდა �
 msgid "Countermeasures"
 msgstr "საწინააღმდეგო ზომები"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "ჩამოვარდა"
 
@@ -1124,7 +1132,7 @@ msgstr "კლებადობით"
 msgid "Description"
 msgstr "აღწერა"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "ხანძარმა გაანადგურა"
 
@@ -1163,6 +1171,10 @@ msgstr "მიმართულება"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "კატალოგი"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "შასი ჩამოუშვი"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "ჩამოტვირთვა"
 msgid "Download failed"
 msgstr "ჩამოტვირთვა ვერ მოხერხდა"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "ქარის მიმართულებით 600 ფუტი"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "გადათრევა"
 
@@ -1333,15 +1349,15 @@ msgstr "შეიყვანეთ თქვენი authenticator-ის კ�
 msgid "Environment"
 msgstr "გარემო"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "ყველა"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "მატჩიდან გასვლა"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "მისიიდან გასვლა"
 
@@ -1481,7 +1497,7 @@ msgstr "დაასრულეთ ანგარიშის გადატ�
 msgid "Finished"
 msgstr "დასრულდა"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "სროლა"
 
@@ -1502,7 +1518,7 @@ msgstr "დროშები"
 msgid "FLAMEOUT"
 msgstr "ალის ჩაქრობა"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "სატყუარები"
 
@@ -1514,7 +1530,7 @@ msgstr "ფლერები"
 msgid "Flat"
 msgstr "ბრტყელი"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "ზღვაში ჩავარდა"
 
@@ -1543,7 +1559,7 @@ msgstr "იფრინა"
 msgid "Fly"
 msgstr "ფრენა"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "ისევ ფრენა"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "ფიუზელაჟი"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "შასი"
 
@@ -1724,7 +1740,7 @@ msgstr "ისტორია"
 msgid "Home"
 msgstr "მთავარი"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "კაუჭი"
 
@@ -1919,7 +1935,7 @@ msgstr "ᲒᲕᲘᲐᲜ"
 msgid "Launch (catapult)"
 msgstr "გაშვება (კატაპულტი)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "აფრენა / სამიზნე"
 
@@ -1976,7 +1992,7 @@ msgstr "ᲡᲬᲝᲠᲐᲓ 1200-ᲖᲔ, ᲨᲐᲡᲘ ᲥᲕᲔᲕᲘᲗ"
 msgid "Light"
 msgstr "ღია"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "შუქები"
 
@@ -2095,7 +2111,7 @@ msgstr "მართეთ თქვენი დაკავშირებუ�
 msgid "Manual"
 msgstr "სახელმძღვანელო"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "რუკა"
 
@@ -2134,7 +2150,7 @@ msgstr "MCP სერვერი"
 msgid "Medium"
 msgstr "საშუალო"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "მენიუ"
 
@@ -2147,7 +2163,7 @@ msgstr "მენიუ"
 msgid "Message"
 msgstr "შეტყობინება"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "მისწერე ყველას"
 
@@ -2155,7 +2171,7 @@ msgstr "მისწერე ყველას"
 msgid "Message players on this server"
 msgstr "მისწერეთ ამ სერვერის მოთამაშეებს"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "მისწერე შენს გუნდს"
 
@@ -2163,7 +2179,7 @@ msgstr "მისწერე შენს გუნდს"
 msgid "Metric"
 msgstr "მეტრიკული"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "შეჯახება ჰაერში"
 
@@ -2530,11 +2546,11 @@ msgstr "ვარიანტის სახელი"
 msgid "Options"
 msgstr "ვარიანტები"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "ან"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "ბრუნვა"
 
@@ -2600,11 +2616,11 @@ msgstr "პილოტი"
 msgid "PILOT DOWN"
 msgstr "პილოტი დაიღუპა"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "პილოტი დაიღუპა"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "ტანგაჟი"
 
@@ -2914,7 +2930,7 @@ msgstr "მისიის თავიდან დაწყება"
 msgid "Result"
 msgstr "შედეგი"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "გაგრძელება"
 
@@ -2952,7 +2968,7 @@ msgstr "მარჯვენა ფრთა"
 msgid "Right wingtip"
 msgstr "მარჯვენა ფრთის ბოლო"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "კრენი"
 
@@ -3165,7 +3181,7 @@ msgstr "გაგზავნა"
 msgid "Send again"
 msgstr "თავიდან გაგზავნა"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "შეტყობინების გაგზავნა"
 
@@ -3220,7 +3236,7 @@ msgstr "წყაროს და დანიშნულების დაყ
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "ფართო"
 msgid "SPD BK"
 msgstr "სმ"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "სიჩქარის მუხრუჭი"
 
@@ -3424,7 +3440,7 @@ msgstr "მტერს ვხედავ"
 msgid "Task"
 msgstr "ამოცანა"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "გუნდი"
 
@@ -3458,7 +3474,7 @@ msgstr "ტექსტი"
 msgid "That code is incorrect or has expired."
 msgstr "ეს კოდი არასწორია ან ვადაგასულია."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "მატჩი ამ მენიუს მიღმა გრძელდება."
 
@@ -3490,7 +3506,7 @@ msgstr "ეს ლობი თქვენს თამაშის კავ�
 msgid "This page has not been created yet."
 msgstr "ეს გვერდი ჯერ არ შექმნილა."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "გაზი"
 
@@ -3514,7 +3530,7 @@ msgstr "ხუთშაბათი"
 msgid "Tightest sustained turn speed"
 msgstr "ყველაზე მჭიდრო მდგრადი მოხვევის სიჩქარე"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "დახრა"
 
@@ -3773,7 +3789,7 @@ msgstr "ვიდეოს მინიატურა"
 msgid "Video viewer: {0}"
 msgstr "ვიდეოს მნახველი: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "ხედი"
 
@@ -3829,7 +3845,7 @@ msgstr "ვერ ვიპოვეთ აპები თქვენთვი
 msgid "We'll notify you when something important happens."
 msgstr "შეგატყობინებთ, როცა რამე მნიშვნელოვანი მოხდება."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "იარაღი"
 
@@ -3872,7 +3888,7 @@ msgstr "სამყაროს სერვერი"
 msgid "World server not reachable"
 msgstr "სამყაროს სერვერი მიუწვდომელია"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "მობრუნება"
 

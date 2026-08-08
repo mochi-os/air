@@ -3043,7 +3043,13 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 	const ind=ownship.group.userData.indexer;
 	if(ind&&INDEXER_TEST){ ind.slow.opacity=1; ind.donut.opacity=1; ind.fast.opacity=1; }
 	else if(ind){ const devd=(out[STATE.alpha]||0)/D2R-8.1;   // Control.Onspeed, the PA on-speed alpha datum (trim.go)
-		const lit=(out[STATE.extension]||0)>0.9;   // the real indexer arms with the gear
+		// The indexer arms with the gear AND weight off wheels, and FLASHES
+		// when the hook is up (NATOPS 2.12.10) — the jet telling you at eye
+		// level that you forgot it, long before the hook-up waveoff at 1,200 m.
+		// It was alpha alone: steady on a hook-up approach, and still lit
+		// through the rollout after a trap.
+		const blink=((ownship.hook??0)<0.5)?(Math.floor(sim_time*3)%2):1;
+		const lit=(out[STATE.extension]||0)>0.9 && !ownship.grounded && blink>0;
 		ind.slow.opacity = lit?THREE.MathUtils.clamp((devd-0.4)/0.5,0,1):0;
 		ind.fast.opacity = lit?THREE.MathUtils.clamp((-devd-0.4)/0.5,0,1):0;
 		ind.donut.opacity= lit?THREE.MathUtils.clamp(1-(Math.abs(devd)-0.5)/0.5,0,1):0; } }
@@ -3068,7 +3074,7 @@ const _headq=new THREE.Quaternion(), _pitq=new THREE.Quaternion(), _yaxis=new TH
 const CAMFIX=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),-Math.PI/2);   // maps the camera's -Z view axis onto body +X with +Y up   // chase view: orbit around the aircraft; cam_psi = smoothed heading the orbit is referenced to
 let flyby_pos=null, flyby_side=1;          // flypast view: fixed world point the jet flies past, re-seeded ahead as it recedes
 // True while the aircraft is sitting/rolling on the deck or runway (not yet airborne) — gear can't retract then.
-let marshal=null;   // Case III recovery state (#205): {push: sim_time of the assigned EAT, commenced, platform, dirty, ball} — null outside a Case III mission
+let marshal=null, pattern=null;   // Case III script / Case I-II visual pattern (#50)   // Case III recovery state (#205): {push: sim_time of the assigned EAT, commenced, platform, dirty, ball} — null outside a Case III mission
 const MARSHAL_PUSH=DEV_MODE&&+(new URLSearchParams(location.search).get("push")||0)>0?+(new URLSearchParams(location.search).get("push")||0):360;   // one full six-minute racetrack to the push; &push=N (dev) shortens it for testing
 function clock_text(seconds){ const s=Math.max(0,Math.round(seconds)); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
 // marshal_watch: the Case III radio script, driven by range and altitude. The
@@ -3086,7 +3092,39 @@ function marshal_watch(){ if(!marshal||!running) return;
 		return; }
 	if(!marshal.platform && ownship.pos.y<1524){ marshal.platform=true; comm((cfg.callsign||"701")+": "+translate("PLATFORM"), "#9fd0ff"); }
 	if(!marshal.dirty && range<10*1852){ marshal.dirty=true; comm("APPROACH: "+translate("LEVEL AT 1200, DIRTY UP"), "#9fd0ff"); }
-	if(!marshal.ball && range<0.75*1852){ marshal.ball=true; comm("PADDLES: "+translate("CALL THE BALL"), "#9fd0ff"); } }
+	if(!marshal.ball && range<0.75*1852){ marshal.ball=true; call_the_ball(); } }
+// pattern_watch is the Case I/II analogue of marshal_watch (#50): the visual
+// pattern's own gates, in NATOPS 8.2.10's order — the break, the 250 kt
+// dirty-up, the 600 ft downwind, the abeam, and the ball. Case III was fully
+// scripted while Case I — the mode a player picks in order TO FLY THE
+// PATTERN — offered nothing at all between spawn and the LSO watch.
+function pattern_watch(){ if(!pattern||!running) return;
+	const range=Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),wrap_axis(CARRIER.z-ownship.pos.z));
+	const feet=ownship.pos.y*3.28084, kt=(ownship.cas||0)*1.9438;
+	if(!pattern.broke){ if(range<1.2*1852){ pattern.broke=true;
+		comm("TOWER: "+translate("BREAK WHEN READY"), "#9fd0ff"); }
+		return; }
+	if(!pattern.dirty){ if(kt<250&&(ownship.gearTarget??0)>0.5){ pattern.dirty=true;
+		comm((cfg.callsign||"701")+": "+translate("DIRTY UP"), "#9fd0ff"); }
+		else if(kt<250&&!pattern.told){ pattern.told=true;
+			comm("TOWER: "+translate("BELOW 250 — GEAR AND FLAPS"), "#9fd0ff"); }
+		return; }
+	if(!pattern.downwind && feet<800 && range>0.7*1852){ pattern.downwind=true;
+		comm("TOWER: "+translate("DOWNWIND 600 FEET"), "#9fd0ff"); }
+	if(!pattern.ball && range<0.75*1852){ pattern.ball=true; call_the_ball(); } }
+// call_the_ball is the paddles prompt AND the pilot's reply (NATOPS 8.2.10:
+// "call sign, Hornet, Ball or CLARA, fuel state, auto"). Both Case III and the
+// visual pattern use it; only the prompt existed, and only in Case III.
+function call_the_ball(){
+	comm("PADDLES: "+translate("CALL THE BALL"), "#9fd0ff");
+	const hundreds=Math.round(((ownship.fuel??0)+(ownship.external??0))*2.2046/100)/10;   // fuel state to the nearest 100 lb, spoken in thousands
+	// BALL or CLARA: CLARA ("clear as mud") is the call when the lens is not
+	// yet in sight — off the centreline, or below the glideslope's lower
+	// lens travel where the amber ball has dropped out of view.
+	const clara=(()=>{ if(!carrier_ols) return true; const s=ols_dev(ownship.pos,carrier_ols);
+		return Math.abs(Math.atan2(s.lat,Math.max(s.along,1))*180/Math.PI)>4 || s.dev<-1; })();
+	const ball=clara?translate("CLARA"):translate("BALL");
+	comm((cfg.callsign||"701")+": "+translate("HORNET")+" "+ball+" "+hundreds.toFixed(1)+(atc_on?" "+translate("AUTO"):""), "#9fd0ff"); }
 function mission_start(){ const start=cfg.task==="joust"?"joust":cfg.start; return start==="landing"?"case2":start; }   // joust always starts at the merge; the Start selector applies to free flight only. "landing" is the legacy saved value for what is now Case II (#205)
 function takeoff_surface(){ const st=mission_start(); if(st==="carrier") return CARRIER.deckY; if(st==="runway"&&airports.length) return airports[0].start.y; return 8; }
 function on_ground(){ return ownship.launching||!!ownship.grounded; }   // the real resting flag, not an altitude guess — off the cat you fly level at deck height, where a +12 m heuristic left G dead
@@ -3503,6 +3541,7 @@ let hud_pa=false;   // the virtual flap switch's HUD mirror (see the landing-sym
 // additive, and slightly random in size, and a burst walking across the target
 // leaves the line of flashes the pilot actually sees.
 let _spark_count=0;   // dev: how many strike flashes have been spawned
+if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
 if(DEV_MODE) (globalThis as any).dev_close=(m)=>{ const d=+m||200;   // dev (?developer=1 only): park the bandit dead ahead at d metres — gunnery and hit-flash checks need a target in range, and flying onto one by hand is not a test
 	bandit.pos.copy(ownship.pos).addScaledVector(ownship.fwd,d); bandit.fwd.copy(ownship.fwd); bandit.speed=ownship.speed;
 	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
@@ -3650,7 +3689,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect,   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
+	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2),   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
 	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
 	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS
 		racks:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>[n,o.visible])),
@@ -4206,7 +4245,7 @@ function update_anim(dt){ for(const st of [ownship,bandit]){
 		st.wheelDist=(st.wheelDist??0)+(st.wheelSpeed??0)*dt; }
 	apply_anim(st); } }
 function step_world(dt){ sim_time+=dt;
-	marshal_watch();
+	marshal_watch(); pattern_watch();
 	fly_player(dt); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
 	const flick=0.6+Math.random()*0.4; const set_ab=(g,on)=>{
 		if(g.userData.flames) return;   // this airframe's burner look is its own nozzle glow — no cones, no flame boxes
@@ -4264,6 +4303,7 @@ function reset_ownship(){
 	if(st==="case1"||st==="case2"||st==="case3") ddi_sets.nav.right="adi";   // spawned on approach: the pilot set up for instrument work before we hand over (#15)
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
+	pattern=null;   // ...and any visual-pattern procedure (#50)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
 	else if(st==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
 		ownship.pos.set(ap.start.x,ap.start.y,ap.start.z); ownship.fwd.copy(ap.dir).normalize(); ownship.speed=0; ownship.throttle=0;
@@ -4277,7 +4317,8 @@ function reset_ownship(){
 		ownship.speed=180; ownship.throttle=0.85;   // 350 kt clean; pre-core fallback — flight_push trims speed AND power via the core's Level
 		ownship.fwd.set(hx,0,hz).normalize();
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
-		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
+		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
+		pattern={ broke:false, told:false, dirty:false, downwind:false, ball:false }; }
 	else if(st==="case2"){   // Case II (#205): established on the FINAL BEARING at 1,200 ft, on-speed, configured — needles to the break-out, visual finish. Level at 1,200 intercepts the 3.5° glideslope ~3 nm out (CV-1)
 		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);   // landing centreline, A (aft) → B (forward, toward the rollout)
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;           // unit landing direction (the way the aircraft rolls out)
@@ -4287,7 +4328,8 @@ function reset_ownship(){
 		ownship.fwd.set(ldx,0,ldz).normalize();
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
-		ownship.q.premultiply(new THREE.Quaternion().setFromAxisAngle(r,8.1*D2R)); }   // attitude = on-speed alpha over the level path (pre-core fallback)
+		ownship.q.premultiply(new THREE.Quaternion().setFromAxisAngle(r,8.1*D2R));   // attitude = on-speed alpha over the level path (pre-core fallback)
+		pattern={ broke:true, told:true, dirty:true, downwind:true, ball:false }; }   // Case II starts configured on the final bearing: only the ball remains
 	else if(st==="case3"){   // Case III (#205): marshal — 21 NM on the final bearing at angels 6, clean, 250 kt, inbound at the fix. The push clock is running: fly the racetrack, commence on time
 		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;
@@ -4314,7 +4356,7 @@ function reset_ownship(){
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
 	throttle_from_lever();   // a connected stick with a bound throttle wins over the spawn default — the physical lever position IS the commanded power (falls back silently: browsers hide pads until a button has been pressed)
 	{ const down=(st==="carrier"||st==="runway"||st==="case2"); ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway/Case II (established on the approach); Cases I and III spawn CLEAN — the dirty-up is part of the procedure
-	{ const hk=(st==="case2")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }   // hook down for the Case II approach start, else stowed (deploy manually with H)
+	{ const hk=(st==="case1"||st==="case2")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }   // hook down for BOTH visual-pattern starts (NATOPS 8.2.10: "enter the carrier landing pattern with the hook down"); Case III lowers it at the dirty-up, everything else stows it
 	flight_push();   // deliver the spawn to the flight core (no-op until it boots; the boot pushes this pose itself)
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
 	if(st==="joust"){ bandit.pos.set(joust_side*1.5*NM,4572,0); bandit.fwd.set(-joust_side,0,0); bandit.speed=220; bandit.merging=true;   // merging: the bandit flies straight at the player until the pass, so the merge can be timed   // the other end of the merge, same airspeed (equal TAS is the fair condition once wind exists)

@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "Controleer je internetverbinding en probeer het opnieuw."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[niet ingesteld]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# kogel geïncasseerd} other {# kogels geïncasseerd}}"
 
@@ -444,7 +444,7 @@ msgstr "Assen"
 msgid "Axis {i}"
 msgstr "As {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "terug"
 
@@ -466,6 +466,10 @@ msgstr "Bandiet"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Banner"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "ONDER 250 — ONDERSTEL EN KLEPPEN"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "Randkleur"
 msgid "Bots"
 msgstr "Bots"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "remmen"
 
@@ -541,6 +545,10 @@ msgstr "BREAK LINKS"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "BREAK RECHTS"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "DRAAI WANNEER GEREED"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "Middellijn"
 msgid "Change notification category"
 msgstr "Meldingscategorie wijzigen"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "Achtervolgingsweergave:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "chat"
 
@@ -765,7 +773,7 @@ msgstr "Paneel sluiten / annuleren"
 msgid "Close search"
 msgstr "Zoeken sluiten"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "dichterbij"
 
@@ -939,7 +947,7 @@ msgstr "Kan niet verifiëren met dat account. Probeer het opnieuw."
 msgid "Countermeasures"
 msgstr "Tegenmaatregelen"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "Neergestort"
 
@@ -1124,7 +1132,7 @@ msgstr "Aflopend"
 msgid "Description"
 msgstr "Beschrijving"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "Door brand verwoest"
 
@@ -1163,6 +1171,10 @@ msgstr "Richting"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "Gids"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "ONDERSTEL UIT"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "Downloaden"
 msgid "Download failed"
 msgstr "Download mislukt"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "BENEDENWINDS 600 VOET"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "Slepen"
 
@@ -1333,15 +1349,15 @@ msgstr "Voer je authenticatorcode in"
 msgid "Environment"
 msgstr "Omgeving"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "Iedereen"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "Match verlaten"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "Missie verlaten"
 
@@ -1481,7 +1497,7 @@ msgstr "Voltooi het verplaatsen van uw account"
 msgid "Finished"
 msgstr "Voltooid"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "vuren"
 
@@ -1502,7 +1518,7 @@ msgstr "Vlaggen"
 msgid "FLAMEOUT"
 msgstr "FLAMEOUT"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "flares"
 
@@ -1514,7 +1530,7 @@ msgstr "FAKKELS"
 msgid "Flat"
 msgstr "Plat"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "In zee gevlogen"
 
@@ -1543,7 +1559,7 @@ msgstr "Gevlogen"
 msgid "Fly"
 msgstr "Vliegen"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "Opnieuw vliegen"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Romp"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "onderstel"
 
@@ -1724,7 +1740,7 @@ msgstr "Geschiedenis"
 msgid "Home"
 msgstr "Start"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "haak"
 
@@ -1919,7 +1935,7 @@ msgstr "LAAT"
 msgid "Launch (catapult)"
 msgstr "Lancering (katapult)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "start / doel"
 
@@ -1976,7 +1992,7 @@ msgstr "VLAK OP 1200, GESTEL NEER"
 msgid "Light"
 msgstr "Licht"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "verlichting"
 
@@ -2095,7 +2111,7 @@ msgstr "Beheer je gekoppelde accounts voor meldingen en diensten."
 msgid "Manual"
 msgstr "Handmatig"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "kaart"
 
@@ -2134,7 +2150,7 @@ msgstr "MCP-server"
 msgid "Medium"
 msgstr "Gemiddeld"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "menu"
 
@@ -2147,7 +2163,7 @@ msgstr "Menu"
 msgid "Message"
 msgstr "Bericht"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "Stuur een bericht naar iedereen"
 
@@ -2155,7 +2171,7 @@ msgstr "Stuur een bericht naar iedereen"
 msgid "Message players on this server"
 msgstr "Stuur een bericht naar spelers op deze server"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "Stuur een bericht naar je team"
 
@@ -2163,7 +2179,7 @@ msgstr "Stuur een bericht naar je team"
 msgid "Metric"
 msgstr "Metriek"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "Botsing in de lucht"
 
@@ -2530,11 +2546,11 @@ msgstr "Optienaam"
 msgid "Options"
 msgstr "Opties"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "of"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "draaien"
 
@@ -2600,11 +2616,11 @@ msgstr "Piloot"
 msgid "PILOT DOWN"
 msgstr "PILOOT GEDOOD"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "Piloot gedood"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "stampen"
 
@@ -2914,7 +2930,7 @@ msgstr "Missie herstarten"
 msgid "Result"
 msgstr "Resultaat"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "Hervatten"
 
@@ -2952,7 +2968,7 @@ msgstr "Rechtervleugel"
 msgid "Right wingtip"
 msgstr "Rechtervleugeltip"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "rollen"
 
@@ -3165,7 +3181,7 @@ msgstr "Verzenden"
 msgid "Send again"
 msgstr "Opnieuw verzenden"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "Bericht versturen"
 
@@ -3220,7 +3236,7 @@ msgstr "Vertrek en bestemming instellen"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "Ruim"
 msgid "SPD BK"
 msgstr "LREM"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "luchtrem"
 
@@ -3424,7 +3440,7 @@ msgstr "VIJAND IN ZICHT"
 msgid "Task"
 msgstr "Taak"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "Team"
 
@@ -3458,7 +3474,7 @@ msgstr "Tekst"
 msgid "That code is incorrect or has expired."
 msgstr "Die code is onjuist of verlopen."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "De match gaat door achter dit menu."
 
@@ -3490,7 +3506,7 @@ msgstr "Deze lobby stuurt je gameverbinding door naar een andere host ({redirect
 msgid "This page has not been created yet."
 msgstr "Deze pagina is nog niet aangemaakt."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "gas"
 
@@ -3514,7 +3530,7 @@ msgstr "Donderdag"
 msgid "Tightest sustained turn speed"
 msgstr "Krapste aanhoudende bochtsnelheid"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "kantelen"
 
@@ -3773,7 +3789,7 @@ msgstr "Videominiatuur"
 msgid "Video viewer: {0}"
 msgstr "Videoviewer: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "weergave"
 
@@ -3829,7 +3845,7 @@ msgstr "We zijn zo weer online."
 msgid "We'll notify you when something important happens."
 msgstr "We laten het je weten als er iets belangrijks gebeurt."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "wapen"
 
@@ -3872,7 +3888,7 @@ msgstr "Wereldserver"
 msgid "World server not reachable"
 msgstr "Wereldserver niet bereikbaar"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "gieren"
 

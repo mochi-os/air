@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "Veuillez vérifier votre connexion Internet et réessayer."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[non défini]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# impact encaissé} many {# d'impacts encaissés} other {# impacts encaissés}}"
 
@@ -444,7 +444,7 @@ msgstr "Axes"
 msgid "Axis {i}"
 msgstr "Axe {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "arrière"
 
@@ -466,6 +466,10 @@ msgstr "Bandit"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Bannière"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "SOUS 250 — TRAIN ET VOLETS"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "Couleur de la bordure"
 msgid "Bots"
 msgstr "Bots"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "freins"
 
@@ -541,6 +545,10 @@ msgstr "BREAK GAUCHE"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "BREAK DROITE"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "VIRAGE QUAND PRÊT"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "Ligne centrale"
 msgid "Change notification category"
 msgstr "Changer la catégorie de notification"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "Vue de poursuite :"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "chat"
 
@@ -765,7 +773,7 @@ msgstr "Fermer le panneau / annuler"
 msgid "Close search"
 msgstr "Fermer la recherche"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "plus près"
 
@@ -939,7 +947,7 @@ msgstr "Impossible de vérifier avec ce compte. Veuillez réessayer."
 msgid "Countermeasures"
 msgstr "Contre-mesures"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "S'est écrasé"
 
@@ -1124,7 +1132,7 @@ msgstr "Décroissant"
 msgid "Description"
 msgstr "Description"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "Détruit par un incendie"
 
@@ -1163,6 +1171,10 @@ msgstr "Direction"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "Annuaire"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "TRAIN SORTI"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "Télécharger"
 msgid "Download failed"
 msgstr "Échec du téléchargement"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "VENT ARRIÈRE 600 PIEDS"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "Glisser"
 
@@ -1333,15 +1349,15 @@ msgstr "Saisissez le code de votre application d'authentification"
 msgid "Environment"
 msgstr "Environnement"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "Tous"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "Quitter la partie"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "Quitter la mission"
 
@@ -1481,7 +1497,7 @@ msgstr "Terminez de déplacer votre compte"
 msgid "Finished"
 msgstr "Terminée"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "tirer"
 
@@ -1502,7 +1518,7 @@ msgstr "Indicateurs"
 msgid "FLAMEOUT"
 msgstr "EXTINCTION"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "leurres"
 
@@ -1514,7 +1530,7 @@ msgstr "LEURRES"
 msgid "Flat"
 msgstr "Plat"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "A percuté la mer"
 
@@ -1543,7 +1559,7 @@ msgstr "Volé"
 msgid "Fly"
 msgstr "Voler"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "Voler à nouveau"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Fuselage"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "train"
 
@@ -1724,7 +1740,7 @@ msgstr "Historique"
 msgid "Home"
 msgstr "Accueil"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "crochet"
 
@@ -1919,7 +1935,7 @@ msgstr "EN RETARD"
 msgid "Launch (catapult)"
 msgstr "Lancement (catapulte)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "catapultage / ciblage"
 
@@ -1976,7 +1992,7 @@ msgstr "PALIER 1200, TRAIN SORTI"
 msgid "Light"
 msgstr "Clair"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "feux"
 
@@ -2095,7 +2111,7 @@ msgstr "Gérez vos comptes connectés pour les notifications et les services."
 msgid "Manual"
 msgstr "Manuel"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "carte"
 
@@ -2134,7 +2150,7 @@ msgstr "Serveur MCP"
 msgid "Medium"
 msgstr "Moyen"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "menu"
 
@@ -2147,7 +2163,7 @@ msgstr "Menu"
 msgid "Message"
 msgstr "Message"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "Écrivez à tous"
 
@@ -2155,7 +2171,7 @@ msgstr "Écrivez à tous"
 msgid "Message players on this server"
 msgstr "Envoyez un message aux joueurs de ce serveur"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "Écrivez à votre équipe"
 
@@ -2163,7 +2179,7 @@ msgstr "Écrivez à votre équipe"
 msgid "Metric"
 msgstr "Métrique"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "Collision en plein vol"
 
@@ -2530,11 +2546,11 @@ msgstr "Nom de l'option"
 msgid "Options"
 msgstr "Options"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "ou"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "orbite"
 
@@ -2600,11 +2616,11 @@ msgstr "Pilote"
 msgid "PILOT DOWN"
 msgstr "PILOTE TUÉ"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "Pilote tué"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "tangage"
 
@@ -2914,7 +2930,7 @@ msgstr "Redémarrer la mission"
 msgid "Result"
 msgstr "Résultat"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "Reprendre"
 
@@ -2952,7 +2968,7 @@ msgstr "Aile droite"
 msgid "Right wingtip"
 msgstr "Bout de l'aile droite"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "roulis"
 
@@ -3165,7 +3181,7 @@ msgstr "Envoyer"
 msgid "Send again"
 msgstr "Renvoyer"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "Envoyer un message"
 
@@ -3220,7 +3236,7 @@ msgstr "Définir l'origine et la destination"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "Spacieux"
 msgid "SPD BK"
 msgstr "AÉROF"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "aérofrein"
 
@@ -3424,7 +3440,7 @@ msgstr "ENNEMI EN VUE"
 msgid "Task"
 msgstr "Tâche"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "Équipe"
 
@@ -3458,7 +3474,7 @@ msgstr "Texte"
 msgid "That code is incorrect or has expired."
 msgstr "Ce code est incorrect ou a expiré."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "La partie continue derrière ce menu."
 
@@ -3490,7 +3506,7 @@ msgstr "Ce salon envoie votre connexion de jeu vers un hôte différent ({redire
 msgid "This page has not been created yet."
 msgstr "Cette page n'a pas encore été créée."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "gaz"
 
@@ -3514,7 +3530,7 @@ msgstr "Jeudi"
 msgid "Tightest sustained turn speed"
 msgstr "Vitesse de virage soutenu le plus serré"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "inclinaison"
 
@@ -3773,7 +3789,7 @@ msgstr "Miniature de la vidéo"
 msgid "Video viewer: {0}"
 msgstr "Lecteur vidéo : {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "vue"
 
@@ -3829,7 +3845,7 @@ msgstr "Nous serons de retour en ligne sous peu."
 msgid "We'll notify you when something important happens."
 msgstr "Nous vous préviendrons lorsqu'un événement important surviendra."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "arme"
 
@@ -3872,7 +3888,7 @@ msgstr "Serveur de monde"
 msgid "World server not reachable"
 msgstr "Serveur de monde injoignable"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "lacet"
 

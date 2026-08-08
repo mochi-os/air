@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "សូមពិនិត្យការតភ្ជាប់អ៊ីនធឺណិតរបស់អ្នក រួចព្យាយាមម្តងទៀត។"
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[មិនបានកំណត់]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, other {ត្រូវគ្រាប់ # គ្រាប់}}"
 
@@ -444,7 +444,7 @@ msgstr "អ័ក្ស"
 msgid "Axis {i}"
 msgstr "អ័ក្ស {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "ថយក្រោយ"
 
@@ -466,6 +466,10 @@ msgstr "យន្តហោះសត្រូវ"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "បដា"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "ក្រោម 250 — កង់និងស្លាប"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "ពណ៌ស៊ុម"
 msgid "Bots"
 msgstr "រូបយន្ត"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "ហ្វ្រាំង"
 
@@ -541,6 +545,10 @@ msgstr "បត់ឆ្វេងភ្លាម"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "បត់ស្តាំភ្លាម"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "បត់ពេលរួចរាល់"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "បន្ទាត់កណ្តាល"
 msgid "Change notification category"
 msgstr "ប្ដូរប្រភេទការជូនដំណឹង"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "ទិដ្ឋភាពតាមដាន:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "ឆាត"
 
@@ -765,7 +773,7 @@ msgstr "បិទផ្ទាំង / បោះបង់"
 msgid "Close search"
 msgstr "បិទការស្វែងរក"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "ខិតជិត"
 
@@ -939,7 +947,7 @@ msgstr "មិនអាចផ្ទៀងផ្ទាត់ជាមួយគណ
 msgid "Countermeasures"
 msgstr "វិធានការទប់ទល់"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "យន្តហោះធ្លាក់"
 
@@ -1124,7 +1132,7 @@ msgstr "តាមលំដាប់ថយ"
 msgid "Description"
 msgstr "ការពិពណ៌នា"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "ត្រូវភ្លើងឆេះ"
 
@@ -1163,6 +1171,10 @@ msgstr "ទិស"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "ថត"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "បញ្ចុះកង់"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "ទាញយក"
 msgid "Download failed"
 msgstr "ការទាញយកបានបរាជ័យ"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "តាមខ្យល់ 600 ហ្វីត"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "អូស"
 
@@ -1333,15 +1349,15 @@ msgstr "បញ្ចូលកូដ authenticator របស់អ្នក"
 msgid "Environment"
 msgstr "បរិយាកាស"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "គ្រប់គ្នា"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "ចាកចេញពីការប្រកួត"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "ចាកចេញពីបេសកកម្ម"
 
@@ -1481,7 +1497,7 @@ msgstr "បញ្ចប់ការផ្លាស់ប្តូរគណនី
 msgid "Finished"
 msgstr "បញ្ចប់"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "បាញ់"
 
@@ -1502,7 +1518,7 @@ msgstr "ទង់"
 msgid "FLAMEOUT"
 msgstr "ម៉ាស៊ីនរលត់"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "គ្រាប់ភ្លើង"
 
@@ -1514,7 +1530,7 @@ msgstr "គ្រាប់ភ្លើង"
 msgid "Flat"
 msgstr "រាបស្មើ"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "ធ្លាក់ចូលសមុទ្រ"
 
@@ -1543,7 +1559,7 @@ msgstr "បានហោះ"
 msgid "Fly"
 msgstr "ហោះ"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "ហោះម្តងទៀត"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "តួយន្តហោះ"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "កង់ចុះចត"
 
@@ -1724,7 +1740,7 @@ msgstr "ប្រវត្តិ"
 msgid "Home"
 msgstr "ដើម"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "ទំពក់"
 
@@ -1919,7 +1935,7 @@ msgstr "យឺត"
 msgid "Launch (catapult)"
 msgstr "ការបាញ់ចេញ (កាតាពុល)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "ហោះឡើង / គោលដៅ"
 
@@ -1976,7 +1992,7 @@ msgstr "រាបស្មើនៅ 1200 ទម្លាក់កង់"
 msgid "Light"
 msgstr "ភ្លឺ"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "ភ្លើង"
 
@@ -2095,7 +2111,7 @@ msgstr "គ្រប់គ្រងគណនីដែលបានភ្ជាប
 msgid "Manual"
 msgstr "សៀវភៅណែនាំ"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "ផែនទី"
 
@@ -2134,7 +2150,7 @@ msgstr "ម៉ាស៊ីនមេ MCP"
 msgid "Medium"
 msgstr "មធ្យម"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "ម៉ឺនុយ"
 
@@ -2147,7 +2163,7 @@ msgstr "ម៉ឺនុយ"
 msgid "Message"
 msgstr "សារ"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "ផ្ញើសារទៅគ្រប់គ្នា"
 
@@ -2155,7 +2171,7 @@ msgstr "ផ្ញើសារទៅគ្រប់គ្នា"
 msgid "Message players on this server"
 msgstr "ផ្ញើសារទៅកាន់អ្នកលេងនៅលើម៉ាស៊ីនមេនេះ"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "ផ្ញើសារទៅក្រុមរបស់អ្នក"
 
@@ -2163,7 +2179,7 @@ msgstr "ផ្ញើសារទៅក្រុមរបស់អ្នក"
 msgid "Metric"
 msgstr "ម៉ែត្រ"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "បុកគ្នាកណ្តាលអាកាស"
 
@@ -2530,11 +2546,11 @@ msgstr "ឈ្មោះជម្រើស"
 msgid "Options"
 msgstr "ជម្រើស"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "ឬ"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "គោចរ"
 
@@ -2600,11 +2616,11 @@ msgstr "អ្នកបើកយន្តហោះ"
 msgid "PILOT DOWN"
 msgstr "អ្នកបើកបរស្លាប់"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "អ្នកបើកយន្តហោះស្លាប់"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "ងើប-ផ្កាប់"
 
@@ -2914,7 +2930,7 @@ msgstr "ចាប់ផ្តើមបេសកកម្មឡើងវិញ"
 msgid "Result"
 msgstr "លទ្ធផល"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "បន្ត"
 
@@ -2952,7 +2968,7 @@ msgstr "ស្លាបស្តាំ"
 msgid "Right wingtip"
 msgstr "ចុងស្លាបស្តាំ"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "រមៀល"
 
@@ -3165,7 +3181,7 @@ msgstr "ផ្ញើ"
 msgid "Send again"
 msgstr "ផ្ញើម្តងទៀត"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "ផ្ញើសារ"
 
@@ -3220,7 +3236,7 @@ msgstr "កំណត់ចំណុចចេញដំណើរ និងគោ�
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "ធំទូលាយ"
 msgid "SPD BK"
 msgstr "ហ.ល"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "ហ្វ្រាំងល្បឿន"
 
@@ -3424,7 +3440,7 @@ msgstr "ឃើញសត្រូវហើយ"
 msgid "Task"
 msgstr "កិច្ចការ"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "ក្រុម"
 
@@ -3458,7 +3474,7 @@ msgstr "អត្ថបទ"
 msgid "That code is incorrect or has expired."
 msgstr "កូដនោះមិនត្រឹមត្រូវ ឬផុតកំណត់ហើយ។"
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "ការប្រកួតបន្តនៅពីក្រោយម៉ឺនុយនេះ។"
 
@@ -3490,7 +3506,7 @@ msgstr "បន្ទប់រង់ចាំនេះកំពុងបញ្ជ
 msgid "This page has not been created yet."
 msgstr "ទំព័រនេះមិនទាន់ត្រូវបានបង្កើតទេ។"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "បង្កើនល្បឿន"
 
@@ -3514,7 +3530,7 @@ msgstr "ថ្ងៃព្រហស្បតិ៍"
 msgid "Tightest sustained turn speed"
 msgstr "ល្បឿនបត់ជាប់លាប់តឹងបំផុត"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "ផ្អៀង"
 
@@ -3773,7 +3789,7 @@ msgstr "រូបភាពតូចវីដេអូ"
 msgid "Video viewer: {0}"
 msgstr "កម្មវិធីមើលវីដេអូ៖ {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "ទិដ្ឋភាព"
 
@@ -3829,7 +3845,7 @@ msgstr "យើងនឹងត្រឡប់មកដំណើរការវិ
 msgid "We'll notify you when something important happens."
 msgstr "យើងនឹងជូនដំណឹងអ្នក នៅពេលមានរឿងសំខាន់កើតឡើង។"
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "អាវុធ"
 
@@ -3872,7 +3888,7 @@ msgstr "ម៉ាស៊ីនមេពិភព"
 msgid "World server not reachable"
 msgstr "មិនអាចភ្ជាប់ទៅម៉ាស៊ីនមេពិភពបានទេ"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "ងាក"
 

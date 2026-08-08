@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[സജ്ജമാക്കിയിട്ടില്ല]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# വെടിയുണ്ട ഏറ്റു} other {# വെടിയുണ്ടകൾ ഏറ്റു}}"
 
@@ -444,7 +444,7 @@ msgstr "അക്ഷങ്ങൾ"
 msgid "Axis {i}"
 msgstr "അക്ഷം {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "പുറകോട്ട്"
 
@@ -466,6 +466,10 @@ msgstr "ശത്രുവിമാനം"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "ബാനർ"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "250-ന് താഴെ — ഗിയറും ഫ്ലാപ്പും"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "ബോർഡർ നിറം"
 msgid "Bots"
 msgstr "ബോട്ടുകൾ"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "ബ്രേക്കുകൾ"
 
@@ -541,6 +545,10 @@ msgstr "ഇടത്തോട്ട് തിരിയൂ"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "വലത്തോട്ട് തിരിയൂ"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "തയ്യാറാകുമ്പോൾ തിരിയുക"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "മധ്യരേഖ"
 msgid "Change notification category"
 msgstr "അറിയിപ്പ് വിഭാഗം മാറ്റുക"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "പിന്തുടരൽ കാഴ്ച:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "ചാറ്റ്"
 
@@ -765,7 +773,7 @@ msgstr "പാനൽ അടയ്ക്കുക / റദ്ദാക്കു�
 msgid "Close search"
 msgstr "തിരയൽ അടയ്ക്കുക"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "കൂടുതൽ അടുത്ത്"
 
@@ -939,7 +947,7 @@ msgstr "ആ അക്കൗണ്ട് ഉപയോഗിച്ച് പരി
 msgid "Countermeasures"
 msgstr "പ്രതിരോധ നടപടികൾ"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "തകർന്നുവീണു"
 
@@ -1124,7 +1132,7 @@ msgstr "അവരോഹണ ക്രമം"
 msgid "Description"
 msgstr "വിവരണം"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "തീപിടിച്ച് നശിച്ചു"
 
@@ -1163,6 +1171,10 @@ msgstr "ദിശ"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "ഡയറക്ടറി"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "ഗിയർ താഴ്ത്തുക"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "ഡൗൺലോഡ്"
 msgid "Download failed"
 msgstr "ഡൗൺലോഡ് പരാജയപ്പെട്ടു"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "ഡൗൺവിൻഡ് 600 അടി"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "വലിക്കുക"
 
@@ -1333,15 +1349,15 @@ msgstr "നിങ്ങളുടെ ഓതെന്റിക്കേറ്റ�
 msgid "Environment"
 msgstr "പരിസരം"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "എല്ലാവരും"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "മത്സരത്തിൽ നിന്ന് പുറത്തുകടക്കുക"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "ദൗത്യം അവസാനിപ്പിക്കുക"
 
@@ -1481,7 +1497,7 @@ msgstr "നിങ്ങളുടെ അക്കൗണ്ട് മാറ്റ�
 msgid "Finished"
 msgstr "പൂർത്തിയായി"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "ഫയർ"
 
@@ -1502,7 +1518,7 @@ msgstr "ഫ്ലാഗുകൾ"
 msgid "FLAMEOUT"
 msgstr "ഫ്ലേംഔട്ട്"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "ഫ്ലെയറുകൾ"
 
@@ -1514,7 +1530,7 @@ msgstr "ഫ്ലെയറുകൾ"
 msgid "Flat"
 msgstr "പരന്നത്"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "കടലിൽ പതിച്ചു"
 
@@ -1543,7 +1559,7 @@ msgstr "പറന്നു"
 msgid "Fly"
 msgstr "പറക്കുക"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "വീണ്ടും പറക്കുക"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "ഫ്യൂസ്‌ലേജ്"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "ഗിയർ"
 
@@ -1724,7 +1740,7 @@ msgstr "ചരിത്രം"
 msgid "Home"
 msgstr "ഹോം"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "കൊളുത്ത്"
 
@@ -1919,7 +1935,7 @@ msgstr "വൈകി"
 msgid "Launch (catapult)"
 msgstr "വിക്ഷേപണം (കാറ്റപൾട്ട്)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "ലോഞ്ച് / ലക്ഷ്യം"
 
@@ -1976,7 +1992,7 @@ msgstr "1200-ൽ നിരപ്പ്, ചക്രം താഴെ"
 msgid "Light"
 msgstr "ലൈറ്റ്"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "വിളക്കുകൾ"
 
@@ -2095,7 +2111,7 @@ msgstr "അറിയിപ്പുകൾക്കും സേവനങ്ങ�
 msgid "Manual"
 msgstr "മാനുവൽ"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "ഭൂപടം"
 
@@ -2134,7 +2150,7 @@ msgstr "MCP സെർവർ"
 msgid "Medium"
 msgstr "ഇടത്തരം"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "മെനു"
 
@@ -2147,7 +2163,7 @@ msgstr "മെനു"
 msgid "Message"
 msgstr "സന്ദേശം"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "എല്ലാവർക്കും മെസ്സേജ് അയയ്ക്കുക"
 
@@ -2155,7 +2171,7 @@ msgstr "എല്ലാവർക്കും മെസ്സേജ് അയയ�
 msgid "Message players on this server"
 msgstr "ഈ സെർവറിലെ കളിക്കാർക്ക് സന്ദേശം അയയ്ക്കുക"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "നിങ്ങളുടെ ടീമിന് മെസ്സേജ് അയയ്ക്കുക"
 
@@ -2163,7 +2179,7 @@ msgstr "നിങ്ങളുടെ ടീമിന് മെസ്സേജ് 
 msgid "Metric"
 msgstr "മെട്രിക്"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "ആകാശത്ത് കൂട്ടിയിടി"
 
@@ -2530,11 +2546,11 @@ msgstr "ഓപ്ഷൻ പേര്"
 msgid "Options"
 msgstr "ഓപ്ഷനുകൾ"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "അല്ലെങ്കിൽ"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "ഭ്രമണം"
 
@@ -2600,11 +2616,11 @@ msgstr "പൈലറ്റ്"
 msgid "PILOT DOWN"
 msgstr "പൈലറ്റ് കൊല്ലപ്പെട്ടു"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "പൈലറ്റ് കൊല്ലപ്പെട്ടു"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "പിച്ച്"
 
@@ -2914,7 +2930,7 @@ msgstr "ദൗത്യം പുനരാരംഭിക്കുക"
 msgid "Result"
 msgstr "ഫലം"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "പുനരാരംഭിക്കുക"
 
@@ -2952,7 +2968,7 @@ msgstr "വലത് ചിറക്"
 msgid "Right wingtip"
 msgstr "വലത് ചിറകിന്റെ അറ്റം"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "റോൾ"
 
@@ -3165,7 +3181,7 @@ msgstr "അയയ്ക്കുക"
 msgid "Send again"
 msgstr "വീണ്ടും അയയ്ക്കുക"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "ചാറ്റ് അയയ്ക്കുക"
 
@@ -3220,7 +3236,7 @@ msgstr "ഉത്ഭവവും ലക്ഷ്യസ്ഥാനവും സ�
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "വിശാലം"
 msgid "SPD BK"
 msgstr "ഏ.ബ്ര"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "ഏർ ബ്രേക്ക്"
 
@@ -3424,7 +3440,7 @@ msgstr "ശത്രു ദൃഷ്ടിയിൽ"
 msgid "Task"
 msgstr "ടാസ്ക്"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "ടീം"
 
@@ -3458,7 +3474,7 @@ msgstr "ടെക്സ്റ്റ്"
 msgid "That code is incorrect or has expired."
 msgstr "ആ കോഡ് തെറ്റാണ് അല്ലെങ്കിൽ കാലഹരണപ്പെട്ടു."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "ഈ മെനുവിന് പിന്നിൽ മത്സരം തുടരുന്നു."
 
@@ -3490,7 +3506,7 @@ msgstr "ഈ ലോബി നിങ്ങളുടെ ഗെയിം കണക�
 msgid "This page has not been created yet."
 msgstr "ഈ പേജ് ഇതുവരെ സൃഷ്ടിച്ചിട്ടില്ല."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "ത്രോട്ടിൽ"
 
@@ -3514,7 +3530,7 @@ msgstr "വ്യാഴാഴ്ച"
 msgid "Tightest sustained turn speed"
 msgstr "ഏറ്റവും ഇറുകിയ സുസ്ഥിര തിരിവ് വേഗത"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "ചരിക്കുക"
 
@@ -3773,7 +3789,7 @@ msgstr "വീഡിയോ തംബ്നെയിൽ"
 msgid "Video viewer: {0}"
 msgstr "വീഡിയോ വ്യൂവർ: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "കാഴ്ച"
 
@@ -3829,7 +3845,7 @@ msgstr "ഞങ്ങൾ ഉടൻ വീണ്ടും ഓൺലൈൻ ആക�
 msgid "We'll notify you when something important happens."
 msgstr "പ്രധാനപ്പെട്ട എന്തെങ്കിലും സംഭവിക്കുമ്പോൾ ഞങ്ങൾ അറിയിക്കും."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "ആയുധം"
 
@@ -3872,7 +3888,7 @@ msgstr "വേൾഡ് സെർവർ"
 msgid "World server not reachable"
 msgstr "വേൾഡ് സെർവറിലേക്ക് എത്താനാകുന്നില്ല"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "യാവ്"
 

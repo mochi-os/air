@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "Ellenőrizze az internetkapcsolatát, és próbálja újra."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[nincs beállítva]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# találatot kapott} other {# találatot kapott}}"
 
@@ -444,7 +444,7 @@ msgstr "Tengelyek"
 msgid "Axis {i}"
 msgstr "{i}. tengely"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "hátra"
 
@@ -466,6 +466,10 @@ msgstr "Bandita"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Fejléckép"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "250 ALATT — FUTÓMŰ ÉS FÉKSZÁRNY"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "Szegélyszín"
 msgid "Bots"
 msgstr "Botok"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "fékek"
 
@@ -541,6 +545,10 @@ msgstr "BREAK BALRA"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "BREAK JOBBRA"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "FORDULÓ HA KÉSZ"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "Középvonal"
 msgid "Change notification category"
 msgstr "Értesítési kategória módosítása"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "Követő nézet:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "csevegés"
 
@@ -765,7 +773,7 @@ msgstr "Panel bezárása / mégse"
 msgid "Close search"
 msgstr "Keresés bezárása"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "közelebb"
 
@@ -939,7 +947,7 @@ msgstr "Nem sikerült ellenőrizni azzal a fiókkal. Kérjük, próbálja újra.
 msgid "Countermeasures"
 msgstr "Ellenintézkedések"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "Lezuhant"
 
@@ -1124,7 +1132,7 @@ msgstr "Csökkenő"
 msgid "Description"
 msgstr "Leírás"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "Tűzben megsemmisült"
 
@@ -1163,6 +1171,10 @@ msgstr "Irány"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "Címtár"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "FUTÓMŰ KI"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "Letöltés"
 msgid "Download failed"
 msgstr "A letöltés sikertelen"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "SZÉLIRÁNYBAN 600 LÁB"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "Húzás"
 
@@ -1333,15 +1349,15 @@ msgstr "Adja meg a hitelesítő kódját"
 msgid "Environment"
 msgstr "Környezet"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "Mindenki"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "Kilépés a meccsből"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "Kilépés a küldetésből"
 
@@ -1481,7 +1497,7 @@ msgstr "Fejezze be a fiók áthelyezését"
 msgid "Finished"
 msgstr "Befejezve"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "tűz"
 
@@ -1502,7 +1518,7 @@ msgstr "Jelzések"
 msgid "FLAMEOUT"
 msgstr "LÁNGKIALVÁS"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "fáklyák"
 
@@ -1514,7 +1530,7 @@ msgstr "INFRACSAPDÁK"
 msgid "Flat"
 msgstr "Lapos"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "A tengerbe csapódott"
 
@@ -1543,7 +1559,7 @@ msgstr "Repülve"
 msgid "Fly"
 msgstr "Repülés"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "Repülj újra"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Törzs"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "futómű"
 
@@ -1724,7 +1740,7 @@ msgstr "Előzmények"
 msgid "Home"
 msgstr "Kezdőlap"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "Horog"
 
@@ -1919,7 +1935,7 @@ msgstr "KÉSŐN"
 msgid "Launch (catapult)"
 msgstr "Indítás (katapult)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "indítás / befogás"
 
@@ -1976,7 +1992,7 @@ msgstr "TARTS 1200-AT, FUTÓMŰ KI"
 msgid "Light"
 msgstr "Világos"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "fények"
 
@@ -2095,7 +2111,7 @@ msgstr "Kezelje csatlakoztatott fiókjait az értesítésekhez és szolgáltatá
 msgid "Manual"
 msgstr "Kézikönyv"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "térkép"
 
@@ -2134,7 +2150,7 @@ msgstr "MCP-kiszolgáló"
 msgid "Medium"
 msgstr "Közepes"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "menü"
 
@@ -2147,7 +2163,7 @@ msgstr "Menü"
 msgid "Message"
 msgstr "Üzenet"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "Írj mindenkinek"
 
@@ -2155,7 +2171,7 @@ msgstr "Írj mindenkinek"
 msgid "Message players on this server"
 msgstr "Írj a szerveren lévő játékosoknak"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "Írj a csapatodnak"
 
@@ -2163,7 +2179,7 @@ msgstr "Írj a csapatodnak"
 msgid "Metric"
 msgstr "Metrika"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "Ütközés a levegőben"
 
@@ -2530,11 +2546,11 @@ msgstr "Opció neve"
 msgid "Options"
 msgstr "Opciók"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "vagy"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "keringés"
 
@@ -2600,11 +2616,11 @@ msgstr "Pilóta"
 msgid "PILOT DOWN"
 msgstr "PILÓTA MEGHALT"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "A pilóta meghalt"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "bólintás"
 
@@ -2914,7 +2930,7 @@ msgstr "Küldetés újraindítása"
 msgid "Result"
 msgstr "Eredmény"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "Folytatás"
 
@@ -2952,7 +2968,7 @@ msgstr "Jobb szárny"
 msgid "Right wingtip"
 msgstr "Jobb szárnyvég"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "orsózás"
 
@@ -3165,7 +3181,7 @@ msgstr "Küldés"
 msgid "Send again"
 msgstr "Újraküldés"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "Üzenet küldése"
 
@@ -3220,7 +3236,7 @@ msgstr "Kiindulási és úti cél beállítása"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "Tágas"
 msgid "SPD BK"
 msgstr "SEB FK"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "sebességfék"
 
@@ -3424,7 +3440,7 @@ msgstr "LÁTOM AZ ELLENSÉGET"
 msgid "Task"
 msgstr "Feladat"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "Csapat"
 
@@ -3458,7 +3474,7 @@ msgstr "Szöveg"
 msgid "That code is incorrect or has expired."
 msgstr "Ez a kód helytelen vagy lejárt."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "A meccs a menü mögött is folytatódik."
 
@@ -3490,7 +3506,7 @@ msgstr "Ez a lobbi egy másik kiszolgálóra ({redirectHost}) irányítja át a 
 msgid "This page has not been created yet."
 msgstr "Ez az oldal még nem jött létre."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "gázkar"
 
@@ -3514,7 +3530,7 @@ msgstr "Csütörtök"
 msgid "Tightest sustained turn speed"
 msgstr "Legszűkebb tartós fordulási sebesség"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "döntés"
 
@@ -3773,7 +3789,7 @@ msgstr "Videó indexképe"
 msgid "Video viewer: {0}"
 msgstr "Videónézegető: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "nézet"
 
@@ -3829,7 +3845,7 @@ msgstr "Hamarosan újra elérhetők leszünk."
 msgid "We'll notify you when something important happens."
 msgstr "Értesítjük, ha valami fontos történik."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "fegyver"
 
@@ -3872,7 +3888,7 @@ msgstr "Világszerver"
 msgid "World server not reachable"
 msgstr "A világszerver nem érhető el"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "legyezés"
 

@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "Проверете ја вашата интернет-врска и обидете се повторно."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[не е поставено]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Примен # погодок} other {Примени # погодоци}}"
 
@@ -444,7 +444,7 @@ msgstr "Оски"
 msgid "Axis {i}"
 msgstr "Оска {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "подалеку"
 
@@ -466,6 +466,10 @@ msgstr "Бандит"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Банер"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "ПОД 250 — СТАП И ЗАКРИЛЦА"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "Боја на раб"
 msgid "Bots"
 msgstr "Ботови"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "кочници"
 
@@ -541,6 +545,10 @@ msgstr "ОСТРО ЛЕВО"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "ОСТРО ДЕСНО"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "СВРТИ КОГА СИ ПОДГОТВЕН"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "Централна линија"
 msgid "Change notification category"
 msgstr "Промени категорија на известување"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "Поглед во потера:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "чет"
 
@@ -765,7 +773,7 @@ msgstr "Затвори панел / откажи"
 msgid "Close search"
 msgstr "Затвори пребарување"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "поблиску"
 
@@ -939,7 +947,7 @@ msgstr "Не успеа верификацијата со таа сметка. �
 msgid "Countermeasures"
 msgstr "Противмерки"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "Се урна"
 
@@ -1124,7 +1132,7 @@ msgstr "Опаѓачки"
 msgid "Description"
 msgstr "Опис"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "Уништен од пожар"
 
@@ -1163,6 +1171,10 @@ msgstr "Насока"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "Именик"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "СПУШТИ СТАП"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "Преземи"
 msgid "Download failed"
 msgstr "Преземањето не успеа"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "НИЗ ВЕТЕР 600 СТАПКИ"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "Влечење"
 
@@ -1333,15 +1349,15 @@ msgstr "Внесете го кодот од authenticator"
 msgid "Environment"
 msgstr "Околина"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "Сите"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "Напушти го натпреварот"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "Излези од мисијата"
 
@@ -1481,7 +1497,7 @@ msgstr "Завршете го преместувањето на профилот
 msgid "Finished"
 msgstr "Завршена"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "пукај"
 
@@ -1502,7 +1518,7 @@ msgstr "Знаменца"
 msgid "FLAMEOUT"
 msgstr "ГАСНЕЊЕ"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "термички мамки"
 
@@ -1514,7 +1530,7 @@ msgstr "ТОПЛОТНИ МАМКИ"
 msgid "Flat"
 msgstr "Рамна"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "Влета во морето"
 
@@ -1543,7 +1559,7 @@ msgstr "Одлетано"
 msgid "Fly"
 msgstr "Лет"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "Летај повторно"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Труп"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "Трап"
 
@@ -1724,7 +1740,7 @@ msgstr "Историја"
 msgid "Home"
 msgstr "Дома"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "Кука"
 
@@ -1919,7 +1935,7 @@ msgstr "ДОЦНА"
 msgid "Launch (catapult)"
 msgstr "Лансирање (катапулт)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "старт / цел"
 
@@ -1976,7 +1992,7 @@ msgstr "РАМНО НА 1200, СТОЈНИОТ ТРАП ДОЛУ"
 msgid "Light"
 msgstr "Светло"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "светла"
 
@@ -2095,7 +2111,7 @@ msgstr "Управувајте со поврзаните сметки за из�
 msgid "Manual"
 msgstr "Рачно"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "мапа"
 
@@ -2134,7 +2150,7 @@ msgstr "MCP сервер"
 msgid "Medium"
 msgstr "Средно"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "мени"
 
@@ -2147,7 +2163,7 @@ msgstr "Мени"
 msgid "Message"
 msgstr "Порака"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "Пиши им на сите"
 
@@ -2155,7 +2171,7 @@ msgstr "Пиши им на сите"
 msgid "Message players on this server"
 msgstr "Пишете им на играчите на овој сервер"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "Пиши му на твојот тим"
 
@@ -2163,7 +2179,7 @@ msgstr "Пиши му на твојот тим"
 msgid "Metric"
 msgstr "Метрички"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "Судир во воздухот"
 
@@ -2530,11 +2546,11 @@ msgstr "Име на опцијата"
 msgid "Options"
 msgstr "Опции"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "или"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "кружење"
 
@@ -2600,11 +2616,11 @@ msgstr "Пилот"
 msgid "PILOT DOWN"
 msgstr "ПИЛОТ ЗАГИНАТ"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "Пилотот е убиен"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "пропињање"
 
@@ -2914,7 +2930,7 @@ msgstr "Рестартирај мисија"
 msgid "Result"
 msgstr "Резултат"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "Продолжи"
 
@@ -2952,7 +2968,7 @@ msgstr "Десно крило"
 msgid "Right wingtip"
 msgstr "Врв на десното крило"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "валање"
 
@@ -3165,7 +3181,7 @@ msgstr "Испрати"
 msgid "Send again"
 msgstr "Испрати повторно"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "Испрати порака"
 
@@ -3220,7 +3236,7 @@ msgstr "Постави потекло и одредиште"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "Простран"
 msgid "SPD BK"
 msgstr "В.КОЧ"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "воздушна кочница"
 
@@ -3424,7 +3440,7 @@ msgstr "НЕПРИЈАТЕЛ НА ВИДИК"
 msgid "Task"
 msgstr "Задача"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "Тим"
 
@@ -3458,7 +3474,7 @@ msgstr "Текст"
 msgid "That code is incorrect or has expired."
 msgstr "Тој код е неточен или е истечен."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "Натпреварот продолжува зад ова мени."
 
@@ -3490,7 +3506,7 @@ msgstr "Ова лоби ја пренасочува вашата игровна 
 msgid "This page has not been created yet."
 msgstr "Оваа страница сè уште не е креирана."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "гас"
 
@@ -3514,7 +3530,7 @@ msgstr "Четврток"
 msgid "Tightest sustained turn speed"
 msgstr "Брзина на најтесен одржан заврт"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "наклон"
 
@@ -3773,7 +3789,7 @@ msgstr "Сликичка на видео"
 msgid "Video viewer: {0}"
 msgstr "Прегледувач на видео: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "поглед"
 
@@ -3829,7 +3845,7 @@ msgstr "Ќе се вратиме онлајн набргу."
 msgid "We'll notify you when something important happens."
 msgstr "Ќе ве известиме кога ќе се случи нешто важно."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "оружје"
 
@@ -3872,7 +3888,7 @@ msgstr "Сервер за свет"
 msgid "World server not reachable"
 msgstr "Серверот за свет не е достапен"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "скршнување"
 

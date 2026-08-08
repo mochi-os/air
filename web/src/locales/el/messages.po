@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: ../../../lib/web/src/lib/error-normalizer.ts:236
+#: ../../../lib/web/src/lib/error-normalizer.ts:244
 msgid "Please check your internet connection and try again."
 msgstr "Ελέγξτε τη σύνδεσή σας στο διαδίκτυο και δοκιμάστε ξανά."
 
@@ -35,7 +35,7 @@ msgid "[not set]"
 msgstr "[χωρίς ορισμό]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:276
+#: src/components/GameCanvas.tsx:283
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Δέχτηκε # χτύπημα} other {Δέχτηκε # χτυπήματα}}"
 
@@ -444,7 +444,7 @@ msgstr "Άξονες"
 msgid "Axis {i}"
 msgstr "Άξονας {i}"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "back"
 msgstr "πίσω"
 
@@ -466,6 +466,10 @@ msgstr "Εχθρός"
 #: ../../../lib/web/src/components/entity-banner.tsx:17
 msgid "Banner"
 msgstr "Μπάνερ"
+
+#: src/components/GameCanvas.tsx:106
+msgid "BELOW 250 — GEAR AND FLAPS"
+msgstr "ΚΑΤΩ ΑΠΟ 250 — ΣΥΣΤΗΜΑ ΚΑΙ ΠΤΕΡΥΓΙΑ"
 
 #: src/components/MissionSetup.tsx:892
 msgid "Best climb (Vy, 100% thrust)"
@@ -530,7 +534,7 @@ msgstr "Χρώμα περιγράμματος"
 msgid "Bots"
 msgstr "Μποτ"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "brakes"
 msgstr "φρένα"
 
@@ -541,6 +545,10 @@ msgstr "ΑΠΟΤΟΜΑ ΑΡΙΣΤΕΡΑ"
 #: src/components/GameCanvas.tsx:86
 msgid "BREAK RIGHT"
 msgstr "ΑΠΟΤΟΜΑ ΔΕΞΙΑ"
+
+#: src/components/GameCanvas.tsx:105
+msgid "BREAK WHEN READY"
+msgstr "ΣΤΡΟΦΗ ΟΤΑΝ ΕΤΟΙΜΟΣ"
 
 #: ../../../lib/web/src/features/accounts/types.ts:13
 msgid "Browser notifications"
@@ -641,11 +649,11 @@ msgstr "Κεντρική γραμμή"
 msgid "Change notification category"
 msgstr "Αλλαγή κατηγορίας ειδοποίησης"
 
-#: src/components/GameCanvas.tsx:372
+#: src/components/GameCanvas.tsx:379
 msgid "Chase view:"
 msgstr "Θέα καταδίωξης:"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "chat"
 msgstr "συνομιλία"
 
@@ -765,7 +773,7 @@ msgstr "Κλείσιμο πίνακα / ακύρωση"
 msgid "Close search"
 msgstr "Κλείσιμο αναζήτησης"
 
-#: src/components/GameCanvas.tsx:376
+#: src/components/GameCanvas.tsx:383
 msgid "closer"
 msgstr "πιο κοντά"
 
@@ -939,7 +947,7 @@ msgstr "Δεν ήταν δυνατή η επαλήθευση με αυτόν τ�
 msgid "Countermeasures"
 msgstr "Αντίμετρα"
 
-#: src/components/GameCanvas.tsx:270
+#: src/components/GameCanvas.tsx:277
 msgid "Crashed"
 msgstr "Συνετρίβη"
 
@@ -1124,7 +1132,7 @@ msgstr "Φθίνουσα"
 msgid "Description"
 msgstr "Περιγραφή"
 
-#: src/components/GameCanvas.tsx:264
+#: src/components/GameCanvas.tsx:271
 msgid "Destroyed by fire"
 msgstr "Καταστράφηκε από πυρκαγιά"
 
@@ -1163,6 +1171,10 @@ msgstr "Κατεύθυνση"
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
 msgstr "Κατάλογος"
+
+#: src/components/GameCanvas.tsx:107
+msgid "DIRTY UP"
+msgstr "ΚΑΤΕΒΑΣΕ ΣΥΣΤΗΜΑ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Discard"
@@ -1216,7 +1228,11 @@ msgstr "Λήψη"
 msgid "Download failed"
 msgstr "Η λήψη απέτυχε"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:108
+msgid "DOWNWIND 600 FEET"
+msgstr "ΥΠΗΝΕΜΟ 600 ΠΟΔΙΑ"
+
+#: src/components/GameCanvas.tsx:381
 msgid "Drag"
 msgstr "Σύρσιμο"
 
@@ -1333,15 +1349,15 @@ msgstr "Εισαγάγετε τον κωδικό της εφαρμογής ελ�
 msgid "Environment"
 msgstr "Περιβάλλον"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Everyone"
 msgstr "Όλοι"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit match"
 msgstr "Έξοδος από τον αγώνα"
 
-#: src/components/GameCanvas.tsx:347
+#: src/components/GameCanvas.tsx:354
 msgid "Exit mission"
 msgstr "Έξοδος από αποστολή"
 
@@ -1481,7 +1497,7 @@ msgstr "Ολοκληρώστε τη μεταφορά του λογαριασμο
 msgid "Finished"
 msgstr "Ολοκληρώθηκε"
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "fire"
 msgstr "πυρ"
 
@@ -1502,7 +1518,7 @@ msgstr "Σημαίες"
 msgid "FLAMEOUT"
 msgstr "ΣΒΕΣΗ ΚΙΝ"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "flares"
 msgstr "φωτοβολίδες"
 
@@ -1514,7 +1530,7 @@ msgstr "ΦΩΤΟΒΟΛΙΔΕΣ"
 msgid "Flat"
 msgstr "Επίπεδη"
 
-#: src/components/GameCanvas.tsx:266
+#: src/components/GameCanvas.tsx:273
 msgid "Flew into the sea"
 msgstr "Έπεσε στη θάλασσα"
 
@@ -1543,7 +1559,7 @@ msgstr "Πέταξε"
 msgid "Fly"
 msgstr "Πτήση"
 
-#: src/components/GameCanvas.tsx:293
+#: src/components/GameCanvas.tsx:300
 msgid "Fly again"
 msgstr "Πέταξε ξανά"
 
@@ -1622,7 +1638,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Άτρακτος"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "gear"
 msgstr "τροχοί"
 
@@ -1724,7 +1740,7 @@ msgstr "Ιστορικό"
 msgid "Home"
 msgstr "Αρχική"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "hook"
 msgstr "άγκιστρο"
 
@@ -1919,7 +1935,7 @@ msgstr "ΑΡΓΆ"
 msgid "Launch (catapult)"
 msgstr "Εκτόξευση (καταπέλτης)"
 
-#: src/components/GameCanvas.tsx:365
+#: src/components/GameCanvas.tsx:372
 msgid "launch / target"
 msgstr "εκτόξευση / στόχευση"
 
@@ -1976,7 +1992,7 @@ msgstr "ΕΥΘΕΊΑ ΣΤΑ 1200, ΣΎΣΤΗΜΑ ΚΆΤΩ"
 msgid "Light"
 msgstr "Φωτεινό"
 
-#: src/components/GameCanvas.tsx:366
+#: src/components/GameCanvas.tsx:373
 msgid "lights"
 msgstr "φώτα"
 
@@ -2095,7 +2111,7 @@ msgstr "Διαχειριστείτε τους συνδεδεμένους λογ�
 msgid "Manual"
 msgstr "Χειροκίνητο"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "map"
 msgstr "χάρτης"
 
@@ -2134,7 +2150,7 @@ msgstr "Διακομιστής MCP"
 msgid "Medium"
 msgstr "Μεσαίο"
 
-#: src/components/GameCanvas.tsx:369
+#: src/components/GameCanvas.tsx:376
 msgid "menu"
 msgstr "μενού"
 
@@ -2147,7 +2163,7 @@ msgstr "Μενού"
 msgid "Message"
 msgstr "Μήνυμα"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message everyone"
 msgstr "Μήνυμα σε όλους"
 
@@ -2155,7 +2171,7 @@ msgstr "Μήνυμα σε όλους"
 msgid "Message players on this server"
 msgstr "Στείλτε μήνυμα στους παίκτες αυτού του διακομιστή"
 
-#: src/components/GameCanvas.tsx:240
+#: src/components/GameCanvas.tsx:247
 msgid "Message your team"
 msgstr "Μήνυμα στην ομάδα σου"
 
@@ -2163,7 +2179,7 @@ msgstr "Μήνυμα στην ομάδα σου"
 msgid "Metric"
 msgstr "Μετρικό"
 
-#: src/components/GameCanvas.tsx:268
+#: src/components/GameCanvas.tsx:275
 msgid "Midair collision"
 msgstr "Σύγκρουση στον αέρα"
 
@@ -2530,11 +2546,11 @@ msgstr "Όνομα επιλογής"
 msgid "Options"
 msgstr "Επιλογές"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "or"
 msgstr "ή"
 
-#: src/components/GameCanvas.tsx:374
+#: src/components/GameCanvas.tsx:381
 msgid "orbit"
 msgstr "τροχιά"
 
@@ -2600,11 +2616,11 @@ msgstr "Πιλότος"
 msgid "PILOT DOWN"
 msgstr "ΠΙΛΟΤΟΣ ΝΕΚΡΟΣ"
 
-#: src/components/GameCanvas.tsx:262
+#: src/components/GameCanvas.tsx:269
 msgid "Pilot killed"
 msgstr "Ο πιλότος σκοτώθηκε"
 
-#: src/components/GameCanvas.tsx:361
+#: src/components/GameCanvas.tsx:368
 msgid "pitch"
 msgstr "πρόνευση"
 
@@ -2914,7 +2930,7 @@ msgstr "Επανεκκίνηση αποστολής"
 msgid "Result"
 msgstr "Αποτέλεσμα"
 
-#: src/components/GameCanvas.tsx:304
+#: src/components/GameCanvas.tsx:311
 msgid "Resume"
 msgstr "Συνέχιση"
 
@@ -2952,7 +2968,7 @@ msgstr "Δεξιά πτέρυγα"
 msgid "Right wingtip"
 msgstr "Άκρο δεξιάς πτέρυγας"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "roll"
 msgstr "διατοιχισμός"
 
@@ -3165,7 +3181,7 @@ msgstr "Αποστολή"
 msgid "Send again"
 msgstr "Αποστολή ξανά"
 
-#: src/components/GameCanvas.tsx:318
+#: src/components/GameCanvas.tsx:325
 msgid "Send chat"
 msgstr "Αποστολή μηνύματος"
 
@@ -3220,7 +3236,7 @@ msgstr "Ορίστε αφετηρία και προορισμό"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:126
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:333
+#: src/components/GameCanvas.tsx:340
 #: src/components/MissionSetup.tsx:1822
 #: src/components/MissionSetup.tsx:1856
 msgid "Settings"
@@ -3304,7 +3320,7 @@ msgstr "Ευρύχωρο"
 msgid "SPD BK"
 msgstr "ΑΕΡΟΦΡ"
 
-#: src/components/GameCanvas.tsx:367
+#: src/components/GameCanvas.tsx:374
 msgid "speed brake"
 msgstr "αεροφρένο"
 
@@ -3424,7 +3440,7 @@ msgstr "ΒΛΕΠΩ ΤΟΝ ΕΧΘΡΟ"
 msgid "Task"
 msgstr "Εργασία"
 
-#: src/components/GameCanvas.tsx:235
+#: src/components/GameCanvas.tsx:242
 msgid "Team"
 msgstr "Ομάδα"
 
@@ -3458,7 +3474,7 @@ msgstr "Κείμενο"
 msgid "That code is incorrect or has expired."
 msgstr "Αυτός ο κωδικός είναι λανθασμένος ή έχει λήξει."
 
-#: src/components/GameCanvas.tsx:351
+#: src/components/GameCanvas.tsx:358
 msgid "The match continues behind this menu."
 msgstr "Ο αγώνας συνεχίζεται πίσω από αυτό το μενού."
 
@@ -3490,7 +3506,7 @@ msgstr "Αυτό το λόμπι στέλνει τη σύνδεση του πα�
 msgid "This page has not been created yet."
 msgstr "Αυτή η σελίδα δεν έχει δημιουργηθεί ακόμη."
 
-#: src/components/GameCanvas.tsx:363
+#: src/components/GameCanvas.tsx:370
 msgid "throttle"
 msgstr "γκάζι"
 
@@ -3514,7 +3530,7 @@ msgstr "Πέμπτη"
 msgid "Tightest sustained turn speed"
 msgstr "Ταχύτητα στενότερης διατηρούμενης στροφής"
 
-#: src/components/GameCanvas.tsx:375
+#: src/components/GameCanvas.tsx:382
 msgid "tilt"
 msgstr "κλίση"
 
@@ -3773,7 +3789,7 @@ msgstr "Μικρογραφία βίντεο"
 msgid "Video viewer: {0}"
 msgstr "Προβολή βίντεο: {0}"
 
-#: src/components/GameCanvas.tsx:368
+#: src/components/GameCanvas.tsx:375
 msgid "view"
 msgstr "θέα"
 
@@ -3829,7 +3845,7 @@ msgstr "Θα είμαστε ξανά online σύντομα."
 msgid "We'll notify you when something important happens."
 msgstr "Θα σας ειδοποιήσουμε όταν συμβεί κάτι σημαντικό."
 
-#: src/components/GameCanvas.tsx:364
+#: src/components/GameCanvas.tsx:371
 msgid "weapon"
 msgstr "όπλο"
 
@@ -3872,7 +3888,7 @@ msgstr "Διακομιστής κόσμου"
 msgid "World server not reachable"
 msgstr "Ο διακομιστής κόσμου δεν είναι προσβάσιμος"
 
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:369
 msgid "yaw"
 msgstr "εκτροπή"
 
