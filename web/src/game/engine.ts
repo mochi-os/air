@@ -1351,7 +1351,7 @@ function ddi_eng(x){ const gz=ownship.gauges||{};   // the real format: paramete
 	x.font="22px monospace";
 	const rows=[["N2 %",gz.rpmL,gz.rpmR,1],["EGT °C",gz.egtL,gz.egtR,1],["FF PPH",(gz.flowL||0)*10,(gz.flowR||0)*10,10],
 		["NOZ %",100*Math.max((0.7-(gz.spoolL||0))/0.55,gz.reheatL||0),100*Math.max((0.7-(gz.spoolR||0))/0.55,gz.reheatR||0),1],
-		["OIL PSI",55+10*(gz.spoolL||0),55+10*(gz.spoolR||0),1]];
+		["OIL PSI",55+45*(gz.spoolL||0),55+45*(gz.spoolR||0),1]];   // 55 idle to 100 at MIL: the -402 inflight bands are 55-110 idle and 95-180 MIL (NATOPS 4.1.1.4). It swept 55-65, below the MIL minimum at every power setting (#49)
 	x.textAlign="center"; x.fillText("L",150,84); x.fillText("R",362,84);
 	let y=140;
 	for(const [label,L,R,q] of rows){
@@ -3030,7 +3030,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		vsi:dial(VSI_DIAL,fpm),
 		fuelLbs:Math.min(lbs,21000),
 		rpmL:35+(30+34*gL)*hL, rpmR:35+(30+34*gR)*hR,            // F404 N2: ground idle ~65 %, military 99; a dead core windmills near 35
-		egtL:300+(150+360*gL)*hL+140*bL, egtR:300+(150+360*gR)*hR+140*bR,   // °C, F404-shaped: idle ~450, military ~810, max reheat ~950; a dead can cools toward 300
+		egtL:300+(150+360*gL)*hL+90*bL, egtR:300+(150+360*gR)*hR+90*bR,   // °C, F404-shaped: idle ~450, military ~810, max reheat ~900 — inside the -402's 920 steady-state ceiling (NATOPS 4.1.1.2); it read 950, above even the 942 transient, so hard flying showed a permanent over-temperature. A dead can cools toward 300
 		flowL:THREE.MathUtils.clamp(flow_state.pph*((0.12*hL+gL+3.4*bL)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1))/10,0,999),   // the honest measured total, split by each engine's own health-weighted demand — a dead engine's counter winds to zero, matching the core's burn (#41)
 		flowR:THREE.MathUtils.clamp(flow_state.pph*((0.12*hR+gR+3.4*bR)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1))/10,0,999),
 		hyd:(gL+gR)>0.03?2.83:0,                                 // ~3000 psi on the 0-5k arc while either healthy pump turns (an engine failure takes its side's circuit, NATOPS 15.4)
