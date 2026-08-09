@@ -122,7 +122,7 @@ const CARRIER_MODELS={
 const SHIP=CARRIER_MODELS.nimitz;   // the active carrier (a picker arrives with the second ship)
 function sanitize_cfg(){   // runs after every config merge (the server-backed store can hold stale eras too)
 	delete cfg.cats; delete cfg.cat_dy;   // pre-#100 configs carried ship data; CARRIER_MODELS owns it now
-	if(cfg.clouds!=="none"&&!["cumulus","high_stratus","low_stratus"].includes(cfg.clouds)) cfg.clouds="cumulus";   // a saved cloud type that no longer exists falls back to the default
+	if(cfg.clouds!=="none"&&!["cumulus","high_stratus","mid_stratus","low_stratus"].includes(cfg.clouds)) cfg.clouds="cumulus";   // a saved cloud type that no longer exists falls back to the default. EVERY new preset must be listed here: an omission silently rewrites the mission to cumulus, which would have turned every Case II approach into a clear-sky one
 	cfg.stores=stores_normalize(cfg.stores&&Object.keys(cfg.stores).length?cfg.stores:stores_migrate(cfg.missiles!==false));   // #17: legacy configs carry the retired missiles boolean — map it to its preset; any stores map is normalized so a stale shape cannot reach the loadout paths
 	delete cfg.missiles; }
 let dev_cursor=null;   // the measuring-cursor ring on deck (dev mode)
@@ -453,7 +453,8 @@ build_ocean(cfg.ocean_segments);
 const CLOUDS={   // cover: higher = more cloud (coverage remap). Trade-wind cumulus: low bases (~2,000 ft), most tops at the inversion, a few towers.
 	cumulus:      { base:600,  top:2400, high:5000,  cover:0.42, density:1.0, flat:0.0, gate:[0.22,0.50], dark:0.45 },   // fair-weather broken trade-wind sky (user-preferred). (A cumulonimbus preset lived here 2026-07-05/06 and was removed entirely — recover from git if ever revisited)
 	high_stratus: { base:1829, top:2134, high:2134, cover:0.78, density:1.0, flat:1.0, gate:[0.0,0.0], dark:0.3 },   // altostratus deck 6,000-7,000 ft: dogfights descend through it and LOSE each other inside (dense enough to white-out; occasional thin spots for re-acquisition). Base above the 5,000 ft free-flight spawn
-	low_stratus:  { base:152,  top:460,  high:460,  cover:0.85, density:1.3, flat:1.0, gate:[0.0,0.0], dark:0.3 },   // marine-layer overcast, 500 ft ceiling: instrument approaches and Case III carrier landings — break out on the ball at minimums (spawn clearings deliberately do not hole stratus). dark matches high_stratus: the user approved that base grey
+	mid_stratus:  { base:305,  top:915,  high:915,  cover:0.85, density:1.3, flat:1.0, gate:[0.0,0.0], dark:0.3 },   // CASE II deck, 1,000-3,000 ft: the NATOPS Case II band (ceiling at or above 1,000 ft but below Case I's 3,000). The Case II spawn is INSIDE it at 1,200 ft, so the level segment is flown on instruments and the glideslope descent breaks out at ~2.7 NM — enough to finish visually, which is what the procedure requires
+	low_stratus:  { base:91,   top:915,  high:915,  cover:0.85, density:1.3, flat:1.0, gate:[0.0,0.0], dark:0.3 },   // CASE III deck, 300-3,000 ft: a 300 ft ceiling puts the break-out at ~0.8 NM, exactly on the 0.75 NM ball call — see the ball or call CLARA. The top rose from 1,510 to 3,000 ft because the old deck left marshal and most of the penetration in CLEAR AIR, which drains an instrument approach of its point; now the business end is genuinely IMC (spawn clearings deliberately do not hole stratus). dark matches high_stratus: the user approved that base grey
 };
 function apply_clouds(){ const p=CLOUDS[cfg.clouds];
 	ocean_mat.uniforms.u_cloud_on.value=p?1.0:0.0;
@@ -2168,7 +2169,11 @@ function make_points(max,size,additive,tex,sized){ const geo=new THREE.BufferGeo
 	if(sized){ geo.setAttribute("grow",new THREE.BufferAttribute(new Float32Array(max),1)); geo.setAttribute("fade",new THREE.BufferAttribute(new Float32Array(max),1)); geo.setAttribute("spin",new THREE.BufferAttribute(new Float32Array(max),1));
 		mat.onBeforeCompile=(sh)=>{
 			sh.vertexShader="attribute float grow;\nattribute float fade;\nattribute float spin;\nvarying float vFade;\nvarying float vSpin;\n"+sh.vertexShader.replace("gl_PointSize = size;","gl_PointSize = size * grow;\n\tvFade = fade;\n\tvSpin = spin;");
-			sh.fragmentShader="varying float vFade;\nvarying float vSpin;\n"+sh.fragmentShader.replace("vec4 diffuseColor = vec4( diffuse, opacity );","vec4 diffuseColor = vec4( diffuse, opacity * vFade );\n// Cheap hemispheric volume cue: the upper lobe catches sky/sun while the lower core stays dense.\ndiffuseColor.rgb *= 0.72 + 0.42 * smoothstep(0.0, 1.0, 1.0-gl_PointCoord.y);").replace("vec2 uv = ( uvTransform * vec3( gl_PointCoord.x, 1.0 - gl_PointCoord.y, 1 ) ).xy;","vec2 pc=gl_PointCoord-0.5; float cs=cos(vSpin), sn=sin(vSpin); pc=mat2(cs,-sn,sn,cs)*pc; vec2 uv=(uvTransform*vec3(pc+0.5,1)).xy;"); }; }
+			sh.fragmentShader="varying float vFade;\nvarying float vSpin;\n"+sh.fragmentShader.replace("vec4 diffuseColor = vec4( diffuse, opacity );","vec4 diffuseColor = vec4( diffuse, opacity * vFade );\n// Cheap hemispheric volume cue: the upper lobe catches sky/sun while the lower core stays dense.\ndiffuseColor.rgb *= 0.72 + 0.42 * smoothstep(0.0, 1.0, 1.0-gl_PointCoord.y);").replace("vec2 uv = ( uvTransform * vec3( gl_PointCoord.x, 1.0 - gl_PointCoord.y, 1 ) ).xy;","vec2 pc=gl_PointCoord-0.5; float cs=cos(vSpin), sn=sin(vSpin); pc=mat2(cs,-sn,sn,cs)*pc; vec2 uv=(uvTransform*vec3(pc+0.5,1)).xy;");
+			// The replaces target THREE r160's exact chunk text; a reworded upgrade
+			// would otherwise drop growth/fade/rotation SILENTLY (invisible smoke
+			// or static puffs, no error anywhere).
+			if(!sh.vertexShader.includes("size * grow")||!sh.fragmentShader.includes("opacity * vFade")||!sh.fragmentShader.includes("mat2(cs,-sn,sn,cs)")) console.warn("points shader injection missed a token — THREE chunk text changed; sized-particle growth/fade/spin are OFF"); }; }
 	const pts=new THREE.Points(geo,mat); pts.frustumCulled=false; pts.userData.sized=!!sized; scene.add(pts); return pts; }
 const glow=glow_texture(false), soft=glow_texture(true);
 function light_dot_texture(){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d"); const g=x.createRadialGradient(32,32,0,32,32,32);   // crisp light point (solid core, quick falloff) — no big halo, unlike the soft `glow`
@@ -2180,15 +2185,20 @@ function windsock_texture(){ const c=document.createElement("canvas"); c.width=8
 	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; }
 function pool(max){ return { px:new Float32Array(max),py:new Float32Array(max),pz:new Float32Array(max), vx:new Float32Array(max),vy:new Float32Array(max),vz:new Float32Array(max),
 	life:new Float32Array(max),ttl:new Float32Array(max), r:new Float32Array(max),g:new Float32Array(max),b:new Float32Array(max),
-	sz:new Float32Array(max),gr:new Float32Array(max), spin:new Float32Array(max), seed:new Float32Array(max), activeList:[],   // sized pools only (#239): scale at birth, growth per second of age
+	sz:new Float32Array(max),gr:new Float32Array(max), spin:new Float32Array(max), seed:new Float32Array(max), activeList:[], pos:new Int32Array(max),   // sized pools only (#239): scale at birth, growth per second of age
 	active:new Uint8Array(max), max, next:0 }; }
 function pool_spawn(p){ if(p.activeList.length>=(p.limit??p.max)) return -1; for(let i=0;i<p.max;i++){ const k=(p.next+i)%p.max; if(!p.active[k]){ p.next=(k+1)%p.max; p.active[k]=1; p.seed[k]=Math.random()*1000; p.spin[k]=Math.random()*Math.PI*2;
 		// A caller can retire a slot between physics ticks (missile impact, reset).
 		// Remove that stale index before reusing it or it would simulate twice.
-		const stale=p.activeList.indexOf(k); if(stale>=0)p.activeList.splice(stale,1); p.activeList.push(k); return k; } } return -1; }
+		// O(1) via the position map (indexOf scanned the whole live list per
+		// spawn); list order is immaterial — one draw call renders the pool —
+		// so a swap-remove is safe.
+		const sp=p.pos[k]; if(sp<p.activeList.length&&p.activeList[sp]===k){ const last=p.activeList.pop(); if(sp<p.activeList.length){ p.activeList[sp]=last; p.pos[last]=sp; } }
+		p.pos[k]=p.activeList.length; p.activeList.push(k); return k; } } return -1; }
 const TR_MAX=4000,FL_MAX=2500,SM_MAX=3000,ST_MAX=1200,DB_MAX=260;
 const tracers=pool(TR_MAX),flares=pool(FL_MAX),smoke=pool(SM_MAX),strikes=pool(ST_MAX),debris=pool(DB_MAX);
-{ const q=Math.max(0,Math.min(3,Number(cfg.effects_quality??2))), scale=[.28,.52,.78,1][q]; smoke.limit=Math.floor(SM_MAX*scale); strikes.limit=Math.floor(ST_MAX*scale); debris.limit=Math.max(60,Math.floor(DB_MAX*scale)); flares.limit=Math.max(500,Math.floor(FL_MAX*scale)); }
+function effects_limits(){ const q=Math.max(0,Math.min(3,Number(cfg.effects_quality??2))), scale=[.28,.52,.78,1][q]; smoke.limit=Math.floor(SM_MAX*scale); strikes.limit=Math.floor(ST_MAX*scale); debris.limit=Math.max(60,Math.floor(DB_MAX*scale)); flares.limit=Math.max(500,Math.floor(FL_MAX*scale)); }
+effects_limits();   // and again from apply_effects: computed only at boot, a Settings change over a paused mission silently did nothing until reload
 const tr_pts=make_points(TR_MAX,4,false,glow), fl_pts=make_points(FL_MAX,26,true,glow), sm_pts=make_points(SM_MAX,70,false,soft,true);   // tracers: small + NORMAL blend (additive blew the colour out to white against bright sky); smoke is SIZED (per-particle growth + alpha fade, #239)
 const db_pts=make_points(DB_MAX,5,false,glow);   // debris (#239): dark shed panels and wreck chunks — normal-blended dots on ballistic arcs, decoupled from the aircraft's path (the gun-camera signature of coming apart)
 // Strike flashes get their OWN pool, and it is ADDITIVE. Borrowing the tracer
@@ -2225,7 +2235,7 @@ function update_pool_ballistic(p,dt,grav,drag,round){ const live=[]; for(const i
 	// Trade-wind advection plus low-frequency curl-like drift. It is deliberately
 	// cheap and only applied to smoke; hot puffs also rise through negative grav.
 	if(p===smoke){ const age=p.ttl[i]-p.life[i], q=p.seed[i]; p.vx[i]+=(2.8+Math.sin(q+age*.7)*1.7-p.vx[i]*.018)*dt; p.vz[i]+=(.8+Math.cos(q*.71+age*.55)*1.5-p.vz[i]*.018)*dt; }
-	p.px[i]+=p.vx[i]*dt; p.py[i]+=p.vy[i]*dt; p.pz[i]+=p.vz[i]*dt; p.life[i]-=dt; if(p.life[i]<=0||p.py[i]<0) p.active[i]=0; else live.push(i); } p.activeList=live; }
+	p.px[i]+=p.vx[i]*dt; p.py[i]+=p.vy[i]*dt; p.pz[i]+=p.vz[i]*dt; p.life[i]-=dt; if(p.life[i]<=0||p.py[i]<0) p.active[i]=0; else { p.pos[i]=live.length; live.push(i); } } p.activeList=live; }
 
 const muzzle=1050; const gun={};
 // 20 mm drag (mirrors battle.Length/Average in Go): quadratic drag decays the
@@ -2449,7 +2459,7 @@ function apply_harm(kind){ const words=flight_get(); if(!words) return;
 		for(let volley=0;volley<6;volley++) battle_volley(1,{...pose,velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz}},40,battle_tick+volley); } }   // real rounds now: they arrive over the next frames
 let own_burn=[0,0], own_burning=false, own_leak=0;   // ownship condition mirrored from progress()
 let eject_flag=false, ejected=false;
-bandit.harm={ thrust:0, wing:0, killed:false, burning:false };   // zonal summary driving the AI
+bandit.harm={ thrust:0, wing:0, killed:false, burning:false, fire:[0,0], leak:0 };   // zonal summary driving the AI, plus the graded wound channels the visuals read (#244)
 bandit.rounds=MAGAZINE;   // the bandit fires from the same 578-round M61 load as the ownship (#233) — fire_gun enforces it. Dry, it keeps pressing its attacks with a silent gun: the brain never learns the belt state, which is what a real pilot out of rounds would do rather than concede
 function battle_aim(st){ const q=st.group?st.group.quaternion:ownship.q;
 	return { position:{x:st.pos.x,y:st.pos.y,z:st.pos.z}, quaternion:{w:q.w,x:q.x,y:q.y,z:q.z},
@@ -2458,7 +2468,8 @@ function battle_pose(st){ const up=st.up||world_up; return { position:{x:st.pos.
 	forward:{x:st.fwd.x,y:st.fwd.y,z:st.fwd.z}, up:{x:up.x,y:up.y,z:up.z},
 	velocity:{x:st.velx??st.fwd.x*st.speed,y:st.vely??st.fwd.y*st.speed,z:st.velz??st.fwd.z*st.speed} }; }   // the shooter's velocity rides on every round
 function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c");   // battle_rigged: mission start races the async wasm load and battle_hulk silently no-ops until the core lands — the frame loop retries until the rig takes (an unrigged hulk made the bandit UNHITTABLE: every gun burst and missile blast on him no-opped for the whole mission)
-	bandit.harm={thrust:0,wing:0,killed:false,burning:false}; battle_reset=true; }
+	bandit.harm={thrust:0,wing:0,killed:false,burning:false,fire:[0,0],leak:0}; battle_reset=true;
+	for(const m of impact_marks.splice(0)) m.parent?.remove(m); }   // a fresh fight starts unscarred — marks otherwise survive the respawn on the persistent bandit group
 // bandit_destroy ends the DUEL: a joust is one fight to one kill, so the bandit
 // does not respawn — the sky stays empty and the pilot ends the mission from
 // the menu (and launches another if they want one). The endless-rematch loop
@@ -3665,7 +3676,7 @@ let last_out=null;   // the core's latest output words: the HUD caution panel re
 // sub-puffs give the cauliflower texture a single row of blobs never had.
 function burn_trail(pos,intensity,vx,_vy,vz){ if(intensity<=0.02) return;
 	if(Math.random()<Math.min(1,intensity)){
-		const cluster=1+(Math.random()<0.6?1:0);   // usually two offset sub-puffs per emission
+		const cluster=1+(Math.random()<0.25+0.55*Math.min(1,intensity)?1:0);   // a small fire puffs singly; a torching jet emits dense clusters
 		for(let c=0;c<cluster;c++){ const k=pool_spawn(smoke); if(k<0) break;
 		smoke.px[k]=pos.x-((vx||0)*0.05)+(Math.random()-0.5)*2.4;smoke.py[k]=pos.y+(Math.random()-0.5)*1.6;smoke.pz[k]=pos.z-((vz||0)*0.05)+(Math.random()-0.5)*2.4;
 		smoke.vx[k]=(Math.random()-0.5)*4;smoke.vy[k]=4+Math.random()*6;smoke.vz[k]=(Math.random()-0.5)*4;
@@ -3677,6 +3688,14 @@ function burn_trail(pos,intensity,vx,_vy,vz){ if(intensity<=0.02) return;
 			smoke.vy[k]=2+Math.random()*3;
 			const warm=Math.min(1,intensity);   // fire-lit at birth, near-black when the fire is small; the flush ramp pales it with age. Mid-grey floor: true 0.10 soot disappeared against the sea
 			smoke.r[k]=0.16+0.26*warm;smoke.g[k]=0.15+0.10*warm;smoke.b[k]=0.15; } } } }
+// engine_smoke: dark machinery smoke from a damaged engine (#244) — unburned
+// oil and fuel through a wrecked compressor, cooler and flatter than fire soot
+// (no warm tint, no flame), thin at the nozzle and thickening with the damage.
+function engine_smoke(pos,fraction,vx,_vy,vz){ if(Math.random()>Math.min(1,fraction*0.8)) return; const k=pool_spawn(smoke); if(k<0) return;
+	smoke.px[k]=pos.x-((vx||0)*0.04);smoke.py[k]=pos.y-0.3;smoke.pz[k]=pos.z-((vz||0)*0.04);
+	smoke.vx[k]=(Math.random()-0.5)*3;smoke.vy[k]=1+Math.random()*2;smoke.vz[k]=(Math.random()-0.5)*3;
+	smoke.ttl[k]=smoke.life[k]=2.0+Math.random()*1.4; smoke.sz[k]=0.18+0.10*Math.min(1,fraction); smoke.gr[k]=0.55;
+	smoke.r[k]=0.24;smoke.g[k]=0.24;smoke.b[k]=0.25; }
 // leak_trail: white fuel mist behind a holed tank.
 function leak_trail(pos,rate,vx,_vy,vz){ if(Math.random()>Math.min(1,rate)) return; const k=pool_spawn(smoke); if(k<0) return;
 	smoke.px[k]=pos.x-((vx||0)*0.06);smoke.py[k]=pos.y-0.4;smoke.pz[k]=pos.z-((vz||0)*0.06);
@@ -3694,12 +3713,36 @@ const impact_marks=[];
 function impact_mark_texture(){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d"); const g=x.createRadialGradient(32,32,2,32,32,30);
 	g.addColorStop(0,"rgba(8,8,7,.95)"); g.addColorStop(.28,"rgba(35,25,16,.9)"); g.addColorStop(.62,"rgba(70,48,26,.35)"); g.addColorStop(1,"rgba(0,0,0,0)"); x.fillStyle=g; x.fillRect(0,0,64,64); return new THREE.CanvasTexture(c); }
 const impact_mark_mat=new THREE.MeshBasicMaterial({map:impact_mark_texture(),transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,side:THREE.DoubleSide,toneMapped:false});
-const impact_mark_geo=new THREE.PlaneGeometry(1,1); const _mark_z=new THREE.Vector3(0,0,1);
+const impact_mark_geo=new THREE.PlaneGeometry(1,1); const _mark_z=new THREE.Vector3(0,0,1); const _v2=new THREE.Vector3();   // _v2: the mark-normal scratch — its definition was lost in an interleaved commit, and the first gun hit after that threw ReferenceError and killed the whole frame loop
 function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_quality??2)<1) return; const cap=[0,10,28,56][Math.max(0,Math.min(3,cfg.effects_quality|0))];
 	while(impact_marks.length>=cap){ const old=impact_marks.shift(); old.parent?.remove(old); }
 	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
-if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], padlock });   // dev (#242, #243): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle
+if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], padlock, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle
+if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): set a cloud deck and park the jet on the 3.5 deg glideslope at nm — cfg/apply_clouds/carrier_world are module-scope, so a headless approach test cannot be driven from page script without this
+	if(clouds!==undefined){ cfg.clouds=clouds; apply_clouds(); }
+	const d=nm*1852, tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw));
+	const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);
+	let lx=B.x-A.x, lz=B.z-A.z; const l=Math.hypot(lx,lz)||1; lx/=l; lz/=l;
+	const alt=ft!==undefined?ft*0.3048:(nm*1852*Math.tan(3.5*Math.PI/180)+CARRIER.deckY);
+	ownship.pos.set(td.x-lx*d, alt, td.z-lz*d); ownship.fwd.set(lx,0,lz).normalize();
+	const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
+	ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
+	flight_push();
+	const p=CLOUDS[cfg.clouds];
+	return { clouds:cfg.clouds, nm, alt:+alt.toFixed(0), altFeet:+(alt/0.3048).toFixed(0), base:p?p.base:null, top:p?p.top:null, inCloud:!!p&&alt>=p.base&&alt<=p.top }; };
+if(DEV_MODE) (globalThis as any).dev_effects=(q)=>{ cfg.effects_quality=q; apply_effects(); return [smoke.limit,strikes.limit,debris.limit,flares.limit]; };   // dev (#13): the Settings live-apply path, verifiable headless
+if(DEV_MODE) (globalThis as any).dev_pools=()=>{   // dev (#13): pool invariants — the swap-remove position map must never duplicate, lose, or mis-map a live index
+	const report={};
+	for(const [name,p] of [["smoke",smoke],["strikes",strikes],["debris",debris],["flares",flares],["tracers",tracers]]){
+		const seen=new Set(); let dup=0, dead=0, mis=0, live=0;
+		for(let n=0;n<p.activeList.length;n++){ const i=p.activeList[n];
+			if(seen.has(i)) dup++; seen.add(i);
+			if(!p.active[i]) dead++;
+			if(p.pos[i]!==n) mis++; }
+		for(let i=0;i<p.max;i++) if(p.active[i]){ live++; if(!seen.has(i)) mis++; }   // an active slot missing from the list would never simulate or render again
+		report[name]={list:p.activeList.length,live,dup,dead,mis,limit:p.limit??p.max}; }
+	return report; };
 if(DEV_MODE) (globalThis as any).dev_close=(m)=>{ const d=+m||200;   // dev (?developer=1 only): park the bandit dead ahead at d metres — gunnery and hit-flash checks need a target in range, and flying onto one by hand is not a test
 	bandit.pos.copy(ownship.pos).addScaledVector(ownship.fwd,d); bandit.fwd.copy(ownship.fwd); bandit.speed=ownship.speed;
 	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
@@ -3748,7 +3791,7 @@ function transient_blast(x,y,z,water){ if((cfg.effects_quality??2)<1) return;
 	const mat=new THREE.MeshBasicMaterial({color:water?0xd9f4ff:0xffb34d,transparent:true,opacity:.72,depthWrite:false,blending:water?THREE.NormalBlending:THREE.AdditiveBlending,side:THREE.DoubleSide,toneMapped:false});
 	const mesh=new THREE.Mesh(new THREE.RingGeometry(.45,1,48),mat); mesh.position.set(x,water?.12:y,z); if(water) mesh.rotation.x=-Math.PI/2; else mesh.quaternion.copy(camera.quaternion); scene.add(mesh);
 	const light=new THREE.PointLight(water?0xcceeff:0xff8b32,water?14:38,water?35:75,2); light.position.set(x,y+1,z); scene.add(light); transient_fx.push({mesh,light,age:0,life:water?.75:.34,water}); }
-function update_transient_fx(dt){ for(let i=transient_fx.length-1;i>=0;i--){ const f=transient_fx[i]; f.age+=dt; const t=f.age/f.life; if(t>=1){ scene.remove(f.mesh,f.light); f.mat?.dispose?.(); f.mesh.material.dispose(); f.mesh.geometry.dispose(); transient_fx.splice(i,1); continue; }
+function update_transient_fx(dt){ for(let i=transient_fx.length-1;i>=0;i--){ const f=transient_fx[i]; f.age+=dt; const t=f.age/f.life; if(t>=1){ scene.remove(f.mesh,f.light); f.mesh.material.dispose(); f.mesh.geometry.dispose(); transient_fx.splice(i,1); continue; }
 	const s=(f.water?3:2)+t*(f.water?24:15); f.mesh.scale.setScalar(s); f.mesh.material.opacity=(1-t)*(f.water?.55:.72); f.light.intensity=(1-t)*(f.water?14:38); if(!f.water) f.mesh.quaternion.copy(camera.quaternion); } }
 function explosion_at(x,y,z,kind){
 	audio_explosion(Math.hypot(x-ownship.pos.x,y-ownship.pos.y,z-ownship.pos.z));
@@ -4205,6 +4248,7 @@ function fly_player(dt){
 		const battle=battle_progress(ownship.throttle,battle_tick++,battle_reset,(secured[0]?1:0)|(secured[1]?2:0)); battle_reset=false;
 		own_burn[0]=battle[0]; own_burn[1]=battle[1]; own_burning=battle[2]>0; own_leak=battle[5];
 		if(has_enemy){ const h=bandit.harm; h.thrust=battle[11]; h.wing=battle[12]; h.killed=battle[9]>0; h.burning=battle[8]>0;
+			h.fire=[battle[6]||0,battle[7]||0]; h.leak=battle[14]||0;   // per-engine fire intensity (always exported, never read until #244) and the hulk leak (new wasm row)
 			h.wreck=battle[13]; if(h.killed&&!bandit.fate) bandit.fate="pilot";
 			if(battle[10]&BATTLE.explode){ own_kills++; bandit_destroy(); } }
 		if(has_enemy&&bandit.group.visible){ const rdx=bandit.pos.x-ownship.pos.x, rdy=bandit.pos.y-ownship.pos.y, rdz=bandit.pos.z-ownship.pos.z;
@@ -4349,7 +4393,15 @@ function fly_bandit_stricken(dt){
 	if(harm.killed){ const d=bandit.fwd.clone(); d.y=-0.15; steer(bandit,d,dt,0.05,0.2); }
 	else { const d=bandit.break_dir.clone(); d.y=-0.5; steer(bandit,d,dt,0.9,1.5); bandit.speed=Math.max(120,bandit.speed-30*dt); }   // wing gone: rolling descent
 	apply_orientation(bandit);
-	burn_trail(bandit.pos,Math.max(harm.burning?1:0,harm.wing),bandit.velx,bandit.vely,bandit.velz);
+	// The bandit's wounds render at their true severity (#244): per-engine fire
+	// intensity grades the burn from a thin lick to a torching trail (the old
+	// binary burned at full blast or not at all), an engine knocked out streams
+	// dark machinery smoke even before anything burns, and a holed tank streams
+	// the same pale fuel mist the ownship shows. This is the feedback loop the
+	// player's gunnery learns from — what a burst DID, readable at a glance.
+	burn_trail(bandit.pos,Math.max(harm.fire?harm.fire[0]:0,harm.fire?harm.fire[1]:0,harm.burning?0.7:0,harm.wing*0.9),bandit.velx,bandit.vely,bandit.velz);
+	if((harm.thrust||0)>0.06) engine_smoke(bandit.pos,harm.thrust,bandit.velx,bandit.vely,bandit.velz);
+	if((harm.leak||0)>0.04) leak_trail(bandit.pos,Math.min(1,harm.leak*3),bandit.velx,bandit.vely,bandit.velz);
 }
 let rig_sweep=0;   // dev calibration (Shift+A): 0 = off, n = sweep the nth rig entry of the ownship
 let stab_cycle=0;   // dev calibration (Shift+E): adds n×90° about the stab hinge so the user can identify the correct orientation
@@ -5350,7 +5402,7 @@ function set_view(v){
 	cfg.view=v;
 	cockpit_hidden();
 }
-function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow=cfg.shadows;
+function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow=cfg.shadows; effects_limits();
 	const setc=g=>g.traverse(c=>{ if(c.isMesh&&(c.userData.body||c.userData.modelmesh))c.castShadow=cfg.shadows; }); setc(ownship.group); setc(bandit.group); }
 
 // ============================================================================ multiplayer
@@ -5595,6 +5647,7 @@ function net_frame(dt){
 		else audio_remote_drop("r"+slot);
 		if(pose.alive){ const burning=Math.max(pose.burn?pose.burn[0]:0, pose.burn?pose.burn[1]:0);   // #78: the damage you inflicted shows on their jet
 			if(burning>0) burn_trail(st.pos,burning,st.velx,st.vely,st.velz);
+			if((pose.thrust||0)>0.06) engine_smoke(st.pos,pose.thrust,st.velx,st.vely,st.velz);   // harmless no-op on wires that do not carry it
 			if((pose.leak||0)>0.1) leak_trail(st.pos,pose.leak,st.velx,st.vely,st.velz); } }
 	for(const slot of [...remotes.keys()]) if(!seen.has(slot)) remote_drop(slot);
 	update_darts(dt); }

@@ -446,8 +446,8 @@ export function battle_blast(target: number, point: { x: number; y: number; z: n
 // battle_progress runs the damage cascade one frame for the ownship and
 // every hulk; the returned view is valid until the next call. Layout:
 // 0-5 ownship (fire L, fire R, burning, killed, mask, leak);
-// 6+i*8.. per hulk (fire L, fire R, burning, killed, mask, thrust loss,
-// wing loss, element total).
+// 6+i*9.. per hulk (fire L, fire R, burning, killed, mask, thrust loss,
+// wing loss, element total, leak) — #244 widened the stride for the leak.
 export function battle_progress(throttle: number, tick: number, reset: boolean, secure: number): Float64Array {
   if (!core) return battle_output
   battle_input[0] = throttle

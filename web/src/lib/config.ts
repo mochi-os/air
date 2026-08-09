@@ -56,7 +56,7 @@ export interface MissionConfig {
   pilot: string // this player's stable token: identifies the owner of a match offer across reconnects (#77)
   cat: number // carrier-start catapult 1-4
   tod: 'day' | 'night'
-  clouds: 'none' | 'cumulus' | 'high_stratus' | 'low_stratus'
+  clouds: 'none' | 'cumulus' | 'high_stratus' | 'mid_stratus' | 'low_stratus'
   render_scale: number
   exterior_detail: number
   ocean_segments: number
@@ -92,7 +92,7 @@ export function seedStart(config: MissionConfig, start: MissionConfig['start']):
     seeded.fuel = 4500
   } else if (start === 'case2') {
     seeded.tod = 'day'
-    seeded.clouds = 'low_stratus'
+    seeded.clouds = 'mid_stratus' // the Case II band (1,000-3,000 ft); low_stratus is a Case III ceiling and the two cases shared it until 2026-08-09
     seeded.fuel = 4500
   } else if (start === 'case3') {
     seeded.tod = 'night'
