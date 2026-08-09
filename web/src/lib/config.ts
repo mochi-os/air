@@ -65,6 +65,7 @@ export interface MissionConfig {
   shadows: boolean
   afterburner: boolean
   tracers: boolean
+  effects_quality: number // 0..3: particle density/detail; presets keep effects inside their GPU budget
   stores: Record<string, StationSlot> // per-station loadout (#17), station number -> slot; replaced the missiles boolean (legacy saves migrate in the store's load merge)
   sound: boolean
   volume: Record<string, number> // Sound-tab mixer, percent per bus: master, engine, aircraft, weapons, environment, alerts
@@ -130,6 +131,7 @@ export const DEFAULT_CONFIG: MissionConfig = {
   shadows: false,
   afterburner: true,
   tracers: true,
+  effects_quality: 2,
   stores: PRESETS.fox2, // new players fly the Fox 2 fighter preset — symmetric against the armed bot standard (#17, decided 2026-08-05)
   sound: true,
   volume: { master: 80, engine: 100, aircraft: 100, weapons: 100, environment: 100, alerts: 100 },
@@ -147,12 +149,12 @@ export type GraphicsPreset = 'low' | 'med' | 'high' | 'ultra'
 // MissionConfig stays a MissionConfig.
 type GraphicsPatch = Pick<
   MissionConfig,
-  'render_scale' | 'ocean_segments' | 'exterior_detail' | 'shadows'
+  'render_scale' | 'ocean_segments' | 'exterior_detail' | 'effects_quality' | 'shadows'
 >
 
 export const GRAPHICS_PRESETS: Record<GraphicsPreset, GraphicsPatch> = {
-  low: { render_scale: 0.6, ocean_segments: 96, exterior_detail: 1, shadows: false },
-  med: { render_scale: 1.0, ocean_segments: 192, exterior_detail: 3, shadows: false },
-  high: { render_scale: 1.0, ocean_segments: 320, exterior_detail: 4, shadows: true },
-  ultra: { render_scale: 1.5, ocean_segments: 512, exterior_detail: 5, shadows: true },
+  low: { render_scale: 0.6, ocean_segments: 96, exterior_detail: 1, effects_quality: 0, shadows: false },
+  med: { render_scale: 1.0, ocean_segments: 192, exterior_detail: 3, effects_quality: 1, shadows: false },
+  high: { render_scale: 1.0, ocean_segments: 320, exterior_detail: 4, effects_quality: 2, shadows: true },
+  ultra: { render_scale: 1.5, ocean_segments: 512, exterior_detail: 5, effects_quality: 3, shadows: true },
 }
