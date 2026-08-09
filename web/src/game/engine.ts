@@ -2176,9 +2176,9 @@ function flush_points(p,pts){ const pos=pts.geometry.attributes.position.array,c
 			// Smoke life (#239, from the gun-camera study): the puff GROWS as it
 			// disperses, fades by alpha (fast in, slow out), and its colour
 			// PALES with age toward a neutral haze — soot is darkest at birth.
-			const left=Math.max(0,p.life[i]/p.ttl[i]), age=1-left;
-			grow[n]=p.sz[i]+p.gr[i]*age*p.ttl[i];
-			fade[n]=Math.min(1,age*7)*Math.pow(left,0.6);
+			const left=Math.max(0,p.life[i]/p.ttl[i]), age=1-left, elapsed=age*p.ttl[i];
+			grow[n]=p.sz[i]+p.gr[i]*elapsed;
+			fade[n]=Math.min(1,elapsed/0.12)*Math.pow(left,0.6);   // fade-in on WALL time: a fraction-of-ttl ramp left long-lived soot invisible for its first half second — the part nearest the jet
 			const t=age*0.75; col[o]=p.r[i]+(0.62-p.r[i])*t; col[o+1]=p.g[i]+(0.62-p.g[i])*t; col[o+2]=p.b[i]+(0.64-p.b[i])*t;
 		} else {
 			const f=Math.max(0,p.life[i]/p.ttl[i]); col[o]=p.r[i]*f;col[o+1]=p.g[i]*f;col[o+2]=p.b[i]*f; }
@@ -3615,10 +3615,12 @@ function burn_trail(pos,intensity,vx,_vy,vz){ if(intensity<=0.02) return;
 		smoke.vx[k]=(Math.random()-0.5)*4;smoke.vy[k]=4+Math.random()*6;smoke.vz[k]=(Math.random()-0.5)*4;
 		const flame=c===0&&Math.random()<0.3;
 		if(flame){ smoke.ttl[k]=smoke.life[k]=0.5+Math.random()*0.3; smoke.sz[k]=0.26; smoke.gr[k]=0.5;   // the fire itself: brief, small, bright
+			smoke.vy[k]=0.5+Math.random()*2;   // flame HUGS the path — the jet's own motion strings the tongues into the trail's burning head
 			smoke.r[k]=2.2;smoke.g[k]=0.9;smoke.b[k]=0.25; }
 		else { smoke.ttl[k]=smoke.life[k]=3.2+Math.random()*2.2; smoke.sz[k]=0.30+Math.random()*0.15; smoke.gr[k]=0.75;   // soot: long-lived, strong growth — the expanding ribbon
-			const warm=Math.min(1,intensity);   // fire-lit at birth, near-black when the fire is small; the flush ramp pales it with age
-			smoke.r[k]=0.10+0.26*warm;smoke.g[k]=0.10+0.10*warm;smoke.b[k]=0.10; } } } }
+			smoke.vy[k]=2+Math.random()*3;
+			const warm=Math.min(1,intensity);   // fire-lit at birth, near-black when the fire is small; the flush ramp pales it with age. Mid-grey floor: true 0.10 soot disappeared against the sea
+			smoke.r[k]=0.16+0.26*warm;smoke.g[k]=0.15+0.10*warm;smoke.b[k]=0.15; } } } }
 // leak_trail: white fuel mist behind a holed tank.
 function leak_trail(pos,rate,vx,_vy,vz){ if(Math.random()>Math.min(1,rate)) return; const k=pool_spawn(smoke); if(k<0) return;
 	smoke.px[k]=pos.x-((vx||0)*0.06);smoke.py[k]=pos.y-0.4;smoke.pz[k]=pos.z-((vz||0)*0.06);
@@ -3651,8 +3653,8 @@ function hit_sparks(x,y,z,vx,vy,vz){ _spark_count++;
 		smoke.px[k]=x+(Math.random()-0.5)*1.2; smoke.py[k]=y+(Math.random()-0.5)*1.0; smoke.pz[k]=z+(Math.random()-0.5)*1.2;
 		smoke.vx[k]=(vx||0)*0.9+(Math.random()-0.5)*5; smoke.vy[k]=(vy||0)*0.9+(Math.random()-0.5)*5; smoke.vz[k]=(vz||0)*0.9+(Math.random()-0.5)*5;
 		smoke.ttl[k]=smoke.life[k]=i===0?0.30:(0.8+Math.random()*0.5);
-		smoke.sz[k]=i===0?0.34:0.24; smoke.gr[k]=1.5;   // flashes into being, swells fast, gone as a pale wisp
-		if(i===0){ smoke.r[k]=1.35;smoke.g[k]=1.15;smoke.b[k]=0.85; }   // the incandescent body, warm white-cream
+		smoke.sz[k]=i===0?0.15:0.10; smoke.gr[k]=i===0?0.5:0.25;   // a metre or two of cloud, swelling as it thins (first cut at 0.34 swallowed the whole jet)
+		if(i===0){ smoke.r[k]=1.25;smoke.g[k]=1.18;smoke.b[k]=1.02; }   // the incandescent body, warm white-cream
 		else { smoke.r[k]=0.82;smoke.g[k]=0.80;smoke.b[k]=0.76; } }
 	for(let i=0;i<3;i++){ const k=pool_spawn(strikes); if(k<0) break;   // the tight white-hot core at the point of impact
 		const a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=0.6+Math.random()*1.6;
