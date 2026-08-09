@@ -7,7 +7,8 @@ import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { Check, History, LogIn, Pencil, Play, RotateCcw, Send, Settings, TriangleAlert, Users, X } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
-import { getErrorMessage } from '@mochi/web'
+import { getErrorMessage, useShellStorage } from '@mochi/web'
+import { diagnose } from '../lib/graphics'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
 import {
@@ -1756,6 +1757,17 @@ export function MissionSetup({
   // is you against each other — created, offered, joined, and never paused by
   // one participant. The vocabulary is load-bearing, not decorative.
   const [dialog, setDialog] = useState<string | null>(null)
+  const { t } = useLingui()
+  // Graphics warnings (#55): one banner, three diagnoses, one visible at a
+  // time — each names its culprit so the player knows whether to change
+  // browser, flip an acceleration setting, or change machine. The capability
+  // verdicts are probed here at mount; the performance one is written by the
+  // engine's frame-time governor after a sustained pinned-at-the-floor
+  // flight, per DEVICE (shell storage, never the cross-device config).
+  const [verdict] = useState(() => diagnose())
+  const [strained] = useShellStorage('air.performance', 0)
+  const [dismissed, setDismissed] = useShellStorage('air.graphics', '')
+  const alert = verdict ?? (strained ? 'performance' : null)
   const fromFlight = useRef(false)
   useEffect(() => {
     if (settingsNonce) {
@@ -1798,6 +1810,23 @@ export function MissionSetup({
       <div className='w-full max-w-md'>
         {/* jsx-text-ok: the game's name, verbatim in every locale */}
         <h1 className='mb-8 text-4xl font-semibold tracking-tight'>Air</h1>
+        {alert && dismissed !== alert && (
+          <div className='mb-4 flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-600'>
+            <TriangleAlert className='mt-0.5 size-4 shrink-0' />
+            <div className='flex-1'>
+              {alert === 'webgl2' ? (
+                <Trans>This browser does not support WebGL 2, so the game cannot run — try a different browser.</Trans>
+              ) : alert === 'software' ? (
+                <Trans>Hardware graphics acceleration is off — check browser settings or graphics drivers.</Trans>
+              ) : (
+                <Trans>This machine may be too slow for smooth flight.</Trans>
+              )}
+            </div>
+            <Button type='button' variant='ghost' size='icon' className='size-6 shrink-0' aria-label={t`Dismiss`} onClick={() => setDismissed(alert)}>
+              <X className='size-4' />
+            </Button>
+          </div>
+        )}
         <div className='flex flex-col gap-2'>
           {gameInProgress ? (
             <>

@@ -163,24 +163,34 @@ export function GameCanvas({
       const descriptor = HUD_MESSAGES[text]
       return descriptor ? i18nRef.current._(descriptor) : text
     }
-    const game = startGame({
-      stage: stageRef.current!,
-      hud: hudRef.current!,
-      map: mapRef.current!,
-      help: helpRef.current!,
-      framerate: framerateRef.current!,
-      config,
-      join,
-      onExit,
-      onConfig: (partial: Record<string, number | string>) => onConfigRef.current?.(partial),
-      onMenu: () => setMenu((open) => !open), // Esc toggles the popup (#84)
-      onOver: (result: { fate: string; struck: number; seconds: number }) => {
-        setOver(result)
-        setMenu(true)
-      },
-      onChat: (scope) => setChat(scope),
-      translate,
-    })
+    let game: GameHandle
+    try {
+      game = startGame({
+        stage: stageRef.current!,
+        hud: hudRef.current!,
+        map: mapRef.current!,
+        help: helpRef.current!,
+        framerate: framerateRef.current!,
+        config,
+        join,
+        onExit,
+        onConfig: (partial: Record<string, number | string>) => onConfigRef.current?.(partial),
+        onMenu: () => setMenu((open) => !open), // Esc toggles the popup (#84)
+        onOver: (result: { fate: string; struck: number; seconds: number }) => {
+          setOver(result)
+          setMenu(true)
+        },
+        onChat: (scope) => setChat(scope),
+        translate,
+      })
+    } catch (error) {
+      // The engine constructor throws where WebGL 2 is missing (#55): return
+      // to the menu, whose graphics banner names the culprit, instead of
+      // crashing into the route's generic error page.
+      console.error('engine failed to start', error)
+      onExit?.()
+      return
+    }
     handleRef.current = game
     onReady?.(game)
     return () => game.stop()
