@@ -1494,6 +1494,7 @@ function MissionPanel({
     { value: 'none', label: <Trans>None</Trans> },
     { value: 'cumulus', label: <Trans>Cumulus</Trans> },
     { value: 'high_stratus', label: <Trans>High stratus</Trans> },
+    { value: 'mid_stratus', label: <Trans>Mid stratus</Trans> },
     { value: 'low_stratus', label: <Trans>Low stratus</Trans> },
   ]}
 />

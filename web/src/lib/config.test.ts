@@ -20,7 +20,7 @@ describe('seedStart', () => {
   })
   it('seeds the case weather alongside the fuel', () => {
     expect(seedStart(DEFAULT_CONFIG, 'case1')).toMatchObject({ tod: 'day', clouds: 'none' })
-    expect(seedStart(DEFAULT_CONFIG, 'case2')).toMatchObject({ tod: 'day', clouds: 'low_stratus' })
+    expect(seedStart(DEFAULT_CONFIG, 'case2')).toMatchObject({ tod: 'day', clouds: 'mid_stratus' }) // the cases must NOT share a deck: 500 ft is a Case III ceiling
     expect(seedStart(DEFAULT_CONFIG, 'case3')).toMatchObject({ tod: 'night', clouds: 'low_stratus' })
   })
   it('leaves weather alone for the launch starts', () => {

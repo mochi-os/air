@@ -62,7 +62,7 @@ function deviations(parameters: Record<string, unknown> | undefined): string[] {
   if (!parameters) return out
   if (parameters.missiles === false) out.push('guns')
   if (parameters.tod === 'night') out.push('night')
-  if (parameters.clouds === 'cumulus' || parameters.clouds === 'high_stratus' || parameters.clouds === 'low_stratus') out.push(String(parameters.clouds))
+  if (parameters.clouds === 'cumulus' || parameters.clouds === 'high_stratus' || parameters.clouds === 'mid_stratus' || parameters.clouds === 'low_stratus') out.push(String(parameters.clouds))
   const cheats = (parameters.cheats ?? {}) as Record<string, unknown>
   for (const key of ['invulnerable', 'ammunition', 'fuel']) if (cheats[key] === true) out.push('cheat.' + key)
   return out
@@ -73,6 +73,7 @@ const DEVIATIONS: Record<string, React.ReactNode> = {
   night: <Trans>Night</Trans>,
   cumulus: <Trans>Cumulus</Trans>,
   high_stratus: <Trans>High stratus</Trans>,
+  mid_stratus: <Trans>Mid stratus</Trans>,
   low_stratus: <Trans>Low stratus</Trans>,
   'cheat.invulnerable': <Trans>Invulnerable</Trans>,
   'cheat.ammunition': <Trans>Unlimited ammunition</Trans>,
@@ -346,6 +347,7 @@ export function Multiplayer({
                 <Option group={group + 'clouds'} value='none' label={<Trans>Clear</Trans>} />
                 <Option group={group + 'clouds'} value='cumulus' label={<Trans>Cumulus</Trans>} />
                 <Option group={group + 'clouds'} value='high_stratus' label={<Trans>High stratus</Trans>} />
+                <Option group={group + 'clouds'} value='mid_stratus' label={<Trans>Mid stratus</Trans>} />
                 <Option group={group + 'clouds'} value='low_stratus' label={<Trans>Low stratus</Trans>} />
               </RadioGroup>
             </div>
