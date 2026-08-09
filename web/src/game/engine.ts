@@ -3416,7 +3416,23 @@ function read_input(dt){
 	// Hold ~0.5 s for full deflection.
 	const shape=(current,target)=>{ const toward=Math.abs(target)>Math.abs(current)&&target*current>=0;
 		const R=(toward?2.0:6.0)*dt; return current+THREE.MathUtils.clamp(target-current,-R,R); };
-	key_axes.pitch=shape(key_axes.pitch,tp);   // keyboard stays live alongside the stick — larger magnitude wins per axis
+	// Keyboard pitch is a G-COMMAND (#242). The core's UA law already maps
+	// stick deflection to a load-factor demand (the bot's compose exploits the
+	// same linearity), so shaping the STICK trajectory IS shaping the g
+	// trajectory — no second feedback loop wrapped around the FCS to fight it.
+	// The attack ramp above makes a held key a smooth g ramp and a tap a small
+	// g increment; what it could never fix was RELEASE: letting go at a hard
+	// pull recentred the stick in ~170 ms, a step no arm would command, and
+	// the airframe answered with the pitch bobble the pilot then pumped W/S
+	// against ("extreme oscillations when releasing the s key"). Released
+	// pitch now UNLOADS: an exponential decay (tau ~0.33 s, floored so the
+	// tail does not linger) that walks the g back to level the way a pilot
+	// eases a pull. Only when BOTH keys are up — an actively held opposite
+	// key keeps the fast rate, so push-after-pull stays crisp. Roll and yaw
+	// keep the fast recentre: stopping a roll promptly is what you want.
+	if(tp===0&&key_axes.pitch!==0){ const R=Math.max(1.2,Math.abs(key_axes.pitch)*3.0)*dt;
+		key_axes.pitch=key_axes.pitch-THREE.MathUtils.clamp(key_axes.pitch,-R,R); }
+	else key_axes.pitch=shape(key_axes.pitch,tp);   // keyboard stays live alongside the stick — larger magnitude wins per axis
 	key_axes.roll=shape(key_axes.roll,tr);
 	key_axes.yaw=shape(key_axes.yaw,ty);
 	let pp=0, pr=0, py=0;
@@ -3635,6 +3651,7 @@ let hud_pa=false;   // the virtual flap switch's HUD mirror (see the landing-sym
 // leaves the line of flashes the pilot actually sees.
 let _spark_count=0;   // dev: how many strike flashes have been spawned
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
+if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0 });   // dev (#242): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle
 if(DEV_MODE) (globalThis as any).dev_close=(m)=>{ const d=+m||200;   // dev (?developer=1 only): park the bandit dead ahead at d metres — gunnery and hit-flash checks need a target in range, and flying onto one by hand is not a test
 	bandit.pos.copy(ownship.pos).addScaledVector(ownship.fwd,d); bandit.fwd.copy(ownship.fwd); bandit.speed=ownship.speed;
 	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
