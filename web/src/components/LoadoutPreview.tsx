@@ -113,7 +113,12 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
     let gone = false
     const width = host.clientWidth || 480
     const height = 130
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true })
+    let renderer: THREE.WebGLRenderer
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true })
+    } catch {
+      return // no WebGL 2 (#55): the setup dialog stands without its preview; the menu banner explains
+    }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
     renderer.setSize(width, height)
     renderer.domElement.style.width = '100%'

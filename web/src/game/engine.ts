@@ -20,6 +20,8 @@ import { flight_load, flight_ready, flight_failure, flight_init, flight_set, fli
 import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release } from './stores'
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
 import { flight_catalog } from './flight'
+import { diagnose } from '../lib/graphics'
+import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -172,6 +174,7 @@ const col_sundisc=new THREE.Color(0xfff3da), col_deep=new THREE.Color(0x0a2a3a),
 
 // ============================================================================ renderer/scene
 const canvas = stage;
+const graphics_verdict = diagnose();   // #55: null = real acceleration; the governor's machine verdict below only counts then (a software-rendered run says nothing about the GPU that never got to fight)
 const renderer = new THREE.WebGLRenderer({ canvas, antialias:!MSAA_OFF, powerPreference:"high-performance" });
 renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
@@ -2128,10 +2131,19 @@ function glow_texture(soft){ const c=document.createElement("canvas"); c.width=c
 	if(soft){ g.addColorStop(0,"rgba(180,180,180,0.5)"); g.addColorStop(0.5,"rgba(150,150,150,0.18)"); g.addColorStop(1,"rgba(150,150,150,0)"); }
 	else { g.addColorStop(0,"rgba(255,255,255,1)"); g.addColorStop(0.3,"rgba(255,240,200,0.9)"); g.addColorStop(1,"rgba(255,200,120,0)"); }
 	x.fillStyle=g; x.fillRect(0,0,64,64); return new THREE.CanvasTexture(c); }
-function make_points(max,size,additive,tex){ const geo=new THREE.BufferGeometry();
+function make_points(max,size,additive,tex,sized){ const geo=new THREE.BufferGeometry();
 	geo.setAttribute("position",new THREE.BufferAttribute(new Float32Array(max*3),3)); geo.setAttribute("color",new THREE.BufferAttribute(new Float32Array(max*3),3));
 	const mat=new THREE.PointsMaterial({size,map:tex,vertexColors:true,transparent:true,blending:additive?THREE.AdditiveBlending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:true,fog:!additive});
-	const pts=new THREE.Points(geo,mat); pts.frustumCulled=false; scene.add(pts); return pts; }
+	// sized (#239): per-particle scale and alpha, injected into the points
+	// shader. Smoke needs both — real smoke GROWS as it disperses and fades by
+	// TRANSPARENCY, where the stock colour-fade dimmed every puff to black
+	// under normal blending (smoke that darkens as it dies is backwards: soot
+	// is darkest at birth and pales as it thins).
+	if(sized){ geo.setAttribute("grow",new THREE.BufferAttribute(new Float32Array(max),1)); geo.setAttribute("fade",new THREE.BufferAttribute(new Float32Array(max),1));
+		mat.onBeforeCompile=(sh)=>{
+			sh.vertexShader="attribute float grow;\nattribute float fade;\nvarying float vFade;\n"+sh.vertexShader.replace("gl_PointSize = size;","gl_PointSize = size * grow;\n\tvFade = fade;");
+			sh.fragmentShader="varying float vFade;\n"+sh.fragmentShader.replace("vec4 diffuseColor = vec4( diffuse, opacity );","vec4 diffuseColor = vec4( diffuse, opacity * vFade );"); }; }
+	const pts=new THREE.Points(geo,mat); pts.frustumCulled=false; pts.userData.sized=!!sized; scene.add(pts); return pts; }
 const glow=glow_texture(false), soft=glow_texture(true);
 function light_dot_texture(){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d"); const g=x.createRadialGradient(32,32,0,32,32,32);   // crisp light point (solid core, quick falloff) — no big halo, unlike the soft `glow`
 	g.addColorStop(0,"rgba(255,255,255,1)"); g.addColorStop(0.36,"rgba(255,255,255,1)"); g.addColorStop(0.6,"rgba(255,255,255,0.3)"); g.addColorStop(1,"rgba(255,255,255,0)");   // solid opaque core → bright + crisp
@@ -2141,11 +2153,14 @@ function windsock_texture(){ const c=document.createElement("canvas"); c.width=8
 	const cols=["#e8531a","#f2f2f2"]; for(let i=0;i<5;i++){ x.fillStyle=cols[i%2]; x.fillRect(0,i*32,8,32); }
 	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; }
 function pool(max){ return { px:new Float32Array(max),py:new Float32Array(max),pz:new Float32Array(max), vx:new Float32Array(max),vy:new Float32Array(max),vz:new Float32Array(max),
-	life:new Float32Array(max),ttl:new Float32Array(max), r:new Float32Array(max),g:new Float32Array(max),b:new Float32Array(max), active:new Uint8Array(max), max, next:0 }; }
+	life:new Float32Array(max),ttl:new Float32Array(max), r:new Float32Array(max),g:new Float32Array(max),b:new Float32Array(max),
+	sz:new Float32Array(max),gr:new Float32Array(max),   // sized pools only (#239): scale at birth, growth per second of age — every smoke spawn must set sz or the puff renders at scale zero
+	active:new Uint8Array(max), max, next:0 }; }
 function pool_spawn(p){ for(let i=0;i<p.max;i++){ const k=(p.next+i)%p.max; if(!p.active[k]){ p.next=(k+1)%p.max; p.active[k]=1; return k; } } return -1; }
-const TR_MAX=4000,FL_MAX=2500,SM_MAX=3000,ST_MAX=1200;
-const tracers=pool(TR_MAX),flares=pool(FL_MAX),smoke=pool(SM_MAX),strikes=pool(ST_MAX);
-const tr_pts=make_points(TR_MAX,4,false,glow), fl_pts=make_points(FL_MAX,26,true,glow), sm_pts=make_points(SM_MAX,70,false,soft);   // tracers: small + NORMAL blend (additive blew the colour out to white against bright sky)
+const TR_MAX=4000,FL_MAX=2500,SM_MAX=3000,ST_MAX=1200,DB_MAX=260;
+const tracers=pool(TR_MAX),flares=pool(FL_MAX),smoke=pool(SM_MAX),strikes=pool(ST_MAX),debris=pool(DB_MAX);
+const tr_pts=make_points(TR_MAX,4,false,glow), fl_pts=make_points(FL_MAX,26,true,glow), sm_pts=make_points(SM_MAX,70,false,soft,true);   // tracers: small + NORMAL blend (additive blew the colour out to white against bright sky); smoke is SIZED (per-particle growth + alpha fade, #239)
+const db_pts=make_points(DB_MAX,5,false,glow);   // debris (#239): dark shed panels and wreck chunks — normal-blended dots on ballistic arcs, decoupled from the aircraft's path (the gun-camera signature of coming apart)
 // Strike flashes get their OWN pool, and it is ADDITIVE. Borrowing the tracer
 // pool inherited that pool's normal blending, which is right for a tracer (a
 // lit round, read against bright sky) and wrong for an impact: a flash is
@@ -2155,9 +2170,22 @@ const tr_pts=make_points(TR_MAX,4,false,glow), fl_pts=make_points(FL_MAX,26,true
 // so switching tracers off silently switched hit flashes off with them.
 const strike_pts=make_points(ST_MAX,9,true,glow);
 function flush_points(p,pts){ const pos=pts.geometry.attributes.position.array,col=pts.geometry.attributes.color.array; let n=0;
+	const sized=pts.userData.sized, grow=sized?pts.geometry.attributes.grow.array:null, fade=sized?pts.geometry.attributes.fade.array:null;
 	for(let i=0;i<p.max;i++){ if(!p.active[i]) continue; const o=n*3; pos[o]=p.px[i];pos[o+1]=p.py[i];pos[o+2]=p.pz[i];
-		const f=Math.max(0,p.life[i]/p.ttl[i]); col[o]=p.r[i]*f;col[o+1]=p.g[i]*f;col[o+2]=p.b[i]*f; n++; }
-	pts.geometry.setDrawRange(0,n); pts.geometry.attributes.position.needsUpdate=true; pts.geometry.attributes.color.needsUpdate=true; return n; }
+		if(sized){
+			// Smoke life (#239, from the gun-camera study): the puff GROWS as it
+			// disperses, fades by alpha (fast in, slow out), and its colour
+			// PALES with age toward a neutral haze — soot is darkest at birth.
+			const left=Math.max(0,p.life[i]/p.ttl[i]), age=1-left;
+			grow[n]=p.sz[i]+p.gr[i]*age*p.ttl[i];
+			fade[n]=Math.min(1,age*7)*Math.pow(left,0.6);
+			const t=age*0.75; col[o]=p.r[i]+(0.62-p.r[i])*t; col[o+1]=p.g[i]+(0.62-p.g[i])*t; col[o+2]=p.b[i]+(0.64-p.b[i])*t;
+		} else {
+			const f=Math.max(0,p.life[i]/p.ttl[i]); col[o]=p.r[i]*f;col[o+1]=p.g[i]*f;col[o+2]=p.b[i]*f; }
+		n++; }
+	pts.geometry.setDrawRange(0,n); pts.geometry.attributes.position.needsUpdate=true; pts.geometry.attributes.color.needsUpdate=true;
+	if(sized){ pts.geometry.attributes.grow.needsUpdate=true; pts.geometry.attributes.fade.needsUpdate=true; }
+	return n; }
 let _live_particles=0;
 function update_pool_ballistic(p,dt,grav,drag,round){ for(let i=0;i<p.max;i++){ if(!p.active[i]) continue;
 	p.vy[i]-=grav*dt; if(drag){p.vx[i]*=drag;p.vy[i]*=drag;p.vz[i]*=drag;}
@@ -2319,7 +2347,8 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active) continue; 
 	m.smoke_acc+=dt; const puff=m.burn>0?0.02:0.08;   // the motor smokes; the coast barely does (reduced-smoke Mk 36)
 	while(m.smoke_acc>puff){ m.smoke_acc-=puff; const k=pool_spawn(smoke); if(k<0) break;
 		smoke.px[k]=m.px-m.vx*0.01;smoke.py[k]=m.py;smoke.pz[k]=m.pz-m.vz*0.01; smoke.vx[k]=(Math.random()-0.5)*6;smoke.vy[k]=(Math.random()-0.5)*6+2;smoke.vz[k]=(Math.random()-0.5)*6;
-		smoke.ttl[k]=smoke.life[k]=2.8; smoke.r[k]=0.7;smoke.g[k]=0.72;smoke.b[k]=0.75; } } }
+		smoke.ttl[k]=smoke.life[k]=2.8; smoke.sz[k]=0.30+Math.random()*0.12; smoke.gr[k]=0.40;   // thin at the motor, swelling downstream (#239)
+		smoke.r[k]=0.7;smoke.g[k]=0.72;smoke.b[k]=0.75; } } }
 
 
 // ============================================================================ flight
@@ -3118,6 +3147,7 @@ function zoom_persist(){   // remember the setting per view, debounced past the 
 		if(cfg[key]!==v){ cfg[key]=v; if(on_config) on_config({ [key]:v }); } },800); }
 let on_config=null;   // engine -> menu config channel (startGame option): partial updates the menu merges and saves
 const _headq=new THREE.Quaternion(), _pitq=new THREE.Quaternion(), _yaxis=new THREE.Vector3(0,1,0), _zaxis=new THREE.Vector3(0,0,1);
+const _vig=new THREE.Vector3(), _vigr=new THREE.Vector3(), _vigu=new THREE.Vector3();   // hit-vignette scratch (#239)
 const CAMFIX=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),-Math.PI/2);   // maps the camera's -Z view axis onto body +X with +Y up   // chase view: orbit around the aircraft; cam_psi = smoothed heading the orbit is referenced to
 let flyby_pos=null, flyby_side=1;          // flypast view: fixed world point the jet flies past, re-seeded ahead as it recedes
 // True while the aircraft is sitting/rolling on the deck or runway (not yet airborne) — gear can't retract then.
@@ -3572,19 +3602,29 @@ function cautions_update(){
 	if(bingo){ bingo_nag+=1/60; if(bingo_nag>=30){ bingo_nag=0; audio_caution(); } } else bingo_nag=0; }
 let law_armed=true;   // radar-altimeter low-altitude warning: one aural per descent through the bug
 let last_out=null;   // the core's latest output words: the HUD caution panel reads damage straight from them
-// burn_trail: flame + black smoke from a burning aircraft, rate by intensity.
+// burn_trail: flame + sooty smoke from a burning aircraft, rate by intensity.
+// The gun-camera rules (#239): one CONNECTED clumped plume, darkest and
+// warmest at the head — the flame interpenetrates the young smoke and tints
+// it from within — paling and swelling as it ages down the ribbon. Clustered
+// sub-puffs give the cauliflower texture a single row of blobs never had.
 function burn_trail(pos,intensity,vx,_vy,vz){ if(intensity<=0.02) return;
-	if(Math.random()<Math.min(1,intensity)){ const k=pool_spawn(smoke); if(k>=0){
-		smoke.px[k]=pos.x-((vx||0)*0.05);smoke.py[k]=pos.y;smoke.pz[k]=pos.z-((vz||0)*0.05);
+	if(Math.random()<Math.min(1,intensity)){
+		const cluster=1+(Math.random()<0.6?1:0);   // usually two offset sub-puffs per emission
+		for(let c=0;c<cluster;c++){ const k=pool_spawn(smoke); if(k<0) break;
+		smoke.px[k]=pos.x-((vx||0)*0.05)+(Math.random()-0.5)*2.4;smoke.py[k]=pos.y+(Math.random()-0.5)*1.6;smoke.pz[k]=pos.z-((vz||0)*0.05)+(Math.random()-0.5)*2.4;
 		smoke.vx[k]=(Math.random()-0.5)*4;smoke.vy[k]=4+Math.random()*6;smoke.vz[k]=(Math.random()-0.5)*4;
-		smoke.ttl[k]=smoke.life[k]=2.2+Math.random()*1.6;
-		const flame=Math.random()<0.3;
-		if(flame){ smoke.r[k]=2.2;smoke.g[k]=0.9;smoke.b[k]=0.25; } else { smoke.r[k]=0.12;smoke.g[k]=0.12;smoke.b[k]=0.13; } } } }
+		const flame=c===0&&Math.random()<0.3;
+		if(flame){ smoke.ttl[k]=smoke.life[k]=0.5+Math.random()*0.3; smoke.sz[k]=0.26; smoke.gr[k]=0.5;   // the fire itself: brief, small, bright
+			smoke.r[k]=2.2;smoke.g[k]=0.9;smoke.b[k]=0.25; }
+		else { smoke.ttl[k]=smoke.life[k]=3.2+Math.random()*2.2; smoke.sz[k]=0.30+Math.random()*0.15; smoke.gr[k]=0.75;   // soot: long-lived, strong growth — the expanding ribbon
+			const warm=Math.min(1,intensity);   // fire-lit at birth, near-black when the fire is small; the flush ramp pales it with age
+			smoke.r[k]=0.10+0.26*warm;smoke.g[k]=0.10+0.10*warm;smoke.b[k]=0.10; } } } }
 // leak_trail: white fuel mist behind a holed tank.
 function leak_trail(pos,rate,vx,_vy,vz){ if(Math.random()>Math.min(1,rate)) return; const k=pool_spawn(smoke); if(k<0) return;
 	smoke.px[k]=pos.x-((vx||0)*0.06);smoke.py[k]=pos.y-0.4;smoke.pz[k]=pos.z-((vz||0)*0.06);
 	smoke.vx[k]=(Math.random()-0.5)*3;smoke.vy[k]=(Math.random()-0.5)*3;smoke.vz[k]=(Math.random()-0.5)*3;
-	smoke.ttl[k]=smoke.life[k]=1.1+Math.random()*0.7; smoke.r[k]=0.95;smoke.g[k]=0.96;smoke.b[k]=0.98; }
+	smoke.ttl[k]=smoke.life[k]=1.4+Math.random()*0.8; smoke.sz[k]=0.26+Math.random()*0.10; smoke.gr[k]=0.55;   // fuel vapour: pale, fast-swelling, quick to thin (#239)
+	smoke.r[k]=0.95;smoke.g[k]=0.96;smoke.b[k]=0.98; }
 let hud_pa=false;   // the virtual flap switch's HUD mirror (see the landing-symbology gate)
 // hit_sparks: the flash where a round strikes an airframe (#217). Real cannon
 // strikes are a brief white-hot flash with sparks thrown along the round's
@@ -3597,34 +3637,64 @@ if(DEV_MODE) (globalThis as any).dev_close=(m)=>{ const d=+m||200;   // dev (?de
 	bandit.pos.copy(ownship.pos).addScaledVector(ownship.fwd,d); bandit.fwd.copy(ownship.fwd); bandit.speed=ownship.speed;
 	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
 function hit_sparks(x,y,z,vx,vy,vz){ _spark_count++;
-	// Sized by TRIAL, three times over. The smoke pool (particle size 70)
-	// swallowed the whole aircraft; the tracer pool (size 4, normal-blended)
-	// could not be seen at all in a real fight; count and dwell alone did not
-	// rescue it, because the problem was never the number of particles. A
-	// normal-blended flash the same colour and size as the tracer that caused
-	// it does not read as an impact — it reads as more tracer. So the flash now
-	// has its own ADDITIVE pool at a middle size: emissive, so it brightens
-	// whatever it lands on, which is what makes a strike on a grey airframe
-	// legible where a subtractive smudge was not.
-	for(let i=0;i<22;i++){ const k=pool_spawn(strikes); if(k<0) break;
-		const core=i<9;   // a tight hot core, then sparks thrown off it
-		const a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=core?(0.6+Math.random()*1.6):(9+Math.random()*20);
+	// Re-read against real gun-camera frames (#239, the 3 June 1967 F-105 on a
+	// MiG-17 in colour): 20 mm HEI lands as a SOFT VOLUMETRIC FLASH CLOUD —
+	// warm white-cream, a metre or two across, cauliflower edges, hugging the
+	// skin — because each round is a small high-explosive detonation, not a
+	// spark shower. So the LEAD is now a burst-puff in the smoke pool; the
+	// additive hot core stays (the earlier trial, #217, proved additive is
+	// what reads over a grey airframe) but trimmed, its sparks thrown as
+	// short collinear STREAKS (the API garnish of the WWII footage). Heavy
+	// walking bursts occasionally shed a dark tumbling flake — the panel
+	// visibly leaving the MiG's wing in the same frame.
+	for(let i=0;i<3;i++){ const k=pool_spawn(smoke); if(k<0) break;   // the HEI cloud: one bright body, two wisps
+		smoke.px[k]=x+(Math.random()-0.5)*1.2; smoke.py[k]=y+(Math.random()-0.5)*1.0; smoke.pz[k]=z+(Math.random()-0.5)*1.2;
+		smoke.vx[k]=(vx||0)*0.9+(Math.random()-0.5)*5; smoke.vy[k]=(vy||0)*0.9+(Math.random()-0.5)*5; smoke.vz[k]=(vz||0)*0.9+(Math.random()-0.5)*5;
+		smoke.ttl[k]=smoke.life[k]=i===0?0.30:(0.8+Math.random()*0.5);
+		smoke.sz[k]=i===0?0.34:0.24; smoke.gr[k]=1.5;   // flashes into being, swells fast, gone as a pale wisp
+		if(i===0){ smoke.r[k]=1.35;smoke.g[k]=1.15;smoke.b[k]=0.85; }   // the incandescent body, warm white-cream
+		else { smoke.r[k]=0.82;smoke.g[k]=0.80;smoke.b[k]=0.76; } }
+	for(let i=0;i<3;i++){ const k=pool_spawn(strikes); if(k<0) break;   // the tight white-hot core at the point of impact
+		const a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=0.6+Math.random()*1.6;
 		strikes.px[k]=x+(Math.random()-0.5)*0.5; strikes.py[k]=y+(Math.random()-0.5)*0.5; strikes.pz[k]=z+(Math.random()-0.5)*0.5;
-		// Carry the TARGET's velocity: sparks are shed BY the airframe, so they
-		// leave at its speed plus the ejecta. Spawned at rest in world space they
-		// hung where the round struck while the jet flew on at ~220 m/s, so every
-		// flash trailed tens of metres behind the aircraft that produced it.
 		strikes.vx[k]=(vx||0)+Math.cos(a)*Math.cos(e)*sp; strikes.vy[k]=(vy||0)+Math.sin(e)*sp*0.6+1.5; strikes.vz[k]=(vz||0)+Math.sin(a)*Math.cos(e)*sp;
-		strikes.ttl[k]=strikes.life[k]=core?(0.16+Math.random()*0.10):(0.22+Math.random()*0.20);
-		if(core){ strikes.r[k]=1.0; strikes.g[k]=0.97; strikes.b[k]=0.88; }   // white-hot at the point of impact
-		else { strikes.r[k]=1.0; strikes.g[k]=0.5+Math.random()*0.3; strikes.b[k]=0.10; } } }   // amber sparks thrown off it
+		strikes.ttl[k]=strikes.life[k]=0.14+Math.random()*0.08;
+		strikes.r[k]=1.0; strikes.g[k]=0.97; strikes.b[k]=0.88; }
+	// Carry the TARGET's velocity throughout: ejecta is shed BY the airframe,
+	// so it leaves at the jet's speed plus its own. Spawned at rest in world
+	// space it hung where the round struck while the jet flew on at ~220 m/s.
+	for(let d=0;d<3;d++){   // streaked sparks: three directions, three collinear particles each — a line, not a dot
+		const a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=11+Math.random()*16;
+		const ux=Math.cos(a)*Math.cos(e), uy=Math.sin(e)*0.6, uz=Math.sin(a)*Math.cos(e);
+		for(let j=0;j<3;j++){ const k=pool_spawn(strikes); if(k<0) break;
+			strikes.px[k]=x+ux*j*0.9; strikes.py[k]=y+uy*j*0.9; strikes.pz[k]=z+uz*j*0.9;
+			strikes.vx[k]=(vx||0)+ux*sp; strikes.vy[k]=(vy||0)+uy*sp+1.5; strikes.vz[k]=(vz||0)+uz*sp;
+			strikes.ttl[k]=strikes.life[k]=0.16+j*0.05+Math.random()*0.08;
+			strikes.r[k]=1.0; strikes.g[k]=0.5+Math.random()*0.3; strikes.b[k]=0.10; } }
+	if(Math.random()<0.15){ const k=pool_spawn(debris); if(k>=0){   // roughly one flake per walked burst
+		debris.px[k]=x; debris.py[k]=y; debris.pz[k]=z;
+		debris.vx[k]=(vx||0)*0.8+(Math.random()-0.5)*14; debris.vy[k]=(vy||0)*0.8+2+Math.random()*6; debris.vz[k]=(vz||0)*0.8+(Math.random()-0.5)*14;
+		debris.ttl[k]=debris.life[k]=2.5+Math.random()*2;
+		debris.r[k]=0.16;debris.g[k]=0.16;debris.b[k]=0.17; } } }
 function explosion_at(x,y,z){
-	audio_explosion(Math.hypot(x-ownship.pos.x,y-ownship.pos.y,z-ownship.pos.z)); for(let i=0;i<64;i++){ const k=pool_spawn(smoke); if(k<0) break;
-	const fire=i<28, a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=fire?(9+Math.random()*40):(3+Math.random()*15);
+	audio_explosion(Math.hypot(x-ownship.pos.x,y-ownship.pos.y,z-ownship.pos.z));
+	// Two stages (#239): a fast-swelling fireball that soots into a slower,
+	// longer-lived dark cloud — fewer particles than the old 64, because each
+	// one now GROWS instead of holding its spawn size — plus shed wreckage on
+	// its own ballistic arcs drawing micro-trails as it falls.
+	for(let i=0;i<36;i++){ const k=pool_spawn(smoke); if(k<0) break;
+	const fire=i<14, a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=fire?(9+Math.random()*40):(3+Math.random()*15);
 	smoke.px[k]=x; smoke.py[k]=y+1; smoke.pz[k]=z;
 	smoke.vx[k]=Math.cos(a)*Math.cos(e)*sp; smoke.vy[k]=Math.abs(Math.sin(e))*sp*0.8+6; smoke.vz[k]=Math.sin(a)*Math.cos(e)*sp;
-	smoke.ttl[k]=smoke.life[k]=fire?(0.5+Math.random()*0.7):(2.6+Math.random()*2.6);
-	if(fire){ smoke.r[k]=1.0; smoke.g[k]=0.42+Math.random()*0.25; smoke.b[k]=0.08; } else { smoke.r[k]=0.30; smoke.g[k]=0.30; smoke.b[k]=0.32; } } }
+	smoke.ttl[k]=smoke.life[k]=fire?(0.5+Math.random()*0.7):(3.0+Math.random()*3.0);
+	smoke.sz[k]=fire?0.45:(0.35+Math.random()*0.2); smoke.gr[k]=fire?2.6:0.9;   // the fireball balloons; the soot billows
+	if(fire){ smoke.r[k]=1.3; smoke.g[k]=0.55+Math.random()*0.3; smoke.b[k]=0.10; } else { smoke.r[k]=0.16; smoke.g[k]=0.15; smoke.b[k]=0.15; } }
+	for(let i=0;i<9;i++){ const k=pool_spawn(debris); if(k<0) break;
+	const a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=12+Math.random()*30;
+	debris.px[k]=x; debris.py[k]=y+1; debris.pz[k]=z;
+	debris.vx[k]=Math.cos(a)*Math.cos(e)*sp; debris.vy[k]=Math.abs(Math.sin(e))*sp*0.7+8; debris.vz[k]=Math.sin(a)*Math.cos(e)*sp;
+	debris.ttl[k]=debris.life[k]=3.5+Math.random()*3;
+	debris.r[k]=0.15;debris.g[k]=0.15;debris.b[k]=0.16; } }
 function crash_ownship(why){ if(crash_t>0) return; crash_t=3.0;
 	ownship.fate=ownship.fate||why||"pilot";   // how this life ended, for the recording (#238); the pilot-down path calls with no reason
 	if(!MULTIPLAYER) own_deaths++;   // local deaths count too — the history records the joust honestly (multiplayer's arrive via the net death event)
@@ -4308,7 +4378,14 @@ function step_world(dt){ sim_time+=dt;
 		if(fired>0&&!MULTIPLAYER){ battle_volley(0,battle_pose(ownship),fired,battle_tick); } }
 	update_pool_ballistic(tracers,dt,9.8,0,true); update_missiles(dt);
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96); update_pool_ballistic(strikes,dt,9.8,0);   // no drag, exactly as these behaved in the tracer pool: the change here is legibility, not motion
-	_live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts)+flush_points(strikes,strike_pts);
+	update_pool_ballistic(debris,dt,9.8,0.998);   // shed panels fall ballistically with a whisper of drag (#239)
+	for(let i=0;i<debris.max;i++){ if(!debris.active[i]||Math.random()>dt*7) continue;   // micro-trail: falling wreckage sheds an occasional thin wisp — the gun-camera frames show each chunk drawing its own faint line
+		const k=pool_spawn(smoke); if(k<0) break;
+		smoke.px[k]=debris.px[i]; smoke.py[k]=debris.py[i]; smoke.pz[k]=debris.pz[i];
+		smoke.vx[k]=debris.vx[i]*0.15; smoke.vy[k]=debris.vy[i]*0.15; smoke.vz[k]=debris.vz[i]*0.15;
+		smoke.ttl[k]=smoke.life[k]=1.2+Math.random()*0.8; smoke.sz[k]=0.16; smoke.gr[k]=0.5;
+		smoke.r[k]=0.30;smoke.g[k]=0.29;smoke.b[k]=0.28; }
+	_live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts)+flush_points(strikes,strike_pts)+flush_points(debris,db_pts);
 	tr_pts.visible=cfg.tracers; fl_pts.visible=true; strike_pts.visible=true;   // flares are no longer a mission setting (dispensing is always allowed); a strike flash is not a tracer, so it stays on with tracers switched off
 	update_anim(dt);
 	update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights(); update_shuttles(); update_jbds(dt);
@@ -5033,7 +5110,17 @@ function draw_hud(){
 		let cy=HH-118;
 		for(const [,label,red] of caution_list){ hctx.fillStyle=red?RD:AM; hctx.fillText(label,40,cy); cy-=18; }
 	}
-	if(hit_flash>0){ hctx.fillStyle="rgba(255,32,32,"+(hit_flash*0.28).toFixed(3)+")"; hctx.fillRect(0,0,HW,HH); }   // rounds are landing on us
+	if(hit_flash>0){   // rounds are landing on us (#239): an edge-weighted vignette, not a flat wash —
+		// the pain lives at the periphery and the pilot keeps the picture. In single
+		// player the shooter is known, so the vignette centre shifts AWAY from the
+		// bandit's screen direction and the red bites hardest on the threat side.
+		let ox=0, oy=0;
+		if(!MULTIPLAYER&&has_enemy){ _vig.copy(bandit.pos).sub(camera.position).normalize();
+			const sx=_vig.dot(_vigr.setFromMatrixColumn(camera.matrixWorld,0)), sy=_vig.dot(_vigu.setFromMatrixColumn(camera.matrixWorld,1));
+			const m=Math.hypot(sx,sy)||1; ox=-sx/m*HW*0.12; oy=sy/m*HH*0.12; }
+		const g=hctx.createRadialGradient(HW/2+ox,HH/2+oy,Math.min(HW,HH)*0.32,HW/2+ox,HH/2+oy,Math.max(HW,HH)*0.72);
+		g.addColorStop(0,"rgba(255,32,32,0)"); g.addColorStop(0.55,"rgba(255,32,32,"+(hit_flash*0.16).toFixed(3)+")"); g.addColorStop(1,"rgba(255,26,26,"+(hit_flash*0.5).toFixed(3)+")");
+		hctx.fillStyle=g; hctx.fillRect(0,0,HW,HH); }
 
 	// ---- weapon legend (bottom-left) ----
 	// Cheats show in the symbology: ∞ replaces the counters the cheat makes
@@ -5099,11 +5186,14 @@ function apply_size(){ const w=innerWidth,h=innerHeight,dpr=Math.min(devicePixel
 	renderer.setSize(Math.round(w*sc),Math.round(h*sc),false); canvas.style.width=w+"px"; canvas.style.height=h+"px";
 	camera.aspect=w/h; camera.updateProjectionMatrix(); cockpit_cam.aspect=w/h; cockpit_cam.updateProjectionMatrix(); hud_resize(); if(cloud_active()||rt) size_rt(); }
 addEventListener("resize",apply_size,{ signal });
-let dyn_cd=0, dyn_ceiling=2.0, dyn_ceiling_t=0;
+let dyn_cd=0, dyn_ceiling=2.0, dyn_ceiling_t=0, dyn_strain=0, dyn_health=0;
 function dynamic_res(dt){ if(!cfg.dyn_res) return; dyn_cd-=dt; if((dyn_ceiling_t-=dt)<=0) dyn_ceiling=2.0; if(dyn_cd>0) return; dyn_cd=0.5;
 	const last=ft_ring.slice(-30), recent=last.reduce((s,v)=>s+v,0)/30, spike=[...last].sort((a,b)=>a-b)[27];   // mean + p90 of the last 30 frames
 	if(recent>18&&cfg.render_scale>0.45){ dyn_ceiling=Math.min(dyn_ceiling,cfg.render_scale); dyn_ceiling_t=30;   // this scale overloaded: don't climb back into it for a while
-		cfg.render_scale=Math.max(0.45,cfg.render_scale-0.1); apply_size(); }
+		cfg.render_scale=Math.max(0.45,cfg.render_scale-0.1); apply_size(); dyn_strain=0; dyn_health=0; }
+	else if(recent>18){   // pinned at the floor and STILL over budget: the honest "this machine cannot hold it" verdict (#55), measured on the player's real scene. Only real gameplay under real acceleration counts — shader-compile stutter, the pause menu and SwiftShader must not condemn the machine.
+		dyn_health=0;
+		if(graphics_verdict===null&&running&&!loading&&!game_paused&&(dyn_strain+=0.5)>=30){ dyn_strain=0; shellStorage.setItem("air.performance","1"); } }
 	// Raise while SOLIDLY vsynced. The old <14 ms test could never pass on a 60 Hz
 	// display (a pegged frame reads 16.7 ms), so any loading stutter ratcheted the
 	// scale to the floor permanently. Pegged-with-margin now qualifies (mean under
@@ -5111,7 +5201,9 @@ function dynamic_res(dt){ if(!cfg.dyn_res) return; dyn_cd-=dt; if((dyn_ceiling_t
 	// would otherwise hunt forever (raise -> overload -> drop -> raise...), so the
 	// overloaded scale becomes a 30 s ceiling and the governor settles one step
 	// below it; raises are also slower (2 s) than drops (0.5 s).
-	else if(recent<17.2&&spike<17.5&&cfg.render_scale<1.0&&cfg.render_scale+0.05<dyn_ceiling-0.001){ cfg.render_scale=Math.min(1.0,cfg.render_scale+0.05); dyn_cd=2; apply_size(); } }
+	else if(recent<17.2&&spike<17.5&&cfg.render_scale<1.0&&cfg.render_scale+0.05<dyn_ceiling-0.001){ cfg.render_scale=Math.min(1.0,cfg.render_scale+0.05); dyn_cd=2; apply_size(); dyn_strain=0; }
+	else if(recent<17.2&&cfg.render_scale>=1.0){ dyn_strain=0;   // holding FULL scale vsynced: the machine verdict self-heals (an upgraded GPU should not wear last year's warning)
+		if((dyn_health+=0.5)>=30){ dyn_health=0; shellStorage.removeItem("air.performance"); } } }
 
 // Benchmark reporting (#148): the sampler itself lives in bench.ts (imported
 // first, so it survives an engine-init failure); here we hand it the resolved
@@ -5413,7 +5505,7 @@ function update_darts(dt){
 		p.acc+=dt; const puff=0.02;
 		while(p.acc>puff){ p.acc-=puff; const k=pool_spawn(smoke); if(k<0) break;
 			smoke.px[k]=x; smoke.py[k]=y; smoke.pz[k]=z; smoke.vx[k]=(Math.random()-0.5)*6; smoke.vy[k]=(Math.random()-0.5)*6+2; smoke.vz[k]=(Math.random()-0.5)*6;
-			smoke.ttl[k]=smoke.life[k]=2.8; smoke.r[k]=0.7; smoke.g[k]=0.72; smoke.b[k]=0.75; } }
+			smoke.ttl[k]=smoke.life[k]=2.8; smoke.sz[k]=0.30+Math.random()*0.12; smoke.gr[k]=0.40; smoke.r[k]=0.7; smoke.g[k]=0.72; smoke.b[k]=0.75; } }
 	for(let i=used;i<darts_pool.length;i++) darts_pool[i].mesh.visible=false;
 }
 function net_connect(){
