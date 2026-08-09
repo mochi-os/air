@@ -66,7 +66,7 @@ const TAB_FIELDS: Record<string, string[]> = {
   controls: ['invert', 'joystick', 'sticks'],
   keys: ['keys'],
   sound: ['sound', 'volume'],
-  graphics: ['render_scale', 'dyn_res', 'lod', 'shadows', 'exterior_detail', 'ocean_segments', 'afterburner', 'tracers', 'framerate'],   // missiles moved to the mission tab: they are a rule of the fight, not a rendering choice
+  graphics: ['render_scale', 'dyn_res', 'lod', 'shadows', 'exterior_detail', 'effects_quality', 'ocean_segments', 'afterburner', 'tracers', 'framerate'],   // missiles moved to the mission tab: they are a rule of the fight, not a rendering choice
 }
 
 function SectionLabel({ children }: { children: ReactNode }) {
@@ -1599,6 +1599,14 @@ function GraphicsPanel({
     max={6}
     step={1}
     onChange={(v) => set('exterior_detail', v)}
+  />
+  <SliderRow
+    label={<Trans>Effects detail</Trans>}
+    value={config.effects_quality}
+    min={0}
+    max={3}
+    step={1}
+    onChange={(v) => set('effects_quality', v)}
   />
   <SliderRow
     label={<Trans>Ocean detail</Trans>}

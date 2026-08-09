@@ -91,7 +91,7 @@ export function startGame({
 
 // ============================================================================ config
 const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, exterior_detail:3, lod:true,   // dyn_res defaults ON (#148): slow machines self-tune render_scale down to 0.45 instead of stuttering
-	tracers:true, stores:stores_migrate(true), flares:true, shadows:false, clouds:"none", afterburner:true,   // stores (#17): the per-station loadout; the Fox 2 fighter preset is the unconfigured default
+	tracers:true, effects_quality:2, stores:stores_migrate(true), flares:true, shadows:false, clouds:"none", afterburner:true,   // effects_quality 0..3 scales expensive translucent work; stores (#17): the per-station loadout
 	view:"hud", invert:false, framerate:false, sens:1.0,
 	task:"joust", start:"carrier", tod:"day", help:false };
 // The ship: everything that describes the carrier itself, per model —
@@ -475,6 +475,7 @@ const cloud_active=()=>cfg.clouds&&cfg.clouds!=="none";
 // cloud slab and composites over it, stopping at the scene surface for occlusion.
 let rt=null, rt_march=null; const rt_hist=[null,null]; let hist_write=0, hist_valid=false;   // temporal accumulation: the march output is blended into a reprojected history ping-pong
 const invVP=new THREE.Matrix4(), curVP=new THREE.Matrix4(), prevVP=new THREE.Matrix4(); const _buf=new THREE.Vector2();
+const cloud_prev_pos=new THREE.Vector3(); const cloud_prev_q=new THREE.Quaternion(); let cloud_prev_camera=false;
 let cloud_frame=0;
 function size_rt(){ renderer.getDrawingBufferSize(_buf); const w=Math.max(2,_buf.x|0),h=Math.max(2,_buf.y|0);
 	const hw=Math.max(2,w>>1), hh=Math.max(2,h>>1);   // clouds are soft: everything cloud-related runs at half resolution
@@ -519,10 +520,13 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 		float top_at(float vig){ return mix(mix(uTop,uHigh,smoothstep(0.52,0.68,vig)), uTop, uFlat); }   // NARROW ramp: height plateaus just inside a vigorous cell, so the flanks rise as near-vertical walls — the old wide ramp (0.48-0.82) made height track the vigour falloff and every tower rendered as a smooth cone
 		float dens(vec3 p, float lod){   // lod 0 = near (full erosion detail) … 1 = far (soft stable masses — fine detail undersamples at long range and reads as clouds bubbling in and out)
 			float cm=clearing(p.xz); if(cm<=0.002) return 0.0;   // spawn clearings: nothing to march inside them
-			vec3 sp=p+vec3(uTime*8.0,0.0,uTime*3.0);   // slow drift
-			vec4 w=texture(tNoise, sp*4.2e-4+vec3(0.31,0.17,0.47));   // ~2.4 km warp field (fetched early: .r feeds the flank turrets, .gba warps the base field below)
-			float hh=clamp((p.y-uBase)/(uHigh-uBase),0.0,1.0);   // absolute slab altitude (independent of vig — the lobe terms below must not feed back into themselves)
-			vec4 cf=cellfield(p.xz); float vig=cf.g;
+				float shear=clamp((p.y-uBase)/max(uHigh-uBase,1.0),0.0,1.0);
+				vec2 wind=mix(vec2(7.2,2.5),vec2(11.8,4.8),shear);   // vertical wind shear: crowns move and lean downwind instead of the whole volume sliding as one rigid block
+				vec3 sp=p+vec3(uTime*wind.x,0.0,uTime*wind.y);
+				vec4 w=texture(tNoise, sp*4.2e-4+vec3(0.31,0.17,0.47));   // ~2.4 km warp field (fetched early: .r feeds the flank turrets, .gba warps the base field below)
+				float hh=clamp((p.y-uBase)/(uHigh-uBase),0.0,1.0);   // absolute slab altitude (independent of vig — the lobe terms below must not feed back into themselves)
+				sp.xz+=vec2(115.0,42.0)*hh*hh*(1.0-uFlat);   // persistent shear lean: tall heads offset from their rooted bases
+				vec4 cf=cellfield(p.xz); float vig=cf.g;
 			vec4 lb=texture(tNoise, sp*9.0e-5+vec3(0.63,0.42,0.11));   // GIANT lobe field, ~2 km features: a few HUGE bulging masses first, billows second, texture last
 			float attach=smoothstep(uGate.x-0.02,uGate.x+0.06,vig);   // perturbations SCULPT existing cells only: unmasked, a strong lobe over near-gate vigour conjures isolated round puffs floating in mid-air with no tower beneath
 			vig=clamp(vig+((lb.g-0.5)*(0.05+0.13*hh)+(w.r-0.5)*0.04)*(1.0-uFlat)*attach,0.0,1.0);   // FLANK TURRETS, two scales: km-class lobes (amplitude growing with height — flat bases, billowing flared heads) + fine 3D scalloping (both TRUE 3D fields — an xz-only field paints vertical cliff striations, found twice)
@@ -536,7 +540,16 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 				top*=1.0+0.12*tallf*(turret*2.0-1.0);
 			}
 			float lbase=uBase+(lb.a-0.5)*mix(64.0,110.0,1.0-uFlat);   // the condensation level is flat, not MACHINE-flat: lobe-scale undulation (lowered shelves, ragged patches) breaks the single shared plane that read as artificial. Stratus gets a gentler +/-32 m — a 500 ft marine-layer ceiling that varies slightly, like the real thing
-			float h=(p.y-lbase)/(top-lbase); if(h>1.0) return 0.0;
+				float h=(p.y-lbase)/(top-lbase); if(h>1.0) return 0.0;
+				if(uFlat>0.5){   // dedicated stratus: broad layered density, not all the cumulus tower machinery flattened into a sheet
+					if(h<0.0) return 0.0;
+					vec2 sw=vec2(sp.x*0.958+sp.z*0.286,-sp.x*0.286+sp.z*0.958); sw.x*=0.27;
+					vec4 sn=texture(tNoise,vec3(sw.x,sp.y,sw.y)*1.25e-4+vec3(0.17,0.41,0.29));
+					float broad=sn.r*0.72+sn.g*0.28;
+					float layer=smoothstep(0.0,0.18,h)*smoothstep(1.0,0.76,h);
+					float sd=remap(broad*layer,1.0-uCoverage,1.0,0.0,1.0);
+					return clamp(smoothstep(0.08,0.48,sd),0.0,1.0)*uDensity*cm;
+				}
 			if(h<0.0){   // sub-base veil: vigorous cells trail translucent virga toward the sea
 				if(uFlat>0.5) return 0.0;
 				float vfall=1.0+h*3.2; if(vfall<=0.0) return 0.0;
@@ -555,8 +568,9 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 			float wf=n.g*0.625+n.b*0.25+n.a*0.125;
 			float braw=remap(n.r, wf-1.0, 1.0, 0.0, 1.0);
 			float base=braw*prof;
-				float cov=uCoverage*mix((0.55+0.95*vig)*smoothstep(uGate.x,uGate.y,vig), 1.0, uFlat);   // per-preset cell gate: how FEW the cells are; uCoverage sets how MASSIVE each survivor builds
-			float d=remap(base, 1.0-cov, 1.0, 0.0, 1.0)*cov;
+				float regional=mix(0.84,1.16,smoothstep(0.18,0.82,cf.r));   // broad clear/cloudy sectors from an already-fetched channel: macro variation without another texture lookup
+				float cov=clamp(uCoverage*(0.55+0.95*vig)*smoothstep(uGate.x,uGate.y,vig)*regional,0.02,0.96);   // coverage chooses WHERE and how wide a cloud is; it must not also make surviving cloud optically weak
+				float d=remap(base, 1.0-cov, 1.0, 0.0, 1.0)*mix(0.86,1.16,smoothstep(uGate.x,1.0,vig));
 			if(d<=0.0) return 0.0;
 			float hb=clamp(h*4.0,0.0,1.0), estr=mix(0.35,0.15,uFlat)*(0.82+0.36*tB)*mix(1.0,0.75,uDark);   // per-cell erosion character: some cells ragged and crisply carved, others fuller and softer; darker presets erode less (full billowing masses, not serrated rock)
 			float coarse=mix(n.b, 1.0-n.b, hb);                               // coarse erosion from the base sample: keeps far cells SEPARATE at zero cost and zero shimmer (fading erosion out entirely merged the horizon into a solid wall)
@@ -568,8 +582,10 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 					det=det*0.85+(dn2.r*0.625+dn2.g*0.25+dn2.b*0.125)*0.15*(1.0-smoothstep(0.15,0.35,lod)); }
 				er=mix(mix(det, 1.0-det, hb), coarse, smoothstep(0.25,0.7,lod));
 			}
-			d=remap(d, er*estr*(1.0+1.1*(1.0-clamp(d*2.2,0.0,1.0))), 1.0, 0.0, 1.0);   // edge-weighted erosion: the rim erodes hardest (fractal raggedness), the core stays solid
-			d=max(smoothstep(0.05,0.52,d), d*0.30);   // sharpen: defined lobe rims instead of uniform wool — but thin margins SURVIVE the knee as translucent veils (the reference photo mixes dense cores with dissipating wisps you can half-see through; a pure knee makes everything opaque)
+				float protect=smoothstep(0.30,0.68,d);   // erosion sculpts the surface, never perforates the load-bearing cloud body
+				d=remap(d,er*estr*mix(1.0,0.16,protect)*(1.0+0.65*(1.0-clamp(d*2.0,0.0,1.0))),1.0,0.0,1.0);
+				float core=smoothstep(0.14,0.46,d), fringe=smoothstep(0.025,0.16,d)*(1.0-core);
+				d=core+fringe*mix(0.10,0.16,smoothstep(0.68,1.0,h));   // substantial connected mass; wisps survive only in a narrow, mostly upper fringe
 			return clamp(d,0.0,1.0)*uDensity*cm;   // cm: spawn clearings thin the fade ring like natural dissipation
 		}
 		// The blend layer expects display-encoded premultiplied light; reproduce three's exact ACESFilmic + sRGB.
@@ -623,8 +639,11 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 								sun=pow(sun,mix(1.38,1.5,uDark))*(bfloor+(1.0-bfloor)*smoothstep(0.04,0.55,hcur));   // harder mid-tone falloff: brilliant lit tops against genuinely shaded mid-bodies — the reference masses are SCULPTED by light, not just lit
 								float afloor=mix(0.24,0.12,uDark);
 								vec3 ambient=(dome*(afloor+(1.0-afloor)*hcur) + suncol*0.03*(1.0-hcur))*exp(-ld*0.0030)*(1.0-mix(0.50,0.60,uDark)*d)*(1.0+0.45*uFlat);   // crevice AO: dense samples sit deep between billows. Stratus undersides get a lift: over bright tropical water, sea-reflected light keeps an overcast's base grey, not charcoal
-								vec3 lit=(suncol*sun*mix(1.30,1.42,uDark) + ambient*0.55)*(0.40+0.60*smoothstep(0.03,0.35,d));   // the low-density fringe DIMS into translucency — a bright fringe reads as an airbrushed halo
-							float a=(1.0-exp(-d*0.09*dt))*mix(smoothstep(cfar,cfar*0.65,ts),1.0,uFlat)*smoothstep(0.006,0.045,d);   // the ultra-thin fringe barely registers: accumulated over steps it painted a pale glow RING around every cloud against dark water. NO range ALPHA fade for stratus: at grazing angles any range fade compresses into a few pixels and cuts a hard edge (tried 2026-07-06) — the overcast dissolve is done in COLOUR below instead
+								float edge=smoothstep(0.035,0.20,d)*(1.0-smoothstep(0.20,0.48,d));
+								float silver=edge*smoothstep(0.18,0.92,cosT)*exp(-ld*0.018)*(1.0-uFlat)*0.42;   // narrow directional silver lining, never a uniform airbrushed halo
+								vec3 lit=(suncol*(sun*mix(1.30,1.42,uDark)+silver) + ambient*0.55)*(0.36+0.64*smoothstep(0.025,0.32,d));
+							float extinction=mix(0.075,0.145,smoothstep(0.18,0.68,d));   // permeable fringe, rapidly opaque core: mass without concrete edges
+							float a=(1.0-exp(-d*extinction*dt))*mix(smoothstep(cfar,cfar*0.65,ts),1.0,uFlat)*smoothstep(0.006,0.045,d);   // the ultra-thin fringe barely registers: accumulated over steps it painted a pale glow RING around every cloud against dark water. NO range ALPHA fade for stratus: at grazing angles any range fade compresses into a few pixels and cuts a hard edge (tried 2026-07-06) — the overcast dissolve is done in COLOUR below instead
 							float hz=clamp(1.0-exp(-ts*ts*mix(0.6e-9,1.5e-9,uFlat)),0.0,mix(0.72,0.985,uFlat));   // aerial perspective: the hazed share of each sample's alpha is paid out AFTER the march as the scene sky's own display-space colour — mixing a haze colour through this pass's aces/srgb never matches the sky behind and left a flat pale band above the horizon; pure alpha fade saturates over enough steps and turned the far field its raw beige. For stratus the haze COMPLETES (0.98): the far deck converges to exactly the greyed dome backdrop, so the march's 90 km cutoff is invisible by construction and the texture melts into murk with distance — the dissolve a real overcast has. Safe only because u_ovc greys the dome: against a blue backdrop this leaked blue under the deck
 							col+=tr*a*lit*(1.0-hz); hw+=tr*a*hz; aw+=tr*a; adist+=tr*a*ts; tr*=1.0-a; }
 						t+=dt; }
@@ -706,11 +725,11 @@ const comp_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, tra
 const comp_scene=new THREE.Scene(); comp_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),comp_mat));
 const depth_override=new THREE.MeshBasicMaterial({colorWrite:false});   // depth-only scene pass for the cloud raymarch
 const acc_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,
-	uniforms:{ tCur:{value:null}, tAux:{value:null}, tHist:{value:null}, uTexel:{value:new THREE.Vector2(1/512,1/512)},
-		uPrevVP:{value:new THREE.Matrix4()}, uInvVP:{value:new THREE.Matrix4()}, uCamPos:{value:new THREE.Vector3()}, uHistValid:{value:0.0} },
+		uniforms:{ tCur:{value:null}, tAux:{value:null}, tHist:{value:null}, uTexel:{value:new THREE.Vector2(1/512,1/512)},
+			uPrevVP:{value:new THREE.Matrix4()}, uInvVP:{value:new THREE.Matrix4()}, uCamPos:{value:new THREE.Vector3()}, uHistValid:{value:0.0}, uHistoryWeight:{value:0.9} },
 	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
 	fragmentShader:`varying vec2 vUv; uniform sampler2D tCur,tAux,tHist; uniform vec2 uTexel;
-		uniform mat4 uPrevVP,uInvVP; uniform vec3 uCamPos; uniform float uHistValid;
+		uniform mat4 uPrevVP,uInvVP; uniform vec3 uCamPos; uniform float uHistValid,uHistoryWeight;
 		void main(){   // temporal accumulation: reproject last frame's accumulated cloud through the previous
 			// view-projection at each pixel's mean march distance, clamp it against the current 3x3
 			// neighbourhood (kills ghosting on disocclusion), and blend. ~10 differently-jittered marches
@@ -729,7 +748,7 @@ const acc_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,
 			vec4 fp=uInvVP*vec4(vUv*2.0-1.0,1.0,1.0); vec3 ray=normalize(fp.xyz/fp.w-uCamPos);
 			vec4 pc=uPrevVP*vec4(uCamPos+ray*t,1.0);
 			vec2 puv=(pc.xy/pc.w)*0.5+0.5;
-			float w=0.90*uHistValid;
+			float w=uHistoryWeight*uHistValid;
 			if(pc.w<=0.0||puv.x<0.0||puv.x>1.0||puv.y<0.0||puv.y>1.0) w=0.0;   // off-screen last frame: no history
 			vec4 hist=clamp(texture2D(tHist,puv),mn,mx);   // neighbourhood clamp: stale history is pulled to what the current frame says is locally possible
 			gl_FragColor=mix(w>0.0?cur:avg,hist,w); }` });   // rejected pixels fall back to the neighbourhood mean — the old blur, exactly where it is still needed
@@ -756,6 +775,9 @@ function render_frame(){
 		acc_mat.uniforms.tCur.value=rt_march.texture[0]; acc_mat.uniforms.tAux.value=rt_march.texture[1]; acc_mat.uniforms.tHist.value=rt_hist[hr].texture;
 		acc_mat.uniforms.uTexel.value.set(1/rt_march.width,1/rt_march.height);
 		acc_mat.uniforms.uPrevVP.value.copy(prevVP); acc_mat.uniforms.uInvVP.value.copy(invVP); acc_mat.uniforms.uCamPos.value.copy(camera.position);
+		{ const turn=cloud_prev_camera?camera.quaternion.angleTo(cloud_prev_q):Math.PI, travel=cloud_prev_camera?camera.position.distanceTo(cloud_prev_pos):1e6;
+			const motion=THREE.MathUtils.clamp(turn*5.5+travel/550,0,1); acc_mat.uniforms.uHistoryWeight.value=THREE.MathUtils.lerp(0.90,0.56,motion);
+			cloud_prev_pos.copy(camera.position); cloud_prev_q.copy(camera.quaternion); cloud_prev_camera=true; }
 		acc_mat.uniforms.uHistValid.value=hist_valid?1.0:0.0;
 		renderer.setRenderTarget(rt_hist[hist_write]); renderer.render(acc_scene,fs_cam);   // blend into the reprojected history
 		renderer.setRenderTarget(null); renderer.render(scene,camera);   // the player-visible scene: the EXACT no-clouds path (canvas MSAA and all)
@@ -2127,10 +2149,14 @@ async function init_carrier_model(){
 }
 
 // ============================================================================ particles (proven)
-function glow_texture(soft){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d"); const g=x.createRadialGradient(32,32,0,32,32,32);
-	if(soft){ g.addColorStop(0,"rgba(180,180,180,0.5)"); g.addColorStop(0.5,"rgba(150,150,150,0.18)"); g.addColorStop(1,"rgba(150,150,150,0)"); }
-	else { g.addColorStop(0,"rgba(255,255,255,1)"); g.addColorStop(0.3,"rgba(255,240,200,0.9)"); g.addColorStop(1,"rgba(255,200,120,0)"); }
-	x.fillStyle=g; x.fillRect(0,0,64,64); return new THREE.CanvasTexture(c); }
+function glow_texture(soft){ const c=document.createElement("canvas"); c.width=c.height=128; const x=c.getContext("2d");
+	// Smoke is an irregular, overlapping lobe field rather than a radial dot.
+	// The deterministic lobes keep captures stable while rotation in the point
+	// shader prevents repeated puffs from exposing the shared source texture.
+	if(soft){ x.clearRect(0,0,128,128); const lobes=[[64,62,47,.24],[43,67,34,.19],[82,47,31,.17],[83,79,36,.17],[55,39,28,.15],[39,43,23,.11]];
+		for(const [cx,cy,r,a] of lobes){ const g=x.createRadialGradient(cx,cy,0,cx,cy,r); g.addColorStop(0,`rgba(205,205,205,${a})`); g.addColorStop(.58,`rgba(155,155,155,${a*.55})`); g.addColorStop(1,"rgba(145,145,145,0)"); x.fillStyle=g; x.fillRect(cx-r,cy-r,r*2,r*2); } }
+	else { const g=x.createRadialGradient(64,64,0,64,64,64); g.addColorStop(0,"rgba(255,255,255,1)"); g.addColorStop(0.3,"rgba(255,240,200,0.9)"); g.addColorStop(1,"rgba(255,200,120,0)"); x.fillStyle=g; x.fillRect(0,0,128,128); }
+	return new THREE.CanvasTexture(c); }
 function make_points(max,size,additive,tex,sized){ const geo=new THREE.BufferGeometry();
 	geo.setAttribute("position",new THREE.BufferAttribute(new Float32Array(max*3),3)); geo.setAttribute("color",new THREE.BufferAttribute(new Float32Array(max*3),3));
 	const mat=new THREE.PointsMaterial({size,map:tex,vertexColors:true,transparent:true,blending:additive?THREE.AdditiveBlending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:true,fog:!additive});
@@ -2139,10 +2165,10 @@ function make_points(max,size,additive,tex,sized){ const geo=new THREE.BufferGeo
 	// TRANSPARENCY, where the stock colour-fade dimmed every puff to black
 	// under normal blending (smoke that darkens as it dies is backwards: soot
 	// is darkest at birth and pales as it thins).
-	if(sized){ geo.setAttribute("grow",new THREE.BufferAttribute(new Float32Array(max),1)); geo.setAttribute("fade",new THREE.BufferAttribute(new Float32Array(max),1));
+	if(sized){ geo.setAttribute("grow",new THREE.BufferAttribute(new Float32Array(max),1)); geo.setAttribute("fade",new THREE.BufferAttribute(new Float32Array(max),1)); geo.setAttribute("spin",new THREE.BufferAttribute(new Float32Array(max),1));
 		mat.onBeforeCompile=(sh)=>{
-			sh.vertexShader="attribute float grow;\nattribute float fade;\nvarying float vFade;\n"+sh.vertexShader.replace("gl_PointSize = size;","gl_PointSize = size * grow;\n\tvFade = fade;");
-			sh.fragmentShader="varying float vFade;\n"+sh.fragmentShader.replace("vec4 diffuseColor = vec4( diffuse, opacity );","vec4 diffuseColor = vec4( diffuse, opacity * vFade );"); }; }
+			sh.vertexShader="attribute float grow;\nattribute float fade;\nattribute float spin;\nvarying float vFade;\nvarying float vSpin;\n"+sh.vertexShader.replace("gl_PointSize = size;","gl_PointSize = size * grow;\n\tvFade = fade;\n\tvSpin = spin;");
+			sh.fragmentShader="varying float vFade;\nvarying float vSpin;\n"+sh.fragmentShader.replace("vec4 diffuseColor = vec4( diffuse, opacity );","vec4 diffuseColor = vec4( diffuse, opacity * vFade );\n// Cheap hemispheric volume cue: the upper lobe catches sky/sun while the lower core stays dense.\ndiffuseColor.rgb *= 0.72 + 0.42 * smoothstep(0.0, 1.0, 1.0-gl_PointCoord.y);").replace("vec2 uv = ( uvTransform * vec3( gl_PointCoord.x, 1.0 - gl_PointCoord.y, 1 ) ).xy;","vec2 pc=gl_PointCoord-0.5; float cs=cos(vSpin), sn=sin(vSpin); pc=mat2(cs,-sn,sn,cs)*pc; vec2 uv=(uvTransform*vec3(pc+0.5,1)).xy;"); }; }
 	const pts=new THREE.Points(geo,mat); pts.frustumCulled=false; pts.userData.sized=!!sized; scene.add(pts); return pts; }
 const glow=glow_texture(false), soft=glow_texture(true);
 function light_dot_texture(){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d"); const g=x.createRadialGradient(32,32,0,32,32,32);   // crisp light point (solid core, quick falloff) — no big halo, unlike the soft `glow`
@@ -2154,11 +2180,15 @@ function windsock_texture(){ const c=document.createElement("canvas"); c.width=8
 	const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; }
 function pool(max){ return { px:new Float32Array(max),py:new Float32Array(max),pz:new Float32Array(max), vx:new Float32Array(max),vy:new Float32Array(max),vz:new Float32Array(max),
 	life:new Float32Array(max),ttl:new Float32Array(max), r:new Float32Array(max),g:new Float32Array(max),b:new Float32Array(max),
-	sz:new Float32Array(max),gr:new Float32Array(max),   // sized pools only (#239): scale at birth, growth per second of age — every smoke spawn must set sz or the puff renders at scale zero
+	sz:new Float32Array(max),gr:new Float32Array(max), spin:new Float32Array(max), seed:new Float32Array(max), activeList:[],   // sized pools only (#239): scale at birth, growth per second of age
 	active:new Uint8Array(max), max, next:0 }; }
-function pool_spawn(p){ for(let i=0;i<p.max;i++){ const k=(p.next+i)%p.max; if(!p.active[k]){ p.next=(k+1)%p.max; p.active[k]=1; return k; } } return -1; }
+function pool_spawn(p){ if(p.activeList.length>=(p.limit??p.max)) return -1; for(let i=0;i<p.max;i++){ const k=(p.next+i)%p.max; if(!p.active[k]){ p.next=(k+1)%p.max; p.active[k]=1; p.seed[k]=Math.random()*1000; p.spin[k]=Math.random()*Math.PI*2;
+		// A caller can retire a slot between physics ticks (missile impact, reset).
+		// Remove that stale index before reusing it or it would simulate twice.
+		const stale=p.activeList.indexOf(k); if(stale>=0)p.activeList.splice(stale,1); p.activeList.push(k); return k; } } return -1; }
 const TR_MAX=4000,FL_MAX=2500,SM_MAX=3000,ST_MAX=1200,DB_MAX=260;
 const tracers=pool(TR_MAX),flares=pool(FL_MAX),smoke=pool(SM_MAX),strikes=pool(ST_MAX),debris=pool(DB_MAX);
+{ const q=Math.max(0,Math.min(3,Number(cfg.effects_quality??2))), scale=[.28,.52,.78,1][q]; smoke.limit=Math.floor(SM_MAX*scale); strikes.limit=Math.floor(ST_MAX*scale); debris.limit=Math.max(60,Math.floor(DB_MAX*scale)); flares.limit=Math.max(500,Math.floor(FL_MAX*scale)); }
 const tr_pts=make_points(TR_MAX,4,false,glow), fl_pts=make_points(FL_MAX,26,true,glow), sm_pts=make_points(SM_MAX,70,false,soft,true);   // tracers: small + NORMAL blend (additive blew the colour out to white against bright sky); smoke is SIZED (per-particle growth + alpha fade, #239)
 const db_pts=make_points(DB_MAX,5,false,glow);   // debris (#239): dark shed panels and wreck chunks — normal-blended dots on ballistic arcs, decoupled from the aircraft's path (the gun-camera signature of coming apart)
 // Strike flashes get their OWN pool, and it is ADDITIVE. Borrowing the tracer
@@ -2170,28 +2200,32 @@ const db_pts=make_points(DB_MAX,5,false,glow);   // debris (#239): dark shed pan
 // so switching tracers off silently switched hit flashes off with them.
 const strike_pts=make_points(ST_MAX,9,true,glow);
 function flush_points(p,pts){ const pos=pts.geometry.attributes.position.array,col=pts.geometry.attributes.color.array; let n=0;
-	const sized=pts.userData.sized, grow=sized?pts.geometry.attributes.grow.array:null, fade=sized?pts.geometry.attributes.fade.array:null;
-	for(let i=0;i<p.max;i++){ if(!p.active[i]) continue; const o=n*3; pos[o]=p.px[i];pos[o+1]=p.py[i];pos[o+2]=p.pz[i];
+	const sized=pts.userData.sized, grow=sized?pts.geometry.attributes.grow.array:null, fade=sized?pts.geometry.attributes.fade.array:null, spin=sized?pts.geometry.attributes.spin.array:null;
+	for(const i of p.activeList){ if(!p.active[i]) continue; const o=n*3; pos[o]=p.px[i];pos[o+1]=p.py[i];pos[o+2]=p.pz[i];
 		if(sized){
 			// Smoke life (#239, from the gun-camera study): the puff GROWS as it
 			// disperses, fades by alpha (fast in, slow out), and its colour
 			// PALES with age toward a neutral haze — soot is darkest at birth.
 			const left=Math.max(0,p.life[i]/p.ttl[i]), age=1-left, elapsed=age*p.ttl[i];
 			grow[n]=p.sz[i]+p.gr[i]*elapsed;
+			spin[n]=p.spin[i]+elapsed*(0.08+0.08*Math.sin(p.seed[i]));
 			fade[n]=Math.min(1,elapsed/0.12)*Math.pow(left,0.6);   // fade-in on WALL time: a fraction-of-ttl ramp left long-lived soot invisible for its first half second — the part nearest the jet
 			const t=age*0.75; col[o]=p.r[i]+(0.62-p.r[i])*t; col[o+1]=p.g[i]+(0.62-p.g[i])*t; col[o+2]=p.b[i]+(0.64-p.b[i])*t;
 		} else {
 			const f=Math.max(0,p.life[i]/p.ttl[i]); col[o]=p.r[i]*f;col[o+1]=p.g[i]*f;col[o+2]=p.b[i]*f; }
 		n++; }
 	pts.geometry.setDrawRange(0,n); pts.geometry.attributes.position.needsUpdate=true; pts.geometry.attributes.color.needsUpdate=true;
-	if(sized){ pts.geometry.attributes.grow.needsUpdate=true; pts.geometry.attributes.fade.needsUpdate=true; }
+	if(sized){ pts.geometry.attributes.grow.needsUpdate=true; pts.geometry.attributes.fade.needsUpdate=true; pts.geometry.attributes.spin.needsUpdate=true; }
 	return n; }
 let _live_particles=0;
-function update_pool_ballistic(p,dt,grav,drag,round){ for(let i=0;i<p.max;i++){ if(!p.active[i]) continue;
+function update_pool_ballistic(p,dt,grav,drag,round){ const live=[]; for(const i of p.activeList){ if(!p.active[i]) continue;
 	p.vy[i]-=grav*dt; if(drag){p.vx[i]*=drag;p.vy[i]*=drag;p.vz[i]*=drag;}
 	if(round){ const sp=Math.hypot(p.vx[i],p.vy[i],p.vz[i]); if(sp>1){ const k=1/(1+sp*dt/round_length(p.py[i]));   // the quadratic drag the real 20 mm round flies (battle.Fly): the tracer IS the round the pilot corrects by
 		p.vx[i]*=k;p.vy[i]*=k;p.vz[i]*=k; } }
-	p.px[i]+=p.vx[i]*dt; p.py[i]+=p.vy[i]*dt; p.pz[i]+=p.vz[i]*dt; p.life[i]-=dt; if(p.life[i]<=0||p.py[i]<0) p.active[i]=0; } }
+	// Trade-wind advection plus low-frequency curl-like drift. It is deliberately
+	// cheap and only applied to smoke; hot puffs also rise through negative grav.
+	if(p===smoke){ const age=p.ttl[i]-p.life[i], q=p.seed[i]; p.vx[i]+=(2.8+Math.sin(q+age*.7)*1.7-p.vx[i]*.018)*dt; p.vz[i]+=(.8+Math.cos(q*.71+age*.55)*1.5-p.vz[i]*.018)*dt; }
+	p.px[i]+=p.vx[i]*dt; p.py[i]+=p.vy[i]*dt; p.pz[i]+=p.vz[i]*dt; p.life[i]-=dt; if(p.life[i]<=0||p.py[i]<0) p.active[i]=0; else live.push(i); } p.activeList=live; }
 
 const muzzle=1050; const gun={};
 // 20 mm drag (mirrors battle.Length/Average in Go): quadratic drag decays the
@@ -2233,9 +2267,10 @@ const missile_geo=(()=>{ const parts=[]; const b=new THREE.CylinderGeometry(0.12
 	const n=new THREE.ConeGeometry(0.12,0.5,12); n.rotateZ(-Math.PI/2); n.translate(1.45,0,0); parts.push(n);
 	for(const s of [0,1,2,3]){ const f=new THREE.BoxGeometry(0.4,0.02,0.3); f.translate(-1.0,0,0); f.rotateX(s*Math.PI/2); parts.push(f); } return merge_geometries(parts); })();
 const missile_mat=new THREE.MeshStandardMaterial({color:0xdedede,metalness:0.3,roughness:0.6});
-const missiles=[]; for(let i=0;i<MSL_MAX;i++){ const m=new THREE.Mesh(missile_geo,missile_mat); m.visible=false; scene.add(m);
+const missile_trail_mat=new THREE.LineBasicMaterial({color:0xc9d1d5,transparent:true,opacity:.38,depthWrite:false,fog:true});
+const missiles=[]; for(let i=0;i<MSL_MAX;i++){ const m=new THREE.Mesh(missile_geo,missile_mat); m.visible=false; scene.add(m); const tg=new THREE.BufferGeometry(); tg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(30*3),3)); tg.setDrawRange(0,0); const trail=new THREE.Line(tg,missile_trail_mat); trail.frustumCulled=false; trail.visible=false; scene.add(trail);
 	missiles.push({mesh:m,active:false,px:0,py:0,pz:0,vx:0,vy:0,vz:0,life:0,target:null,smoke_acc:0,
-		burn:0,flew:0,sx:0,sy:0,sz:0,loose:false,blind:0,lx:0,ly:0,lz:0,window:false}); }   // AIM-9M state (#126): boost, arming, seeker sight line, broken lock, and a swallowed flare's fall point
+		burn:0,flew:0,sx:0,sy:0,sz:0,loose:false,blind:0,lx:0,ly:0,lz:0,window:false,trail,trail_n:0,trail_acc:0}); }   // AIM-9M state (#126): boost, arming, seeker sight line, broken lock, and a swallowed flare's fall point
 function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) return false;
 	let sp=local_offset(st,1,-0.8,0);   // fallback: near the nose
 	if(st.group&&st.msl>0){ let rail=null;
@@ -2246,6 +2281,7 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 		else rail=st.group.getObjectByName(MISSILE_NODES[(st.msl-1)%MISSILE_NODES.length]);   // no known loadout (remote before its roster): the legacy alternating tips
 		if(rail){ rail.getWorldPosition(_v); sp={x:_v.x,y:_v.y,z:_v.z}; } }
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
+	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
 	m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30);   // off the rail at aircraft speed; the Mk 36 does the rest
 	m.life=20; m.target=target; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.prate=undefined;
 	if(target){ const dx=wrap_axis(target.pos.x-st.pos.x), dy=target.pos.y-st.pos.y, dz=wrap_axis(target.pos.z-st.pos.z); const d=Math.hypot(dx,dy,dz)||1;
@@ -2269,7 +2305,7 @@ function trigger_missile(){
 	if(MULTIPLAYER) missile_flag=true;
 	if(launch_missile(ownship,MULTIPLAYER?(remotes.get(designated)||remote_nearest()):(has_enemy?bandit:null))){ if(!cheat("ammunition")) ownship.msl--; audio_launch(); update_rails(ownship,ownship.msl); }
 }
-function update_missiles(dt){ for(const m of missiles){ if(!m.active) continue; m.life-=dt; m.flew+=dt;
+function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.visible=false; continue; } m.life-=dt; m.flew+=dt;
 	if(DEV_MODE&&m.target){ const md=wrap_distance({x:m.px,y:m.py,z:m.pz},m.target.pos); if(md<(m.least??1e9)) m.least=md; }   // terminal telemetry for dev_missiles
 	const post=(why)=>{ if(DEV_MODE){ const log=(globalThis as any).dev_missiles=(globalThis as any).dev_missiles||[]; log.push({why, least:+(m.least??-1).toFixed(1), flew:+m.flew.toFixed(1), loose:!!m.loose, broke:m.why||"", at:m.at??-1, mask:m.mask??-1, killed:!!m.killed}); } };
 	if(m.life<=0){ m.active=false; m.mesh.visible=false; post("life"); continue; }
@@ -2343,6 +2379,7 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active) continue; 
 	if(m.burn>0){ m.burn-=dt; spd=Math.hypot(m.vx,m.vy,m.vz)||1; m.vx+=m.vx/spd*260*dt; m.vy+=m.vy/spd*260*dt; m.vz+=m.vz/spd*260*dt; }
 	else if(m.loose||!guided){ spd=Math.hypot(m.vx,m.vy,m.vz)||1; const next=Math.max(spd-5e-5*spd*spd*dt,60)/spd; m.vx*=next; m.vy*=next; m.vz*=next; }
 	m.px+=m.vx*dt;m.py+=m.vy*dt;m.pz+=m.vz*dt; m.mesh.position.set(m.px,m.py,m.pz); m.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),new THREE.Vector3(m.vx,m.vy,m.vz).normalize());
+	m.trail_acc+=dt; if(m.trail_acc>.035){ m.trail_acc=0; const a=m.trail.geometry.attributes.position.array, n=Math.min(30,m.trail_n+1); if(m.trail_n>=30)a.copyWithin(0,3); const o=(n-1)*3; a[o]=m.px;a[o+1]=m.py;a[o+2]=m.pz; m.trail_n=n; m.trail.geometry.setDrawRange(0,n); m.trail.geometry.attributes.position.needsUpdate=true; }
 	if(m.py<=0){ m.active=false; m.mesh.visible=false; post("ocean"); continue; }
 	m.smoke_acc+=dt; const puff=m.burn>0?0.02:0.08;   // the motor smokes; the coast barely does (reduced-smoke Mk 36)
 	while(m.smoke_acc>puff){ m.smoke_acc-=puff; const k=pool_spawn(smoke); if(k<0) break;
@@ -3135,6 +3172,7 @@ const keys=new Set();
 let cam_az=0, cam_el=0.22, cam_dist=24, cam_psi=0;
 let buffet_env=0;   // low-passed buffet intensity (#234): the seat cue's shared envelope — the camera writes it each frame, draw_hud reads it
 let head_az=0, head_el=0, head_drag=false;   // cockpit head look (#99): mouse-drag or arrow keys. The head HOLDS where it is left, like the chase orbit — 0 (view.reset) recenters
+let padlock=false, padlock_snap=false;   // padlock toggle (#243): the head slaves to the target within honest neck limits; toggling off eases the head back to boresight
 let view_zoom=1, zoom_target=1, zoom_wheel=0;   // optical zoom: notches move the TARGET, the view eases after it (stepping the FOV directly read as jerky); per-view values persist in the config (zoom_<view>, #209)
 let zoom_save=0;   // debounce handle for persisting the zoom
 function zoom_floor(){ return cfg.view==="chase"?0.5:0.6; }   // chase zooms out to 90° wide; first person to ~75°, which is nearer what a pilot actually takes in than the 45° a 1x floor pinned it to
@@ -3148,6 +3186,7 @@ function zoom_persist(){   // remember the setting per view, debounced past the 
 let on_config=null;   // engine -> menu config channel (startGame option): partial updates the menu merges and saves
 const _headq=new THREE.Quaternion(), _pitq=new THREE.Quaternion(), _yaxis=new THREE.Vector3(0,1,0), _zaxis=new THREE.Vector3(0,0,1);
 const _vig=new THREE.Vector3(), _vigr=new THREE.Vector3(), _vigu=new THREE.Vector3();   // hit-vignette scratch (#239)
+const _pad_d=new THREE.Vector3();   // padlock scratch (#243)
 const CAMFIX=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),-Math.PI/2);   // maps the camera's -Z view axis onto body +X with +Y up   // chase view: orbit around the aircraft; cam_psi = smoothed heading the orbit is referenced to
 let flyby_pos=null, flyby_side=1;          // flypast view: fixed world point the jet flies past, re-seeded ahead as it recedes
 // True while the aircraft is sitting/rolling on the deck or runway (not yet airborne) — gear can't retract then.
@@ -3248,6 +3287,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("shout") && MULTIPLAYER && running && onChat){ e.preventDefault(); onChat("all"); }   // Shift+T: everyone, when team chat is the default
 		if(ch===key_of("hook")){ ownship.hookTarget = ownship.hookTarget>0.5?0:1; }   // arrestor hook deploy/stow
 		if(ch===key_of("lights") && !dev_parked){ ownship.lights=!ownship.lights; }   // aircraft position/strobe/landing lights
+		if(ch===key_of("padlock")) padlock_toggle();   // Y: eyes on the bandit (#243) — first-person head slaved to the target, honest neck limits
 
 		if(ch===key_of("brake.speed")){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
 		if(ch===key_of("flaps.extend")&&flap_select<2){ flap_select++; notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // F: one notch toward FULL, no wrap — a cycle's worst moment was FULL wrapping to AUTO on short final
@@ -3314,7 +3354,7 @@ function zoom_step(direction){
 // head back to boresight, and the chase orbit back to its shoulder. Per-view,
 // not global — resetting the cockpit should not disturb a chase framing the
 // player set up earlier, and the zoom is persisted per view anyway (#209).
-function view_reset(){
+function view_reset(){ padlock=false; padlock_snap=false;
 	if(map_on){ map_range=MAP_RANGE_DEFAULT; return; }
 	if(cfg.view==="ddi"){ const p=DDI_PAGES[ddi_state[ddi_focus()].page];
 		if(p&&p.reset){ p.reset(); ddi_dirty=true; ddi_view_last=0; } return; }   // 0 head-down: the focused page's transients back to defaults
@@ -3355,7 +3395,7 @@ stage.addEventListener("pointercancel",end_drag,{ signal });
 const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.left":"KeyA", "yaw.right":"KeyE", "yaw.left":"KeyQ",
 	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash", "trim.up":"Period", "trim.down":"Comma", "trim.left":"Shift+Comma", "trim.right":"Shift+Period", "trim.reset":"None", "flaps.extend":"KeyF", "flaps.retract":"Shift+KeyF", override:"KeyO", "brake.parking":"Shift+KeyB",
 	gear:"KeyG", hook:"KeyH", probe:"KeyR", atc:"KeyP", lights:"KeyL", flares:"KeyC", eject:"Shift+KeyE", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"None", select:"KeyX", altitude:"KeyK", reject:"None", acquire:"Enter",
-	canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0", repeater:"KeyI",
+	canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0", repeater:"KeyI", padlock:"KeyY",
 	"jettison.tanks":"KeyJ", "jettison.emergency":"Shift+KeyJ", "caution.reset":"Shift+KeyM", dump:"Shift+KeyD", "secure.port":"Shift+KeyZ", "secure.starboard":"Shift+KeyX" };   // the cutoffs are chords like the jettison family — securing an engine must be deliberate (Shift+Digit collided with the dev scenario starts)   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares. J is the jettison family; eject moved to triple-Escape (a pilot reaching for "jettison" must never punch out)
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
@@ -3650,12 +3690,20 @@ let hud_pa=false;   // the virtual flap switch's HUD mirror (see the landing-sym
 // additive, and slightly random in size, and a burst walking across the target
 // leaves the line of flashes the pilot actually sees.
 let _spark_count=0;   // dev: how many strike flashes have been spawned
+const impact_marks=[];
+function impact_mark_texture(){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d"); const g=x.createRadialGradient(32,32,2,32,32,30);
+	g.addColorStop(0,"rgba(8,8,7,.95)"); g.addColorStop(.28,"rgba(35,25,16,.9)"); g.addColorStop(.62,"rgba(70,48,26,.35)"); g.addColorStop(1,"rgba(0,0,0,0)"); x.fillStyle=g; x.fillRect(0,0,64,64); return new THREE.CanvasTexture(c); }
+const impact_mark_mat=new THREE.MeshBasicMaterial({map:impact_mark_texture(),transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,side:THREE.DoubleSide,toneMapped:false});
+const impact_mark_geo=new THREE.PlaneGeometry(1,1); const _mark_z=new THREE.Vector3(0,0,1);
+function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_quality??2)<1) return; const cap=[0,10,28,56][Math.max(0,Math.min(3,cfg.effects_quality|0))];
+	while(impact_marks.length>=cap){ const old=impact_marks.shift(); old.parent?.remove(old); }
+	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
-if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0 });   // dev (#242): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle
+if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], padlock });   // dev (#242, #243): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle
 if(DEV_MODE) (globalThis as any).dev_close=(m)=>{ const d=+m||200;   // dev (?developer=1 only): park the bandit dead ahead at d metres — gunnery and hit-flash checks need a target in range, and flying onto one by hand is not a test
 	bandit.pos.copy(ownship.pos).addScaledVector(ownship.fwd,d); bandit.fwd.copy(ownship.fwd); bandit.speed=ownship.speed;
 	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
-function hit_sparks(x,y,z,vx,vy,vz){ _spark_count++;
+function hit_sparks(x,y,z,vx,vy,vz,target,local){ _spark_count++; add_impact_mark(target,local);
 	// Re-read against real gun-camera frames (#239, the 3 June 1967 F-105 on a
 	// MiG-17 in colour): 20 mm HEI lands as a SOFT VOLUMETRIC FLASH CLOUD —
 	// warm white-cream, a metre or two across, cauliflower edges, hugging the
@@ -3695,8 +3743,16 @@ function hit_sparks(x,y,z,vx,vy,vz){ _spark_count++;
 		debris.vx[k]=(vx||0)*0.8+(Math.random()-0.5)*14; debris.vy[k]=(vy||0)*0.8+2+Math.random()*6; debris.vz[k]=(vz||0)*0.8+(Math.random()-0.5)*14;
 		debris.ttl[k]=debris.life[k]=2.5+Math.random()*2;
 		debris.r[k]=0.16;debris.g[k]=0.16;debris.b[k]=0.17; } } }
-function explosion_at(x,y,z){
+const transient_fx=[];
+function transient_blast(x,y,z,water){ if((cfg.effects_quality??2)<1) return;
+	const mat=new THREE.MeshBasicMaterial({color:water?0xd9f4ff:0xffb34d,transparent:true,opacity:.72,depthWrite:false,blending:water?THREE.NormalBlending:THREE.AdditiveBlending,side:THREE.DoubleSide,toneMapped:false});
+	const mesh=new THREE.Mesh(new THREE.RingGeometry(.45,1,48),mat); mesh.position.set(x,water?.12:y,z); if(water) mesh.rotation.x=-Math.PI/2; else mesh.quaternion.copy(camera.quaternion); scene.add(mesh);
+	const light=new THREE.PointLight(water?0xcceeff:0xff8b32,water?14:38,water?35:75,2); light.position.set(x,y+1,z); scene.add(light); transient_fx.push({mesh,light,age:0,life:water?.75:.34,water}); }
+function update_transient_fx(dt){ for(let i=transient_fx.length-1;i>=0;i--){ const f=transient_fx[i]; f.age+=dt; const t=f.age/f.life; if(t>=1){ scene.remove(f.mesh,f.light); f.mat?.dispose?.(); f.mesh.material.dispose(); f.mesh.geometry.dispose(); transient_fx.splice(i,1); continue; }
+	const s=(f.water?3:2)+t*(f.water?24:15); f.mesh.scale.setScalar(s); f.mesh.material.opacity=(1-t)*(f.water?.55:.72); f.light.intensity=(1-t)*(f.water?14:38); if(!f.water) f.mesh.quaternion.copy(camera.quaternion); } }
+function explosion_at(x,y,z,kind){
 	audio_explosion(Math.hypot(x-ownship.pos.x,y-ownship.pos.y,z-ownship.pos.z));
+	const water=kind==="water"||(kind===undefined&&y<2); transient_blast(x,y,z,water);
 	// Two stages (#239): a fast-swelling fireball that soots into a slower,
 	// longer-lived dark cloud — fewer particles than the old 64, because each
 	// one now GROWS instead of holding its spawn size — plus shed wreckage on
@@ -3707,7 +3763,8 @@ function explosion_at(x,y,z){
 	smoke.vx[k]=Math.cos(a)*Math.cos(e)*sp; smoke.vy[k]=Math.abs(Math.sin(e))*sp*0.8+6; smoke.vz[k]=Math.sin(a)*Math.cos(e)*sp;
 	smoke.ttl[k]=smoke.life[k]=fire?(0.5+Math.random()*0.7):(3.0+Math.random()*3.0);
 	smoke.sz[k]=fire?0.45:(0.35+Math.random()*0.2); smoke.gr[k]=fire?2.6:0.9;   // the fireball balloons; the soot billows
-	if(fire){ smoke.r[k]=1.3; smoke.g[k]=0.55+Math.random()*0.3; smoke.b[k]=0.10; } else { smoke.r[k]=0.16; smoke.g[k]=0.15; smoke.b[k]=0.15; } }
+	if(water){ smoke.r[k]=.82; smoke.g[k]=.92; smoke.b[k]=1.0; smoke.gr[k]=1.5; smoke.ttl[k]=smoke.life[k]=.8+Math.random()*1.5; }
+	else if(fire){ smoke.r[k]=1.3; smoke.g[k]=0.55+Math.random()*0.3; smoke.b[k]=0.10; } else { smoke.r[k]=0.16; smoke.g[k]=0.15; smoke.b[k]=0.15; } }
 	for(let i=0;i<9;i++){ const k=pool_spawn(debris); if(k<0) break;
 	const a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=12+Math.random()*30;
 	debris.px[k]=x; debris.py[k]=y+1; debris.pz[k]=z;
@@ -4142,7 +4199,7 @@ function fly_player(dt){
 		// the flash and thud are the bandit's rounds arriving on us.
 		{ const flown=battle_fly(Math.min(dt,0.1), !!cheat("invulnerable"), (has_enemy&&bandit.group.visible)?battle_aim(bandit):null);
 			for(const p of flown.impacts){ const w=_v.set(p.x,p.y,p.z).applyQuaternion(bandit.group.quaternion).add(bandit.group.position);
-				hit_sparks(w.x,w.y,w.z,bandit.velx??bandit.fwd.x*bandit.speed,bandit.vely??bandit.fwd.y*bandit.speed,bandit.velz??bandit.fwd.z*bandit.speed); }
+				hit_sparks(w.x,w.y,w.z,bandit.velx??bandit.fwd.x*bandit.speed,bandit.vely??bandit.fwd.y*bandit.speed,bandit.velz??bandit.fwd.z*bandit.speed,bandit,p); }
 			if(flown.own>0){ hit_flash=Math.min(1,hit_flash+0.25*flown.own); audio_hit(Math.min(flown.own,4)); }
 			ownship.struck=(ownship.struck||0)+flown.own; bandit.struck=(bandit.struck||0)+flown.bandit; }   // cumulative rounds taken, for the recording (#238): the total survives 10 Hz sampling losslessly
 		const battle=battle_progress(ownship.throttle,battle_tick++,battle_reset,(secured[0]?1:0)|(secured[1]?2:0)); battle_reset=false;
@@ -4398,6 +4455,7 @@ function step_world(dt){ sim_time+=dt;
 	update_pool_ballistic(tracers,dt,9.8,0,true); update_missiles(dt);
 	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96); update_pool_ballistic(strikes,dt,9.8,0);   // no drag, exactly as these behaved in the tracer pool: the change here is legibility, not motion
 	update_pool_ballistic(debris,dt,9.8,0.998);   // shed panels fall ballistically with a whisper of drag (#239)
+	update_transient_fx(dt);
 	for(let i=0;i<debris.max;i++){ if(!debris.active[i]||Math.random()>dt*7) continue;   // micro-trail: falling wreckage sheds an occasional thin wisp — the gun-camera frames show each chunk drawing its own faint line
 		const k=pool_spawn(smoke); if(k<0) break;
 		smoke.px[k]=debris.px[i]; smoke.py[k]=debris.py[i]; smoke.pz[k]=debris.pz[i];
@@ -4516,6 +4574,24 @@ function reset_ownship(){
 }
 
 // ============================================================================ camera
+// padlock_target: what the padlock watches. Single player, the bandit while
+// the duel stands; multiplayer, the nearest remote not on my team (any remote
+// in a teamless furball). Null means nothing to watch.
+function padlock_target(){
+	if(!MULTIPLAYER) return (has_enemy&&bandit.group&&bandit.group.visible)?bandit:null;
+	if(!net) return null;
+	const mine=net.teams.get(net.slot)||"";
+	let best=null, span=1e12;
+	for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
+		if(mine&&(net.teams.get(slot)||"")===mine) continue;
+		const d=st.pos.distanceToSquared(ownship.pos); if(d<span){ span=d; best=st; } }
+	return best;
+}
+function padlock_toggle(){
+	if(padlock){ padlock=false; padlock_snap=true; notice(translate("PADLOCK OFF")); return; }
+	if(!padlock_target()){ notice(translate("NO TARGET")); return; }
+	padlock=true; padlock_snap=false; notice(translate("PADLOCK"));
+}
 function update_camera(dt){
 	const firstPerson = (cfg.view==="hud");
 	ownship.group.visible=(!firstPerson) || cfg.view==="cockpit";   // in cockpit view the airframe RENDERS (near pass); the layer split keeps it out of the world passes
@@ -4523,8 +4599,28 @@ function update_camera(dt){
 		const hr=dt*1.6;
 		const daz=(((keys.has("ArrowLeft")||pad_looks.left)?1:0)-((keys.has("ArrowRight")||pad_looks.right)?1:0))*hr;
 		const del=(((keys.has("ArrowUp")||pad_looks.up)?1:0)-((keys.has("ArrowDown")||pad_looks.down)?1:0))*hr;   // ↑ looks up (head_el positive = up; the compose carries the sign); the castle joins the arrows in both views
-		if(daz||del){ head_az=THREE.MathUtils.clamp(head_az+daz,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+del,-1.047,1.396); }
+		if(daz||del){ head_az=THREE.MathUtils.clamp(head_az+daz,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+del,-1.047,1.396); padlock=false; padlock_snap=false; }   // a manual look takes the head back — padlock yields to the pilot
 	}
+	// Padlock (#243): slave the head to the target in the first-person views.
+	// The direction is computed in the BODY frame and expressed in the same
+	// az/el the compose consumes; the head slews at a neck rate rather than
+	// teleporting, and the CLAMPS are the mask — a target past ±150° az or
+	// under the sill stays honestly out of view, head parked at its limit
+	// ("he's behind me and I can't see him"), resuming when he emerges.
+	if(padlock&&(cfg.view==="hud"||cfg.view==="cockpit")){
+		const t=padlock_target();
+		if(!t){ padlock=false; padlock_snap=true; }
+		else { _pad_d.copy(t.pos).sub(ownship.pos).normalize();
+			const bf=_pad_d.dot(ownship.fwd), bu=_pad_d.dot(ownship.up), br=_pad_d.dot(ownship.right);
+			const azT=THREE.MathUtils.clamp(Math.atan2(-br,bf),-2.618,2.618);
+			const elT=THREE.MathUtils.clamp(Math.atan2(bu,Math.hypot(bf,br)),-1.047,1.396);
+			const R=dt*4.5;   // ~260°/s: a quick check-six, not a teleport
+			head_az+=THREE.MathUtils.clamp(azT-head_az,-R,R);
+			head_el+=THREE.MathUtils.clamp(elT-head_el,-R,R); }
+	}
+	if(padlock_snap){ const R=dt*6;   // toggled off: ease back to boresight, cancelled by any manual look
+		head_az-=THREE.MathUtils.clamp(head_az,-R,R); head_el-=THREE.MathUtils.clamp(head_el,-R,R);
+		if(Math.abs(head_az)<0.01&&Math.abs(head_el)<0.01){ head_az=0; head_el=0; padlock_snap=false; } }
 	if(cfg.view!=="chase" || map_on){   // HELD zoom keys sweep the optical zoom (the keydown edge gives the first notch; this carries the hold). Chase in flight is excluded: there −/= dolly the orbit below
 		const zk=(k)=>keys.has(key_of(k).replace(/^Shift\+/,""));
 		const sweep=((zk("zoom.in")?1:0)-(zk("zoom.out")?1:0))*dt*2.6;   // held sweep quickened to match the coarser notch
@@ -5393,7 +5489,7 @@ function net_event(e){ const slot=Number(e.slot);
 		if(net&&slot===net.slot&&!(e.kind==="eject"&&ejected)) notice(translate(e.kind==="eject"?"EJECTED":"PILOT DOWN"));   // our own eject already shows the banner
 		break;   // the airframe flies on as a wreck; the kill event handles scoring and the fireball
 	case "explode": { const st=(net&&slot===net.slot)?ownship:remotes.get(slot); if(st) explosion_at(st.pos.x,st.pos.y,st.pos.z); break; }
-	case "splash": if(Array.isArray(e.position)) explosion_at(e.position[0],e.position[1],e.position[2]); break;   // a wreck met the sea
+	case "splash": if(Array.isArray(e.position)) explosion_at(e.position[0],e.position[1],e.position[2],"water"); break;   // a wreck met the sea: pale steam/spray rather than an orange fuel ball
 	case "join": if(!net||slot!==net.slot) notice((e.name||"")+" "+translate("JOINED")); break;
 	case "leave": remote_drop(slot); notice((e.name||"")+" "+translate("LEFT")); break;
 	case "call": {   // wingman brevity calls (#139): radio is team-scoped, callsigns verbatim, call words localised
