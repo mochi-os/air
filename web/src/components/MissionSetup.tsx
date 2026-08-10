@@ -147,6 +147,9 @@ const BUTTON_ROWS: Row[] = [
   { id: 'guns', label: <Trans>Fire weapon</Trans>, group: 'weapons' },   // the trigger serves the SELECTED weapon (engine.ts: guns in GUN mode, a 9M in 9M mode), so 'Guns' named only half of what it does
   { id: 'select', label: <Trans>Select weapon</Trans>, group: 'weapons' },
   { id: 'acquire', label: <Trans>Acquire target</Trans>, group: 'weapons' },
+  { id: 'radar.undesignate', label: <Trans>Undesignate target</Trans>, group: 'weapons' },   // #30
+  { id: 'radar.silent', label: <Trans>Radar silent</Trans>, group: 'weapons' },   // #30
+  { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },   // #30: boresight <-> vertical
   { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },   // the id stays 'flares' (the action); the label is the real dispenser's name
   { id: 'jettison.tanks', label: <Trans>Jettison tanks</Trans>, group: 'weapons' },
   { id: 'jettison.emergency', label: <Trans>Emergency jettison (hold)</Trans>, group: 'weapons' },
@@ -191,6 +194,9 @@ const KEY_ROWS: Row[] = [
   { id: 'guns', label: <Trans>Fire weapon</Trans>, group: 'weapons' },
   { id: 'select', label: <Trans>Select weapon</Trans>, group: 'weapons' },
   { id: 'acquire', label: <Trans>Acquire target</Trans>, group: 'weapons' },
+  { id: 'radar.undesignate', label: <Trans>Undesignate target</Trans>, group: 'weapons' },   // #30
+  { id: 'radar.silent', label: <Trans>Radar silent</Trans>, group: 'weapons' },   // #30
+  { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },   // #30: boresight <-> vertical
   { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },
   { id: 'jettison.tanks', label: <Trans>Jettison tanks</Trans>, group: 'weapons' },
   { id: 'jettison.emergency', label: <Trans>Emergency jettison (hold)</Trans>, group: 'weapons' },
