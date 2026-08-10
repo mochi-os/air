@@ -12,17 +12,20 @@ vi.mock('@mochi/web', () => ({ createAppClient: () => ({}) }))
 const { Net } = await import('./net')
 type Net = InstanceType<typeof Net>
 
-// The server's 34-byte pose record (world/games/air/air.go, func pose): slot,
-// position f32x3, ..., flags at 26, fire bytes at 29/30, leak at 31. Only the
-// fields this test asserts on are filled; the rest stay zero.
+// The server's 35-byte pose record (world/games/air/air.go, func pose): slot,
+// position f32x3, ..., flags at 26, fire bytes at 29/30, leak at 31, the
+// radar emitter at 34 (#30). Only the fields this test asserts on are filled;
+// the rest stay zero — except the emitter byte, whose "nothing" is 63.
 function pose(options: {
   slot: number
   alive?: boolean
   burning?: boolean
   fire?: [number, number]
   leak?: number
+  emitter?: number
+  target?: number
 }): Uint8Array {
-  const b = new Uint8Array(34)
+  const b = new Uint8Array(35)
   const v = new DataView(b.buffer)
   v.setUint8(0, options.slot)
   let flags = 0
@@ -33,12 +36,13 @@ function pose(options: {
   v.setUint8(29, Math.round((options.fire?.[0] ?? 0) * 255))
   v.setUint8(30, Math.round((options.fire?.[1] ?? 0) * 255))
   v.setUint8(31, Math.round((options.leak ?? 0) * 10))
+  v.setUint8(34, ((options.emitter ?? 0) << 6) | (options.target ?? 63))
   return b
 }
 
 function concat(list: Uint8Array[]): Uint8Array {
-  const out = new Uint8Array(list.length * 34)
-  list.forEach((p, i) => out.set(p, i * 34))
+  const out = new Uint8Array(list.length * 35)
+  list.forEach((p, i) => out.set(p, i * 35))
   return out
 }
 
@@ -94,16 +98,18 @@ describe('self pose', () => {
     expect(mine.burning).toBe(true)
   })
 
-  // Cross-language contract: these 34 bytes were captured from the REAL server
+  // Cross-language contract: these bytes were captured from the REAL server
   // encoder (world/games/air/air.go func pose) for a jet with the left engine
   // alight at 0.6, a fuel fire, and a 1.5 leak — the same case the Go test
-  // TestSelfPoseDamage asserts on. If either side's layout drifts, one of the
-  // two tests fails.
+  // TestSelfPoseDamage asserts on. The record grew its 35th byte (the radar
+  // emitter, #30): silent/no-lock encodes as 0x3f, appended here exactly as
+  // the encoder now emits it (asserted by TestRadarPoseWire). If either
+  // side's layout drifts, one of the two tests fails.
   it('decodes the bytes the server actually produces', () => {
     const golden = Uint8Array.from(
-      '0000a02d4500e08e450000000000003303f47f0000810000980831000099000f0000'.match(/../g)!.map((h) => parseInt(h, 16))
+      '0000a02d4500e08e450000000000003303f47f0000810000980831000099000f00003f'.match(/../g)!.map((h) => parseInt(h, 16))
     )
-    expect(golden.length).toBe(34)
+    expect(golden.length).toBe(35)
     const s = session(0)
     feed(s, golden)
     const mine = s.self()!
@@ -119,5 +125,25 @@ describe('self pose', () => {
     feed(s, concat([pose({ slot: 0 }), pose({ slot: 5, fire: [0.4, 0.4], burning: true })]))
     expect(s.slots()).toContain(5)
     expect(s.slots()).not.toContain(0) // your own jet is never drawn from the wire
+  })
+})
+
+describe('emitters (#30)', () => {
+  it('reads each slot\'s radar state from byte 34 — the RWR\'s feed', () => {
+    const s = session(0)
+    feed(s, concat([
+      pose({ slot: 0 }),
+      pose({ slot: 3, emitter: 2, target: 0 }), // slot 3 has us locked
+      pose({ slot: 5, emitter: 1 }), // slot 5 is searching
+    ]))
+    expect(s.emitters.get(3)).toEqual({ mode: 2, target: 0 })
+    expect(s.emitters.get(5)).toEqual({ mode: 1, target: -1 })
+    expect(s.emitters.get(0)).toEqual({ mode: 0, target: -1 })
+  })
+  it('a later record replaces the state — a broken lock goes quiet', () => {
+    const s = session(0)
+    feed(s, concat([pose({ slot: 3, emitter: 2, target: 0 })]), 60)
+    feed(s, concat([pose({ slot: 3, emitter: 1 })]), 120)
+    expect(s.emitters.get(3)).toEqual({ mode: 1, target: -1 })
   })
 })

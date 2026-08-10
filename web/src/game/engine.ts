@@ -22,6 +22,7 @@ import { split as model_split, repack as model_repack, textures as model_capture
 import { flight_catalog } from './flight'
 import { diagnose } from '../lib/graphics'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
+import { Radar, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES } from './radar'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
@@ -1254,14 +1255,14 @@ const ddi_state={ left:{page:"eng",menu:""}, right:{page:"adi",menu:""}, center:
 //-case starts pre-set NAV's right display to ADI — the pilot would have
 // configured for the approach). Page selections record into the CURRENT
 // family, so a switch away and back restores what you had.
-const ddi_sets={ aa:{left:"sms",right:"sa",center:"hsi"}, nav:{left:"chklst",right:"fuel",center:"hsi"} };
+const ddi_sets={ aa:{left:"sms",right:"rdr",center:"sa"}, nav:{left:"chklst",right:"fuel",center:"hsi"} };   // A/A seeds the attack scan on the right DDI with stores left and the SA picture on the AMPCD (#30) — the fighting layout; NAV keeps its instrument set
 function ddi_family(){ return master==="nav"?"nav":"aa"; }
 function ddi_recall(){ const set=ddi_sets[ddi_family()]; for(const d of ["left","right","center"]) ddi_state[d]={ page:set[d], menu:"" }; ddi_dirty=true; }
 function ddi_show(display,page){ ddi_state[display]={ page, menu:"" }; ddi_sets[ddi_family()][display]=page; ddi_dirty=true; }
 function set_master(m){ const before=ddi_family(); master=m; if(ddi_family()!==before) ddi_recall(); }
 let ddi_dirty=false;   // a pushbutton press redraws NOW — the 120 ms cadence would read as a stuck button
 const DDI_MENUS={   // [pushbutton, legend, page] — page "" = not built yet
-	tac:[ [6,"HUD","hud"],[7,"RDR",""],[8,"SA","sa"],[9,"SMS","sms"],[10,"EW","ew"] ],
+	tac:[ [6,"HUD","hud"],[7,"RDR","rdr"],[8,"SA","sa"],[9,"SMS","sms"],[10,"EW","ew"] ],
 	supt:[ [6,"ADI","adi"],[7,"HSI","hsi"],[8,"ENG","eng"],[9,"FUEL","fuel"],[10,"FCS","fcs"],[11,"CHKLST","chklst"],[12,"FPAS","fpas"],[13,"BIT",""],[14,"MUMI",""] ] };
 function button_of(lx,ly){   // 512-space point -> pushbutton number, 0 between slots (five 80 px slots along the 56..456 span of each edge)
 	const slot=v=>{ const k=Math.floor((v-56)/80); return k>=0&&k<5?k:-1; };
@@ -1290,7 +1291,9 @@ function ddi_press(display,pb){   // true when the press did something (consumes
 	const p=DDI_PAGES[st.page];
 	if(p&&p.press&&p.press(pb,display)){ ddi_dirty=true; return true; }   // page-owned pushbuttons
 	return false; }
+let ddi_draws=0;   // dev cadence probe: every face render counts, from both the MFD blit and the full-screen view
 function ddi_render(x,size,display){   // size-agnostic: draws the display's current face into ANY square canvas
+	ddi_draws++;
 	const s=size/512; x.setTransform(s,0,0,s,0,0);
 	x.globalAlpha=1; x.fillStyle="#050b06"; x.fillRect(0,0,512,512);
 	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="26px monospace"; x.textAlign="center"; x.textBaseline="middle";
@@ -1309,10 +1312,16 @@ function screens_update(){
 	const list=ownship.group.userData.screens; if(!list) return;
 	const pit=cfg.view==="cockpit", rep=(cfg.view==="hud"&&!map_on)?repeat:"";
 	if(!pit&&!rep) return;   // pages redraw only while some consumer is on screen
-	const now=performance.now(); if(!ddi_dirty&&now-screens_last<120) return; screens_last=now; ddi_dirty=false;
+	// The 120 ms economy holds for the static instrument pages; a display
+	// showing an ANIMATED page (the radar's sweep) redraws every frame — the
+	// stale gate is per-cycle, the spend per-screen, so the other MFDs stay cheap.
+	const now=performance.now(); const stale=ddi_dirty||now-screens_last>=120;
+	if(stale){ screens_last=now; ddi_dirty=false; }
 	const dpr=Math.min(devicePixelRatio||1,2);
 	for(const sc of list){
 		if(!pit&&sc.display!==rep) continue;   // repeating: only the shown display spends
+		{ const st=ddi_state[sc.display];
+			if(!stale&&!(st&&!st.menu&&DDI_PAGES[st.page]&&DDI_PAGES[st.page].animated)) continue; }
 		// variable resolution: the canvas follows the consumer — the quad's
 		// projected on-screen height in the pit (stepped, with hysteresis
 		// against zoom flutter), the panel's size when repeating
@@ -1332,7 +1341,8 @@ function screens_update(){
 // semantics; 0 puts the page's transient state back to defaults).
 const DDI_PAGES={ eng:{draw:ddi_eng}, adi:{draw:ddi_adi}, hsi:{draw:ddi_hsi,range:hsi_range,reset:hsi_reset,press:hsi_press},
 	sa:{draw:ddi_sa,range:sa_range,reset:sa_reset,press:sa_press}, hud:{draw:ddi_hud},
-	fuel:{draw:ddi_fuel,press:fuel_press}, fcs:{draw:ddi_fcs}, chklst:{draw:ddi_chklst}, ew:{draw:ddi_ew}, sms:{draw:ddi_sms}, fpas:{draw:ddi_fpas} };
+	fuel:{draw:ddi_fuel,press:fuel_press}, fcs:{draw:ddi_fcs}, chklst:{draw:ddi_chklst}, ew:{draw:ddi_ew}, sms:{draw:ddi_sms}, fpas:{draw:ddi_fpas},
+	rdr:{draw:ddi_rdr,range:rdr_range,reset:rdr_reset,press:rdr_press,animated:true} };   // animated: continuous motion (the sweep, the TDC, fading bricks) — displays showing it redraw at frame rate instead of the 120 ms economy below
 // ---- HSI page state (#99 pages): ONE nav picture shared by every display
 // showing the format, like the jet's single nav solution. The rose ring sits
 // at HALF the selected scale; DCTR slides the rose down so the scale ahead
@@ -1361,6 +1371,112 @@ function sa_press(pb){
 	if(pb===4){ sa_range(-1); return true; }
 	if(pb===3){ sa_range(1); return true; }
 	return false; }
+// ---- RDR ATTK page (#30): the B-scan attack format — azimuth across, range
+// up, the sweep animated, RWS bricks aging in place, TWS trackfiles with
+// velocity sticks and the L&S star, STT alone with its data block. The mouse
+// is the TDC on the face (rdr_face); the top bezels carry mode / width / SIL /
+// ACM condition / UNDES, the left arrows the range scale, HSI-style. Legends
+// are instrument vocabulary and stay English, like every annunciator.
+function rdr_x(azimuth,half){ return 256+(azimuth/half)*180; }
+function rdr_y(range,scaleM){ return 430-THREE.MathUtils.clamp(range/scaleM,0,1)*360; }
+function rdr_range(direction){ const i=RADAR_SCALES.indexOf(RADAR.scale);
+	RADAR.scale=RADAR_SCALES[THREE.MathUtils.clamp(i-Math.sign(direction),0,RADAR_SCALES.length-1)]; }   // zoom-in steps the scale DOWN, like the HSI
+function rdr_reset(){ RADAR.scale=40; RADAR.elevation=0; radar_cursor.azimuth=0; radar_cursor.range=20*NM; }
+function rdr_press(pb){
+	if(pb===4){ rdr_range(-1); return true; }
+	if(pb===3){ rdr_range(1); return true; }
+	if(pb===6){ RADAR.mode=RADAR.mode==="rws"?"tws":"rws"; return true; }
+	if(pb===7){ RADAR.width=(RADAR.width+1)%RADAR_WIDTHS.length; return true; }
+	if(pb===8){ RADAR.sil=!RADAR.sil; return true; }
+	if(pb===9){ RADAR.acm=RADAR.acm==="bst"?"vacq":"bst"; return true; }
+	if(pb===10){ radar_undesignate(); return true; }
+	if(pb===11){ RADAR.slew(1); return true; }   // EL↑/EL↓ (#30): sanitise high or low — the caret shows what the band covers at the cursor
+	if(pb===12){ RADAR.slew(-1); return true; }
+	return false; }
+// rdr_face: a click on the scan face is the TDC — move the cursor there and
+// try the ladder on whatever it captured: trackfiles in TWS (first the L&S,
+// again for STT), bricks in RWS straight to STT — where a stale brick whose
+// target has moved on simply fails, which is the honest lesson about RWS.
+function rdr_face(lx,ly){ if(lx<60||lx>452||ly<54||ly>446) return false;
+	const half=RADAR.half(), scaleM=RADAR.scale*NM;
+	const azimuth=THREE.MathUtils.clamp((lx-256)/180,-1,1)*half;
+	const range=THREE.MathUtils.clamp((430-ly)/360,0,1)*scaleM;
+	radar_cursor.azimuth=azimuth; radar_cursor.range=range;
+	const own=radar_own();
+	if(RADAR.mode==="tws"){
+		const candidates=RADAR.tracks.map(t=>{ const g=radar_geometry(own,t,wrap_axis); return { id:t.id, azimuth:g.azimuth, range:g.range }; });
+		const id=radar_pick(candidates,azimuth,range,half,scaleM);
+		if(id!=null) radar_designate(id);
+		return true; }
+	const id=radar_pick(RADAR.bricks.map(b=>({ id:b.id, azimuth:b.azimuth, range:b.range })),azimuth,range,half,scaleM);
+	if(id!=null){ const c=contacts().find(k=>k.id===id);
+		if(c){ const g=radar_geometry(own,c,wrap_axis);
+			if(Math.abs(g.azimuth-azimuth)<0.09&&Math.abs(g.range-range)<scaleM*0.12) radar_designate(id); } }
+	return true; }
+function rdr_stick(x,px,py,t,own){   // velocity stick: the track's direction relative to own heading, screen-up = same way we point
+	const angle=Math.atan2(t.vx,-t.vz)-own.heading;
+	x.beginPath(); x.moveTo(px,py); x.lineTo(px+Math.sin(angle)*16,py-Math.cos(angle)*16); x.stroke(); }
+function rdr_star(x,px,py){   // the L&S star
+	x.lineWidth=2; x.beginPath();
+	for(let k=0;k<4;k++){ const a=k*Math.PI/4; x.moveTo(px-Math.cos(a)*6,py-Math.sin(a)*6); x.lineTo(px+Math.cos(a)*6,py+Math.sin(a)*6); }
+	x.stroke(); }
+function rdr_block(x,t,own,g){   // the L&S/STT data block: closure, altitude, target speed — the stick already shows aspect
+	const mvx=ownship.velx??ownship.fwd.x*ownship.speed, mvy=ownship.vely??ownship.fwd.y*ownship.speed, mvz=ownship.velz??ownship.fwd.z*ownship.speed;
+	const lx=wrap_axis(t.x-own.x)/(g.range||1), ly=(t.y-own.y)/(g.range||1), lz=wrap_axis(t.z-own.z)/(g.range||1);
+	const vc=((mvx-t.vx)*lx+(mvy-t.vy)*ly+(mvz-t.vz)*lz)*1.944;   // + = closing, knots
+	x.font="18px monospace"; x.textAlign="left"; x.fillStyle="#39e07a";
+	x.fillText("VC "+(vc>=0?"+":"")+Math.round(vc),84,392);
+	x.fillText(Math.round(t.y*3.281/1000)+" KFT",84,412);
+	x.fillText(Math.round(Math.hypot(t.vx,t.vy,t.vz)*1.944)+" KTS",84,432); }
+function ddi_rdr(x){
+	const own=radar_own(); const half=RADAR.half(), scaleM=RADAR.scale*NM;
+	ddi_legend(x,6,RADAR.mode==="rws"?"RWS":"TWS",true,false);
+	ddi_legend(x,7,Math.round(half/D2R)+"°",true,false);   // the EFFECTIVE width — TWS caps the ask
+	ddi_legend(x,8,"SIL",true,RADAR.sil);
+	ddi_legend(x,9,RADAR.acm==="bst"?"BST":"VACQ",true,false);
+	ddi_legend(x,10,"UNDES",RADAR.stt!=null||RADAR.ls!=null,false);
+	ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false);
+	ddi_legend(x,11,"EL↑",true,false); ddi_legend(x,12,"EL↓",true,false);
+	x.fillStyle="#39e07a"; x.font="20px monospace"; x.textAlign="left"; x.fillText(String(RADAR.scale),14,216);
+	if(RADAR.elevation!==0){ x.textAlign="right"; x.fillText("EL "+(RADAR.elevation>0?"+":"-")+Math.round(Math.abs(RADAR.elevation)/D2R)+"°",430,92); }   // slewed off level: say so — a silent tilt is a mystery blind scan
+	x.strokeStyle="rgba(57,224,122,0.5)"; x.lineWidth=1.5; x.strokeRect(76,70,360,360);
+	for(const az of [0,half/2,-half/2]){ const px=rdr_x(az,half);   // azimuth grid
+		x.strokeStyle=az===0?"rgba(57,224,122,0.25)":"rgba(57,224,122,0.12)";
+		x.beginPath(); x.moveTo(px,70); x.lineTo(px,430); x.stroke(); }
+	for(const q of [0.25,0.5,0.75]){ const py=rdr_y(scaleM*q,scaleM);   // range ticks up the left inside edge
+		x.strokeStyle="rgba(57,224,122,0.35)"; x.beginPath(); x.moveTo(76,py); x.lineTo(86,py); x.stroke(); }
+	x.fillStyle="#39e07a"; x.font="16px monospace"; x.textAlign="center";
+	x.fillText(String(-Math.round(half/D2R)),76,450); x.fillText("0",256,450); x.fillText(String(Math.round(half/D2R)),436,450);
+	if(RADAR.stt!=null){ const t=RADAR.tracks.find(k=>k.id===RADAR.stt);
+		x.font="18px monospace"; x.textAlign="left"; x.fillText("STT",86,92);
+		if(t){ const g=radar_geometry(own,t,wrap_axis);
+			const px=rdr_x(THREE.MathUtils.clamp(g.azimuth,-half,half),half), py=rdr_y(g.range,scaleM);
+			x.strokeStyle="#39e07a"; x.lineWidth=2.5;
+			x.beginPath(); x.arc(px,py,12,0,Math.PI*2); x.stroke();
+			x.fillRect(px-3,py-3,6,6);
+			rdr_stick(x,px,py,t,own);
+			rdr_block(x,t,own,g); } }
+	else if(!RADAR.sil){ const sx=rdr_x(RADAR.sweep,half);   // the animated sweep
+		x.strokeStyle="rgba(57,224,122,0.6)"; x.lineWidth=2;
+		x.beginPath(); x.moveTo(sx,70); x.lineTo(sx,430); x.stroke(); }
+	if(RADAR.sil){ x.font="22px monospace"; x.textAlign="center"; x.fillText("SIL",256,108); }
+	for(const b of RADAR.bricks){ if(Math.abs(b.azimuth)>half||b.range>scaleM) continue;   // RWS paints, fading with age
+		x.globalAlpha=Math.max(0.15,1-(RADAR.time-b.at)/12); x.fillStyle="#39e07a";
+		x.fillRect(rdr_x(b.azimuth,half)-6,rdr_y(b.range,scaleM)-2,12,5); }
+	x.globalAlpha=1;
+	if(RADAR.mode==="tws"&&RADAR.stt==null){ for(const t of RADAR.tracks){ const g=radar_geometry(own,t,wrap_axis);
+		if(Math.abs(g.azimuth)>half||g.range>scaleM) continue;
+		const px=rdr_x(g.azimuth,half), py=rdr_y(g.range,scaleM);
+		x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.strokeRect(px-6,py-6,12,12);
+		rdr_stick(x,px,py,t,own);
+		x.font="14px monospace"; x.textAlign="center"; x.fillText(String(Math.round(t.y*3.281/1000)),px,py+26);   // altitude, kft
+		if(t.id===RADAR.ls){ rdr_star(x,px,py-16); rdr_block(x,t,own,g); } } }
+	{ const px=rdr_x(THREE.MathUtils.clamp(radar_cursor.azimuth,-half,half),half), py=rdr_y(THREE.MathUtils.clamp(radar_cursor.range,0,scaleM),scaleM);   // the TDC: two bars, with the elevation coverage readout at its range
+		x.strokeStyle="#39e07a"; x.lineWidth=2.5;
+		x.beginPath(); x.moveTo(px-5,py-9); x.lineTo(px-5,py+9); x.moveTo(px+5,py-9); x.lineTo(px+5,py+9); x.stroke();
+		const reach=Math.max(NM,radar_cursor.range);
+		const hi=Math.round((ownship.pos.y+reach*Math.tan(RADAR.elevation+0.175))*3.281/1000), lo=Math.max(0,Math.round((ownship.pos.y+reach*Math.tan(RADAR.elevation-0.175))*3.281/1000));
+		x.font="14px monospace"; x.textAlign="left"; x.fillText(hi+"-"+lo,px+12,py-4); } }
 function ddi_eng(x){ const gz=ownship.gauges||{};   // the real format: parameter names down the CENTRE, engine values either side
 	x.fillText("ENG",256,36);
 	x.font="22px monospace";
@@ -1484,10 +1600,7 @@ function ddi_sa(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0
 		if(label){ x.save(); x.translate(dx,dz); x.rotate(hdg); x.font="14px monospace"; x.fillText(label,0,24); x.restore(); } };   // labels unrotate to stay upright
 	{ const kx=wrap_axis(CARRIER.x-ownship.pos.x)*ppm, kz=wrap_axis(CARRIER.z-ownship.pos.z)*ppm;   // the boat
 		if(Math.hypot(kx,kz)<=R+14){ x.fillStyle=colour?"#ffd27a":"#39e07a"; x.fillRect(kx-5,kz-5,10,10); } }
-	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
-			const team=net.teams.get(slot)||"";
-			jet(st.pos.x,st.pos.z,st.fwd.x,st.fwd.z,colour?(team==="red"?"#ff5a48":team==="blue"?"#5a86ff":"#ffb04a"):"#39e07a",st.name||net.names.get(slot)||""); } }
-	else if(has_enemy&&bandit.group.visible) jet(bandit.pos.x,bandit.pos.z,bandit.fwd.x,bandit.fwd.z,colour?"#ffb04a":"#39e07a","");
+	for(const c of contacts()) jet(c.x,c.z,c.fwd.x,c.fwd.z,colour?(c.team==="red"?"#ff5a48":c.team==="blue"?"#5a86ff":"#ffb04a"):"#39e07a",c.name);   // the contacts model (#30): today truth-fed (furball is omniscient by design); the BVR rules (#32) will gate it by sensors and this page must not notice
 	x.restore();
 	x.strokeStyle=colour?"#ffffff":"#39e07a"; x.lineWidth=3;   // ownship
 	x.beginPath(); x.moveTo(256,cy-14); x.lineTo(248,cy+12); x.lineTo(264,cy+12); x.closePath(); x.stroke();
@@ -3288,7 +3401,10 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
 		const ch=(e.shiftKey?"Shift+":"")+k;   // full chord — remappable actions match this, so a shift-chord never fires the bare-key action and vice versa
 		if(ch===key_of("launch") && launch_status()===2){ if((ownship.fold??0)>0.02) notice(translate("SPREAD WINGS")); else start_launch(); }   // only when spotted on the cat, lined up, at full power — and never with the wings folded
-		if(ch===key_of("acquire") && MULTIPLAYER && !on_ground()) acquire_target();   // ACM acquisition (in flight, Enter is free — the catapult owns it only on deck); single-player auto-designates the lone bandit
+		if(ch===key_of("acquire") && !on_ground()) acquire_press();   // radar-aware acquisition (#30): TWS steps the L&S, otherwise the ACM cone (in flight, Enter is free — the catapult owns it only on deck)
+		if(ch===key_of("radar.undesignate")) radar_undesignate();   // #30: STT back to search, then the L&S, gone
+		if(ch===key_of("radar.silent")){ RADAR.sil=!RADAR.sil; notice(RADAR.sil?"RADAR SILENT":"RADAR ACTIVE"); }   // #30: emission discipline is a reflex action — annunciator vocabulary stays English
+		if(ch===key_of("radar.acm")){ RADAR.acm=RADAR.acm==="bst"?"vacq":"bst"; notice(RADAR.acm==="bst"?"ACM BORESIGHT":"ACM VERTICAL"); }   // #30: the castle-switch stand-in
 		if(ch===key_of("select")){ set_master(master==="gun"?"9m":master==="9m"?"nav":"gun"); }   // weapon select (#133): GUN -> 9M -> NAV -> GUN; the HUD master mode follows, and crossing the A/A-NAV boundary recalls that mode's displays (#15)
 		if(ch===key_of("altitude")){ alt_radar=!alt_radar; }   // HUD altitude switch: BARO <-> RDR
 		if(ch===key_of("reject")){ declutter=(declutter+1)%3; notice(translate(["HUD NORM","HUD REJ 1","HUD REJ 2"][declutter])); }     // the three-position symbology reject switch (NATOPS 2.13.4.8.1) — unbound by default: re-pressing 2 cycles it; the action stays for players who want a dedicated key or button
@@ -3363,6 +3479,13 @@ stage.addEventListener("pointermove",e=>{ if(!dragging) return;
 	cam_az-=dx*f; cam_el=THREE.MathUtils.clamp(cam_el+dy*f,-1.2,1.45); }, { signal });   // both axes reversed (grab-the-world feel): drag right = orbit left, drag up = camera lowers
 function end_drag(e){ if(!dragging) return; dragging=false; head_drag=false; try{ stage.releasePointerCapture(e.pointerId); }catch(_){ /* release optional */ } }
 stage.addEventListener("pointerup",e=>{ const pressed=dragging&&head_drag&&press_moved<6; end_drag(e); if(pressed) pit_click(e); },{ signal });
+stage.addEventListener("pointermove",e=>{ if(cfg.view!=="ddi"||!running||map_on||!ddi_view_rect) return;   // the TDC follows the mouse over the full-screen attack format (#30) — position only; the click designates
+	const st=ddi_state[ddi_focus()]; if(!st||st.menu||st.page!=="rdr") return;
+	const lx=(e.clientX-ddi_view_rect.ox)/ddi_view_rect.size*512, ly=(e.clientY-ddi_view_rect.oy)/ddi_view_rect.size*512;
+	if(lx<60||lx>452||ly<54||ly>446) return;
+	const half=RADAR.half(), scaleM=RADAR.scale*NM;
+	radar_cursor.azimuth=THREE.MathUtils.clamp((lx-256)/180,-1,1)*half;
+	radar_cursor.range=THREE.MathUtils.clamp((430-ly)/360,0,1)*scaleM; },{ signal });
 // A stationary press-release in the pit is a pushbutton CLICK, not a head look
 // (movement past a few px stays a drag, with its snap-back): raycast the
 // pointer through the near camera at the DDI quads and press the bezel
@@ -3381,7 +3504,10 @@ function pit_click(e){
 				try{ navigator.clipboard.writeText(dev_probe_text); }catch(_){ /* clipboard optional */ } } }   // the WHOLE line — the node name and depth matter as much as y,z
 		return; }
 	const sc=list.find(s=>s.mesh===hit.object);
-	if(ddi_press(sc.display,button_of(hit.uv.x*512,(1-hit.uv.y)*512))) screens_update(); }   // dirty redraw NOW — a press must answer this frame
+	const px=hit.uv.x*512, py=(1-hit.uv.y)*512, pb=button_of(px,py);
+	const st=ddi_state[sc.display];
+	if(pb===0&&st&&!st.menu&&st.page==="rdr"){ if(rdr_face(px,py)){ ddi_dirty=true; screens_update(); } return; }   // a face click on the attack format is the TDC (#30)
+	if(ddi_press(sc.display,pb)) screens_update(); }   // dirty redraw NOW — a press must answer this frame
 // zoom_step: one discrete notch of zoom (trim-wheel button pulse or scroll notch).
 function zoom_step(direction){
 	if(map_on){ map_range=THREE.MathUtils.clamp(map_range*Math.pow(1.2,-direction),MAP_RANGE_MIN,MAP_RANGE_MAX); return; }
@@ -3434,7 +3560,8 @@ const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.
 	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash", "trim.up":"Period", "trim.down":"Comma", "trim.left":"Shift+Comma", "trim.right":"Shift+Period", "trim.reset":"None", "flaps.extend":"KeyF", "flaps.retract":"Shift+KeyF", override:"KeyO", "brake.parking":"Shift+KeyB",
 	gear:"KeyG", hook:"KeyH", probe:"KeyR", atc:"KeyP", lights:"KeyL", flares:"KeyC", eject:"Shift+KeyE", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"None", select:"KeyX", altitude:"KeyK", reject:"None", acquire:"Enter",
 	canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0", repeater:"KeyI", "look.target":"KeyY",
-	"jettison.tanks":"KeyJ", "jettison.emergency":"Shift+KeyJ", "caution.reset":"Shift+KeyM", dump:"Shift+KeyD", "secure.port":"Shift+KeyZ", "secure.starboard":"Shift+KeyX" };   // the cutoffs are chords like the jettison family — securing an engine must be deliberate (Shift+Digit collided with the dev scenario starts)   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares. J is the jettison family; eject moved to triple-Escape (a pilot reaching for "jettison" must never punch out)
+	"jettison.tanks":"KeyJ", "jettison.emergency":"Shift+KeyJ", "caution.reset":"Shift+KeyM", dump:"Shift+KeyD", "secure.port":"Shift+KeyZ", "secure.starboard":"Shift+KeyX",
+	"radar.silent":"Shift+KeyR", "radar.acm":"KeyV", "radar.undesignate":"Shift+Enter" };   // #30: V cycles the ACM condition (a real key, not None — pad buttons replay the bound key, and "None" would fire every unbound action at once)   // the cutoffs are chords like the jettison family — securing an engine must be deliberate (Shift+Digit collided with the dev scenario starts)   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares. J is the jettison family; eject moved to triple-Escape (a pilot reaching for "jettison" must never punch out)
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
@@ -3962,7 +4089,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], /* #57 parked: tracking:{ on:head_track?1:0, ok:head_ok?1:0, az:+head_az.toFixed(3), el:+head_el.toFixed(3) }, */home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
+	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], /* #57 parked: tracking:{ on:head_track?1:0, ok:head_ok?1:0, az:+head_az.toFixed(3), el:+head_el.toFixed(3) }, */ radar:{ mode:RADAR.sil?"sil":RADAR.stt!=null?"stt":RADAR.mode, w:Math.round(RADAR.half()/D2R), scale:RADAR.scale, sweep:+(RADAR.sweep/D2R).toFixed(1), bricks:RADAR.bricks.length, tracks:RADAR.tracks.length, ls:RADAR.ls??null, stt:RADAR.stt??null, emit:RADAR.emitter(), bandit:bandit_emitter, el:Math.round(RADAR.elevation/D2R), track:RADAR.tracks.length?(()=>{ const g=radar_geometry(radar_own(),RADAR.tracks[0],wrap_axis); return { az:+(g.azimuth/D2R).toFixed(1), range:Math.round(g.range) }; })():null }, draws:ddi_draws, emitters:MULTIPLAYER&&net?Object.fromEntries(net.emitters):null,home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
 	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
 	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS
 		racks:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>[n,o.visible])),
@@ -4901,8 +5028,10 @@ function draw_ddi_view(){
 	hctx.save(); hctx.shadowBlur=0;
 	hctx.fillStyle="#101214"; hctx.fillRect(0,0,HW,HH);   // opaque matte — the GL canvas beneath still holds the last world frame
 	if(ddi_face.width!==px){ ddi_face.width=ddi_face.height=px; ddi_view_last=0; }
-	if(!ddi_view_last||performance.now()-ddi_view_last>120){ ddi_view_last=performance.now();
-		ddi_render(ddi_face.getContext("2d"),px,d); }
+	{ const st=ddi_state[d];   // animated pages (the radar) track the frame; static pages keep the 120 ms economy
+		const animated=st&&!st.menu&&DDI_PAGES[st.page]&&DDI_PAGES[st.page].animated;
+		if(animated||!ddi_view_last||performance.now()-ddi_view_last>120){ ddi_view_last=performance.now();
+			ddi_render(ddi_face.getContext("2d"),px,d); } }
 	const ox=(HW-size)/2, oy=(HH-size)/2;
 	ddi_view_rect={ ox, oy, size };
 	hctx.drawImage(ddi_face,ox,oy,size,size);
@@ -4926,7 +5055,9 @@ function ddi_view_click(e){   // screen-space bezel press — the same 512-space
 	let lx=(e.clientX-ddi_view_rect.ox)/ddi_view_rect.size*512, ly=(e.clientY-ddi_view_rect.oy)/ddi_view_rect.size*512;
 	if(lx<-44||ly<-44||lx>556||ly>556) return;
 	lx=THREE.MathUtils.clamp(lx,1,511); ly=THREE.MathUtils.clamp(ly,1,511);
-	if(ddi_press(ddi_focus(),button_of(lx,ly))) ddi_view_last=0; }   // redraw NOW — a press must answer this frame
+	const pb=button_of(lx,ly); const st=ddi_state[ddi_focus()];
+	if(pb===0&&st&&!st.menu&&st.page==="rdr"){ if(rdr_face(lx,ly)) ddi_view_last=0; return; }   // the TDC on the full-screen format (#30)
+	if(ddi_press(ddi_focus(),pb)) ddi_view_last=0; }   // redraw NOW — a press must answer this frame
 function draw_hud(){
 	{ const dpr=Math.min(devicePixelRatio||1,2); hctx.setTransform(dpr,0,0,dpr,0,0); }   // re-assert the base each frame: the buffet shake below leaves a translated transform behind, and early returns must not accumulate it
 	hctx.clearRect(0,0,HW,HH);
@@ -5510,22 +5641,84 @@ let mission_began=Date.now();   // local session identity for the history's repl
 let own_kills=0, own_deaths=0, match_started=0;
 const remotes=new Map();   // slot -> aircraft state
 let designated=-1;   // multiplayer L&S designation: the remote slot the pilot acquired (-1 = none) — HUD state only, like the real jet (the missile's seeker hunts its own cone)
-// acquire_target: ACM boresight acquisition (#133) — designate the target nearest
-// the nose within a 20° cone out to 10 nm; press again with the designated target
-// still in the cone to STEP to the next candidate; an empty cone undesignates.
-// This is the real change-of-target flow: undesignate/point/re-acquire.
-function acquire_target(){
+// ---- A/A radar (#30): the model lives in radar.ts; this block owns its truth
+// feed (the contacts model), the per-frame step, the designation plumbing that
+// makes the radar's L&S/STT the ONE target source (the HUD TD box, the
+// missiles, padlock and the SA picture all follow `designated`), the emitter
+// uplink so other pilots' RWR can hear us (#28), and the SP bandit's emitter.
+const RADAR=new Radar();
+const radar_cursor={ azimuth:0, range:20*1852 };   // the TDC's position on the format
+let radar_sent={ mode:-1, target:-1 };             // last emitter state told to the server
+let bandit_emitter=0;                              // SP bandit: 0 silent / 1 search / 2 STT — what the RWR will read
+// contacts: the one list every target consumer reads — the SA page, the
+// acquire flow, the radar's truth feed. Furball feeds it from truth
+// (omniscient by design); the BVR match rules (#32) will gate it by sensor
+// knowledge instead, and no consumer may care which.
+function contacts(){
+	const out=[];
+	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
+		out.push({ id:slot, x:st.pos.x, y:st.pos.y, z:st.pos.z,
+			vx:st.velx??st.fwd.x*st.speed, vy:st.vely??st.fwd.y*st.speed, vz:st.velz??st.fwd.z*st.speed,
+			fwd:st.fwd, name:st.name||net.names.get(slot)||"", team:net.teams.get(slot)||"" }); } }
+	else if(has_enemy&&bandit.group.visible) out.push({ id:"bandit", x:bandit.pos.x, y:bandit.pos.y, z:bandit.pos.z,
+		vx:bandit.velx??bandit.fwd.x*bandit.speed, vy:bandit.vely??bandit.fwd.y*bandit.speed, vz:bandit.velz??bandit.fwd.z*bandit.speed,
+		fwd:bandit.fwd, name:"", team:"" });
+	return out; }
+function radar_own(){ const gz=ownship.gauges||{}; return { x:ownship.pos.x, y:ownship.pos.y, z:ownship.pos.z, heading:gz.heading||0 }; }
+function radar_designate(id){ if(!RADAR.designate(id)) return;   // a silent radar refuses; the visual designation stands
+	if(MULTIPLAYER&&typeof id==="number") designated=id; }
+function radar_undesignate(){ RADAR.undesignate();
+	if(RADAR.stt==null&&RADAR.ls==null&&MULTIPLAYER) designated=-1; }
+function radar_step(dt){ if(!running) return;
+	RADAR.step(dt,radar_own(),contacts(),wrap_axis);
+	if(MULTIPLAYER&&net){   // emitter uplink: the wire hears state changes only — mode flips and lock/break
+		const mode=RADAR.emitter(), target=typeof RADAR.stt==="number"?RADAR.stt:-1;
+		if(mode!==radar_sent.mode||target!==radar_sent.target){ net.radar(mode,target); radar_sent={ mode, target }; } }
+	bandit_emitter=0;
+	if(!MULTIPLAYER&&has_enemy&&bandit.group.visible){   // geometry-derived until the brain grows radar tactics (#33): searching while it hunts, STT with its nose settled on us inside 10 nm
+		const dx=wrap_axis(ownship.pos.x-bandit.pos.x), dy=ownship.pos.y-bandit.pos.y, dz=wrap_axis(ownship.pos.z-bandit.pos.z);
+		const d=Math.hypot(dx,dy,dz)||1;
+		bandit_emitter=(bandit.fwd.x*dx+bandit.fwd.y*dy+bandit.fwd.z*dz)/d>0.94&&d<18520?2:1; } }
+// acquire_press: one key, radar-aware (#30). TWS with tracks and no lock:
+// step the L&S through the trackfiles nearest-first; a double-tap commands
+// STT on the current L&S. Every other state runs the ACM flow below —
+// which IS today's visual cone designation when the radar is silent.
+let acquire_last=0;
+function acquire_press(){
+	const now=performance.now(); const twice=now-acquire_last<350; acquire_last=now;
+	if(RADAR.mode==="tws"&&RADAR.stt==null&&!RADAR.sil&&RADAR.tracks.length){
+		if(twice&&RADAR.ls!=null){ radar_designate(RADAR.ls); return; }
+		const own=radar_own();
+		const order=[...RADAR.tracks].sort((a,b)=>radar_geometry(own,a,wrap_axis).range-radar_geometry(own,b,wrap_axis).range);
+		const at=order.findIndex(t=>t.id===RADAR.ls);
+		RADAR.ls=order[(at+1)%order.length].id;
+		if(MULTIPLAYER&&typeof RADAR.ls==="number") designated=RADAR.ls;
+		return; }
+	acquire_acm(); }
+// acquire_acm: the armed ACM condition's cone (#133 flow, now radar-fed).
+// BST: 20° off the nose to 10 nm. VACQ: the tall thin fan for the turning
+// fight — ±6° azimuth, -8°..+55° in the lift plane, 5 nm. Nearest-the-axis
+// first, repeat presses step the cone, an empty cone undesignates — the real
+// change-of-target flow: undesignate/point/re-acquire. With the radar active
+// the acquisition goes straight to STT; silent, it stays a visual designation.
+function acquire_acm(){
 	const cone=[];
-	for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
-		const dx=wrap_axis(st.pos.x-ownship.pos.x), dy=st.pos.y-ownship.pos.y, dz=wrap_axis(st.pos.z-ownship.pos.z);
-		const d=Math.hypot(dx,dy,dz)||1; if(d>18520) continue;
-		const off=(ownship.fwd.x*dx+ownship.fwd.y*dy+ownship.fwd.z*dz)/d;
-		if(off>0.94) cone.push({slot,off}); }
+	for(const c of contacts()){ const dx=wrap_axis(c.x-ownship.pos.x), dy=c.y-ownship.pos.y, dz=wrap_axis(c.z-ownship.pos.z);
+		const d=Math.hypot(dx,dy,dz)||1; const fx=dx/d, fy=dy/d, fz=dz/d;
+		const nose=ownship.fwd.x*fx+ownship.fwd.y*fy+ownship.fwd.z*fz;
+		if(RADAR.acm==="bst"){ if(d>18520||nose<0.94) continue; }
+		else { const lift=ownship.up.x*fx+ownship.up.y*fy+ownship.up.z*fz;
+			const side=ownship.right.x*fx+ownship.right.y*fy+ownship.right.z*fz;
+			const elevation=Math.atan2(lift,nose);
+			if(d>9260||Math.abs(side)>0.105||elevation<-0.14||elevation>0.96) continue; }
+		cone.push({ id:c.id, off:nose }); }
 	cone.sort((a,b)=>b.off-a.off);
-	if(!cone.length){ designated=-1; return; }
-	const at=cone.findIndex(c=>c.slot===designated);
-	designated=cone[(at+1)%cone.length].slot;
-}
+	if(!cone.length){ radar_undesignate(); if(MULTIPLAYER&&RADAR.stt==null&&RADAR.ls==null) designated=-1; return; }
+	const current=RADAR.stt??(MULTIPLAYER?designated:null);
+	const at=cone.findIndex(k=>k.id===current);
+	const id=cone[(at+1)%cone.length].id;
+	if(MULTIPLAYER&&typeof id==="number") designated=id;
+	radar_designate(id); }
 function notice(text,secs){ net_notice=text; net_notice_t=secs||3; }   // the single centre-banner slot; each call REPLACES the last (the LSO grade, BOLTER and REARMED all route through here so they can never overprint each other)
 // Team liveries (#130): the separately-named rig subtrees double as paint
 // masks — the rudder nodes ride the tail fins and the folding outer panels
@@ -5862,7 +6055,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 			else { draw_loading(); __raf=requestAnimationFrame(frame); return; } }
 	}
 	if(running){
-		if(!game_paused){ ocean_mat.uniforms.u_time.value+=dt; step_world(dt); }   // frozen world stops advancing
+		if(!game_paused){ ocean_mat.uniforms.u_time.value+=dt; step_world(dt); radar_step(dt); }   // frozen world stops advancing (the radar freezes with it)
 		update_camera(dt);
 	} else { ocean_mat.uniforms.u_time.value+=dt; menu_backdrop(); }
 	if(map_on&&running){ const pad=read_gamepad(); if(pad) scan_zoom(pad,pad_bindings(pad)); }   // the map pauses the world (read_input stops): poll the wheel here so it still zooms the map

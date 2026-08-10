@@ -19,7 +19,7 @@ import { cbor_encode, cbor_decode } from './cbor'
 import { parseDarts, type Dart } from './darts'
 export { crossHost } from './host'
 
-const PROTOCOL = 1
+const PROTOCOL = 2 // 2: the 35-byte pose record — byte 34 carries the emitter state (#30)
 
 // isEnvelope is the minimal shape every server message must have before it
 // reaches handle(): an object with a string `kind` discriminator.
@@ -302,6 +302,7 @@ export class Net {
   score: Record<string, number> = {} // teams mode running score (welcome + kill events)
   darts: Dart[] = [] // the recipient's nearest server missiles, from the poses datagram — the engine renders every dart another player fired
   dartsAt = 0 // arrival time of the dart set (performance.now()), for dead reckoning
+  emitters = new Map<number, { mode: number; target: number }>() // slot -> radar emitter state from the pose records (#30): 0 silent / 1 search / 2 STT with the locked slot — the RWR's feed (#28)
   private tallies = new Map<number, { kills: number; deaths: number }>() // counted from kill events
   private corrected = 0 // highest acknowledged sequence already reconciled
   cored = false // the server has sent at least one own-state core
@@ -499,6 +500,15 @@ export class Net {
     } catch { /* already gone */ }
   }
 
+  // radar reports the own emitter state (#30) on change: 0 silent, 1 search,
+  // 2 STT with the locked slot (-1 none). The server validates and stamps it
+  // into everyone's pose records — what their RWR reacts to (#28).
+  radar(mode: number, target: number) {
+    try {
+      this.writer?.write(frame(cbor_encode({ kind: 'radar', mode, target })))
+    } catch { /* already gone */ }
+  }
+
   leave() {
     this.closed = true
     try {
@@ -528,8 +538,10 @@ export class Net {
   private handle(message: Record<string, unknown>) {
     switch (message.kind) {
       case 'poses': {
-        // The interest-managed pose datagram (#81): fixed 34-byte records —
+        // The interest-managed pose datagram (#81): fixed 35-byte records —
         // self first, then the nearest remotes, then the rotating far tail.
+        // Byte 34 is the emitter state (#30); the stride is version-locked by
+        // the join's protocol check, so a mismatched build never parses here.
         const blob = message.blob as Uint8Array | undefined
         if (!(blob instanceof Uint8Array)) break
         const at = performance.now()
@@ -541,7 +553,7 @@ export class Net {
         if (!Number.isFinite(this.clock) || Math.abs(offset - this.clock) > 0.25) this.clock = offset
         else this.clock += (offset - this.clock) * 0.08
         const view = new DataView(blob.buffer, blob.byteOffset)
-        for (let base = 0; base + 34 <= blob.byteLength; base += 34) {
+        for (let base = 0; base + 35 <= blob.byteLength; base += 35) {
           const slot = view.getUint8(base)
           const flags = view.getUint8(base + 26)
           const tally = this.tallies.get(slot)
@@ -575,6 +587,8 @@ export class Net {
           // record rather than feed NaN through shortest()/rewrap() into
           // Three.js. Attitude/direction/speed are int-derived and finite.
           if (!pose.position.every(Number.isFinite)) continue
+          const emitter = view.getUint8(base + 34) // #30: high two bits the mode, low six the locked slot (63 = none)
+          this.emitters.set(slot, { mode: (emitter >> 6) & 3, target: (emitter & 63) === 63 ? -1 : emitter & 63 })
           let ring = this.rings.get(slot)
           if (!ring) {
             ring = []

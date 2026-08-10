@@ -46,7 +46,7 @@ msgstr "{0, plural, one {# zaɓaɓɓe} other {# zaɓaɓɓu}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:1331
+#: src/components/MissionSetup.tsx:1337
 msgid "{0} created “{1}”"
 msgstr "{0} ya ƙirƙiri “{1}”"
 
@@ -56,12 +56,12 @@ msgid "{0} flying"
 msgstr "{0} suna shawagi"
 
 #. placeholder {0}: moment - CATAPULT
-#: src/components/MissionSetup.tsx:1027
+#: src/components/MissionSetup.tsx:1033
 msgid "{0} ft·lb over the catapult asymmetry limit"
 msgstr "{0} ft·lb sama da iyakar rashin daidaito na katafila"
 
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:1015
+#: src/components/MissionSetup.tsx:1021
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb sama da iyakar nauyin harbawa"
 
@@ -158,7 +158,7 @@ msgstr "WAYA 1"
 msgid "12 hours"
 msgstr "Awa 12"
 
-#: src/components/MissionSetup.tsx:1093
+#: src/components/MissionSetup.tsx:1099
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -174,7 +174,7 @@ msgstr "Awa 24"
 msgid "3 WIRE"
 msgstr "WAYA 3"
 
-#: src/components/MissionSetup.tsx:1096
+#: src/components/MissionSetup.tsx:1102
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -214,16 +214,21 @@ msgstr "Nau'in asusu"
 msgid "Account verified"
 msgstr "An tabbatar da asusu"
 
-#: src/components/MissionSetup.tsx:1569
-#: src/components/MissionSetup.tsx:1953
+#: src/components/MissionSetup.tsx:1575
+#: src/components/MissionSetup.tsx:1959
 #: src/components/Multiplayer.tsx:424
 msgid "Ace"
 msgstr "Gwani"
 
 #: src/components/MissionSetup.tsx:149
-#: src/components/MissionSetup.tsx:193
+#: src/components/MissionSetup.tsx:196
 msgid "Acquire target"
 msgstr "Kama abin hari"
+
+#: src/components/MissionSetup.tsx:152
+#: src/components/MissionSetup.tsx:199
+msgid "Acquisition mode"
+msgstr "Yanayin kamawa"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:717
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
@@ -313,7 +318,7 @@ msgstr "Ana ƙarawa..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Daidaita kamannin da tsarin don dacewa da ra'ayinka."
 
-#: src/components/MissionSetup.tsx:1791
+#: src/components/MissionSetup.tsx:1797
 msgid "Afterburner"
 msgstr "Afterburner"
 
@@ -322,19 +327,19 @@ msgid "AI"
 msgstr "AI"
 
 #: src/components/MissionSetup.tsx:121
-#: src/components/MissionSetup.tsx:466
+#: src/components/MissionSetup.tsx:472
 msgid "Aircraft"
 msgstr "Jirgin sama"
 
-#: src/components/MissionSetup.tsx:1170
+#: src/components/MissionSetup.tsx:1176
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Jirgin ruwa mai ɗaukar jiragen sama <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> na <1>Muhamad Mirza Arrafi</1> (Sketchfab), an ba da lasisi ƙarƙashin <2>CC BY 4.0</2>. An gyara: an sake awo, an sake fuskantarwa, an nutsar da shi har zuwa layin ruwa, kuma an sauƙaƙa shi don yanar gizo."
 
-#: src/components/MissionSetup.tsx:1144
+#: src/components/MissionSetup.tsx:1150
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Samfurin jirgin sama <0>“F/A-18C Hornet”</0> na <1>CreadorDeMu</1> (Sketchfab), mai lasisin <2>CC BY 4.0</2>. An gyara: an sake fuskantarwa da sake awo, an cire bayanan texture da ba a amfani da su, an raba kayan ɗauka na waje zuwa wani fayil daban, kuma an mai da raga ɗaya ta murfi kamar ta madubi."
 
-#: src/components/MissionSetup.tsx:469
+#: src/components/MissionSetup.tsx:475
 msgid "Alerts"
 msgstr "Faɗakarwa"
 
@@ -376,12 +381,12 @@ msgstr "Duk wanda ya shiga"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Duk abin da ya biyan kuɗin wannan ciyarwar zai daina karɓarta. Za ka iya kwafi sabon URL bayan haka."
 
-#: src/components/MissionSetup.tsx:158
-#: src/components/MissionSetup.tsx:202
+#: src/components/MissionSetup.tsx:161
+#: src/components/MissionSetup.tsx:208
 msgid "Approach power (ATC)"
 msgstr "Ƙarfin kusantowa (ATC)"
 
-#: src/components/MissionSetup.tsx:1067
+#: src/components/MissionSetup.tsx:1073
 msgid "Approach, on-speed (Vapp)"
 msgstr "Kusanci, daidai gudu (Vapp)"
 
@@ -402,8 +407,8 @@ msgstr "Ka tabbata kana son goge wannan sharhi? Wannan zai goge duk amsoshi kuma
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Ka tabbata kana son fita? Za ka buƙaci shiga kuma don shiga asusunka."
 
-#: src/components/MissionSetup.tsx:157
-#: src/components/MissionSetup.tsx:201
+#: src/components/MissionSetup.tsx:160
+#: src/components/MissionSetup.tsx:207
 msgid "Arrestor hook"
 msgstr "Ƙugiyar tsaida"
 
@@ -415,7 +420,7 @@ msgstr "Hawa"
 msgid "Ascending"
 msgstr "Hawa sama"
 
-#: src/components/MissionSetup.tsx:1021
+#: src/components/MissionSetup.tsx:1027
 msgid "Asymmetry"
 msgstr "Rashin daidaito"
 
@@ -450,11 +455,11 @@ msgstr "Avatar"
 msgid "Avatar for {name}"
 msgstr "Avatar na {name}"
 
-#: src/components/MissionSetup.tsx:328
+#: src/components/MissionSetup.tsx:334
 msgid "Axes"
 msgstr "Aksis"
 
-#: src/components/MissionSetup.tsx:369
+#: src/components/MissionSetup.tsx:375
 msgid "Axis {i}"
 msgstr "Aksis {i}"
 
@@ -473,7 +478,7 @@ msgstr "Komawa"
 msgid "Back to home"
 msgstr "Komawa gida"
 
-#: src/components/MissionSetup.tsx:1561
+#: src/components/MissionSetup.tsx:1567
 msgid "Bandit"
 msgstr "Abokin gaba"
 
@@ -485,19 +490,19 @@ msgstr "Banner"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "KASA DA 250 — KAFA DA FIKAFIKAI"
 
-#: src/components/MissionSetup.tsx:1058
+#: src/components/MissionSetup.tsx:1064
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "Hawa mafi kyau (Vy, 100% turawa)"
 
-#: src/components/MissionSetup.tsx:1059
+#: src/components/MissionSetup.tsx:1065
 msgid "Best climb (Vy, afterburner)"
 msgstr "Hawa mafi kyau (Vy, afterburner)"
 
-#: src/components/MissionSetup.tsx:1061
+#: src/components/MissionSetup.tsx:1067
 msgid "Best glide (engines out)"
 msgstr "Shawagi mafi kyau (injina sun gaza)"
 
-#: src/components/MissionSetup.tsx:1063
+#: src/components/MissionSetup.tsx:1069
 msgid "Best sustained turn speed"
 msgstr "Gudun juyi mai dorewa mafi kyau"
 
@@ -568,11 +573,11 @@ msgstr "JUYA IDAN A SHIRYE"
 msgid "Browser notifications"
 msgstr "Sanarwar browser"
 
-#: src/components/MissionSetup.tsx:429
+#: src/components/MissionSetup.tsx:435
 msgid "Button {i}"
 msgstr "Maɓalli {i}"
 
-#: src/components/MissionSetup.tsx:403
+#: src/components/MissionSetup.tsx:409
 msgid "Buttons"
 msgstr "Maɓallai"
 
@@ -580,16 +585,16 @@ msgstr "Maɓallai"
 msgid "CALL THE BALL"
 msgstr "SANAR DA BALL"
 
-#: src/components/MissionSetup.tsx:1847
+#: src/components/MissionSetup.tsx:1853
 #: src/components/Multiplayer.tsx:286
 msgid "Callsign"
 msgstr "Sunan kira"
 
-#: src/components/MissionSetup.tsx:583
+#: src/components/MissionSetup.tsx:589
 msgid "Camera distance"
 msgstr "Nisan kyamara"
 
-#: src/components/MissionSetup.tsx:807
+#: src/components/MissionSetup.tsx:813
 msgid "Camera unavailable"
 msgstr "Babu kyamara"
 
@@ -606,7 +611,7 @@ msgstr "Babu kyamara"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/MissionSetup.tsx:558
+#: src/components/MissionSetup.tsx:564
 #: src/components/Multiplayer.tsx:257
 #: src/components/Multiplayer.tsx:513
 msgid "Cancel"
@@ -622,35 +627,35 @@ msgstr "Soke sharhi"
 msgid "Cancel reply"
 msgstr "Soke amsa"
 
-#: src/components/MissionSetup.tsx:204
+#: src/components/MissionSetup.tsx:210
 msgid "Canopy"
 msgstr "Murfin kokpit"
 
-#: src/components/MissionSetup.tsx:1366
+#: src/components/MissionSetup.tsx:1372
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1597
+#: src/components/MissionSetup.tsx:1603
 msgid "Case I (day)"
 msgstr "Yanayi I (rana)"
 
-#: src/components/MissionSetup.tsx:1367
+#: src/components/MissionSetup.tsx:1373
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1598
+#: src/components/MissionSetup.tsx:1604
 msgid "Case II (weather)"
 msgstr "Yanayi II (yanayi)"
 
-#: src/components/MissionSetup.tsx:1368
+#: src/components/MissionSetup.tsx:1374
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1599
+#: src/components/MissionSetup.tsx:1605
 msgid "Case III (night)"
 msgstr "Yanayi III (dare)"
 
-#: src/components/MissionSetup.tsx:1605
+#: src/components/MissionSetup.tsx:1611
 msgid "Catapult"
 msgstr "Katafult"
 
@@ -658,7 +663,7 @@ msgstr "Katafult"
 msgid "Category for these notifications"
 msgstr "Rukuni don waɗannan sanarwoni"
 
-#: src/components/MissionSetup.tsx:892
+#: src/components/MissionSetup.tsx:898
 msgid "Centerline"
 msgstr "Layin tsakiya"
 
@@ -675,16 +680,16 @@ msgstr "Kallon bi:"
 msgid "chat"
 msgstr "hira"
 
-#: src/components/MissionSetup.tsx:215
+#: src/components/MissionSetup.tsx:221
 msgid "Chat"
 msgstr "Hira"
 
-#: src/components/MissionSetup.tsx:216
+#: src/components/MissionSetup.tsx:222
 msgid "Chat to everyone"
 msgstr "Hira da kowa"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1668
+#: src/components/MissionSetup.tsx:1674
 msgid "Cheats"
 msgstr "Magudi"
 
@@ -795,7 +800,7 @@ msgstr "Rufe bincike"
 msgid "closer"
 msgstr "kusa"
 
-#: src/components/MissionSetup.tsx:1633
+#: src/components/MissionSetup.tsx:1639
 msgid "Clouds"
 msgstr "Gizagizai"
 
@@ -866,7 +871,7 @@ msgstr "Saita saitunan view"
 msgid "Confirm"
 msgstr "Tabbatar"
 
-#: src/components/MissionSetup.tsx:1476
+#: src/components/MissionSetup.tsx:1482
 msgid "Connect"
 msgstr "Haɗa"
 
@@ -923,7 +928,7 @@ msgstr "An kwafi zuwa clipboard"
 msgid "Copy"
 msgstr "Kwafi"
 
-#: src/components/MissionSetup.tsx:1062
+#: src/components/MissionSetup.tsx:1068
 msgid "Corner speed (best instant turn)"
 msgstr "Gudun kusurwa (juyi mafi kyau nan take)"
 
@@ -940,7 +945,7 @@ msgstr "Ba a iya loda wannan takarda ba. Da fatan a sake gwadawa daga baya."
 msgid "Could not save the recording"
 msgstr "An kasa adana rikodin"
 
-#: src/components/MissionSetup.tsx:1313
+#: src/components/MissionSetup.tsx:1319
 msgid "Could not send the message"
 msgstr "An kasa aika saƙon"
 
@@ -960,8 +965,8 @@ msgstr "An kasa fara sake tantancewa. Don Allah a sake gwadawa."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "An kasa tabbatar da wannan asusun. Da fatan za a sake gwadawa."
 
-#: src/components/MissionSetup.tsx:150
-#: src/components/MissionSetup.tsx:194
+#: src/components/MissionSetup.tsx:153
+#: src/components/MissionSetup.tsx:200
 msgid "Countermeasures"
 msgstr "Matakan kariya"
 
@@ -994,8 +999,8 @@ msgstr "Ƙirƙira sannan ka tashi"
 msgid "Create match"
 msgstr "Ƙirƙiri wasa"
 
-#: src/components/MissionSetup.tsx:2010
-#: src/components/MissionSetup.tsx:2033
+#: src/components/MissionSetup.tsx:2016
+#: src/components/MissionSetup.tsx:2039
 msgid "Create mission"
 msgstr "Ƙirƙiri manufa"
 
@@ -1013,12 +1018,12 @@ msgstr "An ƙirƙira"
 msgid "Creating..."
 msgstr "Ana ƙirƙira..."
 
-#: src/components/MissionSetup.tsx:1133
 #: src/components/MissionSetup.tsx:1139
+#: src/components/MissionSetup.tsx:1145
 msgid "Credits"
 msgstr "Godiya"
 
-#: src/components/MissionSetup.tsx:1640
+#: src/components/MissionSetup.tsx:1646
 #: src/components/Multiplayer.tsx:74
 #: src/components/Multiplayer.tsx:348
 msgid "Cumulus"
@@ -1029,7 +1034,7 @@ msgid "Current location"
 msgstr "Wurin yanzu"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:265
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:960
 msgid "Custom"
 msgstr "Na musamman"
 
@@ -1037,8 +1042,8 @@ msgstr "Na musamman"
 msgid "CUT"
 msgstr "HAƊARI"
 
-#: src/components/MissionSetup.tsx:161
-#: src/components/MissionSetup.tsx:209
+#: src/components/MissionSetup.tsx:164
+#: src/components/MissionSetup.tsx:215
 msgid "Cycle view"
 msgstr "Sauya kallo"
 
@@ -1062,7 +1067,7 @@ msgstr "Rikicin bayanai"
 msgid "Date"
 msgstr "Kwanan wata"
 
-#: src/components/MissionSetup.tsx:1628
+#: src/components/MissionSetup.tsx:1634
 #: src/components/Multiplayer.tsx:343
 msgid "Day"
 msgstr "Rana"
@@ -1158,8 +1163,8 @@ msgstr "Wuta ta ƙona jirgin"
 msgid "Details Panel"
 msgstr "Panel na cikakkun bayanai"
 
-#: src/components/MissionSetup.tsx:395
-#: src/components/MissionSetup.tsx:444
+#: src/components/MissionSetup.tsx:401
+#: src/components/MissionSetup.tsx:450
 msgid "Detect"
 msgstr "Gano"
 
@@ -1174,7 +1179,7 @@ msgstr "Gano"
 msgid "Detect from web browser"
 msgstr "Gano daga web browser"
 
-#: src/components/MissionSetup.tsx:297
+#: src/components/MissionSetup.tsx:303
 msgid "Device"
 msgstr "Na'ura"
 
@@ -1202,7 +1207,7 @@ msgstr "Watsar"
 msgid "Discard draft?"
 msgstr "A watsar da daftarin?"
 
-#: src/components/MissionSetup.tsx:309
+#: src/components/MissionSetup.tsx:315
 msgid "disconnected"
 msgstr "an yanke haɗi"
 
@@ -1214,12 +1219,12 @@ msgstr "An cire haɗi"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: ../../../lib/web/src/components/restore-banner.tsx:100
-#: src/components/MissionSetup.tsx:1982
+#: src/components/MissionSetup.tsx:1988
 msgid "Dismiss"
 msgstr "Kau da shi"
 
-#: src/components/MissionSetup.tsx:163
-#: src/components/MissionSetup.tsx:211
+#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:217
 msgid "Display repeater"
 msgstr "Mai maimaita allo"
 
@@ -1227,13 +1232,13 @@ msgstr "Mai maimaita allo"
 msgid "Displays the mobile sidebar."
 msgstr "Yana nuna sidebar na wayar hannu."
 
-#: src/components/MissionSetup.tsx:1779
+#: src/components/MissionSetup.tsx:1785
 msgid "Distance LOD"
 msgstr "LOD na nisa"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:2124
+#: src/components/MissionSetup.tsx:2130
 msgid "Done"
 msgstr "An gama"
 
@@ -1267,7 +1272,7 @@ msgstr "Yana ninkawa"
 msgid "Duration"
 msgstr "Tsawon lokaci"
 
-#: src/components/MissionSetup.tsx:1773
+#: src/components/MissionSetup.tsx:1779
 msgid "Dynamic resolution"
 msgstr "Resolution mai sauyawa"
 
@@ -1314,11 +1319,11 @@ msgstr "Gyara zaɓaɓɓen kati"
 msgid "Edit view"
 msgstr "Gyara view"
 
-#: src/components/MissionSetup.tsx:1753
+#: src/components/MissionSetup.tsx:1759
 msgid "Effects detail"
 msgstr "Bayanin tasiri"
 
-#: src/components/MissionSetup.tsx:208
+#: src/components/MissionSetup.tsx:214
 msgid "Eject"
 msgstr "Fice"
 
@@ -1338,8 +1343,8 @@ msgstr "Lambar imel"
 msgid "EMERG JETT"
 msgstr "ZUBARWA TA GAGGAWA"
 
-#: src/components/MissionSetup.tsx:152
-#: src/components/MissionSetup.tsx:196
+#: src/components/MissionSetup.tsx:155
+#: src/components/MissionSetup.tsx:202
 msgid "Emergency jettison (hold)"
 msgstr "Zubarwa ta gaggawa (riƙe)"
 
@@ -1347,8 +1352,8 @@ msgstr "Zubarwa ta gaggawa (riƙe)"
 msgid "empty"
 msgstr "babu kowa"
 
-#: src/components/MissionSetup.tsx:907
-#: src/components/MissionSetup.tsx:912
+#: src/components/MissionSetup.tsx:913
+#: src/components/MissionSetup.tsx:918
 msgid "Empty pylon"
 msgstr "Pylon mara kaya"
 
@@ -1356,7 +1361,7 @@ msgstr "Pylon mara kaya"
 msgid "ENGAGED"
 msgstr "INA KAI HARI"
 
-#: src/components/MissionSetup.tsx:465
+#: src/components/MissionSetup.tsx:471
 msgid "Engine"
 msgstr "Injin"
 
@@ -1368,7 +1373,7 @@ msgstr "Shigar da lambar daga imel ɗinka"
 msgid "Enter your authenticator code"
 msgstr "Shigar da lambar mai tantancewarka"
 
-#: src/components/MissionSetup.tsx:468
+#: src/components/MissionSetup.tsx:474
 msgid "Environment"
 msgstr "Muhalli"
 
@@ -1395,12 +1400,12 @@ msgstr "Faɗaɗa"
 msgid "Expand sidebar"
 msgstr "Faɗaɗa sidebar"
 
-#: src/components/MissionSetup.tsx:154
-#: src/components/MissionSetup.tsx:198
+#: src/components/MissionSetup.tsx:157
+#: src/components/MissionSetup.tsx:204
 msgid "Extend flaps"
 msgstr "Fitar da flaps"
 
-#: src/components/MissionSetup.tsx:1745
+#: src/components/MissionSetup.tsx:1751
 msgid "Exterior detail"
 msgstr "Bayanin waje"
 
@@ -1412,7 +1417,7 @@ msgstr "URL na waje"
 msgid "Extra large"
 msgstr "Babba sosai"
 
-#: src/components/MissionSetup.tsx:1081
+#: src/components/MissionSetup.tsx:1087
 msgid "F/A-18C reference"
 msgstr "Ma'aunin F/A-18C"
 
@@ -1525,11 +1530,11 @@ msgid "fire"
 msgstr "harba"
 
 #: src/components/MissionSetup.tsx:147
-#: src/components/MissionSetup.tsx:191
+#: src/components/MissionSetup.tsx:194
 msgid "Fire weapon"
 msgstr "Harba makami"
 
-#: src/components/MissionSetup.tsx:573
+#: src/components/MissionSetup.tsx:579
 msgid "Fixed keys"
 msgstr "Kafaffun maɓallai"
 
@@ -1577,8 +1582,8 @@ msgstr "Mai yawo"
 msgid "Flown"
 msgstr "An tashi"
 
-#: src/components/MissionSetup.tsx:2004
-#: src/components/MissionSetup.tsx:2047
+#: src/components/MissionSetup.tsx:2010
+#: src/components/MissionSetup.tsx:2053
 msgid "Fly"
 msgstr "Tashi"
 
@@ -1586,16 +1591,16 @@ msgstr "Tashi"
 msgid "Fly again"
 msgstr "Sake tashi"
 
-#: src/components/MissionSetup.tsx:919
+#: src/components/MissionSetup.tsx:925
 msgid "Fox 2 fighter"
 msgstr "Mayaƙin Fox 2"
 
-#: src/components/MissionSetup.tsx:1803
+#: src/components/MissionSetup.tsx:1809
 msgid "Framerate"
 msgstr "Yawan firam"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1554
+#: src/components/MissionSetup.tsx:1560
 msgid "Free flight"
 msgstr "Tashi cikin 'yanci"
 
@@ -1640,11 +1645,11 @@ msgstr "YOYON MAI"
 msgid "FUEL LO"
 msgstr "MAI KADAN"
 
-#: src/components/MissionSetup.tsx:203
+#: src/components/MissionSetup.tsx:209
 msgid "Fuel probe"
 msgstr "Sandar mai"
 
-#: src/components/MissionSetup.tsx:905
+#: src/components/MissionSetup.tsx:911
 msgid "Fuel tank"
 msgstr "Tankin mai"
 
@@ -1656,12 +1661,12 @@ msgstr "Cikakken layout"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:891
-#: src/components/MissionSetup.tsx:893
+#: src/components/MissionSetup.tsx:897
+#: src/components/MissionSetup.tsx:899
 msgid "Fuselage"
 msgstr "Jikin jirgi"
 
-#: src/components/MissionSetup.tsx:807
+#: src/components/MissionSetup.tsx:813
 msgid "Gain"
 msgstr "Ƙarfafawa"
 
@@ -1673,7 +1678,7 @@ msgstr "ƙafafu"
 msgid "GEAR"
 msgstr "ƘAFAFU"
 
-#: src/components/MissionSetup.tsx:2056
+#: src/components/MissionSetup.tsx:2062
 msgid "General"
 msgstr "Gabaɗaya"
 
@@ -1703,11 +1708,11 @@ msgstr "Je shafi {pageNumber}"
 msgid "Go to previous page"
 msgstr "Tafi shafi na baya"
 
-#: src/components/MissionSetup.tsx:2059
+#: src/components/MissionSetup.tsx:2065
 msgid "Graphics"
 msgstr "Zane-zane"
 
-#: src/components/MissionSetup.tsx:1011
+#: src/components/MissionSetup.tsx:1017
 msgid "Gross weight"
 msgstr "Jimlar nauyi"
 
@@ -1728,7 +1733,7 @@ msgstr "Rukuni: {0}"
 msgid "GUN"
 msgstr "BINDIGA"
 
-#: src/components/MissionSetup.tsx:918
+#: src/components/MissionSetup.tsx:924
 msgid "Gun fighter"
 msgstr "Mayaƙin bindiga"
 
@@ -1736,15 +1741,15 @@ msgstr "Mayaƙin bindiga"
 msgid "Guns only"
 msgstr "Bindigogi kaɗai"
 
-#: src/components/MissionSetup.tsx:1977
+#: src/components/MissionSetup.tsx:1983
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "An kashe hanzarta zane-zane na na'ura — duba saitunan burauza ko direbobin zane-zane."
 
-#: src/components/MissionSetup.tsx:807
+#: src/components/MissionSetup.tsx:813
 msgid "Head"
 msgstr "Kai"
 
-#: src/components/MissionSetup.tsx:807
+#: src/components/MissionSetup.tsx:813
 msgid "Head tracking"
 msgstr "Bin diddigin kai"
 
@@ -1756,18 +1761,18 @@ msgstr "Ɓoye"
 msgid "Hide password"
 msgstr "Ɓoye kalmar sirri"
 
-#: src/components/MissionSetup.tsx:1725
+#: src/components/MissionSetup.tsx:1731
 msgid "High"
 msgstr "Babba"
 
-#: src/components/MissionSetup.tsx:1641
+#: src/components/MissionSetup.tsx:1647
 #: src/components/Multiplayer.tsx:75
 #: src/components/Multiplayer.tsx:349
 msgid "High stratus"
 msgstr "Stratus na sama"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:2023
+#: src/components/MissionSetup.tsx:2029
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Tarihi"
@@ -1791,11 +1796,11 @@ msgstr "ƘUGIYA"
 msgid "Hot"
 msgstr "Mai zafi"
 
-#: src/components/MissionSetup.tsx:212
+#: src/components/MissionSetup.tsx:218
 msgid "HUD altitude source"
 msgstr "Tushen tsayin HUD"
 
-#: src/components/MissionSetup.tsx:213
+#: src/components/MissionSetup.tsx:219
 msgid "HUD declutter"
 msgstr "Sauƙaƙa HUD"
 
@@ -1812,8 +1817,8 @@ msgstr "Mai duba hoto: {0}"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/MissionSetup.tsx:1363
-#: src/components/MissionSetup.tsx:1594
+#: src/components/MissionSetup.tsx:1369
+#: src/components/MissionSetup.tsx:1600
 msgid "In air"
 msgstr "A sama"
 
@@ -1837,7 +1842,7 @@ msgstr "Shigar ciki"
 msgid "Interests"
 msgstr "Abubuwan sha'awa"
 
-#: src/components/MissionSetup.tsx:1007
+#: src/components/MissionSetup.tsx:1013
 msgid "Internal fuel"
 msgstr "Man na ciki"
 
@@ -1853,7 +1858,7 @@ msgstr "Tambarin da bai dace ba: haruffa, lambobi, sarari, gajerun layi da sara 
 msgid "Invalid verification code"
 msgstr "Verification code mara inganci"
 
-#: src/components/MissionSetup.tsx:322
+#: src/components/MissionSetup.tsx:328
 msgid "Invert pitch"
 msgstr "Juya pitch"
 
@@ -1865,7 +1870,7 @@ msgstr "Ba ya ji rauni"
 msgid "INVULNERABLE"
 msgstr "BA YA RAUNUWA"
 
-#: src/components/MissionSetup.tsx:1673
+#: src/components/MissionSetup.tsx:1679
 #: src/components/Multiplayer.tsx:388
 msgid "Invulnerable (human players only)"
 msgstr "Ba ya raunuwa (’yan wasa mutane kawai)"
@@ -1874,8 +1879,8 @@ msgstr "Ba ya raunuwa (’yan wasa mutane kawai)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Da alama shafin da kake nema <0/>babu shi ko an cire shi."
 
-#: src/components/MissionSetup.tsx:151
-#: src/components/MissionSetup.tsx:195
+#: src/components/MissionSetup.tsx:154
+#: src/components/MissionSetup.tsx:201
 msgid "Jettison tanks"
 msgstr "Zubar da tankuna"
 
@@ -1887,8 +1892,8 @@ msgstr "ZUBARWA: ƘAFAFUN SAUKA"
 msgid "Join"
 msgstr "Shiga"
 
-#: src/components/MissionSetup.tsx:1446
-#: src/components/MissionSetup.tsx:2014
+#: src/components/MissionSetup.tsx:1452
+#: src/components/MissionSetup.tsx:2020
 msgid "Join server"
 msgstr "Shiga sabar"
 
@@ -1897,7 +1902,7 @@ msgid "JOINED"
 msgstr "YA SHIGA"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:1959
+#: src/components/MissionSetup.tsx:1965
 #: src/components/Multiplayer.tsx:482
 msgid "Joust"
 msgstr "Joust"
@@ -1906,11 +1911,11 @@ msgstr "Joust"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Karawa — 1v1, wanda ya fara kashewa ya ci nasara"
 
-#: src/components/MissionSetup.tsx:1555
+#: src/components/MissionSetup.tsx:1561
 msgid "Joust 1v1"
 msgstr "Karawa 1v1"
 
-#: src/components/MissionSetup.tsx:2065
+#: src/components/MissionSetup.tsx:2071
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1926,7 +1931,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Shortcuts na keyboard"
 
-#: src/components/MissionSetup.tsx:2068
+#: src/components/MissionSetup.tsx:2074
 msgid "Keys"
 msgstr "Maɓallai"
 
@@ -1955,8 +1960,8 @@ msgstr "WUTAR INJIN HAGU"
 msgid "L GEAR"
 msgstr "ƘAFAR HAGU"
 
-#: src/components/MissionSetup.tsx:156
-#: src/components/MissionSetup.tsx:200
+#: src/components/MissionSetup.tsx:159
+#: src/components/MissionSetup.tsx:206
 msgid "Landing gear"
 msgstr "Kayan saukar jirgi"
 
@@ -1969,8 +1974,8 @@ msgstr "Babba"
 msgid "LATE"
 msgstr "A MAKARE"
 
-#: src/components/MissionSetup.tsx:159
-#: src/components/MissionSetup.tsx:207
+#: src/components/MissionSetup.tsx:162
+#: src/components/MissionSetup.tsx:213
 msgid "Launch (catapult)"
 msgstr "Harba (majajjawa)"
 
@@ -1992,7 +1997,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Ƙara koyo"
 
-#: src/components/MissionSetup.tsx:1502
+#: src/components/MissionSetup.tsx:1508
 msgid "Leave server"
 msgstr "Bar sabar"
 
@@ -2008,12 +2013,12 @@ msgstr "YA FITA"
 msgid "Left to Right"
 msgstr "Hagu zuwa Dama"
 
-#: src/components/MissionSetup.tsx:889
-#: src/components/MissionSetup.tsx:890
+#: src/components/MissionSetup.tsx:895
+#: src/components/MissionSetup.tsx:896
 msgid "Left wing"
 msgstr "Fikafikan hagu"
 
-#: src/components/MissionSetup.tsx:888
+#: src/components/MissionSetup.tsx:894
 msgid "Left wingtip"
 msgstr "Ƙarshen fikafikan hagu"
 
@@ -2035,8 +2040,8 @@ msgstr "Haske"
 msgid "lights"
 msgstr "fitilu"
 
-#: src/components/MissionSetup.tsx:160
-#: src/components/MissionSetup.tsx:206
+#: src/components/MissionSetup.tsx:163
+#: src/components/MissionSetup.tsx:212
 msgid "Lights"
 msgstr "Fitilu"
 
@@ -2077,7 +2082,7 @@ msgstr "SAUKARWA TA GAZA"
 msgid "Loading..."
 msgstr "Ana saukarwa..."
 
-#: src/components/MissionSetup.tsx:1649
+#: src/components/MissionSetup.tsx:1655
 msgid "Loadout"
 msgstr "Kaya"
 
@@ -2104,35 +2109,35 @@ msgstr "Ana fita…"
 msgid "Look"
 msgstr "Kalli"
 
-#: src/components/MissionSetup.tsx:582
+#: src/components/MissionSetup.tsx:588
 msgid "Look / orbit"
 msgstr "Kallo / kewayawa"
 
-#: src/components/MissionSetup.tsx:168
+#: src/components/MissionSetup.tsx:171
 msgid "Look at target"
 msgstr "Duba manufa"
 
-#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:168
 msgid "Look down"
 msgstr "Kalli ƙasa"
 
-#: src/components/MissionSetup.tsx:166
+#: src/components/MissionSetup.tsx:169
 msgid "Look left"
 msgstr "Kalli hagu"
 
-#: src/components/MissionSetup.tsx:167
+#: src/components/MissionSetup.tsx:170
 msgid "Look right"
 msgstr "Kalli dama"
 
-#: src/components/MissionSetup.tsx:164
+#: src/components/MissionSetup.tsx:167
 msgid "Look up"
 msgstr "Kalli sama"
 
-#: src/components/MissionSetup.tsx:1721
+#: src/components/MissionSetup.tsx:1727
 msgid "Low"
 msgstr "Ƙasa"
 
-#: src/components/MissionSetup.tsx:1643
+#: src/components/MissionSetup.tsx:1649
 #: src/components/Multiplayer.tsx:77
 #: src/components/Multiplayer.tsx:351
 msgid "Low stratus"
@@ -2158,7 +2163,7 @@ msgstr "Hannu"
 msgid "map"
 msgstr "taswira"
 
-#: src/components/MissionSetup.tsx:214
+#: src/components/MissionSetup.tsx:220
 msgid "Map"
 msgstr "Taswira"
 
@@ -2168,7 +2173,7 @@ msgstr "Taswira"
 msgid "Mark all as read"
 msgstr "Yi alama duka a matsayin karanta"
 
-#: src/components/MissionSetup.tsx:464
+#: src/components/MissionSetup.tsx:470
 msgid "Master"
 msgstr "Gaba ɗaya"
 
@@ -2176,7 +2181,7 @@ msgstr "Gaba ɗaya"
 msgid "Match type"
 msgstr "Nau'in wasa"
 
-#: src/components/MissionSetup.tsx:1496
+#: src/components/MissionSetup.tsx:1502
 msgid "Matches"
 msgstr "Wasanni"
 
@@ -2189,7 +2194,7 @@ msgid "MCP server"
 msgstr "Sabar MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:1723
+#: src/components/MissionSetup.tsx:1729
 msgid "Medium"
 msgstr "Matsakaici"
 
@@ -2198,7 +2203,7 @@ msgid "menu"
 msgstr "menu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:207
-#: src/components/MissionSetup.tsx:217
+#: src/components/MissionSetup.tsx:223
 msgid "Menu"
 msgstr "Menu"
 
@@ -2210,7 +2215,7 @@ msgstr "Saƙo"
 msgid "Message everyone"
 msgstr "Aika saƙo ga kowa"
 
-#: src/components/MissionSetup.tsx:1348
+#: src/components/MissionSetup.tsx:1354
 msgid "Message players on this server"
 msgstr "Aika saƙo ga 'yan wasa a wannan sabar"
 
@@ -2222,7 +2227,7 @@ msgstr "Aika saƙo ga ƙungiyarka"
 msgid "Metric"
 msgstr "Metrik"
 
-#: src/components/MissionSetup.tsx:1642
+#: src/components/MissionSetup.tsx:1648
 #: src/components/Multiplayer.tsx:76
 #: src/components/Multiplayer.tsx:350
 msgid "Mid stratus"
@@ -2232,7 +2237,7 @@ msgstr "Stratus na tsakiya"
 msgid "Midair collision"
 msgstr "Karo a sama"
 
-#: src/components/MissionSetup.tsx:1196
+#: src/components/MissionSetup.tsx:1202
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Taswirar Midway Atoll — hotunan sun ƙunshi bayanan <0>Copernicus Sentinel-2</0> da aka gyara (2026); tsarin filin jirgi (titin tashi da sauka, hanyoyin tasi, faifan ajiye jirgi) © masu ba da gudummawa na <1>OpenStreetMap</1>, an ba da lasisi ƙarƙashin <2>ODbL</2>; bayanan gaɓar teku da murjani daga <3>NOAA NCCOS</3> (mallakar jama'a)."
 
@@ -2269,7 +2274,7 @@ msgstr "Litinin"
 msgid "More options"
 msgstr "Ƙarin zaɓuɓɓuka"
 
-#: src/components/MissionSetup.tsx:395
+#: src/components/MissionSetup.tsx:401
 msgid "Move it…"
 msgstr "Motsa shi…"
 
@@ -2313,7 +2318,7 @@ msgstr "Sabon wasa"
 msgid "Next image"
 msgstr "Hoton na gaba"
 
-#: src/components/MissionSetup.tsx:1629
+#: src/components/MissionSetup.tsx:1635
 #: src/components/Multiplayer.tsx:73
 #: src/components/Multiplayer.tsx:344
 msgid "Night"
@@ -2355,7 +2360,7 @@ msgstr "Babu ƙungiyoyi"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Ba a iya ƙirƙirar nau'o'in abubuwa tukuna. Fara ƙirƙirar parent items da ake buƙata."
 
-#: src/components/MissionSetup.tsx:316
+#: src/components/MissionSetup.tsx:322
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ba a gano joystick ba — danna kowane maɓalli a kansa don farkar da shi."
 
@@ -2429,7 +2434,7 @@ msgstr "Babu masu amfani da aka samu"
 msgid "No views"
 msgstr "Babu views"
 
-#: src/components/MissionSetup.tsx:1325
+#: src/components/MissionSetup.tsx:1331
 #: src/components/Multiplayer.tsx:465
 msgid "No world server."
 msgstr "Babu sabar duniya."
@@ -2452,10 +2457,10 @@ msgstr "BABU MAKI"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:105
 #: ../../../lib/web/src/lib/preference-utils.ts:125
-#: src/components/MissionSetup.tsx:365
-#: src/components/MissionSetup.tsx:425
-#: src/components/MissionSetup.tsx:914
-#: src/components/MissionSetup.tsx:1639
+#: src/components/MissionSetup.tsx:371
+#: src/components/MissionSetup.tsx:431
+#: src/components/MissionSetup.tsx:920
+#: src/components/MissionSetup.tsx:1645
 msgid "None"
 msgstr "Babu"
 
@@ -2479,7 +2484,7 @@ msgstr "Ba a saita ba"
 msgid "Nothing found"
 msgstr "Ba a sami komai ba"
 
-#: src/components/MissionSetup.tsx:1325
+#: src/components/MissionSetup.tsx:1331
 msgid "Nothing yet — say hello."
 msgstr "Babu komai tukuna — a ce sannu."
 
@@ -2496,8 +2501,8 @@ msgstr "Sanarwa"
 msgid "Notifications: {0}"
 msgstr "Sanarwa: {0}"
 
-#: src/components/MissionSetup.tsx:1567
-#: src/components/MissionSetup.tsx:1951
+#: src/components/MissionSetup.tsx:1573
+#: src/components/MissionSetup.tsx:1957
 #: src/components/Multiplayer.tsx:422
 msgid "Novice"
 msgstr "Sabon koyo"
@@ -2508,7 +2513,7 @@ msgstr "Sabon koyo"
 msgid "Number"
 msgstr "Lamba"
 
-#: src/components/MissionSetup.tsx:1761
+#: src/components/MissionSetup.tsx:1767
 msgid "Ocean detail"
 msgstr "Bayanin teku"
 
@@ -2520,13 +2525,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Kunna"
 
-#: src/components/MissionSetup.tsx:1365
-#: src/components/MissionSetup.tsx:1596
+#: src/components/MissionSetup.tsx:1371
+#: src/components/MissionSetup.tsx:1602
 msgid "On carrier"
 msgstr "A jirgin ruwa"
 
-#: src/components/MissionSetup.tsx:1364
-#: src/components/MissionSetup.tsx:1595
+#: src/components/MissionSetup.tsx:1370
+#: src/components/MissionSetup.tsx:1601
 msgid "On runway"
 msgstr "A titin jirgi"
 
@@ -2613,7 +2618,7 @@ msgid "Other"
 msgstr "Sauran"
 
 #: src/components/MissionSetup.tsx:142
-#: src/components/MissionSetup.tsx:185
+#: src/components/MissionSetup.tsx:188
 msgid "Override G limit"
 msgstr "Ketare iyakar G"
 
@@ -2638,7 +2643,7 @@ msgstr "Shafi {currentPage} na {totalPages}"
 msgid "Parent"
 msgstr "Iyaye"
 
-#: src/components/MissionSetup.tsx:184
+#: src/components/MissionSetup.tsx:187
 msgid "Parking brake"
 msgstr "Birki na ajiye"
 
@@ -2662,14 +2667,14 @@ msgstr "Tsari (regex)"
 msgid "Pick a date"
 msgstr "Zaɓi kwanan wata"
 
-#: src/components/MissionSetup.tsx:1267
+#: src/components/MissionSetup.tsx:1273
 #: src/components/Multiplayer.tsx:130
 #: src/components/Multiplayer.tsx:291
 msgid "pilot"
 msgstr "matuƙi"
 
-#: src/components/MissionSetup.tsx:1568
-#: src/components/MissionSetup.tsx:1952
+#: src/components/MissionSetup.tsx:1574
+#: src/components/MissionSetup.tsx:1958
 #: src/components/Multiplayer.tsx:423
 msgid "Pilot"
 msgstr "Matuƙi"
@@ -2690,11 +2695,11 @@ msgstr "ɗagawa"
 msgid "Pitch"
 msgstr "Pitch"
 
-#: src/components/MissionSetup.tsx:175
+#: src/components/MissionSetup.tsx:178
 msgid "Pitch down"
 msgstr "Hanci ƙasa"
 
-#: src/components/MissionSetup.tsx:174
+#: src/components/MissionSetup.tsx:177
 msgid "Pitch up"
 msgstr "Hanci sama"
 
@@ -2732,11 +2737,11 @@ msgstr "Sakonni"
 msgid "Posts and comments"
 msgstr "Posts da sharhi"
 
-#: src/components/MissionSetup.tsx:1708
+#: src/components/MissionSetup.tsx:1714
 msgid "Preset"
 msgstr "Preset"
 
-#: src/components/MissionSetup.tsx:552
+#: src/components/MissionSetup.tsx:558
 msgid "Press a key…"
 msgstr "Danna wani maɓalli…"
 
@@ -2744,7 +2749,7 @@ msgstr "Danna wani maɓalli…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "DANNA ENTER DON TASHI"
 
-#: src/components/MissionSetup.tsx:444
+#: src/components/MissionSetup.tsx:450
 msgid "Press it…"
 msgstr "Danna shi…"
 
@@ -2790,6 +2795,11 @@ msgstr "WUTAR INJIN DAMA"
 msgid "R GEAR"
 msgstr "ƘAFAR DAMA"
 
+#: src/components/MissionSetup.tsx:151
+#: src/components/MissionSetup.tsx:198
+msgid "Radar silent"
+msgstr "Shirun radar"
+
 #: ../../../lib/web/src/lib/preference-utils.ts:117
 msgid "Raised"
 msgstr "Ɗagaggu"
@@ -2806,7 +2816,7 @@ msgstr "Sake yin rajistar makullan shiga naka a wannan uwar garken"
 msgid "REARMED"
 msgstr "AN SAKE MAKAMAI"
 
-#: src/components/MissionSetup.tsx:1451
+#: src/components/MissionSetup.tsx:1457
 msgid "Recent"
 msgstr "Kwanan nan"
 
@@ -2819,12 +2829,12 @@ msgstr "An ba da shawara"
 msgid "Reconnecting ({retries})..."
 msgstr "Ana sake haɗawa ({retries})..."
 
-#: src/components/MissionSetup.tsx:1865
+#: src/components/MissionSetup.tsx:1871
 msgid "Record flights"
 msgstr "Yi rikodin tashi"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:1859
+#: src/components/MissionSetup.tsx:1865
 msgid "Recording"
 msgstr "Rikodi"
 
@@ -2849,7 +2859,7 @@ msgstr "Ana redirecting zuwa shiga."
 msgid "Reduce interest"
 msgstr "Rage sha'awa"
 
-#: src/components/MissionSetup.tsx:1075
+#: src/components/MissionSetup.tsx:1081
 msgid "Reference"
 msgstr "Ma'auni"
 
@@ -2928,7 +2938,7 @@ msgstr "Sake suna column"
 msgid "Rename this board column"
 msgstr "Sake suna wannan column na board"
 
-#: src/components/MissionSetup.tsx:1233
+#: src/components/MissionSetup.tsx:1239
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "An yi rendering da <0>three.js</0> (lasisin MIT)."
 
@@ -2952,7 +2962,7 @@ msgstr "Sake aika imel"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:2117
+#: src/components/MissionSetup.tsx:2123
 msgid "Reset"
 msgstr "Saiti"
 
@@ -2965,26 +2975,26 @@ msgstr "Sake saita {title}"
 msgid "Reset all settings to default values"
 msgstr "Mayar da duk saituna zuwa ƙimar asali"
 
-#: src/components/MissionSetup.tsx:153
-#: src/components/MissionSetup.tsx:197
+#: src/components/MissionSetup.tsx:156
+#: src/components/MissionSetup.tsx:203
 msgid "Reset master caution"
 msgstr "Sake saita babbar gargaɗi"
 
-#: src/components/MissionSetup.tsx:190
+#: src/components/MissionSetup.tsx:193
 msgid "Reset trim"
 msgstr "Sake saita trim"
 
-#: src/components/MissionSetup.tsx:162
-#: src/components/MissionSetup.tsx:210
-#: src/components/MissionSetup.tsx:581
+#: src/components/MissionSetup.tsx:165
+#: src/components/MissionSetup.tsx:216
+#: src/components/MissionSetup.tsx:587
 msgid "Reset view"
 msgstr "Sake saita kallo"
 
-#: src/components/MissionSetup.tsx:1735
+#: src/components/MissionSetup.tsx:1741
 msgid "Resolution"
 msgstr "Warwarewa"
 
-#: src/components/MissionSetup.tsx:1996
+#: src/components/MissionSetup.tsx:2002
 msgid "Restart mission"
 msgstr "Sake fara manufa"
 
@@ -2996,12 +3006,12 @@ msgstr "Sakamako"
 msgid "Resume"
 msgstr "Ci gaba"
 
-#: src/components/MissionSetup.tsx:1992
+#: src/components/MissionSetup.tsx:1998
 msgid "Resume mission"
 msgstr "Ci gaba da manufa"
 
-#: src/components/MissionSetup.tsx:155
-#: src/components/MissionSetup.tsx:199
+#: src/components/MissionSetup.tsx:158
+#: src/components/MissionSetup.tsx:205
 msgid "Retract flaps"
 msgstr "Janye flaps"
 
@@ -3009,7 +3019,7 @@ msgstr "Janye flaps"
 msgid "Retry"
 msgstr "Sake gwadawa"
 
-#: src/components/MissionSetup.tsx:379
+#: src/components/MissionSetup.tsx:385
 msgid "Reversed"
 msgstr "Juyayye"
 
@@ -3029,12 +3039,12 @@ msgstr "A janye damar RSS?"
 msgid "Right to Left"
 msgstr "Daga Dama zuwa Hagu"
 
-#: src/components/MissionSetup.tsx:894
-#: src/components/MissionSetup.tsx:895
+#: src/components/MissionSetup.tsx:900
+#: src/components/MissionSetup.tsx:901
 msgid "Right wing"
 msgstr "Fikafikan dama"
 
-#: src/components/MissionSetup.tsx:896
+#: src/components/MissionSetup.tsx:902
 msgid "Right wingtip"
 msgstr "Ƙarshen fikafikan dama"
 
@@ -3046,11 +3056,11 @@ msgstr "birgima"
 msgid "Roll"
 msgstr "Roll"
 
-#: src/components/MissionSetup.tsx:176
+#: src/components/MissionSetup.tsx:179
 msgid "Roll left"
 msgstr "Karkata hagu"
 
-#: src/components/MissionSetup.tsx:177
+#: src/components/MissionSetup.tsx:180
 msgid "Roll right"
 msgstr "Karkata dama"
 
@@ -3094,7 +3104,7 @@ msgstr "Asabar"
 msgid "Save"
 msgstr "Adana"
 
-#: src/components/MissionSetup.tsx:1090
+#: src/components/MissionSetup.tsx:1096
 msgid "Sea level"
 msgstr "Matakin teku"
 
@@ -3226,7 +3236,7 @@ msgid "Select theme preference"
 msgstr "Zaɓi zaɓin theme"
 
 #: src/components/MissionSetup.tsx:148
-#: src/components/MissionSetup.tsx:192
+#: src/components/MissionSetup.tsx:195
 msgid "Select weapon"
 msgstr "Zaɓi makami"
 
@@ -3244,7 +3254,7 @@ msgstr "an zaɓa"
 msgid "Selected: <0>{0}</0>"
 msgstr "An zaɓa: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:1355
+#: src/components/MissionSetup.tsx:1361
 msgid "Send"
 msgstr "Aika"
 
@@ -3270,11 +3280,11 @@ msgid "Serif"
 msgstr "Serif"
 
 #: src/components/MatchHistory.tsx:161
-#: src/components/MissionSetup.tsx:1464
+#: src/components/MissionSetup.tsx:1470
 msgid "Server"
 msgstr "Sabar"
 
-#: src/components/MissionSetup.tsx:1320
+#: src/components/MissionSetup.tsx:1326
 msgid "Server chat"
 msgstr "Hirar sabar"
 
@@ -3296,7 +3306,7 @@ msgstr "ZAMA YA ƘARE"
 msgid "Session expired. Please log in again."
 msgstr "Lokacin zaman ya ƙare. Da fatan za a sake shiga."
 
-#: src/components/MissionSetup.tsx:558
+#: src/components/MissionSetup.tsx:564
 msgid "Set"
 msgstr "Saita"
 
@@ -3308,12 +3318,12 @@ msgstr "Saita tushe da makoma"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:199
 #: src/components/GameCanvas.tsx:353
-#: src/components/MissionSetup.tsx:2018
-#: src/components/MissionSetup.tsx:2052
+#: src/components/MissionSetup.tsx:2024
+#: src/components/MissionSetup.tsx:2058
 msgid "Settings"
 msgstr "Saitunan"
 
-#: src/components/MissionSetup.tsx:1785
+#: src/components/MissionSetup.tsx:1791
 msgid "Shadows"
 msgstr "Inuwa"
 
@@ -3357,7 +3367,7 @@ msgstr "Ana fita..."
 msgid "Single line of text only"
 msgstr "Layi ɗaya ne kawai na rubutu"
 
-#: src/components/MissionSetup.tsx:1060
+#: src/components/MissionSetup.tsx:1066
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Hawa mafi kyau da inji ɗaya (Vyse, afterburner)"
 
@@ -3374,8 +3384,8 @@ msgstr "Karami"
 msgid "Sort"
 msgstr "Jera"
 
-#: src/components/MissionSetup.tsx:484
-#: src/components/MissionSetup.tsx:2062
+#: src/components/MissionSetup.tsx:490
+#: src/components/MissionSetup.tsx:2068
 msgid "Sound"
 msgstr "Sauti"
 
@@ -3397,11 +3407,11 @@ msgstr "birki iska"
 
 #: src/components/MissionSetup.tsx:132
 #: src/components/MissionSetup.tsx:140
-#: src/components/MissionSetup.tsx:182
+#: src/components/MissionSetup.tsx:185
 msgid "Speed brake"
 msgstr "Birki iska"
 
-#: src/components/MissionSetup.tsx:1116
+#: src/components/MissionSetup.tsx:1122
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Gudu cikin KCAS, a matsayin kewayo daga sauƙi (mafi ƙarancin mai, babu kaya) zuwa nauyi (mafi girman jimillar nauyi). An samo bayanai ta gwaji cikin wasa. Duk wani bambanci daga ainihin jirgin yana nuna kurakuran samfurin tashi na na'urar kwaikwayo."
 
@@ -3409,15 +3419,15 @@ msgstr "Gudu cikin KCAS, a matsayin kewayo daga sauƙi (mafi ƙarancin mai, babu
 msgid "SPLASH"
 msgstr "AN KAKKAƁO SHI"
 
-#: src/components/MissionSetup.tsx:1065
+#: src/components/MissionSetup.tsx:1071
 msgid "Stall, clean (Vs1)"
 msgstr "Rasa ɗagawa, tsabtacce (Vs1)"
 
-#: src/components/MissionSetup.tsx:1066
+#: src/components/MissionSetup.tsx:1072
 msgid "Stall, landing config (Vs0)"
 msgstr "Rasa ɗagawa, shirin sauka (Vs0)"
 
-#: src/components/MissionSetup.tsx:1580
+#: src/components/MissionSetup.tsx:1586
 msgid "Start"
 msgstr "Fara"
 
@@ -3429,11 +3439,11 @@ msgstr "Fara tattaunawa ta hanyar ƙara sharhi na farko."
 msgid "Stay tuned though!"
 msgstr "Ku kasance da mu!"
 
-#: src/components/MissionSetup.tsx:1056
+#: src/components/MissionSetup.tsx:1062
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Hawa mafi karkata (Vx, 100% turawa)"
 
-#: src/components/MissionSetup.tsx:1057
+#: src/components/MissionSetup.tsx:1063
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Hawa mafi karkata (Vx, afterburner)"
 
@@ -3466,8 +3476,8 @@ msgstr "Yi subscribe"
 msgid "Sunday"
 msgstr "Lahadi"
 
-#: src/components/MissionSetup.tsx:1570
-#: src/components/MissionSetup.tsx:1954
+#: src/components/MissionSetup.tsx:1576
+#: src/components/MissionSetup.tsx:1960
 #: src/components/Multiplayer.tsx:425
 msgid "Superhuman"
 msgstr "Fiye da mutum"
@@ -3509,7 +3519,7 @@ msgstr "Alamomi"
 msgid "TALLY"
 msgstr "NA HANGO MAƘIYI"
 
-#: src/components/MissionSetup.tsx:1548
+#: src/components/MissionSetup.tsx:1554
 msgid "Task"
 msgstr "Aiki"
 
@@ -3571,7 +3581,7 @@ msgstr "Jigo"
 msgid "Theme Settings"
 msgstr "Saitunan Theme"
 
-#: src/components/MissionSetup.tsx:1975
+#: src/components/MissionSetup.tsx:1981
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Wannan burauza ba ta goyon bayan WebGL 2, don haka wasan ba zai iya aiki ba — gwada wata burauza."
 
@@ -3579,7 +3589,7 @@ msgstr "Wannan burauza ba ta goyon bayan WebGL 2, don haka wasan ba zai iya aiki
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Wannan ɗakin jira yana aika haɗin wasanka zuwa wani mai masauki dabam ({redirectHost}). Ka ci gaba kawai idan ka amince da wannan sabar."
 
-#: src/components/MissionSetup.tsx:1979
+#: src/components/MissionSetup.tsx:1985
 msgid "This machine may be too slow for smooth flight."
 msgstr "Wannan na'ura na iya zama a hankali sosai don tashi mai santsi."
 
@@ -3595,11 +3605,11 @@ msgstr "ƙarfi"
 msgid "Throttle"
 msgstr "Throttle"
 
-#: src/components/MissionSetup.tsx:181
+#: src/components/MissionSetup.tsx:184
 msgid "Throttle down"
 msgstr "Rage throttle"
 
-#: src/components/MissionSetup.tsx:180
+#: src/components/MissionSetup.tsx:183
 msgid "Throttle up"
 msgstr "Ƙara throttle"
 
@@ -3607,7 +3617,7 @@ msgstr "Ƙara throttle"
 msgid "Thursday"
 msgstr "Alhamis"
 
-#: src/components/MissionSetup.tsx:1064
+#: src/components/MissionSetup.tsx:1070
 msgid "Tightest sustained turn speed"
 msgstr "Gudun juyi mai dorewa mafi ƙunci"
 
@@ -3619,7 +3629,7 @@ msgstr "jingina"
 msgid "Time"
 msgstr "Lokaci"
 
-#: src/components/MissionSetup.tsx:1622
+#: src/components/MissionSetup.tsx:1628
 msgid "Time of day"
 msgstr "Lokacin rana"
 
@@ -3675,7 +3685,7 @@ msgstr "Buƙatu sun yi yawa"
 msgid "Top"
 msgstr "Sama"
 
-#: src/components/MissionSetup.tsx:1797
+#: src/components/MissionSetup.tsx:1803
 msgid "Tracers"
 msgstr "Tracers"
 
@@ -3692,22 +3702,22 @@ msgid "Trim hat"
 msgstr "Hular trim"
 
 #: src/components/MissionSetup.tsx:144
-#: src/components/MissionSetup.tsx:187
+#: src/components/MissionSetup.tsx:190
 msgid "Trim nose down"
 msgstr "Trim: hanci ƙasa"
 
 #: src/components/MissionSetup.tsx:143
-#: src/components/MissionSetup.tsx:186
+#: src/components/MissionSetup.tsx:189
 msgid "Trim nose up"
 msgstr "Trim: hanci sama"
 
 #: src/components/MissionSetup.tsx:145
-#: src/components/MissionSetup.tsx:188
+#: src/components/MissionSetup.tsx:191
 msgid "Trim roll left"
 msgstr "Trim: karkata hagu"
 
 #: src/components/MissionSetup.tsx:146
-#: src/components/MissionSetup.tsx:189
+#: src/components/MissionSetup.tsx:192
 msgid "Trim roll right"
 msgstr "Trim: karkata dama"
 
@@ -3747,7 +3757,7 @@ msgstr "Buga don bincika masu amfani"
 msgid "Type to search..."
 msgstr "Buga don bincika..."
 
-#: src/components/MissionSetup.tsx:1727
+#: src/components/MissionSetup.tsx:1733
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3768,6 +3778,11 @@ msgstr "Ba a sanya wa kowa"
 msgid "Unauthorized Access"
 msgstr "Damar Shiga Ba Tare Da Izini Ba"
 
+#: src/components/MissionSetup.tsx:150
+#: src/components/MissionSetup.tsx:197
+msgid "Undesignate target"
+msgstr "Soke zaɓen manufa"
+
 #: ../../../lib/web/src/lib/request.ts:133
 #: ../../../lib/web/src/lib/request.ts:206
 msgid "Unexpected API error"
@@ -3781,13 +3796,13 @@ msgstr "Amurka"
 msgid "Unknown"
 msgstr "Ba a sani ba"
 
-#: src/components/MissionSetup.tsx:1679
+#: src/components/MissionSetup.tsx:1685
 #: src/components/Multiplayer.tsx:79
 #: src/components/Multiplayer.tsx:398
 msgid "Unlimited ammunition"
 msgstr "Harsasai marasa iyaka"
 
-#: src/components/MissionSetup.tsx:1685
+#: src/components/MissionSetup.tsx:1691
 #: src/components/Multiplayer.tsx:80
 #: src/components/Multiplayer.tsx:408
 msgid "Unlimited fuel"
@@ -3853,7 +3868,7 @@ msgstr "Tabbatar"
 msgid "Verify email address"
 msgstr "Tabbatar da adireshin imel"
 
-#: src/components/MissionSetup.tsx:1106
+#: src/components/MissionSetup.tsx:1112
 msgid "Vertical"
 msgstr "A tsaye"
 
@@ -3892,7 +3907,7 @@ msgstr "Kalli duk sanarwa"
 msgid "View controls"
 msgstr "View controls"
 
-#: src/components/MissionSetup.tsx:580
+#: src/components/MissionSetup.tsx:586
 msgid "Views"
 msgstr "Wuraren kallo"
 
@@ -3931,7 +3946,7 @@ msgid "weapon"
 msgstr "makami"
 
 #: src/components/MissionSetup.tsx:120
-#: src/components/MissionSetup.tsx:467
+#: src/components/MissionSetup.tsx:473
 msgid "Weapons"
 msgstr "Makamai"
 
@@ -3948,11 +3963,11 @@ msgid "Wednesday"
 msgstr "Laraba"
 
 #: src/components/MissionSetup.tsx:141
-#: src/components/MissionSetup.tsx:183
+#: src/components/MissionSetup.tsx:186
 msgid "Wheel brakes"
 msgstr "Birkin tayal"
 
-#: src/components/MissionSetup.tsx:205
+#: src/components/MissionSetup.tsx:211
 msgid "Wing fold"
 msgstr "Nade fiffike"
 
@@ -3964,7 +3979,7 @@ msgstr "YA CI NASARA"
 msgid "World server"
 msgstr "Sabar duniya"
 
-#: src/components/MissionSetup.tsx:1313
+#: src/components/MissionSetup.tsx:1319
 #: src/components/Multiplayer.tsx:143
 msgid "World server not reachable"
 msgstr "Ba a iya kaiwa ga sabar duniya ba"
@@ -3977,11 +3992,11 @@ msgstr "karkata"
 msgid "Yaw"
 msgstr "Yaw"
 
-#: src/components/MissionSetup.tsx:178
+#: src/components/MissionSetup.tsx:181
 msgid "Yaw left"
 msgstr "Hanci hagu"
 
-#: src/components/MissionSetup.tsx:179
+#: src/components/MissionSetup.tsx:182
 msgid "Yaw right"
 msgstr "Hanci dama"
 
@@ -4029,10 +4044,10 @@ msgstr "Rubutunka zai ɓace."
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/MissionSetup.tsx:169
+#: src/components/MissionSetup.tsx:172
 msgid "Zoom in"
 msgstr "Kusata"
 
-#: src/components/MissionSetup.tsx:170
+#: src/components/MissionSetup.tsx:173
 msgid "Zoom out"
 msgstr "Nisanta"
