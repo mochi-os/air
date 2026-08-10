@@ -3208,9 +3208,9 @@ function head_apply(dt){ if(!head_track) return;
 	const el=fresh?THREE.MathUtils.clamp(head_shape(head_pose.pitch-head_datum.pitch,gain,1.396),-1.047,1.396):0;
 	const k=Math.min(1,dt*12);   // glide bridges the 30 Hz pose to frame rate, and eases the view home when the face is lost
 	head_az+=(az-head_az)*k; head_el+=(el-head_el)*k;
-	if(fresh&&Math.abs(az)>0.05){ padlock=false; padlock_snap=false; } }   // a deliberate head turn takes the view back from padlock; a resting head leaves it alone
+	if(fresh&&Math.abs(az)>0.05){ looking=false; look_home=false; } }   // a deliberate head turn takes the view back from padlock; a resting head leaves it alone
 */
-let padlock=false, padlock_snap=false, padlock_warned=false;   // padlock (#243, fourth iteration): HOLD Y to look at the target — the head eases there fast and smoothly, release eases it home. No toggle, no helmet symbology: the user removed the JHMCS after three rounds — overlays never substituted for knowing your own jet
+let looking=false, look_home=false, look_warned=false;   // look-at-target (#243): HOLD the look key to look at the boxed target — the head eases there fast and smoothly, release eases it home. No toggle, no helmet symbology: the user removed the JHMCS after three rounds — overlays never substituted for knowing your own jet
 let view_zoom=1, zoom_target=1, zoom_wheel=0;   // optical zoom: notches move the TARGET, the view eases after it (stepping the FOV directly read as jerky); per-view values persist in the config (zoom_<view>, #209)
 let zoom_save=0;   // debounce handle for persisting the zoom
 function zoom_floor(){ return cfg.view==="chase"?0.5:0.6; }   // chase zooms out to 90° wide; first person to ~75°, which is nearer what a pilot actually takes in than the 45° a 1x floor pinned it to
@@ -3224,7 +3224,7 @@ function zoom_persist(){   // remember the setting per view, debounced past the 
 let on_config=null;   // engine -> menu config channel (startGame option): partial updates the menu merges and saves
 const _headq=new THREE.Quaternion(), _pitq=new THREE.Quaternion(), _yaxis=new THREE.Vector3(0,1,0), _zaxis=new THREE.Vector3(0,0,1);
 const _vig=new THREE.Vector3(), _vigr=new THREE.Vector3(), _vigu=new THREE.Vector3();   // hit-vignette scratch (#239)
-const _pad_d=new THREE.Vector3();   // padlock scratch (#243)
+const _look_d=new THREE.Vector3();   // look-at-target scratch (#243)
 const CAMFIX=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),-Math.PI/2);   // maps the camera's -Z view axis onto body +X with +Y up   // chase view: orbit around the aircraft; cam_psi = smoothed heading the orbit is referenced to
 let flyby_pos=null, flyby_side=1;          // flypast view: fixed world point the jet flies past, re-seeded ahead as it recedes
 // True while the aircraft is sitting/rolling on the deck or runway (not yet airborne) — gear can't retract then.
@@ -3391,7 +3391,7 @@ function zoom_step(direction){
 // head back to boresight, and the chase orbit back to its shoulder. Per-view,
 // not global — resetting the cockpit should not disturb a chase framing the
 // player set up earlier, and the zoom is persisted per view anyway (#209).
-function view_reset(){ padlock_snap=false;
+function view_reset(){ look_home=false;
 	if(map_on){ map_range=MAP_RANGE_DEFAULT; return; }
 	if(cfg.view==="ddi"){ const p=DDI_PAGES[ddi_state[ddi_focus()].page];
 		if(p&&p.reset){ p.reset(); ddi_dirty=true; ddi_view_last=0; } return; }   // 0 head-down: the focused page's transients back to defaults
@@ -3433,7 +3433,7 @@ stage.addEventListener("pointercancel",end_drag,{ signal });
 const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.left":"KeyA", "yaw.right":"KeyE", "yaw.left":"KeyQ",
 	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash", "trim.up":"Period", "trim.down":"Comma", "trim.left":"Shift+Comma", "trim.right":"Shift+Period", "trim.reset":"None", "flaps.extend":"KeyF", "flaps.retract":"Shift+KeyF", override:"KeyO", "brake.parking":"Shift+KeyB",
 	gear:"KeyG", hook:"KeyH", probe:"KeyR", atc:"KeyP", lights:"KeyL", flares:"KeyC", eject:"Shift+KeyE", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"None", select:"KeyX", altitude:"KeyK", reject:"None", acquire:"Enter",
-	canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0", repeater:"KeyI", padlock:"KeyY",
+	canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0", repeater:"KeyI", "look.target":"KeyY",
 	"jettison.tanks":"KeyJ", "jettison.emergency":"Shift+KeyJ", "caution.reset":"Shift+KeyM", dump:"Shift+KeyD", "secure.port":"Shift+KeyZ", "secure.starboard":"Shift+KeyX" };   // the cutoffs are chords like the jettison family — securing an engine must be deliberate (Shift+Digit collided with the dev scenario starts)   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares. J is the jettison family; eject moved to triple-Escape (a pilot reaching for "jettison" must never punch out)
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
@@ -3747,7 +3747,7 @@ function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_qual
 	while(impact_marks.length>=cap){ const old=impact_marks.shift(); old.parent?.remove(old); }
 	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
-if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], padlock, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle
+if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], looking, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle
 if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): set a cloud deck and park the jet on the 3.5 deg glideslope at nm — cfg/apply_clouds/carrier_world are module-scope, so a headless approach test cannot be driven from page script without this
 	if(clouds!==undefined){ cfg.clouds=clouds; apply_clouds(); }
 	const d=nm*1852, tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw));
@@ -3775,8 +3775,8 @@ if(DEV_MODE) (globalThis as any).dev_pools=()=>{   // dev (#13): pool invariants
 if(DEV_MODE) (globalThis as any).dev_bandit=(vx,vy,vz)=>{ bandit.velx=+vx||0; bandit.vely=+vy||0; bandit.velz=+vz||0; if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.velx,y:bandit.vely,z:bandit.velz}); return [bandit.velx,bandit.vely,bandit.velz]; };   // dev (#pipper): give the boxed target a chosen world velocity for deflection-solution checks
 if(DEV_MODE) (globalThis as any).dev_close=(m,az,el)=>{ const d=+m||200;   // dev (?developer=1 only): park the bandit at d metres — dead ahead by default, or at az/el degrees off the nose (padlock and JHMCS checks need a target at a chosen aspect; module scope hides every placement primitive from page script, so the hook carries the geometry)
 	const a=(+az||0)*D2R, e=(+el||0)*D2R;
-	_pad_d.copy(ownship.fwd).multiplyScalar(Math.cos(a)).addScaledVector(ownship.right,Math.sin(a)).normalize();
-	bandit.pos.copy(ownship.pos).addScaledVector(_pad_d,d*Math.cos(e)); bandit.pos.y+=d*Math.sin(e);
+	_look_d.copy(ownship.fwd).multiplyScalar(Math.cos(a)).addScaledVector(ownship.right,Math.sin(a)).normalize();
+	bandit.pos.copy(ownship.pos).addScaledVector(_look_d,d*Math.cos(e)); bandit.pos.y+=d*Math.sin(e);
 	bandit.fwd.copy(ownship.fwd); bandit.speed=ownship.speed;
 	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
 function hit_sparks(x,y,z,vx,vy,vz,target,local){ _spark_count++; add_impact_mark(target,local);
@@ -4670,10 +4670,10 @@ function reset_ownship(){
 }
 
 // ============================================================================ camera
-// padlock_target: what the padlock watches. Single player, the bandit while
+// look_target: what the look-at-target key watches. Single player, the bandit while
 // the duel stands; multiplayer, the nearest remote not on my team (any remote
 // in a teamless furball). Null means nothing to watch.
-function padlock_target(){
+function look_target(){
 	if(!MULTIPLAYER) return (has_enemy&&bandit.group&&bandit.group.visible)?bandit:null;
 	if(!net) return null;
 	const mine=net.teams.get(net.slot)||"";
@@ -4691,7 +4691,7 @@ function update_camera(dt){
 		const hr=dt*1.6;
 		const daz=(((keys.has("ArrowLeft")||pad_looks.left)?1:0)-((keys.has("ArrowRight")||pad_looks.right)?1:0))*hr;
 		const del=(((keys.has("ArrowUp")||pad_looks.up)?1:0)-((keys.has("ArrowDown")||pad_looks.down)?1:0))*hr;   // ↑ looks up (head_el positive = up; the compose carries the sign); the castle joins the arrows in both views
-		if(daz||del){ head_az=THREE.MathUtils.clamp(head_az+daz,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+del,-1.047,1.396); padlock_snap=false; }   // a manual look cancels any ease-home in progress
+		if(daz||del){ head_az=THREE.MathUtils.clamp(head_az+daz,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+del,-1.047,1.396); look_home=false; }   // a manual look cancels any ease-home in progress
 	}
 	// Padlock (#243): HOLD Y to look at the target in the first-person views;
 	// release and the head eases home. The motion is an exponential ease with
@@ -4699,23 +4699,23 @@ function update_camera(dt){
 	// sweep. The CLAMPS are the mask: a target past ±150° az or under the sill
 	// stays honestly out of view, head parked at its limit ("he's behind me
 	// and I can't see him"), resuming when he emerges.
-	{ const held=(cfg.view==="hud"||cfg.view==="cockpit")&&keys.has(key_of("padlock"));
-		const t=held?padlock_target():null;
-		if(held&&!t&&!padlock_warned){ notice(translate("NO TARGET")); padlock_warned=true; }
-		if(!held) padlock_warned=false;
-		if(padlock&&!(held&&t)) padlock_snap=true;   // released (or target gone): ease home
-		padlock=!!(held&&t);
-		if(padlock){ padlock_snap=false;
-			_pad_d.copy(t.pos).sub(ownship.pos).normalize();
-			const bf=_pad_d.dot(ownship.fwd), bu=_pad_d.dot(ownship.up), br=_pad_d.dot(ownship.right);
+	{ const held=(cfg.view==="hud"||cfg.view==="cockpit")&&keys.has(key_of("look.target"));
+		const t=held?look_target():null;
+		if(held&&!t&&!look_warned){ notice(translate("NO TARGET")); look_warned=true; }
+		if(!held) look_warned=false;
+		if(looking&&!(held&&t)) look_home=true;   // released (or target gone): ease home
+		looking=!!(held&&t);
+		if(looking){ look_home=false;
+			_look_d.copy(t.pos).sub(ownship.pos).normalize();
+			const bf=_look_d.dot(ownship.fwd), bu=_look_d.dot(ownship.up), br=_look_d.dot(ownship.right);
 			const azT=THREE.MathUtils.clamp(Math.atan2(-br,bf),-2.618,2.618);
 			const elT=THREE.MathUtils.clamp(Math.atan2(bu,Math.hypot(bf,br)),-1.047,1.396);
 			const k=1-Math.exp(-dt*9), R=dt*7;   // ease constant ~0.11 s, rate cap ~400°/s
 			head_az+=THREE.MathUtils.clamp((azT-head_az)*k,-R,R);
 			head_el+=THREE.MathUtils.clamp((elT-head_el)*k,-R,R); } }
-	if(padlock_snap){ const k=1-Math.exp(-dt*9), R=dt*7;   // the same ease carries the head home
+	if(look_home){ const k=1-Math.exp(-dt*9), R=dt*7;   // the same ease carries the head home
 		head_az-=THREE.MathUtils.clamp(head_az*k,-R,R); head_el-=THREE.MathUtils.clamp(head_el*k,-R,R);
-		if(Math.abs(head_az)<0.01&&Math.abs(head_el)<0.01){ head_az=0; head_el=0; padlock_snap=false; } }
+		if(Math.abs(head_az)<0.01&&Math.abs(head_el)<0.01){ head_az=0; head_el=0; look_home=false; } }
 	if(cfg.view!=="chase" || map_on){   // HELD zoom keys sweep the optical zoom (the keydown edge gives the first notch; this carries the hold). Chase in flight is excluded: there −/= dolly the orbit below
 		const zk=(k)=>keys.has(key_of(k).replace(/^Shift\+/,""));
 		const sweep=((zk("zoom.in")?1:0)-(zk("zoom.out")?1:0))*dt*2.6;   // held sweep quickened to match the coarser notch
@@ -5146,7 +5146,7 @@ function draw_hud(){
 			// the pilot pulls lead to bring it up — it must never rise above the
 			// gun cross from own manoeuvre alone.
 			const avg=round_average(span,ownship.pos.y);
-			_pad_d.set(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)).normalize();   // sight line (padlock scratch, free at draw time)
+			_look_d.set(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)).normalize();   // sight line (padlock scratch, free at draw time)
 			// Time of flight is how long the ROUND takes to fly the span — muzzle
 			// speed under drag, plus the pilot's own velocity the round inherits,
 			// projected on the line of sight. NO target term: the target's motion
@@ -5155,9 +5155,9 @@ function draw_hud(){
 			// velocity here too, so a fast-OPENING bandit (-338 kt) collapsed the
 			// denominator to its floor, inflated t to ~6 s, and threw the pipper
 			// to the top of the screen in a slow high-alpha fight (2026-08-10).
-			const vlos=(ownship.fwd.x*avg+(ownship.velx??0))*_pad_d.x
-				+(ownship.fwd.y*avg+(ownship.vely??0))*_pad_d.y
-				+(ownship.fwd.z*avg+(ownship.velz??0))*_pad_d.z;
+			const vlos=(ownship.fwd.x*avg+(ownship.velx??0))*_look_d.x
+				+(ownship.fwd.y*avg+(ownship.vely??0))*_look_d.y
+				+(ownship.fwd.z*avg+(ownship.velz??0))*_look_d.z;
 			const t=span/Math.max(vlos,250);
 			const air=round_length(ownship.pos.y)*Math.log1p(muzzle*t/round_length(ownship.pos.y));   // barrel-component distance actually covered in t under drag
 			const impact=muz.clone().addScaledVector(ownship.fwd,air).addScaledVector(ownship.vel_dir,ownship.speed*t); impact.y-=0.5*9.8*t*t;

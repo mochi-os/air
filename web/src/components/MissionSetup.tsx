@@ -165,7 +165,7 @@ const BUTTON_ROWS: Row[] = [
   { id: 'look.down', label: <Trans>Look down</Trans>, group: 'view' },
   { id: 'look.left', label: <Trans>Look left</Trans>, group: 'view' },
   { id: 'look.right', label: <Trans>Look right</Trans>, group: 'view' },
-  { id: 'padlock', label: <Trans>Look at target</Trans>, group: 'view' }, // hold to look at the boxed target (was internally "padlock"; the label describes the hold)
+  { id: 'look.target', label: <Trans>Look at target</Trans>, group: 'view' }, // hold to look at the boxed target
   { id: 'zoom.in', label: <Trans>Zoom in</Trans>, group: 'view' },
   { id: 'zoom.out', label: <Trans>Zoom out</Trans>, group: 'view' },
 ]
