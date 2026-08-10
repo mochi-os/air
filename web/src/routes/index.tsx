@@ -18,7 +18,7 @@ import { preload } from '../game/preload'
 // is transient UI — and inside the shell iframe every change relayed a
 // navigation to the parent, rewriting the address bar and stacking a history
 // entry per click (#77).
-type SetupTab = 'general' | 'graphics' | 'sound' | 'controls' | 'keys' // the Settings dialog's tabs (#77): mission, weather and history became their own surfaces
+type SetupTab = 'general' | 'graphics' | 'sound' | 'controls' | 'keys' /* #57 parked: | 'head' */ // the Settings dialog's tabs (#77): mission, weather and history became their own surfaces
 
 // Inside the menu shell the top window owns the browser tab; without this it
 // stays titled "Mochi" no matter what the app's own index.html says.

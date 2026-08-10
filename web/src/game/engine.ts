@@ -21,6 +21,7 @@ import { normalize as stores_normalize, migrate as stores_migrate, strip as stor
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
 import { flight_catalog } from './flight'
 import { diagnose } from '../lib/graphics'
+// #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
@@ -3169,7 +3170,47 @@ const keys=new Set();
 let cam_az=0, cam_el=0.22, cam_dist=24, cam_psi=0;
 let buffet_env=0;   // low-passed buffet intensity (#234): the seat cue's shared envelope — the camera writes it each frame, draw_hud reads it
 let head_az=0, head_el=0, head_drag=false;   // cockpit head look (#99): mouse-drag or arrow keys. The head HOLDS where it is left, like the chase orbit — 0 (view.reset) recenters
-let padlock=false, padlock_snap=false;   // padlock toggle (#243): the head slaves to the target within honest neck limits; toggling off eases the head back to boresight
+/* #57 parked — head tracking is disabled for now. To re-enable, uncomment this
+block, the import at the top, the head_apply/head_begin/head_close call sites,
+the view_reset datum capture, the dev_probe tracking field, the dev_head devq
+read, and the Head tab in MissionSetup.tsx (plus config.head and the SetupTab
+member).
+// --- Webcam head tracking (#57): while a session is live and the face is
+// fresh, the tracked pose owns head_az/head_el in the first-person views; the
+// arrows still work the moment tracking is off or the face is lost (which
+// eases the view home). 0 (view.reset) re-datums the CURRENT physical pose
+// BEFORE zeroing — "make here neutral" and "recentre" are the same press.
+let head_track=null, head_starting=false, head_pose=null, head_at=0, head_ok=false, head_seen=false, dev_head=false;
+let head_datum={ yaw:0, pitch:0 };
+const head_yaw=new HeadEuro(), head_pitch=new HeadEuro();
+function head_begin(){ if(head_track||head_starting) return;
+	dev_head=dev_head||(DEV_MODE&&new URLSearchParams(location.search).get("head")==="1");   // read here, not just at the devq parse: mission start can run before that block (#48's ordering lesson)
+	if(!((cfg.head&&cfg.head.on)||dev_head)) return;
+	head_starting=true;
+	const base=new URL("tracking-1.0.1/",location.href).href;
+	Promise.resolve(shellStorage.getItem("air.camera")).then(stored=>{
+		let device=""; try{ device=stored?JSON.parse(stored):""; }catch(_){ device=""; }
+		return head_start({ base, model: base+"face_landmarker.task", device,
+			pose:(p)=>{ head_ok=!!p.ok; if(p.ok){
+				if(!head_seen){ head_seen=true; head_datum={ yaw:p.yaw, pitch:p.pitch }; }   // first sight IS the calibration: wherever the head rests when tracking wakes is neutral
+				const t=performance.now(), dt=head_at?Math.min(0.2,(t-head_at)/1000):0.033; head_at=t;
+				head_pose={ yaw:head_yaw.next(p.yaw,dt), pitch:head_pitch.next(p.pitch,dt), raw:p }; } },
+			end:()=>{ head_track=null; head_ok=false; } });
+	}).then(r=>{ head_starting=false; if(r&&r.head) head_track=r.head; else if(r&&r.error) notice("HEAD TRACKING: "+String(r.error).toUpperCase()); })
+	.catch((e)=>{ head_starting=false; console.warn("head tracking failed to start",e); });
+}
+function head_close(){ if(head_track){ head_track.stop(); head_track=null; } head_ok=false; head_seen=false; head_pose=null; head_at=0; head_yaw.reset(); head_pitch.reset(); }
+function head_apply(dt){ if(!head_track) return;
+	if(cfg.view!=="cockpit"&&cfg.view!=="hud") return;   // first-person views only; chase/flypast/padlock keep their own logic
+	const fresh=head_ok&&head_pose&&performance.now()-head_at<400;
+	const gain=(cfg.head&&cfg.head.gain)||5;
+	const az=fresh?head_shape(head_pose.yaw-head_datum.yaw,gain,2.618):0;
+	const el=fresh?THREE.MathUtils.clamp(head_shape(head_pose.pitch-head_datum.pitch,gain,1.396),-1.047,1.396):0;
+	const k=Math.min(1,dt*12);   // glide bridges the 30 Hz pose to frame rate, and eases the view home when the face is lost
+	head_az+=(az-head_az)*k; head_el+=(el-head_el)*k;
+	if(fresh&&Math.abs(az)>0.05){ padlock=false; padlock_snap=false; } }   // a deliberate head turn takes the view back from padlock; a resting head leaves it alone
+*/
+let padlock=false, padlock_snap=false, padlock_warned=false;   // padlock (#243, fourth iteration): HOLD Y to look at the target — the head eases there fast and smoothly, release eases it home. No toggle, no helmet symbology: the user removed the JHMCS after three rounds — overlays never substituted for knowing your own jet
 let view_zoom=1, zoom_target=1, zoom_wheel=0;   // optical zoom: notches move the TARGET, the view eases after it (stepping the FOV directly read as jerky); per-view values persist in the config (zoom_<view>, #209)
 let zoom_save=0;   // debounce handle for persisting the zoom
 function zoom_floor(){ return cfg.view==="chase"?0.5:0.6; }   // chase zooms out to 90° wide; first person to ~75°, which is nearer what a pilot actually takes in than the 45° a 1x floor pinned it to
@@ -3284,7 +3325,6 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("shout") && MULTIPLAYER && running && onChat){ e.preventDefault(); onChat("all"); }   // Shift+T: everyone, when team chat is the default
 		if(ch===key_of("hook")){ ownship.hookTarget = ownship.hookTarget>0.5?0:1; }   // arrestor hook deploy/stow
 		if(ch===key_of("lights") && !dev_parked){ ownship.lights=!ownship.lights; }   // aircraft position/strobe/landing lights
-		if(ch===key_of("padlock")) padlock_toggle();   // Y: eyes on the bandit (#243) — first-person head slaved to the target, honest neck limits
 
 		if(ch===key_of("brake.speed")){ ownship.speedbrakeTarget = ownship.speedbrakeTarget>0.5?0:1; }   // / : speed brake (air brake) toggle
 		if(ch===key_of("flaps.extend")&&flap_select<2){ flap_select++; notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // F: one notch toward FULL, no wrap — a cycle's worst moment was FULL wrapping to AUTO on short final
@@ -3351,11 +3391,12 @@ function zoom_step(direction){
 // head back to boresight, and the chase orbit back to its shoulder. Per-view,
 // not global — resetting the cockpit should not disturb a chase framing the
 // player set up earlier, and the zoom is persisted per view anyway (#209).
-function view_reset(){ padlock=false; padlock_snap=false;
+function view_reset(){ padlock_snap=false;
 	if(map_on){ map_range=MAP_RANGE_DEFAULT; return; }
 	if(cfg.view==="ddi"){ const p=DDI_PAGES[ddi_state[ddi_focus()].page];
 		if(p&&p.reset){ p.reset(); ddi_dirty=true; ddi_view_last=0; } return; }   // 0 head-down: the focused page's transients back to defaults
 	zoom_target=THREE.MathUtils.clamp(1,zoom_floor(),4); zoom_persist();
+	// #57 parked: if(head_track&&head_pose){ head_datum={ yaw:head_pose.raw.yaw, pitch:head_pose.raw.pitch }; head_yaw.reset(); head_pitch.reset(); }   // #57: capture the physical pose as the new neutral FIRST — zeroing alone would snap the view straight back off
 	head_az=0; head_el=0;
 	if(cfg.view==="chase"){ cam_az=0; cam_el=0.22; cam_dist=24; }
 }
@@ -3654,6 +3695,8 @@ function cautions_update(){
 	const bingo=rows.some(r=>r[0]==="BINGO"||r[0]==="FUEL LO");
 	if(bingo){ bingo_nag+=1/60; if(bingo_nag>=30){ bingo_nag=0; audio_caution(); } } else bingo_nag=0; }
 let law_armed=true;   // radar-altimeter low-altitude warning: one aural per descent through the bug
+let dev_pip=null;   // dev (#243/pipper): last drawn director geometry for headless assertions
+let law_active=false;   // the warning is LIVE this frame: drives the repeating aural AND the flashing break-X on HUD/helmet (#243 — the user flew into the sea padlocked, gear up, in silence)
 let last_out=null;   // the core's latest output words: the HUD caution panel reads damage straight from them
 // burn_trail: flame + sooty smoke from a burning aircraft, rate by intensity.
 // The gun-camera rules (#239): one CONNECTED clumped plume, darkest and
@@ -3704,7 +3747,7 @@ function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_qual
 	while(impact_marks.length>=cap){ const old=impact_marks.shift(); old.parent?.remove(old); }
 	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
-if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], padlock, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle
+if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], padlock, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle
 if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): set a cloud deck and park the jet on the 3.5 deg glideslope at nm — cfg/apply_clouds/carrier_world are module-scope, so a headless approach test cannot be driven from page script without this
 	if(clouds!==undefined){ cfg.clouds=clouds; apply_clouds(); }
 	const d=nm*1852, tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw));
@@ -3729,8 +3772,12 @@ if(DEV_MODE) (globalThis as any).dev_pools=()=>{   // dev (#13): pool invariants
 		for(let i=0;i<p.max;i++) if(p.active[i]){ live++; if(!seen.has(i)) mis++; }   // an active slot missing from the list would never simulate or render again
 		report[name]={list:p.activeList.length,live,dup,dead,mis,limit:p.limit??p.max}; }
 	return report; };
-if(DEV_MODE) (globalThis as any).dev_close=(m)=>{ const d=+m||200;   // dev (?developer=1 only): park the bandit dead ahead at d metres — gunnery and hit-flash checks need a target in range, and flying onto one by hand is not a test
-	bandit.pos.copy(ownship.pos).addScaledVector(ownship.fwd,d); bandit.fwd.copy(ownship.fwd); bandit.speed=ownship.speed;
+if(DEV_MODE) (globalThis as any).dev_bandit=(vx,vy,vz)=>{ bandit.velx=+vx||0; bandit.vely=+vy||0; bandit.velz=+vz||0; if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.velx,y:bandit.vely,z:bandit.velz}); return [bandit.velx,bandit.vely,bandit.velz]; };   // dev (#pipper): give the boxed target a chosen world velocity for deflection-solution checks
+if(DEV_MODE) (globalThis as any).dev_close=(m,az,el)=>{ const d=+m||200;   // dev (?developer=1 only): park the bandit at d metres — dead ahead by default, or at az/el degrees off the nose (padlock and JHMCS checks need a target at a chosen aspect; module scope hides every placement primitive from page script, so the hook carries the geometry)
+	const a=(+az||0)*D2R, e=(+el||0)*D2R;
+	_pad_d.copy(ownship.fwd).multiplyScalar(Math.cos(a)).addScaledVector(ownship.right,Math.sin(a)).normalize();
+	bandit.pos.copy(ownship.pos).addScaledVector(_pad_d,d*Math.cos(e)); bandit.pos.y+=d*Math.sin(e);
+	bandit.fwd.copy(ownship.fwd); bandit.speed=ownship.speed;
 	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
 function hit_sparks(x,y,z,vx,vy,vz,target,local){ _spark_count++; add_impact_mark(target,local);
 	// Re-read against real gun-camera frames (#239, the 3 June 1967 F-105 on a
@@ -3915,7 +3962,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
+	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], /* #57 parked: tracking:{ on:head_track?1:0, ok:head_ok?1:0, az:+head_az.toFixed(3), el:+head_el.toFixed(3) }, */home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
 	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
 	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS
 		racks:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>[n,o.visible])),
@@ -4262,8 +4309,19 @@ function fly_player(dt){
 		if(ownship.grounded&&!audio_prev.grounded&&!ownship.trapped&&ownship.speed>30) audio_touchdown();
 		audio_horn((ownship.gearTarget??0)>0.5&&ownship.pos.y<300&&ownship.speed<95&&!ownship.grounded&&!ownship.launching);
 		{ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;   // radar-altimeter low-altitude warning: descending through 250 ft AGL clean — the "altitude, altitude" moment; the gear coming down declares the descent deliberate
-			if(law_armed&&agl<250&&(ownship.vely??0)<-2&&!ownship.grounded&&!ownship.launching&&crash_t<=0&&(ownship.gearTarget??0)>0.5) { audio_law(); }   // repeats while below the index (#47) — it played once and went silent for the rest of the descent
-			else if(agl>400) law_armed=true; }
+			const sink=-(ownship.vely??0);   // m/s down
+			// The warning was GEAR-GATED: on approach it called descending through
+			// 250 ft, and in a fight — gear up — it said NOTHING; the pilot flew a
+			// padlocked jet into the sea in silence. Gear up, a fixed bug is also
+			// the wrong shape (a fast dive blows through any height before the
+			// call helps), so the clean trigger is ground CLOSURE: about six
+			// seconds from impact at the current sink, floored at 300 ft and
+			// capped at the 5,000 ft training hard deck.
+			const dirty=(ownship.gearTarget??0)>0.5&&agl<250&&sink>2;
+			const closure=(ownship.gearTarget??0)<=0.5&&sink>10&&agl<Math.min(5000,Math.max(300,sink*3.28084*6));
+			law_active=(dirty||closure)&&!ownship.grounded&&!ownship.launching&&crash_t<=0;
+			if(law_armed&&law_active) { audio_law(); }   // repeats while below the index (#47) — it played once and went silent for the rest of the descent
+			else if(agl>400&&!law_active) law_armed=true; }
 		cautions_update();   // #47: keyed, view-independent — the tone lives HERE, not in draw_hud
 		audio_prev.launching=!!ownship.launching; audio_prev.trapped=!!ownship.trapped; audio_prev.grounded=!!ownship.grounded;
 	}
@@ -4625,39 +4683,38 @@ function padlock_target(){
 		const d=st.pos.distanceToSquared(ownship.pos); if(d<span){ span=d; best=st; } }
 	return best;
 }
-function padlock_toggle(){
-	if(padlock){ padlock=false; padlock_snap=true; notice(translate("PADLOCK OFF")); return; }
-	if(!padlock_target()){ notice(translate("NO TARGET")); return; }
-	padlock=true; padlock_snap=false; notice(translate("PADLOCK"));
-}
 function update_camera(dt){
 	const firstPerson = (cfg.view==="hud");
 	ownship.group.visible=(!firstPerson) || cfg.view==="cockpit";   // in cockpit view the airframe RENDERS (near pass); the layer split keeps it out of the world passes
+	// #57 parked: head_apply(dt);   // #57: the tracked pose first — a held arrow still nudges on top for the frame
 	if(cfg.view!=="chase" && cfg.view!=="ddi" && !map_on){   // arrow/hat head look in BOTH first-person views — chase keeps the arrows for its orbit, and head-down DDI work leaves the head where it was. The clamps are the pilot's: ±150° azimuth (checking six over the shoulder, as far as the straps allow) and -60°/+80° elevation
 		const hr=dt*1.6;
 		const daz=(((keys.has("ArrowLeft")||pad_looks.left)?1:0)-((keys.has("ArrowRight")||pad_looks.right)?1:0))*hr;
 		const del=(((keys.has("ArrowUp")||pad_looks.up)?1:0)-((keys.has("ArrowDown")||pad_looks.down)?1:0))*hr;   // ↑ looks up (head_el positive = up; the compose carries the sign); the castle joins the arrows in both views
-		if(daz||del){ head_az=THREE.MathUtils.clamp(head_az+daz,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+del,-1.047,1.396); padlock=false; padlock_snap=false; }   // a manual look takes the head back — padlock yields to the pilot
+		if(daz||del){ head_az=THREE.MathUtils.clamp(head_az+daz,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+del,-1.047,1.396); padlock_snap=false; }   // a manual look cancels any ease-home in progress
 	}
-	// Padlock (#243): slave the head to the target in the first-person views.
-	// The direction is computed in the BODY frame and expressed in the same
-	// az/el the compose consumes; the head slews at a neck rate rather than
-	// teleporting, and the CLAMPS are the mask — a target past ±150° az or
-	// under the sill stays honestly out of view, head parked at its limit
-	// ("he's behind me and I can't see him"), resuming when he emerges.
-	if(padlock&&(cfg.view==="hud"||cfg.view==="cockpit")){
-		const t=padlock_target();
-		if(!t){ padlock=false; padlock_snap=true; }
-		else { _pad_d.copy(t.pos).sub(ownship.pos).normalize();
+	// Padlock (#243): HOLD Y to look at the target in the first-person views;
+	// release and the head eases home. The motion is an exponential ease with
+	// a rate cap — fast off the mark, smooth into the target, never a robot
+	// sweep. The CLAMPS are the mask: a target past ±150° az or under the sill
+	// stays honestly out of view, head parked at its limit ("he's behind me
+	// and I can't see him"), resuming when he emerges.
+	{ const held=(cfg.view==="hud"||cfg.view==="cockpit")&&keys.has(key_of("padlock"));
+		const t=held?padlock_target():null;
+		if(held&&!t&&!padlock_warned){ notice(translate("NO TARGET")); padlock_warned=true; }
+		if(!held) padlock_warned=false;
+		if(padlock&&!(held&&t)) padlock_snap=true;   // released (or target gone): ease home
+		padlock=!!(held&&t);
+		if(padlock){ padlock_snap=false;
+			_pad_d.copy(t.pos).sub(ownship.pos).normalize();
 			const bf=_pad_d.dot(ownship.fwd), bu=_pad_d.dot(ownship.up), br=_pad_d.dot(ownship.right);
 			const azT=THREE.MathUtils.clamp(Math.atan2(-br,bf),-2.618,2.618);
 			const elT=THREE.MathUtils.clamp(Math.atan2(bu,Math.hypot(bf,br)),-1.047,1.396);
-			const R=dt*4.5;   // ~260°/s: a quick check-six, not a teleport
-			head_az+=THREE.MathUtils.clamp(azT-head_az,-R,R);
-			head_el+=THREE.MathUtils.clamp(elT-head_el,-R,R); }
-	}
-	if(padlock_snap){ const R=dt*6;   // toggled off: ease back to boresight, cancelled by any manual look
-		head_az-=THREE.MathUtils.clamp(head_az,-R,R); head_el-=THREE.MathUtils.clamp(head_el,-R,R);
+			const k=1-Math.exp(-dt*9), R=dt*7;   // ease constant ~0.11 s, rate cap ~400°/s
+			head_az+=THREE.MathUtils.clamp((azT-head_az)*k,-R,R);
+			head_el+=THREE.MathUtils.clamp((elT-head_el)*k,-R,R); } }
+	if(padlock_snap){ const k=1-Math.exp(-dt*9), R=dt*7;   // the same ease carries the head home
+		head_az-=THREE.MathUtils.clamp(head_az*k,-R,R); head_el-=THREE.MathUtils.clamp(head_el*k,-R,R);
 		if(Math.abs(head_az)<0.01&&Math.abs(head_el)<0.01){ head_az=0; head_el=0; padlock_snap=false; } }
 	if(cfg.view!=="chase" || map_on){   // HELD zoom keys sweep the optical zoom (the keydown edge gives the first notch; this carries the hold). Chase in flight is excluded: there −/= dolly the orbit below
 		const zk=(k)=>keys.has(key_of(k).replace(/^Shift\+/,""));
@@ -4693,12 +4750,12 @@ function update_camera(dt){
 		// pilot without the airframe in the way, so the head turns here too,
 		// and the quaternion form is what keeps roll coupled correctly near
 		// the pitch poles where lookAt fumbles it.
-		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el)).multiply(CAMFIX);
+		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el)).multiply(CAMFIX);   // the held look keeps the pilot's head roll in the AIRFRAME frame — a glance, not a stabilised camera (world-up stabilisation tried 2026-08-10 and removed at the user's direction)
 		if(buffet_rot>1e-5) camera.quaternion.multiply(_headq.setFromAxisAngle(_zaxis,(Math.random()*2-1)*buffet_rot)).multiply(_pitq.setFromAxisAngle(_yaxis,(Math.random()*2-1)*buffet_rot));   // the temps are free again after the compose consumed them
 		}
 	else if(cfg.view==="cockpit"){ const at=ownship.group.userData.eye||{x:3.0,y:0.6};   // calibrated from the modeled pilot head once the GLB resolves
 		const eye=buffet_jitter(body_offset(ownship,at.x,at.y,0)); camera.position.copy(eye);
-		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el)).multiply(CAMFIX);   // quaternion compose: lookAt fumbles roll coupling near +80° pitch
+		camera.quaternion.copy(ownship.q).multiply(_headq.setFromAxisAngle(_yaxis,head_az)).multiply(_pitq.setFromAxisAngle(_zaxis,head_el)).multiply(CAMFIX);   // quaternion compose: lookAt fumbles roll coupling near +80° pitch; the held look keeps head roll in the airframe frame
 		}
 	else if(cfg.view==="padlock"){ const eye=camera_floor(body_offset(ownship,-12,4,0)); camera.position.copy(eye); camera.up.set(0,1,0);
 		camera.lookAt(has_enemy?bandit.pos:eye.clone().addScaledVector(ownship.fwd,200)); }   // lock on the bandit; look ahead when solo
@@ -5077,11 +5134,38 @@ function draw_hud(){
 			hctx.fillText(String(Math.round(off)),bore[0]+ux*84,bore[1]+uy*84+4); } }
 	if(master==="gun"){
 		if(boxed&&td){   // director: a TRUE lead-computing pipper now that rounds fly real time of flight — where my rounds will be, pulled back by where HE will be, so pipper-on-target IS the deflection solution (mirrors battle.Burst exactly); range analog around the ring
-			const span=Math.min(rng,2000); const t=span/Math.max(round_average(span,ownship.pos.y)+vc,200); const muz=body_offset(ownship,6.0,0.35,0.0);
+			const span=Math.min(rng,2000); const muz=body_offset(ownship,6.0,0.35,0.0);
+			// Time of flight from the ROUND'S closing speed along the sight line —
+			// NOT aircraft closure: a hard pull swings own velocity off the LOS and
+			// collapsed the old round_average+vc denominator to its 200 m/s floor,
+			// inflating t to ~10 s; the -targetVel*t pullback then threw the pipper
+			// kilometres (the top-of-screen jump under g, 2026-08-10). The round
+			// flies at muzzle+ownship speed toward him regardless of own g, so its
+			// LOS closing speed stays near round speed through any manoeuvre. The
+			// honest own-g effect remains: alpha and gravity DROOP the pipper, and
+			// the pilot pulls lead to bring it up — it must never rise above the
+			// gun cross from own manoeuvre alone.
+			const avg=round_average(span,ownship.pos.y);
+			_pad_d.set(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)).normalize();   // sight line (padlock scratch, free at draw time)
+			// Time of flight is how long the ROUND takes to fly the span — muzzle
+			// speed under drag, plus the pilot's own velocity the round inherits,
+			// projected on the line of sight. NO target term: the target's motion
+			// decides WHERE you aim (the -targetVel*t pullback below), never how
+			// fast the round travels. A first pass wrongly subtracted target
+			// velocity here too, so a fast-OPENING bandit (-338 kt) collapsed the
+			// denominator to its floor, inflated t to ~6 s, and threw the pipper
+			// to the top of the screen in a slow high-alpha fight (2026-08-10).
+			const vlos=(ownship.fwd.x*avg+(ownship.velx??0))*_pad_d.x
+				+(ownship.fwd.y*avg+(ownship.vely??0))*_pad_d.y
+				+(ownship.fwd.z*avg+(ownship.velz??0))*_pad_d.z;
+			const t=span/Math.max(vlos,250);
 			const air=round_length(ownship.pos.y)*Math.log1p(muzzle*t/round_length(ownship.pos.y));   // barrel-component distance actually covered in t under drag
 			const impact=muz.clone().addScaledVector(ownship.fwd,air).addScaledVector(ownship.vel_dir,ownship.speed*t); impact.y-=0.5*9.8*t*t;
 			impact.x-=(boxed.velx??boxed.fwd.x*boxed.speed)*t; impact.y-=(boxed.vely??boxed.fwd.y*boxed.speed)*t; impact.z-=(boxed.velz??boxed.fwd.z*boxed.speed)*t;
 			const pip=proj_point(impact);
+			if(DEV_MODE&&pip){ const bvy=(boxed.vely??boxed.fwd.y*boxed.speed);
+				dev_pip={py:Math.round(pip[1]),by:Math.round(bore[1]),t:+t.toFixed(2),rng:Math.round(rng),bvy:Math.round(bvy),
+					pullY:Math.round(-bvy*t),gravY:-Math.round(0.5*9.8*t*t),ownY:Math.round(ownship.vel_dir.y*ownship.speed*t)}; }   // decomposition of the vertical impact terms — which one lifts the pipper
 			if(pip){ hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.setLineDash([]);
 				hctx.beginPath(); hctx.arc(pip[0],pip[1],4,0,Math.PI*2); hctx.fill();
 				hctx.beginPath(); hctx.arc(pip[0],pip[1],11,0,Math.PI*2); hctx.stroke();
@@ -5263,6 +5347,12 @@ function draw_hud(){
 		let cy=HH-118;
 		for(const [,label,red] of caution_list){ hctx.fillStyle=red?RD:AM; hctx.fillText(label,40,cy); cy-=18; }
 	}
+	if(law_active&&running&&(performance.now()%500)<280){   // the break-X (#243): the real jet's unmissable altitude call, flashed across HUD and helmet alike — numbers are exactly what a padlocked pilot stops reading
+		hctx.strokeStyle="#ff5040"; hctx.lineWidth=5; hctx.beginPath();
+		hctx.moveTo(HW/2-110,HH/2-110); hctx.lineTo(HW/2+110,HH/2+110);
+		hctx.moveTo(HW/2+110,HH/2-110); hctx.lineTo(HW/2-110,HH/2+110); hctx.stroke();
+		hctx.fillStyle="#ff5040"; hctx.font="bold 30px monospace"; hctx.textAlign="center";
+		hctx.fillText("ALTITUDE",HW/2,HH/2+160); }   // annunciator-verbatim, like the caution panel: real Hornet warnings read in English in every operator's cockpit
 	if(hit_flash>0){   // rounds are landing on us (#239): an edge-weighted vignette, not a flat wash —
 		// the pain lives at the periphery and the pilot keeps the picture. In single
 		// player the shooter is known, so the vignette centre shifts AWAY from the
@@ -5402,7 +5492,7 @@ let net_notice="", net_notice_t=0;
 let comms=[];   // the radio/chat log (#84): {text, colour, until} — top-left, hud-view furniture (multiplayer chat + the Case III radio script)
 function comm(text,colour){ comms.push({ text:String(text).slice(0,80), colour, until:performance.now()+10000 }); while(comms.length>5) comms.shift(); }
 function chat_scope(){ return (net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams")?"team":"all"; }
-function exit_match(){ if(!running) return; running=false;
+function exit_match(){ if(!running) return; running=false; /* #57 parked: head_close(); */
 	if(MULTIPLAYER) net_finish("left");
 	else net_record({   // EVERY completed flight is history (#212): a scoreless sortie or a carrier approach is exactly the one you want the recording of, and the cheat flag is data on the row, never a filter
 		world:"local", session:"local-"+mission_began, mode:cfg.task==="joust"?"joust":"free", team:"",
@@ -5686,7 +5776,8 @@ function start_mission(){
 	const devq=new URLSearchParams(DEV_MODE?window.location.search:"");   // dev/screenshot hooks (#105), parsed ONLY in developer mode: force a cloud preset / time of day / inject damage
 	const cloudq=devq.get("clouds"); if(cloudq!==null) cfg.clouds=cloudq;
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
-	harm_pending=devq.get("harm");   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
+	harm_pending=devq.get("harm");
+	// #57 parked: dev_head=devq.get("head")==="1";   // &head=1: force head tracking on for headless verification (#57)   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
 	livery_pending=devq.get("livery");   // ?livery=red|blue — paint ownship that side and the bandit the other (headless livery verification)
 	const viewq=devq.get("view"); if(viewq) set_view(viewq);   // ?view=cockpit|hud|chase — headless capture hook (#105)
 	const storesq=devq.get("stores");   // &stores=gun|fox2|cap|tanks|right — headless loadout hook (#17): presets plus a three-tank fit and a starboard-only tank (the port/starboard sign check)
@@ -5714,7 +5805,7 @@ function start_mission(){
 	menu_hold=false; map_on=false; map_el.style.display="none";
 	loading=!assets_ready(); loading_t0=performance.now();   // hold the LOADING screen until every async asset is in — no piecemeal pop-in of carrier/airfield/airframe
 	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
-	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0;   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
+	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0; /* #57 parked: head_begin(); */   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
 	mission_done=false; mission_zero=sim_time;   // a fresh mission may follow an ended one without a page reload (#240)
 	on_config=onConfig||null; on_over=onOver||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
 	recorder.clear(); record_started=new Date(); record_session="local-"+mission_began; live_recording=recording_file;   // a fresh recording per mission (#212)
@@ -5811,6 +5902,7 @@ init_carrier_model();
 void flight_load();   // the wasm flight core loads alongside the GLBs; assets_ready() gates on it
 
   function stop() {
+    // #57 parked: head_close()
     if (MULTIPLAYER) net_finish('left')
     audio_enable(false)   // the frame-loop gate dies with the RAF below — silence the surviving AudioContext explicitly, or its loops play on under the menu
     try { __ac.abort() } catch { /* ignore */ }

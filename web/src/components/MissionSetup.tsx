@@ -3,11 +3,12 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react' // #57 parked: useCallback returns with HeadPanel
 import { Trans, useLingui } from '@lingui/react/macro'
+import { msg } from '@lingui/core/macro'
 import { Check, History, LogIn, Pencil, Play, RotateCcw, Send, Settings, TriangleAlert, Users, X } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
-import { getErrorMessage, useShellStorage } from '@mochi/web'
+import { getErrorMessage, useShellStorage } from '@mochi/web' // #57 parked: toast returns with HeadPanel
 import { diagnose } from '../lib/graphics'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
@@ -164,6 +165,7 @@ const BUTTON_ROWS: Row[] = [
   { id: 'look.down', label: <Trans>Look down</Trans>, group: 'view' },
   { id: 'look.left', label: <Trans>Look left</Trans>, group: 'view' },
   { id: 'look.right', label: <Trans>Look right</Trans>, group: 'view' },
+  { id: 'padlock', label: <Trans>Look at target</Trans>, group: 'view' }, // hold to look at the boxed target (was internally "padlock"; the label describes the hold)
   { id: 'zoom.in', label: <Trans>Zoom in</Trans>, group: 'view' },
   { id: 'zoom.out', label: <Trans>Zoom out</Trans>, group: 'view' },
 ]
@@ -661,6 +663,148 @@ function SliderRow({
     </div>
   )
 }
+
+/* #57 parked — head tracking is disabled for now. To re-enable, uncomment this
+panel, the Head tab JSX below, the toast/useCallback imports, the head blocks in
+game/engine.ts, config.head in lib/config.ts, and 'head' in the SetupTab type.
+// Head tab (#57): webcam head tracking. The enable switch IS the camera
+// permission gesture (the shell raises the browser prompt from it); the
+// mirrored preview doubles as the tracking check — its border lights while a
+// face is held. One gain knob; the deadzone and filter constants stay
+// internal. The camera runs only while this tab is open and the switch is on;
+// in flight the engine owns its own session.
+function HeadPanel({ config, set }: { config: MissionConfig; set: (key: string, value: MissionConfig[string]) => void }) {
+  const { t } = useLingui()
+  const on = !!(config.head ?? {}).on
+  const gain = (config.head ?? {}).gain || 5
+  const [camera, setCamera] = useShellStorage('air.camera', '')
+  const [devices, setDevices] = useState<{ id: string; label: string }[]>([])
+  const [face, setFace] = useState(false)
+  const canvas = useRef<HTMLCanvasElement | null>(null)
+  const session = useRef<{ stop: () => void } | null>(null)
+  const generation = useRef(0)
+
+  const halt = useCallback(() => {
+    generation.current++
+    session.current?.stop()
+    session.current = null
+    setFace(false)
+  }, [])
+
+  const begin = useCallback(
+    async (device: string) => {
+      halt()
+      const mine = ++generation.current
+      const base = new URL('tracking-1.0.1/', window.location.href).href
+      const { start } = await import('../game/head')
+      const opened = await start({
+        base,
+        model: base + 'face_landmarker.task',
+        device,
+        preview: (frame) => {
+          const c = canvas.current
+          if (!c) return
+          const x = c.getContext('2d')
+          if (!x) return
+          x.save()
+          x.scale(-1, 1) // the mirror view people expect of themselves
+          x.drawImage(frame, -c.width, 0, c.width, c.height)
+          x.restore()
+        },
+          pose: (p) => setFace(p.ok),
+        end: (reason) => {
+          if (generation.current === mine) {
+            session.current = null
+            setFace(false)
+            // The session died underneath us (worker failure, camera unplug):
+            // a silently frozen preview looks like a bug — drop the switch and
+            // say why, exactly like a failed open.
+            set('head', { ...(config.head ?? {}), on: 0 })
+            toast.error(reason || t`Camera unavailable`)
+          }
+        },
+      })
+      if (generation.current !== mine) {
+        opened.head?.stop()
+        return
+      }
+      if (opened.head) {
+        session.current = opened.head
+        setDevices(opened.head.devices)
+      } else {
+        set('head', { ...(config.head ?? {}), on: 0 })
+        setCamera('') // a failed open invalidates any remembered selection — never let a stale pick linger
+        toast.error(opened.error || t`Camera unavailable`)
+      }
+    },
+    // config.head identity churn (the gain slider) must not cycle the camera.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [halt, t]
+  )
+
+  useEffect(() => {
+    if (on) void begin(camera)
+    return halt
+    // Restarted explicitly on device change; only the switch cycles the camera.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [on])
+
+  return (
+    <div className='space-y-4'>
+      <SwitchRow
+        id='head-on'
+        label={<Trans>Head tracking</Trans>}
+        checked={on}
+        onChange={(v) => set('head', { ...(config.head ?? {}), on: v ? 1 : 0 })}
+      />
+      {on && (
+        <>
+          <canvas
+            ref={canvas}
+            width={320}
+            height={240}
+            className={'aspect-4/3 w-full rounded-lg border-2 ' + (face ? 'border-emerald-500' : 'border-border')}
+          />
+          {devices.length > 1 && (
+            <Select
+              value={camera || devices[0]?.id || ''}
+              onValueChange={(v) => {
+                setCamera(v)
+                void begin(v)
+              }}
+            >
+              <SelectTrigger className='w-full'>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {devices.map((d) => (
+                  <SelectItem key={d.id} value={d.id}>
+                    {d.label || d.id.slice(0, 8)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          <SliderRow
+            label={<Trans>Gain</Trans>}
+            value={gain}
+            min={2}
+            max={8}
+            step={0.5}
+            decimals={1}
+            onChange={(v) => set('head', { ...(config.head ?? {}), gain: v })}
+          />
+        </>
+      )}
+    </div>
+  )
+}
+*/
+
+// #57 parked: keeps the head-tracking catalog entries referenced while the
+// panel above is commented out, so `lingui extract --clean` preserves their
+// translations in every locale.
+export const HEAD_MESSAGES = [msg`Head`, msg`Head tracking`, msg`Gain`, msg`Camera unavailable`]
 
 function SwitchRow({
   id,
@@ -1398,6 +1542,7 @@ function MissionPanel({
   onChange: (config: MissionConfig) => void
 }) {
   return (
+    <div className='sm:grid sm:grid-cols-2 sm:gap-x-10'>
     <div>
 <SectionLabel>
   <Trans>Task</Trans>
@@ -1498,6 +1643,8 @@ function MissionPanel({
     { value: 'low_stratus', label: <Trans>Low stratus</Trans> },
   ]}
 />
+</div>
+    <div>
 <SectionLabel>
   <Trans>Loadout</Trans>
 </SectionLabel>
@@ -1540,6 +1687,7 @@ function MissionPanel({
     onChange={(v) => setCheat('fuel', v)}
   />
 </div>
+    </div>
     </div>
   )
 }
@@ -1882,7 +2030,7 @@ export function MissionSetup({
         </div>
       </div>
 
-      <MenuDialog open={dialog === 'mission'} onClose={close} title={<Trans>Create mission</Trans>}>
+      <MenuDialog open={dialog === 'mission'} onClose={close} title={<Trans>Create mission</Trans>} wide>
         <MissionPanel config={config} set={set} setCheat={setCheat} onChange={onChange} />
         {/* The controls above write through live, so closing keeps the changes
             and the front page's Fly launches them. This is the same action
@@ -1919,8 +2067,18 @@ export function MissionSetup({
             <TabsTrigger value='keys'>
               <Trans>Keys</Trans>
             </TabsTrigger>
+            {/* #57 parked:
+            <TabsTrigger value='head'>
+              <Trans>Head</Trans>
+            </TabsTrigger>
+            */}
           </TabsList>
-          <div className='h-[26rem] overflow-y-auto pt-4'>
+          <div className='h-[clamp(26rem,100dvh_-_19rem,60rem)] overflow-y-auto pt-4'>
+            {/* #57 parked:
+            <TabsContent value='head'>
+              <HeadPanel config={config} set={set} />
+            </TabsContent>
+            */}
             <TabsContent value='general'>
               <GeneralPanel config={config} set={set} />
             </TabsContent>
