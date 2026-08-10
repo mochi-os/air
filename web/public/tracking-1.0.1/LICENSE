@@ -1,0 +1,13 @@
+The files in this directory are third-party components of MediaPipe, published
+by Google under the Apache License, Version 2.0:
+
+- vision_wasm_internal.js / .wasm and vision_wasm_nosimd_internal.js / .wasm
+  are the WebAssembly inference runtime from the @mediapipe/tasks-vision npm
+  package, version 1.0.1 (licence declared Apache-2.0 in its package.json).
+- face_landmarker.task is the Face Landmarker model bundle, distributed by
+  Google at storage.googleapis.com/mediapipe-models under Apache-2.0 per its
+  model card.
+
+They are vendored here unmodified so the game is served entirely from Mochi
+with no third-party network fetches. The Apache License, Version 2.0 is at:
+http://www.apache.org/licenses/LICENSE-2.0

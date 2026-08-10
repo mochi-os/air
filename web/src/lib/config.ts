@@ -73,6 +73,7 @@ export interface MissionConfig {
   framerate: boolean
   world: string
   callsign: string
+  // #57 parked: head: Record<string, number> // webcam head tracking (#57): on 0|1, gain (view amplification, ~5)
   cheats: Record<string, boolean> // invulnerable (humans only), ammunition, fuel — mission cheats; a multiplayer match takes its own set from the creator
   rules: Record<string, boolean> // the creator's persisted match rules (#17): missiles (default on)
   [key: string]: string | number | boolean | Record<string, string> | Record<string, number> | Record<string, boolean> | Record<string, StickBindings> | Record<string, StationSlot>
@@ -139,6 +140,7 @@ export const DEFAULT_CONFIG: MissionConfig = {
   framerate: false,
   world: '',
   callsign: '',
+  // #57 parked: head: { on: 0, gain: 5 },
   cheats: {},
   rules: {},
 }
