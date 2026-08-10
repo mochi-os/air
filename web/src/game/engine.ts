@@ -179,7 +179,7 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias:!MSAA_OFF, powerPre
 renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 const scene = new THREE.Scene(); scene.fog=new THREE.FogExp2(fog_colour,0.000042);
-const camera = new THREE.PerspectiveCamera(45,1,3.0,42000);   // 45° ≈ HUD-like 1:1 so a 3° glideslope reads right (was 62°, too wide → approaches felt low)
+const camera = new THREE.PerspectiveCamera(45,1,3.0,130000);   // 45° ≈ HUD-like 1:1 so a 3° glideslope reads right (was 62°, too wide → approaches felt low). far REACHES PAST THE OCEAN RIM (120 km): at 42 km the far plane clipped the sea mid-disc, and from altitude the clip circle cut a razor-straight line across every cloud gap — sea below it, sky-dome haze above (the water shader fades the rim at 70-112 km and always expected the whole disc to render). Near-field depth precision is ~d²/(near·2²⁴), essentially independent of far, so this costs nothing
 // Cockpit view (#99) renders in TWO passes: the world with the main camera
 // (near 3.0 — hopeless for a panel at 0.5 m), then depth cleared and the
 // ownship alone with this near camera over the composited frame. The split
@@ -425,7 +425,8 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			float fog=1.0-exp(-u_fog_density*u_fog_density*dist*dist);
 			fog=max(fog, smoothstep(70000.0,112000.0,dist));   // absolute saturation before the disc rim — a safety net; the density fog completes far earlier
 			vec3 seafog=mix(u_seafog, vec3(dot(u_seafog,vec3(0.333)))*0.74, u_cloud_flat);   // under an OVERCAST the far sea silvers toward the deck's grey, not toward a sunny sky's pale blue — the bright rim read as blue sky under the stratus
-			col=mix(col,seafog,clamp(fog,0.0,1.0));   // the sea fogs to a slightly DEEPER colour than the sky: the real horizon is a visibly darker line, not a white merge
+			float toDome=smoothstep(600.0,3200.0,cameraPosition.y);   // the deliberate darker-than-sky horizon line is a SEA-LEVEL design: from altitude the fogged sea against the paler dome widens into a hard stripe across the view (the user's line, 2026-08-10), so the far sea converges to the dome colour as the camera climbs and the rim melts into the sky
+			col=mix(col,mix(seafog,u_sky,toDome*0.9),clamp(fog,0.0,1.0));   // the sea fogs to a slightly DEEPER colour than the sky: the real horizon is a visibly darker line, not a white merge
 			gl_FragColor=vec4(col,1.0); }` });
 let ocean=null;
 function build_ocean(seg){ if(ocean){scene.remove(ocean);ocean.geometry.dispose();}
@@ -476,7 +477,6 @@ const cloud_active=()=>cfg.clouds&&cfg.clouds!=="none";
 // cloud slab and composites over it, stopping at the scene surface for occlusion.
 let rt=null, rt_march=null; const rt_hist=[null,null]; let hist_write=0, hist_valid=false;   // temporal accumulation: the march output is blended into a reprojected history ping-pong
 const invVP=new THREE.Matrix4(), curVP=new THREE.Matrix4(), prevVP=new THREE.Matrix4(); const _buf=new THREE.Vector2();
-const cloud_prev_pos=new THREE.Vector3(); const cloud_prev_q=new THREE.Quaternion(); let cloud_prev_camera=false;
 let cloud_frame=0;
 function size_rt(){ renderer.getDrawingBufferSize(_buf); const w=Math.max(2,_buf.x|0),h=Math.max(2,_buf.y|0);
 	const hw=Math.max(2,w>>1), hh=Math.max(2,h>>1);   // clouds are soft: everything cloud-related runs at half resolution
@@ -521,12 +521,9 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 		float top_at(float vig){ return mix(mix(uTop,uHigh,smoothstep(0.52,0.68,vig)), uTop, uFlat); }   // NARROW ramp: height plateaus just inside a vigorous cell, so the flanks rise as near-vertical walls — the old wide ramp (0.48-0.82) made height track the vigour falloff and every tower rendered as a smooth cone
 		float dens(vec3 p, float lod){   // lod 0 = near (full erosion detail) … 1 = far (soft stable masses — fine detail undersamples at long range and reads as clouds bubbling in and out)
 			float cm=clearing(p.xz); if(cm<=0.002) return 0.0;   // spawn clearings: nothing to march inside them
-				float shear=clamp((p.y-uBase)/max(uHigh-uBase,1.0),0.0,1.0);
-				vec2 wind=mix(vec2(7.2,2.5),vec2(11.8,4.8),shear);   // vertical wind shear: crowns move and lean downwind instead of the whole volume sliding as one rigid block
-				vec3 sp=p+vec3(uTime*wind.x,0.0,uTime*wind.y);
+				vec3 sp=p+vec3(uTime*8.0,0.0,uTime*3.0);   // slow drift
 				vec4 w=texture(tNoise, sp*4.2e-4+vec3(0.31,0.17,0.47));   // ~2.4 km warp field (fetched early: .r feeds the flank turrets, .gba warps the base field below)
 				float hh=clamp((p.y-uBase)/(uHigh-uBase),0.0,1.0);   // absolute slab altitude (independent of vig — the lobe terms below must not feed back into themselves)
-				sp.xz+=vec2(115.0,42.0)*hh*hh*(1.0-uFlat);   // persistent shear lean: tall heads offset from their rooted bases
 				vec4 cf=cellfield(p.xz); float vig=cf.g;
 			vec4 lb=texture(tNoise, sp*9.0e-5+vec3(0.63,0.42,0.11));   // GIANT lobe field, ~2 km features: a few HUGE bulging masses first, billows second, texture last
 			float attach=smoothstep(uGate.x-0.02,uGate.x+0.06,vig);   // perturbations SCULPT existing cells only: unmasked, a strong lobe over near-gate vigour conjures isolated round puffs floating in mid-air with no tower beneath
@@ -542,15 +539,6 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 			}
 			float lbase=uBase+(lb.a-0.5)*mix(64.0,110.0,1.0-uFlat);   // the condensation level is flat, not MACHINE-flat: lobe-scale undulation (lowered shelves, ragged patches) breaks the single shared plane that read as artificial. Stratus gets a gentler +/-32 m — a 500 ft marine-layer ceiling that varies slightly, like the real thing
 				float h=(p.y-lbase)/(top-lbase); if(h>1.0) return 0.0;
-				if(uFlat>0.5){   // dedicated stratus: broad layered density, not all the cumulus tower machinery flattened into a sheet
-					if(h<0.0) return 0.0;
-					vec2 sw=vec2(sp.x*0.958+sp.z*0.286,-sp.x*0.286+sp.z*0.958); sw.x*=0.27;
-					vec4 sn=texture(tNoise,vec3(sw.x,sp.y,sw.y)*1.25e-4+vec3(0.17,0.41,0.29));
-					float broad=sn.r*0.72+sn.g*0.28;
-					float layer=smoothstep(0.0,0.18,h)*smoothstep(1.0,0.76,h);
-					float sd=remap(broad*layer,1.0-uCoverage,1.0,0.0,1.0);
-					return clamp(smoothstep(0.08,0.48,sd),0.0,1.0)*uDensity*cm;
-				}
 			if(h<0.0){   // sub-base veil: vigorous cells trail translucent virga toward the sea
 				if(uFlat>0.5) return 0.0;
 				float vfall=1.0+h*3.2; if(vfall<=0.0) return 0.0;
@@ -569,9 +557,8 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 			float wf=n.g*0.625+n.b*0.25+n.a*0.125;
 			float braw=remap(n.r, wf-1.0, 1.0, 0.0, 1.0);
 			float base=braw*prof;
-				float regional=mix(0.84,1.16,smoothstep(0.18,0.82,cf.r));   // broad clear/cloudy sectors from an already-fetched channel: macro variation without another texture lookup
-				float cov=clamp(uCoverage*(0.55+0.95*vig)*smoothstep(uGate.x,uGate.y,vig)*regional,0.02,0.96);   // coverage chooses WHERE and how wide a cloud is; it must not also make surviving cloud optically weak
-				float d=remap(base, 1.0-cov, 1.0, 0.0, 1.0)*mix(0.86,1.16,smoothstep(uGate.x,1.0,vig));
+				float cov=uCoverage*mix((0.55+0.95*vig)*smoothstep(uGate.x,uGate.y,vig), 1.0, uFlat);   // per-preset cell gate: how FEW the cells are; uCoverage sets how MASSIVE each survivor builds
+				float d=remap(base, 1.0-cov, 1.0, 0.0, 1.0)*cov;
 			if(d<=0.0) return 0.0;
 			float hb=clamp(h*4.0,0.0,1.0), estr=mix(0.35,0.15,uFlat)*(0.82+0.36*tB)*mix(1.0,0.75,uDark);   // per-cell erosion character: some cells ragged and crisply carved, others fuller and softer; darker presets erode less (full billowing masses, not serrated rock)
 			float coarse=mix(n.b, 1.0-n.b, hb);                               // coarse erosion from the base sample: keeps far cells SEPARATE at zero cost and zero shimmer (fading erosion out entirely merged the horizon into a solid wall)
@@ -583,10 +570,8 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 					det=det*0.85+(dn2.r*0.625+dn2.g*0.25+dn2.b*0.125)*0.15*(1.0-smoothstep(0.15,0.35,lod)); }
 				er=mix(mix(det, 1.0-det, hb), coarse, smoothstep(0.25,0.7,lod));
 			}
-				float protect=smoothstep(0.30,0.68,d);   // erosion sculpts the surface, never perforates the load-bearing cloud body
-				d=remap(d,er*estr*mix(1.0,0.16,protect)*(1.0+0.65*(1.0-clamp(d*2.0,0.0,1.0))),1.0,0.0,1.0);
-				float core=smoothstep(0.14,0.46,d), fringe=smoothstep(0.025,0.16,d)*(1.0-core);
-				d=core+fringe*mix(0.10,0.16,smoothstep(0.68,1.0,h));   // substantial connected mass; wisps survive only in a narrow, mostly upper fringe
+				d=remap(d, er*estr*(1.0+1.1*(1.0-clamp(d*2.2,0.0,1.0))), 1.0, 0.0, 1.0);   // edge-weighted erosion: the rim erodes hardest (fractal raggedness), the core stays solid
+				d=max(smoothstep(0.05,0.52,d), d*0.30);   // sharpen: defined lobe rims instead of uniform wool — but thin margins SURVIVE the knee as translucent veils (the reference photo mixes dense cores with dissipating wisps you can half-see through; a pure knee makes everything opaque)
 			return clamp(d,0.0,1.0)*uDensity*cm;   // cm: spawn clearings thin the fade ring like natural dissipation
 		}
 		// The blend layer expects display-encoded premultiplied light; reproduce three's exact ACESFilmic + sRGB.
@@ -601,6 +586,13 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 			vec4 fp=uInvVP*vec4(vUv*2.0-1.0,1.0,1.0); vec3 ray=normalize(fp.xyz/fp.w-uCamPos);
 			float sceneDist=1.0e9;
 			if(depth<1.0){ vec4 wp=uInvVP*vec4(vUv*2.0-1.0,depth*2.0-1.0,1.0); sceneDist=length(wp.xyz/wp.w-uCamPos); }
+			// The sea PLANE, analytically: the ocean mesh is a finite disc, so past
+			// its rim a below-horizon ray reports "no hit" and the march integrates
+			// tens of kilometres of extra cloud beyond where water would have stopped
+			// it. The rim is a circle at constant range and painted itself as a hard
+			// horizontal seam across the cloud field — visible from altitude over
+			// cumulus, where the rim sits well below the horizon haze.
+			if(ray.y<-1.0e-4) sceneDist=min(sceneDist,(0.0-uCamPos.y)/ray.y);
 			vec3 cloudc=vec3(0.0); float ctr=1.0; float aw=0.0, adist=0.0;   // aw/adist: alpha-weighted mean march distance — the accumulation pass reprojects each pixel at this depth
 			if(uDebug<0.5){   // uDebug=1: full RT path, zero cloud contribution (A/B against the no-clouds path)
 				float slabTop=mix(uHigh,uTop,uFlat);
@@ -640,11 +632,8 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 								sun=pow(sun,mix(1.38,1.5,uDark))*(bfloor+(1.0-bfloor)*smoothstep(0.04,0.55,hcur));   // harder mid-tone falloff: brilliant lit tops against genuinely shaded mid-bodies — the reference masses are SCULPTED by light, not just lit
 								float afloor=mix(0.24,0.12,uDark);
 								vec3 ambient=(dome*(afloor+(1.0-afloor)*hcur) + suncol*0.03*(1.0-hcur))*exp(-ld*0.0030)*(1.0-mix(0.50,0.60,uDark)*d)*(1.0+0.45*uFlat);   // crevice AO: dense samples sit deep between billows. Stratus undersides get a lift: over bright tropical water, sea-reflected light keeps an overcast's base grey, not charcoal
-								float edge=smoothstep(0.035,0.20,d)*(1.0-smoothstep(0.20,0.48,d));
-								float silver=edge*smoothstep(0.18,0.92,cosT)*exp(-ld*0.018)*(1.0-uFlat)*0.42;   // narrow directional silver lining, never a uniform airbrushed halo
-								vec3 lit=(suncol*(sun*mix(1.30,1.42,uDark)+silver) + ambient*0.55)*(0.36+0.64*smoothstep(0.025,0.32,d));
-							float extinction=mix(0.075,0.145,smoothstep(0.18,0.68,d));   // permeable fringe, rapidly opaque core: mass without concrete edges
-							float a=(1.0-exp(-d*extinction*dt))*mix(smoothstep(cfar,cfar*0.65,ts),1.0,uFlat)*smoothstep(0.006,0.045,d);   // the ultra-thin fringe barely registers: accumulated over steps it painted a pale glow RING around every cloud against dark water. NO range ALPHA fade for stratus: at grazing angles any range fade compresses into a few pixels and cuts a hard edge (tried 2026-07-06) — the overcast dissolve is done in COLOUR below instead
+								vec3 lit=(suncol*sun*mix(1.30,1.42,uDark) + ambient*0.55)*(0.40+0.60*smoothstep(0.03,0.35,d));   // the low-density fringe DIMS into translucency — a bright fringe reads as an airbrushed halo
+							float a=(1.0-exp(-d*0.09*dt))*mix(smoothstep(cfar,cfar*0.65,ts),1.0,uFlat)*smoothstep(0.006,0.045,d);   // the ultra-thin fringe barely registers: accumulated over steps it painted a pale glow RING around every cloud against dark water. NO range ALPHA fade for stratus: at grazing angles any range fade compresses into a few pixels and cuts a hard edge (tried 2026-07-06) — the overcast dissolve is done in COLOUR below instead
 							float hz=clamp(1.0-exp(-ts*ts*mix(0.6e-9,1.5e-9,uFlat)),0.0,mix(0.72,0.985,uFlat));   // aerial perspective: the hazed share of each sample's alpha is paid out AFTER the march as the scene sky's own display-space colour — mixing a haze colour through this pass's aces/srgb never matches the sky behind and left a flat pale band above the horizon; pure alpha fade saturates over enough steps and turned the far field its raw beige. For stratus the haze COMPLETES (0.98): the far deck converges to exactly the greyed dome backdrop, so the march's 90 km cutoff is invisible by construction and the texture melts into murk with distance — the dissolve a real overcast has. Safe only because u_ovc greys the dome: against a blue backdrop this leaked blue under the deck
 							col+=tr*a*lit*(1.0-hz); hw+=tr*a*hz; aw+=tr*a; adist+=tr*a*ts; tr*=1.0-a; }
 						t+=dt; }
@@ -727,10 +716,10 @@ const comp_scene=new THREE.Scene(); comp_scene.add(new THREE.Mesh(new THREE.Plan
 const depth_override=new THREE.MeshBasicMaterial({colorWrite:false});   // depth-only scene pass for the cloud raymarch
 const acc_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,
 		uniforms:{ tCur:{value:null}, tAux:{value:null}, tHist:{value:null}, uTexel:{value:new THREE.Vector2(1/512,1/512)},
-			uPrevVP:{value:new THREE.Matrix4()}, uInvVP:{value:new THREE.Matrix4()}, uCamPos:{value:new THREE.Vector3()}, uHistValid:{value:0.0}, uHistoryWeight:{value:0.9} },
+			uPrevVP:{value:new THREE.Matrix4()}, uInvVP:{value:new THREE.Matrix4()}, uCamPos:{value:new THREE.Vector3()}, uHistValid:{value:0.0} },
 	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
 	fragmentShader:`varying vec2 vUv; uniform sampler2D tCur,tAux,tHist; uniform vec2 uTexel;
-		uniform mat4 uPrevVP,uInvVP; uniform vec3 uCamPos; uniform float uHistValid,uHistoryWeight;
+		uniform mat4 uPrevVP,uInvVP; uniform vec3 uCamPos; uniform float uHistValid;
 		void main(){   // temporal accumulation: reproject last frame's accumulated cloud through the previous
 			// view-projection at each pixel's mean march distance, clamp it against the current 3x3
 			// neighbourhood (kills ghosting on disocclusion), and blend. ~10 differently-jittered marches
@@ -749,7 +738,7 @@ const acc_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,
 			vec4 fp=uInvVP*vec4(vUv*2.0-1.0,1.0,1.0); vec3 ray=normalize(fp.xyz/fp.w-uCamPos);
 			vec4 pc=uPrevVP*vec4(uCamPos+ray*t,1.0);
 			vec2 puv=(pc.xy/pc.w)*0.5+0.5;
-			float w=uHistoryWeight*uHistValid;
+			float w=0.90*uHistValid;
 			if(pc.w<=0.0||puv.x<0.0||puv.x>1.0||puv.y<0.0||puv.y>1.0) w=0.0;   // off-screen last frame: no history
 			vec4 hist=clamp(texture2D(tHist,puv),mn,mx);   // neighbourhood clamp: stale history is pulled to what the current frame says is locally possible
 			gl_FragColor=mix(w>0.0?cur:avg,hist,w); }` });   // rejected pixels fall back to the neighbourhood mean — the old blur, exactly where it is still needed
@@ -776,9 +765,6 @@ function render_frame(){
 		acc_mat.uniforms.tCur.value=rt_march.texture[0]; acc_mat.uniforms.tAux.value=rt_march.texture[1]; acc_mat.uniforms.tHist.value=rt_hist[hr].texture;
 		acc_mat.uniforms.uTexel.value.set(1/rt_march.width,1/rt_march.height);
 		acc_mat.uniforms.uPrevVP.value.copy(prevVP); acc_mat.uniforms.uInvVP.value.copy(invVP); acc_mat.uniforms.uCamPos.value.copy(camera.position);
-		{ const turn=cloud_prev_camera?camera.quaternion.angleTo(cloud_prev_q):Math.PI, travel=cloud_prev_camera?camera.position.distanceTo(cloud_prev_pos):1e6;
-			const motion=THREE.MathUtils.clamp(turn*5.5+travel/550,0,1); acc_mat.uniforms.uHistoryWeight.value=THREE.MathUtils.lerp(0.90,0.56,motion);
-			cloud_prev_pos.copy(camera.position); cloud_prev_q.copy(camera.quaternion); cloud_prev_camera=true; }
 		acc_mat.uniforms.uHistValid.value=hist_valid?1.0:0.0;
 		renderer.setRenderTarget(rt_hist[hist_write]); renderer.render(acc_scene,fs_cam);   // blend into the reprojected history
 		renderer.setRenderTarget(null); renderer.render(scene,camera);   // the player-visible scene: the EXACT no-clouds path (canvas MSAA and all)
