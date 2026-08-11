@@ -119,30 +119,36 @@ export function normalize(raw: unknown): Loadout {
   return out
 }
 
-// PRESETS are one-tap fills (#17): Gun fighter (no stores — the pure
-// gunfight), Fox 2 fighter (6× AIM-9M — tips plus outboard twins, decided
-// 2026-08-06, superseding the 4-round transitional fit), CAP (Fox 2 fighter
-// + centerline tank). Contents are data; weapon-era presets accumulate,
-// mission presets evolve.
+// PRESETS are one-tap fills (#17, lineup decided 2026-08-11): Gun (no
+// stores — the pure gunfight), Fox 2 (6× AIM-9M — tips plus four wing
+// singles, spread for the crisper roll), Fox 3 (tip heaters, six AMRAAM
+// singles across the wings and cheeks, and a centreline tank). Contents are
+// data; weapon-era presets accumulate, mission presets evolve.
 export const PRESETS: Record<string, Loadout> = {
   gun: normalize({}),
   fox2: normalize({
     1: { fixture: 'rail', stores: ['9m'] },
-    2: { fixture: 'twin', stores: ['9m', '9m'] },
-    8: { fixture: 'twin', stores: ['9m', '9m'] },
+    2: { fixture: 'rail', stores: ['9m'] },
+    3: { fixture: 'pylon', stores: ['9m'] },
+    7: { fixture: 'pylon', stores: ['9m'] },
+    8: { fixture: 'rail', stores: ['9m'] },
     9: { fixture: 'rail', stores: ['9m'] },
   }),
-  cap: normalize({
+  fox3: normalize({
     1: { fixture: 'rail', stores: ['9m'] },
-    2: { fixture: 'twin', stores: ['9m', '9m'] },
+    2: { fixture: 'rail', stores: ['120c'] },
+    3: { fixture: 'pylon', stores: ['120c'] },
+    4: { fixture: 'rail', stores: ['120c'] },
     5: { fixture: 'pylon', stores: ['tank'] },
-    8: { fixture: 'twin', stores: ['9m', '9m'] },
+    6: { fixture: 'rail', stores: ['120c'] },
+    7: { fixture: 'pylon', stores: ['120c'] },
+    8: { fixture: 'rail', stores: ['120c'] },
     9: { fixture: 'rail', stores: ['9m'] },
   }),
 }
 
-// migrate maps the retired boolean to its preset: armed configs become the
-// Fox 2 fighter, guns-only becomes the Gun fighter.
+// migrate maps the retired boolean to its preset: armed configs become
+// Fox 2, guns-only becomes Gun.
 export function migrate(missiles: boolean): Loadout {
   return structuredClone(missiles ? PRESETS.fox2 : PRESETS.gun)
 }
