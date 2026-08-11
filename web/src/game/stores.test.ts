@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, expect, it } from 'vitest'
-import { LIMITS, RELEASE, PRESETS, amraams, asymmetry, entries, jettison, mask, matches, migrate, missiles_loaded, normalize, options, outcome, outcomes, points, rounds, strip, weight, type Catalog, type Fitment } from './stores'
+import { LIMITS, RELEASE, PRESETS, amraams, asymmetry, eject, entries, jettison, mask, matches, migrate, missiles_loaded, normalize, options, outcome, outcomes, points, rounds, strip, weight, type Catalog, type Fitment } from './stores'
 
 // A catalog mirroring the core's fa18c table (order matters: tips first).
 const FITMENTS: Fitment[] = [
@@ -339,6 +339,21 @@ describe('amraam (#27)', () => {
     })
     expect(amraams(lo)).toEqual(['120c4', '120c6', '120c2', '120c8', '120c3', '120c7'])
     expect(amraams(PRESETS.fox2)).toEqual([])
+  })
+  it('ejector points punch, rail points slide: cheeks and inboard singles eject, rails and twins never', () => {
+    const lo = normalize({
+      2: { fixture: 'rail', stores: ['120c'] },
+      3: { fixture: 'pylon', stores: ['120c'] },
+      4: { fixture: 'rail', stores: ['120c'] },
+      7: { fixture: 'twin', stores: ['120c', '120c'] },
+      8: { fixture: 'twin', stores: ['120c', '120c'] },
+    })
+    expect(eject(lo, '120c4')).toBe(true) // cheek LAU-116
+    expect(eject(lo, '120c3')).toBe(true) // inboard LAU-115C single
+    expect(eject(lo, '120c2')).toBe(false) // wing rail
+    expect(eject(lo, '120c7a')).toBe(false) // inboard twin: LAU-127 points
+    expect(eject(lo, '120c8b')).toBe(false)
+    expect(eject(lo, '120c5')).toBe(false) // unknown station: no slot, no punch
   })
   it('the ten-round fit fires balanced: cheeks, outer pairs alternating, inner pairs alternating', () => {
     const lo = normalize({
