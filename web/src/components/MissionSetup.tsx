@@ -1035,15 +1035,15 @@ function Armament({
         return <Trans>None</Trans>
     }
   }
-  const presets: { name: 'gun' | 'fox2' | 'cap'; title: ReactNode }[] = [
-    { name: 'gun', title: <Trans>Gun fighter</Trans> },
-    { name: 'fox2', title: <Trans>Fox 2 fighter</Trans> },
-    { name: 'cap', title: 'CAP' },
+  const presets: { name: 'gun' | 'fox2' | 'fox3'; title: ReactNode }[] = [
+    { name: 'gun', title: <Trans>Gun</Trans> },
+    { name: 'fox2', title: 'Fox 2' }, // jsx-text-ok: brevity codes, verbatim
+    { name: 'fox3', title: 'Fox 3' }, // jsx-text-ok: brevity codes, verbatim
   ]
   // A preset press SEEDS the fuel load (the duel standard for the fighters,
   // full internal for CAP); the checkmark keeps tracking stores only, so the
   // slider stays freely overridable without un-checking the preset.
-  const FUELS = { gun: 6000, fox2: 6000, cap: 10800 }
+  const FUELS = { gun: 6000, fox2: 6000, fox3: 10800 }
   const w = book ? weight(loadout, book) : { hardware: 0, fuel: 0 }
   const gross = book ? Math.round(((book.empty + w.hardware + w.fuel) * 2.2046 + fuel) / 10) * 10 : 0
   // NATOPS flying-qualities boundary for routine catapult technique: at or

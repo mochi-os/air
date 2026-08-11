@@ -1845,7 +1845,7 @@ function ddi_fcs(x,display){ const o=last_out||[];   // per-surface truth straig
 const TIP_NODES=stores_tips;   // the two wingtip AIM-9 NODES in the fa18c GLB, sides probe-verified — SHARED with the setup preview via stores.ts so the two can never disagree
 const MISSILE_NODES=[TIP_NODES.tip9, TIP_NODES.tip1];   // legacy tip pair for jets with no known loadout (remotes before the roster carries theirs)
 const ROUND_ANCHORS=stores_anchors;   // model-space anchors for AIM-9 rounds cloned onto the outboard stations — also shared with the preview
-const BOT_ARMED=stores_presets.fox2;   // the bot's armed standard IS the Fox 2 fighter (decided 2026-08-06): six AIM-9Ms carried; the brain's calibrated two-round discipline fires from them in SMS order (opening it is #25's re-sweep)
+const BOT_ARMED=stores_normalize({ 1:{fixture:"rail",stores:["9m"]}, 2:{fixture:"twin",stores:["9m","9m"]}, 8:{fixture:"twin",stores:["9m","9m"]}, 9:{fixture:"rail",stores:["9m"]} });   // the bot's armed standard (decided 2026-08-06): six AIM-9Ms on tips and outboard twins, PINNED to match the server's bots_loadout — the calibrated doctrine flies this fit regardless of how the player presets are shaped; the brain's two-round discipline fires from it in SMS order (opening it is #25's re-sweep)
 const BOT_CLEAN=stores_normalize({});
 let loadout_rev=0;   // bumped whenever a jet's loadout is (re)assigned — keys the per-frame mask memo
 let stores_book=null;   // the resolved fitment catalog, read from the core once it boots
@@ -2613,7 +2613,7 @@ ownship.player=true; ownship.q=new THREE.Quaternion(); ownship.up=new THREE.Vect
 // airframe models only the wingtip rails, so missiles three and four launch
 // from a visibly clean jet and the stores mass/drag covers at most the two
 // tips; #226 owns doing stores properly.
-function magazine(){ return stores_rounds(ownship.loadout||loadout()).length; }   // the flown loadout's round count in SMS firing order (#17): four for the Fox 2 fighter, zero for the Gun fighter or a guns-only match
+function magazine(){ return stores_rounds(ownship.loadout||loadout()).length; }   // the flown loadout's round count in SMS firing order (#17): six for Fox 2, zero for Gun or a guns-only match
 ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.burner=0; ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(loadout()).length; ownship.cm=60; ownship.aoa=0; ownship.gload=1;
 ownship.launching=false;
 // init quaternion from initial fwd
@@ -3682,6 +3682,17 @@ function pad_lever(pad,entry,name){   // "N"/"-N" axis entry -> travel fraction 
 		lever.armed=true; }
 	return THREE.MathUtils.clamp((value+1)/2,0,1); }   // the plain ±1 HID range, 1:1 across the travel (the VelocityOne reads clean ±1.00 at its stops; end margins just made dead zones). NEVER normalise by the observed sweep: treating the advancing edge as an end stop commanded full afterburner at half throttle travel
 
+// A stick that VANISHES has to earn control again when it returns. The arming
+// guard above only protects the FIRST arming: it takes the axis's first report
+// as `rest` and ignores the lever until it moves off it. Most sticks report a
+// phantom CENTRE until a control is first moved, so on a reconnect the axis lies
+// again — but `armed` was still true from before, so the guard was bypassed and
+// the phantom went straight through as a command. Measured on the VelocityOne
+// 2026-08-11: unplugging and replugging mid-flight ran the throttle to 50% power
+// and pushed the speed brake half out, with nothing touched. Forgetting the
+// arming makes the returning stick wait for a deliberate sweep, as at startup.
+function pad_forget_levers(){ for(const name in pad_levers){ pad_levers[name].rest=undefined; pad_levers[name].armed=false; } }
+
 function read_gamepad(){ const pads=(navigator.getGamepads&&navigator.getGamepads())||[];   // #74: the menu-selected stick when present, else the first connected; browsers expose pads only after a button press
 	let first=null;
 	for(const p of pads){ if(!p||!p.connected||p.axes.length<2) continue;
@@ -3784,7 +3795,7 @@ function read_input(dt){
 				if(bindText&&bindText!=="None"){ const shift=bindText.startsWith("Shift+"), code=bindText.replace("Shift+","");
 					for(const target of [window, document, stage]) target.dispatchEvent(new KeyboardEvent(down?"keydown":"keyup",{ code, shiftKey:shift, bubbles:true })); } } }
 	}
-	else { pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_fire=false; }
+	else { pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_fire=false; pad_forget_levers(); }   // no pad this frame: a returning stick must re-arm its levers before commanding anything
 	input.pitch=Math.abs(pp)>Math.abs(key_axes.pitch)?pp:key_axes.pitch;
 	input.roll=Math.abs(pr)>Math.abs(key_axes.roll)?pr:key_axes.roll;
 	input.yaw=Math.abs(py)>Math.abs(key_axes.yaw)?py:key_axes.yaw;
@@ -6092,11 +6103,10 @@ function start_mission(){
 	// #57 parked: dev_head=devq.get("head")==="1";   // &head=1: force head tracking on for headless verification (#57)   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
 	livery_pending=devq.get("livery");   // ?livery=red|blue — paint ownship that side and the bandit the other (headless livery verification)
 	const viewq=devq.get("view"); if(viewq) set_view(viewq);   // ?view=cockpit|hud|chase — headless capture hook (#105)
-	const storesq=devq.get("stores");   // &stores=gun|fox2|cap|tanks|right|fox3|spam|heat — headless loadout hook (#17): presets plus a three-tank fit, a starboard-only tank (the port/starboard sign check), the six-round AMRAAM fit, the ten-round twin fit, and the ten-heater fit (#27)
+	const storesq=devq.get("stores");   // &stores=gun|fox2|fox3|tanks|right|spam|heat — headless loadout hook (#17): the presets plus a three-tank fit, a starboard-only tank (the port/starboard sign check), the ten-round AMRAAM twin fit, and the ten-heater fit (#27)
 	if(storesq){ const extra={
 		tanks:{ 1:{fixture:"rail",stores:["9m"]}, 3:{fixture:"pylon",stores:["tank"]}, 5:{fixture:"pylon",stores:["tank"]}, 7:{fixture:"pylon",stores:["tank"]}, 9:{fixture:"rail",stores:["9m"]} },
 		right:{ 7:{fixture:"pylon",stores:["tank"]} },
-		fox3:{ 1:{fixture:"rail",stores:["9m"]}, 2:{fixture:"rail",stores:["120c"]}, 3:{fixture:"pylon",stores:["120c"]}, 4:{fixture:"rail",stores:["120c"]}, 6:{fixture:"rail",stores:["120c"]}, 7:{fixture:"pylon",stores:["120c"]}, 8:{fixture:"rail",stores:["120c"]}, 9:{fixture:"rail",stores:["9m"]} },
 		spam:{ 1:{fixture:"rail",stores:["9m"]}, 2:{fixture:"twin",stores:["120c","120c"]}, 3:{fixture:"twin",stores:["120c","120c"]}, 4:{fixture:"rail",stores:["120c"]}, 6:{fixture:"rail",stores:["120c"]}, 7:{fixture:"twin",stores:["120c","120c"]}, 8:{fixture:"twin",stores:["120c","120c"]}, 9:{fixture:"rail",stores:["9m"]} },
 		heat:{ 1:{fixture:"rail",stores:["9m"]}, 2:{fixture:"twin",stores:["9m","9m"]}, 3:{fixture:"twin",stores:["9m","9m"]}, 7:{fixture:"twin",stores:["9m","9m"]}, 8:{fixture:"twin",stores:["9m","9m"]}, 9:{fixture:"rail",stores:["9m"]} } };
 		const pick=stores_presets[storesq]||extra[storesq];

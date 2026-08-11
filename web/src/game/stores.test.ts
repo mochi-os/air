@@ -77,21 +77,22 @@ describe('normalize', () => {
 })
 
 describe('presets', () => {
-  it('fox2 is six rounds, tips plus outboard twins', () => {
-    expect(rounds(PRESETS.fox2).map((r) => r.name)).toEqual(['tip9', 'tip1', '9m8a', '9m2a', '9m8b', '9m2b'])
+  it('fox2 is six rounds: tips plus four wing singles', () => {
+    expect(rounds(PRESETS.fox2).map((r) => r.name)).toEqual(['tip9', 'tip1', '9m8', '9m2', '9m7', '9m3'])
   })
-  it('cap adds the centerline tank to fox2', () => {
-    expect(PRESETS.cap['5']).toEqual({ fixture: 'pylon', stores: ['tank'] })
-    expect(rounds(PRESETS.cap)).toHaveLength(6)
+  it('fox3 is tip heaters, six AMRAAM singles, and the centreline tank', () => {
+    expect(PRESETS.fox3['5']).toEqual({ fixture: 'pylon', stores: ['tank'] })
+    expect(rounds(PRESETS.fox3).map((r) => r.name)).toEqual(['tip9', 'tip1'])
+    expect(amraams(PRESETS.fox3)).toEqual(['120c4', '120c6', '120c2', '120c8', '120c3', '120c7'])
   })
   it('gun carries nothing', () => {
     expect(rounds(PRESETS.gun)).toHaveLength(0)
     expect(missiles_loaded(PRESETS.gun)).toBe(false)
   })
   it('matches recognises presets and rejects customs', () => {
-    expect(matches(PRESETS.cap)).toBe('cap')
+    expect(matches(PRESETS.fox3)).toBe('fox3')
     const custom = structuredClone(PRESETS.fox2)
-    custom['2'].stores[1] = ''
+    custom['2'].stores[0] = ''
     expect(matches(custom)).toBe('')
   })
   it('migrate maps the retired boolean', () => {
@@ -118,30 +119,31 @@ describe('rounds', () => {
 
 describe('strip', () => {
   it('removes missiles and keeps fixtures and tanks', () => {
-    const lo = strip(PRESETS.cap)
+    const lo = strip(PRESETS.fox3)
     expect(missiles_loaded(lo)).toBe(false)
+    expect(amraams(lo)).toEqual([])
     expect(lo['5']).toEqual({ fixture: 'pylon', stores: ['tank'] })
-    expect(lo['2']).toEqual({ fixture: 'twin', stores: ['', ''] }) // the twin stays, empty and draggy
+    expect(lo['2']).toEqual({ fixture: 'rail', stores: [''] }) // the rail stays, empty and draggy
   })
 })
 
 describe('jettison', () => {
   it('stores drop empties the mounts and keeps the fixture', () => {
-    const lo = jettison(PRESETS.cap, 5, 'stores')
+    const lo = jettison(PRESETS.fox3, 5, 'stores')
     expect(lo['5']).toEqual({ fixture: 'pylon', stores: [''] })
-    expect(lo['2']).toEqual(PRESETS.cap['2']) // untouched stations survive verbatim
+    expect(lo['2']).toEqual(PRESETS.fox3['2']) // untouched stations survive verbatim
   })
   it('rack drop clears the fixture with everything on it', () => {
-    const lo = jettison(PRESETS.cap, 2, 'rack')
+    const lo = jettison(PRESETS.fox3, 2, 'rack')
     expect(lo['2']).toEqual({ fixture: '', stores: [] })
   })
   it('wingtips never jettison', () => {
     const lo = jettison(PRESETS.fox2, 9, 'rack')
     expect(lo['9']).toEqual(PRESETS.fox2['9'])
   })
-  it('cheek and out-of-range stations are refused untouched', () => {
-    expect(jettison(PRESETS.cap, 0, 'rack')).toEqual(PRESETS.cap)
-    expect(jettison(PRESETS.cap, 12, 'stores')).toEqual(PRESETS.cap)
+  it('out-of-range stations are refused untouched', () => {
+    expect(jettison(PRESETS.fox3, 0, 'rack')).toEqual(PRESETS.fox3)
+    expect(jettison(PRESETS.fox3, 12, 'stores')).toEqual(PRESETS.fox3)
   })
   it('carriage limits are NATOPS figure 4-4: tanks only, per station, no g term', () => {
     // Air-to-air missiles, rails and pylons are inside the basic-aircraft
@@ -169,20 +171,23 @@ describe('mask', () => {
     expect(mask(tips, 0, BOOK)).toBe(0b11)
   })
   it('clears bits as rounds fire in order', () => {
-    const bit = (name: string) => 1 << BOOK.index.get(name)!
+    // f64 division, not int32 bitwise — the inboard heater bits sit past 31
+    const has = (m: number, name: string) => Math.floor(m / 2 ** BOOK.index.get(name)!) % 2 === 1
     const full = mask(PRESETS.fox2, 0, BOOK)
-    expect(full & bit('tip9')).toBeTruthy()
+    expect(has(full, 'tip9')).toBe(true)
     const one = mask(PRESETS.fox2, 1, BOOK) // tip9 departs first
-    expect(one & bit('tip9')).toBeFalsy()
-    expect(one & bit('tip1')).toBeTruthy()
+    expect(has(one, 'tip9')).toBe(false)
+    expect(has(one, 'tip1')).toBe(true)
     const spent = mask(PRESETS.fox2, 6, BOOK)
-    expect(spent & (bit('tip1') | bit('tip9') | bit('9m2a') | bit('9m2b') | bit('9m8a') | bit('9m8b'))).toBe(0)
-    expect(spent & bit('twin2')).toBeTruthy() // empty twins stay, with their drag
+    for (const name of ['tip1', 'tip9', '9m2', '9m8', '9m3', '9m7']) expect(has(spent, name)).toBe(false)
+    expect(has(spent, 'rail2')).toBe(true) // empty rails stay, with their drag
+    expect(has(spent, 'pylon3')).toBe(true)
   })
   it('keeps tanks and fixtures regardless of fired count', () => {
-    const bits = mask(PRESETS.cap, 4, BOOK)
-    expect(bits & (1 << BOOK.index.get('tank5')!)).toBeTruthy()
-    expect(bits & (1 << BOOK.index.get('pylon5')!)).toBeTruthy()
+    const has = (m: number, name: string) => Math.floor(m / 2 ** BOOK.index.get(name)!) % 2 === 1
+    const bits = mask(PRESETS.fox3, 2, BOOK)
+    expect(has(bits, 'tank5')).toBe(true)
+    expect(has(bits, 'pylon5')).toBe(true)
   })
   it('carries the ten-round fit past bit 31 and sheds fired AMRAAMs in their own order', () => {
     // f64 division, not int32 bitwise — the pair entries sit on bits 32..35
@@ -211,12 +216,12 @@ describe('mask', () => {
 
 describe('weight', () => {
   it('sums hardware and tank capacity', () => {
-    const w = weight(PRESETS.cap, BOOK)
-    // 2 tips + 4 twin rounds + 2 twin adapters + pylon + tank
-    expect(w.hardware).toBe(86 * 6 + 290 * 2 + 120 + 158)
+    const w = weight(PRESETS.fox3, BOOK)
+    // 2 tips + wing rails + cheek ejectors + inboard pylons + centreline pylon and tank + 6 AMRAAMs
+    expect(w.hardware).toBe(86 * 2 + 179 * 2 + 31 * 2 + 136 * 2 + 120 + 158 + 156 * 6)
     expect(w.fuel).toBe(1010)
   })
-  it('gun fighter weighs nothing', () => {
+  it('gun weighs nothing', () => {
     expect(weight(PRESETS.gun, BOOK)).toEqual({ hardware: 0, fuel: 0 })
   })
 })
@@ -225,7 +230,7 @@ describe('asymmetry', () => {
   it('is zero for the symmetric presets', () => {
     expect(asymmetry(PRESETS.gun, BOOK)).toBeCloseTo(0)
     expect(asymmetry(PRESETS.fox2, BOOK)).toBeCloseTo(0)
-    expect(asymmetry(PRESETS.cap, BOOK)).toBeCloseTo(0)
+    expect(asymmetry(PRESETS.fox3, BOOK)).toBeCloseTo(0)
   })
   it('one full tank to port is the NATOPS example — over every landing limit', () => {
     // Tank on 3, bare pylon on 7: the pylons cancel and the moment is the

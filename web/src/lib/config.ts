@@ -197,7 +197,7 @@ export const DEFAULT_CONFIG: MissionConfig = {
   afterburner: true,
   tracers: true,
   effects_quality: 2,
-  stores: PRESETS.fox2, // new players fly the Fox 2 fighter preset — symmetric against the armed bot standard (#17, decided 2026-08-05)
+  stores: PRESETS.fox2, // new players fly the Fox 2 preset — six heaters, the armed bot standard's round count (#17, decided 2026-08-05)
   sound: true,
   volume: { master: 80, engine: 100, aircraft: 100, weapons: 100, environment: 100, alerts: 100 },
   invert: false,

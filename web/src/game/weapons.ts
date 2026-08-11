@@ -85,14 +85,19 @@ function single_anchor(root: THREE.Object3D, station: number): THREE.Vector3 | n
   return new THREE.Vector3(tank.x, rail.y, tank.z)
 }
 
-// node_centre: the index-aware centroid of a named node's mesh, in the
-// ROOT's model space. Two traps live here, both learned the hard way: the
-// split stores models share ONE vertex buffer across every station's
-// primitive, so only the index selects this piece's triangles — and gltfpack
-// QUANTIZES positions, hanging the dequantization transform on the node, so
-// the raw vertex mean is in meaningless quantized units until it goes
-// through the mesh's world matrix (every round anchored at ~the origin
-// before this transform was applied).
+// node_centre: the centre of a named node's mesh — the middle of its
+// bounding box, NOT the vertex mean — in the ROOT's model space. Three traps
+// live here, all learned the hard way: the split stores models share ONE
+// vertex buffer across every station's primitive, so only the index selects
+// this piece's triangles; gltfpack QUANTIZES positions, hanging the
+// dequantization transform on the node, so raw vertex coordinates are
+// meaningless until they go through the mesh's world matrix; and a vertex
+// MEAN is skewed by wherever the artist spent triangles — a round's dense
+// tail fins dragged the mean below the tube axis, and every AMRAAM anchored
+// to it hung off its rail with an air gap. The box middle is the tube axis
+// for a radially symmetric round, and it is the same convention
+// normalize_round centres our own model by, so anchoring box-middle to
+// box-middle makes the drawn round occupy the source round's exact envelope.
 export function node_centre(root: THREE.Object3D, name: string): THREE.Vector3 | null {
   const node = root.getObjectByName(name)
   if (!node) return null
@@ -103,15 +108,22 @@ export function node_centre(root: THREE.Object3D, name: string): THREE.Vector3 |
   if (!geometry?.attributes?.position) return null
   const pos = geometry.attributes.position
   const idx = geometry.index
-  const c = new THREE.Vector3()
+  root.updateMatrixWorld(true)
+  const v = new THREE.Vector3()
+  const low = new THREE.Vector3(Infinity, Infinity, Infinity)
+  const high = new THREE.Vector3(-Infinity, -Infinity, -Infinity)
   let count = 0
+  const take = (i: number) => {
+    ;(mesh as THREE.Mesh).localToWorld(v.fromBufferAttribute(pos, i))
+    low.min(v)
+    high.max(v)
+    count++
+  }
   if (idx) {
-    for (let k = 0; k < idx.count; k += 9) { const i = idx.getX(k); c.x += pos.getX(i); c.y += pos.getY(i); c.z += pos.getZ(i); count++ }
+    for (let k = 0; k < idx.count; k += 3) take(idx.getX(k))
   } else {
-    for (let i = 0; i < pos.count; i += 3) { c.x += pos.getX(i); c.y += pos.getY(i); c.z += pos.getZ(i); count++ }
+    for (let i = 0; i < pos.count; i++) take(i)
   }
   if (!count) return null
-  c.multiplyScalar(1 / count)
-  root.updateMatrixWorld(true)
-  return (mesh as THREE.Mesh).localToWorld(c)
+  return low.add(high).multiplyScalar(0.5)
 }
