@@ -181,7 +181,20 @@ const col_sundisc=new THREE.Color(0xfff3da), col_deep=new THREE.Color(0x0a2a3a),
 // ============================================================================ renderer/scene
 const canvas = stage;
 const graphics_verdict = diagnose();   // #55: null = real acceleration; the governor's machine verdict below only counts then (a software-rendered run says nothing about the GPU that never got to fight)
-const renderer = new THREE.WebGLRenderer({ canvas, antialias:!MSAA_OFF, powerPreference:"high-performance" });
+// MSAA is OFF whenever the mission has clouds, and the reason is a coverage
+// mismatch rather than a performance one. The scene renders to the canvas with
+// MSAA, so an edge pixel is a blend of the airframe and the RAW sky; the cloud
+// is composited afterwards per PIXEL against a depth prepass that has no MSAA.
+// Where that single depth sample reads "aircraft" the march is short, almost no
+// cloud light is added, and the sky fraction inside the pixel never receives
+// its cloud — leaving a dark, stair-stepped rim between two bright surfaces
+// (measured on the 2026-08-11 wing crop: rim ~110 against a 200 wing and a 215
+// deck). Nothing in the composite can recover coverage the resolve has already
+// thrown away, so the honest fix is to stop creating partial-coverage pixels at
+// all when a cloud layer will be composited over them. Clear skies keep MSAA.
+// cfg carries the mission config by here (Object.assign above), and startGame
+// builds a renderer per mission, so this follows the player's cloud choice.
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:!MSAA_OFF && cfg.clouds==="none", powerPreference:"high-performance" });
 renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 const scene = new THREE.Scene(); scene.fog=new THREE.FogExp2(fog_colour,0.000042);
