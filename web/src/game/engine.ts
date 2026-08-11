@@ -23,9 +23,10 @@ import { flight_catalog } from './flight'
 import { diagnose } from '../lib/graphics'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
 import { Radar, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES } from './radar'
+import { Rwr } from './rwr'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
-import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener } from './audio'
+import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
@@ -1742,7 +1743,7 @@ function ddi_sms(x,display){   // SMS (#5): the stores format over the real load
 	x.fillText("9M "+Math.max(0,ownship.msl|0),24,430);
 	x.fillText("GUN "+(ownship.rounds??0),24,458);
 	x.textAlign="right"; x.fillText(master.toUpperCase(),488,458); }
-function ddi_ew(x){   // EW (#11): the ALR-67 format frame, REALISTIC for the C by decision — a radar warning receiver is a passive RF sensor, and every missile in this game is an IR AIM-9 that emits nothing, so the real box would show exactly this: a quiet ring. (An MWS-style inbound-dart cue was built and removed here on that ground; the C carries no missile warner.) The page earns its symbols when radar-guided threats arrive with the BVR layer.
+function ddi_ew(x){   // EW (#11, symbols #28): the ALR-67 format. Bearing-only symbols on the nose-up ring — the radial position is the LETHALITY band, not range: an STT holding us sits on the inner ring, circled; search paints sit outer and fade between his sweep crossings. The one airframe means one symbol, "18". (An MWS-style inbound-dart cue was built and removed here — the C carries no missile warner; launch warnings arrive with the radar missiles, #27.)
 	x.fillText("EW",256,36);
 	const cx=256, cy=266, R=190;
 	x.strokeStyle="rgba(57,224,122,0.45)"; x.lineWidth=1.5;   // aircraft-referenced ring, nose up — lethality bands, not ranges: inside = close
@@ -1752,7 +1753,16 @@ function ddi_ew(x){   // EW (#11): the ALR-67 format frame, REALISTIC for the C 
 	x.strokeStyle="#39e07a"; x.lineWidth=2;
 	for(let d=0;d<360;d+=30){ const a=d*D2R-Math.PI/2;
 		x.beginPath(); x.moveTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R); x.lineTo(cx+Math.cos(a)*(R-10),cy+Math.sin(a)*(R-10)); x.stroke(); }
-	x.beginPath(); x.moveTo(cx,cy-14); x.lineTo(cx-8,cy+12); x.lineTo(cx+8,cy+12); x.closePath(); x.stroke(); }   // ownship
+	x.beginPath(); x.moveTo(cx,cy-14); x.lineTo(cx-8,cy+12); x.lineTo(cx+8,cy+12); x.closePath(); x.stroke();   // ownship
+	const hdg=(ownship.gauges||{}).heading||0;
+	x.font="18px monospace"; x.textAlign="center";   // real-format proportion: small alphanumerics, the ring hugging the character — the tube holds MANY of these
+	for(const c of RWR.contacts){ const rel=c.bearing-hdg;   // heading-up: nose at the top
+		const r=c.locked?R*0.34:R*0.74;
+		const px=cx+Math.sin(rel)*r, py=cy-Math.cos(rel)*r;
+		x.globalAlpha=c.locked?1:Math.max(0.25,1-(RWR.time-c.at)/8);   // search symbols live between his sweep crossings and fade toward the next
+		x.fillText("18",px,py);   // baseline is middle and alignment centre: text and ring share ONE centre
+		if(c.locked){ x.lineWidth=2; x.beginPath(); x.arc(px,py,13,0,Math.PI*2); x.stroke(); } }
+	x.globalAlpha=1; }
 function gross_weight(){ const gz=ownship.gauges||{}; const book=stores_catalog();   // empty jet + loadout hardware + internal + external, lb — the honest live gross the CHKLST judges (#8, #51)
 	const hardware=book?stores_weight(ownship.loadout||loadout(),book).hardware:0;   // pylons, rails, rounds, dry tanks — the flown loadout's hardware (#17)
 	return Math.round((((book?book.empty:10700)+hardware)*2.2046+(gz.fuelRaw||0)+(gz.externalRaw||0))/10)*10; }
@@ -4089,7 +4099,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], /* #57 parked: tracking:{ on:head_track?1:0, ok:head_ok?1:0, az:+head_az.toFixed(3), el:+head_el.toFixed(3) }, */ radar:{ mode:RADAR.sil?"sil":RADAR.stt!=null?"stt":RADAR.mode, w:Math.round(RADAR.half()/D2R), scale:RADAR.scale, sweep:+(RADAR.sweep/D2R).toFixed(1), bricks:RADAR.bricks.length, tracks:RADAR.tracks.length, ls:RADAR.ls??null, stt:RADAR.stt??null, emit:RADAR.emitter(), bandit:bandit_emitter, el:Math.round(RADAR.elevation/D2R), track:RADAR.tracks.length?(()=>{ const g=radar_geometry(radar_own(),RADAR.tracks[0],wrap_axis); return { az:+(g.azimuth/D2R).toFixed(1), range:Math.round(g.range) }; })():null }, draws:ddi_draws, emitters:MULTIPLAYER&&net?Object.fromEntries(net.emitters):null,home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
+	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], /* #57 parked: tracking:{ on:head_track?1:0, ok:head_ok?1:0, az:+head_az.toFixed(3), el:+head_el.toFixed(3) }, */ radar:{ mode:RADAR.sil?"sil":RADAR.stt!=null?"stt":RADAR.mode, w:Math.round(RADAR.half()/D2R), scale:RADAR.scale, sweep:+(RADAR.sweep/D2R).toFixed(1), bricks:RADAR.bricks.length, tracks:RADAR.tracks.length, ls:RADAR.ls??null, stt:RADAR.stt??null, emit:RADAR.emitter(), bandit:bandit_emitter, el:Math.round(RADAR.elevation/D2R), track:RADAR.tracks.length?(()=>{ const g=radar_geometry(radar_own(),RADAR.tracks[0],wrap_axis); return { az:+(g.azimuth/D2R).toFixed(1), range:Math.round(g.range) }; })():null }, draws:ddi_draws, emitters:MULTIPLAYER&&net?Object.fromEntries(net.emitters):null, rwr:{ n:RWR.contacts.length, lock:RWR.locked(), paints:RWR.paints, contacts:RWR.contacts.map(c=>({ id:c.id, brg:Math.round(c.bearing/D2R), lk:c.locked?1:0, age:+(RWR.time-c.at).toFixed(1) })) },home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
 	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
 	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS
 		racks:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>[n,o.visible])),
@@ -5679,6 +5689,23 @@ function radar_step(dt){ if(!running) return;
 		const dx=wrap_axis(ownship.pos.x-bandit.pos.x), dy=ownship.pos.y-bandit.pos.y, dz=wrap_axis(ownship.pos.z-bandit.pos.z);
 		const d=Math.hypot(dx,dy,dz)||1;
 		bandit_emitter=(bandit.fwd.x*dx+bandit.fwd.y*dy+bandit.fwd.z*dz)/d>0.94&&d<18520?2:1; } }
+// ---- RWR (#28): the receiving end of every emitter #30 created. The builder
+// applies the one rule the model cannot see — an STT on someone ELSE is
+// excluded entirely, his energy is pointed at him — and the model does the
+// periodic-paint listening. Audio: one chirp per new symbol, the warble while
+// any lock holds us.
+const RWR=new Rwr();
+function rwr_step(dt){ if(!running) return;
+	const emitters=[];
+	if(!MULTIPLAYER){ if(bandit_emitter>0&&has_enemy&&bandit.group.visible){ const f=Math.hypot(bandit.fwd.x,bandit.fwd.z)||1;
+		emitters.push({ id:"bandit", x:bandit.pos.x, z:bandit.pos.z, nosex:bandit.fwd.x/f, nosez:bandit.fwd.z/f, mode:bandit_emitter, locked:bandit_emitter===2 }); } }
+	else if(net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
+		const e=net.emitters.get(slot); if(!e||e.mode<1||slot===net.slot) continue;
+		const f=Math.hypot(st.fwd.x,st.fwd.z)||1;
+		emitters.push({ id:slot, x:st.pos.x, z:st.pos.z, nosex:st.fwd.x/f, nosez:st.fwd.z/f, mode:e.mode, locked:e.mode===2&&e.target===net.slot }); } }
+	const events=RWR.step(dt,{ x:ownship.pos.x, z:ownship.pos.z },emitters,wrap_axis);
+	if(events.fresh>0) audio_rwr_paint();
+	audio_rwr(RWR.locked()); }
 // acquire_press: one key, radar-aware (#30). TWS with tracks and no lock:
 // step the L&S through the trackfiles nearest-first; a double-tap commands
 // STT on the current L&S. Every other state runs the ACM flow below —
@@ -5998,7 +6025,7 @@ function start_mission(){
 	menu_hold=false; map_on=false; map_el.style.display="none";
 	loading=!assets_ready(); loading_t0=performance.now();   // hold the LOADING screen until every async asset is in — no piecemeal pop-in of carrier/airfield/airframe
 	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
-	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0; /* #57 parked: head_begin(); */   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
+	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0; RWR.reset(); /* #57 parked: head_begin(); */   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
 	mission_done=false; mission_zero=sim_time;   // a fresh mission may follow an ended one without a page reload (#240)
 	on_config=onConfig||null; on_over=onOver||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
 	recorder.clear(); record_started=new Date(); record_session="local-"+mission_began; live_recording=recording_file;   // a fresh recording per mission (#212)
@@ -6055,7 +6082,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 			else { draw_loading(); __raf=requestAnimationFrame(frame); return; } }
 	}
 	if(running){
-		if(!game_paused){ ocean_mat.uniforms.u_time.value+=dt; step_world(dt); radar_step(dt); }   // frozen world stops advancing (the radar freezes with it)
+		if(!game_paused){ ocean_mat.uniforms.u_time.value+=dt; step_world(dt); radar_step(dt); rwr_step(dt); }   // frozen world stops advancing (the radar and RWR freeze with it)
 		update_camera(dt);
 	} else { ocean_mat.uniforms.u_time.value+=dt; menu_backdrop(); }
 	if(map_on&&running){ const pad=read_gamepad(); if(pad) scan_zoom(pad,pad_bindings(pad)); }   // the map pauses the world (read_input stops): poll the wheel here so it still zooms the map

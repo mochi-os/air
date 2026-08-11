@@ -54,6 +54,7 @@ interface Voice {
 const engines: { whine: OscillatorNode; second: OscillatorNode; whineGain: GainNode; rumble: BiquadFilterNode; hiss: BiquadFilterNode; hissGain: GainNode; gain: GainNode }[] = []
 let burner: Voice | null = null
 let seeker: { osc: OscillatorNode; gain: GainNode } | null = null
+let alr: { osc: OscillatorNode; gain: GainNode } | null = null
 let departure: { osc: OscillatorNode; gain: GainNode } | null = null
 let wind: { source: AudioBufferSourceNode; filter: BiquadFilterNode; gain: GainNode } | null = null
 let buffet: Voice | null = null
@@ -212,6 +213,20 @@ function build(): void {
     osc.connect(gain).connect(bus('alerts'))
     osc.start()
     departure = { osc, gain }
+  }
+
+  // RWR lock warble (#28): an insistent fast on-off pulse in the headset while
+  // an STT holds us — deliberately nothing like the Sidewinder's smooth lock
+  // tone, because the two say opposite things about who is about to die.
+  {
+    const osc = c.createOscillator()
+    osc.type = 'triangle'
+    osc.frequency.value = 1150
+    const gain = c.createGain()
+    gain.gain.value = 0
+    osc.connect(gain).connect(bus('alerts'))
+    osc.start()
+    alr = { osc, gain }
   }
 
   // Airflow: white noise through a speed-tracking lowpass.
@@ -563,6 +578,37 @@ export function audio_seeker(state: number): void {
   const lock = state === 2
   seeker.osc.frequency.setTargetAtTime(lock ? 1450 : 700 + Math.sin(t * 7) * 60, t, 0.03)
   seeker.gain.gain.setTargetAtTime(state === 0 ? 0 : lock ? 0.1 : 0.032, t, 0.05)
+}
+
+// The RWR in the headset (#28): call every frame like the seeker — the lock
+// warble pulses ~8 Hz while an STT holds us.
+export function audio_rwr(lock: boolean): void {
+  if (!alr || !context || context.state !== 'running') return
+  const t = now()
+  alr.gain.gain.setTargetAtTime(lock ? (Math.floor(t * 8) % 2 ? 0.1 : 0.015) : 0, t, 0.02)
+}
+
+// New-threat chirp (#28): two quick high beeps when a symbol first appears on
+// the ring — rate-limited so a busy sky cannot machine-gun the headset.
+let alrAt = 0
+export function audio_rwr_paint(): void {
+  if (!context || context.state !== 'running') return
+  if (now() - alrAt < 0.6) return
+  alrAt = now()
+  const t = now()
+  const osc = context.createOscillator()
+  osc.type = 'triangle'
+  osc.frequency.value = 2400
+  const gain = context.createGain()
+  gain.gain.value = 0
+  osc.connect(gain).connect(bus('alerts'))
+  for (const s of [0, 0.14]) {
+    gain.gain.setValueAtTime(0.001, t + s)
+    gain.gain.exponentialRampToValueAtTime(0.11, t + s + 0.02)
+    gain.gain.exponentialRampToValueAtTime(0.001, t + s + 0.09)
+  }
+  osc.start(t)
+  osc.stop(t + 0.3)
 }
 
 // The low-altitude warning REPEATS while the condition holds (NATOPS
