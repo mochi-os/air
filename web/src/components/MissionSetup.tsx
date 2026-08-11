@@ -1103,10 +1103,12 @@ function Armament({
           </Button>
         ))}
         {/* Custom rides the preset row: it carries the check when the loadout
-            matches no preset, and toggles the station strip — which stays open
-            across preset presses, so pressing each preset SHOWS its contents
-            in the dropdowns below. */}
-        <Button type='button' variant='outline' size='sm' onClick={() => setCustom(!custom)}>
+            matches no preset, and OPENS the station strip. Opening only — it
+            used to toggle, so a second press folded the stations away just as
+            the player reached for them. The strip also stays open across preset
+            presses, so pressing each preset SHOWS its contents in the dropdowns
+            below. */}
+        <Button type='button' variant='outline' size='sm' onClick={() => setCustom(true)}>
           {preset === '' && <Check className='size-4' />}
           <Trans>Custom</Trans>
         </Button>
@@ -1733,6 +1735,16 @@ function MissionPanel({
   setCheat: (name: string, value: boolean) => void
   onChange: (config: MissionConfig) => void
 }) {
+  // The Cheats section is folded unless a cheat is actually set. Opening is
+  // one-way on purpose: an EFFECT rather than a useState initialiser, so a
+  // config that resolves after mount still opens it, and nothing ever closes it
+  // for the player — switching the last cheat off would otherwise collapse the
+  // section out from under the cursor mid-click.
+  const anyCheat = Object.values(config.cheats ?? {}).some(Boolean)
+  const [cheatsOpen, setCheatsOpen] = useState(anyCheat)
+  useEffect(() => {
+    if (anyCheat) setCheatsOpen(true)
+  }, [anyCheat])
   return (
     <div className='sm:grid sm:grid-cols-2 sm:gap-x-10'>
     <div>
@@ -1851,7 +1863,7 @@ function MissionPanel({
     loaded config — and once open it stays where the player left it, so turning
     the last one off does not snap the section shut under the cursor. */}
 <Collapsible open={cheatsOpen} onOpenChange={setCheatsOpen}>
-  <CollapsibleTrigger className='text-muted-foreground hover:text-foreground mt-4 flex w-full items-center gap-1.5 text-sm'>
+  <CollapsibleTrigger className='text-muted-foreground hover:text-foreground mt-4 mb-2 flex w-full items-center gap-1.5 text-xs font-medium tracking-wide uppercase'>
     <ChevronRight className='size-4 transition-transform [[data-state=open]_&]:rotate-90' />
     <Trans>Cheats</Trans>
   </CollapsibleTrigger>
