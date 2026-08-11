@@ -18,7 +18,7 @@ export const KEY_DEFAULTS: Record<string, string> = {
   'yaw.left': 'KeyQ',
   'throttle.up': 'BracketRight',
   'throttle.down': 'BracketLeft',
-  guns: 'Space',
+  fire: 'Space', // renamed from 'guns': the trigger serves the SELECTED weapon, not only the cannon.
   select: 'KeyX',
   acquire: 'Enter',
   launch: 'Enter',

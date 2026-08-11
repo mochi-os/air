@@ -1733,12 +1733,12 @@ function ddi_sms(x,display){   // SMS (#5): the stores format over the real load
 		const [sx,sy]=spots[station];
 		const names=stores_entries(station,slot).filter(n=>!n.startsWith("rail")&&!n.startsWith("twin")&&!n.startsWith("pylon"));
 		const missiles_here=names.filter(n=>(n.startsWith("tip")||n.startsWith("9m"))&&live.has(n)).length;
-		const amraam_here=names.some(n=>n.startsWith("120c")&&alive.has(n));
+		const amraam_here=names.filter(n=>n.startsWith("120c")&&alive.has(n)).length;
 		const tank_here=names.some(n=>n.startsWith("tank"));
 		let label="—";
 		if(tank_here) label="TK";
 		else if(missiles_here>0) label="9M"+(missiles_here>1?"×"+missiles_here:"");
-		else if(amraam_here) label="120C";
+		else if(amraam_here>0) label="120C"+(amraam_here>1?"×"+amraam_here:"");
 		else if(slot.fixture&&names.length===0) label="PYL";   // hardware aboard, nothing on it
 		x.font="15px monospace"; x.textAlign="center";
 		if(colour&&label!=="—"&&label!=="PYL") x.fillStyle=tank_here?"#ffd24a":"#39e07a"; else x.fillStyle=label==="—"?"rgba(57,224,122,0.4)":"#39e07a";
@@ -1746,7 +1746,7 @@ function ddi_sms(x,display){   // SMS (#5): the stores format over the real load
 		x.font="12px monospace"; x.fillStyle="rgba(57,224,122,0.6)"; x.fillText(String(station),sx,sy+52);
 		if(master==="9m"&&next&&next.station===station){ x.strokeStyle="#39e07a"; x.lineWidth=2; x.strokeRect(sx-22,sy+20,44,20);   // the priority station's round launches next
 			x.font="12px monospace"; x.fillStyle="#39e07a"; x.fillText("SEL",sx,sy+14); }
-		if(master==="120c"&&aorder[aspent]&&+aorder[aspent].slice(4)===station){ x.strokeStyle="#39e07a"; x.lineWidth=2; x.strokeRect(sx-22,sy+20,44,20);
+		if(master==="120c"&&aorder[aspent]&&parseInt(aorder[aspent].slice(4),10)===station){ x.strokeStyle="#39e07a"; x.lineWidth=2; x.strokeRect(sx-22,sy+20,44,20);   // parseInt: twin rounds carry an a/b point suffix
 			x.font="12px monospace"; x.fillStyle="#39e07a"; x.fillText("SEL",sx,sy+14); }
 		x.fillStyle="#39e07a"; }
 	x.font="18px monospace"; x.textAlign="left";
@@ -1877,7 +1877,7 @@ function apply_stores(st){ if(!st.group) return;
 			let piece=null;
 			if(name.startsWith("rail")||name.startsWith("twin")||name.startsWith("pylon")){ piece=stores_clone("Pylon_"+station); }   // no Pylon_4/6 exists: the cheek LAU-116 shows nothing, the round sits flush (#27)
 			else if(name.startsWith("tank")){ piece=stores_clone("Tank_"+station); }
-			else if(name.startsWith("120c")){ piece=amraam_clone(station); }
+			else if(name.startsWith("120c")){ piece=amraam_clone(name,station); }
 			else if(ROUND_ANCHORS[name]){ piece=round_clone(model, name, station); }
 			if(piece){ holder.add(piece); nodes[name]=piece; }
 		}
@@ -1888,11 +1888,12 @@ function apply_stores(st){ if(!st.group) return;
 	update_rails(st, Math.max(0, st.msl|0)); }
 function stores_clone(name){ if(!stores_proto) return null; const source=stores_proto.getObjectByName(name); if(!source) return null;
 	const piece=source.clone(true); piece.traverse(o=>{ if(o.isMesh){ o.castShadow=cfg.shadows; o.userData.modelmesh=true; } }); return piece; }
-// amraam_clone (#27): the round at the station's anchor — inherited from the
-// source art's own rounds where they exist, derived for the inboard pylons
-// (weapons.ts amraam_anchor), so placement never needs hand measurement.
-function amraam_clone(station){ if(!amraam_proto||!stores_proto) return null;
-	const anchor=amraam_anchor(stores_proto,station); if(!anchor) return null;
+// amraam_clone (#27): the round at its anchor — inherited from the source
+// art's own rounds where they exist, derived for the inboard pylons, twin
+// points spread off the single anchor (weapons.ts amraam_anchor), so
+// placement never needs hand measurement.
+function amraam_clone(name,station){ if(!amraam_proto||!stores_proto) return null;
+	const anchor=amraam_anchor(stores_proto,station,name.endsWith("a")?"a":name.endsWith("b")?"b":""); if(!anchor) return null;
 	const piece=amraam_proto.clone(true);
 	piece.traverse(o=>{ if(o.isMesh){ o.castShadow=cfg.shadows; o.userData.modelmesh=true; } });
 	piece.position.copy(anchor);
@@ -1926,15 +1927,18 @@ function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply
 	assign_loadout(ownship, loadout()); assign_loadout(bandit, missiles_on()?BOT_ARMED:BOT_CLEAN);
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining()); }   // re-pin the ownship lights to the real airframe; rails reflect the loadout
 // own_mask is the core attach bitmask for the ownship's flown loadout with the
-// expended rounds cleared — memoised on (loadout revision, remaining count) so
-// the per-frame sync allocates nothing. Before the catalog is readable the
-// bare default (wingtips) stands in; the real mask lands the next frame.
+// expended rounds cleared, heaters and AMRAAMs alike — memoised on (loadout
+// revision, remaining heaters, remaining AMRAAMs) so the per-frame sync
+// allocates nothing. Before the catalog is readable the bare default
+// (wingtips) stands in; the real mask lands the next frame.
 let own_mask_memo={ key:-1, value:0b11 };
 function own_mask(){ const book=stores_catalog(); if(!book) return 0b11;
 	const lo=ownship.loadout||loadout();
 	const remaining=Math.max(0, ownship.msl|0);
-	const key=loadout_rev*64+remaining;
-	if(own_mask_memo.key!==key){ const order=stores_rounds(lo); own_mask_memo={ key, value:stores_mask(lo, Math.max(0,order.length-remaining), book) }; }
+	const aorder=stores_amraams(lo);
+	const aleft=Math.min(Math.max(0,(ownship.amraam??aorder.length)|0), aorder.length);
+	const key=(loadout_rev*64+remaining)*64+aleft;
+	if(own_mask_memo.key!==key){ const order=stores_rounds(lo); own_mask_memo={ key, value:stores_mask(lo, Math.max(0,order.length-remaining), book, aorder.length-aleft) }; }
 	return own_mask_memo.value; }
 // external_capacity is the flown loadout's full-tank external fuel, kg — the
 // deck crew's fill line and the setup's gross-weight arithmetic both use it.
@@ -3494,7 +3498,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("select")){ set_master(master==="gun"?"9m":master==="9m"?(MULTIPLAYER?"nav":"120c"):master==="120c"?"nav":"gun"); }   // weapon select (#133, #27): GUN -> 9M -> 120C -> NAV -> GUN; 120C stays out of the cycle in multiplayer until phase 2 wires the server round. Crossing the A/A-NAV boundary recalls that mode's displays (#15)
 		if(ch===key_of("altitude")){ alt_radar=!alt_radar; }   // HUD altitude switch: BARO <-> RDR
 		if(ch===key_of("reject")){ declutter=(declutter+1)%3; notice(translate(["HUD NORM","HUD REJ 1","HUD REJ 2"][declutter])); }     // the three-position symbology reject switch (NATOPS 2.13.4.8.1) — unbound by default: re-pressing 2 cycles it; the action stays for players who want a dedicated key or button
-		if(ch===key_of("guns")) trigger_missile();   // one trigger, weapon-selected: in 9M the trigger launches (the real Hornet's trigger fires the selected A/A weapon) chases the acquisition when one exists (the server's seeker judges the real damage)
+		if(ch===key_of("fire")) trigger_missile();   // one trigger, weapon-selected: in 9M the trigger launches (the real Hornet's trigger fires the selected A/A weapon) chases the acquisition when one exists (the server's seeker judges the real damage)
 		if(TEST_SCENARIOS && e.ctrlKey && k==="KeyC"){ copy_here(); notice("POSITION COPIED"); }   // dev (Ctrl+C): the live position line to the clipboard — for identifying deck locations (spots, markings) by taxiing onto them
 		if(ch===key_of("probe")){ ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; notice(ownship.probeTarget?translate("PROBE OUT"):translate("PROBE IN")); }   // refueling probe (real limit is ~300 KCAS — procedural, not enforced)
 		if(ch===key_of("fold")){ if((ownship.squish??0)>0.5 && ownship.speed<15){ ownship.foldTarget=(ownship.foldTarget??0)>0.5?0:1; notice(ownship.foldTarget?translate("WINGS FOLDING"):translate("WINGS SPREADING")); } else notice(translate("WINGS LOCKED")); }   // wing fold — ground only, taxi speeds; the outer panels carry the ailerons and outer slats with them
@@ -3657,7 +3661,7 @@ const KEYS=KEY_DEFAULTS;
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
-const pad_buttons={};   // edge state per ACTION+BUTTON, not per button: the default binds share button 17 between guns and the wheel brake, and a per-button edge let whichever action processed first consume the press and starve the other (the joystick trigger fired a missile only when guns happened to win)
+const pad_buttons={};   // edge state per ACTION+BUTTON, not per button: the default binds share button 17 between fire and the wheel brake, and a per-button edge let whichever action processed first consume the press and starve the other (the joystick trigger fired a missile only when guns happened to win)
 const pad_levers={};   // per-purpose lever state: armed on the first deliberate sweep
 function throttle_from_lever(){   // mission start: seed the throttle from the physical lever when one is bound, and arm it so it tracks from the first frame
 	const pad=read_gamepad(); if(!pad) return;
@@ -3686,12 +3690,12 @@ function read_gamepad(){ const pads=(navigator.getGamepads&&navigator.getGamepad
 	return first; }
 function pad_bindings(pad){   // resolved axis/button map for THIS stick: the menu's per-device config over the SHARED built-in defaults (lib/config deviceDefaults — one source for the engine and the menu, so Reset always shows what the engine flies)
 	const saved=(cfg.sticks||{})[pad.id]||{};
-	const defaults=deviceDefaults(pad.id||"");
+	const defaults=deviceDefaults(pad.id||"",pad.mapping||"");   // mapping identifies the STANDARD gamepad layout, which no product name can
 	return { axes:{ ...defaults.axes, ...(saved.axes||{}) },
 		buttons: saved.buttons&&Object.keys(saved.buttons).length?saved.buttons:defaults.buttons }; }
 const pad_looks={ up:false, down:false, left:false, right:false };
 const pad_trim={ x:0, y:0 };   // the trim hat pair's level state (x + = right wing down, y + = hat aft = nose up after the sign flip at the read)   // castle/hat state, level-read per frame — deliberately NOT synthetic Arrow events (shared codes let a castle release kill a held physical arrow)
-let pad_guns=false;   // guns level state, same reasoning: a HELD action with possibly several bound buttons must never be synthetic key events
+let pad_fire=false;   // fire level state, same reasoning: a HELD action with possibly several bound buttons must never be synthetic key events
 function pad_axis(pad,i){ const v=pad.axes[i]??0;   // raw ±1, no calibration: the worn-pot centring/throw machinery is gone by decree — modern sticks read clean, and every margin only made dead travel
 	const dz=Math.abs(v)<0.05?0:(v-Math.sign(v)*0.05)/0.95;   // small centre deadzone against electrical jitter
 	return Math.sign(dz)*Math.pow(Math.abs(dz),1.25);   // gentle expo: fine control near centre, full authority at the stops
@@ -3746,7 +3750,7 @@ function read_input(dt){
 				ownship.throttle=Math.min(1,lever/0.75); ownship.burner=THREE.MathUtils.clamp((lever-0.75)/0.25,0,1); } }   // lever: 0..75% = idle..MIL, the top quarter sweeps the five AB zones
 		{ const p=pad_lever(pad,bind.axes.speedbrake,"speedbrake");   // speed brake: full forward retracted, aft deployed (deployed at the HIGH raw end; "-" prefix flips)
 			if(p!==null) ownship.speedbrakeTarget=p; }
-		pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_guns=false; pad_trim.x=pad_trim.y=0;
+		pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_fire=false; pad_trim.x=pad_trim.y=0;
 		{ const z=String(bind.axes.zoom??""); zoom_wheel=0;
 			if(z.endsWith("+")){ const zi=Math.abs(parseInt(z,10));   // "N+": half-axis PAIR wheel — each roll direction sweeps its own axis 0..-1 (thumbwheel style)
 				if(pad.axes.length>zi+1){ const back=Math.max(0,-pad.axes[zi]), fore=Math.max(0,-pad.axes[zi+1]);
@@ -3765,10 +3769,10 @@ function read_input(dt){
 			if(!(b>=0)||b>=pad.buttons.length) continue;
 			const down=pad.buttons[b].pressed;
 			if(action.startsWith("look.")&&action!=="look.target"){ if(down) pad_looks[action.slice(5)]=true; continue; }   // look DIRECTIONS are level state for the camera, not key events. look.target is NOT one of them: it is a bound hold read from the keys set, and the bare prefix swallowed it into pad_looks.target, which nothing reads — so the stick's "Look at target" button did nothing at all. It falls through to the key replay below instead
-			if(action==="guns"){   // held fire stays a LEVEL read (any bound button, immune to another button's release); the PRESS edge calls the 9M launch DIRECTLY — no synthetic key event, which wedged Space into the held-keys set and froze the edge for keyboard and trigger alike
-				if(down){ pad_guns=true;
-					if(!pad_buttons["guns/"+b]){ pad_buttons["guns/"+b]=true; trigger_missile(); } }
-				else pad_buttons["guns/"+b]=false;
+			if(action==="fire"){   // held fire stays a LEVEL read (any bound button, immune to another button's release); the PRESS edge calls the 9M launch DIRECTLY — no synthetic key event, which wedged Space into the held-keys set and froze the edge for keyboard and trigger alike
+				if(down){ pad_fire=true;
+					if(!pad_buttons["fire/"+b]){ pad_buttons["fire/"+b]=true; trigger_missile(); } }
+				else pad_buttons["fire/"+b]=false;
 				continue; }
 			if(action==="zoom.in"||action==="zoom.out") continue;   // notch zoom is scanned by scan_zoom (also polled while the map pauses the world)
 			// A KEYLESS action cannot be replayed. "None" is truthy, so the generic path below dispatched a synthetic event carrying the code "None", and EVERY unbound action matched it at once — a stick button bound to Cycle view also toggled the HUD reject switch and zeroed the trim. These two are the keyless actions a stick may reasonably carry, so they fire directly on the press edge, the same shape as guns and the zoom notches above; that also hands trim reset to the stick without inventing a keyboard chord for an action deliberately left unbound.
@@ -3780,12 +3784,12 @@ function read_input(dt){
 				if(bindText&&bindText!=="None"){ const shift=bindText.startsWith("Shift+"), code=bindText.replace("Shift+","");
 					for(const target of [window, document, stage]) target.dispatchEvent(new KeyboardEvent(down?"keydown":"keyup",{ code, shiftKey:shift, bubbles:true })); } } }
 	}
-	else { pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_guns=false; }
+	else { pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_fire=false; }
 	input.pitch=Math.abs(pp)>Math.abs(key_axes.pitch)?pp:key_axes.pitch;
 	input.roll=Math.abs(pr)>Math.abs(key_axes.roll)?pr:key_axes.roll;
 	input.yaw=Math.abs(py)>Math.abs(key_axes.yaw)?py:key_axes.yaw;
 	if(pad) scan_zoom(pad,pad_bindings(pad));
-	input.guns=(keys.has(key_of("guns"))||pad_guns)&&master==="gun";   // the trigger serves the SELECTED weapon (#133): guns only in GUN
+	input.guns=(keys.has(key_of("fire"))||pad_fire)&&master==="gun";   // the trigger serves the SELECTED weapon (#133): guns only in GUN
 	const held=(action)=>{ const b=key_of(action); if(!b||b==="None") return false;
 		if(!keys.has(b)) return false;
 		return b.startsWith("Shift+")||!keys.has("Shift+"+b); };   // a live shift-chord owns its bare key: Shift+, is roll trim, not nose-down-with-Shift
@@ -6088,11 +6092,13 @@ function start_mission(){
 	// #57 parked: dev_head=devq.get("head")==="1";   // &head=1: force head tracking on for headless verification (#57)   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
 	livery_pending=devq.get("livery");   // ?livery=red|blue — paint ownship that side and the bandit the other (headless livery verification)
 	const viewq=devq.get("view"); if(viewq) set_view(viewq);   // ?view=cockpit|hud|chase — headless capture hook (#105)
-	const storesq=devq.get("stores");   // &stores=gun|fox2|cap|tanks|right|fox3 — headless loadout hook (#17): presets plus a three-tank fit, a starboard-only tank (the port/starboard sign check), and the cheek-AMRAAM fit (#27)
+	const storesq=devq.get("stores");   // &stores=gun|fox2|cap|tanks|right|fox3|spam|heat — headless loadout hook (#17): presets plus a three-tank fit, a starboard-only tank (the port/starboard sign check), the six-round AMRAAM fit, the ten-round twin fit, and the ten-heater fit (#27)
 	if(storesq){ const extra={
 		tanks:{ 1:{fixture:"rail",stores:["9m"]}, 3:{fixture:"pylon",stores:["tank"]}, 5:{fixture:"pylon",stores:["tank"]}, 7:{fixture:"pylon",stores:["tank"]}, 9:{fixture:"rail",stores:["9m"]} },
 		right:{ 7:{fixture:"pylon",stores:["tank"]} },
-		fox3:{ 1:{fixture:"rail",stores:["9m"]}, 2:{fixture:"rail",stores:["120c"]}, 3:{fixture:"pylon",stores:["120c"]}, 4:{fixture:"rail",stores:["120c"]}, 6:{fixture:"rail",stores:["120c"]}, 7:{fixture:"pylon",stores:["120c"]}, 8:{fixture:"rail",stores:["120c"]}, 9:{fixture:"rail",stores:["9m"]} } };
+		fox3:{ 1:{fixture:"rail",stores:["9m"]}, 2:{fixture:"rail",stores:["120c"]}, 3:{fixture:"pylon",stores:["120c"]}, 4:{fixture:"rail",stores:["120c"]}, 6:{fixture:"rail",stores:["120c"]}, 7:{fixture:"pylon",stores:["120c"]}, 8:{fixture:"rail",stores:["120c"]}, 9:{fixture:"rail",stores:["9m"]} },
+		spam:{ 1:{fixture:"rail",stores:["9m"]}, 2:{fixture:"twin",stores:["120c","120c"]}, 3:{fixture:"twin",stores:["120c","120c"]}, 4:{fixture:"rail",stores:["120c"]}, 6:{fixture:"rail",stores:["120c"]}, 7:{fixture:"twin",stores:["120c","120c"]}, 8:{fixture:"twin",stores:["120c","120c"]}, 9:{fixture:"rail",stores:["9m"]} },
+		heat:{ 1:{fixture:"rail",stores:["9m"]}, 2:{fixture:"twin",stores:["9m","9m"]}, 3:{fixture:"twin",stores:["9m","9m"]}, 7:{fixture:"twin",stores:["9m","9m"]}, 8:{fixture:"twin",stores:["9m","9m"]}, 9:{fixture:"rail",stores:["9m"]} } };
 		const pick=stores_presets[storesq]||extra[storesq];
 		if(pick){ cfg.stores=stores_normalize(pick); assign_loadout(ownship, loadout()); ownship.msl=magazine(); ownship.amraam=stores_amraams(ownship.loadout||{}).length; update_rails(ownship, ownship.msl); } }
 	dev_fps=parseFloat(devq.get("fps")||"0")||0; dev_jitter=devq.get("jitter")==="1";   // ?fps=N + ?jitter=1: forced frame dt with optional stutter spikes

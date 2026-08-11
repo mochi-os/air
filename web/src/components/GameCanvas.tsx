@@ -130,7 +130,7 @@ const HINTS: { actions: string[]; label: React.ReactNode }[] = [
   { actions: ['yaw.left', 'yaw.right'], label: <Trans>yaw</Trans> },
   { actions: ['throttle.down', 'throttle.up'], label: <Trans>throttle</Trans> },
   { actions: ['trim.up', 'trim.down'], label: <Trans>trim</Trans> },
-  { actions: ['guns'], label: <Trans>fire</Trans> },
+  { actions: ['fire'], label: <Trans>fire</Trans> },
   { actions: ['select'], label: <Trans>weapon</Trans> },
   { actions: ['launch'], label: <Trans>launch / target</Trans> },
   { actions: ['flares'], label: <Trans>flares</Trans> },
