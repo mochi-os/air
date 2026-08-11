@@ -215,6 +215,18 @@ export function amraams(loadout: Loadout): string[] {
   return out
 }
 
+// eject reports whether an AMRAAM entry leaves on an EJECTOR — the cheek
+// LAU-116 and the inboard pylon's LAU-115C both punch the round down before
+// the motor lights — or slides forward off a LAU-127 rail, like the 9M: the
+// wing rails and every twin point are rails. Launch dynamics read this now;
+// phase 2's employment model consumes the same distinction.
+export function eject(loadout: Loadout, name: string): boolean {
+  const station = parseInt(name.slice(4), 10)
+  const slot = loadout[String(station)]
+  if (!slot || slot.fixture === 'twin') return false
+  return station === 3 || station === 4 || station === 6 || station === 7
+}
+
 // jettison returns a new loadout with a station's departure applied: 'stores'
 // empties the mounts and the fixture stays, 'rack' clears the fixture with
 // everything on it (the real RACK/LCHR position — rail missiles leave only

@@ -18,7 +18,7 @@ import {
   type Join as NetJoin,
 } from './net'
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode } from './flight'
-import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams } from './stores'
+import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject } from './stores'
 import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
 import { flight_catalog } from './flight'
@@ -2530,7 +2530,8 @@ function launch_amraam(st,target){ const m=missiles.find(x=>!x.active); if(!m) r
 	if(piece){ _launch_box.setFromObject(piece); _launch_box.getCenter(_v); sp={x:_v.x,y:_v.y,z:_v.z}; }
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
-	m.vx=st.fwd.x*(st.speed+15); m.vy=(st.fwd.y*st.speed)-8; m.vz=st.fwd.z*(st.speed+15);   // the LAU-116 ejector punches the round DOWN off the cheek before the motor lights
+	if(stores_eject(st.loadout||{},name||"")){ m.vx=st.fwd.x*(st.speed+15); m.vy=(st.fwd.y*st.speed)-8; m.vz=st.fwd.z*(st.speed+15); }   // ejector points (the cheek LAU-116, the inboard LAU-115C): the round punches DOWN before the motor lights
+	else { m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30); }   // rail points (wing LAU-127s, single or twin): forward off the rail like the 9M
 	m.life=60; m.kind="120c"; m.target=target; m.smoke_acc=0; m.burn=8.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.prate=undefined;
 	{ const d=Math.hypot(target.pos.x-m.px,target.pos.y-m.py,target.pos.z-m.pz)||1;
 		m.sx=(target.pos.x-m.px)/d; m.sy=(target.pos.y-m.py)/d; m.sz=(target.pos.z-m.pz)/d; }
@@ -4933,7 +4934,7 @@ function reset_ownship(){
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
 	throttle_from_lever();   // a connected stick with a bound throttle wins over the spawn default — the physical lever position IS the commanded power (falls back silently: browsers hide pads until a button has been pressed)
 	{ const down=(st==="carrier"||st==="runway"||st==="case2"); ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway/Case II (established on the approach); Cases I and III spawn CLEAN — the dirty-up is part of the procedure
-	{ const hk=(st==="case1"||st==="case2")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }   // hook down for BOTH visual-pattern starts (NATOPS 8.2.10: "enter the carrier landing pattern with the hook down"); Case III lowers it at the dirty-up, everything else stows it
+	{ const hk=(st==="case2")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }   // hook down only where the aircraft is already ESTABLISHED on the approach (Case II, on the final bearing configured). NATOPS 8.2.10 has the pattern entered with the hook down, so a Case I spawn at the initial could defensibly start hooked — but the checklist is the player's to fly (2026-08-11): Case I hands over 3 NM astern clean and stowed, and lowering it before the break is part of the exercise. Case III lowers it at the dirty-up
 	flight_push();   // deliver the spawn to the flight core (no-op until it boots; the boot pushes this pose itself)
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
 	if(st==="joust"){ bandit.pos.set(joust_side*1.5*NM,4572,0); bandit.fwd.set(-joust_side,0,0); bandit.speed=220; bandit.merging=true;   // merging: the bandit flies straight at the player until the pass, so the merge can be timed   // the other end of the merge, same airspeed (equal TAS is the fair condition once wind exists)
