@@ -63,8 +63,19 @@ export function normalize_round(scene: THREE.Group, length = AMRAAM_LENGTH): THR
 // centroid directly. The inboard pylons 3/7 have only tanks in the source, so
 // their anchor is DERIVED: the tank's buttline and longitudinal centre with
 // the hang height of the same wing's rail round — a rail-hung slim store
-// under the same pylon family.
-export function amraam_anchor(root: THREE.Object3D, station: number): THREE.Vector3 | null {
+// under the same pylon family. Twin points ('a' outer, 'b' inner) spread the
+// pair laterally off the single-round anchor and hang slightly lower, the
+// same geometry the heater twins' hand-measured anchors encode.
+export function amraam_anchor(root: THREE.Object3D, station: number, point = ''): THREE.Vector3 | null {
+  const anchor = single_anchor(root, station)
+  if (!anchor || !point) return anchor
+  const outer = anchor.x >= 0 ? 0.15 : -0.15
+  anchor.x += point === 'a' ? outer : -outer
+  anchor.y -= 0.04
+  return anchor
+}
+
+function single_anchor(root: THREE.Object3D, station: number): THREE.Vector3 | null {
   const direct = node_centre(root, 'Missile_' + station)
   if (direct) return direct
   if (station !== 3 && station !== 7) return null

@@ -3,12 +3,12 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react' // #57 parked: useCallback returns with HeadPanel
+import { useEffect, useId, useRef, useState, type ChangeEvent, type ReactNode } from 'react' // #57 parked: useCallback returns with HeadPanel
 import { Trans, useLingui } from '@lingui/react/macro'
 import { msg } from '@lingui/core/macro'
 import { Check, History, LogIn, Pencil, Play, RotateCcw, Send, Settings, TriangleAlert, Users, X } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
-import { getErrorMessage, useShellStorage } from '@mochi/web' // #57 parked: toast returns with HeadPanel
+import { getErrorMessage, shellSaveBlob, toast, useShellStorage } from '@mochi/web' // #57 parked: toast returns with HeadPanel
 import { diagnose } from '../lib/graphics'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
@@ -40,6 +40,7 @@ import {
   type StationSlot,
   type StickBindings,
   deviceDefaults,
+  profileFor,
   seedStart,
 } from '../lib/config'
 import { useIdentityName } from '../lib/config-store'
@@ -82,6 +83,7 @@ function SectionLabel({ children }: { children: ReactNode }) {
 // axis and button maps for that stick, and cfg.keys remaps the keyboard actions.
 interface PadState {
   id: string
+  mapping: string // '' for most sticks; 'standard' means the W3C layout, which picks the standard-gamepad profile
   axes: number[]
   buttons: boolean[]
 }
@@ -95,7 +97,7 @@ function useGamepads(): PadState[] {
       const list: PadState[] = []
       for (const p of raw) {
         if (p && p.connected && p.axes.length >= 2)
-          list.push({ id: p.id, axes: Array.from(p.axes), buttons: p.buttons.map((b) => b.pressed) })
+          list.push({ id: p.id, mapping: p.mapping ?? '', axes: Array.from(p.axes), buttons: p.buttons.map((b) => b.pressed) })
       }
       setPads((old) =>
         old.length === list.length &&
@@ -135,17 +137,46 @@ const AXIS_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'zoom', label: <Trans>Zoom</Trans> }, // spring-centred wheel: deflection = zoom rate on the view (or the map when open)
 ]
 const LEVERS = new Set(['throttle', 'speedbrake']) // lever-style rows: min-to-max meter + reverse toggle
+// POV pairs: the bound index is the HORIZONTAL half and the engine reads the
+// vertical from the next index up. Both halves get a meter — showing only the
+// bound one made a half-bound hat look identical to a working one, so pushing
+// the hat up moved nothing on screen while the engine was reading the axis
+// perfectly well, and a device whose vertical half is NOT at index+1 gave no
+// hint at all that it was mis-bound.
+const PAIRS = new Set(['look', 'trim'])
+
+// AxisMeter draws one centred +/- axis. Levers keep their own left-anchored
+// fill inline below; this is the two-sided form the flight axes and the hat
+// halves share.
+function AxisMeter({ live }: { live: number }) {
+  return (
+    <div className='bg-muted relative h-2 min-w-10 flex-1 overflow-hidden rounded'>
+      <div className='bg-border absolute top-0 bottom-0 left-1/2 w-px' />
+      <div
+        className='bg-primary absolute top-0 bottom-0 rounded'
+        style={{ left: `${50 + Math.min(0, live) * 50}%`, width: `${Math.abs(live) * 50}%` }}
+      />
+    </div>
+  )
+}
 
 const BUTTON_ROWS: Row[] = [
   { id: 'brake.speed', label: <Trans>Speed brake</Trans>, group: 'flight' },
   { id: 'brake.wheel', label: <Trans>Wheel brakes</Trans>, group: 'flight' },
   { id: 'override', label: <Trans>Override G limit</Trans>, group: 'flight' },
+  // A gamepad has no twist and no throttle lever, so rudder and power have to be
+  // reachable as BUTTONS; the same rows serve a stick whose twist axis is absent
+  // or too coarse to fly on. The labels are the ones the Keys tab already uses.
+  { id: 'yaw.left', label: <Trans>Yaw left</Trans>, group: 'flight' },
+  { id: 'yaw.right', label: <Trans>Yaw right</Trans>, group: 'flight' },
+  { id: 'throttle.up', label: <Trans>Throttle up</Trans>, group: 'flight' },
+  { id: 'throttle.down', label: <Trans>Throttle down</Trans>, group: 'flight' },
   { id: 'trim.up', label: <Trans>Trim nose up</Trans>, group: 'trim' },
   { id: 'trim.down', label: <Trans>Trim nose down</Trans>, group: 'trim' },
   { id: 'trim.left', label: <Trans>Trim roll left</Trans>, group: 'trim' },
   { id: 'trim.right', label: <Trans>Trim roll right</Trans>, group: 'trim' },
   { id: 'trim.reset', label: <Trans>Reset trim</Trans>, group: 'trim' },   // keyless by default, so the pad path fires it directly rather than replaying a key
-  { id: 'guns', label: <Trans>Fire weapon</Trans>, group: 'weapons' },   // the trigger serves the SELECTED weapon (engine.ts: guns in GUN mode, a 9M in 9M mode), so 'Guns' named only half of what it does
+  { id: 'fire', label: <Trans>Fire weapon</Trans>, group: 'weapons' },   // the trigger serves the SELECTED weapon (engine.ts: guns in GUN mode, a 9M in 9M mode), so 'Guns' named only half of what it does
   { id: 'select', label: <Trans>Select weapon</Trans>, group: 'weapons' },
   { id: 'acquire', label: <Trans>Acquire target</Trans>, group: 'weapons' },
   { id: 'radar.undesignate', label: <Trans>Undesignate target</Trans>, group: 'weapons' },   // #30
@@ -192,7 +223,7 @@ const KEY_ROWS: Row[] = [
   { id: 'trim.left', label: <Trans>Trim roll left</Trans>, group: 'trim' },
   { id: 'trim.right', label: <Trans>Trim roll right</Trans>, group: 'trim' },
   { id: 'trim.reset', label: <Trans>Reset trim</Trans>, group: 'trim' },
-  { id: 'guns', label: <Trans>Fire weapon</Trans>, group: 'weapons' },
+  { id: 'fire', label: <Trans>Fire weapon</Trans>, group: 'weapons' },
   { id: 'select', label: <Trans>Select weapon</Trans>, group: 'weapons' },
   { id: 'acquire', label: <Trans>Acquire target</Trans>, group: 'weapons' },
   { id: 'radar.undesignate', label: <Trans>Undesignate target</Trans>, group: 'weapons' },   // #30
@@ -239,7 +270,7 @@ function JoystickPanel({
   const known = Array.from(new Set([...pads.map((p) => p.id), ...Object.keys(sticks)]))
   const active = config.joystick && known.includes(config.joystick) ? config.joystick : (pads[0]?.id ?? known[0] ?? '')
   const pad = pads.find((p) => p.id === active) ?? null
-  const defaults = deviceDefaults(active)
+  const defaults = deviceDefaults(active, pad?.mapping ?? '')
   const saved = sticks[active]
   const axes = { ...defaults.axes, ...(saved?.axes ?? {}) }
   const buttons = saved?.buttons && Object.keys(saved.buttons).length ? saved.buttons : defaults.buttons
@@ -262,6 +293,39 @@ function JoystickPanel({
     if (value !== '')
       for (const other of Object.keys(next)) if (other !== action && next[other] === value) next[other] = ''
     store(axes, next)
+  }
+  // A profile is one device's complete map, shared as plain JSON. This is the
+  // only route that covers hardware nobody here owns: one owner of a model maps
+  // it and every other owner imports the result, with no build needed.
+  const fileRef = useRef<HTMLInputElement>(null)
+  const exportProfile = async () => {
+    const payload = { air: 'joystick', version: 1, device: active, axes, buttons }
+    const name =
+      (active.replace(/\s*\(Vendor:.*$/, '').replace(/[^\w.-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'joystick') + '.json'
+    // shellSaveBlob, not an anchor: inside the shell's sandboxed iframe an
+    // anchor download is silently dropped (see MatchHistory).
+    const saved = await shellSaveBlob(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }), name)
+    if (saved) toast.success(t`Profile saved`)
+    else toast.error(t`Could not save the profile`)
+  }
+  const importProfile = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    event.target.value = '' // clear first, so the same file can be retried after a bad parse
+    if (!file) return
+    try {
+      const parsed = JSON.parse(await file.text())
+      if (parsed?.air !== 'joystick' || typeof parsed.axes !== 'object' || typeof parsed.buttons !== 'object')
+        throw new Error('not a profile')
+      // Applied to the ACTIVE device whatever id it was exported from: the same
+      // model reports a different id string on another machine, and refusing
+      // those would defeat the point of sharing a profile at all. Axes merge
+      // over the defaults and buttons replace them, matching how the engine
+      // resolves a saved map.
+      store({ ...defaults.axes, ...(parsed.axes as Record<string, string>) }, parsed.buttons as Record<string, string>)
+      toast.success(t`Profile saved`)   // an imported profile IS saved; reusing the string avoids a near-duplicate msgid
+    } catch {
+      toast.error(t`Not a joystick profile`)
+    }
   }
 
   // press-to-detect: watch the live pad against the armed baseline
@@ -323,6 +387,22 @@ function JoystickPanel({
           <Trans>No joystick detected — press any button on it to wake it up.</Trans>
         </div>
       )}
+      {/* Which built-in profile this device resolved to, beside the buttons that
+          move a map between machines. The name is a product name, not prose. */}
+      <div className='mt-2 flex items-center gap-2'>
+        {active !== '' && (
+          <span className='text-muted-foreground truncate text-xs'>{profileFor(active, pad?.mapping ?? '').name}</span>
+        )}
+        <span className='ml-auto flex shrink-0 gap-2'>
+          <Button type='button' size='sm' variant='outline' disabled={active === ''} onClick={exportProfile}>
+            <Trans>Export</Trans>
+          </Button>
+          <Button type='button' size='sm' variant='outline' disabled={active === ''} onClick={() => fileRef.current?.click()}>
+            <Trans>Import</Trans>
+          </Button>
+        </span>
+        <input ref={fileRef} type='file' accept='application/json,.json' className='hidden' onChange={importProfile} />
+      </div>
       <div className='mt-4 space-y-4'>
         <SwitchRow
           id='invert'
@@ -340,28 +420,39 @@ function JoystickPanel({
           const reversed = value.startsWith('-')
           const index = value.replace('-', '')
           const live = pad && index !== '' ? pad.axes[Number(index)] : null
+          // The pair's vertical half, read where the engine reads it. undefined
+          // (rather than null) means the device has no axis at index+1 at all,
+          // which is worth SEEING: the hat's vertical half cannot work.
+          const vertical = PAIRS.has(id) && pad && index !== '' ? (pad.axes[Number(index) + 1] ?? null) : null
           return (
             <div key={id} className='flex items-center justify-between gap-2 py-0.5'>
               <span className='w-24 shrink-0'>{label}</span>
-              {live !== null && (
-                <div className='bg-muted relative h-2 min-w-10 flex-1 overflow-hidden rounded'>
-                  {/* levers show travel min..max as a left-anchored fill (throttle: power; speed brake: deployment); the flight axes stay centred +/- */}
-                  {LEVERS.has(id) ? (
+              {/* levers show travel min..max as a left-anchored fill (throttle: power; speed brake: deployment); the flight axes stay centred +/-, and a POV pair shows both halves */}
+              {live !== null &&
+                (LEVERS.has(id) ? (
+                  <div className='bg-muted relative h-2 min-w-10 flex-1 overflow-hidden rounded'>
                     <div
                       className='bg-primary absolute top-0 bottom-0 left-0 rounded'
                       style={{ width: `${(((id === 'throttle') !== reversed ? 1 - live : live + 1) / 2) * 100}%` }}
                     />
-                  ) : (
-                    <>
-                      <div className='bg-border absolute top-0 bottom-0 left-1/2 w-px' />
-                      <div
-                        className='bg-primary absolute top-0 bottom-0 rounded'
-                        style={{ left: `${50 + Math.min(0, live) * 50}%`, width: `${Math.abs(live) * 50}%` }}
-                      />
-                    </>
-                  )}
-                </div>
-              )}
+                  </div>
+                ) : PAIRS.has(id) ? (
+                  <div className='flex min-w-10 flex-1 items-center gap-1.5'>
+                    {/* jsx-text-ok: the arrows are direction glyphs, not prose — they read the same in every language */}
+                    <span className='text-muted-foreground shrink-0 text-xs'>↔</span>
+                    <AxisMeter live={live} />
+                    <span className='text-muted-foreground shrink-0 text-xs'>↕</span>
+                    {vertical !== null ? (
+                      <AxisMeter live={vertical} />
+                    ) : (
+                      // No axis at index+1: the bar stays empty on purpose, so a
+                      // pair bound to the last axis of the device is visible.
+                      <div className='bg-muted h-2 min-w-10 flex-1 rounded opacity-50' />
+                    )}
+                  </div>
+                ) : (
+                  <AxisMeter live={live} />
+                ))}
               <span className='flex shrink-0 items-center gap-1'>
                 <Select value={index === '' ? 'none' : index} onValueChange={(v) => setAxis(id, v === 'none' ? '' : (reversed ? '-' : '') + v)}>
                   <SelectTrigger size='sm' className='min-w-28'>
@@ -371,11 +462,21 @@ function JoystickPanel({
                     <SelectItem value='none'>
                       <Trans>None</Trans>
                     </SelectItem>
-                    {axisOptions.map((i) => (
-                      <SelectItem key={i} value={i}>
-                        <Trans>Axis {i}</Trans>
-                      </SelectItem>
-                    ))}
+                    {axisOptions.map((option) => {
+                      // DISPLAYED 1-based, STORED 0-based. Hardware labels, the
+                      // Windows controller panel and every simulator that numbers
+                      // a control count from 1, while the Gamepad API counts from
+                      // 0 — so the raw index is the one number the player can
+                      // check against nothing. The stored value stays the API
+                      // index: it is what indexes pad.axes, and an exported
+                      // profile has to mean the same thing on another machine.
+                      const i = String(Number(option) + 1)
+                      return (
+                        <SelectItem key={option} value={option}>
+                          <Trans>Axis {i}</Trans>
+                        </SelectItem>
+                      )
+                    })}
                   </SelectContent>
                 </Select>
                 {LEVERS.has(id) && index !== '' && (
@@ -431,11 +532,14 @@ function JoystickPanel({
                     <SelectItem value='none'>
                       <Trans>None</Trans>
                     </SelectItem>
-                    {buttonOptions.map((i) => (
-                      <SelectItem key={i} value={i}>
-                        <Trans>Button {i}</Trans>
-                      </SelectItem>
-                    ))}
+                    {buttonOptions.map((option) => {
+                      const i = String(Number(option) + 1) // displayed 1-based, stored 0-based — see the axis list above
+                      return (
+                        <SelectItem key={option} value={option}>
+                          <Trans>Button {i}</Trans>
+                        </SelectItem>
+                      )
+                    })}
                   </SelectContent>
                 </Select>
                 <Button
@@ -910,6 +1014,8 @@ function Armament({
         return '2× AIM-9M' // jsx-text-ok: a count and a designation, no prose
       case '120c':
         return 'AIM-120C' // designation verbatim (#27)
+      case '120c2':
+        return '2× AIM-120C' // jsx-text-ok: a count and a designation, no prose
       case 'tank':
         return <Trans>Fuel tank</Trans>
       case 'pylon':
@@ -917,6 +1023,12 @@ function Armament({
       case 'twin1':
       case 'twin1b':
         return 'AIM-9M' // legacy hand-built twin with one round: shown, never offered
+      case '120c1':
+      case '120c1b':
+        return 'AIM-120C' // hand-built twin with one round: shown, never offered
+      case 'mixed':
+      case 'mixedb':
+        return 'AIM-9M + AIM-120C' // jsx-text-ok: designations; the real LAU-115 flies mixed pairs, representable but not offered
       case 'twin0':
         return <Trans>Empty pylon</Trans>
       default:
@@ -1016,18 +1128,25 @@ function Armament({
       <SliderRow label={<Trans>Internal fuel</Trans>} value={fuel} min={1500} max={10800} step={100} decimals={0} suffix=' lb' onChange={onFuel} />
       {book && (
         <div className='text-sm'>
-          {/* jsx-text-ok: LB is the cockpit's own unit annunciation, verbatim like the IFEI */}
+          {/* jsx-text-ok: LB and ft·lb are the cockpit's own unit annunciations, verbatim like the IFEI */}
           <Trans>Gross weight</Trans> {gross} lb
+          {/* The asymmetry rides in brackets on the gross-weight line: it is a
+              property of the same loadout, and its own line read as a second
+              headline for what is really a qualifier. The over-limit warnings
+              below stay on their own lines — those ARE headlines. */}
+          {moment > 0 && (
+            <>
+              {' ('}
+              {/* Lower case as a mid-sentence qualifier, and a msgid of its own rather than a
+                  CSS transform of the capitalised one: German capitalises its nouns, so
+                  Asymmetrie must stay capitalised where English asymmetry does not. */}
+              <Trans>asymmetry</Trans> {moment} ft·lb{')'}
+            </>
+          )}
           {gross > LAUNCH && (
             <div className='mt-1 flex items-center gap-1.5 text-amber-500'>
               <TriangleAlert className='size-4' />
               <Trans>{gross - LAUNCH} lb over maximum launch weight</Trans>
-            </div>
-          )}
-          {moment > 0 && (
-            <div className='mt-1'>
-              {/* jsx-text-ok: ft·lb is the unit annunciation, verbatim like lb above */}
-              <Trans>Asymmetry</Trans> {moment} ft·lb
             </div>
           )}
           {catapult && moment > CATAPULT && (

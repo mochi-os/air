@@ -73,6 +73,20 @@ describe('amraam_anchor', () => {
     expect(amraam_anchor(root, 7)).toBeNull() // no starboard sources in this rig
     expect(amraam_anchor(root, 5)).toBeNull() // the centreline never derives
   })
+  it('twin points spread laterally off the single anchor, outer away from the keel', () => {
+    const root = new THREE.Group()
+    root.add(labelled('Missile_2', [3.3, -1.0, -0.2]))
+    root.add(labelled('Missile_8', [-3.3, -1.0, -0.2]))
+    const single = amraam_anchor(root, 2)!
+    const outer = amraam_anchor(root, 2, 'a')!
+    const inner = amraam_anchor(root, 2, 'b')!
+    expect(outer.x).toBeCloseTo(single.x + 0.15, 5) // model x is port-positive
+    expect(inner.x).toBeCloseTo(single.x - 0.15, 5)
+    expect(outer.y).toBeCloseTo(single.y - 0.04, 5) // pairs hang a touch lower, like the heater twins
+    expect(outer.z).toBeCloseTo(single.z, 5)
+    const starboard = amraam_anchor(root, 8, 'a')!
+    expect(starboard.x).toBeCloseTo(amraam_anchor(root, 8)!.x - 0.15, 5) // outer flips sign across the keel
+  })
 })
 
 describe('node_centre', () => {

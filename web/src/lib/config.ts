@@ -26,16 +26,80 @@ export interface StationSlot {
 // defaults after Reset). "-N" = reversed axis sense; look = the axis pair that
 // looks around (x index, y at x+1); a buttons value may list several indices
 // comma-separated. VelocityOne notes: buttons 8-11 are LATCHING base toggles —
-// never bind them to momentary actions; guns and wheel brakes share a button
+// never bind them to momentary actions; fire and the wheel brakes share a button
 // because the gear decides which applies.
-export function deviceDefaults(id: string): StickBindings {
-  const vone = /velocityone|10f5/i.test(id)
-  return {
-    axes: { pitch: '1', roll: '0', yaw: '2', throttle: vone ? '-5' : '3', speedbrake: vone ? '-6' : '', look: vone ? '3' : '', trim: vone ? '8' : '', zoom: '' },   // look = the smooth-hat ministick (axes 3/4, spring-centred — measured; the castle POV pair at 8/9 stays free). zoom: the VelocityOne thumbwheel is a SCROLL WHEEL on the stick's mouse interface — DOM wheel events, not a gamepad axis; the axis forms ("N", "N+") remain for sticks whose wheel is a real axis
-    buttons: vone
-      ? { guns: '17', 'brake.wheel': '17', select: '15', flares: '16', gear: '3', hook: '2', 'zoom.in': '12', 'zoom.out': '13' }   // select: the old missile button becomes weapon select — one trigger fires the selected weapon, like the real stick. zoom.in/out: the trim wheel in its DIGITAL mode pulses one button per notch (12 forward, 13 back — set via the stick's OLED; its default mouse-cursor mode is invisible to the Gamepad API)
-      : { guns: '0' },
-  }
+// One built-in profile. `match` decides whether a connected pad is this model:
+// it gets the pad's id AND its Gamepad API mapping, because the standard
+// gamepad layout is identified by the mapping rather than by any product name.
+export interface StickProfile {
+  name: string // shown in the Joystick tab; a product name, not translated
+  match: (id: string, mapping: string) => boolean
+  axes: Record<string, string>
+  buttons: Record<string, string>
+}
+
+// PROFILES is ordered: the FIRST match wins, so a named model beats the generic
+// standard-gamepad entry, and the fallback sits last matching everything.
+//
+// A profile may only be added from MEASURED indices — read off the hardware in
+// the Joystick tab — or from a layout the platform GUARANTEES. Never infer them
+// from a product photo or a manual's button numbering: a guessed map attaches
+// every binding to the wrong control, and the player reads that as the game
+// being broken rather than as a wrong profile.
+export const PROFILES: StickProfile[] = [
+  {
+    // Measured on the hardware 2026-08-11. select: the old missile button becomes
+    // weapon select — one trigger fires the SELECTED weapon, like the real stick.
+    // zoom.in/out: the trim wheel in its DIGITAL mode pulses one button per notch
+    // (12 forward, 13 back — set via the stick's OLED; its default mouse-cursor
+    // mode is invisible to the Gamepad API). Buttons 8-11 are LATCHING base
+    // toggles and carry nothing: a latch cannot drive a momentary action.
+    // Deliberately keyboard-only, the stick having run out of buttons: trim
+    // reset, look-at-target, the jettison family, the radar controls, lights,
+    // launch and the speed brake.
+    name: 'Turtle Beach VelocityOne Flightstick',
+    match: (id) => /velocityone|10f5/i.test(id),
+    axes: { pitch: '1', roll: '0', yaw: '2', throttle: '-5', speedbrake: '-6', look: '3', trim: '8', zoom: '' },   // look = the smooth-hat ministick (axes 3/4, spring-centred); the castle POV pair at 8/9 is the trim hat. zoom: the thumbwheel is a SCROLL WHEEL on the stick's mouse interface — DOM wheel events, not a gamepad axis
+    buttons: { fire: '17', 'brake.wheel': '17', select: '15', acquire: '16', flares: '0',
+      gear: '7', hook: '6', atc: '1', override: '3', 'flaps.extend': '4', 'flaps.retract': '5',
+      view: '2', 'view.reset': '18', 'zoom.in': '12', 'zoom.out': '13' },
+  },
+  {
+    // The W3C standard gamepad layout. This one is NOT measured and does not need
+    // to be: when the browser reports mapping === 'standard' the indices are
+    // fixed by specification — 0 A, 1 B, 2 X, 3 Y, 4/5 shoulders, 6/7 triggers,
+    // 8 back, 9 start, 10/11 stick presses, 12-15 d-pad; axes 0/1 left stick,
+    // 2/3 right stick. So it can be written correctly for hardware nobody here
+    // owns, which no other profile can claim.
+    // A gamepad has no twist and no throttle lever, so rudder rides the shoulders
+    // and throttle steps on the d-pad — both as BUTTON actions replaying their
+    // keys. The right stick is the look pair (2/3); R3 holds look-at-target.
+    name: 'Standard gamepad',
+    match: (_id, mapping) => mapping === 'standard',
+    axes: { pitch: '1', roll: '0', yaw: '', throttle: '', speedbrake: '', look: '2', trim: '', zoom: '' },
+    buttons: { fire: '7', 'brake.wheel': '6', gear: '0', flares: '1', select: '2', hook: '3',
+      'yaw.left': '4', 'yaw.right': '5', 'throttle.up': '12', 'throttle.down': '13',
+      'flaps.extend': '15', 'flaps.retract': '14', view: '10', 'look.target': '11', 'view.reset': '9' },
+  },
+  {
+    // Everything else: the HID convention every stick follows — X roll, Y pitch,
+    // twist yaw, and the trigger on button 0. Enough to fly and shoot on an
+    // unknown stick; the rest is hand-bound in the Joystick tab.
+    name: 'Generic joystick',
+    match: () => true,
+    axes: { pitch: '1', roll: '0', yaw: '2', throttle: '3', speedbrake: '', look: '', trim: '', zoom: '' },
+    buttons: { fire: '0' },
+  },
+]
+
+// profileFor names the built-in profile a pad resolves to (for the Joystick tab).
+export function profileFor(id: string, mapping = ''): StickProfile {
+  return PROFILES.find((p) => p.match(id, mapping)) ?? PROFILES[PROFILES.length - 1]
+}
+
+export function deviceDefaults(id: string, mapping = ''): StickBindings {
+  const profile = profileFor(id, mapping)
+  return { axes: { ...profile.axes }, buttons: { ...profile.buttons } }
 }
 
 // Mission configuration collected by the setup menu and handed to the engine.

@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
 import { KEY_DEFAULTS, pretty } from './keys'
+import { PROFILES, profileFor } from '../lib/config'
 
 const read = (relative: string) => readFileSync(fileURLToPath(new URL(relative, import.meta.url)), 'utf8')
 
@@ -85,6 +86,91 @@ describe('key bindings', () => {
     // The number row is the one legitimate literal (views are not rebindable).
     const caps = Array.from(canvas.matchAll(/<kbd>([A-Za-z][\w/]*)<\/kbd>/g), (m) => m[1])
     expect(caps, 'hand-written key caps drift; derive them from the bindings').toEqual([])
+  })
+
+  it('shows both halves of every axis pair the engine reads as a pair', () => {
+    // An axis the engine reads as index and index+1 is a POV pair. The settings
+    // tab must know about it, or it draws only the bound half — and a hat whose
+    // vertical half is missing or mis-bound then looks exactly like a working
+    // one, because pushing it up moves nothing on screen.
+    const engine = read('./engine.ts')
+    const paired = new Set(
+      Array.from(engine.matchAll(/bind\.axes\.(\w+)\s*\?\?\s*""[\s\S]{0,200}?hi\s*\+\s*1/g), (m) => m[1]),
+    )
+    expect(paired.size).toBeGreaterThan(0) // the scan found the pair reads at all
+    const setup = read('../components/MissionSetup.tsx')
+    const declared = new RegExp(`const PAIRS = new Set\\(\\[([^\\]]*)\\]`).exec(setup)
+    expect(declared, 'PAIRS not found').toBeTruthy()
+    const shown = new Set(Array.from(declared![1].matchAll(/'([\w.]+)'/g), (m) => m[1]))
+    expect([...paired].sort(), 'engine pair reads vs PAIRS in the settings tab').toEqual([...shown].sort())
+  })
+
+  it('binds only real actions in the built-in device maps', () => {
+    // A device default naming an action that does not exist binds a physical
+    // button to nothing at all, silently — there is no error, the button simply
+    // does not work, and it looks like a hardware fault.
+    const config = read('../lib/config.ts')
+    const block = /export const PROFILES: StickProfile\[\] = \[([\s\S]*?)\n\]/.exec(config)
+    expect(block, 'PROFILES not found').toBeTruthy()
+    const maps = Array.from(block![1].matchAll(/buttons:\s*\{([\s\S]*?)\},?\n/g))
+    expect(maps.length, 'every profile must declare a button map').toBeGreaterThan(2)
+    const actions = maps.flatMap((m) => Array.from(m[1].matchAll(/'?([\w.]+)'?\s*:\s*'/g), (q) => q[1]))
+    expect(actions.length).toBeGreaterThan(10)
+    const engine = read('./engine.ts')
+    const special = new Set(Array.from(engine.matchAll(/action===["']([\w.]+)["']/g), (m) => m[1]))
+    const looks = new Set(['look.up', 'look.down', 'look.left', 'look.right'])
+    const unknown = actions.filter((a) => !(a in KEY_DEFAULTS) && !special.has(a) && !looks.has(a)).sort()
+    expect(unknown, 'device map binds actions the engine does not know').toEqual([])
+  })
+
+  it('resolves each device to the right built-in profile, most specific first', () => {
+    expect(profileFor('Turtle Beach VelocityOne Flightstick (Vendor: 10f5 Product: 7055)', '').name).toContain('VelocityOne')
+    expect(profileFor('Xbox Wireless Controller (STANDARD GAMEPAD)', 'standard').name).toBe('Standard gamepad')
+    expect(profileFor('Some Unknown Stick', '').name).toBe('Generic joystick')
+    // Order matters: a MEASURED model must beat the generic standard layout even
+    // when the browser also reports the pad as standard, or a known stick would
+    // silently take the gamepad map.
+    expect(profileFor('VelocityOne Flightstick', 'standard').name).toContain('VelocityOne')
+    // The last profile is the catch-all, so resolution can never return nothing.
+    expect(PROFILES[PROFILES.length - 1].match('anything at all', '')).toBe(true)
+  })
+
+  it('keeps the standard gamepad profile inside the layout the spec guarantees', () => {
+    // This is the one profile written without the hardware in hand, and it is
+    // only safe because the W3C standard mapping fixes the indices: 17 buttons
+    // (0-16) and 4 axes (0-3). An index outside that is a guess, not a spec.
+    const standard = PROFILES.find((p) => p.name === 'Standard gamepad')
+    expect(standard).toBeTruthy()
+    for (const [action, index] of Object.entries(standard!.buttons)) {
+      expect(Number(index), `${action} button index`).toBeGreaterThanOrEqual(0)
+      expect(Number(index), `${action} button index`).toBeLessThanOrEqual(16)
+    }
+    for (const [axis, value] of Object.entries(standard!.axes)) {
+      if (value === '') continue
+      const index = Number(value.replace('-', ''))
+      expect(index, `${axis} axis index`).toBeGreaterThanOrEqual(0)
+      // look is a PAIR and reads index+1, so it must leave room for its second half.
+      expect(index + (axis === 'look' || axis === 'trim' ? 1 : 0), `${axis} axis index`).toBeLessThanOrEqual(3)
+    }
+  })
+
+  it('offers 1-based axis and button numbers while storing the 0-based index', () => {
+    // Hardware labels, the Windows controller panel and the simulators number
+    // controls from 1; the Gamepad API numbers from 0. The DISPLAY carries the
+    // +1 and the STORED value must not: it indexes pad.axes/pad.buttons directly
+    // and travels in exported profiles. Getting this backwards binds the wrong
+    // control with no error at all, so it is worth pinning.
+    const setup = read('../components/MissionSetup.tsx')
+    for (const kind of ['axisOptions', 'buttonOptions']) {
+      const block = new RegExp(`${kind}\\.map\\(\\(option\\) => \\{([\\s\\S]*?)\\n\\s*\\}\\)\\}`).exec(setup)
+      expect(block, `${kind} list not found`).toBeTruthy()
+      const body = block![1]
+      // stored: the raw option, never the incremented one
+      expect(body, `${kind} must store the raw index`).toMatch(/value=\{option\}/)
+      expect(body, `${kind} must not store an incremented index`).not.toMatch(/value=\{[^}]*\+\s*1[^}]*\}/)
+      // displayed: option + 1
+      expect(body, `${kind} must display 1-based`).toMatch(/Number\(option\)\s*\+\s*1/)
+    }
   })
 
   it('renders an unbound action as a dash rather than the word None', () => {

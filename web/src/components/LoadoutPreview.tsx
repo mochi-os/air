@@ -86,9 +86,11 @@ function dress(jet: THREE.Group, stores: Record<string, StationSlot>): void {
         const piece = racks?.getObjectByName('Tank_' + station)
         if (piece) holder.add(piece.clone(true))
       } else if (name.startsWith('120c')) {
-        // The AMRAAM (#27) at the station's anchor — inherited from the
-        // source art's rounds, derived for the inboard pylons (weapons.ts).
-        const anchor = racks ? amraam_anchor(racks, station) : null
+        // The AMRAAM (#27) at its anchor — inherited from the source art's
+        // rounds, derived for the inboard pylons, twin points spread off the
+        // single anchor (weapons.ts).
+        const point = name.endsWith('a') ? 'a' : name.endsWith('b') ? 'b' : ''
+        const anchor = racks ? amraam_anchor(racks, station, point) : null
         if (amraam && anchor) {
           const piece = amraam.clone(true)
           piece.position.copy(anchor)
@@ -114,9 +116,76 @@ function dress(jet: THREE.Group, stores: Record<string, StationSlot>): void {
   jet.add(holder)
 }
 
+// silhouette reads the rendered frame's alpha and reports the jet's extent:
+// width and height as fractions of the frame, and how far the jet's centre
+// sits below the frame's centre (fraction of frame height, positive down).
+let gauge: HTMLCanvasElement | null = null
+function silhouette(source: HTMLCanvasElement): { width: number; height: number; middle: number } | null {
+  gauge ??= document.createElement('canvas')
+  const w = 200
+  const h = Math.max(1, Math.round((w * source.height) / source.width))
+  gauge.width = w
+  gauge.height = h
+  const flat = gauge.getContext('2d', { willReadFrequently: true })
+  if (!flat) return null
+  flat.clearRect(0, 0, w, h)
+  flat.drawImage(source, 0, 0, w, h)
+  const data = flat.getImageData(0, 0, w, h).data
+  let left = w, right = -1, top = h, bottom = -1
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (data[(y * w + x) * 4 + 3] > 8) {
+        if (x < left) left = x
+        if (x > right) right = x
+        if (y < top) top = y
+        if (y > bottom) bottom = y
+      }
+    }
+  }
+  if (right < 0) return null
+  return { width: (right - left + 1) / w, height: (bottom - top + 1) / h, middle: ((top + bottom) / 2 - (h - 1) / 2) / h }
+}
+
+// frame zooms the head-on camera so the dressed jet FILLS the panel,
+// recomputed per loadout so a bare Gun fighter is not dwarfed by the frame a
+// full fit needs. A bounding-box fit seeds the distance, then one measured
+// pass reads the rendered silhouette and corrects the zoom and the vertical
+// centring — the box carries depth and hidden extents the nose-on projection
+// never shows, so a pure box fit leaves wide, uneven margins. The eye keeps
+// a slight from-below pitch: the belly is where the stores hang, and a
+// from-above eye hid the centerline tank behind the nose.
+function frame(renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.PerspectiveCamera, wrap: THREE.Group, aspect: number): void {
+  const box = new THREE.Box3().setFromObject(wrap)
+  const centre = box.getCenter(new THREE.Vector3())
+  const size = box.getSize(new THREE.Vector3())
+  const vertical = Math.tan((camera.fov * Math.PI) / 360)
+  const pitch = Math.tan((3 * Math.PI) / 180)
+  let distance = Math.max(size.z / 2 / (vertical * aspect), size.y / 2 / vertical)
+  let level = centre.y
+  const aim = () => {
+    camera.position.set(centre.x + distance, level - distance * pitch, centre.z)
+    camera.lookAt(centre.x, level, centre.z)
+  }
+  aim()
+  // Measured passes until the fill settles: each correction changes the
+  // geometry it measured (the eye moves closer and drops less), and the
+  // pitched perspective bends the zoom-to-size relation, so one pass
+  // overshoots into the frame edge.
+  for (let pass = 0; pass < 5; pass++) {
+    renderer.render(scene, camera)
+    const seen = silhouette(renderer.domElement)
+    if (!seen) break
+    const fill = Math.max(seen.width, seen.height)
+    if (Math.abs(fill - 0.93) < 0.015 && Math.abs(seen.middle) < 0.02) break
+    level -= seen.middle * 2 * distance * vertical
+    distance *= fill / 0.93
+    aim()
+  }
+}
+
 export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot> }) {
   const mount = useRef<HTMLDivElement>(null)
-  const state = useRef<{ renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.PerspectiveCamera; jet: THREE.Group } | null>(null)
+  const state = useRef<{ renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.PerspectiveCamera; jet: THREE.Group; wrap: THREE.Group } | null>(null)
   const wanted = useRef(stores)
   wanted.current = stores
 
@@ -125,7 +194,11 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
     if (!host) return
     let gone = false
     const width = host.clientWidth || 480
-    const height = 130
+    // The box is CSS aspect-locked to the head-on silhouette (span to
+    // height-with-stores, ~10:3), so the tight frame fills it on BOTH axes
+    // at any dialog width — a fixed height went height-limited on wide
+    // dialogs and the side margins returned.
+    const height = host.clientHeight || Math.round(width * 0.3)
     let renderer: THREE.WebGLRenderer
     try {
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true })
@@ -146,9 +219,8 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
       sun.position.set(3, 4, 2)
       scene.add(sun)
       const jet = airframe.clone(true)
-      // Normalize head-on: centre the model, face the nose at the camera
-      // (the raw scene needs the same +90 yaw the engine applies), and frame
-      // the full span.
+      // Normalize head-on: centre the model and face the nose at the camera
+      // (the raw scene needs the same +90 yaw the engine applies).
       const box = new THREE.Box3().setFromObject(jet)
       const size = box.getSize(new THREE.Vector3())
       const centre = box.getCenter(new THREE.Vector3())
@@ -158,14 +230,10 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
       wrap.rotation.y = Math.PI / 2
       wrap.scale.setScalar(10 / Math.max(size.x, size.y, size.z, 1e-3))
       scene.add(wrap)
-      // Nose-on from slightly BELOW: the belly is where the stores hang, and
-      // a from-above eye hid the centerline tank behind the nose. The narrow
-      // lens fills the panel with the wingspan without fisheye at this range.
       const camera = new THREE.PerspectiveCamera(18, width / height, 0.1, 100)
-      camera.position.set(9.0, -0.85, 0)
-      camera.lookAt(0, -0.38, 0)
-      state.current = { renderer, scene, camera, jet }
+      state.current = { renderer, scene, camera, jet, wrap }
       dress(jet, wanted.current)
+      frame(renderer, scene, camera, wrap, width / height)
       renderer.render(scene, camera)
     })
     return () => {
@@ -181,8 +249,9 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
     const s = state.current
     if (!s) return
     dress(s.jet, stores)
+    frame(s.renderer, s.scene, s.camera, s.wrap, s.camera.aspect)
     s.renderer.render(s.scene, s.camera)
   }, [stores])
 
-  return <div ref={mount} className='h-[130px] w-full overflow-hidden' />
+  return <div ref={mount} className='aspect-[10/3] w-full overflow-hidden' />
 }

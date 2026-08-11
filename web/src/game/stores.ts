@@ -40,15 +40,17 @@ export type Loadout = Record<string, Slot>
 // Which fixtures each station accepts. Tips carry the integral LAU-7 — not
 // removable, so the setup shows no fixture choice there. Cheek stations 4/6
 // (#27) take the LAU-116 ejector — 'rail' in this vocabulary, with no visual
-// piece: the round sits flush against the fuselage as on the real jet.
+// piece: the round sits flush against the fuselage as on the real jet. The
+// inboard pylons 3/7 take the twin too — the LAU-115C with a LAU-127 bolted
+// to each side, the dual carriage behind the ten-AMRAAM fit.
 export const STATIONS: Record<number, { fixtures: string[]; locked?: boolean }> = {
   1: { fixtures: ['rail'], locked: true },
   2: { fixtures: ['', 'rail', 'twin'] },
-  3: { fixtures: ['', 'pylon'] },
+  3: { fixtures: ['', 'pylon', 'twin'] },
   4: { fixtures: ['', 'rail'] },
   5: { fixtures: ['', 'pylon'] },
   6: { fixtures: ['', 'rail'] },
-  7: { fixtures: ['', 'pylon'] },
+  7: { fixtures: ['', 'pylon', 'twin'] },
   8: { fixtures: ['', 'rail', 'twin'] },
   9: { fixtures: ['rail'], locked: true },
 }
@@ -60,18 +62,17 @@ export function points(fixture: string): number {
 }
 
 // options lists the store ids one point accepts (always including empty).
-// The cheek stations are radar-missile positions (#27): AIM-120C only. The
-// outboard wing rails take either round (the LAU-127 carries both families);
-// the twin adapter stays a heater fitting — dual AMRAAMs are different
-// hardware, phase 2 territory if ever. The inboard pylons 3/7 are
-// Sparrow-capable stations, so the LAU-115C puts an AMRAAM there too — the
-// real fuel-versus-magazine choice; the centreline never carries one.
+// The cheek stations are radar-missile positions (#27): AIM-120C only.
+// Every rail point — the wing rail, and each side of a twin — is a LAU-127,
+// which carries both missile families. The inboard pylons 3/7 are
+// Sparrow-capable stations: the LAU-115C hangs a missile there — either
+// family, single or twin pair — the real fuel-versus-magazine choice; the
+// centreline never carries a missile at all.
 export function options(station: number, fixture: string): string[] {
   if (station === 1 || station === 9) return ['', '9m']
   if (station === 4 || station === 6) return fixture === 'rail' ? ['', '120c'] : ['']
-  if (fixture === 'rail') return ['', '9m', '120c']
-  if (fixture === 'twin') return ['', '9m']
-  if (fixture === 'pylon') return station === 5 ? ['', 'tank'] : ['', 'tank', '120c']
+  if (fixture === 'rail' || fixture === 'twin') return ['', '9m', '120c']
+  if (fixture === 'pylon') return station === 5 ? ['', 'tank'] : ['', 'tank', '9m', '120c']
   return ['']
 }
 
@@ -88,15 +89,10 @@ export function entries(station: number, slot: Slot): string[] {
   if (!slot.fixture) return out
   out.push(slot.fixture + station)
   if (slot.fixture === 'twin') {
-    if (slot.stores[0] === '9m') out.push('9m' + station + 'a')
-    if (slot.stores[1] === '9m') out.push('9m' + station + 'b')
-  } else if (slot.fixture === 'rail') {
-    if (slot.stores[0] === '9m') out.push('9m' + station)
-    if (slot.stores[0] === '120c') out.push('120c' + station)
-  } else if (slot.stores[0] === 'tank') {
-    out.push('tank' + station)
-  } else if (slot.stores[0] === '120c') {
-    out.push('120c' + station) // the inboard pylon's AMRAAM (#27)
+    if (slot.stores[0]) out.push(slot.stores[0] + station + 'a')
+    if (slot.stores[1]) out.push(slot.stores[1] + station + 'b')
+  } else if (slot.stores[0]) {
+    out.push(slot.stores[0] + station) // any occupied single point: 9m2, 120c4, tank3, 9m7...
   }
   return out
 }
@@ -183,14 +179,33 @@ export function strip(loadout: Loadout): Loadout {
 }
 
 // amraams lists the loadout's AIM-120 entries in firing order — cheeks, then
-// outboard rails, then inboard pylons, port first at each level (#27). The
-// k-th launch takes amraams[k]; remaining count is amraams.length - fired.
+// outboard rails, then inboard pylons, alternating port-first within each
+// ring so a full expenditure stays balanced; twins fire the outer round
+// before the inner, like the heaters (#27). The k-th launch takes
+// amraams[k]; remaining count is amraams.length - fired.
 export function amraams(loadout: Loadout): string[] {
   const out: string[] = []
-  for (const station of [4, 6, 2, 8, 3, 7]) {
-    const slot = loadout[String(station)]
-    if ((slot?.fixture === 'rail' || slot?.fixture === 'pylon') && slot.stores[0] === '120c') out.push('120c' + station)
+  const ring = (stations: number[]) => {
+    const queues = stations.map((station) => {
+      const slot = loadout[String(station)] ?? { fixture: '', stores: [] }
+      const names: string[] = []
+      if (slot.fixture === 'twin') {
+        if (slot.stores[0] === '120c') names.push('120c' + station + 'a')
+        if (slot.stores[1] === '120c') names.push('120c' + station + 'b')
+      } else if ((slot.fixture === 'rail' || slot.fixture === 'pylon') && slot.stores[0] === '120c') {
+        names.push('120c' + station)
+      }
+      return names
+    })
+    for (let round = 0; queues.some((q) => round < q.length); round++) {
+      for (const q of queues) {
+        if (round < q.length) out.push(q[round])
+      }
+    }
   }
+  ring([4, 6])
+  ring([2, 8])
+  ring([3, 7])
   return out
 }
 
@@ -230,8 +245,9 @@ export const RELEASE = { knots: 575, mach: 0.95, low: 1.0, high: 2.0 }
 // rounds lists the missile catalog entries in the authentic SMS priority
 // order (researched 2026-08-05): wingtips first, alternating to the opposite
 // station at the same priority level before stepping inboard — starboard tip
-// seeds the sequence. Twins fire their outer round before the inner. The
-// k-th launch takes rounds[k]; remaining count is rounds.length - fired.
+// seeds the sequence, outboard rails before the inboard pylons. Twins fire
+// their outer round before the inner. The k-th launch takes rounds[k];
+// remaining count is rounds.length - fired.
 export function rounds(loadout: Loadout): { station: number; name: string }[] {
   const out: { station: number; name: string }[] = []
   const level = (stations: number[]) => {
@@ -243,8 +259,8 @@ export function rounds(loadout: Loadout): { station: number; name: string }[] {
       } else if (slot.fixture === 'twin') {
         if (slot.stores[0] === '9m') names.push('9m' + station + 'a')
         if (slot.stores[1] === '9m') names.push('9m' + station + 'b')
-      } else if (slot.fixture === 'rail' && slot.stores[0] === '9m') {
-        names.push('9m' + station)
+      } else if (slot.stores[0] === '9m') {
+        names.push('9m' + station) // a single on the wing rail or the inboard LAU-115C
       }
       return { station, names }
     })
@@ -256,6 +272,7 @@ export function rounds(loadout: Loadout): { station: number; name: string }[] {
   }
   level([9, 1])
   level([8, 2])
+  level([7, 3])
   return out
 }
 
@@ -274,6 +291,16 @@ export const ANCHORS: Record<string, [number, number, number]> = {
   '9m8': [-3.61, -0.38, -1.28],
   '9m8a': [-3.76, -0.42, -1.28],
   '9m8b': [-3.46, -0.42, -1.28],
+  // Inboard heaters (#27 follow-up): buttline from the art's station-3 tank
+  // (2.40 — the mesh flies ~7% wide of the real 2.24, same ratio as the
+  // outboard stations), hang heights matching the outboard rounds, and the
+  // station's longitudinal shift taken from the AMRAAM anchors' art delta.
+  '9m3': [2.4, -0.38, -1.57],
+  '9m3a': [2.55, -0.42, -1.57],
+  '9m3b': [2.25, -0.42, -1.57],
+  '9m7': [-2.4, -0.38, -1.57],
+  '9m7a': [-2.55, -0.42, -1.57],
+  '9m7b': [-2.25, -0.42, -1.57],
 }
 
 // The setup presents each station as ONE dropdown of meaningful end states
@@ -301,9 +328,14 @@ export function outcomes(station: number): Outcome[] {
       { id: '9m', slot: { fixture: 'rail', stores: ['9m'] } },
       { id: '9m2', slot: { fixture: 'twin', stores: ['9m', '9m'] } },
       { id: '120c', slot: { fixture: 'rail', stores: ['120c'] } },
+      { id: '120c2', slot: { fixture: 'twin', stores: ['120c', '120c'] } },
       { id: 'pylon', slot: { fixture: 'rail', stores: [''] } },
       { id: 'twin1', slot: { fixture: 'twin', stores: ['9m', ''] }, hidden: true },
       { id: 'twin1b', slot: { fixture: 'twin', stores: ['', '9m'] }, hidden: true },
+      { id: '120c1', slot: { fixture: 'twin', stores: ['120c', ''] }, hidden: true },
+      { id: '120c1b', slot: { fixture: 'twin', stores: ['', '120c'] }, hidden: true },
+      { id: 'mixed', slot: { fixture: 'twin', stores: ['9m', '120c'] }, hidden: true },
+      { id: 'mixedb', slot: { fixture: 'twin', stores: ['120c', '9m'] }, hidden: true },
       { id: 'twin0', slot: { fixture: 'twin', stores: ['', ''] }, hidden: true },
     ]
   }
@@ -317,8 +349,18 @@ export function outcomes(station: number): Outcome[] {
     return [
       { id: '', slot: { fixture: '', stores: [] } },
       { id: 'tank', slot: { fixture: 'pylon', stores: ['tank'] } },
+      { id: '9m', slot: { fixture: 'pylon', stores: ['9m'] } },
+      { id: '9m2', slot: { fixture: 'twin', stores: ['9m', '9m'] } },
       { id: '120c', slot: { fixture: 'pylon', stores: ['120c'] } },
+      { id: '120c2', slot: { fixture: 'twin', stores: ['120c', '120c'] } },
       { id: 'pylon', slot: { fixture: 'pylon', stores: [''] } },
+      { id: 'twin1', slot: { fixture: 'twin', stores: ['9m', ''] }, hidden: true },
+      { id: 'twin1b', slot: { fixture: 'twin', stores: ['', '9m'] }, hidden: true },
+      { id: '120c1', slot: { fixture: 'twin', stores: ['120c', ''] }, hidden: true },
+      { id: '120c1b', slot: { fixture: 'twin', stores: ['', '120c'] }, hidden: true },
+      { id: 'mixed', slot: { fixture: 'twin', stores: ['9m', '120c'] }, hidden: true },
+      { id: 'mixedb', slot: { fixture: 'twin', stores: ['120c', '9m'] }, hidden: true },
+      { id: 'twin0', slot: { fixture: 'twin', stores: ['', ''] }, hidden: true },
     ]
   }
   if (station === 5) {
@@ -358,17 +400,20 @@ export function resolve(raw: { stores: Fitment[]; default: number; internal: num
   return { ...raw, index }
 }
 
-// mask computes the core attach bitmask for a loadout with `fired` missiles
-// already expended (in rounds() order). Fixtures and tanks always attach;
-// tips ride their catalog bits so the default (bare) jet stays a subset.
-export function mask(loadout: Loadout, fired: number, book: Catalog): number {
+// mask computes the core attach bitmask for a loadout with `fired` heaters
+// (rounds() order) and `expended` AMRAAMs (amraams() order) already away —
+// each departure sheds its round's mass and drag in the core. Fixtures and
+// tanks always attach; tips ride their catalog bits so the default (bare)
+// jet stays a subset.
+export function mask(loadout: Loadout, fired: number, book: Catalog, expended = 0): number {
   let bits = 0
   const spent = new Set(rounds(loadout).slice(0, Math.max(0, fired)).map((r) => r.name))
+  for (const name of amraams(loadout).slice(0, Math.max(0, expended))) spent.add(name)
   for (let station = 1; station <= 9; station++) {
     for (const name of entries(station, loadout[String(station)] ?? { fixture: '', stores: [] })) {
       if (spent.has(name)) continue
       const bit = book.index.get(name)
-      if (bit !== undefined) bits |= 1 << bit
+      if (bit !== undefined) bits += 2 ** bit // NOT |=: the catalog outgrew 32 bits and JS bitwise is int32; f64 addition is exact here (unique names, bits far below 2^53)
     }
   }
   return bits

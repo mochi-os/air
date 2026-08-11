@@ -26,6 +26,30 @@ const FITMENTS: Fitment[] = [
   { name: 'tank7', station: 7, mass: 158, area: 0.07, fuel: 1010, lateral: 2.24 },
   { name: 'pylon5', station: 5, mass: 120, area: 0.03, fuel: 0, lateral: 0 },
   { name: 'tank5', station: 5, mass: 158, area: 0.07, fuel: 1010, lateral: 0 },
+  { name: 'rail4', station: 4, mass: 31, area: 0.01, fuel: 0, lateral: -0.55 },
+  { name: '120c4', station: 4, mass: 156, area: 0.04, fuel: 0, lateral: -0.55 },
+  { name: 'rail6', station: 6, mass: 31, area: 0.01, fuel: 0, lateral: 0.55 },
+  { name: '120c6', station: 6, mass: 156, area: 0.04, fuel: 0, lateral: 0.55 },
+  { name: '120c2', station: 2, mass: 156, area: 0.05, fuel: 0, lateral: -3.35 },
+  { name: '120c8', station: 8, mass: 156, area: 0.05, fuel: 0, lateral: 3.35 },
+  { name: '120c3', station: 3, mass: 156, area: 0.05, fuel: 0, lateral: -2.24 },
+  { name: '120c7', station: 7, mass: 156, area: 0.05, fuel: 0, lateral: 2.24 },
+  { name: 'twin3', station: 3, mass: 290, area: 0.06, fuel: 0, lateral: -2.24 },
+  { name: 'twin7', station: 7, mass: 290, area: 0.06, fuel: 0, lateral: 2.24 },
+  { name: '120c2a', station: 2, mass: 156, area: 0.05, fuel: 0, lateral: -3.5 },
+  { name: '120c2b', station: 2, mass: 156, area: 0.05, fuel: 0, lateral: -3.2 },
+  { name: '120c8a', station: 8, mass: 156, area: 0.05, fuel: 0, lateral: 3.5 },
+  { name: '120c8b', station: 8, mass: 156, area: 0.05, fuel: 0, lateral: 3.2 },
+  { name: '120c3a', station: 3, mass: 156, area: 0.05, fuel: 0, lateral: -2.39 },
+  { name: '120c3b', station: 3, mass: 156, area: 0.05, fuel: 0, lateral: -2.09 },
+  { name: '120c7a', station: 7, mass: 156, area: 0.05, fuel: 0, lateral: 2.39 },
+  { name: '120c7b', station: 7, mass: 156, area: 0.05, fuel: 0, lateral: 2.09 },
+  { name: '9m3', station: 3, mass: 86, area: 0.05, fuel: 0, lateral: -2.24 },
+  { name: '9m3a', station: 3, mass: 86, area: 0.05, fuel: 0, lateral: -2.39 },
+  { name: '9m3b', station: 3, mass: 86, area: 0.05, fuel: 0, lateral: -2.09 },
+  { name: '9m7', station: 7, mass: 86, area: 0.05, fuel: 0, lateral: 2.24 },
+  { name: '9m7a', station: 7, mass: 86, area: 0.05, fuel: 0, lateral: 2.39 },
+  { name: '9m7b', station: 7, mass: 86, area: 0.05, fuel: 0, lateral: 2.09 },
 ]
 const BOOK: Catalog = {
   stores: FITMENTS,
@@ -160,6 +184,29 @@ describe('mask', () => {
     expect(bits & (1 << BOOK.index.get('tank5')!)).toBeTruthy()
     expect(bits & (1 << BOOK.index.get('pylon5')!)).toBeTruthy()
   })
+  it('carries the ten-round fit past bit 31 and sheds fired AMRAAMs in their own order', () => {
+    // f64 division, not int32 bitwise — the pair entries sit on bits 32..35
+    const has = (m: number, name: string) => Math.floor(m / 2 ** BOOK.index.get(name)!) % 2 === 1
+    const lo = normalize({
+      2: { fixture: 'twin', stores: ['120c', '120c'] },
+      3: { fixture: 'twin', stores: ['120c', '120c'] },
+      4: { fixture: 'rail', stores: ['120c'] },
+      6: { fixture: 'rail', stores: ['120c'] },
+      7: { fixture: 'twin', stores: ['120c', '120c'] },
+      8: { fixture: 'twin', stores: ['120c', '120c'] },
+    })
+    const full = mask(lo, 0, BOOK)
+    for (const name of ['120c4', '120c2a', '120c3b', '120c7b']) expect(has(full, name)).toBe(true)
+    expect(full).toBeGreaterThan(2 ** 32) // the catalog outgrew uint32 — the chain is 64-bit/f64 throughout
+    const two = mask(lo, 0, BOOK, 2) // both cheeks away
+    expect(has(two, '120c4')).toBe(false)
+    expect(has(two, '120c6')).toBe(false)
+    expect(has(two, '120c2a')).toBe(true)
+    expect(has(two, 'rail4')).toBe(true) // the empty ejector stays
+    const dry = mask(lo, 0, BOOK, 10)
+    for (const name of ['120c4', '120c2a', '120c2b', '120c3a', '120c7b']) expect(has(dry, name)).toBe(false)
+    expect(has(dry, 'twin2')).toBe(true) // empty twins stay, with their drag
+  })
 })
 
 describe('weight', () => {
@@ -244,15 +291,37 @@ describe('entries', () => {
 })
 
 describe('amraam (#27)', () => {
-  it('cheeks take only the AIM-120C; wing rails take either family; twins stay heaters', () => {
+  it('cheeks take only the AIM-120C; wing rails and twin points take either family', () => {
     expect(options(4, 'rail')).toEqual(['', '120c'])
     expect(options(2, 'rail')).toEqual(['', '9m', '120c'])
-    expect(options(2, 'twin')).toEqual(['', '9m'])
+    expect(options(2, 'twin')).toEqual(['', '9m', '120c'])
     expect(entries(6, { fixture: 'rail', stores: ['120c'] })).toEqual(['rail6', '120c6'])
     expect(entries(2, { fixture: 'rail', stores: ['120c'] })).toEqual(['rail2', '120c2'])
     const lo = normalize({ 4: { fixture: 'rail', stores: ['9m'] }, 2: { fixture: 'twin', stores: ['120c', '120c'] } })
     expect(lo['4'].stores).toEqual(['']) // a heater on the cheek is not a thing
-    expect(lo['2'].stores).toEqual(['', '']) // nor AMRAAMs on the twin adapter
+    expect(lo['2'].stores).toEqual(['120c', '120c']) // the twin's LAU-127 points carry the pair
+    expect(entries(2, lo['2'])).toEqual(['twin2', '120c2a', '120c2b'])
+  })
+  it('the inboards carry heaters too: singles on the LAU-115C, pairs on its twin rails', () => {
+    expect(options(3, 'twin')).toEqual(['', '9m', '120c'])
+    expect(options(7, 'pylon')).toEqual(['', 'tank', '9m', '120c'])
+    const lo = normalize({ 3: { fixture: 'twin', stores: ['9m', '120c'] }, 7: { fixture: 'pylon', stores: ['9m'] }, 5: { fixture: 'pylon', stores: ['9m'] } })
+    expect(lo['3'].stores).toEqual(['9m', '120c']) // a mixed pair is real carriage, kept
+    expect(entries(3, lo['3'])).toEqual(['twin3', '9m3a', '120c3b'])
+    expect(entries(7, lo['7'])).toEqual(['pylon7', '9m7'])
+    expect(lo['5'].stores).toEqual(['']) // the centreline never carries a missile
+    expect(entries(7, { fixture: 'twin', stores: ['120c', '120c'] })).toEqual(['twin7', '120c7a', '120c7b'])
+  })
+  it('the 9M order steps inboard after the outboard ring, starboard seeding', () => {
+    const lo = normalize({
+      1: { fixture: 'rail', stores: ['9m'] },
+      2: { fixture: 'twin', stores: ['9m', '9m'] },
+      3: { fixture: 'twin', stores: ['9m', '9m'] },
+      7: { fixture: 'pylon', stores: ['9m'] },
+      8: { fixture: 'twin', stores: ['9m', '9m'] },
+      9: { fixture: 'rail', stores: ['9m'] },
+    })
+    expect(rounds(lo).map((r) => r.name)).toEqual(['tip9', 'tip1', '9m8a', '9m2a', '9m8b', '9m2b', '9m7', '9m3a', '9m3b'])
   })
   it('amraams fires cheeks, then outboard rails, then inboard pylons, port first', () => {
     const lo = normalize({
@@ -266,8 +335,33 @@ describe('amraam (#27)', () => {
     expect(amraams(lo)).toEqual(['120c4', '120c6', '120c2', '120c8', '120c3', '120c7'])
     expect(amraams(PRESETS.fox2)).toEqual([])
   })
+  it('the ten-round fit fires balanced: cheeks, outer pairs alternating, inner pairs alternating', () => {
+    const lo = normalize({
+      2: { fixture: 'twin', stores: ['120c', '120c'] },
+      3: { fixture: 'twin', stores: ['120c', '120c'] },
+      4: { fixture: 'rail', stores: ['120c'] },
+      6: { fixture: 'rail', stores: ['120c'] },
+      7: { fixture: 'twin', stores: ['120c', '120c'] },
+      8: { fixture: 'twin', stores: ['120c', '120c'] },
+    })
+    expect(amraams(lo)).toEqual(['120c4', '120c6', '120c2a', '120c8a', '120c2b', '120c8b', '120c3a', '120c7a', '120c3b', '120c7b'])
+    expect(missiles_loaded(lo)).toBe(true)
+  })
+  it('the setup offers the pair outcomes and represents hand-built partials', () => {
+    expect(outcomes(2).find((o) => o.id === '120c2' && !o.hidden)).toBeTruthy()
+    expect(outcomes(3).find((o) => o.id === '120c2' && !o.hidden)).toBeTruthy()
+    expect(outcomes(3).find((o) => o.id === '9m' && !o.hidden)).toBeTruthy()
+    expect(outcomes(7).find((o) => o.id === '9m2' && !o.hidden)).toBeTruthy()
+    expect(outcome(2, { fixture: 'twin', stores: ['120c', '120c'] })).toBe('120c2')
+    expect(outcome(3, { fixture: 'twin', stores: ['120c', ''] })).toBe('120c1')
+    expect(outcome(3, { fixture: 'twin', stores: ['9m', ''] })).toBe('twin1')
+    expect(outcome(7, { fixture: 'pylon', stores: ['9m'] })).toBe('9m')
+    expect(outcome(8, { fixture: 'twin', stores: ['9m', '120c'] })).toBe('mixed')
+    expect(outcomes(8).find((o) => o.id === 'mixed')?.hidden).toBe(true)
+    expect(outcomes(3).find((o) => o.id === 'mixedb')?.hidden).toBe(true)
+  })
   it('the inboard pylons trade fuel for magazine; the centreline never carries one', () => {
-    expect(options(3, 'pylon')).toEqual(['', 'tank', '120c'])
+    expect(options(3, 'pylon')).toEqual(['', 'tank', '9m', '120c'])
     expect(options(5, 'pylon')).toEqual(['', 'tank'])
     expect(entries(7, { fixture: 'pylon', stores: ['120c'] })).toEqual(['pylon7', '120c7'])
     const lo = normalize({ 5: { fixture: 'pylon', stores: ['120c'] } })
