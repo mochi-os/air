@@ -15,17 +15,20 @@ import * as THREE from 'three'
 import { asset } from '../game/preload'
 import { load, NEUTRAL, POSE, SCRUBS } from '../game/model'
 import { ANCHORS, TIPS, entries, normalize } from '../game/stores'
+import { normalize_round, amraam_anchor } from '../game/weapons'
 import type { StationSlot } from '../lib/config'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
+import amraam_model_url from '../assets/aim120c.glb?url'
 
 let airframe: THREE.Group | null = null
 let racks: THREE.Group | null = null
+let amraam: THREE.Group | null = null
 let loading: Promise<void> | null = null
 
 function fetch_models(renderer: THREE.WebGLRenderer): Promise<void> {
   loading ??= (async () => {
-    const [jet, stores] = await Promise.all([asset(fa18c_model_url), asset(stores_model_url)])
+    const [jet, stores, round] = await Promise.all([asset(fa18c_model_url), asset(stores_model_url), asset(amraam_model_url)])
     const parsed = await load(jet, renderer)
     airframe = parsed.scene
     for (const fix of POSE) {
@@ -54,6 +57,7 @@ function fetch_models(renderer: THREE.WebGLRenderer): Promise<void> {
       if (node) node.quaternion.set(...rest.quaternion)
     }
     racks = (await load(stores, renderer)).scene
+    amraam = normalize_round((await load(round, renderer)).scene)
   })()
   return loading
 }
@@ -81,6 +85,15 @@ function dress(jet: THREE.Group, stores: Record<string, StationSlot>): void {
       } else if (name.startsWith('tank')) {
         const piece = racks?.getObjectByName('Tank_' + station)
         if (piece) holder.add(piece.clone(true))
+      } else if (name.startsWith('120c')) {
+        // The AMRAAM (#27) at the station's anchor — inherited from the
+        // source art's rounds, derived for the inboard pylons (weapons.ts).
+        const anchor = racks ? amraam_anchor(racks, station) : null
+        if (amraam && anchor) {
+          const piece = amraam.clone(true)
+          piece.position.copy(anchor)
+          holder.add(piece)
+        }
       } else if (ANCHORS[name]) {
         const source = jet.getObjectByName(station < 5 ? TIPS.tip1 : TIPS.tip9) as THREE.Mesh | null
         if (source && source.isMesh) {

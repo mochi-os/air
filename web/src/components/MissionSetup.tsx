@@ -144,6 +144,7 @@ const BUTTON_ROWS: Row[] = [
   { id: 'trim.down', label: <Trans>Trim nose down</Trans>, group: 'trim' },
   { id: 'trim.left', label: <Trans>Trim roll left</Trans>, group: 'trim' },
   { id: 'trim.right', label: <Trans>Trim roll right</Trans>, group: 'trim' },
+  { id: 'trim.reset', label: <Trans>Reset trim</Trans>, group: 'trim' },   // keyless by default, so the pad path fires it directly rather than replaying a key
   { id: 'guns', label: <Trans>Fire weapon</Trans>, group: 'weapons' },   // the trigger serves the SELECTED weapon (engine.ts: guns in GUN mode, a 9M in 9M mode), so 'Guns' named only half of what it does
   { id: 'select', label: <Trans>Select weapon</Trans>, group: 'weapons' },
   { id: 'acquire', label: <Trans>Acquire target</Trans>, group: 'weapons' },
@@ -907,6 +908,8 @@ function Armament({
         return 'AIM-9M' // designations verbatim, like the Reference dialog's V-speeds
       case '9m2':
         return '2× AIM-9M' // jsx-text-ok: a count and a designation, no prose
+      case '120c':
+        return 'AIM-120C' // designation verbatim (#27)
       case 'tank':
         return <Trans>Fuel tank</Trans>
       case 'pylon':
@@ -964,7 +967,7 @@ function Armament({
         (() => {
           const cell = (station: number) => {
             const slot = loadout[String(station)]
-            const open = outcomes(station).filter((o) => allowed || !o.slot.stores.includes('9m'))
+            const open = outcomes(station).filter((o) => allowed || !o.slot.stores.some((s) => s === '9m' || s === '120c'))
             const current = outcome(station, slot)
             const usable = open.filter((o) => !o.hidden || o.id === current)
             const dead = usable.length <= 1
@@ -1181,6 +1184,31 @@ function CreditsDialog() {
             <a
               className='text-primary hover:underline'
               href='https://sketchfab.com/3d-models/uss-nimitz-cvn-68-aircraft-carrier-06cf0dba66874934a105b3fe2bfdb0f7'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              {/* jsx-text-ok: attribution name, required verbatim by the source licence */}
+              Sketchfab
+            </a>{' '}
+            ·{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://creativecommons.org/licenses/by/4.0/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              {/* jsx-text-ok: attribution name, required verbatim by the source licence */}
+              CC BY 4.0
+            </a>
+          </p>
+          <p className='leading-relaxed'>
+            <Trans>
+              Missile model <b>“AIM-120C AMRAAM”</b> by <b>Pippa</b> (Sketchfab), licensed under{' '}
+              <b>CC BY 4.0</b>. Modified: rescaled, reoriented, and centred for placement.
+            </Trans>{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://sketchfab.com/3d-models/aim-120c-amraam-62b79b0f76e44684ad43adcc2ae3cdb9'
               target='_blank'
               rel='noopener noreferrer'
             >
@@ -1649,6 +1677,30 @@ function MissionPanel({
     { value: 'low_stratus', label: <Trans>Low stratus</Trans> },
   ]}
 />
+{/* a MATCH takes its cheats from the creator's rules instead — these are the mission's */}
+<SectionLabel>
+  <Trans>Cheats</Trans>
+</SectionLabel>
+<div className='space-y-2'>
+  <SwitchRow
+    id='cheat-invulnerable'
+    label={<Trans>Invulnerable (human players only)</Trans>}
+    checked={!!(config.cheats ?? {}).invulnerable}
+    onChange={(v) => setCheat('invulnerable', v)}
+  />
+  <SwitchRow
+    id='cheat-ammunition'
+    label={<Trans>Unlimited ammunition (all players)</Trans>}
+    checked={!!(config.cheats ?? {}).ammunition}
+    onChange={(v) => setCheat('ammunition', v)}
+  />
+  <SwitchRow
+    id='cheat-fuel'
+    label={<Trans>Unlimited fuel (all players)</Trans>}
+    checked={!!(config.cheats ?? {}).fuel}
+    onChange={(v) => setCheat('fuel', v)}
+  />
+</div>
 </div>
     <div>
 <SectionLabel>
@@ -1669,30 +1721,6 @@ function MissionPanel({
   onFuel={(v) => set('fuel', v)}
   onPreset={(stores, fuel) => onChange({ ...config, stores, fuel })}
 />
-{/* a MATCH takes its cheats from the creator's rules instead — these are the mission's */}
-<SectionLabel>
-  <Trans>Cheats</Trans>
-</SectionLabel>
-<div className='space-y-2'>
-  <SwitchRow
-    id='cheat-invulnerable'
-    label={<Trans>Invulnerable (human players only)</Trans>}
-    checked={!!(config.cheats ?? {}).invulnerable}
-    onChange={(v) => setCheat('invulnerable', v)}
-  />
-  <SwitchRow
-    id='cheat-ammunition'
-    label={<Trans>Unlimited ammunition</Trans>}
-    checked={!!(config.cheats ?? {}).ammunition}
-    onChange={(v) => setCheat('ammunition', v)}
-  />
-  <SwitchRow
-    id='cheat-fuel'
-    label={<Trans>Unlimited fuel</Trans>}
-    checked={!!(config.cheats ?? {}).fuel}
-    onChange={(v) => setCheat('fuel', v)}
-  />
-</div>
     </div>
     </div>
   )

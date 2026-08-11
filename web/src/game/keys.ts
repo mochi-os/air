@@ -38,7 +38,7 @@ export const KEY_DEFAULTS: Record<string, string> = {
   atc: 'KeyP',
   lights: 'KeyL',
   flares: 'KeyC',
-  eject: 'KeyJ',
+  eject: 'Shift+KeyE',
   map: 'KeyM',
   chat: 'KeyT',
   shout: 'Shift+KeyT',
@@ -51,6 +51,18 @@ export const KEY_DEFAULTS: Record<string, string> = {
   reject: 'None',
   repeater: 'KeyI',
   'view.reset': 'Digit0',
+  'look.target': 'KeyY',
+  'zoom.in': 'Equal',
+  'zoom.out': 'Minus',
+  'jettison.tanks': 'KeyJ',
+  'jettison.emergency': 'Shift+KeyJ',
+  'caution.reset': 'Shift+KeyM',
+  dump: 'Shift+KeyD',
+  'secure.port': 'Shift+KeyZ',
+  'secure.starboard': 'Shift+KeyX',
+  'radar.silent': 'Shift+KeyR',
+  'radar.acm': 'KeyV',
+  'radar.undesignate': 'Shift+Enter',
 }
 
 // pretty renders a KeyboardEvent.code as its physical key label (a glyph or the
@@ -67,6 +79,7 @@ export function pretty(code: string): string {
   const table: Record<string, string> = {
     Space: 'Space',
     Enter: 'Enter',
+    Escape: 'Esc', // the cap is printed Esc, and the help line said Esc before it was derived
     Slash: '/',
     Backslash: '\\',
     BracketLeft: '[',

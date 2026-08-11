@@ -39,14 +39,15 @@ export type Loadout = Record<string, Slot>
 
 // Which fixtures each station accepts. Tips carry the integral LAU-7 — not
 // removable, so the setup shows no fixture choice there. Cheek stations 4/6
-// are schema-present but take nothing until a future version.
+// (#27) take the LAU-116 ejector — 'rail' in this vocabulary, with no visual
+// piece: the round sits flush against the fuselage as on the real jet.
 export const STATIONS: Record<number, { fixtures: string[]; locked?: boolean }> = {
   1: { fixtures: ['rail'], locked: true },
   2: { fixtures: ['', 'rail', 'twin'] },
   3: { fixtures: ['', 'pylon'] },
-  4: { fixtures: [''] },
+  4: { fixtures: ['', 'rail'] },
   5: { fixtures: ['', 'pylon'] },
-  6: { fixtures: [''] },
+  6: { fixtures: ['', 'rail'] },
   7: { fixtures: ['', 'pylon'] },
   8: { fixtures: ['', 'rail', 'twin'] },
   9: { fixtures: ['rail'], locked: true },
@@ -59,10 +60,18 @@ export function points(fixture: string): number {
 }
 
 // options lists the store ids one point accepts (always including empty).
+// The cheek stations are radar-missile positions (#27): AIM-120C only. The
+// outboard wing rails take either round (the LAU-127 carries both families);
+// the twin adapter stays a heater fitting — dual AMRAAMs are different
+// hardware, phase 2 territory if ever. The inboard pylons 3/7 are
+// Sparrow-capable stations, so the LAU-115C puts an AMRAAM there too — the
+// real fuel-versus-magazine choice; the centreline never carries one.
 export function options(station: number, fixture: string): string[] {
   if (station === 1 || station === 9) return ['', '9m']
-  if (fixture === 'rail' || fixture === 'twin') return ['', '9m']
-  if (fixture === 'pylon') return ['', 'tank']
+  if (station === 4 || station === 6) return fixture === 'rail' ? ['', '120c'] : ['']
+  if (fixture === 'rail') return ['', '9m', '120c']
+  if (fixture === 'twin') return ['', '9m']
+  if (fixture === 'pylon') return station === 5 ? ['', 'tank'] : ['', 'tank', '120c']
   return ['']
 }
 
@@ -83,8 +92,11 @@ export function entries(station: number, slot: Slot): string[] {
     if (slot.stores[1] === '9m') out.push('9m' + station + 'b')
   } else if (slot.fixture === 'rail') {
     if (slot.stores[0] === '9m') out.push('9m' + station)
+    if (slot.stores[0] === '120c') out.push('120c' + station)
   } else if (slot.stores[0] === 'tank') {
     out.push('tank' + station)
+  } else if (slot.stores[0] === '120c') {
+    out.push('120c' + station) // the inboard pylon's AMRAAM (#27)
   }
   return out
 }
@@ -150,9 +162,11 @@ export function matches(loadout: Loadout): string {
 
 // missiles_loaded: the derived predicate that replaced cfg.missiles — it
 // feeds the trigger gate, the bandit doctrine flag, and the joust rule.
+// Any missile arms the fight: heaters and the AMRAAM alike (#27).
 export function missiles_loaded(loadout: Loadout): boolean {
   for (let station = 1; station <= 9; station++) {
-    if (loadout[String(station)]?.stores.includes('9m')) return true
+    const stores = loadout[String(station)]?.stores ?? []
+    if (stores.includes('9m') || stores.includes('120c')) return true
   }
   return false
 }
@@ -163,7 +177,19 @@ export function strip(loadout: Loadout): Loadout {
   const out = normalize(loadout)
   for (let station = 1; station <= 9; station++) {
     const slot = out[String(station)]
-    slot.stores = slot.stores.map((id) => (id === '9m' ? '' : id))
+    slot.stores = slot.stores.map((id) => (id === '9m' || id === '120c' ? '' : id))
+  }
+  return out
+}
+
+// amraams lists the loadout's AIM-120 entries in firing order — cheeks, then
+// outboard rails, then inboard pylons, port first at each level (#27). The
+// k-th launch takes amraams[k]; remaining count is amraams.length - fired.
+export function amraams(loadout: Loadout): string[] {
+  const out: string[] = []
+  for (const station of [4, 6, 2, 8, 3, 7]) {
+    const slot = loadout[String(station)]
+    if ((slot?.fixture === 'rail' || slot?.fixture === 'pylon') && slot.stores[0] === '120c') out.push('120c' + station)
   }
   return out
 }
@@ -274,13 +300,28 @@ export function outcomes(station: number): Outcome[] {
       { id: '', slot: { fixture: '', stores: [] } },
       { id: '9m', slot: { fixture: 'rail', stores: ['9m'] } },
       { id: '9m2', slot: { fixture: 'twin', stores: ['9m', '9m'] } },
+      { id: '120c', slot: { fixture: 'rail', stores: ['120c'] } },
       { id: 'pylon', slot: { fixture: 'rail', stores: [''] } },
       { id: 'twin1', slot: { fixture: 'twin', stores: ['9m', ''] }, hidden: true },
       { id: 'twin1b', slot: { fixture: 'twin', stores: ['', '9m'] }, hidden: true },
       { id: 'twin0', slot: { fixture: 'twin', stores: ['', ''] }, hidden: true },
     ]
   }
-  if (station === 3 || station === 5 || station === 7) {
+  if (station === 4 || station === 6) {
+    return [
+      { id: '', slot: { fixture: '', stores: [] } },
+      { id: '120c', slot: { fixture: 'rail', stores: ['120c'] } },
+    ]
+  }
+  if (station === 3 || station === 7) {
+    return [
+      { id: '', slot: { fixture: '', stores: [] } },
+      { id: 'tank', slot: { fixture: 'pylon', stores: ['tank'] } },
+      { id: '120c', slot: { fixture: 'pylon', stores: ['120c'] } },
+      { id: 'pylon', slot: { fixture: 'pylon', stores: [''] } },
+    ]
+  }
+  if (station === 5) {
     return [
       { id: '', slot: { fixture: '', stores: [] } },
       { id: 'tank', slot: { fixture: 'pylon', stores: ['tank'] } },

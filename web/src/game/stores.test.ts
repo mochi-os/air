@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, expect, it } from 'vitest'
-import { LIMITS, RELEASE, PRESETS, asymmetry, entries, jettison, mask, matches, migrate, missiles_loaded, normalize, options, outcome, outcomes, points, rounds, strip, weight, type Catalog, type Fitment } from './stores'
+import { LIMITS, RELEASE, PRESETS, amraams, asymmetry, entries, jettison, mask, matches, migrate, missiles_loaded, normalize, options, outcome, outcomes, points, rounds, strip, weight, type Catalog, type Fitment } from './stores'
 
 // A catalog mirroring the core's fa18c table (order matters: tips first).
 const FITMENTS: Fitment[] = [
@@ -238,7 +238,51 @@ describe('entries', () => {
   it('points and options describe the strip', () => {
     expect(points('twin')).toBe(2)
     expect(points('')).toBe(0)
-    expect(options(3, 'pylon')).toEqual(['', 'tank'])
+    expect(options(5, 'pylon')).toEqual(['', 'tank'])
     expect(options(1, 'rail')).toEqual(['', '9m'])
+  })
+})
+
+describe('amraam (#27)', () => {
+  it('cheeks take only the AIM-120C; wing rails take either family; twins stay heaters', () => {
+    expect(options(4, 'rail')).toEqual(['', '120c'])
+    expect(options(2, 'rail')).toEqual(['', '9m', '120c'])
+    expect(options(2, 'twin')).toEqual(['', '9m'])
+    expect(entries(6, { fixture: 'rail', stores: ['120c'] })).toEqual(['rail6', '120c6'])
+    expect(entries(2, { fixture: 'rail', stores: ['120c'] })).toEqual(['rail2', '120c2'])
+    const lo = normalize({ 4: { fixture: 'rail', stores: ['9m'] }, 2: { fixture: 'twin', stores: ['120c', '120c'] } })
+    expect(lo['4'].stores).toEqual(['']) // a heater on the cheek is not a thing
+    expect(lo['2'].stores).toEqual(['', '']) // nor AMRAAMs on the twin adapter
+  })
+  it('amraams fires cheeks, then outboard rails, then inboard pylons, port first', () => {
+    const lo = normalize({
+      2: { fixture: 'rail', stores: ['120c'] },
+      3: { fixture: 'pylon', stores: ['120c'] },
+      4: { fixture: 'rail', stores: ['120c'] },
+      6: { fixture: 'rail', stores: ['120c'] },
+      7: { fixture: 'pylon', stores: ['120c'] },
+      8: { fixture: 'rail', stores: ['120c'] },
+    })
+    expect(amraams(lo)).toEqual(['120c4', '120c6', '120c2', '120c8', '120c3', '120c7'])
+    expect(amraams(PRESETS.fox2)).toEqual([])
+  })
+  it('the inboard pylons trade fuel for magazine; the centreline never carries one', () => {
+    expect(options(3, 'pylon')).toEqual(['', 'tank', '120c'])
+    expect(options(5, 'pylon')).toEqual(['', 'tank'])
+    expect(entries(7, { fixture: 'pylon', stores: ['120c'] })).toEqual(['pylon7', '120c7'])
+    const lo = normalize({ 5: { fixture: 'pylon', stores: ['120c'] } })
+    expect(lo['5'].stores).toEqual([''])
+  })
+  it('arms the fight and falls to the guns-only clamp like any missile', () => {
+    const lo = normalize({ 4: { fixture: 'rail', stores: ['120c'] } })
+    expect(missiles_loaded(lo)).toBe(true)
+    const clamped = strip(lo)
+    expect(missiles_loaded(clamped)).toBe(false)
+    expect(clamped['4'].fixture).toBe('rail') // the empty ejector stays, like an empty rail
+  })
+  it('stays out of the 9M firing order and mask entries carry it', () => {
+    const lo = normalize({ 1: { fixture: 'rail', stores: ['9m'] }, 4: { fixture: 'rail', stores: ['120c'] } })
+    expect(rounds(lo).map((r) => r.name)).toEqual(['tip1'])
+    expect(entries(4, lo['4'])).toContain('120c4')
   })
 })
