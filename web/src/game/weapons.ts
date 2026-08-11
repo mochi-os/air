@@ -85,6 +85,53 @@ function single_anchor(root: THREE.Object3D, station: number): THREE.Vector3 | n
   return new THREE.Vector3(tank.x, rail.y, tank.z)
 }
 
+// amraam_aim: the round's ORIENTATION at a station — the long axis of the
+// source art's own round, as the dominant principal component of its sampled
+// vertices. The model space is not quite waterline-level (the airframe rests
+// slightly pitched within it, and the art's stores are authored to match), so
+// a round laid perfectly along model z visibly diverges from its pylon
+// toward the nose. Stations without a source round borrow the same wing's
+// rail round, like the derived anchors.
+export function amraam_aim(root: THREE.Object3D, station: number): THREE.Quaternion {
+  const aim = new THREE.Quaternion()
+  const source = root.getObjectByName('Missile_' + station) ? station : station === 3 ? 2 : station === 7 ? 8 : station
+  const node = root.getObjectByName('Missile_' + source)
+  if (!node) return aim
+  let mesh: THREE.Mesh | null = null
+  node.traverse((o) => { if (!mesh && (o as THREE.Mesh).isMesh) mesh = o as THREE.Mesh })
+  const geometry = mesh ? (mesh as THREE.Mesh).geometry : null
+  if (!mesh || !geometry?.attributes?.position) return aim
+  const pos = geometry.attributes.position
+  const idx = geometry.index
+  const total = idx ? idx.count : pos.count
+  const stride = Math.max(1, Math.floor(total / 2000))
+  root.updateMatrixWorld(true)
+  const v = new THREE.Vector3()
+  const points: THREE.Vector3[] = []
+  const mean = new THREE.Vector3()
+  for (let k = 0; k < total; k += stride) {
+    ;(mesh as THREE.Mesh).localToWorld(v.fromBufferAttribute(pos, idx ? idx.getX(k) : k))
+    points.push(v.clone())
+    mean.add(v)
+  }
+  if (points.length < 3) return aim
+  mean.multiplyScalar(1 / points.length)
+  let xx = 0, xy = 0, xz = 0, yy = 0, yz = 0, zz = 0
+  for (const p of points) {
+    p.sub(mean)
+    xx += p.x * p.x; xy += p.x * p.y; xz += p.x * p.z
+    yy += p.y * p.y; yz += p.y * p.z; zz += p.z * p.z
+  }
+  const axis = new THREE.Vector3(0, 0, 1)
+  for (let i = 0; i < 12; i++) {
+    axis.set(xx * axis.x + xy * axis.y + xz * axis.z, xy * axis.x + yy * axis.y + yz * axis.z, xz * axis.x + yz * axis.y + zz * axis.z)
+    if (!axis.length()) return aim
+    axis.normalize()
+  }
+  if (axis.z < 0) axis.negate() // nose forward: the convention normalize_round bakes
+  return aim.setFromUnitVectors(new THREE.Vector3(0, 0, 1), axis)
+}
+
 // node_centre: the centre of a named node's mesh — the middle of its
 // bounding box, NOT the vertex mean — in the ROOT's model space. Three traps
 // live here, all learned the hard way: the split stores models share ONE

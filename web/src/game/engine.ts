@@ -19,7 +19,7 @@ import {
 } from './net'
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode } from './flight'
 import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams } from './stores'
-import { normalize_round, amraam_anchor } from './weapons'
+import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
 import { flight_catalog } from './flight'
 import { diagnose } from '../lib/graphics'
@@ -459,9 +459,9 @@ build_ocean(cfg.ocean_segments);
 // cloud layer types (rendered by the raymarch pass below)
 const CLOUDS={   // cover: higher = more cloud (coverage remap). Trade-wind cumulus: low bases (~2,000 ft), most tops at the inversion, a few towers.
 	cumulus:      { base:600,  top:2400, high:5000,  cover:0.42, density:1.0, flat:0.0, gate:[0.22,0.50], dark:0.45 },   // fair-weather broken trade-wind sky (user-preferred). (A cumulonimbus preset lived here 2026-07-05/06 and was removed entirely — recover from git if ever revisited)
-	high_stratus: { base:1829, top:2134, high:2134, cover:0.78, density:1.0, flat:1.0, gate:[0.0,0.0], dark:0.3 },   // altostratus deck 6,000-7,000 ft: dogfights descend through it and LOSE each other inside (dense enough to white-out; occasional thin spots for re-acquisition). Base above the 5,000 ft free-flight spawn
-	mid_stratus:  { base:305,  top:915,  high:915,  cover:0.85, density:1.3, flat:1.0, gate:[0.0,0.0], dark:0.3 },   // CASE II deck, 1,000-3,000 ft: the NATOPS Case II band (ceiling at or above 1,000 ft but below Case I's 3,000). The Case II spawn is INSIDE it at 1,200 ft, so the level segment is flown on instruments and the glideslope descent breaks out at ~2.7 NM — enough to finish visually, which is what the procedure requires
-	low_stratus:  { base:91,   top:915,  high:915,  cover:0.85, density:1.3, flat:1.0, gate:[0.0,0.0], dark:0.3 },   // CASE III deck, 300-3,000 ft: a 300 ft ceiling puts the break-out at ~0.8 NM, exactly on the 0.75 NM ball call — see the ball or call CLARA. The top rose from 1,510 to 3,000 ft because the old deck left marshal and most of the penetration in CLEAR AIR, which drains an instrument approach of its point; now the business end is genuinely IMC (spawn clearings deliberately do not hole stratus). dark matches high_stratus: the user approved that base grey
+	high_stratus: { base:1829, top:2439, high:2439, cover:0.78, density:1.0, flat:1.0, gate:[0.0,0.0], dark:0.3 },   // altostratus deck 6,000-8,000 ft: dogfights descend through it and LOSE each other inside (dense enough to white-out; occasional thin spots for re-acquisition). Base above the 5,000 ft free-flight spawn
+	mid_stratus:  { base:305,  top:915,  high:915,  cover:0.78, density:1.0, flat:1.0, gate:[0.0,0.0], dark:0.3 },   // CASE II deck, 1,000-3,000 ft: the NATOPS Case II band (ceiling at or above 1,000 ft but below Case I's 3,000). The Case II spawn is INSIDE it at 1,200 ft, so the level segment is flown on instruments and the glideslope descent breaks out at ~2.7 NM — enough to finish visually, which is what the procedure requires
+	low_stratus:  { base:91,   top:701,  high:701,  cover:0.78, density:1.0, flat:1.0, gate:[0.0,0.0], dark:0.3 },   // CASE III deck, 300-2,300 ft: a 300 ft ceiling puts the break-out at ~0.8 NM, exactly on the 0.75 NM ball call — see the ball or call CLARA. All three stratus decks are 610 m (2,000 ft) thick so they are ONE cloud at three heights - identical thickness, cover and density means identical lighting, which is what stopped the thicker decks reading darker than the thin one. Marshal at angels 6 stays above this top, the penetration enters IMC at 2,300 ft, and the level segment, the glideslope intercept and the whole final are flown on instruments (spawn clearings deliberately do not hole stratus). dark matches high_stratus: the user approved that base grey
 };
 function apply_clouds(){ const p=CLOUDS[cfg.clouds];
 	ocean_mat.uniforms.u_cloud_on.value=p?1.0:0.0;
@@ -481,11 +481,13 @@ const cloud_active=()=>cfg.clouds&&cfg.clouds!=="none";
 // ---- volumetric clouds: raymarched, composited against scene depth ----
 // scene renders to an offscreen target (with depth); a fullscreen pass marches a
 // cloud slab and composites over it, stopping at the scene surface for occlusion.
+const CLOUD_SHIFT=0;   // cloud buffer resolution: 0 full, 1 half
 let rt=null, rt_march=null; const rt_hist=[null,null]; let hist_write=0, hist_valid=false;   // temporal accumulation: the march output is blended into a reprojected history ping-pong
 const invVP=new THREE.Matrix4(), curVP=new THREE.Matrix4(), prevVP=new THREE.Matrix4(); const _buf=new THREE.Vector2();
 let cloud_frame=0;
 function size_rt(){ renderer.getDrawingBufferSize(_buf); const w=Math.max(2,_buf.x|0),h=Math.max(2,_buf.y|0);
-	const hw=Math.max(2,w>>1), hh=Math.max(2,h>>1);   // clouds are soft: everything cloud-related runs at half resolution
+	const shift=CLOUD_SHIFT;   // 0 = full resolution, 1 = half. Half made the march cheap but decided occlusion once per 2x2 block of final pixels, which quantised every silhouette into stair-steps the canvas MSAA could not repair (it antialiases the geometry pass, which the cloud composite then paints over). Full res costs ~4x the march and is the only thing that removes them
+	const hw=Math.max(2,w>>shift), hh=Math.max(2,h>>shift);
 	if(!rt){ rt=new THREE.WebGLRenderTarget(hw,hh,{depthBuffer:true}); rt.depthTexture=new THREE.DepthTexture(hw,hh);   // depth-source pass only — the scene the player SEES renders directly to the canvas, exactly like the no-clouds path (the full-res RT detour alone cost ~40% frame time and lost MSAA)
 		rt_march=new THREE.WebGLMultipleRenderTargets(hw,hh,2,{depthBuffer:false});   // [0] marched cloud light + transmittance, [1] transmittance-weighted mean march distance (reprojection depth)
 		rt_march.texture[1].minFilter=THREE.NearestFilter; rt_march.texture[1].magFilter=THREE.NearestFilter;
@@ -554,7 +556,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 				return smoothstep(0.55,0.85,nb.r)*shaft*0.045*uDensity*cm;
 			}
 			float prof=mix( smoothstep(0.02,0.12,h)*smoothstep(1.0,mix(mix(0.40,0.62,tA),0.86,tallf),h),   // cumulus domes, per-cell taper (flat-topped through plump); TOWERS hold near-constant width and only round at the head — early taper renders ice-cream cones
-			                smoothstep(0.0,0.25,h)*smoothstep(1.0,0.7,h), uFlat );   // stratus: thin even slab
+			                smoothstep(0.0,70.0/max(top-lbase,1.0),h)*smoothstep(1.0,0.7,h), uFlat );   // stratus: thin even slab. The bottom fade is a FIXED 70 m, not a fraction of thickness: at 0.25 of an 824 m Case III deck it was 206 m (676 ft) of mush, so a 300 ft geometric base first became visible near 500 ft and the reported ceiling was a fiction. Real stratus has a sharp base — that is why a ceiling is a definite altitude — and a thickness-proportional fade is cumulus behaviour wearing a stratus hat
 			sp+=(w.gba-0.5)*vec3(150.0,80.0,150.0)*(0.75+0.5*tA)*(1.0-uFlat);   // domain warp, gentle, per-cell amplitude: clusters the base blobs into LOBES (height-scaled warp smears the field into vertical curtain folds — tried and reverted)
 			vec3 spn=sp;
 			if(uFlat>0.01){ vec2 sw=vec2(sp.x*0.958+sp.z*0.286, -sp.x*0.286+sp.z*0.958); sw.x*=0.32;   // stratus sheets are WIND-COMBED: stretch the base field ~3x along the wind so the deck shows banded striations instead of a featureless veil
@@ -566,7 +568,14 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 				float cov=uCoverage*mix((0.55+0.95*vig)*smoothstep(uGate.x,uGate.y,vig), 1.0, uFlat);   // per-preset cell gate: how FEW the cells are; uCoverage sets how MASSIVE each survivor builds
 				float d=remap(base, 1.0-cov, 1.0, 0.0, 1.0)*cov;
 			if(d<=0.0) return 0.0;
-			float hb=clamp(h*4.0,0.0,1.0), estr=mix(0.35,0.15,uFlat)*(0.82+0.36*tB)*mix(1.0,0.75,uDark);   // per-cell erosion character: some cells ragged and crisply carved, others fuller and softer; darker presets erode less (full billowing masses, not serrated rock)
+			// hb picks the erosion CHARACTER by height: the raw detail field low in
+			// the cell, its inverse high up — rounded cumulus bottoms, ragged tops.
+			// A stratus SHEET has no such distinction, and taking the raw field on
+			// the underside showed it for what it is: fine noise (~1.2 km and
+			// ~320 m periods) drifting with the wind on sp, read from below as
+			// animated dots and bubbles. Flat decks therefore take the TOP's
+			// character throughout, which is the face the user judged good.
+			float hb=mix(clamp(h*4.0,0.0,1.0),1.0,uFlat), estr=mix(0.35,0.15,uFlat)*(0.82+0.36*tB)*mix(1.0,0.75,uDark);   // per-cell erosion character: some cells ragged and crisply carved, others fuller and softer; darker presets erode less (full billowing masses, not serrated rock)
 			float coarse=mix(n.b, 1.0-n.b, hb);                               // coarse erosion from the base sample: keeps far cells SEPARATE at zero cost and zero shimmer (fading erosion out entirely merged the horizon into a solid wall)
 			float er=coarse;
 			if(lod<0.7){
@@ -625,7 +634,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 						if(d>0.01){
 							float ld=0.0; vec3 lp=pos; float ls=32.0; float slod=min(lod,0.5);   // the shadow march keeps mid-range detail at ALL distances — sharing the view lod left far towers uniformly lit (flat white against a modelled near one)
 							ls*=(0.72+0.56*ign);   // per-pixel tap-distance jitter: decorrelates the shadow shells into floret-scale variance the accumulation smooths
-							for(int j=0;j<5;j++){ lp+=uSun*ls; ld+=dens(lp,slod)*ls; ls*=1.75; }   // reach ~640 m: with km-class lobes, a turret must be able to shade the turret below it — the old ~460 m reach lit every lobe identically
+							for(int j=0;j<5;j++){ lp+=uSun*ls; ld+=dens(lp,slod)*ls; ls*=1.75; }   // reach ~640 m: with km-class lobes, a turret must be able to shade the turret below it — the old ~460 m reach lit every lobe identically   // reach ~640 m: with km-class lobes, a turret must be able to shade the turret below it — the old ~460 m reach lit every lobe identically
 								float powder=1.0-exp(-ld*0.028);   // Beer-powder: darkened crinkles on sun-facing billows
 								float sun=(0.22+0.78*powder)*(phv.x*exp(-ld*0.010)+0.45*phv.y*exp(-ld*0.005))
 								         +0.22*phv.z*exp(-ld*0.0022);   // multi-scatter octaves; powder gates the first two — gap-slipping light samples otherwise flood the field white
@@ -637,8 +646,7 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 								float bfloor=mix(0.68,0.30,uDark);   // per-preset base darkness: fair-weather bottoms are shaded, storm bottoms near-black
 								sun=pow(sun,mix(1.38,1.5,uDark))*(bfloor+(1.0-bfloor)*smoothstep(0.04,0.55,hcur));   // harder mid-tone falloff: brilliant lit tops against genuinely shaded mid-bodies — the reference masses are SCULPTED by light, not just lit
 								float afloor=mix(0.24,0.12,uDark);
-								vec3 ambient=(dome*(afloor+(1.0-afloor)*hcur) + suncol*0.03*(1.0-hcur))*exp(-ld*0.0030)*(1.0-mix(0.50,0.60,uDark)*d)*(1.0+0.45*uFlat);   // crevice AO: dense samples sit deep between billows. Stratus undersides get a lift: over bright tropical water, sea-reflected light keeps an overcast's base grey, not charcoal
-								vec3 lit=(suncol*sun*mix(1.30,1.42,uDark) + ambient*0.55)*(0.40+0.60*smoothstep(0.03,0.35,d));   // the low-density fringe DIMS into translucency — a bright fringe reads as an airbrushed halo
+								vec3 ambient=(dome*(afloor+(1.0-afloor)*hcur) + suncol*0.03*(1.0-hcur))*exp(-ld*0.0030)*(1.0-mix(0.50,0.60,uDark)*d)*(1.0+0.45*uFlat);   								vec3 lit=(suncol*sun*mix(1.30,1.42,uDark) + ambient*0.55)*(0.40+0.60*smoothstep(0.03,0.35,d));   // the low-density fringe DIMS into translucency — a bright fringe reads as an airbrushed halo
 							float a=(1.0-exp(-d*0.09*dt))*mix(smoothstep(cfar,cfar*0.65,ts),1.0,uFlat)*smoothstep(0.006,0.045,d);   // the ultra-thin fringe barely registers: accumulated over steps it painted a pale glow RING around every cloud against dark water. NO range ALPHA fade for stratus: at grazing angles any range fade compresses into a few pixels and cuts a hard edge (tried 2026-07-06) — the overcast dissolve is done in COLOUR below instead
 							float hz=clamp(1.0-exp(-ts*ts*mix(0.6e-9,1.5e-9,uFlat)),0.0,mix(0.72,0.985,uFlat));   // aerial perspective: the hazed share of each sample's alpha is paid out AFTER the march as the scene sky's own display-space colour — mixing a haze colour through this pass's aces/srgb never matches the sky behind and left a flat pale band above the horizon; pure alpha fade saturates over enough steps and turned the far field its raw beige. For stratus the haze COMPLETES (0.98): the far deck converges to exactly the greyed dome backdrop, so the march's 90 km cutoff is invisible by construction and the texture melts into murk with distance — the dissolve a real overcast has. Safe only because u_ovc greys the dome: against a blue backdrop this leaked blue under the deck
 							col+=tr*a*lit*(1.0-hz); hw+=tr*a*hz; aw+=tr*a; adist+=tr*a*ts; tr*=1.0-a; }
@@ -702,21 +710,31 @@ function build_cloud_noise(){
 build_cloud_noise();
 const comp_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, transparent:true,
 	blending:THREE.CustomBlending, blendSrc:THREE.OneFactor, blendDst:THREE.OneMinusSrcAlphaFactor,   // canvas = cloud.rgb + canvas*tr — the same premultiplied maths the RT composite used, done by the blender over the DIRECT scene render
-	uniforms:{ tCloud:{value:null}, uTexel:{value:new THREE.Vector2(1/512,1/512)} },
+	uniforms:{ tCloud:{value:null}, tDepthLow:{value:null}, tDepthHigh:{value:null}, uTexel:{value:new THREE.Vector2(1/512,1/512)}, uNear:{value:0.1}, uFar:{value:130000.0} },
 	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
-	fragmentShader:`varying vec2 vUv; uniform sampler2D tCloud; uniform vec2 uTexel;
-		void main(){   // alpha-aware joint upsample: a plain tent feathers bright cloud light across
-			// every silhouette into the background — a 2-3 px halo ring at 4K (the same disease
-			// the bilateral blur cured in the smoothing pass)
+	fragmentShader:`varying vec2 vUv; uniform sampler2D tCloud,tDepthLow,tDepthHigh; uniform vec2 uTexel; uniform float uNear,uFar;
+		float lin(float d){ float z=d*2.0-1.0; return (2.0*uNear*uFar)/(uFar+uNear-z*(uFar-uNear)); }   // window depth -> metres; the raw value is far too non-linear to difference
+		void main(){   // DEPTH-AWARE joint filter. At half resolution this fixed a black ring: a
+			// texel straddling a silhouette carried a march terminated early on the aircraft — almost
+			// no cloud light, i.e. DARK — and the old ALPHA-only weighting rejected the healthy
+			// neighbours (their alpha differs for a perfectly good reason at an edge) and kept it.
+			// At CLOUD_SHIFT=0 the buffer is full res and the ring cannot arise, but the depth
+			// weighting still earns its place: it stops the joint smoothing bleeding cloud light
+			// across a silhouette. Relative, not absolute, so it holds from a wingtip at 20 m to a
+			// deck at 40 km.
+			float dref=lin(texture2D(tDepthHigh,vUv).r);
 			vec4 c0=texture2D(tCloud,vUv);
-			vec4 acc=c0; float wsum=1.0;
+			float w0=exp(-40.0*abs(lin(texture2D(tDepthLow,vUv).r)-dref)/max(dref,1.0));   // the CENTRE tap earns its weight too: on the far side of an edge it is the wrong sample and must be outvoted
+			vec4 acc=c0*w0; float wsum=w0;
 			for(int i=0;i<4;i++){
 				vec2 dxy=(i==0)?vec2(-0.75,-0.75):(i==1)?vec2(0.75,-0.75):(i==2)?vec2(-0.75,0.75):vec2(0.75,0.75);
-				vec4 cs=texture2D(tCloud,vUv+uTexel*dxy);
-				float w=0.6*exp(-12.0*abs(cs.a-c0.a));
+				vec2 uv=vUv+uTexel*dxy;
+				vec4 cs=texture2D(tCloud,uv);
+				float wd=exp(-40.0*abs(lin(texture2D(tDepthLow,uv).r)-dref)/max(dref,1.0));
+				float w=0.6*exp(-12.0*abs(cs.a-c0.a))*wd;
 				acc+=cs*w; wsum+=w;
 			}
-			vec4 cl=acc/wsum;
+			vec4 cl=wsum>1e-4?acc/wsum:c0;   // thin geometry narrower than a half-res texel can leave every tap disagreeing; fall back rather than divide by nothing
 			gl_FragColor=vec4(cl.rgb,1.0-cl.a); }` });
 const comp_scene=new THREE.Scene(); comp_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),comp_mat));
 const depth_override=new THREE.MeshBasicMaterial({colorWrite:false});   // depth-only scene pass for the cloud raymarch
@@ -760,13 +778,14 @@ function render_frame(){
 	const dip=Math.max(camera.position.y,3)/45000;   // #108: dip of the VISIBLE sea/sky line — set by the seafog completion and the 42 km far plane, NOT the 120 km mesh rim (that model left a bright crest above the line at altitude). Generous by design: a peak clipped below the line is invisible, a crest above it is the band
 	sky_mat.uniforms.u_dip.value=dip; cloud_mat.uniforms.uDip.value=dip;
 	if(cloud_active()){ size_rt();
-		scene.overrideMaterial=depth_override; renderer.setRenderTarget(rt); renderer.render(scene,camera); scene.overrideMaterial=null;   // half-res pass, used only for scene DEPTH (cloud occlusion) — cheap flat shading, no lighting or textures
+		scene.overrideMaterial=depth_override; renderer.setRenderTarget(rt); renderer.render(scene,camera);
+		scene.overrideMaterial=null;   // depth-only pass at the cloud buffer's resolution, used for cloud occlusion — no colour, no lighting or textures
 		curVP.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse); invVP.copy(curVP).invert();
 		cloud_mat.uniforms.tDepth.value=rt.depthTexture;
 		cloud_mat.uniforms.uCamPos.value.copy(camera.position); cloud_mat.uniforms.uInvVP.value.copy(invVP);
 		cloud_mat.uniforms.uJitter.value=(++cloud_frame*0.61803398875)%1;   // golden-ratio jitter sequence for the march offsets — see the accumulation pass
 		cloud_mat.uniforms.uTime.value=(MULTIPLAYER&&net&&net.time)?net.time():sim_time;   // multiplayer: clouds drift on the SHARED session clock — a local mission clock puts every player's cloud field in a different place, and hiding in cloud must mean the same cloud for everyone
-		renderer.setRenderTarget(rt_march); renderer.render(fs_scene,fs_cam);   // half-res raymarch (colour + reprojection depth)
+		renderer.setRenderTarget(rt_march); renderer.render(fs_scene,fs_cam);   // the raymarch (colour + reprojection depth)
 		const hr=1-hist_write;
 		acc_mat.uniforms.tCur.value=rt_march.texture[0]; acc_mat.uniforms.tAux.value=rt_march.texture[1]; acc_mat.uniforms.tHist.value=rt_hist[hr].texture;
 		acc_mat.uniforms.uTexel.value.set(1/rt_march.width,1/rt_march.height);
@@ -775,6 +794,8 @@ function render_frame(){
 		renderer.setRenderTarget(rt_hist[hist_write]); renderer.render(acc_scene,fs_cam);   // blend into the reprojected history
 		renderer.setRenderTarget(null); renderer.render(scene,camera);   // the player-visible scene: the EXACT no-clouds path (canvas MSAA and all)
 		comp_mat.uniforms.tCloud.value=rt_hist[hist_write].texture; comp_mat.uniforms.uTexel.value.set(1/rt_march.width,1/rt_march.height);
+		comp_mat.uniforms.tDepthLow.value=rt.depthTexture; comp_mat.uniforms.tDepthHigh.value=rt.depthTexture;   // one buffer at full res: the depth weighting still stops the joint filter bleeding cloud across a silhouette, it simply no longer has a resolution gap to bridge
+		comp_mat.uniforms.uNear.value=camera.near; comp_mat.uniforms.uFar.value=camera.far;
 		renderer.autoClear=false; renderer.render(comp_scene,fs_cam); renderer.autoClear=true;   // blend the cloud layer over it
 		prevVP.copy(curVP); hist_valid=true; hist_write=hr;   // this frame's accumulation is next frame's history
 	} else { renderer.render(scene,camera); }
@@ -1888,15 +1909,17 @@ function apply_stores(st){ if(!st.group) return;
 	update_rails(st, Math.max(0, st.msl|0)); }
 function stores_clone(name){ if(!stores_proto) return null; const source=stores_proto.getObjectByName(name); if(!source) return null;
 	const piece=source.clone(true); piece.traverse(o=>{ if(o.isMesh){ o.castShadow=cfg.shadows; o.userData.modelmesh=true; } }); return piece; }
-// amraam_clone (#27): the round at its anchor — inherited from the source
-// art's own rounds where they exist, derived for the inboard pylons, twin
-// points spread off the single anchor (weapons.ts amraam_anchor), so
-// placement never needs hand measurement.
+// amraam_clone (#27): the round at its anchor and the art's own lean —
+// position inherited from the source art's rounds where they exist, derived
+// for the inboard pylons, twin points spread off the single anchor, and the
+// orientation from the source round's long axis (weapons.ts), so placement
+// never needs hand measurement.
 function amraam_clone(name,station){ if(!amraam_proto||!stores_proto) return null;
 	const anchor=amraam_anchor(stores_proto,station,name.endsWith("a")?"a":name.endsWith("b")?"b":""); if(!anchor) return null;
 	const piece=amraam_proto.clone(true);
 	piece.traverse(o=>{ if(o.isMesh){ o.castShadow=cfg.shadows; o.userData.modelmesh=true; } });
 	piece.position.copy(anchor);
+	piece.quaternion.copy(amraam_aim(stores_proto,station));
 	return piece; }
 // round_clone borrows the jet's own tip missile mesh for a pylon round: same
 // geometry, material, and heading — only translated to the station anchor.

@@ -6,9 +6,9 @@
 import { useEffect, useId, useRef, useState, type ChangeEvent, type ReactNode } from 'react' // #57 parked: useCallback returns with HeadPanel
 import { Trans, useLingui } from '@lingui/react/macro'
 import { msg } from '@lingui/core/macro'
-import { Check, History, LogIn, Pencil, Play, RotateCcw, Send, Settings, TriangleAlert, Users, X } from 'lucide-react'
+import { Check, ChevronRight, History, LogIn, Pencil, Play, RotateCcw, Send, Settings, TriangleAlert, Users, X } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
-import { getErrorMessage, shellSaveBlob, toast, useShellStorage } from '@mochi/web' // #57 parked: toast returns with HeadPanel
+import { Collapsible, CollapsibleContent, CollapsibleTrigger, getErrorMessage, shellSaveBlob, toast, useShellStorage } from '@mochi/web' // #57 parked: toast returns with HeadPanel
 import { diagnose } from '../lib/graphics'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
@@ -706,7 +706,13 @@ function Key({ children }: { children: ReactNode }) {
 }
 
 // A standard single-select radio group laid out inline.
-function Choice<T extends string>({
+// Segmented: the short mutually-exclusive groups (2-4 options) as a joined row
+// of buttons rather than scattered radio circles. Still a RadioGroup underneath,
+// so arrow-key navigation and the screen-reader announcement are unchanged — only
+// the skin differs. Long lists do NOT use this: past about four options the row
+// wraps and the tightness is lost, which is what crowded the dialog in the first
+// place, so Start and Clouds are Selects instead.
+function Segmented<T extends string>({
   value,
   onChange,
   options,
@@ -717,17 +723,19 @@ function Choice<T extends string>({
 }) {
   const baseId = useId()
   return (
-    <RadioGroup
-      value={value}
-      onValueChange={(v) => onChange(v as T)}
-      className='flex flex-wrap gap-x-6 gap-y-2'
-    >
+    <RadioGroup value={value} onValueChange={(v) => onChange(v as T)} className='flex flex-wrap gap-1'>
       {options.map((o) => {
         const id = `${baseId}-${o.value}`
+        const on = o.value === value
         return (
-          <div key={o.value} className='flex items-center gap-2'>
-            <RadioGroupItem value={o.value} id={id} />
-            <Label htmlFor={id} className='cursor-pointer font-normal'>
+          <div key={o.value}>
+            <RadioGroupItem value={o.value} id={id} className='peer sr-only' />
+            <Label
+              htmlFor={id}
+              className={`cursor-pointer rounded-md border px-2.5 py-1 text-sm font-normal transition-colors peer-focus-visible:ring-[3px] ${
+                on ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-muted border-input'
+              }`}
+            >
               {o.label}
             </Label>
           </div>
@@ -736,6 +744,34 @@ function Choice<T extends string>({
     </RadioGroup>
   )
 }
+
+// Picker: a long mutually-exclusive list. A Select costs a click to open, which
+// is the right trade only once the options stop fitting on one line.
+function Picker<T extends string>({
+  value,
+  onChange,
+  options,
+}: {
+  value: T
+  onChange: (value: T) => void
+  options: { value: T; label: ReactNode }[]
+}) {
+  return (
+    <Select value={value} onValueChange={(v) => onChange(v as T)}>
+      <SelectTrigger className='w-full'>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {options.map((o) => (
+          <SelectItem key={o.value} value={o.value}>
+            {o.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  )
+}
+
 
 function SliderRow({
   label,
@@ -1098,7 +1134,7 @@ function Armament({
                       if (picked) onChange({ ...loadout, [String(station)]: structuredClone(picked.slot) })
                     }}
                   >
-                    <SelectTrigger size='sm' className='w-full'>
+                    <SelectTrigger size='sm' className='w-full px-2'>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -1116,9 +1152,12 @@ function Armament({
           // Three columns MIRRORING the nose-on jet above: head-on, the
           // jet's right wing is on the viewer's LEFT. Each column runs
           // wingtip at the top to fuselage at the bottom; the centerline
-          // bottom-aligns with the fuselage row.
+          // bottom-aligns with the fuselage row. Equal thirds: the longest
+          // wing label (2× AIM-120C) and the longest centerline label
+          // (Empty pylon) are nearly the same width, and the tight gap and
+          // trigger padding buy the text room the stock spacing lacked.
           return (
-            <div className='grid grid-cols-3 gap-x-3'>
+            <div className='grid grid-cols-3 gap-x-2'>
               <div className='space-y-2'>{[9, 8, 7, 6].map(cell)}</div>
               <div className='flex flex-col justify-end'>{[5].map(cell)}</div>
               <div className='space-y-2'>{[1, 2, 3, 4].map(cell)}</div>
@@ -1700,7 +1739,7 @@ function MissionPanel({
 <SectionLabel>
   <Trans>Task</Trans>
 </SectionLabel>
-<Choice
+<Segmented
   value={config.task}
   onChange={(v) => set('task', v)}
   options={[
@@ -1713,7 +1752,7 @@ function MissionPanel({
     <SectionLabel>
       <Trans>Bandit</Trans>
     </SectionLabel>
-    <Choice
+    <Segmented
       value={String(config.bandit || 'ace')}
       onChange={(v) => set('bandit', v as 'novice' | 'pilot' | 'ace' | 'superhuman')}
       options={[
@@ -1732,7 +1771,7 @@ function MissionPanel({
     <SectionLabel>
       <Trans>Start</Trans>
     </SectionLabel>
-    <Choice
+    <Picker
       value={config.start === 'landing' ? 'case2' : config.start}
       onChange={(v) => {
         // A recovery case IS a weather definition — and a fuel state:
@@ -1757,7 +1796,7 @@ function MissionPanel({
         <SectionLabel>
           <Trans>Catapult</Trans>
         </SectionLabel>
-        <Choice
+        <Segmented
           value={String(config.cat)}
           onChange={(v) => set('cat', parseInt(v, 10))}
           options={[
@@ -1771,10 +1810,19 @@ function MissionPanel({
     )}
   </>
 )}
+{/* The recovery cases SEED the weather (seedStart: Case I day/clear, Case II
+    day/mid stratus, Case III night/low stratus) and the fuel that fits them.
+    Restating both as peer controls made the panel echo the choice just made,
+    which is most of what crowded it. They live behind a disclosure instead —
+    still one click from any override, and the summary says what is set so
+    nothing is hidden, only folded. */}
+<SectionLabel>
+  <Trans>Conditions</Trans>
+</SectionLabel>
 <SectionLabel>
   <Trans>Time of day</Trans>
 </SectionLabel>
-<Choice
+<Segmented
   value={config.tod}
   onChange={(v) => set('tod', v)}
   options={[
@@ -1785,7 +1833,7 @@ function MissionPanel({
 <SectionLabel>
   <Trans>Clouds</Trans>
 </SectionLabel>
-<Choice
+<Picker
   value={config.clouds}
   onChange={(v) => set('clouds', v)}
   options={[
@@ -1797,9 +1845,17 @@ function MissionPanel({
   ]}
 />
 {/* a MATCH takes its cheats from the creator's rules instead — these are the mission's */}
-<SectionLabel>
-  <Trans>Cheats</Trans>
-</SectionLabel>
+{/* Folded away when every cheat is off, which is the normal state: an honest
+    mission should not devote three rows to switches nobody has touched. It
+    opens itself if any cheat IS set — including one that arrives late with the
+    loaded config — and once open it stays where the player left it, so turning
+    the last one off does not snap the section shut under the cursor. */}
+<Collapsible open={cheatsOpen} onOpenChange={setCheatsOpen}>
+  <CollapsibleTrigger className='text-muted-foreground hover:text-foreground mt-4 flex w-full items-center gap-1.5 text-sm'>
+    <ChevronRight className='size-4 transition-transform [[data-state=open]_&]:rotate-90' />
+    <Trans>Cheats</Trans>
+  </CollapsibleTrigger>
+  <CollapsibleContent>
 <div className='space-y-2'>
   <SwitchRow
     id='cheat-invulnerable'
@@ -1820,6 +1876,8 @@ function MissionPanel({
     onChange={(v) => setCheat('fuel', v)}
   />
 </div>
+  </CollapsibleContent>
+</Collapsible>
 </div>
     <div>
 <SectionLabel>
