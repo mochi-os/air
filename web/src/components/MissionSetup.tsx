@@ -1706,12 +1706,7 @@ function ServerFlow({
             callsign={config.callsign}
             onServer={(v) => set('world', v)}
             onCallsign={(v) => set('callsign', v)}
-            onJoin={(info) => {
-              // Flying somebody else's match retires your own offer: you can
-              // hold one, and you are no longer waiting in it.
-              void world_withdraw(normalize_server(config.world || default_server()), pilot)
-              onJoin(info)
-            }}
+            onJoin={onJoin}
           />
         </div>
         <div className='flex min-h-0 w-full flex-col max-lg:h-96 lg:w-80'>

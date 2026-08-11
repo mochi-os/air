@@ -186,6 +186,13 @@ export function Multiplayer({
   const join = useCallback(
     (session: string, team?: string) => {
       if (!status) return
+      // Flying somebody else's match retires your own offer — you can hold
+      // one, and you are no longer waiting in it. Joining your OWN offer
+      // must NOT withdraw it: the withdraw wins the race against the game
+      // dial (which waits on asset loading), so a creator's just-made match
+      // died before they ever arrived in it.
+      const target = sessions.find((s) => s.session === session)
+      if (pilot && !target?.mine) void world_withdraw(address, pilot)
       enter({
         server: address,
         address: status.address,
@@ -195,7 +202,7 @@ export function Multiplayer({
         team,
       })
     },
-    [address, name, status, enter]
+    [address, name, status, enter, sessions, pilot]
   )
 
   const create = async () => {
