@@ -5,7 +5,7 @@
 
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
-import { normalize_round, node_centre, amraam_anchor, AMRAAM_LENGTH } from './weapons'
+import { normalize_round, node_centre, amraam_anchor, amraam_aim, AMRAAM_LENGTH } from './weapons'
 
 // A synthetic download-shaped round: a 2-long cylinder along X with a cone at
 // +x — the nose — in arbitrary units, off-centre. What Sketchfab hands us.
@@ -86,6 +86,32 @@ describe('amraam_anchor', () => {
     expect(outer.z).toBeCloseTo(single.z, 5)
     const starboard = amraam_anchor(root, 8, 'a')!
     expect(starboard.x).toBeCloseTo(amraam_anchor(root, 8)!.x - 0.15, 5) // outer flips sign across the keel
+  })
+})
+
+describe('amraam_aim', () => {
+  it('leans the round to the source round\'s long axis; inboards borrow the wing; no source means upright', () => {
+    const root = new THREE.Group()
+    const n = 40
+    const arr = new Float32Array(n * 3)
+    const pitch = (4 * Math.PI) / 180
+    for (let i = 0; i < n; i++) {
+      const t = (i / (n - 1) - 0.5) * 3
+      arr[i * 3] = 3.3 + (i % 2) * 0.05
+      arr[i * 3 + 1] = -1 + Math.sin(pitch) * t + (i % 3) * 0.02
+      arr[i * 3 + 2] = Math.cos(pitch) * t
+    }
+    const g = new THREE.BufferGeometry()
+    g.setAttribute('position', new THREE.BufferAttribute(arr, 3))
+    const mesh = new THREE.Mesh(g)
+    mesh.name = 'Missile_2'
+    root.add(mesh)
+    const nose = new THREE.Vector3(0, 0, 1).applyQuaternion(amraam_aim(root, 2))
+    expect(nose.z).toBeCloseTo(Math.cos(pitch), 2)
+    expect(nose.y).toBeCloseTo(Math.sin(pitch), 2)
+    const inboard = new THREE.Vector3(0, 0, 1).applyQuaternion(amraam_aim(root, 3))
+    expect(inboard.y).toBeCloseTo(Math.sin(pitch), 2)
+    expect(amraam_aim(root, 5).equals(new THREE.Quaternion())).toBe(true)
   })
 })
 
