@@ -9,6 +9,7 @@
 // the React <GameCanvas> via startGame(). The mission-setup menu lives in React.
 import { bench_register } from './bench'   // FIRST: the #148 sampler must survive an engine-init failure
 import { atc_step } from './atc'
+import { KEY_DEFAULTS } from './keys'
 import * as THREE from 'three'
 import {
   connect as net_dial,
@@ -17,7 +18,8 @@ import {
   type Join as NetJoin,
 } from './net'
 import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode } from './flight'
-import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release } from './stores'
+import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams } from './stores'
+import { normalize_round, amraam_anchor } from './weapons'
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
 import { flight_catalog } from './flight'
 import { diagnose } from '../lib/graphics'
@@ -37,6 +39,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import nimitz_model_url from '../assets/nimitz.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
+import amraam_model_url from '../assets/aim120c.glb?url'
 import { asset as asset_bytes, progress as load_progress } from './preload'
 import { Recorder } from './acmi'
 
@@ -1722,15 +1725,20 @@ function ddi_sms(x,display){   // SMS (#5): the stores format over the real load
 	const fired=Math.max(0, order.length-Math.max(0,ownship.msl|0));
 	const next=order[fired];   // the SMS priority station: the round the trigger takes next
 	const live=new Set(order.slice(fired).map(r=>r.name));
+	const aorder=stores_amraams(lo);   // #27: the cheek AMRAAMs, their own magazine
+	const aspent=Math.max(0,aorder.length-Math.max(0,ownship.amraam|0));
+	const alive=new Set(aorder.slice(aspent));
 	for(let station=1;station<=9;station++){
 		const slot=lo[String(station)]||{fixture:"",stores:[]};
 		const [sx,sy]=spots[station];
 		const names=stores_entries(station,slot).filter(n=>!n.startsWith("rail")&&!n.startsWith("twin")&&!n.startsWith("pylon"));
 		const missiles_here=names.filter(n=>(n.startsWith("tip")||n.startsWith("9m"))&&live.has(n)).length;
+		const amraam_here=names.some(n=>n.startsWith("120c")&&alive.has(n));
 		const tank_here=names.some(n=>n.startsWith("tank"));
 		let label="—";
 		if(tank_here) label="TK";
 		else if(missiles_here>0) label="9M"+(missiles_here>1?"×"+missiles_here:"");
+		else if(amraam_here) label="120C";
 		else if(slot.fixture&&names.length===0) label="PYL";   // hardware aboard, nothing on it
 		x.font="15px monospace"; x.textAlign="center";
 		if(colour&&label!=="—"&&label!=="PYL") x.fillStyle=tank_here?"#ffd24a":"#39e07a"; else x.fillStyle=label==="—"?"rgba(57,224,122,0.4)":"#39e07a";
@@ -1738,9 +1746,12 @@ function ddi_sms(x,display){   // SMS (#5): the stores format over the real load
 		x.font="12px monospace"; x.fillStyle="rgba(57,224,122,0.6)"; x.fillText(String(station),sx,sy+52);
 		if(master==="9m"&&next&&next.station===station){ x.strokeStyle="#39e07a"; x.lineWidth=2; x.strokeRect(sx-22,sy+20,44,20);   // the priority station's round launches next
 			x.font="12px monospace"; x.fillStyle="#39e07a"; x.fillText("SEL",sx,sy+14); }
+		if(master==="120c"&&aorder[aspent]&&+aorder[aspent].slice(4)===station){ x.strokeStyle="#39e07a"; x.lineWidth=2; x.strokeRect(sx-22,sy+20,44,20);
+			x.font="12px monospace"; x.fillStyle="#39e07a"; x.fillText("SEL",sx,sy+14); }
 		x.fillStyle="#39e07a"; }
 	x.font="18px monospace"; x.textAlign="left";
 	x.fillText("9M "+Math.max(0,ownship.msl|0),24,430);
+	x.fillText("120C "+Math.max(0,ownship.amraam|0),120,430);
 	x.fillText("GUN "+(ownship.rounds??0),24,458);
 	x.textAlign="right"; x.fillText(master.toUpperCase(),488,458); }
 function ddi_ew(x){   // EW (#11, symbols #28): the ALR-67 format. Bearing-only symbols on the nose-up ring — the radial position is the LETHALITY band, not range: an STT holding us sits on the inner ring, circled; search paints sit outer and fade between his sweep crossings. The one airframe means one symbol, "18". (An MWS-style inbound-dart cue was built and removed here — the C carries no missile warner; launch warnings arrive with the radar missiles, #27.)
@@ -1843,7 +1854,7 @@ function loadout(){ return missiles_rule?cfg.stores:stores_strip(cfg.stores); } 
 function missiles_on(){ return missiles_rule&&missiles_loaded(cfg.stores); }   // the derived flag that replaced cfg.missiles: joust rule (bandit arms when the player does), SHOOT cue, dev probe
 function loadout_racked(lo){ for(let s=2;s<=8;s++){ const slot=lo&&lo[String(s)]; if(slot&&slot.fixture) return true; } return false; }
 function bandit_remaining(){ return missiles_on()?stores_rounds(BOT_ARMED).length:0; }   // the SP bandit CARRIES the full armed standard of missiles and never expends them (its brain is guns-only; the gun draws from a real 578-round belt, #233); server bots decrement their own masks
-function assign_loadout(st,lo){ st.loadout=lo; loadout_rev++; if(loadout_racked(lo)) void init_stores_model(); apply_stores(st); }
+function assign_loadout(st,lo){ st.loadout=lo; loadout_rev++; if(loadout_racked(lo)) void init_stores_model(); if(stores_amraams(lo).length){ void init_amraam_model(); st.amraam=stores_amraams(lo).length; } apply_stores(st); }   // #27: the round's model fetches lazily like the racks; a fresh loadout's AMRAAM count seeds full
 // apply_stores rebuilds a jet's store visuals from its loadout: fixtures and
 // tanks from the split stores.glb (per-station nodes in the airframe's own
 // model space — parenting under the scene frame needs no offset math), and
@@ -1864,8 +1875,9 @@ function apply_stores(st){ if(!st.group) return;
 		for(const name of stores_entries(station,slot)){
 			if(name.startsWith("tip")) continue;   // airframe nodes, not clones
 			let piece=null;
-			if(name.startsWith("rail")||name.startsWith("twin")||name.startsWith("pylon")){ piece=stores_clone("Pylon_"+station); }
+			if(name.startsWith("rail")||name.startsWith("twin")||name.startsWith("pylon")){ piece=stores_clone("Pylon_"+station); }   // no Pylon_4/6 exists: the cheek LAU-116 shows nothing, the round sits flush (#27)
 			else if(name.startsWith("tank")){ piece=stores_clone("Tank_"+station); }
+			else if(name.startsWith("120c")){ piece=amraam_clone(station); }
 			else if(ROUND_ANCHORS[name]){ piece=round_clone(model, name, station); }
 			if(piece){ holder.add(piece); nodes[name]=piece; }
 		}
@@ -1876,6 +1888,15 @@ function apply_stores(st){ if(!st.group) return;
 	update_rails(st, Math.max(0, st.msl|0)); }
 function stores_clone(name){ if(!stores_proto) return null; const source=stores_proto.getObjectByName(name); if(!source) return null;
 	const piece=source.clone(true); piece.traverse(o=>{ if(o.isMesh){ o.castShadow=cfg.shadows; o.userData.modelmesh=true; } }); return piece; }
+// amraam_clone (#27): the round at the station's anchor — inherited from the
+// source art's own rounds where they exist, derived for the inboard pylons
+// (weapons.ts amraam_anchor), so placement never needs hand measurement.
+function amraam_clone(station){ if(!amraam_proto||!stores_proto) return null;
+	const anchor=amraam_anchor(stores_proto,station); if(!anchor) return null;
+	const piece=amraam_proto.clone(true);
+	piece.traverse(o=>{ if(o.isMesh){ o.castShadow=cfg.shadows; o.userData.modelmesh=true; } });
+	piece.position.copy(anchor);
+	return piece; }
 // round_clone borrows the jet's own tip missile mesh for a pylon round: same
 // geometry, material, and heading — only translated to the station anchor.
 function round_clone(model, name, station){
@@ -1898,7 +1919,9 @@ function update_rails(st,count){ if(!st.group) return;
 	const fired=Math.max(0, order.length-Math.max(0,count|0));
 	const live=new Set(order.slice(fired).map(r=>r.name));
 	for(const key of ["tip1","tip9"]){ const node=st.group.getObjectByName(TIP_NODES[key]); if(node) node.visible=live.has(key); }
-	for(const [name,node] of Object.entries((st.racks&&st.racks.nodes)||{})){ if(name.startsWith("9m")) node.visible=live.has(name); } }
+	for(const [name,node] of Object.entries((st.racks&&st.racks.nodes)||{})){ if(name.startsWith("9m")) node.visible=live.has(name); }
+	{ const order=stores_amraams(lo); const spent=Math.max(0,order.length-Math.max(0,st.amraam??order.length));   // #27: expended AMRAAMs disappear port cheek first; a jet with no count (remote) keeps them all
+		order.forEach((name,i)=>{ const node=st.racks&&st.racks.nodes&&st.racks.nodes[name]; if(node) node.visible=i>=spent; }); } }
 function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); position_aircraft_lights(); calibrate_eye();
 	assign_loadout(ownship, loadout()); assign_loadout(bandit, missiles_on()?BOT_ARMED:BOT_CLEAN);
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining()); }   // re-pin the ownship lights to the real airframe; rails reflect the loadout
@@ -1965,7 +1988,9 @@ function jettison_stations(stations, what){
 	const before=stores_rounds(lo), fired=Math.max(0,before.length-Math.max(0,ownship.msl|0));
 	const live=new Set(stores_rounds(next).map(r=>r.name));
 	const gone=before.slice(fired).filter(r=>!live.has(r.name)).length;   // live rounds that left on their racks
+	const carried=Math.min(Math.max(0,ownship.amraam|0), stores_amraams(next).length);   // #27: cheek rounds that left on their racks stop counting (assign_loadout re-seeds full)
 	assign_loadout(ownship,next);
+	ownship.amraam=carried;
 	ownship.msl=Math.max(0,(ownship.msl|0)-gone);
 	update_rails(ownship,ownship.msl);
 	// The release envelope (#43, NATOPS fig 4-4 jettison columns: 575 KCAS /
@@ -2101,34 +2126,53 @@ async function init_external_model(kind){
 // carries anything beyond the wingtips. Same sandbox-safe pipeline as the
 // airframe: strip texture refs, parse, decode KTX2 in-process.
 let stores_proto=null, stores_pending=null;
+// load_split: the sandbox-safe GLB pipeline shared by the split stores model
+// and the ordnance model (#27) — strip texture refs, parse with meshopt, then
+// decode and re-apply the textures in-process.
+async function load_split(url, tag){
+	const abuf=await asset_bytes(url);
+	const parts=glb_split(abuf); const tex_by_material=model_textures(parts);
+	(parts.json.materials||[]).forEach(m=>{ if(m.pbrMetallicRoughness){ delete m.pbrMetallicRoughness.baseColorTexture; delete m.pbrMetallicRoughness.metallicRoughnessTexture; } delete m.normalTexture; delete m.occlusionTexture; delete m.emissiveTexture;
+		for(const ext of Object.values(m.extensions||{})){ for(const key of Object.keys(ext)){ if(key.endsWith("Texture")) delete ext[key]; } } });
+	delete parts.json.textures; delete parts.json.images; delete parts.json.samplers;
+	const clean=glb_repack(parts.json, parts.bin);
+	const gltf=await new Promise((res,rej)=>{ const loader=new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder); loader.parse(clean,"",res,rej); });
+	if(typeof createImageBitmap==="function"){
+		const decoded={};
+		await Promise.all(Object.keys(tex_by_material).map(async name=>{ try{
+			const src=tex_by_material[name]; const make=async(im,srgb)=>im?make_tex(im,srgb):null;
+			decoded[name]={ base:await make(src.base,true) };
+		}catch(te){ console.warn("["+tag+"] texture decode failed for "+name,te&&te.message||te); } }));
+		gltf.scene.traverse(o=>{ if(o.isMesh&&o.material){ (Array.isArray(o.material)?o.material:[o.material]).forEach(mm=>{
+			const d=decoded[mm.name];
+			if(d&&d.base) mm.map=d.base;
+			if(mm.metalness!==undefined){ mm.metalness=0.0; mm.roughness=0.88; }   // the same matte tactical finish as the airframe
+			mm.needsUpdate=true;
+		}); } });
+	}
+	return gltf.scene;
+}
 async function init_stores_model(){
 	if(stores_proto) return; if(stores_pending) return stores_pending;
 	stores_pending=(async()=>{ try{
-		const abuf=await asset_bytes(stores_model_url);
-		const parts=glb_split(abuf); const tex_by_material=model_textures(parts);
-		(parts.json.materials||[]).forEach(m=>{ if(m.pbrMetallicRoughness){ delete m.pbrMetallicRoughness.baseColorTexture; delete m.pbrMetallicRoughness.metallicRoughnessTexture; } delete m.normalTexture; delete m.occlusionTexture; delete m.emissiveTexture;
-			for(const ext of Object.values(m.extensions||{})){ for(const key of Object.keys(ext)){ if(key.endsWith("Texture")) delete ext[key]; } } });
-		delete parts.json.textures; delete parts.json.images; delete parts.json.samplers;
-		const clean=glb_repack(parts.json, parts.bin);
-		const gltf=await new Promise((res,rej)=>{ const loader=new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder); loader.parse(clean,"",res,rej); });
-		if(typeof createImageBitmap==="function"){
-			const decoded={};
-			await Promise.all(Object.keys(tex_by_material).map(async name=>{ try{
-				const src=tex_by_material[name]; const make=async(im,srgb)=>im?make_tex(im,srgb):null;
-				decoded[name]={ base:await make(src.base,true) };
-			}catch(te){ console.warn("[stores] texture decode failed for "+name,te&&te.message||te); } }));
-			gltf.scene.traverse(o=>{ if(o.isMesh&&o.material){ (Array.isArray(o.material)?o.material:[o.material]).forEach(mm=>{
-				const d=decoded[mm.name];
-				if(d&&d.base) mm.map=d.base;
-				if(mm.metalness!==undefined){ mm.metalness=0.0; mm.roughness=0.88; }   // the same matte tactical finish as the airframe
-				mm.needsUpdate=true;
-			}); } });
-		}
-		stores_proto=gltf.scene;
+		stores_proto=await load_split(stores_model_url,"stores");
 		apply_stores(ownship); apply_stores(bandit);   // jets that spawned before the fetch finished get their racks now
 		for(const st of remotes.values()) apply_stores(st);
 	}catch(e){ console.warn("[stores] model failed",e&&e.message||e); stores_pending=null; } })();
 	return stores_pending;
+}
+// The AIM-120C round (#27): one designation per GLB, like the airframe —
+// normalised to the placement convention (z longitudinal nose-forward,
+// metres, centred) at load, fetched only when a loadout carries one.
+let amraam_proto=null, amraam_pending=null;
+async function init_amraam_model(){
+	if(amraam_proto) return; if(amraam_pending) return amraam_pending;
+	amraam_pending=(async()=>{ try{
+		amraam_proto=normalize_round(await load_split(amraam_model_url,"aim120c"));
+		apply_stores(ownship); apply_stores(bandit);
+		for(const st of remotes.values()) apply_stores(st);
+	}catch(e){ console.warn("[aim120c] model failed",e&&e.message||e); amraam_pending=null; } })();
+	return amraam_pending;
 }
 
 // ============================================================================ optional external carrier model
@@ -2403,7 +2447,7 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
 	m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30);   // off the rail at aircraft speed; the Mk 36 does the rest
-	m.life=20; m.target=target; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.prate=undefined;
+	m.life=20; m.kind="9m"; m.target=target; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.prate=undefined;
 	if(target){ const dx=wrap_axis(target.pos.x-st.pos.x), dy=target.pos.y-st.pos.y, dz=wrap_axis(target.pos.z-st.pos.z); const d=Math.hypot(dx,dy,dz)||1;
 		const tail=target.fwd?Math.max(0,(dx*target.fwd.x+dy*target.fwd.y+dz*target.fwd.z)/d):0;
 		const floor=0.15+0.35*THREE.MathUtils.clamp(target.reheat??0,0,1);
@@ -2421,10 +2465,36 @@ const _launch_box=new THREE.Box3();
 // real press-release cleared it — the trigger "only worked after pressing
 // space, which did nothing".
 function trigger_missile(){
+	if(master==="120c"){ trigger_amraam(); return; }   // #27 phase 1: the trigger serves the selected weapon
 	if(master!=="9m" || weapons_hold || ownship.launching || (ownship.gear??0)<=0.98 || ownship.msl<=0) return;   // an unarmed loadout has no rounds, so msl covers the retired missiles flag (#17)
 	if(MULTIPLAYER) missile_flag=true;
 	if(launch_missile(ownship,MULTIPLAYER?(remotes.get(designated)||remote_nearest()):(has_enemy?bandit:null))){ if(!cheat("ammunition")) ownship.msl--; audio_launch(); update_rails(ownship,ownship.msl); }
 }
+// trigger_amraam (#27 phase 1, SP only — the select cycle never offers 120C in
+// multiplayer): the launch REQUIRES the radar's STT — the emission gameplay is
+// the point — and the round then flies fire-and-forget on the track.
+function trigger_amraam(){
+	if(MULTIPLAYER || weapons_hold || ownship.launching || (ownship.gear??0)<=0.98 || (ownship.amraam|0)<=0) return;
+	if(RADAR.stt!=="bandit" || !has_enemy || !bandit.group.visible){ notice("NO RADAR LOCK"); return; }
+	if(launch_amraam(ownship,bandit)){ if(!cheat("ammunition")) ownship.amraam--; audio_launch(); update_rails(ownship,ownship.msl); }
+}
+// launch_amraam: the very simple AIM-120C (#27 phase 1) — the 9M's pool and
+// pro-nav with a hotter, longer motor and none of the heater's frailties (no
+// flare seduction, wide gimbal, high track ceiling): the active-seeker
+// handwave until phase 2's proper employment model.
+function launch_amraam(st,target){ const m=missiles.find(x=>!x.active); if(!m) return false;
+	let sp=local_offset(st,1,-0.9,0);
+	const order=stores_amraams(st.loadout||{});
+	const name=order[Math.max(0,order.length-Math.max(0,st.amraam|0))];
+	const piece=name&&st.racks&&st.racks.nodes&&st.racks.nodes[name];
+	if(piece){ _launch_box.setFromObject(piece); _launch_box.getCenter(_v); sp={x:_v.x,y:_v.y,z:_v.z}; }
+	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
+	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
+	m.vx=st.fwd.x*(st.speed+15); m.vy=(st.fwd.y*st.speed)-8; m.vz=st.fwd.z*(st.speed+15);   // the LAU-116 ejector punches the round DOWN off the cheek before the motor lights
+	m.life=60; m.kind="120c"; m.target=target; m.smoke_acc=0; m.burn=8.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.prate=undefined;
+	{ const d=Math.hypot(target.pos.x-m.px,target.pos.y-m.py,target.pos.z-m.pz)||1;
+		m.sx=(target.pos.x-m.px)/d; m.sy=(target.pos.y-m.py)/d; m.sz=(target.pos.z-m.pz)/d; }
+	return true; }
 function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.visible=false; continue; } m.life-=dt; m.flew+=dt;
 	if(DEV_MODE&&m.target){ const md=wrap_distance({x:m.px,y:m.py,z:m.pz},m.target.pos); if(md<(m.least??1e9)) m.least=md; }   // terminal telemetry for dev_missiles
 	const post=(why)=>{ if(DEV_MODE){ const log=(globalThis as any).dev_missiles=(globalThis as any).dev_missiles||[]; log.push({why, least:+(m.least??-1).toFixed(1), flew:+m.flew.toFixed(1), loose:!!m.loose, broke:m.why||"", at:m.at??-1, mask:m.mask??-1, killed:!!m.killed}); } };
@@ -2434,9 +2504,10 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.v
 	// turn in drag; a fuse that arms after separation; flares that SEDUCE.
 	let spd=Math.hypot(m.vx,m.vy,m.vz)||1;
 	const t=m.target;
+	const fox3=m.kind==="120c";   // #27 phase 1: the radar round shares the pool with different constants and no IR frailties
 	let tracking=!m.loose && m.blind<=0 && !!t && (t!==bandit || bandit.group.visible);
-	// Bandit flares: one seduction roll per flare window (SP only — MP damage is the server's).
-	if(tracking && t===bandit && sim_time-(bandit.flared_at??-9)<0.8){
+	// Bandit flares: one seduction roll per flare window (SP only — MP damage is the server's). Flares mean nothing to a radar seeker (chaff is #29).
+	if(tracking && !fox3 && t===bandit && sim_time-(bandit.flared_at??-9)<0.8){
 		if(!m.window){ m.window=true;
 			const dx=m.px-bandit.pos.x, dy=m.py-bandit.pos.y, dz=m.pz-bandit.pos.z; const dd=Math.hypot(dx,dy,dz)||1;
 			const tail=THREE.MathUtils.clamp(-(dx*bandit.fwd.x+dy*bandit.fwd.y+dz*bandit.fwd.z)/dd,0,1);
@@ -2457,11 +2528,15 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.v
 		const squared=cvx*cvx+cvy*cvy+cvz*cvz;
 		const ts=squared>1e-9?THREE.MathUtils.clamp(-(rx*cvx+ry*cvy+rz*cvz)/squared,0,dt):0;
 		const nx=rx+cvx*ts, ny=ry+cvy*ts, nz=rz+cvz*ts;
-		if(Math.hypot(nx,ny,nz)<12){ m.active=false; m.mesh.visible=false;
+		const near=Math.hypot(nx,ny,nz);
+		if(near<(fox3?20:12)){ m.active=false; m.mesh.visible=false;
 			const bx=t.pos.x-nx, by=t.pos.y-ny, bz=t.pos.z-nz;   // the missile at its nearest point, anchored to the target
-			if(!MULTIPLAYER&&has_enemy&&t===bandit){ const verdict=battle_blast(0,{x:bx,y:by,z:bz},battle_aim(bandit),0,battle_tick);
-				if(DEV_MODE){ m.mask=verdict.mask; m.killed=verdict.kill; }
-				explosion_at(bx,by,bz); if(verdict.kill){ own_kills++; bandit_destroy(); } }
+			if(!MULTIPLAYER&&has_enemy&&t===bandit){
+				if(fox3&&near<18){ if(DEV_MODE){ m.mask=-1; m.killed=true; }   // #27 phase 1 PLACEHOLDER: the simple PN endgame grazes a hard-evading target at 12-21 m, and the deliberately-simple round scores that as the 22 kg warhead's kill rather than growing proper guidance now — phase 2's core flight model and warhead classes replace this whole criterion
+					explosion_at(bx,by,bz); own_kills++; bandit_destroy(); }
+				else { const verdict=battle_blast(0,{x:bx,y:by,z:bz},battle_aim(bandit),0,battle_tick);
+					if(DEV_MODE){ m.mask=verdict.mask; m.killed=verdict.kill; }
+					explosion_at(bx,by,bz); if(verdict.kill){ own_kills++; bandit_destroy(); } } }
 			post("fuse");
 			continue; } }
 	let ax=0, ay=0, az=0, guided=false;
@@ -2472,12 +2547,12 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.v
 		const dx=ax-m.px, dy=ay-m.py, dz=az-m.pz; const dist=Math.hypot(dx,dy,dz)||1e-6;
 		const ux=dx/dist, uy=dy/dist, uz=dz/dist;
 		const axl=m.vx/spd, ayl=m.vy/spd, azl=m.vz/spd;
-		if(ux*axl+uy*ayl+uz*azl<0.766){ if(DEV_MODE&&!m.loose){ m.why="gimbal"; m.at=+dist.toFixed(0); } m.loose=true; }   // ±40° gimbal: the lock breaks
+		if(ux*axl+uy*ayl+uz*azl<(fox3?0.5:0.766)){ if(DEV_MODE&&!m.loose){ m.why="gimbal"; m.at=+dist.toFixed(0); } m.loose=true; }   // ±40° gimbal (the 120's own seeker gimbals wider, ±60)
 		let rx=(ux-m.sx)/Math.max(dt,1e-6), ry=(uy-m.sy)/Math.max(dt,1e-6), rz=(uz-m.sz)/Math.max(dt,1e-6);
 		const along=rx*ux+ry*uy+rz*uz; rx-=along*ux; ry-=along*uy; rz-=along*uz;   // the rotation component of the LOS motion
 		const rate=Math.hypot(rx,ry,rz);
 		const paced=(rate+(m.prate??rate))/2; m.prate=rate;   // two-frame average: the bandit advances in whole 1/60 s quanta, so off-60 fps render frames see its motion as alternating spikes — judge the ceiling on the mean, not the artifact
-		if(paced>0.35){ if(DEV_MODE&&!m.loose){ m.why="rate"; m.at=+dist.toFixed(0); } m.loose=true; }   // the seeker's track ceiling — beaming saturates it
+		if(paced>(fox3?0.7:0.35)){ if(DEV_MODE&&!m.loose){ m.why="rate"; m.at=+dist.toFixed(0); } m.loose=true; }   // the seeker's track ceiling — beaming saturates it (the radar round tracks harder, phase 1)
 		m.sx=ux; m.sy=uy; m.sz=uz;
 		if(!m.loose){
 			// PROPORTIONAL NAVIGATION: a = N·Vc·λ̇ — fly the collision course.
@@ -2496,7 +2571,8 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.v
 				if(spd<ts+60 && closing<40){ m.active=false; m.mesh.visible=false; post("energy"); continue; } }   // energy death: it trails off, no dice
 		}
 	} else if(guided){ const dx=ax-m.px, dy=ay-m.py, dz=az-m.pz; const dd=Math.hypot(dx,dy,dz)||1; m.sx=dx/dd; m.sy=dy/dd; m.sz=dz/dd; }
-	if(m.burn>0){ m.burn-=dt; spd=Math.hypot(m.vx,m.vy,m.vz)||1; m.vx+=m.vx/spd*260*dt; m.vy+=m.vy/spd*260*dt; m.vz+=m.vz/spd*260*dt; }
+	if(m.burn>0){ m.burn-=dt; spd=Math.hypot(m.vx,m.vy,m.vz)||1; const thrust=fox3?150:260;   // the 120's motor burns longer and gentler: ~1,200 m/s over 8 s against the 9M's ~780 over 3
+		m.vx+=m.vx/spd*thrust*dt; m.vy+=m.vy/spd*thrust*dt; m.vz+=m.vz/spd*thrust*dt; }
 	else if(m.loose||!guided){ spd=Math.hypot(m.vx,m.vy,m.vz)||1; const next=Math.max(spd-5e-5*spd*spd*dt,60)/spd; m.vx*=next; m.vy*=next; m.vz*=next; }
 	m.px+=m.vx*dt;m.py+=m.vy*dt;m.pz+=m.vz*dt; m.mesh.position.set(m.px,m.py,m.pz); m.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),new THREE.Vector3(m.vx,m.vy,m.vz).normalize());
 	m.trail_acc+=dt; if(m.trail_acc>.035){ m.trail_acc=0; const a=m.trail.geometry.attributes.position.array, n=Math.min(30,m.trail_n+1); if(m.trail_n>=30)a.copyWithin(0,3); const o=(n-1)*3; a[o]=m.px;a[o+1]=m.py;a[o+2]=m.pz; m.trail_n=n; m.trail.geometry.setDrawRange(0,n); m.trail.geometry.attributes.position.needsUpdate=true; }
@@ -2534,7 +2610,7 @@ ownship.player=true; ownship.q=new THREE.Quaternion(); ownship.up=new THREE.Vect
 // from a visibly clean jet and the stores mass/drag covers at most the two
 // tips; #226 owns doing stores properly.
 function magazine(){ return stores_rounds(ownship.loadout||loadout()).length; }   // the flown loadout's round count in SMS firing order (#17): four for the Fox 2 fighter, zero for the Gun fighter or a guns-only match
-ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.burner=0; ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.cm=60; ownship.aoa=0; ownship.gload=1;
+ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.burner=0; ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(loadout()).length; ownship.cm=60; ownship.aoa=0; ownship.gload=1;
 ownship.launching=false;
 // init quaternion from initial fwd
 (()=>{ const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
@@ -3415,7 +3491,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("radar.undesignate")) radar_undesignate();   // #30: STT back to search, then the L&S, gone
 		if(ch===key_of("radar.silent")){ RADAR.sil=!RADAR.sil; notice(RADAR.sil?"RADAR SILENT":"RADAR ACTIVE"); }   // #30: emission discipline is a reflex action — annunciator vocabulary stays English
 		if(ch===key_of("radar.acm")){ RADAR.acm=RADAR.acm==="bst"?"vacq":"bst"; notice(RADAR.acm==="bst"?"ACM BORESIGHT":"ACM VERTICAL"); }   // #30: the castle-switch stand-in
-		if(ch===key_of("select")){ set_master(master==="gun"?"9m":master==="9m"?"nav":"gun"); }   // weapon select (#133): GUN -> 9M -> NAV -> GUN; the HUD master mode follows, and crossing the A/A-NAV boundary recalls that mode's displays (#15)
+		if(ch===key_of("select")){ set_master(master==="gun"?"9m":master==="9m"?(MULTIPLAYER?"nav":"120c"):master==="120c"?"nav":"gun"); }   // weapon select (#133, #27): GUN -> 9M -> 120C -> NAV -> GUN; 120C stays out of the cycle in multiplayer until phase 2 wires the server round. Crossing the A/A-NAV boundary recalls that mode's displays (#15)
 		if(ch===key_of("altitude")){ alt_radar=!alt_radar; }   // HUD altitude switch: BARO <-> RDR
 		if(ch===key_of("reject")){ declutter=(declutter+1)%3; notice(translate(["HUD NORM","HUD REJ 1","HUD REJ 2"][declutter])); }     // the three-position symbology reject switch (NATOPS 2.13.4.8.1) — unbound by default: re-pressing 2 cycles it; the action stays for players who want a dedicated key or button
 		if(ch===key_of("guns")) trigger_missile();   // one trigger, weapon-selected: in 9M the trigger launches (the real Hornet's trigger fires the selected A/A weapon) chases the acquisition when one exists (the server's seeker judges the real damage)
@@ -3566,12 +3642,18 @@ stage.addEventListener("pointercancel",end_drag,{ signal });
 // Remappable input actions (#74): defaults here, user overrides in cfg.keys
 // (the menu's Keys tab). Joystick buttons bind to ACTIONS and replay the
 // action's current key as a synthetic event, so pad binds follow key remaps.
-const KEYS={ "pitch.up":"KeyS", "pitch.down":"KeyW", "roll.right":"KeyD", "roll.left":"KeyA", "yaw.right":"KeyE", "yaw.left":"KeyQ",
-	"throttle.up":"BracketRight", "throttle.down":"BracketLeft", guns:"Space", launch:"Enter", "brake.wheel":"KeyB", "brake.speed":"Slash", "trim.up":"Period", "trim.down":"Comma", "trim.left":"Shift+Comma", "trim.right":"Shift+Period", "trim.reset":"None", "flaps.extend":"KeyF", "flaps.retract":"Shift+KeyF", override:"KeyO", "brake.parking":"Shift+KeyB",
-	gear:"KeyG", hook:"KeyH", probe:"KeyR", atc:"KeyP", lights:"KeyL", flares:"KeyC", eject:"Shift+KeyE", map:"KeyM", chat:"KeyT", shout:"Shift+KeyT", menu:"Escape", view:"None", select:"KeyX", altitude:"KeyK", reject:"None", acquire:"Enter",
-	canopy:"Shift+KeyC", fold:"Shift+KeyW", "zoom.in":"Equal", "zoom.out":"Minus", "view.reset":"Digit0", repeater:"KeyI", "look.target":"KeyY",
-	"jettison.tanks":"KeyJ", "jettison.emergency":"Shift+KeyJ", "caution.reset":"Shift+KeyM", dump:"Shift+KeyD", "secure.port":"Shift+KeyZ", "secure.starboard":"Shift+KeyX",
-	"radar.silent":"Shift+KeyR", "radar.acm":"KeyV", "radar.undesignate":"Shift+Enter" };   // #30: V cycles the ACM condition (a real key, not None — pad buttons replay the bound key, and "None" would fire every unbound action at once)   // the cutoffs are chords like the jettison family — securing an engine must be deliberate (Shift+Digit collided with the dev scenario starts)   // chord actions: "Shift+<code>" — matched against the full chord, so Shift+F never also fires flares. J is the jettison family; eject moved to triple-Escape (a pilot reaching for "jettison" must never punch out)
+// The table itself lives in ./keys, which the menu's Keys tab already reads —
+// ONE table, because two drifted: the tab advertised eject on J while the
+// engine had moved it to Shift+E (J became the jettison family, and a pilot
+// reaching for jettison must never punch out), and twelve actions the engine
+// binds — look.target, both zooms, the jettison pair, all three radar controls,
+// caution.reset, dump and the two cutoffs — were absent from the tab entirely,
+// so it drew them as unbound. keys.test.ts now fails if the two disagree.
+// #30: V cycles the ACM condition, a real key rather than None — pad buttons
+// replay the bound key, and "None" would fire every unbound action at once.
+// Chord actions are "Shift+<code>", matched against the full chord, so Shift+F
+// never also fires flares.
+const KEYS=KEY_DEFAULTS;
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
 const key_axes={ pitch:0, roll:0, yaw:0 };
@@ -3682,16 +3764,20 @@ function read_input(dt){
 		for(const [action,list] of Object.entries(bind.buttons)) for(const index of String(list).split(",")){ const b=+index;   // a binding may list several buttons
 			if(!(b>=0)||b>=pad.buttons.length) continue;
 			const down=pad.buttons[b].pressed;
-			if(action.startsWith("look.")){ if(down) pad_looks[action.slice(5)]=true; continue; }   // look directions are level state for the camera, not key events
+			if(action.startsWith("look.")&&action!=="look.target"){ if(down) pad_looks[action.slice(5)]=true; continue; }   // look DIRECTIONS are level state for the camera, not key events. look.target is NOT one of them: it is a bound hold read from the keys set, and the bare prefix swallowed it into pad_looks.target, which nothing reads — so the stick's "Look at target" button did nothing at all. It falls through to the key replay below instead
 			if(action==="guns"){   // held fire stays a LEVEL read (any bound button, immune to another button's release); the PRESS edge calls the 9M launch DIRECTLY — no synthetic key event, which wedged Space into the held-keys set and froze the edge for keyboard and trigger alike
 				if(down){ pad_guns=true;
 					if(!pad_buttons["guns/"+b]){ pad_buttons["guns/"+b]=true; trigger_missile(); } }
 				else pad_buttons["guns/"+b]=false;
 				continue; }
 			if(action==="zoom.in"||action==="zoom.out") continue;   // notch zoom is scanned by scan_zoom (also polled while the map pauses the world)
+			// A KEYLESS action cannot be replayed. "None" is truthy, so the generic path below dispatched a synthetic event carrying the code "None", and EVERY unbound action matched it at once — a stick button bound to Cycle view also toggled the HUD reject switch and zeroed the trim. These two are the keyless actions a stick may reasonably carry, so they fire directly on the press edge, the same shape as guns and the zoom notches above; that also hands trim reset to the stick without inventing a keyboard chord for an action deliberately left unbound.
+			if(action==="view"||action==="trim.reset"){ const edge=pad_buttons[action+"/"+b]||false;
+				if(down&&!edge){ if(action==="view") set_view(cfg.view==="cockpit"?"hud":"cockpit"); else reset_flag=true; }
+				pad_buttons[action+"/"+b]=down; continue; }
 			const was=pad_buttons[action+"/"+b]||false;   // other actions replay their CURRENT key: synthetic keydown on press, keyup on release, so held actions (brakes) work and pad binds follow key remaps
 			if(down!==was){ pad_buttons[action+"/"+b]=down; const bindText=key_of(action);
-				if(bindText){ const shift=bindText.startsWith("Shift+"), code=bindText.replace("Shift+","");
+				if(bindText&&bindText!=="None"){ const shift=bindText.startsWith("Shift+"), code=bindText.replace("Shift+","");
 					for(const target of [window, document, stage]) target.dispatchEvent(new KeyboardEvent(down?"keydown":"keyup",{ code, shiftKey:shift, bubbles:true })); } } }
 	}
 	else { pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_guns=false; }
@@ -4097,7 +4183,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	if(base) base.traverse((o:any)=>{ if(o.isMesh&&o.geometry?.attributes?.position){ const pos=o.geometry.attributes.position; for(let i=0;i<pos.count;i++){ v.fromBufferAttribute(pos,i).applyMatrix4(o.matrixWorld); if(!claw||v.y<claw.y) claw={x:v.x,y:v.y,z:v.z}; } } });
 	let cl=null; if(claw){ const local=new THREE.Vector3(claw.x,claw.y,claw.z); ownship.group.worldToLocal(local); cl={x:+local.x.toFixed(2),y:+local.y.toFixed(2),z:+local.z.toFixed(2)}; }
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
-if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl,
+if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl, amraam:Math.max(0,ownship.amraam|0),
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
 	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], /* #57 parked: tracking:{ on:head_track?1:0, ok:head_ok?1:0, az:+head_az.toFixed(3), el:+head_el.toFixed(3) }, */ radar:{ mode:RADAR.sil?"sil":RADAR.stt!=null?"stt":RADAR.mode, w:Math.round(RADAR.half()/D2R), scale:RADAR.scale, sweep:+(RADAR.sweep/D2R).toFixed(1), bricks:RADAR.bricks.length, tracks:RADAR.tracks.length, ls:RADAR.ls??null, stt:RADAR.stt??null, emit:RADAR.emitter(), bandit:bandit_emitter, el:Math.round(RADAR.elevation/D2R), track:RADAR.tracks.length?(()=>{ const g=radar_geometry(radar_own(),RADAR.tracks[0],wrap_axis); return { az:+(g.azimuth/D2R).toFixed(1), range:Math.round(g.range) }; })():null }, draws:ddi_draws, emitters:MULTIPLAYER&&net?Object.fromEntries(net.emitters):null, rwr:{ n:RWR.contacts.length, lock:RWR.locked(), paints:RWR.paints, contacts:RWR.contacts.map(c=>({ id:c.id, brg:Math.round(c.bearing/D2R), lk:c.locked?1:0, age:+(RWR.time-c.at).toFixed(1) })) },home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
 	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
@@ -4276,7 +4362,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	const wire=out[STATE.wire];
 	if(wire>=0&&prev_wire<0){ ownship.trapped=true; ownship.wire=wire+1; ownship.grade=lso_grade(); ownship.turned=false; ownship.taxied=false; notice(translate(ownship.grade)+", "+translate(ownship.wire+" WIRE"), 8); }
 	if(ownship.trapped&&!ownship.turned&&ownship.speed<0.5){ ownship.turned=true;   // chocked and chained: the deck crew turn the jet around and service it (#128)
-		ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.cm=60; update_rails(ownship,ownship.msl);
+		ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(ownship.loadout||loadout()).length; ownship.cm=60; update_rails(ownship,ownship.msl);
 		const b=flight_get(); b[STATE.fuel]=FUEL(); b[STATE.external]=external_capacity(); flight_set(b); }   // the deck crew top the externals too — every spawn and service is a full-tank fill (#17)
 	if(ownship.turned&&!ownship.taxied&&ownship.speed>4){ ownship.taxied=true; notice(translate("REARMED")); }   // announce the rearm only once the player TAXIES clear of the trap — so it never lands on top of the LSO grade at the stop (#72)   // end the LSO grade banner so REARMED replaces it cleanly instead of overprinting it (#72)
 	else if(wire<0&&prev_wire>=0){ ownship.trapped=false; }
@@ -4290,7 +4376,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	if(!ownship.grounded && ownship.speed>50) ownship.flown=true;
 	if(ownship.flown && ownship.grounded && !ownship.trapped && ownship.speed<0.5 && on_strip(ownship.pos)){
 		ownship.flown=false; ownship.turned=true; ownship.taxied=false;
-		ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.cm=60; update_rails(ownship,ownship.msl);
+		ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(ownship.loadout||loadout()).length; ownship.cm=60; update_rails(ownship,ownship.msl);
 		const b=flight_get(); b[STATE.fuel]=FUEL(); b[STATE.external]=external_capacity(); flight_set(b); }
 }
 function on_strip(p){   // point inside any paved capsule (the airfield strips; the carrier deck is not one)
@@ -5446,6 +5532,7 @@ function draw_hud(){
 	{ const ly=cy+7.2*ppdv; const bxl=ax-84;
 		if(master==="gun"){ hctx.fillStyle=input.guns?AM:GR; hctx.fillText(translate("GUN")+" "+(cheat("ammunition")?"\u221e":ownship.rounds),bxl,ly); hctx.fillStyle=GR; }
 		else if(master==="9m") hctx.fillText("9M "+(cheat("ammunition")?"\u221e":ownship.msl),bxl,ly);
+		else if(master==="120c") hctx.fillText("120C "+(cheat("ammunition")?"\u221e":Math.max(0,ownship.amraam|0)),bxl,ly);
 		else hctx.fillText("NAV",bxl,ly); }
 
 	// ---- throttle gauge: hud-view furniture only — the real HUD carries no such thing, so it lives at the screen edge with the rest of the game furniture ----
@@ -5536,6 +5623,7 @@ function draw_hud(){
 	hctx.fillStyle=input.guns?AM:GR;
 	hctx.fillText(translate("GUN")+"  "+(cheat("ammunition")?"∞":ownship.rounds),40,HH-88); hctx.fillStyle=GR;
 	hctx.fillText("9M  "+(cheat("ammunition")?"∞":ownship.msl),40,HH-70);
+	if(stores_amraams(ownship.loadout||{}).length||ownship.amraam>0) hctx.fillText("120C  "+(cheat("ammunition")?"∞":Math.max(0,ownship.amraam|0)),150,HH-70);   // #27: beside the 9M count — only when the loadout actually carries them
 	hctx.fillText(translate("FLARES")+"  "+(cheat("ammunition")?"∞":ownship.cm),40,HH-52);
 	if(cheat("fuel")) hctx.fillText(translate("FUEL")+"  ∞",40,HH-34);   // the tank is frozen: no pounds, no LO/BINGO colours
 	else { const pounds=Math.round(((ownship.fuel??0)+(ownship.external??0))*2.2046/10)*10;   // the IFEI headline is TOTAL fuel, externals included (#17) — they burn first, so this is the number that counts down from the top
@@ -6000,12 +6088,13 @@ function start_mission(){
 	// #57 parked: dev_head=devq.get("head")==="1";   // &head=1: force head tracking on for headless verification (#57)   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)
 	livery_pending=devq.get("livery");   // ?livery=red|blue — paint ownship that side and the bandit the other (headless livery verification)
 	const viewq=devq.get("view"); if(viewq) set_view(viewq);   // ?view=cockpit|hud|chase — headless capture hook (#105)
-	const storesq=devq.get("stores");   // &stores=gun|fox2|cap|tanks|right — headless loadout hook (#17): presets plus a three-tank fit and a starboard-only tank (the port/starboard sign check)
+	const storesq=devq.get("stores");   // &stores=gun|fox2|cap|tanks|right|fox3 — headless loadout hook (#17): presets plus a three-tank fit, a starboard-only tank (the port/starboard sign check), and the cheek-AMRAAM fit (#27)
 	if(storesq){ const extra={
 		tanks:{ 1:{fixture:"rail",stores:["9m"]}, 3:{fixture:"pylon",stores:["tank"]}, 5:{fixture:"pylon",stores:["tank"]}, 7:{fixture:"pylon",stores:["tank"]}, 9:{fixture:"rail",stores:["9m"]} },
-		right:{ 7:{fixture:"pylon",stores:["tank"]} } };
+		right:{ 7:{fixture:"pylon",stores:["tank"]} },
+		fox3:{ 1:{fixture:"rail",stores:["9m"]}, 2:{fixture:"rail",stores:["120c"]}, 3:{fixture:"pylon",stores:["120c"]}, 4:{fixture:"rail",stores:["120c"]}, 6:{fixture:"rail",stores:["120c"]}, 7:{fixture:"pylon",stores:["120c"]}, 8:{fixture:"rail",stores:["120c"]}, 9:{fixture:"rail",stores:["9m"]} } };
 		const pick=stores_presets[storesq]||extra[storesq];
-		if(pick){ cfg.stores=stores_normalize(pick); assign_loadout(ownship, loadout()); ownship.msl=magazine(); update_rails(ownship, ownship.msl); } }
+		if(pick){ cfg.stores=stores_normalize(pick); assign_loadout(ownship, loadout()); ownship.msl=magazine(); ownship.amraam=stores_amraams(ownship.loadout||{}).length; update_rails(ownship, ownship.msl); } }
 	dev_fps=parseFloat(devq.get("fps")||"0")||0; dev_jitter=devq.get("jitter")==="1";   // ?fps=N + ?jitter=1: forced frame dt with optional stutter spikes
 	const scq=devq.get("scenario"); if(scq!==null){ const n=parseInt(scq)||0; const arm=setInterval(()=>{ if(TESTS[n]&&TESTS[n].carrier?carrier_ols:airports.length){ clearInterval(arm); start_test(n); } }, 500); }   // &scenario=N: fire a landing test once ITS surface data exists (carrier scenarios need the OLS survey, not just the airfield list) — a fixed 3 s timer lost the race to the map load and the hook silently never ran
 	const startq=devq.get("start"); if(startq){ cfg.start=startq; cfg.task="free"; }

@@ -11,6 +11,7 @@ import { type MessageDescriptor } from '@lingui/core'
 import { Button } from '@mochi/web/components/ui/button'
 import { LogOut, Play, RotateCcw, Send, Settings as SettingsIcon } from 'lucide-react'
 import { startGame, type GameHandle } from '../game/engine'
+import { KEY_DEFAULTS, pretty } from '../game/keys'
 import { type Join as NetJoin } from '../game/net'
 import { type MissionConfig } from '../lib/config'
 import '../game/game.css'
@@ -118,6 +119,33 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
 // unmount. The engine owns the render loop; React owns the surrounding DOM.
 // onReady hands the engine handle (stop/resume) back so the menu can resume a
 // paused game; onExit fires when the player presses Esc in flight.
+// The in-game help line, as ACTIONS rather than key caps — the caps are read
+// from the binding table at render so the line cannot drift from the engine and
+// follows the player's own remaps. Two actions on one entry render as "W/S".
+// Views are the bare number row (engine.ts handles Digit1..5 directly, not
+// through a rebindable action), so they are appended as literals.
+const HINTS: { actions: string[]; label: React.ReactNode }[] = [
+  { actions: ['pitch.down', 'pitch.up'], label: <Trans>pitch</Trans> },
+  { actions: ['roll.left', 'roll.right'], label: <Trans>roll</Trans> },
+  { actions: ['yaw.left', 'yaw.right'], label: <Trans>yaw</Trans> },
+  { actions: ['throttle.down', 'throttle.up'], label: <Trans>throttle</Trans> },
+  { actions: ['trim.up', 'trim.down'], label: <Trans>trim</Trans> },
+  { actions: ['guns'], label: <Trans>fire</Trans> },
+  { actions: ['select'], label: <Trans>weapon</Trans> },
+  { actions: ['launch'], label: <Trans>launch / target</Trans> },
+  { actions: ['flares'], label: <Trans>flares</Trans> },
+  { actions: ['flaps.extend', 'flaps.retract'], label: <Trans>flaps</Trans> },
+  { actions: ['gear'], label: <Trans>gear</Trans> },
+  { actions: ['hook'], label: <Trans>hook</Trans> },
+  { actions: ['atc'], label: 'ATC' },
+  { actions: ['lights'], label: <Trans>lights</Trans> },
+  { actions: ['brake.wheel'], label: <Trans>brakes</Trans> },
+  { actions: ['brake.speed'], label: <Trans>speed brake</Trans> },
+  { actions: ['map'], label: <Trans>map</Trans> },
+  { actions: ['chat'], label: <Trans>chat</Trans> },
+  { actions: ['menu'], label: <Trans>menu</Trans> },
+]
+
 export function GameCanvas({
   config,
   join = null,
@@ -160,6 +188,8 @@ export function GameCanvas({
   const { i18n } = useLingui()
   const i18nRef = useRef(i18n)
   i18nRef.current = i18n
+  // The player's remap wins over the default, exactly as the engine's key_of does.
+  const binding = (action: string) => config?.keys?.[action] ?? KEY_DEFAULTS[action]
 
   useEffect(() => {
     const translate = (text: string) => {
@@ -377,16 +407,20 @@ export function GameCanvas({
       <div className='panel' id='help' ref={helpRef}>
         {/* Key legends are <kbd>, the element that means "keyboard input";
             the action beside each one is prose and stays wrapped. Two <b>
-            below are emphasis on translated text, not keys, so they stay <b>. */}
-        <kbd>W/S</kbd> <Trans>pitch</Trans> · <kbd>A/D</kbd>{' '}
-        <Trans>roll</Trans> · <kbd>Q/E</kbd> <Trans>yaw</Trans> · <kbd>[/]</kbd>{' '}
-        <Trans>throttle</Trans> · <kbd>Space</kbd> <Trans>fire</Trans> · <kbd>X</kbd>{' '}
-        <Trans>weapon</Trans> · <kbd>Enter</kbd>{' '}
-        <Trans>launch / target</Trans> · <kbd>F</kbd> <Trans>flares</Trans> · <kbd>G</kbd>{' '}
-        <Trans>gear</Trans> · <kbd>H</kbd> <Trans>hook</Trans> · <kbd>P</kbd> {'ATC'} · <kbd>L</kbd> <Trans>lights</Trans> ·{' '}
-        <kbd>B</kbd> <Trans>brakes</Trans> · <kbd>/</kbd> <Trans>speed brake</Trans> ·{' '}
-        <kbd>1</kbd>–<kbd>5</kbd>/<kbd>V</kbd> <Trans>view</Trans> · <kbd>M</kbd> <Trans>map</Trans> ·{' '}
-        <kbd>T</kbd> <Trans>chat</Trans> · <kbd>Esc</kbd> <Trans>menu</Trans>
+            below are emphasis on translated text, not keys, so they stay <b>.
+            The legends are DERIVED from the binding table rather than written
+            out: hand-written ones went stale and lied — this line advertised F
+            for flares long after F became the flaps switch and flares moved to
+            C, and offered V for view after V became the ACM control. Deriving
+            them also means a player who remaps a key sees their own key here. */}
+        {HINTS.map(({ actions, label }, index) => (
+          <span key={index}>
+            {index > 0 && ' · '}
+            <kbd>{actions.map((action) => pretty(binding(action))).join('/')}</kbd> {label}
+          </span>
+        ))}
+        {' · '}
+        <kbd>1</kbd>–<kbd>5</kbd> <Trans>view</Trans>
         <br />
         <b>
           <Trans>Chase view:</Trans>
