@@ -120,6 +120,7 @@ interface Core {
   round_launch(input: Uint8Array): string | null
   round_step(input: Uint8Array, output: Uint8Array): string | null
   round_ladder(input: Uint8Array, output: Uint8Array): string | null
+  round_distract(input: Uint8Array): boolean | string
   round_drop(input: Uint8Array): string | null
   bandit_init?(config: string): string
   bandit_place?(spawn: string): string
@@ -550,6 +551,19 @@ export function round_ladder(shooter: Aimed, target: Aimed, wrap: number): { aer
   core.round_ladder(round_input_bytes, round_output_bytes)
   const o = round_output
   return { aero: o[0], max: o[1], escape: o[2], minimum: o[3], active: o[4] }
+}
+
+// round_distract offers the seeker a chaff bloom (#29). The core's doppler
+// gate decides: in the notch it seduces, out of it the velocity gate
+// rejects it. Returns whether it took.
+export function round_distract(slot: number, bloom: { x: number; y: number; z: number }, truth: Aimed): boolean {
+  if (!core) return false
+  const r = round_input
+  r[0] = slot
+  r[1] = bloom.x; r[2] = bloom.y; r[3] = bloom.z
+  r[4] = truth.position.x; r[5] = truth.position.y; r[6] = truth.position.z
+  r[7] = truth.velocity.x; r[8] = truth.velocity.y; r[9] = truth.velocity.z
+  return core.round_distract(round_input_bytes) === true
 }
 
 export function round_drop(slot: number): void {

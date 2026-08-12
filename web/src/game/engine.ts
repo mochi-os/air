@@ -17,7 +17,7 @@ import {
   recording_store,
   type Join as NetJoin,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_drop } from './flight'
+import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop } from './flight'
 import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject } from './stores'
 import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
@@ -2466,7 +2466,17 @@ function fire_gun(st,target,key,dt,force){
 const _flare_timer={bandit:4.5};
 function dispense_flares(st){ for(let i=0;i<36;i++){ const k=pool_spawn(flares); if(k<0) break; const sp=local_offset(st,-2,-0.3,0);
 	flares.px[k]=sp.x;flares.py[k]=sp.y;flares.pz[k]=sp.z; flares.vx[k]=st.velx*0.5+(Math.random()-0.5)*40; flares.vy[k]=st.vely*0.5-Math.random()*25; flares.vz[k]=st.velz*0.5+(Math.random()-0.5)*40;
-	flares.ttl[k]=flares.life[k]=3.5+Math.random()*1.5; flares.r[k]=2.6;flares.g[k]=2.3;flares.b[k]=1.2; } }   // brilliant white-hot with a warm tinge (burning magnesium), not orange
+	flares.ttl[k]=flares.life[k]=3.5+Math.random()*1.5; flares.r[k]=2.6;flares.g[k]=2.3;flares.b[k]=1.2; }
+	// The mixed program (#29): every dispense is a flare AND a chaff bloom —
+	// one magazine, both effects. The bloom is the record the radar rounds
+	// consult (the doppler gate decides whether it matters) plus a brief
+	// grey puff that hangs where the jet was, visibly unlike the burning
+	// flares falling away.
+	{ const sp=local_offset(st,-3,0,0); st.chaff={x:sp.x,y:sp.y,z:sp.z}; st.chaffed=sim_time;
+	for(let i=0;i<10;i++){ const k=pool_spawn(smoke); if(k<0) break;
+		smoke.px[k]=sp.x;smoke.py[k]=sp.y;smoke.pz[k]=sp.z; smoke.vx[k]=(Math.random()-0.5)*14; smoke.vy[k]=(Math.random()-0.5)*8-2; smoke.vz[k]=(Math.random()-0.5)*14;
+		smoke.ttl[k]=smoke.life[k]=5.5; smoke.sz[k]=0.6+Math.random()*0.5; smoke.gr[k]=0.9;
+		smoke.r[k]=0.78;smoke.g[k]=0.80;smoke.b[k]=0.82; } } }
 const MSL_MAX=32;   // in-flight pool (own missiles): sized for infinite-ammunition ripple fire — a fast finger against 20 s missile lives peaks in the twenties; was 8, saturated the day the cheat landed
 const missile_geo=(()=>{ const parts=[]; const b=new THREE.CylinderGeometry(0.12,0.12,2.4,12); b.rotateZ(-Math.PI/2); parts.push(b);
 	const n=new THREE.ConeGeometry(0.12,0.5,12); n.rotateZ(-Math.PI/2); n.translate(1.45,0,0); parts.push(n);
@@ -2551,7 +2561,7 @@ function launch_amraam(st,target,track){ const m=missiles.find(x=>!x.active); if
 	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
 	if(stores_eject(st.loadout||{},name||"")){ m.vx=st.fwd.x*(st.speed+15); m.vy=(st.fwd.y*st.speed)-8; m.vz=st.fwd.z*(st.speed+15); }   // ejector points (the cheek LAU-116, the inboard LAU-115C): the round punches DOWN before the motor lights
 	else { m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30); }   // rail points (wing LAU-127s, single or twin): forward off the rail like the 9M
-	m.kind="120c"; m.target=target; m.track=track??null; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0;
+	m.kind="120c"; m.target=target; m.track=track??null; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0;
 	m.slot=missiles.indexOf(m);
 	const estimate=(track!=null&&target)?{ position:{x:target.pos.x,y:target.pos.y,z:target.pos.z},
 		velocity:{x:target.velx??target.fwd.x*target.speed,y:target.vely??target.fwd.y*target.speed,z:target.velz??target.fwd.z*target.speed} }:null;
@@ -2570,6 +2580,7 @@ function step_amraam(m,dt){
 	const truth=(t&&t.group&&t.group.visible)?{ position:{x:t.pos.x,y:t.pos.y,z:t.pos.z},
 		velocity:{x:t.velx??t.fwd.x*t.speed,y:t.vely??t.fwd.y*t.speed,z:t.velz??t.fwd.z*t.speed} }:null;
 	const supported=truth&&!RADAR.sil&&(RADAR.stt===m.track||RADAR.tracks.some(k=>k.id===m.track));   // the shooter's radar still holds this trackfile: the crank works, turning cold drops support
+	if(truth&&t.chaffed!==undefined&&sim_time-t.chaffed<2.0){ if(round_distract(m.slot,t.chaff,truth)) m.took=(m.took||0)+1; }   // a fresh bloom from the target (#29): the core's doppler gate decides whether it seduces; took counts the ones that did (dev telemetry)
 	const state=round_step(m.slot,dt,supported?truth:null,truth);
 	if(!state){ m.active=false; m.mesh.visible=false; round_drop(m.slot); post_round(m,"lost"); return; }
 	m.px=state.x; m.py=state.y; m.pz=state.z; m.vx=state.vx; m.vy=state.vy; m.vz=state.vz;
@@ -2591,7 +2602,7 @@ function step_amraam(m,dt){
 		smoke.ttl[k]=smoke.life[k]=2.8; smoke.sz[k]=0.30+Math.random()*0.12; smoke.gr[k]=0.40;
 		smoke.r[k]=0.7;smoke.g[k]=0.72;smoke.b[k]=0.75; } }
 function post_round(m,why){ if(!DEV_MODE) return; const log=(globalThis as any).dev_missiles=(globalThis as any).dev_missiles||[];
-	log.push({why, kind:"120c", flew:+(m.flew??0).toFixed(1), phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), least:+(m.least??-1).toFixed(1), killed:!!m.killed, mask:m.mask??-1}); }
+	log.push({why, kind:"120c", flew:+(m.flew??0).toFixed(1), phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), least:+(m.least??-1).toFixed(1), took:m.took||0, killed:!!m.killed, mask:m.mask??-1}); }
 function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.visible=false; continue; }
 	if(m.kind==="120c"){ step_amraam(m,dt); continue; }
 	m.life-=dt; m.flew+=dt;
@@ -4107,12 +4118,13 @@ if(DEV_MODE) (globalThis as any).dev_pools=()=>{   // dev (#13): pool invariants
 		report[name]={list:p.activeList.length,live,dup,dead,mis,limit:p.limit??p.max}; }
 	return report; };
 if(DEV_MODE) (globalThis as any).dev_bandit=(vx,vy,vz)=>{ bandit.velx=+vx||0; bandit.vely=+vy||0; bandit.velz=+vz||0; if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.velx,y:bandit.vely,z:bandit.velz}); return [bandit.velx,bandit.vely,bandit.velz]; };   // dev (#pipper): give the boxed target a chosen world velocity for deflection-solution checks
-if(DEV_MODE) (globalThis as any).dev_close=(m,az,el)=>{ const d=+m||200;   // dev (?developer=1 only): park the bandit at d metres — dead ahead by default, or at az/el degrees off the nose (padlock and JHMCS checks need a target at a chosen aspect; module scope hides every placement primitive from page script, so the hook carries the geometry)
-	const a=(+az||0)*D2R, e=(+el||0)*D2R;
+if(DEV_MODE) (globalThis as any).dev_close=(m,az,el,heading)=>{ const d=+m||200;   // dev (?developer=1 only): park the bandit at d metres — dead ahead by default, or at az/el degrees off the nose (padlock and JHMCS checks need a target at a chosen aspect; module scope hides every placement primitive from page script, so the hook carries the geometry). heading: the BANDIT'S course in degrees off ownship heading (default 0 = co-heading; 90 = crossing left-to-right — the beam geometry the chaff checks need)
+	const a=(+az||0)*D2R, e=(+el||0)*D2R, h=(+heading||0)*D2R;
 	_look_d.copy(ownship.fwd).multiplyScalar(Math.cos(a)).addScaledVector(ownship.right,Math.sin(a)).normalize();
 	bandit.pos.copy(ownship.pos).addScaledVector(_look_d,d*Math.cos(e)); bandit.pos.y+=d*Math.sin(e);
-	bandit.fwd.copy(ownship.fwd); bandit.speed=ownship.speed;
+	bandit.fwd.copy(ownship.fwd).multiplyScalar(Math.cos(h)).addScaledVector(ownship.right,Math.sin(h)).normalize(); bandit.speed=ownship.speed;
 	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
+if(DEV_MODE) (globalThis as any).dev_dispense=()=>{ if(!has_enemy||!bandit.group.visible) return false; dispense_flares(bandit); bandit.flared_at=sim_time; return true; };   // dev (#29): the bandit's mixed-program dispense on demand — the chaff harness owns the timing the brain otherwise decides
 if(DEV_MODE) (globalThis as any).dev_radar=(mode)=>{ if(mode==="rws"||mode==="tws") RADAR.mode=mode; return RADAR.mode; };   // dev: the mode the RDR page's bezel selects, reachable without a canvas click (the TWS employment paths need it)
 if(DEV_MODE) (globalThis as any).dev_zone=()=>{ const z=launch_zone(); if(!z) return null;   // #27 phase 2: the live DLZ ladder and its shoot cue, as the HUD draws them
 	return { aero:Math.round(z.aero), max:Math.round(z.max), escape:Math.round(z.escape), minimum:Math.round(z.minimum), range:Math.round(z.range||0), active:+((z.active||0).toFixed(1)), cue:shoot_cue(z) }; };
@@ -4311,7 +4323,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v
 			const above=(dx*ux+dy*uy+dz*uz)/d;
 			best={ range:Math.round(d), ahead:+ahead.toFixed(3), side:+side.toFixed(3), above:+above.toFixed(3) }; }
 		return best; })(),
-	visual:amraam_visual, rounds:missiles.filter(m=>m.active&&m.kind==="120c").map(m=>({ phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), reach:Math.round(m.rangeToGo??0), stale:+(m.stale??0).toFixed(1), flew:+(m.flew??0).toFixed(1) })),   // #27 phase 2: each AIM-120 in flight, straight from the Go core
+	visual:amraam_visual, rounds:missiles.filter(m=>m.active&&m.kind==="120c").map(m=>({ phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), reach:Math.round(m.rangeToGo??0), stale:+(m.stale??0).toFixed(1), flew:+(m.flew??0).toFixed(1), took:m.took||0 })),   // #27 phase 2: each AIM-120 in flight, straight from the Go core
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
 	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], /* #57 parked: tracking:{ on:head_track?1:0, ok:head_ok?1:0, az:+head_az.toFixed(3), el:+head_el.toFixed(3) }, */ radar:{ mode:RADAR.sil?"sil":RADAR.stt!=null?"stt":RADAR.mode, w:Math.round(RADAR.half()/D2R), scale:RADAR.scale, sweep:+(RADAR.sweep/D2R).toFixed(1), bricks:RADAR.bricks.length, tracks:RADAR.tracks.length, ls:RADAR.ls??null, stt:RADAR.stt??null, emit:RADAR.emitter(), bandit:bandit_emitter, el:Math.round(RADAR.elevation/D2R), track:RADAR.tracks.length?(()=>{ const g=radar_geometry(radar_own(),RADAR.tracks[0],wrap_axis); return { az:+(g.azimuth/D2R).toFixed(1), range:Math.round(g.range) }; })():null }, draws:ddi_draws, emitters:MULTIPLAYER&&net?Object.fromEntries(net.emitters):null, rwr:{ n:RWR.contacts.length, lock:RWR.locked(), missile:RWR.warned(), paints:RWR.paints, contacts:RWR.contacts.map(c=>({ id:c.id, brg:Math.round(c.bearing/D2R), lk:c.locked?1:0, ms:c.missile?1:0, age:+(RWR.time-c.at).toFixed(1) })) },home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
 	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
