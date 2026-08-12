@@ -164,6 +164,15 @@ def match_list(a):
 	totals = mochi.db.row("select count(*) as flights, sum(ended - started) / 1000 as seconds, sum(kills) as kills, sum(deaths) as deaths, sum(cheated) as cheated from matches")
 	return {"data": {"matches": matches, "totals": totals}}
 
+# servers() -> {"data": {"servers": [...]}}: the public world servers hosting
+# air, for the join page's server list. Pure read of the core world listing
+# table (mochi.world.list), which core keeps fresh from local pushes and
+# network gossip; this action just forwards it. The client sorts and filters -
+# the version compatibility check and players-descending order are its job,
+# since only it knows its own flight version.
+def servers(a):
+	return {"data": {"servers": mochi.world.list("air")}}
+
 # ---- flight recordings (#213) ----
 # Recordings are ATTACHMENTS bound to their match row, not rows in a table of
 # their own: the attachment system already owns bytes, and its multipart path
