@@ -19,7 +19,8 @@ export const KEY_DEFAULTS: Record<string, string> = {
   'throttle.up': 'BracketRight',
   'throttle.down': 'BracketLeft',
   fire: 'Space', // renamed from 'guns': the trigger serves the SELECTED weapon, not only the cannon.
-  select: 'KeyX',
+  select: 'Tab', // the biggest left-edge key, and clear of X's Shift-chord neighbour (Shift+X secures an engine)
+  uncage: 'Delete', // CIA <-> VISUAL for the AIM-120 (#27); the 9M's SEAM slaving joins it later — one switch on the real jet
   acquire: 'Enter',
   launch: 'Enter',
   'brake.wheel': 'KeyB',
@@ -62,7 +63,7 @@ export const KEY_DEFAULTS: Record<string, string> = {
   'secure.starboard': 'Shift+KeyX',
   'radar.silent': 'Shift+KeyR',
   'radar.acm': 'KeyV',
-  'radar.undesignate': 'Shift+Enter',
+  'radar.undesignate': 'Backspace', // the erase key un-designates; in TWS it steps the L&S to the next trackfile
 }
 
 // pretty renders a KeyboardEvent.code as its physical key label (a glyph or the
@@ -92,6 +93,7 @@ export function pretty(code: string): string {
     Equal: '=',
     Tab: 'Tab',
     Backspace: 'Backspace',
+    Delete: 'Del',
     ShiftLeft: 'Shift',
     ShiftRight: 'Shift',
     ArrowUp: '↑',

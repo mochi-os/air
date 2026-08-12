@@ -117,6 +117,10 @@ interface Core {
   fly(input: Uint8Array, output: Uint8Array): number
   blast(input: Uint8Array, output: Uint8Array): boolean
   progress(input: Uint8Array, output: Uint8Array): void
+  round_launch(input: Uint8Array): string | null
+  round_step(input: Uint8Array, output: Uint8Array): string | null
+  round_ladder(input: Uint8Array, output: Uint8Array): string | null
+  round_drop(input: Uint8Array): string | null
   bandit_init?(config: string): string
   bandit_place?(spawn: string): string
   bandit_mirror?(state: Uint8Array): string
@@ -429,7 +433,11 @@ export function battle_fly(
 }
 
 // battle_blast detonates a missile warhead at a world point against a target.
-export function battle_blast(target: number, point: { x: number; y: number; z: number }, aim: Aim | null, identity: number, tick: number): { kill: boolean; mask: number } {
+// battle_blast detonates a warhead. class scales the blast and fragment
+// radii with the cube root of the charge: WARHEAD.heater is the 9M's 9.4 kg
+// (the default), WARHEAD.radar the AIM-120's 22 kg directed-fragmentation charge.
+export const WARHEAD = { heater: 1.0, radar: 2.0 }
+export function battle_blast(target: number, point: { x: number; y: number; z: number }, aim: Aim | null, identity: number, tick: number, class_ = WARHEAD.heater): { kill: boolean; mask: number } {
   if (!core) return { kill: false, mask: 0 }
   const b = battle_input
   b[0] = target
@@ -438,7 +446,7 @@ export function battle_blast(target: number, point: { x: number; y: number; z: n
     b[4] = aim.position.x; b[5] = aim.position.y; b[6] = aim.position.z
     b[7] = aim.quaternion.w; b[8] = aim.quaternion.x; b[9] = aim.quaternion.y; b[10] = aim.quaternion.z
   }
-  b[11] = identity; b[12] = tick
+  b[11] = identity; b[12] = tick; b[13] = class_
   core.blast(battle_input_bytes, battle_output_bytes)
   return { kill: battle_output[0] !== 0, mask: battle_output[1] }
 }
@@ -456,6 +464,98 @@ export function battle_progress(throttle: number, tick: number, reset: boolean, 
   battle_input[3] = secure // per-engine fuel-off bitmask (1 port, 2 starboard): the fire drill starves a secured engine's fire at any throttle
   core.progress(battle_input_bytes, battle_output_bytes)
   return battle_output
+}
+
+// ---- The AIM-120 round (#27 phase 2): the same Go integrator the
+// multiplayer server flies, stepped per launched round through slot
+// handles; the launch-zone ladder runs the identical model, so the
+// cockpit's ranges can never disagree with the flight. Word layouts mirror
+// wasm/round.go.
+
+const round_input = new Float64Array(16)
+const round_input_bytes = new Uint8Array(round_input.buffer)
+const round_output = new Float64Array(15)
+const round_output_bytes = new Uint8Array(round_output.buffer)
+
+export interface Aimed {
+  position: { x: number; y: number; z: number }
+  velocity: { x: number; y: number; z: number }
+}
+
+export interface RoundState {
+  alive: boolean
+  phase: number // 0 midcourse, 1 active (husky), 2 pitbull, 3 loose
+  x: number
+  y: number
+  z: number
+  vx: number
+  vy: number
+  vz: number
+  range: number // to the round's current estimate
+  stale: number // seconds since the last datalink update
+  time: number
+  life: number
+  fused: boolean
+  mach: number
+  least: number // closest approach to the target so far, m
+}
+
+export function round_launch(slot: number, position: { x: number; y: number; z: number }, velocity: { x: number; y: number; z: number }, estimate: Aimed | null, wrap: number, loft: boolean): void {
+  if (!core) return
+  const r = round_input
+  r[0] = slot
+  r[1] = position.x; r[2] = position.y; r[3] = position.z
+  r[4] = velocity.x; r[5] = velocity.y; r[6] = velocity.z
+  r[7] = estimate ? 0 : 1
+  if (estimate) {
+    r[8] = estimate.position.x; r[9] = estimate.position.y; r[10] = estimate.position.z
+    r[11] = estimate.velocity.x; r[12] = estimate.velocity.y; r[13] = estimate.velocity.z
+  }
+  r[14] = wrap
+  r[15] = loft ? 1 : 0
+  core.round_launch(round_input_bytes)
+}
+
+export function round_step(slot: number, dt: number, support: Aimed | null, truth: Aimed | null): RoundState | null {
+  if (!core) return null
+  const r = round_input
+  r[0] = slot
+  r[1] = dt
+  r[2] = support ? 1 : 0
+  if (support) {
+    r[3] = support.position.x; r[4] = support.position.y; r[5] = support.position.z
+    r[6] = support.velocity.x; r[7] = support.velocity.y; r[8] = support.velocity.z
+  }
+  r[9] = truth ? 1 : 0
+  if (truth) {
+    r[10] = truth.position.x; r[11] = truth.position.y; r[12] = truth.position.z
+    r[13] = truth.velocity.x; r[14] = truth.velocity.y; r[15] = truth.velocity.z
+  }
+  if (core.round_step(round_input_bytes, round_output_bytes) != null) return null
+  const o = round_output
+  return {
+    alive: o[0] > 0.5, phase: o[1], x: o[2], y: o[3], z: o[4], vx: o[5], vy: o[6], vz: o[7],
+    range: o[8], stale: o[9], time: o[10], life: o[11], fused: o[12] > 0.5, mach: o[13], least: o[14],
+  }
+}
+
+export function round_ladder(shooter: Aimed, target: Aimed, wrap: number): { aero: number; max: number; escape: number; minimum: number; active: number } | null {
+  if (!core) return null
+  const r = round_input
+  r[0] = shooter.position.x; r[1] = shooter.position.y; r[2] = shooter.position.z
+  r[3] = shooter.velocity.x; r[4] = shooter.velocity.y; r[5] = shooter.velocity.z
+  r[6] = target.position.x; r[7] = target.position.y; r[8] = target.position.z
+  r[9] = target.velocity.x; r[10] = target.velocity.y; r[11] = target.velocity.z
+  r[12] = wrap
+  core.round_ladder(round_input_bytes, round_output_bytes)
+  const o = round_output
+  return { aero: o[0], max: o[1], escape: o[2], minimum: o[3], active: o[4] }
+}
+
+export function round_drop(slot: number): void {
+  if (!core) return
+  round_input[0] = slot
+  core.round_drop(round_input_bytes)
 }
 
 // flight_stores sets the attached-store bitmask over the airframe's fitment

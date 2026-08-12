@@ -44,6 +44,7 @@ import {
   seedStart,
 } from '../lib/config'
 import { useIdentityName } from '../lib/config-store'
+import { ServerList } from './ServerList'
 import { Multiplayer } from './Multiplayer'
 import { Link } from '@tanstack/react-router'
 import { KEY_DEFAULTS, pretty } from '../game/keys'
@@ -180,6 +181,7 @@ const BUTTON_ROWS: Row[] = [
   { id: 'select', label: <Trans>Select weapon</Trans>, group: 'weapons' },
   { id: 'acquire', label: <Trans>Acquire target</Trans>, group: 'weapons' },
   { id: 'radar.undesignate', label: <Trans>Undesignate target</Trans>, group: 'weapons' },   // #30
+  { id: 'uncage', label: <Trans>Uncage seeker</Trans>, group: 'weapons' },   // #27: the AIM-120's CIA <-> VISUAL toggle; the 9M's SEAM slaving joins it later
   { id: 'radar.silent', label: <Trans>Radar silent</Trans>, group: 'weapons' },   // #30
   { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },   // #30: boresight <-> vertical
   { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },   // the id stays 'flares' (the action); the label is the real dispenser's name
@@ -227,6 +229,7 @@ const KEY_ROWS: Row[] = [
   { id: 'select', label: <Trans>Select weapon</Trans>, group: 'weapons' },
   { id: 'acquire', label: <Trans>Acquire target</Trans>, group: 'weapons' },
   { id: 'radar.undesignate', label: <Trans>Undesignate target</Trans>, group: 'weapons' },   // #30
+  { id: 'uncage', label: <Trans>Uncage seeker</Trans>, group: 'weapons' },   // #27: the AIM-120's CIA <-> VISUAL toggle; the 9M's SEAM slaving joins it later
   { id: 'radar.silent', label: <Trans>Radar silent</Trans>, group: 'weapons' },   // #30
   { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },   // #30: boresight <-> vertical
   { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },
@@ -1639,6 +1642,15 @@ function ServerFlow({
     return (
       <MenuDialog open onClose={onClose} title={<Trans>Join server</Trans>}>
         <div className='space-y-4'>
+          {/* The public list: community servers hosting air, live from the
+              network. Absent entirely when nothing is public, so a lone
+              private player just sees the recents + URL field below. */}
+          <div className='space-y-2'>
+            <SectionLabel>
+              <Trans>Public servers</Trans>
+            </SectionLabel>
+            <ServerList onPick={(address) => enter(address)} />
+          </div>
           {recents.length > 0 && (
             <div className='space-y-2'>
               <SectionLabel>
