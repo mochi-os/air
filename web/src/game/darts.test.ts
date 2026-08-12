@@ -31,8 +31,18 @@ describe('parseDarts', () => {
   it('decodes well-formed darts', () => {
     const out = parseDarts(concat([dart([1, 2, 3], [4, 5, 6], 7), dart([8, 9, 10], [11, 12, 13], 2)]))
     expect(out).toEqual([
-      { position: [1, 2, 3], velocity: [4, 5, 6], shooter: 7 },
-      { position: [8, 9, 10], velocity: [11, 12, 13], shooter: 2 },
+      { position: [1, 2, 3], velocity: [4, 5, 6], shooter: 7, radar: false },
+      { position: [8, 9, 10], velocity: [11, 12, 13], shooter: 2, radar: false },
+    ])
+  })
+
+  it('reads the round kind from the shooter byte high bit (#27)', () => {
+    // Slots stop at 62, so the bit is free: an AIM-120 rides the same
+    // 25-byte record as a heater and an older client just draws it as one.
+    const out = parseDarts(concat([dart([1, 2, 3], [4, 5, 6], 7 | 0x80), dart([8, 9, 10], [11, 12, 13], 62)]))
+    expect(out.map((d) => [d.shooter, d.radar])).toEqual([
+      [7, true],
+      [62, false],
     ])
   })
 

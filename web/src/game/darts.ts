@@ -14,6 +14,7 @@ export type Dart = {
   position: [number, number, number]
   velocity: [number, number, number]
   shooter: number
+  radar: boolean // the round's kind (#27): an AIM-120 rather than a heater
 }
 
 // DART_MOST caps the rendered darts: the server sends the nearest six, so a
@@ -21,7 +22,8 @@ export type Dart = {
 export const DART_MOST = 6
 
 // DART_STRIDE is the wire size of one dart: position f32x3, velocity f32x3,
-// shooter u8 — all little-endian, matching the server's snapshot assembly.
+// shooter u8 (its high bit the round's kind) — all little-endian, matching
+// the server's snapshot assembly.
 export const DART_STRIDE = 25
 
 // parseDarts decodes darts from the missile byte string. A length that is not a
@@ -44,7 +46,10 @@ export function parseDarts(missiles: Uint8Array): Dart[] {
       view.getFloat32(base + 20, true),
     ]
     if (!position.every(Number.isFinite) || !velocity.every(Number.isFinite)) continue
-    list.push({ position, velocity, shooter: view.getUint8(base + 24) })
+    // The shooter byte carries the round's KIND in its high bit (#27):
+    // slots stop at 62, so the bit is free and the record stays 25 bytes.
+    const who = view.getUint8(base + 24)
+    list.push({ position, velocity, shooter: who & 0x7f, radar: (who & 0x80) !== 0 })
   }
   return list
 }

@@ -12,6 +12,13 @@
 // Bearing only — a receiver has no ranging — and contacts age off when the
 // paints stop. The feeds are #30's emitters: the SP bandit's derived state and
 // net.emitters from the pose wire in multiplayer.
+//
+// A MISSILE is the third voice (#27 phase 2d). The Hornet carries no missile
+// warner and the AIM-120's motor is reduced-smoke, so a launch itself is
+// silent — you learn of it when the round's OWN seeker wakes at about ten
+// miles and starts illuminating you. That is the classic escalation heard
+// from the receiving end: nails, then a spike, then MISSILE, each one less
+// deniable than the last.
 
 export const NM = 1852
 
@@ -24,7 +31,11 @@ export type RwrEmitter = {
   mode: 1 | 2 // search / STT
   locked: boolean // STT with US as the target
 }
-export type RwrContact = { id: number | string; bearing: number; locked: boolean; at: number }
+export type RwrContact = { id: number | string; bearing: number; locked: boolean; missile?: boolean; at: number }
+
+// RwrSeeker is an active missile seeker painting us — the round's own radar,
+// not its shooter's. Bearing is all a receiver gets.
+export type RwrSeeker = { id: number | string; x: number; z: number }
 
 const CONE = 0.342 // cos 70°: his scan half-width — outside it his sweep never touches us
 const REACH = 60 * NM // one-way listening range: a receiver hears further than the radar sees
@@ -46,9 +57,23 @@ export class Rwr {
   }
 
   // step returns how many NEW symbols appeared (the new-threat chirp).
-  step(dt: number, own: { x: number; z: number }, emitters: RwrEmitter[], wrap: (v: number) => number, random: () => number = Math.random): { fresh: number } {
+  step(dt: number, own: { x: number; z: number }, emitters: RwrEmitter[], wrap: (v: number) => number, random: () => number = Math.random, seekers: RwrSeeker[] = []): { fresh: number; missile: boolean } {
     this.time += dt
     let fresh = 0
+    // Active seekers first: a round hunting US is the loudest thing the
+    // receiver will ever hear, and it owns its own symbol rather than
+    // colouring the shooter's.
+    for (const s of seekers) {
+      const bearing = Math.atan2(wrap(s.x - own.x), -wrap(s.z - own.z))
+      const existing = this.contacts.find((c) => c.id === s.id)
+      if (existing) {
+        existing.bearing = bearing
+        existing.at = this.time
+      } else {
+        this.contacts.push({ id: s.id, bearing, locked: true, missile: true, at: this.time })
+        fresh++
+      }
+    }
     for (const e of emitters) {
       if (e.mode === 2 && !e.locked) continue // his antenna is on someone else
       const dx = wrap(e.x - own.x)
@@ -68,7 +93,12 @@ export class Rwr {
       fresh += this.heard(e.id, bearing, false)
     }
     this.contacts = this.contacts.filter((c) => this.time - c.at < AGE)
-    return { fresh }
+    return { fresh, missile: this.warned() }
+  }
+
+  // warned: an active seeker is painting us right now — the MISSILE alert.
+  warned(): boolean {
+    return this.contacts.some((c) => c.missile && this.time - c.at < 1.0)
   }
 
   private heard(id: number | string, bearing: number, locked: boolean): number {
