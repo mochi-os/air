@@ -87,3 +87,37 @@ describe('aging', () => {
     expect(fresh).toBe(1)
   })
 })
+
+// The third voice (#27 phase 2d): an active seeker. The Hornet has no
+// missile warner and the AIM-120's motor is reduced-smoke, so the launch
+// itself is silent — the receiver learns of the shot when the round's OWN
+// radar wakes and starts painting.
+describe('missile warning', () => {
+  it('an active seeker raises MISSILE, distinct from a lock', () => {
+    const rwr = new Rwr()
+    const seeker = [{ id: 'm1', x: 0, z: -6 * NM }]
+    expect(rwr.warned()).toBe(false)
+    const first = rwr.step(1 / 60, own, [], wrap, steady, seeker)
+    expect(first.fresh).toBe(1) // one chirp as the symbol appears
+    expect(first.missile).toBe(true)
+    expect(rwr.warned()).toBe(true)
+    const contact = rwr.contacts.find((c) => c.id === 'm1')
+    expect(contact?.missile).toBe(true)
+    expect(contact?.locked).toBe(true) // continuous, like an STT — it is staring at us
+  })
+
+  it('goes quiet when the seeker stops painting — the round is gone or blind', () => {
+    const rwr = new Rwr()
+    rwr.step(1 / 60, own, [], wrap, steady, [{ id: 'm1', x: 0, z: -6 * NM }])
+    expect(rwr.warned()).toBe(true)
+    for (let i = 0; i < 90; i++) rwr.step(1 / 60, own, [], wrap, steady) // 1.5 s of silence
+    expect(rwr.warned()).toBe(false)
+  })
+
+  it('a lock alone is never a missile warning', () => {
+    const rwr = new Rwr()
+    rwr.step(1 / 60, own, [{ ...facing, mode: 2, locked: true }], wrap, steady)
+    expect(rwr.locked()).toBe(true)
+    expect(rwr.warned()).toBe(false)
+  })
+})

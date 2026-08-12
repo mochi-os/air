@@ -254,6 +254,7 @@ export interface InputSample {
   fire: boolean
   flare: boolean
   missile: boolean
+  radar: boolean // the AIM-120's own trigger (#27): its own magazine, its own edge
 }
 
 export interface Welcome {
