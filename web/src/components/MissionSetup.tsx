@@ -1023,7 +1023,6 @@ function Armament({
     return raw ? resolve(raw) : null
   }
   const [book, setBook] = useState<Catalog | null>(read)
-  const [custom, setCustom] = useState(() => matches(normalize(stores)) === '') // a custom loadout opens its settings on entry; presets start folded
   useEffect(() => {
     if (book) return
     let gone = false
@@ -1078,7 +1077,7 @@ function Armament({
     }
   }
   const presets: { name: 'gun' | 'fox2' | 'fox3'; title: ReactNode }[] = [
-    { name: 'gun', title: <Trans>Gun</Trans> },
+    { name: 'gun', title: <Trans>Gun only</Trans> },
     { name: 'fox2', title: 'Fox 2' }, // jsx-text-ok: brevity codes, verbatim
     { name: 'fox3', title: 'Fox 3' }, // jsx-text-ok: brevity codes, verbatim
   ]
@@ -1108,19 +1107,12 @@ function Armament({
             {entry.title}
           </Button>
         ))}
-        {/* Custom rides the preset row: it carries the check when the loadout
-            matches no preset, and OPENS the station strip. Opening only — it
-            used to toggle, so a second press folded the stations away just as
-            the player reached for them. The strip also stays open across preset
-            presses, so pressing each preset SHOWS its contents in the dropdowns
-            below. */}
-        <Button type='button' variant='outline' size='sm' onClick={() => setCustom(true)}>
-          {preset === '' && <Check className='size-4' />}
-          <Trans>Custom</Trans>
-        </Button>
       </div>
-      {custom &&
-        (() => {
+      {/* The station strip is always visible (2026-08-13): a loadout that
+          matches no preset simply shows no check above, and the dropdowns
+          ARE the details — folding them behind a button hid the answer to
+          "what am I actually carrying". */}
+      {(() => {
           const cell = (station: number) => {
             const slot = loadout[String(station)]
             const open = outcomes(station).filter((o) => allowed || !o.slot.stores.some((s) => s === '9m' || s === '120c'))
@@ -1805,14 +1797,14 @@ function MissionPanel({
     <div className='sm:grid sm:grid-cols-2 sm:gap-x-10'>
     <div>
 <SectionLabel>
-  <Trans>Task</Trans>
+  <Trans>Mission</Trans>
 </SectionLabel>
 <Segmented
   value={config.task}
   onChange={(v) => set('task', v)}
   options={[
     { value: 'free', label: <Trans>Free flight</Trans> },
-    { value: 'joust', label: <Trans>Joust 1v1</Trans> },
+    { value: 'joust', label: <Trans>Joust against bot</Trans> },
   ]}
 />
 {config.task === 'joust' && (
@@ -1935,19 +1927,19 @@ function MissionPanel({
 <div className='space-y-2'>
   <SwitchRow
     id='cheat-invulnerable'
-    label={<Trans>Invulnerable (human players only)</Trans>}
+    label={config.task === 'free' ? <Trans>Invulnerable</Trans> : <Trans>Invulnerable (human players only)</Trans>}
     checked={!!(config.cheats ?? {}).invulnerable}
     onChange={(v) => setCheat('invulnerable', v)}
   />
   <SwitchRow
     id='cheat-ammunition'
-    label={<Trans>Unlimited ammunition (all players)</Trans>}
+    label={config.task === 'free' ? <Trans>Unlimited ammunition</Trans> : <Trans>Unlimited ammunition (all players)</Trans>}
     checked={!!(config.cheats ?? {}).ammunition}
     onChange={(v) => setCheat('ammunition', v)}
   />
   <SwitchRow
     id='cheat-fuel'
-    label={<Trans>Unlimited fuel (all players)</Trans>}
+    label={config.task === 'free' ? <Trans>Unlimited fuel</Trans> : <Trans>Unlimited fuel (all players)</Trans>}
     checked={!!(config.cheats ?? {}).fuel}
     onChange={(v) => setCheat('fuel', v)}
   />
