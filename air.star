@@ -214,8 +214,15 @@ def recording_save(a):
 
 # recordings_prune drops the oldest unpinned recordings once either budget is
 # exceeded. Called after each save, so the store is self-limiting.
+#
+# Ordered by `created`, the match's own timestamp - NOT by `recorded`, which is
+# the recording's size in bytes and is what the budget below accumulates.
+# Sorting by it kept the largest recordings rather than the newest, so the
+# budget was spent on whatever happened to be biggest and every short match was
+# deleted first. `created` is also the server's own clock, where started/ended
+# are submitted by the client, so no client can order the queue in its favour.
 def recordings_prune(keep):
-	rows = mochi.db.rows("select id, recording, recorded, pinned from matches where recording != '' order by recorded desc")
+	rows = mochi.db.rows("select id, recording, recorded, pinned from matches where recording != '' order by created desc")
 	total = 0
 	kept = 0
 	for row in rows:
