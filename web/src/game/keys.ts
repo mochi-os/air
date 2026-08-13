@@ -63,6 +63,7 @@ export const KEY_DEFAULTS: Record<string, string> = {
   'secure.starboard': 'Shift+KeyX',
   'radar.silent': 'Shift+KeyR',
   'radar.acm': 'KeyV',
+  jammer: 'KeyX', // XMIT on the key marked X (#31): arm the jammer; it radiates only while a threat paints us
   'radar.undesignate': 'Backspace', // the erase key un-designates; in TWS it steps the L&S to the next trackfile
 }
 

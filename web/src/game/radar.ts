@@ -16,13 +16,21 @@
 
 export const NM = 1852
 
-export type RadarTarget = { id: number | string; x: number; y: number; z: number; vx: number; vy: number; vz: number }
+export type RadarTarget = { id: number | string; x: number; y: number; z: number; vx: number; vy: number; vz: number; jamming?: boolean }
 export type RadarOwn = { x: number; y: number; z: number; heading: number }
 export type Brick = { id: number | string; azimuth: number; range: number; at: number }
 export type Track = { id: number | string; x: number; y: number; z: number; vx: number; vy: number; vz: number; at: number; hits: number }
 export type Wrap = (value: number) => number
 
 const SWEEP = 1.31 // antenna sweep rate, rad/s (~75°/s)
+// The EW pieces (#31), sharing the round package's convention: a jammer
+// outside burnthrough steals this radar's gate, and a target inside the
+// clutter notch gives its tracker nothing — either way the STT goes to
+// MEMORY (the track coasts on its last state, the display says MEM) and
+// breaks if the condition outlasts the memory window.
+const BURNTHROUGH = 9000 // m — inside this the skin echo beats the jammer
+const NOTCH = 60 // m/s — radial speed under this sits in the clutter gate
+const MEMORY = 4 // s — how long a track survives on memory before the lock drops
 const ELEVATION = 0.175 // search coverage half-height, rad (~10°) — one generous band in place of bar bookkeeping
 const BASE = 40 * NM // beam-aspect detection range against the game's one fighter
 const BRICK_AGE = 12 // seconds an RWS paint stays on the format
@@ -109,6 +117,8 @@ export class Radar {
   ls: number | string | null = null // launch & steering trackfile (TWS)
   stt: number | string | null = null // the hard lock
   acm: 'bst' | 'vacq' = 'bst' // armed ACM condition, used by the acquire flow
+  memory = 0 // seconds the STT has coasted without real data (0 = tracking); MEM shows past zero
+  strobes: number[] = [] // azimuths of jamming emitters this step (#31): bearing-only spokes, range unknown
   time = 0
 
   // half: the effective azimuth half-width — TWS trades volume for trackfiles
@@ -133,16 +143,44 @@ export class Radar {
       this.stt = null // a silent radar tracks nothing — the picture freezes and ages
       return
     }
+    // Jamming strobes (#31): a radiating emitter shows as a bearing-only
+    // spoke whatever the radar is doing — the jam arrives whether or not
+    // the sweep is pointed at it.
+    this.strobes = []
+    for (const t of targets) {
+      if (!t.jamming) continue
+      const g = geometry(own, t, wrap)
+      this.strobes.push(g.azimuth)
+    }
     if (this.stt != null) {
       const target = targets.find((t) => t.id === this.stt)
       const g = target ? geometry(own, target, wrap) : null
       if (!target || !g || Math.abs(g.azimuth) > GIMBAL || g.range > HOLD * detect_range(own, target, wrap)) {
         this.stt = null // broken lock: back to search; the last trackfile remembers
+        this.memory = 0
         return
       }
+      // MEMORY (#31): a jammer outside burnthrough has stolen the gate, and
+      // a target inside the clutter notch gives the tracker nothing — the
+      // track coasts on its last state (no fix), the display says MEM, and
+      // the lock drops if the condition outlasts the window. This is the
+      // radar's face catching up with what the datalink gate already knew.
+      const speed = Math.hypot(target.vx, target.vy, target.vz)
+      const radial = speed < 1 ? 0 : Math.abs((target.vx * wrap(target.x - own.x) + target.vy * (target.y - own.y) + target.vz * wrap(target.z - own.z)) / Math.max(g.range, 1))
+      const starved = (target.jamming && g.range > BURNTHROUGH) || radial < NOTCH
+      if (starved) {
+        this.memory += dt
+        if (this.memory > MEMORY) {
+          this.stt = null
+          this.memory = 0
+        }
+        return
+      }
+      this.memory = 0
       this.fix(target) // the antenna stays on the target: a continuous track, and nothing else painted
       return
     }
+    this.memory = 0
     const half = this.half()
     let az = this.sweep + this.direction * SWEEP * dt
     if (az > half) { az = half; this.direction = -1 }

@@ -145,16 +145,58 @@ describe('TWS', () => {
   })
 })
 
+// A HOT target: closing fast, radial velocity far above the clutter notch —
+// the geometry where a tracker genuinely holds. The crossing `beam` target
+// above sits IN the notch by definition, which since #31 puts an STT on it
+// into MEMORY: the beam aspect is not a tracking geometry any more, which is
+// the point of the whole doctrine.
+const hot = { id: 7, x: 0, y: 3000, z: -15 * NM, vx: 0, vy: 0, vz: 250 }
+
 describe('STT', () => {
-  it('tracks continuously and paints nothing else', () => {
+  it('tracks a hot target continuously and paints nothing else', () => {
     const radar = new Radar()
     radar.designate(7) // RWS: straight to STT
     expect(radar.stt).toBe(7)
-    const other = { ...beam, id: 9, x: 2 * NM }
-    swept(radar, [beam, other], 3)
+    const other = { ...hot, id: 9, x: 2 * NM }
+    swept(radar, [hot, other], 3)
     expect(radar.tracks.find((t) => t.id === 7)?.hits).toBeGreaterThan(100)
     expect(radar.tracks.find((t) => t.id === 9)).toBeUndefined()
     expect(radar.bricks.length).toBe(0)
+  })
+
+  it('a beaming target coasts in MEMORY, then the lock drops (#31)', () => {
+    const radar = new Radar()
+    radar.designate(7)
+    swept(radar, [beam], 2) // in the notch: no fresh data, the track coasts
+    expect(radar.stt).toBe(7)
+    expect(radar.memory).toBeGreaterThan(1)
+    expect(radar.tracks.find((t) => t.id === 7)?.hits ?? 0).toBeLessThan(10)
+    swept(radar, [beam], 3) // the memory window (4 s) expires
+    expect(radar.stt).toBe(null)
+  })
+
+  it('a jammer outside burnthrough steals the gate; inside, the echo wins (#31)', () => {
+    const radar = new Radar()
+    radar.designate(7)
+    const far = { ...hot, jamming: true } // 15 nmi: well outside 9 km burnthrough
+    swept(radar, [far], 2)
+    expect(radar.memory).toBeGreaterThan(1)
+    swept(radar, [far], 3)
+    expect(radar.stt).toBe(null)
+    radar.designate(7)
+    const near = { ...hot, z: -4000, jamming: true } // 4 km: burnt through
+    swept(radar, [near], 2)
+    expect(radar.stt).toBe(7)
+    expect(radar.memory).toBe(0)
+  })
+
+  it('a radiating emitter draws a bearing-only strobe (#31)', () => {
+    const radar = new Radar()
+    radar.step(1 / 60, own, [{ ...beam, x: 5 * NM, jamming: true }], wrap, always)
+    expect(radar.strobes.length).toBe(1)
+    expect(radar.strobes[0]).toBeGreaterThan(0) // off to the right, bearing only
+    radar.step(1 / 60, own, [beam], wrap, always)
+    expect(radar.strobes.length).toBe(0)
   })
   it('breaks past the gimbal and returns to search', () => {
     const radar = new Radar()

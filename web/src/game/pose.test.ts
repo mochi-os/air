@@ -20,6 +20,7 @@ function pose(options: {
   slot: number
   alive?: boolean
   burning?: boolean
+  jamming?: boolean
   fire?: [number, number]
   leak?: number
   emitter?: number
@@ -32,6 +33,7 @@ function pose(options: {
   if (options.alive ?? true) flags |= 1
   flags |= 16 // pilot alive
   if (options.burning) flags |= 32
+  if (options.jamming) flags |= 64 // #31: the radiating-jammer bit
   v.setUint8(26, flags)
   v.setUint8(29, Math.round((options.fire?.[0] ?? 0) * 255))
   v.setUint8(30, Math.round((options.fire?.[1] ?? 0) * 255))
@@ -145,5 +147,14 @@ describe('emitters (#30)', () => {
     feed(s, concat([pose({ slot: 3, emitter: 2, target: 0 })]), 60)
     feed(s, concat([pose({ slot: 3, emitter: 1 })]), 120)
     expect(s.emitters.get(3)).toEqual({ mode: 1, target: -1 })
+  })
+})
+
+describe('jamming (#31)', () => {
+  it('reads the radiating-jammer bit from the flags byte', () => {
+    const s = session(0)
+    feed(s, concat([pose({ slot: 3, jamming: true }), pose({ slot: 5 })]))
+    expect(s.remote(3)?.jamming).toBe(true)
+    expect(s.remote(5)?.jamming).toBe(false)
   })
 })

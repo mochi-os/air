@@ -1486,7 +1486,7 @@ function ddi_rdr(x){
 	x.fillStyle="#39e07a"; x.font="16px monospace"; x.textAlign="center";
 	x.fillText(String(-Math.round(half/D2R)),76,450); x.fillText("0",256,450); x.fillText(String(Math.round(half/D2R)),436,450);
 	if(RADAR.stt!=null){ const t=RADAR.tracks.find(k=>k.id===RADAR.stt);
-		x.font="18px monospace"; x.textAlign="left"; x.fillText("STT",86,92);
+		x.font="18px monospace"; x.textAlign="left"; x.fillText(RADAR.memory>0?"MEM":"STT",86,92);   // #31: the display finally admits what the tracker knows — a coasting track is MEMORY, not a lock
 		if(t){ const g=radar_geometry(own,t,wrap_axis);
 			const px=rdr_x(THREE.MathUtils.clamp(g.azimuth,-half,half),half), py=rdr_y(g.range,scaleM);
 			x.strokeStyle="#39e07a"; x.lineWidth=2.5;
@@ -1498,6 +1498,12 @@ function ddi_rdr(x){
 		x.strokeStyle="rgba(57,224,122,0.6)"; x.lineWidth=2;
 		x.beginPath(); x.moveTo(sx,70); x.lineTo(sx,430); x.stroke(); }
 	if(RADAR.sil){ x.font="22px monospace"; x.textAlign="center"; x.fillText("SIL",256,108); }
+	for(const az of RADAR.strobes){ if(Math.abs(az)>half) continue;   // #31: jam strobes — bearing-only spokes, range unknown, so the whole column glows
+		const px=rdr_x(az,half);
+		x.strokeStyle="rgba(57,224,122,0.7)"; x.lineWidth=2; x.setLineDash([10,7]);
+		x.beginPath(); x.moveTo(px,70); x.lineTo(px,430); x.stroke(); x.setLineDash([]);
+		x.font="14px monospace"; x.textAlign="center"; x.fillText("JAM",px,64); }
+	if(jammer_armed){ x.font="16px monospace"; x.textAlign="right"; x.fillStyle=jammer_loud()?"#ffc14d":"#39e07a"; x.fillText(jammer_loud()?"XMIT":"JAM ARM",430,110); x.fillStyle="#39e07a"; }   // #31: the ASPJ state, amber while actually radiating
 	for(const b of RADAR.bricks){ if(Math.abs(b.azimuth)>half||b.range>scaleM) continue;   // RWS paints, fading with age
 		x.globalAlpha=Math.max(0.15,1-(RADAR.time-b.at)/12); x.fillStyle="#39e07a";
 		x.fillRect(rdr_x(b.azimuth,half)-6,rdr_y(b.range,scaleM)-2,12,5); }
@@ -2547,6 +2553,8 @@ function trigger_amraam(){
 	if(launch_amraam(ownship,target,amraam_visual?null:track)){ if(!cheat("ammunition")) ownship.amraam--; audio_launch(); update_rails(ownship,ownship.msl); }
 }
 let amraam_visual=false;   // UNCAGE: the boresight/MADDOG launch mode (#27 phase 2)
+let jammer_armed=false;   // XMIT (#31): the standing decision; jammer_loud() is whether it radiates right now
+function jammer_loud(){ return jammer_armed && (RWR.locked()||RWR.warned()); }   // armed AND painted: the threat picture decides the radiation, so forgetting it armed is a carried risk, not a constant beacon
 // launch_amraam (#27 phase 2): the round separates off its rail or ejector
 // and is handed to the Go core with the datalink's first estimate — or with
 // none at all for a VISUAL shot, which starts the seeker hot. The slot is
@@ -3600,6 +3608,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("acquire") && !on_ground()) acquire_press();   // radar-aware acquisition (#30): TWS steps the L&S, otherwise the ACM cone (in flight, Enter is free — the catapult owns it only on deck)
 		if(ch===key_of("radar.undesignate")) undesignate_press();   // #30/#27: STT back to search, the L&S gone — or, in TWS, the L&S steps to the next trackfile
 		if(ch===key_of("uncage")){ if(master==="120c"){ amraam_visual=!amraam_visual; notice(amraam_visual?"VISUAL":"CIA"); } }   // #27 phase 2: the AIM-120's boresight/MADDOG mode (the 9M's SEAM slaving joins this key later)
+		if(ch===key_of("jammer")){ jammer_armed=!jammer_armed; notice(jammer_armed?"JAMMER ARMED":"JAMMER OFF"); }   // #31: the ASPJ collapsed to its one real decision — annunciator vocabulary stays English like SIL's
 		if(ch===key_of("radar.silent")){ RADAR.sil=!RADAR.sil; notice(RADAR.sil?"RADAR SILENT":"RADAR ACTIVE"); }   // #30: emission discipline is a reflex action — annunciator vocabulary stays English
 		if(ch===key_of("radar.acm")){ RADAR.acm=RADAR.acm==="bst"?"vacq":"bst"; notice(RADAR.acm==="bst"?"ACM BORESIGHT":"ACM VERTICAL"); }   // #30: the castle-switch stand-in
 		if(ch===key_of("select")){ set_master(master==="gun"?"9m":master==="9m"?"120c":master==="120c"?"nav":"gun"); }   // weapon select (#133, #27): GUN -> 9M -> 120C -> NAV -> GUN. Crossing the A/A-NAV boundary recalls that mode's displays (#15)
@@ -4323,7 +4332,8 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v
 			const above=(dx*ux+dy*uy+dz*uz)/d;
 			best={ range:Math.round(d), ahead:+ahead.toFixed(3), side:+side.toFixed(3), above:+above.toFixed(3) }; }
 		return best; })(),
-	visual:amraam_visual, rounds:missiles.filter(m=>m.active&&m.kind==="120c").map(m=>({ phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), reach:Math.round(m.rangeToGo??0), stale:+(m.stale??0).toFixed(1), flew:+(m.flew??0).toFixed(1), took:m.took||0 })),   // #27 phase 2: each AIM-120 in flight, straight from the Go core
+	visual:amraam_visual, jammer:{ armed:jammer_armed, loud:jammer_loud(), memory:+(RADAR.memory??0).toFixed(1), strobes:RADAR.strobes.length },
+	rounds:missiles.filter(m=>m.active&&m.kind==="120c").map(m=>({ phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), reach:Math.round(m.rangeToGo??0), stale:+(m.stale??0).toFixed(1), flew:+(m.flew??0).toFixed(1), took:m.took||0 })),   // #27 phase 2: each AIM-120 in flight, straight from the Go core
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
 	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], /* #57 parked: tracking:{ on:head_track?1:0, ok:head_ok?1:0, az:+head_az.toFixed(3), el:+head_el.toFixed(3) }, */ radar:{ mode:RADAR.sil?"sil":RADAR.stt!=null?"stt":RADAR.mode, w:Math.round(RADAR.half()/D2R), scale:RADAR.scale, sweep:+(RADAR.sweep/D2R).toFixed(1), bricks:RADAR.bricks.length, tracks:RADAR.tracks.length, ls:RADAR.ls??null, stt:RADAR.stt??null, emit:RADAR.emitter(), bandit:bandit_emitter, el:Math.round(RADAR.elevation/D2R), track:RADAR.tracks.length?(()=>{ const g=radar_geometry(radar_own(),RADAR.tracks[0],wrap_axis); return { az:+(g.azimuth/D2R).toFixed(1), range:Math.round(g.range) }; })():null }, draws:ddi_draws, emitters:MULTIPLAYER&&net?Object.fromEntries(net.emitters):null, rwr:{ n:RWR.contacts.length, lock:RWR.locked(), missile:RWR.warned(), paints:RWR.paints, contacts:RWR.contacts.map(c=>({ id:c.id, brg:Math.round(c.bearing/D2R), lk:c.locked?1:0, ms:c.missile?1:0, age:+(RWR.time-c.at).toFixed(1) })) },home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
 	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
@@ -5963,7 +5973,7 @@ function contacts(){
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
 		out.push({ id:slot, x:st.pos.x, y:st.pos.y, z:st.pos.z,
 			vx:st.velx??st.fwd.x*st.speed, vy:st.vely??st.fwd.y*st.speed, vz:st.velz??st.fwd.z*st.speed,
-			fwd:st.fwd, name:st.name||net.names.get(slot)||"", team:net.teams.get(slot)||"" }); } }
+			fwd:st.fwd, name:st.name||net.names.get(slot)||"", team:net.teams.get(slot)||"", jamming:!!st.jamming }); } }
 	else if(has_enemy&&bandit.group.visible) out.push({ id:"bandit", x:bandit.pos.x, y:bandit.pos.y, z:bandit.pos.z,
 		vx:bandit.velx??bandit.fwd.x*bandit.speed, vy:bandit.vely??bandit.fwd.y*bandit.speed, vz:bandit.velz??bandit.fwd.z*bandit.speed,
 		fwd:bandit.fwd, name:"", team:"" });
@@ -6208,7 +6218,7 @@ function net_frame(dt){
 		reheat:ownship.burner??0, brake:input.brake, trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
 		override:c?c.override:false, dump:fuel_dump, port:secured[0], starboard:secured[1],
-		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, missile:missile_flag, radar:fox3_flag, eject:eject_flag };
+		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, missile:missile_flag, radar:fox3_flag, jammer:jammer_armed, eject:eject_flag };
 	const sequence=net.input(sample);
 	if(sequence>0){ flare_flag=false; missile_flag=false; fox3_flag=false; eject_flag=false; }
 	// Prediction: the wire sample IS the sample the core flew, so the mark ring
@@ -6257,6 +6267,7 @@ function net_frame(dt){
 		st.fwd.set(1,0,0).applyQuaternion(st.group.quaternion);
 		st.velx=st.fwd.x*pose.speed; st.vely=st.fwd.y*pose.speed; st.velz=st.fwd.z*pose.speed;
 		st.gearTarget=pose.gear?0:1; st.hookTarget=pose.hook?1:0; st.speedbrakeTarget=pose.speedbrake;
+		st.jamming=!!pose.jamming;   // #31: the flag the RDR page strobes and the STT MEM logic feed on
 		st.name=pose.name; st.group.visible=pose.alive;
 		{ const team=net.teams.get(slot)||"";
 			if(st.livery!==team&&model_active){ apply_livery(st.group,team); st.livery=team; } }
