@@ -16,29 +16,18 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import { createAppClient, useFormat } from '@mochi/web'
 import { Users } from 'lucide-react'
 import { flight_load, flight_version } from '../game/flight'
+import { server_mismatch, server_offline, server_order, type Server } from '../game/servers'
 
 const client = createAppClient({ appName: 'air' })
 
-export interface Server {
-  world: string
-  name: string
-  address: string
-  version: number
-  players: number
-  seen: number
-}
-
-// A listing is offline once it has missed two 10-minute refresh floors: core
-// keeps it in the table for 45 minutes (repair grace), but a join page should
-// stop advertising a server that has gone quiet well before then.
-const OFFLINE_AFTER = 1500
+export type { Server }
 
 // useServers polls the public listing and loads this client's own flight
 // version. It lives outside ServerList so the join dialog can also match its
 // RECENTS against the listing — a public server the player has joined shows
-// once, in the recent position, under its public name. `servers` is null
-// until the first response; a failed fetch resolves to an empty list so the
-// dialog's empty state (auto-expanded private-server entry) still applies.
+// once, in the recent position, under its public name. `servers` is null until
+// the first response; a failed fetch resolves to an empty list so the dialog's
+// empty state (the auto-expanded private-server entry) still applies.
 export function useServers(): { servers: Server[] | null; version: number } {
   const [servers, setServers] = useState<Server[] | null>(null)
   const [version, setVersion] = useState(0)
@@ -81,8 +70,8 @@ export function useServers(): { servers: Server[] | null; version: number } {
 export function ServerRow({ server, version, onPick }: { server: Server; version: number; onPick: (address: string) => void }) {
   const { t } = useLingui()
   const { formatNumber } = useFormat()
-  const offline = Date.now() / 1000 - server.seen > OFFLINE_AFTER
-  const mismatch = version > 0 && server.version !== version
+  const offline = server_offline(server, Date.now() / 1000)
+  const mismatch = server_mismatch(server, version)
   const disabled = offline || mismatch
   return (
     <button
@@ -111,14 +100,7 @@ export function ServerRow({ server, version, onPick }: { server: Server; version
 }
 
 export function ServerList({ servers, version, onPick }: { servers: Server[]; version: number; onPick: (address: string) => void }) {
-  const now = Date.now() / 1000
-  // Players descending; an empty-looking list of empty servers reads as a dead
-  // game, so the busiest sits first. Offline listings sink to the bottom.
-  const sorted = [...servers].sort((a, b) => {
-    const ao = now - a.seen > OFFLINE_AFTER ? 1 : 0
-    const bo = now - b.seen > OFFLINE_AFTER ? 1 : 0
-    return ao - bo || b.players - a.players
-  })
+  const sorted = server_order(servers, Date.now() / 1000)
 
   return (
     <div className='space-y-1'>
