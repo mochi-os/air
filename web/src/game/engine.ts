@@ -6366,6 +6366,7 @@ function start_mission(){
 	const devq=new URLSearchParams(DEV_MODE?window.location.search:"");   // dev/screenshot hooks (#105), parsed ONLY in developer mode: force a cloud preset / time of day / inject damage
 	const cloudq=devq.get("clouds"); if(cloudq!==null) cfg.clouds=cloudq;
 	const taskq=devq.get("task"); if(taskq==="joust"||taskq==="free") cfg.task=taskq;   // &task=joust — headless SP joust boot (#32)
+	const cheatq=devq.get("cheat"); if(cheatq){ const on={...(cfg.cheats as Record<string,boolean>)}; for(const c of cheatq.split(",")) if(c==="invulnerable"||c==="ammunition"||c==="fuel") on[c]=true; cfg.cheats=on; }   // &cheat=invulnerable,... — harness survival without teaching the rig to fly BFM
 	const duelq=devq.get("duel"); if(duelq==="bvr"||duelq==="merge") cfg.duel=duelq;   // &duel=bvr — the BVR start
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
 	harm_pending=devq.get("harm");
