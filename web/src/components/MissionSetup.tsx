@@ -44,7 +44,7 @@ import {
   seedStart,
 } from '../lib/config'
 import { useIdentityName } from '../lib/config-store'
-import { ServerList } from './ServerList'
+import { ServerList, ServerRow, useServers } from './ServerList'
 import { Multiplayer } from './Multiplayer'
 import { Link } from '@tanstack/react-router'
 import { KEY_DEFAULTS, pretty } from '../game/keys'
@@ -55,6 +55,7 @@ import {
   default_server,
   normalize_server,
   world_chat,
+  world_status,
   world_withdraw,
   world_say,
   type Join,
@@ -182,6 +183,7 @@ const BUTTON_ROWS: Row[] = [
   { id: 'acquire', label: <Trans>Acquire target</Trans>, group: 'weapons' },
   { id: 'radar.undesignate', label: <Trans>Undesignate target</Trans>, group: 'weapons' },   // #30
   { id: 'uncage', label: <Trans>Uncage seeker</Trans>, group: 'weapons' },   // #27: the AIM-120's CIA <-> VISUAL toggle; the 9M's SEAM slaving joins it later
+  { id: 'jammer', label: <Trans>Jammer</Trans>, group: 'weapons' },   // #31: the ASPJ's one real decision — armed, radiating only while painted
   { id: 'radar.silent', label: <Trans>Radar silent</Trans>, group: 'weapons' },   // #30
   { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },   // #30: boresight <-> vertical
   { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },   // the id stays 'flares' (the action); the label is the real dispenser's name
@@ -230,6 +232,7 @@ const KEY_ROWS: Row[] = [
   { id: 'acquire', label: <Trans>Acquire target</Trans>, group: 'weapons' },
   { id: 'radar.undesignate', label: <Trans>Undesignate target</Trans>, group: 'weapons' },   // #30
   { id: 'uncage', label: <Trans>Uncage seeker</Trans>, group: 'weapons' },   // #27: the AIM-120's CIA <-> VISUAL toggle; the 9M's SEAM slaving joins it later
+  { id: 'jammer', label: <Trans>Jammer</Trans>, group: 'weapons' },   // #31: the ASPJ's one real decision — armed, radiating only while painted
   { id: 'radar.silent', label: <Trans>Radar silent</Trans>, group: 'weapons' },   // #30
   { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },   // #30: boresight <-> vertical
   { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },
@@ -1614,6 +1617,24 @@ function ServerFlow({
 }) {
   const [entered, setEntered] = useState(false)
   const [address, setAddress] = useState(config.world || '')
+  const { servers, version } = useServers()
+  // The private-server address entry is collapsed by default; no persistence,
+  // because a joined private server lands in recents, which remembers for us.
+  const [private_, setPrivate] = useState(false)
+  // The server's own name, from its lobby status — every world server
+  // advertises one ([world] name), so the page can be titled with it even for
+  // private servers the public listing has never heard of. Empty until it
+  // answers; the generic heading stands in.
+  const [world, setWorld] = useState('')
+  useEffect(() => {
+    if (!entered) return
+    const abort = new AbortController()
+    setWorld('')
+    world_status(normalize_server(config.world || default_server()), abort.signal)
+      .then((s) => setWorld(s.name))
+      .catch(() => {}) // unreachable: the generic heading stands
+    return () => abort.abort()
+  }, [entered, config.world])
   // The pilot token identifies the owner of a match offer across reconnects.
   // It is minted when the player actually enters a server — NOT in an effect at
   // mount: this component is mounted (closed) from the first render, and a
@@ -1639,48 +1660,76 @@ function ServerFlow({
   }
   if (!open) return null
   if (!entered) {
+    // A recent that matches a public listing shows ONCE, here in the recent
+    // position, under its public name with the live count — the name is the
+    // player-facing identity; the raw address is only shown when no listing
+    // matches (a private server, or a public one gone quiet), which doubles
+    // as the honest signal that the server is not currently announcing.
+    const matched = (r: string) => (servers ?? []).find((s) => normalize_server(s.address) === normalize_server(r))
+    const publics = (servers ?? []).filter((s) => !recents.some((r) => normalize_server(r) === normalize_server(s.address)))
+    // The address entry is the expert path and collapses out of a new
+    // player's way — unless it is the only thing the dialog would contain
+    // (no listings, no recents: today's lone-private-player state).
+    const bare = servers !== null && publics.length === 0 && recents.length === 0
+    const entry = private_ || bare
     return (
       <MenuDialog open onClose={onClose} title={<Trans>Join server</Trans>}>
         <div className='space-y-4'>
-          {/* The public list: community servers hosting air, live from the
-              network. Absent entirely when nothing is public, so a lone
-              private player just sees the recents + URL field below. */}
-          <div className='space-y-2'>
-            <SectionLabel>
-              <Trans>Public servers</Trans>
-            </SectionLabel>
-            <ServerList onPick={(address) => enter(address)} />
-          </div>
           {recents.length > 0 && (
             <div className='space-y-2'>
               <SectionLabel>
                 <Trans>Recent</Trans>
               </SectionLabel>
               <div className='flex flex-col gap-1'>
-                {recents.map((r) => (
-                  <Button key={r} type='button' variant='outline' className='justify-start font-mono text-sm' onClick={() => enter(r)}>
-                    {r}
-                  </Button>
-                ))}
+                {recents.map((r) => {
+                  const s = matched(r)
+                  return s ? (
+                    <ServerRow key={r} server={s} version={version} onPick={(a) => enter(a)} />
+                  ) : (
+                    <Button key={r} type='button' variant='outline' className='justify-start font-mono text-sm' onClick={() => enter(r)}>
+                      {r}
+                    </Button>
+                  )
+                })}
               </div>
             </div>
           )}
+          {/* The public list: community servers hosting air, live from the
+              network. Absent entirely when nothing is public, so a lone
+              private player just sees the recents + address entry. */}
+          {publics.length > 0 && (
+            <div className='space-y-2'>
+              <SectionLabel>
+                <Trans>Public servers</Trans>
+              </SectionLabel>
+              <ServerList servers={publics} version={version} onPick={(a) => enter(a)} />
+            </div>
+          )}
           <div className='space-y-2'>
-            <SectionLabel>
-              <Trans>Server</Trans>
-            </SectionLabel>
-            <Input
-              value={address}
-              placeholder={default_server()}
-              onChange={(e) => setAddress(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && enter(address)}
-            />
-          </div>
-          <div className='flex justify-end'>
-            <Button onClick={() => enter(address)}>
-              <LogIn className='size-4' />
-              <Trans>Connect</Trans>
-            </Button>
+            <button
+              type='button'
+              onClick={() => setPrivate(!private_)}
+              className='text-muted-foreground hover:text-foreground flex items-center gap-1 text-sm transition-colors'
+            >
+              <ChevronRight className={`size-4 transition-transform ${entry ? 'rotate-90' : ''}`} />
+              <Trans>Connect to private server</Trans>
+            </button>
+            {entry && (
+              <>
+                <Input
+                  value={address}
+                  placeholder={default_server()}
+                  onChange={(e) => setAddress(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && enter(address)}
+                />
+                <div className='flex justify-end'>
+                  <Button onClick={() => enter(address)}>
+                    <LogIn className='size-4' />
+                    <Trans>Connect</Trans>
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </MenuDialog>
@@ -1698,9 +1747,7 @@ function ServerFlow({
         <div className='flex min-h-0 min-w-0 flex-1 flex-col'>
           <div className='mb-4 flex items-center justify-between'>
             <div>
-              <h2 className='text-2xl font-semibold tracking-tight'>
-                <Trans>Matches</Trans>
-              </h2>
+              <h2 className='text-2xl font-semibold tracking-tight'>{world || <Trans>Matches</Trans>}</h2>
               <p className='text-muted-foreground font-mono text-xs'>{config.world}</p>
             </div>
             <Button type='button' variant='outline' onClick={leave}>

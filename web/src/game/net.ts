@@ -206,6 +206,7 @@ export interface RemotePose {
   speed: number
   name: string
   alive: boolean
+  jamming: boolean // the jammer is radiating (#31)
   burn: [number, number]
   leak: number
   pilot: boolean
@@ -255,6 +256,7 @@ export interface InputSample {
   flare: boolean
   missile: boolean
   radar: boolean // the AIM-120's own trigger (#27): its own magazine, its own edge
+  jammer: boolean // the jammer's ARMED state (#31): a level — the server judges when it radiates
 }
 
 export interface Welcome {
@@ -574,6 +576,7 @@ export class Net {
             hook: !!(flags & 4),
             fire: !!(flags & 8),
             pilot: !!(flags & 16),
+            jamming: !!(flags & 64), // the jammer is radiating (#31): victims strobe and break locks on this
             burning: !!(flags & 32),
             reheat: view.getUint8(base + 27) / 255,
             speedbrake: view.getUint8(base + 28) / 255,
