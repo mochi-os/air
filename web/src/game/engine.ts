@@ -4333,6 +4333,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v
 			best={ range:Math.round(d), ahead:+ahead.toFixed(3), side:+side.toFixed(3), above:+above.toFixed(3) }; }
 		return best; })(),
 	visual:amraam_visual, jammer:{ armed:jammer_armed, loud:jammer_loud(), memory:+(RADAR.memory??0).toFixed(1), strobes:RADAR.strobes.length },
+	apart:(!MULTIPLAYER&&has_enemy)?Math.round(Math.hypot(wrap_axis(bandit.pos.x-ownship.pos.x),bandit.pos.y-ownship.pos.y,wrap_axis(bandit.pos.z-ownship.pos.z))):-1,   // #32: the SP pair's separation, for the BVR joust checks
 	rounds:missiles.filter(m=>m.active&&m.kind==="120c").map(m=>({ phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), reach:Math.round(m.rangeToGo??0), stale:+(m.stale??0).toFixed(1), flew:+(m.flew??0).toFixed(1), took:m.took||0 })),   // #27 phase 2: each AIM-120 in flight, straight from the Go core
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
 	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], /* #57 parked: tracking:{ on:head_track?1:0, ok:head_ok?1:0, az:+head_az.toFixed(3), el:+head_el.toFixed(3) }, */ radar:{ mode:RADAR.sil?"sil":RADAR.stt!=null?"stt":RADAR.mode, w:Math.round(RADAR.half()/D2R), scale:RADAR.scale, sweep:+(RADAR.sweep/D2R).toFixed(1), bricks:RADAR.bricks.length, tracks:RADAR.tracks.length, ls:RADAR.ls??null, stt:RADAR.stt??null, emit:RADAR.emitter(), bandit:bandit_emitter, el:Math.round(RADAR.elevation/D2R), track:RADAR.tracks.length?(()=>{ const g=radar_geometry(radar_own(),RADAR.tracks[0],wrap_axis); return { az:+(g.azimuth/D2R).toFixed(1), range:Math.round(g.range) }; })():null }, draws:ddi_draws, emitters:MULTIPLAYER&&net?Object.fromEntries(net.emitters):null, rwr:{ n:RWR.contacts.length, lock:RWR.locked(), missile:RWR.warned(), paints:RWR.paints, contacts:RWR.contacts.map(c=>({ id:c.id, brg:Math.round(c.bearing/D2R), lk:c.locked?1:0, ms:c.missile?1:0, age:+(RWR.time-c.at).toFixed(1) })) },home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
@@ -5018,11 +5019,14 @@ function reset_ownship(){
 		marshal={ push:sim_time+MARSHAL_PUSH, commenced:false, platform:false, dirty:false, ball:false };
 		comm("MARSHAL: "+translate("PUSH TIME")+" "+clock_text(MARSHAL_PUSH), "#9fd0ff"); }
 	else if(st==="joust"){   // 1v1 merge: head-on east-west directly over the atoll at 15,000 ft, 1 NM either side, equal AIRSPEED — symmetric in every respect (island below both at all fight orientations, sun/moon abeam both noses); the side is a coin flip so the sun-left/sun-right mirror can't systematically favour one player
-		weapons_hold=true;   // #87: fight's on at the merge, not before
+		const bvr=cfg.duel==="bvr";   // #32: the BVR start — the same head-on symmetry across the DERIVED separation, at the block, weapons free (the distance is the hold)
+		weapons_hold=!bvr;   // #87: fight's on at the merge, not before — except the BVR start, which is free from spawn
 		joust_side=Math.random()<0.5?1:-1;
-		ownship.pos.set(-joust_side*1.5*NM, 4572, 0); ownship.fwd.set(joust_side,0,0); ownship.speed=220; ownship.throttle=0.85;   // 15,000 ft = 4572 m; 1.5 NM either side = 3 NM head-on
+		const reach=bvr?bvr_separation()/2:1.5*NM, block=bvr?6096:4572, pace=bvr?272:220;
+		ownship.pos.set(-joust_side*reach, block, 0); ownship.fwd.set(joust_side,0,0); ownship.speed=pace; ownship.throttle=0.85;
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
-		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
+		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
+		if(bvr) notice(translate("FIGHT'S ON")); }   // the rule difference announced at the calmest moment: this joust has no hold
 	else {   // air start (free flight): ~15 km ENE of the runway at 5000 ft, heading at the carrier
 		const rwy=airports.length?airports[0]:{x:-1125,z:2898};   // Sand Island runway (fallback = its known centroid, since the map loads async)
 		const b=68*D2R;   // ENE
@@ -5035,7 +5039,8 @@ function reset_ownship(){
 	{ const hk=(st==="case2")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }   // hook down only where the aircraft is already ESTABLISHED on the approach (Case II, on the final bearing configured). NATOPS 8.2.10 has the pattern entered with the hook down, so a Case I spawn at the initial could defensibly start hooked — but the checklist is the player's to fly (2026-08-11): Case I hands over 3 NM astern clean and stowed, and lowering it before the break is part of the exercise. Case III lowers it at the dirty-up
 	flight_push();   // deliver the spawn to the flight core (no-op until it boots; the boot pushes this pose itself)
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
-	if(st==="joust"){ bandit.pos.set(joust_side*1.5*NM,4572,0); bandit.fwd.set(-joust_side,0,0); bandit.speed=220; bandit.merging=true;   // merging: the bandit flies straight at the player until the pass, so the merge can be timed   // the other end of the merge, same airspeed (equal TAS is the fair condition once wind exists)
+	if(st==="joust"){ const bvr=cfg.duel==="bvr"; const reach=bvr?bvr_separation()/2:1.5*NM, block=bvr?6096:4572, pace=bvr?272:220;
+		bandit.pos.set(joust_side*reach,block,0); bandit.fwd.set(-joust_side,0,0); bandit.speed=pace; bandit.merging=true;   // merging: the bandit flies straight at the player until the pass, so the merge can be timed   // the other end of the merge, same airspeed (equal TAS is the fair condition once wind exists)
 		bandit_brain=false; fly_bandit.tried=false;   // the wasm brain arms lazily in fly_bandit once the core is ready (#125 phase 2)
 	}
 	else { bandit.pos.set(3000,2400,-1000); bandit.fwd.set(-0.3,0,1).normalize(); bandit.speed=195; bandit.merging=false; }   // ground/deck starts: the bandit orbits near Midway as before
@@ -5268,6 +5273,17 @@ function hud_message(text){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.fon
 // flights, refreshed a few times a second — the numbers can never disagree
 // with what the round then does.
 let zone_at=0, zone=null, zone_track=null;
+// bvr_separation mirrors the server's derivation exactly (#32): head-on Rmax
+// from the round core's ladder at the spawn block (272 m/s at 6096 m), plus
+// the 15 nmi commit buffer — so the SP joust and the MP joust can never
+// disagree about the geometry. The constant fallback only covers the boot
+// race (the menu boots the core long before a mission starts, so in practice
+// the ladder governs); it sits near the current derivation on purpose.
+let bvr_apart=0;
+function bvr_separation(){ if(bvr_apart>0) return bvr_apart;
+	const z=round_ladder({position:{x:0,y:6096,z:0},velocity:{x:272,y:0,z:0}},{position:{x:60000,y:6096,z:0},velocity:{x:-272,y:0,z:0}},0);
+	bvr_apart=(z&&z.max>0?z.max:84000)+27780;
+	return bvr_apart; }
 function launch_zone(){
 	const track=RADAR.stt??RADAR.ls; if(track==null) return null;
 	const t=(!MULTIPLAYER&&has_enemy&&bandit.group.visible)?bandit:remotes.get(track);
@@ -6349,6 +6365,8 @@ function start_mission(){
 	set_view("hud");   // every mission starts in HUD view — a cockpit/chase choice is per-flight, not sticky across missions
 	const devq=new URLSearchParams(DEV_MODE?window.location.search:"");   // dev/screenshot hooks (#105), parsed ONLY in developer mode: force a cloud preset / time of day / inject damage
 	const cloudq=devq.get("clouds"); if(cloudq!==null) cfg.clouds=cloudq;
+	const taskq=devq.get("task"); if(taskq==="joust"||taskq==="free") cfg.task=taskq;   // &task=joust — headless SP joust boot (#32)
+	const duelq=devq.get("duel"); if(duelq==="bvr"||duelq==="merge") cfg.duel=duelq;   // &duel=bvr — the BVR start
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
 	harm_pending=devq.get("harm");
 	// #57 parked: dev_head=devq.get("head")==="1";   // &head=1: force head tracking on for headless verification (#57)   // ?harm=wing|engine|leak|jam — inject damage into the live core a few seconds in (headless verification of the presentation layer)

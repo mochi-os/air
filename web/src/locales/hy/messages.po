@@ -51,7 +51,7 @@ msgid "{0} created “{1}”"
 msgstr "{0}-ը ստեղծել է «{1}»-ը"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:309
+#: src/components/Multiplayer.tsx:328
 msgid "{0} flying"
 msgstr "{0} օդում"
 
@@ -72,7 +72,7 @@ msgstr "{0} տարբերակի նախադիտում"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:522
 msgid "{0}/{1} players"
 msgstr "{0}/{1} խաղացող"
 
@@ -100,7 +100,7 @@ msgstr "{entityLabel}-ի անունը"
 msgid "{entityLabel} name is required"
 msgstr "{entityLabel}-ի անունը պարտադիր է"
 
-#: src/components/Multiplayer.tsx:215
+#: src/components/Multiplayer.tsx:231
 msgid "{name}'s match"
 msgstr "{name}-ի խաղը"
 
@@ -214,9 +214,9 @@ msgstr "Հաշվի արգելափակումը հանված է"
 msgid "Account verified"
 msgstr "Հաշիվներ"
 
-#: src/components/MissionSetup.tsx:1827
-#: src/components/MissionSetup.tsx:2230
-#: src/components/Multiplayer.tsx:431
+#: src/components/MissionSetup.tsx:1840
+#: src/components/MissionSetup.tsx:2240
+#: src/components/Multiplayer.tsx:462
 msgid "Ace"
 msgstr "Վարպետ"
 
@@ -318,7 +318,7 @@ msgstr "Լրացուցիչ մանրամասներ (ոչ պարտադիր)"
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Հարմարեցրեք տեսքն ու դասավորությունը ձեր նախընտրություններին։"
 
-#: src/components/MissionSetup.tsx:2068
+#: src/components/MissionSetup.tsx:2078
 msgid "Afterburner"
 msgstr "Ֆորսաժ"
 
@@ -363,6 +363,10 @@ msgstr "Սխալ առաջացավ"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:275
 msgid "An unexpected error occurred"
 msgstr "Անսպասելի սխալ առաջացավ"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Anchored sides"
+msgstr "Խարսխված կողմեր"
 
 #: ../../../lib/web/src/features/accounts/types.ts:16
 msgid "Android push"
@@ -478,7 +482,7 @@ msgstr "Հետ դեպի CRM"
 msgid "Back to home"
 msgstr "Վերադառնալ տուն"
 
-#: src/components/MissionSetup.tsx:1819
+#: src/components/MissionSetup.tsx:1832
 msgid "Bandit"
 msgstr "Թշնամի"
 
@@ -524,11 +528,11 @@ msgstr "Արգելափակվեց անցումը անվստահելի հղման"
 msgid "Blocks"
 msgstr "Հատված"
 
-#: src/components/Multiplayer.tsx:543
+#: src/components/Multiplayer.tsx:574
 msgid "Blue"
 msgstr "Կապույտ"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Blue bots"
 msgstr "Կապույտ բոտեր"
 
@@ -549,7 +553,7 @@ msgstr "Եզրագծի գույն"
 msgid "Border colour"
 msgstr "Աղբյուրը և թիրախը պարտադիր են"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Bots"
 msgstr "Բոտեր"
 
@@ -581,12 +585,20 @@ msgstr "Կոճակ {i}"
 msgid "Buttons"
 msgstr "Կոճակներ"
 
+#: src/components/Multiplayer.tsx:409
+msgid "BVR — weapons free from spawn"
+msgstr "BVR — կրակը ազատ է սկզբից"
+
+#: src/components/MissionSetup.tsx:1828
+msgid "BVR, fight's on at start"
+msgstr "BVR, մարտը սկսվում է անմիջապես"
+
 #: src/components/GameCanvas.tsx:108
 msgid "CALL THE BALL"
 msgstr "ՀԱՅՏՆԻՐ ԳՆԴԱԿԸ"
 
-#: src/components/MissionSetup.tsx:2124
-#: src/components/Multiplayer.tsx:293
+#: src/components/MissionSetup.tsx:2134
+#: src/components/Multiplayer.tsx:312
 msgid "Callsign"
 msgstr "Կանչանշան"
 
@@ -612,8 +624,8 @@ msgstr "Տեսախցիկը հասանելի չէ"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:675
-#: src/components/Multiplayer.tsx:264
-#: src/components/Multiplayer.tsx:520
+#: src/components/Multiplayer.tsx:283
+#: src/components/Multiplayer.tsx:551
 msgid "Cancel"
 msgstr "Չեղարկել մեկնաբանությունը"
 
@@ -635,7 +647,7 @@ msgstr "Կաբինայի ծածկ"
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1855
+#: src/components/MissionSetup.tsx:1868
 msgid "Case I (day)"
 msgstr "Դեպք I (ցերեկ)"
 
@@ -643,7 +655,7 @@ msgstr "Դեպք I (ցերեկ)"
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1856
+#: src/components/MissionSetup.tsx:1869
 msgid "Case II (weather)"
 msgstr "Դեպք II (եղանակ)"
 
@@ -651,11 +663,11 @@ msgstr "Դեպք II (եղանակ)"
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1857
+#: src/components/MissionSetup.tsx:1870
 msgid "Case III (night)"
 msgstr "Դեպք III (գիշեր)"
 
-#: src/components/MissionSetup.tsx:1863
+#: src/components/MissionSetup.tsx:1876
 msgid "Catapult"
 msgstr "Կատապուլտ"
 
@@ -689,7 +701,7 @@ msgid "Chat to everyone"
 msgstr "Չատ բոլորի հետ"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1922
+#: src/components/MissionSetup.tsx:1932
 msgid "Cheats"
 msgstr "Չիթեր"
 
@@ -736,7 +748,7 @@ msgstr "Ընտրել հակառակորդ"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:373
 msgid "Clear"
 msgstr "Մաքրել ամենը"
 
@@ -800,7 +812,7 @@ msgstr "Կոդը պատճենված է"
 msgid "closer"
 msgstr "ավելի մոտ"
 
-#: src/components/MissionSetup.tsx:1900
+#: src/components/MissionSetup.tsx:1910
 msgid "Clouds"
 msgstr "Ամպեր"
 
@@ -858,10 +870,6 @@ msgstr "Կապ"
 msgid "Compact"
 msgstr "Ավարտեք Stripe-ի գրանցումը՝ հաստատվելու համար"
 
-#: src/components/MissionSetup.tsx:1886
-msgid "Conditions"
-msgstr "Պայմաններ"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
 msgid "Configure option settings"
 msgstr "Կարգավորել տեսքի կարգավորումները"
@@ -875,11 +883,11 @@ msgstr "Կարգավորեք, թե որ հավելվածն է մշակում յ�
 msgid "Confirm"
 msgstr "Հաստատել ստացումը"
 
-#: src/components/MissionSetup.tsx:1728
+#: src/components/MissionSetup.tsx:1730
 msgid "Connect"
 msgstr "Միանալ"
 
-#: src/components/MissionSetup.tsx:1715
+#: src/components/MissionSetup.tsx:1717
 msgid "Connect to private server"
 msgstr "Միանալ մասնավոր սերվերին"
 
@@ -895,7 +903,7 @@ msgstr "Կապվեք ադմինիստրատորի հետ պատվիրակութ�
 msgid "Connecting..."
 msgstr "Միանում է..."
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:331
 msgid "Connecting…"
 msgstr "Միանում է…"
 
@@ -916,7 +924,7 @@ msgid "Contextual information and details."
 msgstr "Համատեքստային տեղեկություններ և մանրամասներ։"
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:273
+#: src/components/Multiplayer.tsx:292
 msgid "Continue"
 msgstr "Շարունակել վճարումը"
 
@@ -940,7 +948,7 @@ msgstr "Պատճենել ամենը"
 msgid "Corner speed (best instant turn)"
 msgstr "Անկյունային արագություն (լավագույն ակնթարթային շրջադարձ)"
 
-#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:248
 msgid "Could not create the match"
 msgstr "Չհաջողվեց ստեղծել խաղը"
 
@@ -1003,16 +1011,16 @@ msgstr "Ստեղծել CRM"
 msgid "Create {0}"
 msgstr "Ստեղծել {0}"
 
-#: src/components/Multiplayer.tsx:463
+#: src/components/Multiplayer.tsx:494
 msgid "Create and fly"
 msgstr "Ստեղծել և թռչել"
 
-#: src/components/Multiplayer.tsx:327
+#: src/components/Multiplayer.tsx:346
 msgid "Create match"
 msgstr "Ստեղծել խաղ"
 
-#: src/components/MissionSetup.tsx:2287
-#: src/components/MissionSetup.tsx:2310
+#: src/components/MissionSetup.tsx:2298
+#: src/components/MissionSetup.tsx:2321
 msgid "Create mission"
 msgstr "Ստեղծել առաքելություն"
 
@@ -1035,9 +1043,9 @@ msgstr "Ստեղծվում է…"
 msgid "Credits"
 msgstr "Հեղինակներ"
 
-#: src/components/MissionSetup.tsx:1907
-#: src/components/Multiplayer.tsx:74
-#: src/components/Multiplayer.tsx:355
+#: src/components/MissionSetup.tsx:1917
+#: src/components/Multiplayer.tsx:80
+#: src/components/Multiplayer.tsx:374
 msgid "Cumulus"
 msgstr "Կույտավոր ամպեր"
 
@@ -1079,8 +1087,8 @@ msgstr "Տվյալների կոնֆլիկտ"
 msgid "Date"
 msgstr "Ամսաթվի ձևաչափ"
 
-#: src/components/MissionSetup.tsx:1895
-#: src/components/Multiplayer.tsx:350
+#: src/components/MissionSetup.tsx:1905
+#: src/components/Multiplayer.tsx:369
 msgid "Day"
 msgstr "Ցերեկ"
 
@@ -1195,7 +1203,7 @@ msgstr "Հայտնաբերել վեբ բրաուզերից"
 msgid "Device"
 msgstr "Սարք"
 
-#: src/components/Multiplayer.tsx:253
+#: src/components/Multiplayer.tsx:272
 msgid "Different game host"
 msgstr "Այլ խաղային սերվեր"
 
@@ -1231,7 +1239,7 @@ msgstr "Անջատված"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: ../../../lib/web/src/components/restore-banner.tsx:100
-#: src/components/MissionSetup.tsx:2259
+#: src/components/MissionSetup.tsx:2270
 msgid "Dismiss"
 msgstr "Հեռացնել"
 
@@ -1244,13 +1252,13 @@ msgstr "Ցուցասարքի կրկնիչ"
 msgid "Displays the mobile sidebar."
 msgstr "Ցուցադրում է բջջային կողագոտին։"
 
-#: src/components/MissionSetup.tsx:2056
+#: src/components/MissionSetup.tsx:2066
 msgid "Distance LOD"
 msgstr "Հեռավորության LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:2401
+#: src/components/MissionSetup.tsx:2412
 msgid "Done"
 msgstr "Կատարված է"
 
@@ -1272,7 +1280,7 @@ msgstr "ՔԱՄՈՒ ՈՒՂՂՈՒԹՅԱՄԲ 600 ՖՈՒՏ"
 msgid "Drag"
 msgstr "Քաշել"
 
-#: src/components/Multiplayer.tsx:428
+#: src/components/Multiplayer.tsx:459
 msgid "Drone"
 msgstr "Դրոն"
 
@@ -1284,7 +1292,7 @@ msgstr "Կրկնօրինակներ"
 msgid "Duration"
 msgstr "Տևողություն"
 
-#: src/components/MissionSetup.tsx:2050
+#: src/components/MissionSetup.tsx:2060
 msgid "Dynamic resolution"
 msgstr "Դինամիկ լուծաչափ"
 
@@ -1331,7 +1339,7 @@ msgstr "Խմբագրել ընտրված քարտը"
 msgid "Edit view"
 msgstr "Խմբագրել տեսքը"
 
-#: src/components/MissionSetup.tsx:2030
+#: src/components/MissionSetup.tsx:2040
 msgid "Effects detail"
 msgstr "Էֆեկտների մանրամասնություն"
 
@@ -1360,7 +1368,7 @@ msgstr "ՎԹԱՐԱՅԻՆ ՆԵՏՈՒՄ"
 msgid "Emergency jettison (hold)"
 msgstr "Վթարային նետում (պահել)"
 
-#: src/components/Multiplayer.tsx:490
+#: src/components/Multiplayer.tsx:521
 msgid "empty"
 msgstr "դատարկ"
 
@@ -1421,7 +1429,7 @@ msgstr "Արտահանել"
 msgid "Extend flaps"
 msgstr "Փեղկերը բացել"
 
-#: src/components/MissionSetup.tsx:2022
+#: src/components/MissionSetup.tsx:2032
 msgid "Exterior detail"
 msgstr "Արտաքին մանրամասներ"
 
@@ -1602,8 +1610,8 @@ msgstr "Լողացող"
 msgid "Flown"
 msgstr "Թռավ"
 
-#: src/components/MissionSetup.tsx:2281
-#: src/components/MissionSetup.tsx:2324
+#: src/components/MissionSetup.tsx:2292
+#: src/components/MissionSetup.tsx:2335
 msgid "Fly"
 msgstr "Թռչել"
 
@@ -1611,12 +1619,12 @@ msgstr "Թռչել"
 msgid "Fly again"
 msgstr "Կրկին թռչել"
 
-#: src/components/MissionSetup.tsx:2080
+#: src/components/MissionSetup.tsx:2090
 msgid "Framerate"
 msgstr "Կադրերի հաճախություն"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1812
+#: src/components/MissionSetup.tsx:1814
 msgid "Free flight"
 msgstr "Ազատ թռիչք"
 
@@ -1641,7 +1649,7 @@ msgstr "Ումից"
 msgid "From theme"
 msgstr "Թեմայից"
 
-#: src/components/Multiplayer.tsx:366
+#: src/components/Multiplayer.tsx:385
 msgid "Fuel"
 msgstr "Վառելիք"
 
@@ -1694,7 +1702,7 @@ msgstr "շասսի"
 msgid "GEAR"
 msgstr "ՇԱՍՍԻ"
 
-#: src/components/MissionSetup.tsx:2333
+#: src/components/MissionSetup.tsx:2344
 msgid "General"
 msgstr "Ընդհանուր"
 
@@ -1724,7 +1732,7 @@ msgstr "Անցնել {pageNumber}-րդ էջ"
 msgid "Go to previous page"
 msgstr "Անցնել նախորդ էջ"
 
-#: src/components/MissionSetup.tsx:2336
+#: src/components/MissionSetup.tsx:2347
 msgid "Graphics"
 msgstr "Գրաֆիկա"
 
@@ -1753,11 +1761,12 @@ msgstr "Թնդանոթ"
 msgid "GUN"
 msgstr "ԹՆԴԱՆՈԹ"
 
-#: src/components/Multiplayer.tsx:72
+#: src/components/Multiplayer.tsx:75
+#: src/components/Multiplayer.tsx:402
 msgid "Guns only"
 msgstr "Միայն թնդանոթներ"
 
-#: src/components/MissionSetup.tsx:2254
+#: src/components/MissionSetup.tsx:2265
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Սարքային գրաֆիկական արագացումն անջատված է — ստուգեք զննարկիչի կարգավորումները կամ գրաֆիկական դրայվերները։"
 
@@ -1777,18 +1786,18 @@ msgstr "Թաքցնել"
 msgid "Hide password"
 msgstr "Թաքցնել գաղտնաբառը"
 
-#: src/components/MissionSetup.tsx:2002
+#: src/components/MissionSetup.tsx:2012
 msgid "High"
 msgstr "Բարձր"
 
-#: src/components/MissionSetup.tsx:1908
-#: src/components/Multiplayer.tsx:75
-#: src/components/Multiplayer.tsx:356
+#: src/components/MissionSetup.tsx:1918
+#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:375
 msgid "High stratus"
 msgstr "Բարձր շերտավոր ամպեր"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:2300
+#: src/components/MissionSetup.tsx:2311
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Պատմություն"
@@ -1838,7 +1847,7 @@ msgid "Import"
 msgstr "Ներմուծել"
 
 #: src/components/MissionSetup.tsx:1563
-#: src/components/MissionSetup.tsx:1852
+#: src/components/MissionSetup.tsx:1865
 msgid "In air"
 msgstr "Օդում"
 
@@ -1882,7 +1891,7 @@ msgstr "Հրավերը չեղարկվեց"
 msgid "Invert pitch"
 msgstr "Շրջել թեքումը"
 
-#: src/components/Multiplayer.tsx:78
+#: src/components/Multiplayer.tsx:84
 msgid "Invulnerable"
 msgstr "Անխոցելի"
 
@@ -1890,8 +1899,8 @@ msgstr "Անխոցելի"
 msgid "INVULNERABLE"
 msgstr "ԱՆԽՈՑԵԼԻ"
 
-#: src/components/MissionSetup.tsx:1928
-#: src/components/Multiplayer.tsx:395
+#: src/components/MissionSetup.tsx:1938
+#: src/components/Multiplayer.tsx:426
 msgid "Invulnerable (human players only)"
 msgstr "Անխոցելի (միայն մարդ խաղացողների համար)"
 
@@ -1913,12 +1922,12 @@ msgstr "Նետել բաքերը"
 msgid "JETTISON: GEAR"
 msgstr "ՆԵՏՈՒՄ. ՇԱՍՍԻ"
 
-#: src/components/Multiplayer.tsx:555
+#: src/components/Multiplayer.tsx:586
 msgid "Join"
 msgstr "Միանալ"
 
-#: src/components/MissionSetup.tsx:1676
-#: src/components/MissionSetup.tsx:2291
+#: src/components/MissionSetup.tsx:1678
+#: src/components/MissionSetup.tsx:2302
 msgid "Join server"
 msgstr "Միանալ սերվերին"
 
@@ -1927,20 +1936,20 @@ msgid "JOINED"
 msgstr "ՄԻԱՑԱՎ"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:2236
-#: src/components/Multiplayer.tsx:489
+#: src/components/MissionSetup.tsx:2246
+#: src/components/Multiplayer.tsx:520
 msgid "Joust"
 msgstr "Մենամարտ"
 
-#: src/components/Multiplayer.tsx:341
+#: src/components/Multiplayer.tsx:360
 msgid "Joust — 1v1, first kill wins"
 msgstr "Մենամարտ — 1v1, առաջին խոցումը հաղթում է"
 
-#: src/components/MissionSetup.tsx:1813
+#: src/components/MissionSetup.tsx:1815
 msgid "Joust 1v1"
 msgstr "Մենամարտ 1v1"
 
-#: src/components/MissionSetup.tsx:2342
+#: src/components/MissionSetup.tsx:2353
 msgid "Joystick"
 msgstr "Ջոյստիկ"
 
@@ -1956,7 +1965,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Ստեղնաշարի դյուրանցումներ"
 
-#: src/components/MissionSetup.tsx:2345
+#: src/components/MissionSetup.tsx:2356
 msgid "Keys"
 msgstr "Ստեղներ"
 
@@ -2013,7 +2022,7 @@ msgstr "արձակում / թիրախ"
 msgid "Layout"
 msgstr "Թողեք մեկնաբանություն..."
 
-#: src/components/Multiplayer.tsx:379
+#: src/components/Multiplayer.tsx:398
 msgid "lb"
 msgstr "lb"
 
@@ -2022,7 +2031,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Թողեք ակնարկ"
 
-#: src/components/MissionSetup.tsx:1755
+#: src/components/MissionSetup.tsx:1757
 msgid "Leave server"
 msgstr "Լքել սերվերը"
 
@@ -2107,7 +2116,7 @@ msgstr "ԲԵՌՆՈՒՄԸ ՁԱԽՈՂՎԵՑ"
 msgid "Loading..."
 msgstr "Կողպել"
 
-#: src/components/MissionSetup.tsx:1950
+#: src/components/MissionSetup.tsx:1960
 msgid "Loadout"
 msgstr "Բեռնվածք"
 
@@ -2158,13 +2167,13 @@ msgstr "Նայել աջ"
 msgid "Look up"
 msgstr "Նայել վերև"
 
-#: src/components/MissionSetup.tsx:1998
+#: src/components/MissionSetup.tsx:2008
 msgid "Low"
 msgstr "Ցածր"
 
-#: src/components/MissionSetup.tsx:1910
-#: src/components/Multiplayer.tsx:77
-#: src/components/Multiplayer.tsx:358
+#: src/components/MissionSetup.tsx:1920
+#: src/components/Multiplayer.tsx:83
+#: src/components/Multiplayer.tsx:377
 msgid "Low stratus"
 msgstr "Ցածր շերտավոր ամպեր"
 
@@ -2202,11 +2211,11 @@ msgstr "Markdown-ը աջակցվում է"
 msgid "Master"
 msgstr "Ընդհանուր"
 
-#: src/components/Multiplayer.tsx:337
+#: src/components/Multiplayer.tsx:356
 msgid "Match type"
 msgstr "Խաղի տեսակ"
 
-#: src/components/MissionSetup.tsx:1750
+#: src/components/MissionSetup.tsx:1752
 msgid "Matches"
 msgstr "Խաղեր"
 
@@ -2219,7 +2228,7 @@ msgid "MCP server"
 msgstr "MCP սերվեր"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:2000
+#: src/components/MissionSetup.tsx:2010
 msgid "Medium"
 msgstr "Միջին"
 
@@ -2231,6 +2240,14 @@ msgstr "մենյու"
 #: src/components/MissionSetup.tsx:261
 msgid "Menu"
 msgstr "Միաձուլման հարցումներ"
+
+#: src/components/Multiplayer.tsx:408
+msgid "Merge — fight on at the pass"
+msgstr "Միաձուլում — մարտը սկսվում է հանդիպման պահին"
+
+#: src/components/MissionSetup.tsx:1827
+msgid "Merge, fight's on at the pass"
+msgstr "Միաձուլում, մարտը սկսվում է հանդիպման պահին"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx:35
 msgid "Message"
@@ -2252,9 +2269,9 @@ msgstr "Գրեք ձեր թիմին"
 msgid "Metric"
 msgstr "Microsoft վարձակալ"
 
-#: src/components/MissionSetup.tsx:1909
-#: src/components/Multiplayer.tsx:76
-#: src/components/Multiplayer.tsx:357
+#: src/components/MissionSetup.tsx:1919
+#: src/components/Multiplayer.tsx:82
+#: src/components/Multiplayer.tsx:376
 msgid "Mid stratus"
 msgstr "Միջին շերտավոր ամպեր"
 
@@ -2277,10 +2294,6 @@ msgstr "ՀՐԹԻՌ"
 #: src/components/MissionSetup.tsx:1371
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Հրթիռի մոդել <0>“AIM-120C AMRAAM”</0> ինքնաթիռակիր՝ <1>Pippa</1>-ի կողմից (Sketchfab), արտոնագրված <2>CC BY 4.0</2>-ի ներքո։ Փոփոխված է՝ վերամասշտաբավորված, վերակողմնորոշված և տեղադրման համար կենտրոնացված:"
-
-#: src/components/Multiplayer.tsx:385
-msgid "Missiles allowed"
-msgstr "Հրթիռները թույլատրված են"
 
 #: ../../../lib/web/src/features/accounts/types.ts:23
 msgid "Mochi web"
@@ -2307,7 +2320,7 @@ msgstr "Լրացուցիչ ընտրանքներ"
 msgid "Move it…"
 msgstr "Շարժեք այն…"
 
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:257
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Բազմախաղացողի համար անհրաժեշտ է WebTransport, որին այս դիտարկիչը դեռ չի աջակցում։"
 
@@ -2347,9 +2360,9 @@ msgstr "Նոր խաղ"
 msgid "Next image"
 msgstr "Հաջորդ նկարը"
 
-#: src/components/MissionSetup.tsx:1896
-#: src/components/Multiplayer.tsx:73
-#: src/components/Multiplayer.tsx:351
+#: src/components/MissionSetup.tsx:1906
+#: src/components/Multiplayer.tsx:79
+#: src/components/Multiplayer.tsx:370
 msgid "Night"
 msgstr "Գիշեր"
 
@@ -2401,7 +2414,7 @@ msgstr "Համապատասխան օբյեկտներ չկան"
 msgid "No notifications yet"
 msgstr "Դեռ ծանուցումներ չկան"
 
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No open matches — create one."
 msgstr "Բաց խաղեր չկան — ստեղծեք մեկը։"
 
@@ -2464,7 +2477,7 @@ msgid "No views"
 msgstr "Դիտումներ չկան"
 
 #: src/components/MissionSetup.tsx:1525
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No world server."
 msgstr "Աշխարհի սերվեր չկա։"
 
@@ -2489,7 +2502,7 @@ msgstr "ԱՌԱՆՑ ԳՆԱՀԱՏԱԿԱՆԻ"
 #: src/components/MissionSetup.tsx:469
 #: src/components/MissionSetup.tsx:539
 #: src/components/MissionSetup.tsx:1077
-#: src/components/MissionSetup.tsx:1906
+#: src/components/MissionSetup.tsx:1916
 msgid "None"
 msgstr "Ոչ մեկը"
 
@@ -2534,9 +2547,9 @@ msgstr "Ծանուցումներ"
 msgid "Notifications: {0}"
 msgstr "Ծանուցումներ՝ {0}"
 
-#: src/components/MissionSetup.tsx:1825
-#: src/components/MissionSetup.tsx:2228
-#: src/components/Multiplayer.tsx:429
+#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:2238
+#: src/components/Multiplayer.tsx:460
 msgid "Novice"
 msgstr "Սկսնակ"
 
@@ -2546,7 +2559,7 @@ msgstr "Սկսնակ"
 msgid "Number"
 msgstr "Թիվ"
 
-#: src/components/MissionSetup.tsx:2038
+#: src/components/MissionSetup.tsx:2048
 msgid "Ocean detail"
 msgstr "Օվկիանոսի մանրամասներ"
 
@@ -2563,12 +2576,12 @@ msgid "On"
 msgstr "Միացված"
 
 #: src/components/MissionSetup.tsx:1565
-#: src/components/MissionSetup.tsx:1854
+#: src/components/MissionSetup.tsx:1867
 msgid "On carrier"
 msgstr "Ավիակրի վրա"
 
 #: src/components/MissionSetup.tsx:1564
-#: src/components/MissionSetup.tsx:1853
+#: src/components/MissionSetup.tsx:1866
 msgid "On runway"
 msgstr "Թռիչքուղու վրա"
 
@@ -2576,11 +2589,11 @@ msgstr "Թռիչքուղու վրա"
 msgid "Oops! Page Not Found!"
 msgstr "Ուփ։ Էջը չի գտնվել։"
 
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Open"
 msgstr "Բացել"
 
-#: src/components/Multiplayer.tsx:340
+#: src/components/Multiplayer.tsx:359
 msgid "Open — anyone may join or leave"
 msgstr "Բաց — ցանկացած ոք կարող է միանալ կամ դուրս գալ"
 
@@ -2705,14 +2718,14 @@ msgid "Pick a date"
 msgstr "Ընտրեք ամսաթիվ"
 
 #: src/components/MissionSetup.tsx:1467
-#: src/components/Multiplayer.tsx:130
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:146
+#: src/components/Multiplayer.tsx:317
 msgid "pilot"
 msgstr "օդաչու"
 
-#: src/components/MissionSetup.tsx:1826
-#: src/components/MissionSetup.tsx:2229
-#: src/components/Multiplayer.tsx:430
+#: src/components/MissionSetup.tsx:1839
+#: src/components/MissionSetup.tsx:2239
+#: src/components/Multiplayer.tsx:461
 msgid "Pilot"
 msgstr "Օդաչու"
 
@@ -2774,7 +2787,7 @@ msgstr "Գրառումներ"
 msgid "Posts and comments"
 msgstr "Գրառումներ և մեկնաբանություններ"
 
-#: src/components/MissionSetup.tsx:1985
+#: src/components/MissionSetup.tsx:1995
 msgid "Preset"
 msgstr "Նախադրվածք"
 
@@ -2817,7 +2830,7 @@ msgstr "Պրոֆիլը պահպանվեց"
 msgid "Project members"
 msgstr "Նախագծի անդամներ"
 
-#: src/components/MissionSetup.tsx:1703
+#: src/components/MissionSetup.tsx:1705
 msgid "Public servers"
 msgstr "Հանրային սերվերներ"
 
@@ -2862,7 +2875,7 @@ msgstr "Կրկին գրանցեք ձեր անցաբառերը այս սերվե�
 msgid "REARMED"
 msgstr "ՎԵՐԱԶԻՆՎԵՑ"
 
-#: src/components/MissionSetup.tsx:1681
+#: src/components/MissionSetup.tsx:1683
 msgid "Recent"
 msgstr "Վերջին"
 
@@ -2875,12 +2888,12 @@ msgstr "Առաջարկվող"
 msgid "Reconnecting ({retries})..."
 msgstr "Վերամիացում ({retries})..."
 
-#: src/components/MissionSetup.tsx:2142
+#: src/components/MissionSetup.tsx:2152
 msgid "Record flights"
 msgstr "Գրանցել թռիչքները"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:2136
+#: src/components/MissionSetup.tsx:2146
 msgid "Recording"
 msgstr "Գրանցում"
 
@@ -2888,11 +2901,11 @@ msgstr "Գրանցում"
 msgid "Recording saved"
 msgstr "Գրանցումը պահպանվեց"
 
-#: src/components/Multiplayer.tsx:533
+#: src/components/Multiplayer.tsx:564
 msgid "Red"
 msgstr "Կարմիր"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Red bots"
 msgstr "Կարմիր բոտեր"
 
@@ -2909,7 +2922,7 @@ msgstr "Նվազեցնել հետաքրքրությունը"
 msgid "Reference"
 msgstr "Տեղեկանք"
 
-#: src/components/Multiplayer.tsx:317
+#: src/components/Multiplayer.tsx:336
 msgid "Refresh"
 msgstr "Թարմացնել"
 
@@ -3008,7 +3021,7 @@ msgstr "Կրկին ուղարկել նամակը"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:2394
+#: src/components/MissionSetup.tsx:2405
 msgid "Reset"
 msgstr "Վերականգնել"
 
@@ -3037,11 +3050,11 @@ msgstr "Տրիմի զրոյացում"
 msgid "Reset view"
 msgstr "Զրոյացնել տեսքը"
 
-#: src/components/MissionSetup.tsx:2012
+#: src/components/MissionSetup.tsx:2022
 msgid "Resolution"
 msgstr "Թողարկում"
 
-#: src/components/MissionSetup.tsx:2273
+#: src/components/MissionSetup.tsx:2284
 msgid "Restart mission"
 msgstr "Վերսկսել առաքելությունը"
 
@@ -3053,7 +3066,7 @@ msgstr "Արդյունք"
 msgid "Resume"
 msgstr "Շարունակել"
 
-#: src/components/MissionSetup.tsx:2269
+#: src/components/MissionSetup.tsx:2280
 msgid "Resume mission"
 msgstr "Շարունակել առաքելությունը"
 
@@ -3369,12 +3382,12 @@ msgstr "Սահմանել ծագումը և նպատակակետը"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:199
 #: src/components/GameCanvas.tsx:383
-#: src/components/MissionSetup.tsx:2295
-#: src/components/MissionSetup.tsx:2329
+#: src/components/MissionSetup.tsx:2306
+#: src/components/MissionSetup.tsx:2340
 msgid "Settings"
 msgstr "Կարգավորումներ"
 
-#: src/components/MissionSetup.tsx:2062
+#: src/components/MissionSetup.tsx:2072
 msgid "Shadows"
 msgstr "Ստվերներ"
 
@@ -3436,13 +3449,21 @@ msgid "Sort"
 msgstr "Տեսակավորել"
 
 #: src/components/MissionSetup.tsx:601
-#: src/components/MissionSetup.tsx:2339
+#: src/components/MissionSetup.tsx:2350
 msgid "Sound"
 msgstr "Ձայն"
 
 #: ../../../lib/web/src/components/options-menu.tsx:161
 msgid "Sources"
 msgstr "Աղբյուրներ"
+
+#: src/components/Multiplayer.tsx:78
+msgid "Spaced"
+msgstr "Հեռավոր"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Spaced spawns"
+msgstr "Հեռավոր մուտքեր"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:97
 msgid "Spacious"
@@ -3478,7 +3499,8 @@ msgstr "Պոկում, մաքուր կոնֆիգուրացիա (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "Պոկում, վայրէջքի կոնֆիգուրացիա (Vs0)"
 
-#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:1821
+#: src/components/MissionSetup.tsx:1851
 msgid "Start"
 msgstr "Սկսել"
 
@@ -3527,9 +3549,9 @@ msgstr "Բաժանորդագրվել"
 msgid "Sunday"
 msgstr "Կիրակի"
 
-#: src/components/MissionSetup.tsx:1828
-#: src/components/MissionSetup.tsx:2231
-#: src/components/Multiplayer.tsx:432
+#: src/components/MissionSetup.tsx:1841
+#: src/components/MissionSetup.tsx:2241
+#: src/components/Multiplayer.tsx:463
 msgid "Superhuman"
 msgstr "Գերմարդկային"
 
@@ -3570,7 +3592,7 @@ msgstr "Թեգեր"
 msgid "TALLY"
 msgstr "ԹՇՆԱՄԻՆ ՏԵՍԱԴԱՇՏՈՒՄ"
 
-#: src/components/MissionSetup.tsx:1806
+#: src/components/MissionSetup.tsx:1808
 msgid "Task"
 msgstr "Առաջադրանք"
 
@@ -3583,11 +3605,11 @@ msgid "TEAM"
 msgstr "ԹԻՄ"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Teams"
 msgstr "Թիմեր"
 
-#: src/components/Multiplayer.tsx:342
+#: src/components/Multiplayer.tsx:361
 msgid "Teams — red versus blue"
 msgstr "Թիմեր — կարմիր ընդդեմ կապույտի"
 
@@ -3641,15 +3663,15 @@ msgstr "Թեմա"
 msgid "Theme Settings"
 msgstr "Թեմայի կարգավորումներ"
 
-#: src/components/MissionSetup.tsx:2252
+#: src/components/MissionSetup.tsx:2263
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Այս զննարկիչը չի աջակցում WebGL 2-ին, ուստի խաղը չի կարող աշխատել — փորձեք այլ զննարկիչ։"
 
-#: src/components/Multiplayer.tsx:256
+#: src/components/Multiplayer.tsx:275
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Այս լոբին ձեր խաղի կապն ուղղորդում է դեպի այլ սերվեր ({redirectHost})։ Շարունակեք միայն, եթե վստահում եք այս սերվերին։"
 
-#: src/components/MissionSetup.tsx:2256
+#: src/components/MissionSetup.tsx:2267
 msgid "This machine may be too slow for smooth flight."
 msgstr "Այս մեքենան կարող է չափազանց դանդաղ լինել սահուն թռիչքի համար։"
 
@@ -3691,7 +3713,7 @@ msgstr "թեքել"
 msgid "Time"
 msgstr "Ժամանակ"
 
-#: src/components/MissionSetup.tsx:1889
+#: src/components/MissionSetup.tsx:1899
 msgid "Time of day"
 msgstr "Օրվա ժամ"
 
@@ -3747,7 +3769,7 @@ msgstr "Չափազանց շատ հարցումներ"
 msgid "Top"
 msgstr "Վերև"
 
-#: src/components/MissionSetup.tsx:2074
+#: src/components/MissionSetup.tsx:2084
 msgid "Tracers"
 msgstr "Հետագծային փամփուշտներ"
 
@@ -3823,7 +3845,7 @@ msgstr "Մուտքագրեք օգտատերեր որոնելու համար"
 msgid "Type to search..."
 msgstr "Մուտքագրեք որոնելու համար..."
 
-#: src/components/MissionSetup.tsx:2004
+#: src/components/MissionSetup.tsx:2014
 msgid "Ultra"
 msgstr "Ուլտրա"
 
@@ -3867,21 +3889,25 @@ msgstr "Միացյալ Նահանգներ"
 msgid "Unknown"
 msgstr "Անհայտ"
 
-#: src/components/Multiplayer.tsx:79
-#: src/components/Multiplayer.tsx:405
+#: src/components/Multiplayer.tsx:404
+msgid "Unlimited"
+msgstr "Անսահմանափակ"
+
+#: src/components/Multiplayer.tsx:85
+#: src/components/Multiplayer.tsx:436
 msgid "Unlimited ammunition"
 msgstr "Անսահմանափակ զինամթերք"
 
-#: src/components/MissionSetup.tsx:1934
+#: src/components/MissionSetup.tsx:1944
 msgid "Unlimited ammunition (all players)"
 msgstr "Անսահմանափակ զինամթերք (բոլոր խաղացողները)"
 
-#: src/components/Multiplayer.tsx:80
-#: src/components/Multiplayer.tsx:415
+#: src/components/Multiplayer.tsx:86
+#: src/components/Multiplayer.tsx:446
 msgid "Unlimited fuel"
 msgstr "Անսահմանափակ վառելիք"
 
-#: src/components/MissionSetup.tsx:1940
+#: src/components/MissionSetup.tsx:1950
 msgid "Unlimited fuel (all players)"
 msgstr "Անսահմանափակ վառելիք (բոլոր խաղացողները)"
 
@@ -4027,7 +4053,7 @@ msgstr "զենք"
 msgid "Weapons"
 msgstr "Զենքեր"
 
-#: src/components/Multiplayer.tsx:347
+#: src/components/Multiplayer.tsx:366
 msgid "Weather"
 msgstr "Եղանակ"
 
@@ -4052,12 +4078,12 @@ msgstr "Թևի ծալում"
 msgid "WINS"
 msgstr "ՀԱՂԹՈՒՄ Է"
 
-#: src/components/Multiplayer.tsx:282
+#: src/components/Multiplayer.tsx:301
 msgid "World server"
 msgstr "Աշխարհի սերվեր"
 
 #: src/components/MissionSetup.tsx:1513
-#: src/components/Multiplayer.tsx:143
+#: src/components/Multiplayer.tsx:159
 msgid "World server not reachable"
 msgstr "Աշխարհի սերվերը հասանելի չէ"
 
@@ -4107,7 +4133,7 @@ msgstr "Ձեր կցորդները կկորչեն։"
 msgid "Your flights appear here once you've flown one."
 msgstr "Ձեր թռիչքները կհայտնվեն այստեղ, երբ մեկը կատարեք։"
 
-#: src/components/Multiplayer.tsx:484
+#: src/components/Multiplayer.tsx:515
 msgid "your offer"
 msgstr "ձեր առաջարկը"
 

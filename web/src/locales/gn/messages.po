@@ -51,7 +51,7 @@ msgid "{0} created “{1}”"
 msgstr "{0} ojapo “{1}”"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:309
+#: src/components/Multiplayer.tsx:328
 msgid "{0} flying"
 msgstr "{0} oveve"
 
@@ -72,7 +72,7 @@ msgstr "{0} poravopy jehecha"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:522
 msgid "{0}/{1} players"
 msgstr "{0}/{1} ñembosaraihára"
 
@@ -100,7 +100,7 @@ msgstr "{entityLabel} réra"
 msgid "{entityLabel} name is required"
 msgstr "{entityLabel} réra tekotevẽ"
 
-#: src/components/Multiplayer.tsx:215
+#: src/components/Multiplayer.tsx:231
 msgid "{name}'s match"
 msgstr "{name} ñembosarai"
 
@@ -214,9 +214,9 @@ msgstr "Tetãygua peteĩchagua"
 msgid "Account verified"
 msgstr "Tetãygua oñemoneĩma"
 
-#: src/components/MissionSetup.tsx:1827
-#: src/components/MissionSetup.tsx:2230
-#: src/components/Multiplayer.tsx:431
+#: src/components/MissionSetup.tsx:1840
+#: src/components/MissionSetup.tsx:2240
+#: src/components/Multiplayer.tsx:462
 msgid "Ace"
 msgstr "As"
 
@@ -318,7 +318,7 @@ msgstr "Embojuajuhína..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Embojeko ne ojeguáva ha tape eipotaháicha."
 
-#: src/components/MissionSetup.tsx:2068
+#: src/components/MissionSetup.tsx:2078
 msgid "Afterburner"
 msgstr "Posquemador"
 
@@ -363,6 +363,10 @@ msgstr "Oĩ peteĩ jejavy"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:275
 msgid "An unexpected error occurred"
 msgstr "Oĩ peteĩ jejavy ñeha'ãrõ'ỹva"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Anchored sides"
+msgstr "Tekotee jokopyre"
 
 #: ../../../lib/web/src/features/accounts/types.ts:16
 msgid "Android push"
@@ -478,7 +482,7 @@ msgstr "Tapykuépe"
 msgid "Back to home"
 msgstr "Eju jey ógape"
 
-#: src/components/MissionSetup.tsx:1819
+#: src/components/MissionSetup.tsx:1832
 msgid "Bandit"
 msgstr "Bandido"
 
@@ -524,11 +528,11 @@ msgstr "Tape ojejokóma jehegui'ỹva-pe"
 msgid "Blocks"
 msgstr "Bloques"
 
-#: src/components/Multiplayer.tsx:543
+#: src/components/Multiplayer.tsx:574
 msgid "Blue"
 msgstr "Hovy"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Blue bots"
 msgstr "Bot hovy"
 
@@ -549,7 +553,7 @@ msgstr "Boost mba'erekohápe"
 msgid "Border colour"
 msgstr "Borde sa'y"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Bots"
 msgstr "Bot kuéra"
 
@@ -581,12 +585,20 @@ msgstr "Botón {i}"
 msgid "Buttons"
 msgstr "Botón-kuéra"
 
+#: src/components/Multiplayer.tsx:409
+msgid "BVR — weapons free from spawn"
+msgstr "BVR — mboka sãso ñepyrũ guive"
+
+#: src/components/MissionSetup.tsx:1828
+msgid "BVR, fight's on at start"
+msgstr "BVR, ñorairõ oñepyrũ voi"
+
 #: src/components/GameCanvas.tsx:108
 msgid "CALL THE BALL"
 msgstr "EMOMBE’U PELOTA"
 
-#: src/components/MissionSetup.tsx:2124
-#: src/components/Multiplayer.tsx:293
+#: src/components/MissionSetup.tsx:2134
+#: src/components/Multiplayer.tsx:312
 msgid "Callsign"
 msgstr "Ñehenói réra"
 
@@ -612,8 +624,8 @@ msgstr "Cámara ndaipóri"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:675
-#: src/components/Multiplayer.tsx:264
-#: src/components/Multiplayer.tsx:520
+#: src/components/Multiplayer.tsx:283
+#: src/components/Multiplayer.tsx:551
 msgid "Cancel"
 msgstr "Heja"
 
@@ -635,7 +647,7 @@ msgstr "Cúpula"
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1855
+#: src/components/MissionSetup.tsx:1868
 msgid "Case I (day)"
 msgstr "Kaso I (ára)"
 
@@ -643,7 +655,7 @@ msgstr "Kaso I (ára)"
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1856
+#: src/components/MissionSetup.tsx:1869
 msgid "Case II (weather)"
 msgstr "Kaso II (arapytu)"
 
@@ -651,11 +663,11 @@ msgstr "Kaso II (arapytu)"
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1857
+#: src/components/MissionSetup.tsx:1870
 msgid "Case III (night)"
 msgstr "Kaso III (pyhare)"
 
-#: src/components/MissionSetup.tsx:1863
+#: src/components/MissionSetup.tsx:1876
 msgid "Catapult"
 msgstr "Katapulta"
 
@@ -689,7 +701,7 @@ msgid "Chat to everyone"
 msgstr "Chat opavavéndi"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1922
+#: src/components/MissionSetup.tsx:1932
 msgid "Cheats"
 msgstr "Trucos"
 
@@ -736,7 +748,7 @@ msgstr "Eiporavo ñe'ẽ"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:373
 msgid "Clear"
 msgstr "Embopotĩ"
 
@@ -800,7 +812,7 @@ msgstr "Mboty jeheka"
 msgid "closer"
 msgstr "aguĩve"
 
-#: src/components/MissionSetup.tsx:1900
+#: src/components/MissionSetup.tsx:1910
 msgid "Clouds"
 msgstr "Arai"
 
@@ -858,10 +870,6 @@ msgstr "Ñemongeta"
 msgid "Compact"
 msgstr "Mbyky"
 
-#: src/components/MissionSetup.tsx:1886
-msgid "Conditions"
-msgstr "Tekoha"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
 msgid "Configure option settings"
 msgstr "Embohekombo'e opción hekombo'e"
@@ -875,11 +883,11 @@ msgstr "Embohekombo'e view hekombo'e"
 msgid "Confirm"
 msgstr "Emoneĩ"
 
-#: src/components/MissionSetup.tsx:1728
+#: src/components/MissionSetup.tsx:1730
 msgid "Connect"
 msgstr "Ojoaju"
 
-#: src/components/MissionSetup.tsx:1715
+#: src/components/MissionSetup.tsx:1717
 msgid "Connect to private server"
 msgstr "Eike servidor privado-pe"
 
@@ -895,7 +903,7 @@ msgstr "Tetãyguakuéra oñembojuajúva"
 msgid "Connecting..."
 msgstr "Ojoajúhína..."
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:331
 msgid "Connecting…"
 msgstr "Ojoajuhína…"
 
@@ -916,7 +924,7 @@ msgid "Contextual information and details."
 msgstr "Marandu rehegua ha detalle."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:273
+#: src/components/Multiplayer.tsx:292
 msgid "Continue"
 msgstr "Tenonde"
 
@@ -940,7 +948,7 @@ msgstr "Kopia"
 msgid "Corner speed (best instant turn)"
 msgstr "Pya'eha yképe (jere iporãvéva sapy'agua)"
 
-#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:248
 msgid "Could not create the match"
 msgstr "Ndaikatúi oñemoheñói pe partida"
 
@@ -1003,16 +1011,16 @@ msgstr "Embojeguáva"
 msgid "Create {0}"
 msgstr "Ejapo {0}"
 
-#: src/components/Multiplayer.tsx:463
+#: src/components/Multiplayer.tsx:494
 msgid "Create and fly"
 msgstr "Emoheñói ha eveve"
 
-#: src/components/Multiplayer.tsx:327
+#: src/components/Multiplayer.tsx:346
 msgid "Create match"
 msgstr "Emoheñói partida"
 
-#: src/components/MissionSetup.tsx:2287
-#: src/components/MissionSetup.tsx:2310
+#: src/components/MissionSetup.tsx:2298
+#: src/components/MissionSetup.tsx:2321
 msgid "Create mission"
 msgstr "Misión apo"
 
@@ -1035,9 +1043,9 @@ msgstr "Embojeguávahína..."
 msgid "Credits"
 msgstr "Créditos"
 
-#: src/components/MissionSetup.tsx:1907
-#: src/components/Multiplayer.tsx:74
-#: src/components/Multiplayer.tsx:355
+#: src/components/MissionSetup.tsx:1917
+#: src/components/Multiplayer.tsx:80
+#: src/components/Multiplayer.tsx:374
 msgid "Cumulus"
 msgstr "Cúmulo"
 
@@ -1079,8 +1087,8 @@ msgstr "Mba'ekuaarã joavy"
 msgid "Date"
 msgstr "Ára"
 
-#: src/components/MissionSetup.tsx:1895
-#: src/components/Multiplayer.tsx:350
+#: src/components/MissionSetup.tsx:1905
+#: src/components/Multiplayer.tsx:369
 msgid "Day"
 msgstr "Ára"
 
@@ -1195,7 +1203,7 @@ msgstr "Heka web browser-gui"
 msgid "Device"
 msgstr "Mba'e"
 
-#: src/components/Multiplayer.tsx:253
+#: src/components/Multiplayer.tsx:272
 msgid "Different game host"
 msgstr "Ñembosarái host ambue"
 
@@ -1231,7 +1239,7 @@ msgstr "Ndojuajúi"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: ../../../lib/web/src/components/restore-banner.tsx:100
-#: src/components/MissionSetup.tsx:2259
+#: src/components/MissionSetup.tsx:2270
 msgid "Dismiss"
 msgstr "Mbohovái"
 
@@ -1244,13 +1252,13 @@ msgstr "Pantalla mbojoapyha"
 msgid "Displays the mobile sidebar."
 msgstr "Ohechauka mobile sidebar."
 
-#: src/components/MissionSetup.tsx:2056
+#: src/components/MissionSetup.tsx:2066
 msgid "Distance LOD"
 msgstr "LOD mombyry"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:2401
+#: src/components/MissionSetup.tsx:2412
 msgid "Done"
 msgstr "Apopyre"
 
@@ -1272,7 +1280,7 @@ msgstr "YVYTU RAPYKUERI 600 PY"
 msgid "Drag"
 msgstr "Mbotyryry"
 
-#: src/components/Multiplayer.tsx:428
+#: src/components/Multiplayer.tsx:459
 msgid "Drone"
 msgstr "Dron"
 
@@ -1284,7 +1292,7 @@ msgstr "Duplicados"
 msgid "Duration"
 msgstr "Aravoʼi"
 
-#: src/components/MissionSetup.tsx:2050
+#: src/components/MissionSetup.tsx:2060
 msgid "Dynamic resolution"
 msgstr "Resolución dinámica"
 
@@ -1331,7 +1339,7 @@ msgstr "Embojuruja tarjeta poravopyre"
 msgid "Edit view"
 msgstr "Embojuruja vista"
 
-#: src/components/MissionSetup.tsx:2030
+#: src/components/MissionSetup.tsx:2040
 msgid "Effects detail"
 msgstr "Efecto mba'emimi"
 
@@ -1360,7 +1368,7 @@ msgstr "POI PYA'E"
 msgid "Emergency jettison (hold)"
 msgstr "Poi pya'e (jejoko)"
 
-#: src/components/Multiplayer.tsx:490
+#: src/components/Multiplayer.tsx:521
 msgid "empty"
 msgstr "nandi"
 
@@ -1421,7 +1429,7 @@ msgstr "Ñemosẽ"
 msgid "Extend flaps"
 msgstr "Flaps ñemosẽ"
 
-#: src/components/MissionSetup.tsx:2022
+#: src/components/MissionSetup.tsx:2032
 msgid "Exterior detail"
 msgstr "Detalle okapegua"
 
@@ -1602,8 +1610,8 @@ msgstr "Oguatáva"
 msgid "Flown"
 msgstr "Oveve"
 
-#: src/components/MissionSetup.tsx:2281
-#: src/components/MissionSetup.tsx:2324
+#: src/components/MissionSetup.tsx:2292
+#: src/components/MissionSetup.tsx:2335
 msgid "Fly"
 msgstr "Oveve"
 
@@ -1611,12 +1619,12 @@ msgstr "Oveve"
 msgid "Fly again"
 msgstr "Eveve jey"
 
-#: src/components/MissionSetup.tsx:2080
+#: src/components/MissionSetup.tsx:2090
 msgid "Framerate"
 msgstr "Framerate"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1812
+#: src/components/MissionSetup.tsx:1814
 msgid "Free flight"
 msgstr "Veve sãso"
 
@@ -1641,7 +1649,7 @@ msgstr "Oguõva"
 msgid "From theme"
 msgstr "Téma guive"
 
-#: src/components/Multiplayer.tsx:366
+#: src/components/Multiplayer.tsx:385
 msgid "Fuel"
 msgstr "Combustible"
 
@@ -1694,7 +1702,7 @@ msgstr "tren"
 msgid "GEAR"
 msgstr "TREN"
 
-#: src/components/MissionSetup.tsx:2333
+#: src/components/MissionSetup.tsx:2344
 msgid "General"
 msgstr "Tekorapy"
 
@@ -1724,7 +1732,7 @@ msgstr "Tereho kuatiarogue {pageNumber}-pe"
 msgid "Go to previous page"
 msgstr "Mboyvegua kuatiaroguépe"
 
-#: src/components/MissionSetup.tsx:2336
+#: src/components/MissionSetup.tsx:2347
 msgid "Graphics"
 msgstr "Gráficos"
 
@@ -1753,11 +1761,12 @@ msgstr "Mboka"
 msgid "GUN"
 msgstr "MBOKA"
 
-#: src/components/Multiplayer.tsx:72
+#: src/components/Multiplayer.tsx:75
+#: src/components/Multiplayer.tsx:402
 msgid "Guns only"
 msgstr "Mboka añónte"
 
-#: src/components/MissionSetup.tsx:2254
+#: src/components/MissionSetup.tsx:2265
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Hardware gráficos ñemyakuãve oñembogue — ehecha navegador ñemboheko térã controladores gráficos."
 
@@ -1777,18 +1786,18 @@ msgstr "Emokañy"
 msgid "Hide password"
 msgstr "Eñomi pe pareha"
 
-#: src/components/MissionSetup.tsx:2002
+#: src/components/MissionSetup.tsx:2012
 msgid "High"
 msgstr "Yvate"
 
-#: src/components/MissionSetup.tsx:1908
-#: src/components/Multiplayer.tsx:75
-#: src/components/Multiplayer.tsx:356
+#: src/components/MissionSetup.tsx:1918
+#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:375
 msgid "High stratus"
 msgstr "Estrato yvate"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:2300
+#: src/components/MissionSetup.tsx:2311
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Tembiasakue"
@@ -1838,7 +1847,7 @@ msgid "Import"
 msgstr "Ñemoinge"
 
 #: src/components/MissionSetup.tsx:1563
-#: src/components/MissionSetup.tsx:1852
+#: src/components/MissionSetup.tsx:1865
 msgid "In air"
 msgstr "Yvytúpe"
 
@@ -1882,7 +1891,7 @@ msgstr "Verificación código ndoikóiva"
 msgid "Invert pitch"
 msgstr "Pitch ñembovai"
 
-#: src/components/Multiplayer.tsx:78
+#: src/components/Multiplayer.tsx:84
 msgid "Invulnerable"
 msgstr "Ndaikatúiva oñehundi"
 
@@ -1890,8 +1899,8 @@ msgstr "Ndaikatúiva oñehundi"
 msgid "INVULNERABLE"
 msgstr "NDAIKATÚI OÑEMBYAI"
 
-#: src/components/MissionSetup.tsx:1928
-#: src/components/Multiplayer.tsx:395
+#: src/components/MissionSetup.tsx:1938
+#: src/components/Multiplayer.tsx:426
 msgid "Invulnerable (human players only)"
 msgstr "Ndaikatúi oñembyai (yvypóra ojugáva añónte)"
 
@@ -1913,12 +1922,12 @@ msgstr "Tanque poi"
 msgid "JETTISON: GEAR"
 msgstr "POI: PYTA"
 
-#: src/components/Multiplayer.tsx:555
+#: src/components/Multiplayer.tsx:586
 msgid "Join"
 msgstr "Eike"
 
-#: src/components/MissionSetup.tsx:1676
-#: src/components/MissionSetup.tsx:2291
+#: src/components/MissionSetup.tsx:1678
+#: src/components/MissionSetup.tsx:2302
 msgid "Join server"
 msgstr "Servidor-pe jeike"
 
@@ -1927,20 +1936,20 @@ msgid "JOINED"
 msgstr "OIKE"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:2236
-#: src/components/Multiplayer.tsx:489
+#: src/components/MissionSetup.tsx:2246
+#: src/components/Multiplayer.tsx:520
 msgid "Joust"
 msgstr "Justa"
 
-#: src/components/Multiplayer.tsx:341
+#: src/components/Multiplayer.tsx:360
 msgid "Joust — 1v1, first kill wins"
 msgstr "Ñorairõ — 1v1, ojukáva raẽva ogana"
 
-#: src/components/MissionSetup.tsx:1813
+#: src/components/MissionSetup.tsx:1815
 msgid "Joust 1v1"
 msgstr "Ñorairõ 1v1"
 
-#: src/components/MissionSetup.tsx:2342
+#: src/components/MissionSetup.tsx:2353
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1956,7 +1965,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Teclado mboypýi"
 
-#: src/components/MissionSetup.tsx:2345
+#: src/components/MissionSetup.tsx:2356
 msgid "Keys"
 msgstr "Tecla-kuéra"
 
@@ -2013,7 +2022,7 @@ msgstr "ñemombo / objetivo"
 msgid "Layout"
 msgstr "Ñemohenda"
 
-#: src/components/Multiplayer.tsx:379
+#: src/components/Multiplayer.tsx:398
 msgid "lb"
 msgstr "lb"
 
@@ -2022,7 +2031,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Eikuaave"
 
-#: src/components/MissionSetup.tsx:1755
+#: src/components/MissionSetup.tsx:1757
 msgid "Leave server"
 msgstr "Servidor jeheja"
 
@@ -2107,7 +2116,7 @@ msgstr "MBOGUEJY OJAVY"
 msgid "Loading..."
 msgstr "Ojembogue..."
 
-#: src/components/MissionSetup.tsx:1950
+#: src/components/MissionSetup.tsx:1960
 msgid "Loadout"
 msgstr "Mba'e reraha"
 
@@ -2158,13 +2167,13 @@ msgstr "Ma'ẽ akatúa gotyo"
 msgid "Look up"
 msgstr "Ma'ẽ yvate gotyo"
 
-#: src/components/MissionSetup.tsx:1998
+#: src/components/MissionSetup.tsx:2008
 msgid "Low"
 msgstr "Yvýpe"
 
-#: src/components/MissionSetup.tsx:1910
-#: src/components/Multiplayer.tsx:77
-#: src/components/Multiplayer.tsx:358
+#: src/components/MissionSetup.tsx:1920
+#: src/components/Multiplayer.tsx:83
+#: src/components/Multiplayer.tsx:377
 msgid "Low stratus"
 msgstr "Estrato yvýpe"
 
@@ -2202,11 +2211,11 @@ msgstr "Ehecha pyre opavave"
 msgid "Master"
 msgstr "General"
 
-#: src/components/Multiplayer.tsx:337
+#: src/components/Multiplayer.tsx:356
 msgid "Match type"
 msgstr "Partida lája"
 
-#: src/components/MissionSetup.tsx:1750
+#: src/components/MissionSetup.tsx:1752
 msgid "Matches"
 msgstr "Ñembosaráikuéra"
 
@@ -2219,7 +2228,7 @@ msgid "MCP server"
 msgstr "MCP mohendaha"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:2000
+#: src/components/MissionSetup.tsx:2010
 msgid "Medium"
 msgstr "Mbyte"
 
@@ -2231,6 +2240,14 @@ msgstr "menu"
 #: src/components/MissionSetup.tsx:261
 msgid "Menu"
 msgstr "Menú"
+
+#: src/components/Multiplayer.tsx:408
+msgid "Merge — fight on at the pass"
+msgstr "Jejuhu — ñorairõ oñepyrũ ojasa jave"
+
+#: src/components/MissionSetup.tsx:1827
+msgid "Merge, fight's on at the pass"
+msgstr "Jejuhu, ñorairõ oñepyrũ ojasa jave"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx:35
 msgid "Message"
@@ -2252,9 +2269,9 @@ msgstr "Ehai ne equípope"
 msgid "Metric"
 msgstr "Métrico"
 
-#: src/components/MissionSetup.tsx:1909
-#: src/components/Multiplayer.tsx:76
-#: src/components/Multiplayer.tsx:357
+#: src/components/MissionSetup.tsx:1919
+#: src/components/Multiplayer.tsx:82
+#: src/components/Multiplayer.tsx:376
 msgid "Mid stratus"
 msgstr "Estrato mbyte"
 
@@ -2277,10 +2294,6 @@ msgstr "MISIL"
 #: src/components/MissionSetup.tsx:1371
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Misil ra'ãnga <0>“AIM-120C AMRAAM”</0> ojapo <1>Pippa</1> (Sketchfab), oñemboguata <2>CC BY 4.0</2> rehe. Oñemoambue: oñemoĩ jey itamaño, oñembohape jey ha oñemombyte oñemoĩ hag̃ua."
-
-#: src/components/Multiplayer.tsx:385
-msgid "Missiles allowed"
-msgstr "Misil ikatu ojepuru"
 
 #: ../../../lib/web/src/features/accounts/types.ts:23
 msgid "Mochi web"
@@ -2307,7 +2320,7 @@ msgstr "Opción hetave"
 msgid "Move it…"
 msgstr "Emongu'e…"
 
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:257
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multijugador oikotevẽ WebTransport, ko kundahára ndoguerekóiva gueteri."
 
@@ -2347,9 +2360,9 @@ msgstr "Ñembosarái pyahu"
 msgid "Next image"
 msgstr "Ta'anga oseguíva"
 
-#: src/components/MissionSetup.tsx:1896
-#: src/components/Multiplayer.tsx:73
-#: src/components/Multiplayer.tsx:351
+#: src/components/MissionSetup.tsx:1906
+#: src/components/Multiplayer.tsx:79
+#: src/components/Multiplayer.tsx:370
 msgid "Night"
 msgstr "Pyhare"
 
@@ -2401,7 +2414,7 @@ msgstr "Ndaipóri mba'e ojuajúva"
 msgid "No notifications yet"
 msgstr "Ndaipóri gueteri marandu"
 
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No open matches — create one."
 msgstr "Ndaipóri partida ojepe'áva — emoheñói peteĩ."
 
@@ -2464,7 +2477,7 @@ msgid "No views"
 msgstr "Ndaipóri jehecha"
 
 #: src/components/MissionSetup.tsx:1525
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No world server."
 msgstr "Ndaipóri mohendahavusu arapygua."
 
@@ -2489,7 +2502,7 @@ msgstr "SIN NOTA"
 #: src/components/MissionSetup.tsx:469
 #: src/components/MissionSetup.tsx:539
 #: src/components/MissionSetup.tsx:1077
-#: src/components/MissionSetup.tsx:1906
+#: src/components/MissionSetup.tsx:1916
 msgid "None"
 msgstr "Mba'eve"
 
@@ -2534,9 +2547,9 @@ msgstr "Ñehenói"
 msgid "Notifications: {0}"
 msgstr "Marandu: {0}"
 
-#: src/components/MissionSetup.tsx:1825
-#: src/components/MissionSetup.tsx:2228
-#: src/components/Multiplayer.tsx:429
+#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:2238
+#: src/components/Multiplayer.tsx:460
 msgid "Novice"
 msgstr "Oñepyrũva"
 
@@ -2546,7 +2559,7 @@ msgstr "Oñepyrũva"
 msgid "Number"
 msgstr "Papapy"
 
-#: src/components/MissionSetup.tsx:2038
+#: src/components/MissionSetup.tsx:2048
 msgid "Ocean detail"
 msgstr "Detalle yguasu"
 
@@ -2563,12 +2576,12 @@ msgid "On"
 msgstr "Myendy"
 
 #: src/components/MissionSetup.tsx:1565
-#: src/components/MissionSetup.tsx:1854
+#: src/components/MissionSetup.tsx:1867
 msgid "On carrier"
 msgstr "Portaaviones ári"
 
 #: src/components/MissionSetup.tsx:1564
-#: src/components/MissionSetup.tsx:1853
+#: src/components/MissionSetup.tsx:1866
 msgid "On runway"
 msgstr "Pista ári"
 
@@ -2576,11 +2589,11 @@ msgstr "Pista ári"
 msgid "Oops! Page Not Found!"
 msgstr "Hetia'epa! ¡Kuatiarogue ndojejuhúi!"
 
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Open"
 msgstr "Eipe'a"
 
-#: src/components/Multiplayer.tsx:340
+#: src/components/Multiplayer.tsx:359
 msgid "Open — anyone may join or leave"
 msgstr "Ojepe'áva — oimeraẽva ikatu oike térã osẽ"
 
@@ -2705,14 +2718,14 @@ msgid "Pick a date"
 msgstr "Eiporavo peteĩ ára"
 
 #: src/components/MissionSetup.tsx:1467
-#: src/components/Multiplayer.tsx:130
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:146
+#: src/components/Multiplayer.tsx:317
 msgid "pilot"
 msgstr "piloto"
 
-#: src/components/MissionSetup.tsx:1826
-#: src/components/MissionSetup.tsx:2229
-#: src/components/Multiplayer.tsx:430
+#: src/components/MissionSetup.tsx:1839
+#: src/components/MissionSetup.tsx:2239
+#: src/components/Multiplayer.tsx:461
 msgid "Pilot"
 msgstr "Piloto"
 
@@ -2774,7 +2787,7 @@ msgstr "Marandu"
 msgid "Posts and comments"
 msgstr "Marandu ha comentarios"
 
-#: src/components/MissionSetup.tsx:1985
+#: src/components/MissionSetup.tsx:1995
 msgid "Preset"
 msgstr "Preset"
 
@@ -2817,7 +2830,7 @@ msgstr "Perfil oñeñongatu"
 msgid "Project members"
 msgstr "Proyecto pehẽnguéra"
 
-#: src/components/MissionSetup.tsx:1703
+#: src/components/MissionSetup.tsx:1705
 msgid "Public servers"
 msgstr "Servidor publico"
 
@@ -2862,7 +2875,7 @@ msgstr "Emoinge jey nde passkeys ko servidor-pe"
 msgid "REARMED"
 msgstr "OÑEARMÁ JEY"
 
-#: src/components/MissionSetup.tsx:1681
+#: src/components/MissionSetup.tsx:1683
 msgid "Recent"
 msgstr "Ramoiteve"
 
@@ -2875,12 +2888,12 @@ msgstr "Ojeporavóva"
 msgid "Reconnecting ({retries})..."
 msgstr "Ojoajujey ({retries})..."
 
-#: src/components/MissionSetup.tsx:2142
+#: src/components/MissionSetup.tsx:2152
 msgid "Record flights"
 msgstr "Egraba umi veve"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:2136
+#: src/components/MissionSetup.tsx:2146
 msgid "Recording"
 msgstr "Grabación"
 
@@ -2888,11 +2901,11 @@ msgstr "Grabación"
 msgid "Recording saved"
 msgstr "Grabación oñeñongatýma"
 
-#: src/components/Multiplayer.tsx:533
+#: src/components/Multiplayer.tsx:564
 msgid "Red"
 msgstr "Pytã"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Red bots"
 msgstr "Bot pytã"
 
@@ -2909,7 +2922,7 @@ msgstr "Embogue ñembyeko'ói"
 msgid "Reference"
 msgstr "Techapyrã"
 
-#: src/components/Multiplayer.tsx:317
+#: src/components/Multiplayer.tsx:336
 msgid "Refresh"
 msgstr "Embohekopyahu"
 
@@ -3008,7 +3021,7 @@ msgstr "Embou jey ñe'ẽveve"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:2394
+#: src/components/MissionSetup.tsx:2405
 msgid "Reset"
 msgstr "Embojevy"
 
@@ -3037,11 +3050,11 @@ msgstr "Trim ñemboguevi"
 msgid "Reset view"
 msgstr "Ñehecha ñemboguevi"
 
-#: src/components/MissionSetup.tsx:2012
+#: src/components/MissionSetup.tsx:2022
 msgid "Resolution"
 msgstr "Resolución"
 
-#: src/components/MissionSetup.tsx:2273
+#: src/components/MissionSetup.tsx:2284
 msgid "Restart mission"
 msgstr "Misión ñepyrũjey"
 
@@ -3053,7 +3066,7 @@ msgstr "Resultado"
 msgid "Resume"
 msgstr "Eñepyrũ jey"
 
-#: src/components/MissionSetup.tsx:2269
+#: src/components/MissionSetup.tsx:2280
 msgid "Resume mission"
 msgstr "Misión ku’ejey"
 
@@ -3369,12 +3382,12 @@ msgstr "Emoĩ ñepyrũmby ha ohohaguã"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:199
 #: src/components/GameCanvas.tsx:383
-#: src/components/MissionSetup.tsx:2295
-#: src/components/MissionSetup.tsx:2329
+#: src/components/MissionSetup.tsx:2306
+#: src/components/MissionSetup.tsx:2340
 msgid "Settings"
 msgstr "Ñemboheko"
 
-#: src/components/MissionSetup.tsx:2062
+#: src/components/MissionSetup.tsx:2072
 msgid "Shadows"
 msgstr "Kuarahy'ã"
 
@@ -3436,13 +3449,21 @@ msgid "Sort"
 msgstr "Embojo'a"
 
 #: src/components/MissionSetup.tsx:601
-#: src/components/MissionSetup.tsx:2339
+#: src/components/MissionSetup.tsx:2350
 msgid "Sound"
 msgstr "Pu"
 
 #: ../../../lib/web/src/components/options-menu.tsx:161
 msgid "Sources"
 msgstr "Pyendarã"
+
+#: src/components/Multiplayer.tsx:78
+msgid "Spaced"
+msgstr "Mombyry"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Spaced spawns"
+msgstr "Jeikojey mombyry"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:97
 msgid "Spacious"
@@ -3478,7 +3499,8 @@ msgstr "Pérdida, potĩ (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "Pérdida, ñeguejyrã (Vs0)"
 
-#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:1821
+#: src/components/MissionSetup.tsx:1851
 msgid "Start"
 msgstr "Ñepyrũ"
 
@@ -3527,9 +3549,9 @@ msgstr "Eñemboaty"
 msgid "Sunday"
 msgstr "Arateĩ"
 
-#: src/components/MissionSetup.tsx:1828
-#: src/components/MissionSetup.tsx:2231
-#: src/components/Multiplayer.tsx:432
+#: src/components/MissionSetup.tsx:1841
+#: src/components/MissionSetup.tsx:2241
+#: src/components/Multiplayer.tsx:463
 msgid "Superhuman"
 msgstr "Yvypóra rasa"
 
@@ -3570,7 +3592,7 @@ msgstr "Tagskuéra"
 msgid "TALLY"
 msgstr "AHECHA AMOTARE'Ỹ"
 
-#: src/components/MissionSetup.tsx:1806
+#: src/components/MissionSetup.tsx:1808
 msgid "Task"
 msgstr "Tembiapo"
 
@@ -3583,11 +3605,11 @@ msgid "TEAM"
 msgstr "EQUIPO"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Teams"
 msgstr "Atykuéra"
 
-#: src/components/Multiplayer.tsx:342
+#: src/components/Multiplayer.tsx:361
 msgid "Teams — red versus blue"
 msgstr "Atykuéra — pytã contra hovy"
 
@@ -3641,15 +3663,15 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Theme Ñemboheko"
 
-#: src/components/MissionSetup.tsx:2252
+#: src/components/MissionSetup.tsx:2263
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Ko navegador ndoipytyvõi WebGL 2, upévare pe juego ndaikatúi oku'e — eipuru ambue navegador."
 
-#: src/components/Multiplayer.tsx:256
+#: src/components/Multiplayer.tsx:275
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Ko lobby omondo nde ñembosarái jeikeha peteĩ host ambue ({redirectHost}) gotyo. Eku'e mante rejeroviáramo ko servidor rehe."
 
-#: src/components/MissionSetup.tsx:2256
+#: src/components/MissionSetup.tsx:2267
 msgid "This machine may be too slow for smooth flight."
 msgstr "Ko máquina ikatu imbegue eterei jeveve sỹi peg̃uarã."
 
@@ -3691,7 +3713,7 @@ msgstr "jeroja"
 msgid "Time"
 msgstr "Aravo"
 
-#: src/components/MissionSetup.tsx:1889
+#: src/components/MissionSetup.tsx:1899
 msgid "Time of day"
 msgstr "Ára aravo"
 
@@ -3747,7 +3769,7 @@ msgstr "Hetaiterei mba'ejerure"
 msgid "Top"
 msgstr "Yvate"
 
-#: src/components/MissionSetup.tsx:2074
+#: src/components/MissionSetup.tsx:2084
 msgid "Tracers"
 msgstr "Trazadora"
 
@@ -3823,7 +3845,7 @@ msgstr "Ehai eheka mboapurevahára"
 msgid "Type to search..."
 msgstr "Ehai eheka..."
 
-#: src/components/MissionSetup.tsx:2004
+#: src/components/MissionSetup.tsx:2014
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3867,21 +3889,25 @@ msgstr "Estados Unidos"
 msgid "Unknown"
 msgstr "Ojekuaa'ỹva"
 
-#: src/components/Multiplayer.tsx:79
-#: src/components/Multiplayer.tsx:405
+#: src/components/Multiplayer.tsx:404
+msgid "Unlimited"
+msgstr "Ipa'ũ'ỹva"
+
+#: src/components/Multiplayer.tsx:85
+#: src/components/Multiplayer.tsx:436
 msgid "Unlimited ammunition"
 msgstr "Mboka ra'ỹi opave'ỹva"
 
-#: src/components/MissionSetup.tsx:1934
+#: src/components/MissionSetup.tsx:1944
 msgid "Unlimited ammunition (all players)"
 msgstr "Mboka ra'ỹi opave'ỹva (opavave ñembosaráyhára)"
 
-#: src/components/Multiplayer.tsx:80
-#: src/components/Multiplayer.tsx:415
+#: src/components/Multiplayer.tsx:86
+#: src/components/Multiplayer.tsx:446
 msgid "Unlimited fuel"
 msgstr "Nafta opave'ỹva"
 
-#: src/components/MissionSetup.tsx:1940
+#: src/components/MissionSetup.tsx:1950
 msgid "Unlimited fuel (all players)"
 msgstr "Nafta opave'ỹva (opavave ñembosaráyhára)"
 
@@ -4027,7 +4053,7 @@ msgstr "arma"
 msgid "Weapons"
 msgstr "Armakuéra"
 
-#: src/components/Multiplayer.tsx:347
+#: src/components/Multiplayer.tsx:366
 msgid "Weather"
 msgstr "Ára reko"
 
@@ -4052,12 +4078,12 @@ msgstr "Pepo ñemama"
 msgid "WINS"
 msgstr "OGANA"
 
-#: src/components/Multiplayer.tsx:282
+#: src/components/Multiplayer.tsx:301
 msgid "World server"
 msgstr "Mohendahavusu arapygua"
 
 #: src/components/MissionSetup.tsx:1513
-#: src/components/Multiplayer.tsx:143
+#: src/components/Multiplayer.tsx:159
 msgid "World server not reachable"
 msgstr "Ndaikatúi ojehupyty mohendahavusu arapygua"
 
@@ -4107,7 +4133,7 @@ msgstr "Ne archivo mbojoapypyre okañýta."
 msgid "Your flights appear here once you've flown one."
 msgstr "Nde veve osẽta ko'ápe reveve rire peteĩ."
 
-#: src/components/Multiplayer.tsx:484
+#: src/components/Multiplayer.tsx:515
 msgid "your offer"
 msgstr "nde jerure"
 

@@ -139,8 +139,9 @@ export interface MissionConfig {
   callsign: string
   // #57 parked: head: Record<string, number> // webcam head tracking (#57): on 0|1, gain (view amplification, ~5)
   cheats: Record<string, boolean> // invulnerable (humans only), ammunition, fuel — mission cheats; a multiplayer match takes its own set from the creator
-  rules: Record<string, boolean> // the creator's persisted match rules (#17): missiles (default on)
-  [key: string]: string | number | boolean | Record<string, string> | Record<string, number> | Record<string, boolean> | Record<string, StickBindings> | Record<string, StationSlot>
+  rules: Record<string, unknown> // the creator's persisted match rules (#17/#32): the weapons class and spacing, with missiles derived for old servers
+  duel: 'merge' | 'bvr' // the joust's start (#32): today's merge, or head-on across the derived BVR separation, weapons free
+  [key: string]: string | number | boolean | Record<string, string> | Record<string, number> | Record<string, boolean> | Record<string, unknown> | Record<string, StickBindings> | Record<string, StationSlot>
 }
 
 // seedStart applies a start choice with everything that choice defines: the
@@ -207,6 +208,7 @@ export const DEFAULT_CONFIG: MissionConfig = {
   // #57 parked: head: { on: 0, gain: 5 },
   cheats: {},
   rules: {},
+  duel: 'merge',
 }
 
 export type GraphicsPreset = 'low' | 'med' | 'high' | 'ultra'

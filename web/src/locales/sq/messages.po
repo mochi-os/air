@@ -51,7 +51,7 @@ msgid "{0} created “{1}”"
 msgstr "{0} krijoi «{1}»"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:309
+#: src/components/Multiplayer.tsx:328
 msgid "{0} flying"
 msgstr "{0} duke fluturuar"
 
@@ -72,7 +72,7 @@ msgstr "Pamja paraprake e opsionit {0}"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:522
 msgid "{0}/{1} players"
 msgstr "{0}/{1} lojtarë"
 
@@ -100,7 +100,7 @@ msgstr "Emri i {entityLabel}"
 msgid "{entityLabel} name is required"
 msgstr "Emri i {entityLabel} është i detyrueshëm"
 
-#: src/components/Multiplayer.tsx:215
+#: src/components/Multiplayer.tsx:231
 msgid "{name}'s match"
 msgstr "Ndeshja e {name}"
 
@@ -214,9 +214,9 @@ msgstr "Lloji i llogarisë"
 msgid "Account verified"
 msgstr "Llogaria u verifikua"
 
-#: src/components/MissionSetup.tsx:1827
-#: src/components/MissionSetup.tsx:2230
-#: src/components/Multiplayer.tsx:431
+#: src/components/MissionSetup.tsx:1840
+#: src/components/MissionSetup.tsx:2240
+#: src/components/Multiplayer.tsx:462
 msgid "Ace"
 msgstr "As"
 
@@ -318,7 +318,7 @@ msgstr "Po shtohet..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Rregullo paraqitjen dhe strukturën sipas preferencave të tua."
 
-#: src/components/MissionSetup.tsx:2068
+#: src/components/MissionSetup.tsx:2078
 msgid "Afterburner"
 msgstr "Pasdjegës"
 
@@ -363,6 +363,10 @@ msgstr "Ndodhi një gabim"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:275
 msgid "An unexpected error occurred"
 msgstr "Ndodhi një gabim i papritur"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Anchored sides"
+msgstr "Krahë të ankoruar"
 
 #: ../../../lib/web/src/features/accounts/types.ts:16
 msgid "Android push"
@@ -478,7 +482,7 @@ msgstr "Mbrapa"
 msgid "Back to home"
 msgstr "Kthehu në fillim"
 
-#: src/components/MissionSetup.tsx:1819
+#: src/components/MissionSetup.tsx:1832
 msgid "Bandit"
 msgstr "Bandit"
 
@@ -524,11 +528,11 @@ msgstr "Lundrimi te lidhja e pabesueshme u bllokua"
 msgid "Blocks"
 msgstr "Blloqe"
 
-#: src/components/Multiplayer.tsx:543
+#: src/components/Multiplayer.tsx:574
 msgid "Blue"
 msgstr "Blutë"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Blue bots"
 msgstr "Bots blu"
 
@@ -549,7 +553,7 @@ msgstr "Rrit interesin"
 msgid "Border colour"
 msgstr "Ngjyra e kornizës"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Bots"
 msgstr "Bots"
 
@@ -581,12 +585,20 @@ msgstr "Butoni {i}"
 msgid "Buttons"
 msgstr "Butonat"
 
+#: src/components/Multiplayer.tsx:409
+msgid "BVR — weapons free from spawn"
+msgstr "BVR — armët të lira që nga nisja"
+
+#: src/components/MissionSetup.tsx:1828
+msgid "BVR, fight's on at start"
+msgstr "BVR, lufta nis menjëherë"
+
 #: src/components/GameCanvas.tsx:108
 msgid "CALL THE BALL"
 msgstr "NJOFTO TOPIN"
 
-#: src/components/MissionSetup.tsx:2124
-#: src/components/Multiplayer.tsx:293
+#: src/components/MissionSetup.tsx:2134
+#: src/components/Multiplayer.tsx:312
 msgid "Callsign"
 msgstr "Shenja e thirrjes"
 
@@ -612,8 +624,8 @@ msgstr "Kamera nuk është e disponueshme"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:675
-#: src/components/Multiplayer.tsx:264
-#: src/components/Multiplayer.tsx:520
+#: src/components/Multiplayer.tsx:283
+#: src/components/Multiplayer.tsx:551
 msgid "Cancel"
 msgstr "Anulo"
 
@@ -635,7 +647,7 @@ msgstr "Kupola e kabinës"
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1855
+#: src/components/MissionSetup.tsx:1868
 msgid "Case I (day)"
 msgstr "Rast I (ditë)"
 
@@ -643,7 +655,7 @@ msgstr "Rast I (ditë)"
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1856
+#: src/components/MissionSetup.tsx:1869
 msgid "Case II (weather)"
 msgstr "Rast II (mot)"
 
@@ -651,11 +663,11 @@ msgstr "Rast II (mot)"
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1857
+#: src/components/MissionSetup.tsx:1870
 msgid "Case III (night)"
 msgstr "Rast III (natë)"
 
-#: src/components/MissionSetup.tsx:1863
+#: src/components/MissionSetup.tsx:1876
 msgid "Catapult"
 msgstr "Katapulta"
 
@@ -689,7 +701,7 @@ msgid "Chat to everyone"
 msgstr "Chat me të gjithë"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1922
+#: src/components/MissionSetup.tsx:1932
 msgid "Cheats"
 msgstr "Mashtrime"
 
@@ -736,7 +748,7 @@ msgstr "Zgjidh gjuhën"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:373
 msgid "Clear"
 msgstr "Pastro"
 
@@ -800,7 +812,7 @@ msgstr "Mbyll kërkimin"
 msgid "closer"
 msgstr "më afër"
 
-#: src/components/MissionSetup.tsx:1900
+#: src/components/MissionSetup.tsx:1910
 msgid "Clouds"
 msgstr "Re"
 
@@ -858,10 +870,6 @@ msgstr "Komunikimi"
 msgid "Compact"
 msgstr "Kompakt"
 
-#: src/components/MissionSetup.tsx:1886
-msgid "Conditions"
-msgstr "Kushtet"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
 msgid "Configure option settings"
 msgstr "Konfiguro cilësimet e opsionit"
@@ -875,11 +883,11 @@ msgstr "Konfiguro cilësimet e pamjes"
 msgid "Confirm"
 msgstr "Konfirmo"
 
-#: src/components/MissionSetup.tsx:1728
+#: src/components/MissionSetup.tsx:1730
 msgid "Connect"
 msgstr "Lidhu"
 
-#: src/components/MissionSetup.tsx:1715
+#: src/components/MissionSetup.tsx:1717
 msgid "Connect to private server"
 msgstr "Lidhu me server privat"
 
@@ -895,7 +903,7 @@ msgstr "Llogaritë e lidhura"
 msgid "Connecting..."
 msgstr "Po lidhet..."
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:331
 msgid "Connecting…"
 msgstr "Duke u lidhur…"
 
@@ -916,7 +924,7 @@ msgid "Contextual information and details."
 msgstr "Informacion kontekstual dhe detaje."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:273
+#: src/components/Multiplayer.tsx:292
 msgid "Continue"
 msgstr "Vazhdo"
 
@@ -940,7 +948,7 @@ msgstr "Kopjo"
 msgid "Corner speed (best instant turn)"
 msgstr "Shpejtësia e këndit (kthesa më e mirë e menjëhershme)"
 
-#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:248
 msgid "Could not create the match"
 msgstr "Ndeshja nuk u krijua dot"
 
@@ -1003,16 +1011,16 @@ msgstr "Krijo"
 msgid "Create {0}"
 msgstr "Krijo {0}"
 
-#: src/components/Multiplayer.tsx:463
+#: src/components/Multiplayer.tsx:494
 msgid "Create and fly"
 msgstr "Krijo dhe fluturo"
 
-#: src/components/Multiplayer.tsx:327
+#: src/components/Multiplayer.tsx:346
 msgid "Create match"
 msgstr "Krijo ndeshje"
 
-#: src/components/MissionSetup.tsx:2287
-#: src/components/MissionSetup.tsx:2310
+#: src/components/MissionSetup.tsx:2298
+#: src/components/MissionSetup.tsx:2321
 msgid "Create mission"
 msgstr "Krijo mision"
 
@@ -1035,9 +1043,9 @@ msgstr "Po krijon..."
 msgid "Credits"
 msgstr "Falënderime"
 
-#: src/components/MissionSetup.tsx:1907
-#: src/components/Multiplayer.tsx:74
-#: src/components/Multiplayer.tsx:355
+#: src/components/MissionSetup.tsx:1917
+#: src/components/Multiplayer.tsx:80
+#: src/components/Multiplayer.tsx:374
 msgid "Cumulus"
 msgstr "Kumulus"
 
@@ -1079,8 +1087,8 @@ msgstr "Konflikt të dhënash"
 msgid "Date"
 msgstr "Data"
 
-#: src/components/MissionSetup.tsx:1895
-#: src/components/Multiplayer.tsx:350
+#: src/components/MissionSetup.tsx:1905
+#: src/components/Multiplayer.tsx:369
 msgid "Day"
 msgstr "Ditë"
 
@@ -1195,7 +1203,7 @@ msgstr "Zbulo nga shfletuesi i web-it"
 msgid "Device"
 msgstr "Pajisja"
 
-#: src/components/Multiplayer.tsx:253
+#: src/components/Multiplayer.tsx:272
 msgid "Different game host"
 msgstr "Strehues tjetër i lojës"
 
@@ -1231,7 +1239,7 @@ msgstr "I shkëputur"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: ../../../lib/web/src/components/restore-banner.tsx:100
-#: src/components/MissionSetup.tsx:2259
+#: src/components/MissionSetup.tsx:2270
 msgid "Dismiss"
 msgstr "Hidhe"
 
@@ -1244,13 +1252,13 @@ msgstr "Përsëritës i ekranit"
 msgid "Displays the mobile sidebar."
 msgstr "Shfaq anën mobile."
 
-#: src/components/MissionSetup.tsx:2056
+#: src/components/MissionSetup.tsx:2066
 msgid "Distance LOD"
 msgstr "LOD sipas largësisë"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:2401
+#: src/components/MissionSetup.tsx:2412
 msgid "Done"
 msgstr "Përfunduar"
 
@@ -1272,7 +1280,7 @@ msgstr "ME ERËN 600 KËMBË"
 msgid "Drag"
 msgstr "Tërhiq"
 
-#: src/components/Multiplayer.tsx:428
+#: src/components/Multiplayer.tsx:459
 msgid "Drone"
 msgstr "Dron"
 
@@ -1284,7 +1292,7 @@ msgstr "Dublikatat"
 msgid "Duration"
 msgstr "Kohëzgjatja"
 
-#: src/components/MissionSetup.tsx:2050
+#: src/components/MissionSetup.tsx:2060
 msgid "Dynamic resolution"
 msgstr "Rezolucion dinamik"
 
@@ -1331,7 +1339,7 @@ msgstr "Modifiko kartën e zgjedhur"
 msgid "Edit view"
 msgstr "Modifiko pamjen"
 
-#: src/components/MissionSetup.tsx:2030
+#: src/components/MissionSetup.tsx:2040
 msgid "Effects detail"
 msgstr "Detaje të efekteve"
 
@@ -1360,7 +1368,7 @@ msgstr "HEDHJE URGJENCE"
 msgid "Emergency jettison (hold)"
 msgstr "Hedhje urgjence (mbaje)"
 
-#: src/components/Multiplayer.tsx:490
+#: src/components/Multiplayer.tsx:521
 msgid "empty"
 msgstr "bosh"
 
@@ -1421,7 +1429,7 @@ msgstr "Eksporto"
 msgid "Extend flaps"
 msgstr "Nxirr flapet"
 
-#: src/components/MissionSetup.tsx:2022
+#: src/components/MissionSetup.tsx:2032
 msgid "Exterior detail"
 msgstr "Detaje të jashtme"
 
@@ -1602,8 +1610,8 @@ msgstr "Pluskues"
 msgid "Flown"
 msgstr "Fluturuar"
 
-#: src/components/MissionSetup.tsx:2281
-#: src/components/MissionSetup.tsx:2324
+#: src/components/MissionSetup.tsx:2292
+#: src/components/MissionSetup.tsx:2335
 msgid "Fly"
 msgstr "Fluturo"
 
@@ -1611,12 +1619,12 @@ msgstr "Fluturo"
 msgid "Fly again"
 msgstr "Fluturo sërish"
 
-#: src/components/MissionSetup.tsx:2080
+#: src/components/MissionSetup.tsx:2090
 msgid "Framerate"
 msgstr "Frekuencë e kuadrove"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1812
+#: src/components/MissionSetup.tsx:1814
 msgid "Free flight"
 msgstr "Fluturim i lirë"
 
@@ -1641,7 +1649,7 @@ msgstr "Nga"
 msgid "From theme"
 msgstr "Nga tema"
 
-#: src/components/Multiplayer.tsx:366
+#: src/components/Multiplayer.tsx:385
 msgid "Fuel"
 msgstr "Karburanti"
 
@@ -1694,7 +1702,7 @@ msgstr "Trupi i uljes"
 msgid "GEAR"
 msgstr "TREN"
 
-#: src/components/MissionSetup.tsx:2333
+#: src/components/MissionSetup.tsx:2344
 msgid "General"
 msgstr "Të përgjithshme"
 
@@ -1724,7 +1732,7 @@ msgstr "Shko te faqja {pageNumber}"
 msgid "Go to previous page"
 msgstr "Shko në faqen e mëparshme"
 
-#: src/components/MissionSetup.tsx:2336
+#: src/components/MissionSetup.tsx:2347
 msgid "Graphics"
 msgstr "Grafika"
 
@@ -1753,11 +1761,12 @@ msgstr "Top"
 msgid "GUN"
 msgstr "TOP"
 
-#: src/components/Multiplayer.tsx:72
+#: src/components/Multiplayer.tsx:75
+#: src/components/Multiplayer.tsx:402
 msgid "Guns only"
 msgstr "Vetëm topa"
 
-#: src/components/MissionSetup.tsx:2254
+#: src/components/MissionSetup.tsx:2265
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Përshpejtimi grafik i harduerit është i fikur — kontrolloni cilësimet e shfletuesit ose drejtuesit grafikë."
 
@@ -1777,18 +1786,18 @@ msgstr "Fshih"
 msgid "Hide password"
 msgstr "Fshih fjalëkalimin"
 
-#: src/components/MissionSetup.tsx:2002
+#: src/components/MissionSetup.tsx:2012
 msgid "High"
 msgstr "I lartë"
 
-#: src/components/MissionSetup.tsx:1908
-#: src/components/Multiplayer.tsx:75
-#: src/components/Multiplayer.tsx:356
+#: src/components/MissionSetup.tsx:1918
+#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:375
 msgid "High stratus"
 msgstr "Stratus i lartë"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:2300
+#: src/components/MissionSetup.tsx:2311
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Historia"
@@ -1838,7 +1847,7 @@ msgid "Import"
 msgstr "Importo"
 
 #: src/components/MissionSetup.tsx:1563
-#: src/components/MissionSetup.tsx:1852
+#: src/components/MissionSetup.tsx:1865
 msgid "In air"
 msgstr "Në ajër"
 
@@ -1882,7 +1891,7 @@ msgstr "Kod verifikimi i pavlefshëm"
 msgid "Invert pitch"
 msgstr "Përmbys pjerrësinë"
 
-#: src/components/Multiplayer.tsx:78
+#: src/components/Multiplayer.tsx:84
 msgid "Invulnerable"
 msgstr "I paprekshëm"
 
@@ -1890,8 +1899,8 @@ msgstr "I paprekshëm"
 msgid "INVULNERABLE"
 msgstr "I PACENUESHËM"
 
-#: src/components/MissionSetup.tsx:1928
-#: src/components/Multiplayer.tsx:395
+#: src/components/MissionSetup.tsx:1938
+#: src/components/Multiplayer.tsx:426
 msgid "Invulnerable (human players only)"
 msgstr "I pacenueshëm (vetëm lojtarë njerëz)"
 
@@ -1913,12 +1922,12 @@ msgstr "Hidh serbatorët"
 msgid "JETTISON: GEAR"
 msgstr "HEDHJE: SHASIA"
 
-#: src/components/Multiplayer.tsx:555
+#: src/components/Multiplayer.tsx:586
 msgid "Join"
 msgstr "Bashkohu"
 
-#: src/components/MissionSetup.tsx:1676
-#: src/components/MissionSetup.tsx:2291
+#: src/components/MissionSetup.tsx:1678
+#: src/components/MissionSetup.tsx:2302
 msgid "Join server"
 msgstr "Bashkohu me serverin"
 
@@ -1927,20 +1936,20 @@ msgid "JOINED"
 msgstr "U BASHKUA"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:2236
-#: src/components/Multiplayer.tsx:489
+#: src/components/MissionSetup.tsx:2246
+#: src/components/Multiplayer.tsx:520
 msgid "Joust"
 msgstr "Duel"
 
-#: src/components/Multiplayer.tsx:341
+#: src/components/Multiplayer.tsx:360
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, kush rrëzon i pari fiton"
 
-#: src/components/MissionSetup.tsx:1813
+#: src/components/MissionSetup.tsx:1815
 msgid "Joust 1v1"
 msgstr "Duel 1v1"
 
-#: src/components/MissionSetup.tsx:2342
+#: src/components/MissionSetup.tsx:2353
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1956,7 +1965,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Shkurtoret e tastierës"
 
-#: src/components/MissionSetup.tsx:2345
+#: src/components/MissionSetup.tsx:2356
 msgid "Keys"
 msgstr "Tastet"
 
@@ -2013,7 +2022,7 @@ msgstr "ngritje / objektiv"
 msgid "Layout"
 msgstr "Paraqitja"
 
-#: src/components/Multiplayer.tsx:379
+#: src/components/Multiplayer.tsx:398
 msgid "lb"
 msgstr "lb"
 
@@ -2022,7 +2031,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Mëso më shumë"
 
-#: src/components/MissionSetup.tsx:1755
+#: src/components/MissionSetup.tsx:1757
 msgid "Leave server"
 msgstr "Lër serverin"
 
@@ -2107,7 +2116,7 @@ msgstr "NGARKIMI DËSHTOI"
 msgid "Loading..."
 msgstr "Duke ngarkuar..."
 
-#: src/components/MissionSetup.tsx:1950
+#: src/components/MissionSetup.tsx:1960
 msgid "Loadout"
 msgstr "Ngarkesa"
 
@@ -2158,13 +2167,13 @@ msgstr "Shiko djathtas"
 msgid "Look up"
 msgstr "Shiko lart"
 
-#: src/components/MissionSetup.tsx:1998
+#: src/components/MissionSetup.tsx:2008
 msgid "Low"
 msgstr "I ulët"
 
-#: src/components/MissionSetup.tsx:1910
-#: src/components/Multiplayer.tsx:77
-#: src/components/Multiplayer.tsx:358
+#: src/components/MissionSetup.tsx:1920
+#: src/components/Multiplayer.tsx:83
+#: src/components/Multiplayer.tsx:377
 msgid "Low stratus"
 msgstr "Stratus i ulët"
 
@@ -2202,11 +2211,11 @@ msgstr "Shëno të gjitha si të lexuara"
 msgid "Master"
 msgstr "Kryesori"
 
-#: src/components/Multiplayer.tsx:337
+#: src/components/Multiplayer.tsx:356
 msgid "Match type"
 msgstr "Lloji i ndeshjes"
 
-#: src/components/MissionSetup.tsx:1750
+#: src/components/MissionSetup.tsx:1752
 msgid "Matches"
 msgstr "Ndeshjet"
 
@@ -2219,7 +2228,7 @@ msgid "MCP server"
 msgstr "Server MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:2000
+#: src/components/MissionSetup.tsx:2010
 msgid "Medium"
 msgstr "I mesëm"
 
@@ -2231,6 +2240,14 @@ msgstr "meny"
 #: src/components/MissionSetup.tsx:261
 msgid "Menu"
 msgstr "Menyja"
+
+#: src/components/Multiplayer.tsx:408
+msgid "Merge — fight on at the pass"
+msgstr "Bashkim — lufta nis në kalim"
+
+#: src/components/MissionSetup.tsx:1827
+msgid "Merge, fight's on at the pass"
+msgstr "Bashkim, lufta nis në kalim"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx:35
 msgid "Message"
@@ -2252,9 +2269,9 @@ msgstr "Shkruaji skuadrës tënde"
 msgid "Metric"
 msgstr "Metrik"
 
-#: src/components/MissionSetup.tsx:1909
-#: src/components/Multiplayer.tsx:76
-#: src/components/Multiplayer.tsx:357
+#: src/components/MissionSetup.tsx:1919
+#: src/components/Multiplayer.tsx:82
+#: src/components/Multiplayer.tsx:376
 msgid "Mid stratus"
 msgstr "Stratus i mesëm"
 
@@ -2277,10 +2294,6 @@ msgstr "RAKETË"
 #: src/components/MissionSetup.tsx:1371
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Model rakete <0>“AIM-120C AMRAAM”</0> nga <1>Pippa</1> (Sketchfab), licencuar sipas <2>CC BY 4.0</2>. Modifikuar: rishkallëzuar, riorientuar dhe qendërzuar për vendosje."
-
-#: src/components/Multiplayer.tsx:385
-msgid "Missiles allowed"
-msgstr "Raketat lejohen"
 
 #: ../../../lib/web/src/features/accounts/types.ts:23
 msgid "Mochi web"
@@ -2307,7 +2320,7 @@ msgstr "Më shumë opsione"
 msgid "Move it…"
 msgstr "Lëvizeni…"
 
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:257
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Loja shumëlojtarëshe kërkon WebTransport, të cilin ky shfletues ende nuk e mbështet."
 
@@ -2347,9 +2360,9 @@ msgstr "Lojë e re"
 msgid "Next image"
 msgstr "Imazhi tjetër"
 
-#: src/components/MissionSetup.tsx:1896
-#: src/components/Multiplayer.tsx:73
-#: src/components/Multiplayer.tsx:351
+#: src/components/MissionSetup.tsx:1906
+#: src/components/Multiplayer.tsx:79
+#: src/components/Multiplayer.tsx:370
 msgid "Night"
 msgstr "Natë"
 
@@ -2401,7 +2414,7 @@ msgstr "Asnjë objekt përputhës"
 msgid "No notifications yet"
 msgstr "Ende asnjë njoftim"
 
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No open matches — create one."
 msgstr "Nuk ka ndeshje të hapura — krijo një."
 
@@ -2464,7 +2477,7 @@ msgid "No views"
 msgstr "Asnjë shikim"
 
 #: src/components/MissionSetup.tsx:1525
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No world server."
 msgstr "Nuk ka server bote."
 
@@ -2489,7 +2502,7 @@ msgstr "PA NOTË"
 #: src/components/MissionSetup.tsx:469
 #: src/components/MissionSetup.tsx:539
 #: src/components/MissionSetup.tsx:1077
-#: src/components/MissionSetup.tsx:1906
+#: src/components/MissionSetup.tsx:1916
 msgid "None"
 msgstr "Asnjë"
 
@@ -2534,9 +2547,9 @@ msgstr "Njoftime"
 msgid "Notifications: {0}"
 msgstr "Njoftimet: {0}"
 
-#: src/components/MissionSetup.tsx:1825
-#: src/components/MissionSetup.tsx:2228
-#: src/components/Multiplayer.tsx:429
+#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:2238
+#: src/components/Multiplayer.tsx:460
 msgid "Novice"
 msgstr "Fillestar"
 
@@ -2546,7 +2559,7 @@ msgstr "Fillestar"
 msgid "Number"
 msgstr "Numri"
 
-#: src/components/MissionSetup.tsx:2038
+#: src/components/MissionSetup.tsx:2048
 msgid "Ocean detail"
 msgstr "Detaje të oqeanit"
 
@@ -2563,12 +2576,12 @@ msgid "On"
 msgstr "Aktiv"
 
 #: src/components/MissionSetup.tsx:1565
-#: src/components/MissionSetup.tsx:1854
+#: src/components/MissionSetup.tsx:1867
 msgid "On carrier"
 msgstr "Në portaavionë"
 
 #: src/components/MissionSetup.tsx:1564
-#: src/components/MissionSetup.tsx:1853
+#: src/components/MissionSetup.tsx:1866
 msgid "On runway"
 msgstr "Në pistë"
 
@@ -2576,11 +2589,11 @@ msgstr "Në pistë"
 msgid "Oops! Page Not Found!"
 msgstr "Ups! Faqja s'u gjet!"
 
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Open"
 msgstr "Hap"
 
-#: src/components/Multiplayer.tsx:340
+#: src/components/Multiplayer.tsx:359
 msgid "Open — anyone may join or leave"
 msgstr "E hapur — kushdo mund të bashkohet ose të largohet"
 
@@ -2705,14 +2718,14 @@ msgid "Pick a date"
 msgstr "Zgjidhni një datë"
 
 #: src/components/MissionSetup.tsx:1467
-#: src/components/Multiplayer.tsx:130
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:146
+#: src/components/Multiplayer.tsx:317
 msgid "pilot"
 msgstr "pilot"
 
-#: src/components/MissionSetup.tsx:1826
-#: src/components/MissionSetup.tsx:2229
-#: src/components/Multiplayer.tsx:430
+#: src/components/MissionSetup.tsx:1839
+#: src/components/MissionSetup.tsx:2239
+#: src/components/Multiplayer.tsx:461
 msgid "Pilot"
 msgstr "Pilot"
 
@@ -2774,7 +2787,7 @@ msgstr "Postimet"
 msgid "Posts and comments"
 msgstr "Postimet dhe komentet"
 
-#: src/components/MissionSetup.tsx:1985
+#: src/components/MissionSetup.tsx:1995
 msgid "Preset"
 msgstr "Paracaktim"
 
@@ -2817,7 +2830,7 @@ msgstr "Profili u ruajt"
 msgid "Project members"
 msgstr "Anëtarët e projektit"
 
-#: src/components/MissionSetup.tsx:1703
+#: src/components/MissionSetup.tsx:1705
 msgid "Public servers"
 msgstr "Serverë publikë"
 
@@ -2862,7 +2875,7 @@ msgstr "Riregjistroni çelësat tuaj të hyrjes në këtë server"
 msgid "REARMED"
 msgstr "U RIARMATOS"
 
-#: src/components/MissionSetup.tsx:1681
+#: src/components/MissionSetup.tsx:1683
 msgid "Recent"
 msgstr "Së fundmi"
 
@@ -2875,12 +2888,12 @@ msgstr "I rekomanduar"
 msgid "Reconnecting ({retries})..."
 msgstr "Po rilidhet ({retries})..."
 
-#: src/components/MissionSetup.tsx:2142
+#: src/components/MissionSetup.tsx:2152
 msgid "Record flights"
 msgstr "Regjistro fluturimet"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:2136
+#: src/components/MissionSetup.tsx:2146
 msgid "Recording"
 msgstr "Regjistrimi"
 
@@ -2888,11 +2901,11 @@ msgstr "Regjistrimi"
 msgid "Recording saved"
 msgstr "Regjistrimi u ruajt"
 
-#: src/components/Multiplayer.tsx:533
+#: src/components/Multiplayer.tsx:564
 msgid "Red"
 msgstr "Të kuqtë"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Red bots"
 msgstr "Bots të kuq"
 
@@ -2909,7 +2922,7 @@ msgstr "Zvogëlo interesin"
 msgid "Reference"
 msgstr "Referencë"
 
-#: src/components/Multiplayer.tsx:317
+#: src/components/Multiplayer.tsx:336
 msgid "Refresh"
 msgstr "Rifresko"
 
@@ -3008,7 +3021,7 @@ msgstr "Ridërgo email-in"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:2394
+#: src/components/MissionSetup.tsx:2405
 msgid "Reset"
 msgstr "Rivendos"
 
@@ -3037,11 +3050,11 @@ msgstr "Rivendos trimin"
 msgid "Reset view"
 msgstr "Rivendos pamjen"
 
-#: src/components/MissionSetup.tsx:2012
+#: src/components/MissionSetup.tsx:2022
 msgid "Resolution"
 msgstr "Rezolucioni"
 
-#: src/components/MissionSetup.tsx:2273
+#: src/components/MissionSetup.tsx:2284
 msgid "Restart mission"
 msgstr "Rinis misionin"
 
@@ -3053,7 +3066,7 @@ msgstr "Rezultati"
 msgid "Resume"
 msgstr "Vazhdo"
 
-#: src/components/MissionSetup.tsx:2269
+#: src/components/MissionSetup.tsx:2280
 msgid "Resume mission"
 msgstr "Vazhdo misionin"
 
@@ -3369,12 +3382,12 @@ msgstr "Vendos origjinën dhe destinacionin"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:199
 #: src/components/GameCanvas.tsx:383
-#: src/components/MissionSetup.tsx:2295
-#: src/components/MissionSetup.tsx:2329
+#: src/components/MissionSetup.tsx:2306
+#: src/components/MissionSetup.tsx:2340
 msgid "Settings"
 msgstr "Cilësimet"
 
-#: src/components/MissionSetup.tsx:2062
+#: src/components/MissionSetup.tsx:2072
 msgid "Shadows"
 msgstr "Hije"
 
@@ -3436,13 +3449,21 @@ msgid "Sort"
 msgstr "Rendit"
 
 #: src/components/MissionSetup.tsx:601
-#: src/components/MissionSetup.tsx:2339
+#: src/components/MissionSetup.tsx:2350
 msgid "Sound"
 msgstr "Zëri"
 
 #: ../../../lib/web/src/components/options-menu.tsx:161
 msgid "Sources"
 msgstr "Burimet"
+
+#: src/components/Multiplayer.tsx:78
+msgid "Spaced"
+msgstr "I larguar"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Spaced spawns"
+msgstr "Hyrje të larguara"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:97
 msgid "Spacious"
@@ -3478,7 +3499,8 @@ msgstr "Ndalje, konfigurim i pastër (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "Ndalje, konfigurim uljeje (Vs0)"
 
-#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:1821
+#: src/components/MissionSetup.tsx:1851
 msgid "Start"
 msgstr "Fillo"
 
@@ -3527,9 +3549,9 @@ msgstr "Abonohu"
 msgid "Sunday"
 msgstr "E diel"
 
-#: src/components/MissionSetup.tsx:1828
-#: src/components/MissionSetup.tsx:2231
-#: src/components/Multiplayer.tsx:432
+#: src/components/MissionSetup.tsx:1841
+#: src/components/MissionSetup.tsx:2241
+#: src/components/Multiplayer.tsx:463
 msgid "Superhuman"
 msgstr "Mbinjerëzor"
 
@@ -3570,7 +3592,7 @@ msgstr "Etiketat"
 msgid "TALLY"
 msgstr "SHOH ARMIKUN"
 
-#: src/components/MissionSetup.tsx:1806
+#: src/components/MissionSetup.tsx:1808
 msgid "Task"
 msgstr "Detyrë"
 
@@ -3583,11 +3605,11 @@ msgid "TEAM"
 msgstr "SKUADRA"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Teams"
 msgstr "Ekipe"
 
-#: src/components/Multiplayer.tsx:342
+#: src/components/Multiplayer.tsx:361
 msgid "Teams — red versus blue"
 msgstr "Ekipe — të kuqtë kundër bluve"
 
@@ -3641,15 +3663,15 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Cilësimet e temës"
 
-#: src/components/MissionSetup.tsx:2252
+#: src/components/MissionSetup.tsx:2263
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Ky shfletues nuk mbështet WebGL 2, kështu që loja nuk mund të funksionojë — provoni një shfletues tjetër."
 
-#: src/components/Multiplayer.tsx:256
+#: src/components/Multiplayer.tsx:275
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Kjo lobi po e dërgon lidhjen tënde të lojës te një strehues tjetër ({redirectHost}). Vazhdo vetëm nëse i beson këtij serveri."
 
-#: src/components/MissionSetup.tsx:2256
+#: src/components/MissionSetup.tsx:2267
 msgid "This machine may be too slow for smooth flight."
 msgstr "Kjo makinë mund të jetë tepër e ngadaltë për fluturim të lëmuar."
 
@@ -3691,7 +3713,7 @@ msgstr "anim"
 msgid "Time"
 msgstr "Koha"
 
-#: src/components/MissionSetup.tsx:1889
+#: src/components/MissionSetup.tsx:1899
 msgid "Time of day"
 msgstr "Koha e ditës"
 
@@ -3747,7 +3769,7 @@ msgstr "Shumë kërkesa"
 msgid "Top"
 msgstr "Lart"
 
-#: src/components/MissionSetup.tsx:2074
+#: src/components/MissionSetup.tsx:2084
 msgid "Tracers"
 msgstr "Gjurmuese"
 
@@ -3823,7 +3845,7 @@ msgstr "Shkruaj për të kërkuar përdorues"
 msgid "Type to search..."
 msgstr "Shkruaj për të kërkuar..."
 
-#: src/components/MissionSetup.tsx:2004
+#: src/components/MissionSetup.tsx:2014
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3867,21 +3889,25 @@ msgstr "Shtetet e Bashkuara"
 msgid "Unknown"
 msgstr "I panjohur"
 
-#: src/components/Multiplayer.tsx:79
-#: src/components/Multiplayer.tsx:405
+#: src/components/Multiplayer.tsx:404
+msgid "Unlimited"
+msgstr "Pa kufi"
+
+#: src/components/Multiplayer.tsx:85
+#: src/components/Multiplayer.tsx:436
 msgid "Unlimited ammunition"
 msgstr "Municion i pakufizuar"
 
-#: src/components/MissionSetup.tsx:1934
+#: src/components/MissionSetup.tsx:1944
 msgid "Unlimited ammunition (all players)"
 msgstr "Municion i pakufizuar (të gjithë lojtarët)"
 
-#: src/components/Multiplayer.tsx:80
-#: src/components/Multiplayer.tsx:415
+#: src/components/Multiplayer.tsx:86
+#: src/components/Multiplayer.tsx:446
 msgid "Unlimited fuel"
 msgstr "Karburant i pakufizuar"
 
-#: src/components/MissionSetup.tsx:1940
+#: src/components/MissionSetup.tsx:1950
 msgid "Unlimited fuel (all players)"
 msgstr "Karburant i pakufizuar (të gjithë lojtarët)"
 
@@ -4027,7 +4053,7 @@ msgstr "armë"
 msgid "Weapons"
 msgstr "Armët"
 
-#: src/components/Multiplayer.tsx:347
+#: src/components/Multiplayer.tsx:366
 msgid "Weather"
 msgstr "Moti"
 
@@ -4052,12 +4078,12 @@ msgstr "Palosja e krahëve"
 msgid "WINS"
 msgstr "FITON"
 
-#: src/components/Multiplayer.tsx:282
+#: src/components/Multiplayer.tsx:301
 msgid "World server"
 msgstr "Serveri i botës"
 
 #: src/components/MissionSetup.tsx:1513
-#: src/components/Multiplayer.tsx:143
+#: src/components/Multiplayer.tsx:159
 msgid "World server not reachable"
 msgstr "Serveri i botës nuk arrihet"
 
@@ -4107,7 +4133,7 @@ msgstr "Bashkëngjitjet tuaja do të humbasin."
 msgid "Your flights appear here once you've flown one."
 msgstr "Fluturimet tuaja shfaqen këtu pasi të keni bërë një."
 
-#: src/components/Multiplayer.tsx:484
+#: src/components/Multiplayer.tsx:515
 msgid "your offer"
 msgstr "oferta juaj"
 

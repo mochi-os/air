@@ -51,7 +51,7 @@ msgid "{0} created “{1}”"
 msgstr "{0} “{1}” luriwa"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:309
+#: src/components/Multiplayer.tsx:328
 msgid "{0} flying"
 msgstr "{0} halaskiwa"
 
@@ -72,7 +72,7 @@ msgstr "{0} ajlliwi nayrraqata uñjaña"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:522
 msgid "{0}/{1} players"
 msgstr "{0}/{1} anatirinaka"
 
@@ -100,7 +100,7 @@ msgstr "{entityLabel} suti"
 msgid "{entityLabel} name is required"
 msgstr "{entityLabel} suti wakisi"
 
-#: src/components/Multiplayer.tsx:215
+#: src/components/Multiplayer.tsx:231
 msgid "{name}'s match"
 msgstr "{name}na anatäwipa"
 
@@ -214,9 +214,9 @@ msgstr "Cuenta kasta"
 msgid "Account verified"
 msgstr "Cuenta uñakipata"
 
-#: src/components/MissionSetup.tsx:1827
-#: src/components/MissionSetup.tsx:2230
-#: src/components/Multiplayer.tsx:431
+#: src/components/MissionSetup.tsx:1840
+#: src/components/MissionSetup.tsx:2240
+#: src/components/Multiplayer.tsx:462
 msgid "Ace"
 msgstr "As"
 
@@ -318,7 +318,7 @@ msgstr "Yapxatkasa..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Uñnaqa ukat layout askichaña juma munawinakaman."
 
-#: src/components/MissionSetup.tsx:2068
+#: src/components/MissionSetup.tsx:2078
 msgid "Afterburner"
 msgstr "Posquemador"
 
@@ -363,6 +363,10 @@ msgstr "Mä juch'a utjawayi"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:275
 msgid "An unexpected error occurred"
 msgstr "Jan suyt'ata juch'a utjawayi"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Anchored sides"
+msgstr "Chinuta tuqinaka"
 
 #: ../../../lib/web/src/features/accounts/types.ts:16
 msgid "Android push"
@@ -478,7 +482,7 @@ msgstr "Kutta"
 msgid "Back to home"
 msgstr "Utar kutiña"
 
-#: src/components/MissionSetup.tsx:1819
+#: src/components/MissionSetup.tsx:1832
 msgid "Bandit"
 msgstr "Awqa"
 
@@ -524,11 +528,11 @@ msgstr "Jan iyawsir linkar mantañ jark'ata"
 msgid "Blocks"
 msgstr "Bloquenaka"
 
-#: src/components/Multiplayer.tsx:543
+#: src/components/Multiplayer.tsx:574
 msgid "Blue"
 msgstr "Larama"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Blue bots"
 msgstr "Larama botanaka"
 
@@ -549,7 +553,7 @@ msgstr "Munawi jiltayaña"
 msgid "Border colour"
 msgstr "Borde colora"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Bots"
 msgstr "Botanaka"
 
@@ -581,12 +585,20 @@ msgstr "Botón {i}"
 msgid "Buttons"
 msgstr "Botonanaka"
 
+#: src/components/Multiplayer.tsx:409
+msgid "BVR — weapons free from spawn"
+msgstr "BVR — qalltatpacha nuwasiña yänaka antutata"
+
+#: src/components/MissionSetup.tsx:1828
+msgid "BVR, fight's on at start"
+msgstr "BVR, nuwasiña qalltatpacha qallti"
+
 #: src/components/GameCanvas.tsx:108
 msgid "CALL THE BALL"
 msgstr "PELOTA ARUNAQAÑA"
 
-#: src/components/MissionSetup.tsx:2124
-#: src/components/Multiplayer.tsx:293
+#: src/components/MissionSetup.tsx:2134
+#: src/components/Multiplayer.tsx:312
 msgid "Callsign"
 msgstr "Jawsa suti"
 
@@ -612,8 +624,8 @@ msgstr "Cámara jan utjkiti"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:675
-#: src/components/Multiplayer.tsx:264
-#: src/components/Multiplayer.tsx:520
+#: src/components/Multiplayer.tsx:283
+#: src/components/Multiplayer.tsx:551
 msgid "Cancel"
 msgstr "Jaytaña"
 
@@ -635,7 +647,7 @@ msgstr "Cúpula"
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1855
+#: src/components/MissionSetup.tsx:1868
 msgid "Case I (day)"
 msgstr "Kasu I (uru)"
 
@@ -643,7 +655,7 @@ msgstr "Kasu I (uru)"
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1856
+#: src/components/MissionSetup.tsx:1869
 msgid "Case II (weather)"
 msgstr "Kasu II (pacha)"
 
@@ -651,11 +663,11 @@ msgstr "Kasu II (pacha)"
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1857
+#: src/components/MissionSetup.tsx:1870
 msgid "Case III (night)"
 msgstr "Kasu III (aruma)"
 
-#: src/components/MissionSetup.tsx:1863
+#: src/components/MissionSetup.tsx:1876
 msgid "Catapult"
 msgstr "Katapulta"
 
@@ -689,7 +701,7 @@ msgid "Chat to everyone"
 msgstr "Taqiniru chat"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1922
+#: src/components/MissionSetup.tsx:1932
 msgid "Cheats"
 msgstr "Trampanaka"
 
@@ -736,7 +748,7 @@ msgstr "Aru ajllxaña"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:373
 msgid "Clear"
 msgstr "Q'umachaña"
 
@@ -800,7 +812,7 @@ msgstr "Thaqaña jist'antaña"
 msgid "closer"
 msgstr "jak'aru"
 
-#: src/components/MissionSetup.tsx:1900
+#: src/components/MissionSetup.tsx:1910
 msgid "Clouds"
 msgstr "Qinayanaka"
 
@@ -858,10 +870,6 @@ msgstr "Aruskipäwi"
 msgid "Compact"
 msgstr "Compacto"
 
-#: src/components/MissionSetup.tsx:1886
-msgid "Conditions"
-msgstr "Pachan sarawipa"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
 msgid "Configure option settings"
 msgstr "Opción wakichawinak askichaña"
@@ -875,11 +883,11 @@ msgstr "Uñacht'awi wakichawinak askichaña"
 msgid "Confirm"
 msgstr "Iyawsaña"
 
-#: src/components/MissionSetup.tsx:1728
+#: src/components/MissionSetup.tsx:1730
 msgid "Connect"
 msgstr "Chikacht’aña"
 
-#: src/components/MissionSetup.tsx:1715
+#: src/components/MissionSetup.tsx:1717
 msgid "Connect to private server"
 msgstr "Privado servidor ukaru chikt'ayasiña"
 
@@ -895,7 +903,7 @@ msgstr "Chinjat cuentanaka"
 msgid "Connecting..."
 msgstr "Mayacht'asiskiwa..."
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:331
 msgid "Connecting…"
 msgstr "Mayacht'asiski…"
 
@@ -916,7 +924,7 @@ msgid "Contextual information and details."
 msgstr "Contexto yatiyäwinaka ukat detallenaka."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:273
+#: src/components/Multiplayer.tsx:292
 msgid "Continue"
 msgstr "Sarantaña"
 
@@ -940,7 +948,7 @@ msgstr "Copiaña"
 msgid "Corner speed (best instant turn)"
 msgstr "Esquina velocidad (suma jank'a muyuña)"
 
-#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:248
 msgid "Could not create the match"
 msgstr "Janiw anatäwix lurasikiti"
 
@@ -1003,16 +1011,16 @@ msgstr "Luraña"
 msgid "Create {0}"
 msgstr "{0} luraña"
 
-#: src/components/Multiplayer.tsx:463
+#: src/components/Multiplayer.tsx:494
 msgid "Create and fly"
 msgstr "Luraña ukat halaña"
 
-#: src/components/Multiplayer.tsx:327
+#: src/components/Multiplayer.tsx:346
 msgid "Create match"
 msgstr "Anatäwi luraña"
 
-#: src/components/MissionSetup.tsx:2287
-#: src/components/MissionSetup.tsx:2310
+#: src/components/MissionSetup.tsx:2298
+#: src/components/MissionSetup.tsx:2321
 msgid "Create mission"
 msgstr "Misión luraña"
 
@@ -1035,9 +1043,9 @@ msgstr "Lurkasa..."
 msgid "Credits"
 msgstr "Créditos"
 
-#: src/components/MissionSetup.tsx:1907
-#: src/components/Multiplayer.tsx:74
-#: src/components/Multiplayer.tsx:355
+#: src/components/MissionSetup.tsx:1917
+#: src/components/Multiplayer.tsx:80
+#: src/components/Multiplayer.tsx:374
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -1079,8 +1087,8 @@ msgstr "Datanakan ch'axwawipa"
 msgid "Date"
 msgstr "Uru"
 
-#: src/components/MissionSetup.tsx:1895
-#: src/components/Multiplayer.tsx:350
+#: src/components/MissionSetup.tsx:1905
+#: src/components/Multiplayer.tsx:369
 msgid "Day"
 msgstr "Uru"
 
@@ -1195,7 +1203,7 @@ msgstr "Web browser taypit jikxataña"
 msgid "Device"
 msgstr "Dispositivo"
 
-#: src/components/Multiplayer.tsx:253
+#: src/components/Multiplayer.tsx:272
 msgid "Different game host"
 msgstr "Yaqha anatañ host"
 
@@ -1231,7 +1239,7 @@ msgstr "Jan chinjata"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: ../../../lib/web/src/components/restore-banner.tsx:100
-#: src/components/MissionSetup.tsx:2259
+#: src/components/MissionSetup.tsx:2270
 msgid "Dismiss"
 msgstr "Apaqaña"
 
@@ -1244,13 +1252,13 @@ msgstr "Pantalla wasitat uñachayiri"
 msgid "Displays the mobile sidebar."
 msgstr "Móvil sidebar uñacht'ayi."
 
-#: src/components/MissionSetup.tsx:2056
+#: src/components/MissionSetup.tsx:2066
 msgid "Distance LOD"
 msgstr "Jaya LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:2401
+#: src/components/MissionSetup.tsx:2412
 msgid "Done"
 msgstr "Tukuyata"
 
@@ -1272,7 +1280,7 @@ msgstr "AYNACHA 600 CHAKI"
 msgid "Drag"
 msgstr "Aytaña"
 
-#: src/components/Multiplayer.tsx:428
+#: src/components/Multiplayer.tsx:459
 msgid "Drone"
 msgstr "Dron"
 
@@ -1284,7 +1292,7 @@ msgstr "Paypachayatanaka"
 msgid "Duration"
 msgstr "Pacha"
 
-#: src/components/MissionSetup.tsx:2050
+#: src/components/MissionSetup.tsx:2060
 msgid "Dynamic resolution"
 msgstr "Resolución dinámica"
 
@@ -1331,7 +1339,7 @@ msgstr "Ajllita tarjeta askichaña"
 msgid "Edit view"
 msgstr "Uñjaña askichaña"
 
-#: src/components/MissionSetup.tsx:2030
+#: src/components/MissionSetup.tsx:2040
 msgid "Effects detail"
 msgstr "Efecto detalle"
 
@@ -1360,7 +1368,7 @@ msgstr "EMERGENCIA JAQTAÑA"
 msgid "Emergency jettison (hold)"
 msgstr "Emergencia jaqtaña (katuña)"
 
-#: src/components/Multiplayer.tsx:490
+#: src/components/Multiplayer.tsx:521
 msgid "empty"
 msgstr "ch'usa"
 
@@ -1421,7 +1429,7 @@ msgstr "Apsuña"
 msgid "Extend flaps"
 msgstr "Flaps mistuyaña"
 
-#: src/components/MissionSetup.tsx:2022
+#: src/components/MissionSetup.tsx:2032
 msgid "Exterior detail"
 msgstr "Anqa detalle"
 
@@ -1602,8 +1610,8 @@ msgstr "Tuyuri"
 msgid "Flown"
 msgstr "Jalatawa"
 
-#: src/components/MissionSetup.tsx:2281
-#: src/components/MissionSetup.tsx:2324
+#: src/components/MissionSetup.tsx:2292
+#: src/components/MissionSetup.tsx:2335
 msgid "Fly"
 msgstr "Halaña"
 
@@ -1611,12 +1619,12 @@ msgstr "Halaña"
 msgid "Fly again"
 msgstr "Mayamp halam"
 
-#: src/components/MissionSetup.tsx:2080
+#: src/components/MissionSetup.tsx:2090
 msgid "Framerate"
 msgstr "Fotograma frecuencia"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1812
+#: src/components/MissionSetup.tsx:1814
 msgid "Free flight"
 msgstr "Libre jaläwi"
 
@@ -1641,7 +1649,7 @@ msgstr "Ukatx"
 msgid "From theme"
 msgstr "Temata"
 
-#: src/components/Multiplayer.tsx:366
+#: src/components/Multiplayer.tsx:385
 msgid "Fuel"
 msgstr "Combustible"
 
@@ -1694,7 +1702,7 @@ msgstr "tren"
 msgid "GEAR"
 msgstr "TREN"
 
-#: src/components/MissionSetup.tsx:2333
+#: src/components/MissionSetup.tsx:2344
 msgid "General"
 msgstr "Taqpacha"
 
@@ -1724,7 +1732,7 @@ msgstr "{pageNumber} jananakaru saraña"
 msgid "Go to previous page"
 msgstr "Nayraqat páginar saraña"
 
-#: src/components/MissionSetup.tsx:2336
+#: src/components/MissionSetup.tsx:2347
 msgid "Graphics"
 msgstr "Gráficos"
 
@@ -1753,11 +1761,12 @@ msgstr "Kañuna"
 msgid "GUN"
 msgstr "ILLAPA"
 
-#: src/components/Multiplayer.tsx:72
+#: src/components/Multiplayer.tsx:75
+#: src/components/Multiplayer.tsx:402
 msgid "Guns only"
 msgstr "Kañunanakaki"
 
-#: src/components/MissionSetup.tsx:2254
+#: src/components/MissionSetup.tsx:2265
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Hardware gráficos jank'aptayañax jiwt'atawa — navegador wakichäwinak jan ukax controladores uñakipt'am."
 
@@ -1777,18 +1786,18 @@ msgstr "Imantaña"
 msgid "Hide password"
 msgstr "Imantata aru imaña"
 
-#: src/components/MissionSetup.tsx:2002
+#: src/components/MissionSetup.tsx:2012
 msgid "High"
 msgstr "Patxa"
 
-#: src/components/MissionSetup.tsx:1908
-#: src/components/Multiplayer.tsx:75
-#: src/components/Multiplayer.tsx:356
+#: src/components/MissionSetup.tsx:1918
+#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:375
 msgid "High stratus"
 msgstr "Patxa stratus"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:2300
+#: src/components/MissionSetup.tsx:2311
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Sarawi"
@@ -1838,7 +1847,7 @@ msgid "Import"
 msgstr "Apantaña"
 
 #: src/components/MissionSetup.tsx:1563
-#: src/components/MissionSetup.tsx:1852
+#: src/components/MissionSetup.tsx:1865
 msgid "In air"
 msgstr "Alaxpachana"
 
@@ -1882,7 +1891,7 @@ msgstr "Jan wakisir verificación código"
 msgid "Invert pitch"
 msgstr "Cabeceo kutt'ayaña"
 
-#: src/components/Multiplayer.tsx:78
+#: src/components/Multiplayer.tsx:84
 msgid "Invulnerable"
 msgstr "Jan usuchjaña"
 
@@ -1890,8 +1899,8 @@ msgstr "Jan usuchjaña"
 msgid "INVULNERABLE"
 msgstr "JAN USUCHJAÑJAMA"
 
-#: src/components/MissionSetup.tsx:1928
-#: src/components/Multiplayer.tsx:395
+#: src/components/MissionSetup.tsx:1938
+#: src/components/Multiplayer.tsx:426
 msgid "Invulnerable (human players only)"
 msgstr "Jan usuchjañjama (jaqi anatirinakaki)"
 
@@ -1913,12 +1922,12 @@ msgstr "Tanquenak jaqtaña"
 msgid "JETTISON: GEAR"
 msgstr "JAQTAÑA: CAYUNAKA"
 
-#: src/components/Multiplayer.tsx:555
+#: src/components/Multiplayer.tsx:586
 msgid "Join"
 msgstr "Mantaña"
 
-#: src/components/MissionSetup.tsx:1676
-#: src/components/MissionSetup.tsx:2291
+#: src/components/MissionSetup.tsx:1678
+#: src/components/MissionSetup.tsx:2302
 msgid "Join server"
 msgstr "Servidorar mantaña"
 
@@ -1927,20 +1936,20 @@ msgid "JOINED"
 msgstr "MANTIWA"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:2236
-#: src/components/Multiplayer.tsx:489
+#: src/components/MissionSetup.tsx:2246
+#: src/components/Multiplayer.tsx:520
 msgid "Joust"
 msgstr "Nuwasiña"
 
-#: src/components/Multiplayer.tsx:341
+#: src/components/Multiplayer.tsx:360
 msgid "Joust — 1v1, first kill wins"
 msgstr "Nuwasiña — 1v1, nayrïri jiwayirix atipi"
 
-#: src/components/MissionSetup.tsx:1813
+#: src/components/MissionSetup.tsx:1815
 msgid "Joust 1v1"
 msgstr "Nuwasiña 1v1"
 
-#: src/components/MissionSetup.tsx:2342
+#: src/components/MissionSetup.tsx:2353
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1956,7 +1965,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Teclado atajonaka"
 
-#: src/components/MissionSetup.tsx:2345
+#: src/components/MissionSetup.tsx:2356
 msgid "Keys"
 msgstr "Teclanaka"
 
@@ -2013,7 +2022,7 @@ msgstr "jaqtaña / chimpu"
 msgid "Layout"
 msgstr "Diseño"
 
-#: src/components/Multiplayer.tsx:379
+#: src/components/Multiplayer.tsx:398
 msgid "lb"
 msgstr "lb"
 
@@ -2022,7 +2031,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Jukamp yatiqaña"
 
-#: src/components/MissionSetup.tsx:1755
+#: src/components/MissionSetup.tsx:1757
 msgid "Leave server"
 msgstr "Servidor mistuña"
 
@@ -2107,7 +2116,7 @@ msgstr "JANIW APAQASKITI"
 msgid "Loading..."
 msgstr "Apaqaskiwa..."
 
-#: src/components/MissionSetup.tsx:1950
+#: src/components/MissionSetup.tsx:1960
 msgid "Loadout"
 msgstr "Q'ipi"
 
@@ -2158,13 +2167,13 @@ msgstr "Kupiru uñtaña"
 msgid "Look up"
 msgstr "Alaxaru uñtaña"
 
-#: src/components/MissionSetup.tsx:1998
+#: src/components/MissionSetup.tsx:2008
 msgid "Low"
 msgstr "Aynacha"
 
-#: src/components/MissionSetup.tsx:1910
-#: src/components/Multiplayer.tsx:77
-#: src/components/Multiplayer.tsx:358
+#: src/components/MissionSetup.tsx:1920
+#: src/components/Multiplayer.tsx:83
+#: src/components/Multiplayer.tsx:377
 msgid "Low stratus"
 msgstr "Aynacha stratus"
 
@@ -2202,11 +2211,11 @@ msgstr "Taqpach ullt'ata uñacht'ayaña"
 msgid "Master"
 msgstr "Principal"
 
-#: src/components/Multiplayer.tsx:337
+#: src/components/Multiplayer.tsx:356
 msgid "Match type"
 msgstr "Anatäwi kasta"
 
-#: src/components/MissionSetup.tsx:1750
+#: src/components/MissionSetup.tsx:1752
 msgid "Matches"
 msgstr "Anatawinaka"
 
@@ -2219,7 +2228,7 @@ msgid "MCP server"
 msgstr "MCP servidor"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:2000
+#: src/components/MissionSetup.tsx:2010
 msgid "Medium"
 msgstr "Taypi"
 
@@ -2231,6 +2240,14 @@ msgstr "menu"
 #: src/components/MissionSetup.tsx:261
 msgid "Menu"
 msgstr "Menú"
+
+#: src/components/Multiplayer.tsx:408
+msgid "Merge — fight on at the pass"
+msgstr "Jikthapta — jikxatasin nuwasiña qallti"
+
+#: src/components/MissionSetup.tsx:1827
+msgid "Merge, fight's on at the pass"
+msgstr "Jikthapta, jikxatasin nuwasiña qallti"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx:35
 msgid "Message"
@@ -2252,9 +2269,9 @@ msgstr "Equipomaru qillqt'am"
 msgid "Metric"
 msgstr "Métrico"
 
-#: src/components/MissionSetup.tsx:1909
-#: src/components/Multiplayer.tsx:76
-#: src/components/Multiplayer.tsx:357
+#: src/components/MissionSetup.tsx:1919
+#: src/components/Multiplayer.tsx:82
+#: src/components/Multiplayer.tsx:376
 msgid "Mid stratus"
 msgstr "Taypi stratus"
 
@@ -2277,10 +2294,6 @@ msgstr "MISIL"
 #: src/components/MissionSetup.tsx:1371
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Modelo de misil <0>“AIM-120C AMRAAM”</0> <1>Pippa</1> lurata (Sketchfab), <2>CC BY 4.0</2> ukampi licenciado. Modificado: reescalado, reorientado y centrado para la colocación."
-
-#: src/components/Multiplayer.tsx:385
-msgid "Missiles allowed"
-msgstr "Misilanakax iyawsatawa"
 
 #: ../../../lib/web/src/features/accounts/types.ts:23
 msgid "Mochi web"
@@ -2307,7 +2320,7 @@ msgstr "Yaqha chimpunaka"
 msgid "Move it…"
 msgstr "Eje unxtayam…"
 
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:257
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Walja anatirinakatakix WebTransport wakisiwa, aka nabegadorax janiw ukx yanapt'kiti."
 
@@ -2347,9 +2360,9 @@ msgstr "Machaqa anatawi"
 msgid "Next image"
 msgstr "Arkiri imagen"
 
-#: src/components/MissionSetup.tsx:1896
-#: src/components/Multiplayer.tsx:73
-#: src/components/Multiplayer.tsx:351
+#: src/components/MissionSetup.tsx:1906
+#: src/components/Multiplayer.tsx:79
+#: src/components/Multiplayer.tsx:370
 msgid "Night"
 msgstr "Aruma"
 
@@ -2401,7 +2414,7 @@ msgstr "Jan jikxatat objectanaka"
 msgid "No notifications yet"
 msgstr "Janïraw yatiyawinakax utjkiti"
 
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No open matches — create one."
 msgstr "Janiw jist'arata anatäwinakax utjkiti — mä anatäwi lurma."
 
@@ -2464,7 +2477,7 @@ msgid "No views"
 msgstr "Jan uñjawinak"
 
 #: src/components/MissionSetup.tsx:1525
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No world server."
 msgstr "Janiw uraqpacha servidorax utjkiti."
 
@@ -2489,7 +2502,7 @@ msgstr "SIN NOTA"
 #: src/components/MissionSetup.tsx:469
 #: src/components/MissionSetup.tsx:539
 #: src/components/MissionSetup.tsx:1077
-#: src/components/MissionSetup.tsx:1906
+#: src/components/MissionSetup.tsx:1916
 msgid "None"
 msgstr "Janiwa"
 
@@ -2534,9 +2547,9 @@ msgstr "Yatiyawinaka"
 msgid "Notifications: {0}"
 msgstr "Yatiyawinaka: {0}"
 
-#: src/components/MissionSetup.tsx:1825
-#: src/components/MissionSetup.tsx:2228
-#: src/components/Multiplayer.tsx:429
+#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:2238
+#: src/components/Multiplayer.tsx:460
 msgid "Novice"
 msgstr "Yatiqiri"
 
@@ -2546,7 +2559,7 @@ msgstr "Yatiqiri"
 msgid "Number"
 msgstr "Jakhu"
 
-#: src/components/MissionSetup.tsx:2038
+#: src/components/MissionSetup.tsx:2048
 msgid "Ocean detail"
 msgstr "Quta detalle"
 
@@ -2563,12 +2576,12 @@ msgid "On"
 msgstr "Qhanti"
 
 #: src/components/MissionSetup.tsx:1565
-#: src/components/MissionSetup.tsx:1854
+#: src/components/MissionSetup.tsx:1867
 msgid "On carrier"
 msgstr "Portaaviones patxana"
 
 #: src/components/MissionSetup.tsx:1564
-#: src/components/MissionSetup.tsx:1853
+#: src/components/MissionSetup.tsx:1866
 msgid "On runway"
 msgstr "Pista patxana"
 
@@ -2576,11 +2589,11 @@ msgstr "Pista patxana"
 msgid "Oops! Page Not Found!"
 msgstr "¡Oops! ¡Página jan jikxatasiti!"
 
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Open"
 msgstr "Jist'arma"
 
-#: src/components/Multiplayer.tsx:340
+#: src/components/Multiplayer.tsx:359
 msgid "Open — anyone may join or leave"
 msgstr "Jist'arata — khitis mantaspa jan ukax mistuspa"
 
@@ -2705,14 +2718,14 @@ msgid "Pick a date"
 msgstr "Mä uru ajlliña"
 
 #: src/components/MissionSetup.tsx:1467
-#: src/components/Multiplayer.tsx:130
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:146
+#: src/components/Multiplayer.tsx:317
 msgid "pilot"
 msgstr "piloto"
 
-#: src/components/MissionSetup.tsx:1826
-#: src/components/MissionSetup.tsx:2229
-#: src/components/Multiplayer.tsx:430
+#: src/components/MissionSetup.tsx:1839
+#: src/components/MissionSetup.tsx:2239
+#: src/components/Multiplayer.tsx:461
 msgid "Pilot"
 msgstr "Piloto"
 
@@ -2774,7 +2787,7 @@ msgstr "Qillqatanaka"
 msgid "Posts and comments"
 msgstr "Qillqatanak comentarionakampi"
 
-#: src/components/MissionSetup.tsx:1985
+#: src/components/MissionSetup.tsx:1995
 msgid "Preset"
 msgstr "Wakichäwi"
 
@@ -2817,7 +2830,7 @@ msgstr "Perfil imaña"
 msgid "Project members"
 msgstr "Proyecto masinaka"
 
-#: src/components/MissionSetup.tsx:1703
+#: src/components/MissionSetup.tsx:1705
 msgid "Public servers"
 msgstr "Publica servidores"
 
@@ -2862,7 +2875,7 @@ msgstr "Aka servidoran passkeysniykita wasitata qillqantañani"
 msgid "REARMED"
 msgstr "WASITAT ARMT'ATA"
 
-#: src/components/MissionSetup.tsx:1681
+#: src/components/MissionSetup.tsx:1683
 msgid "Recent"
 msgstr "Jichhapacha"
 
@@ -2875,12 +2888,12 @@ msgstr "Recomendata"
 msgid "Reconnecting ({retries})..."
 msgstr "Wasitat mayacht'asisa ({retries})..."
 
-#: src/components/MissionSetup.tsx:2142
+#: src/components/MissionSetup.tsx:2152
 msgid "Record flights"
 msgstr "Jaläwinaka grabaña"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:2136
+#: src/components/MissionSetup.tsx:2146
 msgid "Recording"
 msgstr "Grabación"
 
@@ -2888,11 +2901,11 @@ msgstr "Grabación"
 msgid "Recording saved"
 msgstr "Grabación imata"
 
-#: src/components/Multiplayer.tsx:533
+#: src/components/Multiplayer.tsx:564
 msgid "Red"
 msgstr "Wila"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Red bots"
 msgstr "Wila botanaka"
 
@@ -2909,7 +2922,7 @@ msgstr "Interés pisi tukuyma"
 msgid "Reference"
 msgstr "Referencia"
 
-#: src/components/Multiplayer.tsx:317
+#: src/components/Multiplayer.tsx:336
 msgid "Refresh"
 msgstr "Machaqachama"
 
@@ -3008,7 +3021,7 @@ msgstr "Correo mayampi apaña"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:2394
+#: src/components/MissionSetup.tsx:2405
 msgid "Reset"
 msgstr "Kutintayama"
 
@@ -3037,11 +3050,11 @@ msgstr "Trim kutiyaña"
 msgid "Reset view"
 msgstr "Uñjäwi kutiyaña"
 
-#: src/components/MissionSetup.tsx:2012
+#: src/components/MissionSetup.tsx:2022
 msgid "Resolution"
 msgstr "Resolución"
 
-#: src/components/MissionSetup.tsx:2273
+#: src/components/MissionSetup.tsx:2284
 msgid "Restart mission"
 msgstr "Misión wasitat qalltaña"
 
@@ -3053,7 +3066,7 @@ msgstr "Tukuyäwi"
 msgid "Resume"
 msgstr "Mayamp qalltama"
 
-#: src/components/MissionSetup.tsx:2269
+#: src/components/MissionSetup.tsx:2280
 msgid "Resume mission"
 msgstr "Misión sarantayaña"
 
@@ -3369,12 +3382,12 @@ msgstr "Origen ukat destino uñstayaña"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:199
 #: src/components/GameCanvas.tsx:383
-#: src/components/MissionSetup.tsx:2295
-#: src/components/MissionSetup.tsx:2329
+#: src/components/MissionSetup.tsx:2306
+#: src/components/MissionSetup.tsx:2340
 msgid "Settings"
 msgstr "Configuración"
 
-#: src/components/MissionSetup.tsx:2062
+#: src/components/MissionSetup.tsx:2072
 msgid "Shadows"
 msgstr "Ch'iwinaka"
 
@@ -3436,13 +3449,21 @@ msgid "Sort"
 msgstr "Sumaña"
 
 #: src/components/MissionSetup.tsx:601
-#: src/components/MissionSetup.tsx:2339
+#: src/components/MissionSetup.tsx:2350
 msgid "Sound"
 msgstr "Sonido"
 
 #: ../../../lib/web/src/components/options-menu.tsx:161
 msgid "Sources"
 msgstr "Origenanaka"
+
+#: src/components/Multiplayer.tsx:78
+msgid "Spaced"
+msgstr "Jayanaka"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Spaced spawns"
+msgstr "Jaya qalltawinaka"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:97
 msgid "Spacious"
@@ -3478,7 +3499,8 @@ msgstr "Pérdida, q'uma (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "Pérdida, aterrizaje wakichawi (Vs0)"
 
-#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:1821
+#: src/components/MissionSetup.tsx:1851
 msgid "Start"
 msgstr "Qalltaña"
 
@@ -3527,9 +3549,9 @@ msgstr "Suscribiña"
 msgid "Sunday"
 msgstr "Domingo"
 
-#: src/components/MissionSetup.tsx:1828
-#: src/components/MissionSetup.tsx:2231
-#: src/components/Multiplayer.tsx:432
+#: src/components/MissionSetup.tsx:1841
+#: src/components/MissionSetup.tsx:2241
+#: src/components/Multiplayer.tsx:463
 msgid "Superhuman"
 msgstr "Jaqit sipans"
 
@@ -3570,7 +3592,7 @@ msgstr "Chimpunaka"
 msgid "TALLY"
 msgstr "AWQA UÑJTA"
 
-#: src/components/MissionSetup.tsx:1806
+#: src/components/MissionSetup.tsx:1808
 msgid "Task"
 msgstr "Lurawi"
 
@@ -3583,11 +3605,11 @@ msgid "TEAM"
 msgstr "EQUIPO"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Teams"
 msgstr "Tamanaka"
 
-#: src/components/Multiplayer.tsx:342
+#: src/components/Multiplayer.tsx:361
 msgid "Teams — red versus blue"
 msgstr "Tamanaka — wila contra larama"
 
@@ -3641,15 +3663,15 @@ msgstr "Tema Configuración"
 msgid "Theme Settings"
 msgstr "Tema machaqachata"
 
-#: src/components/MissionSetup.tsx:2252
+#: src/components/MissionSetup.tsx:2263
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Aka navegador janiw WebGL 2 apnaqkiti, ukhamaw anatäwix jan sarnaqkaspa — yaqha navegador yant'am."
 
-#: src/components/Multiplayer.tsx:256
+#: src/components/Multiplayer.tsx:275
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Aka lobby ukax anatam conexiónam yaqha host ({redirectHost}) ukar apayaski. Aka servidor ukar confiyasakiptxa sarantañamawa."
 
-#: src/components/MissionSetup.tsx:2256
+#: src/components/MissionSetup.tsx:2267
 msgid "This machine may be too slow for smooth flight."
 msgstr "Aka máquinax inas wali jayrächispa suma jalañataki."
 
@@ -3691,7 +3713,7 @@ msgstr "thiya"
 msgid "Time"
 msgstr "Pacha"
 
-#: src/components/MissionSetup.tsx:1889
+#: src/components/MissionSetup.tsx:1899
 msgid "Time of day"
 msgstr "Uru pacha"
 
@@ -3747,7 +3769,7 @@ msgstr "Walja mayiwinaka"
 msgid "Top"
 msgstr "Patxa nivel"
 
-#: src/components/MissionSetup.tsx:2074
+#: src/components/MissionSetup.tsx:2084
 msgid "Tracers"
 msgstr "Trazadoranaka"
 
@@ -3823,7 +3845,7 @@ msgstr "Thaqhañatak qillqam..."
 msgid "Type to search..."
 msgstr "Mensajemam qillqam…"
 
-#: src/components/MissionSetup.tsx:2004
+#: src/components/MissionSetup.tsx:2014
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3867,21 +3889,25 @@ msgstr "Unidades"
 msgid "Unknown"
 msgstr "Janiw yatxatat browser"
 
-#: src/components/Multiplayer.tsx:79
-#: src/components/Multiplayer.tsx:405
+#: src/components/Multiplayer.tsx:404
+msgid "Unlimited"
+msgstr "Juntayata jaytaña"
+
+#: src/components/Multiplayer.tsx:85
+#: src/components/Multiplayer.tsx:436
 msgid "Unlimited ammunition"
 msgstr "Jan tukusiri balanaka"
 
-#: src/components/MissionSetup.tsx:1934
+#: src/components/MissionSetup.tsx:1944
 msgid "Unlimited ammunition (all players)"
 msgstr "Jan tukusiri balanaka (taqpach anatirinaka)"
 
-#: src/components/Multiplayer.tsx:80
-#: src/components/Multiplayer.tsx:415
+#: src/components/Multiplayer.tsx:86
+#: src/components/Multiplayer.tsx:446
 msgid "Unlimited fuel"
 msgstr "Jan tukusiri combustible"
 
-#: src/components/MissionSetup.tsx:1940
+#: src/components/MissionSetup.tsx:1950
 msgid "Unlimited fuel (all players)"
 msgstr "Jan tukusiri combustible (taqpach anatirinaka)"
 
@@ -4027,7 +4053,7 @@ msgstr "arma"
 msgid "Weapons"
 msgstr "Armanaka"
 
-#: src/components/Multiplayer.tsx:347
+#: src/components/Multiplayer.tsx:366
 msgid "Weather"
 msgstr "Pacha"
 
@@ -4052,12 +4078,12 @@ msgstr "Chhiqa suk'aña"
 msgid "WINS"
 msgstr "ATIPI"
 
-#: src/components/Multiplayer.tsx:282
+#: src/components/Multiplayer.tsx:301
 msgid "World server"
 msgstr "Uraqpacha servidora"
 
 #: src/components/MissionSetup.tsx:1513
-#: src/components/Multiplayer.tsx:143
+#: src/components/Multiplayer.tsx:159
 msgid "World server not reachable"
 msgstr "Janiw uraqpacha servidorar puriñjamäkiti"
 
@@ -4107,7 +4133,7 @@ msgstr "Apkatata archivonakamax chhaqhaniwa."
 msgid "Your flights appear here once you've flown one."
 msgstr "Mä kuti jalatatxa, jaläwinakamax akan uñstani."
 
-#: src/components/Multiplayer.tsx:484
+#: src/components/Multiplayer.tsx:515
 msgid "your offer"
 msgstr "jumanki jaysawi"
 

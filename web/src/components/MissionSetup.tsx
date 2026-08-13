@@ -1575,17 +1575,19 @@ function MenuDialog({
   onClose,
   title,
   wide,
+  steady,
   children,
 }: {
   open: boolean
   onClose: () => void
   title: ReactNode
   wide?: boolean
+  steady?: boolean // hold one height whatever the options render: the interior scrolls instead of the box breathing as sections expand
   children: ReactNode
 }) {
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className={wide ? 'sm:max-w-4xl' : 'sm:max-w-2xl'}>
+      <DialogContent className={`${wide ? 'sm:max-w-4xl' : 'sm:max-w-2xl'}${steady ? ' h-[min(46rem,calc(100svh-2rem))]' : ''}`}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
@@ -1816,11 +1818,22 @@ function MissionPanel({
 {config.task === 'joust' && (
   <>
     <SectionLabel>
+      <Trans>Start</Trans>
+    </SectionLabel>
+    <Picker
+      value={config.duel === 'bvr' ? 'bvr' : 'merge'}
+      onChange={(v) => set('duel', v as 'merge' | 'bvr')}
+      options={[
+        { value: 'merge', label: <Trans>Merge, fight's on at the pass</Trans> },
+        { value: 'bvr', label: <Trans>BVR, fight's on at start</Trans> },
+      ]}
+    />
+    <SectionLabel>
       <Trans>Bandit</Trans>
     </SectionLabel>
-    <Segmented
-      value={String(config.bandit || 'ace')}
-      onChange={(v) => set('bandit', v as 'novice' | 'pilot' | 'ace' | 'superhuman')}
+    <Picker
+      value={String(config.bandit || 'ace') as 'novice' | 'pilot' | 'ace' | 'superhuman'}
+      onChange={(v) => set('bandit', v)}
       options={[
         { value: 'novice', label: <Trans>Novice</Trans> },
         { value: 'pilot', label: <Trans>Pilot</Trans> },
@@ -1883,12 +1896,9 @@ function MissionPanel({
     still one click from any override, and the summary says what is set so
     nothing is hidden, only folded. */}
 <SectionLabel>
-  <Trans>Conditions</Trans>
-</SectionLabel>
-<SectionLabel>
   <Trans>Time of day</Trans>
 </SectionLabel>
-<Segmented
+<Picker
   value={config.tod}
   onChange={(v) => set('tod', v)}
   options={[
@@ -1918,7 +1928,7 @@ function MissionPanel({
     the last one off does not snap the section shut under the cursor. */}
 <Collapsible open={cheatsOpen} onOpenChange={setCheatsOpen}>
   <CollapsibleTrigger className='text-muted-foreground hover:text-foreground mt-4 mb-2 flex w-full items-center gap-1.5 text-xs font-medium tracking-wide uppercase'>
-    <ChevronRight className='size-4 transition-transform [[data-state=open]_&]:rotate-90' />
+    <ChevronRight className={`size-4 transition-transform ${cheatsOpen ? 'rotate-90' : ''}`} />
     <Trans>Cheats</Trans>
   </CollapsibleTrigger>
   <CollapsibleContent>
@@ -2234,6 +2244,7 @@ export function MissionSetup({
     config.task === 'joust' ? (
       <>
         <Trans>Joust</Trans> · {BANDITS[String(config.bandit || 'ace')] ?? BANDITS.ace}
+        {config.duel === 'bvr' ? ' · BVR' : ''}
       </>
     ) : (
       STARTS[config.start === 'landing' ? 'case2' : config.start]
@@ -2307,7 +2318,7 @@ export function MissionSetup({
         </div>
       </div>
 
-      <MenuDialog open={dialog === 'mission'} onClose={close} title={<Trans>Create mission</Trans>} wide>
+      <MenuDialog open={dialog === 'mission'} onClose={close} title={<Trans>Create mission</Trans>} wide steady>
         <MissionPanel config={config} set={set} setCheat={setCheat} onChange={onChange} />
         {/* The controls above write through live, so closing keeps the changes
             and the front page's Fly launches them. This is the same action
