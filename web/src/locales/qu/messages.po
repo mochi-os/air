@@ -51,7 +51,7 @@ msgid "{0} created “{1}”"
 msgstr "{0} “{1}” nisqata ruwarqan"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:309
+#: src/components/Multiplayer.tsx:328
 msgid "{0} flying"
 msgstr "{0} phawachkan"
 
@@ -72,7 +72,7 @@ msgstr "{0} akllanapa ñawpaq qhaway"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:522
 msgid "{0}/{1} players"
 msgstr "{0}/{1} pukllaqkuna"
 
@@ -100,7 +100,7 @@ msgstr "{entityLabel} suti"
 msgid "{entityLabel} name is required"
 msgstr "{entityLabel} sutin necesitakun"
 
-#: src/components/Multiplayer.tsx:215
+#: src/components/Multiplayer.tsx:231
 msgid "{name}'s match"
 msgstr "{name}pa pukllaynin"
 
@@ -214,9 +214,9 @@ msgstr "Cuenta laya"
 msgid "Account verified"
 msgstr "Cuenta takyachisqa"
 
-#: src/components/MissionSetup.tsx:1827
-#: src/components/MissionSetup.tsx:2230
-#: src/components/Multiplayer.tsx:431
+#: src/components/MissionSetup.tsx:1840
+#: src/components/MissionSetup.tsx:2240
+#: src/components/Multiplayer.tsx:462
 msgid "Ace"
 msgstr "As"
 
@@ -318,7 +318,7 @@ msgstr "Yapaspa..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Llinp'i hinaspa kamariyta munasqaykiman hina allichay."
 
-#: src/components/MissionSetup.tsx:2068
+#: src/components/MissionSetup.tsx:2078
 msgid "Afterburner"
 msgstr "Postquemador"
 
@@ -363,6 +363,10 @@ msgstr "Huk pantay rikurirqan"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:275
 msgid "An unexpected error occurred"
 msgstr "Mana suyasqa pantay rikurirqan"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Anchored sides"
+msgstr "Watasqa ladokuna"
 
 #: ../../../lib/web/src/features/accounts/types.ts:16
 msgid "Android push"
@@ -478,7 +482,7 @@ msgstr "Kutichiy"
 msgid "Back to home"
 msgstr "Wasiman kutiy"
 
-#: src/components/MissionSetup.tsx:1819
+#: src/components/MissionSetup.tsx:1832
 msgid "Bandit"
 msgstr "Awqa"
 
@@ -524,11 +528,11 @@ msgstr "Mana iñikuq link-man yaykuy hark'asqa"
 msgid "Blocks"
 msgstr "Bloques"
 
-#: src/components/Multiplayer.tsx:543
+#: src/components/Multiplayer.tsx:574
 msgid "Blue"
 msgstr "Anqas"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Blue bots"
 msgstr "Anqas botkuna"
 
@@ -549,7 +553,7 @@ msgstr "Munay yapay"
 msgid "Border colour"
 msgstr "K'illa llinp'i"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Bots"
 msgstr "Botkuna"
 
@@ -581,12 +585,20 @@ msgstr "Botón {i}"
 msgid "Buttons"
 msgstr "Botonkuna"
 
+#: src/components/Multiplayer.tsx:409
+msgid "BVR — weapons free from spawn"
+msgstr "BVR — qallariymantapacha maqanakuna kacharisqa"
+
+#: src/components/MissionSetup.tsx:1828
+msgid "BVR, fight's on at start"
+msgstr "BVR, maqanakuyqa qallariymantapacha"
+
 #: src/components/GameCanvas.tsx:108
 msgid "CALL THE BALL"
 msgstr "PELOTA WILLAY"
 
-#: src/components/MissionSetup.tsx:2124
-#: src/components/Multiplayer.tsx:293
+#: src/components/MissionSetup.tsx:2134
+#: src/components/Multiplayer.tsx:312
 msgid "Callsign"
 msgstr "Waqyana suti"
 
@@ -612,8 +624,8 @@ msgstr "Cámara mana kanchu"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:675
-#: src/components/Multiplayer.tsx:264
-#: src/components/Multiplayer.tsx:520
+#: src/components/Multiplayer.tsx:283
+#: src/components/Multiplayer.tsx:551
 msgid "Cancel"
 msgstr "Mana ruway"
 
@@ -635,7 +647,7 @@ msgstr "Kabina qata"
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1855
+#: src/components/MissionSetup.tsx:1868
 msgid "Case I (day)"
 msgstr "Kaso I (p’unchaw)"
 
@@ -643,7 +655,7 @@ msgstr "Kaso I (p’unchaw)"
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1856
+#: src/components/MissionSetup.tsx:1869
 msgid "Case II (weather)"
 msgstr "Kaso II (pacha)"
 
@@ -651,11 +663,11 @@ msgstr "Kaso II (pacha)"
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1857
+#: src/components/MissionSetup.tsx:1870
 msgid "Case III (night)"
 msgstr "Kaso III (tuta)"
 
-#: src/components/MissionSetup.tsx:1863
+#: src/components/MissionSetup.tsx:1876
 msgid "Catapult"
 msgstr "Katapulta"
 
@@ -689,7 +701,7 @@ msgid "Chat to everyone"
 msgstr "Llapanwan chat"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1922
+#: src/components/MissionSetup.tsx:1932
 msgid "Cheats"
 msgstr "Trampakuna"
 
@@ -736,7 +748,7 @@ msgstr "Simi akllay"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:373
 msgid "Clear"
 msgstr "Pichay"
 
@@ -800,7 +812,7 @@ msgstr "Maskhay wichq'ay"
 msgid "closer"
 msgstr "aswan qaylla"
 
-#: src/components/MissionSetup.tsx:1900
+#: src/components/MissionSetup.tsx:1910
 msgid "Clouds"
 msgstr "Phuyukuna"
 
@@ -858,10 +870,6 @@ msgstr "Rimanakuy"
 msgid "Compact"
 msgstr "Pisi"
 
-#: src/components/MissionSetup.tsx:1886
-msgid "Conditions"
-msgstr "Imayna kaynin"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
 msgid "Configure option settings"
 msgstr "Akllana kamariykuna allichay"
@@ -875,11 +883,11 @@ msgstr "Vista kamariykuna allichay"
 msgid "Confirm"
 msgstr "Takyachiy"
 
-#: src/components/MissionSetup.tsx:1728
+#: src/components/MissionSetup.tsx:1730
 msgid "Connect"
 msgstr "Tinkiy"
 
-#: src/components/MissionSetup.tsx:1715
+#: src/components/MissionSetup.tsx:1717
 msgid "Connect to private server"
 msgstr "Privado servidorman t'inkuy"
 
@@ -895,7 +903,7 @@ msgstr "Tinkichisqa cuentas"
 msgid "Connecting..."
 msgstr "Tinkichkan..."
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:331
 msgid "Connecting…"
 msgstr "T'inkichkan…"
 
@@ -916,7 +924,7 @@ msgid "Contextual information and details."
 msgstr "Contextual willariy hinaspa willariykuna."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:273
+#: src/components/Multiplayer.tsx:292
 msgid "Continue"
 msgstr "Qatiy"
 
@@ -940,7 +948,7 @@ msgstr "Copiay"
 msgid "Corner speed (best instant turn)"
 msgstr "Esquina velocidad (allin kunallan muyuy)"
 
-#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:248
 msgid "Could not create the match"
 msgstr "Manam pukllayta ruray atikurqachu"
 
@@ -1003,16 +1011,16 @@ msgstr "Kamariy"
 msgid "Create {0}"
 msgstr "{0} kamay"
 
-#: src/components/Multiplayer.tsx:463
+#: src/components/Multiplayer.tsx:494
 msgid "Create and fly"
 msgstr "Ruray hinaspa phaway"
 
-#: src/components/Multiplayer.tsx:327
+#: src/components/Multiplayer.tsx:346
 msgid "Create match"
 msgstr "Pukllayta ruray"
 
-#: src/components/MissionSetup.tsx:2287
-#: src/components/MissionSetup.tsx:2310
+#: src/components/MissionSetup.tsx:2298
+#: src/components/MissionSetup.tsx:2321
 msgid "Create mission"
 msgstr "Misión kamay"
 
@@ -1035,9 +1043,9 @@ msgstr "Kamarispa..."
 msgid "Credits"
 msgstr "Créditos"
 
-#: src/components/MissionSetup.tsx:1907
-#: src/components/Multiplayer.tsx:74
-#: src/components/Multiplayer.tsx:355
+#: src/components/MissionSetup.tsx:1917
+#: src/components/Multiplayer.tsx:80
+#: src/components/Multiplayer.tsx:374
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -1079,8 +1087,8 @@ msgstr "Datukunap awqanakuynin"
 msgid "Date"
 msgstr "P'unchaw"
 
-#: src/components/MissionSetup.tsx:1895
-#: src/components/Multiplayer.tsx:350
+#: src/components/MissionSetup.tsx:1905
+#: src/components/Multiplayer.tsx:369
 msgid "Day"
 msgstr "P'unchay"
 
@@ -1195,7 +1203,7 @@ msgstr "Web browser-manta tariy"
 msgid "Device"
 msgstr "Mañana"
 
-#: src/components/Multiplayer.tsx:253
+#: src/components/Multiplayer.tsx:272
 msgid "Different game host"
 msgstr "Huk pukllay servidor"
 
@@ -1231,7 +1239,7 @@ msgstr "Mana tinkichisqa"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: ../../../lib/web/src/components/restore-banner.tsx:100
-#: src/components/MissionSetup.tsx:2259
+#: src/components/MissionSetup.tsx:2270
 msgid "Dismiss"
 msgstr "Wischuy"
 
@@ -1244,13 +1252,13 @@ msgstr "Pantalla kutipaq"
 msgid "Displays the mobile sidebar."
 msgstr "Movil sidebar qhawachin."
 
-#: src/components/MissionSetup.tsx:2056
+#: src/components/MissionSetup.tsx:2066
 msgid "Distance LOD"
 msgstr "Karu LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:2401
+#: src/components/MissionSetup.tsx:2412
 msgid "Done"
 msgstr "Tukurqun"
 
@@ -1272,7 +1280,7 @@ msgstr "WAYRA QHIPAN 600 CHAKI"
 msgid "Drag"
 msgstr "Aysay"
 
-#: src/components/Multiplayer.tsx:428
+#: src/components/Multiplayer.tsx:459
 msgid "Drone"
 msgstr "Dron"
 
@@ -1284,7 +1292,7 @@ msgstr "Iskaynisqakuna"
 msgid "Duration"
 msgstr "Pacha unayninn"
 
-#: src/components/MissionSetup.tsx:2050
+#: src/components/MissionSetup.tsx:2060
 msgid "Dynamic resolution"
 msgstr "Kuyuq resolución"
 
@@ -1331,7 +1339,7 @@ msgstr "Akllasqa cardta hukchay"
 msgid "Edit view"
 msgstr "Qhawayta hukchay"
 
-#: src/components/MissionSetup.tsx:2030
+#: src/components/MissionSetup.tsx:2040
 msgid "Effects detail"
 msgstr "Efectokunap sut'inchaynin"
 
@@ -1360,7 +1368,7 @@ msgstr "USQHAY WIKCH'UY"
 msgid "Emergency jettison (hold)"
 msgstr "Usqhay wikch'uy (hap'iy)"
 
-#: src/components/Multiplayer.tsx:490
+#: src/components/Multiplayer.tsx:521
 msgid "empty"
 msgstr "ch'usaq"
 
@@ -1421,7 +1429,7 @@ msgstr "Hurquy"
 msgid "Extend flaps"
 msgstr "Flaps hurquy"
 
-#: src/components/MissionSetup.tsx:2022
+#: src/components/MissionSetup.tsx:2032
 msgid "Exterior detail"
 msgstr "Hawa detalle"
 
@@ -1602,8 +1610,8 @@ msgstr "Phawaq"
 msgid "Flown"
 msgstr "Phawasqa"
 
-#: src/components/MissionSetup.tsx:2281
-#: src/components/MissionSetup.tsx:2324
+#: src/components/MissionSetup.tsx:2292
+#: src/components/MissionSetup.tsx:2335
 msgid "Fly"
 msgstr "Phaway"
 
@@ -1611,12 +1619,12 @@ msgstr "Phaway"
 msgid "Fly again"
 msgstr "Wakmanta phaway"
 
-#: src/components/MissionSetup.tsx:2080
+#: src/components/MissionSetup.tsx:2090
 msgid "Framerate"
 msgstr "Framerate"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1812
+#: src/components/MissionSetup.tsx:1814
 msgid "Free flight"
 msgstr "Qispi phaway"
 
@@ -1641,7 +1649,7 @@ msgstr "Manta"
 msgid "From theme"
 msgstr "Temamanta"
 
-#: src/components/Multiplayer.tsx:366
+#: src/components/Multiplayer.tsx:385
 msgid "Fuel"
 msgstr "Combustible"
 
@@ -1694,7 +1702,7 @@ msgstr "tren"
 msgid "GEAR"
 msgstr "TREN"
 
-#: src/components/MissionSetup.tsx:2333
+#: src/components/MissionSetup.tsx:2344
 msgid "General"
 msgstr "Llapanpi"
 
@@ -1724,7 +1732,7 @@ msgstr "{pageNumber} p’anqaman riy"
 msgid "Go to previous page"
 msgstr "Ñawpa paginaman riy"
 
-#: src/components/MissionSetup.tsx:2336
+#: src/components/MissionSetup.tsx:2347
 msgid "Graphics"
 msgstr "Gráficos"
 
@@ -1753,11 +1761,12 @@ msgstr "Kañun"
 msgid "GUN"
 msgstr "ILLAPA"
 
-#: src/components/Multiplayer.tsx:72
+#: src/components/Multiplayer.tsx:75
+#: src/components/Multiplayer.tsx:402
 msgid "Guns only"
 msgstr "Kañunkunalla"
 
-#: src/components/MissionSetup.tsx:2254
+#: src/components/MissionSetup.tsx:2265
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Hardware gráficos utqaykachiyqa wañusqam — navegadorpa configuracionninta utaq controladores gráficos nisqata qhaway."
 
@@ -1777,18 +1786,18 @@ msgstr "Pakay"
 msgid "Hide password"
 msgstr "Yaykuna rimayta pakay"
 
-#: src/components/MissionSetup.tsx:2002
+#: src/components/MissionSetup.tsx:2012
 msgid "High"
 msgstr "Hatun"
 
-#: src/components/MissionSetup.tsx:1908
-#: src/components/Multiplayer.tsx:75
-#: src/components/Multiplayer.tsx:356
+#: src/components/MissionSetup.tsx:1918
+#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:375
 msgid "High stratus"
 msgstr "Hanaq stratus"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:2300
+#: src/components/MissionSetup.tsx:2311
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Historia"
@@ -1838,7 +1847,7 @@ msgid "Import"
 msgstr "Yaykuchiy"
 
 #: src/components/MissionSetup.tsx:1563
-#: src/components/MissionSetup.tsx:1852
+#: src/components/MissionSetup.tsx:1865
 msgid "In air"
 msgstr "Wayrapi"
 
@@ -1882,7 +1891,7 @@ msgstr "Mana allin sut'inchay código"
 msgid "Invert pitch"
 msgstr "Pitch t'ikray"
 
-#: src/components/Multiplayer.tsx:78
+#: src/components/Multiplayer.tsx:84
 msgid "Invulnerable"
 msgstr "Mana k'irichana"
 
@@ -1890,8 +1899,8 @@ msgstr "Mana k'irichana"
 msgid "INVULNERABLE"
 msgstr "MANA K'IRICHINA"
 
-#: src/components/MissionSetup.tsx:1928
-#: src/components/Multiplayer.tsx:395
+#: src/components/MissionSetup.tsx:1938
+#: src/components/Multiplayer.tsx:426
 msgid "Invulnerable (human players only)"
 msgstr "Mana k'irichina (runa pukllaqkunalla)"
 
@@ -1913,12 +1922,12 @@ msgstr "Tanquekunata wikch'uy"
 msgid "JETTISON: GEAR"
 msgstr "WIKCH'UY: CHAKI"
 
-#: src/components/Multiplayer.tsx:555
+#: src/components/Multiplayer.tsx:586
 msgid "Join"
 msgstr "Yaykuy"
 
-#: src/components/MissionSetup.tsx:1676
-#: src/components/MissionSetup.tsx:2291
+#: src/components/MissionSetup.tsx:1678
+#: src/components/MissionSetup.tsx:2302
 msgid "Join server"
 msgstr "Servidorman yaykuy"
 
@@ -1927,20 +1936,20 @@ msgid "JOINED"
 msgstr "YAYKUN"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:2236
-#: src/components/Multiplayer.tsx:489
+#: src/components/MissionSetup.tsx:2246
+#: src/components/Multiplayer.tsx:520
 msgid "Joust"
 msgstr "Tinkuy"
 
-#: src/components/Multiplayer.tsx:341
+#: src/components/Multiplayer.tsx:360
 msgid "Joust — 1v1, first kill wins"
 msgstr "Maqanakuy — 1v1, ñawpaqta urmachiq llallin"
 
-#: src/components/MissionSetup.tsx:1813
+#: src/components/MissionSetup.tsx:1815
 msgid "Joust 1v1"
 msgstr "Maqanakuy 1v1"
 
-#: src/components/MissionSetup.tsx:2342
+#: src/components/MissionSetup.tsx:2353
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1956,7 +1965,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Teclado pisi ñankuna"
 
-#: src/components/MissionSetup.tsx:2345
+#: src/components/MissionSetup.tsx:2356
 msgid "Keys"
 msgstr "Teclakuna"
 
@@ -2013,7 +2022,7 @@ msgstr "phaway / blanco"
 msgid "Layout"
 msgstr "Churana"
 
-#: src/components/Multiplayer.tsx:379
+#: src/components/Multiplayer.tsx:398
 msgid "lb"
 msgstr "lb"
 
@@ -2022,7 +2031,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Aswan yachay"
 
-#: src/components/MissionSetup.tsx:1755
+#: src/components/MissionSetup.tsx:1757
 msgid "Leave server"
 msgstr "Servidormanta lloqsiy"
 
@@ -2107,7 +2116,7 @@ msgstr "WICHACHIY MANA ATIKUNCHU"
 msgid "Loading..."
 msgstr "Wichachichkan..."
 
-#: src/components/MissionSetup.tsx:1950
+#: src/components/MissionSetup.tsx:1960
 msgid "Loadout"
 msgstr "Q'ipi"
 
@@ -2158,13 +2167,13 @@ msgstr "Pañaman qhaway"
 msgid "Look up"
 msgstr "Hanaqman qhaway"
 
-#: src/components/MissionSetup.tsx:1998
+#: src/components/MissionSetup.tsx:2008
 msgid "Low"
 msgstr "Pisi"
 
-#: src/components/MissionSetup.tsx:1910
-#: src/components/Multiplayer.tsx:77
-#: src/components/Multiplayer.tsx:358
+#: src/components/MissionSetup.tsx:1920
+#: src/components/Multiplayer.tsx:83
+#: src/components/Multiplayer.tsx:377
 msgid "Low stratus"
 msgstr "Uray stratus"
 
@@ -2202,11 +2211,11 @@ msgstr "Llapanta ñawinchasqaman churay"
 msgid "Master"
 msgstr "Principal"
 
-#: src/components/Multiplayer.tsx:337
+#: src/components/Multiplayer.tsx:356
 msgid "Match type"
 msgstr "Pukllay laya"
 
-#: src/components/MissionSetup.tsx:1750
+#: src/components/MissionSetup.tsx:1752
 msgid "Matches"
 msgstr "Pukllaykuna"
 
@@ -2219,7 +2228,7 @@ msgid "MCP server"
 msgstr "MCP servidor"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:2000
+#: src/components/MissionSetup.tsx:2010
 msgid "Medium"
 msgstr "Chawpi"
 
@@ -2231,6 +2240,14 @@ msgstr "menú"
 #: src/components/MissionSetup.tsx:261
 msgid "Menu"
 msgstr "Menú"
+
+#: src/components/Multiplayer.tsx:408
+msgid "Merge — fight on at the pass"
+msgstr "Tinkuy — maqanakuyqa chimpanakuypi qallarin"
+
+#: src/components/MissionSetup.tsx:1827
+msgid "Merge, fight's on at the pass"
+msgstr "Tinkuy, maqanakuyqa chimpanakuypi qallarin"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx:35
 msgid "Message"
@@ -2252,9 +2269,9 @@ msgstr "Equipoykiman qillqay"
 msgid "Metric"
 msgstr "Metrico"
 
-#: src/components/MissionSetup.tsx:1909
-#: src/components/Multiplayer.tsx:76
-#: src/components/Multiplayer.tsx:357
+#: src/components/MissionSetup.tsx:1919
+#: src/components/Multiplayer.tsx:82
+#: src/components/Multiplayer.tsx:376
 msgid "Mid stratus"
 msgstr "Chawpi stratus"
 
@@ -2277,10 +2294,6 @@ msgstr "MISIL"
 #: src/components/MissionSetup.tsx:1371
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Misil modelo <0>“AIM-120C AMRAAM”</0>, <1>Pippa</1> (Sketchfab) ruwasqan, <2>CC BY 4.0</2> licenciayuq. Hukchasqa: musuq tupu, musuq chiqanchay, churanapaq chawpichasqa."
-
-#: src/components/Multiplayer.tsx:385
-msgid "Missiles allowed"
-msgstr "Misilkuna saqisqa"
 
 #: ../../../lib/web/src/features/accounts/types.ts:23
 msgid "Mochi web"
@@ -2307,7 +2320,7 @@ msgstr "Astawan akllaykuna"
 msgid "Move it…"
 msgstr "Ejeta kuyuchiy…"
 
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:257
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Achka pukllaqpaq WebTransport munakun; kay navegadorqa manaraq chayta yanapanchu."
 
@@ -2347,9 +2360,9 @@ msgstr "Musuq pukllay"
 msgid "Next image"
 msgstr "Qatiqnin imagen"
 
-#: src/components/MissionSetup.tsx:1896
-#: src/components/Multiplayer.tsx:73
-#: src/components/Multiplayer.tsx:351
+#: src/components/MissionSetup.tsx:1906
+#: src/components/Multiplayer.tsx:79
+#: src/components/Multiplayer.tsx:370
 msgid "Night"
 msgstr "Tuta"
 
@@ -2401,7 +2414,7 @@ msgstr "Mana tupaq objetokuna"
 msgid "No notifications yet"
 msgstr "Manaraqmi willakuykuna kanchu"
 
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No open matches — create one."
 msgstr "Manam kichasqa pukllaykuna kanchu — hukta ruray."
 
@@ -2464,7 +2477,7 @@ msgid "No views"
 msgstr "Mana qhawaykuna"
 
 #: src/components/MissionSetup.tsx:1525
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No world server."
 msgstr "Mana pacha servidor kanchu."
 
@@ -2489,7 +2502,7 @@ msgstr "SIN NOTA"
 #: src/components/MissionSetup.tsx:469
 #: src/components/MissionSetup.tsx:539
 #: src/components/MissionSetup.tsx:1077
-#: src/components/MissionSetup.tsx:1906
+#: src/components/MissionSetup.tsx:1916
 msgid "None"
 msgstr "Mana"
 
@@ -2534,9 +2547,9 @@ msgstr "Notificacionkuna"
 msgid "Notifications: {0}"
 msgstr "Willakuykuna: {0}"
 
-#: src/components/MissionSetup.tsx:1825
-#: src/components/MissionSetup.tsx:2228
-#: src/components/Multiplayer.tsx:429
+#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:2238
+#: src/components/Multiplayer.tsx:460
 msgid "Novice"
 msgstr "Qallariq"
 
@@ -2546,7 +2559,7 @@ msgstr "Qallariq"
 msgid "Number"
 msgstr "Yupay"
 
-#: src/components/MissionSetup.tsx:2038
+#: src/components/MissionSetup.tsx:2048
 msgid "Ocean detail"
 msgstr "Mama qucha detalle"
 
@@ -2563,12 +2576,12 @@ msgid "On"
 msgstr "Hapichisqa"
 
 #: src/components/MissionSetup.tsx:1565
-#: src/components/MissionSetup.tsx:1854
+#: src/components/MissionSetup.tsx:1867
 msgid "On carrier"
 msgstr "Wamp'upi"
 
 #: src/components/MissionSetup.tsx:1564
-#: src/components/MissionSetup.tsx:1853
+#: src/components/MissionSetup.tsx:1866
 msgid "On runway"
 msgstr "Pistapi"
 
@@ -2576,11 +2589,11 @@ msgstr "Pistapi"
 msgid "Oops! Page Not Found!"
 msgstr "¡Ay! ¡Página Mana Tarisqachu!"
 
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Open"
 msgstr "Kichay"
 
-#: src/components/Multiplayer.tsx:340
+#: src/components/Multiplayer.tsx:359
 msgid "Open — anyone may join or leave"
 msgstr "Kichasqa — pipas yaykunman lluqsinmanpas"
 
@@ -2705,14 +2718,14 @@ msgid "Pick a date"
 msgstr "Huk p'unchawta akllay"
 
 #: src/components/MissionSetup.tsx:1467
-#: src/components/Multiplayer.tsx:130
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:146
+#: src/components/Multiplayer.tsx:317
 msgid "pilot"
 msgstr "piloto"
 
-#: src/components/MissionSetup.tsx:1826
-#: src/components/MissionSetup.tsx:2229
-#: src/components/Multiplayer.tsx:430
+#: src/components/MissionSetup.tsx:1839
+#: src/components/MissionSetup.tsx:2239
+#: src/components/Multiplayer.tsx:461
 msgid "Pilot"
 msgstr "Piloto"
 
@@ -2774,7 +2787,7 @@ msgstr "Qillqakuna"
 msgid "Posts and comments"
 msgstr "Qillqakuna comentariokunawan"
 
-#: src/components/MissionSetup.tsx:1985
+#: src/components/MissionSetup.tsx:1995
 msgid "Preset"
 msgstr "Wakichisqa"
 
@@ -2817,7 +2830,7 @@ msgstr "Perfil waqaychasqa"
 msgid "Project members"
 msgstr "Proyectop ayllunkuna"
 
-#: src/components/MissionSetup.tsx:1703
+#: src/components/MissionSetup.tsx:1705
 msgid "Public servers"
 msgstr "Publico servidorkuna"
 
@@ -2862,7 +2875,7 @@ msgstr "Kay servidorpi passkeyniykita musukmanta qillqachiy"
 msgid "REARMED"
 msgstr "MUSUQMANTA ARMASQA"
 
-#: src/components/MissionSetup.tsx:1681
+#: src/components/MissionSetup.tsx:1683
 msgid "Recent"
 msgstr "Qayna"
 
@@ -2875,12 +2888,12 @@ msgstr "Munasqa"
 msgid "Reconnecting ({retries})..."
 msgstr "Kutimanta t'inkichkan ({retries})..."
 
-#: src/components/MissionSetup.tsx:2142
+#: src/components/MissionSetup.tsx:2152
 msgid "Record flights"
 msgstr "Phawaykunata grabay"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:2136
+#: src/components/MissionSetup.tsx:2146
 msgid "Recording"
 msgstr "Grabay"
 
@@ -2888,11 +2901,11 @@ msgstr "Grabay"
 msgid "Recording saved"
 msgstr "Grabasqa waqaychasqa"
 
-#: src/components/Multiplayer.tsx:533
+#: src/components/Multiplayer.tsx:564
 msgid "Red"
 msgstr "Puka"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Red bots"
 msgstr "Puka botkuna"
 
@@ -2909,7 +2922,7 @@ msgstr "Munayta pisichiy"
 msgid "Reference"
 msgstr "Referencia"
 
-#: src/components/Multiplayer.tsx:317
+#: src/components/Multiplayer.tsx:336
 msgid "Refresh"
 msgstr "Musuqchay"
 
@@ -3008,7 +3021,7 @@ msgstr "Correota kutiy apachiy"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:2394
+#: src/components/MissionSetup.tsx:2405
 msgid "Reset"
 msgstr "Kutichiy"
 
@@ -3037,11 +3050,11 @@ msgstr "Trim kutichiy"
 msgid "Reset view"
 msgstr "Qhawayta kutichiy"
 
-#: src/components/MissionSetup.tsx:2012
+#: src/components/MissionSetup.tsx:2022
 msgid "Resolution"
 msgstr "Resolución"
 
-#: src/components/MissionSetup.tsx:2273
+#: src/components/MissionSetup.tsx:2284
 msgid "Restart mission"
 msgstr "Misión kutimanta qallariy"
 
@@ -3053,7 +3066,7 @@ msgstr "Resultado"
 msgid "Resume"
 msgstr "Qatiy"
 
-#: src/components/MissionSetup.tsx:2269
+#: src/components/MissionSetup.tsx:2280
 msgid "Resume mission"
 msgstr "Misión katichiy"
 
@@ -3369,12 +3382,12 @@ msgstr "Pukyu chayanata churay"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:199
 #: src/components/GameCanvas.tsx:383
-#: src/components/MissionSetup.tsx:2295
-#: src/components/MissionSetup.tsx:2329
+#: src/components/MissionSetup.tsx:2306
+#: src/components/MissionSetup.tsx:2340
 msgid "Settings"
 msgstr "Wakichiykuna"
 
-#: src/components/MissionSetup.tsx:2062
+#: src/components/MissionSetup.tsx:2072
 msgid "Shadows"
 msgstr "Llanthukuna"
 
@@ -3436,13 +3449,21 @@ msgid "Sort"
 msgstr "Allichay"
 
 #: src/components/MissionSetup.tsx:601
-#: src/components/MissionSetup.tsx:2339
+#: src/components/MissionSetup.tsx:2350
 msgid "Sound"
 msgstr "Sonido"
 
 #: ../../../lib/web/src/components/options-menu.tsx:161
 msgid "Sources"
 msgstr "Pukyukuna"
+
+#: src/components/Multiplayer.tsx:78
+msgid "Spaced"
+msgstr "Karu"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Spaced spawns"
+msgstr "Karu yaykunakuna"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:97
 msgid "Spacious"
@@ -3478,7 +3499,8 @@ msgstr "Pérdida, ch'uya (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "Pérdida, aterrizaje wakichay (Vs0)"
 
-#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:1821
+#: src/components/MissionSetup.tsx:1851
 msgid "Start"
 msgstr "Qallariy"
 
@@ -3527,9 +3549,9 @@ msgstr "Suscribiy"
 msgid "Sunday"
 msgstr "Intichaw"
 
-#: src/components/MissionSetup.tsx:1828
-#: src/components/MissionSetup.tsx:2231
-#: src/components/Multiplayer.tsx:432
+#: src/components/MissionSetup.tsx:1841
+#: src/components/MissionSetup.tsx:2241
+#: src/components/Multiplayer.tsx:463
 msgid "Superhuman"
 msgstr "Runamanta aswan"
 
@@ -3570,7 +3592,7 @@ msgstr "Unanchakuna"
 msgid "TALLY"
 msgstr "AWQATA RIKUNI"
 
-#: src/components/MissionSetup.tsx:1806
+#: src/components/MissionSetup.tsx:1808
 msgid "Task"
 msgstr "Llamk'ana"
 
@@ -3583,11 +3605,11 @@ msgid "TEAM"
 msgstr "EQUIPO"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Teams"
 msgstr "Equipokuna"
 
-#: src/components/Multiplayer.tsx:342
+#: src/components/Multiplayer.tsx:361
 msgid "Teams — red versus blue"
 msgstr "Equipokuna — puka contra anqas"
 
@@ -3641,15 +3663,15 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Tema Wakichiykuna"
 
-#: src/components/MissionSetup.tsx:2252
+#: src/components/MissionSetup.tsx:2263
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Kay navegador manam WebGL 2-ta yanapanchu, chaymi pukllayqa mana purinmanchu — huk navegadorta pruebay."
 
-#: src/components/Multiplayer.tsx:256
+#: src/components/Multiplayer.tsx:275
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Kay lobby pukllay t'inkiyniykita huk servidorman ({redirectHost}) apachkan. Kay servidorpi iñispaykiqa qatiylla."
 
-#: src/components/MissionSetup.tsx:2256
+#: src/components/MissionSetup.tsx:2267
 msgid "This machine may be too slow for smooth flight."
 msgstr "Kay maquinaqa ancha allillamantach kanman llampu phalaypaq."
 
@@ -3691,7 +3713,7 @@ msgstr "k'iray"
 msgid "Time"
 msgstr "Pacha"
 
-#: src/components/MissionSetup.tsx:1889
+#: src/components/MissionSetup.tsx:1899
 msgid "Time of day"
 msgstr "P'unchaypa pachan"
 
@@ -3747,7 +3769,7 @@ msgstr "Ancha achka mañakuykuna"
 msgid "Top"
 msgstr "Hawan"
 
-#: src/components/MissionSetup.tsx:2074
+#: src/components/MissionSetup.tsx:2084
 msgid "Tracers"
 msgstr "Trazadorkuna"
 
@@ -3823,7 +3845,7 @@ msgstr "Apaykachaqkunata maskanapaq qillqay"
 msgid "Type to search..."
 msgstr "Maskanapaq qillqay..."
 
-#: src/components/MissionSetup.tsx:2004
+#: src/components/MissionSetup.tsx:2014
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3867,21 +3889,25 @@ msgstr "Hukllachasqa Suyukuna"
 msgid "Unknown"
 msgstr "Mana riqsisqa"
 
-#: src/components/Multiplayer.tsx:79
-#: src/components/Multiplayer.tsx:405
+#: src/components/Multiplayer.tsx:404
+msgid "Unlimited"
+msgstr "Mana harkasqa"
+
+#: src/components/Multiplayer.tsx:85
+#: src/components/Multiplayer.tsx:436
 msgid "Unlimited ammunition"
 msgstr "Mana tukukuq balakuna"
 
-#: src/components/MissionSetup.tsx:1934
+#: src/components/MissionSetup.tsx:1944
 msgid "Unlimited ammunition (all players)"
 msgstr "Mana tukukuq balakuna (llapa pukllaqkuna)"
 
-#: src/components/Multiplayer.tsx:80
-#: src/components/Multiplayer.tsx:415
+#: src/components/Multiplayer.tsx:86
+#: src/components/Multiplayer.tsx:446
 msgid "Unlimited fuel"
 msgstr "Mana tukukuq combustible"
 
-#: src/components/MissionSetup.tsx:1940
+#: src/components/MissionSetup.tsx:1950
 msgid "Unlimited fuel (all players)"
 msgstr "Mana tukukuq combustible (llapa pukllaqkuna)"
 
@@ -4027,7 +4053,7 @@ msgstr "arma"
 msgid "Weapons"
 msgstr "Armakuna"
 
-#: src/components/Multiplayer.tsx:347
+#: src/components/Multiplayer.tsx:366
 msgid "Weather"
 msgstr "Clima"
 
@@ -4052,12 +4078,12 @@ msgstr "Rapra pataray"
 msgid "WINS"
 msgstr "LLALLIN"
 
-#: src/components/Multiplayer.tsx:282
+#: src/components/Multiplayer.tsx:301
 msgid "World server"
 msgstr "Pacha servidor"
 
 #: src/components/MissionSetup.tsx:1513
-#: src/components/Multiplayer.tsx:143
+#: src/components/Multiplayer.tsx:159
 msgid "World server not reachable"
 msgstr "Pacha servidorman mana chayay atikunchu"
 
@@ -4107,7 +4133,7 @@ msgstr "Ratachisqaykikuna chinkapunqa."
 msgid "Your flights appear here once you've flown one."
 msgstr "Phawaykunaykiqa kaypi rikhurinqa huk kutita phawaqtiyki."
 
-#: src/components/Multiplayer.tsx:484
+#: src/components/Multiplayer.tsx:515
 msgid "your offer"
 msgstr "qampa haywayniyki"
 

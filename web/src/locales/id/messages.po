@@ -51,7 +51,7 @@ msgid "{0} created “{1}”"
 msgstr "{0} membuat “{1}”"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:309
+#: src/components/Multiplayer.tsx:328
 msgid "{0} flying"
 msgstr "{0} sedang terbang"
 
@@ -72,7 +72,7 @@ msgstr "Pratinjau opsi {0}"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:522
 msgid "{0}/{1} players"
 msgstr "{0}/{1} pemain"
 
@@ -100,7 +100,7 @@ msgstr "Nama {entityLabel}"
 msgid "{entityLabel} name is required"
 msgstr "Nama {entityLabel} wajib diisi"
 
-#: src/components/Multiplayer.tsx:215
+#: src/components/Multiplayer.tsx:231
 msgid "{name}'s match"
 msgstr "Pertandingan {name}"
 
@@ -214,9 +214,9 @@ msgstr "Tipe akun"
 msgid "Account verified"
 msgstr "Akun terverifikasi"
 
-#: src/components/MissionSetup.tsx:1827
-#: src/components/MissionSetup.tsx:2230
-#: src/components/Multiplayer.tsx:431
+#: src/components/MissionSetup.tsx:1840
+#: src/components/MissionSetup.tsx:2240
+#: src/components/Multiplayer.tsx:462
 msgid "Ace"
 msgstr "As"
 
@@ -318,7 +318,7 @@ msgstr "Menambahkan..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Sesuaikan tampilan dan tata letak sesuai preferensi Anda."
 
-#: src/components/MissionSetup.tsx:2068
+#: src/components/MissionSetup.tsx:2078
 msgid "Afterburner"
 msgstr "Afterburner"
 
@@ -363,6 +363,10 @@ msgstr "Terjadi kesalahan"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:275
 msgid "An unexpected error occurred"
 msgstr "Terjadi kesalahan tak terduga"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Anchored sides"
+msgstr "Sisi berjangkar"
 
 #: ../../../lib/web/src/features/accounts/types.ts:16
 msgid "Android push"
@@ -478,7 +482,7 @@ msgstr "Kembali"
 msgid "Back to home"
 msgstr "Kembali ke beranda"
 
-#: src/components/MissionSetup.tsx:1819
+#: src/components/MissionSetup.tsx:1832
 msgid "Bandit"
 msgstr "Pesawat musuh"
 
@@ -524,11 +528,11 @@ msgstr "Navigasi ke tautan tidak tepercaya diblokir"
 msgid "Blocks"
 msgstr "Memblokir"
 
-#: src/components/Multiplayer.tsx:543
+#: src/components/Multiplayer.tsx:574
 msgid "Blue"
 msgstr "Biru"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Blue bots"
 msgstr "Bot biru"
 
@@ -549,7 +553,7 @@ msgstr "Tingkatkan minat"
 msgid "Border colour"
 msgstr "Warna border"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Bots"
 msgstr "Bot"
 
@@ -581,12 +585,20 @@ msgstr "Tombol {i}"
 msgid "Buttons"
 msgstr "Tombol"
 
+#: src/components/Multiplayer.tsx:409
+msgid "BVR — weapons free from spawn"
+msgstr "BVR — senjata bebas sejak awal"
+
+#: src/components/MissionSetup.tsx:1828
+msgid "BVR, fight's on at start"
+msgstr "BVR, pertempuran dimulai sejak awal"
+
 #: src/components/GameCanvas.tsx:108
 msgid "CALL THE BALL"
 msgstr "LAPORKAN BOLA"
 
-#: src/components/MissionSetup.tsx:2124
-#: src/components/Multiplayer.tsx:293
+#: src/components/MissionSetup.tsx:2134
+#: src/components/Multiplayer.tsx:312
 msgid "Callsign"
 msgstr "Tanda panggil"
 
@@ -612,8 +624,8 @@ msgstr "Kamera tidak tersedia"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:675
-#: src/components/Multiplayer.tsx:264
-#: src/components/Multiplayer.tsx:520
+#: src/components/Multiplayer.tsx:283
+#: src/components/Multiplayer.tsx:551
 msgid "Cancel"
 msgstr "Batal"
 
@@ -635,7 +647,7 @@ msgstr "Kanopi"
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1855
+#: src/components/MissionSetup.tsx:1868
 msgid "Case I (day)"
 msgstr "Kasus I (siang)"
 
@@ -643,7 +655,7 @@ msgstr "Kasus I (siang)"
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1856
+#: src/components/MissionSetup.tsx:1869
 msgid "Case II (weather)"
 msgstr "Kasus II (cuaca)"
 
@@ -651,11 +663,11 @@ msgstr "Kasus II (cuaca)"
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1857
+#: src/components/MissionSetup.tsx:1870
 msgid "Case III (night)"
 msgstr "Kasus III (malam)"
 
-#: src/components/MissionSetup.tsx:1863
+#: src/components/MissionSetup.tsx:1876
 msgid "Catapult"
 msgstr "Katapel"
 
@@ -689,7 +701,7 @@ msgid "Chat to everyone"
 msgstr "Chat ke semua"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1922
+#: src/components/MissionSetup.tsx:1932
 msgid "Cheats"
 msgstr "Cheat"
 
@@ -736,7 +748,7 @@ msgstr "Pilih bahasa"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:373
 msgid "Clear"
 msgstr "Bersihkan"
 
@@ -800,7 +812,7 @@ msgstr "Tutup pencarian"
 msgid "closer"
 msgstr "lebih dekat"
 
-#: src/components/MissionSetup.tsx:1900
+#: src/components/MissionSetup.tsx:1910
 msgid "Clouds"
 msgstr "Awan"
 
@@ -858,10 +870,6 @@ msgstr "Komunikasi"
 msgid "Compact"
 msgstr "Kompak"
 
-#: src/components/MissionSetup.tsx:1886
-msgid "Conditions"
-msgstr "Kondisi"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
 msgid "Configure option settings"
 msgstr "Konfigurasi pengaturan opsi"
@@ -875,11 +883,11 @@ msgstr "Konfigurasi pengaturan tampilan"
 msgid "Confirm"
 msgstr "Konfirmasi"
 
-#: src/components/MissionSetup.tsx:1728
+#: src/components/MissionSetup.tsx:1730
 msgid "Connect"
 msgstr "Sambung"
 
-#: src/components/MissionSetup.tsx:1715
+#: src/components/MissionSetup.tsx:1717
 msgid "Connect to private server"
 msgstr "Hubungkan ke server pribadi"
 
@@ -895,7 +903,7 @@ msgstr "Akun yang terhubung"
 msgid "Connecting..."
 msgstr "Menghubungkan..."
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:331
 msgid "Connecting…"
 msgstr "Menghubungkan…"
 
@@ -916,7 +924,7 @@ msgid "Contextual information and details."
 msgstr "Informasi dan detail kontekstual."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:273
+#: src/components/Multiplayer.tsx:292
 msgid "Continue"
 msgstr "Lanjutkan"
 
@@ -940,7 +948,7 @@ msgstr "Salin"
 msgid "Corner speed (best instant turn)"
 msgstr "Kecepatan sudut (belok seketika terbaik)"
 
-#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:248
 msgid "Could not create the match"
 msgstr "Tidak dapat membuat pertandingan"
 
@@ -1003,16 +1011,16 @@ msgstr "Buat"
 msgid "Create {0}"
 msgstr "Buat {0}"
 
-#: src/components/Multiplayer.tsx:463
+#: src/components/Multiplayer.tsx:494
 msgid "Create and fly"
 msgstr "Buat dan terbang"
 
-#: src/components/Multiplayer.tsx:327
+#: src/components/Multiplayer.tsx:346
 msgid "Create match"
 msgstr "Buat pertandingan"
 
-#: src/components/MissionSetup.tsx:2287
-#: src/components/MissionSetup.tsx:2310
+#: src/components/MissionSetup.tsx:2298
+#: src/components/MissionSetup.tsx:2321
 msgid "Create mission"
 msgstr "Buat misi"
 
@@ -1035,9 +1043,9 @@ msgstr "Membuat..."
 msgid "Credits"
 msgstr "Kredit"
 
-#: src/components/MissionSetup.tsx:1907
-#: src/components/Multiplayer.tsx:74
-#: src/components/Multiplayer.tsx:355
+#: src/components/MissionSetup.tsx:1917
+#: src/components/Multiplayer.tsx:80
+#: src/components/Multiplayer.tsx:374
 msgid "Cumulus"
 msgstr "Kumulus"
 
@@ -1079,8 +1087,8 @@ msgstr "Konflik data"
 msgid "Date"
 msgstr "Tanggal"
 
-#: src/components/MissionSetup.tsx:1895
-#: src/components/Multiplayer.tsx:350
+#: src/components/MissionSetup.tsx:1905
+#: src/components/Multiplayer.tsx:369
 msgid "Day"
 msgstr "Siang"
 
@@ -1195,7 +1203,7 @@ msgstr "Deteksi dari web browser"
 msgid "Device"
 msgstr "Perangkat"
 
-#: src/components/Multiplayer.tsx:253
+#: src/components/Multiplayer.tsx:272
 msgid "Different game host"
 msgstr "Host game berbeda"
 
@@ -1231,7 +1239,7 @@ msgstr "Terputus"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: ../../../lib/web/src/components/restore-banner.tsx:100
-#: src/components/MissionSetup.tsx:2259
+#: src/components/MissionSetup.tsx:2270
 msgid "Dismiss"
 msgstr "Tutup"
 
@@ -1244,13 +1252,13 @@ msgstr "Pengulang tampilan"
 msgid "Displays the mobile sidebar."
 msgstr "Menampilkan sidebar seluler."
 
-#: src/components/MissionSetup.tsx:2056
+#: src/components/MissionSetup.tsx:2066
 msgid "Distance LOD"
 msgstr "LOD jarak"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:2401
+#: src/components/MissionSetup.tsx:2412
 msgid "Done"
 msgstr "Selesai"
 
@@ -1272,7 +1280,7 @@ msgstr "SEARAH ANGIN 600 KAKI"
 msgid "Drag"
 msgstr "Seret"
 
-#: src/components/Multiplayer.tsx:428
+#: src/components/Multiplayer.tsx:459
 msgid "Drone"
 msgstr "Drone"
 
@@ -1284,7 +1292,7 @@ msgstr "Duplikat"
 msgid "Duration"
 msgstr "Durasi"
 
-#: src/components/MissionSetup.tsx:2050
+#: src/components/MissionSetup.tsx:2060
 msgid "Dynamic resolution"
 msgstr "Resolusi dinamis"
 
@@ -1331,7 +1339,7 @@ msgstr "Edit kartu terpilih"
 msgid "Edit view"
 msgstr "Edit tampilan"
 
-#: src/components/MissionSetup.tsx:2030
+#: src/components/MissionSetup.tsx:2040
 msgid "Effects detail"
 msgstr "Detail efek"
 
@@ -1360,7 +1368,7 @@ msgstr "BUANG DARURAT"
 msgid "Emergency jettison (hold)"
 msgstr "Pembuangan darurat (tahan)"
 
-#: src/components/Multiplayer.tsx:490
+#: src/components/Multiplayer.tsx:521
 msgid "empty"
 msgstr "kosong"
 
@@ -1421,7 +1429,7 @@ msgstr "Ekspor"
 msgid "Extend flaps"
 msgstr "Flap keluar"
 
-#: src/components/MissionSetup.tsx:2022
+#: src/components/MissionSetup.tsx:2032
 msgid "Exterior detail"
 msgstr "Detail eksterior"
 
@@ -1602,8 +1610,8 @@ msgstr "Mengambang"
 msgid "Flown"
 msgstr "Terbang"
 
-#: src/components/MissionSetup.tsx:2281
-#: src/components/MissionSetup.tsx:2324
+#: src/components/MissionSetup.tsx:2292
+#: src/components/MissionSetup.tsx:2335
 msgid "Fly"
 msgstr "Terbang"
 
@@ -1611,12 +1619,12 @@ msgstr "Terbang"
 msgid "Fly again"
 msgstr "Terbang lagi"
 
-#: src/components/MissionSetup.tsx:2080
+#: src/components/MissionSetup.tsx:2090
 msgid "Framerate"
 msgstr "Laju bingkai"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1812
+#: src/components/MissionSetup.tsx:1814
 msgid "Free flight"
 msgstr "Terbang bebas"
 
@@ -1641,7 +1649,7 @@ msgstr "Dari"
 msgid "From theme"
 msgstr "Dari tema"
 
-#: src/components/Multiplayer.tsx:366
+#: src/components/Multiplayer.tsx:385
 msgid "Fuel"
 msgstr "Bahan bakar"
 
@@ -1694,7 +1702,7 @@ msgstr "roda pendarat"
 msgid "GEAR"
 msgstr "RODA"
 
-#: src/components/MissionSetup.tsx:2333
+#: src/components/MissionSetup.tsx:2344
 msgid "General"
 msgstr "Umum"
 
@@ -1724,7 +1732,7 @@ msgstr "Pergi ke halaman {pageNumber}"
 msgid "Go to previous page"
 msgstr "Ke halaman sebelumnya"
 
-#: src/components/MissionSetup.tsx:2336
+#: src/components/MissionSetup.tsx:2347
 msgid "Graphics"
 msgstr "Grafik"
 
@@ -1753,11 +1761,12 @@ msgstr "Meriam"
 msgid "GUN"
 msgstr "MERIAM"
 
-#: src/components/Multiplayer.tsx:72
+#: src/components/Multiplayer.tsx:75
+#: src/components/Multiplayer.tsx:402
 msgid "Guns only"
 msgstr "Hanya meriam"
 
-#: src/components/MissionSetup.tsx:2254
+#: src/components/MissionSetup.tsx:2265
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Akselerasi grafis perangkat keras mati — periksa pengaturan peramban atau driver grafis."
 
@@ -1777,18 +1786,18 @@ msgstr "Sembunyikan"
 msgid "Hide password"
 msgstr "Sembunyikan kata sandi"
 
-#: src/components/MissionSetup.tsx:2002
+#: src/components/MissionSetup.tsx:2012
 msgid "High"
 msgstr "Tinggi"
 
-#: src/components/MissionSetup.tsx:1908
-#: src/components/Multiplayer.tsx:75
-#: src/components/Multiplayer.tsx:356
+#: src/components/MissionSetup.tsx:1918
+#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:375
 msgid "High stratus"
 msgstr "Stratus tinggi"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:2300
+#: src/components/MissionSetup.tsx:2311
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Riwayat"
@@ -1838,7 +1847,7 @@ msgid "Import"
 msgstr "Impor"
 
 #: src/components/MissionSetup.tsx:1563
-#: src/components/MissionSetup.tsx:1852
+#: src/components/MissionSetup.tsx:1865
 msgid "In air"
 msgstr "Di udara"
 
@@ -1882,7 +1891,7 @@ msgstr "Kode verifikasi tidak valid"
 msgid "Invert pitch"
 msgstr "Balikkan angguk"
 
-#: src/components/Multiplayer.tsx:78
+#: src/components/Multiplayer.tsx:84
 msgid "Invulnerable"
 msgstr "Kebal"
 
@@ -1890,8 +1899,8 @@ msgstr "Kebal"
 msgid "INVULNERABLE"
 msgstr "KEBAL"
 
-#: src/components/MissionSetup.tsx:1928
-#: src/components/Multiplayer.tsx:395
+#: src/components/MissionSetup.tsx:1938
+#: src/components/Multiplayer.tsx:426
 msgid "Invulnerable (human players only)"
 msgstr "Kebal (hanya pemain manusia)"
 
@@ -1913,12 +1922,12 @@ msgstr "Buang tangki"
 msgid "JETTISON: GEAR"
 msgstr "BUANG: RODA PENDARAT"
 
-#: src/components/Multiplayer.tsx:555
+#: src/components/Multiplayer.tsx:586
 msgid "Join"
 msgstr "Gabung"
 
-#: src/components/MissionSetup.tsx:1676
-#: src/components/MissionSetup.tsx:2291
+#: src/components/MissionSetup.tsx:1678
+#: src/components/MissionSetup.tsx:2302
 msgid "Join server"
 msgstr "Gabung ke server"
 
@@ -1927,20 +1936,20 @@ msgid "JOINED"
 msgstr "BERGABUNG"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:2236
-#: src/components/Multiplayer.tsx:489
+#: src/components/MissionSetup.tsx:2246
+#: src/components/Multiplayer.tsx:520
 msgid "Joust"
 msgstr "Duel"
 
-#: src/components/Multiplayer.tsx:341
+#: src/components/Multiplayer.tsx:360
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, kill pertama menang"
 
-#: src/components/MissionSetup.tsx:1813
+#: src/components/MissionSetup.tsx:1815
 msgid "Joust 1v1"
 msgstr "Duel 1v1"
 
-#: src/components/MissionSetup.tsx:2342
+#: src/components/MissionSetup.tsx:2353
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1956,7 +1965,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Pintasan keyboard"
 
-#: src/components/MissionSetup.tsx:2345
+#: src/components/MissionSetup.tsx:2356
 msgid "Keys"
 msgstr "Tombol"
 
@@ -2013,7 +2022,7 @@ msgstr "luncur / target"
 msgid "Layout"
 msgstr "Tata letak"
 
-#: src/components/Multiplayer.tsx:379
+#: src/components/Multiplayer.tsx:398
 msgid "lb"
 msgstr "lb"
 
@@ -2022,7 +2031,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Pelajari lebih lanjut"
 
-#: src/components/MissionSetup.tsx:1755
+#: src/components/MissionSetup.tsx:1757
 msgid "Leave server"
 msgstr "Tinggalkan server"
 
@@ -2107,7 +2116,7 @@ msgstr "PEMUATAN GAGAL"
 msgid "Loading..."
 msgstr "Memuat..."
 
-#: src/components/MissionSetup.tsx:1950
+#: src/components/MissionSetup.tsx:1960
 msgid "Loadout"
 msgstr "Muatan"
 
@@ -2158,13 +2167,13 @@ msgstr "Lihat ke kanan"
 msgid "Look up"
 msgstr "Lihat ke atas"
 
-#: src/components/MissionSetup.tsx:1998
+#: src/components/MissionSetup.tsx:2008
 msgid "Low"
 msgstr "Rendah"
 
-#: src/components/MissionSetup.tsx:1910
-#: src/components/Multiplayer.tsx:77
-#: src/components/Multiplayer.tsx:358
+#: src/components/MissionSetup.tsx:1920
+#: src/components/Multiplayer.tsx:83
+#: src/components/Multiplayer.tsx:377
 msgid "Low stratus"
 msgstr "Stratus rendah"
 
@@ -2202,11 +2211,11 @@ msgstr "Tandai semua sebagai sudah dibaca"
 msgid "Master"
 msgstr "Utama"
 
-#: src/components/Multiplayer.tsx:337
+#: src/components/Multiplayer.tsx:356
 msgid "Match type"
 msgstr "Jenis pertandingan"
 
-#: src/components/MissionSetup.tsx:1750
+#: src/components/MissionSetup.tsx:1752
 msgid "Matches"
 msgstr "Pertandingan"
 
@@ -2219,7 +2228,7 @@ msgid "MCP server"
 msgstr "Server MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:2000
+#: src/components/MissionSetup.tsx:2010
 msgid "Medium"
 msgstr "Sedang"
 
@@ -2231,6 +2240,14 @@ msgstr "menu"
 #: src/components/MissionSetup.tsx:261
 msgid "Menu"
 msgstr "Menu"
+
+#: src/components/Multiplayer.tsx:408
+msgid "Merge — fight on at the pass"
+msgstr "Merge — pertempuran dimulai saat berpapasan"
+
+#: src/components/MissionSetup.tsx:1827
+msgid "Merge, fight's on at the pass"
+msgstr "Merge, pertempuran dimulai saat berpapasan"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx:35
 msgid "Message"
@@ -2252,9 +2269,9 @@ msgstr "Kirim pesan ke timmu"
 msgid "Metric"
 msgstr "Metrik"
 
-#: src/components/MissionSetup.tsx:1909
-#: src/components/Multiplayer.tsx:76
-#: src/components/Multiplayer.tsx:357
+#: src/components/MissionSetup.tsx:1919
+#: src/components/Multiplayer.tsx:82
+#: src/components/Multiplayer.tsx:376
 msgid "Mid stratus"
 msgstr "Stratus sedang"
 
@@ -2277,10 +2294,6 @@ msgstr "RUDAL"
 #: src/components/MissionSetup.tsx:1371
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Model rudal <0>“AIM-120C AMRAAM”</0> oleh <1>Pippa</1> (Sketchfab), dilisensikan di bawah <2>CC BY 4.0</2>. Dimodifikasi: diskalakan ulang, diorientasikan ulang, dan dipusatkan untuk penempatan."
-
-#: src/components/Multiplayer.tsx:385
-msgid "Missiles allowed"
-msgstr "Rudal diizinkan"
 
 #: ../../../lib/web/src/features/accounts/types.ts:23
 msgid "Mochi web"
@@ -2307,7 +2320,7 @@ msgstr "Opsi lainnya"
 msgid "Move it…"
 msgstr "Gerakkan…"
 
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:257
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multipemain memerlukan WebTransport, yang belum didukung browser ini."
 
@@ -2347,9 +2360,9 @@ msgstr "Permainan baru"
 msgid "Next image"
 msgstr "Gambar berikutnya"
 
-#: src/components/MissionSetup.tsx:1896
-#: src/components/Multiplayer.tsx:73
-#: src/components/Multiplayer.tsx:351
+#: src/components/MissionSetup.tsx:1906
+#: src/components/Multiplayer.tsx:79
+#: src/components/Multiplayer.tsx:370
 msgid "Night"
 msgstr "Malam"
 
@@ -2401,7 +2414,7 @@ msgstr "Tidak ada objek yang cocok"
 msgid "No notifications yet"
 msgstr "Belum ada notifikasi"
 
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No open matches — create one."
 msgstr "Tidak ada pertandingan terbuka — buat satu."
 
@@ -2464,7 +2477,7 @@ msgid "No views"
 msgstr "Tidak ada tampilan"
 
 #: src/components/MissionSetup.tsx:1525
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No world server."
 msgstr "Tidak ada server dunia."
 
@@ -2489,7 +2502,7 @@ msgstr "TANPA NILAI"
 #: src/components/MissionSetup.tsx:469
 #: src/components/MissionSetup.tsx:539
 #: src/components/MissionSetup.tsx:1077
-#: src/components/MissionSetup.tsx:1906
+#: src/components/MissionSetup.tsx:1916
 msgid "None"
 msgstr "Tidak ada"
 
@@ -2534,9 +2547,9 @@ msgstr "Notifikasi"
 msgid "Notifications: {0}"
 msgstr "Notifikasi: {0}"
 
-#: src/components/MissionSetup.tsx:1825
-#: src/components/MissionSetup.tsx:2228
-#: src/components/Multiplayer.tsx:429
+#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:2238
+#: src/components/Multiplayer.tsx:460
 msgid "Novice"
 msgstr "Pemula"
 
@@ -2546,7 +2559,7 @@ msgstr "Pemula"
 msgid "Number"
 msgstr "Angka"
 
-#: src/components/MissionSetup.tsx:2038
+#: src/components/MissionSetup.tsx:2048
 msgid "Ocean detail"
 msgstr "Detail laut"
 
@@ -2563,12 +2576,12 @@ msgid "On"
 msgstr "Aktif"
 
 #: src/components/MissionSetup.tsx:1565
-#: src/components/MissionSetup.tsx:1854
+#: src/components/MissionSetup.tsx:1867
 msgid "On carrier"
 msgstr "Di kapal induk"
 
 #: src/components/MissionSetup.tsx:1564
-#: src/components/MissionSetup.tsx:1853
+#: src/components/MissionSetup.tsx:1866
 msgid "On runway"
 msgstr "Di landasan"
 
@@ -2576,11 +2589,11 @@ msgstr "Di landasan"
 msgid "Oops! Page Not Found!"
 msgstr "Ups! Halaman Tidak Ditemukan!"
 
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Open"
 msgstr "Buka"
 
-#: src/components/Multiplayer.tsx:340
+#: src/components/Multiplayer.tsx:359
 msgid "Open — anyone may join or leave"
 msgstr "Terbuka — siapa saja boleh bergabung atau keluar"
 
@@ -2705,14 +2718,14 @@ msgid "Pick a date"
 msgstr "Pilih tanggal"
 
 #: src/components/MissionSetup.tsx:1467
-#: src/components/Multiplayer.tsx:130
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:146
+#: src/components/Multiplayer.tsx:317
 msgid "pilot"
 msgstr "pilot"
 
-#: src/components/MissionSetup.tsx:1826
-#: src/components/MissionSetup.tsx:2229
-#: src/components/Multiplayer.tsx:430
+#: src/components/MissionSetup.tsx:1839
+#: src/components/MissionSetup.tsx:2239
+#: src/components/Multiplayer.tsx:461
 msgid "Pilot"
 msgstr "Pilot"
 
@@ -2774,7 +2787,7 @@ msgstr "Postingan"
 msgid "Posts and comments"
 msgstr "Postingan dan komentar"
 
-#: src/components/MissionSetup.tsx:1985
+#: src/components/MissionSetup.tsx:1995
 msgid "Preset"
 msgstr "Preset"
 
@@ -2817,7 +2830,7 @@ msgstr "Profil disimpan"
 msgid "Project members"
 msgstr "Anggota proyek"
 
-#: src/components/MissionSetup.tsx:1703
+#: src/components/MissionSetup.tsx:1705
 msgid "Public servers"
 msgstr "Server publik"
 
@@ -2862,7 +2875,7 @@ msgstr "Daftarkan ulang kunci sandi Anda di server ini"
 msgid "REARMED"
 msgstr "DIPERSENJATAI ULANG"
 
-#: src/components/MissionSetup.tsx:1681
+#: src/components/MissionSetup.tsx:1683
 msgid "Recent"
 msgstr "Terbaru"
 
@@ -2875,12 +2888,12 @@ msgstr "Direkomendasikan"
 msgid "Reconnecting ({retries})..."
 msgstr "Menghubungkan kembali ({retries})..."
 
-#: src/components/MissionSetup.tsx:2142
+#: src/components/MissionSetup.tsx:2152
 msgid "Record flights"
 msgstr "Rekam penerbangan"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:2136
+#: src/components/MissionSetup.tsx:2146
 msgid "Recording"
 msgstr "Perekaman"
 
@@ -2888,11 +2901,11 @@ msgstr "Perekaman"
 msgid "Recording saved"
 msgstr "Rekaman tersimpan"
 
-#: src/components/Multiplayer.tsx:533
+#: src/components/Multiplayer.tsx:564
 msgid "Red"
 msgstr "Merah"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Red bots"
 msgstr "Bot merah"
 
@@ -2909,7 +2922,7 @@ msgstr "Kurangi minat"
 msgid "Reference"
 msgstr "Referensi"
 
-#: src/components/Multiplayer.tsx:317
+#: src/components/Multiplayer.tsx:336
 msgid "Refresh"
 msgstr "Segarkan"
 
@@ -3008,7 +3021,7 @@ msgstr "Kirim ulang email"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:2394
+#: src/components/MissionSetup.tsx:2405
 msgid "Reset"
 msgstr "Setel ulang"
 
@@ -3037,11 +3050,11 @@ msgstr "Reset trim"
 msgid "Reset view"
 msgstr "Reset tampilan"
 
-#: src/components/MissionSetup.tsx:2012
+#: src/components/MissionSetup.tsx:2022
 msgid "Resolution"
 msgstr "Resolusi"
 
-#: src/components/MissionSetup.tsx:2273
+#: src/components/MissionSetup.tsx:2284
 msgid "Restart mission"
 msgstr "Mulai ulang misi"
 
@@ -3053,7 +3066,7 @@ msgstr "Hasil"
 msgid "Resume"
 msgstr "Lanjutkan"
 
-#: src/components/MissionSetup.tsx:2269
+#: src/components/MissionSetup.tsx:2280
 msgid "Resume mission"
 msgstr "Lanjutkan misi"
 
@@ -3369,12 +3382,12 @@ msgstr "Tetapkan asal dan tujuan"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:199
 #: src/components/GameCanvas.tsx:383
-#: src/components/MissionSetup.tsx:2295
-#: src/components/MissionSetup.tsx:2329
+#: src/components/MissionSetup.tsx:2306
+#: src/components/MissionSetup.tsx:2340
 msgid "Settings"
 msgstr "Pengaturan"
 
-#: src/components/MissionSetup.tsx:2062
+#: src/components/MissionSetup.tsx:2072
 msgid "Shadows"
 msgstr "Bayangan"
 
@@ -3436,13 +3449,21 @@ msgid "Sort"
 msgstr "Urutkan"
 
 #: src/components/MissionSetup.tsx:601
-#: src/components/MissionSetup.tsx:2339
+#: src/components/MissionSetup.tsx:2350
 msgid "Sound"
 msgstr "Suara"
 
 #: ../../../lib/web/src/components/options-menu.tsx:161
 msgid "Sources"
 msgstr "Sumber"
+
+#: src/components/Multiplayer.tsx:78
+msgid "Spaced"
+msgstr "Berjarak"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Spaced spawns"
+msgstr "Titik masuk berjarak"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:97
 msgid "Spacious"
@@ -3478,7 +3499,8 @@ msgstr "Stall, konfigurasi bersih (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "Stall, konfigurasi pendaratan (Vs0)"
 
-#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:1821
+#: src/components/MissionSetup.tsx:1851
 msgid "Start"
 msgstr "Mulai"
 
@@ -3527,9 +3549,9 @@ msgstr "Berlangganan"
 msgid "Sunday"
 msgstr "Minggu"
 
-#: src/components/MissionSetup.tsx:1828
-#: src/components/MissionSetup.tsx:2231
-#: src/components/Multiplayer.tsx:432
+#: src/components/MissionSetup.tsx:1841
+#: src/components/MissionSetup.tsx:2241
+#: src/components/Multiplayer.tsx:463
 msgid "Superhuman"
 msgstr "Manusia super"
 
@@ -3570,7 +3592,7 @@ msgstr "Tag"
 msgid "TALLY"
 msgstr "MUSUH TERLIHAT"
 
-#: src/components/MissionSetup.tsx:1806
+#: src/components/MissionSetup.tsx:1808
 msgid "Task"
 msgstr "Tugas"
 
@@ -3583,11 +3605,11 @@ msgid "TEAM"
 msgstr "TIM"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Teams"
 msgstr "Tim"
 
-#: src/components/Multiplayer.tsx:342
+#: src/components/Multiplayer.tsx:361
 msgid "Teams — red versus blue"
 msgstr "Tim — merah lawan biru"
 
@@ -3641,15 +3663,15 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Pengaturan Tema"
 
-#: src/components/MissionSetup.tsx:2252
+#: src/components/MissionSetup.tsx:2263
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Peramban ini tidak mendukung WebGL 2, jadi permainan tidak bisa berjalan — coba peramban lain."
 
-#: src/components/Multiplayer.tsx:256
+#: src/components/Multiplayer.tsx:275
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Lobi ini mengalihkan koneksi game Anda ke host lain ({redirectHost}). Lanjutkan hanya jika Anda memercayai server ini."
 
-#: src/components/MissionSetup.tsx:2256
+#: src/components/MissionSetup.tsx:2267
 msgid "This machine may be too slow for smooth flight."
 msgstr "Mesin ini mungkin terlalu lambat untuk penerbangan mulus."
 
@@ -3691,7 +3713,7 @@ msgstr "miringkan"
 msgid "Time"
 msgstr "Waktu"
 
-#: src/components/MissionSetup.tsx:1889
+#: src/components/MissionSetup.tsx:1899
 msgid "Time of day"
 msgstr "Waktu hari"
 
@@ -3747,7 +3769,7 @@ msgstr "Terlalu banyak permintaan"
 msgid "Top"
 msgstr "Atas"
 
-#: src/components/MissionSetup.tsx:2074
+#: src/components/MissionSetup.tsx:2084
 msgid "Tracers"
 msgstr "Peluru pelacak"
 
@@ -3823,7 +3845,7 @@ msgstr "Ketik untuk mencari pengguna"
 msgid "Type to search..."
 msgstr "Ketik untuk mencari..."
 
-#: src/components/MissionSetup.tsx:2004
+#: src/components/MissionSetup.tsx:2014
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3867,21 +3889,25 @@ msgstr "Amerika Serikat"
 msgid "Unknown"
 msgstr "Tidak diketahui"
 
-#: src/components/Multiplayer.tsx:79
-#: src/components/Multiplayer.tsx:405
+#: src/components/Multiplayer.tsx:404
+msgid "Unlimited"
+msgstr "Tak terbatas"
+
+#: src/components/Multiplayer.tsx:85
+#: src/components/Multiplayer.tsx:436
 msgid "Unlimited ammunition"
 msgstr "Amunisi tak terbatas"
 
-#: src/components/MissionSetup.tsx:1934
+#: src/components/MissionSetup.tsx:1944
 msgid "Unlimited ammunition (all players)"
 msgstr "Amunisi tak terbatas (semua pemain)"
 
-#: src/components/Multiplayer.tsx:80
-#: src/components/Multiplayer.tsx:415
+#: src/components/Multiplayer.tsx:86
+#: src/components/Multiplayer.tsx:446
 msgid "Unlimited fuel"
 msgstr "Bahan bakar tak terbatas"
 
-#: src/components/MissionSetup.tsx:1940
+#: src/components/MissionSetup.tsx:1950
 msgid "Unlimited fuel (all players)"
 msgstr "Bahan bakar tak terbatas (semua pemain)"
 
@@ -4027,7 +4053,7 @@ msgstr "senjata"
 msgid "Weapons"
 msgstr "Senjata"
 
-#: src/components/Multiplayer.tsx:347
+#: src/components/Multiplayer.tsx:366
 msgid "Weather"
 msgstr "Cuaca"
 
@@ -4052,12 +4078,12 @@ msgstr "Lipat sayap"
 msgid "WINS"
 msgstr "MENANG"
 
-#: src/components/Multiplayer.tsx:282
+#: src/components/Multiplayer.tsx:301
 msgid "World server"
 msgstr "Server dunia"
 
 #: src/components/MissionSetup.tsx:1513
-#: src/components/Multiplayer.tsx:143
+#: src/components/Multiplayer.tsx:159
 msgid "World server not reachable"
 msgstr "Server dunia tidak dapat dijangkau"
 
@@ -4107,7 +4133,7 @@ msgstr "Lampiran Anda akan hilang."
 msgid "Your flights appear here once you've flown one."
 msgstr "Penerbangan Anda akan muncul di sini setelah Anda menerbangkan satu."
 
-#: src/components/Multiplayer.tsx:484
+#: src/components/Multiplayer.tsx:515
 msgid "your offer"
 msgstr "tawaran Anda"
 

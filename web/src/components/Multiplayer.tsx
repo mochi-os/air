@@ -60,7 +60,10 @@ function Option({
 function deviations(parameters: Record<string, unknown> | undefined): string[] {
   const out: string[] = []
   if (!parameters) return out
-  if (parameters.missiles === false) out.push('guns')
+  if (parameters.weapons === 'guns' || (parameters.weapons == null && parameters.missiles === false)) out.push('guns')
+  if (parameters.weapons === 'fox2') out.push('fox2')
+  if (parameters.start === 'bvr') out.push('bvr')
+  if (parameters.spaced === true) out.push('spaced')
   if (parameters.tod === 'night') out.push('night')
   if (parameters.clouds === 'cumulus' || parameters.clouds === 'high_stratus' || parameters.clouds === 'mid_stratus' || parameters.clouds === 'low_stratus') out.push(String(parameters.clouds))
   const cheats = (parameters.cheats ?? {}) as Record<string, unknown>
@@ -70,6 +73,9 @@ function deviations(parameters: Record<string, unknown> | undefined): string[] {
 
 const DEVIATIONS: Record<string, React.ReactNode> = {
   guns: <Trans>Guns only</Trans>,
+  fox2: 'Fox 2',
+  bvr: 'BVR',
+  spaced: <Trans>Spaced</Trans>,
   night: <Trans>Night</Trans>,
   cumulus: <Trans>Cumulus</Trans>,
   high_stratus: <Trans>High stratus</Trans>,
@@ -99,8 +105,8 @@ export function Multiplayer({
   onJoin: (join: Join) => void
   pilot?: string // this player's stable offer token (#77)
   hideServer?: boolean // the server page owns the address and the callsign (Settings does): show only the match list and its controls
-  rules?: Record<string, boolean> // the creator's persisted match rules (#17): today just missiles (default on)
-  onRules?: (rules: Record<string, boolean>) => void
+  rules?: Record<string, unknown> // the creator's persisted match rules (#17/#32): the weapons class (missiles derived for old servers), spacing
+  onRules?: (rules: Record<string, unknown>) => void
   stores?: Record<string, { fixture: string; stores: string[] }> // the player's persisted loadout, sent as the join request (#17)
 }) {
   const { t } = useLingui()
@@ -115,13 +121,23 @@ export function Multiplayer({
   const [mode, setMode] = useState<'furball' | 'joust' | 'teams'>('furball')
   const [tod, setTod] = useState<'day' | 'night'>('day')
   const [clouds, setClouds] = useState('none')
-  // The missiles rule defaults ON and persists per-creator (#17, decided
+  // The weapons CLASS (#32) defaults Unlimited and persists per-creator; the
+  // missiles boolean is derived from it for old servers and old rows. The
+  // original note stands (#17, decided
   // 2026-08-05): the switch seeds from the saved rules and writes back.
-  const [missiles, setMissilesState] = useState(rules?.missiles !== false)
-  const setMissiles = (value: boolean) => {
-    setMissilesState(value)
-    onRules?.({ ...rules, missiles: value })
+  const [weapons, setWeaponsState] = useState<'guns' | 'fox2' | 'open'>(
+    rules?.weapons === 'guns' || rules?.weapons === 'fox2' || rules?.weapons === 'open'
+      ? rules.weapons
+      : rules?.missiles === false
+        ? 'guns'
+        : 'open'
+  )
+  const setWeapons = (value: 'guns' | 'fox2' | 'open') => {
+    setWeaponsState(value)
+    onRules?.({ ...rules, weapons: value, missiles: value !== 'guns' })
   }
+  const [start, setStart] = useState<'merge' | 'bvr'>('merge') // joust start (#32): today's merge, or the BVR pair across the derived separation
+  const [spaced, setSpaced] = useState(false) // open/teams (#32): spaced re-entries / anchored walls
   const [cheats, setCheats] = useState<Record<string, boolean>>({}) // invulnerable (humans only), ammunition, fuel
   const [bots, setBots] = useState<Record<string, number>>({ drone: 0, novice: 0, pilot: 0, ace: 0, superhuman: 0 }) // server-flown aircraft per skill level; drones cruise, the rest fight (also the 100-player verification lever)
   const [blueBots, setBlueBots] = useState<Record<string, number>>({ drone: 0, novice: 0, pilot: 0, ace: 0, superhuman: 0 }) // teams mode: the blue side's bots (the row above places red's)
@@ -216,7 +232,10 @@ export function Multiplayer({
         name,
         capacity: mode === 'joust' ? 2 : 0,
         // bots: per-level counts {drone, novice, ...}; the teams mode places them per side. Fuel in pounds; cheats: {invulnerable, ammunition, fuel}.
-        parameters: { tod, clouds, missiles, bots: mode === 'teams' ? { red: bots, blue: blueBots } : bots, fuel, cheats },
+        // weapons is the class rule (#32); missiles stays derived so old servers and old rows keep their meaning.
+        parameters: { tod, clouds, weapons, missiles: weapons !== 'guns',
+          ...(mode === 'joust' ? { start } : { spaced }),
+          bots: mode === 'teams' ? { red: bots, blue: blueBots } : bots, fuel, cheats },
       })
       enter({
         server: address,
@@ -379,12 +398,24 @@ export function Multiplayer({
                   <Trans>lb</Trans>
                 </span>
               </div>
-              <div className='flex items-center gap-2'>
-                <Switch id='rule-missiles' checked={missiles} onCheckedChange={setMissiles} />
-                <Label htmlFor='rule-missiles' className='font-normal'>
-                  <Trans>Missiles allowed</Trans>
-                </Label>
-              </div>
+              <RadioGroup value={weapons} onValueChange={(v) => setWeapons(v as 'guns' | 'fox2' | 'open')}>
+                <Option group={group + 'weapons'} value='guns' label={<Trans>Guns only</Trans>} />
+                <Option group={group + 'weapons'} value='fox2' label='Fox 2' />
+                <Option group={group + 'weapons'} value='open' label={<Trans>Unlimited</Trans>} />
+              </RadioGroup>
+              {mode === 'joust' ? (
+                <RadioGroup value={start} onValueChange={(v) => setStart(v as 'merge' | 'bvr')}>
+                  <Option group={group + 'start'} value='merge' label={<Trans>Merge — fight on at the pass</Trans>} />
+                  <Option group={group + 'start'} value='bvr' label={<Trans>BVR — weapons free from spawn</Trans>} />
+                </RadioGroup>
+              ) : (
+                <div className='flex items-center gap-2'>
+                  <Switch id='rule-spaced' checked={spaced} onCheckedChange={setSpaced} />
+                  <Label htmlFor='rule-spaced' className='font-normal'>
+                    {mode === 'teams' ? <Trans>Anchored sides</Trans> : <Trans>Spaced spawns</Trans>}
+                  </Label>
+                </div>
+              )}
               <div className='flex items-center gap-2'>
                 <Switch
                   id='rule-invulnerable'

@@ -51,7 +51,7 @@ msgid "{0} created “{1}”"
 msgstr "{0} je ustvaril(a) »{1}«"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:309
+#: src/components/Multiplayer.tsx:328
 msgid "{0} flying"
 msgstr "{0} v zraku"
 
@@ -72,7 +72,7 @@ msgstr "Predogled možnosti {0}"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:522
 msgid "{0}/{1} players"
 msgstr "{0}/{1} igralcev"
 
@@ -100,7 +100,7 @@ msgstr "Ime {entityLabel}"
 msgid "{entityLabel} name is required"
 msgstr "Ime {entityLabel} je obvezno"
 
-#: src/components/Multiplayer.tsx:215
+#: src/components/Multiplayer.tsx:231
 msgid "{name}'s match"
 msgstr "Tekma igralca {name}"
 
@@ -214,9 +214,9 @@ msgstr "Vrsta računa"
 msgid "Account verified"
 msgstr "Račun potrjen"
 
-#: src/components/MissionSetup.tsx:1827
-#: src/components/MissionSetup.tsx:2230
-#: src/components/Multiplayer.tsx:431
+#: src/components/MissionSetup.tsx:1840
+#: src/components/MissionSetup.tsx:2240
+#: src/components/Multiplayer.tsx:462
 msgid "Ace"
 msgstr "As"
 
@@ -318,7 +318,7 @@ msgstr "Dodajanje ..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Prilagodite videz in postavitev po svojih željah."
 
-#: src/components/MissionSetup.tsx:2068
+#: src/components/MissionSetup.tsx:2078
 msgid "Afterburner"
 msgstr "Dodatno zgorevanje"
 
@@ -363,6 +363,10 @@ msgstr "Prišlo je do napake"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:275
 msgid "An unexpected error occurred"
 msgstr "Prišlo je do nepričakovane napake"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Anchored sides"
+msgstr "Zasidrani strani"
 
 #: ../../../lib/web/src/features/accounts/types.ts:16
 msgid "Android push"
@@ -478,7 +482,7 @@ msgstr "Nazaj"
 msgid "Back to home"
 msgstr "Nazaj na začetek"
 
-#: src/components/MissionSetup.tsx:1819
+#: src/components/MissionSetup.tsx:1832
 msgid "Bandit"
 msgstr "Bandit"
 
@@ -524,11 +528,11 @@ msgstr "Blokirana navigacija do nezaupanja vredne povezave"
 msgid "Blocks"
 msgstr "Bloki"
 
-#: src/components/Multiplayer.tsx:543
+#: src/components/Multiplayer.tsx:574
 msgid "Blue"
 msgstr "Modri"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Blue bots"
 msgstr "Modri boti"
 
@@ -549,7 +553,7 @@ msgstr "Povečaj zanimanje"
 msgid "Border colour"
 msgstr "Barva obrobe"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Bots"
 msgstr "Boti"
 
@@ -581,12 +585,20 @@ msgstr "Gumb {i}"
 msgid "Buttons"
 msgstr "Gumbi"
 
+#: src/components/Multiplayer.tsx:409
+msgid "BVR — weapons free from spawn"
+msgstr "BVR — orožje prosto od začetka"
+
+#: src/components/MissionSetup.tsx:1828
+msgid "BVR, fight's on at start"
+msgstr "BVR, boj se začne takoj"
+
 #: src/components/GameCanvas.tsx:108
 msgid "CALL THE BALL"
 msgstr "JAVI ŽOGO"
 
-#: src/components/MissionSetup.tsx:2124
-#: src/components/Multiplayer.tsx:293
+#: src/components/MissionSetup.tsx:2134
+#: src/components/Multiplayer.tsx:312
 msgid "Callsign"
 msgstr "Klicni znak"
 
@@ -612,8 +624,8 @@ msgstr "Kamera ni na voljo"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:675
-#: src/components/Multiplayer.tsx:264
-#: src/components/Multiplayer.tsx:520
+#: src/components/Multiplayer.tsx:283
+#: src/components/Multiplayer.tsx:551
 msgid "Cancel"
 msgstr "Prekliči"
 
@@ -635,7 +647,7 @@ msgstr "Pokrov kabine"
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1855
+#: src/components/MissionSetup.tsx:1868
 msgid "Case I (day)"
 msgstr "Primer I (dan)"
 
@@ -643,7 +655,7 @@ msgstr "Primer I (dan)"
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1856
+#: src/components/MissionSetup.tsx:1869
 msgid "Case II (weather)"
 msgstr "Primer II (vreme)"
 
@@ -651,11 +663,11 @@ msgstr "Primer II (vreme)"
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1857
+#: src/components/MissionSetup.tsx:1870
 msgid "Case III (night)"
 msgstr "Primer III (noč)"
 
-#: src/components/MissionSetup.tsx:1863
+#: src/components/MissionSetup.tsx:1876
 msgid "Catapult"
 msgstr "Katapult"
 
@@ -689,7 +701,7 @@ msgid "Chat to everyone"
 msgstr "Klepet z vsemi"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1922
+#: src/components/MissionSetup.tsx:1932
 msgid "Cheats"
 msgstr "Goljufije"
 
@@ -736,7 +748,7 @@ msgstr "Izberite jezik"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:373
 msgid "Clear"
 msgstr "Počisti"
 
@@ -800,7 +812,7 @@ msgstr "Zapri iskanje"
 msgid "closer"
 msgstr "bližje"
 
-#: src/components/MissionSetup.tsx:1900
+#: src/components/MissionSetup.tsx:1910
 msgid "Clouds"
 msgstr "Oblaki"
 
@@ -858,10 +870,6 @@ msgstr "Komunikacija"
 msgid "Compact"
 msgstr "Kompaktno"
 
-#: src/components/MissionSetup.tsx:1886
-msgid "Conditions"
-msgstr "Razmere"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
 msgid "Configure option settings"
 msgstr "Konfigurirajte nastavitve možnosti"
@@ -875,11 +883,11 @@ msgstr "Konfigurirajte nastavitve pogleda"
 msgid "Confirm"
 msgstr "Potrdi"
 
-#: src/components/MissionSetup.tsx:1728
+#: src/components/MissionSetup.tsx:1730
 msgid "Connect"
 msgstr "Poveži"
 
-#: src/components/MissionSetup.tsx:1715
+#: src/components/MissionSetup.tsx:1717
 msgid "Connect to private server"
 msgstr "Poveži se z zasebnim strežnikom"
 
@@ -895,7 +903,7 @@ msgstr "Povezani računi"
 msgid "Connecting..."
 msgstr "Povezovanje..."
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:331
 msgid "Connecting…"
 msgstr "Povezovanje…"
 
@@ -916,7 +924,7 @@ msgid "Contextual information and details."
 msgstr "Kontekstualne informacije in podrobnosti."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:273
+#: src/components/Multiplayer.tsx:292
 msgid "Continue"
 msgstr "Nadaljuj"
 
@@ -940,7 +948,7 @@ msgstr "Kopiraj"
 msgid "Corner speed (best instant turn)"
 msgstr "Kotna hitrost (najboljši trenutni zavoj)"
 
-#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:248
 msgid "Could not create the match"
 msgstr "Tekme ni bilo mogoče ustvariti"
 
@@ -1003,16 +1011,16 @@ msgstr "Ustvari"
 msgid "Create {0}"
 msgstr "Ustvari {0}"
 
-#: src/components/Multiplayer.tsx:463
+#: src/components/Multiplayer.tsx:494
 msgid "Create and fly"
 msgstr "Ustvari in poleti"
 
-#: src/components/Multiplayer.tsx:327
+#: src/components/Multiplayer.tsx:346
 msgid "Create match"
 msgstr "Ustvari tekmo"
 
-#: src/components/MissionSetup.tsx:2287
-#: src/components/MissionSetup.tsx:2310
+#: src/components/MissionSetup.tsx:2298
+#: src/components/MissionSetup.tsx:2321
 msgid "Create mission"
 msgstr "Ustvari misijo"
 
@@ -1035,9 +1043,9 @@ msgstr "Ustvarjanje ..."
 msgid "Credits"
 msgstr "Zasluge"
 
-#: src/components/MissionSetup.tsx:1907
-#: src/components/Multiplayer.tsx:74
-#: src/components/Multiplayer.tsx:355
+#: src/components/MissionSetup.tsx:1917
+#: src/components/Multiplayer.tsx:80
+#: src/components/Multiplayer.tsx:374
 msgid "Cumulus"
 msgstr "Kumulus"
 
@@ -1079,8 +1087,8 @@ msgstr "Konflikt podatkov"
 msgid "Date"
 msgstr "Datum"
 
-#: src/components/MissionSetup.tsx:1895
-#: src/components/Multiplayer.tsx:350
+#: src/components/MissionSetup.tsx:1905
+#: src/components/Multiplayer.tsx:369
 msgid "Day"
 msgstr "Dan"
 
@@ -1195,7 +1203,7 @@ msgstr "Zaznaj iz spletnega brskalnika"
 msgid "Device"
 msgstr "Naprava"
 
-#: src/components/Multiplayer.tsx:253
+#: src/components/Multiplayer.tsx:272
 msgid "Different game host"
 msgstr "Drug gostitelj igre"
 
@@ -1231,7 +1239,7 @@ msgstr "Prekinjena povezava"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: ../../../lib/web/src/components/restore-banner.tsx:100
-#: src/components/MissionSetup.tsx:2259
+#: src/components/MissionSetup.tsx:2270
 msgid "Dismiss"
 msgstr "Opusti"
 
@@ -1244,13 +1252,13 @@ msgstr "Ponavljalnik zaslona"
 msgid "Displays the mobile sidebar."
 msgstr "Prikaže mobilno stransko vrstico."
 
-#: src/components/MissionSetup.tsx:2056
+#: src/components/MissionSetup.tsx:2066
 msgid "Distance LOD"
 msgstr "LOD razdalje"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:2401
+#: src/components/MissionSetup.tsx:2412
 msgid "Done"
 msgstr "Končano"
 
@@ -1272,7 +1280,7 @@ msgstr "PO VETRU 600 ČEVLJEV"
 msgid "Drag"
 msgstr "Povleci"
 
-#: src/components/Multiplayer.tsx:428
+#: src/components/Multiplayer.tsx:459
 msgid "Drone"
 msgstr "Dron"
 
@@ -1284,7 +1292,7 @@ msgstr "Dvojniki"
 msgid "Duration"
 msgstr "Trajanje"
 
-#: src/components/MissionSetup.tsx:2050
+#: src/components/MissionSetup.tsx:2060
 msgid "Dynamic resolution"
 msgstr "Dinamična ločljivost"
 
@@ -1331,7 +1339,7 @@ msgstr "Uredi izbrano kartico"
 msgid "Edit view"
 msgstr "Uredi pogled"
 
-#: src/components/MissionSetup.tsx:2030
+#: src/components/MissionSetup.tsx:2040
 msgid "Effects detail"
 msgstr "Podrobnost učinkov"
 
@@ -1360,7 +1368,7 @@ msgstr "ZASILNI ODMET"
 msgid "Emergency jettison (hold)"
 msgstr "Zasilni odmet (drži)"
 
-#: src/components/Multiplayer.tsx:490
+#: src/components/Multiplayer.tsx:521
 msgid "empty"
 msgstr "prazna"
 
@@ -1421,7 +1429,7 @@ msgstr "Izvozi"
 msgid "Extend flaps"
 msgstr "Zakrilca ven"
 
-#: src/components/MissionSetup.tsx:2022
+#: src/components/MissionSetup.tsx:2032
 msgid "Exterior detail"
 msgstr "Podrobnosti zunanjosti"
 
@@ -1602,8 +1610,8 @@ msgstr "Plavajoče"
 msgid "Flown"
 msgstr "Odletel"
 
-#: src/components/MissionSetup.tsx:2281
-#: src/components/MissionSetup.tsx:2324
+#: src/components/MissionSetup.tsx:2292
+#: src/components/MissionSetup.tsx:2335
 msgid "Fly"
 msgstr "Leti"
 
@@ -1611,12 +1619,12 @@ msgstr "Leti"
 msgid "Fly again"
 msgstr "Poleti znova"
 
-#: src/components/MissionSetup.tsx:2080
+#: src/components/MissionSetup.tsx:2090
 msgid "Framerate"
 msgstr "Hitrost sličic"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1812
+#: src/components/MissionSetup.tsx:1814
 msgid "Free flight"
 msgstr "Prosti let"
 
@@ -1641,7 +1649,7 @@ msgstr "Od"
 msgid "From theme"
 msgstr "Iz teme"
 
-#: src/components/Multiplayer.tsx:366
+#: src/components/Multiplayer.tsx:385
 msgid "Fuel"
 msgstr "Gorivo"
 
@@ -1694,7 +1702,7 @@ msgstr "Podvozje"
 msgid "GEAR"
 msgstr "PODVOZJE"
 
-#: src/components/MissionSetup.tsx:2333
+#: src/components/MissionSetup.tsx:2344
 msgid "General"
 msgstr "Splošno"
 
@@ -1724,7 +1732,7 @@ msgstr "Pojdi na stran {pageNumber}"
 msgid "Go to previous page"
 msgstr "Pojdi na prejšnjo stran"
 
-#: src/components/MissionSetup.tsx:2336
+#: src/components/MissionSetup.tsx:2347
 msgid "Graphics"
 msgstr "Grafika"
 
@@ -1753,11 +1761,12 @@ msgstr "Top"
 msgid "GUN"
 msgstr "TOP"
 
-#: src/components/Multiplayer.tsx:72
+#: src/components/Multiplayer.tsx:75
+#: src/components/Multiplayer.tsx:402
 msgid "Guns only"
 msgstr "Samo topovi"
 
-#: src/components/MissionSetup.tsx:2254
+#: src/components/MissionSetup.tsx:2265
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Strojno pospeševanje grafike je izklopljeno — preverite nastavitve brskalnika ali grafične gonilnike."
 
@@ -1777,18 +1786,18 @@ msgstr "Skrij"
 msgid "Hide password"
 msgstr "Skrij geslo"
 
-#: src/components/MissionSetup.tsx:2002
+#: src/components/MissionSetup.tsx:2012
 msgid "High"
 msgstr "Visoko"
 
-#: src/components/MissionSetup.tsx:1908
-#: src/components/Multiplayer.tsx:75
-#: src/components/Multiplayer.tsx:356
+#: src/components/MissionSetup.tsx:1918
+#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:375
 msgid "High stratus"
 msgstr "Visoki stratus"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:2300
+#: src/components/MissionSetup.tsx:2311
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Zgodovina"
@@ -1838,7 +1847,7 @@ msgid "Import"
 msgstr "Uvozi"
 
 #: src/components/MissionSetup.tsx:1563
-#: src/components/MissionSetup.tsx:1852
+#: src/components/MissionSetup.tsx:1865
 msgid "In air"
 msgstr "V zraku"
 
@@ -1882,7 +1891,7 @@ msgstr "Neveljavna potrditvena koda"
 msgid "Invert pitch"
 msgstr "Obrni naklon"
 
-#: src/components/Multiplayer.tsx:78
+#: src/components/Multiplayer.tsx:84
 msgid "Invulnerable"
 msgstr "Neranljiv"
 
@@ -1890,8 +1899,8 @@ msgstr "Neranljiv"
 msgid "INVULNERABLE"
 msgstr "NERANLJIVOST"
 
-#: src/components/MissionSetup.tsx:1928
-#: src/components/Multiplayer.tsx:395
+#: src/components/MissionSetup.tsx:1938
+#: src/components/Multiplayer.tsx:426
 msgid "Invulnerable (human players only)"
 msgstr "Neranljivost (samo človeški igralci)"
 
@@ -1913,12 +1922,12 @@ msgstr "Odvrzi rezervoarje"
 msgid "JETTISON: GEAR"
 msgstr "ODMET: PODVOZJE"
 
-#: src/components/Multiplayer.tsx:555
+#: src/components/Multiplayer.tsx:586
 msgid "Join"
 msgstr "Pridruži se"
 
-#: src/components/MissionSetup.tsx:1676
-#: src/components/MissionSetup.tsx:2291
+#: src/components/MissionSetup.tsx:1678
+#: src/components/MissionSetup.tsx:2302
 msgid "Join server"
 msgstr "Pridruži se strežniku"
 
@@ -1927,20 +1936,20 @@ msgid "JOINED"
 msgstr "SE JE PRIDRUŽIL"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:2236
-#: src/components/Multiplayer.tsx:489
+#: src/components/MissionSetup.tsx:2246
+#: src/components/Multiplayer.tsx:520
 msgid "Joust"
 msgstr "Dvoboj"
 
-#: src/components/Multiplayer.tsx:341
+#: src/components/Multiplayer.tsx:360
 msgid "Joust — 1v1, first kill wins"
 msgstr "Dvoboj — 1v1, zmaga prva sestrelitev"
 
-#: src/components/MissionSetup.tsx:1813
+#: src/components/MissionSetup.tsx:1815
 msgid "Joust 1v1"
 msgstr "Dvoboj 1v1"
 
-#: src/components/MissionSetup.tsx:2342
+#: src/components/MissionSetup.tsx:2353
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1956,7 +1965,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Bližnjice na tipkovnici"
 
-#: src/components/MissionSetup.tsx:2345
+#: src/components/MissionSetup.tsx:2356
 msgid "Keys"
 msgstr "Tipke"
 
@@ -2013,7 +2022,7 @@ msgstr "vzlet / cilj"
 msgid "Layout"
 msgstr "Postavitev"
 
-#: src/components/Multiplayer.tsx:379
+#: src/components/Multiplayer.tsx:398
 msgid "lb"
 msgstr "lb"
 
@@ -2022,7 +2031,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Več informacij"
 
-#: src/components/MissionSetup.tsx:1755
+#: src/components/MissionSetup.tsx:1757
 msgid "Leave server"
 msgstr "Zapusti strežnik"
 
@@ -2107,7 +2116,7 @@ msgstr "NALAGANJE NI USPELO"
 msgid "Loading..."
 msgstr "Nalaganje..."
 
-#: src/components/MissionSetup.tsx:1950
+#: src/components/MissionSetup.tsx:1960
 msgid "Loadout"
 msgstr "Oborožitev"
 
@@ -2158,13 +2167,13 @@ msgstr "Pogled desno"
 msgid "Look up"
 msgstr "Pogled gor"
 
-#: src/components/MissionSetup.tsx:1998
+#: src/components/MissionSetup.tsx:2008
 msgid "Low"
 msgstr "Nizko"
 
-#: src/components/MissionSetup.tsx:1910
-#: src/components/Multiplayer.tsx:77
-#: src/components/Multiplayer.tsx:358
+#: src/components/MissionSetup.tsx:1920
+#: src/components/Multiplayer.tsx:83
+#: src/components/Multiplayer.tsx:377
 msgid "Low stratus"
 msgstr "Nizki stratus"
 
@@ -2202,11 +2211,11 @@ msgstr "Označi vse kot prebrano"
 msgid "Master"
 msgstr "Glavna"
 
-#: src/components/Multiplayer.tsx:337
+#: src/components/Multiplayer.tsx:356
 msgid "Match type"
 msgstr "Vrsta tekme"
 
-#: src/components/MissionSetup.tsx:1750
+#: src/components/MissionSetup.tsx:1752
 msgid "Matches"
 msgstr "Tekme"
 
@@ -2219,7 +2228,7 @@ msgid "MCP server"
 msgstr "Strežnik MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:2000
+#: src/components/MissionSetup.tsx:2010
 msgid "Medium"
 msgstr "Srednje"
 
@@ -2231,6 +2240,14 @@ msgstr "meni"
 #: src/components/MissionSetup.tsx:261
 msgid "Menu"
 msgstr "Meni"
+
+#: src/components/Multiplayer.tsx:408
+msgid "Merge — fight on at the pass"
+msgstr "Srečanje — boj se začne ob srečanju"
+
+#: src/components/MissionSetup.tsx:1827
+msgid "Merge, fight's on at the pass"
+msgstr "Srečanje, boj se začne ob srečanju"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx:35
 msgid "Message"
@@ -2252,9 +2269,9 @@ msgstr "Piši svoji ekipi"
 msgid "Metric"
 msgstr "Metrične enote"
 
-#: src/components/MissionSetup.tsx:1909
-#: src/components/Multiplayer.tsx:76
-#: src/components/Multiplayer.tsx:357
+#: src/components/MissionSetup.tsx:1919
+#: src/components/Multiplayer.tsx:82
+#: src/components/Multiplayer.tsx:376
 msgid "Mid stratus"
 msgstr "Srednji stratus"
 
@@ -2277,10 +2294,6 @@ msgstr "RAKETA"
 #: src/components/MissionSetup.tsx:1371
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Model izstrelka <0>“AIM-120C AMRAAM”</0> avtorja <1>Pippa</1> (Sketchfab), licencirano pod <2>CC BY 4.0</2>. Spremenjeno: novo merilo, preusmerjeno in centrirano za namestitev."
-
-#: src/components/Multiplayer.tsx:385
-msgid "Missiles allowed"
-msgstr "Rakete dovoljene"
 
 #: ../../../lib/web/src/features/accounts/types.ts:23
 msgid "Mochi web"
@@ -2307,7 +2320,7 @@ msgstr "Več možnosti"
 msgid "Move it…"
 msgstr "Premaknite ga…"
 
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:257
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Večigralski način potrebuje WebTransport, ki ga ta brskalnik še ne podpira."
 
@@ -2347,9 +2360,9 @@ msgstr "Nova igra"
 msgid "Next image"
 msgstr "Naslednja slika"
 
-#: src/components/MissionSetup.tsx:1896
-#: src/components/Multiplayer.tsx:73
-#: src/components/Multiplayer.tsx:351
+#: src/components/MissionSetup.tsx:1906
+#: src/components/Multiplayer.tsx:79
+#: src/components/Multiplayer.tsx:370
 msgid "Night"
 msgstr "Noč"
 
@@ -2401,7 +2414,7 @@ msgstr "Ni ujemajočih objektov"
 msgid "No notifications yet"
 msgstr "Še ni obvestil"
 
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No open matches — create one."
 msgstr "Ni odprtih tekem — ustvari novo."
 
@@ -2464,7 +2477,7 @@ msgid "No views"
 msgstr "Brez ogledov"
 
 #: src/components/MissionSetup.tsx:1525
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No world server."
 msgstr "Ni strežnika sveta."
 
@@ -2489,7 +2502,7 @@ msgstr "BREZ OCENE"
 #: src/components/MissionSetup.tsx:469
 #: src/components/MissionSetup.tsx:539
 #: src/components/MissionSetup.tsx:1077
-#: src/components/MissionSetup.tsx:1906
+#: src/components/MissionSetup.tsx:1916
 msgid "None"
 msgstr "Brez"
 
@@ -2534,9 +2547,9 @@ msgstr "Obvestila"
 msgid "Notifications: {0}"
 msgstr "Obvestila: {0}"
 
-#: src/components/MissionSetup.tsx:1825
-#: src/components/MissionSetup.tsx:2228
-#: src/components/Multiplayer.tsx:429
+#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:2238
+#: src/components/Multiplayer.tsx:460
 msgid "Novice"
 msgstr "Začetnik"
 
@@ -2546,7 +2559,7 @@ msgstr "Začetnik"
 msgid "Number"
 msgstr "Številka"
 
-#: src/components/MissionSetup.tsx:2038
+#: src/components/MissionSetup.tsx:2048
 msgid "Ocean detail"
 msgstr "Podrobnosti oceana"
 
@@ -2563,12 +2576,12 @@ msgid "On"
 msgstr "Vklopljeno"
 
 #: src/components/MissionSetup.tsx:1565
-#: src/components/MissionSetup.tsx:1854
+#: src/components/MissionSetup.tsx:1867
 msgid "On carrier"
 msgstr "Na letalonosilki"
 
 #: src/components/MissionSetup.tsx:1564
-#: src/components/MissionSetup.tsx:1853
+#: src/components/MissionSetup.tsx:1866
 msgid "On runway"
 msgstr "Na vzletišču"
 
@@ -2576,11 +2589,11 @@ msgstr "Na vzletišču"
 msgid "Oops! Page Not Found!"
 msgstr "Ups! Strani ni bilo mogoče najti!"
 
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Open"
 msgstr "Odpri"
 
-#: src/components/Multiplayer.tsx:340
+#: src/components/Multiplayer.tsx:359
 msgid "Open — anyone may join or leave"
 msgstr "Odprta — vsakdo se lahko pridruži ali odide"
 
@@ -2705,14 +2718,14 @@ msgid "Pick a date"
 msgstr "Izberite datum"
 
 #: src/components/MissionSetup.tsx:1467
-#: src/components/Multiplayer.tsx:130
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:146
+#: src/components/Multiplayer.tsx:317
 msgid "pilot"
 msgstr "pilot"
 
-#: src/components/MissionSetup.tsx:1826
-#: src/components/MissionSetup.tsx:2229
-#: src/components/Multiplayer.tsx:430
+#: src/components/MissionSetup.tsx:1839
+#: src/components/MissionSetup.tsx:2239
+#: src/components/Multiplayer.tsx:461
 msgid "Pilot"
 msgstr "Pilot"
 
@@ -2774,7 +2787,7 @@ msgstr "Objave"
 msgid "Posts and comments"
 msgstr "Objave in komentarji"
 
-#: src/components/MissionSetup.tsx:1985
+#: src/components/MissionSetup.tsx:1995
 msgid "Preset"
 msgstr "Prednastavitev"
 
@@ -2817,7 +2830,7 @@ msgstr "Profil shranjen"
 msgid "Project members"
 msgstr "Člani projekta"
 
-#: src/components/MissionSetup.tsx:1703
+#: src/components/MissionSetup.tsx:1705
 msgid "Public servers"
 msgstr "Javni strežniki"
 
@@ -2862,7 +2875,7 @@ msgstr "Znova registrirajte svoje ključe za dostop na tem strežniku"
 msgid "REARMED"
 msgstr "PONOVNO OBOROŽEN"
 
-#: src/components/MissionSetup.tsx:1681
+#: src/components/MissionSetup.tsx:1683
 msgid "Recent"
 msgstr "Nedavno"
 
@@ -2875,12 +2888,12 @@ msgstr "Priporočeno"
 msgid "Reconnecting ({retries})..."
 msgstr "Ponovno povezovanje ({retries})..."
 
-#: src/components/MissionSetup.tsx:2142
+#: src/components/MissionSetup.tsx:2152
 msgid "Record flights"
 msgstr "Snemaj lete"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:2136
+#: src/components/MissionSetup.tsx:2146
 msgid "Recording"
 msgstr "Snemanje"
 
@@ -2888,11 +2901,11 @@ msgstr "Snemanje"
 msgid "Recording saved"
 msgstr "Posnetek je shranjen"
 
-#: src/components/Multiplayer.tsx:533
+#: src/components/Multiplayer.tsx:564
 msgid "Red"
 msgstr "Rdeči"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Red bots"
 msgstr "Rdeči boti"
 
@@ -2909,7 +2922,7 @@ msgstr "Zmanjšaj zanimanje"
 msgid "Reference"
 msgstr "Referenca"
 
-#: src/components/Multiplayer.tsx:317
+#: src/components/Multiplayer.tsx:336
 msgid "Refresh"
 msgstr "Osveži"
 
@@ -3008,7 +3021,7 @@ msgstr "Znova pošlji e-pošto"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:2394
+#: src/components/MissionSetup.tsx:2405
 msgid "Reset"
 msgstr "Ponastavi"
 
@@ -3037,11 +3050,11 @@ msgstr "Ponastavi trim"
 msgid "Reset view"
 msgstr "Ponastavi pogled"
 
-#: src/components/MissionSetup.tsx:2012
+#: src/components/MissionSetup.tsx:2022
 msgid "Resolution"
 msgstr "Resolucija"
 
-#: src/components/MissionSetup.tsx:2273
+#: src/components/MissionSetup.tsx:2284
 msgid "Restart mission"
 msgstr "Znova zaženi misijo"
 
@@ -3053,7 +3066,7 @@ msgstr "Rezultat"
 msgid "Resume"
 msgstr "Nadaljuj"
 
-#: src/components/MissionSetup.tsx:2269
+#: src/components/MissionSetup.tsx:2280
 msgid "Resume mission"
 msgstr "Nadaljuj misijo"
 
@@ -3369,12 +3382,12 @@ msgstr "Nastavi izvor in cilj"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:199
 #: src/components/GameCanvas.tsx:383
-#: src/components/MissionSetup.tsx:2295
-#: src/components/MissionSetup.tsx:2329
+#: src/components/MissionSetup.tsx:2306
+#: src/components/MissionSetup.tsx:2340
 msgid "Settings"
 msgstr "Nastavitve"
 
-#: src/components/MissionSetup.tsx:2062
+#: src/components/MissionSetup.tsx:2072
 msgid "Shadows"
 msgstr "Sence"
 
@@ -3436,13 +3449,21 @@ msgid "Sort"
 msgstr "Razvrsti"
 
 #: src/components/MissionSetup.tsx:601
-#: src/components/MissionSetup.tsx:2339
+#: src/components/MissionSetup.tsx:2350
 msgid "Sound"
 msgstr "Zvok"
 
 #: ../../../lib/web/src/components/options-menu.tsx:161
 msgid "Sources"
 msgstr "Viri"
+
+#: src/components/Multiplayer.tsx:78
+msgid "Spaced"
+msgstr "Razmaknjeno"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Spaced spawns"
+msgstr "Razmaknjeni vstopi"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:97
 msgid "Spacious"
@@ -3478,7 +3499,8 @@ msgstr "Prevlek, čista konfiguracija (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "Prevlek, pristajalna konfiguracija (Vs0)"
 
-#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:1821
+#: src/components/MissionSetup.tsx:1851
 msgid "Start"
 msgstr "Začni"
 
@@ -3527,9 +3549,9 @@ msgstr "Naroči se"
 msgid "Sunday"
 msgstr "Nedelja"
 
-#: src/components/MissionSetup.tsx:1828
-#: src/components/MissionSetup.tsx:2231
-#: src/components/Multiplayer.tsx:432
+#: src/components/MissionSetup.tsx:1841
+#: src/components/MissionSetup.tsx:2241
+#: src/components/Multiplayer.tsx:463
 msgid "Superhuman"
 msgstr "Nadčloveški"
 
@@ -3570,7 +3592,7 @@ msgstr "Oznake"
 msgid "TALLY"
 msgstr "VIDIM SOVRAŽNIKA"
 
-#: src/components/MissionSetup.tsx:1806
+#: src/components/MissionSetup.tsx:1808
 msgid "Task"
 msgstr "Naloga"
 
@@ -3583,11 +3605,11 @@ msgid "TEAM"
 msgstr "EKIPA"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Teams"
 msgstr "Ekipe"
 
-#: src/components/Multiplayer.tsx:342
+#: src/components/Multiplayer.tsx:361
 msgid "Teams — red versus blue"
 msgstr "Ekipe — rdeči proti modrim"
 
@@ -3641,15 +3663,15 @@ msgstr "Tema"
 msgid "Theme Settings"
 msgstr "Nastavitve teme"
 
-#: src/components/MissionSetup.tsx:2252
+#: src/components/MissionSetup.tsx:2263
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Ta brskalnik ne podpira WebGL 2, zato igra ne more teči — poskusite drug brskalnik."
 
-#: src/components/Multiplayer.tsx:256
+#: src/components/Multiplayer.tsx:275
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Ta lobi pošilja vašo igralno povezavo drugemu gostitelju ({redirectHost}). Nadaljujte samo, če zaupate temu strežniku."
 
-#: src/components/MissionSetup.tsx:2256
+#: src/components/MissionSetup.tsx:2267
 msgid "This machine may be too slow for smooth flight."
 msgstr "Ta stroj je morda prepočasen za gladek let."
 
@@ -3691,7 +3713,7 @@ msgstr "nagibanje"
 msgid "Time"
 msgstr "Čas"
 
-#: src/components/MissionSetup.tsx:1889
+#: src/components/MissionSetup.tsx:1899
 msgid "Time of day"
 msgstr "Čas dneva"
 
@@ -3747,7 +3769,7 @@ msgstr "Preveč zahtev"
 msgid "Top"
 msgstr "Vrh"
 
-#: src/components/MissionSetup.tsx:2074
+#: src/components/MissionSetup.tsx:2084
 msgid "Tracers"
 msgstr "Sledilni naboji"
 
@@ -3823,7 +3845,7 @@ msgstr "Vnesi za iskanje uporabnikov"
 msgid "Type to search..."
 msgstr "Vnesi za iskanje..."
 
-#: src/components/MissionSetup.tsx:2004
+#: src/components/MissionSetup.tsx:2014
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3867,21 +3889,25 @@ msgstr "Združene države"
 msgid "Unknown"
 msgstr "Neznano"
 
-#: src/components/Multiplayer.tsx:79
-#: src/components/Multiplayer.tsx:405
+#: src/components/Multiplayer.tsx:404
+msgid "Unlimited"
+msgstr "Neomejeno"
+
+#: src/components/Multiplayer.tsx:85
+#: src/components/Multiplayer.tsx:436
 msgid "Unlimited ammunition"
 msgstr "Neomejeno strelivo"
 
-#: src/components/MissionSetup.tsx:1934
+#: src/components/MissionSetup.tsx:1944
 msgid "Unlimited ammunition (all players)"
 msgstr "Neomejeno strelivo (vsi igralci)"
 
-#: src/components/Multiplayer.tsx:80
-#: src/components/Multiplayer.tsx:415
+#: src/components/Multiplayer.tsx:86
+#: src/components/Multiplayer.tsx:446
 msgid "Unlimited fuel"
 msgstr "Neomejeno gorivo"
 
-#: src/components/MissionSetup.tsx:1940
+#: src/components/MissionSetup.tsx:1950
 msgid "Unlimited fuel (all players)"
 msgstr "Neomejeno gorivo (vsi igralci)"
 
@@ -4027,7 +4053,7 @@ msgstr "orožje"
 msgid "Weapons"
 msgstr "Orožje"
 
-#: src/components/Multiplayer.tsx:347
+#: src/components/Multiplayer.tsx:366
 msgid "Weather"
 msgstr "Vreme"
 
@@ -4052,12 +4078,12 @@ msgstr "Zlaganje kril"
 msgid "WINS"
 msgstr "ZMAGA"
 
-#: src/components/Multiplayer.tsx:282
+#: src/components/Multiplayer.tsx:301
 msgid "World server"
 msgstr "Strežnik sveta"
 
 #: src/components/MissionSetup.tsx:1513
-#: src/components/Multiplayer.tsx:143
+#: src/components/Multiplayer.tsx:159
 msgid "World server not reachable"
 msgstr "Strežnik sveta ni dosegljiv"
 
@@ -4107,7 +4133,7 @@ msgstr "Vaše priloge bodo izgubljene."
 msgid "Your flights appear here once you've flown one."
 msgstr "Vaši leti se prikažejo tukaj, ko opravite prvega."
 
-#: src/components/Multiplayer.tsx:484
+#: src/components/Multiplayer.tsx:515
 msgid "your offer"
 msgstr "vaša ponudba"
 

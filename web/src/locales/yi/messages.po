@@ -51,7 +51,7 @@ msgid "{0} created “{1}”"
 msgstr "{0} האָט באַשאַפֿן „{1}“"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:309
+#: src/components/Multiplayer.tsx:328
 msgid "{0} flying"
 msgstr "{0} אין דער לופֿטן"
 
@@ -72,7 +72,7 @@ msgstr "פֿאָרױסבליק פֿון {0} אָפּציע"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:522
 msgid "{0}/{1} players"
 msgstr "{0}/{1} שפּילער"
 
@@ -100,7 +100,7 @@ msgstr "{entityLabel} נאָמען"
 msgid "{entityLabel} name is required"
 msgstr "{entityLabel}־נאָמען איז נײטיק"
 
-#: src/components/Multiplayer.tsx:215
+#: src/components/Multiplayer.tsx:231
 msgid "{name}'s match"
 msgstr "{name}ס שפּיל"
 
@@ -214,9 +214,9 @@ msgstr "קאָנטע סאָרט"
 msgid "Account verified"
 msgstr "קאָנטע באַשטעטיקט"
 
-#: src/components/MissionSetup.tsx:1827
-#: src/components/MissionSetup.tsx:2230
-#: src/components/Multiplayer.tsx:431
+#: src/components/MissionSetup.tsx:1840
+#: src/components/MissionSetup.tsx:2240
+#: src/components/Multiplayer.tsx:462
 msgid "Ace"
 msgstr "מײַסטער"
 
@@ -318,7 +318,7 @@ msgstr "צולייגן..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "פּאַסט אָן דעם אויסזען און לייאַוט צו אײַער געשמאַק."
 
-#: src/components/MissionSetup.tsx:2068
+#: src/components/MissionSetup.tsx:2078
 msgid "Afterburner"
 msgstr "נאָכברענער"
 
@@ -363,6 +363,10 @@ msgstr "אַ פֿעלער איז פֿאָרגעקומען"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:275
 msgid "An unexpected error occurred"
 msgstr "אַן אומדערוואַרטעטער פֿעלער איז פֿאָרגעקומען"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Anchored sides"
+msgstr "פֿאַראַנקערטע זײַטן"
 
 #: ../../../lib/web/src/features/accounts/types.ts:16
 msgid "Android push"
@@ -478,7 +482,7 @@ msgstr "צוריק"
 msgid "Back to home"
 msgstr "צוריק צום הויז"
 
-#: src/components/MissionSetup.tsx:1819
+#: src/components/MissionSetup.tsx:1832
 msgid "Bandit"
 msgstr "באַנדיט"
 
@@ -524,11 +528,11 @@ msgstr "געבלאָקירט נאַוויגאַציע צו אומגעטרויט�
 msgid "Blocks"
 msgstr "Blocks"
 
-#: src/components/Multiplayer.tsx:543
+#: src/components/Multiplayer.tsx:574
 msgid "Blue"
 msgstr "בלוי"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Blue bots"
 msgstr "בלויע באָטס"
 
@@ -549,7 +553,7 @@ msgstr "פֿאַרשטאַרקן אינטערעס"
 msgid "Border colour"
 msgstr "ראַנד פֿאַרב"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Bots"
 msgstr "באָטס"
 
@@ -581,12 +585,20 @@ msgstr "קנאָפּ {i}"
 msgid "Buttons"
 msgstr "קנעפּ"
 
+#: src/components/Multiplayer.tsx:409
+msgid "BVR — weapons free from spawn"
+msgstr "BVR — וואָפֿן פֿרײַ פֿון אָנהייב"
+
+#: src/components/MissionSetup.tsx:1828
+msgid "BVR, fight's on at start"
+msgstr "BVR, דער קאַמף הייבט זיך אָן גלײַך"
+
 #: src/components/GameCanvas.tsx:108
 msgid "CALL THE BALL"
 msgstr "מעלד די באַלל"
 
-#: src/components/MissionSetup.tsx:2124
-#: src/components/Multiplayer.tsx:293
+#: src/components/MissionSetup.tsx:2134
+#: src/components/Multiplayer.tsx:312
 msgid "Callsign"
 msgstr "רוף־נאָמען"
 
@@ -612,8 +624,8 @@ msgstr "די קאַמערע איז נישט פֿאַראַן"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:675
-#: src/components/Multiplayer.tsx:264
-#: src/components/Multiplayer.tsx:520
+#: src/components/Multiplayer.tsx:283
+#: src/components/Multiplayer.tsx:551
 msgid "Cancel"
 msgstr "אָפּזאָגן"
 
@@ -635,7 +647,7 @@ msgstr "קאַנאָפּי"
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1855
+#: src/components/MissionSetup.tsx:1868
 msgid "Case I (day)"
 msgstr "פאַל I (טאָג)"
 
@@ -643,7 +655,7 @@ msgstr "פאַל I (טאָג)"
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1856
+#: src/components/MissionSetup.tsx:1869
 msgid "Case II (weather)"
 msgstr "פאַל II (וועטער)"
 
@@ -651,11 +663,11 @@ msgstr "פאַל II (וועטער)"
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1857
+#: src/components/MissionSetup.tsx:1870
 msgid "Case III (night)"
 msgstr "פאַל III (נאַכט)"
 
-#: src/components/MissionSetup.tsx:1863
+#: src/components/MissionSetup.tsx:1876
 msgid "Catapult"
 msgstr "קאַטאַפּולט"
 
@@ -689,7 +701,7 @@ msgid "Chat to everyone"
 msgstr "שמועס מיט אַלעמען"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1922
+#: src/components/MissionSetup.tsx:1932
 msgid "Cheats"
 msgstr "טשיטס"
 
@@ -736,7 +748,7 @@ msgstr "קלײַבט שפּראַך"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:373
 msgid "Clear"
 msgstr "רייניקן"
 
@@ -800,7 +812,7 @@ msgstr "פֿאַרמאַכן זוכן"
 msgid "closer"
 msgstr "נענטער"
 
-#: src/components/MissionSetup.tsx:1900
+#: src/components/MissionSetup.tsx:1910
 msgid "Clouds"
 msgstr "וואָלקנס"
 
@@ -858,10 +870,6 @@ msgstr "קאָמוניקאַציע"
 msgid "Compact"
 msgstr "קאָמפּאַקט"
 
-#: src/components/MissionSetup.tsx:1886
-msgid "Conditions"
-msgstr "באדינגונגען"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
 msgid "Configure option settings"
 msgstr "קאָנפֿיגורירן אָפּציע אײַנשטעלונגען"
@@ -875,11 +883,11 @@ msgstr "קאָנפֿיגורירן זעהן אײַנשטעלונגען"
 msgid "Confirm"
 msgstr "באַשטעטיקן"
 
-#: src/components/MissionSetup.tsx:1728
+#: src/components/MissionSetup.tsx:1730
 msgid "Connect"
 msgstr "פֿאַרבינדן"
 
-#: src/components/MissionSetup.tsx:1715
+#: src/components/MissionSetup.tsx:1717
 msgid "Connect to private server"
 msgstr "פֿאַרבינדן צו אַ פּריוואַטן סערווער"
 
@@ -895,7 +903,7 @@ msgstr "פֿאַרבונדענע קאָנטעס"
 msgid "Connecting..."
 msgstr "פֿאַרבינדט..."
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:331
 msgid "Connecting…"
 msgstr "פֿאַרבינדט זיך…"
 
@@ -916,7 +924,7 @@ msgid "Contextual information and details."
 msgstr "קאָנטעקסטועלע אינפֿאָרמאַציע און פּרטים."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:273
+#: src/components/Multiplayer.tsx:292
 msgid "Continue"
 msgstr "ממשיך"
 
@@ -940,7 +948,7 @@ msgstr "קאָפּירן"
 msgid "Corner speed (best instant turn)"
 msgstr "װינקל־גיכקײט (בעסטער מאָמענטאַנער דריי)"
 
-#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:248
 msgid "Could not create the match"
 msgstr "מען האָט נישט געקענט שאַפֿן דעם מאַטש"
 
@@ -1003,16 +1011,16 @@ msgstr "באַשאַפֿן"
 msgid "Create {0}"
 msgstr "שאַף {0}"
 
-#: src/components/Multiplayer.tsx:463
+#: src/components/Multiplayer.tsx:494
 msgid "Create and fly"
 msgstr "שאַף און פֿלי"
 
-#: src/components/Multiplayer.tsx:327
+#: src/components/Multiplayer.tsx:346
 msgid "Create match"
 msgstr "שאַף אַ מאַטש"
 
-#: src/components/MissionSetup.tsx:2287
-#: src/components/MissionSetup.tsx:2310
+#: src/components/MissionSetup.tsx:2298
+#: src/components/MissionSetup.tsx:2321
 msgid "Create mission"
 msgstr "שאַפֿן מיסיע"
 
@@ -1035,9 +1043,9 @@ msgstr "באַשאַפֿן..."
 msgid "Credits"
 msgstr "קרעדיטן"
 
-#: src/components/MissionSetup.tsx:1907
-#: src/components/Multiplayer.tsx:74
-#: src/components/Multiplayer.tsx:355
+#: src/components/MissionSetup.tsx:1917
+#: src/components/Multiplayer.tsx:80
+#: src/components/Multiplayer.tsx:374
 msgid "Cumulus"
 msgstr "קומולוס"
 
@@ -1079,8 +1087,8 @@ msgstr "דאַטן־קאָנפֿליקט"
 msgid "Date"
 msgstr "דאַטע"
 
-#: src/components/MissionSetup.tsx:1895
-#: src/components/Multiplayer.tsx:350
+#: src/components/MissionSetup.tsx:1905
+#: src/components/Multiplayer.tsx:369
 msgid "Day"
 msgstr "טאָג"
 
@@ -1195,7 +1203,7 @@ msgstr "אויסקלײַבן פֿון וועב בראָוזער"
 msgid "Device"
 msgstr "מיטל"
 
-#: src/components/Multiplayer.tsx:253
+#: src/components/Multiplayer.tsx:272
 msgid "Different game host"
 msgstr "אַן אַנדער שפּיל־האָסט"
 
@@ -1231,7 +1239,7 @@ msgstr "אפגעשניטן"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: ../../../lib/web/src/components/restore-banner.tsx:100
-#: src/components/MissionSetup.tsx:2259
+#: src/components/MissionSetup.tsx:2270
 msgid "Dismiss"
 msgstr "אַראָפּזאָגן"
 
@@ -1244,13 +1252,13 @@ msgstr "איבערחזרער פֿון דיספּלײ"
 msgid "Displays the mobile sidebar."
 msgstr "ווײַזט די מאָבילע סײַדבאַר."
 
-#: src/components/MissionSetup.tsx:2056
+#: src/components/MissionSetup.tsx:2066
 msgid "Distance LOD"
 msgstr "ווייטקייט LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:2401
+#: src/components/MissionSetup.tsx:2412
 msgid "Done"
 msgstr "געטאָן"
 
@@ -1272,7 +1280,7 @@ msgstr "מיטן װינט 600 פֿוס"
 msgid "Drag"
 msgstr "שלעפּן"
 
-#: src/components/Multiplayer.tsx:428
+#: src/components/Multiplayer.tsx:459
 msgid "Drone"
 msgstr "דראָן"
 
@@ -1284,7 +1292,7 @@ msgstr "טאָפּלען"
 msgid "Duration"
 msgstr "געדויער"
 
-#: src/components/MissionSetup.tsx:2050
+#: src/components/MissionSetup.tsx:2060
 msgid "Dynamic resolution"
 msgstr "דינאַמישע רעזאָלוציע"
 
@@ -1331,7 +1339,7 @@ msgstr "רעדאַקטירן אויסגעקליבענע קאַרטל"
 msgid "Edit view"
 msgstr "רעדאַקטירן בליק"
 
-#: src/components/MissionSetup.tsx:2030
+#: src/components/MissionSetup.tsx:2040
 msgid "Effects detail"
 msgstr "עפעקט פרטים"
 
@@ -1360,7 +1368,7 @@ msgstr "נויטפֿאַל אַראָפּוואַרף"
 msgid "Emergency jettison (hold)"
 msgstr "נויטפֿאַל אַראָפּוואַרף (האַלט)"
 
-#: src/components/Multiplayer.tsx:490
+#: src/components/Multiplayer.tsx:521
 msgid "empty"
 msgstr "ליידיק"
 
@@ -1421,7 +1429,7 @@ msgstr "עקספּאָרט"
 msgid "Extend flaps"
 msgstr "פֿלאַפּס אַרויס"
 
-#: src/components/MissionSetup.tsx:2022
+#: src/components/MissionSetup.tsx:2032
 msgid "Exterior detail"
 msgstr "אויסערלעכער פּרט"
 
@@ -1602,8 +1610,8 @@ msgstr "שווימענדיק"
 msgid "Flown"
 msgstr "געפֿלויגן"
 
-#: src/components/MissionSetup.tsx:2281
-#: src/components/MissionSetup.tsx:2324
+#: src/components/MissionSetup.tsx:2292
+#: src/components/MissionSetup.tsx:2335
 msgid "Fly"
 msgstr "פֿליען"
 
@@ -1611,12 +1619,12 @@ msgstr "פֿליען"
 msgid "Fly again"
 msgstr "פֿלי ווידער"
 
-#: src/components/MissionSetup.tsx:2080
+#: src/components/MissionSetup.tsx:2090
 msgid "Framerate"
 msgstr "פֿרעם-ראַטע"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1812
+#: src/components/MissionSetup.tsx:1814
 msgid "Free flight"
 msgstr "פֿרייער פֿלי"
 
@@ -1641,7 +1649,7 @@ msgstr "פֿון"
 msgid "From theme"
 msgstr "פֿון טעמע"
 
-#: src/components/Multiplayer.tsx:366
+#: src/components/Multiplayer.tsx:385
 msgid "Fuel"
 msgstr "ברענשטאָף"
 
@@ -1694,7 +1702,7 @@ msgstr "געצייג"
 msgid "GEAR"
 msgstr "שאַסי"
 
-#: src/components/MissionSetup.tsx:2333
+#: src/components/MissionSetup.tsx:2344
 msgid "General"
 msgstr "אַלגעמיין"
 
@@ -1724,7 +1732,7 @@ msgstr "גיין צו זייט {pageNumber}"
 msgid "Go to previous page"
 msgstr "גיין צום פֿריִערדיקן בלאַט"
 
-#: src/components/MissionSetup.tsx:2336
+#: src/components/MissionSetup.tsx:2347
 msgid "Graphics"
 msgstr "גראַפֿיק"
 
@@ -1753,11 +1761,12 @@ msgstr "האַרמאַט"
 msgid "GUN"
 msgstr "קאַנאָן"
 
-#: src/components/Multiplayer.tsx:72
+#: src/components/Multiplayer.tsx:75
+#: src/components/Multiplayer.tsx:402
 msgid "Guns only"
 msgstr "בלויז האַרמאַטן"
 
-#: src/components/MissionSetup.tsx:2254
+#: src/components/MissionSetup.tsx:2265
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "האַרדוואַרע גראַפֿיק פֿאַרגיכערונג איז אויסגעשאַלטן — קוקט די בלעטערער־שטעלונגען אָדער גראַפֿיק־דרײַווערס."
 
@@ -1777,18 +1786,18 @@ msgstr "באַהאַלטן"
 msgid "Hide password"
 msgstr "באַהאַלטן פּאַראָל"
 
-#: src/components/MissionSetup.tsx:2002
+#: src/components/MissionSetup.tsx:2012
 msgid "High"
 msgstr "הויך"
 
-#: src/components/MissionSetup.tsx:1908
-#: src/components/Multiplayer.tsx:75
-#: src/components/Multiplayer.tsx:356
+#: src/components/MissionSetup.tsx:1918
+#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:375
 msgid "High stratus"
 msgstr "הויכער סטראַטוס"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:2300
+#: src/components/MissionSetup.tsx:2311
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "היסטאָריע"
@@ -1838,7 +1847,7 @@ msgid "Import"
 msgstr "אימפּאָרט"
 
 #: src/components/MissionSetup.tsx:1563
-#: src/components/MissionSetup.tsx:1852
+#: src/components/MissionSetup.tsx:1865
 msgid "In air"
 msgstr "אין דער לופֿט"
 
@@ -1882,7 +1891,7 @@ msgstr "ניט גילטיקער פֿאַרזיכערונג־קאָד"
 msgid "Invert pitch"
 msgstr "פֿאַרקערט פּיטש"
 
-#: src/components/Multiplayer.tsx:78
+#: src/components/Multiplayer.tsx:84
 msgid "Invulnerable"
 msgstr "אומפֿאַרוואונדבאַר"
 
@@ -1890,8 +1899,8 @@ msgstr "אומפֿאַרוואונדבאַר"
 msgid "INVULNERABLE"
 msgstr "אומפֿאַרלעצלעך"
 
-#: src/components/MissionSetup.tsx:1928
-#: src/components/Multiplayer.tsx:395
+#: src/components/MissionSetup.tsx:1938
+#: src/components/Multiplayer.tsx:426
 msgid "Invulnerable (human players only)"
 msgstr "אומפֿאַרלעצלעך (נאָר מענטשלעכע שפּילערס)"
 
@@ -1913,12 +1922,12 @@ msgstr "וואַרף אַראָפּ די טאַנקען"
 msgid "JETTISON: GEAR"
 msgstr "אַראָפּוואַרף: לאַנדונג-רעדער"
 
-#: src/components/Multiplayer.tsx:555
+#: src/components/Multiplayer.tsx:586
 msgid "Join"
 msgstr "זיך אָנשליסן"
 
-#: src/components/MissionSetup.tsx:1676
-#: src/components/MissionSetup.tsx:2291
+#: src/components/MissionSetup.tsx:1678
+#: src/components/MissionSetup.tsx:2302
 msgid "Join server"
 msgstr "זיך צוטשעפּען צו סערווער"
 
@@ -1927,20 +1936,20 @@ msgid "JOINED"
 msgstr "האָט זיך אָנגעשלאָסן"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:2236
-#: src/components/Multiplayer.tsx:489
+#: src/components/MissionSetup.tsx:2246
+#: src/components/Multiplayer.tsx:520
 msgid "Joust"
 msgstr "צווייקאַמף"
 
-#: src/components/Multiplayer.tsx:341
+#: src/components/Multiplayer.tsx:360
 msgid "Joust — 1v1, first kill wins"
 msgstr "דועל — 1v1, ווער עס שיסט אַראָפּ צוערשט געווינט"
 
-#: src/components/MissionSetup.tsx:1813
+#: src/components/MissionSetup.tsx:1815
 msgid "Joust 1v1"
 msgstr "דועל 1v1"
 
-#: src/components/MissionSetup.tsx:2342
+#: src/components/MissionSetup.tsx:2353
 msgid "Joystick"
 msgstr "דזשויסטיק"
 
@@ -1956,7 +1965,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "קלאַוויאַטור־קורצוועגן"
 
-#: src/components/MissionSetup.tsx:2345
+#: src/components/MissionSetup.tsx:2356
 msgid "Keys"
 msgstr "קלאַווישן"
 
@@ -2013,7 +2022,7 @@ msgstr "שטאַרט / ציל"
 msgid "Layout"
 msgstr "אויסשטעל"
 
-#: src/components/Multiplayer.tsx:379
+#: src/components/Multiplayer.tsx:398
 msgid "lb"
 msgstr "lb"
 
@@ -2022,7 +2031,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "לערן מער"
 
-#: src/components/MissionSetup.tsx:1755
+#: src/components/MissionSetup.tsx:1757
 msgid "Leave server"
 msgstr "פֿאַרלאָזן סערווער"
 
@@ -2107,7 +2116,7 @@ msgstr "לאָדן דורכגעפֿאַלן"
 msgid "Loading..."
 msgstr "לאָדט..."
 
-#: src/components/MissionSetup.tsx:1950
+#: src/components/MissionSetup.tsx:1960
 msgid "Loadout"
 msgstr "לאָדונג"
 
@@ -2158,13 +2167,13 @@ msgstr "קוק רעכטס"
 msgid "Look up"
 msgstr "קוק אַרויף"
 
-#: src/components/MissionSetup.tsx:1998
+#: src/components/MissionSetup.tsx:2008
 msgid "Low"
 msgstr "נידעריק"
 
-#: src/components/MissionSetup.tsx:1910
-#: src/components/Multiplayer.tsx:77
-#: src/components/Multiplayer.tsx:358
+#: src/components/MissionSetup.tsx:1920
+#: src/components/Multiplayer.tsx:83
+#: src/components/Multiplayer.tsx:377
 msgid "Low stratus"
 msgstr "נידעריקער סטראַטוס"
 
@@ -2202,11 +2211,11 @@ msgstr "צייכענען אַלץ ווי געלייענט"
 msgid "Master"
 msgstr "אַלגעמיין"
 
-#: src/components/Multiplayer.tsx:337
+#: src/components/Multiplayer.tsx:356
 msgid "Match type"
 msgstr "סאָרט מאַטש"
 
-#: src/components/MissionSetup.tsx:1750
+#: src/components/MissionSetup.tsx:1752
 msgid "Matches"
 msgstr "מאַטשן"
 
@@ -2219,7 +2228,7 @@ msgid "MCP server"
 msgstr "MCP סערװער"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:2000
+#: src/components/MissionSetup.tsx:2010
 msgid "Medium"
 msgstr "מיטל"
 
@@ -2231,6 +2240,14 @@ msgstr "מעניו"
 #: src/components/MissionSetup.tsx:261
 msgid "Menu"
 msgstr "מעניו"
+
+#: src/components/Multiplayer.tsx:408
+msgid "Merge — fight on at the pass"
+msgstr "צונויפֿקום — דער קאַמף הייבט זיך אָן בײַם פֿאַרבײַגיין"
+
+#: src/components/MissionSetup.tsx:1827
+msgid "Merge, fight's on at the pass"
+msgstr "צונויפֿקום, דער קאַמף הייבט זיך אָן בײַם פֿאַרבײַגיין"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx:35
 msgid "Message"
@@ -2252,9 +2269,9 @@ msgstr "שרײַב דײַן מאַנשאַפֿט"
 msgid "Metric"
 msgstr "מעטריש"
 
-#: src/components/MissionSetup.tsx:1909
-#: src/components/Multiplayer.tsx:76
-#: src/components/Multiplayer.tsx:357
+#: src/components/MissionSetup.tsx:1919
+#: src/components/Multiplayer.tsx:82
+#: src/components/Multiplayer.tsx:376
 msgid "Mid stratus"
 msgstr "מיטלער סטראַטוס"
 
@@ -2277,10 +2294,6 @@ msgstr "ראַקעטע"
 #: src/components/MissionSetup.tsx:1371
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "ראַקעטע־מאָדעל <0>“AIM-120C AMRAAM”</0> פֿון <1>Pippa</1> (Sketchfab), ליצענצירט אונטער <2>CC BY 4.0</2>. געענדערט: איבערגעמאָסטן, איבערגעדרייט און צענטרירט פֿאַרן אַרײַנשטעלן."
-
-#: src/components/Multiplayer.tsx:385
-msgid "Missiles allowed"
-msgstr "ראַקעטן דערלויבט"
 
 #: ../../../lib/web/src/features/accounts/types.ts:23
 msgid "Mochi web"
@@ -2307,7 +2320,7 @@ msgstr "מער אָפּציעס"
 msgid "Move it…"
 msgstr "באַוועגט עס…"
 
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:257
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "מולטיפּלייער דאַרף WebTransport, וואָס דער בראַוזער שטיצט נאָך נישט."
 
@@ -2347,9 +2360,9 @@ msgstr "נײַ שפּיל"
 msgid "Next image"
 msgstr "ווײַטערדיק בילד"
 
-#: src/components/MissionSetup.tsx:1896
-#: src/components/Multiplayer.tsx:73
-#: src/components/Multiplayer.tsx:351
+#: src/components/MissionSetup.tsx:1906
+#: src/components/Multiplayer.tsx:79
+#: src/components/Multiplayer.tsx:370
 msgid "Night"
 msgstr "נאַכט"
 
@@ -2401,7 +2414,7 @@ msgstr "קיין שטימענדיקע אָביעקטן"
 msgid "No notifications yet"
 msgstr "נאָך קײן מעלדונגען"
 
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No open matches — create one."
 msgstr "נישטאָ קיין אָפֿענע מאַטשן — שאַף איינעם."
 
@@ -2464,7 +2477,7 @@ msgid "No views"
 msgstr "קיין קוקן"
 
 #: src/components/MissionSetup.tsx:1525
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No world server."
 msgstr "נישטאָ קיין וועלט־סערווער."
 
@@ -2489,7 +2502,7 @@ msgstr "אָן צייכן"
 #: src/components/MissionSetup.tsx:469
 #: src/components/MissionSetup.tsx:539
 #: src/components/MissionSetup.tsx:1077
-#: src/components/MissionSetup.tsx:1906
+#: src/components/MissionSetup.tsx:1916
 msgid "None"
 msgstr "קיינס"
 
@@ -2534,9 +2547,9 @@ msgstr "מעלדונגען"
 msgid "Notifications: {0}"
 msgstr "מעלדונגען: {0}"
 
-#: src/components/MissionSetup.tsx:1825
-#: src/components/MissionSetup.tsx:2228
-#: src/components/Multiplayer.tsx:429
+#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:2238
+#: src/components/Multiplayer.tsx:460
 msgid "Novice"
 msgstr "אָנהייבער"
 
@@ -2546,7 +2559,7 @@ msgstr "אָנהייבער"
 msgid "Number"
 msgstr "נומער"
 
-#: src/components/MissionSetup.tsx:2038
+#: src/components/MissionSetup.tsx:2048
 msgid "Ocean detail"
 msgstr "אָקעאַן-פּרט"
 
@@ -2563,12 +2576,12 @@ msgid "On"
 msgstr "אָן"
 
 #: src/components/MissionSetup.tsx:1565
-#: src/components/MissionSetup.tsx:1854
+#: src/components/MissionSetup.tsx:1867
 msgid "On carrier"
 msgstr "אויפֿן טרעגער"
 
 #: src/components/MissionSetup.tsx:1564
-#: src/components/MissionSetup.tsx:1853
+#: src/components/MissionSetup.tsx:1866
 msgid "On runway"
 msgstr "אויפֿן לאַנדבאַן"
 
@@ -2576,11 +2589,11 @@ msgstr "אויפֿן לאַנדבאַן"
 msgid "Oops! Page Not Found!"
 msgstr "אױ! זײַטל ניט געפֿונען!"
 
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Open"
 msgstr "עפֿן"
 
-#: src/components/Multiplayer.tsx:340
+#: src/components/Multiplayer.tsx:359
 msgid "Open — anyone may join or leave"
 msgstr "אָפֿן — יעדער קען זיך אָנשליסן אָדער אַוועקגיין"
 
@@ -2705,14 +2718,14 @@ msgid "Pick a date"
 msgstr "קלײַבט אױס אַ דאַטע"
 
 #: src/components/MissionSetup.tsx:1467
-#: src/components/Multiplayer.tsx:130
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:146
+#: src/components/Multiplayer.tsx:317
 msgid "pilot"
 msgstr "פּילאָט"
 
-#: src/components/MissionSetup.tsx:1826
-#: src/components/MissionSetup.tsx:2229
-#: src/components/Multiplayer.tsx:430
+#: src/components/MissionSetup.tsx:1839
+#: src/components/MissionSetup.tsx:2239
+#: src/components/Multiplayer.tsx:461
 msgid "Pilot"
 msgstr "פּילאָט"
 
@@ -2774,7 +2787,7 @@ msgstr "פּאָסטן"
 msgid "Posts and comments"
 msgstr "פּאָסטן און באַמערקונגען"
 
-#: src/components/MissionSetup.tsx:1985
+#: src/components/MissionSetup.tsx:1995
 msgid "Preset"
 msgstr "פּרעסעט"
 
@@ -2817,7 +2830,7 @@ msgstr "פּראָפֿיל אויפֿגעהיט"
 msgid "Project members"
 msgstr "פּראָיעקט־מיטגלידער"
 
-#: src/components/MissionSetup.tsx:1703
+#: src/components/MissionSetup.tsx:1705
 msgid "Public servers"
 msgstr "עפֿנטלעכע סערווערס"
 
@@ -2862,7 +2875,7 @@ msgstr "רעגיסטרירט איבער אייערע צוטריט שליסלען
 msgid "REARMED"
 msgstr "ווידער באַוואָפֿנט"
 
-#: src/components/MissionSetup.tsx:1681
+#: src/components/MissionSetup.tsx:1683
 msgid "Recent"
 msgstr "לעצטנס"
 
@@ -2875,12 +2888,12 @@ msgstr "רעקאָמענדירט"
 msgid "Reconnecting ({retries})..."
 msgstr "פֿאַרבינדט װידער ({retries})..."
 
-#: src/components/MissionSetup.tsx:2142
+#: src/components/MissionSetup.tsx:2152
 msgid "Record flights"
 msgstr "פֿאַרשרײַבן פֿליען"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:2136
+#: src/components/MissionSetup.tsx:2146
 msgid "Recording"
 msgstr "פֿאַרשרײַבונג"
 
@@ -2888,11 +2901,11 @@ msgstr "פֿאַרשרײַבונג"
 msgid "Recording saved"
 msgstr "פֿאַרשרײַבונג געשפּייכערט"
 
-#: src/components/Multiplayer.tsx:533
+#: src/components/Multiplayer.tsx:564
 msgid "Red"
 msgstr "רויט"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Red bots"
 msgstr "רויטע באָטס"
 
@@ -2909,7 +2922,7 @@ msgstr "פֿאַרמינער אינטערעס"
 msgid "Reference"
 msgstr "רעפֿערענץ"
 
-#: src/components/Multiplayer.tsx:317
+#: src/components/Multiplayer.tsx:336
 msgid "Refresh"
 msgstr "דערפֿריש"
 
@@ -3008,7 +3021,7 @@ msgstr "שיק די בליצפּאָסט נאָך אַ מאָל"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:2394
+#: src/components/MissionSetup.tsx:2405
 msgid "Reset"
 msgstr "צוריקזעצן"
 
@@ -3037,11 +3050,11 @@ msgstr "טרים צוריקשטעלן"
 msgid "Reset view"
 msgstr "צוריקשטעלן דעם בליק"
 
-#: src/components/MissionSetup.tsx:2012
+#: src/components/MissionSetup.tsx:2022
 msgid "Resolution"
 msgstr "אויפֿלייזונג"
 
-#: src/components/MissionSetup.tsx:2273
+#: src/components/MissionSetup.tsx:2284
 msgid "Restart mission"
 msgstr "איבערהייבן מיסיע"
 
@@ -3053,7 +3066,7 @@ msgstr "רעזולטאַט"
 msgid "Resume"
 msgstr "פֿאָרזעצן"
 
-#: src/components/MissionSetup.tsx:2269
+#: src/components/MissionSetup.tsx:2280
 msgid "Resume mission"
 msgstr "ממשיך זײַן מיסיע"
 
@@ -3369,12 +3382,12 @@ msgstr "שטעל אָנהייב און ציל"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:199
 #: src/components/GameCanvas.tsx:383
-#: src/components/MissionSetup.tsx:2295
-#: src/components/MissionSetup.tsx:2329
+#: src/components/MissionSetup.tsx:2306
+#: src/components/MissionSetup.tsx:2340
 msgid "Settings"
 msgstr "אײַנשטעלונגען"
 
-#: src/components/MissionSetup.tsx:2062
+#: src/components/MissionSetup.tsx:2072
 msgid "Shadows"
 msgstr "שאָטנס"
 
@@ -3436,13 +3449,21 @@ msgid "Sort"
 msgstr "סאָרטיר"
 
 #: src/components/MissionSetup.tsx:601
-#: src/components/MissionSetup.tsx:2339
+#: src/components/MissionSetup.tsx:2350
 msgid "Sound"
 msgstr "קלאַנג"
 
 #: ../../../lib/web/src/components/options-menu.tsx:161
 msgid "Sources"
 msgstr "מקורים"
+
+#: src/components/Multiplayer.tsx:78
+msgid "Spaced"
+msgstr "צעשפּרייט"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Spaced spawns"
+msgstr "צעשפּרייטע אַרײַנגאַנגען"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:97
 msgid "Spacious"
@@ -3478,7 +3499,8 @@ msgstr "הייב־פֿאַרלוסט, ריין (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "הייב־פֿאַרלוסט, לאַנדונג־סטעלונג (Vs0)"
 
-#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:1821
+#: src/components/MissionSetup.tsx:1851
 msgid "Start"
 msgstr "אָנהייבן"
 
@@ -3527,9 +3549,9 @@ msgstr "אַבאָנירן"
 msgid "Sunday"
 msgstr "זונטיק"
 
-#: src/components/MissionSetup.tsx:1828
-#: src/components/MissionSetup.tsx:2231
-#: src/components/Multiplayer.tsx:432
+#: src/components/MissionSetup.tsx:1841
+#: src/components/MissionSetup.tsx:2241
+#: src/components/Multiplayer.tsx:463
 msgid "Superhuman"
 msgstr "איבערמענטשלעך"
 
@@ -3570,7 +3592,7 @@ msgstr "טאַגן"
 msgid "TALLY"
 msgstr "איך זע דעם שׂונא"
 
-#: src/components/MissionSetup.tsx:1806
+#: src/components/MissionSetup.tsx:1808
 msgid "Task"
 msgstr "אויפֿגאַבע"
 
@@ -3583,11 +3605,11 @@ msgid "TEAM"
 msgstr "מאַנשאַפֿט"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Teams"
 msgstr "מאַנשאַפֿטן"
 
-#: src/components/Multiplayer.tsx:342
+#: src/components/Multiplayer.tsx:361
 msgid "Teams — red versus blue"
 msgstr "מאַנשאַפֿטן — רויט קעגן בלוי"
 
@@ -3641,15 +3663,15 @@ msgstr "טעמע"
 msgid "Theme Settings"
 msgstr "טעמע־אײַנשטעלונגען"
 
-#: src/components/MissionSetup.tsx:2252
+#: src/components/MissionSetup.tsx:2263
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "דער בלעטערער שטיצט נישט WebGL 2, דעריבער קען די שפּיל נישט לויפֿן — פּרוּווט אַן אַנדער בלעטערער."
 
-#: src/components/Multiplayer.tsx:256
+#: src/components/Multiplayer.tsx:275
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "דער לאָבי שיקט אײַער שפּיל־פֿאַרבינדונג צו אַן אַנדער האָסט ({redirectHost}). גייט װײַטער נאָר אױב איר טרױט דעם דאָזיקן סערװער."
 
-#: src/components/MissionSetup.tsx:2256
+#: src/components/MissionSetup.tsx:2267
 msgid "This machine may be too slow for smooth flight."
 msgstr "די מאַשין קען זײַן צו פּאַמעלעך פֿאַר אַ גלאַטן פֿלי."
 
@@ -3691,7 +3713,7 @@ msgstr "קער"
 msgid "Time"
 msgstr "צײַט"
 
-#: src/components/MissionSetup.tsx:1889
+#: src/components/MissionSetup.tsx:1899
 msgid "Time of day"
 msgstr "צייט פֿון טאָג"
 
@@ -3747,7 +3769,7 @@ msgstr "צו פֿיל בקשות"
 msgid "Top"
 msgstr "אויבן"
 
-#: src/components/MissionSetup.tsx:2074
+#: src/components/MissionSetup.tsx:2084
 msgid "Tracers"
 msgstr "טרײַסערס"
 
@@ -3823,7 +3845,7 @@ msgstr "טיפּט צו זוכן באַניצערס"
 msgid "Type to search..."
 msgstr "טיפּט צו זוכן..."
 
-#: src/components/MissionSetup.tsx:2004
+#: src/components/MissionSetup.tsx:2014
 msgid "Ultra"
 msgstr "אולטראַ"
 
@@ -3867,21 +3889,25 @@ msgstr "פֿאַראייניקטע שטאַטן"
 msgid "Unknown"
 msgstr "אומבאַקאַנט"
 
-#: src/components/Multiplayer.tsx:79
-#: src/components/Multiplayer.tsx:405
+#: src/components/Multiplayer.tsx:404
+msgid "Unlimited"
+msgstr "אומבאַגרענעצט"
+
+#: src/components/Multiplayer.tsx:85
+#: src/components/Multiplayer.tsx:436
 msgid "Unlimited ammunition"
 msgstr "אומבאַגרענעצטע אַמוניציע"
 
-#: src/components/MissionSetup.tsx:1934
+#: src/components/MissionSetup.tsx:1944
 msgid "Unlimited ammunition (all players)"
 msgstr "אומבאַגרענעצטע אַמוניציע (אַלע שפּילער)"
 
-#: src/components/Multiplayer.tsx:80
-#: src/components/Multiplayer.tsx:415
+#: src/components/Multiplayer.tsx:86
+#: src/components/Multiplayer.tsx:446
 msgid "Unlimited fuel"
 msgstr "אומבאַגרענעצטער ברענשטאָף"
 
-#: src/components/MissionSetup.tsx:1940
+#: src/components/MissionSetup.tsx:1950
 msgid "Unlimited fuel (all players)"
 msgstr "אומבאַגרענעצטער ברענשטאָף (אַלע שפּילער)"
 
@@ -4027,7 +4053,7 @@ msgstr "וואָפֿן"
 msgid "Weapons"
 msgstr "וואָפֿן"
 
-#: src/components/Multiplayer.tsx:347
+#: src/components/Multiplayer.tsx:366
 msgid "Weather"
 msgstr "וועטער"
 
@@ -4052,12 +4078,12 @@ msgstr "פֿליגל פֿאַלטן"
 msgid "WINS"
 msgstr "געווינט"
 
-#: src/components/Multiplayer.tsx:282
+#: src/components/Multiplayer.tsx:301
 msgid "World server"
 msgstr "וועלט־סערווער"
 
 #: src/components/MissionSetup.tsx:1513
-#: src/components/Multiplayer.tsx:143
+#: src/components/Multiplayer.tsx:159
 msgid "World server not reachable"
 msgstr "דער וועלט־סערווער איז נישט צו דערגרייכן"
 
@@ -4107,7 +4133,7 @@ msgstr "דײַנע צוגעלייגטע טעקעס וועלן פֿאַרלויר
 msgid "Your flights appear here once you've flown one."
 msgstr "אײַערע פֿליען וועלן זיך װײַזן דאָ נאָך דעם װי איר פֿליט איין מאָל."
 
-#: src/components/Multiplayer.tsx:484
+#: src/components/Multiplayer.tsx:515
 msgid "your offer"
 msgstr "דײַן פֿאָרשלאָג"
 

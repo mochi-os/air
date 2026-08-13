@@ -51,7 +51,7 @@ msgid "{0} created “{1}”"
 msgstr "{0} δημιούργησε «{1}»"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:309
+#: src/components/Multiplayer.tsx:328
 msgid "{0} flying"
 msgstr "{0} στον αέρα"
 
@@ -72,7 +72,7 @@ msgstr "Προεπισκόπηση επιλογής {0}"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:491
+#: src/components/Multiplayer.tsx:522
 msgid "{0}/{1} players"
 msgstr "{0}/{1} παίκτες"
 
@@ -100,7 +100,7 @@ msgstr "Όνομα {entityLabel}"
 msgid "{entityLabel} name is required"
 msgstr "Το όνομα {entityLabel} είναι υποχρεωτικό"
 
-#: src/components/Multiplayer.tsx:215
+#: src/components/Multiplayer.tsx:231
 msgid "{name}'s match"
 msgstr "Αγώνας του {name}"
 
@@ -214,9 +214,9 @@ msgstr "Τύπος λογαριασμού"
 msgid "Account verified"
 msgstr "Ο λογαριασμός επαληθεύτηκε"
 
-#: src/components/MissionSetup.tsx:1827
-#: src/components/MissionSetup.tsx:2230
-#: src/components/Multiplayer.tsx:431
+#: src/components/MissionSetup.tsx:1840
+#: src/components/MissionSetup.tsx:2240
+#: src/components/Multiplayer.tsx:462
 msgid "Ace"
 msgstr "Άσος"
 
@@ -318,7 +318,7 @@ msgstr "Προσθήκη..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Προσαρμόστε την εμφάνιση και τη διάταξη σύμφωνα με τις προτιμήσεις σας."
 
-#: src/components/MissionSetup.tsx:2068
+#: src/components/MissionSetup.tsx:2078
 msgid "Afterburner"
 msgstr "Μετάκαυση"
 
@@ -363,6 +363,10 @@ msgstr "Παρουσιάστηκε σφάλμα"
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:275
 msgid "An unexpected error occurred"
 msgstr "Παρουσιάστηκε απροσδόκητο σφάλμα"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Anchored sides"
+msgstr "Αγκυρωμένες πλευρές"
 
 #: ../../../lib/web/src/features/accounts/types.ts:16
 msgid "Android push"
@@ -478,7 +482,7 @@ msgstr "Πίσω"
 msgid "Back to home"
 msgstr "Επιστροφή στην αρχή"
 
-#: src/components/MissionSetup.tsx:1819
+#: src/components/MissionSetup.tsx:1832
 msgid "Bandit"
 msgstr "Εχθρός"
 
@@ -524,11 +528,11 @@ msgstr "Αποκλείστηκε η πλοήγηση σε μη αξιόπιστ�
 msgid "Blocks"
 msgstr "Αποκλείει"
 
-#: src/components/Multiplayer.tsx:543
+#: src/components/Multiplayer.tsx:574
 msgid "Blue"
 msgstr "Μπλε"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Blue bots"
 msgstr "Μπλε bots"
 
@@ -549,7 +553,7 @@ msgstr "Ενίσχυση ενδιαφέροντος"
 msgid "Border colour"
 msgstr "Χρώμα περιγράμματος"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Bots"
 msgstr "Μποτ"
 
@@ -581,12 +585,20 @@ msgstr "Κουμπί {i}"
 msgid "Buttons"
 msgstr "Κουμπιά"
 
+#: src/components/Multiplayer.tsx:409
+msgid "BVR — weapons free from spawn"
+msgstr "BVR — ελεύθερα πυρά από την αρχή"
+
+#: src/components/MissionSetup.tsx:1828
+msgid "BVR, fight's on at start"
+msgstr "BVR, η μάχη αρχίζει αμέσως"
+
 #: src/components/GameCanvas.tsx:108
 msgid "CALL THE BALL"
 msgstr "ΑΝΆΦΕΡΕ ΤΗΝ ΜΠΆΛΑ"
 
-#: src/components/MissionSetup.tsx:2124
-#: src/components/Multiplayer.tsx:293
+#: src/components/MissionSetup.tsx:2134
+#: src/components/Multiplayer.tsx:312
 msgid "Callsign"
 msgstr "Διακριτικό κλήσης"
 
@@ -612,8 +624,8 @@ msgstr "Η κάμερα δεν είναι διαθέσιμη"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/MissionSetup.tsx:675
-#: src/components/Multiplayer.tsx:264
-#: src/components/Multiplayer.tsx:520
+#: src/components/Multiplayer.tsx:283
+#: src/components/Multiplayer.tsx:551
 msgid "Cancel"
 msgstr "Ακύρωση"
 
@@ -635,7 +647,7 @@ msgstr "Θόλος πιλοτηρίου"
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1855
+#: src/components/MissionSetup.tsx:1868
 msgid "Case I (day)"
 msgstr "Περίπτωση I (ημέρα)"
 
@@ -643,7 +655,7 @@ msgstr "Περίπτωση I (ημέρα)"
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1856
+#: src/components/MissionSetup.tsx:1869
 msgid "Case II (weather)"
 msgstr "Περίπτωση II (καιρός)"
 
@@ -651,11 +663,11 @@ msgstr "Περίπτωση II (καιρός)"
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1857
+#: src/components/MissionSetup.tsx:1870
 msgid "Case III (night)"
 msgstr "Περίπτωση III (νύχτα)"
 
-#: src/components/MissionSetup.tsx:1863
+#: src/components/MissionSetup.tsx:1876
 msgid "Catapult"
 msgstr "Καταπέλτης"
 
@@ -689,7 +701,7 @@ msgid "Chat to everyone"
 msgstr "Συνομιλία με όλους"
 
 #: src/components/MatchHistory.tsx:179
-#: src/components/MissionSetup.tsx:1922
+#: src/components/MissionSetup.tsx:1932
 msgid "Cheats"
 msgstr "Ζαβολιές"
 
@@ -736,7 +748,7 @@ msgstr "Επιλογή γλώσσας"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:354
+#: src/components/Multiplayer.tsx:373
 msgid "Clear"
 msgstr "Εκκαθάριση"
 
@@ -800,7 +812,7 @@ msgstr "Κλείσιμο αναζήτησης"
 msgid "closer"
 msgstr "πιο κοντά"
 
-#: src/components/MissionSetup.tsx:1900
+#: src/components/MissionSetup.tsx:1910
 msgid "Clouds"
 msgstr "Σύννεφα"
 
@@ -858,10 +870,6 @@ msgstr "Επικοινωνία"
 msgid "Compact"
 msgstr "Συμπαγές"
 
-#: src/components/MissionSetup.tsx:1886
-msgid "Conditions"
-msgstr "Συνθήκες"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:97
 msgid "Configure option settings"
 msgstr "Διαμόρφωση ρυθμίσεων επιλογής"
@@ -875,11 +883,11 @@ msgstr "Διαμόρφωση ρυθμίσεων προβολής"
 msgid "Confirm"
 msgstr "Επιβεβαίωση"
 
-#: src/components/MissionSetup.tsx:1728
+#: src/components/MissionSetup.tsx:1730
 msgid "Connect"
 msgstr "Σύνδεση"
 
-#: src/components/MissionSetup.tsx:1715
+#: src/components/MissionSetup.tsx:1717
 msgid "Connect to private server"
 msgstr "Σύνδεση σε ιδιωτικό διακομιστή"
 
@@ -895,7 +903,7 @@ msgstr "Συνδεδεμένοι λογαριασμοί"
 msgid "Connecting..."
 msgstr "Σύνδεση..."
 
-#: src/components/Multiplayer.tsx:312
+#: src/components/Multiplayer.tsx:331
 msgid "Connecting…"
 msgstr "Σύνδεση…"
 
@@ -916,7 +924,7 @@ msgid "Contextual information and details."
 msgstr "Πληροφορίες και λεπτομέρειες πλαισίου."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:273
+#: src/components/Multiplayer.tsx:292
 msgid "Continue"
 msgstr "Συνέχεια"
 
@@ -940,7 +948,7 @@ msgstr "Αντιγραφή"
 msgid "Corner speed (best instant turn)"
 msgstr "Ταχύτητα γωνίας (βέλτιστη στιγμιαία στροφή)"
 
-#: src/components/Multiplayer.tsx:229
+#: src/components/Multiplayer.tsx:248
 msgid "Could not create the match"
 msgstr "Δεν ήταν δυνατή η δημιουργία του αγώνα"
 
@@ -1003,16 +1011,16 @@ msgstr "Δημιουργία"
 msgid "Create {0}"
 msgstr "Δημιουργία {0}"
 
-#: src/components/Multiplayer.tsx:463
+#: src/components/Multiplayer.tsx:494
 msgid "Create and fly"
 msgstr "Δημιουργία και πτήση"
 
-#: src/components/Multiplayer.tsx:327
+#: src/components/Multiplayer.tsx:346
 msgid "Create match"
 msgstr "Δημιουργία αγώνα"
 
-#: src/components/MissionSetup.tsx:2287
-#: src/components/MissionSetup.tsx:2310
+#: src/components/MissionSetup.tsx:2298
+#: src/components/MissionSetup.tsx:2321
 msgid "Create mission"
 msgstr "Δημιουργία αποστολής"
 
@@ -1035,9 +1043,9 @@ msgstr "Δημιουργία..."
 msgid "Credits"
 msgstr "Συντελεστές"
 
-#: src/components/MissionSetup.tsx:1907
-#: src/components/Multiplayer.tsx:74
-#: src/components/Multiplayer.tsx:355
+#: src/components/MissionSetup.tsx:1917
+#: src/components/Multiplayer.tsx:80
+#: src/components/Multiplayer.tsx:374
 msgid "Cumulus"
 msgstr "Σωρείτης"
 
@@ -1079,8 +1087,8 @@ msgstr "Διένεξη δεδομένων"
 msgid "Date"
 msgstr "Ημερομηνία"
 
-#: src/components/MissionSetup.tsx:1895
-#: src/components/Multiplayer.tsx:350
+#: src/components/MissionSetup.tsx:1905
+#: src/components/Multiplayer.tsx:369
 msgid "Day"
 msgstr "Ημέρα"
 
@@ -1195,7 +1203,7 @@ msgstr "Εντοπισμός από το πρόγραμμα περιήγησης
 msgid "Device"
 msgstr "Συσκευή"
 
-#: src/components/Multiplayer.tsx:253
+#: src/components/Multiplayer.tsx:272
 msgid "Different game host"
 msgstr "Διαφορετικός κεντρικός υπολογιστής παιχνιδιού"
 
@@ -1231,7 +1239,7 @@ msgstr "Αποσυνδεδεμένο"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: ../../../lib/web/src/components/restore-banner.tsx:100
-#: src/components/MissionSetup.tsx:2259
+#: src/components/MissionSetup.tsx:2270
 msgid "Dismiss"
 msgstr "Απόρριψη"
 
@@ -1244,13 +1252,13 @@ msgstr "Επαναλήπτης οθόνης"
 msgid "Displays the mobile sidebar."
 msgstr "Εμφανίζει την πλευρική μπάρα κινητού."
 
-#: src/components/MissionSetup.tsx:2056
+#: src/components/MissionSetup.tsx:2066
 msgid "Distance LOD"
 msgstr "LOD απόστασης"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:524
-#: src/components/MissionSetup.tsx:2401
+#: src/components/MissionSetup.tsx:2412
 msgid "Done"
 msgstr "Ολοκληρώθηκε"
 
@@ -1272,7 +1280,7 @@ msgstr "ΥΠΗΝΕΜΟ 600 ΠΟΔΙΑ"
 msgid "Drag"
 msgstr "Σύρσιμο"
 
-#: src/components/Multiplayer.tsx:428
+#: src/components/Multiplayer.tsx:459
 msgid "Drone"
 msgstr "Ντρόουν"
 
@@ -1284,7 +1292,7 @@ msgstr "Διπλότυπο"
 msgid "Duration"
 msgstr "Διάρκεια"
 
-#: src/components/MissionSetup.tsx:2050
+#: src/components/MissionSetup.tsx:2060
 msgid "Dynamic resolution"
 msgstr "Δυναμική ανάλυση"
 
@@ -1331,7 +1339,7 @@ msgstr "Επεξεργασία επιλεγμένης κάρτας"
 msgid "Edit view"
 msgstr "Επεξεργασία προβολής"
 
-#: src/components/MissionSetup.tsx:2030
+#: src/components/MissionSetup.tsx:2040
 msgid "Effects detail"
 msgstr "Λεπτομέρεια εφέ"
 
@@ -1360,7 +1368,7 @@ msgstr "ΑΠΟΡΡΙΨΗ ΑΝΑΓΚΗΣ"
 msgid "Emergency jettison (hold)"
 msgstr "Απόρριψη έκτακτης ανάγκης (κρατήστε)"
 
-#: src/components/Multiplayer.tsx:490
+#: src/components/Multiplayer.tsx:521
 msgid "empty"
 msgstr "κενή"
 
@@ -1421,7 +1429,7 @@ msgstr "Εξαγωγή"
 msgid "Extend flaps"
 msgstr "Έκταση πτερυγίων"
 
-#: src/components/MissionSetup.tsx:2022
+#: src/components/MissionSetup.tsx:2032
 msgid "Exterior detail"
 msgstr "Λεπτομέρεια εξωτερικού"
 
@@ -1602,8 +1610,8 @@ msgstr "Αιωρούμενο"
 msgid "Flown"
 msgstr "Πέταξε"
 
-#: src/components/MissionSetup.tsx:2281
-#: src/components/MissionSetup.tsx:2324
+#: src/components/MissionSetup.tsx:2292
+#: src/components/MissionSetup.tsx:2335
 msgid "Fly"
 msgstr "Πτήση"
 
@@ -1611,12 +1619,12 @@ msgstr "Πτήση"
 msgid "Fly again"
 msgstr "Πέταξε ξανά"
 
-#: src/components/MissionSetup.tsx:2080
+#: src/components/MissionSetup.tsx:2090
 msgid "Framerate"
 msgstr "Ρυθμός καρέ"
 
 #: src/components/MatchHistory.tsx:82
-#: src/components/MissionSetup.tsx:1812
+#: src/components/MissionSetup.tsx:1814
 msgid "Free flight"
 msgstr "Ελεύθερη πτήση"
 
@@ -1641,7 +1649,7 @@ msgstr "Από"
 msgid "From theme"
 msgstr "Από το θέμα"
 
-#: src/components/Multiplayer.tsx:366
+#: src/components/Multiplayer.tsx:385
 msgid "Fuel"
 msgstr "Καύσιμο"
 
@@ -1694,7 +1702,7 @@ msgstr "τροχοί"
 msgid "GEAR"
 msgstr "ΣΚΕΛΗ"
 
-#: src/components/MissionSetup.tsx:2333
+#: src/components/MissionSetup.tsx:2344
 msgid "General"
 msgstr "Γενικά"
 
@@ -1724,7 +1732,7 @@ msgstr "Μετάβαση στη σελίδα {pageNumber}"
 msgid "Go to previous page"
 msgstr "Μετάβαση στην προηγούμενη σελίδα"
 
-#: src/components/MissionSetup.tsx:2336
+#: src/components/MissionSetup.tsx:2347
 msgid "Graphics"
 msgstr "Γραφικά"
 
@@ -1753,11 +1761,12 @@ msgstr "Πυροβόλο"
 msgid "GUN"
 msgstr "ΠΥΡΟΒΟΛΟ"
 
-#: src/components/Multiplayer.tsx:72
+#: src/components/Multiplayer.tsx:75
+#: src/components/Multiplayer.tsx:402
 msgid "Guns only"
 msgstr "Μόνο πυροβόλα"
 
-#: src/components/MissionSetup.tsx:2254
+#: src/components/MissionSetup.tsx:2265
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Η επιτάχυνση γραφικών υλικού είναι απενεργοποιημένη — ελέγξτε τις ρυθμίσεις του προγράμματος περιήγησης ή τους οδηγούς γραφικών."
 
@@ -1777,18 +1786,18 @@ msgstr "Απόκρυψη"
 msgid "Hide password"
 msgstr "Απόκρυψη κωδικού"
 
-#: src/components/MissionSetup.tsx:2002
+#: src/components/MissionSetup.tsx:2012
 msgid "High"
 msgstr "Υψηλή"
 
-#: src/components/MissionSetup.tsx:1908
-#: src/components/Multiplayer.tsx:75
-#: src/components/Multiplayer.tsx:356
+#: src/components/MissionSetup.tsx:1918
+#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:375
 msgid "High stratus"
 msgstr "Υψηλά στρώματα"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:64
-#: src/components/MissionSetup.tsx:2300
+#: src/components/MissionSetup.tsx:2311
 #: src/routes/history.tsx:29
 msgid "History"
 msgstr "Ιστορικό"
@@ -1838,7 +1847,7 @@ msgid "Import"
 msgstr "Εισαγωγή"
 
 #: src/components/MissionSetup.tsx:1563
-#: src/components/MissionSetup.tsx:1852
+#: src/components/MissionSetup.tsx:1865
 msgid "In air"
 msgstr "Στον αέρα"
 
@@ -1882,7 +1891,7 @@ msgstr "Μη έγκυρος κωδικός επαλήθευσης"
 msgid "Invert pitch"
 msgstr "Αντιστροφή πρόνευσης"
 
-#: src/components/Multiplayer.tsx:78
+#: src/components/Multiplayer.tsx:84
 msgid "Invulnerable"
 msgstr "Άτρωτος"
 
@@ -1890,8 +1899,8 @@ msgstr "Άτρωτος"
 msgid "INVULNERABLE"
 msgstr "ΑΤΡΩΤΟΣ"
 
-#: src/components/MissionSetup.tsx:1928
-#: src/components/Multiplayer.tsx:395
+#: src/components/MissionSetup.tsx:1938
+#: src/components/Multiplayer.tsx:426
 msgid "Invulnerable (human players only)"
 msgstr "Άτρωτος (μόνο για ανθρώπινους παίκτες)"
 
@@ -1913,12 +1922,12 @@ msgstr "Απόρριψη δεξαμενών"
 msgid "JETTISON: GEAR"
 msgstr "ΑΠΟΡΡΙΨΗ: ΣΥΣΤΗΜΑ ΠΡΟΣΓΕΙΩΣΗΣ"
 
-#: src/components/Multiplayer.tsx:555
+#: src/components/Multiplayer.tsx:586
 msgid "Join"
 msgstr "Συμμετοχή"
 
-#: src/components/MissionSetup.tsx:1676
-#: src/components/MissionSetup.tsx:2291
+#: src/components/MissionSetup.tsx:1678
+#: src/components/MissionSetup.tsx:2302
 msgid "Join server"
 msgstr "Σύνδεση σε διακομιστή"
 
@@ -1927,20 +1936,20 @@ msgid "JOINED"
 msgstr "ΜΠΗΚΕ"
 
 #: src/components/MatchHistory.tsx:80
-#: src/components/MissionSetup.tsx:2236
-#: src/components/Multiplayer.tsx:489
+#: src/components/MissionSetup.tsx:2246
+#: src/components/Multiplayer.tsx:520
 msgid "Joust"
 msgstr "Κονταρομαχία"
 
-#: src/components/Multiplayer.tsx:341
+#: src/components/Multiplayer.tsx:360
 msgid "Joust — 1v1, first kill wins"
 msgstr "Μονομαχία — 1v1, η πρώτη κατάρριψη κερδίζει"
 
-#: src/components/MissionSetup.tsx:1813
+#: src/components/MissionSetup.tsx:1815
 msgid "Joust 1v1"
 msgstr "Μονομαχία 1v1"
 
-#: src/components/MissionSetup.tsx:2342
+#: src/components/MissionSetup.tsx:2353
 msgid "Joystick"
 msgstr "Χειριστήριο"
 
@@ -1956,7 +1965,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Συντομεύσεις πληκτρολογίου"
 
-#: src/components/MissionSetup.tsx:2345
+#: src/components/MissionSetup.tsx:2356
 msgid "Keys"
 msgstr "Πλήκτρα"
 
@@ -2013,7 +2022,7 @@ msgstr "εκτόξευση / στόχευση"
 msgid "Layout"
 msgstr "Διάταξη"
 
-#: src/components/Multiplayer.tsx:379
+#: src/components/Multiplayer.tsx:398
 msgid "lb"
 msgstr "lb"
 
@@ -2022,7 +2031,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Μάθετε περισσότερα"
 
-#: src/components/MissionSetup.tsx:1755
+#: src/components/MissionSetup.tsx:1757
 msgid "Leave server"
 msgstr "Αποχώρηση από διακομιστή"
 
@@ -2107,7 +2116,7 @@ msgstr "Η ΦΟΡΤΩΣΗ ΑΠΕΤΥΧΕ"
 msgid "Loading..."
 msgstr "Φόρτωση..."
 
-#: src/components/MissionSetup.tsx:1950
+#: src/components/MissionSetup.tsx:1960
 msgid "Loadout"
 msgstr "Φορτίο"
 
@@ -2158,13 +2167,13 @@ msgstr "Θέαση δεξιά"
 msgid "Look up"
 msgstr "Θέαση πάνω"
 
-#: src/components/MissionSetup.tsx:1998
+#: src/components/MissionSetup.tsx:2008
 msgid "Low"
 msgstr "Χαμηλή"
 
-#: src/components/MissionSetup.tsx:1910
-#: src/components/Multiplayer.tsx:77
-#: src/components/Multiplayer.tsx:358
+#: src/components/MissionSetup.tsx:1920
+#: src/components/Multiplayer.tsx:83
+#: src/components/Multiplayer.tsx:377
 msgid "Low stratus"
 msgstr "Χαμηλά στρώματα"
 
@@ -2202,11 +2211,11 @@ msgstr "Σήμανση όλων ως αναγνωσμένα"
 msgid "Master"
 msgstr "Γενική"
 
-#: src/components/Multiplayer.tsx:337
+#: src/components/Multiplayer.tsx:356
 msgid "Match type"
 msgstr "Τύπος αγώνα"
 
-#: src/components/MissionSetup.tsx:1750
+#: src/components/MissionSetup.tsx:1752
 msgid "Matches"
 msgstr "Αγώνες"
 
@@ -2219,7 +2228,7 @@ msgid "MCP server"
 msgstr "Διακομιστής MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:107
-#: src/components/MissionSetup.tsx:2000
+#: src/components/MissionSetup.tsx:2010
 msgid "Medium"
 msgstr "Μεσαίο"
 
@@ -2231,6 +2240,14 @@ msgstr "μενού"
 #: src/components/MissionSetup.tsx:261
 msgid "Menu"
 msgstr "Μενού"
+
+#: src/components/Multiplayer.tsx:408
+msgid "Merge — fight on at the pass"
+msgstr "Συνάντηση — η μάχη αρχίζει στο πέρασμα"
+
+#: src/components/MissionSetup.tsx:1827
+msgid "Merge, fight's on at the pass"
+msgstr "Συνάντηση, η μάχη αρχίζει στο πέρασμα"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx:35
 msgid "Message"
@@ -2252,9 +2269,9 @@ msgstr "Μήνυμα στην ομάδα σου"
 msgid "Metric"
 msgstr "Μετρικό"
 
-#: src/components/MissionSetup.tsx:1909
-#: src/components/Multiplayer.tsx:76
-#: src/components/Multiplayer.tsx:357
+#: src/components/MissionSetup.tsx:1919
+#: src/components/Multiplayer.tsx:82
+#: src/components/Multiplayer.tsx:376
 msgid "Mid stratus"
 msgstr "Μεσαία στρώματα"
 
@@ -2277,10 +2294,6 @@ msgstr "ΠΥΡΑΥΛΟΣ"
 #: src/components/MissionSetup.tsx:1371
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Μοντέλο πυραύλου <0>“AIM-120C AMRAAM”</0> από <1>Pippa</1> (Sketchfab), με άδεια <2>CC BY 4.0</2>. Τροποποιήθηκε: νέα κλίμακα, νέος προσανατολισμός και κεντράρισμα για την τοποθέτηση."
-
-#: src/components/Multiplayer.tsx:385
-msgid "Missiles allowed"
-msgstr "Επιτρέπονται οι πύραυλοι"
 
 #: ../../../lib/web/src/features/accounts/types.ts:23
 msgid "Mochi web"
@@ -2307,7 +2320,7 @@ msgstr "Περισσότερες επιλογές"
 msgid "Move it…"
 msgstr "Κινήστε τον άξονα…"
 
-#: src/components/Multiplayer.tsx:238
+#: src/components/Multiplayer.tsx:257
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Το multiplayer χρειάζεται WebTransport, το οποίο αυτό το πρόγραμμα περιήγησης δεν υποστηρίζει ακόμα."
 
@@ -2347,9 +2360,9 @@ msgstr "Νέο παιχνίδι"
 msgid "Next image"
 msgstr "Επόμενη εικόνα"
 
-#: src/components/MissionSetup.tsx:1896
-#: src/components/Multiplayer.tsx:73
-#: src/components/Multiplayer.tsx:351
+#: src/components/MissionSetup.tsx:1906
+#: src/components/Multiplayer.tsx:79
+#: src/components/Multiplayer.tsx:370
 msgid "Night"
 msgstr "Νύχτα"
 
@@ -2401,7 +2414,7 @@ msgstr "Δεν υπάρχουν αντίστοιχα αντικείμενα"
 msgid "No notifications yet"
 msgstr "Καμία ειδοποίηση ακόμη"
 
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No open matches — create one."
 msgstr "Δεν υπάρχουν ανοιχτοί αγώνες — δημιούργησε έναν."
 
@@ -2464,7 +2477,7 @@ msgid "No views"
 msgstr "Χωρίς προβολές"
 
 #: src/components/MissionSetup.tsx:1525
-#: src/components/Multiplayer.tsx:472
+#: src/components/Multiplayer.tsx:503
 msgid "No world server."
 msgstr "Δεν υπάρχει διακομιστής κόσμου."
 
@@ -2489,7 +2502,7 @@ msgstr "ΧΩΡΙΣ ΒΑΘΜΟ"
 #: src/components/MissionSetup.tsx:469
 #: src/components/MissionSetup.tsx:539
 #: src/components/MissionSetup.tsx:1077
-#: src/components/MissionSetup.tsx:1906
+#: src/components/MissionSetup.tsx:1916
 msgid "None"
 msgstr "Κανένα"
 
@@ -2534,9 +2547,9 @@ msgstr "Ειδοποιήσεις"
 msgid "Notifications: {0}"
 msgstr "Ειδοποιήσεις: {0}"
 
-#: src/components/MissionSetup.tsx:1825
-#: src/components/MissionSetup.tsx:2228
-#: src/components/Multiplayer.tsx:429
+#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:2238
+#: src/components/Multiplayer.tsx:460
 msgid "Novice"
 msgstr "Αρχάριος"
 
@@ -2546,7 +2559,7 @@ msgstr "Αρχάριος"
 msgid "Number"
 msgstr "Αριθμός"
 
-#: src/components/MissionSetup.tsx:2038
+#: src/components/MissionSetup.tsx:2048
 msgid "Ocean detail"
 msgstr "Λεπτομέρεια ωκεανού"
 
@@ -2563,12 +2576,12 @@ msgid "On"
 msgstr "Ενεργό"
 
 #: src/components/MissionSetup.tsx:1565
-#: src/components/MissionSetup.tsx:1854
+#: src/components/MissionSetup.tsx:1867
 msgid "On carrier"
 msgstr "Στο αεροπλανοφόρο"
 
 #: src/components/MissionSetup.tsx:1564
-#: src/components/MissionSetup.tsx:1853
+#: src/components/MissionSetup.tsx:1866
 msgid "On runway"
 msgstr "Στον διάδρομο"
 
@@ -2576,11 +2589,11 @@ msgstr "Στον διάδρομο"
 msgid "Oops! Page Not Found!"
 msgstr "Ωχ! Η σελίδα δεν βρέθηκε!"
 
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Open"
 msgstr "Ανοιχτό"
 
-#: src/components/Multiplayer.tsx:340
+#: src/components/Multiplayer.tsx:359
 msgid "Open — anyone may join or leave"
 msgstr "Ανοιχτός — οποιοσδήποτε μπορεί να μπει ή να φύγει"
 
@@ -2705,14 +2718,14 @@ msgid "Pick a date"
 msgstr "Επιλέξτε ημερομηνία"
 
 #: src/components/MissionSetup.tsx:1467
-#: src/components/Multiplayer.tsx:130
-#: src/components/Multiplayer.tsx:298
+#: src/components/Multiplayer.tsx:146
+#: src/components/Multiplayer.tsx:317
 msgid "pilot"
 msgstr "πιλότος"
 
-#: src/components/MissionSetup.tsx:1826
-#: src/components/MissionSetup.tsx:2229
-#: src/components/Multiplayer.tsx:430
+#: src/components/MissionSetup.tsx:1839
+#: src/components/MissionSetup.tsx:2239
+#: src/components/Multiplayer.tsx:461
 msgid "Pilot"
 msgstr "Πιλότος"
 
@@ -2774,7 +2787,7 @@ msgstr "Αναρτήσεις"
 msgid "Posts and comments"
 msgstr "Αναρτήσεις και σχόλια"
 
-#: src/components/MissionSetup.tsx:1985
+#: src/components/MissionSetup.tsx:1995
 msgid "Preset"
 msgstr "Προεπιλογή"
 
@@ -2817,7 +2830,7 @@ msgstr "Το προφίλ αποθηκεύτηκε"
 msgid "Project members"
 msgstr "Μέλη έργου"
 
-#: src/components/MissionSetup.tsx:1703
+#: src/components/MissionSetup.tsx:1705
 msgid "Public servers"
 msgstr "Δημόσιοι διακομιστές"
 
@@ -2862,7 +2875,7 @@ msgstr "Καταχωρίστε ξανά τα κλειδιά πρόσβασής �
 msgid "REARMED"
 msgstr "ΕΠΑΝΟΠΛΙΣΤΗΚΕ"
 
-#: src/components/MissionSetup.tsx:1681
+#: src/components/MissionSetup.tsx:1683
 msgid "Recent"
 msgstr "Πρόσφατα"
 
@@ -2875,12 +2888,12 @@ msgstr "Συνιστώμενο"
 msgid "Reconnecting ({retries})..."
 msgstr "Επανασύνδεση ({retries})..."
 
-#: src/components/MissionSetup.tsx:2142
+#: src/components/MissionSetup.tsx:2152
 msgid "Record flights"
 msgstr "Καταγραφή πτήσεων"
 
 #: src/components/MatchHistory.tsx:238
-#: src/components/MissionSetup.tsx:2136
+#: src/components/MissionSetup.tsx:2146
 msgid "Recording"
 msgstr "Καταγραφή"
 
@@ -2888,11 +2901,11 @@ msgstr "Καταγραφή"
 msgid "Recording saved"
 msgstr "Η καταγραφή αποθηκεύτηκε"
 
-#: src/components/Multiplayer.tsx:533
+#: src/components/Multiplayer.tsx:564
 msgid "Red"
 msgstr "Κόκκινοι"
 
-#: src/components/Multiplayer.tsx:424
+#: src/components/Multiplayer.tsx:455
 msgid "Red bots"
 msgstr "Κόκκινα bots"
 
@@ -2909,7 +2922,7 @@ msgstr "Μείωση ενδιαφέροντος"
 msgid "Reference"
 msgstr "Αναφορά"
 
-#: src/components/Multiplayer.tsx:317
+#: src/components/Multiplayer.tsx:336
 msgid "Refresh"
 msgstr "Ανανέωση"
 
@@ -3008,7 +3021,7 @@ msgstr "Επαναποστολή email"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/MissionSetup.tsx:2394
+#: src/components/MissionSetup.tsx:2405
 msgid "Reset"
 msgstr "Επαναφορά"
 
@@ -3037,11 +3050,11 @@ msgstr "Μηδενισμός αντιστάθμισης"
 msgid "Reset view"
 msgstr "Μηδενισμός προβολής"
 
-#: src/components/MissionSetup.tsx:2012
+#: src/components/MissionSetup.tsx:2022
 msgid "Resolution"
 msgstr "Επίλυση"
 
-#: src/components/MissionSetup.tsx:2273
+#: src/components/MissionSetup.tsx:2284
 msgid "Restart mission"
 msgstr "Επανεκκίνηση αποστολής"
 
@@ -3053,7 +3066,7 @@ msgstr "Αποτέλεσμα"
 msgid "Resume"
 msgstr "Συνέχιση"
 
-#: src/components/MissionSetup.tsx:2269
+#: src/components/MissionSetup.tsx:2280
 msgid "Resume mission"
 msgstr "Συνέχιση αποστολής"
 
@@ -3369,12 +3382,12 @@ msgstr "Ορίστε αφετηρία και προορισμό"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:132
 #: ../../../lib/web/src/components/options-menu.tsx:199
 #: src/components/GameCanvas.tsx:383
-#: src/components/MissionSetup.tsx:2295
-#: src/components/MissionSetup.tsx:2329
+#: src/components/MissionSetup.tsx:2306
+#: src/components/MissionSetup.tsx:2340
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 
-#: src/components/MissionSetup.tsx:2062
+#: src/components/MissionSetup.tsx:2072
 msgid "Shadows"
 msgstr "Σκιές"
 
@@ -3436,13 +3449,21 @@ msgid "Sort"
 msgstr "Ταξινόμηση"
 
 #: src/components/MissionSetup.tsx:601
-#: src/components/MissionSetup.tsx:2339
+#: src/components/MissionSetup.tsx:2350
 msgid "Sound"
 msgstr "Ήχος"
 
 #: ../../../lib/web/src/components/options-menu.tsx:161
 msgid "Sources"
 msgstr "Πηγές"
+
+#: src/components/Multiplayer.tsx:78
+msgid "Spaced"
+msgstr "Αραιό"
+
+#: src/components/Multiplayer.tsx:415
+msgid "Spaced spawns"
+msgstr "Αραιές εμφανίσεις"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:97
 msgid "Spacious"
@@ -3478,7 +3499,8 @@ msgstr "Απώλεια στήριξης, καθαρή (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "Απώλεια στήριξης, διαμόρφωση προσγείωσης (Vs0)"
 
-#: src/components/MissionSetup.tsx:1838
+#: src/components/MissionSetup.tsx:1821
+#: src/components/MissionSetup.tsx:1851
 msgid "Start"
 msgstr "Έναρξη"
 
@@ -3527,9 +3549,9 @@ msgstr "Εγγραφή"
 msgid "Sunday"
 msgstr "Κυριακή"
 
-#: src/components/MissionSetup.tsx:1828
-#: src/components/MissionSetup.tsx:2231
-#: src/components/Multiplayer.tsx:432
+#: src/components/MissionSetup.tsx:1841
+#: src/components/MissionSetup.tsx:2241
+#: src/components/Multiplayer.tsx:463
 msgid "Superhuman"
 msgstr "Υπεράνθρωπος"
 
@@ -3570,7 +3592,7 @@ msgstr "Ετικέτες"
 msgid "TALLY"
 msgstr "ΒΛΕΠΩ ΤΟΝ ΕΧΘΡΟ"
 
-#: src/components/MissionSetup.tsx:1806
+#: src/components/MissionSetup.tsx:1808
 msgid "Task"
 msgstr "Εργασία"
 
@@ -3583,11 +3605,11 @@ msgid "TEAM"
 msgstr "ΟΜΑΔΑ"
 
 #: src/components/MatchHistory.tsx:81
-#: src/components/Multiplayer.tsx:489
+#: src/components/Multiplayer.tsx:520
 msgid "Teams"
 msgstr "Ομάδες"
 
-#: src/components/Multiplayer.tsx:342
+#: src/components/Multiplayer.tsx:361
 msgid "Teams — red versus blue"
 msgstr "Ομάδες — κόκκινοι εναντίον μπλε"
 
@@ -3641,15 +3663,15 @@ msgstr "Θέμα"
 msgid "Theme Settings"
 msgstr "Ρυθμίσεις θέματος"
 
-#: src/components/MissionSetup.tsx:2252
+#: src/components/MissionSetup.tsx:2263
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Αυτό το πρόγραμμα περιήγησης δεν υποστηρίζει WebGL 2, οπότε το παιχνίδι δεν μπορεί να τρέξει — δοκιμάστε άλλο πρόγραμμα περιήγησης."
 
-#: src/components/Multiplayer.tsx:256
+#: src/components/Multiplayer.tsx:275
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Αυτό το λόμπι στέλνει τη σύνδεση του παιχνιδιού σας σε διαφορετικό κεντρικό υπολογιστή ({redirectHost}). Συνεχίστε μόνο αν εμπιστεύεστε αυτόν τον διακομιστή."
 
-#: src/components/MissionSetup.tsx:2256
+#: src/components/MissionSetup.tsx:2267
 msgid "This machine may be too slow for smooth flight."
 msgstr "Αυτό το μηχάνημα μπορεί να είναι πολύ αργό για ομαλή πτήση."
 
@@ -3691,7 +3713,7 @@ msgstr "κλίση"
 msgid "Time"
 msgstr "Χρόνος"
 
-#: src/components/MissionSetup.tsx:1889
+#: src/components/MissionSetup.tsx:1899
 msgid "Time of day"
 msgstr "Ώρα της ημέρας"
 
@@ -3747,7 +3769,7 @@ msgstr "Πάρα πολλά αιτήματα"
 msgid "Top"
 msgstr "Κορυφή"
 
-#: src/components/MissionSetup.tsx:2074
+#: src/components/MissionSetup.tsx:2084
 msgid "Tracers"
 msgstr "Ιχνηλάτες"
 
@@ -3823,7 +3845,7 @@ msgstr "Πληκτρολογήστε για αναζήτηση χρηστών"
 msgid "Type to search..."
 msgstr "Πληκτρολογήστε για αναζήτηση..."
 
-#: src/components/MissionSetup.tsx:2004
+#: src/components/MissionSetup.tsx:2014
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3867,21 +3889,25 @@ msgstr "Ηνωμένες Πολιτείες"
 msgid "Unknown"
 msgstr "Άγνωστο"
 
-#: src/components/Multiplayer.tsx:79
-#: src/components/Multiplayer.tsx:405
+#: src/components/Multiplayer.tsx:404
+msgid "Unlimited"
+msgstr "Απεριόριστο"
+
+#: src/components/Multiplayer.tsx:85
+#: src/components/Multiplayer.tsx:436
 msgid "Unlimited ammunition"
 msgstr "Απεριόριστα πυρομαχικά"
 
-#: src/components/MissionSetup.tsx:1934
+#: src/components/MissionSetup.tsx:1944
 msgid "Unlimited ammunition (all players)"
 msgstr "Απεριόριστα πυρομαχικά (όλοι οι παίκτες)"
 
-#: src/components/Multiplayer.tsx:80
-#: src/components/Multiplayer.tsx:415
+#: src/components/Multiplayer.tsx:86
+#: src/components/Multiplayer.tsx:446
 msgid "Unlimited fuel"
 msgstr "Απεριόριστα καύσιμα"
 
-#: src/components/MissionSetup.tsx:1940
+#: src/components/MissionSetup.tsx:1950
 msgid "Unlimited fuel (all players)"
 msgstr "Απεριόριστα καύσιμα (όλοι οι παίκτες)"
 
@@ -4027,7 +4053,7 @@ msgstr "όπλο"
 msgid "Weapons"
 msgstr "Όπλα"
 
-#: src/components/Multiplayer.tsx:347
+#: src/components/Multiplayer.tsx:366
 msgid "Weather"
 msgstr "Καιρός"
 
@@ -4052,12 +4078,12 @@ msgstr "Δίπλωμα πτερύγων"
 msgid "WINS"
 msgstr "ΝΙΚΑ"
 
-#: src/components/Multiplayer.tsx:282
+#: src/components/Multiplayer.tsx:301
 msgid "World server"
 msgstr "Διακομιστής κόσμου"
 
 #: src/components/MissionSetup.tsx:1513
-#: src/components/Multiplayer.tsx:143
+#: src/components/Multiplayer.tsx:159
 msgid "World server not reachable"
 msgstr "Ο διακομιστής κόσμου δεν είναι προσβάσιμος"
 
@@ -4107,7 +4133,7 @@ msgstr "Τα συνημμένα σας θα χαθούν."
 msgid "Your flights appear here once you've flown one."
 msgstr "Οι πτήσεις σας θα εμφανίζονται εδώ μόλις πραγματοποιήσετε μία."
 
-#: src/components/Multiplayer.tsx:484
+#: src/components/Multiplayer.tsx:515
 msgid "your offer"
 msgstr "η προσφορά σας"
 
