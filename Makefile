@@ -32,7 +32,8 @@ web/src/assets/flight.wasm: $(shell find ../../world/games/air ../../world/wasm 
 release: web/dist/index.html
 	rm -f $(RELEASE)/$(APP)_*.zip
 	zip -r $(RELEASE)/$(APP)_$(VERSION).zip app.json *.star labels web/dist
-	git tag -a $(VERSION) -m "$(VERSION)" 2>/dev/null || true
+	# Tagged by claude/scripts/commit.sh when the version bump is committed:
+	# tagging here runs before that commit, so the tag named the one before it.
 
 deploy:
 	../../test/claude/deploy.sh $(APP)
