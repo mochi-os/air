@@ -124,7 +124,7 @@ msgstr "{selectedCount, plural, zero {# wedi'u dewis} one {# wedi'u dewis} two {
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
 msgstr "{selectedCount, plural, zero {Camau swmp ar gyfer # {manyName} a ddewiswyd} one {Camau swmp ar gyfer # {entityName} a ddewiswyd} two {Camau swmp ar gyfer # {manyName} a ddewiswyd} few {Camau swmp ar gyfer # {manyName} a ddewiswyd} many {Camau swmp ar gyfer # {manyName} a ddewiswyd} other {Camau swmp ar gyfer # {manyName} a ddewiswyd}}"
 
-#: ../../../lib/web/src/components/attachment-composer.tsx:252
+#: ../../../lib/web/src/components/attachment-composer.tsx:281
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:52
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel} o {totalLabel}"
@@ -260,6 +260,10 @@ msgstr "Ychwanegu cyfrif"
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:297
 msgid "Add an account to receive notifications and use services."
 msgstr "Ychwanegu cyfrif i dderbyn hysbysiadau a defnyddio gwasanaethau."
+
+#: ../../../lib/web/src/components/attachment-composer.tsx:324
+msgid "Add caption"
+msgstr "Ychwanegu capsiwn"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:687
 msgid "Add checklist item"
@@ -610,6 +614,7 @@ msgstr "Pellter y camera"
 msgid "Camera unavailable"
 msgstr "Camera ddim ar gael"
 
+#: ../../../lib/web/src/components/attachment-composer.tsx:461
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:250
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
@@ -642,6 +647,11 @@ msgstr "Canslo ateb"
 #: src/components/MissionSetup.tsx:248
 msgid "Canopy"
 msgstr "Canopi"
+
+#: ../../../lib/web/src/components/attachment-composer.tsx:421
+#: ../../../lib/web/src/components/attachment-composer.tsx:456
+msgid "Caption"
+msgstr "Capsiwn"
 
 #: src/components/MissionSetup.tsx:1558
 msgid "Case I"
@@ -777,8 +787,8 @@ msgstr "Clirio dewis (Escape)"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:511
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:376
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Cau"
@@ -1218,11 +1228,11 @@ msgstr "Cyfeiriadur"
 msgid "DIRTY UP"
 msgstr "GOSTWNG YR OLWYNION"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:300
+#: ../../../lib/web/src/components/comment-composer.tsx:313
 msgid "Discard"
 msgstr "Hepgor"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:298
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Discard draft?"
 msgstr "Hepgor y drafft?"
 
@@ -1262,12 +1272,12 @@ msgid "Done"
 msgstr "Wedi gorffen"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:239
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:367
 msgid "Download"
 msgstr "Lawrlwytho"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:68
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:69
 msgid "Download failed"
 msgstr "Methwyd â lawrlwytho"
 
@@ -1311,6 +1321,10 @@ msgstr "Golygu"
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "Golygu {label}"
+
+#: ../../../lib/web/src/components/attachment-composer.tsx:324
+msgid "Edit caption"
+msgstr "Golygu capsiwn"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:137
 msgid "Edit field"
@@ -1486,11 +1500,11 @@ msgstr "Methwyd llwytho"
 msgid "Failed to load history"
 msgstr "Methwyd llwytho hanes"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:264
 msgid "Failed to load image"
 msgstr "Methwyd llwytho'r ddelwedd"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:264
 msgid "Failed to load video"
 msgstr "Methwyd llwytho'r fideo"
 
@@ -1833,7 +1847,7 @@ msgid "ID"
 msgstr "ID"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:248
 msgid "Image viewer: {0}"
 msgstr "Gwyliwr delweddau: {0}"
 
@@ -2359,8 +2373,8 @@ msgstr "Newydd"
 msgid "New game"
 msgstr "Gêm newydd"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:407
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:412
 msgid "Next image"
 msgstr "Delwedd nesaf"
 
@@ -2567,7 +2581,7 @@ msgstr "Rhif"
 msgid "Ocean detail"
 msgstr "Manylion y cefnfor"
 
-#: src/components/ServerList.tsx:99
+#: src/components/ServerList.tsx:88
 msgid "offline"
 msgstr ""
 
@@ -2807,8 +2821,8 @@ msgstr "PWYSWCH ENTER I LANSIO"
 msgid "Press it…"
 msgstr "Pwyswch y botwm…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Previous image"
 msgstr "Delwedd flaenorol"
 
@@ -2946,8 +2960,8 @@ msgstr "Cymharol (5m, 3a, 2d)"
 msgid "Relative within 24 hours, else absolute"
 msgstr "Cymharol o fewn 24 awr, fel arall yn absoliwt"
 
-#: ../../../lib/web/src/components/attachment-composer.tsx:289
-#: ../../../lib/web/src/components/attachment-composer.tsx:328
+#: ../../../lib/web/src/components/attachment-composer.tsx:318
+#: ../../../lib/web/src/components/attachment-composer.tsx:363
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
 #: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
@@ -3079,7 +3093,7 @@ msgstr "Parhau’r genhadaeth"
 msgid "Retract flaps"
 msgstr "Tynnu fflapiau"
 
-#: ../../../lib/web/src/components/attachment-composer.tsx:346
+#: ../../../lib/web/src/components/attachment-composer.tsx:381
 msgid "Retry"
 msgstr "Ail-geisio"
 
@@ -3161,6 +3175,7 @@ msgstr "PŴER LLAWN"
 msgid "Saturday"
 msgstr "Dydd Sadwrn"
 
+#: ../../../lib/web/src/components/attachment-composer.tsx:465
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:270
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
@@ -3362,7 +3377,7 @@ msgid "Server rules"
 msgstr "Rheolau'r gweinydd"
 
 #. placeholder {0}: server.version
-#: src/components/ServerList.tsx:101
+#: src/components/ServerList.tsx:90
 msgid "server runs v{0}, you have v{version}"
 msgstr "mae'r gweinydd yn rhedeg v{0}, mae gennych v{version}"
 
@@ -3981,12 +3996,12 @@ msgstr "Fertigol"
 msgid "Victory"
 msgstr "Buddugoliaeth"
 
-#: ../../../lib/web/src/components/attachment-gallery.tsx:79
+#: ../../../lib/web/src/components/attachment-gallery.tsx:85
 msgid "Video thumbnail"
 msgstr "Bawd fideo"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
 msgid "Video viewer: {0}"
 msgstr "Gwyliwr fideo: {0}"
 
@@ -4127,7 +4142,7 @@ msgstr "Rydych wedi dal i fyny!"
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Symudwyd eich cyfrif yma o {source}. Hyd nes y byddwch yn ei ddileu yno, gall negeseuon a hysbysiadau gyrraedd y ddau weinydd, gall peth o'ch cynnwys barhau i gael ei weini o'r hen weinydd, a gall dilynwyr gymryd ychydig funudau i ddod o hyd i chi yma."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:291
+#: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Your attachments will be lost."
 msgstr "Bydd eich atodiadau'n cael eu colli."
 
@@ -4139,11 +4154,11 @@ msgstr "Bydd eich hediadau yn ymddangos yma ar ôl i chi hedfan un."
 msgid "your offer"
 msgstr "eich cynnig"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:289
+#: ../../../lib/web/src/components/comment-composer.tsx:302
 msgid "Your text and attachments will be lost."
 msgstr "Bydd eich testun a'ch atodiadau'n cael eu colli."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:292
+#: ../../../lib/web/src/components/comment-composer.tsx:305
 msgid "Your text will be lost."
 msgstr "Bydd eich testun yn cael ei golli."
 

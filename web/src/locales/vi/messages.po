@@ -124,7 +124,7 @@ msgstr "{selectedCount, plural, one {# đã chọn} other {# đã chọn}}"
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
 msgstr "{selectedCount, plural, one {Thao tác hàng loạt cho # {entityName} đã chọn} other {Thao tác hàng loạt cho # {manyName} đã chọn}}"
 
-#: ../../../lib/web/src/components/attachment-composer.tsx:252
+#: ../../../lib/web/src/components/attachment-composer.tsx:281
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:52
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel} trên {totalLabel}"
@@ -260,6 +260,10 @@ msgstr "Thêm tài khoản"
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:297
 msgid "Add an account to receive notifications and use services."
 msgstr "Thêm tài khoản để nhận thông báo và dùng dịch vụ."
+
+#: ../../../lib/web/src/components/attachment-composer.tsx:324
+msgid "Add caption"
+msgstr "Thêm chú thích"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:687
 msgid "Add checklist item"
@@ -610,6 +614,7 @@ msgstr "Khoảng cách camera"
 msgid "Camera unavailable"
 msgstr "Camera không khả dụng"
 
+#: ../../../lib/web/src/components/attachment-composer.tsx:461
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:250
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
@@ -642,6 +647,11 @@ msgstr "Hủy phản hồi"
 #: src/components/MissionSetup.tsx:248
 msgid "Canopy"
 msgstr "Nắp buồng lái"
+
+#: ../../../lib/web/src/components/attachment-composer.tsx:421
+#: ../../../lib/web/src/components/attachment-composer.tsx:456
+msgid "Caption"
+msgstr "Chú thích"
 
 #: src/components/MissionSetup.tsx:1558
 msgid "Case I"
@@ -777,8 +787,8 @@ msgstr "Bỏ chọn (Escape)"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:511
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:376
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Đóng"
@@ -1218,11 +1228,11 @@ msgstr "Danh bạ"
 msgid "DIRTY UP"
 msgstr "HẠ CÀNG"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:300
+#: ../../../lib/web/src/components/comment-composer.tsx:313
 msgid "Discard"
 msgstr "Hủy bỏ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:298
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Discard draft?"
 msgstr "Hủy bản nháp?"
 
@@ -1262,12 +1272,12 @@ msgid "Done"
 msgstr "Xong"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:239
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:367
 msgid "Download"
 msgstr "Tải xuống"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:68
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:69
 msgid "Download failed"
 msgstr "Tải xuống thất bại"
 
@@ -1311,6 +1321,10 @@ msgstr "Sửa"
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "Chỉnh sửa {label}"
+
+#: ../../../lib/web/src/components/attachment-composer.tsx:324
+msgid "Edit caption"
+msgstr "Sửa chú thích"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:137
 msgid "Edit field"
@@ -1486,11 +1500,11 @@ msgstr "Không tải được"
 msgid "Failed to load history"
 msgstr "Không tải lịch sử được"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:264
 msgid "Failed to load image"
 msgstr "Không tải được hình ảnh"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:264
 msgid "Failed to load video"
 msgstr "Không tải được video"
 
@@ -1833,7 +1847,7 @@ msgid "ID"
 msgstr "ID"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:248
 msgid "Image viewer: {0}"
 msgstr "Trình xem ảnh: {0}"
 
@@ -2359,8 +2373,8 @@ msgstr "Mới"
 msgid "New game"
 msgstr "Trò chơi mới"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:407
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:412
 msgid "Next image"
 msgstr "Hình tiếp theo"
 
@@ -2567,7 +2581,7 @@ msgstr "Số"
 msgid "Ocean detail"
 msgstr "Chi tiết đại dương"
 
-#: src/components/ServerList.tsx:99
+#: src/components/ServerList.tsx:88
 msgid "offline"
 msgstr ""
 
@@ -2807,8 +2821,8 @@ msgstr "NHẤN ENTER ĐỂ CẤT CÁNH"
 msgid "Press it…"
 msgstr "Nhấn nó…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Previous image"
 msgstr "Hình trước"
 
@@ -2946,8 +2960,8 @@ msgstr "Tương đối (5m, 3h, 2d)"
 msgid "Relative within 24 hours, else absolute"
 msgstr "Tương đối trong vòng 24 giờ, ngoài ra dùng tuyệt đối"
 
-#: ../../../lib/web/src/components/attachment-composer.tsx:289
-#: ../../../lib/web/src/components/attachment-composer.tsx:328
+#: ../../../lib/web/src/components/attachment-composer.tsx:318
+#: ../../../lib/web/src/components/attachment-composer.tsx:363
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
 #: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
@@ -3079,7 +3093,7 @@ msgstr "Tiếp tục nhiệm vụ"
 msgid "Retract flaps"
 msgstr "Thu cánh tà"
 
-#: ../../../lib/web/src/components/attachment-composer.tsx:346
+#: ../../../lib/web/src/components/attachment-composer.tsx:381
 msgid "Retry"
 msgstr "Thử lại"
 
@@ -3161,6 +3175,7 @@ msgstr "HẾT CÔNG SUẤT"
 msgid "Saturday"
 msgstr "Thứ bảy"
 
+#: ../../../lib/web/src/components/attachment-composer.tsx:465
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:270
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
@@ -3362,7 +3377,7 @@ msgid "Server rules"
 msgstr "Quy tắc máy chủ"
 
 #. placeholder {0}: server.version
-#: src/components/ServerList.tsx:101
+#: src/components/ServerList.tsx:90
 msgid "server runs v{0}, you have v{version}"
 msgstr "máy chủ chạy v{0}, bạn có v{version}"
 
@@ -3981,12 +3996,12 @@ msgstr "Thẳng đứng"
 msgid "Victory"
 msgstr "Chiến thắng"
 
-#: ../../../lib/web/src/components/attachment-gallery.tsx:79
+#: ../../../lib/web/src/components/attachment-gallery.tsx:85
 msgid "Video thumbnail"
 msgstr "Hình thu nhỏ video"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
 msgid "Video viewer: {0}"
 msgstr "Trình xem video: {0}"
 
@@ -4127,7 +4142,7 @@ msgstr "Bạn đã xem hết!"
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Tài khoản của bạn đã được chuyển đến đây từ {source}. Cho đến khi bạn xóa nó ở đó, tin nhắn và thông báo có thể đến cả hai máy chủ, một số nội dung của bạn vẫn được phục vụ từ máy chủ cũ và người theo dõi có thể mất vài phút để tìm thấy bạn ở đây."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:291
+#: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Your attachments will be lost."
 msgstr "Tệp đính kèm của bạn sẽ bị mất."
 
@@ -4139,11 +4154,11 @@ msgstr "Các chuyến bay của bạn sẽ xuất hiện ở đây sau khi bạn
 msgid "your offer"
 msgstr "lời mời của bạn"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:289
+#: ../../../lib/web/src/components/comment-composer.tsx:302
 msgid "Your text and attachments will be lost."
 msgstr "Văn bản và tệp đính kèm của bạn sẽ bị mất."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:292
+#: ../../../lib/web/src/components/comment-composer.tsx:305
 msgid "Your text will be lost."
 msgstr "Nội dung của bạn sẽ bị mất."
 

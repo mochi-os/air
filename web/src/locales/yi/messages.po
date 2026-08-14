@@ -124,7 +124,7 @@ msgstr "{selectedCount, plural, one {# אויסגעקליבן} other {# אויס
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
 msgstr "{selectedCount, plural, one {מאַסן־אַקציעס פֿאַר # אויסגעקליבענעם {entityName}} other {מאַסן־אַקציעס פֿאַר # אויסגעקליבענע {manyName}}}"
 
-#: ../../../lib/web/src/components/attachment-composer.tsx:252
+#: ../../../lib/web/src/components/attachment-composer.tsx:281
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:52
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel} פֿון {totalLabel}"
@@ -260,6 +260,10 @@ msgstr "צולייגן קאָנטע"
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:297
 msgid "Add an account to receive notifications and use services."
 msgstr "צולייגן אַ קאָנטע צו באַקומען נאָטיפֿיקאַציעס און נוצן סערוויסעס."
+
+#: ../../../lib/web/src/components/attachment-composer.tsx:324
+msgid "Add caption"
+msgstr "צוגעבן אן אונטערשריפֿט"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:687
 msgid "Add checklist item"
@@ -610,6 +614,7 @@ msgstr "קאַמערע-דיסטאַנץ"
 msgid "Camera unavailable"
 msgstr "די קאַמערע איז נישט פֿאַראַן"
 
+#: ../../../lib/web/src/components/attachment-composer.tsx:461
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:250
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
@@ -642,6 +647,11 @@ msgstr "אָפּזאָגן ענטפֿער"
 #: src/components/MissionSetup.tsx:248
 msgid "Canopy"
 msgstr "קאַנאָפּי"
+
+#: ../../../lib/web/src/components/attachment-composer.tsx:421
+#: ../../../lib/web/src/components/attachment-composer.tsx:456
+msgid "Caption"
+msgstr "אונטערשריפֿט"
 
 #: src/components/MissionSetup.tsx:1558
 msgid "Case I"
@@ -777,8 +787,8 @@ msgstr "רייניקן אויסקלײַב (Escape)"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:511
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:376
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "פֿאַרמאַכן"
@@ -1218,11 +1228,11 @@ msgstr "פֿאַרצײכעניש"
 msgid "DIRTY UP"
 msgstr "לאָז אַראָפּ דאָס געציַג"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:300
+#: ../../../lib/web/src/components/comment-composer.tsx:313
 msgid "Discard"
 msgstr "אַװעקװאַרפֿן"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:298
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Discard draft?"
 msgstr "אַװעקװאַרפֿן דעם פּראָיעקט?"
 
@@ -1262,12 +1272,12 @@ msgid "Done"
 msgstr "געטאָן"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:239
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:367
 msgid "Download"
 msgstr "אַראָפּלאָדן"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:68
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:69
 msgid "Download failed"
 msgstr "אַראָפּלאָדן דורכגעפֿאַלן"
 
@@ -1311,6 +1321,10 @@ msgstr "רעדאַקטירן"
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "רעדאַקטירן {label}"
+
+#: ../../../lib/web/src/components/attachment-composer.tsx:324
+msgid "Edit caption"
+msgstr "רעדאַקטירן די אונטערשריפֿט"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:137
 msgid "Edit field"
@@ -1486,11 +1500,11 @@ msgstr "ניט געלונגען צו לאָדן"
 msgid "Failed to load history"
 msgstr "ניט געלונגען צו לאָדן היסטאָריע"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:264
 msgid "Failed to load image"
 msgstr "נישט געקאָנט לאָדן דאָס בילד"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:264
 msgid "Failed to load video"
 msgstr "נישט געקאָנט לאָדן דעם ווידעאָ"
 
@@ -1833,7 +1847,7 @@ msgid "ID"
 msgstr "ID"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:248
 msgid "Image viewer: {0}"
 msgstr "בילד־ווײַזער: {0}"
 
@@ -2359,8 +2373,8 @@ msgstr "נײַ"
 msgid "New game"
 msgstr "נײַ שפּיל"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:407
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:412
 msgid "Next image"
 msgstr "ווײַטערדיק בילד"
 
@@ -2567,7 +2581,7 @@ msgstr "נומער"
 msgid "Ocean detail"
 msgstr "אָקעאַן-פּרט"
 
-#: src/components/ServerList.tsx:99
+#: src/components/ServerList.tsx:88
 msgid "offline"
 msgstr ""
 
@@ -2807,8 +2821,8 @@ msgstr "דריקט Enter צו פֿליִען"
 msgid "Press it…"
 msgstr "דריקט עס…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Previous image"
 msgstr "פֿריִערדיק בילד"
 
@@ -2946,8 +2960,8 @@ msgstr "רעלאַטיוו (5m, 3h, 2d)"
 msgid "Relative within 24 hours, else absolute"
 msgstr "רעלאַטיוו אין 24 שעה, אַנדערש אַבסאָלוט"
 
-#: ../../../lib/web/src/components/attachment-composer.tsx:289
-#: ../../../lib/web/src/components/attachment-composer.tsx:328
+#: ../../../lib/web/src/components/attachment-composer.tsx:318
+#: ../../../lib/web/src/components/attachment-composer.tsx:363
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
 #: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
@@ -3079,7 +3093,7 @@ msgstr "ממשיך זײַן מיסיע"
 msgid "Retract flaps"
 msgstr "פֿלאַפּס אַרײַן"
 
-#: ../../../lib/web/src/components/attachment-composer.tsx:346
+#: ../../../lib/web/src/components/attachment-composer.tsx:381
 msgid "Retry"
 msgstr "פּרוּווט נאָך אַ מאָל"
 
@@ -3161,6 +3175,7 @@ msgstr "פֿולע קראַפֿט"
 msgid "Saturday"
 msgstr "שבת"
 
+#: ../../../lib/web/src/components/attachment-composer.tsx:465
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:270
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
@@ -3362,7 +3377,7 @@ msgid "Server rules"
 msgstr "סערווער־כּללים"
 
 #. placeholder {0}: server.version
-#: src/components/ServerList.tsx:101
+#: src/components/ServerList.tsx:90
 msgid "server runs v{0}, you have v{version}"
 msgstr "סערווער לויפֿט v{0}, איר האָט v{version}"
 
@@ -3981,12 +3996,12 @@ msgstr "סענקרעכט"
 msgid "Victory"
 msgstr "נצחון"
 
-#: ../../../lib/web/src/components/attachment-gallery.tsx:79
+#: ../../../lib/web/src/components/attachment-gallery.tsx:85
 msgid "Video thumbnail"
 msgstr "ווידעאָ־טאַמבניל"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
 msgid "Video viewer: {0}"
 msgstr "ווידעאָ־ווײַזער: {0}"
 
@@ -4127,7 +4142,7 @@ msgstr "איר האָט אַלץ געזען!"
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "דיין קאנטע איז אהערגעברענגט ווארן פון {source}. ביז דו לעשסט עס דארט, קענען מעסאזשן און הודעות דערגרייכן ביידע סערווערס, עטלעכע פון דיין אינהאלט ווערט ווייטאר פארזאמלט פונם אלטן סערווער, און פאלגערס קענען נעמען עטלעכע מינוטן צו דיך דא געפינען."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:291
+#: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Your attachments will be lost."
 msgstr "דײַנע צוגעלייגטע טעקעס וועלן פֿאַרלוירן גיין."
 
@@ -4139,11 +4154,11 @@ msgstr "אײַערע פֿליען וועלן זיך װײַזן דאָ נאָך �
 msgid "your offer"
 msgstr "דײַן פֿאָרשלאָג"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:289
+#: ../../../lib/web/src/components/comment-composer.tsx:302
 msgid "Your text and attachments will be lost."
 msgstr "דײַן טעקסט און צוגעלייגטע טעקעס וועלן פֿאַרלוירן גיין."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:292
+#: ../../../lib/web/src/components/comment-composer.tsx:305
 msgid "Your text will be lost."
 msgstr "אײַער טעקסט װעט פֿאַרלוירן װערן."
 

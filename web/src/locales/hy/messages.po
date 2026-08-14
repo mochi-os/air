@@ -124,7 +124,7 @@ msgstr "{selectedCount, plural, one {# ընտրված} other {# ընտրված}}
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
 msgstr "{selectedCount, plural, one {Զանգվածային գործողություններ # ընտրված {entityName}-ի համար} other {Զանգվածային գործողություններ # ընտրված {manyName}-ի համար}}"
 
-#: ../../../lib/web/src/components/attachment-composer.tsx:252
+#: ../../../lib/web/src/components/attachment-composer.tsx:281
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:52
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{sentLabel}՝ {totalLabel}-ից"
@@ -260,6 +260,10 @@ msgstr "Ավելացնել հաշիվ ծանուցումներ ստանալու 
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:297
 msgid "Add an account to receive notifications and use services."
 msgstr "Ավելացնել հավելված լրացուցիչ անվտանգության համար"
+
+#: ../../../lib/web/src/components/attachment-composer.tsx:324
+msgid "Add caption"
+msgstr "Ավելացնել մակագրություն"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:687
 msgid "Add checklist item"
@@ -610,6 +614,7 @@ msgstr "Տեսախցիկի հեռավորություն"
 msgid "Camera unavailable"
 msgstr "Տեսախցիկը հասանելի չէ"
 
+#: ../../../lib/web/src/components/attachment-composer.tsx:461
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:250
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
@@ -642,6 +647,11 @@ msgstr "Չեղարկել բաժանորդագրությունը"
 #: src/components/MissionSetup.tsx:248
 msgid "Canopy"
 msgstr "Կաբինայի ծածկ"
+
+#: ../../../lib/web/src/components/attachment-composer.tsx:421
+#: ../../../lib/web/src/components/attachment-composer.tsx:456
+msgid "Caption"
+msgstr "Մակագրություն"
 
 #: src/components/MissionSetup.tsx:1558
 msgid "Case I"
@@ -777,8 +787,8 @@ msgstr "Կլոնավորել"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:511
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:376
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Փակել վահանակը"
@@ -1218,11 +1228,11 @@ msgstr "Տեղեկագիրք"
 msgid "DIRTY UP"
 msgstr "ՇԱՍԻՆ ԻՋԵՑՐՈՒ"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:300
+#: ../../../lib/web/src/components/comment-composer.tsx:313
 msgid "Discard"
 msgstr "Հրաժարվել"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:298
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Discard draft?"
 msgstr "Հրաժարվե՞լ սևագրից։"
 
@@ -1262,12 +1272,12 @@ msgid "Done"
 msgstr "Կատարված է"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:239
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:367
 msgid "Download"
 msgstr "Ներբեռնել"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:68
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:69
 msgid "Download failed"
 msgstr "Ներբեռնումը ձախողվեց"
 
@@ -1311,6 +1321,10 @@ msgstr "Խմբագրել"
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "Խմբագրել {label}"
+
+#: ../../../lib/web/src/components/attachment-composer.tsx:324
+msgid "Edit caption"
+msgstr "Խմբագրել մակագրությունը"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:137
 msgid "Edit field"
@@ -1486,11 +1500,11 @@ msgstr "Չհաջողվեց բեռնել"
 msgid "Failed to load history"
 msgstr "Չհաջողվեց բեռնել պատմությունը"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:264
 msgid "Failed to load image"
 msgstr "Չհաջողվեց բեռնել պատկերը"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:264
 msgid "Failed to load video"
 msgstr "Չհաջողվեց բեռնել տեսանյութը"
 
@@ -1833,7 +1847,7 @@ msgid "ID"
 msgstr "ID"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:248
 msgid "Image viewer: {0}"
 msgstr "Պատկերի դիտիչ՝ {0}"
 
@@ -2359,8 +2373,8 @@ msgstr "Նոր"
 msgid "New game"
 msgstr "Նոր խաղ"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:407
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:412
 msgid "Next image"
 msgstr "Հաջորդ նկարը"
 
@@ -2567,7 +2581,7 @@ msgstr "Թիվ"
 msgid "Ocean detail"
 msgstr "Օվկիանոսի մանրամասներ"
 
-#: src/components/ServerList.tsx:99
+#: src/components/ServerList.tsx:88
 msgid "offline"
 msgstr ""
 
@@ -2807,8 +2821,8 @@ msgstr "ԹՌՉԵԼՈՒ ՀԱՄԱՐ ՍԵՂՄԻՐ ENTER"
 msgid "Press it…"
 msgstr "Սեղմեք այն…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Previous image"
 msgstr "Նախորդ նկարը"
 
@@ -2946,8 +2960,8 @@ msgstr "Հարաբերական (5մ, 3ժ, 2օ)"
 msgid "Relative within 24 hours, else absolute"
 msgstr "Հարաբերական 24 ժամվա ընթացքում, այլապես՝ բացարձակ"
 
-#: ../../../lib/web/src/components/attachment-composer.tsx:289
-#: ../../../lib/web/src/components/attachment-composer.tsx:328
+#: ../../../lib/web/src/components/attachment-composer.tsx:318
+#: ../../../lib/web/src/components/attachment-composer.tsx:363
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
 #: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
@@ -3079,7 +3093,7 @@ msgstr "Շարունակել առաքելությունը"
 msgid "Retract flaps"
 msgstr "Փեղկերը հավաքել"
 
-#: ../../../lib/web/src/components/attachment-composer.tsx:346
+#: ../../../lib/web/src/components/attachment-composer.tsx:381
 msgid "Retry"
 msgstr "Կրկին փորձել"
 
@@ -3161,6 +3175,7 @@ msgstr "ԼՐԻՎ ՀԶՈՐՈՒԹՅՈՒՆ"
 msgid "Saturday"
 msgstr "Շաբաթ"
 
+#: ../../../lib/web/src/components/attachment-composer.tsx:465
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:270
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
@@ -3362,7 +3377,7 @@ msgid "Server rules"
 msgstr "Սերվերի կանոններ"
 
 #. placeholder {0}: server.version
-#: src/components/ServerList.tsx:101
+#: src/components/ServerList.tsx:90
 msgid "server runs v{0}, you have v{version}"
 msgstr "սերվերն աշխատում է v{0}, դուք ունեք v{version}"
 
@@ -3981,12 +3996,12 @@ msgstr "Ուղղաձիգ"
 msgid "Victory"
 msgstr "Հաղթանակ"
 
-#: ../../../lib/web/src/components/attachment-gallery.tsx:79
+#: ../../../lib/web/src/components/attachment-gallery.tsx:85
 msgid "Video thumbnail"
 msgstr "Տեսանյութի մանրապատկեր"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
 msgid "Video viewer: {0}"
 msgstr "Տեսանյութի դիտիչ՝ {0}"
 
@@ -4127,7 +4142,7 @@ msgstr "Դուք ամեն ինչ տեսել եք։"
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Ձեր հաշիվը տեղափոխվել է այստեղ {source}-ից: Մինչ այն ջնջեք այնտեղ, հաղորդագրություններն ու ծանուցումները կարող են հասնել երկու սերվերներին, ձեր որոշ բովանդակություն դեռ մատուցվում է հին սերվերից, և հետևորդները կարող են մի քանի րոպե պահանջել ձեզ գտնելու համար:"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:291
+#: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Your attachments will be lost."
 msgstr "Ձեր կցորդները կկորչեն։"
 
@@ -4139,11 +4154,11 @@ msgstr "Ձեր թռիչքները կհայտնվեն այստեղ, երբ մեկ
 msgid "your offer"
 msgstr "ձեր առաջարկը"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:289
+#: ../../../lib/web/src/components/comment-composer.tsx:302
 msgid "Your text and attachments will be lost."
 msgstr "Ձեր տեքստը և կցորդները կկորչեն։"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:292
+#: ../../../lib/web/src/components/comment-composer.tsx:305
 msgid "Your text will be lost."
 msgstr "Քո տեքստը կկորչի։"
 

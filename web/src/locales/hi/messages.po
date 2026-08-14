@@ -124,7 +124,7 @@ msgstr "{selectedCount, plural, one {# चयनित} other {# चयनित
 msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
 msgstr "{selectedCount, plural, one {# चयनित {entityName} के लिए बल्क कार्रवाइयाँ} other {# चयनित {manyName} के लिए बल्क कार्रवाइयाँ}}"
 
-#: ../../../lib/web/src/components/attachment-composer.tsx:252
+#: ../../../lib/web/src/components/attachment-composer.tsx:281
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:52
 msgid "{sentLabel} of {totalLabel}"
 msgstr "{totalLabel} में से {sentLabel}"
@@ -260,6 +260,10 @@ msgstr "अकाउंट जोड़ें"
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:297
 msgid "Add an account to receive notifications and use services."
 msgstr "नोटिफ़िकेशन प्राप्त करने और सेवाएँ उपयोग करने के लिए एक अकाउंट जोड़ें।"
+
+#: ../../../lib/web/src/components/attachment-composer.tsx:324
+msgid "Add caption"
+msgstr "कैप्शन जोड़ें"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx:687
 msgid "Add checklist item"
@@ -610,6 +614,7 @@ msgstr "कैमरे की दूरी"
 msgid "Camera unavailable"
 msgstr "कैमरा उपलब्ध नहीं"
 
+#: ../../../lib/web/src/components/attachment-composer.tsx:461
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:250
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
@@ -642,6 +647,11 @@ msgstr "उत्तर रद्द करें"
 #: src/components/MissionSetup.tsx:248
 msgid "Canopy"
 msgstr "कैनोपी"
+
+#: ../../../lib/web/src/components/attachment-composer.tsx:421
+#: ../../../lib/web/src/components/attachment-composer.tsx:456
+msgid "Caption"
+msgstr "कैप्शन"
 
 #: src/components/MissionSetup.tsx:1558
 msgid "Case I"
@@ -777,8 +787,8 @@ msgstr "चयन साफ़ करें (Escape)"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:511
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:361
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:373
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:376
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "बंद करें"
@@ -1218,11 +1228,11 @@ msgstr "निर्देशिका"
 msgid "DIRTY UP"
 msgstr "गियर नीचे"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:300
+#: ../../../lib/web/src/components/comment-composer.tsx:313
 msgid "Discard"
 msgstr "त्यागें"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:298
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Discard draft?"
 msgstr "ड्राफ्ट त्यागें?"
 
@@ -1262,12 +1272,12 @@ msgid "Done"
 msgstr "पूर्ण"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:239
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:342
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:352
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:357
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:367
 msgid "Download"
 msgstr "डाउनलोड"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:68
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:69
 msgid "Download failed"
 msgstr "डाउनलोड विफल"
 
@@ -1311,6 +1321,10 @@ msgstr "संपादित करें"
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:154
 msgid "Edit {label}"
 msgstr "{label} संपादित करें"
+
+#: ../../../lib/web/src/components/attachment-composer.tsx:324
+msgid "Edit caption"
+msgstr "कैप्शन संपादित करें"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:137
 msgid "Edit field"
@@ -1486,11 +1500,11 @@ msgstr "लोड करने में विफल"
 msgid "Failed to load history"
 msgstr "इतिहास लोड करने में विफल"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:264
 msgid "Failed to load image"
 msgstr "छवि लोड नहीं हो सकी"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:263
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:264
 msgid "Failed to load video"
 msgstr "वीडियो लोड नहीं हो सका"
 
@@ -1833,7 +1847,7 @@ msgid "ID"
 msgstr "आईडी"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:248
 msgid "Image viewer: {0}"
 msgstr "छवि व्यूअर: {0}"
 
@@ -2359,8 +2373,8 @@ msgstr "नया"
 msgid "New game"
 msgstr "नया गेम"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:407
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:412
 msgid "Next image"
 msgstr "अगली इमेज"
 
@@ -2567,7 +2581,7 @@ msgstr "संख्या"
 msgid "Ocean detail"
 msgstr "महासागर विवरण"
 
-#: src/components/ServerList.tsx:99
+#: src/components/ServerList.tsx:88
 msgid "offline"
 msgstr ""
 
@@ -2807,8 +2821,8 @@ msgstr "उड़ान भरने के लिए ENTER दबाएँ"
 msgid "Press it…"
 msgstr "उसे दबाएँ…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:377
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:382
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:392
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:397
 msgid "Previous image"
 msgstr "पिछली इमेज"
 
@@ -2946,8 +2960,8 @@ msgstr "सापेक्ष (5m, 3h, 2d)"
 msgid "Relative within 24 hours, else absolute"
 msgstr "24 घंटे के भीतर सापेक्ष, अन्यथा निरपेक्ष"
 
-#: ../../../lib/web/src/components/attachment-composer.tsx:289
-#: ../../../lib/web/src/components/attachment-composer.tsx:328
+#: ../../../lib/web/src/components/attachment-composer.tsx:318
+#: ../../../lib/web/src/components/attachment-composer.tsx:363
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
 #: ../../../lib/web/src/features/access/access-list.tsx:270
 #: ../../../lib/web/src/features/accounts/account-manager.tsx:180
@@ -3079,7 +3093,7 @@ msgstr "मिशन जारी रखें"
 msgid "Retract flaps"
 msgstr "फ्लैप अंदर"
 
-#: ../../../lib/web/src/components/attachment-composer.tsx:346
+#: ../../../lib/web/src/components/attachment-composer.tsx:381
 msgid "Retry"
 msgstr "पुनः प्रयास करें"
 
@@ -3161,6 +3175,7 @@ msgstr "पूरी शक्ति"
 msgid "Saturday"
 msgstr "शनिवार"
 
+#: ../../../lib/web/src/components/attachment-composer.tsx:465
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:270
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
@@ -3362,7 +3377,7 @@ msgid "Server rules"
 msgstr "सर्वर के नियम"
 
 #. placeholder {0}: server.version
-#: src/components/ServerList.tsx:101
+#: src/components/ServerList.tsx:90
 msgid "server runs v{0}, you have v{version}"
 msgstr "सर्वर v{0} चला रहा है, आपके पास v{version} है"
 
@@ -3981,12 +3996,12 @@ msgstr "ऊर्ध्वाधर"
 msgid "Victory"
 msgstr "जीत"
 
-#: ../../../lib/web/src/components/attachment-gallery.tsx:79
+#: ../../../lib/web/src/components/attachment-gallery.tsx:85
 msgid "Video thumbnail"
 msgstr "वीडियो थंबनेल"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:246
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:247
 msgid "Video viewer: {0}"
 msgstr "वीडियो व्यूअर: {0}"
 
@@ -4127,7 +4142,7 @@ msgstr "आप सब देख चुके हैं!"
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "आपका खाता {source} से यहाँ स्थानांतरित किया गया। जब तक आप वहाँ इसे हटा नहीं देते, संदेश और सूचनाएं दोनों सर्वर तक पहुँच सकती हैं, आपकी कुछ सामग्री पुराने सर्वर से परोसी जाती रहेगी, और फ़ॉलोअर्स को आपको यहाँ ढूंढने में कुछ मिनट लग सकते हैं।"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:291
+#: ../../../lib/web/src/components/comment-composer.tsx:304
 msgid "Your attachments will be lost."
 msgstr "आपके अनुलग्नक खो जाएँगे।"
 
@@ -4139,11 +4154,11 @@ msgstr "एक उड़ान भरने के बाद आपकी उड
 msgid "your offer"
 msgstr "आपका प्रस्ताव"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:289
+#: ../../../lib/web/src/components/comment-composer.tsx:302
 msgid "Your text and attachments will be lost."
 msgstr "आपका पाठ और अनुलग्नक खो जाएँगे।"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:292
+#: ../../../lib/web/src/components/comment-composer.tsx:305
 msgid "Your text will be lost."
 msgstr "आपका टेक्स्ट खो जाएगा।"
 
