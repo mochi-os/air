@@ -2569,12 +2569,27 @@ function launch_amraam(st,target,track){ const m=missiles.find(x=>!x.active); if
 	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
 	if(stores_eject(st.loadout||{},name||"")){ m.vx=st.fwd.x*(st.speed+15); m.vy=(st.fwd.y*st.speed)-8; m.vz=st.fwd.z*(st.speed+15); }   // ejector points (the cheek LAU-116, the inboard LAU-115C): the round punches DOWN before the motor lights
 	else { m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30); }   // rail points (wing LAU-127s, single or twin): forward off the rail like the 9M
-	m.kind="120c"; m.target=target; m.track=track??null; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0;
+	m.kind="120c"; m.target=target; m.track=track??null; m.enemy=false; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0;
 	m.slot=missiles.indexOf(m);
 	const estimate=(track!=null&&target)?{ position:{x:target.pos.x,y:target.pos.y,z:target.pos.z},
 		velocity:{x:target.velx??target.fwd.x*target.speed,y:target.vely??target.fwd.y*target.speed,z:target.velz??target.fwd.z*target.speed} }:null;
 	round_launch(m.slot,{x:m.px,y:m.py,z:m.pz},{x:m.vx,y:m.vy,z:m.vz},estimate,WORLD_WRAP,!!estimate);
 	return true; }
+// launch_bandit_round (#33): the bandit's AMRAAM, client-owned from the
+// rail — the harness only decides the shot. Flies the same core, chases the
+// OWNSHIP, and its datalink is the bandit's real STT state; the player's
+// mixed-program dispense (flare AND chaff bloom) is what defeats it, the
+// same doppler gate the player's own rounds face.
+function launch_bandit_round(){ const m=missiles.find(x=>!x.active); if(!m||!has_enemy||MULTIPLAYER) return;
+	const sp=local_offset(bandit,1,-0.9,0);
+	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
+	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
+	m.vx=bandit.fwd.x*(bandit.speed+30); m.vy=bandit.fwd.y*(bandit.speed+30); m.vz=bandit.fwd.z*(bandit.speed+30);
+	m.kind="120c"; m.target=null; m.track=null; m.enemy=true; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0;
+	m.slot=missiles.indexOf(m);
+	round_launch(m.slot,{x:m.px,y:m.py,z:m.pz},{x:m.vx,y:m.vy,z:m.vz},
+		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },WORLD_WRAP,true);
+	audio_launch(); }
 // step_amraam (#27 phase 2): the AIM-120 flies the Go `round` core — the same
 // integrator the server runs and the DLZ ladder queries, so the cockpit's
 // ranges, the flown round and (in multiplayer) the server's copy cannot
@@ -2585,10 +2600,17 @@ function launch_amraam(st,target,track){ const m=missiles.find(x=>!x.active); if
 // gun and the 9M — no placeholder kill ring.
 function step_amraam(m,dt){
 	const t=m.target;
-	const truth=(t&&t.group&&t.group.visible)?{ position:{x:t.pos.x,y:t.pos.y,z:t.pos.z},
+	let truth,supported;
+	if(m.enemy){   // the bandit's round (#33): it chases US — truth is the ownship, support is the bandit's real STT, and our dispense is the defence
+		truth=crash_t<=0?{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z},
+			velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} }:null;
+		supported=truth&&bandit_locked&&has_enemy;
+		if(truth&&ownship.chaffed!==undefined&&sim_time-ownship.chaffed<2.0){ if(round_distract(m.slot,ownship.chaff,truth)) m.took=(m.took||0)+1; } }
+	else{
+	truth=(t&&t.group&&t.group.visible)?{ position:{x:t.pos.x,y:t.pos.y,z:t.pos.z},
 		velocity:{x:t.velx??t.fwd.x*t.speed,y:t.vely??t.fwd.y*t.speed,z:t.velz??t.fwd.z*t.speed} }:null;
-	const supported=truth&&!RADAR.sil&&(RADAR.stt===m.track||RADAR.tracks.some(k=>k.id===m.track));   // the shooter's radar still holds this trackfile: the crank works, turning cold drops support
-	if(truth&&t.chaffed!==undefined&&sim_time-t.chaffed<2.0){ if(round_distract(m.slot,t.chaff,truth)) m.took=(m.took||0)+1; }   // a fresh bloom from the target (#29): the core's doppler gate decides whether it seduces; took counts the ones that did (dev telemetry)
+	supported=truth&&!RADAR.sil&&(RADAR.stt===m.track||RADAR.tracks.some(k=>k.id===m.track));   // the shooter's radar still holds this trackfile: the crank works, turning cold drops support
+	if(truth&&t.chaffed!==undefined&&sim_time-t.chaffed<2.0){ if(round_distract(m.slot,t.chaff,truth)) m.took=(m.took||0)+1; } }   // a fresh bloom from the target (#29): the core's doppler gate decides whether it seduces; took counts the ones that did (dev telemetry)
 	const state=round_step(m.slot,dt,supported?truth:null,truth);
 	if(!state){ m.active=false; m.mesh.visible=false; round_drop(m.slot); post_round(m,"lost"); return; }
 	m.px=state.x; m.py=state.y; m.pz=state.z; m.vx=state.vx; m.vy=state.vy; m.vz=state.vz;
@@ -2598,7 +2620,9 @@ function step_amraam(m,dt){
 	m.trail_acc+=dt; if(m.trail_acc>.035){ m.trail_acc=0; const a=m.trail.geometry.attributes.position.array, n=Math.min(30,m.trail_n+1); if(m.trail_n>=30)a.copyWithin(0,3); const o=(n-1)*3; a[o]=m.px;a[o+1]=m.py;a[o+2]=m.pz; m.trail_n=n; m.trail.geometry.setDrawRange(0,n); m.trail.geometry.attributes.position.needsUpdate=true; }
 	if(state.fused&&truth){   // the warhead speaks through battle, exactly like the 9M's
 		m.active=false; m.mesh.visible=false; round_drop(m.slot);
-		if(!MULTIPLAYER&&has_enemy&&t===bandit){ const verdict=battle_blast(0,{x:m.px,y:m.py,z:m.pz},battle_aim(bandit),0,battle_tick,WARHEAD.radar);   // the 22 kg charge reaches ~1.33x the 9M's radii
+		if(m.enemy){ if(!cheat("invulnerable")){ battle_blast(1,{x:m.px,y:m.py,z:m.pz},battle_aim(ownship),0,battle_tick,WARHEAD.radar); }   // hulk 1 is the ownship: the wound flows through the same battle pipeline the bandit's guns use
+			explosion_at(m.px,m.py,m.pz); }
+		else if(!MULTIPLAYER&&has_enemy&&t===bandit){ const verdict=battle_blast(0,{x:m.px,y:m.py,z:m.pz},battle_aim(bandit),0,battle_tick,WARHEAD.radar);   // the 22 kg charge reaches ~1.33x the 9M's radii
 			if(DEV_MODE){ m.mask=verdict.mask; m.killed=verdict.kill; }
 			explosion_at(m.px,m.py,m.pz); if(verdict.kill){ own_kills++; bandit_destroy(); } }
 		else explosion_at(m.px,m.py,m.pz);
@@ -4334,9 +4358,9 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v
 		return best; })(),
 	visual:amraam_visual, jammer:{ armed:jammer_armed, loud:jammer_loud(), memory:+(RADAR.memory??0).toFixed(1), strobes:RADAR.strobes.length },
 	apart:(!MULTIPLAYER&&has_enemy)?Math.round(Math.hypot(wrap_axis(bandit.pos.x-ownship.pos.x),bandit.pos.y-ownship.pos.y,wrap_axis(bandit.pos.z-ownship.pos.z))):-1,   // #32: the SP pair's separation, for the BVR joust checks
-	rounds:missiles.filter(m=>m.active&&m.kind==="120c").map(m=>({ phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), reach:Math.round(m.rangeToGo??0), stale:+(m.stale??0).toFixed(1), flew:+(m.flew??0).toFixed(1), took:m.took||0 })),   // #27 phase 2: each AIM-120 in flight, straight from the Go core
+	rounds:missiles.filter(m=>m.active&&m.kind==="120c").map(m=>({ phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), reach:Math.round(m.rangeToGo??0), stale:+(m.stale??0).toFixed(1), flew:+(m.flew??0).toFixed(1), took:m.took||0, enemy:!!m.enemy })),   // #27 phase 2: each AIM-120 in flight, straight from the Go core
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], /* #57 parked: tracking:{ on:head_track?1:0, ok:head_ok?1:0, az:+head_az.toFixed(3), el:+head_el.toFixed(3) }, */ radar:{ mode:RADAR.sil?"sil":RADAR.stt!=null?"stt":RADAR.mode, w:Math.round(RADAR.half()/D2R), scale:RADAR.scale, sweep:+(RADAR.sweep/D2R).toFixed(1), bricks:RADAR.bricks.length, tracks:RADAR.tracks.length, ls:RADAR.ls??null, stt:RADAR.stt??null, emit:RADAR.emitter(), bandit:bandit_emitter, el:Math.round(RADAR.elevation/D2R), track:RADAR.tracks.length?(()=>{ const g=radar_geometry(radar_own(),RADAR.tracks[0],wrap_axis); return { az:+(g.azimuth/D2R).toFixed(1), range:Math.round(g.range) }; })():null }, draws:ddi_draws, emitters:MULTIPLAYER&&net?Object.fromEntries(net.emitters):null, rwr:{ n:RWR.contacts.length, lock:RWR.locked(), missile:RWR.warned(), paints:RWR.paints, contacts:RWR.contacts.map(c=>({ id:c.id, brg:Math.round(c.bearing/D2R), lk:c.locked?1:0, ms:c.missile?1:0, age:+(RWR.time-c.at).toFixed(1) })) },home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
+	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], /* #57 parked: tracking:{ on:head_track?1:0, ok:head_ok?1:0, az:+head_az.toFixed(3), el:+head_el.toFixed(3) }, */ radar:{ mode:RADAR.sil?"sil":RADAR.stt!=null?"stt":RADAR.mode, w:Math.round(RADAR.half()/D2R), scale:RADAR.scale, sweep:+(RADAR.sweep/D2R).toFixed(1), bricks:RADAR.bricks.length, tracks:RADAR.tracks.length, ls:RADAR.ls??null, stt:RADAR.stt??null, emit:RADAR.emitter(), bandit:bandit_emitter, banditlock:bandit_locked,el:Math.round(RADAR.elevation/D2R), track:RADAR.tracks.length?(()=>{ const g=radar_geometry(radar_own(),RADAR.tracks[0],wrap_axis); return { az:+(g.azimuth/D2R).toFixed(1), range:Math.round(g.range) }; })():null }, draws:ddi_draws, emitters:MULTIPLAYER&&net?Object.fromEntries(net.emitters):null, rwr:{ n:RWR.contacts.length, lock:RWR.locked(), missile:RWR.warned(), paints:RWR.paints, contacts:RWR.contacts.map(c=>({ id:c.id, brg:Math.round(c.bearing/D2R), lk:c.locked?1:0, ms:c.missile?1:0, age:+(RWR.time-c.at).toFixed(1) })) },home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
 	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
 	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS
 		racks:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>[n,o.visible])),
@@ -4738,13 +4762,14 @@ function fly_bandit(dt){
 	if(bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5)) return fly_bandit_stricken(dt);
 	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&!fly_bandit.tried){   // lazy: the core loads async and start_mission races it — arm the brain on the first frame the core is ready
 		fly_bandit.tried=true;
-		bandit_brain=bandit_init({ level: cfg.bandit||"ace", seed: 7, wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night", missiles: missiles_on() });   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
+		bandit_brain=bandit_init({ level: cfg.bandit||"ace", seed: 7, wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night", missiles: missiles_on(),
+			weapons: cfg.duel==="bvr"?"open":(missiles_on()?"fox2":"guns") });   // the bandit arms to the match's rules, exactly as server bots do (#33): the BVR joust is an open-class fight and the bandit shoots back   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
 		if(bandit_brain) bandit_spawn(bandit.pos, {x:bandit.fwd.x*bandit.speed, y:0, z:bandit.fwd.z*bandit.speed});
 	}
 	if(bandit_brain){   // the wasm brain: mirror the player in, step the second core, read the bandit back (#125 phase 2)
 		bandit_mirror(flight_get(), input.guns, crash_t<=0);
-		const shots=[]; for(const m of missiles){ if(m.active&&m.target===bandit&&shots.length<36) shots.push(m.px,m.py,m.pz,m.vx,m.vy,m.vz); }
-		bandit_menace(shots);
+		const shots=[]; for(const m of missiles){ if(m.active&&(m.target===bandit||m.enemy)&&shots.length<56) shots.push(m.px,m.py,m.pz,m.vx,m.vy,m.vz,m.enemy?1:0,m.kind==="120c"?(m.phase??0):-1); }
+		bandit_menace(shots);   // every round in the air, eight words each: the brain defends against ours and paces its own by phase (#33)
 		// The brain advances fixed 1/60 s frames: run it through an accumulator like
 		// the flight core, not once per render frame — per-frame stepping scaled the
 		// bandit's SIM SPEED with the display (double speed at 120 Hz, slow motion
@@ -4754,10 +4779,12 @@ function fly_bandit(dt){
 		bandit_acc+=Math.max(0,dt); let count=Math.floor(bandit_acc*60);
 		if(count>8){ count=8; bandit_acc=0; }   // a long stall: drop the debt rather than fast-forward (the flight core's rule)
 		else bandit_acc-=count/60;
-		let step=null, pulled=false, popped=false;
-		for(let s=0;s<count;s++){ const one=bandit_step(); if(!one) break; step=one; pulled=pulled||one.fire; popped=popped||one.flare; }
+		let step=null, pulled=false, popped=false, loosed=false;
+		for(let s=0;s<count;s++){ const one=bandit_step(); if(!one) break; step=one; pulled=pulled||one.fire; popped=popped||one.flare; loosed=loosed||one.launch; }
 		if(step){
 			const w=step.state; step.fire=pulled; step.flare=popped;
+			bandit_radar=step.emitter; bandit_locked=step.locked;   // the brain's real radar state (#33): the RWR and the round's datalink read truth
+			if(loosed) launch_bandit_round();   // an AMRAAM left the bandit's rail in ANY substep: the client owns the round from here, same core the player's shots fly
 
 			bandit.pos.set(w[0],w[1],w[2]);
 			bandit.velx=w[3]; bandit.vely=w[4]; bandit.velz=w[5];
@@ -5980,6 +6007,8 @@ const RADAR=new Radar();
 const radar_cursor={ azimuth:0, range:20*1852 };   // the TDC's position on the format
 let radar_sent={ mode:-1, target:-1 };             // last emitter state told to the server
 let bandit_emitter=0;                              // SP bandit: 0 silent / 1 search / 2 STT — what the RWR will read
+let bandit_radar=-1;                               // the BRAIN's reported emitter state (#33): -1 until the wasm reports, then it replaces the derived geometry below
+let bandit_locked=false;                           // the brain's STT holds us: datalink support for a bandit-shot round
 // contacts: the one list every target consumer reads — the SA page, the
 // acquire flow, the radar's truth feed. Furball feeds it from truth
 // (omniscient by design); the BVR match rules (#32) will gate it by sensor
@@ -6005,10 +6034,12 @@ function radar_step(dt){ if(!running) return;
 		const mode=RADAR.emitter(), target=typeof RADAR.stt==="number"?RADAR.stt:-1;
 		if(mode!==radar_sent.mode||target!==radar_sent.target){ net.radar(mode,target); radar_sent={ mode, target }; } }
 	bandit_emitter=0;
-	if(!MULTIPLAYER&&has_enemy&&bandit.group.visible){   // geometry-derived until the brain grows radar tactics (#33): searching while it hunts, STT with its nose settled on us inside 10 nm
+	if(!MULTIPLAYER&&has_enemy&&bandit.group.visible){
+		if(bandit_radar>=0){ bandit_emitter=bandit_radar; }   // the brain reports its real radar now (#33): search while hunting, STT withheld until commit — the RWR reads the truth, not a guess
+		else{   // geometry-derived fallback: a wasm core from before the report
 		const dx=wrap_axis(ownship.pos.x-bandit.pos.x), dy=ownship.pos.y-bandit.pos.y, dz=wrap_axis(ownship.pos.z-bandit.pos.z);
 		const d=Math.hypot(dx,dy,dz)||1;
-		bandit_emitter=(bandit.fwd.x*dx+bandit.fwd.y*dy+bandit.fwd.z*dz)/d>0.94&&d<18520?2:1; } }
+		bandit_emitter=(bandit.fwd.x*dx+bandit.fwd.y*dy+bandit.fwd.z*dz)/d>0.94&&d<18520?2:1; } } }
 // ---- RWR (#28): the receiving end of every emitter #30 created. The builder
 // applies the one rule the model cannot see — an STT on someone ELSE is
 // excluded entirely, his energy is pointed at him — and the model does the
@@ -6030,6 +6061,9 @@ function rwr_step(dt){ if(!running) return;
 	// the local rounds only when the BANDIT owns them — none today, but the
 	// path is here rather than bolted on later.
 	const seekers=[];
+	if(!MULTIPLAYER){ for(const m of missiles){   // the bandit's own rounds (#33): an active seeker painting us is the third RWR voice, exactly as an MP dart's would be
+		if(!m.active||!m.enemy||(m.phase??0)<1) continue;
+		seekers.push({ id:"bandit-round-"+m.slot, x:m.px, z:m.pz }); } }
 	if(MULTIPLAYER&&net){ for(const d of (net.darts||[])){
 		if(!d.radar||d.shooter===net.slot) continue;
 		const dx=wrap_axis(d.position[0]-ownship.pos.x), dy=d.position[1]-ownship.pos.y, dz=wrap_axis(d.position[2]-ownship.pos.z);

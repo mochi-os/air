@@ -331,10 +331,10 @@ const mirror = new Float64Array(SIZE + 1)
 const mirror_bytes = new Uint8Array(mirror.buffer)
 const bandit_out = new Float64Array(SIZE)
 const bandit_bytes = new Uint8Array(bandit_out.buffer)
-const menace = new Float64Array(36)
+const menace = new Float64Array(64)
 const menace_bytes = new Uint8Array(menace.buffer)
 
-export function bandit_init(config: { level: string; seed: number; wrap: number; sky: string; night: boolean; missiles: boolean }): boolean {
+export function bandit_init(config: { level: string; seed: number; wrap: number; sky: string; night: boolean; missiles: boolean; weapons?: string }): boolean {
   if (!core?.bandit_init) return false
   const error = core.bandit_init(JSON.stringify(config))
   if (error) console.error('bandit init:', error)
@@ -354,22 +354,29 @@ export function bandit_mirror(state: Float64Array, firing: boolean, alive: boole
   core.bandit_mirror(mirror_bytes)
 }
 
-// bandit_menace declares the player's missiles chasing the bandit: a flat
-// array of six words each (position, velocity), up to six missiles.
+// bandit_menace declares every missile in the air: a flat array of eight
+// words each — position, velocity, shooter (0 the player, 1 the bandit),
+// and phase (-1 a heater, otherwise the radar round's guidance phase). The
+// client flies the rounds; the brain reads these stubs for its evasion, its
+// radar-round defence, and its shoot-look-shoot discipline.
 export function bandit_menace(shots: number[]): void {
   if (!core?.bandit_menace) return
-  const count = Math.min(6, Math.floor(shots.length / 6))
-  for (let i = 0; i < count * 6; i++) menace[i] = shots[i]
+  const count = Math.min(8, Math.floor(shots.length / 8))
+  for (let i = 0; i < count * 8; i++) menace[i] = shots[i]
   core.bandit_menace(menace_bytes, count)
 }
 
 // bandit_step advances one 60 Hz frame; returns the bandit's encoded state
-// plus its trigger and flare decisions, or null when the core is absent.
-export function bandit_step(): { state: Float64Array; fire: boolean; flare: boolean } | null {
+// plus its decisions: trigger, flare, an AMRAAM launch this frame (the
+// client owns the round from there), the radar emitter state the RWR
+// reads, and whether the STT holds the player (datalink support for a
+// bandit-shot round).
+export function bandit_step(): { state: Float64Array; fire: boolean; flare: boolean; launch: boolean; emitter: number; locked: boolean } | null {
   if (!core?.bandit_step) return null
   const flags = core.bandit_step(bandit_bytes)
   if (typeof flags !== 'number' || flags < 0) return null
-  return { state: bandit_out, fire: (flags & 1) !== 0, flare: (flags & 2) !== 0 }
+  return { state: bandit_out, fire: (flags & 1) !== 0, flare: (flags & 2) !== 0,
+    launch: (flags & 4) !== 0, emitter: (flags >> 3) & 3, locked: (flags & 32) !== 0 }
 }
 
 // bandit_mode reports the brain's chosen manoeuvre (press, defense, spiral...)
