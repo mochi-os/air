@@ -213,3 +213,50 @@ it('battle channels are delta-suppressed and the fate is written once', () => {
   expect(struck[1]).toContain('Struck=7')
   expect(text.split('\n').filter((l) => l.includes('Fate=pilot'))).toHaveLength(1)
 })
+
+// Missiles are their own objects and the ownship carries the HUD's cue and
+// its stores count (#33 debrief). Before this a fight won with six 9Ms
+// recorded two structural wounds on the bandit and nothing else, and the
+// debrief called them self-inflicted.
+it('records a missile as its own object with seeker, closest approach, and a once-written fate', () => {
+  const jet = (missiles: number, cue: string): Sample['objects'][number] => ({
+    id: 1, x: 0, y: 1000, z: 0, roll: 0, pitch: 0, yaw: 0,
+    name: 'FA-18C', label: 'P', colour: 'Blue', kind: 'Air+FixedWing', data: { missiles, cue },
+  })
+  const round = (seeker: string, least: number, fate?: string): Sample['objects'][number] => ({
+    id: 164, x: 50, y: 1000, z: -200, roll: 0, pitch: 2, yaw: 355,
+    name: 'AIM-9M', label: '9M', colour: 'Blue', kind: 'Weapon+Missile',
+    round: { shooter: 1, target: 2, seeker, least, ...(fate ? { fate, killed: true } : {}) },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [jet(6, '')] },
+      { time: 0.1, objects: [jet(6, '9m')] },
+      { time: 0.2, objects: [jet(5, '9m'), round('track', 900)] },
+      { time: 0.3, objects: [jet(5, ''), round('lure', 400)] },
+      { time: 0.4, objects: [jet(5, ''), round('track', 12, 'fuse')] },
+    ],
+    new Date(0),
+    't'
+  )
+  const lines = text.split('\n')
+  const mine = lines.filter((l) => l.startsWith('1,T='))
+  expect(mine[0]).toContain('Missiles=6')
+  expect(mine[0]).toContain('Cue=')          // the empty cue is written once so a reader knows the channel exists
+  expect(mine[1]).toContain('Cue=9m')
+  expect(mine[2]).toContain('Missiles=5')    // the launch is a stores step, like a gun burst is a Rounds step
+  expect(mine[2]).not.toContain('Cue=')      // unchanged cue: suppressed
+  expect(mine[3]).toContain('Cue=')          // the cue dropped: written
+  const shots = lines.filter((l) => l.startsWith('a4,T='))   // 164 in hex
+  expect(shots).toHaveLength(3)
+  expect(shots[0]).toContain('Type=Weapon+Missile')
+  expect(shots[0]).toContain('Parent=1')
+  expect(shots[0]).toContain('LockedTarget=2')
+  expect(shots[0]).toContain('Seeker=track')
+  expect(shots[1]).toContain('Seeker=lure')
+  expect(shots[1]).not.toContain('Parent=')  // identity written once
+  expect(shots[2]).toContain('Fate=fuse')
+  expect(shots[2]).toContain('Killed=1')
+  expect(shots[2]).toContain('Least=12')
+  expect(lines.filter((l) => l.includes('Fate=fuse'))).toHaveLength(1)
+})
