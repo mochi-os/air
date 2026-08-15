@@ -33,6 +33,22 @@ export interface Recorded {
   kind: string // TacView type tag, e.g. Air+FixedWing
   mode?: string // bot doctrine state — developer builds only
   data?: Flight // per-sample flight data: TacView graphs these natively
+  round?: Round // a missile in flight (#33 debrief): its guidance state and, on its last sample, its fate
+}
+
+// Round is a missile's per-sample state. Missiles are recorded as their own
+// ACMI objects (Weapon+Missile — TacView flies them natively), so a debrief
+// sees the whole flight: who fired, at whom, whether the seeker ever held,
+// how close it came, and how it ended. Before this a fight won with six 9Ms
+// recorded nothing but two structural wounds on the bandit, and the debrief
+// called them self-inflicted (2026-08-15).
+export interface Round {
+  shooter: number // recorded id of the launcher
+  target?: number // recorded id of the target it was fired at, if any
+  seeker: string // guidance state: track / loose (lock broken, ballistic) / lure (seduced by a flare) / midcourse / active / pitbull
+  least?: number // closest approach to the target so far, metres
+  fate?: string // written once, on the last sample: fuse / energy / life / ocean / lost / battery
+  killed?: boolean // the fuse's verdict, when it fused
 }
 
 // Flight is the standard ACMI telemetry set. TacView knows these property
@@ -61,6 +77,14 @@ export interface Flight {
   fate?: string // how this life ended: pilot / fire / sea / midair / building / post / island / verdict / probe
   stick?: number // control-law channels: developer builds only
   stabilator?: number // degrees
+  // The weapons channels (#33 debrief). Missiles is the stores count, so a
+  // launch is a step exactly like a gun burst is a Rounds step. Cue is what
+  // the HUD was telling the pilot: gun / heater / radar SHOOT states, or the
+  // breakaway X, empty when nothing was commanded — a debrief that cannot
+  // see the cue cannot judge whether a shot was taken on one, refused on
+  // one, or fired without one.
+  missiles?: number // heaters + radar rounds remaining
+  cue?: string // '' | 'gun' | '9m' | 'steady' | 'flash' | 'break'
 }
 
 // position converts the flat world's metres to the degrees ACMI carries.
@@ -93,6 +117,9 @@ export function acmi(samples: Sample[], started: Date, title: string): string {
   const declared = new Map<number, string>()
   const counted = new Map<number, number>() // last written round count, per object
   const battled = new Map<number, string>() // last written battle channels, per object
+  const armed = new Map<number, number>() // last written missiles count, per object
+  const cued = new Map<number, string>() // last written cue, per object
+  const guided = new Map<number, string>() // last written seeker channels, per missile object
   for (const sample of samples) {
     out.push(`#${round(sample.time, 2)}`)
     for (const o of sample.objects) {
@@ -141,12 +168,41 @@ export function acmi(samples: Sample[], started: Date, title: string): string {
         }
         if (d.stick !== undefined) line += `,Stick=${round(d.stick, 3)}`
         if (d.stabilator !== undefined) line += `,Stabilator=${round(d.stabilator, 2)}`
+        // Missiles and the cue are delta-suppressed like the rounds: the count
+        // steps at a launch, the cue at the moments the HUD's advice changed.
+        if (d.missiles !== undefined && armed.get(o.id) !== d.missiles) {
+          armed.set(o.id, d.missiles)
+          line += `,Missiles=${Math.round(d.missiles)}`
+        }
+        if (d.cue !== undefined && cued.get(o.id) !== d.cue) {
+          cued.set(o.id, d.cue)
+          line += `,Cue=${d.cue}`
+        }
       }
-      const properties = `${o.name}|${o.label}|${o.colour}|${o.kind}|${o.mode ?? ''}`
+      // A missile's guidance rides on its own object. Shooter and target are
+      // identity (written once); the seeker state and closest approach are
+      // delta-suppressed; the fate is written on the last sample only, and
+      // TacView's Weapon type gives the debrief a track it can fly forward.
+      const r = o.round
+      if (r) {
+        let guide = `,Seeker=${r.seeker}`
+        if (r.least !== undefined) guide += `,Least=${round(r.least, 1)}`
+        if (r.fate !== undefined) guide += `,Fate=${r.fate},Killed=${r.killed ? 1 : 0}`
+        if (guided.get(o.id) !== guide) {
+          guided.set(o.id, guide)
+          line += guide
+        }
+      }
+      const properties = `${o.name}|${o.label}|${o.colour}|${o.kind}|${o.mode ?? ''}|${r ? `${r.shooter}>${r.target ?? ''}` : ''}`
       if (declared.get(o.id) !== properties) {
         declared.set(o.id, properties)
         line += `,Name=${o.name},Pilot=${o.label},Color=${o.colour},Type=${o.kind}`
         if (o.mode) line += `,Doctrine=${o.mode}` // developer builds only: the bot's chosen manoeuvre
+        if (r) {
+          // ACMI's own parent/target linkage, in the object ids the file uses.
+          line += `,Parent=${r.shooter.toString(16)}`
+          if (r.target !== undefined) line += `,LockedTarget=${r.target.toString(16)}`
+        }
       }
       out.push(line)
     }
