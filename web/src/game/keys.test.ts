@@ -135,6 +135,24 @@ describe('key bindings', () => {
     expect(PROFILES[PROFILES.length - 1].match('anything at all', '')).toBe(true)
   })
 
+  it('flies the BVR loop from the VelocityOne stick: castle selects, 15 acquires, 16 steps, 17 fires', () => {
+    // Settled 2026-08-11 (air-amraam.md), implemented 2026-08-15. The castle
+    // POV pair is POSITIONAL weapon select and no longer trims; trim lives on
+    // the thumbwheel's digital pulses (12/13); zoom keeps no stick binding.
+    const stick = profileFor('Turtle Beach VelocityOne Flightstick (Vendor: 10f5 Product: 7055)', '')
+    expect(stick.axes.weapon).toBe('8')
+    expect(stick.axes.trim).toBe('')
+    expect(stick.axes.zoom).toBe('')
+    expect(stick.buttons.acquire).toBe('15')
+    expect(stick.buttons['radar.undesignate']).toBe('16')
+    expect(stick.buttons.fire).toBe('17')
+    expect(stick.buttons['trim.down']).toBe('12')
+    expect(stick.buttons['trim.up']).toBe('13')
+    expect(stick.buttons.select).toBeUndefined() // the cycle key stays on the keyboard; the stick selects positionally
+    expect(stick.buttons['zoom.in']).toBeUndefined()
+    expect(stick.buttons['zoom.out']).toBeUndefined()
+  })
+
   it('keeps the standard gamepad profile inside the layout the spec guarantees', () => {
     // This is the one profile written without the hardware in hand, and it is
     // only safe because the W3C standard mapping fixes the indices: 17 buttons
@@ -150,7 +168,7 @@ describe('key bindings', () => {
       const index = Number(value.replace('-', ''))
       expect(index, `${axis} axis index`).toBeGreaterThanOrEqual(0)
       // look is a PAIR and reads index+1, so it must leave room for its second half.
-      expect(index + (axis === 'look' || axis === 'trim' ? 1 : 0), `${axis} axis index`).toBeLessThanOrEqual(3)
+      expect(index + (axis === 'look' || axis === 'trim' || axis === 'weapon' ? 1 : 0), `${axis} axis index`).toBeLessThanOrEqual(3)
     }
   })
 

@@ -136,6 +136,7 @@ const AXIS_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'speedbrake', label: <Trans>Speed brake</Trans> },
   { id: 'look', label: <Trans>Look</Trans> }, // an axis PAIR: the chosen index is horizontal, the next one up is vertical
   { id: 'trim', label: <Trans>Trim hat</Trans> }, // an axis PAIR too (a POV that reports as two axes): forward = nose down, the aviation convention
+  { id: 'weapon', label: <Trans>Weapon select hat</Trans> }, // an axis PAIR: POSITIONAL select — forward 120C, aft 9M, left GUN, right NAV (the VelocityOne castle)
   { id: 'zoom', label: <Trans>Zoom</Trans> }, // spring-centred wheel: deflection = zoom rate on the view (or the map when open)
 ]
 const LEVERS = new Set(['throttle', 'speedbrake']) // lever-style rows: min-to-max meter + reverse toggle
@@ -145,7 +146,7 @@ const LEVERS = new Set(['throttle', 'speedbrake']) // lever-style rows: min-to-m
 // the hat up moved nothing on screen while the engine was reading the axis
 // perfectly well, and a device whose vertical half is NOT at index+1 gave no
 // hint at all that it was mis-bound.
-const PAIRS = new Set(['look', 'trim'])
+const PAIRS = new Set(['look', 'trim', 'weapon'])
 
 // AxisMeter draws one centred +/- axis. Levers keep their own left-anchored
 // fill inline below; this is the two-sided form the flight axes and the hat
