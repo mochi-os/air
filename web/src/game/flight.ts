@@ -329,7 +329,7 @@ export interface Aim {
 
 const mirror = new Float64Array(SIZE + 1)
 const mirror_bytes = new Uint8Array(mirror.buffer)
-const bandit_out = new Float64Array(SIZE)
+const bandit_out = new Float64Array(SIZE + 5) // state plus the instrument tail (alpha, beta, nz, mach, cas) at the ownship's own indices (#33 debrief)
 const bandit_bytes = new Uint8Array(bandit_out.buffer)
 const menace = new Float64Array(64)
 const menace_bytes = new Uint8Array(menace.buffer)
