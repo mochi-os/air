@@ -260,3 +260,17 @@ it('records a missile as its own object with seeker, closest approach, and a onc
   expect(shots[2]).toContain('Least=12')
   expect(lines.filter((l) => l.includes('Fate=fuse'))).toHaveLength(1)
 })
+
+// The bot's tier rides on its own object, so a debrief judges its plays in
+// context without decoding the mission title (which named the tier only for
+// jousts). Declared once, like the other identity properties.
+it('writes a bot\'s skill tier once, on the object', () => {
+  const bandit = (): Sample['objects'][number] => ({
+    id: 2, x: 0, y: 1000, z: 0, roll: 0, pitch: 0, yaw: 0,
+    name: 'FA-18C', label: 'Bandit', colour: 'Red', kind: 'Air+FixedWing', skill: 'ace',
+  })
+  const text = acmi([{ time: 0, objects: [bandit()] }, { time: 0.1, objects: [bandit()] }], new Date(0), 't')
+  const lines = text.split('\n').filter((l) => l.startsWith('2,T='))
+  expect(lines[0]).toContain('Skill=ace')
+  expect(lines[1]).not.toContain('Skill=')
+})
