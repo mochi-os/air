@@ -86,6 +86,29 @@ export interface Flight {
   // one, or fired without one.
   missiles?: number // heaters + radar rounds remaining
   cue?: string // '' | 'gun' | '9m' | 'steady' | 'flash' | 'break'
+  // Countermeasures: the ownship's flare INVENTORY (a dispense is a step);
+  // the bandit's dispenser is bottomless, so it records a cumulative dispense
+  // COUNT instead — same shape, same information (its steps are the dispenses).
+  flares?: number
+  // Energy management, TacView-native: throttle 0..1 to MIL and the burner
+  // fraction beyond it — the channel that turns "you flew too fast" from an
+  // inference off alpha into a recorded fact.
+  throttle?: number
+  burner?: number
+  // The sensor picture: radar mode (rws / tws / stt / sil), the L&S target's
+  // recorded id, whether the RWR held a hard-lock warning and a MISSILE call,
+  // the jammer's standing state, and the pilot's designated/boxed target —
+  // "no shot" and "shooting at the wrong thing" are different findings.
+  radar?: string
+  lock?: number // recorded id of the STT / L&S target, if any
+  rwrlock?: boolean
+  rwrmissile?: boolean
+  jammer?: boolean
+  target?: number // recorded id of the boxed target the HUD was flying against, if any
+  // The bandit's own control state, so its plays can be judged from its inputs
+  // rather than inferred from position at 9 Hz.
+  spool?: number // engine spool 0..1
+  reheat?: number // achieved reheat 0..1
 }
 
 // position converts the flat world's metres to the degrees ACMI carries.
@@ -103,7 +126,15 @@ const round = (v: number, places: number) => {
 
 // acmi renders samples as an ACMI 2.2 flight recording. `started` stamps the
 // reference time; TacView shows wall-clock from it.
-export function acmi(samples: Sample[], started: Date, title: string): string {
+// Match describes the fight's rules in the header, so a debrief knows what it
+// is judging without asking: the mode and duel, the weapons class, the bot
+// tier, and any cheats that were live (an invulnerable ownship changes what
+// "survived" means). Values are free text; ACMI global properties are.
+export interface Match {
+  [key: string]: string | number | boolean | undefined
+}
+
+export function acmi(samples: Sample[], started: Date, title: string, match?: Match): string {
   const out: string[] = [
     'FileType=text/acmi/tacview',
     'FileVersion=2.2',
@@ -112,6 +143,13 @@ export function acmi(samples: Sample[], started: Date, title: string): string {
     `0,Title=${title.replace(/[,\n]/g, ' ')}`,
     '0,Category=Flight',
   ]
+  if (match) {
+    for (const [key, value] of Object.entries(match)) {
+      if (value === undefined || value === '') continue
+      // Match_ prefix keeps these clear of ACMI's reserved global names.
+      out.push(`0,Match_${key}=${String(value).replace(/[,\n]/g, ' ')}`)
+    }
+  }
   // Declared properties are written once per object and repeated only when
   // they change — ACMI is a delta format, and repeating them every frame
   // multiplies the file size for no information.
@@ -120,6 +158,8 @@ export function acmi(samples: Sample[], started: Date, title: string): string {
   const battled = new Map<number, string>() // last written battle channels, per object
   const armed = new Map<number, number>() // last written missiles count, per object
   const cued = new Map<number, string>() // last written cue, per object
+  const countered = new Map<number, number>() // last written flares, per object
+  const sensed_last = new Map<number, string>() // last written sensor group, per object
   const guided = new Map<number, string>() // last written seeker channels, per missile object
   for (const sample of samples) {
     out.push(`#${round(sample.time, 2)}`)
@@ -178,6 +218,31 @@ export function acmi(samples: Sample[], started: Date, title: string): string {
         if (d.cue !== undefined && cued.get(o.id) !== d.cue) {
           cued.set(o.id, d.cue)
           line += `,Cue=${d.cue}`
+        }
+        if (d.flares !== undefined && countered.get(o.id) !== d.flares) {
+          countered.set(o.id, d.flares)
+          line += `,Flares=${Math.round(d.flares)}`
+        }
+        // Throttle and burner change constantly under a pilot's hand: written
+        // every sample, like the flight data.
+        if (d.throttle !== undefined) line += `,Throttle=${round(d.throttle, 2)}`
+        if (d.burner !== undefined) line += `,Afterburner=${round(d.burner, 2)}`
+        if (d.spool !== undefined) line += `,Spool=${round(d.spool, 2)}`
+        if (d.reheat !== undefined) line += `,Reheat=${round(d.reheat, 2)}`
+        // The sensor picture is delta-suppressed as one group: it holds for
+        // seconds and steps at exactly the moments a debrief cares about.
+        {
+          let sensed = ''
+          if (d.radar !== undefined) sensed += `,Radar=${d.radar}`
+          if (d.lock !== undefined) sensed += `,Lock=${d.lock.toString(16)}`
+          if (d.rwrlock !== undefined) sensed += `,RwrLock=${d.rwrlock ? 1 : 0}`
+          if (d.rwrmissile !== undefined) sensed += `,RwrMissile=${d.rwrmissile ? 1 : 0}`
+          if (d.jammer !== undefined) sensed += `,Jammer=${d.jammer ? 1 : 0}`
+          if (d.target !== undefined) sensed += `,Target=${d.target.toString(16)}`
+          if (sensed && sensed_last.get(o.id) !== sensed) {
+            sensed_last.set(o.id, sensed)
+            line += sensed
+          }
         }
       }
       // A missile's guidance rides on its own object. Shooter and target are
@@ -245,13 +310,14 @@ export class Recorder {
   }
 
   // render writes the buffer out, re-basing time so the file starts at zero.
-  render(started: Date, title: string): string {
+  render(started: Date, title: string, match?: Match): string {
     if (!this.samples.length) return ''
     const base = this.samples[0].time
     return acmi(
       this.samples.map((s) => ({ time: s.time - base, objects: s.objects })),
       started,
-      title
+      title,
+      match
     )
   }
 }

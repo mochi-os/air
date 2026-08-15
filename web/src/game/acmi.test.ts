@@ -274,3 +274,40 @@ it('writes a bot\'s skill tier once, on the object', () => {
   expect(lines[0]).toContain('Skill=ace')
   expect(lines[1]).not.toContain('Skill=')
 })
+
+// The wider channel set (#33 debrief, 2026-08-15): countermeasures, the hand
+// on the throttle, the sensor picture, and the match block in the header.
+it('records flares, throttle, the sensor picture, and the match rules', () => {
+  const jet = (flares: number, radar: string, lock: number | undefined, target: number | undefined): Sample['objects'][number] => ({
+    id: 1, x: 0, y: 1000, z: 0, roll: 0, pitch: 0, yaw: 0,
+    name: 'FA-18C', label: 'P', colour: 'Blue', kind: 'Air+FixedWing',
+    data: { flares, throttle: 0.85, burner: 0.4, radar, ...(lock !== undefined ? { lock } : {}), rwrlock: false, rwrmissile: lock !== undefined, jammer: false, ...(target !== undefined ? { target } : {}) },
+  })
+  const text = acmi(
+    [
+      { time: 0, objects: [jet(60, 'rws', undefined, undefined)] },
+      { time: 0.1, objects: [jet(60, 'rws', undefined, undefined)] },
+      { time: 0.2, objects: [jet(59, 'stt', 2, 2)] },
+      { time: 0.3, objects: [jet(59, 'stt', 2, 2)] },
+    ],
+    new Date(0), 't',
+    { task: 'joust', bandit: 'ace', weapons: 'fox2', cheats: 'invulnerable', empty: '' }
+  )
+  const lines = text.split('\n')
+  expect(lines.filter((l) => l.startsWith('0,Match_'))).toEqual(['0,Match_task=joust', '0,Match_bandit=ace', '0,Match_weapons=fox2', '0,Match_cheats=invulnerable'])
+  const mine = lines.filter((l) => l.startsWith('1,T='))
+  expect(mine[0]).toContain('Flares=60')
+  expect(mine[0]).toContain('Throttle=0.85')
+  expect(mine[0]).toContain('Afterburner=0.4')
+  expect(mine[0]).toContain('Radar=rws')
+  expect(mine[0]).toContain('RwrMissile=0')
+  expect(mine[1]).not.toContain('Flares=')       // held: suppressed
+  expect(mine[1]).not.toContain('Radar=')        // sensor group unchanged: suppressed
+  expect(mine[1]).toContain('Throttle=0.85')     // throttle is written every sample
+  expect(mine[2]).toContain('Flares=59')         // the dispense is a step
+  expect(mine[2]).toContain('Radar=stt')
+  expect(mine[2]).toContain('Lock=2')
+  expect(mine[2]).toContain('Target=2')
+  expect(mine[2]).toContain('RwrMissile=1')
+  expect(mine[3]).not.toContain('Radar=')
+})

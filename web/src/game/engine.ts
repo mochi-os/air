@@ -2798,7 +2798,7 @@ function battle_pose(st){ const up=st.up||world_up; return { position:{x:st.pos.
 	forward:{x:st.fwd.x,y:st.fwd.y,z:st.fwd.z}, up:{x:up.x,y:up.y,z:up.z},
 	velocity:{x:st.velx??st.fwd.x*st.speed,y:st.vely??st.fwd.y*st.speed,z:st.velz??st.fwd.z*st.speed} }; }   // the shooter's velocity rides on every round
 function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c");   // battle_rigged: mission start races the async wasm load and battle_hulk silently no-ops until the core lands — the frame loop retries until the rig takes (an unrigged hulk made the bandit UNHITTABLE: every gun burst and missile blast on him no-opped for the whole mission)
-	bandit.harm={thrust:0,wing:0,killed:false,burning:false,fire:[0,0],leak:0}; battle_reset=true;
+	bandit.harm={thrust:0,wing:0,killed:false,burning:false,fire:[0,0],leak:0}; battle_reset=true; bandit_dispensed=0; bandit_words=null;
 	for(const m of impact_marks.splice(0)) m.parent?.remove(m); }   // a fresh fight starts unscarred — marks otherwise survive the respawn on the persistent bandit group
 // bandit_destroy ends the DUEL: a joust is one fight to one kill, so the bandit
 // does not respawn — the sky stays empty and the pilot ends the mission from
@@ -3990,6 +3990,12 @@ function recording_sample(){
 		yaw:(degrees(Math.atan2(st.fwd.x,-st.fwd.z))+360)%360,
 		pitch:degrees(Math.asin(THREE.MathUtils.clamp(st.fwd.y,-1,1))),
 		roll:(st.up&&st.right)?degrees(Math.atan2(st.right.y,st.up.y)):degrees(st.bank||0) });
+	// recorded_state maps a live state to the id the recording knows it by
+	// (1 ownship, 2 bandit, 10+slot remotes); recorded_track maps a radar
+	// trackfile's source the same way. Both are the recorder's own vocabulary
+	// for the Lock and Target channels.
+	const recorded_state=(st)=>st===ownship?1:(st===bandit?2:(()=>{ if(MULTIPLAYER&&net) for(const [slot,r] of remotes.entries()) if(r===st) return 10+slot; return undefined; })());
+	const recorded_track=(id)=>id==="bandit"?2:(typeof id==="number"?10+id:undefined);   // radar contacts are id "bandit" in SP and the remote SLOT in MP
 	const add=(st,id,label,colour,mode,data,skill=undefined)=>{ if(!st||!st.pos||!st.fwd) return;   // a half-built state must never take the frame loop down with it
 		const a=attitude(st);
 		list.push({ id, x:st.pos.x, y:st.pos.y, z:st.pos.z, roll:a.roll, pitch:a.pitch, yaw:a.yaw,
@@ -4007,6 +4013,10 @@ function recording_sample(){
 		ias:out[STATE.cas]||0, mach:out[STATE.mach]||0,
 		fuel:out[STATE.fuel]||0, rounds:ownship.rounds??0,
 		missiles:(ownship.msl|0)+Math.max(0,ownship.amraam|0), cue:hud_cue,   // stores and the HUD's advice (#33 debrief)
+		flares:ownship.cm|0, throttle:ownship.throttle??0, burner:ownship.burner??0,   // countermeasure inventory and the hand on the throttle
+		radar:RADAR.sil?"sil":(RADAR.stt!=null?"stt":RADAR.mode), ...(RADAR.stt!=null?{lock:recorded_track(RADAR.stt)}:{}),   // the sensor picture
+		rwrlock:RWR.locked(), rwrmissile:RWR.warned(), jammer:jammer_armed,
+		...(hud_boxed?{target:recorded_state(hud_boxed)}:{}),
 		// battle channels (#238): what the fight did to ME, from the same
 		// state the CAS alerts and damage visuals read
 		struck:ownship.struck||0, burning:own_burning||Math.max(own_burn[0],own_burn[1])>0,
@@ -4018,7 +4028,17 @@ function recording_sample(){
 		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?(bandit_mode()||undefined):undefined,
 			{ rounds:bandit.rounds??0,   // the true belt (#233), same counter as the ownship's — no longer a nominal derived from expenditure
 				struck:bandit.struck||0, burning:!!bandit.harm.burning, thrust:bandit.harm.thrust||0,
-				wing:bandit.harm.wreck||0, ...(bandit.fate?{fate:bandit.fate}:{}) },
+				wing:bandit.harm.wreck||0, ...(bandit.fate?{fate:bandit.fate}:{}),
+				flares:bandit_dispensed,   // cumulative dispenses (bottomless dispenser): its steps are the dispenses
+				missiles:Math.max(0,bandit.amraam|0), radar:bandit_emitter>=2?"stt":(bandit_emitter>=1?"rws":"sil"),
+				...(bandit_locked?{lock:1}:{}), ...(bandit_brain?{target:1}:{}),   // the brain bandit only ever fights the ownship
+				// The brain bandit flies the real model, so its own STATE tail
+				// carries the same telemetry the ownship records: TacView graphs
+				// both, and a debrief judges its plays from its inputs.
+				...(bandit_words?{ aoa:(bandit_words[STATE.alpha]||0)/D2R, g:bandit_words[STATE.nz]||0, tas:bandit.speed||0,
+					ias:bandit_words[STATE.cas]||0, mach:bandit_words[STATE.mach]||0, fuel:bandit_words[STATE.fuel]||0,
+					spool:Math.max(bandit_words[STATE.engine]||0,bandit_words[STATE.engine+2]||0), reheat:bandit.reheat||0,
+					stabilator:(bandit_words[STATE.stabilator]||0)/D2R }:{}) },
 			cfg.task==="joust"?(cfg.bandit||"ace"):undefined);   // the tier flown against, on the bandit's own object (shipped): the debrief's context for judging every play it chose. Keyed on the CONFIG, not on bandit_brain — the brain arms lazily on the first core-ready frame, and the first recorded sample must not read as an untiered bandit   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
 		const team=net.teams.get(slot)||"";
@@ -4029,7 +4049,7 @@ function recording_sample(){
 	// recording, so a delta parser sees each round appear once and die once.
 	// Shooter and target map to the recorded ids above (1 ownship, 2 bandit,
 	// 10+slot remotes).
-	const recorded=(st)=>st===ownship?1:(st===bandit?2:(()=>{ if(MULTIPLAYER&&net) for(const [slot,r] of remotes.entries()) if(r===st) return 10+slot; return undefined; })());
+	const recorded=recorded_state;
 	for(let k=0;k<missiles.length;k++){ const m=missiles[k]; if(!m.kind) continue;
 		const live=m.active, grace=!live&&m.fated>0&&sim_time-m.fated<1&&m.shot>0;
 		if(!live&&!grace) continue;
@@ -4047,7 +4067,15 @@ function recording_sample(){
 function recording_file(){
 	if(!recorder.length||!record_started) return null;
 	const kind=cfg.task==="joust"?("joust-"+(cfg.bandit||"ace")):"flight";
-	return { text:recorder.render(record_started,"Mochi Air: "+kind), session:record_session, kind }; }
+	// The match block (#33 debrief): the fight's rules in the header, so a
+	// debrief knows what it is judging — a "survived" under the invulnerable
+	// cheat is not a survival, and a fox2 furball has no AMRAAM story.
+	const cheats=Object.entries((cfg.cheats||{}) as Record<string,boolean>).filter(([,on])=>on).map(([c])=>c).join("+");
+	const match={ task:cfg.task||"", duel:cfg.task==="joust"?(cfg.duel||"merge"):"", bandit:cfg.task==="joust"?(cfg.bandit||"ace"):"",
+		weapons:MULTIPLAYER?"":(missiles_on()?((ownship.amraam|0)>0||stores_amraams(ownship.loadout||loadout()).length>0?"open":"fox2"):"guns"),
+		start:cfg.start||"", clouds:cfg.clouds||"", tod:cfg.tod||"", multiplayer:MULTIPLAYER?1:0, world:MULTIPLAYER?(cfg.world||""):"",
+		callsign:cfg.callsign||"", cheats, effects:String(cfg.effects_quality??2), version:String(flight_version()) };
+	return { text:recorder.render(record_started,"Mochi Air: "+kind,match), session:record_session, kind }; }
 const _q=new THREE.Quaternion(), _fwd=new THREE.Vector3(), _up=new THREE.Vector3(), _right=new THREE.Vector3();
 function start_launch(){ launch_flag=true; ownship.trapped=false; ownship.throttle=Math.max(ownship.throttle,0.9); }   // requests the shot; the core fires it while attached to the shuttle (caller gates on launch_status()===2)
 let atc_on=false, atc_alpha=0;   // Approach Power Compensator (#202): engaged flag + last-frame alpha for the rate term
@@ -4808,6 +4836,7 @@ function fly_bandit(dt){
 		if(step){
 			const w=step.state; step.fire=pulled; step.flare=popped;
 			bandit_radar=step.emitter; bandit_locked=step.locked;   // the brain's real radar state (#33): the RWR and the round's datalink read truth
+			bandit_words=w;   // the brain bandit's full model tail, for the recorder's telemetry channels (#33 debrief)
 			if(loosed) launch_bandit_round();   // an AMRAAM left the bandit's rail in ANY substep: the client owns the round from here, same core the player's shots fly
 
 			bandit.pos.set(w[0],w[1],w[2]);
@@ -4828,7 +4857,7 @@ function fly_bandit(dt){
 			bandit.group.quaternion.copy(_q);
 			bandit.group.position.copy(bandit.pos);
 			if(bandit.merging&&(wrap_distance(bandit.pos,ownship.pos)<500||bandit.fwd.dot(_v.subVectors(ownship.pos,bandit.pos))<0)) bandit.merging=false;   // keep the merge flag honest for the SP weapons hold
-			if(step.flare){ dispense_flares(bandit); bandit.flared_at=sim_time; }
+			if(step.flare){ dispense_flares(bandit); bandit.flared_at=sim_time; bandit_dispensed++; }
 			const fired=fire_gun(bandit,ownship,"bandit",dt,step.fire&&!weapons_hold);   // the joust hold binds BOTH jets: the brain may pull its trigger on the run-in, but nothing leaves the barrel before the merge (#87 — the player's trigger has always been gated; the bandit's never was)
 			if(fired>0 && !cheat("invulnerable")){ battle_volley(1,battle_pose(bandit),fired,battle_tick); }   // real rounds: arrival, and the hit feedback, come from battle_fly
 		}
@@ -4845,7 +4874,7 @@ function fly_bandit(dt){
 	}
 	const threatened = rng<1800 && ownship.fwd.dot(to_own.clone().multiplyScalar(-1).normalize())>0.5; // ownship pointing at bandit from behind-ish
 	if(bandit.break_t<=0){ const a=Math.random()*Math.PI*2; bandit.break_dir.set(Math.cos(a),0,Math.sin(a)); bandit.break_t=threatened?(2+Math.random()*2):(5+Math.random()*5);
-		if(threatened){ dispense_flares(bandit); bandit.flared_at=sim_time; } }
+		if(threatened){ dispense_flares(bandit); bandit.flared_at=sim_time; bandit_dispensed++; } }
 	const b=bandit.break_dir.clone(); b.x+=Math.sin(sim_time*0.7)*0.6; b.z+=Math.cos(sim_time*0.9)*0.6;
 	if(bandit.pos.length()>5500) b.addScaledVector(bandit.pos.clone().negate().setY(0).normalize(),1.2);
 	hold_altitude(b,bandit,1400,3600); steer(bandit,b,dt,threatened?0.5:0.34,1.2); apply_orientation(bandit);
@@ -5313,6 +5342,7 @@ map_el.addEventListener("wheel",e=>{ e.preventDefault(); map_range=THREE.MathUti
 // peak-g readout NATOPS shows past 4.0.
 let master="gun", alt_radar=false, declutter=0, peak_g=1;   // declutter: 0 NORM, 1 REJ 1, 2 REJ 2
 let hud_cue="";   // what the HUD is telling the pilot this frame (#33 debrief): '' / 'gun' / '9m' / 'steady' / 'flash' / 'break' — set where each cue is drawn, read by the recorder
+let hud_boxed=null;   // the target the HUD is flying against this frame (the boxed contact), for the recorder's Target channel
 function dir_at(headFwd, rightH, yawRad, pitchRad){ const d=headFwd.clone().applyAxisAngle(world_up,yawRad); d.applyAxisAngle(rightH,pitchRad); return d; }
 function hud_message(text){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="20px monospace"; hctx.fillText(text, HW/2, HH/2+180); }   // shared centre banner for important messages (RUN UP ENGINE / PRESS SPACE TO LAUNCH / N WIRE)
 // ---- the AIM-120's launch zone (#27 phase 2) ----
@@ -5607,6 +5637,7 @@ function draw_hud(){
 	else if(MULTIPLAYER&&net){ const dst=remotes.get(designated);   // the pilot's acquisition, not auto-nearest: designate/step/undesignate on the acquire key like the real ACM flow
 		if(dst&&dst.group.visible){ boxed=dst; rng=wrap_distance(ownship.pos,dst.pos); vc=closure(ownship,dst); }
 		else designated=-1; }
+	hud_boxed=boxed;   // recorded as the Target channel (#33 debrief)
 
 	// 9M seeker tone (#73): the growl/lock audio tracks the seeker itself, not
 	// the drawn symbology — the tone keeps playing with the head turned away
@@ -6038,6 +6069,8 @@ const radar_cursor={ azimuth:0, range:20*1852 };   // the TDC's position on the 
 let radar_sent={ mode:-1, target:-1 };             // last emitter state told to the server
 let bandit_emitter=0;                              // SP bandit: 0 silent / 1 search / 2 STT — what the RWR will read
 let bandit_radar=-1;                               // the BRAIN's reported emitter state (#33): -1 until the wasm reports, then it replaces the derived geometry below
+let bandit_words=null;                             // the brain bandit's latest model output words (its own STATE tail), for the recorder
+let bandit_dispensed=0;                            // cumulative flare dispenses by the bandit this mission: its dispenser is bottomless, so the recording carries the count
 let bandit_locked=false;                           // the brain's STT holds us: datalink support for a bandit-shot round
 // contacts: the one list every target consumer reads — the SA page, the
 // acquire flow, the radar's truth feed. Furball feeds it from truth
