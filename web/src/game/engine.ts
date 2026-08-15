@@ -1298,6 +1298,17 @@ function ddi_family(){ return master==="nav"?"nav":"aa"; }
 function ddi_recall(){ const set=ddi_sets[ddi_family()]; for(const d of ["left","right","center"]) ddi_state[d]={ page:set[d], menu:"" }; ddi_dirty=true; }
 function ddi_show(display,page){ ddi_state[display]={ page, menu:"" }; ddi_sets[ddi_family()][display]=page; ddi_dirty=true; }
 function set_master(m){ const before=ddi_family(); master=m; if(ddi_family()!==before) ddi_recall(); }
+// next_master is the weapon-select cycle: GUN -> 9M -> 120C -> NAV -> GUN, but
+// a station with nothing left to fire is skipped — cycling onto an empty rail
+// (a heater-only fit stepping through 120C, a Winchester belt) is a dead stop
+// the pilot has to click past under pressure. NAV is not a weapon and always
+// stays in the cycle; with every weapon empty the key toggles GUN and NAV.
+function next_master(){
+	const order=["gun","9m","120c","nav"];
+	const loaded={ gun:(ownship.rounds??0)>0, "9m":(ownship.msl|0)>0, "120c":Math.max(0,ownship.amraam|0)>0, nav:true };
+	let at=order.indexOf(master); if(at<0) at=0;
+	for(let step=1;step<=order.length;step++){ const m=order[(at+step)%order.length]; if(loaded[m]||m==="gun"&&!order.some(w=>w!=="nav"&&loaded[w])) return m; }
+	return master; }
 let ddi_dirty=false;   // a pushbutton press redraws NOW — the 120 ms cadence would read as a stuck button
 const DDI_MENUS={   // [pushbutton, legend, page] — page "" = not built yet
 	tac:[ [6,"HUD","hud"],[7,"RDR","rdr"],[8,"SA","sa"],[9,"SMS","sms"],[10,"EW","ew"] ],
@@ -3637,7 +3648,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("jammer")){ jammer_armed=!jammer_armed; notice(jammer_armed?"JAMMER ARMED":"JAMMER OFF"); }   // #31: the ASPJ collapsed to its one real decision — annunciator vocabulary stays English like SIL's
 		if(ch===key_of("radar.silent")){ RADAR.sil=!RADAR.sil; notice(RADAR.sil?"RADAR SILENT":"RADAR ACTIVE"); }   // #30: emission discipline is a reflex action — annunciator vocabulary stays English
 		if(ch===key_of("radar.acm")){ RADAR.acm=RADAR.acm==="bst"?"vacq":"bst"; notice(RADAR.acm==="bst"?"ACM BORESIGHT":"ACM VERTICAL"); }   // #30: the castle-switch stand-in
-		if(ch===key_of("select")){ set_master(master==="gun"?"9m":master==="9m"?"120c":master==="120c"?"nav":"gun"); }   // weapon select (#133, #27): GUN -> 9M -> 120C -> NAV -> GUN. Crossing the A/A-NAV boundary recalls that mode's displays (#15)
+		if(ch===key_of("select")) set_master(next_master());   // weapon select (#133, #27): GUN -> 9M -> 120C -> NAV -> GUN, skipping any weapon with nothing left to fire. Crossing the A/A-NAV boundary recalls that mode's displays (#15)
 		if(ch===key_of("altitude")){ alt_radar=!alt_radar; }   // HUD altitude switch: BARO <-> RDR
 		if(ch===key_of("reject")){ declutter=(declutter+1)%3; notice(translate(["HUD NORM","HUD REJ 1","HUD REJ 2"][declutter])); }     // the three-position symbology reject switch (NATOPS 2.13.4.8.1) — unbound by default: re-pressing 2 cycles it; the action stays for players who want a dedicated key or button
 		if(ch===key_of("fire")) trigger_missile();   // one trigger, weapon-selected: in 9M the trigger launches (the real Hornet's trigger fires the selected A/A weapon) chases the acquisition when one exists (the server's seeker judges the real damage)
