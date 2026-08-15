@@ -4233,6 +4233,14 @@ if(DEV_MODE) (globalThis as any).dev_close=(m,az,el,heading)=>{ const d=+m||200;
 	bandit.pos.copy(ownship.pos).addScaledVector(_look_d,d*Math.cos(e)); bandit.pos.y+=d*Math.sin(e);
 	bandit.fwd.copy(ownship.fwd).multiplyScalar(Math.cos(h)).addScaledVector(ownship.right,Math.sin(h)).normalize(); bandit.speed=ownship.speed;
 	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
+if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds){ if(!has_enemy||!bandit.harm||!bandit.group.visible) return null;   // dev (#27 wound trails): rake the FLYING bandit from astern with REAL rounds — identity 0 is the ownship's gun against the bandit hulk, the same path a gun kill flies, so the wound is the battle model's own and survives the per-frame refresh (setting bandit.harm directly is clobbered by it). The wound trails must then draw while the brain still flies the jet.
+	const n=Math.max(1,+volleys||6), shots=Math.max(1,+(arguments[1])||40), back=250, up=bandit.up||world_up;
+	const pose={ position:{x:bandit.pos.x-bandit.fwd.x*back, y:bandit.pos.y-bandit.fwd.y*back, z:bandit.pos.z-bandit.fwd.z*back},
+		forward:{x:bandit.fwd.x,y:bandit.fwd.y,z:bandit.fwd.z}, up:{x:up.x,y:up.y,z:up.z},
+		velocity:{x:bandit.velx,y:bandit.vely,z:bandit.velz} };
+	for(let v=0;v<n;v++) battle_volley(0,pose,shots,battle_tick+v);
+	return { volleys:n, shots }; };
+if(DEV_MODE) (globalThis as any).dev_bandit_state=()=>has_enemy&&bandit.harm?{ thrust:+(bandit.harm.thrust||0).toFixed(2), leak:+(bandit.harm.leak||0).toFixed(2), fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)), burning:!!bandit.harm.burning, wing:+(bandit.harm.wing||0).toFixed(2), killed:!!bandit.harm.killed, smoke:smoke.activeList.length, flying:!(bandit.harm.killed||bandit.harm.wing>0.5)&&bandit.group.visible, speed:Math.round(bandit.speed||0) }:null;
 if(DEV_MODE) (globalThis as any).dev_dispense=()=>{ if(!has_enemy||!bandit.group.visible) return false; dispense_flares(bandit); bandit.flared_at=sim_time; return true; };   // dev (#29): the bandit's mixed-program dispense on demand — the chaff harness owns the timing the brain otherwise decides
 if(DEV_MODE) (globalThis as any).dev_radar=(mode)=>{ if(mode==="rws"||mode==="tws") RADAR.mode=mode; return RADAR.mode; };   // dev: the mode the RDR page's bezel selects, reachable without a canvas click (the TWS employment paths need it)
 if(DEV_MODE) (globalThis as any).dev_zone=()=>{ const z=launch_zone(); if(!z) return null;   // #27 phase 2: the live DLZ ladder and its shoot cue, as the HUD draws them
@@ -4835,6 +4843,7 @@ function fly_bandit(dt){
 	// for it at twenty feet. Counted as the player's kill, as the stricken
 	// path counts it: flying an opponent into the ground is a kill.
 	if(bandit_wrecked()){ own_kills++; bandit_destroy(); return; }
+	bandit_wounds();   // the wound trails draw on EVERY branch below: a bandit still flying under its brain with a dead engine streams smoke, exactly like a stricken one
 	if(bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5)) return fly_bandit_stricken(dt);
 	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&!fly_bandit.tried){   // lazy: the core loads async and start_mission races it — arm the brain on the first frame the core is ready
 		fly_bandit.tried=true;
@@ -4915,13 +4924,20 @@ function fly_bandit_stricken(dt){
 	if(harm.killed){ const d=bandit.fwd.clone(); d.y=-0.15; steer(bandit,d,dt,0.05,0.2); }
 	else { const d=bandit.break_dir.clone(); d.y=-0.5; steer(bandit,d,dt,0.9,1.5); bandit.speed=Math.max(120,bandit.speed-30*dt); }   // wing gone: rolling descent
 	apply_orientation(bandit);
-	// The bandit's wounds render at their true severity (#244): per-engine fire
-	// intensity grades the burn from a thin lick to a torching trail (the old
-	// binary burned at full blast or not at all), an engine knocked out streams
-	// dark machinery smoke even before anything burns, and a holed tank streams
-	// the same pale fuel mist the ownship shows. This is the feedback loop the
-	// player's gunnery learns from — what a burst DID, readable at a glance.
-	burn_trail(bandit.pos,Math.max(harm.fire?harm.fire[0]:0,harm.fire?harm.fire[1]:0,harm.burning?0.7:0,harm.wing*0.9),bandit.velx,bandit.vely,bandit.velz);
+}
+// bandit_wounds renders the bandit's damage at its true severity (#244): per-
+// engine fire intensity grades the burn from a thin lick to a torching trail
+// (the old binary burned at full blast or not at all), an engine knocked out
+// streams dark machinery smoke even before anything burns, and a holed tank
+// streams the same pale fuel mist the ownship shows. This is the feedback loop
+// the player's gunnery learns from — what a burst DID, readable at a glance —
+// and the plume is the ONE cue that reads on a small fast airframe at range.
+// It draws on every flight branch: it once lived only on the stricken path,
+// so a bandit wounded but still flying under its brain drew clean — the user
+// flew 115 s behind one at half thrust with no way to judge whether it was
+// finished, and followed it down to be sure (2026-08-15).
+function bandit_wounds(){ const harm=bandit.harm; if(!harm) return;
+	burn_trail(bandit.pos,Math.max(harm.fire?harm.fire[0]:0,harm.fire?harm.fire[1]:0,harm.burning?0.7:0,(harm.wing||0)*0.9),bandit.velx,bandit.vely,bandit.velz);
 	if((harm.thrust||0)>0.06) engine_smoke(bandit.pos,harm.thrust,bandit.velx,bandit.vely,bandit.velz);
 	if((harm.leak||0)>0.04) leak_trail(bandit.pos,Math.min(1,harm.leak*3),bandit.velx,bandit.vely,bandit.velz);
 }
