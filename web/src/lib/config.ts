@@ -48,15 +48,17 @@ export interface StickProfile {
 // being broken rather than as a wrong profile.
 export const PROFILES: StickProfile[] = [
   {
-    // Measured on the hardware 2026-08-11. select: the old missile button becomes
-    // weapon select — one trigger fires the SELECTED weapon, like the real stick.
-    // zoom.in/out: the trim wheel in its DIGITAL mode pulses one button per notch
-    // (12 forward, 13 back — set via the stick's OLED; its default mouse-cursor
-    // mode is invisible to the Gamepad API). Buttons 8-11 are LATCHING base
-    // toggles and carry nothing: a latch cannot drive a momentary action.
-    // Deliberately keyboard-only, the stick having run out of buttons: trim
-    // reset, look-at-target, the jettison family, the radar controls, lights,
-    // launch and the speed brake.
+    // Measured on the hardware 2026-08-11, re-roled for the BVR loop
+    // 2026-08-15 and confirmed on the stick the same day. Buttons 8-11 are
+    // LATCHING base toggles and carry nothing: a latch cannot drive a
+    // momentary action. The thumbwheel reaches the Gamepad API only in its
+    // DIGITAL mode, one button pulse per notch (12 forward, 13 back — set
+    // via the stick's OLED; its default mouse-cursor mode is invisible
+    // here, arriving as DOM wheel events instead). Deliberately
+    // keyboard-only, the stick having run out of buttons: trim reset,
+    // look-at-target, the jettison family, the radar controls, lights,
+    // launch, the speed brake — and the weapon-select CYCLE, which the
+    // castle makes unnecessary here by selecting positionally.
     name: 'Turtle Beach VelocityOne Flightstick',
     match: (id) => /velocityone|10f5/i.test(id),
     // The BVR loop flies from the stick (settled 2026-08-11, implemented
