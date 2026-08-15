@@ -3990,10 +3990,10 @@ function recording_sample(){
 		yaw:(degrees(Math.atan2(st.fwd.x,-st.fwd.z))+360)%360,
 		pitch:degrees(Math.asin(THREE.MathUtils.clamp(st.fwd.y,-1,1))),
 		roll:(st.up&&st.right)?degrees(Math.atan2(st.right.y,st.up.y)):degrees(st.bank||0) });
-	const add=(st,id,label,colour,mode,data)=>{ if(!st||!st.pos||!st.fwd) return;   // a half-built state must never take the frame loop down with it
+	const add=(st,id,label,colour,mode,data,skill=undefined)=>{ if(!st||!st.pos||!st.fwd) return;   // a half-built state must never take the frame loop down with it
 		const a=attitude(st);
 		list.push({ id, x:st.pos.x, y:st.pos.y, z:st.pos.z, roll:a.roll, pitch:a.pitch, yaw:a.yaw,
-			name:"FA-18C", label, colour, kind:"Air+FixedWing", mode, data }); };
+			name:"FA-18C", label, colour, kind:"Air+FixedWing", mode, data, ...(skill?{skill}:{}) }); };
 	// The ownship's flight data comes from the instrument tail the gauges read
 	// (#216) — TacView graphs AOA/G/TAS/IAS/Mach natively, which is what turns a
 	// replay into the handling trace the old CSV telemetry carried. The
@@ -4018,7 +4018,8 @@ function recording_sample(){
 		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?(bandit_mode()||undefined):undefined,
 			{ rounds:bandit.rounds??0,   // the true belt (#233), same counter as the ownship's — no longer a nominal derived from expenditure
 				struck:bandit.struck||0, burning:!!bandit.harm.burning, thrust:bandit.harm.thrust||0,
-				wing:bandit.harm.wreck||0, ...(bandit.fate?{fate:bandit.fate}:{}) });   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
+				wing:bandit.harm.wreck||0, ...(bandit.fate?{fate:bandit.fate}:{}) },
+			cfg.task==="joust"?(cfg.bandit||"ace"):undefined);   // the tier flown against, on the bandit's own object (shipped): the debrief's context for judging every play it chose. Keyed on the CONFIG, not on bandit_brain — the brain arms lazily on the first core-ready frame, and the first recorded sample must not read as an untiered bandit   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
 		const team=net.teams.get(slot)||"";
 		add(st,10+slot,st.name||net.names.get(slot)||"",team==="red"?"Red":team==="blue"?"Blue":"Orange"); } }

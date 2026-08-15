@@ -32,6 +32,7 @@ export interface Recorded {
   colour: 'Blue' | 'Red' | 'Orange'
   kind: string // TacView type tag, e.g. Air+FixedWing
   mode?: string // bot doctrine state — developer builds only
+  skill?: string // a bot's tier (novice / pilot / ace / superhuman) — shipped: the context that decides whether a play was reasonable
   data?: Flight // per-sample flight data: TacView graphs these natively
   round?: Round // a missile in flight (#33 debrief): its guidance state and, on its last sample, its fate
 }
@@ -193,10 +194,11 @@ export function acmi(samples: Sample[], started: Date, title: string): string {
           line += guide
         }
       }
-      const properties = `${o.name}|${o.label}|${o.colour}|${o.kind}|${o.mode ?? ''}|${r ? `${r.shooter}>${r.target ?? ''}` : ''}`
+      const properties = `${o.name}|${o.label}|${o.colour}|${o.kind}|${o.mode ?? ''}|${o.skill ?? ''}|${r ? `${r.shooter}>${r.target ?? ''}` : ''}`
       if (declared.get(o.id) !== properties) {
         declared.set(o.id, properties)
         line += `,Name=${o.name},Pilot=${o.label},Color=${o.colour},Type=${o.kind}`
+        if (o.skill) line += `,Skill=${o.skill}` // the bot's tier, on the object itself: the mission title named it only for jousts, and only in the header
         if (o.mode) line += `,Doctrine=${o.mode}` // developer builds only: the bot's chosen manoeuvre
         if (r) {
           // ACMI's own parent/target linkage, in the object ids the file uses.
