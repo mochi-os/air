@@ -59,10 +59,19 @@ export const PROFILES: StickProfile[] = [
     // launch and the speed brake.
     name: 'Turtle Beach VelocityOne Flightstick',
     match: (id) => /velocityone|10f5/i.test(id),
-    axes: { pitch: '1', roll: '0', yaw: '2', throttle: '-5', speedbrake: '-6', look: '3', trim: '8', zoom: '' },   // look = the smooth-hat ministick (axes 3/4, spring-centred); the castle POV pair at 8/9 is the trim hat. zoom: the thumbwheel is a SCROLL WHEEL on the stick's mouse interface — DOM wheel events, not a gamepad axis
-    buttons: { fire: '17', 'brake.wheel': '17', select: '15', acquire: '16', flares: '0',
+    // The BVR loop flies from the stick (settled 2026-08-11, implemented
+    // 2026-08-15): the castle POV pair at 8/9 is POSITIONAL weapon select —
+    // forward 120C, aft 9M, left GUN, right NAV, one flick with no cycling
+    // under g — so trim leaves the castle for the thumbwheel (buttons 12/13,
+    // a trim wheel under the thumb: forward = nose down) and zoom loses its
+    // stick binding (the mouse wheel and keyboard keep it). The thumb buttons
+    // re-role: ACQUIRE takes 15/«16», the easier reach for the URGENT press
+    // (merge-range lock under g); UNDESIGNATE/step takes 16/«17», frequent
+    // but self-paced. Fire stays 17/«18».
+    axes: { pitch: '1', roll: '0', yaw: '2', throttle: '-5', speedbrake: '-6', look: '3', trim: '', weapon: '8', zoom: '' },   // look = the smooth-hat ministick (axes 3/4, spring-centred); weapon = the castle POV pair (8/9). zoom: the thumbwheel is a SCROLL WHEEL on the stick's mouse interface — DOM wheel events, not a gamepad axis
+    buttons: { fire: '17', 'brake.wheel': '17', acquire: '15', 'radar.undesignate': '16', flares: '0',
       gear: '7', hook: '6', atc: '1', override: '3', 'flaps.extend': '4', 'flaps.retract': '5',
-      view: '2', 'view.reset': '18', 'zoom.in': '12', 'zoom.out': '13' },
+      view: '2', 'view.reset': '18', 'trim.down': '12', 'trim.up': '13' },
   },
   {
     // The W3C standard gamepad layout. This one is NOT measured and does not need
@@ -76,7 +85,7 @@ export const PROFILES: StickProfile[] = [
     // keys. The right stick is the look pair (2/3); R3 holds look-at-target.
     name: 'Standard gamepad',
     match: (_id, mapping) => mapping === 'standard',
-    axes: { pitch: '1', roll: '0', yaw: '', throttle: '', speedbrake: '', look: '2', trim: '', zoom: '' },
+    axes: { pitch: '1', roll: '0', yaw: '', throttle: '', speedbrake: '', look: '2', trim: '', weapon: '', zoom: '' },
     buttons: { fire: '7', 'brake.wheel': '6', gear: '0', flares: '1', select: '2', hook: '3',
       'yaw.left': '4', 'yaw.right': '5', 'throttle.up': '12', 'throttle.down': '13',
       'flaps.extend': '15', 'flaps.retract': '14', view: '10', 'look.target': '11', 'view.reset': '9' },
@@ -87,7 +96,7 @@ export const PROFILES: StickProfile[] = [
     // unknown stick; the rest is hand-bound in the Joystick tab.
     name: 'Generic joystick',
     match: () => true,
-    axes: { pitch: '1', roll: '0', yaw: '2', throttle: '3', speedbrake: '', look: '', trim: '', zoom: '' },
+    axes: { pitch: '1', roll: '0', yaw: '2', throttle: '3', speedbrake: '', look: '', trim: '', weapon: '', zoom: '' },
     buttons: { fire: '0' },
   },
 ]

@@ -1303,6 +1303,13 @@ function set_master(m){ const before=ddi_family(); master=m; if(ddi_family()!==b
 // (a heater-only fit stepping through 120C, a Winchester belt) is a dead stop
 // the pilot has to click past under pressure. NAV is not a weapon and always
 // stays in the cycle; with every weapon empty the key toggles GUN and NAV.
+// select_master is positional weapon select (the castle): the wanted station,
+// unless it has nothing left to fire — an empty rail is skipped exactly as the
+// cycle skips it, and the request is simply ignored rather than landing the
+// pilot on a dead station under g.
+function select_master(m){
+	const loaded={ gun:(ownship.rounds??0)>0, "9m":(ownship.msl|0)>0, "120c":Math.max(0,ownship.amraam|0)>0, nav:true };
+	if(loaded[m]) set_master(m); }
 function next_master(){
 	const order=["gun","9m","120c","nav"];
 	const loaded={ gun:(ownship.rounds??0)>0, "9m":(ownship.msl|0)>0, "120c":Math.max(0,ownship.amraam|0)>0, nav:true };
@@ -3858,7 +3865,8 @@ function pad_bindings(pad){   // resolved axis/button map for THIS stick: the me
 	return { axes:{ ...defaults.axes, ...(saved.axes||{}) },
 		buttons: saved.buttons&&Object.keys(saved.buttons).length?saved.buttons:defaults.buttons }; }
 const pad_looks={ up:false, down:false, left:false, right:false };
-const pad_trim={ x:0, y:0 };   // the trim hat pair's level state (x + = right wing down, y + = hat aft = nose up after the sign flip at the read)   // castle/hat state, level-read per frame — deliberately NOT synthetic Arrow events (shared codes let a castle release kill a held physical arrow)
+const pad_trim={ x:0, y:0 };   // the trim hat pair's level state (x + = right wing down, y + = hat aft = nose up after the sign flip at the read)
+let pad_weapon="";   // the weapon-select hat's level state: "" centred, else the master it points at — positional select acts on the PRESS edge, so a held castle selects once   // castle/hat state, level-read per frame — deliberately NOT synthetic Arrow events (shared codes let a castle release kill a held physical arrow)
 let pad_fire=false;   // fire level state, same reasoning: a HELD action with possibly several bound buttons must never be synthetic key events
 function pad_axis(pad,i){ const v=pad.axes[i]??0;   // raw ±1, no calibration: the worn-pot centring/throw machinery is gone by decree — modern sticks read clean, and every margin only made dead travel
 	const dz=Math.abs(v)<0.05?0:(v-Math.sign(v)*0.05)/0.95;   // small centre deadzone against electrical jitter
@@ -3914,7 +3922,7 @@ function read_input(dt){
 				ownship.throttle=Math.min(1,lever/0.75); ownship.burner=THREE.MathUtils.clamp((lever-0.75)/0.25,0,1); } }   // lever: 0..75% = idle..MIL, the top quarter sweeps the five AB zones
 		{ const p=pad_lever(pad,bind.axes.speedbrake,"speedbrake");   // speed brake: full forward retracted, aft deployed (deployed at the HIGH raw end; "-" prefix flips)
 			if(p!==null) ownship.speedbrakeTarget=p; }
-		pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_fire=false; pad_trim.x=pad_trim.y=0;
+		pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_fire=false; pad_trim.x=pad_trim.y=0;   // level states, re-read below every frame — pad_weapon is NOT among them: it is the castle's last position, kept across frames so a held castle selects on the press edge only
 		{ const z=String(bind.axes.zoom??""); zoom_wheel=0;
 			if(z.endsWith("+")){ const zi=Math.abs(parseInt(z,10));   // "N+": half-axis PAIR wheel — each roll direction sweeps its own axis 0..-1 (thumbwheel style)
 				if(pad.axes.length>zi+1){ const back=Math.max(0,-pad.axes[zi]), fore=Math.max(0,-pad.axes[zi+1]);
@@ -3925,6 +3933,11 @@ function read_input(dt){
 		{ const h=String(bind.axes.trim??""); if(h!==""){ const hi=+h;   // the trim hat pair, thresholded like the look pair — a POV that reports as two axes
 			if(pad.axes.length>hi+1){ const hx=pad.axes[hi], hy=pad.axes[hi+1];
 				pad_trim.x=Math.abs(hx)>0.5?Math.sign(hx):0; pad_trim.y=Math.abs(hy)>0.5?Math.sign(hy):0; } } }
+		{ const h=String(bind.axes.weapon??""); if(h!==""){ const hi=+h;   // the weapon-select hat pair (the castle): positional, see select_master
+			if(pad.axes.length>hi+1){ const hx=pad.axes[hi], hy=pad.axes[hi+1];   // HID: y -1 forward +1 aft, x -1 left +1 right
+				const want=hy<-0.5?"120c":hy>0.5?"9m":hx<-0.5?"gun":hx>0.5?"nav":"";
+				if(want&&want!==pad_weapon) select_master(want);   // the press edge selects once; a held castle does not re-select every frame
+				pad_weapon=want; } } }
 		{ const h=String(bind.axes.look??""); if(h!==""){ const hi=+h;   // the Look pair (HID: x -1 left +1 right, y -1 up +1 down; the 0.5 threshold covers analog ministicks and digital hats alike)
 			if(pad.axes.length>hi+1){ const hx=pad.axes[hi], hy=pad.axes[hi+1];
 				if(hx<-0.5) pad_looks.left=true; if(hx>0.5) pad_looks.right=true;
@@ -3948,7 +3961,7 @@ function read_input(dt){
 				if(bindText&&bindText!=="None"){ const shift=bindText.startsWith("Shift+"), code=bindText.replace("Shift+","");
 					for(const target of [window, document, stage]) target.dispatchEvent(new KeyboardEvent(down?"keydown":"keyup",{ code, shiftKey:shift, bubbles:true })); } } }
 	}
-	else { pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_fire=false; pad_forget_levers(); }   // no pad this frame: a returning stick must re-arm its levers before commanding anything
+	else { pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_fire=false; pad_weapon=""; pad_forget_levers(); }   // no pad this frame: a returning stick must re-arm its levers before commanding anything
 	input.pitch=Math.abs(pp)>Math.abs(key_axes.pitch)?pp:key_axes.pitch;
 	input.roll=Math.abs(pr)>Math.abs(key_axes.roll)?pr:key_axes.roll;
 	input.yaw=Math.abs(py)>Math.abs(key_axes.yaw)?py:key_axes.yaw;
