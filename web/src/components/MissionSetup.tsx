@@ -196,6 +196,7 @@ const BUTTON_ROWS: Row[] = [
   { id: 'gear', label: <Trans>Landing gear</Trans>, group: 'aircraft' },
   { id: 'hook', label: <Trans>Arrestor hook</Trans>, group: 'aircraft' },
   { id: 'atc', label: <Trans>Approach power (ATC)</Trans>, group: 'aircraft' },
+  { id: 'fold', label: <Trans>Wing fold</Trans>, group: 'aircraft' },   // bindable, but no built-in profile assigns it: a deck-only function does not earn a button on a stick that has run out of them, and the pilot who wants it can say so
   { id: 'launch', label: <Trans>Launch (catapult)</Trans>, group: 'aircraft' },
   { id: 'lights', label: <Trans>Lights</Trans>, group: 'aircraft' },
   { id: 'view', label: <Trans>Cycle view</Trans>, group: 'view' },
