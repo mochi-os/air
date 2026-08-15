@@ -4270,6 +4270,9 @@ if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds){ if(!has_ene
 		velocity:{x:bandit.velx,y:bandit.vely,z:bandit.velz} };
 	for(let v=0;v<n;v++) battle_volley(0,pose,shots,battle_tick+v);
 	return { volleys:n, shots }; };
+if(DEV_MODE) (globalThis as any).dev_panels=()=>{ const read=(st)=>{ if(!st||!st.group) return null; const out={}; for(const p of PANELS){ const n=st.group.getObjectByName(p.node); out[p.node]=n?n.visible:null; } return out; };
+	const words=last_out, gone={}; if(words) for(const p of PANELS){ let g=true; for(let e=p.first;e<p.first+4;e++) if((words[STATE.element+e]??0)<0.99) g=false; gone[p.node]=g; }
+	return { ownship:read(ownship), bandit:has_enemy?read(bandit):null, ownshipShed:gone }; };   // dev (#wing loss): panel visibility and the element verdict behind it
 if(DEV_MODE) (globalThis as any).dev_bandit_state=()=>has_enemy&&bandit.harm?{ thrust:+(bandit.harm.thrust||0).toFixed(2), leak:+(bandit.harm.leak||0).toFixed(2), fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)), burning:!!bandit.harm.burning, wing:+(bandit.harm.wing||0).toFixed(2), killed:!!bandit.harm.killed, smoke:smoke.activeList.length, flying:!(bandit.harm.killed||bandit.harm.wing>0.5)&&bandit.group.visible, speed:Math.round(bandit.speed||0) }:null;
 if(DEV_MODE) (globalThis as any).dev_dispense=()=>{ if(!has_enemy||!bandit.group.visible) return false; dispense_flares(bandit); bandit.flared_at=sim_time; return true; };   // dev (#29): the bandit's mixed-program dispense on demand — the chaff harness owns the timing the brain otherwise decides
 if(DEV_MODE) (globalThis as any).dev_radar=(mode)=>{ if(mode==="rws"||mode==="tws") RADAR.mode=mode; return RADAR.mode; };   // dev: the mode the RDR page's bezel selects, reachable without a canvas click (the TWS employment paths need it)
@@ -4792,6 +4795,7 @@ function fly_player(dt){
 			ownship.struck=(ownship.struck||0)+flown.own; bandit.struck=(bandit.struck||0)+flown.bandit; }   // cumulative rounds taken, for the recording (#238): the total survives 10 Hz sampling losslessly
 		const battle=battle_progress(ownship.throttle,battle_tick++,battle_reset,(secured[0]?1:0)|(secured[1]?2:0)); battle_reset=false;
 		own_burn[0]=battle[0]; own_burn[1]=battle[1]; own_burning=battle[2]>0; own_leak=battle[5];
+		shed_panels(ownship,last_out);   // our own wing too: in any external view a lost panel is the loudest damage cue there is
 		if(has_enemy) bandit_racks();   // keep the hulk's rails in step before the next tick judges hits on them
 		if(has_enemy){ const h=bandit.harm; h.thrust=battle[11]; h.wing=battle[12]; h.killed=battle[9]>0; h.burning=battle[8]>0;
 			h.fire=[battle[6]||0,battle[7]||0]; h.leak=battle[14]||0;   // per-engine fire intensity (always exported, never read until #244) and the hulk leak (new wasm row)
@@ -4968,7 +4972,25 @@ function fly_bandit_stricken(dt){
 // so a bandit wounded but still flying under its brain drew clean — the user
 // flew 115 s behind one at half thrust with no way to judge whether it was
 // finished, and followed it down to be sure (2026-08-15).
+// The outer wing PANELS. Battle sheds the outboard HALF of a wing's
+// elements, and the airframe builds its surfaces port-first as wing (8),
+// strake (2), stabilator (3), fin (3) — so the shed halves are elements 4-7
+// to port and 20-23 to starboard. The GLB carries those panels as their own
+// subtrees because the real jet folds them there, which means a lost wing is
+// a hide: the aileron, flaperon, outer slat, their covers and the wingtip
+// Sidewinder all go with it, being its children. battle/battle_test.go pins
+// the element ranges so a reordered airframe fails loudly rather than
+// silently hiding the wrong panel.
+const PANELS=[{ node:"Left_Wing_Outer_81", first:4 }, { node:"Right_wing_outer_317", first:20 }];
+function shed_panels(st,words){ if(!st||!st.group||!words) return;
+	for(const panel of PANELS){
+		let gone=true;
+		for(let e=panel.first;e<panel.first+4;e++) if((words[STATE.element+e]??0)<0.99){ gone=false; break; }
+		const node=st.group.getObjectByName(panel.node);
+		if(node&&node.visible===gone) node.visible=!gone; } }
+
 function bandit_wounds(){ const harm=bandit.harm; if(!harm) return;
+	shed_panels(bandit,bandit_words);   // a wing the battle model tore off stops being drawn
 	burn_trail(bandit.pos,Math.max(harm.fire?harm.fire[0]:0,harm.fire?harm.fire[1]:0,harm.burning?0.7:0,(harm.wing||0)*0.9),bandit.velx,bandit.vely,bandit.velz);
 	if((harm.thrust||0)>0.06) engine_smoke(bandit.pos,harm.thrust,bandit.velx,bandit.vely,bandit.velz);
 	if((harm.leak||0)>0.04) leak_trail(bandit.pos,Math.min(1,harm.leak*3),bandit.velx,bandit.vely,bandit.velz);
