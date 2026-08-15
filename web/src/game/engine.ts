@@ -17,7 +17,7 @@ import {
   recording_store,
   type Join as NetJoin,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop } from './flight'
+import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop } from './flight'
 import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject } from './stores'
 import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
@@ -2488,7 +2488,8 @@ function fire_gun(st,target,key,dt,force){
 	spend(fired);
 	return fired; }
 const _flare_timer={bandit:4.5};
-function dispense_flares(st){ for(let i=0;i<36;i++){ const k=pool_spawn(flares); if(k<0) break; const sp=local_offset(st,-2,-0.3,0);
+function dispense_flares(st){ st.flared_at=sim_time;   // stamped HERE, for every dispenser: the seduction window is the target's own, and the player's flares had never marked one because nothing of the bandit's could be seduced until it could fire heaters (2026-08-15)
+	for(let i=0;i<36;i++){ const k=pool_spawn(flares); if(k<0) break; const sp=local_offset(st,-2,-0.3,0);
 	flares.px[k]=sp.x;flares.py[k]=sp.y;flares.pz[k]=sp.z; flares.vx[k]=st.velx*0.5+(Math.random()-0.5)*40; flares.vy[k]=st.vely*0.5-Math.random()*25; flares.vz[k]=st.velz*0.5+(Math.random()-0.5)*40;
 	flares.ttl[k]=flares.life[k]=3.5+Math.random()*1.5; flares.r[k]=2.6;flares.g[k]=2.3;flares.b[k]=1.2; }
 	// The mixed program (#29): every dispense is a flare AND a chaff bloom —
@@ -2593,6 +2594,20 @@ function launch_amraam(st,target,track){ const m=missiles.find(x=>!x.active); if
 		velocity:{x:target.velx??target.fwd.x*target.speed,y:target.vely??target.fwd.y*target.speed,z:target.velz??target.fwd.z*target.speed} }:null;
 	round_launch(m.slot,{x:m.px,y:m.py,z:m.pz},{x:m.vx,y:m.vy,z:m.vz},estimate,WORLD_WRAP,!!estimate);
 	return true; }
+// launch_bandit_heater (#33): the bandit's AIM-9M, flown by the client at
+// the ownship. It rides the ownship's own launcher — same rail geometry,
+// same seeker, same acquisition rule — with the enemy flag set so the fuse
+// wounds hulk 1 and the player's flares are the ones that can seduce it.
+// Until 2026-08-15 the brain's heater launches never crossed the wasm
+// boundary at all (Step reported only fox3), so a single-player bandit
+// could not shoot a heat-seeker at the pilot.
+function launch_bandit_heater(){ if(!has_enemy||MULTIPLAYER) return;
+	const before=missiles.filter(m=>m.active).length;
+	if(!launch_missile(bandit,ownship)) return;
+	const m=missiles.find(x=>x.active&&x.kind==="9m"&&x.target===ownship&&!x.enemy);
+	if(m) m.enemy=true;
+	if(missiles.filter(x=>x.active).length>before){ bandit.msl=Math.max(0,(bandit.msl??magazine())-1); audio_launch(); } }
+
 // launch_bandit_round (#33): the bandit's AMRAAM, client-owned from the
 // rail — the harness only decides the shot. Flies the same core, chases the
 // OWNSHIP, and its datalink is the bandit's real STT state; the player's
@@ -2669,7 +2684,7 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.v
 	const fox3=m.kind==="120c";   // #27 phase 1: the radar round shares the pool with different constants and no IR frailties
 	let tracking=!m.loose && m.blind<=0 && !!t && (t!==bandit || bandit.group.visible);
 	// Bandit flares: one seduction roll per flare window (SP only — MP damage is the server's). Flares mean nothing to a radar seeker (chaff is #29).
-	if(tracking && !fox3 && t===bandit && sim_time-(bandit.flared_at??-9)<0.8){
+	if(tracking && !fox3 && t && sim_time-(t.flared_at??-9)<0.8){   // the TARGET's dispense, whoever the target is: the bandit's flares seduce our heaters, ours seduce its
 		if(!m.window){ m.window=true;
 			const dx=m.px-bandit.pos.x, dy=m.py-bandit.pos.y, dz=m.pz-bandit.pos.z; const dd=Math.hypot(dx,dy,dz)||1;
 			const tail=THREE.MathUtils.clamp(-(dx*bandit.fwd.x+dy*bandit.fwd.y+dz*bandit.fwd.z)/dd,0,1);
@@ -2678,7 +2693,7 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.v
 			if(Math.random()<decoy){ m.blind=1.5; m.lx=bandit.pos.x; m.ly=bandit.pos.y-30; m.lz=bandit.pos.z; tracking=false;
 				const sx=m.lx-m.px, sy=m.ly-m.py, sz=m.lz-m.pz, sd=Math.hypot(sx,sy,sz)||1;   // the seeker is ON the flare now: re-reference the track, or the aim-point swap reads as an LOS-rate spike and breaks the lock at the seduction instant (mirrors the server)
 				m.sx=sx/sd; m.sy=sy/sd; m.sz=sz/sd; } }
-	} else if(!(t===bandit && sim_time-(bandit.flared_at??-9)<0.8)) m.window=false;
+	} else if(!(t&&sim_time-(t.flared_at??-9)<0.8)) m.window=false;   // whoever the target is: their own dispense owns the window
 	// Proximity fuse (armed): independent of the seeker — a broken lock leaves the
 	// warhead live, and it detonates at the CLOSEST APPROACH within this step, not
 	// at the first frame-sampled range under the envelope (which burst at 8-12 m,
@@ -2693,7 +2708,10 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.v
 		const near=Math.hypot(nx,ny,nz);
 		if(near<(fox3?20:12)){ m.active=false; m.mesh.visible=false;
 			const bx=t.pos.x-nx, by=t.pos.y-ny, bz=t.pos.z-nz;   // the missile at its nearest point, anchored to the target
-			if(!MULTIPLAYER&&has_enemy&&t===bandit){
+			if(m.enemy){   // the bandit's own heater: hulk 1 is the ownship, and the cheat spares us as it does everywhere else
+				if(!cheat("invulnerable")) battle_blast(1,{x:bx,y:by,z:bz},battle_aim(ownship),0,battle_tick);
+				explosion_at(bx,by,bz); }
+			else if(!MULTIPLAYER&&has_enemy&&t===bandit){
 				if(fox3&&near<18){ if(DEV_MODE){ m.mask=-1; m.killed=true; }   // #27 phase 1 PLACEHOLDER: the simple PN endgame grazes a hard-evading target at 12-21 m, and the deliberately-simple round scores that as the 22 kg warhead's kill rather than growing proper guidance now — phase 2's core flight model and warhead classes replace this whole criterion
 					explosion_at(bx,by,bz); own_kills++; bandit_destroy(); }
 				else { const verdict=battle_blast(0,{x:bx,y:by,z:bz},battle_aim(bandit),0,battle_tick);
@@ -2815,6 +2833,18 @@ function battle_aim(st){ const q=st.group?st.group.quaternion:ownship.q;
 function battle_pose(st){ const up=st.up||world_up; return { position:{x:st.pos.x+st.fwd.x*6,y:st.pos.y+st.fwd.y*6,z:st.pos.z+st.fwd.z*6},
 	forward:{x:st.fwd.x,y:st.fwd.y,z:st.fwd.z}, up:{x:up.x,y:up.y,z:up.z},
 	velocity:{x:st.velx??st.fwd.x*st.speed,y:st.vely??st.fwd.y*st.speed,z:st.velz??st.fwd.z*st.speed} }; }   // the shooter's velocity rides on every round
+// bandit_racks pushes the bandit's attached-station mask into its battle
+// hulk (#33): a hulk has no flight model, so without this its rails read as
+// permanently loaded and empty stations would keep cooking off. Memoised on
+// the remaining counts — it is called every frame.
+let bandit_rack_memo={ key:-1, value:0 };
+function bandit_racks(){ const book=stores_catalog(); if(!book||!battle_rigged) return;
+	const lo=bandit.loadout; if(!lo) return;
+	const order=stores_rounds(lo), aorder=stores_amraams(lo);
+	const left=Math.min(Math.max(0,(bandit.msl??order.length)|0), order.length), aleft=Math.min(Math.max(0,(bandit.amraam??aorder.length)|0), aorder.length);   // the counts default to a FULL rack: the SP bandit's heater launches never reach the client (its brain reports only fox3), so an undefined count means carried, not fired
+	const key=left*64+aleft;
+	if(bandit_rack_memo.key!==key) bandit_rack_memo={ key, value:stores_mask(lo, Math.max(0,order.length-left), book, aorder.length-aleft) };
+	battle_racks(0,bandit_rack_memo.value); }
 function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c");   // battle_rigged: mission start races the async wasm load and battle_hulk silently no-ops until the core lands — the frame loop retries until the rig takes (an unrigged hulk made the bandit UNHITTABLE: every gun burst and missile blast on him no-opped for the whole mission)
 	bandit.harm={thrust:0,wing:0,killed:false,burning:false,fire:[0,0],leak:0}; battle_reset=true; bandit_dispensed=0; bandit_words=null;
 	for(const m of impact_marks.splice(0)) m.parent?.remove(m); }   // a fresh fight starts unscarred — marks otherwise survive the respawn on the persistent bandit group
@@ -4054,7 +4084,7 @@ function recording_sample(){
 				struck:bandit.struck||0, burning:!!bandit.harm.burning, thrust:bandit.harm.thrust||0,
 				wing:bandit.harm.wreck||0, ...(bandit.fate?{fate:bandit.fate}:{}),
 				flares:bandit_dispensed,   // cumulative dispenses (bottomless dispenser): its steps are the dispenses
-				missiles:Math.max(0,bandit.amraam|0), radar:bandit_emitter>=2?"stt":(bandit_emitter>=1?"rws":"sil"),
+				missiles:Math.max(0,(bandit.msl??magazine())|0)+Math.max(0,bandit.amraam|0), radar:bandit_emitter>=2?"stt":(bandit_emitter>=1?"rws":"sil"),   // heaters AND radar rounds, like the ownship's: a heater launch must read as a stores step
 				...(bandit_locked?{lock:1}:{}), ...(bandit_brain?{target:1}:{}),   // the brain bandit only ever fights the ownship
 				// The brain bandit flies the real model, so its own STATE tail
 				// carries the same telemetry the ownship records: TacView graphs
@@ -4762,6 +4792,7 @@ function fly_player(dt){
 			ownship.struck=(ownship.struck||0)+flown.own; bandit.struck=(bandit.struck||0)+flown.bandit; }   // cumulative rounds taken, for the recording (#238): the total survives 10 Hz sampling losslessly
 		const battle=battle_progress(ownship.throttle,battle_tick++,battle_reset,(secured[0]?1:0)|(secured[1]?2:0)); battle_reset=false;
 		own_burn[0]=battle[0]; own_burn[1]=battle[1]; own_burning=battle[2]>0; own_leak=battle[5];
+		if(has_enemy) bandit_racks();   // keep the hulk's rails in step before the next tick judges hits on them
 		if(has_enemy){ const h=bandit.harm; h.thrust=battle[11]; h.wing=battle[12]; h.killed=battle[9]>0; h.burning=battle[8]>0;
 			h.fire=[battle[6]||0,battle[7]||0]; h.leak=battle[14]||0;   // per-engine fire intensity (always exported, never read until #244) and the hulk leak (new wasm row)
 			h.wreck=battle[13]; if(h.killed&&!bandit.fate) bandit.fate="pilot";
@@ -4864,13 +4895,14 @@ function fly_bandit(dt){
 		bandit_acc+=Math.max(0,dt); let count=Math.floor(bandit_acc*60);
 		if(count>8){ count=8; bandit_acc=0; }   // a long stall: drop the debt rather than fast-forward (the flight core's rule)
 		else bandit_acc-=count/60;
-		let step=null, pulled=false, popped=false, loosed=false;
-		for(let s=0;s<count;s++){ const one=bandit_step(); if(!one) break; step=one; pulled=pulled||one.fire; popped=popped||one.flare; loosed=loosed||one.launch; }
+		let step=null, pulled=false, popped=false, loosed=false, heated=false;
+		for(let s=0;s<count;s++){ const one=bandit_step(); if(!one) break; step=one; pulled=pulled||one.fire; popped=popped||one.flare; loosed=loosed||one.launch; heated=heated||one.heater; }
 		if(step){
 			const w=step.state; step.fire=pulled; step.flare=popped;
 			bandit_radar=step.emitter; bandit_locked=step.locked;   // the brain's real radar state (#33): the RWR and the round's datalink read truth
 			bandit_words=w;   // the brain bandit's full model tail, for the recorder's telemetry channels (#33 debrief)
 			if(loosed) launch_bandit_round();   // an AMRAAM left the bandit's rail in ANY substep: the client owns the round from here, same core the player's shots fly
+			if(heated) launch_bandit_heater();   // and the same for a 9M: the brain fired it, the client flies it at us
 
 			bandit.pos.set(w[0],w[1],w[2]);
 			bandit.velx=w[3]; bandit.vely=w[4]; bandit.velz=w[5];

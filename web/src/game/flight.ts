@@ -112,7 +112,7 @@ interface Core {
   catalog(aircraft: string): string
   approach(x: number, y: number, z: number, dx: number, dz: number, slope: number, fuel: number): number
   clear(): string
-  hulk(index: number, aircraft: string): boolean
+  hulk(index: number, aircraft: string, stores?: number): boolean
   volley(input: Uint8Array, output: Uint8Array): number
   fly(input: Uint8Array, output: Uint8Array): number
   blast(input: Uint8Array, output: Uint8Array): boolean
@@ -127,6 +127,7 @@ interface Core {
   bandit_mirror?(state: Uint8Array): string
   bandit_menace?(shots: Uint8Array, count: number): string
   bandit_step?(state: Uint8Array): number
+  racks?(index: number, mask: number): boolean
   bandit_mode?(): string
 }
 
@@ -371,12 +372,12 @@ export function bandit_menace(shots: number[]): void {
 // client owns the round from there), the radar emitter state the RWR
 // reads, and whether the STT holds the player (datalink support for a
 // bandit-shot round).
-export function bandit_step(): { state: Float64Array; fire: boolean; flare: boolean; launch: boolean; emitter: number; locked: boolean } | null {
+export function bandit_step(): { state: Float64Array; fire: boolean; flare: boolean; launch: boolean; emitter: number; locked: boolean; heater: boolean } | null {
   if (!core?.bandit_step) return null
   const flags = core.bandit_step(bandit_bytes)
   if (typeof flags !== 'number' || flags < 0) return null
   return { state: bandit_out, fire: (flags & 1) !== 0, flare: (flags & 2) !== 0,
-    launch: (flags & 4) !== 0, emitter: (flags >> 3) & 3, locked: (flags & 32) !== 0 }
+    launch: (flags & 4) !== 0, emitter: (flags >> 3) & 3, locked: (flags & 32) !== 0, heater: (flags & 64) !== 0 }
 }
 
 // bandit_mode reports the brain's chosen manoeuvre (press, defense, spiral...)
@@ -385,8 +386,16 @@ export function bandit_mode(): string {
   return core?.bandit_mode ? core.bandit_mode() : ''
 }
 
-export function battle_hulk(index: number, aircraft: string): boolean {
-  return !!core?.hulk(index, aircraft)
+export function battle_hulk(index: number, aircraft: string, stores?: number): boolean {
+  return !!core?.hulk(index, aircraft, stores ?? 0)
+}
+
+// battle_racks sets a hulk's attached-station mask (bit i = the airframe's
+// store catalog index). A real aircraft's rails come from its flight model;
+// a hulk has none, so the client pushes the bandit's mask as rounds leave —
+// an empty rail must stop being a cook-off target.
+export function battle_racks(index: number, stores: number): boolean {
+  return !!(core?.racks && core.racks(index, stores))   // optional export: an older core simply has no rails to set
 }
 
 // battle_volley fires REAL rounds into the shared airborne set: identity 0 =
