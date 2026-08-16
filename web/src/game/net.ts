@@ -876,7 +876,7 @@ export interface MatchRow {
   world: string
   session: string
   recording: string // attachment id, '' when nothing is stored
-  recorded: number // stored bytes
+  size: number
   pinned: number // 1 = exempt from pruning
   mode: string
   team: string
