@@ -59,14 +59,25 @@ export const PROFILES: StickProfile[] = [
     // to idle, every push to military, every speedbrake cycle. The tempting
     // one is the worst: the aft throttle detent is where a real Hornet cuts
     // fuel, so engine shutdown reads as natural there, and it would secure
-    // the engines every time the throttle came back in a fight. The thumbwheel reaches the Gamepad API only in its
+    // the engines every time the throttle came back in a fight.
+    //
+    // Button 14 (displayed 15) is reported by the device and driven by no
+    // physical control, and nothing exists past the base diamond either —
+    // the Gamepad API hands back a fixed-length array, so empty slots are
+    // normal and are not a binding waiting to be found (hunted 2026-08-16).
+    //
+    // The thumbwheel reaches the Gamepad API only in its
     // DIGITAL mode, one button pulse per notch (12 forward, 13 back — set
     // via the stick's OLED; its default mouse-cursor mode is invisible
-    // here, arriving as DOM wheel events instead). Deliberately
-    // keyboard-only, the stick having run out of buttons: trim reset,
-    // look-at-target, the jettison family, the radar controls, lights,
-    // launch, the speed brake — and the weapon-select CYCLE, which the
-    // castle makes unnecessary here by selecting positionally.
+    // here, arriving as DOM wheel events instead). In that
+    // default mode PITCH TRIM IS UNAVAILABLE ON THE STICK, the castle having
+    // handed trim to the wheel when it became weapon select.
+    //
+    // Deliberately keyboard-only, the stick having run out of buttons: trim
+    // reset, look-at-target, TANK jettison (the EMERGENCY one has the base
+    // diamond's lower button), the radar controls, lights, launch, wing
+    // fold, the speed brake — and the weapon-select CYCLE, which the castle
+    // makes unnecessary here by selecting positionally.
     name: 'Turtle Beach VelocityOne Flightstick',
     match: (id) => /velocityone|10f5/i.test(id),
     // The BVR loop flies from the stick (settled 2026-08-11, implemented
