@@ -148,6 +148,12 @@ describe('key bindings', () => {
     expect(stick.buttons.fire).toBe('17')
     expect(stick.buttons['trim.down']).toBe('12')
     expect(stick.buttons['trim.up']).toBe('13')
+    // The base's front-centre diamond (measured 2026-08-16): deliberate
+    // actions only, because a base button cannot be reached in a turn.
+    expect(stick.buttons.menu).toBe('19')
+    expect(stick.buttons['trim.left']).toBe('20')
+    expect(stick.buttons['jettison.emergency']).toBe('21')
+    expect(stick.buttons['trim.right']).toBe('22')
     expect(stick.buttons.select).toBeUndefined() // the cycle key stays on the keyboard; the stick selects positionally
     expect(stick.buttons['zoom.in']).toBeUndefined()
     expect(stick.buttons['zoom.out']).toBeUndefined()

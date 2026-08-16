@@ -73,7 +73,17 @@ export const PROFILES: StickProfile[] = [
     axes: { pitch: '1', roll: '0', yaw: '2', throttle: '-5', speedbrake: '-6', look: '3', trim: '', weapon: '8', zoom: '' },   // look = the smooth-hat ministick (axes 3/4, spring-centred); weapon = the castle POV pair (8/9). zoom: the thumbwheel is a SCROLL WHEEL on the stick's mouse interface — DOM wheel events, not a gamepad axis
     buttons: { fire: '17', 'brake.wheel': '17', acquire: '15', 'radar.undesignate': '16', flares: '0',
       gear: '7', hook: '6', atc: '1', override: '3', 'flaps.extend': '4', 'flaps.retract': '5',
-      view: '2', 'view.reset': '18', 'trim.down': '12', 'trim.up': '13' },
+      view: '2', 'view.reset': '18', 'trim.down': '12', 'trim.up': '13',
+      // The base's front-centre diamond, measured on the hardware 2026-08-16
+      // (displayed 20-23 in the Joystick tab, stored 0-based as 19-22). Base
+      // buttons cannot be reached in a turn, so they carry the deliberate
+      // actions: MENU on the large Xbox-logo button at the top, where every
+      // other device puts exactly this; EMERGENCY JETTISON below it, a hold
+      // the striped button models and one the grip had no room for; and ROLL
+      // TRIM left and right, which restores what the castle re-role took away
+      // — pitch trim moved to the thumbwheel and roll trim lost its home
+      // entirely.
+      menu: '19', 'trim.left': '20', 'jettison.emergency': '21', 'trim.right': '22' },
   },
   {
     // The W3C standard gamepad layout. This one is NOT measured and does not need
