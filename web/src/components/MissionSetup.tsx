@@ -209,6 +209,7 @@ const BUTTON_ROWS: Row[] = [
   { id: 'look.target', label: <Trans>Look at target</Trans>, group: 'view' }, // hold to look at the boxed target
   { id: 'zoom.in', label: <Trans>Zoom in</Trans>, group: 'view' },
   { id: 'zoom.out', label: <Trans>Zoom out</Trans>, group: 'view' },
+  { id: 'menu', label: <Trans>Menu</Trans>, group: 'comms' },   // bindable but unassigned by any profile: it suits a BASE button (a stick that pauses the game under the trigger finger is a stick that pauses it by accident), and the Xbox-logo button is where every other device puts this
 ]
 
 const KEY_ROWS: Row[] = [
