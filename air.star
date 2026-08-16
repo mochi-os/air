@@ -20,7 +20,7 @@ def database_create():
 	# already per-user, so no account column is needed. `updated` versions each
 	# key as an LWW-register so writes converge under multi-host replication.
 	mochi.db.execute("create table if not exists settings (name text not null primary key, value text not null, updated integer not null)")
-	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, created integer not null, recording text not null default '', recorded integer not null default 0, pinned integer not null default 0)")
+	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, created integer not null, recording text not null default '', size integer not null default 0, pinned integer not null default 0)")
 	# A match is identified by where and when it ran; the unique index makes the
 	# dedup atomic (insert ... on conflict do nothing) instead of a racy check-
 	# then-insert.
@@ -29,6 +29,18 @@ def database_create():
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
+	if version == 10:
+		# `recorded` held the recording's SIZE IN BYTES, while the API field of
+		# the same name is a boolean and the word itself reads as a timestamp.
+		# That cost a real bug: recordings_prune ordered by it, which looks like
+		# "newest first" and means "biggest first", so the disk budget kept the
+		# largest recordings and deleted every short match. One name, one
+		# meaning - the column is `size`, and the ordering below is self-evident
+		# beside it. The branches after this one predate the rename and keep the
+		# old name deliberately: they run on databases that still carry it.
+		columns = [c["name"] for c in mochi.db.table("matches")]
+		if "size" not in columns:
+			mochi.db.execute("alter table matches rename column recorded to size")
 	if version == 8 or version == 9:
 		# Recordings live in plain file storage at "recordings/<match id>", with
 		# the match's own recording/recorded columns as metadata. Relocate any
@@ -126,14 +138,14 @@ def whole(a, name):
 	value = a.input(name, "0") or "0"
 	return int(value) if decimal(value) else 0
 
-# match_record() -> {"data": {"recorded": bool}}: store this player's own view of a finished multiplayer match.
+# match_record() -> {"data": {"stored": bool}}: store this player's own view of a finished multiplayer match.
 def match_record(a):
 	if not a.user:
-		return {"data": {"recorded": False}}
+		return {"data": {"stored": False}}
 	world = a.input("world", "")[:256]
 	session = a.input("session", "")[:64]
 	if not world or not session:
-		return {"data": {"recorded": False}}
+		return {"data": {"stored": False}}
 	# Atomic dedup on the (world, session, started) unique index (#191): the old
 	# check-then-insert let two concurrent retries both pass and duplicate the
 	# row. `on conflict do nothing` is the single, race-free write; whether our
@@ -143,8 +155,8 @@ def match_record(a):
 	mochi.db.execute("insert into matches (id, world, session, mode, team, started, ended, reason, players, kills, deaths, cheated, created) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) on conflict(world, session, started) do nothing",
 		id, world, session, a.input("mode", "")[:32], a.input("team", "")[:16], started, whole(a, "ended"), a.input("reason", "")[:32],
 		a.input("players", "")[:1024], whole(a, "kills"), whole(a, "deaths"), whole(a, "cheated"), mochi.time.now())
-	recorded = mochi.db.exists("select 1 from matches where world = ? and session = ? and started = ? and id = ?", world, session, started, id)
-	return {"data": {"recorded": recorded}}
+	stored = mochi.db.exists("select 1 from matches where world = ? and session = ? and started = ? and id = ?", world, session, started, id)
+	return {"data": {"stored": stored}}
 
 # match_list() -> {"data": {"matches": [...]}}: this player's recorded multiplayer
 # matches, most recent first (capped). The reader the history view was missing.
@@ -153,7 +165,7 @@ def match_record(a):
 def match_list(a):
 	if not a.user:
 		return {"data": {"matches": []}}
-	matches = mochi.db.rows("select world, session, mode, team, started, ended, reason, players, kills, deaths, cheated, recording, recorded, pinned from matches order by started desc limit 50")
+	matches = mochi.db.rows("select world, session, mode, team, started, ended, reason, players, kills, deaths, cheated, recording, size, pinned from matches order by started desc limit 50")
 	# Totals are aggregated over EVERY row, not the fifty listed: the table is a
 	# recent-flights view, the summary is a career. Cheated flights count too —
 	# this is the player's own logbook, not a leaderboard, and excluding them
@@ -203,38 +215,34 @@ def recording_save(a):
 		return
 	# A match has exactly one recording, so it needs no attachment machinery:
 	# the bytes go straight to file storage at "recordings/<match id>", and the
-	# match row's own recording/recorded columns are the metadata. recording
+	# match row's own recording/size columns are the metadata. recording
 	# holds the match id as the "present" marker.
 	size = a.upload("recording", "recordings/" + row["id"])
 	if not size:
 		return {"data": {"saved": False}}
-	mochi.db.execute("update matches set recording = ?, recorded = ? where id = ?", row["id"], size, row["id"])
+	mochi.db.execute("update matches set recording = ?, size = ? where id = ?", row["id"], size, row["id"])
 	recordings_prune(row["id"])
 	return {"data": {"saved": True}}
 
 # recordings_prune drops the oldest unpinned recordings once either budget is
 # exceeded. Called after each save, so the store is self-limiting.
 #
-# Ordered by `created`, the match's own timestamp - NOT by `recorded`, which is
-# the recording's size in bytes and is what the budget below accumulates.
-# Sorting by it kept the largest recordings rather than the newest, so the
-# budget was spent on whatever happened to be biggest and every short match was
-# deleted first. `created` is also the server's own clock, where started/ended
-# are submitted by the client, so no client can order the queue in its favour.
+# Ordered by `created`, the server's own clock - started/ended are submitted by
+# the client, so no client can order the queue in its favour.
 def recordings_prune(keep):
-	rows = mochi.db.rows("select id, recording, recorded, pinned from matches where recording != '' order by created desc")
+	rows = mochi.db.rows("select id, recording, size, pinned from matches where recording != '' order by created desc")
 	total = 0
 	kept = 0
 	for row in rows:
 		if row["pinned"]:
 			continue   # pinned recordings count against nothing and are never dropped
 		kept = kept + 1
-		total = total + row["recorded"]
+		total = total + row["size"]
 		if row["id"] == keep:
 			continue
 		if kept > RECORDINGS_KEPT or total > RECORDINGS_BYTES:
 			mochi.file.delete("recordings/" + row["id"])
-			mochi.db.execute("update matches set recording = '', recorded = 0 where id = ?", row["id"])
+			mochi.db.execute("update matches set recording = '', size = 0 where id = ?", row["id"])
 
 # recording_pin() -> {"data": {"pinned": bool}}: mark a recording to survive
 # pruning, or release it.
