@@ -26,6 +26,7 @@ import { diagnose } from '../lib/graphics'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
 import { Radar, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES } from './radar'
 import { Rwr } from './rwr'
+import { words as menace_words } from './menace'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint } from './audio'
@@ -4888,7 +4889,7 @@ function fly_bandit(dt){
 	}
 	if(bandit_brain){   // the wasm brain: mirror the player in, step the second core, read the bandit back (#125 phase 2)
 		bandit_mirror(flight_get(), input.guns, crash_t<=0);
-		const shots=[]; for(const m of missiles){ if(m.active&&(m.target===bandit||m.enemy)&&shots.length<56) shots.push(m.px,m.py,m.pz,m.vx,m.vy,m.vz,m.enemy?1:0,m.kind==="120c"?(m.phase??0):-1); }
+		const shots=menace_words(missiles as any, bandit);   // the wire lives in menace.ts, where it can be tested: the phase word carries the heater's fate (-2 beaten) as well as the radar round's guidance phase
 		bandit_menace(shots);   // every round in the air, eight words each: the brain defends against ours and paces its own by phase (#33)
 		// The brain advances fixed 1/60 s frames: run it through an accumulator like
 		// the flight core, not once per render frame — per-frame stepping scaled the
