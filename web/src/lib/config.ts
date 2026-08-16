@@ -50,8 +50,16 @@ export const PROFILES: StickProfile[] = [
   {
     // Measured on the hardware 2026-08-11, re-roled for the BVR loop
     // 2026-08-15 and confirmed on the stick the same day. Buttons 8-11 are
-    // LATCHING base toggles and carry nothing: a latch cannot drive a
-    // momentary action. The thumbwheel reaches the Gamepad API only in its
+    // the END-OF-TRAVEL detents on the throttle and speedbrake levers, and
+    // they carry nothing DELIBERATELY (identified 2026-08-16; an earlier
+    // note here called them latching base toggles, which was wrong and sent
+    // two attempts at binding them down the wrong road). They duplicate
+    // what the axes already say — the game reads both levers continuously,
+    // stops included — and an action bound to one would fire on every pull
+    // to idle, every push to military, every speedbrake cycle. The tempting
+    // one is the worst: the aft throttle detent is where a real Hornet cuts
+    // fuel, so engine shutdown reads as natural there, and it would secure
+    // the engines every time the throttle came back in a fight. The thumbwheel reaches the Gamepad API only in its
     // DIGITAL mode, one button pulse per notch (12 forward, 13 back — set
     // via the stick's OLED; its default mouse-cursor mode is invisible
     // here, arriving as DOM wheel events instead). Deliberately
