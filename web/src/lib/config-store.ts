@@ -6,7 +6,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createAppClient, useAuthStore, useShellStorage } from '@mochi/web'
 import { DEFAULT_CONFIG, type MissionConfig } from './config'
-import { loadOutcome, PendingConfig } from './config-persist'
+import { loadOutcome, PendingConfig, stripRetired } from './config-persist'
 import { migrate, normalize } from '../game/stores'
 
 const client = createAppClient({ appName: 'air' })
@@ -189,9 +189,12 @@ export function useMissionConfig(): [
         // migrate to the matching preset (#17). Any saved stores map is
         // normalized so a stale or hand-edited shape cannot reach the engine.
         const legacy = saved as MissionConfig & { missiles?: boolean }
+        // Read `missiles` BEFORE stripping — it still decides which preset a
+        // pre-#17 save migrates to; stripRetired copies, so it survives here.
         const stores = normalize(legacy.stores ?? migrate(legacy.missiles !== false))
-        delete legacy.missiles
-        setStored({ ...DEFAULT_CONFIG, ...legacy, stores } as MissionConfig)
+        // Every retired key goes, not just this one. A setting deleted from the
+        // menu leaves its saved VALUE behind, and `sens` proved what that costs.
+        setStored({ ...DEFAULT_CONFIG, ...stripRetired(legacy), stores } as MissionConfig)
       } else {
         void saveConfig(pending.current()) // first run on this account — seed the server
       }

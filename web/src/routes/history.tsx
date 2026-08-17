@@ -11,7 +11,10 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { BackButton } from '@mochi/web/components/layout/back-button'
 import { MatchHistory } from '../components/MatchHistory'
-import { recording } from '../game/engine'
+// From the replay seam, NOT from the engine: importing engine.ts here pulled
+// the whole simulator and three.js (1,094 kB) into this page's chunk to read one
+// in-memory buffer.
+import { recording } from '../game/replay'
 
 function History() {
   const { t } = useLingui()

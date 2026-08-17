@@ -6,3 +6,24 @@
 @source "../../../../../lib/web/src/**/*.{ts,tsx}";
 
 @custom-variant dark (&:is(.dark *));
+
+/* Air's own accent and instrument face, so the menu and the cockpit read as one
+   product. Until now air imported the shared theme and defined nothing of its
+   own, so the menu was stock Mochi while flight is a green phosphor cockpit
+   (game/game.css).
+
+   The HUD's green (#5fffa8) is a LIGHT-EMITTING colour on near black; used raw
+   on a white panel it is illegible, so the light theme takes a darkened,
+   desaturated form of the same hue and the dark theme takes the HUD's own.
+
+   Deliberately NOT an override of --primary: that would restyle every shadcn
+   component in every dialog across the app and risk contrast failures in both
+   themes. One accent, applied by hand where an instrument is being drawn. */
+:root {
+  --air-accent: oklch(0.55 0.13 165);
+  --air-mono: 'SF Mono', 'JetBrains Mono', 'Consolas', ui-monospace, monospace;
+}
+
+.dark {
+  --air-accent: oklch(0.86 0.16 165);
+}

@@ -102,40 +102,44 @@ export default defineConfig(
           ...i18nConfig.rules['lingui/no-unlocalized-strings'][1],
           ignore: [
             ...i18nConfig.rules['lingui/no-unlocalized-strings'][1].ignore,
-            // Physical keyboard key labels shown in the control legends (the
-            // GameCanvas help panel, MissionSetup ControlRows) and the "Shift+"
-            // chord prefix — printed key names, not translatable UI prose.
             '^(W/S|A/D|Q/E|Space|Enter|Esc|Shift)$',
             '^Shift\\+',
-            // Internal keybinding sentinels compared in the rebind logic (the
-            // display maps them through pretty()/<Trans>), and the app name.
             '^(None|Vertical)$',
             '^Air$',
-            // Aviation instrument tokens shown verbatim in every language (the
-            // same policy as the HUD's KCAS/THR/NM symbology).
             '^ATC$',
-            // Attribution link labels in the credits: platform / data-source
-            // proper nouns and a license identifier — brand names kept verbatim
-            // (the glossary guard requires it), not translatable prose.
             '^(Sketchfab|Copernicus|OpenStreetMap|NOAA NCCOS|CC BY 4\\.0)$',
+            '^(?:\\d+× )?AIM-\\d+[A-Z]?(?: \\+ AIM-\\d+[A-Z]?)?$',
+            '^Fox \\d$',
+            '^\\s*·\\s*[A-Z0-9]+$',
+            '^(?:Turtle Beach VelocityOne Flightstick|Standard gamepad|Generic joystick)$',
+          ],
+          ignoreFunctions: [
+            ...i18nConfig.rules['lingui/no-unlocalized-strings'][1].ignoreFunctions,
+            '*.getObjectByName',
+            '*.getExtension',
           ],
         },
       ],
     },
   },
   {
-    // The game/ layer is the Three.js + WASM flight engine and the wire
-    // protocol, not React UI. Lingui (React i18n) does not apply to text drawn
-    // to the WebGL canvas or to protocol tokens/error codes; the WASM and Three
-    // interop is inherently untyped; and engine.ts is intentionally @ts-nocheck.
-    // Console keeps warn/error for genuine engine diagnostics but still bans
-    // stray console.log. Ordinary hygiene (unused vars, const, empty blocks)
-    // stays enforced here. Must come after the i18n block to win for these files.
+    files: ['**/*.{test,spec}.{ts,tsx}'],
+    rules: {
+      'lingui/no-unlocalized-strings': 'off',
+    },
+  },
+  {
     files: ['src/game/**/*.{ts,tsx}'],
     rules: {
       'lingui/no-unlocalized-strings': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
+      'no-console': ['error', { allow: ['warn', 'error'] }],
+    },
+  },
+  {
+    files: ['src/components/GameCanvas.tsx'],
+    rules: {
       'no-console': ['error', { allow: ['warn', 'error'] }],
     },
   }

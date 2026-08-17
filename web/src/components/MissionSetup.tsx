@@ -3,7 +3,7 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-import { useEffect, useId, useRef, useState, type ChangeEvent, type ReactNode } from 'react' // #57 parked: useCallback returns with HeadPanel
+import { lazy, Suspense, useEffect, useId, useRef, useState, type ChangeEvent, type ReactNode } from 'react' // #57 parked: useCallback returns with HeadPanel
 import { Trans, useLingui } from '@lingui/react/macro'
 import { msg } from '@lingui/core/macro'
 import { Check, ChevronRight, History, LogIn, Pencil, Play, RotateCcw, Send, Settings, TriangleAlert, Users, X } from 'lucide-react'
@@ -50,7 +50,6 @@ import { Link } from '@tanstack/react-router'
 import { KEY_DEFAULTS, pretty } from '../game/keys'
 import { PRESETS, asymmetry, matches, normalize, outcome, outcomes, weight, resolve, type Catalog } from '../game/stores'
 import { flight_catalog, flight_load } from '../game/flight'
-import { LoadoutPreview } from './LoadoutPreview'
 import {
   default_server,
   normalize_server,
@@ -61,6 +60,14 @@ import {
   type Join,
   type WorldChatLine,
 } from '../game/net'
+
+// Lazy, like GameCanvas on the route above: LoadoutPreview imports three.js
+// directly, so a static import here put the whole renderer in the MENU's chunk
+// — for a panel that only ever renders inside the Create mission dialog. The two
+// warm together, because whichever loads first brings three with it.
+const LoadoutPreview = lazy(() =>
+  import('./LoadoutPreview').then((m) => ({ default: m.LoadoutPreview }))
+)
 
 // The fields each tab owns, for the per-tab Reset (the joystick tab also clears
 // the per-device maps so built-in defaults apply again).
@@ -155,9 +162,15 @@ function AxisMeter({ live }: { live: number }) {
   return (
     <div className='bg-muted relative h-2 min-w-10 flex-1 overflow-hidden rounded'>
       <div className='bg-border absolute top-0 bottom-0 left-1/2 w-px' />
+      {/* The accent, not --primary: these bars ARE instruments, and reading the
+          same green the HUD uses is the point. */}
       <div
-        className='bg-primary absolute top-0 bottom-0 rounded'
-        style={{ left: `${50 + Math.min(0, live) * 50}%`, width: `${Math.abs(live) * 50}%` }}
+        className='absolute top-0 bottom-0 rounded'
+        style={{
+          left: `${50 + Math.min(0, live) * 50}%`,
+          width: `${Math.abs(live) * 50}%`,
+          background: 'var(--air-accent)',
+        }}
       />
     </div>
   )
@@ -441,8 +454,11 @@ function JoystickPanel({
                 (LEVERS.has(id) ? (
                   <div className='bg-muted relative h-2 min-w-10 flex-1 overflow-hidden rounded'>
                     <div
-                      className='bg-primary absolute top-0 bottom-0 left-0 rounded'
-                      style={{ width: `${(((id === 'throttle') !== reversed ? 1 - live : live + 1) / 2) * 100}%` }}
+                      className='absolute top-0 bottom-0 left-0 rounded'
+                      style={{
+                        width: `${(((id === 'throttle') !== reversed ? 1 - live : live + 1) / 2) * 100}%`,
+                        background: 'var(--air-accent)',
+                      }}
                     />
                   </div>
                 ) : PAIRS.has(id) ? (
@@ -630,6 +646,7 @@ function KeysPanel({
   config: MissionConfig
   set: (key: string, value: MissionConfig[string]) => void
 }) {
+  const { t } = useLingui()
   const overrides = (config.keys ?? {}) as Record<string, string>
   const [arming, setArming] = useState<string | null>(null)
   const current = (id: string) => overrides[id] ?? KEY_DEFAULTS[id]
@@ -677,8 +694,11 @@ function KeysPanel({
               <Button type='button' size='sm' variant='outline' onClick={() => setArming(arming === id ? null : id)}>
                 {arming === id ? <Trans>Cancel</Trans> : <Trans>Set</Trans>}
               </Button>
+              {/* 'None' is the stored SENTINEL; the tooltip below is its LABEL,
+                  so it translates. The lint exemption covers the sentinel, not
+                  the label, which is how this stayed English in 106 languages. */}
               {current(id) !== 'None' && (
-                <Button type='button' size='sm' variant='outline' title='None' onClick={() => set('keys', { ...overrides, [id]: 'None' })}>
+                <Button type='button' size='sm' variant='outline' title={t`None`} onClick={() => set('keys', { ...overrides, [id]: 'None' })}>
                   ✕
                 </Button>
               )}
@@ -807,7 +827,13 @@ function SliderRow({
     <div className='space-y-1.5'>
       <div className='flex items-center justify-between'>
         <Label className='font-normal'>{label}</Label>
-        <span className='text-muted-foreground text-sm tabular-nums'>{display}</span>
+        {/* Instrument readouts are set on the instrument face, not the UI face. */}
+        <span
+          className='text-muted-foreground text-sm tabular-nums'
+          style={{ fontFamily: 'var(--air-mono)' }}
+        >
+          {display}
+        </span>
       </div>
       <Slider
         value={value}
@@ -1035,7 +1061,6 @@ function Armament({
     return () => {
       gone = true
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [book])
   const loadout = normalize(stores)
   const preset = matches(loadout)
@@ -1102,7 +1127,12 @@ function Armament({
   const CATAPULT = 6000
   return (
     <div className='space-y-3'>
-      <LoadoutPreview stores={loadout} />
+      {/* The fallback holds the preview's exact aspect box, so the dialog does
+          not jump when the renderer arrives (and stands in permanently on a
+          machine with no WebGL 2, where LoadoutPreview draws nothing). */}
+      <Suspense fallback={<div className='aspect-[29/10] w-full' />}>
+        <LoadoutPreview stores={loadout} />
+      </Suspense>
       <div className='flex flex-wrap gap-2'>
         {presets.map((entry) => (
           <Button key={entry.name} type='button' variant='outline' size='sm' onClick={() => onPreset(structuredClone(PRESETS[entry.name]), FUELS[entry.name])}>
@@ -1171,7 +1201,10 @@ function Armament({
       {book && (
         <div className='text-sm'>
           {/* jsx-text-ok: LB and ft·lb are the cockpit's own unit annunciations, verbatim like the IFEI */}
-          <Trans>Gross weight</Trans> {gross} lb
+          <Trans>Gross weight</Trans>{' '}
+          <span className='tabular-nums' style={{ fontFamily: 'var(--air-mono)' }}>
+            {gross} lb
+          </span>
           {/* The asymmetry rides in brackets on the gross-weight line: it is a
               property of the same loadout, and its own line read as a second
               headline for what is really a qualifier. The over-limit warnings
@@ -1182,7 +1215,11 @@ function Armament({
               {/* Lower case as a mid-sentence qualifier, and a msgid of its own rather than a
                   CSS transform of the capitalised one: German capitalises its nouns, so
                   Asymmetrie must stay capitalised where English asymmetry does not. */}
-              <Trans>asymmetry</Trans> {moment} ft·lb{')'}
+              <Trans>asymmetry</Trans>{' '}
+              <span className='tabular-nums' style={{ fontFamily: 'var(--air-mono)' }}>
+                {moment} ft·lb
+              </span>
+              {')'}
             </>
           )}
           {gross > LAUNCH && (
@@ -2248,8 +2285,26 @@ export function MissionSetup({
   return (
     <div className='bg-background fixed inset-0 z-50 flex items-center justify-center overflow-auto p-6'>
       <div className='w-full max-w-md'>
-        {/* jsx-text-ok: the game's name, verbatim in every locale */}
-        <h1 className='mb-8 text-4xl font-semibold tracking-tight'>Air</h1>
+        {/* The app's own mark beside the wordmark — the front page carried a
+            bare <h1> and nothing else of the game in it. Inline SVG rather than
+            an <img> so it takes the accent directly and costs no request; the
+            same path public/images/icon.svg uses for the launcher. */}
+        <div className='mb-8 flex items-center gap-3'>
+          <svg
+            viewBox='0 0 24 24'
+            aria-hidden='true'
+            className='size-9 shrink-0'
+            fill='none'
+            stroke='var(--air-accent)'
+            strokeWidth={2}
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          >
+            <path d='M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z' />
+          </svg>
+          {/* jsx-text-ok: the game's name, verbatim in every locale */}
+          <h1 className='text-4xl font-semibold tracking-tight'>Air</h1>
+        </div>
         {alert && dismissed !== alert && (
           <div className='mb-4 flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-600'>
             <TriangleAlert className='mt-0.5 size-4 shrink-0' />

@@ -378,9 +378,21 @@ export function Multiplayer({
               </RadioGroup>
             </div>
           </div>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center gap-4'>
-              <div className='flex items-center gap-2'>
+          {/* A GRID of named groups, not one flex row. Twelve controls on a
+              single unwrapped row overflowed every narrow viewport, and this is
+              the surface a host drives while other people wait in the lobby.
+              Every header reuses an msgid the app already ships. */}
+          <div className='grid gap-4 sm:grid-cols-2'>
+            <div className='space-y-2'>
+              <div className='text-muted-foreground text-xs font-medium uppercase'>
+                <Trans>Weapons</Trans>
+              </div>
+              <RadioGroup value={weapons} onValueChange={(v) => setWeapons(v as 'guns' | 'fox2' | 'open')}>
+                <Option group={group + 'weapons'} value='guns' label={<Trans>Guns only</Trans>} />
+                <Option group={group + 'weapons'} value='fox2' label='Fox 2' />
+                <Option group={group + 'weapons'} value='open' label={<Trans>Unlimited</Trans>} />
+              </RadioGroup>
+              <div className='flex items-center gap-2 pt-1'>
                 <Label htmlFor='rule-fuel' className='font-normal'>
                   <Trans>Fuel</Trans>
                 </Label>
@@ -392,17 +404,18 @@ export function Multiplayer({
                   step={100}
                   value={fuel}
                   onChange={(e) => setFuel(Math.max(1500, Math.min(10800, Number(e.target.value) || 6000)))}
-                  className='h-8 w-20'
+                  className='h-8 w-24'
                 />
                 <span className='text-muted-foreground text-xs'>
                   <Trans>lb</Trans>
                 </span>
               </div>
-              <RadioGroup value={weapons} onValueChange={(v) => setWeapons(v as 'guns' | 'fox2' | 'open')}>
-                <Option group={group + 'weapons'} value='guns' label={<Trans>Guns only</Trans>} />
-                <Option group={group + 'weapons'} value='fox2' label='Fox 2' />
-                <Option group={group + 'weapons'} value='open' label={<Trans>Unlimited</Trans>} />
-              </RadioGroup>
+            </div>
+
+            <div className='space-y-2'>
+              <div className='text-muted-foreground text-xs font-medium uppercase'>
+                <Trans>Start</Trans>
+              </div>
               {mode === 'joust' ? (
                 <RadioGroup value={start} onValueChange={(v) => setStart(v as 'merge' | 'bvr')}>
                   <Option group={group + 'start'} value='merge' label={<Trans>Merge — fight on at the pass</Trans>} />
@@ -416,6 +429,12 @@ export function Multiplayer({
                   </Label>
                 </div>
               )}
+            </div>
+
+            <div className='space-y-2'>
+              <div className='text-muted-foreground text-xs font-medium uppercase'>
+                <Trans>Cheats</Trans>
+              </div>
               <div className='flex items-center gap-2'>
                 <Switch
                   id='rule-invulnerable'
@@ -446,49 +465,66 @@ export function Multiplayer({
                   <Trans>Unlimited fuel</Trans>
                 </Label>
               </div>
+            </div>
+
+            <div className='space-y-2'>
+              <div className='text-muted-foreground text-xs font-medium uppercase'>
+                <Trans>Bots</Trans>
+              </div>
               {(mode === 'teams' ? (['red', 'blue'] as const) : (['all'] as const)).map((side) => {
                 const counts = side === 'blue' ? blueBots : bots
                 const update = side === 'blue' ? setBlueBots : setBots
                 return (
-                  <div key={side} className='flex flex-wrap items-center gap-2'>
-                    <Label className='font-normal'>
-                      {side === 'red' ? <Trans>Red bots</Trans> : side === 'blue' ? <Trans>Blue bots</Trans> : <Trans>Bots</Trans>}
-                    </Label>
-                    {(
-                      [
-                        ['drone', t`Drone`],
-                        ['novice', t`Novice`],
-                        ['pilot', t`Pilot`],
-                        ['ace', t`Ace`],
-                        ['superhuman', t`Superhuman`],
-                      ] as const
-                    ).map(([level, label]) => (
-                      <div key={level} className='flex items-center gap-1'>
-                        <Label htmlFor={'bots-' + side + '-' + level} className='text-muted-foreground text-xs font-normal'>
-                          {label}
-                        </Label>
-                        <Input
-                          id={'bots-' + side + '-' + level}
-                          type='number'
-                          min={0}
-                          max={99}
-                          value={counts[level]}
-                          onChange={(e) => {
-                            const value = Math.max(0, Math.min(99, Number(e.target.value) || 0))
-                            update((b) => {
-                              const next = { ...b, [level]: value }
-                              const total = Object.values(next).reduce((sum, n) => sum + n, 0)
-                              return total <= 99 ? next : b // the match holds 99 bots at most
-                            })
-                          }}
-                          className='h-8 w-14'
-                        />
-                      </div>
-                    ))}
+                  <div key={side} className='space-y-1'>
+                    {mode === 'teams' && (
+                      <Label className='text-muted-foreground text-xs font-normal'>
+                        {side === 'red' ? <Trans>Red bots</Trans> : <Trans>Blue bots</Trans>}
+                      </Label>
+                    )}
+                    <div className='grid grid-cols-5 gap-1'>
+                      {(
+                        [
+                          ['drone', t`Drone`],
+                          ['novice', t`Novice`],
+                          ['pilot', t`Pilot`],
+                          ['ace', t`Ace`],
+                          ['superhuman', t`Superhuman`],
+                        ] as const
+                      ).map(([level, label]) => (
+                        <div key={level} className='min-w-0'>
+                          <Label
+                            htmlFor={'bots-' + side + '-' + level}
+                            className='text-muted-foreground block truncate text-xs font-normal'
+                            title={label}
+                          >
+                            {label}
+                          </Label>
+                          <Input
+                            id={'bots-' + side + '-' + level}
+                            type='number'
+                            min={0}
+                            max={99}
+                            value={counts[level]}
+                            onChange={(e) => {
+                              const value = Math.max(0, Math.min(99, Number(e.target.value) || 0))
+                              update((b) => {
+                                const next = { ...b, [level]: value }
+                                const total = Object.values(next).reduce((sum, n) => sum + n, 0)
+                                return total <= 99 ? next : b // the match holds 99 bots at most
+                              })
+                            }}
+                            className='h-8 w-full'
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )
               })}
             </div>
+          </div>
+
+          <div className='flex justify-end border-t pt-3'>
             <Button type='button' size='sm' disabled={!status || busy} onClick={() => void create()}>
               <Plus className='size-4' />
               <Trans>Create and fly</Trans>

@@ -266,7 +266,6 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
       renderer.dispose()
       renderer.domElement.remove()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

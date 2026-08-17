@@ -3,15 +3,26 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { shellSetTitle, useShellImmersive } from '@mochi/web'
-import { GameCanvas } from '../components/GameCanvas'
 import { MissionSetup } from '../components/MissionSetup'
 import { useMissionConfig } from '../lib/config-store'
+// Type-only, so the statement is erased at build. Keep it that way: a VALUE
+// import from the engine here would undo the lazy split below.
 import { type GameHandle } from '../game/engine'
 import { type Join as NetJoin } from '../game/net'
 import { preload } from '../game/preload'
+
+// The engine and three.js are 1,094 kB raw / 338 kB gzipped — measured, and the
+// one chunk that dwarfs everything else air ships. Imported statically it landed
+// in the MENU's chunk, so the front page downloaded and parsed the whole
+// simulator before the player had clicked anything. Lazy here, and warmed in the
+// same effect that starts the asset downloads, so pressing Fly still costs
+// nothing.
+const GameCanvas = lazy(() =>
+  import('../components/GameCanvas').then((m) => ({ default: m.GameCanvas }))
+)
 
 // The Settings tabs are COMPONENT state, not a route. Mirroring them in the URL
 // made sense when tabs were the menu itself; now Settings is a dialog, so a tab
@@ -29,6 +40,10 @@ function useTabTitle() {
     // still in the menu: by the time they start a mission the loading screen
     // usually costs nothing, and the engine joins these same in-flight fetches.
     preload()
+    // The same idea for the engine's own chunk, now that it is lazy: fetched
+    // AFTER the menu has painted rather than before, so it costs the first
+    // render nothing and is warm by the time Fly is pressed.
+    void import('../components/GameCanvas')
   }, [])
 }
 
@@ -78,43 +93,60 @@ function Index() {
   return (
     <>
       {started && (
-        <GameCanvas
-          key={gameKey}
-          config={config}
-          join={join}
-          onReady={(h) => {
-            gameRef.current = h
-          }}
-          onExit={() => {
-            // Leaving the mission clears any pending settings request: the
-            // nonce survives into MissionSetup's fresh mount, and a stale one
-            // reopened the settings dialog over the front page.
-            setSettingsNonce(0)
-            leaveFlight()
-          }}
-          flying={inFlight}
-          onConfig={(partial) => {
-            // Engine-side setting changes (per-view zoom, the DDI view's
-            // remembered display) merge into the same persisted config the
-            // menu owns — one store, one save path.
-            setConfig({ ...config, ...partial })
-          }}
-          onAgain={() => {
-            // Fly again after the mission ended at a crash (#240): a fresh
-            // mount, same setup — the same path Restart mission takes.
-            setGameKey((k) => k + 1)
-            enterFlight()
-          }}
-          onSettings={() => {
-            // Settings over a paused mission: reuse the one menu surface rather
-            // than a second copy of every panel. Resume returns to flight. The
-            // nonce asks MissionSetup to OPEN its settings dialog — landing on
-            // the front page alone left the button apparently dead.
-            setTab('general')
-            setSettingsNonce((n) => n + 1)
-            leaveFlight()
-          }}
-        />
+        // fallback={null} on purpose: the engine draws its own LOADING screen
+        // the moment it mounts, and a spinner in front of that would be the only
+        // thing that ever flashed. The chunk is warmed at menu open anyway.
+        <Suspense fallback={null}>
+          <GameCanvas
+            key={gameKey}
+            config={config}
+            join={join}
+            onReady={(h) => {
+              gameRef.current = h
+            }}
+            onExit={() => {
+              // Leaving the mission clears any pending settings request: the
+              // nonce survives into MissionSetup's fresh mount, and a stale one
+              // reopened the settings dialog over the front page.
+              setSettingsNonce(0)
+              // The mission is OVER, not suspended. exit_match has already written
+              // the flight to History and, in multiplayer, closed the transport and
+              // latched session_over — so leaving `started` true made the front
+              // page offer Resume mission for a mission that had ended. Resuming
+              // set running=true again on a torn-down session (flying on with no
+              // server and no way back), and in single player it reused
+              // mission_began, so the next exit's record collided with the first
+              // on the (world, session, started) index and the second sortie never
+              // reached the logbook. Unmounting also runs GameCanvas's cleanup,
+              // which stops the engine. The crash path is untouched: that ends
+              // through onOver, which keeps its own Fly again surface.
+              setStarted(false)
+              leaveFlight()
+            }}
+            flying={inFlight}
+            onConfig={(partial) => {
+              // Engine-side setting changes (per-view zoom, the DDI view's
+              // remembered display) merge into the same persisted config the
+              // menu owns — one store, one save path.
+              setConfig({ ...config, ...partial })
+            }}
+            onAgain={() => {
+              // Fly again after the mission ended at a crash (#240): a fresh
+              // mount, same setup — the same path Restart mission takes.
+              setGameKey((k) => k + 1)
+              enterFlight()
+            }}
+            onSettings={() => {
+              // Settings over a paused mission: reuse the one menu surface rather
+              // than a second copy of every panel. Resume returns to flight. The
+              // nonce asks MissionSetup to OPEN its settings dialog — landing on
+              // the front page alone left the button apparently dead.
+              setTab('general')
+              setSettingsNonce((n) => n + 1)
+              leaveFlight()
+            }}
+          />
+        </Suspense>
       )}
       {menuOpen && (
         <MissionSetup
