@@ -311,3 +311,21 @@ it('records flares, throttle, the sensor picture, and the match rules', () => {
   expect(mine[2]).toContain('RwrMissile=1')
   expect(mine[3]).not.toContain('Radar=')
 })
+
+// The burner goes out under the name the format defines. The bandit used to
+// write a Mochi-only Reheat, which no other tool reading an ACMI understands —
+// and which silently returned nothing to anything looking on the standard
+// channel, scoring a jet in full afterburner as stone cold.
+it('records the burner as the standard Afterburner property, never Reheat', () => {
+  const bandit = (burner: number): Sample['objects'][number] => ({
+    id: 2, x: 0, y: 1000, z: 0, roll: 0, pitch: 0, yaw: 0,
+    name: 'FA-18C', label: 'Bandit', colour: 'Red', kind: 'Air+FixedWing',
+    data: { burner, spool: 1 },
+  })
+  const text = acmi([{ time: 0, objects: [bandit(0.99)] }, { time: 0.1, objects: [bandit(0)] }], new Date(0), 't')
+  const lines = text.split('\n').filter((l) => l.startsWith('2,T='))
+  expect(lines[0]).toContain('Afterburner=0.99')
+  expect(lines[1]).toContain('Afterburner=0')     // written every sample, like the ownship's
+  expect(text).not.toContain('Reheat=')
+  expect(lines[0]).toContain('Spool=1')           // a deliberate Mochi extension, and not a duplicate of the burner
+})
