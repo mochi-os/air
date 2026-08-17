@@ -27,6 +27,7 @@ import { diagnose } from '../lib/graphics'
 import { Radar, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES } from './radar'
 import { Rwr } from './rwr'
 import { words as menace_words } from './menace'
+import { bandit_coast } from './flight'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint } from './audio'
@@ -4880,7 +4881,30 @@ function fly_bandit(dt){
 	// path counts it: flying an opponent into the ground is a kill.
 	if(bandit_wrecked()){ own_kills++; bandit_destroy(); return; }
 	bandit_wounds();   // the wound trails draw on EVERY branch below: a bandit still flying under its brain with a dead engine streams smoke, exactly like a stricken one
-	if(bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5)) return fly_bandit_stricken(dt);
+	if(bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5)){
+		// Dead, and the brain is flying it: coast on the REAL model rather than
+		// the scripted descent below — stick free, levers held, a standing roll.
+		// The script held one speed and one angle to the water (measured at a
+		// constant 233 kt down 26.6 degrees, wings level, for 79 s).
+		if(bandit_brain){
+			bandit.lean ??= 0.10*(2*(((cfg.seed??7)*2654435761)%1000)/1000-1);   // per-mission, deterministic: replays must reproduce the fall
+			let steps=Math.min(4,Math.floor((fly_bandit.debt=(fly_bandit.debt||0)+dt)*60)); fly_bandit.debt-=steps/60;
+			let w=null; for(let s=0;s<steps;s++){ const one=bandit_coast(bandit.lean); if(!one) break; w=one; }
+			if(w){ bandit_words=w;
+				bandit.pos.set(w[0],w[1],w[2]);
+				bandit.velx=w[3]; bandit.vely=w[4]; bandit.velz=w[5];
+				bandit.speed=Math.hypot(w[3],w[4],w[5]);
+				bandit.reheat=Math.max(w[STATE.engine+1],w[STATE.engine+3]);
+				_q.set(w[7],w[8],w[9],w[6]);
+				bandit.fwd.set(1,0,0).applyQuaternion(_q);
+				(bandit.up??=new THREE.Vector3()).set(0,1,0).applyQuaternion(_q);
+				(bandit.right??=new THREE.Vector3()).set(0,0,1).applyQuaternion(_q);
+				bandit.group.quaternion.copy(_q);
+				bandit.group.position.copy(bandit.pos); }
+			return;
+		}
+		return fly_bandit_stricken(dt);
+	}
 	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&!fly_bandit.tried){   // lazy: the core loads async and start_mission races it — arm the brain on the first frame the core is ready
 		fly_bandit.tried=true;
 		bandit_brain=bandit_init({ level: cfg.bandit||"ace", seed: 7, wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night", missiles: missiles_on(),
