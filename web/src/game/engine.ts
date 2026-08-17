@@ -29,6 +29,7 @@ import { Rwr } from './rwr'
 import { words as menace_words } from './menace'
 import { bandit_coast } from './flight'
 import { surface as impact_surface } from './impact'
+import { impact as pipper_impact } from './pipper'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint } from './audio'
@@ -2526,7 +2527,7 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
 	m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30);   // off the rail at aircraft speed; the Mk 36 does the rest
-	m.life=20; m.kind="9m"; m.target=target; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.prate=undefined; m.fate=undefined; m.fated=0; m.shot=(m.shot||0)+1; m.launcher=st;
+	m.life=20; m.kind="9m"; m.target=target; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.prate=undefined; m.fate=undefined; m.fated=0; m.shot=(m.shot||0)+1; m.launcher=st;
 	if(target){ const dx=wrap_axis(target.pos.x-st.pos.x), dy=target.pos.y-st.pos.y, dz=wrap_axis(target.pos.z-st.pos.z); const d=Math.hypot(dx,dy,dz)||1;
 		const tail=target.fwd?Math.max(0,(dx*target.fwd.x+dy*target.fwd.y+dz*target.fwd.z)/d):0;
 		const floor=0.15+0.35*THREE.MathUtils.clamp(target.reheat??0,0,1);
@@ -2693,7 +2694,9 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.v
 			const tail=THREE.MathUtils.clamp(-(dx*bandit.fwd.x+dy*bandit.fwd.y+dz*bandit.fwd.z)/dd,0,1);
 			let decoy=(0.35+0.40*(1-tail))*0.55;
 			if((bandit.reheat??0)>0.05) decoy*=0.5;   // the burner is the brightest thing in view (mirrors the server — the client never had this factor)
-			if(Math.random()<decoy){ m.blind=1.5; m.lx=bandit.pos.x; m.ly=bandit.pos.y-30; m.lz=bandit.pos.z; tracking=false;
+			decoy*=Math.pow(0.5,m.rejected||0);   // diminishing returns, not independent coin flips: a jet dispensing continuously used to stack ten full rolls in front of one round (measured 2026-08-17: twelve 9Ms, seven seduced, none arriving) — a seeker that has resolved this target through four flares has demonstrated the discrimination the M's counter-countermeasures exist for
+			if(Math.random()>=decoy){ m.rejected=(m.rejected||0)+1; }
+			else { m.blind=1.5; m.lx=bandit.pos.x; m.ly=bandit.pos.y-30; m.lz=bandit.pos.z; tracking=false;
 				const sx=m.lx-m.px, sy=m.ly-m.py, sz=m.lz-m.pz, sd=Math.hypot(sx,sy,sz)||1;   // the seeker is ON the flare now: re-reference the track, or the aim-point swap reads as an LOS-rate spike and breaks the lock at the seduction instant (mirrors the server)
 				m.sx=sx/sd; m.sy=sy/sd; m.sz=sz/sd; } }
 	} else if(!(t&&sim_time-(t.flared_at??-9)<0.8)) m.window=false;   // whoever the target is: their own dispense owns the window
@@ -2725,7 +2728,17 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.v
 	let ax=0, ay=0, az=0, guided=false;
 	if(tracking){ ax=t.pos.x; ay=t.pos.y; az=t.pos.z; guided=true; }
 	else if(m.blind>0){ m.blind-=dt; m.ly-=45*dt; ax=m.lx; ay=m.ly; az=m.lz; guided=true;
-		if(m.blind<=0){ if(DEV_MODE&&!m.loose){ m.why="flare"; } m.loose=true; } }   // a swallowed flare is terminal: the seeker stares at the burnt-out decoy and never re-acquires (9M-realistic) — ballistic from here, fuse still live; mirrors the server
+		if(m.blind<=0){
+			// The flare has burnt out. ONE chance to find the aircraft again, and
+			// only if it is still inside the gimbal cone: improved counter-
+			// countermeasures are the M's defining feature over the L, and one
+			// flare being permanently terminal under-modelled the weapon.
+			m.loose=true;
+			if(t&&t.pos){ const rx=t.pos.x-m.px, ry=t.pos.y-m.py, rz=t.pos.z-m.pz, rd=Math.hypot(rx,ry,rz)||1;
+				if((rx*m.vx+ry*m.vy+rz*m.vz)/(rd*spd)>0.766 && Math.random()<0.55){
+					m.loose=false; m.blind=0; m.window=false; m.rejected=(m.rejected||0)+1;
+					m.sx=rx/rd; m.sy=ry/rd; m.sz=rz/rd; } }
+			if(DEV_MODE&&m.loose){ m.why="flare"; } } }   // ballistic from here, fuse still live; mirrors the server
 	if(guided && m.flew>0.6){
 		const dx=ax-m.px, dy=ay-m.py, dz=az-m.pz; const dist=Math.hypot(dx,dy,dz)||1e-6;
 		const ux=dx/dist, uy=dy/dist, uz=dz/dist;
@@ -5797,34 +5810,18 @@ function draw_hud(){
 			hctx.fillText(String(Math.round(off)),bore[0]+ux*84,bore[1]+uy*84+4); } }
 	if(master==="gun"){
 		if(boxed&&td){   // director: a TRUE lead-computing pipper now that rounds fly real time of flight — where my rounds will be, pulled back by where HE will be, so pipper-on-target IS the deflection solution (mirrors battle.Burst exactly); range analog around the ring
-			const span=Math.min(rng,2000); const muz=body_offset(ownship,6.0,0.35,0.0);
-			// Time of flight from the ROUND'S closing speed along the sight line —
-			// NOT aircraft closure: a hard pull swings own velocity off the LOS and
-			// collapsed the old round_average+vc denominator to its 200 m/s floor,
-			// inflating t to ~10 s; the -targetVel*t pullback then threw the pipper
-			// kilometres (the top-of-screen jump under g, 2026-08-10). The round
-			// flies at muzzle+ownship speed toward him regardless of own g, so its
-			// LOS closing speed stays near round speed through any manoeuvre. The
-			// honest own-g effect remains: alpha and gravity DROOP the pipper, and
-			// the pilot pulls lead to bring it up — it must never rise above the
-			// gun cross from own manoeuvre alone.
-			const avg=round_average(span,ownship.pos.y);
-			_look_d.set(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)).normalize();   // sight line (padlock scratch, free at draw time)
-			// Time of flight is how long the ROUND takes to fly the span — muzzle
-			// speed under drag, plus the pilot's own velocity the round inherits,
-			// projected on the line of sight. NO target term: the target's motion
-			// decides WHERE you aim (the -targetVel*t pullback below), never how
-			// fast the round travels. A first pass wrongly subtracted target
-			// velocity here too, so a fast-OPENING bandit (-338 kt) collapsed the
-			// denominator to its floor, inflated t to ~6 s, and threw the pipper
-			// to the top of the screen in a slow high-alpha fight (2026-08-10).
-			const vlos=(ownship.fwd.x*avg+(ownship.velx??0))*_look_d.x
-				+(ownship.fwd.y*avg+(ownship.vely??0))*_look_d.y
-				+(ownship.fwd.z*avg+(ownship.velz??0))*_look_d.z;
-			const t=span/Math.max(vlos,250);
-			const air=round_length(ownship.pos.y)*Math.log1p(muzzle*t/round_length(ownship.pos.y));   // barrel-component distance actually covered in t under drag
-			const impact=muz.clone().addScaledVector(ownship.fwd,air).addScaledVector(ownship.vel_dir,ownship.speed*t); impact.y-=0.5*9.8*t*t;
-			impact.x-=(boxed.velx??boxed.fwd.x*boxed.speed)*t; impact.y-=(boxed.vely??boxed.fwd.y*boxed.speed)*t; impact.z-=(boxed.velz??boxed.fwd.z*boxed.speed)*t;
+			const muz=body_offset(ownship,6.0,0.35,0.0);
+			// The solution lives in pipper.ts, where it is tested against a real
+			// round march. It used to clamp the span at 2 km (so a distant target
+			// got a 2 km solution), time the flight from an approximated closing
+			// speed with a 250 m/s floor, and decay only the barrel component
+			// while carrying the inherited velocity undragged. It is NOT gated on
+			// the gun's reach: the ring and the shoot cue say whether the shot is
+			// worth taking, this says where to point.
+			const impact=pipper_impact(muz,ownship.fwd,{x:ownship.velx??ownship.fwd.x*ownship.speed,y:ownship.vely??ownship.fwd.y*ownship.speed,z:ownship.velz??ownship.fwd.z*ownship.speed},
+				{x:boxed.pos.x,y:boxed.pos.y,z:boxed.pos.z},
+				{x:boxed.velx??boxed.fwd.x*boxed.speed,y:boxed.vely??boxed.fwd.y*boxed.speed,z:boxed.velz??boxed.fwd.z*boxed.speed},
+				ownship.pos.y).point;
 			const pip=proj_point(impact);
 			if(DEV_MODE&&pip){ const bvy=(boxed.vely??boxed.fwd.y*boxed.speed);
 				dev_pip={py:Math.round(pip[1]),by:Math.round(bore[1]),t:+t.toFixed(2),rng:Math.round(rng),bvy:Math.round(bvy),
