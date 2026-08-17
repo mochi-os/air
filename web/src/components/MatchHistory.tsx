@@ -95,7 +95,29 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
     return labels[reason] ?? reason.charAt(0).toUpperCase() + reason.slice(1)
   }
 
-  if (matches === null) return null // brief load
+  // A skeleton shaped like the table that is coming, not a spinner and not
+  // nothing: returning null left the page as a Back button and a heading over
+  // empty space, which reads as "you have no flights" — the exact thing the
+  // real empty state below says properly.
+  if (matches === null)
+    return (
+      <div className='space-y-4' aria-busy='true'>
+        <div className='flex flex-wrap gap-x-4 gap-y-1'>
+          {[64, 72, 52, 60, 44].map((w, i) => (
+            <div key={i} className='bg-muted h-4 animate-pulse rounded' style={{ width: w }} />
+          ))}
+        </div>
+        <div className='space-y-2'>
+          {Array.from({ length: 6 }, (_, i) => (
+            <div
+              key={i}
+              className='bg-muted h-8 animate-pulse rounded'
+              style={{ animationDelay: `${i * 60}ms` }}
+            />
+          ))}
+        </div>
+      </div>
+    )
 
   if (matches.length === 0) {
     return (

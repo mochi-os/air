@@ -10,6 +10,7 @@
 import { bench_register } from './bench'   // FIRST: the #148 sampler must survive an engine-init failure
 import { atc_step } from './atc'
 import { KEY_DEFAULTS } from './keys'
+import { publish as publish_recording } from './replay'
 import * as THREE from 'three'
 import {
   connect as net_dial,
@@ -17,11 +18,10 @@ import {
   recording_store,
   type Join as NetJoin,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop } from './flight'
+import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog } from './flight'
 import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject } from './stores'
 import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
-import { flight_catalog } from './flight'
 import { diagnose } from '../lib/graphics'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
 import { Radar, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES } from './radar'
@@ -57,10 +57,12 @@ export interface GameHandle {
 
 // The buffered flight, reachable WITHOUT a game handle: the History page is its
 // own route and cannot see the index route's handle. startGame publishes its
-// accessor here rather than the recorder being lifted out of the closure it
-// shares with the whole engine.
-let live_recording: () => { text: string; session: string; kind: string } | null = () => null
-export function recording() { return live_recording() }
+// accessor rather than the recorder being lifted out of the closure it shares
+// with the whole engine — and it publishes into replay.ts, not into a local
+// here, so the History route can read the buffer without importing this file
+// and pulling three.js into its chunk. Re-exported so any caller that already
+// reaches for engine.recording still resolves.
+export { recording } from './replay'
 
 export function startGame({
   stage,
@@ -98,7 +100,7 @@ export function startGame({
 // ============================================================================ config
 const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, exterior_detail:3, lod:true,   // dyn_res defaults ON (#148): slow machines self-tune render_scale down to 0.45 instead of stuttering
 	tracers:true, effects_quality:2, stores:stores_migrate(true), flares:true, shadows:false, clouds:"none", afterburner:true,   // effects_quality 0..3 scales expensive translucent work; stores (#17): the per-station loadout
-	view:"hud", invert:false, framerate:false, sens:1.0,
+	view:"hud", invert:false, framerate:false,   // no sens: the Sensitivity slider was removed because it was a flight-control gain, and the last two reads of it went with it (see sanitize_cfg)
 	task:"joust", start:"carrier", tod:"day", help:false };
 // The ship: everything that describes the carrier itself, per model —
 // shuttle (nose-gear) points, arrestor wires, the landing centreline, the
@@ -128,6 +130,7 @@ const CARRIER_MODELS={
 const SHIP=CARRIER_MODELS.nimitz;   // the active carrier (a picker arrives with the second ship)
 function sanitize_cfg(){   // runs after every config merge (the server-backed store can hold stale eras too)
 	delete cfg.cats; delete cfg.cat_dy;   // pre-#100 configs carried ship data; CARRIER_MODELS owns it now
+	delete cfg.sens;   // the retired Sensitivity slider. Removing the SETTING did not remove the saved VALUE: the config is server-backed, so an account that moved it before the removal still carries it, and the two surviving reads (the multiplayer control sample, the nosewheel pedal) went on scaling by it with no UI left to correct it
 	if(cfg.clouds!=="none"&&!["cumulus","high_stratus","mid_stratus","low_stratus"].includes(cfg.clouds)) cfg.clouds="cumulus";   // a saved cloud type that no longer exists falls back to the default. EVERY new preset must be listed here: an omission silently rewrites the mission to cumulus, which would have turned every Case II approach into a clear-sky one
 	cfg.stores=stores_normalize(cfg.stores&&Object.keys(cfg.stores).length?cfg.stores:stores_migrate(cfg.missiles!==false));   // #17: legacy configs carry the retired missiles boolean — map it to its preset; any stores map is normalized so a stale shape cannot reach the loadout paths
 	delete cfg.missiles; }
@@ -1135,8 +1138,7 @@ function build_lamps(g){
 	g.userData.lamps=lamps; g.userData.lampsGroup=brow; }
 function lamps_update(out){
 	const l=ownship.group.userData.lamps; if(!l) return;
-	const ext=out[STATE.extension]||0, harmL=out[STATE.engine_harm]||0, harmR=out[STATE.engine_harm+1]||0;
-	const fuel=(out[STATE.fuel]||0)*2.2046, leak=Math.max(out[STATE.leak]||0, own_leak);
+	const ext=out[STATE.extension]||0;   // the gear lamps' one input; the engine-harm, fuel and leak reads that sat here went unused once the FIRE lamps below stopped deriving from thrust loss (#40)
 	// The FIRE warnings read FIRE, not thrust loss (#40): three cannon hits on a
 	// turbine reach full harm with nothing alight, and the red light is the most
 	// action-forcing cue in the cockpit — it must not cry wolf.
@@ -1836,7 +1838,7 @@ function ddi_ew(x){   // EW (#11, symbols #28): the ALR-67 format. Bearing-only 
 function gross_weight(){ const gz=ownship.gauges||{}; const book=stores_catalog();   // empty jet + loadout hardware + internal + external, lb — the honest live gross the CHKLST judges (#8, #51)
 	const hardware=book?stores_weight(ownship.loadout||loadout(),book).hardware:0;   // pylons, rails, rounds, dry tanks — the flown loadout's hardware (#17)
 	return Math.round((((book?book.empty:10700)+hardware)*2.2046+(gz.fuelRaw||0)+(gz.externalRaw||0))/10)*10; }
-function ddi_chklst(x,display){ const gz=ownship.gauges||{}; const o=last_out||[];   // CHKLST (#8): the real page is an ABBREVIATED memory-jogger, here filtered to systems the game models — and live: each line checks itself off from the sim state, which the real static page cannot do. Cockpit text stays English by the annunciator policy.
+function ddi_chklst(x,display){ const o=last_out||[];   // CHKLST (#8): the real page is an ABBREVIATED memory-jogger, here filtered to systems the game models — and live: each line checks itself off from the sim state, which the real static page cannot do. Cockpit text stays English by the annunciator policy.
 	const colour=display==="center";
 	x.fillText("CHKLST",256,36);
 	const wt=gross_weight();
@@ -4264,7 +4266,7 @@ if(DEV_MODE) (globalThis as any).dev_close=(m,az,el,heading)=>{ const d=+m||200;
 	bandit.fwd.copy(ownship.fwd).multiplyScalar(Math.cos(h)).addScaledVector(ownship.right,Math.sin(h)).normalize(); bandit.speed=ownship.speed;
 	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
 if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds){ if(!has_enemy||!bandit.harm||!bandit.group.visible) return null;   // dev (#27 wound trails): rake the FLYING bandit from astern with REAL rounds — identity 0 is the ownship's gun against the bandit hulk, the same path a gun kill flies, so the wound is the battle model's own and survives the per-frame refresh (setting bandit.harm directly is clobbered by it). The wound trails must then draw while the brain still flies the jet.
-	const n=Math.max(1,+volleys||6), shots=Math.max(1,+(arguments[1])||40), back=250, up=bandit.up||world_up;
+	const n=Math.max(1,+volleys||6), shots=Math.max(1,+rounds||40), back=250, up=bandit.up||world_up;
 	const pose={ position:{x:bandit.pos.x-bandit.fwd.x*back, y:bandit.pos.y-bandit.fwd.y*back, z:bandit.pos.z-bandit.fwd.z*back},
 		forward:{x:bandit.fwd.x,y:bandit.fwd.y,z:bandit.fwd.z}, up:{x:up.x,y:up.y,z:up.z},
 		velocity:{x:bandit.velx,y:bandit.vely,z:bandit.velz} };
@@ -4764,7 +4766,7 @@ function fly_player(dt){
 		flight_active=true; flight_push();
 	}
 	if(test_active) test_drive();   // scripted test approach: prescribes attitude + velocity into the core each frame
-	const controls={ pitch:THREE.MathUtils.clamp(input.pitch,-1,1), roll:THREE.MathUtils.clamp(input.roll,-1,1), yaw:THREE.MathUtils.clamp(input.yaw,-1,1),   // RAW stick: cfg.sens used to scale these (the removed Sensitivity slider genuinely was a flight-control gain — a saved sens!=1 silently rescaled the whole stick)
+	const controls={ pitch:THREE.MathUtils.clamp(input.pitch,-1,1), roll:THREE.MathUtils.clamp(input.roll,-1,1), yaw:THREE.MathUtils.clamp(input.yaw,-1,1),   // RAW stick. cfg.sens used to scale these: the removed Sensitivity slider genuinely was a flight-control gain, and a saved sens!=1 silently rescaled the whole stick. The multiplayer sample and the nosewheel pedal kept scaling by it until 2026-08-17; sanitize_cfg now deletes the key outright
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake || (sim_time<test_idle && test_brake && !ownship.wire),   // scenario rollout: the scripted pilot rides the brakes only on a runway (test_brake); the carrier's wire and the bolter's power stop the jet instead (a hands-off free roll ran 1.4 km off the runway end into the lagoon) — but NEVER on a wire: locked mains under the 3 g runout slammed the nose and rolled the trap over (the live-traced 37-degree topple)
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,
@@ -5075,7 +5077,7 @@ function update_anim(dt){ for(const st of [ownship,bandit]){
 	if(st.fold===undefined) st.fold=st.foldTarget??0; st.fold+=THREE.MathUtils.clamp((st.foldTarget??0)-st.fold,-0.125*dt,0.125*dt);   // ~8 s fold cycle
 	if(st===ownship) st.barTarget=(st.launching || ((st.squish??0)>0.5 && ownship.speed<15 && on_cat_spot()>=0))?1:0;   // launch bar drops automatically when the catapult captures the jet (the deck crew the game doesn't have), stays down through the stroke, retracts as the jet flies off or taxis clear — the real bar's retraction IS automatic
 	if(st.bar===undefined) st.bar=st.barTarget??0; st.bar+=THREE.MathUtils.clamp((st.barTarget??0)-st.bar,-0.8*dt,0.8*dt);   // ~1.3 s swing
-	if(st===ownship){ const pedal=THREE.MathUtils.clamp((input.yaw??0)*cfg.sens,-1,1), sp=st.speed||0;   // nosewheel steering: mirror the core's authority blend (LOW 22.5° at taxi, HI 75° only near standstill), then slew the drawn wheel at an actuator-like rate — the keyboard pedal is bang-bang and an unslewed wheel snaps
+	if(st===ownship){ const pedal=THREE.MathUtils.clamp(input.yaw??0,-1,1), sp=st.speed||0;   // RAW pedal, like the flight controls: this was the last surviving cfg.sens read on the ownship   // nosewheel steering: mirror the core's authority blend (LOW 22.5° at taxi, HI 75° only near standstill), then slew the drawn wheel at an actuator-like rate — the keyboard pedal is bang-bang and an unslewed wheel snaps
 		const auth=(22.5+(75-22.5)*THREE.MathUtils.clamp(1-sp/2.5,0,1))*D2R;
 		const target=pedal*auth*THREE.MathUtils.clamp(1-sp/60,0.1,1)*(st.squish??0);
 		st.steer=(st.steer??0)+THREE.MathUtils.clamp(target-(st.steer??0),-0.4*dt,0.4*dt); }   // ~23°/s — hydraulic, not snappy
@@ -6420,7 +6422,12 @@ function net_frame(dt){
 	{ const moved=net&&racks_seen!==net.racksRevision; if(moved) racks_seen=net.racksRevision;
 		for(const [slot,st] of remotes.entries()){ if(!st.loadout||moved) remote_racks(st,slot); } }   // adopt a late roster grant (#17); re-apply on any stores change — a mid-flight jettison (#18)
 	const c=last_controls;
-	const sample={ pitch:c?c.pitch:input.pitch*cfg.sens, roll:c?c.roll:input.roll*cfg.sens, yaw:c?c.yaw:input.yaw*cfg.sens,
+	// RAW stick, matching the single-player path exactly (see the controls block
+	// in fly_player). These three carried *cfg.sens after the Sensitivity slider
+	// was removed, so an account that had ever moved that slider kept flying at
+	// reduced authority in MULTIPLAYER ONLY — full stick alone, scaled stick
+	// against other people, with no setting left anywhere to put it back.
+	const sample={ pitch:c?c.pitch:input.pitch, roll:c?c.roll:input.roll, yaw:c?c.yaw:input.yaw,
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake, trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
@@ -6594,7 +6601,7 @@ function start_mission(){
 	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0; RWR.reset(); /* #57 parked: head_begin(); */   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
 	mission_done=false; mission_zero=sim_time;   // a fresh mission may follow an ended one without a page reload (#240)
 	on_config=onConfig||null; on_over=onOver||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
-	recorder.clear(); record_started=new Date(); record_session="local-"+mission_began; live_recording=recording_file;   // a fresh recording per mission (#212)
+	recorder.clear(); record_started=new Date(); record_session="local-"+mission_began; publish_recording(recording_file);   // a fresh recording per mission (#212)
 	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,
 	// chase camera at the given azimuth/elevation. Judging water needs an external low view.
 	const shotp=DEV_MODE?new URLSearchParams(window.location.search).get("shot"):null;
@@ -6696,9 +6703,9 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
     try { renderer.dispose() } catch { /* ignore */ }
   }
   // Re-enter a game paused by Esc (running was set false; state is preserved).
-  // Re-applies any settings changed in the menu that take effect live — sensitivity,
-  // invert, render scale, shadows, time of day. Mission, start, clouds and ocean
-  // detail only take effect on a Restart (a fresh start_mission).
+  // Re-applies any settings changed in the menu that take effect live — invert,
+  // render scale, shadows, time of day. Mission, start, clouds and ocean detail
+  // only take effect on a Restart (a fresh start_mission).
   function resume(updated) {
     if (updated) {
       Object.assign(cfg, updated)
