@@ -28,6 +28,7 @@ import { Radar, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_
 import { Rwr } from './rwr'
 import { words as menace_words } from './menace'
 import { bandit_coast } from './flight'
+import { surface as impact_surface } from './impact'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint } from './audio'
@@ -2659,7 +2660,7 @@ function step_amraam(m,dt){
 			explosion_at(m.px,m.py,m.pz); }
 		else if(!MULTIPLAYER&&has_enemy&&t===bandit){ const verdict=battle_blast(0,{x:m.px,y:m.py,z:m.pz},battle_aim(bandit),0,battle_tick,WARHEAD.radar);   // the 22 kg charge reaches ~1.33x the 9M's radii
 			if(DEV_MODE){ m.mask=verdict.mask; m.killed=verdict.kill; }
-			explosion_at(m.px,m.py,m.pz); if(verdict.kill){ own_kills++; bandit_destroy(); } }
+			explosion_at(m.px,m.py,m.pz); if(verdict.kill){ own_kills++; bandit_destroy("verdict"); } }
 		else explosion_at(m.px,m.py,m.pz);
 		post_round(m,"fuse"); return; }
 	if(!state.alive||m.py<=0){ m.active=false; m.mesh.visible=false; round_drop(m.slot); post_round(m,m.py<=0?"ocean":"battery"); return; }
@@ -2715,10 +2716,10 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.v
 				explosion_at(bx,by,bz); }
 			else if(!MULTIPLAYER&&has_enemy&&t===bandit){
 				if(fox3&&near<18){ if(DEV_MODE){ m.mask=-1; m.killed=true; }   // #27 phase 1 PLACEHOLDER: the simple PN endgame grazes a hard-evading target at 12-21 m, and the deliberately-simple round scores that as the 22 kg warhead's kill rather than growing proper guidance now — phase 2's core flight model and warhead classes replace this whole criterion
-					explosion_at(bx,by,bz); own_kills++; bandit_destroy(); }
+					explosion_at(bx,by,bz); own_kills++; bandit_destroy("verdict"); }
 				else { const verdict=battle_blast(0,{x:bx,y:by,z:bz},battle_aim(bandit),0,battle_tick);
 					if(DEV_MODE){ m.mask=verdict.mask; m.killed=verdict.kill; }
-					explosion_at(bx,by,bz); if(verdict.kill){ own_kills++; bandit_destroy(); } } }
+					explosion_at(bx,by,bz); if(verdict.kill){ own_kills++; bandit_destroy("verdict"); } } }
 			post("fuse");
 			continue; } }
 	let ax=0, ay=0, az=0, guided=false;
@@ -2855,7 +2856,9 @@ function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c");   // battle_rigged:
 // the menu (and launches another if they want one). The endless-rematch loop
 // this replaces made a victory feel like a lap counter. The match row and the
 // recording are written at exit as always; the kill is already on the counters.
-function bandit_destroy(){ bandit.fate=bandit.fate||"fire"; bandit.fated=sim_time; explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
+// why names the cause, as crash_ownship(why) does for the ownship. The
+// fallback stays only for a caller that genuinely cannot say.
+function bandit_destroy(why){ bandit.fate=bandit.fate||why||"fire"; bandit.fated=sim_time; explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
 	has_enemy=false; bandit.group.visible=false;
 	notice(translate("KILL")); }
 let aircraft_lights=null;
@@ -4412,7 +4415,7 @@ function check_collisions(){   // ownship vs sea / buildings / structures / carr
 	// blow up and it flew on. bandit_destroy is the real thing (explosion,
 	// duel over); no kill is credited, because flying into someone is
 	// not shooting them down.
-	if(has_enemy && wrap_distance(p,bandit.pos)<14){ bandit_destroy(); return crash_ownship("midair"); }
+	if(has_enemy && wrap_distance(p,bandit.pos)<14){ bandit_destroy("midair"); return crash_ownship("midair"); }
 }
 function lso_grade(){   // LSO pass grade from the in-close deviations and the touchdown: OK / FAIR / NO-GRADE / CUT
 	const p=ownship.pass||{gs:0,az:0,n:0}, t=ownship.touch||{sink:0,bank:0,fa:0};
@@ -4802,7 +4805,7 @@ function fly_player(dt){
 		if(has_enemy){ const h=bandit.harm; h.thrust=battle[11]; h.wing=battle[12]; h.killed=battle[9]>0; h.burning=battle[8]>0;
 			h.fire=[battle[6]||0,battle[7]||0]; h.leak=battle[14]||0;   // per-engine fire intensity (always exported, never read until #244) and the hulk leak (new wasm row)
 			h.wreck=battle[13]; if(h.killed&&!bandit.fate) bandit.fate="pilot";
-			if(battle[10]&BATTLE.explode){ own_kills++; bandit_destroy(); } }
+			if(battle[10]&BATTLE.explode){ own_kills++; bandit_destroy("fire"); } }   // the tank-vapour detonation: the one place "fire" is the honest word
 		if(has_enemy&&bandit.group.visible){ const rdx=bandit.pos.x-ownship.pos.x, rdy=bandit.pos.y-ownship.pos.y, rdz=bandit.pos.z-ownship.pos.z;
 			const range=Math.hypot(rdx,rdy,rdz)||1;
 			const closure=-((bandit.velx-ownship.velx)*rdx+(bandit.vely-ownship.vely)*rdy+(bandit.velz-ownship.velz)*rdz)/range;
@@ -4859,16 +4862,14 @@ function fly_player(dt){
 // line. The client owned obstacle collision for the ownship alone, so a bot
 // could fly through an island, a hangar or the carrier island untouched while
 // the same geometry killed the player instantly.
+// bandit_wrecked names WHAT it hit, or "" while it still flies. It used to
+// return a bare boolean and the caller defaulted every cause to "fire", so a
+// jet whose wing had been shot off and which then flew into the sea was
+// recorded as destroyed by a fire it never had. The geometry lives in
+// impact.ts, where it can be tested.
 function bandit_wrecked(){
-	const p=bandit.pos;
-	const floor=ground_height(p.x,p.z);
-	if(p.y<=(floor>-1e8?floor+2:6)) return true;   // terrain, deck, runway, apron — or open sea, which reports no surface
-	for(const b of obstacles.buildings){ if(p.y<b.topY+2 && p.x>b.minx&&p.x<b.maxx&&p.z>b.minz&&p.z<b.maxz && pip(p.x,p.z,b.pts)) return true; }
-	for(const m of obstacles.posts){ if(p.y<m.y1 && Math.hypot(p.x-m.x,p.z-m.z)<m.r+4) return true; }
-	if(carrier_model && p.y<80 && Math.abs(p.x-CARRIER.x)<160 && Math.abs(p.z-CARRIER.z)<160){
-		const h=deck_y_at(carrier_model,p.x,p.z,-1e9);   // the flat deck is a landing surface (the height check above owns it); only the taller superstructure is an obstacle
-		if(h>CARRIER.deckY+4 && p.y<h) return true; }
-	return false;
+	return impact_surface(bandit.pos, ground_height(bandit.pos.x,bandit.pos.z), obstacles.buildings, obstacles.posts,
+		carrier_model?{ x:CARRIER.x, z:CARRIER.z, deck:CARRIER.deckY, height:(x,z)=>deck_y_at(carrier_model,x,z,-1e9) }:undefined);
 }
 function fly_bandit(dt){
 	// The sea finishes a bandit whichever brain is flying it. This check lived
@@ -4879,7 +4880,7 @@ function fly_bandit(dt){
 	// the target box pointing dutifully straight down while the player hunted
 	// for it at twenty feet. Counted as the player's kill, as the stricken
 	// path counts it: flying an opponent into the ground is a kill.
-	if(bandit_wrecked()){ own_kills++; bandit_destroy(); return; }
+	{ const hit=bandit_wrecked(); if(hit){ own_kills++; bandit_destroy(hit); return; } }
 	bandit_wounds();   // the wound trails draw on EVERY branch below: a bandit still flying under its brain with a dead engine streams smoke, exactly like a stricken one
 	if(bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5)){
 		// Dead, and the brain is flying it: coast on the REAL model rather than
