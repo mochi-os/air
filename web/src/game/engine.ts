@@ -4092,7 +4092,7 @@ function recording_sample(){
 				// both, and a debrief judges its plays from its inputs.
 				...(bandit_words?{ aoa:(bandit_words[STATE.alpha]||0)/D2R, g:bandit_words[STATE.nz]||0, tas:bandit.speed||0,
 					ias:bandit_words[STATE.cas]||0, mach:bandit_words[STATE.mach]||0, fuel:bandit_words[STATE.fuel]||0,
-					spool:Math.max(bandit_words[STATE.engine]||0,bandit_words[STATE.engine+2]||0), reheat:bandit.reheat||0,
+					spool:Math.max(bandit_words[STATE.engine]||0,bandit_words[STATE.engine+2]||0), burner:bandit.reheat||0,   // Afterburner, the name TacView plots — the bandit used to write a Mochi-only Reheat, invisible to every other tool and a silent empty read for anything looking on the standard channel
 					stabilator:(bandit_words[STATE.stabilator]||0)/D2R }:{}) },
 			cfg.task==="joust"?(cfg.bandit||"ace"):undefined);   // the tier flown against, on the bandit's own object (shipped): the debrief's context for judging every play it chose. Keyed on the CONFIG, not on bandit_brain — the brain arms lazily on the first core-ready frame, and the first recorded sample must not read as an untiered bandit   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;

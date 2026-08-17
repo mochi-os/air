@@ -107,8 +107,7 @@ export interface Flight {
   target?: number // recorded id of the boxed target the HUD was flying against, if any
   // The bandit's own control state, so its plays can be judged from its inputs
   // rather than inferred from position at 9 Hz.
-  spool?: number // engine spool 0..1
-  reheat?: number // achieved reheat 0..1
+  spool?: number // engine spool 0..1 (a Mochi extension; TacView will not plot it)
 }
 
 // position converts the flat world's metres to the degrees ACMI carries.
@@ -228,7 +227,6 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
         if (d.throttle !== undefined) line += `,Throttle=${round(d.throttle, 2)}`
         if (d.burner !== undefined) line += `,Afterburner=${round(d.burner, 2)}`
         if (d.spool !== undefined) line += `,Spool=${round(d.spool, 2)}`
-        if (d.reheat !== undefined) line += `,Reheat=${round(d.reheat, 2)}`
         // The sensor picture is delta-suppressed as one group: it holds for
         // seconds and steps at exactly the moments a debrief cares about.
         {
