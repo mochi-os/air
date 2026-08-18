@@ -127,6 +127,7 @@ interface Core {
   bandit_mirror?(state: Uint8Array): string
   bandit_menace?(shots: Uint8Array, count: number): string
   bandit_step?(state: Uint8Array): number
+  bandit_coast?(lean: number, state: Uint8Array): number
   racks?(index: number, mask: number): boolean
   bandit_mode?(): string
 }
@@ -378,6 +379,15 @@ export function bandit_step(): { state: Float64Array; fire: boolean; flare: bool
   if (typeof flags !== 'number' || flags < 0) return null
   return { state: bandit_out, fire: (flags & 1) !== 0, flare: (flags & 2) !== 0,
     launch: (flags & 4) !== 0, emitter: (flags >> 3) & 3, locked: (flags & 32) !== 0, heater: (flags & 64) !== 0 }
+}
+
+// bandit_coast flies the DEAD bandit one frame on the real model: no thinking,
+// the stick free so the FCS holds attitude, the levers as its pilot left them,
+// and a standing roll so it spirals rather than gliding flat.
+export function bandit_coast(lean: number): Float64Array | null {
+  if (!core?.bandit_coast) return null
+  if (core.bandit_coast(lean, bandit_bytes) < 0) return null
+  return bandit_out
 }
 
 // bandit_mode reports the brain's chosen manoeuvre (press, defense, spiral...)
