@@ -371,14 +371,14 @@ export function bandit_menace(shots: number[]): void {
 // bandit_step advances one 60 Hz frame; returns the bandit's encoded state
 // plus its decisions: trigger, flare, an AMRAAM launch this frame (the
 // client owns the round from there), the radar emitter state the RWR
-// reads, and whether the STT holds the player (datalink support for a
-// bandit-shot round).
-export function bandit_step(): { state: Float64Array; fire: boolean; flare: boolean; launch: boolean; emitter: number; locked: boolean; heater: boolean } | null {
+// reads, whether the STT holds the player (datalink support for a
+// bandit-shot round), and a chaff bloom (#43: its own magazine, no flare).
+export function bandit_step(): { state: Float64Array; fire: boolean; flare: boolean; launch: boolean; emitter: number; locked: boolean; heater: boolean; chaff: boolean } | null {
   if (!core?.bandit_step) return null
   const flags = core.bandit_step(bandit_bytes)
   if (typeof flags !== 'number' || flags < 0) return null
   return { state: bandit_out, fire: (flags & 1) !== 0, flare: (flags & 2) !== 0,
-    launch: (flags & 4) !== 0, emitter: (flags >> 3) & 3, locked: (flags & 32) !== 0, heater: (flags & 64) !== 0 }
+    launch: (flags & 4) !== 0, emitter: (flags >> 3) & 3, locked: (flags & 32) !== 0, heater: (flags & 64) !== 0, chaff: (flags & 128) !== 0 }
 }
 
 // bandit_coast flies the DEAD bandit one frame on the real model: no thinking,
