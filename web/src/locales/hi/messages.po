@@ -22,11 +22,11 @@ msgstr "कृपया अपना इंटरनेट कनेक्शन
 msgid " or "
 msgstr " या "
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:229
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:190
 msgid "(edited)"
 msgstr "(संपादित)"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:213
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:174
 msgid "(expand)"
 msgstr "(विस्तार करें)"
 
@@ -142,11 +142,11 @@ msgstr "{unreadCount, plural, one {मेन्यू खोलें (# अप�
 msgid "+{0} nested"
 msgstr "+{0} नेस्टेड"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:210
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:171
 msgid "+{totalDescendants} more replies"
 msgstr "+{totalDescendants} और उत्तर"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:209
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:170
 msgid "1 reply"
 msgstr "1 उत्तर"
 
@@ -236,7 +236,7 @@ msgstr "लक्ष्य पकड़ मोड"
 msgid "Add"
 msgstr "जोड़ें"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:365
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:312
 msgid "Add a comment..."
 msgstr "एक टिप्पणी जोड़ें..."
 
@@ -407,7 +407,7 @@ msgstr "क्या आप \"{0}\" को हटाना चाहते ह�
 msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
 msgstr "क्या आप \"{name}\" कॉलम को हटाना चाहते हैं? यह पूर्ववत नहीं किया जा सकता।"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:491
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:352
 msgid "Are you sure you want to delete this comment? This will also delete all replies."
 msgstr "क्या आप इस टिप्पणी को हटाना चाहते हैं? इससे सभी उत्तर भी हट जाएँगे।"
 
@@ -432,13 +432,11 @@ msgstr "आरोही"
 msgid "asymmetry"
 msgstr "असमानता"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:408
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:413
+#: ../../../lib/web/src/components/comment-composer.tsx:442
 msgid "Attach comment files"
 msgstr "टिप्पणी फ़ाइलें अटैच करें"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:445
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:450
+#: ../../../lib/web/src/components/comment-composer.tsx:441
 msgid "Attach reply files"
 msgstr "उत्तर फ़ाइलें अटैच करें"
 
@@ -616,7 +614,7 @@ msgstr "कैमरा उपलब्ध नहीं"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:461
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:250
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:211
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
@@ -634,13 +632,11 @@ msgstr "कैमरा उपलब्ध नहीं"
 msgid "Cancel"
 msgstr "रद्द करें"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:425
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:442
 msgid "Cancel comment"
 msgstr "टिप्पणी रद्द करें"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:461
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:466
+#: ../../../lib/web/src/components/comment-composer.tsx:441
 msgid "Cancel reply"
 msgstr "उत्तर रद्द करें"
 
@@ -788,8 +784,8 @@ msgstr "चयन साफ़ करें (Escape)"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:511
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:469
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:472
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:488
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:491
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "बंद करें"
@@ -867,13 +863,13 @@ msgstr "कमांड पैलेट"
 msgid "COMMENCING"
 msgstr "शुरू कर रहा हूँ"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:331
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:338
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:292
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:299
 msgid "Comment actions"
 msgstr "टिप्पणी क्रियाएँ"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:432
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:444
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:451
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:463
 msgid "Comments"
 msgstr "टिप्पणियाँ"
 
@@ -1134,9 +1130,9 @@ msgstr "डिफ़ॉल्ट सॉर्ट"
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:583
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:644
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:319
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:362
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:492
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:280
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:323
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:353
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:198
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:203
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:252
@@ -1152,7 +1148,7 @@ msgstr "अटैचमेंट हटाएँ"
 msgid "Delete column"
 msgstr "कॉलम हटाएँ"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:490
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:351
 msgid "Delete comment"
 msgstr "टिप्पणी हटाएँ"
 
@@ -1234,11 +1230,11 @@ msgstr "निर्देशिका"
 msgid "DIRTY UP"
 msgstr "गियर नीचे"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:313
+#: ../../../lib/web/src/components/comment-composer.tsx:322
 msgid "Discard"
 msgstr "त्यागें"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:311
+#: ../../../lib/web/src/components/comment-composer.tsx:320
 msgid "Discard draft?"
 msgstr "ड्राफ्ट त्यागें?"
 
@@ -1278,12 +1274,12 @@ msgid "Done"
 msgstr "पूर्ण"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:239
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:453
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:463
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:472
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:482
 msgid "Download"
 msgstr "डाउनलोड"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:92
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:111
 msgid "Download failed"
 msgstr "डाउनलोड विफल"
 
@@ -1319,8 +1315,8 @@ msgstr "डिस्लेक्सिया-अनुकूल"
 msgid "EARLY"
 msgstr "जल्दी"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:308
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:353
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:269
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:314
 msgid "Edit"
 msgstr "संपादित करें"
 
@@ -1486,7 +1482,7 @@ msgstr "लिंक बनाने में विफल"
 msgid "Failed to delete attachment"
 msgstr "अनुलग्नक हटाने में विफल"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:212
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:191
 msgid "Failed to delete comment"
 msgstr "टिप्पणी हटाने में विफल"
 
@@ -1506,15 +1502,15 @@ msgstr "लोड करने में विफल"
 msgid "Failed to load history"
 msgstr "इतिहास लोड करने में विफल"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:339
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 msgid "Failed to load image"
 msgstr "छवि लोड नहीं हो सकी"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:339
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 msgid "Failed to load video"
 msgstr "वीडियो लोड नहीं हो सका"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:175
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:154
 msgid "Failed to post comment"
 msgstr "टिप्पणी पोस्ट करने में विफल"
 
@@ -1530,7 +1526,7 @@ msgstr "RSS पहुँच रद्द करने में विफल"
 msgid "Failed to send verification code"
 msgstr "सत्यापन कोड भेजने में विफल"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:195
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:174
 msgid "Failed to update comment"
 msgstr "टिप्पणी अपडेट करने में विफल"
 
@@ -1853,7 +1849,7 @@ msgid "ID"
 msgstr "आईडी"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:317
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:336
 msgid "Image viewer: {0}"
 msgstr "छवि व्यूअर: {0}"
 
@@ -2380,8 +2376,8 @@ msgstr "नया"
 msgid "New game"
 msgstr "नया गेम"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:530
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:535
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:549
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:554
 msgid "Next image"
 msgstr "अगली इमेज"
 
@@ -2403,7 +2399,7 @@ msgstr "कोई एक्सेस नियम कॉन्फ़िगर �
 msgid "No activity yet"
 msgstr "अभी तक कोई गतिविधि नहीं"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:460
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:322
 msgid "No comments yet"
 msgstr "अभी तक कोई कमेंट नहीं"
 
@@ -2787,7 +2783,7 @@ msgstr "प्लेटफ़ॉर्म"
 msgid "Players"
 msgstr "खिलाड़ी"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:84
+#: ../../../lib/web/src/components/comment-composer.tsx:93
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:323
 msgid "Please check your internet connection and try again."
@@ -2829,8 +2825,8 @@ msgstr "उड़ान भरने के लिए ENTER दबाएँ"
 msgid "Press it…"
 msgstr "उसे दबाएँ…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:514
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:519
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:533
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:538
 msgid "Previous image"
 msgstr "पिछली इमेज"
 
@@ -3027,13 +3023,13 @@ msgstr "इस बोर्ड कॉलम का नाम बदलें"
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "रेंडरिंग <0>three.js</0> द्वारा (MIT लाइसेंस)।"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:295
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:343
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:256
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:304
 msgid "Reply"
 msgstr "उत्तर"
 
 #. placeholder {0}: comment.name || comment.author
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:386
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:343
 msgid "Reply to {0}..."
 msgstr "{0} को उत्तर दें..."
 
@@ -3184,7 +3180,7 @@ msgid "Saturday"
 msgstr "शनिवार"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:465
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:270
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:231
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
 #: ../../../lib/web/src/components/ui/secret-field.tsx:79
@@ -3532,7 +3528,7 @@ msgstr "स्टॉल, लैंडिंग विन्यास (Vs0)"
 msgid "Start"
 msgstr "आरंभ"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:461
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:323
 msgid "Start the discussion by adding the first comment."
 msgstr "पहला कमेंट जोड़कर चर्चा शुरू करें।"
 
@@ -3556,13 +3552,11 @@ msgstr "संरचना"
 msgid "Subject"
 msgstr "विषय"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:441
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:450
+#: ../../../lib/web/src/components/comment-composer.tsx:442
 msgid "Submit comment"
 msgstr "कमेंट सबमिट करें"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:476
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:481
+#: ../../../lib/web/src/components/comment-composer.tsx:441
 msgid "Submit reply"
 msgstr "जवाब सबमिट करें"
 
@@ -4010,7 +4004,7 @@ msgid "Video thumbnail"
 msgstr "वीडियो थंबनेल"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:316
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:335
 msgid "Video viewer: {0}"
 msgstr "वीडियो व्यूअर: {0}"
 
@@ -4157,7 +4151,7 @@ msgstr "आप सब देख चुके हैं!"
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "आपका खाता {source} से यहाँ स्थानांतरित किया गया। जब तक आप वहाँ इसे हटा नहीं देते, संदेश और सूचनाएं दोनों सर्वर तक पहुँच सकती हैं, आपकी कुछ सामग्री पुराने सर्वर से परोसी जाती रहेगी, और फ़ॉलोअर्स को आपको यहाँ ढूंढने में कुछ मिनट लग सकते हैं।"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:304
+#: ../../../lib/web/src/components/comment-composer.tsx:313
 msgid "Your attachments will be lost."
 msgstr "आपके अनुलग्नक खो जाएँगे।"
 
@@ -4169,11 +4163,11 @@ msgstr "एक उड़ान भरने के बाद आपकी उड
 msgid "your offer"
 msgstr "आपका प्रस्ताव"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:302
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Your text and attachments will be lost."
 msgstr "आपका पाठ और अनुलग्नक खो जाएँगे।"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:305
+#: ../../../lib/web/src/components/comment-composer.tsx:314
 msgid "Your text will be lost."
 msgstr "आपका टेक्स्ट खो जाएगा।"
 

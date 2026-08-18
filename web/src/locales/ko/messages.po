@@ -22,11 +22,11 @@ msgstr "인터넷 연결을 확인하고 다시 시도하세요."
 msgid " or "
 msgstr " 또는 "
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:229
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:190
 msgid "(edited)"
 msgstr "(편집됨)"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:213
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:174
 msgid "(expand)"
 msgstr "(확장)"
 
@@ -142,11 +142,11 @@ msgstr "{unreadCount, plural, one {메뉴 열기(읽지 않은 알림 #개)} oth
 msgid "+{0} nested"
 msgstr "+{0}개 중첩"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:210
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:171
 msgid "+{totalDescendants} more replies"
 msgstr "답글 +{totalDescendants}개"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:209
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:170
 msgid "1 reply"
 msgstr "답글 1개"
 
@@ -236,7 +236,7 @@ msgstr "포착 모드"
 msgid "Add"
 msgstr "추가"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:365
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:312
 msgid "Add a comment..."
 msgstr "댓글 추가..."
 
@@ -407,7 +407,7 @@ msgstr "\"{0}\"을(를) 삭제할까요?"
 msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
 msgstr "\"{name}\" 컬럼을 삭제할까요? 이 작업은 되돌릴 수 없어요."
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:491
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:352
 msgid "Are you sure you want to delete this comment? This will also delete all replies."
 msgstr "이 댓글을 삭제할까요? 모든 답글도 함께 삭제돼요."
 
@@ -432,13 +432,11 @@ msgstr "오름차순"
 msgid "asymmetry"
 msgstr "비대칭"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:408
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:413
+#: ../../../lib/web/src/components/comment-composer.tsx:442
 msgid "Attach comment files"
 msgstr "댓글 파일 첨부"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:445
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:450
+#: ../../../lib/web/src/components/comment-composer.tsx:441
 msgid "Attach reply files"
 msgstr "답글 파일 첨부"
 
@@ -616,7 +614,7 @@ msgstr "카메라를 사용할 수 없음"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:461
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:250
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:211
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
@@ -634,13 +632,11 @@ msgstr "카메라를 사용할 수 없음"
 msgid "Cancel"
 msgstr "취소"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:425
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:442
 msgid "Cancel comment"
 msgstr "댓글 취소"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:461
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:466
+#: ../../../lib/web/src/components/comment-composer.tsx:441
 msgid "Cancel reply"
 msgstr "답글 취소"
 
@@ -788,8 +784,8 @@ msgstr "선택 해제 (Escape)"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:511
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:469
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:472
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:488
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:491
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "닫기"
@@ -867,13 +863,13 @@ msgstr "명령 팔레트"
 msgid "COMMENCING"
 msgstr "접근 개시"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:331
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:338
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:292
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:299
 msgid "Comment actions"
 msgstr "댓글 작업"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:432
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:444
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:451
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:463
 msgid "Comments"
 msgstr "댓글"
 
@@ -1134,9 +1130,9 @@ msgstr "기본 정렬"
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:583
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:644
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:319
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:362
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:492
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:280
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:323
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:353
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:198
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:203
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:252
@@ -1152,7 +1148,7 @@ msgstr "첨부 파일 삭제"
 msgid "Delete column"
 msgstr "컬럼 삭제"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:490
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:351
 msgid "Delete comment"
 msgstr "댓글 삭제"
 
@@ -1234,11 +1230,11 @@ msgstr "디렉터리"
 msgid "DIRTY UP"
 msgstr "기어 다운"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:313
+#: ../../../lib/web/src/components/comment-composer.tsx:322
 msgid "Discard"
 msgstr "버리기"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:311
+#: ../../../lib/web/src/components/comment-composer.tsx:320
 msgid "Discard draft?"
 msgstr "초안을 버릴까요?"
 
@@ -1278,12 +1274,12 @@ msgid "Done"
 msgstr "완료"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:239
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:453
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:463
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:472
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:482
 msgid "Download"
 msgstr "다운로드"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:92
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:111
 msgid "Download failed"
 msgstr "다운로드 실패"
 
@@ -1319,8 +1315,8 @@ msgstr "난독증 친화적"
 msgid "EARLY"
 msgstr "이름"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:308
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:353
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:269
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:314
 msgid "Edit"
 msgstr "편집"
 
@@ -1486,7 +1482,7 @@ msgstr "링크 생성에 실패했어요"
 msgid "Failed to delete attachment"
 msgstr "첨부 파일 삭제에 실패했어요"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:212
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:191
 msgid "Failed to delete comment"
 msgstr "댓글 삭제에 실패했어요"
 
@@ -1506,15 +1502,15 @@ msgstr "불러오기에 실패했어요"
 msgid "Failed to load history"
 msgstr "기록 불러오기에 실패했어요"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:339
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 msgid "Failed to load image"
 msgstr "이미지를 불러오지 못했어요"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:339
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 msgid "Failed to load video"
 msgstr "동영상을 불러오지 못했어요"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:175
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:154
 msgid "Failed to post comment"
 msgstr "댓글 게시에 실패했어요"
 
@@ -1530,7 +1526,7 @@ msgstr "RSS 액세스 취소에 실패했습니다"
 msgid "Failed to send verification code"
 msgstr "인증 코드 전송에 실패했어요"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:195
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:174
 msgid "Failed to update comment"
 msgstr "댓글 업데이트에 실패했어요"
 
@@ -1853,7 +1849,7 @@ msgid "ID"
 msgstr "ID"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:317
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:336
 msgid "Image viewer: {0}"
 msgstr "이미지 뷰어: {0}"
 
@@ -2380,8 +2376,8 @@ msgstr "새로 만들기"
 msgid "New game"
 msgstr "새 게임"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:530
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:535
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:549
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:554
 msgid "Next image"
 msgstr "다음 이미지"
 
@@ -2403,7 +2399,7 @@ msgstr "설정된 접근 규칙이 없어요. 이 리소스에 접근할 수 있
 msgid "No activity yet"
 msgstr "아직 활동이 없어요"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:460
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:322
 msgid "No comments yet"
 msgstr "아직 댓글이 없어요"
 
@@ -2787,7 +2783,7 @@ msgstr "플랫폼"
 msgid "Players"
 msgstr "플레이어 수"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:84
+#: ../../../lib/web/src/components/comment-composer.tsx:93
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:323
 msgid "Please check your internet connection and try again."
@@ -2829,8 +2825,8 @@ msgstr "ENTER로 발진"
 msgid "Press it…"
 msgstr "버튼을 누르세요…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:514
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:519
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:533
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:538
 msgid "Previous image"
 msgstr "이전 이미지"
 
@@ -3027,13 +3023,13 @@ msgstr "이 보드 열 이름 변경"
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "렌더링은 <0>three.js</0> 사용 (MIT 라이선스)."
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:295
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:343
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:256
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:304
 msgid "Reply"
 msgstr "답글"
 
 #. placeholder {0}: comment.name || comment.author
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:386
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:343
 msgid "Reply to {0}..."
 msgstr "{0}에게 답글..."
 
@@ -3184,7 +3180,7 @@ msgid "Saturday"
 msgstr "토요일"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:465
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:270
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:231
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
 #: ../../../lib/web/src/components/ui/secret-field.tsx:79
@@ -3532,7 +3528,7 @@ msgstr "실속, 착륙 형상 (Vs0)"
 msgid "Start"
 msgstr "시작"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:461
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:323
 msgid "Start the discussion by adding the first comment."
 msgstr "첫 번째 댓글을 추가하여 토론을 시작해 주세요."
 
@@ -3556,13 +3552,11 @@ msgstr "구조"
 msgid "Subject"
 msgstr "제목"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:441
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:450
+#: ../../../lib/web/src/components/comment-composer.tsx:442
 msgid "Submit comment"
 msgstr "댓글 제출"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:476
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:481
+#: ../../../lib/web/src/components/comment-composer.tsx:441
 msgid "Submit reply"
 msgstr "답글 제출"
 
@@ -4010,7 +4004,7 @@ msgid "Video thumbnail"
 msgstr "동영상 미리보기 이미지"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:316
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:335
 msgid "Video viewer: {0}"
 msgstr "동영상 뷰어: {0}"
 
@@ -4157,7 +4151,7 @@ msgstr "모두 확인했어요!"
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "계정이 {source}에서 이곳으로 이전되었습니다. 거기서 삭제할 때까지 메시지와 알림이 두 서버 모두에 전달될 수 있으며, 일부 콘텐츠는 이전 서버에서 계속 제공되고 팔로워가 이곳에서 나를 찾는 데 몇 분이 걸릴 수 있습니다."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:304
+#: ../../../lib/web/src/components/comment-composer.tsx:313
 msgid "Your attachments will be lost."
 msgstr "첨부 파일이 사라집니다."
 
@@ -4169,11 +4163,11 @@ msgstr "비행을 한 번 하면 여기에 표시돼요."
 msgid "your offer"
 msgstr "내 모집"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:302
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Your text and attachments will be lost."
 msgstr "텍스트와 첨부 파일이 사라집니다."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:305
+#: ../../../lib/web/src/components/comment-composer.tsx:314
 msgid "Your text will be lost."
 msgstr "작성한 내용이 사라져요."
 

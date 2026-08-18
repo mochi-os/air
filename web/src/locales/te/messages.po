@@ -22,11 +22,11 @@ msgstr "దయచేసి మీ ఇంటర్నెట్ కనెక్ష
 msgid " or "
 msgstr " లేదా "
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:229
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:190
 msgid "(edited)"
 msgstr "(సవరించబడింది)"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:213
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:174
 msgid "(expand)"
 msgstr "(విస్తరించు)"
 
@@ -142,11 +142,11 @@ msgstr "{unreadCount, plural, one {మెనూ తెరవండి (# చద�
 msgid "+{0} nested"
 msgstr "+{0} నెస్టెడ్"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:210
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:171
 msgid "+{totalDescendants} more replies"
 msgstr "+{totalDescendants} మరిన్ని ప్రత్యుత్తరాలు"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:209
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:170
 msgid "1 reply"
 msgstr "1 ప్రత్యుత్తరం"
 
@@ -236,7 +236,7 @@ msgstr "స్వాధీన మోడ్"
 msgid "Add"
 msgstr "జోడించండి"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:365
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:312
 msgid "Add a comment..."
 msgstr "ఒక వ్యాఖ్యను జోడించండి..."
 
@@ -407,7 +407,7 @@ msgstr "మీరు \"{0}\"ని తొలగించాలనుకుంట
 msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
 msgstr "మీరు \"{name}\" కాలమ్‌ను తొలగించాలనుకుంటున్నారా? దీన్ని రద్దు చేయలేరు."
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:491
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:352
 msgid "Are you sure you want to delete this comment? This will also delete all replies."
 msgstr "మీరు ఈ వ్యాఖ్యను తొలగించాలనుకుంటున్నారా? ఇది అన్ని ప్రత్యుత్తరాలను కూడా తొలగిస్తుంది."
 
@@ -432,13 +432,11 @@ msgstr "ఆరోహణ"
 msgid "asymmetry"
 msgstr "అసమానత"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:408
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:413
+#: ../../../lib/web/src/components/comment-composer.tsx:442
 msgid "Attach comment files"
 msgstr "వ్యాఖ్య ఫైల్‌లను జతచేయండి"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:445
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:450
+#: ../../../lib/web/src/components/comment-composer.tsx:441
 msgid "Attach reply files"
 msgstr "ప్రత్యుత్తర ఫైల్‌లను జతచేయండి"
 
@@ -616,7 +614,7 @@ msgstr "కెమెరా అందుబాటులో లేదు"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:461
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:250
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:211
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
@@ -634,13 +632,11 @@ msgstr "కెమెరా అందుబాటులో లేదు"
 msgid "Cancel"
 msgstr "రద్దు చేయండి"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:425
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:442
 msgid "Cancel comment"
 msgstr "వ్యాఖ్యను రద్దు చేయండి"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:461
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:466
+#: ../../../lib/web/src/components/comment-composer.tsx:441
 msgid "Cancel reply"
 msgstr "ప్రత్యుత్తరాన్ని రద్దు చేయండి"
 
@@ -788,8 +784,8 @@ msgstr "ఎంపికను క్లియర్ చేయండి (Escape)"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:511
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:469
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:472
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:488
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:491
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "మూసివేయండి"
@@ -867,13 +863,13 @@ msgstr "కమాండ్ ప్యాలెట్"
 msgid "COMMENCING"
 msgstr "ప్రారంభిస్తున్నాను"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:331
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:338
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:292
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:299
 msgid "Comment actions"
 msgstr "వ్యాఖ్య చర్యలు"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:432
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:444
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:451
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:463
 msgid "Comments"
 msgstr "వ్యాఖ్యలు"
 
@@ -1134,9 +1130,9 @@ msgstr "డిఫాల్ట్ క్రమబద్ధీకరణ"
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:583
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:644
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:319
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:362
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:492
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:280
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:323
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:353
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:198
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:203
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:252
@@ -1152,7 +1148,7 @@ msgstr "అటాచ్‌మెంట్‌ను తొలగించండ�
 msgid "Delete column"
 msgstr "కాలమ్‌ను తొలగించండి"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:490
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:351
 msgid "Delete comment"
 msgstr "వ్యాఖ్యను తొలగించండి"
 
@@ -1234,11 +1230,11 @@ msgstr "డైరెక్టరీ"
 msgid "DIRTY UP"
 msgstr "గేర్ దించండి"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:313
+#: ../../../lib/web/src/components/comment-composer.tsx:322
 msgid "Discard"
 msgstr "విస్మరించు"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:311
+#: ../../../lib/web/src/components/comment-composer.tsx:320
 msgid "Discard draft?"
 msgstr "డ్రాఫ్ట్‌ను విస్మరించాలా?"
 
@@ -1278,12 +1274,12 @@ msgid "Done"
 msgstr "పూర్తయింది"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:239
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:453
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:463
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:472
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:482
 msgid "Download"
 msgstr "డౌన్‌లోడ్"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:92
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:111
 msgid "Download failed"
 msgstr "డౌన్‌లోడ్ విఫలమైంది"
 
@@ -1319,8 +1315,8 @@ msgstr "డిస్లెక్సియా-అనుకూలం"
 msgid "EARLY"
 msgstr "త్వరగా"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:308
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:353
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:269
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:314
 msgid "Edit"
 msgstr "సవరించండి"
 
@@ -1486,7 +1482,7 @@ msgstr "లింక్‌ను సృష్టించడంలో విఫ�
 msgid "Failed to delete attachment"
 msgstr "జోడింపును తొలగించడంలో విఫలమైంది"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:212
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:191
 msgid "Failed to delete comment"
 msgstr "వ్యాఖ్యను తొలగించడంలో విఫలమైంది"
 
@@ -1506,15 +1502,15 @@ msgstr "లోడ్ చేయడంలో విఫలమైంది"
 msgid "Failed to load history"
 msgstr "చరిత్రను లోడ్ చేయడంలో విఫలమైంది"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:339
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 msgid "Failed to load image"
 msgstr "చిత్రాన్ని లోడ్ చేయడంలో విఫలమైంది"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:339
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 msgid "Failed to load video"
 msgstr "వీడియోను లోడ్ చేయడంలో విఫలమైంది"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:175
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:154
 msgid "Failed to post comment"
 msgstr "వ్యాఖ్యను పోస్ట్ చేయడంలో విఫలమైంది"
 
@@ -1530,7 +1526,7 @@ msgstr "RSS యాక్సెస్ ఉపసంహరించడంలో వ
 msgid "Failed to send verification code"
 msgstr "ధృవీకరణ కోడ్‌ను పంపడంలో విఫలమైంది"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:195
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:174
 msgid "Failed to update comment"
 msgstr "వ్యాఖ్యను నవీకరించడంలో విఫలమైంది"
 
@@ -1853,7 +1849,7 @@ msgid "ID"
 msgstr "ఐడీ"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:317
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:336
 msgid "Image viewer: {0}"
 msgstr "చిత్ర వీక్షకం: {0}"
 
@@ -2380,8 +2376,8 @@ msgstr "కొత్తది"
 msgid "New game"
 msgstr "కొత్త గేమ్"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:530
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:535
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:549
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:554
 msgid "Next image"
 msgstr "తదుపరి చిత్రం"
 
@@ -2403,7 +2399,7 @@ msgstr "యాక్సెస్ నియమాలు ఏవీ కాన్ఫ
 msgid "No activity yet"
 msgstr "ఇంకా యాక్టివిటీ లేదు"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:460
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:322
 msgid "No comments yet"
 msgstr "ఇంకా కామెంట్‌లు లేవు"
 
@@ -2787,7 +2783,7 @@ msgstr "వేదిక"
 msgid "Players"
 msgstr "ఆటగాళ్లు"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:84
+#: ../../../lib/web/src/components/comment-composer.tsx:93
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:323
 msgid "Please check your internet connection and try again."
@@ -2829,8 +2825,8 @@ msgstr "ఎగరడానికి ENTER నొక్కండి"
 msgid "Press it…"
 msgstr "దాన్ని నొక్కండి…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:514
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:519
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:533
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:538
 msgid "Previous image"
 msgstr "మునుపటి చిత్రం"
 
@@ -3027,13 +3023,13 @@ msgstr "ఈ బోర్డ్ కాలమ్ పేరును మార్�
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "రెండరింగ్ <0>three.js</0> ద్వారా (MIT లైసెన్స్)."
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:295
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:343
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:256
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:304
 msgid "Reply"
 msgstr "రిప్లై"
 
 #. placeholder {0}: comment.name || comment.author
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:386
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:343
 msgid "Reply to {0}..."
 msgstr "{0} కి ప్రత్యుత్తరం..."
 
@@ -3184,7 +3180,7 @@ msgid "Saturday"
 msgstr "శనివారం"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:465
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:270
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:231
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
 #: ../../../lib/web/src/components/ui/secret-field.tsx:79
@@ -3532,7 +3528,7 @@ msgstr "స్టాల్, అవతరణ విన్యాసం (Vs0)"
 msgid "Start"
 msgstr "ప్రారంభించు"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:461
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:323
 msgid "Start the discussion by adding the first comment."
 msgstr "మొదటి వ్యాఖ్యను జోడించడం ద్వారా చర్చను ప్రారంభించండి."
 
@@ -3556,13 +3552,11 @@ msgstr "నిర్మాణం"
 msgid "Subject"
 msgstr "విషయం"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:441
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:450
+#: ../../../lib/web/src/components/comment-composer.tsx:442
 msgid "Submit comment"
 msgstr "వ్యాఖ్యను సమర్పించండి"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:476
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:481
+#: ../../../lib/web/src/components/comment-composer.tsx:441
 msgid "Submit reply"
 msgstr "ప్రత్యుత్తరాన్ని సమర్పించండి"
 
@@ -4010,7 +4004,7 @@ msgid "Video thumbnail"
 msgstr "వీడియో థంబ్‌నెయిల్"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:316
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:335
 msgid "Video viewer: {0}"
 msgstr "వీడియో వీక్షకం: {0}"
 
@@ -4157,7 +4151,7 @@ msgstr "మీరు అన్నీ చూశారు!"
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "మీ ఖాతా {source} నుండి ఇక్కడికి తరలించబడింది. మీరు అక్కడ దాన్ని తొలగించే వరకు, సందేశాలు మరియు నోటిఫికేషన్లు రెండు సర్వర్లకు చేరవచ్చు, మీ కొంత కంటెంట్ పాత సర్వర్ నుండి అందించబడుతూ ఉంటుంది, మరియు ఫాలోవర్లు మిమ్మల్ని ఇక్కడ కనుగొనడానికి కొన్ని నిమిషాలు పట్టవచ్చు."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:304
+#: ../../../lib/web/src/components/comment-composer.tsx:313
 msgid "Your attachments will be lost."
 msgstr "మీ జోడింపులు పోతాయి."
 
@@ -4169,11 +4163,11 @@ msgstr "మీరు ఒకసారి ఎగిరిన తర్వాత �
 msgid "your offer"
 msgstr "మీ ఆఫర్"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:302
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Your text and attachments will be lost."
 msgstr "మీ వచనం మరియు జోడింపులు పోతాయి."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:305
+#: ../../../lib/web/src/components/comment-composer.tsx:314
 msgid "Your text will be lost."
 msgstr "మీ వచనం పోతుంది."
 

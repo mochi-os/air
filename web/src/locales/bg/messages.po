@@ -22,11 +22,11 @@ msgstr "Проверете интернет връзката си и опита�
 msgid " or "
 msgstr " или "
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:229
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:190
 msgid "(edited)"
 msgstr "(редактирано)"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:213
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:174
 msgid "(expand)"
 msgstr "(разгъване)"
 
@@ -142,11 +142,11 @@ msgstr "{unreadCount, plural, one {Отваряне на менюто (# неп�
 msgid "+{0} nested"
 msgstr "+{0} вложени"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:210
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:171
 msgid "+{totalDescendants} more replies"
 msgstr "+{totalDescendants} още отговори"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:209
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:170
 msgid "1 reply"
 msgstr "1 отговор"
 
@@ -236,7 +236,7 @@ msgstr "Режим на захващане"
 msgid "Add"
 msgstr "Добави"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:365
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:312
 msgid "Add a comment..."
 msgstr "Добавете коментар..."
 
@@ -407,7 +407,7 @@ msgstr "Сигурни ли сте, че искате да изтриете \"{0
 msgid "Are you sure you want to delete the \"{name}\" column? This cannot be undone."
 msgstr "Сигурни ли сте, че искате да изтриете колоната \"{name}\"? Това не може да бъде отменено."
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:491
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:352
 msgid "Are you sure you want to delete this comment? This will also delete all replies."
 msgstr "Сигурни ли сте, че искате да изтриете този коментар? Това ще изтрие и всички отговори."
 
@@ -432,13 +432,11 @@ msgstr "Възходящ"
 msgid "asymmetry"
 msgstr "асиметрия"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:408
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:413
+#: ../../../lib/web/src/components/comment-composer.tsx:442
 msgid "Attach comment files"
 msgstr "Прикачи файлове към коментара"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:445
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:450
+#: ../../../lib/web/src/components/comment-composer.tsx:441
 msgid "Attach reply files"
 msgstr "Прикачи файлове към отговора"
 
@@ -616,7 +614,7 @@ msgstr "Камерата не е достъпна"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:461
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:628
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:250
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:211
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:169
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:186
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:67
@@ -634,13 +632,11 @@ msgstr "Камерата не е достъпна"
 msgid "Cancel"
 msgstr "Отказ"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:425
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:430
+#: ../../../lib/web/src/components/comment-composer.tsx:442
 msgid "Cancel comment"
 msgstr "Отказ от коментара"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:461
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:466
+#: ../../../lib/web/src/components/comment-composer.tsx:441
 msgid "Cancel reply"
 msgstr "Отказ от отговора"
 
@@ -788,8 +784,8 @@ msgstr "Изчисти избраното (Escape)"
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:511
 #: ../../../lib/web/src/components/ui/dialog.tsx:78
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:469
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:472
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:488
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:491
 #: ../../../lib/web/src/components/ui/sheet.tsx:79
 msgid "Close"
 msgstr "Затвори"
@@ -867,13 +863,13 @@ msgstr "Палитра с команди"
 msgid "COMMENCING"
 msgstr "ЗАПОЧВАМ"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:331
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:338
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:292
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:299
 msgid "Comment actions"
 msgstr "Действия за коментара"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:432
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:444
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:451
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:463
 msgid "Comments"
 msgstr "Коментари"
 
@@ -1134,9 +1130,9 @@ msgstr "Сортиране по подразбиране"
 
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:583
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx:644
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:319
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:362
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:492
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:280
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:323
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:353
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:198
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:203
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:252
@@ -1152,7 +1148,7 @@ msgstr "Изтрий прикачения файл"
 msgid "Delete column"
 msgstr "Изтрий колоната"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:490
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:351
 msgid "Delete comment"
 msgstr "Изтрий коментара"
 
@@ -1234,11 +1230,11 @@ msgstr "Указател"
 msgid "DIRTY UP"
 msgstr "СПУСНИ КОЛЕСНИК"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:313
+#: ../../../lib/web/src/components/comment-composer.tsx:322
 msgid "Discard"
 msgstr "Отхвърли"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:311
+#: ../../../lib/web/src/components/comment-composer.tsx:320
 msgid "Discard draft?"
 msgstr "Да се отхвърли ли черновата?"
 
@@ -1278,12 +1274,12 @@ msgid "Done"
 msgstr "Готово"
 
 #: ../../../lib/web/src/components/entity/entity-object-attachments.tsx:239
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:453
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:463
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:472
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:482
 msgid "Download"
 msgstr "Изтегляне"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:92
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:111
 msgid "Download failed"
 msgstr "Изтеглянето е неуспешно"
 
@@ -1319,8 +1315,8 @@ msgstr "Подходящ за дислексия"
 msgid "EARLY"
 msgstr "РАНО"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:308
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:353
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:269
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:314
 msgid "Edit"
 msgstr "Редактиране"
 
@@ -1486,7 +1482,7 @@ msgstr "Неуспешно създаване на връзка"
 msgid "Failed to delete attachment"
 msgstr "Неуспешно изтриване на прикачен файл"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:212
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:191
 msgid "Failed to delete comment"
 msgstr "Неуспешно изтриване на коментар"
 
@@ -1506,15 +1502,15 @@ msgstr "Неуспешно зареждане"
 msgid "Failed to load history"
 msgstr "Неуспешно зареждане на история"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:339
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 msgid "Failed to load image"
 msgstr "Изображението не можа да се зареди"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:339
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:358
 msgid "Failed to load video"
 msgstr "Видеото не можа да се зареди"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:175
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:154
 msgid "Failed to post comment"
 msgstr "Неуспешно публикуване на коментар"
 
@@ -1530,7 +1526,7 @@ msgstr "Неуспешно отменяне на достъпа до RSS"
 msgid "Failed to send verification code"
 msgstr "Неуспешно изпращане на код за потвърждение"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:195
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:174
 msgid "Failed to update comment"
 msgstr "Неуспешна актуализация на коментар"
 
@@ -1853,7 +1849,7 @@ msgid "ID"
 msgstr "ID"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:317
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:336
 msgid "Image viewer: {0}"
 msgstr "Преглед на изображения: {0}"
 
@@ -2380,8 +2376,8 @@ msgstr "Ново"
 msgid "New game"
 msgstr "Нова игра"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:530
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:535
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:549
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:554
 msgid "Next image"
 msgstr "Следващо изображение"
 
@@ -2403,7 +2399,7 @@ msgstr "Няма конфигурирани правила за достъп. Д
 msgid "No activity yet"
 msgstr "Все още няма активност"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:460
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:322
 msgid "No comments yet"
 msgstr "Все още няма коментари"
 
@@ -2787,7 +2783,7 @@ msgstr "ПЛАТФОРМА"
 msgid "Players"
 msgstr "Играчи"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:84
+#: ../../../lib/web/src/components/comment-composer.tsx:93
 #: ../../../lib/web/src/features/errors/general-error.tsx:54
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:323
 msgid "Please check your internet connection and try again."
@@ -2829,8 +2825,8 @@ msgstr "НАТИСНИ ENTER ЗА ИЗЛИТАНЕ"
 msgid "Press it…"
 msgstr "Натисни бутона…"
 
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:514
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:519
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:533
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:538
 msgid "Previous image"
 msgstr "Предишно изображение"
 
@@ -3027,13 +3023,13 @@ msgstr "Преименувай тази колона"
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Рендерирането се извършва от <0>three.js</0> (лиценз MIT)."
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:295
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:343
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:256
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:304
 msgid "Reply"
 msgstr "Отговор"
 
 #. placeholder {0}: comment.name || comment.author
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:386
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:343
 msgid "Reply to {0}..."
 msgstr "Отговор до {0}..."
 
@@ -3184,7 +3180,7 @@ msgid "Saturday"
 msgstr "Събота"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:465
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:270
+#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:231
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:173
 #: ../../../lib/web/src/components/ui/editable-field-row.tsx:122
 #: ../../../lib/web/src/components/ui/secret-field.tsx:79
@@ -3532,7 +3528,7 @@ msgstr "Срив, конфигурация за кацане (Vs0)"
 msgid "Start"
 msgstr "Старт"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:461
+#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:323
 msgid "Start the discussion by adding the first comment."
 msgstr "Започнете дискусията, като добавите първия коментар."
 
@@ -3556,13 +3552,11 @@ msgstr "КОНСТРУКЦИЯ"
 msgid "Subject"
 msgstr "Тема"
 
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:441
-#: ../../../lib/web/src/components/entity/entity-comment-list.tsx:450
+#: ../../../lib/web/src/components/comment-composer.tsx:442
 msgid "Submit comment"
 msgstr "Изпрати коментар"
 
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:476
-#: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:481
+#: ../../../lib/web/src/components/comment-composer.tsx:441
 msgid "Submit reply"
 msgstr "Изпрати отговор"
 
@@ -4010,7 +4004,7 @@ msgid "Video thumbnail"
 msgstr "Миниатюра на видео"
 
 #. placeholder {0}: currentMedia.name
-#: ../../../lib/web/src/components/ui/image-lightbox.tsx:316
+#: ../../../lib/web/src/components/ui/image-lightbox.tsx:335
 msgid "Video viewer: {0}"
 msgstr "Преглед на видео: {0}"
 
@@ -4157,7 +4151,7 @@ msgstr "Видяхте всичко!"
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
 msgstr "Профилът ви беше преместен тук от {source}. Докато не го изтриете там, съобщенията и известията може да достигат до двата сървъра, част от съдържанието ви продължава да се обслужва от стария сървър и последователите може да отнеме няколко минути, за да ви намерят тук."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:304
+#: ../../../lib/web/src/components/comment-composer.tsx:313
 msgid "Your attachments will be lost."
 msgstr "Прикачените файлове ще бъдат изгубени."
 
@@ -4169,11 +4163,11 @@ msgstr "Полетите ви ще се появят тук, след като �
 msgid "your offer"
 msgstr "вашата покана"
 
-#: ../../../lib/web/src/components/comment-composer.tsx:302
+#: ../../../lib/web/src/components/comment-composer.tsx:311
 msgid "Your text and attachments will be lost."
 msgstr "Текстът и прикачените файлове ще бъдат изгубени."
 
-#: ../../../lib/web/src/components/comment-composer.tsx:305
+#: ../../../lib/web/src/components/comment-composer.tsx:314
 msgid "Your text will be lost."
 msgstr "Текстът ви ще бъде загубен."
 
