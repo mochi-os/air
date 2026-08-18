@@ -266,3 +266,20 @@ export const GRAPHICS_PRESETS: Record<GraphicsPreset, GraphicsPatch> = {
   high: { render_scale: 1.0, ocean_segments: 320, exterior_detail: 4, effects_quality: 2, shadows: true },
   ultra: { render_scale: 1.5, ocean_segments: 512, exterior_detail: 5, effects_quality: 3, shadows: true },
 }
+
+// Which preset the current settings ARE, so the Graphics tab can mark the one
+// in force. A preset is only the five fields above, so equality is over those
+// five and nothing else: a player who nudged a single slider is on no preset
+// and the row marks none, rather than claiming a preset it no longer matches.
+// render_scale comes back off a native range input, so it is compared with a
+// tolerance instead of by identity.
+export function graphicsPreset(config: MissionConfig): GraphicsPreset | null {
+  const same = (a: number | boolean, b: number | boolean) =>
+    typeof a === 'number' && typeof b === 'number' ? Math.abs(a - b) < 1e-6 : a === b
+  const keys = Object.keys(GRAPHICS_PRESETS.low) as (keyof GraphicsPatch)[]
+  return (
+    (Object.keys(GRAPHICS_PRESETS) as GraphicsPreset[]).find((p) =>
+      keys.every((k) => same(config[k], GRAPHICS_PRESETS[p][k])),
+    ) ?? null
+  )
+}

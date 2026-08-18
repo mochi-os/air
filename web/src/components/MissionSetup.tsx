@@ -36,6 +36,7 @@ import {
   DEFAULT_CONFIG,
   GRAPHICS_PRESETS,
   type GraphicsPreset,
+  graphicsPreset,
   type MissionConfig,
   type StationSlot,
   type StickBindings,
@@ -2020,6 +2021,12 @@ function GraphicsPanel({
   set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
   onChange: (config: MissionConfig) => void
 }) {
+  // The row is a segmented control, not four fire-and-forget buttons: the
+  // settings below ARE a preset until the player moves one, so the matching
+  // button is filled. Moving any slider off it clears the row to none, which
+  // is the honest read of a custom mix. Same filled/outline pair the Reversed
+  // axis toggle uses, so a set button looks set everywhere in this dialog.
+  const active = graphicsPreset(config)
   return (
     <div className='space-y-4'>
 <div>
@@ -2031,7 +2038,8 @@ function GraphicsPanel({
       <Button
         key={p}
         type='button'
-        variant='outline'
+        aria-pressed={active === p}
+        variant={active === p ? 'default' : 'outline'}
         size='sm'
         className='min-w-20 flex-1'
         onClick={() => onChange({ ...config, ...GRAPHICS_PRESETS[p] })}
