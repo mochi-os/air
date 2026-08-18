@@ -18,7 +18,7 @@ import {
   recording_store,
   type Join as NetJoin,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog } from './flight'
+import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast } from './flight'
 import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject } from './stores'
 import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
@@ -27,7 +27,6 @@ import { diagnose } from '../lib/graphics'
 import { Radar, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES } from './radar'
 import { Rwr } from './rwr'
 import { words as menace_words } from './menace'
-import { bandit_coast } from './flight'
 import { surface as impact_surface } from './impact'
 import { impact as pipper_impact } from './pipper'
 import { shellStorage } from '@mochi/web'
@@ -2471,7 +2470,6 @@ const muzzle=1050; const gun={};
 // this or the pilot walks a burst by tracers that lie about where rounds go.
 const ROUND_LENGTH=2600;
 function round_length(alt){ return ROUND_LENGTH*Math.exp(Math.max(alt,0)/8500); }
-function round_average(span,alt){ if(span<1) return muzzle; const l=round_length(alt); return span*muzzle/(l*Math.expm1(span/l)); }
 const MAGAZINE=578;   // the M61's load: the ownship's magazine, and the nominal the bandit's expenditure is reported against
 function fire_gun(st,target,key,dt,force){
 	let active;
@@ -4904,7 +4902,7 @@ function fly_bandit(dt){
 		// constant 233 kt down 26.6 degrees, wings level, for 79 s).
 		if(bandit_brain){
 			bandit.lean ??= 0.10*(2*(((cfg.seed??7)*2654435761)%1000)/1000-1);   // per-mission, deterministic: replays must reproduce the fall
-			let steps=Math.min(4,Math.floor((fly_bandit.debt=(fly_bandit.debt||0)+dt)*60)); fly_bandit.debt-=steps/60;
+			const steps=Math.min(4,Math.floor((fly_bandit.debt=(fly_bandit.debt||0)+dt)*60)); fly_bandit.debt-=steps/60;
 			let w=null; for(let s=0;s<steps;s++){ const one=bandit_coast(bandit.lean); if(!one) break; w=one; }
 			if(w){ bandit_words=w;
 				bandit.pos.set(w[0],w[1],w[2]);

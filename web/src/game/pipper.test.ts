@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, it, expect } from 'vitest'
-import { aim, impact, flight, travel, length, reach, launch, MUZZLE, GRAVITY, Vector } from './pipper'
+import { aim, impact, flight, travel, length, reach, launch, MUZZLE, GRAVITY, type Vector } from './pipper'
 
 // fly marches a round the way battle.Fly does — quadratic drag on the whole
 // vector, plus gravity — and reports its closest approach to a target that
