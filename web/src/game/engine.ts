@@ -26,6 +26,10 @@ import { diagnose } from '../lib/graphics'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
 import { Radar, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES } from './radar'
 import { Rwr } from './rwr'
+import { words as menace_words } from './menace'
+import { bandit_coast } from './flight'
+import { surface as impact_surface } from './impact'
+import { impact as pipper_impact } from './pipper'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint } from './audio'
@@ -2525,7 +2529,7 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
 	m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30);   // off the rail at aircraft speed; the Mk 36 does the rest
-	m.life=20; m.kind="9m"; m.target=target; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.prate=undefined; m.fate=undefined; m.fated=0; m.shot=(m.shot||0)+1; m.launcher=st;
+	m.life=20; m.kind="9m"; m.target=target; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.prate=undefined; m.fate=undefined; m.fated=0; m.shot=(m.shot||0)+1; m.launcher=st;
 	if(target){ const dx=wrap_axis(target.pos.x-st.pos.x), dy=target.pos.y-st.pos.y, dz=wrap_axis(target.pos.z-st.pos.z); const d=Math.hypot(dx,dy,dz)||1;
 		const tail=target.fwd?Math.max(0,(dx*target.fwd.x+dy*target.fwd.y+dz*target.fwd.z)/d):0;
 		const floor=0.15+0.35*THREE.MathUtils.clamp(target.reheat??0,0,1);
@@ -2659,7 +2663,7 @@ function step_amraam(m,dt){
 			explosion_at(m.px,m.py,m.pz); }
 		else if(!MULTIPLAYER&&has_enemy&&t===bandit){ const verdict=battle_blast(0,{x:m.px,y:m.py,z:m.pz},battle_aim(bandit),0,battle_tick,WARHEAD.radar);   // the 22 kg charge reaches ~1.33x the 9M's radii
 			if(DEV_MODE){ m.mask=verdict.mask; m.killed=verdict.kill; }
-			explosion_at(m.px,m.py,m.pz); if(verdict.kill){ own_kills++; bandit_destroy(); } }
+			explosion_at(m.px,m.py,m.pz); if(verdict.kill){ own_kills++; bandit_destroy("verdict"); } }
 		else explosion_at(m.px,m.py,m.pz);
 		post_round(m,"fuse"); return; }
 	if(!state.alive||m.py<=0){ m.active=false; m.mesh.visible=false; round_drop(m.slot); post_round(m,m.py<=0?"ocean":"battery"); return; }
@@ -2692,7 +2696,9 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.v
 			const tail=THREE.MathUtils.clamp(-(dx*bandit.fwd.x+dy*bandit.fwd.y+dz*bandit.fwd.z)/dd,0,1);
 			let decoy=(0.35+0.40*(1-tail))*0.55;
 			if((bandit.reheat??0)>0.05) decoy*=0.5;   // the burner is the brightest thing in view (mirrors the server — the client never had this factor)
-			if(Math.random()<decoy){ m.blind=1.5; m.lx=bandit.pos.x; m.ly=bandit.pos.y-30; m.lz=bandit.pos.z; tracking=false;
+			decoy*=Math.pow(0.5,m.rejected||0);   // diminishing returns, not independent coin flips: a jet dispensing continuously used to stack ten full rolls in front of one round (measured 2026-08-17: twelve 9Ms, seven seduced, none arriving) — a seeker that has resolved this target through four flares has demonstrated the discrimination the M's counter-countermeasures exist for
+			if(Math.random()>=decoy){ m.rejected=(m.rejected||0)+1; }
+			else { m.blind=1.5; m.lx=bandit.pos.x; m.ly=bandit.pos.y-30; m.lz=bandit.pos.z; tracking=false;
 				const sx=m.lx-m.px, sy=m.ly-m.py, sz=m.lz-m.pz, sd=Math.hypot(sx,sy,sz)||1;   // the seeker is ON the flare now: re-reference the track, or the aim-point swap reads as an LOS-rate spike and breaks the lock at the seduction instant (mirrors the server)
 				m.sx=sx/sd; m.sy=sy/sd; m.sz=sz/sd; } }
 	} else if(!(t&&sim_time-(t.flared_at??-9)<0.8)) m.window=false;   // whoever the target is: their own dispense owns the window
@@ -2715,16 +2721,26 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.v
 				explosion_at(bx,by,bz); }
 			else if(!MULTIPLAYER&&has_enemy&&t===bandit){
 				if(fox3&&near<18){ if(DEV_MODE){ m.mask=-1; m.killed=true; }   // #27 phase 1 PLACEHOLDER: the simple PN endgame grazes a hard-evading target at 12-21 m, and the deliberately-simple round scores that as the 22 kg warhead's kill rather than growing proper guidance now — phase 2's core flight model and warhead classes replace this whole criterion
-					explosion_at(bx,by,bz); own_kills++; bandit_destroy(); }
+					explosion_at(bx,by,bz); own_kills++; bandit_destroy("verdict"); }
 				else { const verdict=battle_blast(0,{x:bx,y:by,z:bz},battle_aim(bandit),0,battle_tick);
 					if(DEV_MODE){ m.mask=verdict.mask; m.killed=verdict.kill; }
-					explosion_at(bx,by,bz); if(verdict.kill){ own_kills++; bandit_destroy(); } } }
+					explosion_at(bx,by,bz); if(verdict.kill){ own_kills++; bandit_destroy("verdict"); } } }
 			post("fuse");
 			continue; } }
 	let ax=0, ay=0, az=0, guided=false;
 	if(tracking){ ax=t.pos.x; ay=t.pos.y; az=t.pos.z; guided=true; }
 	else if(m.blind>0){ m.blind-=dt; m.ly-=45*dt; ax=m.lx; ay=m.ly; az=m.lz; guided=true;
-		if(m.blind<=0){ if(DEV_MODE&&!m.loose){ m.why="flare"; } m.loose=true; } }   // a swallowed flare is terminal: the seeker stares at the burnt-out decoy and never re-acquires (9M-realistic) — ballistic from here, fuse still live; mirrors the server
+		if(m.blind<=0){
+			// The flare has burnt out. ONE chance to find the aircraft again, and
+			// only if it is still inside the gimbal cone: improved counter-
+			// countermeasures are the M's defining feature over the L, and one
+			// flare being permanently terminal under-modelled the weapon.
+			m.loose=true;
+			if(t&&t.pos){ const rx=t.pos.x-m.px, ry=t.pos.y-m.py, rz=t.pos.z-m.pz, rd=Math.hypot(rx,ry,rz)||1;
+				if((rx*m.vx+ry*m.vy+rz*m.vz)/(rd*spd)>0.766 && Math.random()<0.55){
+					m.loose=false; m.blind=0; m.window=false; m.rejected=(m.rejected||0)+1;
+					m.sx=rx/rd; m.sy=ry/rd; m.sz=rz/rd; } }
+			if(DEV_MODE&&m.loose){ m.why="flare"; } } }   // ballistic from here, fuse still live; mirrors the server
 	if(guided && m.flew>0.6){
 		const dx=ax-m.px, dy=ay-m.py, dz=az-m.pz; const dist=Math.hypot(dx,dy,dz)||1e-6;
 		const ux=dx/dist, uy=dy/dist, uz=dz/dist;
@@ -2855,7 +2871,9 @@ function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c");   // battle_rigged:
 // the menu (and launches another if they want one). The endless-rematch loop
 // this replaces made a victory feel like a lap counter. The match row and the
 // recording are written at exit as always; the kill is already on the counters.
-function bandit_destroy(){ bandit.fate=bandit.fate||"fire"; bandit.fated=sim_time; explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
+// why names the cause, as crash_ownship(why) does for the ownship. The
+// fallback stays only for a caller that genuinely cannot say.
+function bandit_destroy(why){ bandit.fate=bandit.fate||why||"fire"; bandit.fated=sim_time; explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
 	has_enemy=false; bandit.group.visible=false;
 	notice(translate("KILL")); }
 let aircraft_lights=null;
@@ -4093,7 +4111,7 @@ function recording_sample(){
 				// both, and a debrief judges its plays from its inputs.
 				...(bandit_words?{ aoa:(bandit_words[STATE.alpha]||0)/D2R, g:bandit_words[STATE.nz]||0, tas:bandit.speed||0,
 					ias:bandit_words[STATE.cas]||0, mach:bandit_words[STATE.mach]||0, fuel:bandit_words[STATE.fuel]||0,
-					spool:Math.max(bandit_words[STATE.engine]||0,bandit_words[STATE.engine+2]||0), reheat:bandit.reheat||0,
+					spool:Math.max(bandit_words[STATE.engine]||0,bandit_words[STATE.engine+2]||0), burner:bandit.reheat||0,   // Afterburner, the name TacView plots — the bandit used to write a Mochi-only Reheat, invisible to every other tool and a silent empty read for anything looking on the standard channel
 					stabilator:(bandit_words[STATE.stabilator]||0)/D2R }:{}) },
 			cfg.task==="joust"?(cfg.bandit||"ace"):undefined);   // the tier flown against, on the bandit's own object (shipped): the debrief's context for judging every play it chose. Keyed on the CONFIG, not on bandit_brain — the brain arms lazily on the first core-ready frame, and the first recorded sample must not read as an untiered bandit   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
@@ -4412,7 +4430,7 @@ function check_collisions(){   // ownship vs sea / buildings / structures / carr
 	// blow up and it flew on. bandit_destroy is the real thing (explosion,
 	// duel over); no kill is credited, because flying into someone is
 	// not shooting them down.
-	if(has_enemy && wrap_distance(p,bandit.pos)<14){ bandit_destroy(); return crash_ownship("midair"); }
+	if(has_enemy && wrap_distance(p,bandit.pos)<14){ bandit_destroy("midair"); return crash_ownship("midair"); }
 }
 function lso_grade(){   // LSO pass grade from the in-close deviations and the touchdown: OK / FAIR / NO-GRADE / CUT
 	const p=ownship.pass||{gs:0,az:0,n:0}, t=ownship.touch||{sink:0,bank:0,fa:0};
@@ -4802,7 +4820,7 @@ function fly_player(dt){
 		if(has_enemy){ const h=bandit.harm; h.thrust=battle[11]; h.wing=battle[12]; h.killed=battle[9]>0; h.burning=battle[8]>0;
 			h.fire=[battle[6]||0,battle[7]||0]; h.leak=battle[14]||0;   // per-engine fire intensity (always exported, never read until #244) and the hulk leak (new wasm row)
 			h.wreck=battle[13]; if(h.killed&&!bandit.fate) bandit.fate="pilot";
-			if(battle[10]&BATTLE.explode){ own_kills++; bandit_destroy(); } }
+			if(battle[10]&BATTLE.explode){ own_kills++; bandit_destroy("fire"); } }   // the tank-vapour detonation: the one place "fire" is the honest word
 		if(has_enemy&&bandit.group.visible){ const rdx=bandit.pos.x-ownship.pos.x, rdy=bandit.pos.y-ownship.pos.y, rdz=bandit.pos.z-ownship.pos.z;
 			const range=Math.hypot(rdx,rdy,rdz)||1;
 			const closure=-((bandit.velx-ownship.velx)*rdx+(bandit.vely-ownship.vely)*rdy+(bandit.velz-ownship.velz)*rdz)/range;
@@ -4859,16 +4877,14 @@ function fly_player(dt){
 // line. The client owned obstacle collision for the ownship alone, so a bot
 // could fly through an island, a hangar or the carrier island untouched while
 // the same geometry killed the player instantly.
+// bandit_wrecked names WHAT it hit, or "" while it still flies. It used to
+// return a bare boolean and the caller defaulted every cause to "fire", so a
+// jet whose wing had been shot off and which then flew into the sea was
+// recorded as destroyed by a fire it never had. The geometry lives in
+// impact.ts, where it can be tested.
 function bandit_wrecked(){
-	const p=bandit.pos;
-	const floor=ground_height(p.x,p.z);
-	if(p.y<=(floor>-1e8?floor+2:6)) return true;   // terrain, deck, runway, apron — or open sea, which reports no surface
-	for(const b of obstacles.buildings){ if(p.y<b.topY+2 && p.x>b.minx&&p.x<b.maxx&&p.z>b.minz&&p.z<b.maxz && pip(p.x,p.z,b.pts)) return true; }
-	for(const m of obstacles.posts){ if(p.y<m.y1 && Math.hypot(p.x-m.x,p.z-m.z)<m.r+4) return true; }
-	if(carrier_model && p.y<80 && Math.abs(p.x-CARRIER.x)<160 && Math.abs(p.z-CARRIER.z)<160){
-		const h=deck_y_at(carrier_model,p.x,p.z,-1e9);   // the flat deck is a landing surface (the height check above owns it); only the taller superstructure is an obstacle
-		if(h>CARRIER.deckY+4 && p.y<h) return true; }
-	return false;
+	return impact_surface(bandit.pos, ground_height(bandit.pos.x,bandit.pos.z), obstacles.buildings, obstacles.posts,
+		carrier_model?{ x:CARRIER.x, z:CARRIER.z, deck:CARRIER.deckY, height:(x,z)=>deck_y_at(carrier_model,x,z,-1e9) }:undefined);
 }
 function fly_bandit(dt){
 	// The sea finishes a bandit whichever brain is flying it. This check lived
@@ -4879,9 +4895,32 @@ function fly_bandit(dt){
 	// the target box pointing dutifully straight down while the player hunted
 	// for it at twenty feet. Counted as the player's kill, as the stricken
 	// path counts it: flying an opponent into the ground is a kill.
-	if(bandit_wrecked()){ own_kills++; bandit_destroy(); return; }
+	{ const hit=bandit_wrecked(); if(hit){ own_kills++; bandit_destroy(hit); return; } }
 	bandit_wounds();   // the wound trails draw on EVERY branch below: a bandit still flying under its brain with a dead engine streams smoke, exactly like a stricken one
-	if(bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5)) return fly_bandit_stricken(dt);
+	if(bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5)){
+		// Dead, and the brain is flying it: coast on the REAL model rather than
+		// the scripted descent below — stick free, levers held, a standing roll.
+		// The script held one speed and one angle to the water (measured at a
+		// constant 233 kt down 26.6 degrees, wings level, for 79 s).
+		if(bandit_brain){
+			bandit.lean ??= 0.10*(2*(((cfg.seed??7)*2654435761)%1000)/1000-1);   // per-mission, deterministic: replays must reproduce the fall
+			let steps=Math.min(4,Math.floor((fly_bandit.debt=(fly_bandit.debt||0)+dt)*60)); fly_bandit.debt-=steps/60;
+			let w=null; for(let s=0;s<steps;s++){ const one=bandit_coast(bandit.lean); if(!one) break; w=one; }
+			if(w){ bandit_words=w;
+				bandit.pos.set(w[0],w[1],w[2]);
+				bandit.velx=w[3]; bandit.vely=w[4]; bandit.velz=w[5];
+				bandit.speed=Math.hypot(w[3],w[4],w[5]);
+				bandit.reheat=Math.max(w[STATE.engine+1],w[STATE.engine+3]);
+				_q.set(w[7],w[8],w[9],w[6]);
+				bandit.fwd.set(1,0,0).applyQuaternion(_q);
+				(bandit.up??=new THREE.Vector3()).set(0,1,0).applyQuaternion(_q);
+				(bandit.right??=new THREE.Vector3()).set(0,0,1).applyQuaternion(_q);
+				bandit.group.quaternion.copy(_q);
+				bandit.group.position.copy(bandit.pos); }
+			return;
+		}
+		return fly_bandit_stricken(dt);
+	}
 	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&!fly_bandit.tried){   // lazy: the core loads async and start_mission races it — arm the brain on the first frame the core is ready
 		fly_bandit.tried=true;
 		bandit_brain=bandit_init({ level: cfg.bandit||"ace", seed: 7, wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night", missiles: missiles_on(),
@@ -4890,7 +4929,7 @@ function fly_bandit(dt){
 	}
 	if(bandit_brain){   // the wasm brain: mirror the player in, step the second core, read the bandit back (#125 phase 2)
 		bandit_mirror(flight_get(), input.guns, crash_t<=0);
-		const shots=[]; for(const m of missiles){ if(m.active&&(m.target===bandit||m.enemy)&&shots.length<56) shots.push(m.px,m.py,m.pz,m.vx,m.vy,m.vz,m.enemy?1:0,m.kind==="120c"?(m.phase??0):-1); }
+		const shots=menace_words(missiles as any, bandit);   // the wire lives in menace.ts, where it can be tested: the phase word carries the heater's fate (-2 beaten) as well as the radar round's guidance phase
 		bandit_menace(shots);   // every round in the air, eight words each: the brain defends against ours and paces its own by phase (#33)
 		// The brain advances fixed 1/60 s frames: run it through an accumulator like
 		// the flight core, not once per render frame — per-frame stepping scaled the
@@ -5773,34 +5812,18 @@ function draw_hud(){
 			hctx.fillText(String(Math.round(off)),bore[0]+ux*84,bore[1]+uy*84+4); } }
 	if(master==="gun"){
 		if(boxed&&td){   // director: a TRUE lead-computing pipper now that rounds fly real time of flight — where my rounds will be, pulled back by where HE will be, so pipper-on-target IS the deflection solution (mirrors battle.Burst exactly); range analog around the ring
-			const span=Math.min(rng,2000); const muz=body_offset(ownship,6.0,0.35,0.0);
-			// Time of flight from the ROUND'S closing speed along the sight line —
-			// NOT aircraft closure: a hard pull swings own velocity off the LOS and
-			// collapsed the old round_average+vc denominator to its 200 m/s floor,
-			// inflating t to ~10 s; the -targetVel*t pullback then threw the pipper
-			// kilometres (the top-of-screen jump under g, 2026-08-10). The round
-			// flies at muzzle+ownship speed toward him regardless of own g, so its
-			// LOS closing speed stays near round speed through any manoeuvre. The
-			// honest own-g effect remains: alpha and gravity DROOP the pipper, and
-			// the pilot pulls lead to bring it up — it must never rise above the
-			// gun cross from own manoeuvre alone.
-			const avg=round_average(span,ownship.pos.y);
-			_look_d.set(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)).normalize();   // sight line (padlock scratch, free at draw time)
-			// Time of flight is how long the ROUND takes to fly the span — muzzle
-			// speed under drag, plus the pilot's own velocity the round inherits,
-			// projected on the line of sight. NO target term: the target's motion
-			// decides WHERE you aim (the -targetVel*t pullback below), never how
-			// fast the round travels. A first pass wrongly subtracted target
-			// velocity here too, so a fast-OPENING bandit (-338 kt) collapsed the
-			// denominator to its floor, inflated t to ~6 s, and threw the pipper
-			// to the top of the screen in a slow high-alpha fight (2026-08-10).
-			const vlos=(ownship.fwd.x*avg+(ownship.velx??0))*_look_d.x
-				+(ownship.fwd.y*avg+(ownship.vely??0))*_look_d.y
-				+(ownship.fwd.z*avg+(ownship.velz??0))*_look_d.z;
-			const t=span/Math.max(vlos,250);
-			const air=round_length(ownship.pos.y)*Math.log1p(muzzle*t/round_length(ownship.pos.y));   // barrel-component distance actually covered in t under drag
-			const impact=muz.clone().addScaledVector(ownship.fwd,air).addScaledVector(ownship.vel_dir,ownship.speed*t); impact.y-=0.5*9.8*t*t;
-			impact.x-=(boxed.velx??boxed.fwd.x*boxed.speed)*t; impact.y-=(boxed.vely??boxed.fwd.y*boxed.speed)*t; impact.z-=(boxed.velz??boxed.fwd.z*boxed.speed)*t;
+			const muz=body_offset(ownship,6.0,0.35,0.0);
+			// The solution lives in pipper.ts, where it is tested against a real
+			// round march. It used to clamp the span at 2 km (so a distant target
+			// got a 2 km solution), time the flight from an approximated closing
+			// speed with a 250 m/s floor, and decay only the barrel component
+			// while carrying the inherited velocity undragged. It is NOT gated on
+			// the gun's reach: the ring and the shoot cue say whether the shot is
+			// worth taking, this says where to point.
+			const impact=pipper_impact(muz,ownship.fwd,{x:ownship.velx??ownship.fwd.x*ownship.speed,y:ownship.vely??ownship.fwd.y*ownship.speed,z:ownship.velz??ownship.fwd.z*ownship.speed},
+				{x:boxed.pos.x,y:boxed.pos.y,z:boxed.pos.z},
+				{x:boxed.velx??boxed.fwd.x*boxed.speed,y:boxed.vely??boxed.fwd.y*boxed.speed,z:boxed.velz??boxed.fwd.z*boxed.speed},
+				ownship.pos.y).point;
 			const pip=proj_point(impact);
 			if(DEV_MODE&&pip){ const bvy=(boxed.vely??boxed.fwd.y*boxed.speed);
 				dev_pip={py:Math.round(pip[1]),by:Math.round(bore[1]),t:+t.toFixed(2),rng:Math.round(rng),bvy:Math.round(bvy),
