@@ -93,10 +93,7 @@ function Index() {
   return (
     <>
       {started && (
-        // fallback={null} on purpose: the engine draws its own LOADING screen
-        // the moment it mounts, and a spinner in front of that would be the only
-        // thing that ever flashed. The chunk is warmed at menu open anyway.
-        <Suspense fallback={null}>
+        <Suspense fallback={<div className='fixed inset-0 z-20 bg-[#0a1412]' />}>
           <GameCanvas
             key={gameKey}
             config={config}
