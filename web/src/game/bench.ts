@@ -54,10 +54,10 @@ if (active) {
       dpr: devicePixelRatio,
       back: canvas ? [canvas.width, canvas.height] : null,
       frames: s.length,
-      avg: +(sum / s.length).toFixed(2),
-      median: +(s[s.length >> 1] || 0).toFixed(2),
-      p95: +(s[Math.floor(s.length * 0.95)] || 0).toFixed(2),
-      fps: +(1000 / (sum / s.length)).toFixed(1),
+      avg: +(sum / s.length).toFixed(2),   // i18n-format-ok: developer benchmark payload, never shown to a user
+      median: +(s[s.length >> 1] || 0).toFixed(2),   // i18n-format-ok: developer benchmark payload, never shown to a user
+      p95: +(s[Math.floor(s.length * 0.95)] || 0).toFixed(2),   // i18n-format-ok: developer benchmark payload, never shown to a user
+      fps: +(1000 / (sum / s.length)).toFixed(1),   // i18n-format-ok: developer benchmark payload, never shown to a user
     }
     try {
       const gl = canvas?.getContext('webgl2') || canvas?.getContext('webgl')
@@ -69,7 +69,7 @@ if (active) {
       for (const [k, v] of Object.entries(state)) {
         if (k.startsWith('acc_') && typeof v === 'number') {
           const base = typeof state0?.[k] === 'number' ? (state0[k] as number) : 0
-          out['frame_' + k.slice(4)] = +((v - base) / (s.length || 1)).toFixed(2)
+          out['frame_' + k.slice(4)] = +((v - base) / (s.length || 1)).toFixed(2)   // i18n-format-ok: developer benchmark payload, never shown to a user
         } else {
           out[k] = v
         }
