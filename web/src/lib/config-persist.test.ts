@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, it, expect } from 'vitest'
-import { loadOutcome, PendingConfig } from './config-persist'
+import { loadOutcome, PendingConfig, RETIRED, stripRetired } from './config-persist'
 import type { MissionConfig } from './config'
 
 // Minimal stand-ins; PendingConfig only stores/returns the reference.
@@ -53,5 +53,36 @@ describe('PendingConfig', () => {
     pending.sync(a) // a later/stale render must not clobber the user's edit
     expect(pending.current()).toBe(c)
     expect(pending.dirty).toBe(true)
+  })
+})
+
+describe('stripRetired', () => {
+  it('drops the retired Sensitivity value a legacy account still carries', () => {
+    // The regression: removing the slider left the SAVED value in place, and two
+    // engine reads (the multiplayer control sample, the nosewheel pedal) went on
+    // scaling by it — so an account that had ever moved it flew at reduced
+    // authority against other people, with no setting left to correct it.
+    expect(stripRetired({ fuel: 6000, sens: 0.6 })).toEqual({ fuel: 6000 })
+  })
+
+  it('drops the retired missiles boolean the per-station loadout replaced', () => {
+    expect(stripRetired({ fuel: 6000, missiles: false })).toEqual({ fuel: 6000 })
+  })
+
+  it('leaves a config that carries no retired key untouched', () => {
+    expect(stripRetired({ fuel: 6000, callsign: 'Hornet' })).toEqual({ fuel: 6000, callsign: 'Hornet' })
+  })
+
+  it('copies rather than mutates, so the caller can still read what it strips', () => {
+    // loadConfig reads `missiles` to migrate the loadout AFTER stripping; a
+    // mutating strip would pull that value out from under it.
+    const saved = { fuel: 6000, missiles: false, sens: 0.6 }
+    stripRetired(saved)
+    expect(saved.missiles).toBe(false)
+    expect(saved.sens).toBe(0.6)
+  })
+
+  it('names every retired key in one place', () => {
+    expect([...RETIRED]).toEqual(['missiles', 'sens'])
   })
 })
