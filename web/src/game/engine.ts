@@ -147,7 +147,7 @@ function here_text(){   // dev: the deck point under the NOSE WHEEL (plus the nu
 	const nx=ownship.pos.x+ownship.fwd.x*nose, nz=ownship.pos.z+ownship.fwd.z*nose;
 	const fa=carrier_fore_aft(nx,nz)+dev_nudge.fa, lat=carrier_lateral(nx,nz)+dev_nudge.lat;
 	const hd=Math.atan2(-(ownship.fwd.x*CARRIER_S+ownship.fwd.z*CARRIER_C), ownship.fwd.x*CARRIER_C-ownship.fwd.z*CARRIER_S)*180/Math.PI+dev_nudge.hd;   // heading in the deck frame (0 = down the bow, + = port), from the forward vector through the inverse frame
-	return "fa="+fa.toFixed(2)+", lat="+lat.toFixed(2)+", heading="+hd.toFixed(1)+", y="+ownship.pos.y.toFixed(2)+" · nimitz "+model_stamp(nimitz_model_url);
+	return "fa="+fa.toFixed(2)+", lat="+lat.toFixed(2)+", heading="+hd.toFixed(1)+", y="+ownship.pos.y.toFixed(2)+" · nimitz "+model_stamp(nimitz_model_url);   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 }
 function copy_here(){   // dev (Ctrl+C): the live position line to the clipboard
 	const txt=here_text();
@@ -1074,7 +1074,7 @@ function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_7
 					clipped.push([a[0]+(b[0]-a[0])*f, floor, a[2]+(b[2]-a[2])*f]); } }
 			if(clipped.length>=3) ownship.group.userData.outline=clipped; } }   // [z, y, x] per hull vertex, group frame
 	try{ build_indexer(ownship.group); }catch(e){ build_error=String(e&&e.message||e); }
-	console.warn("cockpit eye", ownship.group.userData.eye.x.toFixed(2), ownship.group.userData.eye.y.toFixed(2)); }
+	console.warn("cockpit eye", ownship.group.userData.eye.x.toFixed(2), ownship.group.userData.eye.y.toFixed(2)); }   // i18n-format-ok: developer console output, never shown to a user
 // AoA indexer (#99): the GLB ships the brightness knob but no indexer lights, so
 // three unlit emissive shapes stand in, mounted beside the combining glass —
 // green chevron (slow), amber donut (on-speed), red chevron (fast), Navy
@@ -1193,7 +1193,7 @@ function surface_fit(g,box){
 	const xt=probe(cy+hh*0.8)??xm, xb=probe(cy-hh*0.8)??xm;
 	const pW=g.localToWorld(new THREE.Vector3(box.lo.x,cy,cz)); rc.set(eyeW,pW.sub(eyeW).normalize());   // diagnostic: the full surface stack on the centre sightline
 	const stack=rc.intersectObject(g,true).slice(0,8).map(h=>{ const p=g.worldToLocal(h.point.clone());
-		return +p.x.toFixed(3)+" "+(h.object.name||h.object.type)+"/"+(((h.object as THREE.Mesh).material as THREE.Material&{name?:string})?.name||"?"); });
+		return +p.x.toFixed(3)+" "+(h.object.name||h.object.type)+"/"+(((h.object as THREE.Mesh).material as THREE.Material&{name?:string})?.name||"?"); });   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	return { x:xm, tilt:Math.atan2(xt-xb,1.6*hh), stack, cover }; }
 // (Two placement refinements were tried against captures and refuted: sliding
 // and scaling the quad along the eye sightline to subtend the recessed plate
@@ -1276,9 +1276,9 @@ function build_screens(g){
 			:new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, side:THREE.DoubleSide }));
 		surface_pose(mesh,fit?fit.x:box.lo.x,tilt,cy,cz);
 		g.add(mesh);
-		list.push({ mesh, canvas, tex, display, height:h, fit:fit?[+fit.x.toFixed(3),+(tilt/D2R).toFixed(1)]:null, stack:fit?fit.stack:null,
-			box:[box.lo.x,box.lo.y,box.lo.z,box.hi.x,box.hi.y,box.hi.z].map(n=>+n.toFixed(3)) }); }
-	if(DEV_MODE) (globalThis as Record<string,unknown>).ddi_geometry=list.map(sc=>({ display:sc.display, at:sc.mesh.position.toArray().map(n=>+(n as number).toFixed(3)), box:sc.box }));   // placement diagnostics that survive dev_probe churn
+		list.push({ mesh, canvas, tex, display, height:h, fit:fit?[+fit.x.toFixed(3),+(tilt/D2R).toFixed(1)]:null, stack:fit?fit.stack:null,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+			box:[box.lo.x,box.lo.y,box.lo.z,box.hi.x,box.hi.y,box.hi.z].map(n=>+n.toFixed(3)) }); }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	if(DEV_MODE) (globalThis as Record<string,unknown>).ddi_geometry=list.map(sc=>({ display:sc.display, at:sc.mesh.position.toArray().map(n=>+(n as number).toFixed(3)), box:sc.box }));   // placement diagnostics that survive dev_probe churn (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 	if(list.length){ g.userData.screens=list; for(const sc of list) ddi_blit(sc); } }
 // ---- DDI/AMPCD paging (#99): per-display page state drawn by size-agnostic
 // renderers in a 512-logical space — every consumer (the pit quads now; the
@@ -1642,7 +1642,7 @@ function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||
 	const rngnm=Math.hypot(dx,dz)/NM;   // TACAN block: bearing / range / minutes to the boat at present groundspeed — two short lines in the corner, clear of the MENU legend
 	x.font="20px monospace";
 	x.fillText("TCN "+String(Math.round(brg/D2R+360)%360).padStart(3,"0"),24,458);
-	let tline=rngnm.toFixed(1)+" NM";
+	let tline=rngnm.toFixed(1)+" NM";   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	if(gz.ground>50) tline+="  "+Math.max(0,Math.round(rngnm/gz.ground*60))+" MIN";
 	x.fillText(tline,24,486); }
 function ddi_sa(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0;
@@ -1698,9 +1698,9 @@ function ddi_hud(x){ const gz=ownship.gauges||{};   // HUD repeater format (#9):
 	x.strokeRect(58,196,96,34); x.fillText(String(Math.round(gz.casKt||0)),144,214);
 	x.strokeRect(360,196,110,34); x.fillText(String(Math.round(gz.altitude||0)),462,214);
 	x.font="20px monospace"; x.textAlign="left";
-	x.fillText("α "+(ownship.aoa||0).toFixed(1),58,254);
-	x.fillText("G  "+(ownship.gload||1).toFixed(1),58,280);
-	x.fillText("M  "+(gz.mach||0).toFixed(2),58,306);
+	x.fillText("α "+(ownship.aoa||0).toFixed(1),58,254);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+	x.fillText("G  "+(ownship.gload||1).toFixed(1),58,280);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+	x.fillText("M  "+(gz.mach||0).toFixed(2),58,306);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 	x.textAlign="right"; x.fillText(String(Math.round(gz.fpm||0)),470,254);   // VVI under the altitude box
 	x.font="26px monospace"; x.textAlign="center";
 	x.fillText(String(Math.round((gz.heading||0)/D2R+360)%360).padStart(3,"0"),256,70);
@@ -1733,7 +1733,7 @@ function ddi_fpas(x,display){ const gz=ownship.gauges||{};   // FPAS (#8 menu pr
 	if(pph>200){
 		const spare=Math.max(0,total-2000), hours=spare/pph;
 		row("FLOW",Math.round(pph/10)*10+" PPH",140);
-		row("",gs>60?(pph/gs).toFixed(1)+" LB/NM":"--- LB/NM",168);
+		row("",gs>60?(pph/gs).toFixed(1)+" LB/NM":"--- LB/NM",168);   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 		row("TIME",hm(hours)+" TO 2000",210);
 		row("RANGE",gs>60?Math.round(hours*gs)+" NM TO 2000":"---",238);
 	} else { x.font="20px monospace"; x.textAlign="center"; x.fillText("ENGINES DEAD",256,180); }
@@ -1741,7 +1741,7 @@ function ddi_fpas(x,display){ const gz=ownship.gauges||{};   // FPAS (#8 menu pr
 	const home=fpas_home();
 	if(home){
 		const low=home.arrive<=2000;
-		row("DIST",home.dist.toFixed(0)+" NM",344);
+		row("DIST",home.dist.toFixed(0)+" NM",344);   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 		row("TIME",hm(home.hours),372);
 		if(low&&colour) x.fillStyle="#ffb04a";
 		row("FUEL",Math.round(home.arrive/10)*10+" LB",400);
@@ -1859,7 +1859,7 @@ function ddi_chklst(x,display){ const o=last_out||[];   // CHKLST (#8): the real
 	let y=130;
 	item(44,y,"WINGS","SPREAD",(ownship.fold??0)<0.02); y+=56;
 	item(44,y,"FLAPS","FLAPS "+flap,flap_select===1); y+=56;
-	item(44,y,"TRIM",trim.toFixed(1)+"° NU",trim>0.5); y+=56;
+	item(44,y,"TRIM",trim.toFixed(1)+"° NU",trim>0.5); y+=56;   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	item(44,y,"HOOK UP",null,(ownship.hook??0)<0.02); y+=56;
 	item(44,y,"CANOPY",null,(ownship.canopy??ownship.canopyTarget??0)<0.02); y+=56;
 	item(44,y,"PARK BRK","OFF",!parking);
@@ -1903,7 +1903,7 @@ function ddi_fcs(x,display){ const o=last_out||[];   // per-surface truth straig
 		x.beginPath(); x.moveTo(150,92); x.lineTo(362,122); x.moveTo(362,92); x.lineTo(150,122); x.stroke();
 		x.strokeStyle="#39e07a"; x.lineWidth=2; }
 	x.textAlign="left";   // the two trim datums
-	x.fillText("TRIM "+((o[STATE.datum]||0)/D2R).toFixed(1)+"°",24,430);
+	x.fillText("TRIM "+((o[STATE.datum]||0)/D2R).toFixed(1)+"°",24,430);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 	x.fillText("ROLL "+Math.round((o[STATE.bank]||0)*100)+"%",24,458); }
 // ============================================================================ stores (#17): per-station loadout, visuals, firing order
 const TIP_NODES=stores_tips;   // the two wingtip AIM-9 NODES in the fa18c GLB, sides probe-verified — SHARED with the setup preview via stores.ts so the two can never disagree
@@ -2672,13 +2672,13 @@ function step_amraam(m,dt){
 		smoke.r[k]=0.7;smoke.g[k]=0.72;smoke.b[k]=0.75; } }
 function post_round(m,why){ m.fate=why; m.fated=sim_time;   // the recorder's last sample of this round carries the fate (#33 debrief) — shipped, unlike the dev log below
 	if(!DEV_MODE) return; const log=(globalThis as any).dev_missiles=(globalThis as any).dev_missiles||[];
-	log.push({why, kind:"120c", flew:+(m.flew??0).toFixed(1), phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), least:+(m.least??-1).toFixed(1), took:m.took||0, killed:!!m.killed, mask:m.mask??-1}); }
+	log.push({why, kind:"120c", flew:+(m.flew??0).toFixed(1), phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), least:+(m.least??-1).toFixed(1), took:m.took||0, killed:!!m.killed, mask:m.mask??-1}); }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.visible=false; continue; }
 	if(m.kind==="120c"){ step_amraam(m,dt); continue; }
 	m.life-=dt; m.flew+=dt;
 	if(m.target){ const md=wrap_distance({x:m.px,y:m.py,z:m.pz},m.target.pos); if(md<(m.least??1e9)) m.least=md; }   // closest approach: dev_missiles telemetry and the recording's Least channel (#33 debrief) — one distance per live heater per frame
 	const post=(why)=>{ m.fate=why; m.fated=sim_time;   // recorded on the round's last sample (#33 debrief)
-		if(DEV_MODE){ const log=(globalThis as any).dev_missiles=(globalThis as any).dev_missiles||[]; log.push({why, least:+(m.least??-1).toFixed(1), flew:+m.flew.toFixed(1), loose:!!m.loose, broke:m.why||"", at:m.at??-1, mask:m.mask??-1, killed:!!m.killed}); } };
+		if(DEV_MODE){ const log=(globalThis as any).dev_missiles=(globalThis as any).dev_missiles||[]; log.push({why, least:+(m.least??-1).toFixed(1), flew:+m.flew.toFixed(1), loose:!!m.loose, broke:m.why||"", at:m.at??-1, mask:m.mask??-1, killed:!!m.killed}); } };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	if(m.life<=0){ m.active=false; m.mesh.visible=false; post("life"); continue; }
 	// The AIM-9M (#126), mirroring the server: proportional navigation with a
 	// gimballed, rate-limited seeker; boost-coast propulsion paying for every
@@ -2743,12 +2743,12 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.v
 		const dx=ax-m.px, dy=ay-m.py, dz=az-m.pz; const dist=Math.hypot(dx,dy,dz)||1e-6;
 		const ux=dx/dist, uy=dy/dist, uz=dz/dist;
 		const axl=m.vx/spd, ayl=m.vy/spd, azl=m.vz/spd;
-		if(ux*axl+uy*ayl+uz*azl<(fox3?0.5:0.766)){ if(DEV_MODE&&!m.loose){ m.why="gimbal"; m.at=+dist.toFixed(0); } m.loose=true; }   // ±40° gimbal (the 120's own seeker gimbals wider, ±60)
+		if(ux*axl+uy*ayl+uz*azl<(fox3?0.5:0.766)){ if(DEV_MODE&&!m.loose){ m.why="gimbal"; m.at=+dist.toFixed(0); } m.loose=true; }   // ±40° gimbal (the 120's own seeker gimbals wider, ±60)   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 		let rx=(ux-m.sx)/Math.max(dt,1e-6), ry=(uy-m.sy)/Math.max(dt,1e-6), rz=(uz-m.sz)/Math.max(dt,1e-6);
 		const along=rx*ux+ry*uy+rz*uz; rx-=along*ux; ry-=along*uy; rz-=along*uz;   // the rotation component of the LOS motion
 		const rate=Math.hypot(rx,ry,rz);
 		const paced=(rate+(m.prate??rate))/2; m.prate=rate;   // two-frame average: the bandit advances in whole 1/60 s quanta, so off-60 fps render frames see its motion as alternating spikes — judge the ceiling on the mean, not the artifact
-		if(paced>(fox3?0.7:0.35)){ if(DEV_MODE&&!m.loose){ m.why="rate"; m.at=+dist.toFixed(0); } m.loose=true; }   // the seeker's track ceiling — beaming saturates it (the radar round tracks harder, phase 1)
+		if(paced>(fox3?0.7:0.35)){ if(DEV_MODE&&!m.loose){ m.why="rate"; m.at=+dist.toFixed(0); } m.loose=true; }   // the seeker's track ceiling — beaming saturates it (the radar round tracks harder, phase 1)   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 		m.sx=ux; m.sy=uy; m.sz=uz;
 		if(!m.loose){
 			// PROPORTIONAL NAVIGATION: a = N·Vc·λ̇ — fly the collision course.
@@ -3444,7 +3444,7 @@ const instrument_mats=[];   // the two gauge-atlas materials, per loaded model �
 let backlight_state="";
 function instrument_backlight(){
 	const level=cfg.tod==="night"?(ownship.lights?0.62:0.30):0.22;   // dim wash by day; night panel follows the lights switch (L)
-	const key=level.toFixed(2); if(key===backlight_state) return; backlight_state=key;
+	const key=level.toFixed(2); if(key===backlight_state) return; backlight_state=key;   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	for(const mm of instrument_mats) mm.emissiveIntensity=level; }
 let cockpit_flood=null;
 function update_shuttles(){   // the hooked cat's shuttle rides with the jet's launch bar; the others sit home
@@ -3687,7 +3687,7 @@ function call_the_ball(){
 	const clara=(()=>{ if(!carrier_ols) return true; const s=ols_dev(ownship.pos,carrier_ols);
 		return Math.abs(Math.atan2(s.lat,Math.max(s.along,1))*180/Math.PI)>4 || s.dev<-1; })();
 	const ball=clara?translate("CLARA"):translate("BALL");
-	comm((cfg.callsign||"701")+": "+translate("HORNET")+" "+ball+" "+hundreds.toFixed(1)+(atc_on?" "+translate("AUTO"):""), "#9fd0ff"); }
+	comm((cfg.callsign||"701")+": "+translate("HORNET")+" "+ball+" "+hundreds.toFixed(1)+(atc_on?" "+translate("AUTO"):""), "#9fd0ff"); }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 function mission_start(){ const start=cfg.task==="joust"?"joust":cfg.start; return start==="landing"?"case2":start; }   // joust always starts at the merge; the Start selector applies to free flight only. "landing" is the legacy saved value for what is now Case II (#205)
 function takeoff_surface(){ const st=mission_start(); if(st==="carrier") return CARRIER.deckY; if(st==="runway"&&airports.length) return airports[0].start.y; return 8; }
 function on_ground(){ return ownship.launching||!!ownship.grounded; }   // the real resting flag, not an altitude guess — off the cat you fly level at deck height, where a +12 m heuristic left G dead
@@ -3798,7 +3798,7 @@ function pit_click(e){
 	if(!hit||!hit.uv){
 		if(PANEL_POINT){ const h=_click_ray.intersectObject(ownship.group,true).find(k=>!k.object.userData.overlay);   // measuring click: report where on the panel the pilot pointed
 			if(h){ const p=ownship.group.worldToLocal(h.point.clone());
-				dev_probe_text="panel y="+p.y.toFixed(3)+" z="+p.z.toFixed(3)+" x="+p.x.toFixed(3)+" ("+(h.object.name||"?")+")";
+				dev_probe_text="panel y="+p.y.toFixed(3)+" z="+p.z.toFixed(3)+" x="+p.x.toFixed(3)+" ("+(h.object.name||"?")+")";   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 				try{ navigator.clipboard.writeText(dev_probe_text); }catch(_){ /* clipboard optional */ } } }   // the WHOLE line — the node name and depth matter as much as y,z
 		return; }
 	const sc=list.find(s=>s.mesh===hit.object);
@@ -4248,7 +4248,7 @@ function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_qual
 	while(impact_marks.length>=cap){ const old=impact_marks.shift(); old.parent?.remove(old); }
 	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
-if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], looking, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle
+if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], looking, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): set a cloud deck and park the jet on the 3.5 deg glideslope at nm — cfg/apply_clouds/carrier_world are module-scope, so a headless approach test cannot be driven from page script without this
 	if(clouds!==undefined){ cfg.clouds=clouds; apply_clouds(); }
 	const d=nm*1852, tw=SHIP.wires[SHIP.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw));
@@ -4260,7 +4260,7 @@ if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): s
 	ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 	flight_push();
 	const p=CLOUDS[cfg.clouds];
-	return { clouds:cfg.clouds, nm, alt:+alt.toFixed(0), altFeet:+(alt/0.3048).toFixed(0), base:p?p.base:null, top:p?p.top:null, inCloud:!!p&&alt>=p.base&&alt<=p.top }; };
+	return { clouds:cfg.clouds, nm, alt:+alt.toFixed(0), altFeet:+(alt/0.3048).toFixed(0), base:p?p.base:null, top:p?p.top:null, inCloud:!!p&&alt>=p.base&&alt<=p.top }; };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 if(DEV_MODE) (globalThis as any).dev_effects=(q)=>{ cfg.effects_quality=q; apply_effects(); return [smoke.limit,strikes.limit,debris.limit,flares.limit]; };   // dev (#13): the Settings live-apply path, verifiable headless
 if(DEV_MODE) (globalThis as any).dev_pools=()=>{   // dev (#13): pool invariants — the swap-remove position map must never duplicate, lose, or mis-map a live index
 	const report={};
@@ -4291,11 +4291,11 @@ if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds){ if(!has_ene
 if(DEV_MODE) (globalThis as any).dev_panels=()=>{ const read=(st)=>{ if(!st||!st.group) return null; const out={}; for(const p of PANELS){ const n=st.group.getObjectByName(p.node); out[p.node]=n?n.visible:null; } return out; };
 	const words=last_out, gone={}; if(words) for(const p of PANELS){ let g=true; for(let e=p.first;e<p.first+4;e++) if((words[STATE.element+e]??0)<0.99) g=false; gone[p.node]=g; }
 	return { ownship:read(ownship), bandit:has_enemy?read(bandit):null, ownshipShed:gone }; };   // dev (#wing loss): panel visibility and the element verdict behind it
-if(DEV_MODE) (globalThis as any).dev_bandit_state=()=>has_enemy&&bandit.harm?{ thrust:+(bandit.harm.thrust||0).toFixed(2), leak:+(bandit.harm.leak||0).toFixed(2), fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)), burning:!!bandit.harm.burning, wing:+(bandit.harm.wing||0).toFixed(2), killed:!!bandit.harm.killed, smoke:smoke.activeList.length, flying:!(bandit.harm.killed||bandit.harm.wing>0.5)&&bandit.group.visible, speed:Math.round(bandit.speed||0) }:null;
+if(DEV_MODE) (globalThis as any).dev_bandit_state=()=>has_enemy&&bandit.harm?{ thrust:+(bandit.harm.thrust||0).toFixed(2), leak:+(bandit.harm.leak||0).toFixed(2), fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)), burning:!!bandit.harm.burning, wing:+(bandit.harm.wing||0).toFixed(2), killed:!!bandit.harm.killed, smoke:smoke.activeList.length, flying:!(bandit.harm.killed||bandit.harm.wing>0.5)&&bandit.group.visible, speed:Math.round(bandit.speed||0) }:null;   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 if(DEV_MODE) (globalThis as any).dev_dispense=()=>{ if(!has_enemy||!bandit.group.visible) return false; dispense_flares(bandit); bandit.flared_at=sim_time; return true; };   // dev (#29): the bandit's mixed-program dispense on demand — the chaff harness owns the timing the brain otherwise decides
 if(DEV_MODE) (globalThis as any).dev_radar=(mode)=>{ if(mode==="rws"||mode==="tws") RADAR.mode=mode; return RADAR.mode; };   // dev: the mode the RDR page's bezel selects, reachable without a canvas click (the TWS employment paths need it)
 if(DEV_MODE) (globalThis as any).dev_zone=()=>{ const z=launch_zone(); if(!z) return null;   // #27 phase 2: the live DLZ ladder and its shoot cue, as the HUD draws them
-	return { aero:Math.round(z.aero), max:Math.round(z.max), escape:Math.round(z.escape), minimum:Math.round(z.minimum), range:Math.round(z.range||0), active:+((z.active||0).toFixed(1)), cue:shoot_cue(z) }; };
+	return { aero:Math.round(z.aero), max:Math.round(z.max), escape:Math.round(z.escape), minimum:Math.round(z.minimum), range:Math.round(z.range||0), active:+((z.active||0).toFixed(1)), cue:shoot_cue(z) }; };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 function hit_sparks(x,y,z,vx,vy,vz,target,local){ _spark_count++; add_impact_mark(target,local);
 	// Re-read against real gun-camera frames (#239, the 3 June 1967 F-105 on a
 	// MiG-17 in colour): 20 mm HEI lands as a SOFT VOLUMETRIC FLASH CLOUD —
@@ -4466,7 +4466,7 @@ if(DEV_MODE) (globalThis as any).dev_measure=()=>{   // one-shot: the lowest mes
 		let best=null as any;
 		for(let i=0;i<pos.count;i+=stride){ v.fromBufferAttribute(pos,i).applyMatrix4(m);
 			if(!best || v.y<best.y) best={y:v.y,x:v.x,z:v.z}; }
-		if(best) rows.push({n:(o.name||o.parent?.name||"?").slice(0,28), y:+best.y.toFixed(2), x:+best.x.toFixed(2), z:+best.z.toFixed(2)}); });
+		if(best) rows.push({n:(o.name||o.parent?.name||"?").slice(0,28), y:+best.y.toFixed(2), x:+best.x.toFixed(2), z:+best.z.toFixed(2)}); });   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	rows.sort((p1,p2)=>p1.y-p2.y);
 	return JSON.stringify(rows.slice(0,16));
 };
@@ -4475,9 +4475,9 @@ let dev_fired=0;   // frames on which any REMOTE streamed gunfire — cumulative
 if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most low vertex of the Hook mesh) in WORLD, vs the current wire apex — #72 wire-to-claw
 	let claw=null as any; const v=new THREE.Vector3(); const base=ownship.group.getObjectByName("Hook_AN_base_20");
 	if(base) base.traverse((o:any)=>{ if(o.isMesh&&o.geometry?.attributes?.position){ const pos=o.geometry.attributes.position; for(let i=0;i<pos.count;i++){ v.fromBufferAttribute(pos,i).applyMatrix4(o.matrixWorld); if(!claw||v.y<claw.y) claw={x:v.x,y:v.y,z:v.z}; } } });
-	let cl=null; if(claw){ const local=new THREE.Vector3(claw.x,claw.y,claw.z); ownship.group.worldToLocal(local); cl={x:+local.x.toFixed(2),y:+local.y.toFixed(2),z:+local.z.toFixed(2)}; }
-	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };
-if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl, amraam:Math.max(0,ownship.amraam|0),
+	let cl=null; if(claw){ const local=new THREE.Vector3(claw.x,claw.y,claw.z); ownship.group.worldToLocal(local); cl={x:+local.x.toFixed(2),y:+local.y.toFixed(2),z:+local.z.toFixed(2)}; }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl, amraam:Math.max(0,ownship.amraam|0),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	fleet:[...remotes.values()].map(r=>({ loadout:!!r.loadout, racks:r.racks&&r.racks.nodes?Object.fromEntries(Object.entries(r.racks.nodes).map(([k,n])=>[k,!!(n as any).visible])):null })),   // each remote's drawn store nodes — MP stores-rendering verification (#27)
 	nearest:(()=>{ let best=null;   // #27: the closest remote's geometry off our nose — how an MP harness (and a bot, later) knows where to point
 		for(const st of remotes.values()){ if(!st.pos) continue;   // geometry only: a remote too far to DRAW is still a contact worth pointing at
@@ -4489,15 +4489,15 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v
 			const side=(dx*rx+dy*ry+dz*rz)/d;
 			const ux=ownship.up.x, uy=ownship.up.y, uz=ownship.up.z;
 			const above=(dx*ux+dy*uy+dz*uz)/d;
-			best={ range:Math.round(d), ahead:+ahead.toFixed(3), side:+side.toFixed(3), above:+above.toFixed(3) }; }
+			best={ range:Math.round(d), ahead:+ahead.toFixed(3), side:+side.toFixed(3), above:+above.toFixed(3) }; }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 		return best; })(),
-	visual:amraam_visual, jammer:{ armed:jammer_armed, loud:jammer_loud(), memory:+(RADAR.memory??0).toFixed(1), strobes:RADAR.strobes.length },
+	visual:amraam_visual, jammer:{ armed:jammer_armed, loud:jammer_loud(), memory:+(RADAR.memory??0).toFixed(1), strobes:RADAR.strobes.length },   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	apart:(!MULTIPLAYER&&has_enemy)?Math.round(Math.hypot(wrap_axis(bandit.pos.x-ownship.pos.x),bandit.pos.y-ownship.pos.y,wrap_axis(bandit.pos.z-ownship.pos.z))):-1,   // #32: the SP pair's separation, for the BVR joust checks
-	rounds:missiles.filter(m=>m.active&&m.kind==="120c").map(m=>({ phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), reach:Math.round(m.rangeToGo??0), stale:+(m.stale??0).toFixed(1), flew:+(m.flew??0).toFixed(1), took:m.took||0, enemy:!!m.enemy })),   // #27 phase 2: each AIM-120 in flight, straight from the Go core
+	rounds:missiles.filter(m=>m.active&&m.kind==="120c").map(m=>({ phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), reach:Math.round(m.rangeToGo??0), stale:+(m.stale??0).toFixed(1), flew:+(m.flew??0).toFixed(1), took:m.took||0, enemy:!!m.enemy })),   // #27 phase 2: each AIM-120 in flight, straight from the Go core (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 	running, loading, gates:{ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready() },   // #restart debugging: which load gate is stuck
-	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], /* #57 parked: tracking:{ on:head_track?1:0, ok:head_ok?1:0, az:+head_az.toFixed(3), el:+head_el.toFixed(3) }, */ radar:{ mode:RADAR.sil?"sil":RADAR.stt!=null?"stt":RADAR.mode, w:Math.round(RADAR.half()/D2R), scale:RADAR.scale, sweep:+(RADAR.sweep/D2R).toFixed(1), bricks:RADAR.bricks.length, tracks:RADAR.tracks.length, ls:RADAR.ls??null, stt:RADAR.stt??null, emit:RADAR.emitter(), bandit:bandit_emitter, banditlock:bandit_locked,el:Math.round(RADAR.elevation/D2R), track:RADAR.tracks.length?(()=>{ const g=radar_geometry(radar_own(),RADAR.tracks[0],wrap_axis); return { az:+(g.azimuth/D2R).toFixed(1), range:Math.round(g.range) }; })():null }, draws:ddi_draws, emitters:MULTIPLAYER&&net?Object.fromEntries(net.emitters):null, rwr:{ n:RWR.contacts.length, lock:RWR.locked(), missile:RWR.warned(), paints:RWR.paints, contacts:RWR.contacts.map(c=>({ id:c.id, brg:Math.round(c.bearing/D2R), lk:c.locked?1:0, ms:c.missile?1:0, age:+(RWR.time-c.at).toFixed(1) })) },home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose
-	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,
-	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS
+	atc:atc_on, missiles:missiles_on(), hold:weapons_hold, master, brake:!!input.brake, park:parking, flap:flap_select, banditspent:bandit.spent||0, trim:input.trim||0, lean:input.lean||0, flares:ownship.cm, probe:ownship.probeTarget??0, view:cfg.view, harm:{...bandit.harm}, own:{ burn:[+own_burn[0].toFixed(2),+own_burn[1].toFixed(2)], burning:own_burning, leak:+own_leak.toFixed(2) }, alerts:{ lamp:caution_lamp, keys:[...caution_keys] }, face:ddi_view_rect, pattern:pattern&&{...pattern}, comms:comms.map(c=>c.text).slice(-8), hook:+(ownship.hook??0).toFixed(2), gross:gross_weight(), fuel:Math.round(((ownship.gauges||{}).fuelRaw)||0), departure:departure_drive, yawrate:+((Math.abs((last_out||[])[STATE.omega+1]||0))*57.2958).toFixed(1), aoa:+(ownship.aoa??0).toFixed(1), dump:fuel_dump?1:0, secured:[...secured], /* #57 parked: tracking:{ on:head_track?1:0, ok:head_ok?1:0, az:+head_az.toFixed(3), el:+head_el.toFixed(3) }, */ radar:{ mode:RADAR.sil?"sil":RADAR.stt!=null?"stt":RADAR.mode, w:Math.round(RADAR.half()/D2R), scale:RADAR.scale, sweep:+(RADAR.sweep/D2R).toFixed(1), bricks:RADAR.bricks.length, tracks:RADAR.tracks.length, ls:RADAR.ls??null, stt:RADAR.stt??null, emit:RADAR.emitter(), bandit:bandit_emitter, banditlock:bandit_locked,el:Math.round(RADAR.elevation/D2R), track:RADAR.tracks.length?(()=>{ const g=radar_geometry(radar_own(),RADAR.tracks[0],wrap_axis); return { az:+(g.azimuth/D2R).toFixed(1), range:Math.round(g.range) }; })():null }, draws:ddi_draws, emitters:MULTIPLAYER&&net?Object.fromEntries(net.emitters):null, rwr:{ n:RWR.contacts.length, lock:RWR.locked(), missile:RWR.warned(), paints:RWR.paints, contacts:RWR.contacts.map(c=>({ id:c.id, brg:Math.round(c.bearing/D2R), lk:c.locked?1:0, ms:c.missile?1:0, age:+(RWR.time-c.at).toFixed(1) })) },home:(()=>{const h=fpas_home(); return h?Math.round(h.arrive):null})(), spool:[+(((ownship.gauges||{}).spoolL)||0).toFixed(2),+(((ownship.gauges||{}).spoolR)||0).toFixed(2)],   // #50: the visual-pattern gates and the recent radio log   // #47 alert diagnostics; face is the full-screen DDI's on-screen box, which headless page verification crops from   // #40: the ownship's OWN damage — in multiplayer this comes from the server's copy via the self pose   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 		racks:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>[n,o.visible])),
 		lateral:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>{ let mesh=null; o.traverse(x=>{ if(!mesh&&x.isMesh) mesh=x; });
 			if(!mesh||!mesh.geometry||!mesh.geometry.attributes.position) return [n,null];
@@ -4511,12 +4511,12 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v
 			else { for(let i=0;i<pos.count;i+=3){ c.x+=pos.getX(i); c.y+=pos.getY(i); c.z+=pos.getZ(i); count++; } }
 			if(!count) return [n,null];
 			c.multiplyScalar(1/count); mesh.localToWorld(c); ownship.group.worldToLocal(c);
-			return [n,+c.z.toFixed(2)]; })),   // group-frame lateral: positive z = starboard (the cockpit panel-click convention) — the port/starboard placement truth for each rack
+			return [n,+c.z.toFixed(2)]; })),   // group-frame lateral: positive z = starboard (the cockpit panel-click convention) — the port/starboard placement truth for each rack (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 		tips:Object.fromEntries(Object.entries(TIP_NODES).map(([k,n])=>{ const o=ownship.group.getObjectByName(n); return [k,o?o.visible:null]; })),
 		tiplateral:Object.fromEntries(Object.entries(TIP_NODES).map(([k,n])=>{ const o=ownship.group.getObjectByName(n); if(!o||!o.isMesh||!o.geometry.attributes.position) return [k,null];
 			const pos=o.geometry.attributes.position, c=new THREE.Vector3(); let count=0;
 			for(let i=0;i<pos.count;i+=7){ c.x+=pos.getX(i); c.y+=pos.getY(i); c.z+=pos.getZ(i); count++; }
-			c.multiplyScalar(1/count); o.localToWorld(c); ownship.group.worldToLocal(c); return [k,+c.z.toFixed(2)]; })) },   // the airframe tip nodes' true sides, same convention as lateral
+			c.multiplyScalar(1/count); o.localToWorld(c); ownship.group.worldToLocal(c); return [k,+c.z.toFixed(2)]; })) },   // the airframe tip nodes' true sides, same convention as lateral   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	record:(()=>{ const r=recording_file(); if(!r) return null; const lines=r.text.split(String.fromCharCode(10));
 		return {lines:lines.length, session:r.session, kind:r.kind, bot:/Doctrine=/.test(r.text),
 			// The ownship's last data line: proves a channel actually plumbs
@@ -4529,33 +4529,33 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v
 			e.object.getWorldPosition(v); v.project(cockpit_cam);
 			if(v.z<1) out[e.name]=[Math.round((v.x+1)/2*innerWidth), Math.round((1-v.y)/2*innerHeight)]; }
 		return out; })(),
-	gauges:(()=>{ const g=ownship.gauges||{}; const f=v=>v===undefined?null:+(+v).toFixed(3); return { asi:f(g.asi), altitude:f(g.altitude), vsi:f(g.vsi), fuelLbs:f(g.fuelLbs), rpmL:f(g.rpmL), egtL:f(g.egtL), flowL:f(g.flowL), clockH:f(g.clockH) }; })(),
-	indexer:(()=>{ const i=ownship.group.userData.indexer; return i?{ slow:+i.slow.opacity.toFixed(2), donut:+i.donut.opacity.toFixed(2), fast:+i.fast.opacity.toFixed(2) }:null; })(),
+	gauges:(()=>{ const g=ownship.gauges||{}; const f=v=>v===undefined?null:+(+v).toFixed(3); return { asi:f(g.asi), altitude:f(g.altitude), vsi:f(g.vsi), fuelLbs:f(g.fuelLbs), rpmL:f(g.rpmL), egtL:f(g.egtL), flowL:f(g.flowL), clockH:f(g.clockH) }; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	indexer:(()=>{ const i=ownship.group.userData.indexer; return i?{ slow:+i.slow.opacity.toFixed(2), donut:+i.donut.opacity.toFixed(2), fast:+i.fast.opacity.toFixed(2) }:null; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	built:(()=>{ const u=ownship.group.userData; return { indexer:!!u.indexer, lamps:!!u.lamps, radalt:!!u.radalt, screens:(u.screens||[]).length, err:build_error,
 		view:cfg.view, focus:ddi_focus(), hsi:hsi_state.scale, sa:sa_state.scale, repeat,
 		radar:(()=>{ const r=u.radalt; if(!r) return null; const v=new THREE.Vector3(); r.mesh.getWorldPosition(v); v.project(cockpit_cam);   // the disc's projection — aims verification crops
 			return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; })(),
 		mount:(()=>{ const b=u.indexerGroup; if(!b) return null; const v=new THREE.Vector3(); b.children[1].getWorldPosition(v); v.project(cockpit_cam);
-			return { px:[Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)], at:b.position.toArray().map(n=>+n.toFixed(3)), low:u.indexlow }; })(),
-		outline:(u.outline||[]).map(p=>p.map(n=>+n.toFixed(3))),
+			return { px:[Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)], at:b.position.toArray().map(n=>+n.toFixed(3)), low:u.indexlow }; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+		outline:(u.outline||[]).map(p=>p.map(n=>+n.toFixed(3))),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 		faces:["left","right","center"].map(d=>d+":"+(ddi_state[d].menu||ddi_state[d].page)), px:(u.screens||[]).map(sc=>sc.canvas.width),
 		rects:(u.screens||[]).map(sc=>{ const m=sc.mesh, v=new THREE.Vector3(), w=(m.geometry as THREE.PlaneGeometry).parameters.width/2, h=sc.height/2;   // projected quad corners (css px, pilot's view) — aims headless bezel clicks
 			const p=(px_,py_)=>{ v.set(px_,py_,0).applyMatrix4(m.matrixWorld).project(cockpit_cam); return [Math.round((v.x*0.5+0.5)*HW),Math.round((-v.y*0.5+0.5)*HH)]; };
 			return { tl:p(-w,h), br:p(w,-h) }; }),
-		geom:(u.screens||[]).map(sc=>({ at:sc.mesh.position.toArray().map(n=>+n.toFixed(3)), box:sc.box, fit:sc.fit, stack:sc.stack, mask:sc.mesh.layers.mask, vis:sc.mesh.visible })), eye:u.eye, glass:u.glass }; })(),
+		geom:(u.screens||[]).map(sc=>({ at:sc.mesh.position.toArray().map(n=>+n.toFixed(3)), box:sc.box, fit:sc.fit, stack:sc.stack, mask:sc.mesh.layers.mask, vis:sc.mesh.visible })), eye:u.eye, glass:u.glass }; })(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	scene:(()=>{ const u=ownship.group.userData; const probe=(o)=>{ if(!o) return null;
 			const p=new THREE.Vector3(); o.getWorldPosition(p);
 			let vis=true, q=o; while(q){ if(!q.visible) vis=false; q=q.parent; }
 			let inScene=false; q=o; while(q){ if(q===scene) inScene=true; q=q.parent; }
-			return { p:[+p.x.toFixed(1),+p.y.toFixed(1),+p.z.toFixed(1)], layer:o.layers.mask, vis, inScene }; };
-		return { radalt:probe(u.radalt&&u.radalt.mesh), screen0:probe(u.screens&&u.screens[0]&&u.screens[0].mesh), nose:probe(u.lamps&&u.lamps.nose), donut:probe(u.indexerGroup&&u.indexerGroup.children[1]), eyecam:[+cockpit_cam.position.x.toFixed(1),+cockpit_cam.position.y.toFixed(1),+cockpit_cam.position.z.toFixed(1)], cam_layer:cockpit_cam.layers.mask }; })(), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)), marshal:marshal?{left:+(marshal.push-sim_time).toFixed(1),commenced:marshal.commenced,platform:marshal.platform,dirty:marshal.dirty,ball:marshal.ball}:null, comms:comms.map(c=>c.text), groove:!!ownship.groove, waving:!!ownship.waving, icls:!!approach_deviation(),
-	boff:has_enemy?+(Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(_v.set(bandit.pos.x-ownship.pos.x,bandit.pos.y-ownship.pos.y,bandit.pos.z-ownship.pos.z).normalize()),-1,1))*57.3).toFixed(0):-1,
-	bburn:has_enemy&&bandit.harm?(bandit.harm.burning?1:0):-1, bkill:has_enemy&&bandit.harm?(bandit.harm.killed?1:0):-1, bwing:has_enemy&&bandit.harm?+(bandit.harm.wing??0).toFixed(2):-1,
-	brng:has_enemy?+wrap_distance(ownship.pos,bandit.pos).toFixed(0):-1, peak:+dev_peakbank.toFixed(1), phi:+dev_pitchhi.toFixed(1), plo:+dev_pitchlo.toFixed(1), gs:ownship.pass&&ownship.pass.n?+(ownship.pass.gs/ownship.pass.n).toFixed(2):-1, az:ownship.pass&&ownship.pass.n?+(ownship.pass.az/ownship.pass.n).toFixed(2):-1, grade:ownship.grade||"", pn:ownship.pass?ownship.pass.n:0, why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,
-	lat:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*(-carrier_ols.apz)+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apx).toFixed(1)):0,
-	along:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*carrier_ols.apx+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apz).toFixed(1)):0, fa:+carrier_fore_aft(ownship.pos.x,ownship.pos.z).toFixed(1), edge:carrier_ols?+((ownship.pos.y-carrier_ols.dy).toFixed(1)):0,
-	darts:net?net.darts.map(d=>({p:d.position.map(n=>+n.toFixed(0)),v:d.velocity.map(n=>+n.toFixed(0)),s:d.shooter})):[], drawn:darts_pool.filter(p=>p.mesh.visible).length, firing:[...remotes.values()].filter(st=>st.firing).length, fired:dev_fired, remotes:remotes.size,
-	burn:+Math.max(own_burn[0],own_burn[1]).toFixed(2), burning:own_burning, leak:+own_leak.toFixed(2) });   // dev: CDP-reachable state sampler for headless scenario verification (#72); darts/drawn/firing/remotes verify the multiplayer weapon visuals over a live wire; burn/leak mirror the damage-visual drivers (#78)
+			return { p:[+p.x.toFixed(1),+p.y.toFixed(1),+p.z.toFixed(1)], layer:o.layers.mask, vis, inScene }; };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+		return { radalt:probe(u.radalt&&u.radalt.mesh), screen0:probe(u.screens&&u.screens[0]&&u.screens[0].mesh), nose:probe(u.lamps&&u.lamps.nose), donut:probe(u.indexerGroup&&u.indexerGroup.children[1]), eyecam:[+cockpit_cam.position.x.toFixed(1),+cockpit_cam.position.y.toFixed(1),+cockpit_cam.position.z.toFixed(1)], cam_layer:cockpit_cam.layers.mask }; })(), geart:+(ownship.gearTarget??0), gearx:+((ownship.gear??0).toFixed(2)), marshal:marshal?{left:+(marshal.push-sim_time).toFixed(1),commenced:marshal.commenced,platform:marshal.platform,dirty:marshal.dirty,ball:marshal.ball}:null, comms:comms.map(c=>c.text), groove:!!ownship.groove, waving:!!ownship.waving, icls:!!approach_deviation(),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	boff:has_enemy?+(Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(_v.set(bandit.pos.x-ownship.pos.x,bandit.pos.y-ownship.pos.y,bandit.pos.z-ownship.pos.z).normalize()),-1,1))*57.3).toFixed(0):-1,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	bburn:has_enemy&&bandit.harm?(bandit.harm.burning?1:0):-1, bkill:has_enemy&&bandit.harm?(bandit.harm.killed?1:0):-1, bwing:has_enemy&&bandit.harm?+(bandit.harm.wing??0).toFixed(2):-1,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	brng:has_enemy?+wrap_distance(ownship.pos,bandit.pos).toFixed(0):-1, peak:+dev_peakbank.toFixed(1), phi:+dev_pitchhi.toFixed(1), plo:+dev_pitchlo.toFixed(1), gs:ownship.pass&&ownship.pass.n?+(ownship.pass.gs/ownship.pass.n).toFixed(2):-1, az:ownship.pass&&ownship.pass.n?+(ownship.pass.az/ownship.pass.n).toFixed(2):-1, grade:ownship.grade||"", pn:ownship.pass?ownship.pass.n:0, why:(globalThis as any).dev_crash||"", x:+ownship.pos.x.toFixed(0), z:+ownship.pos.z.toFixed(0), pitch:+((Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(1)), bank:+((Math.atan2(ownship.right.y,ownship.up.y)*57.3).toFixed(1)), wire:ownship.wire||0,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	lat:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*(-carrier_ols.apz)+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apx).toFixed(1)):0,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	along:carrier_ols?+(((ownship.pos.x-carrier_ols.tdx)*carrier_ols.apx+(ownship.pos.z-carrier_ols.tdz)*carrier_ols.apz).toFixed(1)):0, fa:+carrier_fore_aft(ownship.pos.x,ownship.pos.z).toFixed(1), edge:carrier_ols?+((ownship.pos.y-carrier_ols.dy).toFixed(1)):0,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	darts:net?net.darts.map(d=>({p:d.position.map(n=>+n.toFixed(0)),v:d.velocity.map(n=>+n.toFixed(0)),s:d.shooter})):[], drawn:darts_pool.filter(p=>p.mesh.visible).length, firing:[...remotes.values()].filter(st=>st.firing).length, fired:dev_fired, remotes:remotes.size,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	burn:+Math.max(own_burn[0],own_burn[1]).toFixed(2), burning:own_burning, leak:+own_leak.toFixed(2) });   // dev: CDP-reachable state sampler for headless scenario verification (#72); darts/drawn/firing/remotes verify the multiplayer weapon visuals over a live wire; burn/leak mirror the damage-visual drivers (#78) (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 function start_test(i){ const sc=TESTS[i]; if(!sc || crash_t>0) return;
 	let T,d;
 	if(sc.carrier){ if(!carrier_ols) return; const o=carrier_ols;
@@ -5533,7 +5533,7 @@ function hud_launch_zone(cx,cy,ppdv,ax,lx){
 			if(mark==="=") { hctx.beginPath(); hctx.moveTo(sx-5,y-3); hctx.lineTo(sx+5,y-3); hctx.stroke(); } }   // Rne carries the doubled tick, the pilot's "he cannot escape" mark
 		const y=at(z.range);   // the target's own range: the caret that walks down the staff
 		hctx.beginPath(); hctx.moveTo(sx+7,y); hctx.lineTo(sx+15,y-4); hctx.lineTo(sx+15,y+4); hctx.closePath(); hctx.fill();
-		hctx.fillText((z.range/1852).toFixed(1),sx+18,y+4);
+		hctx.fillText((z.range/1852).toFixed(1),sx+18,y+4);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 		if(z.max>0&&z.range<=z.aero){   // the maximum-aspect digit: tens of degrees of turn the shot survives
 			const aspect=z.range<=z.escape?18:Math.round(18*THREE.MathUtils.clamp((z.max-z.range)/Math.max(1,z.max-z.escape),0,1));
 			hctx.fillText("A "+aspect,sx-46,top-6); } }
@@ -5635,15 +5635,15 @@ function draw_hud(){
 	if(DEV_MODE){   // mission elapsed time, on the SAME base as the flight recording — so a moment you noticed reads straight off the ACMI timeline
 		const whole=Math.max(0,Math.floor(sim_time));
 		hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="14px monospace";
-		hctx.fillText(String(Math.floor(whole/60))+":"+String(whole%60).padStart(2,"0")+" · ω "+turn_probe.rate.toFixed(1)+"°/s", 14, 46); }   // mission clock · instantaneous turn rate (EM validation, #131)
+		hctx.fillText(String(Math.floor(whole/60))+":"+String(whole%60).padStart(2,"0")+" · ω "+turn_probe.rate.toFixed(1)+"°/s", 14, 46); }   // mission clock · instantaneous turn rate (EM validation, #131) (i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument)
 	if(DEV_MODE && carrier_model){   // developer mode: the deck measuring cursor and the &probe raycast. The nose-wheel readout and the dashed view centreline were deck-alignment scaffolding and are gone — Ctrl+C still copies the position
 		if(dev_probe && performance.now()-dev_probe_t>1000){ dev_probe_t=performance.now();
 			const rc=new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(dev_probe.x*2-1, -(dev_probe.y*2-1)), camera);
 			const hits=rc.intersectObject(carrier_model.parent||carrier_model, true);
 			if(hits.length){ const h=hits[0]; const fa2=carrier_fore_aft(h.point.x,h.point.z), la2=carrier_lateral(h.point.x,h.point.z);
-				dev_probe_text="probe: fa="+fa2.toFixed(1)+" lat="+la2.toFixed(1)+" y="+h.point.y.toFixed(2)+" mesh="+(h.object.name||"?")+" mat="+((h.object as THREE.Mesh & {material?:{name?:string}}).material?.name||"?")
+				dev_probe_text="probe: fa="+fa2.toFixed(1)+" lat="+la2.toFixed(1)+" y="+h.point.y.toFixed(2)+" mesh="+(h.object.name||"?")+" mat="+((h.object as THREE.Mesh & {material?:{name?:string}}).material?.name||"?")   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 					+" geo="+((h.object as THREE.Mesh).geometry?.type||"?")+" kind="+h.object.type+" parents="+(()=>{ const chain:string[]=[]; let o:THREE.Object3D|null=h.object.parent; while(o&&chain.length<4){ chain.push(o.name||o.type); o=o.parent; } return chain.join("<"); })()
-					+" at="+h.object.getWorldPosition(new THREE.Vector3()).toArray().map(v=>v.toFixed(1)).join(",")
+					+" at="+h.object.getWorldPosition(new THREE.Vector3()).toArray().map(v=>v.toFixed(1)).join(",")   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 					+" box="+JSON.stringify(((h.object as THREE.Mesh).geometry as any)?.parameters||{})+" colour="+(((h.object as THREE.Mesh).material as any)?.color?.getHexString?.()||"?"); }
 			else dev_probe_text="probe: no hit"; }
 		if(dev_probe_text){ hctx.fillStyle="#ff80ff"; hctx.fillText(dev_probe_text, 14, 64); }
@@ -5790,7 +5790,7 @@ function draw_hud(){
 	// excluded — a HI-mode nosewheel turn yaws faster than the onset.
 	{ const o=last_out||[]; const yawrate=Math.abs(o[STATE.omega+1]||0)*57.2958, aoadeg=(o[STATE.alpha]||0)*57.2958;
 		const airborne=!ownship.grounded&&!game_paused&&crash_t<=0;
-		departure_drive=[airborne&&yawrate>40?+Math.min(1,(yawrate-40)/20).toFixed(2):0, airborne&&aoadeg>35?1:0];
+		departure_drive=[airborne&&yawrate>40?+Math.min(1,(yawrate-40)/20).toFixed(2):0, airborne&&aoadeg>35?1:0];   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 		audio_departure(departure_drive[0], departure_drive[1]===1); }
 
 	// ---- A/A weapon symbology (#133): GUN = funnel free / director pipper on a
@@ -5824,7 +5824,7 @@ function draw_hud(){
 				ownship.pos.y).point;
 			const pip=proj_point(impact);
 			if(DEV_MODE&&pip){ const bvy=(boxed.vely??boxed.fwd.y*boxed.speed);
-				dev_pip={py:Math.round(pip[1]),by:Math.round(bore[1]),t:+t.toFixed(2),rng:Math.round(rng),bvy:Math.round(bvy),
+				dev_pip={py:Math.round(pip[1]),by:Math.round(bore[1]),t:+t.toFixed(2),rng:Math.round(rng),bvy:Math.round(bvy),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 					pullY:Math.round(-bvy*t),gravY:-Math.round(0.5*9.8*t*t),ownY:Math.round(ownship.vel_dir.y*ownship.speed*t)}; }   // decomposition of the vertical impact terms — which one lifts the pipper
 			if(pip){ hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.setLineDash([]);
 				hctx.beginPath(); hctx.arc(pip[0],pip[1],4,0,Math.PI*2); hctx.fill();
@@ -5933,12 +5933,12 @@ function draw_hud(){
 
 	// ---- AoA / Mach / G / peak-G block (left-centre); Mach and g are DELETED in the landing configuration ----
 	{ hctx.font="13px monospace"; hctx.textAlign="left"; const bxl=ax-84; let dy=wly+52;
-		hctx.fillText("\u03b1 "+(ownship.aoa??0).toFixed(1),bxl,dy); dy+=17;   // AoA survives REJ 1 \u2014 the NATOPS reject list names M/g/peak/boxes/bank, not alpha
+		hctx.fillText("\u03b1 "+(ownship.aoa??0).toFixed(1),bxl,dy); dy+=17;   // AoA survives REJ 1 \u2014 the NATOPS reject list names M/g/peak/boxes/bank, not alpha (i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument)
 		if(atc_on){ hctx.fillStyle=AM; hctx.fillText("ATC",bxl,dy); hctx.fillStyle=GR; dy+=17; }   // ATC advisory below the airspeed column, like the real HUD; the slot is free in the landing configuration (Mach/g deleted) and it rides the glass transform in cockpit view
 		if(!declutter&&!pa){ const core=last_out;
-			hctx.fillText("M "+(((core&&core[STATE.mach])??(ownship.speed/343))).toFixed(2),bxl,dy); dy+=17;
-			hctx.fillText("G "+(ownship.gload??1).toFixed(1),bxl,dy); dy+=17;
-			if(peak_g>=4) hctx.fillText(peak_g.toFixed(1),bxl+13,dy); }
+			hctx.fillText("M "+(((core&&core[STATE.mach])??(ownship.speed/343))).toFixed(2),bxl,dy); dy+=17;   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+			hctx.fillText("G "+(ownship.gload??1).toFixed(1),bxl,dy); dy+=17;   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+			if(peak_g>=4) hctx.fillText(peak_g.toFixed(1),bxl+13,dy); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 		}   // the dev turn-rate readout moved to the developer line by the clock \u2014 EM validation data is not HUD symbology
 
 	// ---- bank angle scale (bottom): ticks to 45°; the pointer pegs at 45 and flashes past 47 (NATOPS); dropped in the A/A masters, whose relocated heading scale owns the bottom of the display ----
@@ -5958,12 +5958,12 @@ function draw_hud(){
 	// ---- data blocks: TCN slant range to the carrier (lower right), selected weapon (lower left) ----
 	hctx.font="13px monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
 	if(carrier_ols&&master==="nav"&&declutter<2){ const slant=Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),ownship.pos.y,wrap_axis(CARRIER.z-ownship.pos.z))/1852;
-		hctx.fillText("TCN "+slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range + the station's ident, like the real data block (REJ 2 removes it; NAV only, with the chevron — #224)
+		hctx.fillText("TCN "+slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range + the station's ident, like the real data block (REJ 2 removes it; NAV only, with the chevron — #224)   // i18n-format-ok: canvas HUD glyph: TACAN slant range, fixed-format like the real instrument
 	if(marshal&&!marshal.commenced&&declutter<2){ const left=marshal.push-sim_time;   // Case III push clock (#205): counts down to the assigned EAT, then counts UP the lateness
 		hctx.fillStyle=(left<30)?AM:GR; hctx.textAlign="left"; hctx.font="13px monospace";
 		hctx.fillText("PUSH "+(left>=0?clock_text(left):"+"+clock_text(-left)),lx,cy+8.1*ppdv); hctx.fillStyle=GR; }
 	if(boxed&&aa){   // designated-target range and closure: fixed right-side data block, like the radar-track readouts on the real HUD — never text glued to the target
-		hctx.fillText((rng/1852).toFixed(1)+" NM",lx,cy+5.4*ppdv);
+		hctx.fillText((rng/1852).toFixed(1)+" NM",lx,cy+5.4*ppdv);   // i18n-format-ok: canvas HUD glyph: range in nautical miles, fixed-format like the real instrument
 		hctx.fillText((vc>0?"+":"")+Math.round(vc*1.94384)+" kt",lx,cy+6.3*ppdv); }
 	{ const ly=cy+7.2*ppdv; const bxl=ax-84;
 		if(master==="gun"){ hctx.fillStyle=input.guns?AM:GR; hctx.fillText(translate("GUN")+" "+(cheat("ammunition")?"\u221e":ownship.rounds),bxl,ly); hctx.fillStyle=GR; }
@@ -5995,8 +5995,8 @@ function draw_hud(){
 	if(parking){ hctx.fillStyle=AM; hctx.fillText(translate("PARK"),HW-40,HH-142); }   // the parking brake holds the mains: amber, like a caution
 	{ const datum=(last_out?last_out[STATE.datum]:0)||0, bank=(last_out?last_out[STATE.bank]:0)||0;   // the trim state, shown only when trimmed away from neutral
 		const parts=[];
-		if(hud_pa&&Math.abs(datum)>0.0025) parts.push(Math.abs(datum*57.3).toFixed(1)+(datum>0?"NU":"ND"));
-		if(Math.abs(bank)>0.004) parts.push(Math.abs(bank*100).toFixed(0)+(bank>0?"RWD":"LWD"));
+		if(hud_pa&&Math.abs(datum)>0.0025) parts.push(Math.abs(datum*57.3).toFixed(1)+(datum>0?"NU":"ND"));   // i18n-format-ok: canvas HUD glyph: pitch datum in degrees, fixed-format like the real instrument
+		if(Math.abs(bank)>0.004) parts.push(Math.abs(bank*100).toFixed(0)+(bank>0?"RWD":"LWD"));   // i18n-format-ok: canvas HUD glyph: bank angle, fixed-format like the real instrument
 		if(parts.length){ hctx.fillStyle=GR; hctx.fillText("TRIM "+parts.join(" "),HW-40,HH-160); } }   // amber whenever the air brake is out (keys.md §3)
 	if(stab_cycle>0){ hctx.fillStyle=AM; hctx.fillText("STAB "+stab_cycle,HW-40,HH-108); }   // Shift+E calibration state
 	if(ownship.lights){ hctx.fillStyle=GR; hctx.fillText(translate("LIGHTS"),HW-40,HH-34); }   // below HOOK
@@ -6027,7 +6027,7 @@ function draw_hud(){
 			const sx=_vig.dot(_vigr.setFromMatrixColumn(camera.matrixWorld,0)), sy=_vig.dot(_vigu.setFromMatrixColumn(camera.matrixWorld,1));
 			const m=Math.hypot(sx,sy)||1; ox=-sx/m*HW*0.12; oy=sy/m*HH*0.12; }
 		const g=hctx.createRadialGradient(HW/2+ox,HH/2+oy,Math.min(HW,HH)*0.32,HW/2+ox,HH/2+oy,Math.max(HW,HH)*0.72);
-		g.addColorStop(0,"rgba(255,32,32,0)"); g.addColorStop(0.55,"rgba(255,32,32,"+(hit_flash*0.16).toFixed(3)+")"); g.addColorStop(1,"rgba(255,26,26,"+(hit_flash*0.5).toFixed(3)+")");
+		g.addColorStop(0,"rgba(255,32,32,0)"); g.addColorStop(0.55,"rgba(255,32,32,"+(hit_flash*0.16).toFixed(3)+")"); g.addColorStop(1,"rgba(255,26,26,"+(hit_flash*0.5).toFixed(3)+")");   // i18n-format-ok: rgba colour component, not a displayed quantity
 		hctx.fillStyle=g; hctx.fillRect(0,0,HW,HH); }
 
 	// ---- weapon legend (bottom-left) ----
@@ -6126,8 +6126,8 @@ if(BENCH_PARAMS&&BENCH_PARAMS.get("bench")){
 	let submit_ms=0;
 	const raw_render=renderer.render.bind(renderer);
 	renderer.render=(s,c)=>{ const t0=performance.now(); raw_render(s,c); submit_ms+=performance.now()-t0; };
-	bench_register(()=>({ scale:+cfg.render_scale.toFixed(2), ssaa:supersample(Math.min(devicePixelRatio||1,2)), msaa:!MSAA_OFF, dyn:!!cfg.dyn_res, clouds:cfg.clouds,
-		acc_submit:+submit_ms.toFixed(1), draws:renderer.info.render.calls, tris:renderer.info.render.triangles, progs:(renderer.info.programs||[]).length, texs:renderer.info.memory.textures, geoms:renderer.info.memory.geometries }));
+	bench_register(()=>({ scale:+cfg.render_scale.toFixed(2), ssaa:supersample(Math.min(devicePixelRatio||1,2)), msaa:!MSAA_OFF, dyn:!!cfg.dyn_res, clouds:cfg.clouds,   // i18n-format-ok: developer benchmark payload, never shown to a user
+		acc_submit:+submit_ms.toFixed(1), draws:renderer.info.render.calls, tris:renderer.info.render.triangles, progs:(renderer.info.programs||[]).length, texs:renderer.info.memory.textures, geoms:renderer.info.memory.geometries }));   // i18n-format-ok: developer benchmark payload, never shown to a user
 }
 
 // ============================================================================ UI / menu
@@ -6664,7 +6664,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 			for(const k of Object.keys(parts)) if(parts[k]&&load_marks[k]===undefined) load_marks[k]=performance.now()-loading_t0;
 			load_pending=Object.keys(parts).filter(k=>!parts[k]); }
 		if(assets_ready()){ loading=false;
-			console.warn("[load] "+Object.entries(load_marks).map(([k,v])=>k+" "+(v/1000).toFixed(2)+"s").join(" · ")+" · total "+((performance.now()-loading_t0)/1000).toFixed(2)+"s");
+			console.warn("[load] "+Object.entries(load_marks).map(([k,v])=>k+" "+(v/1000).toFixed(2)+"s").join(" · ")+" · total "+((performance.now()-loading_t0)/1000).toFixed(2)+"s");   // i18n-format-ok: developer console timing, never shown to a user
 			if(MULTIPLAYER && !net) net_connect(); }   // dial only NOW: connecting before the assets exist left the link idle for the whole download (slow connections were dropped mid-load and bounced back to the menu)
 		else { const lp=load_progress();
 			// A slow load is a slow load — the percentage moves and the player waits. Failure is a
