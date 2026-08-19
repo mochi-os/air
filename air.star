@@ -26,6 +26,32 @@ def database_create():
 	# then-insert.
 	mochi.db.execute("create unique index if not exists matches_replay on matches(world, session, started)")
 
+# attachment_export() returns the rows core's attachment store held for this
+# user and app, each with "file" (an own row's stored filename, relative to
+# file storage; "" for a remote row), or None when the store cannot be read
+# yet. Through the transition bridge while a core still has one, else from the
+# export file core's cleanup wrote before dropping the store. A core without
+# the bridge exported every store that had rows before it served a request, so
+# no file means no rows; a file that exists and cannot be read is damage, not
+# emptiness, and reads as unavailable.
+def attachment_export():
+	if hasattr(mochi, "attachment") and hasattr(mochi.attachment, "export"):
+		rows = mochi.attachment.export()
+		if rows == None:
+			return None
+		result = []
+		for row in rows:
+			row = dict(row)
+			row["file"] = mochi.attachment.path(row["id"]) or ""
+			result.append(row)
+		return result
+	if not mochi.file.exists("attachments.json"):
+		return []
+	rows = json.decode(str(mochi.file.read("attachments.json") or ""), None)
+	if type(rows) != "list":
+		return None
+	return rows
+
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
@@ -44,16 +70,25 @@ def database_upgrade(version):
 	if version == 8 or version == 9:
 		# Recordings live in plain file storage at "recordings/<match id>", with
 		# the match's own recording/recorded columns as metadata. Relocate any
-		# recording still held by the transition bridge and rewrite the marker to
-		# the match id; one whose bytes are already gone just clears its marker
+		# recording still held by core's attachment store and rewrite the marker
+		# to the match id, aborting without advancing if the store cannot be
+		# read yet; one whose bytes are already gone just clears its marker
 		# (recordings are transient). A match already carrying its own id as the
 		# marker is skipped, so the step runs at either version.
 		rows = mochi.db.rows("select id, recording from matches where recording != ''") or []
+		files = {}
+		if rows:
+			exported = attachment_export()
+			if exported == None:
+				mochi.db.abort("attachment store unavailable")
+				return
+			for att in exported:
+				files[att.get("id", "")] = att.get("file", "")
 		for row in rows:
 			if row["recording"] == row["id"]:
 				continue
-			old = mochi.attachment.path(row["recording"])
-			if old:
+			old = files.get(row["recording"], "")
+			if old and mochi.file.exists(old):
 				mochi.file.move(old, "recordings/" + row["id"])
 				mochi.db.execute("update matches set recording = ? where id = ?", row["id"], row["id"])
 			else:
