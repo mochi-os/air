@@ -200,7 +200,7 @@ const BUTTON_ROWS: Row[] = [
   { id: 'uncage', label: <Trans>Uncage seeker</Trans>, group: 'weapons' },   // #27: the AIM-120's CIA <-> VISUAL toggle; the 9M's SEAM slaving joins it later
   { id: 'jammer', label: <Trans>Jammer</Trans>, group: 'weapons' },   // #31: the ASPJ's one real decision — armed, radiating only while painted
   { id: 'radar.silent', label: <Trans>Radar silent</Trans>, group: 'weapons' },   // #30
-  { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },   // #30: boresight <-> vertical
+  { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },   // #30: the castle switch — boresight, vertical, off
   { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },   // the id stays 'flares' (the action); the label is the real dispenser's name
   { id: 'jettison.tanks', label: <Trans>Jettison tanks</Trans>, group: 'weapons' },
   { id: 'jettison.emergency', label: <Trans>Emergency jettison (hold)</Trans>, group: 'weapons' },
@@ -251,7 +251,7 @@ const KEY_ROWS: Row[] = [
   { id: 'uncage', label: <Trans>Uncage seeker</Trans>, group: 'weapons' },   // #27: the AIM-120's CIA <-> VISUAL toggle; the 9M's SEAM slaving joins it later
   { id: 'jammer', label: <Trans>Jammer</Trans>, group: 'weapons' },   // #31: the ASPJ's one real decision — armed, radiating only while painted
   { id: 'radar.silent', label: <Trans>Radar silent</Trans>, group: 'weapons' },   // #30
-  { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },   // #30: boresight <-> vertical
+  { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },   // #30: the castle switch — boresight, vertical, off
   { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },
   { id: 'jettison.tanks', label: <Trans>Jettison tanks</Trans>, group: 'weapons' },
   { id: 'jettison.emergency', label: <Trans>Emergency jettison (hold)</Trans>, group: 'weapons' },
