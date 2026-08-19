@@ -120,6 +120,7 @@ interface Core {
   round_launch(input: Uint8Array): string | null
   round_step(input: Uint8Array, output: Uint8Array): string | null
   round_ladder(input: Uint8Array, output: Uint8Array): string | null
+  heater_ladder?(input: Uint8Array, output: Uint8Array): string | null
   round_distract(input: Uint8Array): boolean | string
   round_drop(input: Uint8Array): string | null
   bandit_init?(config: string): string
@@ -499,7 +500,7 @@ export function battle_progress(throttle: number, tick: number, reset: boolean, 
 // cockpit's ranges can never disagree with the flight. Word layouts mirror
 // wasm/round.go.
 
-const round_input = new Float64Array(16)
+const round_input = new Float64Array(17)
 const round_input_bytes = new Uint8Array(round_input.buffer)
 const round_output = new Float64Array(15)
 const round_output_bytes = new Uint8Array(round_output.buffer)
@@ -575,6 +576,27 @@ export function round_ladder(shooter: Aimed, target: Aimed, wrap: number): { aer
   r[9] = target.velocity.x; r[10] = target.velocity.y; r[11] = target.velocity.z
   r[12] = wrap
   core.round_ladder(round_input_bytes, round_output_bytes)
+  const o = round_output
+  return { aero: o[0], max: o[1], escape: o[2], minimum: o[3], active: o[4] }
+}
+
+// heater_ladder is the AIM-9M's launch zone in the AMRAAM's shape (#47):
+// Rmax is the outermost range the round arrives from against the target
+// flying on as now (his present turn included), capped at what the seeker
+// can lock at this aspect and burner state; escape is the no-escape rung;
+// minimum the arming floor. The cockpit's SHOOT for the 9M reads this — and
+// only with a radar lock, as the real jet does, because only the radar knows
+// range.
+export function heater_ladder(shooter: Aimed, target: Aimed, swing: { x: number; y: number; z: number }, lit: number, wrap: number): { aero: number; max: number; escape: number; minimum: number; active: number } | null {
+  if (!core?.heater_ladder) return null
+  const r = round_input
+  r[0] = shooter.position.x; r[1] = shooter.position.y; r[2] = shooter.position.z
+  r[3] = shooter.velocity.x; r[4] = shooter.velocity.y; r[5] = shooter.velocity.z
+  r[6] = target.position.x; r[7] = target.position.y; r[8] = target.position.z
+  r[9] = target.velocity.x; r[10] = target.velocity.y; r[11] = target.velocity.z
+  r[12] = swing.x; r[13] = swing.y; r[14] = swing.z
+  r[15] = lit; r[16] = wrap
+  core.heater_ladder(round_input_bytes, round_output_bytes)
   const o = round_output
   return { aero: o[0], max: o[1], escape: o[2], minimum: o[3], active: o[4] }
 }
