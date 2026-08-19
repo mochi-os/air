@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, it, expect } from 'vitest'
-import { command, radius, merge, reach, REACH_DEFAULT, REACH_FLOOR, REACH_CLEAR, GAINS, type Frame, type Vector } from './steer'
+import { command, radius, merge, reach, REACH_DEFAULT, GAINS, type Frame, type Vector } from './steer'
 
 // LEVEL is the jet upright and pointing down -z, the engine's own convention
 // (bearing is atan2(dx, -dz)). Every case below aims relative to this so the
@@ -270,7 +270,7 @@ describe('reach', () => {
   })
 
   it('honours the absolute floor', () => {
-    expect(reach(50, 10, 0, 1 / 60)).toBe(REACH_FLOOR)
+    expect(reach(50, 10, 0, 1 / 60)).toBe(250) // literal: asserting the floor equals REACH_FLOOR asserts nothing
   })
 
   it('keeps clear of the camera offset at every dolly distance', () => {
@@ -278,7 +278,7 @@ describe('reach', () => {
     // geometry degenerate; below it the commanded direction inverts outright.
     for (const offset of [14, 24, 60, 100, 140]) {
       const out = reach(200, offset, 0, 1 / 60)
-      expect(out).toBeGreaterThanOrEqual(REACH_CLEAR * offset)
+      expect(out).toBeGreaterThanOrEqual(4 * offset) // literal, for the same reason
       expect(out).toBeGreaterThan(offset)
     }
   })
@@ -351,9 +351,11 @@ describe('chase geometry with a near target', () => {
     expect(raw).toBeGreaterThan(3)
   })
 
-  it('drives the gain toward unity as the camera comes in close', () => {
-    // First person is the limit case: the camera sits essentially at the pilot,
-    // so there is no parallax left and the cursor means exactly itself.
+  it('has almost no parallax with the camera at the pilot, the first-person limit', () => {
+    // Renamed from a claim about the clearance guard that it never tested: with
+    // a 1200 m reach against a 6 m offset the gain is ~1.005 whatever the
+    // clearance multiplier is, so this asserts the geometry, not the guard.
+    // The guard is asserted by the gain-bound block below.
     const off = (5 * Math.PI) / 180
     const ray: Vector = { x: Math.sin(off), y: 0, z: -Math.cos(off) }
     const near = between(aim_direction({ x: 0, y: 0, z: 6 }, ray, aircraft, reach(1200, 6, 0, 1 / 60)), ahead) / off
@@ -366,6 +368,57 @@ describe('chase geometry with a near target', () => {
       const cam: Vector = { x: 0, y: 0, z: offset }
       const dir = aim_direction(cam, ahead, aircraft, reach(200, offset, 0, 1 / 60))
       expect(dir.z).toBeLessThan(0) // still pointing forward, not back past the camera
+    }
+  })
+})
+
+// gain is how many degrees of nose command one degree of cursor buys. The aim
+// point sits `r` along the ray from the CAMERA and the command is taken from
+// the AIRCRAFT, so in the small-angle limit the across-track components match
+// while the along-track ones differ by the camera offset: gain = r / (r - d).
+// The whole point of the floor and the clearance multiple is to bound this.
+const DOLLY = [14, 20, 24, 40, 62.5, 63, 80, 100, 120, 140] // the chase camera's full travel
+function gain_at(offset: number, range: number | null = 200): number {
+  const r = reach(range, offset, 0, 1 / 60)
+  return r / (r - offset)
+}
+
+describe('reach bounds the parallax gain across the whole dolly range', () => {
+  it('never returns a reach below the floor or the clearance multiple', () => {
+    // LITERALS, not REACH_FLOOR and REACH_CLEAR: deriving the expectation from
+    // the constants under test makes the assertion move with the bug and pass
+    // whatever they are set to. That defect is why this comment exists.
+    for (const d of DOLLY) {
+      expect(reach(200, d, 0, 1 / 60)).toBeGreaterThanOrEqual(Math.max(250, 4 * d))
+    }
+  })
+
+  it('never inverts: the reach always clears the camera offset outright', () => {
+    for (const d of DOLLY) expect(reach(200, d, 0, 1 / 60)).toBeGreaterThan(d)
+  })
+
+  it('keeps the gain at or above unity, never shrinking the cursor', () => {
+    for (const d of DOLLY) expect(gain_at(d)).toBeGreaterThanOrEqual(1)
+  })
+
+  it('bounds the gain at 4/3, which is what the clearance multiple buys', () => {
+    // 4/3 as a LITERAL. Written first as REACH_CLEAR / (REACH_CLEAR - 1), which
+    // is Infinity at REACH_CLEAR = 1 and so passed against the exact mutation it
+    // was written to catch. At a 140 m dolly with clearance 1 the reach falls to
+    // the floor and the gain runs to 2.27; this now catches that.
+    for (const d of DOLLY) expect(gain_at(d)).toBeLessThanOrEqual(4 / 3 + 1e-9)
+  })
+
+  it('is monotone in the dolly distance, so pulling the camera back never gets twitchier in jumps', () => {
+    for (let i = 1; i < DOLLY.length; i++) {
+      expect(gain_at(DOLLY[i])).toBeGreaterThanOrEqual(gain_at(DOLLY[i - 1]) - 1e-12)
+    }
+  })
+
+  it('holds the same bounds with a distant target, where the range dominates', () => {
+    for (const d of DOLLY) {
+      expect(gain_at(d, 4000)).toBeGreaterThanOrEqual(1)
+      expect(gain_at(d, 4000)).toBeLessThanOrEqual(4 / 3 + 1e-9)
     }
   })
 })
