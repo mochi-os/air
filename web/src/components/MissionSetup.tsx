@@ -235,6 +235,9 @@ const KEY_ROWS: Row[] = [
   { id: 'yaw.right', label: <Trans>Yaw right</Trans>, group: 'flight' },
   { id: 'throttle.up', label: <Trans>Throttle up</Trans>, group: 'flight' },
   { id: 'throttle.down', label: <Trans>Throttle down</Trans>, group: 'flight' },
+  { id: 'throttle.idle', label: <Trans>Throttle idle</Trans>, group: 'flight' },
+  { id: 'throttle.mil', label: <Trans>Throttle military</Trans>, group: 'flight' },
+  { id: 'throttle.max', label: <Trans>Throttle max reheat</Trans>, group: 'flight' },
   { id: 'brake.speed', label: <Trans>Speed brake</Trans>, group: 'flight' },
   { id: 'brake.wheel', label: <Trans>Wheel brakes</Trans>, group: 'flight' },
   { id: 'brake.parking', label: <Trans>Parking brake</Trans>, group: 'flight' },
@@ -272,6 +275,7 @@ const KEY_ROWS: Row[] = [
   { id: 'repeater', label: <Trans>Display repeater</Trans>, group: 'view' },
   { id: 'altitude', label: <Trans>HUD altitude source</Trans>, group: 'view' },
   { id: 'reject', label: <Trans>HUD declutter</Trans>, group: 'view' },
+  { id: 'hud.hide', label: <Trans>Hide HUD</Trans>, group: 'view' },
   { id: 'map', label: <Trans>Map</Trans>, group: 'view' },
   { id: 'chat', label: <Trans>Chat</Trans>, group: 'comms' },
   { id: 'shout', label: <Trans>Chat to everyone</Trans>, group: 'comms' },
@@ -1865,7 +1869,7 @@ function MissionPanel({
       <Trans>Bandit</Trans>
     </SectionLabel>
     <Picker
-      value={String(config.bandit || 'ace') as 'novice' | 'pilot' | 'ace' | 'superhuman'}
+      value={String(config.bandit || 'pilot') as 'novice' | 'pilot' | 'ace' | 'superhuman'}
       onChange={(v) => set('bandit', v)}
       options={[
         { value: 'novice', label: <Trans>Novice</Trans> },
@@ -2283,7 +2287,7 @@ export function MissionSetup({
   const started =
     config.task === 'joust' ? (
       <>
-        <Trans>Joust</Trans> · {BANDITS[String(config.bandit || 'ace')] ?? BANDITS.ace}
+        <Trans>Joust</Trans> · {BANDITS[String(config.bandit || 'pilot')] ?? BANDITS.pilot}
         {config.duel === 'bvr' ? ' · BVR' : ''}
       </>
     ) : (
