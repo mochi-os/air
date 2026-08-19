@@ -5737,6 +5737,35 @@ function draw_hud(){
 	const boresight=Math.hypot(head_az,head_el);
 	const flight_symbols=(cfg.view==="cockpit")?!!glass:(cfg.view!=="hud"||boresight<0.44);
 	if(crash_t>0){ hctx.textAlign="center"; hctx.fillStyle="#ff5040"; hctx.font="bold 36px monospace"; hctx.fillText(translate(ejected?"EJECTED":"CRASHED"),cx,cy-60); return; }   // a fired seat is an ejection, not a crash — same banner, honest word
+	// ---- targets (#133): the designated target carries the authentic green TD
+	// box — the ONLY aircraft marking, in every view; its range/closure live in
+	// the fixed right-side data block (the real HUD attaches no text to the
+	// target, boxes nothing else, and draws no amber).
+	const authentic=cfg.view==="cockpit";
+	let boxed=null; let rng=1500; let vc=0;   // vc: closure to the boxed target, m/s (+ = closing) — the data block and the breakaway cue share it
+	// Closure from the two VELOCITY vectors along the line of sight, not by
+	// differencing range between render frames. The flight cores advance on a
+	// fixed 60 Hz accumulator while the display runs at whatever rate it runs
+	// at, so above 60 fps the range simply did not change on the frames that
+	// stepped nothing: the difference quotient alternated between zero and
+	// roughly double the true closure, every frame. That fed the time of
+	// flight the director pipper leads on, so the pipper shook — and flipped
+	// between two positions fast enough to read as two pippers.
+	const closure=(one,two)=>{ const to=new THREE.Vector3(wrap_axis(two.pos.x-one.pos.x),two.pos.y-one.pos.y,wrap_axis(two.pos.z-one.pos.z));
+		if(to.lengthSq()<1e-6) return 0;
+		to.normalize();
+		const mine=new THREE.Vector3(one.velx??one.fwd.x*one.speed,one.vely??one.fwd.y*one.speed,one.velz??one.fwd.z*one.speed);
+		const his=new THREE.Vector3(two.velx??two.fwd.x*two.speed,two.vely??two.fwd.y*two.speed,two.velz??two.fwd.z*two.speed);
+		return mine.sub(his).dot(to); };   // + = closing
+	if(has_enemy){ rng=wrap_distance(ownship.pos,bandit.pos); boxed=bandit; vc=closure(ownship,bandit); }
+	else if(MULTIPLAYER&&net){ const dst=remotes.get(designated);   // the pilot's acquisition, not auto-nearest: designate/step/undesignate on the acquire key like the real ACM flow
+		if(dst&&dst.group.visible){ boxed=dst; rng=wrap_distance(ownship.pos,dst.pos); vc=closure(ownship,dst); }
+		else designated=-1; }
+	hud_boxed=boxed;   // recorded as the Target channel (#33 debrief)
+	// The block above resolves state, not pixels, so it runs BEFORE the blanking
+	// gate: hud_boxed feeds the flight recorder's Target channel, and blanking the
+	// symbology used to freeze it — the recorder then wrote a stale target for the
+	// whole time the HUD was hidden.
 	if(hud_hidden) return;   // Shift+H: all symbology off. Deliberately AFTER the crash banner — a hidden HUD must still say the jet is gone, or the player sits watching a dead aircraft wondering why nothing answers
 	if(crash_t<=0 && ownship.waving && net_notice_t<=0 && ((performance.now()-(ownship.wavet||0))%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call; the LSO grade / BOLTER / REARMED all go through the notice slot now (#72), so this is the only direct centre-banner draw left
 	if(test_active){ hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="13px monospace"; hctx.fillText("TEST  "+test_active.name, 14, 28); }
@@ -5770,31 +5799,6 @@ function draw_hud(){
 			dev_cursor.position.set(bx, cursor_y+0.06, bz); dev_cursor.visible=cursor_y>-1e8; }
 		}
 	if(net_notice_t<=0){ const ls=launch_status(); if(ls>0) hud_message(translate(ls===2?"PRESS ENTER TO LAUNCH":"RUN UP ENGINE")); }   // transient notices own the centre banner — never draw two messages on top of each other
-	// ---- targets (#133): the designated target carries the authentic green TD
-	// box — the ONLY aircraft marking, in every view; its range/closure live in
-	// the fixed right-side data block (the real HUD attaches no text to the
-	// target, boxes nothing else, and draws no amber).
-	const authentic=cfg.view==="cockpit";
-	let boxed=null; let rng=1500; let vc=0;   // vc: closure to the boxed target, m/s (+ = closing) — the data block and the breakaway cue share it
-	// Closure from the two VELOCITY vectors along the line of sight, not by
-	// differencing range between render frames. The flight cores advance on a
-	// fixed 60 Hz accumulator while the display runs at whatever rate it runs
-	// at, so above 60 fps the range simply did not change on the frames that
-	// stepped nothing: the difference quotient alternated between zero and
-	// roughly double the true closure, every frame. That fed the time of
-	// flight the director pipper leads on, so the pipper shook — and flipped
-	// between two positions fast enough to read as two pippers.
-	const closure=(one,two)=>{ const to=new THREE.Vector3(wrap_axis(two.pos.x-one.pos.x),two.pos.y-one.pos.y,wrap_axis(two.pos.z-one.pos.z));
-		if(to.lengthSq()<1e-6) return 0;
-		to.normalize();
-		const mine=new THREE.Vector3(one.velx??one.fwd.x*one.speed,one.vely??one.fwd.y*one.speed,one.velz??one.fwd.z*one.speed);
-		const his=new THREE.Vector3(two.velx??two.fwd.x*two.speed,two.vely??two.fwd.y*two.speed,two.velz??two.fwd.z*two.speed);
-		return mine.sub(his).dot(to); };   // + = closing
-	if(has_enemy){ rng=wrap_distance(ownship.pos,bandit.pos); boxed=bandit; vc=closure(ownship,bandit); }
-	else if(MULTIPLAYER&&net){ const dst=remotes.get(designated);   // the pilot's acquisition, not auto-nearest: designate/step/undesignate on the acquire key like the real ACM flow
-		if(dst&&dst.group.visible){ boxed=dst; rng=wrap_distance(ownship.pos,dst.pos); vc=closure(ownship,dst); }
-		else designated=-1; }
-	hud_boxed=boxed;   // recorded as the Target channel (#33 debrief)
 	// The target resolution above is hoisted ABOVE the view gate on purpose: the
 	// chase set below needs the same boxed contact the HUD does, and computing it
 	// twice is how the two views drift apart.
