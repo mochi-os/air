@@ -1312,6 +1312,16 @@ function set_master(m){ const before=ddi_family(); master=m; if(ddi_family()!==b
 // unless it has nothing left to fire — an empty rail is skipped exactly as the
 // cycle skips it, and the request is simply ignored rather than landing the
 // pilot on a dead station under g.
+// default_master is the weapon the match calls for, selected before the pilot
+// touches anything: NAV for free flight like the real jet powering up; the
+// AMRAAM for a BVR start (or any multiplayer fight the pilot loaded them for);
+// the 9M when heaters are aboard and the match allows them; the gun otherwise.
+function default_master(){
+	if(cfg.task==="free") return "nav";
+	const amraams=stores_amraams(ownship.loadout||loadout()).length;
+	if(amraams>0&&(MULTIPLAYER||cfg.duel==="bvr")) return "120c";
+	if(missiles_on()&&(ownship.msl|0)>0) return "9m";
+	return "gun"; }
 function select_master(m){
 	const loaded={ gun:(ownship.rounds??0)>0, "9m":(ownship.msl|0)>0, "120c":Math.max(0,ownship.amraam|0)>0, nav:true };
 	if(loaded[m]) set_master(m); }
@@ -2505,7 +2515,7 @@ function dispense_flare(st){ st.flared_at=sim_time;   // stamped HERE, for every
 // both while both remain, the bandit's programme chooses, and each arrives as
 // its own event.
 function dispense_chaff(st){
-	const sp=local_offset(st,-3,0,0); st.chaff={x:sp.x,y:sp.y,z:sp.z}; st.chaffed=sim_time;
+	const sp=local_offset(st,-3,0,0); st.bloom={x:sp.x,y:sp.y,z:sp.z}; st.chaffed=sim_time;   // `bloom` is WHERE the last cloud is; `chaff` on the ownship is the magazine COUNT — the two shared a name for an afternoon and the HUD read NaN
 	for(let i=0;i<10;i++){ const k=pool_spawn(smoke); if(k<0) break;
 		smoke.px[k]=sp.x;smoke.py[k]=sp.y;smoke.pz[k]=sp.z; smoke.vx[k]=(Math.random()-0.5)*14; smoke.vy[k]=(Math.random()-0.5)*8-2; smoke.vz[k]=(Math.random()-0.5)*14;
 		smoke.ttl[k]=smoke.life[k]=5.5; smoke.sz[k]=0.6+Math.random()*0.5; smoke.gr[k]=0.9;
@@ -2646,12 +2656,12 @@ function step_amraam(m,dt){
 		truth=crash_t<=0?{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z},
 			velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} }:null;
 		supported=truth&&bandit_locked&&has_enemy;
-		if(truth&&ownship.chaffed!==undefined&&sim_time-ownship.chaffed<2.0){ if(round_distract(m.slot,ownship.chaff,truth)) m.took=(m.took||0)+1; } }
+		if(truth&&ownship.chaffed!==undefined&&sim_time-ownship.chaffed<2.0){ if(round_distract(m.slot,ownship.bloom,truth)) m.took=(m.took||0)+1; } }
 	else{
 	truth=(t&&t.group&&t.group.visible)?{ position:{x:t.pos.x,y:t.pos.y,z:t.pos.z},
 		velocity:{x:t.velx??t.fwd.x*t.speed,y:t.vely??t.fwd.y*t.speed,z:t.velz??t.fwd.z*t.speed} }:null;
 	supported=truth&&!RADAR.sil&&(RADAR.stt===m.track||RADAR.tracks.some(k=>k.id===m.track));   // the shooter's radar still holds this trackfile: the crank works, turning cold drops support
-	if(truth&&t.chaffed!==undefined&&sim_time-t.chaffed<2.0){ if(round_distract(m.slot,t.chaff,truth)) m.took=(m.took||0)+1; } }   // a fresh bloom from the target (#29): the core's doppler gate decides whether it seduces; took counts the ones that did (dev telemetry)
+	if(truth&&t.chaffed!==undefined&&sim_time-t.chaffed<2.0){ if(round_distract(m.slot,t.bloom,truth)) m.took=(m.took||0)+1; } }   // a fresh bloom from the target (#29): the core's doppler gate decides whether it seduces; took counts the ones that did (dev telemetry)
 	const state=round_step(m.slot,dt,supported?truth:null,truth);
 	if(!state){ m.active=false; m.mesh.visible=false; round_drop(m.slot); post_round(m,"lost"); return; }
 	m.px=state.x; m.py=state.y; m.pz=state.z; m.vx=state.vx; m.vy=state.vy; m.vz=state.vz;
@@ -2709,7 +2719,7 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.v
 	// at the first frame-sampled range under the envelope (which burst at 8-12 m,
 	// outside the 5 m lethal radius, and never at all once the terminal LOS rate
 	// broke the lock against an evading target). Mirrors the server (#133 follow-up).
-	if(m.flew>0.6 && t && t.group && t.group.visible){
+	if(m.flew>0.6 && t && (t===ownship ? crash_t<=0 : (t.group && t.group.visible))){   // the ownship is a target while it FLIES, not while its mesh renders: in the hud view the airframe group is hidden, and gating the fuse on it let four of the bandit's heaters pass at 2-32 m of a straight-and-level pilot without one detonating (recording 01a0175c, 2026-08-18)
 		const rx=wrap_axis(t.pos.x-m.px), ry=t.pos.y-m.py, rz=wrap_axis(t.pos.z-m.pz);
 		const cvx=(t.velx??t.fwd.x*t.speed)-m.vx, cvy=(t.vely??t.fwd.y*t.speed)-m.vy, cvz=(t.velz??t.fwd.z*t.speed)-m.vz;
 		const squared=cvx*cvx+cvy*cvy+cvz*cvz;
@@ -4929,7 +4939,7 @@ function fly_bandit(dt){
 	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&!fly_bandit.tried){   // lazy: the core loads async and start_mission races it — arm the brain on the first frame the core is ready
 		fly_bandit.tried=true;
 		bandit_brain=bandit_init({ level: cfg.bandit||"ace", seed: 7, wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night", missiles: missiles_on(),
-			weapons: cfg.duel==="bvr"?"open":(missiles_on()?"fox2":"guns") });   // the bandit arms to the match's rules, exactly as server bots do (#33): the BVR joust is an open-class fight and the bandit shoots back   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
+			weapons: cfg.duel==="bvr"?"open":(missiles_on()?"fox2":"guns"), fuel: FUEL() });   // the bandit fights on the player's own tank: it used to spawn with the server's 6,000 lb whatever the slider said, and hit its burner bingo four minutes before a full-internal pilot   // the bandit arms to the match's rules, exactly as server bots do (#33): the BVR joust is an open-class fight and the bandit shoots back   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
 		if(bandit_brain) bandit_spawn(bandit.pos, {x:bandit.fwd.x*bandit.speed, y:0, z:bandit.fwd.z*bandit.speed});
 	}
 	if(bandit_brain){   // the wasm brain: mirror the player in, step the second core, read the bandit back (#125 phase 2)
@@ -5186,13 +5196,13 @@ function reset_ownship(){
 	test_idle=0; _test_power=0;   // a respawn ends any scenario rollout grace — the lever and brakes are the pilot's again
 	hist_valid=false;   // spawn/respawn teleports the camera — a cut for the cloud accumulation history
 	battle_rig(); ejected=false; hit_flash=0; own_burn=[0,0]; own_burning=false; own_leak=0; peak_g=1;   // a fresh jet, a fresh fight (#78)
-	master=cfg.task==="free"?"nav":"gun";   // default master mode per mission: combat spawns fight-ready (a dead trigger at the merge is a trap), free flight powers up in NAV like the real jet
 	bandit_acc=0;   // no stale fixed-step debt across spawns
 	designated=-1;   // a respawn drops the acquisition
 	bandit.spent=0; bandit.rounds=MAGAZINE;   // a fresh fight rearms the bandit: full belt, clean expenditure
 	bandit.struck=0; bandit.fate=undefined; ownship.struck=0; ownship.fate=undefined;   // and starts clean battle channels (#238)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
-	ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; ownship.lights=(cfg.tod!=="day");   // lights default on at night, off by day; the magazine is the flown loadout's round count (#17)
+	ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; ownship.lights=(cfg.tod!=="day");
+	master=default_master();   // the match's own weapon is already selected at spawn: a dead trigger at the merge is a trap, and so is arriving with the gun up in a heater fight   // lights default on at night, off by day; the magazine is the flown loadout's round count (#17)
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining());
 	ownship.grounded=false; ownship.touch=null; ownship.pass={gs:0,az:0,n:0}; ownship.grade=""; ownship.waved=false; ownship.groove=false; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
 	test_active=null;   // a test scenario must not keep driving across a crash respawn (it would fly the fresh spawn straight into the deck, forever)
@@ -6584,7 +6594,7 @@ function net_connect(){
 		if(typeof rules.clouds==="string"&&["none","cumulus","high_stratus","low_stratus"].includes(rules.clouds)){
 			cfg.clouds=rules.clouds; apply_clouds(); if(cloud_active()) size_rt(); }   // apply_clouds runs even for "none": it zeroes the overcast/shadow uniforms on the ocean and sky
 		missiles_rule=rules.missiles===true;   // the creator's rule clamps the FLOWN loadout (#17): strip(cfg.stores) when forbidden, the persisted choice untouched
-		assign_loadout(ownship, loadout()); ownship.msl=magazine(); update_rails(ownship, ownship.msl);
+		assign_loadout(ownship, loadout()); ownship.msl=magazine(); update_rails(ownship, ownship.msl); master=default_master();   // the rule decides the flown loadout, and the loadout decides the weapon that is up when the fight starts
 		cfg.cheats=(rules.cheats&&typeof rules.cheats==="object")?rules.cheats:{};   // the creator's match cheats: the server enforces them; the client mirrors the ammo gates so the HUD counters and the launch gate agree
 		})
 	.catch((error)=>{ console.error("air multiplayer:", error);   // the HUD shows the headline; the console keeps the cause
