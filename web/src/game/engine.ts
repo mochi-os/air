@@ -30,7 +30,7 @@ import { words as menace_words } from './menace'
 import { bandit_coast } from './flight'
 import { surface as impact_surface } from './impact'
 import { impact as pipper_impact } from './pipper'
-import { command as steer_command, radius as steer_radius } from './steer'   // mouse-aim: the nose-to-cursor law and its angular cursor clamp
+import { command as steer_command, radius as steer_radius, merge as steer_merge, reach as steer_reach } from './steer'   // mouse-aim: the nose-to-cursor law and its angular cursor clamp
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint } from './audio'
@@ -3783,6 +3783,20 @@ addEventListener("pagehide",()=>{ if(MULTIPLAYER) net_finish("left"); },{ signal
 // elsewhere, so a pixel clamp would silently change what the cursor is worth on
 // every zoom notch and every view change.
 const MOUSE_LIMIT=25*D2R;   // how far off boresight the cursor may command
+// MOUSE_CATCH is the time the commanded cursor takes to cross the FULL clamp
+// radius while catching up after a re-arm. It is a chosen figure, not a
+// placeholder: a full-radius cursor is very nearly full stick, so 0.12 s is
+// 8.3 of stick per second, four times faster than the keyboard's own deliberate
+// 2.0/s attack ramp. It therefore cannot be the limiting factor in a fight. It
+// exists only so a pointer that TELEPORTS — re-entering the canvas at the clamp
+// boundary after pointerleave zeroed things — cannot become full deflection on
+// a single frame. Re-entry near the centre, which is the common case, converges
+// in a frame or two and costs nothing at all. Control is not degraded on re-arm
+// unless the cursor genuinely has distance to travel.
+const MOUSE_CATCH=0.12;   // seconds to cross the full clamp radius while catching up
+let mouse_px=0, mouse_py=0;   // where the POINTER is (clamped)
+let mouse_catch=false;        // commanded cursor is still travelling toward the pointer
+let mouse_reach=0;            // eased aim distance, metres — see steer.reach
 let mouse_aim=false, mouse_cx=0, mouse_cy=0;
 const mouse_command={pitch:0,roll:0,yaw:0};
 const _maim=new THREE.Vector3();   // scratch: the frame loop allocates nothing
@@ -3791,7 +3805,7 @@ const _maim=new THREE.Vector3();   // scratch: the frame loop allocates nothing
 function mouse_flying(){ return mouse_aim&&running&&!game_paused&&!map_on&&(cfg.view==="hud"||cfg.view==="cockpit"||cfg.view==="chase"); }
 // A command that outlives a lost window is a jet that flies itself into the sea
 // while the player reads their mail. Mirrors the keys.clear() on blur.
-function mouse_neutral(){ mouse_cx=0; mouse_cy=0; mouse_command.pitch=0; mouse_command.roll=0; mouse_command.yaw=0; }
+function mouse_neutral(){ mouse_cx=0; mouse_cy=0; mouse_px=0; mouse_py=0; mouse_catch=true; mouse_reach=0; mouse_command.pitch=0; mouse_command.roll=0; mouse_command.yaw=0; }
 let dragging=false, drag_x=0, drag_y=0, press_moved=0;
 stage.addEventListener("pointerdown",e=>{ if(cfg.view==="ddi"){ if(e.button===0&&running&&!map_on) ddi_view_click(e); e.preventDefault(); return; }   // full-screen bezel presses, immediate on the down edge (no drag semantics head-down)
 	if(e.button!==0 || (cfg.view!=="chase"&&cfg.view!=="cockpit")) return;
@@ -3801,7 +3815,7 @@ stage.addEventListener("pointermove",e=>{ if(!mouse_flying()) return;   // mouse
 	let dx=e.clientX-HW/2, dy=e.clientY-HH/2;
 	const r=Math.hypot(dx,dy);
 	if(r>lim&&r>0){ dx=dx/r*lim; dy=dy/r*lim; }
-	mouse_cx=dx; mouse_cy=dy; },{ signal });
+	mouse_px=dx; mouse_py=dy; },{ signal });   // the POINTER; read_input moves the commanded cursor onto it
 stage.addEventListener("pointermove",e=>{ if(!dragging) return;
 	const dx=e.clientX-drag_x, dy=e.clientY-drag_y; drag_x=e.clientX; drag_y=e.clientY; press_moved+=Math.abs(dx)+Math.abs(dy);
 	const f=0.005;   // radians per pixel (the sensitivity slider is gone: one constant fits, and the setting only ever scaled THIS — players kept reading it as a flight-control gain)
@@ -4068,18 +4082,41 @@ function read_input(dt){
 	// that target — hold the look key and the jet flies at what you are watching.
 	// An off-centre cursor is bounded by the same angular clamp as always.
 	if(mouse_flying()){
+		// The camera-through-cursor RAY is not the direction the nose should go.
+		// The chase camera sits about 24 m behind and above the jet, so the ray
+		// direction and the aircraft-to-aim-point direction differ by a parallax
+		// that grows as the aim point comes closer — worst exactly at gun range,
+		// which is the range the mode exists for. March the ray out to an aim
+		// distance, then take the direction from the AIRCRAFT to that point.
+		// With a boxed target the reach IS its range, so cursor-on-target means
+		// nose-at-target exactly; without one a fixed reach keeps the parallax
+		// small. First person has almost none of this, but it runs the same path
+		// — one code path, and now it really is correct in every view.
+		// Catch-up: normally the commanded cursor IS the pointer, one to one, so
+		// a fast flick is a fast command. Only after a re-arm does it travel, at
+		// the bounded rate above, so a teleporting pointer cannot step the stick.
+		{ const lim=steer_radius(MOUSE_LIMIT,camera.fov*D2R,HH);
+			if(mouse_catch){ const step=lim*dt/MOUSE_CATCH, dx=mouse_px-mouse_cx, dy=mouse_py-mouse_cy, d=Math.hypot(dx,dy);
+				if(d<=step||step<=0){ mouse_cx=mouse_px; mouse_cy=mouse_py; mouse_catch=false; }
+				else { mouse_cx+=dx/d*step; mouse_cy+=dy/d*step; } }
+			else { mouse_cx=mouse_px; mouse_cy=mouse_py; } }
 		_maim.set(mouse_cx/(HW/2),-(mouse_cy/(HH/2)),0.5).unproject(camera).sub(camera.position).normalize();
+		// Reach: eased, floored, and kept clear of the camera offset. See
+		// steer.reach for why all three matter — the short version is that in
+		// chase the commanded direction depends on the reach, so a step in it is
+		// a jerk of the nose with the cursor stationary.
+		mouse_reach=steer_reach(hud_boxed?wrap_distance(ownship.pos,hud_boxed.pos):null,camera.position.distanceTo(ownship.pos),mouse_reach,dt);
+		_maim.multiplyScalar(mouse_reach).add(camera.position).sub(ownship.pos);
 		const c=steer_command({x:_maim.x,y:_maim.y,z:_maim.z},{fwd:ownship.fwd,up:ownship.up,right:ownship.right},cfg.mouse_gain??1);
 		mouse_command.pitch=c.pitch; mouse_command.roll=c.roll; mouse_command.yaw=c.yaw; }
-	else { mouse_command.pitch=0; mouse_command.roll=0; mouse_command.yaw=0; }
+	else { mouse_command.pitch=0; mouse_command.roll=0; mouse_command.yaw=0; mouse_catch=true; mouse_reach=0; }
 	// Keyboard, stick and mouse all stay live together; the biggest command on
 	// each axis wins, which is what the keyboard and the stick already did to
 	// each other. mouse_command.yaw is always zero — the law never commands
 	// rudder, and the pedals stay with the player.
-	const pick=(...list)=>list.reduce((a,b)=>Math.abs(b)>Math.abs(a)?b:a,0);
-	input.pitch=pick(pp,key_axes.pitch,mouse_command.pitch);
-	input.roll=pick(pr,key_axes.roll,mouse_command.roll);
-	input.yaw=pick(py,key_axes.yaw,mouse_command.yaw);
+	input.pitch=steer_merge(pp,key_axes.pitch,mouse_command.pitch);
+	input.roll=steer_merge(pr,key_axes.roll,mouse_command.roll);
+	input.yaw=steer_merge(py,key_axes.yaw,mouse_command.yaw);
 	if(pad) scan_zoom(pad,pad_bindings(pad));
 	input.guns=(keys.has(key_of("fire"))||pad_fire)&&master==="gun";   // the trigger serves the SELECTED weapon (#133): guns only in GUN
 	const held=(action)=>{ const b=key_of(action); if(!b||b==="None") return false;
@@ -5763,9 +5800,8 @@ function draw_hud(){
 		else designated=-1; }
 	hud_boxed=boxed;   // recorded as the Target channel (#33 debrief)
 	// The block above resolves state, not pixels, so it runs BEFORE the blanking
-	// gate: hud_boxed feeds the flight recorder's Target channel, and blanking the
-	// symbology used to freeze it — the recorder then wrote a stale target for the
-	// whole time the HUD was hidden.
+	// gate: hud_boxed feeds the flight recorder's Target channel and the mouse-aim
+	// reach below, and hiding the symbology used to freeze both.
 	if(hud_hidden) return;   // Shift+H: all symbology off. Deliberately AFTER the crash banner — a hidden HUD must still say the jet is gone, or the player sits watching a dead aircraft wondering why nothing answers
 	if(crash_t<=0 && ownship.waving && net_notice_t<=0 && ((performance.now()-(ownship.wavet||0))%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call; the LSO grade / BOLTER / REARMED all go through the notice slot now (#72), so this is the only direct centre-banner draw left
 	if(test_active){ hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="13px monospace"; hctx.fillText("TEST  "+test_active.name, 14, 28); }
