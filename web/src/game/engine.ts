@@ -30,6 +30,7 @@ import { words as menace_words } from './menace'
 import { bandit_coast } from './flight'
 import { surface as impact_surface } from './impact'
 import { impact as pipper_impact } from './pipper'
+import { command as steer_command, radius as steer_radius } from './steer'   // mouse-aim: the nose-to-cursor law and its angular cursor clamp
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
 import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint } from './audio'
@@ -3765,17 +3766,42 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 	keys.add(k); if(e.shiftKey) keys.add("Shift+"+k); }, { signal });   // chords live in the held set too: trim's Shift pairs are HELD actions, not edges
 addEventListener("keyup",e=>{ keys.delete(e.code); keys.delete("Shift+"+e.code);
 	if(e.code==="ShiftLeft"||e.code==="ShiftRight") for(const held of [...keys]) if(held.startsWith("Shift+")) keys.delete(held); },{ signal });
-addEventListener("blur",()=>keys.clear(),{ signal });
+addEventListener("blur",()=>{ keys.clear(); mouse_neutral(); },{ signal });
+stage.addEventListener("pointerleave",()=>mouse_neutral(),{ signal });   // the pointer left the canvas: stop commanding, do not hold the last deflection
 addEventListener("pagehide",()=>{ if(MULTIPLAYER) net_finish("left"); },{ signal });   // closing/navigating the tab sends a clean leave — otherwise the QUIC connection lingers as a ghost player (the browser ACKs snapshots even with the page dead)
 
 // ---- mouse look / orbit (keys.md §5): left-drag orbits the chase camera, sharing
 // cam_az/cam_el with the keyboard orbit and holding on release (no spring-back). Left
 // button only (fire stays Space); never in HUD. Pointer capture — not pointer lock, which
 // the sandboxed shell iframe can block. Zoom stays on -/= (not the wheel), so no wheel handler.
+// ---- mouse aim (optional control mode) ------------------------------------
+// The cursor is the REAL pointer position, not a locked delta: pointer lock is
+// refused in the sandboxed shell iframe, the same reason the camera drag uses
+// pointer capture. Held as an offset from the viewport centre in CSS pixels and
+// clamped to an ANGLE off boresight, never to a pixel radius — the camera field
+// is divided by view_zoom every frame and the pit runs a 72 deg base against 45
+// elsewhere, so a pixel clamp would silently change what the cursor is worth on
+// every zoom notch and every view change.
+const MOUSE_LIMIT=25*D2R;   // how far off boresight the cursor may command
+let mouse_aim=false, mouse_cx=0, mouse_cy=0;
+const mouse_command={pitch:0,roll:0,yaw:0};
+const _maim=new THREE.Vector3();   // scratch: the frame loop allocates nothing
+// mouse_flying gates the whole mode: the flying views only, and never while the
+// map has the world paused or the padlock is driving the head.
+function mouse_flying(){ return mouse_aim&&running&&!game_paused&&!map_on&&(cfg.view==="hud"||cfg.view==="cockpit"||cfg.view==="chase"); }
+// A command that outlives a lost window is a jet that flies itself into the sea
+// while the player reads their mail. Mirrors the keys.clear() on blur.
+function mouse_neutral(){ mouse_cx=0; mouse_cy=0; mouse_command.pitch=0; mouse_command.roll=0; mouse_command.yaw=0; }
 let dragging=false, drag_x=0, drag_y=0, press_moved=0;
 stage.addEventListener("pointerdown",e=>{ if(cfg.view==="ddi"){ if(e.button===0&&running&&!map_on) ddi_view_click(e); e.preventDefault(); return; }   // full-screen bezel presses, immediate on the down edge (no drag semantics head-down)
 	if(e.button!==0 || (cfg.view!=="chase"&&cfg.view!=="cockpit")) return;
 	dragging=true; head_drag=(cfg.view==="cockpit"); drag_x=e.clientX; drag_y=e.clientY; press_moved=0; try{ stage.setPointerCapture(e.pointerId); }catch(_){ /* pointer capture optional */ } e.preventDefault(); }, { signal });
+stage.addEventListener("pointermove",e=>{ if(!mouse_flying()) return;   // mouse aim owns the pointer; the drag handler below still runs for the camera
+	const lim=steer_radius(MOUSE_LIMIT,camera.fov*D2R,HH);   // recomputed every move: camera.fov tracks the zoom ease and the per-view base
+	let dx=e.clientX-HW/2, dy=e.clientY-HH/2;
+	const r=Math.hypot(dx,dy);
+	if(r>lim&&r>0){ dx=dx/r*lim; dy=dy/r*lim; }
+	mouse_cx=dx; mouse_cy=dy; },{ signal });
 stage.addEventListener("pointermove",e=>{ if(!dragging) return;
 	const dx=e.clientX-drag_x, dy=e.clientY-drag_y; drag_x=e.clientX; drag_y=e.clientY; press_moved+=Math.abs(dx)+Math.abs(dy);
 	const f=0.005;   // radians per pixel (the sensitivity slider is gone: one constant fits, and the setting only ever scaled THIS — players kept reading it as a flight-control gain)
@@ -4031,9 +4057,29 @@ function read_input(dt){
 					for(const target of [window, document, stage]) target.dispatchEvent(new KeyboardEvent(down?"keydown":"keyup",{ code, shiftKey:shift, bubbles:true })); } } }
 	}
 	else { pad_looks.up=pad_looks.down=pad_looks.left=pad_looks.right=false; pad_fire=false; pad_weapon=""; pad_forget_levers(); }   // no pad this frame: a returning stick must re-arm its levers before commanding anything
-	input.pitch=Math.abs(pp)>Math.abs(key_axes.pitch)?pp:key_axes.pitch;
-	input.roll=Math.abs(pr)>Math.abs(key_axes.roll)?pr:key_axes.roll;
-	input.yaw=Math.abs(py)>Math.abs(key_axes.yaw)?py:key_axes.yaw;
+	// ---- mouse aim: the cursor's world ray, turned into a stick command -------
+	// Unprojected through the LIVE camera, so chase needs no special case: the
+	// ray already carries the orbit camera's offset. Recomputed here rather than
+	// in the pointer handler because the camera moves every frame even when the
+	// mouse is still, and a command derived from a stale camera lags the view.
+	//
+	// The padlock hold (look.target) is deliberately NOT excluded. It swings the
+	// camera onto the boxed target, so a centred cursor then commands the nose at
+	// that target — hold the look key and the jet flies at what you are watching.
+	// An off-centre cursor is bounded by the same angular clamp as always.
+	if(mouse_flying()){
+		_maim.set(mouse_cx/(HW/2),-(mouse_cy/(HH/2)),0.5).unproject(camera).sub(camera.position).normalize();
+		const c=steer_command({x:_maim.x,y:_maim.y,z:_maim.z},{fwd:ownship.fwd,up:ownship.up,right:ownship.right},cfg.mouse_gain??1);
+		mouse_command.pitch=c.pitch; mouse_command.roll=c.roll; mouse_command.yaw=c.yaw; }
+	else { mouse_command.pitch=0; mouse_command.roll=0; mouse_command.yaw=0; }
+	// Keyboard, stick and mouse all stay live together; the biggest command on
+	// each axis wins, which is what the keyboard and the stick already did to
+	// each other. mouse_command.yaw is always zero — the law never commands
+	// rudder, and the pedals stay with the player.
+	const pick=(...list)=>list.reduce((a,b)=>Math.abs(b)>Math.abs(a)?b:a,0);
+	input.pitch=pick(pp,key_axes.pitch,mouse_command.pitch);
+	input.roll=pick(pr,key_axes.roll,mouse_command.roll);
+	input.yaw=pick(py,key_axes.yaw,mouse_command.yaw);
 	if(pad) scan_zoom(pad,pad_bindings(pad));
 	input.guns=(keys.has(key_of("fire"))||pad_fire)&&master==="gun";   // the trigger serves the SELECTED weapon (#133): guns only in GUN
 	const held=(action)=>{ const b=key_of(action); if(!b||b==="None") return false;
@@ -4269,6 +4315,7 @@ function add_impact_mark(st,local){ if(!st||!st.group||!local||(cfg.effects_qual
 	while(impact_marks.length>=cap){ const old=impact_marks.shift(); old.parent?.remove(old); }
 	const n=_v2.set(local.x,local.y,local.z).normalize(); const mark=new THREE.Mesh(impact_mark_geo,impact_mark_mat); mark.position.set(local.x,local.y,local.z).addScaledVector(n,.018); mark.quaternion.setFromUnitVectors(_mark_z,n); const s=.22+Math.random()*.28; mark.scale.set(s,s*(.65+Math.random()*.35),1); mark.rotation.z=Math.random()*Math.PI*2; mark.renderOrder=3; st.group.add(mark); impact_marks.push(mark); }
 if(DEV_MODE) (globalThis as any).dev_ball=()=>{ call_the_ball(); return comms.slice(-2).map(c=>c.text); };   // dev: fire the ball exchange and return both lines — a flown pattern turn is not reachable from a headless harness, and this exercises the real function
+if(DEV_MODE) (globalThis as any).dev_mouse=(on)=>{ mouse_aim=on!==false; if(!mouse_aim) mouse_neutral(); return mouse_aim?"mouse aim on":"mouse aim off"; };   // dev: the mode has no key until #task5, and the merge has to be flyable before then
 if(DEV_MODE) (globalThis as any).dev_flight=()=>({ pitch:+(Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*57.3).toFixed(2), g:+(ownship.gload??1).toFixed(2), aoa:+(ownship.aoa??0).toFixed(1), stick:last_controls?+(+last_controls.pitch).toFixed(3):0, head:[+head_az.toFixed(3),+head_el.toFixed(3)], looking, law:law_active, pip:dev_pip, hold:weapons_hold, rounds:ownship.rounds??-1, gear:+(ownship.gear??1).toFixed(2), sparks:_spark_count, bandit:has_enemy?{thrust:+(bandit.harm.thrust||0).toFixed(2),leak:+(bandit.harm.leak||0).toFixed(2),fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)),burning:!!bandit.harm.burning,marks:impact_marks.length}:null });   // dev (#242, #243, #244): flight-state sampler for headless input-shaping verification — the unload test reads pitch/g/stick at ~12 Hz through a pull-release cycle
 if(DEV_MODE) (globalThis as any).dev_approach=(clouds,nm,ft)=>{   // dev (#6): set a cloud deck and park the jet on the 3.5 deg glideslope at nm — cfg/apply_clouds/carrier_world are module-scope, so a headless approach test cannot be driven from page script without this
 	if(clouds!==undefined){ cfg.clouds=clouds; apply_clouds(); }
