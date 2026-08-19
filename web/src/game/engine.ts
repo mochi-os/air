@@ -18,7 +18,7 @@ import {
   recording_store,
   type Join as NetJoin,
 } from './net'
-import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast } from './flight'
+import { flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder } from './flight'
 import { normalize as stores_normalize, migrate as stores_migrate, strip as stores_strip, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject } from './stores'
 import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
 import { split as model_split, repack as model_repack, textures as model_captures, POSE as model_pose, GEAR as model_gear } from './model'
@@ -2541,7 +2541,7 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
 	m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30);   // off the rail at aircraft speed; the Mk 36 does the rest
-	m.life=20; m.kind="9m"; m.target=target; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.prate=undefined; m.fate=undefined; m.fated=0; m.shot=(m.shot||0)+1; m.launcher=st;
+	m.life=20; m.kind="9m"; m.target=target; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.fate=undefined; m.fated=0; m.shot=(m.shot||0)+1; m.launcher=st;
 	if(target){ const dx=wrap_axis(target.pos.x-st.pos.x), dy=target.pos.y-st.pos.y, dz=wrap_axis(target.pos.z-st.pos.z); const d=Math.hypot(dx,dy,dz)||1;
 		const tail=target.fwd?Math.max(0,(dx*target.fwd.x+dy*target.fwd.y+dz*target.fwd.z)/d):0;
 		const floor=0.15+0.35*THREE.MathUtils.clamp(target.reheat??0,0,1);
@@ -2687,7 +2687,23 @@ function step_amraam(m,dt){
 function post_round(m,why){ m.fate=why; m.fated=sim_time;   // the recorder's last sample of this round carries the fate (#33 debrief) — shipped, unlike the dev log below
 	if(!DEV_MODE) return; const log=(globalThis as any).dev_missiles=(globalThis as any).dev_missiles||[];
 	log.push({why, kind:"120c", flew:+(m.flew??0).toFixed(1), phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), least:+(m.least??-1).toFixed(1), took:m.took||0, killed:!!m.killed, mask:m.mask??-1}); }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.visible=false; continue; }
+// The rounds step in the same fixed 1/60 s quanta the flight core and the
+// bandit step in, however fast the display runs. They used to step once per
+// RENDER frame against targets that advance in whole 1/60 s jumps, and the
+// seeker's track-rate check read the jumps as motion: on a display off 60 Hz
+// the measured LOS rate alternated between frames that saw a jump and frames
+// that did not, and its two-frame average crossed the 20 deg/s ceiling on shots
+// the physics arrives on. Measured on the 2026-08-18 fight's first launch, the
+// same shot at the same target: 60 and 30 fps arrive at 1 m; 45, 40, 90, 120
+// and 144 fps break lock at 180-775 m — the recording's own break, at 756 m
+// and 2.3 s, is the 144 fps row. Six of six 9Ms 'missed as usual' that day.
+let missile_acc=0;
+function update_missiles(dt){
+	missile_acc+=Math.max(0,dt); let count=Math.floor(missile_acc*60);
+	if(count>8){ count=8; missile_acc=0; } else missile_acc-=count/60;   // a long stall: drop the debt rather than fast-forward (the flight core's rule)
+	for(let s=0;s<count;s++) step_missiles(1/60);
+	for(const m of missiles) if(!m.active) m.trail.visible=false; }
+function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 	if(m.kind==="120c"){ step_amraam(m,dt); continue; }
 	m.life-=dt; m.flew+=dt;
 	if(m.target){ const md=wrap_distance({x:m.px,y:m.py,z:m.pz},m.target.pos); if(md<(m.least??1e9)) m.least=md; }   // closest approach: dev_missiles telemetry and the recording's Least channel (#33 debrief) — one distance per live heater per frame
@@ -2761,7 +2777,7 @@ function update_missiles(dt){ for(const m of missiles){ if(!m.active){ m.trail.v
 		let rx=(ux-m.sx)/Math.max(dt,1e-6), ry=(uy-m.sy)/Math.max(dt,1e-6), rz=(uz-m.sz)/Math.max(dt,1e-6);
 		const along=rx*ux+ry*uy+rz*uz; rx-=along*ux; ry-=along*uy; rz-=along*uz;   // the rotation component of the LOS motion
 		const rate=Math.hypot(rx,ry,rz);
-		const paced=(rate+(m.prate??rate))/2; m.prate=rate;   // two-frame average: the bandit advances in whole 1/60 s quanta, so off-60 fps render frames see its motion as alternating spikes — judge the ceiling on the mean, not the artifact
+		const paced=rate;   // the round steps in the same 1/60 s quanta as its target now (update_missiles), so the rate is the rate: the two-frame average that used to paper over the aliasing is gone with it
 		if(paced>(fox3?0.7:0.35)){ if(DEV_MODE&&!m.loose){ m.why="rate"; m.at=+dist.toFixed(0); } m.loose=true; }   // the seeker's track ceiling — beaming saturates it (the radar round tracks harder, phase 1)   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 		m.sx=ux; m.sy=uy; m.sz=uz;
 		if(!m.loose){
@@ -4311,6 +4327,8 @@ if(DEV_MODE) (globalThis as any).dev_panels=()=>{ const read=(st)=>{ if(!st||!st
 if(DEV_MODE) (globalThis as any).dev_bandit_state=()=>has_enemy&&bandit.harm?{ thrust:+(bandit.harm.thrust||0).toFixed(2), leak:+(bandit.harm.leak||0).toFixed(2), fire:(bandit.harm.fire||[0,0]).map(v=>+v.toFixed(2)), burning:!!bandit.harm.burning, wing:+(bandit.harm.wing||0).toFixed(2), killed:!!bandit.harm.killed, smoke:smoke.activeList.length, flying:!(bandit.harm.killed||bandit.harm.wing>0.5)&&bandit.group.visible, speed:Math.round(bandit.speed||0) }:null;   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 if(DEV_MODE) (globalThis as any).dev_dispense=()=>{ if(!has_enemy||!bandit.group.visible) return false; dispense_flare(bandit); dispense_chaff(bandit); bandit.flared_at=sim_time; return true; };   // dev (#29): the bandit's mixed-program dispense on demand — the chaff harness owns the timing the brain otherwise decides
 if(DEV_MODE) (globalThis as any).dev_radar=(mode)=>{ if(mode==="rws"||mode==="tws") RADAR.mode=mode; return RADAR.mode; };   // dev: the mode the RDR page's bezel selects, reachable without a canvas click (the TWS employment paths need it)
+if(DEV_MODE) (globalThis as any).dev_heat=()=>{ const z=heat_zone(); if(!z) return null;   // #47: the live 9M ladder and its cue, as the HUD draws them
+	return { max:Math.round(z.max), escape:Math.round(z.escape), minimum:Math.round(z.minimum), range:Math.round(z.range||0), cue:heat_cue(z) }; };
 if(DEV_MODE) (globalThis as any).dev_zone=()=>{ const z=launch_zone(); if(!z) return null;   // #27 phase 2: the live DLZ ladder and its shoot cue, as the HUD draws them
 	return { aero:Math.round(z.aero), max:Math.round(z.max), escape:Math.round(z.escape), minimum:Math.round(z.minimum), range:Math.round(z.range||0), active:+((z.active||0).toFixed(1)), cue:shoot_cue(z) }; };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 function hit_sparks(x,y,z,vx,vy,vz,target,local){ _spark_count++; add_impact_mark(target,local);
@@ -4494,7 +4512,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	if(base) base.traverse((o:any)=>{ if(o.isMesh&&o.geometry?.attributes?.position){ const pos=o.geometry.attributes.position; for(let i=0;i<pos.count;i++){ v.fromBufferAttribute(pos,i).applyMatrix4(o.matrixWorld); if(!claw||v.y<claw.y) claw={x:v.x,y:v.y,z:v.z}; } } });
 	let cl=null; if(claw){ const local=new THREE.Vector3(claw.x,claw.y,claw.z); ownship.group.worldToLocal(local); cl={x:+local.x.toFixed(2),y:+local.y.toFixed(2),z:+local.z.toFixed(2)}; }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-if(DEV_MODE) (globalThis as any).dev_probe=()=>({ y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl, amraam:Math.max(0,ownship.amraam|0),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl, amraam:Math.max(0,ownship.amraam|0),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	fleet:[...remotes.values()].map(r=>({ loadout:!!r.loadout, racks:r.racks&&r.racks.nodes?Object.fromEntries(Object.entries(r.racks.nodes).map(([k,n])=>[k,!!(n as any).visible])):null })),   // each remote's drawn store nodes — MP stores-rendering verification (#27)
 	nearest:(()=>{ let best=null;   // #27: the closest remote's geometry off our nose — how an MP harness (and a bot, later) knows where to point
 		for(const st of remotes.values()){ if(!st.pos) continue;   // geometry only: a remote too far to DRAW is still a contact worth pointing at
@@ -5196,7 +5214,7 @@ function reset_ownship(){
 	test_idle=0; _test_power=0;   // a respawn ends any scenario rollout grace — the lever and brakes are the pilot's again
 	hist_valid=false;   // spawn/respawn teleports the camera — a cut for the cloud accumulation history
 	battle_rig(); ejected=false; hit_flash=0; own_burn=[0,0]; own_burning=false; own_leak=0; peak_g=1;   // a fresh jet, a fresh fight (#78)
-	bandit_acc=0;   // no stale fixed-step debt across spawns
+	bandit_acc=0; missile_acc=0;   // no stale fixed-step debt across spawns
 	designated=-1;   // a respawn drops the acquisition
 	bandit.spent=0; bandit.rounds=MAGAZINE;   // a fresh fight rearms the bandit: full belt, clean expenditure
 	bandit.struck=0; bandit.fate=undefined; ownship.struck=0; ownship.fate=undefined;   // and starts clean battle channels (#238)
@@ -5532,10 +5550,34 @@ function launch_zone(){
 // shoot_cue: null, "steady" (Rmax..Rne) or "flash" (inside Rne — the shot
 // the target cannot outrun). Inside Rmin the breakaway X replaces it.
 function shoot_cue(z){ if(!z||(ownship.amraam|0)<=0||weapons_hold) return null;
+	return zone_cue(z); }
+function zone_cue(z){
 	if(z.range<z.minimum) return "break";
 	if(z.range<=z.escape) return "flash";
 	if(z.range<=z.max) return "steady";
 	return null; }
+// The 9M's zone (#47): the same radar-lock gate as the AMRAAM's — the real
+// jet has no Sidewinder SHOOT without a radar lock, because only the radar
+// knows range; tone alone is the seeker circle and the growl — and the core's
+// heater ladder flying the round against the target's present turn and burner
+// state, refreshed at ~2 Hz like launch_zone. Until 2026-08-18 the 9M SHOOT
+// was seeker tone alone, and it lit on beam shots at 1.8 km.
+let heat_at=0, heat=null, heat_track=null, heat_prev=null;
+function heat_zone(){
+	const track=RADAR.stt??RADAR.ls; if(track==null) return null;
+	const t=(!MULTIPLAYER&&has_enemy&&bandit.group.visible)?bandit:remotes.get(track);
+	if(!t||!t.group||!t.group.visible) return null;
+	if(heat&&heat_track===track&&sim_time-heat_at<0.5) return heat;
+	const v={x:t.velx??t.fwd.x*t.speed,y:t.vely??t.fwd.y*t.speed,z:t.velz??t.fwd.z*t.speed};
+	let swing={x:0,y:0,z:0};   // his present acceleration, from the last refresh: the ladder flies his turn on, not a straight line
+	if(heat_prev&&heat_track===track&&sim_time-heat_prev.t>0.2){ const dt=sim_time-heat_prev.t; swing={x:(v.x-heat_prev.vx)/dt,y:(v.y-heat_prev.vy)/dt,z:(v.z-heat_prev.vz)/dt}; }
+	heat_prev={t:sim_time,vx:v.x,vy:v.y,vz:v.z}; heat_track=track; heat_at=sim_time;
+	heat=heater_ladder(
+		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },
+		{ position:{x:t.pos.x,y:t.pos.y,z:t.pos.z}, velocity:v }, swing, t.reheat??0, WORLD_WRAP);
+	if(heat) heat.range=Math.hypot(wrap_axis(t.pos.x-ownship.pos.x),t.pos.y-ownship.pos.y,wrap_axis(t.pos.z-ownship.pos.z));
+	return heat; }
+function heat_cue(z){ if(!z||(ownship.msl|0)<=0||weapons_hold) return null; return zone_cue(z); }
 function hud_launch_zone(cx,cy,ppdv,ax,lx){
 	const z=launch_zone();
 	const flying=missiles.filter(m=>m.active&&m.kind==="120c");
@@ -5886,9 +5928,31 @@ function draw_hud(){
 		const seeker=2.5*ppd;   // the 5° seeker circle
 		const at=(lockon&&td)?td:bore;
 		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(at[0],at[1],seeker,0,Math.PI*2); hctx.stroke();
-		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0) hud_cue="9m";
-		if(lockon&&!brk&&!weapons_hold&&(sim_time*5)%2<1&&ownship.msl>0){ hctx.fillStyle=GR; hctx.font="16px monospace"; hctx.textAlign="center";   // no SHOOT inside the breakaway regime (the X owns it) or during the joust weapons hold — commanding a launch the trigger will refuse just confuses the merge
-			hctx.fillText("SHOOT",at[0],at[1]-seeker-16); } }
+		// SHOOT only with a radar lock AND the target inside the heater's
+		// computed zone (#47), as on the real jet; the seeker circle and the
+		// growl are what tone alone earns. The recorder's Cue channel tells
+		// the two apart: 'tone' for a lock the radar does not range, '9m'
+		// for the cue itself.
+		const zone=lockon?heat_zone():null, cue=lockon?heat_cue(zone):null;
+		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0) hud_cue=(cue==="steady"||cue==="flash")?"9m":(cue==="break"?"break":"tone");
+		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0&&(cue==="steady"||(cue==="flash"&&(sim_time*5)%2<1))){ hctx.fillStyle=GR; hctx.font="16px monospace"; hctx.textAlign="center";   // steady between Rmax and Rne, flashing inside Rne; no SHOOT inside the breakaway regime (the X owns it) or during the joust weapons hold — commanding a launch the trigger will refuse just confuses the merge
+			hctx.fillText("SHOOT",at[0],at[1]-seeker-16); }
+		if(zone&&zone.max>0&&lockon&&declutter<2){   // the ladder's staff, as the AMRAAM draws it: Rmax, the doubled Rne tick, Rmin, and the caret at his range
+			hctx.save(); hctx.font="13px monospace"; hctx.textAlign="left"; hctx.fillStyle=GR; hctx.strokeStyle=GR; hctx.lineWidth=1.5;
+			const top=bore[1]-3.0*ppd, bottom=bore[1]+3.0*ppd, sx=bore[0]+9*ppd;   // beside the boresight, where the AMRAAM's staff sits (bore and ppd are this block's frame; the AMRAAM's cx/cy/ppdv are declared further down draw_hud and would be in their dead zone here)
+			const scale=Math.max(zone.max,zone.range)*1.05;
+			const y_of=(r)=>bottom-(bottom-top)*THREE.MathUtils.clamp(r/scale,0,1);
+			hctx.beginPath(); hctx.moveTo(sx,top); hctx.lineTo(sx,bottom); hctx.stroke();
+			for(const [range,mark] of [[zone.max,"—"],[zone.escape,"="],[zone.minimum,"_"]]){
+				if(range<=0) continue; const y=y_of(range);
+				hctx.beginPath(); hctx.moveTo(sx-5,y); hctx.lineTo(sx+5,y); hctx.stroke();
+				if(mark==="="){ hctx.beginPath(); hctx.moveTo(sx-5,y-3); hctx.lineTo(sx+5,y-3); hctx.stroke(); } }
+			const y=y_of(zone.range);
+			hctx.beginPath(); hctx.moveTo(sx+7,y); hctx.lineTo(sx+15,y-4); hctx.lineTo(sx+15,y+4); hctx.closePath(); hctx.fill();
+			hctx.fillText((zone.range/1852).toFixed(1),sx+18,y+4);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+			hctx.restore(); }
+		if(cue==="break"&&lockon&&(sim_time*5)%2<1){ const R=2.2*ppd; hctx.strokeStyle=AM; hctx.setLineDash([]); hctx.lineWidth=2.5;   // inside the heater's own minimum: the breakaway X
+			hctx.beginPath(); hctx.moveTo(at[0]-R,at[1]-R); hctx.lineTo(at[0]+R,at[1]+R); hctx.moveTo(at[0]+R,at[1]-R); hctx.lineTo(at[0]-R,at[1]+R); hctx.stroke(); hctx.lineWidth=1.5; } }
 	if(brk) hud_cue="break";
 	if(brk&&(sim_time*5)%2<1){   // breakaway X (flashing): the 9M can't arm, a gun pass this close eats debris — break off
 		const R=2.2*ppd; hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=2.5;
