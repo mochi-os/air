@@ -336,7 +336,7 @@ const bandit_bytes = new Uint8Array(bandit_out.buffer)
 const menace = new Float64Array(64)
 const menace_bytes = new Uint8Array(menace.buffer)
 
-export function bandit_init(config: { level: string; seed: number; wrap: number; sky: string; night: boolean; missiles: boolean; weapons?: string }): boolean {
+export function bandit_init(config: { level: string; seed: number; wrap: number; sky: string; night: boolean; missiles: boolean; weapons?: string; fuel?: number }): boolean {
   if (!core?.bandit_init) return false
   const error = core.bandit_init(JSON.stringify(config))
   if (error) console.error('bandit init:', error)

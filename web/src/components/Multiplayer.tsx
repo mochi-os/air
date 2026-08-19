@@ -141,7 +141,7 @@ export function Multiplayer({
   const [cheats, setCheats] = useState<Record<string, boolean>>({}) // invulnerable (humans only), ammunition, fuel
   const [bots, setBots] = useState<Record<string, number>>({ drone: 0, novice: 0, pilot: 0, ace: 0, superhuman: 0 }) // server-flown aircraft per skill level; drones cruise, the rest fight (also the 100-player verification lever)
   const [blueBots, setBlueBots] = useState<Record<string, number>>({ drone: 0, novice: 0, pilot: 0, ace: 0, superhuman: 0 }) // teams mode: the blue side's bots (the row above places red's)
-  const [fuel, setFuel] = useState(6000) // spawn load in POUNDS, like the IFEI
+  const [fuel, setFuel] = useState(10800) // spawn load in POUNDS, like the IFEI: full internal, the same default the single-player presets seed (2026-08-18)
   const address = normalize_server(server || default_server())
   const name = (callsign || identity || t`pilot`).slice(0, 32)
 
