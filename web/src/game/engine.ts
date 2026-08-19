@@ -4130,7 +4130,7 @@ function recording_sample(){
 		...(DEV_MODE?{ stick:last_controls?last_controls.pitch:0, stabilator:(out[STATE.stabilator]||0)/D2R }:{}) }:undefined;
 	add(ownship,1,cfg.callsign||"Player","Blue",undefined,data);
 	if(!MULTIPLAYER&&bandit.group&&(has_enemy&&bandit.group.visible||(bandit.fated&&sim_time-bandit.fated<1)))   // the grace second writes the corpse's Fate: destruction hides the group before the next sample, and an unrecorded fate was how a debrief argued with the pilot about who killed whom
-		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?(bandit_mode()||undefined):undefined,
+		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?((bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5))?"wreck":(bandit_mode()||undefined)):undefined,   // a dead jet coasting on the model (#40) has no doctrine — and since it rolls and accelerates now, the attitude freeze no longer dates the kill; "wreck" is what dates it
 			{ rounds:bandit.rounds??0,   // the true belt (#233), same counter as the ownship's — no longer a nominal derived from expenditure
 				struck:bandit.struck||0, burning:!!bandit.harm.burning, thrust:bandit.harm.thrust||0,
 				wing:bandit.harm.wreck||0, ...(bandit.fate?{fate:bandit.fate}:{}),
@@ -4314,9 +4314,9 @@ if(DEV_MODE) (globalThis as any).dev_close=(m,az,el,heading)=>{ const d=+m||200;
 	bandit.pos.copy(ownship.pos).addScaledVector(_look_d,d*Math.cos(e)); bandit.pos.y+=d*Math.sin(e);
 	bandit.fwd.copy(ownship.fwd).multiplyScalar(Math.cos(h)).addScaledVector(ownship.right,Math.sin(h)).normalize(); bandit.speed=ownship.speed;
 	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
-if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds){ if(!has_enemy||!bandit.harm||!bandit.group.visible) return null;   // dev (#27 wound trails): rake the FLYING bandit from astern with REAL rounds — identity 0 is the ownship's gun against the bandit hulk, the same path a gun kill flies, so the wound is the battle model's own and survives the per-frame refresh (setting bandit.harm directly is clobbered by it). The wound trails must then draw while the brain still flies the jet.
-	const n=Math.max(1,+volleys||6), shots=Math.max(1,+rounds||40), back=250, up=bandit.up||world_up;
-	const pose={ position:{x:bandit.pos.x-bandit.fwd.x*back, y:bandit.pos.y-bandit.fwd.y*back, z:bandit.pos.z-bandit.fwd.z*back},
+if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds,side){ if(!has_enemy||!bandit.harm||!bandit.group.visible) return null;   // dev (#27 wound trails): rake the FLYING bandit from astern with REAL rounds — identity 0 is the ownship's gun against the bandit hulk, the same path a gun kill flies, so the wound is the battle model's own and survives the per-frame refresh (setting bandit.harm directly is clobbered by it). The wound trails must then draw while the brain still flies the jet.
+	const n=Math.max(1,+volleys||6), shots=Math.max(1,+rounds||40), back=250, up=bandit.up||world_up, right=bandit.right||_look_d.crossVectors(bandit.fwd,up).normalize(), off=+side||0;   // side: metres abeam of the centreline, so a rake can take a WING rather than the fuselage (#39/#40 wreck verification)
+	const pose={ position:{x:bandit.pos.x-bandit.fwd.x*back+right.x*off, y:bandit.pos.y-bandit.fwd.y*back+right.y*off, z:bandit.pos.z-bandit.fwd.z*back+right.z*off},
 		forward:{x:bandit.fwd.x,y:bandit.fwd.y,z:bandit.fwd.z}, up:{x:up.x,y:up.y,z:up.z},
 		velocity:{x:bandit.velx,y:bandit.vely,z:bandit.velz} };
 	for(let v=0;v<n;v++) battle_volley(0,pose,shots,battle_tick+v);
