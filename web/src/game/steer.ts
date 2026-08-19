@@ -171,3 +171,56 @@ export function radius(limit: number, fov: number, height: number): number {
   const half = Math.tan(Math.max(1e-4, fov / 2))
   return (Math.tan(clamp(limit, 0, 1.4)) / half) * (height / 2)
 }
+
+// merge resolves the live input sources onto one axis. Keyboard, stick and
+// mouse all stay live together and the largest magnitude wins, which is what
+// the keyboard and the stick already did to each other before the mouse
+// existed. A tie keeps the EARLIER argument, so the engine's call order — pad,
+// keyboard, mouse — decides it, and a physical control is never silently
+// overridden by a software one commanding exactly as much.
+//
+// The gamepad's centre deadzone is applied upstream in the engine's pad_axis,
+// so a resting stick arrives here as exactly 0 and cannot beat a centred
+// mouse. Drift past the deadzone is a real deflection and is meant to win.
+export function merge(...axes: number[]): number {
+  let out = 0
+  for (const v of axes) if (Math.abs(v) > Math.abs(out)) out = v
+  return out
+}
+
+// ---- aim reach -------------------------------------------------------------
+// The cursor is a screen point, so turning it into a direction needs a distance
+// to put the aim point at. Two things constrain the choice.
+//
+// It must be CONTINUOUS. In chase the commanded direction depends on the reach,
+// because the aim point is measured from the camera and the command from the
+// aircraft, so stepping the reach steps the nose command with the cursor
+// perfectly still. Acquiring or dropping a target would jerk the nose at
+// exactly the moment the pilot is watching the target. Hence the ease.
+//
+// It must CLEAR THE CAMERA. The chase camera dollies from 14 m to 140 m, and an
+// aim point that is not comfortably beyond that offset makes the geometry
+// degenerate: at reach comparable to the offset the two vectors nearly cancel,
+// so a small cursor movement swings the commanded direction wildly, and below
+// the offset the direction inverts outright. The clearance multiple bounds the
+// worst-case parallax to about 14 degrees.
+//
+// Reach tracking the target's own range is not an approximation — with the
+// cursor on the target the aim point IS the target, so the commanded direction
+// is exact. Closure at 460 m/s lags this ease by under 200 m, which moves the
+// commanded direction by a fraction of a degree.
+export const REACH_DEFAULT = 1500 // m, when nothing is designated
+export const REACH_FLOOR = 250 // m, absolute
+export const REACH_CLEAR = 4 // multiples of the camera's offset from the aircraft
+export const REACH_EASE = 4 // per second
+
+// reach returns the aim distance for this frame. `range` is the designated
+// target's range or null, `offset` the camera's distance from the aircraft,
+// `previous` last frame's reach (0 or less on the first call), `dt` seconds.
+// Stateless: the caller keeps `previous`, so this stays a pure function.
+export function reach(range: number | null, offset: number, previous: number, dt: number): number {
+  const want = Math.max(range !== null && range > 0 ? range : REACH_DEFAULT, REACH_FLOOR, REACH_CLEAR * Math.max(0, offset))
+  if (!(previous > 0)) return want // first frame: no step to smooth
+  if (!(dt > 0)) return previous
+  return previous + (want - previous) * Math.min(1, dt * REACH_EASE)
+}
