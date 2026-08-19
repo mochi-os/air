@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, it, expect } from 'vitest'
-import { command, radius, GAINS, type Frame, type Vector } from './steer'
+import { command, radius, merge, reach, REACH_DEFAULT, REACH_FLOOR, REACH_CLEAR, GAINS, type Frame, type Vector } from './steer'
 
 // LEVEL is the jet upright and pointing down -z, the engine's own convention
 // (bearing is atan2(dx, -dz)). Every case below aims relative to this so the
@@ -166,5 +166,206 @@ describe('radius', () => {
 
   it('does not divide by zero on a degenerate field', () => {
     expect(Number.isFinite(radius(0.4, 0, 1080))).toBe(true)
+  })
+})
+
+// off_axis measures the TRUE angle between the boresight and the ray through a
+// pixel offset, the way three.js builds it: the camera carries a VERTICAL fov
+// and aspect = width/height, which keeps pixels square, so a pixel offset maps
+// to camera-space tangent through the vertical field on BOTH axes. Note the
+// width never enters — that is the property the clamp depends on, and these
+// tests assert it rather than assuming it.
+function off_axis(px: number, py: number, fov: number, height: number): number {
+  const t = Math.tan(fov / 2)
+  return Math.atan(Math.hypot((px / (height / 2)) * t, (py / (height / 2)) * t))
+}
+
+describe('radius holds a true angular cone', () => {
+  const LIMIT = (25 * Math.PI) / 180
+  // The three fields the engine actually produces: chase and HUD at 45 deg, the
+  // cockpit's wide 72 deg base, and the deepest optical zoom (base / 4).
+  const fields = [45, 72, 45 / 4, 72 / 4].map((d) => (d * Math.PI) / 180)
+  // 21:9 and 4:3 bracket any window the game will meet.
+  const shapes = [
+    { w: 2560, h: 1080 },
+    { w: 1440, h: 1080 },
+    { w: 1920, h: 1080 },
+    { w: 1280, h: 720 },
+  ]
+
+  it('measures exactly the limit horizontally and vertically, at every field and aspect', () => {
+    for (const fov of fields) {
+      for (const { h } of shapes) {
+        const r = radius(LIMIT, fov, h)
+        expect(off_axis(r, 0, fov, h)).toBeCloseTo(LIMIT, 9) // horizontal edge
+        expect(off_axis(0, r, fov, h)).toBeCloseTo(LIMIT, 9) // vertical edge
+        expect(off_axis(r * Math.SQRT1_2, r * Math.SQRT1_2, fov, h)).toBeCloseTo(LIMIT, 9) // diagonal
+      }
+    }
+  })
+
+  it('is width-independent because the aspect cancels, proved the long way', () => {
+    // radius() never sees the width, which only holds because three.js scales
+    // NDC x by aspect * tan(fov/2) and aspect is width/height. Derive the
+    // horizontal angle the LONG way, through NDC and aspect, and check it still
+    // lands on the limit at 21:9, 4:3 and 16:9. Comparing radius() to itself
+    // would assert nothing.
+    for (const fov of fields) {
+      for (const { w, h } of shapes) {
+        const r = radius(LIMIT, fov, h)
+        const long = Math.atan(Math.abs((r / (w / 2)) * (w / h) * Math.tan(fov / 2)))
+        expect(long).toBeCloseTo(LIMIT, 9)
+      }
+    }
+  })
+})
+
+describe('merge', () => {
+  it('is zero with nothing commanded', () => {
+    expect(merge()).toBe(0)
+    expect(merge(0, 0, 0)).toBe(0)
+  })
+
+  it('takes the largest magnitude regardless of sign', () => {
+    expect(merge(0.3, -0.7, 0)).toBeCloseTo(-0.7)
+    expect(merge(-0.2, 0, 0.9)).toBeCloseTo(0.9)
+    expect(merge(0, -1, 0.5)).toBeCloseTo(-1)
+  })
+
+  it('keeps the earlier argument on an equal-magnitude sign conflict', () => {
+    // Engine call order is pad, keyboard, mouse: a physical control is never
+    // silently overridden by a software one commanding exactly as much.
+    expect(merge(0.5, -0.5, 0)).toBeCloseTo(0.5)
+    expect(merge(-0.5, 0.5, 0)).toBeCloseTo(-0.5)
+    expect(merge(0, 0.4, -0.4)).toBeCloseTo(0.4)
+  })
+
+  it('lets a centred mouse leave a deflected stick alone', () => {
+    expect(merge(0.62, 0, 0)).toBeCloseTo(0.62)
+  })
+
+  it('lets a deflected mouse command past a centred stick', () => {
+    expect(merge(0, 0, -0.44)).toBeCloseTo(-0.44)
+  })
+
+  it('cannot be beaten by stick drift inside the deadzone', () => {
+    // pad_axis zeroes anything under 0.05 raw before the merge sees it, so
+    // resting-stick drift arrives here as exactly 0.
+    expect(merge(0, 0, 0.25)).toBeCloseTo(0.25)
+    expect(merge(0, 0, 0)).toBe(0)
+  })
+
+  it('lets real deflection past the deadzone win, which is the point of it', () => {
+    expect(merge(0.31, 0, 0.25)).toBeCloseTo(0.31)
+  })
+})
+
+describe('reach', () => {
+  it('takes the target range when one is designated and it clears everything', () => {
+    expect(reach(3000, 24, 3000, 1 / 60)).toBeCloseTo(3000, 6)
+  })
+
+  it('falls back to the default with nothing designated', () => {
+    expect(reach(null, 24, 0, 1 / 60)).toBe(REACH_DEFAULT)
+  })
+
+  it('honours the absolute floor', () => {
+    expect(reach(50, 10, 0, 1 / 60)).toBe(REACH_FLOOR)
+  })
+
+  it('keeps clear of the camera offset at every dolly distance', () => {
+    // Chase dollies 14 m to 140 m. A reach comparable to the offset makes the
+    // geometry degenerate; below it the commanded direction inverts outright.
+    for (const offset of [14, 24, 60, 100, 140]) {
+      const out = reach(200, offset, 0, 1 / 60)
+      expect(out).toBeGreaterThanOrEqual(REACH_CLEAR * offset)
+      expect(out).toBeGreaterThan(offset)
+    }
+  })
+
+  it('never steps: acquiring a close target moves the reach a bounded amount per frame', () => {
+    // The defect this exists for: with the cursor stationary, a step in reach
+    // is a step in the commanded direction, so acquire/drop would jerk the nose.
+    const dt = 1 / 60
+    const before = reach(null, 24, 0, dt) // cruising, nothing boxed
+    const after = reach(400, 24, before, dt) // target acquired at 400 m
+    expect(after).toBeLessThan(before)
+    expect(before - after).toBeLessThan((before - 400) * 0.2) // a fraction of the gap, not the gap
+  })
+
+  it('converges on the wanted reach rather than easing forever', () => {
+    let r = reach(null, 24, 0, 1 / 60)
+    for (let i = 0; i < 240; i++) r = reach(900, 24, r, 1 / 60)
+    expect(r).toBeCloseTo(900, 3)
+  })
+
+  it('holds still on a zero or negative timestep', () => {
+    expect(reach(900, 24, 1500, 0)).toBe(1500)
+    expect(reach(900, 24, 1500, -1)).toBe(1500)
+  })
+
+  it('seeds instantly on the first frame, with no ease from zero', () => {
+    expect(reach(800, 24, 0, 1 / 60)).toBe(800)
+    expect(reach(800, 24, -1, 1 / 60)).toBe(800)
+  })
+})
+
+// aim_direction mirrors what the engine does: march the camera ray out to the
+// reach, then take the direction from the AIRCRAFT to that point. The camera is
+// not at the aircraft in chase, which is the whole reason this indirection
+// exists.
+function aim_direction(camera: Vector, ray: Vector, aircraft: Vector, r: number): Vector {
+  return { x: camera.x + ray.x * r - aircraft.x, y: camera.y + ray.y * r - aircraft.y, z: camera.z + ray.z * r - aircraft.z }
+}
+
+function between(a: Vector, b: Vector): number {
+  const la = Math.hypot(a.x, a.y, a.z) || 1
+  const lb = Math.hypot(b.x, b.y, b.z) || 1
+  const d = (a.x * b.x + a.y * b.y + a.z * b.z) / (la * lb)
+  return Math.acos(Math.min(1, Math.max(-1, d)))
+}
+
+describe('chase geometry with a near target', () => {
+  // Chase, dollied fully out: camera 140 m behind the jet, both pointing -z.
+  const aircraft: Vector = { x: 0, y: 0, z: 0 }
+  const camera: Vector = { x: 0, y: 0, z: 140 }
+  const ahead: Vector = { x: 0, y: 0, z: -1 }
+
+  it('commands nearly straight ahead for a centred cursor, even at a 200 m target', () => {
+    const r = reach(200, 140, 0, 1 / 60)
+    const dir = aim_direction(camera, ahead, aircraft, r)
+    expect(between(dir, ahead)).toBeCloseTo(0, 9)
+  })
+
+  it('bounds the cursor-to-command gain, which an unguarded reach does not', () => {
+    // The quantity that matters is GAIN: how many degrees of nose command one
+    // degree of cursor buys. Unguarded, a 200 m reach against a 140 m camera
+    // offset nearly cancels the two vectors, so the gain runs away and the jet
+    // turns twitchy exactly when a target is close. The floor holds it near
+    // unity, which is what "the cursor means what it looks like" requires.
+    const off = (5 * Math.PI) / 180
+    const ray: Vector = { x: Math.sin(off), y: 0, z: -Math.cos(off) }
+    const guarded = between(aim_direction(camera, ray, aircraft, reach(200, 140, 0, 1 / 60)), ahead) / off
+    const raw = between(aim_direction(camera, ray, aircraft, 200), ahead) / off
+    expect(guarded).toBeLessThan(1.5)
+    expect(raw).toBeGreaterThan(3)
+  })
+
+  it('drives the gain toward unity as the camera comes in close', () => {
+    // First person is the limit case: the camera sits essentially at the pilot,
+    // so there is no parallax left and the cursor means exactly itself.
+    const off = (5 * Math.PI) / 180
+    const ray: Vector = { x: Math.sin(off), y: 0, z: -Math.cos(off) }
+    const near = between(aim_direction({ x: 0, y: 0, z: 6 }, ray, aircraft, reach(1200, 6, 0, 1 / 60)), ahead) / off
+    expect(near).toBeGreaterThan(0.9)
+    expect(near).toBeLessThan(1.1)
+  })
+
+  it('never inverts the commanded direction, at any dolly distance', () => {
+    for (const offset of [14, 24, 60, 100, 140]) {
+      const cam: Vector = { x: 0, y: 0, z: offset }
+      const dir = aim_direction(cam, ahead, aircraft, reach(200, offset, 0, 1 / 60))
+      expect(dir.z).toBeLessThan(0) // still pointing forward, not back past the camera
+    }
   })
 })
