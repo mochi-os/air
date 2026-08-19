@@ -5826,10 +5826,11 @@ function draw_hud(){
 			// while carrying the inherited velocity undragged. It is NOT gated on
 			// the gun's reach: the ring and the shoot cue say whether the shot is
 			// worth taking, this says where to point.
-			const impact=pipper_impact(muz,ownship.fwd,{x:ownship.velx??ownship.fwd.x*ownship.speed,y:ownship.vely??ownship.fwd.y*ownship.speed,z:ownship.velz??ownship.fwd.z*ownship.speed},
+			const solution=pipper_impact(muz,ownship.fwd,{x:ownship.velx??ownship.fwd.x*ownship.speed,y:ownship.vely??ownship.fwd.y*ownship.speed,z:ownship.velz??ownship.fwd.z*ownship.speed},
 				{x:boxed.pos.x,y:boxed.pos.y,z:boxed.pos.z},
 				{x:boxed.velx??boxed.fwd.x*boxed.speed,y:boxed.vely??boxed.fwd.y*boxed.speed,z:boxed.velz??boxed.fwd.z*boxed.speed},
-				ownship.pos.y).point;
+				ownship.pos.y);
+			const impact=solution.point, t=solution.seconds;   // t: the round's time of flight, which the developer decomposition below reads — it was a local of the inline solution this replaced, and referencing it undeclared threw on the first HUD frame of every developer-mode match (2026-08-18)
 			const pip=proj_point(impact);
 			if(DEV_MODE&&pip){ const bvy=(boxed.vely??boxed.fwd.y*boxed.speed);
 				dev_pip={py:Math.round(pip[1]),by:Math.round(bore[1]),t:+t.toFixed(2),rng:Math.round(rng),bvy:Math.round(bvy),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
