@@ -213,7 +213,7 @@ export function seedStart(config: MissionConfig, start: MissionConfig['start']):
 // Mirrors the engine's defaults so the menu reflects what an unconfigured game uses.
 export const DEFAULT_CONFIG: MissionConfig = {
   task: 'joust',
-  bandit: 'ace',
+  bandit: 'pilot',
   fuel: 10800, // full internal — combat loads are a slider pull away
   record: true, // flight recorder (#212): always running, saved from History
   aircraft: 'fa18c',

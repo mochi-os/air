@@ -18,6 +18,13 @@ export const KEY_DEFAULTS: Record<string, string> = {
   'yaw.left': 'KeyQ',
   'throttle.up': 'BracketRight',
   'throttle.down': 'BracketLeft',
+  // Throttle DETENTS (7/8/9), the GeoFS/DCS direct-set convention: one press
+  // commands a lever position instead of ramping toward it. They write the same
+  // commanded pair the ramp keys move, so [ after 9 winds down from MAX, not from
+  // a stale value. Digit0 is deliberately NOT among them — it is view.reset.
+  'throttle.idle': 'Digit7',
+  'throttle.mil': 'Digit8',
+  'throttle.max': 'Digit9',
   fire: 'Space', // renamed from 'guns': the trigger serves the SELECTED weapon, not only the cannon.
   select: 'Tab', // the biggest left-edge key, and clear of X's Shift-chord neighbour (Shift+X secures an engine)
   uncage: 'Delete', // CIA <-> VISUAL for the AIM-120 (#27); the 9M's SEAM slaving joins it later — one switch on the real jet
@@ -37,6 +44,7 @@ export const KEY_DEFAULTS: Record<string, string> = {
   gear: 'KeyG',
   hook: 'KeyH',
   atc: 'KeyP',
+  'hud.hide': 'Shift+KeyH', // blank all symbology, chase included. Plain H stays the hook; the reject switch only THINS the picture, so there was no way to take it away
   lights: 'KeyL',
   flares: 'KeyC',
   eject: 'Shift+KeyE',

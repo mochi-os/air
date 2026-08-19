@@ -3747,6 +3747,10 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 		if(ch===key_of("flaps.retract")&&flap_select>0){ flap_select--; notice(translate(["FLAPS AUTO","FLAPS HALF","FLAPS FULL"][flap_select])); }   // Shift+F: one notch toward AUTO (the switch legends read verbatim English, like the annunciators)
 		if(ch===key_of("brake.parking")){ parking=!parking; notice(translate(parking?"PARK BRAKE":"PARK BRAKE OFF")); }   // Shift+B: strictly manual, like the real handle
 		if(ch===key_of("trim.reset")){ reset_flag=true; }   // unbound by default: zero both trim datums, re-datum the hold
+		if(ch===key_of("throttle.idle")) set_power(0,0,"IDLE");   // 7: flight idle — the dry range bottom, burner off
+		if(ch===key_of("throttle.mil")) set_power(1,0,"MIL");     // 8: military, the top of the dry range
+		if(ch===key_of("throttle.max")) set_power(1,1,"MAX");     // 9: max reheat, all five F404 zones commanded
+		if(ch===key_of("hud.hide")) hud_hidden=!hud_hidden;   // Shift+H: no notice — a hidden HUD cannot draw one, and the symbology vanishing IS the feedback
 		if(ch===key_of("gear") && !on_ground()){ ownship.gearTarget = ownship.gearTarget>0.5?0:1; audio_servo(); }   // G: landing gear up/down — only once airborne, never on deck/runway
 		if(ch===key_of("caution.reset")) caution_lamp=false;   // the pressed-out MASTER CAUTION (NATOPS 2.17.2.1); the next NEW caution re-lights it
 		if(ch===key_of("dump")){ fuel_dump=!fuel_dump; notice("FUEL DUMP "+(fuel_dump?"ON":"OFF")); }   // #54: NATOPS 2.2.7 — the drain and its bingo floor live in the core; annunciator vocabulary stays English
@@ -3882,6 +3886,21 @@ function throttle_from_lever(){   // mission start: seed the throttle from the p
 	lever.armed=true; lever.rest=value;
 	const power=1-THREE.MathUtils.clamp((value+1)/2,0,1);
 	ownship.throttle=Math.min(1,power/0.75); ownship.burner=THREE.MathUtils.clamp((power-0.75)/0.25,0,1); }
+// set_power commands a throttle DETENT: flight idle, military, or max reheat.
+// It writes the SAME ownship.throttle/burner pair the [/] ramp moves — there is
+// no parallel commanded value — so a ramp key pressed after a detent continues
+// from the detent rather than from wherever the lever used to be, and the HUD
+// tape never disagrees with what the core is flying. It also takes the throttle
+// back from an armed physical lever and drops ATC, exactly as the ramp keys do:
+// without the first the lever re-pins the power on the next frame, and without
+// the second the approach compensator keeps overwriting the commanded value.
+// The step is a COMMAND, not a thrust jump — the core spools on a 1.0 s constant
+// (0.6 s down) and the burner stages 0.5 s above 85% core speed (flight/propulsion.go).
+function set_power(throttle,burner,legend){
+	if(pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; }
+	atc_on=false;
+	ownship.throttle=throttle; ownship.burner=burner;
+	notice(legend); }   // switch-legend vocabulary stays verbatim English, like FUEL DUMP and ENG SECURED
 function pad_lever(pad,entry,name){   // "N"/"-N" axis entry -> travel fraction 0..1 (0 = the raw LOW end after the reverse negation), or null when unbound/untouched
 	const text=String(entry??""); if(text==="") return null;
 	const index=Math.abs(+text); if(!(pad.axes.length>index)) return null;
@@ -5475,7 +5494,8 @@ map_el.addEventListener("wheel",e=>{ e.preventDefault(); map_range=THREE.MathUti
 // trigger fires the SELECTED weapon like the real stick), the HUD control
 // panel's BARO/RDR altitude switch, the REJ 1 declutter, and the sticky
 // peak-g readout NATOPS shows past 4.0.
-let master="gun", alt_radar=false, declutter=0, peak_g=1;   // declutter: 0 NORM, 1 REJ 1, 2 REJ 2
+let master="gun", alt_radar=false, declutter=0, peak_g=1;
+let hud_hidden=false;   // Shift+H: the symbology blanking toggle. Separate from declutter, which is the NATOPS three-position reject switch and only ever THINS the picture — there was no way to take it away entirely, which an external view and a screenshot both want   // declutter: 0 NORM, 1 REJ 1, 2 REJ 2
 let hud_cue="";   // what the HUD is telling the pilot this frame (#33 debrief): '' / 'gun' / '9m' / 'steady' / 'flash' / 'break' — set where each cue is drawn, read by the recorder
 let hud_boxed=null;   // the target the HUD is flying against this frame (the boxed contact), for the recorder's Target channel
 function dir_at(headFwd, rightH, yawRad, pitchRad){ const d=headFwd.clone().applyAxisAngle(world_up,yawRad); d.applyAxisAngle(rightH,pitchRad); return d; }
@@ -5603,6 +5623,44 @@ function ddi_view_click(e){   // screen-space bezel press — the same 512-space
 	const pb=button_of(lx,ly); const st=ddi_state[ddi_focus()];
 	if(pb===0&&st&&!st.menu&&st.page==="rdr"){ if(rdr_face(lx,ly)) ddi_view_last=0; return; }   // the TDC on the full-screen format (#30)
 	if(ddi_press(ddi_focus(),pb)) ddi_view_last=0; }   // redraw NOW — a press must answer this frame
+const _chase_to=new THREE.Vector3();   // scratch: the frame loop allocates nothing
+// draw_chase is the external-view symbology set. The HUD proper is a combining
+// glass bolted into the cockpit and cannot be read from a camera flying behind
+// the jet, which is why draw_hud returns early out here — but a view with no
+// target marking and no numbers is not flyable, and chase was blind in every
+// mode, which made it useless for fighting.
+//
+// This is deliberately NOT the HUD. No pitch ladder and no velocity vector:
+// they would project correctly through the orbit camera, since they work in
+// world directions, but a ladder drawn across your own tail reads badly.
+//
+// Always on, never gated on any control mode. Two mode-dependent layouts would
+// mean two code paths and two layouts for the player to learn.
+function draw_chase(boxed,rng,vc){
+	hctx.setLineDash([]); hctx.lineWidth=1.5; hctx.strokeStyle=GR; hctx.fillStyle=GR;
+	if(boxed){
+		const td=proj_point(boxed.pos);
+		if(td&&td[0]>0&&td[0]<HW&&td[1]>0&&td[1]<HH) hctx.strokeRect(td[0]-14,td[1]-14,28,28);   // the same TD box the HUD draws — one marking, learned once
+		else {   // off screen: the locator line points the shortest way to it, angle-off at the tip. Referenced to the SCREEN centre, not to boresight: in chase the nose is not at the centre and the pilot's eye is on the middle of the picture
+			const to=_chase_to.set(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)).normalize();
+			const off=Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(to),-1,1))*57.29578;   // read BEFORE the rotate below, which mutates the scratch
+			const cs=to.applyQuaternion(_q.copy(camera.quaternion).invert()); const sd=Math.hypot(cs.x,cs.y);
+			if(sd>1e-4){ const ux=cs.x/sd, uy=-cs.y/sd, ox=HW/2, oy=HH/2;
+				hctx.lineWidth=2; hctx.beginPath(); hctx.moveTo(ox+ux*40,oy+uy*40); hctx.lineTo(ox+ux*92,oy+uy*92); hctx.stroke(); hctx.lineWidth=1.5;
+				hctx.textAlign="center"; hctx.font="12px monospace"; hctx.fillText(String(Math.round(off)),ox+ux*106,oy+uy*106+4); } } }
+	// The corner block. Left margin and line pitch match the HUD's own
+	// bottom-left stores block, so the two views read the same way round.
+	hctx.textAlign="left"; hctx.font="15px monospace"; hctx.fillStyle=GR;
+	if(boxed){   // range and closure: the HUD carries them in its right-side data block, and without them an external view cannot answer "am I gaining"
+		hctx.fillText((rng/1852).toFixed(1)+" NM",40,HH-142);
+		hctx.fillText((vc>=0?"+":"")+Math.round(vc*1.94384)+" kt",40,HH-124); }
+	hctx.fillText(Math.round((ownship.cas??ownship.speed)*1.94384)+" KT",40,HH-106);
+	hctx.fillText(Math.round(ownship.pos.y*3.28084)+" FT",40,HH-88);
+	hctx.fillText(String(Math.round(((Math.atan2(ownship.fwd.x,-ownship.fwd.z)*57.29578)+360)%360)).padStart(3,"0"),40,HH-70);
+	{ const thrust=Math.round((ownship.spool??ownship.throttle)*100+(ownship.stage??0)*58);   // achieved thrust, % of military — the same figure the HUD tape prints, burner running to ~158%
+		hctx.fillText(thrust+"%"+((ownship.stage??0)>0.05?"  AB "+Math.max(1,Math.round((ownship.stage??0)*5)):""),40,HH-52); }
+	{ const count=master==="gun"?(ownship.rounds??0):master==="9m"?Math.max(0,ownship.msl|0):master==="120c"?Math.max(0,ownship.amraam|0):-1;   // NAV carries no count
+		hctx.fillText(master.toUpperCase()+(count>=0?"  "+(cheat("ammunition")?"\u221e":count):""),40,HH-34); } }
 function draw_hud(){
 	hud_cue="";   // re-decided every frame by the cue draws below; a cue that stops being drawn stops being recorded
 	{ const dpr=Math.min(devicePixelRatio||1,2); hctx.setTransform(dpr,0,0,dpr,0,0); }   // re-assert the base each frame: the buffet shake below leaves a translated transform behind, and early returns must not accumulate it
@@ -5632,6 +5690,7 @@ function draw_hud(){
 	const boresight=Math.hypot(head_az,head_el);
 	const flight_symbols=(cfg.view==="cockpit")?!!glass:(cfg.view!=="hud"||boresight<0.44);
 	if(crash_t>0){ hctx.textAlign="center"; hctx.fillStyle="#ff5040"; hctx.font="bold 36px monospace"; hctx.fillText(translate(ejected?"EJECTED":"CRASHED"),cx,cy-60); return; }   // a fired seat is an ejection, not a crash — same banner, honest word
+	if(hud_hidden) return;   // Shift+H: all symbology off. Deliberately AFTER the crash banner — a hidden HUD must still say the jet is gone, or the player sits watching a dead aircraft wondering why nothing answers
 	if(crash_t<=0 && ownship.waving && net_notice_t<=0 && ((performance.now()-(ownship.wavet||0))%400)<200){ hud_message(translate("WAVE OFF")); }   // flashing waveoff call; the LSO grade / BOLTER / REARMED all go through the notice slot now (#72), so this is the only direct centre-banner draw left
 	if(test_active){ hctx.textAlign="left"; hctx.fillStyle="#7fc8ff"; hctx.font="13px monospace"; hctx.fillText("TEST  "+test_active.name, 14, 28); }
 	if(DEV_MODE){   // mission elapsed time, on the SAME base as the flight recording — so a moment you noticed reads straight off the ACMI timeline
@@ -5664,7 +5723,35 @@ function draw_hud(){
 			dev_cursor.position.set(bx, cursor_y+0.06, bz); dev_cursor.visible=cursor_y>-1e8; }
 		}
 	if(net_notice_t<=0){ const ls=launch_status(); if(ls>0) hud_message(translate(ls===2?"PRESS ENTER TO LAUNCH":"RUN UP ENGINE")); }   // transient notices own the centre banner — never draw two messages on top of each other
-	if(cfg.view!=="hud" && cfg.view!=="cockpit"){ return; }
+	// ---- targets (#133): the designated target carries the authentic green TD
+	// box — the ONLY aircraft marking, in every view; its range/closure live in
+	// the fixed right-side data block (the real HUD attaches no text to the
+	// target, boxes nothing else, and draws no amber).
+	const authentic=cfg.view==="cockpit";
+	let boxed=null; let rng=1500; let vc=0;   // vc: closure to the boxed target, m/s (+ = closing) — the data block and the breakaway cue share it
+	// Closure from the two VELOCITY vectors along the line of sight, not by
+	// differencing range between render frames. The flight cores advance on a
+	// fixed 60 Hz accumulator while the display runs at whatever rate it runs
+	// at, so above 60 fps the range simply did not change on the frames that
+	// stepped nothing: the difference quotient alternated between zero and
+	// roughly double the true closure, every frame. That fed the time of
+	// flight the director pipper leads on, so the pipper shook — and flipped
+	// between two positions fast enough to read as two pippers.
+	const closure=(one,two)=>{ const to=new THREE.Vector3(wrap_axis(two.pos.x-one.pos.x),two.pos.y-one.pos.y,wrap_axis(two.pos.z-one.pos.z));
+		if(to.lengthSq()<1e-6) return 0;
+		to.normalize();
+		const mine=new THREE.Vector3(one.velx??one.fwd.x*one.speed,one.vely??one.fwd.y*one.speed,one.velz??one.fwd.z*one.speed);
+		const his=new THREE.Vector3(two.velx??two.fwd.x*two.speed,two.vely??two.fwd.y*two.speed,two.velz??two.fwd.z*two.speed);
+		return mine.sub(his).dot(to); };   // + = closing
+	if(has_enemy){ rng=wrap_distance(ownship.pos,bandit.pos); boxed=bandit; vc=closure(ownship,bandit); }
+	else if(MULTIPLAYER&&net){ const dst=remotes.get(designated);   // the pilot's acquisition, not auto-nearest: designate/step/undesignate on the acquire key like the real ACM flow
+		if(dst&&dst.group.visible){ boxed=dst; rng=wrap_distance(ownship.pos,dst.pos); vc=closure(ownship,dst); }
+		else designated=-1; }
+	hud_boxed=boxed;   // recorded as the Target channel (#33 debrief)
+	// The target resolution above is hoisted ABOVE the view gate on purpose: the
+	// chase set below needs the same boxed contact the HUD does, and computing it
+	// twice is how the two views drift apart.
+	if(cfg.view!=="hud" && cfg.view!=="cockpit"){ if(cfg.view==="chase") draw_chase(boxed,rng,vc); return; }
 	hctx.lineWidth=1.5; hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.font="13px monospace";
 	hctx.textAlign="center"; hctx.textBaseline="middle";
 
@@ -5748,31 +5835,6 @@ function draw_hud(){
 	}
 	if(glass) hctx.restore();
 
-	// ---- targets (#133): the designated target carries the authentic green TD
-	// box — the ONLY aircraft marking, in every view; its range/closure live in
-	// the fixed right-side data block (the real HUD attaches no text to the
-	// target, boxes nothing else, and draws no amber).
-	const authentic=cfg.view==="cockpit";
-	let boxed=null; let rng=1500; let vc=0;   // vc: closure to the boxed target, m/s (+ = closing) — the data block and the breakaway cue share it
-	// Closure from the two VELOCITY vectors along the line of sight, not by
-	// differencing range between render frames. The flight cores advance on a
-	// fixed 60 Hz accumulator while the display runs at whatever rate it runs
-	// at, so above 60 fps the range simply did not change on the frames that
-	// stepped nothing: the difference quotient alternated between zero and
-	// roughly double the true closure, every frame. That fed the time of
-	// flight the director pipper leads on, so the pipper shook — and flipped
-	// between two positions fast enough to read as two pippers.
-	const closure=(one,two)=>{ const to=new THREE.Vector3(wrap_axis(two.pos.x-one.pos.x),two.pos.y-one.pos.y,wrap_axis(two.pos.z-one.pos.z));
-		if(to.lengthSq()<1e-6) return 0;
-		to.normalize();
-		const mine=new THREE.Vector3(one.velx??one.fwd.x*one.speed,one.vely??one.fwd.y*one.speed,one.velz??one.fwd.z*one.speed);
-		const his=new THREE.Vector3(two.velx??two.fwd.x*two.speed,two.vely??two.fwd.y*two.speed,two.velz??two.fwd.z*two.speed);
-		return mine.sub(his).dot(to); };   // + = closing
-	if(has_enemy){ rng=wrap_distance(ownship.pos,bandit.pos); boxed=bandit; vc=closure(ownship,bandit); }
-	else if(MULTIPLAYER&&net){ const dst=remotes.get(designated);   // the pilot's acquisition, not auto-nearest: designate/step/undesignate on the acquire key like the real ACM flow
-		if(dst&&dst.group.visible){ boxed=dst; rng=wrap_distance(ownship.pos,dst.pos); vc=closure(ownship,dst); }
-		else designated=-1; }
-	hud_boxed=boxed;   // recorded as the Target channel (#33 debrief)
 
 	// 9M seeker tone (#73): the growl/lock audio tracks the seeker itself, not
 	// the drawn symbology — the tone keeps playing with the head turned away
@@ -5958,20 +6020,33 @@ function draw_hud(){
 		hctx.lineWidth=1.5; }
 
 	// ---- data blocks: TCN slant range to the carrier (lower right), selected weapon (lower left) ----
+	// Both columns sit OUTSIDE the pitch ladder's corridor. The rungs reach about
+	// 8.75 deg either side of the velocity vector, and the ladder is referenced to
+	// that vector rather than to screen centre, so it slides vertically as the
+	// flight path moves — which put a rung straight through "GUN 578" and through
+	// the range/closure pair at unpredictable moments. The offset is held in ppdv
+	// so it tracks the field of view and the optical zoom instead of drifting at
+	// one screen size, and clamped so a narrow window cannot push a column off the
+	// edge. lx itself is NOT moved: it anchors the altitude box and the AMRAAM
+	// launch zone, which belong where they are.
+	const rail=10.5*ppdv;
+	const datax=Math.min(HW-160,cx+rail);   // right-hand column: range, closure, TCN, push clock
+	const weapx=Math.max(150,cx-rail);      // left-hand column: the selected weapon and its count
 	hctx.font="13px monospace"; hctx.textAlign="left"; hctx.fillStyle=GR;
 	if(carrier_ols&&master==="nav"&&declutter<2){ const slant=Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),ownship.pos.y,wrap_axis(CARRIER.z-ownship.pos.z))/1852;
-		hctx.fillText("TCN "+slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),lx,cy+7.2*ppdv); }   // slant range + the station's ident, like the real data block (REJ 2 removes it; NAV only, with the chevron — #224)
+		hctx.fillText("TCN "+slant.toFixed(1)+(SHIP.ident?" "+SHIP.ident:""),datax,cy+7.2*ppdv); }   // slant range + the station's ident, like the real data block (REJ 2 removes it; NAV only, with the chevron — #224)
 	if(marshal&&!marshal.commenced&&declutter<2){ const left=marshal.push-sim_time;   // Case III push clock (#205): counts down to the assigned EAT, then counts UP the lateness
 		hctx.fillStyle=(left<30)?AM:GR; hctx.textAlign="left"; hctx.font="13px monospace";
-		hctx.fillText("PUSH "+(left>=0?clock_text(left):"+"+clock_text(-left)),lx,cy+8.1*ppdv); hctx.fillStyle=GR; }
+		hctx.fillText("PUSH "+(left>=0?clock_text(left):"+"+clock_text(-left)),datax,cy+8.1*ppdv); hctx.fillStyle=GR; }
 	if(boxed&&aa){   // designated-target range and closure: fixed right-side data block, like the radar-track readouts on the real HUD — never text glued to the target
-		hctx.fillText((rng/1852).toFixed(1)+" NM",lx,cy+5.4*ppdv);
-		hctx.fillText((vc>0?"+":"")+Math.round(vc*1.94384)+" kt",lx,cy+6.3*ppdv); }
-	{ const ly=cy+7.2*ppdv; const bxl=ax-84;
+		hctx.fillText((rng/1852).toFixed(1)+" NM",datax,cy+5.4*ppdv);
+		hctx.fillText((vc>0?"+":"")+Math.round(vc*1.94384)+" kt",datax,cy+6.3*ppdv); }
+	{ const ly=cy+7.2*ppdv; const bxl=weapx; hctx.textAlign="right";   // right-aligned so the column grows AWAY from the ladder as the count widens
 		if(master==="gun"){ hctx.fillStyle=input.guns?AM:GR; hctx.fillText(translate("GUN")+" "+(cheat("ammunition")?"\u221e":ownship.rounds),bxl,ly); hctx.fillStyle=GR; }
 		else if(master==="9m") hctx.fillText("9M "+(cheat("ammunition")?"\u221e":ownship.msl),bxl,ly);
 		else if(master==="120c"){ hctx.fillText("120C "+(cheat("ammunition")?"\u221e":Math.max(0,ownship.amraam|0))+(amraam_visual?" VIS":""),bxl,ly); }
-		else hctx.fillText("NAV",bxl,ly); }
+		else hctx.fillText("NAV",bxl,ly);
+		hctx.textAlign="left"; }   // put the alignment back: the launch zone and the throttle gauge below assume it
 	if(master==="120c"&&declutter<2) hud_launch_zone(cx,cy,ppdv,ax,lx);
 
 	// ---- throttle gauge: hud-view furniture only — the real HUD carries no such thing, so it lives at the screen edge with the rest of the game furniture ----
@@ -6075,11 +6150,21 @@ function draw_hud(){
 
 // ============================================================================ perf
 const ft_ring=new Array(180).fill(16.7); let ft_i=0, accumulator=0;
-function refresh_perf(dt){ ft_ring[ft_i]=dt*1000; ft_i=(ft_i+1)%ft_ring.length;   // frame-time ring (dynamic_res reads it)
+// perf_ring holds the TRUE frame times; ft_ring holds the clamped ones the
+// governor reads. They have to be separate rings. The readout used to share
+// ft_ring, whose values are dt — clamped to 50 ms in frame() so a hitch cannot
+// blow up the integrators — so the worst frame it could ever see was exactly
+// 50 ms and the "1% low" printed exactly 20 fps on every machine, in every
+// scene, whatever the real spike was. It was reporting the clamp, not the
+// frame. The governor keeps the clamped ring deliberately: feeding it true
+// half-second loading hitches would slam the render scale down on a machine
+// that is actually fine.
+const perf_ring=new Array(180).fill(16.7);
+function refresh_perf(dt,raw){ ft_ring[ft_i]=dt*1000; perf_ring[ft_i]=(raw??dt)*1000; ft_i=(ft_i+1)%ft_ring.length;   // frame-time rings (dynamic_res reads the clamped one)
 	accumulator+=dt; if(accumulator<0.25 || !framerate) return; accumulator=0;        // fps + 1% low readout, ~4 Hz
 	if(!cfg.framerate){ framerate.style.display="none"; return; }                     // gated by the graphics setting (default off)
 	framerate.style.display="block";
-	const s=[...ft_ring].sort((a,b)=>a-b), avg=s.reduce((x,v)=>x+v,0)/s.length, low=s[Math.floor(s.length*0.99)];
+	const s=[...perf_ring].sort((a,b)=>a-b), avg=s.reduce((x,v)=>x+v,0)/s.length, low=s[Math.floor(s.length*0.99)];
 	framerate.textContent=Math.round(1000/avg)+" fps · "+Math.round(1000/low)+" 1% low"; }
 
 // ============================================================================ sizing
@@ -6648,7 +6733,7 @@ function menu_backdrop(){ const a=performance.now()*0.00007; const r=440;
 	ownship.group.visible=true; ownship.group.position.copy(ownship.pos); ownship.group.quaternion.copy(ownship.q); bandit.group.visible=false; }
 
 const clock=new THREE.Clock();
-function frame(){ let dt=Math.min(clock.getDelta(),0.05);
+function frame(){ const raw_frame=clock.getDelta(); let dt=Math.min(raw_frame,0.05);   // raw_frame is the TRUE frame time; dt is clamped so a long hitch cannot blow up the integrators. The readout must measure the former or it reports the clamp
 	if(DEV_MODE&&running){ const bk=Math.abs(Math.atan2(ownship.right.y,ownship.up.y))*180/Math.PI; if(bk>dev_peakbank&&bk<170) dev_peakbank=bk;
 		const pt=Math.asin(Math.max(-1,Math.min(1,ownship.fwd.y)))*180/Math.PI; if(pt>dev_pitchhi)dev_pitchhi=pt; if(pt<dev_pitchlo)dev_pitchlo=pt; }   // true per-frame peak bank + pitch extent for #72
 	if(DEV_MODE&&dev_fps>0){ dt=1/dev_fps; if(dev_jitter&&Math.random()<0.25) dt=0.05; }   // dev: force a fixed frame dt (?fps=N); ?jitter=1 randomly spikes to the 0.05 clamp to mimic real stutter (#72)
@@ -6692,7 +6777,7 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 	// step after the render composited one black frame per adjustment (visible
 	// as black flicker while the governor hunted). Stepping first means the
 	// resized buffer is repainted below before the compositor ever sees it.
-	refresh_perf(dt); dynamic_res(dt);
+	refresh_perf(dt,raw_frame); dynamic_res(dt);
 	render_frame();
 	stage.style.cursor=(running && !game_paused && cfg.view!=="ddi" && !PANEL_POINT)?"none":"";   // hide the mouse pointer while in flight; restore it in the menu / when paused — and head-down or panel-measuring, where the mouse IS the hand on the panel
 	if(running){ draw_hud();
