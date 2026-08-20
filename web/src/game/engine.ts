@@ -6254,7 +6254,11 @@ function exit_match(){ if(!running) return; running=false; /* #57 parked: head_c
 	// (#213). Deliberately after net_record and unawaited: the row must exist
 	// for the save to bind to, and the menu should never wait on an upload.
 	if(!MULTIPLAYER){ const replay=recording_file();
-		if(replay) setTimeout(()=>void recording_store(replay.session,mission_began,replay.text),600); }
+		// A flight under five seconds is a mistake, not a sortie (#51): an
+		// aborted start used to leave a 15-420 byte stub in the recordings
+		// list beside the real fights. The live text (dev_acmi) and the
+		// History download are untouched — only the automatic upload skips.
+		if(replay&&sim_time-mission_zero>=5) setTimeout(()=>void recording_store(replay.session,mission_began,replay.text),600); }
 	if(onExit) onExit(); }
 let mission_began=Date.now();   // local session identity for the history's replay-dedup key
 let own_kills=0, own_deaths=0, match_started=0;
