@@ -47,7 +47,11 @@ export interface Round {
   shooter: number // recorded id of the launcher
   target?: number // recorded id of the target it was fired at, if any
   seeker: string // guidance state: track / loose (lock broken, ballistic) / lure (seduced by a flare) / midcourse / active / pitbull
-  least?: number // closest approach to the target so far, metres
+  least?: number // closest approach to the target so far, metres (per-frame sampled)
+  burst?: number // the fuse's CONTINUOUS closest approach, metres — written with the fate (#58)
+  closure?: number // relative speed at detonation, m/s
+  when?: number // exact sim time of the fuse, s (the frame grid is ~9 Hz)
+  off?: { ahead: number; above: number; right: number } // target -> burst in the target's body frame
   fate?: string // written once, on the last sample: fuse / energy / life / ocean / lost / battery
   killed?: boolean // the fuse's verdict, when it fused
 }
@@ -259,6 +263,10 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
         let guide = `,Seeker=${r.seeker}`
         if (r.least !== undefined) guide += `,Least=${round(r.least, 1)}`
         if (r.fate !== undefined) guide += `,Fate=${r.fate},Killed=${r.killed ? 1 : 0}`
+        if (r.burst !== undefined) {
+          guide += `,Burst=${round(r.burst, 1)},Closure=${round(r.closure ?? 0, 0)},When=${round(r.when ?? 0, 2)}`
+          if (r.off) guide += `,Off=${round(r.off.ahead, 1)}|${round(r.off.above, 1)}|${round(r.off.right, 1)}`
+        }
         if (guided.get(o.id) !== guide) {
           guided.set(o.id, guide)
           line += guide

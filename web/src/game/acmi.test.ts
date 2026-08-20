@@ -226,7 +226,8 @@ it('records a missile as its own object with seeker, closest approach, and a onc
   const round = (seeker: string, least: number, fate?: string): Sample['objects'][number] => ({
     id: 164, x: 50, y: 1000, z: -200, roll: 0, pitch: 2, yaw: 355,
     name: 'AIM-9M', label: '9M', colour: 'Blue', kind: 'Weapon+Missile',
-    round: { shooter: 1, target: 2, seeker, least, ...(fate ? { fate, killed: true } : {}) },
+    round: { shooter: 1, target: 2, seeker, least,
+      ...(fate ? { fate, killed: true, burst: 6.24, closure: 641, when: 0.38, off: { ahead: 3.1, above: -2.0, right: 4.9 } } : {}) },
   })
   const text = acmi(
     [
@@ -258,7 +259,14 @@ it('records a missile as its own object with seeker, closest approach, and a onc
   expect(shots[2]).toContain('Fate=fuse')
   expect(shots[2]).toContain('Killed=1')
   expect(shots[2]).toContain('Least=12')
+  // The burst record (#58): the fuse's CONTINUOUS miss, closure, exact time,
+  // and the body-frame miss vector — written once, with the fate.
+  expect(shots[2]).toContain('Burst=6.2')
+  expect(shots[2]).toContain('Closure=641')
+  expect(shots[2]).toContain('When=0.38')
+  expect(shots[2]).toContain('Off=3.1|-2|4.9')
   expect(lines.filter((l) => l.includes('Fate=fuse'))).toHaveLength(1)
+  expect(lines.filter((l) => l.includes('Burst='))).toHaveLength(1)
 })
 
 // The bot's tier rides on its own object, so a debrief judges its plays in
