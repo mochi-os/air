@@ -123,8 +123,9 @@ function Index() {
               setConfig({ ...config, ...partial })
             }}
             onAgain={() => {
-              // Fly again after the mission ended at a crash (#240): a fresh
-              // mount, same setup — the same path Restart mission takes.
+              // A fresh mount on the same setup, for both of the game's own
+              // restarts: Fly again after the mission ended at a crash (#240),
+              // and Restart mission from the pause menu.
               setGameKey((k) => k + 1)
               enterFlight()
             }}
@@ -137,7 +138,6 @@ function Index() {
           onChange={setConfig}
           tab={tab}
           onTabChange={(t) => setTab(t as SetupTab)}
-          gameInProgress={started}
           onStart={() => {
             setJoin(null)
             setGameKey((k) => k + 1)
@@ -148,14 +148,6 @@ function Index() {
             setJoin(info)
             setGameKey((k) => k + 1)
             setStarted(true)
-            enterFlight()
-          }}
-          onResume={() => {
-            gameRef.current?.resume(config)
-            enterFlight()
-          }}
-          onRestart={() => {
-            setGameKey((k) => k + 1)
             enterFlight()
           }}
         />

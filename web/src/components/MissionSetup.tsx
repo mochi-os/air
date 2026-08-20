@@ -12,7 +12,6 @@ import {
   LogIn,
   Pencil,
   Play,
-  RotateCcw,
   Send,
   Settings,
   TriangleAlert,
@@ -1124,21 +1123,15 @@ export function MissionSetup({
   onChange,
   tab,
   onTabChange,
-  gameInProgress,
   onStart,
   onJoin,
-  onResume,
-  onRestart,
 }: {
   config: MissionConfig
   onChange: (config: MissionConfig) => void
   tab: string
   onTabChange: (tab: string) => void
-  gameInProgress: boolean
   onStart: () => void
   onJoin: (join: Join) => void
-  onResume: () => void
-  onRestart: () => void
 }) {
   const set = <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) =>
     onChange({ ...config, [key]: value })
@@ -1233,26 +1226,15 @@ export function MissionSetup({
           </div>
         )}
         <div className='flex flex-col gap-2'>
-          {gameInProgress ? (
-            <>
-              <Button className='h-12 justify-start text-base' onClick={onResume}>
-                <Play className='size-4' />
-                <Trans>Resume mission</Trans>
-              </Button>
-              <Button type='button' variant='outline' className='h-12 justify-start text-base' onClick={onRestart}>
-                <RotateCcw className='size-4' />
-                <Trans>Restart mission</Trans>
-              </Button>
-            </>
-          ) : (
-            <Button className='h-12 justify-start text-base' onClick={onStart}>
-              <Play className='size-4' />
-              {/* The fast path stays one click: fly the mission already configured,
-                  labelled with it, so tweak-and-fly never grows a detour. */}
-              <Trans>Fly</Trans>
-              <span className='text-primary-foreground/70 ml-1 text-sm'>{started}</span>
-            </Button>
-          )}
+          {/* The front page is only ever reached with no mission running: the
+              pause menu owns Resume and Restart now, over the frozen scene. */}
+          <Button className='h-12 justify-start text-base' onClick={onStart}>
+            <Play className='size-4' />
+            {/* The fast path stays one click: fly the mission already configured,
+                labelled with it, so tweak-and-fly never grows a detour. */}
+            <Trans>Fly</Trans>
+            <span className='text-primary-foreground/70 ml-1 text-sm'>{started}</span>
+          </Button>
           <Button type='button' variant='outline' className='h-12 justify-start text-base' onClick={() => setDialog('mission')}>
             <Pencil className='size-4' />
             <Trans>Create mission</Trans>

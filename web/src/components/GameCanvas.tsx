@@ -9,6 +9,16 @@ import { msg } from '@lingui/core/macro'
 import { Plural, Trans, useLingui as useLinguiMacro } from '@lingui/react/macro'
 import { type MessageDescriptor } from '@lingui/core'
 import { Button } from '@mochi/web/components/ui/button'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@mochi/web/components/ui/alert-dialog'
 import { LogOut, Play, RotateCcw, Send, Settings as SettingsIcon } from 'lucide-react'
 import { SettingsDialog } from './SettingsDialog'
 import { startGame, type GameHandle } from '../game/engine'
@@ -189,6 +199,15 @@ export function GameCanvas({
   configRef.current = config
   // Settings is offered only where it can actually be written back.
   const tunable = !!onConfigChange && !!config
+  // Both ways out of a mission are one keystroke from the pause menu and
+  // neither can be undone, so each asks first. Exit ends the flight and writes
+  // it to History; Restart throws it away and starts the same setup again.
+  const [confirm, setConfirm] = useState<'exit' | 'restart' | null>(null)
+  // The engine captures onMenu once at startGame, so the confirmation's state
+  // reaches it through a ref: Esc belongs to the confirmation while it is open
+  // (Radix closes it), never to the pause popup underneath.
+  const confirmRef = useRef<'exit' | 'restart' | null>(null)
+  confirmRef.current = confirm
   const { t } = useLinguiMacro()
   const hudRef = useRef<HTMLCanvasElement>(null)
   const mapRef = useRef<HTMLCanvasElement>(null)
@@ -220,7 +239,10 @@ export function GameCanvas({
         join,
         onExit,
         onConfig: (partial: Record<string, number | string>) => onConfigRef.current?.(partial),
-        onMenu: () => setMenu((open) => !open), // Esc toggles the popup (#84)
+        onMenu: () => {
+          if (confirmRef.current) return // the open confirmation owns Esc
+          setMenu((open) => !open) // Esc toggles the popup (#84)
+        },
         onOver: (result: { fate: string; struck: number; seconds: number }) => {
           setOver(result)
           setMenu(true)
@@ -255,11 +277,11 @@ export function GameCanvas({
     if (!join) handleRef.current?.pause(menu)
   }, [menu, join])
 
-  // While Settings is up the keyboard is the dialog's: rebinding a key in the
+  // While a dialog is up the keyboard is the dialog's: rebinding a key in the
   // Keys tab must not also drop the gear, and in a match the jet flies on.
   useEffect(() => {
-    handleRef.current?.fence(settings)
-  }, [settings])
+    handleRef.current?.fence(settings || confirm !== null)
+  }, [settings, confirm])
 
   // Escape in browser fullscreen belongs to the browser: it exits fullscreen
   // before (or instead of) reaching the page. Losing fullscreen therefore
@@ -379,6 +401,20 @@ export function GameCanvas({
                 <Trans>Send chat</Trans>
               </Button>
             )}
+            {/* A MATCH has nothing to restart — the server's round is not
+                yours to reset — and once the mission is over the Fly again
+                button above already is the restart. */}
+            {!over && !join && (
+              <Button
+                type='button'
+                variant='outline'
+                className='h-12 justify-start text-base'
+                onClick={() => setConfirm('restart')}
+              >
+                <RotateCcw className='size-4' />
+                <Trans>Restart mission</Trans>
+              </Button>
+            )}
             {tunable && (
               <Button
                 type='button'
@@ -399,8 +435,12 @@ export function GameCanvas({
               variant='outline'
               className='h-12 justify-start text-base'
               onClick={() => {
-                setMenu(false)
-                handleRef.current?.exit()
+                // Nothing is left to lose once the mission has ended, so the
+                // end-of-mission menu leaves straight away.
+                if (over) {
+                  setMenu(false)
+                  handleRef.current?.exit()
+                } else setConfirm('exit')
               }}
             >
               <LogOut className='size-4' />
@@ -432,6 +472,60 @@ export function GameCanvas({
           guarded
         />
       )}
+      {/* Both answers are final, so both are asked over the frozen scene before
+          anything happens. Exit runs exit_match, which writes the flight to
+          History and tears the session down (closing the transport in a match);
+          Restart remounts, and a remount only stops the engine — the sortie is
+          never written at all. */}
+      <AlertDialog open={confirm !== null} onOpenChange={(v) => !v && setConfirm(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {confirm === 'restart' ? (
+                <Trans>Restart the mission?</Trans>
+              ) : join ? (
+                <Trans>Leave the match?</Trans>
+              ) : (
+                <Trans>End the mission?</Trans>
+              )}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {confirm === 'restart' ? (
+                <Trans>
+                  You start again from the same setup. This flight is thrown away and never reaches
+                  History.
+                </Trans>
+              ) : join ? (
+                <Trans>The match carries on without you. Your flight is saved to History.</Trans>
+              ) : (
+                <Trans>The mission ends here and your flight is saved to History. You cannot return to it.</Trans>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>
+              <Trans>Keep flying</Trans>
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                const what = confirm
+                setConfirm(null)
+                setMenu(false)
+                if (what === 'restart') onAgain?.()
+                else handleRef.current?.exit()
+              }}
+            >
+              {confirm === 'restart' ? (
+                <Trans>Restart mission</Trans>
+              ) : join ? (
+                <Trans>Exit match</Trans>
+              ) : (
+                <Trans>Exit mission</Trans>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <div className='panel' id='help' ref={helpRef}>
         {/* Key legends are <kbd>, the element that means "keyboard input";
             the action beside each one is prose and stays wrapped. Two <b>
