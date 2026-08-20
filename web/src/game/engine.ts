@@ -1355,26 +1355,58 @@ function ddi_press(display,pb){   // true when the press did something (consumes
 	if(p&&p.press&&p.press(pb,display)){ ddi_dirty=true; return true; }   // page-owned pushbuttons
 	return false; }
 let ddi_draws=0;   // dev cadence probe: every face render counts, from both the MFD blit and the full-screen view
+// ---- inset mode (#12 follow-on): the same page renderers, drawn small.
+// A 512-space face scaled into a 184 px corner panel runs at about 0.36, which
+// puts the pages' 18 px legends at 6 px and their 14 px contact labels at 5 —
+// smaller than the 11 px the old 324 px panel gave, so shrinking the furniture
+// makes the panel WORSE the smaller it gets. An inset therefore drops the
+// furniture instead of scaling it.
+//
+// What gets counter-scaled is a narrow list: STROKE WIDTHS, FONTS, and the
+// rings drawn tight around a glyph, all of which have a legibility floor in
+// real screen pixels. Ring radii, tick lengths and the aircraft symbols do
+// NOT — those set the composition, and counter-scaling them at 0.36 inflated
+// the ownship triangle to 37% of the ring radius where the format draws it at
+// 13%, which is what made the first panel read as an arrow in a cage. The
+// compact face takes its space back by GROWING THE RING into the margin the
+// dropped legends freed, and states its own smaller type sizes outright.
+//
+// inset_scale is CSS pixels per 512-space unit, or 0 for a real display (a
+// cockpit MFD or the full-screen head-down view), which always draws complete.
+// It is deliberately not the device-pixel factor: a panel whose symbols change
+// size with the display's pixel ratio is a different panel on every machine.
+// Pages read it; nothing else does.
+let inset_scale=0;
+function inset_px(px){ return inset_scale?px/inset_scale:px; }   // CSS px -> 512-space units at the size this face is being drawn
 function ddi_render(x,size,display){   // size-agnostic: draws the display's current face into ANY square canvas
 	ddi_draws++;
 	const s=size/512; x.setTransform(s,0,0,s,0,0);
-	x.globalAlpha=1; x.fillStyle="#050b06"; x.fillRect(0,0,512,512);
+	x.globalAlpha=1; x.fillStyle=inset_scale?"rgba(3,10,6,0.55)":"#050b06"; x.fillRect(0,0,512,512);   // the corner panels sit ON the world, not in a bezel: opaque black read as a window pasted over the sky
 	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="26px monospace"; x.textAlign="center"; x.textBaseline="middle";
 	const st=ddi_state[display];
 	if(st.menu){ x.fillText(st.menu==="tac"?"TAC":"SUPT",256,256);
 		for(const [pb,label,page] of DDI_MENUS[st.menu]) ddi_legend(x,pb,label,!!page,!!page&&page===st.page); }
 	else{ const p=DDI_PAGES[st.page]; if(p) p.draw(x,display); }
-	ddi_legend(x,18,"MENU",true,!!st.menu); }
+	if(!inset_scale) ddi_legend(x,18,"MENU",true,!!st.menu); }   // pushbutton furniture belongs to a display you can press; the corner panel has no buttons
 function ddi_blit(sc){ const x=sc.canvas.getContext("2d"); ddi_render(x,sc.canvas.width,sc.display); sc.tex.needsUpdate=true; }
 const DDI_STEPS=[256,512,1024];
 const _sv1=new THREE.Vector3(), _sv2=new THREE.Vector3();
 let screens_last=0;
-let repeat="";   // HUD-view corner repeater (#12): "" off, else the display it shows
-function repeat_size(){ return Math.round(Math.min(HW,HH)*0.30); }
+// HUD-view corner instruments (#12): "" off, else the display the bottom-right
+// panel shows. Defaults to the AMPCD, whose A/A page set already seeds `sa` —
+// so a mission opens with the tactical picture on screen instead of behind an
+// unadvertised key. The full-screen map (M) and the head-down view still own
+// the detail; this is the glance surface.
+let repeat="center";
+// 0.17 of the short side: ~184 px at 1080p. The panel was 0.30 (324 px), which
+// is a display you read rather than one you glance at, and it overlapped the
+// configuration flags at the bottom-right corner. The pages compensate for the
+// smaller face by dropping furniture rather than shrinking it — see inset_scale.
+function repeat_size(){ return Math.round(Math.min(HW,HH)*0.17); }
 function screens_update(){
 	const list=ownship.group.userData.screens; if(!list) return;
-	const pit=cfg.view==="cockpit", rep=(cfg.view==="hud"&&!map_on)?repeat:"";
-	if(!pit&&!rep) return;   // pages redraw only while some consumer is on screen
+	const pit=cfg.view==="cockpit";
+	if(!pit) return;   // pages redraw only while some consumer is on screen — the HUD's corner panels render their own faces now (hud_inset), so the pit is the only consumer of these textures
 	// The 120 ms economy holds for the static instrument pages; a display
 	// showing an ANIMATED page (the radar's sweep) redraws every frame — the
 	// stale gate is per-cycle, the spend per-screen, so the other MFDs stay cheap.
@@ -1382,17 +1414,13 @@ function screens_update(){
 	if(stale){ screens_last=now; ddi_dirty=false; }
 	const dpr=Math.min(devicePixelRatio||1,2);
 	for(const sc of list){
-		if(!pit&&sc.display!==rep) continue;   // repeating: only the shown display spends
 		{ const st=ddi_state[sc.display];
 			if(!stale&&!(st&&!st.menu&&DDI_PAGES[st.page]&&DDI_PAGES[st.page].animated)) continue; }
-		// variable resolution: the canvas follows the consumer — the quad's
-		// projected on-screen height in the pit (stepped, with hysteresis
-		// against zoom flutter), the panel's size when repeating
-		let px;
-		if(pit){ _sv1.set(0,sc.height/2,0).applyMatrix4(sc.mesh.matrixWorld).project(cockpit_cam);
-			_sv2.set(0,-sc.height/2,0).applyMatrix4(sc.mesh.matrixWorld).project(cockpit_cam);
-			px=Math.abs(_sv1.y-_sv2.y)*0.5*HH*dpr; }
-		else px=repeat_size()*dpr;
+		// variable resolution: the canvas follows the quad's projected
+		// on-screen height (stepped, with hysteresis against zoom flutter)
+		_sv1.set(0,sc.height/2,0).applyMatrix4(sc.mesh.matrixWorld).project(cockpit_cam);
+		_sv2.set(0,-sc.height/2,0).applyMatrix4(sc.mesh.matrixWorld).project(cockpit_cam);
+		const px=Math.abs(_sv1.y-_sv2.y)*0.5*HH*dpr;
 		const cur=sc.canvas.width;
 		if(px>cur*1.15||px<cur*0.45){ const want=DDI_STEPS.find(v=>v>=px)||1024;
 			if(want!==cur){ sc.canvas.width=sc.canvas.height=want;
@@ -1648,34 +1676,41 @@ function ddi_hsi(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||
 	if(gz.ground>50) tline+="  "+Math.max(0,Math.round(rngnm/gz.ground*60))+" MIN";
 	x.fillText(tline,24,486); }
 function ddi_sa(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0;
-	const scale=sa_state.scale, cy=266, R=196, ppm=R/(scale*NM/2);
+	// Inset (#12): the rings and the contacts are the picture; the heading
+	// readout, the contact names and the pushbutton arrows are furniture the
+	// HUD already carries or the panel cannot be pressed to use. Dropping them
+	// frees the top and bottom of the face, so the ring GROWS into it and
+	// centres — the picture fills the panel instead of floating in it.
+	const ins=!!inset_scale, u=v=>inset_px(v), font=v=>Math.round(inset_px(v))+"px monospace";
+	const scale=sa_state.scale, cy=ins?256:266, R=ins?230:196, ppm=R/(scale*NM/2);
+	const blip=ins?1.4:1;   // the contacts are the payload of a panel this small, so the compact face draws them a size up. A fixed step, not a counter-scale: the symbol must stay a fraction of the ring, whatever the ring is
 	const colour=display==="center";   // team colours on the AMPCD; the DDIs stay monochrome green
-	x.fillText(String(Math.round(hdg/D2R+360)%360).padStart(3,"0"),256,30);
+	if(!ins) x.fillText(String(Math.round(hdg/D2R+360)%360).padStart(3,"0"),256,30);   // the HUD's own heading scale carries this in the view the panel lives in
 	x.save(); x.translate(256,cy);
-	x.strokeStyle="rgba(57,224,122,0.45)"; x.lineWidth=1.5;   // half- and quarter-scale rings, ticks only — the SA picture stays uncluttered, the HSI owns full nav
+	x.strokeStyle="rgba(57,224,122,0.45)"; x.lineWidth=u(1.5);   // half- and quarter-scale rings, ticks only — the SA picture stays uncluttered, the HSI owns full nav
 	x.beginPath(); x.arc(0,0,R,0,Math.PI*2); x.stroke();
 	x.strokeStyle="rgba(57,224,122,0.22)";
 	x.beginPath(); x.arc(0,0,R/2,0,Math.PI*2); x.stroke();
-	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="18px monospace"; x.textAlign="center";
+	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=u(2); x.font=font(ins?11:18); x.textAlign="center";
 	for(let d=0;d<360;d+=30){ const a=(d*D2R)-hdg-Math.PI/2;
-		x.beginPath(); x.moveTo(Math.cos(a)*196,Math.sin(a)*196); x.lineTo(Math.cos(a)*184,Math.sin(a)*184); x.stroke();
-		if(d===0) x.fillText("N",Math.cos(a)*166,Math.sin(a)*166+6); }
+		x.beginPath(); x.moveTo(Math.cos(a)*R,Math.sin(a)*R); x.lineTo(Math.cos(a)*(R-12),Math.sin(a)*(R-12)); x.stroke();
+		if(d===0) x.fillText("N",Math.cos(a)*(R-30),Math.sin(a)*(R-30)+6); }   // north stays: it is the one glyph that tells the player which way the ring is turned
 	x.rotate(-hdg);   // heading-up frame: contacts draw at their north-up offsets
 	const jet=(wx,wz,fx,fz,c,label)=>{ const dx=wrap_axis(wx-ownship.pos.x)*ppm, dz=wrap_axis(wz-ownship.pos.z)*ppm;
 		if(Math.hypot(dx,dz)>R+14) return;   // outside the scale: not shown, like the real format
 		const fl=Math.hypot(fx,fz)||1, ux=fx/fl, uz=fz/fl, rx=-uz, rz=ux;
 		x.fillStyle=c; x.beginPath();
-		x.moveTo(dx+ux*11,dz+uz*11); x.lineTo(dx-ux*7+rx*6,dz-uz*7+rz*6); x.lineTo(dx-ux*7-rx*6,dz-uz*7-rz*6); x.closePath(); x.fill();
-		if(label){ x.save(); x.translate(dx,dz); x.rotate(hdg); x.font="14px monospace"; x.fillText(label,0,24); x.restore(); } };   // labels unrotate to stay upright
+		x.moveTo(dx+ux*11*blip,dz+uz*11*blip); x.lineTo(dx-ux*7*blip+rx*6*blip,dz-uz*7*blip+rz*6*blip); x.lineTo(dx-ux*7*blip-rx*6*blip,dz-uz*7*blip-rz*6*blip); x.closePath(); x.fill();
+		if(label&&!ins){ x.save(); x.translate(dx,dz); x.rotate(hdg); x.font="14px monospace"; x.fillText(label,0,24); x.restore(); } };   // labels unrotate to stay upright; dropped in the inset, where a name is clutter around a symbol
 	{ const kx=wrap_axis(CARRIER.x-ownship.pos.x)*ppm, kz=wrap_axis(CARRIER.z-ownship.pos.z)*ppm;   // the boat
-		if(Math.hypot(kx,kz)<=R+14){ x.fillStyle=colour?"#ffd27a":"#39e07a"; x.fillRect(kx-5,kz-5,10,10); } }
+		if(Math.hypot(kx,kz)<=R+14){ x.fillStyle=colour?"#ffd27a":"#39e07a"; x.fillRect(kx-5*blip,kz-5*blip,10*blip,10*blip); } }
 	for(const c of contacts()) jet(c.x,c.z,c.fwd.x,c.fwd.z,colour?(c.team==="red"?"#ff5a48":c.team==="blue"?"#5a86ff":"#ffb04a"):"#39e07a",c.name);   // the contacts model (#30): today truth-fed (furball is omniscient by design); the BVR rules (#32) will gate it by sensors and this page must not notice
 	x.restore();
-	x.strokeStyle=colour?"#ffffff":"#39e07a"; x.lineWidth=3;   // ownship
-	x.beginPath(); x.moveTo(256,cy-14); x.lineTo(248,cy+12); x.lineTo(264,cy+12); x.closePath(); x.stroke();
-	ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false);
-	x.fillStyle="#39e07a"; x.font="20px monospace"; x.textAlign="left";
-	x.fillText(String(scale),14,216); }
+	x.strokeStyle=colour?"#ffffff":"#39e07a"; x.lineWidth=ins?u(2):3;   // ownship
+	x.beginPath(); x.moveTo(256,cy-14); x.lineTo(256-8,cy+12); x.lineTo(256+8,cy+12); x.closePath(); x.stroke();
+	if(!ins){ ddi_legend(x,4,"↑",true,false); ddi_legend(x,3,"↓",true,false); }   // the panel has no pushbuttons to label
+	x.fillStyle="#39e07a"; x.font=font(ins?13:20); x.textAlign="left";
+	x.fillText(String(scale),14,ins?484:216); }   // the range scale stays in the inset, in the corner the inscribed ring leaves empty: a radar picture without its scale answers nothing
 function ddi_hud(x){ const gz=ownship.gauges||{};   // HUD repeater format (#9): the symbol generator's boresight picture at a fixed field — the same numbers the HUD shows, independent of the head and camera (which is why this is a fresh renderer, not a copy of the screen HUD's camera-coupled draw)
 	const ppd=512/26, cx=256, cy=250;   // a 26° square field, about the HUD's own
 	const pitch=(gz.pitch||0)/D2R, bank=gz.bank||0;
@@ -1820,25 +1855,37 @@ function ddi_sms(x,display){   // SMS (#5): the stores format over the real load
 	x.fillText("GUN "+(ownship.rounds??0),24,458);
 	x.textAlign="right"; x.fillText(master.toUpperCase(),488,458); }
 function ddi_ew(x){   // EW (#11, symbols #28): the ALR-67 format. Bearing-only symbols on the nose-up ring — the radial position is the LETHALITY band, not range: an STT holding us sits on the inner ring, circled; search paints sit outer and fade between his sweep crossings. The one airframe means one symbol, "18". (An MWS-style inbound-dart cue was built and removed here — the C carries no missile warner; launch warnings arrive with the radar missiles, #27.)
-	x.fillText("EW",256,36);
-	const cx=256, cy=266, R=190;
-	x.strokeStyle="rgba(57,224,122,0.45)"; x.lineWidth=1.5;   // aircraft-referenced ring, nose up — lethality bands, not ranges: inside = close
+	// Inset (#12): the title goes, because the panel already carries an EW
+	// legend above the face and printing it twice is just noise. The ring
+	// grows and the OUTER ring goes dashed: this and the tactical picture sit
+	// in two corners of the same screen and were reading as twins, when one is
+	// a nose-up lethality ring and the other a heading-up range picture. The
+	// threat symbols keep their full-display screen size — glyph and the ring
+	// hugging it are one unit, and this is the instrument read at a glance
+	// under the worst workload the game has.
+	const ins=!!inset_scale, u=v=>inset_px(v), font=v=>Math.round(inset_px(v))+"px monospace";
+	if(!ins){ x.font="26px monospace"; x.fillText("EW",256,36); }
+	const cx=256, cy=ins?256:266, R=ins?222:190;
+	const glyph=ins?12:18, near=ins?9:13, far=ins?12:17;   // stated outright rather than derived: at panel size the format's 18 px alphanumerics crowd a ring this wide
+	x.strokeStyle="rgba(57,224,122,0.45)"; x.lineWidth=u(1.5);   // aircraft-referenced ring, nose up — lethality bands, not ranges: inside = close
+	if(ins) x.setLineDash([10,8]);
 	x.beginPath(); x.arc(cx,cy,R,0,Math.PI*2); x.stroke();
+	x.setLineDash([]);
 	x.strokeStyle="rgba(57,224,122,0.22)";
 	x.beginPath(); x.arc(cx,cy,R*0.5,0,Math.PI*2); x.stroke();
-	x.strokeStyle="#39e07a"; x.lineWidth=2;
+	x.strokeStyle="#39e07a"; x.lineWidth=u(2);
 	for(let d=0;d<360;d+=30){ const a=d*D2R-Math.PI/2;
 		x.beginPath(); x.moveTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R); x.lineTo(cx+Math.cos(a)*(R-10),cy+Math.sin(a)*(R-10)); x.stroke(); }
 	x.beginPath(); x.moveTo(cx,cy-14); x.lineTo(cx-8,cy+12); x.lineTo(cx+8,cy+12); x.closePath(); x.stroke();   // ownship
 	const hdg=(ownship.gauges||{}).heading||0;
-	x.font="18px monospace"; x.textAlign="center";   // real-format proportion: small alphanumerics, the ring hugging the character — the tube holds MANY of these
+	x.font=font(glyph); x.textAlign="center";   // real-format proportion: small alphanumerics, the ring hugging the character — the tube holds MANY of these
 	for(const c of RWR.contacts){ const rel=c.bearing-hdg;   // heading-up: nose at the top
 		const r=c.missile?R*0.18:c.locked?R*0.34:R*0.74;   // an active seeker sits innermost: nothing is more lethal than a round already looking at you
 		const px=cx+Math.sin(rel)*r, py=cy-Math.cos(rel)*r;
 		x.globalAlpha=c.locked?1:Math.max(0.25,1-(RWR.time-c.at)/8);   // search symbols live between his sweep crossings and fade toward the next
 		x.fillText(c.missile?"M":"18",px,py);   // baseline is middle and alignment centre: text and ring share ONE centre
-		if(c.missile){ x.lineWidth=2.5; x.beginPath(); x.arc(px,py,13,0,Math.PI*2); x.stroke(); x.beginPath(); x.arc(px,py,17,0,Math.PI*2); x.stroke(); }   // the doubled ring: the MISSILE symbol the pilot reacts to without reading it
-		else if(c.locked){ x.lineWidth=2; x.beginPath(); x.arc(px,py,13,0,Math.PI*2); x.stroke(); } }
+		if(c.missile){ x.lineWidth=u(2.5); x.beginPath(); x.arc(px,py,u(near),0,Math.PI*2); x.stroke(); x.beginPath(); x.arc(px,py,u(far),0,Math.PI*2); x.stroke(); }   // the doubled ring: the MISSILE symbol the pilot reacts to without reading it
+		else if(c.locked){ x.lineWidth=u(2); x.beginPath(); x.arc(px,py,u(near),0,Math.PI*2); x.stroke(); } }
 	x.globalAlpha=1; }
 function gross_weight(){ const gz=ownship.gauges||{}; const book=stores_catalog();   // empty jet + loadout hardware + internal + external, lb — the honest live gross the CHKLST judges (#8, #51)
 	const hardware=book?stores_weight(ownship.loadout||loadout(),book).hardware:0;   // pylons, rails, rounds, dry tanks — the flown loadout's hardware (#17)
@@ -3733,7 +3780,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 			if(k==="Digit5") set_view("flypast");    // 5 Flypast
 			if(k==="Digit6") set_view("padlock"); }  // 6 Padlock — head-forward views on 1-3, external on 4-6
 		if(ch===key_of("view")) set_view(cfg.view==="cockpit"?"hud":"cockpit");   // Cockpit↔HUD fast-swap (any other view → Cockpit); unbound by default since the number row selects views
-		if(ch===key_of("repeater")&&cfg.view==="hud"){ repeat=repeat===""?"left":repeat==="left"?"right":repeat==="right"?"center":""; ddi_dirty=true; }   // I: corner DDI repeater panel — off -> left DDI -> right DDI -> AMPCD -> off (#12); HUD view only, game furniture by policy
+		if(ch===key_of("repeater")&&cfg.view==="hud"){ repeat=repeat==="center"?"left":repeat==="left"?"right":repeat==="right"?"":"center"; ddi_dirty=true; }   // I: corner DDI panel — AMPCD -> left DDI -> right DDI -> off -> AMPCD (#12); HUD view only, game furniture by policy. The panel now starts ON at the AMPCD, so OFF moved to the end of the cycle: from the default, one press steps to another display instead of blanking the corner
 		if(ch===key_of("view.reset")) view_reset();   // 0: put THIS view back to its defaults — zoom, head, and the chase orbit
 		if(ch===key_of("zoom.in")&&(map_on||cfg.view!=="chase")) zoom_step(1);     // =/− zoom every view optically; chase keeps them for the orbit distance, its wheel already zooms. Edge-triggered here, and HELD keys sweep continuously from read_input below
 		if(ch===key_of("zoom.out")&&(map_on||cfg.view!=="chase")) zoom_step(-1);
@@ -5707,6 +5754,47 @@ function ddi_view_click(e){   // screen-space bezel press — the same 512-space
 	const pb=button_of(lx,ly); const st=ddi_state[ddi_focus()];
 	if(pb===0&&st&&!st.menu&&st.page==="rdr"){ if(rdr_face(lx,ly)) ddi_view_last=0; return; }   // the TDC on the full-screen format (#30)
 	if(ddi_press(ddi_focus(),pb)) ddi_view_last=0; }   // redraw NOW — a press must answer this frame
+// ---- HUD corner instruments (#12): the threat ring top-right, the tactical
+// picture bottom-right. Both are the head-down page renderers drawn small, so
+// there is one radar picture in this game and the player learns it once.
+//
+// Each panel owns its OWN offscreen face rather than borrowing an MFD's canvas
+// the way the old repeater did. Two reasons: the old panel drew nothing until
+// the cockpit GLB's screen nodes had resolved, which is a silent blank corner
+// on a slow load; and a compact face rendered into the pit's texture would be
+// the face the cockpit then showed until its next blit.
+const inset_faces=new Map();
+function hud_inset(key,ox,oy,size,label,paint){
+	const dpr=Math.min(devicePixelRatio||1,2), px=Math.max(2,Math.round(size*dpr));
+	let f=inset_faces.get(key);
+	if(!f) inset_faces.set(key,f={ canvas:document.createElement("canvas"), at:0 });
+	if(f.canvas.width!==px){ f.canvas.width=f.canvas.height=px; f.at=0; }
+	const now=performance.now();
+	if(now-f.at>=120){ f.at=now;   // the MFDs' own economy: these pages move, but nothing on them moves per frame
+		const fx=f.canvas.getContext("2d");
+		fx.setTransform(1,0,0,1,0,0); fx.clearRect(0,0,px,px);
+		inset_scale=size/512;   // CSS px per 512-space unit, NOT px/512: the device ratio must not decide how big the symbols come out
+		try{ paint(fx,px); } finally{ inset_scale=0; } }   // always cleared: a throw in here would leave every later MFD and the head-down view drawing compact
+	hctx.save(); hctx.shadowBlur=0;
+	hctx.drawImage(f.canvas,ox,oy,size,size);
+	hctx.strokeStyle="rgba(57,224,122,0.30)"; hctx.lineWidth=1; hctx.strokeRect(ox-0.5,oy-0.5,size+1,size+1);   // a thin rule in the symbology's own green; the grey bezel framed these as pasted-in windows
+	// The legend gets the same dark halo every other HUD glyph has. Without it
+	// the bottom panel's label sat unreadable over a sunlit sea while the top
+	// one read fine against dark sky, which is the whole reason the halo exists.
+	hctx.shadowColor="rgba(0,0,0,0.85)"; hctx.shadowBlur=3;
+	hctx.fillStyle="#8fa0aa"; hctx.font="12px monospace"; hctx.textAlign="left"; hctx.textBaseline="middle";
+	hctx.fillText(label,ox,oy-10);
+	hctx.restore(); }
+function inset_page(fx,px,draw){   // the face ddi_render would lay down, without the pushbutton furniture: dark glass, then the page
+	const s=px/512; fx.setTransform(s,0,0,s,0,0);
+	fx.globalAlpha=1; fx.fillStyle="rgba(3,10,6,0.55)"; fx.fillRect(0,0,512,512);   // translucent: the panel sits ON the world, and opaque black read as a window pasted over the sky
+	fx.strokeStyle="#39e07a"; fx.fillStyle="#39e07a"; fx.lineWidth=2; fx.font="26px monospace"; fx.textAlign="center"; fx.textBaseline="middle";
+	draw(fx); }
+function hud_insets(){
+	if(map_on) return;
+	const size=repeat_size(), ox=HW-size-24;
+	hud_inset("ew",ox,38,size,"EW",(fx,px)=>inset_page(fx,px,ddi_ew));   // the RWR was only ever visible head-down, which is exactly where the player cannot be in the moment it matters
+	if(repeat) hud_inset("tac",ox,HH-size-24,size,repeat==="center"?"AMPCD":repeat==="left"?"LEFT DDI":"RIGHT DDI",(fx,px)=>ddi_render(fx,px,repeat)); }   // whichever display I has selected, so the panel still repeats rather than fixing one page
 const _chase_to=new THREE.Vector3();   // scratch: the frame loop allocates nothing
 // draw_chase is the external-view symbology set. The HUD proper is a combining
 // glass bolted into the cockpit and cannot be read from a camera flying behind
@@ -6151,22 +6239,28 @@ function draw_hud(){
 	// Shown only while deployed (like the SPD BK convention): green = down & locked,
 	// amber = in transit; nothing drawn in the clean configuration (gear up, hook stowed).
 	hctx.textAlign="right"; hctx.font="13px monospace";
-	if(ownship.gear<0.99){ hctx.fillStyle=ownship.gear<0.02?GR:AM; hctx.fillText(translate("GEAR"),HW-40,HH-70); }   // GEAR + HOOK stay in every view: no panel lights exist yet (#99), and a gear-up trap is a game-ender
-	if((ownship.hook??0)>0.01){ hctx.fillStyle=(ownship.hook??0)>0.98?GR:AM; hctx.fillText(translate("HOOK"),HW-40,HH-52); }
+	// The column right-aligns clear of the bottom-right instrument panel, which
+	// otherwise sits straight on top of it. It keeps ONE x in the fullscreen
+	// view whether or not the panel is currently up (I cycles it off), because
+	// legends that jump sideways when an unrelated key is pressed read as a
+	// fault. The cockpit view has real panel space and no corner instruments.
+	const flagx=authentic?HW-40:HW-repeat_size()-40;
+	if(ownship.gear<0.99){ hctx.fillStyle=ownship.gear<0.02?GR:AM; hctx.fillText(translate("GEAR"),flagx,HH-70); }   // GEAR + HOOK stay in every view: no panel lights exist yet (#99), and a gear-up trap is a game-ender
+	if((ownship.hook??0)>0.01){ hctx.fillStyle=(ownship.hook??0)>0.98?GR:AM; hctx.fillText(translate("HOOK"),flagx,HH-52); }
 	if(!authentic){   // the rest is hud-view furniture: the real HUD carries no configuration legend (#133)
-	if((ownship.speedbrake??0)>0.02){ hctx.fillStyle=AM; hctx.fillText(translate("SPD BK"),HW-40,HH-88); }
-	if(flap_select>0){ hctx.fillStyle=GR; hctx.fillText(translate(flap_select===1?"FLAPS HALF":"FLAPS FULL"),HW-40,HH-124); }   // the switch's non-AUTO positions only: AUTO is the silent default
-	if(parking){ hctx.fillStyle=AM; hctx.fillText(translate("PARK"),HW-40,HH-142); }   // the parking brake holds the mains: amber, like a caution
+	if((ownship.speedbrake??0)>0.02){ hctx.fillStyle=AM; hctx.fillText(translate("SPD BK"),flagx,HH-88); }
+	if(flap_select>0){ hctx.fillStyle=GR; hctx.fillText(translate(flap_select===1?"FLAPS HALF":"FLAPS FULL"),flagx,HH-124); }   // the switch's non-AUTO positions only: AUTO is the silent default
+	if(parking){ hctx.fillStyle=AM; hctx.fillText(translate("PARK"),flagx,HH-142); }   // the parking brake holds the mains: amber, like a caution
 	{ const datum=(last_out?last_out[STATE.datum]:0)||0, bank=(last_out?last_out[STATE.bank]:0)||0;   // the trim state, shown only when trimmed away from neutral
 		const parts=[];
 		if(hud_pa&&Math.abs(datum)>0.0025) parts.push(Math.abs(datum*57.3).toFixed(1)+(datum>0?"NU":"ND"));
 		if(Math.abs(bank)>0.004) parts.push(Math.abs(bank*100).toFixed(0)+(bank>0?"RWD":"LWD"));
-		if(parts.length){ hctx.fillStyle=GR; hctx.fillText("TRIM "+parts.join(" "),HW-40,HH-160); } }   // amber whenever the air brake is out (keys.md §3)
-	if(stab_cycle>0){ hctx.fillStyle=AM; hctx.fillText("STAB "+stab_cycle,HW-40,HH-108); }   // Shift+E calibration state
-	if(ownship.lights){ hctx.fillStyle=GR; hctx.fillText(translate("LIGHTS"),HW-40,HH-34); }   // below HOOK
-	if((ownship.probe??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("PROBE"),HW-40,HH-22); }   // below LIGHTS
-	if((ownship.canopy??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("CANOPY"),HW-40,HH-10); }   // below PROBE
-	if((ownship.fold??0)>0.02){ hctx.fillStyle=AM; hctx.fillText(translate("WINGS"),HW-40,HH-124); } }   // amber, above SPD BK: not a flight configuration
+		if(parts.length){ hctx.fillStyle=GR; hctx.fillText("TRIM "+parts.join(" "),flagx,HH-160); } }   // amber whenever the air brake is out (keys.md §3)
+	if(stab_cycle>0){ hctx.fillStyle=AM; hctx.fillText("STAB "+stab_cycle,flagx,HH-108); }   // Shift+E calibration state
+	if(ownship.lights){ hctx.fillStyle=GR; hctx.fillText(translate("LIGHTS"),flagx,HH-34); }   // below HOOK
+	if((ownship.probe??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("PROBE"),flagx,HH-22); }   // below LIGHTS
+	if((ownship.canopy??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("CANOPY"),flagx,HH-10); }   // below PROBE
+	if((ownship.fold??0)>0.02){ hctx.fillStyle=AM; hctx.fillText(translate("WINGS"),flagx,HH-178); } }   // amber, at the top of the column: it shared HH-124 with the FLAPS legend, and folding the wings with a flap position selected printed the two strings over each other
 
 	// ---- caution panel (#78): red for fires and the pilot, amber for degraded systems ----
 	// Read straight from the core's damage words, so it works identically in SP and MP.
@@ -6211,15 +6305,7 @@ function draw_hud(){
 			hctx.fillStyle="#00000090"; hctx.fillText(c.text,41,cy+1);
 			hctx.fillStyle=c.colour; hctx.fillText(c.text,40,cy); cy+=19; }
 		hctx.restore(); }
-	if(!authentic&&repeat&&!map_on){   // DDI repeater panel (#12): one display's live face in the corner — game furniture, HUD view only; the same canvas the pit textures, sized for the panel by screens_update
-		const sc=(ownship.group.userData.screens||[]).find(s=>s.display===repeat);
-		if(sc){ const size=repeat_size(), ox=HW-size-24, oy=HH-size-24;   // bottom-right: the stores counters own the bottom-left
-			hctx.save(); hctx.shadowBlur=0;
-			hctx.drawImage(sc.canvas,ox,oy,size,size);
-			hctx.strokeStyle="#2a2f33"; hctx.lineWidth=2; hctx.strokeRect(ox-1,oy-1,size+2,size+2);
-			hctx.fillStyle="#8fa0aa"; hctx.font="12px monospace"; hctx.textAlign="left"; hctx.textBaseline="middle";
-			hctx.fillText(repeat==="center"?"AMPCD":repeat==="left"?"LEFT DDI":"RIGHT DDI",ox,oy-10);
-			hctx.restore(); } }
+	if(!authentic) hud_insets();   // the corner instruments (#12): threat ring top-right, tactical picture bottom-right — game furniture, first-person fullscreen view only
 	if(!authentic){   // stores furniture (hud view): the FULL counter set — the authentic data block shows only the selected weapon, so without these the other weapon's count is invisible; the IFEI fuel belongs to the cockpit panel, kept here for the fullscreen view
 	hctx.fillStyle=input.guns?AM:GR;
 	hctx.fillText(translate("GUN")+"  "+(cheat("ammunition")?"∞":ownship.rounds),40,HH-88); hctx.fillStyle=GR;
