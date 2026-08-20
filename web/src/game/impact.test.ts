@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, it, expect } from 'vitest'
-import { surface, inside, Building, Post, Island } from './impact'
+import { surface, inside, type Building, type Post, type Island } from './impact'
 
 const SEA = -1e9 // open water reports no terrain surface
 
