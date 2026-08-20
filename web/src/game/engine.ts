@@ -5832,7 +5832,8 @@ function draw_chase(boxed,rng,vc){
 	{ const thrust=Math.round((ownship.spool??ownship.throttle)*100+(ownship.stage??0)*58);   // achieved thrust, % of military — the same figure the HUD tape prints, burner running to ~158%
 		hctx.fillText(thrust+"%"+((ownship.stage??0)>0.05?"  AB "+Math.max(1,Math.round((ownship.stage??0)*5)):""),40,HH-52); }
 	{ const count=master==="gun"?(ownship.rounds??0):master==="9m"?Math.max(0,ownship.msl|0):master==="120c"?Math.max(0,ownship.amraam|0):-1;   // NAV carries no count
-		hctx.fillText(master.toUpperCase()+(count>=0?"  "+(cheat("ammunition")?"\u221e":count):""),40,HH-34); } }
+		hctx.fillText(master.toUpperCase()+(count>=0?"  "+(cheat("ammunition")?"\u221e":count):""),40,HH-34); }
+	hud_insets(); }   // the same two corner instruments the HUD view draws, same corners and same size: one radar picture in this game, learned once, which is the argument the TD box above already makes
 function draw_hud(){
 	hud_cue="";   // re-decided every frame by the cue draws below; a cue that stops being drawn stops being recorded
 	{ const dpr=Math.min(devicePixelRatio||1,2); hctx.setTransform(dpr,0,0,dpr,0,0); }   // re-assert the base each frame: the buffet shake below leaves a translated transform behind, and early returns must not accumulate it
