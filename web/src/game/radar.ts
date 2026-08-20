@@ -117,6 +117,7 @@ export class Radar {
   ls: number | string | null = null // launch & steering trackfile (TWS)
   stt: number | string | null = null // the hard lock
   acm: 'bst' | 'vacq' = 'bst' // armed ACM condition, used by the acquire flow
+  auto = false // the ACM condition is commanded: the radar runs the cone itself and locks the first target in it, until deselected
   memory = 0 // seconds the STT has coasted without real data (0 = tracking); MEM shows past zero
   strobes: number[] = [] // azimuths of jamming emitters this step (#31): bearing-only spokes, range unknown
   time = 0
@@ -235,6 +236,16 @@ export class Radar {
       this.ls = id
       return true
     }
+    this.ls = id
+    this.stt = id
+    return true
+  }
+
+  // lock is the ACM acquisition: straight to STT whatever the search mode —
+  // the cone found him, so there is no trackfile ladder to climb. A silent
+  // radar cannot lock.
+  lock(id: number | string): boolean {
+    if (this.sil) return false
     this.ls = id
     this.stt = id
     return true
