@@ -55,6 +55,7 @@ export interface GameHandle {
   exit: () => void                              // the old Esc: suspend to the mission menu (leaves the match in multiplayer)
   recording: () => { text: string; session: string; kind: string } | null   // the buffered flight recording, rendered as ACMI (#212)
   pause: (on: boolean) => void                  // the menu popup's single-player freeze (#84)
+  fence: (on: boolean) => void                  // a React dialog (Settings, the exit confirmation) has the keyboard: no key reaches the jet while it is up
   chat: (text: string, scope: string) => void   // send one match-chat line (#84)
   scope: () => string                           // the default chat scope: "team" in a teams match, else "all"
 }
@@ -177,6 +178,7 @@ const MSAA_OFF=BENCH_PARAMS?.get("msaa")==="0";
 const TEST_SCENARIOS=DEV_MODE;         // (DEV_MODE must be declared FIRST: initializing these from it a line early was a temporal-dead-zone crash at module load)
 let cat_idx=(()=>{ const u=DEV_MODE?parseInt(new URLSearchParams(location.search).get("cat")||"",10):NaN; const c=u>=1&&u<=4?u:(cfg.cat>=1&&cfg.cat<=4?cfg.cat:2); return c-1; })();   // selected catapult (0-based): &cat=1..4 (developer mode) wins, else the menu's Catapult choice, else #2 port bow
 let menu_hold=false, game_paused=false;   // menu_hold = the Esc popup freeze; the popup is the ONLY pause UI (the old P-pause banner/controls-window plumbing was dead code whose banner drew UNDER the popup)
+let input_fence=false;   // a REACT DIALOG owns the keyboard (Settings, the exit confirmation): every key belongs to it, so none reaches the jet. The Esc popup is NOT fenced — Esc is how it closes, and that is the engine's own handler
 let loading=false, loading_t0=0;
 const load_marks={}; let load_pending=[];   // loading-screen profiling: per-gate ready times + what is still pending (drawn under LOADING)   // flight-start LOADING screen: the sim + render hold until assets_ready() (20 s cap so a failed load can't hang the game)
 let joust_side=1;   // which end of the merge the player drew this round (+1 = start west heading east); coin-flipped per joust start
@@ -3770,6 +3772,7 @@ function mission_start(){ const start=cfg.task==="joust"?"joust":cfg.start; retu
 function takeoff_surface(){ const st=mission_start(); if(st==="carrier") return CARRIER.deckY; if(st==="runway"&&airports.length) return airports[0].start.y; return 8; }
 function on_ground(){ return ownship.launching||!!ownship.grounded; }   // the real resting flag, not an altitude guess — off the cat you fly level at deck height, where a +12 m heuristic left G dead
 addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.target instanceof HTMLTextAreaElement) return;   // the chat box owns the keyboard while focused (#84) — no flares while typing f
+	if(input_fence) return;   // a dialog is up: rebinding a key in Settings must not ALSO drop the gear, and in a match the jet is still flying while it is open
 	if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","PageUp","PageDown","/"].includes(e.key)) e.preventDefault();
 	audio_gesture();   // the first gesture unlocks the audio context (browser policy)
 	const k=e.code; if(!keys.has(k)){ // edge-triggered actions
@@ -7115,6 +7118,7 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
     recording: recording_file,   // kept on the handle for callers that already hold one
     exit: exit_match,
     pause: (on) => { menu_hold = !!on },   // the Esc popup: freezes the SP world (game_paused gates on !MULTIPLAYER — it cannot freeze a server) without the P-pause banner/controls
+    fence: (on) => { input_fence = !!on; if(input_fence){ keys.clear(); mouse_neutral(); } },   // hand the keyboard to a dialog; clearing the held set matters in a match, where a key held as it opened would stay held
     chat: (words, scope) => { if (MULTIPLAYER && net && running) net.chat(String(words).slice(0, 200), scope) },
     scope: chat_scope,
   }

@@ -1124,7 +1124,6 @@ export function MissionSetup({
   onChange,
   tab,
   onTabChange,
-  settingsNonce = 0,
   gameInProgress,
   onStart,
   onJoin,
@@ -1135,7 +1134,6 @@ export function MissionSetup({
   onChange: (config: MissionConfig) => void
   tab: string
   onTabChange: (tab: string) => void
-  settingsNonce?: number
   gameInProgress: boolean
   onStart: () => void
   onJoin: (join: Join) => void
@@ -1172,22 +1170,7 @@ export function MissionSetup({
   const [strained] = useShellStorage('air.performance', 0)
   const [dismissed, setDismissed] = useShellStorage('air.graphics', '')
   const alert = verdict ?? (strained ? 'performance' : null)
-  const fromFlight = useRef(false)
-  useEffect(() => {
-    if (settingsNonce) {
-      fromFlight.current = true // remember the visit is a detour from flight
-      setDialog('settings')
-    }
-  }, [settingsNonce])
-  const close = () => {
-    // Settings reached from the Esc menu is a detour: ANY dismissal (Done, Esc,
-    // backdrop) returns to flight rather than stranding the player on the front
-    // page with one more Resume click to make.
-    const back = fromFlight.current && dialog === 'settings' && gameInProgress
-    fromFlight.current = false
-    setDialog(null)
-    if (back) onResume()
-  }
+  const close = () => setDialog(null)
   // The label must describe what Fly actually does: a joust ignores the start
   // selector entirely (the engine spawns both jets at the merge), so showing
   // the start read as a deck start that then began airborne.
