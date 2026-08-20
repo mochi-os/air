@@ -33,7 +33,7 @@
 export const MUZZLE = 1050 // m/s at the barrel
 export const LENGTH = 2600 // m, the round's drag length at sea level
 export const GRAVITY = 9.8
-export const LIFE = 2.0 // s a round stays dangerous, matching battle.Life
+export const LIFE = 4.0 // s a round stays dangerous, matching battle.Life
 
 export interface Vector {
   x: number
@@ -66,7 +66,7 @@ export function flight(span: number, v0: number, altitude: number): number {
   return (l / Math.max(v0, 1)) * Math.expm1(Math.max(span, 0) / l)
 }
 
-// reach is how far a round gets before its life runs out — about 1,540 m at sea
+// reach is how far a round gets before its life runs out — about 2,500 m at sea
 // level from a standing start, further with the shooter's own speed behind it.
 export function reach(altitude: number, v0: number = MUZZLE): number {
   return travel(v0, LIFE, altitude)

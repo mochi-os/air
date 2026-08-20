@@ -80,14 +80,14 @@ if (active) {
       dpr: devicePixelRatio,
       back: canvas ? [canvas.width, canvas.height] : null,
       frames: s.length,
-      avg: +(sum / s.length).toFixed(2),
-      median: +(s[s.length >> 1] || 0).toFixed(2),
-      p95: +(s[Math.floor(s.length * 0.95)] || 0).toFixed(2),
-      fps: +(1000 / (sum / s.length)).toFixed(1),
+      avg: +(sum / s.length).toFixed(2),   // i18n-format-ok: developer benchmark payload, never shown to a user
+      median: +(s[s.length >> 1] || 0).toFixed(2),   // i18n-format-ok: developer benchmark payload, never shown to a user
+      p95: +(s[Math.floor(s.length * 0.95)] || 0).toFixed(2),   // i18n-format-ok: developer benchmark payload, never shown to a user
+      fps: +(1000 / (sum / s.length)).toFixed(1),   // i18n-format-ok: developer benchmark payload, never shown to a user
       // The fast tail: under vsync the quickest frames ARE the panel period, so
       // these two bound the refresh from below even when the mean is loaded.
-      fastest: +(s[0] || 0).toFixed(2),
-      p5: +(s[Math.floor(s.length * 0.05)] || 0).toFixed(2),
+      fastest: +(s[0] || 0).toFixed(2),   // i18n-format-ok: developer benchmark payload, never shown to a user
+      p5: +(s[Math.floor(s.length * 0.05)] || 0).toFixed(2),   // i18n-format-ok: developer benchmark payload, never shown to a user
       ...cadence(deltas),
       // Non-standard and absent on most browsers; reported when present as a
       // cross-check on the measured beat, never as the primary source.
@@ -103,7 +103,7 @@ if (active) {
       for (const [k, v] of Object.entries(state)) {
         if (k.startsWith('acc_') && typeof v === 'number') {
           const base = typeof state0?.[k] === 'number' ? (state0[k] as number) : 0
-          out['frame_' + k.slice(4)] = +((v - base) / (s.length || 1)).toFixed(2)
+          out['frame_' + k.slice(4)] = +((v - base) / (s.length || 1)).toFixed(2)   // i18n-format-ok: developer benchmark payload, never shown to a user
         } else {
           out[k] = v
         }

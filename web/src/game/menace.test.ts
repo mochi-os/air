@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { describe, it, expect } from 'vitest'
-import { phase, words, Round, MENACE_STRIDE, MENACE_MOST, MENACE_HEATER, MENACE_BEATEN } from './menace'
+import { phase, words, type Round, MENACE_STRIDE, MENACE_MOST, MENACE_HEATER, MENACE_BEATEN } from './menace'
 
 const bandit = { name: 'bandit' }
 

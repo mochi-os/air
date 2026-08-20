@@ -86,10 +86,12 @@ export interface Flight {
   // one, or fired without one.
   missiles?: number // heaters + radar rounds remaining
   cue?: string // '' | 'gun' | '9m' | 'steady' | 'flash' | 'break'
-  // Countermeasures: the ownship's flare INVENTORY (a dispense is a step);
-  // the bandit's dispenser is bottomless, so it records a cumulative dispense
-  // COUNT instead — same shape, same information (its steps are the dispenses).
+  // Countermeasures: the ownship's flare and chaff INVENTORIES (a dispense is
+  // a step); the bandit records a cumulative flare dispense COUNT instead —
+  // same shape, same information (its steps are the dispenses). Both carry a
+  // 40/20 load since #43; before it the bandit's dispenser was bottomless.
   flares?: number
+  chaff?: number
   // Energy management, TacView-native: throttle 0..1 to MIL and the burner
   // fraction beyond it — the channel that turns "you flew too fast" from an
   // inference off alpha into a recorded fact.
@@ -158,6 +160,7 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
   const armed = new Map<number, number>() // last written missiles count, per object
   const cued = new Map<number, string>() // last written cue, per object
   const countered = new Map<number, number>() // last written flares, per object
+  const bloomed = new Map<number, number>() // last written chaff, per object
   const sensed_last = new Map<number, string>() // last written sensor group, per object
   const guided = new Map<number, string>() // last written seeker channels, per missile object
   for (const sample of samples) {
@@ -221,6 +224,10 @@ export function acmi(samples: Sample[], started: Date, title: string, match?: Ma
         if (d.flares !== undefined && countered.get(o.id) !== d.flares) {
           countered.set(o.id, d.flares)
           line += `,Flares=${Math.round(d.flares)}`
+        }
+        if (d.chaff !== undefined && bloomed.get(o.id) !== d.chaff) {
+          bloomed.set(o.id, d.chaff)
+          line += `,Chaff=${Math.round(d.chaff)}`
         }
         // Throttle and burner change constantly under a pilot's hand: written
         // every sample, like the flight data.
