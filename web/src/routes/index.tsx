@@ -74,7 +74,6 @@ function Index() {
   const [tab, setTab] = useState<SetupTab>('general')
 
   const inFlight = started && !menuOpen
-  const [settingsNonce, setSettingsNonce] = useState(0)
 
   // Hide the shell chrome while in flight; the hook's heartbeat lets the shell
   // restore it automatically if air crashes or is closed.
@@ -102,10 +101,6 @@ function Index() {
               gameRef.current = h
             }}
             onExit={() => {
-              // Leaving the mission clears any pending settings request: the
-              // nonce survives into MissionSetup's fresh mount, and a stale one
-              // reopened the settings dialog over the front page.
-              setSettingsNonce(0)
               // The mission is OVER, not suspended. exit_match has already written
               // the flight to History and, in multiplayer, closed the transport and
               // latched session_over — so leaving `started` true made the front
@@ -120,7 +115,7 @@ function Index() {
               setStarted(false)
               leaveFlight()
             }}
-            flying={inFlight}
+            onConfigChange={setConfig}
             onConfig={(partial) => {
               // Engine-side setting changes (per-view zoom, the DDI view's
               // remembered display) merge into the same persisted config the
@@ -133,15 +128,6 @@ function Index() {
               setGameKey((k) => k + 1)
               enterFlight()
             }}
-            onSettings={() => {
-              // Settings over a paused mission: reuse the one menu surface rather
-              // than a second copy of every panel. Resume returns to flight. The
-              // nonce asks MissionSetup to OPEN its settings dialog — landing on
-              // the front page alone left the button apparently dead.
-              setTab('general')
-              setSettingsNonce((n) => n + 1)
-              leaveFlight()
-            }}
           />
         </Suspense>
       )}
@@ -151,7 +137,6 @@ function Index() {
           onChange={setConfig}
           tab={tab}
           onTabChange={(t) => setTab(t as SetupTab)}
-          settingsNonce={settingsNonce}
           gameInProgress={started}
           onStart={() => {
             setJoin(null)

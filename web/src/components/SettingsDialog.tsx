@@ -1048,6 +1048,7 @@ export function SettingsDialog({
   onChange,
   tab,
   onTabChange,
+  guarded,
 }: {
   open: boolean
   onClose: () => void
@@ -1055,12 +1056,13 @@ export function SettingsDialog({
   onChange: (config: MissionConfig) => void
   tab: string
   onTabChange: (tab: string) => void
+  guarded?: boolean // opened over the game: only Done, the ✕ and Esc close it
 }) {
   const set = <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) =>
     onChange({ ...config, [key]: value })
   const identity = useIdentityName()
   return (
-      <MenuDialog open={open} onClose={onClose} title={<Trans>Settings</Trans>}>
+      <MenuDialog open={open} onClose={onClose} guarded={guarded} title={<Trans>Settings</Trans>}>
         <Tabs variant='underline' value={tab} onValueChange={onTabChange}>
           <TabsList>
             <TabsTrigger value='general'>

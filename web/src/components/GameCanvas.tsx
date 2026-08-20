@@ -10,6 +10,7 @@ import { Plural, Trans, useLingui as useLinguiMacro } from '@lingui/react/macro'
 import { type MessageDescriptor } from '@lingui/core'
 import { Button } from '@mochi/web/components/ui/button'
 import { LogOut, Play, RotateCcw, Send, Settings as SettingsIcon } from 'lucide-react'
+import { SettingsDialog } from './SettingsDialog'
 import { startGame, type GameHandle } from '../game/engine'
 import { KEY_DEFAULTS, pretty } from '../game/keys'
 import { type Join as NetJoin } from '../game/net'
@@ -152,19 +153,17 @@ export function GameCanvas({
   join = null,
   onExit,
   onReady,
-  onSettings,
   onConfig,
+  onConfigChange,
   onAgain,
-  flying,
 }: {
   config?: MissionConfig
   join?: NetJoin | null
   onExit?: () => void
   onReady?: (handle: GameHandle) => void
-  onSettings?: () => void
   onConfig?: (partial: Record<string, number | string>) => void
-  onAgain?: () => void // remount a fresh mission after this one ended at a crash (#240)
-  flying?: boolean
+  onConfigChange?: (config: MissionConfig) => void // the Settings dialog writes the WHOLE config back, unlike the engine's partial merge above
+  onAgain?: () => void // remount a fresh mission: Fly again after a crash (#240), and Restart from the pause menu
 }) {
   const stageRef = useRef<HTMLCanvasElement>(null)
   const handleRef = useRef<GameHandle | null>(null)
@@ -178,6 +177,18 @@ export function GameCanvas({
   // becomes the end-of-mission surface — outcome line, Fly again, no Resume.
   const [over, setOver] = useState<{ fate: string; struck: number; seconds: number } | null>(null)
   const [chat, setChat] = useState<string | null>(null) // the open chat prompt's scope, null when closed
+  // Settings opens OVER the frozen scene, in fullscreen, rather than bouncing
+  // out to the front page: the graphics knobs are meant to be judged against the
+  // frame you are looking at, and the player gets the pause menu back when they
+  // close it. The tab is local — the front page keeps its own.
+  const [settings, setSettings] = useState(false)
+  const [tab, setTab] = useState('general')
+  // The engine captured `config` at startGame; this is the live one, for the
+  // resume() that re-applies whatever was just changed after the dialog closes.
+  const configRef = useRef(config)
+  configRef.current = config
+  // Settings is offered only where it can actually be written back.
+  const tunable = !!onConfigChange && !!config
   const { t } = useLinguiMacro()
   const hudRef = useRef<HTMLCanvasElement>(null)
   const mapRef = useRef<HTMLCanvasElement>(null)
@@ -232,13 +243,6 @@ export function GameCanvas({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Re-entering flight from the front page (Resume mission) closes the Esc
-  // popup: it stayed open - and paused - behind the menu, so Resume appeared
-  // to land back on the escape menu instead of flying.
-  useEffect(() => {
-    if (flying) setMenu(false)
-  }, [flying])
-
   // Once the mission has ended the menu is MODAL: there is nothing behind it
   // but the frozen fireball, so any dismissal (Esc, the settings detour's
   // return) reopens it rather than stranding the player in a held world.
@@ -250,6 +254,12 @@ export function GameCanvas({
   useEffect(() => {
     if (!join) handleRef.current?.pause(menu)
   }, [menu, join])
+
+  // While Settings is up the keyboard is the dialog's: rebinding a key in the
+  // Keys tab must not also drop the gear, and in a match the jet flies on.
+  useEffect(() => {
+    handleRef.current?.fence(settings)
+  }, [settings])
 
   // Escape in browser fullscreen belongs to the browser: it exits fullscreen
   // before (or instead of) reaching the page. Losing fullscreen therefore
@@ -369,12 +379,12 @@ export function GameCanvas({
                 <Trans>Send chat</Trans>
               </Button>
             )}
-            {onSettings && (
+            {tunable && (
               <Button
                 type='button'
                 variant='outline'
                 className='h-12 justify-start text-base'
-                onClick={() => onSettings()}
+                onClick={() => setSettings(true)}
               >
                 {/* Tuning over the PAUSED, visible scene is the best place to do
                     it — the graphics knobs apply against the frame you are
@@ -404,6 +414,23 @@ export function GameCanvas({
             )}
           </div>
         </div>
+      )}
+      {tunable && (
+        <SettingsDialog
+          open={settings}
+          onClose={() => {
+            setSettings(false)
+            // Re-apply what was just changed against the held frame. The pause
+            // popup is untouched, so the player lands back on it rather than
+            // in a moving jet.
+            handleRef.current?.resume(configRef.current)
+          }}
+          config={config}
+          onChange={onConfigChange}
+          tab={tab}
+          onTabChange={setTab}
+          guarded
+        />
       )}
       <div className='panel' id='help' ref={helpRef}>
         {/* Key legends are <kbd>, the element that means "keyboard input";

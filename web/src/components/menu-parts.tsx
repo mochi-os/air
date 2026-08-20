@@ -97,6 +97,7 @@ export function MenuDialog({
   title,
   wide,
   steady,
+  guarded,
   children,
 }: {
   open: boolean
@@ -104,11 +105,14 @@ export function MenuDialog({
   title: ReactNode
   wide?: boolean
   steady?: boolean // hold one height whatever the options render: the interior scrolls instead of the box breathing as sections expand
+  guarded?: boolean // a stray click on the backdrop must not close it: over the game the backdrop IS the flight, and it is the easiest thing in the world to hit
   children: ReactNode
 }) {
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className={`${wide ? 'sm:max-w-4xl' : 'sm:max-w-2xl'}${steady ? ' h-[min(46rem,calc(100svh-2rem))]' : ''}`}>
+      <DialogContent
+        onInteractOutside={guarded ? (e) => e.preventDefault() : undefined}
+        className={`${wide ? 'sm:max-w-4xl' : 'sm:max-w-2xl'}${steady ? ' h-[min(46rem,calc(100svh-2rem))]' : ''}`}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
