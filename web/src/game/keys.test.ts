@@ -28,7 +28,7 @@ describe('key bindings', () => {
   })
 
   it('offers every bindable action in the Keys and Buttons tabs', () => {
-    const setup = read('../components/MissionSetup.tsx')
+    const setup = read('../components/SettingsDialog.tsx')
     // The row tables are `const KEY_ROWS: Row[] = [...]` / `BUTTON_ROWS`; take
     // each `{ id: '...'` inside them. A row whose id has no default renders as
     // '—', telling the player a working control is unbound.
@@ -98,7 +98,7 @@ describe('key bindings', () => {
       Array.from(engine.matchAll(/bind\.axes\.(\w+)\s*\?\?\s*""[\s\S]{0,200}?hi\s*\+\s*1/g), (m) => m[1]),
     )
     expect(paired.size).toBeGreaterThan(0) // the scan found the pair reads at all
-    const setup = read('../components/MissionSetup.tsx')
+    const setup = read('../components/SettingsDialog.tsx')
     const declared = new RegExp(`const PAIRS = new Set\\(\\[([^\\]]*)\\]`).exec(setup)
     expect(declared, 'PAIRS not found').toBeTruthy()
     const shown = new Set(Array.from(declared![1].matchAll(/'([\w.]+)'/g), (m) => m[1]))
@@ -184,7 +184,7 @@ describe('key bindings', () => {
     // +1 and the STORED value must not: it indexes pad.axes/pad.buttons directly
     // and travels in exported profiles. Getting this backwards binds the wrong
     // control with no error at all, so it is worth pinning.
-    const setup = read('../components/MissionSetup.tsx')
+    const setup = read('../components/SettingsDialog.tsx')
     for (const kind of ['axisOptions', 'buttonOptions']) {
       const block = new RegExp(`${kind}\\.map\\(\\(option\\) => \\{([\\s\\S]*?)\\n\\s*\\}\\)\\}`).exec(setup)
       expect(block, `${kind} list not found`).toBeTruthy()
