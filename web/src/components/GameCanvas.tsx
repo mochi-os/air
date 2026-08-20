@@ -24,6 +24,7 @@ import '../game/game.css'
 const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   GUN: msg`GUN`,
   FLARES: msg`FLARES`,
+  CHAFF: msg`CHAFF`,
   GEAR: msg`GEAR`,
   HOOK: msg`HOOK`,
   'SPD BK': msg`SPD BK`,

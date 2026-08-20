@@ -200,7 +200,7 @@ const BUTTON_ROWS: Row[] = [
   { id: 'uncage', label: <Trans>Uncage seeker</Trans>, group: 'weapons' },   // #27: the AIM-120's CIA <-> VISUAL toggle; the 9M's SEAM slaving joins it later
   { id: 'jammer', label: <Trans>Jammer</Trans>, group: 'weapons' },   // #31: the ASPJ's one real decision — armed, radiating only while painted
   { id: 'radar.silent', label: <Trans>Radar silent</Trans>, group: 'weapons' },   // #30
-  { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },   // #30: boresight <-> vertical
+  { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },   // #30: the castle switch — boresight, vertical, off
   { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },   // the id stays 'flares' (the action); the label is the real dispenser's name
   { id: 'jettison.tanks', label: <Trans>Jettison tanks</Trans>, group: 'weapons' },
   { id: 'jettison.emergency', label: <Trans>Emergency jettison (hold)</Trans>, group: 'weapons' },
@@ -254,7 +254,7 @@ const KEY_ROWS: Row[] = [
   { id: 'uncage', label: <Trans>Uncage seeker</Trans>, group: 'weapons' },   // #27: the AIM-120's CIA <-> VISUAL toggle; the 9M's SEAM slaving joins it later
   { id: 'jammer', label: <Trans>Jammer</Trans>, group: 'weapons' },   // #31: the ASPJ's one real decision — armed, radiating only while painted
   { id: 'radar.silent', label: <Trans>Radar silent</Trans>, group: 'weapons' },   // #30
-  { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },   // #30: boresight <-> vertical
+  { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },   // #30: the castle switch — boresight, vertical, off
   { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },
   { id: 'jettison.tanks', label: <Trans>Jettison tanks</Trans>, group: 'weapons' },
   { id: 'jettison.emergency', label: <Trans>Emergency jettison (hold)</Trans>, group: 'weapons' },
@@ -1114,10 +1114,13 @@ function Armament({
     { name: 'fox2', title: 'Fox 2' }, // jsx-text-ok: brevity codes, verbatim
     { name: 'fox3', title: 'Fox 3' }, // jsx-text-ok: brevity codes, verbatim
   ]
-  // A preset press SEEDS the fuel load (the duel standard for the fighters,
-  // full internal for CAP); the checkmark keeps tracking stores only, so the
+  // A preset press SEEDS the fuel load — full internal for every preset since
+  // 2026-08-18: the 6,000 lb duel standard the fighters used to seed ended a
+  // new pilot's fight on fuel before it ended on a kill (a seven-minute joust
+  // at 79% burner landed at 1,000 lb), and an experienced one is a slider
+  // pull from a lighter jet. The checkmark keeps tracking stores only, so the
   // slider stays freely overridable without un-checking the preset.
-  const FUELS = { gun: 6000, fox2: 6000, fox3: 10800 }
+  const FUELS = { gun: 10800, fox2: 10800, fox3: 10800 }
   const w = book ? weight(loadout, book) : { hardware: 0, fuel: 0 }
   const gross = book ? Math.round(((book.empty + w.hardware + w.fuel) * 2.2046 + fuel) / 10) * 10 : 0
   // NATOPS flying-qualities boundary for routine catapult technique: at or
