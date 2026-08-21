@@ -10,6 +10,7 @@
 import { bench_register } from './bench'   // FIRST: the #148 sampler must survive an engine-init failure
 import { atc_step } from './atc'
 import { KEY_DEFAULTS } from './keys'
+import { recent_window } from './governor'
 import { publish as publish_recording } from './replay'
 import * as THREE from 'three'
 import {
@@ -6541,7 +6542,12 @@ function apply_size(){ const w=innerWidth,h=innerHeight,dpr=Math.min(devicePixel
 addEventListener("resize",apply_size,{ signal });
 let dyn_cd=0, dyn_ceiling=2.0, dyn_ceiling_t=0, dyn_strain=0, dyn_health=0;
 function dynamic_res(dt){ if(!cfg.dyn_res) return; dyn_cd-=dt; if((dyn_ceiling_t-=dt)<=0) dyn_ceiling=2.0; if(dyn_cd>0) return; dyn_cd=0.5;
-	const last=ft_ring.slice(-30), recent=last.reduce((s,v)=>s+v,0)/30, spike=[...last].sort((a,b)=>a-b)[27];   // mean + p90 of the last 30 frames
+	// ft_ring is a RING with a rotating write index. slice(-30) returned array
+	// positions 150-179 whatever ft_i was, so the governor judged the machine on
+	// a fixed 30-slot window that refreshed once per 180 frames: a 0.5 s hitch was
+	// invisible at 78% of ring phases and a 5 s overload was caught a median 2.6 s
+	// late. recent_window reads the frames that were actually just rendered.
+	const last=recent_window(ft_ring,ft_i), recent=last.reduce((s,v)=>s+v,0)/30, spike=[...last].sort((a,b)=>a-b)[27];   // mean + the 28th of 30 sorted (see governor.ts; the old "p90" comment was wrong, the index is unchanged)
 	if(recent>18&&cfg.render_scale>0.45){ dyn_ceiling=Math.min(dyn_ceiling,cfg.render_scale); dyn_ceiling_t=30;   // this scale overloaded: don't climb back into it for a while
 		cfg.render_scale=Math.max(0.45,cfg.render_scale-0.1); apply_size(); dyn_strain=0; dyn_health=0; }
 	else if(recent>18){   // pinned at the floor and STILL over budget: the honest "this machine cannot hold it" verdict (#55), measured on the player's real scene. Only real gameplay under real acceleration counts — shader-compile stutter, the pause menu and SwiftShader must not condemn the machine.
