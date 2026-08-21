@@ -247,3 +247,47 @@ export function narrow(panel: Panel, s: Sample): Panel {
   if (is_multiple(s.beat, panel.period)) return panel
   return { period: s.beat, source: 'idle' }
 }
+
+export interface Cadence {
+  /** The modal frame delta in ms — the panel's period when the client is vsynced. */
+  beat: number
+  /** Share of frames within 1.5 ms of the mode, 0..1. */
+  locked: number
+  /** The beat as a rate in Hz, or 0 when there is no beat. */
+  refresh: number
+}
+
+/**
+ * Read the display's own beat out of a list of frame deltas.
+ *
+ * A vsynced client cannot outrun the panel, so its deltas pile up on the
+ * refresh period, and on multiples of it whenever a frame is missed. The mode
+ * of a 0.5 ms histogram is that period, and the share of frames sitting on it
+ * says whether the client is locked to the panel at all — a low share means the
+ * deltas are spread, which is either an unsynced client or genuine stutter, and
+ * the median/p95 split tells those two apart.
+ *
+ * Moved here from bench.ts unchanged. It lived inside that module's
+ * developer-mode guard, so it existed only under ?developer=1 and could be
+ * neither tested nor reused. It is a pure function of an array of numbers and
+ * belongs with the rest of the governor's arithmetic.
+ *
+ * Read it from the TRUE frame times, never the clamped ones: engine.ts clamps
+ * dt at 50 ms, and a ring full of clamped hitches would report a 20 Hz beat.
+ */
+export function cadence(list: readonly number[]): Cadence {
+  const bucket = new Map<number, number>()
+  for (const d of list) {
+    const key = Math.round(d * 2) / 2
+    bucket.set(key, (bucket.get(key) || 0) + 1)
+  }
+  let mode = 0
+  let best = 0
+  for (const [key, n] of bucket) if (n > best) { best = n; mode = key }
+  const near = list.filter((d) => Math.abs(d - mode) <= 1.5).length
+  return {
+    beat: mode,
+    locked: +(near / (list.length || 1)).toFixed(2),
+    refresh: mode > 0 ? +(1000 / mode).toFixed(1) : 0,
+  }
+}
