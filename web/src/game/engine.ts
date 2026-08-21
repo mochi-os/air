@@ -10,7 +10,7 @@
 import { bench_register } from './bench'   // FIRST: the #148 sampler must survive an engine-init failure
 import { atc_step } from './atc'
 import { KEY_DEFAULTS } from './keys'
-import { PANEL_DEFAULT, budget, cadence, narrow, recent_window, type Panel } from './governor'
+import { PANEL_DEFAULT, budget, cadence, narrow, recent_window, restore, type Panel } from './governor'
 import { publish as publish_recording } from './replay'
 import * as THREE from 'three'
 import {
@@ -6526,6 +6526,7 @@ const perf_ring=new Array(180).fill(16.7);
 // indistinguishable from a 30 Hz panel. Deriving the budget from that would
 // hand the struggling machine a MORE permissive threshold.
 let panel: Panel = PANEL_DEFAULT;
+Promise.resolve(shellStorage.getItem("air.panel")).then(stored=>{ if(stored&&panel.source==="default") panel=restore(stored); });   // async like air.camera; seeds ONLY while nothing better has been measured this session
 // perf_ring is pre-filled with 16.7, so until it has been written through once
 // its histogram says "60 Hz" on every machine. Count real writes and refuse to
 // read a cadence before the ring holds nothing but measured frames.
@@ -6565,7 +6566,15 @@ function dynamic_res(dt){ if(!cfg.dyn_res) return; dyn_cd-=dt; if((dyn_ceiling_t
 	// masquerade as a 20 Hz beat and widen the budget on the worst machines.
 	if(ft_seen>=perf_ring.length){ const c=cadence(recent_window(perf_ring,ft_i,perf_ring.length));
 		const hz=(screen as unknown as { refreshRate?: number }).refreshRate;   // non-standard, absent on most browsers, authoritative when present
-		panel=narrow(panel,{ beat:c.beat, locked:c.locked, idle:false, declared:(typeof hz==="number"&&hz>0)?1000/hz:null }); }
+		const was=panel.period;
+		// The post-mission menu backdrop is the only genuinely cheap frame this
+		// engine draws. It is NOT reached before the first mission — start_mission
+		// sets running=true at module load — and the loading screen only looks idle
+		// while the main thread parses GLBs and compiles wasm. So the first usable
+		// widening sample arrives after a mission ends, which is why the result has
+		// to be persisted or it never helps the session that earned it.
+		panel=narrow(panel,{ beat:c.beat, locked:c.locked, idle:!running&&!loading, declared:(typeof hz==="number"&&hz>0)?1000/hz:null });
+		if(panel.period>was+0.01) shellStorage.setItem("air.panel",String(panel.period)); }   // only a WIDEN is persisted; a narrow is re-derived from the first locked sample of every session
 	const b=budget(panel);   // 18.00 / 17.20 / 17.50 at the 60 Hz default, to within 4e-15
 	if(recent>b.drop&&cfg.render_scale>0.45){ dyn_ceiling=Math.min(dyn_ceiling,cfg.render_scale); dyn_ceiling_t=30;   // this scale overloaded: don't climb back into it for a while
 		cfg.render_scale=Math.max(0.45,cfg.render_scale-0.1); apply_size(); dyn_strain=0; dyn_health=0; }
