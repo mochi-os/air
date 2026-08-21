@@ -291,3 +291,32 @@ export function cadence(list: readonly number[]): Cadence {
     refresh: mode > 0 ? +(1000 / mode).toFixed(1) : 0,
   }
 }
+
+/** Widest and narrowest periods worth believing: 240 Hz to 24 Hz. */
+const PERIOD_MIN = 1000 / 240
+const PERIOD_MAX = 1000 / 24
+
+/**
+ * Rebuild a panel estimate from persisted storage.
+ *
+ * Only a WIDENED estimate is ever persisted, and the asymmetry is deliberate.
+ * A narrowed estimate is re-derived from the first locked sample of every
+ * session, in seconds, so persisting it buys nothing — and a stale narrow is
+ * the harmful direction, because too tight a budget pins the render scale at
+ * the 0.45 floor, which is exactly where the raise arm cannot lift it back.
+ * A widen is the opposite: it can only be earned from an idle sample, the
+ * engine has no idle frame before the first mission (start_mission sets
+ * running = true at module load, so the menu backdrop is only reached after a
+ * mission ENDS), and without persistence it would never help the session that
+ * measured it.
+ *
+ * The source is reported as 'declared' because a value that survived the widen
+ * guards and this range check is trusted the same way screen.refreshRate is.
+ * Anything outside 240 Hz to 24 Hz is not a panel, it is a corrupted or
+ * hand-edited key, and the caller gets the default instead.
+ */
+export function restore(period: unknown): Panel {
+  const n = typeof period === 'number' ? period : parseFloat(String(period))
+  if (!Number.isFinite(n) || n < PERIOD_MIN || n > PERIOD_MAX) return PANEL_DEFAULT
+  return { period: n, source: 'declared' }
+}

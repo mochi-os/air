@@ -13,6 +13,7 @@ import {
   budget,
   narrow,
   recent_window,
+  restore,
   type Panel,
   type Sample,
 } from './governor'
@@ -231,5 +232,29 @@ describe('cadence reads the panel beat out of the frame deltas', () => {
     expect(c.beat).toBe(0)
     expect(c.locked).toBe(0)
     expect(c.refresh).toBe(0)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// 5. restore. Only a WIDENED estimate is ever persisted, so this is the one
+//    path where a bad value could outlive the session that produced it.
+// ---------------------------------------------------------------------------
+
+describe('restore rebuilds a persisted panel estimate safely', () => {
+  it('accepts a plausible stored period', () => {
+    expect(restore('20').period).toBeCloseTo(20, 3)
+    expect(restore('20').source).toBe('declared')
+  })
+
+  it('falls back to the default for anything implausible', () => {
+    for (const bad of [null, undefined, '', 'abc', '0', '-5', '2', '900', NaN])
+      expect(restore(bad).period, `${String(bad)} must not be trusted`).toBeCloseTo(DEFAULT_PERIOD, 3)
+  })
+
+  it('accepts the ends of the believable range and rejects just outside them', () => {
+    expect(restore(1000 / 240).period).toBeCloseTo(1000 / 240, 3) // 240 Hz
+    expect(restore(1000 / 24).period).toBeCloseTo(1000 / 24, 3) // 24 Hz
+    expect(restore(1000 / 241).period).toBeCloseTo(DEFAULT_PERIOD, 3)
+    expect(restore(1000 / 23).period).toBeCloseTo(DEFAULT_PERIOD, 3)
   })
 })
