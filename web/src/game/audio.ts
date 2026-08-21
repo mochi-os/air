@@ -82,6 +82,12 @@ export function audio_gesture(): void {
   if (context && context.state === 'suspended') void context.resume()
 }
 
+// audio_state reports the context's live condition for the developer probe
+// (#55): whether it exists, whether it is running, and the enable flag.
+export function audio_state(): { context: string; enabled: boolean } {
+  return { context: context ? context.state : 'none', enabled }
+}
+
 let lastEnable: boolean | null = null
 export function audio_enable(on: boolean): void {
   if (on !== lastEnable) {

@@ -31,7 +31,7 @@ import { surface as impact_surface } from './impact'
 import { impact as pipper_impact } from './pipper'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
-import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint } from './audio'
+import { audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
@@ -99,6 +99,16 @@ export function startGame({
   const __ac = new AbortController()
   const signal = __ac.signal
   let __raf = 0
+  // Arm the audio context NOW (#55): the mount runs inside the Fly click's
+  // transient user-activation window, so the resume inherits the gesture. The
+  // pointerdown/keydown hooks below only install after this point, so a pilot
+  // who clicked Fly and then flew HOTAS-only — gamepad input is not a user
+  // activation and fires no DOM events — heard nothing until the first
+  // keyboard press: no engine, no wind, and in the 2026-08-20 joust all six
+  // enemy launch sounds and two 15-18 m proximity detonations played into a
+  // suspended context and were discarded. audio_enable first: the previous
+  // unmount leaves `enabled` false, which would no-op the gesture on a refly.
+  if (config.sound !== false) { audio_enable(true); audio_gesture() }
 
 // ============================================================================ config
 const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, exterior_detail:3, lod:true,   // dyn_res defaults ON (#148): slow machines self-tune render_scale down to 0.45 instead of stuttering
@@ -4328,6 +4338,7 @@ if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds,side){ if(!ha
 		velocity:{x:bandit.velx,y:bandit.vely,z:bandit.velz} };
 	for(let v=0;v<n;v++) battle_volley(0,pose,shots,battle_tick+v);
 	return { volleys:n, shots }; };
+if(DEV_MODE) (globalThis as any).dev_audio=()=>audio_state();   // #55: the context's live state, for the strict-autoplay boot test
 if(DEV_MODE) (globalThis as any).dev_blast=function(hulk,distance,trials,klass,way){   // #53: detonate the real warhead at an anchored miss distance against either LIVE hulk, pristine state per trial — the damage-v-distance curve, measured on the wiring under suspicion
 	const own=hulk===1; if(!own&&(!has_enemy||!bandit.harm||!bandit.group.visible)) return null;
 	const t=own?ownship:bandit, d=+distance||9, n=Math.max(1,trials|0||20), cls=+klass||1;
