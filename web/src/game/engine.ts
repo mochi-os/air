@@ -5601,7 +5601,8 @@ function glass_clip(g){ hctx.beginPath(); hctx.moveTo(g.corners[0][0],g.corners[
 	if(GLASS_DEBUG){ hctx.save(); hctx.strokeStyle="#ff40ff"; hctx.lineWidth=2; hctx.stroke(); hctx.restore(); }
 	hctx.clip(); }
 function proj_dir(d){ _p.copy(camera.position).addScaledVector(d,1000).project(camera); if(_p.z>1) return null; return [(_p.x*0.5+0.5)*HW,(-_p.y*0.5+0.5)*HH]; }
-let GR="#15b85f"; const AM="#ffc14d";   // GR switches to a brighter daytime green in draw_hud (real HUDs have a brightness knob)
+let GR="#15b85f"; const AM="#ffc14d"; const RD="#ff5050";   // GR switches to a brighter daytime green in draw_hud (real HUDs have a brightness knob)
+let DM="#1d8a55";   // the label green: dim enough to sit under the value it names without competing with it, and it tracks the day/night brightness with GR
 
 // ---- full-screen map (M) — aircraft, islands, airports, carrier; never bandits ----
 const map_el=map; const mctx=map_el.getContext("2d"); let map_on=false;
@@ -5856,6 +5857,18 @@ function hud_insets(){
 	const size=repeat_size(), ox=HW-size-24;
 	hud_inset("ew",ox,38,size,"EW",(fx,px)=>inset_page(fx,px,ddi_ew));   // the RWR was only ever visible head-down, which is exactly where the player cannot be in the moment it matters
 	if(repeat) hud_inset("tac",ox,HH-size-24,size,repeat==="center"?"AMPCD":repeat==="left"?"LEFT DDI":"RIGHT DDI",(fx,px)=>ddi_render(fx,px,repeat)); }   // whichever display I has selected, so the panel still repeats rather than fixing one page
+// ---- caution/warning stack (#78/#47): red for fires and the pilot, amber for
+// degraded systems, read straight from the sim-step model so every view shows
+// the same set. Drawn bottom-up from y, and NOT in push order: the amber tier
+// is laid down first so the red one always sits at the TOP of the column. A
+// mixed list meant "is anything on fire" was answered by reading every row;
+// now it is answered by looking at one end of the stack.
+// Annunciator text stays English by policy — real Hornet cockpits do worldwide.
+function caution_stack(x,y){
+	hctx.textAlign="left"; hctx.font="13px monospace";
+	for(const [,label,red] of caution_list) if(!red){ hctx.fillStyle=AM; hctx.fillText(label,x,y); y-=18; }
+	for(const [,label,red] of caution_list) if(red){ hctx.fillStyle=RD; hctx.fillText(label,x,y); y-=18; }
+	return y; }
 const _chase_to=new THREE.Vector3();   // scratch: the frame loop allocates nothing
 // draw_chase is the external-view symbology set. The HUD proper is a combining
 // glass bolted into the cockpit and cannot be read from a camera flying behind
@@ -5883,18 +5896,64 @@ function draw_chase(boxed,rng,vc){
 				hctx.textAlign="center"; hctx.font="12px monospace"; hctx.fillText(String(Math.round(off)),ox+ux*106,oy+uy*106+4); } } }
 	// The corner block. Left margin and line pitch match the HUD's own
 	// bottom-left stores block, so the two views read the same way round.
-	hctx.textAlign="left"; hctx.font="15px monospace"; hctx.fillStyle=GR;
+	//
+	// Every row is LABELLED. The block used to be seven bare numbers in a
+	// column, which is what a real HUD gets away with — its numbers are read
+	// off boxes and tapes whose position IS the label. Out here there is no
+	// tape and no box, so "169" and "5166 FT" had nothing at all saying which
+	// quantity they were, and the selected weapon was told apart from the
+	// altitude only by having letters in it. A dim three-letter label in its
+	// own column answers that without adding a single icon: the values keep
+	// their bright green and stay on one x, so the column still scans as a
+	// column of numbers rather than a table.
+	const rows=[];
 	if(boxed){   // range and closure: the HUD carries them in its right-side data block, and without them an external view cannot answer "am I gaining"
-		hctx.fillText((rng/1852).toFixed(1)+" NM",40,HH-142);
-		hctx.fillText((vc>=0?"+":"")+Math.round(vc*1.94384)+" kt",40,HH-124); }
-	hctx.fillText(Math.round((ownship.cas??ownship.speed)*1.94384)+" KT",40,HH-106);
-	hctx.fillText(Math.round(ownship.pos.y*3.28084)+" FT",40,HH-88);
-	hctx.fillText(String(Math.round(((Math.atan2(ownship.fwd.x,-ownship.fwd.z)*57.29578)+360)%360)).padStart(3,"0"),40,HH-70);
+		rows.push(["RNG",(rng/1852).toFixed(1)+" NM"]);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+		rows.push(["VC",(vc>=0?"+":"")+Math.round(vc*1.94384)+" KT"]); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+	const kcas=(ownship.cas??ownship.speed)*1.94384;
+	rows.push(["CAS",Math.round(kcas)+" KT"+(kcas>=300&&kcas<=400?"  [E]":"")]);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+	rows.push(["ALT",Math.round(ownship.pos.y*3.28084)+" FT"]);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+	rows.push(["HDG",String(Math.round(((Math.atan2(ownship.fwd.x,-ownship.fwd.z)*57.29578)+360)%360)).padStart(3,"0")]);   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 	{ const thrust=Math.round((ownship.spool??ownship.throttle)*100+(ownship.stage??0)*58);   // achieved thrust, % of military — the same figure the HUD tape prints, burner running to ~158%
-		hctx.fillText(thrust+"%"+((ownship.stage??0)>0.05?"  AB "+Math.max(1,Math.round((ownship.stage??0)*5)):""),40,HH-52); }
+		rows.push(["THR",thrust+"%"+((ownship.stage??0)>0.05?"  AB "+Math.max(1,Math.round((ownship.stage??0)*5)):"")]); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
 	{ const count=master==="gun"?(ownship.rounds??0):master==="9m"?Math.max(0,ownship.msl|0):master==="120c"?Math.max(0,ownship.amraam|0):-1;   // NAV carries no count
-		hctx.fillText(master.toUpperCase()+(count>=0?"  "+(cheat("ammunition")?"\u221e":count):""),40,HH-34); }
+		rows.push(["SEL",master.toUpperCase()+(count>=0?"  "+(cheat("ammunition")?"\u221e":count):"")]); }   // i18n-format-ok: canvas HUD glyph, fixed-format like the real instrument
+	// Bottom-up, so the block keeps its baseline at HH-34 and grows upward as
+	// rows appear: the ones the eye goes to (weapon, throttle) never move when
+	// the target box comes and goes and takes RNG/VC with it.
+	hctx.textAlign="left"; hctx.font="15px monospace";
+	let by=HH-34;
+	for(let i=rows.length-1;i>=0;i--){ hctx.fillStyle=DM; hctx.fillText(rows[i][0],40,by);
+		hctx.fillStyle=GR; hctx.fillText(rows[i][1],86,by); by-=18; }
+	// The cautions above the numbers, same left margin, same source as the HUD
+	// view's stack. Chase returned long before draw_hud reached the stack, so an
+	// external view showed a burning, gear-shot jet with nothing said about it.
+	caution_stack(40,by-12);
 	hud_insets(); }   // the same two corner instruments the HUD view draws, same corners and same size: one radar picture in this game, learned once, which is the argument the TD box above already makes
+
+function draw_jhmcs(boxed, rng, cx, cy){
+	hctx.setLineDash([]); hctx.lineWidth=1.5; hctx.strokeStyle=GR; hctx.fillStyle=GR;
+	hctx.beginPath(); hctx.moveTo(cx-12,cy); hctx.lineTo(cx-4,cy); hctx.moveTo(cx+4,cy); hctx.lineTo(cx+12,cy); hctx.moveTo(cx,cy-12); hctx.lineTo(cx,cy-4); hctx.moveTo(cx,cy+4); hctx.lineTo(cx,cy+12); hctx.stroke();
+	const kcas=(ownship.cas??ownship.speed)*1.94384;
+	hctx.textAlign="right"; hctx.font="14px monospace"; hctx.fillText(String(Math.round(kcas))+(kcas>=300&&kcas<=400?" E":""),cx-40,cy+5);
+	hctx.textAlign="left"; hctx.fillText(String(Math.round(ownship.pos.y*3.28084)),cx+40,cy+5);
+	hctx.textAlign="center"; hctx.fillText(String(Math.round(((Math.atan2(ownship.fwd.x,-ownship.fwd.z)*57.29578)+360)%360)).padStart(3,"0"),cx,cy-40);
+	if(boxed){
+		const td=proj_point(boxed.pos);
+		if(td&&td[0]>0&&td[0]<HW&&td[1]>0&&td[1]<HH){
+			hctx.strokeRect(td[0]-14,td[1]-14,28,28);
+			hctx.textAlign="left"; hctx.font="12px monospace"; hctx.fillText((rng/1852).toFixed(1),td[0]+18,td[1]-18);
+		} else {
+			const to=_chase_to.set(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)).normalize();
+			const off=Math.acos(THREE.MathUtils.clamp(ownship.fwd.dot(to),-1,1))*57.29578;
+			const cs=to.applyQuaternion(_q.copy(camera.quaternion).invert()); const sd=Math.hypot(cs.x,cs.y);
+			if(sd>1e-4){ const ux=cs.x/sd, uy=-cs.y/sd;
+				hctx.lineWidth=2; hctx.beginPath(); hctx.moveTo(cx+ux*30,cy+uy*30); hctx.lineTo(cx+ux*70,cy+uy*70); hctx.stroke(); hctx.lineWidth=1.5;
+				hctx.textAlign="center"; hctx.font="12px monospace"; hctx.fillText(String(Math.round(off)),cx+ux*84,cy+uy*84+4); }
+		}
+	}
+}
+
 function draw_hud(){
 	hud_cue="";   // re-decided every frame by the cue draws below; a cue that stops being drawn stops being recorded
 	{ const dpr=Math.min(devicePixelRatio||1,2); hctx.setTransform(dpr,0,0,dpr,0,0); }   // re-assert the base each frame: the buffet shake below leaves a translated transform behind, and early returns must not accumulate it
@@ -5911,6 +5970,7 @@ function draw_hud(){
 	if(cfg.view==="hud"){ const a=buffet_env*buffet_env*buffet_env*0.003*HH;
 		if(a>0.2) hctx.translate((Math.random()*2-1)*a,(Math.random()*2-1)*a); }
 	GR=cfg.tod==="day"?"#23e57d":"#15b85f";   // daytime brightness up — the muted night green washes out against a sunlit sea/sky
+	DM=cfg.tod==="day"?"#2f9e6c":"#1d8a55";   // the labels ride the same knob, one step down: dimmed by the same amount in both lights
 	hctx.shadowColor="rgba(0,0,0,0.85)"; hctx.shadowBlur=3; hctx.shadowOffsetX=0; hctx.shadowOffsetY=0;   // dark halo behind every HUD glyph/line so it stays readable over any background
 	if(cfg.view==="ddi") draw_ddi_view();   // the head-down panel underdraws — banners and notices below stay on top
 	const cx=HW/2, cy=HH/2;
@@ -6232,7 +6292,9 @@ function draw_hud(){
 	const kcas=(ownship.cas??ownship.speed)*1.94384; const ax=cx-4.2*ppdv;
 	if(!declutter){ hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]);
 		hctx.strokeRect(ax-84,wly,84,30);
-		hctx.font="600 20px monospace"; hctx.textAlign="right"; hctx.fillText(String(Math.round(kcas)),ax-8,wly+16); }
+		hctx.font="600 20px monospace"; hctx.textAlign="right"; hctx.fillText(String(Math.round(kcas)),ax-8,wly+16); 
+		if(kcas>=300&&kcas<=400){ hctx.beginPath(); hctx.moveTo(ax+8,wly+4); hctx.lineTo(ax+4,wly+4); hctx.lineTo(ax+4,wly+26); hctx.lineTo(ax+8,wly+26); hctx.moveTo(ax+4,wly+15); hctx.lineTo(ax+7,wly+15); hctx.stroke(); }
+	}
 
 	// ---- altitude box (right): BARO or RDR (R suffix; flashing B fallback), NATOPS digit sizing ----
 	const baro=ownship.pos.y*3.28084; const lx=cx+4.2*ppdv;
@@ -6347,14 +6409,9 @@ function draw_hud(){
 	if((ownship.canopy??0)>0.02){ hctx.fillStyle=GR; hctx.fillText(translate("CANOPY"),flagx,HH-10); }   // below PROBE
 	if((ownship.fold??0)>0.02){ hctx.fillStyle=AM; hctx.fillText(translate("WINGS"),flagx,HH-178); } }   // amber, at the top of the column: it shared HH-124 with the FLAPS legend, and folding the wings with a flap position selected printed the two strings over each other
 
-	// ---- caution panel (#78): red for fires and the pilot, amber for degraded systems ----
-	// Read straight from the core's damage words, so it works identically in SP and MP.
-	// Annunciator text stays English by policy — real Hornet cockpits do worldwide.
-	{ const RD="#ff5050";   // the stack renders the sim-step model (#47) — building it here left the tone dead outside this view
-		hctx.textAlign="left"; hctx.font="13px monospace";
-		let cy=HH-118;
-		for(const [,label,red] of caution_list){ hctx.fillStyle=red?RD:AM; hctx.fillText(label,40,cy); cy-=18; }
-	}
+	// ---- caution panel (#78) ---- the same stack chase draws, from the same
+	// sim-step model (#47), so the set never depends on which view is up.
+	caution_stack(40,HH-118);
 	if(law_active&&running&&(performance.now()%500)<280){   // the break-X (#243): the real jet's unmissable altitude call, flashed across HUD and helmet alike — numbers are exactly what a padlocked pilot stops reading
 		hctx.strokeStyle="#ff5040"; hctx.lineWidth=5; hctx.beginPath();
 		hctx.moveTo(HW/2-110,HH/2-110); hctx.lineTo(HW/2+110,HH/2+110);
@@ -6405,6 +6462,7 @@ function draw_hud(){
 		hctx.fillText(translate("FUEL")+"  "+pounds,40,HH-34); hctx.fillStyle=GR; } }
 
 	// ---- catapult prompt ----
+	if(cfg.view==="cockpit") draw_jhmcs(boxed, rng, cx, cy);
 }
 
 // ============================================================================ perf
