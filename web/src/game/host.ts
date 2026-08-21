@@ -14,19 +14,9 @@ export function loopback(host: string): boolean {
 }
 
 // crossHost returns the transport hostname when it differs from the lobby the
-// player actually chose, or null when they match. The lobby (untrusted) hands
-// out the separate WebTransport address, so it could point the browser at
-// another host — a private-network or loopback service — without this check.
-// It also supplies the certificate hash to trust, so an unchecked redirect
-// dials an arbitrary host with validation the same untrusted party chose.
-// An unparseable transport address is treated as cross-host (surfaced, not
-// silently trusted).
-//
-// Loopback spellings are collapsed only when BOTH ends are loopback: a local
-// lobby advertising 127.0.0.1 to a player who typed localhost is the same
-// machine (the server's own default address does exactly this), while a
-// REMOTE lobby redirecting to loopback is the private-service attack this
-// check exists to catch — and stays a warning.
+// player chose, else null. The untrusted lobby supplies that address, so an
+// unparseable one counts as cross-host and loopback spellings collapse only
+// when BOTH ends are loopback.
 export function crossHost(transport: string, lobby: string): string | null {
   try {
     const other = new URL(transport).hostname

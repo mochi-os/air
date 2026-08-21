@@ -4,16 +4,11 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 // Minimal CBOR (RFC 8949) subset matching the server's fxamacker encoding:
-// unsigned/negative integers, byte/text strings, arrays, string-keyed maps,
-// booleans, null, and float16/32/64. No dependency, no indefinite lengths.
-//
-// The decoder reads UNTRUSTED bytes from an open World server, so it is bounded
-// on every axis: each read is checked against the input length, declared
-// array/map sizes are capped (and can never exceed the bytes that remain),
-// nesting depth is limited, indefinite/reserved encodings are rejected,
-// non-finite floats are refused, maps are built on a null prototype so a
-// __proto__ key cannot reach the prototype chain, and the whole input must be
-// consumed. Isolated here so it is unit testable without app dependencies.
+// integers, byte/text strings, arrays, string-keyed maps, booleans, null,
+// float16/32/64; no indefinite lengths. The decoder reads UNTRUSTED bytes from
+// an open World server: every read is length-checked, array/map sizes and
+// nesting depth are capped, reserved encodings and non-finite floats are
+// rejected, maps use a null prototype, and the whole input must be consumed.
 
 export class CborError extends Error {}
 

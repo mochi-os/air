@@ -15,21 +15,16 @@ import { type GameHandle } from '../game/engine'
 import { type Join as NetJoin } from '../game/net'
 import { preload } from '../game/preload'
 
-// The engine and three.js are 1,094 kB raw / 338 kB gzipped — measured, and the
-// one chunk that dwarfs everything else air ships. Imported statically it landed
-// in the MENU's chunk, so the front page downloaded and parsed the whole
-// simulator before the player had clicked anything. Lazy here, and warmed in the
-// same effect that starts the asset downloads, so pressing Fly still costs
-// nothing.
+// The engine and three.js are by far the largest chunk air ships (1,094 kB
+// raw). Keep it lazy: imported statically it lands in the MENU's chunk. It is
+// warmed in the same effect that starts the asset downloads.
 const GameCanvas = lazy(() =>
   import('../components/GameCanvas').then((m) => ({ default: m.GameCanvas }))
 )
 
-// The Settings tabs are COMPONENT state, not a route. Mirroring them in the URL
-// made sense when tabs were the menu itself; now Settings is a dialog, so a tab
-// is transient UI — and inside the shell iframe every change relayed a
-// navigation to the parent, rewriting the address bar and stacking a history
-// entry per click (#77).
+// The Settings tabs are COMPONENT state, not a route: inside the shell iframe
+// every URL change relays a navigation to the parent, stacking a history entry
+// per click (#77).
 type SetupTab = 'general' | 'graphics' | 'sound' | 'controls' | 'keys' /* #57 parked: | 'head' */ // the Settings dialog's tabs (#77): mission, weather and history became their own surfaces
 
 // Inside the menu shell the top window owns the browser tab; without this it
@@ -84,11 +79,8 @@ function Index() {
 
   const enterFlight = () => {
     // Arm the audio context HERE, synchronously inside the click dispatch
-    // (#55): a resume during a genuine event handler always satisfies the
-    // autoplay policy, where arming at engine start raced the transient
-    // activation window across the lazy GameCanvas chunk load — and a
-    // HOTAS-only pilot fires no DOM events at all once flying, so nothing
-    // later can do it.
+    // (#55): a resume in a genuine event handler always satisfies the autoplay
+    // policy, and a HOTAS-only pilot fires no DOM events at all once flying.
     audio_gesture()
     setMenuOpen(false)
     enterFullscreen()
@@ -114,17 +106,11 @@ function Index() {
               // nonce survives into MissionSetup's fresh mount, and a stale one
               // reopened the settings dialog over the front page.
               setSettingsNonce(0)
-              // The mission is OVER, not suspended. exit_match has already written
-              // the flight to History and, in multiplayer, closed the transport and
-              // latched session_over — so leaving `started` true made the front
-              // page offer Resume mission for a mission that had ended. Resuming
-              // set running=true again on a torn-down session (flying on with no
-              // server and no way back), and in single player it reused
-              // mission_began, so the next exit's record collided with the first
-              // on the (world, session, started) index and the second sortie never
-              // reached the logbook. Unmounting also runs GameCanvas's cleanup,
-              // which stops the engine. The crash path is untouched: that ends
-              // through onOver, which keeps its own Fly again surface.
+              // The mission is OVER, not suspended: exit_match has written the
+              // flight to History and closed any transport, so leaving
+              // `started` true offers Resume on a torn-down session and
+              // collides the next sortie's record. The crash path ends through
+              // onOver.
               setStarted(false)
               leaveFlight()
             }}
@@ -189,13 +175,9 @@ function Index() {
 
 export const Route = createFileRoute('/')({
   component: Index,
-  // History is its own ROUTE (/history, declared in app.json like the root), so
-  // nothing about it belongs in this route's search. A legacy ?tab= or
-  // ?page=history is accepted and ignored: old links must not error.
-  // Pass search through UNCHANGED. validateSearch strips anything it does not
-  // return, and the engine reads ?developer / ?fly / ?start / ?view and the
-  // rest straight off location.search — an allow-list here deleted every dev
-  // hook but the one it named, and a joust launched from a link stopped
-  // launching at all.
+  // Pass search through UNCHANGED: validateSearch strips anything it does not
+  // return, and the engine reads ?developer / ?fly / ?start / ?view straight
+  // off location.search. History is its own route, so a legacy ?tab= or
+  // ?page=history is accepted and ignored.
   validateSearch: (search: Record<string, unknown>) => search,
 })

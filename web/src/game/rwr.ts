@@ -3,22 +3,11 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// RWR (#28): the ALR-67 at game fidelity — a passive receiver that knows only
-// what illuminates it. A SEARCH radar is heard as PERIODIC paints: you are lit
-// only when his sweep crosses you, so the symbol blips every few seconds while
-// you sit inside his scan cone, and the on-off rhythm is emission discipline
-// felt from the receiving end. An STT on YOU is continuous and unmistakable;
-// an STT on someone else is silence, because his energy is pointed at him.
-// Bearing only — a receiver has no ranging — and contacts age off when the
-// paints stop. The feeds are #30's emitters: the SP bandit's derived state and
-// net.emitters from the pose wire in multiplayer.
-//
-// A MISSILE is the third voice (#27 phase 2d). The Hornet carries no missile
-// warner and the AIM-120's motor is reduced-smoke, so a launch itself is
-// silent — you learn of it when the round's OWN seeker wakes at about ten
-// miles and starts illuminating you. That is the classic escalation heard
-// from the receiving end: nails, then a spike, then MISSILE, each one less
-// deniable than the last.
+// RWR (#28): the ALR-67 at game fidelity - a passive, bearing-only receiver. A
+// search radar is heard as periodic paints as its sweep crosses us, an STT on
+// us is continuous, an STT on someone else is silence; contacts age off when
+// the paints stop. The feeds are #30's emitters, and a missile is heard only
+// when its own seeker wakes, about ten miles out.
 
 export const NM = 1852
 

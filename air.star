@@ -26,14 +26,10 @@ def database_create():
 	# then-insert.
 	mochi.db.execute("create unique index if not exists matches_replay on matches(world, session, started)")
 
-# attachment_export() returns the rows core's attachment store held for this
-# user and app, each with "file" (an own row's stored filename, relative to
-# file storage; "" for a remote row), or None when the store cannot be read
-# yet. Through the transition bridge while a core still has one, else from the
-# export file core's cleanup wrote before dropping the store. A core without
-# the bridge exported every store that had rows before it served a request, so
-# no file means no rows; a file that exists and cannot be read is damage, not
-# emptiness, and reads as unavailable.
+# attachment_export() -> list | None: the rows core's attachment store held for
+# this user and app, each with "file" (stored filename, "" for a remote row) -
+# from the transition bridge if core still has one, else core's export file.
+# None when the store cannot be read; a missing export file means no rows.
 def attachment_export():
 	if hasattr(mochi, "attachment") and hasattr(mochi.attachment, "export"):
 		rows = mochi.attachment.export()
@@ -56,25 +52,18 @@ def attachment_export():
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
 	if version == 10:
-		# `recorded` held the recording's SIZE IN BYTES, while the API field of
-		# the same name is a boolean and the word itself reads as a timestamp.
-		# That cost a real bug: recordings_prune ordered by it, which looks like
-		# "newest first" and means "biggest first", so the disk budget kept the
-		# largest recordings and deleted every short match. One name, one
-		# meaning - the column is `size`, and the ordering below is self-evident
-		# beside it. The branches after this one predate the rename and keep the
-		# old name deliberately: they run on databases that still carry it.
+		# `recorded` held the recording's size in bytes; rename it to `size`. The
+		# branches below keep the old name deliberately: they run on databases that
+		# still carry it.
 		columns = [c["name"] for c in mochi.db.table("matches")]
 		if "size" not in columns:
 			mochi.db.execute("alter table matches rename column recorded to size")
 	if version == 8 or version == 9:
-		# Recordings live in plain file storage at "recordings/<match id>", with
-		# the match's own recording/recorded columns as metadata. Relocate any
-		# recording still held by core's attachment store and rewrite the marker
-		# to the match id, aborting without advancing if the store cannot be
-		# read yet; one whose bytes are already gone just clears its marker
-		# (recordings are transient). A match already carrying its own id as the
-		# marker is skipped, so the step runs at either version.
+		# Move recordings from core's attachment store to file storage at
+		# "recordings/<match id>" and set the marker to the match id. Abort without
+		# advancing if the store cannot be read yet; a recording whose bytes are gone
+		# clears its marker. Matches already marked with their own id are skipped, so
+		# the step runs at either version.
 		rows = mochi.db.rows("select id, recording from matches where recording != ''") or []
 		files = {}
 		if rows:
@@ -111,18 +100,13 @@ def database_upgrade(version):
 		mochi.db.execute("drop table if exists telemetry")
 
 	if version == 5:
-		# Atomic match dedup (#191 review): the check-then-insert could let two
-		# concurrent retries both pass the existence check and insert duplicates.
-		# Collapse any existing (world, session, started) collisions to the
-		# lowest id, then a unique index makes future inserts conflict-safe.
+		# Collapse (world, session, started) collisions to the lowest id so the unique
+		# index can be created; it makes match dedup atomic (#191).
 		mochi.db.execute("delete from matches where id not in (select min(id) from matches group by world, session, started)")
 		mochi.db.execute("create unique index if not exists matches_replay on matches(world, session, started)")
 	if version == 4:
-		# Telemetry out of the settings store (#161 review): the CSV rows rode
-		# into config_load's wholesale dump, failed json.decode into None, and
-		# the next config_save wrote them back as the literal string "null" —
-		# destroying the telemetry and junking the config. Surviving rows
-		# (still raw CSV) move to their own table; the "null" corpses drop.
+		# Telemetry rows move out of the settings store (#161); rows config_save had
+		# rewritten as the literal "null" are dropped.
 		mochi.db.execute("create table if not exists telemetry (name text not null primary key, value text not null, created integer not null)")
 		mochi.db.execute("insert or ignore into telemetry (name, value, created) select name, value, updated from settings where name like 'telemetry%' and value <> 'null'")
 		mochi.db.execute("delete from settings where name like 'telemetry%'")
@@ -150,12 +134,10 @@ def config_load(a):
 def config_save(a):
 	if not a.user:
 		return {"data": {"saved": False}}
-	# Require a matching identity. A debounced client save that fires after an
-	# in-place account switch - or before config/load established the identity -
-	# would otherwise write the previous/unknown account's edits into this user's
-	# config. Empty is refused too (not just a mismatch): the client always sends
-	# its loaded identity and defers saves until it is known, so a missing one is
-	# a stale or pre-load save, not a legitimate one.
+	# Require a matching identity: a debounced client save firing after an in-place
+	# account switch, or before config/load, would otherwise write another
+	# account's edits here. Empty is refused too - the client always sends its
+	# loaded identity.
 	if a.input("identity", "") != a.user.identity.id:
 		return {"data": {"saved": False}}
 	config = json.decode(a.input("config", ""), None)
@@ -181,10 +163,9 @@ def match_record(a):
 	session = a.input("session", "")[:64]
 	if not world or not session:
 		return {"data": {"stored": False}}
-	# Atomic dedup on the (world, session, started) unique index (#191): the old
-	# check-then-insert let two concurrent retries both pass and duplicate the
-	# row. `on conflict do nothing` is the single, race-free write; whether our
-	# own id landed then tells the caller if this was the first record.
+	# `on conflict do nothing` on the (world, session, started) index is the
+	# race-free dedup (#191); whether our own id landed tells the caller if this
+	# was the first record.
 	started = whole(a, "started")
 	id = mochi.uid()
 	mochi.db.execute("insert into matches (id, world, session, mode, team, started, ended, reason, players, kills, deaths, cheated, created) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) on conflict(world, session, started) do nothing",
@@ -201,31 +182,21 @@ def match_list(a):
 	if not a.user:
 		return {"data": {"matches": []}}
 	matches = mochi.db.rows("select world, session, mode, team, started, ended, reason, players, kills, deaths, cheated, recording, size, pinned from matches order by started desc limit 50")
-	# Totals are aggregated over EVERY row, not the fifty listed: the table is a
-	# recent-flights view, the summary is a career. Cheated flights count too —
-	# this is the player's own logbook, not a leaderboard, and excluding them
-	# just made the summary disagree with the table above it.
-	# started/ended are epoch MILLISECONDS (the client stamps them with
-	# Date.now), so the duration divides by 1000: summed raw it read 125 hours
-	# for an evening's flying.
+	# Totals span every row, not the fifty listed, and include cheated flights (a
+	# logbook, not a leaderboard). started/ended are epoch milliseconds, hence /
+	# 1000.
 	totals = mochi.db.row("select count(*) as flights, sum(ended - started) / 1000 as seconds, sum(kills) as kills, sum(deaths) as deaths, sum(cheated) as cheated from matches")
 	return {"data": {"matches": matches, "totals": totals}}
 
 # servers() -> {"data": {"servers": [...]}}: the public world servers hosting
-# air, for the join page's server list. Pure read of the core world listing
-# table (mochi.world.list), which core keeps fresh from local pushes and
-# network gossip; this action just forwards it. The client sorts and filters -
-# the version compatibility check and players-descending order are its job,
-# since only it knows its own flight version.
+# air, straight from core's world listing. The client sorts and filters - only
+# it knows its own flight version.
 def servers(a):
 	return {"data": {"servers": mochi.world.list("air")}}
 
-# ---- flight recordings (#213) ----
-# Recordings are ATTACHMENTS bound to their match row, not rows in a table of
-# their own: the attachment system already owns bytes, and its multipart path
-# sidesteps the 1 MB non-multipart body cap that a base64 field would hit.
-# They are stored gzipped (~3:1 on ACMI, measured) and the client inflates on
-# download, so the player still receives a plain .acmi TacView opens.
+# ---- flight recordings (#213) ---- Stored gzipped (~3:1 on ACMI) in file
+# storage at "recordings/<match id>" via multipart upload; the client inflates
+# on download so the player gets a plain .acmi.
 
 # How many recordings a player keeps, and the byte budget, whichever binds
 # first. Age-based expiry was rejected: someone who flies twice a month would
@@ -260,10 +231,8 @@ def recording_save(a):
 	return {"data": {"saved": True}}
 
 # recordings_prune drops the oldest unpinned recordings once either budget is
-# exceeded. Called after each save, so the store is self-limiting.
-#
-# Ordered by `created`, the server's own clock - started/ended are submitted by
-# the client, so no client can order the queue in its favour.
+# exceeded; called after each save. Ordered by `created`, the server's clock -
+# started/ended are client-submitted.
 def recordings_prune(keep):
 	rows = mochi.db.rows("select id, recording, size, pinned from matches where recording != '' order by created desc")
 	total = 0
@@ -291,11 +260,9 @@ def recording_pin(a):
 	mochi.db.execute("update matches set pinned = ? where session = ? and started = ?", pinned, session, started)
 	return {"data": {"pinned": pinned == 1}}
 
-# recording_fetch: serve a stored recording's bytes. The gate IS this action —
-# a.write.file performs no access check of its own — so it authorises on a.user
-# and binds the recording to a match this player actually owns. (The app DB is
-# per-user, so "in my matches table" IS the ownership test.) The recording id is
-# the match id; the bytes live at "recordings/<match id>".
+# recording_fetch: serve a stored recording's bytes. This action is the gate
+# (a.write.file checks nothing): authorise on a.user and require the match in
+# this per-user DB. The recording id is the match id.
 def recording_fetch(a):
 	if not a.user or not a.user.identity.id:
 		a.error.label(401, "errors.not_logged_in")

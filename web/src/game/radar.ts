@@ -3,16 +3,11 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// A/A radar (#30): the APG-73 at game fidelity. The model is deliberately
-// small — a swept beam over truth positions with probabilistic paints — but
-// the STATES are real, because the gameplay is emission states, not antenna
-// physics: SIL (quiet and blind), RWS (wide search, anonymous bricks), TWS
-// (trackfiles with vectors over a narrower volume), STT (one continuous track,
-// and the loudest thing the victim's RWR will ever hear, #28). Angles are
-// radians, ranges metres, azimuths relative to own heading (level-flight
-// nose). The engine owns geometry sources and display; this module owns the
-// sweep, the paints, the trackfiles and the designation ladder, so all of it
-// is testable without a canvas.
+// A/A radar (#30): the APG-73 at game fidelity - a swept beam over truth
+// positions with probabilistic paints, but real emission STATES: SIL, RWS
+// (anonymous bricks), TWS (trackfiles), STT (one continuous track, the loudest
+// thing a victim's RWR hears). Angles radians, ranges metres, azimuths relative
+// to own heading.
 
 export const NM = 1852
 
@@ -23,11 +18,9 @@ export type Track = { id: number | string; x: number; y: number; z: number; vx: 
 export type Wrap = (value: number) => number
 
 const SWEEP = 1.31 // antenna sweep rate, rad/s (~75°/s)
-// The EW pieces (#31), sharing the round package's convention: a jammer
-// outside burnthrough steals this radar's gate, and a target inside the
-// clutter notch gives its tracker nothing — either way the STT goes to
-// MEMORY (the track coasts on its last state, the display says MEM) and
-// breaks if the condition outlasts the memory window.
+// The EW pieces (#31): a jammer outside burnthrough or a target inside the
+// clutter notch starves the tracker, so the STT goes to MEMORY and breaks if
+// the condition outlasts the window.
 const BURNTHROUGH = 9000 // m — inside this the skin echo beats the jammer
 const NOTCH = 60 // m/s — radial speed under this sits in the clutter gate
 const MEMORY = 4 // s — how long a track survives on memory before the lock drops
@@ -161,11 +154,9 @@ export class Radar {
         this.memory = 0
         return
       }
-      // MEMORY (#31): a jammer outside burnthrough has stolen the gate, and
-      // a target inside the clutter notch gives the tracker nothing — the
-      // track coasts on its last state (no fix), the display says MEM, and
-      // the lock drops if the condition outlasts the window. This is the
-      // radar's face catching up with what the datalink gate already knew.
+      // MEMORY (#31): a starved tracker coasts on the track's last state (no
+      // fix), the display says MEM, and the lock drops if the condition
+      // outlasts the window.
       const speed = Math.hypot(target.vx, target.vy, target.vz)
       const radial = speed < 1 ? 0 : Math.abs((target.vx * wrap(target.x - own.x) + target.vy * (target.y - own.y) + target.vz * wrap(target.z - own.z)) / Math.max(g.range, 1))
       const starved = (target.jamming && g.range > BURNTHROUGH) || radial < NOTCH
@@ -191,9 +182,8 @@ export class Radar {
       if (Math.abs(g.elevation - this.elevation) > ELEVATION) continue
       if (Math.abs(g.azimuth) > half) continue
       // Half-open interval (previous, current]: consecutive frames partition
-      // the sweep exactly, so one crossing is one detection roll. The old
-      // ±beam padding let 2-3 successive frames all claim the same target
-      // and cluster duplicate bricks — one bandit read as a formation.
+      // the sweep exactly, so one crossing is one detection roll and never a
+      // cluster of duplicates.
       if ((g.azimuth - this.sweep) * (g.azimuth - az) > 0 || g.azimuth === this.sweep) continue
       const detection = detect_range(own, target, wrap)
       if (g.range >= detection) continue

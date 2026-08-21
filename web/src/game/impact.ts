@@ -3,14 +3,9 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// What a falling aircraft hit, named. The recorder's Fate channel is supposed
-// to state the cause of death, and for the bandit it named "fire" for
-// everything — a jet whose wing had been shot off and which then flew into the
-// sea was recorded as destroyed by a fire it never had.
-//
-// The ownship's own crash check is deliberately NOT shared: its thresholds
-// differ (sea at 3.4 m rather than the terrain floor, buildings gated on
-// altitude) because it is a landing aircraft and this is a falling one.
+// What a falling aircraft hit, named, for the recorder's Fate channel. The
+// ownship's own crash check is deliberately NOT shared: its thresholds differ
+// (sea at 3.4 m rather than the terrain floor, buildings gated on altitude).
 
 export interface Building {
   minx: number

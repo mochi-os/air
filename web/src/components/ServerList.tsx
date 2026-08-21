@@ -3,13 +3,10 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// The public world-server list on the join page (#14). Reads air's /-/servers
-// action (core's world listing table, kept fresh from local pushes and network
-// gossip) and renders it players-first. A server whose flight version differs
-// from this client's wasm is shown greyed with the mismatch spelled out rather
-// than hidden — a hidden server reads as a dead network; a greyed one explains
-// itself. Private servers never appear here; they are joined by address from
-// the collapsed control beside this list.
+// The public world-server list on the join page (#14), players-first. A server
+// whose flight version differs from this client's wasm is greyed with the
+// mismatch spelled out, not hidden. Private servers are joined by address from
+// the control beside this list.
 
 import { useEffect, useState } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -22,12 +19,10 @@ const client = createAppClient({ appName: 'air' })
 
 export type { Server }
 
-// useServers polls the public listing and loads this client's own flight
-// version. It lives outside ServerList so the join dialog can also match its
-// RECENTS against the listing — a public server the player has joined shows
-// once, in the recent position, under its public name. `servers` is null until
-// the first response; a failed fetch resolves to an empty list so the dialog's
-// empty state (the auto-expanded private-server entry) still applies.
+// useServers polls the public listing and loads this client's flight version.
+// It lives outside ServerList so the join dialog can match its recents against
+// the listing. `servers` is null until the first response; a failed fetch
+// resolves to an empty list so the dialog's empty state still applies.
 export function useServers(): { servers: Server[] | null; version: number } {
   const [servers, setServers] = useState<Server[] | null>(null)
   const [version, setVersion] = useState(0)

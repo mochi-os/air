@@ -4,20 +4,9 @@
 # This file is part of Mochi, licensed under the GNU AGPL v3 with the
 # Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-"""CI guard: every key in labels/en.conf must be translated in all sibling
-<lang>.conf catalogs.
-
-"Translated" means present and non-empty. A value identical to the English
-source is allowed only when every alphabetic word in it (placeholders stripped)
-is a keep-word — a brand/protocol token, loanword, or colour name. A real error
-or notification message always has an ordinary word, so it is never exempted.
-
-Exits non-zero with a per-locale breakdown when any catalog is incomplete.
-
-KEEP_WORDS mirrors the canonical list in the monorepo's
-claude/scripts/i18n_glossary.py (that module can't be imported here — separate
-repo). Keep the two in sync.
-"""
+"""CI guard: every key in labels/en.conf must be present and non-empty in every sibling <lang>.conf.
+A value identical to English passes only when every word (placeholders stripped) is a keep-word.
+KEEP_WORDS mirrors claude/scripts/i18n_glossary.py in the monorepo - keep the two in sync."""
 import re
 import sys
 from pathlib import Path
@@ -54,14 +43,8 @@ KEEP_ENGLISH = frozenset({
 })
 
 def _strip_placeholders(value):
-    """Remove every {...} group, including nested ICU constructs.
-
-    A regex cannot do this: a {...} pattern stops at the first closing brace,
-    so `{count, plural, one {#m} other {#m}}` loses `{count, plural, one {#m}`
-    and leaves ` other {#m}}` behind - which then reads as the English word
-    "other" and makes a translated plural look like untranslated prose.
-    Mirrors claude/scripts/i18n_glossary.py strip_placeholders; keep in sync.
-    """
+    """Remove every {...} group, nested ICU constructs included - a regex stops at the first closing
+    brace and leaves ` other {#m}}` behind. Mirrors i18n_glossary.py strip_placeholders; keep in sync."""
     out = []
     depth = 0
     for c in value:

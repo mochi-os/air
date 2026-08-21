@@ -172,10 +172,8 @@ describe('Recorder', () => {
     expect(lines[2]).toContain('Rounds=520')
   })
 
-  // The BANDIT's gun on the same channel as mine. Without it a debrief cannot
-  // tell a bandit that shot and missed from one that never fired: both look
-  // identical from the ownship, which is exactly the question the 2026-08-05
-  // superhuman post-mortem could not answer from the recording alone.
+  // The bandit's gun on the same channel as mine, so a debrief can tell a
+  // bandit that shot and missed from one that never fired.
   it('records each aircraft\'s rounds independently', () => {
     const text = acmi(
       [
@@ -323,10 +321,8 @@ it('records flares, throttle, the sensor picture, and the match rules', () => {
   expect(mine[3]).not.toContain('Radar=')
 })
 
-// The burner goes out under the name the format defines. The bandit used to
-// write a Mochi-only Reheat, which no other tool reading an ACMI understands —
-// and which silently returned nothing to anything looking on the standard
-// channel, scoring a jet in full afterburner as stone cold.
+// Afterburner is the name the format defines; a Mochi-only Reheat reads as
+// stone cold to every other ACMI tool.
 it('records the burner as the standard Afterburner property, never Reheat', () => {
   const bandit = (burner: number): Sample['objects'][number] => ({
     id: 2, x: 0, y: 1000, z: 0, roll: 0, pitch: 0, yaw: 0,

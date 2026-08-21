@@ -5,9 +5,8 @@
 
 // Toroidal-world coordinate maths, isolated so the security-critical parts are
 // unit testable and dependency-free. The wrap size comes from an UNTRUSTED
-// server, so it is validated on arrival (sanitizeWrap) and the normalization is
-// constant-time — a hostile tiny wrap fed to a subtraction loop would freeze
-// the render thread (the client twin of the server's flight.Shortest fix).
+// server: it is validated on arrival (sanitizeWrap) and the normalization is
+// constant-time.
 
 // MIN_WRAP mirrors the server's Create clamp (wrap is 0 or >= 10 km): a world
 // smaller than this is geometric nonsense, and a tiny value is the freeze
@@ -25,9 +24,9 @@ export function sanitizeWrap(value: unknown, fallback: number): number {
 }
 
 // minimumImage is the shortest signed difference to-from on the torus. Loop
-// free: the old `while (d > half) d -= wrap` ran ~|d|/wrap iterations, so a
-// hostile tiny wrap froze the render thread on ordinary coordinates. Round
-// gives the identical minimum-image result in one step.
+// free: a `while (d > half) d -= wrap` form runs ~|d|/wrap iterations, so a
+// hostile tiny wrap freezes the render thread. Round gives the identical result
+// in one step.
 export function minimumImage(wrap: number, from: number, to: number): number {
   const d = to - from
   if (wrap <= 0) return d

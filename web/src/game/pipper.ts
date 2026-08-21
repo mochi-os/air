@@ -4,31 +4,11 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 // The director gun solution: where this burst's rounds will arrive, pulled back
-// by where the target will be, so that putting the pipper ON the target IS the
-// deflection solution — and so the pipper tells the pilot the true nose angle
-// to pull at any range.
-//
-// Three defects fixed 2026-08-17, each of which made it lie:
-//
-//   The span was CLAMPED at 2,000 m, so beyond that the solution was computed
-//   for a target 2 km away however far away it actually was.
-//
-//   The time of flight came from an approximated closing speed with a 250 m/s
-//   floor rather than from the drag law the rounds fly. At 1,315 m and 4 km
-//   altitude that read 1.20 s against a true 1.47 s, and lead scales with it.
-//
-//   The round was modelled as a barrel component decaying under drag PLUS an
-//   undragged inherited velocity. The real round decays as one vector, so the
-//   split over-credited the inherited part — worth about 8 m at 800 m, which is
-//   more than the gun's own dispersion.
-//
-// Quadratic drag on the whole velocity gives v(t) = v0/(1 + v0·t/L) along a
-// fixed direction, so the round flies straight down its launch vector and slows,
-// with gravity dropping it. That is what battle.Fly marches, and matching it is
-// what makes pipper-on-target mean a hit.
-//
-// The pipper is deliberately NOT gated on the gun's reach: the ring and the
-// shoot cue say whether a shot is worth taking, the pipper says where to point.
+// by where the target will be, so putting the pipper ON the target IS the
+// deflection solution. Quadratic drag on the whole velocity - v(t) = v0/(1 +
+// v0·t/L) along a fixed direction - is what battle.Fly marches, and matching it
+// is what makes pipper-on-target mean a hit. Deliberately NOT gated on the
+// gun's reach.
 
 export const MUZZLE = 1050 // m/s at the barrel
 export const LENGTH = 2600 // m, the round's drag length at sea level

@@ -16,11 +16,9 @@ import { type Join as NetJoin } from '../game/net'
 import { type MissionConfig } from '../lib/config'
 import '../game/game.css'
 
-// Player-facing HUD strings the engine draws on the 2D canvas. Declared here (in a
-// React module) so the Lingui macro extracts them; the engine is framework-agnostic
-// and receives a `translate` that resolves these against the active locale.
-// Aviation unit/instrument tokens (KCAS, FT, NM, kt, IR, G, M, α, THR, CV) are left
-// untranslated on purpose — they're standard on real HUDs regardless of language.
+// HUD strings the engine draws on the 2D canvas, declared in a React module so
+// Lingui extracts them; the engine receives a `translate`. Aviation tokens
+// (KCAS, FT, NM, kt, IR, G, M, α, THR, CV) stay untranslated.
 const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   GUN: msg`GUN`,
   FLARES: msg`FLARES`,
@@ -116,15 +114,10 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   // annunciators above — it is the surrounding call that localises.
 }
 
-// Mounts the imperative Three.js engine onto its canvases and tears it down on
-// unmount. The engine owns the render loop; React owns the surrounding DOM.
-// onReady hands the engine handle (stop/resume) back so the menu can resume a
-// paused game; onExit fires when the player presses Esc in flight.
-// The in-game help line, as ACTIONS rather than key caps — the caps are read
-// from the binding table at render so the line cannot drift from the engine and
-// follows the player's own remaps. Two actions on one entry render as "W/S".
-// Views are the bare number row (engine.ts handles Digit1..5 directly, not
-// through a rebindable action), so they are appended as literals.
+// The in-game help line as actions, not key caps: the caps are read from the
+// binding table at render, so the line follows the player's remaps. Two actions
+// on one entry render as "W/S". Views (Digit1..5) are handled directly by
+// engine.ts, so they are appended as literals.
 const HINTS: { actions: string[]; label: React.ReactNode }[] = [
   { actions: ['pitch.down', 'pitch.up'], label: <Trans>pitch</Trans> },
   { actions: ['roll.left', 'roll.right'], label: <Trans>roll</Trans> },
@@ -406,14 +399,8 @@ export function GameCanvas({
         </div>
       )}
       <div className='panel' id='help' ref={helpRef}>
-        {/* Key legends are <kbd>, the element that means "keyboard input";
-            the action beside each one is prose and stays wrapped. Two <b>
-            below are emphasis on translated text, not keys, so they stay <b>.
-            The legends are DERIVED from the binding table rather than written
-            out: hand-written ones went stale and lied — this line advertised F
-            for flares long after F became the flaps switch and flares moved to
-            C, and offered V for view after V became the ACM control. Deriving
-            them also means a player who remaps a key sees their own key here. */}
+        {/* Key legends are <kbd>; the action beside each is prose and stays wrapped. The two <b> below
+            are emphasis on translated text, not keys. Legends derive from the binding table - hand-written ones went stale. */}
         {HINTS.map(({ actions, label }, index) => (
           <span key={index}>
             {index > 0 && ' · '}

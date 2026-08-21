@@ -3,12 +3,10 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// The flight simulation core: a Go blade-element model compiled to wasm
-// (built from world/games/air/flight into src/assets/), shared with
-// the authoritative world server. This module owns loading, the fixed-dt
-// accumulator, and the typed-array boundary — one crossing per rendered
-// frame. Layouts mirror world/games/air/flight/encode.go and
-// world/wasm/main.go exactly; a mismatch is a version bump, not a patch.
+// The flight simulation core: a Go blade-element model compiled to wasm, shared
+// with the authoritative world server. Layouts mirror
+// world/games/air/flight/encode.go and world/wasm/main.go exactly; a mismatch
+// is a version bump, not a patch.
 
 import { getErrorMessage } from '@mochi/web'
 // Vite content-hashes these into the bundle (assets/flight-<hash>.wasm): the
@@ -158,11 +156,8 @@ const exchange_bytes = new Uint8Array(exchange.buffer)
 // loud and terminal — there is no TypeScript physics to fall back to.
 let loading: Promise<void> | null = null
 export function flight_load(): Promise<void> {
-  // Failure is RETRIABLE: `if (core || failure)` made one bad load —
-  // a dropped fetch, wasm_exec blocked, the 30 s export timeout on a
-  // hammered machine — permanent for the page, and every later mission
-  // reported the stale error. A fresh mission now begins a fresh attempt;
-  // only a live core short-circuits.
+  // Only a live core short-circuits: a failed load (dropped fetch, blocked
+  // wasm_exec, export timeout) must stay retriable for the next mission.
   if (core) return Promise.resolve()
   loading ??= load_core()
   return loading
@@ -183,12 +178,9 @@ async function load_core(): Promise<void> {
     const bytes = await asset(flight_wasm_url)
     const go = new globalThis.Go!()
     const { instance } = await WebAssembly.instantiate(bytes, go.importObject)
-    // run() resolves only if the Go program EXITS — which only an unrecovered
-    // panic causes. When it does, every later export call throws "Go program
-    // has already exited", and the stale `core` used to satisfy flight_load
-    // forever: the page was bricked until reload. A dead core now resets the
-    // loader, so the next mission instantiates a fresh Go program from the
-    // cached bytes and flies.
+    // run() resolves only if the Go program EXITS, which only an unrecovered
+    // panic causes; every later export call then throws. Reset the loader so
+    // the next mission instantiates a fresh Go program from the cached bytes.
     void go.run(instance).then(() => {
       console.error('flight core exited — a panic killed the Go program; the next mission boots a fresh core')
       core = null
@@ -376,11 +368,9 @@ export function bandit_mirror(state: Float64Array, firing: boolean, alive: boole
   core.bandit_mirror(mirror_bytes)
 }
 
-// bandit_menace declares every missile in the air: a flat array of eight
-// words each — position, velocity, shooter (0 the player, 1 the bandit),
-// and phase (-1 a heater, otherwise the radar round's guidance phase). The
-// client flies the rounds; the brain reads these stubs for its evasion, its
-// radar-round defence, and its shoot-look-shoot discipline.
+// bandit_menace declares every missile in the air: a flat array of eight words
+// each - position, velocity, shooter (0 the player, 1 the bandit), and phase
+// (-1 a heater, otherwise the radar round's guidance phase).
 export function bandit_menace(shots: number[]): void {
   if (!core?.bandit_menace) return
   const count = Math.min(8, Math.floor(shots.length / 8))
@@ -388,11 +378,9 @@ export function bandit_menace(shots: number[]): void {
   core.bandit_menace(menace_bytes, count)
 }
 
-// bandit_step advances one 60 Hz frame; returns the bandit's encoded state
-// plus its decisions: trigger, flare, an AMRAAM launch this frame (the
-// client owns the round from there), the radar emitter state the RWR
-// reads, whether the STT holds the player (datalink support for a
-// bandit-shot round), and a chaff bloom (#43: its own magazine, no flare).
+// bandit_step advances one 60 Hz frame and returns the bandit's encoded state
+// plus its decisions for that frame. The client owns any launched round from
+// the launch frame on.
 export function bandit_step(): { state: Float64Array; fire: boolean; flare: boolean; launch: boolean; emitter: number; locked: boolean; heater: boolean; chaff: boolean } | null {
   if (!core?.bandit_step) return null
   const flags = core.bandit_step(bandit_bytes)
@@ -498,11 +486,10 @@ export function battle_blast(target: number, point: { x: number; y: number; z: n
   return { kill: battle_output[0] !== 0, mask: battle_output[1] }
 }
 
-// battle_progress runs the damage cascade one frame for the ownship and
-// every hulk; the returned view is valid until the next call. Layout:
-// 0-5 ownship (fire L, fire R, burning, killed, mask, leak);
-// 6+i*9.. per hulk (fire L, fire R, burning, killed, mask, thrust loss,
-// wing loss, element total, leak) — #244 widened the stride for the leak.
+// battle_progress runs the damage cascade one frame; the returned view is valid
+// until the next call. Layout: 0-5 ownship (fire L, fire R, burning, killed,
+// mask, leak); 6+i*9.. per hulk (adds thrust loss, wing loss, element total
+// before leak).
 export function battle_progress(throttle: number, tick: number, reset: boolean, secure: number): Float64Array {
   if (!core) return battle_output
   battle_input[0] = throttle
@@ -513,11 +500,9 @@ export function battle_progress(throttle: number, tick: number, reset: boolean, 
   return battle_output
 }
 
-// ---- The AIM-120 round (#27 phase 2): the same Go integrator the
-// multiplayer server flies, stepped per launched round through slot
-// handles; the launch-zone ladder runs the identical model, so the
-// cockpit's ranges can never disagree with the flight. Word layouts mirror
-// wasm/round.go.
+// ---- The AIM-120 round (#27 phase 2): the same Go integrator the multiplayer
+// server flies, stepped per launched round through slot handles. Word layouts
+// mirror wasm/round.go.
 
 const round_input = new Float64Array(17)
 const round_input_bytes = new Uint8Array(round_input.buffer)
@@ -599,13 +584,10 @@ export function round_ladder(shooter: Aimed, target: Aimed, wrap: number): { aer
   return { aero: o[0], max: o[1], escape: o[2], minimum: o[3], active: o[4] }
 }
 
-// heater_ladder is the AIM-9M's launch zone in the AMRAAM's shape (#47):
-// Rmax is the outermost range the round arrives from against the target
-// flying on as now (his present turn included), capped at what the seeker
-// can lock at this aspect and burner state; escape is the no-escape rung;
-// minimum the arming floor. The cockpit's SHOOT for the 9M reads this — and
-// only with a radar lock, as the real jet does, because only the radar knows
-// range.
+// heater_ladder is the AIM-9M's launch zone in the AMRAAM's shape (#47): Rmax
+// the outermost arrival range against the target flying on as now, capped by
+// seeker lock at this aspect; escape the no-escape rung; minimum the arming
+// floor.
 export function heater_ladder(shooter: Aimed, target: Aimed, swing: { x: number; y: number; z: number }, lit: number, wrap: number): { aero: number; max: number; escape: number; minimum: number; active: number } | null {
   if (!core?.heater_ladder) return null
   const r = round_input
@@ -660,11 +642,10 @@ export function flight_catalog(aircraft: string): { stores: Fitment[]; default: 
   }
 }
 
-// flight_approach places the model on a trimmed on-speed descent — the landing
+// flight_approach places the model on a trimmed on-speed descent - the landing
 // spawn. The glideslope is in DEGREES below the horizon; it returns the
 // throttle holding the trim, so the client's lever starts where the core put
-// the engines rather than carrying its own measured constant (which goes stale
-// the moment the airframe or the approach law moves).
+// the engines.
 export function flight_approach(x: number, y: number, z: number, dx: number, dz: number, slope: number, fuel: number): number {
   return (core?.approach(x, y, z, dx, dz, slope, fuel) as number) ?? 0
 }

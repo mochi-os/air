@@ -148,12 +148,9 @@ const AXIS_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'zoom', label: <Trans>Zoom</Trans> }, // spring-centred wheel: deflection = zoom rate on the view (or the map when open)
 ]
 const LEVERS = new Set(['throttle', 'speedbrake']) // lever-style rows: min-to-max meter + reverse toggle
-// POV pairs: the bound index is the HORIZONTAL half and the engine reads the
-// vertical from the next index up. Both halves get a meter — showing only the
-// bound one made a half-bound hat look identical to a working one, so pushing
-// the hat up moved nothing on screen while the engine was reading the axis
-// perfectly well, and a device whose vertical half is NOT at index+1 gave no
-// hint at all that it was mis-bound.
+// POV pairs: the bound index is the horizontal half and the engine reads the
+// vertical from index+1. Both halves get a meter, so a mis-bound vertical half
+// is visible.
 const PAIRS = new Set(['look', 'trim', 'weapon'])
 
 // AxisMeter draws one centred +/- axis. Levers keep their own left-anchored
@@ -339,11 +336,10 @@ function JoystickPanel({
       const parsed = JSON.parse(await file.text())
       if (parsed?.air !== 'joystick' || typeof parsed.axes !== 'object' || typeof parsed.buttons !== 'object')
         throw new Error('not a profile')
-      // Applied to the ACTIVE device whatever id it was exported from: the same
-      // model reports a different id string on another machine, and refusing
-      // those would defeat the point of sharing a profile at all. Axes merge
-      // over the defaults and buttons replace them, matching how the engine
-      // resolves a saved map.
+      // Applied to the ACTIVE device whatever id it was exported from - the
+      // same model reports a different id on another machine. Axes merge over
+      // the defaults and buttons replace them, as the engine resolves a saved
+      // map.
       store({ ...defaults.axes, ...(parsed.axes as Record<string, string>) }, parsed.buttons as Record<string, string>)
       toast.success(t`Profile saved`)   // an imported profile IS saved; reusing the string avoids a near-duplicate msgid
     } catch {
@@ -489,13 +485,10 @@ function JoystickPanel({
                       <Trans>None</Trans>
                     </SelectItem>
                     {axisOptions.map((option) => {
-                      // DISPLAYED 1-based, STORED 0-based. Hardware labels, the
-                      // Windows controller panel and every simulator that numbers
-                      // a control count from 1, while the Gamepad API counts from
-                      // 0 — so the raw index is the one number the player can
-                      // check against nothing. The stored value stays the API
-                      // index: it is what indexes pad.axes, and an exported
-                      // profile has to mean the same thing on another machine.
+                      // Displayed 1-based (hardware labels and every simulator
+                      // count from 1), stored 0-based (the Gamepad API index,
+                      // which indexes pad.axes and must mean the same in an
+                      // exported profile).
                       const i = String(Number(option) + 1)
                       return (
                         <SelectItem key={option} value={option}>
@@ -592,11 +585,8 @@ function JoystickPanel({
   )
 }
 
-// The sound tab: master switch plus a per-bus mixer. Buses mirror the audio
-// module's routing (audio.ts): engine = turbines/afterburner, aircraft = wind,
-// buffet, actuators, deck events, own fires and hits, weapons = gun/missiles/
-// flares/explosions, environment = deck ambience and other aircraft, alerts =
-// the cockpit tones.
+// The sound tab: master switch plus a per-bus mixer; the buses mirror audio.ts
+// routing.
 const VOLUME_ROWS: { id: string; label: ReactNode }[] = [
   { id: 'master', label: <Trans>Master</Trans> },
   { id: 'engine', label: <Trans>Engine</Trans> },
@@ -713,10 +703,7 @@ function KeysPanel({
       <SectionLabel>
         <Trans>Fixed keys</Trans>
       </SectionLabel>
-      {/* Genuinely fixed keys only. The probe, canopy and menu rows used to be
-          listed here as well as being rebindable above, and the probe entry
-          still read Shift+F after that chord became flaps-retract — a settings
-          screen that lies is worse than one that says less. */}
+      {/* Genuinely fixed keys only - never list a rebindable action here, it goes stale. */}
       <div className='grid gap-x-8 text-sm sm:grid-cols-2'>
         <ControlRow action={<Trans>Views</Trans>} keys={<><Key>1</Key>–<Key>5</Key></>} />
         <ControlRow action={<Trans>Reset view</Trans>} keys={<Key>0</Key>} />
@@ -735,13 +722,9 @@ function Key({ children }: { children: ReactNode }) {
   )
 }
 
-// A standard single-select radio group laid out inline.
-// Segmented: the short mutually-exclusive groups (2-4 options) as a joined row
-// of buttons rather than scattered radio circles. Still a RadioGroup underneath,
-// so arrow-key navigation and the screen-reader announcement are unchanged — only
-// the skin differs. Long lists do NOT use this: past about four options the row
-// wraps and the tightness is lost, which is what crowded the dialog in the first
-// place, so Start and Clouds are Selects instead.
+// Segmented: a RadioGroup skinned as a joined row of buttons for short (2-4
+// option) groups; keyboard navigation and screen-reader announcement are
+// unchanged. Longer lists wrap and lose the tightness - use a Select.
 function Segmented<T extends string>({
   value,
   onChange,
@@ -1019,18 +1002,13 @@ function ControlRow({ action, keys }: { action: ReactNode; keys: ReactNode }) {
   )
 }
 
-// The loadout editor (#17, reworked for first-time readability): the live
-// head-on jet on top — a station choice reads on the aircraft itself — then
-// the three presets with plain one-line descriptions, and the per-station
-// editor folded behind "Customize loadout". Inside, stations are labelled by
-// POSITION ("Left wingtip", "Centerline"…, the NATOPS number as a small
-// annotation) and each offers ONE dropdown of meaningful end states with the
-// fixture derived underneath (game/stores.ts outcomes) — players choose
-// "AIM-9" or "Fuel tank", never rail-versus-pylon vocabulary. Numbers come
-// from the flight core's catalog, loaded on demand so the menu works before
-// any mission starts. Edits build ONE new loadout and call onChange once.
-// When `allowed` is false (a guns-only match rule) missile outcomes are
-// ABSENT — not greyed; the persisted choice is never written back.
+// The loadout editor (#17): the live head-on jet, the three presets, then the
+// per-station strip. Stations are labelled by position (NATOPS number as an
+// annotation) and each offers one dropdown of end states with the fixture
+// derived underneath (game/stores.ts outcomes); numbers come from the flight
+// core's catalog, loaded on demand. Edits build one loadout and call onChange
+// once; when `allowed` is false missile outcomes are absent, not greyed, and
+// the persisted choice is never written back.
 function Armament({
   stores,
   fuel,
@@ -1110,12 +1088,8 @@ function Armament({
     { name: 'fox2', title: 'Fox 2' }, // jsx-text-ok: brevity codes, verbatim
     { name: 'fox3', title: 'Fox 3' }, // jsx-text-ok: brevity codes, verbatim
   ]
-  // A preset press SEEDS the fuel load — full internal for every preset since
-  // 2026-08-18: the 6,000 lb duel standard the fighters used to seed ended a
-  // new pilot's fight on fuel before it ended on a kill (a seven-minute joust
-  // at 79% burner landed at 1,000 lb), and an experienced one is a slider
-  // pull from a lighter jet. The checkmark keeps tracking stores only, so the
-  // slider stays freely overridable without un-checking the preset.
+  // A preset press seeds full internal fuel; the checkmark tracks stores only,
+  // so the slider stays overridable without un-checking the preset.
   const FUELS = { gun: 10800, fox2: 10800, fox3: 10800 }
   const w = book ? weight(loadout, book) : { hardware: 0, fuel: 0 }
   const gross = book ? Math.round(((book.empty + w.hardware + w.fuel) * 2.2046 + fuel) / 10) * 10 : 0
@@ -1145,10 +1119,8 @@ function Armament({
           </Button>
         ))}
       </div>
-      {/* The station strip is always visible (2026-08-13): a loadout that
-          matches no preset simply shows no check above, and the dropdowns
-          ARE the details — folding them behind a button hid the answer to
-          "what am I actually carrying". */}
+      {/* The station strip is always visible: the dropdowns ARE the details, and a loadout matching no
+          preset simply shows no check above. */}
       {(() => {
           const cell = (station: number) => {
             const slot = loadout[String(station)]
@@ -1186,13 +1158,9 @@ function Armament({
               </div>
             )
           }
-          // Three columns MIRRORING the nose-on jet above: head-on, the
-          // jet's right wing is on the viewer's LEFT. Each column runs
-          // wingtip at the top to fuselage at the bottom; the centerline
-          // bottom-aligns with the fuselage row. Equal thirds: the longest
-          // wing label (2× AIM-120C) and the longest centerline label
-          // (Empty pylon) are nearly the same width, and the tight gap and
-          // trigger padding buy the text room the stock spacing lacked.
+          // Three columns mirroring the nose-on jet above (head-on, the jet's
+          // right wing is on the viewer's left), wingtip at the top to fuselage
+          // at the bottom, centerline bottom-aligned with the fuselage row.
           return (
             <div className='grid grid-cols-3 gap-x-2'>
               <div className='space-y-2'>{[9, 8, 7, 6].map(cell)}</div>
@@ -1243,27 +1211,15 @@ function Armament({
     </div>
   )
 }
-// The measured F/A-18C performance reference (#89): every number flown out of
-// the flight model by tools/vspeeds.sh (world repo) — rerun it after flight
-// changes and update these cells. Cells are TRUE KCAS, matching the HUD box:
-// flight/frames.go Cas() carries the compressible pitot term (#133), so the
-// 15,000/30,000 ft cells sit up to ~20 kt above the harness's KEAS printout
-// (convert with the compressible formula; sea level is the identity).
-// Ranges span light (11.2 t, minimum fuel) to heavy (15.6 t, full internal).
-// Rows in sortie order: climb, engine-out, dash, combat, landing. Rotation
-// (Vr) is deliberately absent: nosewheel liftoff depends on weight, CG, and
-// technique (NATOPS gives no single speed), so a one-number row would
-// mislead. The V-speed designations (Vx, Vy, Vs1, Vs0, Vapp, Vyse) are
-// international aviation abbreviations and stay verbatim in every locale; the
-// descriptive phrase around each is translated. id is the stable React key
-// (the label is now a translated node, not a plain string).
+// The measured F/A-18C performance reference (#89): every number comes from
+// tools/vspeeds.sh (world repo) - rerun it after flight changes. Cells are true
+// KCAS (the HUD box), so the 15,000/30,000 ft cells sit up to ~20 kt above the
+// harness's KEAS; ranges span light (11.2 t) to heavy (15.6 t). Rotation is
+// absent: NATOPS gives no single speed. V-speed designations stay verbatim in
+// every locale; id is the React key.
 const REFERENCE_ROWS: { id: string; label: ReactNode; cells: [string, string, string] }[] = [
-  // Regenerated 2026-08-07 against today's flight model (tools/vspeeds.sh,
-  // corner acceptance stabilised first — the old cells were recalibration
-  // history, corner reading 298 where the jet flies 339). Each cell is
-  // light-to-heavy (11.2 t minimum-fuel to 15.6 t full-internal), and the
-  // heavy figure is written second even where it is the LOWER speed — the
-  // column meaning outranks ascending cosmetics.
+  // Each cell is light-to-heavy (11.2 t to 15.6 t); the heavy figure is written
+  // second even where it is the lower speed.
   { id: 'vx-mil', label: <Trans>Steepest climb (Vx, 100% thrust)</Trans>, cells: ['186-318', '270-337', '284-343'] },
   { id: 'vx-ab', label: <Trans>Steepest climb (Vx, afterburner)</Trans>, cells: ['Vertical', '229-219', '192-259'] },
   { id: 'vy-mil', label: <Trans>Best climb (Vy, 100% thrust)</Trans>, cells: ['562-576', '445-387', '342-348'] },
@@ -1485,11 +1441,9 @@ function CreditsDialog() {
   )
 }
 
-// The server-wide lobby chat (#84): sits beside the menu so anyone browsing —
-// whether or not they've picked a match — can talk about what to fly next.
-// Player lines are {name, text}; system lines are structured events rendered
-// in the viewer's language. It follows the world server configured on the
-// Mission tab, falling back to this host's conventional lobby port.
+// The server-wide lobby chat (#84). Player lines are {name, text}; system lines
+// are structured events rendered in the viewer's language. Follows the world
+// server from the Mission tab, falling back to this host's lobby port.
 function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
   const { t } = useLingui()
   const identity = useIdentityName()
@@ -1634,10 +1588,8 @@ function MenuDialog({
 }
 
 // ServerFlow is the multiplayer half of the menu: pick a server (recents
-// first — typing a hostname every time would sting), then a full page of the
-// matches it is offering beside its lobby chat. A MATCH is you against each
-// other: created, offered, joined, left — never paused or restarted by one
-// participant, which is why none of the mission verbs appear here.
+// first), then its matches beside its lobby chat. A match is never paused or
+// restarted by one participant, so no mission verbs appear here.
 function ServerFlow({
   open,
   onClose,
@@ -1674,11 +1626,9 @@ function ServerFlow({
     return () => abort.abort()
   }, [entered, config.world])
   // The pilot token identifies the owner of a match offer across reconnects.
-  // It is minted when the player actually enters a server — NOT in an effect at
-  // mount: this component is mounted (closed) from the first render, and a
-  // write then races config/load, persisting a defaults-shaped config over the
-  // saved one. That is the PendingConfig hazard useMissionConfig documents, and
-  // it cost a saved callsign.
+  // Mint it when the player enters a server, never in a mount effect: this
+  // component mounts closed from the first render and a write then races
+  // config/load (the PendingConfig hazard useMissionConfig documents).
   const pilot = config.pilot || crypto.randomUUID()
   // Recents live beside the rest of the mission config so they persist with it.
   const recents = String(config.servers ?? '').split('\n').filter(Boolean)
@@ -1698,11 +1648,9 @@ function ServerFlow({
   }
   if (!open) return null
   if (!entered) {
-    // A recent that matches a public listing shows ONCE, here in the recent
-    // position, under its public name with the live count — the name is the
-    // player-facing identity; the raw address is only shown when no listing
-    // matches (a private server, or a public one gone quiet), which doubles
-    // as the honest signal that the server is not currently announcing.
+    // A recent that matches a public listing shows once, in the recent
+    // position, under its public name with the live count; the raw address
+    // appears only when no listing matches.
     const matched = (r: string) => (servers ?? []).find((s) => normalize_server(s.address) === normalize_server(r))
     const publics = (servers ?? []).filter((s) => !recents.some((r) => normalize_server(r) === normalize_server(s.address)))
     // The address entry is the expert path and collapses out of a new
@@ -1774,12 +1722,9 @@ function ServerFlow({
     )
   }
   return (
-    // The page OWNS the viewport height: a full-height flex column whose two
-    // columns fill it, each scrolling its own overflow. Previously the page
-    // scrolled as one block and both columns were content-height, so a server
-    // with a handful of matches drew everything squashed against the top with
-    // the rest of the screen empty — and the chat, which asks for h-full, had
-    // no height to fill.
+    // The page owns the viewport height: a full-height flex column whose two
+    // columns fill it, each scrolling its own overflow, so the chat's h-full
+    // has a height to fill.
     <div className='bg-background fixed inset-0 z-50 flex flex-col p-6'>
       <div className='mx-auto flex min-h-0 w-full max-w-5xl flex-1 flex-col gap-6 lg:flex-row'>
         <div className='flex min-h-0 min-w-0 flex-1 flex-col'>
@@ -1827,11 +1772,9 @@ function MissionPanel({
   setCheat: (name: string, value: boolean) => void
   onChange: (config: MissionConfig) => void
 }) {
-  // The Cheats section is folded unless a cheat is actually set. Opening is
-  // one-way on purpose: an EFFECT rather than a useState initialiser, so a
-  // config that resolves after mount still opens it, and nothing ever closes it
-  // for the player — switching the last cheat off would otherwise collapse the
-  // section out from under the cursor mid-click.
+  // Cheats fold unless one is set. Opening is one-way, via an effect so a
+  // config that resolves after mount still opens it; nothing closes it for the
+  // player (switching the last cheat off would collapse it under the cursor).
   const anyCheat = Object.values(config.cheats ?? {}).some(Boolean)
   const [cheatsOpen, setCheatsOpen] = useState(anyCheat)
   useEffect(() => {
@@ -1889,12 +1832,9 @@ function MissionPanel({
     <Picker
       value={config.start === 'landing' ? 'case2' : config.start}
       onChange={(v) => {
-        // A recovery case IS a weather definition — and a fuel state:
-        // picking one seeds the authentic conditions and the arrival gas
-        // (seedStart), visibly and freely overridable. One onChange with
-        // every seeded field: consecutive set() calls each spread the
-        // RENDER's config, so the last would revert the start (the same
-        // React-batch clobber the cheats ref works around).
+        // A recovery case seeds weather and fuel (seedStart). One onChange with
+        // every seeded field: consecutive set() calls each spread the render's
+        // config and clobber each other.
         onChange(seedStart(config, v as MissionConfig['start']))
       }}
       options={[
@@ -1925,12 +1865,7 @@ function MissionPanel({
     )}
   </>
 )}
-{/* The recovery cases SEED the weather (seedStart: Case I day/clear, Case II
-    day/mid stratus, Case III night/low stratus) and the fuel that fits them.
-    Restating both as peer controls made the panel echo the choice just made,
-    which is most of what crowded it. They live behind a disclosure instead —
-    still one click from any override, and the summary says what is set so
-    nothing is hidden, only folded. */}
+{/* The recovery cases seed these (seedStart), so a case pick is echoed here and freely overridable. */}
 <SectionLabel>
   <Trans>Time of day</Trans>
 </SectionLabel>
@@ -1957,11 +1892,6 @@ function MissionPanel({
   ]}
 />
 {/* a MATCH takes its cheats from the creator's rules instead — these are the mission's */}
-{/* Folded away when every cheat is off, which is the normal state: an honest
-    mission should not devote three rows to switches nobody has touched. It
-    opens itself if any cheat IS set — including one that arrives late with the
-    loaded config — and once open it stays where the player left it, so turning
-    the last one off does not snap the section shut under the cursor. */}
 <Collapsible open={cheatsOpen} onOpenChange={setCheatsOpen}>
   <CollapsibleTrigger className='text-muted-foreground hover:text-foreground mt-4 mb-2 flex w-full items-center gap-1.5 text-xs font-medium tracking-wide uppercase'>
     <ChevronRight className={`size-4 transition-transform ${cheatsOpen ? 'rotate-90' : ''}`} />
@@ -1995,12 +1925,8 @@ function MissionPanel({
 <SectionLabel>
   <Trans>Loadout</Trans>
 </SectionLabel>
-{/* The loadout (#17) is a rule of the fight, like the opponent's skill.
-    Presets are one-tap fills that also SEED the fuel load (freely
-    overridable after, like the Start cases seed weather); the strip edits
-    per station; the joust derives missiles-allowed from whether any missile
-    is loaded. onPreset writes stores AND fuel in ONE config patch — two
-    set() calls in a batch clobber each other. */}
+{/* Presets seed the fuel load too; onPreset writes stores AND fuel in one config patch - two set() calls
+    in a batch clobber each other. The joust derives missiles-allowed from whether any missile is loaded. */}
 <Armament
   stores={config.stores}
   fuel={Number(config.fuel) || 10800}
@@ -2024,11 +1950,9 @@ function GraphicsPanel({
   set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
   onChange: (config: MissionConfig) => void
 }) {
-  // The row is a segmented control, not four fire-and-forget buttons: the
-  // settings below ARE a preset until the player moves one, so the matching
-  // button is filled. Moving any slider off it clears the row to none, which
-  // is the honest read of a custom mix. Same filled/outline pair the Reversed
-  // axis toggle uses, so a set button looks set everywhere in this dialog.
+  // A segmented control: the settings below ARE a preset until the player moves
+  // one, so the matching button is filled and any slider change clears the row
+  // to none.
   const active = graphicsPreset(config)
   return (
     <div className='space-y-4'>
@@ -2148,18 +2072,13 @@ function GeneralPanel({
   config: MissionConfig
   set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
 }) {
-  // The identity name IS the default, applied at render. Seeding it into the
-  // stored config is not reliable on its own: useMissionConfig can take the
-  // flush path (a locally-dirty config wins and is pushed to the server), which
-  // discards whatever the load seeded — which is why two earlier attempts, one
-  // in an effect and one inside loadConfig, both left the field blank. Showing
-  // it here cannot be raced or discarded, and the first edit makes it explicit.
+  // The identity name is the default, applied at render, not seeded into the
+  // stored config: useMissionConfig's flush path (a locally-dirty config wins)
+  // discards anything the load seeded.
   const identity = useIdentityName()
-  // Local text state, seeded from the stored callsign or the identity default.
-  // Deriving the displayed value as `callsign || identity` instead made the
-  // field un-clearable: emptying it re-showed the identity name on the very next
-  // render, so select-all-delete looked like it did nothing. The seed runs only
-  // while nothing is stored, so it cannot fight an edit.
+  // Local text state, seeded once from the stored callsign or the identity
+  // default. Deriving `callsign || identity` at render made the field
+  // un-clearable.
   const [text, setText] = useState(config.callsign)
   useEffect(() => setText(config.callsign), [config.callsign]) // follow the config, so Reset lands in the field
   const seeded = useRef(Boolean(config.callsign)) // already had one at mount: never seed, so clearing it stays cleared
@@ -2246,11 +2165,9 @@ export function MissionSetup({
   const [dialog, setDialog] = useState<string | null>(null)
   const { t } = useLingui()
   // Graphics warnings (#55): one banner, three diagnoses, one visible at a
-  // time — each names its culprit so the player knows whether to change
-  // browser, flip an acceleration setting, or change machine. The capability
-  // verdicts are probed here at mount; the performance one is written by the
-  // engine's frame-time governor after a sustained pinned-at-the-floor
-  // flight, per DEVICE (shell storage, never the cross-device config).
+  // time. Capability verdicts are probed at mount; the performance verdict is
+  // written by the engine's frame-time governor per device (shell storage,
+  // never the cross-device config).
   const [verdict] = useState(() => diagnose())
   const [strained] = useShellStorage('air.performance', 0)
   const [dismissed, setDismissed] = useShellStorage('air.graphics', '')
@@ -2272,11 +2189,9 @@ export function MissionSetup({
     setDialog(null)
     if (back) onResume()
   }
-  // The label must describe what Fly actually does: a joust ignores the start
-  // selector entirely (the engine spawns both jets at the merge), so showing
-  // the start read as a deck start that then began airborne.
-  // Composed from msgids the bandit selector and task label already carry, so
-  // every locale is covered with no new translation surface.
+  // The label describes what Fly actually does: a joust ignores the start
+  // selector (both jets spawn at the merge). Composed from msgids the bandit
+  // selector and task label already carry, so no new translation surface.
   const BANDITS: Record<string, ReactNode> = {
     novice: <Trans>Novice</Trans>,
     pilot: <Trans>Pilot</Trans>,
@@ -2416,18 +2331,8 @@ export function MissionSetup({
             <TabsTrigger value='keys'>
               <Trans>Keys</Trans>
             </TabsTrigger>
-            {/* #57 parked:
-            <TabsTrigger value='head'>
-              <Trans>Head</Trans>
-            </TabsTrigger>
-            */}
           </TabsList>
           <div className='h-[clamp(26rem,100dvh_-_19rem,60rem)] overflow-y-auto pt-4'>
-            {/* #57 parked:
-            <TabsContent value='head'>
-              <HeadPanel config={config} set={set} />
-            </TabsContent>
-            */}
             <TabsContent value='general'>
               <GeneralPanel config={config} set={set} />
             </TabsContent>

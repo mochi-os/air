@@ -4,13 +4,9 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 // Webcam head tracking (#57): the player's real head pose drives the
-// first-person view, TrackIR-style — a comfortable ±25° of real head turn
-// sweeps the whole cockpit. This module owns the camera session (through the
-// #56 cameraOpen dual-path helper: the shell streams frames in the sandboxed
-// iframe, getUserMedia directly top-window), the landmark worker, and the pure
-// shaping maths — deadzone, progressive curve, gain, and a one-euro filter per
-// axis so a still head is rock steady while a fast turn stays snappy. Only
-// the ~9 MB of runtime + model loads lazily, and only when tracking starts.
+// first-person view, ±25° of real turn sweeping the whole cockpit. Owns the
+// camera session, the landmark worker, and the shaping maths; the ~9 MB runtime
+// loads lazily when tracking starts.
 
 import type { CameraDevice, CameraSession } from '@mochi/web'
 // The worker ships INLINE (a blob of the fully bundled script): the sandboxed
@@ -147,9 +143,8 @@ export async function start(options: HeadOptions): Promise<{ head: Head | null; 
   session = opened
 
   if (!live) {
-    // The worker died while the camera was still opening: finish() ran with
-    // session unassigned, so release the just-granted camera HERE — without
-    // this the stream (and the light) outlived a dead pipeline unstoppably.
+    // The worker died while the camera was still opening, so finish() ran
+    // before session was assigned: release the just-granted camera here.
     opened.stop()
     return { head: null, error: died || 'failed' }
   }

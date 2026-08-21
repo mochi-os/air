@@ -100,13 +100,10 @@ describe('self pose', () => {
     expect(mine.burning).toBe(true)
   })
 
-  // Cross-language contract: these bytes were captured from the REAL server
-  // encoder (world/games/air/air.go func pose) for a jet with the left engine
-  // alight at 0.6, a fuel fire, and a 1.5 leak — the same case the Go test
-  // TestSelfPoseDamage asserts on. The record grew its 35th byte (the radar
-  // emitter, #30): silent/no-lock encodes as 0x3f, appended here exactly as
-  // the encoder now emits it (asserted by TestRadarPoseWire). If either
-  // side's layout drifts, one of the two tests fails.
+  // Cross-language contract: these bytes were captured from the real server
+  // encoder (world/games/air/air.go func pose), the same case Go's
+  // TestSelfPoseDamage asserts on. If either side's layout drifts, one of the
+  // two tests fails.
   it('decodes the bytes the server actually produces', () => {
     const golden = Uint8Array.from(
       '0000a02d4500e08e450000000000003303f47f0000810000980831000099000f00003f'.match(/../g)!.map((h) => parseInt(h, 16))

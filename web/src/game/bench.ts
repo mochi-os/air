@@ -4,12 +4,10 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 // Frame-time benchmark sampler (#148, developer mode only): &bench=<sample s>
-// &benchto=<url> [&benchwarm=<s>]. Imported FIRST by engine.ts and free of
-// engine dependencies, so it still reports (including any module-evaluation
-// error that kills the engine) when later engine init fails. An independent
-// RAF loop records per-frame deltas after warmup, then beacons the
-// distribution; the engine registers a state callback (bench_state) so the
-// report carries the resolved quality knobs when the engine is alive.
+// &benchto=<url> [&benchwarm=<s>]. Imported first by engine.ts and free of
+// engine dependencies, so it still reports when engine init fails. Records
+// per-frame deltas after warmup, then beacons the distribution with the
+// engine's resolved quality knobs (bench_state) when available.
 
 const params = new URLSearchParams(location.search)
 const active = params.get('developer') === '1' && !!params.get('bench')

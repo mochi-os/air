@@ -4,12 +4,8 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 // Length-framed message reader for the control stream. World servers are
-// UNTRUSTED, so every frame length is bounded (the server caps its own inbound
-// at 65536; the client must apply the same cap the other way) and chunks are
-// held in a queue rather than re-concatenated whole on each read — an
-// unbounded declared length otherwise forced ever-growing buffers with
-// quadratic copies, exhausting the tab. Dependency-free so the parser is unit
-// testable in isolation.
+// UNTRUSTED, so every frame length is bounded and chunks are consumed from a
+// queue - an unbounded declared length otherwise forces quadratic copies.
 
 // FRAME_MOST is the largest control-stream frame the client will assemble,
 // mirroring the server's frame_most inbound cap.

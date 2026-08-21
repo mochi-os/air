@@ -3,13 +3,10 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// Multiplayer networking: lobby API helpers, the WebTransport data plane
-// (join handshake on a framed control stream, inputs up / snapshots down as
-// CBOR datagrams), remote-aircraft interpolation ~100 ms behind live, and
-// self-recorded match history. World servers are open and untrusted — the
-// address comes from the player, identity is self-asserted (see the plan's
-// verified-tier seam), and results are recorded per player via their own
-// authenticated app connection.
+// Multiplayer networking: lobby helpers, the WebTransport data plane (framed
+// control stream, CBOR datagrams), remote-aircraft interpolation ~100 ms behind
+// live, and match history. World servers are open and UNTRUSTED, and identity
+// is self-asserted.
 
 import { createAppClient } from '@mochi/web'
 import { SIZE, STATE } from './flight'
@@ -27,9 +24,8 @@ function isEnvelope(message: unknown): message is Record<string, unknown> {
   return typeof message === 'object' && message !== null && typeof (message as { kind?: unknown }).kind === 'string'
 }
 
-// MAX_SLOT bounds a slot index from an untrusted server (session capacity is
-// well under this) — a slot is a map key and identity, so a NaN or absurd
-// value must not through.
+// MAX_SLOT bounds a slot index from an untrusted server - a slot is a map key
+// and an identity, so a NaN or absurd value must not get through.
 const MAX_SLOT = 256
 
 function validSlot(value: unknown): boolean {
@@ -131,10 +127,9 @@ export async function world_create(
     body: JSON.stringify(request),
     signal: withTimeout(),
   })
-  // Parse only after the status check falls through to the structured-error
-  // case: an HTML 502 from a proxy used to surface as a JSON parse error
-  // instead of the status. The server DOES answer failed creates with JSON
-  // ({error}), so a failed parse on !ok falls back to the bare status.
+  // Parse only after the status check: an HTML 502 from a proxy would otherwise
+  // surface as a JSON parse error instead of the status. Failed creates do
+  // answer JSON ({error}).
   if (!response.ok) {
     const failure = (await response.json().catch(() => null)) as { error?: string } | null
     throw new Error(failure?.error || 'status ' + response.status)
@@ -338,12 +333,10 @@ export class Net {
     return this.sequence
   }
 
-  // remote returns the interpolated pose for a slot, ~DELAY ms behind live,
-  // unwrapping across the toroidal seam before lerping.
   // soften absorbs position discontinuities (interest-set entry after a long
   // dead-reckon, late samples on a turning jet): any step between the raw
-  // stream and its velocity-extrapolated expectation folds into an offset
-  // that bleeds out over ~⅓ s, so near aircraft glide instead of snapping.
+  // stream and its velocity-extrapolated expectation folds into an offset that
+  // bleeds out over ~⅓ s.
   private soften(slot: number, pose: RemotePose): RemotePose {
     const now = performance.now()
     const memo = this.glide.get(slot)
@@ -377,12 +370,10 @@ export class Net {
     return { ...pose, position: [this.rewrap(x + ox), y + oy, this.rewrap(z + oz)] }
   }
 
-  // self is the player's OWN latest pose. The server sends it first in every
-  // poses datagram precisely so the client can read its own server-side truth,
-  // but slots() skips it (nobody draws their own jet from the wire), so the
-  // damage it carries — engine fires, the fuel fire, the leak — had no reader
-  // at all in multiplayer (#40). Newest sample, not interpolated: this feeds
-  // annunciation and trails, not a rendered position.
+  // self is the player's OWN latest pose, sent first in every poses datagram
+  // and skipped by slots(). Newest sample, not interpolated: it feeds
+  // annunciation and trails (engine fires, fuel fire, leak), not a rendered
+  // position.
   self(): RemotePose | null {
     const ring = this.slot >= 0 ? this.rings.get(this.slot) : undefined
     if (!ring || !ring.length) return null
@@ -446,11 +437,10 @@ export class Net {
     return { sequence: newest.acknowledged, core: newest.core }
   }
 
-  // time returns the shared session clock in seconds — the server tick at a known
-  // rate, extrapolated by wall time since the newest snapshot arrived. Every player
-  // computes the same value (± network jitter), which is what world-anchored visuals
-  // (cloud drift) must run on in multiplayer: a local mission clock puts each
-  // player's cloud field in a different place.
+  // time returns the shared session clock in seconds - the server tick
+  // extrapolated by wall time since the newest snapshot. World-anchored visuals
+  // (cloud drift) must run on this; a local mission clock puts each player's
+  // cloud field somewhere else.
   time(): number {
     const newest = this.snapshots[this.snapshots.length - 1]
     if (!newest) return 0
@@ -601,12 +591,10 @@ export class Net {
           ring.push({ at, tick, pose })
           if (ring.length > 20) ring.shift()
         }
-        // The missile block: 25-byte darts (position, velocity, shooter) —
-        // the recipient's nearest server missiles, capped at 6. The stride
-        // must match the server's snapshot assembly; the modulo guard shows
-        // no darts on a mismatched build rather than garbage.
-        // Darts are validated (non-finite dropped) and capped in parseDarts —
-        // the floats ride an opaque byte string the CBOR finite guard can't see.
+        // The missile block: 25-byte darts (position, velocity, shooter), the
+        // recipient's nearest server missiles, capped at 6. The stride must
+        // match the server's snapshot assembly; parseDarts drops non-finite
+        // floats the CBOR guard cannot see.
         const missiles = message.missiles as Uint8Array | undefined
         if (missiles instanceof Uint8Array) {
           this.darts = parseDarts(missiles)
@@ -712,12 +700,10 @@ export class Net {
       this.fail('protocol')
       return
     }
-    // The generator ended without throwing: the control stream closed cleanly
-    // between frames. It is the reliable channel a live match needs (welcome,
-    // roster, events, kills), so its end means the session is over — a hostile
-    // server that FINs it while holding the transport open must not leave a
-    // frozen-looking match alive. fail() is idempotent, so a user-initiated
-    // leave (which sets this.closed first) makes this a no-op.
+    // The generator ended without throwing: the control stream closed cleanly,
+    // and it is the reliable channel a live match needs, so its end ends the
+    // session. fail() is idempotent, so a user-initiated leave (which sets
+    // this.closed first) no-ops here.
     this.fail('closed')
   }
 
@@ -771,10 +757,9 @@ export function supported(): boolean {
 }
 
 // connect dials the world server and completes the join handshake.
-// CONNECT_DEADLINE bounds the transport open + stream; WELCOME_DEADLINE bounds
-// the wait for the first server frame. Separate so a server that completes the
-// QUIC handshake but never answers the join still fails promptly instead of
-// leaving the game stuck on its loading path.
+// CONNECT_DEADLINE bounds the transport open + stream, WELCOME_DEADLINE the
+// wait for the first server frame - separate, so a server that never answers
+// the join still fails promptly.
 const CONNECT_DEADLINE = 10000
 const WELCOME_DEADLINE = 10000
 
@@ -889,13 +874,11 @@ export interface MatchRow {
   cheated: number
 }
 
-// history reads this player's recorded matches, most recent first. Empty for an
-// anonymous visitor or on error — the view renders that as "no matches yet".
-// Totals are aggregated server-side over EVERY recorded flight — the matches
-// list is capped at fifty, so summing what is on screen understates a career.
-// recording_store uploads a gzipped ACMI for a finished flight. Multipart, so
-// the megabytes go in a field rather than a JSON body (the 1 MB non-multipart
-// cap would reject anything but the shortest sortie).
+// history reads this player's recorded matches, most recent first. Its totals
+// come from the server over EVERY flight while the list is capped at fifty, so
+// summing the rows on screen understates a career. recording_store uploads a
+// gzipped ACMI as multipart: the 1 MB non-multipart body cap would reject
+// anything but the shortest sortie.
 export async function recording_store(session: string, started: number, text: string): Promise<boolean> {
   try {
     const gz = new Blob([text]).stream().pipeThrough(new CompressionStream('gzip'))

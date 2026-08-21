@@ -1,8 +1,7 @@
 # Texture-only KTX2 surgery for a GLB (#200): encode embedded images >= MIN
-# bytes to KTX2 (via a minimal glTF wrapper run through gltfpack, the approved
-# encoder) and graft them back in place. BufferView ORDER and indices are
-# preserved (offsets recomputed), geometry/animations/materials untouched — the
-# fa18c rig surgery history forbids restructuring, so gltfpack never sees the
+# bytes to KTX2 via a minimal glTF wrapper through gltfpack and graft them back
+# in place. BufferView order and indices are preserved (offsets recomputed);
+# geometry, animations and materials are untouched - gltfpack never sees the
 # real model.
 import json, struct, subprocess, sys, os, base64
 

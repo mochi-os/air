@@ -3,11 +3,6 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// The join page's ordering rules. These decide what a player sees before they
-// have clicked anything, and until 2026-08-13 they had no test and had never
-// been seen with more than one server in the list, because only one public
-// world server existed.
-
 import { describe, expect, it } from 'vitest'
 import { server_mismatch, server_offline, server_order, type Server } from './servers'
 

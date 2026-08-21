@@ -3,13 +3,10 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// The multiplayer panel on the Mission tab: pick an open world server (any
-// address — world servers are community-run, like classic game servers), see
-// its live matches, join one, or create your own. Creators choose the match
-// type (open, or a 1v1 joust that ends on the first kill), the weather, and
-// the rules (allowed weapons) — all carried as session parameters the world
-// relays to every participant. The standing "Furball" match is listed first;
-// every match is joined from its row.
+// The multiplayer panel on the Mission tab: pick a world server, see its live
+// matches, join one or create your own. Creators choose match type, weather and
+// rules, carried as session parameters the world relays to every participant.
+// The standing "Furball" match is listed first.
 
 import { useCallback, useEffect, useId, useState } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -52,11 +49,10 @@ function Option({
   )
 }
 
-// deviations lists a match's NON-standard settings as stable keys in the
-// canonical order — weapons, time, weather, cheats (#19). Standard is
-// missiles/day/no clouds/no cheats; a fully standard match returns nothing.
-// The creator's fuel choice is deliberately absent: every player picks their
-// own load, and the creator's is not the joiners' business.
+// deviations lists a match's non-standard settings as stable keys in canonical
+// order - weapons, time, weather, cheats (#19); a fully standard match returns
+// nothing. The creator's fuel choice is deliberately absent: every player picks
+// their own load.
 function deviations(parameters: Record<string, unknown> | undefined): string[] {
   const out: string[] = []
   if (!parameters) return out
@@ -121,10 +117,8 @@ export function Multiplayer({
   const [mode, setMode] = useState<'furball' | 'joust' | 'teams'>('furball')
   const [tod, setTod] = useState<'day' | 'night'>('day')
   const [clouds, setClouds] = useState('none')
-  // The weapons CLASS (#32) defaults Unlimited and persists per-creator; the
-  // missiles boolean is derived from it for old servers and old rows. The
-  // original note stands (#17, decided
-  // 2026-08-05): the switch seeds from the saved rules and writes back.
+  // The weapons class (#32) defaults to open and persists per-creator; the
+  // missiles boolean is derived from it for old servers and old rows.
   const [weapons, setWeaponsState] = useState<'guns' | 'fox2' | 'open'>(
     rules?.weapons === 'guns' || rules?.weapons === 'fox2' || rules?.weapons === 'open'
       ? rules.weapons
@@ -202,11 +196,9 @@ export function Multiplayer({
   const join = useCallback(
     (session: string, team?: string) => {
       if (!status) return
-      // Flying somebody else's match retires your own offer — you can hold
-      // one, and you are no longer waiting in it. Joining your OWN offer
-      // must NOT withdraw it: the withdraw wins the race against the game
-      // dial (which waits on asset loading), so a creator's just-made match
-      // died before they ever arrived in it.
+      // Flying somebody else's match retires your own offer. Joining your OWN
+      // offer must not withdraw it: the withdraw wins the race against the game
+      // dial and kills a just-made match before its creator arrives.
       const target = sessions.find((s) => s.session === session)
       if (pilot && !target?.mine) void world_withdraw(address, pilot)
       enter({

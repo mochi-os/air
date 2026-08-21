@@ -22,12 +22,10 @@ type ConfigPayload = {
   identity?: string
 }
 
-// The identity the loaded config belongs to, echoed back with every save. The
-// server requires it to match the session, so a debounced save that fires after
-// an in-place account switch (the shell delivers init once and stops listening,
-// so this hook need not remount) is refused rather than landing the previous
-// account's edit in the new account's config. Empty until config/load resolves;
-// saveConfig defers while empty so no unattributed save is ever sent.
+// The identity the loaded config belongs to, echoed back with every save; the
+// server requires it to match the session, so a save after an in-place account
+// switch is refused. Empty until config/load resolves, and saveConfig defers
+// while empty.
 let config_identity = ''
 
 // The signed-in identity's display name (from config/load) — the default
@@ -35,13 +33,9 @@ let config_identity = ''
 let identity_name = ''
 
 const identity_waiters: ((name: string) => void)[] = []
-// useIdentityName re-renders when the name arrives from config/load, which
-// may complete after mount (and, when the account has no saved config, with
-// no config change to piggyback a re-render on).
 // resolve_identity asks CORE for the signed-in name. config/load carries it
-// too, but only for callers holding an app token — and the name is wanted
-// before and outside that (the callsign default). /_/identity needs just the
-// session cookie, so it answers wherever the app is signed in at all.
+// too, but only for callers holding an app token, and the callsign default
+// wants it before that: /_/identity needs just the session cookie.
 let identity_asked = false
 function resolve_identity(): void {
   if (identity_asked || identity_name) return
@@ -81,15 +75,10 @@ export function useIdentityName(): string {
   return name
 }
 
-// Wait for the auth store to finish initializing before any config request.
-// The shell delivers the app token by postMessage AFTER the React tree mounts,
-// so a config/load fired from the route's first effect races it: the request
-// goes out bare, 401s, config_identity stays empty — and an empty identity
-// silently drops EVERY save for the rest of the session, while the
-// shell-storage cache makes each edit look saved. The next session's load then
-// applies the server's stale config over the cache, which read as "the menu
-// keeps forgetting the start I picked". Timing decides the race, so it forgot
-// intermittently.
+// Wait for the auth store to finish initializing before any config request. The
+// shell delivers the app token by postMessage AFTER mount, so a load fired from
+// the route's first effect goes out bare, 401s, and leaves config_identity
+// empty - which silently drops every save for the rest of the session.
 function authenticated(): Promise<void> {
   return new Promise((resolve) => {
     if (useAuthStore.getState().isInitialized) return resolve()
@@ -156,12 +145,10 @@ export function useMissionConfig(): [
     'air.config',
     DEFAULT_CONFIG
   )
-  // pending bundles the latest edited config with the dirty flag, updated
-  // synchronously in the edit path (see PendingConfig): the setup menu is
-  // interactive while config/load is in flight, so an edit during the load is
-  // NEWER than the server's value and must (a) not be overwritten by the late
-  // load and (b) be the value flushed to the server — independent of when React
-  // commits the render that syncs component state (configRef only updated then).
+  // pending carries the latest edited config with its dirty flag, updated
+  // synchronously in the edit path (see PendingConfig): an edit made while
+  // config/load is in flight is newer than the server's value and must survive
+  // the late load and be flushed.
   const pendingRef = useRef<PendingConfig | null>(null)
   pendingRef.current ??= new PendingConfig(config)
   const pending = pendingRef.current
@@ -176,12 +163,10 @@ export function useMissionConfig(): [
     loadConfig().then((saved) => {
       const outcome = loadOutcome(pending.dirty, saved)
       if (outcome === 'flush') {
-        // The player edited while loading: keep their change (don't overwrite it
-        // with the server's older value) AND persist it. A debounced save that
-        // fired before config/load established the identity was dropped, so this
-        // is the point that actually saves the edit — the identity is known now.
-        // pending.current() is the latest edit even if React has not yet
-        // committed the render. Cancel any pending timer so it isn't a duplicate.
+        // The player edited while loading: keep their change and persist it now
+        // the identity is known. pending.current() is the latest edit even if
+        // React has not committed the render; cancel any pending timer so this
+        // is not a duplicate.
         if (saveTimer.current) clearTimeout(saveTimer.current)
         void saveConfig(pending.current())
       } else if (outcome === 'apply' && saved) {

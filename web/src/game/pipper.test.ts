@@ -95,18 +95,15 @@ describe('aim solves for a hit', () => {
       const bore = aim(muzzle, c.own, target, c.drift, altitude)
       const miss = fly(muzzle, bore, c.own, target, c.drift)
       if (c.range < reach(altitude, size(launch({ x: 1, y: 0, z: 0 }, c.own)))) {
-        // An angular bar under the gun's own 3 mrad dispersion: the solution
-        // must be better than the weapon's scatter at any range. Past 2 km the
-        // harness's own fidelity shows (it re-reads the drag length at the
-        // round's falling altitude every 20 m; the solution reads it once, at
-        // launch), so the bar is 2.9 mrad, not the 1.7 the near shots hold.
+        // The bar sits under the gun's own 3 mrad dispersion. Past 2 km it
+        // widens to 2.9 mrad: the harness re-reads drag length as the round
+        // falls, the solution reads it once.
         expect(miss).toBeLessThan(Math.max(2, c.range / 350))
       } else {
-        // Past the round's life no aim can hit — the deliverable there is the
-        // correct ANGLE, asserted by the pipper-on-target case below. All the
-        // shortfall may do is put the round short, never wide (the 80 m is the
-        // harness's gravity and altitude bookkeeping over four seconds, which
-        // the analytic reach does not carry).
+        // Past the round's life no aim can hit; the deliverable is the correct
+        // ANGLE, asserted by the pipper-on-target case below. The 80 m is the
+        // harness's gravity and altitude bookkeeping, which the analytic reach
+        // does not carry.
         expect(miss).toBeLessThan(c.range - reach(altitude, size(launch({ x: 1, y: 0, z: 0 }, c.own))) + 80)
       }
     })

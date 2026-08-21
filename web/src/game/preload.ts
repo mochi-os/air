@@ -3,13 +3,10 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// Single-flight loader for the big flight assets (models + flight core).
-// The menu calls preload() as soon as the app opens, so the downloads run
-// while the player is still choosing a mission; the engine consumes the SAME
-// in-flight fetches through asset(), so nothing ever downloads twice. Bytes
-// are counted as they stream, giving the loading screen a real percentage
-// and a stall signal — the honest replacements for the old fixed 20 s cap,
-// which force-started missions with missing models on slow connections.
+// Single-flight loader for the big flight assets (models + flight core). The
+// menu calls preload() on open and the engine consumes the SAME in-flight
+// fetches through asset(), so nothing downloads twice. Bytes are counted to
+// drive the loading screen and stall signal.
 
 import nimitz_model_url from '../assets/nimitz.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
@@ -62,12 +59,8 @@ function begin(url: string): Load {
       return buffer.buffer
     } catch (error) {
       load.failed = true
-      // A failed download must not poison the page: this entry used to
-      // stay cached forever, so one flaky fetch — mid-load exit, slow link,
-      // dropped connection — rejected every later mission's asset() until a
-      // full reload. The CURRENT waiters still see the rejection (the failed
-      // flag drives this mission's LOADING FAILED); the next mission begins
-      // a fresh fetch.
+      // A failed download must not poison the page: drop the entry so the next
+      // mission fetches afresh. The current waiters still see the rejection.
       loads.delete(url)
       throw error
     }
@@ -105,10 +98,9 @@ export function progress(): { percent: number; failed: boolean; idle: number } {
   return {
     percent: total > 0 ? Math.min(100, Math.floor((received / total) * 100)) : 0,
     failed,
-    // A stall needs OUTSTANDING work with no bytes moving. With every download
-    // complete, "ms since the last byte" grows forever — on a match RESTART the
-    // cached assets fetch nothing, so the old unconditional clock read minutes
-    // idle and the engine declared LOADING FAILED on the first frame.
+    // A stall needs OUTSTANDING work with no bytes moving: with every download
+    // complete (a restart off cache fetches nothing) the idle clock would
+    // otherwise grow forever.
     idle: outstanding ? performance.now() - moved : 0,
   }
 }

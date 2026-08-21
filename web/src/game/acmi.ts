@@ -3,13 +3,11 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// Flight recorder (#212): a rolling buffer of the last few minutes, written
-// out as TacView ACMI 2.2 text. Dependency-free so it unit-tests in isolation.
-//
-// The world is flat with a wrap; TacView wants geographic coordinates, so the
-// map carries a reference point and metres convert to degrees about it. At
-// Midway's latitude the error from treating a degree of longitude as constant
-// is far below anything a debrief cares about.
+// Flight recorder (#212): a rolling buffer of the last few minutes written out
+// as TacView ACMI 2.2 text; dependency-free so it unit-tests in isolation. The
+// world is flat with a wrap, so the map carries a reference point and metres
+// convert to degrees about it (a constant degree of longitude is fine at
+// Midway's latitude).
 
 export const MIDWAY = { latitude: 28.2072, longitude: -177.3735 } // Midway Atoll, the v1 map's real position
 const METRES_PER_DEGREE = 111320
@@ -38,11 +36,9 @@ export interface Recorded {
 }
 
 // Round is a missile's per-sample state. Missiles are recorded as their own
-// ACMI objects (Weapon+Missile — TacView flies them natively), so a debrief
-// sees the whole flight: who fired, at whom, whether the seeker ever held,
-// how close it came, and how it ended. Before this a fight won with six 9Ms
-// recorded nothing but two structural wounds on the bandit, and the debrief
-// called them self-inflicted (2026-08-15).
+// ACMI objects (Weapon+Missile, which TacView flies natively), so a debrief
+// sees who fired, at whom, whether the seeker held, how close it came, and how
+// it ended.
 export interface Round {
   shooter: number // recorded id of the launcher
   target?: number // recorded id of the target it was fired at, if any
@@ -67,13 +63,8 @@ export interface Flight {
   mach?: number
   fuel?: number // kilograms remaining — ACMI's standard FuelWeight, which TacView plots like any other channel
   rounds?: number // gun rounds remaining
-  // The battle channels (#238): the wasm battle module computes all of these
-  // every frame, drives the HUD and effects with them, and used to discard
-  // them - two debriefs in a row were materially wrong for it (a walked burst
-  // that riddled the player read as "missed with everything" at 9 Hz, and a
-  // jet ridden down crippled read as controlled flight into the sea). Struck
-  // is CUMULATIVE rounds taken, so sampling loses nothing: the total is the
-  // total, and its steps are the hits.
+  // The battle channels (#238), from the wasm battle module. Struck is
+  // CUMULATIVE rounds taken, so sampling loses nothing: its steps are the hits.
   struck?: number // cumulative rounds taken
   burning?: boolean // an engine or fuel fire is alight
   thrust?: number // thrust fraction lost, 0..1
@@ -82,12 +73,9 @@ export interface Flight {
   fate?: string // how this life ended: pilot / fire / sea / midair / building / post / island / verdict / probe
   stick?: number // control-law channels: developer builds only
   stabilator?: number // degrees
-  // The weapons channels (#33 debrief). Missiles is the stores count, so a
-  // launch is a step exactly like a gun burst is a Rounds step. Cue is what
-  // the HUD was telling the pilot: gun / heater / radar SHOOT states, or the
-  // breakaway X, empty when nothing was commanded — a debrief that cannot
-  // see the cue cannot judge whether a shot was taken on one, refused on
-  // one, or fired without one.
+  // The weapons channels (#33). Missiles is the stores count, so a launch is a
+  // step like a gun burst. Cue is what the HUD was telling the pilot (gun /
+  // heater / radar SHOOT states, the breakaway X, or empty).
   missiles?: number // heaters + radar rounds remaining
   cue?: string // '' | 'gun' | '9m' | 'steady' | 'flash' | 'break'
   // Countermeasures: the ownship's flare and chaff INVENTORIES (a dispense is
@@ -129,12 +117,9 @@ const round = (v: number, places: number) => {
   return Math.round(v * f) / f
 }
 
-// acmi renders samples as an ACMI 2.2 flight recording. `started` stamps the
-// reference time; TacView shows wall-clock from it.
-// Match describes the fight's rules in the header, so a debrief knows what it
-// is judging without asking: the mode and duel, the weapons class, the bot
-// tier, and any cheats that were live (an invulnerable ownship changes what
-// "survived" means). Values are free text; ACMI global properties are.
+// acmi renders samples as an ACMI 2.2 recording; `started` stamps the reference
+// time. Match describes the fight's rules in the header (mode, duel, weapons
+// class, bot tier, live cheats) as free-text ACMI global properties.
 export interface Match {
   [key: string]: string | number | boolean | undefined
 }

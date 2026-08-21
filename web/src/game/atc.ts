@@ -3,13 +3,11 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// Approach Power Compensator (#202): the carrier-landing autothrottle. On the
-// back side of the power curve, power controls flight path and pitch controls
-// alpha — the ATC closes the alpha loop through the throttle so the pilot flies
-// glideslope and lineup with the stick alone, exactly as the real Hornet's ATC
-// does. Engine-side by design: it modulates the throttle INPUT into the flight
-// core, so the wasm ABI and the multiplayer input protocol are untouched.
-// Dependency-free so the law is unit testable (framing.ts/wrap.ts pattern).
+// Approach Power Compensator (#202): the carrier-landing autothrottle closes
+// the alpha loop through the throttle, so the pilot flies glideslope and lineup
+// with the stick alone. Engine-side: it modulates the throttle INPUT into the
+// flight core, so the wasm ABI and multiplayer input protocol are untouched.
+// Dependency-free so the law is unit testable.
 
 // On-speed alpha in DEGREES (the airframe's Control.Onspeed, 8.1°).
 export const ATC_ONSPEED = 8.1

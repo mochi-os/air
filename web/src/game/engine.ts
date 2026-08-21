@@ -1,12 +1,11 @@
 // @ts-nocheck
 // Copyright © 2026 Mochisoft OÜ
 // SPDX-License-Identifier: AGPL-3.0-only
-// This file is part of Mochi, licensed under the GNU AGPL v3 with the
-// Mochi Application Interface Exception - see license.txt and license-exception.md.
+// This file is part of Mochi, licensed under the GNU AGPL v3 with the Mochi
+// Application Interface Exception - see license.txt and license-exception.md.
 //
 // Air game engine: the Three.js render loop, flight model and 2D-canvas HUD,
-// extracted verbatim from the prototype. Imperative and self-contained; mounted by
-// the React <GameCanvas> via startGame(). The mission-setup menu lives in React.
+// mounted by the React <GameCanvas> via startGame().
 import { bench_register } from './bench'   // FIRST: the #148 sampler must survive an engine-init failure
 import { atc_step } from './atc'
 import { KEY_DEFAULTS } from './keys'
@@ -35,10 +34,9 @@ import { audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, a
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
-// Model binaries ride the bundle as content-hashed assets (assets/nimitz-<hash>.glb):
-// the URL changes exactly when the bytes do, so the stale-programmatic-fetch trap
-// (90 minutes of phantom debugging, 2026-07-07) is impossible by construction —
-// no manual version constants to bump on regen. The dev readout shows the hash.
+// Model binaries are content-hashed bundle assets (assets/nimitz-<hash>.glb):
+// the URL changes when the bytes do, so there is no version constant to bump on
+// regen. The dev readout shows the hash.
 import nimitz_model_url from '../assets/nimitz.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
@@ -58,13 +56,9 @@ export interface GameHandle {
   scope: () => string                           // the default chat scope: "team" in a teams match, else "all"
 }
 
-// The buffered flight, reachable WITHOUT a game handle: the History page is its
-// own route and cannot see the index route's handle. startGame publishes its
-// accessor rather than the recorder being lifted out of the closure it shares
-// with the whole engine — and it publishes into replay.ts, not into a local
-// here, so the History route can read the buffer without importing this file
-// and pulling three.js into its chunk. Re-exported so any caller that already
-// reaches for engine.recording still resolves.
+// The recording accessor lives in replay.ts, not here, so the History route can
+// read the buffer without pulling three.js into its chunk. Re-exported for
+// callers that reach for engine.recording.
 export { recording } from './replay'
 
 export function startGame({
@@ -99,15 +93,10 @@ export function startGame({
   const __ac = new AbortController()
   const signal = __ac.signal
   let __raf = 0
-  // Arm the audio context NOW (#55): the mount runs inside the Fly click's
-  // transient user-activation window, so the resume inherits the gesture. The
-  // pointerdown/keydown hooks below only install after this point, so a pilot
-  // who clicked Fly and then flew HOTAS-only — gamepad input is not a user
-  // activation and fires no DOM events — heard nothing until the first
-  // keyboard press: no engine, no wind, and in the 2026-08-20 joust all six
-  // enemy launch sounds and two 15-18 m proximity detonations played into a
-  // suspended context and were discarded. audio_enable first: the previous
-  // unmount leaves `enabled` false, which would no-op the gesture on a refly.
+  // Arm the audio context here (#55): the mount runs inside the Fly click's
+  // user activation, and a HOTAS-only pilot never fires a DOM event to resume
+  // it later. audio_enable first - the previous unmount leaves `enabled` false,
+  // which would no-op the gesture on a refly.
   if (config.sound !== false) { audio_enable(true); audio_gesture() }
 
 // ============================================================================ config
@@ -115,22 +104,17 @@ const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, e
 	tracers:true, effects_quality:2, stores:stores_migrate(true), flares:true, shadows:false, clouds:"none", afterburner:true,   // effects_quality 0..3 scales expensive translucent work; stores (#17): the per-station loadout
 	view:"hud", invert:false, framerate:false,   // no sens: the Sensitivity slider was removed because it was a flight-control gain, and the last two reads of it went with it (see sanitize_cfg)
 	task:"joust", start:"carrier", tod:"day", help:false };
-// The ship: everything that describes the carrier itself, per model —
-// shuttle (nose-gear) points, arrestor wires, the landing centreline, the
-// OLS bracket, and the deck outline for the flight core. Measured per deck
-// with the align tool and the GLB measurement scripts; a second carrier is
-// one more entry (#100). CARRIER {x,z} is world PLACEMENT, not ship data.
-// stamp: the content hash from an imported asset URL (assets/nimitz-<hash>.glb),
-// for the dev readout — the capture-verification workflow reads it off the HUD.
+// CARRIER_MODELS: per-ship deck data (shuttle points, wires, landing line, OLS,
+// deck outline), measured with the align tool; a second carrier is one more
+// entry (#100). CARRIER {x,z} is world placement, not ship data. model_stamp:
+// the content hash from an imported asset URL, for the dev readout.
 function model_stamp(url){ const m=/-([\w-]+)\.\w+$/.exec(url); return m?m[1]:url; }
 const CARRIER_MODELS={
 	nimitz:{ url:nimitz_model_url, length:333, yaw:20, bow:0, draft:0.375, deck:19,   // real USS Nimitz length. yaw:20 faces the bow to 070° (into the Midway wind) — the model's bow is +X (the retired Ford's was +Z, hence its yaw:110); both reach the same 070° recovery course. bow = the bow's bearing in the MODEL frame (0 = +X, 90 = +Z): the deck-ops frame is (yaw - bow), so carrier-local fore-aft tracks the drawn bow whatever the modeller's axes
 		stroke:85, speed:88,                             // catapult throw and end speed, m / m/s
-		// Wires + landing line: measured off the 1:200 CVN-68 deck plan (2026-07-06) — anchored on the deck
-		// plateau extent (model fa -166.5..+164.9), hull centreline at lat +1.3; strip axis came out 9.5° port
-		// of the bow (real angled deck: 9.05°), wire spacing 11.7 m (real: 40 ft). Catapults: measured off the
-		// MODEL's track troughs/JBDs via a painter-ordered deck raster + Hough fit (waist headings +9.2°/+8.8°
-		// bracket the real 9.05° angle). OLS AND THE DECK OUTLINE ARE STILL FORD PLACEHOLDERS.
+		// Wires and landing line: from the 1:200 CVN-68 deck plan (real angled deck
+		// 9.05°, wire spacing 40 ft); catapults: fitted to the model's own track
+		// troughs.
 		shuttles:[ {x:48.98, z:15.50, h:3.30},            // 1: starboard bow — x toward bow, z + starboard, heading deg (+ = port). PLAN-derived (Stage C, 1:200 GA drawing 2026-07-10): the plan's cat-1 track line starts at fa 45 (a slot's aft end, right behind this spot) and runs to the bow water-brake slot centre at 0.95 ridge coverage. The MODEL's painted track (z 19.41, h 5.67 — the 2026-07-07 exact fit) sits 3.9 m starboard with +2.4° excess heading and lies on no plan feature at all (0.22 coverage); the baked deck track moved with this constant, so jet, shuttle, and paint stay coherent
 		           {x:47.23, z:-3.44, h:0},              // 2: port bow (the carrier-start spawn) — user-located in-game (2026-07-07), exact-fitted to the track's own triangles (heading -0.044° ≈ dead straight, line at lat -3.58 for this fa)
 		           {x:-46.61, z:-17.08, h:4.03},          // 3: starboard waist — user-located in-game (2026-07-07), exact-fitted to the track's own triangles (heading +4.225°, line at lat -17.79 for this fa); the old Hough entry had fit the angled-deck trough 27 m away
@@ -197,19 +181,10 @@ const col_sundisc=new THREE.Color(0xfff3da), col_deep=new THREE.Color(0x0a2a3a),
 // ============================================================================ renderer/scene
 const canvas = stage;
 const graphics_verdict = diagnose();   // #55: null = real acceleration; the governor's machine verdict below only counts then (a software-rendered run says nothing about the GPU that never got to fight)
-// MSAA is OFF whenever the mission has clouds, and the reason is a coverage
-// mismatch rather than a performance one. The scene renders to the canvas with
-// MSAA, so an edge pixel is a blend of the airframe and the RAW sky; the cloud
-// is composited afterwards per PIXEL against a depth prepass that has no MSAA.
-// Where that single depth sample reads "aircraft" the march is short, almost no
-// cloud light is added, and the sky fraction inside the pixel never receives
-// its cloud — leaving a dark, stair-stepped rim between two bright surfaces
-// (measured on the 2026-08-11 wing crop: rim ~110 against a 200 wing and a 215
-// deck). Nothing in the composite can recover coverage the resolve has already
-// thrown away, so the honest fix is to stop creating partial-coverage pixels at
-// all when a cloud layer will be composited over them. Clear skies keep MSAA.
-// cfg carries the mission config by here (Object.assign above), and startGame
-// builds a renderer per mission, so this follows the player's cloud choice.
+// MSAA is off whenever the mission has clouds: the cloud composite is per pixel
+// against a depth prepass with no MSAA, so an MSAA-resolved edge pixel's sky
+// fraction never receives its cloud and every airframe edge gets a dark
+// stair-stepped rim. Clear skies keep MSAA.
 const renderer = new THREE.WebGLRenderer({ canvas, antialias:!MSAA_OFF && cfg.clouds==="none", powerPreference:"high-performance" });
 renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
@@ -279,12 +254,9 @@ function build_water_detail(){
 	const mkwaves=(K,fmax,red)=>{ const w=[]; for(let i=0;i<K;i++){ let fx=0,fz=0;
 		while(fx===0&&fz===0){ fx=Math.round((rnd()*2-1)*fmax); fz=Math.round((rnd()*2-1)*fmax); }
 		w.push([fx,fz,rnd()*Math.PI*2,(0.6+0.7*rnd())/Math.pow(Math.hypot(fx,fz),red)]); } return w; };
-	// A dense red spectrum: few modes = visible plane-wave plaid (the "chessboard sea").
-	// Wide frequency band per tile: the repeat period in the world equals the sampling
-	// scale, so richness INSIDE the tile is what separates feature size from repeat size.
-	// Directional spectrum: real seas concentrate energy around the wind direction
-	// (crests elongate cross-wind, break irregularly along it). An isotropic dense
-	// field is a Gaussian noise — it reads as fingerprint swirls, not waves.
+	// Dense, wind-directional spectrum: few modes read as plane-wave plaid, an
+	// isotropic field as fingerprint swirls. Richness inside the tile is what
+	// separates feature size from the repeat period.
 	const band=(K,flo,fhi,red,dir,spread)=>{ const w=[]; for(let i=0;i<K;i++){
 		const f=flo*Math.pow(fhi/flo,rnd());
 		const th=dir+(rnd()+rnd()+rnd()-1.5)*spread;   // triangular-ish spread about the wind
@@ -428,11 +400,10 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			float crest=clamp(v_height/3.0+0.12,0.0,1.2);   // low baseline: an unconditional floor paints a faint wash along the same near-grazing crest bands
 			float thin=smoothstep(0.25,0.65,length(slope)*2.0)*0.55;   // gated on real steepness and dimmed: a broad smooth SSS wash reads as oil, not translucency
 			col+=u_sss*(trans*crest*thin*(0.35+0.65*shade)*(1.0-0.7*v_calm))*exp(-dist/6000.0);
-			// --- foam: crest foam on the big vertex waves + wind-scattered whitecaps from the cap-noise channel
-			// Real whitecaps are commas: born as a crest line elongated CROSS-wind (the
-			// breaking front), decaying into a dimmer foam streak stretched ALONG-wind
-			// behind it. Head = along-wind-compressed field; tail = upwind-shifted,
-			// along-wind-stretched field at half strength.
+			// Foam: crest foam on the vertex waves plus whitecaps from the cap-noise
+			// channel. A whitecap is a comma - a cross-wind head (along-wind-compressed
+			// field) trailing an along-wind tail (upwind-shifted, stretched, half
+			// strength).
 			vec2 aw=vec2(0.958,0.286);
 			vec2 xzc=xz-u_time*aw*1.1;   // the cap pattern drifts downwind
 			float alo=dot(xzc,aw), cro=dot(xzc,vec2(-aw.y,aw.x));
@@ -441,13 +412,9 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			float hv=(0.45*texture2D(u_detail,hu/320.0).b+0.55*texture2D(u_detail,hu/700.0).b)*(0.6+0.4*capc);
 			float tv=(0.45*texture2D(u_detail,tu/320.0).b+0.55*texture2D(u_detail,tu/700.0).b)*(0.6+0.4*capc);
 			float head=smoothstep(0.575,0.615,hv), tail=smoothstep(0.565,0.615,tv);
-			// Caps ride the big swell crests, and FOAM PERSISTS: heads gate on the crest
-			// being here now; tails also pass if the crest is just DOWNWIND (it recently
-			// swept this spot), so each break leaves a fading streak behind the wave for
-			// seconds instead of flashing out with the crest. Stateless memory — the
-			// swell is analytic, so "where was the crest" is a question, not a history.
-			// (An instantaneous steepness gate is wrong: sines are steepest at ZERO
-			// height, so ridge*steep only passed in narrow flickering windows.)
+			// Heads gate on the crest being here now; tails also pass when the crest is
+			// just downwind, so each break leaves a fading streak. Not a steepness gate:
+			// sines are steepest at zero height, so ridge*steep only flickered.
 			float ridge=smoothstep(0.55,1.8,swell(xzc));
 			float ridge1=smoothstep(0.55,1.8,swell(xzc+aw*24.0));
 			float ridge2=smoothstep(0.55,1.8,swell(xzc+aw*52.0));
@@ -597,13 +564,9 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 				float cov=uCoverage*mix((0.55+0.95*vig)*smoothstep(uGate.x,uGate.y,vig), 1.0, uFlat);   // per-preset cell gate: how FEW the cells are; uCoverage sets how MASSIVE each survivor builds
 				float d=remap(base, 1.0-cov, 1.0, 0.0, 1.0)*cov;
 			if(d<=0.0) return 0.0;
-			// hb picks the erosion CHARACTER by height: the raw detail field low in
-			// the cell, its inverse high up — rounded cumulus bottoms, ragged tops.
-			// A stratus SHEET has no such distinction, and taking the raw field on
-			// the underside showed it for what it is: fine noise (~1.2 km and
-			// ~320 m periods) drifting with the wind on sp, read from below as
-			// animated dots and bubbles. Flat decks therefore take the TOP's
-			// character throughout, which is the face the user judged good.
+			// hb: erosion character by height - raw detail low in the cell, inverted
+			// high up (rounded bottoms, ragged tops). Flat decks take the top's
+			// character throughout: the raw field read from below is animated dots.
 			float hb=mix(clamp(h*4.0,0.0,1.0),1.0,uFlat), estr=mix(0.35,0.15,uFlat)*(0.82+0.36*tB)*mix(1.0,0.75,uDark);   // per-cell erosion character: some cells ragged and crisply carved, others fuller and softer; darker presets erode less (full billowing masses, not serrated rock)
 			float coarse=mix(n.b, 1.0-n.b, hb);                               // coarse erosion from the base sample: keeps far cells SEPARATE at zero cost and zero shimmer (fading erosion out entirely merged the horizon into a solid wall)
 			float er=coarse;
@@ -630,12 +593,9 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 			vec4 fp=uInvVP*vec4(vUv*2.0-1.0,1.0,1.0); vec3 ray=normalize(fp.xyz/fp.w-uCamPos);
 			float sceneDist=1.0e9;
 			if(depth<1.0){ vec4 wp=uInvVP*vec4(vUv*2.0-1.0,depth*2.0-1.0,1.0); sceneDist=length(wp.xyz/wp.w-uCamPos); }
-			// The sea PLANE, analytically: the ocean mesh is a finite disc, so past
-			// its rim a below-horizon ray reports "no hit" and the march integrates
-			// tens of kilometres of extra cloud beyond where water would have stopped
-			// it. The rim is a circle at constant range and painted itself as a hard
-			// horizontal seam across the cloud field — visible from altitude over
-			// cumulus, where the rim sits well below the horizon haze.
+			// Intersect the sea plane analytically: the ocean mesh is a finite disc, and
+			// past its rim a below-horizon ray would march kilometres of cloud beyond
+			// the water, painting the rim as a hard seam across the field.
 			if(ray.y<-1.0e-4) sceneDist=min(sceneDist,(0.0-uCamPos.y)/ray.y);
 			vec3 cloudc=vec3(0.0); float ctr=1.0; float aw=0.0, adist=0.0;   // aw/adist: alpha-weighted mean march distance — the accumulation pass reprojects each pixel at this depth
 			if(uDebug<0.5){   // uDebug=1: full RT path, zero cloud contribution (A/B against the no-clouds path)
@@ -693,17 +653,16 @@ const cloud_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, gl
 			oDepth=vec4(clamp(tmean/100000.0,0.0,1.0), clamp(aw,0.0,1.0), 0.0, 1.0);
 		}` });
 fs_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),cloud_mat));
-// One-time GPU bake of the tiling 3D cloud noise (Perlin-Worley base + Worley erosion detail), rendered
-// slice by slice into 3D textures. Sampling these is ~10x cheaper than the old in-loop fbm, which is what
-// pays for the richer lighting and step count above.
+// One-time GPU bake of the tiling 3D cloud noise (Perlin-Worley base + Worley
+// erosion detail), slice by slice into 3D textures.
 function build_cloud_noise(){
 	const gen_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, glslVersion:THREE.GLSL3,
 		uniforms:{ uZ:{value:0}, uMode:{value:0} },
 		vertexShader:`out vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
 		fragmentShader:`in vec2 vUv; layout(location=0) out vec4 frag; uniform float uZ,uMode;
-			// PCG3D integer hash, shared VERBATIM with the flight core's convection.go —
-			// bit-exact on every GPU and in Go, so the physics feels the cells the player
-			// sees (the old sin-hash was driver-dependent). Change one, change both.
+			// PCG3D integer hash, shared verbatim with the flight core's convection.go -
+			// bit-exact on every GPU and in Go, so the physics feels the cells the
+			// player sees. Change one, change both.
 			uvec3 pcg3d(uvec3 v){ v=v*1664525u+1013904223u; v.x+=v.y*v.z; v.y+=v.z*v.x; v.z+=v.x*v.y; v=v^(v>>16u); v.x+=v.y*v.z; v.y+=v.z*v.x; v.z+=v.x*v.y; return v; }
 			vec3 h3(vec3 p){ uvec3 r=pcg3d(uvec3(ivec3(p+0.5)+64)); return vec3(r)*(1.0/4294967296.0); }
 			float worley(vec3 p,float freq){ p*=freq; vec3 id=floor(p), f=fract(p); float m=8.0;
@@ -744,13 +703,11 @@ const comp_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, tra
 	fragmentShader:`varying vec2 vUv; uniform sampler2D tCloud,tDepthLow,tDepthHigh; uniform vec2 uTexel; uniform float uNear,uFar;
 		float lin(float d){ float z=d*2.0-1.0; return (2.0*uNear*uFar)/(uFar+uNear-z*(uFar-uNear)); }   // window depth -> metres; the raw value is far too non-linear to difference
 		void main(){   // DEPTH-AWARE joint filter. At half resolution this fixed a black ring: a
-			// texel straddling a silhouette carried a march terminated early on the aircraft — almost
-			// no cloud light, i.e. DARK — and the old ALPHA-only weighting rejected the healthy
-			// neighbours (their alpha differs for a perfectly good reason at an edge) and kept it.
-			// At CLOUD_SHIFT=0 the buffer is full res and the ring cannot arise, but the depth
-			// weighting still earns its place: it stops the joint smoothing bleeding cloud light
-			// across a silhouette. Relative, not absolute, so it holds from a wingtip at 20 m to a
-			// deck at 40 km.
+			// Depth-aware joint filter: weight each tap by relative depth agreement, so
+			// a texel whose march ended early on a silhouette cannot outvote its
+			// neighbours (alpha-only weighting left a black ring at half res) and cloud
+			// light does not bleed across silhouettes. Relative, so it holds from 20 m
+			// to 40 km.
 			float dref=lin(texture2D(tDepthHigh,vUv).r);
 			vec4 c0=texture2D(tCloud,vUv);
 			float w0=exp(-40.0*abs(lin(texture2D(tDepthLow,vUv).r)-dref)/max(dref,1.0));   // the CENTRE tap earns its weight too: on the far side of an edge it is the wrong sample and must be outvoted
@@ -774,9 +731,9 @@ const acc_mat=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false,
 	fragmentShader:`varying vec2 vUv; uniform sampler2D tCur,tAux,tHist; uniform vec2 uTexel;
 		uniform mat4 uPrevVP,uInvVP; uniform vec3 uCamPos; uniform float uHistValid;
 		void main(){   // temporal accumulation: reproject last frame's accumulated cloud through the previous
-			// view-projection at each pixel's mean march distance, clamp it against the current 3x3
-			// neighbourhood (kills ghosting on disocclusion), and blend. ~10 differently-jittered marches
-			// average into each pixel — the supersampling the old bilateral blur only faked.
+			// view-projection at each pixel's mean march distance, clamp against the
+			// current 3x3 neighbourhood (kills ghosting on disocclusion), and blend: ~10
+			// differently-jittered marches average into each pixel.
 			vec4 cur=texture2D(tCur,vUv);
 			vec4 mn=cur, mx=cur; vec4 avg=cur;
 			for(int i=0;i<8;i++){
@@ -847,17 +804,13 @@ const ab_mat=new THREE.MeshBasicMaterial({color:0xffaa44,transparent:true,opacit
 function make_jet(){ const g=new THREE.Group();   // afterburner cones only — the airframe is the loaded GLB (no procedural fallback). NO team colour: every jet wears the F/A-18C's own livery, and identification is the HUD's and the map's job (#210)
 	for(const side of [1,-1]){ const ab=new THREE.Mesh(ab_geo,ab_mat); ab.position.set(-9.3,-0.37,side*0.48); ab.userData.ab=true; g.add(ab); } return g; }   // at the Hornet's twin nozzles (Y raised from -0.95 after the gear extended the model bbox, shifting normalise's centre up ~0.58)
 
-// ============================================================================ aircraft GLB models (cosmetic only)
-// Each aircraft is web/public/aircraft/<id>/model.glb (served by the app.json "aircraft" action);
-// a new type is one CATALOGUE entry here plus its folder — mirrors world/games/air/aircraft/<id>/.
-// Source must be UNCOMPRESSED glTF/GLB (no Draco/Meshopt) — Sketchfab's plain "glTF" download works.
-// Per-aircraft models and their animation rigs. Orientation: if a model
-// looks wrong — flies BACKWARDS -> yaw 180; on its SIDE -> roll ±90; nose
-// pitched -> pitch ±90; upside down -> roll 180. A rig entry either matches
-// whole CLIPS by name (the F ships split clips) or partitions the model's
-// single timeline by animated-node TRACK name (the C); each is scrubbed
-// from game state: "drive" picks the state channel, min/max normalise a
-// signed surface deflection (rad) onto the clip span, flip reverses it.
+// ============================================================================
+// aircraft GLB models (cosmetic only) Per-aircraft models and animation rigs.
+// Orientation fixes: flies backwards -> yaw 180; on its side -> roll ±90; nose
+// pitched -> pitch ±90; upside down -> roll 180. A rig entry matches whole
+// clips by name or partitions a single timeline by track name; "drive" picks
+// the state channel, min/max normalise a signed deflection (rad) onto the clip
+// span, flip reverses it.
 const AIRCRAFT_MODELS={
 	fa18c:{ url:fa18c_model_url, length:17.07, yaw:90, pitch:0, roll:0,
 		cockpitHide:/^Pilot_Head_769$/,   // first person: this subtree is the head+helmet+visor+mask; the body and arms stay on the stick
@@ -884,11 +837,10 @@ const AIRCRAFT_MODELS={
 		      { name:"slatRO",    node:"Right_Slat_Outer_315", axis:"x", drive:"slat" },
 		      { name:"flapL",     node:"FlapL_12",           axis:"x", sign:-1, drive:"flapL" },   // flap droop percent keys sweep 0..-40° with 0 = 0% droop, so the authored pose IS flush — no base needed (unlike the aileron roll stage, whose keys are roll ±20° around a -20° flush centre)
 		      { name:"flapR",     node:"FlapR_15",           axis:"x", sign:-1, drive:"flapR" },
-		      // NOTE: Left_Flaperon_74 / Right_Flaperon_312 are NOT separate inboard surfaces — they are the
-		      // DROOP stage of the aileron chains (Left_Flaperon_74 -> ... -> AileronL_69 -> the one aileron
-		      // mesh). Driving them alongside the aileron entries doubled the droop (ailerons drooped 2v while
-		      // the flaps drooped v — the in-flight "ailerons droop relative to the flaps"). The aileron entries
-		      // below carry the full flaperon signal (droop + roll differential) through one stage instead.
+		      // Left_Flaperon_74 / Right_Flaperon_312 are the droop stage of the
+		      // aileron chains, not separate surfaces: driving them alongside the
+		      // aileron entries doubles the droop. The aileron entries carry the full
+		      // signal.
 		      { name:"aileronL",  node:"AileronL_69",        axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapL" },   // both ailerons: flush (TE continues the wing; ailerons are faired with flaps up) = -20° local, the centre of each side's 0..±40° roll percent-key sweep — matches the right's silhouette-bisected hand calibration to 0.02°. The authored static poses are asymmetric (left full-up 0°, right full-down -40°), so neither is neutral
 		      { name:"aileronR",  node:"AileronR_309",       axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapR" },
 		      { name:"coverL",    node:"l_aileron_percent_key_AN_Cover_65",  axis:"x", sign:-1, max:0, drive:"flapL" },   // aileron shroud covers: separate follower nodes outside the aileron subtrees, seated on the wing at their authored statics and floored there via the node-drive max cap (they ride up with an up-deflected aileron so it never pokes through, and never follow the droop down). The original left plate was a different, smaller ride-on-the-aileron design that leaked a gap at every pose; its mesh was replaced in the GLB by a mirrored copy of the right cover baked closed at the authored static, so both wings now share the validated seated design
@@ -896,11 +848,10 @@ const AIRCRAFT_MODELS={
 		      { name:"rudderL",  node:"rudder_percent_key_AN_Left_319",  axis:"y", base:[0,0.15471,0,0.98796], sign:-1, toe:-0.5236, min:-0.5236, max:0.5236, drive:"rudder" },   // rudder neutral: trailing-edge-in-fin-plane (PCA fin plane, rotate until the TE's mean plane distance is zero) — sharper than the lateral-extent minimum, which sat ~6° off; re-verified 2026-07-06 (TE residual under 4 mm). toe = the Hornet's rudder toe-in: with the gear down both trailing edges deflect 30° INBOARD (the canted fins turn that into nose-up pitch for takeoff rotation), active with weight on wheels (washing out at liftoff via the squish signal); min/max clamp the sum of toe + yaw command at the ±30° physical throw
 		      { name:"rudderR",  node:"rudder_percent_key_AN_Right_322", axis:"y", base:[0,0.19423,0,0.98096], sign:-1, toe:0.5236, min:-0.5236, max:0.5236, drive:"rudder" },   // sign -1 on both: the core's aero convention is +rudder = nose LEFT (tail pushed right), and these hinges deflect the TEs starboard for +local rotation — so nose-right (negative) commands must show TE-starboard rudders. The toe values are pre-sign, hence flipped
 		      { name:"brake",    track:/^SPOILER_L/i, drive:"speedbrake" },
-	      // ---- cockpit instruments (#99): DIRECT drives, never clip scrubs — the GLB's percent-key
-	      // tracks for these are EASED 0-360° sweeps (scrubbing time would warp the reading and
-	      // cannot wrap). Axes/signs/throws extracted from the tracks themselves. RULE: none of
-	      // these nodes may ever be matched by a scrubbed-clip track regex, or the mixer fights
-	      // the writes (the nosewheel swivel post-multiply pattern is the escape hatch).
+	      // Cockpit instruments (#99): direct drives, never clip scrubs - the
+	      // GLB's percent-key tracks are eased 0-360° sweeps that cannot wrap.
+	      // None of these nodes may be matched by a scrubbed-clip track regex, or
+	      // the mixer fights the writes.
 	      { name:"adiPitch",  node:"INSTRUMENT_AttitudeIndicator_Pitch_AN_Pitch_503",        axis:"x", gauge:"pitch" },
 	      { name:"adiBank",   node:"INSTRUMENT_AttitudeIndicator_Bank_AN_Bank_505",          axis:"z", sign:-1, gauge:"bank" },
 	      { name:"compass",   node:"INSTRUMENT_MagneticCompass_AN_MagneticCompass_517",      axis:"y", gauge:"heading" },
@@ -975,12 +926,10 @@ function normalise_model(scene, spec){ scene.updateMatrixWorld(true);
 	proto.position.x=(spec.nose||0)-(spec.wheel||spec.nose||0);   // align the drawn nose wheel onto the physics nose gear: wheels, physics, and the shuttle coincide
 	const outer=new THREE.Group(); outer.add(proto); outer.updateMatrixWorld(true); return outer; }
 
-// rig_build partitions a model's animations into scrubbable per-subsystem
-// clips: clip-name matching for models shipped with split clips, track-name
-// matching to carve subsystems out of a single combined timeline.
-// moving_span finds where a track's values actually CHANGE — on a shared
-// timeline every track carries keys across the whole file and only moves in
-// its own segment, so keyframe extents lie about the subsystem's range.
+// rig_build partitions a model's animations into per-subsystem clips by clip
+// name or by track name. moving_span finds where a track's values actually
+// change: on a shared timeline every track carries keys across the whole file,
+// so keyframe extents lie about a subsystem's range.
 function moving_span(track){
 	const n=track.times.length, w=track.getValueSize();
 	let first=-1, last=-1;
@@ -1009,15 +958,8 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	const loaded=fleet[kind]; if(!loaded||g.userData.hasModel===kind) return; g.userData.hasModel=kind;
 	g.children.forEach(c=>{ if(c.userData.body||c.userData.glass) c.visible=false; });   // hide procedural shell, keep afterburner cones
 	const previous=g.children.find(c=>c.userData&&c.userData.model); if(previous) g.remove(previous);   // aircraft swap: drop the old airframe
-	// NO team tint on a modelled airframe (#210). The red bandit and pale-grey
-	// traffic were identification aids from the procedural-shell era, when every
-	// jet was untextured geometry and colour was the only way to tell them
-	// apart. Multiplied over the F/A-18C's own livery it just stains the
-	// paintwork, and it was inconsistent besides (multiplayer tinted by real
-	// team, the single-player bandit was always red). Identification is a
-	// SENSOR job, as in the real jet: the HUD boxes the designated target and
-	// draws the locator line to it off-boresight, and the map colours contacts
-	// by side. The airframe wears its own paint.
+	// No team tint on the airframe (#210): identification is the HUD box, locator
+	// line and map colours, not paint.
 	const m=loaded.proto.clone(true); m.userData.model=true;
 	m.traverse(o=>{ if(o.isMesh){ o.userData.modelmesh=true; o.castShadow=cfg.shadows; } });
 	const spec=AIRCRAFT_MODELS[kind]||{};
@@ -1061,12 +1003,10 @@ function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_7
 		for(let k=0;k<8;k++){ c.set(k&1?box.max.x:box.min.x, k&2?box.max.y:box.min.y, k&4?box.max.z:box.min.z);
 			c.applyMatrix4(mesh.matrixWorld); ownship.group.worldToLocal(c); lo.min(c); hi.max(c); }
 		ownship.group.userData.glass={ x:(lo.x+hi.x)/2, y:(lo.y+hi.y)/2, hw:(hi.z-lo.z)/2, hh:(hi.y-lo.y)/2 };   // body-frame pane: x fore-aft, y up, half-extents across the span and vertically
-		// The pane's OUTLINE, not its box: the combining glass is an octagon
-		// with sloped upper corners, and a rectangular clip lets symbology
-		// float on sky at those corners (#16). Convex-hull the pane's own
-		// vertices in the span/height plane, pre-clipped at the visible glass
-		// line (the mesh runs down behind the glareshield, where a 2D overlay
-		// cannot be occluded by geometry).
+		// Clip to the pane's outline, not its box: the combining glass is an octagon
+		// and a rectangular clip lets symbology float on sky at the sloped corners
+		// (#16). Convex-hull the pane's vertices, pre-clipped at the visible glass
+		// line.
 		{ const pos=mesh.geometry.attributes.position, pts=[];
 			for(let k=0;k<pos.count;k++){ c.set(pos.getX(k),pos.getY(k),pos.getZ(k));
 				c.applyMatrix4(mesh.matrixWorld); ownship.group.worldToLocal(c); pts.push([c.z,c.y,c.x]); }
@@ -1085,12 +1025,10 @@ function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_7
 			if(clipped.length>=3) ownship.group.userData.outline=clipped; } }   // [z, y, x] per hull vertex, group frame
 	try{ build_indexer(ownship.group); }catch(e){ build_error=String(e&&e.message||e); }
 	console.warn("cockpit eye", ownship.group.userData.eye.x.toFixed(2), ownship.group.userData.eye.y.toFixed(2)); }   // i18n-format-ok: developer console output, never shown to a user
-// AoA indexer (#99): the GLB ships the brightness knob but no indexer lights, so
-// three unlit emissive shapes stand in, mounted beside the combining glass —
-// green chevron (slow), amber donut (on-speed), red chevron (fast), Navy
-// colours. Driven from alpha in update_gauges; lit only with the gear down,
-// like the real box. Unlit material so it reads at night, LAYER_OWN so only
-// the cockpit pass pays for it.
+// AoA indexer (#99): the GLB has no indexer lights, so three unlit emissive
+// shapes beside the combining glass stand in (green chevron slow, amber donut
+// on-speed, red chevron fast). Driven from alpha in update_gauges; LAYER_OWN so
+// only the cockpit pass pays for it.
 function build_indexer(g){
 	if(g.userData.indexer&&g.userData.indexerGroup&&g.userData.indexerGroup.parent===g) return;
 	const glass=g.userData.glass, eye=g.userData.eye;
@@ -1168,11 +1106,9 @@ function lamps_update(out){
 // painted into the face texture, so a live canvas disc covers it — APN-194
 // style dial measured from that face, needle below 5000 ft, OFF flag above.
 const RADALT_DIAL=[[0,35],[100,52],[200,70],[300,103],[400,149],[600,202],[800,235],[1000,280],[3000,305],[5000,325]];
-// node_box: the node's own geometry corners in the GROUP frame (the pattern
-// calibrate_eye uses for the glass pane). A world Box3 tilts with the parked
-// heading, and its centre sits inside the housing DEPTH — placing "proud"
-// quads from that centre buried them behind the painted faces, which is what
-// kept these builders parked.
+// node_box: the node's own geometry corners in the group frame. A world Box3
+// tilts with the parked heading and centres inside the housing depth, which
+// buries quads placed from it behind the painted faces.
 function node_box(g,node){
 	const lo=new THREE.Vector3(Infinity,Infinity,Infinity), hi=new THREE.Vector3(-Infinity,-Infinity,-Infinity), c=new THREE.Vector3(); let any=false;
 	node.traverse(o=>{ if(!o.isMesh||!o.geometry) return; any=true;
@@ -1180,13 +1116,11 @@ function node_box(g,node){
 		for(let k=0;k<8;k++){ c.set(k&1?b.max.x:b.min.x, k&2?b.max.y:b.min.y, k&4?b.max.z:b.min.z);
 			c.applyMatrix4(o.matrixWorld); g.worldToLocal(c); lo.min(c); hi.max(c); } });
 	return any?{lo,hi}:null; }
-// surface_fit: the surface the pilot actually SEES over an aperture, by
-// raycast from the calibrated eye. The named screen/gauge nodes are the
-// recessed plates; each sits behind a smoked cover glass in a DIFFERENT node
-// — opaque black, nearer the eye — so a quad placed off the plate loses the
-// depth test to the cover and renders buried (what parked these builders).
-// Three rays (top/centre/bottom of the aperture) give the cover's x and the
-// panel's lean; overlays go just proud of THAT, tilted to match.
+// surface_fit: the surface the pilot sees over an aperture, by raycast from the
+// calibrated eye. The named plates sit behind a smoked cover glass in a
+// different node, so a quad placed on the plate loses the depth test and
+// renders buried. Three rays (top/centre/bottom) give the cover's x and the
+// panel's lean.
 function surface_fit(g,box){
 	const eye=g.userData.eye; if(!eye) return null;
 	const cy=(box.lo.y+box.hi.y)/2, cz=(box.lo.z+box.hi.z)/2, hh=Math.max((box.hi.y-box.lo.y)/2,0.02);
@@ -1205,19 +1139,10 @@ function surface_fit(g,box){
 	const stack=rc.intersectObject(g,true).slice(0,8).map(h=>{ const p=g.worldToLocal(h.point.clone());
 		return +p.x.toFixed(3)+" "+(h.object.name||h.object.type)+"/"+(((h.object as THREE.Mesh).material as THREE.Material&{name?:string})?.name||"?"); });   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	return { x:xm, tilt:Math.atan2(xt-xb,1.6*hh), stack, cover }; }
-// (Two placement refinements were tried against captures and refuted: sliding
-// and scaling the quad along the eye sightline to subtend the recessed plate
-// put it visibly OFF the bezel outline, and hunting the cover glass for a
-// per-screen pane sub-mesh found none — the cover is one merged mesh. The
-// seated placement, measured against grid-overlaid captures, is the plate
-// box's own y/z at the fitted cover surface, with a few millimetres of
-// hand-measured bias below.)
-// surface_pose orients a +Z-facing geometry onto the fitted surface at the
-// given centre: width along the span, height up the measured lean, normal out
-// toward the pilot. The centre comes from aperture_fit (the visible opening),
-// never slid or scaled — the frame the pilot aligns against lives at the
-// cover depth, so projecting the recessed plate toward the eye lands the
-// overlay OFF the frame (the misalignment the first fit shipped).
+// surface_pose orients a +Z-facing geometry onto the fitted surface: width
+// along the span, height up the measured lean, normal toward the pilot. The
+// centre comes from aperture_fit at the cover depth, never slid or scaled
+// toward the eye - that lands the overlay off the bezel.
 function surface_pose(mesh,x,tilt,cy,cz){
 	const X=new THREE.Vector3(0,0,1), Y=new THREE.Vector3(Math.sin(tilt),Math.cos(tilt),0), N=new THREE.Vector3().crossVectors(X,Y);
 	mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X,Y,N));
@@ -1225,11 +1150,9 @@ function surface_pose(mesh,x,tilt,cy,cz){
 	mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN); }
 function build_radalt(g){
 	if(g.userData.radalt&&g.userData.radalt.mesh.parent) return;
-	// The GLB has no radar-altimeter face node — the Object_1372 this builder
-	// originally covered turned out to be the full-panel cover glass. The dial's
-	// position was measured by a panel click (&panelpoint=1): top-centre of the
-	// main panel just under the glareshield. &radalt=y,z (dev) still overrides
-	// for recalibration.
+	// The GLB has no radar-altimeter face node; the dial position was measured by
+	// a panel click (&panelpoint=1). &radalt=y,z (dev) overrides for
+	// recalibration.
 	const at=DEV_MODE&&new URLSearchParams(location.search).get("radalt");
 	const [y,z]=at?at.split(",").map(Number):[0.535,0.011];
 	if(!isFinite(y)||!isFinite(z)) return;
@@ -1290,42 +1213,25 @@ function build_screens(g){
 			box:[box.lo.x,box.lo.y,box.lo.z,box.hi.x,box.hi.y,box.hi.z].map(n=>+n.toFixed(3)) }); }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	if(DEV_MODE) (globalThis as Record<string,unknown>).ddi_geometry=list.map(sc=>({ display:sc.display, at:sc.mesh.position.toArray().map(n=>+(n as number).toFixed(3)), box:sc.box }));   // placement diagnostics that survive dev_probe churn (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 	if(list.length){ g.userData.screens=list; for(const sc of list) ddi_blit(sc); } }
-// ---- DDI/AMPCD paging (#99): per-display page state drawn by size-agnostic
-// renderers in a 512-logical space — every consumer (the pit quads now; the
-// full-screen DDI view and HUD repeater later) scales the same draw onto its
-// own canvas at its own resolution. Twenty pushbuttons ring each display (1-5
-// up the left, 6-10 across the top, 11-15 down the right, 16-20 across the
-// bottom right to left); MENU lives at PB18 and alternates the TAC and SUPT
-// menus, like the real jet. Legends are cockpit verbatim — English by the
-// annunciator policy. Menu entries whose page has no backing system yet draw
-// dim and inert, never faked.
+// DDI/AMPCD paging (#99): per-display page state drawn by size-agnostic
+// renderers in a 512-logical space; each consumer scales the same draw onto its
+// own canvas. Pushbuttons 1-5 up the left, 6-10 across the top, 11-15 down the
+// right, 16-20 across the bottom right to left; MENU is PB18 and alternates TAC
+// and SUPT. Legends are cockpit verbatim, English by the annunciator policy.
 const ddi_state={ left:{page:"eng",menu:""}, right:{page:"adi",menu:""}, center:{page:"hsi",menu:""} };
-// Master-mode display recall (#15): the real avionics remember a display
-// configuration PER MASTER MODE and restore it when the mode is selected —
-// there is no per-mission-phase page card in NATOPS. Families: A/A (gun and
-// 9m share one, as in the jet) and NAV. Seeds are fleet convention minus the
-// radar we don't model: A/A = SMS/SA/HSI, NAV = CHKLST/FUEL/HSI (recovery
-//-case starts pre-set NAV's right display to ADI — the pilot would have
-// configured for the approach). Page selections record into the CURRENT
-// family, so a switch away and back restores what you had.
+// Master-mode display recall (#15): a display configuration per master-mode
+// family (A/A - gun and 9m share - and NAV), restored when the family is
+// selected; page selections record into the current family.
 const ddi_sets={ aa:{left:"sms",right:"rdr",center:"sa"}, nav:{left:"chklst",right:"fuel",center:"hsi"} };   // A/A seeds the attack scan on the right DDI with stores left and the SA picture on the AMPCD (#30) — the fighting layout; NAV keeps its instrument set
 function ddi_family(){ return master==="nav"?"nav":"aa"; }
 function ddi_recall(){ const set=ddi_sets[ddi_family()]; for(const d of ["left","right","center"]) ddi_state[d]={ page:set[d], menu:"" }; ddi_dirty=true; }
 function ddi_show(display,page){ ddi_state[display]={ page, menu:"" }; ddi_sets[ddi_family()][display]=page; ddi_dirty=true; }
 function set_master(m){ const before=ddi_family(); master=m; if(ddi_family()!==before) ddi_recall(); }
-// next_master is the weapon-select cycle: GUN -> 9M -> 120C -> NAV -> GUN, but
-// a station with nothing left to fire is skipped — cycling onto an empty rail
-// (a heater-only fit stepping through 120C, a Winchester belt) is a dead stop
-// the pilot has to click past under pressure. NAV is not a weapon and always
-// stays in the cycle; with every weapon empty the key toggles GUN and NAV.
-// select_master is positional weapon select (the castle): the wanted station,
-// unless it has nothing left to fire — an empty rail is skipped exactly as the
-// cycle skips it, and the request is simply ignored rather than landing the
-// pilot on a dead station under g.
-// default_master is the weapon the match calls for, selected before the pilot
-// touches anything: NAV for free flight like the real jet powering up; the
-// AMRAAM for a BVR start (or any multiplayer fight the pilot loaded them for);
-// the 9M when heaters are aboard and the match allows them; the gun otherwise.
+// next_master cycles GUN -> 9M -> 120C -> NAV, skipping any station with
+// nothing left to fire; NAV always stays. select_master is the positional pick,
+// ignored for an empty station. default_master is the match's weapon at spawn:
+// NAV for free flight, the AMRAAM for a BVR or multiplayer start, the 9M when
+// heaters are aboard and allowed, else the gun.
 function default_master(){
 	if(cfg.task==="free") return "nav";
 	const amraams=stores_amraams(ownship.loadout||loadout()).length;
@@ -1424,11 +1330,9 @@ const DDI_PAGES={ eng:{draw:ddi_eng}, adi:{draw:ddi_adi}, hsi:{draw:ddi_hsi,rang
 	sa:{draw:ddi_sa,range:sa_range,reset:sa_reset,press:sa_press}, hud:{draw:ddi_hud},
 	fuel:{draw:ddi_fuel,press:fuel_press}, fcs:{draw:ddi_fcs}, chklst:{draw:ddi_chklst}, ew:{draw:ddi_ew}, sms:{draw:ddi_sms}, fpas:{draw:ddi_fpas},
 	rdr:{draw:ddi_rdr,range:rdr_range,reset:rdr_reset,press:rdr_press,animated:true} };   // animated: continuous motion (the sweep, the TDC, fading bricks) — displays showing it redraw at frame rate instead of the 120 ms economy below
-// ---- HSI page state (#99 pages): ONE nav picture shared by every display
-// showing the format, like the jet's single nav solution. The rose ring sits
-// at HALF the selected scale; DCTR slides the rose down so the scale ahead
-// grows; the TAMMAC-style map underlay is AMPCD-only (the DDIs are monochrome
-// and map-less in the real jet).
+// HSI page state (#99): one nav picture shared by every display showing the
+// format. The rose ring sits at half the selected scale; DCTR slides the rose
+// down; the map underlay is AMPCD-only.
 const HSI_SCALES=[5,10,20,40,80,160];
 const hsi_state={ scale:40, dctr:false, map:true };
 function hsi_range(direction){ const i=HSI_SCALES.indexOf(hsi_state.scale);
@@ -1452,12 +1356,10 @@ function sa_press(pb){
 	if(pb===4){ sa_range(-1); return true; }
 	if(pb===3){ sa_range(1); return true; }
 	return false; }
-// ---- RDR ATTK page (#30): the B-scan attack format — azimuth across, range
-// up, the sweep animated, RWS bricks aging in place, TWS trackfiles with
-// velocity sticks and the L&S star, STT alone with its data block. The mouse
-// is the TDC on the face (rdr_face); the top bezels carry mode / width / SIL /
-// ACM condition / UNDES, the left arrows the range scale, HSI-style. Legends
-// are instrument vocabulary and stay English, like every annunciator.
+// RDR ATTK page (#30): B-scan attack format, azimuth across and range up - RWS
+// bricks, TWS trackfiles with velocity sticks and the L&S star, STT with its
+// data block. The mouse is the TDC (rdr_face); top bezels carry
+// mode/width/SIL/ACM/UNDES, left arrows the range scale.
 function rdr_x(azimuth,half){ return 256+(azimuth/half)*180; }
 function rdr_y(range,scaleM){ return 430-THREE.MathUtils.clamp(range/scaleM,0,1)*360; }
 function rdr_range(direction){ const i=RADAR_SCALES.indexOf(RADAR.scale);
@@ -1730,11 +1632,9 @@ function ddi_hud(x){ const gz=ownship.gauges||{};   // HUD repeater format (#9):
 	{ const ba=Math.PI/2-THREE.MathUtils.clamp(bank,-45*D2R,45*D2R), br=180;
 		x.beginPath(); x.moveTo(cx+Math.cos(ba)*(br-4),cy+Math.sin(ba)*(br-4)); x.lineTo(cx+Math.cos(ba-0.035)*(br-16),cy+Math.sin(ba-0.035)*(br-16)); x.lineTo(cx+Math.cos(ba+0.035)*(br-16),cy+Math.sin(ba+0.035)*(br-16)); x.closePath(); x.fill(); }
 	x.restore(); }
-// ---- FUEL page state: the bingo caret, stepped from the bezel arrows.
-// fpas_home is the FPAS arrival computation (#54): distance and time to the
-// carrier at present groundspeed, and the fuel state on arrival at the
-// present measured burn. Null while the numbers cannot mean anything —
-// on deck, hovering, or with the engines not burning.
+// fpas_home (#54): distance and time to the carrier at present groundspeed, and
+// the fuel state on arrival at the present burn. Null on deck, hovering, or
+// with the engines not burning.
 function fpas_home(){ const gz=ownship.gauges||{};
 	const gs=gz.ground||0, pph=flow_state.pph;
 	if(ownship.grounded||gs<60||pph<200||cheat("fuel")) return null;
@@ -1908,12 +1808,9 @@ function ddi_fcs(x,display){ const o=last_out||[];   // per-surface truth straig
 			x.beginPath(); x.moveTo(xx-26,y-12); x.lineTo(xx+26,y+38); x.moveTo(xx+26,y-12); x.lineTo(xx-26,y+38); x.stroke();
 			x.strokeStyle="#39e07a"; x.lineWidth=2; } };
 	row("LEF",deg(STATE.slat),110,140,jam(5)); row("LEF",deg(STATE.slat),402,140,jam(5));   // one slat word, both wings
-	// The jam words are per ACTUATOR (flight/damage.go: 0/1 stabilator, 2/3
-	// FLAPERON, 4 rudder, 5 slat, 6 speedbrake) — there is no flap channel at
-	// all. The X belonged on the AIL rows, which show the genuinely frozen
-	// surface; it sat on TEF, whose number keeps moving because Fcs.Flap is a
-	// readout the flaperon actuator already carries (aero.go). The page the
-	// pilot opens to identify a failure named the wrong surface (#48).
+	// Jam words are per actuator (flight/damage.go: 0/1 stabilator, 2/3 flaperon,
+	// 4 rudder, 5 slat, 6 speedbrake); there is no flap channel, so the X goes on
+	// the AIL rows, never TEF.
 	row("TEF",deg(STATE.flap),110,216,false); row("TEF",deg(STATE.flap),402,216,false);
 	row("AIL",deg(STATE.flaperon),110,292,jam(2)); row("AIL",deg(STATE.flaperon+1),402,292,jam(3));
 	row("STAB",deg(STATE.stabilator),110,368,jam(0)); row("STAB",deg(STATE.stabilator+1),402,368,jam(1));
@@ -1940,10 +1837,9 @@ function loadout_racked(lo){ for(let s=2;s<=8;s++){ const slot=lo&&lo[String(s)]
 function bandit_remaining(){ return missiles_on()?stores_rounds(BOT_ARMED).length:0; }   // the SP bandit CARRIES the full armed standard of missiles and never expends them (its brain is guns-only; the gun draws from a real 578-round belt, #233); server bots decrement their own masks
 function assign_loadout(st,lo){ st.loadout=lo; loadout_rev++; if(loadout_racked(lo)) void init_stores_model(); if(stores_amraams(lo).length){ void init_amraam_model(); st.amraam=stores_amraams(lo).length; } apply_stores(st); }   // #27: the round's model fetches lazily like the racks; a fresh loadout's AMRAAM count seeds full
 // apply_stores rebuilds a jet's store visuals from its loadout: fixtures and
-// tanks from the split stores.glb (per-station nodes in the airframe's own
-// model space — parenting under the scene frame needs no offset math), and
-// pylon AIM-9 rounds as translated clones of the jet's own tip missile mesh.
-// Tips stay airframe nodes, toggled by update_rails.
+// tanks from the split stores.glb (per-station nodes in the airframe's model
+// space), pylon AIM-9s as translated clones of the tip missile mesh. Tips stay
+// airframe nodes, toggled by update_rails.
 function apply_stores(st){ if(!st.group) return;
 	const model=st.group.children.find(c=>c.userData&&c.userData.model);
 	const scene=model&&model.children[0]&&model.children[0].children[0];
@@ -1972,11 +1868,8 @@ function apply_stores(st){ if(!st.group) return;
 	update_rails(st, Math.max(0, st.msl|0)); }
 function stores_clone(name){ if(!stores_proto) return null; const source=stores_proto.getObjectByName(name); if(!source) return null;
 	const piece=source.clone(true); piece.traverse(o=>{ if(o.isMesh){ o.castShadow=cfg.shadows; o.userData.modelmesh=true; } }); return piece; }
-// amraam_clone (#27): the round at its anchor and the art's own lean —
-// position inherited from the source art's rounds where they exist, derived
-// for the inboard pylons, twin points spread off the single anchor, and the
-// orientation from the source round's long axis (weapons.ts), so placement
-// never needs hand measurement.
+// amraam_clone (#27): the round at its anchor, position and lean derived by
+// weapons.ts from the source art so placement never needs hand measurement.
 function amraam_clone(name,station){ if(!amraam_proto||!stores_proto) return null;
 	const anchor=amraam_anchor(stores_proto,station,name.endsWith("a")?"a":name.endsWith("b")?"b":""); if(!anchor) return null;
 	const piece=amraam_proto.clone(true);
@@ -2012,11 +1905,9 @@ function update_rails(st,count){ if(!st.group) return;
 function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); position_aircraft_lights(); calibrate_eye();
 	assign_loadout(ownship, loadout()); assign_loadout(bandit, missiles_on()?BOT_ARMED:BOT_CLEAN);
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining()); }   // re-pin the ownship lights to the real airframe; rails reflect the loadout
-// own_mask is the core attach bitmask for the ownship's flown loadout with the
-// expended rounds cleared, heaters and AMRAAMs alike — memoised on (loadout
-// revision, remaining heaters, remaining AMRAAMs) so the per-frame sync
-// allocates nothing. Before the catalog is readable the bare default
-// (wingtips) stands in; the real mask lands the next frame.
+// own_mask: the core attach bitmask for the flown loadout with expended rounds
+// cleared, memoised on (loadout revision, heaters left, AMRAAMs left). Before
+// the catalog is readable the wingtip default stands in.
 let own_mask_memo={ key:-1, value:0b11 };
 function own_mask(){ const book=stores_catalog(); if(!book) return 0b11;
 	const lo=ownship.loadout||loadout();
@@ -2030,11 +1921,10 @@ function own_mask(){ const book=stores_catalog(); if(!book) return 0b11;
 // deck crew's fill line and the setup's gross-weight arithmetic both use it.
 function external_capacity(){ const book=stores_catalog(); if(!book) return 0;
 	return stores_weight(ownship.loadout||loadout(), book).fuel; }
-// ---- Jettison (#18): ONE separation path shared by the pilot's commands and
-// carriage-limit failures. The loadout edit flows to the core (mass, drag,
-// external fuel clamp) through the per-frame flight_stores sync; departing
-// pieces become free-falling debris; multiplayer learns through the jettison
-// wire event and the server's roster re-emit.
+// Jettison (#18): one separation path for the pilot's commands and
+// carriage-limit failures. The loadout edit reaches the core through the
+// per-frame flight_stores sync; departing pieces become debris; multiplayer
+// learns through the jettison wire event.
 const falling=[];   // free-falling jettisoned pieces: {piece, vel, spin, age}
 function separate_debris(st, names){
 	const nodes=(st.racks&&st.racks.nodes)||{};
@@ -2083,11 +1973,10 @@ function jettison_stations(stations, what){
 	ownship.amraam=carried;
 	ownship.msl=Math.max(0,(ownship.msl|0)-gone);
 	update_rails(ownship,ownship.msl);
-	// The release envelope (#43, NATOPS fig 4-4 jettison columns: 575 KCAS /
-	// Mach 0.95, +1 to +2 g). Outside it the departing store can strike the
-	// airframe — a deterministic dent and overstress per offending station.
-	// SP only: in multiplayer the server's Jettison applies the same strike
-	// authoritatively (world/games/air/stores.go release_severity — in sync).
+	// Release envelope (#43, NATOPS fig 4-4: 575 KCAS / Mach 0.95, +1 to +2 g):
+	// outside it the departing store dents and overstresses the airframe per
+	// offending station. SP only - the server applies the same strike in
+	// multiplayer (world/games/air/stores.go release_severity, kept in sync).
 	if(!MULTIPLAYER){
 		const speed=Math.max((ownship.cas||0)*1.9438/stores_release.knots, (((ownship.gauges&&ownship.gauges.mach)||0))/stores_release.mach);
 		const g=ownship.gload||1;
@@ -2109,14 +1998,10 @@ function emergency_update(dt, pressed){
 	emergency.timer-=dt;
 	if(emergency.timer<=0){ if(jettison_stations(EMERGENCY_PAIRS[emergency.step],"rack")&&!emergency.said){ emergency.said=true; notice(translate("EMERG JETT")); }   // the wing stations are behind the pilot — say that the button worked
 		emergency.step++; emergency.timer=0.3; } }
-// Carriage limits (#18/#43): each store's envelope is NATOPS figure 4-4 data
-// (stores LIMITS, keyed by entry name — the centreline tank genuinely differs
-// from the wing stations). The limit is two-sided, KCAS or Mach whichever is
-// less; there is NO store g limit (LBA — the airframe's own placard governs),
-// and missiles/rails/pylons carry no limit at all. Exceedance accumulates
-// per-station harm and past threshold the attachment FAILS — the store
-// departs involuntarily through the same path, the sudden asymmetry itself
-// the pilot's first cue.
+// Carriage limits (#18/#43): each store's envelope is NATOPS figure 4-4 (stores
+// LIMITS, keyed by entry name); KCAS or Mach, whichever is less, no store g
+// limit, and missiles/rails/pylons carry none. Exceedance accumulates
+// per-station harm; past threshold the store departs through the jettison path.
 function carriage_update(dt){
 	if(!running||ownship.grounded||!ownship.loadout) return;
 	const cas=(ownship.cas||0)*1.9438, mach=(ownship.gauges&&ownship.gauges.mach)||0;   // knots CAS + Mach from the core's own air data
@@ -2131,12 +2016,9 @@ function carriage_update(dt){
 		if(worst<=1) continue;
 		harm[station]=(harm[station]||0)+(worst-1)*dt*2.5;   // ~6 s at 7% over, faster the deeper the breach
 		if(harm[station]>=1){ delete harm[station]; jettison_stations([station],"rack"); } } }
-// --- minimal GLB container surgery (so we never trigger the loader's blob-URL texture path) ---
-// The pure helpers moved to game/model.ts (shared with the setup's loadout
-// preview); glb_split/glb_repack/model_textures are import aliases so every
-// call site here reads as before. Solid-colour materials (no
-// baseColorTexture) keep their baseColorFactor, so a multi-material model
-// renders its full livery.
+// GLB container surgery (game/model.ts, shared with the setup preview): strip
+// texture refs so the loader never takes its blob-URL texture path;
+// solid-colour materials keep their baseColorFactor.
 const glb_split=model_split, glb_repack=model_repack, model_textures=model_captures;
 async function init_external_model(kind){
 	kind=kind||"fa18c"; const spec=AIRCRAFT_MODELS[kind]||AIRCRAFT_MODELS.fa18c;
@@ -2159,11 +2041,10 @@ async function init_external_model(kind){
 				for(const fix of spec.pose||[]){ let o=null; gltf.scene.traverse(x=>{ if(!o&&x.name===fix.node) o=x; }); if(o) o.quaternion.set(...fix.quaternion); }   // static pose corrections for mid-animation-authored nodes, before anything captures rest poses
 				const proto=normalise_model(gltf.scene, spec);
 				const rig=rig_build(spec, gltf.animations||[]);
-				// Stand the drawn model on its wheels. normalise_model centres on the bounding box, which knows
-				// nothing about wheel geometry — and GLB edits move the centre (removing the external tanks
-				// shifted it ~11 cm and buried the wheels). Scrub the gear rig to the grounded pose, find the
-				// drawn wheel bottoms, and lift the model so they land exactly on the physics resting plane
-				// (spec.stance below the origin — the core settles the origin ~2.56 m above the surface).
+				// Stand the drawn model on its wheels: normalise_model centres on the
+				// bounding box, which GLB edits move. Scrub the gear rig to the grounded
+				// pose, find the drawn wheel bottoms, and lift the model so they land on
+				// the physics resting plane (spec.stance below the origin).
 				const gearrig=rig.find(r=>r.name==="gear"&&r.clip);
 				if(gearrig&&spec.stance){
 					const mixer=new THREE.AnimationMixer(proto), action=mixer.clipAction(gearrig.clip);
@@ -2173,11 +2054,9 @@ async function init_external_model(kind){
 					proto.traverse(x=>{ if(!x.isMesh) return; const pa=x.geometry.attributes.position;
 						for(let i=0;i<pa.count;i++){ lv.fromBufferAttribute(pa,i).applyMatrix4(x.matrixWorld); if(lv.y<low) low=lv.y; if(lv.y<low+0.6) bottoms.push([lv.x,lv.y]); } });
 					if(low>-8&&low<-1){ proto.children[0].position.y=(-spec.stance)-low;   // clones inherit; each aircraft's own gear scrub re-poses the struts every frame
-						// Measure the DRAWN nose wheel and pin it onto the physics nose gear: the static spec.wheel
-						// constant goes stale every time a GLB edit moves the bounding-box centre the normaliser uses
-						// (the stores removal did). The forward-most wheel-bottom cluster is the nose wheel contact;
-						// shifting it onto spec.nose makes the shuttle, the cat spot, and the align tool all
-						// nosewheel-true by construction.
+						// Pin the drawn nose wheel onto the physics nose gear: the forward-most
+						// wheel-bottom cluster is the nose contact, and shifting it onto
+						// spec.nose keeps the shuttle, cat spot and align tool nosewheel-true.
 						const wb=bottoms.filter(q=>q[1]<low+0.35);
 						if(wb.length>3){ const mx=Math.max(...wb.map(q=>q[0]));
 							const nosewb=wb.filter(q=>q[0]>mx-1.2), nx=nosewb.reduce((a,q)=>a+q[0],0)/nosewb.length;
@@ -2186,9 +2065,6 @@ async function init_external_model(kind){
 				if(typeof createImageBitmap==="function"){
 					const decoded={};
 					await Promise.all(Object.keys(tex_by_material).map(async name=>{ try{
-						// make_tex handles both classic images (createImageBitmap) and KTX2 (#200,
-						// transcoded via KTX2Loader) — the old inline duplicate fed KTX2 bytes to
-						// createImageBitmap, which throws, leaving the jet untextured.
 						const src=tex_by_material[name]; const make=async(im,srgb)=>im?make_tex(im,srgb):null;
 						decoded[name]={ base:await make(src.base,true), emissive:await make(src.emissive,true), hadEmissive:src.hadEmissive };
 					}catch(te){ console.warn("[model] texture decode failed for "+name,te&&te.message||te); } }));
@@ -2210,11 +2086,10 @@ async function init_external_model(kind){
 	}catch(e){ finish(); throw new Error("aircraft model: not loaded "+tag+" ("+((e&&e.message)||e)+")"); }
 }
 
-// ============================================================================ stores model (#17)
-// The split stores.glb: per-station pylon, tank, and (future) missile nodes in
-// the airframe's own model space, lazily fetched the first time a loadout
-// carries anything beyond the wingtips. Same sandbox-safe pipeline as the
-// airframe: strip texture refs, parse, decode KTX2 in-process.
+// ============================================================================
+// stores model (#17) The split stores.glb: per-station pylon, tank and missile
+// nodes in the airframe's model space, fetched lazily the first time a loadout
+// carries anything beyond the wingtips.
 let stores_proto=null, stores_pending=null;
 // load_split: the sandbox-safe GLB pipeline shared by the split stores model
 // and the ordnance model (#27) — strip texture refs, parse with meshopt, then
@@ -2281,11 +2156,9 @@ let ktx2=null;
 function ktx2_loader(){ if(!ktx2){ ktx2=new KTX2Loader().setTranscoderPath("basis/").detectSupport(renderer); } return ktx2; }
 async function make_tex(src,srgb){
 	if(src.mime==="image/ktx2"){
-		// GPU-compressed textures (#200): transcode the KTX2 payload to the native
-		// block format (BC7/ASTC/ETC2). _createTexture is KTX2Loader's buffer entry
-		// (load() is a thin URL wrapper around it); the mip chain ships in the
-		// container, so no generateMipmaps. flipY stays false (glTF convention —
-		// compressed textures cannot flip anyway).
+		// KTX2 (#200): transcode to the native block format. _createTexture is
+		// KTX2Loader's buffer entry (load() is a URL wrapper around it); the mip
+		// chain ships in the container, and compressed textures cannot flip.
 		const buf=src.bytes.byteOffset===0&&src.bytes.byteLength===src.bytes.buffer.byteLength?src.bytes.buffer:src.bytes.slice().buffer;
 		const t=await ktx2_loader()._createTexture(buf);
 		t.colorSpace=srgb?THREE.SRGBColorSpace:THREE.LinearSRGBColorSpace; t.wrapS=t.wrapT=THREE.RepeatWrapping;
@@ -2405,11 +2278,9 @@ function glow_texture(soft){ const c=document.createElement("canvas"); c.width=c
 function make_points(max,size,additive,tex,sized){ const geo=new THREE.BufferGeometry();
 	geo.setAttribute("position",new THREE.BufferAttribute(new Float32Array(max*3),3)); geo.setAttribute("color",new THREE.BufferAttribute(new Float32Array(max*3),3));
 	const mat=new THREE.PointsMaterial({size,map:tex,vertexColors:true,transparent:true,blending:additive?THREE.AdditiveBlending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:true,fog:!additive});
-	// sized (#239): per-particle scale and alpha, injected into the points
-	// shader. Smoke needs both — real smoke GROWS as it disperses and fades by
-	// TRANSPARENCY, where the stock colour-fade dimmed every puff to black
-	// under normal blending (smoke that darkens as it dies is backwards: soot
-	// is darkest at birth and pales as it thins).
+	// sized (#239): per-particle scale and alpha attributes injected into the
+	// points shader - smoke grows as it disperses and fades by transparency; the
+	// stock colour fade darkened puffs to black under normal blending.
 	if(sized){ geo.setAttribute("grow",new THREE.BufferAttribute(new Float32Array(max),1)); geo.setAttribute("fade",new THREE.BufferAttribute(new Float32Array(max),1)); geo.setAttribute("spin",new THREE.BufferAttribute(new Float32Array(max),1));
 		mat.onBeforeCompile=(sh)=>{
 			sh.vertexShader="attribute float grow;\nattribute float fade;\nattribute float spin;\nvarying float vFade;\nvarying float vSpin;\n"+sh.vertexShader.replace("gl_PointSize = size;","gl_PointSize = size * grow;\n\tvFade = fade;\n\tvSpin = spin;");
@@ -2432,11 +2303,9 @@ function pool(max){ return { px:new Float32Array(max),py:new Float32Array(max),p
 	sz:new Float32Array(max),gr:new Float32Array(max), spin:new Float32Array(max), seed:new Float32Array(max), activeList:[], pos:new Int32Array(max),   // sized pools only (#239): scale at birth, growth per second of age
 	active:new Uint8Array(max), max, next:0 }; }
 function pool_spawn(p){ if(p.activeList.length>=(p.limit??p.max)) return -1; for(let i=0;i<p.max;i++){ const k=(p.next+i)%p.max; if(!p.active[k]){ p.next=(k+1)%p.max; p.active[k]=1; p.seed[k]=Math.random()*1000; p.spin[k]=Math.random()*Math.PI*2;
-		// A caller can retire a slot between physics ticks (missile impact, reset).
-		// Remove that stale index before reusing it or it would simulate twice.
-		// O(1) via the position map (indexOf scanned the whole live list per
-		// spawn); list order is immaterial — one draw call renders the pool —
-		// so a swap-remove is safe.
+		// A slot retired between physics ticks may still sit in activeList;
+		// swap-remove it via the position map before reuse or it simulates twice.
+		// Order is immaterial - one draw call renders the pool.
 		const sp=p.pos[k]; if(sp<p.activeList.length&&p.activeList[sp]===k){ const last=p.activeList.pop(); if(sp<p.activeList.length){ p.activeList[sp]=last; p.pos[last]=sp; } }
 		p.pos[k]=p.activeList.length; p.activeList.push(k); return k; } } return -1; }
 const TR_MAX=4000,FL_MAX=2500,SM_MAX=3000,ST_MAX=1200,DB_MAX=260;
@@ -2445,13 +2314,9 @@ function effects_limits(){ const q=Math.max(0,Math.min(3,Number(cfg.effects_qual
 effects_limits();   // and again from apply_effects: computed only at boot, a Settings change over a paused mission silently did nothing until reload
 const tr_pts=make_points(TR_MAX,4,false,glow), fl_pts=make_points(FL_MAX,26,true,glow), sm_pts=make_points(SM_MAX,70,false,soft,true);   // tracers: small + NORMAL blend (additive blew the colour out to white against bright sky); smoke is SIZED (per-particle growth + alpha fade, #239)
 const db_pts=make_points(DB_MAX,5,false,glow);   // debris (#239): dark shed panels and wreck chunks — normal-blended dots on ballistic arcs, decoupled from the aircraft's path (the gun-camera signature of coming apart)
-// Strike flashes get their OWN pool, and it is ADDITIVE. Borrowing the tracer
-// pool inherited that pool's normal blending, which is right for a tracer (a
-// lit round, read against bright sky) and wrong for an impact: a flash is
-// emissive, and normal-blended it came out the same dull amber as the tracer
-// that caused it — indistinguishable from the stream, over both a grey
-// airframe and the sky. Borrowing also inherited `tr_pts.visible=cfg.tracers`,
-// so switching tracers off silently switched hit flashes off with them.
+// Strike flashes get their own additive pool: a flash is emissive, and
+// normal-blended in the tracer pool it read as the same dull amber as the
+// tracer. Sharing also tied flashes to `tr_pts.visible=cfg.tracers`.
 const strike_pts=make_points(ST_MAX,9,true,glow);
 function flush_points(p,pts){ const pos=pts.geometry.attributes.position.array,col=pts.geometry.attributes.color.array; let n=0;
 	const sized=pts.userData.sized, grow=sized?pts.geometry.attributes.grow.array:null, fade=sized?pts.geometry.attributes.fade.array:null, spin=sized?pts.geometry.attributes.spin.array:null;
@@ -2482,12 +2347,10 @@ function update_pool_ballistic(p,dt,grav,drag,round){ const live=[]; for(const i
 	p.px[i]+=p.vx[i]*dt; p.py[i]+=p.vy[i]*dt; p.pz[i]+=p.vz[i]*dt; p.life[i]-=dt; if(p.life[i]<=0||p.py[i]<0) p.active[i]=0; else { p.pos[i]=live.length; live.push(i); } } p.activeList=live; }
 
 const muzzle=1050; const gun={};
-// 20 mm drag (mirrors battle.Length/Average in Go): quadratic drag decays the
-// round's speed exponentially with distance, v(x)=v0*exp(-x/L), L=2,600 m at
-// sea level stretching as the air thins — fitted to the published M56/PGU-28
-// tables (~700 m/s and 1.16 s at a thousand metres). Every consumer of the
-// round — the flying tracers, the director pipper, the funnel — must share
-// this or the pilot walks a burst by tracers that lie about where rounds go.
+// 20 mm drag (mirrors battle.Length/Average in Go): v(x)=v0*exp(-x/L), L=2,600
+// m at sea level, stretching as the air thins - fitted to the M56/PGU-28
+// tables. Every consumer (tracers, director pipper, funnel) must share this or
+// the tracers lie about where rounds go.
 const ROUND_LENGTH=2600;
 function round_length(alt){ return ROUND_LENGTH*Math.exp(Math.max(alt,0)/8500); }
 const MAGAZINE=578;   // the M61's load: the ownship's magazine, and the nominal the bandit's expenditure is reported against
@@ -2518,12 +2381,9 @@ function dispense_flare(st){ st.flared_at=sim_time;   // stamped HERE, for every
 	flares.px[k]=sp.x;flares.py[k]=sp.y;flares.pz[k]=sp.z; flares.vx[k]=st.velx*0.5+(Math.random()-0.5)*40; flares.vy[k]=st.vely*0.5-Math.random()*25; flares.vz[k]=st.velz*0.5+(Math.random()-0.5)*40;
 	flares.ttl[k]=flares.life[k]=3.5+Math.random()*1.5; flares.r[k]=2.6;flares.g[k]=2.3;flares.b[k]=1.2; }
 	}
-// dispense_chaff is the bloom: the record the radar rounds consult (the doppler
-// gate decides whether it matters) plus a brief grey puff that hangs where the
-// jet was, visibly unlike the burning flares falling away. Flares and chaff are
-// separate dispenses from separate magazines (#43): the player's one key fires
-// both while both remain, the bandit's programme chooses, and each arrives as
-// its own event.
+// dispense_chaff: the bloom the radar rounds consult plus a brief grey puff.
+// Flares and chaff are separate dispenses from separate magazines (#43); the
+// player's one key fires both while both remain, each as its own event.
 function dispense_chaff(st){
 	const sp=local_offset(st,-3,0,0); st.bloom={x:sp.x,y:sp.y,z:sp.z}; st.chaffed=sim_time;   // `bloom` is WHERE the last cloud is; `chaff` on the ownship is the magazine COUNT — the two shared a name for an afternoon and the HUD read NaN
 	for(let i=0;i<10;i++){ const k=pool_spawn(smoke); if(k<0) break;
@@ -2561,36 +2421,28 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 	return true; }
 const _v=new THREE.Vector3();
 const _launch_box=new THREE.Box3();
-// trigger_missile: the 9M edge of the fire trigger, shared by the keyboard's
-// keydown and the pad trigger's press. The pad path CALLS this rather than
-// synthesising a Space keydown: the synthetic event (sent with deliberately no
-// matching keyup, to protect held fire) wedged Space into the held-keys set,
-// after which BOTH the real key and the trigger skipped the edge block until a
-// real press-release cleared it — the trigger "only worked after pressing
-// space, which did nothing".
+// trigger_missile: the 9M edge of the fire trigger, shared by the keyboard and
+// the pad trigger. The pad path calls this directly: a synthetic Space keydown
+// with no keyup wedges Space into the held-keys set and both paths then skip
+// the edge block.
 function trigger_missile(){
 	if(master==="120c"){ trigger_amraam(); return; }   // #27 phase 1: the trigger serves the selected weapon
 	if(master!=="9m" || weapons_hold || ownship.launching || (ownship.gear??0)<=0.98 || ownship.msl<=0) return;   // an unarmed loadout has no rounds, so msl covers the retired missiles flag (#17)
 	if(MULTIPLAYER) missile_flag=true;
 	if(launch_missile(ownship,MULTIPLAYER?(remotes.get(designated)||remote_nearest()):(has_enemy?bandit:null))){ if(!cheat("ammunition")) ownship.msl--; audio_launch(); update_rails(ownship,ownship.msl); }
 }
-// trigger_amraam (#27 phase 2, SP): the shot needs an L&S — the STT, or a
-// TWS trackfile — and flies command-inertial on the datalink. UNCAGE selects
-// VISUAL instead: the seeker is hot off the rail, no lock and no support
-// needed (the MADDOG shot), which is the fallback when the radar is silent,
-// broken, or the merge came too fast for a designation.
+// trigger_amraam (#27, SP): the shot needs an L&S (STT or TWS trackfile) and
+// flies command-inertial on the datalink. UNCAGE selects VISUAL: seeker hot off
+// the rail, no lock needed (MADDOG).
 function trigger_amraam(){
 	if(weapons_hold || ownship.launching || (ownship.gear??0)<=0.98 || (ownship.amraam|0)<=0) return;
 	const track=RADAR.stt??RADAR.ls;
 	if(!amraam_visual && track==null){ notice("NO RADAR LOCK"); return; }
 	if(MULTIPLAYER){
-		// The SERVER owns the round (#27 phase 2c): it flies the same core,
-		// judges the warhead, and streams the dart to everyone. The client
-		// raises the trigger edge and spends its own magazine to keep the
-		// racks and the SMS honest; the server's grant is the real count.
-		// A supported shot needs the STT the server can see on the emitter
-		// wire — the L&S alone is a client-side notion, so hardening the
-		// lock IS the price of a datalinked shot in multiplayer.
+		// Multiplayer (#27): the server flies the round and judges the warhead; the
+		// client raises the trigger edge and spends its own magazine to keep the SMS
+		// honest. A supported shot needs the STT the server can see on the emitter
+		// wire - the L&S is client-side only.
 		if(!amraam_visual && RADAR.stt==null){ notice("LOCK REQUIRED"); return; }
 		fox3_flag=true;
 		if(!cheat("ammunition")) ownship.amraam--;
@@ -2622,13 +2474,9 @@ function launch_amraam(st,target,track){ const m=missiles.find(x=>!x.active); if
 		velocity:{x:target.velx??target.fwd.x*target.speed,y:target.vely??target.fwd.y*target.speed,z:target.velz??target.fwd.z*target.speed} }:null;
 	round_launch(m.slot,{x:m.px,y:m.py,z:m.pz},{x:m.vx,y:m.vy,z:m.vz},estimate,WORLD_WRAP,!!estimate);
 	return true; }
-// launch_bandit_heater (#33): the bandit's AIM-9M, flown by the client at
-// the ownship. It rides the ownship's own launcher — same rail geometry,
-// same seeker, same acquisition rule — with the enemy flag set so the fuse
-// wounds hulk 1 and the player's flares are the ones that can seduce it.
-// Until 2026-08-15 the brain's heater launches never crossed the wasm
-// boundary at all (Step reported only fox3), so a single-player bandit
-// could not shoot a heat-seeker at the pilot.
+// launch_bandit_heater (#33): the bandit's AIM-9M, flown by the client at the
+// ownship through the ownship's own launcher, with the enemy flag set so the
+// fuse wounds hulk 1 and the player's flares can seduce it.
 function launch_bandit_heater(){ if(!has_enemy||MULTIPLAYER) return;
 	const before=missiles.filter(m=>m.active).length;
 	if(!launch_missile(bandit,ownship)) return;
@@ -2636,11 +2484,10 @@ function launch_bandit_heater(){ if(!has_enemy||MULTIPLAYER) return;
 	if(m) m.enemy=true;
 	if(missiles.filter(x=>x.active).length>before){ bandit.msl=Math.max(0,(bandit.msl??magazine())-1); audio_launch(); } }
 
-// launch_bandit_round (#33): the bandit's AMRAAM, client-owned from the
-// rail — the harness only decides the shot. Flies the same core, chases the
-// OWNSHIP, and its datalink is the bandit's real STT state; the player's
-// mixed-program dispense (flare AND chaff bloom) is what defeats it, the
-// same doppler gate the player's own rounds face.
+// launch_bandit_round (#33): the bandit's AMRAAM, client-owned from the rail -
+// the brain only decides the shot. It chases the ownship, its datalink is the
+// bandit's real STT state, and the player's dispense faces the same doppler
+// gate.
 function launch_bandit_round(){ const m=missiles.find(x=>!x.active); if(!m||!has_enemy||MULTIPLAYER) return;
 	const sp=local_offset(bandit,1,-0.9,0);
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
@@ -2651,14 +2498,11 @@ function launch_bandit_round(){ const m=missiles.find(x=>!x.active); if(!m||!has
 	round_launch(m.slot,{x:m.px,y:m.py,z:m.pz},{x:m.vx,y:m.vy,z:m.vz},
 		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },WORLD_WRAP,true);
 	audio_launch(); }
-// step_amraam (#27 phase 2): the AIM-120 flies the Go `round` core — the same
-// integrator the server runs and the DLZ ladder queries, so the cockpit's
-// ranges, the flown round and (in multiplayer) the server's copy cannot
-// disagree. Datalink support is the radar's: while our track on this target
-// lives, the round gets fresh estimates and steers a lead-collision midcourse;
-// lose the track and it coasts on the last prediction until its own seeker
-// wakes at 18 km. The fuse and the warhead are the battle package's, like the
-// gun and the 9M — no placeholder kill ring.
+// step_amraam (#27): the AIM-120 flies the Go `round` core - the same
+// integrator the server and the DLZ ladder use. While our track on the target
+// lives the round gets fresh estimates; lose it and it coasts on the last
+// prediction until its seeker wakes at 18 km. Fuse and warhead are the battle
+// package's.
 function step_amraam(m,dt){
 	const t=m.target;
 	let truth,supported;
@@ -2701,16 +2545,10 @@ function step_amraam(m,dt){
 function post_round(m,why){ m.fate=why; m.fated=sim_time;   // the recorder's last sample of this round carries the fate (#33 debrief) — shipped, unlike the dev log below
 	if(!DEV_MODE) return; const log=(globalThis as any).dev_missiles=(globalThis as any).dev_missiles||[];
 	log.push({why, kind:"120c", flew:+(m.flew??0).toFixed(1), phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), least:+(m.least??-1).toFixed(1), took:m.took||0, killed:!!m.killed, mask:m.mask??-1}); }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-// The rounds step in the same fixed 1/60 s quanta the flight core and the
-// bandit step in, however fast the display runs. They used to step once per
-// RENDER frame against targets that advance in whole 1/60 s jumps, and the
-// seeker's track-rate check read the jumps as motion: on a display off 60 Hz
-// the measured LOS rate alternated between frames that saw a jump and frames
-// that did not, and its two-frame average crossed the 20 deg/s ceiling on shots
-// the physics arrives on. Measured on the 2026-08-18 fight's first launch, the
-// same shot at the same target: 60 and 30 fps arrive at 1 m; 45, 40, 90, 120
-// and 144 fps break lock at 180-775 m — the recording's own break, at 756 m
-// and 2.3 s, is the 144 fps row. Six of six 9Ms 'missed as usual' that day.
+// Rounds step in the same fixed 1/60 s quanta as the flight core and the
+// bandit, whatever the display rate. Stepped per render frame against targets
+// that advance in 1/60 s jumps, the seeker's LOS-rate check read the jumps as
+// motion and broke lock on any display off 60 Hz.
 let missile_acc=0;
 function update_missiles(dt){
 	missile_acc+=Math.max(0,dt); let count=Math.floor(missile_acc*60);
@@ -2744,11 +2582,10 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 				const sx=m.lx-m.px, sy=m.ly-m.py, sz=m.lz-m.pz, sd=Math.hypot(sx,sy,sz)||1;   // the seeker is ON the flare now: re-reference the track, or the aim-point swap reads as an LOS-rate spike and breaks the lock at the seduction instant (mirrors the server)
 				m.sx=sx/sd; m.sy=sy/sd; m.sz=sz/sd; } }
 	} else if(!(t&&sim_time-(t.flared_at??-9)<0.8)) m.window=false;   // whoever the target is: their own dispense owns the window
-	// Proximity fuse (armed): independent of the seeker — a broken lock leaves the
-	// warhead live, and it detonates at the CLOSEST APPROACH within this step, not
-	// at the first frame-sampled range under the envelope (which burst at 8-12 m,
-	// outside the 5 m lethal radius, and never at all once the terminal LOS rate
-	// broke the lock against an evading target). Mirrors the server (#133 follow-up).
+	// Proximity fuse: independent of the seeker (a broken lock leaves the warhead
+	// live), judged at the closest approach within the step rather than the first
+	// sampled range, which burst outside the 5 m lethal radius. Mirrors the
+	// server.
 	if(m.flew>0.6 && t && (t===ownship ? crash_t<=0 : (t.group && t.group.visible))){   // the ownship is a target while it FLIES, not while its mesh renders: in the hud view the airframe group is hidden, and gating the fuse on it let four of the bandit's heaters pass at 2-32 m of a straight-and-level pilot without one detonating (recording 01a0175c, 2026-08-18)
 		const rx=wrap_axis(t.pos.x-m.px), ry=t.pos.y-m.py, rz=wrap_axis(t.pos.z-m.pz);
 		const cvx=(t.velx??t.fwd.x*t.speed)-m.vx, cvy=(t.vely??t.fwd.y*t.speed)-m.vy, cvz=(t.velz??t.fwd.z*t.speed)-m.vz;
@@ -2846,11 +2683,6 @@ function body_offset(st,x,y,z){ const up=st.up||world_up; const right=st.right||
 // ownship = player
 const ownship=make_state(new THREE.Vector3(CARRIER.x+70,CARRIER.deckY+1.8,CARRIER.z-6),new THREE.Vector3(1,0,0),0);
 ownship.player=true; ownship.q=new THREE.Quaternion(); ownship.up=new THREE.Vector3(0,1,0); ownship.right=new THREE.Vector3(0,0,1);
-// magazine: AIM-9s aboard — four everywhere, the real jet's tips plus one
-// LAU-127 dual-rail pair (the server arms the same four, and validates). The
-// airframe models only the wingtip rails, so missiles three and four launch
-// from a visibly clean jet and the stores mass/drag covers at most the two
-// tips; #226 owns doing stores properly.
 function magazine(){ return stores_rounds(ownship.loadout||loadout()).length; }   // the flown loadout's round count in SMS firing order (#17): six for Fox 2, zero for Gun or a guns-only match
 ownship.vel_dir=ownship.fwd.clone(); ownship.throttle=0.85; ownship.burner=0; ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(loadout()).length; ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1;
 ownship.launching=false;
@@ -2858,11 +2690,11 @@ ownship.launching=false;
 (()=>{ const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 	ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); })();
 const bandit=make_state(new THREE.Vector3(3000,2400,-1000),new THREE.Vector3(-0.3,0,1),195);
-// ============================================================================ battle (#78)
-// Single-player damage authority: the SAME Go battle package the multiplayer
-// server runs natively, through the wasm exports. The bandit and every extra
-// carry a "hulk" (a model-less hit body); the ownship's wounds land straight
-// in the flight core's damage state, so the aero degrades on the next step.
+// ============================================================================
+// battle (#78) Single-player damage authority is the same Go battle package the
+// server runs, through the wasm exports. The bandit and every extra carry a
+// hulk (a model-less hit body); the ownship's wounds land in the flight core's
+// damage state.
 let battle_tick=0, battle_reset=true, battle_rigged=false;
 let net_waiting=false;   // joust waiting room (#88): the server holds the lone first player frozen at the ring until the opponent joins
 let weapons_hold=false;   // joust weapons hold (#87): guns and missiles inhibited until the MERGE — either aircraft crossing the other's 3/9 line; released by the fighton event (MP) or the local check (SP)
@@ -2910,13 +2742,9 @@ function bandit_racks(){ const book=stores_catalog(); if(!book||!battle_rigged) 
 function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c");   // battle_rigged: mission start races the async wasm load and battle_hulk silently no-ops until the core lands — the frame loop retries until the rig takes (an unrigged hulk made the bandit UNHITTABLE: every gun burst and missile blast on him no-opped for the whole mission)
 	bandit.harm={thrust:0,wing:0,killed:false,burning:false,fire:[0,0],leak:0}; battle_reset=true; bandit_dispensed=0; bandit_words=null;
 	for(const m of impact_marks.splice(0)) m.parent?.remove(m); }   // a fresh fight starts unscarred — marks otherwise survive the respawn on the persistent bandit group
-// bandit_destroy ends the DUEL: a joust is one fight to one kill, so the bandit
-// does not respawn — the sky stays empty and the pilot ends the mission from
-// the menu (and launches another if they want one). The endless-rematch loop
-// this replaces made a victory feel like a lap counter. The match row and the
-// recording are written at exit as always; the kill is already on the counters.
-// why names the cause, as crash_ownship(why) does for the ownship. The
-// fallback stays only for a caller that genuinely cannot say.
+// bandit_destroy ends the duel: the bandit does not respawn; the pilot ends the
+// mission from the menu. `why` names the cause, as crash_ownship(why) does; the
+// fallback is for a caller that cannot say.
 function bandit_destroy(why){ bandit.fate=bandit.fate||why||"fire"; bandit.fated=sim_time; explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
 	has_enemy=false; bandit.group.visible=false;
 	notice(translate("KILL")); }
@@ -3311,17 +3139,11 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 		m.position.set(w.x, deck_y_at(carrier_model,w.x,w.z,dy), w.z); m.rotation.y=Math.atan2(-fwdz,fwdx); scene.add(m);
 		return { mesh:m, home:m.position.clone() };
 	});
-	// --- jet blast deflectors: a Mk 7 panel behind each cat spot, engine-animated ---
-	// The painted JBD boxes (plan-derived, centred on each track 18-24 m aft of the spot)
-	// are the FOOTPRINT: the panel fills the box, hinged at its FORWARD edge, 1.5 cm above
-	// deck while it moves (never coplanar — the z-fight rule), rising to 50° behind a hooked
-	// jet. Fully down the mesh is HIDDEN and the painted deck is the flush panel — the real
-	// panels are recessed flush, and any rendered plate, even deck-textured (the taxi face
-	// samples the bake at the panel's own footprint), reads raised at grazing angles: its
-	// edge halves the border dashes, parallax doubles them, and the steel side face draws a
-	// dark outline. The underside the queued jet sees when it's raised is ribbed steel.
-	// Raised, a near-black pit quad and three hydraulic rams appear in the footprint — the
-	// recess the real panel lies in.
+	// Jet blast deflectors: a Mk 7 panel filling each painted JBD box, hinged at
+	// its forward edge, 1.5 cm above deck while moving (never coplanar), rising to
+	// 50° behind a hooked jet. Fully down the mesh is hidden and the painted deck
+	// is the flush panel - any rendered plate reads raised at grazing angles.
+	// Raised, a pit quad and three rams fill the footprint.
 	const jbdSteel=new THREE.MeshStandardMaterial({color:0x7a8087,metalness:0.35,roughness:0.62});
 	const jbdDeck=new THREE.MeshStandardMaterial({color:0x5e605c,metalness:0.05,roughness:0.95});   // fallback only: a carrier without a deck_baked material
 	const jbdPitM=new THREE.MeshStandardMaterial({color:0x0c0d0f,metalness:0.1,roughness:1.0});
@@ -3495,12 +3317,10 @@ function instrument_backlight(){
 let cockpit_flood=null;
 function update_shuttles(){   // the hooked cat's shuttle rides with the jet's launch bar; the others sit home
 	if(!carrier_shuttles) return;
-	// The shuttle is mechanically attached to the launch bar, so it follows the bar tip
-	// whenever the jet is HOOKED — parked (the holdback spring stretches the nose ~0.2-0.8 m
-	// forward of the spot at run-up power) as well as through the stroke. Drawing it only
-	// during the launch left it pinned at the spot while the bar strained forward, so the
-	// jet looked parked in front of the shuttle. The horn (local -0.22 m) meets the deployed
-	// bar tip (~0.06 m ahead of the nose gear) when the group origin leads the nose gear by 0.28 m.
+	// The shuttle follows the launch bar tip whenever the jet is hooked - parked
+	// (the holdback stretches the nose 0.2-0.8 m forward at run-up) as well as
+	// through the stroke. The horn (local -0.22 m) meets the deployed bar tip when
+	// the group origin leads the nose gear by 0.28 m.
 	const active=ownship.launching?cat_idx:on_cat_spot();   // the cat the jet is hooked to (on_cat_spot is -1 mid-launch)
 	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
 	for(let i=0;i<carrier_shuttles.length;i++){ const s=carrier_shuttles[i];
@@ -3574,11 +3394,9 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 	flow_state={t, fuel:out[STATE.fuel]||0, pph:flow_state.pph};
 	const sL=THREE.MathUtils.clamp(out[STATE.engine]||0,0,1), sR=THREE.MathUtils.clamp(out[STATE.engine+2]||0,0,1);
 	const rL=THREE.MathUtils.clamp(out[STATE.engine+1]||0,0,1), rR=THREE.MathUtils.clamp(out[STATE.engine+3]||0,0,1);
-	// The instruments read what the DAMAGED engine actually does (#41): the core
-	// keeps spool as the commanded thrust basis and scales output by health, so
-	// the gauges scale the same way — a dead core windmills near 35% N2 with a
-	// cooling can, instead of showing 99%/810°C on the page the pilot opens to
-	// find out which engine is gone (NATOPS 15.1).
+	// Gauges read the damaged engine (#41): the core keeps spool as the commanded
+	// basis and scales output by health, so the gauges scale the same way - a dead
+	// core windmills near 35% N2 with a cooling can (NATOPS 15.1).
 	const hL=1-THREE.MathUtils.clamp(out[STATE.engine_harm]||0,0,1), hR=1-THREE.MathUtils.clamp(out[STATE.engine_harm+1]||0,0,1);
 	const gL=sL*hL, gR=sR*hR, bL=rL*hL, bR=rR*hR;   // health-weighted spool/reheat: the gauges' and the effects' drive
 	const vx=out[STATE.velocity]||0, vz=out[STATE.velocity+2]||0, vh=Math.hypot(vx,vz);   // horizontal velocity: HSI ground track and groundspeed
@@ -3608,11 +3426,8 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 	const ind=ownship.group.userData.indexer;
 	if(ind&&INDEXER_TEST){ ind.slow.opacity=1; ind.donut.opacity=1; ind.fast.opacity=1; }
 	else if(ind){ const devd=(out[STATE.alpha]||0)/D2R-8.1;   // Control.Onspeed, the PA on-speed alpha datum (trim.go)
-		// The indexer arms with the gear AND weight off wheels, and FLASHES
-		// when the hook is up (NATOPS 2.12.10) — the jet telling you at eye
-		// level that you forgot it, long before the hook-up waveoff at 1,200 m.
-		// It was alpha alone: steady on a hook-up approach, and still lit
-		// through the rollout after a trap.
+		// The indexer lights with the gear down and weight off wheels, and flashes
+		// when the hook is up (NATOPS 2.12.10).
 		const blink=((ownship.hook??0)<0.5)?(Math.floor(sim_time*3)%2):1;
 		const lit=(out[STATE.extension]||0)>0.9 && !ownship.grounded && blink>0;
 		ind.slow.opacity = lit?THREE.MathUtils.clamp((devd-0.4)/0.5,0,1):0;
@@ -3686,11 +3501,9 @@ let flyby_pos=null, flyby_side=1;          // flypast view: fixed world point th
 let marshal=null, pattern=null;   // Case III script / Case I-II visual pattern (#50)   // Case III recovery state (#205): {push: sim_time of the assigned EAT, commenced, platform, dirty, ball} — null outside a Case III mission
 const MARSHAL_PUSH=DEV_MODE&&+(new URLSearchParams(location.search).get("push")||0)>0?+(new URLSearchParams(location.search).get("push")||0):360;   // one full six-minute racetrack to the push; &push=N (dev) shortens it for testing
 function clock_text(seconds){ const s=Math.max(0,Math.round(seconds)); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
-// marshal_watch: the Case III radio script, driven by range and altitude. The
-// controller calls come from range gates (MARSHAL/APPROACH/PADDLES callsigns
-// verbatim, call words localised — the #139 radio rule); the pilot's own calls
-// carry the callsign. Commencing is judged against the assigned push time:
-// within ±10 s is on time, as the real recovery demands.
+// marshal_watch: the Case III radio script by range and altitude. Controller
+// callsigns verbatim, call words localised (the #139 radio rule). Commencing
+// within ±10 s of the assigned push time is on time.
 function marshal_watch(){ if(!marshal||!running) return;
 	const range=Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),wrap_axis(CARRIER.z-ownship.pos.z));
 	if(!marshal.commenced){ if(range<20.5*1852){ marshal.commenced=true;
@@ -3702,11 +3515,9 @@ function marshal_watch(){ if(!marshal||!running) return;
 	if(!marshal.platform && ownship.pos.y<1524){ marshal.platform=true; comm((cfg.callsign||"701")+": "+translate("PLATFORM"), "#9fd0ff"); }
 	if(!marshal.dirty && range<10*1852){ marshal.dirty=true; comm("APPROACH: "+translate("LEVEL AT 1200, DIRTY UP"), "#9fd0ff"); }
 	if(!marshal.ball && range<0.75*1852){ marshal.ball=true; call_the_ball(); } }
-// pattern_watch is the Case I/II analogue of marshal_watch (#50): the visual
-// pattern's own gates, in NATOPS 8.2.10's order — the break, the 250 kt
-// dirty-up, the 600 ft downwind, the abeam, and the ball. Case III was fully
-// scripted while Case I — the mode a player picks in order TO FLY THE
-// PATTERN — offered nothing at all between spawn and the LSO watch.
+// pattern_watch (#50): the Case I/II visual pattern's gates in NATOPS 8.2.10's
+// order - the break, the 250 kt dirty-up, the 600 ft downwind, the abeam, and
+// the ball.
 function pattern_watch(){ if(!pattern||!running) return;
 	const range=Math.hypot(wrap_axis(CARRIER.x-ownship.pos.x),wrap_axis(CARRIER.z-ownship.pos.z));
 	const feet=ownship.pos.y*3.28084, kt=(ownship.cas||0)*1.9438;
@@ -3900,20 +3711,12 @@ stage.addEventListener("wheel",e=>{ e.preventDefault();   // scroll = zoom (any 
 	zoom_target=THREE.MathUtils.clamp(zoom_target*Math.pow(1.5,notch),zoom_floor(),4); zoom_persist();
 },{ signal, passive:false });
 stage.addEventListener("pointercancel",end_drag,{ signal });
-// Remappable input actions (#74): defaults here, user overrides in cfg.keys
-// (the menu's Keys tab). Joystick buttons bind to ACTIONS and replay the
-// action's current key as a synthetic event, so pad binds follow key remaps.
-// The table itself lives in ./keys, which the menu's Keys tab already reads —
-// ONE table, because two drifted: the tab advertised eject on J while the
-// engine had moved it to Shift+E (J became the jettison family, and a pilot
-// reaching for jettison must never punch out), and twelve actions the engine
-// binds — look.target, both zooms, the jettison pair, all three radar controls,
-// caution.reset, dump and the two cutoffs — were absent from the tab entirely,
-// so it drew them as unbound. keys.test.ts now fails if the two disagree.
-// #30: V cycles the ACM condition, a real key rather than None — pad buttons
-// replay the bound key, and "None" would fire every unbound action at once.
-// Chord actions are "Shift+<code>", matched against the full chord, so Shift+F
-// never also fires flares.
+// Remappable input actions (#74): defaults in ./keys (one table, shared with
+// the menu's Keys tab - keys.test.ts fails if they disagree), user overrides in
+// cfg.keys. Joystick buttons bind to actions and replay the action's current
+// key as a synthetic event, so every action needs a real key ("None" would fire
+// every unbound action at once). Chord actions are "Shift+<code>", matched
+// against the full chord.
 const KEYS=KEY_DEFAULTS;
 function key_of(action){ return (cfg.keys&&cfg.keys[action])||KEYS[action]; }
 let gamepad_seen=false;
@@ -3939,15 +3742,10 @@ function pad_lever(pad,entry,name){   // "N"/"-N" axis entry -> travel fraction 
 		lever.armed=true; }
 	return THREE.MathUtils.clamp((value+1)/2,0,1); }   // the plain ±1 HID range, 1:1 across the travel (the VelocityOne reads clean ±1.00 at its stops; end margins just made dead zones). NEVER normalise by the observed sweep: treating the advancing edge as an end stop commanded full afterburner at half throttle travel
 
-// A stick that VANISHES has to earn control again when it returns. The arming
-// guard above only protects the FIRST arming: it takes the axis's first report
-// as `rest` and ignores the lever until it moves off it. Most sticks report a
-// phantom CENTRE until a control is first moved, so on a reconnect the axis lies
-// again — but `armed` was still true from before, so the guard was bypassed and
-// the phantom went straight through as a command. Measured on the VelocityOne
-// 2026-08-11: unplugging and replugging mid-flight ran the throttle to 50% power
-// and pushed the speed brake half out, with nothing touched. Forgetting the
-// arming makes the returning stick wait for a deliberate sweep, as at startup.
+// A reconnected stick must earn control again: most sticks report a phantom
+// centre until a control is moved, and with `armed` still true the phantom went
+// straight through as a command (throttle to 50%, speed brake half out).
+// Forgetting the arming makes it wait for a deliberate sweep, as at startup.
 function pad_forget_levers(){ for(const name in pad_levers){ pad_levers[name].rest=undefined; pad_levers[name].armed=false; } }
 
 function read_gamepad(){ const pads=(navigator.getGamepads&&navigator.getGamepads())||[];   // #74: the menu-selected stick when present, else the first connected; browsers expose pads only after a button press
@@ -3986,20 +3784,11 @@ function read_input(dt){
 	// Hold ~0.5 s for full deflection.
 	const shape=(current,target)=>{ const toward=Math.abs(target)>Math.abs(current)&&target*current>=0;
 		const R=(toward?2.0:6.0)*dt; return current+THREE.MathUtils.clamp(target-current,-R,R); };
-	// Keyboard pitch is a G-COMMAND (#242). The core's UA law already maps
-	// stick deflection to a load-factor demand (the bot's compose exploits the
-	// same linearity), so shaping the STICK trajectory IS shaping the g
-	// trajectory — no second feedback loop wrapped around the FCS to fight it.
-	// The attack ramp above makes a held key a smooth g ramp and a tap a small
-	// g increment; what it could never fix was RELEASE: letting go at a hard
-	// pull recentred the stick in ~170 ms, a step no arm would command, and
-	// the airframe answered with the pitch bobble the pilot then pumped W/S
-	// against ("extreme oscillations when releasing the s key"). Released
-	// pitch now UNLOADS: an exponential decay (tau ~0.33 s, floored so the
-	// tail does not linger) that walks the g back to level the way a pilot
-	// eases a pull. Only when BOTH keys are up — an actively held opposite
-	// key keeps the fast rate, so push-after-pull stays crisp. Roll and yaw
-	// keep the fast recentre: stopping a roll promptly is what you want.
+	// Keyboard pitch is a g-command (#242): the core's UA law maps stick
+	// deflection to load factor, so shaping the stick trajectory is shaping the g.
+	// Release unloads through an exponential decay (tau ~0.33 s, floored) rather
+	// than the fast recentre, which stepped the stick home in ~170 ms and set up a
+	// pitch bobble. Only with both keys up; roll and yaw keep the fast recentre.
 	if(tp===0&&key_axes.pitch!==0){ const R=Math.max(1.2,Math.abs(key_axes.pitch)*3.0)*dt;
 		key_axes.pitch=key_axes.pitch-THREE.MathUtils.clamp(key_axes.pitch,-R,R); }
 	else key_axes.pitch=shape(key_axes.pitch,tp);   // keyboard stays live alongside the stick — larger magnitude wins per axis
@@ -4081,10 +3870,8 @@ function read_input(dt){
 	if(throttling&&pad_levers.throttle){ pad_levers.throttle.armed=false; pad_levers.throttle.rest=undefined; }   // the keyboard takes the throttle back from an armed physical lever (else the lever pins it every frame and e.g. the catapult unhook — throttle below 30% + full pedal — can never fire); the next deliberate lever sweep re-takes control
 	if(keys.has(key_of("throttle.up"))){ if(ownship.throttle>=1) ownship.burner=Math.min(1,(ownship.burner??0)+dt*0.8); else ownship.throttle=Math.min(1,ownship.throttle+dt*0.5); }   // throttle up (], held & ramped); past MIL the lever advances through the afterburner range
 	// Approach Power Compensator (#202): with ATC engaged the throttle holds
-	// on-speed alpha and the pilot flies glideslope/lineup with the stick.
-	// Auto-disengage on touchdown, gear retraction, or any manual throttle
-	// input (keyboard keys or an armed physical lever) — the real jet's
-	// force-override. Alpha in degrees from the flight core (ownship.aoa).
+	// on-speed alpha. Auto-disengage on touchdown, gear retraction, or any manual
+	// throttle input (keys or an armed physical lever).
 	if(atc_on){
 		if(on_ground()||ownship.gearTarget>0.5||throttling||(pad_levers.throttle&&pad_levers.throttle.armed)) atc_on=false;   // gearTarget>0.5 = gear UP (retraction disengages)
 		else { const rate=(ownship.aoa-atc_alpha)/Math.max(dt,1e-3); atc_alpha=ownship.aoa;
@@ -4122,9 +3909,8 @@ function recording_sample(){
 		list.push({ id, x:st.pos.x, y:st.pos.y, z:st.pos.z, roll:a.roll, pitch:a.pitch, yaw:a.yaw,
 			name:"FA-18C", label, colour, kind:"Air+FixedWing", mode, data, ...(skill?{skill}:{}) }); };
 	// The ownship's flight data comes from the instrument tail the gauges read
-	// (#216) — TacView graphs AOA/G/TAS/IAS/Mach natively, which is what turns a
-	// replay into the handling trace the old CSV telemetry carried. The
-	// control-law channels stay behind developer mode with the doctrine one.
+	// (#216): TacView graphs AOA/G/TAS/IAS/Mach natively. Control-law channels
+	// stay behind developer mode.
 	const out=last_out;
 	// Fuel and rounds ride in the SHIPPED recording, not behind developer mode:
 	// "what did that fight cost me" is a debrief question every pilot asks, and
@@ -4164,12 +3950,10 @@ function recording_sample(){
 	if(MULTIPLAYER&&net){ for(const [slot,st] of remotes.entries()){ if(!st.group||!st.group.visible) continue;
 		const team=net.teams.get(slot)||"";
 		add(st,10+slot,st.name||net.names.get(slot)||"",team==="red"?"Red":team==="blue"?"Blue":"Orange"); } }
-	// Missiles ride as their own objects (#33 debrief): every round in flight,
-	// plus one grace sample after it ends so the fate is written. Ids are
-	// unique per LAUNCH (pool slot × shot number), never reused within a
-	// recording, so a delta parser sees each round appear once and die once.
-	// Shooter and target map to the recorded ids above (1 ownship, 2 bandit,
-	// 10+slot remotes).
+	// Missiles ride as their own objects (#33), plus one grace sample after the
+	// end so the fate is written. Ids are unique per launch (pool slot × shot
+	// number), never reused within a recording. Shooter and target use the
+	// recorded ids above.
 	const recorded=recorded_state;
 	for(let k=0;k<missiles.length;k++){ const m=missiles[k]; if(!m.kind) continue;
 		const live=m.active, grace=!live&&m.fated>0&&sim_time-m.fated<1&&m.shot>0;
@@ -4207,15 +3991,11 @@ let mission_zero=0;       // sim_time at mission start, for the outcome line's c
 let on_over=null;         // app callback: the mission ended with a result
 let hit_flash=0;   // red vignette pulse when rounds land on the ownship
 const audio_prev={launching:false,trapped:false,grounded:false,cautions:0};   // one-shot edge detection (#73)
-// ---- Master caution/warning model (#47): the caution SET is built in the
-// sim step, keyed and view-independent — the tone, the glareshield lamp, and
-// the HUD stack read this one source. It was a count published by draw_hud:
-// dead in every view that returns before the stack (chase, map, and the
-// head-down DDI view — the one mode where the ear is the only channel), and
-// blind to escalation (L ENG catching fire kept the count at one). NATOPS
-// 2.17.2.1: the tone fires when ANY caution comes ON (a new KEY), the light
-// goes out when PRESSED, and later cautions re-arm it. Warnings (red tier)
-// carry their own tone — explicitly not backed by the caution beep (2.17.3).
+// Master caution/warning (#47): the caution set is built in the sim step, keyed
+// and view-independent; the tone, the glareshield lamp and the HUD stack all
+// read it. NATOPS 2.17.2.1: the tone fires on any new caution key, the light
+// clears when pressed and re-arms on the next. Warnings (red) carry their own
+// tone (2.17.3).
 let caution_list=[];        // [key, label, red] rows, sim-step fresh — the renderers' source
 let caution_keys=new Set(); // keys present last step (the new-key edge)
 let caution_lamp=false;     // the glareshield MASTER CAUTION: latched by a new caution, cleared by the reset key, re-lit by the next new one
@@ -4249,11 +4029,9 @@ let law_armed=true;   // radar-altimeter low-altitude warning: one aural per des
 let dev_pip=null;   // dev (#243/pipper): last drawn director geometry for headless assertions
 let law_active=false;   // the warning is LIVE this frame: drives the repeating aural AND the flashing break-X on HUD/helmet (#243 — the user flew into the sea padlocked, gear up, in silence)
 let last_out=null;   // the core's latest output words: the HUD caution panel reads damage straight from them
-// burn_trail: flame + sooty smoke from a burning aircraft, rate by intensity.
-// The gun-camera rules (#239): one CONNECTED clumped plume, darkest and
-// warmest at the head — the flame interpenetrates the young smoke and tints
-// it from within — paling and swelling as it ages down the ribbon. Clustered
-// sub-puffs give the cauliflower texture a single row of blobs never had.
+// burn_trail: flame + sooty smoke from a burning aircraft, rate by intensity
+// (#239) - one connected clumped plume, darkest and warmest at the head, paling
+// and swelling as it ages.
 function burn_trail(pos,intensity,vx,_vy,vz){ if(intensity<=0.02) return;
 	if(Math.random()<Math.min(1,intensity)){
 		const cluster=1+(Math.random()<0.25+0.55*Math.min(1,intensity)?1:0);   // a small fire puffs singly; a torching jet emits dense clusters
@@ -4283,11 +4061,6 @@ function leak_trail(pos,rate,vx,_vy,vz){ if(Math.random()>Math.min(1,rate)) retu
 	smoke.ttl[k]=smoke.life[k]=1.4+Math.random()*0.8; smoke.sz[k]=0.26+Math.random()*0.10; smoke.gr[k]=0.55;   // fuel vapour: pale, fast-swelling, quick to thin (#239)
 	smoke.r[k]=0.95;smoke.g[k]=0.96;smoke.b[k]=0.98; }
 let hud_pa=false;   // the virtual flap switch's HUD mirror (see the landing-symbology gate)
-// hit_sparks: the flash where a round strikes an airframe (#217). Real cannon
-// strikes are a brief white-hot flash with sparks thrown along the round's
-// path, gone in well under a tenth of a second — so these are short-lived,
-// additive, and slightly random in size, and a burst walking across the target
-// leaves the line of flashes the pilot actually sees.
 let _spark_count=0;   // dev: how many strike flashes have been spawned
 const impact_marks=[];
 function impact_mark_texture(){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d"); const g=x.createRadialGradient(32,32,2,32,32,30);
@@ -4366,16 +4139,10 @@ if(DEV_MODE) (globalThis as any).dev_heat=()=>{ const z=heat_zone(); if(!z) retu
 if(DEV_MODE) (globalThis as any).dev_zone=()=>{ const z=launch_zone(); if(!z) return null;   // #27 phase 2: the live DLZ ladder and its shoot cue, as the HUD draws them
 	return { aero:Math.round(z.aero), max:Math.round(z.max), escape:Math.round(z.escape), minimum:Math.round(z.minimum), range:Math.round(z.range||0), active:+((z.active||0).toFixed(1)), cue:shoot_cue(z) }; };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 function hit_sparks(x,y,z,vx,vy,vz,target,local){ _spark_count++; add_impact_mark(target,local);
-	// Re-read against real gun-camera frames (#239, the 3 June 1967 F-105 on a
-	// MiG-17 in colour): 20 mm HEI lands as a SOFT VOLUMETRIC FLASH CLOUD —
-	// warm white-cream, a metre or two across, cauliflower edges, hugging the
-	// skin — because each round is a small high-explosive detonation, not a
-	// spark shower. So the LEAD is now a burst-puff in the smoke pool; the
-	// additive hot core stays (the earlier trial, #217, proved additive is
-	// what reads over a grey airframe) but trimmed, its sparks thrown as
-	// short collinear STREAKS (the API garnish of the WWII footage). Heavy
-	// walking bursts occasionally shed a dark tumbling flake — the panel
-	// visibly leaving the MiG's wing in the same frame.
+	// hit_sparks (#217/#239): 20 mm HEI lands as a soft warm flash cloud a metre
+	// or two across, hugging the skin (a burst-puff in the smoke pool), with a
+	// trimmed additive hot core, short collinear spark streaks, and occasionally a
+	// dark tumbling flake.
 	for(let i=0;i<3;i++){ const k=pool_spawn(smoke); if(k<0) break;   // the HEI cloud: one bright body, two wisps
 		smoke.px[k]=x+(Math.random()-0.5)*1.2; smoke.py[k]=y+(Math.random()-0.5)*1.0; smoke.pz[k]=z+(Math.random()-0.5)*1.2;
 		smoke.vx[k]=(vx||0)*0.9+(Math.random()-0.5)*5; smoke.vy[k]=(vy||0)*0.9+(Math.random()-0.5)*5; smoke.vz[k]=(vz||0)*0.9+(Math.random()-0.5)*5;
@@ -4415,10 +4182,8 @@ function update_transient_fx(dt){ for(let i=transient_fx.length-1;i>=0;i--){ con
 function explosion_at(x,y,z,kind){
 	audio_explosion(Math.hypot(x-ownship.pos.x,y-ownship.pos.y,z-ownship.pos.z));
 	const water=kind==="water"||(kind===undefined&&y<2); transient_blast(x,y,z,water);
-	// Two stages (#239): a fast-swelling fireball that soots into a slower,
-	// longer-lived dark cloud — fewer particles than the old 64, because each
-	// one now GROWS instead of holding its spawn size — plus shed wreckage on
-	// its own ballistic arcs drawing micro-trails as it falls.
+	// Two stages (#239): a fast-swelling fireball sooting into a slower dark
+	// cloud, plus shed wreckage on its own ballistic arcs.
 	for(let i=0;i<36;i++){ const k=pool_spawn(smoke); if(k<0) break;
 	const fire=i<14, a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=fire?(9+Math.random()*40):(3+Math.random()*15);
 	smoke.px[k]=x; smoke.py[k]=y+1; smoke.pz[k]=z;
@@ -4492,11 +4257,7 @@ function check_collisions(){   // ownship vs sea / buildings / structures / carr
 		const h=deck_y_at(carrier_model,p.x,p.z,-1e9);   // the flat deck is a landing surface (ground floor); only the taller island superstructure is an obstacle here
 		if(h>CARRIER.deckY+4 && p.y<h) return crash_ownship("island");   // flew into the island superstructure
 	}
-	// A midair kills BOTH. This drew an explosion on the bandit and then merely
-	// relocated it — damage intact, no consequence — so the player watched it
-	// blow up and it flew on. bandit_destroy is the real thing (explosion,
-	// duel over); no kill is credited, because flying into someone is
-	// not shooting them down.
+	// A midair kills both: bandit_destroy ends the duel, and no kill is credited.
 	if(has_enemy && wrap_distance(p,bandit.pos)<14){ bandit_destroy("midair"); return crash_ownship("midair"); }
 }
 function lso_grade(){   // LSO pass grade from the in-close deviations and the touchdown: OK / FAIR / NO-GRADE / CUT
@@ -4658,12 +4419,10 @@ function test_drive(){   // hold the prescribed approach exactly; hand control b
 	if(crash_t>0 || ownship.trapped || (ownship.touch && ownship.touch.t>=t.t0)){ test_handoff(t); return; }   // this branch fires a frame before the state checks below (the verdict path records the touch first) — it must ALSO start the rollout grace
 	const b=flight_get();   // hold the prescribed approach exactly; position integrates in the core
 	if(b[STATE.wow]>0.5 || b[STATE.contact]>=0 || b[STATE.touch]>0.5){ test_handoff(t); return; }
-	// EARLY RELEASE ~1.5 m up, with a CLEAN on-speed state: the settle,
-	// touchdown, wire catch and arrest then run as pure core physics, which is
-	// frame-rate independent (like a real un-scripted landing). Re-pinning the
-	// approach THROUGH the gear/wire engagement fights the physics for a whole
-	// frame and resonates with the frame rate — banking the rollout up to ~25°
-	// around 15 fps while 60 fps looked clean (#72 trap-topple-at-low-fps).
+	// Early release ~1.5 m up with a clean on-speed state: settle, touchdown, wire
+	// catch and arrest then run as pure core physics. Re-pinning the approach
+	// through the engagement fights the physics for a frame and resonates with the
+	// frame rate (#72, rollout banked ~25° at 15 fps).
 	if(!t.bolter && t.carrier && ownship.pos.y < t.touchY + 1.5){   // CARRIER only (and not the bolter): the early clean hand-off exists solely to keep the wire/gear re-pin fight off the frame rate (#72). On a runway it just adds ~4 m/s of free-fall sink that trips the strict belly verdict and drops the nose-high tail-strike case flat — runway scenarios release at contact like before. (The bolter must fly its scripted high approach clear over the wires; releasing early with power drops it onto one.)
 		b[STATE.velocity]=t.vd.x*t.V; b[STATE.velocity+1]=t.vd.y*t.V; b[STATE.velocity+2]=t.vd.z*t.V;
 		b[STATE.attitude]=t.q.w; b[STATE.attitude+1]=t.q.x; b[STATE.attitude+2]=t.q.y; b[STATE.attitude+3]=t.q.z;
@@ -4700,14 +4459,10 @@ function flight_world(){
 		wires:SHIP.wires.map(fa=>({ a:{x:fa+SHIP.halfspan*STRIP_ULAT, y:0, z:strip_lat(fa)-SHIP.halfspan*STRIP_UFA}, b:{x:fa-SHIP.halfspan*STRIP_ULAT, y:0, z:strip_lat(fa)+SHIP.halfspan*STRIP_UFA} })) };   // pendants span SQUARE TO THE LANDING STRIP, as a real angled deck rigs them (the hook crosses them perpendicular on rollout); ship-axis-aligned wires skewed the catch geometry. NOT the topple fix — that was the world-side wing-leveler (#72 scenario 9) — but correct regardless
 	const cl=CLOUDS[cfg.clouds];
 	const cloud=(cl&&cl.flat<0.5)?{ base:cl.base, top:cl.top, high:cl.high, convective:1, gate:{ minimum:cl.gate[0], maximum:cl.gate[1] } }:undefined;   // #122: convective presets bump and lift; stratiform decks are STABLE air and stay deliberately smooth
-	// Wind (#44): ~25 kt from 070° — the Midway trades the deck already faces
-	// (yaw:20 aims the bow into them). This single key activates the whole of
-	// flight/wind.go — shear, veer, gusts, and the carrier burble — which had
-	// never run: Environment.Wind was assigned nowhere. Vector points WHERE
-	// THE AIR MOVES: from 070° means toward 250°, i.e. -x*sin(70°),+z... the
-	// core's frame has -z north, so blowing-toward-250° is x=-sin(250°+180°)…
-	// measured empirically instead: HUD wind arrow and drift on the 070° bow
-	// must read a HEADWIND on deck. 12.9 m/s ≈ 25 kt.
+	// Wind (#44): ~25 kt (12.9 m/s) from 070°, the trades the deck already faces.
+	// This key activates the whole of flight/wind.go (shear, veer, gusts, carrier
+	// burble). The vector points where the air moves, verified empirically: the
+	// HUD wind arrow on the 070° bow must read a headwind.
 	let wind={ x:-12.9*Math.sin(70*D2R), z:12.9*Math.cos(70*D2R) };   // blowing FROM 070 toward 250 in the world frame (x east, z south)
 	if(DEV_MODE){ const w=new URLSearchParams(location.search).get("wind"); if(w!==null){ const knots=parseFloat(w)||0; const scale=knots*0.5144/12.9; wind={ x:wind.x*scale, z:wind.z*scale }; } }   // &wind=<knots> (0 = calm) — headless A/B isolation of wind effects (#44)
 	return { aircraft:cfg.aircraft||"fa18c", environment:{ seed:1, wrap:WORLD_WRAP, cloud, wind, cheat:{ fuel:cheat("fuel") } }, world:{ sea:0, fields, carrier } };
@@ -4746,12 +4501,10 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	if(ownship.turned&&!ownship.taxied&&ownship.speed>4){ ownship.taxied=true; notice(translate("REARMED")); }   // announce the rearm only once the player TAXIES clear of the trap — so it never lands on top of the LSO grade at the stop (#72)   // end the LSO grade banner so REARMED replaces it cleanly instead of overprinting it (#72)
 	else if(wire<0&&prev_wire>=0){ ownship.trapped=false; }
 	prev_wire=wire;
-	// Airfield service: a full stop on the paved strip after a flight brings
-	// the ground crew — the carrier trap's choreography (service at the stop,
-	// REARMED announced through the same taxi-away line above). The flown gate
-	// keeps a runway spawn from being "serviced" it never needed; it re-arms
-	// only after genuinely flying again. Multiplayer has no airfields (and
-	// physics_strips stays empty there), so this is single-player by nature.
+	// Airfield service: a full stop on a paved strip after a flight rearms and
+	// refuels like the carrier trap. The flown gate stops a runway spawn being
+	// serviced before it has flown. Single-player only - multiplayer has no
+	// airfields.
 	if(!ownship.grounded && ownship.speed>50) ownship.flown=true;
 	if(ownship.flown && ownship.grounded && !ownship.trapped && ownship.speed<0.5 && on_strip(ownship.pos)){
 		ownship.flown=false; ownship.turned=true; ownship.taxied=false;
@@ -4770,13 +4523,11 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 	prev_wire=-1;
 	ownship.flown=false;   // a fresh spawn has not flown: no phantom airfield service (a respawn already carries a full load)
 	if(!test_active && !ownship.grounded && mission_start()==="case2"){
-		// The CORE owns approach trim (#158). On-speed is a wing condition, so the
-		// speed, the attitude and the power all follow from the weight and the
-		// droop schedule — carrying them here as measured constants is what let
-		// the old landing start go stale under the flight core and balloon off
-		// the glideslope. The client supplies only where and which way. Case II
-		// trims LEVEL (slope 0): established at 1,200 ft on the final bearing,
-		// the glideslope intercept ~3 nm ahead is the pilot's to fly (CV-1).
+		// The core owns approach trim (#158): on-speed follows from weight and the
+		// droop schedule, so the client supplies only where and which way - constants
+		// carried here went stale and ballooned off the glideslope. Case II trims
+		// level (slope 0) at 1,200 ft on the final bearing; the intercept ~3 nm ahead
+		// is the pilot's (CV-1).
 		ownship.throttle=flight_approach(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, 0, FUEL());
 		sync_core(flight_get()); return;
 	}
@@ -4788,11 +4539,10 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 		sync_core(flight_get()); return;
 	}
 	const b=flight_get();   // keep time (carrier pose, wind field) and fuel across resets
-	// ...but NEVER the damage block: every flight_push call site is a fresh-airframe moment
-	// (mission start, cat re-spot, scenario, respawn), and recycling the snapshot carried the
-	// crashed jet's damage into the respawn — folded gear with red cautions at the threshold,
-	// and worse, silent engine thrust loss + fuel leak (the client visuals reset, the core
-	// words didn't). Air starts were immune only because flight_level builds a fresh state.
+	// ...but never the damage block: every flight_push is a fresh-airframe moment
+	// (mission start, re-spot, scenario, respawn), and a recycled snapshot carries
+	// the crashed jet's damage - folded gear, thrust loss, leak - into the
+	// respawn.
 	for(let i=STATE.engine_harm;i<=STATE.stress;i++) b[i]=0;   // engine harm ×4, leak, drag, shift ×3, stress
 	for(let i=STATE.element;i<=STATE.gear_harm+2;i++) b[i]=0;   // element losses ×40, jams ×8, shed mass, gear struts ×3
 	if(ownship.speed<1){ const g=ground_height(ownship.pos.x,ownship.pos.z);   // ground spawns: rest the wheels ON the surface — legacy spawn heights assume the old glue, and an interpenetrated spawn fires the bottomed-out struts like a mortar
@@ -4834,10 +4584,8 @@ function verdict(out){   // judge the core's touchdown record: crash conditions 
 function fly_player(dt){
 	if(net_waiting){ hud_message(translate("WAITING FOR OPPONENT")); return; }   // joust waiting room: frozen at the ring, no sim, until the server's match-start respawn
 	if(crash_t>0||mission_done){ if(MULTIPLAYER){ read_input(dt); return; }   // multiplayer: hold in the fireball until the server's respawn event places us
-		// Single player: the crash ENDS the mission (#240) — every task, free
-		// flight included. The old silent respawn was worst in a joust, where
-		// the victorious bandit stands down and the fresh jet spawned into an
-		// EMPTY sky; the menu owns what happens next, with the outcome on it.
+		// Single player: the crash ends the mission (#240), every task included; the
+		// menu owns what happens next.
 		if(!mission_done){ crash_t-=dt;
 			if(crash_t<=0){ crash_t=0; mission_done=true;
 				if(on_over) on_over({ fate:ownship.fate||"crash", struck:ownship.struck||0, seconds:Math.max(0,sim_time-mission_zero) }); } }
@@ -4914,13 +4662,10 @@ function fly_player(dt){
 		audio_horn((ownship.gearTarget??0)>0.5&&ownship.pos.y<300&&ownship.speed<95&&!ownship.grounded&&!ownship.launching);
 		{ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;   // radar-altimeter low-altitude warning: descending through 250 ft AGL clean — the "altitude, altitude" moment; the gear coming down declares the descent deliberate
 			const sink=-(ownship.vely??0);   // m/s down
-			// The warning was GEAR-GATED: on approach it called descending through
-			// 250 ft, and in a fight — gear up — it said NOTHING; the pilot flew a
-			// padlocked jet into the sea in silence. Gear up, a fixed bug is also
-			// the wrong shape (a fast dive blows through any height before the
-			// call helps), so the clean trigger is ground CLOSURE: about six
-			// seconds from impact at the current sink, floored at 300 ft and
-			// capped at the 5,000 ft training hard deck.
+			// Gear up, the low-altitude warning triggers on ground closure - about six
+			// seconds from impact at the current sink, floored at 300 ft and capped at
+			// the 5,000 ft training hard deck - since a fixed bug is the wrong shape for
+			// a fast dive. Gear down it stays the 250 ft call.
 			const dirty=(ownship.gearTarget??0)>0.5&&agl<250&&sink>2;
 			const closure=(ownship.gearTarget??0)<=0.5&&sink>10&&agl<Math.min(5000,Math.max(300,sink*3.28084*6));
 			law_active=(dirty||closure)&&!ownship.grounded&&!ownship.launching&&crash_t<=0;
@@ -4939,29 +4684,18 @@ function fly_player(dt){
 	if(MULTIPLAYER && render_offset.lengthSq()>1e-8){ render_offset.multiplyScalar(Math.max(0,1-dt*7)); ownship.group.position.add(render_offset); }   // the correction shows as a ~150 ms visual decay, never a physics change
 	check_collisions();
 }
-// bandit_wrecked: the bandit against the same world the PLAYER is checked
-// against — terrain height, buildings, masts, the deck — not just a flat sea
-// line. The client owned obstacle collision for the ownship alone, so a bot
-// could fly through an island, a hangar or the carrier island untouched while
-// the same geometry killed the player instantly.
-// bandit_wrecked names WHAT it hit, or "" while it still flies. It used to
-// return a bare boolean and the caller defaulted every cause to "fire", so a
-// jet whose wing had been shot off and which then flew into the sea was
-// recorded as destroyed by a fire it never had. The geometry lives in
-// impact.ts, where it can be tested.
+// bandit_wrecked: the bandit against the same world the player is checked
+// against (terrain, buildings, masts, the deck). Returns what it hit, or ""
+// while it still flies, so the fate names the real cause. The geometry lives in
+// impact.ts, where it is tested.
 function bandit_wrecked(){
 	return impact_surface(bandit.pos, ground_height(bandit.pos.x,bandit.pos.z), obstacles.buildings, obstacles.posts,
 		carrier_model?{ x:CARRIER.x, z:CARRIER.z, deck:CARRIER.deckY, height:(x,z)=>deck_y_at(carrier_model,x,z,-1e9) }:undefined);
 }
 function fly_bandit(dt){
-	// The sea finishes a bandit whichever brain is flying it. This check lived
-	// only in the STRICKEN path, so a healthy bandit that flew itself into the
-	// water was caught nowhere — and the flight core has no ground, so it just
-	// kept descending for the rest of the mission. One recorded joust had it
-	// 81 km below sea level four minutes later, still reporting "cruise", with
-	// the target box pointing dutifully straight down while the player hunted
-	// for it at twenty feet. Counted as the player's kill, as the stricken
-	// path counts it: flying an opponent into the ground is a kill.
+	// The sea finishes a bandit whichever brain flies it - the flight core has no
+	// ground, so an unchecked bandit descends forever. Counted as the player's
+	// kill, as the stricken path counts it.
 	{ const hit=bandit_wrecked(); if(hit){ own_kills++; bandit_destroy(hit); return; } }
 	bandit_wounds();   // the wound trails draw on EVERY branch below: a bandit still flying under its brain with a dead engine streams smoke, exactly like a stricken one
 	if(bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5)){
@@ -4999,11 +4733,8 @@ function fly_bandit(dt){
 		const shots=menace_words(missiles as any, bandit);   // the wire lives in menace.ts, where it can be tested: the phase word carries the heater's fate (-2 beaten) as well as the radar round's guidance phase
 		bandit_menace(shots);   // every round in the air, eight words each: the brain defends against ours and paces its own by phase (#33)
 		// The brain advances fixed 1/60 s frames: run it through an accumulator like
-		// the flight core, not once per render frame — per-frame stepping scaled the
-		// bandit's SIM SPEED with the display (double speed at 120 Hz, slow motion
-		// below 60) and fed the missiles' LOS-rate measurement fixed-step position
-		// jumps over variable render dt, tripping the seeker's track ceiling at
-		// ranges where the true rate was a tenth of the limit.
+		// the flight core. Per-render-frame stepping scaled the bandit's sim speed
+		// with the display and fed the missiles' LOS-rate check position jumps.
 		bandit_acc+=Math.max(0,dt); let count=Math.floor(bandit_acc*60);
 		if(count>8){ count=8; bandit_acc=0; }   // a long stall: drop the debt rather than fast-forward (the flight core's rule)
 		else bandit_acc-=count/60;
@@ -5022,13 +4753,9 @@ function fly_bandit(dt){
 			bandit.reheat=Math.max(w[STATE.engine+1],w[STATE.engine+3]);   // achieved reheat: the flare-seduction burner factor reads it
 			_q.set(w[7],w[8],w[9],w[6]);   // words are W,X,Y,Z; three.js wants x,y,z,w
 			bandit.fwd.set(1,0,0).applyQuaternion(_q);
-			// The full basis, same convention as the ownship. The brain bandit
-			// flies the real model, so it HAS a roll — but only fwd was read
-			// back, leaving body_offset to fall back on a world-up basis (gun
-			// hit flashes landed on the wrong part of a rolled airframe) and
-			// the recorder to fall back on the kinematic AI's stale scalar
-			// bank, which for a brain bandit never updates: every recording so
-			// far shows it flying without ever rolling.
+			// Read back the full basis, same convention as the ownship: with only fwd,
+			// body_offset fell back to a world-up basis (hit flashes on the wrong part
+			// of a rolled airframe) and the recorder to a stale scalar bank.
 			(bandit.up??=new THREE.Vector3()).set(0,1,0).applyQuaternion(_q);
 			(bandit.right??=new THREE.Vector3()).set(0,0,1).applyQuaternion(_q);
 			bandit.group.quaternion.copy(_q);
@@ -5070,26 +4797,15 @@ function fly_bandit_stricken(dt){
 	else { const d=bandit.break_dir.clone(); d.y=-0.5; steer(bandit,d,dt,0.9,1.5); bandit.speed=Math.max(120,bandit.speed-30*dt); }   // wing gone: rolling descent
 	apply_orientation(bandit);
 }
-// bandit_wounds renders the bandit's damage at its true severity (#244): per-
-// engine fire intensity grades the burn from a thin lick to a torching trail
-// (the old binary burned at full blast or not at all), an engine knocked out
-// streams dark machinery smoke even before anything burns, and a holed tank
-// streams the same pale fuel mist the ownship shows. This is the feedback loop
-// the player's gunnery learns from — what a burst DID, readable at a glance —
-// and the plume is the ONE cue that reads on a small fast airframe at range.
-// It draws on every flight branch: it once lived only on the stricken path,
-// so a bandit wounded but still flying under its brain drew clean — the user
-// flew 115 s behind one at half thrust with no way to judge whether it was
-// finished, and followed it down to be sure (2026-08-15).
-// The outer wing PANELS. Battle sheds the outboard HALF of a wing's
-// elements, and the airframe builds its surfaces port-first as wing (8),
-// strake (2), stabilator (3), fin (3) — so the shed halves are elements 4-7
-// to port and 20-23 to starboard. The GLB carries those panels as their own
-// subtrees because the real jet folds them there, which means a lost wing is
-// a hide: the aileron, flaperon, outer slat, their covers and the wingtip
-// Sidewinder all go with it, being its children. battle/battle_test.go pins
-// the element ranges so a reordered airframe fails loudly rather than
-// silently hiding the wrong panel.
+// bandit_wounds (#244): the bandit's damage at its true severity - per-engine
+// fire intensity grades the burn, a knocked-out engine streams dark smoke
+// before anything burns, a holed tank streams fuel mist. Drawn on every flight
+// branch, not just the stricken one. PANELS: battle sheds the outboard half of
+// a wing's elements; the airframe builds wing (8), strake (2), stabilator (3),
+// fin (3) port-first, so the shed halves are elements 4-7 port and 20-23
+// starboard. Hiding the GLB's fold subtree takes the aileron, flaperon, outer
+// slat, covers and tip Sidewinder with it; battle/battle_test.go pins the
+// ranges.
 const PANELS=[{ node:"Left_Wing_Outer_81", first:4 }, { node:"Right_wing_outer_317", first:20 }];
 function shed_panels(st,words){ if(!st||!st.group||!words) return;
 	for(const panel of PANELS){
@@ -5225,11 +4941,9 @@ function step_world(dt){ sim_time+=dt;
 		if(s.along>2500 || s.along<-70){ ownship.pass={gs:0,az:0,n:0}; ownship.waved=false; ownship.groove=false; }   // outside the pass → fresh slate. The forward bound is -70 m, NOT 0: touchdown and the wire catch happen 0..-30 m past the reference, so resetting at 0 wiped the in-close data the frame before lso_grade() read it — every trap scored NO-GRADE for want of data (#72). A bolter/go-around rolls or flies well past -70 and still resets for the next pass.
 		else if(!ownship.grounded && s.dist<1852 && s.along>40){
 			const lineup=Math.abs(Math.atan2(s.lat,Math.max(s.along,1)))*180/Math.PI;
-			// ESTABLISHED gate: the LSO grades an aircraft in the groove — aligned
-			// and at approach speed — not every configured jet in the wedge. The
-			// Case I upwind runs up the WAKE, ~9° off the angled centreline and
-			// fast, and used to collect "high, lineup — wave off" for the flyby.
-			// Sticky once armed, so the drifted-past-6° wave still fires.
+			// Established gate: the LSO grades a jet in the groove (aligned, at approach
+			// speed), not the Case I upwind running up the wake ~9° off and fast. Sticky
+			// once armed so a drift past 6° still waves.
 			if(!ownship.groove && lineup<5 && ownship.speed<105) ownship.groove=true;
 			if(ownship.groove){
 			if((ownship.hook??0)>0.5){ const p=ownship.pass||(ownship.pass={gs:0,az:0,n:0});
@@ -5354,12 +5068,10 @@ function update_camera(dt){
 		const del=(((keys.has("ArrowUp")||pad_looks.up)?1:0)-((keys.has("ArrowDown")||pad_looks.down)?1:0))*hr;   // ↑ looks up (head_el positive = up; the compose carries the sign); the castle joins the arrows in both views
 		if(daz||del){ head_az=THREE.MathUtils.clamp(head_az+daz,-2.618,2.618); head_el=THREE.MathUtils.clamp(head_el+del,-1.047,1.396); look_home=false; }   // a manual look cancels any ease-home in progress
 	}
-	// Padlock (#243): HOLD Y to look at the target in the first-person views;
-	// release and the head eases home. The motion is an exponential ease with
-	// a rate cap — fast off the mark, smooth into the target, never a robot
-	// sweep. The CLAMPS are the mask: a target past ±150° az or under the sill
-	// stays honestly out of view, head parked at its limit ("he's behind me
-	// and I can't see him"), resuming when he emerges.
+	// Padlock (#243): hold Y to look at the target in the first-person views;
+	// release eases home. Exponential ease with a rate cap. The clamps are the
+	// mask: a target past ±150° az or under the sill stays out of view, head
+	// parked at its limit.
 	{ const held=(cfg.view==="hud"||cfg.view==="cockpit")&&keys.has(key_of("look.target"));
 		const t=held?look_target():null;
 		if(held&&!t&&!look_warned){ notice(translate("NO TARGET")); look_warned=true; }
@@ -5389,17 +5101,9 @@ function update_camera(dt){
 		if(keys.has("Minus")) cam_dist=Math.min(140,cam_dist+zr);           // - back
 		if(keys.has("Equal")) cam_dist=Math.max(14,cam_dist-zr);            // = in — floor clears the airframe: ~10 m bounding radius about the orbit centre + the 3 m near plane + margin, so the camera can never cut inside the jet (#116)
 	}
-	// Aerodynamic buffet, the seat cue: the core grades the LEX/stall shake
-	// (STATE.buffet) and the seat views ride it — a small white-noise jitter
-	// whose amplitude cubes with the ENVELOPED intensity, so onset is a
-	// gradual tremble and the deep stall is a firm shake. Outside views stay
-	// steady.
-	// The envelope, then a cubed law (#234 tuning): the core's channel ramps
-	// with alpha, so a brisk pull crosses the whole onset band in a fraction
-	// of a second and the raw value arrives as a step — the shake snapped on
-	// and read as violent. The low-pass gives it a ~0.4 s fade-in/out, and the
-	// cube keeps the low end near-imperceptible so the tremble grows instead
-	// of appearing.
+	// Buffet, the seat cue: the core's STATE.buffet low-passed (~0.4 s - the raw
+	// channel arrives as a step on a brisk pull) then cubed, so onset is a tremble
+	// and the deep stall a firm shake. Outside views stay steady.
 	const buffet_b=last_out?(last_out[STATE.buffet]||0):0;
 	buffet_env+=(buffet_b-buffet_env)*Math.min(1,dt*4);
 	const buffet_cue=buffet_env*buffet_env*buffet_env;
@@ -5548,22 +5252,16 @@ let hud_cue="";   // what the HUD is telling the pilot this frame (#33 debrief):
 let hud_boxed=null;   // the target the HUD is flying against this frame (the boxed contact), for the recorder's Target channel
 function dir_at(headFwd, rightH, yawRad, pitchRad){ const d=headFwd.clone().applyAxisAngle(world_up,yawRad); d.applyAxisAngle(rightH,pitchRad); return d; }
 function hud_message(text){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.font="20px monospace"; hctx.fillText(text, HW/2, HH/2+180); }   // shared centre banner for important messages (RUN UP ENGINE / PRESS SPACE TO LAUNCH / N WIRE)
-// ---- the AIM-120's launch zone (#27 phase 2) ----
-// The DLZ ladder as the real HUD draws it: a vertical staff on the right
-// with caret ticks for the four ranges, the target's own range as a moving
-// caret, the SHOOT cue steady between Rmax and Rne and flashing inside it,
-// the maximum-aspect digit (tens of degrees the target must turn to survive
-// the shot), and after launch the A-time counting to the seeker's wake,
-// becoming T-time at pitbull. The rungs come from the Go core running real
-// flights, refreshed a few times a second — the numbers can never disagree
-// with what the round then does.
+// ---- the AIM-120's launch zone (#27) ---- The DLZ ladder as the real HUD
+// draws it: a staff with carets for the four ranges, the target's range as a
+// moving caret, SHOOT steady between Rmax and Rne and flashing inside, the
+// maximum-aspect digit, and A-time/T-time after launch. Rungs come from the Go
+// core flying trial shots, refreshed ~2 Hz.
 let zone_at=0, zone=null, zone_track=null;
-// bvr_separation mirrors the server's derivation exactly (#32): head-on Rmax
-// from the round core's ladder at the spawn block (272 m/s at 6096 m), plus
-// the 15 nmi commit buffer — so the SP joust and the MP joust can never
-// disagree about the geometry. The constant fallback only covers the boot
-// race (the menu boots the core long before a mission starts, so in practice
-// the ladder governs); it sits near the current derivation on purpose.
+// bvr_separation mirrors the server's derivation (#32): head-on Rmax from the
+// round core's ladder at the spawn block (272 m/s at 6096 m) plus the 15 nmi
+// commit buffer. The constant fallback covers only the boot race and sits near
+// the derivation on purpose.
 let bvr_apart=0;
 function bvr_separation(){ if(bvr_apart>0) return bvr_apart;
 	const z=round_ladder({position:{x:0,y:6096,z:0},velocity:{x:272,y:0,z:0}},{position:{x:60000,y:6096,z:0},velocity:{x:-272,y:0,z:0}},0);
@@ -5590,12 +5288,10 @@ function zone_cue(z){
 	if(z.range<=z.escape) return "flash";
 	if(z.range<=z.max) return "steady";
 	return null; }
-// The 9M's zone (#47): the same radar-lock gate as the AMRAAM's — the real
-// jet has no Sidewinder SHOOT without a radar lock, because only the radar
-// knows range; tone alone is the seeker circle and the growl — and the core's
-// heater ladder flying the round against the target's present turn and burner
-// state, refreshed at ~2 Hz like launch_zone. Until 2026-08-18 the 9M SHOOT
-// was seeker tone alone, and it lit on beam shots at 1.8 km.
+// The 9M's zone (#47): the same radar-lock gate as the AMRAAM's (no Sidewinder
+// SHOOT without a radar lock - only the radar knows range; tone alone is the
+// seeker circle and growl), from the core's heater ladder, refreshed ~2 Hz like
+// launch_zone.
 let heat_at=0, heat=null, heat_track=null, heat_prev=null;
 function heat_zone(){
 	const track=RADAR.stt??RADAR.ls; if(track==null) return null;
@@ -5649,12 +5345,10 @@ function hud_launch_zone(cx,cy,ppdv,ax,lx){
 			const label=(active?"T ":"A ")+Math.round(seconds);
 			hctx.fillText(label+(m.stale>2&&!active?" LOST":m.phase>=2?" PITBULL":active?" HUSKY":""),lx,y); y+=16; } }
 	hctx.restore(); }
-// ---- DDI view (#99 follow-on): one display fills the screen, head-down. The
-// face reuses the same size-agnostic page renderers at SCREEN resolution on
-// its own canvas (never the pit's small textures upscaled); the bezel bands
-// become large click targets. The world is not rendered behind the panel —
-// honest head-down time; the sim and audio run on. Re-press 3 cycles the
-// display; the choice persists in the config as cfg.ddi.
+// ---- DDI view (#99): one display fills the screen, drawn by the same
+// size-agnostic page renderers at screen resolution on its own canvas; the
+// bezel bands become large click targets. The world is not rendered behind it;
+// the sim and audio run on. Re-press 3 cycles the display (cfg.ddi).
 const DDI_ORDER=["left","right","center"];
 function ddi_focus(){ return DDI_ORDER.includes(cfg.ddi)?cfg.ddi:"left"; }
 const ddi_face=document.createElement("canvas");
@@ -5700,14 +5394,9 @@ function draw_hud(){
 	{ const dpr=Math.min(devicePixelRatio||1,2); hctx.setTransform(dpr,0,0,dpr,0,0); }   // re-assert the base each frame: the buffet shake below leaves a translated transform behind, and early returns must not accumulate it
 	hctx.clearRect(0,0,HW,HH);
 	// Buffet on the combiner (#234): in HUD view the seat cue is carried by the
-	// SYMBOLOGY — the camera's centimetre translation is invisible with no near
-	// geometry, but the combining glass is bolted to the shaking airframe. Same
-	// enveloped cubed law as the seat views (buffet_env fades the onset in over
-	// ~0.4 s — the raw channel arrives as a step on a brisk pull), scaled to
-	// 0.3% of viewport height at the limit: ~3-4 px at the stall on a 1200 px
-	// view. A HINT, never a hindrance (the user's words, after three rounds
-	// of tuning down from 12 px): the symbology must stay fully readable at
-	// every buffet depth — the cue is peripheral, like the real shake.
+	// symbology (the glass is bolted to the shaking airframe), same enveloped
+	// cubed law, scaled to 0.3% of viewport height at the limit. A hint, never a
+	// hindrance: the symbology must stay readable at every buffet depth.
 	if(cfg.view==="hud"){ const a=buffet_env*buffet_env*buffet_env*0.003*HH;
 		if(a>0.2) hctx.translate((Math.random()*2-1)*a,(Math.random()*2-1)*a); }
 	GR=cfg.tod==="day"?"#23e57d":"#15b85f";   // daytime brightness up — the muted night green washes out against a sunlit sea/sky
@@ -5715,12 +5404,9 @@ function draw_hud(){
 	if(cfg.view==="ddi") draw_ddi_view();   // the head-down panel underdraws — banners and notices below stay on top
 	const cx=HW/2, cy=HH/2;
 	const glass=(cfg.view==="cockpit")?glass_rect():null;   // #99: flight symbology binds to the combining glass in cockpit view
-	// The combining glass is bolted to the airframe, not to the pilot's head. In
-	// cockpit view the glass rectangle already answers this — turn away and it
-	// is off screen. HUD view has no cockpit to occlude it, so now that the head
-	// moves there too the same truth has to be stated directly: the symbology
-	// fades out as the head leaves boresight and is gone by ~25° off, which is
-	// about where a real HUD's field of view runs out.
+	// The combining glass is bolted to the airframe: in HUD view the symbology
+	// fades as the head leaves boresight and is gone by ~25° off, about a real
+	// HUD's field of view. Cockpit view gets this from the glass rectangle.
 	const boresight=Math.hypot(head_az,head_el);
 	const flight_symbols=(cfg.view==="cockpit")?!!glass:(cfg.view!=="hud"||boresight<0.44);
 	if(crash_t>0){ hctx.textAlign="center"; hctx.fillStyle="#ff5040"; hctx.font="bold 36px monospace"; hctx.fillText(translate(ejected?"EJECTED":"CRASHED"),cx,cy-60); return; }   // a fired seat is an ejection, not a crash — same banner, honest word
@@ -5809,13 +5495,10 @@ function draw_hud(){
 	if(pa){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath();
 		hctx.moveTo(bore[0]-16,bore[1]); hctx.lineTo(bore[0]-6,bore[1]); hctx.lineTo(bore[0],bore[1]+7); hctx.lineTo(bore[0]+6,bore[1]); hctx.lineTo(bore[0]+16,bore[1]); hctx.stroke(); }
 
-	// ---- velocity vector, limited to 10° from the boresight and flashing when limited ----
-	// The cage models the HUD field-of-view edge, which the real jet references —
-	// NOT an 8° boresight cone: on-speed alpha is 8.1°, so an 8° cage clamped the
-	// marker by an invisible 0.1° on every trimmed approach and flashed it
-	// continuously while it looked perfectly centred. 10° keeps the trimmed
-	// approach steady with gust margin, and still cues a genuinely pegged marker
-	// (the catapult fly-away peaks ~10.9° alpha and flashes briefly, as before).
+	// ---- velocity vector, caged at 10° from boresight and flashing when limited.
+	// The cage is the HUD field-of-view edge, not an 8° cone: on-speed alpha is
+	// 8.1°, and an 8° cage clamped and flashed the marker on every trimmed
+	// approach.
 	fpm=proj_dir(ownship.vel_dir);
 	let fpm_limited=false;
 	if(fpm){ const dx=fpm[0]-bore[0], dy=fpm[1]-bore[1], r=Math.hypot(dx,dy), rmax=10*ppd;
@@ -5846,14 +5529,10 @@ function draw_hud(){
 	// target, boxes nothing else, and draws no amber).
 	const authentic=cfg.view==="cockpit";
 	let boxed=null; let rng=1500; let vc=0;   // vc: closure to the boxed target, m/s (+ = closing) — the data block and the breakaway cue share it
-	// Closure from the two VELOCITY vectors along the line of sight, not by
-	// differencing range between render frames. The flight cores advance on a
-	// fixed 60 Hz accumulator while the display runs at whatever rate it runs
-	// at, so above 60 fps the range simply did not change on the frames that
-	// stepped nothing: the difference quotient alternated between zero and
-	// roughly double the true closure, every frame. That fed the time of
-	// flight the director pipper leads on, so the pipper shook — and flipped
-	// between two positions fast enough to read as two pippers.
+	// Closure from the two velocity vectors along the line of sight, never by
+	// differencing range between render frames: the cores step on a fixed 60 Hz
+	// accumulator, so above 60 fps the difference quotient alternated between zero
+	// and double the true closure and the director pipper shook.
 	const closure=(one,two)=>{ const to=new THREE.Vector3(wrap_axis(two.pos.x-one.pos.x),two.pos.y-one.pos.y,wrap_axis(two.pos.z-one.pos.z));
 		if(to.lengthSq()<1e-6) return 0;
 		to.normalize();
@@ -5871,13 +5550,10 @@ function draw_hud(){
 	// from the glass, exactly like the real headset.
 	let lockon=false, drinking=0;
 	if(master==="9m"&&!pa&&boxed){ const to=_v.set(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)); const d=to.length()||1; to.multiplyScalar(1/d);
-		// Plume-conditioned acquisition (#255), mirroring the server: a
-		// burner-lit nose is lockable to half the envelope, a cold one only
-		// close aboard — rear aspect keeps the full reach. The tone tells
-		// the truth about what the seeker can actually hold — and how MUCH
-		// heat it is drinking (#59): depth inside the brightness-conditioned
-		// reach drives the growl's pitch and anger, so the ear learns shot
-		// quality the way the real headset teaches it.
+		// Plume-conditioned acquisition (#255), mirroring the server: a burner-lit
+		// nose is lockable to half the envelope, a cold one only close aboard, rear
+		// aspect the full reach. Depth inside that reach drives the growl's pitch
+		// (#59).
 		const tail=boxed.fwd?Math.max(0,to.dot(boxed.fwd)):0;
 		const floor=0.15+0.35*THREE.MathUtils.clamp(boxed.reheat??0,0,1);
 		const reach=5000*(floor+(1-floor)*tail);
@@ -5911,13 +5587,9 @@ function draw_hud(){
 	if(master==="gun"){
 		if(boxed&&td){   // director: a TRUE lead-computing pipper now that rounds fly real time of flight — where my rounds will be, pulled back by where HE will be, so pipper-on-target IS the deflection solution (mirrors battle.Burst exactly); range analog around the ring
 			const muz=body_offset(ownship,6.0,0.35,0.0);
-			// The solution lives in pipper.ts, where it is tested against a real
-			// round march. It used to clamp the span at 2 km (so a distant target
-			// got a 2 km solution), time the flight from an approximated closing
-			// speed with a 250 m/s floor, and decay only the barrel component
-			// while carrying the inherited velocity undragged. It is NOT gated on
-			// the gun's reach: the ring and the shoot cue say whether the shot is
-			// worth taking, this says where to point.
+			// The solution lives in pipper.ts, tested against a real round march. Not
+			// gated on the gun's reach: the ring and the shoot cue say whether the shot
+			// is worth taking, this says where to point.
 			const solution=pipper_impact(muz,ownship.fwd,{x:ownship.velx??ownship.fwd.x*ownship.speed,y:ownship.vely??ownship.fwd.y*ownship.speed,z:ownship.velz??ownship.fwd.z*ownship.speed},
 				{x:boxed.pos.x,y:boxed.pos.y,z:boxed.pos.z},
 				{x:boxed.velx??boxed.fwd.x*boxed.speed,y:boxed.vely??boxed.fwd.y*boxed.speed,z:boxed.velz??boxed.fwd.z*boxed.speed},
@@ -5930,21 +5602,11 @@ function draw_hud(){
 			if(pip){ hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.setLineDash([]);
 				hctx.beginPath(); hctx.arc(pip[0],pip[1],4,0,Math.PI*2); hctx.fill();
 				hctx.beginPath(); hctx.arc(pip[0],pip[1],11,0,Math.PI*2); hctx.stroke();
-				// Range analog, the real director's convention: the arc is
-				// PROPORTIONAL to range — full ring at 3,000 ft (~914 m, the
-				// dial's full scale on the jet), unwinding clockwise to nothing
-				// as the target closes, with the 1,000 ft minimum-range tick.
-				// It was inverted (growing on closure, against its own comment)
-				// and scaled to 3,000 METRES, so it read backwards and barely
-				// moved inside actual gun range.
-				// Full scale 3,000 ft (~914 m), the real dial — restored
-				// 2026-08-06 when the round got real drag. The 1,500 m scale
-				// existed because the no-drag round genuinely reached past a
-				// kilometre and the ring pegged where real shots lived; with
-				// drag those shots die out the way they do in reality, and
-				// the dial and the round tell the same story again. A
-				// high-closure face shot still pegs the ring — it does on
-				// the jet too, and the SHOOT cue owns that case.
+				// Range analog, the real director's convention: the arc is proportional to
+				// range - full ring at 3,000 ft (~914 m, the dial's full scale), unwinding
+				// clockwise to nothing as the target closes, with the 1,000 ft
+				// minimum-range tick. A high-closure face shot pegs the ring, as on the
+				// jet; the SHOOT cue owns that case.
 				const fraction=THREE.MathUtils.clamp(rng/914,0,1);
 				hctx.lineWidth=2.5; hctx.beginPath(); hctx.arc(pip[0],pip[1],15,-Math.PI/2,-Math.PI/2+fraction*Math.PI*2); hctx.stroke();
 				const tick=-Math.PI/2+(305/914)*Math.PI*2;   // 1,000 ft of 3,000: the no-closer cue on the same dial
@@ -5968,11 +5630,9 @@ function draw_hud(){
 		const seeker=2.5*ppd;   // the 5° seeker circle
 		const at=(lockon&&td)?td:bore;
 		hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(at[0],at[1],seeker,0,Math.PI*2); hctx.stroke();
-		// SHOOT only with a radar lock AND the target inside the heater's
-		// computed zone (#47), as on the real jet; the seeker circle and the
-		// growl are what tone alone earns. The recorder's Cue channel tells
-		// the two apart: 'tone' for a lock the radar does not range, '9m'
-		// for the cue itself.
+		// SHOOT only with a radar lock and the target inside the heater's zone (#47);
+		// the seeker circle and growl are what tone alone earns. Recorder Cue
+		// channel: 'tone' for a lock the radar does not range, '9m' for the cue.
 		const zone=lockon?heat_zone():null, cue=lockon?heat_cue(zone):null;
 		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0) hud_cue=(cue==="steady"||cue==="flash")?"9m":(cue==="break"?"break":"tone");
 		if(lockon&&!brk&&!weapons_hold&&ownship.msl>0&&(cue==="steady"||(cue==="flash"&&(sim_time*5)%2<1))){ hctx.fillStyle=GR; hctx.font="16px monospace"; hctx.textAlign="center";   // steady between Rmax and Rne, flashing inside Rne; no SHOOT inside the breakaway regime (the X owns it) or during the joust weapons hold — commanding a launch the trigger will refuse just confuses the merge
@@ -6204,15 +5864,13 @@ function refresh_perf(dt){ ft_ring[ft_i]=dt*1000; ft_i=(ft_i+1)%ft_ring.length; 
 	const s=[...ft_ring].sort((a,b)=>a-b), avg=s.reduce((x,v)=>x+v,0)/s.length, low=s[Math.floor(s.length*0.99)];
 	framerate.textContent=Math.round(1000/avg)+" fps · "+Math.round(1000/low)+" 1% low"; }
 
-// ============================================================================ sizing
-// Supersample: render the scene at SUPERSAMPLE× the device resolution and let the blit downscale (SSAA).
-// This is the only thing that smooths *texture-baked* detail like the carrier deck markings at grazing
-// angles — anisotropy already maxed, but the lines are inside the texture so MSAA can't touch them.
-// Kept separate from render_scale (the dyn-res perf knob, capped at 1.0) so it isn't scaled away or
-// clobbered by a saved cfg. GATED TO dpr 1 (#148): a HiDPI screen already samples the deck textures at
-// 2× density, so 1.5× SSAA there bought nothing visible while costing 2.25× the pixels ON TOP of the
-// dpr — measured 26.7 -> 46.5 fps on an Arc iGPU at dpr 2 with SSAA off, no sharpness loss. At dpr 1
-// (where the markings genuinely alias) it stays, and that config holds 60 fps.
+// ============================================================================
+// sizing Supersample: render at SUPERSAMPLE× device resolution and let the blit
+// downscale. It is the only thing that smooths texture-baked detail (deck
+// markings at grazing angles - MSAA cannot touch lines inside a texture).
+// Separate from render_scale so a saved cfg cannot clobber it. Gated to dpr 1
+// (#148): HiDPI already samples the deck at 2× density, and SSAA there cost
+// 2.25× the pixels for nothing visible.
 function supersample(dpr){ if(Number.isFinite(SSAA_OVERRIDE)) return SSAA_OVERRIDE;   // &ssaa=X (dev) pins it for benchmarking
 	return dpr>1.25?1.0:1.5; }
 function apply_size(){ const w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,2),sc=THREE.MathUtils.clamp(cfg.render_scale,0.3,2.0)*dpr*supersample(dpr);
@@ -6227,13 +5885,11 @@ function dynamic_res(dt){ if(!cfg.dyn_res) return; dyn_cd-=dt; if((dyn_ceiling_t
 	else if(recent>18){   // pinned at the floor and STILL over budget: the honest "this machine cannot hold it" verdict (#55), measured on the player's real scene. Only real gameplay under real acceleration counts — shader-compile stutter, the pause menu and SwiftShader must not condemn the machine.
 		dyn_health=0;
 		if(graphics_verdict===null&&running&&!loading&&!game_paused&&(dyn_strain+=0.5)>=30){ dyn_strain=0; shellStorage.setItem("air.performance","1"); } }
-	// Raise while SOLIDLY vsynced. The old <14 ms test could never pass on a 60 Hz
-	// display (a pegged frame reads 16.7 ms), so any loading stutter ratcheted the
-	// scale to the floor permanently. Pegged-with-margin now qualifies (mean under
-	// 17.2, p90 tight). A machine that pegs at scale S but overloads at S+0.05
-	// would otherwise hunt forever (raise -> overload -> drop -> raise...), so the
-	// overloaded scale becomes a 30 s ceiling and the governor settles one step
-	// below it; raises are also slower (2 s) than drops (0.5 s).
+	// Raise only while solidly vsynced: pegged-with-margin qualifies (mean under
+	// 17.2 ms, p90 tight) - a strict <14 ms test can never pass on a 60 Hz
+	// display. An overloaded scale becomes a 30 s ceiling so the governor settles
+	// one step below it instead of hunting; raises (2 s) are slower than drops
+	// (0.5 s).
 	else if(recent<17.2&&spike<17.5&&cfg.render_scale<1.0&&cfg.render_scale+0.05<dyn_ceiling-0.001){ cfg.render_scale=Math.min(1.0,cfg.render_scale+0.05); dyn_cd=2; apply_size(); dyn_strain=0; }
 	else if(recent<17.2&&cfg.render_scale>=1.0){ dyn_strain=0;   // holding FULL scale vsynced: the machine verdict self-heals (an upgraded GPU should not wear last year's warning)
 		if((dyn_health+=0.5)>=30){ dyn_health=0; shellStorage.removeItem("air.performance"); } } }
@@ -6271,44 +5927,40 @@ function set_view(v){
 function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow=cfg.shadows; effects_limits();
 	const setc=g=>g.traverse(c=>{ if(c.isMesh&&(c.userData.body||c.userData.modelmesh))c.castShadow=cfg.shadows; }); setc(ownship.group); setc(bandit.group); }
 
-// ============================================================================ multiplayer
-// The server is authoritative (world/games/air runs the same placeholder
-// kinematics); fly_player keeps running as the local predictor and is
-// corrected from snapshots — snap when >20 m off (minimum-image), gentle pull
-// otherwise. Remote players are interpolated ~100 ms behind live; the first
-// reuses the bandit airframe, the rest get their own.
+// ============================================================================
+// multiplayer The server is authoritative; fly_player runs as the local
+// predictor, corrected from snapshots (snap when >20 m off, gentle pull
+// otherwise). Remotes are interpolated ~100 ms behind live.
 let net=null, flare_flag=false, missile_flag=false, fox3_flag=false, session_over=false;
 let net_notice="", net_notice_t=0;
 let comms=[];   // the radio/chat log (#84): {text, colour, until} — top-left, hud-view furniture (multiplayer chat + the Case III radio script)
 function comm(text,colour){ comms.push({ text:String(text).slice(0,80), colour, until:performance.now()+10000 }); while(comms.length>5) comms.shift(); }
 function chat_scope(){ return (net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams")?"team":"all"; }
 function exit_match(){ if(!running) return; running=false; /* #57 parked: head_close(); */
+	// A flight under five seconds is an aborted start, not a sortie (#51 ruling 2026-08-21): it leaves NOTHING —
+	// no history row, no recording. The sub-5s carve-out is the one exception to #212's every-flight-is-history.
+	const sortie=sim_time-mission_zero>=5;
 	if(MULTIPLAYER) net_finish("left");
-	else net_record({   // EVERY completed flight is history (#212): a scoreless sortie or a carrier approach is exactly the one you want the recording of, and the cheat flag is data on the row, never a filter
+	else if(sortie) net_record({   // EVERY completed sortie is history (#212): a scoreless sortie or a carrier approach is exactly the one you want the recording of, and the cheat flag is data on the row, never a filter
 		world:"local", session:"local-"+mission_began, mode:cfg.task==="joust"?"joust":"free", team:"",
 		started:mission_began, ended:Date.now(),
 		reason:own_kills>0?"victory":(own_deaths>0?"killed":"flown"),
 		players:cfg.task==="joust"?"2":"1", kills:own_kills, deaths:own_deaths,
 		cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0 });
-	// ...then upload the recording against that row, so it outlives the session
-	// (#213). Deliberately after net_record and unawaited: the row must exist
-	// for the save to bind to, and the menu should never wait on an upload.
-	if(!MULTIPLAYER){ const replay=recording_file();
-		// A flight under five seconds is a mistake, not a sortie (#51): an
-		// aborted start used to leave a 15-420 byte stub in the recordings
-		// list beside the real fights. The live text (dev_acmi) and the
-		// History download are untouched — only the automatic upload skips.
-		if(replay&&sim_time-mission_zero>=5) setTimeout(()=>void recording_store(replay.session,mission_began,replay.text),600); }
+	// Upload the recording against that row (#213), after net_record and
+	// unawaited: the row must exist for the save to bind to, and the menu never
+	// waits on an upload.
+	if(!MULTIPLAYER&&sortie){ const replay=recording_file();
+		if(replay) setTimeout(()=>void recording_store(replay.session,mission_began,replay.text),600); }
 	if(onExit) onExit(); }
 let mission_began=Date.now();   // local session identity for the history's replay-dedup key
 let own_kills=0, own_deaths=0, match_started=0;
 const remotes=new Map();   // slot -> aircraft state
 let designated=-1;   // multiplayer L&S designation: the remote slot the pilot acquired (-1 = none) — HUD state only, like the real jet (the missile's seeker hunts its own cone)
-// ---- A/A radar (#30): the model lives in radar.ts; this block owns its truth
-// feed (the contacts model), the per-frame step, the designation plumbing that
-// makes the radar's L&S/STT the ONE target source (the HUD TD box, the
-// missiles, padlock and the SA picture all follow `designated`), the emitter
-// uplink so other pilots' RWR can hear us (#28), and the SP bandit's emitter.
+// ---- A/A radar (#30): the model lives in radar.ts; this block owns its
+// contacts feed, the per-frame step, the designation plumbing that makes the
+// L&S/STT the one target source (`designated`), the emitter uplink for other
+// pilots' RWR (#28), and the SP bandit's emitter.
 const RADAR=new Radar();
 const radar_cursor={ azimuth:0, range:20*1852 };   // the TDC's position on the format
 let radar_sent={ mode:-1, target:-1 };             // last emitter state told to the server
@@ -6357,10 +6009,9 @@ function radar_step(dt){ if(!running) return;
 		const d=Math.hypot(dx,dy,dz)||1;
 		bandit_emitter=(bandit.fwd.x*dx+bandit.fwd.y*dy+bandit.fwd.z*dz)/d>0.94&&d<18520?2:1; } } }
 // ---- RWR (#28): the receiving end of every emitter #30 created. The builder
-// applies the one rule the model cannot see — an STT on someone ELSE is
-// excluded entirely, his energy is pointed at him — and the model does the
-// periodic-paint listening. Audio: one chirp per new symbol, the warble while
-// any lock holds us.
+// applies the one rule the model cannot see - an STT on someone else is
+// excluded - and the model does the periodic-paint listening. Audio: one chirp
+// per new symbol, the warble while any lock holds us.
 const RWR=new Rwr();
 function rwr_step(dt){ if(!running) return;
 	const emitters=[];
@@ -6370,12 +6021,10 @@ function rwr_step(dt){ if(!running) return;
 		const e=net.emitters.get(slot); if(!e||e.mode<1||slot===net.slot) continue;
 		const f=Math.hypot(st.fwd.x,st.fwd.z)||1;
 		emitters.push({ id:slot, x:st.pos.x, z:st.pos.z, nosex:st.fwd.x/f, nosez:st.fwd.z/f, mode:e.mode, locked:e.mode===2&&e.target===net.slot }); } }
-	// Active seekers hunting US (#27 phase 2d): a round's own radar, not its
-	// shooter's. In multiplayer the server's darts carry the kind bit and
-	// their closure tells us which are ours to fear; in single player the
-	// bandit does not shoot AMRAAMs yet (#33 prices that), so the feed is
-	// the local rounds only when the BANDIT owns them — none today, but the
-	// path is here rather than bolted on later.
+	// Active seekers hunting us (#27): a round's own radar, not its shooter's.
+	// Multiplayer darts carry the kind bit and their closure says which to fear;
+	// in single player the bandit's own rounds feed it once their seeker is
+	// active.
 	const seekers=[];
 	if(!MULTIPLAYER){ for(const m of missiles){   // the bandit's own rounds (#33): an active seeker painting us is the third RWR voice, exactly as an MP dart's would be
 		if(!m.active||!m.enemy||(m.phase??0)<1) continue;
@@ -6393,15 +6042,11 @@ function rwr_step(dt){ if(!running) return;
 	if(events.missile&&sim_time-rwr_called>3){ rwr_called=sim_time; notice(translate("MISSILE")); }   // the third voice: nails, spike, MISSILE
 	audio_rwr(RWR.locked()); }
 let rwr_called=-9;
-// acquire_press: one key, radar-aware (#30). TWS with tracks and no lock:
-// step the L&S through the trackfiles nearest-first; a double-tap commands
-// STT on the current L&S. Every other state runs the ACM flow below —
-// which IS today's visual cone designation when the radar is silent.
-// ENTER is monotonic — it only ever commits harder (#27 phase 2): in TWS it
-// takes the nearest trackfile as the L&S, or escalates the L&S to STT; every
-// other state runs the ACM flow below, which IS the visual cone designation
-// when the radar is silent. STEPPING between trackfiles is BACKSPACE's, so a
-// press of Enter can never cost a supported round its datalink.
+// acquire_press: Enter is monotonic - it only ever commits harder (#27/#30). In
+// TWS it takes the nearest trackfile as the L&S or escalates the L&S to STT;
+// every other state runs the ACM flow, the visual cone designation when the
+// radar is silent. Stepping between trackfiles is Backspace's, so Enter can
+// never cost a supported round its datalink.
 function acquire_press(){
 	if(RADAR.mode==="tws"&&RADAR.stt==null&&!RADAR.sil&&RADAR.tracks.length){
 		if(RADAR.ls!=null){ radar_designate(RADAR.ls); return; }   // the L&S hardens into the lock
@@ -6424,14 +6069,11 @@ function undesignate_press(){
 		if(MULTIPLAYER&&typeof RADAR.ls==="number") designated=RADAR.ls;
 		return; }
 	radar_undesignate(); }
-// acquire_acm: the armed ACM condition's cone (#133 flow, now radar-fed).
-// BST: 20° off the nose to 10 nm. VACQ: the tall thin fan for the turning
-// fight — ±6° azimuth, -8°..+55° in the lift plane, 5 nm. Nearest-the-axis
-// first, repeat presses step the cone, an empty cone undesignates — the real
-// change-of-target flow: undesignate/point/re-acquire. With the radar active
-// the acquisition goes straight to STT; silent, it stays a visual designation.
-// `auto` is the commanded condition's own pass from radar_step: it takes the
-// first target and never steps or undesignates — those stay the pilot's.
+// acquire_acm: the armed ACM condition's cone (#133). BST: 20° off the nose to
+// 10 nm; VACQ: ±6° azimuth, -8°..+55° in the lift plane, 5 nm. Nearest the axis
+// first; repeat presses step the cone, an empty cone undesignates. Radar active
+// -> STT, silent -> visual designation. `auto` (radar_step's pass) takes the
+// first target and never steps or undesignates.
 function acquire_acm(auto){
 	const cone=[];
 	for(const c of contacts()){ const dx=wrap_axis(c.x-ownship.pos.x), dy=c.y-ownship.pos.y, dz=wrap_axis(c.z-ownship.pos.z);
@@ -6457,11 +6099,9 @@ function acm_press(){
 	if(!RADAR.auto){ RADAR.auto=true; RADAR.acm="bst"; notice("ACM BORESIGHT"); }
 	else if(RADAR.acm==="bst"){ RADAR.acm="vacq"; notice("ACM VERTICAL"); }
 	else { RADAR.auto=false; RADAR.acm="bst"; notice("ACM OFF"); } }
-// default_radar: the set is already where the match wants it at spawn, the way
-// default_master has the weapon up. A merge joust commands boresight at 10 nm —
-// the bandit is dead ahead at three miles, the lock takes on its own and the
-// HUD has range and closure before the pass; a BVR start (or an AMRAAM fight)
-// is TWS at 40 nm for the L&S and the datalink; free flight searches in RWS.
+// default_radar: the set at spawn, as default_master has the weapon up - a
+// merge joust commands boresight at 10 nm, a BVR or AMRAAM fight is TWS at 40
+// nm, free flight searches in RWS.
 function merge_joust(){ return cfg.task==="joust"&&cfg.duel!=="bvr"&&!MULTIPLAYER; }
 function radar_scale(){ return merge_joust()?10:40; }   // the merge is inside ten miles from the first frame; everything else searches at the full scale
 function default_radar(){
@@ -6601,11 +6241,8 @@ function net_frame(dt){
 	{ const moved=net&&racks_seen!==net.racksRevision; if(moved) racks_seen=net.racksRevision;
 		for(const [slot,st] of remotes.entries()){ if(!st.loadout||moved) remote_racks(st,slot); } }   // adopt a late roster grant (#17); re-apply on any stores change — a mid-flight jettison (#18)
 	const c=last_controls;
-	// RAW stick, matching the single-player path exactly (see the controls block
-	// in fly_player). These three carried *cfg.sens after the Sensitivity slider
-	// was removed, so an account that had ever moved that slider kept flying at
-	// reduced authority in MULTIPLAYER ONLY — full stick alone, scaled stick
-	// against other people, with no setting left anywhere to put it back.
+	// Raw stick, matching the single-player path exactly (the controls block in
+	// fly_player) - no sensitivity scaling here.
 	const sample={ pitch:c?c.pitch:input.pitch, roll:c?c.roll:input.roll, yaw:c?c.yaw:input.yaw,
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake, trim:input.trim||0, lean:input.lean||0, reset:reset_flag, flap:flap_select,
@@ -6825,9 +6462,9 @@ function frame(){ let dt=Math.min(clock.getDelta(),0.05);
 			console.warn("[load] "+Object.entries(load_marks).map(([k,v])=>k+" "+(v/1000).toFixed(2)+"s").join(" · ")+" · total "+((performance.now()-loading_t0)/1000).toFixed(2)+"s");   // i18n-format-ok: developer console timing, never shown to a user
 			if(MULTIPLAYER && !net) net_connect(); }   // dial only NOW: connecting before the assets exist left the link idle for the whole download (slow connections were dropped mid-load and bounced back to the menu)
 		else { const lp=load_progress();
-			// A slow load is a slow load — the percentage moves and the player waits. Failure is a
-			// FAILED fetch or 20 s with no byte anywhere: the old fixed 20 s wall-clock cap
-			// force-started missions with missing models whenever the connection was merely slow.
+			// Failure is a failed fetch or 20 s with no byte anywhere, never a
+			// wall-clock cap: a slow load just moves the percentage while the player
+			// waits.
 			if(lp.failed || lp.idle>20000){ loading=false;
 				console.error("air load failed:", lp.failed?"fetch error":"stalled", load_pending.join(","));
 				notice(translate("LOADING FAILED")); setTimeout(()=>{ if(running){ running=false; if(onExit) onExit(); } },1800); }
