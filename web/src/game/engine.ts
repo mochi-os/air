@@ -4338,6 +4338,8 @@ if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds,side){ if(!ha
 		velocity:{x:bandit.velx,y:bandit.vely,z:bandit.velz} };
 	for(let v=0;v<n;v++) battle_volley(0,pose,shots,battle_tick+v);
 	return { volleys:n, shots }; };
+let growl_force=null;
+if(DEV_MODE) (globalThis as any).dev_growl=(state,strength,seconds)=>{ growl_force={state:+state||0,strength:+strength||0,until:sim_time+(+seconds||6)}; return growl_force; };   // #59: audition the seeker voice from the console — dev_growl(1,0.2) search cold, dev_growl(2,1) lock point-blank burner
 if(DEV_MODE) (globalThis as any).dev_audio=()=>audio_state();   // #55: the context's live state, for the strict-autoplay boot test
 if(DEV_MODE) (globalThis as any).dev_blast=function(hulk,distance,trials,klass,way){   // #53: detonate the real warhead at an anchored miss distance against either LIVE hulk, pristine state per trial — the damage-v-distance curve, measured on the wiring under suspicion
 	const own=hulk===1; if(!own&&(!has_enemy||!bandit.harm||!bandit.group.visible)) return null;
@@ -5867,16 +5869,22 @@ function draw_hud(){
 	// 9M seeker tone (#73): the growl/lock audio tracks the seeker itself, not
 	// the drawn symbology — the tone keeps playing with the head turned away
 	// from the glass, exactly like the real headset.
-	let lockon=false;
+	let lockon=false, drinking=0;
 	if(master==="9m"&&!pa&&boxed){ const to=_v.set(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)); const d=to.length()||1; to.multiplyScalar(1/d);
 		// Plume-conditioned acquisition (#255), mirroring the server: a
 		// burner-lit nose is lockable to half the envelope, a cold one only
 		// close aboard — rear aspect keeps the full reach. The tone tells
-		// the truth about what the seeker can actually hold.
+		// the truth about what the seeker can actually hold — and how MUCH
+		// heat it is drinking (#59): depth inside the brightness-conditioned
+		// reach drives the growl's pitch and anger, so the ear learns shot
+		// quality the way the real headset teaches it.
 		const tail=boxed.fwd?Math.max(0,to.dot(boxed.fwd)):0;
 		const floor=0.15+0.35*THREE.MathUtils.clamp(boxed.reheat??0,0,1);
-		lockon=ownship.fwd.dot(to)>0.866&&d<5000*(floor+(1-floor)*tail); }
-	audio_seeker(game_paused?0:(master==="9m"&&!pa?(lockon?2:1):0));
+		const reach=5000*(floor+(1-floor)*tail);
+		lockon=ownship.fwd.dot(to)>0.866&&d<reach;
+		drinking=THREE.MathUtils.clamp(1-d/reach,0,1); }
+	if(growl_force&&sim_time<growl_force.until) audio_seeker(growl_force.state,growl_force.strength);
+	else audio_seeker(game_paused?0:(master==="9m"&&!pa?(lockon?2:1):0),drinking);
 	// Departure / AoA warning tone (NATOPS 2.8.2.5, #53): yaw-rate intensity
 	// from the 40°/s onset to the 60°/s ceiling, steady above 35° AoA. Ground
 	// excluded — a HI-mode nosewheel turn yaws faster than the onset.
