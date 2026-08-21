@@ -158,11 +158,17 @@ const exchange_bytes = new Uint8Array(exchange.buffer)
 // loud and terminal — there is no TypeScript physics to fall back to.
 let loading: Promise<void> | null = null
 export function flight_load(): Promise<void> {
-  if (core || failure) return Promise.resolve()
+  // Failure is RETRIABLE: `if (core || failure)` made one bad load —
+  // a dropped fetch, wasm_exec blocked, the 30 s export timeout on a
+  // hammered machine — permanent for the page, and every later mission
+  // reported the stale error. A fresh mission now begins a fresh attempt;
+  // only a live core short-circuits.
+  if (core) return Promise.resolve()
   loading ??= load_core()
   return loading
 }
 async function load_core(): Promise<void> {
+  failure = null
   try {
     await new Promise<void>((resolve, reject) => {
       if (globalThis.Go) return resolve()
@@ -177,7 +183,19 @@ async function load_core(): Promise<void> {
     const bytes = await asset(flight_wasm_url)
     const go = new globalThis.Go!()
     const { instance } = await WebAssembly.instantiate(bytes, go.importObject)
-    void go.run(instance) // resolves only if the core exits — it never should
+    // run() resolves only if the Go program EXITS — which only an unrecovered
+    // panic causes. When it does, every later export call throws "Go program
+    // has already exited", and the stale `core` used to satisfy flight_load
+    // forever: the page was bricked until reload. A dead core now resets the
+    // loader, so the next mission instantiates a fresh Go program from the
+    // cached bytes and flies.
+    void go.run(instance).then(() => {
+      console.error('flight core exited — a panic killed the Go program; the next mission boots a fresh core')
+      core = null
+      loading = null
+      failure = 'flight core exited'
+      delete (globalThis as { air_flight?: unknown }).air_flight
+    })
     const started = performance.now()
     while (!globalThis.air_flight) {
       // 30 s, not a snappier 5: the Go runtime's first-boot main-thread slice is at the
@@ -190,6 +208,7 @@ async function load_core(): Promise<void> {
   } catch (error) {
     failure = getErrorMessage(error, 'flight core load failed')
     console.error('flight core load failed:', failure)
+    loading = null // retriable: the next flight_load begins a fresh attempt
   }
 }
 
