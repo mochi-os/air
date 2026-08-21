@@ -10,7 +10,7 @@
 import { bench_register } from './bench'   // FIRST: the #148 sampler must survive an engine-init failure
 import { atc_step } from './atc'
 import { KEY_DEFAULTS } from './keys'
-import { recent_window } from './governor'
+import { PANEL_DEFAULT, budget, cadence, narrow, recent_window, type Panel } from './governor'
 import { publish as publish_recording } from './replay'
 import * as THREE from 'three'
 import {
@@ -6518,7 +6518,19 @@ const ft_ring=new Array(180).fill(16.7); let ft_i=0, accumulator=0;
 // half-second loading hitches would slam the render scale down on a machine
 // that is actually fine.
 const perf_ring=new Array(180).fill(16.7);
-function refresh_perf(dt,raw){ ft_ring[ft_i]=dt*1000; perf_ring[ft_i]=(raw??dt)*1000; ft_i=(ft_i+1)%ft_ring.length;   // frame-time rings (dynamic_res reads the clamped one)
+// The panel estimate the governor's budget is derived from. It starts at the
+// 60 Hz default — which reproduces the historic hardcoded 18 / 17.2 / 17.5
+// exactly — and is narrowed by live cadence readings. narrow() is monotone: it
+// never widens on a loaded measurement, because a 60 Hz machine at 30 fps sits
+// on half-rate vsync and reads a rock-solid 33.5 ms beat that is
+// indistinguishable from a 30 Hz panel. Deriving the budget from that would
+// hand the struggling machine a MORE permissive threshold.
+let panel: Panel = PANEL_DEFAULT;
+// perf_ring is pre-filled with 16.7, so until it has been written through once
+// its histogram says "60 Hz" on every machine. Count real writes and refuse to
+// read a cadence before the ring holds nothing but measured frames.
+let ft_seen=0;
+function refresh_perf(dt,raw){ ft_ring[ft_i]=dt*1000; perf_ring[ft_i]=(raw??dt)*1000; ft_i=(ft_i+1)%ft_ring.length; if(ft_seen<perf_ring.length) ft_seen++;   // frame-time rings (dynamic_res reads the clamped one; ft_seen gates the cadence read below)
 	accumulator+=dt; if(accumulator<0.25 || !framerate) return; accumulator=0;        // fps + 1% low readout, ~4 Hz
 	if(!cfg.framerate){ framerate.style.display="none"; return; }                     // gated by the graphics setting (default off)
 	framerate.style.display="block";
@@ -6548,20 +6560,29 @@ function dynamic_res(dt){ if(!cfg.dyn_res) return; dyn_cd-=dt; if((dyn_ceiling_t
 	// invisible at 78% of ring phases and a 5 s overload was caught a median 2.6 s
 	// late. recent_window reads the frames that were actually just rendered.
 	const last=recent_window(ft_ring,ft_i), recent=last.reduce((s,v)=>s+v,0)/30, spike=[...last].sort((a,b)=>a-b)[27];   // mean + the 28th of 30 sorted (see governor.ts; the old "p90" comment was wrong, the index is unchanged)
-	if(recent>18&&cfg.render_scale>0.45){ dyn_ceiling=Math.min(dyn_ceiling,cfg.render_scale); dyn_ceiling_t=30;   // this scale overloaded: don't climb back into it for a while
+	// Narrow the panel estimate from the TRUE frame times, never the clamped
+	// ones: the clamp is a 50 ms ceiling and a ring full of hitches would
+	// masquerade as a 20 Hz beat and widen the budget on the worst machines.
+	if(ft_seen>=perf_ring.length){ const c=cadence(recent_window(perf_ring,ft_i,perf_ring.length));
+		const hz=(screen as unknown as { refreshRate?: number }).refreshRate;   // non-standard, absent on most browsers, authoritative when present
+		panel=narrow(panel,{ beat:c.beat, locked:c.locked, idle:false, declared:(typeof hz==="number"&&hz>0)?1000/hz:null }); }
+	const b=budget(panel);   // 18.00 / 17.20 / 17.50 at the 60 Hz default, to within 4e-15
+	if(recent>b.drop&&cfg.render_scale>0.45){ dyn_ceiling=Math.min(dyn_ceiling,cfg.render_scale); dyn_ceiling_t=30;   // this scale overloaded: don't climb back into it for a while
 		cfg.render_scale=Math.max(0.45,cfg.render_scale-0.1); apply_size(); dyn_strain=0; dyn_health=0; }
-	else if(recent>18){   // pinned at the floor and STILL over budget: the honest "this machine cannot hold it" verdict (#55), measured on the player's real scene. Only real gameplay under real acceleration counts — shader-compile stutter, the pause menu and SwiftShader must not condemn the machine.
+	else if(recent>b.drop){   // pinned at the floor and STILL over budget: the honest "this machine cannot hold it" verdict (#55), measured on the player's real scene. Only real gameplay under real acceleration counts — shader-compile stutter, the pause menu and SwiftShader must not condemn the machine.
 		dyn_health=0;
 		if(graphics_verdict===null&&running&&!loading&&!game_paused&&(dyn_strain+=0.5)>=30){ dyn_strain=0; shellStorage.setItem("air.performance","1"); } }
 	// Raise while SOLIDLY vsynced. The old <14 ms test could never pass on a 60 Hz
 	// display (a pegged frame reads 16.7 ms), so any loading stutter ratcheted the
-	// scale to the floor permanently. Pegged-with-margin now qualifies (mean under
-	// 17.2, p90 tight). A machine that pegs at scale S but overloads at S+0.05
+	// scale to the floor permanently. Pegged-with-margin now qualifies (mean
+	// within 3.2% of the panel period, tail within 5% — 17.2 and 17.5 ms on a
+	// 60 Hz display, derived from the measured period on any other). A machine
+	// that pegs at scale S but overloads at S+0.05
 	// would otherwise hunt forever (raise -> overload -> drop -> raise...), so the
 	// overloaded scale becomes a 30 s ceiling and the governor settles one step
 	// below it; raises are also slower (2 s) than drops (0.5 s).
-	else if(recent<17.2&&spike<17.5&&cfg.render_scale<1.0&&cfg.render_scale+0.05<dyn_ceiling-0.001){ cfg.render_scale=Math.min(1.0,cfg.render_scale+0.05); dyn_cd=2; apply_size(); dyn_strain=0; }
-	else if(recent<17.2&&cfg.render_scale>=1.0){ dyn_strain=0;   // holding FULL scale vsynced: the machine verdict self-heals (an upgraded GPU should not wear last year's warning)
+	else if(recent<b.raise&&spike<b.spike&&cfg.render_scale<1.0&&cfg.render_scale+0.05<dyn_ceiling-0.001){ cfg.render_scale=Math.min(1.0,cfg.render_scale+0.05); dyn_cd=2; apply_size(); dyn_strain=0; }
+	else if(recent<b.raise&&cfg.render_scale>=1.0){ dyn_strain=0;   // holding FULL scale vsynced: the machine verdict self-heals (an upgraded GPU should not wear last year's warning)
 		if((dyn_health+=0.5)>=30){ dyn_health=0; shellStorage.removeItem("air.performance"); } } }
 
 // Benchmark reporting (#148): the sampler itself lives in bench.ts (imported
