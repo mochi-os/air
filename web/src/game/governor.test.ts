@@ -6,6 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   DEFAULT_PERIOD,
+  cadence,
   PANEL_DEFAULT,
   RING,
   WINDOW,
@@ -203,5 +204,32 @@ describe('the panel estimate never widens under load', () => {
   it('ignores a beat the client is not actually locked to', () => {
     const p = narrow(PANEL_DEFAULT, { beat: 9.1, locked: 0.11, idle: true, declared: null })
     expect(p.period).toBeCloseTo(DEFAULT_PERIOD, 3)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// 4. cadence. Moved here from bench.ts, where it sat inside the developer-mode
+//    guard and could not be tested or reused.
+// ---------------------------------------------------------------------------
+
+describe('cadence reads the panel beat out of the frame deltas', () => {
+  it('finds the mode of a 0.5 ms histogram and the share locked to it', () => {
+    const list = [...Array(90).fill(16.7), ...Array(10).fill(33.4)]
+    const c = cadence(list)
+    expect(c.beat).toBeCloseTo(16.5, 3)
+    expect(c.locked).toBeCloseTo(0.9, 2)
+    expect(c.refresh).toBeCloseTo(60.6, 1)
+  })
+
+  it('reports a low locked share when the deltas are spread', () => {
+    const list = Array.from({ length: 100 }, (_, i) => 10 + i * 0.4)
+    expect(cadence(list).locked).toBeLessThan(0.2)
+  })
+
+  it('survives an empty list without dividing by zero', () => {
+    const c = cadence([])
+    expect(c.beat).toBe(0)
+    expect(c.locked).toBe(0)
+    expect(c.refresh).toBe(0)
   })
 })

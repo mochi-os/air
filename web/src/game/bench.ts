@@ -11,6 +11,8 @@
 // distribution; the engine registers a state callback (bench_state) so the
 // report carries the resolved quality knobs when the engine is alive.
 
+import { cadence } from './governor'
+
 const params = new URLSearchParams(location.search)
 const active = params.get('developer') === '1' && !!params.get('bench')
 
@@ -45,32 +47,6 @@ if (active) {
   // counters (e.g. render-submission ms); finish() diffs them over the window so
   // the report carries per-frame costs (#197).
   let state0: Record<string, unknown> | null = null
-  // cadence reads the DISPLAY's own beat out of the frame deltas. A vsynced
-  // client cannot outrun the panel, so its deltas pile up on the refresh
-  // period (and on multiples of it whenever a frame is missed). The mode of a
-  // 0.5 ms histogram is that period, and the share of frames sitting on it
-  // says whether the client is locked to the panel at all — a low share means
-  // the deltas are spread, which is either an unsynced client or genuine
-  // stutter, and the median/p95 split tells those two apart.
-  //
-  // Reported because the dynamic-resolution governor's 18 ms drop threshold is
-  // written for a 60 Hz panel. On a 50 Hz panel a PERFECTLY vsynced frame is
-  // 20 ms, already past that threshold, so a healthy machine is driven to the
-  // 0.45 render floor and then counted toward the "cannot hold it" verdict.
-  // Without the panel's rate in the report there is no way to tell that case
-  // from real stutter, and they want opposite fixes.
-  const cadence = (list: number[]) => {
-    const bucket = new Map<number, number>()
-    for (const d of list) {
-      const key = Math.round(d * 2) / 2
-      bucket.set(key, (bucket.get(key) || 0) + 1)
-    }
-    let mode = 0
-    let best = 0
-    for (const [key, n] of bucket) if (n > best) { best = n; mode = key }
-    const near = list.filter((d) => Math.abs(d - mode) <= 1.5).length
-    return { beat: mode, locked: +(near / (list.length || 1)).toFixed(2), refresh: mode > 0 ? +(1000 / mode).toFixed(1) : 0 }
-  }
   const finish = () => {
     const s = [...deltas].sort((a, b) => a - b)
     const sum = s.reduce((a, v) => a + v, 0) || 1
