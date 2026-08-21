@@ -32,7 +32,7 @@ import { impact as pipper_impact } from './pipper'
 import { command as steer_command, radius as steer_radius, merge as steer_merge, reach as steer_reach } from './steer'   // mouse-aim: the nose-to-cursor law and its angular cursor clamp
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
-import { audio_gesture, audio_enable, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint } from './audio'
+import { audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
@@ -101,6 +101,16 @@ export function startGame({
   const __ac = new AbortController()
   const signal = __ac.signal
   let __raf = 0
+  // Arm the audio context NOW (#55): the mount runs inside the Fly click's
+  // transient user-activation window, so the resume inherits the gesture. The
+  // pointerdown/keydown hooks below only install after this point, so a pilot
+  // who clicked Fly and then flew HOTAS-only — gamepad input is not a user
+  // activation and fires no DOM events — heard nothing until the first
+  // keyboard press: no engine, no wind, and in the 2026-08-20 joust all six
+  // enemy launch sounds and two 15-18 m proximity detonations played into a
+  // suspended context and were discarded. audio_enable first: the previous
+  // unmount leaves `enabled` false, which would no-op the gesture on a refly.
+  if (config.sound !== false) { audio_enable(true); audio_gesture() }
 
 // ============================================================================ config
 const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, exterior_detail:3, lod:true,   // dyn_res defaults ON (#148): slow machines self-tune render_scale down to 0.45 instead of stuttering
@@ -2591,7 +2601,7 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
 	m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30);   // off the rail at aircraft speed; the Mk 36 does the rest
-	m.life=20; m.kind="9m"; m.target=target; m.enemy=false; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.fate=undefined; m.fated=0; m.shot=(m.shot||0)+1; m.launcher=st;   // enemy=false HERE, every launch: the pool slot may last have carried the bandit's heater, and a player's 9M that inherited enemy=true fused on the bandit and blasted the OWNSHIP's hulk instead — four fused shots in the 2026-08-19 joust, recorded as the bandit's, harming nobody. launch_bandit_heater sets it true again for its own rounds
+	m.life=20; m.kind="9m"; m.target=target; m.enemy=false; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.shot=(m.shot||0)+1; m.launcher=st;   // enemy=false HERE, every launch: the pool slot may last have carried the bandit's heater, and a player's 9M that inherited enemy=true fused on the bandit and blasted the OWNSHIP's hulk instead — four fused shots in the 2026-08-19 joust, recorded as the bandit's, harming nobody. launch_bandit_heater sets it true again for its own rounds
 	if(target){ const dx=wrap_axis(target.pos.x-st.pos.x), dy=target.pos.y-st.pos.y, dz=wrap_axis(target.pos.z-st.pos.z); const d=Math.hypot(dx,dy,dz)||1;
 		const tail=target.fwd?Math.max(0,(dx*target.fwd.x+dy*target.fwd.y+dz*target.fwd.z)/d):0;
 		const floor=0.15+0.35*THREE.MathUtils.clamp(target.reheat??0,0,1);
@@ -2656,7 +2666,7 @@ function launch_amraam(st,target,track){ const m=missiles.find(x=>!x.active); if
 	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
 	if(stores_eject(st.loadout||{},name||"")){ m.vx=st.fwd.x*(st.speed+15); m.vy=(st.fwd.y*st.speed)-8; m.vz=st.fwd.z*(st.speed+15); }   // ejector points (the cheek LAU-116, the inboard LAU-115C): the round punches DOWN before the motor lights
 	else { m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30); }   // rail points (wing LAU-127s, single or twin): forward off the rail like the 9M
-	m.kind="120c"; m.target=target; m.track=track??null; m.enemy=false; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.shot=(m.shot||0)+1; m.launcher=st;
+	m.kind="120c"; m.target=target; m.track=track??null; m.enemy=false; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.shot=(m.shot||0)+1; m.launcher=st;
 	m.slot=missiles.indexOf(m);
 	const estimate=(track!=null&&target)?{ position:{x:target.pos.x,y:target.pos.y,z:target.pos.z},
 		velocity:{x:target.velx??target.fwd.x*target.speed,y:target.vely??target.fwd.y*target.speed,z:target.velz??target.fwd.z*target.speed} }:null;
@@ -2686,7 +2696,7 @@ function launch_bandit_round(){ const m=missiles.find(x=>!x.active); if(!m||!has
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
 	m.vx=bandit.fwd.x*(bandit.speed+30); m.vy=bandit.fwd.y*(bandit.speed+30); m.vz=bandit.fwd.z*(bandit.speed+30);
-	m.kind="120c"; m.target=null; m.track=null; m.enemy=true; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.shot=(m.shot||0)+1; m.launcher=bandit;
+	m.kind="120c"; m.target=null; m.track=null; m.enemy=true; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.shot=(m.shot||0)+1; m.launcher=bandit;
 	m.slot=missiles.indexOf(m);
 	round_launch(m.slot,{x:m.px,y:m.py,z:m.pz},{x:m.vx,y:m.vy,z:m.vz},
 		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },WORLD_WRAP,true);
@@ -2721,7 +2731,11 @@ function step_amraam(m,dt){
 	m.trail_acc+=dt; if(m.trail_acc>.035){ m.trail_acc=0; const a=m.trail.geometry.attributes.position.array, n=Math.min(30,m.trail_n+1); if(m.trail_n>=30)a.copyWithin(0,3); const o=(n-1)*3; a[o]=m.px;a[o+1]=m.py;a[o+2]=m.pz; m.trail_n=n; m.trail.geometry.setDrawRange(0,n); m.trail.geometry.attributes.position.needsUpdate=true; }
 	if(state.fused&&truth){   // the warhead speaks through battle, exactly like the 9M's
 		m.active=false; m.mesh.visible=false; round_drop(m.slot);
-		if(m.enemy){ if(!cheat("invulnerable")){ battle_blast(1,{x:m.px,y:m.py,z:m.pz},battle_aim(ownship),0,battle_tick,WARHEAD.radar); }   // hulk 1 is the ownship: the wound flows through the same battle pipeline the bandit's guns use
+		{ const prey=m.enemy?ownship:t;   // the burst record (#58): the core's own continuous least, the closing speed, and the miss vector in the target's body frame
+			const wx=wrap_axis(m.px-truth.position.x), wy=m.py-truth.position.y, wz=wrap_axis(m.pz-truth.position.z);
+			m.burst=m.least; m.closure=Math.hypot(truth.velocity.x-m.vx,truth.velocity.y-m.vy,truth.velocity.z-m.vz);
+			m.off=(prey&&prey.fwd&&prey.up&&prey.right)?{ ahead:wx*prey.fwd.x+wy*prey.fwd.y+wz*prey.fwd.z, above:wx*prey.up.x+wy*prey.up.y+wz*prey.up.z, right:wx*prey.right.x+wy*prey.right.y+wz*prey.right.z }:undefined; }
+		if(m.enemy){ if(!cheat("invulnerable")){ battle_blast(-1,{x:m.px,y:m.py,z:m.pz},battle_aim(ownship),0,battle_tick,WARHEAD.radar); }   // target -1 is the OWNSHIP (non-negative selects a fleet hulk — passing 1 resolved a hulk that does not exist and silently did nothing, #53): the wound flows through the same battle pipeline the bandit's guns use
 			explosion_at(m.px,m.py,m.pz); }
 		else if(!MULTIPLAYER&&has_enemy&&t===bandit){ const verdict=battle_blast(0,{x:m.px,y:m.py,z:m.pz},battle_aim(bandit),0,battle_tick,WARHEAD.radar);   // the 22 kg charge reaches ~1.33x the 9M's radii
 			if(DEV_MODE){ m.mask=verdict.mask; m.killed=verdict.kill; }
@@ -2758,7 +2772,7 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 	m.life-=dt; m.flew+=dt;
 	if(m.target){ const md=wrap_distance({x:m.px,y:m.py,z:m.pz},m.target.pos); if(md<(m.least??1e9)) m.least=md; }   // closest approach: dev_missiles telemetry and the recording's Least channel (#33 debrief) — one distance per live heater per frame
 	const post=(why)=>{ m.fate=why; m.fated=sim_time;   // recorded on the round's last sample (#33 debrief)
-		if(DEV_MODE){ const log=(globalThis as any).dev_missiles=(globalThis as any).dev_missiles||[]; log.push({why, least:+(m.least??-1).toFixed(1), flew:+m.flew.toFixed(1), loose:!!m.loose, broke:m.why||"", at:m.at??-1, mask:m.mask??-1, killed:!!m.killed}); } };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+		if(DEV_MODE){ const log=(globalThis as any).dev_missiles=(globalThis as any).dev_missiles||[]; log.push({why, enemy:!!m.enemy, least:+(m.least??-1).toFixed(1), flew:+m.flew.toFixed(1), loose:!!m.loose, broke:m.why||"", at:m.at??-1, mask:m.mask??-1, killed:!!m.killed}); } };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	if(m.life<=0){ m.active=false; m.mesh.visible=false; post("life"); continue; }
 	// The AIM-9M (#126), mirroring the server: proportional navigation with a
 	// gimballed, rate-limited seeker; boost-coast propulsion paying for every
@@ -2794,8 +2808,10 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 		const near=Math.hypot(nx,ny,nz);
 		if(near<(fox3?20:12)){ m.active=false; m.mesh.visible=false;
 			const bx=t.pos.x-nx, by=t.pos.y-ny, bz=t.pos.z-nz;   // the missile at its nearest point, anchored to the target
-			if(m.enemy){   // the bandit's own heater: hulk 1 is the ownship, and the cheat spares us as it does everywhere else
-				if(!cheat("invulnerable")) battle_blast(1,{x:bx,y:by,z:bz},battle_aim(ownship),0,battle_tick);
+			m.burst=near; m.closure=Math.sqrt(squared);   // the CONTINUOUS miss and closing speed, recorded (#58): the sampled Least could not tell a 4 m near-kill from an 11.9 m fringe graze, which is what forced #53 to be answered synthetically
+			m.off=(t.fwd&&t.up&&t.right)?{ ahead:-(nx*t.fwd.x+ny*t.fwd.y+nz*t.fwd.z), above:-(nx*t.up.x+ny*t.up.y+nz*t.up.z), right:-(nx*t.right.x+ny*t.right.y+nz*t.right.z) }:undefined;   // target -> burst in the TARGET's body frame: distance and bearing in one field
+			if(m.enemy){   // the bandit's own heater: target -1 is the ownship (#53 — passing 1 selected a nonexistent fleet hulk and every enemy fusing silently did nothing), and the cheat spares us as it does everywhere else
+				if(!cheat("invulnerable")) battle_blast(-1,{x:bx,y:by,z:bz},battle_aim(ownship),0,battle_tick);
 				explosion_at(bx,by,bz); }
 			else if(!MULTIPLAYER&&has_enemy&&t===bandit){
 				if(fox3&&near<18){ if(DEV_MODE){ m.mask=-1; m.killed=true; }   // #27 phase 1 PLACEHOLDER: the simple PN endgame grazes a hard-evading target at 12-21 m, and the deliberately-simple round scores that as the 22 kg warhead's kill rather than growing proper guidance now — phase 2's core flight model and warhead classes replace this whole criterion
@@ -4282,7 +4298,7 @@ function recording_sample(){
 		...(DEV_MODE?{ stick:last_controls?last_controls.pitch:0, stabilator:(out[STATE.stabilator]||0)/D2R }:{}) }:undefined;
 	add(ownship,1,cfg.callsign||"Player","Blue",undefined,data);
 	if(!MULTIPLAYER&&bandit.group&&(has_enemy&&bandit.group.visible||(bandit.fated&&sim_time-bandit.fated<1)))   // the grace second writes the corpse's Fate: destruction hides the group before the next sample, and an unrecorded fate was how a debrief argued with the pilot about who killed whom
-		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?(bandit_mode()||undefined):undefined,
+		add(bandit,2,"Bandit","Red",DEV_MODE&&bandit_brain?((bandit.harm&&(bandit.harm.killed||bandit.harm.wing>0.5))?"wreck":(bandit_mode()||undefined)):undefined,   // a dead jet coasting on the model (#40) has no doctrine — and since it rolls and accelerates now, the attitude freeze no longer dates the kill; "wreck" is what dates it
 			{ rounds:bandit.rounds??0,   // the true belt (#233), same counter as the ownship's — no longer a nominal derived from expenditure
 				struck:bandit.struck||0, burning:!!bandit.harm.burning, thrust:bandit.harm.thrust||0,
 				wing:bandit.harm.wreck||0, ...(bandit.fate?{fate:bandit.fate}:{}),
@@ -4318,7 +4334,8 @@ function recording_sample(){
 		list.push({ id:100+k*64+(m.shot%64), x:m.px, y:m.py, z:m.pz, roll:0, pitch, yaw,
 			name:heater?"AIM-9M":"AIM-120C", label:heater?"9M":"120C", colour:shooter===2?"Red":"Blue", kind:"Weapon+Missile",
 			round:{ shooter, target:m.enemy?1:(m.target?recorded(m.target):undefined), seeker,
-				...((m.least??1e9)<1e8?{least:m.least}:{}), ...(grace?{fate:m.fate||"lost",killed:!!m.killed}:{}) } }); }
+				...((m.least??1e9)<1e8?{least:m.least}:{}),
+				...(grace?{fate:m.fate||"lost",killed:!!m.killed,...(m.burst!==undefined?{burst:m.burst,closure:m.closure,when:m.fated,...(m.off?{off:m.off}:{})}:{})}:{}) } }); }
 	recorder.add(sim_time,list); }
 // recording_file renders what is buffered; null when nothing was captured.
 function recording_file(){
@@ -4467,13 +4484,30 @@ if(DEV_MODE) (globalThis as any).dev_close=(m,az,el,heading)=>{ const d=+m||200;
 	bandit.pos.copy(ownship.pos).addScaledVector(_look_d,d*Math.cos(e)); bandit.pos.y+=d*Math.sin(e);
 	bandit.fwd.copy(ownship.fwd).multiplyScalar(Math.cos(h)).addScaledVector(ownship.right,Math.sin(h)).normalize(); bandit.speed=ownship.speed;
 	if(bandit_brain) bandit_spawn(bandit.pos,{x:bandit.fwd.x*bandit.speed,y:0,z:bandit.fwd.z*bandit.speed}); return d; };
-if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds){ if(!has_enemy||!bandit.harm||!bandit.group.visible) return null;   // dev (#27 wound trails): rake the FLYING bandit from astern with REAL rounds — identity 0 is the ownship's gun against the bandit hulk, the same path a gun kill flies, so the wound is the battle model's own and survives the per-frame refresh (setting bandit.harm directly is clobbered by it). The wound trails must then draw while the brain still flies the jet.
-	const n=Math.max(1,+volleys||6), shots=Math.max(1,+rounds||40), back=250, up=bandit.up||world_up;
-	const pose={ position:{x:bandit.pos.x-bandit.fwd.x*back, y:bandit.pos.y-bandit.fwd.y*back, z:bandit.pos.z-bandit.fwd.z*back},
+if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds,side){ if(!has_enemy||!bandit.harm||!bandit.group.visible) return null;   // dev (#27 wound trails): rake the FLYING bandit from astern with REAL rounds — identity 0 is the ownship's gun against the bandit hulk, the same path a gun kill flies, so the wound is the battle model's own and survives the per-frame refresh (setting bandit.harm directly is clobbered by it). The wound trails must then draw while the brain still flies the jet.
+	const n=Math.max(1,+volleys||6), shots=Math.max(1,+rounds||40), back=250, up=bandit.up||world_up, right=bandit.right||_look_d.crossVectors(bandit.fwd,up).normalize(), off=+side||0;   // side: metres abeam of the centreline, so a rake can take a WING rather than the fuselage (#39/#40 wreck verification)
+	const pose={ position:{x:bandit.pos.x-bandit.fwd.x*back+right.x*off, y:bandit.pos.y-bandit.fwd.y*back+right.y*off, z:bandit.pos.z-bandit.fwd.z*back+right.z*off},
 		forward:{x:bandit.fwd.x,y:bandit.fwd.y,z:bandit.fwd.z}, up:{x:up.x,y:up.y,z:up.z},
 		velocity:{x:bandit.velx,y:bandit.vely,z:bandit.velz} };
 	for(let v=0;v<n;v++) battle_volley(0,pose,shots,battle_tick+v);
 	return { volleys:n, shots }; };
+let growl_force=null;
+if(DEV_MODE) (globalThis as any).dev_growl=(state,strength,seconds)=>{ growl_force={state:+state||0,strength:+strength||0,until:sim_time+(+seconds||6)}; return growl_force; };   // #59: audition the seeker voice from the console — dev_growl(1,0.2) search cold, dev_growl(2,1) lock point-blank burner
+if(DEV_MODE) (globalThis as any).dev_audio=()=>audio_state();   // #55: the context's live state, for the strict-autoplay boot test
+if(DEV_MODE) (globalThis as any).dev_blast=function(hulk,distance,trials,klass,way){   // #53: detonate the real warhead at an anchored miss distance against either LIVE hulk, pristine state per trial — the damage-v-distance curve, measured on the wiring under suspicion
+	const own=hulk===1; if(!own&&(!has_enemy||!bandit.harm||!bandit.group.visible)) return null;
+	const t=own?ownship:bandit, d=+distance||9, n=Math.max(1,trials|0||20), cls=+klass||1;
+	const axes={ right:own?ownship.right:(bandit.right||world_up.clone().cross(bandit.fwd).normalize()), ahead:t.fwd, behind:t.fwd.clone().negate(), above:own?ownship.up:(bandit.up||world_up) };
+	const along=axes[way&&axes[way]?way:"right"];
+	let kills=0, wounds=0;
+	for(let k=0;k<n;k++){
+		battle_progress(0.85,900000+k*2,true,0);   // pristine both hulks, ownship flight damage included
+		const p={x:t.pos.x+along.x*d, y:t.pos.y+along.y*d, z:t.pos.z+along.z*d};
+		const r=battle_blast(own?-1:0,p,battle_aim(t),0,900001+k*2,cls);
+		if(r.kill) kills++; else if(r.mask) wounds++; }
+	battle_progress(0.85,900900,true,0);   // leave the mission pristine
+	return { hulk:own?"ownship":"bandit", distance:d, trials:n, kills, wounds };   // i18n-format-ok: developer probe
+};
 if(DEV_MODE) (globalThis as any).dev_panels=()=>{ const read=(st)=>{ if(!st||!st.group) return null; const out={}; for(const p of PANELS){ const n=st.group.getObjectByName(p.node); out[p.node]=n?n.visible:null; } return out; };
 	const words=last_out, gone={}; if(words) for(const p of PANELS){ let g=true; for(let e=p.first;e<p.first+4;e++) if((words[STATE.element+e]??0)<0.99) g=false; gone[p.node]=g; }
 	return { ownship:read(ownship), bandit:has_enemy?read(bandit):null, ownshipShed:gone }; };   // dev (#wing loss): panel visibility and the element verdict behind it
@@ -6136,16 +6170,22 @@ function draw_hud(){
 	// 9M seeker tone (#73): the growl/lock audio tracks the seeker itself, not
 	// the drawn symbology — the tone keeps playing with the head turned away
 	// from the glass, exactly like the real headset.
-	let lockon=false;
+	let lockon=false, drinking=0;
 	if(master==="9m"&&!pa&&boxed){ const to=_v.set(wrap_axis(boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,wrap_axis(boxed.pos.z-ownship.pos.z)); const d=to.length()||1; to.multiplyScalar(1/d);
 		// Plume-conditioned acquisition (#255), mirroring the server: a
 		// burner-lit nose is lockable to half the envelope, a cold one only
 		// close aboard — rear aspect keeps the full reach. The tone tells
-		// the truth about what the seeker can actually hold.
+		// the truth about what the seeker can actually hold — and how MUCH
+		// heat it is drinking (#59): depth inside the brightness-conditioned
+		// reach drives the growl's pitch and anger, so the ear learns shot
+		// quality the way the real headset teaches it.
 		const tail=boxed.fwd?Math.max(0,to.dot(boxed.fwd)):0;
 		const floor=0.15+0.35*THREE.MathUtils.clamp(boxed.reheat??0,0,1);
-		lockon=ownship.fwd.dot(to)>0.866&&d<5000*(floor+(1-floor)*tail); }
-	audio_seeker(game_paused?0:(master==="9m"&&!pa?(lockon?2:1):0));
+		const reach=5000*(floor+(1-floor)*tail);
+		lockon=ownship.fwd.dot(to)>0.866&&d<reach;
+		drinking=THREE.MathUtils.clamp(1-d/reach,0,1); }
+	if(growl_force&&sim_time<growl_force.until) audio_seeker(growl_force.state,growl_force.strength);
+	else audio_seeker(game_paused?0:(master==="9m"&&!pa?(lockon?2:1):0),drinking);
 	// Departure / AoA warning tone (NATOPS 2.8.2.5, #53): yaw-rate intensity
 	// from the 40°/s onset to the 60°/s ceiling, steady above 35° AoA. Ground
 	// excluded — a HI-mode nosewheel turn yaws faster than the onset.
@@ -6574,7 +6614,11 @@ function exit_match(){ if(!running) return; running=false; /* #57 parked: head_c
 	// (#213). Deliberately after net_record and unawaited: the row must exist
 	// for the save to bind to, and the menu should never wait on an upload.
 	if(!MULTIPLAYER){ const replay=recording_file();
-		if(replay) setTimeout(()=>void recording_store(replay.session,mission_began,replay.text),600); }
+		// A flight under five seconds is a mistake, not a sortie (#51): an
+		// aborted start used to leave a 15-420 byte stub in the recordings
+		// list beside the real fights. The live text (dev_acmi) and the
+		// History download are untouched — only the automatic upload skips.
+		if(replay&&sim_time-mission_zero>=5) setTimeout(()=>void recording_store(replay.session,mission_began,replay.text),600); }
 	if(onExit) onExit(); }
 let mission_began=Date.now();   // local session identity for the history's replay-dedup key
 let own_kills=0, own_deaths=0, match_started=0;

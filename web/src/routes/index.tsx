@@ -4,6 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { audio_gesture } from '../game/audio'
 import { createFileRoute } from '@tanstack/react-router'
 import { shellSetTitle, useShellImmersive } from '@mochi/web'
 import { MissionSetup } from '../components/MissionSetup'
@@ -81,6 +82,13 @@ function Index() {
   useTabTitle()
 
   const enterFlight = () => {
+    // Arm the audio context HERE, synchronously inside the click dispatch
+    // (#55): a resume during a genuine event handler always satisfies the
+    // autoplay policy, where arming at engine start raced the transient
+    // activation window across the lazy GameCanvas chunk load — and a
+    // HOTAS-only pilot fires no DOM events at all once flying, so nothing
+    // later can do it.
+    audio_gesture()
     setMenuOpen(false)
     enterFullscreen()
   }
