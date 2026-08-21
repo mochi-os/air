@@ -62,6 +62,13 @@ function begin(url: string): Load {
       return buffer.buffer
     } catch (error) {
       load.failed = true
+      // A failed download must not poison the page: this entry used to
+      // stay cached forever, so one flaky fetch — mid-load exit, slow link,
+      // dropped connection — rejected every later mission's asset() until a
+      // full reload. The CURRENT waiters still see the rejection (the failed
+      // flag drives this mission's LOADING FAILED); the next mission begins
+      // a fresh fetch.
+      loads.delete(url)
       throw error
     }
   })()
