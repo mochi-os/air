@@ -136,24 +136,18 @@ const catalogs: Catalogs = {
 
 const queryClient = createQueryClient()
 
-// Shell integration that AuthenticatedLayout normally installs — this fullscreen
-// game doesn't use that layout, so wire it up by hand. All three self-guard
-// (no-op outside the Mochi shell / if already installed):
-//  - navigation sync: inside the iframe history.pushState is a silent no-op, so
-//    relay the router's URL changes (e.g. ?tab=) up to the parent address bar;
-//  - link interceptor: route in-app/cross-app link clicks through the shell;
-//  - clipboard proxy: clipboard APIs are blocked in the sandboxed iframe.
+// Shell integration AuthenticatedLayout normally installs - this fullscreen
+// game does not use that layout. All three self-guard (no-op outside the shell
+// or if already installed); inside the sandboxed iframe pushState and the
+// clipboard APIs are dead.
 installShellNavigationSync()
 installShellLinkInterceptor()
 installShellClipboardProxy()
 
-// The shell appends ?_shell=1 to the iframe document URL so the server serves
-// the app (not the shell wrapper) for that load. The server has consumed it by
-// the time this SPA runs, so drop it from the client URL — otherwise the
-// navigation sync above relays it into the visible top-window address bar, and
-// it gets merged into ?tab= navigations. Replacing it here (post-sync) also
-// pushes the cleaned URL up to the shell. Re-loads come from the shell, which
-// re-adds the marker, so removing it client-side is safe.
+// The shell appends ?_shell=1 so the server serves the app rather than the
+// shell wrapper. The server has consumed it by now, so drop it: the navigation
+// sync otherwise relays it into the top-window address bar and merges it into
+// ?tab= navigations.
 {
   const u = new URL(window.location.href)
   if (u.searchParams.has('_shell')) {
@@ -162,17 +156,10 @@ installShellClipboardProxy()
   }
 }
 
-// Authenticate BEFORE the router mounts. Top-window (a typed URL, a deep link)
-// there is no shell to hand the app a token, so the auth store fetches one from
-// /_/token itself; in the shell it arrives asynchronously by postMessage. Air
-// never ran this, so every authenticated call went out bare and 401'd — no
-// saved config, no identity name, and settings that only appeared to persist
-// because they were cached in shell storage.
-// Unconditional: initialize() covers BOTH paths — it awaits initShellBridge()
-// for the token the shell delivers by postMessage, and falls back to fetching
-// /_/token itself when standalone. Guarding it on !isInShell() (copied from
-// feeds, which handles the shell case in an _authenticated route Air does not
-// have) skipped the shell — which is where the app actually runs.
+// Authenticate BEFORE the router mounts, unconditionally: initialize() covers
+// both paths - it awaits initShellBridge() for the token the shell delivers by
+// postMessage and falls back to fetching /_/token when standalone. Guarding it
+// on !isInShell() skips the shell, which is where the app actually runs.
 void useAuthStore.getState().initialize()
 
 const router = createRouter({

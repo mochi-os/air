@@ -1,35 +1,10 @@
 #!/usr/bin/env python3
-"""Check the engine's deck layout against the 1:200 GA drawing (nimitz-plan.jpg).
-
-This is the Stage C tool that WORKED (see PLAN.md). The earlier idea — trace the
-plan's deck outline column-by-column and re-source the outline from it — failed:
-the scan's margins are full of leader lines, part drawings, labels and a compass
-rose, and no masking made the trace trustworthy. What works is the inverse:
-REGISTER the engine's current outline onto the plan (fit axis + lateral scale by
-maximizing plan darkness along the outline polyline), then measure specific
-features (catapult track lines, wires) with seeded ridge fits in that frame.
-
-Registration found 2026-07-10 (and why the first attempt misregistered): the plan
-has no bow tip — the flight-deck front is a blunt ~23 m edge — and the stern
-round-down apex is buried in catwalk bands, so tip-picking put the axis ~12 px too
-high. The whole-outline fit gives axis y = 335.0 + 0.0030x and 2.950 px/m lateral
-(anisotropy vs fore-aft 0.994 — the scan is effectively isotropic).
-
-Findings (all in deck-ops metres, post-squash):
-- outline: 2/3 of stations sit on a plan line within +-1.7 m; the rest is clutter.
-  Bow front edge is ~1.5 m short of the plan's (real half-length 166.4 vs fa 165).
-- wires: plan marks at fa -116.8/-105.3/-93.9/-83.7 vs engine -115.6..-80.5 at the
-  same 11.4-11.7 m spacing; the uniform ~1.4 m offset is fa-registration noise.
-- cat2 (-3.44, 0 deg) and cat3 (-17.08, 4.03 deg): plan agrees within noise. The
-  full-length line the fit prefers for cat2 (+1.4 deg) is the bow foul line — it
-  misses the bow water-brake slot centre; the real track line matches the engine.
-- cat1: engine's model-paint fit (19.41, 5.67) lay on NO plan feature (ridge
-  coverage 0.22); the plan's track line (15.50, 3.30, coverage 0.95) starts at
-  fa 45 — a slot's aft end right behind the spot — and hits the bow slot centre.
-  MOVED (engine shuttles + bake CATS + JBD ensemble transplant), 2026-07-10.
-- cat4: plan line at -27.75 (coverage 0.99 over the unambiguous aft stretch) vs
-  model paint -26.82 (0.15). MOVED with heading kept 0.
-"""
+"""Check the engine's deck layout against the 1:200 GA drawing (nimitz-plan.jpg). Tracing the plan's
+outline directly fails (the margins are full of leader lines, part drawings and labels); instead REGISTER
+the engine's outline onto the plan (fit axis + lateral scale by maximising plan darkness along the
+polyline), then measure catapult track lines and wires with seeded ridge fits in that frame. Never pick
+tips: the plan has no bow tip (a blunt ~23 m front edge) and the stern apex is buried in catwalk bands,
+so fit the whole outline."""
 import json, math, sys
 import numpy as np
 from PIL import Image, ImageDraw

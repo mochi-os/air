@@ -3,15 +3,11 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// Graphics capability diagnosis (#55). The engine is THREE r160 on WebGL2 —
-// its renderer constructor throws without it — and the silent killer below
-// that is the software fallback (SwiftShader, llvmpipe, Microsoft Basic
-// Render), where the context creates fine and the game crawls with no
-// explanation. Each verdict names its culprit so the player knows whether to
-// change browser, flip an acceleration setting, or change machine; the menu
-// shows the matching banner and the engine's frame-time governor only judges
-// the MACHINE when the verdict here is clear (a software-rendered run says
-// nothing about the GPU that never got to fight).
+// Graphics capability diagnosis (#55). The engine is THREE r160 on WebGL2, and
+// the silent killer below that is the software fallback (SwiftShader, llvmpipe,
+// Microsoft Basic Render), where the context creates fine and the game crawls.
+// The frame-time governor only judges the machine when the verdict here is
+// clear.
 
 export type Verdict = 'webgl2' | 'software' | null
 

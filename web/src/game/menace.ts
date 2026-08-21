@@ -31,15 +31,10 @@ export interface Round {
   vz: number
 }
 
-// phase names what the eighth word says about this round.
-//
-// The BEATEN sentinel is load-bearing: the brain's `beaten` (bot.go) reads the
-// round's loose/blind flags to decide whether it is worth abandoning a fight
-// for, and the stubs it builds from this wire start with both at zero. Without
-// the sentinel the bandit breaks for every 9M the player fires, including the
-// ones the player's flares have already defeated — which is the whole defect
-// the doctrine change fixed on the server, dead in the one place a human sees
-// it.
+// phase names what the eighth word says about this round. BEATEN is
+// load-bearing: the stubs the brain builds from this wire carry loose/blind at
+// zero, so without it the bandit breaks for every round the player's flares
+// have already defeated.
 export function phase(round: Round): number {
   if (round.kind === '120c') return round.phase ?? 0
   return round.loose || (round.blind ?? 0) > 0 ? MENACE_BEATEN : MENACE_HEATER

@@ -1,15 +1,7 @@
 #!/usr/bin/env python3
-"""Extract the ICCS cab geometry from the pristine original into cab38.npy / cab1.npy —
-the verbatim transplant that build_carrier.py re-adds (dropped 0.64 m flush).
-
-The bow ICCS (ICCSZONES[0] = fa 64.5..73.0, lat 4.5..11.5) is an octagonal cab, 3.1x2.8 m,
-0.5 m tall: material_38 walls (~134 tris) + a 16-tri material_1 glass band at h 0.82..0.97.
-The originals sit slightly proud with a floating duplicate; build_carrier deletes them via
-ICCSZONES and re-adds this extraction dropped 0.64 m so the cab sits flush.
-
-Output is a flat per-triangle WORLD-coordinate vertex soup (n*3, 3) — add_soup(deckframe=False)
-consumes it directly. Run once; build_carrier.py loads the .npy files.
-"""
+"""Extract the bow ICCS cab (ICCSZONES[0]: material_38 walls + a material_1 glass band) from the pristine
+original into cab38.npy / cab1.npy, dropped 0.64 m so the transplant sits flush. Output is a per-triangle
+world-coordinate vertex soup (n*3, 3) for build_carrier.py's add_soup(deckframe=False). Run once."""
 import json, struct
 import numpy as np
 

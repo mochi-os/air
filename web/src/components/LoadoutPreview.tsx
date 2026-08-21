@@ -3,12 +3,10 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// The setup dialog's live jet (#17 menu rework): a head-on render of the
-// airframe wearing the edited loadout, so a station choice reads on the
-// aircraft itself instead of through fixture vocabulary. Assets join the
-// preload's in-flight downloads; the parsed prototypes are cached at module
-// scope so reopening the dialog costs one scene assembly, not a re-parse.
-// Rendering is on-demand — one frame per loadout change, no animation loop.
+// The setup dialog's live jet: a head-on render of the airframe wearing the
+// edited loadout. Parsed prototypes are cached at module scope so reopening the
+// dialog costs one scene assembly; rendering is on demand, one frame per
+// loadout change.
 
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
@@ -118,15 +116,11 @@ function dress(jet: THREE.Group, stores: Record<string, StationSlot>): void {
   jet.add(holder)
 }
 
-// extent projects the visible meshes' vertices through the camera and
-// reports the silhouette's NDC reach: the half-width and half-height (1.0 =
-// the frame edge) and the vertical midpoint. Sampled true geometry, and the
-// INDEX selects each piece's triangles (the split stores models share one
-// vertex buffer across stations). Two earlier versions failed differently:
-// rendered-pixel measurement silently returned nothing on some machines'
-// canvas readback, shipping the raw uncorrected seed frame; bounding-box
-// corners overshot the silhouette (a box corner is usually empty space), so
-// the fit stopped a third short of the edges.
+// extent projects the visible meshes' vertices through the camera and reports
+// the silhouette's NDC half-width, half-height and vertical midpoint. Uses the
+// INDEX (the split stores models share one vertex buffer across stations).
+// Bounding-box corners overshoot the silhouette and pixel readback fails
+// silently on some machines, so sampled geometry it is.
 function extent(wrap: THREE.Group, camera: THREE.PerspectiveCamera): { width: number; height: number; middle: number } | null {
   camera.updateMatrixWorld(true)
   wrap.updateMatrixWorld(true)
@@ -154,13 +148,9 @@ function extent(wrap: THREE.Group, camera: THREE.PerspectiveCamera): { width: nu
   return { width: widest, height: Math.max(Math.abs(low), Math.abs(high)), middle: (low + high) / 2 }
 }
 
-// FULLEST is the maximal carriage envelope — tips, twin pairs on every wing
-// pylon, cheeks, and the centreline tank (the deepest store). The camera is
-// framed ONCE against it and then FIXED: every real loadout renders inside
-// that frame, so the airframe never shifts or rescales as stations change —
-// stores simply appear in the space reserved for them. The panel's aspect is
-// chosen so this fit is width-limited, which keeps the jet spanning the full
-// width even with the tank aboard.
+// FULLEST is the maximal carriage envelope. The camera is framed once against
+// it and then fixed, so the airframe never shifts or rescales as stations
+// change. The panel aspect makes this fit width-limited.
 const FULLEST = normalize({
   1: { fixture: 'rail', stores: ['9m'] },
   2: { fixture: 'twin', stores: ['120c', '120c'] },
@@ -173,14 +163,11 @@ const FULLEST = normalize({
   9: { fixture: 'rail', stores: ['9m'] },
 })
 
-// frame zooms the head-on camera so the dressed jet FILLS the panel. A
-// bounding-box fit seeds the distance conservatively, then
-// projected-geometry passes settle the zoom and the vertical centring — the
-// box fit alone leaves wide, uneven margins (it puts every extreme at the
-// centre plane), and each correction changes the geometry it corrected, so
-// the loop runs to convergence. The eye keeps a slight from-below pitch: the
-// belly is where the stores hang, and a from-above eye hid the centerline
-// tank behind the nose.
+// frame zooms the head-on camera so the dressed jet fills the panel: a
+// bounding-box fit seeds the distance, then projected-geometry passes settle
+// zoom and vertical centring (each correction changes what it corrected, so it
+// loops to convergence). The slight from-below pitch keeps the centerline tank
+// visible.
 function frame(camera: THREE.PerspectiveCamera, wrap: THREE.Group, aspect: number): void {
   const box = new THREE.Box3().setFromObject(wrap)
   const centre = box.getCenter(new THREE.Vector3())
@@ -217,10 +204,8 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
     let gone = false
     const width = host.clientWidth || 480
     // The box is CSS aspect-locked just below the fullest fit's silhouette
-    // aspect (~3.1), so the fixed frame is width-limited: the jet spans the
-    // width at any dialog width, tank and all, with headroom below for the
-    // deepest stores. A fixed height went height-limited on wide dialogs and
-    // the side margins returned.
+    // aspect (~3.1) so the fixed frame stays width-limited at any dialog width;
+    // a fixed height went height-limited on wide dialogs.
     const height = host.clientHeight || Math.round(width / 2.9)
     let renderer: THREE.WebGLRenderer
     try {

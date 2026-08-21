@@ -58,10 +58,6 @@ describe('PendingConfig', () => {
 
 describe('stripRetired', () => {
   it('drops the retired Sensitivity value a legacy account still carries', () => {
-    // The regression: removing the slider left the SAVED value in place, and two
-    // engine reads (the multiplayer control sample, the nosewheel pedal) went on
-    // scaling by it — so an account that had ever moved it flew at reduced
-    // authority against other people, with no setting left to correct it.
     expect(stripRetired({ fuel: 6000, sens: 0.6 })).toEqual({ fuel: 6000 })
   })
 

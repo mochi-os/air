@@ -4,16 +4,10 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 // Shared ordnance helpers (#27). Each round ships as its own GLB named by
-// designation, like the airframe (aim120c.glb — "AIM-120C AMRAAM" by
-// Pippa/Planetrix23, Sketchfab, CC BY 4.0): per-designation files cache and
-// update independently and map one-to-one onto their licensed sources.
-// Sources arrive in arbitrary units and axes, so normalize_round bakes the
-// convention every consumer relies on: the round lies along +z (nose forward,
-// the airframe model space's longitudinal axis), spans its true length in
-// metres, and is centred at the origin — which makes placement everywhere
-// "position = anchor". The airframe-specific half of the fit (WHERE a round
-// hangs) comes from node_centre over the aircraft's own split stores model,
-// so the source artist's station positions transfer without hand measurement.
+// designation (aim120c.glb - "AIM-120C AMRAAM" by Pippa/Planetrix23, Sketchfab,
+// CC BY 4.0). normalize_round bakes the convention every consumer relies on:
+// the round lies along +z, spans its true length in metres, and is centred at
+// the origin, so placement everywhere is "position = anchor".
 
 import * as THREE from 'three'
 
@@ -58,14 +52,11 @@ export function normalize_round(scene: THREE.Group, length = AMRAAM_LENGTH): THR
   return wrap
 }
 
-// amraam_anchor: where a station's AIM-120 hangs, in model space. Stations
-// with a source-art round (the cheeks 4/6 and the wing rails 2/8) inherit its
-// centroid directly. The inboard pylons 3/7 have only tanks in the source, so
-// their anchor is DERIVED: the tank's buttline and longitudinal centre with
-// the hang height of the same wing's rail round — a rail-hung slim store
-// under the same pylon family. Twin points ('a' outer, 'b' inner) spread the
-// pair laterally off the single-round anchor and hang slightly lower, the
-// same geometry the heater twins' hand-measured anchors encode.
+// amraam_anchor: where a station's AIM-120 hangs, in model space. Stations with
+// a source-art round inherit its centroid; the inboard pylons 3/7 have only
+// tanks, so their anchor takes the tank's buttline with the same wing's rail
+// round's hang height. Twin points ('a' outer, 'b' inner) spread laterally and
+// hang slightly lower.
 export function amraam_anchor(root: THREE.Object3D, station: number, point = ''): THREE.Vector3 | null {
   const anchor = single_anchor(root, station)
   if (!anchor || !point) return anchor
@@ -85,13 +76,10 @@ function single_anchor(root: THREE.Object3D, station: number): THREE.Vector3 | n
   return new THREE.Vector3(tank.x, rail.y, tank.z)
 }
 
-// amraam_aim: the round's ORIENTATION at a station — the long axis of the
-// source art's own round, as the dominant principal component of its sampled
-// vertices. The model space is not quite waterline-level (the airframe rests
-// slightly pitched within it, and the art's stores are authored to match), so
-// a round laid perfectly along model z visibly diverges from its pylon
-// toward the nose. Stations without a source round borrow the same wing's
-// rail round, like the derived anchors.
+// amraam_aim: the round's ORIENTATION at a station, the long axis of the source
+// art's own round as the dominant principal component of its vertices. Model
+// space is not waterline-level, so a round laid along model z visibly diverges
+// from its pylon.
 export function amraam_aim(root: THREE.Object3D, station: number): THREE.Quaternion {
   const aim = new THREE.Quaternion()
   const source = root.getObjectByName('Missile_' + station) ? station : station === 3 ? 2 : station === 7 ? 8 : station
@@ -132,19 +120,12 @@ export function amraam_aim(root: THREE.Object3D, station: number): THREE.Quatern
   return aim.setFromUnitVectors(new THREE.Vector3(0, 0, 1), axis)
 }
 
-// node_centre: the centre of a named node's mesh — the middle of its
-// bounding box, NOT the vertex mean — in the ROOT's model space. Three traps
-// live here, all learned the hard way: the split stores models share ONE
-// vertex buffer across every station's primitive, so only the index selects
-// this piece's triangles; gltfpack QUANTIZES positions, hanging the
-// dequantization transform on the node, so raw vertex coordinates are
-// meaningless until they go through the mesh's world matrix; and a vertex
-// MEAN is skewed by wherever the artist spent triangles — a round's dense
-// tail fins dragged the mean below the tube axis, and every AMRAAM anchored
-// to it hung off its rail with an air gap. The box middle is the tube axis
-// for a radially symmetric round, and it is the same convention
-// normalize_round centres our own model by, so anchoring box-middle to
-// box-middle makes the drawn round occupy the source round's exact envelope.
+// node_centre: the centre of a named node's mesh - the middle of its bounding
+// box, NOT the vertex mean - in the ROOT's model space. The split stores models
+// share one vertex buffer, so only the index selects this piece; gltfpack
+// quantizes positions, so raw coordinates mean nothing until they go through
+// the mesh's world matrix; and a vertex mean is skewed by where the artist
+// spent triangles.
 export function node_centre(root: THREE.Object3D, name: string): THREE.Vector3 | null {
   const node = root.getObjectByName(name)
   if (!node) return null

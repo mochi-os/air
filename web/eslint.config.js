@@ -152,13 +152,11 @@ export default defineConfig(
     },
   },
   {
-    // The game/ layer is the Three.js + WASM flight engine and the wire
-    // protocol, not React UI. Lingui (React i18n) does not apply to text drawn
-    // to the WebGL canvas or to protocol tokens/error codes; the WASM and Three
-    // interop is inherently untyped; and engine.ts is intentionally @ts-nocheck.
-    // Console keeps warn/error for genuine engine diagnostics but still bans
-    // stray console.log. Ordinary hygiene (unused vars, const, empty blocks)
-    // stays enforced here. Must come after the i18n block to win for these files.
+    // The game/ layer is the Three.js + WASM engine and wire protocol, not
+    // React UI: no Lingui for canvas text or protocol tokens, untyped interop
+    // allowed, engine.ts is @ts-nocheck. console.warn/error allowed,
+    // console.log still banned. Must come after the i18n block to win for these
+    // files.
     files: ['src/game/**/*.{ts,tsx}'],
     rules: {
       'lingui/no-unlocalized-strings': 'off',

@@ -1,18 +1,9 @@
-"""Sky-through-ship regression rays: exact Moller-Trumbore casts of straight paths
-through the hull volume against the built nimitz-clean.glb. A CLEAR ray = that
-sightline shows sky through the ship in game. Run after ANY edit touching the hull,
-skirt, deck strip, underside, or band-clear rules; exits non-zero on a clear ray.
-
-KNOWN LIMITATION (the hard lesson of 2026-07-12/13, v76-v80): this ray set is
-necessary but NOT sufficient. The v80 build passes all ten rays, yet the user
-repeatedly observed sky-through from in-game viewpoints these rays do not
-reproduce - four fixes (deck underside, 5 m skirt, hangar walls, closed interior
-liner) each eliminated the paths measured here without eliminating what the user
-saw. The sky-from-below defect class is ACCEPTED AS UNRESOLVED as of v80 (user
-decision; v77-v79 reverted). If it is ever reopened: FIRST reproduce the user's
-exact in-game camera (position + orientation, not a guess from the screenshot),
-add that ray here, watch it fail, and only then design the fix. skyprobe.py finds
-candidate corridors in bulk but over-reports open air under the overhangs/flare."""
+"""Sky-through-ship regression rays: exact Moller-Trumbore casts of straight paths through the hull
+volume against nimitz-clean.glb; a clear ray means that sightline shows sky in game. Run after any edit
+touching the hull, skirt, deck strip, underside or band-clear rules; exits non-zero on a clear ray.
+Necessary but not sufficient: the user has seen sky-through from viewpoints these rays do not reproduce
+(accepted unresolved). If reopened, reproduce the exact in-game camera as a ray here first, watch it
+fail, then design the fix."""
 import json, struct
 import numpy as np
 GLB='nimitz-clean.glb'

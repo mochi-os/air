@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
-"""One-shot verification of the analytic JBD border bake (2026-07-13).
-
-1. Diffs decktex12.png against decktex12-prev.png and clusters changed texels by
-   region — the change must be confined to the four JBD rectangles.
-2. Measures painted border width in texels along sample cuts: each JBD box edge
-   vs the elevator-1 border and the cat-1 blast-zone border. The point of the
-   change is uniform width, so the JBD numbers must land in the neighbours' range.
-"""
+"""Verify the analytic JBD border bake: diff decktex12.png against decktex12-prev.png (changes must be
+confined to the four JBD rectangles) and measure painted border width along sample cuts - each JBD edge
+must land in the range of the elevator-1 and cat-1 blast-zone borders."""
 import numpy as np
 from PIL import Image
 

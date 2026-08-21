@@ -4,13 +4,10 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 // The loadout model (#17): per-station fixtures and stores over the flight
-// core's fitment catalog. Stations run 1..9, port tip to starboard tip
-// (NATOPS numbering). A station holds one FIXTURE (the pylon or adapter
-// chain collapsed to a single choice) exposing one or two POINTS, each
-// holding a store or nothing. Structure (which fixtures a station accepts,
-// which stores a point accepts) lives here; every number (mass, drag, fuel
-// capacity, mask bit order) comes from the core's catalog at runtime so the
-// two sides cannot drift.
+// core's fitment catalog. Stations run 1..9, port tip to starboard tip (NATOPS
+// numbering); a station holds one FIXTURE exposing one or two POINTS. Structure
+// lives here, every number comes from the core's catalog at runtime so the two
+// cannot drift.
 
 // One fitment-catalog entry, as the flight core publishes it: the
 // world-owned property table (this module deliberately does NOT import the
@@ -37,12 +34,10 @@ export interface Slot {
 // and the wire carry) to its slot. normalize() guarantees all nine stations.
 export type Loadout = Record<string, Slot>
 
-// Which fixtures each station accepts. Tips carry the integral LAU-7 — not
-// removable, so the setup shows no fixture choice there. Cheek stations 4/6
-// (#27) take the LAU-116 ejector — 'rail' in this vocabulary, with no visual
-// piece: the round sits flush against the fuselage as on the real jet. The
-// inboard pylons 3/7 take the twin too — the LAU-115C with a LAU-127 bolted
-// to each side, the dual carriage behind the ten-AMRAAM fit.
+// Which fixtures each station accepts. Tips carry the integral LAU-7 and are
+// not removable, so the setup offers no fixture choice there. Cheeks 4/6 take
+// the LAU-116 ejector ('rail' here, with no visual piece); inboard pylons 3/7
+// also take the twin.
 export const STATIONS: Record<number, { fixtures: string[]; locked?: boolean }> = {
   1: { fixtures: ['rail'], locked: true },
   2: { fixtures: ['', 'rail', 'twin'] },
@@ -61,13 +56,10 @@ export function points(fixture: string): number {
   return fixture ? 1 : 0
 }
 
-// options lists the store ids one point accepts (always including empty).
-// The cheek stations are radar-missile positions (#27): AIM-120C only.
-// Every rail point — the wing rail, and each side of a twin — is a LAU-127,
-// which carries both missile families. The inboard pylons 3/7 are
-// Sparrow-capable stations: the LAU-115C hangs a missile there — either
-// family, single or twin pair — the real fuel-versus-magazine choice; the
-// centreline never carries a missile at all.
+// options lists the store ids one point accepts, always including empty. The
+// cheeks are radar-missile positions (AIM-120C only), the centreline never
+// carries a missile, and every rail or twin point is a LAU-127 carrying both
+// families.
 export function options(station: number, fixture: string): string[] {
   if (station === 1 || station === 9) return ['', '9m']
   if (station === 4 || station === 6) return fixture === 'rail' ? ['', '120c'] : ['']
@@ -119,11 +111,6 @@ export function normalize(raw: unknown): Loadout {
   return out
 }
 
-// PRESETS are one-tap fills (#17, lineup decided 2026-08-11): Gun (no
-// stores — the pure gunfight), Fox 2 (6× AIM-9M — tips plus four wing
-// singles, spread for the crisper roll), Fox 3 (tip heaters, six AMRAAM
-// singles across the wings and cheeks, and a centreline tank). Contents are
-// data; weapon-era presets accumulate, mission presets evolve.
 export const PRESETS: Record<string, Loadout> = {
   gun: normalize({}),
   fox2: normalize({
@@ -184,11 +171,9 @@ export function strip(loadout: Loadout): Loadout {
   return out
 }
 
-// amraams lists the loadout's AIM-120 entries in firing order — cheeks, then
-// outboard rails, then inboard pylons, alternating port-first within each
-// ring so a full expenditure stays balanced; twins fire the outer round
-// before the inner, like the heaters (#27). The k-th launch takes
-// amraams[k]; remaining count is amraams.length - fired.
+// amraams lists the loadout's AIM-120 entries in firing order - cheeks, then
+// outboard rails, then inboard pylons, alternating port-first within each ring
+// so a full expenditure stays balanced. The k-th launch takes amraams[k].
 export function amraams(loadout: Loadout): string[] {
   const out: string[] = []
   const ring = (stations: number[]) => {
@@ -215,11 +200,9 @@ export function amraams(loadout: Loadout): string[] {
   return out
 }
 
-// eject reports whether an AMRAAM entry leaves on an EJECTOR — the cheek
-// LAU-116 and the inboard pylon's LAU-115C both punch the round down before
-// the motor lights — or slides forward off a LAU-127 rail, like the 9M: the
-// wing rails and every twin point are rails. Launch dynamics read this now;
-// phase 2's employment model consumes the same distinction.
+// eject reports whether an AMRAAM entry leaves on an EJECTOR (the cheek LAU-116
+// and the inboard pylon's LAU-115C punch the round down) rather than sliding
+// off a LAU-127 rail: the wing rails and every twin point are rails.
 export function eject(loadout: Loadout, name: string): boolean {
   const station = parseInt(name.slice(4), 10)
   const slot = loadout[String(station)]
@@ -241,18 +224,10 @@ export function jettison(loadout: Loadout, station: number, what: 'stores' | 'ra
 }
 
 // LIMITS carries each store's carriage envelope, keyed by catalog entry name,
-// straight from NATOPS figure 4-4 (A1-F18AC-NFM-000, "MAXIMUM KCAS OR IMN
-// WHICHEVER IS LESS"): wing tanks 635 KCAS / Mach 1.6; the centreline tank
-// Mach 1.8 with NO KCAS figure (note 5 + 4.1.3.1 item 22.b) — the airspeed
-// side is the basic aircraft's own envelope. Acceleration is "LBA — limit
-// basic aircraft": tanks carry NO store g limit, and air-to-air missiles,
-// rails and pylons appear in figure 4-3's basic-aircraft definition with no
-// restriction at all, so they have no entry here (an entry below the FCS's
-// own 7.5 g placard shed AIM-9 racks in a failure mode the jet does not
-// have). Exceedance accumulates per-station harm; past threshold the
-// attachment fails and the store departs through the same separation path
-// (#18). JETTISON is the same figure's other half: a deliberate drop is
-// clean only below 575 KCAS / Mach 0.95 between +1 and +2 g.
+// from NATOPS figure 4-4 (A1-F18AC-NFM-000): wing tanks 635 KCAS / Mach 1.6,
+// the centreline tank Mach 1.8 with no KCAS figure. Missiles, rails and pylons
+// are limit-basic-aircraft and get no entry. RELEASE is the same figure's
+// clean-jettison window.
 export const LIMITS: Record<string, { knots?: number; mach?: number }> = {
   tank3: { knots: 635, mach: 1.6 },
   tank7: { knots: 635, mach: 1.6 },
@@ -260,12 +235,10 @@ export const LIMITS: Record<string, { knots?: number; mach?: number }> = {
 }
 export const RELEASE = { knots: 575, mach: 0.95, low: 1.0, high: 2.0 }
 
-// rounds lists the missile catalog entries in the authentic SMS priority
-// order (researched 2026-08-05): wingtips first, alternating to the opposite
-// station at the same priority level before stepping inboard — starboard tip
-// seeds the sequence, outboard rails before the inboard pylons. Twins fire
-// their outer round before the inner. The k-th launch takes rounds[k];
-// remaining count is rounds.length - fired.
+// rounds lists the missile catalog entries in SMS priority order: wingtips
+// first, alternating to the opposite station at each level before stepping
+// inboard, starboard tip seeding. Twins fire outer before inner; the k-th
+// launch takes rounds[k].
 export function rounds(loadout: Loadout): { station: number; name: string }[] {
   const out: { station: number; name: string }[] = []
   const level = (stations: number[]) => {
@@ -294,13 +267,10 @@ export function rounds(loadout: Loadout): { station: number; name: string }[] {
   return out
 }
 
-// Visual node names shared by the in-game jet and the setup preview, so the
-// two can never disagree about what hangs where. TIPS maps the airframe
-// GLB's wingtip AIM-9 nodes (sides verified by the index-aware lateral
-// probe: Object_145 is the PORT tip). ANCHORS places AIM-9 rounds cloned
-// onto the outboard stations, in stores.glb/model.glb space (x lateral with
-// POSITIVE x = port, y vertical, z longitudinal): the tip missile mesh
-// translates by (anchor - its own centre).
+// Visual node names shared by the in-game jet and the setup preview. TIPS maps
+// the airframe GLB's wingtip AIM-9 nodes (Object_145 is the PORT tip). ANCHORS
+// is in stores.glb/model.glb space, where POSITIVE x is PORT; a mesh translates
+// by (anchor - its own centre).
 export const TIPS: Record<string, string> = { tip9: 'Object_542', tip1: 'Object_145' }
 export const ANCHORS: Record<string, [number, number, number]> = {
   '9m2': [3.61, -0.38, -1.28],
@@ -321,12 +291,10 @@ export const ANCHORS: Record<string, [number, number, number]> = {
   '9m7b': [-2.25, -0.42, -1.57],
 }
 
-// The setup presents each station as ONE dropdown of meaningful end states
-// with the fixture derived underneath (#17 menu rework): players choose
-// outcomes ("AIM-9", "Fuel tank"), never fixture vocabulary. Entries marked
-// hidden only render when they are the current value — they keep older
-// hand-built slots (a twin with one round) representable without offering
-// them as choices.
+// The setup presents each station as ONE dropdown of end states with the
+// fixture derived underneath: players choose outcomes, never fixture
+// vocabulary. A hidden entry renders only when it is the current value, keeping
+// older slots representable.
 export interface Outcome {
   id: string
   slot: Slot
@@ -419,9 +387,8 @@ export function resolve(raw: { stores: Fitment[]; default: number; internal: num
 }
 
 // mask computes the core attach bitmask for a loadout with `fired` heaters
-// (rounds() order) and `expended` AMRAAMs (amraams() order) already away —
-// each departure sheds its round's mass and drag in the core. Fixtures and
-// tanks always attach; tips ride their catalog bits so the default (bare)
+// (rounds() order) and `expended` AMRAAMs (amraams() order) already away.
+// Fixtures and tanks always attach; tips ride their catalog bits so the bare
 // jet stays a subset.
 export function mask(loadout: Loadout, fired: number, book: Catalog, expended = 0): number {
   let bits = 0

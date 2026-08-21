@@ -92,9 +92,8 @@ describe('search', () => {
     expect(radar.bricks.length).toBe(0)
   })
   it('one sweep crossing paints exactly one brick', () => {
-    // ±20° at 75°/s: up 0→20 in 0.27 s, the down pass crosses the bore at
-    // 0.53 s, the next up pass at 1.07 s. One crossing, one brick — the old
-    // padded window let consecutive frames cluster duplicates.
+    // ±20° at 75°/s: up 0→20 in 0.27 s, the down pass crosses the bore at 0.53
+    // s, the next up pass at 1.07 s. One crossing, one brick.
     const radar = new Radar()
     radar.width = 2
     swept(radar, [beam], 0.9)
@@ -145,11 +144,9 @@ describe('TWS', () => {
   })
 })
 
-// A HOT target: closing fast, radial velocity far above the clutter notch —
-// the geometry where a tracker genuinely holds. The crossing `beam` target
-// above sits IN the notch by definition, which since #31 puts an STT on it
-// into MEMORY: the beam aspect is not a tracking geometry any more, which is
-// the point of the whole doctrine.
+// A HOT target: closing fast, radial velocity far above the clutter notch - the
+// geometry where a tracker holds. The crossing `beam` target above sits IN the
+// notch, which since #31 puts an STT on it into MEMORY.
 const hot = { id: 7, x: 0, y: 3000, z: -15 * NM, vx: 0, vy: 0, vz: 250 }
 
 describe('STT', () => {

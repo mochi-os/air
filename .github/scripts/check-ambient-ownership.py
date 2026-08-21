@@ -4,40 +4,16 @@
 # This file is part of Mochi, licensed under the GNU AGPL v3 with the
 # Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-"""check-ambient-ownership.py — flag Starlark access checks that grant access on
-entity ownership without a real authenticated-user guard.
+"""Flag Starlark access checks that grant on entity ownership without an authenticated-user guard.
 
-Mochi runs public actions as the entity owner (entity-scoped actions) or the first
-administrator (class-level actions) for anonymous callers — see core/server/web.go
-owner resolution and the memory note reference-public-action-runs-as-owner.
-`mochi.entity.get(id)` and an app's `owned(id)` helper both resolve ownership
-against that *thread-local* effective user, so for an anonymous request to a public
-action they return the OWNER. An access helper that short-circuits to a grant:
-
-    if mochi.entity.get(id): return True        # wikis bug, 2026-06-17
-    if owned(id): return True                   # forums bug, 2026-06-17
-
-therefore treats the anonymous caller as the owner and bypasses the access rules
-below it. The fix is to gate the short-circuit on a real authenticated user:
-
-    if user and mochi.entity.get(id): return True
-
-This detector flags exactly that shape:
-  `if <cond containing owned(...) | mochi.entity.get(...) | mochi.entity.owned(...)>: return True`
-  (single- or two-line) whose condition contains no `user` reference, AND whose
-  enclosing function has no earlier `if not a.user` / `if not user` early-return
-  (the repositories check_admin_access pattern, which is already safe).
-
-It deliberately does NOT flag the common, safe uses (`if owned(x): is_owner = ...`,
-`if not owned(x): ...`, display enrichment) — only the `return True` grant.
-
+Anonymous requests to public actions run as the entity owner, so `owned(id)` / `mochi.entity.get(id)`
+return the owner for them and `if owned(id): return True` grants to anyone. Flags that shape (a one- or
+two-line `if <owned(...) | mochi.entity.get(...) | mochi.entity.owned(...)>: return True` with no `user`
+in the condition and no earlier `if not a.user` / `if not user` early-return in the function).
 Allowlist: a trailing `# access-ok: <reason>` on the if line or the line above.
 
-Usage:
-  check-ambient-ownership.py [paths...]       # report violations (exit 0)
-  check-ambient-ownership.py --check [paths]  # exit 1 if any violation (CI/preflight)
-
-Default paths (run from monorepo root): apps/*/*.star + apps/*/starlark/*.star.
+Usage: check-ambient-ownership.py [--check] [paths...]
+  --check exits 1 on any violation; default paths apps/*/*.star + apps/*/starlark/*.star
 """
 import re
 import sys

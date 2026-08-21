@@ -3,17 +3,11 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// Game audio (#73): everything is SYNTHESIZED — continuous sources (engines,
+// Game audio (#73): everything is synthesized - continuous sources (engines,
 // wind, fires) as live Web Audio graphs modulated per frame from the flight
-// core's own values, one-shots (gun, explosions, clunks) pre-rendered once
-// at startup with an OfflineAudioContext. No recorded assets: nothing to
-// license, nothing to download, and the engine note tracks the spool
-// continuously instead of pitch-shifting a loop. Any single voice here can
-// later be swapped for a real recording (DVIDS carrier audio is public
-// domain) without touching the callers.
-//
-// The context starts suspended until the first user gesture (browser
-// policy); every entry point is safe to call before init or with audio off.
+// core, one-shots pre-rendered at startup with an OfflineAudioContext; no
+// recorded assets. The context starts suspended until the first user gesture;
+// every entry point is safe to call before init or with audio off.
 
 let context: AudioContext | null = null
 let master: GainNode | null = null
@@ -53,7 +47,7 @@ interface Voice {
 }
 const engines: { whine: OscillatorNode; second: OscillatorNode; whineGain: GainNode; rumble: BiquadFilterNode; hiss: BiquadFilterNode; hissGain: GainNode; gain: GainNode }[] = []
 let burner: Voice | null = null
-let seeker: { saw: OscillatorNode; square: OscillatorNode; chop: OscillatorNode; depth: GainNode; chopped: GainNode; gain: GainNode } | null = null
+let seeker: { carrier: OscillatorNode; chop: OscillatorNode; depth: GainNode; chopped: GainNode; gain: GainNode } | null = null
 let alr: { osc: OscillatorNode; gain: GainNode } | null = null
 let departure: { osc: OscillatorNode; gain: GainNode } | null = null
 let wind: { source: AudioBufferSourceNode; filter: BiquadFilterNode; gain: GainNode } | null = null
@@ -192,46 +186,31 @@ function build(): void {
     burner = { gain }
   }
 
-  // The Sidewinder in the headset (#59). The real tone is the seeker's own
-  // signal made audible — the IR return chopped by the spinning reticle — so
-  // its identity is TEXTURE, not pitch: a rough, saturated, amplitude-
-  // modulated buzz that rises and hardens as the seeker drinks more heat.
-  // Built accordingly: two detuned oscillators (saw + square, beating like
-  // the engine's N1/N2 pair) through a soft-clip waveshaper for the rasp,
-  // amplitude-chopped by a sub-audio square LFO for the reticle grit. The
-  // old voice was a single clean square with vibrato — a beep, not a growl.
+  // The Sidewinder tone: a NEARLY PURE SINE carrier, deeply amplitude-chopped by the
+  // reticle spin — the rasp of the real growl is the chop, not harmonic distortion.
+  // Measured from three references (DCS F-14 Sidewinder audio and a Danish F-16
+  // AIM-9M HUD tape): growl ≈700 Hz carrier with a hard ~64 Hz chop and harmonics
+  // ≤3% of the fundamental; lock jumps to ≈2,956 Hz warbled at ~242 Hz. The prior
+  // saw+square-through-waveshaper voice was buzz from harmonics — the opposite
+  // structure, and it sounded nothing like the missile.
   {
-    const saw = c.createOscillator()
-    saw.type = 'sawtooth'
-    saw.frequency.value = 380
-    const square = c.createOscillator()
-    square.type = 'square'
-    square.frequency.value = 380
-    square.detune.value = 9 // a few cents of beat keeps the buzz alive
-    const shaper = c.createWaveShaper()
-    const curve = new Float32Array(1024)
-    for (let i = 0; i < curve.length; i++) {
-      const x = (i / (curve.length - 1)) * 2 - 1
-      curve[i] = Math.tanh(3 * x) // soft clip: harmonic filth without digital edge
-    }
-    shaper.curve = curve
+    const carrier = c.createOscillator()
+    carrier.type = 'sine'
+    carrier.frequency.value = 700
     const chopped = c.createGain()
-    chopped.gain.value = 0.55 // the chop LFO swings around this baseline
+    chopped.gain.value = 0.5 // the chop LFO swings around this baseline
     const chop = c.createOscillator()
     chop.type = 'square'
-    chop.frequency.value = 55 // the reticle chop, sub-audio grit
+    chop.frequency.value = 64 // the reticle spin: near-full on/off in the references
     const depth = c.createGain()
-    depth.gain.value = 0.45
+    depth.gain.value = 0.5
     chop.connect(depth).connect(chopped.gain)
     const gain = c.createGain()
     gain.gain.value = 0
-    saw.connect(shaper)
-    square.connect(shaper)
-    shaper.connect(chopped).connect(gain).connect(bus('weapons'))
-    saw.start()
-    square.start()
+    carrier.connect(chopped).connect(gain).connect(bus('weapons'))
+    carrier.start()
     chop.start()
-    seeker = { saw, square, chop, depth, chopped, gain }
+    seeker = { carrier, chop, depth, chopped, gain }
   }
 
   // Departure / AoA warning tone (NATOPS 2.8.2.5): a steady tone above 35°
@@ -614,14 +593,17 @@ export function audio_seeker(state: number, strength = 0): void {
   const t = now()
   const lock = state === 2
   const heat = Math.max(0, Math.min(1, strength))
-  // Search wanders slowly and unsteadily (two incommensurate wobbles); lock
-  // is steady, roughly an octave up, with a faster and shallower chop.
-  const base = lock ? 780 + heat * 140 : 350 + heat * 90 + Math.sin(t * 3.1) * 24 + Math.sin(t * 7.7) * 11
-  seeker.saw.frequency.setTargetAtTime(base, t, 0.03)
-  seeker.square.frequency.setTargetAtTime(base, t, 0.03)
-  seeker.chop.frequency.setTargetAtTime(lock ? 90 : 55, t, 0.05)
-  seeker.depth.gain.setTargetAtTime(lock ? 0.3 : 0.45, t, 0.05)
-  seeker.gain.gain.setTargetAtTime(state === 0 ? 0 : (lock ? 0.11 : 0.045) * (0.7 + 0.5 * heat), t, 0.05)
+  // Growl: ~700 Hz rising toward ~950 as the seeker drinks (the real F-16 tape sits
+  // at 700-990), with a small unsteady wander; the 64 Hz chop stays hard. Lock: the
+  // ~2,956 Hz SEAM sing, steady, warbled at 242 Hz with a shallower swing.
+  const base = lock ? 2956 : 700 + heat * 250 + Math.sin(t * 3.1) * 12 + Math.sin(t * 7.7) * 6
+  seeker.carrier.frequency.setTargetAtTime(base, t, 0.03)
+  seeker.chop.frequency.setTargetAtTime(lock ? 242 : 64, t, 0.05)
+  seeker.chopped.gain.setTargetAtTime(lock ? 0.62 : 0.5, t, 0.05)
+  seeker.depth.gain.setTargetAtTime(lock ? 0.38 : 0.5, t, 0.05)
+  // A ~3 kHz sine reads far louder than 700 Hz at equal amplitude: the lock
+  // level drops accordingly.
+  seeker.gain.gain.setTargetAtTime(state === 0 ? 0 : (lock ? 0.05 : 0.05) * (0.7 + 0.5 * heat), t, 0.05)
 }
 
 // The RWR in the headset (#28): call every frame like the seeker — the lock

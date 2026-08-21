@@ -1,17 +1,13 @@
 #!/usr/bin/env python3
-"""CDP-driven air capture — real-time replacement for the --virtual-time-budget
-one-shot, which Chrome 141 broke (virtual time now expires before the first canvas
-paint; --enable-unsafe-swiftshader is also required for software WebGL at all).
-
-Waits a real-time window (assets load + a few frames) then captures. All air dev
-query hooks require developer=1; &fly=1 skips the menu into a mission. The engine's
-&probe=x,y hook prints the model coordinate/material under a viewport pixel on the dev HUD.
+"""CDP-driven air capture: waits a real-time window (assets + a few frames) then captures.
+--enable-unsafe-swiftshader is required for software WebGL; --virtual-time-budget no longer works (virtual
+time expires before the first canvas paint). Dev query hooks need developer=1; &fly=1 skips the menu;
+&probe=x,y prints the model coordinate/material under a pixel on the dev HUD.
 
 Usage: cdp_shot.py "<query-string>" <out.png> [wait-s]
 
-IMPORTANT: chrome leaks a temp profile + process per run if the SIGTERM misses; a pileup
-exhausts the sandbox (bwrap fails on `true`). If captures start failing, pkill -9 -f chrome
-and rm -rf /tmp/cdpshot* before retrying.
+Chrome leaks a temp profile + process per run if the SIGTERM misses, and a pileup breaks bwrap: if captures
+start failing, kill the leftover chrome processes by PID and rm -rf /tmp/cdpshot*.
 """
 import json, subprocess, sys, threading, time, http.client, urllib.request, base64, tempfile, os, signal
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer

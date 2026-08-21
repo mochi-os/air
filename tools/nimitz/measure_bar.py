@@ -1,13 +1,9 @@
 #!/usr/bin/env python3
-"""Measure the deployed launch-bar tip fore-aft reach in the OWNSHIP frame, so the shuttle
-mesh can be drawn under the bar tip instead of under the nose wheel.
-
-Replicates normalise_model (engine.ts): scale = length/max(static bbox dim), centre on the
-static bbox, proto rotation yaw 90 about Y, proto.position.x = nose - wheel. After that the
-ownship +X is forward (nose gear at x = nose = 4.9). The bar chain (nose-gear subtree) is
-evaluated at the DEPLOYED pose (each animated ancestor at its channel's last keyframe = gear
-down + bar hookup); the static bbox uses the authored (gear-up) pose, matching the engine.
-"""
+"""Measure the deployed launch-bar tip's fore-aft reach in the ownship frame, so the shuttle mesh sits
+under the bar tip rather than the nose wheel. Replicates normalise_model (engine.ts): scale =
+length/max(static bbox dim), centred on the static bbox, yaw 90 about Y, position.x = nose - wheel, +X
+forward. The bar chain is evaluated at the deployed pose (each animated ancestor at its last keyframe);
+the static bbox uses the authored gear-up pose, as the engine does."""
 import json, struct
 import numpy as np
 

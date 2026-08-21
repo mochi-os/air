@@ -36,12 +36,9 @@ export function server_mismatch(server: Server, version: number): boolean {
   return version > 0 && server.version !== version
 }
 
-// server_order sorts a listing set the way the join page shows it: busiest
-// first, because a list of empty servers reads as a dead game, and offline
-// listings sunk to the bottom regardless of the count they last reported.
-// Version-mismatched servers keep their place — they are shown greyed with the
-// reason, never hidden or demoted, so the list does not look like a dead
-// network.
+// server_order sorts a listing set the way the join page shows it: offline
+// listings last, then busiest first. Version-mismatched servers keep their
+// place - they are shown greyed with the reason, never hidden or demoted.
 export function server_order(servers: Server[], now: number): Server[] {
   return [...servers].sort((a, b) => {
     const first = server_offline(a, now) ? 1 : 0

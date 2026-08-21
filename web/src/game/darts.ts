@@ -4,11 +4,9 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 // Missile "dart" parser for the poses datagram. The 25-byte records arrive from
-// an UNTRUSTED server as an opaque byte string, so the float fields are
-// validated HERE: the CBOR finite guard only inspects decoded numbers, not
-// floats packed inside a byte string, so NaN/Inf can otherwise reach the
-// renderer's dead reckoning. The record count is also capped. Dependency-free
-// so it is unit testable in isolation (matching framing.ts / wrap.ts / cbor.ts).
+// an UNTRUSTED server as an opaque byte string, so float fields are validated
+// here (the CBOR finite guard never sees floats packed inside a byte string)
+// and the record count is capped.
 
 export type Dart = {
   position: [number, number, number]

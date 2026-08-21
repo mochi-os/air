@@ -12,12 +12,9 @@ import { PROFILES, profileFor } from '../lib/config'
 
 const read = (relative: string) => readFileSync(fileURLToPath(new URL(relative, import.meta.url)), 'utf8')
 
-// The engine and the menu's Keys tab once kept SEPARATE copies of this table
-// and drifted: the tab advertised eject on J after the engine had moved it to
-// Shift+E and given J to the jettison family, and twelve actions the engine
-// binds were missing from the tab, which therefore drew them as unbound. The
-// engine now imports KEY_DEFAULTS, so the tables cannot disagree — these tests
-// guard the two remaining ways the set can fall out of step.
+// The engine and the menu's Keys tab share KEY_DEFAULTS, so the tables cannot
+// disagree; these tests guard the two remaining ways the sets can fall out of
+// step.
 describe('key bindings', () => {
   it('binds every action the engine dispatches', () => {
     const engine = read('./engine.ts')
@@ -37,10 +34,9 @@ describe('key bindings', () => {
       expect(block, `${table} not found`).toBeTruthy()
       const ids = Array.from(block![1].matchAll(/\{\s*id:\s*'([\w.]+)'/g), (m) => m[1])
       expect(ids.length).toBeGreaterThan(10)
-      // The four look DIRECTIONS carry no key: the pad path turns them into
-      // camera level state directly (pad_looks) and the keyboard drives the
-      // same camera from the fixed arrow keys. look.target is deliberately NOT
-      // exempt — it is a bound hold, and it must own a key for a pad button to
+      // The four look DIRECTIONS carry no key: the pad drives the camera
+      // directly and the keyboard uses the fixed arrow keys. look.target is NOT
+      // exempt - it is a bound hold and must own a key for a pad button to
       // replay.
       const keyless = new Set(['look.up', 'look.down', 'look.left', 'look.right'])
       const missing = ids.filter((id) => !keyless.has(id) && !(id in KEY_DEFAULTS)).sort()
@@ -136,9 +132,6 @@ describe('key bindings', () => {
   })
 
   it('flies the BVR loop from the VelocityOne stick: castle selects, 15 acquires, 16 steps, 17 fires', () => {
-    // Settled 2026-08-11 (air-amraam.md), implemented 2026-08-15. The castle
-    // POV pair is POSITIONAL weapon select and no longer trims; trim lives on
-    // the thumbwheel's digital pulses (12/13); zoom keeps no stick binding.
     const stick = profileFor('Turtle Beach VelocityOne Flightstick (Vendor: 10f5 Product: 7055)', '')
     expect(stick.axes.weapon).toBe('8')
     expect(stick.axes.trim).toBe('')
@@ -179,11 +172,9 @@ describe('key bindings', () => {
   })
 
   it('offers 1-based axis and button numbers while storing the 0-based index', () => {
-    // Hardware labels, the Windows controller panel and the simulators number
-    // controls from 1; the Gamepad API numbers from 0. The DISPLAY carries the
-    // +1 and the STORED value must not: it indexes pad.axes/pad.buttons directly
-    // and travels in exported profiles. Getting this backwards binds the wrong
-    // control with no error at all, so it is worth pinning.
+    // Hardware and the platform controller panels number controls from 1, the
+    // Gamepad API from 0. Only the DISPLAY carries the +1: the stored value
+    // indexes pad.axes/pad.buttons and travels in exported profiles.
     const setup = read('../components/MissionSetup.tsx')
     for (const kind of ['axisOptions', 'buttonOptions']) {
       const block = new RegExp(`${kind}\\.map\\(\\(option\\) => \\{([\\s\\S]*?)\\n\\s*\\}\\)\\}`).exec(setup)

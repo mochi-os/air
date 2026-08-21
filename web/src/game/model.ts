@@ -4,11 +4,9 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 // Sandbox-safe GLB loading, shared by the engine and the setup's loadout
-// preview. The shell's sandboxed iframe rejects blob: URLs, so the loader's
-// own texture path cannot run: split the container, capture each material's
-// images, STRIP the texture references, parse the clean model, then decode
-// the images in-process (createImageBitmap, or KTX2 transcode) and hand them
-// back to the materials.
+// preview. The shell's sandboxed iframe rejects blob: URLs, so the loader's own
+// texture path cannot run: strip the texture references, parse, then decode the
+// images in-process.
 
 import * as THREE from 'three'
 import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -123,24 +121,19 @@ export function parse(clean: ArrayBuffer): Promise<GLTF> {
   })
 }
 
-// The fa18c model-preparation data shared by the engine's AIRCRAFT_MODELS
-// spec and the setup preview, so the two prepare the SAME jet. POSE: the
-// stabs' shared parent is authored mid-animation 180°-flipped
-// (planform-reversed stabs); this is its animation END key — the correct
-// frame. GEAR: the landing-gear track family (the authored static pose is
-// already gear-up on this model).
+// fa18c model-preparation data shared by the engine's AIRCRAFT_MODELS spec and
+// the setup preview. POSE: the stabs' shared parent is authored mid-animation
+// 180°-flipped, so this is its animation END key. GEAR: the landing-gear track
+// family.
 export const POSE: { node: string; quaternion: [number, number, number, number] }[] = [
   { node: 'elevator_percent_key_AN_238_100', quaternion: [0, -0.996, 0.087, 0] },
 ]
 export const GEAR = /(^|_)[clr]_(gear|wheel)_AN_/i
 
 // SCRUBS: the engine's scrubbed-clip track families (AIRCRAFT_MODELS fa18c
-// rig), mirrored for the preview's one-off neutral pose — each family's
-// timeline holds its NEUTRAL value at the first key (gear up, hook up, probe
-// in, canopy closed, nozzles closed, wings spread, launch bar stowed,
-// spoiler closed), while some authored STATIC poses rest deployed (the
-// spoiler's dark plate over the port wing). Keep in sync when the engine
-// gains a rig family.
+// rig). Each family's timeline holds its NEUTRAL value at the first key, while
+// some authored static poses rest deployed. Keep in sync when the engine gains
+// a family.
 export const SCRUBS: RegExp[] = [
   GEAR,
   /^Hook_AN_/i,
@@ -152,11 +145,9 @@ export const SCRUBS: RegExp[] = [
   /^SPOILER_L/i,
 ]
 
-// NEUTRAL: the direct-driven control surfaces' neutral base quaternions
-// (x, y, z, w), mirrored from the engine's rig entries — the authored static
-// poses rest deflected (the C's stabs sit ~-50°, reading as dark planform
-// plates from head-on), and the engine re-poses them every frame while the
-// preview poses them once. Keep in sync with AIRCRAFT_MODELS fa18c.
+// NEUTRAL: the direct-driven control surfaces' neutral base quaternions (x, y,
+// z, w), mirrored from the engine's rig entries - the authored static poses
+// rest deflected. Keep in sync with AIRCRAFT_MODELS fa18c.
 export const NEUTRAL: { node: string; quaternion: [number, number, number, number] }[] = [
   { node: 'Elevator_Left_94', quaternion: [0.96593, 0, 0, 0.25882] },
   { node: 'Elevator_right_97', quaternion: [0.96502, 0, 0, 0.26219] },
@@ -166,11 +157,9 @@ export const NEUTRAL: { node: string; quaternion: [number, number, number, numbe
   { node: 'rudder_percent_key_AN_Right_322', quaternion: [0, 0.19423, 0, 0.98096] },
 ]
 
-// decode turns captured image bytes into a texture: KTX2 through the
-// transcoder (self-hosted under basis/), everything else through
-// createImageBitmap. Matches the engine's make_tex exactly — glTF UVs are
-// NOT flipped (a flipped decode scrambles the livery atlas and paints the
-// fuselage white), sRGB for colour, repeat wrap, trilinear mips.
+// decode turns captured image bytes into a texture: KTX2 through the transcoder
+// (self-hosted under basis/), everything else through createImageBitmap. glTF
+// UVs are NOT flipped - a flipped decode scrambles the livery atlas.
 async function decode(ktx2: KTX2Loader, src: Source, srgb: boolean): Promise<THREE.Texture> {
   if (src.mime === 'image/ktx2') {
     const loaderInternal = ktx2 as unknown as { _createTexture(buffer: ArrayBuffer): Promise<THREE.Texture> }
@@ -194,11 +183,9 @@ async function decode(ktx2: KTX2Loader, src: Source, srgb: boolean): Promise<THR
   return texture
 }
 
-// load runs the whole pipeline for a standalone consumer (the setup
-// preview): bytes to a textured scene. The engine's own pipeline predates
-// this module and carries per-jet extras (rig scrub, stance, emissive
-// pools); it shares split/repack/textures above and should fold onto load()
-// when next reworked.
+// load runs the whole pipeline for a standalone consumer (the setup preview):
+// bytes to a textured scene. The engine keeps its own pipeline with per-jet
+// extras and shares only split/repack/textures.
 export async function load(ab: ArrayBuffer, renderer: THREE.WebGLRenderer): Promise<GLTF> {
   const parts = split(ab)
   const captured = textures(parts)

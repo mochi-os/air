@@ -1,15 +1,7 @@
-"""Retention audit: original (post-squash, post-edge-purge baseline) vs the built
-nimitz-clean.glb. Execs build_carrier.py's front half so the baseline and the rule
-volumes are the build's own, then looks every baseline triangle up in the built model
-and classifies each MISSING one as an intended kill (raft zone, deck band, elevator
-clear, fence/dome, OLS trim) or UNEXPLAINED. Run whenever "has the surgery eaten
-something?" comes up; review the UNEXPLAINED bucket, which should stay tiny.
-
-v80 result (2026-07-13): 391,597 baseline tris; 159,233 removed, 99.955%% classified
-intended; 176 UNEXPLAINED (0.045%%) in 4-14-tri clumps of paired material_38+black
-fittings - consistent with the crest/pokes sub-rules this classifier only
-approximates (centroid below the band envelope, top cresting into it), matchbox
-scale, none visible. The build removes what it was designed to remove."""
+"""Retention audit: baseline (post-squash, post-edge-purge) vs the built nimitz-clean.glb. Execs
+build_carrier.py's front half so the rule volumes are the build's own, looks every baseline triangle up
+in the built model, and classifies each missing one as an intended kill (raft zone, deck band, elevator
+clear, fence/dome, OLS trim) or UNEXPLAINED. Review the UNEXPLAINED bucket; it should stay tiny."""
 import json, struct
 import numpy as np
 from collections import defaultdict

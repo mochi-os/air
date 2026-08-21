@@ -1,37 +1,20 @@
 #!/usr/bin/env python3
-"""Canonical air Nimitz deck-texture bake — FROM THE ORIGINAL MODEL.
-
-Layers, in order:
+"""Nimitz deck-texture bake from the original model. Layers, in order:
   1. weathered non-skid base (value noise + plate seams + grunge)
-  2. ANALYTIC landing-area boundary lines (four lines parallel to the landing
-     centreline, drawn BEFORE tracks/rubber so cats and wires overlay them - real deck
-     layering; authored fragments near a line are suppressed in the mark pass)
-  3. the ORIGINAL model's up-facing paint, classified:
-       - near-black paint            -> never painted
-       - saturated colour markings   -> painted fully (except exclusion zones; the JBD
-         borders are killed at the authored spots and DRAWN at the plan rectangles, uniform width)
-       - neutral thin lines (<1.0 m) -> painted fully (centreline dashes, foul lines, outlines)
-       - neutral wide plates         -> skipped (lids, walkway wedges, ICCS ghost class)
-       - neutral marks inside a catapult track corridor -> skipped (the strip owns them)
-       - material_37 (life-raft canister shells) -> never painted (their tops sat close
-         enough to deck height to bake as white ghost dashes along the edge)
-       - EDGE_KILL: grey mono marks (lum<=0.60) within 4.5 m of the outline die (phantom
-         catwalk-plate bakes); painted lines and whites survive; the bow "68" numerals
-         are exempted by box (same grey as the phantom plates)
-  4. catapult tracks: bare-steel strip 1.4 m + near-black slot 0.12 m, from just aft of each
-     shuttle position to the exact deck-outline exit (the real track runs to the round-down);
-     the cat 1 and cat 4 lines are PLAN-derived (Stage C), not the model's misplaced paint
+  2. analytic landing-area boundary lines, drawn before tracks/rubber so cats and wires overlay them;
+     authored fragments near a line are suppressed
+  3. the original model's up-facing paint: near-black never painted; saturated markings painted (JBD
+     borders killed at the authored spots and drawn at the plan rectangles); neutral thin lines (<1.0 m)
+     painted; neutral wide plates, marks inside a catapult corridor, material_37 raft shells, and grey
+     mono marks (lum<=0.60) within 4.5 m of the outline skipped (bow "68" numerals exempted by box)
+  4. catapult tracks: bare-steel strip 1.4 m + near-black slot 0.12 m, from aft of each shuttle to the
+     deck-outline exit; cats 1/4 are plan-derived
   5. rubber: landing-strip band + catapult start streaks
 
-After ANY mark-rule change, run the lost-bright-pixel diff against the previous texture,
-clustered by fa bin - per-spot brightness probes miss systemic damage (three separate
-rules ate the landing-area edge stripes across v55-v59 before that diff found them all).
-The lum split that discriminates: phantom catwalk plates 0.523, painted lines 0.659,
-whites 0.976.
-
-All markings are drawn anti-aliased (3x3 coverage for model paint, analytic lateral
-coverage for the tracks) - hard texel edges read as staircases on every diagonal line
-at 4.2 cm/texel. Track steel noise is smooth 1D (per-column noise reads as striations).
+After any mark-rule change, diff lost bright pixels against the previous texture clustered by fa bin;
+per-spot probes miss systemic damage. Discriminating lum: phantom plates 0.523, painted lines 0.659,
+whites 0.976. All markings are anti-aliased (3x3 coverage for model paint, analytic lateral coverage
+for tracks); track steel noise is smooth 1D.
 
 Output: decktex12.png (8192x2400, fa -172..172, lat -52..48)
 """
@@ -40,12 +23,8 @@ import resource
 import numpy as np
 from PIL import Image
 
-# Hard memory cap: fail with a clean MemoryError rather than drive the kernel OOM
-# killer into the desktop session (2026-07-13: a stalled float-remainder dash walk
-# appended zero-length tris to 18.6 GB and the kernel reaped unrelated processes;
-# this cap turned the same bug into a one-line traceback). A healthy bake fits in
-# well under 4 GB; a MemoryError here means a new unbounded allocation, not a
-# too-small cap.
+# Hard memory cap: a healthy bake fits in well under 4 GB; a MemoryError here
+# means a new unbounded allocation.
 resource.setrlimit(resource.RLIMIT_AS, (8 << 30, 8 << 30))
 
 ORIG = '/home/alistair/mochi/apps/air/downloads/uss_nimitz_cvn-68_aircraft_carrier.glb'
@@ -71,12 +50,9 @@ def inpoly(f, l):
 # Stage B: the model is laterally squashed to the real 76.8 m beam in build_carrier
 # (S_LAT below); every lat this bake paints must follow (tracks, marks, exclusions, rubber)
 S_LAT = 76.8/80.0
-# catapult centrelines (pre-squash frame — outputs scaled) + shuttle starts.
-# Cats 2/3 are the model-paint exact fits (the 1:200 plan agrees within noise).
-# Cats 1/4 are PLAN-derived (Stage C, 2026-07-10): the model's painted cat-1 track was
-# 3.9 m starboard with +2.4° excess heading (its line lies on no plan feature, ridge
-# coverage 0.22 vs 0.95 on the plan track, which starts at fa 45 as a slot should);
-# cat-4 paint was 0.93 m starboard (plan line -27.75 post-squash, coverage 0.99 aft).
+# catapult centrelines (pre-squash frame - outputs scaled) + shuttle starts.
+# Cats 2/3 are model-paint fits; cats 1/4 are plan-derived (the model's paint
+# sits 3.9 m / 0.93 m off the plan lines).
 CATS = [
     (48.5,  lambda f: (16.15-0.0601*(f-48.98))*S_LAT, 12),
     (46.8,  lambda f: (-3.58+0*f)*S_LAT,              12),
@@ -98,20 +74,14 @@ OLD = [
     (-67.0, 73.0,  lambda f: (-27.94+0*f)*S_LAT),
 ]
 def superseded(f, l): return any(a < f < b and abs(l-ln(f)) < 0.9 for a, b, ln in OLD)
-# JBD relocation (v56) + analytic borders (2026-07-13): the model authored each cat's
-# red/yellow dashed JBD box ~8-10 m aft of the shuttle spot — under the parked jet's
-# rear fuselage, where a deflector could never rise — plus a grey "frame" between box
-# and spot that exists on no reference. The 1:200 plan draws the JBDs as hatched bars
-# 18-24 m aft of the spots, centred on each track. Per cat: SAT marks in the ensemble
-# region (the authored dashed box) are KILLED (they were rigid-transplanted until the
-# authored dashes proved half the width of every neighbouring safety border) and the
-# border is DRAWN at the plan rectangle instead, uniform width, same rectangle the
-# engine's animated panel fills; GREY mono marks there (the frame — lum<=0.85 spares
-# the near-white landing-area stripes crossing at the waist) are killed. The big
-# blast-zone rectangle aft of cat 1 (fa ~13..37, down to the deck edge) stays as
-# authored — its bottom hugs the deck edge, which did not move — except where it
-# crosses a plan JBD rectangle (jbd_zone kill below).
-#     region fa0,fa1,lat0,lat1      box centre       target centre
+# JBD regions: the model authored each cat's red/yellow dashed box 8-10 m aft of
+# the shuttle spot; the 1:200 plan puts the JBD 18-24 m aft, centred on the
+# track. Per cat, saturated marks in the authored region are killed and the
+# border is drawn at the plan rectangle (the one the engine's animated panel
+# fills); grey mono marks there (lum<=0.85 spares the landing-area stripes) are
+# killed. The cat-1 blast-zone rectangle stays except where it crosses a plan
+# JBD rectangle (jbd_zone). region fa0,fa1,lat0,lat1      box centre target
+# centre
 JBD = [
     (36.4, 53.5, 14.6, 25.4,     39.35, 20.47,    27.2, 16.76),
     (35.0, 47.6, -8.7, 1.9,      37.5, -3.40,     23.5, -3.44),
@@ -136,23 +106,20 @@ def jbd_zone(f, l, margin=0.55):
         if abs(df*ux+dl*uy) < JBD_BD/2+margin and abs(-df*uy+dl*ux) < JBD_BW/2+margin:
             return True
     return False
-# grey-frame mono kill boxes. NOT the same as the JBD regions: the landing-area edge
-# stripes are drawn as triangle FANS whose short apex tris land inside cat 3's region
-# (same material and lum as the frame — position is the only discriminator), so cat 3
-# kills only two narrow fa slices covering the frame's end lines at fa -54.1 / -46.6.
-# The frame's long sides there survive; they hug the stripes and read as part of them.
+# grey-frame mono kill boxes, not the JBD regions: the landing-area edge stripes
+# are triangle fans whose apex tris land inside cat 3's region with the same
+# material and lum, so cat 3 kills only two narrow fa slices over the frame's
+# end lines (fa -54.1 / -46.6).
 MONO_KILL = [
     (36.4, 53.5, 14.6, 25.4),
     (35.0, 47.6, -8.7, 1.9),
     (-59.2, -45.6, -21.5, -11.0),
     (-78.9, -60.4, -31.3, -21.8),   # lat0 -31.3, NOT the ensemble's -32.4: the angled-deck edge stripe runs at -31.7 through this fa range
 ]
-# Landing-area boundary lines (v61): four straight lines parallel to the landing
-# centreline (fitted from the v52 bake: offsets/colour below, fa -147..+37). The
-# authored versions are triangle fans that every kill rule keeps nicking (corridor,
-# frames, edge) — so the authored marks near them are SUPPRESSED and the lines are
-# DRAWN continuously instead, before the tracks and rubber so cats and wires paint
-# over them (paint layering, as on the real deck).
+# Landing-area boundary lines: four lines parallel to the landing centreline (fa
+# -147..+37). The authored versions are triangle fans every kill rule nicks, so
+# authored marks near them are suppressed and the lines drawn continuously,
+# before tracks and rubber so cats and wires paint over them.
 LINE_A, LINE_S, LINE_F = 1.92, 0.15171, -115.6
 LANDING_LINES = [-11.42, -9.06, 9.28, 11.75]
 LANDING_SPAN = (-147.0, 36.8)
@@ -166,14 +133,11 @@ def in_corridor(f, l):
         if s-1.5 < f < e+1.5 and abs(l-ln(f)) < 0.9: return True
     return False
 EXCLUDE_SAT = [(78.0, 88.5, 4.0*S_LAT, 11.5*S_LAT)]   # ammo-elevator dash box: authored, but wrong for this deck
-# Structure-grey near the rim is PHANTOM paint: the model's below-lip catwalk and
-# sponson plates (up-facing, pale grey, ch +0.2..0.6 — inside the mark band) bake
-# flat onto the deck as triangle-fan wedges hugging the edge (the port-margin
-# "strange triangles", 2026-07-10; same fans ring the whole rim). No legitimate
-# GREY paint lives that close to the edge — the edge safety dashes are near-white
-# (lum 0.976) and stay; the bow "68" numerals are the SAME grey material as the
-# phantom plates (lum 0.523/0.659) and reach within ~1-2 m of both edges, hence
-# the exemption box.
+# Grey mono paint within EDGE_KILL of the rim is phantom: below-lip catwalk and
+# sponson plates bake flat onto the deck as fans hugging the edge. Edge safety
+# dashes are near-white (lum 0.976) and survive; the bow "68" numerals share the
+# phantom plates' grey and reach within 1-2 m of both edges, hence the exemption
+# box.
 EDGE_KILL = 4.5            # grey mono mark death zone, metres inboard of the outline
 NUMERALS = (118.0, 162.0, -11.0, 15.0)
 _SEG1 = POLY; _SEG2 = np.roll(POLY, -1, axis=0)
@@ -295,12 +259,10 @@ for ni, n in enumerate(nodes):
             if not sat and 0.60 < lum <= 0.85 and near_landing_line(f2, l2):
                 continue   # authored boundary-line fragments: replaced by the drawn lines
             marks.append((ch[i2], tri, (c3*255)))
-# analytic JBD borders (2026-07-13): the authored dashes measured 17-21 cm wide vs the
-# 25-33 cm of the neighbouring safety borders (blast zone, elevators) — deck safety
-# stripes are a uniform width on the real ship. Drawn as 0.34 m red/yellow dashes on
-# the exact plan rectangles the engine's animated panels fill, so paint and geometry
-# stay concentric by construction. Appended as mark tris at ch +10 so they rasterise
-# last through the same anti-aliased pipeline.
+# analytic JBD borders: 0.34 m red/yellow dashes on the exact plan rectangles
+# the engine's animated panels fill (the authored dashes were half the width of
+# the neighbouring safety borders). Appended as mark tris at ch +10 so they
+# rasterise last through the same anti-aliased pipeline.
 JBD_RED = np.array([0.58, 0.0, 0.01])*255; JBD_YEL = np.array([0.97, 0.86, 0.02])*255
 for e, m in zip(JBD, JBD_M):
     tf, tl = e[6], e[7]
@@ -313,10 +275,9 @@ for e, m in zip(JBD, JBD_M):
         a, b = corners[k], corners[(k+1) % 4]
         seg = b-a; seglen = np.linalg.norm(seg); sd = seg/seglen
         nn = np.array([-sd[1], sd[0]])*JBD_LW/2
-        # dash boundaries continuous around the loop, walked by INTEGER dash index —
-        # the float-remainder walk this replaces stalled when the remainder landed at
-        # ~JBD_DASH (step 2e-16), appending zero-length tris until the kernel OOM
-        # killer took out the desktop session (2026-07-13)
+        # walk dash boundaries by integer dash index, continuous around the loop
+        # - a float-remainder walk stalls when the remainder lands at ~JBD_DASH
+        # and appends zero-length tris without bound
         for i in range(int(math.floor(s/JBD_DASH)), int(math.floor((s+seglen)/JBD_DASH))+1):
             t0 = max(i*JBD_DASH-s, 0.0); t1 = min((i+1)*JBD_DASH-s, seglen)
             if t1 <= t0: continue

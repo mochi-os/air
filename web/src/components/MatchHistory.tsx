@@ -23,8 +23,7 @@ import { history, recording_load, type MatchRow, type MatchTotals } from '../gam
 import { Button } from '@mochi/web/components/ui/button'
 
 // Replay is the in-memory recording the engine still holds for this session's
-// flights (#212). Nothing is stored server-side yet, so only rows flown since
-// the page loaded can offer a download — see #213.
+// flights - the fallback for a row whose upload has not landed yet.
 export interface Replay {
   text: string
   session: string
@@ -129,11 +128,9 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
     )
   }
 
-  // Career totals come from the SERVER's aggregate over every recorded flight.
-  // Summing the rows on screen counted only the fifty most recent, which now
-  // that every flight records a row is a small and shrinking fraction of them.
-  // Cheated flights are INCLUDED: this is the player's own logbook, not a
-  // leaderboard, and excluding them made the summary contradict the table.
+  // Career totals are the server's aggregate over every flight (the rows on
+  // screen are only the fifty most recent), cheated flights included - a
+  // logbook, not a leaderboard.
   const flights = totals?.flights ?? matches.length
   const kills = totals?.kills ?? 0
   const deaths = totals?.deaths ?? 0
@@ -236,11 +233,9 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
                     className='opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100'
                     onClick={() =>
                       void (async () => {
-                        // Prefer the row's STORED copy: it exists for every
-                        // flight, not just this session's, which is the whole
-                        // point of keeping them server-side (#213). The
-                        // in-memory buffer is the fallback for a flight whose
-                        // upload has not landed yet.
+                        // Prefer the stored copy (exists for every flight); the
+                        // in-memory buffer covers a flight whose upload has not
+                        // landed yet.
                         const text =
                           (m.recording ? await recording_load(m.recording) : null) ??
                           (replay && replay.session === m.session ? replay.text : null)

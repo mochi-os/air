@@ -21,16 +21,11 @@ export interface StationSlot {
   stores: string[]
 }
 
-// Built-in per-device bindings — the SINGLE source: the engine's pad_bindings and
-// the menu's Joystick tab both read this (a duplicated mirror once showed stale
-// defaults after Reset). "-N" = reversed axis sense; look = the axis pair that
-// looks around (x index, y at x+1); a buttons value may list several indices
-// comma-separated. VelocityOne notes: buttons 8-11 are LATCHING base toggles —
-// never bind them to momentary actions; fire and the wheel brakes share a button
-// because the gear decides which applies.
-// One built-in profile. `match` decides whether a connected pad is this model:
-// it gets the pad's id AND its Gamepad API mapping, because the standard
-// gamepad layout is identified by the mapping rather than by any product name.
+// Built-in per-device bindings, the single source for the engine's pad_bindings
+// and the menu's Joystick tab. "-N" = reversed axis sense; look = the axis pair
+// (x index, y at x+1); a buttons value may list several indices
+// comma-separated. `match` gets the pad's id AND its Gamepad API mapping, since
+// the standard layout is known by the mapping, not by a product name.
 export interface StickProfile {
   name: string // shown in the Joystick tab; a product name, not translated
   match: (id: string, mapping: string) => boolean
@@ -38,82 +33,41 @@ export interface StickProfile {
   buttons: Record<string, string>
 }
 
-// PROFILES is ordered: the FIRST match wins, so a named model beats the generic
-// standard-gamepad entry, and the fallback sits last matching everything.
-//
-// A profile may only be added from MEASURED indices — read off the hardware in
-// the Joystick tab — or from a layout the platform GUARANTEES. Never infer them
-// from a product photo or a manual's button numbering: a guessed map attaches
-// every binding to the wrong control, and the player reads that as the game
-// being broken rather than as a wrong profile.
+// PROFILES is ordered, first match wins, so a named model beats the generic
+// standard-gamepad entry and the catch-all sits last. A profile may only be
+// added from MEASURED indices or a layout the platform guarantees - never
+// inferred from a manual or a photo.
 export const PROFILES: StickProfile[] = [
   {
-    // Measured on the hardware 2026-08-11, re-roled for the BVR loop
-    // 2026-08-15 and confirmed on the stick the same day. Buttons 8-11 are
-    // the END-OF-TRAVEL detents on the throttle and speedbrake levers, and
-    // they carry nothing DELIBERATELY (identified 2026-08-16; an earlier
-    // note here called them latching base toggles, which was wrong and sent
-    // two attempts at binding them down the wrong road). They duplicate
-    // what the axes already say — the game reads both levers continuously,
-    // stops included — and an action bound to one would fire on every pull
-    // to idle, every push to military, every speedbrake cycle. The tempting
-    // one is the worst: the aft throttle detent is where a real Hornet cuts
-    // fuel, so engine shutdown reads as natural there, and it would secure
-    // the engines every time the throttle came back in a fight.
-    //
-    // Button 14 (displayed 15) is reported by the device and driven by no
-    // physical control, and nothing exists past the base diamond either —
-    // the Gamepad API hands back a fixed-length array, so empty slots are
-    // normal and are not a binding waiting to be found (hunted 2026-08-16).
-    //
-    // The thumbwheel reaches the Gamepad API only in its
-    // DIGITAL mode, one button pulse per notch (12 forward, 13 back — set
-    // via the stick's OLED; its default mouse-cursor mode is invisible
-    // here, arriving as DOM wheel events instead). In that
-    // default mode PITCH TRIM IS UNAVAILABLE ON THE STICK, the castle having
-    // handed trim to the wheel when it became weapon select.
-    //
-    // Deliberately keyboard-only, the stick having run out of buttons: trim
-    // reset, look-at-target, TANK jettison (the EMERGENCY one has the base
-    // diamond's lower button), the radar controls, lights, launch, wing
-    // fold, the speed brake — and the weapon-select CYCLE, which the castle
-    // makes unnecessary here by selecting positionally.
+    // Measured on the hardware. Buttons 8-11 are the END-OF-TRAVEL detents on
+    // the throttle and speedbrake levers and carry nothing deliberately: they
+    // duplicate what the axes already say, and an action bound to one fires on
+    // every pull to idle. Button 14 and everything past the base diamond are
+    // empty slots the device reports, not bindings waiting to be found. The
+    // thumbwheel reaches the Gamepad API only in its DIGITAL mode (12 forward,
+    // 13 back, set on the stick's OLED); in its default mouse mode it arrives
+    // as DOM wheel events and pitch trim is unavailable on the stick.
     name: 'Turtle Beach VelocityOne Flightstick',
     match: (id) => /velocityone|10f5/i.test(id),
-    // The BVR loop flies from the stick (settled 2026-08-11, implemented
-    // 2026-08-15): the castle POV pair at 8/9 is POSITIONAL weapon select —
-    // forward 120C, aft 9M, left GUN, right NAV, one flick with no cycling
-    // under g — so trim leaves the castle for the thumbwheel (buttons 12/13,
-    // a trim wheel under the thumb: forward = nose down) and zoom loses its
-    // stick binding (the mouse wheel and keyboard keep it). The thumb buttons
-    // re-role: ACQUIRE takes 15/«16», the easier reach for the URGENT press
-    // (merge-range lock under g); UNDESIGNATE/step takes 16/«17», frequent
-    // but self-paced. Fire stays 17/«18».
+    // The castle POV pair at 8/9 is POSITIONAL weapon select - forward 120C,
+    // aft 9M, left GUN, right NAV - so trim lives on the thumbwheel (12/13,
+    // forward = nose down) and zoom keeps no stick binding.
     axes: { pitch: '1', roll: '0', yaw: '2', throttle: '-5', speedbrake: '-6', look: '3', trim: '', weapon: '8', zoom: '' },   // look = the smooth-hat ministick (axes 3/4, spring-centred); weapon = the castle POV pair (8/9). zoom: the thumbwheel is a SCROLL WHEEL on the stick's mouse interface — DOM wheel events, not a gamepad axis
     buttons: { fire: '17', 'brake.wheel': '17', acquire: '15', 'radar.undesignate': '16', flares: '0',
       gear: '7', hook: '6', atc: '1', override: '3', 'flaps.extend': '4', 'flaps.retract': '5',
       view: '2', 'view.reset': '18', 'trim.down': '12', 'trim.up': '13',
-      // The base's front-centre diamond, measured on the hardware 2026-08-16
-      // (displayed 20-23 in the Joystick tab, stored 0-based as 19-22). Base
-      // buttons cannot be reached in a turn, so they carry the deliberate
-      // actions: MENU on the large Xbox-logo button at the top, where every
-      // other device puts exactly this; EMERGENCY JETTISON below it, a hold
-      // the striped button models and one the grip had no room for; and ROLL
-      // TRIM left and right, which restores what the castle re-role took away
-      // — pitch trim moved to the thumbwheel and roll trim lost its home
-      // entirely.
+      // The base's front-centre diamond: displayed 20-23 in the Joystick tab,
+      // stored 0-based as 19-22. Base buttons cannot be reached in a turn, so
+      // they carry the deliberate actions.
       menu: '19', 'trim.left': '20', 'jettison.emergency': '21', 'trim.right': '22' },
   },
   {
-    // The W3C standard gamepad layout. This one is NOT measured and does not need
-    // to be: when the browser reports mapping === 'standard' the indices are
-    // fixed by specification — 0 A, 1 B, 2 X, 3 Y, 4/5 shoulders, 6/7 triggers,
-    // 8 back, 9 start, 10/11 stick presses, 12-15 d-pad; axes 0/1 left stick,
-    // 2/3 right stick. So it can be written correctly for hardware nobody here
-    // owns, which no other profile can claim.
-    // A gamepad has no twist and no throttle lever, so rudder rides the shoulders
-    // and throttle steps on the d-pad — both as BUTTON actions replaying their
-    // keys. The right stick is the look pair (2/3); R3 holds look-at-target.
+    // The W3C standard gamepad layout, not measured and not needing to be: with
+    // mapping === 'standard' the indices are fixed by specification - 0 A, 1 B,
+    // 2 X, 3 Y, 4/5 shoulders, 6/7 triggers, 8 back, 9 start, 10/11 stick
+    // presses, 12-15 d-pad; axes 0/1 left stick, 2/3 right stick. No twist or
+    // throttle lever, so rudder rides the shoulders and throttle steps on the
+    // d-pad as button actions.
     name: 'Standard gamepad',
     match: (_id, mapping) => mapping === 'standard',
     axes: { pitch: '1', roll: '0', yaw: '', throttle: '', speedbrake: '', look: '2', trim: '', weapon: '', zoom: '' },
@@ -184,12 +138,10 @@ export interface MissionConfig {
   [key: string]: string | number | boolean | Record<string, string> | Record<string, number> | Record<string, boolean> | Record<string, unknown> | Record<string, StickBindings> | Record<string, StationSlot>
 }
 
-// seedStart applies a start choice with everything that choice defines: the
-// recovery cases seed their authentic weather, and every start seeds the fuel
-// that fits it — a pattern entry arrives with mission-end gas (NATOPS 4.1.7:
-// full internal is over the 33,000 lb carrier landing limit before a single
-// missile hangs), a launch leaves with full tanks. All of it stays freely
-// overridable in the controls below the selector; re-picking a start re-seeds.
+// seedStart applies a start choice with everything it defines: the recovery
+// cases seed their weather and every start seeds matching fuel (NATOPS 4.1.7:
+// full internal exceeds the 33,000 lb carrier landing limit). Seeded values
+// stay overridable; re-picking re-seeds.
 export function seedStart(config: MissionConfig, start: MissionConfig['start']): MissionConfig {
   const seeded = { ...config, start }
   if (start === 'case1') {
@@ -268,11 +220,8 @@ export const GRAPHICS_PRESETS: Record<GraphicsPreset, GraphicsPatch> = {
 }
 
 // Which preset the current settings ARE, so the Graphics tab can mark the one
-// in force. A preset is only the five fields above, so equality is over those
-// five and nothing else: a player who nudged a single slider is on no preset
-// and the row marks none, rather than claiming a preset it no longer matches.
-// render_scale comes back off a native range input, so it is compared with a
-// tolerance instead of by identity.
+// in force. Equality is over the five preset fields only, and render_scale
+// comes off a range input so it is compared with a tolerance.
 export function graphicsPreset(config: MissionConfig): GraphicsPreset | null {
   const same = (a: number | boolean, b: number | boolean) =>
     typeof a === 'number' && typeof b === 'number' ? Math.abs(a - b) < 1e-6 : a === b

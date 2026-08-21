@@ -1,12 +1,7 @@
-"""Sky-through-ship corridor finder: voxelize the built nimitz-clean.glb at 0.5 m,
-then scan straight lines at every height (0.5 m layers) and angle (5 deg steps) for
-free stretches that are flanked by hull on both lateral sides - candidate
-see-through corridors. Bulk discovery tool, NOT an acceptance test: it OVER-REPORTS
-(open air under the bow/stern deck overhangs and below the hull flare flags as
-flanked), and its voxel resolution misses nothing thinner than 0.5 m. Use it to
-find candidate families, verify each with an exact ray in raycheck.py, and judge
-the visual result in game. See raycheck.py's header for the v76-v80 history and
-the accepted-unresolved status of this defect class."""
+"""Sky-through-ship corridor finder: voxelize nimitz-clean.glb at 0.5 m and scan straight lines at every
+height (0.5 m layers) and angle (5 deg) for free stretches flanked by hull on both sides. Discovery tool,
+not an acceptance test: it over-reports (open air under the overhangs and below the hull flare) and misses
+anything thinner than 0.5 m. Verify each candidate with an exact ray in raycheck.py."""
 import json, struct, sys
 from collections import defaultdict
 import numpy as np

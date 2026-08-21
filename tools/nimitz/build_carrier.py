@@ -1,64 +1,28 @@
 #!/usr/bin/env python3
-"""Canonical air Nimitz build — FROM THE PRISTINE ORIGINAL, single pass.
-
-    original download  ->  clean playable carrier
+"""Nimitz build from the pristine original, single pass: original download -> nimitz-clean.glb.
 
 Steps:
   1. drop SketchUp edge-line prims (no baseColorFactor -> glTF metallic=1 -> render black)
-  2. clear the flight-deck band inside the traced outline (keep-boxed: 5 operator cabs,
-     OLS bracket, auto-enumerated tall radomes + glass cabs) with boundary-owned rules:
-       - long edges: +2 m ring;  bow/stern round-downs (|fa|>160): exact outline, at/above deck only
-       - pokes-through (tall below-deck geometry cresting the plane): base outline on the long
-         edges (kills elevator-rim webs), 1.5 m inset at the round-downs (forecastle front faces)
-       - crest: up-facing flat plate wholly near deck level (platform tops on below-deck structure)
-       - island: apron flats < 1.05 m die, lateral end-wall slices die, dark equipment
-         to bridge height repainted steel; deck-zone near-black repainted DECK TONE (+12 m reach)
-       - elevator platforms (ELEV_CLEAR): the strip owns the surface, so EVERYTHING in the band
-         dies regardless of facing (saturated border paint survives); pale flush plates the kill
-         rules miss get DECK-TONE repaint so any survivor merges with the baked deck
-       - life-raft zones (RAFT_ZONES): EVERYTHING dies, material-blind (racks + their
-         orange/grey mounting brackets), nothing regenerated - see lessons below
-  3. one flat-across, sheer-following deck polygon (traced outline, per-vertex rim heights)
-     textured with the decktex bake, plus a steel UNDERSIDE plate 0.10 m below (the strip is
-     single-sided; without the plate the deck is invisible - sky - from underneath)
-  4. deck-edge skirt (2 m, the generated fascia), authored ICCS cab transplant, generated
-     post-and-rail railings
-  5. strip empty meshes (safety), GC-repack
+  2. clear the flight-deck band inside the traced outline (keep-boxed cabs, OLS bracket, radomes) with
+     boundary-owned rules: +2 m ring on the long edges, exact outline at the round-downs; pokes-through,
+     crest, island, elevator (ELEV_CLEAR: everything in the band dies) and life-raft (RAFT_ZONES:
+     everything dies, nothing regenerated) rules
+  3. one flat-across, sheer-following deck polygon textured with the decktex bake, plus a steel
+     underside plate 0.10 m below (the strip is single-sided)
+  4. deck-edge skirt, authored ICCS cab transplant, generated railings
+  5. strip empty meshes, GC-repack
+Wires, sheaves, shuttles, JBD animation, OLS lights and floods are engine-drawn.
 
-Wires, sheaves, shuttles, JBD animation, OLS lights, floods are ENGINE-drawn - not model work.
-Output: nimitz-clean.glb
+REGEN CHAIN (order matters): build_carrier.py (writes outline.json) -> bake_decktex.py (-> decktex12.png)
+-> build_carrier.py -> cp to web/src/assets/nimitz.glb + splice_outline.py + make. Needs cab38.npy/cab1.npy
+(extract_cab.py).
 
-REGEN CHAIN (order matters): build_carrier.py (writes outline.json) -> bake_decktex.py
-(reads outline.json -> decktex12.png) -> build_carrier.py (reads decktex12) -> cp to
-web/src/assets/nimitz.glb + splice_outline.py + make. Needs cab38.npy/cab1.npy (extract_cab.py).
-
-LESSONS (2026-07-10..13, v53-v80 - the full history is in PLAN.md and README.md):
-- SOURCES OF TRUTH: the 1:200 GA plan is 2D layout truth for markings and fixtures
-  (plan outranks the model's own paint - cat 1 was 3.9 m off yet exactly fitted);
-  the model is 3D truth (outline shape, sheer, hull, island; the plan has no
-  elevation data); the fascia is GENERATED - the skirt is the ship's side below
-  the deck edge, nothing is sourced for it.
-- LIFE RAFTS ARE REMOVED, permanently. Fourteen versions tried to keep them
-  (exemptions, transplant, smooth bend field, per-component filter, authored-fascia
-  zones): every scheme fought the same conflict - the authored racks belong to the
-  authored catwalk, which this rebuild must delete. Do not re-add them without a
-  fresh design discussion.
-- SKY-FROM-BELOW is ACCEPTED-UNRESOLVED (v80, user decision). Four fixes (deck
-  underside, 5 m skirt, hangar walls, closed interior liner) each sealed every
-  path that could be measured, and the user still saw sky from in-game viewpoints
-  the measurements did not reproduce. v77-v79 are reverted. If reopened: reproduce
-  the user's exact camera FIRST, add it as a ray to raycheck.py, watch it fail,
-  then design the fix. Do not patch sightlines one screenshot at a time.
-- VERIFY by measurement, in the build's own frame: after rule changes compare the
-  deleted/repainted counters against the previous run (a clean revert reproduces
-  them exactly); run raycheck.py after any hull/skirt/deck edit; judge recesses
-  and dark cavities IN GAME (engine lighting), never in Cycles renders - Cycles
-  shows any overhung cavity as pure black and misleads.
-- The GLB is a Vite content-hashed bundle asset (web/src/assets/nimitz.glb ->
-  dist/assets/nimitz-<hash>.glb): new bytes get a new URL automatically, no
-  version constant. After make, md5-compare dist/assets/nimitz-*.glb against
-  src/assets/nimitz.glb - a stale hash means the build raced the cp. The dev
-  HUD stamps the hash.
+Rules: the 1:200 GA plan is 2D truth for markings, the model is 3D truth, the fascia is generated. Life
+rafts are removed by decision - do not re-add without a design discussion. Sky-from-below is accepted
+unresolved; if reopened, reproduce the exact in-game camera as a raycheck.py ray first. After rule changes
+compare the deleted/repainted counters against the previous run, run raycheck.py after any hull/skirt/deck
+edit, and judge cavities in game, not in Cycles. The GLB is a Vite content-hashed asset: after make,
+md5-compare dist/assets/nimitz-*.glb against src/assets/nimitz.glb.
 """
 import json, struct
 import numpy as np
@@ -90,13 +54,10 @@ FENCE_KILL = [(-90.2,-33.2,21.7,23.4,-0.4,1.1),(-48.2,-42.8,16.2,19.2,-0.4,1.1),
               (43.6,45.8,39.3,40.2,-0.4,0.9),(-116.4,-115.4,35.6,36.6,-0.4,1.0),
               (-72.9,-72.0,-39.1,-38.4,-0.4,0.9),
               (-34.6,-33.4,18.5,30.0,-0.4,1.0),(-89.9,-88.6,18.5,30.0,-0.4,1.0)]   # island apron lateral end walls
-# the two DOME PLATFORMS (port waist + stern stbd): the platform is FILLED by a white geodesic
-# radome sphere with a BLACK solid-fence bulwark around it (verified by rendering the original).
-# Any geometric kill band through h -0.4..1.2 guts the dome's own mid-shell (it spans the whole
-# platform) — three attempts (full box v34-era, perimeter bands v51) all left a floating cap /
-# arched shell remnants. The right discriminator is MATERIAL: kill only DARK prims (the black
-# bulwark) in the full box; the white dome shell survives whole. The generated railing_ring
-# stands in for the removed bulwark.
+# the two dome platforms (port waist + stern stbd): a white geodesic radome
+# fills the platform inside a black solid-fence bulwark. A geometric kill band
+# guts the dome's own mid-shell, so kill only DARK prims (the bulwark) in the
+# full box; the generated railing_ring stands in for it.
 FENCE_KILL_DARK = [(54.1,57.9,-44.8,-41.1,-0.4,1.2),(-153.3,-148.5,23.0,28.3,-0.4,1.1)]
 # aircraft-elevator platform footprints: the strip owns the surface, so EVERYTHING in the
 # band dies regardless of facing — the orientation-gated rules leave vertical/metallic
@@ -160,20 +121,13 @@ def writeA(ai, arr):
     if 'min' in a: a['min']=[float(x) for x in a32.min(0)]
     if 'max' in a: a['max']=[float(x) for x in a32.max(0)]
 
-# --- Stage B: LATERAL SQUASH to the real beam ---
-# The flight deck measures 80.0 m max width vs the real 76.8 m (+4.2%); length is exact
-# (333 vs 332.8). One uniform lateral scale about the centreline corrects the beam. Known
-# trade (PLAN.md acid test): the angled-deck angle scales atan(0.96*tan) 8.99->~8.64 deg vs
-# the real 9.05 - a 0.4 deg error nobody can see, in exchange for exact proportions. All
-# deck-ops constants (engine shuttles/line/OLS/halfspan and this file's measured boxes)
-# are scaled to match, and the bake scales its mark/track lats identically.
-# Dome shape-preservation was tried TWICE and abandoned: any blend between "translated"
-# (shape-kept) and "squashed" geometry has a transition zone, and the dome clusters are
-# dense - the falloff ran through neighbouring pedestals/structures and TORE them (first
-# the port-bow whip dome whose shell exceeded its tight box, then the port golf-ball whose
-# unpreserved pedestal sat inside a preserved neighbour's falloff: dome floating off its
-# mount). Uniform squash distorts a 6-8 m sphere by 24-32 cm (4%) - invisible in game -
-# and by construction cannot tear anything. DOME_PRESERVE stays as a knob, empty.
+# --- Stage B: LATERAL SQUASH to the real beam --- The flight deck measures 80.0
+# m wide vs the real 76.8 m (length is exact); one uniform lateral scale about
+# the centreline corrects it, accepting an angled-deck angle of ~8.64 vs 9.05
+# deg. Every deck-ops constant here, in the engine and in the bake scales to
+# match. DOME_PRESERVE stays empty: a shape-preserving blend has a transition
+# zone that tears the dense dome clusters, and the uniform squash distorts a
+# sphere by only 4%.
 S_LAT=76.8/80.0
 DOME_PRESERVE=[]
 print(f"lateral squash: S_LAT={S_LAT:.4f} (uniform; dome preservation disabled)")
@@ -211,13 +165,10 @@ KEEP_HAND=[(f0,f1,_lat(l0),_lat(l1)) for f0,f1,l0,l1 in KEEP_HAND]
 DOME_KEEP=[(f0,f1,_lat(l0),_lat(l1)) for f0,f1,l0,l1 in DOME_KEEP]
 FENCE_KILL=[(f0,f1,_lat(l0),_lat(l1),h0,h1) for f0,f1,l0,l1,h0,h1 in FENCE_KILL]
 FENCE_KILL_DARK=[(f0,f1,_lat(l0),_lat(l1),h0,h1) for f0,f1,l0,l1,h0,h1 in FENCE_KILL_DARK]
-# OLS datum-arm trim (v54): the model's green-datum light bar is 8.1 m wide at
-# +0.66 m and overhangs the FLIGHT DECK by ~2.2 m (deck edge -35.2 at fa -21) — a
-# deck-clearance violation the real IFLOLS doesn't have; cat-4 wingtips sweep that
-# lat during the launch roll. Trim the bar to ±1.8 m about the lens column
-# (lat -37.06): a realistic ~3.6 m bar ending just outboard of the edge. Applied
-# ONLY to the bar's material (material_5) — the boxes also contain deck plates.
-# Coordinates are POST-squash (measured on the built model), so no _lat here.
+# OLS datum-arm trim: the model's green-datum bar (8.1 m) overhangs the flight
+# deck by ~2.2 m where cat-4 wingtips sweep; trim it to +-1.8 m about the lens
+# column (lat -37.06). Applied only to material_5 (the boxes also contain deck
+# plates). Coordinates are post-squash, so no _lat.
 OLS_TRIM=[(-22.6,-19.2,-35.35,-32.4,0.50,0.85),(-22.6,-19.2,-41.7,-38.75,0.50,0.85)]
 # Life-raft canister racks: v57/v58 tried exempting the authored racks from the
 # edge rules, but they straddle the rebuilt deck's boundary planes (sheered strip +
@@ -403,12 +354,10 @@ def addidx(arr32):
     acc.append({'bufferView':len(bvs)-1,'byteOffset':0,'componentType':5125,'count':len(arr32),'type':'SCALAR'})
     return len(acc)-1
 
-# --- 1b. life-raft rack REMOVAL --- the authored canister racks straddle the rebuilt
-# deck's boundary planes (strip at the sheered rim height + skirt at the outline): every
-# scheme tried v57-v74 left them beheaded, clipping, floating, sliced, or brought the
-# messy authored catwalk back with them. REMOVED entirely (user 2026-07-12): the zones
-# are collected here only so the band clear kills the racks; nothing is regenerated, and
-# the full uniform skirt is the fascia everywhere.
+# --- 1b. life-raft rack REMOVAL --- the authored racks straddle the rebuilt
+# deck's boundary planes and cannot be kept cleanly; the zones are collected so
+# the band clear kills them, nothing is regenerated, and the uniform skirt is
+# the fascia everywhere.
 _P=np.array(OUT,np.float64); _SG=np.roll(_P,-1,axis=0)-_P
 _SL=np.hypot(_SG[:,0],_SG[:,1]); _AR=np.concatenate([[0.0],np.cumsum(_SL)])[:len(_P)]
 def arc_project(f,l):
@@ -500,12 +449,11 @@ for mi2,nis in inst.items():
             if mi>=0 and mats[mi].get('name')=='material_5':   # OLS datum-arm bar only
                 for f0,f1,l0,l1,h0,h1 in OLS_TRIM:
                     fkill|=(fa>f0)&(fa<f1)&(la>l0)&(la<l1)&(ys>h0)&(ys<h1)
-            # life-raft zones: kill EVERYTHING authored, whatever the material — the
-            # racks were RACK_MATS but their mounting brackets/fittings span others
-            # (orange material_9, material_38, dark frames the repaints caught), and
-            # with the rafts removed the empty brackets read as junk on the fascia.
-            # Inside the deck outline the band rules already kill regardless of
-            # colour, so this only widens the sub-deck/outboard part of the zones.
+            # life-raft zones: kill everything authored whatever the material -
+            # the racks' brackets span materials beyond RACK_MATS and read as
+            # junk on the fascia once the rafts are gone. Inside the outline the
+            # band rules already kill regardless of colour; this widens only the
+            # outboard part.
             rz=np.zeros(len(t),bool)
             for f0,f1,l0,l1 in RAFT_ZONES:
                 rz|=(fa>f0)&(fa<f1)&(la>l0)&(la<l1)&(ys>-2.2)&(ys<1.4)
@@ -530,13 +478,11 @@ for mi2,nis in inst.items():
                 pk=pokes[ci]
                 endzone=np.abs(fa[ci])>150
                 abovedeck=ys[ci]>-0.15
-                # preserve the deck-edge CATWALK (walkway ledges + racks + railings hanging below
-                # and outboard of the deck edge). On the long edges the +2 m ring stripped it -
-                # killing 83% of the bow edge while the sides kept theirs. Kill inside the deck
-                # outline (base) fully; in the 0..2 m outboard margin kill ONLY what rises above
-                # the deck surface (hmax > 0.60, deck top is ~0.66) - the bow walkways sit at
-                # ys +0.2..0.4 (just below the deck lip), so a ys-based threshold in the old
-                # h=0 frame wiped them while the sides' lower catwalks (-0.35..-1.35) survived.
+                # preserve the deck-edge catwalk (ledges, racks, railings below
+                # and outboard of the edge): kill fully inside the outline
+                # (base); in the 0..2 m outboard margin kill only what rises
+                # above the deck surface (hmax > 0.60, deck top ~0.66). The bow
+                # walkways sit at ys +0.2..0.4, so a ys threshold wipes them.
                 margin=ring&~base
                 bandpoly=np.where(np.abs(fa[ci])>160, base&abovedeck, base|(margin&(hmax[ci]>0.60)))
                 # pokes: bow/stern round-downs need the inset (forecastle front faces died
@@ -741,15 +687,6 @@ R=[railing_run((-89.37,22.58),(-33.76,22.58),deck_h(-61),0.9),
 RAILS=np.concatenate(R)
 RAILS[:,1]*=S_LAT   # railing sites were measured pre-squash; follow the deck
 
-# --- 4b. generated life-raft canister racks (v59) --- two stacked rows of white
-# cylinders per authored cluster, hung on the outline's outboard side BELOW the local
-# deck lip (deck-edge clearance like the real racks; nothing touches the strip or
-# skirt). Cluster spans come from the authored material_37 shells (step 1b).
-# life rafts REMOVED (user 2026-07-12): every placement scheme fought the same
-# structural conflict (authored rafts belong to the authored catwalk, which the
-# band clear must delete). The zone kill above removes the racks; nothing is
-# regenerated. The full skirt is the fascia everywhere.
-
 def add_soup(verts, mat_idx, name, deckframe):
     global B
     n2=len(verts)
@@ -790,14 +727,12 @@ cab38[:,2]=CZ+(cab38[:,2]-CZ)*S_LAT; cab1[:,2]=CZ+(cab1[:,2]-CZ)*S_LAT
 add_soup(cab38, matbyname.get('material_38',0), 'iccs_cab', False)
 add_soup(cab1, matbyname.get('material_1',0), 'iccs_glass', False)
 
-# --- deck-edge fascia skirt ---
-# The band clear removes the original deck-edge fascia (near-vertical tris in ys -1.2..1.8),
-# but the flat deck strip only replaces the top SURFACE - not the vertical wall below the edge.
-# So the deck edge floats above the surviving hull side (which starts below -1.2 m) and you
-# see into the dark interior (the starboard-bow black wedge; worst there because the hull steps
-# away from the deck edge). A vertical skirt from each outline edge down 2 m closes the gap all
-# round. Drawn double-sided (both windings) so it reads solid from any angle; sits at the outline
-# (0.30 m inboard of the plate edge, so it never pokes through the hull).
+# --- deck-edge fascia skirt --- The band clear removes the original fascia and
+# the flat deck strip replaces only the top surface, so the deck edge would
+# float above the hull side with the interior visible below. A vertical skirt
+# from each outline edge down 2 m closes the gap: double-sided (both windings),
+# at the outline (0.30 m inboard of the plate edge, so it never pokes through
+# the hull).
 SKIRT_DROP=2.0
 skirt=[]
 NPOLY=len(OUT)
@@ -823,13 +758,11 @@ G.setdefault('textures',[]).append({'source':len(G['images'])-1,'sampler':len(G[
 mats.append({'name':'deck_baked','pbrMetallicRoughness':{'baseColorTexture':{'index':len(G['textures'])-1},'metallicFactor':0.0,'roughnessFactor':0.92}})
 MDECK=len(mats)-1
 FA0,FA1,LA0,LA1=-172.0,172.0,-52.0,48.0
-# 4 columns per station, ALL at the measured hull-rim height (flat across each cross-section).
-# The earlier design sank the two inner columns to DECKY (h=0) while the edges sat at the
-# rim (~0.65 m) - that made every cross-section a shallow BOWL (concave, the user's report).
-# The real deck is flat: interior = edges = rim height. The physics contact plane follows
-# automatically (CARRIER.deckY is raycast from the drawn deck at the cat spot, which is now
-# at the rim height, so wheels sit on the deck). Rim height varies fore-aft (sheer + the
-# bow/stern round-downs), so the deck follows the sheer along its length but is flat across.
+# 4 columns per station, all at the measured hull-rim height: the real deck is
+# flat across (sinking the inner columns to DECKY made each cross-section a
+# bowl). CARRIER.deckY is raycast from the drawn deck, so physics follows. Rim
+# height varies fore-aft (sheer + round-downs), so the deck follows the sheer
+# along its length.
 stbd=OUT[:NS]; port=[OUT[2*NS-1-i] for i in range(NS)]
 hs_stbd=[rim_h[i] for i in range(NS)]; hs_port=[rim_h[2*NS-1-i] for i in range(NS)]
 APRON=6.0
