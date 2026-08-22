@@ -2414,7 +2414,7 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 	m.life=20; m.kind="9m"; m.target=target; m.enemy=false; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.shot=(m.shot||0)+1; m.launcher=st;   // enemy=false HERE, every launch: the pool slot may last have carried the bandit's heater, and a player's 9M that inherited enemy=true fused on the bandit and blasted the OWNSHIP's hulk instead — four fused shots in the 2026-08-19 joust, recorded as the bandit's, harming nobody. launch_bandit_heater sets it true again for its own rounds
 	if(target){ const dx=wrap_axis(target.pos.x-st.pos.x), dy=target.pos.y-st.pos.y, dz=wrap_axis(target.pos.z-st.pos.z); const d=Math.hypot(dx,dy,dz)||1;
 		const tail=target.fwd?Math.max(0,(dx*target.fwd.x+dy*target.fwd.y+dz*target.fwd.z)/d):0;
-		const floor=0.15+0.35*THREE.MathUtils.clamp(target.reheat??0,0,1);
+		const floor=0.15+0.35*THREE.MathUtils.clamp(target.reheat??target.burner??0,0,1);   // the ownship's plume lives in `burner` (#67): reading only `reheat` left the bandit's seeker blind to the player's afterburner, and its first live pair left the rail cold at 996 m against a lit reach of 2,500
 		if(d>5000*(floor+(1-floor)*tail)){ m.loose=true; if(DEV_MODE) m.why="cold"; } }   // launched without acquisition (#255): the round departs ballistic — the seeker never had him, exactly as the lock tone warned
 	if(target){ const d=Math.hypot(target.pos.x-m.px,target.pos.y-m.py,target.pos.z-m.pz)||1;
 		m.sx=(target.pos.x-m.px)/d; m.sy=(target.pos.y-m.py)/d; m.sz=(target.pos.z-m.pz)/d; }
@@ -2482,7 +2482,7 @@ function launch_bandit_heater(){ if(!has_enemy||MULTIPLAYER) return;
 	if(!launch_missile(bandit,ownship)) return;
 	const m=missiles.find(x=>x.active&&x.kind==="9m"&&x.target===ownship&&!x.enemy);
 	if(m) m.enemy=true;
-	if(missiles.filter(x=>x.active).length>before){ bandit.msl=Math.max(0,(bandit.msl??magazine())-1); audio_launch(); } }
+	if(missiles.filter(x=>x.active).length>before){ bandit.msl=Math.max(0,(bandit.msl??magazine())-1); } }   // no launch sound (#66): a motor a kilometre out is inaudible through canopy, ambient and helmet — the smoke trail is the cue a real pilot gets
 
 // launch_bandit_round (#33): the bandit's AMRAAM, client-owned from the rail -
 // the brain only decides the shot. It chases the ownship, its datalink is the
@@ -2497,7 +2497,7 @@ function launch_bandit_round(){ const m=missiles.find(x=>!x.active); if(!m||!has
 	m.slot=missiles.indexOf(m);
 	round_launch(m.slot,{x:m.px,y:m.py,z:m.pz},{x:m.vx,y:m.vy,z:m.vz},
 		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },WORLD_WRAP,true);
-	audio_launch(); }
+	}   // no launch sound (#66): enemy launches are seen, never heard
 // step_amraam (#27): the AIM-120 flies the Go `round` core - the same
 // integrator the server and the DLZ ladder use. While our track on the target
 // lives the round gets fresh estimates; lose it and it coasts on the last
@@ -4731,11 +4731,12 @@ function fly_bandit(dt){
 		}
 		return fly_bandit_stricken(dt);
 	}
-	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&!fly_bandit.tried){   // lazy: the core loads async and start_mission races it — arm the brain on the first frame the core is ready
-		fly_bandit.tried=true;
+	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&sim_time>=(fly_bandit.retry??0)){   // lazy: the core loads async and start_mission races it — arm the brain when the core is ready. RETRIABLE (#67 harness finding): the old one-shot flag turned any single failed attempt into a silent pacifist bandit for the whole mission — the kill-chain harness caught one cruising in formation with its target for 240 s
+		fly_bandit.retry=sim_time+1;
 		bandit_brain=bandit_init({ level: cfg.bandit||"ace", seed: 7, wrap: WORLD_WRAP, sky: cfg.clouds||"", night: cfg.tod==="night", missiles: missiles_on(),
 			weapons: cfg.duel==="bvr"?"open":(missiles_on()?"fox2":"guns"), fuel: FUEL() });   // the bandit fights on the player's own tank: it used to spawn with the server's 6,000 lb whatever the slider said, and hit its burner bingo four minutes before a full-internal pilot   // the bandit arms to the match's rules, exactly as server bots do (#33): the BVR joust is an open-class fight and the bandit shoots back   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
 		if(bandit_brain) bandit_spawn(bandit.pos, {x:bandit.fwd.x*bandit.speed, y:0, z:bandit.fwd.z*bandit.speed});
+		else console.error("bandit brain arming failed; retrying");   // never silent: a pacifist bandit reads exactly like a fight the doctrine chose not to have
 	}
 	if(bandit_brain){   // the wasm brain: mirror the player in, step the second core, read the bandit back (#125 phase 2)
 		bandit_mirror(flight_get(), input.guns, crash_t<=0);
