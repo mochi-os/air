@@ -472,7 +472,7 @@ export function battle_fly(
 // radii with the cube root of the charge: WARHEAD.heater is the 9M's 9.4 kg
 // (the default), WARHEAD.radar the AIM-120's 22 kg directed-fragmentation charge.
 export const WARHEAD = { heater: 1.0, radar: 2.0 }
-export function battle_blast(target: number, point: { x: number; y: number; z: number }, aim: Aim | null, identity: number, tick: number, class_ = WARHEAD.heater): { kill: boolean; mask: number; impacts: { x: number; y: number; z: number }[] } {
+export function battle_blast(target: number, point: { x: number; y: number; z: number }, aim: Aim | null, identity: number, tick: number, class_ = WARHEAD.heater, closure = 0): { kill: boolean; mask: number; impacts: { x: number; y: number; z: number }[] } {
   if (!core) return { kill: false, mask: 0, impacts: [] }
   const b = battle_input
   b[0] = target
@@ -481,7 +481,7 @@ export function battle_blast(target: number, point: { x: number; y: number; z: n
     b[4] = aim.position.x; b[5] = aim.position.y; b[6] = aim.position.z
     b[7] = aim.quaternion.w; b[8] = aim.quaternion.x; b[9] = aim.quaternion.y; b[10] = aim.quaternion.z
   }
-  b[11] = identity; b[12] = tick; b[13] = class_
+  b[11] = identity; b[12] = tick; b[13] = class_; b[14] = closure // missile-target relative speed at the fuse (#57): fragments gain head-on, lose astern; 0 keeps the 650 m/s anchor
   core.blast(battle_input_bytes, battle_output_bytes)
   // Words 2.. are where the fragments LANDED, in the target's body frame —
   // the difference between a fireball he flies through and steel in him.
