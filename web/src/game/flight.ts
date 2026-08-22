@@ -472,8 +472,8 @@ export function battle_fly(
 // radii with the cube root of the charge: WARHEAD.heater is the 9M's 9.4 kg
 // (the default), WARHEAD.radar the AIM-120's 22 kg directed-fragmentation charge.
 export const WARHEAD = { heater: 1.0, radar: 2.0 }
-export function battle_blast(target: number, point: { x: number; y: number; z: number }, aim: Aim | null, identity: number, tick: number, class_ = WARHEAD.heater): { kill: boolean; mask: number } {
-  if (!core) return { kill: false, mask: 0 }
+export function battle_blast(target: number, point: { x: number; y: number; z: number }, aim: Aim | null, identity: number, tick: number, class_ = WARHEAD.heater): { kill: boolean; mask: number; impacts: { x: number; y: number; z: number }[] } {
+  if (!core) return { kill: false, mask: 0, impacts: [] }
   const b = battle_input
   b[0] = target
   b[1] = point.x; b[2] = point.y; b[3] = point.z
@@ -483,7 +483,14 @@ export function battle_blast(target: number, point: { x: number; y: number; z: n
   }
   b[11] = identity; b[12] = tick; b[13] = class_
   core.blast(battle_input_bytes, battle_output_bytes)
-  return { kill: battle_output[0] !== 0, mask: battle_output[1] }
+  // Words 2.. are where the fragments LANDED, in the target's body frame —
+  // the difference between a fireball he flies through and steel in him.
+  const impacts: { x: number; y: number; z: number }[] = []
+  const count = Math.min(battle_output[2] | 0, 10)
+  for (let h = 0; h < count; h++) {
+    impacts.push({ x: battle_output[3 + h * 3], y: battle_output[4 + h * 3], z: battle_output[5 + h * 3] })
+  }
+  return { kill: battle_output[0] !== 0, mask: battle_output[1], impacts }
 }
 
 // battle_progress runs the damage cascade one frame; the returned view is valid
