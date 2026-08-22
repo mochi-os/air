@@ -47,7 +47,7 @@ interface Voice {
 }
 const engines: { whine: OscillatorNode; second: OscillatorNode; whineGain: GainNode; rumble: BiquadFilterNode; hiss: BiquadFilterNode; hissGain: GainNode; gain: GainNode }[] = []
 let burner: Voice | null = null
-let seeker: { carrier: OscillatorNode; chop: OscillatorNode; depth: GainNode; chopped: GainNode; gain: GainNode } | null = null
+let seeker: { carrier: OscillatorNode; second: OscillatorNode; chop: OscillatorNode; depth: GainNode; chopped: GainNode; gain: GainNode } | null = null
 let alr: { osc: OscillatorNode; gain: GainNode } | null = null
 let departure: { osc: OscillatorNode; gain: GainNode } | null = null
 let wind: { source: AudioBufferSourceNode; filter: BiquadFilterNode; gain: GainNode } | null = null
@@ -186,31 +186,57 @@ function build(): void {
     burner = { gain }
   }
 
-  // The Sidewinder tone: a NEARLY PURE SINE carrier, deeply amplitude-chopped by the
-  // reticle spin — the rasp of the real growl is the chop, not harmonic distortion.
-  // Measured from three references (DCS F-14 Sidewinder audio and a Danish F-16
-  // AIM-9M HUD tape): growl ≈700 Hz carrier with a hard ~64 Hz chop and harmonics
-  // ≤3% of the fundamental; lock jumps to ≈2,956 Hz warbled at ~242 Hz. The prior
-  // saw+square-through-waveshaper voice was buzz from harmonics — the opposite
-  // structure, and it sounded nothing like the missile.
+  // The Sidewinder tone: a near-sine carrier amplitude-chopped by the reticle
+  // spin. Measured (DCS F-14 + a Danish F-16 AIM-9M HUD tape): growl ≈700 Hz
+  // carrier, ~64 Hz chop, harmonics ≤3%; lock ≈2,956 Hz warbled at ~242 Hz.
+  // The rasp lives in the CHOP SHAPE: a real reticle lights the target spot
+  // briefly per revolution, so the modulation is a train of NARROW PULSES —
+  // a clean 50% square gate on a sine reads as a beeper, the ~30% pulse comb
+  // is the growl. The pulse comes from thresholding the chop sine; a slow
+  // wobble on the spin rate keeps it organic; a whisper of second harmonic
+  // keeps the carrier from glassy purity.
   {
     const carrier = c.createOscillator()
     carrier.type = 'sine'
     carrier.frequency.value = 700
+    const second = c.createOscillator()
+    second.type = 'sine'
+    second.frequency.value = 1400
+    const secondGain = c.createGain()
+    secondGain.gain.value = 0.12
     const chopped = c.createGain()
-    chopped.gain.value = 0.5 // the chop LFO swings around this baseline
+    chopped.gain.value = 0.12 // the pulse floor: mostly closed between reticle passes
     const chop = c.createOscillator()
-    chop.type = 'square'
-    chop.frequency.value = 64 // the reticle spin: near-full on/off in the references
+    chop.type = 'sine'
+    chop.frequency.value = 64 // the reticle spin
+    const pulse = c.createWaveShaper()
+    {
+      const curve = new Float32Array(256)
+      for (let i = 0; i < curve.length; i++) {
+        const x = (i / (curve.length - 1)) * 2 - 1
+        curve[i] = x > 0.4 ? 1 : 0 // ~30% duty: open only over the crest of the spin
+      }
+      pulse.curve = curve
+    }
+    const wobble = c.createOscillator()
+    wobble.type = 'sine'
+    wobble.frequency.value = 0.9 // the spin is never metronomic
+    const wobbleDepth = c.createGain()
+    wobbleDepth.gain.value = 3.5
+    wobble.connect(wobbleDepth).connect(chop.frequency)
     const depth = c.createGain()
-    depth.gain.value = 0.5
-    chop.connect(depth).connect(chopped.gain)
+    depth.gain.value = 0.88
+    chop.connect(pulse).connect(depth).connect(chopped.gain)
     const gain = c.createGain()
     gain.gain.value = 0
-    carrier.connect(chopped).connect(gain).connect(bus('weapons'))
+    carrier.connect(chopped)
+    second.connect(secondGain).connect(chopped)
+    chopped.connect(gain).connect(bus('weapons'))
     carrier.start()
+    second.start()
     chop.start()
-    seeker = { carrier, chop, depth, chopped, gain }
+    wobble.start()
+    seeker = { carrier, second, chop, depth, chopped, gain }
   }
 
   // Departure / AoA warning tone (NATOPS 2.8.2.5): a steady tone above 35°
@@ -605,12 +631,15 @@ export function audio_seeker(state: number, strength = 0): void {
   // ~2,956 Hz SEAM sing, steady, warbled at 242 Hz with a shallower swing.
   const base = lock ? 2956 : 700 + heat * 250 + Math.sin(t * 3.1) * 12 + Math.sin(t * 7.7) * 6
   seeker.carrier.frequency.setTargetAtTime(base, t, 0.03)
+  seeker.second.frequency.setTargetAtTime(base * 2, t, 0.03)
   seeker.chop.frequency.setTargetAtTime(lock ? 242 : 64, t, 0.05)
-  seeker.chopped.gain.setTargetAtTime(lock ? 0.62 : 0.5, t, 0.05)
-  seeker.depth.gain.setTargetAtTime(lock ? 0.38 : 0.5, t, 0.05)
+  // Growl: mostly closed between reticle passes (the pulse comb is the rasp).
+  // Lock: a higher floor and shallower pulse — the sing with a warble on it.
+  seeker.chopped.gain.setTargetAtTime(lock ? 0.45 : 0.12, t, 0.05)
+  seeker.depth.gain.setTargetAtTime(lock ? 0.55 : 0.88, t, 0.05)
   // A ~3 kHz sine reads far louder than 700 Hz at equal amplitude: the lock
-  // level drops accordingly.
-  seeker.gain.gain.setTargetAtTime(state === 0 ? 0 : (lock ? 0.05 : 0.05) * (0.7 + 0.5 * heat), t, 0.05)
+  // level sits lower.
+  seeker.gain.gain.setTargetAtTime(state === 0 ? 0 : (lock ? 0.09 : 0.13) * (0.7 + 0.5 * heat), t, 0.05)
 }
 
 // The RWR in the headset (#28): call every frame like the seeker — the lock

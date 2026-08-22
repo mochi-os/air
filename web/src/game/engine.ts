@@ -2529,9 +2529,9 @@ function step_amraam(m,dt){
 			const wx=wrap_axis(m.px-truth.position.x), wy=m.py-truth.position.y, wz=wrap_axis(m.pz-truth.position.z);
 			m.burst=m.least; m.closure=Math.hypot(truth.velocity.x-m.vx,truth.velocity.y-m.vy,truth.velocity.z-m.vz);
 			m.off=(prey&&prey.fwd&&prey.up&&prey.right)?{ ahead:wx*prey.fwd.x+wy*prey.fwd.y+wz*prey.fwd.z, above:wx*prey.up.x+wy*prey.up.y+wz*prey.up.z, right:wx*prey.right.x+wy*prey.right.y+wz*prey.right.z }:undefined; }
-		if(m.enemy){ if(!cheat("invulnerable")){ battle_blast(-1,{x:m.px,y:m.py,z:m.pz},battle_aim(ownship),0,battle_tick,WARHEAD.radar); }   // target -1 is the OWNSHIP (non-negative selects a fleet hulk — passing 1 resolved a hulk that does not exist and silently did nothing, #53): the wound flows through the same battle pipeline the bandit's guns use
+		if(m.enemy){ if(!cheat("invulnerable")){ battle_blast(-1,{x:m.px,y:m.py,z:m.pz},battle_aim(ownship),0,battle_tick,WARHEAD.radar,m.closure??0); }   // target -1 is the OWNSHIP (non-negative selects a fleet hulk — passing 1 resolved a hulk that does not exist and silently did nothing, #53): the wound flows through the same battle pipeline the bandit's guns use
 			explosion_at(m.px,m.py,m.pz); }
-		else if(!MULTIPLAYER&&has_enemy&&t===bandit){ const verdict=battle_blast(0,{x:m.px,y:m.py,z:m.pz},battle_aim(bandit),0,battle_tick,WARHEAD.radar);   // the 22 kg charge reaches ~1.33x the 9M's radii
+		else if(!MULTIPLAYER&&has_enemy&&t===bandit){ const verdict=battle_blast(0,{x:m.px,y:m.py,z:m.pz},battle_aim(bandit),0,battle_tick,WARHEAD.radar,m.closure??0);   // the 22 kg charge reaches ~1.33x the 9M's radii
 			if(DEV_MODE){ m.mask=verdict.mask; m.killed=verdict.kill; }
 			explosion_at(m.px,m.py,m.pz); if(verdict.kill){ own_kills++; bandit_destroy("verdict"); } }
 		else explosion_at(m.px,m.py,m.pz);
@@ -2598,14 +2598,14 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 			m.burst=near; m.closure=Math.sqrt(squared);   // the CONTINUOUS miss and closing speed, recorded (#58): the sampled Least could not tell a 4 m near-kill from an 11.9 m fringe graze, which is what forced #53 to be answered synthetically
 			m.off=(t.fwd&&t.up&&t.right)?{ ahead:-(nx*t.fwd.x+ny*t.fwd.y+nz*t.fwd.z), above:-(nx*t.up.x+ny*t.up.y+nz*t.up.z), right:-(nx*t.right.x+ny*t.right.y+nz*t.right.z) }:undefined;   // target -> burst in the TARGET's body frame: distance and bearing in one field
 			if(m.enemy){   // the bandit's own heater: target -1 is the ownship (#53 — passing 1 selected a nonexistent fleet hulk and every enemy fusing silently did nothing), and the cheat spares us as it does everywhere else
-				if(!cheat("invulnerable")){ const own=battle_blast(-1,{x:bx,y:by,z:bz},battle_aim(ownship),0,battle_tick);
+				if(!cheat("invulnerable")){ const own=battle_blast(-1,{x:bx,y:by,z:bz},battle_aim(ownship),0,battle_tick,WARHEAD.heater,m.closure??0);
 					// Fragments in OUR jet feel like gun hits: flash and thud per strike (#62)
 					if(own.impacts.length){ hit_flash=Math.min(1,hit_flash+0.2*own.impacts.length); audio_hit(Math.min(own.impacts.length,4)); } }
 				explosion_at(bx,by,bz); }
 			else if(!MULTIPLAYER&&has_enemy&&t===bandit){
 				if(fox3&&near<18){ if(DEV_MODE){ m.mask=-1; m.killed=true; }   // #27 phase 1 PLACEHOLDER: the simple PN endgame grazes a hard-evading target at 12-21 m, and the deliberately-simple round scores that as the 22 kg warhead's kill rather than growing proper guidance now — phase 2's core flight model and warhead classes replace this whole criterion
 					explosion_at(bx,by,bz); own_kills++; bandit_destroy("verdict"); }
-				else { const verdict=battle_blast(0,{x:bx,y:by,z:bz},battle_aim(bandit),0,battle_tick);
+				else { const verdict=battle_blast(0,{x:bx,y:by,z:bz},battle_aim(bandit),0,battle_tick,WARHEAD.heater,m.closure??0);
 					if(DEV_MODE){ m.mask=verdict.mask; m.killed=verdict.kill; }
 					explosion_at(bx,by,bz);
 					// The evidence a real pilot reads (#62): fragments CONNECTING with the airframe —
@@ -4122,7 +4122,7 @@ if(DEV_MODE) (globalThis as any).dev_wound=function(volleys,rounds,side){ if(!ha
 let growl_force=null;
 if(DEV_MODE) (globalThis as any).dev_growl=(state,strength,seconds)=>{ growl_force={state:+state||0,strength:+strength||0,until:sim_time+(+seconds||6)}; return growl_force; };   // #59: audition the seeker voice from the console — dev_growl(1,0.2) search cold, dev_growl(2,1) lock point-blank burner
 if(DEV_MODE) (globalThis as any).dev_audio=()=>audio_state();   // #55: the context's live state, for the strict-autoplay boot test
-if(DEV_MODE) (globalThis as any).dev_blast=function(hulk,distance,trials,klass,way){   // #53: detonate the real warhead at an anchored miss distance against either LIVE hulk, pristine state per trial — the damage-v-distance curve, measured on the wiring under suspicion
+if(DEV_MODE) (globalThis as any).dev_blast=function(hulk,distance,trials,klass,way,closure){   // #53: detonate the real warhead at an anchored miss distance against either LIVE hulk, pristine state per trial — the damage-v-distance curve, measured on the wiring under suspicion
 	const own=hulk===1; if(!own&&(!has_enemy||!bandit.harm||!bandit.group.visible)) return null;
 	const t=own?ownship:bandit, d=+distance||9, n=Math.max(1,trials|0||20), cls=+klass||1;
 	const axes={ right:own?ownship.right:(bandit.right||world_up.clone().cross(bandit.fwd).normalize()), ahead:t.fwd, behind:t.fwd.clone().negate(), above:own?ownship.up:(bandit.up||world_up) };
@@ -4131,7 +4131,7 @@ if(DEV_MODE) (globalThis as any).dev_blast=function(hulk,distance,trials,klass,w
 	for(let k=0;k<n;k++){
 		battle_progress(0.85,900000+k*2,true,0);   // pristine both hulks, ownship flight damage included
 		const p={x:t.pos.x+along.x*d, y:t.pos.y+along.y*d, z:t.pos.z+along.z*d};
-		const r=battle_blast(own?-1:0,p,battle_aim(t),0,900001+k*2,cls);
+		const r=battle_blast(own?-1:0,p,battle_aim(t),0,900001+k*2,cls,+closure||0);
 		fragments+=r.impacts.length;   // #62: the traced hit points now cross the boundary — the visible-evidence channel
 		if(r.kill) kills++; else if(r.mask) wounds++; }
 	battle_progress(0.85,900900,true,0);   // leave the mission pristine
