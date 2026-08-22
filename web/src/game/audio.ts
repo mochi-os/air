@@ -537,11 +537,18 @@ export function audio_hit(count: number): void {
   play('hit', Math.min(0.8, 0.3 + count * 0.1))
 }
 
-// Explosions dull and quieten with range, and arrive late — sound is slow.
+// Detonation acoustics (#66): kilograms of high explosive inside 50 m is a
+// sharp CRACK and a felt thump through the airframe; by 600 m it is a dull
+// thud at the edge of the cockpit ambient, and beyond that nothing survives
+// canopy, engines and helmet. Sound is slow, so it arrives late.
 export function audio_explosion(distance: number): void {
-  const range = Math.max(0, Math.min(1, 1 - distance / 4000))
-  if (range <= 0) return
-  play('explosion', 0.25 + 0.75 * range * range, 400 + 5600 * range * range, distance / 343)
+  if (distance > 700) return
+  const range = Math.max(0, Math.min(1, 1 - distance / 700))
+  // Only a genuinely close burst keeps the impulsive edge: the lowpass opens
+  // toward the raw buffer inside 150 m and dulls fast beyond it.
+  const crack = Math.max(0, Math.min(1, 1 - distance / 150))
+  play('explosion', 0.3 + 0.7 * range * range, 500 + 7500 * crack + 2500 * range * range, distance / 343)
+  if (crack > 0) play('hit', 0.5 * crack, undefined, distance / 343) // the blast overpressure felt through the structure, on the same channel as taking rounds
 }
 
 export function audio_launch(): void {
