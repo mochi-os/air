@@ -2598,14 +2598,22 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 			m.burst=near; m.closure=Math.sqrt(squared);   // the CONTINUOUS miss and closing speed, recorded (#58): the sampled Least could not tell a 4 m near-kill from an 11.9 m fringe graze, which is what forced #53 to be answered synthetically
 			m.off=(t.fwd&&t.up&&t.right)?{ ahead:-(nx*t.fwd.x+ny*t.fwd.y+nz*t.fwd.z), above:-(nx*t.up.x+ny*t.up.y+nz*t.up.z), right:-(nx*t.right.x+ny*t.right.y+nz*t.right.z) }:undefined;   // target -> burst in the TARGET's body frame: distance and bearing in one field
 			if(m.enemy){   // the bandit's own heater: target -1 is the ownship (#53 — passing 1 selected a nonexistent fleet hulk and every enemy fusing silently did nothing), and the cheat spares us as it does everywhere else
-				if(!cheat("invulnerable")) battle_blast(-1,{x:bx,y:by,z:bz},battle_aim(ownship),0,battle_tick);
+				if(!cheat("invulnerable")){ const own=battle_blast(-1,{x:bx,y:by,z:bz},battle_aim(ownship),0,battle_tick);
+					// Fragments in OUR jet feel like gun hits: flash and thud per strike (#62)
+					if(own.impacts.length){ hit_flash=Math.min(1,hit_flash+0.2*own.impacts.length); audio_hit(Math.min(own.impacts.length,4)); } }
 				explosion_at(bx,by,bz); }
 			else if(!MULTIPLAYER&&has_enemy&&t===bandit){
 				if(fox3&&near<18){ if(DEV_MODE){ m.mask=-1; m.killed=true; }   // #27 phase 1 PLACEHOLDER: the simple PN endgame grazes a hard-evading target at 12-21 m, and the deliberately-simple round scores that as the 22 kg warhead's kill rather than growing proper guidance now — phase 2's core flight model and warhead classes replace this whole criterion
 					explosion_at(bx,by,bz); own_kills++; bandit_destroy("verdict"); }
 				else { const verdict=battle_blast(0,{x:bx,y:by,z:bz},battle_aim(bandit),0,battle_tick);
 					if(DEV_MODE){ m.mask=verdict.mask; m.killed=verdict.kill; }
-					explosion_at(bx,by,bz); if(verdict.kill){ own_kills++; bandit_destroy("verdict"); } } }
+					explosion_at(bx,by,bz);
+					// The evidence a real pilot reads (#62): fragments CONNECTING with the airframe —
+					// sparks and marks at the traced hit points, carried on the jet. A burst he flies
+					// through unmarked looks exactly like the miss that it is.
+					for(const p of verdict.impacts){ const w=_v.set(p.x,p.y,p.z).applyQuaternion(bandit.group.quaternion).add(bandit.group.position);
+						hit_sparks(w.x,w.y,w.z,bandit.velx??bandit.fwd.x*bandit.speed,bandit.vely??bandit.fwd.y*bandit.speed,bandit.velz??bandit.fwd.z*bandit.speed,bandit,p); }
+					if(verdict.kill){ own_kills++; bandit_destroy("verdict"); } } }
 			post("fuse");
 			continue; } }
 	let ax=0, ay=0, az=0, guided=false;
@@ -4119,14 +4127,15 @@ if(DEV_MODE) (globalThis as any).dev_blast=function(hulk,distance,trials,klass,w
 	const t=own?ownship:bandit, d=+distance||9, n=Math.max(1,trials|0||20), cls=+klass||1;
 	const axes={ right:own?ownship.right:(bandit.right||world_up.clone().cross(bandit.fwd).normalize()), ahead:t.fwd, behind:t.fwd.clone().negate(), above:own?ownship.up:(bandit.up||world_up) };
 	const along=axes[way&&axes[way]?way:"right"];
-	let kills=0, wounds=0;
+	let kills=0, wounds=0, fragments=0;
 	for(let k=0;k<n;k++){
 		battle_progress(0.85,900000+k*2,true,0);   // pristine both hulks, ownship flight damage included
 		const p={x:t.pos.x+along.x*d, y:t.pos.y+along.y*d, z:t.pos.z+along.z*d};
 		const r=battle_blast(own?-1:0,p,battle_aim(t),0,900001+k*2,cls);
+		fragments+=r.impacts.length;   // #62: the traced hit points now cross the boundary — the visible-evidence channel
 		if(r.kill) kills++; else if(r.mask) wounds++; }
 	battle_progress(0.85,900900,true,0);   // leave the mission pristine
-	return { hulk:own?"ownship":"bandit", distance:d, trials:n, kills, wounds };   // i18n-format-ok: developer probe
+	return { hulk:own?"ownship":"bandit", distance:d, trials:n, kills, wounds, fragments };   // i18n-format-ok: developer probe
 };
 if(DEV_MODE) (globalThis as any).dev_panels=()=>{ const read=(st)=>{ if(!st||!st.group) return null; const out={}; for(const p of PANELS){ const n=st.group.getObjectByName(p.node); out[p.node]=n?n.visible:null; } return out; };
 	const words=last_out, gone={}; if(words) for(const p of PANELS){ let g=true; for(let e=p.first;e<p.first+4;e++) if((words[STATE.element+e]??0)<0.99) g=false; gone[p.node]=g; }
