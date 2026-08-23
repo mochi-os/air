@@ -290,17 +290,19 @@ function build_water_detail(){
 const col_deep2=new THREE.Color(0x11424e);
 const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_deep2:{value:col_deep2}, u_shallow:{value:col_shallow}, u_sky:{value:sky_horizon}, u_fog_density:{value:0.000060},
-		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)}, u_seafog:{value:new THREE.Color(0xa7bccc)},
+		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)}, u_seafog:{value:new THREE.Color(0xa7bccc)}, u_mesh:{value:new THREE.Vector2(2.71,0.0245)},
 		u_detail:{value:build_water_detail()}, u_wind:{value:0.75}, u_rough:{value:0.11}, u_glint:{value:60.0}, u_sss:{value:new THREE.Color(0x16483f)},   // wind 0..1 scales caps+roughness; glint is HDR, soft-kneed in-shader (custom shaders bypass the renderer's ACES pass)
 		u_cloudnoise:{value:null}, u_cloud_on:{value:0.0}, u_cloud_cover:{value:0.42}, u_cloud_mid:{value:1500.0}, u_cloud_flat:{value:0.0} },   // the SAME 3D noise field the cloud raymarcher samples — shadows land under the rendered clouds
-	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
+	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform vec2 u_mesh; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
 		const vec4 W0=vec4(-0.12,-0.99,420.0,60.0); const vec4 W1=vec4(0.85,0.55,233.0,44.0); const vec4 W2=vec4(0.95,-0.05,117.0,38.0); const vec4 W3=vec4(0.75,0.45,59.0,24.0);   // W0 is the long NW GROUND SWELL crossing the trades at ~115 degrees (Midway winter climatology: Aleutian-storm swell vs ENE trade wind-sea) — ONE crossing train of huge wavelength reads as a real crossing sea; W1-W3 stay clustered about the wind (a four-way cross-sea is physically absurd and its interference lattice is a moving quilt no texture fix can hide). Speeds (w.w = 2*pi*m/s): W0/W1 run at ~70% of GROUP velocity — full phase speed always reads too fast in a sum-of-sines sea (no group structure: every crest lives forever)
 		float wave(vec2 p,vec4 w,float amp,out vec2 grad){ vec2 dir=normalize(w.xy); float k=6.2831853/w.z; float ph=dot(dir,p)*k-u_time*(w.w/w.z); grad=dir*(k*amp*cos(ph)); return amp*sin(ph); }   // sin(kx - wt) propagates ALONG dir (downwind): the old +wt sign sent every swell racing UPWIND — a 420 m wave sweeping against the wind at 14 m/s, under whitecap tails built to trail downwind-moving crests
+		float fit(float gap,float span){ return 1.0-smoothstep(span*0.25,span*0.5,gap); }   // sampling honesty (#71): a wave the LOCAL vertex spacing cannot carry (fewer than ~2-4 vertices per wavelength) folds into a gear-amplified beat lattice that races over the sea with camera motion — the moire. Fade each train out where the camera-centred grid gets coarser than its wavelength supports; the texture octaves own those scales beyond
 		void main(){ vec4 wp=modelMatrix*vec4(position,1.0); vec2 xz=wp.xz; vec2 g,gt=vec2(0.0); float h=0.0;
+		float ring=length(position.xz); float gap=max(u_mesh.x*sqrt(ring),u_mesh.y*ring);   // local grid spacing of the quadratic polar disc: radial 2*sqrt(r*R)/rings, azimuthal 2*pi*r/sectors
 		float calm=0.0; if(u_water_on>0.5){ vec2 wuv=clamp((xz+u_water_half)/(2.0*u_water_half),0.0,1.0); calm=texture2D(u_lagoon,wuv).r; }   // atoll interior (reef flat + lagoon incl. the deep basin) = calm
 		v_calm=calm; float ws=mix(1.0,0.12,calm);   // damp wave amplitude inside the reef
-		h+=wave(xz,W0,2.0,g);gt+=g; h+=wave(xz,W1,1.1,g);gt+=g;
-		h+=wave(xz,W2,0.5,g); h+=wave(xz,W3,0.25,g);   // the short waves DISPLACE but do not shade: their slope interference is the moving quilt; the texture octaves own shading at those scales
+		h+=wave(xz,W0,2.0*fit(gap,W0.z),g);gt+=g; h+=wave(xz,W1,1.1*fit(gap,W1.z),g);gt+=g;
+		h+=wave(xz,W2,0.5*fit(gap,W2.z),g); h+=wave(xz,W3,0.25*fit(gap,W3.z),g);   // the short waves DISPLACE but do not shade: their slope interference is the moving quilt; the texture octaves own shading at those scales
 		h*=ws; gt*=ws;
 		wp.y+=h; v_height=h; v_normal=normalize(vec3(-gt.x,1.0,-gt.y)); v_world=wp.xyz; gl_Position=projectionMatrix*viewMatrix*wp; }`,
 	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_sky,u_water_tint,u_sss,u_seafog; uniform float u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_rough,u_glint,u_cloud_on,u_cloud_cover,u_cloud_mid,u_cloud_flat; uniform sampler2D u_water,u_detail; uniform highp sampler3D u_cloudnoise; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm;
@@ -319,9 +321,13 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			vec2 i=floor(t), f=fract(t);
 			float su=step(1.0,f.x+f.y);
 			vec3 w=mix(vec3(1.0-f.x-f.y,f.x,f.y), vec3(f.x+f.y-1.0,1.0-f.y,1.0-f.x), su);
-			vec2 a=texture2D(u_detail,uv+hashcell(i+su*vec2(1.0))+drift).rg-0.5;
-			vec2 b=texture2D(u_detail,uv+hashcell(i+vec2(1.0,0.0))+drift).rg-0.5;
-			vec2 c=texture2D(u_detail,uv+hashcell(i+vec2(0.0,1.0))+drift).rg-0.5;
+			// LOD from the CONTINUOUS uv (Heitz): hashcell jumps O(1) at every lattice edge, and
+			// letting it into the implicit derivatives collapses those pixels to the tiniest mip —
+			// a world-static grid of glassy hairlines racing over the sea at any grazing view.
+			vec2 dx=dFdx(uv), dy=dFdy(uv);
+			vec2 a=textureGrad(u_detail,uv+hashcell(i+su*vec2(1.0))+drift,dx,dy).rg-0.5;
+			vec2 b=textureGrad(u_detail,uv+hashcell(i+vec2(1.0,0.0))+drift,dx,dy).rg-0.5;
+			vec2 c=textureGrad(u_detail,uv+hashcell(i+vec2(0.0,1.0))+drift,dx,dy).rg-0.5;
 			return (w.x*a+w.y*b+w.z*c)*inversesqrt(dot(w,w))*2.0;
 		}
 		float remap(float v,float a,float b,float c,float d){ return c+clamp((v-a)/(b-a),0.0,1.0)*(d-c); }
@@ -449,6 +455,7 @@ function build_ocean(seg){ if(ocean){scene.remove(ocean);ocean.geometry.dispose(
 			idx.push(a0+j, b0+j2, b0+j); idx.push(a0+j, a0+j2, b0+j2); } }
 	const geo=new THREE.BufferGeometry();
 	geo.setAttribute("position", new THREE.BufferAttribute(pos,3)); geo.setIndex(idx);
+	ocean_mat.uniforms.u_mesh.value.set(2*Math.sqrt(R)/rings, 2*Math.PI/sectors);   // local vertex spacing coefficients for the wave sampling fade: radial d/di of R*(i/rings)^2 = 2*sqrt(r*R)/rings, azimuthal 2*pi*r/sectors
 	ocean=new THREE.Mesh(geo,ocean_mat); ocean.receiveShadow=true; ocean.frustumCulled=false; scene.add(ocean); }
 build_ocean(cfg.ocean_segments);
 
@@ -4316,7 +4323,7 @@ if(DEV_MODE) (globalThis as any).dev_hook=()=>{   // the actual claw (aft-most l
 	if(base) base.traverse((o:any)=>{ if(o.isMesh&&o.geometry?.attributes?.position){ const pos=o.geometry.attributes.position; for(let i=0;i<pos.count;i++){ v.fromBufferAttribute(pos,i).applyMatrix4(o.matrixWorld); if(!claw||v.y<claw.y) claw={x:v.x,y:v.y,z:v.z}; } } });
 	let cl=null; if(claw){ const local=new THREE.Vector3(claw.x,claw.y,claw.z); ownship.group.worldToLocal(local); cl={x:+local.x.toFixed(2),y:+local.y.toFixed(2),z:+local.z.toFixed(2)}; }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	return JSON.stringify({claw:claw?{x:+claw.x.toFixed(2),y:+claw.y.toFixed(2),z:+claw.z.toFixed(2)}:null, clawModel:cl, trapped:!!ownship.trapped, wire:ownship.wire||0}); };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
-if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, msl:ownship.msl, amraam:Math.max(0,ownship.amraam|0),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, y:+ownship.pos.y.toFixed(2), v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, banditreheat:has_enemy?+(bandit.reheat??0).toFixed(2):-1, banditspeed:has_enemy?+(bandit.speed*1.944).toFixed(0):-1,   // #69: the ACHIEVED reheat the wasm brain's command produced, and the speed it bought msl:ownship.msl, amraam:Math.max(0,ownship.amraam|0),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	fleet:[...remotes.values()].map(r=>({ loadout:!!r.loadout, racks:r.racks&&r.racks.nodes?Object.fromEntries(Object.entries(r.racks.nodes).map(([k,n])=>[k,!!(n as any).visible])):null })),   // each remote's drawn store nodes — MP stores-rendering verification (#27)
 	nearest:(()=>{ let best=null;   // #27: the closest remote's geometry off our nose — how an MP harness (and a bot, later) knows where to point
 		for(const st of remotes.values()){ if(!st.pos) continue;   // geometry only: a remote too far to DRAW is still a contact worth pointing at
