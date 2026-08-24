@@ -70,6 +70,17 @@ msgstr "{0} lb ngaphezu kwesisindo esikhulu sokwethulwa"
 msgid "{0} option preview"
 msgstr "Ukubuka kuqala kwenketho {0}"
 
+#. placeholder {0}: pretty(taken.chord)
+#: src/components/SettingsDialog.tsx:766
+msgid "{0} was already taken, and that control is now unbound."
+msgstr ""
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(lost.label)
+#: src/components/SettingsDialog.tsx:762
+msgid "{0} was on {1}, which is now unbound."
+msgstr ""
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
 #: src/components/Multiplayer.tsx:556
@@ -220,13 +231,13 @@ msgstr "I-akhawunti iqinisekisiwe"
 msgid "Ace"
 msgstr "Ingcweti"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "Khiya ithagethi"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "Imodi yokubamba"
 
@@ -322,7 +333,7 @@ msgstr "Iyengeza..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Lungisa ukubukeka nesakhiwo ukuze kuhambelane nezintandokazi zakho."
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:986
 msgid "Afterburner"
 msgstr "I-afterburner"
 
@@ -330,7 +341,7 @@ msgstr "I-afterburner"
 msgid "AI"
 msgstr "I-AI"
 
-#: src/components/SettingsDialog.tsx:92
+#: src/components/SettingsDialog.tsx:97
 msgid "Aircraft"
 msgstr "Ibhanoyi"
 
@@ -384,8 +395,8 @@ msgstr "Noma ubani ongenile"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Konke okubhalisele lo mfudlana kuzoyeka ukukuthola. Ungakopisha i-URL entsha ngemva kwalokho."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "Amandla okusondela (ATC)"
 
@@ -414,8 +425,8 @@ msgstr "Uqinisekile ufuna ukuphuma? Kuzodingeka ungene futhi ukuze ufinyelele i-
 msgid "Armament & Stores"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "Ihhuku lokumisa"
 
@@ -439,7 +450,7 @@ msgstr "Namathisela amafayela ombono"
 msgid "Attach reply files"
 msgstr "Namathisela amafayela empendulo"
 
-#: src/components/SettingsDialog.tsx:594
+#: src/components/SettingsDialog.tsx:632
 msgid "Audio Mixer Channels"
 msgstr ""
 
@@ -468,11 +479,12 @@ msgstr "I-avatar ka-{name}"
 msgid "Avionics, HOTAS & audio"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:441
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:474
 msgid "Axis {i}"
 msgstr "I-axis {i}"
 
-#: src/components/SettingsDialog.tsx:391
+#: src/components/SettingsDialog.tsx:424
 msgid "Axis Calibration & Mapping"
 msgstr ""
 
@@ -491,7 +503,7 @@ msgstr "Emuva"
 msgid "Back to home"
 msgstr "Buyela ekhaya"
 
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Balanced flight"
 msgstr ""
 
@@ -523,7 +535,7 @@ msgstr "Ukuntweza okungcono kakhulu (izinjini zicimile)"
 msgid "Best sustained turn speed"
 msgstr "Isivinini esingcono sokujika okuqhubekayo"
 
-#: src/components/SettingsDialog.tsx:554
+#: src/components/SettingsDialog.tsx:592
 msgid "Betty & RWR Alerts"
 msgstr ""
 
@@ -594,11 +606,12 @@ msgstr "PHENDUKA UMA USULUNGILE"
 msgid "Browser notifications"
 msgstr "Izaziso zebhrawuza"
 
-#: src/components/SettingsDialog.tsx:515
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:550
 msgid "Button {i}"
 msgstr "Inkinobho {i}"
 
-#: src/components/SettingsDialog.tsx:481
+#: src/components/SettingsDialog.tsx:516
 msgid "Button Mappings"
 msgstr ""
 
@@ -615,15 +628,15 @@ msgid "CALL THE BALL"
 msgstr "MEMEZELA IBHOLA"
 
 #: src/components/Multiplayer.tsx:311
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:1034
 msgid "Callsign"
 msgstr "Igama lokubiza"
 
-#: src/components/SettingsDialog.tsx:711
+#: src/components/SettingsDialog.tsx:843
 msgid "Camera distance"
 msgstr "Ibanga lekhamera"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Camera unavailable"
 msgstr "Ikhamera ayitholakali"
 
@@ -644,7 +657,7 @@ msgstr "Ikhamera ayitholakali"
 #: src/components/GameCanvas.tsx:522
 #: src/components/Multiplayer.tsx:282
 #: src/components/Multiplayer.tsx:585
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Cancel"
 msgstr "Khansela"
 
@@ -656,11 +669,11 @@ msgstr "Khansela umbono"
 msgid "Cancel reply"
 msgstr "Khansela impendulo"
 
-#: src/components/SettingsDialog.tsx:552
+#: src/components/SettingsDialog.tsx:590
 msgid "Cannons & Ordnance"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "I-canopy"
 
@@ -669,7 +682,7 @@ msgstr "I-canopy"
 msgid "Caption"
 msgstr "Umbhalo ochazayo"
 
-#: src/components/SettingsDialog.tsx:553
+#: src/components/SettingsDialog.tsx:591
 msgid "Carrier & Ambient"
 msgstr ""
 
@@ -726,11 +739,11 @@ msgstr "Umbono wokujaha:"
 msgid "chat"
 msgstr "ingxoxo"
 
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "Ingxoxo"
 
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "Ingxoxo nabo bonke"
 
@@ -783,6 +796,7 @@ msgstr "Khetha ulimi"
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
 #: src/components/Multiplayer.tsx:372
+#: src/components/SettingsDialog.tsx:677
 msgid "Clear"
 msgstr "Sula"
 
@@ -900,7 +914,7 @@ msgstr "Izenzo zokuphawula"
 msgid "Comments"
 msgstr "Imibono"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:99
 msgid "Communication"
 msgstr "Ukuxhumana"
 
@@ -995,7 +1009,7 @@ msgstr "Akukwazekanga ukudala umdlalo"
 msgid "Could not load this document. Please try again later."
 msgstr "Akukwazanga ukulayisha le dokhumenti. Sicela uzame futhi kamuva."
 
-#: src/components/SettingsDialog.tsx:282
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "Ayikwazanga ukulondoloza iphrofayela"
 
@@ -1024,8 +1038,8 @@ msgstr "Ayikwazanga ukuqala ukuqinisekiswa kabusha. Sicela uzame futhi."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Ayikwazanga ukuqinisekisa ngaleyo akhawunti. Sicela uzame futhi."
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "Izinyathelo zokuvimbela"
 
@@ -1100,8 +1114,8 @@ msgstr "Okuzenzelwe"
 msgid "CUT"
 msgstr "INGOZI"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "Shintsha umbono"
 
@@ -1225,8 +1239,8 @@ msgstr "Ibhujiswe ngumlilo"
 msgid "Details Panel"
 msgstr "Iphaneli Yemininingwane"
 
-#: src/components/SettingsDialog.tsx:470
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:503
+#: src/components/SettingsDialog.tsx:567
 msgid "Detect"
 msgstr "Thola"
 
@@ -1265,7 +1279,7 @@ msgstr "Lahla"
 msgid "Discard draft?"
 msgstr "Lahla uhlaka?"
 
-#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:387
 msgid "disconnected"
 msgstr "ayixhunyiwe"
 
@@ -1278,11 +1292,12 @@ msgstr "Kunqanyuliwe"
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: src/components/MissionSetup.tsx:1258
+#: src/components/SettingsDialog.tsx:773
 msgid "Dismiss"
 msgstr "Cashisa"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "Isiphindi sesibonisi"
 
@@ -1290,13 +1305,13 @@ msgstr "Isiphindi sesibonisi"
 msgid "Displays the mobile sidebar."
 msgstr "Ibonisa ibha eseceleni yefoni."
 
-#: src/components/SettingsDialog.tsx:842
+#: src/components/SettingsDialog.tsx:974
 msgid "Distance LOD"
 msgstr "I-LOD yebanga"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:985
+#: src/components/SettingsDialog.tsx:1117
 msgid "Done"
 msgstr "Kwenziwe"
 
@@ -1330,7 +1345,7 @@ msgstr "Iphinda kabili"
 msgid "Duration"
 msgstr "Ubude besikhathi"
 
-#: src/components/SettingsDialog.tsx:836
+#: src/components/SettingsDialog.tsx:968
 msgid "Dynamic resolution"
 msgstr "Isixazululo esiguquguqukayo"
 
@@ -1381,15 +1396,15 @@ msgstr "Hlela ikhadi elikhethiwe"
 msgid "Edit view"
 msgstr "Hlela umbukiso"
 
-#: src/components/SettingsDialog.tsx:830
+#: src/components/SettingsDialog.tsx:962
 msgid "Effects & Toggles"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:941
 msgid "Effects detail"
 msgstr "Imininingwane yemiphumela"
 
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "Ukukhishwa"
 
@@ -1409,8 +1424,8 @@ msgstr "Ikhodi ye-imeyili"
 msgid "EMERG JETT"
 msgstr "UKULAHLA OKUPHUTHUMAYO"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "Ukulahla okuphuthumayo (bamba)"
 
@@ -1431,11 +1446,11 @@ msgstr "NGIYAHLASELA"
 msgid "Engagement"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:550
+#: src/components/SettingsDialog.tsx:588
 msgid "Engine & Afterburner"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "Enhanced visuals"
 msgstr ""
 
@@ -1482,16 +1497,16 @@ msgstr "Nweba"
 msgid "Expand sidebar"
 msgstr "Nweba ibha eseceleni"
 
-#: src/components/SettingsDialog.tsx:370
+#: src/components/SettingsDialog.tsx:402
 msgid "Export"
 msgstr "Thumela ngaphandle"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "Ama-flaps phandle"
 
-#: src/components/SettingsDialog.tsx:801
+#: src/components/SettingsDialog.tsx:933
 msgid "Exterior detail"
 msgstr "Imininingwane yangaphandle"
 
@@ -1623,12 +1638,12 @@ msgstr "Kuqediwe"
 msgid "fire"
 msgstr "dubula"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "Dubula ngesikhali"
 
-#: src/components/SettingsDialog.tsx:704
+#: src/components/SettingsDialog.tsx:836
 msgid "Fixed Flight Keys"
 msgstr ""
 
@@ -1660,7 +1675,7 @@ msgstr "Isicaba"
 msgid "Flew into the sea"
 msgstr "Iwele olwandle"
 
-#: src/components/SettingsDialog.tsx:89
+#: src/components/SettingsDialog.tsx:94
 msgid "Flight"
 msgstr "Ukundiza"
 
@@ -1701,7 +1716,7 @@ msgstr "Ndiza"
 msgid "Fly again"
 msgstr "Ndiza futhi"
 
-#: src/components/SettingsDialog.tsx:866
+#: src/components/SettingsDialog.tsx:998
 msgid "Framerate counter"
 msgstr ""
 
@@ -1751,7 +1766,7 @@ msgstr "UKUVUZA KWAMAFUTHA"
 msgid "FUEL LO"
 msgstr "UPHETHILOLI UPHANSI"
 
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "Iprobhu kaphethiloli"
 
@@ -1772,7 +1787,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Umzimba wendiza"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Gain"
 msgstr "Ukukhulisa"
 
@@ -1784,7 +1799,7 @@ msgstr "Igiya"
 msgid "GEAR"
 msgstr "IGIYA"
 
-#: src/components/SettingsDialog.tsx:994
+#: src/components/SettingsDialog.tsx:1126
 msgid "General"
 msgstr "Okujwayelekile"
 
@@ -1814,11 +1829,11 @@ msgstr "Yiya ekhasini {pageNumber}"
 msgid "Go to previous page"
 msgstr "Yiya ekhasini elingaphambilini"
 
-#: src/components/SettingsDialog.tsx:998
+#: src/components/SettingsDialog.tsx:1130
 msgid "Graphics"
 msgstr "Imidwebo"
 
-#: src/components/SettingsDialog.tsx:761
+#: src/components/SettingsDialog.tsx:893
 msgid "Graphics Preset"
 msgstr ""
 
@@ -1856,11 +1871,11 @@ msgstr "Izibhamu ezinkulu kuphela"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Ukusheshisa kwemidwebo kwehadiwe kuvaliwe — hlola izilungiselelo zebhrawuza noma abashayeli bemidwebo."
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head"
 msgstr "Ikhanda"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head tracking"
 msgstr "Ukulandelela ikhanda"
 
@@ -1876,7 +1891,7 @@ msgstr "Fihla"
 msgid "Hide password"
 msgstr "Fihla iphasiwedi"
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "High"
 msgstr "Okuphezulu"
 
@@ -1910,11 +1925,11 @@ msgstr "IHUKU"
 msgid "Hot"
 msgstr "Okushisayo"
 
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "Umthombo wokuphakama we-HUD"
 
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "Yenza i-HUD ibe lula"
 
@@ -1931,7 +1946,7 @@ msgstr "Isibonisi sesithombe: {0}"
 msgid "Imperial"
 msgstr "Yobukhosi"
 
-#: src/components/SettingsDialog.tsx:374
+#: src/components/SettingsDialog.tsx:406
 msgid "Import"
 msgstr "Ngenisa"
 
@@ -1952,7 +1967,7 @@ msgstr "I-avatar yezinhlamvu zokuqala"
 msgid "Initials avatar for {name}"
 msgstr "I-avatar yezinhlamvu zokuqala ka-{name}"
 
-#: src/components/SettingsDialog.tsx:336
+#: src/components/SettingsDialog.tsx:368
 msgid "Input Hardware"
 msgstr ""
 
@@ -1980,7 +1995,7 @@ msgstr "Ithegi engavumelekile: izinhlamvu, izinombolo, izikhala, ohayifeni nemid
 msgid "Invalid verification code"
 msgstr "Ikhodi yokuqinisekisa engalungile"
 
-#: src/components/SettingsDialog.tsx:382
+#: src/components/SettingsDialog.tsx:414
 msgid "Invert pitch axis"
 msgstr ""
 
@@ -2002,13 +2017,13 @@ msgstr "Akalimali (abadlali abangabantu kuphela)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Kubonakala sengathi ikhasi olifunayo <0/>alikho noma lisusiwe."
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "Isiphazamisi"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "Lahla amathangi"
 
@@ -2043,7 +2058,7 @@ msgstr "Umlo wababili — 1v1, obulala kuqala uyanqoba"
 msgid "Joust against bot"
 msgstr "Umlo ngokumelene nebot"
 
-#: src/components/SettingsDialog.tsx:1006
+#: src/components/SettingsDialog.tsx:1138
 msgid "Joystick"
 msgstr "I-joystick"
 
@@ -2059,7 +2074,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Izinqamuleli zekhibhodi"
 
-#: src/components/SettingsDialog.tsx:1010
+#: src/components/SettingsDialog.tsx:1142
 msgid "Keys"
 msgstr "Okhiye"
 
@@ -2088,8 +2103,8 @@ msgstr "UMLILO INJ SOBUNXELE"
 msgid "L GEAR"
 msgstr "IGIYA SOBUNXELE"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "Amasondo okuhlala"
 
@@ -2106,8 +2121,8 @@ msgstr "SEKWEPHUZILE"
 msgid "Lateral asymmetry"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "Ndulula (ikhathaphali)"
 
@@ -2172,8 +2187,8 @@ msgstr "Okukhanyayo"
 msgid "lights"
 msgstr "izibani"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "Izibani"
 
@@ -2233,35 +2248,35 @@ msgstr "Uphume ngempumelelo"
 msgid "Logging out…"
 msgstr "Iyaphuma…"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:112
 msgid "Look"
 msgstr "Buka"
 
-#: src/components/SettingsDialog.tsx:710
+#: src/components/SettingsDialog.tsx:842
 msgid "Look / orbit"
 msgstr "Buka / zungeza"
 
-#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "Buka okuqondiwe"
 
-#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "Buka phansi"
 
-#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "Buka kwesokunxele"
 
-#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "Buka kwesokudla"
 
-#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "Buka phezulu"
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Low"
 msgstr "Okuphansi"
 
@@ -2291,7 +2306,7 @@ msgstr "Mathupha"
 msgid "map"
 msgstr "imephu"
 
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "Imephu"
 
@@ -2301,16 +2316,16 @@ msgstr "Imephu"
 msgid "Mark all as read"
 msgstr "Maka konke njengokufundiwe"
 
-#: src/components/SettingsDialog.tsx:569
+#: src/components/SettingsDialog.tsx:607
 msgid "Master Audio Output"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:580
+#: src/components/SettingsDialog.tsx:618
 msgid "Master Bus"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:549
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:587
+#: src/components/SettingsDialog.tsx:614
 msgid "Master Volume"
 msgstr ""
 
@@ -2322,7 +2337,7 @@ msgstr "Uhlobo lomdlalo"
 msgid "Matches"
 msgstr "Imidlalo"
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Max fidelity"
 msgstr ""
 
@@ -2335,7 +2350,7 @@ msgid "MCP server"
 msgstr "Iseva ye-MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Medium"
 msgstr "Maphakathi"
 
@@ -2344,8 +2359,8 @@ msgid "menu"
 msgstr "imenyu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "Imenyu"
 
@@ -2428,7 +2443,7 @@ msgstr "UMsombuluko"
 msgid "More options"
 msgstr "Eziningi izinketho"
 
-#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:503
 msgid "Move…"
 msgstr ""
 
@@ -2502,6 +2517,10 @@ msgstr "Awekho amazwana okwamanje"
 msgid "No connected accounts"
 msgstr "Awekho ama-akhawunti axhumeneyo"
 
+#: src/components/SettingsDialog.tsx:692
+msgid "No control matches “{query}”."
+msgstr ""
+
 #: src/components/MatchHistory.tsx:125
 msgid "No flights yet"
 msgstr "Akukho kundiza okwamanje"
@@ -2518,7 +2537,7 @@ msgstr "Awekho amaqembu atholakalayo"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Azikho izinhlobo zezinto ezingadalwa okwamanje. Dala izinto zomzali ezidingekayo kuqala."
 
-#: src/components/SettingsDialog.tsx:362
+#: src/components/SettingsDialog.tsx:394
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Ayikho i-joystick etholakele — cindezela noma iyiphi inkinobho kuyo ukuze uyivuse."
 
@@ -2621,9 +2640,9 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:120
 #: src/components/MissionSetup.tsx:284
 #: src/components/MissionSetup.tsx:1077
-#: src/components/SettingsDialog.tsx:435
-#: src/components/SettingsDialog.tsx:509
-#: src/components/SettingsDialog.tsx:687
+#: src/components/SettingsDialog.tsx:468
+#: src/components/SettingsDialog.tsx:544
+#: src/components/SettingsDialog.tsx:817
 msgid "None"
 msgstr "Lutho"
 
@@ -2635,7 +2654,7 @@ msgstr "Okuvamile"
 msgid "NOSE GEAR"
 msgstr "IGIYA LEKHALA"
 
-#: src/components/SettingsDialog.tsx:295
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "Akulona iphrofayela yejoystick"
 
@@ -2681,7 +2700,7 @@ msgstr "Umqalayo"
 msgid "Number"
 msgstr "Inombolo"
 
-#: src/components/SettingsDialog.tsx:817
+#: src/components/SettingsDialog.tsx:949
 msgid "Ocean detail"
 msgstr "Imininingwane yolwandle"
 
@@ -2789,8 +2808,8 @@ msgstr "jikeleza"
 msgid "Other"
 msgstr "Okunye"
 
-#: src/components/SettingsDialog.tsx:142
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "Ukweqa umkhawulo we-G"
 
@@ -2815,7 +2834,7 @@ msgstr "Ikhasi {currentPage} kwangu-{totalPages}"
 msgid "Parent"
 msgstr "Umzali"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "Ibhuleki yokupaka"
 
@@ -2839,7 +2858,7 @@ msgstr "Iphethini (i-regex)"
 msgid "Paused"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Performance priority"
 msgstr ""
 
@@ -2864,7 +2883,7 @@ msgstr "Umshayeli webhanoyi"
 msgid "PILOT DOWN"
 msgstr "UMSHAYELI UBULEWE"
 
-#: src/components/SettingsDialog.tsx:898
+#: src/components/SettingsDialog.tsx:1030
 msgid "Pilot Identity"
 msgstr ""
 
@@ -2876,15 +2895,15 @@ msgstr "Umshayeli wendiza ubulewe"
 msgid "pitch"
 msgstr "gobisa"
 
-#: src/components/SettingsDialog.tsx:99
+#: src/components/SettingsDialog.tsx:107
 msgid "Pitch"
 msgstr "I-pitch"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "I-pitch phansi"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "I-pitch phezulu"
 
@@ -2922,7 +2941,7 @@ msgstr "Okuthunyelwe"
 msgid "Posts and comments"
 msgstr "Okwabiwayo namazwana"
 
-#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:797
 msgid "Press a key…"
 msgstr "Cindezela ukhiye…"
 
@@ -2930,7 +2949,7 @@ msgstr "Cindezela ukhiye…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "CINDEZELA U-ENTER UKUZE UNDIZE"
 
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:567
 msgid "Press…"
 msgstr ""
 
@@ -2952,8 +2971,8 @@ msgstr "Iyacutshungulwa…"
 msgid "Profile"
 msgstr "Umbiko womsebenzisi"
 
-#: src/components/SettingsDialog.tsx:281
-#: src/components/SettingsDialog.tsx:293
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Umbiko ulondoloziwe"
 
@@ -2986,8 +3005,8 @@ msgstr "UMLILO INJ SOKUDLA"
 msgid "R GEAR"
 msgstr "IGIYA SOKUDLA"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "Ukuthula kwerada"
 
@@ -3024,7 +3043,7 @@ msgstr "Kunconywayo"
 msgid "Reconnecting ({retries})..."
 msgstr "Iyaxhuma kabusha ({retries})..."
 
-#: src/components/SettingsDialog.tsx:923
+#: src/components/SettingsDialog.tsx:1055
 msgid "Record flights automatically"
 msgstr ""
 
@@ -3136,7 +3155,7 @@ msgstr "Qamba kabusha leli kholomu lebhodi"
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Ukurenda kwenziwa nge-<0>three.js</0> (ilayisensi ye-MIT)."
 
-#: src/components/SettingsDialog.tsx:786
+#: src/components/SettingsDialog.tsx:918
 msgid "Rendering Detail"
 msgstr ""
 
@@ -3160,7 +3179,7 @@ msgstr "Thumela i-imeyili futhi"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:981
+#: src/components/SettingsDialog.tsx:1113
 msgid "Reset"
 msgstr "Setha kabusha"
 
@@ -3173,23 +3192,23 @@ msgstr "Setha kabusha i-{title}"
 msgid "Reset all settings to default values"
 msgstr "Setha kabusha zonke izilungiselelo emanani okuzenzakalelayo"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "Setha kabusha isexwayiso esiyinhloko"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "Setha kabusha i-trim"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:227
-#: src/components/SettingsDialog.tsx:709
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:841
 msgid "Reset view"
 msgstr "Setha kabusha umbukiso"
 
-#: src/components/SettingsDialog.tsx:791
+#: src/components/SettingsDialog.tsx:923
 msgid "Resolution"
 msgstr "Isixazululo"
 
@@ -3213,8 +3232,8 @@ msgstr "Umphumela"
 msgid "Resume"
 msgstr "Qhubeka"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "Ama-flaps phakathi"
 
@@ -3222,7 +3241,7 @@ msgstr "Ama-flaps phakathi"
 msgid "Retry"
 msgstr "Zama futhi"
 
-#: src/components/SettingsDialog.tsx:453
+#: src/components/SettingsDialog.tsx:486
 msgid "Reversed"
 msgstr "Kuguquliwe"
 
@@ -3255,15 +3274,15 @@ msgstr "Isihloko sephiko lesokudla"
 msgid "roll"
 msgstr "gingqa"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:108
 msgid "Roll"
 msgstr "I-roll"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "I-roll kwesokunxele"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "I-roll kwesokudla"
 
@@ -3318,6 +3337,11 @@ msgstr "Izinga lolwandle"
 #: ../../../lib/web/src/components/search.tsx:18
 msgid "Search"
 msgstr "Sesha"
+
+#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:668
+msgid "Search controls"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/command.tsx:35
 msgid "Search for a command to run..."
@@ -3439,8 +3463,8 @@ msgstr "Khetha umkhondo wesayithi"
 msgid "Select theme preference"
 msgstr "Khetha okuncamelayo kwendikimba"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "Khetha isikhali"
 
@@ -3514,7 +3538,7 @@ msgstr "ISESHINI IPHELILE"
 msgid "Session expired. Please log in again."
 msgstr "Iseshini iphelelwe yisikhathi. Sicela uphinde ungene ngemvume."
 
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Set"
 msgstr "Setha"
 
@@ -3527,12 +3551,12 @@ msgstr "Misa indawo yokuqala neyokuya"
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:450
 #: src/components/MissionSetup.tsx:1289
-#: src/components/SettingsDialog.tsx:964
-#: src/components/SettingsDialog.tsx:991
+#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1123
 msgid "Settings"
 msgstr "Izilungiselelo"
 
-#: src/components/SettingsDialog.tsx:848
+#: src/components/SettingsDialog.tsx:980
 msgid "Shadows"
 msgstr "Imithunzi"
 
@@ -3597,11 +3621,11 @@ msgstr "Hlunga"
 msgid "Sortie history & replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:918
+#: src/components/SettingsDialog.tsx:1050
 msgid "Sortie Recording"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:1002
+#: src/components/SettingsDialog.tsx:1134
 msgid "Sound"
 msgstr "Umsindo"
 
@@ -3629,9 +3653,9 @@ msgstr "IB.MO"
 msgid "speed brake"
 msgstr "ibhuleki yomoya"
 
-#: src/components/SettingsDialog.tsx:103
-#: src/components/SettingsDialog.tsx:140
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "Ibhuleki yomoya"
 
@@ -3844,17 +3868,17 @@ msgstr "Leli khasi alikadalwa."
 msgid "throttle"
 msgstr "ijubane"
 
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:110
 msgid "Throttle"
 msgstr "I-throttle"
 
-#: src/components/SettingsDialog.tsx:146
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "Yehlisa i-throttle"
 
-#: src/components/SettingsDialog.tsx:145
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "Khuphula i-throttle"
 
@@ -3930,7 +3954,7 @@ msgstr "Izicelo eziningi kakhulu"
 msgid "Top"
 msgstr "Phezulu"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:992
 msgid "Tracers"
 msgstr "Izinhlamvu ezikhanyayo"
 
@@ -3942,31 +3966,31 @@ msgstr "Kuyahanjwa"
 msgid "trim"
 msgstr "i-trim"
 
-#: src/components/SettingsDialog.tsx:90
+#: src/components/SettingsDialog.tsx:95
 msgid "Trim"
 msgstr "I-trim"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:113
 msgid "Trim hat"
 msgstr "Isigqoko se-trim"
 
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "I-trim: ikhala phansi"
 
-#: src/components/SettingsDialog.tsx:147
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "I-trim: ikhala phezulu"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "I-trim: ukutsheka kwesokunxele"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "I-trim: ukutsheka kwesokudla"
 
@@ -4006,7 +4030,7 @@ msgstr "Thayipha ukuze useshe abasebenzisi"
 msgid "Type to search..."
 msgstr "Thayipha ukuze useshe..."
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Ultra"
 msgstr "Ephezulu kakhulu"
 
@@ -4031,13 +4055,13 @@ msgstr "Ukufinyelela Okungavunyelwe"
 msgid "Unavailable"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "Khulula umfunisi"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "Susa ukukhethwa kwethagethi"
 
@@ -4160,7 +4184,7 @@ msgid "view"
 msgstr "umbono"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/SettingsDialog.tsx:93
+#: src/components/SettingsDialog.tsx:98
 msgid "View"
 msgstr "Buka"
 
@@ -4177,7 +4201,7 @@ msgstr "Buka zonke izaziso"
 msgid "View controls"
 msgstr "Buka izilawuli"
 
-#: src/components/SettingsDialog.tsx:708
+#: src/components/SettingsDialog.tsx:840
 msgid "Views"
 msgstr "Ukubukwa"
 
@@ -4215,12 +4239,12 @@ msgstr "Sizokwazisa uma kwenzeka okuthile okubalulekile."
 msgid "weapon"
 msgstr "isikhali"
 
-#: src/components/SettingsDialog.tsx:106
+#: src/components/SettingsDialog.tsx:114
 msgid "Weapon select hat"
 msgstr "Isigqoko sokukhetha isikhali"
 
 #: src/components/Multiplayer.tsx:387
-#: src/components/SettingsDialog.tsx:91
+#: src/components/SettingsDialog.tsx:96
 msgid "Weapons"
 msgstr "Izikhali"
 
@@ -4236,17 +4260,17 @@ msgstr "Iwebhusayithi ingaphansi kwezilungiselelo!"
 msgid "Wednesday"
 msgstr "ULwesithathu"
 
-#: src/components/SettingsDialog.tsx:141
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "Amabhuleki amasondo"
 
-#: src/components/SettingsDialog.tsx:551
+#: src/components/SettingsDialog.tsx:589
 msgid "Wind & Cockpit Airframe"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "Ukugoqwa kwamaphiko"
 
@@ -4267,17 +4291,17 @@ msgstr "Iseva yomhlaba ayifinyeleleki"
 msgid "yaw"
 msgstr "phendula"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:109
 msgid "Yaw"
 msgstr "I-yaw"
 
-#: src/components/SettingsDialog.tsx:143
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "I-yaw kwesokunxele"
 
-#: src/components/SettingsDialog.tsx:144
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "I-yaw kwesokudla"
 
@@ -4321,14 +4345,14 @@ msgstr "Umbhalo nokunamathiselwe kwakho kuzolahleka."
 msgid "Your text will be lost."
 msgstr "Umbhalo wakho uzolahleka."
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:115
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "Sondeza"
 
-#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "Hlehlisa"

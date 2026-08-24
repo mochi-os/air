@@ -70,6 +70,17 @@ msgstr "{0} lb zaidi ya uzito wa juu wa kurusha"
 msgid "{0} option preview"
 msgstr "Onyesho la kuchungulia la chaguo {0}"
 
+#. placeholder {0}: pretty(taken.chord)
+#: src/components/SettingsDialog.tsx:766
+msgid "{0} was already taken, and that control is now unbound."
+msgstr ""
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(lost.label)
+#: src/components/SettingsDialog.tsx:762
+msgid "{0} was on {1}, which is now unbound."
+msgstr ""
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
 #: src/components/Multiplayer.tsx:556
@@ -220,13 +231,13 @@ msgstr "Akaunti imethibitishwa"
 msgid "Ace"
 msgstr "Bingwa"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "Lenga shabaha"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "Hali ya ukamataji"
 
@@ -322,7 +333,7 @@ msgstr "Inaongezwa..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Rekebisha muonekano na mpangilio kulingana na mapendeleo yako."
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:986
 msgid "Afterburner"
 msgstr "Afterburner"
 
@@ -330,7 +341,7 @@ msgstr "Afterburner"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:92
+#: src/components/SettingsDialog.tsx:97
 msgid "Aircraft"
 msgstr "Ndege"
 
@@ -384,8 +395,8 @@ msgstr "Yeyote aliyeingia"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Chochote kilichojiandikisha kwenye mlisho huu kitaacha kuupokea. Unaweza kunakili URL mpya baadaye."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "Nguvu ya kukaribia (ATC)"
 
@@ -414,8 +425,8 @@ msgstr "Una uhakika unataka kuondoka? Utahitaji kuingia tena kufikia akaunti yak
 msgid "Armament & Stores"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "Ndoana ya kuzuia"
 
@@ -439,7 +450,7 @@ msgstr "Ambatisha faili za maoni"
 msgid "Attach reply files"
 msgstr "Ambatisha faili za jibu"
 
-#: src/components/SettingsDialog.tsx:594
+#: src/components/SettingsDialog.tsx:632
 msgid "Audio Mixer Channels"
 msgstr ""
 
@@ -468,11 +479,12 @@ msgstr "Avatar ya {name}"
 msgid "Avionics, HOTAS & audio"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:441
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:474
 msgid "Axis {i}"
 msgstr "Mhimili {i}"
 
-#: src/components/SettingsDialog.tsx:391
+#: src/components/SettingsDialog.tsx:424
 msgid "Axis Calibration & Mapping"
 msgstr ""
 
@@ -491,7 +503,7 @@ msgstr "Rudi"
 msgid "Back to home"
 msgstr "Rudi mwanzo"
 
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Balanced flight"
 msgstr ""
 
@@ -523,7 +535,7 @@ msgstr "Kuteleza bora (injini zimezimwa)"
 msgid "Best sustained turn speed"
 msgstr "Mwendo bora wa mzunguko endelevu"
 
-#: src/components/SettingsDialog.tsx:554
+#: src/components/SettingsDialog.tsx:592
 msgid "Betty & RWR Alerts"
 msgstr ""
 
@@ -594,11 +606,12 @@ msgstr "PINDA UKIWA TAYARI"
 msgid "Browser notifications"
 msgstr "Arifa za kivinjari"
 
-#: src/components/SettingsDialog.tsx:515
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:550
 msgid "Button {i}"
 msgstr "Kitufe {i}"
 
-#: src/components/SettingsDialog.tsx:481
+#: src/components/SettingsDialog.tsx:516
 msgid "Button Mappings"
 msgstr ""
 
@@ -615,15 +628,15 @@ msgid "CALL THE BALL"
 msgstr "TANGAZA MPIRA"
 
 #: src/components/Multiplayer.tsx:311
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:1034
 msgid "Callsign"
 msgstr "Jina la mwito"
 
-#: src/components/SettingsDialog.tsx:711
+#: src/components/SettingsDialog.tsx:843
 msgid "Camera distance"
 msgstr "Umbali wa kamera"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Camera unavailable"
 msgstr "Kamera haipatikani"
 
@@ -644,7 +657,7 @@ msgstr "Kamera haipatikani"
 #: src/components/GameCanvas.tsx:522
 #: src/components/Multiplayer.tsx:282
 #: src/components/Multiplayer.tsx:585
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Cancel"
 msgstr "Ghairi"
 
@@ -656,11 +669,11 @@ msgstr "Ghairi maoni"
 msgid "Cancel reply"
 msgstr "Ghairi jibu"
 
-#: src/components/SettingsDialog.tsx:552
+#: src/components/SettingsDialog.tsx:590
 msgid "Cannons & Ordnance"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "Kanopi"
 
@@ -669,7 +682,7 @@ msgstr "Kanopi"
 msgid "Caption"
 msgstr "Maelezo mafupi"
 
-#: src/components/SettingsDialog.tsx:553
+#: src/components/SettingsDialog.tsx:591
 msgid "Carrier & Ambient"
 msgstr ""
 
@@ -726,11 +739,11 @@ msgstr "Mwonekano wa kufuatilia:"
 msgid "chat"
 msgstr "gumzo"
 
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "Gumzo"
 
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "Gumzo na wote"
 
@@ -783,6 +796,7 @@ msgstr "Chagua lugha"
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
 #: src/components/Multiplayer.tsx:372
+#: src/components/SettingsDialog.tsx:677
 msgid "Clear"
 msgstr "Futa"
 
@@ -900,7 +914,7 @@ msgstr "Vitendo vya maoni"
 msgid "Comments"
 msgstr "Maoni"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:99
 msgid "Communication"
 msgstr "Mawasiliano"
 
@@ -995,7 +1009,7 @@ msgstr "Imeshindikana kuunda mechi"
 msgid "Could not load this document. Please try again later."
 msgstr "Haikuweza kupakia hati hii. Tafadhali jaribu tena baadaye."
 
-#: src/components/SettingsDialog.tsx:282
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "Imeshindwa kuhifadhi wasifu"
 
@@ -1024,8 +1038,8 @@ msgstr "Imeshindwa kuanza uthibitishaji upya. Tafadhali jaribu tena."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Imeshindwa kuthibitisha kwa akaunti hiyo. Tafadhali jaribu tena."
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "Hatua za kukabili"
 
@@ -1100,8 +1114,8 @@ msgstr "Maalum"
 msgid "CUT"
 msgstr "HATARI"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "Badilisha mwonekano"
 
@@ -1225,8 +1239,8 @@ msgstr "Imeteketea kwa moto"
 msgid "Details Panel"
 msgstr "Paneli ya Undani"
 
-#: src/components/SettingsDialog.tsx:470
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:503
+#: src/components/SettingsDialog.tsx:567
 msgid "Detect"
 msgstr "Tambua"
 
@@ -1265,7 +1279,7 @@ msgstr "Tupa"
 msgid "Discard draft?"
 msgstr "Tupa rasimu?"
 
-#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:387
 msgid "disconnected"
 msgstr "imekatika"
 
@@ -1278,11 +1292,12 @@ msgstr "Imetenganishwa"
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: src/components/MissionSetup.tsx:1258
+#: src/components/SettingsDialog.tsx:773
 msgid "Dismiss"
 msgstr "Ondoa"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "Kirudiaji cha skrini"
 
@@ -1290,13 +1305,13 @@ msgstr "Kirudiaji cha skrini"
 msgid "Displays the mobile sidebar."
 msgstr "Huonyesha utepe wa simu."
 
-#: src/components/SettingsDialog.tsx:842
+#: src/components/SettingsDialog.tsx:974
 msgid "Distance LOD"
 msgstr "LOD ya umbali"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:985
+#: src/components/SettingsDialog.tsx:1117
 msgid "Done"
 msgstr "Imekamilika"
 
@@ -1330,7 +1345,7 @@ msgstr "Inarudia"
 msgid "Duration"
 msgstr "Muda"
 
-#: src/components/SettingsDialog.tsx:836
+#: src/components/SettingsDialog.tsx:968
 msgid "Dynamic resolution"
 msgstr "Azimio linalobadilika"
 
@@ -1381,15 +1396,15 @@ msgstr "Hariri kadi iliyochaguliwa"
 msgid "Edit view"
 msgstr "Hariri mwonekano"
 
-#: src/components/SettingsDialog.tsx:830
+#: src/components/SettingsDialog.tsx:962
 msgid "Effects & Toggles"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:941
 msgid "Effects detail"
 msgstr "Maelezo ya athari"
 
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "Kujitupa nje"
 
@@ -1409,8 +1424,8 @@ msgstr "Msimbo wa barua pepe"
 msgid "EMERG JETT"
 msgstr "UTUPAJI WA DHARURA"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "Utupaji wa dharura (shikilia)"
 
@@ -1431,11 +1446,11 @@ msgstr "NASHAMBULIA"
 msgid "Engagement"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:550
+#: src/components/SettingsDialog.tsx:588
 msgid "Engine & Afterburner"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "Enhanced visuals"
 msgstr ""
 
@@ -1482,16 +1497,16 @@ msgstr "Panua"
 msgid "Expand sidebar"
 msgstr "Panua utepe"
 
-#: src/components/SettingsDialog.tsx:370
+#: src/components/SettingsDialog.tsx:402
 msgid "Export"
 msgstr "Hamisha"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "Flapu nje"
 
-#: src/components/SettingsDialog.tsx:801
+#: src/components/SettingsDialog.tsx:933
 msgid "Exterior detail"
 msgstr "Maelezo ya nje"
 
@@ -1623,12 +1638,12 @@ msgstr "Imekamilika"
 msgid "fire"
 msgstr "fyatua"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "Fyatua silaha"
 
-#: src/components/SettingsDialog.tsx:704
+#: src/components/SettingsDialog.tsx:836
 msgid "Fixed Flight Keys"
 msgstr ""
 
@@ -1660,7 +1675,7 @@ msgstr "Tambarare"
 msgid "Flew into the sea"
 msgstr "Imetumbukia baharini"
 
-#: src/components/SettingsDialog.tsx:89
+#: src/components/SettingsDialog.tsx:94
 msgid "Flight"
 msgstr "Kuruka"
 
@@ -1701,7 +1716,7 @@ msgstr "Ruka"
 msgid "Fly again"
 msgstr "Ruka tena"
 
-#: src/components/SettingsDialog.tsx:866
+#: src/components/SettingsDialog.tsx:998
 msgid "Framerate counter"
 msgstr ""
 
@@ -1751,7 +1766,7 @@ msgstr "UVUJAJI MAFUTA"
 msgid "FUEL LO"
 msgstr "MAFUTA KIDOGO"
 
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "Kifaa cha mafuta"
 
@@ -1772,7 +1787,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Kiwiliwili cha ndege"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Gain"
 msgstr "Ukuzaji"
 
@@ -1784,7 +1799,7 @@ msgstr "Gia"
 msgid "GEAR"
 msgstr "GURUDUMU"
 
-#: src/components/SettingsDialog.tsx:994
+#: src/components/SettingsDialog.tsx:1126
 msgid "General"
 msgstr "Jumla"
 
@@ -1814,11 +1829,11 @@ msgstr "Nenda ukurasa {pageNumber}"
 msgid "Go to previous page"
 msgstr "Nenda kwenye ukurasa uliopita"
 
-#: src/components/SettingsDialog.tsx:998
+#: src/components/SettingsDialog.tsx:1130
 msgid "Graphics"
 msgstr "Grafiki"
 
-#: src/components/SettingsDialog.tsx:761
+#: src/components/SettingsDialog.tsx:893
 msgid "Graphics Preset"
 msgstr ""
 
@@ -1856,11 +1871,11 @@ msgstr "Mizinga pekee"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Uharakishaji wa michoro wa maunzi umezimwa — angalia mipangilio ya kivinjari au viendeshi vya michoro."
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head"
 msgstr "Kichwa"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head tracking"
 msgstr "Ufuatiliaji wa kichwa"
 
@@ -1876,7 +1891,7 @@ msgstr "Ficha"
 msgid "Hide password"
 msgstr "Ficha nenosiri"
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "High"
 msgstr "Juu"
 
@@ -1910,11 +1925,11 @@ msgstr "NDOANO"
 msgid "Hot"
 msgstr "Moto"
 
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "Chanzo cha mwinuko wa HUD"
 
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "Rahisisha HUD"
 
@@ -1931,7 +1946,7 @@ msgstr "Kitazamaji picha: {0}"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/SettingsDialog.tsx:374
+#: src/components/SettingsDialog.tsx:406
 msgid "Import"
 msgstr "Ingiza"
 
@@ -1952,7 +1967,7 @@ msgstr "Avatar ya herufi za kwanza"
 msgid "Initials avatar for {name}"
 msgstr "Avatar ya herufi za kwanza ya {name}"
 
-#: src/components/SettingsDialog.tsx:336
+#: src/components/SettingsDialog.tsx:368
 msgid "Input Hardware"
 msgstr ""
 
@@ -1980,7 +1995,7 @@ msgstr "Lebo si sahihi: herufi, tarakimu, nafasi, vistari na mikwaju pekee (kiwa
 msgid "Invalid verification code"
 msgstr "Msimbo wa uthibitisho batili"
 
-#: src/components/SettingsDialog.tsx:382
+#: src/components/SettingsDialog.tsx:414
 msgid "Invert pitch axis"
 msgstr ""
 
@@ -2002,13 +2017,13 @@ msgstr "Hawezi kudhurika (wachezaji binadamu pekee)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Inaonekana ukurasa unaoutafuta <0/>haupo au umeondolewa."
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "Kizuizi cha mawimbi"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "Tupa matangi"
 
@@ -2043,7 +2058,7 @@ msgstr "Pambano — 1v1, anayeangusha kwanza ndiye mshindi"
 msgid "Joust against bot"
 msgstr "Pambano dhidi ya boti"
 
-#: src/components/SettingsDialog.tsx:1006
+#: src/components/SettingsDialog.tsx:1138
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -2059,7 +2074,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Njia za mkato za kibodi"
 
-#: src/components/SettingsDialog.tsx:1010
+#: src/components/SettingsDialog.tsx:1142
 msgid "Keys"
 msgstr "Vitufe"
 
@@ -2088,8 +2103,8 @@ msgstr "MOTO INJ KUSHOTO"
 msgid "L GEAR"
 msgstr "GURUDUMU KUSHOTO"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "Gia ya kutua"
 
@@ -2106,8 +2121,8 @@ msgstr "KUCHELEWA"
 msgid "Lateral asymmetry"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "Rusha (manati)"
 
@@ -2172,8 +2187,8 @@ msgstr "Mwepesi"
 msgid "lights"
 msgstr "taa"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "Taa"
 
@@ -2233,35 +2248,35 @@ msgstr "Umetoka kwa ufanisi"
 msgid "Logging out…"
 msgstr "Inatoka…"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:112
 msgid "Look"
 msgstr "Tazama"
 
-#: src/components/SettingsDialog.tsx:710
+#: src/components/SettingsDialog.tsx:842
 msgid "Look / orbit"
 msgstr "Tazama / zunguka"
 
-#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "Angalia shabaha"
 
-#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "Tazama chini"
 
-#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "Tazama kushoto"
 
-#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "Tazama kulia"
 
-#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "Tazama juu"
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Low"
 msgstr "Chini"
 
@@ -2291,7 +2306,7 @@ msgstr "Mwongozo"
 msgid "map"
 msgstr "ramani"
 
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "Ramani"
 
@@ -2301,16 +2316,16 @@ msgstr "Ramani"
 msgid "Mark all as read"
 msgstr "Weka zote kama zilizosomwa"
 
-#: src/components/SettingsDialog.tsx:569
+#: src/components/SettingsDialog.tsx:607
 msgid "Master Audio Output"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:580
+#: src/components/SettingsDialog.tsx:618
 msgid "Master Bus"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:549
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:587
+#: src/components/SettingsDialog.tsx:614
 msgid "Master Volume"
 msgstr ""
 
@@ -2322,7 +2337,7 @@ msgstr "Aina ya mechi"
 msgid "Matches"
 msgstr "Mechi"
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Max fidelity"
 msgstr ""
 
@@ -2335,7 +2350,7 @@ msgid "MCP server"
 msgstr "Seva ya MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Medium"
 msgstr "Wastani"
 
@@ -2344,8 +2359,8 @@ msgid "menu"
 msgstr "menyu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "Menyu"
 
@@ -2428,7 +2443,7 @@ msgstr "Jumatatu"
 msgid "More options"
 msgstr "Chaguo zaidi"
 
-#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:503
 msgid "Move…"
 msgstr ""
 
@@ -2502,6 +2517,10 @@ msgstr "Hakuna maoni bado"
 msgid "No connected accounts"
 msgstr "Hakuna akaunti zilizounganishwa"
 
+#: src/components/SettingsDialog.tsx:692
+msgid "No control matches “{query}”."
+msgstr ""
+
 #: src/components/MatchHistory.tsx:125
 msgid "No flights yet"
 msgstr "Bado hakuna safari za ndege"
@@ -2518,7 +2537,7 @@ msgstr "Hakuna vikundi vinavyopatikana"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Hakuna aina za vipengele zinazoweza kuundwa bado. Unda vipengele vya mzazi vinavyohitajika kwanza."
 
-#: src/components/SettingsDialog.tsx:362
+#: src/components/SettingsDialog.tsx:394
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Hakuna joystick iliyotambuliwa — bonyeza kitufe chochote juu yake ili kuiamsha."
 
@@ -2621,9 +2640,9 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:120
 #: src/components/MissionSetup.tsx:284
 #: src/components/MissionSetup.tsx:1077
-#: src/components/SettingsDialog.tsx:435
-#: src/components/SettingsDialog.tsx:509
-#: src/components/SettingsDialog.tsx:687
+#: src/components/SettingsDialog.tsx:468
+#: src/components/SettingsDialog.tsx:544
+#: src/components/SettingsDialog.tsx:817
 msgid "None"
 msgstr "Hakuna"
 
@@ -2635,7 +2654,7 @@ msgstr "Kawaida"
 msgid "NOSE GEAR"
 msgstr "GURUDUMU MBELE"
 
-#: src/components/SettingsDialog.tsx:295
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "Si wasifu wa fimbo ya mchezo"
 
@@ -2681,7 +2700,7 @@ msgstr "Mwanafunzi"
 msgid "Number"
 msgstr "Nambari"
 
-#: src/components/SettingsDialog.tsx:817
+#: src/components/SettingsDialog.tsx:949
 msgid "Ocean detail"
 msgstr "Maelezo ya bahari"
 
@@ -2789,8 +2808,8 @@ msgstr "zunguka"
 msgid "Other"
 msgstr "Nyingine"
 
-#: src/components/SettingsDialog.tsx:142
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "Kupita kikomo cha G"
 
@@ -2815,7 +2834,7 @@ msgstr "Ukurasa {currentPage} kati ya {totalPages}"
 msgid "Parent"
 msgstr "Mzazi"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "Breki ya kuegesha"
 
@@ -2839,7 +2858,7 @@ msgstr "Muundo (regex)"
 msgid "Paused"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Performance priority"
 msgstr ""
 
@@ -2864,7 +2883,7 @@ msgstr "Rubani"
 msgid "PILOT DOWN"
 msgstr "RUBANI AMEUAWA"
 
-#: src/components/SettingsDialog.tsx:898
+#: src/components/SettingsDialog.tsx:1030
 msgid "Pilot Identity"
 msgstr ""
 
@@ -2876,15 +2895,15 @@ msgstr "Rubani ameuawa"
 msgid "pitch"
 msgstr "mwinamo"
 
-#: src/components/SettingsDialog.tsx:99
+#: src/components/SettingsDialog.tsx:107
 msgid "Pitch"
 msgstr "Pitch"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "Pitch chini"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "Pitch juu"
 
@@ -2922,7 +2941,7 @@ msgstr "Machapisho"
 msgid "Posts and comments"
 msgstr "Machapisho na maoni"
 
-#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:797
 msgid "Press a key…"
 msgstr "Bonyeza kitufe…"
 
@@ -2930,7 +2949,7 @@ msgstr "Bonyeza kitufe…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "BONYEZA ENTER ILI KUPAA"
 
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:567
 msgid "Press…"
 msgstr ""
 
@@ -2952,8 +2971,8 @@ msgstr "Inachakata…"
 msgid "Profile"
 msgstr "Wasifu"
 
-#: src/components/SettingsDialog.tsx:281
-#: src/components/SettingsDialog.tsx:293
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Wasifu umehifadhiwa"
 
@@ -2986,8 +3005,8 @@ msgstr "MOTO INJ KULIA"
 msgid "R GEAR"
 msgstr "GURUDUMU KULIA"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "Ukimya wa rada"
 
@@ -3024,7 +3043,7 @@ msgstr "Inapendekezwa"
 msgid "Reconnecting ({retries})..."
 msgstr "Inaunganisha upya ({retries})..."
 
-#: src/components/SettingsDialog.tsx:923
+#: src/components/SettingsDialog.tsx:1055
 msgid "Record flights automatically"
 msgstr ""
 
@@ -3136,7 +3155,7 @@ msgstr "Badilisha jina la safuwima hii ya bao"
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Uchoraji unafanywa na <0>three.js</0> (leseni ya MIT)."
 
-#: src/components/SettingsDialog.tsx:786
+#: src/components/SettingsDialog.tsx:918
 msgid "Rendering Detail"
 msgstr ""
 
@@ -3160,7 +3179,7 @@ msgstr "Tuma barua pepe tena"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:981
+#: src/components/SettingsDialog.tsx:1113
 msgid "Reset"
 msgstr "Weka upya"
 
@@ -3173,23 +3192,23 @@ msgstr "Weka upya {title}"
 msgid "Reset all settings to default values"
 msgstr "Weka upya mipangilio yote kwa thamani chaguo-msingi"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "Weka upya onyo kuu"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "Weka upya trimu"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:227
-#: src/components/SettingsDialog.tsx:709
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:841
 msgid "Reset view"
 msgstr "Weka upya mwonekano"
 
-#: src/components/SettingsDialog.tsx:791
+#: src/components/SettingsDialog.tsx:923
 msgid "Resolution"
 msgstr "Utatuzi"
 
@@ -3213,8 +3232,8 @@ msgstr "Matokeo"
 msgid "Resume"
 msgstr "Endelea"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "Flapu ndani"
 
@@ -3222,7 +3241,7 @@ msgstr "Flapu ndani"
 msgid "Retry"
 msgstr "Jaribu tena"
 
-#: src/components/SettingsDialog.tsx:453
+#: src/components/SettingsDialog.tsx:486
 msgid "Reversed"
 msgstr "Imegeuzwa"
 
@@ -3255,15 +3274,15 @@ msgstr "Ncha ya bawa la kulia"
 msgid "roll"
 msgstr "mzunguko"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:108
 msgid "Roll"
 msgstr "Roll"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "Roll kushoto"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "Roll kulia"
 
@@ -3318,6 +3337,11 @@ msgstr "Usawa wa bahari"
 #: ../../../lib/web/src/components/search.tsx:18
 msgid "Search"
 msgstr "Tafuta"
+
+#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:668
+msgid "Search controls"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/command.tsx:35
 msgid "Search for a command to run..."
@@ -3439,8 +3463,8 @@ msgstr "Chagua mwelekeo wa tovuti"
 msgid "Select theme preference"
 msgstr "Chagua mapendeleo ya mandhari"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "Chagua silaha"
 
@@ -3514,7 +3538,7 @@ msgstr "KIPINDI KIMEISHA"
 msgid "Session expired. Please log in again."
 msgstr "Kipindi kimeisha. Tafadhali ingia tena."
 
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Set"
 msgstr "Weka"
 
@@ -3527,12 +3551,12 @@ msgstr "Weka chanzo na marudio"
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:450
 #: src/components/MissionSetup.tsx:1289
-#: src/components/SettingsDialog.tsx:964
-#: src/components/SettingsDialog.tsx:991
+#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1123
 msgid "Settings"
 msgstr "Mipangilio"
 
-#: src/components/SettingsDialog.tsx:848
+#: src/components/SettingsDialog.tsx:980
 msgid "Shadows"
 msgstr "Vivuli"
 
@@ -3597,11 +3621,11 @@ msgstr "Panga"
 msgid "Sortie history & replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:918
+#: src/components/SettingsDialog.tsx:1050
 msgid "Sortie Recording"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:1002
+#: src/components/SettingsDialog.tsx:1134
 msgid "Sound"
 msgstr "Sauti"
 
@@ -3629,9 +3653,9 @@ msgstr "BR.HEW"
 msgid "speed brake"
 msgstr "breki ya hewa"
 
-#: src/components/SettingsDialog.tsx:103
-#: src/components/SettingsDialog.tsx:140
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "Breki ya hewa"
 
@@ -3844,17 +3868,17 @@ msgstr "Ukurasa huu bado haujaundwa."
 msgid "throttle"
 msgstr "kasi"
 
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:110
 msgid "Throttle"
 msgstr "Throttle"
 
-#: src/components/SettingsDialog.tsx:146
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "Punguza throttle"
 
-#: src/components/SettingsDialog.tsx:145
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "Ongeza throttle"
 
@@ -3930,7 +3954,7 @@ msgstr "Maombi mengi mno"
 msgid "Top"
 msgstr "Juu"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:992
 msgid "Tracers"
 msgstr "Risasi za mwanga"
 
@@ -3942,31 +3966,31 @@ msgstr "Kusafiri"
 msgid "trim"
 msgstr "trimu"
 
-#: src/components/SettingsDialog.tsx:90
+#: src/components/SettingsDialog.tsx:95
 msgid "Trim"
 msgstr "Trimu"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:113
 msgid "Trim hat"
 msgstr "Kofia ya trimu"
 
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "Trimu: pua chini"
 
-#: src/components/SettingsDialog.tsx:147
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "Trimu: pua juu"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "Trimu: mwinamo kushoto"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "Trimu: mwinamo kulia"
 
@@ -4006,7 +4030,7 @@ msgstr "Andika kutafuta watumiaji"
 msgid "Type to search..."
 msgstr "Andika kutafuta..."
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -4031,13 +4055,13 @@ msgstr "Ufikiaji Usioruhusiwa"
 msgid "Unavailable"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "Achilia kitafutaji"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "Ondoa uteuzi wa shabaha"
 
@@ -4160,7 +4184,7 @@ msgid "view"
 msgstr "mwonekano"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/SettingsDialog.tsx:93
+#: src/components/SettingsDialog.tsx:98
 msgid "View"
 msgstr "Tazama"
 
@@ -4177,7 +4201,7 @@ msgstr "Tazama arifa zote"
 msgid "View controls"
 msgstr "Tazama udhibiti"
 
-#: src/components/SettingsDialog.tsx:708
+#: src/components/SettingsDialog.tsx:840
 msgid "Views"
 msgstr "Mwonekano"
 
@@ -4215,12 +4239,12 @@ msgstr "Tutakujulisha jambo muhimu litakapotokea."
 msgid "weapon"
 msgstr "silaha"
 
-#: src/components/SettingsDialog.tsx:106
+#: src/components/SettingsDialog.tsx:114
 msgid "Weapon select hat"
 msgstr "Kofia ya kuchagua silaha"
 
 #: src/components/Multiplayer.tsx:387
-#: src/components/SettingsDialog.tsx:91
+#: src/components/SettingsDialog.tsx:96
 msgid "Weapons"
 msgstr "Silaha"
 
@@ -4236,17 +4260,17 @@ msgstr "Tovuti iko chini ya matengenezo!"
 msgid "Wednesday"
 msgstr "Jumatano"
 
-#: src/components/SettingsDialog.tsx:141
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "Breki za magurudumu"
 
-#: src/components/SettingsDialog.tsx:551
+#: src/components/SettingsDialog.tsx:589
 msgid "Wind & Cockpit Airframe"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "Kukunja mabawa"
 
@@ -4267,17 +4291,17 @@ msgstr "Seva ya dunia haipatikani"
 msgid "yaw"
 msgstr "mgeuko"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:109
 msgid "Yaw"
 msgstr "Yaw"
 
-#: src/components/SettingsDialog.tsx:143
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "Yaw kushoto"
 
-#: src/components/SettingsDialog.tsx:144
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "Yaw kulia"
 
@@ -4321,14 +4345,14 @@ msgstr "Maandishi na viambatisho vyako vitapotea."
 msgid "Your text will be lost."
 msgstr "Maandishi yako yatapotea."
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:115
 msgid "Zoom"
 msgstr "Kuza"
 
-#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "Kuza ndani"
 
-#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "Kuza nje"

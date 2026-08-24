@@ -70,6 +70,17 @@ msgstr "{0} lb boven het maximale lanceergewicht"
 msgid "{0} option preview"
 msgstr "Voorbeeld van optie {0}"
 
+#. placeholder {0}: pretty(taken.chord)
+#: src/components/SettingsDialog.tsx:766
+msgid "{0} was already taken, and that control is now unbound."
+msgstr ""
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(lost.label)
+#: src/components/SettingsDialog.tsx:762
+msgid "{0} was on {1}, which is now unbound."
+msgstr ""
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
 #: src/components/Multiplayer.tsx:556
@@ -220,13 +231,13 @@ msgstr "Account geverifieerd"
 msgid "Ace"
 msgstr "Aas"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "Doel vergrendelen"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "Acquisitiemodus"
 
@@ -322,7 +333,7 @@ msgstr "Toevoegen..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Pas het uiterlijk en de lay-out aan naar uw voorkeur."
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:986
 msgid "Afterburner"
 msgstr "Naverbrander"
 
@@ -330,7 +341,7 @@ msgstr "Naverbrander"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:92
+#: src/components/SettingsDialog.tsx:97
 msgid "Aircraft"
 msgstr "Vliegtuig"
 
@@ -384,8 +395,8 @@ msgstr "Iedereen die is ingelogd"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Alles wat op deze feed is geabonneerd, ontvangt deze niet meer. Je kunt daarna een nieuwe URL kopiëren."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "Naderingsvermogen (ATC)"
 
@@ -414,8 +425,8 @@ msgstr "Weet u zeker dat u wilt uitloggen? U moet opnieuw inloggen om toegang te
 msgid "Armament & Stores"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "Vanghaak"
 
@@ -439,7 +450,7 @@ msgstr "Reactiebestanden bijvoegen"
 msgid "Attach reply files"
 msgstr "Antwoordbestanden bijvoegen"
 
-#: src/components/SettingsDialog.tsx:594
+#: src/components/SettingsDialog.tsx:632
 msgid "Audio Mixer Channels"
 msgstr ""
 
@@ -468,11 +479,12 @@ msgstr "Avatar voor {name}"
 msgid "Avionics, HOTAS & audio"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:441
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:474
 msgid "Axis {i}"
 msgstr "As {i}"
 
-#: src/components/SettingsDialog.tsx:391
+#: src/components/SettingsDialog.tsx:424
 msgid "Axis Calibration & Mapping"
 msgstr ""
 
@@ -491,7 +503,7 @@ msgstr "Terug"
 msgid "Back to home"
 msgstr "Terug naar start"
 
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Balanced flight"
 msgstr ""
 
@@ -523,7 +535,7 @@ msgstr "Beste glijvlucht (motoren uit)"
 msgid "Best sustained turn speed"
 msgstr "Beste aanhoudende bochtsnelheid"
 
-#: src/components/SettingsDialog.tsx:554
+#: src/components/SettingsDialog.tsx:592
 msgid "Betty & RWR Alerts"
 msgstr ""
 
@@ -594,11 +606,12 @@ msgstr "DRAAI WANNEER GEREED"
 msgid "Browser notifications"
 msgstr "Browsermeldingen"
 
-#: src/components/SettingsDialog.tsx:515
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:550
 msgid "Button {i}"
 msgstr "Knop {i}"
 
-#: src/components/SettingsDialog.tsx:481
+#: src/components/SettingsDialog.tsx:516
 msgid "Button Mappings"
 msgstr ""
 
@@ -615,15 +628,15 @@ msgid "CALL THE BALL"
 msgstr "MELD DE BAL"
 
 #: src/components/Multiplayer.tsx:311
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:1034
 msgid "Callsign"
 msgstr "Roepnaam"
 
-#: src/components/SettingsDialog.tsx:711
+#: src/components/SettingsDialog.tsx:843
 msgid "Camera distance"
 msgstr "Camera-afstand"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Camera unavailable"
 msgstr "Camera niet beschikbaar"
 
@@ -644,7 +657,7 @@ msgstr "Camera niet beschikbaar"
 #: src/components/GameCanvas.tsx:522
 #: src/components/Multiplayer.tsx:282
 #: src/components/Multiplayer.tsx:585
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Cancel"
 msgstr "Annuleren"
 
@@ -656,11 +669,11 @@ msgstr "Reactie annuleren"
 msgid "Cancel reply"
 msgstr "Antwoord annuleren"
 
-#: src/components/SettingsDialog.tsx:552
+#: src/components/SettingsDialog.tsx:590
 msgid "Cannons & Ordnance"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "Cockpitkap"
 
@@ -669,7 +682,7 @@ msgstr "Cockpitkap"
 msgid "Caption"
 msgstr "Bijschrift"
 
-#: src/components/SettingsDialog.tsx:553
+#: src/components/SettingsDialog.tsx:591
 msgid "Carrier & Ambient"
 msgstr ""
 
@@ -726,11 +739,11 @@ msgstr "Achtervolgingsweergave:"
 msgid "chat"
 msgstr "chat"
 
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "Chat"
 
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "Chat naar iedereen"
 
@@ -783,6 +796,7 @@ msgstr "Kies taal"
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
 #: src/components/Multiplayer.tsx:372
+#: src/components/SettingsDialog.tsx:677
 msgid "Clear"
 msgstr "Wissen"
 
@@ -900,7 +914,7 @@ msgstr "Reactieacties"
 msgid "Comments"
 msgstr "Reacties"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:99
 msgid "Communication"
 msgstr "Communicatie"
 
@@ -995,7 +1009,7 @@ msgstr "Kon de match niet aanmaken"
 msgid "Could not load this document. Please try again later."
 msgstr "Kon dit document niet laden. Probeer het later opnieuw."
 
-#: src/components/SettingsDialog.tsx:282
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "Kon het profiel niet opslaan"
 
@@ -1024,8 +1038,8 @@ msgstr "Kon de herauthenticatie niet starten. Probeer het opnieuw."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Kan niet verifiëren met dat account. Probeer het opnieuw."
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "Tegenmaatregelen"
 
@@ -1100,8 +1114,8 @@ msgstr "Aangepast"
 msgid "CUT"
 msgstr "GEVAARLIJK"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "Weergave wisselen"
 
@@ -1225,8 +1239,8 @@ msgstr "Door brand verwoest"
 msgid "Details Panel"
 msgstr "Detailpaneel"
 
-#: src/components/SettingsDialog.tsx:470
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:503
+#: src/components/SettingsDialog.tsx:567
 msgid "Detect"
 msgstr "Detecteren"
 
@@ -1265,7 +1279,7 @@ msgstr "Verwerpen"
 msgid "Discard draft?"
 msgstr "Klad verwerpen?"
 
-#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:387
 msgid "disconnected"
 msgstr "losgekoppeld"
 
@@ -1278,11 +1292,12 @@ msgstr "Verbinding verbroken"
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: src/components/MissionSetup.tsx:1258
+#: src/components/SettingsDialog.tsx:773
 msgid "Dismiss"
 msgstr "Sluiten"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "Schermrepeater"
 
@@ -1290,13 +1305,13 @@ msgstr "Schermrepeater"
 msgid "Displays the mobile sidebar."
 msgstr "Toont de mobiele zijbalk."
 
-#: src/components/SettingsDialog.tsx:842
+#: src/components/SettingsDialog.tsx:974
 msgid "Distance LOD"
 msgstr "Afstand-LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:985
+#: src/components/SettingsDialog.tsx:1117
 msgid "Done"
 msgstr "Klaar"
 
@@ -1330,7 +1345,7 @@ msgstr "Dupliceert"
 msgid "Duration"
 msgstr "Duur"
 
-#: src/components/SettingsDialog.tsx:836
+#: src/components/SettingsDialog.tsx:968
 msgid "Dynamic resolution"
 msgstr "Dynamische resolutie"
 
@@ -1381,15 +1396,15 @@ msgstr "Geselecteerde kaart bewerken"
 msgid "Edit view"
 msgstr "Weergave bewerken"
 
-#: src/components/SettingsDialog.tsx:830
+#: src/components/SettingsDialog.tsx:962
 msgid "Effects & Toggles"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:941
 msgid "Effects detail"
 msgstr "Effectdetail"
 
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "Schietstoel"
 
@@ -1409,8 +1424,8 @@ msgstr "E-mailcode"
 msgid "EMERG JETT"
 msgstr "NOODAFWORP"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "Noodafworp (vasthouden)"
 
@@ -1431,11 +1446,11 @@ msgstr "IK VAL AAN"
 msgid "Engagement"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:550
+#: src/components/SettingsDialog.tsx:588
 msgid "Engine & Afterburner"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "Enhanced visuals"
 msgstr ""
 
@@ -1482,16 +1497,16 @@ msgstr "Uitklappen"
 msgid "Expand sidebar"
 msgstr "Zijbalk uitvouwen"
 
-#: src/components/SettingsDialog.tsx:370
+#: src/components/SettingsDialog.tsx:402
 msgid "Export"
 msgstr "Exporteren"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "Kleppen uitslaan"
 
-#: src/components/SettingsDialog.tsx:801
+#: src/components/SettingsDialog.tsx:933
 msgid "Exterior detail"
 msgstr "Buitendetail"
 
@@ -1623,12 +1638,12 @@ msgstr "Voltooid"
 msgid "fire"
 msgstr "vuren"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "Wapen afvuren"
 
-#: src/components/SettingsDialog.tsx:704
+#: src/components/SettingsDialog.tsx:836
 msgid "Fixed Flight Keys"
 msgstr ""
 
@@ -1660,7 +1675,7 @@ msgstr "Plat"
 msgid "Flew into the sea"
 msgstr "In zee gevlogen"
 
-#: src/components/SettingsDialog.tsx:89
+#: src/components/SettingsDialog.tsx:94
 msgid "Flight"
 msgstr "Vlucht"
 
@@ -1701,7 +1716,7 @@ msgstr "Vliegen"
 msgid "Fly again"
 msgstr "Opnieuw vliegen"
 
-#: src/components/SettingsDialog.tsx:866
+#: src/components/SettingsDialog.tsx:998
 msgid "Framerate counter"
 msgstr ""
 
@@ -1751,7 +1766,7 @@ msgstr "BRANDSTOFLEK"
 msgid "FUEL LO"
 msgstr "BRANDSTOF LAAG"
 
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "Brandstofsonde"
 
@@ -1772,7 +1787,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Romp"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Gain"
 msgstr "Versterking"
 
@@ -1784,7 +1799,7 @@ msgstr "onderstel"
 msgid "GEAR"
 msgstr "GESTEL"
 
-#: src/components/SettingsDialog.tsx:994
+#: src/components/SettingsDialog.tsx:1126
 msgid "General"
 msgstr "Algemeen"
 
@@ -1814,11 +1829,11 @@ msgstr "Ga naar pagina {pageNumber}"
 msgid "Go to previous page"
 msgstr "Naar vorige pagina"
 
-#: src/components/SettingsDialog.tsx:998
+#: src/components/SettingsDialog.tsx:1130
 msgid "Graphics"
 msgstr "Grafisch"
 
-#: src/components/SettingsDialog.tsx:761
+#: src/components/SettingsDialog.tsx:893
 msgid "Graphics Preset"
 msgstr ""
 
@@ -1856,11 +1871,11 @@ msgstr "Alleen kanonnen"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Hardwarematige grafische versnelling staat uit — controleer browserinstellingen of grafische stuurprogramma's."
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head"
 msgstr "Hoofd"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head tracking"
 msgstr "Hoofdtracking"
 
@@ -1876,7 +1891,7 @@ msgstr "Verbergen"
 msgid "Hide password"
 msgstr "Wachtwoord verbergen"
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "High"
 msgstr "Hoog"
 
@@ -1910,11 +1925,11 @@ msgstr "HAAK"
 msgid "Hot"
 msgstr "Populair"
 
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "HUD-hoogtebron"
 
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "HUD vereenvoudigen"
 
@@ -1931,7 +1946,7 @@ msgstr "Afbeeldingsviewer: {0}"
 msgid "Imperial"
 msgstr "Imperiaal"
 
-#: src/components/SettingsDialog.tsx:374
+#: src/components/SettingsDialog.tsx:406
 msgid "Import"
 msgstr "Importeren"
 
@@ -1952,7 +1967,7 @@ msgstr "Initialen-avatar"
 msgid "Initials avatar for {name}"
 msgstr "Initialen-avatar voor {name}"
 
-#: src/components/SettingsDialog.tsx:336
+#: src/components/SettingsDialog.tsx:368
 msgid "Input Hardware"
 msgstr ""
 
@@ -1980,7 +1995,7 @@ msgstr "Ongeldige tag: alleen letters, cijfers, spaties, koppeltekens en schuine
 msgid "Invalid verification code"
 msgstr "Ongeldige verificatiecode"
 
-#: src/components/SettingsDialog.tsx:382
+#: src/components/SettingsDialog.tsx:414
 msgid "Invert pitch axis"
 msgstr ""
 
@@ -2002,13 +2017,13 @@ msgstr "Onkwetsbaar (enkel menselijke spelers)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Het lijkt erop dat de pagina die je zoekt <0/>niet bestaat of is verwijderd."
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "Stoorzender"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "Tanks afwerpen"
 
@@ -2043,7 +2058,7 @@ msgstr "Duel — 1v1, eerste kill wint"
 msgid "Joust against bot"
 msgstr "Duel tegen bot"
 
-#: src/components/SettingsDialog.tsx:1006
+#: src/components/SettingsDialog.tsx:1138
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -2059,7 +2074,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Sneltoetsen"
 
-#: src/components/SettingsDialog.tsx:1010
+#: src/components/SettingsDialog.tsx:1142
 msgid "Keys"
 msgstr "Toetsen"
 
@@ -2088,8 +2103,8 @@ msgstr "BRAND L MOTOR"
 msgid "L GEAR"
 msgstr "L WIEL"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "Landingsgestel"
 
@@ -2106,8 +2121,8 @@ msgstr "LAAT"
 msgid "Lateral asymmetry"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "Lancering (katapult)"
 
@@ -2172,8 +2187,8 @@ msgstr "Licht"
 msgid "lights"
 msgstr "verlichting"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "Verlichting"
 
@@ -2233,35 +2248,35 @@ msgstr "Succesvol uitgelogd"
 msgid "Logging out…"
 msgstr "Bezig met uitloggen…"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:112
 msgid "Look"
 msgstr "Kijken"
 
-#: src/components/SettingsDialog.tsx:710
+#: src/components/SettingsDialog.tsx:842
 msgid "Look / orbit"
 msgstr "Kijken / draaien"
 
-#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "Kijk naar doel"
 
-#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "Omlaag kijken"
 
-#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "Naar links kijken"
 
-#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "Naar rechts kijken"
 
-#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "Omhoog kijken"
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Low"
 msgstr "Laag"
 
@@ -2291,7 +2306,7 @@ msgstr "Handmatig"
 msgid "map"
 msgstr "kaart"
 
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "Kaart"
 
@@ -2301,16 +2316,16 @@ msgstr "Kaart"
 msgid "Mark all as read"
 msgstr "Alles als gelezen markeren"
 
-#: src/components/SettingsDialog.tsx:569
+#: src/components/SettingsDialog.tsx:607
 msgid "Master Audio Output"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:580
+#: src/components/SettingsDialog.tsx:618
 msgid "Master Bus"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:549
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:587
+#: src/components/SettingsDialog.tsx:614
 msgid "Master Volume"
 msgstr ""
 
@@ -2322,7 +2337,7 @@ msgstr "Matchtype"
 msgid "Matches"
 msgstr "Wedstrijden"
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Max fidelity"
 msgstr ""
 
@@ -2335,7 +2350,7 @@ msgid "MCP server"
 msgstr "MCP-server"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Medium"
 msgstr "Gemiddeld"
 
@@ -2344,8 +2359,8 @@ msgid "menu"
 msgstr "menu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "Menu"
 
@@ -2428,7 +2443,7 @@ msgstr "Maandag"
 msgid "More options"
 msgstr "Meer opties"
 
-#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:503
 msgid "Move…"
 msgstr ""
 
@@ -2502,6 +2517,10 @@ msgstr "Nog geen reacties"
 msgid "No connected accounts"
 msgstr "Geen verbonden accounts"
 
+#: src/components/SettingsDialog.tsx:692
+msgid "No control matches “{query}”."
+msgstr ""
+
 #: src/components/MatchHistory.tsx:125
 msgid "No flights yet"
 msgstr "Nog geen vluchten"
@@ -2518,7 +2537,7 @@ msgstr "Geen groepen beschikbaar"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Er kunnen nog geen itemtypes aangemaakt worden. Maak eerst de vereiste bovenliggende items aan."
 
-#: src/components/SettingsDialog.tsx:362
+#: src/components/SettingsDialog.tsx:394
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Geen joystick gedetecteerd — druk op een willekeurige knop erop om hem wakker te maken."
 
@@ -2621,9 +2640,9 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:120
 #: src/components/MissionSetup.tsx:284
 #: src/components/MissionSetup.tsx:1077
-#: src/components/SettingsDialog.tsx:435
-#: src/components/SettingsDialog.tsx:509
-#: src/components/SettingsDialog.tsx:687
+#: src/components/SettingsDialog.tsx:468
+#: src/components/SettingsDialog.tsx:544
+#: src/components/SettingsDialog.tsx:817
 msgid "None"
 msgstr "Geen"
 
@@ -2635,7 +2654,7 @@ msgstr "Normaal"
 msgid "NOSE GEAR"
 msgstr "NEUSWIEL"
 
-#: src/components/SettingsDialog.tsx:295
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "Geen joystickprofiel"
 
@@ -2681,7 +2700,7 @@ msgstr "Beginner"
 msgid "Number"
 msgstr "Getal"
 
-#: src/components/SettingsDialog.tsx:817
+#: src/components/SettingsDialog.tsx:949
 msgid "Ocean detail"
 msgstr "Oceaandetail"
 
@@ -2789,8 +2808,8 @@ msgstr "draaien"
 msgid "Other"
 msgstr "Andere"
 
-#: src/components/SettingsDialog.tsx:142
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "G-limiet negeren"
 
@@ -2815,7 +2834,7 @@ msgstr "Pagina {currentPage} van {totalPages}"
 msgid "Parent"
 msgstr "Bovenliggend"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "Parkeerrem"
 
@@ -2839,7 +2858,7 @@ msgstr "Patroon (regex)"
 msgid "Paused"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Performance priority"
 msgstr ""
 
@@ -2864,7 +2883,7 @@ msgstr "Piloot"
 msgid "PILOT DOWN"
 msgstr "PILOOT GEDOOD"
 
-#: src/components/SettingsDialog.tsx:898
+#: src/components/SettingsDialog.tsx:1030
 msgid "Pilot Identity"
 msgstr ""
 
@@ -2876,15 +2895,15 @@ msgstr "Piloot gedood"
 msgid "pitch"
 msgstr "stampen"
 
-#: src/components/SettingsDialog.tsx:99
+#: src/components/SettingsDialog.tsx:107
 msgid "Pitch"
 msgstr "Pitch"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "Pitch omlaag"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "Pitch omhoog"
 
@@ -2922,7 +2941,7 @@ msgstr "Berichten"
 msgid "Posts and comments"
 msgstr "Berichten en reacties"
 
-#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:797
 msgid "Press a key…"
 msgstr "Druk op een toets…"
 
@@ -2930,7 +2949,7 @@ msgstr "Druk op een toets…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "DRUK OP ENTER OM TE LANCEREN"
 
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:567
 msgid "Press…"
 msgstr ""
 
@@ -2952,8 +2971,8 @@ msgstr "Verwerken…"
 msgid "Profile"
 msgstr "Profiel"
 
-#: src/components/SettingsDialog.tsx:281
-#: src/components/SettingsDialog.tsx:293
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Profiel opgeslagen"
 
@@ -2986,8 +3005,8 @@ msgstr "BRAND R MOTOR"
 msgid "R GEAR"
 msgstr "R WIEL"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "Radar stil"
 
@@ -3024,7 +3043,7 @@ msgstr "Aanbevolen"
 msgid "Reconnecting ({retries})..."
 msgstr "Opnieuw verbinden ({retries})..."
 
-#: src/components/SettingsDialog.tsx:923
+#: src/components/SettingsDialog.tsx:1055
 msgid "Record flights automatically"
 msgstr ""
 
@@ -3136,7 +3155,7 @@ msgstr "Deze bordkolom hernoemen"
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Rendering door <0>three.js</0> (MIT-licentie)."
 
-#: src/components/SettingsDialog.tsx:786
+#: src/components/SettingsDialog.tsx:918
 msgid "Rendering Detail"
 msgstr ""
 
@@ -3160,7 +3179,7 @@ msgstr "E-mail opnieuw verzenden"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:981
+#: src/components/SettingsDialog.tsx:1113
 msgid "Reset"
 msgstr "Resetten"
 
@@ -3173,23 +3192,23 @@ msgstr "{title} opnieuw instellen"
 msgid "Reset all settings to default values"
 msgstr "Alle instellingen terugzetten naar standaardwaarden"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "Hoofdwaarschuwing resetten"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "Trim resetten"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:227
-#: src/components/SettingsDialog.tsx:709
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:841
 msgid "Reset view"
 msgstr "Beeld resetten"
 
-#: src/components/SettingsDialog.tsx:791
+#: src/components/SettingsDialog.tsx:923
 msgid "Resolution"
 msgstr "Resolutie"
 
@@ -3213,8 +3232,8 @@ msgstr "Resultaat"
 msgid "Resume"
 msgstr "Hervatten"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "Kleppen intrekken"
 
@@ -3222,7 +3241,7 @@ msgstr "Kleppen intrekken"
 msgid "Retry"
 msgstr "Opnieuw proberen"
 
-#: src/components/SettingsDialog.tsx:453
+#: src/components/SettingsDialog.tsx:486
 msgid "Reversed"
 msgstr "Omgekeerd"
 
@@ -3255,15 +3274,15 @@ msgstr "Rechtervleugeltip"
 msgid "roll"
 msgstr "rollen"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:108
 msgid "Roll"
 msgstr "Roll"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "Naar links rollen"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "Naar rechts rollen"
 
@@ -3318,6 +3337,11 @@ msgstr "Zeeniveau"
 #: ../../../lib/web/src/components/search.tsx:18
 msgid "Search"
 msgstr "Zoeken"
+
+#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:668
+msgid "Search controls"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/command.tsx:35
 msgid "Search for a command to run..."
@@ -3439,8 +3463,8 @@ msgstr "Selecteer leesrichting"
 msgid "Select theme preference"
 msgstr "Selecteer themavoorkeur"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "Wapen selecteren"
 
@@ -3514,7 +3538,7 @@ msgstr "SESSIE BEËINDIGD"
 msgid "Session expired. Please log in again."
 msgstr "Sessie verlopen. Meld je opnieuw aan."
 
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Set"
 msgstr "Instellen"
 
@@ -3527,12 +3551,12 @@ msgstr "Stel herkomst en bestemming in"
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:450
 #: src/components/MissionSetup.tsx:1289
-#: src/components/SettingsDialog.tsx:964
-#: src/components/SettingsDialog.tsx:991
+#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1123
 msgid "Settings"
 msgstr "Instellingen"
 
-#: src/components/SettingsDialog.tsx:848
+#: src/components/SettingsDialog.tsx:980
 msgid "Shadows"
 msgstr "Schaduwen"
 
@@ -3597,11 +3621,11 @@ msgstr "Sorteren"
 msgid "Sortie history & replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:918
+#: src/components/SettingsDialog.tsx:1050
 msgid "Sortie Recording"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:1002
+#: src/components/SettingsDialog.tsx:1134
 msgid "Sound"
 msgstr "Geluid"
 
@@ -3629,9 +3653,9 @@ msgstr "LREM"
 msgid "speed brake"
 msgstr "luchtrem"
 
-#: src/components/SettingsDialog.tsx:103
-#: src/components/SettingsDialog.tsx:140
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "Luchtrem"
 
@@ -3844,17 +3868,17 @@ msgstr "Deze pagina is nog niet aangemaakt."
 msgid "throttle"
 msgstr "gas"
 
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:110
 msgid "Throttle"
 msgstr "Gashendel"
 
-#: src/components/SettingsDialog.tsx:146
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "Minder gas"
 
-#: src/components/SettingsDialog.tsx:145
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "Meer gas"
 
@@ -3930,7 +3954,7 @@ msgstr "Te veel verzoeken"
 msgid "Top"
 msgstr "Boven"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:992
 msgid "Tracers"
 msgstr "Tracers"
 
@@ -3942,31 +3966,31 @@ msgstr "Op reis"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx:90
+#: src/components/SettingsDialog.tsx:95
 msgid "Trim"
 msgstr "Trim"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:113
 msgid "Trim hat"
 msgstr "Trim-hat"
 
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "Trim: neus omlaag"
 
-#: src/components/SettingsDialog.tsx:147
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "Trim: neus omhoog"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "Rol naar links trimmen"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "Rol naar rechts trimmen"
 
@@ -4006,7 +4030,7 @@ msgstr "Typ om gebruikers te zoeken"
 msgid "Type to search..."
 msgstr "Typ om te zoeken..."
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -4031,13 +4055,13 @@ msgstr "Ongeautoriseerde toegang"
 msgid "Unavailable"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "Zoekkop ontgrendelen"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "Doelaanwijzing opheffen"
 
@@ -4160,7 +4184,7 @@ msgid "view"
 msgstr "weergave"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/SettingsDialog.tsx:93
+#: src/components/SettingsDialog.tsx:98
 msgid "View"
 msgstr "Weergeven"
 
@@ -4177,7 +4201,7 @@ msgstr "Alle meldingen weergeven"
 msgid "View controls"
 msgstr "Weergaveopties"
 
-#: src/components/SettingsDialog.tsx:708
+#: src/components/SettingsDialog.tsx:840
 msgid "Views"
 msgstr "Weergaven"
 
@@ -4215,12 +4239,12 @@ msgstr "We laten het je weten als er iets belangrijks gebeurt."
 msgid "weapon"
 msgstr "wapen"
 
-#: src/components/SettingsDialog.tsx:106
+#: src/components/SettingsDialog.tsx:114
 msgid "Weapon select hat"
 msgstr "Wapenkeuzehoed"
 
 #: src/components/Multiplayer.tsx:387
-#: src/components/SettingsDialog.tsx:91
+#: src/components/SettingsDialog.tsx:96
 msgid "Weapons"
 msgstr "Wapens"
 
@@ -4236,17 +4260,17 @@ msgstr "Website is in onderhoud!"
 msgid "Wednesday"
 msgstr "Woensdag"
 
-#: src/components/SettingsDialog.tsx:141
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "Wielremmen"
 
-#: src/components/SettingsDialog.tsx:551
+#: src/components/SettingsDialog.tsx:589
 msgid "Wind & Cockpit Airframe"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "Vleugels invouwen"
 
@@ -4267,17 +4291,17 @@ msgstr "Wereldserver niet bereikbaar"
 msgid "yaw"
 msgstr "gieren"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:109
 msgid "Yaw"
 msgstr "Yaw"
 
-#: src/components/SettingsDialog.tsx:143
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "Naar links gieren"
 
-#: src/components/SettingsDialog.tsx:144
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "Naar rechts gieren"
 
@@ -4321,14 +4345,14 @@ msgstr "Je tekst en bijlagen gaan verloren."
 msgid "Your text will be lost."
 msgstr "Uw tekst gaat verloren."
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:115
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "Inzoomen"
 
-#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "Uitzoomen"

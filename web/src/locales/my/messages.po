@@ -70,6 +70,17 @@ msgstr "{0} lb အများဆုံးလွှတ်တင်အလေး�
 msgid "{0} option preview"
 msgstr "{0} ရွေးချယ်မှု အစမ်းကြည့်ရှုခြင်း"
 
+#. placeholder {0}: pretty(taken.chord)
+#: src/components/SettingsDialog.tsx:766
+msgid "{0} was already taken, and that control is now unbound."
+msgstr ""
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(lost.label)
+#: src/components/SettingsDialog.tsx:762
+msgid "{0} was on {1}, which is now unbound."
+msgstr ""
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
 #: src/components/Multiplayer.tsx:556
@@ -220,13 +231,13 @@ msgstr "အကောင့် အတည်ပြုပြီး"
 msgid "Ace"
 msgstr "ထိပ်တန်း"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "ပစ်မှတ် လော့ခ်လုပ်ရန်"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "ဖမ်းယူမှုမုဒ်"
 
@@ -322,7 +333,7 @@ msgstr "ထည့်နေသည်..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "သင့်စိတ်ကြိုက်အတိုင်း အသွင်အပြင်နှင့် အပြင်အဆင်ကို ချိန်ညှိပါ။"
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:986
 msgid "Afterburner"
 msgstr "နောက်တိုးအရှိန်"
 
@@ -330,7 +341,7 @@ msgstr "နောက်တိုးအရှိန်"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:92
+#: src/components/SettingsDialog.tsx:97
 msgid "Aircraft"
 msgstr "လေယာဉ်"
 
@@ -384,8 +395,8 @@ msgstr "ဝင်ရောက်ထားသူ မည်သူမဆို"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "ဤဖိဒ်ကို စာရင်းသွင်းထားသည့် အရာအားလုံး လက်ခံရရှိမှု ရပ်တန့်ပါမည်။ ထို့နောက် URL အသစ်ကို ကူးယူနိုင်ပါသည်။"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "ချဉ်းကပ်မှုစွမ်းအား (ATC)"
 
@@ -414,8 +425,8 @@ msgstr "log out လုပ်မှာသေချာပါသလား? သင�
 msgid "Armament & Stores"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "တားဆီးချိတ်"
 
@@ -439,7 +450,7 @@ msgstr "မှတ်ချက်ဖိုင်များ ပူးတွဲ�
 msgid "Attach reply files"
 msgstr "အကြောင်းပြန်ဖိုင်များ ပူးတွဲမည်"
 
-#: src/components/SettingsDialog.tsx:594
+#: src/components/SettingsDialog.tsx:632
 msgid "Audio Mixer Channels"
 msgstr ""
 
@@ -468,11 +479,12 @@ msgstr "{name} အတွက် အသွင်ပုံ"
 msgid "Avionics, HOTAS & audio"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:441
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:474
 msgid "Axis {i}"
 msgstr "ဝင်ရိုး {i}"
 
-#: src/components/SettingsDialog.tsx:391
+#: src/components/SettingsDialog.tsx:424
 msgid "Axis Calibration & Mapping"
 msgstr ""
 
@@ -491,7 +503,7 @@ msgstr "နောက်သို့"
 msgid "Back to home"
 msgstr "ပင်မစာမျက်နှာ သို့ပြန်သွားရန်"
 
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Balanced flight"
 msgstr ""
 
@@ -523,7 +535,7 @@ msgstr "အကောင်းဆုံးလွင့်ဆင်းမှု (�
 msgid "Best sustained turn speed"
 msgstr "အကောင်းဆုံးစဉ်ဆက်ကွေ့ဝိုက်မှုအမြန်နှုန်း"
 
-#: src/components/SettingsDialog.tsx:554
+#: src/components/SettingsDialog.tsx:592
 msgid "Betty & RWR Alerts"
 msgstr ""
 
@@ -594,11 +606,12 @@ msgstr "အဆင်သင့်ဖြစ်လျှင် ကွေ့ပါ"
 msgid "Browser notifications"
 msgstr "Browser အကြောင်းကြားချက်များ"
 
-#: src/components/SettingsDialog.tsx:515
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:550
 msgid "Button {i}"
 msgstr "ခလုတ် {i}"
 
-#: src/components/SettingsDialog.tsx:481
+#: src/components/SettingsDialog.tsx:516
 msgid "Button Mappings"
 msgstr ""
 
@@ -615,15 +628,15 @@ msgid "CALL THE BALL"
 msgstr "ဘောလုံးကိုကြေညာပါ"
 
 #: src/components/Multiplayer.tsx:311
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:1034
 msgid "Callsign"
 msgstr "ခေါ်ဆိုအမည်"
 
-#: src/components/SettingsDialog.tsx:711
+#: src/components/SettingsDialog.tsx:843
 msgid "Camera distance"
 msgstr "ကင်မရာအကွာအဝေး"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Camera unavailable"
 msgstr "ကင်မရာ မရနိုင်ပါ"
 
@@ -644,7 +657,7 @@ msgstr "ကင်မရာ မရနိုင်ပါ"
 #: src/components/GameCanvas.tsx:522
 #: src/components/Multiplayer.tsx:282
 #: src/components/Multiplayer.tsx:585
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Cancel"
 msgstr "မလုပ်တော့ပါ"
 
@@ -656,11 +669,11 @@ msgstr "မှတ်ချက် မလုပ်တော့ပါ"
 msgid "Cancel reply"
 msgstr "အကြောင်းပြန်ချက် မလုပ်တော့ပါ"
 
-#: src/components/SettingsDialog.tsx:552
+#: src/components/SettingsDialog.tsx:590
 msgid "Cannons & Ordnance"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "လေယာဉ်ခန်းအဖုံး"
 
@@ -669,7 +682,7 @@ msgstr "လေယာဉ်ခန်းအဖုံး"
 msgid "Caption"
 msgstr "စာတန်း"
 
-#: src/components/SettingsDialog.tsx:553
+#: src/components/SettingsDialog.tsx:591
 msgid "Carrier & Ambient"
 msgstr ""
 
@@ -726,11 +739,11 @@ msgstr "လိုက်ကြည့်မြင်ကွင်း:"
 msgid "chat"
 msgstr "ချတ်"
 
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "စကားပြောခန်း"
 
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "အားလုံးနှင့် ချတ်"
 
@@ -783,6 +796,7 @@ msgstr "ဘာသာစကား ရွေးချယ်ပါ"
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
 #: src/components/Multiplayer.tsx:372
+#: src/components/SettingsDialog.tsx:677
 msgid "Clear"
 msgstr "ရှင်းမည်"
 
@@ -900,7 +914,7 @@ msgstr "မှတ်ချက် လုပ်ဆောင်ချက်မျ�
 msgid "Comments"
 msgstr "မှတ်ချက်များ"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:99
 msgid "Communication"
 msgstr "ဆက်သွယ်ရေး"
 
@@ -995,7 +1009,7 @@ msgstr "ပွဲစဉ် ဖန်တီး၍ မရပါ"
 msgid "Could not load this document. Please try again later."
 msgstr "ဤစာရွက်စာတမ်းကို ဖွင့်၍ မရပါ။ နောက်မှ ထပ်စမ်းကြည့်ပါ။"
 
-#: src/components/SettingsDialog.tsx:282
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "ပရိုဖိုင်ကို သိမ်း၍မရပါ"
 
@@ -1024,8 +1038,8 @@ msgstr "ပြန်လည်အတည်ပြုခြင်းကို စ�
 msgid "Couldn't verify with that account. Please try again."
 msgstr "ထိုအကောင့်ဖြင့် အတည်ပြု၍မရပါ။ ကျေးဇူးပြု၍ ထပ်မံကြိုးစားပါ။"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "တန်ပြန်နည်းလမ်းများ"
 
@@ -1100,8 +1114,8 @@ msgstr "စိတ်ကြိုက်"
 msgid "CUT"
 msgstr "အန္တရာယ်ရှိ"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "မြင်ကွင်းပြောင်း"
 
@@ -1225,8 +1239,8 @@ msgstr "မီးလောင်၍ ပျက်စီးသည်"
 msgid "Details Panel"
 msgstr "အသေးစိတ် Panel"
 
-#: src/components/SettingsDialog.tsx:470
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:503
+#: src/components/SettingsDialog.tsx:567
 msgid "Detect"
 msgstr "ဖော်ထုတ်မည်"
 
@@ -1265,7 +1279,7 @@ msgstr "ဖျက်ပစ်ရန်"
 msgid "Discard draft?"
 msgstr "မူကြမ်းကို ဖျက်ပစ်မလား။"
 
-#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:387
 msgid "disconnected"
 msgstr "ချိတ်ဆက်မှုပြတ်"
 
@@ -1278,11 +1292,12 @@ msgstr "ချိတ်ဆက်မှု ပြတ်တောက်ပြီ�
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: src/components/MissionSetup.tsx:1258
+#: src/components/SettingsDialog.tsx:773
 msgid "Dismiss"
 msgstr "ပယ်မည်"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "မျက်နှာပြင် ထပ်ပြကိရိယာ"
 
@@ -1290,13 +1305,13 @@ msgstr "မျက်နှာပြင် ထပ်ပြကိရိယာ"
 msgid "Displays the mobile sidebar."
 msgstr "မိုဘိုင်း ဘေးဘားကို ပြသသည်။"
 
-#: src/components/SettingsDialog.tsx:842
+#: src/components/SettingsDialog.tsx:974
 msgid "Distance LOD"
 msgstr "အကွာအဝေး LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:985
+#: src/components/SettingsDialog.tsx:1117
 msgid "Done"
 msgstr "ပြီးပါပြီ"
 
@@ -1330,7 +1345,7 @@ msgstr "ထပ်နေသော"
 msgid "Duration"
 msgstr "ကြာချိန်"
 
-#: src/components/SettingsDialog.tsx:836
+#: src/components/SettingsDialog.tsx:968
 msgid "Dynamic resolution"
 msgstr "ပြောင်းလဲနိုင်သော ရက်ဆိုလူးရှင်း"
 
@@ -1381,15 +1396,15 @@ msgstr "ရွေးချယ်ထားသော ကတ် တည်းဖြ�
 msgid "Edit view"
 msgstr "မြင်ကွင်း တည်းဖြတ်"
 
-#: src/components/SettingsDialog.tsx:830
+#: src/components/SettingsDialog.tsx:962
 msgid "Effects & Toggles"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:941
 msgid "Effects detail"
 msgstr "အထူးပြုလုပ်ချက် အသေးစိတ်"
 
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "ခုန်ထွက်မည်"
 
@@ -1409,8 +1424,8 @@ msgstr "အီးမေးလ် ကုဒ်"
 msgid "EMERG JETT"
 msgstr "အရေးပေါ်ပစ်ချ"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "အရေးပေါ်ပစ်ချခြင်း (ဖိထားပါ)"
 
@@ -1431,11 +1446,11 @@ msgstr "တိုက်ခိုက်နေပြီ"
 msgid "Engagement"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:550
+#: src/components/SettingsDialog.tsx:588
 msgid "Engine & Afterburner"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "Enhanced visuals"
 msgstr ""
 
@@ -1482,16 +1497,16 @@ msgstr "ချဲ့ရန်"
 msgid "Expand sidebar"
 msgstr "ဘေးဘားကို ချဲ့ပါ"
 
-#: src/components/SettingsDialog.tsx:370
+#: src/components/SettingsDialog.tsx:402
 msgid "Export"
 msgstr "တင်ပို့"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "ဖလက်ပ် ဖြန့်ထုတ်"
 
-#: src/components/SettingsDialog.tsx:801
+#: src/components/SettingsDialog.tsx:933
 msgid "Exterior detail"
 msgstr "အပြင်ဘက် အသေးစိတ်"
 
@@ -1623,12 +1638,12 @@ msgstr "ပြီးဆုံးသည်"
 msgid "fire"
 msgstr "ပစ်ခတ်"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "လက်နက် ပစ်ခတ်ရန်"
 
-#: src/components/SettingsDialog.tsx:704
+#: src/components/SettingsDialog.tsx:836
 msgid "Fixed Flight Keys"
 msgstr ""
 
@@ -1660,7 +1675,7 @@ msgstr "ပြားသော"
 msgid "Flew into the sea"
 msgstr "ပင်လယ်ထဲသို့ ထိုးကျသည်"
 
-#: src/components/SettingsDialog.tsx:89
+#: src/components/SettingsDialog.tsx:94
 msgid "Flight"
 msgstr "ပျံသန်းမှု"
 
@@ -1701,7 +1716,7 @@ msgstr "ပျံသန်း"
 msgid "Fly again"
 msgstr "ထပ်ပျံသန်းမည်"
 
-#: src/components/SettingsDialog.tsx:866
+#: src/components/SettingsDialog.tsx:998
 msgid "Framerate counter"
 msgstr ""
 
@@ -1751,7 +1766,7 @@ msgstr "လောင်စာယိုစိမ့်"
 msgid "FUEL LO"
 msgstr "လောင်စာနည်း"
 
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "လောင်စာပရုပ်"
 
@@ -1772,7 +1787,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "လေယာဉ်ကိုယ်ထည်"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Gain"
 msgstr "ချဲ့ထွင်မှု"
 
@@ -1784,7 +1799,7 @@ msgstr "ဆင်းသက်ဘီး"
 msgid "GEAR"
 msgstr "ဂီယာ"
 
-#: src/components/SettingsDialog.tsx:994
+#: src/components/SettingsDialog.tsx:1126
 msgid "General"
 msgstr "အထွေထွေ"
 
@@ -1814,11 +1829,11 @@ msgstr "စာမျက်နှာ {pageNumber} သို့သွားပါ"
 msgid "Go to previous page"
 msgstr "ယခင်စာမျက်နှာသို့"
 
-#: src/components/SettingsDialog.tsx:998
+#: src/components/SettingsDialog.tsx:1130
 msgid "Graphics"
 msgstr "ဂရပ်ဖစ်"
 
-#: src/components/SettingsDialog.tsx:761
+#: src/components/SettingsDialog.tsx:893
 msgid "Graphics Preset"
 msgstr ""
 
@@ -1856,11 +1871,11 @@ msgstr "အမြောက်များသာ"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "ဟာ့ဒ်ဝဲဂရပ်ဖစ်အရှိန်မြှင့်ခြင်း ပိတ်ထားသည် — ဘရောက်ဇာဆက်တင်များ သို့မဟုတ် ဂရပ်ဖစ်ဒရိုက်ဗာများကို စစ်ဆေးပါ။"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head"
 msgstr "ဦးခေါင်း"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head tracking"
 msgstr "ဦးခေါင်းခြေရာခံခြင်း"
 
@@ -1876,7 +1891,7 @@ msgstr "ဝှက်"
 msgid "Hide password"
 msgstr "စကားဝှက်ကို ဖျောက်ရန်"
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "High"
 msgstr "မြင့်"
 
@@ -1910,11 +1925,11 @@ msgstr "ချိတ်"
 msgid "Hot"
 msgstr "လူကြိုက်များ"
 
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "HUD အမြင့် အရင်းအမြစ်"
 
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "HUD ရိုးရှင်းစေခြင်း"
 
@@ -1931,7 +1946,7 @@ msgstr "ပုံကြည့်ရှုစနစ်- {0}"
 msgid "Imperial"
 msgstr "အင်ပီးရီးယယ်"
 
-#: src/components/SettingsDialog.tsx:374
+#: src/components/SettingsDialog.tsx:406
 msgid "Import"
 msgstr "တင်သွင်း"
 
@@ -1952,7 +1967,7 @@ msgstr "အမည်အစအက္ခရာ အသွင်ပုံ"
 msgid "Initials avatar for {name}"
 msgstr "{name} အတွက် အမည်အစအက္ခရာ အသွင်ပုံ"
 
-#: src/components/SettingsDialog.tsx:336
+#: src/components/SettingsDialog.tsx:368
 msgid "Input Hardware"
 msgstr ""
 
@@ -1980,7 +1995,7 @@ msgstr "မမှန်ကန်သော အညွှန်း- စာလုံ
 msgid "Invalid verification code"
 msgstr "မမှန်ကန်သော အတည်ပြု ကုဒ်"
 
-#: src/components/SettingsDialog.tsx:382
+#: src/components/SettingsDialog.tsx:414
 msgid "Invert pitch axis"
 msgstr ""
 
@@ -2002,13 +2017,13 @@ msgstr "မသေနိုင် (လူသားကစားသမားမျ�
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "သင်ရှာဖွေနေသော စာမျက်နှာသည် <0/>မရှိတော့ပါ သို့မဟုတ် ဖယ်ရှားခံရပုံရသည်။"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "နှောင့်ယှက်စက်"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "တိုင်ကီများ ပစ်ချရန်"
 
@@ -2043,7 +2058,7 @@ msgstr "တစ်ဦးချင်းတိုက်ပွဲ — 1v1၊ အရ
 msgid "Joust against bot"
 msgstr "တစ်ဦးချင်းတိုက်ပွဲ ဘော့နှင့်"
 
-#: src/components/SettingsDialog.tsx:1006
+#: src/components/SettingsDialog.tsx:1138
 msgid "Joystick"
 msgstr "ဂျွိုက်စတစ်"
 
@@ -2059,7 +2074,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "ကီးဘုတ် ဖြတ်လမ်းများ"
 
-#: src/components/SettingsDialog.tsx:1010
+#: src/components/SettingsDialog.tsx:1142
 msgid "Keys"
 msgstr "ခလုတ်များ"
 
@@ -2088,8 +2103,8 @@ msgstr "ဘယ်အင်ဂျင် မီး"
 msgid "L GEAR"
 msgstr "ဘယ်ဘီး"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "ဆင်းသက်ဂီယာ"
 
@@ -2106,8 +2121,8 @@ msgstr "နောက်ကျ"
 msgid "Lateral asymmetry"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "ပစ်လွှတ်ခြင်း (ကတ်တာပတ်)"
 
@@ -2172,8 +2187,8 @@ msgstr "အလင်း"
 msgid "lights"
 msgstr "မီးများ"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "မီးများ"
 
@@ -2233,35 +2248,35 @@ msgstr "အောင်မြင်စွာ ထွက်ပြီးပါပ�
 msgid "Logging out…"
 msgstr "ထွက်နေသည်…"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:112
 msgid "Look"
 msgstr "ကြည့်"
 
-#: src/components/SettingsDialog.tsx:710
+#: src/components/SettingsDialog.tsx:842
 msgid "Look / orbit"
 msgstr "ကြည့်ရှု / ဝိုင်းပတ်"
 
-#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "ပစ်မှတ်ကိုကြည့်ပါ"
 
-#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "အောက်သို့ကြည့်"
 
-#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "ဘယ်သို့ကြည့်"
 
-#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "ညာသို့ကြည့်"
 
-#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "အပေါ်သို့ကြည့်"
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Low"
 msgstr "နိမ့်"
 
@@ -2291,7 +2306,7 @@ msgstr "ကိုယ်တိုင်"
 msgid "map"
 msgstr "မြေပုံ"
 
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "မြေပုံ"
 
@@ -2301,16 +2316,16 @@ msgstr "မြေပုံ"
 msgid "Mark all as read"
 msgstr "အားလုံးကို ဖတ်ပြီးအဖြစ် မှတ်"
 
-#: src/components/SettingsDialog.tsx:569
+#: src/components/SettingsDialog.tsx:607
 msgid "Master Audio Output"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:580
+#: src/components/SettingsDialog.tsx:618
 msgid "Master Bus"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:549
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:587
+#: src/components/SettingsDialog.tsx:614
 msgid "Master Volume"
 msgstr ""
 
@@ -2322,7 +2337,7 @@ msgstr "ပွဲစဉ်အမျိုးအစား"
 msgid "Matches"
 msgstr "ပွဲများ"
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Max fidelity"
 msgstr ""
 
@@ -2335,7 +2350,7 @@ msgid "MCP server"
 msgstr "MCP ဆာဗာ"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Medium"
 msgstr "အလယ်အလတ်"
 
@@ -2344,8 +2359,8 @@ msgid "menu"
 msgstr "မီနူး"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "မီနူး"
 
@@ -2428,7 +2443,7 @@ msgstr "တနင်္လာ"
 msgid "More options"
 msgstr "နောက်ထပ် ရွေးချယ်စရာများ"
 
-#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:503
 msgid "Move…"
 msgstr ""
 
@@ -2502,6 +2517,10 @@ msgstr "comment များ မရှိသေးပါ"
 msgid "No connected accounts"
 msgstr "ချိတ်ဆက်ထားသော အကောင့်များ မရှိပါ"
 
+#: src/components/SettingsDialog.tsx:692
+msgid "No control matches “{query}”."
+msgstr ""
+
 #: src/components/MatchHistory.tsx:125
 msgid "No flights yet"
 msgstr "ပျံသန်းမှု မရှိသေးပါ"
@@ -2518,7 +2537,7 @@ msgstr "အုပ်စုများ မရရှိနိုင်ပါ"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "item အမျိုးအစားအသစ်များ မဖန်တီးနိုင်သေးပါ။ လိုအပ်သော parent item များကို ဦးစွာဖန်တီးပါ။"
 
-#: src/components/SettingsDialog.tsx:362
+#: src/components/SettingsDialog.tsx:394
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "ဂျွိုက်စတစ် မတွေ့ပါ — နိုးရန် ၎င်းပေါ်ရှိ မည်သည့်ခလုတ်ကိုမဆို နှိပ်ပါ။"
 
@@ -2621,9 +2640,9 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:120
 #: src/components/MissionSetup.tsx:284
 #: src/components/MissionSetup.tsx:1077
-#: src/components/SettingsDialog.tsx:435
-#: src/components/SettingsDialog.tsx:509
-#: src/components/SettingsDialog.tsx:687
+#: src/components/SettingsDialog.tsx:468
+#: src/components/SettingsDialog.tsx:544
+#: src/components/SettingsDialog.tsx:817
 msgid "None"
 msgstr "မရှိ"
 
@@ -2635,7 +2654,7 @@ msgstr "ပုံမှန်"
 msgid "NOSE GEAR"
 msgstr "ရှေ့ဘီး"
 
-#: src/components/SettingsDialog.tsx:295
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "ဂျွိုက်စတစ် ပရိုဖိုင် မဟုတ်ပါ"
 
@@ -2681,7 +2700,7 @@ msgstr "အစပြုသူ"
 msgid "Number"
 msgstr "နံပါတ်"
 
-#: src/components/SettingsDialog.tsx:817
+#: src/components/SettingsDialog.tsx:949
 msgid "Ocean detail"
 msgstr "သမုဒ္ဒရာ အသေးစိတ်"
 
@@ -2789,8 +2808,8 @@ msgstr "ဝိုင်းပတ်"
 msgid "Other"
 msgstr "အခြား"
 
-#: src/components/SettingsDialog.tsx:142
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "G ကန့်သတ်ချက် ကျော်လွန်"
 
@@ -2815,7 +2834,7 @@ msgstr "စာမျက်နှာ {currentPage} / {totalPages}"
 msgid "Parent"
 msgstr "Parent"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "ရပ်နားဘရိတ်"
 
@@ -2839,7 +2858,7 @@ msgstr "ပုံစံ (regex)"
 msgid "Paused"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Performance priority"
 msgstr ""
 
@@ -2864,7 +2883,7 @@ msgstr "လေယာဉ်မှူး"
 msgid "PILOT DOWN"
 msgstr "လေယာဉ်မှူးကျဆုံး"
 
-#: src/components/SettingsDialog.tsx:898
+#: src/components/SettingsDialog.tsx:1030
 msgid "Pilot Identity"
 msgstr ""
 
@@ -2876,15 +2895,15 @@ msgstr "လေယာဉ်မှူး ကျဆုံးသည်"
 msgid "pitch"
 msgstr "မော့ငုံ့"
 
-#: src/components/SettingsDialog.tsx:99
+#: src/components/SettingsDialog.tsx:107
 msgid "Pitch"
 msgstr "မော့ချ"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "မော့ချ အောက်သို့"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "မော့ချ အပေါ်သို့"
 
@@ -2922,7 +2941,7 @@ msgstr "ပို့စ်များ"
 msgid "Posts and comments"
 msgstr "ပို့စ်နှင့် comment များ"
 
-#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:797
 msgid "Press a key…"
 msgstr "ခလုတ်တစ်ခု နှိပ်ပါ…"
 
@@ -2930,7 +2949,7 @@ msgstr "ခလုတ်တစ်ခု နှိပ်ပါ…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ပျံတက်ရန် ENTER နှိပ်ပါ"
 
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:567
 msgid "Press…"
 msgstr ""
 
@@ -2952,8 +2971,8 @@ msgstr "လုပ်ဆောင်နေသည်…"
 msgid "Profile"
 msgstr "ပရိုဖိုင်"
 
-#: src/components/SettingsDialog.tsx:281
-#: src/components/SettingsDialog.tsx:293
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "ပရိုဖိုင် သိမ်းပြီးပါပြီ"
 
@@ -2986,8 +3005,8 @@ msgstr "ညာအင်ဂျင် မီး"
 msgid "R GEAR"
 msgstr "ညာဘီး"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "ရေဒါ တိတ်ဆိတ်"
 
@@ -3024,7 +3043,7 @@ msgstr "အကြံပြုထား"
 msgid "Reconnecting ({retries})..."
 msgstr "ပြန်လည်ချိတ်ဆက်နေသည် ({retries})..."
 
-#: src/components/SettingsDialog.tsx:923
+#: src/components/SettingsDialog.tsx:1055
 msgid "Record flights automatically"
 msgstr ""
 
@@ -3136,7 +3155,7 @@ msgstr "ဤ board column ကို အမည်ပြောင်း"
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "ပုံဖော်တင်ဆက်မှုကို <0>three.js</0> ဖြင့် ဆောင်ရွက်သည် (MIT လိုင်စင်)။"
 
-#: src/components/SettingsDialog.tsx:786
+#: src/components/SettingsDialog.tsx:918
 msgid "Rendering Detail"
 msgstr ""
 
@@ -3160,7 +3179,7 @@ msgstr "အီးမေးလ်ပြန်ပို့ရန်"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:981
+#: src/components/SettingsDialog.tsx:1113
 msgid "Reset"
 msgstr "ပြန်စတင်"
 
@@ -3173,23 +3192,23 @@ msgstr "{title} ပြန်လည်သတ်မှတ်ရန်"
 msgid "Reset all settings to default values"
 msgstr "ဆက်တင်အားလုံးကို ပုံသေတန်ဖိုးများသို့ ပြန်ထား"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "ပင်မသတိပေးချက် ပြန်လည်သတ်မှတ်ရန်"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "ထရင်မ် ပြန်လည်သတ်မှတ်"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:227
-#: src/components/SettingsDialog.tsx:709
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:841
 msgid "Reset view"
 msgstr "မြင်ကွင်း ပြန်လည်သတ်မှတ်"
 
-#: src/components/SettingsDialog.tsx:791
+#: src/components/SettingsDialog.tsx:923
 msgid "Resolution"
 msgstr "ဖြေရှင်းချက်"
 
@@ -3213,8 +3232,8 @@ msgstr "ရလဒ်"
 msgid "Resume"
 msgstr "ဆက်လုပ်"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "ဖလက်ပ် သိမ်းသွင်း"
 
@@ -3222,7 +3241,7 @@ msgstr "ဖလက်ပ် သိမ်းသွင်း"
 msgid "Retry"
 msgstr "ထပ်စမ်းကြည့်ပါ"
 
-#: src/components/SettingsDialog.tsx:453
+#: src/components/SettingsDialog.tsx:486
 msgid "Reversed"
 msgstr "ပြောင်းပြန်"
 
@@ -3255,15 +3274,15 @@ msgstr "ညာတောင်ပံထိပ်"
 msgid "roll"
 msgstr "ယိမ်း"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:108
 msgid "Roll"
 msgstr "ယိမ်းလဲ"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "ဘယ်သို့ ယိမ်းလဲ"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "ညာသို့ ယိမ်းလဲ"
 
@@ -3318,6 +3337,11 @@ msgstr "ပင်လယ်ရေမျက်နှာပြင်"
 #: ../../../lib/web/src/components/search.tsx:18
 msgid "Search"
 msgstr "ရှာဖွေ"
+
+#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:668
+msgid "Search controls"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/command.tsx:35
 msgid "Search for a command to run..."
@@ -3439,8 +3463,8 @@ msgstr "ဆိုက်ဦးတည်ရာကို ရွေးပါ"
 msgid "Select theme preference"
 msgstr "အပြင်အဆင် ဦးစားပေးကို ရွေးပါ"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "လက်နက် ရွေးချယ်"
 
@@ -3514,7 +3538,7 @@ msgstr "စက်ရှင် ပြီးဆုံးပါပြီ"
 msgid "Session expired. Please log in again."
 msgstr "စက်ရှင်သက်တမ်း ကုန်သွားပါပြီ။ ကျေးဇူးပြု၍ ထပ်မံ အကောင့်ဝင်ပါ။"
 
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Set"
 msgstr "သတ်မှတ်မည်"
 
@@ -3527,12 +3551,12 @@ msgstr "မူရင်းနှင့် ဦးတည်ရာ သတ်မှ�
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:450
 #: src/components/MissionSetup.tsx:1289
-#: src/components/SettingsDialog.tsx:964
-#: src/components/SettingsDialog.tsx:991
+#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1123
 msgid "Settings"
 msgstr "ဆက်တင်များ"
 
-#: src/components/SettingsDialog.tsx:848
+#: src/components/SettingsDialog.tsx:980
 msgid "Shadows"
 msgstr "အရိပ်များ"
 
@@ -3597,11 +3621,11 @@ msgstr "စီမည်"
 msgid "Sortie history & replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:918
+#: src/components/SettingsDialog.tsx:1050
 msgid "Sortie Recording"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:1002
+#: src/components/SettingsDialog.tsx:1134
 msgid "Sound"
 msgstr "အသံ"
 
@@ -3629,9 +3653,9 @@ msgstr "လေ.ဘ"
 msgid "speed brake"
 msgstr "လေကြောင်းဘရိတ်"
 
-#: src/components/SettingsDialog.tsx:103
-#: src/components/SettingsDialog.tsx:140
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "လေကြောင်းဘရိတ်"
 
@@ -3844,17 +3868,17 @@ msgstr "ဤစာမျက်နှာကို မဖန်တီးရသေ�
 msgid "throttle"
 msgstr "အရှိန်"
 
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:110
 msgid "Throttle"
 msgstr "အရှိန်ထိန်း"
 
-#: src/components/SettingsDialog.tsx:146
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "အရှိန်လျှော့"
 
-#: src/components/SettingsDialog.tsx:145
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "အရှိန်တိုး"
 
@@ -3930,7 +3954,7 @@ msgstr "တောင်းဆိုမှု များလွန်းနေ�
 msgid "Top"
 msgstr "ထိပ်"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:992
 msgid "Tracers"
 msgstr "ခြေရာခံကျည်များ"
 
@@ -3942,31 +3966,31 @@ msgstr "ခရီးသွားနေသည်"
 msgid "trim"
 msgstr "ထရင်မ်"
 
-#: src/components/SettingsDialog.tsx:90
+#: src/components/SettingsDialog.tsx:95
 msgid "Trim"
 msgstr "ထရင်မ်"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:113
 msgid "Trim hat"
 msgstr "ထရင်မ် ဦးထုပ်"
 
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "ထရင်မ်- နှာခေါင်း အောက်"
 
-#: src/components/SettingsDialog.tsx:147
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "ထရင်မ်- နှာခေါင်း အပေါ်"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "ထရင်မ်- ဘယ်စောင်း"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "ထရင်မ်- ညာစောင်း"
 
@@ -4006,7 +4030,7 @@ msgstr "သုံးစွဲသူရှာရန် ရိုက်ပါ"
 msgid "Type to search..."
 msgstr "ရှာရန် ရိုက်ပါ..."
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Ultra"
 msgstr "အာထရာ"
 
@@ -4031,13 +4055,13 @@ msgstr "ခွင့်ပြုမထားသော ဝင်ရောက်�
 msgid "Unavailable"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "ရှာဖွေခေါင်းလွှတ်ရန်"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "ပစ်မှတ်သတ်မှတ်ချက် ပယ်ဖျက်ရန်"
 
@@ -4160,7 +4184,7 @@ msgid "view"
 msgstr "မြင်ကွင်း"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/SettingsDialog.tsx:93
+#: src/components/SettingsDialog.tsx:98
 msgid "View"
 msgstr "ကြည့်ရှုမည်"
 
@@ -4177,7 +4201,7 @@ msgstr "အသိပေးချက်များ အားလုံး ကြ�
 msgid "View controls"
 msgstr "ထိန်းချုပ်မှုများ ကြည့်ရှုမည်"
 
-#: src/components/SettingsDialog.tsx:708
+#: src/components/SettingsDialog.tsx:840
 msgid "Views"
 msgstr "ကြည့်ရှုမှုများ"
 
@@ -4215,12 +4239,12 @@ msgstr "အရေးကြီးတာတစ်ခုခုဖြစ်ရင်
 msgid "weapon"
 msgstr "လက်နက်"
 
-#: src/components/SettingsDialog.tsx:106
+#: src/components/SettingsDialog.tsx:114
 msgid "Weapon select hat"
 msgstr "လက်နက်ရွေး ဦးထုပ်"
 
 #: src/components/Multiplayer.tsx:387
-#: src/components/SettingsDialog.tsx:91
+#: src/components/SettingsDialog.tsx:96
 msgid "Weapons"
 msgstr "လက်နက်များ"
 
@@ -4236,17 +4260,17 @@ msgstr "ဝက်ဘ်ဆိုက်ကို ပြုပြင်နေပ�
 msgid "Wednesday"
 msgstr "ဗုဒ္ဓဟူး"
 
-#: src/components/SettingsDialog.tsx:141
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "ဘီးဘရိတ်"
 
-#: src/components/SettingsDialog.tsx:551
+#: src/components/SettingsDialog.tsx:589
 msgid "Wind & Cockpit Airframe"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "တောင်ပံခေါက်ခြင်း"
 
@@ -4267,17 +4291,17 @@ msgstr "ကမ္ဘာ့ဆာဗာသို့ ချိတ်ဆက်၍�
 msgid "yaw"
 msgstr "လှည့်"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:109
 msgid "Yaw"
 msgstr "ဝဲယာလှည့်"
 
-#: src/components/SettingsDialog.tsx:143
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "ဘယ်သို့လှည့်"
 
-#: src/components/SettingsDialog.tsx:144
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "ညာသို့လှည့်"
 
@@ -4321,14 +4345,14 @@ msgstr "သင့်စာသားနှင့် ပူးတွဲဖို�
 msgid "Your text will be lost."
 msgstr "သင်၏ စာသား ပျောက်ဆုံးသွားပါမည်။"
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:115
 msgid "Zoom"
 msgstr "ဇူးမ်"
 
-#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "ဇူးမ်ချဲ့ရန်"
 
-#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "ဇူးမ်ချုံ့ရန်"

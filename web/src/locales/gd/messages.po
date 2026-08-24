@@ -70,6 +70,17 @@ msgstr "{0} lb thar a' chuideim cur-air-bhog as motha"
 msgid "{0} option preview"
 msgstr "Ro-shealladh air roghainn {0}"
 
+#. placeholder {0}: pretty(taken.chord)
+#: src/components/SettingsDialog.tsx:766
+msgid "{0} was already taken, and that control is now unbound."
+msgstr ""
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(lost.label)
+#: src/components/SettingsDialog.tsx:762
+msgid "{0} was on {1}, which is now unbound."
+msgstr ""
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
 #: src/components/Multiplayer.tsx:556
@@ -220,13 +231,13 @@ msgstr "Cunntas dearbhte"
 msgid "Ace"
 msgstr "Gaisgeach"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "Glais targaid"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "Modh glacaidh"
 
@@ -322,7 +333,7 @@ msgstr "A' cur ris..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Atharraich an coltas agus an coimhead a rèir do roghainnean."
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:986
 msgid "Afterburner"
 msgstr "Iar-loisgear"
 
@@ -330,7 +341,7 @@ msgstr "Iar-loisgear"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:92
+#: src/components/SettingsDialog.tsx:97
 msgid "Aircraft"
 msgstr "Itealan"
 
@@ -384,8 +395,8 @@ msgstr "Neach sam bith a tha air clàradh a-steach"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Sguiridh rud sam bith a tha air fo-sgrìobhadh ris an inbhir seo ga fhaighinn. 'S urrainn dhut URL ùr a chopaigeadh às a dhèidh."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "Cumhachd dlùthachaidh (ATC)"
 
@@ -414,8 +425,8 @@ msgstr "A bheil thu cinnteach gu bheil thu airson clàradh a-mach? Feumaidh tu c
 msgid "Armament & Stores"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "Dubhan-stad"
 
@@ -439,7 +450,7 @@ msgstr "Ceangail faidhlichean beachd"
 msgid "Attach reply files"
 msgstr "Ceangail faidhlichean freagairt"
 
-#: src/components/SettingsDialog.tsx:594
+#: src/components/SettingsDialog.tsx:632
 msgid "Audio Mixer Channels"
 msgstr ""
 
@@ -468,11 +479,12 @@ msgstr "Avatar airson {name}"
 msgid "Avionics, HOTAS & audio"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:441
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:474
 msgid "Axis {i}"
 msgstr "Aiseal {i}"
 
-#: src/components/SettingsDialog.tsx:391
+#: src/components/SettingsDialog.tsx:424
 msgid "Axis Calibration & Mapping"
 msgstr ""
 
@@ -491,7 +503,7 @@ msgstr "Air ais"
 msgid "Back to home"
 msgstr "Air ais dhan dachaigh"
 
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Balanced flight"
 msgstr ""
 
@@ -523,7 +535,7 @@ msgstr "An sleamhnachadh as fheàrr (einnseanan dheth)"
 msgid "Best sustained turn speed"
 msgstr "Astar an tionndaidh sheasmhaich as fheàrr"
 
-#: src/components/SettingsDialog.tsx:554
+#: src/components/SettingsDialog.tsx:592
 msgid "Betty & RWR Alerts"
 msgstr ""
 
@@ -594,11 +606,12 @@ msgstr "TIONNDAIDH NUAIR A BHIOS TU DEISEIL"
 msgid "Browser notifications"
 msgstr "Brathan brabhsair"
 
-#: src/components/SettingsDialog.tsx:515
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:550
 msgid "Button {i}"
 msgstr "Putan {i}"
 
-#: src/components/SettingsDialog.tsx:481
+#: src/components/SettingsDialog.tsx:516
 msgid "Button Mappings"
 msgstr ""
 
@@ -615,15 +628,15 @@ msgid "CALL THE BALL"
 msgstr "GAIRM AM BALL"
 
 #: src/components/Multiplayer.tsx:311
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:1034
 msgid "Callsign"
 msgstr "Ainm-gairme"
 
-#: src/components/SettingsDialog.tsx:711
+#: src/components/SettingsDialog.tsx:843
 msgid "Camera distance"
 msgstr "Astar a' chamara"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Camera unavailable"
 msgstr "Chan eil an camara ri fhaighinn"
 
@@ -644,7 +657,7 @@ msgstr "Chan eil an camara ri fhaighinn"
 #: src/components/GameCanvas.tsx:522
 #: src/components/Multiplayer.tsx:282
 #: src/components/Multiplayer.tsx:585
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Cancel"
 msgstr "Sguir dheth"
 
@@ -656,11 +669,11 @@ msgstr "Sguir den bheachd"
 msgid "Cancel reply"
 msgstr "Sguir den fhreagairt"
 
-#: src/components/SettingsDialog.tsx:552
+#: src/components/SettingsDialog.tsx:590
 msgid "Cannons & Ordnance"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "Còmhdach a' chocpit"
 
@@ -669,7 +682,7 @@ msgstr "Còmhdach a' chocpit"
 msgid "Caption"
 msgstr "Caipsean"
 
-#: src/components/SettingsDialog.tsx:553
+#: src/components/SettingsDialog.tsx:591
 msgid "Carrier & Ambient"
 msgstr ""
 
@@ -726,11 +739,11 @@ msgstr "Sealladh tòir:"
 msgid "chat"
 msgstr "cabadaich"
 
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "Còmhradh"
 
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "Cabadaich ris a h-uile duine"
 
@@ -783,6 +796,7 @@ msgstr "Tagh cànan"
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
 #: src/components/Multiplayer.tsx:372
+#: src/components/SettingsDialog.tsx:677
 msgid "Clear"
 msgstr "Falamhaich"
 
@@ -900,7 +914,7 @@ msgstr "Gnìomhan beachd"
 msgid "Comments"
 msgstr "Beachdan"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:99
 msgid "Communication"
 msgstr "Conaltradh"
 
@@ -995,7 +1009,7 @@ msgstr "Cha b' urrainn dhuinn am maids a chruthachadh"
 msgid "Could not load this document. Please try again later."
 msgstr "Cha b' urrainn an sgrìobhainn seo a luchdachadh. Feuch ris a-rithist nas anmoiche."
 
-#: src/components/SettingsDialog.tsx:282
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "Cha b' urrainn a' phròifil a shàbhaladh"
 
@@ -1024,8 +1038,8 @@ msgstr "Cha b' urrainn ath-dhearbhadh a thòiseachadh. Feuch ris a-rithist."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Cha b' urrainn dearbhadh leis a' chunntas sin. Feuch ris a-rithist."
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "Frith-cheumannan"
 
@@ -1100,8 +1114,8 @@ msgstr "Gnàthaichte"
 msgid "CUT"
 msgstr "CUNNARTACH"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "Cuairtich an sealladh"
 
@@ -1225,8 +1239,8 @@ msgstr "Air a sgrios le teine"
 msgid "Details Panel"
 msgstr "Pannal mion-fhiosrachaidh"
 
-#: src/components/SettingsDialog.tsx:470
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:503
+#: src/components/SettingsDialog.tsx:567
 msgid "Detect"
 msgstr "Lorg"
 
@@ -1265,7 +1279,7 @@ msgstr "Tilg air falbh"
 msgid "Discard draft?"
 msgstr "A bheil thu airson an dreachd a thilgeil air falbh?"
 
-#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:387
 msgid "disconnected"
 msgstr "dì-cheangailte"
 
@@ -1278,11 +1292,12 @@ msgstr "Gun cheangal"
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: src/components/MissionSetup.tsx:1258
+#: src/components/SettingsDialog.tsx:773
 msgid "Dismiss"
 msgstr "Leig seachad"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "Ath-chraolaiche taisbeanaidh"
 
@@ -1290,13 +1305,13 @@ msgstr "Ath-chraolaiche taisbeanaidh"
 msgid "Displays the mobile sidebar."
 msgstr "Seallaidh am bàr-thaobh fòn-làimhe."
 
-#: src/components/SettingsDialog.tsx:842
+#: src/components/SettingsDialog.tsx:974
 msgid "Distance LOD"
 msgstr "LOD astair"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:985
+#: src/components/SettingsDialog.tsx:1117
 msgid "Done"
 msgstr "Deiseil"
 
@@ -1330,7 +1345,7 @@ msgstr "Dùblaichean"
 msgid "Duration"
 msgstr "Faid"
 
-#: src/components/SettingsDialog.tsx:836
+#: src/components/SettingsDialog.tsx:968
 msgid "Dynamic resolution"
 msgstr "Dùmhlachd ghluasadach"
 
@@ -1381,15 +1396,15 @@ msgstr "Deasaich a' chairt thaghte"
 msgid "Edit view"
 msgstr "Deasaich an sealladh"
 
-#: src/components/SettingsDialog.tsx:830
+#: src/components/SettingsDialog.tsx:962
 msgid "Effects & Toggles"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:941
 msgid "Effects detail"
 msgstr "Mion-fhiosrachadh èifeachdan"
 
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "Tilg a-mach"
 
@@ -1409,8 +1424,8 @@ msgstr "Còd puist-d"
 msgid "EMERG JETT"
 msgstr "LEIGEIL ÀS ÈIGINN"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "Leigeil às èiginn (cùm)"
 
@@ -1431,11 +1446,11 @@ msgstr "A' TOIRT IONNSAIGH"
 msgid "Engagement"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:550
+#: src/components/SettingsDialog.tsx:588
 msgid "Engine & Afterburner"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "Enhanced visuals"
 msgstr ""
 
@@ -1482,16 +1497,16 @@ msgstr "Leudaich"
 msgid "Expand sidebar"
 msgstr "Leudaich am bàr-taobh"
 
-#: src/components/SettingsDialog.tsx:370
+#: src/components/SettingsDialog.tsx:402
 msgid "Export"
 msgstr "Às-phortaich"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "Flapaichean a-mach"
 
-#: src/components/SettingsDialog.tsx:801
+#: src/components/SettingsDialog.tsx:933
 msgid "Exterior detail"
 msgstr "Mion-fhiosrachadh a-muigh"
 
@@ -1623,12 +1638,12 @@ msgstr "Crìochnaichte"
 msgid "fire"
 msgstr "loisg"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "Loisg arm"
 
-#: src/components/SettingsDialog.tsx:704
+#: src/components/SettingsDialog.tsx:836
 msgid "Fixed Flight Keys"
 msgstr ""
 
@@ -1660,7 +1675,7 @@ msgstr "Còmhnard"
 msgid "Flew into the sea"
 msgstr "Sgèith dhan mhuir"
 
-#: src/components/SettingsDialog.tsx:89
+#: src/components/SettingsDialog.tsx:94
 msgid "Flight"
 msgstr "Itealaich"
 
@@ -1701,7 +1716,7 @@ msgstr "Itealaich"
 msgid "Fly again"
 msgstr "Sgèith a-rithist"
 
-#: src/components/SettingsDialog.tsx:866
+#: src/components/SettingsDialog.tsx:998
 msgid "Framerate counter"
 msgstr ""
 
@@ -1751,7 +1766,7 @@ msgstr "AODION CONNAIDH"
 msgid "FUEL LO"
 msgstr "CONNADH ÌOSAL"
 
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "Probha connaidh"
 
@@ -1772,7 +1787,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Bodhaig"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Gain"
 msgstr "Neartachadh"
 
@@ -1784,7 +1799,7 @@ msgstr "uidheam"
 msgid "GEAR"
 msgstr "GÈAR"
 
-#: src/components/SettingsDialog.tsx:994
+#: src/components/SettingsDialog.tsx:1126
 msgid "General"
 msgstr "Coitcheann"
 
@@ -1814,11 +1829,11 @@ msgstr "Rach gu duilleag {pageNumber}"
 msgid "Go to previous page"
 msgstr "Rach dhan duilleag roimhe"
 
-#: src/components/SettingsDialog.tsx:998
+#: src/components/SettingsDialog.tsx:1130
 msgid "Graphics"
 msgstr "Grafaigs"
 
-#: src/components/SettingsDialog.tsx:761
+#: src/components/SettingsDialog.tsx:893
 msgid "Graphics Preset"
 msgstr ""
 
@@ -1856,11 +1871,11 @@ msgstr "Gunnaichean a-mhàin"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Tha luathachadh grafaigs bathar-chruaidh dheth — thoir sùil air roghainnean a' bhrabhsair no dràibhearan grafaigs."
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head"
 msgstr "Ceann"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head tracking"
 msgstr "Tracadh a' chinn"
 
@@ -1876,7 +1891,7 @@ msgstr "Falaich"
 msgid "Hide password"
 msgstr "Falaich am facal-faire"
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "High"
 msgstr "Àrd"
 
@@ -1910,11 +1925,11 @@ msgstr "CRÒCA"
 msgid "Hot"
 msgstr "Teth"
 
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "Tùs àirde HUD"
 
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "Simpleachadh HUD"
 
@@ -1931,7 +1946,7 @@ msgstr "Sealladair dhealbhan: {0}"
 msgid "Imperial"
 msgstr "Ìmpireach"
 
-#: src/components/SettingsDialog.tsx:374
+#: src/components/SettingsDialog.tsx:406
 msgid "Import"
 msgstr "Ion-phortaich"
 
@@ -1952,7 +1967,7 @@ msgstr "Avatar litrichean-toisich"
 msgid "Initials avatar for {name}"
 msgstr "Avatar litrichean-toisich airson {name}"
 
-#: src/components/SettingsDialog.tsx:336
+#: src/components/SettingsDialog.tsx:368
 msgid "Input Hardware"
 msgstr ""
 
@@ -1980,7 +1995,7 @@ msgstr "Taga mì-dhligheach: litrichean, àireamhan, beàrnan, tàthanan agus sl
 msgid "Invalid verification code"
 msgstr "Còd dearbhaidh mì-dhligheach"
 
-#: src/components/SettingsDialog.tsx:382
+#: src/components/SettingsDialog.tsx:414
 msgid "Invert pitch axis"
 msgstr ""
 
@@ -2002,13 +2017,13 @@ msgstr "Do-leònta (cluicheadairean daonna a-mhàin)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Tha coltas nach eil an duilleag a tha thu a' sireadh <0/>ann no gun deach a toirt air falbh."
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "Inneal-bacaidh"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "Leig às na tancaichean"
 
@@ -2043,7 +2058,7 @@ msgstr "Còmhrag-dithis — 1v1, buannaichidh a' chiad mharbhadh"
 msgid "Joust against bot"
 msgstr "Còmhrag-dithis an aghaidh a' bhot"
 
-#: src/components/SettingsDialog.tsx:1006
+#: src/components/SettingsDialog.tsx:1138
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -2059,7 +2074,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Ath-ghoiridean a' mheur-chlàir"
 
-#: src/components/SettingsDialog.tsx:1010
+#: src/components/SettingsDialog.tsx:1142
 msgid "Keys"
 msgstr "Iuchraichean"
 
@@ -2088,8 +2103,8 @@ msgstr "TEINE EINNS CLÌ"
 msgid "L GEAR"
 msgstr "ROTH CLÌ"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "Uidheam-laighe"
 
@@ -2106,8 +2121,8 @@ msgstr "FADALACH"
 msgid "Lateral asymmetry"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "Cur air bhog (catapult)"
 
@@ -2172,8 +2187,8 @@ msgstr "Soilleir"
 msgid "lights"
 msgstr "solais"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "Solais"
 
@@ -2233,35 +2248,35 @@ msgstr "Chaidh clàradh a-mach gu soirbheachail"
 msgid "Logging out…"
 msgstr "A' clàradh a-mach…"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:112
 msgid "Look"
 msgstr "Seall"
 
-#: src/components/SettingsDialog.tsx:710
+#: src/components/SettingsDialog.tsx:842
 msgid "Look / orbit"
 msgstr "Seall / cuairtich"
 
-#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "Seall air an targaid"
 
-#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "Seall sìos"
 
-#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "Seall gu clì"
 
-#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "Seall gu deas"
 
-#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "Seall suas"
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Low"
 msgstr "Ìosal"
 
@@ -2291,7 +2306,7 @@ msgstr "Le làimh"
 msgid "map"
 msgstr "mapa"
 
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "Mapa"
 
@@ -2301,16 +2316,16 @@ msgstr "Mapa"
 msgid "Mark all as read"
 msgstr "Comharraich gach nì mar leughte"
 
-#: src/components/SettingsDialog.tsx:569
+#: src/components/SettingsDialog.tsx:607
 msgid "Master Audio Output"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:580
+#: src/components/SettingsDialog.tsx:618
 msgid "Master Bus"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:549
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:587
+#: src/components/SettingsDialog.tsx:614
 msgid "Master Volume"
 msgstr ""
 
@@ -2322,7 +2337,7 @@ msgstr "Seòrsa maidse"
 msgid "Matches"
 msgstr "Geamannan"
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Max fidelity"
 msgstr ""
 
@@ -2335,7 +2350,7 @@ msgid "MCP server"
 msgstr "Frithealaiche MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Medium"
 msgstr "Meadhanach"
 
@@ -2344,8 +2359,8 @@ msgid "menu"
 msgstr "clàr-taice"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "Clàr-taice"
 
@@ -2428,7 +2443,7 @@ msgstr "DiLuain"
 msgid "More options"
 msgstr "Barrachd roghainnean"
 
-#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:503
 msgid "Move…"
 msgstr ""
 
@@ -2502,6 +2517,10 @@ msgstr "Chan eil beachdan ann fhathast"
 msgid "No connected accounts"
 msgstr "Chan eil cunntasan ceangailte"
 
+#: src/components/SettingsDialog.tsx:692
+msgid "No control matches “{query}”."
+msgstr ""
+
 #: src/components/MatchHistory.tsx:125
 msgid "No flights yet"
 msgstr "Chan eil itealanan ann fhathast"
@@ -2518,7 +2537,7 @@ msgstr "Chan eil buidhnean rim faotainn"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Chan urrainnear seòrsa nì sam bith a chruthachadh fhathast. Cruthaich na nithean pàrant riatanach an toiseach."
 
-#: src/components/SettingsDialog.tsx:362
+#: src/components/SettingsDialog.tsx:394
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Cha deach joystick a lorg — brùth putan sam bith air gus a dhùsgadh."
 
@@ -2621,9 +2640,9 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:120
 #: src/components/MissionSetup.tsx:284
 #: src/components/MissionSetup.tsx:1077
-#: src/components/SettingsDialog.tsx:435
-#: src/components/SettingsDialog.tsx:509
-#: src/components/SettingsDialog.tsx:687
+#: src/components/SettingsDialog.tsx:468
+#: src/components/SettingsDialog.tsx:544
+#: src/components/SettingsDialog.tsx:817
 msgid "None"
 msgstr "Chan eil gin"
 
@@ -2635,7 +2654,7 @@ msgstr "Àbhaisteach"
 msgid "NOSE GEAR"
 msgstr "ROTH SRÒN"
 
-#: src/components/SettingsDialog.tsx:295
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "Chan e pròifil bhata-smachd a th' ann"
 
@@ -2681,7 +2700,7 @@ msgstr "Neach-tòiseachaidh"
 msgid "Number"
 msgstr "Àireamh"
 
-#: src/components/SettingsDialog.tsx:817
+#: src/components/SettingsDialog.tsx:949
 msgid "Ocean detail"
 msgstr "Mion-fhiosrachadh cuain"
 
@@ -2789,8 +2808,8 @@ msgstr "cuairt"
 msgid "Other"
 msgstr "Eile"
 
-#: src/components/SettingsDialog.tsx:142
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "Thar crìoch G"
 
@@ -2815,7 +2834,7 @@ msgstr "Duilleag {currentPage} à {totalPages}"
 msgid "Parent"
 msgstr "Pàrant"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "Breig-pàircidh"
 
@@ -2839,7 +2858,7 @@ msgstr "Pàtran (regex)"
 msgid "Paused"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Performance priority"
 msgstr ""
 
@@ -2864,7 +2883,7 @@ msgstr "Pìleat"
 msgid "PILOT DOWN"
 msgstr "PÌLEAT MARBH"
 
-#: src/components/SettingsDialog.tsx:898
+#: src/components/SettingsDialog.tsx:1030
 msgid "Pilot Identity"
 msgstr ""
 
@@ -2876,15 +2895,15 @@ msgstr "Pìleat air a mharbhadh"
 msgid "pitch"
 msgstr "claonadh"
 
-#: src/components/SettingsDialog.tsx:99
+#: src/components/SettingsDialog.tsx:107
 msgid "Pitch"
 msgstr "Claonadh"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "Sròn sìos"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "Sròn suas"
 
@@ -2922,7 +2941,7 @@ msgstr "Postaichean"
 msgid "Posts and comments"
 msgstr "Postaichean is beachdan"
 
-#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:797
 msgid "Press a key…"
 msgstr "Brùth iuchair…"
 
@@ -2930,7 +2949,7 @@ msgstr "Brùth iuchair…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "BRÙTH ENTER GUS FALBH"
 
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:567
 msgid "Press…"
 msgstr ""
 
@@ -2952,8 +2971,8 @@ msgstr "'Ga phròiseasadh…"
 msgid "Profile"
 msgstr "Pròifil"
 
-#: src/components/SettingsDialog.tsx:281
-#: src/components/SettingsDialog.tsx:293
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Chaidh a' phròifil a shàbhaladh"
 
@@ -2986,8 +3005,8 @@ msgstr "TEINE EINNS DEAS"
 msgid "R GEAR"
 msgstr "ROTH DEAS"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "Radar sàmhach"
 
@@ -3024,7 +3043,7 @@ msgstr "Air a mholadh"
 msgid "Reconnecting ({retries})..."
 msgstr "Ag ath-cheangal ({retries})..."
 
-#: src/components/SettingsDialog.tsx:923
+#: src/components/SettingsDialog.tsx:1055
 msgid "Record flights automatically"
 msgstr ""
 
@@ -3136,7 +3155,7 @@ msgstr "Cuir ainm ùr air colbh a' bhùird seo"
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Reandaradh le <0>three.js</0> (ceadachas MIT)."
 
-#: src/components/SettingsDialog.tsx:786
+#: src/components/SettingsDialog.tsx:918
 msgid "Rendering Detail"
 msgstr ""
 
@@ -3160,7 +3179,7 @@ msgstr "Cuir am post-d a-rithist"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:981
+#: src/components/SettingsDialog.tsx:1113
 msgid "Reset"
 msgstr "Ath-shuidhich"
 
@@ -3173,23 +3192,23 @@ msgstr "Ath-shuidhich {title}"
 msgid "Reset all settings to default values"
 msgstr "Ath-shuidhich a h-uile roghainn chun a' bhun-tuiteamais"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "Ath-shuidhich prìomh rabhadh"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "Ath-shuidhich an trim"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:227
-#: src/components/SettingsDialog.tsx:709
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:841
 msgid "Reset view"
 msgstr "Ath-shuidhich an sealladh"
 
-#: src/components/SettingsDialog.tsx:791
+#: src/components/SettingsDialog.tsx:923
 msgid "Resolution"
 msgstr "Rùn"
 
@@ -3213,8 +3232,8 @@ msgstr "Toradh"
 msgid "Resume"
 msgstr "Lean ort"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "Flapaichean a-steach"
 
@@ -3222,7 +3241,7 @@ msgstr "Flapaichean a-steach"
 msgid "Retry"
 msgstr "Feuch ris a-rithist"
 
-#: src/components/SettingsDialog.tsx:453
+#: src/components/SettingsDialog.tsx:486
 msgid "Reversed"
 msgstr "Tionndaichte"
 
@@ -3255,15 +3274,15 @@ msgstr "Bàrr na sgèithe deise"
 msgid "roll"
 msgstr "roiligeadh"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:108
 msgid "Roll"
 msgstr "Roiligeadh"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "Rolladh gu clì"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "Rolladh gu deas"
 
@@ -3318,6 +3337,11 @@ msgstr "Ìre na mara"
 #: ../../../lib/web/src/components/search.tsx:18
 msgid "Search"
 msgstr "Lorg"
+
+#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:668
+msgid "Search controls"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/command.tsx:35
 msgid "Search for a command to run..."
@@ -3439,8 +3463,8 @@ msgstr "Tagh comhair na làraich"
 msgid "Select theme preference"
 msgstr "Tagh roghainn an ùrlair"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "Tagh arm"
 
@@ -3514,7 +3538,7 @@ msgstr "SEISEAN SEACHAD"
 msgid "Session expired. Please log in again."
 msgstr "Dh'fhalbh an ùine air an t-seisean. Log a-steach a-rithist."
 
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Set"
 msgstr "Suidhich"
 
@@ -3527,12 +3551,12 @@ msgstr "Suidhich tùs is ceann-uidhe"
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:450
 #: src/components/MissionSetup.tsx:1289
-#: src/components/SettingsDialog.tsx:964
-#: src/components/SettingsDialog.tsx:991
+#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1123
 msgid "Settings"
 msgstr "Roghainnean"
 
-#: src/components/SettingsDialog.tsx:848
+#: src/components/SettingsDialog.tsx:980
 msgid "Shadows"
 msgstr "Sgàilean"
 
@@ -3597,11 +3621,11 @@ msgstr "Seòrsaich"
 msgid "Sortie history & replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:918
+#: src/components/SettingsDialog.tsx:1050
 msgid "Sortie Recording"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:1002
+#: src/components/SettingsDialog.tsx:1134
 msgid "Sound"
 msgstr "Fuaim"
 
@@ -3629,9 +3653,9 @@ msgstr "BRADH"
 msgid "speed brake"
 msgstr "brèic adhair"
 
-#: src/components/SettingsDialog.tsx:103
-#: src/components/SettingsDialog.tsx:140
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "Brèic adhair"
 
@@ -3844,17 +3868,17 @@ msgstr "Cha deach an duilleag seo a chruthachadh fhathast."
 msgid "throttle"
 msgstr "cumhachd"
 
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:110
 msgid "Throttle"
 msgstr "Sgòrnan"
 
-#: src/components/SettingsDialog.tsx:146
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "Sgòrnan sìos"
 
-#: src/components/SettingsDialog.tsx:145
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "Sgòrnan suas"
 
@@ -3930,7 +3954,7 @@ msgstr "Cus iarrtasan"
 msgid "Top"
 msgstr "Mullach"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:992
 msgid "Tracers"
 msgstr "Peilearan-lorgaidh"
 
@@ -3942,31 +3966,31 @@ msgstr "A' siubhal"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx:90
+#: src/components/SettingsDialog.tsx:95
 msgid "Trim"
 msgstr "Trim"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:113
 msgid "Trim hat"
 msgstr "Ad trim"
 
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "Trim: sròn sìos"
 
-#: src/components/SettingsDialog.tsx:147
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "Trim: sròn suas"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "Trim: rolladh clì"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "Trim: rolladh deas"
 
@@ -4006,7 +4030,7 @@ msgstr "Sgrìobh airson cleachdaichean a lorg"
 msgid "Type to search..."
 msgstr "Sgrìobh airson lorg..."
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -4031,13 +4055,13 @@ msgstr "Inntrigeadh gun chead"
 msgid "Unavailable"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "Fuasgail an lorgair"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "Neo-shònraich targaid"
 
@@ -4160,7 +4184,7 @@ msgid "view"
 msgstr "sealladh"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/SettingsDialog.tsx:93
+#: src/components/SettingsDialog.tsx:98
 msgid "View"
 msgstr "Seall"
 
@@ -4177,7 +4201,7 @@ msgstr "Seall a h-uile brath"
 msgid "View controls"
 msgstr "Smachdan seallaidh"
 
-#: src/components/SettingsDialog.tsx:708
+#: src/components/SettingsDialog.tsx:840
 msgid "Views"
 msgstr "Seallaidhean"
 
@@ -4215,12 +4239,12 @@ msgstr "Innsidh sinn dhut nuair a thachras rudeigin cudromach."
 msgid "weapon"
 msgstr "arm"
 
-#: src/components/SettingsDialog.tsx:106
+#: src/components/SettingsDialog.tsx:114
 msgid "Weapon select hat"
 msgstr "Ad taghadh airm"
 
 #: src/components/Multiplayer.tsx:387
-#: src/components/SettingsDialog.tsx:91
+#: src/components/SettingsDialog.tsx:96
 msgid "Weapons"
 msgstr "Airm"
 
@@ -4236,17 +4260,17 @@ msgstr "Tha an làrach-lìn fo obair-càraidh!"
 msgid "Wednesday"
 msgstr "Diciadain"
 
-#: src/components/SettingsDialog.tsx:141
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "Brèicichean cuibhle"
 
-#: src/components/SettingsDialog.tsx:551
+#: src/components/SettingsDialog.tsx:589
 msgid "Wind & Cockpit Airframe"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "Pasgadh sgiathan"
 
@@ -4267,17 +4291,17 @@ msgstr "Cha ruigear frithealaiche an t-saoghail"
 msgid "yaw"
 msgstr "fiaradh"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:109
 msgid "Yaw"
 msgstr "Tionndadh"
 
-#: src/components/SettingsDialog.tsx:143
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "Sròn gu clì"
 
-#: src/components/SettingsDialog.tsx:144
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "Sròn gu deas"
 
@@ -4321,14 +4345,14 @@ msgstr "Thèid an teacsa 's na ceanglachain agad air chall."
 msgid "Your text will be lost."
 msgstr "Thèid an teacsa agad air chall."
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:115
 msgid "Zoom"
 msgstr "Sùm"
 
-#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "Sùm a-steach"
 
-#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "Sùm a-mach"

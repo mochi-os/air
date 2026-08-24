@@ -70,6 +70,17 @@ msgstr "{0} lb aswan hatun kachariy llasaqmanta"
 msgid "{0} option preview"
 msgstr "{0} akllanapa ñawpaq qhaway"
 
+#. placeholder {0}: pretty(taken.chord)
+#: src/components/SettingsDialog.tsx:766
+msgid "{0} was already taken, and that control is now unbound."
+msgstr ""
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(lost.label)
+#: src/components/SettingsDialog.tsx:762
+msgid "{0} was on {1}, which is now unbound."
+msgstr ""
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
 #: src/components/Multiplayer.tsx:556
@@ -220,13 +231,13 @@ msgstr "Cuenta takyachisqa"
 msgid "Ace"
 msgstr "As"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "Blancota hap'iy"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "Hap'iy ñan"
 
@@ -322,7 +333,7 @@ msgstr "Yapaspa..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Llinp'i hinaspa kamariyta munasqaykiman hina allichay."
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:986
 msgid "Afterburner"
 msgstr "Postquemador"
 
@@ -330,7 +341,7 @@ msgstr "Postquemador"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:92
+#: src/components/SettingsDialog.tsx:97
 msgid "Aircraft"
 msgstr "Avión"
 
@@ -384,8 +395,8 @@ msgstr "Pipas yaykusqa"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Kay feed-ta suscribisqa tukuy imapas manaña chaskinqachu. Chaymanta musuq URL-ta copiayta atinki."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "Asuykuy kallpa (ATC)"
 
@@ -414,8 +425,8 @@ msgstr "Lluqsiyta munanki? Kutichiy yaykunaykipaq cuenta-yki-pi."
 msgid "Armament & Stores"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "Sayachiq ganchu"
 
@@ -439,7 +450,7 @@ msgstr "Comentario archivos churay"
 msgid "Attach reply files"
 msgstr "Kutichiy archivos churay"
 
-#: src/components/SettingsDialog.tsx:594
+#: src/components/SettingsDialog.tsx:632
 msgid "Audio Mixer Channels"
 msgstr ""
 
@@ -468,11 +479,12 @@ msgstr "{name} avatar"
 msgid "Avionics, HOTAS & audio"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:441
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:474
 msgid "Axis {i}"
 msgstr "Eje {i}"
 
-#: src/components/SettingsDialog.tsx:391
+#: src/components/SettingsDialog.tsx:424
 msgid "Axis Calibration & Mapping"
 msgstr ""
 
@@ -491,7 +503,7 @@ msgstr "Kutichiy"
 msgid "Back to home"
 msgstr "Wasiman kutiy"
 
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Balanced flight"
 msgstr ""
 
@@ -523,7 +535,7 @@ msgstr "Allin llusk'ay (motorkuna wañusqa)"
 msgid "Best sustained turn speed"
 msgstr "Allin takyasqa muyuy velocidad"
 
-#: src/components/SettingsDialog.tsx:554
+#: src/components/SettingsDialog.tsx:592
 msgid "Betty & RWR Alerts"
 msgstr ""
 
@@ -594,11 +606,12 @@ msgstr "KUTIRIY WAKICHISQA KASPA"
 msgid "Browser notifications"
 msgstr "Browser willaykuna"
 
-#: src/components/SettingsDialog.tsx:515
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:550
 msgid "Button {i}"
 msgstr "Botón {i}"
 
-#: src/components/SettingsDialog.tsx:481
+#: src/components/SettingsDialog.tsx:516
 msgid "Button Mappings"
 msgstr ""
 
@@ -615,15 +628,15 @@ msgid "CALL THE BALL"
 msgstr "PELOTA WILLAY"
 
 #: src/components/Multiplayer.tsx:311
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:1034
 msgid "Callsign"
 msgstr "Waqyana suti"
 
-#: src/components/SettingsDialog.tsx:711
+#: src/components/SettingsDialog.tsx:843
 msgid "Camera distance"
 msgstr "Cámarapa karuynin"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Camera unavailable"
 msgstr "Cámara mana kanchu"
 
@@ -644,7 +657,7 @@ msgstr "Cámara mana kanchu"
 #: src/components/GameCanvas.tsx:522
 #: src/components/Multiplayer.tsx:282
 #: src/components/Multiplayer.tsx:585
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Cancel"
 msgstr "Mana ruway"
 
@@ -656,11 +669,11 @@ msgstr "Comentario mana ruway"
 msgid "Cancel reply"
 msgstr "Kutichiy mana ruway"
 
-#: src/components/SettingsDialog.tsx:552
+#: src/components/SettingsDialog.tsx:590
 msgid "Cannons & Ordnance"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "Kabina qata"
 
@@ -669,7 +682,7 @@ msgstr "Kabina qata"
 msgid "Caption"
 msgstr "Sut'inchay"
 
-#: src/components/SettingsDialog.tsx:553
+#: src/components/SettingsDialog.tsx:591
 msgid "Carrier & Ambient"
 msgstr ""
 
@@ -726,11 +739,11 @@ msgstr "Qatiy qhaway:"
 msgid "chat"
 msgstr "chat"
 
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "Chat"
 
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "Llapanwan chat"
 
@@ -783,6 +796,7 @@ msgstr "Simi akllay"
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
 #: src/components/Multiplayer.tsx:372
+#: src/components/SettingsDialog.tsx:677
 msgid "Clear"
 msgstr "Pichay"
 
@@ -900,7 +914,7 @@ msgstr "Rimanakuy ruraykuna"
 msgid "Comments"
 msgstr "Comentarios"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:99
 msgid "Communication"
 msgstr "Rimanakuy"
 
@@ -995,7 +1009,7 @@ msgstr "Manam pukllayta ruray atikurqachu"
 msgid "Could not load this document. Please try again later."
 msgstr "Kay documento mana cargasqa karqachu. Qhipaman ruway."
 
-#: src/components/SettingsDialog.tsx:282
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "Manam profilta waqaychay atinchu"
 
@@ -1024,8 +1038,8 @@ msgstr "Kutin yaykuy mana qallariy atikurqanchu. Ama hina kaspa watiqmanta ruway
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Chay cuentawanqa mana takyachiyta atikurqachu. Ama hina kaspa watiqmanta llamk'apuy."
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "Amachana ruraykuna"
 
@@ -1100,8 +1114,8 @@ msgstr "Sapankuq"
 msgid "CUT"
 msgstr "PELIGROSO"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "Qhaway tikray"
 
@@ -1225,8 +1239,8 @@ msgstr "Ninawan tukuchisqa"
 msgid "Details Panel"
 msgstr "Willariykuna Panel"
 
-#: src/components/SettingsDialog.tsx:470
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:503
+#: src/components/SettingsDialog.tsx:567
 msgid "Detect"
 msgstr "Tariy"
 
@@ -1265,7 +1279,7 @@ msgstr "Wikch'uy"
 msgid "Discard draft?"
 msgstr "¿Qillqa qallariyta wikch'unkichu?"
 
-#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:387
 msgid "disconnected"
 msgstr "t'aqasqa"
 
@@ -1278,11 +1292,12 @@ msgstr "Mana tinkichisqa"
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: src/components/MissionSetup.tsx:1258
+#: src/components/SettingsDialog.tsx:773
 msgid "Dismiss"
 msgstr "Wischuy"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "Pantalla kutipaq"
 
@@ -1290,13 +1305,13 @@ msgstr "Pantalla kutipaq"
 msgid "Displays the mobile sidebar."
 msgstr "Movil sidebar qhawachin."
 
-#: src/components/SettingsDialog.tsx:842
+#: src/components/SettingsDialog.tsx:974
 msgid "Distance LOD"
 msgstr "Karu LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:985
+#: src/components/SettingsDialog.tsx:1117
 msgid "Done"
 msgstr "Tukurqun"
 
@@ -1330,7 +1345,7 @@ msgstr "Iskaynisqakuna"
 msgid "Duration"
 msgstr "Pacha unayninn"
 
-#: src/components/SettingsDialog.tsx:836
+#: src/components/SettingsDialog.tsx:968
 msgid "Dynamic resolution"
 msgstr "Kuyuq resolución"
 
@@ -1381,15 +1396,15 @@ msgstr "Akllasqa cardta hukchay"
 msgid "Edit view"
 msgstr "Qhawayta hukchay"
 
-#: src/components/SettingsDialog.tsx:830
+#: src/components/SettingsDialog.tsx:962
 msgid "Effects & Toggles"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:941
 msgid "Effects detail"
 msgstr "Efectokunap sut'inchaynin"
 
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "Eyectay"
 
@@ -1409,8 +1424,8 @@ msgstr "Email código"
 msgid "EMERG JETT"
 msgstr "USQHAY WIKCH'UY"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "Usqhay wikch'uy (hap'iy)"
 
@@ -1431,11 +1446,11 @@ msgstr "ATAKACHKANI"
 msgid "Engagement"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:550
+#: src/components/SettingsDialog.tsx:588
 msgid "Engine & Afterburner"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "Enhanced visuals"
 msgstr ""
 
@@ -1482,16 +1497,16 @@ msgstr "Mastʼariy"
 msgid "Expand sidebar"
 msgstr "Sidebarta kichay"
 
-#: src/components/SettingsDialog.tsx:370
+#: src/components/SettingsDialog.tsx:402
 msgid "Export"
 msgstr "Hurquy"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "Flaps hurquy"
 
-#: src/components/SettingsDialog.tsx:801
+#: src/components/SettingsDialog.tsx:933
 msgid "Exterior detail"
 msgstr "Hawa detalle"
 
@@ -1623,12 +1638,12 @@ msgstr "Tukupun"
 msgid "fire"
 msgstr "t'uqyachiy"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "Armata t'uqyachiy"
 
-#: src/components/SettingsDialog.tsx:704
+#: src/components/SettingsDialog.tsx:836
 msgid "Fixed Flight Keys"
 msgstr ""
 
@@ -1660,7 +1675,7 @@ msgstr "Pampa"
 msgid "Flew into the sea"
 msgstr "Mama quchaman phawaykusqa"
 
-#: src/components/SettingsDialog.tsx:89
+#: src/components/SettingsDialog.tsx:94
 msgid "Flight"
 msgstr "Phaway"
 
@@ -1701,7 +1716,7 @@ msgstr "Phaway"
 msgid "Fly again"
 msgstr "Wakmanta phaway"
 
-#: src/components/SettingsDialog.tsx:866
+#: src/components/SettingsDialog.tsx:998
 msgid "Framerate counter"
 msgstr ""
 
@@ -1751,7 +1766,7 @@ msgstr "COMB SUT'UY"
 msgid "FUEL LO"
 msgstr "COMBUSTIBLE PISI"
 
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "Combustible probe"
 
@@ -1772,7 +1787,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Cuerpo"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Gain"
 msgstr "Kallpachay"
 
@@ -1784,7 +1799,7 @@ msgstr "tren"
 msgid "GEAR"
 msgstr "TREN"
 
-#: src/components/SettingsDialog.tsx:994
+#: src/components/SettingsDialog.tsx:1126
 msgid "General"
 msgstr "Llapanpi"
 
@@ -1814,11 +1829,11 @@ msgstr "{pageNumber} p’anqaman riy"
 msgid "Go to previous page"
 msgstr "Ñawpa paginaman riy"
 
-#: src/components/SettingsDialog.tsx:998
+#: src/components/SettingsDialog.tsx:1130
 msgid "Graphics"
 msgstr "Gráficos"
 
-#: src/components/SettingsDialog.tsx:761
+#: src/components/SettingsDialog.tsx:893
 msgid "Graphics Preset"
 msgstr ""
 
@@ -1856,11 +1871,11 @@ msgstr "Kañunkunalla"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Hardware gráficos utqaykachiyqa wañusqam — navegadorpa configuracionninta utaq controladores gráficos nisqata qhaway."
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head"
 msgstr "Uma"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head tracking"
 msgstr "Uma qatipay"
 
@@ -1876,7 +1891,7 @@ msgstr "Pakay"
 msgid "Hide password"
 msgstr "Yaykuna rimayta pakay"
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "High"
 msgstr "Hatun"
 
@@ -1910,11 +1925,11 @@ msgstr "GANCHU"
 msgid "Hot"
 msgstr "Q'uñi"
 
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "HUD altitud pukyu"
 
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "HUD ch'uyanchay"
 
@@ -1931,7 +1946,7 @@ msgstr "Rikcha qhawana: {0}"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/SettingsDialog.tsx:374
+#: src/components/SettingsDialog.tsx:406
 msgid "Import"
 msgstr "Yaykuchiy"
 
@@ -1952,7 +1967,7 @@ msgstr "Qallariy sananchakuna avatar"
 msgid "Initials avatar for {name}"
 msgstr "{name} qallariy sananchakuna avatar"
 
-#: src/components/SettingsDialog.tsx:336
+#: src/components/SettingsDialog.tsx:368
 msgid "Input Hardware"
 msgstr ""
 
@@ -1980,7 +1995,7 @@ msgstr "Mana allin etiqueta: sananchakunalla, yupaykuna, ch'usaqkuna, guionkuna,
 msgid "Invalid verification code"
 msgstr "Mana allin sut'inchay código"
 
-#: src/components/SettingsDialog.tsx:382
+#: src/components/SettingsDialog.tsx:414
 msgid "Invert pitch axis"
 msgstr ""
 
@@ -2002,13 +2017,13 @@ msgstr "Mana k'irichina (runa pukllaqkunalla)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Maskasqayki p'anqaqa <0/>manam kanchu icha qichusqam."
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "Ch'aqwa kachaq"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "Tanquekunata wikch'uy"
 
@@ -2043,7 +2058,7 @@ msgstr "Maqanakuy — 1v1, ñawpaqta urmachiq llallin"
 msgid "Joust against bot"
 msgstr "Maqanakuy botwan"
 
-#: src/components/SettingsDialog.tsx:1006
+#: src/components/SettingsDialog.tsx:1138
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -2059,7 +2074,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Teclado pisi ñankuna"
 
-#: src/components/SettingsDialog.tsx:1010
+#: src/components/SettingsDialog.tsx:1142
 msgid "Keys"
 msgstr "Teclakuna"
 
@@ -2088,8 +2103,8 @@ msgstr "LLUQ'I MOTOR NINA"
 msgid "L GEAR"
 msgstr "LLUQ'I TREN"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "Uraykuy muyuq"
 
@@ -2106,8 +2121,8 @@ msgstr "QHIPA"
 msgid "Lateral asymmetry"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "Wikch'uy (q'urawa)"
 
@@ -2172,8 +2187,8 @@ msgstr "Sut'i"
 msgid "lights"
 msgstr "k'anchaykuna"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "K'anchaykuna"
 
@@ -2233,35 +2248,35 @@ msgstr "Allinta lluqsirqun"
 msgid "Logging out…"
 msgstr "Lluqsichkan…"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:112
 msgid "Look"
 msgstr "Qhaway"
 
-#: src/components/SettingsDialog.tsx:710
+#: src/components/SettingsDialog.tsx:842
 msgid "Look / orbit"
 msgstr "Qhaway / muyuy"
 
-#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "Chiqaqta qhaway"
 
-#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "Urayman qhaway"
 
-#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "Lluq'iman qhaway"
 
-#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "Pañaman qhaway"
 
-#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "Hanaqman qhaway"
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Low"
 msgstr "Pisi"
 
@@ -2291,7 +2306,7 @@ msgstr "Maki ruway"
 msgid "map"
 msgstr "mapa"
 
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "Mapa"
 
@@ -2301,16 +2316,16 @@ msgstr "Mapa"
 msgid "Mark all as read"
 msgstr "Llapanta ñawinchasqaman churay"
 
-#: src/components/SettingsDialog.tsx:569
+#: src/components/SettingsDialog.tsx:607
 msgid "Master Audio Output"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:580
+#: src/components/SettingsDialog.tsx:618
 msgid "Master Bus"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:549
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:587
+#: src/components/SettingsDialog.tsx:614
 msgid "Master Volume"
 msgstr ""
 
@@ -2322,7 +2337,7 @@ msgstr "Pukllay laya"
 msgid "Matches"
 msgstr "Pukllaykuna"
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Max fidelity"
 msgstr ""
 
@@ -2335,7 +2350,7 @@ msgid "MCP server"
 msgstr "MCP servidor"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Medium"
 msgstr "Chawpi"
 
@@ -2344,8 +2359,8 @@ msgid "menu"
 msgstr "menú"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "Menú"
 
@@ -2428,7 +2443,7 @@ msgstr "Lunes"
 msgid "More options"
 msgstr "Astawan akllaykuna"
 
-#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:503
 msgid "Move…"
 msgstr ""
 
@@ -2502,6 +2517,10 @@ msgstr "Manaraq comentariokuna"
 msgid "No connected accounts"
 msgstr "Mana huñusqa cuentakuna"
 
+#: src/components/SettingsDialog.tsx:692
+msgid "No control matches “{query}”."
+msgstr ""
+
 #: src/components/MatchHistory.tsx:125
 msgid "No flights yet"
 msgstr "Manaraq phawaykuna kanchu"
@@ -2518,7 +2537,7 @@ msgstr "Mana grupokuna atikuq"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Manaraq item niraqkuna ruwakuyta atin. Ñawpaqta munasqa parent itemkunata ruway."
 
-#: src/components/SettingsDialog.tsx:362
+#: src/components/SettingsDialog.tsx:394
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Mana joystick tarisqachu — rikch'arichinapaq ima botonnintapas ñit'iy."
 
@@ -2621,9 +2640,9 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:120
 #: src/components/MissionSetup.tsx:284
 #: src/components/MissionSetup.tsx:1077
-#: src/components/SettingsDialog.tsx:435
-#: src/components/SettingsDialog.tsx:509
-#: src/components/SettingsDialog.tsx:687
+#: src/components/SettingsDialog.tsx:468
+#: src/components/SettingsDialog.tsx:544
+#: src/components/SettingsDialog.tsx:817
 msgid "None"
 msgstr "Mana"
 
@@ -2635,7 +2654,7 @@ msgstr "Walliq"
 msgid "NOSE GEAR"
 msgstr "SINQA TREN"
 
-#: src/components/SettingsDialog.tsx:295
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "Manam joystick profilchu"
 
@@ -2681,7 +2700,7 @@ msgstr "Qallariq"
 msgid "Number"
 msgstr "Yupay"
 
-#: src/components/SettingsDialog.tsx:817
+#: src/components/SettingsDialog.tsx:949
 msgid "Ocean detail"
 msgstr "Mama qucha detalle"
 
@@ -2789,8 +2808,8 @@ msgstr "muyuy"
 msgid "Other"
 msgstr "Huk"
 
-#: src/components/SettingsDialog.tsx:142
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "G saywata pasay"
 
@@ -2815,7 +2834,7 @@ msgstr "{totalPages} p'anqamanta {currentPage}"
 msgid "Parent"
 msgstr "Yaya"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "Sayana freno"
 
@@ -2839,7 +2858,7 @@ msgstr "Patrón (regex)"
 msgid "Paused"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Performance priority"
 msgstr ""
 
@@ -2864,7 +2883,7 @@ msgstr "Piloto"
 msgid "PILOT DOWN"
 msgstr "PILOTO WAÑUSQA"
 
-#: src/components/SettingsDialog.tsx:898
+#: src/components/SettingsDialog.tsx:1030
 msgid "Pilot Identity"
 msgstr ""
 
@@ -2876,15 +2895,15 @@ msgstr "Piloto wañuchisqa"
 msgid "pitch"
 msgstr "k'umuy"
 
-#: src/components/SettingsDialog.tsx:99
+#: src/components/SettingsDialog.tsx:107
 msgid "Pitch"
 msgstr "Pitch"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "Pitch urayman"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "Pitch hanaqman"
 
@@ -2922,7 +2941,7 @@ msgstr "Qillqakuna"
 msgid "Posts and comments"
 msgstr "Qillqakuna comentariokunawan"
 
-#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:797
 msgid "Press a key…"
 msgstr "Huk teclata ñit'iy…"
 
@@ -2930,7 +2949,7 @@ msgstr "Huk teclata ñit'iy…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "PHAWANAPAQ ENTER ÑIT'IY"
 
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:567
 msgid "Press…"
 msgstr ""
 
@@ -2952,8 +2971,8 @@ msgstr "Ruwakuchkan…"
 msgid "Profile"
 msgstr "Perfil"
 
-#: src/components/SettingsDialog.tsx:281
-#: src/components/SettingsDialog.tsx:293
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Perfil waqaychasqa"
 
@@ -2986,8 +3005,8 @@ msgstr "PAÑA MOTOR NINA"
 msgid "R GEAR"
 msgstr "PAÑA TREN"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "Radar ch'in"
 
@@ -3024,7 +3043,7 @@ msgstr "Munasqa"
 msgid "Reconnecting ({retries})..."
 msgstr "Kutimanta t'inkichkan ({retries})..."
 
-#: src/components/SettingsDialog.tsx:923
+#: src/components/SettingsDialog.tsx:1055
 msgid "Record flights automatically"
 msgstr ""
 
@@ -3136,7 +3155,7 @@ msgstr "Kay tablero columnaman huk sutin churay"
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Renderizado <0>three.js</0>-wan (MIT licencia)."
 
-#: src/components/SettingsDialog.tsx:786
+#: src/components/SettingsDialog.tsx:918
 msgid "Rendering Detail"
 msgstr ""
 
@@ -3160,7 +3179,7 @@ msgstr "Correota kutiy apachiy"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:981
+#: src/components/SettingsDialog.tsx:1113
 msgid "Reset"
 msgstr "Kutichiy"
 
@@ -3173,23 +3192,23 @@ msgstr "{title} kutichiy"
 msgid "Reset all settings to default values"
 msgstr "Llapan configuracionkunata por defecto valoresman kutichiy"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "Hatun willakuyta kutichiy"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "Trim kutichiy"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:227
-#: src/components/SettingsDialog.tsx:709
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:841
 msgid "Reset view"
 msgstr "Qhawayta kutichiy"
 
-#: src/components/SettingsDialog.tsx:791
+#: src/components/SettingsDialog.tsx:923
 msgid "Resolution"
 msgstr "Resolución"
 
@@ -3213,8 +3232,8 @@ msgstr "Resultado"
 msgid "Resume"
 msgstr "Qatiy"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "Flaps huntay"
 
@@ -3222,7 +3241,7 @@ msgstr "Flaps huntay"
 msgid "Retry"
 msgstr "Wakmanta ruway"
 
-#: src/components/SettingsDialog.tsx:453
+#: src/components/SettingsDialog.tsx:486
 msgid "Reversed"
 msgstr "Tikrasqa"
 
@@ -3255,15 +3274,15 @@ msgstr "Paña rapra puntan"
 msgid "roll"
 msgstr "tikray"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:108
 msgid "Roll"
 msgstr "Roll"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "Roll lluq'iman"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "Roll pañaman"
 
@@ -3318,6 +3337,11 @@ msgstr "Mama qucha patan"
 #: ../../../lib/web/src/components/search.tsx:18
 msgid "Search"
 msgstr "Maskay"
+
+#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:668
+msgid "Search controls"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/command.tsx:35
 msgid "Search for a command to run..."
@@ -3439,8 +3463,8 @@ msgstr "Sitio direccionta akllay"
 msgid "Select theme preference"
 msgstr "Tema munayta akllay"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "Maqanakuna akllay"
 
@@ -3514,7 +3538,7 @@ msgstr "SESION TUKUSQA"
 msgid "Session expired. Please log in again."
 msgstr "Sesionqa tukukunña. Ama hina kaspa, watiqmanta yaykuy."
 
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Set"
 msgstr "Churay"
 
@@ -3527,12 +3551,12 @@ msgstr "Pukyu chayanata churay"
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:450
 #: src/components/MissionSetup.tsx:1289
-#: src/components/SettingsDialog.tsx:964
-#: src/components/SettingsDialog.tsx:991
+#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1123
 msgid "Settings"
 msgstr "Wakichiykuna"
 
-#: src/components/SettingsDialog.tsx:848
+#: src/components/SettingsDialog.tsx:980
 msgid "Shadows"
 msgstr "Llanthukuna"
 
@@ -3597,11 +3621,11 @@ msgstr "Allichay"
 msgid "Sortie history & replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:918
+#: src/components/SettingsDialog.tsx:1050
 msgid "Sortie Recording"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:1002
+#: src/components/SettingsDialog.tsx:1134
 msgid "Sound"
 msgstr "Sonido"
 
@@ -3629,9 +3653,9 @@ msgstr "W.FR"
 msgid "speed brake"
 msgstr "wayra frena"
 
-#: src/components/SettingsDialog.tsx:103
-#: src/components/SettingsDialog.tsx:140
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "Wayra frena"
 
@@ -3844,17 +3868,17 @@ msgstr "Kay p'anqaqa manaraqmi kamasqachu."
 msgid "throttle"
 msgstr "kallpa"
 
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:110
 msgid "Throttle"
 msgstr "Acelerador"
 
-#: src/components/SettingsDialog.tsx:146
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "Acelerador pisiyachiy"
 
-#: src/components/SettingsDialog.tsx:145
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "Acelerador yapay"
 
@@ -3930,7 +3954,7 @@ msgstr "Ancha achka mañakuykuna"
 msgid "Top"
 msgstr "Hawan"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:992
 msgid "Tracers"
 msgstr "Trazadorkuna"
 
@@ -3942,31 +3966,31 @@ msgstr "Puriy"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx:90
+#: src/components/SettingsDialog.tsx:95
 msgid "Trim"
 msgstr "Trim"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:113
 msgid "Trim hat"
 msgstr "Trim chuku"
 
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "Trim: sinqa uraman"
 
-#: src/components/SettingsDialog.tsx:147
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "Trim: sinqa hanaqman"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "Trim: lluq'iman kumuy"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "Trim: pañaman kumuy"
 
@@ -4006,7 +4030,7 @@ msgstr "Apaykachaqkunata maskanapaq qillqay"
 msgid "Type to search..."
 msgstr "Maskanapaq qillqay..."
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -4031,13 +4055,13 @@ msgstr "Mana Autorizasqa Yaykuy"
 msgid "Unavailable"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "Maskaqta kacharly"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "Akllayta chinkachiy"
 
@@ -4160,7 +4184,7 @@ msgid "view"
 msgstr "qhaway"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/SettingsDialog.tsx:93
+#: src/components/SettingsDialog.tsx:98
 msgid "View"
 msgstr "Qhaway"
 
@@ -4177,7 +4201,7 @@ msgstr "Llapan willakuykunata qhaway"
 msgid "View controls"
 msgstr "Qhaway controlkuna"
 
-#: src/components/SettingsDialog.tsx:708
+#: src/components/SettingsDialog.tsx:840
 msgid "Views"
 msgstr "Qhawaykuna"
 
@@ -4215,12 +4239,12 @@ msgstr "Ima allin kaqta kaptin willasqaykiku."
 msgid "weapon"
 msgstr "arma"
 
-#: src/components/SettingsDialog.tsx:106
+#: src/components/SettingsDialog.tsx:114
 msgid "Weapon select hat"
 msgstr "Arma akllay sumbriru"
 
 #: src/components/Multiplayer.tsx:387
-#: src/components/SettingsDialog.tsx:91
+#: src/components/SettingsDialog.tsx:96
 msgid "Weapons"
 msgstr "Armakuna"
 
@@ -4236,17 +4260,17 @@ msgstr "Website mantenimientopi kachkan!"
 msgid "Wednesday"
 msgstr "Quyllurchaw"
 
-#: src/components/SettingsDialog.tsx:141
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "Muyu frinus"
 
-#: src/components/SettingsDialog.tsx:551
+#: src/components/SettingsDialog.tsx:589
 msgid "Wind & Cockpit Airframe"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "Rapra pataray"
 
@@ -4267,17 +4291,17 @@ msgstr "Pacha servidorman mana chayay atikunchu"
 msgid "yaw"
 msgstr "kinray"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:109
 msgid "Yaw"
 msgstr "Yaw"
 
-#: src/components/SettingsDialog.tsx:143
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "Yaw lluq'iman"
 
-#: src/components/SettingsDialog.tsx:144
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "Yaw pañaman"
 
@@ -4321,14 +4345,14 @@ msgstr "Qillqasqaykipas ratachisqaykikunapas chinkapunqa."
 msgid "Your text will be lost."
 msgstr "Qillqasqayki chinkanqa."
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:115
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "Hatunyachiy"
 
-#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "Huch'uyyachiy"

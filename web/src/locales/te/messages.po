@@ -70,6 +70,17 @@ msgstr "{0} lb గరిష్ఠ ప్రయోగ బరువు కంట�
 msgid "{0} option preview"
 msgstr "{0} ఎంపిక పరిదృశ్యం"
 
+#. placeholder {0}: pretty(taken.chord)
+#: src/components/SettingsDialog.tsx:766
+msgid "{0} was already taken, and that control is now unbound."
+msgstr ""
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(lost.label)
+#: src/components/SettingsDialog.tsx:762
+msgid "{0} was on {1}, which is now unbound."
+msgstr ""
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
 #: src/components/Multiplayer.tsx:556
@@ -220,13 +231,13 @@ msgstr "ఖాతా ధృవీకరించబడింది"
 msgid "Ace"
 msgstr "ఏస్"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "లక్ష్యాన్ని లాక్ చేయి"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "స్వాధీన మోడ్"
 
@@ -322,7 +333,7 @@ msgstr "జోడిస్తోంది..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "మీ ప్రాధాన్యతలకు తగినట్లుగా రూపం మరియు లేఅవుట్‌ను సర్దుబాటు చేయండి."
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:986
 msgid "Afterburner"
 msgstr "ఆఫ్టర్‌బర్నర్"
 
@@ -330,7 +341,7 @@ msgstr "ఆఫ్టర్‌బర్నర్"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:92
+#: src/components/SettingsDialog.tsx:97
 msgid "Aircraft"
 msgstr "విమానం"
 
@@ -384,8 +395,8 @@ msgstr "లాగిన్ అయిన ఎవరైనా"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "ఈ ఫీడ్‌కు సభ్యత్వం పొందిన ప్రతిదీ దాన్ని స్వీకరించడం ఆపేస్తుంది. ఆ తర్వాత మీరు కొత్త URLని కాపీ చేయవచ్చు."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "అప్రోచ్ శక్తి (ATC)"
 
@@ -414,8 +425,8 @@ msgstr "మీరు లాగ్ అవుట్ చేయాలనుకుం
 msgid "Armament & Stores"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "నిలిపే హుక్"
 
@@ -439,7 +450,7 @@ msgstr "వ్యాఖ్య ఫైల్‌లను జతచేయండి"
 msgid "Attach reply files"
 msgstr "ప్రత్యుత్తర ఫైల్‌లను జతచేయండి"
 
-#: src/components/SettingsDialog.tsx:594
+#: src/components/SettingsDialog.tsx:632
 msgid "Audio Mixer Channels"
 msgstr ""
 
@@ -468,11 +479,12 @@ msgstr "{name} కోసం అవతార్"
 msgid "Avionics, HOTAS & audio"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:441
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:474
 msgid "Axis {i}"
 msgstr "అక్షం {i}"
 
-#: src/components/SettingsDialog.tsx:391
+#: src/components/SettingsDialog.tsx:424
 msgid "Axis Calibration & Mapping"
 msgstr ""
 
@@ -491,7 +503,7 @@ msgstr "వెనుకకు"
 msgid "Back to home"
 msgstr "హోమ్‌కు తిరిగి వెళ్ళండి"
 
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Balanced flight"
 msgstr ""
 
@@ -523,7 +535,7 @@ msgstr "ఉత్తమ జారుడు (ఇంజిన్లు లేక�
 msgid "Best sustained turn speed"
 msgstr "ఉత్తమ నిలకడ మలుపు వేగం"
 
-#: src/components/SettingsDialog.tsx:554
+#: src/components/SettingsDialog.tsx:592
 msgid "Betty & RWR Alerts"
 msgstr ""
 
@@ -594,11 +606,12 @@ msgstr "సిద్ధమైనప్పుడు తిరగండి"
 msgid "Browser notifications"
 msgstr "బ్రౌజర్ నోటిఫికేషన్‌లు"
 
-#: src/components/SettingsDialog.tsx:515
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:550
 msgid "Button {i}"
 msgstr "బటన్ {i}"
 
-#: src/components/SettingsDialog.tsx:481
+#: src/components/SettingsDialog.tsx:516
 msgid "Button Mappings"
 msgstr ""
 
@@ -615,15 +628,15 @@ msgid "CALL THE BALL"
 msgstr "బాల్ ప్రకటించండి"
 
 #: src/components/Multiplayer.tsx:311
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:1034
 msgid "Callsign"
 msgstr "కాల్ సైన్"
 
-#: src/components/SettingsDialog.tsx:711
+#: src/components/SettingsDialog.tsx:843
 msgid "Camera distance"
 msgstr "కెమెరా దూరం"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Camera unavailable"
 msgstr "కెమెరా అందుబాటులో లేదు"
 
@@ -644,7 +657,7 @@ msgstr "కెమెరా అందుబాటులో లేదు"
 #: src/components/GameCanvas.tsx:522
 #: src/components/Multiplayer.tsx:282
 #: src/components/Multiplayer.tsx:585
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Cancel"
 msgstr "రద్దు చేయండి"
 
@@ -656,11 +669,11 @@ msgstr "వ్యాఖ్యను రద్దు చేయండి"
 msgid "Cancel reply"
 msgstr "ప్రత్యుత్తరాన్ని రద్దు చేయండి"
 
-#: src/components/SettingsDialog.tsx:552
+#: src/components/SettingsDialog.tsx:590
 msgid "Cannons & Ordnance"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "కెనోపీ"
 
@@ -669,7 +682,7 @@ msgstr "కెనోపీ"
 msgid "Caption"
 msgstr "క్యాప్షన్"
 
-#: src/components/SettingsDialog.tsx:553
+#: src/components/SettingsDialog.tsx:591
 msgid "Carrier & Ambient"
 msgstr ""
 
@@ -726,11 +739,11 @@ msgstr "వెంబడింపు వీక్షణ:"
 msgid "chat"
 msgstr "చాట్"
 
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "చాట్"
 
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "అందరితో చాట్"
 
@@ -783,6 +796,7 @@ msgstr "భాషను ఎంచుకోండి"
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
 #: src/components/Multiplayer.tsx:372
+#: src/components/SettingsDialog.tsx:677
 msgid "Clear"
 msgstr "క్లియర్ చేయండి"
 
@@ -900,7 +914,7 @@ msgstr "వ్యాఖ్య చర్యలు"
 msgid "Comments"
 msgstr "వ్యాఖ్యలు"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:99
 msgid "Communication"
 msgstr "సమాచార ప్రసారం"
 
@@ -995,7 +1009,7 @@ msgstr "మ్యాచ్‌ను సృష్టించలేకపోయ�
 msgid "Could not load this document. Please try again later."
 msgstr "ఈ పత్రాన్ని లోడ్ చేయలేకపోయింది. దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి."
 
-#: src/components/SettingsDialog.tsx:282
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "ప్రొఫైల్‌ను సేవ్ చేయలేకపోయాం"
 
@@ -1024,8 +1038,8 @@ msgstr "పునఃప్రమాణీకరణను ప్రారంభ�
 msgid "Couldn't verify with that account. Please try again."
 msgstr "ఆ ఖాతాతో ధృవీకరించడం సాధ్యం కాలేదు. దయచేసి మళ్లీ ప్రయత్నించండి."
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "ప్రతిచర్యలు"
 
@@ -1100,8 +1114,8 @@ msgstr "అనుకూల"
 msgid "CUT"
 msgstr "ప్రమాదకరం"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "వీక్షణ మార్చు"
 
@@ -1225,8 +1239,8 @@ msgstr "మంటల్లో ధ్వంసమైంది"
 msgid "Details Panel"
 msgstr "వివరాల ప్యానెల్"
 
-#: src/components/SettingsDialog.tsx:470
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:503
+#: src/components/SettingsDialog.tsx:567
 msgid "Detect"
 msgstr "గుర్తించండి"
 
@@ -1265,7 +1279,7 @@ msgstr "విస్మరించు"
 msgid "Discard draft?"
 msgstr "డ్రాఫ్ట్‌ను విస్మరించాలా?"
 
-#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:387
 msgid "disconnected"
 msgstr "డిస్‌కనెక్ట్ అయింది"
 
@@ -1278,11 +1292,12 @@ msgstr "డిస్‌కనెక్ట్ అయింది"
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: src/components/MissionSetup.tsx:1258
+#: src/components/SettingsDialog.tsx:773
 msgid "Dismiss"
 msgstr "విస్మరించండి"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "డిస్ప్లే రిపీటర్"
 
@@ -1290,13 +1305,13 @@ msgstr "డిస్ప్లే రిపీటర్"
 msgid "Displays the mobile sidebar."
 msgstr "మొబైల్ సైడ్‌బార్‌ను ప్రదర్శిస్తుంది."
 
-#: src/components/SettingsDialog.tsx:842
+#: src/components/SettingsDialog.tsx:974
 msgid "Distance LOD"
 msgstr "దూర LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:985
+#: src/components/SettingsDialog.tsx:1117
 msgid "Done"
 msgstr "పూర్తయింది"
 
@@ -1330,7 +1345,7 @@ msgstr "నకలు చేస్తుంది"
 msgid "Duration"
 msgstr "వ్యవధి"
 
-#: src/components/SettingsDialog.tsx:836
+#: src/components/SettingsDialog.tsx:968
 msgid "Dynamic resolution"
 msgstr "డైనమిక్ రిజల్యూషన్"
 
@@ -1381,15 +1396,15 @@ msgstr "ఎంచుకున్న కార్డును సవరించ�
 msgid "Edit view"
 msgstr "వీక్షణను సవరించండి"
 
-#: src/components/SettingsDialog.tsx:830
+#: src/components/SettingsDialog.tsx:962
 msgid "Effects & Toggles"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:941
 msgid "Effects detail"
 msgstr "ఎఫెక్ట్ వివరాలు"
 
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "ఎజెక్ట్"
 
@@ -1409,8 +1424,8 @@ msgstr "ఇమెయిల్ కోడ్"
 msgid "EMERG JETT"
 msgstr "అత్యవసర విడుదల"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "అత్యవసర విడుదల (పట్టుకోండి)"
 
@@ -1431,11 +1446,11 @@ msgstr "దాడి చేస్తున్నా"
 msgid "Engagement"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:550
+#: src/components/SettingsDialog.tsx:588
 msgid "Engine & Afterburner"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "Enhanced visuals"
 msgstr ""
 
@@ -1482,16 +1497,16 @@ msgstr "విస్తరించు"
 msgid "Expand sidebar"
 msgstr "సైడ్‌బార్‌ను విస్తరించండి"
 
-#: src/components/SettingsDialog.tsx:370
+#: src/components/SettingsDialog.tsx:402
 msgid "Export"
 msgstr "ఎగుమతి"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "ఫ్లాప్ బయటకు"
 
-#: src/components/SettingsDialog.tsx:801
+#: src/components/SettingsDialog.tsx:933
 msgid "Exterior detail"
 msgstr "బాహ్య వివరాలు"
 
@@ -1623,12 +1638,12 @@ msgstr "ముగిసింది"
 msgid "fire"
 msgstr "కాల్చు"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "ఆయుధంతో కాల్చు"
 
-#: src/components/SettingsDialog.tsx:704
+#: src/components/SettingsDialog.tsx:836
 msgid "Fixed Flight Keys"
 msgstr ""
 
@@ -1660,7 +1675,7 @@ msgstr "చదునైనది"
 msgid "Flew into the sea"
 msgstr "సముద్రంలో పడిపోయింది"
 
-#: src/components/SettingsDialog.tsx:89
+#: src/components/SettingsDialog.tsx:94
 msgid "Flight"
 msgstr "విమానయానం"
 
@@ -1701,7 +1716,7 @@ msgstr "ఎగరడం"
 msgid "Fly again"
 msgstr "మళ్లీ ఎగరండి"
 
-#: src/components/SettingsDialog.tsx:866
+#: src/components/SettingsDialog.tsx:998
 msgid "Framerate counter"
 msgstr ""
 
@@ -1751,7 +1766,7 @@ msgstr "ఇంధన లీక్"
 msgid "FUEL LO"
 msgstr "ఇంధనం తక్కువ"
 
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "ఇంధన ప్రోబ్"
 
@@ -1772,7 +1787,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "విమాన శరీరం"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Gain"
 msgstr "గెయిన్"
 
@@ -1784,7 +1799,7 @@ msgstr "గేర్"
 msgid "GEAR"
 msgstr "గేర్"
 
-#: src/components/SettingsDialog.tsx:994
+#: src/components/SettingsDialog.tsx:1126
 msgid "General"
 msgstr "సాధారణం"
 
@@ -1814,11 +1829,11 @@ msgstr "పేజీ {pageNumber}కి వెళ్ళండి"
 msgid "Go to previous page"
 msgstr "మునుపటి పేజీకి వెళ్ళండి"
 
-#: src/components/SettingsDialog.tsx:998
+#: src/components/SettingsDialog.tsx:1130
 msgid "Graphics"
 msgstr "గ్రాఫిక్స్"
 
-#: src/components/SettingsDialog.tsx:761
+#: src/components/SettingsDialog.tsx:893
 msgid "Graphics Preset"
 msgstr ""
 
@@ -1856,11 +1871,11 @@ msgstr "ఫిరంగులు మాత్రమే"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "హార్డ్‌వేర్ గ్రాఫిక్స్ త్వరణం ఆఫ్‌లో ఉంది — బ్రౌజర్ సెట్టింగ్‌లు లేదా గ్రాఫిక్స్ డ్రైవర్లను తనిఖీ చేయండి."
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head"
 msgstr "తల"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head tracking"
 msgstr "హెడ్ ట్రాకింగ్"
 
@@ -1876,7 +1891,7 @@ msgstr "దాచండి"
 msgid "Hide password"
 msgstr "పాస్‌వర్డ్‌ను దాచు"
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "High"
 msgstr "అధికం"
 
@@ -1910,11 +1925,11 @@ msgstr "హుక్"
 msgid "Hot"
 msgstr "హాట్"
 
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "HUD ఎత్తు మూలం"
 
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "HUD సరళీకరణ"
 
@@ -1931,7 +1946,7 @@ msgstr "చిత్ర వీక్షకం: {0}"
 msgid "Imperial"
 msgstr "ఇంపీరియల్"
 
-#: src/components/SettingsDialog.tsx:374
+#: src/components/SettingsDialog.tsx:406
 msgid "Import"
 msgstr "దిగుమతి"
 
@@ -1952,7 +1967,7 @@ msgstr "మొదటి అక్షరాల అవతార్"
 msgid "Initials avatar for {name}"
 msgstr "{name} కోసం మొదటి అక్షరాల అవతార్"
 
-#: src/components/SettingsDialog.tsx:336
+#: src/components/SettingsDialog.tsx:368
 msgid "Input Hardware"
 msgstr ""
 
@@ -1980,7 +1995,7 @@ msgstr "చెల్లని ట్యాగ్: అక్షరాలు, స�
 msgid "Invalid verification code"
 msgstr "చెల్లని ధృవీకరణ కోడ్"
 
-#: src/components/SettingsDialog.tsx:382
+#: src/components/SettingsDialog.tsx:414
 msgid "Invert pitch axis"
 msgstr ""
 
@@ -2002,13 +2017,13 @@ msgstr "అజేయం (మానవ ఆటగాళ్లకు మాత్�
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "మీరు వెతుకుతున్న పేజీ <0/>లేదు లేదా తీసివేయబడి ఉండవచ్చు."
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "జామర్"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "ట్యాంకులను వదిలేయండి"
 
@@ -2043,7 +2058,7 @@ msgstr "ద్వంద్వ యుద్ధం — 1v1, ముందుగా 
 msgid "Joust against bot"
 msgstr "ద్వంద్వ యుద్ధం బాట్‌కు వ్యతిరేకంగా"
 
-#: src/components/SettingsDialog.tsx:1006
+#: src/components/SettingsDialog.tsx:1138
 msgid "Joystick"
 msgstr "జాయ్‌స్టిక్"
 
@@ -2059,7 +2074,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "కీబోర్డ్ షార్ట్‌కట్‌లు"
 
-#: src/components/SettingsDialog.tsx:1010
+#: src/components/SettingsDialog.tsx:1142
 msgid "Keys"
 msgstr "కీలు"
 
@@ -2088,8 +2103,8 @@ msgstr "ఎడమ ఇంజిన్ మంట"
 msgid "L GEAR"
 msgstr "ఎడమ గేర్"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "ల్యాండింగ్ గేర్"
 
@@ -2106,8 +2121,8 @@ msgstr "ఆలస్యం"
 msgid "Lateral asymmetry"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "ప్రయోగం (కేటాపుల్ట్)"
 
@@ -2172,8 +2187,8 @@ msgstr "లైట్"
 msgid "lights"
 msgstr "దీపాలు"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "దీపాలు"
 
@@ -2233,35 +2248,35 @@ msgstr "విజయవంతంగా లాగ్ అవుట్ అయ్య
 msgid "Logging out…"
 msgstr "లాగ్ అవుట్ చేస్తోంది…"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:112
 msgid "Look"
 msgstr "చూడు"
 
-#: src/components/SettingsDialog.tsx:710
+#: src/components/SettingsDialog.tsx:842
 msgid "Look / orbit"
 msgstr "చూపు / పరిభ్రమణం"
 
-#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "లక్ష్యాన్ని చూడు"
 
-#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "కిందికి చూడు"
 
-#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "ఎడమకు చూడు"
 
-#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "కుడికి చూడు"
 
-#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "పైకి చూడు"
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Low"
 msgstr "తక్కువ"
 
@@ -2291,7 +2306,7 @@ msgstr "మాన్యువల్"
 msgid "map"
 msgstr "పటం"
 
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "మ్యాప్"
 
@@ -2301,16 +2316,16 @@ msgstr "మ్యాప్"
 msgid "Mark all as read"
 msgstr "అన్నింటినీ చదివినట్లు గుర్తించండి"
 
-#: src/components/SettingsDialog.tsx:569
+#: src/components/SettingsDialog.tsx:607
 msgid "Master Audio Output"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:580
+#: src/components/SettingsDialog.tsx:618
 msgid "Master Bus"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:549
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:587
+#: src/components/SettingsDialog.tsx:614
 msgid "Master Volume"
 msgstr ""
 
@@ -2322,7 +2337,7 @@ msgstr "మ్యాచ్ రకం"
 msgid "Matches"
 msgstr "మ్యాచ్‌లు"
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Max fidelity"
 msgstr ""
 
@@ -2335,7 +2350,7 @@ msgid "MCP server"
 msgstr "MCP సర్వర్"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Medium"
 msgstr "మధ్యస్థం"
 
@@ -2344,8 +2359,8 @@ msgid "menu"
 msgstr "మెను"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "మెను"
 
@@ -2428,7 +2443,7 @@ msgstr "సోమవారం"
 msgid "More options"
 msgstr "మరిన్ని ఎంపికలు"
 
-#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:503
 msgid "Move…"
 msgstr ""
 
@@ -2502,6 +2517,10 @@ msgstr "ఇంకా కామెంట్‌లు లేవు"
 msgid "No connected accounts"
 msgstr "కనెక్ట్ చేయబడిన ఖాతాలు లేవు"
 
+#: src/components/SettingsDialog.tsx:692
+msgid "No control matches “{query}”."
+msgstr ""
+
 #: src/components/MatchHistory.tsx:125
 msgid "No flights yet"
 msgstr "ఇంకా విమానాలు లేవు"
@@ -2518,7 +2537,7 @@ msgstr "గ్రూపులు అందుబాటులో లేవు"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "ఇంకా ఏ ఐటెం రకాలను సృష్టించలేము. మొదట అవసరమైన పేరెంట్ ఐటెంలను సృష్టించండి."
 
-#: src/components/SettingsDialog.tsx:362
+#: src/components/SettingsDialog.tsx:394
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "జాయ్‌స్టిక్ ఏదీ గుర్తించబడలేదు — దాన్ని మేల్కొలపడానికి దానిపై ఏదైనా బటన్ నొక్కండి."
 
@@ -2621,9 +2640,9 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:120
 #: src/components/MissionSetup.tsx:284
 #: src/components/MissionSetup.tsx:1077
-#: src/components/SettingsDialog.tsx:435
-#: src/components/SettingsDialog.tsx:509
-#: src/components/SettingsDialog.tsx:687
+#: src/components/SettingsDialog.tsx:468
+#: src/components/SettingsDialog.tsx:544
+#: src/components/SettingsDialog.tsx:817
 msgid "None"
 msgstr "ఏదీ లేదు"
 
@@ -2635,7 +2654,7 @@ msgstr "సాధారణం"
 msgid "NOSE GEAR"
 msgstr "ముందు గేర్"
 
-#: src/components/SettingsDialog.tsx:295
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "ఇది జాయ్‌స్టిక్ ప్రొఫైల్ కాదు"
 
@@ -2681,7 +2700,7 @@ msgstr "కొత్తవారు"
 msgid "Number"
 msgstr "సంఖ్య"
 
-#: src/components/SettingsDialog.tsx:817
+#: src/components/SettingsDialog.tsx:949
 msgid "Ocean detail"
 msgstr "సముద్ర వివరాలు"
 
@@ -2789,8 +2808,8 @@ msgstr "కక్ష్య"
 msgid "Other"
 msgstr "ఇతర"
 
-#: src/components/SettingsDialog.tsx:142
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "G పరిమితి అధిగమణ"
 
@@ -2815,7 +2834,7 @@ msgstr "పేజీ {currentPage} / {totalPages}"
 msgid "Parent"
 msgstr "పేరెంట్"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "పార్కింగ్ బ్రేక్"
 
@@ -2839,7 +2858,7 @@ msgstr "నమూనా (regex)"
 msgid "Paused"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Performance priority"
 msgstr ""
 
@@ -2864,7 +2883,7 @@ msgstr "పైలట్"
 msgid "PILOT DOWN"
 msgstr "పైలట్ మృతి"
 
-#: src/components/SettingsDialog.tsx:898
+#: src/components/SettingsDialog.tsx:1030
 msgid "Pilot Identity"
 msgstr ""
 
@@ -2876,15 +2895,15 @@ msgstr "పైలట్ మరణించారు"
 msgid "pitch"
 msgstr "పిచ్"
 
-#: src/components/SettingsDialog.tsx:99
+#: src/components/SettingsDialog.tsx:107
 msgid "Pitch"
 msgstr "పిచ్"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "పిచ్ కిందికి"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "పిచ్ పైకి"
 
@@ -2922,7 +2941,7 @@ msgstr "పోస్ట్‌లు"
 msgid "Posts and comments"
 msgstr "పోస్ట్‌లు మరియు కామెంట్‌లు"
 
-#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:797
 msgid "Press a key…"
 msgstr "ఒక కీని నొక్కండి…"
 
@@ -2930,7 +2949,7 @@ msgstr "ఒక కీని నొక్కండి…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ఎగరడానికి ENTER నొక్కండి"
 
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:567
 msgid "Press…"
 msgstr ""
 
@@ -2952,8 +2971,8 @@ msgstr "ప్రాసెస్ అవుతోంది…"
 msgid "Profile"
 msgstr "ప్రొఫైల్"
 
-#: src/components/SettingsDialog.tsx:281
-#: src/components/SettingsDialog.tsx:293
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "ప్రొఫైల్ సేవ్ చేయబడింది"
 
@@ -2986,8 +3005,8 @@ msgstr "కుడి ఇంజిన్ మంట"
 msgid "R GEAR"
 msgstr "కుడి గేర్"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "రాడార్ నిశ్శబ్దం"
 
@@ -3024,7 +3043,7 @@ msgstr "రికమెండ్ చేయబడింది"
 msgid "Reconnecting ({retries})..."
 msgstr "మళ్లీ కనెక్ట్ అవుతోంది ({retries})..."
 
-#: src/components/SettingsDialog.tsx:923
+#: src/components/SettingsDialog.tsx:1055
 msgid "Record flights automatically"
 msgstr ""
 
@@ -3136,7 +3155,7 @@ msgstr "ఈ బోర్డ్ కాలమ్ పేరును మార్�
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "రెండరింగ్ <0>three.js</0> ద్వారా (MIT లైసెన్స్)."
 
-#: src/components/SettingsDialog.tsx:786
+#: src/components/SettingsDialog.tsx:918
 msgid "Rendering Detail"
 msgstr ""
 
@@ -3160,7 +3179,7 @@ msgstr "ఇమెయిల్‌ను మళ్లీ పంపండి"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:981
+#: src/components/SettingsDialog.tsx:1113
 msgid "Reset"
 msgstr "రీసెట్"
 
@@ -3173,23 +3192,23 @@ msgstr "{title} రీసెట్ చేయండి"
 msgid "Reset all settings to default values"
 msgstr "అన్ని సెట్టింగ్‌లను డిఫాల్ట్ విలువలకు రీసెట్ చేయండి"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "ప్రధాన హెచ్చరికను రీసెట్ చేయండి"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "ట్రిమ్ రీసెట్"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:227
-#: src/components/SettingsDialog.tsx:709
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:841
 msgid "Reset view"
 msgstr "వీక్షణ రీసెట్"
 
-#: src/components/SettingsDialog.tsx:791
+#: src/components/SettingsDialog.tsx:923
 msgid "Resolution"
 msgstr "రిజల్యూషన్"
 
@@ -3213,8 +3232,8 @@ msgstr "ఫలితం"
 msgid "Resume"
 msgstr "తిరిగి ప్రారంభించండి"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "ఫ్లాప్ లోపలికి"
 
@@ -3222,7 +3241,7 @@ msgstr "ఫ్లాప్ లోపలికి"
 msgid "Retry"
 msgstr "మళ్లీ ప్రయత్నించండి"
 
-#: src/components/SettingsDialog.tsx:453
+#: src/components/SettingsDialog.tsx:486
 msgid "Reversed"
 msgstr "విలోమం"
 
@@ -3255,15 +3274,15 @@ msgstr "కుడి రెక్క కొన"
 msgid "roll"
 msgstr "రోల్"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:108
 msgid "Roll"
 msgstr "రోల్"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "రోల్ ఎడమకు"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "రోల్ కుడికి"
 
@@ -3318,6 +3337,11 @@ msgstr "సముద్ర మట్టం"
 #: ../../../lib/web/src/components/search.tsx:18
 msgid "Search"
 msgstr "శోధన"
+
+#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:668
+msgid "Search controls"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/command.tsx:35
 msgid "Search for a command to run..."
@@ -3439,8 +3463,8 @@ msgstr "సైట్ దిశను ఎంచుకోండి"
 msgid "Select theme preference"
 msgstr "థీమ్ ప్రాధాన్యతను ఎంచుకోండి"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "ఆయుధం ఎంచుకోండి"
 
@@ -3514,7 +3538,7 @@ msgstr "సెషన్ ముగిసింది"
 msgid "Session expired. Please log in again."
 msgstr "సెషన్ గడువు ముగిసింది. దయచేసి మళ్లీ లాగిన్ చేయండి."
 
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Set"
 msgstr "సెట్ చేయండి"
 
@@ -3527,12 +3551,12 @@ msgstr "మూలం మరియు గమ్యస్థానాన్ని 
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:450
 #: src/components/MissionSetup.tsx:1289
-#: src/components/SettingsDialog.tsx:964
-#: src/components/SettingsDialog.tsx:991
+#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1123
 msgid "Settings"
 msgstr "సెట్టింగ్‌లు"
 
-#: src/components/SettingsDialog.tsx:848
+#: src/components/SettingsDialog.tsx:980
 msgid "Shadows"
 msgstr "నీడలు"
 
@@ -3597,11 +3621,11 @@ msgstr "సార్ట్ చేయండి"
 msgid "Sortie history & replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:918
+#: src/components/SettingsDialog.tsx:1050
 msgid "Sortie Recording"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:1002
+#: src/components/SettingsDialog.tsx:1134
 msgid "Sound"
 msgstr "ధ్వని"
 
@@ -3629,9 +3653,9 @@ msgstr "వా.బ్రే"
 msgid "speed brake"
 msgstr "వాయు బ్రేక్"
 
-#: src/components/SettingsDialog.tsx:103
-#: src/components/SettingsDialog.tsx:140
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "వాయు బ్రేక్"
 
@@ -3844,17 +3868,17 @@ msgstr "ఈ పేజీ ఇంకా సృష్టించబడలేదు
 msgid "throttle"
 msgstr "థ్రోటిల్"
 
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:110
 msgid "Throttle"
 msgstr "థ్రోటిల్"
 
-#: src/components/SettingsDialog.tsx:146
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "థ్రోటిల్ తగ్గించు"
 
-#: src/components/SettingsDialog.tsx:145
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "థ్రోటిల్ పెంచు"
 
@@ -3930,7 +3954,7 @@ msgstr "చాలా ఎక్కువ అభ్యర్థనలు"
 msgid "Top"
 msgstr "ఎగువ"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:992
 msgid "Tracers"
 msgstr "ట్రేసర్‌లు"
 
@@ -3942,31 +3966,31 @@ msgstr "ప్రయాణిస్తోంది"
 msgid "trim"
 msgstr "ట్రిమ్"
 
-#: src/components/SettingsDialog.tsx:90
+#: src/components/SettingsDialog.tsx:95
 msgid "Trim"
 msgstr "ట్రిమ్"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:113
 msgid "Trim hat"
 msgstr "ట్రిమ్ టోపీ"
 
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "ట్రిమ్: ముక్కు కిందికి"
 
-#: src/components/SettingsDialog.tsx:147
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "ట్రిమ్: ముక్కు పైకి"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "ట్రిమ్: ఎడమకు వాలు"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "ట్రిమ్: కుడికి వాలు"
 
@@ -4006,7 +4030,7 @@ msgstr "యూజర్లను శోధించడానికి టైప�
 msgid "Type to search..."
 msgstr "శోధించడానికి టైప్ చేయండి..."
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Ultra"
 msgstr "అల్ట్రా"
 
@@ -4031,13 +4055,13 @@ msgstr "అనుమతి లేని యాక్సెస్"
 msgid "Unavailable"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "సీకర్‌ను విడుదల చేయి"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "లక్ష్య నిర్దేశం రద్దు"
 
@@ -4160,7 +4184,7 @@ msgid "view"
 msgstr "వీక్షణ"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/SettingsDialog.tsx:93
+#: src/components/SettingsDialog.tsx:98
 msgid "View"
 msgstr "వీక్షించండి"
 
@@ -4177,7 +4201,7 @@ msgstr "అన్ని నోటిఫికేషన్‌లను వీక�
 msgid "View controls"
 msgstr "కంట్రోల్‌లను వీక్షించండి"
 
-#: src/components/SettingsDialog.tsx:708
+#: src/components/SettingsDialog.tsx:840
 msgid "Views"
 msgstr "వీక్షణలు"
 
@@ -4215,12 +4239,12 @@ msgstr "ముఖ్యమైనది ఏదైనా జరిగినప్�
 msgid "weapon"
 msgstr "ఆయుధం"
 
-#: src/components/SettingsDialog.tsx:106
+#: src/components/SettingsDialog.tsx:114
 msgid "Weapon select hat"
 msgstr "ఆయుధ ఎంపిక టోపీ"
 
 #: src/components/Multiplayer.tsx:387
-#: src/components/SettingsDialog.tsx:91
+#: src/components/SettingsDialog.tsx:96
 msgid "Weapons"
 msgstr "ఆయుధాలు"
 
@@ -4236,17 +4260,17 @@ msgstr "వెబ్‌సైట్ మెయింటెనెన్స్‌�
 msgid "Wednesday"
 msgstr "బుధవారం"
 
-#: src/components/SettingsDialog.tsx:141
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "చక్రం బ్రేకులు"
 
-#: src/components/SettingsDialog.tsx:551
+#: src/components/SettingsDialog.tsx:589
 msgid "Wind & Cockpit Airframe"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "రెక్క మడత"
 
@@ -4267,17 +4291,17 @@ msgstr "వరల్డ్ సర్వర్ అందుబాటులో ల
 msgid "yaw"
 msgstr "యా"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:109
 msgid "Yaw"
 msgstr "యా"
 
-#: src/components/SettingsDialog.tsx:143
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "యా ఎడమకు"
 
-#: src/components/SettingsDialog.tsx:144
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "యా కుడికి"
 
@@ -4321,14 +4345,14 @@ msgstr "మీ వచనం మరియు జోడింపులు పో�
 msgid "Your text will be lost."
 msgstr "మీ వచనం పోతుంది."
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:115
 msgid "Zoom"
 msgstr "జూమ్"
 
-#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "జూమ్ ఇన్"
 
-#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "జూమ్ అవుట్"

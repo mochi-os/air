@@ -70,6 +70,17 @@ msgstr "{0} lb mbi peshën maksimale të lëshimit"
 msgid "{0} option preview"
 msgstr "Pamja paraprake e opsionit {0}"
 
+#. placeholder {0}: pretty(taken.chord)
+#: src/components/SettingsDialog.tsx:766
+msgid "{0} was already taken, and that control is now unbound."
+msgstr ""
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(lost.label)
+#: src/components/SettingsDialog.tsx:762
+msgid "{0} was on {1}, which is now unbound."
+msgstr ""
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
 #: src/components/Multiplayer.tsx:556
@@ -220,13 +231,13 @@ msgstr "Llogaria u verifikua"
 msgid "Ace"
 msgstr "As"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "Kap objektivin"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "Modaliteti i kapjes"
 
@@ -322,7 +333,7 @@ msgstr "Po shtohet..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "Rregullo paraqitjen dhe strukturën sipas preferencave të tua."
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:986
 msgid "Afterburner"
 msgstr "Pasdjegës"
 
@@ -330,7 +341,7 @@ msgstr "Pasdjegës"
 msgid "AI"
 msgstr "IA"
 
-#: src/components/SettingsDialog.tsx:92
+#: src/components/SettingsDialog.tsx:97
 msgid "Aircraft"
 msgstr "Avioni"
 
@@ -384,8 +395,8 @@ msgstr "Kushdo që ka hyrë"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Gjithçka e abonuar në këtë prurje do të ndalojë ta marrë. Më pas mund të kopjoni një URL të ri."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "Fuqia e afrimit (ATC)"
 
@@ -414,8 +425,8 @@ msgstr "Je i sigurt që do të dalësh? Do të të duhet të rihysh për të hyr
 msgid "Armament & Stores"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "Çengeli ndalues"
 
@@ -439,7 +450,7 @@ msgstr "Bashkëngjit skedarë komenti"
 msgid "Attach reply files"
 msgstr "Bashkëngjit skedarë përgjigjeje"
 
-#: src/components/SettingsDialog.tsx:594
+#: src/components/SettingsDialog.tsx:632
 msgid "Audio Mixer Channels"
 msgstr ""
 
@@ -468,11 +479,12 @@ msgstr "Avatar për {name}"
 msgid "Avionics, HOTAS & audio"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:441
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:474
 msgid "Axis {i}"
 msgstr "Boshti {i}"
 
-#: src/components/SettingsDialog.tsx:391
+#: src/components/SettingsDialog.tsx:424
 msgid "Axis Calibration & Mapping"
 msgstr ""
 
@@ -491,7 +503,7 @@ msgstr "Mbrapa"
 msgid "Back to home"
 msgstr "Kthehu në fillim"
 
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Balanced flight"
 msgstr ""
 
@@ -523,7 +535,7 @@ msgstr "Rrëshqitja më e mirë (motorët të fikur)"
 msgid "Best sustained turn speed"
 msgstr "Shpejtësia më e mirë e kthesës së qëndrueshme"
 
-#: src/components/SettingsDialog.tsx:554
+#: src/components/SettingsDialog.tsx:592
 msgid "Betty & RWR Alerts"
 msgstr ""
 
@@ -594,11 +606,12 @@ msgstr "KTHESË KUR TË JESH GATI"
 msgid "Browser notifications"
 msgstr "Njoftime të shfletuesit"
 
-#: src/components/SettingsDialog.tsx:515
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:550
 msgid "Button {i}"
 msgstr "Butoni {i}"
 
-#: src/components/SettingsDialog.tsx:481
+#: src/components/SettingsDialog.tsx:516
 msgid "Button Mappings"
 msgstr ""
 
@@ -615,15 +628,15 @@ msgid "CALL THE BALL"
 msgstr "NJOFTO TOPIN"
 
 #: src/components/Multiplayer.tsx:311
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:1034
 msgid "Callsign"
 msgstr "Shenja e thirrjes"
 
-#: src/components/SettingsDialog.tsx:711
+#: src/components/SettingsDialog.tsx:843
 msgid "Camera distance"
 msgstr "Distanca e kamerës"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Camera unavailable"
 msgstr "Kamera nuk është e disponueshme"
 
@@ -644,7 +657,7 @@ msgstr "Kamera nuk është e disponueshme"
 #: src/components/GameCanvas.tsx:522
 #: src/components/Multiplayer.tsx:282
 #: src/components/Multiplayer.tsx:585
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Cancel"
 msgstr "Anulo"
 
@@ -656,11 +669,11 @@ msgstr "Anulo komentin"
 msgid "Cancel reply"
 msgstr "Anulo përgjigjen"
 
-#: src/components/SettingsDialog.tsx:552
+#: src/components/SettingsDialog.tsx:590
 msgid "Cannons & Ordnance"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "Kupola e kabinës"
 
@@ -669,7 +682,7 @@ msgstr "Kupola e kabinës"
 msgid "Caption"
 msgstr "Legjenda"
 
-#: src/components/SettingsDialog.tsx:553
+#: src/components/SettingsDialog.tsx:591
 msgid "Carrier & Ambient"
 msgstr ""
 
@@ -726,11 +739,11 @@ msgstr "Pamja e ndjekjes:"
 msgid "chat"
 msgstr "chat"
 
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "Bisedë"
 
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "Chat me të gjithë"
 
@@ -783,6 +796,7 @@ msgstr "Zgjidh gjuhën"
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
 #: src/components/Multiplayer.tsx:372
+#: src/components/SettingsDialog.tsx:677
 msgid "Clear"
 msgstr "Pastro"
 
@@ -900,7 +914,7 @@ msgstr "Veprimet e komentit"
 msgid "Comments"
 msgstr "Komentet"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:99
 msgid "Communication"
 msgstr "Komunikimi"
 
@@ -995,7 +1009,7 @@ msgstr "Ndeshja nuk u krijua dot"
 msgid "Could not load this document. Please try again later."
 msgstr "Nuk mund të ngarkohej ky dokument. Provo më vonë."
 
-#: src/components/SettingsDialog.tsx:282
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "Profili nuk u ruajt dot"
 
@@ -1024,8 +1038,8 @@ msgstr "Rivërtetimi nuk mund të niste. Ju lutemi provoni përsëri."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Nuk u verifikua dot me atë llogari. Ju lutemi provoni përsëri."
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "Kundërmasat"
 
@@ -1100,8 +1114,8 @@ msgstr "Personalizuar"
 msgid "CUT"
 msgstr "I RREZIKSHËM"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "Ndërro pamjen"
 
@@ -1225,8 +1239,8 @@ msgstr "Shkatërruar nga zjarri"
 msgid "Details Panel"
 msgstr "Paneli i detajeve"
 
-#: src/components/SettingsDialog.tsx:470
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:503
+#: src/components/SettingsDialog.tsx:567
 msgid "Detect"
 msgstr "Zbulo"
 
@@ -1265,7 +1279,7 @@ msgstr "Hidh"
 msgid "Discard draft?"
 msgstr "Ta hedhësh draftin?"
 
-#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:387
 msgid "disconnected"
 msgstr "i shkëputur"
 
@@ -1278,11 +1292,12 @@ msgstr "I shkëputur"
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: src/components/MissionSetup.tsx:1258
+#: src/components/SettingsDialog.tsx:773
 msgid "Dismiss"
 msgstr "Hidhe"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "Përsëritës i ekranit"
 
@@ -1290,13 +1305,13 @@ msgstr "Përsëritës i ekranit"
 msgid "Displays the mobile sidebar."
 msgstr "Shfaq anën mobile."
 
-#: src/components/SettingsDialog.tsx:842
+#: src/components/SettingsDialog.tsx:974
 msgid "Distance LOD"
 msgstr "LOD sipas largësisë"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:985
+#: src/components/SettingsDialog.tsx:1117
 msgid "Done"
 msgstr "Përfunduar"
 
@@ -1330,7 +1345,7 @@ msgstr "Dublikatat"
 msgid "Duration"
 msgstr "Kohëzgjatja"
 
-#: src/components/SettingsDialog.tsx:836
+#: src/components/SettingsDialog.tsx:968
 msgid "Dynamic resolution"
 msgstr "Rezolucion dinamik"
 
@@ -1381,15 +1396,15 @@ msgstr "Modifiko kartën e zgjedhur"
 msgid "Edit view"
 msgstr "Modifiko pamjen"
 
-#: src/components/SettingsDialog.tsx:830
+#: src/components/SettingsDialog.tsx:962
 msgid "Effects & Toggles"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:941
 msgid "Effects detail"
 msgstr "Detaje të efekteve"
 
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "Katapultim"
 
@@ -1409,8 +1424,8 @@ msgstr "Kodi me email"
 msgid "EMERG JETT"
 msgstr "HEDHJE URGJENCE"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "Hedhje urgjence (mbaje)"
 
@@ -1431,11 +1446,11 @@ msgstr "PO SULMOJ"
 msgid "Engagement"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:550
+#: src/components/SettingsDialog.tsx:588
 msgid "Engine & Afterburner"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "Enhanced visuals"
 msgstr ""
 
@@ -1482,16 +1497,16 @@ msgstr "Zgjero"
 msgid "Expand sidebar"
 msgstr "Zgjero shiritin anësor"
 
-#: src/components/SettingsDialog.tsx:370
+#: src/components/SettingsDialog.tsx:402
 msgid "Export"
 msgstr "Eksporto"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "Nxirr flapet"
 
-#: src/components/SettingsDialog.tsx:801
+#: src/components/SettingsDialog.tsx:933
 msgid "Exterior detail"
 msgstr "Detaje të jashtme"
 
@@ -1623,12 +1638,12 @@ msgstr "Përfundoi"
 msgid "fire"
 msgstr "zjarr"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "Hap zjarr"
 
-#: src/components/SettingsDialog.tsx:704
+#: src/components/SettingsDialog.tsx:836
 msgid "Fixed Flight Keys"
 msgstr ""
 
@@ -1660,7 +1675,7 @@ msgstr "I sheshtë"
 msgid "Flew into the sea"
 msgstr "U përplas në det"
 
-#: src/components/SettingsDialog.tsx:89
+#: src/components/SettingsDialog.tsx:94
 msgid "Flight"
 msgstr "Fluturimi"
 
@@ -1701,7 +1716,7 @@ msgstr "Fluturo"
 msgid "Fly again"
 msgstr "Fluturo sërish"
 
-#: src/components/SettingsDialog.tsx:866
+#: src/components/SettingsDialog.tsx:998
 msgid "Framerate counter"
 msgstr ""
 
@@ -1751,7 +1766,7 @@ msgstr "RRJEDH KARBURANT"
 msgid "FUEL LO"
 msgstr "PAK KARBURANT"
 
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "Sonda e karburantit"
 
@@ -1772,7 +1787,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "Trupi i avionit"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Gain"
 msgstr "Përforcimi"
 
@@ -1784,7 +1799,7 @@ msgstr "Trupi i uljes"
 msgid "GEAR"
 msgstr "TREN"
 
-#: src/components/SettingsDialog.tsx:994
+#: src/components/SettingsDialog.tsx:1126
 msgid "General"
 msgstr "Të përgjithshme"
 
@@ -1814,11 +1829,11 @@ msgstr "Shko te faqja {pageNumber}"
 msgid "Go to previous page"
 msgstr "Shko në faqen e mëparshme"
 
-#: src/components/SettingsDialog.tsx:998
+#: src/components/SettingsDialog.tsx:1130
 msgid "Graphics"
 msgstr "Grafika"
 
-#: src/components/SettingsDialog.tsx:761
+#: src/components/SettingsDialog.tsx:893
 msgid "Graphics Preset"
 msgstr ""
 
@@ -1856,11 +1871,11 @@ msgstr "Vetëm topa"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Përshpejtimi grafik i harduerit është i fikur — kontrolloni cilësimet e shfletuesit ose drejtuesit grafikë."
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head"
 msgstr "Koka"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head tracking"
 msgstr "Ndjekja e kokës"
 
@@ -1876,7 +1891,7 @@ msgstr "Fshih"
 msgid "Hide password"
 msgstr "Fshih fjalëkalimin"
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "High"
 msgstr "I lartë"
 
@@ -1910,11 +1925,11 @@ msgstr "GREP"
 msgid "Hot"
 msgstr "Të nxehta"
 
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "Burimi i lartësisë së HUD-it"
 
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "Thjeshtimi i HUD-it"
 
@@ -1931,7 +1946,7 @@ msgstr "Shikuesi i figurave: {0}"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/SettingsDialog.tsx:374
+#: src/components/SettingsDialog.tsx:406
 msgid "Import"
 msgstr "Importo"
 
@@ -1952,7 +1967,7 @@ msgstr "Avatar me inicialet"
 msgid "Initials avatar for {name}"
 msgstr "Avatar me inicialet për {name}"
 
-#: src/components/SettingsDialog.tsx:336
+#: src/components/SettingsDialog.tsx:368
 msgid "Input Hardware"
 msgstr ""
 
@@ -1980,7 +1995,7 @@ msgstr "Etiketë e pavlefshme: vetëm shkronja, numra, hapësira, vija ndarëse 
 msgid "Invalid verification code"
 msgstr "Kod verifikimi i pavlefshëm"
 
-#: src/components/SettingsDialog.tsx:382
+#: src/components/SettingsDialog.tsx:414
 msgid "Invert pitch axis"
 msgstr ""
 
@@ -2002,13 +2017,13 @@ msgstr "I pacenueshëm (vetëm lojtarë njerëz)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Duket se faqja që po kërkoni <0/>nuk ekziston ose është hequr."
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "Bllokues"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "Hidh serbatorët"
 
@@ -2043,7 +2058,7 @@ msgstr "Duel — 1v1, kush rrëzon i pari fiton"
 msgid "Joust against bot"
 msgstr "Duel kundër botit"
 
-#: src/components/SettingsDialog.tsx:1006
+#: src/components/SettingsDialog.tsx:1138
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -2059,7 +2074,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Shkurtoret e tastierës"
 
-#: src/components/SettingsDialog.tsx:1010
+#: src/components/SettingsDialog.tsx:1142
 msgid "Keys"
 msgstr "Tastet"
 
@@ -2088,8 +2103,8 @@ msgstr "ZJARR MOT MAJTË"
 msgid "L GEAR"
 msgstr "TREN MAJTË"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "Rrotat e uljes"
 
@@ -2106,8 +2121,8 @@ msgstr "VONË"
 msgid "Lateral asymmetry"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "Nisje (katapultë)"
 
@@ -2172,8 +2187,8 @@ msgstr "E çelët"
 msgid "lights"
 msgstr "dritat"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "Dritat"
 
@@ -2233,35 +2248,35 @@ msgstr "U dol me sukses"
 msgid "Logging out…"
 msgstr "Duke dalë…"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:112
 msgid "Look"
 msgstr "Shiko"
 
-#: src/components/SettingsDialog.tsx:710
+#: src/components/SettingsDialog.tsx:842
 msgid "Look / orbit"
 msgstr "Shikim / rrotullim"
 
-#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "Shiko objektivin"
 
-#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "Shiko poshtë"
 
-#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "Shiko majtas"
 
-#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "Shiko djathtas"
 
-#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "Shiko lart"
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Low"
 msgstr "I ulët"
 
@@ -2291,7 +2306,7 @@ msgstr "Manual"
 msgid "map"
 msgstr "hartë"
 
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "Hartë"
 
@@ -2301,16 +2316,16 @@ msgstr "Hartë"
 msgid "Mark all as read"
 msgstr "Shëno të gjitha si të lexuara"
 
-#: src/components/SettingsDialog.tsx:569
+#: src/components/SettingsDialog.tsx:607
 msgid "Master Audio Output"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:580
+#: src/components/SettingsDialog.tsx:618
 msgid "Master Bus"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:549
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:587
+#: src/components/SettingsDialog.tsx:614
 msgid "Master Volume"
 msgstr ""
 
@@ -2322,7 +2337,7 @@ msgstr "Lloji i ndeshjes"
 msgid "Matches"
 msgstr "Ndeshjet"
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Max fidelity"
 msgstr ""
 
@@ -2335,7 +2350,7 @@ msgid "MCP server"
 msgstr "Server MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Medium"
 msgstr "I mesëm"
 
@@ -2344,8 +2359,8 @@ msgid "menu"
 msgstr "meny"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "Menyja"
 
@@ -2428,7 +2443,7 @@ msgstr "E hënë"
 msgid "More options"
 msgstr "Më shumë opsione"
 
-#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:503
 msgid "Move…"
 msgstr ""
 
@@ -2502,6 +2517,10 @@ msgstr "Ende pa komente"
 msgid "No connected accounts"
 msgstr "Asnjë llogari e lidhur"
 
+#: src/components/SettingsDialog.tsx:692
+msgid "No control matches “{query}”."
+msgstr ""
+
 #: src/components/MatchHistory.tsx:125
 msgid "No flights yet"
 msgstr "Ende asnjë fluturim"
@@ -2518,7 +2537,7 @@ msgstr "Asnjë grup i disponueshëm"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Asnjë lloj artikulli nuk mund të krijohet ende. Krijoni fillimisht artikujt prind të kërkuar."
 
-#: src/components/SettingsDialog.tsx:362
+#: src/components/SettingsDialog.tsx:394
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Nuk u zbulua asnjë joystick — shtypni çfarëdo butoni në të për ta zgjuar."
 
@@ -2621,9 +2640,9 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:120
 #: src/components/MissionSetup.tsx:284
 #: src/components/MissionSetup.tsx:1077
-#: src/components/SettingsDialog.tsx:435
-#: src/components/SettingsDialog.tsx:509
-#: src/components/SettingsDialog.tsx:687
+#: src/components/SettingsDialog.tsx:468
+#: src/components/SettingsDialog.tsx:544
+#: src/components/SettingsDialog.tsx:817
 msgid "None"
 msgstr "Asnjë"
 
@@ -2635,7 +2654,7 @@ msgstr "Normale"
 msgid "NOSE GEAR"
 msgstr "TREN HUNDË"
 
-#: src/components/SettingsDialog.tsx:295
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "Nuk është profil xhojstiku"
 
@@ -2681,7 +2700,7 @@ msgstr "Fillestar"
 msgid "Number"
 msgstr "Numri"
 
-#: src/components/SettingsDialog.tsx:817
+#: src/components/SettingsDialog.tsx:949
 msgid "Ocean detail"
 msgstr "Detaje të oqeanit"
 
@@ -2789,8 +2808,8 @@ msgstr "orbitë"
 msgid "Other"
 msgstr "Tjetër"
 
-#: src/components/SettingsDialog.tsx:142
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "Kapërce kufirin G"
 
@@ -2815,7 +2834,7 @@ msgstr "Faqja {currentPage} nga {totalPages}"
 msgid "Parent"
 msgstr "Prindi"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "Freni i parkimit"
 
@@ -2839,7 +2858,7 @@ msgstr "Modeli (regex)"
 msgid "Paused"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Performance priority"
 msgstr ""
 
@@ -2864,7 +2883,7 @@ msgstr "Pilot"
 msgid "PILOT DOWN"
 msgstr "PILOTI U VRA"
 
-#: src/components/SettingsDialog.tsx:898
+#: src/components/SettingsDialog.tsx:1030
 msgid "Pilot Identity"
 msgstr ""
 
@@ -2876,15 +2895,15 @@ msgstr "Piloti u vra"
 msgid "pitch"
 msgstr "pjerrësi"
 
-#: src/components/SettingsDialog.tsx:99
+#: src/components/SettingsDialog.tsx:107
 msgid "Pitch"
 msgstr "Pjerrësi"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "Pjerrësi poshtë"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "Pjerrësi lart"
 
@@ -2922,7 +2941,7 @@ msgstr "Postimet"
 msgid "Posts and comments"
 msgstr "Postimet dhe komentet"
 
-#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:797
 msgid "Press a key…"
 msgstr "Shtypni një tast…"
 
@@ -2930,7 +2949,7 @@ msgstr "Shtypni një tast…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "SHTYP ENTER PËR T'U NGRITUR"
 
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:567
 msgid "Press…"
 msgstr ""
 
@@ -2952,8 +2971,8 @@ msgstr "Po përpunohet…"
 msgid "Profile"
 msgstr "Profili"
 
-#: src/components/SettingsDialog.tsx:281
-#: src/components/SettingsDialog.tsx:293
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "Profili u ruajt"
 
@@ -2986,8 +3005,8 @@ msgstr "ZJARR MOT DJATHTË"
 msgid "R GEAR"
 msgstr "TREN DJATHTË"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "Heshtje radari"
 
@@ -3024,7 +3043,7 @@ msgstr "I rekomanduar"
 msgid "Reconnecting ({retries})..."
 msgstr "Po rilidhet ({retries})..."
 
-#: src/components/SettingsDialog.tsx:923
+#: src/components/SettingsDialog.tsx:1055
 msgid "Record flights automatically"
 msgstr ""
 
@@ -3136,7 +3155,7 @@ msgstr "Riemërto këtë kolonë të tabelës"
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Renderimi nga <0>three.js</0> (licencë MIT)."
 
-#: src/components/SettingsDialog.tsx:786
+#: src/components/SettingsDialog.tsx:918
 msgid "Rendering Detail"
 msgstr ""
 
@@ -3160,7 +3179,7 @@ msgstr "Ridërgo email-in"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:981
+#: src/components/SettingsDialog.tsx:1113
 msgid "Reset"
 msgstr "Rivendos"
 
@@ -3173,23 +3192,23 @@ msgstr "Rivendos {title}"
 msgid "Reset all settings to default values"
 msgstr "Rivendos të gjitha cilësimet në vlerat parazgjedhura"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "Rivendos paralajmërimin kryesor"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "Rivendos trimin"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:227
-#: src/components/SettingsDialog.tsx:709
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:841
 msgid "Reset view"
 msgstr "Rivendos pamjen"
 
-#: src/components/SettingsDialog.tsx:791
+#: src/components/SettingsDialog.tsx:923
 msgid "Resolution"
 msgstr "Rezolucioni"
 
@@ -3213,8 +3232,8 @@ msgstr "Rezultati"
 msgid "Resume"
 msgstr "Vazhdo"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "Mblidh flapet"
 
@@ -3222,7 +3241,7 @@ msgstr "Mblidh flapet"
 msgid "Retry"
 msgstr "Provo përsëri"
 
-#: src/components/SettingsDialog.tsx:453
+#: src/components/SettingsDialog.tsx:486
 msgid "Reversed"
 msgstr "Përmbysur"
 
@@ -3255,15 +3274,15 @@ msgstr "Maja e krahut të djathtë"
 msgid "roll"
 msgstr "rrotullim"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:108
 msgid "Roll"
 msgstr "Rrotullim"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "Rrotullim majtas"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "Rrotullim djathtas"
 
@@ -3318,6 +3337,11 @@ msgstr "Niveli i detit"
 #: ../../../lib/web/src/components/search.tsx:18
 msgid "Search"
 msgstr "Kërko"
+
+#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:668
+msgid "Search controls"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/command.tsx:35
 msgid "Search for a command to run..."
@@ -3439,8 +3463,8 @@ msgstr "Zgjidh drejtimin e faqes"
 msgid "Select theme preference"
 msgstr "Zgjidh preferencën e temës"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "Zgjidh armën"
 
@@ -3514,7 +3538,7 @@ msgstr "SESIONI PËRFUNDOI"
 msgid "Session expired. Please log in again."
 msgstr "Sesioni ka skaduar. Ju lutemi identifikohuni sërish."
 
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Set"
 msgstr "Cakto"
 
@@ -3527,12 +3551,12 @@ msgstr "Vendos origjinën dhe destinacionin"
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:450
 #: src/components/MissionSetup.tsx:1289
-#: src/components/SettingsDialog.tsx:964
-#: src/components/SettingsDialog.tsx:991
+#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1123
 msgid "Settings"
 msgstr "Cilësimet"
 
-#: src/components/SettingsDialog.tsx:848
+#: src/components/SettingsDialog.tsx:980
 msgid "Shadows"
 msgstr "Hije"
 
@@ -3597,11 +3621,11 @@ msgstr "Rendit"
 msgid "Sortie history & replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:918
+#: src/components/SettingsDialog.tsx:1050
 msgid "Sortie Recording"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:1002
+#: src/components/SettingsDialog.tsx:1134
 msgid "Sound"
 msgstr "Zëri"
 
@@ -3629,9 +3653,9 @@ msgstr "FR.AJR"
 msgid "speed brake"
 msgstr "frena ajrore"
 
-#: src/components/SettingsDialog.tsx:103
-#: src/components/SettingsDialog.tsx:140
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "Frena ajrore"
 
@@ -3844,17 +3868,17 @@ msgstr "Kjo faqe nuk është krijuar ende."
 msgid "throttle"
 msgstr "gaz"
 
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:110
 msgid "Throttle"
 msgstr "Gaz"
 
-#: src/components/SettingsDialog.tsx:146
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "Ul gazin"
 
-#: src/components/SettingsDialog.tsx:145
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "Shto gazin"
 
@@ -3930,7 +3954,7 @@ msgstr "Shumë kërkesa"
 msgid "Top"
 msgstr "Lart"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:992
 msgid "Tracers"
 msgstr "Gjurmuese"
 
@@ -3942,31 +3966,31 @@ msgstr "Duke udhëtuar"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx:90
+#: src/components/SettingsDialog.tsx:95
 msgid "Trim"
 msgstr "Trim"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:113
 msgid "Trim hat"
 msgstr "Kapela e trimit"
 
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "Trim: hunda poshtë"
 
-#: src/components/SettingsDialog.tsx:147
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "Trim: hunda lart"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "Trim: rrotullim majtas"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "Trim: rrotullim djathtas"
 
@@ -4006,7 +4030,7 @@ msgstr "Shkruaj për të kërkuar përdorues"
 msgid "Type to search..."
 msgstr "Shkruaj për të kërkuar..."
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -4031,13 +4055,13 @@ msgstr "Akses i paautorizuar"
 msgid "Unavailable"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "Liro kërkuesin"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "Anulo caktimin e objektivit"
 
@@ -4160,7 +4184,7 @@ msgid "view"
 msgstr "pamje"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/SettingsDialog.tsx:93
+#: src/components/SettingsDialog.tsx:98
 msgid "View"
 msgstr "Shiko"
 
@@ -4177,7 +4201,7 @@ msgstr "Shiko të gjitha njoftimet"
 msgid "View controls"
 msgstr "Kontrollet e pamjes"
 
-#: src/components/SettingsDialog.tsx:708
+#: src/components/SettingsDialog.tsx:840
 msgid "Views"
 msgstr "Pamjet"
 
@@ -4215,12 +4239,12 @@ msgstr "Do t'ju njoftojmë kur të ndodhë diçka e rëndësishme."
 msgid "weapon"
 msgstr "armë"
 
-#: src/components/SettingsDialog.tsx:106
+#: src/components/SettingsDialog.tsx:114
 msgid "Weapon select hat"
 msgstr "Kapelë e zgjedhjes së armës"
 
 #: src/components/Multiplayer.tsx:387
-#: src/components/SettingsDialog.tsx:91
+#: src/components/SettingsDialog.tsx:96
 msgid "Weapons"
 msgstr "Armët"
 
@@ -4236,17 +4260,17 @@ msgstr "Faqja është nën mirëmbajtje!"
 msgid "Wednesday"
 msgstr "E mërkurë"
 
-#: src/components/SettingsDialog.tsx:141
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "Frenat e rrotave"
 
-#: src/components/SettingsDialog.tsx:551
+#: src/components/SettingsDialog.tsx:589
 msgid "Wind & Cockpit Airframe"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "Palosja e krahëve"
 
@@ -4267,17 +4291,17 @@ msgstr "Serveri i botës nuk arrihet"
 msgid "yaw"
 msgstr "devijim"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:109
 msgid "Yaw"
 msgstr "Devijim"
 
-#: src/components/SettingsDialog.tsx:143
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "Devijim majtas"
 
-#: src/components/SettingsDialog.tsx:144
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "Devijim djathtas"
 
@@ -4321,14 +4345,14 @@ msgstr "Teksti dhe bashkëngjitjet tuaja do të humbasin."
 msgid "Your text will be lost."
 msgstr "Teksti yt do të humbasë."
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:115
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "Zmadho"
 
-#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "Zvogëlo"

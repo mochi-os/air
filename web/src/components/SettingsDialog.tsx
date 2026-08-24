@@ -5,7 +5,9 @@
 
 import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
+import { useLingui as useI18n } from '@lingui/react'
 import { msg } from '@lingui/core/macro'
+import { type MessageDescriptor } from '@lingui/core'
 import {
   Check,
   Download,
@@ -13,9 +15,12 @@ import {
   Keyboard,
   Monitor,
   RotateCcw,
+  Search,
+  TriangleAlert,
   Upload,
   User,
   Volume2,
+  X,
 } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
 import { shellSaveBlob, toast } from '@mochi/web'
@@ -93,18 +98,21 @@ const GROUP_TITLES: Record<Group, ReactNode> = {
   view: <Trans>View</Trans>,
   comms: <Trans>Communication</Trans>,
 }
-type Row = { id: string; label: ReactNode; group: Group }
+// The label is a DESCRIPTOR, not an element: the Keys tab searches these rows,
+// and a <Trans> element has no text to match against until React has drawn it.
+// Rendering goes through i18n._ instead, which is the same msgid either way.
+type Row = { id: string; label: MessageDescriptor; group: Group }
 
-const AXIS_ROWS: { id: string; label: ReactNode }[] = [
-  { id: 'pitch', label: <Trans>Pitch</Trans> },
-  { id: 'roll', label: <Trans>Roll</Trans> },
-  { id: 'yaw', label: <Trans>Yaw</Trans> },
-  { id: 'throttle', label: <Trans>Throttle</Trans> },
-  { id: 'speedbrake', label: <Trans>Speed brake</Trans> },
-  { id: 'look', label: <Trans>Look</Trans> },
-  { id: 'trim', label: <Trans>Trim hat</Trans> },
-  { id: 'weapon', label: <Trans>Weapon select hat</Trans> },
-  { id: 'zoom', label: <Trans>Zoom</Trans> },
+const AXIS_ROWS: { id: string; label: MessageDescriptor }[] = [
+  { id: 'pitch', label: msg`Pitch` },
+  { id: 'roll', label: msg`Roll` },
+  { id: 'yaw', label: msg`Yaw` },
+  { id: 'throttle', label: msg`Throttle` },
+  { id: 'speedbrake', label: msg`Speed brake` },
+  { id: 'look', label: msg`Look` },
+  { id: 'trim', label: msg`Trim hat` },
+  { id: 'weapon', label: msg`Weapon select hat` },
+  { id: 'zoom', label: msg`Zoom` },
 ]
 const LEVERS = new Set(['throttle', 'speedbrake'])
 const PAIRS = new Set(['look', 'trim', 'weapon'])
@@ -137,101 +145,101 @@ function AxisMeter({ live }: { live: number }) {
 }
 
 const BUTTON_ROWS: Row[] = [
-  { id: 'brake.speed', label: <Trans>Speed brake</Trans>, group: 'flight' },
-  { id: 'brake.wheel', label: <Trans>Wheel brakes</Trans>, group: 'flight' },
-  { id: 'override', label: <Trans>Override G limit</Trans>, group: 'flight' },
-  { id: 'yaw.left', label: <Trans>Yaw left</Trans>, group: 'flight' },
-  { id: 'yaw.right', label: <Trans>Yaw right</Trans>, group: 'flight' },
-  { id: 'throttle.up', label: <Trans>Throttle up</Trans>, group: 'flight' },
-  { id: 'throttle.down', label: <Trans>Throttle down</Trans>, group: 'flight' },
-  { id: 'trim.up', label: <Trans>Trim nose up</Trans>, group: 'trim' },
-  { id: 'trim.down', label: <Trans>Trim nose down</Trans>, group: 'trim' },
-  { id: 'trim.left', label: <Trans>Trim roll left</Trans>, group: 'trim' },
-  { id: 'trim.right', label: <Trans>Trim roll right</Trans>, group: 'trim' },
-  { id: 'trim.reset', label: <Trans>Reset trim</Trans>, group: 'trim' },
-  { id: 'fire', label: <Trans>Fire weapon</Trans>, group: 'weapons' },
-  { id: 'select', label: <Trans>Select weapon</Trans>, group: 'weapons' },
-  { id: 'acquire', label: <Trans>Acquire target</Trans>, group: 'weapons' },
-  { id: 'radar.undesignate', label: <Trans>Undesignate target</Trans>, group: 'weapons' },
-  { id: 'uncage', label: <Trans>Uncage seeker</Trans>, group: 'weapons' },
-  { id: 'jammer', label: <Trans>Jammer</Trans>, group: 'weapons' },
-  { id: 'radar.silent', label: <Trans>Radar silent</Trans>, group: 'weapons' },
-  { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },
-  { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },
-  { id: 'jettison.tanks', label: <Trans>Jettison tanks</Trans>, group: 'weapons' },
-  { id: 'jettison.emergency', label: <Trans>Emergency jettison (hold)</Trans>, group: 'weapons' },
-  { id: 'caution.reset', label: <Trans>Reset master caution</Trans>, group: 'aircraft' },
-  { id: 'flaps.extend', label: <Trans>Extend flaps</Trans>, group: 'aircraft' },
-  { id: 'flaps.retract', label: <Trans>Retract flaps</Trans>, group: 'aircraft' },
-  { id: 'gear', label: <Trans>Landing gear</Trans>, group: 'aircraft' },
-  { id: 'hook', label: <Trans>Arrestor hook</Trans>, group: 'aircraft' },
-  { id: 'atc', label: <Trans>Approach power (ATC)</Trans>, group: 'aircraft' },
-  { id: 'fold', label: <Trans>Wing fold</Trans>, group: 'aircraft' },
-  { id: 'launch', label: <Trans>Launch (catapult)</Trans>, group: 'aircraft' },
-  { id: 'lights', label: <Trans>Lights</Trans>, group: 'aircraft' },
-  { id: 'view', label: <Trans>Cycle view</Trans>, group: 'view' },
-  { id: 'view.reset', label: <Trans>Reset view</Trans>, group: 'view' },
-  { id: 'repeater', label: <Trans>Display repeater</Trans>, group: 'view' },
-  { id: 'look.up', label: <Trans>Look up</Trans>, group: 'view' },
-  { id: 'look.down', label: <Trans>Look down</Trans>, group: 'view' },
-  { id: 'look.left', label: <Trans>Look left</Trans>, group: 'view' },
-  { id: 'look.right', label: <Trans>Look right</Trans>, group: 'view' },
-  { id: 'look.target', label: <Trans>Look at target</Trans>, group: 'view' },
-  { id: 'zoom.in', label: <Trans>Zoom in</Trans>, group: 'view' },
-  { id: 'zoom.out', label: <Trans>Zoom out</Trans>, group: 'view' },
-  { id: 'menu', label: <Trans>Menu</Trans>, group: 'comms' },
+  { id: 'brake.speed', label: msg`Speed brake`, group: 'flight' },
+  { id: 'brake.wheel', label: msg`Wheel brakes`, group: 'flight' },
+  { id: 'override', label: msg`Override G limit`, group: 'flight' },
+  { id: 'yaw.left', label: msg`Yaw left`, group: 'flight' },
+  { id: 'yaw.right', label: msg`Yaw right`, group: 'flight' },
+  { id: 'throttle.up', label: msg`Throttle up`, group: 'flight' },
+  { id: 'throttle.down', label: msg`Throttle down`, group: 'flight' },
+  { id: 'trim.up', label: msg`Trim nose up`, group: 'trim' },
+  { id: 'trim.down', label: msg`Trim nose down`, group: 'trim' },
+  { id: 'trim.left', label: msg`Trim roll left`, group: 'trim' },
+  { id: 'trim.right', label: msg`Trim roll right`, group: 'trim' },
+  { id: 'trim.reset', label: msg`Reset trim`, group: 'trim' },
+  { id: 'fire', label: msg`Fire weapon`, group: 'weapons' },
+  { id: 'select', label: msg`Select weapon`, group: 'weapons' },
+  { id: 'acquire', label: msg`Acquire target`, group: 'weapons' },
+  { id: 'radar.undesignate', label: msg`Undesignate target`, group: 'weapons' },
+  { id: 'uncage', label: msg`Uncage seeker`, group: 'weapons' },
+  { id: 'jammer', label: msg`Jammer`, group: 'weapons' },
+  { id: 'radar.silent', label: msg`Radar silent`, group: 'weapons' },
+  { id: 'radar.acm', label: msg`Acquisition mode`, group: 'weapons' },
+  { id: 'flares', label: msg`Countermeasures`, group: 'weapons' },
+  { id: 'jettison.tanks', label: msg`Jettison tanks`, group: 'weapons' },
+  { id: 'jettison.emergency', label: msg`Emergency jettison (hold)`, group: 'weapons' },
+  { id: 'caution.reset', label: msg`Reset master caution`, group: 'aircraft' },
+  { id: 'flaps.extend', label: msg`Extend flaps`, group: 'aircraft' },
+  { id: 'flaps.retract', label: msg`Retract flaps`, group: 'aircraft' },
+  { id: 'gear', label: msg`Landing gear`, group: 'aircraft' },
+  { id: 'hook', label: msg`Arrestor hook`, group: 'aircraft' },
+  { id: 'atc', label: msg`Approach power (ATC)`, group: 'aircraft' },
+  { id: 'fold', label: msg`Wing fold`, group: 'aircraft' },
+  { id: 'launch', label: msg`Launch (catapult)`, group: 'aircraft' },
+  { id: 'lights', label: msg`Lights`, group: 'aircraft' },
+  { id: 'view', label: msg`Cycle view`, group: 'view' },
+  { id: 'view.reset', label: msg`Reset view`, group: 'view' },
+  { id: 'repeater', label: msg`Display repeater`, group: 'view' },
+  { id: 'look.up', label: msg`Look up`, group: 'view' },
+  { id: 'look.down', label: msg`Look down`, group: 'view' },
+  { id: 'look.left', label: msg`Look left`, group: 'view' },
+  { id: 'look.right', label: msg`Look right`, group: 'view' },
+  { id: 'look.target', label: msg`Look at target`, group: 'view' },
+  { id: 'zoom.in', label: msg`Zoom in`, group: 'view' },
+  { id: 'zoom.out', label: msg`Zoom out`, group: 'view' },
+  { id: 'menu', label: msg`Menu`, group: 'comms' },
 ]
 
 const KEY_ROWS: Row[] = [
-  { id: 'pitch.up', label: <Trans>Pitch up</Trans>, group: 'flight' },
-  { id: 'pitch.down', label: <Trans>Pitch down</Trans>, group: 'flight' },
-  { id: 'roll.left', label: <Trans>Roll left</Trans>, group: 'flight' },
-  { id: 'roll.right', label: <Trans>Roll right</Trans>, group: 'flight' },
-  { id: 'yaw.left', label: <Trans>Yaw left</Trans>, group: 'flight' },
-  { id: 'yaw.right', label: <Trans>Yaw right</Trans>, group: 'flight' },
-  { id: 'throttle.up', label: <Trans>Throttle up</Trans>, group: 'flight' },
-  { id: 'throttle.down', label: <Trans>Throttle down</Trans>, group: 'flight' },
-  { id: 'brake.speed', label: <Trans>Speed brake</Trans>, group: 'flight' },
-  { id: 'brake.wheel', label: <Trans>Wheel brakes</Trans>, group: 'flight' },
-  { id: 'brake.parking', label: <Trans>Parking brake</Trans>, group: 'flight' },
-  { id: 'override', label: <Trans>Override G limit</Trans>, group: 'flight' },
-  { id: 'trim.up', label: <Trans>Trim nose up</Trans>, group: 'trim' },
-  { id: 'trim.down', label: <Trans>Trim nose down</Trans>, group: 'trim' },
-  { id: 'trim.left', label: <Trans>Trim roll left</Trans>, group: 'trim' },
-  { id: 'trim.right', label: <Trans>Trim roll right</Trans>, group: 'trim' },
-  { id: 'trim.reset', label: <Trans>Reset trim</Trans>, group: 'trim' },
-  { id: 'fire', label: <Trans>Fire weapon</Trans>, group: 'weapons' },
-  { id: 'select', label: <Trans>Select weapon</Trans>, group: 'weapons' },
-  { id: 'acquire', label: <Trans>Acquire target</Trans>, group: 'weapons' },
-  { id: 'radar.undesignate', label: <Trans>Undesignate target</Trans>, group: 'weapons' },
-  { id: 'uncage', label: <Trans>Uncage seeker</Trans>, group: 'weapons' },
-  { id: 'jammer', label: <Trans>Jammer</Trans>, group: 'weapons' },
-  { id: 'radar.silent', label: <Trans>Radar silent</Trans>, group: 'weapons' },
-  { id: 'radar.acm', label: <Trans>Acquisition mode</Trans>, group: 'weapons' },
-  { id: 'flares', label: <Trans>Countermeasures</Trans>, group: 'weapons' },
-  { id: 'jettison.tanks', label: <Trans>Jettison tanks</Trans>, group: 'weapons' },
-  { id: 'jettison.emergency', label: <Trans>Emergency jettison (hold)</Trans>, group: 'weapons' },
-  { id: 'caution.reset', label: <Trans>Reset master caution</Trans>, group: 'aircraft' },
-  { id: 'flaps.extend', label: <Trans>Extend flaps</Trans>, group: 'aircraft' },
-  { id: 'flaps.retract', label: <Trans>Retract flaps</Trans>, group: 'aircraft' },
-  { id: 'gear', label: <Trans>Landing gear</Trans>, group: 'aircraft' },
-  { id: 'hook', label: <Trans>Arrestor hook</Trans>, group: 'aircraft' },
-  { id: 'atc', label: <Trans>Approach power (ATC)</Trans>, group: 'aircraft' },
-  { id: 'probe', label: <Trans>Fuel probe</Trans>, group: 'aircraft' },
-  { id: 'canopy', label: <Trans>Canopy</Trans>, group: 'aircraft' },
-  { id: 'fold', label: <Trans>Wing fold</Trans>, group: 'aircraft' },
-  { id: 'lights', label: <Trans>Lights</Trans>, group: 'aircraft' },
-  { id: 'launch', label: <Trans>Launch (catapult)</Trans>, group: 'aircraft' },
-  { id: 'eject', label: <Trans>Eject</Trans>, group: 'aircraft' },
-  { id: 'view', label: <Trans>Cycle view</Trans>, group: 'view' },
-  { id: 'view.reset', label: <Trans>Reset view</Trans>, group: 'view' },
-  { id: 'repeater', label: <Trans>Display repeater</Trans>, group: 'view' },
-  { id: 'altitude', label: <Trans>HUD altitude source</Trans>, group: 'view' },
-  { id: 'reject', label: <Trans>HUD declutter</Trans>, group: 'view' },
-  { id: 'map', label: <Trans>Map</Trans>, group: 'view' },
-  { id: 'chat', label: <Trans>Chat</Trans>, group: 'comms' },
-  { id: 'shout', label: <Trans>Chat to everyone</Trans>, group: 'comms' },
-  { id: 'menu', label: <Trans>Menu</Trans>, group: 'comms' },
+  { id: 'pitch.up', label: msg`Pitch up`, group: 'flight' },
+  { id: 'pitch.down', label: msg`Pitch down`, group: 'flight' },
+  { id: 'roll.left', label: msg`Roll left`, group: 'flight' },
+  { id: 'roll.right', label: msg`Roll right`, group: 'flight' },
+  { id: 'yaw.left', label: msg`Yaw left`, group: 'flight' },
+  { id: 'yaw.right', label: msg`Yaw right`, group: 'flight' },
+  { id: 'throttle.up', label: msg`Throttle up`, group: 'flight' },
+  { id: 'throttle.down', label: msg`Throttle down`, group: 'flight' },
+  { id: 'brake.speed', label: msg`Speed brake`, group: 'flight' },
+  { id: 'brake.wheel', label: msg`Wheel brakes`, group: 'flight' },
+  { id: 'brake.parking', label: msg`Parking brake`, group: 'flight' },
+  { id: 'override', label: msg`Override G limit`, group: 'flight' },
+  { id: 'trim.up', label: msg`Trim nose up`, group: 'trim' },
+  { id: 'trim.down', label: msg`Trim nose down`, group: 'trim' },
+  { id: 'trim.left', label: msg`Trim roll left`, group: 'trim' },
+  { id: 'trim.right', label: msg`Trim roll right`, group: 'trim' },
+  { id: 'trim.reset', label: msg`Reset trim`, group: 'trim' },
+  { id: 'fire', label: msg`Fire weapon`, group: 'weapons' },
+  { id: 'select', label: msg`Select weapon`, group: 'weapons' },
+  { id: 'acquire', label: msg`Acquire target`, group: 'weapons' },
+  { id: 'radar.undesignate', label: msg`Undesignate target`, group: 'weapons' },
+  { id: 'uncage', label: msg`Uncage seeker`, group: 'weapons' },
+  { id: 'jammer', label: msg`Jammer`, group: 'weapons' },
+  { id: 'radar.silent', label: msg`Radar silent`, group: 'weapons' },
+  { id: 'radar.acm', label: msg`Acquisition mode`, group: 'weapons' },
+  { id: 'flares', label: msg`Countermeasures`, group: 'weapons' },
+  { id: 'jettison.tanks', label: msg`Jettison tanks`, group: 'weapons' },
+  { id: 'jettison.emergency', label: msg`Emergency jettison (hold)`, group: 'weapons' },
+  { id: 'caution.reset', label: msg`Reset master caution`, group: 'aircraft' },
+  { id: 'flaps.extend', label: msg`Extend flaps`, group: 'aircraft' },
+  { id: 'flaps.retract', label: msg`Retract flaps`, group: 'aircraft' },
+  { id: 'gear', label: msg`Landing gear`, group: 'aircraft' },
+  { id: 'hook', label: msg`Arrestor hook`, group: 'aircraft' },
+  { id: 'atc', label: msg`Approach power (ATC)`, group: 'aircraft' },
+  { id: 'probe', label: msg`Fuel probe`, group: 'aircraft' },
+  { id: 'canopy', label: msg`Canopy`, group: 'aircraft' },
+  { id: 'fold', label: msg`Wing fold`, group: 'aircraft' },
+  { id: 'lights', label: msg`Lights`, group: 'aircraft' },
+  { id: 'launch', label: msg`Launch (catapult)`, group: 'aircraft' },
+  { id: 'eject', label: msg`Eject`, group: 'aircraft' },
+  { id: 'view', label: msg`Cycle view`, group: 'view' },
+  { id: 'view.reset', label: msg`Reset view`, group: 'view' },
+  { id: 'repeater', label: msg`Display repeater`, group: 'view' },
+  { id: 'altitude', label: msg`HUD altitude source`, group: 'view' },
+  { id: 'reject', label: msg`HUD declutter`, group: 'view' },
+  { id: 'map', label: msg`Map`, group: 'view' },
+  { id: 'chat', label: msg`Chat`, group: 'comms' },
+  { id: 'shout', label: msg`Chat to everyone`, group: 'comms' },
+  { id: 'menu', label: msg`Menu`, group: 'comms' },
 ]
 
 function JoystickPanel({
@@ -242,6 +250,7 @@ function JoystickPanel({
   set: (key: string, value: MissionConfig[string]) => void
 }) {
   const { t } = useLingui()
+  const { i18n } = useI18n()
   const pads = useGamepads()
   const sticks = (config.sticks ?? {}) as Record<string, StickBindings>
   const known = Array.from(new Set([...pads.map((p) => p.id), ...Object.keys(sticks)]))
@@ -328,8 +337,31 @@ function JoystickPanel({
   const axisOptions = Array.from({ length: axisCount }, (_, i) => String(i))
   const buttonOptions = Array.from({ length: buttonCount }, (_, i) => String(i))
 
+  const [query, setQuery] = useState('')
+  const hunt = query.trim().toLowerCase()
+  // The same caps the pickers show ("Axis 3", "Button 5"), so searching for
+  // what a stick's button is called finds the control it drives - the Keys tab
+  // matches its key caps the same way. The variable HAS to be `i` for the macro
+  // to reuse the msgid the pickers already ship.
+  const cap = (kind: 'axis' | 'button', mapped: string) => {
+    const i = String(Number(mapped.replace('-', '')) + 1)
+    return kind === 'axis' ? t`Axis ${i}` : t`Button ${i}`
+  }
+  const shows = (label: MessageDescriptor, mapped: string, kind: 'axis' | 'button') =>
+    !hunt ||
+    i18n._(label).toLowerCase().includes(hunt) ||
+    (mapped !== '' && cap(kind, mapped).toLowerCase().includes(hunt))
+  const axisHits = AXIS_ROWS.filter((row) => shows(row.label, axes[row.id] ?? '', 'axis'))
+  const buttonHits = BUTTON_ROWS.filter((row) => shows(row.label, buttons[row.id] ?? '', 'button'))
+
   return (
     <div className='space-y-4'>
+      <div className='bg-background sticky top-0 z-10 pb-2'>
+        <SearchBox query={query} onQuery={setQuery} />
+      </div>
+      {/* The device picker stays put while filtering: every mapping below it
+          belongs to the selected stick, so hiding it would leave the results
+          with nothing saying which device they are for. */}
       <section>
         <div className='flex items-center justify-between'>
           <SectionLabel>
@@ -386,161 +418,167 @@ function JoystickPanel({
         </div>
       </section>
 
-      <section>
-        <SectionLabel>
-          <Trans>Axis Calibration & Mapping</Trans>
-        </SectionLabel>
-        <div className='space-y-2 text-xs'>
-          {AXIS_ROWS.map(({ id, label }) => {
-            const value = axes[id] ?? ''
-            const reversed = value.startsWith('-')
-            const index = value.replace('-', '')
-            const live = pad && index !== '' ? pad.axes[Number(index)] : null
-            const vertical = PAIRS.has(id) && pad && index !== '' ? (pad.axes[Number(index) + 1] ?? null) : null
-            return (
-              <div key={id} className='flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-2.5'>
-                <span className='w-24 shrink-0 font-medium text-foreground'>{label}</span>
-                {live !== null &&
-                  (LEVERS.has(id) ? (
-                    <div className='bg-muted relative h-2 min-w-16 flex-1 overflow-hidden rounded border border-border'>
-                      <div
-                        className='absolute top-0 bottom-0 left-0 rounded transition-all duration-75'
-                        style={{
-                          width: `${(((id === 'throttle') !== reversed ? 1 - live : live + 1) / 2) * 100}%`,
-                          background: 'var(--air-accent)',
-                        }}
-                      />
-                    </div>
-                  ) : PAIRS.has(id) ? (
-                    <div className='flex min-w-24 flex-1 items-center gap-1.5'>
-                      <span className='text-muted-foreground shrink-0 text-xs'>↔</span>
+      {axisHits.length > 0 && (
+        <section>
+          <SectionLabel>
+            <Trans>Axis Calibration & Mapping</Trans>
+          </SectionLabel>
+          <div className='space-y-2 text-xs'>
+            {axisHits.map(({ id, label }) => {
+              const value = axes[id] ?? ''
+              const reversed = value.startsWith('-')
+              const index = value.replace('-', '')
+              const live = pad && index !== '' ? pad.axes[Number(index)] : null
+              const vertical = PAIRS.has(id) && pad && index !== '' ? (pad.axes[Number(index) + 1] ?? null) : null
+              return (
+                <div key={id} className='flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-2.5'>
+                  <span className='w-24 shrink-0 font-medium text-foreground'>{i18n._(label)}</span>
+                  {live !== null &&
+                    (LEVERS.has(id) ? (
+                      <div className='bg-muted relative h-2 min-w-16 flex-1 overflow-hidden rounded border border-border'>
+                        <div
+                          className='absolute top-0 bottom-0 left-0 rounded transition-all duration-75'
+                          style={{
+                            width: `${(((id === 'throttle') !== reversed ? 1 - live : live + 1) / 2) * 100}%`,
+                            background: 'var(--air-accent)',
+                          }}
+                        />
+                      </div>
+                    ) : PAIRS.has(id) ? (
+                      <div className='flex min-w-24 flex-1 items-center gap-1.5'>
+                        <span className='text-muted-foreground shrink-0 text-xs'>↔</span>
+                        <AxisMeter live={live} />
+                        <span className='text-muted-foreground shrink-0 text-xs'>↕</span>
+                        {vertical !== null ? (
+                          <AxisMeter live={vertical} />
+                        ) : (
+                          <div className='bg-muted/50 h-2 min-w-12 flex-1 rounded border border-dashed border-border' />
+                        )}
+                      </div>
+                    ) : (
                       <AxisMeter live={live} />
-                      <span className='text-muted-foreground shrink-0 text-xs'>↕</span>
-                      {vertical !== null ? (
-                        <AxisMeter live={vertical} />
-                      ) : (
-                        <div className='bg-muted/50 h-2 min-w-12 flex-1 rounded border border-dashed border-border' />
-                      )}
-                    </div>
-                  ) : (
-                    <AxisMeter live={live} />
-                  ))}
-                <div className='flex shrink-0 items-center gap-1.5'>
-                  <Select value={index === '' ? 'none' : index} onValueChange={(v) => setAxis(id, v === 'none' ? '' : (reversed ? '-' : '') + v)}>
-                    <SelectTrigger size='sm' className='h-8 min-w-24 text-xs'>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='none'>
-                        <Trans>None</Trans>
-                      </SelectItem>
-                      {axisOptions.map((option) => {
-                        const i = String(Number(option) + 1)
-                        return (
-                          <SelectItem key={option} value={option}>
-                            <Trans>Axis {i}</Trans>
-                          </SelectItem>
-                        )
-                      })}
-                    </SelectContent>
-                  </Select>
-                  {LEVERS.has(id) && index !== '' && (
+                    ))}
+                  <div className='flex shrink-0 items-center gap-1.5'>
+                    <Select value={index === '' ? 'none' : index} onValueChange={(v) => setAxis(id, v === 'none' ? '' : (reversed ? '-' : '') + v)}>
+                      <SelectTrigger size='sm' className='h-8 min-w-24 text-xs'>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value='none'>
+                          <Trans>None</Trans>
+                        </SelectItem>
+                        {axisOptions.map((option) => {
+                          const i = String(Number(option) + 1)
+                          return (
+                            <SelectItem key={option} value={option}>
+                              <Trans>Axis {i}</Trans>
+                            </SelectItem>
+                          )
+                        })}
+                      </SelectContent>
+                    </Select>
+                    {LEVERS.has(id) && index !== '' && (
+                      <Button
+                        type='button'
+                        size='sm'
+                        variant={reversed ? 'default' : 'outline'}
+                        className='h-8 px-2 text-xs'
+                        title={t`Reversed`}
+                        onClick={() => setAxis(id, (reversed ? '' : '-') + index)}
+                      >
+                        ⇄
+                      </Button>
+                    )}
                     <Button
                       type='button'
                       size='sm'
-                      variant={reversed ? 'default' : 'outline'}
-                      className='h-8 px-2 text-xs'
-                      title={t`Reversed`}
-                      onClick={() => setAxis(id, (reversed ? '' : '-') + index)}
+                      variant='outline'
+                      className='h-8 min-w-16 text-xs'
+                      disabled={!pad}
+                      onClick={() => {
+                        setBaseline(null)
+                        setDetecting(detecting === 'axis:' + id ? null : 'axis:' + id)
+                      }}
                     >
-                      ⇄
+                      {detecting === 'axis:' + id ? <Trans>Move…</Trans> : <Trans>Detect</Trans>}
                     </Button>
-                  )}
-                  <Button
-                    type='button'
-                    size='sm'
-                    variant='outline'
-                    className='h-8 min-w-16 text-xs'
-                    disabled={!pad}
-                    onClick={() => {
-                      setBaseline(null)
-                      setDetecting(detecting === 'axis:' + id ? null : 'axis:' + id)
-                    }}
-                  >
-                    {detecting === 'axis:' + id ? <Trans>Move…</Trans> : <Trans>Detect</Trans>}
-                  </Button>
+                  </div>
                 </div>
-              </div>
-            )
-          })}
-        </div>
-      </section>
+              )
+            })}
+          </div>
+        </section>
+      )}
 
-      <section>
-        <SectionLabel>
-          <Trans>Button Mappings</Trans>
-        </SectionLabel>
-        <div className='space-y-4'>
-          {GROUP_ORDER.map((group) => {
-            const rows = BUTTON_ROWS.filter((r) => r.group === group)
-            if (!rows.length) return null
-            return (
-              <div key={group} className='space-y-1.5'>
-                <div className='text-muted-foreground text-xs font-semibold tracking-wider uppercase'>{GROUP_TITLES[group]}</div>
-                <div className='grid gap-2 text-xs sm:grid-cols-2'>
-                  {rows.map(({ id, label }) => {
-                    const value = buttons[id] ?? ''
-                    const held = pad && value !== '' && pad.buttons[Number(value)]
-                    return (
-                      <div
-                        key={id}
-                        className={`flex items-center justify-between gap-2 rounded-lg border p-2 transition-colors ${
-                          held ? 'border-primary bg-primary/10 shadow-xs' : 'border-border bg-card'
-                        }`}
-                      >
-                        <span className={held ? 'text-primary font-bold' : 'text-foreground font-medium'}>{label}</span>
-                        <div className='flex shrink-0 items-center gap-1'>
-                          <Select value={value === '' ? 'none' : value} onValueChange={(v) => setButton(id, v === 'none' ? '' : v)}>
-                            <SelectTrigger size='sm' className='h-7 min-w-20 px-2 text-xs'>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value='none'>
-                                <Trans>None</Trans>
-                              </SelectItem>
-                              {buttonOptions.map((option) => {
-                                const i = String(Number(option) + 1)
-                                return (
-                                  <SelectItem key={option} value={option}>
-                                    <Trans>Button {i}</Trans>
-                                  </SelectItem>
-                                )
-                              })}
-                            </SelectContent>
-                          </Select>
-                          <Button
-                            type='button'
-                            size='sm'
-                            variant='outline'
-                            className='h-7 px-2 text-xs'
-                            disabled={!pad}
-                            onClick={() => {
-                              setBaseline(null)
-                              setDetecting(detecting === 'button:' + id ? null : 'button:' + id)
-                            }}
-                          >
-                            {detecting === 'button:' + id ? <Trans>Press…</Trans> : <Trans>Detect</Trans>}
-                          </Button>
+      {buttonHits.length > 0 && (
+        <section>
+          <SectionLabel>
+            <Trans>Button Mappings</Trans>
+          </SectionLabel>
+          <div className='space-y-4'>
+            {GROUP_ORDER.map((group) => {
+              const rows = buttonHits.filter((r) => r.group === group)
+              if (!rows.length) return null
+              return (
+                <div key={group} className='space-y-1.5'>
+                  <div className='text-muted-foreground text-xs font-semibold tracking-wider uppercase'>{GROUP_TITLES[group]}</div>
+                  <div className='grid gap-2 text-xs sm:grid-cols-2'>
+                    {rows.map(({ id, label }) => {
+                      const value = buttons[id] ?? ''
+                      const held = pad && value !== '' && pad.buttons[Number(value)]
+                      return (
+                        <div
+                          key={id}
+                          className={`flex items-center justify-between gap-2 rounded-lg border p-2 transition-colors ${
+                            held ? 'border-primary bg-primary/10 shadow-xs' : 'border-border bg-card'
+                          }`}
+                        >
+                          <span className={held ? 'text-primary font-bold' : 'text-foreground font-medium'}>{i18n._(label)}</span>
+                          <div className='flex shrink-0 items-center gap-1'>
+                            <Select value={value === '' ? 'none' : value} onValueChange={(v) => setButton(id, v === 'none' ? '' : v)}>
+                              <SelectTrigger size='sm' className='h-7 min-w-20 px-2 text-xs'>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value='none'>
+                                  <Trans>None</Trans>
+                                </SelectItem>
+                                {buttonOptions.map((option) => {
+                                  const i = String(Number(option) + 1)
+                                  return (
+                                    <SelectItem key={option} value={option}>
+                                      <Trans>Button {i}</Trans>
+                                    </SelectItem>
+                                  )
+                                })}
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              type='button'
+                              size='sm'
+                              variant='outline'
+                              className='h-7 px-2 text-xs'
+                              disabled={!pad}
+                              onClick={() => {
+                                setBaseline(null)
+                                setDetecting(detecting === 'button:' + id ? null : 'button:' + id)
+                              }}
+                            >
+                              {detecting === 'button:' + id ? <Trans>Press…</Trans> : <Trans>Detect</Trans>}
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    )
-                  })}
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            )
-          })}
-        </div>
-      </section>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
+      {axisHits.length === 0 && buttonHits.length === 0 && <NoMatch query={query} />}
     </div>
   )
 }
@@ -615,6 +653,47 @@ function SoundPanel({
   )
 }
 
+// Both mapping tabs are long lists of one-line controls, so both get the same
+// box. It is sticky at the top of the scroll region: on the Keys tab the match
+// can be forty rows down, and a filter you cannot see while reading the result
+// looks like the app has lost half its controls.
+function SearchBox({ query, onQuery }: { query: string; onQuery: (query: string) => void }) {
+  const { t } = useLingui()
+  return (
+    <div className='relative'>
+      <Search className='text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2' />
+      <Input
+        value={query}
+        placeholder={t`Search controls`}
+        aria-label={t`Search controls`}
+        className='pl-8'
+        onChange={(e) => onQuery(e.target.value)}
+      />
+      {query !== '' && (
+        <Button
+          type='button'
+          variant='ghost'
+          size='icon'
+          aria-label={t`Clear`}
+          className='text-muted-foreground hover:text-foreground absolute top-1/2 right-1 size-7 -translate-y-1/2'
+          onClick={() => onQuery('')}
+        >
+          <X className='size-4' />
+        </Button>
+      )}
+    </div>
+  )
+}
+
+// Nothing matched the filter, on either mapping tab.
+function NoMatch({ query }: { query: string }) {
+  return (
+    <p className='text-muted-foreground py-6 text-center text-sm'>
+      <Trans>No control matches “{query}”.</Trans>
+    </p>
+  )
+}
+
 function KeysPanel({
   config,
   set,
@@ -623,8 +702,14 @@ function KeysPanel({
   set: (key: string, value: MissionConfig[string]) => void
 }) {
   const { t } = useLingui()
+  const { i18n } = useI18n()
   const overrides = (config.keys ?? {}) as Record<string, string>
   const [arming, setArming] = useState<string | null>(null)
+  // The action a rebind took the key away from. Taking it is right - two
+  // controls on one chord is worse - but it used to happen in silence, and the
+  // row that lost its key is usually scrolled off screen.
+  const [taken, setTaken] = useState<{ from: string; chord: string } | null>(null)
+  const [query, setQuery] = useState('')
   const current = (id: string) => overrides[id] ?? KEY_DEFAULTS[id]
   useEffect(() => {
     if (!arming) return
@@ -638,20 +723,65 @@ function KeysPanel({
       if (/^(Shift|Control|Alt|Meta)/.test(e.code)) return
       const chord = (e.shiftKey ? 'Shift+' : '') + e.code
       const next = { ...overrides }
-      for (const other of Object.keys(KEY_DEFAULTS)) if (other !== arming && current(other) === chord) next[other] = 'None'
+      let stolen: string | null = null
+      for (const other of Object.keys(KEY_DEFAULTS))
+        if (other !== arming && current(other) === chord) {
+          next[other] = 'None'
+          stolen = other
+        }
       if (KEY_DEFAULTS[arming] === chord) delete next[arming]
       else next[arming] = chord
       set('keys', next)
+      setTaken(stolen ? { from: stolen, chord } : null)
       setArming(null)
     }
     window.addEventListener('keydown', capture, { capture: true })
     return () => window.removeEventListener('keydown', capture, { capture: true })
   }, [arming]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  const hunt = query.trim().toLowerCase()
+  const found = (row: Row) =>
+    !hunt ||
+    i18n._(row.label).toLowerCase().includes(hunt) ||
+    pretty(current(row.id)).toLowerCase().includes(hunt) // a player looking for what sits on a key searches the CAP, not the action's name
+  const hits = KEY_ROWS.filter(found)
+  // BUTTON_ROWS too, and a fallback below for the handful of actions the engine
+  // knows that neither tab lists: naming nothing is how this went silent in the
+  // first place.
+  const lost = taken ? [...KEY_ROWS, ...BUTTON_ROWS].find((r) => r.id === taken.from) : undefined
+
   return (
     <div className='space-y-4'>
+      <div className='bg-background sticky top-0 z-10 space-y-2 pb-2'>
+        <SearchBox query={query} onQuery={setQuery} />
+        {taken && (
+          <div className='flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 p-2.5 text-xs text-amber-600'>
+            <TriangleAlert className='mt-0.5 size-4 shrink-0' />
+            <span className='flex-1'>
+              {lost ? (
+                <Trans>
+                  {pretty(taken.chord)} was on {i18n._(lost.label)}, which is now unbound.
+                </Trans>
+              ) : (
+                <Trans>{pretty(taken.chord)} was already taken, and that control is now unbound.</Trans>
+              )}
+            </span>
+            <Button
+              type='button'
+              variant='ghost'
+              size='icon'
+              aria-label={t`Dismiss`}
+              className='size-5 shrink-0'
+              onClick={() => setTaken(null)}
+            >
+              <X className='size-3.5' />
+            </Button>
+          </div>
+        )}
+      </div>
+      {hits.length === 0 && <NoMatch query={query} />}
       {GROUP_ORDER.map((group) => {
-        const rows = KEY_ROWS.filter((r) => r.group === group)
+        const rows = hits.filter((r) => r.group === group)
         if (!rows.length) return null
         return (
           <section key={group}>
@@ -660,7 +790,7 @@ function KeysPanel({
               <div className='grid gap-2 text-xs sm:grid-cols-2'>
                 {rows.map(({ id, label }) => (
                   <div key={id} className='flex items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2'>
-                    <span className='font-medium text-foreground'>{label}</span>
+                    <span className='font-medium text-foreground'>{i18n._(label)}</span>
                     <span className='flex items-center gap-1'>
                       {arming === id ? (
                         <span className='text-primary animate-pulse font-mono text-xs font-semibold'>
@@ -699,7 +829,9 @@ function KeysPanel({
         )
       })}
 
-      <section>
+      {/* Not rows, so there is nothing here for the search to match: the
+          section would just sit under an empty result looking like a hit. */}
+      <section hidden={hunt !== ''}>
         <SectionLabel>
           <Trans>Fixed Flight Keys</Trans>
         </SectionLabel>
