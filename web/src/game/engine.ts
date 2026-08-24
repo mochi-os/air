@@ -30,7 +30,7 @@ import { surface as impact_surface } from './impact'
 import { impact as pipper_impact } from './pipper'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults } from '../lib/config'
-import { audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint } from './audio'
+import { audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_eject, audio_caution, audio_warning, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
@@ -2419,7 +2419,7 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
 	m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30);   // off the rail at aircraft speed; the Mk 36 does the rest
-	m.life=20; m.kind="9m"; m.target=target; m.enemy=false; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.shot=(m.shot||0)+1; m.launcher=st;   // enemy=false HERE, every launch: the pool slot may last have carried the bandit's heater, and a player's 9M that inherited enemy=true fused on the bandit and blasted the OWNSHIP's hulk instead — four fused shots in the 2026-08-19 joust, recorded as the bandit's, harming nobody. launch_bandit_heater sets it true again for its own rounds
+	m.life=20; m.kind="9m"; m.target=target; m.enemy=false; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=st;   // enemy=false HERE, every launch: the pool slot may last have carried the bandit's heater, and a player's 9M that inherited enemy=true fused on the bandit and blasted the OWNSHIP's hulk instead — four fused shots in the 2026-08-19 joust, recorded as the bandit's, harming nobody. launch_bandit_heater sets it true again for its own rounds
 	if(target){ const dx=wrap_axis(target.pos.x-st.pos.x), dy=target.pos.y-st.pos.y, dz=wrap_axis(target.pos.z-st.pos.z); const d=Math.hypot(dx,dy,dz)||1;
 		const tail=target.fwd?Math.max(0,(dx*target.fwd.x+dy*target.fwd.y+dz*target.fwd.z)/d):0;
 		const floor=0.15+0.35*THREE.MathUtils.clamp(target.reheat??target.burner??0,0,1);   // the ownship's plume lives in `burner` (#67): reading only `reheat` left the bandit's seeker blind to the player's afterburner, and its first live pair left the rail cold at 996 m against a lit reach of 2,500
@@ -2476,7 +2476,7 @@ function launch_amraam(st,target,track){ const m=missiles.find(x=>!x.active); if
 	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
 	if(stores_eject(st.loadout||{},name||"")){ m.vx=st.fwd.x*(st.speed+15); m.vy=(st.fwd.y*st.speed)-8; m.vz=st.fwd.z*(st.speed+15); }   // ejector points (the cheek LAU-116, the inboard LAU-115C): the round punches DOWN before the motor lights
 	else { m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30); }   // rail points (wing LAU-127s, single or twin): forward off the rail like the 9M
-	m.kind="120c"; m.target=target; m.track=track??null; m.enemy=false; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.shot=(m.shot||0)+1; m.launcher=st;
+	m.kind="120c"; m.target=target; m.track=track??null; m.enemy=false; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=st;
 	m.slot=missiles.indexOf(m);
 	const estimate=(track!=null&&target)?{ position:{x:target.pos.x,y:target.pos.y,z:target.pos.z},
 		velocity:{x:target.velx??target.fwd.x*target.speed,y:target.vely??target.fwd.y*target.speed,z:target.velz??target.fwd.z*target.speed} }:null;
@@ -2501,7 +2501,7 @@ function launch_bandit_round(){ const m=missiles.find(x=>!x.active); if(!m||!has
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
 	m.vx=bandit.fwd.x*(bandit.speed+30); m.vy=bandit.fwd.y*(bandit.speed+30); m.vz=bandit.fwd.z*(bandit.speed+30);
-	m.kind="120c"; m.target=null; m.track=null; m.enemy=true; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.shot=(m.shot||0)+1; m.launcher=bandit;
+	m.kind="120c"; m.target=null; m.track=null; m.enemy=true; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=bandit;
 	m.slot=missiles.indexOf(m);
 	round_launch(m.slot,{x:m.px,y:m.py,z:m.pz},{x:m.vx,y:m.vy,z:m.vz},
 		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },WORLD_WRAP,true);
@@ -2670,6 +2670,11 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 		m.vx+=m.vx/spd*thrust*dt; m.vy+=m.vy/spd*thrust*dt; m.vz+=m.vz/spd*thrust*dt; }
 	else if(m.loose||!guided){ spd=Math.hypot(m.vx,m.vy,m.vz)||1; const next=Math.max(spd-5e-5*spd*spd*dt,60)/spd; m.vx*=next; m.vy*=next; m.vz*=next; }
 	m.px+=m.vx*dt;m.py+=m.vy*dt;m.pz+=m.vz*dt; m.mesh.position.set(m.px,m.py,m.pz); m.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),new THREE.Vector3(m.vx,m.vy,m.vz).normalize());
+	if(m.enemy && !m.heard && m.flew>1){   // the near pass (#80): an enemy round crossing its distance minimum to the ownship close aboard is HEARD — the only cue a passive heater gives that it just missed
+		const fx=wrap_axis(m.px-ownship.pos.x), fy=m.py-ownship.pos.y, fz=wrap_axis(m.pz-ownship.pos.z);
+		const span=Math.hypot(fx,fy,fz);
+		if(m.neared!==undefined && span>m.neared && m.neared<200){ m.heard=true; audio_flyby(m.neared, m.burn>0); }
+		m.neared=m.neared===undefined?span:Math.min(m.neared,span); }
 	m.trail_acc+=dt; if(m.trail_acc>.035){ m.trail_acc=0; const a=m.trail.geometry.attributes.position.array, n=Math.min(30,m.trail_n+1); if(m.trail_n>=30)a.copyWithin(0,3); const o=(n-1)*3; a[o]=m.px;a[o+1]=m.py;a[o+2]=m.pz; m.trail_n=n; m.trail.geometry.setDrawRange(0,n); m.trail.geometry.attributes.position.needsUpdate=true; }
 	if(m.py<=0){ m.active=false; m.mesh.visible=false; post("ocean"); continue; }
 	m.smoke_acc+=dt; const puff=m.burn>0?0.02:0.08;   // the motor smokes; the coast barely does (reduced-smoke Mk 36)
@@ -3573,10 +3578,11 @@ function call_the_ball(){
 // relevance. English-only by design until the wording survives flight
 // testing; translation follows before the task closes.
 const HINT={
-	wake:"Case I: initial at 800', 3 NM astern, up the ship's wake",
-	side:"Hold 800' past the ship's right side; the break comes after the bow",
-	brk:"Break: hard level turn at 800'; power back, speed brake out; roll out beside the ship 0.9 to 1.1 NM out",
-	form:"Below 250 KTS: gear down, full flaps, hook down; descend to 600'",
+	wake:"Case I: fly up the ship's wake at 800' and 350 knots",
+	side:"Hold 800' past the right side; break after the bow",
+	brk:"Break: level turn, throttle idle, speed brake out; pull 1 g per 100 knots",
+	roll:"Roll out beside the ship 0.9 to 1.1 NM out",
+	form:"Below 250 knots: gear, full flaps, hook; descend to 600' and slow to on-speed",
 	donut:"On-speed is 8.1 alpha: trim until the amber donut lights beside the HUD; fly speed with trim, height with power",
 	wing:"Level at 600' downwind; keep the ship 0.9 to 1.1 NM off your wing",
 	abeam:"Ship abeam: bank 27-30\u00b0, start down at 200-300 FPM",
@@ -3585,8 +3591,8 @@ const HINT={
 	final:"Case II: level at 1200' on final, on-speed at 8.1 alpha",
 	needle:"The needles on the HUD are glideslope and centreline: hold the velocity vector where they cross",
 	slope:"Glideslope alive: start down; 2 NM 800', 1 NM 400', half a NM 200'",
-	stack:"Case III: hold 250 KTS at marshal; the HUD clock counts down to your push time; commence on zero",
-	push:"Commencing: 250 KTS, 4000 FPM down to platform at 5000'",
+	stack:"Case III: hold 250 knots at marshal; the HUD clock counts down to your push time; commence on zero",
+	push:"Commencing: 250 knots, 4000 FPM down to platform at 5000'",
 	floor:"Descending below 5000': keep FPM a smaller number than your altitude",
 	level:"Platform: 2000 FPM; level at 1200'",
 	gate:"10 NM: gear down, full flaps, hook down; on-speed 8.1 alpha by 6 NM",
@@ -3595,12 +3601,13 @@ const HINT={
 	wave:"Wave-off: full power, speed brakes in, wings level, hold your attitude; climb up the angled deck",
 	bolt:"Bolter: full power, speed brakes in, hook stays down; climb to 600' and turn downwind",
 };
-const CIRCUIT=[HINT.brk,HINT.form,HINT.wing,HINT.abeam,HINT.ninety,HINT.forty,HINT.slope,HINT.check,HINT.ball,HINT.wave,HINT.bolt];   // the per-circuit set: re-armed by a bolter or wave-off
+const CIRCUIT=[HINT.brk,HINT.roll,HINT.form,HINT.wing,HINT.abeam,HINT.ninety,HINT.forty,HINT.slope,HINT.check,HINT.ball,HINT.wave,HINT.bolt];   // the per-circuit set: re-armed by a bolter or wave-off
 let hinted={};
+let hint_rows=null;   // the coaching slot (#70 round 2): ONE hint at a time, held on screen until the next replaces it — four fading rows at the spawn were unreadable mid-flight
 function hint(key){ if(cfg.hints===false||hinted[key]) return; hinted[key]=1;
-	// comm() clips at 80 characters: pack the hint into as many rows as it
-	// needs, splitting only at clause marks, so the agreed wording survives
-	// verbatim. Translation later happens per full line, before the split.
+	// One row where it fits; the longer teachings wrap at clause marks to at
+	// most two. The slot never fades, so there is no clock to outrun.
+	// Translation later happens per full line, before the split.
 	const rows=[]; let line="";
 	for(const part of translate(key).split("; ")){
 		const next=line?line+"; "+part:part;
@@ -3610,7 +3617,8 @@ function hint(key){ if(cfg.hints===false||hinted[key]) return; hinted[key]=1;
 		while(line.length>78){ const cut=line.lastIndexOf(": ",78); if(cut<1) break; rows.push(line.slice(0,cut+1)); line=line.slice(cut+2); }
 	}
 	if(line) rows.push(line);
-	for(const row of rows) comm(row, "#ffce7a");
+	hint_rows=rows;
+	if(DEV_MODE){ const log=((globalThis as any).dev_comms??=[]); for(const row of rows) log.push(String(row)); }   // the probes keep reading hints here, as they did when hints rode comm()
 }
 function recoach(){ for(const key of CIRCUIT) delete hinted[key]; }
 function hints_watch(){ if(cfg.hints===false||!running||on_ground()) return;
@@ -3623,7 +3631,9 @@ function hints_watch(){ if(cfg.hints===false||!running||on_ground()) return;
 		const O=carrier_world(0,0), F=carrier_world(100,0); let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;
 		const along=rx*hx+rz*hz, lateral=Math.abs(rz*hx-rx*hz);
 		const fdot=ownship.fwd.x*hx+ownship.fwd.z*hz;   // +1 flying up the wake, -1 downwind
+		if(along>-1400&&fdot>0.3&&!hinted[HINT.brk]) hint(HINT.side);   // drawing level with the ship, still inbound
 		if(range<950) hint(HINT.brk);
+		if(hinted[HINT.brk]&&fdot<-0.7) hint(HINT.roll);   // the nose has come around downwind
 		if(hinted[HINT.brk]&&kt<285&&!down) hint(HINT.form);
 		if(down) hint(HINT.donut);
 		if(down&&feet<750&&fdot<-0.5&&range>1000) hint(HINT.wing);
@@ -3631,9 +3641,11 @@ function hints_watch(){ if(cfg.hints===false||!running||on_ground()) return;
 		if(hinted[HINT.abeam]&&Math.abs(fdot)<0.45&&feet<560) hint(HINT.ninety);
 		if(hinted[HINT.ninety]&&fdot>0.55&&feet<430) hint(HINT.forty);
 	}
+	if(st==="case2"&&range<5*1852) hint(HINT.needle);
 	if(st==="case2"&&range<3.2*1852&&feet>700) hint(HINT.slope);
 	if(st==="case3"&&marshal){
-		if(marshal.commenced){ hint(HINT.push); hint(HINT.floor); }
+		if(marshal.commenced) hint(HINT.push);
+		if(marshal.commenced&&feet<5800) hint(HINT.floor);   // the FPM-under-altitude rule, taught as the descent actually approaches the floor
 		if(marshal.platform) hint(HINT.level);
 		if(marshal.dirty) hint(HINT.gate);
 		if(range<3.2*1852) hint(HINT.check);
@@ -5073,7 +5085,7 @@ function reset_ownship(){
 	if(st==="case1"||st==="case2"||st==="case3") ddi_sets.nav.right="adi";   // spawned on approach: the pilot set up for instrument work before we hand over (#15)
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
-	hinted={};   // and the flight hints (#70)
+	hinted={}; hint_rows=null;   // and the flight hints (#70)
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
@@ -5091,7 +5103,7 @@ function reset_ownship(){
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		pattern={ broke:false, told:false, dirty:false, downwind:false, ball:false };
-		hint(HINT.wake); hint(HINT.side); }
+		hint(HINT.wake); }   // side follows at its position — one hint at a time in the slot
 	else if(st==="case2"){   // Case II (#205): established on the FINAL BEARING at 1,200 ft, on-speed, configured — needles to the break-out, visual finish. Level at 1,200 intercepts the 3.5° glideslope ~3 nm out (CV-1)
 		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);   // landing centreline, A (aft) → B (forward, toward the rollout)
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;           // unit landing direction (the way the aircraft rolls out)
@@ -5103,7 +5115,7 @@ function reset_ownship(){
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		ownship.q.premultiply(new THREE.Quaternion().setFromAxisAngle(r,8.1*D2R));   // attitude = on-speed alpha over the level path (pre-core fallback)
 		pattern={ broke:true, told:true, dirty:true, downwind:true, ball:false };   // Case II starts configured on the final bearing: only the ball remains
-		hint(HINT.final); hint(HINT.needle); }
+		hint(HINT.final); }   // needle follows a mile in — one hint at a time in the slot
 	else if(st==="case3"){   // Case III (#205): marshal — 21 NM on the final bearing at angels 6, clean, 250 kt, inbound at the fix. The push clock is running: fly the racetrack, commence on time
 		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;
@@ -5923,10 +5935,14 @@ function draw_hud(){
 	if(!authentic&&MULTIPLAYER&&net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams"){   // team score (game furniture): red and blue running totals above the stores legend
 		hctx.fillStyle="#ff5a48"; hctx.fillText("RED "+(net.score.red||0),40,HH-160);
 		hctx.fillStyle="#5a86ff"; hctx.fillText("BLUE "+(net.score.blue||0),40,HH-142); hctx.fillStyle=GR; }
-	if(!authentic&&comms.length){   // the radio/chat log (#84): top-left, scrolling, fading — game furniture, never in the authentic cockpit. Single player too since the Case III radio script (#205)
+	if(!authentic&&(comms.length||(hint_rows&&cfg.hints!==false))){   // the radio/chat log (#84): top-left, scrolling, fading — game furniture, never in the authentic cockpit. Single player too since the Case III radio script (#205)
 		const cnow=performance.now(); comms=comms.filter(c=>c.until>cnow);
 		hctx.save(); hctx.textAlign="left"; hctx.font="15px ui-monospace, SFMono-Regular, Menlo, monospace";
 		let cy=128;
+		if(hint_rows&&cfg.hints!==false){ hctx.globalAlpha=1;   // the coaching slot (#70): no fade — it stands until the next hint replaces it
+			for(const row of hint_rows){ hctx.fillStyle="#00000090"; hctx.fillText(row,41,cy+1);
+				hctx.fillStyle="#ffce7a"; hctx.fillText(row,40,cy); cy+=19; }
+			cy+=6; }
 		for(const c of comms){ hctx.globalAlpha=Math.min(1,(c.until-cnow)/2000);
 			hctx.fillStyle="#00000090"; hctx.fillText(c.text,41,cy+1);
 			hctx.fillStyle=c.colour; hctx.fillText(c.text,40,cy); cy+=19; }
