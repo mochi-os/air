@@ -10,7 +10,7 @@
 
 import { useCallback, useEffect, useId, useState } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { LogIn, Plus, RefreshCw } from 'lucide-react'
+import { LogIn, Plus, RefreshCw, type LucideIcon } from 'lucide-react'
 import { Button } from '@mochi/web/components/ui/button'
 import {
   Dialog,
@@ -26,6 +26,7 @@ import { RadioGroup, RadioGroupItem } from '@mochi/web/components/ui/radio-group
 import { Switch } from '@mochi/web/components/ui/switch'
 import { getErrorMessage } from '@mochi/web'
 import { useIdentityName } from '../lib/config-store'
+import { CLOUD_ICONS, MODE_ICONS, START_ICONS, TOD_ICONS, WEAPON_ICONS } from './menu-icons'
 import { default_server, normalize_server, supported, world_create, world_sessions, world_withdraw, world_status, type Join, type WorldSession, type WorldStatus, crossHost } from '../game/net'
 
 
@@ -33,16 +34,21 @@ function Option({
   value,
   label,
   group,
+  icon: Icon,
 }: {
   value: string
   label: React.ReactNode
   group: string
+  icon?: LucideIcon
 }) {
   const id = `${group}-${value}`
   return (
     <div className='flex items-center gap-2'>
       <RadioGroupItem value={value} id={id} />
-      <Label htmlFor={id} className='font-normal'>
+      {/* The icon sits inside the label so it is part of the click target, and
+          it is decorative: the words beside it already name the choice. */}
+      <Label htmlFor={id} className='gap-2 font-normal'>
+        {Icon && <Icon aria-hidden className='text-muted-foreground size-4 shrink-0' />}
         {label}
       </Label>
     </div>
@@ -348,9 +354,9 @@ export function Multiplayer({
                 <Trans>Match type</Trans>
               </div>
               <RadioGroup value={mode} onValueChange={(v) => setMode(v as 'furball' | 'joust' | 'teams')}>
-                <Option group={group + 'mode'} value='furball' label={<Trans>Open — anyone may join or leave</Trans>} />
-                <Option group={group + 'mode'} value='joust' label={<Trans>Joust — 1v1, first kill wins</Trans>} />
-                <Option group={group + 'mode'} value='teams' label={<Trans>Teams — red versus blue</Trans>} />
+                <Option group={group + 'mode'} value='furball' icon={MODE_ICONS.furball} label={<Trans>Open — anyone may join or leave</Trans>} />
+                <Option group={group + 'mode'} value='joust' icon={MODE_ICONS.joust} label={<Trans>Joust — 1v1, first kill wins</Trans>} />
+                <Option group={group + 'mode'} value='teams' icon={MODE_ICONS.teams} label={<Trans>Teams — red versus blue</Trans>} />
               </RadioGroup>
             </div>
             <div className='space-y-2'>
@@ -358,15 +364,15 @@ export function Multiplayer({
                 <Trans>Weather</Trans>
               </div>
               <RadioGroup value={tod} onValueChange={(v) => setTod(v as 'day' | 'night')}>
-                <Option group={group + 'tod'} value='day' label={<Trans>Day</Trans>} />
-                <Option group={group + 'tod'} value='night' label={<Trans>Night</Trans>} />
+                <Option group={group + 'tod'} value='day' icon={TOD_ICONS.day} label={<Trans>Day</Trans>} />
+                <Option group={group + 'tod'} value='night' icon={TOD_ICONS.night} label={<Trans>Night</Trans>} />
               </RadioGroup>
               <RadioGroup value={clouds} onValueChange={setClouds}>
-                <Option group={group + 'clouds'} value='none' label={<Trans>Clear</Trans>} />
-                <Option group={group + 'clouds'} value='cumulus' label={<Trans>Cumulus</Trans>} />
-                <Option group={group + 'clouds'} value='high_stratus' label={<Trans>High stratus</Trans>} />
-                <Option group={group + 'clouds'} value='mid_stratus' label={<Trans>Mid stratus</Trans>} />
-                <Option group={group + 'clouds'} value='low_stratus' label={<Trans>Low stratus</Trans>} />
+                <Option group={group + 'clouds'} value='none' icon={CLOUD_ICONS.none} label={<Trans>Clear</Trans>} />
+                <Option group={group + 'clouds'} value='cumulus' icon={CLOUD_ICONS.cumulus} label={<Trans>Cumulus</Trans>} />
+                <Option group={group + 'clouds'} value='high_stratus' icon={CLOUD_ICONS.high_stratus} label={<Trans>High stratus</Trans>} />
+                <Option group={group + 'clouds'} value='mid_stratus' icon={CLOUD_ICONS.mid_stratus} label={<Trans>Mid stratus</Trans>} />
+                <Option group={group + 'clouds'} value='low_stratus' icon={CLOUD_ICONS.low_stratus} label={<Trans>Low stratus</Trans>} />
               </RadioGroup>
             </div>
           </div>
@@ -380,9 +386,9 @@ export function Multiplayer({
                 <Trans>Weapons</Trans>
               </div>
               <RadioGroup value={weapons} onValueChange={(v) => setWeapons(v as 'guns' | 'fox2' | 'open')}>
-                <Option group={group + 'weapons'} value='guns' label={<Trans>Guns only</Trans>} />
-                <Option group={group + 'weapons'} value='fox2' label='Fox 2' />
-                <Option group={group + 'weapons'} value='open' label={<Trans>Unlimited</Trans>} />
+                <Option group={group + 'weapons'} value='guns' icon={WEAPON_ICONS.guns} label={<Trans>Guns only</Trans>} />
+                <Option group={group + 'weapons'} value='fox2' icon={WEAPON_ICONS.fox2} label='Fox 2' />
+                <Option group={group + 'weapons'} value='open' icon={WEAPON_ICONS.open} label={<Trans>Unlimited</Trans>} />
               </RadioGroup>
               <div className='flex items-center gap-2 pt-1'>
                 <Label htmlFor='rule-fuel' className='font-normal'>
@@ -410,8 +416,8 @@ export function Multiplayer({
               </div>
               {mode === 'joust' ? (
                 <RadioGroup value={start} onValueChange={(v) => setStart(v as 'merge' | 'bvr')}>
-                  <Option group={group + 'start'} value='merge' label={<Trans>Merge — fight on at the pass</Trans>} />
-                  <Option group={group + 'start'} value='bvr' label={<Trans>BVR — weapons free from spawn</Trans>} />
+                  <Option group={group + 'start'} value='merge' icon={START_ICONS.merge} label={<Trans>Merge — fight on at the pass</Trans>} />
+                  <Option group={group + 'start'} value='bvr' icon={START_ICONS.bvr} label={<Trans>BVR — weapons free from spawn</Trans>} />
                 </RadioGroup>
               ) : (
                 <div className='flex items-center gap-2'>
