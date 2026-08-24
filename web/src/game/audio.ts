@@ -20,7 +20,7 @@ const buses: Partial<Record<Bus, GainNode>> = {}
 const levels: Record<string, number> = { master: 1, engine: 1, aircraft: 1, weapons: 1, environment: 1, alerts: 1 }
 // one-shot routing
 const SHOT_BUS: Record<string, Bus> = {
-  gun: 'weapons', explosion: 'weapons', launch: 'weapons', flare: 'weapons',
+  gun: 'weapons', explosion: 'weapons', launch: 'weapons', flare: 'weapons', flyby: 'weapons',
   hit: 'aircraft', catapult: 'aircraft', trap: 'aircraft', touchdown: 'aircraft', servo: 'aircraft', eject: 'aircraft',
   caution: 'alerts', warning: 'alerts', horn: 'alerts', law: 'alerts',
 }
@@ -398,6 +398,18 @@ async function bake(): Promise<void> {
   shots.flare = await render(0.3, (d, r) => {
     for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * decay(i, r, 0.05) * 0.5
   })
+  // Missile flyby (#80): the bow-shock crack of a supersonic round passing
+  // close, into a fast roar that sweeps down as it recedes — faster and
+  // rougher than the launch whoosh, gone in under a second.
+  shots.flyby = await render(0.9, (d, r) => {
+    let last = 0
+    for (let i = 0; i < d.length; i++) {
+      const white = Math.random() * 2 - 1
+      if (i < r * 0.012) d[i] += white * decay(i, r, 0.005) * 1.4
+      last = last + (white - last) * (0.55 - 0.45 * (i / d.length))
+      d[i] += last * decay(i, r, 0.22) * 1.1
+    }
+  })
   // Catapult: holdback clunk, building rumble, end clunk.
   shots.catapult = await render(2.6, (d, r) => {
     const clunk = (at: number, f: number, a: number) => {
@@ -621,6 +633,15 @@ export function audio_departure(yawing: number, steady: boolean): void {
 // 2 lock. strength (0..1) is how much heat the seeker is drinking — how deep
 // inside its brightness-conditioned reach the target sits — and it makes the
 // growl louder, higher and angrier as the shot improves, in both states.
+// audio_flyby (#80): an enemy round passing close without fusing. distance is
+// the closest approach in metres; a burning motor arrives louder and brighter.
+export function audio_flyby(distance: number, burning: boolean): void {
+  const range = Math.max(0, Math.min(1, 1 - distance / 200))
+  if (range <= 0) return
+  const crack = Math.max(0, Math.min(1, 1 - distance / 60))
+  play('flyby', (0.25 + 0.75 * range * range) * (burning ? 1.25 : 1), 900 + 9000 * crack + 2000 * range, distance / 343)
+}
+
 export function audio_seeker(state: number, strength = 0): void {
   if (!seeker || !context || context.state !== 'running') return
   const t = now()
