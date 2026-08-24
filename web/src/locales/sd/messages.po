@@ -39,11 +39,6 @@ msgstr "[نه مقرر]"
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# گولي لڳي} other {# گوليون لڳيون}}"
 
-#. placeholder {0}: selectedValues.size
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
-msgid "{0, plural, one {# selected} other {# selected}}"
-msgstr "{0, plural, one {# چونڊيل} other {# چونڊيل}}"
-
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:637
@@ -64,11 +59,6 @@ msgstr "ڪيٽاپلٽ اڻ برابري جي حد کان {0} ft·lb وڌيڪ"
 #: src/components/MissionSetup.tsx:339
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb وڌ ۾ وڌ لانچ وزن کان وڌيڪ"
-
-#. placeholder {0}: item.label
-#: ../../../lib/web/src/components/config-drawer.tsx:160
-msgid "{0} option preview"
-msgstr "{0} اختيار جو اڳواٽ نظارو"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
@@ -107,22 +97,6 @@ msgstr "{name} جو ميچ"
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:29
 msgid "{opponentName} offered a draw"
 msgstr "{opponentName} ڊرا جي پيشڪش ڪئي"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:203
-msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
-msgstr "{selectedCount, plural, one {{entityName} چونڊيو ويو} other {{manyName} چونڊيا ويا}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:45
-msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
-msgstr "{selectedCount, plural, one {# {entityName} چونڊيو ويو. وڏي پيماني تي عمل جي ٽول بار دستياب آهي.} other {# {manyName} چونڊيا ويا. وڏي پيماني تي عمل جي ٽول بار دستياب آهي.}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:195
-msgid "{selectedCount, plural, one {# selected} other {# selected}}"
-msgstr "{selectedCount, plural, one {# چونڊيل} other {# چونڊيل}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:142
-msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
-msgstr "{selectedCount, plural, one {# چونڊيل {entityName} لاءِ وڏي پيماني تي عمل} other {# چونڊيل {manyName} لاءِ وڏي پيماني تي عمل}}"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:248
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:52
@@ -190,29 +164,13 @@ msgstr "قبول ڪريو"
 msgid "Access denied"
 msgstr "رسائي رد ڪئي وئي"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:16
-msgid "Access Forbidden"
-msgstr "رسائي منع آهي"
-
 #: ../../../lib/web/src/features/access/access-list.tsx:197
 msgid "Access level"
 msgstr "رسائي جي سطح"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:216
-msgid "Account added"
-msgstr "اڪائونٽ شامل ڪيو ويو"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:232
-msgid "Account removed"
-msgstr "اڪائونٽ هٽايو ويو"
-
 #: ../../../lib/web/src/features/accounts/account-add.tsx:139
 msgid "Account type"
 msgstr "اڪائونٽ جو قسم"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:242
-msgid "Account verified"
-msgstr "اڪائونٽ تصديق ٿيل"
 
 #: src/components/MissionSetup.tsx:887
 #: src/components/MissionSetup.tsx:1075
@@ -230,7 +188,11 @@ msgstr "نشانو لاڪ ڪريو"
 msgid "Acquisition mode"
 msgstr "گرفت جو موڊ"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:712
+#: src/components/MissionSetup.tsx:988
+msgid "Active assists"
+msgstr ""
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:720
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:209
 msgid "Add"
@@ -253,19 +215,14 @@ msgid "Add access"
 msgstr "رسائي شامل ڪريو"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:132
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:288
 msgid "Add account"
 msgstr "اڪائونٽ شامل ڪريو"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:297
-msgid "Add an account to receive notifications and use services."
-msgstr "اطلاع وصول ڪرڻ ۽ خدمتون استعمال ڪرڻ لاءِ اڪائونٽ شامل ڪريو."
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:291
 msgid "Add caption"
 msgstr "ڪيپشن شامل ڪريو"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:682
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:690
 msgid "Add checklist item"
 msgstr "چيڪ لسٽ شيءِ شامل ڪريو"
 
@@ -274,17 +231,13 @@ msgstr "چيڪ لسٽ شيءِ شامل ڪريو"
 msgid "Add field"
 msgstr "فيلڊ شامل ڪريو"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:700
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:708
 msgid "Add item..."
 msgstr "شيءِ شامل ڪريو..."
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
 msgid "Add link"
 msgstr "لنڪ شامل ڪريو"
-
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:102
-msgid "Add new account"
-msgstr "نئون اڪائونٽ شامل ڪريو"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
@@ -295,13 +248,8 @@ msgid "Add option"
 msgstr "اختيار شامل ڪريو"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
-#: ../../../lib/web/src/components/tag-input.tsx:40
 msgid "Add tag..."
 msgstr "ٽيگ شامل ڪريو..."
-
-#: ../../../lib/web/src/components/layout/team-switcher.tsx:83
-msgid "Add team/app"
-msgstr "ٽيم/ايپ شامل ڪريو"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:175
 msgid "Add to existing notifications"
@@ -317,10 +265,6 @@ msgstr "نظارو شامل ڪريو"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 msgid "Adding..."
 msgstr "شامل ڪري رهيو آهي..."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:72
-msgid "Adjust the appearance and layout to suit your preferences."
-msgstr "پنهنجي پسند مطابق ظاهري شڪل ۽ ترتيب درست ڪريو."
 
 #: src/components/SettingsDialog.tsx:877
 msgid "Afterburner"
@@ -341,10 +285,6 @@ msgstr "هوائي جهاز کڻندڙ ٻيڙو <0>“USS Nimitz CVN-68 Aircraft
 #: src/components/MissionSetup.tsx:444
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "جهاز جو ماڊل <0>“F/A-18C Hornet”</0> پاران <1>CreadorDeMu</1> (Sketchfab)، <2>CC BY 4.0</2> تحت لائسنس يافته. تبديل ٿيل: رخ تبديل ڪيو ويو ۽ نئين سر ماپيو ويو، اڻ استعمال ٿيل ٽيڪسچر ڊيٽا هٽائي وئي، ٻاهريون لٽڪيل سامان الڳ فائل ۾ ڌار ڪيو ويو، هڪ ڍڪ واري ميش کي آئيني عڪس ۾ تبديل ڪيو ويو."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:163
-msgid "All"
-msgstr "سڀ"
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -411,7 +351,7 @@ msgid "Are you sure you want to log out? You will need to log in again to access
 msgstr "ڇا توهان پڪ سان لاگ آئوٽ ڪرڻ چاهيو ٿا؟ پنهنجي اڪائونٽ تائين رسائي لاءِ توهان کي ٻيهر لاگ ان ڪرڻو پوندو."
 
 #: src/components/MissionSetup.tsx:1020
-msgid "Armament & Stores"
+msgid "Armament and stores"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:168
@@ -419,17 +359,9 @@ msgstr ""
 msgid "Arrestor hook"
 msgstr "روڪيندڙ ڪنڍو"
 
-#: ../../../lib/web/src/components/data-table/column-header.tsx:59
-msgid "Asc"
-msgstr "وڌندڙ"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "گهٽ کان وڌيڪ"
-
-#: src/components/MissionSetup.tsx:988
-msgid "Assists Active"
-msgstr ""
 
 #: ../../../lib/web/src/components/comment-composer.tsx:427
 msgid "Attach comment files"
@@ -440,7 +372,7 @@ msgid "Attach reply files"
 msgstr "جواب جون فائلون ڳنڍيو"
 
 #: src/components/SettingsDialog.tsx:604
-msgid "Audio Mixer Channels"
+msgid "Audio channels"
 msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
@@ -465,7 +397,7 @@ msgid "Avatar for {name}"
 msgstr "{name} لاءِ اوتار"
 
 #: src/components/MissionSetup.tsx:1218
-msgid "Avionics, HOTAS & audio"
+msgid "Avionics, HOTAS and audio"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:446
@@ -473,7 +405,7 @@ msgid "Axis {i}"
 msgstr "محور {i}"
 
 #: src/components/SettingsDialog.tsx:395
-msgid "Axis Calibration & Mapping"
+msgid "Axis calibration and mapping"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:521
@@ -485,7 +417,6 @@ msgstr "پوئتي"
 msgid "Back"
 msgstr "واپس"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:28
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:28
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
@@ -524,7 +455,7 @@ msgid "Best sustained turn speed"
 msgstr "بهترين مسلسل موڙ جي رفتار"
 
 #: src/components/SettingsDialog.tsx:561
-msgid "Betty & RWR Alerts"
+msgid "Betty and RWR alerts"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:44
@@ -536,8 +467,8 @@ msgstr "بنگو ٻارڻ"
 msgid "Blocked by"
 msgstr "بلاڪ ڪندڙ"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:227
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:237
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:242
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:252
 msgid "Blocked navigation to untrusted link"
 msgstr "غير قابل اعتماد لنڪ ڏانهن ناقابل اعتماد ناقابل تشريح روڪي"
 
@@ -599,7 +530,7 @@ msgid "Button {i}"
 msgstr "بٽڻ {i}"
 
 #: src/components/SettingsDialog.tsx:487
-msgid "Button Mappings"
+msgid "Button mappings"
 msgstr ""
 
 #: src/components/Multiplayer.tsx:414
@@ -657,7 +588,7 @@ msgid "Cancel reply"
 msgstr "جواب منسوخ ڪريو"
 
 #: src/components/SettingsDialog.tsx:559
-msgid "Cannons & Ordnance"
+msgid "Cannons and ordnance"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:222
@@ -670,7 +601,7 @@ msgid "Caption"
 msgstr "ڪيپشن"
 
 #: src/components/SettingsDialog.tsx:560
-msgid "Carrier & Ambient"
+msgid "Carrier and ambient"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:1082
@@ -739,10 +670,6 @@ msgstr "سڀني سان چيٽ"
 msgid "Cheats"
 msgstr "چيٽس"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:198
-msgid "Check \"All\" to see your past notifications."
-msgstr "پنھنجون اڳوڻيون اطلاعون ڏسڻ لاءِ \"سڀ\" چونڊيو."
-
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
 msgid "Checkbox"
 msgstr "چيڪ بڪس"
@@ -754,22 +681,6 @@ msgstr "چيڪ لسٽ"
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:35
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "سائڊبار مان راند چونڊيو يا نئين شروع ڪريو."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:329
-msgid "Choose between default expanded, compact icon-only, or full layout mode"
-msgstr "ڊفالٽ وڌايل، گهٽ صرف آئڪن، يا پوري ترتيب موڊ مان چونڊيو"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:271
-msgid "Choose between inset, floating, or standard sidebar layout"
-msgstr "اندروني، فلوٽنگ، يا معياري سائڊبار ترتيب مان چونڊيو"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:372
-msgid "Choose between left-to-right or right-to-left site direction"
-msgstr "کاٻي کان ساڄي يا ساڄي کان کاٻي سائيٽ هدايت مان چونڊيو"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:227
-msgid "Choose between system preference, light mode, or dark mode"
-msgstr "سسٽم ترجيح، روشن موڊ، يا اونداهي موڊ مان چونڊيو"
 
 #: ../../../lib/web/src/components/language-picker.tsx:264
 #: ../../../lib/web/src/components/language-picker.tsx:271
@@ -790,23 +701,9 @@ msgstr "صاف ڪريو"
 msgid "Clear all"
 msgstr "سڀ صاف ڪريو"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
-msgid "Clear filters"
-msgstr "فلٽر صاف ڪريو"
-
 #: ../../../lib/web/src/components/search-input.tsx:26
 msgid "Clear search"
 msgstr "ڳولا صاف ڪريو"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:170
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:174
-msgid "Clear selection"
-msgstr "انتخاب صاف ڪريو"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
-msgid "Clear selection (Escape)"
-msgstr "انتخاب صاف ڪريو (Escape)"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:501
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
@@ -878,10 +775,6 @@ msgstr "ڪالم جي گروپنگ"
 msgid "Comfortable"
 msgstr "آرامده"
 
-#: ../../../lib/web/src/components/coming-soon.tsx:12
-msgid "Coming Soon!"
-msgstr "جلد اچي رهيو آهي!"
-
 #: ../../../lib/web/src/components/ui/command.tsx:34
 msgid "Command Palette"
 msgstr "ڪمانڊ پيليٽ"
@@ -904,7 +797,6 @@ msgstr "تبصرا"
 msgid "Communication"
 msgstr "رابطو"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:316
 #: ../../../lib/web/src/lib/preference-utils.ts:90
 msgid "Compact"
 msgstr "گهٽ"
@@ -933,10 +825,6 @@ msgstr "خانگي سرور سان ڳنڍيو"
 #: ../../../lib/web/src/lib/chat-ui.ts:18
 msgid "Connected"
 msgstr "ڳنڍيل"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:191
-msgid "Connected accounts"
-msgstr "ڳنڍيل اڪائونٽ"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:21
 msgid "Connecting..."
@@ -1008,7 +896,7 @@ msgstr "رڪارڊنگ محفوظ نه ٿي سگهي"
 msgid "Could not send the message"
 msgstr "پيغام موڪلجي نه سگهيو"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:128
 msgid "Couldn't load notifications"
 msgstr "اطلاعون لوڊ نه ٿي سگهيا"
 
@@ -1105,16 +993,9 @@ msgstr "خطرناڪ"
 msgid "Cycle view"
 msgstr "منظر مٽايو"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:219
-#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:15
 msgid "Dark"
 msgstr "اونداهو"
-
-#: ../../../lib/web/src/components/profile-dropdown.tsx:87
-#: ../../../lib/web/src/components/profile-dropdown.tsx:123
-msgid "Dark mode"
-msgstr "اونداهو موڊ"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:259
 msgid "Data conflict"
@@ -1142,10 +1023,6 @@ msgstr "ڊيڪ پوزيشن محفوظ ٿي وئي"
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:41
 msgid "Decline"
 msgstr "رد ڪريو"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:311
-msgid "Default"
-msgstr "ڊفالٽ"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
@@ -1205,10 +1082,6 @@ msgstr "پراڻي سرور تي پنهنجو اڪائونٽ ختم ڪريو"
 msgid "Departure / Recovery"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/column-header.tsx:63
-msgid "Desc"
-msgstr "گهٽبڙ"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Descending"
 msgstr "وڌيڪ کان گهٽ"
@@ -1244,10 +1117,6 @@ msgstr "ويب براؤزر کان معلوم ڪريو"
 #: src/components/Multiplayer.tsx:264
 msgid "Different game host"
 msgstr "راند جو مختلف ميزبان"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:341
-msgid "Direction"
-msgstr "هدايت"
 
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
@@ -1286,7 +1155,7 @@ msgstr "رد ڪريو"
 msgid "Display repeater"
 msgstr "ڊسپلي ورجائيندڙ"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:238
+#: ../../../lib/web/src/components/ui/sidebar.tsx:258
 msgid "Displays the mobile sidebar."
 msgstr "موبائل سائڊبار ڏيکاري ٿو."
 
@@ -1296,7 +1165,7 @@ msgstr "مفاصلو LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:1044
+#: src/components/SettingsDialog.tsx:1061
 msgid "Done"
 msgstr "مڪمل"
 
@@ -1382,7 +1251,7 @@ msgid "Edit view"
 msgstr "ڏيک ۾ ترميم ڪريو"
 
 #: src/components/SettingsDialog.tsx:852
-msgid "Effects & Toggles"
+msgid "Effects and toggles"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:830
@@ -1432,7 +1301,7 @@ msgid "Engagement"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:557
-msgid "Engine & Afterburner"
+msgid "Engine and afterburner"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:770
@@ -1515,14 +1384,6 @@ msgstr "F/A-18C حوالو"
 msgid "F/A-18C Strike Fighter"
 msgstr ""
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:225
-msgid "Failed to add account"
-msgstr "اڪائونٽ شامل ڪرڻ ۾ ناڪام"
-
-#: ../../../lib/web/src/components/tag-input.tsx:39
-msgid "Failed to add tag"
-msgstr "ٽيگ شامل ڪرڻ ۾ ناڪام"
-
 #: ../../../lib/web/src/components/ui/copy-button.tsx:26
 #: ../../../lib/web/src/lib/toast-utils.ts:44
 msgid "Failed to copy"
@@ -1569,17 +1430,9 @@ msgstr "وڊيو لوڊ ٿي نه سگهيو"
 msgid "Failed to post comment"
 msgstr "تبصرو پوسٽ ڪرڻ ۾ ناڪام"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:234
-msgid "Failed to remove account"
-msgstr "اڪائونٽ هٽائڻ ۾ ناڪام"
-
 #: ../../../lib/web/src/components/options-menu.tsx:133
 msgid "Failed to revoke RSS access"
 msgstr "RSS رسائي واپس وٺڻ ۾ ناڪام"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:257
-msgid "Failed to send verification code"
-msgstr "تصديق ڪوڊ موڪلڻ ۾ ناڪام"
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:174
 msgid "Failed to update comment"
@@ -1607,10 +1460,6 @@ msgstr "ويڙهه شروع ٿي"
 msgid "Files"
 msgstr "فائلون"
 
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:30
-msgid "Filter..."
-msgstr "فلٽر..."
-
 #: ../../../lib/web/src/components/restore-banner.tsx:97
 msgid "Finish moving your account"
 msgstr "پنهنجو اڪائونٽ منتقل ڪرڻ پورو ڪريو"
@@ -1629,7 +1478,7 @@ msgid "Fire weapon"
 msgstr "هٿيار فائر ڪريو"
 
 #: src/components/SettingsDialog.tsx:720
-msgid "Fixed Flight Keys"
+msgid "Fixed flight keys"
 msgstr ""
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:221
@@ -1665,28 +1514,28 @@ msgid "Flight"
 msgstr "اڏام"
 
 #: src/components/MissionSetup.tsx:984
-msgid "Flight Assists"
+msgid "Flight assists"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:82
 msgid "FLIGHT CORE FAILED"
 msgstr "اڏام جو مرڪز ناڪام ٿيو"
 
+#: src/components/SettingsDialog.tsx:967
+msgid "Flight hints"
+msgstr ""
+
 #: src/components/MissionSetup.tsx:1233
 msgid "Flight log"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:844
-msgid "Flight Profile"
+msgid "Flight profile"
 msgstr ""
 
 #: src/components/MatchHistory.tsx:154
 msgid "Flights"
 msgstr "اڏامون"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:258
-msgid "Floating"
-msgstr "تيرندڙ"
 
 #: src/components/MatchHistory.tsx:90
 msgid "Flown"
@@ -1759,10 +1608,6 @@ msgstr "ايندھن جي پروب"
 msgid "Fuel tank"
 msgstr "ٻارڻ جي ٽانڪي"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:321
-msgid "Full layout"
-msgstr "مڪمل ليئوٽ"
-
 #: src/components/MatchHistory.tsx:78
 msgid "Furball"
 msgstr "Furball"
@@ -1784,42 +1629,21 @@ msgstr "گيئر"
 msgid "GEAR"
 msgstr "گيئر"
 
-#: src/components/SettingsDialog.tsx:988
+#: src/components/SettingsDialog.tsx:1005
 msgid "General"
 msgstr "عام"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:26
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "واپس"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:82
-msgid "Go to first page"
-msgstr "پهرين صفحي تي وڃو"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:128
-msgid "Go to last page"
-msgstr "آخري صفحي تي وڃو"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:119
-msgid "Go to next page"
-msgstr "ايندڙ صفحي تي وڃو"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:106
-msgid "Go to page {pageNumber}"
-msgstr "صفحو {pageNumber} ڏانهن وڃو"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:91
-msgid "Go to previous page"
-msgstr "پوئين صفحي تي وڃو"
-
-#: src/components/SettingsDialog.tsx:992
+#: src/components/SettingsDialog.tsx:1009
 msgid "Graphics"
 msgstr "گرافڪس"
 
 #: src/components/SettingsDialog.tsx:779
-msgid "Graphics Preset"
+msgid "Graphics preset"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:309
@@ -1868,14 +1692,6 @@ msgstr "مٿي جي ٽريڪنگ"
 msgid "Heavy"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/column-header.tsx:70
-msgid "Hide"
-msgstr "لڪايو"
-
-#: ../../../lib/web/src/components/password-input.tsx:27
-msgid "Hide password"
-msgstr "پاسورڊ لڪايو"
-
 #: src/components/SettingsDialog.tsx:770
 msgid "High"
 msgstr "اوچو"
@@ -1885,6 +1701,10 @@ msgstr "اوچو"
 #: src/components/Multiplayer.tsx:367
 msgid "High stratus"
 msgstr "اوچو اسٽريٽس"
+
+#: src/components/SettingsDialog.tsx:959
+msgid "Hints"
+msgstr ""
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:61
 #: src/routes/history.tsx:32
@@ -1953,12 +1773,8 @@ msgid "Initials avatar for {name}"
 msgstr "{name} لاءِ شروعاتي اکرن جو اوتار"
 
 #: src/components/SettingsDialog.tsx:338
-msgid "Input Hardware"
+msgid "Input hardware"
 msgstr ""
-
-#: ../../../lib/web/src/components/config-drawer.tsx:253
-msgid "Inset"
-msgstr "اندر"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
@@ -1968,17 +1784,9 @@ msgstr "دلچسپيون"
 msgid "Internal fuel"
 msgstr "اندروني ٻارڻ"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:545
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:550
 msgid "Invalid date"
 msgstr "غلط تاريخ"
-
-#: ../../../lib/web/src/components/tag-input.tsx:38
-msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
-msgstr "غير معتبر ٽيگ: رڳو اکر، انگ، خالي جڳھون، ھائيفن ۽ سليش (وڌ ۾ وڌ 50 اکر)"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:245
-msgid "Invalid verification code"
-msgstr "غلط تصديق ڪوڊ"
 
 #: src/components/SettingsDialog.tsx:385
 msgid "Invert pitch axis"
@@ -2043,7 +1851,7 @@ msgstr "دوبدو مقابلو — 1v1، جيڪو پهرين ڪيرائيندو
 msgid "Joust against bot"
 msgstr "دوبدو مقابلو بوٽ خلاف"
 
-#: src/components/SettingsDialog.tsx:1000
+#: src/components/SettingsDialog.tsx:1017
 msgid "Joystick"
 msgstr "جوئي اسٽڪ"
 
@@ -2059,7 +1867,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "ڪيبورڊ شارٽ ڪٽَ"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:1021
 msgid "Keys"
 msgstr "ڪنجيون"
 
@@ -2115,7 +1923,6 @@ msgstr "اُڇلاءُ (ڪيٽاپلٽ)"
 msgid "launch / target"
 msgstr "اُڏام / نشانو"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:287
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:306
 msgid "Layout"
 msgstr "ليئوٽ"
@@ -2123,11 +1930,6 @@ msgstr "ليئوٽ"
 #: src/components/Multiplayer.tsx:402
 msgid "lb"
 msgstr "lb"
-
-#: ../../../lib/web/src/components/learn-more.tsx:33
-#: ../../../lib/web/src/components/learn-more.tsx:38
-msgid "Learn more"
-msgstr "وڌيڪ سکو"
 
 #: src/components/MissionSetup.tsx:796
 msgid "Leave server"
@@ -2140,10 +1942,6 @@ msgstr "ڇڏي ويو"
 #: src/components/GameCanvas.tsx:96
 msgid "LEFT"
 msgstr "هليو ويو"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:355
-msgid "Left to Right"
-msgstr "کاٻي کان ساڄي"
 
 #: src/components/MissionSetup.tsx:169
 #: src/components/MissionSetup.tsx:170
@@ -2162,8 +1960,6 @@ msgstr "صرف اکر، انگ، خالي جاءِ ۽ ڊيش"
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200 تي برابر، ڦيٿا هيٺ"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:214
-#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:14
 msgid "Light"
 msgstr "روشن"
@@ -2214,8 +2010,6 @@ msgstr "لوڊنگ ناڪام ٿي"
 msgid "Loading..."
 msgstr "لوڊ ٿي رهيو آهي..."
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:69
-#: ../../../lib/web/src/components/profile-dropdown.tsx:98
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:26
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:28
 msgid "Log out"
@@ -2279,10 +2073,6 @@ msgstr "بند ڪرڻ لاءِ M"
 msgid "Manage categories"
 msgstr "زمرن جو انتظام ڪريو"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:192
-msgid "Manage your connected accounts for notifications and services."
-msgstr "اطلاعن ۽ خدمتن لاءِ پنھنجا ڳنڍيل اڪائونٽ منظم ڪريو."
-
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
 msgid "Manual"
 msgstr "دستي"
@@ -2295,23 +2085,22 @@ msgstr "نقشو"
 msgid "Map"
 msgstr "نقشو"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:192
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:199
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:224
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:207
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:214
 msgid "Mark all as read"
 msgstr "سڀ پڙهيل طور نشانبر ڪريو"
 
 #: src/components/SettingsDialog.tsx:576
-msgid "Master Audio Output"
+msgid "Master audio output"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:589
-msgid "Master Bus"
+msgid "Master bus"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:556
 #: src/components/SettingsDialog.tsx:584
-msgid "Master Volume"
+msgid "Master volume"
 msgstr ""
 
 #: src/components/Multiplayer.tsx:348
@@ -2494,10 +2283,6 @@ msgstr "اڃا ڪا سرگرمي نه آهي"
 msgid "No comments yet"
 msgstr "اڃا ڪو تبصرو نه آهي"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:295
-msgid "No connected accounts"
-msgstr "ڪو ڳنڍيل اڪائونٽ نه آهي"
-
 #: src/components/MatchHistory.tsx:125
 msgid "No flights yet"
 msgstr "اڃا ڪا اڏام ناهي"
@@ -2522,15 +2307,11 @@ msgstr "ڪو جوئي اسٽڪ نه مليو — ان کي جاڳائڻ لاءِ
 msgid "No matching objects"
 msgstr "ڪا ملندڙ شيون نه آهن"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
-msgid "No notifications yet"
-msgstr "اڃا ڪا اطلاع ناهي"
-
 #: src/components/Multiplayer.tsx:531
 msgid "No open matches — create one."
 msgstr "ڪو به کليل ميچ ناهي — هڪ ٺاهيو."
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:336
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:341
 #: ../../../lib/web/src/components/person-picker.tsx:84
 msgid "No people found"
 msgstr "ڪو ماڻهو نه مليو"
@@ -2539,18 +2320,12 @@ msgstr "ڪو ماڻهو نه مليو"
 msgid "No places found"
 msgstr "ڪا جاءِ نه ملي"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:58
-msgid "No profile"
-msgstr "ڪو پروفائيل نه آهي"
-
 #: ../../../lib/web/src/components/inline-entity-search.tsx:64
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:82
 #: ../../../lib/web/src/components/search-entity-page.tsx:73
 msgid "No results found"
 msgstr "ڪو نتيجو نه مليو"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "ڪو نتيجو نه مليو."
 
@@ -2576,7 +2351,7 @@ msgstr "ڪو ٽائيم زون نه مليو."
 msgid "No topic record yet — try again after the next notification."
 msgstr "اڃا ڪو ٽاپڪ رڪارڊ نه آهي — اڳيون اطلاع کان پوءِ ٻيهر ڪوشش ڪريو."
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:124
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:139
 msgid "No unread notifications"
 msgstr "ڪا اڻ پڙهيل اطلاع نه آهي"
 
@@ -2652,16 +2427,8 @@ msgstr "ڪجهه نه مليو"
 msgid "Nothing yet — say hello."
 msgstr "اڃا ڪجهه ناهي — سلام چئو."
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:136
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:150
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:236
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:257
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:261
-msgid "Notifications"
-msgstr "اطلاعون"
-
 #. placeholder {0}: unread.length
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:185
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:200
 msgid "Notifications: {0}"
 msgstr "اطلاعون: {0}"
 
@@ -2715,11 +2482,6 @@ msgstr "کوليو"
 msgid "Open — anyone may join or leave"
 msgstr "کليل — ڪو به شامل ٿي سگهي ٿو يا ڇڏي سگهي ٿو"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:156
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:166
-msgid "Open account actions"
-msgstr "اڪائونٽ ڪارناما کوليو"
-
 #: ../../../lib/web/src/components/layout/nav-group.tsx:199
 #: ../../../lib/web/src/components/layout/nav-group.tsx:204
 msgid "Open actions"
@@ -2734,11 +2496,6 @@ msgstr "مينيو کوليو"
 msgid "Open navigation"
 msgstr "نيويگيشن کوليو"
 
-#: ../../../lib/web/src/components/layout/top-nav.tsx:38
-#: ../../../lib/web/src/components/layout/top-nav.tsx:44
-msgid "Open navigation menu"
-msgstr "نيويگيشن مينيو کوليو"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:105
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:111
 msgid "Open option actions"
@@ -2747,11 +2504,6 @@ msgstr "اختيار ڪارناما کوليو"
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "چونڊيل ڪارڊ کوليو"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:58
-#: ../../../lib/web/src/components/config-drawer.tsx:66
-msgid "Open theme settings"
-msgstr "ٿيم سيٽنگون کوليو"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:274
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:279
@@ -2802,11 +2554,6 @@ msgstr "نظر بند"
 msgid "PADLOCK OFF"
 msgstr "نظر آزاد"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:43
-#: ../../../lib/web/src/components/data-table/pagination.tsx:71
-msgid "Page {currentPage} of {totalPages}"
-msgstr "صفحو {currentPage} مان {totalPages}"
-
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:530
 msgid "Parent"
 msgstr "والدين"
@@ -2835,10 +2582,6 @@ msgstr "نمونو (regex)"
 msgid "Performance priority"
 msgstr ""
 
-#: ../../../lib/web/src/components/date-picker.tsx:20
-msgid "Pick a date"
-msgstr "تاريخ چونڊيو"
-
 #: src/components/MissionSetup.tsx:577
 #: src/components/Multiplayer.tsx:140
 #: src/components/Multiplayer.tsx:309
@@ -2857,7 +2600,7 @@ msgid "PILOT DOWN"
 msgstr "پائلٽ مارجي ويو"
 
 #: src/components/SettingsDialog.tsx:922
-msgid "Pilot Identity"
+msgid "Pilot identity"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:348
@@ -2940,10 +2683,6 @@ msgstr "رازداري"
 msgid "Processing…"
 msgstr "پروسيس ٿي رهيو آهي…"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:114
-msgid "Profile"
-msgstr "پروفائيل"
-
 #: src/components/SettingsDialog.tsx:282
 #: src/components/SettingsDialog.tsx:294
 msgid "Profile saved"
@@ -3006,7 +2745,6 @@ msgstr "ٻيهر هٿياربند"
 msgid "Recent"
 msgstr "تازيون"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:220
 #: ../../../lib/web/src/components/search-entity-page.tsx:243
 msgid "Recommended"
 msgstr "تجويز ڪيل"
@@ -3016,10 +2754,11 @@ msgid "Reconnecting ({retries})..."
 msgstr "ٻيهر ڳنڍجي رهيو آهي ({retries})..."
 
 #: src/components/SettingsDialog.tsx:950
-msgid "Record flights automatically"
+msgid "Record flights"
 msgstr ""
 
 #: src/components/MatchHistory.tsx:255
+#: src/components/SettingsDialog.tsx:944
 msgid "Recording"
 msgstr "رڪارڊنگ"
 
@@ -3072,7 +2811,6 @@ msgstr "24 ڪلاڪن اندر نسبتي، ٻي صورت ۾ مطلق"
 #: ../../../lib/web/src/components/attachment-composer.tsx:330
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
 #: ../../../lib/web/src/features/access/access-list.tsx:270
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
 msgstr "هٽايو"
 
@@ -3101,7 +2839,7 @@ msgstr "رسائي هٽائجي؟"
 msgid "Remove interest"
 msgstr "دلچسپي هٽايو"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:666
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:674
 msgid "Remove item"
 msgstr "شيءِ هٽايو"
 
@@ -3128,7 +2866,7 @@ msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "رينڊرنگ <0>three.js</0> پاران (MIT لائسنس)."
 
 #: src/components/SettingsDialog.tsx:806
-msgid "Rendering Detail"
+msgid "Rendering detail"
 msgstr ""
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:256
@@ -3149,20 +2887,9 @@ msgstr "گهربل"
 msgid "Resend email"
 msgstr "اي ميل ٻيهر موڪليو"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:87
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:1040
+#: src/components/SettingsDialog.tsx:1057
 msgid "Reset"
 msgstr "ري سيٽ"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:122
-#: ../../../lib/web/src/components/config-drawer.tsx:127
-msgid "Reset {title}"
-msgstr "{title} ري سيٽ ڪريو"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:85
-msgid "Reset all settings to default values"
-msgstr "سڀ سيٽنگون ڊفالٽ قدرن تي ري سيٽ ڪريو"
 
 #: src/components/SettingsDialog.tsx:164
 #: src/components/SettingsDialog.tsx:215
@@ -3229,10 +2956,6 @@ msgstr "رسائي واپس وٺو"
 msgid "Revoke RSS access?"
 msgstr "RSS رسائي منسوخ ڪجي؟"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:362
-msgid "Right to Left"
-msgstr "ساڄي کان کاٻي"
-
 #: src/components/MissionSetup.tsx:174
 #: src/components/MissionSetup.tsx:175
 msgid "Right wing"
@@ -3266,10 +2989,6 @@ msgstr "قطارون"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:373
 msgid "Rows group by"
 msgstr "قطارن جو گروپ"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:65
-msgid "Rows per page"
-msgstr "هر صفحي تي قطارون"
 
 #: ../../../lib/web/src/components/options-menu.tsx:131
 msgid "RSS access revoked"
@@ -3350,12 +3069,10 @@ msgstr "هن ڏيک کي ڳوليو، ڏسو، ۽ ترتيب ڏيو."
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:255
 #: ../../../lib/web/src/components/inline-entity-search.tsx:63
 #: ../../../lib/web/src/components/person-picker.tsx:324
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "ڳوليو..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:178
 #: ../../../lib/web/src/components/search-entity-page.tsx:201
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
@@ -3364,11 +3081,6 @@ msgstr "ڳولي رهيو آهي..."
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
 msgid "Select"
 msgstr "چونڊيو"
-
-#. placeholder {0}: item.label.toLowerCase()
-#: ../../../lib/web/src/components/config-drawer.tsx:149
-msgid "Select {0}"
-msgstr "{0} چونڊيو"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:356
 msgid "Select a field"
@@ -3386,10 +3098,6 @@ msgstr "رسائي ڏيڻ لاءِ هڪ يوزر، گروپ، يا ٻيو قاع
 msgid "Select access rule"
 msgstr "رسائي قاعدو چونڊيو"
 
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:34
-msgid "Select account"
-msgstr "اڪائونٽ چونڊيو"
-
 #: ../../../lib/web/src/features/accounts/account-add.tsx:142
 msgid "Select account type"
 msgstr "اڪائونٽ قسم چونڊيو"
@@ -3397,10 +3105,6 @@ msgstr "اڪائونٽ قسم چونڊيو"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:231
 msgid "Select group"
 msgstr "گروپ چونڊيو"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:305
-msgid "Select layout style"
-msgstr "ترتيب جو انداز چونڊيو"
 
 #: ../../../lib/web/src/components/place-picker.tsx:49
 msgid "Select location"
@@ -3418,31 +3122,15 @@ msgstr "شخص چونڊيو..."
 msgid "Select previous card"
 msgstr "پويون ڪارڊ چونڊيو"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:247
-msgid "Select sidebar style"
-msgstr "سائيڊبار جو انداز چونڊيو"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:349
-msgid "Select site direction"
-msgstr "سائيٽ جي طرف چونڊيو"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:203
-msgid "Select theme preference"
-msgstr "ٿيم جي ترجيح چونڊيو"
-
 #: src/components/SettingsDialog.tsx:154
 #: src/components/SettingsDialog.tsx:205
 msgid "Select weapon"
 msgstr "هٿيار چونڊيو"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:252
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:335
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:257
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:340
 msgid "Select..."
 msgstr "چونڊيو..."
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:209
-msgid "selected"
-msgstr "چونڊيل"
 
 #. placeholder {0}: getSelectedName()
 #: ../../../lib/web/src/features/access/access-dialog.tsx:309
@@ -3518,8 +3206,8 @@ msgstr "اصل ۽ منزل مقرر ڪريو"
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:418
 #: src/components/MissionSetup.tsx:1216
-#: src/components/SettingsDialog.tsx:983
-#: src/components/SettingsDialog.tsx:985
+#: src/components/SettingsDialog.tsx:1000
+#: src/components/SettingsDialog.tsx:1002
 msgid "Settings"
 msgstr "سيٽنگون"
 
@@ -3535,10 +3223,6 @@ msgstr "ڪلاسز ڏيکاريو"
 msgid "Show fields"
 msgstr "فيلڊ ڏيکاريو"
 
-#: ../../../lib/web/src/components/password-input.tsx:27
-msgid "Show password"
-msgstr "پاسورڊ ڏيکاريو"
-
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:33
 msgid "Show this help"
 msgstr "هي مدد ڏيکاريو"
@@ -3547,9 +3231,7 @@ msgstr "هي مدد ڏيکاريو"
 msgid "Showing {totalShown} of {total}"
 msgstr "{total} مان {totalShown} ڏيکاري رهيو آھي"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:239
-#: ../../../lib/web/src/components/config-drawer.tsx:263
-#: ../../../lib/web/src/components/ui/sidebar.tsx:237
+#: ../../../lib/web/src/components/ui/sidebar.tsx:257
 msgid "Sidebar"
 msgstr "سائيڊبار"
 
@@ -3571,10 +3253,6 @@ msgstr "صرف ٽيڪسٽ جي ھڪ سٽ"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "هڪ انجڻ سان بهترين چاڙهائي (Vyse، آفٹربرنر)"
 
-#: ../../../lib/web/src/components/skip-to-main.tsx:11
-msgid "Skip to Main"
-msgstr "مين تي ڇڏي ڏيو"
-
 #: ../../../lib/web/src/lib/preference-utils.ts:101
 #: ../../../lib/web/src/lib/preference-utils.ts:128
 msgid "Small"
@@ -3585,14 +3263,10 @@ msgid "Sort"
 msgstr "ترتيب"
 
 #: src/components/MissionSetup.tsx:1235
-msgid "Sortie history & replays"
+msgid "Sortie history and replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:944
-msgid "Sortie Recording"
-msgstr ""
-
-#: src/components/SettingsDialog.tsx:996
+#: src/components/SettingsDialog.tsx:1013
 msgid "Sound"
 msgstr "آواز"
 
@@ -3650,10 +3324,6 @@ msgstr "شروع ڪريو"
 msgid "Start the discussion by adding the first comment."
 msgstr "پهريون تبصرو شامل ڪري بحث شروع ڪريو."
 
-#: ../../../lib/web/src/components/coming-soon.tsx:15
-msgid "Stay tuned though!"
-msgstr "البت رابطي ۾ رھو!"
-
 #: src/components/MissionSetup.tsx:355
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "سڀ کان کڙي چاڙهائي (Vx، 100% زور)"
@@ -3680,7 +3350,6 @@ msgstr "جواب جمع ڪريو"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx:66
 #: ../../../lib/web/src/components/recommended-entities.tsx:58
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
 msgid "Subscribe"
 msgstr "سبسڪرائب ڪريو"
@@ -3700,8 +3369,6 @@ msgid "Switch to view 1-9"
 msgstr "ڏيک 1-9 تي مٽايو"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:107
-#: ../../../lib/web/src/components/config-drawer.tsx:209
-#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:16
 #: ../../../lib/web/src/lib/preference-utils.ts:139
 msgid "System"
@@ -3710,10 +3377,6 @@ msgstr "سسٽم"
 #: src/components/GameCanvas.tsx:75
 msgid "TACTICAL MAP"
 msgstr "تدبيري نقشو"
-
-#: ../../../lib/web/src/components/tag-input.tsx:95
-msgid "Tag"
-msgstr "ٽيگ"
 
 #: ../../../lib/web/src/components/post-tags.tsx:76
 msgid "Tag already exists"
@@ -3737,7 +3400,7 @@ msgid "Task"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:1188
-msgid "Tasks, weather & loadout"
+msgid "Tasks, weather and loadout"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:317
@@ -3756,10 +3419,6 @@ msgstr "ٽيمون"
 #: src/components/Multiplayer.tsx:353
 msgid "Teams — red versus blue"
 msgstr "ٽيمون — ڳاڙهو مقابل نيرو"
-
-#: ../../../lib/web/src/components/layout/team-switcher.tsx:63
-msgid "Teams/Apps"
-msgstr "ٽيمز/ايپس"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx:19
 #: ../../../lib/web/src/features/document/document-page.tsx:42
@@ -3803,18 +3462,6 @@ msgstr "گهربل مواد نه ملي سگهيو."
 msgid "The server returned a web page instead of data."
 msgstr "سرور ڊيٽا جي بجاءِ ويب پيج موٽايو."
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
-msgid "The site is not available at the moment."
-msgstr "سائيٽ ھن وقت دستياب ناهي."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:195
-msgid "Theme"
-msgstr "ٿيم"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:70
-msgid "Theme Settings"
-msgstr "ٿيم سيٽنگون"
-
 #: src/components/MissionSetup.tsx:1142
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "هي برائوزر WebGL 2 کي سپورٽ نٿو ڪري، تنهنڪري راند نه هلي سگهندي — ٻيو برائوزر آزمايو."
@@ -3826,10 +3473,6 @@ msgstr "هي لابي توهان جي راند جو ڪنيڪشن هڪ ٻئي م�
 #: src/components/MissionSetup.tsx:1146
 msgid "This machine may be too slow for smooth flight."
 msgstr "هموار اڏام لاءِ هي مشين تمام سست ٿي سگهي ٿي."
-
-#: ../../../lib/web/src/components/coming-soon.tsx:14
-msgid "This page has not been created yet."
-msgstr "هي صفحو اڃا نه ٺاهيو ويو آهي."
 
 #: src/components/GameCanvas.tsx:136
 msgid "throttle"
@@ -3873,10 +3516,6 @@ msgstr "ڏينهن جو وقت"
 msgid "To"
 msgstr "ڏانھن"
 
-#: ../../../lib/web/src/components/data-table/view-options.tsx:37
-msgid "Toggle columns"
-msgstr "ڪالم ٽوگل ڪريو"
-
 #: ../../../lib/web/src/components/layout/right-panel.tsx:233
 #: ../../../lib/web/src/components/layout/right-panel.tsx:236
 msgid "Toggle right panel"
@@ -3889,20 +3528,15 @@ msgstr "ساڄي پينل کي ٽوگل ڪريو"
 msgid "Toggle section"
 msgstr "سيڪشن ٽوگل ڪريو"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:317
-#: ../../../lib/web/src/components/ui/sidebar.tsx:320
+#: ../../../lib/web/src/components/ui/sidebar.tsx:337
+#: ../../../lib/web/src/components/ui/sidebar.tsx:340
 msgid "Toggle sidebar"
 msgstr "سائڊبار ٽوگل ڪريو"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:332
-#: ../../../lib/web/src/components/ui/sidebar.tsx:335
+#: ../../../lib/web/src/components/ui/sidebar.tsx:352
+#: ../../../lib/web/src/components/ui/sidebar.tsx:355
 msgid "Toggle Sidebar"
 msgstr "سائيڊبار ٽوگل ڪريو"
-
-#: ../../../lib/web/src/components/theme-switch.tsx:37
-#: ../../../lib/web/src/components/theme-switch.tsx:41
-msgid "Toggle theme"
-msgstr "ٿيم ٽوگل ڪريو"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:26
 msgid "Toggle view options"
@@ -3961,14 +3595,12 @@ msgstr "ٽرم: کاٻي لاڙو"
 msgid "Trim roll right"
 msgstr "ٽرم: ساڄي لاڙو"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:194
 #: ../../../lib/web/src/components/search-entity-page.tsx:217
 msgid "Try adjusting your search terms"
 msgstr "پنھنجي ڳولا جي اصطلاحن کي ترتيب ڏيڻ جي ڪوشش ڪريو"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:140
 #: ../../../lib/web/src/features/errors/general-error.tsx:180
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:19
 msgid "Try again"
 msgstr "ٻيهر ڪوشش ڪريو"
 
@@ -4020,7 +3652,7 @@ msgstr "غير مجاز رسائي"
 
 #: ../../../lib/web/src/components/attachment-image.tsx:50
 msgid "Unavailable"
-msgstr ""
+msgstr "دستياب نه آھي"
 
 #: src/components/SettingsDialog.tsx:157
 #: src/components/SettingsDialog.tsx:208
@@ -4079,10 +3711,6 @@ msgstr "ان سبسڪرائب ڪريو"
 msgid "Untitled"
 msgstr "بي عنوان"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:135
-msgid "Unverified"
-msgstr "غير تصديق ٿيل"
-
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
 msgid "Updated"
@@ -4111,16 +3739,7 @@ msgstr "صارف"
 msgid "Verification code"
 msgstr "تصديق ڪوڊ"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:255
-msgid "Verification code sent"
-msgstr "تصديق ڪوڊ موڪليو ويو"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:248
-msgid "Verification failed"
-msgstr "تصديق ناڪام ٿي"
-
 #: ../../../lib/web/src/components/step-up-dialog.tsx:391
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:172
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "تصديق ڪريو"
@@ -4150,17 +3769,12 @@ msgstr "وڊيو ڏسڻ وارو: {0}"
 msgid "view"
 msgstr "منظر"
 
-#: ../../../lib/web/src/components/data-table/view-options.tsx:33
 #: src/components/SettingsDialog.tsx:94
 msgid "View"
 msgstr "ڏسو"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:177
-msgid "View all"
-msgstr "سڀ ڏسو"
-
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:205
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:213
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:220
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:228
 msgid "View all notifications"
 msgstr "سڀ اطلاع ڏسو"
 
@@ -4194,14 +3808,6 @@ msgstr "لهڻ روڪيو"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "اسان تصديقي ڪوڊ <0>{0}</0> تي موڪليو. پنھنجو اي ميل پتو تصديق ڪرڻ لاءِ ھيٺ ڪوڊ داخل ڪريو."
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
-msgid "We'll be back online shortly."
-msgstr "اسان جلد ٻيھر آن لائن ايندا."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:197
-msgid "We'll notify you when something important happens."
-msgstr "جڏھن ڪا اھم ڳالھ ٿيندي ته اسان توھان کي ٻڌائينداسين."
-
 #: src/components/GameCanvas.tsx:139
 msgid "weapon"
 msgstr "هٿيار"
@@ -4219,10 +3825,6 @@ msgstr "هٿيار"
 msgid "Weather"
 msgstr "موسم"
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:13
-msgid "Website is under maintenance!"
-msgstr "ويب سائيٽ مرمت ھيٺان آھي!"
-
 #: ../../../lib/web/src/lib/preference-utils.ts:56
 msgid "Wednesday"
 msgstr "اربع"
@@ -4233,7 +3835,7 @@ msgid "Wheel brakes"
 msgstr "چڪر جا بريڪ"
 
 #: src/components/SettingsDialog.tsx:558
-msgid "Wind & Cockpit Airframe"
+msgid "Wind and cockpit airframe"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:170
@@ -4279,14 +3881,6 @@ msgstr "تون"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "توهان کي هن حصي تائين رسائي ناهي."
-
-#: ../../../lib/web/src/features/errors/forbidden.tsx:18
-msgid "You don't have necessary permission <0/>to view this resource."
-msgstr "توھان وٽ ھي وسيلو ڏسڻ لاءِ <0/>ضروري اجازت ناھي."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
-msgid "You're all caught up!"
-msgstr "توھان سڀ ڏسي ورتو!"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:100
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

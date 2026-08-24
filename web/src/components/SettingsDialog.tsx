@@ -335,7 +335,7 @@ function JoystickPanel({
         
           <div className='flex items-center justify-between'>
             <SectionLabel>
-              <Trans>Input Hardware</Trans>
+              <Trans>Input hardware</Trans>
             </SectionLabel>
             {active !== '' && (
               <Badge variant='outline' className='font-mono text-[10px] text-muted-foreground'>
@@ -392,7 +392,7 @@ function JoystickPanel({
       <section>
         
           <SectionLabel>
-            <Trans>Axis Calibration & Mapping</Trans>
+            <Trans>Axis calibration and mapping</Trans>
           </SectionLabel>
         
         <div className='space-y-2 text-xs'>
@@ -484,7 +484,7 @@ function JoystickPanel({
       <section>
         
           <SectionLabel>
-            <Trans>Button Mappings</Trans>
+            <Trans>Button mappings</Trans>
           </SectionLabel>
         
         <div className='space-y-4'>
@@ -553,12 +553,12 @@ function JoystickPanel({
 }
 
 const VOLUME_ROWS: { id: string; label: ReactNode }[] = [
-  { id: 'master', label: <Trans>Master Volume</Trans> },
-  { id: 'engine', label: <Trans>Engine & Afterburner</Trans> },
-  { id: 'aircraft', label: <Trans>Wind & Cockpit Airframe</Trans> },
-  { id: 'weapons', label: <Trans>Cannons & Ordnance</Trans> },
-  { id: 'environment', label: <Trans>Carrier & Ambient</Trans> },
-  { id: 'alerts', label: <Trans>Betty & RWR Alerts</Trans> },
+  { id: 'master', label: <Trans>Master volume</Trans> },
+  { id: 'engine', label: <Trans>Engine and afterburner</Trans> },
+  { id: 'aircraft', label: <Trans>Wind and cockpit airframe</Trans> },
+  { id: 'weapons', label: <Trans>Cannons and ordnance</Trans> },
+  { id: 'environment', label: <Trans>Carrier and ambient</Trans> },
+  { id: 'alerts', label: <Trans>Betty and RWR alerts</Trans> },
 ]
 
 function SoundPanel({
@@ -573,7 +573,7 @@ function SoundPanel({
     <div className='space-y-4'>
       <SwitchRow
         id='sound'
-        label={<Trans>Master Audio Output</Trans>}
+        label={<Trans>Master audio output</Trans>}
         checked={config.sound !== false}
         onChange={(v) => set('sound', v)}
       />
@@ -581,12 +581,12 @@ function SoundPanel({
       <section>
         
           <SectionLabel>
-            <Trans>Master Volume</Trans>
+            <Trans>Master volume</Trans>
           </SectionLabel>
         
         <div>
           <SliderRow
-            label={<Trans>Master Bus</Trans>}
+            label={<Trans>Master bus</Trans>}
             value={volume.master}
             min={0}
             max={100}
@@ -601,7 +601,7 @@ function SoundPanel({
       <section>
         
           <SectionLabel>
-            <Trans>Audio Mixer Channels</Trans>
+            <Trans>Audio channels</Trans>
           </SectionLabel>
         
         <div>
@@ -717,7 +717,7 @@ function KeysPanel({
       <section>
         
           <SectionLabel>
-            <Trans>Fixed Flight Keys</Trans>
+            <Trans>Fixed flight keys</Trans>
           </SectionLabel>
         
         <div>
@@ -776,7 +776,7 @@ function GraphicsPanel({
       <section>
         
           <SectionLabel>
-            <Trans>Graphics Preset</Trans>
+            <Trans>Graphics preset</Trans>
           </SectionLabel>
         
         <div>
@@ -803,7 +803,7 @@ function GraphicsPanel({
       <section>
         
           <SectionLabel>
-            <Trans>Rendering Detail</Trans>
+            <Trans>Rendering detail</Trans>
           </SectionLabel>
         
         <div>
@@ -849,7 +849,7 @@ function GraphicsPanel({
       <section>
         
           <SectionLabel>
-            <Trans>Effects & Toggles</Trans>
+            <Trans>Effects and toggles</Trans>
           </SectionLabel>
         
         <div>
@@ -919,7 +919,7 @@ function GeneralPanel({
       <section>
         
           <SectionLabel>
-            <Trans>Pilot Identity</Trans>
+            <Trans>Pilot identity</Trans>
           </SectionLabel>
         
         <div className='space-y-2'>

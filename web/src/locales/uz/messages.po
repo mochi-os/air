@@ -39,11 +39,6 @@ msgstr "[oʻrnatilmagan]"
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# ta oʻq tegdi} other {# ta oʻq tegdi}}"
 
-#. placeholder {0}: selectedValues.size
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
-msgid "{0, plural, one {# selected} other {# selected}}"
-msgstr "{0, plural, one {# tanlangan} other {# tanlangan}}"
-
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:637
@@ -64,11 +59,6 @@ msgstr "Katapult asimmetriya chegarasidan {0} ft·lb ortiq"
 #: src/components/MissionSetup.tsx:339
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb maksimal uchirish vaznidan ortiq"
-
-#. placeholder {0}: item.label
-#: ../../../lib/web/src/components/config-drawer.tsx:160
-msgid "{0} option preview"
-msgstr "{0} varianti oldindan ko'rish"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
@@ -107,22 +97,6 @@ msgstr "{name}ning oʻyini"
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:29
 msgid "{opponentName} offered a draw"
 msgstr "{opponentName} durang taklif qildi"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:203
-msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
-msgstr "{selectedCount, plural, one {{entityName} tanlandi} other {{manyName} tanlandi}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:45
-msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
-msgstr "{selectedCount, plural, one {# {entityName} tanlandi. Ommaviy amallar paneli mavjud.} other {# {manyName} tanlandi. Ommaviy amallar paneli mavjud.}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:195
-msgid "{selectedCount, plural, one {# selected} other {# selected}}"
-msgstr "{selectedCount, plural, one {# tanlangan} other {# tanlangan}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:142
-msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
-msgstr "{selectedCount, plural, one {# tanlangan {entityName} uchun ommaviy amallar} other {# tanlangan {manyName} uchun ommaviy amallar}}"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:248
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:52
@@ -190,29 +164,13 @@ msgstr "Qabul qilish"
 msgid "Access denied"
 msgstr "Kirish rad etildi"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:16
-msgid "Access Forbidden"
-msgstr "Kirish taqiqlangan"
-
 #: ../../../lib/web/src/features/access/access-list.tsx:197
 msgid "Access level"
 msgstr "Kirish darajasi"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:216
-msgid "Account added"
-msgstr "Hisob qoʻshildi"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:232
-msgid "Account removed"
-msgstr "Hisob olib tashlandi"
-
 #: ../../../lib/web/src/features/accounts/account-add.tsx:139
 msgid "Account type"
 msgstr "Hisob turi"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:242
-msgid "Account verified"
-msgstr "Hisob tasdiqlandi"
 
 #: src/components/MissionSetup.tsx:887
 #: src/components/MissionSetup.tsx:1075
@@ -230,7 +188,11 @@ msgstr "Nishonga olish"
 msgid "Acquisition mode"
 msgstr "Ushlash rejimi"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:712
+#: src/components/MissionSetup.tsx:988
+msgid "Active assists"
+msgstr ""
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:720
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:209
 msgid "Add"
@@ -253,19 +215,14 @@ msgid "Add access"
 msgstr "Kirish qoʻshish"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:132
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:288
 msgid "Add account"
 msgstr "Hisob qoʻshish"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:297
-msgid "Add an account to receive notifications and use services."
-msgstr "Bildirishnomalar olish va xizmatlardan foydalanish uchun hisob qoʻshing."
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:291
 msgid "Add caption"
 msgstr "Izoh qoʻshish"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:682
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:690
 msgid "Add checklist item"
 msgstr "Roʻyxat elementi qoʻshish"
 
@@ -274,17 +231,13 @@ msgstr "Roʻyxat elementi qoʻshish"
 msgid "Add field"
 msgstr "Maydon qoʻshish"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:700
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:708
 msgid "Add item..."
 msgstr "Element qoʻshish..."
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
 msgid "Add link"
 msgstr "Havola qoʻshish"
-
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:102
-msgid "Add new account"
-msgstr "Yangi hisob qoʻshish"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
@@ -295,13 +248,8 @@ msgid "Add option"
 msgstr "Variant qoʻshish"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
-#: ../../../lib/web/src/components/tag-input.tsx:40
 msgid "Add tag..."
 msgstr "Teg qoʻshish..."
-
-#: ../../../lib/web/src/components/layout/team-switcher.tsx:83
-msgid "Add team/app"
-msgstr "Jamoa/ilova qoʻshish"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:175
 msgid "Add to existing notifications"
@@ -317,10 +265,6 @@ msgstr "Koʻrinish qoʻshish"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 msgid "Adding..."
 msgstr "Qoʻshilmoqda..."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:72
-msgid "Adjust the appearance and layout to suit your preferences."
-msgstr "Tashqi koʻrinish va tartibni xohishingizga moslang."
 
 #: src/components/SettingsDialog.tsx:877
 msgid "Afterburner"
@@ -341,10 +285,6 @@ msgstr "Samolyot tashuvchi kema <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> 
 #: src/components/MissionSetup.tsx:444
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Samolyot modeli <0>“F/A-18C Hornet”</0>, muallif <1>CreadorDeMu</1> (Sketchfab), <2>CC BY 4.0</2> litsenziyasi asosida. O‘zgartirildi: yo‘nalishi va o‘lchami o‘zgartirildi, ishlatilmaydigan tekstura ma’lumotlari olib tashlandi, tashqi osma yuklar alohida faylga ajratildi, bitta g‘ilof meshi ko‘zgu aksi bilan almashtirildi."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:163
-msgid "All"
-msgstr "Hammasi"
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -411,7 +351,7 @@ msgid "Are you sure you want to log out? You will need to log in again to access
 msgstr "Chiqishga ishonchingiz komilmi? Hisobingizga kirish uchun yana kirishingiz kerak boʻladi."
 
 #: src/components/MissionSetup.tsx:1020
-msgid "Armament & Stores"
+msgid "Armament and stores"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:168
@@ -419,17 +359,9 @@ msgstr ""
 msgid "Arrestor hook"
 msgstr "Tormoz ilgagi"
 
-#: ../../../lib/web/src/components/data-table/column-header.tsx:59
-msgid "Asc"
-msgstr "Oʻsib"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "Oʻsish boʻyicha"
-
-#: src/components/MissionSetup.tsx:988
-msgid "Assists Active"
-msgstr ""
 
 #: ../../../lib/web/src/components/comment-composer.tsx:427
 msgid "Attach comment files"
@@ -440,7 +372,7 @@ msgid "Attach reply files"
 msgstr "Javob fayllarini biriktirish"
 
 #: src/components/SettingsDialog.tsx:604
-msgid "Audio Mixer Channels"
+msgid "Audio channels"
 msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
@@ -465,7 +397,7 @@ msgid "Avatar for {name}"
 msgstr "{name} uchun avatar"
 
 #: src/components/MissionSetup.tsx:1218
-msgid "Avionics, HOTAS & audio"
+msgid "Avionics, HOTAS and audio"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:446
@@ -473,7 +405,7 @@ msgid "Axis {i}"
 msgstr "Oʻq {i}"
 
 #: src/components/SettingsDialog.tsx:395
-msgid "Axis Calibration & Mapping"
+msgid "Axis calibration and mapping"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:521
@@ -485,7 +417,6 @@ msgstr "orqaga"
 msgid "Back"
 msgstr "Orqaga"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:28
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:28
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
@@ -524,7 +455,7 @@ msgid "Best sustained turn speed"
 msgstr "Eng yaxshi barqaror burilish tezligi"
 
 #: src/components/SettingsDialog.tsx:561
-msgid "Betty & RWR Alerts"
+msgid "Betty and RWR alerts"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:44
@@ -536,8 +467,8 @@ msgstr "BINGO YOQILGʻI"
 msgid "Blocked by"
 msgstr "Bloklagan"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:227
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:237
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:242
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:252
 msgid "Blocked navigation to untrusted link"
 msgstr "Ishonchsiz havolaga oʻtish bloklandi"
 
@@ -599,7 +530,7 @@ msgid "Button {i}"
 msgstr "Tugma {i}"
 
 #: src/components/SettingsDialog.tsx:487
-msgid "Button Mappings"
+msgid "Button mappings"
 msgstr ""
 
 #: src/components/Multiplayer.tsx:414
@@ -657,7 +588,7 @@ msgid "Cancel reply"
 msgstr "Javobni bekor qilish"
 
 #: src/components/SettingsDialog.tsx:559
-msgid "Cannons & Ordnance"
+msgid "Cannons and ordnance"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:222
@@ -670,7 +601,7 @@ msgid "Caption"
 msgstr "Izoh"
 
 #: src/components/SettingsDialog.tsx:560
-msgid "Carrier & Ambient"
+msgid "Carrier and ambient"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:1082
@@ -739,10 +670,6 @@ msgstr "Hamma bilan chat"
 msgid "Cheats"
 msgstr "Chitlar"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:198
-msgid "Check \"All\" to see your past notifications."
-msgstr "O'tgan bildirishnomalarni ko'rish uchun \"Hammasi\"ni tanlang."
-
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
 msgid "Checkbox"
 msgstr "Belgilash katakchasi"
@@ -754,22 +681,6 @@ msgstr "Roʻyxat"
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:35
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Yon paneldan oʻyin tanlang yoki yangisini boshlang."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:329
-msgid "Choose between default expanded, compact icon-only, or full layout mode"
-msgstr "Standart yoyilgan, ixcham faqat ikonka yoki toʻliq tartib rejimi orasidan tanlang"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:271
-msgid "Choose between inset, floating, or standard sidebar layout"
-msgstr "Inset, suzuvchi yoki standart yon panel tartibi orasidan tanlang"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:372
-msgid "Choose between left-to-right or right-to-left site direction"
-msgstr "Chapdan oʻngga yoki oʻngdan chapga sayt yoʻnalishi orasidan tanlang"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:227
-msgid "Choose between system preference, light mode, or dark mode"
-msgstr "Tizim sozlamasi, yorugʻ yoki qorongʻi rejim orasidan tanlang"
 
 #: ../../../lib/web/src/components/language-picker.tsx:264
 #: ../../../lib/web/src/components/language-picker.tsx:271
@@ -790,23 +701,9 @@ msgstr "Tozalash"
 msgid "Clear all"
 msgstr "Hammasini tozalash"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
-msgid "Clear filters"
-msgstr "Filtrlarni tozalash"
-
 #: ../../../lib/web/src/components/search-input.tsx:26
 msgid "Clear search"
 msgstr "Qidiruvni tozalash"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:170
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:174
-msgid "Clear selection"
-msgstr "Tanlovni tozalash"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
-msgid "Clear selection (Escape)"
-msgstr "Tanlovni tozalash (Escape)"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:501
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
@@ -878,10 +775,6 @@ msgstr "Ustunlarni guruhlash boʻyicha"
 msgid "Comfortable"
 msgstr "Qulay"
 
-#: ../../../lib/web/src/components/coming-soon.tsx:12
-msgid "Coming Soon!"
-msgstr "Tez orada!"
-
 #: ../../../lib/web/src/components/ui/command.tsx:34
 msgid "Command Palette"
 msgstr "Buyruqlar palitrasi"
@@ -904,7 +797,6 @@ msgstr "Izohlar"
 msgid "Communication"
 msgstr "Aloqa"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:316
 #: ../../../lib/web/src/lib/preference-utils.ts:90
 msgid "Compact"
 msgstr "Ixcham"
@@ -933,10 +825,6 @@ msgstr "Shaxsiy serverga ulanish"
 #: ../../../lib/web/src/lib/chat-ui.ts:18
 msgid "Connected"
 msgstr "Ulangan"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:191
-msgid "Connected accounts"
-msgstr "Ulangan hisoblar"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:21
 msgid "Connecting..."
@@ -1008,7 +896,7 @@ msgstr "Yozuvni saqlab boʻlmadi"
 msgid "Could not send the message"
 msgstr "Xabarni yuborib bo‘lmadi"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:128
 msgid "Couldn't load notifications"
 msgstr "Bildirishnomalarni yuklab bo'lmadi"
 
@@ -1105,16 +993,9 @@ msgstr "XAVFLI"
 msgid "Cycle view"
 msgstr "Koʻrinishni almashtirish"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:219
-#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:15
 msgid "Dark"
 msgstr "Qorongʻi"
-
-#: ../../../lib/web/src/components/profile-dropdown.tsx:87
-#: ../../../lib/web/src/components/profile-dropdown.tsx:123
-msgid "Dark mode"
-msgstr "Qorongʻi rejim"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:259
 msgid "Data conflict"
@@ -1142,10 +1023,6 @@ msgstr "PALUBA POZITSIYASI SAQLANDI"
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:41
 msgid "Decline"
 msgstr "Rad etish"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:311
-msgid "Default"
-msgstr "Standart"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
@@ -1205,10 +1082,6 @@ msgstr "Eski serverdagi hisobingizni o'chiring"
 msgid "Departure / Recovery"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/column-header.tsx:63
-msgid "Desc"
-msgstr "Pasayuvchi"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Descending"
 msgstr "Kamayish boʻyicha"
@@ -1244,10 +1117,6 @@ msgstr "Veb-brauzerdan aniqlash"
 #: src/components/Multiplayer.tsx:264
 msgid "Different game host"
 msgstr "Boshqa oʻyin xosti"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:341
-msgid "Direction"
-msgstr "Yoʻnalish"
 
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
@@ -1286,7 +1155,7 @@ msgstr "Bekor qilish"
 msgid "Display repeater"
 msgstr "Ekran takrorlagichi"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:238
+#: ../../../lib/web/src/components/ui/sidebar.tsx:258
 msgid "Displays the mobile sidebar."
 msgstr "Mobil yon panelni koʻrsatadi."
 
@@ -1296,7 +1165,7 @@ msgstr "Masofa LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:1044
+#: src/components/SettingsDialog.tsx:1061
 msgid "Done"
 msgstr "Bajarildi"
 
@@ -1382,7 +1251,7 @@ msgid "Edit view"
 msgstr "Koʻrinishni tahrirlash"
 
 #: src/components/SettingsDialog.tsx:852
-msgid "Effects & Toggles"
+msgid "Effects and toggles"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:830
@@ -1432,7 +1301,7 @@ msgid "Engagement"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:557
-msgid "Engine & Afterburner"
+msgid "Engine and afterburner"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:770
@@ -1515,14 +1384,6 @@ msgstr "F/A-18C ma'lumotnomasi"
 msgid "F/A-18C Strike Fighter"
 msgstr ""
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:225
-msgid "Failed to add account"
-msgstr "Hisob qoʻshib boʻlmadi"
-
-#: ../../../lib/web/src/components/tag-input.tsx:39
-msgid "Failed to add tag"
-msgstr "Yorliq qoʻshib boʻlmadi"
-
 #: ../../../lib/web/src/components/ui/copy-button.tsx:26
 #: ../../../lib/web/src/lib/toast-utils.ts:44
 msgid "Failed to copy"
@@ -1569,17 +1430,9 @@ msgstr "Videoni yuklab bo'lmadi"
 msgid "Failed to post comment"
 msgstr "Izoh joylashtirib boʻlmadi"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:234
-msgid "Failed to remove account"
-msgstr "Hisobni olib tashlab boʻlmadi"
-
 #: ../../../lib/web/src/components/options-menu.tsx:133
 msgid "Failed to revoke RSS access"
 msgstr "RSS kirishini bekor qilib bo'lmadi"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:257
-msgid "Failed to send verification code"
-msgstr "Tasdiqlash kodini yuborib boʻlmadi"
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:174
 msgid "Failed to update comment"
@@ -1607,10 +1460,6 @@ msgstr "JANG BOSHLANDI"
 msgid "Files"
 msgstr "Fayllar"
 
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:30
-msgid "Filter..."
-msgstr "Filtr..."
-
 #: ../../../lib/web/src/components/restore-banner.tsx:97
 msgid "Finish moving your account"
 msgstr "Hisobni ko'chirishni yakunlang"
@@ -1629,7 +1478,7 @@ msgid "Fire weapon"
 msgstr "Quroldan otish"
 
 #: src/components/SettingsDialog.tsx:720
-msgid "Fixed Flight Keys"
+msgid "Fixed flight keys"
 msgstr ""
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:221
@@ -1665,28 +1514,28 @@ msgid "Flight"
 msgstr "Parvoz"
 
 #: src/components/MissionSetup.tsx:984
-msgid "Flight Assists"
+msgid "Flight assists"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:82
 msgid "FLIGHT CORE FAILED"
 msgstr "PARVOZ YADROSI ISHDAN CHIQDI"
 
+#: src/components/SettingsDialog.tsx:967
+msgid "Flight hints"
+msgstr ""
+
 #: src/components/MissionSetup.tsx:1233
 msgid "Flight log"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:844
-msgid "Flight Profile"
+msgid "Flight profile"
 msgstr ""
 
 #: src/components/MatchHistory.tsx:154
 msgid "Flights"
 msgstr "Parvozlar"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:258
-msgid "Floating"
-msgstr "Suzuvchi"
 
 #: src/components/MatchHistory.tsx:90
 msgid "Flown"
@@ -1759,10 +1608,6 @@ msgstr "Yonilg'i zondi"
 msgid "Fuel tank"
 msgstr "Yoqilg'i baki"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:321
-msgid "Full layout"
-msgstr "Toʻliq tartib"
-
 #: src/components/MatchHistory.tsx:78
 msgid "Furball"
 msgstr "Furball"
@@ -1784,42 +1629,21 @@ msgstr "shassi"
 msgid "GEAR"
 msgstr "SHASSI"
 
-#: src/components/SettingsDialog.tsx:988
+#: src/components/SettingsDialog.tsx:1005
 msgid "General"
 msgstr "Umumiy"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:26
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "Orqaga"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:82
-msgid "Go to first page"
-msgstr "Birinchi sahifaga oʻtish"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:128
-msgid "Go to last page"
-msgstr "Oxirgi sahifaga oʻtish"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:119
-msgid "Go to next page"
-msgstr "Keyingi sahifaga oʻtish"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:106
-msgid "Go to page {pageNumber}"
-msgstr "{pageNumber}-sahifaga oʻtish"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:91
-msgid "Go to previous page"
-msgstr "Oldingi sahifaga oʻtish"
-
-#: src/components/SettingsDialog.tsx:992
+#: src/components/SettingsDialog.tsx:1009
 msgid "Graphics"
 msgstr "Grafika"
 
 #: src/components/SettingsDialog.tsx:779
-msgid "Graphics Preset"
+msgid "Graphics preset"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:309
@@ -1868,14 +1692,6 @@ msgstr "Bosh kuzatuvi"
 msgid "Heavy"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/column-header.tsx:70
-msgid "Hide"
-msgstr "Yashirish"
-
-#: ../../../lib/web/src/components/password-input.tsx:27
-msgid "Hide password"
-msgstr "Parolni yashirish"
-
 #: src/components/SettingsDialog.tsx:770
 msgid "High"
 msgstr "Yuqori"
@@ -1885,6 +1701,10 @@ msgstr "Yuqori"
 #: src/components/Multiplayer.tsx:367
 msgid "High stratus"
 msgstr "Yuqori stratus"
+
+#: src/components/SettingsDialog.tsx:959
+msgid "Hints"
+msgstr ""
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:61
 #: src/routes/history.tsx:32
@@ -1953,12 +1773,8 @@ msgid "Initials avatar for {name}"
 msgstr "{name} uchun bosh harflar avatari"
 
 #: src/components/SettingsDialog.tsx:338
-msgid "Input Hardware"
+msgid "Input hardware"
 msgstr ""
-
-#: ../../../lib/web/src/components/config-drawer.tsx:253
-msgid "Inset"
-msgstr "Ichkari"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
@@ -1968,17 +1784,9 @@ msgstr "Qiziqishlar"
 msgid "Internal fuel"
 msgstr "Ichki yoqilg'i"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:545
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:550
 msgid "Invalid date"
 msgstr "Notoʻgʻri sana"
-
-#: ../../../lib/web/src/components/tag-input.tsx:38
-msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
-msgstr "Yaroqsiz teg: faqat harflar, raqamlar, bo'shliqlar, defislar va qiya chiziqlar (ko'pi bilan 50 belgi)"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:245
-msgid "Invalid verification code"
-msgstr "Notoʻgʻri tasdiqlash kodi"
 
 #: src/components/SettingsDialog.tsx:385
 msgid "Invert pitch axis"
@@ -2043,7 +1851,7 @@ msgstr "Duel — 1v1, birinchi boʻlib urib tushirgan gʻolib"
 msgid "Joust against bot"
 msgstr "Duel botga qarshi"
 
-#: src/components/SettingsDialog.tsx:1000
+#: src/components/SettingsDialog.tsx:1017
 msgid "Joystick"
 msgstr "Joystik"
 
@@ -2059,7 +1867,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Klaviatura yorliqlari"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:1021
 msgid "Keys"
 msgstr "Tugmalar"
 
@@ -2115,7 +1923,6 @@ msgstr "Uchirish (katapulta)"
 msgid "launch / target"
 msgstr "uchirish / nishon"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:287
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:306
 msgid "Layout"
 msgstr "Tartib"
@@ -2123,11 +1930,6 @@ msgstr "Tartib"
 #: src/components/Multiplayer.tsx:402
 msgid "lb"
 msgstr "lb"
-
-#: ../../../lib/web/src/components/learn-more.tsx:33
-#: ../../../lib/web/src/components/learn-more.tsx:38
-msgid "Learn more"
-msgstr "Batafsil"
 
 #: src/components/MissionSetup.tsx:796
 msgid "Leave server"
@@ -2140,10 +1942,6 @@ msgstr "Chiqib ketdi"
 #: src/components/GameCanvas.tsx:96
 msgid "LEFT"
 msgstr "CHIQIB KETDI"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:355
-msgid "Left to Right"
-msgstr "Chapdan oʻngga"
 
 #: src/components/MissionSetup.tsx:169
 #: src/components/MissionSetup.tsx:170
@@ -2162,8 +1960,6 @@ msgstr "Faqat harflar, raqamlar, bo'sh joylar va defislar"
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200 DA TEKIS, SHASSI PASTGA"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:214
-#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:14
 msgid "Light"
 msgstr "Yorugʻ"
@@ -2214,8 +2010,6 @@ msgstr "YUKLAB BOʻLMADI"
 msgid "Loading..."
 msgstr "Yuklanmoqda..."
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:69
-#: ../../../lib/web/src/components/profile-dropdown.tsx:98
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:26
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:28
 msgid "Log out"
@@ -2279,10 +2073,6 @@ msgstr "Yopish uchun M"
 msgid "Manage categories"
 msgstr "Toifalarni boshqarish"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:192
-msgid "Manage your connected accounts for notifications and services."
-msgstr "Bildirishnomalar va xizmatlar uchun ulangan hisoblaringizni boshqaring."
-
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
 msgid "Manual"
 msgstr "Qoʻlda"
@@ -2295,23 +2085,22 @@ msgstr "xarita"
 msgid "Map"
 msgstr "Xarita"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:192
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:199
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:224
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:207
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:214
 msgid "Mark all as read"
 msgstr "Hammasini oʻqilgan deb belgilash"
 
 #: src/components/SettingsDialog.tsx:576
-msgid "Master Audio Output"
+msgid "Master audio output"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:589
-msgid "Master Bus"
+msgid "Master bus"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:556
 #: src/components/SettingsDialog.tsx:584
-msgid "Master Volume"
+msgid "Master volume"
 msgstr ""
 
 #: src/components/Multiplayer.tsx:348
@@ -2494,10 +2283,6 @@ msgstr "Hozircha faollik yoʻq"
 msgid "No comments yet"
 msgstr "Hozircha izohlar yoʻq"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:295
-msgid "No connected accounts"
-msgstr "Bogʻlangan hisoblar yoʻq"
-
 #: src/components/MatchHistory.tsx:125
 msgid "No flights yet"
 msgstr "Hozircha parvozlar yo'q"
@@ -2522,15 +2307,11 @@ msgstr "Joystik aniqlanmadi — uni uygʻotish uchun undagi istalgan tugmani bos
 msgid "No matching objects"
 msgstr "Mos obyektlar yoʻq"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
-msgid "No notifications yet"
-msgstr "Hozircha bildirishnoma yo'q"
-
 #: src/components/Multiplayer.tsx:531
 msgid "No open matches — create one."
 msgstr "Ochiq oʻyinlar yoʻq — bittasini yarating."
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:336
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:341
 #: ../../../lib/web/src/components/person-picker.tsx:84
 msgid "No people found"
 msgstr "Odamlar topilmadi"
@@ -2539,18 +2320,12 @@ msgstr "Odamlar topilmadi"
 msgid "No places found"
 msgstr "Joylar topilmadi"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:58
-msgid "No profile"
-msgstr "Profil yoʻq"
-
 #: ../../../lib/web/src/components/inline-entity-search.tsx:64
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:82
 #: ../../../lib/web/src/components/search-entity-page.tsx:73
 msgid "No results found"
 msgstr "Natija topilmadi"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "Natijalar topilmadi."
 
@@ -2576,7 +2351,7 @@ msgstr "Vaqt mintaqasi topilmadi."
 msgid "No topic record yet — try again after the next notification."
 msgstr "Hozircha mavzu yozuvi yoʻq — keyingi bildirishnomadan keyin qayta urinib koʻring."
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:124
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:139
 msgid "No unread notifications"
 msgstr "Oʻqilmagan bildirishnomalar yoʻq"
 
@@ -2652,16 +2427,8 @@ msgstr "Hech narsa topilmadi"
 msgid "Nothing yet — say hello."
 msgstr "Hozircha hech narsa yo‘q — salom deng."
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:136
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:150
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:236
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:257
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:261
-msgid "Notifications"
-msgstr "Bildirishnomalar"
-
 #. placeholder {0}: unread.length
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:185
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:200
 msgid "Notifications: {0}"
 msgstr "Bildirishnomalar: {0}"
 
@@ -2715,11 +2482,6 @@ msgstr "Ochiq"
 msgid "Open — anyone may join or leave"
 msgstr "Ochiq — istalgan kishi qoʻshilishi yoki chiqib ketishi mumkin"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:156
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:166
-msgid "Open account actions"
-msgstr "Hisob amallarini ochish"
-
 #: ../../../lib/web/src/components/layout/nav-group.tsx:199
 #: ../../../lib/web/src/components/layout/nav-group.tsx:204
 msgid "Open actions"
@@ -2734,11 +2496,6 @@ msgstr "Menyuni ochish"
 msgid "Open navigation"
 msgstr "Navigatsiyani ochish"
 
-#: ../../../lib/web/src/components/layout/top-nav.tsx:38
-#: ../../../lib/web/src/components/layout/top-nav.tsx:44
-msgid "Open navigation menu"
-msgstr "Navigatsiya menyusini ochish"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:105
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:111
 msgid "Open option actions"
@@ -2747,11 +2504,6 @@ msgstr "Variant amallarini ochish"
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "Tanlangan kartani ochish"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:58
-#: ../../../lib/web/src/components/config-drawer.tsx:66
-msgid "Open theme settings"
-msgstr "Mavzu sozlamalarini ochish"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:274
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:279
@@ -2802,11 +2554,6 @@ msgstr "NIGOH QULFLANDI"
 msgid "PADLOCK OFF"
 msgstr "NIGOH ERKIN"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:43
-#: ../../../lib/web/src/components/data-table/pagination.tsx:71
-msgid "Page {currentPage} of {totalPages}"
-msgstr "{totalPages} dan {currentPage}-sahifa"
-
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:530
 msgid "Parent"
 msgstr "Ota"
@@ -2835,10 +2582,6 @@ msgstr "Naqsh (regex)"
 msgid "Performance priority"
 msgstr ""
 
-#: ../../../lib/web/src/components/date-picker.tsx:20
-msgid "Pick a date"
-msgstr "Sanani tanlang"
-
 #: src/components/MissionSetup.tsx:577
 #: src/components/Multiplayer.tsx:140
 #: src/components/Multiplayer.tsx:309
@@ -2857,7 +2600,7 @@ msgid "PILOT DOWN"
 msgstr "UCHUVCHI HALOK BO'LDI"
 
 #: src/components/SettingsDialog.tsx:922
-msgid "Pilot Identity"
+msgid "Pilot identity"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:348
@@ -2940,10 +2683,6 @@ msgstr "Maxfiylik"
 msgid "Processing…"
 msgstr "Qayta ishlanmoqda…"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:114
-msgid "Profile"
-msgstr "Profil"
-
 #: src/components/SettingsDialog.tsx:282
 #: src/components/SettingsDialog.tsx:294
 msgid "Profile saved"
@@ -3006,7 +2745,6 @@ msgstr "QAYTA QUROLLANDI"
 msgid "Recent"
 msgstr "Soʻnggi"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:220
 #: ../../../lib/web/src/components/search-entity-page.tsx:243
 msgid "Recommended"
 msgstr "Tavsiya etiladi"
@@ -3016,10 +2754,11 @@ msgid "Reconnecting ({retries})..."
 msgstr "Qayta ulanmoqda ({retries})..."
 
 #: src/components/SettingsDialog.tsx:950
-msgid "Record flights automatically"
+msgid "Record flights"
 msgstr ""
 
 #: src/components/MatchHistory.tsx:255
+#: src/components/SettingsDialog.tsx:944
 msgid "Recording"
 msgstr "Yozuv"
 
@@ -3072,7 +2811,6 @@ msgstr "24 soat ichida nisbiy, aks holda mutlaq"
 #: ../../../lib/web/src/components/attachment-composer.tsx:330
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
 #: ../../../lib/web/src/features/access/access-list.tsx:270
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
 msgstr "Olib tashlash"
 
@@ -3101,7 +2839,7 @@ msgstr "Kirishni olib tashlasinmi?"
 msgid "Remove interest"
 msgstr "Qiziqishni olib tashlash"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:666
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:674
 msgid "Remove item"
 msgstr "Elementni olib tashlash"
 
@@ -3128,7 +2866,7 @@ msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Rendering <0>three.js</0> orqali (MIT litsenziyasi)."
 
 #: src/components/SettingsDialog.tsx:806
-msgid "Rendering Detail"
+msgid "Rendering detail"
 msgstr ""
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:256
@@ -3149,20 +2887,9 @@ msgstr "Talab qilinadi"
 msgid "Resend email"
 msgstr "Xatni qayta yuborish"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:87
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:1040
+#: src/components/SettingsDialog.tsx:1057
 msgid "Reset"
 msgstr "Tiklash"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:122
-#: ../../../lib/web/src/components/config-drawer.tsx:127
-msgid "Reset {title}"
-msgstr "{title} qayta tiklash"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:85
-msgid "Reset all settings to default values"
-msgstr "Barcha sozlamalarni standart qiymatlarga qaytarish"
 
 #: src/components/SettingsDialog.tsx:164
 #: src/components/SettingsDialog.tsx:215
@@ -3229,10 +2956,6 @@ msgstr "Kirishni bekor qilish"
 msgid "Revoke RSS access?"
 msgstr "RSS kirishi bekor qilinsinmi?"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:362
-msgid "Right to Left"
-msgstr "Oʻngdan chapga"
-
 #: src/components/MissionSetup.tsx:174
 #: src/components/MissionSetup.tsx:175
 msgid "Right wing"
@@ -3266,10 +2989,6 @@ msgstr "Qatorlar"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:373
 msgid "Rows group by"
 msgstr "Qatorlarni guruhlash"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:65
-msgid "Rows per page"
-msgstr "Sahifadagi qatorlar"
 
 #: ../../../lib/web/src/components/options-menu.tsx:131
 msgid "RSS access revoked"
@@ -3350,12 +3069,10 @@ msgstr "Bu koʻrinishni qidirish, kuzatish va tartiblash."
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:255
 #: ../../../lib/web/src/components/inline-entity-search.tsx:63
 #: ../../../lib/web/src/components/person-picker.tsx:324
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "Qidirish..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:178
 #: ../../../lib/web/src/components/search-entity-page.tsx:201
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
@@ -3364,11 +3081,6 @@ msgstr "Qidirilmoqda..."
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
 msgid "Select"
 msgstr "Tanlash"
-
-#. placeholder {0}: item.label.toLowerCase()
-#: ../../../lib/web/src/components/config-drawer.tsx:149
-msgid "Select {0}"
-msgstr "{0} tanlash"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:356
 msgid "Select a field"
@@ -3386,10 +3098,6 @@ msgstr "Kirish berish uchun foydalanuvchi, guruh yoki boshqa qoidani tanlang."
 msgid "Select access rule"
 msgstr "Kirish qoidasini tanlash"
 
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:34
-msgid "Select account"
-msgstr "Hisobni tanlang"
-
 #: ../../../lib/web/src/features/accounts/account-add.tsx:142
 msgid "Select account type"
 msgstr "Hisob turini tanlash"
@@ -3397,10 +3105,6 @@ msgstr "Hisob turini tanlash"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:231
 msgid "Select group"
 msgstr "Guruhni tanlang"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:305
-msgid "Select layout style"
-msgstr "Joylashuv uslubini tanlang"
 
 #: ../../../lib/web/src/components/place-picker.tsx:49
 msgid "Select location"
@@ -3418,31 +3122,15 @@ msgstr "Odamni tanlang..."
 msgid "Select previous card"
 msgstr "Oldingi kartani tanlang"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:247
-msgid "Select sidebar style"
-msgstr "Yon panel uslubini tanlang"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:349
-msgid "Select site direction"
-msgstr "Sayt yoʻnalishini tanlang"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:203
-msgid "Select theme preference"
-msgstr "Mavzu sozlamasini tanlang"
-
 #: src/components/SettingsDialog.tsx:154
 #: src/components/SettingsDialog.tsx:205
 msgid "Select weapon"
 msgstr "Qurol tanlash"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:252
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:335
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:257
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:340
 msgid "Select..."
 msgstr "Tanlang..."
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:209
-msgid "selected"
-msgstr "tanlangan"
 
 #. placeholder {0}: getSelectedName()
 #: ../../../lib/web/src/features/access/access-dialog.tsx:309
@@ -3518,8 +3206,8 @@ msgstr "Boshlang‘ich va manzilni belgilash"
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:418
 #: src/components/MissionSetup.tsx:1216
-#: src/components/SettingsDialog.tsx:983
-#: src/components/SettingsDialog.tsx:985
+#: src/components/SettingsDialog.tsx:1000
+#: src/components/SettingsDialog.tsx:1002
 msgid "Settings"
 msgstr "Sozlamalar"
 
@@ -3535,10 +3223,6 @@ msgstr "Sinflarni koʻrsatish"
 msgid "Show fields"
 msgstr "Maydonlarni koʻrsatish"
 
-#: ../../../lib/web/src/components/password-input.tsx:27
-msgid "Show password"
-msgstr "Parolni koʻrsatish"
-
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:33
 msgid "Show this help"
 msgstr "Ushbu yordamni koʻrsatish"
@@ -3547,9 +3231,7 @@ msgstr "Ushbu yordamni koʻrsatish"
 msgid "Showing {totalShown} of {total}"
 msgstr "{total} dan {totalShown} koʻrsatilmoqda"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:239
-#: ../../../lib/web/src/components/config-drawer.tsx:263
-#: ../../../lib/web/src/components/ui/sidebar.tsx:237
+#: ../../../lib/web/src/components/ui/sidebar.tsx:257
 msgid "Sidebar"
 msgstr "Yon panel"
 
@@ -3571,10 +3253,6 @@ msgstr "Faqat bir qator matn"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Bitta dvigatelda eng yaxshi ko'tarilish (Vyse, forsaj)"
 
-#: ../../../lib/web/src/components/skip-to-main.tsx:11
-msgid "Skip to Main"
-msgstr "Asosiyga oʻtish"
-
 #: ../../../lib/web/src/lib/preference-utils.ts:101
 #: ../../../lib/web/src/lib/preference-utils.ts:128
 msgid "Small"
@@ -3585,14 +3263,10 @@ msgid "Sort"
 msgstr "Saralash"
 
 #: src/components/MissionSetup.tsx:1235
-msgid "Sortie history & replays"
+msgid "Sortie history and replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:944
-msgid "Sortie Recording"
-msgstr ""
-
-#: src/components/SettingsDialog.tsx:996
+#: src/components/SettingsDialog.tsx:1013
 msgid "Sound"
 msgstr "Ovoz"
 
@@ -3650,10 +3324,6 @@ msgstr "Boshlash"
 msgid "Start the discussion by adding the first comment."
 msgstr "Birinchi izohni qoʻshib muhokamani boshlang."
 
-#: ../../../lib/web/src/components/coming-soon.tsx:15
-msgid "Stay tuned though!"
-msgstr "Lekin kuzatishda davom eting!"
-
 #: src/components/MissionSetup.tsx:355
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Eng tik ko'tarilish (Vx, 100% tortish kuchi)"
@@ -3680,7 +3350,6 @@ msgstr "Javob yuborish"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx:66
 #: ../../../lib/web/src/components/recommended-entities.tsx:58
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
 msgid "Subscribe"
 msgstr "Obuna boʻlish"
@@ -3700,8 +3369,6 @@ msgid "Switch to view 1-9"
 msgstr "1-9 koʻrinishiga oʻtish"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:107
-#: ../../../lib/web/src/components/config-drawer.tsx:209
-#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:16
 #: ../../../lib/web/src/lib/preference-utils.ts:139
 msgid "System"
@@ -3710,10 +3377,6 @@ msgstr "Tizim"
 #: src/components/GameCanvas.tsx:75
 msgid "TACTICAL MAP"
 msgstr "TAKTIK XARITA"
-
-#: ../../../lib/web/src/components/tag-input.tsx:95
-msgid "Tag"
-msgstr "Teg"
 
 #: ../../../lib/web/src/components/post-tags.tsx:76
 msgid "Tag already exists"
@@ -3737,7 +3400,7 @@ msgid "Task"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:1188
-msgid "Tasks, weather & loadout"
+msgid "Tasks, weather and loadout"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:317
@@ -3756,10 +3419,6 @@ msgstr "Jamoalar"
 #: src/components/Multiplayer.tsx:353
 msgid "Teams — red versus blue"
 msgstr "Jamoalar — qizil koʻkka qarshi"
-
-#: ../../../lib/web/src/components/layout/team-switcher.tsx:63
-msgid "Teams/Apps"
-msgstr "Jamoalar/Ilovalar"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx:19
 #: ../../../lib/web/src/features/document/document-page.tsx:42
@@ -3803,18 +3462,6 @@ msgstr "Soʻralgan kontent topilmadi."
 msgid "The server returned a web page instead of data."
 msgstr "Server ma'lumot o'rniga veb-sahifani qaytardi."
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
-msgid "The site is not available at the moment."
-msgstr "Sayt hozircha mavjud emas."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:195
-msgid "Theme"
-msgstr "Mavzu"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:70
-msgid "Theme Settings"
-msgstr "Mavzu sozlamalari"
-
 #: src/components/MissionSetup.tsx:1142
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Bu brauzer WebGL 2 ni qo'llab-quvvatlamaydi, shuning uchun o'yin ishlay olmaydi — boshqa brauzerni sinab ko'ring."
@@ -3826,10 +3473,6 @@ msgstr "Bu lobbi oʻyin ulanishingizni boshqa xostga ({redirectHost}) yubormoqda
 #: src/components/MissionSetup.tsx:1146
 msgid "This machine may be too slow for smooth flight."
 msgstr "Bu mashina silliq parvoz uchun juda sekin bo'lishi mumkin."
-
-#: ../../../lib/web/src/components/coming-soon.tsx:14
-msgid "This page has not been created yet."
-msgstr "Bu sahifa hali yaratilmagan."
 
 #: src/components/GameCanvas.tsx:136
 msgid "throttle"
@@ -3873,10 +3516,6 @@ msgstr "Kun vaqti"
 msgid "To"
 msgstr "Qayerga"
 
-#: ../../../lib/web/src/components/data-table/view-options.tsx:37
-msgid "Toggle columns"
-msgstr "Ustunlarni almashtirish"
-
 #: ../../../lib/web/src/components/layout/right-panel.tsx:233
 #: ../../../lib/web/src/components/layout/right-panel.tsx:236
 msgid "Toggle right panel"
@@ -3889,20 +3528,15 @@ msgstr "Oʻng panelni almashtirish"
 msgid "Toggle section"
 msgstr "Bo‘limni ochish/yopish"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:317
-#: ../../../lib/web/src/components/ui/sidebar.tsx:320
+#: ../../../lib/web/src/components/ui/sidebar.tsx:337
+#: ../../../lib/web/src/components/ui/sidebar.tsx:340
 msgid "Toggle sidebar"
 msgstr "Yon panelni almashtirish"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:332
-#: ../../../lib/web/src/components/ui/sidebar.tsx:335
+#: ../../../lib/web/src/components/ui/sidebar.tsx:352
+#: ../../../lib/web/src/components/ui/sidebar.tsx:355
 msgid "Toggle Sidebar"
 msgstr "Yon panelni almashtirish"
-
-#: ../../../lib/web/src/components/theme-switch.tsx:37
-#: ../../../lib/web/src/components/theme-switch.tsx:41
-msgid "Toggle theme"
-msgstr "Mavzuni almashtirish"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:26
 msgid "Toggle view options"
@@ -3961,14 +3595,12 @@ msgstr "Trim: chapga og'ish"
 msgid "Trim roll right"
 msgstr "Trim: o'ngga og'ish"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:194
 #: ../../../lib/web/src/components/search-entity-page.tsx:217
 msgid "Try adjusting your search terms"
 msgstr "Qidiruv soʻzlaringizni sozlashga harakat qiling"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:140
 #: ../../../lib/web/src/features/errors/general-error.tsx:180
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:19
 msgid "Try again"
 msgstr "Qayta urinib koʻring"
 
@@ -4020,7 +3652,7 @@ msgstr "Ruxsatsiz kirish"
 
 #: ../../../lib/web/src/components/attachment-image.tsx:50
 msgid "Unavailable"
-msgstr ""
+msgstr "Mavjud emas"
 
 #: src/components/SettingsDialog.tsx:157
 #: src/components/SettingsDialog.tsx:208
@@ -4079,10 +3711,6 @@ msgstr "Obunadan chiqish"
 msgid "Untitled"
 msgstr "Sarlavhasiz"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:135
-msgid "Unverified"
-msgstr "Tasdiqlanmagan"
-
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
 msgid "Updated"
@@ -4111,16 +3739,7 @@ msgstr "Foydalanuvchi"
 msgid "Verification code"
 msgstr "Tasdiqlash kodi"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:255
-msgid "Verification code sent"
-msgstr "Tasdiqlash kodi yuborildi"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:248
-msgid "Verification failed"
-msgstr "Tasdiqlash muvaffaqiyatsiz"
-
 #: ../../../lib/web/src/components/step-up-dialog.tsx:391
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:172
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "Tasdiqlash"
@@ -4150,17 +3769,12 @@ msgstr "Video ko'ruvchi: {0}"
 msgid "view"
 msgstr "ko'rinish"
 
-#: ../../../lib/web/src/components/data-table/view-options.tsx:33
 #: src/components/SettingsDialog.tsx:94
 msgid "View"
 msgstr "Koʻrish"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:177
-msgid "View all"
-msgstr "Hammasini koʻrish"
-
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:205
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:213
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:220
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:228
 msgid "View all notifications"
 msgstr "Barcha bildirishnomalarni koʻrish"
 
@@ -4194,14 +3808,6 @@ msgstr "QOʻNISHNI BEKOR QIL"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "Biz <0>{0}</0> manziliga tasdiqlash kodini yubordik. Elektron pochta manzilingizni tasdiqlash uchun kodni quyida kiriting."
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
-msgid "We'll be back online shortly."
-msgstr "Tez orada qaytib kelamiz."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:197
-msgid "We'll notify you when something important happens."
-msgstr "Muhim bir narsa yuz berganda sizga xabar beramiz."
-
 #: src/components/GameCanvas.tsx:139
 msgid "weapon"
 msgstr "qurol"
@@ -4219,10 +3825,6 @@ msgstr "Qurollar"
 msgid "Weather"
 msgstr "Ob-havo"
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:13
-msgid "Website is under maintenance!"
-msgstr "Veb-sayt texnik xizmatda!"
-
 #: ../../../lib/web/src/lib/preference-utils.ts:56
 msgid "Wednesday"
 msgstr "Chorshanba"
@@ -4233,7 +3835,7 @@ msgid "Wheel brakes"
 msgstr "G'ildirak tormozlari"
 
 #: src/components/SettingsDialog.tsx:558
-msgid "Wind & Cockpit Airframe"
+msgid "Wind and cockpit airframe"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:170
@@ -4279,14 +3881,6 @@ msgstr "SIZ"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "Bu boʻlimga kirish huquqingiz yoʻq."
-
-#: ../../../lib/web/src/features/errors/forbidden.tsx:18
-msgid "You don't have necessary permission <0/>to view this resource."
-msgstr "Sizda ushbu resursni ko'rish uchun <0/>zarur ruxsat yo'q."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
-msgid "You're all caught up!"
-msgstr "Hammasini ko'rdingiz!"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:100
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

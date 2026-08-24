@@ -841,7 +841,7 @@ function MissionPanel({
         <Card>
           <CardHeader className='pb-3'>
             <CardTitle className='text-sm font-semibold'>
-              <Trans>Flight Profile</Trans>
+              <Trans>Flight profile</Trans>
             </CardTitle>
           </CardHeader>
           <CardContent className='space-y-3'>
@@ -981,11 +981,11 @@ function MissionPanel({
               <CollapsibleTrigger className='text-muted-foreground hover:text-foreground flex w-full items-center justify-between text-xs font-semibold tracking-wider uppercase'>
                 <span className='flex items-center gap-1.5'>
                   <ChevronRight className={`size-4 transition-transform ${cheatsOpen ? 'rotate-90' : ''}`} />
-                  <Trans>Flight Assists</Trans>
+                  <Trans>Flight assists</Trans>
                 </span>
                 {anyCheat && (
                   <Badge variant='warning' className='text-[10px] py-0 px-1.5'>
-                    <Trans>Assists Active</Trans>
+                    <Trans>Active assists</Trans>
                   </Badge>
                 )}
               </CollapsibleTrigger>
@@ -1017,7 +1017,7 @@ function MissionPanel({
       <Card>
         <CardHeader className='pb-3'>
           <CardTitle className='text-sm font-semibold'>
-            <Trans>Armament & Stores</Trans>
+            <Trans>Armament and stores</Trans>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -1185,7 +1185,7 @@ export function MissionSetup({
             <div className='flex-1 min-w-0'>
               <div className='text-sm font-semibold truncate'><Trans>Create mission</Trans></div>
               <div className='text-muted-foreground text-[11px] leading-tight line-clamp-1'>
-                <Trans>Tasks, weather & loadout</Trans>
+                <Trans>Tasks, weather and loadout</Trans>
               </div>
             </div>
           </Card>
@@ -1215,7 +1215,7 @@ export function MissionSetup({
             <div className='flex-1 min-w-0'>
               <div className='text-sm font-semibold truncate'><Trans>Settings</Trans></div>
               <div className='text-muted-foreground text-[11px] leading-tight line-clamp-1'>
-                <Trans>Avionics, HOTAS & audio</Trans>
+                <Trans>Avionics, HOTAS and audio</Trans>
               </div>
             </div>
           </Card>
@@ -1232,7 +1232,7 @@ export function MissionSetup({
               <div className='flex-1 min-w-0'>
                 <div className='text-sm font-semibold truncate'><Trans>Flight log</Trans></div>
                 <div className='text-muted-foreground text-[11px] leading-tight line-clamp-1'>
-                  <Trans>Sortie history & replays</Trans>
+                  <Trans>Sortie history and replays</Trans>
                 </div>
               </div>
             </Card>

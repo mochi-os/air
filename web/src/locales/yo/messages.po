@@ -39,11 +39,6 @@ msgstr "[kò sí]"
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, other {Ó gba ọta ìbọn #}}"
 
-#. placeholder {0}: selectedValues.size
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
-msgid "{0, plural, one {# selected} other {# selected}}"
-msgstr "{0, plural, one {# yan} other {# yan}}"
-
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:637
@@ -64,11 +59,6 @@ msgstr "{0} ft·lb ju ààlà àìdọ́gba kàtàpúlítì lọ"
 #: src/components/MissionSetup.tsx:339
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb ju ìwúwo ìfilọ́lẹ̀ tó pọ̀ jùlọ lọ"
-
-#. placeholder {0}: item.label
-#: ../../../lib/web/src/components/config-drawer.tsx:160
-msgid "{0} option preview"
-msgstr "Àyẹ̀wò àṣàyàn {0}"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
@@ -107,22 +97,6 @@ msgstr "Ìdíje {name}"
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:29
 msgid "{opponentName} offered a draw"
 msgstr "{opponentName} fún ní ìdábọ̀"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:203
-msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
-msgstr "{selectedCount, plural, one {{entityName} tí a yàn} other {{manyName} tí a yàn}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:45
-msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
-msgstr "{selectedCount, plural, one {# {entityName} tí a yàn. Àkàwé ìṣe púpọ̀ wà.} other {# {manyName} tí a yàn. Àkàwé ìṣe púpọ̀ wà.}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:195
-msgid "{selectedCount, plural, one {# selected} other {# selected}}"
-msgstr "{selectedCount, plural, one {# tí a yàn} other {# tí a yàn}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:142
-msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
-msgstr "{selectedCount, plural, one {Àwọn ìṣe púpọ̀ fún {entityName} # tí a yàn} other {Àwọn ìṣe púpọ̀ fún {manyName} # tí a yàn}}"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:248
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:52
@@ -190,29 +164,13 @@ msgstr "Gbà"
 msgid "Access denied"
 msgstr "A kọ̀ ìwọlé"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:16
-msgid "Access Forbidden"
-msgstr "Ìwọlé Léèwọ̀"
-
 #: ../../../lib/web/src/features/access/access-list.tsx:197
 msgid "Access level"
 msgstr "Ìpele ìwọlé"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:216
-msgid "Account added"
-msgstr "A ti fi àkáǹtì kún"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:232
-msgid "Account removed"
-msgstr "A ti yọ àkáǹtì kúrò"
-
 #: ../../../lib/web/src/features/accounts/account-add.tsx:139
 msgid "Account type"
 msgstr "Irú àkáǹtì"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:242
-msgid "Account verified"
-msgstr "A ti fọwọ́sí àkáǹtì"
 
 #: src/components/MissionSetup.tsx:887
 #: src/components/MissionSetup.tsx:1075
@@ -230,7 +188,11 @@ msgstr "Gbá àfojúsùn mú"
 msgid "Acquisition mode"
 msgstr "Ipò ìmúni"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:712
+#: src/components/MissionSetup.tsx:988
+msgid "Active assists"
+msgstr ""
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:720
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:209
 msgid "Add"
@@ -253,19 +215,14 @@ msgid "Add access"
 msgstr "Fi ìwọlé kún"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:132
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:288
 msgid "Add account"
 msgstr "Fi àkáǹtì kún"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:297
-msgid "Add an account to receive notifications and use services."
-msgstr "Fi àkáǹtì kún láti gba àwọn ìfitónilétí àti láti lo àwọn iṣẹ́."
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:291
 msgid "Add caption"
 msgstr "Fi àlàyé kún"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:682
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:690
 msgid "Add checklist item"
 msgstr "Fi ohun ìmọ́ ìṣàyẹ̀wò kún"
 
@@ -274,17 +231,13 @@ msgstr "Fi ohun ìmọ́ ìṣàyẹ̀wò kún"
 msgid "Add field"
 msgstr "Fi pápá kún"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:700
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:708
 msgid "Add item..."
 msgstr "Fi ohun kún..."
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
 msgid "Add link"
 msgstr "Fi ọ̀nà kún"
-
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:102
-msgid "Add new account"
-msgstr "Fi àkáǹtì tuntun kún"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
@@ -295,13 +248,8 @@ msgid "Add option"
 msgstr "Fi àṣàyàn kún"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
-#: ../../../lib/web/src/components/tag-input.tsx:40
 msgid "Add tag..."
 msgstr "Fi tag kún..."
-
-#: ../../../lib/web/src/components/layout/team-switcher.tsx:83
-msgid "Add team/app"
-msgstr "Fi ẹgbẹ́/app kún"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:175
 msgid "Add to existing notifications"
@@ -317,10 +265,6 @@ msgstr "Fi ìran kún"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 msgid "Adding..."
 msgstr "Ó ń fi kún..."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:72
-msgid "Adjust the appearance and layout to suit your preferences."
-msgstr "Ṣàtúnṣe ìrísí àti ìtò láti bá ìfẹ́ rẹ mu."
 
 #: src/components/SettingsDialog.tsx:877
 msgid "Afterburner"
@@ -341,10 +285,6 @@ msgstr "Ọkọ̀ ojú omi tí ń gbé ọkọ̀ òfurufú <0>“USS Nimitz CVN-
 #: src/components/MissionSetup.tsx:444
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Àwòṣe ọkọ̀ òfurufú <0>“F/A-18C Hornet”</0> láti ọwọ́ <1>CreadorDeMu</1> (Sketchfab), tí a fún ní ìwé àṣẹ lábẹ́ <2>CC BY 4.0</2>. A ṣàtúnṣe: a yí ìdojúkọ rẹ̀ padà a sì tún ìwọ̀n rẹ̀ ṣe, a yọ dátà tẹ́kísítọ̀ tí a kò lò kúrò, a ya àwọn ẹrù ìta sí fáìlì ọ̀tọ̀, a sì fi ẹ̀dà dígí rọ́pò mẹ́ṣì ìbòjú kan."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:163
-msgid "All"
-msgstr "Gbogbo"
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -411,7 +351,7 @@ msgid "Are you sure you want to log out? You will need to log in again to access
 msgstr "Ṣé o dájú pé o fẹ́ jáde? Wàá nílò láti wọlé lẹ́ẹ̀kan sí i láti rí àkáǹtì rẹ."
 
 #: src/components/MissionSetup.tsx:1020
-msgid "Armament & Stores"
+msgid "Armament and stores"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:168
@@ -419,17 +359,9 @@ msgstr ""
 msgid "Arrestor hook"
 msgstr "Ìwọ̀ ìdádúró"
 
-#: ../../../lib/web/src/components/data-table/column-header.tsx:59
-msgid "Asc"
-msgstr "Àsc"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "Gòkè"
-
-#: src/components/MissionSetup.tsx:988
-msgid "Assists Active"
-msgstr ""
 
 #: ../../../lib/web/src/components/comment-composer.tsx:427
 msgid "Attach comment files"
@@ -440,7 +372,7 @@ msgid "Attach reply files"
 msgstr "So àwọn fáìlì ìdáhùn pọ̀"
 
 #: src/components/SettingsDialog.tsx:604
-msgid "Audio Mixer Channels"
+msgid "Audio channels"
 msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
@@ -465,7 +397,7 @@ msgid "Avatar for {name}"
 msgstr "Àwòrán fún {name}"
 
 #: src/components/MissionSetup.tsx:1218
-msgid "Avionics, HOTAS & audio"
+msgid "Avionics, HOTAS and audio"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:446
@@ -473,7 +405,7 @@ msgid "Axis {i}"
 msgstr "Axis {i}"
 
 #: src/components/SettingsDialog.tsx:395
-msgid "Axis Calibration & Mapping"
+msgid "Axis calibration and mapping"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:521
@@ -485,7 +417,6 @@ msgstr "padà"
 msgid "Back"
 msgstr "Padà"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:28
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:28
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
@@ -524,7 +455,7 @@ msgid "Best sustained turn speed"
 msgstr "Ìyára ìyípo tó dúró tó dára jù"
 
 #: src/components/SettingsDialog.tsx:561
-msgid "Betty & RWR Alerts"
+msgid "Betty and RWR alerts"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:44
@@ -536,8 +467,8 @@ msgstr "EPO BINGO"
 msgid "Blocked by"
 msgstr "Dídènà nípasẹ̀"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:227
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:237
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:242
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:252
 msgid "Blocked navigation to untrusted link"
 msgstr "A dí ìrìnnà sí ọ̀nà tí a kò gbẹ́kẹ̀lé"
 
@@ -599,7 +530,7 @@ msgid "Button {i}"
 msgstr "Bọtìnì {i}"
 
 #: src/components/SettingsDialog.tsx:487
-msgid "Button Mappings"
+msgid "Button mappings"
 msgstr ""
 
 #: src/components/Multiplayer.tsx:414
@@ -657,7 +588,7 @@ msgid "Cancel reply"
 msgstr "Fagilé ìdáhùn"
 
 #: src/components/SettingsDialog.tsx:559
-msgid "Cannons & Ordnance"
+msgid "Cannons and ordnance"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:222
@@ -670,7 +601,7 @@ msgid "Caption"
 msgstr "Àlàyé"
 
 #: src/components/SettingsDialog.tsx:560
-msgid "Carrier & Ambient"
+msgid "Carrier and ambient"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:1082
@@ -739,10 +670,6 @@ msgstr "Ìfọ̀rọ̀wérọ̀ pẹ̀lú gbogbo ènìyàn"
 msgid "Cheats"
 msgstr "Àwọn ẹ̀tàn"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:198
-msgid "Check \"All\" to see your past notifications."
-msgstr "Yan \"Gbogbo\" láti rí àwọn ìfitónilétí rẹ tẹ́lẹ̀."
-
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
 msgid "Checkbox"
 msgstr "Àpótí àyẹ̀wò"
@@ -754,22 +681,6 @@ msgstr "Àkọsílẹ̀ àyẹ̀wò"
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:35
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "Yan eré kan láti sidebar tàbí bẹ̀rẹ̀ ọ̀kan tuntun."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:329
-msgid "Choose between default expanded, compact icon-only, or full layout mode"
-msgstr "Yan láàrin èyí tó fẹ̀ aláìpé, kékeré àmì-nìkan, tàbí ìtò kíkún"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:271
-msgid "Choose between inset, floating, or standard sidebar layout"
-msgstr "Yan láàrin ìtò sidebar inset, lílúwẹ̀ẹ́, tàbí ìpilẹ̀"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:372
-msgid "Choose between left-to-right or right-to-left site direction"
-msgstr "Yan láàrin ìṣíkiri ojú-òpó láti òsì sí ọ̀tún tàbí láti ọ̀tún sí òsì"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:227
-msgid "Choose between system preference, light mode, or dark mode"
-msgstr "Yan láàrin ìfẹ́ system, ọ̀nà ìmọ́lẹ̀, tàbí ọ̀nà òkùnkùn"
 
 #: ../../../lib/web/src/components/language-picker.tsx:264
 #: ../../../lib/web/src/components/language-picker.tsx:271
@@ -790,23 +701,9 @@ msgstr "Pa rẹ́"
 msgid "Clear all"
 msgstr "Pa gbogbo rẹ̀ rẹ́"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
-msgid "Clear filters"
-msgstr "Pa àwọn ásẹ̀ rẹ́"
-
 #: ../../../lib/web/src/components/search-input.tsx:26
 msgid "Clear search"
 msgstr "Pa àwárí rẹ́"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:170
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:174
-msgid "Clear selection"
-msgstr "Pa ìyàn rẹ́"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
-msgid "Clear selection (Escape)"
-msgstr "Pa ìyàn rẹ́ (Escape)"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:501
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
@@ -878,10 +775,6 @@ msgstr "Àwọn ọ̀wọ́n ṣe àwùjọ nípa"
 msgid "Comfortable"
 msgstr "Itunu"
 
-#: ../../../lib/web/src/components/coming-soon.tsx:12
-msgid "Coming Soon!"
-msgstr "Yóò Dé Láìpẹ́!"
-
 #: ../../../lib/web/src/components/ui/command.tsx:34
 msgid "Command Palette"
 msgstr "Àpótí àṣẹ"
@@ -904,7 +797,6 @@ msgstr "Àwọn àlàyé"
 msgid "Communication"
 msgstr "Ìbánisọ̀rọ̀"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:316
 #: ../../../lib/web/src/lib/preference-utils.ts:90
 msgid "Compact"
 msgstr "Kékeré"
@@ -933,10 +825,6 @@ msgstr "Sopọ̀ mọ́ sáfà aládàáni"
 #: ../../../lib/web/src/lib/chat-ui.ts:18
 msgid "Connected"
 msgstr "Tí a so pọ̀"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:191
-msgid "Connected accounts"
-msgstr "Àwọn àkáǹtì tí a so pọ̀"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:21
 msgid "Connecting..."
@@ -1008,7 +896,7 @@ msgstr "A kò lè fi àkọsílẹ̀ náà pamọ́"
 msgid "Could not send the message"
 msgstr "A kò lè fi ìfiránṣẹ́ náà ránṣẹ́"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:128
 msgid "Couldn't load notifications"
 msgstr "Kò lè ṣe àwọn ìfitọ́nilétí"
 
@@ -1105,16 +993,9 @@ msgstr "EWU"
 msgid "Cycle view"
 msgstr "Yí ojú-ìwòye padà"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:219
-#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:15
 msgid "Dark"
 msgstr "Òkùnkùn"
-
-#: ../../../lib/web/src/components/profile-dropdown.tsx:87
-#: ../../../lib/web/src/components/profile-dropdown.tsx:123
-msgid "Dark mode"
-msgstr "Ọ̀nà òkùnkùn"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:259
 msgid "Data conflict"
@@ -1142,10 +1023,6 @@ msgstr "A TI FIPAMỌ́ IPÒ PẸPẸ"
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:41
 msgid "Decline"
 msgstr "Kọ̀"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:311
-msgid "Default"
-msgstr "Àìpé"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
@@ -1205,10 +1082,6 @@ msgstr "Pa akonti rẹ rẹ lori olupin atijọ"
 msgid "Departure / Recovery"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/column-header.tsx:63
-msgid "Desc"
-msgstr "Sọ̀kalẹ̀"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Descending"
 msgstr "Sọkalẹ̀"
@@ -1244,10 +1117,6 @@ msgstr "Ṣàwárí láti web browser"
 #: src/components/Multiplayer.tsx:264
 msgid "Different game host"
 msgstr "Àgbàlejò eré tó yàtọ̀"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:341
-msgid "Direction"
-msgstr "Ìtọ́sọ́nà"
 
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
@@ -1286,7 +1155,7 @@ msgstr "Mú kúrò"
 msgid "Display repeater"
 msgstr "Ẹ̀rọ àtúnfihàn"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:238
+#: ../../../lib/web/src/components/ui/sidebar.tsx:258
 msgid "Displays the mobile sidebar."
 msgstr "Ó ń fi sidebar fóònù hàn."
 
@@ -1296,7 +1165,7 @@ msgstr "LOD ìjìnnà"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:1044
+#: src/components/SettingsDialog.tsx:1061
 msgid "Done"
 msgstr "Ti parí"
 
@@ -1382,7 +1251,7 @@ msgid "Edit view"
 msgstr "Ṣàtúnṣe wíwò"
 
 #: src/components/SettingsDialog.tsx:852
-msgid "Effects & Toggles"
+msgid "Effects and toggles"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:830
@@ -1432,7 +1301,7 @@ msgid "Engagement"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:557
-msgid "Engine & Afterburner"
+msgid "Engine and afterburner"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:770
@@ -1515,14 +1384,6 @@ msgstr "Ìtọ́kasí F/A-18C"
 msgid "F/A-18C Strike Fighter"
 msgstr ""
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:225
-msgid "Failed to add account"
-msgstr "Kò lè fi àkántì kún"
-
-#: ../../../lib/web/src/components/tag-input.tsx:39
-msgid "Failed to add tag"
-msgstr "Kò lè fi tag kún"
-
 #: ../../../lib/web/src/components/ui/copy-button.tsx:26
 #: ../../../lib/web/src/lib/toast-utils.ts:44
 msgid "Failed to copy"
@@ -1569,17 +1430,9 @@ msgstr "Kò ṣeé gbé fídíò wọlé"
 msgid "Failed to post comment"
 msgstr "Kò lè fi ọ̀rọ̀-ìṣàlàyé ránṣẹ́"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:234
-msgid "Failed to remove account"
-msgstr "Kò lè mú àkántì kúrò"
-
 #: ../../../lib/web/src/components/options-menu.tsx:133
 msgid "Failed to revoke RSS access"
 msgstr "Ìkùnà láti fagilé ìwọlé RSS"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:257
-msgid "Failed to send verification code"
-msgstr "Kò lè firanṣẹ́ kóòdù ìjẹ́rìí"
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:174
 msgid "Failed to update comment"
@@ -1607,10 +1460,6 @@ msgstr "ÌJÀ TI BẸ̀RẸ̀"
 msgid "Files"
 msgstr "Àwọn fáìlì"
 
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:30
-msgid "Filter..."
-msgstr "Ṣàyẹ̀wò..."
-
 #: ../../../lib/web/src/components/restore-banner.tsx:97
 msgid "Finish moving your account"
 msgstr "Pari gbigbe akonti rẹ"
@@ -1629,7 +1478,7 @@ msgid "Fire weapon"
 msgstr "Yìnbọn"
 
 #: src/components/SettingsDialog.tsx:720
-msgid "Fixed Flight Keys"
+msgid "Fixed flight keys"
 msgstr ""
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:221
@@ -1665,28 +1514,28 @@ msgid "Flight"
 msgstr "Ọkọ̀ òfuurufú"
 
 #: src/components/MissionSetup.tsx:984
-msgid "Flight Assists"
+msgid "Flight assists"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:82
 msgid "FLIGHT CORE FAILED"
 msgstr "KÓRÒ ÒFURUFÚ KÙNÀ"
 
+#: src/components/SettingsDialog.tsx:967
+msgid "Flight hints"
+msgstr ""
+
 #: src/components/MissionSetup.tsx:1233
 msgid "Flight log"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:844
-msgid "Flight Profile"
+msgid "Flight profile"
 msgstr ""
 
 #: src/components/MatchHistory.tsx:154
 msgid "Flights"
 msgstr "Àwọn ìfò"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:258
-msgid "Floating"
-msgstr "Léfòfò"
 
 #: src/components/MatchHistory.tsx:90
 msgid "Flown"
@@ -1759,10 +1608,6 @@ msgstr "Ọpá epo"
 msgid "Fuel tank"
 msgstr "Tanki epo"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:321
-msgid "Full layout"
-msgstr "Àtòjọ kíkún"
-
 #: src/components/MatchHistory.tsx:78
 msgid "Furball"
 msgstr "Furball"
@@ -1784,42 +1629,21 @@ msgstr "Ẹsẹ̀"
 msgid "GEAR"
 msgstr "GÍYÀ"
 
-#: src/components/SettingsDialog.tsx:988
+#: src/components/SettingsDialog.tsx:1005
 msgid "General"
 msgstr "Gbogbogbòò"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:26
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "Padà"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:82
-msgid "Go to first page"
-msgstr "Lọ sí ojú-ewé àkọ́kọ́"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:128
-msgid "Go to last page"
-msgstr "Lọ sí ojú-ewé ìkẹyìn"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:119
-msgid "Go to next page"
-msgstr "Lọ sí ojú-ewé tí ó tẹ̀le"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:106
-msgid "Go to page {pageNumber}"
-msgstr "Lọ sí ojú-ìwé {pageNumber}"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:91
-msgid "Go to previous page"
-msgstr "Lọ sí ojú-ewé tí ó ṣáájú"
-
-#: src/components/SettingsDialog.tsx:992
+#: src/components/SettingsDialog.tsx:1009
 msgid "Graphics"
 msgstr "Àwòrán"
 
 #: src/components/SettingsDialog.tsx:779
-msgid "Graphics Preset"
+msgid "Graphics preset"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:309
@@ -1868,14 +1692,6 @@ msgstr "Títọpa orí"
 msgid "Heavy"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/column-header.tsx:70
-msgid "Hide"
-msgstr "Fi pamọ́"
-
-#: ../../../lib/web/src/components/password-input.tsx:27
-msgid "Hide password"
-msgstr "Fi ọ̀rọ̀ aṣínà pamọ́"
-
 #: src/components/SettingsDialog.tsx:770
 msgid "High"
 msgstr "Gíga"
@@ -1885,6 +1701,10 @@ msgstr "Gíga"
 #: src/components/Multiplayer.tsx:367
 msgid "High stratus"
 msgstr "Stratus gíga"
+
+#: src/components/SettingsDialog.tsx:959
+msgid "Hints"
+msgstr ""
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:61
 #: src/routes/history.tsx:32
@@ -1953,12 +1773,8 @@ msgid "Initials avatar for {name}"
 msgstr "Àwòrán lẹ́tà àkọ́kọ́ fún {name}"
 
 #: src/components/SettingsDialog.tsx:338
-msgid "Input Hardware"
+msgid "Input hardware"
 msgstr ""
-
-#: ../../../lib/web/src/components/config-drawer.tsx:253
-msgid "Inset"
-msgstr "Inú"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
@@ -1968,17 +1784,9 @@ msgstr "Àwọn ìfẹ́"
 msgid "Internal fuel"
 msgstr "Epo inú"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:545
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:550
 msgid "Invalid date"
 msgstr "Ọjọ́ aláìdára"
-
-#: ../../../lib/web/src/components/tag-input.tsx:38
-msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
-msgstr "Àmì àìtọ́: lẹ́tà, nọ́ńbà, àyè, ìlà àsopọ̀ àti ìlà ìyà nìkan (àsẹ́kù lẹ́tà 50)"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:245
-msgid "Invalid verification code"
-msgstr "Kóòdù ìjẹ́rìí aláìdára"
 
 #: src/components/SettingsDialog.tsx:385
 msgid "Invert pitch axis"
@@ -2043,7 +1851,7 @@ msgstr "Ìjà ojúkojú — 1v1, ẹni tó kọ́kọ́ pa ọ̀tá ló borí"
 msgid "Joust against bot"
 msgstr "Ìjà ojúkojú lòdì sí bot"
 
-#: src/components/SettingsDialog.tsx:1000
+#: src/components/SettingsDialog.tsx:1017
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -2059,7 +1867,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Àwọn ọ̀nà kúkurú kọ́kọ́rọ́"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:1021
 msgid "Keys"
 msgstr "Àwọn bọtìnì"
 
@@ -2115,7 +1923,6 @@ msgstr "Ta (kàtápù)"
 msgid "launch / target"
 msgstr "gbéra / àfojúsùn"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:287
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:306
 msgid "Layout"
 msgstr "Àtòjọ"
@@ -2123,11 +1930,6 @@ msgstr "Àtòjọ"
 #: src/components/Multiplayer.tsx:402
 msgid "lb"
 msgstr "lb"
-
-#: ../../../lib/web/src/components/learn-more.tsx:33
-#: ../../../lib/web/src/components/learn-more.tsx:38
-msgid "Learn more"
-msgstr "Kọ́ síwájú"
 
 #: src/components/MissionSetup.tsx:796
 msgid "Leave server"
@@ -2140,10 +1942,6 @@ msgstr "Ó kúrò"
 #: src/components/GameCanvas.tsx:96
 msgid "LEFT"
 msgstr "TI JÁDE"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:355
-msgid "Left to Right"
-msgstr "Òsì sí Ọ̀tún"
 
 #: src/components/MissionSetup.tsx:169
 #: src/components/MissionSetup.tsx:170
@@ -2162,8 +1960,6 @@ msgstr "Àwọn lẹ́tà, nọ́mbà, àyè, àti òpó nìkan"
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "DỌ́GBA NÍ 1200, SỌ ÀGBÁ KALẸ̀"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:214
-#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:14
 msgid "Light"
 msgstr "Ìmọ́lẹ̀"
@@ -2214,8 +2010,6 @@ msgstr "ÌṢÍ KÙNÀ"
 msgid "Loading..."
 msgstr "Ń ṣí..."
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:69
-#: ../../../lib/web/src/components/profile-dropdown.tsx:98
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:26
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:28
 msgid "Log out"
@@ -2279,10 +2073,6 @@ msgstr "M láti tì"
 msgid "Manage categories"
 msgstr "Ṣàkóso àwọn ẹ̀ka"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:192
-msgid "Manage your connected accounts for notifications and services."
-msgstr "Ṣàkóso àwọn àkáǹtì rẹ tí a ti sopọ̀ fún ìfitónilétí àti iṣẹ́."
-
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
 msgid "Manual"
 msgstr "Ìwé ìtọ́nisọ́nà"
@@ -2295,23 +2085,22 @@ msgstr "máàpù"
 msgid "Map"
 msgstr "Máàpù"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:192
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:199
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:224
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:207
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:214
 msgid "Mark all as read"
 msgstr "Sàmì sí gbogbo gẹ́gẹ́ bí kíkà"
 
 #: src/components/SettingsDialog.tsx:576
-msgid "Master Audio Output"
+msgid "Master audio output"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:589
-msgid "Master Bus"
+msgid "Master bus"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:556
 #: src/components/SettingsDialog.tsx:584
-msgid "Master Volume"
+msgid "Master volume"
 msgstr ""
 
 #: src/components/Multiplayer.tsx:348
@@ -2494,10 +2283,6 @@ msgstr "Kò sí iṣẹ́ síbẹ̀"
 msgid "No comments yet"
 msgstr "Kò sí àlàyé síbẹ̀"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:295
-msgid "No connected accounts"
-msgstr "Kò sí ìròyìn tó sopọ̀"
-
 #: src/components/MatchHistory.tsx:125
 msgid "No flights yet"
 msgstr "Kò sí ìfò kankan síbẹ̀"
@@ -2522,15 +2307,11 @@ msgstr "Kò sí joystick tí a rí — tẹ bọtìnì èyíkéyìí lórí rẹ
 msgid "No matching objects"
 msgstr "Kò sí object tó bámu"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
-msgid "No notifications yet"
-msgstr "Kò sí ìfitónilétí síbẹ̀"
-
 #: src/components/Multiplayer.tsx:531
 msgid "No open matches — create one."
 msgstr "Kò sí ìdíje gbangba kankan — ṣẹ̀dá ọ̀kan."
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:336
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:341
 #: ../../../lib/web/src/components/person-picker.tsx:84
 msgid "No people found"
 msgstr "A kò rí ènìyàn kankan"
@@ -2539,18 +2320,12 @@ msgstr "A kò rí ènìyàn kankan"
 msgid "No places found"
 msgstr "A kò rí ibikíbi"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:58
-msgid "No profile"
-msgstr "Kò sí profile"
-
 #: ../../../lib/web/src/components/inline-entity-search.tsx:64
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:82
 #: ../../../lib/web/src/components/search-entity-page.tsx:73
 msgid "No results found"
 msgstr "Kò sí àbájáde"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "A kò rí àbájáde kankan."
 
@@ -2576,7 +2351,7 @@ msgstr "A kò rí àgbègbè àkókò kankan."
 msgid "No topic record yet — try again after the next notification."
 msgstr "Kò sí àkọsílẹ̀ kókó síbẹ̀ — gbìyànjú lẹ́ẹ̀kan síi lẹ́yìn ìfìtọ́nisí tó kàn."
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:124
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:139
 msgid "No unread notifications"
 msgstr "Kò sí ìfìtọ́nisí tí a kò kà"
 
@@ -2652,16 +2427,8 @@ msgstr "A kò rí ohunkóhun"
 msgid "Nothing yet — say hello."
 msgstr "Kò tíì sí nǹkan kan — kí wọ́n."
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:136
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:150
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:236
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:257
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:261
-msgid "Notifications"
-msgstr "Àwọn ìfìtọ́nisí"
-
 #. placeholder {0}: unread.length
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:185
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:200
 msgid "Notifications: {0}"
 msgstr "Àwọn ìfitónilétí: {0}"
 
@@ -2715,11 +2482,6 @@ msgstr "Ṣílẹ̀"
 msgid "Open — anyone may join or leave"
 msgstr "Gbangba — ẹnikẹ́ni lè dara pọ̀ tàbí kúrò"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:156
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:166
-msgid "Open account actions"
-msgstr "Ṣí àwọn iṣẹ́ ìròyìn"
-
 #: ../../../lib/web/src/components/layout/nav-group.tsx:199
 #: ../../../lib/web/src/components/layout/nav-group.tsx:204
 msgid "Open actions"
@@ -2734,11 +2496,6 @@ msgstr "Ṣí ìtòlẹ́sẹẹsẹ"
 msgid "Open navigation"
 msgstr "Ṣí ìṣàkóso"
 
-#: ../../../lib/web/src/components/layout/top-nav.tsx:38
-#: ../../../lib/web/src/components/layout/top-nav.tsx:44
-msgid "Open navigation menu"
-msgstr "Ṣí ìtòlẹ́sẹẹsẹ ìṣàkóso"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:105
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:111
 msgid "Open option actions"
@@ -2747,11 +2504,6 @@ msgstr "Ṣí àwọn iṣẹ́ àṣàyàn"
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "Ṣí káàdì tó yàn"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:58
-#: ../../../lib/web/src/components/config-drawer.tsx:66
-msgid "Open theme settings"
-msgstr "Ṣí àwọn ètò àkórí"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:274
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:279
@@ -2802,11 +2554,6 @@ msgstr "OJU TI TII"
 msgid "PADLOCK OFF"
 msgstr "OJU LOMINIRA"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:43
-#: ../../../lib/web/src/components/data-table/pagination.tsx:71
-msgid "Page {currentPage} of {totalPages}"
-msgstr "Ojú-ìwé {currentPage} nínú {totalPages}"
-
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:530
 msgid "Parent"
 msgstr "Òbí"
@@ -2835,10 +2582,6 @@ msgstr "Àpẹẹrẹ (regex)"
 msgid "Performance priority"
 msgstr ""
 
-#: ../../../lib/web/src/components/date-picker.tsx:20
-msgid "Pick a date"
-msgstr "Yan ọjọ́"
-
 #: src/components/MissionSetup.tsx:577
 #: src/components/Multiplayer.tsx:140
 #: src/components/Multiplayer.tsx:309
@@ -2857,7 +2600,7 @@ msgid "PILOT DOWN"
 msgstr "AWAKỌ̀ TI KÚ"
 
 #: src/components/SettingsDialog.tsx:922
-msgid "Pilot Identity"
+msgid "Pilot identity"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:348
@@ -2940,10 +2683,6 @@ msgstr "Aṣírí"
 msgid "Processing…"
 msgstr "Ń ṣiṣẹ́ lé e…"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:114
-msgid "Profile"
-msgstr "Profáìlì"
-
 #: src/components/SettingsDialog.tsx:282
 #: src/components/SettingsDialog.tsx:294
 msgid "Profile saved"
@@ -3006,7 +2745,6 @@ msgstr "TÚN DI ÌHÀMÓRA"
 msgid "Recent"
 msgstr "Àìpẹ́"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:220
 #: ../../../lib/web/src/components/search-entity-page.tsx:243
 msgid "Recommended"
 msgstr "Tí a dábàá"
@@ -3016,10 +2754,11 @@ msgid "Reconnecting ({retries})..."
 msgstr "Ń tún sopọ̀ ({retries})..."
 
 #: src/components/SettingsDialog.tsx:950
-msgid "Record flights automatically"
+msgid "Record flights"
 msgstr ""
 
 #: src/components/MatchHistory.tsx:255
+#: src/components/SettingsDialog.tsx:944
 msgid "Recording"
 msgstr "Àkọsílẹ̀"
 
@@ -3072,7 +2811,6 @@ msgstr "Pẹ̀lú ìbáṣepọ̀ nínú wákàtí 24, bí ó ṣíkù absolute"
 #: ../../../lib/web/src/components/attachment-composer.tsx:330
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
 #: ../../../lib/web/src/features/access/access-list.tsx:270
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
 msgstr "Yọ kúrò"
 
@@ -3101,7 +2839,7 @@ msgstr "Yọ àyè kúrò?"
 msgid "Remove interest"
 msgstr "Yọ ìfẹ́ kúrò"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:666
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:674
 msgid "Remove item"
 msgstr "Yọ item kúrò"
 
@@ -3128,7 +2866,7 @@ msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Ìfihàn àwòrán jẹ́ nípasẹ̀ <0>three.js</0> (ìwé àṣẹ MIT)."
 
 #: src/components/SettingsDialog.tsx:806
-msgid "Rendering Detail"
+msgid "Rendering detail"
 msgstr ""
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:256
@@ -3149,20 +2887,9 @@ msgstr "Pọn dandan"
 msgid "Resend email"
 msgstr "Tún ìmélì náà ránṣẹ́"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:87
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:1040
+#: src/components/SettingsDialog.tsx:1057
 msgid "Reset"
 msgstr "Pa padà"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:122
-#: ../../../lib/web/src/components/config-drawer.tsx:127
-msgid "Reset {title}"
-msgstr "Tún {title} ṣe"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:85
-msgid "Reset all settings to default values"
-msgstr "Pa gbogbo ètò padà sí àwọn iye àbùdá"
 
 #: src/components/SettingsDialog.tsx:164
 #: src/components/SettingsDialog.tsx:215
@@ -3229,10 +2956,6 @@ msgstr "Fagilé ìwọlé"
 msgid "Revoke RSS access?"
 msgstr "Fagilé àǹfààní RSS?"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:362
-msgid "Right to Left"
-msgstr "Ọ̀tún sí Òsì"
-
 #: src/components/MissionSetup.tsx:174
 #: src/components/MissionSetup.tsx:175
 msgid "Right wing"
@@ -3266,10 +2989,6 @@ msgstr "Àwọn ila"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:373
 msgid "Rows group by"
 msgstr "Àwọn ila kójọ nípa"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:65
-msgid "Rows per page"
-msgstr "Àwọn ila fún ojú-ìwé kọ̀ọ̀kan"
 
 #: ../../../lib/web/src/components/options-menu.tsx:131
 msgid "RSS access revoked"
@@ -3350,12 +3069,10 @@ msgstr "Wá, ṣọ́, kí o sì ṣètò ìwòye yìí."
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:255
 #: ../../../lib/web/src/components/inline-entity-search.tsx:63
 #: ../../../lib/web/src/components/person-picker.tsx:324
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "Wá..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:178
 #: ../../../lib/web/src/components/search-entity-page.tsx:201
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
@@ -3364,11 +3081,6 @@ msgstr "Ń wá..."
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
 msgid "Select"
 msgstr "Yan"
-
-#. placeholder {0}: item.label.toLowerCase()
-#: ../../../lib/web/src/components/config-drawer.tsx:149
-msgid "Select {0}"
-msgstr "Yan {0}"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:356
 msgid "Select a field"
@@ -3386,10 +3098,6 @@ msgstr "Yan user, ẹgbẹ́, tàbí òfin míì láti fún ní ààyè."
 msgid "Select access rule"
 msgstr "Yan òfin ààyè"
 
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:34
-msgid "Select account"
-msgstr "Yan àkáǹtì"
-
 #: ../../../lib/web/src/features/accounts/account-add.tsx:142
 msgid "Select account type"
 msgstr "Yan irú account"
@@ -3397,10 +3105,6 @@ msgstr "Yan irú account"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:231
 msgid "Select group"
 msgstr "Yan ẹgbẹ́"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:305
-msgid "Select layout style"
-msgstr "Yan irú ìṣètò"
 
 #: ../../../lib/web/src/components/place-picker.tsx:49
 msgid "Select location"
@@ -3418,31 +3122,15 @@ msgstr "Yan ènìyàn..."
 msgid "Select previous card"
 msgstr "Yan káàdì tó wà ṣáájú"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:247
-msgid "Select sidebar style"
-msgstr "Yan irú sidebar"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:349
-msgid "Select site direction"
-msgstr "Yan ìtọ́sọ́nà síìtì"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:203
-msgid "Select theme preference"
-msgstr "Yan àfẹ́nilọ́kàn theme"
-
 #: src/components/SettingsDialog.tsx:154
 #: src/components/SettingsDialog.tsx:205
 msgid "Select weapon"
 msgstr "Yan ohun ìjà"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:252
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:335
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:257
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:340
 msgid "Select..."
 msgstr "Yan..."
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:209
-msgid "selected"
-msgstr "tí a yàn"
 
 #. placeholder {0}: getSelectedName()
 #: ../../../lib/web/src/features/access/access-dialog.tsx:309
@@ -3518,8 +3206,8 @@ msgstr "Ṣètò ibi tí o ti wá àti ibi tí o ń lọ"
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:418
 #: src/components/MissionSetup.tsx:1216
-#: src/components/SettingsDialog.tsx:983
-#: src/components/SettingsDialog.tsx:985
+#: src/components/SettingsDialog.tsx:1000
+#: src/components/SettingsDialog.tsx:1002
 msgid "Settings"
 msgstr "Àwọn ìṣètò"
 
@@ -3535,10 +3223,6 @@ msgstr "Fi àwọn classes hàn"
 msgid "Show fields"
 msgstr "Fi àwọn aaye hàn"
 
-#: ../../../lib/web/src/components/password-input.tsx:27
-msgid "Show password"
-msgstr "Fi ọ̀rọ̀ aṣínà hàn"
-
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:33
 msgid "Show this help"
 msgstr "Fi ìrànlọ́wọ́ yìí hàn"
@@ -3547,9 +3231,7 @@ msgstr "Fi ìrànlọ́wọ́ yìí hàn"
 msgid "Showing {totalShown} of {total}"
 msgstr "Ń fi {totalShown} hàn nínú {total}"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:239
-#: ../../../lib/web/src/components/config-drawer.tsx:263
-#: ../../../lib/web/src/components/ui/sidebar.tsx:237
+#: ../../../lib/web/src/components/ui/sidebar.tsx:257
 msgid "Sidebar"
 msgstr "Ọ̀pá ẹ̀gbẹ́"
 
@@ -3571,10 +3253,6 @@ msgstr "Ila ọ̀rọ̀ kan ṣoṣo"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Gígòkè tó dára jù pẹ̀lú ẹ́ńjìnnì kan (Vyse, afterburner)"
 
-#: ../../../lib/web/src/components/skip-to-main.tsx:11
-msgid "Skip to Main"
-msgstr "Fò sí Olórí"
-
 #: ../../../lib/web/src/lib/preference-utils.ts:101
 #: ../../../lib/web/src/lib/preference-utils.ts:128
 msgid "Small"
@@ -3585,14 +3263,10 @@ msgid "Sort"
 msgstr "Ṣètò"
 
 #: src/components/MissionSetup.tsx:1235
-msgid "Sortie history & replays"
+msgid "Sortie history and replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:944
-msgid "Sortie Recording"
-msgstr ""
-
-#: src/components/SettingsDialog.tsx:996
+#: src/components/SettingsDialog.tsx:1013
 msgid "Sound"
 msgstr "Ìró"
 
@@ -3650,10 +3324,6 @@ msgstr "Bẹ̀rẹ̀"
 msgid "Start the discussion by adding the first comment."
 msgstr "Bẹ̀rẹ̀ ìjíròrò nípa fífi àsọyé àkọ́kọ́ kún."
 
-#: ../../../lib/web/src/components/coming-soon.tsx:15
-msgid "Stay tuned though!"
-msgstr "Ṣùgbọ́n dúró tì wá!"
-
 #: src/components/MissionSetup.tsx:355
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Gígòkè tó gẹ̀gẹ̀ jù (Vx, 100% ìtì)"
@@ -3680,7 +3350,6 @@ msgstr "Fi ìdáhùn sí ilẹ̀"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx:66
 #: ../../../lib/web/src/components/recommended-entities.tsx:58
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
 msgid "Subscribe"
 msgstr "Forúkọsílẹ̀"
@@ -3700,8 +3369,6 @@ msgid "Switch to view 1-9"
 msgstr "Yí padà sí ìwòye 1-9"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:107
-#: ../../../lib/web/src/components/config-drawer.tsx:209
-#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:16
 #: ../../../lib/web/src/lib/preference-utils.ts:139
 msgid "System"
@@ -3710,10 +3377,6 @@ msgstr "Sístẹ́mù"
 #: src/components/GameCanvas.tsx:75
 msgid "TACTICAL MAP"
 msgstr "ÀWÒRÁN ÌLÀNÀ"
-
-#: ../../../lib/web/src/components/tag-input.tsx:95
-msgid "Tag"
-msgstr "Àmì"
 
 #: ../../../lib/web/src/components/post-tags.tsx:76
 msgid "Tag already exists"
@@ -3737,7 +3400,7 @@ msgid "Task"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:1188
-msgid "Tasks, weather & loadout"
+msgid "Tasks, weather and loadout"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:317
@@ -3756,10 +3419,6 @@ msgstr "Àwọn ẹgbẹ́"
 #: src/components/Multiplayer.tsx:353
 msgid "Teams — red versus blue"
 msgstr "Àwọn ẹgbẹ́ — pupa lòdì sí búlúù"
-
-#: ../../../lib/web/src/components/layout/team-switcher.tsx:63
-msgid "Teams/Apps"
-msgstr "Àwọn ẹgbẹ́/Apps"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx:19
 #: ../../../lib/web/src/features/document/document-page.tsx:42
@@ -3803,18 +3462,6 @@ msgstr "A kò rí àkóónú tí o béèrè fún."
 msgid "The server returned a web page instead of data."
 msgstr "Olupin naa da oju-ìwé wẹ́ẹ̀bù padà dípò data."
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
-msgid "The site is not available at the moment."
-msgstr "Ojúlé náà kò sí ní àkókò yìí."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:195
-msgid "Theme"
-msgstr "Àkòrí"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:70
-msgid "Theme Settings"
-msgstr "Àwọn ìṣètò Theme"
-
 #: src/components/MissionSetup.tsx:1142
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Aṣàwákiri yìí kò ṣe àtìlẹ́yìn fún WebGL 2, nítorí náà eré náà kò lè ṣiṣẹ́ — gbìyànjú aṣàwákiri mìíràn."
@@ -3826,10 +3473,6 @@ msgstr "Lobby yìí ń fi ìsopọ̀ eré rẹ ránṣẹ́ sí àgbàlejò tó 
 #: src/components/MissionSetup.tsx:1146
 msgid "This machine may be too slow for smooth flight."
 msgstr "Ẹ̀rọ yìí lè lọ́ra jù fún fífò dídán."
-
-#: ../../../lib/web/src/components/coming-soon.tsx:14
-msgid "This page has not been created yet."
-msgstr "A kò tí ì ṣẹ̀dá ojú-ìwé yìí."
 
 #: src/components/GameCanvas.tsx:136
 msgid "throttle"
@@ -3873,10 +3516,6 @@ msgstr "Àkókò ọjọ́"
 msgid "To"
 msgstr "Sí"
 
-#: ../../../lib/web/src/components/data-table/view-options.tsx:37
-msgid "Toggle columns"
-msgstr "Yí àwọn ọwọ́n"
-
 #: ../../../lib/web/src/components/layout/right-panel.tsx:233
 #: ../../../lib/web/src/components/layout/right-panel.tsx:236
 msgid "Toggle right panel"
@@ -3889,20 +3528,15 @@ msgstr "Yí panẹli ọ̀tún padà"
 msgid "Toggle section"
 msgstr "Ṣí/pa apá"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:317
-#: ../../../lib/web/src/components/ui/sidebar.tsx:320
+#: ../../../lib/web/src/components/ui/sidebar.tsx:337
+#: ../../../lib/web/src/components/ui/sidebar.tsx:340
 msgid "Toggle sidebar"
 msgstr "Yí ẹ̀gbẹ́ padà"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:332
-#: ../../../lib/web/src/components/ui/sidebar.tsx:335
+#: ../../../lib/web/src/components/ui/sidebar.tsx:352
+#: ../../../lib/web/src/components/ui/sidebar.tsx:355
 msgid "Toggle Sidebar"
 msgstr "Yí Sidebar"
-
-#: ../../../lib/web/src/components/theme-switch.tsx:37
-#: ../../../lib/web/src/components/theme-switch.tsx:41
-msgid "Toggle theme"
-msgstr "Yí theme"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:26
 msgid "Toggle view options"
@@ -3961,14 +3595,12 @@ msgstr "Trim: yíyí sí òsì"
 msgid "Trim roll right"
 msgstr "Trim: yíyí sí ọ̀tún"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:194
 #: ../../../lib/web/src/components/search-entity-page.tsx:217
 msgid "Try adjusting your search terms"
 msgstr "Gbìyànjú láti ṣàtúnṣe àwọn ọ̀rọ̀ ìwákiri rẹ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:140
 #: ../../../lib/web/src/features/errors/general-error.tsx:180
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:19
 msgid "Try again"
 msgstr "Gbìyànjú lẹ́ẹ̀kan sí i"
 
@@ -4020,7 +3652,7 @@ msgstr "Ààyè Aláìláyè"
 
 #: ../../../lib/web/src/components/attachment-image.tsx:50
 msgid "Unavailable"
-msgstr ""
+msgstr "Kò sí"
 
 #: src/components/SettingsDialog.tsx:157
 #: src/components/SettingsDialog.tsx:208
@@ -4079,10 +3711,6 @@ msgstr "Yọ ìforúkọsílẹ̀ kúrò"
 msgid "Untitled"
 msgstr "Aláìlórúkọ"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:135
-msgid "Unverified"
-msgstr "Kò tíì jẹ́rìí sí"
-
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
 msgid "Updated"
@@ -4111,16 +3739,7 @@ msgstr "Olùmúlò"
 msgid "Verification code"
 msgstr "Kóòdù ìjẹ́rìísí"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:255
-msgid "Verification code sent"
-msgstr "Kóòdù ìjẹ́rìísí ti ránṣẹ́"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:248
-msgid "Verification failed"
-msgstr "Ìjẹ́rìísí kùnà"
-
 #: ../../../lib/web/src/components/step-up-dialog.tsx:391
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:172
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "Jẹ́rìí sí"
@@ -4150,17 +3769,12 @@ msgstr "Ẹ̀rọ ìwo fídíò: {0}"
 msgid "view"
 msgstr "ìwòran"
 
-#: ../../../lib/web/src/components/data-table/view-options.tsx:33
 #: src/components/SettingsDialog.tsx:94
 msgid "View"
 msgstr "Wo"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:177
-msgid "View all"
-msgstr "Wo gbogbo"
-
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:205
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:213
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:220
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:228
 msgid "View all notifications"
 msgstr "Wo gbogbo àwọn ìfitónilétí"
 
@@ -4194,14 +3808,6 @@ msgstr "DÁWỌ́ ÌBALẸ̀ DÚRÓ"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "A rán kóòdù ìjẹ́rìísí sí <0>{0}</0>. Tẹ kóòdù náà sí ìsàlẹ̀ láti fọwọ́sí àdírẹ́sì ímeèlì rẹ."
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
-msgid "We'll be back online shortly."
-msgstr "A ó padà sí lójú-ọ̀nà láìpẹ́."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:197
-msgid "We'll notify you when something important happens."
-msgstr "A ó sọ fún ọ nígbà tí ohun pàtàkì bá ṣẹlẹ̀."
-
 #: src/components/GameCanvas.tsx:139
 msgid "weapon"
 msgstr "ohun ìjà"
@@ -4219,10 +3825,6 @@ msgstr "Àwọn ohun ìjà"
 msgid "Weather"
 msgstr "Ojú-ọjọ́"
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:13
-msgid "Website is under maintenance!"
-msgstr "Síìtì wà lábẹ́ ìtọ́jú!"
-
 #: ../../../lib/web/src/lib/preference-utils.ts:56
 msgid "Wednesday"
 msgstr "Ọjọ́rú"
@@ -4233,7 +3835,7 @@ msgid "Wheel brakes"
 msgstr "Breki kẹkẹ"
 
 #: src/components/SettingsDialog.tsx:558
-msgid "Wind & Cockpit Airframe"
+msgid "Wind and cockpit airframe"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:170
@@ -4279,14 +3881,6 @@ msgstr "ÌWỌ"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "O kò ní ààyè sí abala yìí."
-
-#: ../../../lib/web/src/features/errors/forbidden.tsx:18
-msgid "You don't have necessary permission <0/>to view this resource."
-msgstr "O kò ní àṣẹ tó yẹ <0/>láti wo ohun àmúlò yìí."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
-msgid "You're all caught up!"
-msgstr "O ti rí gbogbo rẹ̀!"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:100
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."

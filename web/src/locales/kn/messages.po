@@ -39,11 +39,6 @@ msgstr "[ಸಜ್ಜುಗೊಳಿಸಿಲ್ಲ]"
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {# ಗುಂಡು ತಗುಲಿತು} other {# ಗುಂಡುಗಳು ತಗುಲಿದವು}}"
 
-#. placeholder {0}: selectedValues.size
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:66
-msgid "{0, plural, one {# selected} other {# selected}}"
-msgstr "{0, plural, one {# ಆಯ್ಕೆ ಮಾಡಲಾಗಿದೆ} other {# ಆಯ್ಕೆ ಮಾಡಲಾಗಿದೆ}}"
-
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
 #: src/components/MissionSetup.tsx:637
@@ -64,11 +59,6 @@ msgstr "ಕ್ಯಾಟಪಲ್ಟ್ ಅಸಮತೆಯ ಮಿತಿಗಿಂ�
 #: src/components/MissionSetup.tsx:339
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb ಗರಿಷ್ಠ ಉಡಾವಣಾ ತೂಕಕ್ಕಿಂತ ಹೆಚ್ಚು"
-
-#. placeholder {0}: item.label
-#: ../../../lib/web/src/components/config-drawer.tsx:160
-msgid "{0} option preview"
-msgstr "{0} ಆಯ್ಕೆಯ ಪೂರ್ವವೀಕ್ಷಣೆ"
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
@@ -107,22 +97,6 @@ msgstr "{name} ಅವರ ಪಂದ್ಯ"
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:29
 msgid "{opponentName} offered a draw"
 msgstr "{opponentName} ಡ್ರಾ ನೀಡಿದರು"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:203
-msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
-msgstr "{selectedCount, plural, one {{entityName} ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ} other {{manyName} ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:45
-msgid "{selectedCount, plural, one {# {entityName} selected. Bulk actions toolbar is available.} other {# {manyName} selected. Bulk actions toolbar is available.}}"
-msgstr "{selectedCount, plural, one {# {entityName} ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ. ಸಗಟು ಕ್ರಿಯೆ ಟೂಲ್‌ಬಾರ್ ಲಭ್ಯವಿದೆ.} other {# {manyName} ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ. ಸಗಟು ಕ್ರಿಯೆ ಟೂಲ್‌ಬಾರ್ ಲಭ್ಯವಿದೆ.}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:195
-msgid "{selectedCount, plural, one {# selected} other {# selected}}"
-msgstr "{selectedCount, plural, one {# ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ} other {# ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ}}"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:142
-msgid "{selectedCount, plural, one {Bulk actions for # selected {entityName}} other {Bulk actions for # selected {manyName}}}"
-msgstr "{selectedCount, plural, one {# ಆಯ್ದ {entityName} ಗಾಗಿ ಸಗಟು ಕ್ರಿಯೆಗಳು} other {# ಆಯ್ದ {manyName} ಗಾಗಿ ಸಗಟು ಕ್ರಿಯೆಗಳು}}"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:248
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:52
@@ -190,29 +164,13 @@ msgstr "ಸ್ವೀಕರಿಸಿ"
 msgid "Access denied"
 msgstr "ಪ್ರವೇಶ ನಿರಾಕರಿಸಲಾಗಿದೆ"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:16
-msgid "Access Forbidden"
-msgstr "ಪ್ರವೇಶ ನಿಷೇಧಿತ"
-
 #: ../../../lib/web/src/features/access/access-list.tsx:197
 msgid "Access level"
 msgstr "ಪ್ರವೇಶ ಮಟ್ಟ"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:216
-msgid "Account added"
-msgstr "ಖಾತೆ ಸೇರಿಸಲಾಗಿದೆ"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:232
-msgid "Account removed"
-msgstr "ಖಾತೆ ತೆಗೆದುಹಾಕಲಾಗಿದೆ"
-
 #: ../../../lib/web/src/features/accounts/account-add.tsx:139
 msgid "Account type"
 msgstr "ಖಾತೆಯ ಪ್ರಕಾರ"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:242
-msgid "Account verified"
-msgstr "ಖಾತೆ ಪರಿಶೀಲಿಸಲಾಗಿದೆ"
 
 #: src/components/MissionSetup.tsx:887
 #: src/components/MissionSetup.tsx:1075
@@ -230,7 +188,11 @@ msgstr "ಗುರಿ ಲಾಕ್ ಮಾಡಿ"
 msgid "Acquisition mode"
 msgstr "ಗುರಿ ಹಿಡಿತ ಮೋಡ್"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:712
+#: src/components/MissionSetup.tsx:988
+msgid "Active assists"
+msgstr ""
+
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:720
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 #: ../../../lib/web/src/features/accounts/account-add.tsx:209
 msgid "Add"
@@ -253,19 +215,14 @@ msgid "Add access"
 msgstr "ಪ್ರವೇಶ ಸೇರಿಸಿ"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:132
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:288
 msgid "Add account"
 msgstr "ಖಾತೆ ಸೇರಿಸಿ"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:297
-msgid "Add an account to receive notifications and use services."
-msgstr "ಅಧಿಸೂಚನೆಗಳನ್ನು ಸ್ವೀಕರಿಸಲು ಮತ್ತು ಸೇವೆಗಳನ್ನು ಬಳಸಲು ಖಾತೆಯನ್ನು ಸೇರಿಸಿ."
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:291
 msgid "Add caption"
 msgstr "ಅಡಿಬರಹ ಸೇರಿಸಿ"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:682
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:690
 msgid "Add checklist item"
 msgstr "ಚೆಕ್‌ಲಿಸ್ಟ್ ಐಟಂ ಸೇರಿಸಿ"
 
@@ -274,17 +231,13 @@ msgstr "ಚೆಕ್‌ಲಿಸ್ಟ್ ಐಟಂ ಸೇರಿಸಿ"
 msgid "Add field"
 msgstr "ಫೀಲ್ಡ್ ಸೇರಿಸಿ"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:700
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:708
 msgid "Add item..."
 msgstr "ಐಟಂ ಸೇರಿಸಿ..."
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx:320
 msgid "Add link"
 msgstr "ಲಿಂಕ್ ಸೇರಿಸಿ"
-
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:102
-msgid "Add new account"
-msgstr "ಹೊಸ ಖಾತೆ ಸೇರಿಸಿ"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:215
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:220
@@ -295,13 +248,8 @@ msgid "Add option"
 msgstr "ಆಯ್ಕೆ ಸೇರಿಸಿ"
 
 #: ../../../lib/web/src/components/post-tags.tsx:137
-#: ../../../lib/web/src/components/tag-input.tsx:40
 msgid "Add tag..."
 msgstr "ಟ್ಯಾಗ್ ಸೇರಿಸಿ..."
-
-#: ../../../lib/web/src/components/layout/team-switcher.tsx:83
-msgid "Add team/app"
-msgstr "ಟೀಮ್/ಆ್ಯಪ್ ಸೇರಿಸಿ"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:175
 msgid "Add to existing notifications"
@@ -317,10 +265,6 @@ msgstr "ವೀಕ್ಷಣೆ ಸೇರಿಸಿ"
 #: ../../../lib/web/src/features/access/access-dialog.tsx:332
 msgid "Adding..."
 msgstr "ಸೇರಿಸಲಾಗುತ್ತಿದೆ..."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:72
-msgid "Adjust the appearance and layout to suit your preferences."
-msgstr "ನಿಮ್ಮ ಆದ್ಯತೆಗಳಿಗೆ ಸರಿಹೊಂದುವಂತೆ ಗೋಚರಿಕೆ ಮತ್ತು ಲೇಔಟ್ ಅನ್ನು ಹೊಂದಿಸಿ."
 
 #: src/components/SettingsDialog.tsx:877
 msgid "Afterburner"
@@ -341,10 +285,6 @@ msgstr "ವಿಮಾನವಾಹಕ ನೌಕೆ <0>“USS Nimitz CVN-68 Aircraf
 #: src/components/MissionSetup.tsx:444
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "ವಿಮಾನ ಮಾದರಿ <0>“F/A-18C Hornet”</0>, ರಚಿಸಿದವರು <1>CreadorDeMu</1> (Sketchfab), <2>CC BY 4.0</2> ಅಡಿಯಲ್ಲಿ ಪರವಾನಗಿ ಪಡೆದಿದೆ. ಮಾರ್ಪಡಿಸಲಾಗಿದೆ: ದಿಕ್ಕನ್ನು ಬದಲಾಯಿಸಿ ಗಾತ್ರವನ್ನು ಮರುಹೊಂದಿಸಲಾಗಿದೆ, ಬಳಕೆಯಾಗದ ಟೆಕ್ಸ್ಚರ್ ಡೇಟಾವನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ, ಬಾಹ್ಯ ಹೊರೆಗಳನ್ನು ಪ್ರತ್ಯೇಕ ಫೈಲ್‌ಗೆ ಬೇರ್ಪಡಿಸಲಾಗಿದೆ, ಒಂದು ಶ್ರೌಡ್ ಮೆಶ್ ಅನ್ನು ಕನ್ನಡಿಯಂತೆ ಪ್ರತಿಬಿಂಬಿಸಲಾಗಿದೆ."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:163
-msgid "All"
-msgstr "ಎಲ್ಲಾ"
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -411,7 +351,7 @@ msgid "Are you sure you want to log out? You will need to log in again to access
 msgstr "ಲಾಗ್ ಔಟ್ ಮಾಡಲು ನೀವು ಖಚಿತವಾಗಿದ್ದೀರಾ? ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಪ್ರವೇಶಿಸಲು ನೀವು ಮತ್ತೆ ಲಾಗ್ ಇನ್ ಮಾಡಬೇಕಾಗುತ್ತದೆ."
 
 #: src/components/MissionSetup.tsx:1020
-msgid "Armament & Stores"
+msgid "Armament and stores"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:168
@@ -419,17 +359,9 @@ msgstr ""
 msgid "Arrestor hook"
 msgstr "ತಡೆ ಕೊಕ್ಕೆ"
 
-#: ../../../lib/web/src/components/data-table/column-header.tsx:59
-msgid "Asc"
-msgstr "ಆರೋಹಣ"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "ಆರೋಹಣ"
-
-#: src/components/MissionSetup.tsx:988
-msgid "Assists Active"
-msgstr ""
 
 #: ../../../lib/web/src/components/comment-composer.tsx:427
 msgid "Attach comment files"
@@ -440,7 +372,7 @@ msgid "Attach reply files"
 msgstr "ಪ್ರತ್ಯುತ್ತರ ಫೈಲ್‌ಗಳನ್ನು ಲಗತ್ತಿಸಿ"
 
 #: src/components/SettingsDialog.tsx:604
-msgid "Audio Mixer Channels"
+msgid "Audio channels"
 msgstr ""
 
 #: ../../../lib/web/src/features/access/access-list.tsx:46
@@ -465,7 +397,7 @@ msgid "Avatar for {name}"
 msgstr "{name} ಗಾಗಿ ಅವತಾರ್"
 
 #: src/components/MissionSetup.tsx:1218
-msgid "Avionics, HOTAS & audio"
+msgid "Avionics, HOTAS and audio"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:446
@@ -473,7 +405,7 @@ msgid "Axis {i}"
 msgstr "ಅಕ್ಷ {i}"
 
 #: src/components/SettingsDialog.tsx:395
-msgid "Axis Calibration & Mapping"
+msgid "Axis calibration and mapping"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:521
@@ -485,7 +417,6 @@ msgstr "ಹಿಂದೆ"
 msgid "Back"
 msgstr "ಹಿಂದೆ"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:28
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:28
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:28
 msgid "Back to home"
@@ -524,7 +455,7 @@ msgid "Best sustained turn speed"
 msgstr "ಅತ್ಯುತ್ತಮ ನಿರಂತರ ತಿರುವು ವೇಗ"
 
 #: src/components/SettingsDialog.tsx:561
-msgid "Betty & RWR Alerts"
+msgid "Betty and RWR alerts"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:44
@@ -536,8 +467,8 @@ msgstr "ಬಿಂಗೋ ಇಂಧನ"
 msgid "Blocked by"
 msgstr "ರಿಂದ ತಡೆಯಲಾಗಿದೆ"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:227
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:237
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:242
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:252
 msgid "Blocked navigation to untrusted link"
 msgstr "ವಿಶ್ವಾಸಾರ್ಹವಲ್ಲದ ಲಿಂಕ್‌ಗೆ ನ್ಯಾವಿಗೇಶನ್ ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ"
 
@@ -599,7 +530,7 @@ msgid "Button {i}"
 msgstr "ಬಟನ್ {i}"
 
 #: src/components/SettingsDialog.tsx:487
-msgid "Button Mappings"
+msgid "Button mappings"
 msgstr ""
 
 #: src/components/Multiplayer.tsx:414
@@ -657,7 +588,7 @@ msgid "Cancel reply"
 msgstr "ಪ್ರತ್ಯುತ್ತರ ರದ್ದುಮಾಡಿ"
 
 #: src/components/SettingsDialog.tsx:559
-msgid "Cannons & Ordnance"
+msgid "Cannons and ordnance"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:222
@@ -670,7 +601,7 @@ msgid "Caption"
 msgstr "ಅಡಿಬರಹ"
 
 #: src/components/SettingsDialog.tsx:560
-msgid "Carrier & Ambient"
+msgid "Carrier and ambient"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:1082
@@ -739,10 +670,6 @@ msgstr "ಎಲ್ಲರೊಂದಿಗೆ ಚಾಟ್"
 msgid "Cheats"
 msgstr "ಚೀಟ್‌ಗಳು"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:198
-msgid "Check \"All\" to see your past notifications."
-msgstr "ಹಿಂದಿನ ಅಧಿಸೂಚನೆಗಳನ್ನು ನೋಡಲು \"ಎಲ್ಲಾ\" ಆಯ್ಕೆಮಾಡಿ."
-
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:137
 msgid "Checkbox"
 msgstr "ಚೆಕ್‌ಬಾಕ್ಸ್"
@@ -754,22 +681,6 @@ msgstr "ಚೆಕ್‌ಲಿಸ್ಟ್"
 #: ../../../lib/web/src/components/game/game-empty-state.tsx:35
 msgid "Choose a game from the sidebar or start a new one."
 msgstr "ಸೈಡ್‌ಬಾರ್‌ನಿಂದ ಆಟವನ್ನು ಆಯ್ಕೆಮಾಡಿ ಅಥವಾ ಹೊಸದನ್ನು ಪ್ರಾರಂಭಿಸಿ."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:329
-msgid "Choose between default expanded, compact icon-only, or full layout mode"
-msgstr "ಡೀಫಾಲ್ಟ್ ವಿಸ್ತರಿತ, ಕಾಂಪ್ಯಾಕ್ಟ್ ಐಕಾನ್-ಮಾತ್ರ, ಅಥವಾ ಪೂರ್ಣ ಲೇಔಟ್ ಮೋಡ್ ನಡುವೆ ಆಯ್ಕೆಮಾಡಿ"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:271
-msgid "Choose between inset, floating, or standard sidebar layout"
-msgstr "ಇನ್‌ಸೆಟ್, ಫ್ಲೋಟಿಂಗ್, ಅಥವಾ ಸ್ಟ್ಯಾಂಡರ್ಡ್ ಸೈಡ್‌ಬಾರ್ ಲೇಔಟ್ ನಡುವೆ ಆಯ್ಕೆಮಾಡಿ"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:372
-msgid "Choose between left-to-right or right-to-left site direction"
-msgstr "ಎಡದಿಂದ-ಬಲಕ್ಕೆ ಅಥವಾ ಬಲದಿಂದ-ಎಡಕ್ಕೆ ಸೈಟ್ ದಿಕ್ಕಿನ ನಡುವೆ ಆಯ್ಕೆಮಾಡಿ"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:227
-msgid "Choose between system preference, light mode, or dark mode"
-msgstr "ಸಿಸ್ಟಮ್ ಆದ್ಯತೆ, ಲೈಟ್ ಮೋಡ್, ಅಥವಾ ಡಾರ್ಕ್ ಮೋಡ್ ನಡುವೆ ಆಯ್ಕೆಮಾಡಿ"
 
 #: ../../../lib/web/src/components/language-picker.tsx:264
 #: ../../../lib/web/src/components/language-picker.tsx:271
@@ -790,23 +701,9 @@ msgstr "ತೆರವುಗೊಳಿಸಿ"
 msgid "Clear all"
 msgstr "ಎಲ್ಲವನ್ನೂ ತೆರವುಗೊಳಿಸಿ"
 
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:144
-msgid "Clear filters"
-msgstr "ಫಿಲ್ಟರ್‌ಗಳನ್ನು ತೆರವುಗೊಳಿಸಿ"
-
 #: ../../../lib/web/src/components/search-input.tsx:26
 msgid "Clear search"
 msgstr "ಹುಡುಕಾಟ ತೆರವುಗೊಳಿಸಿ"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:170
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:174
-msgid "Clear selection"
-msgstr "ಆಯ್ಕೆ ತೆರವುಗೊಳಿಸಿ"
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:171
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:178
-msgid "Clear selection (Escape)"
-msgstr "ಆಯ್ಕೆ ತೆರವುಗೊಳಿಸಿ (Escape)"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:501
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:506
@@ -878,10 +775,6 @@ msgstr "ಕಾಲಮ್‌ಗಳನ್ನು ಇದರಿಂದ ಗುಂಪು 
 msgid "Comfortable"
 msgstr "ಆರಾಮದಾಯಕ"
 
-#: ../../../lib/web/src/components/coming-soon.tsx:12
-msgid "Coming Soon!"
-msgstr "ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ!"
-
 #: ../../../lib/web/src/components/ui/command.tsx:34
 msgid "Command Palette"
 msgstr "ಆಜ್ಞಾ ಪ್ಯಾಲೆಟ್"
@@ -904,7 +797,6 @@ msgstr "ಕಾಮೆಂಟ್‌ಗಳು"
 msgid "Communication"
 msgstr "ಸಂವಹನ"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:316
 #: ../../../lib/web/src/lib/preference-utils.ts:90
 msgid "Compact"
 msgstr "ಕಾಂಪ್ಯಾಕ್ಟ್"
@@ -933,10 +825,6 @@ msgstr "ಖಾಸಗಿ ಸರ್ವರ್‌ಗೆ ಸಂಪರ್ಕಿಸಿ"
 #: ../../../lib/web/src/lib/chat-ui.ts:18
 msgid "Connected"
 msgstr "ಸಂಪರ್ಕಿತ"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:191
-msgid "Connected accounts"
-msgstr "ಸಂಪರ್ಕಿತ ಖಾತೆಗಳು"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:21
 msgid "Connecting..."
@@ -1008,7 +896,7 @@ msgstr "ರೆಕಾರ್ಡಿಂಗ್ ಉಳಿಸಲು ಸಾಧ್ಯವ�
 msgid "Could not send the message"
 msgstr "ಸಂದೇಶವನ್ನು ಕಳುಹಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:113
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:128
 msgid "Couldn't load notifications"
 msgstr "ಅಧಿಸೂಚನೆಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಲಿಲ್ಲ"
 
@@ -1105,16 +993,9 @@ msgstr "ಅಪಾಯಕಾರಿ"
 msgid "Cycle view"
 msgstr "ನೋಟ ಬದಲಿಸಿ"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:219
-#: ../../../lib/web/src/components/theme-switch.tsx:52
 #: ../../../lib/web/src/lib/preference-utils.ts:15
 msgid "Dark"
 msgstr "ಡಾರ್ಕ್"
-
-#: ../../../lib/web/src/components/profile-dropdown.tsx:87
-#: ../../../lib/web/src/components/profile-dropdown.tsx:123
-msgid "Dark mode"
-msgstr "ಡಾರ್ಕ್ ಮೋಡ್"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts:259
 msgid "Data conflict"
@@ -1142,10 +1023,6 @@ msgstr "ಡೆಕ್ ಸ್ಥಾನ ಉಳಿಸಲಾಗಿದೆ"
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:41
 msgid "Decline"
 msgstr "ತಿರಸ್ಕರಿಸಿ"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:311
-msgid "Default"
-msgstr "ಡೀಫಾಲ್ಟ್"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx:185
 msgid "Default AI account"
@@ -1205,10 +1082,6 @@ msgstr "ಹಳೆಯ ಸರ್ವರ್‌ನಲ್ಲಿ ನಿಮ್ಮ ಖಾ
 msgid "Departure / Recovery"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/column-header.tsx:63
-msgid "Desc"
-msgstr "ಅವರೋಹಣ"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Descending"
 msgstr "ಅವರೋಹಣ"
@@ -1244,10 +1117,6 @@ msgstr "ವೆಬ್ ಬ್ರೌಸರ್‌ನಿಂದ ಪತ್ತೆ ಮಾ
 #: src/components/Multiplayer.tsx:264
 msgid "Different game host"
 msgstr "ಬೇರೆ ಆಟದ ಸರ್ವರ್"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:341
-msgid "Direction"
-msgstr "ದಿಕ್ಕು"
 
 #: ../../../lib/web/src/components/person-picker.tsx:214
 msgid "Directory"
@@ -1286,7 +1155,7 @@ msgstr "ತಿರಸ್ಕರಿಸಿ"
 msgid "Display repeater"
 msgstr "ಡಿಸ್ಪ್ಲೇ ರಿಪೀಟರ್"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:238
+#: ../../../lib/web/src/components/ui/sidebar.tsx:258
 msgid "Displays the mobile sidebar."
 msgstr "ಮೊಬೈಲ್ ಸೈಡ್‌ಬಾರ್ ಪ್ರದರ್ಶಿಸುತ್ತದೆ."
 
@@ -1296,7 +1165,7 @@ msgstr "ಅಂತರ LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:1044
+#: src/components/SettingsDialog.tsx:1061
 msgid "Done"
 msgstr "ಮುಗಿಯಿತು"
 
@@ -1382,7 +1251,7 @@ msgid "Edit view"
 msgstr "ವೀಕ್ಷಣೆ ಸಂಪಾದಿಸಿ"
 
 #: src/components/SettingsDialog.tsx:852
-msgid "Effects & Toggles"
+msgid "Effects and toggles"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:830
@@ -1432,7 +1301,7 @@ msgid "Engagement"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:557
-msgid "Engine & Afterburner"
+msgid "Engine and afterburner"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:770
@@ -1515,14 +1384,6 @@ msgstr "F/A-18C ಉಲ್ಲೇಖ"
 msgid "F/A-18C Strike Fighter"
 msgstr ""
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:225
-msgid "Failed to add account"
-msgstr "ಖಾತೆ ಸೇರಿಸಲು ವಿಫಲವಾಗಿದೆ"
-
-#: ../../../lib/web/src/components/tag-input.tsx:39
-msgid "Failed to add tag"
-msgstr "ಟ್ಯಾಗ್ ಸೇರಿಸಲು ವಿಫಲವಾಗಿದೆ"
-
 #: ../../../lib/web/src/components/ui/copy-button.tsx:26
 #: ../../../lib/web/src/lib/toast-utils.ts:44
 msgid "Failed to copy"
@@ -1569,17 +1430,9 @@ msgstr "ವೀಡಿಯೊ ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿ
 msgid "Failed to post comment"
 msgstr "ಕಾಮೆಂಟ್ ಪೋಸ್ಟ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:234
-msgid "Failed to remove account"
-msgstr "ಖಾತೆ ತೆಗೆದುಹಾಕಲು ವಿಫಲವಾಗಿದೆ"
-
 #: ../../../lib/web/src/components/options-menu.tsx:133
 msgid "Failed to revoke RSS access"
 msgstr "RSS ಪ್ರವೇಶವನ್ನು ಹಿಂಪಡೆಯಲು ವಿಫಲವಾಗಿದೆ"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:257
-msgid "Failed to send verification code"
-msgstr "ಪರಿಶೀಲನಾ ಕೋಡ್ ಕಳುಹಿಸಲು ವಿಫಲವಾಗಿದೆ"
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx:174
 msgid "Failed to update comment"
@@ -1607,10 +1460,6 @@ msgstr "ಕಾದಾಟ ಆರಂಭ"
 msgid "Files"
 msgstr "ಫೈಲ್‌ಗಳು"
 
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:30
-msgid "Filter..."
-msgstr "ಫಿಲ್ಟರ್..."
-
 #: ../../../lib/web/src/components/restore-banner.tsx:97
 msgid "Finish moving your account"
 msgstr "ನಿಮ್ಮ ಖಾತೆಯ ವರ್ಗಾವಣೆ ಮುಗಿಸಿ"
@@ -1629,7 +1478,7 @@ msgid "Fire weapon"
 msgstr "ಆಯುಧ ಫೈರ್ ಮಾಡಿ"
 
 #: src/components/SettingsDialog.tsx:720
-msgid "Fixed Flight Keys"
+msgid "Fixed flight keys"
 msgstr ""
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:221
@@ -1665,28 +1514,28 @@ msgid "Flight"
 msgstr "ಹಾರಾಟ"
 
 #: src/components/MissionSetup.tsx:984
-msgid "Flight Assists"
+msgid "Flight assists"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:82
 msgid "FLIGHT CORE FAILED"
 msgstr "ಫ್ಲೈಟ್ ಕೋರ್ ವಿಫಲ"
 
+#: src/components/SettingsDialog.tsx:967
+msgid "Flight hints"
+msgstr ""
+
 #: src/components/MissionSetup.tsx:1233
 msgid "Flight log"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:844
-msgid "Flight Profile"
+msgid "Flight profile"
 msgstr ""
 
 #: src/components/MatchHistory.tsx:154
 msgid "Flights"
 msgstr "ಹಾರಾಟಗಳು"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:258
-msgid "Floating"
-msgstr "ಫ್ಲೋಟಿಂಗ್"
 
 #: src/components/MatchHistory.tsx:90
 msgid "Flown"
@@ -1759,10 +1608,6 @@ msgstr "ಇಂಧನ ಪ್ರೋಬ್"
 msgid "Fuel tank"
 msgstr "ಇಂಧನ ಟ್ಯಾಂಕ್"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:321
-msgid "Full layout"
-msgstr "ಪೂರ್ಣ ಲೇಔಟ್"
-
 #: src/components/MatchHistory.tsx:78
 msgid "Furball"
 msgstr "Furball"
@@ -1784,42 +1629,21 @@ msgstr "ಗೇರ್"
 msgid "GEAR"
 msgstr "ಗಿಯರ್"
 
-#: src/components/SettingsDialog.tsx:988
+#: src/components/SettingsDialog.tsx:1005
 msgid "General"
 msgstr "ಸಾಮಾನ್ಯ"
 
-#: ../../../lib/web/src/features/errors/forbidden.tsx:26
 #: ../../../lib/web/src/features/errors/not-found-error.tsx:26
 #: ../../../lib/web/src/features/errors/unauthorized-error.tsx:26
 msgid "Go back"
 msgstr "ಹಿಂತಿರುಗಿ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:82
-msgid "Go to first page"
-msgstr "ಮೊದಲ ಪುಟಕ್ಕೆ ಹೋಗಿ"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:128
-msgid "Go to last page"
-msgstr "ಕೊನೆಯ ಪುಟಕ್ಕೆ ಹೋಗಿ"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:119
-msgid "Go to next page"
-msgstr "ಮುಂದಿನ ಪುಟಕ್ಕೆ ಹೋಗಿ"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:106
-msgid "Go to page {pageNumber}"
-msgstr "ಪುಟ {pageNumber}ಗೆ ಹೋಗಿ"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:91
-msgid "Go to previous page"
-msgstr "ಹಿಂದಿನ ಪುಟಕ್ಕೆ ಹೋಗಿ"
-
-#: src/components/SettingsDialog.tsx:992
+#: src/components/SettingsDialog.tsx:1009
 msgid "Graphics"
 msgstr "ಗ್ರಾಫಿಕ್ಸ್"
 
 #: src/components/SettingsDialog.tsx:779
-msgid "Graphics Preset"
+msgid "Graphics preset"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:309
@@ -1868,14 +1692,6 @@ msgstr "ಹೆಡ್ ಟ್ರ್ಯಾಕಿಂಗ್"
 msgid "Heavy"
 msgstr ""
 
-#: ../../../lib/web/src/components/data-table/column-header.tsx:70
-msgid "Hide"
-msgstr "ಮರೆಮಾಡಿ"
-
-#: ../../../lib/web/src/components/password-input.tsx:27
-msgid "Hide password"
-msgstr "ಪಾಸ್‌ವರ್ಡ್ ಮರೆಮಾಡಿ"
-
 #: src/components/SettingsDialog.tsx:770
 msgid "High"
 msgstr "ಹೆಚ್ಚು"
@@ -1885,6 +1701,10 @@ msgstr "ಹೆಚ್ಚು"
 #: src/components/Multiplayer.tsx:367
 msgid "High stratus"
 msgstr "ಎತ್ತರದ ಸ್ಟ್ರಾಟಸ್"
+
+#: src/components/SettingsDialog.tsx:959
+msgid "Hints"
+msgstr ""
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:61
 #: src/routes/history.tsx:32
@@ -1953,12 +1773,8 @@ msgid "Initials avatar for {name}"
 msgstr "{name} ಗಾಗಿ ಆದ್ಯಕ್ಷರ ಅವತಾರ್"
 
 #: src/components/SettingsDialog.tsx:338
-msgid "Input Hardware"
+msgid "Input hardware"
 msgstr ""
-
-#: ../../../lib/web/src/components/config-drawer.tsx:253
-msgid "Inset"
-msgstr "ಇನ್‌ಸೆಟ್"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx:42
 msgid "Interests"
@@ -1968,17 +1784,9 @@ msgstr "ಆಸಕ್ತಿಗಳು"
 msgid "Internal fuel"
 msgstr "ಆಂತರಿಕ ಇಂಧನ"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:545
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:550
 msgid "Invalid date"
 msgstr "ಅಮಾನ್ಯ ದಿನಾಂಕ"
-
-#: ../../../lib/web/src/components/tag-input.tsx:38
-msgid "Invalid tag: letters, numbers, spaces, hyphens, and slashes only (max 50 chars)"
-msgstr "ಅಮಾನ್ಯ ಟ್ಯಾಗ್: ಅಕ್ಷರಗಳು, ಸಂಖ್ಯೆಗಳು, ಸ್ಥಳಗಳು, ಹೈಫನ್‌ಗಳು ಮತ್ತು ಸ್ಲ್ಯಾಶ್‌ಗಳು ಮಾತ್ರ (ಗರಿಷ್ಠ 50 ಅಕ್ಷರಗಳು)"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:245
-msgid "Invalid verification code"
-msgstr "ಅಮಾನ್ಯ ಪರಿಶೀಲನಾ ಕೋಡ್"
 
 #: src/components/SettingsDialog.tsx:385
 msgid "Invert pitch axis"
@@ -2043,7 +1851,7 @@ msgstr "ದ್ವಂದ್ವಯುದ್ಧ — 1v1, ಮೊದಲ ಕಿಲ್�
 msgid "Joust against bot"
 msgstr "ದ್ವಂದ್ವಯುದ್ಧ ಬಾಟ್ ವಿರುದ್ಧ"
 
-#: src/components/SettingsDialog.tsx:1000
+#: src/components/SettingsDialog.tsx:1017
 msgid "Joystick"
 msgstr "ಜಾಯ್‌ಸ್ಟಿಕ್"
 
@@ -2059,7 +1867,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "ಕೀಬೋರ್ಡ್ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು"
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:1021
 msgid "Keys"
 msgstr "ಕೀಲಿಗಳು"
 
@@ -2115,7 +1923,6 @@ msgstr "ಉಡಾವಣೆ (ಕ್ಯಾಟಪಲ್ಟ್)"
 msgid "launch / target"
 msgstr "ಉಡಾವಣೆ / ಗುರಿ"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:287
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:306
 msgid "Layout"
 msgstr "ಲೇಔಟ್"
@@ -2123,11 +1930,6 @@ msgstr "ಲೇಔಟ್"
 #: src/components/Multiplayer.tsx:402
 msgid "lb"
 msgstr "lb"
-
-#: ../../../lib/web/src/components/learn-more.tsx:33
-#: ../../../lib/web/src/components/learn-more.tsx:38
-msgid "Learn more"
-msgstr "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
 
 #: src/components/MissionSetup.tsx:796
 msgid "Leave server"
@@ -2140,10 +1942,6 @@ msgstr "ತೊರೆದರು"
 #: src/components/GameCanvas.tsx:96
 msgid "LEFT"
 msgstr "ನಿರ್ಗಮಿಸಿದರು"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:355
-msgid "Left to Right"
-msgstr "ಎಡದಿಂದ ಬಲಕ್ಕೆ"
 
 #: src/components/MissionSetup.tsx:169
 #: src/components/MissionSetup.tsx:170
@@ -2162,8 +1960,6 @@ msgstr "ಅಕ್ಷರಗಳು, ಸಂಖ್ಯೆಗಳು, ಸ್ಥಳಗ�
 msgid "LEVEL AT 1200, DIRTY UP"
 msgstr "1200ರಲ್ಲಿ ಸಮ, ಚಕ್ರ ಕೆಳಗೆ"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:214
-#: ../../../lib/web/src/components/theme-switch.tsx:45
 #: ../../../lib/web/src/lib/preference-utils.ts:14
 msgid "Light"
 msgstr "ಲೈಟ್"
@@ -2214,8 +2010,6 @@ msgstr "ಲೋಡ್ ವಿಫಲವಾಗಿದೆ"
 msgid "Loading..."
 msgstr "ಲೋಡ್ ಆಗುತ್ತಿದೆ..."
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:69
-#: ../../../lib/web/src/components/profile-dropdown.tsx:98
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:26
 #: ../../../lib/web/src/components/sign-out-dialog.tsx:28
 msgid "Log out"
@@ -2279,10 +2073,6 @@ msgstr "ಮುಚ್ಚಲು M"
 msgid "Manage categories"
 msgstr "ವರ್ಗಗಳನ್ನು ನಿರ್ವಹಿಸಿ"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:192
-msgid "Manage your connected accounts for notifications and services."
-msgstr "ಅಧಿಸೂಚನೆಗಳು ಮತ್ತು ಸೇವೆಗಳಿಗಾಗಿ ನಿಮ್ಮ ಸಂಪರ್ಕಿತ ಖಾತೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ."
-
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:52
 msgid "Manual"
 msgstr "ಮ್ಯಾನುಯಲ್"
@@ -2295,23 +2085,22 @@ msgstr "ನಕ್ಷೆ"
 msgid "Map"
 msgstr "ನಕ್ಷೆ"
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:192
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:199
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:224
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:207
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:214
 msgid "Mark all as read"
 msgstr "ಎಲ್ಲವನ್ನೂ ಓದಲಾಗಿದೆ ಎಂದು ಮಾರ್ಕ್ ಮಾಡಿ"
 
 #: src/components/SettingsDialog.tsx:576
-msgid "Master Audio Output"
+msgid "Master audio output"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:589
-msgid "Master Bus"
+msgid "Master bus"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:556
 #: src/components/SettingsDialog.tsx:584
-msgid "Master Volume"
+msgid "Master volume"
 msgstr ""
 
 #: src/components/Multiplayer.tsx:348
@@ -2494,10 +2283,6 @@ msgstr "ಇನ್ನೂ ಯಾವುದೇ ಚಟುವಟಿಕೆ ಇಲ್ಲ
 msgid "No comments yet"
 msgstr "ಇನ್ನೂ ಯಾವುದೇ ಕಾಮೆಂಟ್‌ಗಳಿಲ್ಲ"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:295
-msgid "No connected accounts"
-msgstr "ಯಾವುದೇ ಕನೆಕ್ಟೆಡ್ ಖಾತೆಗಳಿಲ್ಲ"
-
 #: src/components/MatchHistory.tsx:125
 msgid "No flights yet"
 msgstr "ಇನ್ನೂ ಯಾವುದೇ ಹಾರಾಟಗಳಿಲ್ಲ"
@@ -2522,15 +2307,11 @@ msgstr "ಯಾವುದೇ ಜಾಯ್‌ಸ್ಟಿಕ್ ಪತ್ತೆಯ�
 msgid "No matching objects"
 msgstr "ಯಾವುದೇ ಹೊಂದಾಣಿಕೆಯ ಆಬ್ಜೆಕ್ಟ್‌ಗಳಿಲ್ಲ"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
-msgid "No notifications yet"
-msgstr "ಇನ್ನೂ ಯಾವುದೇ ಅಧಿಸೂಚನೆಗಳಿಲ್ಲ"
-
 #: src/components/Multiplayer.tsx:531
 msgid "No open matches — create one."
 msgstr "ಯಾವುದೇ ಮುಕ್ತ ಪಂದ್ಯಗಳಿಲ್ಲ — ಒಂದನ್ನು ರಚಿಸಿ."
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:336
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:341
 #: ../../../lib/web/src/components/person-picker.tsx:84
 msgid "No people found"
 msgstr "ಯಾವುದೇ ಜನರು ಸಿಗಲಿಲ್ಲ"
@@ -2539,18 +2320,12 @@ msgstr "ಯಾವುದೇ ಜನರು ಸಿಗಲಿಲ್ಲ"
 msgid "No places found"
 msgstr "ಯಾವುದೇ ಸ್ಥಳಗಳು ಸಿಗಲಿಲ್ಲ"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:58
-msgid "No profile"
-msgstr "ಯಾವುದೇ ಪ್ರೊಫೈಲ್ ಇಲ್ಲ"
-
 #: ../../../lib/web/src/components/inline-entity-search.tsx:64
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:82
 #: ../../../lib/web/src/components/search-entity-page.tsx:73
 msgid "No results found"
 msgstr "ಯಾವುದೇ ಫಲಿತಾಂಶ ಕಂಡುಬಂದಿಲ್ಲ"
 
 #: ../../../lib/web/src/components/command-menu.tsx:55
-#: ../../../lib/web/src/components/data-table/faceted-filter.tsx:94
 msgid "No results found."
 msgstr "ಯಾವುದೇ ಫಲಿತಾಂಶಗಳು ಸಿಗಲಿಲ್ಲ."
 
@@ -2576,7 +2351,7 @@ msgstr "ಯಾವುದೇ ಟೈಮ್ ಜೋನ್ ಸಿಗಲಿಲ್ಲ."
 msgid "No topic record yet — try again after the next notification."
 msgstr "ಇನ್ನೂ ಯಾವುದೇ ಟಾಪಿಕ್ ರೆಕಾರ್ಡ್ ಇಲ್ಲ — ಮುಂದಿನ ನೋಟಿಫಿಕೇಶನ್ ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:124
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:139
 msgid "No unread notifications"
 msgstr "ಯಾವುದೇ ಓದದ ನೋಟಿಫಿಕೇಶನ್‌ಗಳಿಲ್ಲ"
 
@@ -2652,16 +2427,8 @@ msgstr "ಏನೂ ಸಿಗಲಿಲ್ಲ"
 msgid "Nothing yet — say hello."
 msgstr "ಇನ್ನೂ ಏನೂ ಇಲ್ಲ — ಹಲೋ ಹೇಳಿ."
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:136
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:150
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:236
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:257
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:261
-msgid "Notifications"
-msgstr "ನೋಟಿಫಿಕೇಶನ್‌ಗಳು"
-
 #. placeholder {0}: unread.length
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:185
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:200
 msgid "Notifications: {0}"
 msgstr "ಅಧಿಸೂಚನೆಗಳು: {0}"
 
@@ -2715,11 +2482,6 @@ msgstr "ತೆರೆಯಿರಿ"
 msgid "Open — anyone may join or leave"
 msgstr "ಮುಕ್ತ — ಯಾರಾದರೂ ಸೇರಬಹುದು ಅಥವಾ ಹೊರಹೋಗಬಹುದು"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:156
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:166
-msgid "Open account actions"
-msgstr "ಖಾತೆ ಆಕ್ಷನ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ"
-
 #: ../../../lib/web/src/components/layout/nav-group.tsx:199
 #: ../../../lib/web/src/components/layout/nav-group.tsx:204
 msgid "Open actions"
@@ -2734,11 +2496,6 @@ msgstr "ಮೆನು ತೆರೆಯಿರಿ"
 msgid "Open navigation"
 msgstr "ನ್ಯಾವಿಗೇಶನ್ ತೆರೆಯಿರಿ"
 
-#: ../../../lib/web/src/components/layout/top-nav.tsx:38
-#: ../../../lib/web/src/components/layout/top-nav.tsx:44
-msgid "Open navigation menu"
-msgstr "ನ್ಯಾವಿಗೇಶನ್ ಮೆನು ತೆರೆಯಿರಿ"
-
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:105
 #: ../../../lib/web/src/components/entity/entity-option-dialog.tsx:111
 msgid "Open option actions"
@@ -2747,11 +2504,6 @@ msgstr "ಆಯ್ಕೆ ಆಕ್ಷನ್‌ಗಳನ್ನು ತೆರೆಯ�
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:30
 msgid "Open selected card"
 msgstr "ಆಯ್ಕೆ ಮಾಡಿದ ಕಾರ್ಡ್ ತೆರೆಯಿರಿ"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:58
-#: ../../../lib/web/src/components/config-drawer.tsx:66
-msgid "Open theme settings"
-msgstr "ಥೀಮ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:274
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:279
@@ -2802,11 +2554,6 @@ msgstr "ನೋಟ ಲಾಕ್"
 msgid "PADLOCK OFF"
 msgstr "ನೋಟ ಮುಕ್ತ"
 
-#: ../../../lib/web/src/components/data-table/pagination.tsx:43
-#: ../../../lib/web/src/components/data-table/pagination.tsx:71
-msgid "Page {currentPage} of {totalPages}"
-msgstr "ಪುಟ {currentPage} / {totalPages}"
-
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:530
 msgid "Parent"
 msgstr "ಪೋಷಕ"
@@ -2835,10 +2582,6 @@ msgstr "ಮಾದರಿ (regex)"
 msgid "Performance priority"
 msgstr ""
 
-#: ../../../lib/web/src/components/date-picker.tsx:20
-msgid "Pick a date"
-msgstr "ದಿನಾಂಕ ಆಯ್ಕೆಮಾಡಿ"
-
 #: src/components/MissionSetup.tsx:577
 #: src/components/Multiplayer.tsx:140
 #: src/components/Multiplayer.tsx:309
@@ -2857,7 +2600,7 @@ msgid "PILOT DOWN"
 msgstr "ಪೈಲಟ್ ಸಾವು"
 
 #: src/components/SettingsDialog.tsx:922
-msgid "Pilot Identity"
+msgid "Pilot identity"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:348
@@ -2940,10 +2683,6 @@ msgstr "ಗೌಪ್ಯತೆ"
 msgid "Processing…"
 msgstr "ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗುತ್ತಿದೆ…"
 
-#: ../../../lib/web/src/components/profile-dropdown.tsx:114
-msgid "Profile"
-msgstr "ಪ್ರೊಫೈಲ್"
-
 #: src/components/SettingsDialog.tsx:282
 #: src/components/SettingsDialog.tsx:294
 msgid "Profile saved"
@@ -3006,7 +2745,6 @@ msgstr "ಮರು ಶಸ್ತ್ರಸಜ್ಜಿತ"
 msgid "Recent"
 msgstr "ಇತ್ತೀಚಿನ"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:220
 #: ../../../lib/web/src/components/search-entity-page.tsx:243
 msgid "Recommended"
 msgstr "ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ"
@@ -3016,10 +2754,11 @@ msgid "Reconnecting ({retries})..."
 msgstr "ಮರುಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ ({retries})..."
 
 #: src/components/SettingsDialog.tsx:950
-msgid "Record flights automatically"
+msgid "Record flights"
 msgstr ""
 
 #: src/components/MatchHistory.tsx:255
+#: src/components/SettingsDialog.tsx:944
 msgid "Recording"
 msgstr "ರೆಕಾರ್ಡಿಂಗ್"
 
@@ -3072,7 +2811,6 @@ msgstr "24 ಗಂಟೆಗಳ ಒಳಗೆ ಸಾಪೇಕ್ಷ, ಇಲ್ಲ�
 #: ../../../lib/web/src/components/attachment-composer.tsx:330
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:190
 #: ../../../lib/web/src/features/access/access-list.tsx:270
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:180
 msgid "Remove"
 msgstr "ತೆಗೆದುಹಾಕಿ"
 
@@ -3101,7 +2839,7 @@ msgstr "ಪ್ರವೇಶ ತೆಗೆದುಹಾಕಬೇಕೆ?"
 msgid "Remove interest"
 msgstr "ಆಸಕ್ತಿ ತೆಗೆದುಹಾಕಿ"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:666
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:674
 msgid "Remove item"
 msgstr "ಐಟಂ ತೆಗೆದುಹಾಕಿ"
 
@@ -3128,7 +2866,7 @@ msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "ರೆಂಡರಿಂಗ್ <0>three.js</0> ಮೂಲಕ (MIT ಪರವಾನಗಿ)."
 
 #: src/components/SettingsDialog.tsx:806
-msgid "Rendering Detail"
+msgid "Rendering detail"
 msgstr ""
 
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx:256
@@ -3149,20 +2887,9 @@ msgstr "ಅಗತ್ಯವಿದೆ"
 msgid "Resend email"
 msgstr "ಇಮೇಲ್ ಮತ್ತೆ ಕಳುಹಿಸಿ"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:87
-#: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:1040
+#: src/components/SettingsDialog.tsx:1057
 msgid "Reset"
 msgstr "ರೀಸೆಟ್ ಮಾಡಿ"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:122
-#: ../../../lib/web/src/components/config-drawer.tsx:127
-msgid "Reset {title}"
-msgstr "{title} ಮರುಹೊಂದಿಸಿ"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:85
-msgid "Reset all settings to default values"
-msgstr "ಎಲ್ಲಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಡೀಫಾಲ್ಟ್ ಮೌಲ್ಯಗಳಿಗೆ ರೀಸೆಟ್ ಮಾಡಿ"
 
 #: src/components/SettingsDialog.tsx:164
 #: src/components/SettingsDialog.tsx:215
@@ -3229,10 +2956,6 @@ msgstr "ಪ್ರವೇಶವನ್ನು ಹಿಂಪಡೆಯಿರಿ"
 msgid "Revoke RSS access?"
 msgstr "RSS ಪ್ರವೇಶವನ್ನು ರದ್ದುಗೊಳಿಸುವುದೇ?"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:362
-msgid "Right to Left"
-msgstr "ಬಲದಿಂದ ಎಡಕ್ಕೆ"
-
 #: src/components/MissionSetup.tsx:174
 #: src/components/MissionSetup.tsx:175
 msgid "Right wing"
@@ -3266,10 +2989,6 @@ msgstr "ಸಾಲುಗಳು"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:373
 msgid "Rows group by"
 msgstr "ಸಾಲುಗಳನ್ನು ಗುಂಪು ಮಾಡಿ"
-
-#: ../../../lib/web/src/components/data-table/pagination.tsx:65
-msgid "Rows per page"
-msgstr "ಪ್ರತಿ ಪುಟಕ್ಕೆ ಸಾಲುಗಳು"
 
 #: ../../../lib/web/src/components/options-menu.tsx:131
 msgid "RSS access revoked"
@@ -3350,12 +3069,10 @@ msgstr "ಈ ವೀಕ್ಷಣೆಯನ್ನು ಹುಡುಕಿ, ವೀಕ�
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:255
 #: ../../../lib/web/src/components/inline-entity-search.tsx:63
 #: ../../../lib/web/src/components/person-picker.tsx:324
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:81
 #: ../../../lib/web/src/components/search-entity-page.tsx:72
 msgid "Search..."
 msgstr "ಹುಡುಕಿ..."
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:178
 #: ../../../lib/web/src/components/search-entity-page.tsx:201
 #: ../../../lib/web/src/features/access/access-dialog.tsx:202
 msgid "Searching..."
@@ -3364,11 +3081,6 @@ msgstr "ಹುಡುಕಲಾಗುತ್ತಿದೆ..."
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:141
 msgid "Select"
 msgstr "ಆಯ್ಕೆಮಾಡಿ"
-
-#. placeholder {0}: item.label.toLowerCase()
-#: ../../../lib/web/src/components/config-drawer.tsx:149
-msgid "Select {0}"
-msgstr "{0} ಆಯ್ಕೆಮಾಡಿ"
 
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:356
 msgid "Select a field"
@@ -3386,10 +3098,6 @@ msgstr "ಪ್ರವೇಶ ನೀಡಲು ಬಳಕೆದಾರ, ಗುಂಪ�
 msgid "Select access rule"
 msgstr "ಪ್ರವೇಶ ನಿಯಮವನ್ನು ಆಯ್ಕೆಮಾಡಿ"
 
-#: ../../../lib/web/src/features/accounts/account-picker.tsx:34
-msgid "Select account"
-msgstr "ಖಾತೆ ಆಯ್ಕೆಮಾಡಿ"
-
 #: ../../../lib/web/src/features/accounts/account-add.tsx:142
 msgid "Select account type"
 msgstr "ಖಾತೆಯ ಪ್ರಕಾರವನ್ನು ಆಯ್ಕೆಮಾಡಿ"
@@ -3397,10 +3105,6 @@ msgstr "ಖಾತೆಯ ಪ್ರಕಾರವನ್ನು ಆಯ್ಕೆಮಾ�
 #: ../../../lib/web/src/features/access/access-dialog.tsx:231
 msgid "Select group"
 msgstr "ಗುಂಪು ಆಯ್ಕೆಮಾಡಿ"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:305
-msgid "Select layout style"
-msgstr "ಲೇಔಟ್ ಶೈಲಿ ಆಯ್ಕೆಮಾಡಿ"
 
 #: ../../../lib/web/src/components/place-picker.tsx:49
 msgid "Select location"
@@ -3418,31 +3122,15 @@ msgstr "ವ್ಯಕ್ತಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ..."
 msgid "Select previous card"
 msgstr "ಹಿಂದಿನ ಕಾರ್ಡ್ ಆಯ್ಕೆ ಮಾಡಿ"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:247
-msgid "Select sidebar style"
-msgstr "ಸೈಡ್‌ಬಾರ್ ಶೈಲಿ ಆಯ್ಕೆಮಾಡಿ"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:349
-msgid "Select site direction"
-msgstr "ಸೈಟ್ ದಿಕ್ಕನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:203
-msgid "Select theme preference"
-msgstr "ಥೀಮ್ ಆದ್ಯತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-
 #: src/components/SettingsDialog.tsx:154
 #: src/components/SettingsDialog.tsx:205
 msgid "Select weapon"
 msgstr "ಆಯುಧ ಆಯ್ಕೆ"
 
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:252
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:335
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:257
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx:340
 msgid "Select..."
 msgstr "ಆಯ್ಕೆಮಾಡಿ..."
-
-#: ../../../lib/web/src/components/data-table/bulk-actions.tsx:209
-msgid "selected"
-msgstr "ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ"
 
 #. placeholder {0}: getSelectedName()
 #: ../../../lib/web/src/features/access/access-dialog.tsx:309
@@ -3518,8 +3206,8 @@ msgstr "ಮೂಲ ಮತ್ತು ಗಮ್ಯಸ್ಥಾನವನ್ನು ಹ
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:418
 #: src/components/MissionSetup.tsx:1216
-#: src/components/SettingsDialog.tsx:983
-#: src/components/SettingsDialog.tsx:985
+#: src/components/SettingsDialog.tsx:1000
+#: src/components/SettingsDialog.tsx:1002
 msgid "Settings"
 msgstr "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
 
@@ -3535,10 +3223,6 @@ msgstr "ತರಗತಿಗಳನ್ನು ತೋರಿಸಿ"
 msgid "Show fields"
 msgstr "ಫೀಲ್ಡ್‌ಗಳನ್ನು ತೋರಿಸಿ"
 
-#: ../../../lib/web/src/components/password-input.tsx:27
-msgid "Show password"
-msgstr "ಪಾಸ್‌ವರ್ಡ್ ತೋರಿಸಿ"
-
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:33
 msgid "Show this help"
 msgstr "ಈ ಸಹಾಯ ತೋರಿಸಿ"
@@ -3547,9 +3231,7 @@ msgstr "ಈ ಸಹಾಯ ತೋರಿಸಿ"
 msgid "Showing {totalShown} of {total}"
 msgstr "{total} ರಲ್ಲಿ {totalShown} ತೋರಿಸಲಾಗುತ್ತಿದೆ"
 
-#: ../../../lib/web/src/components/config-drawer.tsx:239
-#: ../../../lib/web/src/components/config-drawer.tsx:263
-#: ../../../lib/web/src/components/ui/sidebar.tsx:237
+#: ../../../lib/web/src/components/ui/sidebar.tsx:257
 msgid "Sidebar"
 msgstr "ಸೈಡ್‌ಬಾರ್"
 
@@ -3571,10 +3253,6 @@ msgstr "ಒಂದೇ ಸಾಲಿನ ಪಠ್ಯ ಮಾತ್ರ"
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "ಏಕ-ಎಂಜಿನ್ ಅತ್ಯುತ್ತಮ ಏರಿಕೆ (Vyse, ಆಫ್ಟರ್‌ಬರ್ನರ್)"
 
-#: ../../../lib/web/src/components/skip-to-main.tsx:11
-msgid "Skip to Main"
-msgstr "ಮುಖ್ಯಕ್ಕೆ ಸ್ಕಿಪ್ ಮಾಡಿ"
-
 #: ../../../lib/web/src/lib/preference-utils.ts:101
 #: ../../../lib/web/src/lib/preference-utils.ts:128
 msgid "Small"
@@ -3585,14 +3263,10 @@ msgid "Sort"
 msgstr "ವಿಂಗಡಿಸಿ"
 
 #: src/components/MissionSetup.tsx:1235
-msgid "Sortie history & replays"
+msgid "Sortie history and replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:944
-msgid "Sortie Recording"
-msgstr ""
-
-#: src/components/SettingsDialog.tsx:996
+#: src/components/SettingsDialog.tsx:1013
 msgid "Sound"
 msgstr "ಧ್ವನಿ"
 
@@ -3650,10 +3324,6 @@ msgstr "ಪ್ರಾರಂಭಿಸಿ"
 msgid "Start the discussion by adding the first comment."
 msgstr "ಮೊದಲ ಕಾಮೆಂಟ್ ಸೇರಿಸುವ ಮೂಲಕ ಚರ್ಚೆಯನ್ನು ಪ್ರಾರಂಭಿಸಿ."
 
-#: ../../../lib/web/src/components/coming-soon.tsx:15
-msgid "Stay tuned though!"
-msgstr "ಆದರೆ ಕಾದು ನೋಡಿ!"
-
 #: src/components/MissionSetup.tsx:355
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "ಅತ್ಯಂತ ಕಡಿದಾದ ಏರಿಕೆ (Vx, 100% ನೂಕುಬಲ)"
@@ -3680,7 +3350,6 @@ msgstr "ಉತ್ತರ ಸಲ್ಲಿಸಿ"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx:66
 #: ../../../lib/web/src/components/recommended-entities.tsx:58
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:83
 #: ../../../lib/web/src/components/search-entity-page.tsx:74
 msgid "Subscribe"
 msgstr "ಚಂದಾದಾರರಾಗಿ"
@@ -3700,8 +3369,6 @@ msgid "Switch to view 1-9"
 msgstr "ವೀಕ್ಷಣೆ 1-9 ಗೆ ಬದಲಾಯಿಸಿ"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx:107
-#: ../../../lib/web/src/components/config-drawer.tsx:209
-#: ../../../lib/web/src/components/theme-switch.tsx:59
 #: ../../../lib/web/src/lib/preference-utils.ts:16
 #: ../../../lib/web/src/lib/preference-utils.ts:139
 msgid "System"
@@ -3710,10 +3377,6 @@ msgstr "ಸಿಸ್ಟಮ್"
 #: src/components/GameCanvas.tsx:75
 msgid "TACTICAL MAP"
 msgstr "ಯುದ್ಧತಂತ್ರ ನಕ್ಷೆ"
-
-#: ../../../lib/web/src/components/tag-input.tsx:95
-msgid "Tag"
-msgstr "ಟ್ಯಾಗ್"
 
 #: ../../../lib/web/src/components/post-tags.tsx:76
 msgid "Tag already exists"
@@ -3737,7 +3400,7 @@ msgid "Task"
 msgstr ""
 
 #: src/components/MissionSetup.tsx:1188
-msgid "Tasks, weather & loadout"
+msgid "Tasks, weather and loadout"
 msgstr ""
 
 #: src/components/GameCanvas.tsx:317
@@ -3756,10 +3419,6 @@ msgstr "ತಂಡಗಳು"
 #: src/components/Multiplayer.tsx:353
 msgid "Teams — red versus blue"
 msgstr "ತಂಡಗಳು — ಕೆಂಪು ವಿರುದ್ಧ ನೀಲಿ"
-
-#: ../../../lib/web/src/components/layout/team-switcher.tsx:63
-msgid "Teams/Apps"
-msgstr "ತಂಡಗಳು/ಆ್ಯಪ್‌ಗಳು"
 
 #: ../../../lib/web/src/components/server-documents-footer.tsx:19
 #: ../../../lib/web/src/features/document/document-page.tsx:42
@@ -3803,18 +3462,6 @@ msgstr "ವಿನಂತಿಸಿದ ವಿಷಯವನ್ನು ಹುಡುಕ�
 msgid "The server returned a web page instead of data."
 msgstr "ಸರ್ವರ್ ಡೇಟಾ ಬದಲಿಗೆ ವೆಬ್ ಪುಟವನ್ನು ಹಿಂತಿರುಗಿಸಿತು."
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:15
-msgid "The site is not available at the moment."
-msgstr "ಸೈಟ್ ಈ ಕ್ಷಣದಲ್ಲಿ ಲಭ್ಯವಿಲ್ಲ."
-
-#: ../../../lib/web/src/components/config-drawer.tsx:195
-msgid "Theme"
-msgstr "ಥೀಮ್"
-
-#: ../../../lib/web/src/components/config-drawer.tsx:70
-msgid "Theme Settings"
-msgstr "ಥೀಮ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
-
 #: src/components/MissionSetup.tsx:1142
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "ಈ ಬ್ರೌಸರ್ WebGL 2 ಅನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ, ಆದ್ದರಿಂದ ಆಟ ಚಲಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ — ಬೇರೆ ಬ್ರೌಸರ್ ಪ್ರಯತ್ನಿಸಿ."
@@ -3826,10 +3473,6 @@ msgstr "ಈ ಲಾಬಿ ನಿಮ್ಮ ಆಟದ ಸಂಪರ್ಕವನ್�
 #: src/components/MissionSetup.tsx:1146
 msgid "This machine may be too slow for smooth flight."
 msgstr "ನಯವಾದ ಹಾರಾಟಕ್ಕೆ ಈ ಯಂತ್ರ ತುಂಬಾ ನಿಧಾನವಾಗಿರಬಹುದು."
-
-#: ../../../lib/web/src/components/coming-soon.tsx:14
-msgid "This page has not been created yet."
-msgstr "ಈ ಪುಟವನ್ನು ಇನ್ನೂ ರಚಿಸಲಾಗಿಲ್ಲ."
 
 #: src/components/GameCanvas.tsx:136
 msgid "throttle"
@@ -3873,10 +3516,6 @@ msgstr "ದಿನದ ಸಮಯ"
 msgid "To"
 msgstr "ಗೆ"
 
-#: ../../../lib/web/src/components/data-table/view-options.tsx:37
-msgid "Toggle columns"
-msgstr "ಕಾಲಮ್‌ಗಳನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
-
 #: ../../../lib/web/src/components/layout/right-panel.tsx:233
 #: ../../../lib/web/src/components/layout/right-panel.tsx:236
 msgid "Toggle right panel"
@@ -3889,20 +3528,15 @@ msgstr "ಬಲ ಪ್ಯಾನಲ್ ಟಾಗಲ್ ಮಾಡಿ"
 msgid "Toggle section"
 msgstr "ವಿಭಾಗವನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:317
-#: ../../../lib/web/src/components/ui/sidebar.tsx:320
+#: ../../../lib/web/src/components/ui/sidebar.tsx:337
+#: ../../../lib/web/src/components/ui/sidebar.tsx:340
 msgid "Toggle sidebar"
 msgstr "ಸೈಡ್‌ಬಾರ್ ಟಾಗಲ್ ಮಾಡಿ"
 
-#: ../../../lib/web/src/components/ui/sidebar.tsx:332
-#: ../../../lib/web/src/components/ui/sidebar.tsx:335
+#: ../../../lib/web/src/components/ui/sidebar.tsx:352
+#: ../../../lib/web/src/components/ui/sidebar.tsx:355
 msgid "Toggle Sidebar"
 msgstr "ಸೈಡ್‌ಬಾರ್ ಟಾಗಲ್ ಮಾಡಿ"
-
-#: ../../../lib/web/src/components/theme-switch.tsx:37
-#: ../../../lib/web/src/components/theme-switch.tsx:41
-msgid "Toggle theme"
-msgstr "ಥೀಮ್ ಟಾಗಲ್ ಮಾಡಿ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx:26
 msgid "Toggle view options"
@@ -3961,14 +3595,12 @@ msgstr "ಟ್ರಿಮ್: ಎಡಕ್ಕೆ ವಾಲು"
 msgid "Trim roll right"
 msgstr "ಟ್ರಿಮ್: ಬಲಕ್ಕೆ ವಾಲು"
 
-#: ../../../lib/web/src/components/search-entity-dialog.tsx:194
 #: ../../../lib/web/src/components/search-entity-page.tsx:217
 msgid "Try adjusting your search terms"
 msgstr "ನಿಮ್ಮ ಹುಡುಕಾಟ ಪದಗಳನ್ನು ಸರಿಹೊಂದಿಸಲು ಪ್ರಯತ್ನಿಸಿ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx:140
 #: ../../../lib/web/src/features/errors/general-error.tsx:180
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:19
 msgid "Try again"
 msgstr "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ"
 
@@ -4020,7 +3652,7 @@ msgstr "ಅನುಮತಿಸದ ಪ್ರವೇಶ"
 
 #: ../../../lib/web/src/components/attachment-image.tsx:50
 msgid "Unavailable"
-msgstr ""
+msgstr "ಲಭ್ಯವಿಲ್ಲ"
 
 #: src/components/SettingsDialog.tsx:157
 #: src/components/SettingsDialog.tsx:208
@@ -4079,10 +3711,6 @@ msgstr "ಚಂದಾದಾರಿಕೆ ರದ್ದುಗೊಳಿಸಿ"
 msgid "Untitled"
 msgstr "ಶೀರ್ಷಿಕೆರಹಿತ"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:135
-msgid "Unverified"
-msgstr "ಪರಿಶೀಲಿಸದ"
-
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx:57
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:494
 msgid "Updated"
@@ -4111,16 +3739,7 @@ msgstr "ಬಳಕೆದಾರ"
 msgid "Verification code"
 msgstr "ಪರಿಶೀಲನೆ ಕೋಡ್"
 
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:255
-msgid "Verification code sent"
-msgstr "ಪರಿಶೀಲನೆ ಕೋಡ್ ಕಳುಹಿಸಲಾಗಿದೆ"
-
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:248
-msgid "Verification failed"
-msgstr "ಪರಿಶೀಲನೆ ವಿಫಲವಾಗಿದೆ"
-
 #: ../../../lib/web/src/components/step-up-dialog.tsx:391
-#: ../../../lib/web/src/features/accounts/account-manager.tsx:172
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:111
 msgid "Verify"
 msgstr "ಪರಿಶೀಲಿಸಿ"
@@ -4150,17 +3769,12 @@ msgstr "ವೀಡಿಯೊ ವೀಕ್ಷಕ: {0}"
 msgid "view"
 msgstr "ನೋಟ"
 
-#: ../../../lib/web/src/components/data-table/view-options.tsx:33
 #: src/components/SettingsDialog.tsx:94
 msgid "View"
 msgstr "ವೀಕ್ಷಿಸಿ"
 
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:177
-msgid "View all"
-msgstr "ಎಲ್ಲವನ್ನೂ ವೀಕ್ಷಿಸಿ"
-
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:205
-#: ../../../lib/web/src/components/layout/notification-menu.tsx:213
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:220
+#: ../../../lib/web/src/components/layout/notification-menu.tsx:228
 msgid "View all notifications"
 msgstr "ಎಲ್ಲಾ ನೋಟಿಫಿಕೇಶನ್‌ಗಳನ್ನು ವೀಕ್ಷಿಸಿ"
 
@@ -4194,14 +3808,6 @@ msgstr "ಗೋ ಅರೌಂಡ್"
 msgid "We sent a verification code to <0>{0}</0>. Enter the code below to verify your email address."
 msgstr "ನಾವು <0>{0}</0> ಗೆ ಪರಿಶೀಲನಾ ಕೋಡ್ ಕಳುಹಿಸಿದ್ದೇವೆ. ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ಪರಿಶೀಲಿಸಲು ಕೆಳಗೆ ಕೋಡ್ ನಮೂದಿಸಿ."
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:16
-msgid "We'll be back online shortly."
-msgstr "ನಾವು ಶೀಘ್ರದಲ್ಲೇ ಮತ್ತೆ ಆನ್‌ಲೈನ್‌ಗೆ ಬರುತ್ತೇವೆ."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:197
-msgid "We'll notify you when something important happens."
-msgstr "ಮುಖ್ಯವಾದ ಏನಾದರೂ ಸಂಭವಿಸಿದಾಗ ನಾವು ನಿಮಗೆ ತಿಳಿಸುತ್ತೇವೆ."
-
 #: src/components/GameCanvas.tsx:139
 msgid "weapon"
 msgstr "ಆಯುಧ"
@@ -4219,10 +3825,6 @@ msgstr "ಆಯುಧಗಳು"
 msgid "Weather"
 msgstr "ಹವಾಮಾನ"
 
-#: ../../../lib/web/src/features/errors/maintenance-error.tsx:13
-msgid "Website is under maintenance!"
-msgstr "ವೆಬ್‌ಸೈಟ್ ನಿರ್ವಹಣೆಯಲ್ಲಿದೆ!"
-
 #: ../../../lib/web/src/lib/preference-utils.ts:56
 msgid "Wednesday"
 msgstr "ಬುಧವಾರ"
@@ -4233,7 +3835,7 @@ msgid "Wheel brakes"
 msgstr "ಚಕ್ರ ಬ್ರೇಕ್"
 
 #: src/components/SettingsDialog.tsx:558
-msgid "Wind & Cockpit Airframe"
+msgid "Wind and cockpit airframe"
 msgstr ""
 
 #: src/components/SettingsDialog.tsx:170
@@ -4279,14 +3881,6 @@ msgstr "ನೀವು"
 #: ../../../lib/web/src/features/errors/general-error.tsx:61
 msgid "You do not have access to this section."
 msgstr "ಈ ವಿಭಾಗಕ್ಕೆ ನಿಮಗೆ ಪ್ರವೇಶವಿಲ್ಲ."
-
-#: ../../../lib/web/src/features/errors/forbidden.tsx:18
-msgid "You don't have necessary permission <0/>to view this resource."
-msgstr "ಈ ಸಂಪನ್ಮೂಲವನ್ನು ವೀಕ್ಷಿಸಲು <0/>ನಿಮಗೆ ಅಗತ್ಯವಿರುವ ಅನುಮತಿ ಇಲ್ಲ."
-
-#: ../../../lib/web/src/components/notifications-dropdown.tsx:193
-msgid "You're all caught up!"
-msgstr "ನೀವು ಎಲ್ಲವನ್ನೂ ನೋಡಿದ್ದೀರಿ!"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:100
 msgid "Your account was moved here from {source}. Until you delete it there, messages and notifications may reach both servers, some of your content keeps being served from the old server, and followers may take a few minutes to find you here."
