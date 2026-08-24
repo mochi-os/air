@@ -87,6 +87,7 @@ export function MenuDialog({
   wide,
   steady,
   guarded,
+  footer,
   children,
 }: {
   open: boolean
@@ -95,6 +96,10 @@ export function MenuDialog({
   wide?: boolean
   steady?: boolean
   guarded?: boolean
+  // Rendered OUTSIDE the scroll region, pinned under it. A footer passed as
+  // part of children scrolls away with the content, which put Fly and Done
+  // below the fold of a long panel.
+  footer?: ReactNode
   children: ReactNode
 }) {
   return (
@@ -111,6 +116,7 @@ export function MenuDialog({
           </DialogTitle>
         </DialogHeader>
         <div className='flex min-h-0 flex-1 flex-col overflow-y-auto pt-2'>{children}</div>
+        {footer && <div className='border-border shrink-0 border-t pt-3'>{footer}</div>}
       </DialogContent>
     </Dialog>
   )

@@ -980,7 +980,40 @@ export function SettingsDialog({
   const { t } = useLingui()
 
   return (
-    <MenuDialog open={open} onClose={onClose} guarded={guarded} title={<Trans>Settings</Trans>}>
+    // steady: the five tabs differ wildly in height (General is a handful of
+    // rows, Keys is sixty), and without a fixed frame the dialog jumped and
+    // moved the tab strip out from under the pointer on every switch.
+    <MenuDialog
+      open={open}
+      onClose={onClose}
+      guarded={guarded}
+      steady
+      title={<Trans>Settings</Trans>}
+      footer={
+        <div className='flex items-center justify-between'>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            className='text-muted-foreground hover:text-foreground gap-1.5 text-xs'
+            onClick={() => {
+              const fields = TAB_FIELDS[tab] ?? Object.keys(DEFAULT_CONFIG)
+              const next = { ...config }
+              for (const field of fields) next[field] = DEFAULT_CONFIG[field]
+              if (next.callsign === '' && identity) next.callsign = identity
+              onChange(next)
+            }}
+          >
+            <RotateCcw className='size-3.5' />
+            <Trans>Reset</Trans>
+          </Button>
+          <Button className='min-w-28 gap-1.5 font-semibold' onClick={onClose}>
+            <Check className='size-4' />
+            <Trans>Done</Trans>
+          </Button>
+        </div>
+      }
+    >
       <Tabs variant='underline' value={tab} onValueChange={onTabChange} className='flex flex-col min-h-0 flex-1 space-y-4'>
         <TabsList aria-label={t`Settings`}>
           <TabsTrigger value='general' className='gap-2'>
@@ -1022,28 +1055,6 @@ export function SettingsDialog({
           </TabsContent>
         </div>
       </Tabs>
-      <div className='border-border mt-4 flex items-center justify-between border-t pt-3'>
-        <Button
-          type='button'
-          variant='ghost'
-          size='sm'
-          className='text-muted-foreground hover:text-foreground gap-1.5 text-xs'
-          onClick={() => {
-            const fields = TAB_FIELDS[tab] ?? Object.keys(DEFAULT_CONFIG)
-            const next = { ...config }
-            for (const field of fields) next[field] = DEFAULT_CONFIG[field]
-            if (next.callsign === '' && identity) next.callsign = identity
-            onChange(next)
-          }}
-        >
-          <RotateCcw className='size-3.5' />
-          <Trans>Reset</Trans>
-        </Button>
-        <Button className='min-w-28 gap-1.5 font-semibold' onClick={onClose}>
-          <Check className='size-4' />
-          <Trans>Done</Trans>
-        </Button>
-      </div>
     </MenuDialog>
   )
 }

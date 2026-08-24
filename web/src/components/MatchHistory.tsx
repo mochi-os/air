@@ -229,8 +229,10 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
                     size='sm'
                     // Revealed on hover (and kept for keyboard focus, which
                     // hover alone would strand): a button on every row competes
-                    // with the flight data for attention.
-                    className='opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100'
+                    // with the flight data for attention. A coarse pointer has
+                    // no hover at all, so there it stays visible — otherwise a
+                    // tablet could see recordings it had no way to save.
+                    className='opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 pointer-coarse:opacity-100'
                     onClick={() =>
                       void (async () => {
                         // Prefer the stored copy (exists for every flight); the

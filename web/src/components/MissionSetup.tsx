@@ -8,16 +8,28 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import {
   Check,
   ChevronRight,
+  CloudRain,
   Compass,
+  Crosshair,
   History,
   LogIn,
+  Moon,
+  Plane,
+  PlaneTakeoff,
   Play,
   Settings,
+  Ship,
+  Signal,
+  SignalHigh,
+  SignalLow,
+  SignalMedium,
   Sliders,
+  Sun,
   TriangleAlert,
   User,
   Users,
   X,
+  type LucideIcon,
 } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
 import {
@@ -76,12 +88,23 @@ import {
   type WorldChatLine,
 } from '../game/net'
 import { SliderRow, SwitchRow, MenuDialog } from './menu-parts'
+import { CLOUD_ICONS, START_ICONS, TOD_ICONS } from './menu-icons'
 import { SettingsDialog } from './SettingsDialog'
 
 
 const LoadoutPreview = lazy(() =>
   import('./LoadoutPreview').then((m) => ({ default: m.LoadoutPreview }))
 )
+
+// Both controls take an optional icon per option. The Select trigger and the
+// item row are already laid out as an icon-and-text flex pair upstream, so the
+// icon travels into the closed control along with the selection, and a list of
+// five near-identical words reads as a picture instead.
+interface Choice<T extends string> {
+  value: T
+  label: ReactNode
+  icon?: LucideIcon
+}
 
 function Segmented<T extends string>({
   value,
@@ -90,18 +113,72 @@ function Segmented<T extends string>({
 }: {
   value: T
   onChange: (value: T) => void
-  options: { value: T; label: ReactNode }[]
+  options: Choice<T>[]
 }) {
   return (
     <Tabs variant='segmented' value={value} onValueChange={(v) => onChange(v as T)} className='w-full'>
       <TabsList className='w-full flex'>
-        {options.map((o) => (
-          <TabsTrigger key={o.value} value={o.value} className='flex-1 text-xs font-semibold'>
-            {o.label}
+        {options.map(({ value: v, label, icon: Icon }) => (
+          <TabsTrigger key={v} value={v} className='flex-1 gap-1.5 text-xs font-semibold'>
+            {Icon && <Icon className='size-3.5' />}
+            {label}
           </TabsTrigger>
         ))}
       </TabsList>
     </Tabs>
+  )
+}
+
+// The front page tiles. They are Cards rather than <button>s: a button's
+// content model has no room for the icon/title/hint block, and wrapping one in
+// `display: contents` leaves no box for the focus ring to paint on. So the Card
+// carries the button role and answers Enter and Space itself, which is what a
+// real button would have given for free — without it the three dialogs behind
+// these tiles could not be opened from a keyboard at all. Flight log stays a
+// real link (middle-click, open in a new tab); its anchor has no box either, so
+// the ring is painted on the Card through the group.
+const TILE =
+  'hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group outline-none'
+
+function TileFace({ icon: Icon, title, hint }: { icon: LucideIcon; title: ReactNode; hint: ReactNode }) {
+  return (
+    <>
+      <div className='bg-muted text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center rounded-md transition-colors'>
+        <Icon className='size-4' />
+      </div>
+      <div className='flex-1 min-w-0'>
+        <div className='text-sm font-semibold truncate'>{title}</div>
+        <div className='text-muted-foreground text-[11px] leading-tight line-clamp-1'>{hint}</div>
+      </div>
+    </>
+  )
+}
+
+function Tile({
+  icon,
+  title,
+  hint,
+  onOpen,
+}: {
+  icon: LucideIcon
+  title: ReactNode
+  hint: ReactNode
+  onOpen: () => void
+}) {
+  return (
+    <Card
+      role='button'
+      tabIndex={0}
+      onClick={onOpen}
+      onKeyDown={(e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return
+        e.preventDefault() // Space scrolls the page otherwise
+        onOpen()
+      }}
+      className={`${TILE} focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]`}
+    >
+      <TileFace icon={icon} title={title} hint={hint} />
+    </Card>
   )
 }
 
@@ -112,7 +189,7 @@ function Picker<T extends string>({
 }: {
   value: T
   onChange: (value: T) => void
-  options: { value: T; label: ReactNode }[]
+  options: Choice<T>[]
 }) {
   return (
     <Select value={value} onValueChange={(v) => onChange(v as T)}>
@@ -120,9 +197,10 @@ function Picker<T extends string>({
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {options.map((o) => (
-          <SelectItem key={o.value} value={o.value}>
-            {o.label}
+        {options.map(({ value: v, label, icon: Icon }) => (
+          <SelectItem key={v} value={v}>
+            {Icon && <Icon />}
+            {label}
           </SelectItem>
         ))}
       </SelectContent>
@@ -250,12 +328,16 @@ function Armament({
           const usable = open.filter((o) => !o.hidden || o.id === current)
           const dead = usable.length <= 1
           return (
-            <div key={station} className='space-y-1 rounded-lg border border-border bg-card p-2'>
-              <div className='flex items-center justify-between text-xs'>
-                <span className='font-medium text-card-foreground'>{positions[station]}</span>
-                <span className='font-mono text-[10px] text-muted-foreground bg-muted px-1 rounded border border-border'>
+            <div key={station} className='space-y-1.5 rounded-lg border border-border bg-card p-2'>
+              {/* Chip first, on a fixed left rail, so every row starts on the
+                  same edge and the name is the part that gives way. Both refuse
+                  to wrap: squeezed between them the chip used to break over two
+                  lines and the cells lost their common height. */}
+              <div className='flex items-center gap-1.5 text-xs'>
+                <span className='shrink-0 whitespace-nowrap rounded border border-border bg-muted px-1 font-mono text-[10px] text-muted-foreground'>
                   STA {station}
                 </span>
+                <span className='truncate font-medium text-card-foreground'>{positions[station]}</span>
               </div>
               {dead ? (
                 <div className='text-muted-foreground/60 py-1 text-center font-mono text-xs'>—</div>
@@ -282,11 +364,15 @@ function Armament({
             </div>
           )
         }
+        // Two columns, not three. At a third of the panel the name and the
+        // dropdown had no room and the middle column was mostly empty space.
+        // Symmetric stations pair on one row (9 with 1, 8 with 2, and so on)
+        // seen from in front of the aircraft, which is the view the loadout
+        // picture above takes, and the centerline runs full width beneath.
         return (
-          <div className='grid grid-cols-3 gap-2'>
-            <div className='space-y-2'>{[9, 8, 7, 6].map(cell)}</div>
-            <div className='flex flex-col justify-end'>{[5].map(cell)}</div>
-            <div className='space-y-2'>{[1, 2, 3, 4].map(cell)}</div>
+          <div className='space-y-2'>
+            <div className='grid grid-cols-2 gap-2'>{[9, 1, 8, 2, 7, 3, 6, 4].map(cell)}</div>
+            {cell(5)}
           </div>
         )
       })()}
@@ -665,15 +751,17 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
   )
 }
 
+// Mounted only while the join dialog is open. useServers polls the public
+// listing every 30 seconds and cannot sit above an `if (!open) return null` —
+// hooks run either way, so the old shape polled from the moment the front page
+// loaded, for a dialog most sessions never open.
 function ServerFlow({
-  open,
   onClose,
   config,
   set,
   onChange,
   onJoin,
 }: {
-  open: boolean
   onClose: () => void
   config: MissionConfig
   set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
@@ -708,10 +796,13 @@ function ServerFlow({
     setEntered(false)
     onClose()
   }
-  if (!open) return null
   if (!entered) {
     const matched = (r: string) => (servers ?? []).find((s) => normalize_server(s.address) === normalize_server(r))
     const publics = (servers ?? []).filter((s) => !recents.some((r) => normalize_server(r) === normalize_server(s.address)))
+    // servers is null until the first response lands. Without a state of its
+    // own that showed the private-server card alone, which reads as "there are
+    // no public servers" — the answer this dialog does not have yet.
+    const listing = servers === null
     const bare = servers !== null && publics.length === 0 && recents.length === 0
     const entry = private_ || bare
     return (
@@ -735,6 +826,24 @@ function ServerFlow({
                     </Button>
                   )
                 })}
+              </CardContent>
+            </Card>
+          )}
+          {listing && (
+            <Card>
+              <CardHeader className='pb-2'>
+                <CardTitle className='text-sm font-semibold'>
+                  <Trans>Public servers</Trans>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className='space-y-1' aria-busy='true'>
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className='bg-muted h-9 animate-pulse rounded-md'
+                    style={{ animationDelay: `${i * 60}ms` }}
+                  />
+                ))}
               </CardContent>
             </Card>
           )}
@@ -853,8 +962,8 @@ function MissionPanel({
                 value={config.task}
                 onChange={(v) => set('task', v)}
                 options={[
-                  { value: 'free', label: <Trans>Free flight</Trans> },
-                  { value: 'joust', label: <Trans>Joust against bot</Trans> },
+                  { value: 'free', label: <Trans>Free flight</Trans>, icon: Plane },
+                  { value: 'joust', label: <Trans>Joust against bot</Trans>, icon: Crosshair },
                 ]}
               />
             </div>
@@ -869,8 +978,8 @@ function MissionPanel({
                     value={config.duel === 'bvr' ? 'bvr' : 'merge'}
                     onChange={(v) => set('duel', v as 'merge' | 'bvr')}
                     options={[
-                      { value: 'merge', label: <Trans>Merge (Pass)</Trans> },
-                      { value: 'bvr', label: <Trans>BVR (Start)</Trans> },
+                      { value: 'merge', label: <Trans>Merge (Pass)</Trans>, icon: START_ICONS.merge },
+                      { value: 'bvr', label: <Trans>BVR (Start)</Trans>, icon: START_ICONS.bvr },
                     ]}
                   />
                 </div>
@@ -882,10 +991,10 @@ function MissionPanel({
                     value={String(config.bandit || 'pilot') as 'novice' | 'pilot' | 'ace' | 'superhuman'}
                     onChange={(v) => set('bandit', v)}
                     options={[
-                      { value: 'novice', label: <Trans>Novice</Trans> },
-                      { value: 'pilot', label: <Trans>Pilot</Trans> },
-                      { value: 'ace', label: <Trans>Ace</Trans> },
-                      { value: 'superhuman', label: <Trans>Superhuman</Trans> },
+                      { value: 'novice', label: <Trans>Novice</Trans>, icon: SignalLow },
+                      { value: 'pilot', label: <Trans>Pilot</Trans>, icon: SignalMedium },
+                      { value: 'ace', label: <Trans>Ace</Trans>, icon: SignalHigh },
+                      { value: 'superhuman', label: <Trans>Superhuman</Trans>, icon: Signal },
                     ]}
                   />
                 </div>
@@ -904,12 +1013,12 @@ function MissionPanel({
                       onChange(seedStart(config, v as MissionConfig['start']))
                     }}
                     options={[
-                      { value: 'air', label: <Trans>In air</Trans> },
-                      { value: 'runway', label: <Trans>On runway</Trans> },
-                      { value: 'carrier', label: <Trans>On carrier</Trans> },
-                      { value: 'case1', label: <Trans>Case I (day)</Trans> },
-                      { value: 'case2', label: <Trans>Case II (weather)</Trans> },
-                      { value: 'case3', label: <Trans>Case III (night)</Trans> },
+                      { value: 'air', label: <Trans>In air</Trans>, icon: Plane },
+                      { value: 'runway', label: <Trans>On runway</Trans>, icon: PlaneTakeoff },
+                      { value: 'carrier', label: <Trans>On carrier</Trans>, icon: Ship },
+                      { value: 'case1', label: <Trans>Case I (day)</Trans>, icon: Sun },
+                      { value: 'case2', label: <Trans>Case II (weather)</Trans>, icon: CloudRain },
+                      { value: 'case3', label: <Trans>Case III (night)</Trans>, icon: Moon },
                     ]}
                   />
                 </div>
@@ -951,8 +1060,8 @@ function MissionPanel({
                 value={config.tod}
                 onChange={(v) => set('tod', v)}
                 options={[
-                  { value: 'day', label: <Trans>Day</Trans> },
-                  { value: 'night', label: <Trans>Night</Trans> },
+                  { value: 'day', label: <Trans>Day</Trans>, icon: TOD_ICONS.day },
+                  { value: 'night', label: <Trans>Night</Trans>, icon: TOD_ICONS.night },
                 ]}
               />
             </div>
@@ -964,11 +1073,11 @@ function MissionPanel({
                 value={config.clouds}
                 onChange={(v) => set('clouds', v)}
                 options={[
-                  { value: 'none', label: <Trans>None</Trans> },
-                  { value: 'cumulus', label: <Trans>Cumulus</Trans> },
-                  { value: 'high_stratus', label: <Trans>High stratus</Trans> },
-                  { value: 'mid_stratus', label: <Trans>Mid stratus</Trans> },
-                  { value: 'low_stratus', label: <Trans>Low stratus</Trans> },
+                  { value: 'none', label: <Trans>None</Trans>, icon: CLOUD_ICONS.none },
+                  { value: 'cumulus', label: <Trans>Cumulus</Trans>, icon: CLOUD_ICONS.cumulus },
+                  { value: 'high_stratus', label: <Trans>High stratus</Trans>, icon: CLOUD_ICONS.high_stratus },
+                  { value: 'mid_stratus', label: <Trans>Mid stratus</Trans>, icon: CLOUD_ICONS.mid_stratus },
+                  { value: 'low_stratus', label: <Trans>Low stratus</Trans>, icon: CLOUD_ICONS.low_stratus },
                 ]}
               />
             </div>
@@ -1175,66 +1284,12 @@ export function MissionSetup({
         </Card>
 
         <div className='grid grid-cols-2 gap-3'>
-          <Card
-            className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'
-            onClick={() => setDialog('mission')}
-          >
-            <div className='bg-muted text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center rounded-md transition-colors'>
-              <Sliders className='size-4' />
-            </div>
-            <div className='flex-1 min-w-0'>
-              <div className='text-sm font-semibold truncate'><Trans>Create mission</Trans></div>
-              <div className='text-muted-foreground text-[11px] leading-tight line-clamp-1'>
-                <Trans>Tasks, weather & loadout</Trans>
-              </div>
-            </div>
-          </Card>
-
-          <Card
-            className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'
-            onClick={() => setDialog('server')}
-          >
-            <div className='bg-muted text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center rounded-md transition-colors'>
-              <Users className='size-4' />
-            </div>
-            <div className='flex-1 min-w-0'>
-              <div className='text-sm font-semibold truncate'><Trans>Join server</Trans></div>
-              <div className='text-muted-foreground text-[11px] leading-tight line-clamp-1'>
-                <Trans>Multiplayer dogfights</Trans>
-              </div>
-            </div>
-          </Card>
-
-          <Card
-            className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'
-            onClick={() => setDialog('settings')}
-          >
-            <div className='bg-muted text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center rounded-md transition-colors'>
-              <Settings className='size-4' />
-            </div>
-            <div className='flex-1 min-w-0'>
-              <div className='text-sm font-semibold truncate'><Trans>Settings</Trans></div>
-              <div className='text-muted-foreground text-[11px] leading-tight line-clamp-1'>
-                <Trans>Avionics, HOTAS & audio</Trans>
-              </div>
-            </div>
-          </Card>
-
-          <Link
-            to='/history'
-            search={(prev) => prev}
-            className='contents'
-          >
-            <Card className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'>
-              <div className='bg-muted text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center rounded-md transition-colors'>
-                <History className='size-4' />
-              </div>
-              <div className='flex-1 min-w-0'>
-                <div className='text-sm font-semibold truncate'><Trans>Flight log</Trans></div>
-                <div className='text-muted-foreground text-[11px] leading-tight line-clamp-1'>
-                  <Trans>Sortie history & replays</Trans>
-                </div>
-              </div>
+          <Tile icon={Sliders} title={<Trans>Create mission</Trans>} hint={<Trans>Tasks, weather & loadout</Trans>} onOpen={() => setDialog('mission')} />
+          <Tile icon={Users} title={<Trans>Join server</Trans>} hint={<Trans>Multiplayer dogfights</Trans>} onOpen={() => setDialog('server')} />
+          <Tile icon={Settings} title={<Trans>Settings</Trans>} hint={<Trans>Avionics, HOTAS & audio</Trans>} onOpen={() => setDialog('settings')} />
+          <Link to='/history' search={(prev) => prev} className='contents group/tile'>
+            <Card className={`${TILE} group-focus-visible/tile:border-ring group-focus-visible/tile:ring-ring/50 group-focus-visible/tile:ring-[3px]`}>
+              <TileFace icon={History} title={<Trans>Flight log</Trans>} hint={<Trans>Sortie history & replays</Trans>} />
             </Card>
           </Link>
         </div>
@@ -1250,24 +1305,32 @@ export function MissionSetup({
       </div>
       </div>
 
-      <MenuDialog open={dialog === 'mission'} onClose={close} title={<Trans>Create mission</Trans>} wide steady>
-        <MissionPanel config={config} set={set} setCheat={setCheat} onChange={onChange} />
-        <div className='border-border mt-4 flex items-center justify-between border-t pt-4'>
-          <div className='text-muted-foreground flex items-center gap-2 font-mono text-xs'>
-            <span className='size-2 rounded-full' style={{ background: 'var(--air-accent)' }} />
-            <span>{started}</span>
+      <MenuDialog
+        open={dialog === 'mission'}
+        onClose={close}
+        title={<Trans>Create mission</Trans>}
+        wide
+        steady
+        footer={
+          <div className='flex items-center justify-between'>
+            <div className='text-muted-foreground flex items-center gap-2 font-mono text-xs'>
+              <span className='size-2 rounded-full' style={{ background: 'var(--air-accent)' }} />
+              <span>{started}</span>
+            </div>
+            <Button
+              className='min-w-36 gap-2 font-semibold shadow-sm'
+              onClick={() => {
+                close()
+                onStart()
+              }}
+            >
+              <Play className='size-4 fill-current' />
+              <Trans>Fly</Trans>
+            </Button>
           </div>
-          <Button
-            className='min-w-36 gap-2 font-semibold shadow-sm'
-            onClick={() => {
-              close()
-              onStart()
-            }}
-          >
-            <Play className='size-4 fill-current' />
-            <Trans>Fly</Trans>
-          </Button>
-        </div>
+        }
+      >
+        <MissionPanel config={config} set={set} setCheat={setCheat} onChange={onChange} />
       </MenuDialog>
 
       <SettingsDialog
@@ -1279,7 +1342,9 @@ export function MissionSetup({
         onTabChange={onTabChange}
       />
 
-      <ServerFlow open={dialog === 'server'} onClose={close} config={config} set={set} onChange={onChange} onJoin={onJoin} />
+      {dialog === 'server' && (
+        <ServerFlow onClose={close} config={config} set={set} onChange={onChange} onJoin={onJoin} />
+      )}
     </div>
   )
 }
