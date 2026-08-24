@@ -41,7 +41,7 @@ msgstr "{0, plural, one {# വെടിയുണ്ട ഏറ്റു} other {#
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:637
+#: src/components/MissionSetup.tsx:619
 msgid "{0} created “{1}”"
 msgstr "{0} “{1}” സൃഷ്ടിച്ചു"
 
@@ -51,12 +51,12 @@ msgid "{0} flying"
 msgstr "{0} പേർ പറക്കുന്നു"
 
 #. placeholder {0}: moment - CATAPULT
-#: src/components/MissionSetup.tsx:345
+#: src/components/MissionSetup.tsx:327
 msgid "{0} ft·lb over the catapult asymmetry limit"
 msgstr "കാറ്റപ്പൾട്ട് അസമതാ പരിധിയെക്കാൾ {0} ft·lb കൂടുതൽ"
 
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:339
+#: src/components/MissionSetup.tsx:321
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb പരമാവധി വിക്ഷേപണ ഭാരത്തേക്കാൾ കൂടുതൽ"
 
@@ -132,7 +132,7 @@ msgstr "കമ്പി 1"
 msgid "12 hours"
 msgstr "12 മണിക്കൂർ"
 
-#: src/components/MissionSetup.tsx:393
+#: src/components/MissionSetup.tsx:375
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -148,7 +148,7 @@ msgstr "24 മണിക്കൂർ"
 msgid "3 WIRE"
 msgstr "കമ്പി 3"
 
-#: src/components/MissionSetup.tsx:396
+#: src/components/MissionSetup.tsx:378
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -172,8 +172,8 @@ msgstr "ആക്സസ് ലെവൽ"
 msgid "Account type"
 msgstr "അക്കൗണ്ട് തരം"
 
-#: src/components/MissionSetup.tsx:887
-#: src/components/MissionSetup.tsx:1075
+#: src/components/MissionSetup.tsx:864
+#: src/components/MissionSetup.tsx:1040
 #: src/components/Multiplayer.tsx:482
 msgid "Ace"
 msgstr "എയ്സ്"
@@ -188,7 +188,7 @@ msgstr "ലക്ഷ്യം ലോക്ക് ചെയ്യുക"
 msgid "Acquisition mode"
 msgstr "ലക്ഷ്യ പിടിത്ത മോഡ്"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:960
 msgid "Active assists"
 msgstr "സജീവ സഹായങ്ങൾ"
 
@@ -278,11 +278,11 @@ msgstr "AI"
 msgid "Aircraft"
 msgstr "വിമാനം"
 
-#: src/components/MissionSetup.tsx:468
+#: src/components/MissionSetup.tsx:450
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "വിമാനവാഹിനിക്കപ്പൽ <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>, <1>Muhamad Mirza Arrafi</1> നിർമ്മിച്ചത് (Sketchfab), <2>CC BY 4.0</2> പ്രകാരം ലൈസൻസ് ചെയ്തിരിക്കുന്നു. പരിഷ്കരിച്ചു: വലുപ്പം പുനഃക്രമീകരിച്ചു, ദിശ മാറ്റി, ജലരേഖ വരെ മുക്കി, വെബിനായി ലളിതമാക്കി."
 
-#: src/components/MissionSetup.tsx:444
+#: src/components/MissionSetup.tsx:426
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "വിമാന മാതൃക <0>“F/A-18C Hornet”</0>, നിർമ്മിച്ചത് <1>CreadorDeMu</1> (Sketchfab), <2>CC BY 4.0</2> പ്രകാരം ലൈസൻസ് ചെയ്തിരിക്കുന്നു. പരിഷ്കരിച്ചു: ദിശ മാറ്റി വലുപ്പം പുനഃക്രമീകരിച്ചു, ഉപയോഗിക്കാത്ത ടെക്സ്ചർ ഡാറ്റ നീക്കം ചെയ്തു, ബാഹ്യമായി ഘടിപ്പിച്ച ഉപകരണങ്ങൾ പ്രത്യേക ഫയലിലേക്ക് വേർതിരിച്ചു, ഒരു ഷ്രൗഡ് മെഷ് കണ്ണാടിപ്രതിബിംബമാക്കി."
 
@@ -329,7 +329,7 @@ msgstr "ഈ ഫീഡ് സബ്‌സ്‌ക്രൈബ് ചെയ്ത
 msgid "Approach power (ATC)"
 msgstr "സമീപന ശക്തി (ATC)"
 
-#: src/components/MissionSetup.tsx:366
+#: src/components/MissionSetup.tsx:348
 msgid "Approach, on-speed (Vapp)"
 msgstr "സമീപനം, ശരിയായ വേഗതയിൽ (Vapp)"
 
@@ -350,10 +350,6 @@ msgstr "ഈ അഭിപ്രായം ഇല്ലാതാക്കണമെ�
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "ലോഗ് ഔട്ട് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ? നിങ്ങളുടെ അക്കൗണ്ട് ആക്സസ് ചെയ്യാൻ വീണ്ടും ലോഗിൻ ചെയ്യേണ്ടിവരും."
 
-#: src/components/MissionSetup.tsx:1020
-msgid "Armament and stores"
-msgstr "ആയുധങ്ങളും ബാഹ്യ ഉപകരണങ്ങളും"
-
 #: src/components/SettingsDialog.tsx:168
 #: src/components/SettingsDialog.tsx:219
 msgid "Arrestor hook"
@@ -362,6 +358,10 @@ msgstr "തടയൽ കൊളുത്ത്"
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "ആരോഹണ ക്രമം"
+
+#: src/components/MissionSetup.tsx:311
+msgid "asymmetry"
+msgstr "അസമമിതി"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:427
 msgid "Attach comment files"
@@ -396,7 +396,7 @@ msgstr "അവതാർ"
 msgid "Avatar for {name}"
 msgstr "{name}-ന്റെ അവതാർ"
 
-#: src/components/MissionSetup.tsx:1218
+#: src/components/MissionSetup.tsx:1183
 msgid "Avionics, HOTAS and audio"
 msgstr "ഏവിയോണിക്സും HOTAS-ഉം ഓഡിയോയും"
 
@@ -426,7 +426,7 @@ msgstr "ഹോമിലേക്ക് മടങ്ങുക"
 msgid "Balanced flight"
 msgstr "സന്തുലിത പറക്കൽ"
 
-#: src/components/MissionSetup.tsx:879
+#: src/components/MissionSetup.tsx:856
 msgid "Bandit"
 msgstr "ശത്രുവിമാനം"
 
@@ -438,19 +438,19 @@ msgstr "ബാനർ"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250-ന് താഴെ — ഗിയറും ഫ്ലാപ്പും"
 
-#: src/components/MissionSetup.tsx:357
+#: src/components/MissionSetup.tsx:339
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "മികച്ച കയറ്റം (Vy, 100% ത്രസ്റ്റ്)"
 
-#: src/components/MissionSetup.tsx:358
+#: src/components/MissionSetup.tsx:340
 msgid "Best climb (Vy, afterburner)"
 msgstr "മികച്ച കയറ്റം (Vy, ആഫ്റ്റർബർണർ)"
 
-#: src/components/MissionSetup.tsx:360
+#: src/components/MissionSetup.tsx:342
 msgid "Best glide (engines out)"
 msgstr "മികച്ച ഗ്ലൈഡ് (എൻജിനുകൾ ഓഫ്)"
 
-#: src/components/MissionSetup.tsx:362
+#: src/components/MissionSetup.tsx:344
 msgid "Best sustained turn speed"
 msgstr "മികച്ച സുസ്ഥിര തിരിവ് വേഗത"
 
@@ -537,7 +537,7 @@ msgstr "ബട്ടൺ മാപ്പിംഗുകൾ"
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — തുടക്കം മുതൽ ആയുധങ്ങൾ സ്വതന്ത്രം"
 
-#: src/components/MissionSetup.tsx:873
+#: src/components/MissionSetup.tsx:850
 msgid "BVR (Start)"
 msgstr "BVR (തുടക്കം)"
 
@@ -604,31 +604,31 @@ msgstr "അടിക്കുറിപ്പ്"
 msgid "Carrier and ambient"
 msgstr "വാഹിനിക്കപ്പലും പരിസരവും"
 
-#: src/components/MissionSetup.tsx:1082
+#: src/components/MissionSetup.tsx:1047
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:910
+#: src/components/MissionSetup.tsx:887
 msgid "Case I (day)"
 msgstr "കേസ് I (പകൽ)"
 
-#: src/components/MissionSetup.tsx:1083
+#: src/components/MissionSetup.tsx:1048
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:911
+#: src/components/MissionSetup.tsx:888
 msgid "Case II (weather)"
 msgstr "കേസ് II (കാലാവസ്ഥ)"
 
-#: src/components/MissionSetup.tsx:1084
+#: src/components/MissionSetup.tsx:1049
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:912
+#: src/components/MissionSetup.tsx:889
 msgid "Case III (night)"
 msgstr "കേസ് III (രാത്രി)"
 
-#: src/components/MissionSetup.tsx:920
+#: src/components/MissionSetup.tsx:897
 msgid "Catapult"
 msgstr "കാറ്റപ്പൾട്ട്"
 
@@ -743,7 +743,7 @@ msgstr "തിരയൽ അടയ്ക്കുക"
 msgid "closer"
 msgstr "കൂടുതൽ അടുത്ത്"
 
-#: src/components/MissionSetup.tsx:961
+#: src/components/MissionSetup.tsx:933
 msgid "Clouds"
 msgstr "മേഘങ്ങൾ"
 
@@ -814,11 +814,11 @@ msgstr "കാഴ്ച ക്രമീകരണങ്ങൾ കോൺഫിഗ�
 msgid "Confirm"
 msgstr "സ്ഥിരീകരിക്കുക"
 
-#: src/components/MissionSetup.tsx:774
+#: src/components/MissionSetup.tsx:756
 msgid "Connect"
 msgstr "കണക്റ്റ്"
 
-#: src/components/MissionSetup.tsx:761
+#: src/components/MissionSetup.tsx:743
 msgid "Connect to private server"
 msgstr "സ്വകാര്യ സെർവറിലേക്ക് ബന്ധിപ്പിക്കുക"
 
@@ -871,7 +871,7 @@ msgstr "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത�
 msgid "Copy"
 msgstr "പകർത്തുക"
 
-#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:343
 msgid "Corner speed (best instant turn)"
 msgstr "കോർണർ വേഗത (മികച്ച തൽക്ഷണ തിരിവ്)"
 
@@ -896,7 +896,7 @@ msgstr "പ്രൊഫൈൽ സംരക്ഷിക്കാനായില�
 msgid "Could not save the recording"
 msgstr "റെക്കോർഡിംഗ് സേവ് ചെയ്യാനായില്ല"
 
-#: src/components/MissionSetup.tsx:619
+#: src/components/MissionSetup.tsx:601
 msgid "Could not send the message"
 msgstr "സന്ദേശം അയയ്ക്കാനായില്ല"
 
@@ -950,8 +950,8 @@ msgstr "സൃഷ്ടിച്ച് പറക്കുക"
 msgid "Create match"
 msgstr "മത്സരം സൃഷ്ടിക്കുക"
 
-#: src/components/MissionSetup.tsx:1186
-#: src/components/MissionSetup.tsx:1253
+#: src/components/MissionSetup.tsx:1151
+#: src/components/MissionSetup.tsx:1221
 msgid "Create mission"
 msgstr "ദൗത്യം സൃഷ്ടിക്കുക"
 
@@ -969,12 +969,12 @@ msgstr "സൃഷ്ടിച്ചു"
 msgid "Creating..."
 msgstr "സൃഷ്ടിക്കുന്നു..."
 
-#: src/components/MissionSetup.tsx:433
-#: src/components/MissionSetup.tsx:439
+#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:421
 msgid "Credits"
 msgstr "ക്രെഡിറ്റുകൾ"
 
-#: src/components/MissionSetup.tsx:968
+#: src/components/MissionSetup.tsx:940
 #: src/components/Multiplayer.tsx:76
 #: src/components/Multiplayer.tsx:366
 msgid "Cumulus"
@@ -1010,7 +1010,7 @@ msgstr "ഡാറ്റ വൈരുദ്ധ്യം"
 msgid "Date"
 msgstr "തീയതി"
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:926
 #: src/components/Multiplayer.tsx:361
 msgid "Day"
 msgstr "പകൽ"
@@ -1082,7 +1082,7 @@ msgstr "കാഴ്ച ഇല്ലാതാക്കുക"
 msgid "Delete your account on the old server"
 msgstr "പഴയ സെർവറിൽ നിങ്ങളുടെ അക്കൗണ്ട് ഇല്ലാതാക്കുക"
 
-#: src/components/MissionSetup.tsx:899
+#: src/components/MissionSetup.tsx:876
 msgid "Departure / Recovery"
 msgstr "ടേക്ക്ഓഫ് / ലാൻഡിംഗ്"
 
@@ -1150,7 +1150,7 @@ msgstr "വിച്ഛേദിച്ചു"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
-#: src/components/MissionSetup.tsx:1149
+#: src/components/MissionSetup.tsx:1114
 msgid "Dismiss"
 msgstr "ഒഴിവാക്കുക"
 
@@ -1300,7 +1300,7 @@ msgstr "ഒഴിഞ്ഞ പൈലൺ"
 msgid "ENGAGED"
 msgstr "ആക്രമിക്കുന്നു"
 
-#: src/components/MissionSetup.tsx:866
+#: src/components/MissionSetup.tsx:843
 msgid "Engagement"
 msgstr "ഏറ്റുമുട്ടൽ"
 
@@ -1319,10 +1319,6 @@ msgstr "നിങ്ങളുടെ ഇമെയിലിലെ കോഡ് ന
 #: ../../../lib/web/src/components/step-up-dialog.tsx:327
 msgid "Enter your authenticator code"
 msgstr "നിങ്ങളുടെ ഓതെന്റിക്കേറ്റർ കോഡ് നൽകുക"
-
-#: src/components/MissionSetup.tsx:942
-msgid "Environment"
-msgstr "പരിസരം"
 
 #: src/components/GameCanvas.tsx:317
 msgid "Everyone"
@@ -1376,15 +1372,15 @@ msgstr "ബാഹ്യ URL"
 msgid "Extra large"
 msgstr "അധിക വലുത്"
 
-#: src/components/MissionSetup.tsx:1248
+#: src/components/MissionSetup.tsx:1213
 msgid "F/A-18C Hornet"
 msgstr "F/A-18C Hornet"
 
-#: src/components/MissionSetup.tsx:381
+#: src/components/MissionSetup.tsx:363
 msgid "F/A-18C reference"
 msgstr "F/A-18C അവലംബം"
 
-#: src/components/MissionSetup.tsx:1127
+#: src/components/MissionSetup.tsx:1092
 msgid "F/A-18C Strike Fighter"
 msgstr "F/A-18C സ്ട്രൈക്ക് ഫൈറ്റർ"
 
@@ -1517,7 +1513,7 @@ msgstr "കടലിൽ പതിച്ചു"
 msgid "Flight"
 msgstr "പറക്കൽ"
 
-#: src/components/MissionSetup.tsx:984
+#: src/components/MissionSetup.tsx:956
 msgid "Flight assists"
 msgstr "പറക്കൽ സഹായങ്ങൾ"
 
@@ -1529,13 +1525,9 @@ msgstr "ഫ്ലൈറ്റ് കോർ പരാജയപ്പെട്ട�
 msgid "Flight hints"
 msgstr "പറക്കൽ സൂചനകൾ"
 
-#: src/components/MissionSetup.tsx:1233
+#: src/components/MissionSetup.tsx:1198
 msgid "Flight log"
 msgstr "ഫ്ലൈറ്റ് ലോഗ്"
-
-#: src/components/MissionSetup.tsx:844
-msgid "Flight profile"
-msgstr "പറക്കൽ പ്രൊഫൈൽ"
 
 #: src/components/MatchLog.tsx:174
 msgid "Flights"
@@ -1545,8 +1537,8 @@ msgstr "പറക്കലുകൾ"
 msgid "Flown"
 msgstr "പറന്നു"
 
-#: src/components/MissionSetup.tsx:1172
-#: src/components/MissionSetup.tsx:1268
+#: src/components/MissionSetup.tsx:1137
+#: src/components/MissionSetup.tsx:1238
 msgid "Fly"
 msgstr "പറക്കുക"
 
@@ -1559,7 +1551,7 @@ msgid "Framerate counter"
 msgstr "ഫ്രെയിംറേറ്റ് കൗണ്ടർ"
 
 #: src/components/MatchLog.tsx:86
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:833
 msgid "Free flight"
 msgstr "സ്വതന്ത്ര പറക്കൽ"
 
@@ -1649,7 +1641,7 @@ msgstr "ഗ്രാഫിക്സ്"
 msgid "Graphics preset"
 msgstr "ഗ്രാഫിക്സ് പ്രീസെറ്റ്"
 
-#: src/components/MissionSetup.tsx:309
+#: src/components/MissionSetup.tsx:297
 msgid "Gross weight"
 msgstr "മൊത്തം ഭാരം"
 
@@ -1679,7 +1671,7 @@ msgstr "പീരങ്കികൾ മാത്രം"
 msgid "Guns only"
 msgstr "പീരങ്കികൾ മാത്രം"
 
-#: src/components/MissionSetup.tsx:1144
+#: src/components/MissionSetup.tsx:1109
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "ഹാർഡ്‌വെയർ ഗ്രാഫിക്സ് ത്വരണം ഓഫാണ് — ബ്രൗസർ ക്രമീകരണങ്ങളോ ഗ്രാഫിക്സ് ഡ്രൈവറുകളോ പരിശോധിക്കുക."
 
@@ -1691,15 +1683,11 @@ msgstr "തല"
 msgid "Head tracking"
 msgstr "ഹെഡ് ട്രാക്കിംഗ്"
 
-#: src/components/MissionSetup.tsx:317
-msgid "Heavy"
-msgstr "അമിതഭാരം"
-
 #: src/components/SettingsDialog.tsx:769
 msgid "High"
 msgstr "ഉയർന്നത്"
 
-#: src/components/MissionSetup.tsx:969
+#: src/components/MissionSetup.tsx:941
 #: src/components/Multiplayer.tsx:77
 #: src/components/Multiplayer.tsx:367
 msgid "High stratus"
@@ -1757,8 +1745,8 @@ msgstr "ഇംപീരിയൽ"
 msgid "Import"
 msgstr "ഇറക്കുമതി"
 
-#: src/components/MissionSetup.tsx:907
-#: src/components/MissionSetup.tsx:1079
+#: src/components/MissionSetup.tsx:884
+#: src/components/MissionSetup.tsx:1044
 msgid "In air"
 msgstr "വായുവിൽ"
 
@@ -1782,7 +1770,7 @@ msgstr "ഇൻപുട്ട് ഹാർഡ്‌വെയർ"
 msgid "Interests"
 msgstr "താൽപ്പര്യങ്ങൾ"
 
-#: src/components/MissionSetup.tsx:295
+#: src/components/MissionSetup.tsx:292
 msgid "Internal fuel"
 msgstr "ആന്തരിക ഇന്ധനം"
 
@@ -1790,7 +1778,7 @@ msgstr "ആന്തരിക ഇന്ധനം"
 msgid "Invalid date"
 msgstr "അസാധുവായ തീയതി"
 
-#: src/components/MissionSetup.tsx:995
+#: src/components/MissionSetup.tsx:967
 #: src/components/Multiplayer.tsx:80
 msgid "Invulnerable"
 msgstr "അജയ്യൻ"
@@ -1799,7 +1787,7 @@ msgstr "അജയ്യൻ"
 msgid "INVULNERABLE"
 msgstr "അജയ്യത"
 
-#: src/components/MissionSetup.tsx:995
+#: src/components/MissionSetup.tsx:967
 #: src/components/Multiplayer.tsx:437
 msgid "Invulnerable (human players only)"
 msgstr "അജയ്യത (മനുഷ്യ കളിക്കാർക്ക് മാത്രം)"
@@ -1826,8 +1814,8 @@ msgstr "ഉപേക്ഷിക്കൽ: ലാൻഡിംഗ് ഗിയർ
 msgid "Join"
 msgstr "ചേരുക"
 
-#: src/components/MissionSetup.tsx:718
-#: src/components/MissionSetup.tsx:1201
+#: src/components/MissionSetup.tsx:700
+#: src/components/MissionSetup.tsx:1166
 msgid "Join server"
 msgstr "സെർവറിൽ ചേരുക"
 
@@ -1836,7 +1824,7 @@ msgid "JOINED"
 msgstr "ചേർന്നു"
 
 #: src/components/MatchLog.tsx:84
-#: src/components/MissionSetup.tsx:1089
+#: src/components/MissionSetup.tsx:1054
 #: src/components/Multiplayer.tsx:548
 msgid "Joust"
 msgstr "ദ്വന്ദ്വം"
@@ -1845,7 +1833,7 @@ msgstr "ദ്വന്ദ്വം"
 msgid "Joust — 1v1, first kill wins"
 msgstr "ദ്വന്ദ്വയുദ്ധം — 1v1, ആദ്യം വീഴ്ത്തുന്നയാൾ ജയിക്കും"
 
-#: src/components/MissionSetup.tsx:857
+#: src/components/MissionSetup.tsx:834
 msgid "Joust against bot"
 msgstr "ദ്വന്ദ്വയുദ്ധം ബോട്ടിനെതിരെ"
 
@@ -1908,10 +1896,6 @@ msgstr "വലുത്"
 msgid "LATE"
 msgstr "വൈകി"
 
-#: src/components/MissionSetup.tsx:330
-msgid "Lateral asymmetry"
-msgstr "പാർശ്വ അസമമിതി"
-
 #: src/components/SettingsDialog.tsx:171
 #: src/components/SettingsDialog.tsx:225
 msgid "Launch (catapult)"
@@ -1929,7 +1913,7 @@ msgstr "ലേഔട്ട്"
 msgid "lb"
 msgstr "lb"
 
-#: src/components/MissionSetup.tsx:796
+#: src/components/MissionSetup.tsx:778
 msgid "Leave server"
 msgstr "സെർവർ വിടുക"
 
@@ -2061,7 +2045,7 @@ msgstr "മുകളിലേക്ക് നോക്കുക"
 msgid "Low"
 msgstr "താഴ്ന്നത്"
 
-#: src/components/MissionSetup.tsx:971
+#: src/components/MissionSetup.tsx:943
 #: src/components/Multiplayer.tsx:79
 #: src/components/Multiplayer.tsx:369
 msgid "Low stratus"
@@ -2109,7 +2093,7 @@ msgstr "മാസ്റ്റർ വോളിയം"
 msgid "Match type"
 msgstr "മത്സരത്തിന്റെ തരം"
 
-#: src/components/MissionSetup.tsx:791
+#: src/components/MissionSetup.tsx:773
 msgid "Matches"
 msgstr "മത്സരങ്ങൾ"
 
@@ -2144,7 +2128,7 @@ msgstr "മെനു"
 msgid "Merge — fight on at the pass"
 msgstr "മെർജ് — കടന്നുപോകുമ്പോൾ പോരാട്ടം തുടങ്ങുന്നു"
 
-#: src/components/MissionSetup.tsx:872
+#: src/components/MissionSetup.tsx:849
 msgid "Merge (Pass)"
 msgstr "മെർജ് (കടന്നുപോകൽ)"
 
@@ -2156,7 +2140,7 @@ msgstr "സന്ദേശം"
 msgid "Message everyone"
 msgstr "എല്ലാവർക്കും മെസ്സേജ് അയയ്ക്കുക"
 
-#: src/components/MissionSetup.tsx:654
+#: src/components/MissionSetup.tsx:636
 msgid "Message players on this server"
 msgstr "ഈ സെർവറിലെ കളിക്കാർക്ക് സന്ദേശം അയയ്ക്കുക"
 
@@ -2168,7 +2152,7 @@ msgstr "നിങ്ങളുടെ ടീമിന് മെസ്സേജ് 
 msgid "Metric"
 msgstr "മെട്രിക്"
 
-#: src/components/MissionSetup.tsx:970
+#: src/components/MissionSetup.tsx:942
 #: src/components/Multiplayer.tsx:78
 #: src/components/Multiplayer.tsx:368
 msgid "Mid stratus"
@@ -2178,7 +2162,7 @@ msgstr "ഇടത്തരം സ്ട്രാറ്റസ്"
 msgid "Midair collision"
 msgstr "ആകാശത്ത് കൂട്ടിയിടി"
 
-#: src/components/MissionSetup.tsx:515
+#: src/components/MissionSetup.tsx:497
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway Atoll ഭൂപടം — ചിത്രങ്ങളിൽ പരിഷ്‌കരിച്ച <0>Copernicus Sentinel-2</0> ഡാറ്റ ഉൾപ്പെടുന്നു (2026); വിമാനത്താവളത്തിന്റെ ജ്യാമിതി (റൺവേ, ടാക്‌സിവേകൾ, അപ്രണുകൾ) © <1>OpenStreetMap</1> സംഭാവകർ, <2>ODbL</2> പ്രകാരം ലൈസൻസ് ചെയ്‌തത്; തീരരേഖയും പവിഴപ്പുറ്റ് ഡാറ്റയും <3>NOAA NCCOS</3> ൽ നിന്ന് (പൊതുസഞ്ചയം)."
 
@@ -2190,7 +2174,7 @@ msgstr "കുറഞ്ഞ നീളം"
 msgid "MISSILE"
 msgstr "മിസൈൽ"
 
-#: src/components/MissionSetup.tsx:492
+#: src/components/MissionSetup.tsx:474
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "മിസൈൽ മോഡൽ <0>“AIM-120C AMRAAM”</0>, <1>Pippa</1> നിർമ്മിച്ചത് (Sketchfab), <2>CC BY 4.0</2> പ്രകാരം ലൈസൻസ് ചെയ്തിരിക്കുന്നു. പരിഷ്കരിച്ചു: പുനഃസ്കെയിൽ, പുനഃക്രമീകരണം, ഘടിപ്പിക്കാനായി കേന്ദ്രീകരണം."
 
@@ -2219,7 +2203,7 @@ msgstr "കൂടുതൽ ഓപ്ഷനുകൾ"
 msgid "Move…"
 msgstr "ചലിപ്പിക്കുക…"
 
-#: src/components/MissionSetup.tsx:1203
+#: src/components/MissionSetup.tsx:1168
 msgid "Multiplayer dogfights"
 msgstr "മൾട്ടിപ്ലെയർ വ്യോമപോരാട്ടങ്ങൾ"
 
@@ -2263,7 +2247,7 @@ msgstr "പുതിയ ഗെയിം"
 msgid "Next image"
 msgstr "അടുത്ത ചിത്രം"
 
-#: src/components/MissionSetup.tsx:955
+#: src/components/MissionSetup.tsx:927
 #: src/components/Multiplayer.tsx:75
 #: src/components/Multiplayer.tsx:362
 msgid "Night"
@@ -2365,7 +2349,7 @@ msgstr "ഉപയോക്താക്കളെ കണ്ടെത്തിയ�
 msgid "No views"
 msgstr "വ്യൂകളൊന്നുമില്ല"
 
-#: src/components/MissionSetup.tsx:631
+#: src/components/MissionSetup.tsx:613
 #: src/components/Multiplayer.tsx:531
 msgid "No world server."
 msgstr "വേൾഡ് സെർവർ ഇല്ല."
@@ -2373,10 +2357,6 @@ msgstr "വേൾഡ് സെർവർ ഇല്ല."
 #: src/components/GameCanvas.tsx:70
 msgid "NO-GRADE"
 msgstr "ഗ്രേഡ് ഇല്ല"
-
-#: src/components/MissionSetup.tsx:321
-msgid "Nominal"
-msgstr "സാധാരണം"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:349
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:538
@@ -2392,7 +2372,7 @@ msgstr "സാധാരണം"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:204
-#: src/components/MissionSetup.tsx:967
+#: src/components/MissionSetup.tsx:939
 #: src/components/SettingsDialog.tsx:439
 #: src/components/SettingsDialog.tsx:515
 #: src/components/SettingsDialog.tsx:701
@@ -2424,7 +2404,7 @@ msgstr "സജ്ജമാക്കിയിട്ടില്ല"
 msgid "Nothing found"
 msgstr "ഒന്നും കണ്ടെത്തിയില്ല"
 
-#: src/components/MissionSetup.tsx:631
+#: src/components/MissionSetup.tsx:613
 msgid "Nothing yet — say hello."
 msgstr "ഇതുവരെ ഒന്നുമില്ല — ഹലോ പറയൂ."
 
@@ -2433,8 +2413,8 @@ msgstr "ഇതുവരെ ഒന്നുമില്ല — ഹലോ പറ�
 msgid "Notifications: {0}"
 msgstr "അറിയിപ്പുകൾ: {0}"
 
-#: src/components/MissionSetup.tsx:885
-#: src/components/MissionSetup.tsx:1073
+#: src/components/MissionSetup.tsx:862
+#: src/components/MissionSetup.tsx:1038
 #: src/components/Multiplayer.tsx:480
 msgid "Novice"
 msgstr "തുടക്കക്കാരൻ"
@@ -2461,13 +2441,13 @@ msgstr "OK"
 msgid "On"
 msgstr "ഓൺ"
 
-#: src/components/MissionSetup.tsx:909
-#: src/components/MissionSetup.tsx:1081
+#: src/components/MissionSetup.tsx:886
+#: src/components/MissionSetup.tsx:1046
 msgid "On carrier"
 msgstr "വാഹിനിക്കപ്പലിൽ"
 
-#: src/components/MissionSetup.tsx:908
-#: src/components/MissionSetup.tsx:1080
+#: src/components/MissionSetup.tsx:885
+#: src/components/MissionSetup.tsx:1045
 msgid "On runway"
 msgstr "റൺവേയിൽ"
 
@@ -2583,15 +2563,15 @@ msgstr "പാറ്റേൺ (regex)"
 msgid "Performance priority"
 msgstr "പ്രകടനത്തിന് മുൻഗണന"
 
-#: src/components/MissionSetup.tsx:577
+#: src/components/MissionSetup.tsx:559
 #: src/components/Multiplayer.tsx:140
 #: src/components/Multiplayer.tsx:309
 msgid "pilot"
 msgstr "പൈലറ്റ്"
 
-#: src/components/MissionSetup.tsx:886
-#: src/components/MissionSetup.tsx:1074
-#: src/components/MissionSetup.tsx:1133
+#: src/components/MissionSetup.tsx:863
+#: src/components/MissionSetup.tsx:1039
+#: src/components/MissionSetup.tsx:1098
 #: src/components/Multiplayer.tsx:481
 msgid "Pilot"
 msgstr "പൈലറ്റ്"
@@ -2693,7 +2673,7 @@ msgstr "നിരോധിതമോ നിയമവിരുദ്ധമോ ആ�
 msgid "Project members"
 msgstr "പ്രോജക്റ്റ് അംഗങ്ങൾ"
 
-#: src/components/MissionSetup.tsx:745
+#: src/components/MissionSetup.tsx:727
 msgid "Public servers"
 msgstr "പൊതു സെർവറുകൾ"
 
@@ -2734,7 +2714,7 @@ msgstr "ഈ സെർവറിൽ നിങ്ങളുടെ അക്കൗണ
 msgid "Re-register your passkeys on this server"
 msgstr "ഈ സെർവറിൽ നിങ്ങളുടെ പാസ്‌കീകൾ വീണ്ടും രജിസ്റ്റർ ചെയ്യുക"
 
-#: src/components/MissionSetup.tsx:1163
+#: src/components/MissionSetup.tsx:1128
 msgid "Ready for Sortie"
 msgstr "സോർട്ടിക്ക് തയ്യാർ"
 
@@ -2742,7 +2722,7 @@ msgstr "സോർട്ടിക്ക് തയ്യാർ"
 msgid "REARMED"
 msgstr "വീണ്ടും ആയുധസജ്ജം"
 
-#: src/components/MissionSetup.tsx:724
+#: src/components/MissionSetup.tsx:706
 msgid "Recent"
 msgstr "സമീപകാലം"
 
@@ -2784,7 +2764,7 @@ msgstr "ലോഗിനിലേക്ക് തിരിച്ചുവിട�
 msgid "Reduce interest"
 msgstr "പുതുക്കുക"
 
-#: src/components/MissionSetup.tsx:375
+#: src/components/MissionSetup.tsx:357
 msgid "Reference"
 msgstr "അവലംബം"
 
@@ -2862,7 +2842,7 @@ msgstr "പേജ് പുനർനാമകരണം ചെയ്യുക"
 msgid "Rename this board column"
 msgstr "design മാറ്റിസ്ഥാപിക്കണോ?"
 
-#: src/components/MissionSetup.tsx:549
+#: src/components/MissionSetup.tsx:531
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "റെൻഡറിംഗ് <0>three.js</0> വഴി (MIT ലൈസൻസ്)."
 
@@ -3019,7 +2999,7 @@ msgstr "ശനിയാഴ്ച"
 msgid "Save"
 msgstr "സേവ് ചെയ്യുക"
 
-#: src/components/MissionSetup.tsx:390
+#: src/components/MissionSetup.tsx:372
 msgid "Sea level"
 msgstr "സമുദ്രനിരപ്പ്"
 
@@ -3138,7 +3118,7 @@ msgstr "തിരഞ്ഞെടുക്കുക..."
 msgid "Selected: <0>{0}</0>"
 msgstr "തിരഞ്ഞെടുത്തത്: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:661
+#: src/components/MissionSetup.tsx:643
 msgid "Send"
 msgstr "അയയ്ക്കുക"
 
@@ -3167,7 +3147,7 @@ msgstr "സെരിഫ്"
 msgid "Server"
 msgstr "സെർവർ"
 
-#: src/components/MissionSetup.tsx:626
+#: src/components/MissionSetup.tsx:608
 msgid "Server chat"
 msgstr "സെർവർ ചാറ്റ്"
 
@@ -3206,7 +3186,7 @@ msgstr "ഉത്ഭവവും ലക്ഷ്യസ്ഥാനവും സ�
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:418
-#: src/components/MissionSetup.tsx:1216
+#: src/components/MissionSetup.tsx:1181
 #: src/components/SettingsDialog.tsx:999
 #: src/components/SettingsDialog.tsx:1001
 msgid "Settings"
@@ -3250,7 +3230,7 @@ msgstr "സൈൻ ഔട്ട് ചെയ്യുന്നു..."
 msgid "Single line of text only"
 msgstr "ഒറ്റ വരി ടെക്സ്റ്റ് മാത്രം"
 
-#: src/components/MissionSetup.tsx:359
+#: src/components/MissionSetup.tsx:341
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "ഒറ്റ എൻജിൻ മികച്ച കയറ്റം (Vyse, ആഫ്റ്റർബർണർ)"
 
@@ -3263,7 +3243,7 @@ msgstr "ചെറുത്"
 msgid "Sort"
 msgstr "അടുക്കുക"
 
-#: src/components/MissionSetup.tsx:1235
+#: src/components/MissionSetup.tsx:1200
 msgid "Sortie log and replays"
 msgstr "സോർട്ടി ലോഗും റീപ്ലേകളും"
 
@@ -3301,7 +3281,7 @@ msgstr "ഏർ ബ്രേക്ക്"
 msgid "Speed brake"
 msgstr "ഏർ ബ്രേക്ക്"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:398
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "വേഗതകൾ KCAS-ൽ, ഭാരം കുറഞ്ഞത് (കുറഞ്ഞ ഇന്ധനം, ആയുധങ്ങളില്ല) മുതൽ ഭാരം കൂടിയത് (പരമാവധി മൊത്തഭാരം) വരെയുള്ള ഒരു ശ്രേണിയായി. ഡാറ്റ ഗെയിമിനുള്ളിൽ പരീക്ഷണാത്മകമായി നേടിയത്. യഥാർത്ഥ വിമാനത്തിൽ നിന്നുള്ള ഏതൊരു വ്യത്യാസവും സിമുലേറ്ററിന്റെ ഫ്ലൈറ്റ് മോഡലിലെ പിശകുകളെ പ്രതിഫലിപ്പിക്കുന്നു."
 
@@ -3309,11 +3289,11 @@ msgstr "വേഗതകൾ KCAS-ൽ, ഭാരം കുറഞ്ഞത് (ക�
 msgid "SPLASH"
 msgstr "ലക്ഷ്യം തകർത്തു"
 
-#: src/components/MissionSetup.tsx:364
+#: src/components/MissionSetup.tsx:346
 msgid "Stall, clean (Vs1)"
 msgstr "സ്റ്റാൾ, ക്ലീൻ (Vs1)"
 
-#: src/components/MissionSetup.tsx:365
+#: src/components/MissionSetup.tsx:347
 msgid "Stall, landing config (Vs0)"
 msgstr "സ്റ്റാൾ, ലാൻഡിംഗ് കോൺഫിഗ് (Vs0)"
 
@@ -3325,11 +3305,11 @@ msgstr "ആരംഭിക്കുക"
 msgid "Start the discussion by adding the first comment."
 msgstr "ആദ്യത്തെ കമന്റ് ചേർത്ത് ചർച്ച ആരംഭിക്കുക."
 
-#: src/components/MissionSetup.tsx:355
+#: src/components/MissionSetup.tsx:337
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "ഏറ്റവും കുത്തനെയുള്ള കയറ്റം (Vx, 100% ത്രസ്റ്റ്)"
 
-#: src/components/MissionSetup.tsx:356
+#: src/components/MissionSetup.tsx:338
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "ഏറ്റവും കുത്തനെയുള്ള കയറ്റം (Vx, ആഫ്റ്റർബർണർ)"
 
@@ -3359,8 +3339,8 @@ msgstr "സബ്സ്ക്രൈബ് ചെയ്യുക"
 msgid "Sunday"
 msgstr "ഞായറാഴ്ച"
 
-#: src/components/MissionSetup.tsx:888
-#: src/components/MissionSetup.tsx:1076
+#: src/components/MissionSetup.tsx:865
+#: src/components/MissionSetup.tsx:1041
 #: src/components/Multiplayer.tsx:483
 msgid "Superhuman"
 msgstr "അതിമാനുഷൻ"
@@ -3396,11 +3376,11 @@ msgstr "ടാഗുകൾ"
 msgid "TALLY"
 msgstr "ശത്രു ദൃഷ്ടിയിൽ"
 
-#: src/components/MissionSetup.tsx:850
+#: src/components/MissionSetup.tsx:827
 msgid "Task"
 msgstr "ടാസ്ക്"
 
-#: src/components/MissionSetup.tsx:1188
+#: src/components/MissionSetup.tsx:1153
 msgid "Tasks, weather and loadout"
 msgstr "ടാസ്കുകളും കാലാവസ്ഥയും ലോഡ്ഔട്ടും"
 
@@ -3463,7 +3443,7 @@ msgstr "അഭ്യർത്ഥിച്ച ഉള്ളടക്കം കണ�
 msgid "The server returned a web page instead of data."
 msgstr "സെർവർ ഡാറ്റയ്ക്ക് പകരം ഒരു വെബ് പേജ് തിരികെ നൽകി."
 
-#: src/components/MissionSetup.tsx:1142
+#: src/components/MissionSetup.tsx:1107
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "ഈ ബ്രൗസർ WebGL 2 പിന്തുണയ്ക്കുന്നില്ല, അതിനാൽ ഗെയിം പ്രവർത്തിക്കില്ല — മറ്റൊരു ബ്രൗസർ ശ്രമിക്കുക."
 
@@ -3471,7 +3451,7 @@ msgstr "ഈ ബ്രൗസർ WebGL 2 പിന്തുണയ്ക്കു�
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "ഈ ലോബി നിങ്ങളുടെ ഗെയിം കണക്ഷൻ മറ്റൊരു സെർവറിലേക്ക് ({redirectHost}) തിരിച്ചുവിടുന്നു. ഈ സെർവറിനെ വിശ്വസിക്കുന്നെങ്കിൽ മാത്രം തുടരുക."
 
-#: src/components/MissionSetup.tsx:1146
+#: src/components/MissionSetup.tsx:1111
 msgid "This machine may be too slow for smooth flight."
 msgstr "സുഗമമായ പറക്കലിന് ഈ യന്ത്രം വളരെ പതുക്കെയായിരിക്കാം."
 
@@ -3497,7 +3477,7 @@ msgstr "ത്രോട്ടിൽ കൂട്ടുക"
 msgid "Thursday"
 msgstr "വ്യാഴാഴ്ച"
 
-#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:345
 msgid "Tightest sustained turn speed"
 msgstr "ഏറ്റവും ഇറുകിയ സുസ്ഥിര തിരിവ് വേഗത"
 
@@ -3509,7 +3489,7 @@ msgstr "ചരിക്കുക"
 msgid "Time"
 msgstr "സമയം"
 
-#: src/components/MissionSetup.tsx:948
+#: src/components/MissionSetup.tsx:920
 msgid "Time of day"
 msgstr "ദിവസത്തിലെ സമയം"
 
@@ -3677,23 +3657,23 @@ msgstr "അജ്ഞാതം"
 msgid "Unlimited"
 msgstr "പരിധിയില്ല"
 
-#: src/components/MissionSetup.tsx:1001
+#: src/components/MissionSetup.tsx:973
 #: src/components/Multiplayer.tsx:81
 #: src/components/Multiplayer.tsx:447
 msgid "Unlimited ammunition"
 msgstr "പരിധിയില്ലാത്ത വെടിക്കോപ്പുകൾ"
 
-#: src/components/MissionSetup.tsx:1001
+#: src/components/MissionSetup.tsx:973
 msgid "Unlimited ammunition (all players)"
 msgstr "പരിധിയില്ലാത്ത വെടിക്കോപ്പുകൾ (എല്ലാ കളിക്കാരും)"
 
-#: src/components/MissionSetup.tsx:1007
+#: src/components/MissionSetup.tsx:979
 #: src/components/Multiplayer.tsx:82
 #: src/components/Multiplayer.tsx:457
 msgid "Unlimited fuel"
 msgstr "പരിധിയില്ലാത്ത ഇന്ധനം"
 
-#: src/components/MissionSetup.tsx:1007
+#: src/components/MissionSetup.tsx:979
 msgid "Unlimited fuel (all players)"
 msgstr "പരിധിയില്ലാത്ത ഇന്ധനം (എല്ലാ കളിക്കാരും)"
 
@@ -3744,7 +3724,7 @@ msgstr "സ്ഥിരീകരിക്കുക"
 msgid "Verify email address"
 msgstr "ഇമെയിൽ വിലാസം സ്ഥിരീകരിക്കുക"
 
-#: src/components/MissionSetup.tsx:406
+#: src/components/MissionSetup.tsx:388
 msgid "Vertical"
 msgstr "ലംബം"
 
@@ -3847,7 +3827,7 @@ msgstr "ജയിക്കുന്നു"
 msgid "World server"
 msgstr "വേൾഡ് സെർവർ"
 
-#: src/components/MissionSetup.tsx:619
+#: src/components/MissionSetup.tsx:601
 #: src/components/Multiplayer.tsx:153
 msgid "World server not reachable"
 msgstr "വേൾഡ് സെർവറിലേക്ക് എത്താനാകുന്നില്ല"

@@ -87,6 +87,7 @@ export function MenuDialog({
   wide,
   steady,
   guarded,
+  footer,
   children,
 }: {
   open: boolean
@@ -95,6 +96,7 @@ export function MenuDialog({
   wide?: boolean
   steady?: boolean
   guarded?: boolean
+  footer?: ReactNode
   children: ReactNode
 }) {
   return (
@@ -103,7 +105,7 @@ export function MenuDialog({
         onInteractOutside={guarded ? (e) => e.preventDefault() : undefined}
         className={`${
           wide ? 'sm:max-w-4xl' : 'sm:max-w-2xl'
-        }${steady ? ' h-[min(48rem,calc(100svh-2rem))]' : ''}`}
+        }${steady ? ' h-[min(53rem,calc(100svh-2rem))]' : ''}`}
       >
         <DialogHeader className='border-b border-border pb-3'>
           <DialogTitle className='text-lg font-semibold tracking-tight'>
@@ -111,6 +113,9 @@ export function MenuDialog({
           </DialogTitle>
         </DialogHeader>
         <div className='flex min-h-0 flex-1 flex-col overflow-y-auto pt-2'>{children}</div>
+        {/* Outside the scroller: a footer holds the dialog's primary action,
+            which must never scroll out of reach with the body. */}
+        {footer && <div className='border-border border-t pt-2'>{footer}</div>}
       </DialogContent>
     </Dialog>
   )
