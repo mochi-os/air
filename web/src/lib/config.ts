@@ -127,7 +127,6 @@ export interface MissionConfig {
   stores: Record<string, StationSlot> // per-station loadout (#17), station number -> slot; replaced the missiles boolean (legacy saves migrate in the store's load merge)
   sound: boolean
   volume: Record<string, number> // Sound-tab mixer, percent per bus: master, engine, aircraft, weapons, environment, alerts
-  invert: boolean
   framerate: boolean
   world: string
   callsign: string
@@ -167,7 +166,7 @@ export const DEFAULT_CONFIG: MissionConfig = {
   task: 'joust',
   bandit: 'ace',
   fuel: 10800, // full internal — combat loads are a slider pull away
-  record: true, // flight recorder (#212): always running, saved from History
+  record: true, // flight recorder (#212): always running, saved from the log
   aircraft: 'fa18c',
   joystick: '',
   sticks: {},
@@ -193,7 +192,6 @@ export const DEFAULT_CONFIG: MissionConfig = {
   stores: PRESETS.fox2, // new players fly the Fox 2 preset — six heaters, the armed bot standard's round count (#17, decided 2026-08-05)
   sound: true,
   volume: { master: 80, engine: 100, aircraft: 100, weapons: 100, environment: 100, alerts: 100 },
-  invert: false,
   framerate: false,
   world: '',
   callsign: '',

@@ -4,7 +4,7 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 // The buffered flight, reachable WITHOUT the engine: importing an accessor from
-// engine.ts would drag three.js into the History page's chunk. The engine
+// engine.ts would drag three.js into the log page's chunk. The engine
 // PUBLISHES here at mission start. It holds a FUNCTION, not a value - the
 // recorder is still filling - and the module state survives GameCanvas
 // unmounting.

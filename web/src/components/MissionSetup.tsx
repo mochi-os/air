@@ -1221,7 +1221,7 @@ export function MissionSetup({
           </Card>
 
           <Link
-            to='/history'
+            to='/log'
             search={(prev) => prev}
             className='contents'
           >
@@ -1232,7 +1232,7 @@ export function MissionSetup({
               <div className='flex-1 min-w-0'>
                 <div className='text-sm font-semibold truncate'><Trans>Flight log</Trans></div>
                 <div className='text-muted-foreground text-[11px] leading-tight line-clamp-1'>
-                  <Trans>Sortie history and replays</Trans>
+                  <Trans>Sortie log and replays</Trans>
                 </div>
               </div>
             </Card>

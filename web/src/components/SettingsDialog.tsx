@@ -49,7 +49,7 @@ import { SliderRow, SwitchRow, MenuDialog, SectionLabel } from './menu-parts'
 const TAB_FIELDS: Record<string, string[]> = {
   mission: ['task', 'start', 'cat', 'world', 'aircraft', 'bandit', 'fuel', 'stores', 'cheats', 'tod', 'clouds'],
   general: ['callsign', 'record', 'hints'],
-  controls: ['invert', 'joystick', 'sticks'],
+  controls: ['joystick', 'sticks'],
   keys: ['keys'],
   sound: ['sound', 'volume'],
   graphics: ['render_scale', 'dyn_res', 'lod', 'shadows', 'exterior_detail', 'effects_quality', 'ocean_segments', 'afterburner', 'tracers', 'framerate'],
@@ -385,12 +385,6 @@ function JoystickPanel({
             <input ref={fileRef} type='file' accept='application/json,.json' className='hidden' onChange={importProfile} />
           </div>
 
-          <SwitchRow
-            id='invert'
-            label={<Trans>Invert pitch axis</Trans>}
-            checked={config.invert}
-            onChange={(v) => set('invert', v)}
-          />
         </div>
       </section>
 
@@ -454,7 +448,7 @@ function JoystickPanel({
                       })}
                     </SelectContent>
                   </Select>
-                  {LEVERS.has(id) && index !== '' && (
+                  {!PAIRS.has(id) && index !== '' && (
                     <Button
                       type='button'
                       size='sm'

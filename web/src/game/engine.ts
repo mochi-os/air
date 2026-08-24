@@ -56,7 +56,7 @@ export interface GameHandle {
   scope: () => string                           // the default chat scope: "team" in a teams match, else "all"
 }
 
-// The recording accessor lives in replay.ts, not here, so the History route can
+// The recording accessor lives in replay.ts, not here, so the log route can
 // read the buffer without pulling three.js into its chunk. Re-exported for
 // callers that reach for engine.recording.
 export { recording } from './replay'
@@ -102,7 +102,7 @@ export function startGame({
 // ============================================================================ config
 const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, exterior_detail:3, lod:true,   // dyn_res defaults ON (#148): slow machines self-tune render_scale down to 0.45 instead of stuttering
 	tracers:true, effects_quality:2, stores:stores_migrate(true), flares:true, shadows:false, clouds:"none", afterburner:true,   // effects_quality 0..3 scales expensive translucent work; stores (#17): the per-station loadout
-	view:"hud", invert:false, framerate:false,   // no sens: the Sensitivity slider was removed because it was a flight-control gain, and the last two reads of it went with it (see sanitize_cfg)
+	view:"hud", framerate:false,   // no sens: the Sensitivity slider was removed because it was a flight-control gain, and the last two reads of it went with it (see sanitize_cfg)
 	task:"joust", start:"carrier", tod:"day", help:false };
 // CARRIER_MODELS: per-ship deck data (shuttle points, wires, landing line, OLS,
 // deck outline), measured with the align tool; a second carrier is one more
@@ -128,6 +128,7 @@ const SHIP=CARRIER_MODELS.nimitz;   // the active carrier (a picker arrives with
 function sanitize_cfg(){   // runs after every config merge (the server-backed store can hold stale eras too)
 	delete cfg.cats; delete cfg.cat_dy;   // pre-#100 configs carried ship data; CARRIER_MODELS owns it now
 	delete cfg.sens;   // the retired Sensitivity slider. Removing the SETTING did not remove the saved VALUE: the config is server-backed, so an account that moved it before the removal still carries it, and the two surviving reads (the multiplayer control sample, the nosewheel pedal) went on scaling by it with no UI left to correct it
+	delete cfg.invert;   // the retired Invert pitch switch — the per-axis "-" reverse flag replaced it (a flyer who used it re-reverses pitch with the axis row's swap button; keyboard users swap their key bindings)
 	if(cfg.clouds!=="none"&&!["cumulus","high_stratus","mid_stratus","low_stratus"].includes(cfg.clouds)) cfg.clouds="cumulus";   // a saved cloud type that no longer exists falls back to the default. EVERY new preset must be listed here: an omission silently rewrites the mission to cumulus, which would have turned every Case II approach into a clear-sky one
 	cfg.stores=stores_normalize(cfg.stores&&Object.keys(cfg.stores).length?cfg.stores:stores_migrate(cfg.missiles!==false));   // #17: legacy configs carry the retired missiles boolean — map it to its preset; any stores map is normalized so a stale shape cannot reach the loadout paths
 	delete cfg.missiles; }
@@ -3870,7 +3871,7 @@ function read_input(dt){
 	if(keys.has(key_of("roll.right"))) tr+=1;
 	if(keys.has(key_of("roll.left"))) tr-=1;
 	if(keys.has(key_of("yaw.right"))) ty+=1; if(keys.has(key_of("yaw.left"))) ty-=1;   // rudder / yaw
-	tp=THREE.MathUtils.clamp(tp,-1,1)*(cfg.invert?-1:1); tr=THREE.MathUtils.clamp(tr,-1,1); ty=THREE.MathUtils.clamp(ty,-1,1);
+	tp=THREE.MathUtils.clamp(tp,-1,1); tr=THREE.MathUtils.clamp(tr,-1,1); ty=THREE.MathUtils.clamp(ty,-1,1);
 	// Asymmetric ramp: SLOW attack (2/s — a short tap gives a small deflection
 	// instead of a 40%-stick g-spike the FCS then chases into oscillation),
 	// FAST recentre (6/s) so releasing a key stops the command promptly.
@@ -3892,8 +3893,9 @@ function read_input(dt){
 	if(pad){ if(!gamepad_seen){ gamepad_seen=true;
 			if(!(pad_levers.throttle&&pad_levers.throttle.armed)) throttle_from_lever(); }   // browsers hide pads until a button press ON THE PAD — when the stick finally appears (often after the mission spawned), the lever still wins over the spawn default
 		const bind=pad_bindings(pad);
-		const ax=name=>{ const i=bind.axes[name]; return (i===""||i===undefined)?0:pad_axis(pad,+i); };
-		pp=ax("pitch")*(cfg.invert?-1:1);   // stick back = pull; analog goes straight to the FCS — no key shaping
+		const ax=name=>{ const e=String(bind.axes[name]??""); if(e==="") return 0;   // "N"/"-N": the "-" reverse flag, parsed from the STRING — +"-0" is -0, and pad.axes[-0] would read axis 0 unreversed
+			const v=pad_axis(pad,+e.replace("-","")); return e.startsWith("-")?-v:v; };
+		pp=ax("pitch");   // stick back = pull; analog goes straight to the FCS — no key shaping
 		pr=ax("roll");
 		py=ax("yaw");
 		{ const p=(test_active||sim_time<test_idle)?null:pad_lever(pad,bind.axes.throttle,"throttle");   // throttle: power grows from the HIGH raw end (idle at high; "-" prefix flips). The lever yields during a scripted scenario and its rollout grace — a parked lever re-powering the touchdown floated every test landing (#72)
@@ -3974,7 +3976,7 @@ function read_input(dt){
 }
 
 let sim_time=0;
-// Flight recorder (#212): a rolling buffer saved from the History page. The
+// Flight recorder (#212): a rolling buffer saved from the log page. The
 // bot's doctrine state rides along in developer builds only — free to capture
 // (the brain runs in-process in wasm for a local joust) but it is the AI's
 // hand, so a shipped replay does not show it.
@@ -6619,9 +6621,9 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
     try { renderer.dispose() } catch { /* ignore */ }
   }
   // Re-enter a game paused by Esc (running was set false; state is preserved).
-  // Re-applies any settings changed in the menu that take effect live — invert,
-  // render scale, shadows, time of day. Mission, start, clouds and ocean detail
-  // only take effect on a Restart (a fresh start_mission).
+  // Re-applies any settings changed in the menu that take effect live — axis
+  // bindings, render scale, shadows, time of day. Mission, start, clouds and
+  // ocean detail only take effect on a Restart (a fresh start_mission).
   function resume(updated) {
     if (updated) {
       Object.assign(cfg, updated)
