@@ -96,7 +96,11 @@ function Segmented<T extends string>({
     <Tabs variant='segmented' value={value} onValueChange={(v) => onChange(v as T)} className='w-full'>
       <TabsList className='w-full flex'>
         {options.map((o) => (
-          <TabsTrigger key={o.value} value={o.value} className='flex-1 text-xs font-semibold'>
+          <TabsTrigger
+            key={o.value}
+            value={o.value}
+            className='flex-1 text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
+          >
             {o.label}
           </TabsTrigger>
         ))}
@@ -216,8 +220,8 @@ function Armament({
   const moment = book ? Math.round((Math.abs(asymmetry(loadout, book)) * 7.233) / 10) * 10 : 0
   const CATAPULT = 6000
   return (
-    <div className='space-y-3.5'>
-      <div className='relative overflow-hidden rounded-lg border border-border bg-[#060c0b] p-1.5 shadow-inner'>
+    <div className='space-y-2.5'>
+      <div className='mx-auto w-full max-w-[340px]'>
         <Suspense fallback={<div className='aspect-[29/10] w-full' />}>
           <LoadoutPreview stores={loadout} />
         </Suspense>
@@ -249,16 +253,16 @@ function Armament({
           const current = outcome(station, slot)
           const usable = open.filter((o) => !o.hidden || o.id === current)
           const dead = usable.length <= 1
+          // The dense pre-merge cell: a label line and the dropdown, no card
+          // chrome — nine bordered cells pushed the dialog past its height and
+          // scrolled the Fly button away.
           return (
-            <div key={station} className='space-y-1 rounded-lg border border-border bg-card p-2'>
-              <div className='flex items-center justify-between text-xs'>
-                <span className='font-medium text-card-foreground'>{positions[station]}</span>
-                <span className='font-mono text-[10px] text-muted-foreground bg-muted px-1 rounded border border-border'>
-                  STA {station}
-                </span>
+            <div key={station} className='space-y-1'>
+              <div className='text-muted-foreground text-xs'>
+                {positions[station]} <span className='opacity-60'>{station}</span>
               </div>
               {dead ? (
-                <div className='text-muted-foreground/60 py-1 text-center font-mono text-xs'>—</div>
+                <div className='text-muted-foreground/60 py-1 text-xs'>—</div>
               ) : (
                 <Select
                   value={current || 'none'}
@@ -284,64 +288,50 @@ function Armament({
         }
         return (
           <div className='grid grid-cols-3 gap-2'>
-            <div className='space-y-2'>{[9, 8, 7, 6].map(cell)}</div>
+            <div className='space-y-1.5'>{[9, 8, 7, 6].map(cell)}</div>
             <div className='flex flex-col justify-end'>{[5].map(cell)}</div>
-            <div className='space-y-2'>{[1, 2, 3, 4].map(cell)}</div>
+            <div className='space-y-1.5'>{[1, 2, 3, 4].map(cell)}</div>
           </div>
         )
       })()}
 
-      <SliderRow
-        label={<Trans>Internal fuel</Trans>}
-        value={fuel}
-        min={1500}
-        max={10800}
-        step={100}
-        decimals={0}
-        suffix=' lb'
-        onChange={onFuel}
-      />
+      <SliderRow label={<Trans>Internal fuel</Trans>} value={fuel} min={1500} max={10800} step={100} decimals={0} suffix=' lb' onChange={onFuel} />
 
       {book && (
-        <div className='space-y-2 rounded-lg border border-border bg-card p-3 text-xs'>
-          <div className='flex items-center justify-between'>
-            <span className='text-muted-foreground font-medium'>
-              <Trans>Gross weight</Trans>
-            </span>
-            <div className='flex items-center gap-2'>
-              <span className='font-bold text-foreground tabular-nums' style={{ fontFamily: 'var(--air-mono)' }}>
-                {gross.toLocaleString()} lb
-              </span>
-              {gross > LAUNCH ? (
-                <Badge variant='destructive' className='text-[10px]'>
-                  <Trans>Heavy</Trans>
-                </Badge>
-              ) : (
-                <Badge variant='outline' className='text-[10px] text-muted-foreground'>
-                  <Trans>Nominal</Trans>
-                </Badge>
-              )}
-            </div>
-          </div>
-
+        <div className='px-3 text-sm'>
+          {/* px-3 matches SliderRow's p-3, so this line's left edge sits under
+              the fuel label above it. */}
+          {/* jsx-text-ok: LB and ft·lb are the cockpit's own unit annunciations, verbatim like the IFEI */}
+          <Trans>Gross weight</Trans>{' '}
+          <span className='tabular-nums' style={{ fontFamily: 'var(--air-mono)' }}>
+            {gross} lb
+          </span>
+          {/* The asymmetry rides in brackets on the gross-weight line: it is a
+              property of the same loadout, and its own line read as a second
+              headline for what is really a qualifier. The over-limit warnings
+              below stay on their own lines — those ARE headlines. */}
           {moment > 0 && (
-            <div className='flex items-center justify-between text-muted-foreground'>
-              <span>
-                <Trans>Lateral asymmetry</Trans>
+            <>
+              {' ('}
+              {/* Lower case as a mid-sentence qualifier, and a msgid of its own rather than a
+                  CSS transform of the capitalised one: German capitalises its nouns, so
+                  Asymmetrie must stay capitalised where English asymmetry does not. */}
+              <Trans>asymmetry</Trans>{' '}
+              <span className='tabular-nums' style={{ fontFamily: 'var(--air-mono)' }}>
+                {moment} ft·lb
               </span>
-              <span className='font-mono font-medium tabular-nums text-foreground'>{moment} ft·lb</span>
-            </div>
+              {')'}
+            </>
           )}
-
           {gross > LAUNCH && (
-            <div className='flex items-center gap-1.5 pt-1 font-medium text-destructive'>
-              <TriangleAlert className='size-4 shrink-0' />
+            <div className='mt-1 flex items-center gap-1.5 text-amber-500'>
+              <TriangleAlert className='size-4' />
               <Trans>{gross - LAUNCH} lb over maximum launch weight</Trans>
             </div>
           )}
           {catapult && moment > CATAPULT && (
-            <div className='flex items-center gap-1.5 pt-1 font-medium text-destructive'>
-              <TriangleAlert className='size-4 shrink-0' />
+            <div className='mt-1 flex items-center gap-1.5 text-amber-500'>
+              <TriangleAlert className='size-4' />
               <Trans>{moment - CATAPULT} ft·lb over the catapult asymmetry limit</Trans>
             </div>
           )}
@@ -838,13 +828,8 @@ function MissionPanel({
   return (
     <div className='space-y-6 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:space-y-0'>
       <div className='space-y-4'>
-        <Card>
-          <CardHeader className='pb-3'>
-            <CardTitle className='text-sm font-semibold'>
-              <Trans>Flight profile</Trans>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className='space-y-3'>
+        <section>
+          <div className='space-y-3'>
             <div className='space-y-1.5'>
               <Label className='text-xs text-muted-foreground uppercase font-medium'>
                 <Trans>Task</Trans>
@@ -933,16 +918,11 @@ function MissionPanel({
                 )}
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </section>
 
-        <Card>
-          <CardHeader className='pb-3'>
-            <CardTitle className='text-sm font-semibold'>
-              <Trans>Environment</Trans>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className='grid grid-cols-2 gap-2.5'>
+        <section>
+          <div className='grid grid-cols-2 gap-2.5'>
             <div className='space-y-1'>
               <Label className='text-xs text-muted-foreground uppercase font-medium'>
                 <Trans>Time of day</Trans>
@@ -972,10 +952,10 @@ function MissionPanel({
                 ]}
               />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </section>
 
-        <Card>
+        <Card className='py-0'>
           <CardContent className='p-3'>
             <Collapsible open={cheatsOpen} onOpenChange={setCheatsOpen}>
               <CollapsibleTrigger className='text-muted-foreground hover:text-foreground flex w-full items-center justify-between text-xs font-semibold tracking-wider uppercase'>
@@ -1014,24 +994,17 @@ function MissionPanel({
         </Card>
       </div>
 
-      <Card>
-        <CardHeader className='pb-3'>
-          <CardTitle className='text-sm font-semibold'>
-            <Trans>Armament and stores</Trans>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Armament
-            stores={config.stores}
-            fuel={Number(config.fuel) || 10800}
-            allowed={true}
-            catapult={config.start === 'carrier'}
-            onChange={(v) => set('stores', v)}
-            onFuel={(v) => set('fuel', v)}
-            onPreset={(stores, fuel) => onChange({ ...config, stores, fuel })}
-          />
-        </CardContent>
-      </Card>
+      <section>
+        <Armament
+          stores={config.stores}
+          fuel={Number(config.fuel) || 10800}
+          allowed={true}
+          catapult={config.start === 'carrier'}
+          onChange={(v) => set('stores', v)}
+          onFuel={(v) => set('fuel', v)}
+          onPreset={(stores, fuel) => onChange({ ...config, stores, fuel })}
+        />
+      </section>
     </div>
   )
 }
@@ -1250,24 +1223,32 @@ export function MissionSetup({
       </div>
       </div>
 
-      <MenuDialog open={dialog === 'mission'} onClose={close} title={<Trans>Create mission</Trans>} wide steady>
-        <MissionPanel config={config} set={set} setCheat={setCheat} onChange={onChange} />
-        <div className='border-border mt-4 flex items-center justify-between border-t pt-4'>
-          <div className='text-muted-foreground flex items-center gap-2 font-mono text-xs'>
-            <span className='size-2 rounded-full' style={{ background: 'var(--air-accent)' }} />
-            <span>{started}</span>
+      <MenuDialog
+        open={dialog === 'mission'}
+        onClose={close}
+        title={<Trans>Create mission</Trans>}
+        wide
+        steady
+        footer={
+          <div className='flex items-center justify-between'>
+            <div className='text-muted-foreground flex items-center gap-2 font-mono text-xs'>
+              <span className='size-2 rounded-full' style={{ background: 'var(--air-accent)' }} />
+              <span>{started}</span>
+            </div>
+            <Button
+              className='min-w-36 gap-2 font-semibold shadow-sm'
+              onClick={() => {
+                close()
+                onStart()
+              }}
+            >
+              <Play className='size-4 fill-current' />
+              <Trans>Fly</Trans>
+            </Button>
           </div>
-          <Button
-            className='min-w-36 gap-2 font-semibold shadow-sm'
-            onClick={() => {
-              close()
-              onStart()
-            }}
-          >
-            <Play className='size-4 fill-current' />
-            <Trans>Fly</Trans>
-          </Button>
-        </div>
+        }
+      >
+        <MissionPanel config={config} set={set} setCheat={setCheat} onChange={onChange} />
       </MenuDialog>
 
       <SettingsDialog

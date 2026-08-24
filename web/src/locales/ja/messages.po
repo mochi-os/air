@@ -41,7 +41,7 @@ msgstr "{0, plural, other {#発被弾}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:637
+#: src/components/MissionSetup.tsx:619
 msgid "{0} created “{1}”"
 msgstr "{0}が「{1}」を作成しました"
 
@@ -51,12 +51,12 @@ msgid "{0} flying"
 msgstr "{0}人が飛行中"
 
 #. placeholder {0}: moment - CATAPULT
-#: src/components/MissionSetup.tsx:345
+#: src/components/MissionSetup.tsx:327
 msgid "{0} ft·lb over the catapult asymmetry limit"
 msgstr "カタパルト非対称制限を {0} ft·lb 超過"
 
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:339
+#: src/components/MissionSetup.tsx:321
 msgid "{0} lb over maximum launch weight"
 msgstr "最大発艦重量を{0} lb超過"
 
@@ -132,7 +132,7 @@ msgstr "1番ワイヤー"
 msgid "12 hours"
 msgstr "12時間"
 
-#: src/components/MissionSetup.tsx:393
+#: src/components/MissionSetup.tsx:375
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -148,7 +148,7 @@ msgstr "24時間"
 msgid "3 WIRE"
 msgstr "3番ワイヤー"
 
-#: src/components/MissionSetup.tsx:396
+#: src/components/MissionSetup.tsx:378
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -172,8 +172,8 @@ msgstr "アクセスレベル"
 msgid "Account type"
 msgstr "アカウントタイプ"
 
-#: src/components/MissionSetup.tsx:887
-#: src/components/MissionSetup.tsx:1075
+#: src/components/MissionSetup.tsx:864
+#: src/components/MissionSetup.tsx:1040
 #: src/components/Multiplayer.tsx:482
 msgid "Ace"
 msgstr "エース"
@@ -188,7 +188,7 @@ msgstr "ターゲット捕捉"
 msgid "Acquisition mode"
 msgstr "捕捉モード"
 
-#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:960
 msgid "Active assists"
 msgstr "有効なアシスト"
 
@@ -278,11 +278,11 @@ msgstr "AI"
 msgid "Aircraft"
 msgstr "機体"
 
-#: src/components/MissionSetup.tsx:468
+#: src/components/MissionSetup.tsx:450
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "空母 <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>（作者 <1>Muhamad Mirza Arrafi</1>、Sketchfab）、<2>CC BY 4.0</2> ライセンス。変更点: 再スケーリング、再配向、喫水線まで沈下、ウェブ向けに簡略化。"
 
-#: src/components/MissionSetup.tsx:444
+#: src/components/MissionSetup.tsx:426
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "航空機モデル <0>“F/A-18C Hornet”</0>（<1>CreadorDeMu</1> 作、Sketchfab）、<2>CC BY 4.0</2> の下でライセンス。変更点: 再配向と再スケーリング、未使用のテクスチャデータを削除、外部搭載物を別ファイルに分離、シュラウドメッシュ1つをミラー反転。"
 
@@ -329,7 +329,7 @@ msgstr "このフィードを購読しているものはすべて受信しなく
 msgid "Approach power (ATC)"
 msgstr "進入出力 (ATC)"
 
-#: src/components/MissionSetup.tsx:366
+#: src/components/MissionSetup.tsx:348
 msgid "Approach, on-speed (Vapp)"
 msgstr "進入、オンスピード (Vapp)"
 
@@ -350,10 +350,6 @@ msgstr "このコメントを削除しますか？すべての返信も削除さ
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "本当にログアウトしますか？再度アクセスするにはログインが必要です。"
 
-#: src/components/MissionSetup.tsx:1020
-msgid "Armament and stores"
-msgstr "武装と搭載物"
-
 #: src/components/SettingsDialog.tsx:168
 #: src/components/SettingsDialog.tsx:219
 msgid "Arrestor hook"
@@ -362,6 +358,10 @@ msgstr "アレスティングフック"
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx:27
 msgid "Ascending"
 msgstr "昇順"
+
+#: src/components/MissionSetup.tsx:311
+msgid "asymmetry"
+msgstr "非対称"
 
 #: ../../../lib/web/src/components/comment-composer.tsx:427
 msgid "Attach comment files"
@@ -396,7 +396,7 @@ msgstr "アバター"
 msgid "Avatar for {name}"
 msgstr "{name} のアバター"
 
-#: src/components/MissionSetup.tsx:1218
+#: src/components/MissionSetup.tsx:1183
 msgid "Avionics, HOTAS and audio"
 msgstr "アビオニクス、HOTAS、オーディオ"
 
@@ -426,7 +426,7 @@ msgstr "ホームに戻る"
 msgid "Balanced flight"
 msgstr "バランスの取れた飛行"
 
-#: src/components/MissionSetup.tsx:879
+#: src/components/MissionSetup.tsx:856
 msgid "Bandit"
 msgstr "敵機"
 
@@ -438,19 +438,19 @@ msgstr "バナー"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250以下 — ギアとフラップ"
 
-#: src/components/MissionSetup.tsx:357
+#: src/components/MissionSetup.tsx:339
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "最良上昇 (Vy, 100%推力)"
 
-#: src/components/MissionSetup.tsx:358
+#: src/components/MissionSetup.tsx:340
 msgid "Best climb (Vy, afterburner)"
 msgstr "最良上昇 (Vy, アフターバーナー)"
 
-#: src/components/MissionSetup.tsx:360
+#: src/components/MissionSetup.tsx:342
 msgid "Best glide (engines out)"
 msgstr "最良滑空 (エンジン停止)"
 
-#: src/components/MissionSetup.tsx:362
+#: src/components/MissionSetup.tsx:344
 msgid "Best sustained turn speed"
 msgstr "最良持続旋回速度"
 
@@ -537,7 +537,7 @@ msgstr "ボタン割り当て"
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — 開始直後から攻撃自由"
 
-#: src/components/MissionSetup.tsx:873
+#: src/components/MissionSetup.tsx:850
 msgid "BVR (Start)"
 msgstr "BVR (開始)"
 
@@ -604,31 +604,31 @@ msgstr "キャプション"
 msgid "Carrier and ambient"
 msgstr "空母と環境音"
 
-#: src/components/MissionSetup.tsx:1082
+#: src/components/MissionSetup.tsx:1047
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:910
+#: src/components/MissionSetup.tsx:887
 msgid "Case I (day)"
 msgstr "ケース I (昼)"
 
-#: src/components/MissionSetup.tsx:1083
+#: src/components/MissionSetup.tsx:1048
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:911
+#: src/components/MissionSetup.tsx:888
 msgid "Case II (weather)"
 msgstr "ケース II (気象)"
 
-#: src/components/MissionSetup.tsx:1084
+#: src/components/MissionSetup.tsx:1049
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:912
+#: src/components/MissionSetup.tsx:889
 msgid "Case III (night)"
 msgstr "ケース III (夜)"
 
-#: src/components/MissionSetup.tsx:920
+#: src/components/MissionSetup.tsx:897
 msgid "Catapult"
 msgstr "カタパルト"
 
@@ -743,7 +743,7 @@ msgstr "検索を閉じる"
 msgid "closer"
 msgstr "近づく"
 
-#: src/components/MissionSetup.tsx:961
+#: src/components/MissionSetup.tsx:933
 msgid "Clouds"
 msgstr "雲"
 
@@ -814,11 +814,11 @@ msgstr "ビューの設定"
 msgid "Confirm"
 msgstr "確認"
 
-#: src/components/MissionSetup.tsx:774
+#: src/components/MissionSetup.tsx:756
 msgid "Connect"
 msgstr "接続"
 
-#: src/components/MissionSetup.tsx:761
+#: src/components/MissionSetup.tsx:743
 msgid "Connect to private server"
 msgstr "プライベートサーバーに接続"
 
@@ -871,7 +871,7 @@ msgstr "クリップボードにコピーしました"
 msgid "Copy"
 msgstr "コピー"
 
-#: src/components/MissionSetup.tsx:361
+#: src/components/MissionSetup.tsx:343
 msgid "Corner speed (best instant turn)"
 msgstr "コーナー速度 (最良瞬間旋回)"
 
@@ -896,7 +896,7 @@ msgstr "プロファイルを保存できませんでした"
 msgid "Could not save the recording"
 msgstr "記録を保存できませんでした"
 
-#: src/components/MissionSetup.tsx:619
+#: src/components/MissionSetup.tsx:601
 msgid "Could not send the message"
 msgstr "メッセージを送信できませんでした"
 
@@ -950,8 +950,8 @@ msgstr "作成して出撃"
 msgid "Create match"
 msgstr "マッチを作成"
 
-#: src/components/MissionSetup.tsx:1186
-#: src/components/MissionSetup.tsx:1253
+#: src/components/MissionSetup.tsx:1151
+#: src/components/MissionSetup.tsx:1221
 msgid "Create mission"
 msgstr "ミッション作成"
 
@@ -969,12 +969,12 @@ msgstr "作成日"
 msgid "Creating..."
 msgstr "作成中..."
 
-#: src/components/MissionSetup.tsx:433
-#: src/components/MissionSetup.tsx:439
+#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:421
 msgid "Credits"
 msgstr "クレジット"
 
-#: src/components/MissionSetup.tsx:968
+#: src/components/MissionSetup.tsx:940
 #: src/components/Multiplayer.tsx:76
 #: src/components/Multiplayer.tsx:366
 msgid "Cumulus"
@@ -1010,7 +1010,7 @@ msgstr "データの競合"
 msgid "Date"
 msgstr "日付"
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:926
 #: src/components/Multiplayer.tsx:361
 msgid "Day"
 msgstr "昼"
@@ -1082,7 +1082,7 @@ msgstr "ビューを削除"
 msgid "Delete your account on the old server"
 msgstr "旧サーバーのアカウントを削除する"
 
-#: src/components/MissionSetup.tsx:899
+#: src/components/MissionSetup.tsx:876
 msgid "Departure / Recovery"
 msgstr "発艦 / 着艦"
 
@@ -1150,7 +1150,7 @@ msgstr "切断済み"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
-#: src/components/MissionSetup.tsx:1149
+#: src/components/MissionSetup.tsx:1114
 msgid "Dismiss"
 msgstr "閉じる"
 
@@ -1300,7 +1300,7 @@ msgstr "空のパイロン"
 msgid "ENGAGED"
 msgstr "エンゲージ"
 
-#: src/components/MissionSetup.tsx:866
+#: src/components/MissionSetup.tsx:843
 msgid "Engagement"
 msgstr "交戦"
 
@@ -1319,10 +1319,6 @@ msgstr "メールに記載されたコードを入力してください"
 #: ../../../lib/web/src/components/step-up-dialog.tsx:327
 msgid "Enter your authenticator code"
 msgstr "認証アプリのコードを入力"
-
-#: src/components/MissionSetup.tsx:942
-msgid "Environment"
-msgstr "環境"
 
 #: src/components/GameCanvas.tsx:317
 msgid "Everyone"
@@ -1376,15 +1372,15 @@ msgstr "外部 URL"
 msgid "Extra large"
 msgstr "特大"
 
-#: src/components/MissionSetup.tsx:1248
+#: src/components/MissionSetup.tsx:1213
 msgid "F/A-18C Hornet"
 msgstr "F/A-18C Hornet"
 
-#: src/components/MissionSetup.tsx:381
+#: src/components/MissionSetup.tsx:363
 msgid "F/A-18C reference"
 msgstr "F/A-18C 基準"
 
-#: src/components/MissionSetup.tsx:1127
+#: src/components/MissionSetup.tsx:1092
 msgid "F/A-18C Strike Fighter"
 msgstr "F/A-18C 戦闘攻撃機"
 
@@ -1517,7 +1513,7 @@ msgstr "海面に激突"
 msgid "Flight"
 msgstr "飛行"
 
-#: src/components/MissionSetup.tsx:984
+#: src/components/MissionSetup.tsx:956
 msgid "Flight assists"
 msgstr "飛行アシスト"
 
@@ -1529,13 +1525,9 @@ msgstr "飛行コア障害"
 msgid "Flight hints"
 msgstr "飛行ヒント"
 
-#: src/components/MissionSetup.tsx:1233
+#: src/components/MissionSetup.tsx:1198
 msgid "Flight log"
 msgstr "フライトログ"
-
-#: src/components/MissionSetup.tsx:844
-msgid "Flight profile"
-msgstr "飛行プロファイル"
 
 #: src/components/MatchLog.tsx:174
 msgid "Flights"
@@ -1545,8 +1537,8 @@ msgstr "フライト数"
 msgid "Flown"
 msgstr "飛行"
 
-#: src/components/MissionSetup.tsx:1172
-#: src/components/MissionSetup.tsx:1268
+#: src/components/MissionSetup.tsx:1137
+#: src/components/MissionSetup.tsx:1238
 msgid "Fly"
 msgstr "飛行"
 
@@ -1559,7 +1551,7 @@ msgid "Framerate counter"
 msgstr "フレームレートカウンター"
 
 #: src/components/MatchLog.tsx:86
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:833
 msgid "Free flight"
 msgstr "フリーフライト"
 
@@ -1649,7 +1641,7 @@ msgstr "グラフィック"
 msgid "Graphics preset"
 msgstr "グラフィックプリセット"
 
-#: src/components/MissionSetup.tsx:309
+#: src/components/MissionSetup.tsx:297
 msgid "Gross weight"
 msgstr "全備重量"
 
@@ -1679,7 +1671,7 @@ msgstr "機関砲のみ"
 msgid "Guns only"
 msgstr "機関砲のみ"
 
-#: src/components/MissionSetup.tsx:1144
+#: src/components/MissionSetup.tsx:1109
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "ハードウェアグラフィックスアクセラレーションがオフです — ブラウザ設定またはグラフィックスドライバを確認してください。"
 
@@ -1691,15 +1683,11 @@ msgstr "ヘッド"
 msgid "Head tracking"
 msgstr "ヘッドトラッキング"
 
-#: src/components/MissionSetup.tsx:317
-msgid "Heavy"
-msgstr "重量超過"
-
 #: src/components/SettingsDialog.tsx:769
 msgid "High"
 msgstr "高"
 
-#: src/components/MissionSetup.tsx:969
+#: src/components/MissionSetup.tsx:941
 #: src/components/Multiplayer.tsx:77
 #: src/components/Multiplayer.tsx:367
 msgid "High stratus"
@@ -1757,8 +1745,8 @@ msgstr "ヤード・ポンド法"
 msgid "Import"
 msgstr "インポート"
 
-#: src/components/MissionSetup.tsx:907
-#: src/components/MissionSetup.tsx:1079
+#: src/components/MissionSetup.tsx:884
+#: src/components/MissionSetup.tsx:1044
 msgid "In air"
 msgstr "空中"
 
@@ -1782,7 +1770,7 @@ msgstr "入力ハードウェア"
 msgid "Interests"
 msgstr "興味"
 
-#: src/components/MissionSetup.tsx:295
+#: src/components/MissionSetup.tsx:292
 msgid "Internal fuel"
 msgstr "機内燃料"
 
@@ -1790,7 +1778,7 @@ msgstr "機内燃料"
 msgid "Invalid date"
 msgstr "無効な日付"
 
-#: src/components/MissionSetup.tsx:995
+#: src/components/MissionSetup.tsx:967
 #: src/components/Multiplayer.tsx:80
 msgid "Invulnerable"
 msgstr "無敵"
@@ -1799,7 +1787,7 @@ msgstr "無敵"
 msgid "INVULNERABLE"
 msgstr "無敵"
 
-#: src/components/MissionSetup.tsx:995
+#: src/components/MissionSetup.tsx:967
 #: src/components/Multiplayer.tsx:437
 msgid "Invulnerable (human players only)"
 msgstr "無敵（人間プレイヤーのみ）"
@@ -1826,8 +1814,8 @@ msgstr "投棄：降着装置"
 msgid "Join"
 msgstr "参加する"
 
-#: src/components/MissionSetup.tsx:718
-#: src/components/MissionSetup.tsx:1201
+#: src/components/MissionSetup.tsx:700
+#: src/components/MissionSetup.tsx:1166
 msgid "Join server"
 msgstr "サーバーに参加"
 
@@ -1836,7 +1824,7 @@ msgid "JOINED"
 msgstr "参加"
 
 #: src/components/MatchLog.tsx:84
-#: src/components/MissionSetup.tsx:1089
+#: src/components/MissionSetup.tsx:1054
 #: src/components/Multiplayer.tsx:548
 msgid "Joust"
 msgstr "ジャウスト"
@@ -1845,7 +1833,7 @@ msgstr "ジャウスト"
 msgid "Joust — 1v1, first kill wins"
 msgstr "一騎打ち — 1v1、先に撃墜した方が勝ち"
 
-#: src/components/MissionSetup.tsx:857
+#: src/components/MissionSetup.tsx:834
 msgid "Joust against bot"
 msgstr "一騎打ち ボット戦"
 
@@ -1908,10 +1896,6 @@ msgstr "大"
 msgid "LATE"
 msgstr "遅い"
 
-#: src/components/MissionSetup.tsx:330
-msgid "Lateral asymmetry"
-msgstr "左右非対称"
-
 #: src/components/SettingsDialog.tsx:171
 #: src/components/SettingsDialog.tsx:225
 msgid "Launch (catapult)"
@@ -1929,7 +1913,7 @@ msgstr "レイアウト"
 msgid "lb"
 msgstr "lb"
 
-#: src/components/MissionSetup.tsx:796
+#: src/components/MissionSetup.tsx:778
 msgid "Leave server"
 msgstr "サーバーから退出"
 
@@ -2061,7 +2045,7 @@ msgstr "上を見る"
 msgid "Low"
 msgstr "低"
 
-#: src/components/MissionSetup.tsx:971
+#: src/components/MissionSetup.tsx:943
 #: src/components/Multiplayer.tsx:79
 #: src/components/Multiplayer.tsx:369
 msgid "Low stratus"
@@ -2109,7 +2093,7 @@ msgstr "マスター音量"
 msgid "Match type"
 msgstr "マッチタイプ"
 
-#: src/components/MissionSetup.tsx:791
+#: src/components/MissionSetup.tsx:773
 msgid "Matches"
 msgstr "試合数"
 
@@ -2144,7 +2128,7 @@ msgstr "メニュー"
 msgid "Merge — fight on at the pass"
 msgstr "マージ — すれ違いで戦闘開始"
 
-#: src/components/MissionSetup.tsx:872
+#: src/components/MissionSetup.tsx:849
 msgid "Merge (Pass)"
 msgstr "マージ (すれ違い)"
 
@@ -2156,7 +2140,7 @@ msgstr "メッセージ"
 msgid "Message everyone"
 msgstr "全員にメッセージ"
 
-#: src/components/MissionSetup.tsx:654
+#: src/components/MissionSetup.tsx:636
 msgid "Message players on this server"
 msgstr "このサーバーのプレイヤーにメッセージを送信"
 
@@ -2168,7 +2152,7 @@ msgstr "チームにメッセージ"
 msgid "Metric"
 msgstr "メートル法"
 
-#: src/components/MissionSetup.tsx:970
+#: src/components/MissionSetup.tsx:942
 #: src/components/Multiplayer.tsx:78
 #: src/components/Multiplayer.tsx:368
 msgid "Mid stratus"
@@ -2178,7 +2162,7 @@ msgstr "層雲（中）"
 msgid "Midair collision"
 msgstr "空中衝突"
 
-#: src/components/MissionSetup.tsx:515
+#: src/components/MissionSetup.tsx:497
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "ミッドウェー環礁の地図 — 画像には改変された<0>Copernicus Sentinel-2</0>データ（2026年）が含まれます。飛行場の形状（滑走路、誘導路、エプロン）© <1>OpenStreetMap</1> コントリビューター、<2>ODbL</2>に基づいてライセンス供与。海岸線とサンゴ礁のデータは<3>NOAA NCCOS</3>より（パブリックドメイン）。"
 
@@ -2190,7 +2174,7 @@ msgstr "最小長"
 msgid "MISSILE"
 msgstr "ミサイル"
 
-#: src/components/MissionSetup.tsx:492
+#: src/components/MissionSetup.tsx:474
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "ミサイルモデル <0>“AIM-120C AMRAAM”</0>（作者 <1>Pippa</1>、Sketchfab）、<2>CC BY 4.0</2> ライセンス。 変更点：スケール調整、向きの修正、配置用に中心合わせ。"
 
@@ -2219,7 +2203,7 @@ msgstr "その他のオプション"
 msgid "Move…"
 msgstr "動かしてください…"
 
-#: src/components/MissionSetup.tsx:1203
+#: src/components/MissionSetup.tsx:1168
 msgid "Multiplayer dogfights"
 msgstr "マルチプレイヤードッグファイト"
 
@@ -2263,7 +2247,7 @@ msgstr "新しいゲーム"
 msgid "Next image"
 msgstr "次の画像"
 
-#: src/components/MissionSetup.tsx:955
+#: src/components/MissionSetup.tsx:927
 #: src/components/Multiplayer.tsx:75
 #: src/components/Multiplayer.tsx:362
 msgid "Night"
@@ -2365,7 +2349,7 @@ msgstr "ユーザーが見つかりません"
 msgid "No views"
 msgstr "ビューがありません"
 
-#: src/components/MissionSetup.tsx:631
+#: src/components/MissionSetup.tsx:613
 #: src/components/Multiplayer.tsx:531
 msgid "No world server."
 msgstr "ワールドサーバーがありません。"
@@ -2373,10 +2357,6 @@ msgstr "ワールドサーバーがありません。"
 #: src/components/GameCanvas.tsx:70
 msgid "NO-GRADE"
 msgstr "評価なし"
-
-#: src/components/MissionSetup.tsx:321
-msgid "Nominal"
-msgstr "正常"
 
 #: ../../../lib/web/src/components/colour-picker.tsx:349
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx:538
@@ -2392,7 +2372,7 @@ msgstr "正常"
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: src/components/MissionSetup.tsx:204
-#: src/components/MissionSetup.tsx:967
+#: src/components/MissionSetup.tsx:939
 #: src/components/SettingsDialog.tsx:439
 #: src/components/SettingsDialog.tsx:515
 #: src/components/SettingsDialog.tsx:701
@@ -2424,7 +2404,7 @@ msgstr "未設定"
 msgid "Nothing found"
 msgstr "何も見つかりませんでした"
 
-#: src/components/MissionSetup.tsx:631
+#: src/components/MissionSetup.tsx:613
 msgid "Nothing yet — say hello."
 msgstr "まだ何もありません。あいさつしてみましょう。"
 
@@ -2433,8 +2413,8 @@ msgstr "まだ何もありません。あいさつしてみましょう。"
 msgid "Notifications: {0}"
 msgstr "通知: {0}"
 
-#: src/components/MissionSetup.tsx:885
-#: src/components/MissionSetup.tsx:1073
+#: src/components/MissionSetup.tsx:862
+#: src/components/MissionSetup.tsx:1038
 #: src/components/Multiplayer.tsx:480
 msgid "Novice"
 msgstr "初心者"
@@ -2461,13 +2441,13 @@ msgstr "OK"
 msgid "On"
 msgstr "オン"
 
-#: src/components/MissionSetup.tsx:909
-#: src/components/MissionSetup.tsx:1081
+#: src/components/MissionSetup.tsx:886
+#: src/components/MissionSetup.tsx:1046
 msgid "On carrier"
 msgstr "空母上"
 
-#: src/components/MissionSetup.tsx:908
-#: src/components/MissionSetup.tsx:1080
+#: src/components/MissionSetup.tsx:885
+#: src/components/MissionSetup.tsx:1045
 msgid "On runway"
 msgstr "滑走路上"
 
@@ -2583,15 +2563,15 @@ msgstr "パターン (正規表現)"
 msgid "Performance priority"
 msgstr "パフォーマンス優先"
 
-#: src/components/MissionSetup.tsx:577
+#: src/components/MissionSetup.tsx:559
 #: src/components/Multiplayer.tsx:140
 #: src/components/Multiplayer.tsx:309
 msgid "pilot"
 msgstr "パイロット"
 
-#: src/components/MissionSetup.tsx:886
-#: src/components/MissionSetup.tsx:1074
-#: src/components/MissionSetup.tsx:1133
+#: src/components/MissionSetup.tsx:863
+#: src/components/MissionSetup.tsx:1039
+#: src/components/MissionSetup.tsx:1098
 #: src/components/Multiplayer.tsx:481
 msgid "Pilot"
 msgstr "パイロット"
@@ -2693,7 +2673,7 @@ msgstr "プロフィールを保存しました"
 msgid "Project members"
 msgstr "プロジェクトメンバー"
 
-#: src/components/MissionSetup.tsx:745
+#: src/components/MissionSetup.tsx:727
 msgid "Public servers"
 msgstr "公開サーバー"
 
@@ -2734,7 +2714,7 @@ msgstr "このサーバーでアカウントを再リンクする"
 msgid "Re-register your passkeys on this server"
 msgstr "このサーバーでパスキーを再登録してください"
 
-#: src/components/MissionSetup.tsx:1163
+#: src/components/MissionSetup.tsx:1128
 msgid "Ready for Sortie"
 msgstr "出撃準備完了"
 
@@ -2742,7 +2722,7 @@ msgstr "出撃準備完了"
 msgid "REARMED"
 msgstr "再武装完了"
 
-#: src/components/MissionSetup.tsx:724
+#: src/components/MissionSetup.tsx:706
 msgid "Recent"
 msgstr "最近"
 
@@ -2784,7 +2764,7 @@ msgstr "ログイン画面にリダイレクトしています。"
 msgid "Reduce interest"
 msgstr "関心を下げる"
 
-#: src/components/MissionSetup.tsx:375
+#: src/components/MissionSetup.tsx:357
 msgid "Reference"
 msgstr "基準"
 
@@ -2862,7 +2842,7 @@ msgstr "列の名前を変更"
 msgid "Rename this board column"
 msgstr "このボード列の名前を変更"
 
-#: src/components/MissionSetup.tsx:549
+#: src/components/MissionSetup.tsx:531
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "レンダリングは <0>three.js</0> による（MIT ライセンス）。"
 
@@ -3019,7 +2999,7 @@ msgstr "土曜日"
 msgid "Save"
 msgstr "保存"
 
-#: src/components/MissionSetup.tsx:390
+#: src/components/MissionSetup.tsx:372
 msgid "Sea level"
 msgstr "海面"
 
@@ -3138,7 +3118,7 @@ msgstr "選択…"
 msgid "Selected: <0>{0}</0>"
 msgstr "選択中: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:661
+#: src/components/MissionSetup.tsx:643
 msgid "Send"
 msgstr "送信"
 
@@ -3167,7 +3147,7 @@ msgstr "セリフ"
 msgid "Server"
 msgstr "サーバー"
 
-#: src/components/MissionSetup.tsx:626
+#: src/components/MissionSetup.tsx:608
 msgid "Server chat"
 msgstr "サーバーチャット"
 
@@ -3206,7 +3186,7 @@ msgstr "出発地と目的地を設定"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:418
-#: src/components/MissionSetup.tsx:1216
+#: src/components/MissionSetup.tsx:1181
 #: src/components/SettingsDialog.tsx:999
 #: src/components/SettingsDialog.tsx:1001
 msgid "Settings"
@@ -3250,7 +3230,7 @@ msgstr "サインアウト中..."
 msgid "Single line of text only"
 msgstr "1 行のテキストのみ"
 
-#: src/components/MissionSetup.tsx:359
+#: src/components/MissionSetup.tsx:341
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "単発最良上昇 (Vyse, アフターバーナー)"
 
@@ -3263,7 +3243,7 @@ msgstr "小"
 msgid "Sort"
 msgstr "並べ替え"
 
-#: src/components/MissionSetup.tsx:1235
+#: src/components/MissionSetup.tsx:1200
 msgid "Sortie log and replays"
 msgstr "出撃ログとリプレイ"
 
@@ -3301,7 +3281,7 @@ msgstr "スピードブレーキ"
 msgid "Speed brake"
 msgstr "スピードブレーキ"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:398
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "速度はKCASで、軽荷（最小燃料、兵装なし）から重荷（最大総重量）までの範囲です。データはゲーム内で実験的に取得しました。実機との差異はシミュレーターの飛行モデルの誤差を反映しています。"
 
@@ -3309,11 +3289,11 @@ msgstr "速度はKCASで、軽荷（最小燃料、兵装なし）から重荷�
 msgid "SPLASH"
 msgstr "撃墜"
 
-#: src/components/MissionSetup.tsx:364
+#: src/components/MissionSetup.tsx:346
 msgid "Stall, clean (Vs1)"
 msgstr "失速、クリーン (Vs1)"
 
-#: src/components/MissionSetup.tsx:365
+#: src/components/MissionSetup.tsx:347
 msgid "Stall, landing config (Vs0)"
 msgstr "失速、着陸形態 (Vs0)"
 
@@ -3325,11 +3305,11 @@ msgstr "スタート"
 msgid "Start the discussion by adding the first comment."
 msgstr "最初のコメントを追加してディスカッションを始めましょう。"
 
-#: src/components/MissionSetup.tsx:355
+#: src/components/MissionSetup.tsx:337
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "最急上昇 (Vx, 100%推力)"
 
-#: src/components/MissionSetup.tsx:356
+#: src/components/MissionSetup.tsx:338
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "最急上昇 (Vx, アフターバーナー)"
 
@@ -3359,8 +3339,8 @@ msgstr "購読する"
 msgid "Sunday"
 msgstr "日曜日"
 
-#: src/components/MissionSetup.tsx:888
-#: src/components/MissionSetup.tsx:1076
+#: src/components/MissionSetup.tsx:865
+#: src/components/MissionSetup.tsx:1041
 #: src/components/Multiplayer.tsx:483
 msgid "Superhuman"
 msgstr "超人"
@@ -3396,11 +3376,11 @@ msgstr "タグ"
 msgid "TALLY"
 msgstr "敵機視認"
 
-#: src/components/MissionSetup.tsx:850
+#: src/components/MissionSetup.tsx:827
 msgid "Task"
 msgstr "タスク"
 
-#: src/components/MissionSetup.tsx:1188
+#: src/components/MissionSetup.tsx:1153
 msgid "Tasks, weather and loadout"
 msgstr "タスク、天候、兵装"
 
@@ -3463,7 +3443,7 @@ msgstr "リクエストされたコンテンツが見つかりませんでした
 msgid "The server returned a web page instead of data."
 msgstr "サーバーがデータではなくウェブページを返しました。"
 
-#: src/components/MissionSetup.tsx:1142
+#: src/components/MissionSetup.tsx:1107
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "このブラウザは WebGL 2 に対応していないため、ゲームを実行できません — 別のブラウザをお試しください。"
 
@@ -3471,7 +3451,7 @@ msgstr "このブラウザは WebGL 2 に対応していないため、ゲーム
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "このロビーはゲーム接続を別のホスト（{redirectHost}）にリダイレクトしています。このサーバーを信頼できる場合のみ続行してください。"
 
-#: src/components/MissionSetup.tsx:1146
+#: src/components/MissionSetup.tsx:1111
 msgid "This machine may be too slow for smooth flight."
 msgstr "このマシンは滑らかな飛行には遅すぎる可能性があります。"
 
@@ -3497,7 +3477,7 @@ msgstr "スロットルアップ"
 msgid "Thursday"
 msgstr "木曜日"
 
-#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:345
 msgid "Tightest sustained turn speed"
 msgstr "最小持続旋回速度"
 
@@ -3509,7 +3489,7 @@ msgstr "チルト"
 msgid "Time"
 msgstr "時間"
 
-#: src/components/MissionSetup.tsx:948
+#: src/components/MissionSetup.tsx:920
 msgid "Time of day"
 msgstr "時刻"
 
@@ -3677,23 +3657,23 @@ msgstr "不明"
 msgid "Unlimited"
 msgstr "無制限"
 
-#: src/components/MissionSetup.tsx:1001
+#: src/components/MissionSetup.tsx:973
 #: src/components/Multiplayer.tsx:81
 #: src/components/Multiplayer.tsx:447
 msgid "Unlimited ammunition"
 msgstr "弾薬無限"
 
-#: src/components/MissionSetup.tsx:1001
+#: src/components/MissionSetup.tsx:973
 msgid "Unlimited ammunition (all players)"
 msgstr "弾薬無限（全プレイヤー）"
 
-#: src/components/MissionSetup.tsx:1007
+#: src/components/MissionSetup.tsx:979
 #: src/components/Multiplayer.tsx:82
 #: src/components/Multiplayer.tsx:457
 msgid "Unlimited fuel"
 msgstr "燃料無限"
 
-#: src/components/MissionSetup.tsx:1007
+#: src/components/MissionSetup.tsx:979
 msgid "Unlimited fuel (all players)"
 msgstr "燃料無限（全プレイヤー）"
 
@@ -3744,7 +3724,7 @@ msgstr "認証"
 msgid "Verify email address"
 msgstr "メールアドレスを認証"
 
-#: src/components/MissionSetup.tsx:406
+#: src/components/MissionSetup.tsx:388
 msgid "Vertical"
 msgstr "垂直"
 
@@ -3847,7 +3827,7 @@ msgstr "の勝利"
 msgid "World server"
 msgstr "ワールドサーバー"
 
-#: src/components/MissionSetup.tsx:619
+#: src/components/MissionSetup.tsx:601
 #: src/components/Multiplayer.tsx:153
 msgid "World server not reachable"
 msgstr "ワールドサーバーに接続できません"
