@@ -70,6 +70,17 @@ msgstr "{0} lb ಗರಿಷ್ಠ ಉಡಾವಣಾ ತೂಕಕ್ಕಿಂತ
 msgid "{0} option preview"
 msgstr "{0} ಆಯ್ಕೆಯ ಪೂರ್ವವೀಕ್ಷಣೆ"
 
+#. placeholder {0}: pretty(taken.chord)
+#: src/components/SettingsDialog.tsx:766
+msgid "{0} was already taken, and that control is now unbound."
+msgstr ""
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(lost.label)
+#: src/components/SettingsDialog.tsx:762
+msgid "{0} was on {1}, which is now unbound."
+msgstr ""
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
 #: src/components/Multiplayer.tsx:556
@@ -220,13 +231,13 @@ msgstr "ಖಾತೆ ಪರಿಶೀಲಿಸಲಾಗಿದೆ"
 msgid "Ace"
 msgstr "ನಿಪುಣ"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Acquire target"
 msgstr "ಗುರಿ ಲಾಕ್ ಮಾಡಿ"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Acquisition mode"
 msgstr "ಗುರಿ ಹಿಡಿತ ಮೋಡ್"
 
@@ -322,7 +333,7 @@ msgstr "ಸೇರಿಸಲಾಗುತ್ತಿದೆ..."
 msgid "Adjust the appearance and layout to suit your preferences."
 msgstr "ನಿಮ್ಮ ಆದ್ಯತೆಗಳಿಗೆ ಸರಿಹೊಂದುವಂತೆ ಗೋಚರಿಕೆ ಮತ್ತು ಲೇಔಟ್ ಅನ್ನು ಹೊಂದಿಸಿ."
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:986
 msgid "Afterburner"
 msgstr "ಆಫ್ಟರ್‌ಬರ್ನರ್"
 
@@ -330,7 +341,7 @@ msgstr "ಆಫ್ಟರ್‌ಬರ್ನರ್"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:92
+#: src/components/SettingsDialog.tsx:97
 msgid "Aircraft"
 msgstr "ವಿಮಾನ"
 
@@ -384,8 +395,8 @@ msgstr "ಲಾಗಿನ್ ಆಗಿರುವ ಯಾರಾದರೂ"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "ಈ ಫೀಡ್‌ಗೆ ಚಂದಾದಾರರಾದ ಎಲ್ಲವೂ ಅದನ್ನು ಸ್ವೀಕರಿಸುವುದನ್ನು ನಿಲ್ಲಿಸುತ್ತದೆ. ನಂತರ ನೀವು ಹೊಸ URL ಅನ್ನು ನಕಲಿಸಬಹುದು."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Approach power (ATC)"
 msgstr "ಸಮೀಪನ ಶಕ್ತಿ (ATC)"
 
@@ -414,8 +425,8 @@ msgstr "ಲಾಗ್ ಔಟ್ ಮಾಡಲು ನೀವು ಖಚಿತವಾ�
 msgid "Armament & Stores"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Arrestor hook"
 msgstr "ತಡೆ ಕೊಕ್ಕೆ"
 
@@ -439,7 +450,7 @@ msgstr "ಕಾಮೆಂಟ್ ಫೈಲ್‌ಗಳನ್ನು ಲಗತ್ತ�
 msgid "Attach reply files"
 msgstr "ಪ್ರತ್ಯುತ್ತರ ಫೈಲ್‌ಗಳನ್ನು ಲಗತ್ತಿಸಿ"
 
-#: src/components/SettingsDialog.tsx:594
+#: src/components/SettingsDialog.tsx:632
 msgid "Audio Mixer Channels"
 msgstr ""
 
@@ -468,11 +479,12 @@ msgstr "{name} ಗಾಗಿ ಅವತಾರ್"
 msgid "Avionics, HOTAS & audio"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:441
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:474
 msgid "Axis {i}"
 msgstr "ಅಕ್ಷ {i}"
 
-#: src/components/SettingsDialog.tsx:391
+#: src/components/SettingsDialog.tsx:424
 msgid "Axis Calibration & Mapping"
 msgstr ""
 
@@ -491,7 +503,7 @@ msgstr "ಹಿಂದೆ"
 msgid "Back to home"
 msgstr "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ"
 
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Balanced flight"
 msgstr ""
 
@@ -523,7 +535,7 @@ msgstr "ಅತ್ಯುತ್ತಮ ಜಾರುವಿಕೆ (ಎಂಜಿನ್
 msgid "Best sustained turn speed"
 msgstr "ಅತ್ಯುತ್ತಮ ನಿರಂತರ ತಿರುವು ವೇಗ"
 
-#: src/components/SettingsDialog.tsx:554
+#: src/components/SettingsDialog.tsx:592
 msgid "Betty & RWR Alerts"
 msgstr ""
 
@@ -594,11 +606,12 @@ msgstr "ಸಿದ್ಧವಾದಾಗ ತಿರುಗಿ"
 msgid "Browser notifications"
 msgstr "ಬ್ರೌಸರ್ ಅಧಿಸೂಚನೆಗಳು"
 
-#: src/components/SettingsDialog.tsx:515
+#: src/components/SettingsDialog.tsx:348
+#: src/components/SettingsDialog.tsx:550
 msgid "Button {i}"
 msgstr "ಬಟನ್ {i}"
 
-#: src/components/SettingsDialog.tsx:481
+#: src/components/SettingsDialog.tsx:516
 msgid "Button Mappings"
 msgstr ""
 
@@ -615,15 +628,15 @@ msgid "CALL THE BALL"
 msgstr "ಬಾಲ್ ಘೋಷಿಸಿ"
 
 #: src/components/Multiplayer.tsx:311
-#: src/components/SettingsDialog.tsx:902
+#: src/components/SettingsDialog.tsx:1034
 msgid "Callsign"
 msgstr "ಕಾಲ್‌ಸೈನ್"
 
-#: src/components/SettingsDialog.tsx:711
+#: src/components/SettingsDialog.tsx:843
 msgid "Camera distance"
 msgstr "ಕ್ಯಾಮೆರಾ ಅಂತರ"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Camera unavailable"
 msgstr "ಕ್ಯಾಮೆರಾ ಲಭ್ಯವಿಲ್ಲ"
 
@@ -644,7 +657,7 @@ msgstr "ಕ್ಯಾಮೆರಾ ಲಭ್ಯವಿಲ್ಲ"
 #: src/components/GameCanvas.tsx:522
 #: src/components/Multiplayer.tsx:282
 #: src/components/Multiplayer.tsx:585
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Cancel"
 msgstr "ರದ್ದುಮಾಡಿ"
 
@@ -656,11 +669,11 @@ msgstr "ಕಾಮೆಂಟ್ ರದ್ದುಮಾಡಿ"
 msgid "Cancel reply"
 msgstr "ಪ್ರತ್ಯುತ್ತರ ರದ್ದುಮಾಡಿ"
 
-#: src/components/SettingsDialog.tsx:552
+#: src/components/SettingsDialog.tsx:590
 msgid "Cannons & Ordnance"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:229
 msgid "Canopy"
 msgstr "ಕ್ಯಾನೋಪಿ"
 
@@ -669,7 +682,7 @@ msgstr "ಕ್ಯಾನೋಪಿ"
 msgid "Caption"
 msgstr "ಅಡಿಬರಹ"
 
-#: src/components/SettingsDialog.tsx:553
+#: src/components/SettingsDialog.tsx:591
 msgid "Carrier & Ambient"
 msgstr ""
 
@@ -726,11 +739,11 @@ msgstr "ಬೆನ್ನಟ್ಟು ನೋಟ:"
 msgid "chat"
 msgstr "ಚಾಟ್"
 
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:240
 msgid "Chat"
 msgstr "ಚಾಟ್"
 
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:241
 msgid "Chat to everyone"
 msgstr "ಎಲ್ಲರೊಂದಿಗೆ ಚಾಟ್"
 
@@ -783,6 +796,7 @@ msgstr "ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ"
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
 #: src/components/Multiplayer.tsx:372
+#: src/components/SettingsDialog.tsx:677
 msgid "Clear"
 msgstr "ತೆರವುಗೊಳಿಸಿ"
 
@@ -900,7 +914,7 @@ msgstr "ಕಾಮೆಂಟ್ ಕ್ರಿಯೆಗಳು"
 msgid "Comments"
 msgstr "ಕಾಮೆಂಟ್‌ಗಳು"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:99
 msgid "Communication"
 msgstr "ಸಂವಹನ"
 
@@ -995,7 +1009,7 @@ msgstr "ಪಂದ್ಯವನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಾ�
 msgid "Could not load this document. Please try again later."
 msgstr "ಈ ಡಾಕ್ಯುಮೆಂಟ್ ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ನಂತರ ಪುನಃ ಪ್ರಯತ್ನಿಸಿ."
 
-#: src/components/SettingsDialog.tsx:282
+#: src/components/SettingsDialog.tsx:291
 msgid "Could not save the profile"
 msgstr "ಪ್ರೊಫೈಲ್ ಉಳಿಸಲಾಗಲಿಲ್ಲ"
 
@@ -1024,8 +1038,8 @@ msgstr "ಮರು-ದೃಢೀಕರಣವನ್ನು ಪ್ರಾರಂಭಿ�
 msgid "Couldn't verify with that account. Please try again."
 msgstr "ಆ ಖಾತೆಯೊಂದಿಗೆ ಪರಿಶೀಲಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Countermeasures"
 msgstr "ಪ್ರತಿಕ್ರಮಗಳು"
 
@@ -1100,8 +1114,8 @@ msgstr "ಕಸ್ಟಮ್"
 msgid "CUT"
 msgstr "ಅಪಾಯಕಾರಿ"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Cycle view"
 msgstr "ನೋಟ ಬದಲಿಸಿ"
 
@@ -1225,8 +1239,8 @@ msgstr "ಬೆಂಕಿಯಿಂದ ನಾಶವಾಯಿತು"
 msgid "Details Panel"
 msgstr "ವಿವರಗಳ ಪ್ಯಾನೆಲ್"
 
-#: src/components/SettingsDialog.tsx:470
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:503
+#: src/components/SettingsDialog.tsx:567
 msgid "Detect"
 msgstr "ಪತ್ತೆ ಮಾಡಿ"
 
@@ -1265,7 +1279,7 @@ msgstr "ತಿರಸ್ಕರಿಸಿ"
 msgid "Discard draft?"
 msgstr "ಕರಡನ್ನು ತಿರಸ್ಕರಿಸಬೇಕೇ?"
 
-#: src/components/SettingsDialog.tsx:355
+#: src/components/SettingsDialog.tsx:387
 msgid "disconnected"
 msgstr "ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ"
 
@@ -1278,11 +1292,12 @@ msgstr "ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ"
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
 #: src/components/MissionSetup.tsx:1258
+#: src/components/SettingsDialog.tsx:773
 msgid "Dismiss"
 msgstr "ತಿರಸ್ಕರಿಸಿ"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Display repeater"
 msgstr "ಡಿಸ್ಪ್ಲೇ ರಿಪೀಟರ್"
 
@@ -1290,13 +1305,13 @@ msgstr "ಡಿಸ್ಪ್ಲೇ ರಿಪೀಟರ್"
 msgid "Displays the mobile sidebar."
 msgstr "ಮೊಬೈಲ್ ಸೈಡ್‌ಬಾರ್ ಪ್ರದರ್ಶಿಸುತ್ತದೆ."
 
-#: src/components/SettingsDialog.tsx:842
+#: src/components/SettingsDialog.tsx:974
 msgid "Distance LOD"
 msgstr "ಅಂತರ LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:985
+#: src/components/SettingsDialog.tsx:1117
 msgid "Done"
 msgstr "ಮುಗಿಯಿತು"
 
@@ -1330,7 +1345,7 @@ msgstr "ನಕಲು"
 msgid "Duration"
 msgstr "ಅವಧಿ"
 
-#: src/components/SettingsDialog.tsx:836
+#: src/components/SettingsDialog.tsx:968
 msgid "Dynamic resolution"
 msgstr "ಡೈನಾಮಿಕ್ ರೆಸಲ್ಯೂಶನ್"
 
@@ -1381,15 +1396,15 @@ msgstr "ಆಯ್ಕೆ ಮಾಡಿದ ಕಾರ್ಡ್ ಸಂಪಾದಿಸ
 msgid "Edit view"
 msgstr "ವೀಕ್ಷಣೆ ಸಂಪಾದಿಸಿ"
 
-#: src/components/SettingsDialog.tsx:830
+#: src/components/SettingsDialog.tsx:962
 msgid "Effects & Toggles"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:809
+#: src/components/SettingsDialog.tsx:941
 msgid "Effects detail"
 msgstr "ಎಫೆಕ್ಟ್ ವಿವರ"
 
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:233
 msgid "Eject"
 msgstr "ಇಜೆಕ್ಟ್"
 
@@ -1409,8 +1424,8 @@ msgstr "ಇಮೇಲ್ ಕೋಡ್"
 msgid "EMERG JETT"
 msgstr "ತುರ್ತು ಎಸೆತ"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Emergency jettison (hold)"
 msgstr "ತುರ್ತು ಎಸೆತ (ಹಿಡಿದಿಡಿ)"
 
@@ -1431,11 +1446,11 @@ msgstr "ದಾಳಿ ಮಾಡುತ್ತಿದ್ದೇನೆ"
 msgid "Engagement"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:550
+#: src/components/SettingsDialog.tsx:588
 msgid "Engine & Afterburner"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "Enhanced visuals"
 msgstr ""
 
@@ -1482,16 +1497,16 @@ msgstr "ವಿಸ್ತರಿಸಿ"
 msgid "Expand sidebar"
 msgstr "ಸೈಡ್‌ಬಾರ್ ವಿಸ್ತರಿಸಿ"
 
-#: src/components/SettingsDialog.tsx:370
+#: src/components/SettingsDialog.tsx:402
 msgid "Export"
 msgstr "ರಫ್ತು"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Extend flaps"
 msgstr "ಫ್ಲ್ಯಾಪ್ ಹೊರಗೆ"
 
-#: src/components/SettingsDialog.tsx:801
+#: src/components/SettingsDialog.tsx:933
 msgid "Exterior detail"
 msgstr "ಹೊರಭಾಗದ ವಿವರ"
 
@@ -1623,12 +1638,12 @@ msgstr "ಮುಗಿದಿದೆ"
 msgid "fire"
 msgstr "ಫೈರ್"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Fire weapon"
 msgstr "ಆಯುಧ ಫೈರ್ ಮಾಡಿ"
 
-#: src/components/SettingsDialog.tsx:704
+#: src/components/SettingsDialog.tsx:836
 msgid "Fixed Flight Keys"
 msgstr ""
 
@@ -1660,7 +1675,7 @@ msgstr "ಸಪಾಟು"
 msgid "Flew into the sea"
 msgstr "ಸಮುದ್ರಕ್ಕೆ ಅಪ್ಪಳಿಸಿತು"
 
-#: src/components/SettingsDialog.tsx:89
+#: src/components/SettingsDialog.tsx:94
 msgid "Flight"
 msgstr "ಹಾರಾಟ"
 
@@ -1701,7 +1716,7 @@ msgstr "ಹಾರಾಟ"
 msgid "Fly again"
 msgstr "ಮತ್ತೆ ಹಾರಿ"
 
-#: src/components/SettingsDialog.tsx:866
+#: src/components/SettingsDialog.tsx:998
 msgid "Framerate counter"
 msgstr ""
 
@@ -1751,7 +1766,7 @@ msgstr "ಇಂಧನ ಸೋರಿಕೆ"
 msgid "FUEL LO"
 msgstr "ಇಂಧನ ಕಡಿಮೆ"
 
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:228
 msgid "Fuel probe"
 msgstr "ಇಂಧನ ಪ್ರೋಬ್"
 
@@ -1772,7 +1787,7 @@ msgstr "Furball"
 msgid "Fuselage"
 msgstr "ಫ್ಯೂಸ್‌ಲೇಜ್"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Gain"
 msgstr "ಗೇನ್"
 
@@ -1784,7 +1799,7 @@ msgstr "ಗೇರ್"
 msgid "GEAR"
 msgstr "ಗಿಯರ್"
 
-#: src/components/SettingsDialog.tsx:994
+#: src/components/SettingsDialog.tsx:1126
 msgid "General"
 msgstr "ಸಾಮಾನ್ಯ"
 
@@ -1814,11 +1829,11 @@ msgstr "ಪುಟ {pageNumber}ಗೆ ಹೋಗಿ"
 msgid "Go to previous page"
 msgstr "ಹಿಂದಿನ ಪುಟಕ್ಕೆ ಹೋಗಿ"
 
-#: src/components/SettingsDialog.tsx:998
+#: src/components/SettingsDialog.tsx:1130
 msgid "Graphics"
 msgstr "ಗ್ರಾಫಿಕ್ಸ್"
 
-#: src/components/SettingsDialog.tsx:761
+#: src/components/SettingsDialog.tsx:893
 msgid "Graphics Preset"
 msgstr ""
 
@@ -1856,11 +1871,11 @@ msgstr "ಫಿರಂಗಿಗಳು ಮಾತ್ರ"
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "ಹಾರ್ಡ್‌ವೇರ್ ಗ್ರಾಫಿಕ್ಸ್ ವೇಗವರ್ಧನೆ ಆಫ್ ಆಗಿದೆ — ಬ್ರೌಸರ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಅಥವಾ ಗ್ರಾಫಿಕ್ಸ್ ಡ್ರೈವರ್‌ಗಳನ್ನು ಪರಿಶೀಲಿಸಿ."
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head"
 msgstr "ತಲೆ"
 
-#: src/components/SettingsDialog.tsx:729
+#: src/components/SettingsDialog.tsx:861
 msgid "Head tracking"
 msgstr "ಹೆಡ್ ಟ್ರ್ಯಾಕಿಂಗ್"
 
@@ -1876,7 +1891,7 @@ msgstr "ಮರೆಮಾಡಿ"
 msgid "Hide password"
 msgstr "ಪಾಸ್‌ವರ್ಡ್ ಮರೆಮಾಡಿ"
 
-#: src/components/SettingsDialog.tsx:753
+#: src/components/SettingsDialog.tsx:885
 msgid "High"
 msgstr "ಹೆಚ್ಚು"
 
@@ -1910,11 +1925,11 @@ msgstr "ಕೊಕ್ಕೆ"
 msgid "Hot"
 msgstr "ಹಾಟ್"
 
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:237
 msgid "HUD altitude source"
 msgstr "HUD ಎತ್ತರದ ಮೂಲ"
 
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:238
 msgid "HUD declutter"
 msgstr "HUD ಸರಳೀಕರಣ"
 
@@ -1931,7 +1946,7 @@ msgstr "ಚಿತ್ರ ವೀಕ್ಷಕ: {0}"
 msgid "Imperial"
 msgstr "ಇಂಪೀರಿಯಲ್"
 
-#: src/components/SettingsDialog.tsx:374
+#: src/components/SettingsDialog.tsx:406
 msgid "Import"
 msgstr "ಆಮದು"
 
@@ -1952,7 +1967,7 @@ msgstr "ಆದ್ಯಕ್ಷರ ಅವತಾರ್"
 msgid "Initials avatar for {name}"
 msgstr "{name} ಗಾಗಿ ಆದ್ಯಕ್ಷರ ಅವತಾರ್"
 
-#: src/components/SettingsDialog.tsx:336
+#: src/components/SettingsDialog.tsx:368
 msgid "Input Hardware"
 msgstr ""
 
@@ -1980,7 +1995,7 @@ msgstr "ಅಮಾನ್ಯ ಟ್ಯಾಗ್: ಅಕ್ಷರಗಳು, ಸಂ�
 msgid "Invalid verification code"
 msgstr "ಅಮಾನ್ಯ ಪರಿಶೀಲನಾ ಕೋಡ್"
 
-#: src/components/SettingsDialog.tsx:382
+#: src/components/SettingsDialog.tsx:414
 msgid "Invert pitch axis"
 msgstr ""
 
@@ -2002,13 +2017,13 @@ msgstr "ಅವೇಧನೀಯ (ಮಾನವ ಆಟಗಾರರಿಗೆ ಮಾ�
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "ನೀವು ಹುಡುಕುತ್ತಿರುವ ಪುಟ <0/>ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ ಅಥವಾ ತೆಗೆದುಹಾಕಲಾಗಿದೆ ಎಂದು ತೋರುತ್ತದೆ."
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Jammer"
 msgstr "ಜಾಮರ್"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Jettison tanks"
 msgstr "ಟ್ಯಾಂಕ್‌ಗಳನ್ನು ಎಸೆಯಿರಿ"
 
@@ -2043,7 +2058,7 @@ msgstr "ದ್ವಂದ್ವಯುದ್ಧ — 1v1, ಮೊದಲ ಕಿಲ್�
 msgid "Joust against bot"
 msgstr "ದ್ವಂದ್ವಯುದ್ಧ ಬಾಟ್ ವಿರುದ್ಧ"
 
-#: src/components/SettingsDialog.tsx:1006
+#: src/components/SettingsDialog.tsx:1138
 msgid "Joystick"
 msgstr "ಜಾಯ್‌ಸ್ಟಿಕ್"
 
@@ -2059,7 +2074,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "ಕೀಬೋರ್ಡ್ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು"
 
-#: src/components/SettingsDialog.tsx:1010
+#: src/components/SettingsDialog.tsx:1142
 msgid "Keys"
 msgstr "ಕೀಲಿಗಳು"
 
@@ -2088,8 +2103,8 @@ msgstr "ಎಡ ಎಂಜಿನ್ ಬೆಂಕಿ"
 msgid "L GEAR"
 msgstr "ಎಡ ಚಕ್ರ"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Landing gear"
 msgstr "ಲ್ಯಾಂಡಿಂಗ್ ಗೇರ್"
 
@@ -2106,8 +2121,8 @@ msgstr "ತಡ"
 msgid "Lateral asymmetry"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
 msgid "Launch (catapult)"
 msgstr "ಉಡಾವಣೆ (ಕ್ಯಾಟಪಲ್ಟ್)"
 
@@ -2172,8 +2187,8 @@ msgstr "ಲೈಟ್"
 msgid "lights"
 msgstr "ದೀಪಗಳು"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:231
 msgid "Lights"
 msgstr "ದೀಪಗಳು"
 
@@ -2233,35 +2248,35 @@ msgstr "ಯಶಸ್ವಿಯಾಗಿ ಲಾಗ್ ಔಟ್ ಆಗಿದೆ"
 msgid "Logging out…"
 msgstr "ಲಾಗ್ ಔಟ್ ಆಗುತ್ತಿದೆ…"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:112
 msgid "Look"
 msgstr "ನೋಡಿ"
 
-#: src/components/SettingsDialog.tsx:710
+#: src/components/SettingsDialog.tsx:842
 msgid "Look / orbit"
 msgstr "ನೋಟ / ಸುತ್ತುವಿಕೆ"
 
-#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:187
 msgid "Look at target"
 msgstr "ಗುರಿಯನ್ನು ನೋಡಿ"
 
-#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:184
 msgid "Look down"
 msgstr "ಕೆಳಗೆ ನೋಡಿ"
 
-#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:185
 msgid "Look left"
 msgstr "ಎಡಕ್ಕೆ ನೋಡಿ"
 
-#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:186
 msgid "Look right"
 msgstr "ಬಲಕ್ಕೆ ನೋಡಿ"
 
-#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:183
 msgid "Look up"
 msgstr "ಮೇಲೆ ನೋಡಿ"
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Low"
 msgstr "ಕಡಿಮೆ"
 
@@ -2291,7 +2306,7 @@ msgstr "ಮ್ಯಾನುಯಲ್"
 msgid "map"
 msgstr "ನಕ್ಷೆ"
 
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:239
 msgid "Map"
 msgstr "ನಕ್ಷೆ"
 
@@ -2301,16 +2316,16 @@ msgstr "ನಕ್ಷೆ"
 msgid "Mark all as read"
 msgstr "ಎಲ್ಲವನ್ನೂ ಓದಲಾಗಿದೆ ಎಂದು ಮಾರ್ಕ್ ಮಾಡಿ"
 
-#: src/components/SettingsDialog.tsx:569
+#: src/components/SettingsDialog.tsx:607
 msgid "Master Audio Output"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:580
+#: src/components/SettingsDialog.tsx:618
 msgid "Master Bus"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:549
-#: src/components/SettingsDialog.tsx:576
+#: src/components/SettingsDialog.tsx:587
+#: src/components/SettingsDialog.tsx:614
 msgid "Master Volume"
 msgstr ""
 
@@ -2322,7 +2337,7 @@ msgstr "ಪಂದ್ಯದ ಪ್ರಕಾರ"
 msgid "Matches"
 msgstr "ಪಂದ್ಯಗಳು"
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Max fidelity"
 msgstr ""
 
@@ -2335,7 +2350,7 @@ msgid "MCP server"
 msgstr "MCP ಸರ್ವರ್"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:752
+#: src/components/SettingsDialog.tsx:884
 msgid "Medium"
 msgstr "ಮಧ್ಯಮ"
 
@@ -2344,8 +2359,8 @@ msgid "menu"
 msgstr "ಮೆನು"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:182
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:242
 msgid "Menu"
 msgstr "ಮೆನು"
 
@@ -2428,7 +2443,7 @@ msgstr "ಸೋಮವಾರ"
 msgid "More options"
 msgstr "ಹೆಚ್ಚಿನ ಆಯ್ಕೆಗಳು"
 
-#: src/components/SettingsDialog.tsx:470
+#: src/components/SettingsDialog.tsx:503
 msgid "Move…"
 msgstr ""
 
@@ -2502,6 +2517,10 @@ msgstr "ಇನ್ನೂ ಯಾವುದೇ ಕಾಮೆಂಟ್‌ಗಳಿಲ�
 msgid "No connected accounts"
 msgstr "ಯಾವುದೇ ಕನೆಕ್ಟೆಡ್ ಖಾತೆಗಳಿಲ್ಲ"
 
+#: src/components/SettingsDialog.tsx:692
+msgid "No control matches “{query}”."
+msgstr ""
+
 #: src/components/MatchHistory.tsx:125
 msgid "No flights yet"
 msgstr "ಇನ್ನೂ ಯಾವುದೇ ಹಾರಾಟಗಳಿಲ್ಲ"
@@ -2518,7 +2537,7 @@ msgstr "ಯಾವುದೇ ಗ್ರೂಪ್‌ಗಳು ಲಭ್ಯವಿಲ�
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "ಇನ್ನೂ ಯಾವುದೇ ಐಟಂ ಪ್ರಕಾರಗಳನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ. ಮೊದಲು ಅಗತ್ಯವಿರುವ ಪೋಷಕ ಐಟಂಗಳನ್ನು ರಚಿಸಿ."
 
-#: src/components/SettingsDialog.tsx:362
+#: src/components/SettingsDialog.tsx:394
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "ಯಾವುದೇ ಜಾಯ್‌ಸ್ಟಿಕ್ ಪತ್ತೆಯಾಗಿಲ್ಲ — ಅದನ್ನು ಎಚ್ಚರಗೊಳಿಸಲು ಅದರ ಯಾವುದೇ ಬಟನ್ ಒತ್ತಿರಿ."
 
@@ -2621,9 +2640,9 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:120
 #: src/components/MissionSetup.tsx:284
 #: src/components/MissionSetup.tsx:1077
-#: src/components/SettingsDialog.tsx:435
-#: src/components/SettingsDialog.tsx:509
-#: src/components/SettingsDialog.tsx:687
+#: src/components/SettingsDialog.tsx:468
+#: src/components/SettingsDialog.tsx:544
+#: src/components/SettingsDialog.tsx:817
 msgid "None"
 msgstr "ಯಾವುದೂ ಇಲ್ಲ"
 
@@ -2635,7 +2654,7 @@ msgstr "ಸಾಮಾನ್ಯ"
 msgid "NOSE GEAR"
 msgstr "ಮುಂದಿನ ಚಕ್ರ"
 
-#: src/components/SettingsDialog.tsx:295
+#: src/components/SettingsDialog.tsx:304
 msgid "Not a joystick profile"
 msgstr "ಇದು ಜಾಯ್‌ಸ್ಟಿಕ್ ಪ್ರೊಫೈಲ್ ಅಲ್ಲ"
 
@@ -2681,7 +2700,7 @@ msgstr "ಹೊಸಬ"
 msgid "Number"
 msgstr "ಸಂಖ್ಯೆ"
 
-#: src/components/SettingsDialog.tsx:817
+#: src/components/SettingsDialog.tsx:949
 msgid "Ocean detail"
 msgstr "ಸಾಗರ ವಿವರ"
 
@@ -2789,8 +2808,8 @@ msgstr "ಸುತ್ತು"
 msgid "Other"
 msgstr "ಇತರ"
 
-#: src/components/SettingsDialog.tsx:142
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:205
 msgid "Override G limit"
 msgstr "G ಮಿತಿ ಮೀರುವಿಕೆ"
 
@@ -2815,7 +2834,7 @@ msgstr "ಪುಟ {currentPage} / {totalPages}"
 msgid "Parent"
 msgstr "ಪೋಷಕ"
 
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:204
 msgid "Parking brake"
 msgstr "ಪಾರ್ಕಿಂಗ್ ಬ್ರೇಕ್"
 
@@ -2839,7 +2858,7 @@ msgstr "ಮಾದರಿ (regex)"
 msgid "Paused"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:751
+#: src/components/SettingsDialog.tsx:883
 msgid "Performance priority"
 msgstr ""
 
@@ -2864,7 +2883,7 @@ msgstr "ಪೈಲಟ್"
 msgid "PILOT DOWN"
 msgstr "ಪೈಲಟ್ ಸಾವು"
 
-#: src/components/SettingsDialog.tsx:898
+#: src/components/SettingsDialog.tsx:1030
 msgid "Pilot Identity"
 msgstr ""
 
@@ -2876,15 +2895,15 @@ msgstr "ಪೈಲಟ್ ಮೃತಪಟ್ಟರು"
 msgid "pitch"
 msgstr "ಮೇಲೆ-ಕೆಳಗೆ"
 
-#: src/components/SettingsDialog.tsx:99
+#: src/components/SettingsDialog.tsx:107
 msgid "Pitch"
 msgstr "ಪಿಚ್"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:195
 msgid "Pitch down"
 msgstr "ಪಿಚ್ ಕೆಳಗೆ"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:194
 msgid "Pitch up"
 msgstr "ಪಿಚ್ ಮೇಲೆ"
 
@@ -2922,7 +2941,7 @@ msgstr "ಪೋಸ್ಟ್‌ಗಳು"
 msgid "Posts and comments"
 msgstr "ಪೋಸ್ಟ್‌ಗಳು ಮತ್ತು ಕಾಮೆಂಟ್‌ಗಳು"
 
-#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:797
 msgid "Press a key…"
 msgstr "ಒಂದು ಕೀಲಿ ಒತ್ತಿರಿ…"
 
@@ -2930,7 +2949,7 @@ msgstr "ಒಂದು ಕೀಲಿ ಒತ್ತಿರಿ…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "ಹಾರಲು ENTER ಒತ್ತಿ"
 
-#: src/components/SettingsDialog.tsx:532
+#: src/components/SettingsDialog.tsx:567
 msgid "Press…"
 msgstr ""
 
@@ -2952,8 +2971,8 @@ msgstr "ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗುತ್ತಿದೆ
 msgid "Profile"
 msgstr "ಪ್ರೊಫೈಲ್"
 
-#: src/components/SettingsDialog.tsx:281
-#: src/components/SettingsDialog.tsx:293
+#: src/components/SettingsDialog.tsx:290
+#: src/components/SettingsDialog.tsx:302
 msgid "Profile saved"
 msgstr "ಪ್ರೊಫೈಲ್ ಉಳಿಸಲಾಗಿದೆ"
 
@@ -2986,8 +3005,8 @@ msgstr "ಬಲ ಎಂಜಿನ್ ಬೆಂಕಿ"
 msgid "R GEAR"
 msgstr "ಬಲ ಚಕ್ರ"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Radar silent"
 msgstr "ರೇಡಾರ್ ಮೌನ"
 
@@ -3024,7 +3043,7 @@ msgstr "ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ"
 msgid "Reconnecting ({retries})..."
 msgstr "ಮರುಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ ({retries})..."
 
-#: src/components/SettingsDialog.tsx:923
+#: src/components/SettingsDialog.tsx:1055
 msgid "Record flights automatically"
 msgstr ""
 
@@ -3136,7 +3155,7 @@ msgstr "ಈ ಬೋರ್ಡ್ ಕಾಲಮ್ ಅನ್ನು ಮರುಹೆ�
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "ರೆಂಡರಿಂಗ್ <0>three.js</0> ಮೂಲಕ (MIT ಪರವಾನಗಿ)."
 
-#: src/components/SettingsDialog.tsx:786
+#: src/components/SettingsDialog.tsx:918
 msgid "Rendering Detail"
 msgstr ""
 
@@ -3160,7 +3179,7 @@ msgstr "ಇಮೇಲ್ ಮತ್ತೆ ಕಳುಹಿಸಿ"
 
 #: ../../../lib/web/src/components/config-drawer.tsx:87
 #: ../../../lib/web/src/components/data-table/toolbar.tsx:82
-#: src/components/SettingsDialog.tsx:981
+#: src/components/SettingsDialog.tsx:1113
 msgid "Reset"
 msgstr "ರೀಸೆಟ್ ಮಾಡಿ"
 
@@ -3173,23 +3192,23 @@ msgstr "{title} ಮರುಹೊಂದಿಸಿ"
 msgid "Reset all settings to default values"
 msgstr "ಎಲ್ಲಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಡೀಫಾಲ್ಟ್ ಮೌಲ್ಯಗಳಿಗೆ ರೀಸೆಟ್ ಮಾಡಿ"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Reset master caution"
 msgstr "ಮುಖ್ಯ ಎಚ್ಚರಿಕೆ ಮರುಹೊಂದಿಸಿ"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Reset trim"
 msgstr "ಟ್ರಿಮ್ ಮರುಹೊಂದಿಸಿ"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:227
-#: src/components/SettingsDialog.tsx:709
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:841
 msgid "Reset view"
 msgstr "ನೋಟ ಮರುಹೊಂದಿಸಿ"
 
-#: src/components/SettingsDialog.tsx:791
+#: src/components/SettingsDialog.tsx:923
 msgid "Resolution"
 msgstr "ರೆಸಲ್ಯೂಶನ್"
 
@@ -3213,8 +3232,8 @@ msgstr "ಫಲಿತಾಂಶ"
 msgid "Resume"
 msgstr "ಮುಂದುವರಿಸಿ"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Retract flaps"
 msgstr "ಫ್ಲ್ಯಾಪ್ ಒಳಗೆ"
 
@@ -3222,7 +3241,7 @@ msgstr "ಫ್ಲ್ಯಾಪ್ ಒಳಗೆ"
 msgid "Retry"
 msgstr "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ"
 
-#: src/components/SettingsDialog.tsx:453
+#: src/components/SettingsDialog.tsx:486
 msgid "Reversed"
 msgstr "ವಿಲೋಮ"
 
@@ -3255,15 +3274,15 @@ msgstr "ಬಲ ರೆಕ್ಕೆಯ ತುದಿ"
 msgid "roll"
 msgstr "ಓರೆ"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:108
 msgid "Roll"
 msgstr "ರೋಲ್"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:196
 msgid "Roll left"
 msgstr "ರೋಲ್ ಎಡಕ್ಕೆ"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:197
 msgid "Roll right"
 msgstr "ರೋಲ್ ಬಲಕ್ಕೆ"
 
@@ -3318,6 +3337,11 @@ msgstr "ಸಮುದ್ರ ಮಟ್ಟ"
 #: ../../../lib/web/src/components/search.tsx:18
 msgid "Search"
 msgstr "ಹುಡುಕಿ"
+
+#: src/components/SettingsDialog.tsx:667
+#: src/components/SettingsDialog.tsx:668
+msgid "Search controls"
+msgstr ""
 
 #: ../../../lib/web/src/components/ui/command.tsx:35
 msgid "Search for a command to run..."
@@ -3439,8 +3463,8 @@ msgstr "ಸೈಟ್ ದಿಕ್ಕನ್ನು ಆಯ್ಕೆಮಾಡಿ"
 msgid "Select theme preference"
 msgstr "ಥೀಮ್ ಆದ್ಯತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Select weapon"
 msgstr "ಆಯುಧ ಆಯ್ಕೆ"
 
@@ -3514,7 +3538,7 @@ msgstr "ಸೆಷನ್ ಮುಗಿದಿದೆ"
 msgid "Session expired. Please log in again."
 msgstr "ಸೆಷನ್ ಅವಧಿ ಮುಗಿದಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಲಾಗಿನ್ ಮಾಡಿ."
 
-#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:809
 msgid "Set"
 msgstr "ಸೆಟ್ ಮಾಡಿ"
 
@@ -3527,12 +3551,12 @@ msgstr "ಮೂಲ ಮತ್ತು ಗಮ್ಯಸ್ಥಾನವನ್ನು ಹ
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:450
 #: src/components/MissionSetup.tsx:1289
-#: src/components/SettingsDialog.tsx:964
-#: src/components/SettingsDialog.tsx:991
+#: src/components/SettingsDialog.tsx:1096
+#: src/components/SettingsDialog.tsx:1123
 msgid "Settings"
 msgstr "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
 
-#: src/components/SettingsDialog.tsx:848
+#: src/components/SettingsDialog.tsx:980
 msgid "Shadows"
 msgstr "ನೆರಳುಗಳು"
 
@@ -3597,11 +3621,11 @@ msgstr "ವಿಂಗಡಿಸಿ"
 msgid "Sortie history & replays"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:918
+#: src/components/SettingsDialog.tsx:1050
 msgid "Sortie Recording"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:1002
+#: src/components/SettingsDialog.tsx:1134
 msgid "Sound"
 msgstr "ಧ್ವನಿ"
 
@@ -3629,9 +3653,9 @@ msgstr "ವೇ.ಬ್ರ"
 msgid "speed brake"
 msgstr "ವೇಗ ಬ್ರೇಕ್"
 
-#: src/components/SettingsDialog.tsx:103
-#: src/components/SettingsDialog.tsx:140
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:202
 msgid "Speed brake"
 msgstr "ವೇಗ ಬ್ರೇಕ್"
 
@@ -3844,17 +3868,17 @@ msgstr "ಈ ಪುಟವನ್ನು ಇನ್ನೂ ರಚಿಸಲಾಗಿಲ
 msgid "throttle"
 msgstr "ವೇಗ"
 
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:110
 msgid "Throttle"
 msgstr "ಥ್ರೊಟಲ್"
 
-#: src/components/SettingsDialog.tsx:146
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Throttle down"
 msgstr "ಥ್ರೊಟಲ್ ಕಡಿಮೆ ಮಾಡಿ"
 
-#: src/components/SettingsDialog.tsx:145
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Throttle up"
 msgstr "ಥ್ರೊಟಲ್ ಹೆಚ್ಚಿಸಿ"
 
@@ -3930,7 +3954,7 @@ msgstr "ತುಂಬಾ ಹೆಚ್ಚು ವಿನಂತಿಗಳು"
 msgid "Top"
 msgstr "ಅಗ್ರ"
 
-#: src/components/SettingsDialog.tsx:860
+#: src/components/SettingsDialog.tsx:992
 msgid "Tracers"
 msgstr "ಟ್ರೇಸರ್‌ಗಳು"
 
@@ -3942,31 +3966,31 @@ msgstr "ಪ್ರಯಾಣ ಮಾಡಲಾಗುತ್ತಿದೆ"
 msgid "trim"
 msgstr "ಟ್ರಿಮ್"
 
-#: src/components/SettingsDialog.tsx:90
+#: src/components/SettingsDialog.tsx:95
 msgid "Trim"
 msgstr "ಟ್ರಿಮ್"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:113
 msgid "Trim hat"
 msgstr "ಟ್ರಿಮ್ ಟೊಪ್ಪಿ"
 
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Trim nose down"
 msgstr "ಟ್ರಿಮ್: ಮೂಗು ಕೆಳಗೆ"
 
-#: src/components/SettingsDialog.tsx:147
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim nose up"
 msgstr "ಟ್ರಿಮ್: ಮೂಗು ಮೇಲೆ"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim roll left"
 msgstr "ಟ್ರಿಮ್: ಎಡಕ್ಕೆ ವಾಲು"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim roll right"
 msgstr "ಟ್ರಿಮ್: ಬಲಕ್ಕೆ ವಾಲು"
 
@@ -4006,7 +4030,7 @@ msgstr "ಬಳಕೆದಾರರನ್ನು ಹುಡುಕಲು ಟೈಪ್ 
 msgid "Type to search..."
 msgstr "ಹುಡುಕಲು ಟೈಪ್ ಮಾಡಿ..."
 
-#: src/components/SettingsDialog.tsx:754
+#: src/components/SettingsDialog.tsx:886
 msgid "Ultra"
 msgstr "ಅಲ್ಟ್ರಾ"
 
@@ -4031,13 +4055,13 @@ msgstr "ಅನುಮತಿಸದ ಪ್ರವೇಶ"
 msgid "Unavailable"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Uncage seeker"
 msgstr "ಸೀಕರ್ ಬಿಡುಗಡೆ"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Undesignate target"
 msgstr "ಗುರಿ ಆಯ್ಕೆ ರದ್ದುಮಾಡಿ"
 
@@ -4160,7 +4184,7 @@ msgid "view"
 msgstr "ನೋಟ"
 
 #: ../../../lib/web/src/components/data-table/view-options.tsx:33
-#: src/components/SettingsDialog.tsx:93
+#: src/components/SettingsDialog.tsx:98
 msgid "View"
 msgstr "ವೀಕ್ಷಿಸಿ"
 
@@ -4177,7 +4201,7 @@ msgstr "ಎಲ್ಲಾ ನೋಟಿಫಿಕೇಶನ್‌ಗಳನ್ನು �
 msgid "View controls"
 msgstr "ನಿಯಂತ್ರಣಗಳನ್ನು ವೀಕ್ಷಿಸಿ"
 
-#: src/components/SettingsDialog.tsx:708
+#: src/components/SettingsDialog.tsx:840
 msgid "Views"
 msgstr "ವೀಕ್ಷಣೆಗಳು"
 
@@ -4215,12 +4239,12 @@ msgstr "ಮುಖ್ಯವಾದ ಏನಾದರೂ ಸಂಭವಿಸಿದಾ�
 msgid "weapon"
 msgstr "ಆಯುಧ"
 
-#: src/components/SettingsDialog.tsx:106
+#: src/components/SettingsDialog.tsx:114
 msgid "Weapon select hat"
 msgstr "ಶಸ್ತ್ರ ಆಯ್ಕೆ ಹ್ಯಾಟ್"
 
 #: src/components/Multiplayer.tsx:387
-#: src/components/SettingsDialog.tsx:91
+#: src/components/SettingsDialog.tsx:96
 msgid "Weapons"
 msgstr "ಆಯುಧಗಳು"
 
@@ -4236,17 +4260,17 @@ msgstr "ವೆಬ್‌ಸೈಟ್ ನಿರ್ವಹಣೆಯಲ್ಲಿದ�
 msgid "Wednesday"
 msgstr "ಬುಧವಾರ"
 
-#: src/components/SettingsDialog.tsx:141
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:203
 msgid "Wheel brakes"
 msgstr "ಚಕ್ರ ಬ್ರೇಕ್"
 
-#: src/components/SettingsDialog.tsx:551
+#: src/components/SettingsDialog.tsx:589
 msgid "Wind & Cockpit Airframe"
 msgstr ""
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:230
 msgid "Wing fold"
 msgstr "ರೆಕ್ಕೆ ಮಡಚುವಿಕೆ"
 
@@ -4267,17 +4291,17 @@ msgstr "ವರ್ಲ್ಡ್ ಸರ್ವರ್ ತಲುಪಲು ಸಾಧ್
 msgid "yaw"
 msgstr "ತಿರುವು"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:109
 msgid "Yaw"
 msgstr "ಯಾ"
 
-#: src/components/SettingsDialog.tsx:143
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Yaw left"
 msgstr "ಯಾ ಎಡಕ್ಕೆ"
 
-#: src/components/SettingsDialog.tsx:144
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:199
 msgid "Yaw right"
 msgstr "ಯಾ ಬಲಕ್ಕೆ"
 
@@ -4321,14 +4345,14 @@ msgstr "ನಿಮ್ಮ ಪಠ್ಯ ಮತ್ತು ಲಗತ್ತುಗಳು
 msgid "Your text will be lost."
 msgstr "ನಿಮ್ಮ ಪಠ್ಯ ಕಳೆದುಹೋಗುತ್ತದೆ."
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:115
 msgid "Zoom"
 msgstr "ಝೂಮ್"
 
-#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:188
 msgid "Zoom in"
 msgstr "ಝೂಮ್ ಇನ್"
 
-#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:189
 msgid "Zoom out"
 msgstr "ಝೂಮ್ ಔಟ್"
