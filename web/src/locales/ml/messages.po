@@ -65,6 +65,12 @@ msgstr "കാറ്റപ്പൾട്ട് അസമതാ പരിധി�
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb പരമാവധി വിക്ഷേപണ ഭാരത്തേക്കാൾ കൂടുതൽ"
 
+#. placeholder {0}: ordered.length
+#. placeholder {1}: matches.length
+#: src/components/MatchHistory.tsx:308
+msgid "{0} of {1} flights"
+msgstr ""
+
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
 msgid "{0} option preview"
@@ -356,6 +362,14 @@ msgstr "വിമാന മാതൃക <0>“F/A-18C Hornet”</0>, നിർ�
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:163
 msgid "All"
 msgstr "എല്ലാം"
+
+#: src/components/MatchHistory.tsx:273
+msgid "All modes"
+msgstr ""
+
+#: src/components/MatchHistory.tsx:290
+msgid "All servers"
+msgstr ""
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -747,7 +761,7 @@ msgstr "ചാറ്റ്"
 msgid "Chat to everyone"
 msgstr "എല്ലാവരോടും ചാറ്റ്"
 
-#: src/components/MatchHistory.tsx:198
+#: src/components/MatchHistory.tsx:345
 #: src/components/Multiplayer.tsx:434
 msgid "Cheats"
 msgstr "ചീറ്റുകൾ"
@@ -795,6 +809,8 @@ msgstr "ഭാഷ തിരഞ്ഞെടുക്കുക"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/MatchHistory.tsx:303
+#: src/components/MatchHistory.tsx:359
 #: src/components/Multiplayer.tsx:372
 #: src/components/SettingsDialog.tsx:677
 msgid "Clear"
@@ -1013,8 +1029,8 @@ msgstr "ഈ ഡോക്യുമെന്റ് ലോഡ് ചെയ്യാ
 msgid "Could not save the profile"
 msgstr "പ്രൊഫൈൽ സംരക്ഷിക്കാനായില്ല"
 
-#: src/components/MatchHistory.tsx:245
-#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:410
+#: src/components/MatchHistory.tsx:416
 msgid "Could not save the recording"
 msgstr "റെക്കോർഡിംഗ് സേവ് ചെയ്യാനായില്ല"
 
@@ -1135,7 +1151,7 @@ msgid "Data conflict"
 msgstr "ഡാറ്റ വൈരുദ്ധ്യം"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
-#: src/components/MatchHistory.tsx:174
+#: src/components/MatchHistory.tsx:321
 msgid "Date"
 msgstr "തീയതി"
 
@@ -1144,8 +1160,8 @@ msgstr "തീയതി"
 msgid "Day"
 msgstr "പകൽ"
 
-#: src/components/MatchHistory.tsx:163
-#: src/components/MatchHistory.tsx:192
+#: src/components/MatchHistory.tsx:254
+#: src/components/MatchHistory.tsx:339
 msgid "Deaths"
 msgstr "മരണങ്ങൾ"
 
@@ -1285,7 +1301,7 @@ msgstr "വിച്ഛേദിച്ചു"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchHistory.tsx:88
+#: src/components/MatchHistory.tsx:150
 msgid "Disconnected"
 msgstr "വിച്ഛേദിച്ചു"
 
@@ -1341,7 +1357,7 @@ msgstr "ഡ്രോൺ"
 msgid "Duplicates"
 msgstr "ഡ്യൂപ്ലിക്കേറ്റ്"
 
-#: src/components/MatchHistory.tsx:177
+#: src/components/MatchHistory.tsx:324
 msgid "Duration"
 msgstr "ദൈർഘ്യം"
 
@@ -1630,7 +1646,7 @@ msgstr "ഫിൽട്ടർ..."
 msgid "Finish moving your account"
 msgstr "നിങ്ങളുടെ അക്കൗണ്ട് മാറ്റൽ പൂർത്തിയാക്കുക"
 
-#: src/components/MatchHistory.tsx:89
+#: src/components/MatchHistory.tsx:151
 msgid "Finished"
 msgstr "പൂർത്തിയായി"
 
@@ -1695,7 +1711,7 @@ msgstr ""
 msgid "Flight Profile"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:154
+#: src/components/MatchHistory.tsx:245
 msgid "Flights"
 msgstr "പറക്കലുകൾ"
 
@@ -1703,7 +1719,7 @@ msgstr "പറക്കലുകൾ"
 msgid "Floating"
 msgstr "ഫ്ലോട്ടിംഗ്"
 
-#: src/components/MatchHistory.tsx:90
+#: src/components/MatchHistory.tsx:152
 msgid "Flown"
 msgstr "പറന്നു"
 
@@ -1720,7 +1736,7 @@ msgstr "വീണ്ടും പറക്കുക"
 msgid "Framerate counter"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:81
+#: src/components/MatchHistory.tsx:143
 #: src/components/MissionSetup.tsx:966
 msgid "Free flight"
 msgstr "സ്വതന്ത്ര പറക്കൽ"
@@ -1778,7 +1794,7 @@ msgstr "ഇന്ധന ടാങ്ക്"
 msgid "Full layout"
 msgstr "പൂർണ്ണ ലേഔട്ട്"
 
-#: src/components/MatchHistory.tsx:78
+#: src/components/MatchHistory.tsx:140
 msgid "Furball"
 msgstr "Furball"
 
@@ -2044,7 +2060,7 @@ msgstr "സെർവറിൽ ചേരുക"
 msgid "JOINED"
 msgstr "ചേർന്നു"
 
-#: src/components/MatchHistory.tsx:79
+#: src/components/MatchHistory.tsx:141
 #: src/components/MissionSetup.tsx:1198
 #: src/components/Multiplayer.tsx:554
 msgid "Joust"
@@ -2066,7 +2082,7 @@ msgstr "ജോയ്സ്റ്റിക്ക്"
 msgid "Just now"
 msgstr "ഇപ്പോൾ"
 
-#: src/components/MatchHistory.tsx:166
+#: src/components/MatchHistory.tsx:257
 msgid "K/D"
 msgstr "K/D"
 
@@ -2082,12 +2098,12 @@ msgstr "കീകൾ"
 msgid "KILL"
 msgstr "കിൽ"
 
-#: src/components/MatchHistory.tsx:92
+#: src/components/MatchHistory.tsx:154
 msgid "Killed"
 msgstr "കൊല്ലപ്പെട്ടു"
 
-#: src/components/MatchHistory.tsx:160
-#: src/components/MatchHistory.tsx:189
+#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:336
 msgid "Kills"
 msgstr "കൊല്ലലുകൾ"
 
@@ -2148,7 +2164,7 @@ msgstr "കൂടുതലറിയുക"
 msgid "Leave server"
 msgstr "സെർവർ വിടുക"
 
-#: src/components/MatchHistory.tsx:87
+#: src/components/MatchHistory.tsx:149
 msgid "Left"
 msgstr "വിട്ടു"
 
@@ -2426,7 +2442,8 @@ msgstr ""
 msgid "Mochi web"
 msgstr "Mochi വെബ്"
 
-#: src/components/MatchHistory.tsx:183
+#: src/components/MatchHistory.tsx:268
+#: src/components/MatchHistory.tsx:330
 msgid "Mode"
 msgstr "മോഡ്"
 
@@ -2521,7 +2538,11 @@ msgstr "ബന്ധിപ്പിച്ച അക്കൗണ്ടുകള�
 msgid "No control matches “{query}”."
 msgstr ""
 
-#: src/components/MatchHistory.tsx:125
+#: src/components/MatchHistory.tsx:357
+msgid "No flight matches these filters."
+msgstr ""
+
+#: src/components/MatchHistory.tsx:187
 msgid "No flights yet"
 msgstr "ഇതുവരെ പറക്കലുകളില്ല"
 
@@ -2911,7 +2932,7 @@ msgstr "പിച്ച് മുകളിലേക്ക്"
 msgid "PLATFORM"
 msgstr "പ്ലാറ്റ്ഫോം"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:333
 msgid "Players"
 msgstr "കളിക്കാർ"
 
@@ -3047,11 +3068,11 @@ msgstr "വീണ്ടും കണക്റ്റ് ചെയ്യുന്�
 msgid "Record flights automatically"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:257
+#: src/components/MatchHistory.tsx:422
 msgid "Recording"
 msgstr "റെക്കോർഡിംഗ്"
 
-#: src/components/MatchHistory.tsx:250
+#: src/components/MatchHistory.tsx:415
 msgid "Recording saved"
 msgstr "റെക്കോർഡിംഗ് സേവ് ചെയ്തു"
 
@@ -3224,7 +3245,7 @@ msgstr "ദൗത്യം പുനരാരംഭിക്കുക"
 msgid "Restart mission?"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:195
+#: src/components/MatchHistory.tsx:342
 msgid "Result"
 msgstr "ഫലം"
 
@@ -3507,7 +3528,8 @@ msgstr "സന്ദേശം അയയ്ക്കുക"
 msgid "Serif"
 msgstr "സെരിഫ്"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:285
+#: src/components/MatchHistory.tsx:327
 msgid "Server"
 msgstr "സെർവർ"
 
@@ -3781,7 +3803,7 @@ msgstr "ടീം"
 msgid "TEAM"
 msgstr "ടീം"
 
-#: src/components/MatchHistory.tsx:80
+#: src/components/MatchHistory.tsx:142
 #: src/components/Multiplayer.tsx:554
 msgid "Teams"
 msgstr "ടീമുകൾ"
@@ -3894,7 +3916,7 @@ msgstr "ഏറ്റവും ഇറുകിയ സുസ്ഥിര തിര
 msgid "tilt"
 msgstr "ചരിക്കുക"
 
-#: src/components/MatchHistory.tsx:157
+#: src/components/MatchHistory.tsx:248
 msgid "Time"
 msgstr "സമയം"
 
@@ -4166,7 +4188,7 @@ msgstr "ഇമെയിൽ വിലാസം സ്ഥിരീകരിക്�
 msgid "Vertical"
 msgstr "ലംബം"
 
-#: src/components/MatchHistory.tsx:91
+#: src/components/MatchHistory.tsx:153
 msgid "Victory"
 msgstr "വിജയം"
 
@@ -4329,7 +4351,7 @@ msgstr "നിങ്ങളുടെ അക്കൗണ്ട് {source} ൽ ന
 msgid "Your attachments will be lost."
 msgstr "നിങ്ങളുടെ അറ്റാച്ചുമെന്റുകൾ നഷ്ടപ്പെടും."
 
-#: src/components/MatchHistory.tsx:126
+#: src/components/MatchHistory.tsx:188
 msgid "Your flights appear here once you've flown one."
 msgstr "നിങ്ങൾ ഒരു പറക്കൽ നടത്തിക്കഴിഞ്ഞാൽ നിങ്ങളുടെ പറക്കലുകൾ ഇവിടെ കാണാം."
 

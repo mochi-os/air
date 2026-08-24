@@ -65,6 +65,12 @@ msgstr "క్యాటపల్ట్ అసమానత పరిమితి 
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb గరిష్ఠ ప్రయోగ బరువు కంటే ఎక్కువ"
 
+#. placeholder {0}: ordered.length
+#. placeholder {1}: matches.length
+#: src/components/MatchHistory.tsx:308
+msgid "{0} of {1} flights"
+msgstr ""
+
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
 msgid "{0} option preview"
@@ -356,6 +362,14 @@ msgstr "విమానం మోడల్ <0>“F/A-18C Hornet”</0>, <1>Cread
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:163
 msgid "All"
 msgstr "అన్నీ"
+
+#: src/components/MatchHistory.tsx:273
+msgid "All modes"
+msgstr ""
+
+#: src/components/MatchHistory.tsx:290
+msgid "All servers"
+msgstr ""
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -747,7 +761,7 @@ msgstr "చాట్"
 msgid "Chat to everyone"
 msgstr "అందరితో చాట్"
 
-#: src/components/MatchHistory.tsx:198
+#: src/components/MatchHistory.tsx:345
 #: src/components/Multiplayer.tsx:434
 msgid "Cheats"
 msgstr "చీట్స్"
@@ -795,6 +809,8 @@ msgstr "భాషను ఎంచుకోండి"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/MatchHistory.tsx:303
+#: src/components/MatchHistory.tsx:359
 #: src/components/Multiplayer.tsx:372
 #: src/components/SettingsDialog.tsx:677
 msgid "Clear"
@@ -1013,8 +1029,8 @@ msgstr "ఈ పత్రాన్ని లోడ్ చేయలేకపోయ
 msgid "Could not save the profile"
 msgstr "ప్రొఫైల్‌ను సేవ్ చేయలేకపోయాం"
 
-#: src/components/MatchHistory.tsx:245
-#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:410
+#: src/components/MatchHistory.tsx:416
 msgid "Could not save the recording"
 msgstr "రికార్డింగ్‌ను సేవ్ చేయలేకపోయాం"
 
@@ -1135,7 +1151,7 @@ msgid "Data conflict"
 msgstr "డేటా వైరుధ్యం"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
-#: src/components/MatchHistory.tsx:174
+#: src/components/MatchHistory.tsx:321
 msgid "Date"
 msgstr "తేదీ"
 
@@ -1144,8 +1160,8 @@ msgstr "తేదీ"
 msgid "Day"
 msgstr "పగలు"
 
-#: src/components/MatchHistory.tsx:163
-#: src/components/MatchHistory.tsx:192
+#: src/components/MatchHistory.tsx:254
+#: src/components/MatchHistory.tsx:339
 msgid "Deaths"
 msgstr "మరణాలు"
 
@@ -1285,7 +1301,7 @@ msgstr "డిస్‌కనెక్ట్ అయింది"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchHistory.tsx:88
+#: src/components/MatchHistory.tsx:150
 msgid "Disconnected"
 msgstr "డిస్‌కనెక్ట్ అయింది"
 
@@ -1341,7 +1357,7 @@ msgstr "డ్రోన్"
 msgid "Duplicates"
 msgstr "నకలు చేస్తుంది"
 
-#: src/components/MatchHistory.tsx:177
+#: src/components/MatchHistory.tsx:324
 msgid "Duration"
 msgstr "వ్యవధి"
 
@@ -1630,7 +1646,7 @@ msgstr "ఫిల్టర్..."
 msgid "Finish moving your account"
 msgstr "మీ ఖాతా తరలింపు పూర్తి చేయండి"
 
-#: src/components/MatchHistory.tsx:89
+#: src/components/MatchHistory.tsx:151
 msgid "Finished"
 msgstr "ముగిసింది"
 
@@ -1695,7 +1711,7 @@ msgstr ""
 msgid "Flight Profile"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:154
+#: src/components/MatchHistory.tsx:245
 msgid "Flights"
 msgstr "విమానాలు"
 
@@ -1703,7 +1719,7 @@ msgstr "విమానాలు"
 msgid "Floating"
 msgstr "ఫ్లోటింగ్"
 
-#: src/components/MatchHistory.tsx:90
+#: src/components/MatchHistory.tsx:152
 msgid "Flown"
 msgstr "ఎగిరింది"
 
@@ -1720,7 +1736,7 @@ msgstr "మళ్లీ ఎగరండి"
 msgid "Framerate counter"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:81
+#: src/components/MatchHistory.tsx:143
 #: src/components/MissionSetup.tsx:966
 msgid "Free flight"
 msgstr "స్వేచ్ఛా విమానం"
@@ -1778,7 +1794,7 @@ msgstr "ఇంధన ట్యాంక్"
 msgid "Full layout"
 msgstr "పూర్తి లేఅవుట్"
 
-#: src/components/MatchHistory.tsx:78
+#: src/components/MatchHistory.tsx:140
 msgid "Furball"
 msgstr "Furball"
 
@@ -2044,7 +2060,7 @@ msgstr "సర్వర్‌లో చేరండి"
 msgid "JOINED"
 msgstr "చేరారు"
 
-#: src/components/MatchHistory.tsx:79
+#: src/components/MatchHistory.tsx:141
 #: src/components/MissionSetup.tsx:1198
 #: src/components/Multiplayer.tsx:554
 msgid "Joust"
@@ -2066,7 +2082,7 @@ msgstr "జాయ్‌స్టిక్"
 msgid "Just now"
 msgstr "ఇప్పుడే"
 
-#: src/components/MatchHistory.tsx:166
+#: src/components/MatchHistory.tsx:257
 msgid "K/D"
 msgstr "K/D"
 
@@ -2082,12 +2098,12 @@ msgstr "కీలు"
 msgid "KILL"
 msgstr "కిల్"
 
-#: src/components/MatchHistory.tsx:92
+#: src/components/MatchHistory.tsx:154
 msgid "Killed"
 msgstr "కూల్చివేయబడింది"
 
-#: src/components/MatchHistory.tsx:160
-#: src/components/MatchHistory.tsx:189
+#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:336
 msgid "Kills"
 msgstr "కూల్చివేతలు"
 
@@ -2148,7 +2164,7 @@ msgstr "మరింత తెలుసుకోండి"
 msgid "Leave server"
 msgstr "సర్వర్ వదిలివేయి"
 
-#: src/components/MatchHistory.tsx:87
+#: src/components/MatchHistory.tsx:149
 msgid "Left"
 msgstr "నిష్క్రమించారు"
 
@@ -2426,7 +2442,8 @@ msgstr ""
 msgid "Mochi web"
 msgstr "Mochi వెబ్"
 
-#: src/components/MatchHistory.tsx:183
+#: src/components/MatchHistory.tsx:268
+#: src/components/MatchHistory.tsx:330
 msgid "Mode"
 msgstr "మోడ్"
 
@@ -2521,7 +2538,11 @@ msgstr "కనెక్ట్ చేయబడిన ఖాతాలు లేవ
 msgid "No control matches “{query}”."
 msgstr ""
 
-#: src/components/MatchHistory.tsx:125
+#: src/components/MatchHistory.tsx:357
+msgid "No flight matches these filters."
+msgstr ""
+
+#: src/components/MatchHistory.tsx:187
 msgid "No flights yet"
 msgstr "ఇంకా విమానాలు లేవు"
 
@@ -2911,7 +2932,7 @@ msgstr "పిచ్ పైకి"
 msgid "PLATFORM"
 msgstr "వేదిక"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:333
 msgid "Players"
 msgstr "ఆటగాళ్లు"
 
@@ -3047,11 +3068,11 @@ msgstr "మళ్లీ కనెక్ట్ అవుతోంది ({retries
 msgid "Record flights automatically"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:257
+#: src/components/MatchHistory.tsx:422
 msgid "Recording"
 msgstr "రికార్డింగ్"
 
-#: src/components/MatchHistory.tsx:250
+#: src/components/MatchHistory.tsx:415
 msgid "Recording saved"
 msgstr "రికార్డింగ్ సేవ్ చేయబడింది"
 
@@ -3224,7 +3245,7 @@ msgstr "మిషన్ పునఃప్రారంభించు"
 msgid "Restart mission?"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:195
+#: src/components/MatchHistory.tsx:342
 msgid "Result"
 msgstr "ఫలితం"
 
@@ -3507,7 +3528,8 @@ msgstr "సందేశాన్ని పంపండి"
 msgid "Serif"
 msgstr "సెరిఫ్"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:285
+#: src/components/MatchHistory.tsx:327
 msgid "Server"
 msgstr "సర్వర్"
 
@@ -3781,7 +3803,7 @@ msgstr "టీమ్"
 msgid "TEAM"
 msgstr "జట్టు"
 
-#: src/components/MatchHistory.tsx:80
+#: src/components/MatchHistory.tsx:142
 #: src/components/Multiplayer.tsx:554
 msgid "Teams"
 msgstr "జట్లు"
@@ -3894,7 +3916,7 @@ msgstr "అత్యంత బిగుతైన నిలకడ మలుపు
 msgid "tilt"
 msgstr "వాలు"
 
-#: src/components/MatchHistory.tsx:157
+#: src/components/MatchHistory.tsx:248
 msgid "Time"
 msgstr "సమయం"
 
@@ -4166,7 +4188,7 @@ msgstr "ఇమెయిల్ చిరునామాను ధృవీకర�
 msgid "Vertical"
 msgstr "నిలువు"
 
-#: src/components/MatchHistory.tsx:91
+#: src/components/MatchHistory.tsx:153
 msgid "Victory"
 msgstr "విజయం"
 
@@ -4329,7 +4351,7 @@ msgstr "మీ ఖాతా {source} నుండి ఇక్కడికి �
 msgid "Your attachments will be lost."
 msgstr "మీ జోడింపులు పోతాయి."
 
-#: src/components/MatchHistory.tsx:126
+#: src/components/MatchHistory.tsx:188
 msgid "Your flights appear here once you've flown one."
 msgstr "మీరు ఒకసారి ఎగిరిన తర్వాత మీ విమానాలు ఇక్కడ కనిపిస్తాయి."
 

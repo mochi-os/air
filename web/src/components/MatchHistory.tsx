@@ -7,10 +7,18 @@
 // career summary aggregated SERVER-side over all of them and a table of the
 // fifty most recent. Raw mode/reason enums are mapped to labels before display.
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { Download, History, ShieldAlert } from 'lucide-react'
+import { ArrowDown, ArrowUp, ChevronsUpDown, Download, History, ShieldAlert } from 'lucide-react'
 import { EmptyState, shellSaveBlob, toast, useFormat } from '@mochi/web'
+import { Button } from '@mochi/web/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@mochi/web/components/ui/select'
 import {
   Table,
   TableBody,
@@ -20,7 +28,6 @@ import {
   TableRow,
 } from '@mochi/web/components/ui/table'
 import { history, recording_load, type MatchRow, type MatchTotals } from '../game/net'
-import { Button } from '@mochi/web/components/ui/button'
 
 // Replay is the in-memory recording the engine still holds for this session's
 // flights - the fallback for a row whose upload has not landed yet.
@@ -54,12 +61,67 @@ function serverName(world: string): string {
   }
 }
 
+// The columns worth ordering by: when the flight was, how long it ran, and how
+// it went. The rest are labels the filters above the table already narrow.
+type SortKey = 'started' | 'duration' | 'kills' | 'deaths'
+type Sort = { key: SortKey; direction: 'asc' | 'desc' }
+
+// A header that sorts. The whole cell is the button so the hit target matches
+// what the eye reads as the column title, and the arrow only appears on the
+// column actually in force - an arrow on every header says nothing about which
+// one the table is ordered by.
+function SortHead({
+  column,
+  sort,
+  onSort,
+  right,
+  children,
+}: {
+  column: SortKey
+  sort: Sort
+  onSort: (sort: Sort) => void
+  right?: boolean
+  children: ReactNode
+}) {
+  const active = sort.key === column
+  const Arrow = !active ? ChevronsUpDown : sort.direction === 'asc' ? ArrowUp : ArrowDown
+  return (
+    <TableHead
+      aria-sort={active ? (sort.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
+      className={right ? 'text-right' : undefined}
+    >
+      <button
+        type='button'
+        // A new column starts on the order that reads as "most interesting
+        // first": newest flight, longest flight, most kills. Clicking the
+        // column already in force is what flips it.
+        onClick={() =>
+          onSort(active ? { key: column, direction: sort.direction === 'asc' ? 'desc' : 'asc' } : { key: column, direction: 'desc' })
+        }
+        className={`hover:text-foreground focus-visible:ring-ring/50 -mx-1 flex w-full items-center gap-1 rounded px-1 outline-none focus-visible:ring-[3px] ${
+          right ? 'justify-end' : ''
+        } ${active ? 'text-foreground font-semibold' : ''}`}
+      >
+        {/* On a right-aligned column the arrow goes BEFORE the label, so the
+            label itself ends flush with the numbers below it. Trailing it there
+            pushed every heading an arrow's width off its own column. */}
+        {right && <Arrow className={`size-3 shrink-0 ${active ? '' : 'opacity-40'}`} />}
+        {children}
+        {!right && <Arrow className={`size-3 shrink-0 ${active ? '' : 'opacity-40'}`} />}
+      </button>
+    </TableHead>
+  )
+}
+
 export function MatchHistory({ recording }: { recording?: () => Replay | null }) {
   const { t } = useLingui()
   const replay = recording?.() ?? null
   const { formatDateTime, formatNumber } = useFormat()
   const [matches, setMatches] = useState<MatchRow[] | null>(null)
   const [totals, setTotals] = useState<MatchTotals | null>(null)
+  const [mode, setMode] = useState('all')
+  const [world, setWorld] = useState('all')
+  const [sort, setSort] = useState<Sort>({ key: 'started', direction: 'desc' })
 
   useEffect(() => {
     let live = true
@@ -147,6 +209,35 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
     return hh ? `${hh}:${pad(mm)}:${pad(ss)}` : `${mm}:${pad(ss)}`
   }
 
+  // The pickers offer only what the rows actually contain: a menu of every mode
+  // the game has would mostly filter to nothing.
+  const modes = Array.from(new Set(matches.map((m) => m.mode))).sort()
+  const worlds = Array.from(new Set(matches.map((m) => serverName(m.world)))).sort()
+  const filtered = matches.filter(
+    (m) => (mode === 'all' || m.mode === mode) && (world === 'all' || serverName(m.world) === world)
+  )
+  const rank = (m: MatchRow): number => {
+    switch (sort.key) {
+      // A row with no end stamp has no duration to compare; -1 keeps it below
+      // every real one instead of sorting as a zero-second flight.
+      case 'duration':
+        return m.ended > m.started ? m.ended - m.started : -1
+      case 'kills':
+        return m.kills
+      case 'deaths':
+        return m.deaths
+      default:
+        return m.started
+    }
+  }
+  // Copied first: sort() works in place, and matches is the state array.
+  const ordered = [...filtered].sort((a, b) => (rank(a) - rank(b)) * (sort.direction === 'asc' ? 1 : -1))
+  const filtering = mode !== 'all' || world !== 'all'
+  const clear = () => {
+    setMode('all')
+    setWorld('all')
+  }
+
   return (
     <div className='space-y-4'>
       <div className='text-muted-foreground flex flex-wrap gap-x-4 gap-y-1 text-sm'>
@@ -167,15 +258,71 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
         </span>
 
       </div>
+
+      {/* Only worth showing once there is something to narrow: one server and
+          one mode make both pickers a menu of a single choice. */}
+      {(modes.length > 1 || worlds.length > 1) && (
+        <div className='flex flex-wrap items-center gap-2'>
+          {modes.length > 1 && (
+            <Select value={mode} onValueChange={setMode}>
+              <SelectTrigger size='sm' className='w-40' aria-label={t`Mode`}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='all'>
+                  <Trans>All modes</Trans>
+                </SelectItem>
+                {modes.map((m) => (
+                  <SelectItem key={m} value={m}>
+                    {modeLabel(m)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          {worlds.length > 1 && (
+            <Select value={world} onValueChange={setWorld}>
+              <SelectTrigger size='sm' className='w-56' aria-label={t`Server`}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='all'>
+                  <Trans>All servers</Trans>
+                </SelectItem>
+                {worlds.map((w) => (
+                  <SelectItem key={w} value={w}>
+                    {w}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          {filtering && (
+            <>
+              <Button type='button' variant='ghost' size='sm' className='text-muted-foreground' onClick={clear}>
+                <Trans>Clear</Trans>
+              </Button>
+              {/* The career line above counts every flight ever, so a filtered
+                  table needs its own count or the two read as a contradiction. */}
+              <span className='text-muted-foreground text-xs'>
+                <Trans>
+                  {ordered.length} of {matches.length} flights
+                </Trans>
+              </span>
+            </>
+          )}
+        </div>
+      )}
+
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>
+            <SortHead column='started' sort={sort} onSort={setSort}>
               <Trans>Date</Trans>
-            </TableHead>
-            <TableHead className='text-right'>
+            </SortHead>
+            <SortHead column='duration' sort={sort} onSort={setSort} right>
               <Trans>Duration</Trans>
-            </TableHead>
+            </SortHead>
             <TableHead>
               <Trans>Server</Trans>
             </TableHead>
@@ -185,12 +332,12 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
             <TableHead className='text-right'>
               <Trans>Players</Trans>
             </TableHead>
-            <TableHead className='text-right'>
+            <SortHead column='kills' sort={sort} onSort={setSort} right>
               <Trans>Kills</Trans>
-            </TableHead>
-            <TableHead className='text-right'>
+            </SortHead>
+            <SortHead column='deaths' sort={sort} onSort={setSort} right>
               <Trans>Deaths</Trans>
-            </TableHead>
+            </SortHead>
             <TableHead>
               <Trans>Result</Trans>
             </TableHead>
@@ -201,8 +348,24 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
           </TableRow>
         </TableHeader>
         <TableBody>
-          {matches.map((m, i) => (
-            <TableRow key={i} className='group'>
+          {ordered.length === 0 && (
+            <TableRow>
+              {/* Inside the table, not above it: the headers stay put so it
+                  reads as this table with nothing in it, not as a page that
+                  has lost its flights. */}
+              <TableCell colSpan={10} className='text-muted-foreground py-8 text-center text-sm'>
+                <Trans>No flight matches these filters.</Trans>{' '}
+                <button type='button' className='text-primary hover:underline' onClick={clear}>
+                  <Trans>Clear</Trans>
+                </button>
+              </TableCell>
+            </TableRow>
+          )}
+          {ordered.map((m) => (
+            // session and start together: one session can leave more than one
+            // row, and an index key hands the wrong row's download button to
+            // the wrong flight the moment the table is sorted.
+            <TableRow key={`${m.session}-${m.started}`} className='group'>
               <TableCell>{formatDateTime(new Date(m.started))}</TableCell>
               {/* started/ended are epoch milliseconds, stamped by the client
                   and summed server-side for the career total above — so the
@@ -212,11 +375,13 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
               </TableCell>
               <TableCell>{serverName(m.world)}</TableCell>
               <TableCell>{modeLabel(m.mode)}</TableCell>
-              <TableCell className='text-right'>
+              {/* tabular-nums like the Duration column beside them: without it
+                  a 1 and a 0 are different widths and the column edge wobbles. */}
+              <TableCell className='text-right tabular-nums'>
                 {formatNumber(Number(m.players) || 0)}
               </TableCell>
-              <TableCell className='text-right'>{formatNumber(m.kills)}</TableCell>
-              <TableCell className='text-right'>{formatNumber(m.deaths)}</TableCell>
+              <TableCell className='text-right tabular-nums'>{formatNumber(m.kills)}</TableCell>
+              <TableCell className='text-right tabular-nums'>{formatNumber(m.deaths)}</TableCell>
               <TableCell>{reasonLabel(m.reason)}</TableCell>
               <TableCell className='text-muted-foreground'>
                 {m.cheated ? <ShieldAlert className='size-4' /> : null}

@@ -65,6 +65,12 @@ msgstr "캐터펄트 비대칭 한계 {0} ft·lb 초과"
 msgid "{0} lb over maximum launch weight"
 msgstr "최대 발진 중량 {0} lb 초과"
 
+#. placeholder {0}: ordered.length
+#. placeholder {1}: matches.length
+#: src/components/MatchHistory.tsx:308
+msgid "{0} of {1} flights"
+msgstr ""
+
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
 msgid "{0} option preview"
@@ -356,6 +362,14 @@ msgstr "항공기 모델 <0>“F/A-18C Hornet”</0>, 제작 <1>CreadorDeMu</1> 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:163
 msgid "All"
 msgstr "전체"
+
+#: src/components/MatchHistory.tsx:273
+msgid "All modes"
+msgstr ""
+
+#: src/components/MatchHistory.tsx:290
+msgid "All servers"
+msgstr ""
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -747,7 +761,7 @@ msgstr "채팅"
 msgid "Chat to everyone"
 msgstr "전체 채팅"
 
-#: src/components/MatchHistory.tsx:198
+#: src/components/MatchHistory.tsx:345
 #: src/components/Multiplayer.tsx:434
 msgid "Cheats"
 msgstr "치트"
@@ -795,6 +809,8 @@ msgstr "언어 선택"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/MatchHistory.tsx:303
+#: src/components/MatchHistory.tsx:359
 #: src/components/Multiplayer.tsx:372
 #: src/components/SettingsDialog.tsx:677
 msgid "Clear"
@@ -1013,8 +1029,8 @@ msgstr "이 문서를 불러올 수 없었습니다. 잠시 후 다시 시도해
 msgid "Could not save the profile"
 msgstr "프로필을 저장할 수 없습니다"
 
-#: src/components/MatchHistory.tsx:245
-#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:410
+#: src/components/MatchHistory.tsx:416
 msgid "Could not save the recording"
 msgstr "기록을 저장하지 못했습니다"
 
@@ -1135,7 +1151,7 @@ msgid "Data conflict"
 msgstr "데이터 충돌"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
-#: src/components/MatchHistory.tsx:174
+#: src/components/MatchHistory.tsx:321
 msgid "Date"
 msgstr "날짜"
 
@@ -1144,8 +1160,8 @@ msgstr "날짜"
 msgid "Day"
 msgstr "낮"
 
-#: src/components/MatchHistory.tsx:163
-#: src/components/MatchHistory.tsx:192
+#: src/components/MatchHistory.tsx:254
+#: src/components/MatchHistory.tsx:339
 msgid "Deaths"
 msgstr "데스"
 
@@ -1285,7 +1301,7 @@ msgstr "연결 끊김"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchHistory.tsx:88
+#: src/components/MatchHistory.tsx:150
 msgid "Disconnected"
 msgstr "연결 끊김"
 
@@ -1341,7 +1357,7 @@ msgstr "드론"
 msgid "Duplicates"
 msgstr "중복"
 
-#: src/components/MatchHistory.tsx:177
+#: src/components/MatchHistory.tsx:324
 msgid "Duration"
 msgstr "기간"
 
@@ -1630,7 +1646,7 @@ msgstr "필터..."
 msgid "Finish moving your account"
 msgstr "계정 이전 완료"
 
-#: src/components/MatchHistory.tsx:89
+#: src/components/MatchHistory.tsx:151
 msgid "Finished"
 msgstr "종료"
 
@@ -1695,7 +1711,7 @@ msgstr ""
 msgid "Flight Profile"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:154
+#: src/components/MatchHistory.tsx:245
 msgid "Flights"
 msgstr "비행 수"
 
@@ -1703,7 +1719,7 @@ msgstr "비행 수"
 msgid "Floating"
 msgstr "플로팅"
 
-#: src/components/MatchHistory.tsx:90
+#: src/components/MatchHistory.tsx:152
 msgid "Flown"
 msgstr "비행"
 
@@ -1720,7 +1736,7 @@ msgstr "다시 비행하기"
 msgid "Framerate counter"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:81
+#: src/components/MatchHistory.tsx:143
 #: src/components/MissionSetup.tsx:966
 msgid "Free flight"
 msgstr "자유 비행"
@@ -1778,7 +1794,7 @@ msgstr "연료 탱크"
 msgid "Full layout"
 msgstr "전체 레이아웃"
 
-#: src/components/MatchHistory.tsx:78
+#: src/components/MatchHistory.tsx:140
 msgid "Furball"
 msgstr "난투"
 
@@ -2044,7 +2060,7 @@ msgstr "서버 참가"
 msgid "JOINED"
 msgstr "참가"
 
-#: src/components/MatchHistory.tsx:79
+#: src/components/MatchHistory.tsx:141
 #: src/components/MissionSetup.tsx:1198
 #: src/components/Multiplayer.tsx:554
 msgid "Joust"
@@ -2066,7 +2082,7 @@ msgstr "조이스틱"
 msgid "Just now"
 msgstr "방금"
 
-#: src/components/MatchHistory.tsx:166
+#: src/components/MatchHistory.tsx:257
 msgid "K/D"
 msgstr "K/D"
 
@@ -2082,12 +2098,12 @@ msgstr "키"
 msgid "KILL"
 msgstr "격추"
 
-#: src/components/MatchHistory.tsx:92
+#: src/components/MatchHistory.tsx:154
 msgid "Killed"
 msgstr "피격추"
 
-#: src/components/MatchHistory.tsx:160
-#: src/components/MatchHistory.tsx:189
+#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:336
 msgid "Kills"
 msgstr "격추"
 
@@ -2148,7 +2164,7 @@ msgstr "자세히 보기"
 msgid "Leave server"
 msgstr "서버 나가기"
 
-#: src/components/MatchHistory.tsx:87
+#: src/components/MatchHistory.tsx:149
 msgid "Left"
 msgstr "나감"
 
@@ -2426,7 +2442,8 @@ msgstr ""
 msgid "Mochi web"
 msgstr "Mochi 웹"
 
-#: src/components/MatchHistory.tsx:183
+#: src/components/MatchHistory.tsx:268
+#: src/components/MatchHistory.tsx:330
 msgid "Mode"
 msgstr "모드"
 
@@ -2521,7 +2538,11 @@ msgstr "연결된 계정이 없어요"
 msgid "No control matches “{query}”."
 msgstr ""
 
-#: src/components/MatchHistory.tsx:125
+#: src/components/MatchHistory.tsx:357
+msgid "No flight matches these filters."
+msgstr ""
+
+#: src/components/MatchHistory.tsx:187
 msgid "No flights yet"
 msgstr "아직 비행이 없어요"
 
@@ -2911,7 +2932,7 @@ msgstr "기수 올리기"
 msgid "PLATFORM"
 msgstr "플랫폼"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:333
 msgid "Players"
 msgstr "플레이어 수"
 
@@ -3047,11 +3068,11 @@ msgstr "다시 연결하는 중 ({retries})..."
 msgid "Record flights automatically"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:257
+#: src/components/MatchHistory.tsx:422
 msgid "Recording"
 msgstr "기록"
 
-#: src/components/MatchHistory.tsx:250
+#: src/components/MatchHistory.tsx:415
 msgid "Recording saved"
 msgstr "기록을 저장했습니다"
 
@@ -3224,7 +3245,7 @@ msgstr "미션 재시작"
 msgid "Restart mission?"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:195
+#: src/components/MatchHistory.tsx:342
 msgid "Result"
 msgstr "결과"
 
@@ -3507,7 +3528,8 @@ msgstr "메시지 보내기"
 msgid "Serif"
 msgstr "세리프"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:285
+#: src/components/MatchHistory.tsx:327
 msgid "Server"
 msgstr "서버"
 
@@ -3781,7 +3803,7 @@ msgstr "팀"
 msgid "TEAM"
 msgstr "팀"
 
-#: src/components/MatchHistory.tsx:80
+#: src/components/MatchHistory.tsx:142
 #: src/components/Multiplayer.tsx:554
 msgid "Teams"
 msgstr "팀전"
@@ -3894,7 +3916,7 @@ msgstr "최소 반경 지속 선회 속도"
 msgid "tilt"
 msgstr "기울이기"
 
-#: src/components/MatchHistory.tsx:157
+#: src/components/MatchHistory.tsx:248
 msgid "Time"
 msgstr "시간"
 
@@ -4166,7 +4188,7 @@ msgstr "이메일 주소 확인"
 msgid "Vertical"
 msgstr "수직"
 
-#: src/components/MatchHistory.tsx:91
+#: src/components/MatchHistory.tsx:153
 msgid "Victory"
 msgstr "승리"
 
@@ -4329,7 +4351,7 @@ msgstr "계정이 {source}에서 이곳으로 이전되었습니다. 거기서 �
 msgid "Your attachments will be lost."
 msgstr "첨부 파일이 사라집니다."
 
-#: src/components/MatchHistory.tsx:126
+#: src/components/MatchHistory.tsx:188
 msgid "Your flights appear here once you've flown one."
 msgstr "비행을 한 번 하면 여기에 표시돼요."
 

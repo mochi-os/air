@@ -65,6 +65,12 @@ msgstr "{0} ft·lb πάνω από το όριο ασυμμετρίας του �
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb πάνω από το μέγιστο βάρος εκτόξευσης"
 
+#. placeholder {0}: ordered.length
+#. placeholder {1}: matches.length
+#: src/components/MatchHistory.tsx:308
+msgid "{0} of {1} flights"
+msgstr ""
+
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
 msgid "{0} option preview"
@@ -356,6 +362,14 @@ msgstr "Μοντέλο αεροσκάφους <0>“F/A-18C Hornet”</0> από
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:163
 msgid "All"
 msgstr "Όλα"
+
+#: src/components/MatchHistory.tsx:273
+msgid "All modes"
+msgstr ""
+
+#: src/components/MatchHistory.tsx:290
+msgid "All servers"
+msgstr ""
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -747,7 +761,7 @@ msgstr "Συνομιλία"
 msgid "Chat to everyone"
 msgstr "Συνομιλία με όλους"
 
-#: src/components/MatchHistory.tsx:198
+#: src/components/MatchHistory.tsx:345
 #: src/components/Multiplayer.tsx:434
 msgid "Cheats"
 msgstr "Ζαβολιές"
@@ -795,6 +809,8 @@ msgstr "Επιλογή γλώσσας"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/MatchHistory.tsx:303
+#: src/components/MatchHistory.tsx:359
 #: src/components/Multiplayer.tsx:372
 #: src/components/SettingsDialog.tsx:677
 msgid "Clear"
@@ -1013,8 +1029,8 @@ msgstr "Δεν ήταν δυνατή η φόρτωση αυτού του εγγ�
 msgid "Could not save the profile"
 msgstr "Δεν ήταν δυνατή η αποθήκευση του προφίλ"
 
-#: src/components/MatchHistory.tsx:245
-#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:410
+#: src/components/MatchHistory.tsx:416
 msgid "Could not save the recording"
 msgstr "Δεν ήταν δυνατή η αποθήκευση της καταγραφής"
 
@@ -1135,7 +1151,7 @@ msgid "Data conflict"
 msgstr "Διένεξη δεδομένων"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
-#: src/components/MatchHistory.tsx:174
+#: src/components/MatchHistory.tsx:321
 msgid "Date"
 msgstr "Ημερομηνία"
 
@@ -1144,8 +1160,8 @@ msgstr "Ημερομηνία"
 msgid "Day"
 msgstr "Ημέρα"
 
-#: src/components/MatchHistory.tsx:163
-#: src/components/MatchHistory.tsx:192
+#: src/components/MatchHistory.tsx:254
+#: src/components/MatchHistory.tsx:339
 msgid "Deaths"
 msgstr "Θάνατοι"
 
@@ -1285,7 +1301,7 @@ msgstr "αποσυνδεδεμένο"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchHistory.tsx:88
+#: src/components/MatchHistory.tsx:150
 msgid "Disconnected"
 msgstr "Αποσυνδεδεμένο"
 
@@ -1341,7 +1357,7 @@ msgstr "Ντρόουν"
 msgid "Duplicates"
 msgstr "Διπλότυπο"
 
-#: src/components/MatchHistory.tsx:177
+#: src/components/MatchHistory.tsx:324
 msgid "Duration"
 msgstr "Διάρκεια"
 
@@ -1630,7 +1646,7 @@ msgstr "Φιλτράρισμα..."
 msgid "Finish moving your account"
 msgstr "Ολοκληρώστε τη μεταφορά του λογαριασμού σας"
 
-#: src/components/MatchHistory.tsx:89
+#: src/components/MatchHistory.tsx:151
 msgid "Finished"
 msgstr "Ολοκληρώθηκε"
 
@@ -1695,7 +1711,7 @@ msgstr ""
 msgid "Flight Profile"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:154
+#: src/components/MatchHistory.tsx:245
 msgid "Flights"
 msgstr "Πτήσεις"
 
@@ -1703,7 +1719,7 @@ msgstr "Πτήσεις"
 msgid "Floating"
 msgstr "Αιωρούμενο"
 
-#: src/components/MatchHistory.tsx:90
+#: src/components/MatchHistory.tsx:152
 msgid "Flown"
 msgstr "Πέταξε"
 
@@ -1720,7 +1736,7 @@ msgstr "Πέταξε ξανά"
 msgid "Framerate counter"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:81
+#: src/components/MatchHistory.tsx:143
 #: src/components/MissionSetup.tsx:966
 msgid "Free flight"
 msgstr "Ελεύθερη πτήση"
@@ -1778,7 +1794,7 @@ msgstr "Δεξαμενή καυσίμου"
 msgid "Full layout"
 msgstr "Πλήρης διάταξη"
 
-#: src/components/MatchHistory.tsx:78
+#: src/components/MatchHistory.tsx:140
 msgid "Furball"
 msgstr "Furball"
 
@@ -2044,7 +2060,7 @@ msgstr "Σύνδεση σε διακομιστή"
 msgid "JOINED"
 msgstr "ΜΠΗΚΕ"
 
-#: src/components/MatchHistory.tsx:79
+#: src/components/MatchHistory.tsx:141
 #: src/components/MissionSetup.tsx:1198
 #: src/components/Multiplayer.tsx:554
 msgid "Joust"
@@ -2066,7 +2082,7 @@ msgstr "Χειριστήριο"
 msgid "Just now"
 msgstr "Μόλις τώρα"
 
-#: src/components/MatchHistory.tsx:166
+#: src/components/MatchHistory.tsx:257
 msgid "K/D"
 msgstr "K/D"
 
@@ -2082,12 +2098,12 @@ msgstr "Πλήκτρα"
 msgid "KILL"
 msgstr "ΚΑΤΑΡΡΙΨΗ"
 
-#: src/components/MatchHistory.tsx:92
+#: src/components/MatchHistory.tsx:154
 msgid "Killed"
 msgstr "Καταρρίφθηκε"
 
-#: src/components/MatchHistory.tsx:160
-#: src/components/MatchHistory.tsx:189
+#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:336
 msgid "Kills"
 msgstr "Καταρρίψεις"
 
@@ -2148,7 +2164,7 @@ msgstr "Μάθετε περισσότερα"
 msgid "Leave server"
 msgstr "Αποχώρηση από διακομιστή"
 
-#: src/components/MatchHistory.tsx:87
+#: src/components/MatchHistory.tsx:149
 msgid "Left"
 msgstr "Αποχώρησε"
 
@@ -2426,7 +2442,8 @@ msgstr ""
 msgid "Mochi web"
 msgstr "Mochi web"
 
-#: src/components/MatchHistory.tsx:183
+#: src/components/MatchHistory.tsx:268
+#: src/components/MatchHistory.tsx:330
 msgid "Mode"
 msgstr "Λειτουργία"
 
@@ -2521,7 +2538,11 @@ msgstr "Δεν υπάρχουν συνδεδεμένοι λογαριασμοί"
 msgid "No control matches “{query}”."
 msgstr ""
 
-#: src/components/MatchHistory.tsx:125
+#: src/components/MatchHistory.tsx:357
+msgid "No flight matches these filters."
+msgstr ""
+
+#: src/components/MatchHistory.tsx:187
 msgid "No flights yet"
 msgstr "Δεν υπάρχουν ακόμη πτήσεις"
 
@@ -2911,7 +2932,7 @@ msgstr "Μύτη πάνω"
 msgid "PLATFORM"
 msgstr "ΠΛΑΤΦΌΡΜΑ"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:333
 msgid "Players"
 msgstr "Παίκτες"
 
@@ -3047,11 +3068,11 @@ msgstr "Επανασύνδεση ({retries})..."
 msgid "Record flights automatically"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:257
+#: src/components/MatchHistory.tsx:422
 msgid "Recording"
 msgstr "Καταγραφή"
 
-#: src/components/MatchHistory.tsx:250
+#: src/components/MatchHistory.tsx:415
 msgid "Recording saved"
 msgstr "Η καταγραφή αποθηκεύτηκε"
 
@@ -3224,7 +3245,7 @@ msgstr "Επανεκκίνηση αποστολής"
 msgid "Restart mission?"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:195
+#: src/components/MatchHistory.tsx:342
 msgid "Result"
 msgstr "Αποτέλεσμα"
 
@@ -3507,7 +3528,8 @@ msgstr "Αποστολή μηνύματος"
 msgid "Serif"
 msgstr "Με ακρέμονες"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:285
+#: src/components/MatchHistory.tsx:327
 msgid "Server"
 msgstr "Διακομιστής"
 
@@ -3781,7 +3803,7 @@ msgstr "Ομάδα"
 msgid "TEAM"
 msgstr "ΟΜΑΔΑ"
 
-#: src/components/MatchHistory.tsx:80
+#: src/components/MatchHistory.tsx:142
 #: src/components/Multiplayer.tsx:554
 msgid "Teams"
 msgstr "Ομάδες"
@@ -3894,7 +3916,7 @@ msgstr "Ταχύτητα στενότερης διατηρούμενης στρ�
 msgid "tilt"
 msgstr "κλίση"
 
-#: src/components/MatchHistory.tsx:157
+#: src/components/MatchHistory.tsx:248
 msgid "Time"
 msgstr "Χρόνος"
 
@@ -4166,7 +4188,7 @@ msgstr "Επαλήθευση διεύθυνσης email"
 msgid "Vertical"
 msgstr "Κατακόρυφη"
 
-#: src/components/MatchHistory.tsx:91
+#: src/components/MatchHistory.tsx:153
 msgid "Victory"
 msgstr "Νίκη"
 
@@ -4329,7 +4351,7 @@ msgstr "Ο λογαριασμός σας μεταφέρθηκε εδώ από {s
 msgid "Your attachments will be lost."
 msgstr "Τα συνημμένα σας θα χαθούν."
 
-#: src/components/MatchHistory.tsx:126
+#: src/components/MatchHistory.tsx:188
 msgid "Your flights appear here once you've flown one."
 msgstr "Οι πτήσεις σας θα εμφανίζονται εδώ μόλις πραγματοποιήσετε μία."
 

@@ -65,6 +65,12 @@ msgstr "{0} ft·lb boven de asymmetrielimiet van de katapult"
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb boven het maximale lanceergewicht"
 
+#. placeholder {0}: ordered.length
+#. placeholder {1}: matches.length
+#: src/components/MatchHistory.tsx:308
+msgid "{0} of {1} flights"
+msgstr ""
+
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
 msgid "{0} option preview"
@@ -356,6 +362,14 @@ msgstr "Vliegtuigmodel <0>“F/A-18C Hornet”</0> door <1>CreadorDeMu</1> (Sket
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:163
 msgid "All"
 msgstr "Alle"
+
+#: src/components/MatchHistory.tsx:273
+msgid "All modes"
+msgstr ""
+
+#: src/components/MatchHistory.tsx:290
+msgid "All servers"
+msgstr ""
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -747,7 +761,7 @@ msgstr "Chat"
 msgid "Chat to everyone"
 msgstr "Chat naar iedereen"
 
-#: src/components/MatchHistory.tsx:198
+#: src/components/MatchHistory.tsx:345
 #: src/components/Multiplayer.tsx:434
 msgid "Cheats"
 msgstr "Cheats"
@@ -795,6 +809,8 @@ msgstr "Kies taal"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/MatchHistory.tsx:303
+#: src/components/MatchHistory.tsx:359
 #: src/components/Multiplayer.tsx:372
 #: src/components/SettingsDialog.tsx:677
 msgid "Clear"
@@ -1013,8 +1029,8 @@ msgstr "Kon dit document niet laden. Probeer het later opnieuw."
 msgid "Could not save the profile"
 msgstr "Kon het profiel niet opslaan"
 
-#: src/components/MatchHistory.tsx:245
-#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:410
+#: src/components/MatchHistory.tsx:416
 msgid "Could not save the recording"
 msgstr "Kon de opname niet bewaren"
 
@@ -1135,7 +1151,7 @@ msgid "Data conflict"
 msgstr "Gegevensconflict"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
-#: src/components/MatchHistory.tsx:174
+#: src/components/MatchHistory.tsx:321
 msgid "Date"
 msgstr "Datum"
 
@@ -1144,8 +1160,8 @@ msgstr "Datum"
 msgid "Day"
 msgstr "Dag"
 
-#: src/components/MatchHistory.tsx:163
-#: src/components/MatchHistory.tsx:192
+#: src/components/MatchHistory.tsx:254
+#: src/components/MatchHistory.tsx:339
 msgid "Deaths"
 msgstr "Doden"
 
@@ -1285,7 +1301,7 @@ msgstr "losgekoppeld"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchHistory.tsx:88
+#: src/components/MatchHistory.tsx:150
 msgid "Disconnected"
 msgstr "Verbinding verbroken"
 
@@ -1341,7 +1357,7 @@ msgstr "Drone"
 msgid "Duplicates"
 msgstr "Dupliceert"
 
-#: src/components/MatchHistory.tsx:177
+#: src/components/MatchHistory.tsx:324
 msgid "Duration"
 msgstr "Duur"
 
@@ -1630,7 +1646,7 @@ msgstr "Filteren..."
 msgid "Finish moving your account"
 msgstr "Verhuizing van uw account voltooien"
 
-#: src/components/MatchHistory.tsx:89
+#: src/components/MatchHistory.tsx:151
 msgid "Finished"
 msgstr "Voltooid"
 
@@ -1695,7 +1711,7 @@ msgstr ""
 msgid "Flight Profile"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:154
+#: src/components/MatchHistory.tsx:245
 msgid "Flights"
 msgstr "Vluchten"
 
@@ -1703,7 +1719,7 @@ msgstr "Vluchten"
 msgid "Floating"
 msgstr "Zwevend"
 
-#: src/components/MatchHistory.tsx:90
+#: src/components/MatchHistory.tsx:152
 msgid "Flown"
 msgstr "Gevlogen"
 
@@ -1720,7 +1736,7 @@ msgstr "Opnieuw vliegen"
 msgid "Framerate counter"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:81
+#: src/components/MatchHistory.tsx:143
 #: src/components/MissionSetup.tsx:966
 msgid "Free flight"
 msgstr "Vrije vlucht"
@@ -1778,7 +1794,7 @@ msgstr "Brandstoftank"
 msgid "Full layout"
 msgstr "Volledige indeling"
 
-#: src/components/MatchHistory.tsx:78
+#: src/components/MatchHistory.tsx:140
 msgid "Furball"
 msgstr "Furball"
 
@@ -2044,7 +2060,7 @@ msgstr "Deelnemen aan server"
 msgid "JOINED"
 msgstr "DOET MEE"
 
-#: src/components/MatchHistory.tsx:79
+#: src/components/MatchHistory.tsx:141
 #: src/components/MissionSetup.tsx:1198
 #: src/components/Multiplayer.tsx:554
 msgid "Joust"
@@ -2066,7 +2082,7 @@ msgstr "Joystick"
 msgid "Just now"
 msgstr "Zojuist"
 
-#: src/components/MatchHistory.tsx:166
+#: src/components/MatchHistory.tsx:257
 msgid "K/D"
 msgstr "K/D"
 
@@ -2082,12 +2098,12 @@ msgstr "Toetsen"
 msgid "KILL"
 msgstr "KILL"
 
-#: src/components/MatchHistory.tsx:92
+#: src/components/MatchHistory.tsx:154
 msgid "Killed"
 msgstr "Neergehaald"
 
-#: src/components/MatchHistory.tsx:160
-#: src/components/MatchHistory.tsx:189
+#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:336
 msgid "Kills"
 msgstr "Neerhalingen"
 
@@ -2148,7 +2164,7 @@ msgstr "Meer informatie"
 msgid "Leave server"
 msgstr "Server verlaten"
 
-#: src/components/MatchHistory.tsx:87
+#: src/components/MatchHistory.tsx:149
 msgid "Left"
 msgstr "Verlaten"
 
@@ -2426,7 +2442,8 @@ msgstr ""
 msgid "Mochi web"
 msgstr "Mochi web"
 
-#: src/components/MatchHistory.tsx:183
+#: src/components/MatchHistory.tsx:268
+#: src/components/MatchHistory.tsx:330
 msgid "Mode"
 msgstr "Modus"
 
@@ -2521,7 +2538,11 @@ msgstr "Geen verbonden accounts"
 msgid "No control matches “{query}”."
 msgstr ""
 
-#: src/components/MatchHistory.tsx:125
+#: src/components/MatchHistory.tsx:357
+msgid "No flight matches these filters."
+msgstr ""
+
+#: src/components/MatchHistory.tsx:187
 msgid "No flights yet"
 msgstr "Nog geen vluchten"
 
@@ -2911,7 +2932,7 @@ msgstr "Pitch omhoog"
 msgid "PLATFORM"
 msgstr "PLATFORM"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:333
 msgid "Players"
 msgstr "Spelers"
 
@@ -3047,11 +3068,11 @@ msgstr "Opnieuw verbinden ({retries})..."
 msgid "Record flights automatically"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:257
+#: src/components/MatchHistory.tsx:422
 msgid "Recording"
 msgstr "Opname"
 
-#: src/components/MatchHistory.tsx:250
+#: src/components/MatchHistory.tsx:415
 msgid "Recording saved"
 msgstr "Opname bewaard"
 
@@ -3224,7 +3245,7 @@ msgstr "Missie herstarten"
 msgid "Restart mission?"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:195
+#: src/components/MatchHistory.tsx:342
 msgid "Result"
 msgstr "Resultaat"
 
@@ -3507,7 +3528,8 @@ msgstr "Bericht versturen"
 msgid "Serif"
 msgstr "Schreefletter"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:285
+#: src/components/MatchHistory.tsx:327
 msgid "Server"
 msgstr "Server"
 
@@ -3781,7 +3803,7 @@ msgstr "Team"
 msgid "TEAM"
 msgstr "TEAM"
 
-#: src/components/MatchHistory.tsx:80
+#: src/components/MatchHistory.tsx:142
 #: src/components/Multiplayer.tsx:554
 msgid "Teams"
 msgstr "Teams"
@@ -3894,7 +3916,7 @@ msgstr "Krapste aanhoudende bochtsnelheid"
 msgid "tilt"
 msgstr "kantelen"
 
-#: src/components/MatchHistory.tsx:157
+#: src/components/MatchHistory.tsx:248
 msgid "Time"
 msgstr "Tijd"
 
@@ -4166,7 +4188,7 @@ msgstr "E-mailadres verifiëren"
 msgid "Vertical"
 msgstr "Verticaal"
 
-#: src/components/MatchHistory.tsx:91
+#: src/components/MatchHistory.tsx:153
 msgid "Victory"
 msgstr "Overwinning"
 
@@ -4329,7 +4351,7 @@ msgstr "Uw account is hier naartoe verplaatst vanuit {source}. Totdat u het daar
 msgid "Your attachments will be lost."
 msgstr "Je bijlagen gaan verloren."
 
-#: src/components/MatchHistory.tsx:126
+#: src/components/MatchHistory.tsx:188
 msgid "Your flights appear here once you've flown one."
 msgstr "Je vluchten verschijnen hier zodra je er een hebt gevlogen."
 

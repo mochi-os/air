@@ -65,6 +65,12 @@ msgstr "{0} ft·lb over the catapult asymmetry limit"
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb over maximum launch weight"
 
+#. placeholder {0}: ordered.length
+#. placeholder {1}: matches.length
+#: src/components/MatchHistory.tsx:308
+msgid "{0} of {1} flights"
+msgstr "{0} of {1} flights"
+
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
 msgid "{0} option preview"
@@ -356,6 +362,14 @@ msgstr "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketch
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:163
 msgid "All"
 msgstr "All"
+
+#: src/components/MatchHistory.tsx:273
+msgid "All modes"
+msgstr "All modes"
+
+#: src/components/MatchHistory.tsx:290
+msgid "All servers"
+msgstr "All servers"
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -747,7 +761,7 @@ msgstr "Chat"
 msgid "Chat to everyone"
 msgstr "Chat to everyone"
 
-#: src/components/MatchHistory.tsx:198
+#: src/components/MatchHistory.tsx:345
 #: src/components/Multiplayer.tsx:434
 msgid "Cheats"
 msgstr "Cheats"
@@ -795,6 +809,8 @@ msgstr "Choose language"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/MatchHistory.tsx:303
+#: src/components/MatchHistory.tsx:359
 #: src/components/Multiplayer.tsx:372
 #: src/components/SettingsDialog.tsx:677
 msgid "Clear"
@@ -1013,8 +1029,8 @@ msgstr "Could not load this document. Please try again later."
 msgid "Could not save the profile"
 msgstr "Could not save the profile"
 
-#: src/components/MatchHistory.tsx:245
-#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:410
+#: src/components/MatchHistory.tsx:416
 msgid "Could not save the recording"
 msgstr "Could not save the recording"
 
@@ -1135,7 +1151,7 @@ msgid "Data conflict"
 msgstr "Data conflict"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
-#: src/components/MatchHistory.tsx:174
+#: src/components/MatchHistory.tsx:321
 msgid "Date"
 msgstr "Date"
 
@@ -1144,8 +1160,8 @@ msgstr "Date"
 msgid "Day"
 msgstr "Day"
 
-#: src/components/MatchHistory.tsx:163
-#: src/components/MatchHistory.tsx:192
+#: src/components/MatchHistory.tsx:254
+#: src/components/MatchHistory.tsx:339
 msgid "Deaths"
 msgstr "Deaths"
 
@@ -1285,7 +1301,7 @@ msgstr "disconnected"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchHistory.tsx:88
+#: src/components/MatchHistory.tsx:150
 msgid "Disconnected"
 msgstr "Disconnected"
 
@@ -1341,7 +1357,7 @@ msgstr "Drone"
 msgid "Duplicates"
 msgstr "Duplicates"
 
-#: src/components/MatchHistory.tsx:177
+#: src/components/MatchHistory.tsx:324
 msgid "Duration"
 msgstr "Duration"
 
@@ -1630,7 +1646,7 @@ msgstr "Filter..."
 msgid "Finish moving your account"
 msgstr "Finish moving your account"
 
-#: src/components/MatchHistory.tsx:89
+#: src/components/MatchHistory.tsx:151
 msgid "Finished"
 msgstr "Finished"
 
@@ -1695,7 +1711,7 @@ msgstr "Flight log"
 msgid "Flight Profile"
 msgstr "Flight Profile"
 
-#: src/components/MatchHistory.tsx:154
+#: src/components/MatchHistory.tsx:245
 msgid "Flights"
 msgstr "Flights"
 
@@ -1703,7 +1719,7 @@ msgstr "Flights"
 msgid "Floating"
 msgstr "Floating"
 
-#: src/components/MatchHistory.tsx:90
+#: src/components/MatchHistory.tsx:152
 msgid "Flown"
 msgstr "Flown"
 
@@ -1720,7 +1736,7 @@ msgstr "Fly again"
 msgid "Framerate counter"
 msgstr "Framerate counter"
 
-#: src/components/MatchHistory.tsx:81
+#: src/components/MatchHistory.tsx:143
 #: src/components/MissionSetup.tsx:966
 msgid "Free flight"
 msgstr "Free flight"
@@ -1778,7 +1794,7 @@ msgstr "Fuel tank"
 msgid "Full layout"
 msgstr "Full layout"
 
-#: src/components/MatchHistory.tsx:78
+#: src/components/MatchHistory.tsx:140
 msgid "Furball"
 msgstr "Furball"
 
@@ -2044,7 +2060,7 @@ msgstr "Join server"
 msgid "JOINED"
 msgstr "JOINED"
 
-#: src/components/MatchHistory.tsx:79
+#: src/components/MatchHistory.tsx:141
 #: src/components/MissionSetup.tsx:1198
 #: src/components/Multiplayer.tsx:554
 msgid "Joust"
@@ -2066,7 +2082,7 @@ msgstr "Joystick"
 msgid "Just now"
 msgstr "Just now"
 
-#: src/components/MatchHistory.tsx:166
+#: src/components/MatchHistory.tsx:257
 msgid "K/D"
 msgstr "K/D"
 
@@ -2082,12 +2098,12 @@ msgstr "Keys"
 msgid "KILL"
 msgstr "KILL"
 
-#: src/components/MatchHistory.tsx:92
+#: src/components/MatchHistory.tsx:154
 msgid "Killed"
 msgstr "Killed"
 
-#: src/components/MatchHistory.tsx:160
-#: src/components/MatchHistory.tsx:189
+#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:336
 msgid "Kills"
 msgstr "Kills"
 
@@ -2148,7 +2164,7 @@ msgstr "Learn more"
 msgid "Leave server"
 msgstr "Leave server"
 
-#: src/components/MatchHistory.tsx:87
+#: src/components/MatchHistory.tsx:149
 msgid "Left"
 msgstr "Left"
 
@@ -2426,7 +2442,8 @@ msgstr "Mission over"
 msgid "Mochi web"
 msgstr "Mochi web"
 
-#: src/components/MatchHistory.tsx:183
+#: src/components/MatchHistory.tsx:268
+#: src/components/MatchHistory.tsx:330
 msgid "Mode"
 msgstr "Mode"
 
@@ -2521,7 +2538,11 @@ msgstr "No connected accounts"
 msgid "No control matches “{query}”."
 msgstr "No control matches “{query}”."
 
-#: src/components/MatchHistory.tsx:125
+#: src/components/MatchHistory.tsx:357
+msgid "No flight matches these filters."
+msgstr "No flight matches these filters."
+
+#: src/components/MatchHistory.tsx:187
 msgid "No flights yet"
 msgstr "No flights yet"
 
@@ -2911,7 +2932,7 @@ msgstr "Pitch up"
 msgid "PLATFORM"
 msgstr "PLATFORM"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:333
 msgid "Players"
 msgstr "Players"
 
@@ -3047,11 +3068,11 @@ msgstr "Reconnecting ({retries})..."
 msgid "Record flights automatically"
 msgstr "Record flights automatically"
 
-#: src/components/MatchHistory.tsx:257
+#: src/components/MatchHistory.tsx:422
 msgid "Recording"
 msgstr "Recording"
 
-#: src/components/MatchHistory.tsx:250
+#: src/components/MatchHistory.tsx:415
 msgid "Recording saved"
 msgstr "Recording saved"
 
@@ -3224,7 +3245,7 @@ msgstr "Restart mission"
 msgid "Restart mission?"
 msgstr "Restart mission?"
 
-#: src/components/MatchHistory.tsx:195
+#: src/components/MatchHistory.tsx:342
 msgid "Result"
 msgstr "Result"
 
@@ -3507,7 +3528,8 @@ msgstr "Send message"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:285
+#: src/components/MatchHistory.tsx:327
 msgid "Server"
 msgstr "Server"
 
@@ -3781,7 +3803,7 @@ msgstr "Team"
 msgid "TEAM"
 msgstr "TEAM"
 
-#: src/components/MatchHistory.tsx:80
+#: src/components/MatchHistory.tsx:142
 #: src/components/Multiplayer.tsx:554
 msgid "Teams"
 msgstr "Teams"
@@ -3894,7 +3916,7 @@ msgstr "Tightest sustained turn speed"
 msgid "tilt"
 msgstr "tilt"
 
-#: src/components/MatchHistory.tsx:157
+#: src/components/MatchHistory.tsx:248
 msgid "Time"
 msgstr "Time"
 
@@ -4166,7 +4188,7 @@ msgstr "Verify email address"
 msgid "Vertical"
 msgstr "Vertical"
 
-#: src/components/MatchHistory.tsx:91
+#: src/components/MatchHistory.tsx:153
 msgid "Victory"
 msgstr "Victory"
 
@@ -4329,7 +4351,7 @@ msgstr "Your account was moved here from {source}. Until you delete it there, me
 msgid "Your attachments will be lost."
 msgstr "Your attachments will be lost."
 
-#: src/components/MatchHistory.tsx:126
+#: src/components/MatchHistory.tsx:188
 msgid "Your flights appear here once you've flown one."
 msgstr "Your flights appear here once you've flown one."
 
