@@ -784,7 +784,14 @@ function ServerFlow({
     return () => abort.abort()
   }, [entered, config.world])
 
-  const pilot = config.pilot || crypto.randomUUID()
+  // Minted once per opening of this dialog, not once per render: called in the
+  // render body straight, crypto.randomUUID() handed out a fresh token on every
+  // keystroke and every 30-second server poll until enter() wrote one into the
+  // config, so the offer token identifying this player was never stable before
+  // it was saved.
+  const minted = useRef('')
+  if (!config.pilot && !minted.current) minted.current = crypto.randomUUID()
+  const pilot = config.pilot || minted.current
   const recents = String(config.servers ?? '').split('\n').filter(Boolean)
   const enter = (server: string) => {
     const chosen = server.trim() || default_server()
