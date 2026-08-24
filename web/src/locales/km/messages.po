@@ -65,6 +65,12 @@ msgstr "{0} ft·lb លើសដែនកំណត់ភាពមិនស្ម�
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb លើសទម្ងន់បាញ់បង្ហោះអតិបរមា"
 
+#. placeholder {0}: ordered.length
+#. placeholder {1}: matches.length
+#: src/components/MatchHistory.tsx:308
+msgid "{0} of {1} flights"
+msgstr ""
+
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
 msgid "{0} option preview"
@@ -356,6 +362,14 @@ msgstr "ម៉ូដែលយន្តហោះ <0>“F/A-18C Hornet”</0> ដ�
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:163
 msgid "All"
 msgstr "ទាំងអស់"
+
+#: src/components/MatchHistory.tsx:273
+msgid "All modes"
+msgstr ""
+
+#: src/components/MatchHistory.tsx:290
+msgid "All servers"
+msgstr ""
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -747,7 +761,7 @@ msgstr "ជជែក"
 msgid "Chat to everyone"
 msgstr "ឆាតទៅគ្រប់គ្នា"
 
-#: src/components/MatchHistory.tsx:198
+#: src/components/MatchHistory.tsx:345
 #: src/components/Multiplayer.tsx:434
 msgid "Cheats"
 msgstr "ឆីត"
@@ -795,6 +809,8 @@ msgstr "ជ្រើសរើសភាសា"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/MatchHistory.tsx:303
+#: src/components/MatchHistory.tsx:359
 #: src/components/Multiplayer.tsx:372
 #: src/components/SettingsDialog.tsx:677
 msgid "Clear"
@@ -1013,8 +1029,8 @@ msgstr "មិនអាចផ្ទុកឯកសារនេះ។ សូម�
 msgid "Could not save the profile"
 msgstr "មិនអាចរក្សាទុកកម្រងព័ត៌មានបានទេ"
 
-#: src/components/MatchHistory.tsx:245
-#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:410
+#: src/components/MatchHistory.tsx:416
 msgid "Could not save the recording"
 msgstr "មិនអាចរក្សាទុកកំណត់ត្រាបានទេ"
 
@@ -1135,7 +1151,7 @@ msgid "Data conflict"
 msgstr "ទំនាស់ទិន្នន័យ"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
-#: src/components/MatchHistory.tsx:174
+#: src/components/MatchHistory.tsx:321
 msgid "Date"
 msgstr "កាលបរិច្ឆេទ"
 
@@ -1144,8 +1160,8 @@ msgstr "កាលបរិច្ឆេទ"
 msgid "Day"
 msgstr "ថ្ងៃ"
 
-#: src/components/MatchHistory.tsx:163
-#: src/components/MatchHistory.tsx:192
+#: src/components/MatchHistory.tsx:254
+#: src/components/MatchHistory.tsx:339
 msgid "Deaths"
 msgstr "ស្លាប់"
 
@@ -1285,7 +1301,7 @@ msgstr "បានផ្តាច់"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchHistory.tsx:88
+#: src/components/MatchHistory.tsx:150
 msgid "Disconnected"
 msgstr "បានផ្ដាច់"
 
@@ -1341,7 +1357,7 @@ msgstr "ដ្រូន"
 msgid "Duplicates"
 msgstr "ស្ទួន"
 
-#: src/components/MatchHistory.tsx:177
+#: src/components/MatchHistory.tsx:324
 msgid "Duration"
 msgstr "រយៈពេល"
 
@@ -1630,7 +1646,7 @@ msgstr "តម្រង..."
 msgid "Finish moving your account"
 msgstr "បញ្ចប់ការផ្លាស់ប្តូរគណនីរបស់អ្នក"
 
-#: src/components/MatchHistory.tsx:89
+#: src/components/MatchHistory.tsx:151
 msgid "Finished"
 msgstr "បញ្ចប់"
 
@@ -1695,7 +1711,7 @@ msgstr ""
 msgid "Flight Profile"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:154
+#: src/components/MatchHistory.tsx:245
 msgid "Flights"
 msgstr "ការហោះហើរ"
 
@@ -1703,7 +1719,7 @@ msgstr "ការហោះហើរ"
 msgid "Floating"
 msgstr "អណ្ដែត"
 
-#: src/components/MatchHistory.tsx:90
+#: src/components/MatchHistory.tsx:152
 msgid "Flown"
 msgstr "បានហោះ"
 
@@ -1720,7 +1736,7 @@ msgstr "ហោះម្តងទៀត"
 msgid "Framerate counter"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:81
+#: src/components/MatchHistory.tsx:143
 #: src/components/MissionSetup.tsx:966
 msgid "Free flight"
 msgstr "ការហោះសេរី"
@@ -1778,7 +1794,7 @@ msgstr "ធុងប្រេង"
 msgid "Full layout"
 msgstr "ប្លង់ពេញលេញ"
 
-#: src/components/MatchHistory.tsx:78
+#: src/components/MatchHistory.tsx:140
 msgid "Furball"
 msgstr "Furball"
 
@@ -2044,7 +2060,7 @@ msgstr "ចូលរួមម៉ាស៊ីនមេ"
 msgid "JOINED"
 msgstr "បានចូលរួម"
 
-#: src/components/MatchHistory.tsx:79
+#: src/components/MatchHistory.tsx:141
 #: src/components/MissionSetup.tsx:1198
 #: src/components/Multiplayer.tsx:554
 msgid "Joust"
@@ -2066,7 +2082,7 @@ msgstr "ចយស្ទីក"
 msgid "Just now"
 msgstr "អម្បាញ់មិញ"
 
-#: src/components/MatchHistory.tsx:166
+#: src/components/MatchHistory.tsx:257
 msgid "K/D"
 msgstr "K/D"
 
@@ -2082,12 +2098,12 @@ msgstr "គ្រាប់ចុច"
 msgid "KILL"
 msgstr "បាញ់ទម្លាក់"
 
-#: src/components/MatchHistory.tsx:92
+#: src/components/MatchHistory.tsx:154
 msgid "Killed"
 msgstr "ត្រូវបានសម្លាប់"
 
-#: src/components/MatchHistory.tsx:160
-#: src/components/MatchHistory.tsx:189
+#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:336
 msgid "Kills"
 msgstr "សម្លាប់"
 
@@ -2148,7 +2164,7 @@ msgstr "ស្វែងយល់បន្ថែម"
 msgid "Leave server"
 msgstr "ចាកចេញពីម៉ាស៊ីនមេ"
 
-#: src/components/MatchHistory.tsx:87
+#: src/components/MatchHistory.tsx:149
 msgid "Left"
 msgstr "ចាកចេញ"
 
@@ -2426,7 +2442,8 @@ msgstr ""
 msgid "Mochi web"
 msgstr "Mochi វេប"
 
-#: src/components/MatchHistory.tsx:183
+#: src/components/MatchHistory.tsx:268
+#: src/components/MatchHistory.tsx:330
 msgid "Mode"
 msgstr "របៀប"
 
@@ -2521,7 +2538,11 @@ msgstr "មិនមានគណនីភ្ជាប់"
 msgid "No control matches “{query}”."
 msgstr ""
 
-#: src/components/MatchHistory.tsx:125
+#: src/components/MatchHistory.tsx:357
+msgid "No flight matches these filters."
+msgstr ""
+
+#: src/components/MatchHistory.tsx:187
 msgid "No flights yet"
 msgstr "មិនទាន់មានការហោះហើរ"
 
@@ -2911,7 +2932,7 @@ msgstr "ក្បាលឡើងលើ"
 msgid "PLATFORM"
 msgstr "វេទិកា"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:333
 msgid "Players"
 msgstr "អ្នកលេង"
 
@@ -3047,11 +3068,11 @@ msgstr "កំពុងភ្ជាប់ឡើងវិញ ({retries})..."
 msgid "Record flights automatically"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:257
+#: src/components/MatchHistory.tsx:422
 msgid "Recording"
 msgstr "ការកត់ត្រា"
 
-#: src/components/MatchHistory.tsx:250
+#: src/components/MatchHistory.tsx:415
 msgid "Recording saved"
 msgstr "បានរក្សាទុកកំណត់ត្រា"
 
@@ -3224,7 +3245,7 @@ msgstr "ចាប់ផ្តើមបេសកកម្មឡើងវិញ"
 msgid "Restart mission?"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:195
+#: src/components/MatchHistory.tsx:342
 msgid "Result"
 msgstr "លទ្ធផល"
 
@@ -3507,7 +3528,8 @@ msgstr "ផ្ញើសារ"
 msgid "Serif"
 msgstr "សេរីហ្វ"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:285
+#: src/components/MatchHistory.tsx:327
 msgid "Server"
 msgstr "ម៉ាស៊ីនមេ"
 
@@ -3781,7 +3803,7 @@ msgstr "ក្រុម"
 msgid "TEAM"
 msgstr "ក្រុម"
 
-#: src/components/MatchHistory.tsx:80
+#: src/components/MatchHistory.tsx:142
 #: src/components/Multiplayer.tsx:554
 msgid "Teams"
 msgstr "ក្រុម"
@@ -3894,7 +3916,7 @@ msgstr "ល្បឿនបត់ជាប់លាប់តឹងបំផុត
 msgid "tilt"
 msgstr "ផ្អៀង"
 
-#: src/components/MatchHistory.tsx:157
+#: src/components/MatchHistory.tsx:248
 msgid "Time"
 msgstr "ពេលវេលា"
 
@@ -4166,7 +4188,7 @@ msgstr "ផ្ទៀងផ្ទាត់អាសយដ្ឋានអ៊ីម
 msgid "Vertical"
 msgstr "បញ្ឈរ"
 
-#: src/components/MatchHistory.tsx:91
+#: src/components/MatchHistory.tsx:153
 msgid "Victory"
 msgstr "ជ័យជម្នះ"
 
@@ -4329,7 +4351,7 @@ msgstr "គណនីរបស់អ្នកត្រូវបានផ្លា
 msgid "Your attachments will be lost."
 msgstr "ឯកសារភ្ជាប់របស់អ្នកនឹងបាត់បង់។"
 
-#: src/components/MatchHistory.tsx:126
+#: src/components/MatchHistory.tsx:188
 msgid "Your flights appear here once you've flown one."
 msgstr "ការហោះហើររបស់អ្នកនឹងបង្ហាញនៅទីនេះ បន្ទាប់ពីអ្នកបានហោះម្តង។"
 

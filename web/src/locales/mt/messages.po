@@ -65,6 +65,12 @@ msgstr "{0} ft·lb 'il fuq mil-limitu tal-asimmetrija tal-katapulta"
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb aktar mill-piż massimu tat-tluq"
 
+#. placeholder {0}: ordered.length
+#. placeholder {1}: matches.length
+#: src/components/MatchHistory.tsx:308
+msgid "{0} of {1} flights"
+msgstr ""
+
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
 msgid "{0} option preview"
@@ -356,6 +362,14 @@ msgstr "Mudell tal-ajruplan <0>“F/A-18C Hornet”</0> minn <1>CreadorDeMu</1> 
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:163
 msgid "All"
 msgstr "Kollha"
+
+#: src/components/MatchHistory.tsx:273
+msgid "All modes"
+msgstr ""
+
+#: src/components/MatchHistory.tsx:290
+msgid "All servers"
+msgstr ""
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -747,7 +761,7 @@ msgstr "Chat"
 msgid "Chat to everyone"
 msgstr "Chat ma' kulħadd"
 
-#: src/components/MatchHistory.tsx:198
+#: src/components/MatchHistory.tsx:345
 #: src/components/Multiplayer.tsx:434
 msgid "Cheats"
 msgstr "Cheats"
@@ -795,6 +809,8 @@ msgstr "Agħżel lingwa"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/MatchHistory.tsx:303
+#: src/components/MatchHistory.tsx:359
 #: src/components/Multiplayer.tsx:372
 #: src/components/SettingsDialog.tsx:677
 msgid "Clear"
@@ -1013,8 +1029,8 @@ msgstr "Ma setax itella' dan id-dokument. Jekk jogħġbok ipprova mill-ġdid ikt
 msgid "Could not save the profile"
 msgstr "Ma setax jiġi salvat il-profil"
 
-#: src/components/MatchHistory.tsx:245
-#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:410
+#: src/components/MatchHistory.tsx:416
 msgid "Could not save the recording"
 msgstr "Ir-reġistrazzjoni ma setgħetx tinħażen"
 
@@ -1135,7 +1151,7 @@ msgid "Data conflict"
 msgstr "Kunflitt fid-dejta"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
-#: src/components/MatchHistory.tsx:174
+#: src/components/MatchHistory.tsx:321
 msgid "Date"
 msgstr "Data"
 
@@ -1144,8 +1160,8 @@ msgstr "Data"
 msgid "Day"
 msgstr "Binhar"
 
-#: src/components/MatchHistory.tsx:163
-#: src/components/MatchHistory.tsx:192
+#: src/components/MatchHistory.tsx:254
+#: src/components/MatchHistory.tsx:339
 msgid "Deaths"
 msgstr "Mwiet"
 
@@ -1285,7 +1301,7 @@ msgstr "skonnettjat"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchHistory.tsx:88
+#: src/components/MatchHistory.tsx:150
 msgid "Disconnected"
 msgstr "Skonness"
 
@@ -1341,7 +1357,7 @@ msgstr "Drone"
 msgid "Duplicates"
 msgstr "Duplikati"
 
-#: src/components/MatchHistory.tsx:177
+#: src/components/MatchHistory.tsx:324
 msgid "Duration"
 msgstr "Tul ta' żmien"
 
@@ -1630,7 +1646,7 @@ msgstr "Iffiltra..."
 msgid "Finish moving your account"
 msgstr "Lesti t-trasferiment tal-kont tiegħek"
 
-#: src/components/MatchHistory.tsx:89
+#: src/components/MatchHistory.tsx:151
 msgid "Finished"
 msgstr "Spiċċat"
 
@@ -1695,7 +1711,7 @@ msgstr ""
 msgid "Flight Profile"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:154
+#: src/components/MatchHistory.tsx:245
 msgid "Flights"
 msgstr "Titjiriet"
 
@@ -1703,7 +1719,7 @@ msgstr "Titjiriet"
 msgid "Floating"
 msgstr "Galleġġjant"
 
-#: src/components/MatchHistory.tsx:90
+#: src/components/MatchHistory.tsx:152
 msgid "Flown"
 msgstr "Ittajjar"
 
@@ -1720,7 +1736,7 @@ msgstr "Erġa' tir"
 msgid "Framerate counter"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:81
+#: src/components/MatchHistory.tsx:143
 #: src/components/MissionSetup.tsx:966
 msgid "Free flight"
 msgstr "Titjira ħielsa"
@@ -1778,7 +1794,7 @@ msgstr "Tank tal-fjuwil"
 msgid "Full layout"
 msgstr "Layout sħiħ"
 
-#: src/components/MatchHistory.tsx:78
+#: src/components/MatchHistory.tsx:140
 msgid "Furball"
 msgstr "Furball"
 
@@ -2044,7 +2060,7 @@ msgstr "Ingħaqad ma’ server"
 msgid "JOINED"
 msgstr "INGĦAQAD"
 
-#: src/components/MatchHistory.tsx:79
+#: src/components/MatchHistory.tsx:141
 #: src/components/MissionSetup.tsx:1198
 #: src/components/Multiplayer.tsx:554
 msgid "Joust"
@@ -2066,7 +2082,7 @@ msgstr "Joystick"
 msgid "Just now"
 msgstr "Issa"
 
-#: src/components/MatchHistory.tsx:166
+#: src/components/MatchHistory.tsx:257
 msgid "K/D"
 msgstr "K/D"
 
@@ -2082,12 +2098,12 @@ msgstr "Ċwievet"
 msgid "KILL"
 msgstr "QTIL"
 
-#: src/components/MatchHistory.tsx:92
+#: src/components/MatchHistory.tsx:154
 msgid "Killed"
 msgstr "Maqtul"
 
-#: src/components/MatchHistory.tsx:160
-#: src/components/MatchHistory.tsx:189
+#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:336
 msgid "Kills"
 msgstr "Qtil"
 
@@ -2148,7 +2164,7 @@ msgstr "Tgħallem aktar"
 msgid "Leave server"
 msgstr "Ħalli s-server"
 
-#: src/components/MatchHistory.tsx:87
+#: src/components/MatchHistory.tsx:149
 msgid "Left"
 msgstr "Telaq"
 
@@ -2426,7 +2442,8 @@ msgstr ""
 msgid "Mochi web"
 msgstr "Mochi web"
 
-#: src/components/MatchHistory.tsx:183
+#: src/components/MatchHistory.tsx:268
+#: src/components/MatchHistory.tsx:330
 msgid "Mode"
 msgstr "Modalità"
 
@@ -2521,7 +2538,11 @@ msgstr "L-ebda kontijiet konnessi"
 msgid "No control matches “{query}”."
 msgstr ""
 
-#: src/components/MatchHistory.tsx:125
+#: src/components/MatchHistory.tsx:357
+msgid "No flight matches these filters."
+msgstr ""
+
+#: src/components/MatchHistory.tsx:187
 msgid "No flights yet"
 msgstr "Għad m'hemmx titjiriet"
 
@@ -2911,7 +2932,7 @@ msgstr "Pitch 'il fuq"
 msgid "PLATFORM"
 msgstr "PJATTAFORMA"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:333
 msgid "Players"
 msgstr "Plejers"
 
@@ -3047,11 +3068,11 @@ msgstr "Qed jerġa' jgħaqqad ({retries})..."
 msgid "Record flights automatically"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:257
+#: src/components/MatchHistory.tsx:422
 msgid "Recording"
 msgstr "Reġistrazzjoni"
 
-#: src/components/MatchHistory.tsx:250
+#: src/components/MatchHistory.tsx:415
 msgid "Recording saved"
 msgstr "Ir-reġistrazzjoni nħażnet"
 
@@ -3224,7 +3245,7 @@ msgstr "Erġa’ ibda l-missjoni"
 msgid "Restart mission?"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:195
+#: src/components/MatchHistory.tsx:342
 msgid "Result"
 msgstr "Riżultat"
 
@@ -3507,7 +3528,8 @@ msgstr "Ibgħat messaġġ"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:285
+#: src/components/MatchHistory.tsx:327
 msgid "Server"
 msgstr "Server"
 
@@ -3781,7 +3803,7 @@ msgstr "Tim"
 msgid "TEAM"
 msgstr "TIM"
 
-#: src/components/MatchHistory.tsx:80
+#: src/components/MatchHistory.tsx:142
 #: src/components/Multiplayer.tsx:554
 msgid "Teams"
 msgstr "Timijiet"
@@ -3894,7 +3916,7 @@ msgstr "Veloċità tal-aktar dawra sostnuta stretta"
 msgid "tilt"
 msgstr "mejjel"
 
-#: src/components/MatchHistory.tsx:157
+#: src/components/MatchHistory.tsx:248
 msgid "Time"
 msgstr "Ħin"
 
@@ -4166,7 +4188,7 @@ msgstr "Ivverifika l-indirizz tal-email"
 msgid "Vertical"
 msgstr "Vertikali"
 
-#: src/components/MatchHistory.tsx:91
+#: src/components/MatchHistory.tsx:153
 msgid "Victory"
 msgstr "Rebħa"
 
@@ -4329,7 +4351,7 @@ msgstr "Il-kont tiegħek ġie miċċaqqlaq hawn minn {source}. Sakemm tħassru h
 msgid "Your attachments will be lost."
 msgstr "L-annessi tiegħek se jintilfu."
 
-#: src/components/MatchHistory.tsx:126
+#: src/components/MatchHistory.tsx:188
 msgid "Your flights appear here once you've flown one."
 msgstr "It-titjiriet tiegħek jidhru hawn ladarba ttir waħda."
 

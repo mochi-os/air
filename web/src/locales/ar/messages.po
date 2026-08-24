@@ -65,6 +65,12 @@ msgstr "{0} ft·lb فوق حد عدم التماثل للمقلاع"
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb فوق الحد الأقصى لوزن الإطلاق"
 
+#. placeholder {0}: ordered.length
+#. placeholder {1}: matches.length
+#: src/components/MatchHistory.tsx:308
+msgid "{0} of {1} flights"
+msgstr ""
+
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
 msgid "{0} option preview"
@@ -356,6 +362,14 @@ msgstr "نموذج طائرة <0>“F/A-18C Hornet”</0> بواسطة <1>Creado
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:163
 msgid "All"
 msgstr "الكل"
+
+#: src/components/MatchHistory.tsx:273
+msgid "All modes"
+msgstr ""
+
+#: src/components/MatchHistory.tsx:290
+msgid "All servers"
+msgstr ""
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -747,7 +761,7 @@ msgstr "الدردشة"
 msgid "Chat to everyone"
 msgstr "الدردشة مع الجميع"
 
-#: src/components/MatchHistory.tsx:198
+#: src/components/MatchHistory.tsx:345
 #: src/components/Multiplayer.tsx:434
 msgid "Cheats"
 msgstr "الغش"
@@ -795,6 +809,8 @@ msgstr "اختر اللغة"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/MatchHistory.tsx:303
+#: src/components/MatchHistory.tsx:359
 #: src/components/Multiplayer.tsx:372
 #: src/components/SettingsDialog.tsx:677
 msgid "Clear"
@@ -1013,8 +1029,8 @@ msgstr "تعذّر تحميل هذا المستند. يرجى المحاولة �
 msgid "Could not save the profile"
 msgstr "تعذر حفظ ملف التعريف"
 
-#: src/components/MatchHistory.tsx:245
-#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:410
+#: src/components/MatchHistory.tsx:416
 msgid "Could not save the recording"
 msgstr "تعذّر حفظ التسجيل"
 
@@ -1135,7 +1151,7 @@ msgid "Data conflict"
 msgstr "تعارض في البيانات"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
-#: src/components/MatchHistory.tsx:174
+#: src/components/MatchHistory.tsx:321
 msgid "Date"
 msgstr "التاريخ"
 
@@ -1144,8 +1160,8 @@ msgstr "التاريخ"
 msgid "Day"
 msgstr "نهار"
 
-#: src/components/MatchHistory.tsx:163
-#: src/components/MatchHistory.tsx:192
+#: src/components/MatchHistory.tsx:254
+#: src/components/MatchHistory.tsx:339
 msgid "Deaths"
 msgstr "الوفيات"
 
@@ -1285,7 +1301,7 @@ msgstr "غير متصل"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchHistory.tsx:88
+#: src/components/MatchHistory.tsx:150
 msgid "Disconnected"
 msgstr "غير متصل"
 
@@ -1341,7 +1357,7 @@ msgstr "درون"
 msgid "Duplicates"
 msgstr "يكرر"
 
-#: src/components/MatchHistory.tsx:177
+#: src/components/MatchHistory.tsx:324
 msgid "Duration"
 msgstr "المدة"
 
@@ -1630,7 +1646,7 @@ msgstr "تصفية..."
 msgid "Finish moving your account"
 msgstr "أتمم نقل حسابك"
 
-#: src/components/MatchHistory.tsx:89
+#: src/components/MatchHistory.tsx:151
 msgid "Finished"
 msgstr "انتهت"
 
@@ -1695,7 +1711,7 @@ msgstr ""
 msgid "Flight Profile"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:154
+#: src/components/MatchHistory.tsx:245
 msgid "Flights"
 msgstr "الرحلات"
 
@@ -1703,7 +1719,7 @@ msgstr "الرحلات"
 msgid "Floating"
 msgstr "عائم"
 
-#: src/components/MatchHistory.tsx:90
+#: src/components/MatchHistory.tsx:152
 msgid "Flown"
 msgstr "تم الطيران"
 
@@ -1720,7 +1736,7 @@ msgstr "حلّق مجددًا"
 msgid "Framerate counter"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:81
+#: src/components/MatchHistory.tsx:143
 #: src/components/MissionSetup.tsx:966
 msgid "Free flight"
 msgstr "طيران حر"
@@ -1778,7 +1794,7 @@ msgstr "خزان وقود"
 msgid "Full layout"
 msgstr "تخطيط كامل"
 
-#: src/components/MatchHistory.tsx:78
+#: src/components/MatchHistory.tsx:140
 msgid "Furball"
 msgstr "Furball"
 
@@ -2044,7 +2060,7 @@ msgstr "الانضمام إلى خادم"
 msgid "JOINED"
 msgstr "انضم"
 
-#: src/components/MatchHistory.tsx:79
+#: src/components/MatchHistory.tsx:141
 #: src/components/MissionSetup.tsx:1198
 #: src/components/Multiplayer.tsx:554
 msgid "Joust"
@@ -2066,7 +2082,7 @@ msgstr "عصا التحكم"
 msgid "Just now"
 msgstr "الآن"
 
-#: src/components/MatchHistory.tsx:166
+#: src/components/MatchHistory.tsx:257
 msgid "K/D"
 msgstr "K/D"
 
@@ -2082,12 +2098,12 @@ msgstr "المفاتيح"
 msgid "KILL"
 msgstr "إسقاط"
 
-#: src/components/MatchHistory.tsx:92
+#: src/components/MatchHistory.tsx:154
 msgid "Killed"
 msgstr "أُسقط"
 
-#: src/components/MatchHistory.tsx:160
-#: src/components/MatchHistory.tsx:189
+#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:336
 msgid "Kills"
 msgstr "الإسقاطات"
 
@@ -2148,7 +2164,7 @@ msgstr "اعرف المزيد"
 msgid "Leave server"
 msgstr "مغادرة الخادم"
 
-#: src/components/MatchHistory.tsx:87
+#: src/components/MatchHistory.tsx:149
 msgid "Left"
 msgstr "غادر"
 
@@ -2426,7 +2442,8 @@ msgstr ""
 msgid "Mochi web"
 msgstr "Mochi على الويب"
 
-#: src/components/MatchHistory.tsx:183
+#: src/components/MatchHistory.tsx:268
+#: src/components/MatchHistory.tsx:330
 msgid "Mode"
 msgstr "الوضع"
 
@@ -2521,7 +2538,11 @@ msgstr "لا توجد حسابات متصلة"
 msgid "No control matches “{query}”."
 msgstr ""
 
-#: src/components/MatchHistory.tsx:125
+#: src/components/MatchHistory.tsx:357
+msgid "No flight matches these filters."
+msgstr ""
+
+#: src/components/MatchHistory.tsx:187
 msgid "No flights yet"
 msgstr "لا توجد رحلات بعد"
 
@@ -2911,7 +2932,7 @@ msgstr "رفع المقدمة"
 msgid "PLATFORM"
 msgstr "المنصة"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:333
 msgid "Players"
 msgstr "اللاعبون"
 
@@ -3047,11 +3068,11 @@ msgstr "جارٍ إعادة الاتصال ({retries})..."
 msgid "Record flights automatically"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:257
+#: src/components/MatchHistory.tsx:422
 msgid "Recording"
 msgstr "التسجيل"
 
-#: src/components/MatchHistory.tsx:250
+#: src/components/MatchHistory.tsx:415
 msgid "Recording saved"
 msgstr "تم حفظ التسجيل"
 
@@ -3224,7 +3245,7 @@ msgstr "إعادة بدء المهمة"
 msgid "Restart mission?"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:195
+#: src/components/MatchHistory.tsx:342
 msgid "Result"
 msgstr "النتيجة"
 
@@ -3507,7 +3528,8 @@ msgstr "إرسال رسالة"
 msgid "Serif"
 msgstr "سيريف"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:285
+#: src/components/MatchHistory.tsx:327
 msgid "Server"
 msgstr "الخادم"
 
@@ -3781,7 +3803,7 @@ msgstr "الفريق"
 msgid "TEAM"
 msgstr "الفريق"
 
-#: src/components/MatchHistory.tsx:80
+#: src/components/MatchHistory.tsx:142
 #: src/components/Multiplayer.tsx:554
 msgid "Teams"
 msgstr "فرق"
@@ -3894,7 +3916,7 @@ msgstr "أضيق سرعة انعطاف مستمر"
 msgid "tilt"
 msgstr "إمالة"
 
-#: src/components/MatchHistory.tsx:157
+#: src/components/MatchHistory.tsx:248
 msgid "Time"
 msgstr "الوقت"
 
@@ -4166,7 +4188,7 @@ msgstr "التحقق من عنوان البريد الإلكتروني"
 msgid "Vertical"
 msgstr "عمودي"
 
-#: src/components/MatchHistory.tsx:91
+#: src/components/MatchHistory.tsx:153
 msgid "Victory"
 msgstr "انتصار"
 
@@ -4329,7 +4351,7 @@ msgstr "تم نقل حسابك إلى هنا من {source}. حتى تحذفه م
 msgid "Your attachments will be lost."
 msgstr "سيتم فقدان مرفقاتك."
 
-#: src/components/MatchHistory.tsx:126
+#: src/components/MatchHistory.tsx:188
 msgid "Your flights appear here once you've flown one."
 msgstr "ستظهر رحلاتك هنا بمجرد أن تطير واحدة."
 

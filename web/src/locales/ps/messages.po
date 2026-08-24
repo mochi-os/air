@@ -65,6 +65,12 @@ msgstr "{0} ft·lb د کاتاپولت د ناانډولتیا له حده پو�
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb د اعظمي الوتنې وزن څخه ډېر"
 
+#. placeholder {0}: ordered.length
+#. placeholder {1}: matches.length
+#: src/components/MatchHistory.tsx:308
+msgid "{0} of {1} flights"
+msgstr ""
+
 #. placeholder {0}: item.label
 #: ../../../lib/web/src/components/config-drawer.tsx:160
 msgid "{0} option preview"
@@ -356,6 +362,14 @@ msgstr "د الوتکې ماډل <0>“F/A-18C Hornet”</0> د <1>CreadorDeMu</
 #: ../../../lib/web/src/components/notifications-dropdown.tsx:163
 msgid "All"
 msgstr "ټول"
+
+#: src/components/MatchHistory.tsx:273
+msgid "All modes"
+msgstr ""
+
+#: src/components/MatchHistory.tsx:290
+msgid "All servers"
+msgstr ""
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -747,7 +761,7 @@ msgstr "چټ"
 msgid "Chat to everyone"
 msgstr "له ټولو سره چیټ"
 
-#: src/components/MatchHistory.tsx:198
+#: src/components/MatchHistory.tsx:345
 #: src/components/Multiplayer.tsx:434
 msgid "Cheats"
 msgstr "چیټونه"
@@ -795,6 +809,8 @@ msgstr "ژبه وټاکئ"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
+#: src/components/MatchHistory.tsx:303
+#: src/components/MatchHistory.tsx:359
 #: src/components/Multiplayer.tsx:372
 #: src/components/SettingsDialog.tsx:677
 msgid "Clear"
@@ -1013,8 +1029,8 @@ msgstr "دا سند نشي پورته کیدلی. مهرباني وکړئ ورو
 msgid "Could not save the profile"
 msgstr "پروفایل نه شو خوندي کولی"
 
-#: src/components/MatchHistory.tsx:245
-#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:410
+#: src/components/MatchHistory.tsx:416
 msgid "Could not save the recording"
 msgstr "ثبت خوندي نه شو"
 
@@ -1135,7 +1151,7 @@ msgid "Data conflict"
 msgstr "د ډېټا ټکر"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
-#: src/components/MatchHistory.tsx:174
+#: src/components/MatchHistory.tsx:321
 msgid "Date"
 msgstr "نېټه"
 
@@ -1144,8 +1160,8 @@ msgstr "نېټه"
 msgid "Day"
 msgstr "ورځ"
 
-#: src/components/MatchHistory.tsx:163
-#: src/components/MatchHistory.tsx:192
+#: src/components/MatchHistory.tsx:254
+#: src/components/MatchHistory.tsx:339
 msgid "Deaths"
 msgstr "مړینې"
 
@@ -1285,7 +1301,7 @@ msgstr "بېل شوی"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchHistory.tsx:88
+#: src/components/MatchHistory.tsx:150
 msgid "Disconnected"
 msgstr "پرېکړل شوی"
 
@@ -1341,7 +1357,7 @@ msgstr "ډرون"
 msgid "Duplicates"
 msgstr "نقلونه"
 
-#: src/components/MatchHistory.tsx:177
+#: src/components/MatchHistory.tsx:324
 msgid "Duration"
 msgstr "موده"
 
@@ -1630,7 +1646,7 @@ msgstr "چاڼ..."
 msgid "Finish moving your account"
 msgstr "د خپل حساب لیږد پای ته ورسوئ"
 
-#: src/components/MatchHistory.tsx:89
+#: src/components/MatchHistory.tsx:151
 msgid "Finished"
 msgstr "بشپړ شو"
 
@@ -1695,7 +1711,7 @@ msgstr ""
 msgid "Flight Profile"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:154
+#: src/components/MatchHistory.tsx:245
 msgid "Flights"
 msgstr "الوتنې"
 
@@ -1703,7 +1719,7 @@ msgstr "الوتنې"
 msgid "Floating"
 msgstr "ځړیدلی"
 
-#: src/components/MatchHistory.tsx:90
+#: src/components/MatchHistory.tsx:152
 msgid "Flown"
 msgstr "الوتلی"
 
@@ -1720,7 +1736,7 @@ msgstr "بیا والوزه"
 msgid "Framerate counter"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:81
+#: src/components/MatchHistory.tsx:143
 #: src/components/MissionSetup.tsx:966
 msgid "Free flight"
 msgstr "آزاده الوتنه"
@@ -1778,7 +1794,7 @@ msgstr "د تیلو ټانکۍ"
 msgid "Full layout"
 msgstr "بشپړ ترتیب"
 
-#: src/components/MatchHistory.tsx:78
+#: src/components/MatchHistory.tsx:140
 msgid "Furball"
 msgstr "Furball"
 
@@ -2044,7 +2060,7 @@ msgstr "سرور سره یوځای شئ"
 msgid "JOINED"
 msgstr "یوځای شو"
 
-#: src/components/MatchHistory.tsx:79
+#: src/components/MatchHistory.tsx:141
 #: src/components/MissionSetup.tsx:1198
 #: src/components/Multiplayer.tsx:554
 msgid "Joust"
@@ -2066,7 +2082,7 @@ msgstr "جوی سټیک"
 msgid "Just now"
 msgstr "همدا اوس"
 
-#: src/components/MatchHistory.tsx:166
+#: src/components/MatchHistory.tsx:257
 msgid "K/D"
 msgstr "K/D"
 
@@ -2082,12 +2098,12 @@ msgstr "کیلۍ"
 msgid "KILL"
 msgstr "وژنه"
 
-#: src/components/MatchHistory.tsx:92
+#: src/components/MatchHistory.tsx:154
 msgid "Killed"
 msgstr "وژل شوی"
 
-#: src/components/MatchHistory.tsx:160
-#: src/components/MatchHistory.tsx:189
+#: src/components/MatchHistory.tsx:251
+#: src/components/MatchHistory.tsx:336
 msgid "Kills"
 msgstr "وژنې"
 
@@ -2148,7 +2164,7 @@ msgstr "نور زده کړئ"
 msgid "Leave server"
 msgstr "سرور پریښودل"
 
-#: src/components/MatchHistory.tsx:87
+#: src/components/MatchHistory.tsx:149
 msgid "Left"
 msgstr "ووت"
 
@@ -2426,7 +2442,8 @@ msgstr ""
 msgid "Mochi web"
 msgstr "Mochi وېب"
 
-#: src/components/MatchHistory.tsx:183
+#: src/components/MatchHistory.tsx:268
+#: src/components/MatchHistory.tsx:330
 msgid "Mode"
 msgstr "حالت"
 
@@ -2521,7 +2538,11 @@ msgstr "هیڅ نښلول شوي حسابونه نشته"
 msgid "No control matches “{query}”."
 msgstr ""
 
-#: src/components/MatchHistory.tsx:125
+#: src/components/MatchHistory.tsx:357
+msgid "No flight matches these filters."
+msgstr ""
+
+#: src/components/MatchHistory.tsx:187
 msgid "No flights yet"
 msgstr "تر اوسه هیڅ الوتنه نشته"
 
@@ -2911,7 +2932,7 @@ msgstr "پیچ پورته"
 msgid "PLATFORM"
 msgstr "پلیټ فارم"
 
-#: src/components/MatchHistory.tsx:186
+#: src/components/MatchHistory.tsx:333
 msgid "Players"
 msgstr "لوبغاړي"
 
@@ -3047,11 +3068,11 @@ msgstr "بیا نښلول ({retries})..."
 msgid "Record flights automatically"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:257
+#: src/components/MatchHistory.tsx:422
 msgid "Recording"
 msgstr "ثبتول"
 
-#: src/components/MatchHistory.tsx:250
+#: src/components/MatchHistory.tsx:415
 msgid "Recording saved"
 msgstr "ثبت خوندي شو"
 
@@ -3224,7 +3245,7 @@ msgstr "ماموریت بیا پیل"
 msgid "Restart mission?"
 msgstr ""
 
-#: src/components/MatchHistory.tsx:195
+#: src/components/MatchHistory.tsx:342
 msgid "Result"
 msgstr "پایله"
 
@@ -3507,7 +3528,8 @@ msgstr "پیغام ولېږئ"
 msgid "Serif"
 msgstr "سيريف"
 
-#: src/components/MatchHistory.tsx:180
+#: src/components/MatchHistory.tsx:285
+#: src/components/MatchHistory.tsx:327
 msgid "Server"
 msgstr "سرور"
 
@@ -3781,7 +3803,7 @@ msgstr "ټیم"
 msgid "TEAM"
 msgstr "ټیم"
 
-#: src/components/MatchHistory.tsx:80
+#: src/components/MatchHistory.tsx:142
 #: src/components/Multiplayer.tsx:554
 msgid "Teams"
 msgstr "ټيمونه"
@@ -3894,7 +3916,7 @@ msgstr "د دوامداره ګرځ تر ټولو تنګه چټکي"
 msgid "tilt"
 msgstr "کږول"
 
-#: src/components/MatchHistory.tsx:157
+#: src/components/MatchHistory.tsx:248
 msgid "Time"
 msgstr "وخت"
 
@@ -4166,7 +4188,7 @@ msgstr "د ایمیل پته تصدیق کړئ"
 msgid "Vertical"
 msgstr "عمودي"
 
-#: src/components/MatchHistory.tsx:91
+#: src/components/MatchHistory.tsx:153
 msgid "Victory"
 msgstr "بریا"
 
@@ -4329,7 +4351,7 @@ msgstr "ستاسو حساب له {source} دلته لیږدول شوی. تر ه�
 msgid "Your attachments will be lost."
 msgstr "ستاسو ضمیمې به له لاسه ولاړې شي."
 
-#: src/components/MatchHistory.tsx:126
+#: src/components/MatchHistory.tsx:188
 msgid "Your flights appear here once you've flown one."
 msgstr "کله چې یوه الوتنه وکړئ، ستاسو الوتنې به دلته ښکاره شي."
 
