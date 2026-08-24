@@ -47,7 +47,6 @@ import { SliderRow, SwitchRow, MenuDialog, SectionLabel } from './menu-parts'
 
 // The fields each tab owns, for the per-tab Reset
 const TAB_FIELDS: Record<string, string[]> = {
-  mission: ['task', 'start', 'cat', 'world', 'aircraft', 'bandit', 'fuel', 'stores', 'cheats', 'tod', 'clouds'],
   general: ['callsign', 'record'],
   controls: ['invert', 'joystick', 'sticks'],
   keys: ['keys'],
@@ -332,18 +331,16 @@ function JoystickPanel({
   return (
     <div className='space-y-4'>
       <section>
-        
-          <div className='flex items-center justify-between'>
-            <SectionLabel>
-              <Trans>Input Hardware</Trans>
-            </SectionLabel>
-            {active !== '' && (
-              <Badge variant='outline' className='font-mono text-[10px] text-muted-foreground'>
-                {profileFor(active, pad?.mapping ?? '').name}
-              </Badge>
-            )}
-          </div>
-        
+        <div className='flex items-center justify-between'>
+          <SectionLabel>
+            <Trans>Input Hardware</Trans>
+          </SectionLabel>
+          {active !== '' && (
+            <Badge variant='outline' className='font-mono text-[10px] text-muted-foreground'>
+              {profileFor(active, pad?.mapping ?? '').name}
+            </Badge>
+          )}
+        </div>
         <div className='space-y-3'>
           {known.length ? (
             <Select value={active} onValueChange={(v) => set('joystick', v)}>
@@ -390,11 +387,9 @@ function JoystickPanel({
       </section>
 
       <section>
-        
-          <SectionLabel>
-            <Trans>Axis Calibration & Mapping</Trans>
-          </SectionLabel>
-        
+        <SectionLabel>
+          <Trans>Axis Calibration & Mapping</Trans>
+        </SectionLabel>
         <div className='space-y-2 text-xs'>
           {AXIS_ROWS.map(({ id, label }) => {
             const value = axes[id] ?? ''
@@ -482,11 +477,9 @@ function JoystickPanel({
       </section>
 
       <section>
-        
-          <SectionLabel>
-            <Trans>Button Mappings</Trans>
-          </SectionLabel>
-        
+        <SectionLabel>
+          <Trans>Button Mappings</Trans>
+        </SectionLabel>
         <div className='space-y-4'>
           {GROUP_ORDER.map((group) => {
             const rows = BUTTON_ROWS.filter((r) => r.group === group)
@@ -579,11 +572,9 @@ function SoundPanel({
       />
 
       <section>
-        
-          <SectionLabel>
-            <Trans>Master Volume</Trans>
-          </SectionLabel>
-        
+        <SectionLabel>
+          <Trans>Master Volume</Trans>
+        </SectionLabel>
         <div>
           <SliderRow
             label={<Trans>Master Bus</Trans>}
@@ -599,11 +590,9 @@ function SoundPanel({
       </section>
 
       <section>
-        
-          <SectionLabel>
-            <Trans>Audio Mixer Channels</Trans>
-          </SectionLabel>
-        
+        <SectionLabel>
+          <Trans>Audio Mixer Channels</Trans>
+        </SectionLabel>
         <div>
           <div className='grid gap-3 sm:grid-cols-2'>
             {VOLUME_ROWS.filter((r) => r.id !== 'master').map(({ id, label }) => (
@@ -666,11 +655,7 @@ function KeysPanel({
         if (!rows.length) return null
         return (
           <section key={group}>
-            
-              <SectionLabel>
-                {GROUP_TITLES[group]}
-              </SectionLabel>
-            
+            <SectionLabel>{GROUP_TITLES[group]}</SectionLabel>
             <div>
               <div className='grid gap-2 text-xs sm:grid-cols-2'>
                 {rows.map(({ id, label }) => (
@@ -715,11 +700,9 @@ function KeysPanel({
       })}
 
       <section>
-        
-          <SectionLabel>
-            <Trans>Fixed Flight Keys</Trans>
-          </SectionLabel>
-        
+        <SectionLabel>
+          <Trans>Fixed Flight Keys</Trans>
+        </SectionLabel>
         <div>
           <div className='grid gap-x-6 gap-y-2 text-xs sm:grid-cols-2'>
             <ControlRow action={<Trans>Views</Trans>} keys={<><Key>1</Key>–<Key>5</Key></>} />
@@ -774,11 +757,9 @@ function GraphicsPanel({
   return (
     <div className='space-y-4'>
       <section>
-        
-          <SectionLabel>
-            <Trans>Graphics Preset</Trans>
-          </SectionLabel>
-        
+        <SectionLabel>
+          <Trans>Graphics Preset</Trans>
+        </SectionLabel>
         <div>
           <div className='grid grid-cols-2 gap-2 sm:grid-cols-4'>
             {presets.map((p) => (
@@ -801,11 +782,9 @@ function GraphicsPanel({
       </section>
 
       <section>
-        
-          <SectionLabel>
-            <Trans>Rendering Detail</Trans>
-          </SectionLabel>
-        
+        <SectionLabel>
+          <Trans>Rendering Detail</Trans>
+        </SectionLabel>
         <div>
           <div className='grid gap-3 sm:grid-cols-2'>
             <SliderRow
@@ -847,11 +826,9 @@ function GraphicsPanel({
       </section>
 
       <section>
-        
-          <SectionLabel>
-            <Trans>Effects & Toggles</Trans>
-          </SectionLabel>
-        
+        <SectionLabel>
+          <Trans>Effects & Toggles</Trans>
+        </SectionLabel>
         <div>
           <div className='grid gap-2.5 sm:grid-cols-2'>
             <SwitchRow
@@ -917,11 +894,9 @@ function GeneralPanel({
   return (
     <div className='space-y-4'>
       <section>
-        
-          <SectionLabel>
-            <Trans>Pilot Identity</Trans>
-          </SectionLabel>
-        
+        <SectionLabel>
+          <Trans>Pilot Identity</Trans>
+        </SectionLabel>
         <div className='space-y-2'>
           <Label className='text-xs text-muted-foreground uppercase font-medium'>
             <Trans>Callsign</Trans>
@@ -939,11 +914,9 @@ function GeneralPanel({
       </section>
 
       <section>
-        
-          <SectionLabel>
-            <Trans>Sortie Recording</Trans>
-          </SectionLabel>
-        
+        <SectionLabel>
+          <Trans>Sortie Recording</Trans>
+        </SectionLabel>
         <div>
           <SwitchRow
             id='record'
