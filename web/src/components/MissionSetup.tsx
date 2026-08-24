@@ -74,7 +74,7 @@ const LoadoutPreview = lazy(() =>
 // the per-device maps so built-in defaults apply again).
 const TAB_FIELDS: Record<string, string[]> = {
   mission: ['task', 'start', 'cat', 'world', 'aircraft', 'bandit', 'fuel', 'stores', 'cheats', 'tod', 'clouds'],
-  general: ['callsign', 'record'],
+  general: ['callsign', 'record', 'hints'],
   controls: ['invert', 'joystick', 'sticks'],
   keys: ['keys'],
   sound: ['sound', 'volume'],
@@ -2114,6 +2114,18 @@ function GeneralPanel({
         label={<Trans>Record flights</Trans>}
         checked={config.record !== false}
         onChange={(v) => set('record', v)}
+      />
+      <SectionLabel>
+        <Trans>Hints</Trans>
+      </SectionLabel>
+      {/* Coaching through the comms area as you fly — the carrier recovery
+          procedures first (#70). On by default: the players who need it most
+          never find a buried toggle, and it only speaks on approach. */}
+      <SwitchRow
+        id='hints'
+        label={<Trans>Flight hints</Trans>}
+        checked={config.hints !== false}
+        onChange={(v) => set('hints', v)}
       />
     </>
   )

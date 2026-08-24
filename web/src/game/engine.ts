@@ -3559,7 +3559,85 @@ function call_the_ball(){
 	const clara=(()=>{ if(!carrier_ols) return true; const s=ols_dev(ownship.pos,carrier_ols);
 		return Math.abs(Math.atan2(s.lat,Math.max(s.along,1))*180/Math.PI)>4 || s.dev<-1; })();
 	const ball=clara?translate("CLARA"):translate("BALL");
-	comm((cfg.callsign||"701")+": "+translate("HORNET")+" "+ball+" "+hundreds.toFixed(1)+(atc_on?" "+translate("AUTO"):""), "#9fd0ff"); }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	comm((cfg.callsign||"701")+": "+translate("HORNET")+" "+ball+" "+hundreds.toFixed(1)+(atc_on?" "+translate("AUTO"):""), "#9fd0ff");
+	hint(HINT.ball); }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+// The flight hints (#70): carrier recovery coaching through the comms area —
+// amber, no callsign, so advice never reads as radio. Every number is sourced
+// from CNATRA P-816 (CV Procedures FTI, section 204) with the Hornet's 8.1
+// alpha on-speed from NATOPS. Each hint fires AT its moment from its own
+// fuzzy window (range rings, altitude and speed bands, configuration state),
+// never as a strict sequence: a skipped phase blocks nothing, and the
+// per-circuit set re-arms after a bolter or wave-off so the next pattern is
+// coached again. Vocabulary lines teach a term once per mission at first
+// relevance. English-only by design until the wording survives flight
+// testing; translation follows before the task closes.
+const HINT={
+	wake:"Case I: initial at 800', 3 NM astern, up the ship's wake",
+	side:"Hold 800' past the ship's right side; the break comes after the bow",
+	brk:"Break: hard level turn at 800'; power back, speed brake out; roll out beside the ship 0.9 to 1.1 NM out",
+	form:"Below 250 KTS: gear down, full flaps, hook down; descend to 600'",
+	donut:"On-speed is 8.1 alpha: trim until the amber donut lights beside the HUD; fly speed with trim, height with power",
+	wing:"Level at 600' downwind; keep the ship 0.9 to 1.1 NM off your wing",
+	abeam:"Ship abeam: bank 27-30\u00b0, start down at 200-300 FPM",
+	ninety:"The 90: 450', 500 FPM",
+	forty:"The 45: 325-375'; straighten into the groove, look for the ball, fly the ball with power",
+	final:"Case II: level at 1200' on final, on-speed at 8.1 alpha",
+	needle:"The needles on the HUD are glideslope and centreline: hold the velocity vector where they cross",
+	slope:"Glideslope alive: start down; 2 NM 800', 1 NM 400', half a NM 200'",
+	stack:"Case III: hold 250 KTS at marshal; the HUD clock counts down to your push time; commence on zero",
+	push:"Commencing: 250 KTS, 4000 FPM down to platform at 5000'",
+	floor:"Descending below 5000': keep FPM a smaller number than your altitude",
+	level:"Platform: 2000 FPM; level at 1200'",
+	gate:"10 NM: gear down, full flaps, hook down; on-speed 8.1 alpha by 6 NM",
+	check:"Fly the needles down: 3 NM 1200', 2 NM 800', 1 NM 400'",
+	ball:"PADDLES calls the ball here; answer looking at the lens, then fly the ball all the way to touchdown",
+	wave:"Wave-off: full power, speed brakes in, wings level, hold your attitude; climb up the angled deck",
+	bolt:"Bolter: full power, speed brakes in, hook stays down; climb to 600' and turn downwind",
+};
+const CIRCUIT=[HINT.brk,HINT.form,HINT.wing,HINT.abeam,HINT.ninety,HINT.forty,HINT.slope,HINT.check,HINT.ball,HINT.wave,HINT.bolt];   // the per-circuit set: re-armed by a bolter or wave-off
+let hinted={};
+function hint(key){ if(cfg.hints===false||hinted[key]) return; hinted[key]=1;
+	// comm() clips at 80 characters: pack the hint into as many rows as it
+	// needs, splitting only at clause marks, so the agreed wording survives
+	// verbatim. Translation later happens per full line, before the split.
+	const rows=[]; let line="";
+	for(const part of translate(key).split("; ")){
+		const next=line?line+"; "+part:part;
+		if(next.length<=78){ line=next; continue; }
+		if(line) rows.push(line+";");
+		line=part;
+		while(line.length>78){ const cut=line.lastIndexOf(": ",78); if(cut<1) break; rows.push(line.slice(0,cut+1)); line=line.slice(cut+2); }
+	}
+	if(line) rows.push(line);
+	for(const row of rows) comm(row, "#ffce7a");
+}
+function recoach(){ for(const key of CIRCUIT) delete hinted[key]; }
+function hints_watch(){ if(cfg.hints===false||!running||on_ground()) return;
+	const st=mission_start();
+	if(st!=="case1"&&st!=="case2"&&st!=="case3") return;
+	const rx=wrap_axis(ownship.pos.x-CARRIER.x), rz=wrap_axis(ownship.pos.z-CARRIER.z);
+	const range=Math.hypot(rx,rz);
+	const feet=ownship.pos.y*3.28084, kt=(ownship.cas||0)*1.9438, down=(ownship.gearTarget??0)>0.5;
+	if(st==="case1"){
+		const O=carrier_world(0,0), F=carrier_world(100,0); let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;
+		const along=rx*hx+rz*hz, lateral=Math.abs(rz*hx-rx*hz);
+		const fdot=ownship.fwd.x*hx+ownship.fwd.z*hz;   // +1 flying up the wake, -1 downwind
+		if(range<950) hint(HINT.brk);
+		if(hinted[HINT.brk]&&kt<285&&!down) hint(HINT.form);
+		if(down) hint(HINT.donut);
+		if(down&&feet<750&&fdot<-0.5&&range>1000) hint(HINT.wing);
+		if(down&&fdot<-0.3&&Math.abs(along)<400&&lateral>1100&&lateral<4600) hint(HINT.abeam);
+		if(hinted[HINT.abeam]&&Math.abs(fdot)<0.45&&feet<560) hint(HINT.ninety);
+		if(hinted[HINT.ninety]&&fdot>0.55&&feet<430) hint(HINT.forty);
+	}
+	if(st==="case2"&&range<3.2*1852&&feet>700) hint(HINT.slope);
+	if(st==="case3"&&marshal){
+		if(marshal.commenced){ hint(HINT.push); hint(HINT.floor); }
+		if(marshal.platform) hint(HINT.level);
+		if(marshal.dirty) hint(HINT.gate);
+		if(range<3.2*1852) hint(HINT.check);
+	}
+}
 function mission_start(){ const start=cfg.task==="joust"?"joust":cfg.start; return start==="landing"?"case2":start; }   // joust always starts at the merge; the Start selector applies to free flight only. "landing" is the legacy saved value for what is now Case II (#205)
 function takeoff_surface(){ const st=mission_start(); if(st==="carrier") return CARRIER.deckY; if(st==="runway"&&airports.length) return airports[0].start.y; return 8; }
 function on_ground(){ return ownship.launching||!!ownship.grounded; }   // the real resting flag, not an altitude guess — off the cat you fly level at deck height, where a +12 m heuristic left G dead
@@ -4694,7 +4772,7 @@ function fly_player(dt){
 	if(out[STATE.touch]>0.5){ const crashed=verdict(out); flight_clear(); if(crashed) return; }
 	if(sim_time<test_idle && out[STATE.wow]<0.5 && out[STATE.velocity+1]>1){ test_idle=0; _test_power=0; }   // climbing away (a bolter): end the rollout grace — the pilot needs the throttle back
 	// bolter: hook down, touched the deck this pass, airborne again without a wire
-	if(prev_wow&&!ownship.grounded&&!ownship.trapped&&(ownship.hookTarget??0)>0.5&&ownship.touch&&ownship.touch.deck&&(sim_time-ownship.touch.t)<8&&ownship.speed>30){ ownship.grade="BOLTER"; notice(translate("BOLTER"), 6); }
+	if(prev_wow&&!ownship.grounded&&!ownship.trapped&&(ownship.hookTarget??0)>0.5&&ownship.touch&&ownship.touch.deck&&(sim_time-ownship.touch.t)<8&&ownship.speed>30){ ownship.grade="BOLTER"; notice(translate("BOLTER"), 6); recoach(); hint(HINT.bolt); }
 	prev_wow=ownship.grounded;
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
 	if(MULTIPLAYER && render_offset.lengthSq()>1e-8){ render_offset.multiplyScalar(Math.max(0,1-dt*7)); ownship.group.position.add(render_offset); }   // the correction shows as a ~150 ms visual decay, never a physics change
@@ -4929,7 +5007,7 @@ function update_anim(dt){ for(const st of [ownship,bandit]){
 		st.wheelDist=(st.wheelDist??0)+(st.wheelSpeed??0)*dt; }
 	apply_anim(st); } }
 function step_world(dt){ sim_time+=dt;
-	marshal_watch(); pattern_watch();
+	marshal_watch(); pattern_watch(); hints_watch();
 	fly_player(dt); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
 	const flick=0.6+Math.random()*0.4; const set_ab=(g,on)=>{
 		if(g.userData.flames) return;   // this airframe's burner look is its own nozzle glow — no cones, no flame boxes
@@ -4969,7 +5047,7 @@ function step_world(dt){ sim_time+=dt;
 				|| (lineup>6 && s.along>250)          // gross lineup deviation — drifting for the foul line or the island
 				|| (s.dev>1.8 && s.along<800 && s.along>250)   // way high in close: unlandable, go around
 				|| ((ownship.hook??0)<0.5 && s.along<1200);    // hook up on an approach — a mandatory wave-off on any deck
-			if(wave){ ownship.waved=true; if(!ownship.waving) ownship.wavet=performance.now(); ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
+			if(wave){ ownship.waved=true; if(!ownship.waving){ ownship.wavet=performance.now(); recoach(); hint(HINT.wave); } ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
 			}
 		}
 	} else { ownship.waving=false; ownship.groove=false; }
@@ -4993,6 +5071,7 @@ function reset_ownship(){
 	if(st==="case1"||st==="case2"||st==="case3") ddi_sets.nav.right="adi";   // spawned on approach: the pilot set up for instrument work before we hand over (#15)
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
+	hinted={};   // and the flight hints (#70)
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
@@ -5009,7 +5088,8 @@ function reset_ownship(){
 		ownship.fwd.set(hx,0,hz).normalize();
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
-		pattern={ broke:false, told:false, dirty:false, downwind:false, ball:false }; }
+		pattern={ broke:false, told:false, dirty:false, downwind:false, ball:false };
+		hint(HINT.wake); hint(HINT.side); }
 	else if(st==="case2"){   // Case II (#205): established on the FINAL BEARING at 1,200 ft, on-speed, configured — needles to the break-out, visual finish. Level at 1,200 intercepts the 3.5° glideslope ~3 nm out (CV-1)
 		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);   // landing centreline, A (aft) → B (forward, toward the rollout)
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;           // unit landing direction (the way the aircraft rolls out)
@@ -5020,7 +5100,8 @@ function reset_ownship(){
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		ownship.q.premultiply(new THREE.Quaternion().setFromAxisAngle(r,8.1*D2R));   // attitude = on-speed alpha over the level path (pre-core fallback)
-		pattern={ broke:true, told:true, dirty:true, downwind:true, ball:false }; }   // Case II starts configured on the final bearing: only the ball remains
+		pattern={ broke:true, told:true, dirty:true, downwind:true, ball:false };   // Case II starts configured on the final bearing: only the ball remains
+		hint(HINT.final); hint(HINT.needle); }
 	else if(st==="case3"){   // Case III (#205): marshal — 21 NM on the final bearing at angels 6, clean, 250 kt, inbound at the fix. The push clock is running: fly the racetrack, commence on time
 		const A=carrier_world(SHIP.line.afa,SHIP.line.alat), B=carrier_world(SHIP.line.bfa,SHIP.line.blat);
 		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;
@@ -5031,7 +5112,8 @@ function reset_ownship(){
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		marshal={ push:sim_time+MARSHAL_PUSH, commenced:false, platform:false, dirty:false, ball:false };
-		comm("MARSHAL: "+translate("PUSH TIME")+" "+clock_text(MARSHAL_PUSH), "#9fd0ff"); }
+		comm("MARSHAL: "+translate("PUSH TIME")+" "+clock_text(MARSHAL_PUSH), "#9fd0ff");
+		hint(HINT.stack); }
 	else if(st==="joust"){   // 1v1 merge: head-on east-west directly over the atoll at 15,000 ft, 1 NM either side, equal AIRSPEED — symmetric in every respect (island below both at all fight orientations, sun/moon abeam both noses); the side is a coin flip so the sun-left/sun-right mirror can't systematically favour one player
 		const bvr=cfg.duel==="bvr";   // #32: the BVR start — the same head-on symmetry across the DERIVED separation, at the block, weapons free (the distance is the hold)
 		weapons_hold=!bvr;   // #87: fight's on at the merge, not before — except the BVR start, which is free from spawn
@@ -5951,7 +6033,7 @@ function apply_effects(){ renderer.shadowMap.enabled=cfg.shadows; sun.castShadow
 let net=null, flare_flag=false, missile_flag=false, fox3_flag=false, session_over=false;
 let net_notice="", net_notice_t=0;
 let comms=[];   // the radio/chat log (#84): {text, colour, until} — top-left, hud-view furniture (multiplayer chat + the Case III radio script)
-function comm(text,colour){ comms.push({ text:String(text).slice(0,80), colour, until:performance.now()+10000 }); while(comms.length>5) comms.shift(); }
+function comm(text,colour){ comms.push({ text:String(text).slice(0,80), colour, until:performance.now()+10000 }); while(comms.length>5) comms.shift(); if(DEV_MODE){ const log=((globalThis as any).dev_comms??=[]); log.push(String(text)); } }   // dev_comms: the un-fading log — the live rows expire in ten seconds, which is faster than a headless probe can attach
 function chat_scope(){ return (net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams")?"team":"all"; }
 function exit_match(){ if(!running) return; running=false; /* #57 parked: head_close(); */
 	// A flight under five seconds is an aborted start, not a sortie (#51 ruling 2026-08-21): it leaves NOTHING —
@@ -6415,6 +6497,7 @@ function start_mission(){
 	dev_fps=parseFloat(devq.get("fps")||"0")||0; dev_jitter=devq.get("jitter")==="1";   // ?fps=N + ?jitter=1: forced frame dt with optional stutter spikes
 	const scq=devq.get("scenario"); if(scq!==null){ const n=parseInt(scq)||0; const arm=setInterval(()=>{ if(TESTS[n]&&TESTS[n].carrier?carrier_ols:airports.length){ clearInterval(arm); start_test(n); } }, 500); }   // &scenario=N: fire a landing test once ITS surface data exists (carrier scenarios need the OLS survey, not just the airfield list) — a fixed 3 s timer lost the race to the map load and the hook silently never ran
 	const startq=devq.get("start"); if(startq){ cfg.start=startq; cfg.task="free"; }
+	const hintq=devq.get("hints"); if(hintq==="1") cfg.hints=true; else if(hintq==="0") cfg.hints=false;   // &hints=0|1 — force the flight hints for headless verification (#70)
 	sweep_pending=devq.get("sweep");   // &sweep=<rig name> — wall-clock sweep of one rig entry (visible motion even in a ~5-frame headless capture)
 	{ const azq=devq.get("az"); if(azq!==null){ set_view("chase"); cam_az=parseFloat(azq)||0; const elq=parseFloat(devq.get("el")||""); if(!isNaN(elq)) cam_el=elq; const dq=parseFloat(devq.get("dist")||""); if(!isNaN(dq)) cam_dist=dq; } }   // &az=<rad>[&el=&dist=] — headless chase-camera pose without relocating (unlike ?shot)
 	{ const pq=devq.get("probe"); if(pq){ const [px,py]=pq.split(",").map(Number); dev_probe={x:px,y:py}; } }   // &probe=x,y (viewport fractions) — raycast that pixel each second and print the hit on the dev HUD (headless artifact identification)
