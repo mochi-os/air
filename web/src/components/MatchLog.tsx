@@ -3,14 +3,14 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// The History tab: every flight this player has recorded (match_list), with a
+// The flight log: every flight this player has recorded (match_list), with a
 // career summary aggregated SERVER-side over all of them and a table of the
 // fifty most recent. Raw mode/reason enums are mapped to labels before display.
 
 import { useEffect, useState } from 'react'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { Download, History, ShieldAlert } from 'lucide-react'
-import { EmptyState, shellSaveBlob, toast, useFormat } from '@mochi/web'
+import { CircleAlert, Download, History, ShieldAlert } from 'lucide-react'
+import { EmptyState, getErrorMessage, shellSaveBlob, toast, useFormat } from '@mochi/web'
 import {
   Table,
   TableBody,
@@ -19,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from '@mochi/web/components/ui/table'
-import { history, recording_load, type MatchRow, type MatchTotals } from '../game/net'
+import { log, recording_load, type MatchRow, type MatchTotals } from '../game/net'
 import { Button } from '@mochi/web/components/ui/button'
 
 // Replay is the in-memory recording the engine still holds for this session's
@@ -54,20 +54,25 @@ function serverName(world: string): string {
   }
 }
 
-export function MatchHistory({ recording }: { recording?: () => Replay | null }) {
+export function MatchLog({ recording }: { recording?: () => Replay | null }) {
   const { t } = useLingui()
   const replay = recording?.() ?? null
   const { formatDateTime, formatNumber } = useFormat()
   const [matches, setMatches] = useState<MatchRow[] | null>(null)
   const [totals, setTotals] = useState<MatchTotals | null>(null)
+  const [failure, setFailure] = useState<unknown>(null)
 
   useEffect(() => {
     let live = true
-    history().then((result) => {
-      if (!live) return
-      setMatches(result.matches)
-      setTotals(result.totals)
-    })
+    log()
+      .then((result) => {
+        if (!live) return
+        setMatches(result.matches)
+        setTotals(result.totals)
+      })
+      .catch((problem: unknown) => {
+        if (live) setFailure(problem ?? new Error())
+      })
     return () => {
       live = false
     }
@@ -92,6 +97,21 @@ export function MatchHistory({ recording }: { recording?: () => Replay | null })
       killed: t`Killed`,
     }
     return labels[reason] ?? reason.charAt(0).toUpperCase() + reason.slice(1)
+  }
+
+  // A failed load is an error, never the empty state: the empty state says
+  // "you have no flights", which for a 401 or a down server is a lie about
+  // the player's whole logbook.
+  if (failure !== null) {
+    const title = t`Could not load your flights`
+    const detail = getErrorMessage(failure, title)
+    return (
+      <EmptyState
+        icon={CircleAlert}
+        title={title}
+        description={detail === title ? undefined : detail}
+      />
+    )
   }
 
   // A skeleton shaped like the table that is coming, not a spinner and not

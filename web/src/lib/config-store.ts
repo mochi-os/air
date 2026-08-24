@@ -75,11 +75,12 @@ export function useIdentityName(): string {
   return name
 }
 
-// Wait for the auth store to finish initializing before any config request. The
-// shell delivers the app token by postMessage AFTER mount, so a load fired from
-// the route's first effect goes out bare, 401s, and leaves config_identity
-// empty - which silently drops every save for the rest of the session.
-function authenticated(): Promise<void> {
+// Wait for the auth store to finish initializing before any request fired from
+// a route's first effect. The shell delivers the app token by postMessage AFTER
+// mount, so such a load goes out bare and 401s - for config/load that silently
+// dropped every save for the rest of the session; for match/list it rendered a
+// full logbook as "No flights yet".
+export function authenticated(): Promise<void> {
   return new Promise((resolve) => {
     if (useAuthStore.getState().isInitialized) return resolve()
     const stop = useAuthStore.subscribe((state) => {
@@ -98,7 +99,7 @@ export async function loadConfig(): Promise<Partial<MissionConfig> | null> {
   try {
     await authenticated()
     const res = await client.get<ConfigPayload | { data: ConfigPayload }>(
-      '/-/config/load'
+      '-/config/load'
     )
     const payload = unwrap<ConfigPayload>(res)
     config_identity = payload?.identity ?? ''
@@ -122,7 +123,7 @@ export async function saveConfig(config: MissionConfig): Promise<void> {
   try {
     // identity is the account the config was loaded under; the server drops the
     // save if the session identity has since changed (in-place account switch).
-    await client.post('/-/config/save', {
+    await client.post('-/config/save', {
       config: JSON.stringify(config),
       identity: config_identity,
     })

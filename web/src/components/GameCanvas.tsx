@@ -479,7 +479,7 @@ export function GameCanvas({
             </AlertDialogTitle>
             <AlertDialogDescription>
               {confirm === 'exit' ? (
-                <Trans>The mission will end and your flight will be saved to History.</Trans>
+                <Trans>The mission will end and your flight will be saved to the log.</Trans>
               ) : (
                 <Trans>The mission will restart. The current flight will not be saved.</Trans>
               )}

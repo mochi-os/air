@@ -14,6 +14,7 @@ import { createAppClient, useFormat } from '@mochi/web'
 import { Users } from 'lucide-react'
 import { flight_load, flight_version } from '../game/flight'
 import { server_mismatch, server_offline, server_order, type Server } from '../game/servers'
+import { authenticated } from '../lib/config-store'
 
 const client = createAppClient({ appName: 'air' })
 
@@ -34,7 +35,8 @@ export function useServers(): { servers: Server[] | null; version: number } {
     void flight_load().then(() => live && setVersion(flight_version()))
     const load = async () => {
       try {
-        const res = await client.get<unknown>('/-/servers')
+        await authenticated()
+        const res = await client.get<unknown>('-/servers')
         // The app client returns the response; a Starlark action wraps its
         // payload in {data:...}, and createAppClient may unwrap one layer —
         // tolerate either depth rather than guess.

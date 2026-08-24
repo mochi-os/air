@@ -25,7 +25,7 @@ const GameCanvas = lazy(() =>
 // The Settings tabs are COMPONENT state, not a route: inside the shell iframe
 // every URL change relays a navigation to the parent, stacking a history entry
 // per click (#77).
-type SetupTab = 'general' | 'graphics' | 'sound' | 'controls' | 'keys' /* #57 parked: | 'head' */ // the Settings dialog's tabs (#77): mission, weather and history became their own surfaces
+type SetupTab = 'general' | 'graphics' | 'sound' | 'controls' | 'keys' /* #57 parked: | 'head' */ // the Settings dialog's tabs (#77): mission, weather and the log became their own surfaces
 
 // Inside the menu shell the top window owns the browser tab; without this it
 // stays titled "Mochi" no matter what the app's own index.html says.
@@ -102,7 +102,7 @@ function Index() {
             }}
             onExit={() => {
               // The mission is OVER, not suspended: exit_match has written the
-              // flight to History and closed any transport, so leaving
+              // flight to the log and closed any transport, so leaving
               // `started` true offers Resume on a torn-down session and
               // collides the next sortie's record. The crash path ends through
               // onOver.
@@ -153,7 +153,7 @@ export const Route = createFileRoute('/')({
   component: Index,
   // Pass search through UNCHANGED: validateSearch strips anything it does not
   // return, and the engine reads ?developer / ?fly / ?start / ?view straight
-  // off location.search. History is its own route, so a legacy ?tab= or
+  // off location.search. The log is its own route, so a legacy ?tab= or
   // ?page=history is accepted and ignored.
   validateSearch: (search: Record<string, unknown>) => search,
 })

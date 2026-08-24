@@ -9,6 +9,7 @@
 // is self-asserted.
 
 import { createAppClient } from '@mochi/web'
+import { authenticated } from '../lib/config-store'
 import { SIZE, STATE } from './flight'
 import { frame, frames } from './framing'
 import { sanitizeWrap, minimumImage, fold } from './wrap'
@@ -831,7 +832,7 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
   }
 }
 
-// ---------------------------------------------------------------- history
+// ---------------------------------------------------------------- flight log
 
 const client = createAppClient({ appName: 'air' })
 
@@ -851,7 +852,7 @@ export async function record(match: {
   cheated: number
 }): Promise<void> {
   try {
-    await client.post('/-/match/record', match)
+    await client.post('-/match/record', match)
   } catch { /* anonymous or offline — history is best-effort */ }
 }
 
@@ -874,7 +875,7 @@ export interface MatchRow {
   cheated: number
 }
 
-// history reads this player's recorded matches, most recent first. Its totals
+// log reads this player's recorded matches, most recent first. Its totals
 // come from the server over EVERY flight while the list is capped at fifty, so
 // summing the rows on screen understates a career. recording_store uploads a
 // gzipped ACMI as multipart: the 1 MB non-multipart body cap would reject
@@ -888,7 +889,7 @@ export async function recording_store(session: string, started: number, text: st
     // The type matters: a typeless Blob arrives as a part the attachment API does not take as a file.
     const bytes = await new Response(gz).arrayBuffer()
     body.append('recording', new Blob([bytes], { type: 'application/gzip' }), 'flight.acmi.gz')
-    const res = (await client.post('/-/recording/save', body)) as { data?: { saved?: boolean } }
+    const res = (await client.post('-/recording/save', body)) as { data?: { saved?: boolean } }
     return !!(res?.data?.saved ?? (res as { saved?: boolean })?.saved)
   } catch {
     return false // best effort: the player can still save the in-memory copy
@@ -898,7 +899,8 @@ export async function recording_store(session: string, started: number, text: st
 // recording_load fetches a stored recording and inflates it back to ACMI text.
 export async function recording_load(id: string): Promise<string | null> {
   try {
-    const res = await client.instance.get('/-/recording/fetch', {
+    await authenticated()
+    const res = await client.instance.get('-/recording/fetch', {
       params: { id },
       responseType: 'blob',
     })
@@ -911,7 +913,7 @@ export async function recording_load(id: string): Promise<string | null> {
 
 export async function recording_pin(session: string, started: number, pinned: boolean): Promise<void> {
   try {
-    await client.post('/-/recording/pin', { session, started: String(started), pinned: String(pinned) })
+    await client.post('-/recording/pin', { session, started: String(started), pinned: String(pinned) })
   } catch {
     /* best effort */
   }
@@ -925,16 +927,15 @@ export interface MatchTotals {
   cheated: number
 }
 
-export async function history(): Promise<{ matches: MatchRow[]; totals: MatchTotals | null }> {
-  try {
-    const res = (await client.get('/-/match/list')) as {
-      data?: { matches?: MatchRow[]; totals?: MatchTotals }
-      matches?: MatchRow[]
-      totals?: MatchTotals
-    }
-    const body = res?.data ?? res
-    return { matches: body?.matches ?? [], totals: body?.totals ?? null }
-  } catch {
-    return { matches: [], totals: null }
+// log throws on failure: swallowing it here rendered a 401 as the
+// legitimate "No flights yet" empty state.
+export async function log(): Promise<{ matches: MatchRow[]; totals: MatchTotals | null }> {
+  await authenticated()
+  const res = (await client.get('-/match/list')) as {
+    data?: { matches?: MatchRow[]; totals?: MatchTotals }
+    matches?: MatchRow[]
+    totals?: MatchTotals
   }
+  const body = res?.data ?? res
+  return { matches: body?.matches ?? [], totals: body?.totals ?? null }
 }
