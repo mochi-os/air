@@ -354,8 +354,13 @@ function JoystickPanel({
                 {known.map((id) => (
                   <SelectItem key={id} value={id}>
                     {id.replace(/\s*\(Vendor:.*$/, '')}
-                    {!pads.some((p) => p.id === id) && ' — '}
-                    {!pads.some((p) => p.id === id) && <Trans>disconnected</Trans>}
+                    {!pads.some((p) => p.id === id) && (
+                      <>
+                        {' ('}
+                        <Trans>disconnected</Trans>
+                        {')'}
+                      </>
+                    )}
                   </SelectItem>
                 ))}
               </SelectContent>
