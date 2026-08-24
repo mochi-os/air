@@ -13,7 +13,7 @@ from pathlib import Path
 
 LABELS = Path(__file__).resolve().parents[2] / "labels"
 
-OVERLAY = {"en", "en-us", "en-ca", "fr-ca", "es-ar", "zh-hk", "yue", "nn", "de-ch"}
+OVERLAY = {"en", "en-us", "en-ca", "fr-ca", "es-ar", "zh-hk", "yue", "de-ch"}
 
 KEEP_WORDS = {
     "air", "api", "apps", "chat", "chess", "comptroller", "crm", "data",
@@ -71,9 +71,28 @@ def translatable(value):
     return bool(re.search(r"[A-Za-z]", _strip_placeholders(value)))
 
 
-def keep_english(source):
+# Cells where the English spelling IS the target language's word, so a value
+# equal to the source is finished rather than missing. Scoped to one (locale,
+# source) pair each, never to a word: "Interval" is Danish and Czech, but
+# Polish wants "Interwał", Turkish "Aralık" and Finnish "Aikaväli". Mirrors
+# KEEP_LOCALE in claude/scripts/i18n_glossary.py — keep the two in sync.
+KEEP_LOCALE = frozenset({
+    ("ca", "Interval"), ("cs", "Interval"), ("da", "Interval"),
+    ("id", "Interval"), ("jv", "Interval"), ("nl", "Interval"),
+    ("nl-be", "Interval"), ("ro", "Interval"), ("sk", "Interval"),
+    ("sl", "Interval"), ("su", "Interval"),
+    ("da", "Region"), ("de", "Region"), ("nb", "Region"),
+    ("nn", "Region"), ("sv", "Region"),
+    ("da", "Type"), ("fr", "Type"), ("nb", "Type"), ("nn", "Type"),
+    ("fr", "Description"), ("fr", "Notes"), ("sv", "Information"),
+})
+
+
+def keep_english(source, locale=None):
     source = source.strip()
     if source in KEEP_ENGLISH:
+        return True
+    if locale and (locale, source) in KEEP_LOCALE:
         return True
     words = _WORD.findall(_strip_placeholders(source))
     return bool(words) and all(w.lower() in KEEP_WORDS for w in words)
@@ -111,7 +130,7 @@ def main():
             value = translated.get(key, "")
             if not value:
                 missing.append(key)
-            elif value == en_value and not keep_english(en_value):
+            elif value == en_value and not keep_english(en_value, conf.stem):
                 missing.append(key)
         if missing:
             failures[conf.stem] = missing
