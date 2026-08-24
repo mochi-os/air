@@ -270,6 +270,13 @@ export function GameCanvas({
     if (chat != null) chatRef.current?.focus()
   }, [chat])
 
+  // The pause menu is a modal surface, so it takes focus when it opens: without
+  // this the keyboard stayed on the canvas and the menu could only be worked
+  // with the mouse.
+  useEffect(() => {
+    if (menu) menuRef.current?.focus()
+  }, [menu])
+
   // A dialog is open over the paused mission: keep the keyboard away from the
   // engine without taking it away from the dialog. The engine listens on
   // window in the BUBBLE phase, which is the last hop of every real key event,
@@ -339,6 +346,31 @@ export function GameCanvas({
           <div
             ref={menuRef}
             tabIndex={-1}
+            role='dialog'
+            aria-modal='true'
+            aria-label={over ? t`Mission over` : t`Paused`}
+            // Tab is bound to weapon select, Space to the trigger: tabbing
+            // through this menu fired the jet in a match that flies on behind
+            // it. Every key but Escape stops here, and Escape is the one the
+            // engine needs — it is what closes this menu.
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') return
+              if (e.key === 'Tab') {
+                e.preventDefault()
+                const stops = Array.from(
+                  menuRef.current?.querySelectorAll<HTMLElement>('button:not([disabled])') ?? []
+                )
+                if (stops.length) {
+                  const at = stops.indexOf(document.activeElement as HTMLElement)
+                  const step = e.shiftKey ? -1 : 1
+                  stops[(at + step + stops.length) % stops.length].focus()
+                }
+              }
+              e.stopPropagation()
+            }}
+            onKeyUp={(e) => {
+              if (e.key !== 'Escape') e.stopPropagation()
+            }}
             className='bg-background flex w-72 flex-col gap-2 rounded-lg border p-4 shadow-lg outline-none'
           >
             {over && (
