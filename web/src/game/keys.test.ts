@@ -25,12 +25,12 @@ describe('key bindings', () => {
   })
 
   it('offers every bindable action in the Keys and Buttons tabs', () => {
-    const setup = read('../components/MissionSetup.tsx')
+    const settings = read('../components/SettingsDialog.tsx')
     // The row tables are `const KEY_ROWS: Row[] = [...]` / `BUTTON_ROWS`; take
     // each `{ id: '...'` inside them. A row whose id has no default renders as
     // '—', telling the player a working control is unbound.
     for (const table of ['KEY_ROWS', 'BUTTON_ROWS']) {
-      const block = new RegExp(`const ${table}: Row\\[\\] = \\[([\\s\\S]*?)\\n\\]`).exec(setup)
+      const block = new RegExp(`const ${table}: Row\\[\\] = \\[([\\s\\S]*?)\\n\\]`).exec(settings)
       expect(block, `${table} not found`).toBeTruthy()
       const ids = Array.from(block![1].matchAll(/\{\s*id:\s*'([\w.]+)'/g), (m) => m[1])
       expect(ids.length).toBeGreaterThan(10)
@@ -94,8 +94,8 @@ describe('key bindings', () => {
       Array.from(engine.matchAll(/bind\.axes\.(\w+)\s*\?\?\s*""[\s\S]{0,200}?hi\s*\+\s*1/g), (m) => m[1]),
     )
     expect(paired.size).toBeGreaterThan(0) // the scan found the pair reads at all
-    const setup = read('../components/MissionSetup.tsx')
-    const declared = new RegExp(`const PAIRS = new Set\\(\\[([^\\]]*)\\]`).exec(setup)
+    const settings = read('../components/SettingsDialog.tsx')
+    const declared = new RegExp(`const PAIRS = new Set\\(\\[([^\\]]*)\\]`).exec(settings)
     expect(declared, 'PAIRS not found').toBeTruthy()
     const shown = new Set(Array.from(declared![1].matchAll(/'([\w.]+)'/g), (m) => m[1]))
     expect([...paired].sort(), 'engine pair reads vs PAIRS in the settings tab').toEqual([...shown].sort())
@@ -175,9 +175,9 @@ describe('key bindings', () => {
     // Hardware and the platform controller panels number controls from 1, the
     // Gamepad API from 0. Only the DISPLAY carries the +1: the stored value
     // indexes pad.axes/pad.buttons and travels in exported profiles.
-    const setup = read('../components/MissionSetup.tsx')
+    const settings = read('../components/SettingsDialog.tsx')
     for (const kind of ['axisOptions', 'buttonOptions']) {
-      const block = new RegExp(`${kind}\\.map\\(\\(option\\) => \\{([\\s\\S]*?)\\n\\s*\\}\\)\\}`).exec(setup)
+      const block = new RegExp(`${kind}\\.map\\(\\(option\\) => \\{([\\s\\S]*?)\\n\\s*\\}\\)\\}`).exec(settings)
       expect(block, `${kind} list not found`).toBeTruthy()
       const body = block![1]
       // stored: the raw option, never the incremented one
