@@ -26,6 +26,7 @@ import { RadioGroup, RadioGroupItem } from '@mochi/web/components/ui/radio-group
 import { Switch } from '@mochi/web/components/ui/switch'
 import { getErrorMessage } from '@mochi/web'
 import { useIdentityName } from '../lib/config-store'
+import { NumberField } from './menu-parts'
 import { CLOUD_ICONS, MODE_ICONS, START_ICONS, TOD_ICONS, WEAPON_ICONS } from './menu-icons'
 import { default_server, normalize_server, supported, world_create, world_sessions, world_withdraw, world_status, type Join, type WorldSession, type WorldStatus, crossHost } from '../game/net'
 
@@ -394,14 +395,13 @@ export function Multiplayer({
                 <Label htmlFor='rule-fuel' className='font-normal'>
                   <Trans>Fuel</Trans>
                 </Label>
-                <Input
+                <NumberField
                   id='rule-fuel'
-                  type='number'
                   min={1500}
                   max={10800}
                   step={100}
                   value={fuel}
-                  onChange={(e) => setFuel(Math.max(1500, Math.min(10800, Number(e.target.value) || 6000)))}
+                  onChange={setFuel}
                   className='h-8 w-24'
                 />
                 <span className='text-muted-foreground text-xs'>
