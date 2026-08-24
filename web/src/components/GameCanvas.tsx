@@ -14,6 +14,17 @@ import { startGame, type GameHandle } from '../game/engine'
 import { KEY_DEFAULTS, pretty } from '../game/keys'
 import { type Join as NetJoin } from '../game/net'
 import { type MissionConfig } from '../lib/config'
+import { SettingsDialog } from './SettingsDialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@mochi/web/components/ui/alert-dialog'
 import '../game/game.css'
 
 // HUD strings the engine draws on the 2D canvas, declared in a React module so
@@ -145,28 +156,34 @@ export function GameCanvas({
   join = null,
   onExit,
   onReady,
-  onSettings,
+  onConfigChange,
   onConfig,
   onAgain,
-  flying,
 }: {
   config?: MissionConfig
   join?: NetJoin | null
   onExit?: () => void
   onReady?: (handle: GameHandle) => void
-  onSettings?: () => void
+  onConfigChange?: (config: MissionConfig) => void
   onConfig?: (partial: Record<string, number | string>) => void
   onAgain?: () => void // remount a fresh mission after this one ended at a crash (#240)
-  flying?: boolean
 }) {
   const stageRef = useRef<HTMLCanvasElement>(null)
   const handleRef = useRef<GameHandle | null>(null)
+  const configRef = useRef(config)
+  configRef.current = config
+  const onConfigChangeRef = useRef(onConfigChange)
+  onConfigChangeRef.current = onConfigChange
   // the engine captures its callbacks once at startGame; the ref keeps the
   // latest closure live across re-renders (config identity changes per render)
   const onConfigRef = useRef(onConfig)
   onConfigRef.current = onConfig
   const chatRef = useRef<HTMLInputElement>(null)
   const [menu, setMenu] = useState(false)
+  const [settings, setSettings] = useState(false)
+  const [settingsTab, setSettingsTab] = useState('general')
+  const [confirm, setConfirm] = useState<'exit' | 'restart' | null>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
   // The mission ended at a crash (#240): the engine reports how, and the menu
   // becomes the end-of-mission surface — outcome line, Fly again, no Resume.
   const [over, setOver] = useState<{ fate: string; struck: number; seconds: number } | null>(null)
@@ -225,13 +242,6 @@ export function GameCanvas({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Re-entering flight from the front page (Resume mission) closes the Esc
-  // popup: it stayed open - and paused - behind the menu, so Resume appeared
-  // to land back on the escape menu instead of flying.
-  useEffect(() => {
-    if (flying) setMenu(false)
-  }, [flying])
-
   // Once the mission has ended the menu is MODAL: there is nothing behind it
   // but the frozen fireball, so any dismissal (Esc, the settings detour's
   // return) reopens it rather than stranding the player in a held world.
@@ -259,6 +269,34 @@ export function GameCanvas({
   useEffect(() => {
     if (chat != null) chatRef.current?.focus()
   }, [chat])
+
+  // A dialog is open over the paused mission: keep the keyboard away from the
+  // engine without taking it away from the dialog. The engine listens on
+  // window in the BUBBLE phase, which is the last hop of every real key event,
+  // so stopping at document-bubble fences the jet while Escape (Radix listens
+  // at document-capture), the tab strip's arrow keys and the sliders all still
+  // see their event. Stopping at window-capture instead, as this first did,
+  // fenced the dialog too. The pad path replays its binds by dispatching
+  // straight AT window (engine.ts), which never travels through document —
+  // that one needs the window listener, and only for events window itself is
+  // the target of.
+  useEffect(() => {
+    if (!settings && !confirm) return
+    const fence = (e: KeyboardEvent) => e.stopPropagation()
+    const padFence = (e: KeyboardEvent) => {
+      if (e.target === window) e.stopPropagation()
+    }
+    document.addEventListener('keydown', fence)
+    document.addEventListener('keyup', fence)
+    window.addEventListener('keydown', padFence, { capture: true })
+    window.addEventListener('keyup', padFence, { capture: true })
+    return () => {
+      document.removeEventListener('keydown', fence)
+      document.removeEventListener('keyup', fence)
+      window.removeEventListener('keydown', padFence, { capture: true })
+      window.removeEventListener('keyup', padFence, { capture: true })
+    }
+  }, [settings, confirm])
 
   const send = () => {
     const words = chatRef.current?.value.trim()
@@ -298,7 +336,11 @@ export function GameCanvas({
         <div className='fixed inset-0 z-40 flex items-center justify-center bg-black/40'>
           {/* Same visual language as the front page: card surface, solid primary,
               outline secondaries, leading icons. */}
-          <div className='bg-background flex w-72 flex-col gap-2 rounded-lg border p-4 shadow-lg'>
+          <div
+            ref={menuRef}
+            tabIndex={-1}
+            className='bg-background flex w-72 flex-col gap-2 rounded-lg border p-4 shadow-lg outline-none'
+          >
             {over && (
               <div className='mb-1 text-center'>
                 <p className='text-base font-medium'>
@@ -362,19 +404,28 @@ export function GameCanvas({
                 <Trans>Send chat</Trans>
               </Button>
             )}
-            {onSettings && (
+            <Button
+              type='button'
+              variant='outline'
+              className='h-12 justify-start text-base'
+              onClick={() => setSettings(true)}
+            >
+              {/* Tuning over the PAUSED, visible scene is the best place to do
+                  it — the graphics knobs apply against the frame you are
+                  looking at. The dialog fences input while open so a rebind
+                  cannot reach the jet (in a match it keeps flying). */}
+              <SettingsIcon className='size-4' />
+              <Trans>Settings</Trans>
+            </Button>
+            {!join && (
               <Button
                 type='button'
                 variant='outline'
                 className='h-12 justify-start text-base'
-                onClick={() => onSettings()}
+                onClick={() => setConfirm('restart')}
               >
-                {/* Tuning over the PAUSED, visible scene is the best place to do
-                    it — the graphics knobs apply against the frame you are
-                    looking at. The dialog fences input while open so a rebind
-                    cannot reach the jet (in a match it keeps flying). */}
-                <SettingsIcon className='size-4' />
-                <Trans>Settings</Trans>
+                <RotateCcw className='size-4' />
+                <Trans>Restart mission</Trans>
               </Button>
             )}
             <Button
@@ -382,8 +433,12 @@ export function GameCanvas({
               variant='outline'
               className='h-12 justify-start text-base'
               onClick={() => {
-                setMenu(false)
-                handleRef.current?.exit()
+                if (join) {
+                  setMenu(false)
+                  handleRef.current?.exit()
+                } else {
+                  setConfirm('exit')
+                }
               }}
             >
               <LogOut className='size-4' />
@@ -398,6 +453,55 @@ export function GameCanvas({
           </div>
         </div>
       )}
+      {settings && (
+        <SettingsDialog
+          open={settings}
+          onClose={() => {
+            setSettings(false)
+            // Apply graphics changes to the frozen frame behind the menu.
+            // resume() ends by focusing the canvas, which would hand the
+            // keyboard to the jet while the pause menu is still the thing on
+            // screen — take it straight back.
+            handleRef.current?.resume(configRef.current)
+            requestAnimationFrame(() => menuRef.current?.focus())
+          }}
+          config={configRef.current!}
+          onChange={onConfigChangeRef.current!}
+          tab={settingsTab}
+          onTabChange={setSettingsTab}
+        />
+      )}
+      <AlertDialog open={confirm !== null} onOpenChange={(v) => !v && setConfirm(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {confirm === 'exit' ? <Trans>Exit mission?</Trans> : <Trans>Restart mission?</Trans>}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {confirm === 'exit' ? (
+                <Trans>The mission will end and your flight will be saved to History.</Trans>
+              ) : (
+                <Trans>The mission will restart. The current flight will not be saved.</Trans>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>
+              <Trans>Cancel</Trans>
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setMenu(false)
+                if (confirm === 'exit') handleRef.current?.exit()
+                else onAgain?.()
+                setConfirm(null)
+              }}
+            >
+              {confirm === 'exit' ? <Trans>Exit</Trans> : <Trans>Restart</Trans>}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <div className='panel' id='help' ref={helpRef}>
         {/* Key legends are <kbd>; the action beside each is prose and stays wrapped. The two <b> below
             are emphasis on translated text, not keys. Legends derive from the binding table - hand-written ones went stale. */}
