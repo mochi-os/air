@@ -51,7 +51,7 @@ msgid "{0} created “{1}”"
 msgstr "{0} «{1}»-ийг үүсгэлээ"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:327
+#: src/components/Multiplayer.tsx:339
 msgid "{0} flying"
 msgstr "{0} нисэж байна"
 
@@ -89,7 +89,7 @@ msgstr ""
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:556
+#: src/components/Multiplayer.tsx:570
 msgid "{0}/{1} players"
 msgstr "{0}/{1} тоглогч"
 
@@ -117,13 +117,17 @@ msgstr "{entityLabel} нэр"
 msgid "{entityLabel} name is required"
 msgstr "{entityLabel}-ийн нэр шаардлагатай"
 
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:233
 msgid "{name}'s match"
 msgstr "{name}-ийн тоглолт"
 
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:29
 msgid "{opponentName} offered a draw"
 msgstr "{opponentName} тэнцлэлд санал болгосон"
+
+#: src/components/Multiplayer.tsx:532
+msgid "{placed} of {limit} bots"
+msgstr ""
 
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:203
 msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
@@ -231,9 +235,9 @@ msgstr "Бүртгэлийн төрөл"
 msgid "Account verified"
 msgstr "Бүртгэл баталгаажсан"
 
-#: src/components/MissionSetup.tsx:997
-#: src/components/MissionSetup.tsx:1184
-#: src/components/Multiplayer.tsx:488
+#: src/components/MissionSetup.tsx:1004
+#: src/components/MissionSetup.tsx:1191
+#: src/components/Multiplayer.tsx:505
 msgid "Ace"
 msgstr "Мэргэн"
 
@@ -388,7 +392,7 @@ msgstr "Алдаа гарлаа"
 msgid "An unexpected error occurred"
 msgstr "Гэнэтийн алдаа гарлаа"
 
-#: src/components/Multiplayer.tsx:426
+#: src/components/Multiplayer.tsx:438
 msgid "Anchored sides"
 msgstr "Бэхлэгдсэн талууд"
 
@@ -435,7 +439,7 @@ msgstr "Энэ сэтгэгдлийг устгахдаа итгэлтэй бай
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Гарахдаа итгэлтэй байна уу? Бүртгэлдээ дахин нэвтрэхдээ дахин нэвтрэх шаардлагатай."
 
-#: src/components/MissionSetup.tsx:1130
+#: src/components/MissionSetup.tsx:1137
 msgid "Armament & Stores"
 msgstr ""
 
@@ -452,7 +456,7 @@ msgstr "Өсөх"
 msgid "Ascending"
 msgstr "Өсөхөөр"
 
-#: src/components/MissionSetup.tsx:1098
+#: src/components/MissionSetup.tsx:1105
 msgid "Assists Active"
 msgstr ""
 
@@ -489,7 +493,7 @@ msgstr "Аватар"
 msgid "Avatar for {name}"
 msgstr "{name}-ийн аватар"
 
-#: src/components/MissionSetup.tsx:1289
+#: src/components/MissionSetup.tsx:1296
 msgid "Avionics, HOTAS & audio"
 msgstr ""
 
@@ -521,7 +525,7 @@ msgstr "Нүүр хуудас руу буцах"
 msgid "Balanced flight"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:989
+#: src/components/MissionSetup.tsx:996
 msgid "Bandit"
 msgstr "Дайсны онгоц"
 
@@ -571,11 +575,11 @@ msgstr "Найдвартай биш холбоос руу шилжихийг б�
 msgid "Blocks"
 msgstr "Блокууд"
 
-#: src/components/Multiplayer.tsx:608
+#: src/components/Multiplayer.tsx:622
 msgid "Blue"
 msgstr "Цэнхэр"
 
-#: src/components/Multiplayer.tsx:479
+#: src/components/Multiplayer.tsx:496
 msgid "Blue bots"
 msgstr "Цэнхэр ботууд"
 
@@ -596,7 +600,7 @@ msgstr "Сонирхлыг идэвхжүүлэх"
 msgid "Border colour"
 msgstr "Хүрээний өнгө"
 
-#: src/components/Multiplayer.tsx:470
+#: src/components/Multiplayer.tsx:482
 msgid "Bots"
 msgstr "Ботууд"
 
@@ -629,11 +633,11 @@ msgstr "Товч {i}"
 msgid "Button Mappings"
 msgstr ""
 
-#: src/components/Multiplayer.tsx:420
+#: src/components/Multiplayer.tsx:432
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — эхнээсээ зэвсэг чөлөөтэй"
 
-#: src/components/MissionSetup.tsx:983
+#: src/components/MissionSetup.tsx:990
 msgid "BVR (Start)"
 msgstr ""
 
@@ -641,7 +645,7 @@ msgstr ""
 msgid "CALL THE BALL"
 msgstr "БӨМБӨГИЙГ МЭДЭГД"
 
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:323
 #: src/components/SettingsDialog.tsx:1034
 msgid "Callsign"
 msgstr "Дуудлагын нэр"
@@ -669,8 +673,8 @@ msgstr "Камер ашиглах боломжгүй"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/GameCanvas.tsx:522
-#: src/components/Multiplayer.tsx:282
-#: src/components/Multiplayer.tsx:585
+#: src/components/Multiplayer.tsx:294
+#: src/components/Multiplayer.tsx:599
 #: src/components/SettingsDialog.tsx:809
 msgid "Cancel"
 msgstr "Цуцлах"
@@ -700,31 +704,31 @@ msgstr "Тайлбар"
 msgid "Carrier & Ambient"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1191
+#: src/components/MissionSetup.tsx:1198
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1020
+#: src/components/MissionSetup.tsx:1027
 msgid "Case I (day)"
 msgstr "Тохиолдол I (өдөр)"
 
-#: src/components/MissionSetup.tsx:1192
+#: src/components/MissionSetup.tsx:1199
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1021
+#: src/components/MissionSetup.tsx:1028
 msgid "Case II (weather)"
 msgstr "Тохиолдол II (цаг агаар)"
 
-#: src/components/MissionSetup.tsx:1193
+#: src/components/MissionSetup.tsx:1200
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1022
+#: src/components/MissionSetup.tsx:1029
 msgid "Case III (night)"
 msgstr "Тохиолдол III (шөнө)"
 
-#: src/components/MissionSetup.tsx:1030
+#: src/components/MissionSetup.tsx:1037
 msgid "Catapult"
 msgstr "Катапульт"
 
@@ -762,7 +766,7 @@ msgid "Chat to everyone"
 msgstr "Бүгдтэй чатлах"
 
 #: src/components/MatchHistory.tsx:345
-#: src/components/Multiplayer.tsx:434
+#: src/components/Multiplayer.tsx:446
 msgid "Cheats"
 msgstr "Читүүд"
 
@@ -811,7 +815,7 @@ msgstr "Хэл сонгох"
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
 #: src/components/MatchHistory.tsx:303
 #: src/components/MatchHistory.tsx:359
-#: src/components/Multiplayer.tsx:372
+#: src/components/Multiplayer.tsx:384
 #: src/components/SettingsDialog.tsx:677
 msgid "Clear"
 msgstr "Цэвэрлэх"
@@ -876,7 +880,7 @@ msgstr "Хайлтыг хаах"
 msgid "closer"
 msgstr "ойртох"
 
-#: src/components/MissionSetup.tsx:1071
+#: src/components/MissionSetup.tsx:1078
 msgid "Clouds"
 msgstr "Үүл"
 
@@ -952,11 +956,11 @@ msgstr "Харагдацын тохиргоог тохируулах"
 msgid "Confirm"
 msgstr "Баталгаажуулах"
 
-#: src/components/MissionSetup.tsx:884
+#: src/components/MissionSetup.tsx:891
 msgid "Connect"
 msgstr "Холбогдох"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:878
 msgid "Connect to private server"
 msgstr "Хувийн сервертэй холбогдох"
 
@@ -972,7 +976,7 @@ msgstr "Холбогдсон бүртгэлүүд"
 msgid "Connecting..."
 msgstr "Холбогдож байна..."
 
-#: src/components/Multiplayer.tsx:330
+#: src/components/Multiplayer.tsx:342
 msgid "Connecting…"
 msgstr "Холбогдож байна…"
 
@@ -993,7 +997,7 @@ msgid "Contextual information and details."
 msgstr "Контекст мэдээлэл ба дэлгэрэнгүй."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:291
+#: src/components/Multiplayer.tsx:303
 msgid "Continue"
 msgstr "Үргэлжлүүлэх"
 
@@ -1017,7 +1021,7 @@ msgstr "Хуулах"
 msgid "Corner speed (best instant turn)"
 msgstr "Булангийн хурд (хамгийн сайн шуурхай эргэлт)"
 
-#: src/components/Multiplayer.tsx:247
+#: src/components/Multiplayer.tsx:250
 msgid "Could not create the match"
 msgstr "Тоглолт үүсгэж чадсангүй"
 
@@ -1080,16 +1084,16 @@ msgstr "Үүсгэх"
 msgid "Create {0}"
 msgstr "{0} үүсгэх"
 
-#: src/components/Multiplayer.tsx:528
+#: src/components/Multiplayer.tsx:542
 msgid "Create and fly"
 msgstr "Үүсгээд нисэх"
 
-#: src/components/Multiplayer.tsx:345
+#: src/components/Multiplayer.tsx:357
 msgid "Create match"
 msgstr "Тоглолт үүсгэх"
 
-#: src/components/MissionSetup.tsx:1287
-#: src/components/MissionSetup.tsx:1311
+#: src/components/MissionSetup.tsx:1294
+#: src/components/MissionSetup.tsx:1318
 msgid "Create mission"
 msgstr "Даалгавар үүсгэх"
 
@@ -1112,9 +1116,9 @@ msgstr "Үүсгэж байна..."
 msgid "Credits"
 msgstr "Талархал"
 
-#: src/components/MissionSetup.tsx:1078
-#: src/components/Multiplayer.tsx:83
-#: src/components/Multiplayer.tsx:373
+#: src/components/MissionSetup.tsx:1085
+#: src/components/Multiplayer.tsx:86
+#: src/components/Multiplayer.tsx:385
 msgid "Cumulus"
 msgstr "Овоохой үүл"
 
@@ -1155,8 +1159,8 @@ msgstr "Өгөгдлийн зөрчил"
 msgid "Date"
 msgstr "Огноо"
 
-#: src/components/MissionSetup.tsx:1064
-#: src/components/Multiplayer.tsx:368
+#: src/components/MissionSetup.tsx:1071
+#: src/components/Multiplayer.tsx:380
 msgid "Day"
 msgstr "Өдөр"
 
@@ -1231,7 +1235,7 @@ msgstr "Харагдац устгах"
 msgid "Delete your account on the old server"
 msgstr "Хуучин серверт байгаа бүртгэлээ устгана уу"
 
-#: src/components/MissionSetup.tsx:1009
+#: src/components/MissionSetup.tsx:1016
 msgid "Departure / Recovery"
 msgstr ""
 
@@ -1271,7 +1275,7 @@ msgstr "Илрүүлэх"
 msgid "Detect from web browser"
 msgstr "Хөтчөөс илрүүлэх"
 
-#: src/components/Multiplayer.tsx:271
+#: src/components/Multiplayer.tsx:283
 msgid "Different game host"
 msgstr "Өөр тоглоомын сервер"
 
@@ -1307,7 +1311,7 @@ msgstr "Салгагдсан"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
-#: src/components/MissionSetup.tsx:1258
+#: src/components/MissionSetup.tsx:1265
 #: src/components/SettingsDialog.tsx:773
 msgid "Dismiss"
 msgstr "Болих"
@@ -1349,7 +1353,7 @@ msgstr "САЛХИНЫ ДАГУУ 600 ФУТ"
 msgid "Drag"
 msgstr "Чирэх"
 
-#: src/components/Multiplayer.tsx:485
+#: src/components/Multiplayer.tsx:502
 msgid "Drone"
 msgstr "Дрон"
 
@@ -1445,7 +1449,7 @@ msgstr "ОСЛЫН ХАЯЛТ"
 msgid "Emergency jettison (hold)"
 msgstr "Ослын хаялт (барих)"
 
-#: src/components/Multiplayer.tsx:555
+#: src/components/Multiplayer.tsx:569
 msgid "empty"
 msgstr "хоосон"
 
@@ -1458,7 +1462,7 @@ msgstr "Хоосон пилон"
 msgid "ENGAGED"
 msgstr "ДОВТОЛЖ БАЙНА"
 
-#: src/components/MissionSetup.tsx:976
+#: src/components/MissionSetup.tsx:983
 msgid "Engagement"
 msgstr ""
 
@@ -1478,7 +1482,7 @@ msgstr "Имэйлд ирсэн кодоо оруулна уу"
 msgid "Enter your authenticator code"
 msgstr "Баталгаажуулагчийн кодоо оруулна уу"
 
-#: src/components/MissionSetup.tsx:1052
+#: src/components/MissionSetup.tsx:1059
 msgid "Environment"
 msgstr "Орчин"
 
@@ -1534,7 +1538,7 @@ msgstr "Гадаад URL"
 msgid "Extra large"
 msgstr "Маш том"
 
-#: src/components/MissionSetup.tsx:1303
+#: src/components/MissionSetup.tsx:1310
 msgid "F/A-18C Hornet"
 msgstr ""
 
@@ -1542,7 +1546,7 @@ msgstr ""
 msgid "F/A-18C reference"
 msgstr "F/A-18C лавлагаа"
 
-#: src/components/MissionSetup.tsx:1236
+#: src/components/MissionSetup.tsx:1243
 msgid "F/A-18C Strike Fighter"
 msgstr ""
 
@@ -1695,7 +1699,7 @@ msgstr "Далайд унасан"
 msgid "Flight"
 msgstr "Нислэг"
 
-#: src/components/MissionSetup.tsx:1094
+#: src/components/MissionSetup.tsx:1101
 msgid "Flight Assists"
 msgstr ""
 
@@ -1703,11 +1707,11 @@ msgstr ""
 msgid "FLIGHT CORE FAILED"
 msgstr "НИСЛЭГИЙН ЦӨМ АМЖИЛТГҮЙ"
 
-#: src/components/MissionSetup.tsx:1292
+#: src/components/MissionSetup.tsx:1299
 msgid "Flight log"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:961
 msgid "Flight Profile"
 msgstr ""
 
@@ -1723,8 +1727,8 @@ msgstr "Хөвөгч"
 msgid "Flown"
 msgstr "Ниссэн"
 
-#: src/components/MissionSetup.tsx:1281
-#: src/components/MissionSetup.tsx:1328
+#: src/components/MissionSetup.tsx:1288
+#: src/components/MissionSetup.tsx:1335
 msgid "Fly"
 msgstr "Нисэх"
 
@@ -1737,7 +1741,7 @@ msgid "Framerate counter"
 msgstr ""
 
 #: src/components/MatchHistory.tsx:143
-#: src/components/MissionSetup.tsx:966
+#: src/components/MissionSetup.tsx:973
 msgid "Free flight"
 msgstr "Чөлөөт нислэг"
 
@@ -1762,7 +1766,7 @@ msgstr "Эхлэх"
 msgid "From theme"
 msgstr "Загвараас"
 
-#: src/components/Multiplayer.tsx:396
+#: src/components/Multiplayer.tsx:408
 msgid "Fuel"
 msgstr "Түлш"
 
@@ -1878,12 +1882,12 @@ msgstr "БУУ"
 msgid "Gun only"
 msgstr "Зөвхөн их буу"
 
-#: src/components/Multiplayer.tsx:78
-#: src/components/Multiplayer.tsx:390
+#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:402
 msgid "Guns only"
 msgstr "Зөвхөн их буу"
 
-#: src/components/MissionSetup.tsx:1253
+#: src/components/MissionSetup.tsx:1260
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Техник хангамжийн график хурдасгуур унтраалттай байна — хөтчийн тохиргоо эсвэл график драйверуудыг шалгана уу."
 
@@ -1911,9 +1915,9 @@ msgstr "Нууц үг нуух"
 msgid "High"
 msgstr "Өндөр"
 
-#: src/components/MissionSetup.tsx:1079
-#: src/components/Multiplayer.tsx:84
-#: src/components/Multiplayer.tsx:374
+#: src/components/MissionSetup.tsx:1086
+#: src/components/Multiplayer.tsx:87
+#: src/components/Multiplayer.tsx:386
 msgid "High stratus"
 msgstr "Өндөр давхарга үүл"
 
@@ -1966,8 +1970,8 @@ msgstr "Империал"
 msgid "Import"
 msgstr "Импортлох"
 
-#: src/components/MissionSetup.tsx:1017
-#: src/components/MissionSetup.tsx:1188
+#: src/components/MissionSetup.tsx:1024
+#: src/components/MissionSetup.tsx:1195
 msgid "In air"
 msgstr "Агаарт"
 
@@ -2015,8 +2019,8 @@ msgstr "Баталгаажуулах код хүчингүй"
 msgid "Invert pitch axis"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1105
-#: src/components/Multiplayer.tsx:87
+#: src/components/MissionSetup.tsx:1112
+#: src/components/Multiplayer.tsx:90
 msgid "Invulnerable"
 msgstr "Халдашгүй"
 
@@ -2024,8 +2028,8 @@ msgstr "Халдашгүй"
 msgid "INVULNERABLE"
 msgstr "ХАЛДАШГҮЙ"
 
-#: src/components/MissionSetup.tsx:1105
-#: src/components/Multiplayer.tsx:443
+#: src/components/MissionSetup.tsx:1112
+#: src/components/Multiplayer.tsx:455
 msgid "Invulnerable (human players only)"
 msgstr "Халдашгүй (зөвхөн хүн тоглогчид)"
 
@@ -2047,12 +2051,12 @@ msgstr "Сав хаях"
 msgid "JETTISON: GEAR"
 msgstr "ХАЯЛТ: БУУХ ТӨХӨӨРӨМЖ"
 
-#: src/components/Multiplayer.tsx:620
+#: src/components/Multiplayer.tsx:634
 msgid "Join"
 msgstr "Нэгдэх"
 
-#: src/components/MissionSetup.tsx:810
-#: src/components/MissionSetup.tsx:1288
+#: src/components/MissionSetup.tsx:817
+#: src/components/MissionSetup.tsx:1295
 msgid "Join server"
 msgstr "Сервэрт нэгдэх"
 
@@ -2061,16 +2065,16 @@ msgid "JOINED"
 msgstr "НЭГДЛЭЭ"
 
 #: src/components/MatchHistory.tsx:141
-#: src/components/MissionSetup.tsx:1198
-#: src/components/Multiplayer.tsx:554
+#: src/components/MissionSetup.tsx:1205
+#: src/components/Multiplayer.tsx:568
 msgid "Joust"
 msgstr "Дуэль"
 
-#: src/components/Multiplayer.tsx:359
+#: src/components/Multiplayer.tsx:371
 msgid "Joust — 1v1, first kill wins"
 msgstr "Тулаан — 1v1, түрүүлж унагасан нь ялна"
 
-#: src/components/MissionSetup.tsx:967
+#: src/components/MissionSetup.tsx:974
 msgid "Joust against bot"
 msgstr "Тулаан боттой"
 
@@ -2151,7 +2155,7 @@ msgstr "хөөрөх / бай"
 msgid "Layout"
 msgstr "Зохион байгуулалт"
 
-#: src/components/Multiplayer.tsx:408
+#: src/components/Multiplayer.tsx:420
 msgid "lb"
 msgstr "lb"
 
@@ -2160,7 +2164,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "Илүү ихийг мэдэх"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:913
 msgid "Leave server"
 msgstr "Сервэрээс гарах"
 
@@ -2296,9 +2300,9 @@ msgstr "Дээш харах"
 msgid "Low"
 msgstr "Бага"
 
-#: src/components/MissionSetup.tsx:1081
-#: src/components/Multiplayer.tsx:86
-#: src/components/Multiplayer.tsx:376
+#: src/components/MissionSetup.tsx:1088
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:388
 msgid "Low stratus"
 msgstr "Нам давхарга үүл"
 
@@ -2345,11 +2349,11 @@ msgstr ""
 msgid "Master Volume"
 msgstr ""
 
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:367
 msgid "Match type"
 msgstr "Тоглолтын төрөл"
 
-#: src/components/MissionSetup.tsx:901
+#: src/components/MissionSetup.tsx:908
 msgid "Matches"
 msgstr "Тоглолт"
 
@@ -2380,11 +2384,11 @@ msgstr "цэс"
 msgid "Menu"
 msgstr "Цэс"
 
-#: src/components/Multiplayer.tsx:419
+#: src/components/Multiplayer.tsx:431
 msgid "Merge — fight on at the pass"
 msgstr "Нэгдэл — зөрөх үед тулаан эхэлнэ"
 
-#: src/components/MissionSetup.tsx:982
+#: src/components/MissionSetup.tsx:989
 msgid "Merge (Pass)"
 msgstr ""
 
@@ -2408,9 +2412,9 @@ msgstr "Багтаа зурвас бичих"
 msgid "Metric"
 msgstr "Метрик"
 
-#: src/components/MissionSetup.tsx:1080
-#: src/components/Multiplayer.tsx:85
-#: src/components/Multiplayer.tsx:375
+#: src/components/MissionSetup.tsx:1087
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:387
 msgid "Mid stratus"
 msgstr "Дунд давхарга үүл"
 
@@ -2464,11 +2468,11 @@ msgstr "Бусад сонголтууд"
 msgid "Move…"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1288
+#: src/components/MissionSetup.tsx:1295
 msgid "Multiplayer dogfights"
 msgstr ""
 
-#: src/components/Multiplayer.tsx:256
+#: src/components/Multiplayer.tsx:259
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Мультиплеерт WebTransport шаардлагатай бөгөөд энэ хөтөч үүнийг одоогоор дэмждэггүй."
 
@@ -2508,9 +2512,9 @@ msgstr "Шинэ тоглоом"
 msgid "Next image"
 msgstr "Дараагийн зураг"
 
-#: src/components/MissionSetup.tsx:1065
-#: src/components/Multiplayer.tsx:82
-#: src/components/Multiplayer.tsx:369
+#: src/components/MissionSetup.tsx:1072
+#: src/components/Multiplayer.tsx:85
+#: src/components/Multiplayer.tsx:381
 msgid "Night"
 msgstr "Шөнө"
 
@@ -2570,7 +2574,7 @@ msgstr "Тохирох обьект алга"
 msgid "No notifications yet"
 msgstr "Одоогоор мэдэгдэл алга"
 
-#: src/components/Multiplayer.tsx:537
+#: src/components/Multiplayer.tsx:551
 msgid "No open matches — create one."
 msgstr "Нээлттэй тоглолт алга — нэгийг үүсгээрэй."
 
@@ -2633,7 +2637,7 @@ msgid "No views"
 msgstr "Үзэлт алга"
 
 #: src/components/MissionSetup.tsx:718
-#: src/components/Multiplayer.tsx:537
+#: src/components/Multiplayer.tsx:551
 msgid "No world server."
 msgstr "Ертөнцийн сервер алга."
 
@@ -2660,7 +2664,7 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: ../../../lib/web/src/lib/preference-utils.ts:120
 #: src/components/MissionSetup.tsx:284
-#: src/components/MissionSetup.tsx:1077
+#: src/components/MissionSetup.tsx:1084
 #: src/components/SettingsDialog.tsx:468
 #: src/components/SettingsDialog.tsx:544
 #: src/components/SettingsDialog.tsx:817
@@ -2709,9 +2713,9 @@ msgstr "Мэдэгдэл"
 msgid "Notifications: {0}"
 msgstr "Мэдэгдэл: {0}"
 
-#: src/components/MissionSetup.tsx:995
-#: src/components/MissionSetup.tsx:1182
-#: src/components/Multiplayer.tsx:486
+#: src/components/MissionSetup.tsx:1002
+#: src/components/MissionSetup.tsx:1189
+#: src/components/Multiplayer.tsx:503
 msgid "Novice"
 msgstr "Шинэ суралцагч"
 
@@ -2737,13 +2741,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Асаалттай"
 
-#: src/components/MissionSetup.tsx:1019
-#: src/components/MissionSetup.tsx:1190
+#: src/components/MissionSetup.tsx:1026
+#: src/components/MissionSetup.tsx:1197
 msgid "On carrier"
 msgstr "Онгоц тээгч дээр"
 
-#: src/components/MissionSetup.tsx:1018
-#: src/components/MissionSetup.tsx:1189
+#: src/components/MissionSetup.tsx:1025
+#: src/components/MissionSetup.tsx:1196
 msgid "On runway"
 msgstr "Хөөрөлтийн зам дээр"
 
@@ -2751,11 +2755,11 @@ msgstr "Хөөрөлтийн зам дээр"
 msgid "Oops! Page Not Found!"
 msgstr "Уучлаарай! Хуудас олдсонгүй!"
 
-#: src/components/Multiplayer.tsx:554
+#: src/components/Multiplayer.tsx:568
 msgid "Open"
 msgstr "Нээх"
 
-#: src/components/Multiplayer.tsx:358
+#: src/components/Multiplayer.tsx:370
 msgid "Open — anyone may join or leave"
 msgstr "Нээлттэй — хэн ч нэгдэж эсвэл гарч болно"
 
@@ -2888,15 +2892,15 @@ msgid "Pick a date"
 msgstr "Огноо сонгох"
 
 #: src/components/MissionSetup.tsx:664
-#: src/components/Multiplayer.tsx:147
-#: src/components/Multiplayer.tsx:316
+#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:328
 msgid "pilot"
 msgstr "нисгэгч"
 
-#: src/components/MissionSetup.tsx:996
-#: src/components/MissionSetup.tsx:1183
-#: src/components/MissionSetup.tsx:1242
-#: src/components/Multiplayer.tsx:487
+#: src/components/MissionSetup.tsx:1003
+#: src/components/MissionSetup.tsx:1190
+#: src/components/MissionSetup.tsx:1249
+#: src/components/Multiplayer.tsx:504
 msgid "Pilot"
 msgstr "Нисгэгч"
 
@@ -3001,8 +3005,8 @@ msgstr "Профайл хадгалагдсан"
 msgid "Project members"
 msgstr "Төслийн гишүүд"
 
-#: src/components/MissionSetup.tsx:837
-#: src/components/MissionSetup.tsx:855
+#: src/components/MissionSetup.tsx:844
+#: src/components/MissionSetup.tsx:862
 msgid "Public servers"
 msgstr "Нийтийн серверүүд"
 
@@ -3043,7 +3047,7 @@ msgstr "Энэ серверт бүртгэлүүдээ дахин холбоно
 msgid "Re-register your passkeys on this server"
 msgstr "Энэ серверт нэвтрэх түлхүүрээ дахин бүртгүүлнэ үү"
 
-#: src/components/MissionSetup.tsx:1272
+#: src/components/MissionSetup.tsx:1279
 msgid "Ready for Sortie"
 msgstr ""
 
@@ -3051,7 +3055,7 @@ msgstr ""
 msgid "REARMED"
 msgstr "ДАХИН ЗЭВСЭГЛЭВ"
 
-#: src/components/MissionSetup.tsx:816
+#: src/components/MissionSetup.tsx:823
 msgid "Recent"
 msgstr "Сүүлийн"
 
@@ -3076,11 +3080,11 @@ msgstr "Бичлэг"
 msgid "Recording saved"
 msgstr "Бичлэгийг хадгаллаа"
 
-#: src/components/Multiplayer.tsx:598
+#: src/components/Multiplayer.tsx:612
 msgid "Red"
 msgstr "Улаан"
 
-#: src/components/Multiplayer.tsx:479
+#: src/components/Multiplayer.tsx:496
 msgid "Red bots"
 msgstr "Улаан ботууд"
 
@@ -3097,7 +3101,7 @@ msgstr "Хүүг бууруулах"
 msgid "Reference"
 msgstr "Лавлагаа"
 
-#: src/components/Multiplayer.tsx:335
+#: src/components/Multiplayer.tsx:347
 msgid "Refresh"
 msgstr "Сэргээх"
 
@@ -3572,7 +3576,7 @@ msgstr "Эхлэл, очих газрыг тогтоох"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:450
-#: src/components/MissionSetup.tsx:1289
+#: src/components/MissionSetup.tsx:1296
 #: src/components/SettingsDialog.tsx:1096
 #: src/components/SettingsDialog.tsx:1123
 msgid "Settings"
@@ -3639,7 +3643,7 @@ msgstr "Жижиг"
 msgid "Sort"
 msgstr "Эрэмбэлэх"
 
-#: src/components/MissionSetup.tsx:1292
+#: src/components/MissionSetup.tsx:1299
 msgid "Sortie history & replays"
 msgstr ""
 
@@ -3655,11 +3659,11 @@ msgstr "Дуу"
 msgid "Sources"
 msgstr "Эх сурвалжууд"
 
-#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:84
 msgid "Spaced"
 msgstr "Зайтай"
 
-#: src/components/Multiplayer.tsx:426
+#: src/components/Multiplayer.tsx:438
 msgid "Spaced spawns"
 msgstr "Зайтай оролтууд"
 
@@ -3697,7 +3701,7 @@ msgstr "Өргөх хүч алдалт, цэвэр (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "Өргөх хүч алдалт, буултын тохиргоо (Vs0)"
 
-#: src/components/Multiplayer.tsx:415
+#: src/components/Multiplayer.tsx:427
 msgid "Start"
 msgstr "Эхлүүлэх"
 
@@ -3744,9 +3748,9 @@ msgstr "Захиалах"
 msgid "Sunday"
 msgstr "Ням гараг"
 
-#: src/components/MissionSetup.tsx:998
-#: src/components/MissionSetup.tsx:1185
-#: src/components/Multiplayer.tsx:489
+#: src/components/MissionSetup.tsx:1005
+#: src/components/MissionSetup.tsx:1192
+#: src/components/Multiplayer.tsx:506
 msgid "Superhuman"
 msgstr "Хүнээс давсан"
 
@@ -3787,11 +3791,11 @@ msgstr "Тэгүүд"
 msgid "TALLY"
 msgstr "ДАЙСАН ХАРАГДЛАА"
 
-#: src/components/MissionSetup.tsx:960
+#: src/components/MissionSetup.tsx:967
 msgid "Task"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1287
+#: src/components/MissionSetup.tsx:1294
 msgid "Tasks, weather & loadout"
 msgstr ""
 
@@ -3804,11 +3808,11 @@ msgid "TEAM"
 msgstr "БАГ"
 
 #: src/components/MatchHistory.tsx:142
-#: src/components/Multiplayer.tsx:554
+#: src/components/Multiplayer.tsx:568
 msgid "Teams"
 msgstr "Багууд"
 
-#: src/components/Multiplayer.tsx:360
+#: src/components/Multiplayer.tsx:372
 msgid "Teams — red versus blue"
 msgstr "Багууд — улаан цэнхэрийн эсрэг"
 
@@ -3870,15 +3874,15 @@ msgstr "Загвар"
 msgid "Theme Settings"
 msgstr "Загварын тохиргоо"
 
-#: src/components/MissionSetup.tsx:1251
+#: src/components/MissionSetup.tsx:1258
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Энэ хөтөч WebGL 2-ыг дэмждэггүй тул тоглоом ажиллах боломжгүй — өөр хөтөч туршиж үзнэ үү."
 
-#: src/components/Multiplayer.tsx:274
+#: src/components/Multiplayer.tsx:286
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Энэ лобби таны тоглоомын холболтыг өөр сервер рүү ({redirectHost}) чиглүүлж байна. Энэ серверт итгэж байвал л үргэлжлүүлээрэй."
 
-#: src/components/MissionSetup.tsx:1255
+#: src/components/MissionSetup.tsx:1262
 msgid "This machine may be too slow for smooth flight."
 msgstr "Энэ машин жигд нислэгт хэт удаан байж магадгүй."
 
@@ -3920,7 +3924,7 @@ msgstr "налуу"
 msgid "Time"
 msgstr "Хугацаа"
 
-#: src/components/MissionSetup.tsx:1058
+#: src/components/MissionSetup.tsx:1065
 msgid "Time of day"
 msgstr "Өдрийн цаг"
 
@@ -4100,27 +4104,27 @@ msgstr "АНУ"
 msgid "Unknown"
 msgstr "Үл мэдэгдэх"
 
-#: src/components/Multiplayer.tsx:392
+#: src/components/Multiplayer.tsx:404
 msgid "Unlimited"
 msgstr "Хязгааргүй"
 
-#: src/components/MissionSetup.tsx:1111
-#: src/components/Multiplayer.tsx:88
-#: src/components/Multiplayer.tsx:453
+#: src/components/MissionSetup.tsx:1118
+#: src/components/Multiplayer.tsx:91
+#: src/components/Multiplayer.tsx:465
 msgid "Unlimited ammunition"
 msgstr "Хязгааргүй сум"
 
-#: src/components/MissionSetup.tsx:1111
+#: src/components/MissionSetup.tsx:1118
 msgid "Unlimited ammunition (all players)"
 msgstr "Хязгааргүй сум (бүх тоглогчид)"
 
-#: src/components/MissionSetup.tsx:1117
-#: src/components/Multiplayer.tsx:89
-#: src/components/Multiplayer.tsx:463
+#: src/components/MissionSetup.tsx:1124
+#: src/components/Multiplayer.tsx:92
+#: src/components/Multiplayer.tsx:475
 msgid "Unlimited fuel"
 msgstr "Хязгааргүй шатахуун"
 
-#: src/components/MissionSetup.tsx:1117
+#: src/components/MissionSetup.tsx:1124
 msgid "Unlimited fuel (all players)"
 msgstr "Хязгааргүй шатахуун (бүх тоглогчид)"
 
@@ -4265,12 +4269,12 @@ msgstr "зэвсэг"
 msgid "Weapon select hat"
 msgstr "Зэвсэг сонгох малгай"
 
-#: src/components/Multiplayer.tsx:387
+#: src/components/Multiplayer.tsx:399
 #: src/components/SettingsDialog.tsx:96
 msgid "Weapons"
 msgstr "Зэвсэг"
 
-#: src/components/Multiplayer.tsx:365
+#: src/components/Multiplayer.tsx:377
 msgid "Weather"
 msgstr "Цаг агаар"
 
@@ -4300,12 +4304,12 @@ msgstr "Далавч эвхэх"
 msgid "WINS"
 msgstr "ЯЛЛАА"
 
-#: src/components/Multiplayer.tsx:300
+#: src/components/Multiplayer.tsx:312
 msgid "World server"
 msgstr "Ертөнцийн сервер"
 
 #: src/components/MissionSetup.tsx:706
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:163
 msgid "World server not reachable"
 msgstr "Ертөнцийн серверт холбогдох боломжгүй"
 
@@ -4355,7 +4359,7 @@ msgstr "Таны хавсралтууд устах болно."
 msgid "Your flights appear here once you've flown one."
 msgstr "Та нэг удаа нисмэгц нислэгүүд чинь энд харагдана."
 
-#: src/components/Multiplayer.tsx:549
+#: src/components/Multiplayer.tsx:563
 msgid "your offer"
 msgstr "таны санал"
 

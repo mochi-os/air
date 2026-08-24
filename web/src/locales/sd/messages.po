@@ -51,7 +51,7 @@ msgid "{0} created “{1}”"
 msgstr "{0} “{1}” ٺاهيو"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:327
+#: src/components/Multiplayer.tsx:339
 msgid "{0} flying"
 msgstr "{0} اڏامي رهيا آهن"
 
@@ -89,7 +89,7 @@ msgstr ""
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:556
+#: src/components/Multiplayer.tsx:570
 msgid "{0}/{1} players"
 msgstr "{0}/{1} رانديگر"
 
@@ -117,13 +117,17 @@ msgstr "{entityLabel} جو نالو"
 msgid "{entityLabel} name is required"
 msgstr "{entityLabel} جو نالو گھربل آهي"
 
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:233
 msgid "{name}'s match"
 msgstr "{name} جو ميچ"
 
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:29
 msgid "{opponentName} offered a draw"
 msgstr "{opponentName} ڊرا جي پيشڪش ڪئي"
+
+#: src/components/Multiplayer.tsx:532
+msgid "{placed} of {limit} bots"
+msgstr ""
 
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:203
 msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
@@ -231,9 +235,9 @@ msgstr "اڪائونٽ جو قسم"
 msgid "Account verified"
 msgstr "اڪائونٽ تصديق ٿيل"
 
-#: src/components/MissionSetup.tsx:997
-#: src/components/MissionSetup.tsx:1184
-#: src/components/Multiplayer.tsx:488
+#: src/components/MissionSetup.tsx:1004
+#: src/components/MissionSetup.tsx:1191
+#: src/components/Multiplayer.tsx:505
 msgid "Ace"
 msgstr "استاد"
 
@@ -388,7 +392,7 @@ msgstr "هڪ خرابي پيش آئي"
 msgid "An unexpected error occurred"
 msgstr "هڪ غير متوقع خرابي پيش آئي"
 
-#: src/components/Multiplayer.tsx:426
+#: src/components/Multiplayer.tsx:438
 msgid "Anchored sides"
 msgstr "لنگر ٿيل پاسا"
 
@@ -435,7 +439,7 @@ msgstr "ڇا توهان پڪ سان هي تبصرو ختم ڪرڻ چاهيو ٿ�
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "ڇا توهان پڪ سان لاگ آئوٽ ڪرڻ چاهيو ٿا؟ پنهنجي اڪائونٽ تائين رسائي لاءِ توهان کي ٻيهر لاگ ان ڪرڻو پوندو."
 
-#: src/components/MissionSetup.tsx:1130
+#: src/components/MissionSetup.tsx:1137
 msgid "Armament & Stores"
 msgstr ""
 
@@ -452,7 +456,7 @@ msgstr "وڌندڙ"
 msgid "Ascending"
 msgstr "گهٽ کان وڌيڪ"
 
-#: src/components/MissionSetup.tsx:1098
+#: src/components/MissionSetup.tsx:1105
 msgid "Assists Active"
 msgstr ""
 
@@ -489,7 +493,7 @@ msgstr "اوتار"
 msgid "Avatar for {name}"
 msgstr "{name} لاءِ اوتار"
 
-#: src/components/MissionSetup.tsx:1289
+#: src/components/MissionSetup.tsx:1296
 msgid "Avionics, HOTAS & audio"
 msgstr ""
 
@@ -521,7 +525,7 @@ msgstr "گهر ڏانهن واپس"
 msgid "Balanced flight"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:989
+#: src/components/MissionSetup.tsx:996
 msgid "Bandit"
 msgstr "دشمن جو جهاز"
 
@@ -571,11 +575,11 @@ msgstr "غير قابل اعتماد لنڪ ڏانهن ناقابل اعتماد
 msgid "Blocks"
 msgstr "بلاڪ"
 
-#: src/components/Multiplayer.tsx:608
+#: src/components/Multiplayer.tsx:622
 msgid "Blue"
 msgstr "نيرو"
 
-#: src/components/Multiplayer.tsx:479
+#: src/components/Multiplayer.tsx:496
 msgid "Blue bots"
 msgstr "نيرا بوٽ"
 
@@ -596,7 +600,7 @@ msgstr "دلچسپي وڌايو"
 msgid "Border colour"
 msgstr "ڪناري جو رنگ"
 
-#: src/components/Multiplayer.tsx:470
+#: src/components/Multiplayer.tsx:482
 msgid "Bots"
 msgstr "بوٽ"
 
@@ -629,11 +633,11 @@ msgstr "بٽڻ {i}"
 msgid "Button Mappings"
 msgstr ""
 
-#: src/components/Multiplayer.tsx:420
+#: src/components/Multiplayer.tsx:432
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — شروع کان ئي هٿيار آزاد"
 
-#: src/components/MissionSetup.tsx:983
+#: src/components/MissionSetup.tsx:990
 msgid "BVR (Start)"
 msgstr ""
 
@@ -641,7 +645,7 @@ msgstr ""
 msgid "CALL THE BALL"
 msgstr "بال جو اعلان ڪر"
 
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:323
 #: src/components/SettingsDialog.tsx:1034
 msgid "Callsign"
 msgstr "ڪال سائن"
@@ -669,8 +673,8 @@ msgstr "ڪئميرا موجود ناهي"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/GameCanvas.tsx:522
-#: src/components/Multiplayer.tsx:282
-#: src/components/Multiplayer.tsx:585
+#: src/components/Multiplayer.tsx:294
+#: src/components/Multiplayer.tsx:599
 #: src/components/SettingsDialog.tsx:809
 msgid "Cancel"
 msgstr "منسوخ ڪريو"
@@ -700,31 +704,31 @@ msgstr "ڪيپشن"
 msgid "Carrier & Ambient"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1191
+#: src/components/MissionSetup.tsx:1198
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1020
+#: src/components/MissionSetup.tsx:1027
 msgid "Case I (day)"
 msgstr "حالت I (ڏينهن)"
 
-#: src/components/MissionSetup.tsx:1192
+#: src/components/MissionSetup.tsx:1199
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1021
+#: src/components/MissionSetup.tsx:1028
 msgid "Case II (weather)"
 msgstr "حالت II (موسم)"
 
-#: src/components/MissionSetup.tsx:1193
+#: src/components/MissionSetup.tsx:1200
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1022
+#: src/components/MissionSetup.tsx:1029
 msgid "Case III (night)"
 msgstr "حالت III (رات)"
 
-#: src/components/MissionSetup.tsx:1030
+#: src/components/MissionSetup.tsx:1037
 msgid "Catapult"
 msgstr "ڪيٽاپلٽ"
 
@@ -762,7 +766,7 @@ msgid "Chat to everyone"
 msgstr "سڀني سان چيٽ"
 
 #: src/components/MatchHistory.tsx:345
-#: src/components/Multiplayer.tsx:434
+#: src/components/Multiplayer.tsx:446
 msgid "Cheats"
 msgstr "چيٽس"
 
@@ -811,7 +815,7 @@ msgstr "ٻولي چونڊيو"
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
 #: src/components/MatchHistory.tsx:303
 #: src/components/MatchHistory.tsx:359
-#: src/components/Multiplayer.tsx:372
+#: src/components/Multiplayer.tsx:384
 #: src/components/SettingsDialog.tsx:677
 msgid "Clear"
 msgstr "صاف ڪريو"
@@ -876,7 +880,7 @@ msgstr "ڳولا بند ڪريو"
 msgid "closer"
 msgstr "ويجهو"
 
-#: src/components/MissionSetup.tsx:1071
+#: src/components/MissionSetup.tsx:1078
 msgid "Clouds"
 msgstr "ڪڪر"
 
@@ -952,11 +956,11 @@ msgstr "نظاري جون سيٽنگون ترتيب ڏيو"
 msgid "Confirm"
 msgstr "تصديق ڪريو"
 
-#: src/components/MissionSetup.tsx:884
+#: src/components/MissionSetup.tsx:891
 msgid "Connect"
 msgstr "ڳنڍيو"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:878
 msgid "Connect to private server"
 msgstr "خانگي سرور سان ڳنڍيو"
 
@@ -972,7 +976,7 @@ msgstr "ڳنڍيل اڪائونٽ"
 msgid "Connecting..."
 msgstr "ڳنڍجي رهيو آهي..."
 
-#: src/components/Multiplayer.tsx:330
+#: src/components/Multiplayer.tsx:342
 msgid "Connecting…"
 msgstr "ڳنڍجي رهيو آهي…"
 
@@ -993,7 +997,7 @@ msgid "Contextual information and details."
 msgstr "حوالي جي معلومات ۽ تفصيل."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:291
+#: src/components/Multiplayer.tsx:303
 msgid "Continue"
 msgstr "جاري رکو"
 
@@ -1017,7 +1021,7 @@ msgstr "ڪاپي ڪريو"
 msgid "Corner speed (best instant turn)"
 msgstr "ڪنڊ جي رفتار (بهترين فوري موڙ)"
 
-#: src/components/Multiplayer.tsx:247
+#: src/components/Multiplayer.tsx:250
 msgid "Could not create the match"
 msgstr "ميچ ٺهي نه سگهيو"
 
@@ -1080,16 +1084,16 @@ msgstr "ٺاهيو"
 msgid "Create {0}"
 msgstr "{0} ٺاھيو"
 
-#: src/components/Multiplayer.tsx:528
+#: src/components/Multiplayer.tsx:542
 msgid "Create and fly"
 msgstr "ٺاهيو ۽ اڏامو"
 
-#: src/components/Multiplayer.tsx:345
+#: src/components/Multiplayer.tsx:357
 msgid "Create match"
 msgstr "ميچ ٺاهيو"
 
-#: src/components/MissionSetup.tsx:1287
-#: src/components/MissionSetup.tsx:1311
+#: src/components/MissionSetup.tsx:1294
+#: src/components/MissionSetup.tsx:1318
 msgid "Create mission"
 msgstr "مشن ٺاهيو"
 
@@ -1112,9 +1116,9 @@ msgstr "ٺاهي رهيو آهي..."
 msgid "Credits"
 msgstr "ڪريڊٽس"
 
-#: src/components/MissionSetup.tsx:1078
-#: src/components/Multiplayer.tsx:83
-#: src/components/Multiplayer.tsx:373
+#: src/components/MissionSetup.tsx:1085
+#: src/components/Multiplayer.tsx:86
+#: src/components/Multiplayer.tsx:385
 msgid "Cumulus"
 msgstr "ڪيمولس"
 
@@ -1155,8 +1159,8 @@ msgstr "ڊيٽا جو ٽڪراءُ"
 msgid "Date"
 msgstr "تاريخ"
 
-#: src/components/MissionSetup.tsx:1064
-#: src/components/Multiplayer.tsx:368
+#: src/components/MissionSetup.tsx:1071
+#: src/components/Multiplayer.tsx:380
 msgid "Day"
 msgstr "ڏينهن"
 
@@ -1231,7 +1235,7 @@ msgstr "نظارو ختم ڪريو"
 msgid "Delete your account on the old server"
 msgstr "پراڻي سرور تي پنهنجو اڪائونٽ ختم ڪريو"
 
-#: src/components/MissionSetup.tsx:1009
+#: src/components/MissionSetup.tsx:1016
 msgid "Departure / Recovery"
 msgstr ""
 
@@ -1271,7 +1275,7 @@ msgstr "معلوم ڪريو"
 msgid "Detect from web browser"
 msgstr "ويب براؤزر کان معلوم ڪريو"
 
-#: src/components/Multiplayer.tsx:271
+#: src/components/Multiplayer.tsx:283
 msgid "Different game host"
 msgstr "راند جو مختلف ميزبان"
 
@@ -1307,7 +1311,7 @@ msgstr "ڳنڍيل ناهي"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
-#: src/components/MissionSetup.tsx:1258
+#: src/components/MissionSetup.tsx:1265
 #: src/components/SettingsDialog.tsx:773
 msgid "Dismiss"
 msgstr "رد ڪريو"
@@ -1349,7 +1353,7 @@ msgstr "هوا سان 600 فوٽ"
 msgid "Drag"
 msgstr "ڇڪيو"
 
-#: src/components/Multiplayer.tsx:485
+#: src/components/Multiplayer.tsx:502
 msgid "Drone"
 msgstr "ڊرون"
 
@@ -1445,7 +1449,7 @@ msgstr "هنگامي ڦٽو"
 msgid "Emergency jettison (hold)"
 msgstr "هنگامي ڦٽو (جهليو)"
 
-#: src/components/Multiplayer.tsx:555
+#: src/components/Multiplayer.tsx:569
 msgid "empty"
 msgstr "خالي"
 
@@ -1458,7 +1462,7 @@ msgstr "خالي پائلون"
 msgid "ENGAGED"
 msgstr "حملو پيو ڪريان"
 
-#: src/components/MissionSetup.tsx:976
+#: src/components/MissionSetup.tsx:983
 msgid "Engagement"
 msgstr ""
 
@@ -1478,7 +1482,7 @@ msgstr "پنھنجي اِيميل مان ڪوڊ داخل ڪريو"
 msgid "Enter your authenticator code"
 msgstr "پنهنجو تصديق ڪندڙ ڪوڊ داخل ڪريو"
 
-#: src/components/MissionSetup.tsx:1052
+#: src/components/MissionSetup.tsx:1059
 msgid "Environment"
 msgstr "ماحول"
 
@@ -1534,7 +1538,7 @@ msgstr "خارجي URL"
 msgid "Extra large"
 msgstr "تمام وڏو"
 
-#: src/components/MissionSetup.tsx:1303
+#: src/components/MissionSetup.tsx:1310
 msgid "F/A-18C Hornet"
 msgstr ""
 
@@ -1542,7 +1546,7 @@ msgstr ""
 msgid "F/A-18C reference"
 msgstr "F/A-18C حوالو"
 
-#: src/components/MissionSetup.tsx:1236
+#: src/components/MissionSetup.tsx:1243
 msgid "F/A-18C Strike Fighter"
 msgstr ""
 
@@ -1695,7 +1699,7 @@ msgstr "سمنڊ ۾ وڃي ڪريو"
 msgid "Flight"
 msgstr "اڏام"
 
-#: src/components/MissionSetup.tsx:1094
+#: src/components/MissionSetup.tsx:1101
 msgid "Flight Assists"
 msgstr ""
 
@@ -1703,11 +1707,11 @@ msgstr ""
 msgid "FLIGHT CORE FAILED"
 msgstr "اڏام جو مرڪز ناڪام ٿيو"
 
-#: src/components/MissionSetup.tsx:1292
+#: src/components/MissionSetup.tsx:1299
 msgid "Flight log"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:961
 msgid "Flight Profile"
 msgstr ""
 
@@ -1723,8 +1727,8 @@ msgstr "تيرندڙ"
 msgid "Flown"
 msgstr "اڏاميو"
 
-#: src/components/MissionSetup.tsx:1281
-#: src/components/MissionSetup.tsx:1328
+#: src/components/MissionSetup.tsx:1288
+#: src/components/MissionSetup.tsx:1335
 msgid "Fly"
 msgstr "اڏام"
 
@@ -1737,7 +1741,7 @@ msgid "Framerate counter"
 msgstr ""
 
 #: src/components/MatchHistory.tsx:143
-#: src/components/MissionSetup.tsx:966
+#: src/components/MissionSetup.tsx:973
 msgid "Free flight"
 msgstr "آزاد اڏام"
 
@@ -1762,7 +1766,7 @@ msgstr "کان"
 msgid "From theme"
 msgstr "ٿيم کان"
 
-#: src/components/Multiplayer.tsx:396
+#: src/components/Multiplayer.tsx:408
 msgid "Fuel"
 msgstr "ٻارڻ"
 
@@ -1878,12 +1882,12 @@ msgstr "توب"
 msgid "Gun only"
 msgstr "رڳو توبون"
 
-#: src/components/Multiplayer.tsx:78
-#: src/components/Multiplayer.tsx:390
+#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:402
 msgid "Guns only"
 msgstr "رڳو توبون"
 
-#: src/components/MissionSetup.tsx:1253
+#: src/components/MissionSetup.tsx:1260
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "هارڊويئر گرافڪس تيز رفتاري بند آهي — برائوزر سيٽنگون يا گرافڪس ڊرائيور ڏسو."
 
@@ -1911,9 +1915,9 @@ msgstr "پاسورڊ لڪايو"
 msgid "High"
 msgstr "اوچو"
 
-#: src/components/MissionSetup.tsx:1079
-#: src/components/Multiplayer.tsx:84
-#: src/components/Multiplayer.tsx:374
+#: src/components/MissionSetup.tsx:1086
+#: src/components/Multiplayer.tsx:87
+#: src/components/Multiplayer.tsx:386
 msgid "High stratus"
 msgstr "اوچو اسٽريٽس"
 
@@ -1966,8 +1970,8 @@ msgstr "امپيريل"
 msgid "Import"
 msgstr "درآمد"
 
-#: src/components/MissionSetup.tsx:1017
-#: src/components/MissionSetup.tsx:1188
+#: src/components/MissionSetup.tsx:1024
+#: src/components/MissionSetup.tsx:1195
 msgid "In air"
 msgstr "هوا ۾"
 
@@ -2015,8 +2019,8 @@ msgstr "غلط تصديق ڪوڊ"
 msgid "Invert pitch axis"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1105
-#: src/components/Multiplayer.tsx:87
+#: src/components/MissionSetup.tsx:1112
+#: src/components/Multiplayer.tsx:90
 msgid "Invulnerable"
 msgstr "ناقابل شڪست"
 
@@ -2024,8 +2028,8 @@ msgstr "ناقابل شڪست"
 msgid "INVULNERABLE"
 msgstr "ناقابل نقصان"
 
-#: src/components/MissionSetup.tsx:1105
-#: src/components/Multiplayer.tsx:443
+#: src/components/MissionSetup.tsx:1112
+#: src/components/Multiplayer.tsx:455
 msgid "Invulnerable (human players only)"
 msgstr "ناقابل نقصان (رڳو انساني رانديگر)"
 
@@ -2047,12 +2051,12 @@ msgstr "ٽانڪيون ڦٽي ڪريو"
 msgid "JETTISON: GEAR"
 msgstr "ڦٽو: لينڊنگ گيئر"
 
-#: src/components/Multiplayer.tsx:620
+#: src/components/Multiplayer.tsx:634
 msgid "Join"
 msgstr "شامل ٿيو"
 
-#: src/components/MissionSetup.tsx:810
-#: src/components/MissionSetup.tsx:1288
+#: src/components/MissionSetup.tsx:817
+#: src/components/MissionSetup.tsx:1295
 msgid "Join server"
 msgstr "سرور ۾ شامل ٿيو"
 
@@ -2061,16 +2065,16 @@ msgid "JOINED"
 msgstr "شامل ٿي ويو"
 
 #: src/components/MatchHistory.tsx:141
-#: src/components/MissionSetup.tsx:1198
-#: src/components/Multiplayer.tsx:554
+#: src/components/MissionSetup.tsx:1205
+#: src/components/Multiplayer.tsx:568
 msgid "Joust"
 msgstr "جوسٽ"
 
-#: src/components/Multiplayer.tsx:359
+#: src/components/Multiplayer.tsx:371
 msgid "Joust — 1v1, first kill wins"
 msgstr "دوبدو مقابلو — 1v1، جيڪو پهرين ڪيرائيندو سو کٽيندو"
 
-#: src/components/MissionSetup.tsx:967
+#: src/components/MissionSetup.tsx:974
 msgid "Joust against bot"
 msgstr "دوبدو مقابلو بوٽ خلاف"
 
@@ -2151,7 +2155,7 @@ msgstr "اُڏام / نشانو"
 msgid "Layout"
 msgstr "ليئوٽ"
 
-#: src/components/Multiplayer.tsx:408
+#: src/components/Multiplayer.tsx:420
 msgid "lb"
 msgstr "lb"
 
@@ -2160,7 +2164,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "وڌيڪ سکو"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:913
 msgid "Leave server"
 msgstr "سرور ڇڏيو"
 
@@ -2296,9 +2300,9 @@ msgstr "مٿي ڏسو"
 msgid "Low"
 msgstr "گهٽ"
 
-#: src/components/MissionSetup.tsx:1081
-#: src/components/Multiplayer.tsx:86
-#: src/components/Multiplayer.tsx:376
+#: src/components/MissionSetup.tsx:1088
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:388
 msgid "Low stratus"
 msgstr "گهٽ اسٽريٽس"
 
@@ -2345,11 +2349,11 @@ msgstr ""
 msgid "Master Volume"
 msgstr ""
 
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:367
 msgid "Match type"
 msgstr "ميچ جو قسم"
 
-#: src/components/MissionSetup.tsx:901
+#: src/components/MissionSetup.tsx:908
 msgid "Matches"
 msgstr "ميچون"
 
@@ -2380,11 +2384,11 @@ msgstr "مينيو"
 msgid "Menu"
 msgstr "مينيو"
 
-#: src/components/Multiplayer.tsx:419
+#: src/components/Multiplayer.tsx:431
 msgid "Merge — fight on at the pass"
 msgstr "ملاپ — ويڙهه گذرڻ وقت شروع"
 
-#: src/components/MissionSetup.tsx:982
+#: src/components/MissionSetup.tsx:989
 msgid "Merge (Pass)"
 msgstr ""
 
@@ -2408,9 +2412,9 @@ msgstr "پنهنجي ٽيم کي پيغام موڪليو"
 msgid "Metric"
 msgstr "ميٽرڪ"
 
-#: src/components/MissionSetup.tsx:1080
-#: src/components/Multiplayer.tsx:85
-#: src/components/Multiplayer.tsx:375
+#: src/components/MissionSetup.tsx:1087
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:387
 msgid "Mid stratus"
 msgstr "وچولو اسٽريٽس"
 
@@ -2464,11 +2468,11 @@ msgstr "وڌيڪ اختيار"
 msgid "Move…"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1288
+#: src/components/MissionSetup.tsx:1295
 msgid "Multiplayer dogfights"
 msgstr ""
 
-#: src/components/Multiplayer.tsx:256
+#: src/components/Multiplayer.tsx:259
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "ملٽي پليئر لاءِ WebTransport گهربل آهي، جنهن کي هي برائوزر اڃا سپورٽ نٿو ڪري."
 
@@ -2508,9 +2512,9 @@ msgstr "نئين گيم"
 msgid "Next image"
 msgstr "اڳيون تصوير"
 
-#: src/components/MissionSetup.tsx:1065
-#: src/components/Multiplayer.tsx:82
-#: src/components/Multiplayer.tsx:369
+#: src/components/MissionSetup.tsx:1072
+#: src/components/Multiplayer.tsx:85
+#: src/components/Multiplayer.tsx:381
 msgid "Night"
 msgstr "رات"
 
@@ -2570,7 +2574,7 @@ msgstr "ڪا ملندڙ شيون نه آهن"
 msgid "No notifications yet"
 msgstr "اڃا ڪا اطلاع ناهي"
 
-#: src/components/Multiplayer.tsx:537
+#: src/components/Multiplayer.tsx:551
 msgid "No open matches — create one."
 msgstr "ڪو به کليل ميچ ناهي — هڪ ٺاهيو."
 
@@ -2633,7 +2637,7 @@ msgid "No views"
 msgstr "ڪا ڏيک نه آهي"
 
 #: src/components/MissionSetup.tsx:718
-#: src/components/Multiplayer.tsx:537
+#: src/components/Multiplayer.tsx:551
 msgid "No world server."
 msgstr "ڪو ورلڊ سرور ناهي."
 
@@ -2660,7 +2664,7 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: ../../../lib/web/src/lib/preference-utils.ts:120
 #: src/components/MissionSetup.tsx:284
-#: src/components/MissionSetup.tsx:1077
+#: src/components/MissionSetup.tsx:1084
 #: src/components/SettingsDialog.tsx:468
 #: src/components/SettingsDialog.tsx:544
 #: src/components/SettingsDialog.tsx:817
@@ -2709,9 +2713,9 @@ msgstr "اطلاعون"
 msgid "Notifications: {0}"
 msgstr "اطلاعون: {0}"
 
-#: src/components/MissionSetup.tsx:995
-#: src/components/MissionSetup.tsx:1182
-#: src/components/Multiplayer.tsx:486
+#: src/components/MissionSetup.tsx:1002
+#: src/components/MissionSetup.tsx:1189
+#: src/components/Multiplayer.tsx:503
 msgid "Novice"
 msgstr "نئون سکندڙ"
 
@@ -2737,13 +2741,13 @@ msgstr "OK"
 msgid "On"
 msgstr "آن"
 
-#: src/components/MissionSetup.tsx:1019
-#: src/components/MissionSetup.tsx:1190
+#: src/components/MissionSetup.tsx:1026
+#: src/components/MissionSetup.tsx:1197
 msgid "On carrier"
 msgstr "جهازبردار تي"
 
-#: src/components/MissionSetup.tsx:1018
-#: src/components/MissionSetup.tsx:1189
+#: src/components/MissionSetup.tsx:1025
+#: src/components/MissionSetup.tsx:1196
 msgid "On runway"
 msgstr "رن وي تي"
 
@@ -2751,11 +2755,11 @@ msgstr "رن وي تي"
 msgid "Oops! Page Not Found!"
 msgstr "افسوس! صفحو نه مليو!"
 
-#: src/components/Multiplayer.tsx:554
+#: src/components/Multiplayer.tsx:568
 msgid "Open"
 msgstr "کوليو"
 
-#: src/components/Multiplayer.tsx:358
+#: src/components/Multiplayer.tsx:370
 msgid "Open — anyone may join or leave"
 msgstr "کليل — ڪو به شامل ٿي سگهي ٿو يا ڇڏي سگهي ٿو"
 
@@ -2888,15 +2892,15 @@ msgid "Pick a date"
 msgstr "تاريخ چونڊيو"
 
 #: src/components/MissionSetup.tsx:664
-#: src/components/Multiplayer.tsx:147
-#: src/components/Multiplayer.tsx:316
+#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:328
 msgid "pilot"
 msgstr "پائلٽ"
 
-#: src/components/MissionSetup.tsx:996
-#: src/components/MissionSetup.tsx:1183
-#: src/components/MissionSetup.tsx:1242
-#: src/components/Multiplayer.tsx:487
+#: src/components/MissionSetup.tsx:1003
+#: src/components/MissionSetup.tsx:1190
+#: src/components/MissionSetup.tsx:1249
+#: src/components/Multiplayer.tsx:504
 msgid "Pilot"
 msgstr "پائلٽ"
 
@@ -3001,8 +3005,8 @@ msgstr "پروفائيل محفوظ ٿيو"
 msgid "Project members"
 msgstr "منصوبي جا ميمبر"
 
-#: src/components/MissionSetup.tsx:837
-#: src/components/MissionSetup.tsx:855
+#: src/components/MissionSetup.tsx:844
+#: src/components/MissionSetup.tsx:862
 msgid "Public servers"
 msgstr "عوامي سرور"
 
@@ -3043,7 +3047,7 @@ msgstr "هن سرور تي پنهنجا اڪائونٽ ٻيهر ڳنڍيو"
 msgid "Re-register your passkeys on this server"
 msgstr "هن سرور تي پنهنجون پاسي ڪيز ٻيهر رجسٽر ڪريو"
 
-#: src/components/MissionSetup.tsx:1272
+#: src/components/MissionSetup.tsx:1279
 msgid "Ready for Sortie"
 msgstr ""
 
@@ -3051,7 +3055,7 @@ msgstr ""
 msgid "REARMED"
 msgstr "ٻيهر هٿياربند"
 
-#: src/components/MissionSetup.tsx:816
+#: src/components/MissionSetup.tsx:823
 msgid "Recent"
 msgstr "تازيون"
 
@@ -3076,11 +3080,11 @@ msgstr "رڪارڊنگ"
 msgid "Recording saved"
 msgstr "رڪارڊنگ محفوظ ٿي وئي"
 
-#: src/components/Multiplayer.tsx:598
+#: src/components/Multiplayer.tsx:612
 msgid "Red"
 msgstr "ڳاڙهو"
 
-#: src/components/Multiplayer.tsx:479
+#: src/components/Multiplayer.tsx:496
 msgid "Red bots"
 msgstr "ڳاڙها بوٽ"
 
@@ -3097,7 +3101,7 @@ msgstr "دلچسپي گهٽايو"
 msgid "Reference"
 msgstr "حوالو"
 
-#: src/components/Multiplayer.tsx:335
+#: src/components/Multiplayer.tsx:347
 msgid "Refresh"
 msgstr "ريفريش"
 
@@ -3572,7 +3576,7 @@ msgstr "اصل ۽ منزل مقرر ڪريو"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:450
-#: src/components/MissionSetup.tsx:1289
+#: src/components/MissionSetup.tsx:1296
 #: src/components/SettingsDialog.tsx:1096
 #: src/components/SettingsDialog.tsx:1123
 msgid "Settings"
@@ -3639,7 +3643,7 @@ msgstr "ننڍو"
 msgid "Sort"
 msgstr "ترتيب"
 
-#: src/components/MissionSetup.tsx:1292
+#: src/components/MissionSetup.tsx:1299
 msgid "Sortie history & replays"
 msgstr ""
 
@@ -3655,11 +3659,11 @@ msgstr "آواز"
 msgid "Sources"
 msgstr "ماخذ"
 
-#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:84
 msgid "Spaced"
 msgstr "پري پري"
 
-#: src/components/Multiplayer.tsx:426
+#: src/components/Multiplayer.tsx:438
 msgid "Spaced spawns"
 msgstr "پري پري داخلا"
 
@@ -3697,7 +3701,7 @@ msgstr "اسٽال، صاف ترتيب (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "اسٽال، لهڻ جي ترتيب (Vs0)"
 
-#: src/components/Multiplayer.tsx:415
+#: src/components/Multiplayer.tsx:427
 msgid "Start"
 msgstr "شروع ڪريو"
 
@@ -3744,9 +3748,9 @@ msgstr "سبسڪرائب ڪريو"
 msgid "Sunday"
 msgstr "آچر"
 
-#: src/components/MissionSetup.tsx:998
-#: src/components/MissionSetup.tsx:1185
-#: src/components/Multiplayer.tsx:489
+#: src/components/MissionSetup.tsx:1005
+#: src/components/MissionSetup.tsx:1192
+#: src/components/Multiplayer.tsx:506
 msgid "Superhuman"
 msgstr "انسان کان مٿي"
 
@@ -3787,11 +3791,11 @@ msgstr "ٽيگ"
 msgid "TALLY"
 msgstr "دشمن نظر ۾"
 
-#: src/components/MissionSetup.tsx:960
+#: src/components/MissionSetup.tsx:967
 msgid "Task"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1287
+#: src/components/MissionSetup.tsx:1294
 msgid "Tasks, weather & loadout"
 msgstr ""
 
@@ -3804,11 +3808,11 @@ msgid "TEAM"
 msgstr "ٽيم"
 
 #: src/components/MatchHistory.tsx:142
-#: src/components/Multiplayer.tsx:554
+#: src/components/Multiplayer.tsx:568
 msgid "Teams"
 msgstr "ٽيمون"
 
-#: src/components/Multiplayer.tsx:360
+#: src/components/Multiplayer.tsx:372
 msgid "Teams — red versus blue"
 msgstr "ٽيمون — ڳاڙهو مقابل نيرو"
 
@@ -3870,15 +3874,15 @@ msgstr "ٿيم"
 msgid "Theme Settings"
 msgstr "ٿيم سيٽنگون"
 
-#: src/components/MissionSetup.tsx:1251
+#: src/components/MissionSetup.tsx:1258
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "هي برائوزر WebGL 2 کي سپورٽ نٿو ڪري، تنهنڪري راند نه هلي سگهندي — ٻيو برائوزر آزمايو."
 
-#: src/components/Multiplayer.tsx:274
+#: src/components/Multiplayer.tsx:286
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "هي لابي توهان جي راند جو ڪنيڪشن هڪ ٻئي ميزبان ({redirectHost}) ڏانهن موڪلي رهيو آهي. صرف تڏهن جاري رکو جڏهن توهان هن سرور تي ڀروسو ڪريو ٿا."
 
-#: src/components/MissionSetup.tsx:1255
+#: src/components/MissionSetup.tsx:1262
 msgid "This machine may be too slow for smooth flight."
 msgstr "هموار اڏام لاءِ هي مشين تمام سست ٿي سگهي ٿي."
 
@@ -3920,7 +3924,7 @@ msgstr "جهڪاءُ"
 msgid "Time"
 msgstr "وقت"
 
-#: src/components/MissionSetup.tsx:1058
+#: src/components/MissionSetup.tsx:1065
 msgid "Time of day"
 msgstr "ڏينهن جو وقت"
 
@@ -4100,27 +4104,27 @@ msgstr "آمريڪا"
 msgid "Unknown"
 msgstr "اڻڄاتل"
 
-#: src/components/Multiplayer.tsx:392
+#: src/components/Multiplayer.tsx:404
 msgid "Unlimited"
 msgstr "لامحدود"
 
-#: src/components/MissionSetup.tsx:1111
-#: src/components/Multiplayer.tsx:88
-#: src/components/Multiplayer.tsx:453
+#: src/components/MissionSetup.tsx:1118
+#: src/components/Multiplayer.tsx:91
+#: src/components/Multiplayer.tsx:465
 msgid "Unlimited ammunition"
 msgstr "لامحدود گولا بارود"
 
-#: src/components/MissionSetup.tsx:1111
+#: src/components/MissionSetup.tsx:1118
 msgid "Unlimited ammunition (all players)"
 msgstr "لامحدود گولا بارود (سڀئي رانديگر)"
 
-#: src/components/MissionSetup.tsx:1117
-#: src/components/Multiplayer.tsx:89
-#: src/components/Multiplayer.tsx:463
+#: src/components/MissionSetup.tsx:1124
+#: src/components/Multiplayer.tsx:92
+#: src/components/Multiplayer.tsx:475
 msgid "Unlimited fuel"
 msgstr "لامحدود ٻارڻ"
 
-#: src/components/MissionSetup.tsx:1117
+#: src/components/MissionSetup.tsx:1124
 msgid "Unlimited fuel (all players)"
 msgstr "لامحدود ٻارڻ (سڀئي رانديگر)"
 
@@ -4265,12 +4269,12 @@ msgstr "هٿيار"
 msgid "Weapon select hat"
 msgstr "هٿيار چونڊ ٽوپي"
 
-#: src/components/Multiplayer.tsx:387
+#: src/components/Multiplayer.tsx:399
 #: src/components/SettingsDialog.tsx:96
 msgid "Weapons"
 msgstr "هٿيار"
 
-#: src/components/Multiplayer.tsx:365
+#: src/components/Multiplayer.tsx:377
 msgid "Weather"
 msgstr "موسم"
 
@@ -4300,12 +4304,12 @@ msgstr "کنڀ ويڙهڻ"
 msgid "WINS"
 msgstr "کٽي ٿو"
 
-#: src/components/Multiplayer.tsx:300
+#: src/components/Multiplayer.tsx:312
 msgid "World server"
 msgstr "ورلڊ سرور"
 
 #: src/components/MissionSetup.tsx:706
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:163
 msgid "World server not reachable"
 msgstr "ورلڊ سرور تائين پهچ ناهي"
 
@@ -4355,7 +4359,7 @@ msgstr "توهان جون منسلڪات گم ٿي وينديون."
 msgid "Your flights appear here once you've flown one."
 msgstr "جڏهن توهان هڪ اڏام ڪندا ته توهان جون اڏامون هتي ظاهر ٿينديون."
 
-#: src/components/Multiplayer.tsx:549
+#: src/components/Multiplayer.tsx:563
 msgid "your offer"
 msgstr "توهان جي آڇ"
 

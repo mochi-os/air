@@ -51,7 +51,7 @@ msgid "{0} created “{1}”"
 msgstr "{0} “{1}” ಅನ್ನು ರಚಿಸಿದ್ದಾರೆ"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:327
+#: src/components/Multiplayer.tsx:339
 msgid "{0} flying"
 msgstr "{0} ಹಾರಾಟದಲ್ಲಿ"
 
@@ -89,7 +89,7 @@ msgstr ""
 
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:556
+#: src/components/Multiplayer.tsx:570
 msgid "{0}/{1} players"
 msgstr "{0}/{1} ಆಟಗಾರರು"
 
@@ -117,13 +117,17 @@ msgstr "{entityLabel} ಹೆಸರು"
 msgid "{entityLabel} name is required"
 msgstr "{entityLabel} ಹೆಸರು ಅಗತ್ಯವಿದೆ"
 
-#: src/components/Multiplayer.tsx:230
+#: src/components/Multiplayer.tsx:233
 msgid "{name}'s match"
 msgstr "{name} ಅವರ ಪಂದ್ಯ"
 
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:29
 msgid "{opponentName} offered a draw"
 msgstr "{opponentName} ಡ್ರಾ ನೀಡಿದರು"
+
+#: src/components/Multiplayer.tsx:532
+msgid "{placed} of {limit} bots"
+msgstr ""
 
 #: ../../../lib/web/src/components/data-table/bulk-actions.tsx:203
 msgid "{selectedCount, plural, one {{entityName} selected} other {{manyName} selected}}"
@@ -231,9 +235,9 @@ msgstr "ಖಾತೆಯ ಪ್ರಕಾರ"
 msgid "Account verified"
 msgstr "ಖಾತೆ ಪರಿಶೀಲಿಸಲಾಗಿದೆ"
 
-#: src/components/MissionSetup.tsx:997
-#: src/components/MissionSetup.tsx:1184
-#: src/components/Multiplayer.tsx:488
+#: src/components/MissionSetup.tsx:1004
+#: src/components/MissionSetup.tsx:1191
+#: src/components/Multiplayer.tsx:505
 msgid "Ace"
 msgstr "ನಿಪುಣ"
 
@@ -388,7 +392,7 @@ msgstr "ದೋಷ ಸಂಭವಿಸಿದೆ"
 msgid "An unexpected error occurred"
 msgstr "ಅನಿರೀಕ್ಷಿತ ದೋಷ ಸಂಭವಿಸಿದೆ"
 
-#: src/components/Multiplayer.tsx:426
+#: src/components/Multiplayer.tsx:438
 msgid "Anchored sides"
 msgstr "ಲಂಗರು ಹಾಕಿದ ಪಕ್ಷಗಳು"
 
@@ -435,7 +439,7 @@ msgstr "ಈ ಕಾಮೆಂಟ್ ಅನ್ನು ಅಳಿಸಲು ನೀವ�
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "ಲಾಗ್ ಔಟ್ ಮಾಡಲು ನೀವು ಖಚಿತವಾಗಿದ್ದೀರಾ? ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಪ್ರವೇಶಿಸಲು ನೀವು ಮತ್ತೆ ಲಾಗ್ ಇನ್ ಮಾಡಬೇಕಾಗುತ್ತದೆ."
 
-#: src/components/MissionSetup.tsx:1130
+#: src/components/MissionSetup.tsx:1137
 msgid "Armament & Stores"
 msgstr ""
 
@@ -452,7 +456,7 @@ msgstr "ಆರೋಹಣ"
 msgid "Ascending"
 msgstr "ಆರೋಹಣ"
 
-#: src/components/MissionSetup.tsx:1098
+#: src/components/MissionSetup.tsx:1105
 msgid "Assists Active"
 msgstr ""
 
@@ -489,7 +493,7 @@ msgstr "ಅವತಾರ್"
 msgid "Avatar for {name}"
 msgstr "{name} ಗಾಗಿ ಅವತಾರ್"
 
-#: src/components/MissionSetup.tsx:1289
+#: src/components/MissionSetup.tsx:1296
 msgid "Avionics, HOTAS & audio"
 msgstr ""
 
@@ -521,7 +525,7 @@ msgstr "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ"
 msgid "Balanced flight"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:989
+#: src/components/MissionSetup.tsx:996
 msgid "Bandit"
 msgstr "ಶತ್ರು ವಿಮಾನ"
 
@@ -571,11 +575,11 @@ msgstr "ವಿಶ್ವಾಸಾರ್ಹವಲ್ಲದ ಲಿಂಕ್‌ಗ�
 msgid "Blocks"
 msgstr "ತಡೆಯುತ್ತದೆ"
 
-#: src/components/Multiplayer.tsx:608
+#: src/components/Multiplayer.tsx:622
 msgid "Blue"
 msgstr "ನೀಲಿ"
 
-#: src/components/Multiplayer.tsx:479
+#: src/components/Multiplayer.tsx:496
 msgid "Blue bots"
 msgstr "ನೀಲಿ ಬಾಟ್‌ಗಳು"
 
@@ -596,7 +600,7 @@ msgstr "ಆಸಕ್ತಿಯನ್ನು ಹೆಚ್ಚಿಸಿ"
 msgid "Border colour"
 msgstr "ಗಡಿ ಬಣ್ಣ"
 
-#: src/components/Multiplayer.tsx:470
+#: src/components/Multiplayer.tsx:482
 msgid "Bots"
 msgstr "ಬಾಟ್‌ಗಳು"
 
@@ -629,11 +633,11 @@ msgstr "ಬಟನ್ {i}"
 msgid "Button Mappings"
 msgstr ""
 
-#: src/components/Multiplayer.tsx:420
+#: src/components/Multiplayer.tsx:432
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — ಆರಂಭದಿಂದಲೇ ಶಸ್ತ್ರ ಮುಕ್ತ"
 
-#: src/components/MissionSetup.tsx:983
+#: src/components/MissionSetup.tsx:990
 msgid "BVR (Start)"
 msgstr ""
 
@@ -641,7 +645,7 @@ msgstr ""
 msgid "CALL THE BALL"
 msgstr "ಬಾಲ್ ಘೋಷಿಸಿ"
 
-#: src/components/Multiplayer.tsx:311
+#: src/components/Multiplayer.tsx:323
 #: src/components/SettingsDialog.tsx:1034
 msgid "Callsign"
 msgstr "ಕಾಲ್‌ಸೈನ್"
@@ -669,8 +673,8 @@ msgstr "ಕ್ಯಾಮೆರಾ ಲಭ್ಯವಿಲ್ಲ"
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
 #: src/components/GameCanvas.tsx:522
-#: src/components/Multiplayer.tsx:282
-#: src/components/Multiplayer.tsx:585
+#: src/components/Multiplayer.tsx:294
+#: src/components/Multiplayer.tsx:599
 #: src/components/SettingsDialog.tsx:809
 msgid "Cancel"
 msgstr "ರದ್ದುಮಾಡಿ"
@@ -700,31 +704,31 @@ msgstr "ಅಡಿಬರಹ"
 msgid "Carrier & Ambient"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1191
+#: src/components/MissionSetup.tsx:1198
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1020
+#: src/components/MissionSetup.tsx:1027
 msgid "Case I (day)"
 msgstr "ಪ್ರಕರಣ I (ಹಗಲು)"
 
-#: src/components/MissionSetup.tsx:1192
+#: src/components/MissionSetup.tsx:1199
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1021
+#: src/components/MissionSetup.tsx:1028
 msgid "Case II (weather)"
 msgstr "ಪ್ರಕರಣ II (ಹವಾಮಾನ)"
 
-#: src/components/MissionSetup.tsx:1193
+#: src/components/MissionSetup.tsx:1200
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1022
+#: src/components/MissionSetup.tsx:1029
 msgid "Case III (night)"
 msgstr "ಪ್ರಕರಣ III (ರಾತ್ರಿ)"
 
-#: src/components/MissionSetup.tsx:1030
+#: src/components/MissionSetup.tsx:1037
 msgid "Catapult"
 msgstr "ಕ್ಯಾಟಪಲ್ಟ್"
 
@@ -762,7 +766,7 @@ msgid "Chat to everyone"
 msgstr "ಎಲ್ಲರೊಂದಿಗೆ ಚಾಟ್"
 
 #: src/components/MatchHistory.tsx:345
-#: src/components/Multiplayer.tsx:434
+#: src/components/Multiplayer.tsx:446
 msgid "Cheats"
 msgstr "ಚೀಟ್‌ಗಳು"
 
@@ -811,7 +815,7 @@ msgstr "ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ"
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
 #: src/components/MatchHistory.tsx:303
 #: src/components/MatchHistory.tsx:359
-#: src/components/Multiplayer.tsx:372
+#: src/components/Multiplayer.tsx:384
 #: src/components/SettingsDialog.tsx:677
 msgid "Clear"
 msgstr "ತೆರವುಗೊಳಿಸಿ"
@@ -876,7 +880,7 @@ msgstr "ಹುಡುಕಾಟ ಮುಚ್ಚಿ"
 msgid "closer"
 msgstr "ಹತ್ತಿರ"
 
-#: src/components/MissionSetup.tsx:1071
+#: src/components/MissionSetup.tsx:1078
 msgid "Clouds"
 msgstr "ಮೋಡಗಳು"
 
@@ -952,11 +956,11 @@ msgstr "ವೀಕ್ಷಣಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು �
 msgid "Confirm"
 msgstr "ದೃಢೀಕರಿಸಿ"
 
-#: src/components/MissionSetup.tsx:884
+#: src/components/MissionSetup.tsx:891
 msgid "Connect"
 msgstr "ಸಂಪರ್ಕಿಸಿ"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:878
 msgid "Connect to private server"
 msgstr "ಖಾಸಗಿ ಸರ್ವರ್‌ಗೆ ಸಂಪರ್ಕಿಸಿ"
 
@@ -972,7 +976,7 @@ msgstr "ಸಂಪರ್ಕಿತ ಖಾತೆಗಳು"
 msgid "Connecting..."
 msgstr "ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ..."
 
-#: src/components/Multiplayer.tsx:330
+#: src/components/Multiplayer.tsx:342
 msgid "Connecting…"
 msgstr "ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ…"
 
@@ -993,7 +997,7 @@ msgid "Contextual information and details."
 msgstr "ಸಂದರ್ಭಾನುಸಾರ ಮಾಹಿತಿ ಮತ್ತು ವಿವರಗಳು."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:291
+#: src/components/Multiplayer.tsx:303
 msgid "Continue"
 msgstr "ಮುಂದುವರಿಸಿ"
 
@@ -1017,7 +1021,7 @@ msgstr "ನಕಲಿಸಿ"
 msgid "Corner speed (best instant turn)"
 msgstr "ಕಾರ್ನರ್ ವೇಗ (ಅತ್ಯುತ್ತಮ ತತ್‌ಕ್ಷಣ ತಿರುವು)"
 
-#: src/components/Multiplayer.tsx:247
+#: src/components/Multiplayer.tsx:250
 msgid "Could not create the match"
 msgstr "ಪಂದ್ಯವನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ"
 
@@ -1080,16 +1084,16 @@ msgstr "ರಚಿಸಿ"
 msgid "Create {0}"
 msgstr "{0} ರಚಿಸಿ"
 
-#: src/components/Multiplayer.tsx:528
+#: src/components/Multiplayer.tsx:542
 msgid "Create and fly"
 msgstr "ರಚಿಸಿ ಮತ್ತು ಹಾರಿ"
 
-#: src/components/Multiplayer.tsx:345
+#: src/components/Multiplayer.tsx:357
 msgid "Create match"
 msgstr "ಪಂದ್ಯ ರಚಿಸಿ"
 
-#: src/components/MissionSetup.tsx:1287
-#: src/components/MissionSetup.tsx:1311
+#: src/components/MissionSetup.tsx:1294
+#: src/components/MissionSetup.tsx:1318
 msgid "Create mission"
 msgstr "ಕಾರ್ಯಾಚರಣೆ ರಚಿಸಿ"
 
@@ -1112,9 +1116,9 @@ msgstr "ರಚಿಸಲಾಗುತ್ತಿದೆ..."
 msgid "Credits"
 msgstr "ಶ್ರೇಯಸ್ಸು"
 
-#: src/components/MissionSetup.tsx:1078
-#: src/components/Multiplayer.tsx:83
-#: src/components/Multiplayer.tsx:373
+#: src/components/MissionSetup.tsx:1085
+#: src/components/Multiplayer.tsx:86
+#: src/components/Multiplayer.tsx:385
 msgid "Cumulus"
 msgstr "ಕ್ಯುಮುಲಸ್"
 
@@ -1155,8 +1159,8 @@ msgstr "ಡೇಟಾ ಸಂಘರ್ಷ"
 msgid "Date"
 msgstr "ದಿನಾಂಕ"
 
-#: src/components/MissionSetup.tsx:1064
-#: src/components/Multiplayer.tsx:368
+#: src/components/MissionSetup.tsx:1071
+#: src/components/Multiplayer.tsx:380
 msgid "Day"
 msgstr "ಹಗಲು"
 
@@ -1231,7 +1235,7 @@ msgstr "ವೀಕ್ಷಣೆ ಅಳಿಸಿ"
 msgid "Delete your account on the old server"
 msgstr "ಹಳೆಯ ಸರ್ವರ್‌ನಲ್ಲಿ ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಅಳಿಸಿ"
 
-#: src/components/MissionSetup.tsx:1009
+#: src/components/MissionSetup.tsx:1016
 msgid "Departure / Recovery"
 msgstr ""
 
@@ -1271,7 +1275,7 @@ msgstr "ಪತ್ತೆ ಮಾಡಿ"
 msgid "Detect from web browser"
 msgstr "ವೆಬ್ ಬ್ರೌಸರ್‌ನಿಂದ ಪತ್ತೆ ಮಾಡಿ"
 
-#: src/components/Multiplayer.tsx:271
+#: src/components/Multiplayer.tsx:283
 msgid "Different game host"
 msgstr "ಬೇರೆ ಆಟದ ಸರ್ವರ್"
 
@@ -1307,7 +1311,7 @@ msgstr "ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
-#: src/components/MissionSetup.tsx:1258
+#: src/components/MissionSetup.tsx:1265
 #: src/components/SettingsDialog.tsx:773
 msgid "Dismiss"
 msgstr "ತಿರಸ್ಕರಿಸಿ"
@@ -1349,7 +1353,7 @@ msgstr "ಡೌನ್‌ವಿಂಡ್ 600 ಅಡಿ"
 msgid "Drag"
 msgstr "ಎಳೆಯಿರಿ"
 
-#: src/components/Multiplayer.tsx:485
+#: src/components/Multiplayer.tsx:502
 msgid "Drone"
 msgstr "ಡ್ರೋನ್"
 
@@ -1445,7 +1449,7 @@ msgstr "ತುರ್ತು ಎಸೆತ"
 msgid "Emergency jettison (hold)"
 msgstr "ತುರ್ತು ಎಸೆತ (ಹಿಡಿದಿಡಿ)"
 
-#: src/components/Multiplayer.tsx:555
+#: src/components/Multiplayer.tsx:569
 msgid "empty"
 msgstr "ಖಾಲಿ"
 
@@ -1458,7 +1462,7 @@ msgstr "ಖಾಲಿ ಪೈಲಾನ್"
 msgid "ENGAGED"
 msgstr "ದಾಳಿ ಮಾಡುತ್ತಿದ್ದೇನೆ"
 
-#: src/components/MissionSetup.tsx:976
+#: src/components/MissionSetup.tsx:983
 msgid "Engagement"
 msgstr ""
 
@@ -1478,7 +1482,7 @@ msgstr "ನಿಮ್ಮ ಇಮೇಲ್‌ನಿಂದ ಕೋಡ್ ನಮೂದ
 msgid "Enter your authenticator code"
 msgstr "ನಿಮ್ಮ authenticator ಕೋಡ್ ನಮೂದಿಸಿ"
 
-#: src/components/MissionSetup.tsx:1052
+#: src/components/MissionSetup.tsx:1059
 msgid "Environment"
 msgstr "ಪರಿಸರ"
 
@@ -1534,7 +1538,7 @@ msgstr "ಬಾಹ್ಯ URL"
 msgid "Extra large"
 msgstr "ಹೆಚ್ಚುವರಿ ದೊಡ್ಡದು"
 
-#: src/components/MissionSetup.tsx:1303
+#: src/components/MissionSetup.tsx:1310
 msgid "F/A-18C Hornet"
 msgstr ""
 
@@ -1542,7 +1546,7 @@ msgstr ""
 msgid "F/A-18C reference"
 msgstr "F/A-18C ಉಲ್ಲೇಖ"
 
-#: src/components/MissionSetup.tsx:1236
+#: src/components/MissionSetup.tsx:1243
 msgid "F/A-18C Strike Fighter"
 msgstr ""
 
@@ -1695,7 +1699,7 @@ msgstr "ಸಮುದ್ರಕ್ಕೆ ಅಪ್ಪಳಿಸಿತು"
 msgid "Flight"
 msgstr "ಹಾರಾಟ"
 
-#: src/components/MissionSetup.tsx:1094
+#: src/components/MissionSetup.tsx:1101
 msgid "Flight Assists"
 msgstr ""
 
@@ -1703,11 +1707,11 @@ msgstr ""
 msgid "FLIGHT CORE FAILED"
 msgstr "ಫ್ಲೈಟ್ ಕೋರ್ ವಿಫಲ"
 
-#: src/components/MissionSetup.tsx:1292
+#: src/components/MissionSetup.tsx:1299
 msgid "Flight log"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:961
 msgid "Flight Profile"
 msgstr ""
 
@@ -1723,8 +1727,8 @@ msgstr "ಫ್ಲೋಟಿಂಗ್"
 msgid "Flown"
 msgstr "ಹಾರಿದೆ"
 
-#: src/components/MissionSetup.tsx:1281
-#: src/components/MissionSetup.tsx:1328
+#: src/components/MissionSetup.tsx:1288
+#: src/components/MissionSetup.tsx:1335
 msgid "Fly"
 msgstr "ಹಾರಾಟ"
 
@@ -1737,7 +1741,7 @@ msgid "Framerate counter"
 msgstr ""
 
 #: src/components/MatchHistory.tsx:143
-#: src/components/MissionSetup.tsx:966
+#: src/components/MissionSetup.tsx:973
 msgid "Free flight"
 msgstr "ಮುಕ್ತ ಹಾರಾಟ"
 
@@ -1762,7 +1766,7 @@ msgstr "ಇಂದ"
 msgid "From theme"
 msgstr "ಥೀಮ್‌ನಿಂದ"
 
-#: src/components/Multiplayer.tsx:396
+#: src/components/Multiplayer.tsx:408
 msgid "Fuel"
 msgstr "ಇಂಧನ"
 
@@ -1878,12 +1882,12 @@ msgstr "ಫಿರಂಗಿ"
 msgid "Gun only"
 msgstr "ಫಿರಂಗಿಗಳು ಮಾತ್ರ"
 
-#: src/components/Multiplayer.tsx:78
-#: src/components/Multiplayer.tsx:390
+#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:402
 msgid "Guns only"
 msgstr "ಫಿರಂಗಿಗಳು ಮಾತ್ರ"
 
-#: src/components/MissionSetup.tsx:1253
+#: src/components/MissionSetup.tsx:1260
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "ಹಾರ್ಡ್‌ವೇರ್ ಗ್ರಾಫಿಕ್ಸ್ ವೇಗವರ್ಧನೆ ಆಫ್ ಆಗಿದೆ — ಬ್ರೌಸರ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಅಥವಾ ಗ್ರಾಫಿಕ್ಸ್ ಡ್ರೈವರ್‌ಗಳನ್ನು ಪರಿಶೀಲಿಸಿ."
 
@@ -1911,9 +1915,9 @@ msgstr "ಪಾಸ್‌ವರ್ಡ್ ಮರೆಮಾಡಿ"
 msgid "High"
 msgstr "ಹೆಚ್ಚು"
 
-#: src/components/MissionSetup.tsx:1079
-#: src/components/Multiplayer.tsx:84
-#: src/components/Multiplayer.tsx:374
+#: src/components/MissionSetup.tsx:1086
+#: src/components/Multiplayer.tsx:87
+#: src/components/Multiplayer.tsx:386
 msgid "High stratus"
 msgstr "ಎತ್ತರದ ಸ್ಟ್ರಾಟಸ್"
 
@@ -1966,8 +1970,8 @@ msgstr "ಇಂಪೀರಿಯಲ್"
 msgid "Import"
 msgstr "ಆಮದು"
 
-#: src/components/MissionSetup.tsx:1017
-#: src/components/MissionSetup.tsx:1188
+#: src/components/MissionSetup.tsx:1024
+#: src/components/MissionSetup.tsx:1195
 msgid "In air"
 msgstr "ಗಾಳಿಯಲ್ಲಿ"
 
@@ -2015,8 +2019,8 @@ msgstr "ಅಮಾನ್ಯ ಪರಿಶೀಲನಾ ಕೋಡ್"
 msgid "Invert pitch axis"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1105
-#: src/components/Multiplayer.tsx:87
+#: src/components/MissionSetup.tsx:1112
+#: src/components/Multiplayer.tsx:90
 msgid "Invulnerable"
 msgstr "ಅಜೇಯ"
 
@@ -2024,8 +2028,8 @@ msgstr "ಅಜೇಯ"
 msgid "INVULNERABLE"
 msgstr "ಅವೇಧನೀಯ"
 
-#: src/components/MissionSetup.tsx:1105
-#: src/components/Multiplayer.tsx:443
+#: src/components/MissionSetup.tsx:1112
+#: src/components/Multiplayer.tsx:455
 msgid "Invulnerable (human players only)"
 msgstr "ಅವೇಧನೀಯ (ಮಾನವ ಆಟಗಾರರಿಗೆ ಮಾತ್ರ)"
 
@@ -2047,12 +2051,12 @@ msgstr "ಟ್ಯಾಂಕ್‌ಗಳನ್ನು ಎಸೆಯಿರಿ"
 msgid "JETTISON: GEAR"
 msgstr "ಎಸೆತ: ಲ್ಯಾಂಡಿಂಗ್ ಗೇರ್"
 
-#: src/components/Multiplayer.tsx:620
+#: src/components/Multiplayer.tsx:634
 msgid "Join"
 msgstr "ಸೇರಿ"
 
-#: src/components/MissionSetup.tsx:810
-#: src/components/MissionSetup.tsx:1288
+#: src/components/MissionSetup.tsx:817
+#: src/components/MissionSetup.tsx:1295
 msgid "Join server"
 msgstr "ಸರ್ವರ್‌ಗೆ ಸೇರಿ"
 
@@ -2061,16 +2065,16 @@ msgid "JOINED"
 msgstr "ಸೇರಿದರು"
 
 #: src/components/MatchHistory.tsx:141
-#: src/components/MissionSetup.tsx:1198
-#: src/components/Multiplayer.tsx:554
+#: src/components/MissionSetup.tsx:1205
+#: src/components/Multiplayer.tsx:568
 msgid "Joust"
 msgstr "ದ್ವಂದ್ವ"
 
-#: src/components/Multiplayer.tsx:359
+#: src/components/Multiplayer.tsx:371
 msgid "Joust — 1v1, first kill wins"
 msgstr "ದ್ವಂದ್ವಯುದ್ಧ — 1v1, ಮೊದಲ ಕಿಲ್‌ಗೆ ಗೆಲುವು"
 
-#: src/components/MissionSetup.tsx:967
+#: src/components/MissionSetup.tsx:974
 msgid "Joust against bot"
 msgstr "ದ್ವಂದ್ವಯುದ್ಧ ಬಾಟ್ ವಿರುದ್ಧ"
 
@@ -2151,7 +2155,7 @@ msgstr "ಉಡಾವಣೆ / ಗುರಿ"
 msgid "Layout"
 msgstr "ಲೇಔಟ್"
 
-#: src/components/Multiplayer.tsx:408
+#: src/components/Multiplayer.tsx:420
 msgid "lb"
 msgstr "lb"
 
@@ -2160,7 +2164,7 @@ msgstr "lb"
 msgid "Learn more"
 msgstr "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
 
-#: src/components/MissionSetup.tsx:906
+#: src/components/MissionSetup.tsx:913
 msgid "Leave server"
 msgstr "ಸರ್ವರ್ ಬಿಡಿ"
 
@@ -2296,9 +2300,9 @@ msgstr "ಮೇಲೆ ನೋಡಿ"
 msgid "Low"
 msgstr "ಕಡಿಮೆ"
 
-#: src/components/MissionSetup.tsx:1081
-#: src/components/Multiplayer.tsx:86
-#: src/components/Multiplayer.tsx:376
+#: src/components/MissionSetup.tsx:1088
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:388
 msgid "Low stratus"
 msgstr "ತಗ್ಗಿನ ಸ್ಟ್ರಾಟಸ್"
 
@@ -2345,11 +2349,11 @@ msgstr ""
 msgid "Master Volume"
 msgstr ""
 
-#: src/components/Multiplayer.tsx:355
+#: src/components/Multiplayer.tsx:367
 msgid "Match type"
 msgstr "ಪಂದ್ಯದ ಪ್ರಕಾರ"
 
-#: src/components/MissionSetup.tsx:901
+#: src/components/MissionSetup.tsx:908
 msgid "Matches"
 msgstr "ಪಂದ್ಯಗಳು"
 
@@ -2380,11 +2384,11 @@ msgstr "ಮೆನು"
 msgid "Menu"
 msgstr "ಮೆನು"
 
-#: src/components/Multiplayer.tsx:419
+#: src/components/Multiplayer.tsx:431
 msgid "Merge — fight on at the pass"
 msgstr "ಮರ್ಜ್ — ಹಾದುಹೋಗುವಾಗ ಹೋರಾಟ ಆರಂಭ"
 
-#: src/components/MissionSetup.tsx:982
+#: src/components/MissionSetup.tsx:989
 msgid "Merge (Pass)"
 msgstr ""
 
@@ -2408,9 +2412,9 @@ msgstr "ನಿಮ್ಮ ತಂಡಕ್ಕೆ ಸಂದೇಶ ಕಳುಹಿಸ
 msgid "Metric"
 msgstr "ಮೆಟ್ರಿಕ್"
 
-#: src/components/MissionSetup.tsx:1080
-#: src/components/Multiplayer.tsx:85
-#: src/components/Multiplayer.tsx:375
+#: src/components/MissionSetup.tsx:1087
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:387
 msgid "Mid stratus"
 msgstr "ಮಧ್ಯಮ ಸ್ಟ್ರಾಟಸ್"
 
@@ -2464,11 +2468,11 @@ msgstr "ಹೆಚ್ಚಿನ ಆಯ್ಕೆಗಳು"
 msgid "Move…"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1288
+#: src/components/MissionSetup.tsx:1295
 msgid "Multiplayer dogfights"
 msgstr ""
 
-#: src/components/Multiplayer.tsx:256
+#: src/components/Multiplayer.tsx:259
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "ಮಲ್ಟಿಪ್ಲೇಯರ್‌ಗೆ WebTransport ಅಗತ್ಯವಿದೆ, ಇದನ್ನು ಈ ಬ್ರೌಸರ್ ಇನ್ನೂ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ."
 
@@ -2508,9 +2512,9 @@ msgstr "ಹೊಸ ಆಟ"
 msgid "Next image"
 msgstr "ಮುಂದಿನ ಚಿತ್ರ"
 
-#: src/components/MissionSetup.tsx:1065
-#: src/components/Multiplayer.tsx:82
-#: src/components/Multiplayer.tsx:369
+#: src/components/MissionSetup.tsx:1072
+#: src/components/Multiplayer.tsx:85
+#: src/components/Multiplayer.tsx:381
 msgid "Night"
 msgstr "ರಾತ್ರಿ"
 
@@ -2570,7 +2574,7 @@ msgstr "ಯಾವುದೇ ಹೊಂದಾಣಿಕೆಯ ಆಬ್ಜೆಕ್�
 msgid "No notifications yet"
 msgstr "ಇನ್ನೂ ಯಾವುದೇ ಅಧಿಸೂಚನೆಗಳಿಲ್ಲ"
 
-#: src/components/Multiplayer.tsx:537
+#: src/components/Multiplayer.tsx:551
 msgid "No open matches — create one."
 msgstr "ಯಾವುದೇ ಮುಕ್ತ ಪಂದ್ಯಗಳಿಲ್ಲ — ಒಂದನ್ನು ರಚಿಸಿ."
 
@@ -2633,7 +2637,7 @@ msgid "No views"
 msgstr "ಯಾವುದೇ ವೀಕ್ಷಣೆಗಳಿಲ್ಲ"
 
 #: src/components/MissionSetup.tsx:718
-#: src/components/Multiplayer.tsx:537
+#: src/components/Multiplayer.tsx:551
 msgid "No world server."
 msgstr "ವರ್ಲ್ಡ್ ಸರ್ವರ್ ಇಲ್ಲ."
 
@@ -2660,7 +2664,7 @@ msgstr ""
 #: ../../../lib/web/src/lib/preference-utils.ts:100
 #: ../../../lib/web/src/lib/preference-utils.ts:120
 #: src/components/MissionSetup.tsx:284
-#: src/components/MissionSetup.tsx:1077
+#: src/components/MissionSetup.tsx:1084
 #: src/components/SettingsDialog.tsx:468
 #: src/components/SettingsDialog.tsx:544
 #: src/components/SettingsDialog.tsx:817
@@ -2709,9 +2713,9 @@ msgstr "ನೋಟಿಫಿಕೇಶನ್‌ಗಳು"
 msgid "Notifications: {0}"
 msgstr "ಅಧಿಸೂಚನೆಗಳು: {0}"
 
-#: src/components/MissionSetup.tsx:995
-#: src/components/MissionSetup.tsx:1182
-#: src/components/Multiplayer.tsx:486
+#: src/components/MissionSetup.tsx:1002
+#: src/components/MissionSetup.tsx:1189
+#: src/components/Multiplayer.tsx:503
 msgid "Novice"
 msgstr "ಹೊಸಬ"
 
@@ -2737,13 +2741,13 @@ msgstr "OK"
 msgid "On"
 msgstr "ಆನ್"
 
-#: src/components/MissionSetup.tsx:1019
-#: src/components/MissionSetup.tsx:1190
+#: src/components/MissionSetup.tsx:1026
+#: src/components/MissionSetup.tsx:1197
 msgid "On carrier"
 msgstr "ವಾಹಕದ ಮೇಲೆ"
 
-#: src/components/MissionSetup.tsx:1018
-#: src/components/MissionSetup.tsx:1189
+#: src/components/MissionSetup.tsx:1025
+#: src/components/MissionSetup.tsx:1196
 msgid "On runway"
 msgstr "ರನ್‌ವೇ ಮೇಲೆ"
 
@@ -2751,11 +2755,11 @@ msgstr "ರನ್‌ವೇ ಮೇಲೆ"
 msgid "Oops! Page Not Found!"
 msgstr "ಓ! ಪುಟ ಸಿಗಲಿಲ್ಲ!"
 
-#: src/components/Multiplayer.tsx:554
+#: src/components/Multiplayer.tsx:568
 msgid "Open"
 msgstr "ತೆರೆಯಿರಿ"
 
-#: src/components/Multiplayer.tsx:358
+#: src/components/Multiplayer.tsx:370
 msgid "Open — anyone may join or leave"
 msgstr "ಮುಕ್ತ — ಯಾರಾದರೂ ಸೇರಬಹುದು ಅಥವಾ ಹೊರಹೋಗಬಹುದು"
 
@@ -2888,15 +2892,15 @@ msgid "Pick a date"
 msgstr "ದಿನಾಂಕ ಆಯ್ಕೆಮಾಡಿ"
 
 #: src/components/MissionSetup.tsx:664
-#: src/components/Multiplayer.tsx:147
-#: src/components/Multiplayer.tsx:316
+#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:328
 msgid "pilot"
 msgstr "ಪೈಲಟ್"
 
-#: src/components/MissionSetup.tsx:996
-#: src/components/MissionSetup.tsx:1183
-#: src/components/MissionSetup.tsx:1242
-#: src/components/Multiplayer.tsx:487
+#: src/components/MissionSetup.tsx:1003
+#: src/components/MissionSetup.tsx:1190
+#: src/components/MissionSetup.tsx:1249
+#: src/components/Multiplayer.tsx:504
 msgid "Pilot"
 msgstr "ಪೈಲಟ್"
 
@@ -3001,8 +3005,8 @@ msgstr "ಪ್ರೊಫೈಲ್ ಉಳಿಸಲಾಗಿದೆ"
 msgid "Project members"
 msgstr "ಯೋಜನಾ ಸದಸ್ಯರು"
 
-#: src/components/MissionSetup.tsx:837
-#: src/components/MissionSetup.tsx:855
+#: src/components/MissionSetup.tsx:844
+#: src/components/MissionSetup.tsx:862
 msgid "Public servers"
 msgstr "ಸಾರ್ವಜನಿಕ ಸರ್ವರ್‌ಗಳು"
 
@@ -3043,7 +3047,7 @@ msgstr "ಈ ಸರ್ವರ್‌ನಲ್ಲಿ ನಿಮ್ಮ ಖಾತೆಗ
 msgid "Re-register your passkeys on this server"
 msgstr "ಈ ಸರ್ವರ್‌ನಲ್ಲಿ ನಿಮ್ಮ ಪಾಸ್‌ಕೀಗಳನ್ನು ಮರು-ನೋಂದಣಿ ಮಾಡಿ"
 
-#: src/components/MissionSetup.tsx:1272
+#: src/components/MissionSetup.tsx:1279
 msgid "Ready for Sortie"
 msgstr ""
 
@@ -3051,7 +3055,7 @@ msgstr ""
 msgid "REARMED"
 msgstr "ಮರು ಶಸ್ತ್ರಸಜ್ಜಿತ"
 
-#: src/components/MissionSetup.tsx:816
+#: src/components/MissionSetup.tsx:823
 msgid "Recent"
 msgstr "ಇತ್ತೀಚಿನ"
 
@@ -3076,11 +3080,11 @@ msgstr "ರೆಕಾರ್ಡಿಂಗ್"
 msgid "Recording saved"
 msgstr "ರೆಕಾರ್ಡಿಂಗ್ ಉಳಿಸಲಾಗಿದೆ"
 
-#: src/components/Multiplayer.tsx:598
+#: src/components/Multiplayer.tsx:612
 msgid "Red"
 msgstr "ಕೆಂಪು"
 
-#: src/components/Multiplayer.tsx:479
+#: src/components/Multiplayer.tsx:496
 msgid "Red bots"
 msgstr "ಕೆಂಪು ಬಾಟ್‌ಗಳು"
 
@@ -3097,7 +3101,7 @@ msgstr "ಆಸಕ್ತಿ ಕಡಿಮೆಗೊಳಿಸಿ"
 msgid "Reference"
 msgstr "ಉಲ್ಲೇಖ"
 
-#: src/components/Multiplayer.tsx:335
+#: src/components/Multiplayer.tsx:347
 msgid "Refresh"
 msgstr "ರಿಫ್ರೆಶ್ ಮಾಡಿ"
 
@@ -3572,7 +3576,7 @@ msgstr "ಮೂಲ ಮತ್ತು ಗಮ್ಯಸ್ಥಾನವನ್ನು ಹ
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:450
-#: src/components/MissionSetup.tsx:1289
+#: src/components/MissionSetup.tsx:1296
 #: src/components/SettingsDialog.tsx:1096
 #: src/components/SettingsDialog.tsx:1123
 msgid "Settings"
@@ -3639,7 +3643,7 @@ msgstr "ಸಣ್ಣ"
 msgid "Sort"
 msgstr "ವಿಂಗಡಿಸಿ"
 
-#: src/components/MissionSetup.tsx:1292
+#: src/components/MissionSetup.tsx:1299
 msgid "Sortie history & replays"
 msgstr ""
 
@@ -3655,11 +3659,11 @@ msgstr "ಧ್ವನಿ"
 msgid "Sources"
 msgstr "ಮೂಲಗಳು"
 
-#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:84
 msgid "Spaced"
 msgstr "ಅಂತರದ"
 
-#: src/components/Multiplayer.tsx:426
+#: src/components/Multiplayer.tsx:438
 msgid "Spaced spawns"
 msgstr "ಅಂತರದ ಪ್ರವೇಶಗಳು"
 
@@ -3697,7 +3701,7 @@ msgstr "ಸ್ಟಾಲ್, ಸ್ವಚ್ಛ ವಿನ್ಯಾಸ (Vs1)"
 msgid "Stall, landing config (Vs0)"
 msgstr "ಸ್ಟಾಲ್, ಲ್ಯಾಂಡಿಂಗ್ ವಿನ್ಯಾಸ (Vs0)"
 
-#: src/components/Multiplayer.tsx:415
+#: src/components/Multiplayer.tsx:427
 msgid "Start"
 msgstr "ಪ್ರಾರಂಭಿಸಿ"
 
@@ -3744,9 +3748,9 @@ msgstr "ಚಂದಾದಾರರಾಗಿ"
 msgid "Sunday"
 msgstr "ಭಾನುವಾರ"
 
-#: src/components/MissionSetup.tsx:998
-#: src/components/MissionSetup.tsx:1185
-#: src/components/Multiplayer.tsx:489
+#: src/components/MissionSetup.tsx:1005
+#: src/components/MissionSetup.tsx:1192
+#: src/components/Multiplayer.tsx:506
 msgid "Superhuman"
 msgstr "ಅತಿಮಾನವ"
 
@@ -3787,11 +3791,11 @@ msgstr "ಟ್ಯಾಗ್‌ಗಳು"
 msgid "TALLY"
 msgstr "ಶತ್ರು ಗೋಚರ"
 
-#: src/components/MissionSetup.tsx:960
+#: src/components/MissionSetup.tsx:967
 msgid "Task"
 msgstr ""
 
-#: src/components/MissionSetup.tsx:1287
+#: src/components/MissionSetup.tsx:1294
 msgid "Tasks, weather & loadout"
 msgstr ""
 
@@ -3804,11 +3808,11 @@ msgid "TEAM"
 msgstr "ತಂಡ"
 
 #: src/components/MatchHistory.tsx:142
-#: src/components/Multiplayer.tsx:554
+#: src/components/Multiplayer.tsx:568
 msgid "Teams"
 msgstr "ತಂಡಗಳು"
 
-#: src/components/Multiplayer.tsx:360
+#: src/components/Multiplayer.tsx:372
 msgid "Teams — red versus blue"
 msgstr "ತಂಡಗಳು — ಕೆಂಪು ವಿರುದ್ಧ ನೀಲಿ"
 
@@ -3870,15 +3874,15 @@ msgstr "ಥೀಮ್"
 msgid "Theme Settings"
 msgstr "ಥೀಮ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
 
-#: src/components/MissionSetup.tsx:1251
+#: src/components/MissionSetup.tsx:1258
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "ಈ ಬ್ರೌಸರ್ WebGL 2 ಅನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ, ಆದ್ದರಿಂದ ಆಟ ಚಲಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ — ಬೇರೆ ಬ್ರೌಸರ್ ಪ್ರಯತ್ನಿಸಿ."
 
-#: src/components/Multiplayer.tsx:274
+#: src/components/Multiplayer.tsx:286
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "ಈ ಲಾಬಿ ನಿಮ್ಮ ಆಟದ ಸಂಪರ್ಕವನ್ನು ಬೇರೆ ಸರ್ವರ್‌ಗೆ ({redirectHost}) ಮರುನಿರ್ದೇಶಿಸುತ್ತಿದೆ. ಈ ಸರ್ವರ್ ಅನ್ನು ನೀವು ನಂಬಿದರೆ ಮಾತ್ರ ಮುಂದುವರಿಸಿ."
 
-#: src/components/MissionSetup.tsx:1255
+#: src/components/MissionSetup.tsx:1262
 msgid "This machine may be too slow for smooth flight."
 msgstr "ನಯವಾದ ಹಾರಾಟಕ್ಕೆ ಈ ಯಂತ್ರ ತುಂಬಾ ನಿಧಾನವಾಗಿರಬಹುದು."
 
@@ -3920,7 +3924,7 @@ msgstr "ಬಾಗು"
 msgid "Time"
 msgstr "ಸಮಯ"
 
-#: src/components/MissionSetup.tsx:1058
+#: src/components/MissionSetup.tsx:1065
 msgid "Time of day"
 msgstr "ದಿನದ ಸಮಯ"
 
@@ -4100,27 +4104,27 @@ msgstr "ಯುನೈಟೆಡ್ ಸ್ಟೇಟ್ಸ್"
 msgid "Unknown"
 msgstr "ಅಜ್ಞಾತ"
 
-#: src/components/Multiplayer.tsx:392
+#: src/components/Multiplayer.tsx:404
 msgid "Unlimited"
 msgstr "ಅಪರಿಮಿತ"
 
-#: src/components/MissionSetup.tsx:1111
-#: src/components/Multiplayer.tsx:88
-#: src/components/Multiplayer.tsx:453
+#: src/components/MissionSetup.tsx:1118
+#: src/components/Multiplayer.tsx:91
+#: src/components/Multiplayer.tsx:465
 msgid "Unlimited ammunition"
 msgstr "ಅನಿಯಮಿತ ಮದ್ದುಗುಂಡು"
 
-#: src/components/MissionSetup.tsx:1111
+#: src/components/MissionSetup.tsx:1118
 msgid "Unlimited ammunition (all players)"
 msgstr "ಅನಿಯಮಿತ ಮದ್ದುಗುಂಡು (ಎಲ್ಲಾ ಆಟಗಾರರು)"
 
-#: src/components/MissionSetup.tsx:1117
-#: src/components/Multiplayer.tsx:89
-#: src/components/Multiplayer.tsx:463
+#: src/components/MissionSetup.tsx:1124
+#: src/components/Multiplayer.tsx:92
+#: src/components/Multiplayer.tsx:475
 msgid "Unlimited fuel"
 msgstr "ಅನಿಯಮಿತ ಇಂಧನ"
 
-#: src/components/MissionSetup.tsx:1117
+#: src/components/MissionSetup.tsx:1124
 msgid "Unlimited fuel (all players)"
 msgstr "ಅನಿಯಮಿತ ಇಂಧನ (ಎಲ್ಲಾ ಆಟಗಾರರು)"
 
@@ -4265,12 +4269,12 @@ msgstr "ಆಯುಧ"
 msgid "Weapon select hat"
 msgstr "ಶಸ್ತ್ರ ಆಯ್ಕೆ ಹ್ಯಾಟ್"
 
-#: src/components/Multiplayer.tsx:387
+#: src/components/Multiplayer.tsx:399
 #: src/components/SettingsDialog.tsx:96
 msgid "Weapons"
 msgstr "ಆಯುಧಗಳು"
 
-#: src/components/Multiplayer.tsx:365
+#: src/components/Multiplayer.tsx:377
 msgid "Weather"
 msgstr "ಹವಾಮಾನ"
 
@@ -4300,12 +4304,12 @@ msgstr "ರೆಕ್ಕೆ ಮಡಚುವಿಕೆ"
 msgid "WINS"
 msgstr "ಗೆದ್ದರು"
 
-#: src/components/Multiplayer.tsx:300
+#: src/components/Multiplayer.tsx:312
 msgid "World server"
 msgstr "ವರ್ಲ್ಡ್ ಸರ್ವರ್"
 
 #: src/components/MissionSetup.tsx:706
-#: src/components/Multiplayer.tsx:160
+#: src/components/Multiplayer.tsx:163
 msgid "World server not reachable"
 msgstr "ವರ್ಲ್ಡ್ ಸರ್ವರ್ ತಲುಪಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ"
 
@@ -4355,7 +4359,7 @@ msgstr "ನಿಮ್ಮ ಲಗತ್ತುಗಳು ಕಳೆದುಹೋಗು�
 msgid "Your flights appear here once you've flown one."
 msgstr "ನೀವು ಒಂದು ಹಾರಾಟ ಮಾಡಿದ ನಂತರ ನಿಮ್ಮ ಹಾರಾಟಗಳು ಇಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತವೆ."
 
-#: src/components/Multiplayer.tsx:549
+#: src/components/Multiplayer.tsx:563
 msgid "your offer"
 msgstr "ನಿಮ್ಮ ಕೊಡುಗೆ"
 
