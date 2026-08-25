@@ -182,7 +182,7 @@ export function GameCanvas({
   const [menu, setMenu] = useState(false)
   const [settings, setSettings] = useState(false)
   const [settingsTab, setSettingsTab] = useState('general')
-  const [confirm, setConfirm] = useState<'exit' | 'restart' | null>(null)
+  const [confirm, setConfirm] = useState<'restart' | null>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   // The mission ended at a crash (#240): the engine reports how, and the menu
   // becomes the end-of-mission surface — outcome line, Fly again, no Resume.
@@ -433,12 +433,10 @@ export function GameCanvas({
               variant='outline'
               className='h-12 justify-start text-base'
               onClick={() => {
-                if (join) {
-                  setMenu(false)
-                  handleRef.current?.exit()
-                } else {
-                  setConfirm('exit')
-                }
+                // No confirmation: exiting SAVES the flight to the log, so there
+                // is nothing to lose — only Restart, which discards it, asks.
+                setMenu(false)
+                handleRef.current?.exit()
               }}
             >
               <LogOut className='size-4' />
@@ -475,14 +473,10 @@ export function GameCanvas({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {confirm === 'exit' ? <Trans>Exit mission?</Trans> : <Trans>Restart mission?</Trans>}
+              <Trans>Restart mission?</Trans>
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {confirm === 'exit' ? (
-                <Trans>The mission will end and your flight will be saved to the log.</Trans>
-              ) : (
-                <Trans>The mission will restart. The current flight will not be saved.</Trans>
-              )}
+              <Trans>The mission will restart. The current flight will not be saved.</Trans>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -492,12 +486,11 @@ export function GameCanvas({
             <AlertDialogAction
               onClick={() => {
                 setMenu(false)
-                if (confirm === 'exit') handleRef.current?.exit()
-                else onAgain?.()
+                onAgain?.()
                 setConfirm(null)
               }}
             >
-              {confirm === 'exit' ? <Trans>Exit</Trans> : <Trans>Restart</Trans>}
+              <Trans>Restart</Trans>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

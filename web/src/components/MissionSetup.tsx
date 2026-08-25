@@ -10,12 +10,12 @@ import {
   ChevronRight,
   Compass,
   History,
+  ClipboardList,
+  Info,
   LogIn,
   Play,
   Settings,
-  Sliders,
   TriangleAlert,
-  User,
   Users,
   X,
 } from 'lucide-react'
@@ -39,7 +39,6 @@ import {
 } from '@mochi/web/components/ui/select'
 import { Button } from '@mochi/web/components/ui/button'
 import { Label } from '@mochi/web/components/ui/label'
-import { Badge } from '@mochi/web/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@mochi/web/components/ui/card'
 import { Tabs, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
 import {
@@ -295,10 +294,10 @@ function Armament({
         )
       })()}
 
-      <SliderRow label={<Trans>Internal fuel</Trans>} value={fuel} min={1500} max={10800} step={100} decimals={0} suffix=' lb' onChange={onFuel} />
+      <SliderRow label={<Trans>Internal fuel</Trans>} value={fuel} min={1500} max={10800} step={100} decimals={0} suffix=' lb' tight onChange={onFuel} />
 
       {book && (
-        <div className='px-3 text-sm'>
+        <div className='px-3 text-xs'>
           {/* px-3 matches SliderRow's p-3, so this line's left edge sits under
               the fuel label above it. */}
           {/* jsx-text-ok: LB and ft·lb are the cockpit's own unit annunciations, verbatim like the IFEI */}
@@ -420,6 +419,7 @@ function CreditsDialog() {
     <Dialog>
       <DialogTrigger asChild>
         <Button type='button' variant='ghost' size='sm' className='text-muted-foreground hover:text-foreground text-xs gap-1.5 h-7 px-2'>
+          <Info className='size-3.5' />
           <Trans>Credits</Trans>
         </Button>
       </DialogTrigger>
@@ -740,34 +740,32 @@ function ServerFlow({
               </CardContent>
             </Card>
           )}
-          <Card>
-            <CardContent className='p-4 space-y-3'>
-              <button
-                type='button'
-                onClick={() => setPrivate(!private_)}
-                className='text-muted-foreground hover:text-foreground flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider transition-colors'
-              >
-                <ChevronRight className={`size-4 transition-transform ${entry ? 'rotate-90' : ''}`} />
-                <Trans>Connect to private server</Trans>
-              </button>
-              {entry && (
-                <div className='space-y-2 pt-1'>
-                  <Input
-                    value={address}
-                    placeholder={default_server()}
-                    onChange={(e) => setAddress(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && enter(address)}
-                  />
-                  <div className='flex justify-end'>
-                    <Button onClick={() => enter(address)} className='gap-2'>
-                      <LogIn className='size-4' />
-                      <Trans>Connect</Trans>
-                    </Button>
-                  </div>
+          <div>
+            <button
+              type='button'
+              onClick={() => setPrivate(!private_)}
+              className='text-muted-foreground hover:text-foreground mt-4 mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider transition-colors'
+            >
+              <ChevronRight className={`size-4 transition-transform ${entry ? 'rotate-90' : ''}`} />
+              <Trans>Connect to private server</Trans>
+            </button>
+            {entry && (
+              <div className='space-y-2'>
+                <Input
+                  value={address}
+                  placeholder={default_server()}
+                  onChange={(e) => setAddress(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && enter(address)}
+                />
+                <div className='flex justify-end'>
+                  <Button onClick={() => enter(address)} className='gap-2'>
+                    <LogIn className='size-4' />
+                    <Trans>Connect</Trans>
+                  </Button>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </div>
+            )}
+          </div>
         </div>
       </MenuDialog>
     )
@@ -845,7 +843,7 @@ function MissionPanel({
             </div>
 
             {config.task === 'joust' && (
-              <div className='grid grid-cols-2 gap-2.5 pt-1'>
+              <div className='space-y-2 pt-1'>
                 <div className='space-y-1'>
                   <Label className='text-xs text-muted-foreground uppercase font-medium'>
                     <Trans>Engagement</Trans>
@@ -854,8 +852,8 @@ function MissionPanel({
                     value={config.duel === 'bvr' ? 'bvr' : 'merge'}
                     onChange={(v) => set('duel', v as 'merge' | 'bvr')}
                     options={[
-                      { value: 'merge', label: <Trans>Merge (Pass)</Trans> },
-                      { value: 'bvr', label: <Trans>BVR (Start)</Trans> },
+                      { value: 'merge', label: <Trans>WVR, fight's on at the pass</Trans> },
+                      { value: 'bvr', label: <Trans>BVR, fight's on from the start</Trans> },
                     ]}
                   />
                 </div>
@@ -955,43 +953,35 @@ function MissionPanel({
           </div>
         </section>
 
-        <Card className='py-0'>
-          <CardContent className='p-3'>
-            <Collapsible open={cheatsOpen} onOpenChange={setCheatsOpen}>
-              <CollapsibleTrigger className='text-muted-foreground hover:text-foreground flex w-full items-center justify-between text-xs font-semibold tracking-wider uppercase'>
-                <span className='flex items-center gap-1.5'>
-                  <ChevronRight className={`size-4 transition-transform ${cheatsOpen ? 'rotate-90' : ''}`} />
-                  <Trans>Flight assists</Trans>
-                </span>
-                {anyCheat && (
-                  <Badge variant='warning' className='text-[10px] py-0 px-1.5'>
-                    <Trans>Active assists</Trans>
-                  </Badge>
-                )}
-              </CollapsibleTrigger>
-              <CollapsibleContent className='pt-3 space-y-2'>
+        <Collapsible open={cheatsOpen} onOpenChange={setCheatsOpen}>
+          <CollapsibleTrigger className='text-muted-foreground hover:text-foreground mt-4 mb-2 flex w-full items-center gap-1.5 text-xs font-medium tracking-wide uppercase'>
+            <ChevronRight className={`size-4 transition-transform ${cheatsOpen ? 'rotate-90' : ''}`} />
+            <Trans>Cheats</Trans>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
                 <SwitchRow
                   id='cheat-invulnerable'
+                  tight
                   label={config.task === 'free' ? <Trans>Invulnerable</Trans> : <Trans>Invulnerable (human players only)</Trans>}
                   checked={!!(config.cheats ?? {}).invulnerable}
                   onChange={(v) => setCheat('invulnerable', v)}
                 />
                 <SwitchRow
                   id='cheat-ammunition'
+                  tight
                   label={config.task === 'free' ? <Trans>Unlimited ammunition</Trans> : <Trans>Unlimited ammunition (all players)</Trans>}
                   checked={!!(config.cheats ?? {}).ammunition}
                   onChange={(v) => setCheat('ammunition', v)}
                 />
                 <SwitchRow
                   id='cheat-fuel'
+                  tight
                   label={config.task === 'free' ? <Trans>Unlimited fuel</Trans> : <Trans>Unlimited fuel (all players)</Trans>}
                   checked={!!(config.cheats ?? {}).fuel}
                   onChange={(v) => setCheat('fuel', v)}
                 />
-              </CollapsibleContent>
-            </Collapsible>
-          </CardContent>
-        </Card>
+          </CollapsibleContent>
+        </Collapsible>
       </div>
 
       <section>
@@ -1068,44 +1058,23 @@ export function MissionSetup({
 
   return (
     <div className='bg-background fixed inset-0 z-50 overflow-y-auto overflow-x-hidden'>
-      <div className='pointer-events-none fixed inset-0 flex items-center justify-center overflow-hidden opacity-[0.12] dark:opacity-[0.15]'>
-        <div className='size-[820px] shrink-0 rounded-full border border-dashed border-[var(--air-accent)]' />
-        <div className='absolute size-[560px] shrink-0 rounded-full border border-[var(--air-accent)]' />
-        <div className='absolute size-[300px] shrink-0 rounded-full border border-dashed border-[var(--air-accent)]' />
-        <div className='absolute h-full w-px bg-gradient-to-b from-transparent via-[var(--air-accent)] to-transparent' />
-        <div className='absolute h-px w-full bg-gradient-to-r from-transparent via-[var(--air-accent)] to-transparent' />
-      </div>
-
       <div className='flex min-h-full items-center justify-center p-6'>
         <div className='relative z-10 w-full max-w-lg space-y-6'>
-          <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-3'>
-            <div className='flex size-10 items-center justify-center rounded-lg border border-border bg-card shadow-xs'>
-              <svg
-                viewBox='0 0 24 24'
-                aria-hidden='true'
-                className='size-6 shrink-0'
-                fill='none'
-                stroke='var(--air-accent)'
-                strokeWidth={2}
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              >
-                <path d='M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z' />
-              </svg>
-            </div>
-            <div>
-              <h1 className='text-2xl font-bold tracking-tight'>Air</h1>
-              <p className='text-muted-foreground text-xs font-medium'>
-                <Trans>F/A-18C Strike Fighter</Trans>
-              </p>
-            </div>
+          <div className='flex items-center gap-2.5'>
+            <svg
+              viewBox='0 0 24 24'
+              aria-hidden='true'
+              className='text-primary size-6 shrink-0'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth={2}
+              strokeLinecap='round'
+              strokeLinejoin='round'
+            >
+              <path d='M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z' />
+            </svg>
+            <h1 className='text-2xl font-bold tracking-tight'>Air</h1>
           </div>
-          <Badge variant='outline' className='gap-1.5 px-2.5 py-1 font-mono text-xs'>
-            <User className='text-muted-foreground size-3' />
-            <span>{config.callsign || t`Pilot`}</span>
-          </Badge>
-        </div>
 
         {alert && dismissed !== alert && (
           <div className='flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-600'>
@@ -1126,20 +1095,13 @@ export function MissionSetup({
         )}
 
         <Card
-          className='border-primary/40 hover:border-primary transition-all cursor-pointer shadow-sm hover:shadow-md'
+          className='border-primary/40 hover:border-primary py-0 transition-all cursor-pointer shadow-sm hover:shadow-md'
           onClick={onStart}
         >
-          <CardContent className='p-5 flex items-center justify-between'>
-            <div className='space-y-1'>
-              <div className='flex items-center gap-2'>
-                <Badge variant='default' className='text-[10px] font-bold tracking-wider uppercase'>
-                  <Trans>Ready for Sortie</Trans>
-                </Badge>
-              </div>
-              <span className='text-muted-foreground font-mono text-xs'>
-                {started}
-              </span>
-            </div>
+          <CardContent className='px-5 py-3.5 flex items-center justify-between'>
+            <span className='text-foreground font-mono text-sm'>
+              {started}
+            </span>
             <Button size='lg' className='gap-2 font-bold px-6'>
               <Play className='size-5 fill-current' />
               <Trans>Fly</Trans>
@@ -1152,14 +1114,11 @@ export function MissionSetup({
             className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'
             onClick={() => setDialog('mission')}
           >
-            <div className='bg-muted text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center rounded-md transition-colors'>
-              <Sliders className='size-4' />
+            <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
+              <ClipboardList className='size-4' />
             </div>
             <div className='flex-1 min-w-0'>
               <div className='text-sm font-semibold truncate'><Trans>Create mission</Trans></div>
-              <div className='text-muted-foreground text-[11px] leading-tight line-clamp-1'>
-                <Trans>Tasks, weather and loadout</Trans>
-              </div>
             </div>
           </Card>
 
@@ -1167,14 +1126,11 @@ export function MissionSetup({
             className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'
             onClick={() => setDialog('server')}
           >
-            <div className='bg-muted text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center rounded-md transition-colors'>
+            <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
               <Users className='size-4' />
             </div>
             <div className='flex-1 min-w-0'>
               <div className='text-sm font-semibold truncate'><Trans>Join server</Trans></div>
-              <div className='text-muted-foreground text-[11px] leading-tight line-clamp-1'>
-                <Trans>Multiplayer dogfights</Trans>
-              </div>
             </div>
           </Card>
 
@@ -1182,14 +1138,11 @@ export function MissionSetup({
             className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'
             onClick={() => setDialog('settings')}
           >
-            <div className='bg-muted text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center rounded-md transition-colors'>
+            <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
               <Settings className='size-4' />
             </div>
             <div className='flex-1 min-w-0'>
               <div className='text-sm font-semibold truncate'><Trans>Settings</Trans></div>
-              <div className='text-muted-foreground text-[11px] leading-tight line-clamp-1'>
-                <Trans>Avionics, HOTAS and audio</Trans>
-              </div>
             </div>
           </Card>
 
@@ -1199,26 +1152,20 @@ export function MissionSetup({
             className='contents'
           >
             <Card className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'>
-              <div className='bg-muted text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center rounded-md transition-colors'>
+              <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
                 <History className='size-4' />
               </div>
               <div className='flex-1 min-w-0'>
                 <div className='text-sm font-semibold truncate'><Trans>Flight log</Trans></div>
-                <div className='text-muted-foreground text-[11px] leading-tight line-clamp-1'>
-                  <Trans>Sortie log and replays</Trans>
-                </div>
               </div>
             </Card>
           </Link>
         </div>
 
-        <div className='text-muted-foreground border-border flex items-center justify-between border-t pt-4 text-xs'>
-          <div className='flex items-center gap-2'>
-            <ReferenceDialog />
-            <span>•</span>
-            <CreditsDialog />
-          </div>
-          <span className='font-mono text-[11px] opacity-60'><Trans>F/A-18C Hornet</Trans></span>
+        <div className='text-muted-foreground border-border flex items-center justify-center gap-2 border-t pt-4 text-xs'>
+          <ReferenceDialog />
+          <span>•</span>
+          <CreditsDialog />
         </div>
       </div>
       </div>
@@ -1230,11 +1177,7 @@ export function MissionSetup({
         wide
         steady
         footer={
-          <div className='flex items-center justify-between'>
-            <div className='text-muted-foreground flex items-center gap-2 font-mono text-xs'>
-              <span className='size-2 rounded-full' style={{ background: 'var(--air-accent)' }} />
-              <span>{started}</span>
-            </div>
+          <div className='flex items-center justify-end'>
             <Button
               className='min-w-36 gap-2 font-semibold shadow-sm'
               onClick={() => {

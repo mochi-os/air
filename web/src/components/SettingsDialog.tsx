@@ -763,11 +763,11 @@ function GraphicsPanel({
   onChange: (config: MissionConfig) => void
 }) {
   const active = graphicsPreset(config)
-  const presets: { id: GraphicsPreset; label: ReactNode; desc: ReactNode }[] = [
-    { id: 'low', label: <Trans>Low</Trans>, desc: <Trans>Performance priority</Trans> },
-    { id: 'med', label: <Trans>Medium</Trans>, desc: <Trans>Balanced flight</Trans> },
-    { id: 'high', label: <Trans>High</Trans>, desc: <Trans>Enhanced visuals</Trans> },
-    { id: 'ultra', label: <Trans>Ultra</Trans>, desc: <Trans>Max fidelity</Trans> },
+  const presets: { id: GraphicsPreset; label: ReactNode }[] = [
+    { id: 'low', label: <Trans>Low</Trans> },
+    { id: 'med', label: <Trans>Medium</Trans> },
+    { id: 'high', label: <Trans>High</Trans> },
+    { id: 'ultra', label: <Trans>Ultra</Trans> },
   ]
 
   return (
@@ -786,13 +786,10 @@ function GraphicsPanel({
                 type='button'
                 variant={active === p.id ? 'default' : 'outline'}
                 size='sm'
-                className='h-auto flex-col items-start p-3 text-left'
+                className='text-xs font-semibold'
                 onClick={() => onChange({ ...config, ...GRAPHICS_PRESETS[p.id] })}
               >
-                <span className='text-xs font-bold'>{p.label}</span>
-                <span className={`text-[10px] mt-0.5 font-normal ${active === p.id ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}>
-                  {p.desc}
-                </span>
+                {p.label}
               </Button>
             ))}
           </div>
@@ -802,11 +799,11 @@ function GraphicsPanel({
       <section>
         
           <SectionLabel>
-            <Trans>Rendering detail</Trans>
+            <Trans>Detail</Trans>
           </SectionLabel>
         
         <div>
-          <div className='grid gap-3 sm:grid-cols-2'>
+          <div className='grid gap-1 sm:grid-cols-2'>
             <SliderRow
               label={<Trans>Resolution</Trans>}
               value={config.render_scale}
@@ -848,43 +845,49 @@ function GraphicsPanel({
       <section>
         
           <SectionLabel>
-            <Trans>Effects and toggles</Trans>
+            <Trans>Effects</Trans>
           </SectionLabel>
         
         <div>
-          <div className='grid gap-2.5 sm:grid-cols-2'>
+          <div className='grid gap-1 sm:grid-cols-2'>
             <SwitchRow
               id='dyn_res'
+              tight
               label={<Trans>Dynamic resolution</Trans>}
               checked={config.dyn_res}
               onChange={(v) => set('dyn_res', v)}
             />
             <SwitchRow
               id='lod'
+              tight
               label={<Trans>Distance LOD</Trans>}
               checked={config.lod}
               onChange={(v) => set('lod', v)}
             />
             <SwitchRow
               id='shadows'
+              tight
               label={<Trans>Shadows</Trans>}
               checked={config.shadows}
               onChange={(v) => set('shadows', v)}
             />
             <SwitchRow
               id='afterburner'
+              tight
               label={<Trans>Afterburner</Trans>}
               checked={config.afterburner}
               onChange={(v) => set('afterburner', v)}
             />
             <SwitchRow
               id='tracers'
+              tight
               label={<Trans>Tracers</Trans>}
               checked={config.tracers}
               onChange={(v) => set('tracers', v)}
             />
             <SwitchRow
               id='framerate'
+              tight
               label={<Trans>Framerate counter</Trans>}
               checked={config.framerate}
               onChange={(v) => set('framerate', v)}
@@ -946,6 +949,7 @@ function GeneralPanel({
         <div>
           <SwitchRow
             id='record'
+            tight
             label={<Trans>Record flights</Trans>}
             checked={config.record !== false}
             onChange={(v) => set('record', v)}
@@ -963,6 +967,7 @@ function GeneralPanel({
         <div>
           <SwitchRow
             id='hints'
+            tight
             label={<Trans>Flight hints</Trans>}
             checked={config.hints !== false}
             onChange={(v) => set('hints', v)}

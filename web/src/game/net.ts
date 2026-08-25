@@ -8,7 +8,7 @@
 // live, and match history. World servers are open and UNTRUSTED, and identity
 // is self-asserted.
 
-import { createAppClient } from '@mochi/web'
+import { createAppClient, getAppPath, useAuthStore } from '@mochi/web'
 import { authenticated } from '../lib/config-store'
 import { SIZE, STATE } from './flight'
 import { frame, frames } from './framing'
@@ -852,7 +852,18 @@ export async function record(match: {
   cheated: number
 }): Promise<void> {
   try {
-    await client.post('-/match/record', match)
+    // fetch keepalive, not the app client: this row is written as the pilot
+    // LEAVES — often from a pagehide or an unmount — and a plain request dies
+    // with the page. keepalive survives page death, and the row is tiny.
+    await authenticated()
+    const token = useAuthStore.getState().token
+    await fetch((getAppPath() || '/air') + '/-/match/record', {
+      method: 'POST',
+      keepalive: true,
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: token.startsWith('Bearer ') ? token : 'Bearer ' + token } : {}) },
+      body: JSON.stringify(match),
+    })
   } catch { /* anonymous or offline — history is best-effort */ }
 }
 
