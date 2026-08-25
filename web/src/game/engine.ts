@@ -3726,7 +3726,7 @@ addEventListener("keydown",e=>{ if(e.target instanceof HTMLInputElement||e.targe
 addEventListener("keyup",e=>{ keys.delete(e.code); keys.delete("Shift+"+e.code);
 	if(e.code==="ShiftLeft"||e.code==="ShiftRight") for(const held of [...keys]) if(held.startsWith("Shift+")) keys.delete(held); },{ signal });
 addEventListener("blur",()=>keys.clear(),{ signal });
-addEventListener("pagehide",()=>{ if(MULTIPLAYER) net_finish("left"); },{ signal });   // closing/navigating the tab sends a clean leave — otherwise the QUIC connection lingers as a ghost player (the browser ACKs snapshots even with the page dead)
+addEventListener("pagehide",()=>{ exit_match(); },{ signal });   // closing/navigating the tab: MP sends the clean leave (a ghost player otherwise — the browser ACKs snapshots with the page dead), SP salvages the match row over keepalive; the recording upload cannot outlive the page and is accepted as lost
 
 // ---- mouse look / orbit (keys.md §5): left-drag orbits the chase camera, sharing
 // cam_az/cam_el with the keyboard orbit and holding on release (no spring-back). Left
@@ -6631,7 +6631,8 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
 
   function stop() {
     // #57 parked: head_close()
-    if (MULTIPLAYER) net_finish('left')
+    exit_match()   // Back/unmount IS an exit (#212): the flight lands in the log with its recording — an SP navigation used to leave no trace at all
+    if (MULTIPLAYER) net_finish('left')   // idempotent backstop for a stop before the match clock started
     audio_enable(false)   // the frame-loop gate dies with the RAF below — silence the surviving AudioContext explicitly, or its loops play on under the menu
     try { __ac.abort() } catch { /* ignore */ }
     cancelAnimationFrame(__raf)

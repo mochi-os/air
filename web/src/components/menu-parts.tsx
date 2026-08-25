@@ -25,6 +25,7 @@ export function SliderRow({
   step,
   suffix,
   decimals = 0,
+  tight,
   onChange,
 }: {
   label: ReactNode
@@ -34,11 +35,12 @@ export function SliderRow({
   step: number
   suffix?: string
   decimals?: number
+  tight?: boolean // trim the vertical padding where the row sits in a dense stack (the armament column)
   onChange: (value: number) => void
 }) {
   const display = (decimals ? value.toFixed(decimals) : String(value)) + (suffix ?? '')
   return (
-    <div className='space-y-2 p-3'>
+    <div className={tight ? 'space-y-2 px-3 py-1' : 'space-y-2 p-3'}>
       <div className='flex items-center justify-between text-sm'>
         <Label className='text-card-foreground font-medium'>{label}</Label>
         <span
@@ -63,15 +65,17 @@ export function SwitchRow({
   id,
   label,
   checked,
+  tight,
   onChange,
 }: {
   id: string
   label: ReactNode
   checked: boolean
+  tight?: boolean // trim the vertical padding where the row sits in a dense stack
   onChange: (value: boolean) => void
 }) {
   return (
-    <div className='flex items-center justify-between gap-4 p-3'>
+    <div className={tight ? 'flex items-center justify-between gap-4 px-3 py-1' : 'flex items-center justify-between gap-4 p-3'}>
       <Label htmlFor={id} className='text-card-foreground cursor-pointer text-sm font-medium'>
         {label}
       </Label>
