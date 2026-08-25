@@ -197,6 +197,7 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
   const state = useRef<{ renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.PerspectiveCamera; jet: THREE.Group; wrap: THREE.Group } | null>(null)
   const wanted = useRef(stores)
   wanted.current = stores
+  const shape = JSON.stringify(normalize(stores))
 
   useEffect(() => {
     const host = mount.current
@@ -263,9 +264,9 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
   useEffect(() => {
     const s = state.current
     if (!s) return
-    dress(s.jet, stores)
+    dress(s.jet, wanted.current)
     s.renderer.render(s.scene, s.camera) // the camera stays where FULLEST framed it — the jet never moves
-  }, [stores])
+  }, [shape])
 
   return <div ref={mount} className='aspect-[29/10] w-full overflow-hidden' />
 }
