@@ -219,7 +219,9 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
     renderer.domElement.style.height = height + 'px'
     renderer.domElement.dataset.preview = 'loadout'
     host.appendChild(renderer.domElement)
+    let settled = false
     void fetch_models(renderer).then(() => {
+      settled = true
       if (gone || !airframe) return
       const scene = new THREE.Scene()
       scene.add(new THREE.HemisphereLight(0xdfe8f2, 0x54595e, 2.4))
@@ -248,6 +250,11 @@ export function LoadoutPreview({ stores }: { stores: Record<string, StationSlot>
     return () => {
       gone = true
       state.current = null
+      // dispose() does NOT hand the context back, and a page is allowed about
+      // sixteen live ones before the browser force-loses the OLDEST, which once
+      // the player is flying is the game's. forceContextLoss first, the order
+      // three's own TextureUtils uses.
+      if (settled) renderer.forceContextLoss()
       renderer.dispose()
       renderer.domElement.remove()
     }
