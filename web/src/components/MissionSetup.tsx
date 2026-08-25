@@ -660,12 +660,19 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
   const cursor = useRef(0)
   const lineRef = useRef<HTMLInputElement>(null)
   const boxRef = useRef<HTMLDivElement>(null)
+  // Whether the reader is parked on the newest line. Recorded when they SCROLL,
+  // never when a line lands: appending to a box that is already at the bottom
+  // moves the bottom away from an unchanged scrollTop and fires no scroll
+  // event, so the same measurement taken from the effect reads as "scrolled up"
+  // on any burst longer than the slack.
+  const stuck = useRef(true)
   const address = normalize_server(server || default_server())
   const name = (callsign || identity || t`pilot`).slice(0, 32)
 
   useEffect(() => {
     cursor.current = 0
     setLounge([])
+    stuck.current = true // a different server is a different room: start at its newest line
     let alive = true
     const pull = async () => {
       try {
@@ -687,13 +694,16 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
   }, [address])
 
   useEffect(() => {
-    boxRef.current?.scrollTo({ top: boxRef.current.scrollHeight })
+    if (!stuck.current) return // reading back through the room: a new line must not drag the view off it
+    const box = boxRef.current
+    box?.scrollTo({ top: box.scrollHeight })
   }, [lounge])
 
   const say = async () => {
     const words = lineRef.current?.value.trim()
     if (!words) return
     if (lineRef.current) lineRef.current.value = ''
+    stuck.current = true // saying something is asking to be shown it, wherever the reader had scrolled to
     try {
       await world_say(address, name, words)
       const reply = await world_chat(address, cursor.current)
@@ -712,7 +722,17 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
       <div className='text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase'>
         <Trans>Server chat</Trans>
       </div>
-      <div ref={boxRef} className='flex-1 space-y-0.5 overflow-y-auto rounded-lg border border-border bg-card p-2.5 text-sm'>
+      <div
+        ref={boxRef}
+        // A line's worth of slack: a reader a pixel or two off the bottom is
+        // still on the newest line, and scrollTop lands fractional at some zoom
+        // levels.
+        onScroll={(e) => {
+          const box = e.currentTarget
+          stuck.current = box.scrollHeight - box.scrollTop - box.clientHeight < 24
+        }}
+        className='flex-1 space-y-0.5 overflow-y-auto rounded-lg border border-border bg-card p-2.5 text-sm'
+      >
         {lounge.length === 0 && (
           <div className='text-muted-foreground text-xs'>
             {up ? <Trans>Nothing yet — say hello.</Trans> : <Trans>No world server.</Trans>}
