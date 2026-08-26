@@ -37,6 +37,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
   getErrorMessage,
+  useFormat,
   useShellStorage,
 } from '@mochi/web'
 import { useIdentityName } from '../lib/config-store'
@@ -227,6 +228,10 @@ function Armament({
   onFuel: (fuel: number) => void
   onPreset: (stores: Record<string, StationSlot>, fuel: number) => void
 }) {
+  // Through the app's formatter, not the browser's: History and the server
+  // list already format their numbers on the Mochi locale, and toLocaleString
+  // put a second thousands style on the same screen.
+  const { formatNumber } = useFormat()
   const read = () => {
     const raw = flight_catalog('fa18c')
     return raw ? resolve(raw) : null
@@ -397,7 +402,7 @@ function Armament({
             </span>
             <div className='flex items-center gap-2'>
               <span className='font-bold text-foreground tabular-nums' style={{ fontFamily: 'var(--air-mono)' }}>
-                {gross.toLocaleString()} lb
+                {formatNumber(gross)} lb
               </span>
               {gross > LAUNCH ? (
                 <Badge variant='destructive' className='text-[10px]'>
@@ -416,20 +421,20 @@ function Armament({
               <span>
                 <Trans>Lateral asymmetry</Trans>
               </span>
-              <span className='font-mono font-medium tabular-nums text-foreground'>{moment} ft·lb</span>
+              <span className='font-mono font-medium tabular-nums text-foreground'>{formatNumber(moment)} ft·lb</span>
             </div>
           )}
 
           {gross > LAUNCH && (
             <div className='flex items-center gap-1.5 pt-1 font-medium text-destructive'>
               <TriangleAlert className='size-4 shrink-0' />
-              <Trans>{gross - LAUNCH} lb over maximum launch weight</Trans>
+              <Trans>{formatNumber(gross - LAUNCH)} lb over maximum launch weight</Trans>
             </div>
           )}
           {catapult && moment > CATAPULT && (
             <div className='flex items-center gap-1.5 pt-1 font-medium text-destructive'>
               <TriangleAlert className='size-4 shrink-0' />
-              <Trans>{moment - CATAPULT} ft·lb over the catapult asymmetry limit</Trans>
+              <Trans>{formatNumber(moment - CATAPULT)} ft·lb over the catapult asymmetry limit</Trans>
             </div>
           )}
         </div>
@@ -462,7 +467,7 @@ function ReferenceDialog() {
           <Trans>Reference</Trans>
         </Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-2xl'>
+      <DialogContent aria-describedby={undefined} className='sm:max-w-2xl'>
         <DialogHeader>
           <DialogTitle>
             <Trans>F/A-18C reference</Trans>
@@ -520,7 +525,7 @@ function CreditsDialog() {
           <Trans>Credits</Trans>
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>
             <Trans>Credits</Trans>
