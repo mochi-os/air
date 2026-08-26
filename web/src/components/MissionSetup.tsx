@@ -503,6 +503,29 @@ function CreditsDialog() {
           </p>
           <p className='leading-relaxed'>
             <Trans>
+              Explosion animation <b>“Explosion02HD”</b> by <b>Unity Technologies</b> (Unity Labs
+              VFX image sequences), released under <b>CC0</b>. Modified: recompressed for the web.
+            </Trans>{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://unity.com/blog/engine-platform/free-vfx-image-sequences-flipbooks'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              Unity Labs
+            </a>{' '}
+            ·{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://creativecommons.org/publicdomain/zero/1.0/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              CC0
+            </a>
+          </p>
+          <p className='leading-relaxed'>
+            <Trans>
               Midway Atoll map — imagery contains modified <b>Copernicus Sentinel-2</b> data (2026);
               airfield geometry (runway, taxiways, aprons) © <b>OpenStreetMap</b> contributors,
               licensed under <b>ODbL</b>; coastline and reef data from <b>NOAA NCCOS</b> (public

@@ -4282,19 +4282,56 @@ function hit_sparks(x,y,z,vx,vy,vz,target,local){ _spark_count++; add_impact_mar
 		debris.ttl[k]=debris.life[k]=2.5+Math.random()*2;
 		debris.r[k]=0.16;debris.g[k]=0.16;debris.b[k]=0.17; } } }
 const transient_fx=[];
+// Flipbook fireball (#82): Unity Labs' CC0 Explosion02HD atlas — 25 frames in
+// a 5x5 grid running white-hot core to dark soot. The shader crossfades
+// adjacent frames and writes raw (no tone mapping), so the core stays hot; the
+// texture stays untagged so the authored frames pass through unconverted. The
+// KTX2 is flipY=false (compressed textures cannot flip), so cell v counts rows
+// from the image top.
+const boom_geo=new THREE.PlaneGeometry(1,1);
+let boom_tex=null;
+function boom_texture(){ if(!boom_tex){ boom_tex=new Promise(done=>{ ktx2_loader().load("images/explosion.ktx2",t=>{ t.colorSpace=THREE.NoColorSpace;   // the container says sRGB, which would make the sampler linearize and the raw shader write those darker values to screen
+	renderer.initTexture(t);
+	// Warm-up: one microscopic burst through the normal path, so the shader
+	// program compiles and the atlas reaches the GPU now — a cold first
+	// detonation stalled ~0.4 s and lost its white-hot opening frames.
+	const warm=new THREE.Mesh(boom_geo,boom_material(t)); warm.scale.setScalar(.001); warm.position.set(0,-100,0); scene.add(warm);
+	transient_fx.push({mesh:warm,age:0,life:.1,boom:true,size:.001,roll:0,stagger:0});
+	done(t); },undefined,()=>done(null)); }); } return boom_tex; }
+boom_texture();   // prefetch: the first burst of a fight should not wait on the network
+function boom_material(t){ return new THREE.ShaderMaterial({ transparent:true, depthWrite:false, side:THREE.DoubleSide,
+	uniforms:{ map:{value:t}, frame:{value:0}, fade:{value:1} },
+	vertexShader:"varying vec2 v; void main(){ v=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }",
+	fragmentShader:"uniform sampler2D map; uniform float frame; uniform float fade; varying vec2 v;\n"
+		+"vec4 cell(float f){ return texture2D(map,vec2((v.x+mod(f,5.0))/5.0,(floor(f/5.0)+1.0-v.y)/5.0)); }\n"
+		+"void main(){ float f=clamp(frame,0.0,24.0); vec4 c=mix(cell(floor(f)),cell(min(floor(f)+1.0,24.0)),fract(f)); gl_FragColor=vec4(c.rgb,c.a*fade); }" }); }
 function transient_blast(x,y,z,water){ if((cfg.effects_quality??2)<1) return;
-	const mat=new THREE.MeshBasicMaterial({color:water?0xd9f4ff:0xffb34d,transparent:true,opacity:.72,depthWrite:false,blending:water?THREE.NormalBlending:THREE.AdditiveBlending,side:THREE.DoubleSide,toneMapped:false});
-	const mesh=new THREE.Mesh(new THREE.RingGeometry(.45,1,48),mat); mesh.position.set(x,water?.12:y,z); if(water) mesh.rotation.x=-Math.PI/2; else mesh.quaternion.copy(camera.quaternion); scene.add(mesh);
-	const light=new THREE.PointLight(water?0xcceeff:0xff8b32,water?14:38,water?35:75,2); light.position.set(x,y+1,z); scene.add(light); transient_fx.push({mesh,light,age:0,life:water?.75:.34,water}); }
-function update_transient_fx(dt){ for(let i=transient_fx.length-1;i>=0;i--){ const f=transient_fx[i]; f.age+=dt; const t=f.age/f.life; if(t>=1){ scene.remove(f.mesh,f.light); f.mesh.material.dispose(); f.mesh.geometry.dispose(); transient_fx.splice(i,1); continue; }
-	const s=(f.water?3:2)+t*(f.water?24:15); f.mesh.scale.setScalar(s); f.mesh.material.opacity=(1-t)*(f.water?.55:.72); f.light.intensity=(1-t)*(f.water?14:38); if(!f.water) f.mesh.quaternion.copy(camera.quaternion); } }
+	const light=new THREE.PointLight(water?0xcceeff:0xff8b32,water?14:38,water?35:75,2); light.position.set(x,y+1,z); scene.add(light);
+	if(water){ const mat=new THREE.MeshBasicMaterial({color:0xd9f4ff,transparent:true,opacity:.72,depthWrite:false,side:THREE.DoubleSide,toneMapped:false});
+		const mesh=new THREE.Mesh(new THREE.RingGeometry(.45,1,48),mat); mesh.position.set(x,.12,z); mesh.rotation.x=-Math.PI/2; scene.add(mesh);
+		transient_fx.push({mesh,light,age:0,life:.75,water:true}); return; }
+	transient_fx.push({light,age:0,life:.34});   // the flash light keeps its own fast fade
+	boom_texture().then(t=>{ if(!t) return;   // fetch failure: the particle stages still burn
+		for(let i=0;i<2;i++){ const mesh=new THREE.Mesh(boom_geo,boom_material(t));
+			const size=(i?15:11)+Math.random()*4; mesh.position.set(x,y+1,z); mesh.scale.setScalar(size); scene.add(mesh);
+			transient_fx.push({mesh,age:0,life:i?1.15:.9,boom:true,size,roll:Math.random()*Math.PI*2,stagger:i?-1.5:0}); } }); }
+function update_transient_fx(dt){ for(let i=transient_fx.length-1;i>=0;i--){ const f=transient_fx[i]; f.age+=dt; const t=f.age/f.life;
+	if(t>=1){ if(f.mesh){ scene.remove(f.mesh); f.mesh.material.dispose(); if(!f.boom) f.mesh.geometry.dispose(); } if(f.light) scene.remove(f.light); transient_fx.splice(i,1); continue; }
+	if(f.boom){ f.mesh.material.uniforms.frame.value=Math.max(0,t*25+(f.stagger||0)); f.mesh.material.uniforms.fade.value=t>.75?(1-t)*4:1;
+		f.mesh.scale.setScalar(f.size*(1+.5*t)); f.mesh.quaternion.copy(camera.quaternion); f.mesh.rotateZ(f.roll); }
+	else if(f.mesh){ const s=3+t*24; f.mesh.scale.setScalar(s); f.mesh.material.opacity=(1-t)*.55; }
+	if(f.light) f.light.intensity=(1-t)*(f.water?14:38); } }
 function explosion_at(x,y,z,kind){
 	audio_explosion(Math.hypot(x-ownship.pos.x,y-ownship.pos.y,z-ownship.pos.z));
 	const water=kind==="water"||(kind===undefined&&y<2); transient_blast(x,y,z,water);
 	// Two stages (#239): a fast-swelling fireball sooting into a slower dark
-	// cloud, plus shed wreckage on its own ballistic arcs.
-	for(let i=0;i<36;i++){ const k=pool_spawn(smoke); if(k<0) break;
-	const fire=i<14, a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=fire?(9+Math.random()*40):(3+Math.random()*15);
+	// cloud, plus shed wreckage on its own ballistic arcs. With the flipbook
+	// carrying the fireball (#82) only a few fire particles remain, for the
+	// parallax a flat card cannot give; low quality has no flipbook and keeps
+	// the full count.
+	const nf=(water||(cfg.effects_quality??2)<1)?14:5;
+	for(let i=0;i<nf+22;i++){ const k=pool_spawn(smoke); if(k<0) break;
+	const fire=i<nf, a=Math.random()*Math.PI*2, e=Math.random()*Math.PI-Math.PI/2, sp=fire?(9+Math.random()*40):(3+Math.random()*15);
 	smoke.px[k]=x; smoke.py[k]=y+1; smoke.pz[k]=z;
 	smoke.vx[k]=Math.cos(a)*Math.cos(e)*sp; smoke.vy[k]=Math.abs(Math.sin(e))*sp*0.8+6; smoke.vz[k]=Math.sin(a)*Math.cos(e)*sp;
 	smoke.ttl[k]=smoke.life[k]=fire?(0.5+Math.random()*0.7):(3.0+Math.random()*3.0);
@@ -4307,6 +4344,9 @@ function explosion_at(x,y,z,kind){
 	debris.vx[k]=Math.cos(a)*Math.cos(e)*sp; debris.vy[k]=Math.abs(Math.sin(e))*sp*0.7+8; debris.vz[k]=Math.sin(a)*Math.cos(e)*sp;
 	debris.ttl[k]=debris.life[k]=3.5+Math.random()*3;
 	debris.r[k]=0.15;debris.g[k]=0.15;debris.b[k]=0.16; } }
+if(DEV_MODE) (globalThis as any).dev_boom=function(distance){   // #82: audition the detonation visuals — burst dead ahead of the camera
+	const d=Number(distance)||150, v=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);
+	explosion_at(camera.position.x+v.x*d,camera.position.y+v.y*d,camera.position.z+v.z*d); };
 function crash_ownship(why){ if(crash_t>0) return; crash_t=3.0;
 	ownship.fate=ownship.fate||why||"pilot";   // how this life ended, for the recording (#238); the pilot-down path calls with no reason
 	if(!MULTIPLAYER) own_deaths++;   // local deaths count too — the history records the joust honestly (multiplayer's arrive via the net death event)
