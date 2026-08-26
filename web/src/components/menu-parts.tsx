@@ -3,9 +3,10 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-import { type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { Slider } from '@mochi/web/components/ui/slider'
 import { Switch } from '@mochi/web/components/ui/switch'
+import { Input } from '@mochi/web/components/ui/input'
 import { Label } from '@mochi/web/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@mochi/web/components/ui/dialog'
 
@@ -58,6 +59,68 @@ export function SliderRow({
         onChange={(e) => onChange(parseFloat(e.currentTarget.value))}
       />
     </div>
+  )
+}
+
+// A number box that can actually be typed into. Clamping on every keystroke
+// rewrote the value mid-entry: in a field with a floor of 1500, the first digit
+// of 2000 became 1500, and emptying the box snapped it to a default. The draft
+// keeps exactly what was typed and is only committed once it is a number the
+// range allows, or on blur / Enter, where it is clamped.
+export function NumberField({
+  id,
+  value,
+  min,
+  max,
+  step,
+  className,
+  onChange,
+}: {
+  id?: string
+  value: number
+  min: number
+  max: number
+  step?: number
+  className?: string
+  onChange: (value: number) => void
+}) {
+  const [draft, setDraft] = useState(String(value))
+  // The owner stays the source of truth: whatever it holds after a commit (or
+  // after changing the value itself) is what the box shows.
+  useEffect(() => setDraft(String(value)), [value])
+
+  const settle = () => {
+    const parsed = Number(draft)
+    const next = draft.trim() === '' || !Number.isFinite(parsed) ? value : Math.max(min, Math.min(max, parsed))
+    setDraft(String(next))
+    if (next !== value) onChange(next)
+  }
+
+  return (
+    <Input
+      id={id}
+      type='number'
+      inputMode='numeric'
+      min={min}
+      max={max}
+      step={step}
+      value={draft}
+      className={className}
+      onChange={(e) => {
+        const text = e.target.value
+        setDraft(text)
+        const parsed = Number(text)
+        // Live only while the typed number is already inside the range; a
+        // half-typed one waits for blur rather than being rewritten under the
+        // cursor.
+        if (text.trim() !== '' && Number.isFinite(parsed) && parsed >= min && parsed <= max && parsed !== value)
+          onChange(parsed)
+      }}
+      onBlur={settle}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') settle()
+      }}
+    />
   )
 }
 

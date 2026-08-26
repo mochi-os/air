@@ -8,16 +8,28 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import {
   Check,
   ChevronRight,
+  CloudRain,
   Compass,
+  Crosshair,
   History,
   ClipboardList,
   Info,
   LogIn,
+  Moon,
+  Plane,
+  PlaneTakeoff,
   Play,
   Settings,
+  Ship,
+  Signal,
+  SignalHigh,
+  SignalLow,
+  SignalMedium,
+  Sun,
   TriangleAlert,
   Users,
   X,
+  type LucideIcon,
 } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
 import {
@@ -75,12 +87,23 @@ import {
   type WorldChatLine,
 } from '../game/net'
 import { SliderRow, SwitchRow, MenuDialog } from './menu-parts'
+import { CLOUD_ICONS, START_ICONS, TOD_ICONS } from './menu-icons'
 import { SettingsDialog } from './SettingsDialog'
 
 
 const LoadoutPreview = lazy(() =>
   import('./LoadoutPreview').then((m) => ({ default: m.LoadoutPreview }))
 )
+
+// Both controls take an optional icon per option. The Select trigger and the
+// item row are already laid out as an icon-and-text flex pair upstream, so the
+// icon travels into the closed control along with the selection, and a list of
+// five near-identical words reads as a picture instead.
+interface Choice<T extends string> {
+  value: T
+  label: ReactNode
+  icon?: LucideIcon
+}
 
 function Segmented<T extends string>({
   value,
@@ -89,22 +112,65 @@ function Segmented<T extends string>({
 }: {
   value: T
   onChange: (value: T) => void
-  options: { value: T; label: ReactNode }[]
+  options: Choice<T>[]
 }) {
   return (
     <Tabs variant='segmented' value={value} onValueChange={(v) => onChange(v as T)} className='w-full'>
       <TabsList className='w-full flex'>
-        {options.map((o) => (
+        {options.map(({ value: v, label, icon: Icon }) => (
           <TabsTrigger
-            key={o.value}
-            value={o.value}
+            key={v}
+            value={v}
             className='flex-1 text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
           >
-            {o.label}
+            {Icon && <Icon className='size-3.5' />}
+            {label}
           </TabsTrigger>
         ))}
       </TabsList>
     </Tabs>
+  )
+}
+
+// The front page tiles. They are Cards rather than <button>s: a button's
+// content model has no room for the icon/title block, and wrapping one in
+// `display: contents` leaves no box for the focus ring to paint on. So the Card
+// carries the button role and answers Enter and Space itself, which is what a
+// real button would have given for free — without it the three dialogs behind
+// these tiles could not be opened from a keyboard at all. Flight log stays a
+// real link (middle-click, open in a new tab); its anchor has no box either, so
+// the ring is painted on the Card through the group.
+const TILE =
+  'hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group outline-none'
+
+function TileFace({ icon: Icon, title }: { icon: LucideIcon; title: ReactNode }) {
+  return (
+    <>
+      <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
+        <Icon className='size-4' />
+      </div>
+      <div className='flex-1 min-w-0'>
+        <div className='text-sm font-semibold truncate'>{title}</div>
+      </div>
+    </>
+  )
+}
+
+function Tile({ icon, title, onOpen }: { icon: LucideIcon; title: ReactNode; onOpen: () => void }) {
+  return (
+    <Card
+      role='button'
+      tabIndex={0}
+      onClick={onOpen}
+      onKeyDown={(e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return
+        e.preventDefault() // Space scrolls the page otherwise
+        onOpen()
+      }}
+      className={`${TILE} focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]`}
+    >
+      <TileFace icon={icon} title={title} />
+    </Card>
   )
 }
 
@@ -115,7 +181,7 @@ function Picker<T extends string>({
 }: {
   value: T
   onChange: (value: T) => void
-  options: { value: T; label: ReactNode }[]
+  options: Choice<T>[]
 }) {
   return (
     <Select value={value} onValueChange={(v) => onChange(v as T)}>
@@ -123,9 +189,10 @@ function Picker<T extends string>({
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {options.map((o) => (
-          <SelectItem key={o.value} value={o.value}>
-            {o.label}
+        {options.map(({ value: v, label, icon: Icon }) => (
+          <SelectItem key={v} value={v}>
+            {Icon && <Icon />}
+            {label}
           </SelectItem>
         ))}
       </SelectContent>
@@ -133,10 +200,13 @@ function Picker<T extends string>({
   )
 }
 
+// Full internal fuel, in pounds: the slider's ceiling, the default, and what
+// every stores preset loads.
+const FULL_FUEL = 10800
+
 function Armament({
   stores,
   fuel,
-  allowed,
   catapult,
   onChange,
   onFuel,
@@ -144,7 +214,6 @@ function Armament({
 }: {
   stores: Record<string, StationSlot>
   fuel: number
-  allowed: boolean
   catapult: boolean
   onChange: (stores: Record<string, StationSlot>) => void
   onFuel: (fuel: number) => void
@@ -212,7 +281,6 @@ function Armament({
     { name: 'fox2', title: 'Fox 2' },
     { name: 'fox3', title: 'Fox 3' },
   ]
-  const FUELS = { gun: 10800, fox2: 10800, fox3: 10800 }
   const w = book ? weight(loadout, book) : { hardware: 0, fuel: 0 }
   const gross = book ? Math.round(((book.empty + w.hardware + w.fuel) * 2.2046 + fuel) / 10) * 10 : 0
   const LAUNCH = 48000
@@ -236,7 +304,7 @@ function Armament({
               variant={active ? 'default' : 'outline'}
               size='sm'
               className='gap-1.5 text-xs font-semibold flex-1'
-              onClick={() => onPreset(structuredClone(PRESETS[entry.name]), FUELS[entry.name])}
+              onClick={() => onPreset(structuredClone(PRESETS[entry.name]), FULL_FUEL)}
             >
               {active && <Check className='size-3.5' />}
               {entry.title}
@@ -248,7 +316,7 @@ function Armament({
       {(() => {
         const cell = (station: number) => {
           const slot = loadout[String(station)]
-          const open = outcomes(station).filter((o) => allowed || !o.slot.stores.some((s) => s === '9m' || s === '120c'))
+          const open = outcomes(station)
           const current = outcome(station, slot)
           const usable = open.filter((o) => !o.hidden || o.id === current)
           const dead = usable.length <= 1
@@ -294,7 +362,7 @@ function Armament({
         )
       })()}
 
-      <SliderRow label={<Trans>Internal fuel</Trans>} value={fuel} min={1500} max={10800} step={100} decimals={0} suffix=' lb' tight onChange={onFuel} />
+      <SliderRow label={<Trans>Internal fuel</Trans>} value={fuel} min={1500} max={FULL_FUEL} step={100} decimals={0} suffix=' lb' tight onChange={onFuel} />
 
       {book && (
         <div className='px-3 text-xs'>
@@ -678,15 +746,17 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
   )
 }
 
+// Mounted only while the join dialog is open. useServers polls the public
+// listing every 30 seconds and cannot sit above an `if (!open) return null` —
+// hooks run either way, so the old shape polled from the moment the front page
+// loaded, for a dialog most sessions never open.
 function ServerFlow({
-  open,
   onClose,
   config,
   set,
   onChange,
   onJoin,
 }: {
-  open: boolean
   onClose: () => void
   config: MissionConfig
   set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
@@ -708,7 +778,14 @@ function ServerFlow({
     return () => abort.abort()
   }, [entered, config.world])
 
-  const pilot = config.pilot || crypto.randomUUID()
+  // Minted once per opening of this dialog, not once per render: called in the
+  // render body straight, crypto.randomUUID() handed out a fresh token on every
+  // keystroke and every 30-second server poll until enter() wrote one into the
+  // config, so the offer token identifying this player was never stable before
+  // it was saved.
+  const minted = useRef('')
+  if (!config.pilot && !minted.current) minted.current = crypto.randomUUID()
+  const pilot = config.pilot || minted.current
   const recents = String(config.servers ?? '').split('\n').filter(Boolean)
   const enter = (server: string) => {
     const chosen = server.trim() || default_server()
@@ -721,10 +798,13 @@ function ServerFlow({
     setEntered(false)
     onClose()
   }
-  if (!open) return null
   if (!entered) {
     const matched = (r: string) => (servers ?? []).find((s) => normalize_server(s.address) === normalize_server(r))
     const publics = (servers ?? []).filter((s) => !recents.some((r) => normalize_server(r) === normalize_server(s.address)))
+    // servers is null until the first response lands. Without a state of its
+    // own that showed the private-server card alone, which reads as "there are
+    // no public servers" — the answer this dialog does not have yet.
+    const listing = servers === null
     const bare = servers !== null && publics.length === 0 && recents.length === 0
     const entry = private_ || bare
     return (
@@ -748,6 +828,24 @@ function ServerFlow({
                     </Button>
                   )
                 })}
+              </CardContent>
+            </Card>
+          )}
+          {listing && (
+            <Card>
+              <CardHeader className='pb-2'>
+                <CardTitle className='text-sm font-semibold'>
+                  <Trans>Public servers</Trans>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className='space-y-1' aria-busy='true'>
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className='bg-muted h-9 animate-pulse rounded-md'
+                    style={{ animationDelay: `${i * 60}ms` }}
+                  />
+                ))}
               </CardContent>
             </Card>
           )}
@@ -859,8 +957,8 @@ function MissionPanel({
                 value={config.task}
                 onChange={(v) => set('task', v)}
                 options={[
-                  { value: 'free', label: <Trans>Free flight</Trans> },
-                  { value: 'joust', label: <Trans>Joust against bot</Trans> },
+                  { value: 'free', label: <Trans>Free flight</Trans>, icon: Plane },
+                  { value: 'joust', label: <Trans>Joust against bot</Trans>, icon: Crosshair },
                 ]}
               />
             </div>
@@ -875,8 +973,8 @@ function MissionPanel({
                     value={config.duel === 'bvr' ? 'bvr' : 'merge'}
                     onChange={(v) => set('duel', v as 'merge' | 'bvr')}
                     options={[
-                      { value: 'merge', label: <Trans>WVR, fight's on at the pass</Trans> },
-                      { value: 'bvr', label: <Trans>BVR, fight's on from the start</Trans> },
+                      { value: 'merge', label: <Trans>WVR, fight's on at the pass</Trans>, icon: START_ICONS.merge },
+                      { value: 'bvr', label: <Trans>BVR, fight's on from the start</Trans>, icon: START_ICONS.bvr },
                     ]}
                   />
                 </div>
@@ -888,10 +986,10 @@ function MissionPanel({
                     value={String(config.bandit || 'pilot') as 'novice' | 'pilot' | 'ace' | 'superhuman'}
                     onChange={(v) => set('bandit', v)}
                     options={[
-                      { value: 'novice', label: <Trans>Novice</Trans> },
-                      { value: 'pilot', label: <Trans>Pilot</Trans> },
-                      { value: 'ace', label: <Trans>Ace</Trans> },
-                      { value: 'superhuman', label: <Trans>Superhuman</Trans> },
+                      { value: 'novice', label: <Trans>Novice</Trans>, icon: SignalLow },
+                      { value: 'pilot', label: <Trans>Pilot</Trans>, icon: SignalMedium },
+                      { value: 'ace', label: <Trans>Ace</Trans>, icon: SignalHigh },
+                      { value: 'superhuman', label: <Trans>Superhuman</Trans>, icon: Signal },
                     ]}
                   />
                 </div>
@@ -910,12 +1008,12 @@ function MissionPanel({
                       onChange(seedStart(config, v as MissionConfig['start']))
                     }}
                     options={[
-                      { value: 'air', label: <Trans>In air</Trans> },
-                      { value: 'runway', label: <Trans>On runway</Trans> },
-                      { value: 'carrier', label: <Trans>On carrier</Trans> },
-                      { value: 'case1', label: <Trans>Case I (day)</Trans> },
-                      { value: 'case2', label: <Trans>Case II (weather)</Trans> },
-                      { value: 'case3', label: <Trans>Case III (night)</Trans> },
+                      { value: 'air', label: <Trans>In air</Trans>, icon: Plane },
+                      { value: 'runway', label: <Trans>On runway</Trans>, icon: PlaneTakeoff },
+                      { value: 'carrier', label: <Trans>On carrier</Trans>, icon: Ship },
+                      { value: 'case1', label: <Trans>Case I (day)</Trans>, icon: Sun },
+                      { value: 'case2', label: <Trans>Case II (weather)</Trans>, icon: CloudRain },
+                      { value: 'case3', label: <Trans>Case III (night)</Trans>, icon: Moon },
                     ]}
                   />
                 </div>
@@ -952,8 +1050,8 @@ function MissionPanel({
                 value={config.tod}
                 onChange={(v) => set('tod', v)}
                 options={[
-                  { value: 'day', label: <Trans>Day</Trans> },
-                  { value: 'night', label: <Trans>Night</Trans> },
+                  { value: 'day', label: <Trans>Day</Trans>, icon: TOD_ICONS.day },
+                  { value: 'night', label: <Trans>Night</Trans>, icon: TOD_ICONS.night },
                 ]}
               />
             </div>
@@ -965,11 +1063,11 @@ function MissionPanel({
                 value={config.clouds}
                 onChange={(v) => set('clouds', v)}
                 options={[
-                  { value: 'none', label: <Trans>None</Trans> },
-                  { value: 'cumulus', label: <Trans>Cumulus</Trans> },
-                  { value: 'high_stratus', label: <Trans>High stratus</Trans> },
-                  { value: 'mid_stratus', label: <Trans>Mid stratus</Trans> },
-                  { value: 'low_stratus', label: <Trans>Low stratus</Trans> },
+                  { value: 'none', label: <Trans>None</Trans>, icon: CLOUD_ICONS.none },
+                  { value: 'cumulus', label: <Trans>Cumulus</Trans>, icon: CLOUD_ICONS.cumulus },
+                  { value: 'high_stratus', label: <Trans>High stratus</Trans>, icon: CLOUD_ICONS.high_stratus },
+                  { value: 'mid_stratus', label: <Trans>Mid stratus</Trans>, icon: CLOUD_ICONS.mid_stratus },
+                  { value: 'low_stratus', label: <Trans>Low stratus</Trans>, icon: CLOUD_ICONS.low_stratus },
                 ]}
               />
             </div>
@@ -1010,8 +1108,7 @@ function MissionPanel({
       <section>
         <Armament
           stores={config.stores}
-          fuel={Number(config.fuel) || 10800}
-          allowed={true}
+          fuel={Number(config.fuel) || FULL_FUEL}
           catapult={config.start === 'carrier'}
           onChange={(v) => set('stores', v)}
           onFuel={(v) => set('fuel', v)}
@@ -1133,54 +1230,12 @@ export function MissionSetup({
         </Card>
 
         <div className='grid grid-cols-2 gap-3'>
-          <Card
-            className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'
-            onClick={() => setDialog('mission')}
-          >
-            <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
-              <ClipboardList className='size-4' />
-            </div>
-            <div className='flex-1 min-w-0'>
-              <div className='text-sm font-semibold truncate'><Trans>Create mission</Trans></div>
-            </div>
-          </Card>
-
-          <Card
-            className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'
-            onClick={() => setDialog('server')}
-          >
-            <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
-              <Users className='size-4' />
-            </div>
-            <div className='flex-1 min-w-0'>
-              <div className='text-sm font-semibold truncate'><Trans>Join server</Trans></div>
-            </div>
-          </Card>
-
-          <Card
-            className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'
-            onClick={() => setDialog('settings')}
-          >
-            <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
-              <Settings className='size-4' />
-            </div>
-            <div className='flex-1 min-w-0'>
-              <div className='text-sm font-semibold truncate'><Trans>Settings</Trans></div>
-            </div>
-          </Card>
-
-          <Link
-            to='/log'
-            search={(prev) => prev}
-            className='contents'
-          >
-            <Card className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'>
-              <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
-                <History className='size-4' />
-              </div>
-              <div className='flex-1 min-w-0'>
-                <div className='text-sm font-semibold truncate'><Trans>Flight log</Trans></div>
-              </div>
+          <Tile icon={ClipboardList} title={<Trans>Create mission</Trans>} onOpen={() => setDialog('mission')} />
+          <Tile icon={Users} title={<Trans>Join server</Trans>} onOpen={() => setDialog('server')} />
+          <Tile icon={Settings} title={<Trans>Settings</Trans>} onOpen={() => setDialog('settings')} />
+          <Link to='/log' search={(prev) => prev} className='contents group/tile'>
+            <Card className={`${TILE} group-focus-visible/tile:border-ring group-focus-visible/tile:ring-ring/50 group-focus-visible/tile:ring-[3px]`}>
+              <TileFace icon={History} title={<Trans>Flight log</Trans>} />
             </Card>
           </Link>
         </div>
@@ -1226,7 +1281,9 @@ export function MissionSetup({
         onTabChange={onTabChange}
       />
 
-      <ServerFlow open={dialog === 'server'} onClose={close} config={config} set={set} onChange={onChange} onJoin={onJoin} />
+      {dialog === 'server' && (
+        <ServerFlow onClose={close} config={config} set={set} onChange={onChange} onJoin={onJoin} />
+      )}
     </div>
   )
 }
