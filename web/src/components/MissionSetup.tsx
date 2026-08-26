@@ -698,15 +698,17 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
   )
 }
 
+// Mounted only while the join dialog is open. useServers polls the public
+// listing every 30 seconds and cannot sit above an `if (!open) return null` —
+// hooks run either way, so the old shape polled from the moment the front page
+// loaded, for a dialog most sessions never open.
 function ServerFlow({
-  open,
   onClose,
   config,
   set,
   onChange,
   onJoin,
 }: {
-  open: boolean
   onClose: () => void
   config: MissionConfig
   set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
@@ -728,7 +730,14 @@ function ServerFlow({
     return () => abort.abort()
   }, [entered, config.world])
 
-  const pilot = config.pilot || crypto.randomUUID()
+  // Minted once per opening of this dialog, not once per render: called in the
+  // render body straight, crypto.randomUUID() handed out a fresh token on every
+  // keystroke and every 30-second server poll until enter() wrote one into the
+  // config, so the offer token identifying this player was never stable before
+  // it was saved.
+  const minted = useRef('')
+  if (!config.pilot && !minted.current) minted.current = crypto.randomUUID()
+  const pilot = config.pilot || minted.current
   const recents = String(config.servers ?? '').split('\n').filter(Boolean)
   const enter = (server: string) => {
     const chosen = server.trim() || default_server()
@@ -741,10 +750,13 @@ function ServerFlow({
     setEntered(false)
     onClose()
   }
-  if (!open) return null
   if (!entered) {
     const matched = (r: string) => (servers ?? []).find((s) => normalize_server(s.address) === normalize_server(r))
     const publics = (servers ?? []).filter((s) => !recents.some((r) => normalize_server(r) === normalize_server(s.address)))
+    // servers is null until the first response lands. Without a state of its
+    // own that showed the private-server card alone, which reads as "there are
+    // no public servers" — the answer this dialog does not have yet.
+    const listing = servers === null
     const bare = servers !== null && publics.length === 0 && recents.length === 0
     const entry = private_ || bare
     return (
@@ -768,6 +780,24 @@ function ServerFlow({
                     </Button>
                   )
                 })}
+              </CardContent>
+            </Card>
+          )}
+          {listing && (
+            <Card>
+              <CardHeader className='pb-2'>
+                <CardTitle className='text-sm font-semibold'>
+                  <Trans>Public servers</Trans>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className='space-y-1' aria-busy='true'>
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className='bg-muted h-9 animate-pulse rounded-md'
+                    style={{ animationDelay: `${i * 60}ms` }}
+                  />
+                ))}
               </CardContent>
             </Card>
           )}
@@ -1204,7 +1234,9 @@ export function MissionSetup({
         onTabChange={onTabChange}
       />
 
-      <ServerFlow open={dialog === 'server'} onClose={close} config={config} set={set} onChange={onChange} onJoin={onJoin} />
+      {dialog === 'server' && (
+        <ServerFlow onClose={close} config={config} set={set} onChange={onChange} onJoin={onJoin} />
+      )}
     </div>
   )
 }
