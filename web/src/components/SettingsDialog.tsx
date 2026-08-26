@@ -23,7 +23,7 @@ import {
   X,
 } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
-import { shellSaveBlob, toast } from '@mochi/web'
+import { IconButton, shellSaveBlob, toast } from '@mochi/web'
 import { Badge } from '@mochi/web/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
 import {
@@ -662,26 +662,30 @@ function SoundPanel({
 function SearchBox({ query, onQuery }: { query: string; onQuery: (query: string) => void }) {
   const { t } = useLingui()
   return (
+    // Logical inset and padding, not left/right: air ships nine RTL locales
+    // (ar, ckb, fa, he, ku, ps, sd, ur, yi) and lib/web flips the document
+    // direction for them, so a physical `left-2.5` puts the magnifier on top of
+    // the Arabic text and the clear button where the magnifier belongs. Same
+    // ps-9 the other apps' search fields use.
     <div className='relative'>
-      <Search className='text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2' />
+      <Search className='text-muted-foreground pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2' />
       <Input
         value={query}
         placeholder={t`Search controls`}
         aria-label={t`Search controls`}
-        className='pl-8'
+        className='ps-9'
         onChange={(e) => onQuery(e.target.value)}
       />
       {query !== '' && (
-        <Button
+        <IconButton
           type='button'
           variant='ghost'
-          size='icon'
-          aria-label={t`Clear`}
-          className='text-muted-foreground hover:text-foreground absolute top-1/2 right-1 size-7 -translate-y-1/2'
+          label={t`Clear`}
+          className='text-muted-foreground hover:text-foreground absolute top-1/2 end-1 size-7 -translate-y-1/2'
           onClick={() => onQuery('')}
         >
           <X className='size-4' />
-        </Button>
+        </IconButton>
       )}
     </div>
   )
@@ -768,16 +772,15 @@ function KeysPanel({
                 <Trans>{pretty(taken.chord)} was already taken, and that control is now unbound.</Trans>
               )}
             </span>
-            <Button
+            <IconButton
               type='button'
               variant='ghost'
-              size='icon'
-              aria-label={t`Dismiss`}
+              label={t`Dismiss`}
               className='size-5 shrink-0'
               onClick={() => setTaken(null)}
             >
               <X className='size-3.5' />
-            </Button>
+            </IconButton>
           </div>
         )}
       </div>
