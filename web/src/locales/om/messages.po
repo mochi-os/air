@@ -35,34 +35,51 @@ msgid "[not set]"
 msgstr "[hin qindoofne]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:421
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Rasaasa # fudhate} other {Rasaasa # fudhate}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:650
+#: src/components/MissionSetup.tsx:718
 msgid "{0} created “{1}”"
 msgstr "{0} “{1}” uumeera"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:320
+#: src/components/Multiplayer.tsx:339
 msgid "{0} flying"
 msgstr "{0} balali'aa jiru"
 
 #. placeholder {0}: moment - CATAPULT
-#: src/components/MissionSetup.tsx:334
+#: src/components/MissionSetup.tsx:402
 msgid "{0} ft·lb over the catapult asymmetry limit"
 msgstr "{0} ft·lb daangaa wal-madaalummaa dhabuu katapultaa oli"
 
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:328
+#: src/components/MissionSetup.tsx:396
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb ulfaatina ol-ka'iinsa olaanaa caalaa"
 
+#. placeholder {0}: ordered.length
+#. placeholder {1}: matches.length
+#: src/components/MatchLog.tsx:328
+msgid "{0} of {1} flights"
+msgstr "Balalii {1} keessaa {0}"
+
+#. placeholder {0}: pretty(taken.chord)
+#: src/components/SettingsDialog.tsx:772
+msgid "{0} was already taken, and that control is now unbound."
+msgstr "{0} duraanuu fudhatamee ture, toʼannoon sunis amma hin hidhamne."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(lost.label)
+#: src/components/SettingsDialog.tsx:768
+msgid "{0} was on {1}, which is now unbound."
+msgstr "{0} {1} irra ture, kunis amma hin hidhamne."
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:550
+#: src/components/Multiplayer.tsx:570
 msgid "{0}/{1} players"
 msgstr "Taphattoota {0}/{1}"
 
@@ -90,13 +107,17 @@ msgstr "Maqaa {entityLabel}"
 msgid "{entityLabel} name is required"
 msgstr "Maqaan {entityLabel} barbaachisaadha"
 
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:233
 msgid "{name}'s match"
 msgstr "Dorgommii {name}"
 
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:29
 msgid "{opponentName} offered a draw"
 msgstr "{opponentName} qixxee dhiyeesse"
+
+#: src/components/Multiplayer.tsx:532
+msgid "{placed} of {limit} bots"
+msgstr "Boota {limit} keessaa {placed}"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:248
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:52
@@ -132,7 +153,7 @@ msgstr "HAADA 1"
 msgid "12 hours"
 msgstr "Sa'aatii 12"
 
-#: src/components/MissionSetup.tsx:382
+#: src/components/MissionSetup.tsx:450
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -148,7 +169,7 @@ msgstr "Sa'aatii 24"
 msgid "3 WIRE"
 msgstr "HAADA 3"
 
-#: src/components/MissionSetup.tsx:385
+#: src/components/MissionSetup.tsx:453
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -172,19 +193,19 @@ msgstr "Sadarkaa seensaa"
 msgid "Account type"
 msgstr "Gosa akkaawuntii"
 
-#: src/components/MissionSetup.tsx:893
-#: src/components/MissionSetup.tsx:1061
-#: src/components/Multiplayer.tsx:482
+#: src/components/MissionSetup.tsx:991
+#: src/components/MissionSetup.tsx:1158
+#: src/components/Multiplayer.tsx:505
 msgid "Ace"
 msgstr "Jagna"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Acquire target"
 msgstr "Galma qabadhu"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Acquisition mode"
 msgstr "Haala qabannaa"
 
@@ -262,7 +283,7 @@ msgstr "Mul'ata dabali"
 msgid "Adding..."
 msgstr "Dabalaa jira..."
 
-#: src/components/SettingsDialog.tsx:877
+#: src/components/SettingsDialog.tsx:1004
 msgid "Afterburner"
 msgstr "Afterburner"
 
@@ -270,17 +291,25 @@ msgstr "Afterburner"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:93
+#: src/components/SettingsDialog.tsx:97
 msgid "Aircraft"
 msgstr "Xayyaara"
 
-#: src/components/MissionSetup.tsx:458
+#: src/components/MissionSetup.tsx:526
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Dooniin xiyyaa <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> kan <1>Muhamad Mirza Arrafi</1> (Sketchfab), <2>CC BY 4.0</2> jalatti hayyamame. Jijjiirame: irra deebiʼamee safarame, kallattiin isaa jijjiirame, hanga sarara bishaaniitti liqimfame, akkasumas weebiif salphifame."
 
-#: src/components/MissionSetup.tsx:434
+#: src/components/MissionSetup.tsx:502
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Moodeelii xayyaaraa <0>“F/A-18C Hornet”</0> kan <1>CreadorDeMu</1> (Sketchfab), hayyama <2>CC BY 4.0</2> jalatti. Jijjiirame: kallattiin isaa jijjiiramee irra deebiʼamee safarame, daataan teekstarii hin fayyadamne haqame, feʼumsawwan alaa gara faayilii addaatti addaan baafaman, meshiin golgaa tokko akka daawwitiitti garagalfame."
+
+#: src/components/MatchLog.tsx:293
+msgid "All modes"
+msgstr "Haala hunda"
+
+#: src/components/MatchLog.tsx:310
+msgid "All servers"
+msgstr "Sarvara hunda"
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -299,7 +328,7 @@ msgstr "Dogoggorri uumame"
 msgid "An unexpected error occurred"
 msgstr "Dogoggorri hin eegamne uumame"
 
-#: src/components/Multiplayer.tsx:420
+#: src/components/Multiplayer.tsx:438
 msgid "Anchored sides"
 msgstr "Gareewwan hidhaman"
 
@@ -320,12 +349,12 @@ msgstr "Namni seene kamiyyuu"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Wanti kamiyyuu nyaata kana ajaje fudhachuu ni dhaaba. Booda URL haaraa garagalchuu dandeessa."
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Approach power (ATC)"
 msgstr "Humna itti dhiyaachuu (ATC)"
 
-#: src/components/MissionSetup.tsx:355
+#: src/components/MissionSetup.tsx:423
 msgid "Approach, on-speed (Vapp)"
 msgstr "Dhiyaachuu, saffisa sirrii (Vapp)"
 
@@ -346,8 +375,8 @@ msgstr "Yaada kana haquu mirkanaa'oo dha? Kun deebii hundi haqama."
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Bahuu mirkanaa'oo dha? Akkaawuntii kee fayyadamuuf deebitee seenuu qabda."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Arrestor hook"
 msgstr "Hokkoo dhaabaa"
 
@@ -355,7 +384,7 @@ msgstr "Hokkoo dhaabaa"
 msgid "Ascending"
 msgstr "Ol kaʼaa"
 
-#: src/components/MissionSetup.tsx:318
+#: src/components/MissionSetup.tsx:386
 msgid "asymmetry"
 msgstr "madaallii dhabuu"
 
@@ -367,7 +396,7 @@ msgstr "Faayiloota yaadaa hidhi"
 msgid "Attach reply files"
 msgstr "Faayiloota deebii hidhi"
 
-#: src/components/SettingsDialog.tsx:603
+#: src/components/SettingsDialog.tsx:633
 msgid "Audio channels"
 msgstr "Chaanaaliiwwan sagalee"
 
@@ -392,15 +421,16 @@ msgstr "Fakkii"
 msgid "Avatar for {name}"
 msgstr "Fakkii {name}"
 
-#: src/components/SettingsDialog.tsx:445
+#: src/components/SettingsDialog.tsx:345
+#: src/components/SettingsDialog.tsx:473
 msgid "Axis {i}"
 msgstr "Siiqqee {i}"
 
-#: src/components/SettingsDialog.tsx:394
+#: src/components/SettingsDialog.tsx:422
 msgid "Axis calibration and mapping"
 msgstr "Kaalibreeshinii fi ramaddii siiqqee"
 
-#: src/components/GameCanvas.tsx:514
+#: src/components/GameCanvas.tsx:579
 msgid "back"
 msgstr "duuba"
 
@@ -414,7 +444,7 @@ msgstr "Duuba"
 msgid "Back to home"
 msgstr "Gara mana deebi’uu"
 
-#: src/components/MissionSetup.tsx:885
+#: src/components/MissionSetup.tsx:983
 msgid "Bandit"
 msgstr "Xiyyaara diinaa"
 
@@ -426,23 +456,23 @@ msgstr "Bannerii"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "250 GADI — KOOFIYAA FI QOCHOO"
 
-#: src/components/MissionSetup.tsx:346
+#: src/components/MissionSetup.tsx:414
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "Ol-ba'uu gaarii (Vy, dhiibbaa 100%)"
 
-#: src/components/MissionSetup.tsx:347
+#: src/components/MissionSetup.tsx:415
 msgid "Best climb (Vy, afterburner)"
 msgstr "Ol-ba'uu gaarii (Vy, afterburner)"
 
-#: src/components/MissionSetup.tsx:349
+#: src/components/MissionSetup.tsx:417
 msgid "Best glide (engines out)"
 msgstr "Gadi-bu'uu gaarii (injinoonni dhaabatan)"
 
-#: src/components/MissionSetup.tsx:351
+#: src/components/MissionSetup.tsx:419
 msgid "Best sustained turn speed"
 msgstr "Saffisa goruu itti-fufaa gaarii"
 
-#: src/components/SettingsDialog.tsx:560
+#: src/components/SettingsDialog.tsx:590
 msgid "Betty and RWR alerts"
 msgstr "Akeekkachiisa Betty fi RWR"
 
@@ -464,11 +494,11 @@ msgstr "Karaa hin amanamne irraa qajeelfamni dhorkame"
 msgid "Blocks"
 msgstr "Bloka"
 
-#: src/components/Multiplayer.tsx:602
+#: src/components/Multiplayer.tsx:622
 msgid "Blue"
 msgstr "Cuquliisa"
 
-#: src/components/Multiplayer.tsx:473
+#: src/components/Multiplayer.tsx:496
 msgid "Blue bots"
 msgstr "Botiiwwan cuquliisa"
 
@@ -489,7 +519,7 @@ msgstr "Fedhii cimsi"
 msgid "Border colour"
 msgstr "Halluu marsaa"
 
-#: src/components/Multiplayer.tsx:464
+#: src/components/Multiplayer.tsx:482
 msgid "Bots"
 msgstr "Bootota"
 
@@ -513,19 +543,20 @@ msgstr "QOPHOOFTU YOO TAATE MAR"
 msgid "Browser notifications"
 msgstr "Beeksisa barreessaa"
 
-#: src/components/SettingsDialog.tsx:521
+#: src/components/SettingsDialog.tsx:345
+#: src/components/SettingsDialog.tsx:549
 msgid "Button {i}"
 msgstr "Qabduu {i}"
 
-#: src/components/SettingsDialog.tsx:486
+#: src/components/SettingsDialog.tsx:514
 msgid "Button mappings"
 msgstr "Ramaddii qabduu"
 
-#: src/components/Multiplayer.tsx:414
+#: src/components/Multiplayer.tsx:432
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — meeshaaleen jalqabaa kaasee bilisa"
 
-#: src/components/MissionSetup.tsx:879
+#: src/components/MissionSetup.tsx:977
 msgid "BVR, fight's on from the start"
 msgstr "BVR, meeshaaleen jalqabaa kaasee bilisa"
 
@@ -533,16 +564,16 @@ msgstr "BVR, meeshaaleen jalqabaa kaasee bilisa"
 msgid "CALL THE BALL"
 msgstr "KUBBAA LABSI"
 
-#: src/components/Multiplayer.tsx:304
-#: src/components/SettingsDialog.tsx:929
+#: src/components/Multiplayer.tsx:323
+#: src/components/SettingsDialog.tsx:1056
 msgid "Callsign"
 msgstr "Maqaa waamichaa"
 
-#: src/components/SettingsDialog.tsx:727
+#: src/components/SettingsDialog.tsx:854
 msgid "Camera distance"
 msgstr "Fageenya kaameraa"
 
-#: src/components/SettingsDialog.tsx:745
+#: src/components/SettingsDialog.tsx:872
 msgid "Camera unavailable"
 msgstr "Kaameraan hin argamu"
 
@@ -560,10 +591,10 @@ msgstr "Kaameraan hin argamu"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:484
-#: src/components/Multiplayer.tsx:275
-#: src/components/Multiplayer.tsx:579
-#: src/components/SettingsDialog.tsx:693
+#: src/components/GameCanvas.tsx:549
+#: src/components/Multiplayer.tsx:294
+#: src/components/Multiplayer.tsx:599
+#: src/components/SettingsDialog.tsx:818
 msgid "Cancel"
 msgstr "Haquu"
 
@@ -575,11 +606,11 @@ msgstr "Yaada haquu"
 msgid "Cancel reply"
 msgstr "Deebii haquu"
 
-#: src/components/SettingsDialog.tsx:558
+#: src/components/SettingsDialog.tsx:588
 msgid "Cannons and ordnance"
 msgstr "Madfii fi rasaasa"
 
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:226
 msgid "Canopy"
 msgstr "Uwwisa kaabinii"
 
@@ -588,35 +619,35 @@ msgstr "Uwwisa kaabinii"
 msgid "Caption"
 msgstr "Ibsa"
 
-#: src/components/SettingsDialog.tsx:559
+#: src/components/SettingsDialog.tsx:589
 msgid "Carrier and ambient"
 msgstr "Doonii fi sagalee naannoo"
 
-#: src/components/MissionSetup.tsx:1068
+#: src/components/MissionSetup.tsx:1165
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:916
+#: src/components/MissionSetup.tsx:1014
 msgid "Case I (day)"
 msgstr "Haala I (guyyaa)"
 
-#: src/components/MissionSetup.tsx:1069
+#: src/components/MissionSetup.tsx:1166
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:917
+#: src/components/MissionSetup.tsx:1015
 msgid "Case II (weather)"
 msgstr "Haala II (haala qilleensaa)"
 
-#: src/components/MissionSetup.tsx:1070
+#: src/components/MissionSetup.tsx:1167
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:918
+#: src/components/MissionSetup.tsx:1016
 msgid "Case III (night)"
 msgstr "Haala III (halkan)"
 
-#: src/components/MissionSetup.tsx:926
+#: src/components/MissionSetup.tsx:1024
 msgid "Catapult"
 msgstr "Kaatapultii"
 
@@ -624,7 +655,7 @@ msgstr "Kaatapultii"
 msgid "Category for these notifications"
 msgstr "Beeksisota kanaaf ramaddii"
 
-#: src/components/MissionSetup.tsx:175
+#: src/components/MissionSetup.tsx:244
 msgid "Centerline"
 msgstr "Sarara giddugaleessa"
 
@@ -637,7 +668,7 @@ msgstr "CHAFF"
 msgid "Change notification category"
 msgstr "Ramaddii beeksisaa jijjiiri"
 
-#: src/components/GameCanvas.tsx:511
+#: src/components/GameCanvas.tsx:576
 msgid "Chase view:"
 msgstr "Mul'ata ari'achuu:"
 
@@ -645,17 +676,17 @@ msgstr "Mul'ata ari'achuu:"
 msgid "chat"
 msgstr "chaatii"
 
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:237
 msgid "Chat"
 msgstr "Chaattii"
 
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:238
 msgid "Chat to everyone"
 msgstr "Hunda waliin chaatii"
 
-#: src/components/MatchLog.tsx:218
-#: src/components/MissionSetup.tsx:982
-#: src/components/Multiplayer.tsx:428
+#: src/components/MatchLog.tsx:365
+#: src/components/MissionSetup.tsx:1080
+#: src/components/Multiplayer.tsx:446
 msgid "Cheats"
 msgstr "Gowwoomsaa"
 
@@ -682,7 +713,10 @@ msgstr "Afaan filadhu"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:365
+#: src/components/MatchLog.tsx:323
+#: src/components/MatchLog.tsx:379
+#: src/components/Multiplayer.tsx:384
+#: src/components/SettingsDialog.tsx:683
 msgid "Clear"
 msgstr "Cilliisi"
 
@@ -728,11 +762,11 @@ msgstr "Paanelii cufi / haqi"
 msgid "Close search"
 msgstr "Barbaadii cufi"
 
-#: src/components/GameCanvas.tsx:515
+#: src/components/GameCanvas.tsx:580
 msgid "closer"
 msgstr "dhihoo"
 
-#: src/components/MissionSetup.tsx:962
+#: src/components/MissionSetup.tsx:1060
 msgid "Clouds"
 msgstr "Duumessoota"
 
@@ -782,7 +816,7 @@ msgstr "Gocha yaadaa"
 msgid "Comments"
 msgstr "Yaadawwan"
 
-#: src/components/SettingsDialog.tsx:95
+#: src/components/SettingsDialog.tsx:99
 msgid "Communication"
 msgstr "Qunnamtii"
 
@@ -803,11 +837,11 @@ msgstr "Qindaa'ina mul'ataa sirreessi"
 msgid "Confirm"
 msgstr "Mirkaneessi"
 
-#: src/components/MissionSetup.tsx:786
+#: src/components/MissionSetup.tsx:884
 msgid "Connect"
 msgstr "Wal qunnamsiisi"
 
-#: src/components/MissionSetup.tsx:773
+#: src/components/MissionSetup.tsx:871
 msgid "Connect to private server"
 msgstr "Sarvara dhuunfaatti qindaa'i"
 
@@ -819,7 +853,7 @@ msgstr "Walitti hidhame"
 msgid "Connecting..."
 msgstr "Walqunnamsiisaa jira..."
 
-#: src/components/Multiplayer.tsx:323
+#: src/components/Multiplayer.tsx:342
 msgid "Connecting…"
 msgstr "Walqunnamaa jira…"
 
@@ -840,7 +874,7 @@ msgid "Contextual information and details."
 msgstr "Odeeffannoo fi caasaa naannoo."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:284
+#: src/components/Multiplayer.tsx:303
 msgid "Continue"
 msgstr "Itti fufi"
 
@@ -860,11 +894,11 @@ msgstr "Garagalfamee gara saanduqa garagalchaa"
 msgid "Copy"
 msgstr "Garagalchi"
 
-#: src/components/MissionSetup.tsx:350
+#: src/components/MissionSetup.tsx:418
 msgid "Corner speed (best instant turn)"
 msgstr "Saffisa golee (goruu battalaa gaarii)"
 
-#: src/components/Multiplayer.tsx:240
+#: src/components/Multiplayer.tsx:250
 msgid "Could not create the match"
 msgstr "Dorgommii uumuun hin milkoofne"
 
@@ -872,20 +906,20 @@ msgstr "Dorgommii uumuun hin milkoofne"
 msgid "Could not load this document. Please try again later."
 msgstr "Galmee kana fe'uu hin dandeenye. Booda yaali."
 
-#: src/components/MatchLog.tsx:106
+#: src/components/MatchLog.tsx:168
 msgid "Could not load your flights"
 msgstr "Balali'uuwwan kee fe'uun hin danda'amne"
 
-#: src/components/SettingsDialog.tsx:283
+#: src/components/SettingsDialog.tsx:288
 msgid "Could not save the profile"
 msgstr "Piroofaayilii olkaa'uun hin danda'amne"
 
-#: src/components/MatchLog.tsx:263
-#: src/components/MatchLog.tsx:269
+#: src/components/MatchLog.tsx:430
+#: src/components/MatchLog.tsx:436
 msgid "Could not save the recording"
 msgstr "Galmeen olkaa'amuu hin dandeenye"
 
-#: src/components/MissionSetup.tsx:632
+#: src/components/MissionSetup.tsx:700
 msgid "Could not send the message"
 msgstr "Ergaan ergamuu hin dandeenye"
 
@@ -905,12 +939,12 @@ msgstr "Mirkaneessa irra deebiʼaa jalqabuu hin dandeenye. Maaloo irra deebiʼii
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Akkaawuntii sana waliin mirkaneessuun hin danda'amne. Maaloo irra deebi'ii yaali."
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Countermeasures"
 msgstr "Tarkaanfii faallaa"
 
-#: src/components/GameCanvas.tsx:356
+#: src/components/GameCanvas.tsx:415
 msgid "Crashed"
 msgstr "Kufee caccabe"
 
@@ -931,16 +965,16 @@ msgstr "Uumi"
 msgid "Create {0}"
 msgstr "{0} uumi"
 
-#: src/components/Multiplayer.tsx:522
+#: src/components/Multiplayer.tsx:542
 msgid "Create and fly"
 msgstr "Uumiitii balali'i"
 
-#: src/components/Multiplayer.tsx:338
+#: src/components/Multiplayer.tsx:357
 msgid "Create match"
 msgstr "Dorgommii uumi"
 
-#: src/components/MissionSetup.tsx:1144
-#: src/components/MissionSetup.tsx:1199
+#: src/components/MissionSetup.tsx:1233
+#: src/components/MissionSetup.tsx:1254
 msgid "Create mission"
 msgstr "Ergama uumi"
 
@@ -958,14 +992,14 @@ msgstr "Uumame"
 msgid "Creating..."
 msgstr "Uumaa jira..."
 
-#: src/components/MissionSetup.tsx:423
-#: src/components/MissionSetup.tsx:429
+#: src/components/MissionSetup.tsx:491
+#: src/components/MissionSetup.tsx:497
 msgid "Credits"
 msgstr "Galata"
 
-#: src/components/MissionSetup.tsx:969
-#: src/components/Multiplayer.tsx:76
-#: src/components/Multiplayer.tsx:366
+#: src/components/MissionSetup.tsx:1067
+#: src/components/Multiplayer.tsx:86
+#: src/components/Multiplayer.tsx:385
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -981,8 +1015,8 @@ msgstr "Mataa keetiin"
 msgid "CUT"
 msgstr "BALAA"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:231
 msgid "Cycle view"
 msgstr "Mul'ata jijjiiruu"
 
@@ -995,17 +1029,17 @@ msgid "Data conflict"
 msgstr "Walitti bu'iinsa deetaa"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
-#: src/components/MatchLog.tsx:194
+#: src/components/MatchLog.tsx:341
 msgid "Date"
 msgstr "Guyyaa"
 
-#: src/components/MissionSetup.tsx:955
-#: src/components/Multiplayer.tsx:361
+#: src/components/MissionSetup.tsx:1053
+#: src/components/Multiplayer.tsx:380
 msgid "Day"
 msgstr "Guyyaa"
 
-#: src/components/MatchLog.tsx:183
-#: src/components/MatchLog.tsx:212
+#: src/components/MatchLog.tsx:274
+#: src/components/MatchLog.tsx:359
 msgid "Deaths"
 msgstr "Du'aa"
 
@@ -1071,7 +1105,7 @@ msgstr "Mul'ata haqi"
 msgid "Delete your account on the old server"
 msgstr "Akkaawuntii kee sarvaraa durii irraa haqi"
 
-#: src/components/MissionSetup.tsx:905
+#: src/components/MissionSetup.tsx:1003
 msgid "Departure / Recovery"
 msgstr "Ka'iinsa / qubannaa"
 
@@ -1083,11 +1117,11 @@ msgstr "Gad buʼaa"
 msgid "Description"
 msgstr "Ibsa"
 
-#: src/components/GameCanvas.tsx:350
+#: src/components/GameCanvas.tsx:409
 msgid "Destroyed by fire"
 msgstr "Ibiddaan barbadaa'e"
 
-#: src/components/SettingsDialog.tsx:802
+#: src/components/SettingsDialog.tsx:929
 msgid "Detail"
 msgstr "Bal'ina"
 
@@ -1095,8 +1129,8 @@ msgstr "Bal'ina"
 msgid "Details Panel"
 msgstr "Paanelii Bal'inaan"
 
-#: src/components/SettingsDialog.tsx:474
-#: src/components/SettingsDialog.tsx:538
+#: src/components/SettingsDialog.tsx:502
+#: src/components/SettingsDialog.tsx:566
 msgid "Detect"
 msgstr "Argi"
 
@@ -1111,7 +1145,7 @@ msgstr "Argi"
 msgid "Detect from web browser"
 msgstr "Weeb biraawsarii irraa argi"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:283
 msgid "Different game host"
 msgstr "Sarvara taphaa adda"
 
@@ -1131,24 +1165,25 @@ msgstr "Gati"
 msgid "Discard draft?"
 msgstr "Wixinee gatuu?"
 
-#: src/components/SettingsDialog.tsx:360
+#: src/components/SettingsDialog.tsx:388
 msgid "disconnected"
 msgstr "addaan citee"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchLog.tsx:93
+#: src/components/MatchLog.tsx:155
 msgid "Disconnected"
 msgstr "Hidhaan citeera"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
-#: src/components/MissionSetup.tsx:1114
+#: src/components/MissionSetup.tsx:1211
+#: src/components/SettingsDialog.tsx:778
 msgid "Dismiss"
 msgstr "Dhiisi"
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:233
 msgid "Display repeater"
 msgstr "Agarsiisa irra deebi'u"
 
@@ -1156,13 +1191,13 @@ msgstr "Agarsiisa irra deebi'u"
 msgid "Displays the mobile sidebar."
 msgstr "Cinaa moobaayilaa mul'isa."
 
-#: src/components/SettingsDialog.tsx:863
+#: src/components/SettingsDialog.tsx:990
 msgid "Distance LOD"
 msgstr "LOD fageenyaa"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:1065
+#: src/components/SettingsDialog.tsx:1160
 msgid "Done"
 msgstr "Xumurame"
 
@@ -1180,11 +1215,11 @@ msgstr "Buufachuun hin milkoofne"
 msgid "DOWNWIND 600 FEET"
 msgstr "QILLEENSA WAJJIN 600 FIITII"
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:578
 msgid "Drag"
 msgstr "Harkisi"
 
-#: src/components/Multiplayer.tsx:479
+#: src/components/Multiplayer.tsx:502
 msgid "Drone"
 msgstr "Diroonii"
 
@@ -1192,11 +1227,11 @@ msgstr "Diroonii"
 msgid "Duplicates"
 msgstr "Lameetfamtoota"
 
-#: src/components/MatchLog.tsx:197
+#: src/components/MatchLog.tsx:344
 msgid "Duration"
 msgstr "Yeroo"
 
-#: src/components/SettingsDialog.tsx:856
+#: src/components/SettingsDialog.tsx:983
 msgid "Dynamic resolution"
 msgstr "Resoluushinii dinaamikaawaa"
 
@@ -1247,15 +1282,15 @@ msgstr "Kaardii filatame sirreessi"
 msgid "Edit view"
 msgstr "Mul'annoo sirreessi"
 
-#: src/components/SettingsDialog.tsx:848
+#: src/components/SettingsDialog.tsx:975
 msgid "Effects"
 msgstr "Efektoota"
 
-#: src/components/SettingsDialog.tsx:826
+#: src/components/SettingsDialog.tsx:953
 msgid "Effects detail"
 msgstr "Bal'ina taatewwanii"
 
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:230
 msgid "Eject"
 msgstr "Eject"
 
@@ -1275,17 +1310,17 @@ msgstr "Koodii imeelii"
 msgid "EMERG JETT"
 msgstr "GATIINSA HATATTAMAA"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Emergency jettison (hold)"
 msgstr "Gatiinsa hatattamaa (qabadhu)"
 
-#: src/components/Multiplayer.tsx:549
+#: src/components/Multiplayer.tsx:569
 msgid "empty"
 msgstr "duwwaa"
 
-#: src/components/MissionSetup.tsx:194
-#: src/components/MissionSetup.tsx:205
+#: src/components/MissionSetup.tsx:263
+#: src/components/MissionSetup.tsx:274
 msgid "Empty pylon"
 msgstr "Paayilonii duwwaa"
 
@@ -1293,11 +1328,11 @@ msgstr "Paayilonii duwwaa"
 msgid "ENGAGED"
 msgstr "HALEELAA JIRA"
 
-#: src/components/MissionSetup.tsx:872
+#: src/components/MissionSetup.tsx:970
 msgid "Engagement"
 msgstr "Lola"
 
-#: src/components/SettingsDialog.tsx:556
+#: src/components/SettingsDialog.tsx:586
 msgid "Engine and afterburner"
 msgstr "Moottora fi Afterburner"
 
@@ -1309,15 +1344,15 @@ msgstr "Koodii imeelii kee irraa galchi"
 msgid "Enter your authenticator code"
 msgstr "Koodii mirkaneessaa kee galchi"
 
-#: src/components/GameCanvas.tsx:317
+#: src/components/GameCanvas.tsx:337
 msgid "Everyone"
 msgstr "Hunduu"
 
-#: src/components/GameCanvas.tsx:444
+#: src/components/GameCanvas.tsx:509
 msgid "Exit match"
 msgstr "Taphicha keessaa bahi"
 
-#: src/components/GameCanvas.tsx:444
+#: src/components/GameCanvas.tsx:509
 msgid "Exit mission"
 msgstr "Ergama irraa ba’i"
 
@@ -1332,20 +1367,20 @@ msgstr "Babalʼisi"
 msgid "Expand sidebar"
 msgstr "Sidebar baldhisi"
 
-#: src/components/MissionSetup.tsx:505
+#: src/components/MissionSetup.tsx:573
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
-msgstr Sochii dhoʼinsaa <0>“Explosion02HD”</0> kan <1>Unity Technologies</1> (tartiiba suuraa VFX Unity Labs), <2>CC0</2> jalatti gadhiifame. Fooyyaʼe: weebiif irra deebiʼamee dhiphifame."
+msgstr "Sochii dhoʼinsaa <0>“Explosion02HD”</0> kan <1>Unity Technologies</1> (tartiiba suuraa VFX Unity Labs), <2>CC0</2> jalatti gadhiifame. Fooyyaʼe: weebiif irra deebiʼamee dhiphifame."
 
-#: src/components/SettingsDialog.tsx:378
+#: src/components/SettingsDialog.tsx:406
 msgid "Export"
 msgstr "Alaa erguu"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Extend flaps"
 msgstr "Flaapii baasuu"
 
-#: src/components/SettingsDialog.tsx:818
+#: src/components/SettingsDialog.tsx:945
 msgid "Exterior detail"
 msgstr "Bal'ina alaa"
 
@@ -1357,7 +1392,7 @@ msgstr "URL alaa"
 msgid "Extra large"
 msgstr "Guddaa Akkaan"
 
-#: src/components/MissionSetup.tsx:370
+#: src/components/MissionSetup.tsx:438
 msgid "F/A-18C reference"
 msgstr "Wabii F/A-18C"
 
@@ -1441,7 +1476,7 @@ msgstr "Faayilota"
 msgid "Finish moving your account"
 msgstr "Akkaawuntii kee jijjiiruu fixadhu"
 
-#: src/components/MatchLog.tsx:94
+#: src/components/MatchLog.tsx:156
 msgid "Finished"
 msgstr "Xumurame"
 
@@ -1449,12 +1484,12 @@ msgstr "Xumurame"
 msgid "fire"
 msgstr "dhukaasuu"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Fire weapon"
 msgstr "Meeshaa waraanaa dhukaasi"
 
-#: src/components/SettingsDialog.tsx:719
+#: src/components/SettingsDialog.tsx:846
 msgid "Fixed flight keys"
 msgstr "Furtuuwwan balali'uu dhaabbataa"
 
@@ -1482,11 +1517,11 @@ msgstr "IBSAA"
 msgid "Flat"
 msgstr "Diriiraa"
 
-#: src/components/GameCanvas.tsx:352
+#: src/components/GameCanvas.tsx:411
 msgid "Flew into the sea"
 msgstr "Galaanatti kufe"
 
-#: src/components/SettingsDialog.tsx:90
+#: src/components/SettingsDialog.tsx:94
 msgid "Flight"
 msgstr "Balali'uu"
 
@@ -1494,37 +1529,37 @@ msgstr "Balali'uu"
 msgid "FLIGHT CORE FAILED"
 msgstr "HANDHUURRI BALALII HIN MILKOOFNE"
 
-#: src/components/SettingsDialog.tsx:971
+#: src/components/SettingsDialog.tsx:1098
 msgid "Flight hints"
 msgstr "Gorsa balali'uu"
 
-#: src/components/MissionSetup.tsx:1182
+#: src/components/MissionSetup.tsx:1238
 msgid "Flight log"
 msgstr "Galmee balali'uu"
 
-#: src/components/MatchLog.tsx:174
+#: src/components/MatchLog.tsx:265
 msgid "Flights"
 msgstr "Balaliiwwan"
 
-#: src/components/MatchLog.tsx:95
+#: src/components/MatchLog.tsx:157
 msgid "Flown"
 msgstr "Balali'e"
 
-#: src/components/MissionSetup.tsx:1130
-#: src/components/MissionSetup.tsx:1212
+#: src/components/MissionSetup.tsx:1227
+#: src/components/MissionSetup.tsx:1267
 msgid "Fly"
 msgstr "Balali’i"
 
-#: src/components/GameCanvas.tsx:379
+#: src/components/GameCanvas.tsx:438
 msgid "Fly again"
 msgstr "Ammas balali'i"
 
-#: src/components/SettingsDialog.tsx:891
+#: src/components/SettingsDialog.tsx:1018
 msgid "Framerate counter"
 msgstr "Lakkaa'aa saffisa fireemii"
 
-#: src/components/MatchLog.tsx:86
-#: src/components/MissionSetup.tsx:862
+#: src/components/MatchLog.tsx:148
+#: src/components/MissionSetup.tsx:960
 msgid "Free flight"
 msgstr "Balalii bilisaa"
 
@@ -1548,7 +1583,7 @@ msgstr "Irraa"
 msgid "From theme"
 msgstr "Akeeka irraa"
 
-#: src/components/Multiplayer.tsx:389
+#: src/components/Multiplayer.tsx:408
 msgid "Fuel"
 msgstr "Boba'aa"
 
@@ -1568,24 +1603,24 @@ msgstr "YAA'UU BOBA'AA"
 msgid "FUEL LO"
 msgstr "BOBA'AA XIQQAA"
 
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:225
 msgid "Fuel probe"
 msgstr "Ulaagaa boba'aa"
 
-#: src/components/MissionSetup.tsx:192
+#: src/components/MissionSetup.tsx:261
 msgid "Fuel tank"
 msgstr "Taankii boba'aa"
 
-#: src/components/MatchLog.tsx:83
+#: src/components/MatchLog.tsx:145
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:174
-#: src/components/MissionSetup.tsx:176
+#: src/components/MissionSetup.tsx:243
+#: src/components/MissionSetup.tsx:245
 msgid "Fuselage"
 msgstr "Qaama xayyaaraa"
 
-#: src/components/SettingsDialog.tsx:745
+#: src/components/SettingsDialog.tsx:872
 msgid "Gain"
 msgstr "Cimsuu"
 
@@ -1597,7 +1632,7 @@ msgstr "koora"
 msgid "GEAR"
 msgstr "GEENGOO"
 
-#: src/components/SettingsDialog.tsx:1009
+#: src/components/SettingsDialog.tsx:1169
 msgid "General"
 msgstr "Waliigalaa"
 
@@ -1606,15 +1641,15 @@ msgstr "Waliigalaa"
 msgid "Go back"
 msgstr "Duubatti deebi’uu"
 
-#: src/components/SettingsDialog.tsx:1013
+#: src/components/SettingsDialog.tsx:1173
 msgid "Graphics"
 msgstr "Giraafiksii"
 
-#: src/components/SettingsDialog.tsx:778
+#: src/components/SettingsDialog.tsx:905
 msgid "Graphics preset"
 msgstr "Qindaa'ina giraafiksii"
 
-#: src/components/MissionSetup.tsx:304
+#: src/components/MissionSetup.tsx:372
 msgid "Gross weight"
 msgstr "Ulfaatina waliigalaa"
 
@@ -1635,38 +1670,38 @@ msgstr "Garee: {0}"
 msgid "GUN"
 msgstr "QAWWEE"
 
-#: src/components/MissionSetup.tsx:211
+#: src/components/MissionSetup.tsx:280
 msgid "Gun only"
 msgstr "Qawwee gurguddaa qofa"
 
-#: src/components/Multiplayer.tsx:71
-#: src/components/Multiplayer.tsx:383
+#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:402
 msgid "Guns only"
 msgstr "Qawwee gurguddaa qofa"
 
-#: src/components/MissionSetup.tsx:1109
+#: src/components/MissionSetup.tsx:1206
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Saffisiisni saxaatoo meeshaalee cufameera — qindaa'ina biraawzarii yookiin ofooftota saxaatoo ilaali."
 
-#: src/components/SettingsDialog.tsx:745
+#: src/components/SettingsDialog.tsx:872
 msgid "Head"
 msgstr "Mataa"
 
-#: src/components/SettingsDialog.tsx:745
+#: src/components/SettingsDialog.tsx:872
 msgid "Head tracking"
 msgstr "Hordoffii mataa"
 
-#: src/components/SettingsDialog.tsx:769
+#: src/components/SettingsDialog.tsx:896
 msgid "High"
 msgstr "Ol'aanaa"
 
-#: src/components/MissionSetup.tsx:970
-#: src/components/Multiplayer.tsx:77
-#: src/components/Multiplayer.tsx:367
+#: src/components/MissionSetup.tsx:1068
+#: src/components/Multiplayer.tsx:87
+#: src/components/Multiplayer.tsx:386
 msgid "High stratus"
 msgstr "Istraatasii ol'aanaa"
 
-#: src/components/SettingsDialog.tsx:962
+#: src/components/SettingsDialog.tsx:1089
 msgid "Hints"
 msgstr "Gorsa"
 
@@ -1693,11 +1728,11 @@ msgstr "QOOQA"
 msgid "Hot"
 msgstr "Ho'aa"
 
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:234
 msgid "HUD altitude source"
 msgstr "Madda olka'iinsa HUD"
 
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:235
 msgid "HUD declutter"
 msgstr "HUD salphisuu"
 
@@ -1714,12 +1749,12 @@ msgstr "Ilaaltuu fakkii: {0}"
 msgid "Imperial"
 msgstr "Imperiyaal"
 
-#: src/components/SettingsDialog.tsx:382
+#: src/components/SettingsDialog.tsx:410
 msgid "Import"
 msgstr "Alaa galchuu"
 
-#: src/components/MissionSetup.tsx:913
-#: src/components/MissionSetup.tsx:1065
+#: src/components/MissionSetup.tsx:1011
+#: src/components/MissionSetup.tsx:1162
 msgid "In air"
 msgstr "Qilleensa keessa"
 
@@ -1735,7 +1770,7 @@ msgstr "Fakkii qubee jalqabaa"
 msgid "Initials avatar for {name}"
 msgstr "Fakkii qubee jalqabaa {name}"
 
-#: src/components/SettingsDialog.tsx:338
+#: src/components/SettingsDialog.tsx:366
 msgid "Input hardware"
 msgstr "Meeshaa galtee"
 
@@ -1743,7 +1778,7 @@ msgstr "Meeshaa galtee"
 msgid "Interests"
 msgstr "Fedhota"
 
-#: src/components/MissionSetup.tsx:297
+#: src/components/MissionSetup.tsx:365
 msgid "Internal fuel"
 msgstr "Boba'aa keessaa"
 
@@ -1751,8 +1786,8 @@ msgstr "Boba'aa keessaa"
 msgid "Invalid date"
 msgstr "Guyyaa sirrii hin taane"
 
-#: src/components/MissionSetup.tsx:988
-#: src/components/Multiplayer.tsx:80
+#: src/components/MissionSetup.tsx:1086
+#: src/components/Multiplayer.tsx:90
 msgid "Invulnerable"
 msgstr "Hin miidhamu"
 
@@ -1760,8 +1795,8 @@ msgstr "Hin miidhamu"
 msgid "INVULNERABLE"
 msgstr "KAN HIN MIIDHAMNE"
 
-#: src/components/MissionSetup.tsx:988
-#: src/components/Multiplayer.tsx:437
+#: src/components/MissionSetup.tsx:1086
+#: src/components/Multiplayer.tsx:455
 msgid "Invulnerable (human players only)"
 msgstr "Kan hin miidhamne (taphattoota namaa qofa)"
 
@@ -1769,13 +1804,13 @@ msgstr "Kan hin miidhamne (taphattoota namaa qofa)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Fuulli ati barbaadaa jirtu <0/>hin jiru yookaan haqameera fakkaata."
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Jammer"
 msgstr "Danqaa mallattoo"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Jettison tanks"
 msgstr "Taankiiwwan gati"
 
@@ -1783,12 +1818,12 @@ msgstr "Taankiiwwan gati"
 msgid "JETTISON: GEAR"
 msgstr "GATIINSA: MIILA QUBANNAA"
 
-#: src/components/Multiplayer.tsx:614
+#: src/components/Multiplayer.tsx:634
 msgid "Join"
 msgstr "Seeni"
 
-#: src/components/MissionSetup.tsx:731
-#: src/components/MissionSetup.tsx:1156
+#: src/components/MissionSetup.tsx:811
+#: src/components/MissionSetup.tsx:1234
 msgid "Join server"
 msgstr "Sarvara seeni"
 
@@ -1796,21 +1831,21 @@ msgstr "Sarvara seeni"
 msgid "JOINED"
 msgstr "SEENEERA"
 
-#: src/components/MatchLog.tsx:84
-#: src/components/MissionSetup.tsx:1075
-#: src/components/Multiplayer.tsx:548
+#: src/components/MatchLog.tsx:146
+#: src/components/MissionSetup.tsx:1172
+#: src/components/Multiplayer.tsx:568
 msgid "Joust"
 msgstr "Wal-lola"
 
-#: src/components/Multiplayer.tsx:352
+#: src/components/Multiplayer.tsx:371
 msgid "Joust — 1v1, first kill wins"
 msgstr "Wal-lola — 1v1, kan dura kuffise ni mo'ata"
 
-#: src/components/MissionSetup.tsx:863
+#: src/components/MissionSetup.tsx:961
 msgid "Joust against bot"
 msgstr "Wal-lola botii waliin"
 
-#: src/components/SettingsDialog.tsx:1021
+#: src/components/SettingsDialog.tsx:1181
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1818,7 +1853,7 @@ msgstr "Joystick"
 msgid "Just now"
 msgstr "Amma"
 
-#: src/components/MatchLog.tsx:186
+#: src/components/MatchLog.tsx:277
 msgid "K/D"
 msgstr "K/D"
 
@@ -1826,7 +1861,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Karoora keyboardii"
 
-#: src/components/SettingsDialog.tsx:1025
+#: src/components/SettingsDialog.tsx:1185
 msgid "Keys"
 msgstr "Furtuuwwan"
 
@@ -1834,12 +1869,12 @@ msgstr "Furtuuwwan"
 msgid "KILL"
 msgstr "AJJEECHAA"
 
-#: src/components/MatchLog.tsx:97
+#: src/components/MatchLog.tsx:159
 msgid "Killed"
 msgstr "Ajjeefame"
 
-#: src/components/MatchLog.tsx:180
-#: src/components/MatchLog.tsx:209
+#: src/components/MatchLog.tsx:271
+#: src/components/MatchLog.tsx:356
 msgid "Kills"
 msgstr "Ajjeechaa"
 
@@ -1855,8 +1890,8 @@ msgstr "IBIDDA INJ BITAA"
 msgid "L GEAR"
 msgstr "GOMMAA BITAA"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Landing gear"
 msgstr "Miilla qubannaa"
 
@@ -1869,8 +1904,8 @@ msgstr "Guddaa"
 msgid "LATE"
 msgstr "TURE"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:229
 msgid "Launch (catapult)"
 msgstr "Darbi (furrisaa)"
 
@@ -1882,15 +1917,15 @@ msgstr "ka'umsa / galma"
 msgid "Layout"
 msgstr "Bocii"
 
-#: src/components/Multiplayer.tsx:402
+#: src/components/Multiplayer.tsx:420
 msgid "lb"
 msgstr "lb"
 
-#: src/components/MissionSetup.tsx:807
+#: src/components/MissionSetup.tsx:905
 msgid "Leave server"
 msgstr "Sarvara irraa ba’i"
 
-#: src/components/MatchLog.tsx:92
+#: src/components/MatchLog.tsx:154
 msgid "Left"
 msgstr "Ba'e"
 
@@ -1898,12 +1933,12 @@ msgstr "Ba'e"
 msgid "LEFT"
 msgstr "BA'EERA"
 
-#: src/components/MissionSetup.tsx:172
-#: src/components/MissionSetup.tsx:173
+#: src/components/MissionSetup.tsx:241
+#: src/components/MissionSetup.tsx:242
 msgid "Left wing"
 msgstr "Qoochoo bitaa"
 
-#: src/components/MissionSetup.tsx:171
+#: src/components/MissionSetup.tsx:240
 msgid "Left wingtip"
 msgstr "Fiixee qoochoo bitaa"
 
@@ -1923,8 +1958,8 @@ msgstr "Ifaa"
 msgid "lights"
 msgstr "ibsaa"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:228
 msgid "Lights"
 msgstr "Ibsaa"
 
@@ -1986,41 +2021,41 @@ msgstr "Milkaa'inaan ba'e"
 msgid "Logging out…"
 msgstr "Ba'aa jiraa…"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:109
 msgid "Look"
 msgstr "Ilaali"
 
-#: src/components/SettingsDialog.tsx:726
+#: src/components/SettingsDialog.tsx:853
 msgid "Look / orbit"
 msgstr "Ilaaluu / naanna'uu"
 
-#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:184
 msgid "Look at target"
 msgstr "Galma ilaali"
 
-#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:181
 msgid "Look down"
 msgstr "Gadi ilaali"
 
-#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:182
 msgid "Look left"
 msgstr "Bitaatti ilaali"
 
-#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:183
 msgid "Look right"
 msgstr "Mirgatti ilaali"
 
-#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:180
 msgid "Look up"
 msgstr "Ol ilaali"
 
-#: src/components/SettingsDialog.tsx:767
+#: src/components/SettingsDialog.tsx:894
 msgid "Low"
 msgstr "Gad'aanaa"
 
-#: src/components/MissionSetup.tsx:972
-#: src/components/Multiplayer.tsx:79
-#: src/components/Multiplayer.tsx:369
+#: src/components/MissionSetup.tsx:1070
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:388
 msgid "Low stratus"
 msgstr "Istraatasii gad'aanaa"
 
@@ -2040,7 +2075,7 @@ msgstr "Harkaan"
 msgid "map"
 msgstr "kaartaa"
 
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:236
 msgid "Map"
 msgstr "Kaartaa"
 
@@ -2049,24 +2084,24 @@ msgstr "Kaartaa"
 msgid "Mark all as read"
 msgstr "Hunda dubbifame jechuu mallatteessi"
 
-#: src/components/SettingsDialog.tsx:575
+#: src/components/SettingsDialog.tsx:605
 msgid "Master audio output"
 msgstr "Bahaa sagalee muummee"
 
-#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:618
 msgid "Master bus"
 msgstr "Baasii muummee"
 
-#: src/components/SettingsDialog.tsx:555
-#: src/components/SettingsDialog.tsx:583
+#: src/components/SettingsDialog.tsx:585
+#: src/components/SettingsDialog.tsx:613
 msgid "Master volume"
 msgstr "Guddina sagalee muummee"
 
-#: src/components/Multiplayer.tsx:348
+#: src/components/Multiplayer.tsx:367
 msgid "Match type"
 msgstr "Gosa dorgommii"
 
-#: src/components/MissionSetup.tsx:802
+#: src/components/MissionSetup.tsx:900
 msgid "Matches"
 msgstr "Dorgommii"
 
@@ -2079,7 +2114,7 @@ msgid "MCP server"
 msgstr "Sarvara MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:768
+#: src/components/SettingsDialog.tsx:895
 msgid "Medium"
 msgstr "Giddu-galeessa"
 
@@ -2088,12 +2123,12 @@ msgid "menu"
 msgstr "menuu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:239
 msgid "Menu"
 msgstr "Menyuu"
 
-#: src/components/Multiplayer.tsx:413
+#: src/components/Multiplayer.tsx:431
 msgid "Merge — fight on at the pass"
 msgstr "Wal-qunnamtii — lolli yeroo darban jalqaba"
 
@@ -2101,15 +2136,15 @@ msgstr "Wal-qunnamtii — lolli yeroo darban jalqaba"
 msgid "Message"
 msgstr "Ergaa"
 
-#: src/components/GameCanvas.tsx:322
+#: src/components/GameCanvas.tsx:342
 msgid "Message everyone"
 msgstr "Hundaaf barreessi"
 
-#: src/components/MissionSetup.tsx:667
+#: src/components/MissionSetup.tsx:735
 msgid "Message players on this server"
 msgstr "Taphattoota sarvarii kanaa irra jiraniif ergaa ergi"
 
-#: src/components/GameCanvas.tsx:322
+#: src/components/GameCanvas.tsx:342
 msgid "Message your team"
 msgstr "Garee keetiif barreessi"
 
@@ -2117,17 +2152,17 @@ msgstr "Garee keetiif barreessi"
 msgid "Metric"
 msgstr "Meetrikii"
 
-#: src/components/MissionSetup.tsx:971
-#: src/components/Multiplayer.tsx:78
-#: src/components/Multiplayer.tsx:368
+#: src/components/MissionSetup.tsx:1069
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:387
 msgid "Mid stratus"
 msgstr "Istraatasii giddu galeessaa"
 
-#: src/components/GameCanvas.tsx:354
+#: src/components/GameCanvas.tsx:413
 msgid "Midair collision"
 msgstr "Qilleensa keessatti walitti bu'e"
 
-#: src/components/MissionSetup.tsx:528
+#: src/components/MissionSetup.tsx:596
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Kaartaa Midway Atoll — suuraaleen daataa <0>Copernicus Sentinel-2</0> fooyya'e (2026) qabu; geometrii buufata xayyaaraa (daandii ka'umsaa, daandiiwwan taaksii, iddoo dhaabbii) © gumaachitoota <1>OpenStreetMap</1>, <2>ODbL</2> jalatti eeyyamame; daataan qarqara galaanaatii fi soodduu <3>NOAA NCCOS</3> irraa (qabeenya uummataa)."
 
@@ -2139,15 +2174,20 @@ msgstr "Dheerina xiqqaa"
 msgid "MISSILE"
 msgstr "MISAA'ELA"
 
-#: src/components/MissionSetup.tsx:482
+#: src/components/MissionSetup.tsx:550
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Moodela misaayilii <0>“AIM-120C AMRAAM”</0> kan <1>Pippa</1> (Sketchfab), <2>CC BY 4.0</2> jalatti hayyamame. Fooyya'e: madaalliin haaromfame, kallattiin haaromfame, hidhachuuf gidduu galeeffame."
+
+#: src/components/GameCanvas.tsx:364
+msgid "Mission over"
+msgstr "Ergamni xumurame"
 
 #: ../../../lib/web/src/features/accounts/types.ts:23
 msgid "Mochi web"
 msgstr "Mochi web"
 
-#: src/components/MatchLog.tsx:203
+#: src/components/MatchLog.tsx:288
+#: src/components/MatchLog.tsx:350
 msgid "Mode"
 msgstr "Moodii"
 
@@ -2164,11 +2204,11 @@ msgstr "Wiixata"
 msgid "More options"
 msgstr "Filannoo dabalataa"
 
-#: src/components/SettingsDialog.tsx:474
+#: src/components/SettingsDialog.tsx:502
 msgid "Move…"
 msgstr "Sochoosi…"
 
-#: src/components/Multiplayer.tsx:249
+#: src/components/Multiplayer.tsx:259
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer WebTransport barbaada, kan biraawzarri kun ammallee hin deeggarre."
 
@@ -2208,9 +2248,9 @@ msgstr "Taphaa haaraa"
 msgid "Next image"
 msgstr "Suuraa itti aanu"
 
-#: src/components/MissionSetup.tsx:956
-#: src/components/Multiplayer.tsx:75
-#: src/components/Multiplayer.tsx:362
+#: src/components/MissionSetup.tsx:1054
+#: src/components/Multiplayer.tsx:85
+#: src/components/Multiplayer.tsx:381
 msgid "Night"
 msgstr "Halkan"
 
@@ -2230,7 +2270,15 @@ msgstr "Hanga ammaatti sochiin hin jiru"
 msgid "No comments yet"
 msgstr "Hanga ammaatti yaadni hin jiru"
 
-#: src/components/MatchLog.tsx:145
+#: src/components/SettingsDialog.tsx:698
+msgid "No control matches “{query}”."
+msgstr "Toʼannoon “{query}” waliin walsimu hin jiru."
+
+#: src/components/MatchLog.tsx:377
+msgid "No flight matches these filters."
+msgstr "Balaliin gingilchaawwan kanaan walsimu hin jiru."
+
+#: src/components/MatchLog.tsx:207
 msgid "No flights yet"
 msgstr "Ammatti balalii hin jiru"
 
@@ -2246,7 +2294,7 @@ msgstr "Garreen hin jiran"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Hanga ammaatti gosti meeshaalee uumamuu hin danda'u. Jalqaba meeshaalee maatii barbaachisaa uumi."
 
-#: src/components/SettingsDialog.tsx:370
+#: src/components/SettingsDialog.tsx:398
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Joystick tokkollee hin argamne — dammaqsuuf qabduu isaa kamiyyuu dhiibi."
 
@@ -2254,7 +2302,7 @@ msgstr "Joystick tokkollee hin argamne — dammaqsuuf qabduu isaa kamiyyuu dhiib
 msgid "No matching objects"
 msgstr "Wantoonni walsiman hin jiran"
 
-#: src/components/Multiplayer.tsx:531
+#: src/components/Multiplayer.tsx:551
 msgid "No open matches — create one."
 msgstr "Dorgommiin banaa hin jiru — tokko uumi."
 
@@ -2310,8 +2358,8 @@ msgstr "Fayyadamtoonni hin argamne"
 msgid "No views"
 msgstr "Mul'annoon hin jiru"
 
-#: src/components/MissionSetup.tsx:644
-#: src/components/Multiplayer.tsx:531
+#: src/components/MissionSetup.tsx:712
+#: src/components/Multiplayer.tsx:551
 msgid "No world server."
 msgstr "Serveriin addunyaa hin jiru."
 
@@ -2332,11 +2380,11 @@ msgstr "QABXII HIN JIRU"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:491
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:100
-#: src/components/MissionSetup.tsx:207
-#: src/components/MissionSetup.tsx:968
-#: src/components/SettingsDialog.tsx:439
-#: src/components/SettingsDialog.tsx:515
-#: src/components/SettingsDialog.tsx:701
+#: src/components/MissionSetup.tsx:276
+#: src/components/MissionSetup.tsx:1066
+#: src/components/SettingsDialog.tsx:467
+#: src/components/SettingsDialog.tsx:543
+#: src/components/SettingsDialog.tsx:826
 msgid "None"
 msgstr "Tokko illee"
 
@@ -2348,7 +2396,7 @@ msgstr "Idilee"
 msgid "NOSE GEAR"
 msgstr "GOMMAA DURAA"
 
-#: src/components/SettingsDialog.tsx:296
+#: src/components/SettingsDialog.tsx:301
 msgid "Not a joystick profile"
 msgstr "Piroofaayilii joystick miti"
 
@@ -2365,7 +2413,7 @@ msgstr "Hin qabamne"
 msgid "Nothing found"
 msgstr "Wanti argame hin jiru"
 
-#: src/components/MissionSetup.tsx:644
+#: src/components/MissionSetup.tsx:712
 msgid "Nothing yet — say hello."
 msgstr "Hanga ammaatti homtuu hin jiru — nagaa gaafadhu."
 
@@ -2374,9 +2422,9 @@ msgstr "Hanga ammaatti homtuu hin jiru — nagaa gaafadhu."
 msgid "Notifications: {0}"
 msgstr "Beeksisawwan: {0}"
 
-#: src/components/MissionSetup.tsx:891
-#: src/components/MissionSetup.tsx:1059
-#: src/components/Multiplayer.tsx:480
+#: src/components/MissionSetup.tsx:989
+#: src/components/MissionSetup.tsx:1156
+#: src/components/Multiplayer.tsx:503
 msgid "Novice"
 msgstr "Jalqabaa"
 
@@ -2386,7 +2434,7 @@ msgstr "Jalqabaa"
 msgid "Number"
 msgstr "Lakkoofsa"
 
-#: src/components/SettingsDialog.tsx:834
+#: src/components/SettingsDialog.tsx:961
 msgid "Ocean detail"
 msgstr "Bal'ina galaanaa"
 
@@ -2402,13 +2450,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Banaa"
 
-#: src/components/MissionSetup.tsx:915
-#: src/components/MissionSetup.tsx:1067
+#: src/components/MissionSetup.tsx:1013
+#: src/components/MissionSetup.tsx:1164
 msgid "On carrier"
 msgstr "Doonii irra"
 
-#: src/components/MissionSetup.tsx:914
-#: src/components/MissionSetup.tsx:1066
+#: src/components/MissionSetup.tsx:1012
+#: src/components/MissionSetup.tsx:1163
 msgid "On runway"
 msgstr "Daandii balalii irra"
 
@@ -2416,11 +2464,11 @@ msgstr "Daandii balalii irra"
 msgid "Oops! Page Not Found!"
 msgstr "Hoo! Fuulli hin argamne!"
 
-#: src/components/Multiplayer.tsx:548
+#: src/components/Multiplayer.tsx:568
 msgid "Open"
 msgstr "Bani"
 
-#: src/components/Multiplayer.tsx:351
+#: src/components/Multiplayer.tsx:370
 msgid "Open — anyone may join or leave"
 msgstr "Banaa — namni kamiyyuu makamuu ykn bahuu ni danda'a"
 
@@ -2467,11 +2515,11 @@ msgstr "Maqaa filannoo"
 msgid "Options"
 msgstr "Filannoowwan"
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:578
 msgid "or"
 msgstr "yookaan"
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:578
 msgid "orbit"
 msgstr "naanna'uu"
 
@@ -2479,8 +2527,8 @@ msgstr "naanna'uu"
 msgid "Other"
 msgstr "Biraa"
 
-#: src/components/SettingsDialog.tsx:143
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:147
+#: src/components/SettingsDialog.tsx:202
 msgid "Override G limit"
 msgstr "Daangaa G darbuu"
 
@@ -2500,7 +2548,7 @@ msgstr "ILAALCHA BILISA"
 msgid "Parent"
 msgstr "Maatii"
 
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:201
 msgid "Parking brake"
 msgstr "Biraakii dhaabbii"
 
@@ -2520,15 +2568,19 @@ msgstr "Passkey-wwan"
 msgid "Pattern (regex)"
 msgstr "Bocaa (regex)"
 
-#: src/components/MissionSetup.tsx:590
-#: src/components/Multiplayer.tsx:140
-#: src/components/Multiplayer.tsx:309
+#: src/components/GameCanvas.tsx:364
+msgid "Paused"
+msgstr "Dhaabbate"
+
+#: src/components/MissionSetup.tsx:658
+#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:328
 msgid "pilot"
 msgstr "balaliisaa"
 
-#: src/components/MissionSetup.tsx:892
-#: src/components/MissionSetup.tsx:1060
-#: src/components/Multiplayer.tsx:481
+#: src/components/MissionSetup.tsx:990
+#: src/components/MissionSetup.tsx:1157
+#: src/components/Multiplayer.tsx:504
 msgid "Pilot"
 msgstr "Balaliisaa"
 
@@ -2536,11 +2588,11 @@ msgstr "Balaliisaa"
 msgid "PILOT DOWN"
 msgstr "BALALIISAAN DU'E"
 
-#: src/components/SettingsDialog.tsx:924
+#: src/components/SettingsDialog.tsx:1051
 msgid "Pilot identity"
 msgstr "Eenyummaa balaliisaa"
 
-#: src/components/GameCanvas.tsx:348
+#: src/components/GameCanvas.tsx:407
 msgid "Pilot killed"
 msgstr "Balali'isaan ajjeefame"
 
@@ -2548,15 +2600,15 @@ msgstr "Balali'isaan ajjeefame"
 msgid "pitch"
 msgstr "pitch"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:104
 msgid "Pitch"
 msgstr "Pitch"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:192
 msgid "Pitch down"
 msgstr "Pitch gadi"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:191
 msgid "Pitch up"
 msgstr "Pitch ol"
 
@@ -2564,7 +2616,7 @@ msgstr "Pitch ol"
 msgid "PLATFORM"
 msgstr "WALTAJJII"
 
-#: src/components/MatchLog.tsx:206
+#: src/components/MatchLog.tsx:353
 msgid "Players"
 msgstr "Taphattoota"
 
@@ -2594,7 +2646,7 @@ msgstr "Maxxansoota"
 msgid "Posts and comments"
 msgstr "Maxxansoota fi yaadawwan"
 
-#: src/components/SettingsDialog.tsx:681
+#: src/components/SettingsDialog.tsx:806
 msgid "Press a key…"
 msgstr "Furtuu tokko dhiibi…"
 
@@ -2602,7 +2654,7 @@ msgstr "Furtuu tokko dhiibi…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "KA'UUF ENTER TUQI"
 
-#: src/components/SettingsDialog.tsx:538
+#: src/components/SettingsDialog.tsx:566
 msgid "Press…"
 msgstr "Dhiibi…"
 
@@ -2620,8 +2672,8 @@ msgstr "Iccitii"
 msgid "Processing…"
 msgstr "Adeemsifamaa jira…"
 
-#: src/components/SettingsDialog.tsx:282
-#: src/components/SettingsDialog.tsx:294
+#: src/components/SettingsDialog.tsx:287
+#: src/components/SettingsDialog.tsx:299
 msgid "Profile saved"
 msgstr "Piroofaayiliin olkaa'ame"
 
@@ -2629,7 +2681,8 @@ msgstr "Piroofaayiliin olkaa'ame"
 msgid "Project members"
 msgstr "Miseensota pirojektii"
 
-#: src/components/MissionSetup.tsx:758
+#: src/components/MissionSetup.tsx:838
+#: src/components/MissionSetup.tsx:856
 msgid "Public servers"
 msgstr "Sarveroota ummataa"
 
@@ -2653,8 +2706,8 @@ msgstr "IBIDDA INJ MIRGA"
 msgid "R GEAR"
 msgstr "GOMMAA MIRGAA"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Radar silent"
 msgstr "Cal'isa raadaarii"
 
@@ -2674,7 +2727,7 @@ msgstr "Furtuuwwan seensaa kee sajoo kana irratti irra deebi'ii galmeessi"
 msgid "REARMED"
 msgstr "DEEBI'EE HIDHATE"
 
-#: src/components/MissionSetup.tsx:737
+#: src/components/MissionSetup.tsx:817
 msgid "Recent"
 msgstr "Dhiheenya"
 
@@ -2686,24 +2739,24 @@ msgstr "Yaadachifame"
 msgid "Reconnecting ({retries})..."
 msgstr "Irra deebi'ee walqunnamsiisaa jira ({retries})..."
 
-#: src/components/SettingsDialog.tsx:953
+#: src/components/SettingsDialog.tsx:1080
 msgid "Record flights"
 msgstr "Balali'uuwwan galmeessuu"
 
-#: src/components/MatchLog.tsx:275
-#: src/components/SettingsDialog.tsx:946
+#: src/components/MatchLog.tsx:442
+#: src/components/SettingsDialog.tsx:1073
 msgid "Recording"
 msgstr "Galmeessa"
 
-#: src/components/MatchLog.tsx:268
+#: src/components/MatchLog.tsx:435
 msgid "Recording saved"
 msgstr "Galmeen olkaa'ame"
 
-#: src/components/Multiplayer.tsx:592
+#: src/components/Multiplayer.tsx:612
 msgid "Red"
 msgstr "Diimaa"
 
-#: src/components/Multiplayer.tsx:473
+#: src/components/Multiplayer.tsx:496
 msgid "Red bots"
 msgstr "Botiiwwan diimaa"
 
@@ -2716,11 +2769,11 @@ msgstr "Gara galmeetti deebi'aa jira."
 msgid "Reduce interest"
 msgstr "Dantaa hir'isi"
 
-#: src/components/MissionSetup.tsx:364
+#: src/components/MissionSetup.tsx:432
 msgid "Reference"
 msgstr "Wabii"
 
-#: src/components/Multiplayer.tsx:328
+#: src/components/Multiplayer.tsx:347
 msgid "Refresh"
 msgstr "Haaromsi"
 
@@ -2794,7 +2847,7 @@ msgstr "Maqaa tarjaa jijjiiri"
 msgid "Rename this board column"
 msgstr "Maqaa tarjaa gabatee kanaa jijjiiri"
 
-#: src/components/MissionSetup.tsx:562
+#: src/components/MissionSetup.tsx:630
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Renderingiin <0>three.js</0> tiin raawwatama (hayyama MIT)."
 
@@ -2816,52 +2869,52 @@ msgstr "Barbaachisaa"
 msgid "Resend email"
 msgstr "Imeelii irra deebi'ii ergi"
 
-#: src/components/SettingsDialog.tsx:1061
+#: src/components/SettingsDialog.tsx:1156
 msgid "Reset"
 msgstr "Haaromsi"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Reset master caution"
 msgstr "Akeekkachiisa guddaa deebisi"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Reset trim"
 msgstr "Trim deebisuu"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:228
-#: src/components/SettingsDialog.tsx:725
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:852
 msgid "Reset view"
 msgstr "Mul'ata deebisuu"
 
-#: src/components/SettingsDialog.tsx:808
+#: src/components/SettingsDialog.tsx:935
 msgid "Resolution"
 msgstr "Furmaata"
 
-#: src/components/GameCanvas.tsx:493
+#: src/components/GameCanvas.tsx:558
 msgid "Restart"
 msgstr "Irra deebi'ii jalqabi"
 
-#: src/components/GameCanvas.tsx:428
+#: src/components/GameCanvas.tsx:493
 msgid "Restart mission"
 msgstr "Ergama irra deebi’ii jalqabi"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:541
 msgid "Restart mission?"
 msgstr "Ergama irra deebi'anii jalqabuu?"
 
-#: src/components/MatchLog.tsx:215
+#: src/components/MatchLog.tsx:362
 msgid "Result"
 msgstr "Bu'aa"
 
-#: src/components/GameCanvas.tsx:390
+#: src/components/GameCanvas.tsx:449
 msgid "Resume"
 msgstr "Itti fufi"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Retract flaps"
 msgstr "Flaapii deebisuu"
 
@@ -2869,7 +2922,7 @@ msgstr "Flaapii deebisuu"
 msgid "Retry"
 msgstr "Irra deebi'ii yaali"
 
-#: src/components/SettingsDialog.tsx:457
+#: src/components/SettingsDialog.tsx:485
 msgid "Reversed"
 msgstr "Garagalfame"
 
@@ -2885,12 +2938,12 @@ msgstr "Argama haqi"
 msgid "Revoke RSS access?"
 msgstr "Argaa RSS haqamuu?"
 
-#: src/components/MissionSetup.tsx:177
-#: src/components/MissionSetup.tsx:178
+#: src/components/MissionSetup.tsx:246
+#: src/components/MissionSetup.tsx:247
 msgid "Right wing"
 msgstr "Qoochoo mirgaa"
 
-#: src/components/MissionSetup.tsx:179
+#: src/components/MissionSetup.tsx:248
 msgid "Right wingtip"
 msgstr "Fiixee qoochoo mirgaa"
 
@@ -2898,15 +2951,15 @@ msgstr "Fiixee qoochoo mirgaa"
 msgid "roll"
 msgstr "roll"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:105
 msgid "Roll"
 msgstr "Roll"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:193
 msgid "Roll left"
 msgstr "Roll bitaatti"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:194
 msgid "Roll right"
 msgstr "Roll mirgatti"
 
@@ -2947,7 +3000,7 @@ msgstr "Sanbata"
 msgid "Save"
 msgstr "Olkaa'i"
 
-#: src/components/MissionSetup.tsx:379
+#: src/components/MissionSetup.tsx:447
 msgid "Sea level"
 msgstr "Sadarkaa galaanaa"
 
@@ -2957,6 +3010,11 @@ msgstr "Sadarkaa galaanaa"
 #: ../../../lib/web/src/components/search.tsx:18
 msgid "Search"
 msgstr "Barbaadi"
+
+#: src/components/SettingsDialog.tsx:674
+#: src/components/SettingsDialog.tsx:675
+msgid "Search controls"
+msgstr "Toʼannoowwan barbaadi"
 
 #: ../../../lib/web/src/components/ui/command.tsx:35
 msgid "Search for a command to run..."
@@ -3051,8 +3109,8 @@ msgstr "Nama filadhu..."
 msgid "Select previous card"
 msgstr "Kaardii kanaan dura turu filadhu"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Select weapon"
 msgstr "Meeshaa filadhu"
 
@@ -3066,7 +3124,7 @@ msgstr "Filadhu..."
 msgid "Selected: <0>{0}</0>"
 msgstr "Kan filatame: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:674
+#: src/components/MissionSetup.tsx:742
 msgid "Send"
 msgstr "Ergi"
 
@@ -3074,7 +3132,7 @@ msgstr "Ergi"
 msgid "Send again"
 msgstr "Ammas erguu"
 
-#: src/components/GameCanvas.tsx:404
+#: src/components/GameCanvas.tsx:463
 msgid "Send chat"
 msgstr "Ergaa ergi"
 
@@ -3091,11 +3149,12 @@ msgstr "Ergaa ergi"
 msgid "Serif"
 msgstr "Serif"
 
-#: src/components/MatchLog.tsx:200
+#: src/components/MatchLog.tsx:305
+#: src/components/MatchLog.tsx:347
 msgid "Server"
 msgstr "Sarvarii"
 
-#: src/components/MissionSetup.tsx:639
+#: src/components/MissionSetup.tsx:707
 msgid "Server chat"
 msgstr "Chaattii sarvarii"
 
@@ -3122,7 +3181,7 @@ msgstr "SEESHINIIN XUMURAMEERA"
 msgid "Session expired. Please log in again."
 msgstr "Seeshinichi dhumateera. Maaloo irra deebi'ii seeni."
 
-#: src/components/SettingsDialog.tsx:693
+#: src/components/SettingsDialog.tsx:818
 msgid "Set"
 msgstr "Qindeessi"
 
@@ -3133,14 +3192,14 @@ msgstr "Madda fi galma qindeessi"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:418
-#: src/components/MissionSetup.tsx:1168
-#: src/components/SettingsDialog.tsx:1004
-#: src/components/SettingsDialog.tsx:1006
+#: src/components/GameCanvas.tsx:477
+#: src/components/MissionSetup.tsx:1235
+#: src/components/SettingsDialog.tsx:1139
+#: src/components/SettingsDialog.tsx:1166
 msgid "Settings"
 msgstr "Qindaa'inoota"
 
-#: src/components/SettingsDialog.tsx:870
+#: src/components/SettingsDialog.tsx:997
 msgid "Shadows"
 msgstr "Gaaddidduuwwan"
 
@@ -3178,7 +3237,7 @@ msgstr "Bahaa jira..."
 msgid "Single line of text only"
 msgstr "Sararoota barreeffamaa qofa"
 
-#: src/components/MissionSetup.tsx:348
+#: src/components/MissionSetup.tsx:416
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Ol-ba'uu gaarii injinii tokkoon (Vyse, afterburner)"
 
@@ -3191,7 +3250,7 @@ msgstr "Xiqqaa"
 msgid "Sort"
 msgstr "Sirreessi"
 
-#: src/components/SettingsDialog.tsx:1017
+#: src/components/SettingsDialog.tsx:1177
 msgid "Sound"
 msgstr "Sagalee"
 
@@ -3199,11 +3258,11 @@ msgstr "Sagalee"
 msgid "Sources"
 msgstr "Maddoota"
 
-#: src/components/Multiplayer.tsx:74
+#: src/components/Multiplayer.tsx:84
 msgid "Spaced"
 msgstr "Fagoo"
 
-#: src/components/Multiplayer.tsx:420
+#: src/components/Multiplayer.tsx:438
 msgid "Spaced spawns"
 msgstr "Iddoowwan seensaa fagoo"
 
@@ -3219,13 +3278,13 @@ msgstr "BRK.SF"
 msgid "speed brake"
 msgstr "bireekii saffisaa"
 
-#: src/components/SettingsDialog.tsx:104
-#: src/components/SettingsDialog.tsx:141
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:108
+#: src/components/SettingsDialog.tsx:145
+#: src/components/SettingsDialog.tsx:199
 msgid "Speed brake"
 msgstr "Bireekii saffisaa"
 
-#: src/components/MissionSetup.tsx:405
+#: src/components/MissionSetup.tsx:473
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Saffisawwan KCAS keessatti, salphaa (boba'aa xiqqaa, fe'umsa malee) irraa hanga ulfaataa (ulfina waliigalaa guddaa) tti hangaan. Daataan taphicha keessatti yaalidhaan argame. Garaagarummaan xiyyaara dhugaa irraa jiru kamiyyuu dogoggora moodeela balali'ii simuleetara agarsiisa."
 
@@ -3233,15 +3292,15 @@ msgstr "Saffisawwan KCAS keessatti, salphaa (boba'aa xiqqaa, fe'umsa malee) irra
 msgid "SPLASH"
 msgstr "KUFFISEERA"
 
-#: src/components/MissionSetup.tsx:353
+#: src/components/MissionSetup.tsx:421
 msgid "Stall, clean (Vs1)"
 msgstr "Stall, haala qulqulluu (Vs1)"
 
-#: src/components/MissionSetup.tsx:354
+#: src/components/MissionSetup.tsx:422
 msgid "Stall, landing config (Vs0)"
 msgstr "Stall, haala qubannaa (Vs0)"
 
-#: src/components/Multiplayer.tsx:409
+#: src/components/Multiplayer.tsx:427
 msgid "Start"
 msgstr "Jalqabi"
 
@@ -3249,11 +3308,11 @@ msgstr "Jalqabi"
 msgid "Start the discussion by adding the first comment."
 msgstr "Yaada jalqabaa dabaluudhaan marii jalqabi."
 
-#: src/components/MissionSetup.tsx:344
+#: src/components/MissionSetup.tsx:412
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Ol-ba'uu golee guddaa (Vx, dhiibbaa 100%)"
 
-#: src/components/MissionSetup.tsx:345
+#: src/components/MissionSetup.tsx:413
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Ol-ba'uu golee guddaa (Vx, afterburner)"
 
@@ -3283,9 +3342,9 @@ msgstr "Galaa'i"
 msgid "Sunday"
 msgstr "Dilbata"
 
-#: src/components/MissionSetup.tsx:894
-#: src/components/MissionSetup.tsx:1062
-#: src/components/Multiplayer.tsx:483
+#: src/components/MissionSetup.tsx:992
+#: src/components/MissionSetup.tsx:1159
+#: src/components/Multiplayer.tsx:506
 msgid "Superhuman"
 msgstr "Nama caalu"
 
@@ -3320,11 +3379,11 @@ msgstr "Tagoota"
 msgid "TALLY"
 msgstr "DIINA ARGEERA"
 
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:954
 msgid "Task"
 msgstr "Hojii"
 
-#: src/components/GameCanvas.tsx:317
+#: src/components/GameCanvas.tsx:337
 msgid "Team"
 msgstr "Garee"
 
@@ -3332,12 +3391,12 @@ msgstr "Garee"
 msgid "TEAM"
 msgstr "GAREE"
 
-#: src/components/MatchLog.tsx:85
-#: src/components/Multiplayer.tsx:548
+#: src/components/MatchLog.tsx:147
+#: src/components/Multiplayer.tsx:568
 msgid "Teams"
 msgstr "Gareewwan"
 
-#: src/components/Multiplayer.tsx:353
+#: src/components/Multiplayer.tsx:372
 msgid "Teams — red versus blue"
 msgstr "Gareewwan — diimaa vs cuquliisa"
 
@@ -3363,11 +3422,11 @@ msgstr "Erguun hin danda'amne. Faayilonni baay'ee guddaa ta'uu danda'u, yookiin 
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "Ol kaa'uuf baay'ee guddaa ture. Faayilota balleessi yookiin xiqqeessi, ergasii irra deebi'ii yaali."
 
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:513
 msgid "The match continues behind this menu."
 msgstr "Taphichi menu kana duubatti itti fufa."
 
-#: src/components/GameCanvas.tsx:479
+#: src/components/GameCanvas.tsx:544
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Ergamni irra deebi'ee ni jalqaba. Balali'uun ammaa hin olkaa'amu."
 
@@ -3379,15 +3438,15 @@ msgstr "Qabiyyeen gaafatame argamuu hin dandeenye."
 msgid "The server returned a web page instead of data."
 msgstr "Sarviichiin qooda daataa fuula weebii deebise."
 
-#: src/components/MissionSetup.tsx:1107
+#: src/components/MissionSetup.tsx:1204
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Biraawzariin kun WebGL 2 hin deeggaru, kanaafuu tapichi hojjechuu hin danda'u — biraawzarii biraa yaali."
 
-#: src/components/Multiplayer.tsx:267
+#: src/components/Multiplayer.tsx:286
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Loobiin kun walqunnamtii taphaa kee gara sarvara biraatti ({redirectHost}) qajeelchaa jira. Yoo sarvara kana amantee qofa itti fufi."
 
-#: src/components/MissionSetup.tsx:1111
+#: src/components/MissionSetup.tsx:1208
 msgid "This machine may be too slow for smooth flight."
 msgstr "Maashinni kun balali'insa lallaafaaf baay'ee suuta ta'uu danda'a."
 
@@ -3395,17 +3454,17 @@ msgstr "Maashinni kun balali'insa lallaafaaf baay'ee suuta ta'uu danda'a."
 msgid "throttle"
 msgstr "throttle"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:107
 msgid "Throttle"
 msgstr "Throttle"
 
-#: src/components/SettingsDialog.tsx:147
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Throttle down"
 msgstr "Throttle hir'isi"
 
-#: src/components/SettingsDialog.tsx:146
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:197
 msgid "Throttle up"
 msgstr "Throttle dabali"
 
@@ -3413,19 +3472,19 @@ msgstr "Throttle dabali"
 msgid "Thursday"
 msgstr "Kamisa"
 
-#: src/components/MissionSetup.tsx:352
+#: src/components/MissionSetup.tsx:420
 msgid "Tightest sustained turn speed"
 msgstr "Saffisa goruu itti-fufaa cimaa"
 
-#: src/components/GameCanvas.tsx:514
+#: src/components/GameCanvas.tsx:579
 msgid "tilt"
 msgstr "dabsuu"
 
-#: src/components/MatchLog.tsx:177
+#: src/components/MatchLog.tsx:268
 msgid "Time"
 msgstr "Yeroo"
 
-#: src/components/MissionSetup.tsx:949
+#: src/components/MissionSetup.tsx:1047
 msgid "Time of day"
 msgstr "Yeroo guyyaa"
 
@@ -3467,7 +3526,7 @@ msgstr "Gaaffiiwwan baay'ee garmalee"
 msgid "Top"
 msgstr "Ol"
 
-#: src/components/SettingsDialog.tsx:884
+#: src/components/SettingsDialog.tsx:1011
 msgid "Tracers"
 msgstr "Tracers"
 
@@ -3479,31 +3538,31 @@ msgstr "Imala"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx:91
+#: src/components/SettingsDialog.tsx:95
 msgid "Trim"
 msgstr "Trim"
 
-#: src/components/SettingsDialog.tsx:106
+#: src/components/SettingsDialog.tsx:110
 msgid "Trim hat"
 msgstr "Gonfoo trim"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:204
 msgid "Trim nose down"
 msgstr "Trim: funyaan gadi"
 
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:203
 msgid "Trim nose up"
 msgstr "Trim: funyaan ol"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:205
 msgid "Trim roll left"
 msgstr "Trim: gara bitaa dabuu"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim roll right"
 msgstr "Trim: gara mirgaa dabuu"
 
@@ -3541,7 +3600,7 @@ msgstr "Fayyadamtoota barbaaduuf barreessi"
 msgid "Type to search..."
 msgstr "Barbaaduuf barreessi..."
 
-#: src/components/SettingsDialog.tsx:770
+#: src/components/SettingsDialog.tsx:897
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3566,13 +3625,13 @@ msgstr "Galmee Hin hayyamamne"
 msgid "Unavailable"
 msgstr "Hin argamu"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Uncage seeker"
 msgstr "Barbaadaa gadi dhiisi"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Undesignate target"
 msgstr "Filannoo galmaa haquu"
 
@@ -3589,27 +3648,27 @@ msgstr "Yunaaytid Isteeths"
 msgid "Unknown"
 msgstr "Hin beekamu"
 
-#: src/components/Multiplayer.tsx:385
+#: src/components/Multiplayer.tsx:404
 msgid "Unlimited"
 msgstr "Daangaa hin qabu"
 
-#: src/components/MissionSetup.tsx:995
-#: src/components/Multiplayer.tsx:81
-#: src/components/Multiplayer.tsx:447
+#: src/components/MissionSetup.tsx:1093
+#: src/components/Multiplayer.tsx:91
+#: src/components/Multiplayer.tsx:465
 msgid "Unlimited ammunition"
 msgstr "Rasaasa daangaa hin qabne"
 
-#: src/components/MissionSetup.tsx:995
+#: src/components/MissionSetup.tsx:1093
 msgid "Unlimited ammunition (all players)"
 msgstr "Rasaasa daangaa hin qabne (taphattoota hunda)"
 
-#: src/components/MissionSetup.tsx:1002
-#: src/components/Multiplayer.tsx:82
-#: src/components/Multiplayer.tsx:457
+#: src/components/MissionSetup.tsx:1100
+#: src/components/Multiplayer.tsx:92
+#: src/components/Multiplayer.tsx:475
 msgid "Unlimited fuel"
 msgstr "Boba'aa daangaa hin qabne"
 
-#: src/components/MissionSetup.tsx:1002
+#: src/components/MissionSetup.tsx:1100
 msgid "Unlimited fuel (all players)"
 msgstr "Boba'aa daangaa hin qabne (taphattoota hunda)"
 
@@ -3660,11 +3719,11 @@ msgstr "Mirkaneessi"
 msgid "Verify email address"
 msgstr "Teessoo iimeelii mirkaneessi"
 
-#: src/components/MissionSetup.tsx:395
+#: src/components/MissionSetup.tsx:463
 msgid "Vertical"
 msgstr "Ol-ka'aa"
 
-#: src/components/MatchLog.tsx:96
+#: src/components/MatchLog.tsx:158
 msgid "Victory"
 msgstr "Injifannoo"
 
@@ -3677,11 +3736,11 @@ msgstr "Suuraa duraa viidiyoo"
 msgid "Video viewer: {0}"
 msgstr "Ilaaltuu viidiyoo: {0}"
 
-#: src/components/GameCanvas.tsx:508
+#: src/components/GameCanvas.tsx:573
 msgid "view"
 msgstr "mul'ata"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:98
 msgid "View"
 msgstr "Daawwadhu"
 
@@ -3694,7 +3753,7 @@ msgstr "Beeksisa hunda daawwadhu"
 msgid "View controls"
 msgstr "Toofta daawwannaa"
 
-#: src/components/SettingsDialog.tsx:724
+#: src/components/SettingsDialog.tsx:851
 msgid "Views"
 msgstr "Daawwannaalee"
 
@@ -3724,16 +3783,16 @@ msgstr "Koodii mirkaneessaa gara <0>{0}</0> ergineerra. Teessoo imeelii kee mirk
 msgid "weapon"
 msgstr "meeshaa waraanaa"
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:111
 msgid "Weapon select hat"
 msgstr "Kofiyyaa filannoo meeshaa waraanaa"
 
-#: src/components/Multiplayer.tsx:380
-#: src/components/SettingsDialog.tsx:92
+#: src/components/Multiplayer.tsx:399
+#: src/components/SettingsDialog.tsx:96
 msgid "Weapons"
 msgstr "Meeshaalee waraanaa"
 
-#: src/components/Multiplayer.tsx:358
+#: src/components/Multiplayer.tsx:377
 msgid "Weather"
 msgstr "Haala qilleensaa"
 
@@ -3741,17 +3800,17 @@ msgstr "Haala qilleensaa"
 msgid "Wednesday"
 msgstr "Roobii"
 
-#: src/components/SettingsDialog.tsx:142
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:146
+#: src/components/SettingsDialog.tsx:200
 msgid "Wheel brakes"
 msgstr "Bireekii geengoo"
 
-#: src/components/SettingsDialog.tsx:557
+#: src/components/SettingsDialog.tsx:587
 msgid "Wind and cockpit airframe"
 msgstr "Bubbee fi qaama xiyyaaraa"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:227
 msgid "Wing fold"
 msgstr "Dachaa qoochoo"
 
@@ -3759,16 +3818,16 @@ msgstr "Dachaa qoochoo"
 msgid "WINS"
 msgstr "NI MO'ATA"
 
-#: src/components/Multiplayer.tsx:293
+#: src/components/Multiplayer.tsx:312
 msgid "World server"
 msgstr "Serverii addunyaa"
 
-#: src/components/MissionSetup.tsx:632
-#: src/components/Multiplayer.tsx:153
+#: src/components/MissionSetup.tsx:700
+#: src/components/Multiplayer.tsx:163
 msgid "World server not reachable"
 msgstr "Serverii addunyaa qaqqabuun hin danda'amne"
 
-#: src/components/MissionSetup.tsx:878
+#: src/components/MissionSetup.tsx:976
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, meeshaaleen yeroo darban bilisa"
 
@@ -3776,17 +3835,17 @@ msgstr "WVR, meeshaaleen yeroo darban bilisa"
 msgid "yaw"
 msgstr "yaw"
 
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:106
 msgid "Yaw"
 msgstr "Yaw"
 
-#: src/components/SettingsDialog.tsx:144
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:195
 msgid "Yaw left"
 msgstr "Yaw bitaatti"
 
-#: src/components/SettingsDialog.tsx:145
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:196
 msgid "Yaw right"
 msgstr "Yaw mirgatti"
 
@@ -3806,11 +3865,11 @@ msgstr "Akkaawuntiin kee {source} irraa as fidame. Achitti haqtee hanga fixtutti
 msgid "Your attachments will be lost."
 msgstr "Miiltoowwan kee ni badu."
 
-#: src/components/MatchLog.tsx:146
+#: src/components/MatchLog.tsx:208
 msgid "Your flights appear here once you've flown one."
 msgstr "Balaliiwwan kee erga tokko balaliitee as ni mul'atu."
 
-#: src/components/Multiplayer.tsx:543
+#: src/components/Multiplayer.tsx:563
 msgid "your offer"
 msgstr "dhiyeessa kee"
 
@@ -3822,14 +3881,14 @@ msgstr "Barreeffamnii fi miiltoowwan kee ni badu."
 msgid "Your text will be lost."
 msgstr "Barreeffamni kee ni bada."
 
-#: src/components/SettingsDialog.tsx:108
+#: src/components/SettingsDialog.tsx:112
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:185
 msgid "Zoom in"
 msgstr "Guddisi"
 
-#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:186
 msgid "Zoom out"
 msgstr "Xiqqeessi"
