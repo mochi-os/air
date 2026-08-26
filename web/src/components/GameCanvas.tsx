@@ -270,6 +270,13 @@ export function GameCanvas({
     if (chat != null) chatRef.current?.focus()
   }, [chat])
 
+  // The pause menu is a modal surface, so it takes focus when it opens: without
+  // this the keyboard stayed on the canvas and the menu could only be worked
+  // with the mouse.
+  useEffect(() => {
+    if (menu) menuRef.current?.focus()
+  }, [menu])
+
   // A dialog is open over the paused mission: keep the keyboard away from the
   // engine without taking it away from the dialog. The engine listens on
   // window in the BUBBLE phase, which is the last hop of every real key event,
@@ -339,6 +346,45 @@ export function GameCanvas({
           <div
             ref={menuRef}
             tabIndex={-1}
+            role='dialog'
+            aria-modal='true'
+            aria-label={over ? t`Mission over` : t`Paused`}
+            // Tab is bound to weapon select, Space to the trigger: tabbing
+            // through this menu fired the jet in a match that flies on behind
+            // it. Every key but Escape stops here, and Escape is the one the
+            // engine needs — it is what closes this menu.
+            //
+            // KEYUP is deliberately NOT stopped. The engine holds a set of
+            // pressed keys and clears each one on its keyup; a key held when
+            // the menu opened releases into this menu, so swallowing that
+            // keyup left the engine believing it was still down and resumed
+            // flight with a stuck control. Nothing is lost by letting it
+            // through: the keydown never reached the engine, so there is
+            // nothing there to delete.
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') return
+              if (e.key === 'Tab') {
+                e.preventDefault()
+                const stops = Array.from(
+                  menuRef.current?.querySelectorAll<HTMLElement>('button:not([disabled])') ?? []
+                )
+                if (stops.length) {
+                  // Focus sits on the container itself until the first Tab, and
+                  // indexOf returns -1 for it: forward starts at the first
+                  // button, back at the LAST one, which the plain modulo turned
+                  // into the second to last.
+                  const at = stops.indexOf(document.activeElement as HTMLElement)
+                  const next =
+                    at < 0
+                      ? e.shiftKey
+                        ? stops.length - 1
+                        : 0
+                      : (at + (e.shiftKey ? -1 : 1) + stops.length) % stops.length
+                  stops[next].focus()
+                }
+              }
+              e.stopPropagation()
+            }}
             className='bg-background flex w-72 flex-col gap-2 rounded-lg border p-4 shadow-lg outline-none'
           >
             {over && (
