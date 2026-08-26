@@ -2403,10 +2403,24 @@ const missile_geo=(()=>{ const parts=[]; const b=new THREE.CylinderGeometry(0.12
 	const n=new THREE.ConeGeometry(0.12,0.5,12); n.rotateZ(-Math.PI/2); n.translate(1.45,0,0); parts.push(n);
 	for(const s of [0,1,2,3]){ const f=new THREE.BoxGeometry(0.4,0.02,0.3); f.translate(-1.0,0,0); f.rotateX(s*Math.PI/2); parts.push(f); } return merge_geometries(parts); })();
 const missile_mat=new THREE.MeshStandardMaterial({color:0xdedede,metalness:0.3,roughness:0.6});
-const missile_trail_mat=new THREE.LineBasicMaterial({color:0xc9d1d5,transparent:true,opacity:.38,depthWrite:false,fog:true});
-const missiles=[]; for(let i=0;i<MSL_MAX;i++){ const m=new THREE.Mesh(missile_geo,missile_mat); m.visible=false; scene.add(m); const tg=new THREE.BufferGeometry(); tg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(30*3),3)); tg.setDrawRange(0,0); const trail=new THREE.Line(tg,missile_trail_mat); trail.frustumCulled=false; trail.visible=false; scene.add(trail);
+// Motor smoke (#83): puff sprites are the trail — each owns its lifetime, so
+// the column persists through detonation and dissolves oldest-first from the
+// launch end, the way a real smoke column decays. Both carried motors are
+// reduced-smoke (the 9M's Mk 36, the 120C's HTPB), so the wisp is faint and
+// boost-only; the polyline ribbon this replaces vanished whole on fusing.
+function trail_puff(x,y,z){ const k=pool_spawn(smoke); if(k<0) return false;
+	smoke.px[k]=x+(Math.random()-0.5)*1.2; smoke.py[k]=y+(Math.random()-0.5)*1.2; smoke.pz[k]=z+(Math.random()-0.5)*1.2;
+	smoke.vx[k]=(Math.random()-0.5)*4; smoke.vy[k]=(Math.random()-0.5)*4+1.5; smoke.vz[k]=(Math.random()-0.5)*4;
+	smoke.ttl[k]=smoke.life[k]=5.5+Math.random()*1.5; smoke.sz[k]=0.36+Math.random()*0.14; smoke.gr[k]=0.55;
+	smoke.r[k]=0.78; smoke.g[k]=0.79; smoke.b[k]=0.80; return true; }
+function launch_puff(x,y,z){ for(let i=0;i<6;i++){ const k=pool_spawn(smoke); if(k<0) return;   // the rail flash cloud: brief, a little brighter, left hanging at the launch point
+	smoke.px[k]=x; smoke.py[k]=y; smoke.pz[k]=z;
+	smoke.vx[k]=(Math.random()-0.5)*3; smoke.vy[k]=(Math.random()-0.5)*3+1; smoke.vz[k]=(Math.random()-0.5)*3;
+	smoke.ttl[k]=smoke.life[k]=1.8+Math.random()*0.8; smoke.sz[k]=0.5+Math.random()*0.35; smoke.gr[k]=1.3;
+	smoke.r[k]=0.84; smoke.g[k]=0.84; smoke.b[k]=0.85; } }
+const missiles=[]; for(let i=0;i<MSL_MAX;i++){ const m=new THREE.Mesh(missile_geo,missile_mat); m.visible=false; scene.add(m);
 	missiles.push({mesh:m,active:false,px:0,py:0,pz:0,vx:0,vy:0,vz:0,life:0,target:null,smoke_acc:0,
-		burn:0,flew:0,sx:0,sy:0,sz:0,loose:false,blind:0,lx:0,ly:0,lz:0,window:false,trail,trail_n:0,trail_acc:0}); }   // AIM-9M state (#126): boost, arming, seeker sight line, broken lock, and a swallowed flare's fall point
+		burn:0,flew:0,sx:0,sy:0,sz:0,loose:false,blind:0,lx:0,ly:0,lz:0,window:false}); }   // AIM-9M state (#126): boost, arming, seeker sight line, broken lock, and a swallowed flare's fall point
 function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) return false;
 	let sp=local_offset(st,1,-0.8,0);   // fallback: near the nose
 	if(st.group&&st.msl>0){ let rail=null;
@@ -2417,7 +2431,7 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 		else rail=st.group.getObjectByName(MISSILE_NODES[(st.msl-1)%MISSILE_NODES.length]);   // no known loadout (remote before its roster): the legacy alternating tips
 		if(rail){ rail.getWorldPosition(_v); sp={x:_v.x,y:_v.y,z:_v.z}; } }
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
-	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
+	launch_puff(sp.x,sp.y,sp.z);
 	m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30);   // off the rail at aircraft speed; the Mk 36 does the rest
 	m.life=20; m.kind="9m"; m.target=target; m.enemy=false; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.mask=-1; m.killed=false; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=st;   // enemy=false HERE, every launch: the pool slot may last have carried the bandit's heater, and a player's 9M that inherited enemy=true fused on the bandit and blasted the OWNSHIP's hulk instead — four fused shots in the 2026-08-19 joust, recorded as the bandit's, harming nobody. launch_bandit_heater sets it true again for its own rounds
 	if(target){ const dx=wrap_axis(target.pos.x-st.pos.x), dy=target.pos.y-st.pos.y, dz=wrap_axis(target.pos.z-st.pos.z); const d=Math.hypot(dx,dy,dz)||1;
@@ -2473,7 +2487,7 @@ function launch_amraam(st,target,track){ const m=missiles.find(x=>!x.active); if
 	const piece=name&&st.racks&&st.racks.nodes&&st.racks.nodes[name];
 	if(piece){ _launch_box.setFromObject(piece); _launch_box.getCenter(_v); sp={x:_v.x,y:_v.y,z:_v.z}; }
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
-	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
+	launch_puff(sp.x,sp.y,sp.z);
 	if(stores_eject(st.loadout||{},name||"")){ m.vx=st.fwd.x*(st.speed+15); m.vy=(st.fwd.y*st.speed)-8; m.vz=st.fwd.z*(st.speed+15); }   // ejector points (the cheek LAU-116, the inboard LAU-115C): the round punches DOWN before the motor lights
 	else { m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30); }   // rail points (wing LAU-127s, single or twin): forward off the rail like the 9M
 	m.kind="120c"; m.target=target; m.track=track??null; m.enemy=false; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=st;
@@ -2499,7 +2513,7 @@ function launch_bandit_heater(){ if(!has_enemy||MULTIPLAYER) return;
 function launch_bandit_round(){ const m=missiles.find(x=>!x.active); if(!m||!has_enemy||MULTIPLAYER) return;
 	const sp=local_offset(bandit,1,-0.9,0);
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
-	m.trail_n=1; m.trail_acc=0; { const a=m.trail.geometry.attributes.position.array; a[0]=sp.x;a[1]=sp.y;a[2]=sp.z; m.trail.geometry.setDrawRange(0,1); m.trail.visible=(cfg.effects_quality??2)>0; }
+	launch_puff(sp.x,sp.y,sp.z);
 	m.vx=bandit.fwd.x*(bandit.speed+30); m.vy=bandit.fwd.y*(bandit.speed+30); m.vz=bandit.fwd.z*(bandit.speed+30);
 	m.kind="120c"; m.target=null; m.track=null; m.enemy=true; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=bandit;
 	m.slot=missiles.indexOf(m);
@@ -2530,7 +2544,6 @@ function step_amraam(m,dt){
 	m.phase=state.phase; m.stale=state.stale; m.flew=state.time; m.mach=state.mach; m.rangeToGo=state.range; m.least=state.least;
 	m.mesh.position.set(m.px,m.py,m.pz);
 	m.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),new THREE.Vector3(m.vx,m.vy,m.vz).normalize());
-	m.trail_acc+=dt; if(m.trail_acc>.035){ m.trail_acc=0; const a=m.trail.geometry.attributes.position.array, n=Math.min(30,m.trail_n+1); if(m.trail_n>=30)a.copyWithin(0,3); const o=(n-1)*3; a[o]=m.px;a[o+1]=m.py;a[o+2]=m.pz; m.trail_n=n; m.trail.geometry.setDrawRange(0,n); m.trail.geometry.attributes.position.needsUpdate=true; }
 	if(state.fused&&truth){   // the warhead speaks through battle, exactly like the 9M's
 		m.active=false; m.mesh.visible=false; round_drop(m.slot);
 		{ const prey=m.enemy?ownship:t;   // the burst record (#58): the core's own continuous least, the closing speed, and the miss vector in the target's body frame
@@ -2545,11 +2558,8 @@ function step_amraam(m,dt){
 		else explosion_at(m.px,m.py,m.pz);
 		post_round(m,"fuse"); return; }
 	if(!state.alive||m.py<=0){ m.active=false; m.mesh.visible=false; round_drop(m.slot); post_round(m,m.py<=0?"ocean":"battery"); return; }
-	m.smoke_acc+=dt; const puff=state.time<8?0.02:0.08;
-	while(m.smoke_acc>puff){ m.smoke_acc-=puff; const k=pool_spawn(smoke); if(k<0) break;
-		smoke.px[k]=m.px-m.vx*0.01;smoke.py[k]=m.py;smoke.pz[k]=m.pz-m.vz*0.01; smoke.vx[k]=(Math.random()-0.5)*6;smoke.vy[k]=(Math.random()-0.5)*6+2;smoke.vz[k]=(Math.random()-0.5)*6;
-		smoke.ttl[k]=smoke.life[k]=2.8; smoke.sz[k]=0.30+Math.random()*0.12; smoke.gr[k]=0.40;
-		smoke.r[k]=0.7;smoke.g[k]=0.72;smoke.b[k]=0.75; } }
+	if(state.time<8){ m.smoke_acc+=dt; while(m.smoke_acc>0.02){ m.smoke_acc-=0.02; if(!trail_puff(m.px-m.vx*0.01,m.py-m.vy*0.01,m.pz-m.vz*0.01)) break; } }
+	else m.smoke_acc=0; }   // reduced-smoke HTPB: the boost column marks the launch arc; the coast is clean
 function post_round(m,why){ m.fate=why; m.fated=sim_time;   // the recorder's last sample of this round carries the fate (#33 debrief) — shipped, unlike the dev log below
 	if(!DEV_MODE) return; const log=(globalThis as any).dev_missiles=(globalThis as any).dev_missiles||[];
 	log.push({why, kind:"120c", flew:+(m.flew??0).toFixed(1), phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), least:+(m.least??-1).toFixed(1), took:m.took||0, killed:!!m.killed, mask:m.mask??-1}); }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
@@ -2562,7 +2572,7 @@ function update_missiles(dt){
 	missile_acc+=Math.max(0,dt); let count=Math.floor(missile_acc*60);
 	if(count>8){ count=8; missile_acc=0; } else missile_acc-=count/60;   // a long stall: drop the debt rather than fast-forward (the flight core's rule)
 	for(let s=0;s<count;s++) step_missiles(1/60);
-	for(const m of missiles) if(!m.active) m.trail.visible=false; }
+}
 function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 	if(m.kind==="120c"){ step_amraam(m,dt); continue; }
 	m.life-=dt; m.flew+=dt;
@@ -2675,13 +2685,9 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 		const span=Math.hypot(fx,fy,fz);
 		if(m.neared!==undefined && span>m.neared && m.neared<200){ m.heard=true; audio_flyby(m.neared, m.burn>0); }
 		m.neared=m.neared===undefined?span:Math.min(m.neared,span); }
-	m.trail_acc+=dt; if(m.trail_acc>.035){ m.trail_acc=0; const a=m.trail.geometry.attributes.position.array, n=Math.min(30,m.trail_n+1); if(m.trail_n>=30)a.copyWithin(0,3); const o=(n-1)*3; a[o]=m.px;a[o+1]=m.py;a[o+2]=m.pz; m.trail_n=n; m.trail.geometry.setDrawRange(0,n); m.trail.geometry.attributes.position.needsUpdate=true; }
 	if(m.py<=0){ m.active=false; m.mesh.visible=false; post("ocean"); continue; }
-	m.smoke_acc+=dt; const puff=m.burn>0?0.02:0.08;   // the motor smokes; the coast barely does (reduced-smoke Mk 36)
-	while(m.smoke_acc>puff){ m.smoke_acc-=puff; const k=pool_spawn(smoke); if(k<0) break;
-		smoke.px[k]=m.px-m.vx*0.01;smoke.py[k]=m.py;smoke.pz[k]=m.pz-m.vz*0.01; smoke.vx[k]=(Math.random()-0.5)*6;smoke.vy[k]=(Math.random()-0.5)*6+2;smoke.vz[k]=(Math.random()-0.5)*6;
-		smoke.ttl[k]=smoke.life[k]=2.8; smoke.sz[k]=0.30+Math.random()*0.12; smoke.gr[k]=0.40;   // thin at the motor, swelling downstream (#239)
-		smoke.r[k]=0.7;smoke.g[k]=0.72;smoke.b[k]=0.75; } } }
+	if(m.burn>0){ m.smoke_acc+=dt; while(m.smoke_acc>0.02){ m.smoke_acc-=0.02; if(!trail_puff(m.px-m.vx*0.01,m.py-m.vy*0.01,m.pz-m.vz*0.01)) break; } }
+	else m.smoke_acc=0; } }   // reduced-smoke Mk 36: the boost column marks the launch arc; the coast is clean
 
 
 // ============================================================================ flight
@@ -4347,6 +4353,8 @@ function explosion_at(x,y,z,kind){
 if(DEV_MODE) (globalThis as any).dev_boom=function(distance){   // #82: audition the detonation visuals — burst dead ahead of the camera
 	const d=Number(distance)||150, v=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);
 	explosion_at(camera.position.x+v.x*d,camera.position.y+v.y*d,camera.position.z+v.z*d); };
+if(DEV_MODE) (globalThis as any).dev_fox=function(){ return launch_missile(ownship,null); };   // #83: audition the motor trail — a ballistic 9M off the rail
+if(DEV_MODE) (globalThis as any).dev_smoke=function(){ return smoke.activeList.length; };   // #83: live smoke-pool count — the decay curve the camera cannot fake
 function crash_ownship(why){ if(crash_t>0) return; crash_t=3.0;
 	ownship.fate=ownship.fate||why||"pilot";   // how this life ended, for the recording (#238); the pilot-down path calls with no reason
 	if(!MULTIPLAYER) own_deaths++;   // local deaths count too — the history records the joust honestly (multiplayer's arrive via the net death event)
@@ -6494,10 +6502,7 @@ function update_darts(dt){
 				p.mesh.position.set(x,y,z);
 				_v.set(d.velocity[0],d.velocity[1],d.velocity[2]);
 				if(_v.lengthSq()>1){ p.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),_v.normalize()); }   // the round model lies along +z (normalize_round's convention)
-				if(p.mesh.visible){ p.acc+=dt; const puff=0.02;
-					while(p.acc>puff){ p.acc-=puff; const k=pool_spawn(smoke); if(k<0) break;
-						smoke.px[k]=x; smoke.py[k]=y; smoke.pz[k]=z; smoke.vx[k]=(Math.random()-0.5)*6; smoke.vy[k]=(Math.random()-0.5)*6+2; smoke.vz[k]=(Math.random()-0.5)*6;
-						smoke.ttl[k]=smoke.life[k]=2.8; smoke.sz[k]=0.30+Math.random()*0.12; smoke.gr[k]=0.40; smoke.r[k]=0.7; smoke.g[k]=0.72; smoke.b[k]=0.75; } }
+				if(p.mesh.visible){ p.acc+=dt; while(p.acc>0.02){ p.acc-=0.02; if(!trail_puff(x,y,z)) break; } }   // continuous: the wire carries no burn state (#83)
 				continue; } }
 		if(used>=darts_pool.length) break;
 		const p=darts_pool[used++]; p.mesh.visible=age<1.0;   // a stale set (detonated, or out of the top six) disappears rather than flying on forever
@@ -6506,10 +6511,7 @@ function update_darts(dt){
 		_v.set(d.velocity[0],d.velocity[1],d.velocity[2]);
 		if(_v.lengthSq()>1){ _dart_q.setFromUnitVectors(_dart_axis,_v.normalize()); p.mesh.quaternion.copy(_dart_q); }
 		if(!p.mesh.visible) continue;
-		p.acc+=dt; const puff=0.02;
-		while(p.acc>puff){ p.acc-=puff; const k=pool_spawn(smoke); if(k<0) break;
-			smoke.px[k]=x; smoke.py[k]=y; smoke.pz[k]=z; smoke.vx[k]=(Math.random()-0.5)*6; smoke.vy[k]=(Math.random()-0.5)*6+2; smoke.vz[k]=(Math.random()-0.5)*6;
-			smoke.ttl[k]=smoke.life[k]=2.8; smoke.sz[k]=0.30+Math.random()*0.12; smoke.gr[k]=0.40; smoke.r[k]=0.7; smoke.g[k]=0.72; smoke.b[k]=0.75; } }
+		p.acc+=dt; while(p.acc>0.02){ p.acc-=0.02; if(!trail_puff(x,y,z)) break; } }   // continuous: the wire carries no burn state (#83)
 	for(let i=used;i<darts_pool.length;i++) darts_pool[i].mesh.visible=false;
 	for(let i=fox3;i<fox3_pool.length;i++) fox3_pool[i].mesh.visible=false;
 	if(fox3&&!amraam_proto) void init_amraam_model();   // a remote AIM-120 is inbound and the model is not loaded yet: fetch it
