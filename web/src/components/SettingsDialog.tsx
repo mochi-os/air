@@ -47,7 +47,6 @@ import { SliderRow, SwitchRow, MenuDialog, SectionLabel } from './menu-parts'
 
 // The fields each tab owns, for the per-tab Reset
 const TAB_FIELDS: Record<string, string[]> = {
-  mission: ['task', 'start', 'cat', 'world', 'aircraft', 'bandit', 'fuel', 'stores', 'cheats', 'tod', 'clouds'],
   general: ['callsign', 'record', 'hints'],
   controls: ['joystick', 'sticks'],
   keys: ['keys'],
