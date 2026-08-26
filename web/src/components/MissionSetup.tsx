@@ -176,10 +176,13 @@ function Picker<T extends string>({
   )
 }
 
+// Full internal fuel, in pounds: the slider's ceiling, the default, and what
+// every stores preset loads.
+const FULL_FUEL = 10800
+
 function Armament({
   stores,
   fuel,
-  allowed,
   catapult,
   onChange,
   onFuel,
@@ -187,7 +190,6 @@ function Armament({
 }: {
   stores: Record<string, StationSlot>
   fuel: number
-  allowed: boolean
   catapult: boolean
   onChange: (stores: Record<string, StationSlot>) => void
   onFuel: (fuel: number) => void
@@ -255,7 +257,6 @@ function Armament({
     { name: 'fox2', title: 'Fox 2' },
     { name: 'fox3', title: 'Fox 3' },
   ]
-  const FUELS = { gun: 10800, fox2: 10800, fox3: 10800 }
   const w = book ? weight(loadout, book) : { hardware: 0, fuel: 0 }
   const gross = book ? Math.round(((book.empty + w.hardware + w.fuel) * 2.2046 + fuel) / 10) * 10 : 0
   const LAUNCH = 48000
@@ -279,7 +280,7 @@ function Armament({
               variant={active ? 'default' : 'outline'}
               size='sm'
               className='gap-1.5 text-xs font-semibold flex-1'
-              onClick={() => onPreset(structuredClone(PRESETS[entry.name]), FUELS[entry.name])}
+              onClick={() => onPreset(structuredClone(PRESETS[entry.name]), FULL_FUEL)}
             >
               {active && <Check className='size-3.5' />}
               {entry.title}
@@ -291,7 +292,7 @@ function Armament({
       {(() => {
         const cell = (station: number) => {
           const slot = loadout[String(station)]
-          const open = outcomes(station).filter((o) => allowed || !o.slot.stores.some((s) => s === '9m' || s === '120c'))
+          const open = outcomes(station)
           const current = outcome(station, slot)
           const usable = open.filter((o) => !o.hidden || o.id === current)
           const dead = usable.length <= 1
@@ -337,7 +338,7 @@ function Armament({
         )
       })()}
 
-      <SliderRow label={<Trans>Internal fuel</Trans>} value={fuel} min={1500} max={10800} step={100} decimals={0} suffix=' lb' tight onChange={onFuel} />
+      <SliderRow label={<Trans>Internal fuel</Trans>} value={fuel} min={1500} max={FULL_FUEL} step={100} decimals={0} suffix=' lb' tight onChange={onFuel} />
 
       {book && (
         <div className='px-3 text-xs'>
@@ -1060,8 +1061,7 @@ function MissionPanel({
       <section>
         <Armament
           stores={config.stores}
-          fuel={Number(config.fuel) || 10800}
-          allowed={true}
+          fuel={Number(config.fuel) || FULL_FUEL}
           catapult={config.start === 'carrier'}
           onChange={(v) => set('stores', v)}
           onFuel={(v) => set('fuel', v)}
