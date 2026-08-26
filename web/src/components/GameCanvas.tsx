@@ -183,6 +183,14 @@ export function GameCanvas({
   const [settings, setSettings] = useState(false)
   const [settingsTab, setSettingsTab] = useState('general')
   const [confirm, setConfirm] = useState<'restart' | null>(null)
+  // Unmount is not the pilot leaving. stop() ends through the engine's own
+  // exit_match, which logs the flight and its recording and THEN reports
+  // onExit — so the keyed remount behind Fly again and Restart had the
+  // OUTGOING mission tell the route to leave the game, and the fresh mission
+  // was torn down the frame after it began loading its map. Only the
+  // cleanup-borne call is swallowed; the menu's Exit mission runs
+  // handle.exit() itself and still reports.
+  const closingRef = useRef(false)
   const menuRef = useRef<HTMLDivElement>(null)
   // The mission ended at a crash (#240): the engine reports how, and the menu
   // becomes the end-of-mission surface — outcome line, Fly again, no Resume.
@@ -217,7 +225,9 @@ export function GameCanvas({
         framerate: framerateRef.current!,
         config,
         join,
-        onExit,
+        onExit: () => {
+          if (!closingRef.current) onExit?.()
+        },
         onConfig: (partial: Record<string, number | string>) => onConfigRef.current?.(partial),
         onMenu: () => setMenu((open) => !open), // Esc toggles the popup (#84)
         onOver: (result: { fate: string; struck: number; seconds: number }) => {
@@ -237,7 +247,10 @@ export function GameCanvas({
     }
     handleRef.current = game
     onReady?.(game)
-    return () => game.stop()
+    return () => {
+      closingRef.current = true
+      game.stop()
+    }
     // Mount once; config is captured at launch (a new mission remounts via key).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
