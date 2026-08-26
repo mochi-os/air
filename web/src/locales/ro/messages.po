@@ -35,34 +35,51 @@ msgid "[not set]"
 msgstr "[nesetat]"
 
 #. placeholder {0}: over.struck
-#: src/components/GameCanvas.tsx:362
+#: src/components/GameCanvas.tsx:408
 msgid "{0, plural, one {# round taken} other {# rounds taken}}"
 msgstr "{0, plural, one {Lovit de # proiectil} few {Lovit de # proiectile} other {Lovit de # de proiectile}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:625
+#: src/components/MissionSetup.tsx:695
 msgid "{0} created “{1}”"
 msgstr "{0} a creat „{1}”"
 
 #. placeholder {0}: status.players
-#: src/components/Multiplayer.tsx:320
+#: src/components/Multiplayer.tsx:339
 msgid "{0} flying"
 msgstr "{0} în zbor"
 
 #. placeholder {0}: moment - CATAPULT
-#: src/components/MissionSetup.tsx:333
+#: src/components/MissionSetup.tsx:402
 msgid "{0} ft·lb over the catapult asymmetry limit"
 msgstr "{0} ft·lb peste limita de asimetrie a catapultei"
 
 #. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:327
+#: src/components/MissionSetup.tsx:396
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb peste greutatea maximă de lansare"
 
+#. placeholder {0}: ordered.length
+#. placeholder {1}: matches.length
+#: src/components/MatchLog.tsx:328
+msgid "{0} of {1} flights"
+msgstr "{0} din {1} zboruri"
+
+#. placeholder {0}: pretty(taken.chord)
+#: src/components/SettingsDialog.tsx:768
+msgid "{0} was already taken, and that control is now unbound."
+msgstr "{0} era deja ocupat, iar acea comandă este acum nealocată."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(lost.label)
+#: src/components/SettingsDialog.tsx:764
+msgid "{0} was on {1}, which is now unbound."
+msgstr "{0} era pe {1}, care este acum nealocat."
+
 #. placeholder {0}: (s.players ?? []).length
 #. placeholder {1}: s.capacity
-#: src/components/Multiplayer.tsx:550
+#: src/components/Multiplayer.tsx:570
 msgid "{0}/{1} players"
 msgstr "{0}/{1} jucători"
 
@@ -90,13 +107,17 @@ msgstr "Numele {entityLabel}"
 msgid "{entityLabel} name is required"
 msgstr "Numele {entityLabel} este obligatoriu"
 
-#: src/components/Multiplayer.tsx:223
+#: src/components/Multiplayer.tsx:233
 msgid "{name}'s match"
 msgstr "Meciul lui {name}"
 
 #: ../../../lib/web/src/components/game/game-draw-offer-banner.tsx:29
 msgid "{opponentName} offered a draw"
 msgstr "{opponentName} a oferit egalitate"
+
+#: src/components/Multiplayer.tsx:532
+msgid "{placed} of {limit} bots"
+msgstr "{placed} din {limit} boți"
 
 #: ../../../lib/web/src/components/attachment-composer.tsx:248
 #: ../../../lib/web/src/components/ui/upload-progress.tsx:52
@@ -132,7 +153,7 @@ msgstr "CABLU 1"
 msgid "12 hours"
 msgstr "12 ore"
 
-#: src/components/MissionSetup.tsx:381
+#: src/components/MissionSetup.tsx:450
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -148,7 +169,7 @@ msgstr "24 de ore"
 msgid "3 WIRE"
 msgstr "CABLU 3"
 
-#: src/components/MissionSetup.tsx:384
+#: src/components/MissionSetup.tsx:453
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -172,19 +193,19 @@ msgstr "Nivel de acces"
 msgid "Account type"
 msgstr "Tip de cont"
 
-#: src/components/MissionSetup.tsx:870
-#: src/components/MissionSetup.tsx:1038
-#: src/components/Multiplayer.tsx:482
+#: src/components/MissionSetup.tsx:968
+#: src/components/MissionSetup.tsx:1135
+#: src/components/Multiplayer.tsx:505
 msgid "Ace"
 msgstr "As"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Acquire target"
 msgstr "Fixează ținta"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Acquisition mode"
 msgstr "Mod de achiziție"
 
@@ -262,7 +283,7 @@ msgstr "Adaugă vizualizare"
 msgid "Adding..."
 msgstr "Se adaugă..."
 
-#: src/components/SettingsDialog.tsx:877
+#: src/components/SettingsDialog.tsx:1001
 msgid "Afterburner"
 msgstr "Postcombustie"
 
@@ -270,17 +291,25 @@ msgstr "Postcombustie"
 msgid "AI"
 msgstr "IA"
 
-#: src/components/SettingsDialog.tsx:93
+#: src/components/SettingsDialog.tsx:97
 msgid "Aircraft"
 msgstr "Avion"
 
-#: src/components/MissionSetup.tsx:456
+#: src/components/MissionSetup.tsx:526
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Portavion <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> de <1>Muhamad Mirza Arrafi</1> (Sketchfab), licențiat sub <2>CC BY 4.0</2>. Modificat: rescalat, reorientat, scufundat până la linia de plutire și simplificat pentru web."
 
-#: src/components/MissionSetup.tsx:432
+#: src/components/MissionSetup.tsx:502
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Model de aeronavă <0>“F/A-18C Hornet”</0> de <1>CreadorDeMu</1> (Sketchfab), licențiat sub <2>CC BY 4.0</2>. Modificat: reorientat și rescalat, datele de textură nefolosite eliminate, încărcăturile externe separate într-un fișier distinct, un mesh de carenaj oglindit."
+
+#: src/components/MatchLog.tsx:293
+msgid "All modes"
+msgstr "Toate modurile"
+
+#: src/components/MatchLog.tsx:310
+msgid "All servers"
+msgstr "Toate serverele"
 
 #. placeholder {0}: entityLabel.toLowerCase()
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx:85
@@ -299,7 +328,7 @@ msgstr "A apărut o eroare"
 msgid "An unexpected error occurred"
 msgstr "A apărut o eroare neașteptată"
 
-#: src/components/Multiplayer.tsx:420
+#: src/components/Multiplayer.tsx:438
 msgid "Anchored sides"
 msgstr "Tabere ancorate"
 
@@ -320,12 +349,12 @@ msgstr "Oricine este autentificat"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Tot ce este abonat la acest flux va înceta să îl primească. Puteți copia un URL nou după aceea."
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Approach power (ATC)"
 msgstr "Putere de apropiere (ATC)"
 
-#: src/components/MissionSetup.tsx:354
+#: src/components/MissionSetup.tsx:423
 msgid "Approach, on-speed (Vapp)"
 msgstr "Apropiere, la viteza corectă (Vapp)"
 
@@ -346,8 +375,8 @@ msgstr "Sigur vrei să ștergi acest comentariu? Asta va șterge și toate răsp
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Sigur vrei să te deconectezi? Va trebui să te autentifici din nou pentru a accesa contul."
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Arrestor hook"
 msgstr "Cârlig de frânare"
 
@@ -355,7 +384,7 @@ msgstr "Cârlig de frânare"
 msgid "Ascending"
 msgstr "Crescător"
 
-#: src/components/MissionSetup.tsx:317
+#: src/components/MissionSetup.tsx:386
 msgid "asymmetry"
 msgstr "asimetrie"
 
@@ -367,7 +396,7 @@ msgstr "Atașează fișiere la comentariu"
 msgid "Attach reply files"
 msgstr "Atașează fișiere la răspuns"
 
-#: src/components/SettingsDialog.tsx:603
+#: src/components/SettingsDialog.tsx:633
 msgid "Audio channels"
 msgstr "Canale audio"
 
@@ -392,15 +421,16 @@ msgstr "Avatar"
 msgid "Avatar for {name}"
 msgstr "Avatar pentru {name}"
 
-#: src/components/SettingsDialog.tsx:445
+#: src/components/SettingsDialog.tsx:345
+#: src/components/SettingsDialog.tsx:473
 msgid "Axis {i}"
 msgstr "Axa {i}"
 
-#: src/components/SettingsDialog.tsx:394
+#: src/components/SettingsDialog.tsx:422
 msgid "Axis calibration and mapping"
 msgstr "Calibrarea și maparea axelor"
 
-#: src/components/GameCanvas.tsx:514
+#: src/components/GameCanvas.tsx:566
 msgid "back"
 msgstr "înapoi"
 
@@ -414,7 +444,7 @@ msgstr "Înapoi"
 msgid "Back to home"
 msgstr "Înapoi la pornire"
 
-#: src/components/MissionSetup.tsx:862
+#: src/components/MissionSetup.tsx:960
 msgid "Bandit"
 msgstr "Bandit"
 
@@ -426,23 +456,23 @@ msgstr "Banner"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "SUB 250 — TREN ȘI FLAPSURI"
 
-#: src/components/MissionSetup.tsx:345
+#: src/components/MissionSetup.tsx:414
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "Cea mai bună urcare (Vy, 100% tracțiune)"
 
-#: src/components/MissionSetup.tsx:346
+#: src/components/MissionSetup.tsx:415
 msgid "Best climb (Vy, afterburner)"
 msgstr "Cea mai bună urcare (Vy, postcombustie)"
 
-#: src/components/MissionSetup.tsx:348
+#: src/components/MissionSetup.tsx:417
 msgid "Best glide (engines out)"
 msgstr "Cea mai bună planare (cu motoarele oprite)"
 
-#: src/components/MissionSetup.tsx:350
+#: src/components/MissionSetup.tsx:419
 msgid "Best sustained turn speed"
 msgstr "Viteza celui mai bun viraj susținut"
 
-#: src/components/SettingsDialog.tsx:560
+#: src/components/SettingsDialog.tsx:590
 msgid "Betty and RWR alerts"
 msgstr "Alerte Betty și RWR"
 
@@ -464,11 +494,11 @@ msgstr "Navigare blocată către un link nesigur"
 msgid "Blocks"
 msgstr "Blocuri"
 
-#: src/components/Multiplayer.tsx:602
+#: src/components/Multiplayer.tsx:622
 msgid "Blue"
 msgstr "Albastru"
 
-#: src/components/Multiplayer.tsx:473
+#: src/components/Multiplayer.tsx:496
 msgid "Blue bots"
 msgstr "Boți albaștri"
 
@@ -489,7 +519,7 @@ msgstr "Promovează interesul"
 msgid "Border colour"
 msgstr "Culoare contur"
 
-#: src/components/Multiplayer.tsx:464
+#: src/components/Multiplayer.tsx:482
 msgid "Bots"
 msgstr "Boți"
 
@@ -513,19 +543,20 @@ msgstr "VIRAJ CÂND EȘTI GATA"
 msgid "Browser notifications"
 msgstr "Notificări de browser"
 
-#: src/components/SettingsDialog.tsx:521
+#: src/components/SettingsDialog.tsx:345
+#: src/components/SettingsDialog.tsx:549
 msgid "Button {i}"
 msgstr "Buton {i}"
 
-#: src/components/SettingsDialog.tsx:486
+#: src/components/SettingsDialog.tsx:514
 msgid "Button mappings"
 msgstr "Maparea butoanelor"
 
-#: src/components/Multiplayer.tsx:414
+#: src/components/Multiplayer.tsx:432
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — foc liber de la start"
 
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:954
 msgid "BVR, fight's on from the start"
 msgstr "BVR, foc liber de la start"
 
@@ -533,16 +564,16 @@ msgstr "BVR, foc liber de la start"
 msgid "CALL THE BALL"
 msgstr "ANUNȚĂ MINGEA"
 
-#: src/components/Multiplayer.tsx:304
-#: src/components/SettingsDialog.tsx:929
+#: src/components/Multiplayer.tsx:323
+#: src/components/SettingsDialog.tsx:1053
 msgid "Callsign"
 msgstr "Indicativ"
 
-#: src/components/SettingsDialog.tsx:727
+#: src/components/SettingsDialog.tsx:851
 msgid "Camera distance"
 msgstr "Distanța camerei"
 
-#: src/components/SettingsDialog.tsx:745
+#: src/components/SettingsDialog.tsx:869
 msgid "Camera unavailable"
 msgstr "Camera nu este disponibilă"
 
@@ -560,10 +591,10 @@ msgstr "Camera nu este disponibilă"
 #: ../../../lib/web/src/features/access/access-list.tsx:268
 #: ../../../lib/web/src/features/accounts/account-add.tsx:201
 #: ../../../lib/web/src/features/accounts/account-verify.tsx:91
-#: src/components/GameCanvas.tsx:484
-#: src/components/Multiplayer.tsx:275
-#: src/components/Multiplayer.tsx:579
-#: src/components/SettingsDialog.tsx:693
+#: src/components/GameCanvas.tsx:536
+#: src/components/Multiplayer.tsx:294
+#: src/components/Multiplayer.tsx:599
+#: src/components/SettingsDialog.tsx:815
 msgid "Cancel"
 msgstr "Anulează"
 
@@ -575,11 +606,11 @@ msgstr "Anulează comentariul"
 msgid "Cancel reply"
 msgstr "Anulează răspunsul"
 
-#: src/components/SettingsDialog.tsx:558
+#: src/components/SettingsDialog.tsx:588
 msgid "Cannons and ordnance"
 msgstr "Tunuri și muniție"
 
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:226
 msgid "Canopy"
 msgstr "Cupolă"
 
@@ -588,35 +619,35 @@ msgstr "Cupolă"
 msgid "Caption"
 msgstr "Legendă"
 
-#: src/components/SettingsDialog.tsx:559
+#: src/components/SettingsDialog.tsx:589
 msgid "Carrier and ambient"
 msgstr "Portavion și ambianță"
 
-#: src/components/MissionSetup.tsx:1045
+#: src/components/MissionSetup.tsx:1142
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:893
+#: src/components/MissionSetup.tsx:991
 msgid "Case I (day)"
 msgstr "Caz I (zi)"
 
-#: src/components/MissionSetup.tsx:1046
+#: src/components/MissionSetup.tsx:1143
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:894
+#: src/components/MissionSetup.tsx:992
 msgid "Case II (weather)"
 msgstr "Caz II (meteo)"
 
-#: src/components/MissionSetup.tsx:1047
+#: src/components/MissionSetup.tsx:1144
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:895
+#: src/components/MissionSetup.tsx:993
 msgid "Case III (night)"
 msgstr "Caz III (noapte)"
 
-#: src/components/MissionSetup.tsx:903
+#: src/components/MissionSetup.tsx:1001
 msgid "Catapult"
 msgstr "Catapultă"
 
@@ -624,7 +655,7 @@ msgstr "Catapultă"
 msgid "Category for these notifications"
 msgstr "Categorie pentru aceste notificări"
 
-#: src/components/MissionSetup.tsx:174
+#: src/components/MissionSetup.tsx:244
 msgid "Centerline"
 msgstr "Linia centrală"
 
@@ -637,7 +668,7 @@ msgstr "CHAFF"
 msgid "Change notification category"
 msgstr "Schimbă categoria notificării"
 
-#: src/components/GameCanvas.tsx:511
+#: src/components/GameCanvas.tsx:563
 msgid "Chase view:"
 msgstr "Vedere de urmărire:"
 
@@ -645,17 +676,17 @@ msgstr "Vedere de urmărire:"
 msgid "chat"
 msgstr "chat"
 
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:237
 msgid "Chat"
 msgstr "Chat"
 
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:238
 msgid "Chat to everyone"
 msgstr "Chat cu toți"
 
-#: src/components/MatchLog.tsx:218
-#: src/components/MissionSetup.tsx:959
-#: src/components/Multiplayer.tsx:428
+#: src/components/MatchLog.tsx:365
+#: src/components/MissionSetup.tsx:1057
+#: src/components/Multiplayer.tsx:446
 msgid "Cheats"
 msgstr "Cheat-uri"
 
@@ -682,7 +713,10 @@ msgstr "Alege limba"
 #: ../../../lib/web/src/components/travelling-picker.tsx:170
 #: ../../../lib/web/src/components/travelling-picker.tsx:231
 #: ../../../lib/web/src/components/travelling-picker.tsx:237
-#: src/components/Multiplayer.tsx:365
+#: src/components/MatchLog.tsx:323
+#: src/components/MatchLog.tsx:379
+#: src/components/Multiplayer.tsx:384
+#: src/components/SettingsDialog.tsx:679
 msgid "Clear"
 msgstr "Golește"
 
@@ -728,11 +762,11 @@ msgstr "Închide panoul / anulează"
 msgid "Close search"
 msgstr "Închide căutarea"
 
-#: src/components/GameCanvas.tsx:515
+#: src/components/GameCanvas.tsx:567
 msgid "closer"
 msgstr "mai aproape"
 
-#: src/components/MissionSetup.tsx:939
+#: src/components/MissionSetup.tsx:1037
 msgid "Clouds"
 msgstr "Nori"
 
@@ -782,7 +816,7 @@ msgstr "Acțiuni comentariu"
 msgid "Comments"
 msgstr "Comentarii"
 
-#: src/components/SettingsDialog.tsx:95
+#: src/components/SettingsDialog.tsx:99
 msgid "Communication"
 msgstr "Comunicații"
 
@@ -803,11 +837,11 @@ msgstr "Configurează setările vizualizării"
 msgid "Confirm"
 msgstr "Confirmă"
 
-#: src/components/MissionSetup.tsx:762
+#: src/components/MissionSetup.tsx:861
 msgid "Connect"
 msgstr "Conectare"
 
-#: src/components/MissionSetup.tsx:749
+#: src/components/MissionSetup.tsx:848
 msgid "Connect to private server"
 msgstr "Conectare la server privat"
 
@@ -819,7 +853,7 @@ msgstr "Conectat"
 msgid "Connecting..."
 msgstr "Se conectează..."
 
-#: src/components/Multiplayer.tsx:323
+#: src/components/Multiplayer.tsx:342
 msgid "Connecting…"
 msgstr "Se conectează…"
 
@@ -840,7 +874,7 @@ msgid "Contextual information and details."
 msgstr "Informații și detalii contextuale."
 
 #: ../../../lib/web/src/components/responsive-confirm-dialog.tsx:75
-#: src/components/Multiplayer.tsx:284
+#: src/components/Multiplayer.tsx:303
 msgid "Continue"
 msgstr "Continuă"
 
@@ -860,11 +894,11 @@ msgstr "Copiat în clipboard"
 msgid "Copy"
 msgstr "Copiază"
 
-#: src/components/MissionSetup.tsx:349
+#: src/components/MissionSetup.tsx:418
 msgid "Corner speed (best instant turn)"
 msgstr "Viteză de colț (cel mai bun viraj instantaneu)"
 
-#: src/components/Multiplayer.tsx:240
+#: src/components/Multiplayer.tsx:250
 msgid "Could not create the match"
 msgstr "Meciul nu a putut fi creat"
 
@@ -872,20 +906,20 @@ msgstr "Meciul nu a putut fi creat"
 msgid "Could not load this document. Please try again later."
 msgstr "Nu s-a putut încărca acest document. Încearcă din nou mai târziu."
 
-#: src/components/MatchLog.tsx:106
+#: src/components/MatchLog.tsx:168
 msgid "Could not load your flights"
 msgstr "Zborurile tale nu au putut fi încărcate"
 
-#: src/components/SettingsDialog.tsx:283
+#: src/components/SettingsDialog.tsx:288
 msgid "Could not save the profile"
 msgstr "Profilul nu a putut fi salvat"
 
-#: src/components/MatchLog.tsx:263
-#: src/components/MatchLog.tsx:269
+#: src/components/MatchLog.tsx:430
+#: src/components/MatchLog.tsx:436
 msgid "Could not save the recording"
 msgstr "Înregistrarea nu a putut fi salvată"
 
-#: src/components/MissionSetup.tsx:607
+#: src/components/MissionSetup.tsx:677
 msgid "Could not send the message"
 msgstr "Mesajul nu a putut fi trimis"
 
@@ -905,12 +939,12 @@ msgstr "Reautentificarea nu a putut fi inițiată. Încearcă din nou."
 msgid "Couldn't verify with that account. Please try again."
 msgstr "Nu s-a putut verifica cu acel cont. Încearcă din nou."
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Countermeasures"
 msgstr "Contramăsuri"
 
-#: src/components/GameCanvas.tsx:356
+#: src/components/GameCanvas.tsx:402
 msgid "Crashed"
 msgstr "S-a prăbușit"
 
@@ -931,16 +965,16 @@ msgstr "Creează"
 msgid "Create {0}"
 msgstr "Creați {0}"
 
-#: src/components/Multiplayer.tsx:522
+#: src/components/Multiplayer.tsx:542
 msgid "Create and fly"
 msgstr "Creează și zboară"
 
-#: src/components/Multiplayer.tsx:338
+#: src/components/Multiplayer.tsx:357
 msgid "Create match"
 msgstr "Creează meci"
 
-#: src/components/MissionSetup.tsx:1107
-#: src/components/MissionSetup.tsx:1164
+#: src/components/MissionSetup.tsx:1210
+#: src/components/MissionSetup.tsx:1231
 msgid "Create mission"
 msgstr "Creează misiune"
 
@@ -958,14 +992,14 @@ msgstr "Creat"
 msgid "Creating..."
 msgstr "Se creează..."
 
-#: src/components/MissionSetup.tsx:421
-#: src/components/MissionSetup.tsx:427
+#: src/components/MissionSetup.tsx:491
+#: src/components/MissionSetup.tsx:497
 msgid "Credits"
 msgstr "Credite"
 
-#: src/components/MissionSetup.tsx:946
-#: src/components/Multiplayer.tsx:76
-#: src/components/Multiplayer.tsx:366
+#: src/components/MissionSetup.tsx:1044
+#: src/components/Multiplayer.tsx:86
+#: src/components/Multiplayer.tsx:385
 msgid "Cumulus"
 msgstr "Cumulus"
 
@@ -981,8 +1015,8 @@ msgstr "Personalizat"
 msgid "CUT"
 msgstr "PERICULOS"
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:231
 msgid "Cycle view"
 msgstr "Schimbă vederea"
 
@@ -995,17 +1029,17 @@ msgid "Data conflict"
 msgstr "Conflict de date"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx:139
-#: src/components/MatchLog.tsx:194
+#: src/components/MatchLog.tsx:341
 msgid "Date"
 msgstr "Dată"
 
-#: src/components/MissionSetup.tsx:932
-#: src/components/Multiplayer.tsx:361
+#: src/components/MissionSetup.tsx:1030
+#: src/components/Multiplayer.tsx:380
 msgid "Day"
 msgstr "Zi"
 
-#: src/components/MatchLog.tsx:183
-#: src/components/MatchLog.tsx:212
+#: src/components/MatchLog.tsx:274
+#: src/components/MatchLog.tsx:359
 msgid "Deaths"
 msgstr "Morți"
 
@@ -1071,7 +1105,7 @@ msgstr "Șterge vizualizarea"
 msgid "Delete your account on the old server"
 msgstr "Ștergeți contul de pe serverul vechi"
 
-#: src/components/MissionSetup.tsx:882
+#: src/components/MissionSetup.tsx:980
 msgid "Departure / Recovery"
 msgstr "Decolare / Apuntare"
 
@@ -1083,11 +1117,11 @@ msgstr "Descrescător"
 msgid "Description"
 msgstr "Descriere"
 
-#: src/components/GameCanvas.tsx:350
+#: src/components/GameCanvas.tsx:396
 msgid "Destroyed by fire"
 msgstr "Distrus de incendiu"
 
-#: src/components/SettingsDialog.tsx:802
+#: src/components/SettingsDialog.tsx:926
 msgid "Detail"
 msgstr "Detaliu"
 
@@ -1095,8 +1129,8 @@ msgstr "Detaliu"
 msgid "Details Panel"
 msgstr "Panou detalii"
 
-#: src/components/SettingsDialog.tsx:474
-#: src/components/SettingsDialog.tsx:538
+#: src/components/SettingsDialog.tsx:502
+#: src/components/SettingsDialog.tsx:566
 msgid "Detect"
 msgstr "Detectează"
 
@@ -1111,7 +1145,7 @@ msgstr "Detectează"
 msgid "Detect from web browser"
 msgstr "Detectează din browser"
 
-#: src/components/Multiplayer.tsx:264
+#: src/components/Multiplayer.tsx:283
 msgid "Different game host"
 msgstr "Gazdă de joc diferită"
 
@@ -1131,24 +1165,25 @@ msgstr "Renunță"
 msgid "Discard draft?"
 msgstr "Renunți la ciornă?"
 
-#: src/components/SettingsDialog.tsx:360
+#: src/components/SettingsDialog.tsx:388
 msgid "disconnected"
 msgstr "deconectat"
 
 #: ../../../lib/web/src/lib/chat-ui.ts:25
 #: ../../../lib/web/src/lib/chat-ui.ts:29
-#: src/components/MatchLog.tsx:93
+#: src/components/MatchLog.tsx:155
 msgid "Disconnected"
 msgstr "Deconectat"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
-#: src/components/MissionSetup.tsx:1077
+#: src/components/MissionSetup.tsx:1188
+#: src/components/SettingsDialog.tsx:775
 msgid "Dismiss"
 msgstr "Renunță"
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:233
 msgid "Display repeater"
 msgstr "Repetitor de afișaj"
 
@@ -1156,13 +1191,13 @@ msgstr "Repetitor de afișaj"
 msgid "Displays the mobile sidebar."
 msgstr "Afișează bara laterală mobilă."
 
-#: src/components/SettingsDialog.tsx:863
+#: src/components/SettingsDialog.tsx:987
 msgid "Distance LOD"
 msgstr "LOD după distanță"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:1065
+#: src/components/SettingsDialog.tsx:1157
 msgid "Done"
 msgstr "Terminat"
 
@@ -1180,11 +1215,11 @@ msgstr "Descărcarea a eșuat"
 msgid "DOWNWIND 600 FEET"
 msgstr "SUB VÂNT 600 PICIOARE"
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:565
 msgid "Drag"
 msgstr "Trage"
 
-#: src/components/Multiplayer.tsx:479
+#: src/components/Multiplayer.tsx:502
 msgid "Drone"
 msgstr "Dronă"
 
@@ -1192,11 +1227,11 @@ msgstr "Dronă"
 msgid "Duplicates"
 msgstr "Duplicate"
 
-#: src/components/MatchLog.tsx:197
+#: src/components/MatchLog.tsx:344
 msgid "Duration"
 msgstr "Durată"
 
-#: src/components/SettingsDialog.tsx:856
+#: src/components/SettingsDialog.tsx:980
 msgid "Dynamic resolution"
 msgstr "Rezoluție dinamică"
 
@@ -1247,15 +1282,15 @@ msgstr "Editează cardul selectat"
 msgid "Edit view"
 msgstr "Editează vizualizarea"
 
-#: src/components/SettingsDialog.tsx:848
+#: src/components/SettingsDialog.tsx:972
 msgid "Effects"
 msgstr "Efecte"
 
-#: src/components/SettingsDialog.tsx:826
+#: src/components/SettingsDialog.tsx:950
 msgid "Effects detail"
 msgstr "Detaliu efecte"
 
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:230
 msgid "Eject"
 msgstr "Catapultare"
 
@@ -1275,17 +1310,17 @@ msgstr "Cod email"
 msgid "EMERG JETT"
 msgstr "LARGARE DE URGENȚĂ"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Emergency jettison (hold)"
 msgstr "Largare de urgență (ține apăsat)"
 
-#: src/components/Multiplayer.tsx:549
+#: src/components/Multiplayer.tsx:569
 msgid "empty"
 msgstr "goală"
 
-#: src/components/MissionSetup.tsx:193
-#: src/components/MissionSetup.tsx:204
+#: src/components/MissionSetup.tsx:263
+#: src/components/MissionSetup.tsx:274
 msgid "Empty pylon"
 msgstr "Pilon gol"
 
@@ -1293,11 +1328,11 @@ msgstr "Pilon gol"
 msgid "ENGAGED"
 msgstr "ANGAJEZ"
 
-#: src/components/MissionSetup.tsx:849
+#: src/components/MissionSetup.tsx:947
 msgid "Engagement"
 msgstr "Angajare"
 
-#: src/components/SettingsDialog.tsx:556
+#: src/components/SettingsDialog.tsx:586
 msgid "Engine and afterburner"
 msgstr "Motor și postcombustie"
 
@@ -1309,15 +1344,15 @@ msgstr "Introduceți codul din e-mailul dumneavoastră"
 msgid "Enter your authenticator code"
 msgstr "Introdu codul din aplicația de autentificare"
 
-#: src/components/GameCanvas.tsx:317
+#: src/components/GameCanvas.tsx:324
 msgid "Everyone"
 msgstr "Toți"
 
-#: src/components/GameCanvas.tsx:444
+#: src/components/GameCanvas.tsx:496
 msgid "Exit match"
 msgstr "Ieși din meci"
 
-#: src/components/GameCanvas.tsx:444
+#: src/components/GameCanvas.tsx:496
 msgid "Exit mission"
 msgstr "Ieși din misiune"
 
@@ -1332,16 +1367,16 @@ msgstr "Extinde"
 msgid "Expand sidebar"
 msgstr "Extinde bara laterală"
 
-#: src/components/SettingsDialog.tsx:378
+#: src/components/SettingsDialog.tsx:406
 msgid "Export"
 msgstr "Exportă"
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Extend flaps"
 msgstr "Scoatere flapsuri"
 
-#: src/components/SettingsDialog.tsx:818
+#: src/components/SettingsDialog.tsx:942
 msgid "Exterior detail"
 msgstr "Detaliu exterior"
 
@@ -1353,7 +1388,7 @@ msgstr "URL extern"
 msgid "Extra large"
 msgstr "Extra mare"
 
-#: src/components/MissionSetup.tsx:369
+#: src/components/MissionSetup.tsx:438
 msgid "F/A-18C reference"
 msgstr "Referință F/A-18C"
 
@@ -1437,7 +1472,7 @@ msgstr "Fișiere"
 msgid "Finish moving your account"
 msgstr "Finalizați mutarea contului dvs."
 
-#: src/components/MatchLog.tsx:94
+#: src/components/MatchLog.tsx:156
 msgid "Finished"
 msgstr "Finalizat"
 
@@ -1445,12 +1480,12 @@ msgstr "Finalizat"
 msgid "fire"
 msgstr "foc"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Fire weapon"
 msgstr "Trage cu arma"
 
-#: src/components/SettingsDialog.tsx:719
+#: src/components/SettingsDialog.tsx:843
 msgid "Fixed flight keys"
 msgstr "Taste de zbor fixe"
 
@@ -1478,11 +1513,11 @@ msgstr "FLARE"
 msgid "Flat"
 msgstr "Plat"
 
-#: src/components/GameCanvas.tsx:352
+#: src/components/GameCanvas.tsx:398
 msgid "Flew into the sea"
 msgstr "A căzut în mare"
 
-#: src/components/SettingsDialog.tsx:90
+#: src/components/SettingsDialog.tsx:94
 msgid "Flight"
 msgstr "Zbor"
 
@@ -1490,37 +1525,37 @@ msgstr "Zbor"
 msgid "FLIGHT CORE FAILED"
 msgstr "NUCLEUL DE ZBOR A EȘUAT"
 
-#: src/components/SettingsDialog.tsx:971
+#: src/components/SettingsDialog.tsx:1095
 msgid "Flight hints"
 msgstr "Indicii de zbor"
 
-#: src/components/MissionSetup.tsx:1145
+#: src/components/MissionSetup.tsx:1215
 msgid "Flight log"
 msgstr "Jurnal de zbor"
 
-#: src/components/MatchLog.tsx:174
+#: src/components/MatchLog.tsx:265
 msgid "Flights"
 msgstr "Zboruri"
 
-#: src/components/MatchLog.tsx:95
+#: src/components/MatchLog.tsx:157
 msgid "Flown"
 msgstr "Zburat"
 
-#: src/components/MissionSetup.tsx:1093
-#: src/components/MissionSetup.tsx:1177
+#: src/components/MissionSetup.tsx:1204
+#: src/components/MissionSetup.tsx:1244
 msgid "Fly"
 msgstr "Zboară"
 
-#: src/components/GameCanvas.tsx:379
+#: src/components/GameCanvas.tsx:425
 msgid "Fly again"
 msgstr "Zboară din nou"
 
-#: src/components/SettingsDialog.tsx:891
+#: src/components/SettingsDialog.tsx:1015
 msgid "Framerate counter"
 msgstr "Contor de cadre"
 
-#: src/components/MatchLog.tsx:86
-#: src/components/MissionSetup.tsx:839
+#: src/components/MatchLog.tsx:148
+#: src/components/MissionSetup.tsx:937
 msgid "Free flight"
 msgstr "Zbor liber"
 
@@ -1544,7 +1579,7 @@ msgstr "De la"
 msgid "From theme"
 msgstr "Din temă"
 
-#: src/components/Multiplayer.tsx:389
+#: src/components/Multiplayer.tsx:408
 msgid "Fuel"
 msgstr "Combustibil"
 
@@ -1564,24 +1599,24 @@ msgstr "SCURGERE COMB"
 msgid "FUEL LO"
 msgstr "COMBUSTIBIL SCĂZUT"
 
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:225
 msgid "Fuel probe"
 msgstr "Sondă de combustibil"
 
-#: src/components/MissionSetup.tsx:191
+#: src/components/MissionSetup.tsx:261
 msgid "Fuel tank"
 msgstr "Rezervor de combustibil"
 
-#: src/components/MatchLog.tsx:83
+#: src/components/MatchLog.tsx:145
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:173
-#: src/components/MissionSetup.tsx:175
+#: src/components/MissionSetup.tsx:243
+#: src/components/MissionSetup.tsx:245
 msgid "Fuselage"
 msgstr "Fuselaj"
 
-#: src/components/SettingsDialog.tsx:745
+#: src/components/SettingsDialog.tsx:869
 msgid "Gain"
 msgstr "Amplificare"
 
@@ -1593,7 +1628,7 @@ msgstr "tren"
 msgid "GEAR"
 msgstr "TREN"
 
-#: src/components/SettingsDialog.tsx:1009
+#: src/components/SettingsDialog.tsx:1166
 msgid "General"
 msgstr "General"
 
@@ -1602,15 +1637,15 @@ msgstr "General"
 msgid "Go back"
 msgstr "Înapoi"
 
-#: src/components/SettingsDialog.tsx:1013
+#: src/components/SettingsDialog.tsx:1170
 msgid "Graphics"
 msgstr "Grafică"
 
-#: src/components/SettingsDialog.tsx:778
+#: src/components/SettingsDialog.tsx:902
 msgid "Graphics preset"
 msgstr "Presetare grafică"
 
-#: src/components/MissionSetup.tsx:303
+#: src/components/MissionSetup.tsx:372
 msgid "Gross weight"
 msgstr "Greutate totală"
 
@@ -1631,38 +1666,38 @@ msgstr "Grup: {0}"
 msgid "GUN"
 msgstr "TUN"
 
-#: src/components/MissionSetup.tsx:210
+#: src/components/MissionSetup.tsx:280
 msgid "Gun only"
 msgstr "Doar tunuri"
 
-#: src/components/Multiplayer.tsx:71
-#: src/components/Multiplayer.tsx:383
+#: src/components/Multiplayer.tsx:81
+#: src/components/Multiplayer.tsx:402
 msgid "Guns only"
 msgstr "Doar tunuri"
 
-#: src/components/MissionSetup.tsx:1072
+#: src/components/MissionSetup.tsx:1183
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Accelerarea grafică hardware este oprită — verificați setările browserului sau driverele grafice."
 
-#: src/components/SettingsDialog.tsx:745
+#: src/components/SettingsDialog.tsx:869
 msgid "Head"
 msgstr "Cap"
 
-#: src/components/SettingsDialog.tsx:745
+#: src/components/SettingsDialog.tsx:869
 msgid "Head tracking"
 msgstr "Urmărirea capului"
 
-#: src/components/SettingsDialog.tsx:769
+#: src/components/SettingsDialog.tsx:893
 msgid "High"
 msgstr "Ridicat"
 
-#: src/components/MissionSetup.tsx:947
-#: src/components/Multiplayer.tsx:77
-#: src/components/Multiplayer.tsx:367
+#: src/components/MissionSetup.tsx:1045
+#: src/components/Multiplayer.tsx:87
+#: src/components/Multiplayer.tsx:386
 msgid "High stratus"
 msgstr "Stratus înalt"
 
-#: src/components/SettingsDialog.tsx:962
+#: src/components/SettingsDialog.tsx:1086
 msgid "Hints"
 msgstr "Indicii"
 
@@ -1689,11 +1724,11 @@ msgstr "CÂRLIG"
 msgid "Hot"
 msgstr "Popular"
 
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:234
 msgid "HUD altitude source"
 msgstr "Sursă altitudine HUD"
 
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:235
 msgid "HUD declutter"
 msgstr "Simplificare HUD"
 
@@ -1710,12 +1745,12 @@ msgstr "Vizualizator de imagini: {0}"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/SettingsDialog.tsx:382
+#: src/components/SettingsDialog.tsx:410
 msgid "Import"
 msgstr "Importă"
 
-#: src/components/MissionSetup.tsx:890
-#: src/components/MissionSetup.tsx:1042
+#: src/components/MissionSetup.tsx:988
+#: src/components/MissionSetup.tsx:1139
 msgid "In air"
 msgstr "În aer"
 
@@ -1731,7 +1766,7 @@ msgstr "Avatar cu inițiale"
 msgid "Initials avatar for {name}"
 msgstr "Avatar cu inițiale pentru {name}"
 
-#: src/components/SettingsDialog.tsx:338
+#: src/components/SettingsDialog.tsx:366
 msgid "Input hardware"
 msgstr "Hardware de intrare"
 
@@ -1739,7 +1774,7 @@ msgstr "Hardware de intrare"
 msgid "Interests"
 msgstr "Interese"
 
-#: src/components/MissionSetup.tsx:296
+#: src/components/MissionSetup.tsx:365
 msgid "Internal fuel"
 msgstr "Combustibil intern"
 
@@ -1747,8 +1782,8 @@ msgstr "Combustibil intern"
 msgid "Invalid date"
 msgstr "Dată invalidă"
 
-#: src/components/MissionSetup.tsx:965
-#: src/components/Multiplayer.tsx:80
+#: src/components/MissionSetup.tsx:1063
+#: src/components/Multiplayer.tsx:90
 msgid "Invulnerable"
 msgstr "Invulnerabil"
 
@@ -1756,8 +1791,8 @@ msgstr "Invulnerabil"
 msgid "INVULNERABLE"
 msgstr "INVULNERABIL"
 
-#: src/components/MissionSetup.tsx:965
-#: src/components/Multiplayer.tsx:437
+#: src/components/MissionSetup.tsx:1063
+#: src/components/Multiplayer.tsx:455
 msgid "Invulnerable (human players only)"
 msgstr "Invulnerabil (doar jucători umani)"
 
@@ -1765,13 +1800,13 @@ msgstr "Invulnerabil (doar jucători umani)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Se pare că pagina pe care o căutați <0/>nu există sau a fost eliminată."
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Jammer"
 msgstr "Bruiaj"
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Jettison tanks"
 msgstr "Largare rezervoare"
 
@@ -1779,12 +1814,12 @@ msgstr "Largare rezervoare"
 msgid "JETTISON: GEAR"
 msgstr "LARGARE: TREN"
 
-#: src/components/Multiplayer.tsx:614
+#: src/components/Multiplayer.tsx:634
 msgid "Join"
 msgstr "Alătură-te"
 
-#: src/components/MissionSetup.tsx:706
-#: src/components/MissionSetup.tsx:1119
+#: src/components/MissionSetup.tsx:788
+#: src/components/MissionSetup.tsx:1211
 msgid "Join server"
 msgstr "Alătură-te unui server"
 
@@ -1792,21 +1827,21 @@ msgstr "Alătură-te unui server"
 msgid "JOINED"
 msgstr "S-A ALĂTURAT"
 
-#: src/components/MatchLog.tsx:84
-#: src/components/MissionSetup.tsx:1052
-#: src/components/Multiplayer.tsx:548
+#: src/components/MatchLog.tsx:146
+#: src/components/MissionSetup.tsx:1149
+#: src/components/Multiplayer.tsx:568
 msgid "Joust"
 msgstr "Duel"
 
-#: src/components/Multiplayer.tsx:352
+#: src/components/Multiplayer.tsx:371
 msgid "Joust — 1v1, first kill wins"
 msgstr "Duel — 1v1, prima doborâre câștigă"
 
-#: src/components/MissionSetup.tsx:840
+#: src/components/MissionSetup.tsx:938
 msgid "Joust against bot"
 msgstr "Duel contra botului"
 
-#: src/components/SettingsDialog.tsx:1021
+#: src/components/SettingsDialog.tsx:1178
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1814,7 +1849,7 @@ msgstr "Joystick"
 msgid "Just now"
 msgstr "Chiar acum"
 
-#: src/components/MatchLog.tsx:186
+#: src/components/MatchLog.tsx:277
 msgid "K/D"
 msgstr "K/D"
 
@@ -1822,7 +1857,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Scurtături de tastatură"
 
-#: src/components/SettingsDialog.tsx:1025
+#: src/components/SettingsDialog.tsx:1182
 msgid "Keys"
 msgstr "Taste"
 
@@ -1830,12 +1865,12 @@ msgstr "Taste"
 msgid "KILL"
 msgstr "DOBORÂRE"
 
-#: src/components/MatchLog.tsx:97
+#: src/components/MatchLog.tsx:159
 msgid "Killed"
 msgstr "Doborât"
 
-#: src/components/MatchLog.tsx:180
-#: src/components/MatchLog.tsx:209
+#: src/components/MatchLog.tsx:271
+#: src/components/MatchLog.tsx:356
 msgid "Kills"
 msgstr "Doborâri"
 
@@ -1851,8 +1886,8 @@ msgstr "FOC MOTOR STG"
 msgid "L GEAR"
 msgstr "TREN STG"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Landing gear"
 msgstr "Tren de aterizare"
 
@@ -1865,8 +1900,8 @@ msgstr "Mare"
 msgid "LATE"
 msgstr "TÂRZIU"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:229
 msgid "Launch (catapult)"
 msgstr "Lansare (catapultă)"
 
@@ -1878,15 +1913,15 @@ msgstr "lansare / țintire"
 msgid "Layout"
 msgstr "Aspect"
 
-#: src/components/Multiplayer.tsx:402
+#: src/components/Multiplayer.tsx:420
 msgid "lb"
 msgstr "lb"
 
-#: src/components/MissionSetup.tsx:784
+#: src/components/MissionSetup.tsx:882
 msgid "Leave server"
 msgstr "Părăsește serverul"
 
-#: src/components/MatchLog.tsx:92
+#: src/components/MatchLog.tsx:154
 msgid "Left"
 msgstr "Părăsit"
 
@@ -1894,12 +1929,12 @@ msgstr "Părăsit"
 msgid "LEFT"
 msgstr "A PLECAT"
 
-#: src/components/MissionSetup.tsx:171
-#: src/components/MissionSetup.tsx:172
+#: src/components/MissionSetup.tsx:241
+#: src/components/MissionSetup.tsx:242
 msgid "Left wing"
 msgstr "Aripa stângă"
 
-#: src/components/MissionSetup.tsx:170
+#: src/components/MissionSetup.tsx:240
 msgid "Left wingtip"
 msgstr "Vârful aripii stângi"
 
@@ -1919,8 +1954,8 @@ msgstr "Luminos"
 msgid "lights"
 msgstr "lumini"
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:228
 msgid "Lights"
 msgstr "Lumini"
 
@@ -1982,41 +2017,41 @@ msgstr "Deconectare reușită"
 msgid "Logging out…"
 msgstr "Se deconectează…"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:109
 msgid "Look"
 msgstr "Privește"
 
-#: src/components/SettingsDialog.tsx:726
+#: src/components/SettingsDialog.tsx:850
 msgid "Look / orbit"
 msgstr "Privire / orbitare"
 
-#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:184
 msgid "Look at target"
 msgstr "Privește ținta"
 
-#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:181
 msgid "Look down"
 msgstr "Privește în jos"
 
-#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:182
 msgid "Look left"
 msgstr "Privește la stânga"
 
-#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:183
 msgid "Look right"
 msgstr "Privește la dreapta"
 
-#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:180
 msgid "Look up"
 msgstr "Privește în sus"
 
-#: src/components/SettingsDialog.tsx:767
+#: src/components/SettingsDialog.tsx:891
 msgid "Low"
 msgstr "Scăzut"
 
-#: src/components/MissionSetup.tsx:949
-#: src/components/Multiplayer.tsx:79
-#: src/components/Multiplayer.tsx:369
+#: src/components/MissionSetup.tsx:1047
+#: src/components/Multiplayer.tsx:89
+#: src/components/Multiplayer.tsx:388
 msgid "Low stratus"
 msgstr "Stratus jos"
 
@@ -2036,7 +2071,7 @@ msgstr "Manual"
 msgid "map"
 msgstr "hartă"
 
-#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:236
 msgid "Map"
 msgstr "Hartă"
 
@@ -2045,24 +2080,24 @@ msgstr "Hartă"
 msgid "Mark all as read"
 msgstr "Marchează totul ca citit"
 
-#: src/components/SettingsDialog.tsx:575
+#: src/components/SettingsDialog.tsx:605
 msgid "Master audio output"
 msgstr "Ieșire audio principală"
 
-#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:618
 msgid "Master bus"
 msgstr "Magistrală principală"
 
-#: src/components/SettingsDialog.tsx:555
-#: src/components/SettingsDialog.tsx:583
+#: src/components/SettingsDialog.tsx:585
+#: src/components/SettingsDialog.tsx:613
 msgid "Master volume"
 msgstr "Volum general"
 
-#: src/components/Multiplayer.tsx:348
+#: src/components/Multiplayer.tsx:367
 msgid "Match type"
 msgstr "Tip de meci"
 
-#: src/components/MissionSetup.tsx:779
+#: src/components/MissionSetup.tsx:877
 msgid "Matches"
 msgstr "Meciuri"
 
@@ -2075,7 +2110,7 @@ msgid "MCP server"
 msgstr "Server MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:768
+#: src/components/SettingsDialog.tsx:892
 msgid "Medium"
 msgstr "Mediu"
 
@@ -2084,12 +2119,12 @@ msgid "menu"
 msgstr "meniu"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:183
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:239
 msgid "Menu"
 msgstr "Meniu"
 
-#: src/components/Multiplayer.tsx:413
+#: src/components/Multiplayer.tsx:431
 msgid "Merge — fight on at the pass"
 msgstr "Întâlnire — lupta începe la trecere"
 
@@ -2097,15 +2132,15 @@ msgstr "Întâlnire — lupta începe la trecere"
 msgid "Message"
 msgstr "Mesaj"
 
-#: src/components/GameCanvas.tsx:322
+#: src/components/GameCanvas.tsx:329
 msgid "Message everyone"
 msgstr "Scrie tuturor"
 
-#: src/components/MissionSetup.tsx:642
+#: src/components/MissionSetup.tsx:712
 msgid "Message players on this server"
 msgstr "Trimite un mesaj jucătorilor de pe acest server"
 
-#: src/components/GameCanvas.tsx:322
+#: src/components/GameCanvas.tsx:329
 msgid "Message your team"
 msgstr "Scrie echipei tale"
 
@@ -2113,17 +2148,17 @@ msgstr "Scrie echipei tale"
 msgid "Metric"
 msgstr "Metric"
 
-#: src/components/MissionSetup.tsx:948
-#: src/components/Multiplayer.tsx:78
-#: src/components/Multiplayer.tsx:368
+#: src/components/MissionSetup.tsx:1046
+#: src/components/Multiplayer.tsx:88
+#: src/components/Multiplayer.tsx:387
 msgid "Mid stratus"
 msgstr "Stratus mediu"
 
-#: src/components/GameCanvas.tsx:354
+#: src/components/GameCanvas.tsx:400
 msgid "Midair collision"
 msgstr "Coliziune în aer"
 
-#: src/components/MissionSetup.tsx:503
+#: src/components/MissionSetup.tsx:573
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Harta atolului Midway — imaginile conțin date <0>Copernicus Sentinel-2</0> modificate (2026); geometria aerodromului (pistă, căi de rulare, platforme) © contribuitorii <1>OpenStreetMap</1>, licențiată sub <2>ODbL</2>; datele privind linia de coastă și recifele de la <3>NOAA NCCOS</3> (domeniu public)."
 
@@ -2135,15 +2170,20 @@ msgstr "Lungime minimă"
 msgid "MISSILE"
 msgstr "RACHETĂ"
 
-#: src/components/MissionSetup.tsx:480
+#: src/components/MissionSetup.tsx:550
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Model de rachetă <0>“AIM-120C AMRAAM”</0> de <1>Pippa</1> (Sketchfab), licențiat sub <2>CC BY 4.0</2>. Modificat: redimensionat, reorientat și centrat pentru amplasare."
+
+#: src/components/GameCanvas.tsx:351
+msgid "Mission over"
+msgstr "Misiune încheiată"
 
 #: ../../../lib/web/src/features/accounts/types.ts:23
 msgid "Mochi web"
 msgstr "Mochi web"
 
-#: src/components/MatchLog.tsx:203
+#: src/components/MatchLog.tsx:288
+#: src/components/MatchLog.tsx:350
 msgid "Mode"
 msgstr "Mod"
 
@@ -2160,11 +2200,11 @@ msgstr "Luni"
 msgid "More options"
 msgstr "Mai multe opțiuni"
 
-#: src/components/SettingsDialog.tsx:474
+#: src/components/SettingsDialog.tsx:502
 msgid "Move…"
 msgstr "Mișcă…"
 
-#: src/components/Multiplayer.tsx:249
+#: src/components/Multiplayer.tsx:259
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayerul necesită WebTransport, pe care acest browser nu îl suportă încă."
 
@@ -2204,9 +2244,9 @@ msgstr "Joc nou"
 msgid "Next image"
 msgstr "Imaginea următoare"
 
-#: src/components/MissionSetup.tsx:933
-#: src/components/Multiplayer.tsx:75
-#: src/components/Multiplayer.tsx:362
+#: src/components/MissionSetup.tsx:1031
+#: src/components/Multiplayer.tsx:85
+#: src/components/Multiplayer.tsx:381
 msgid "Night"
 msgstr "Noapte"
 
@@ -2226,7 +2266,15 @@ msgstr "Încă nicio activitate"
 msgid "No comments yet"
 msgstr "Încă niciun comentariu"
 
-#: src/components/MatchLog.tsx:145
+#: src/components/SettingsDialog.tsx:694
+msgid "No control matches “{query}”."
+msgstr "Nicio comandă nu corespunde cu „{query}”."
+
+#: src/components/MatchLog.tsx:377
+msgid "No flight matches these filters."
+msgstr "Niciun zbor nu corespunde acestor filtre."
+
+#: src/components/MatchLog.tsx:207
 msgid "No flights yet"
 msgstr "Încă niciun zbor"
 
@@ -2242,7 +2290,7 @@ msgstr "Niciun grup disponibil"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "Încă nu pot fi create tipuri de elemente. Creează mai întâi elementele părinte necesare."
 
-#: src/components/SettingsDialog.tsx:370
+#: src/components/SettingsDialog.tsx:398
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Niciun joystick detectat — apasă orice buton de pe el pentru a-l trezi."
 
@@ -2250,7 +2298,7 @@ msgstr "Niciun joystick detectat — apasă orice buton de pe el pentru a-l trez
 msgid "No matching objects"
 msgstr "Niciun obiect potrivit"
 
-#: src/components/Multiplayer.tsx:531
+#: src/components/Multiplayer.tsx:551
 msgid "No open matches — create one."
 msgstr "Niciun meci deschis — creează unul."
 
@@ -2306,8 +2354,8 @@ msgstr "Nu s-au găsit utilizatori"
 msgid "No views"
 msgstr "Nicio vizualizare"
 
-#: src/components/MissionSetup.tsx:619
-#: src/components/Multiplayer.tsx:531
+#: src/components/MissionSetup.tsx:689
+#: src/components/Multiplayer.tsx:551
 msgid "No world server."
 msgstr "Niciun server de lume."
 
@@ -2328,11 +2376,11 @@ msgstr "FĂRĂ NOTĂ"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:491
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:100
-#: src/components/MissionSetup.tsx:206
-#: src/components/MissionSetup.tsx:945
-#: src/components/SettingsDialog.tsx:439
-#: src/components/SettingsDialog.tsx:515
-#: src/components/SettingsDialog.tsx:701
+#: src/components/MissionSetup.tsx:276
+#: src/components/MissionSetup.tsx:1043
+#: src/components/SettingsDialog.tsx:467
+#: src/components/SettingsDialog.tsx:543
+#: src/components/SettingsDialog.tsx:823
 msgid "None"
 msgstr "Niciuna"
 
@@ -2344,7 +2392,7 @@ msgstr "Normal"
 msgid "NOSE GEAR"
 msgstr "TREN BOT"
 
-#: src/components/SettingsDialog.tsx:296
+#: src/components/SettingsDialog.tsx:301
 msgid "Not a joystick profile"
 msgstr "Nu este un profil de joystick"
 
@@ -2361,7 +2409,7 @@ msgstr "Nesetat"
 msgid "Nothing found"
 msgstr "Nu s-a găsit nimic"
 
-#: src/components/MissionSetup.tsx:619
+#: src/components/MissionSetup.tsx:689
 msgid "Nothing yet — say hello."
 msgstr "Încă nimic — salută!"
 
@@ -2370,9 +2418,9 @@ msgstr "Încă nimic — salută!"
 msgid "Notifications: {0}"
 msgstr "Notificări: {0}"
 
-#: src/components/MissionSetup.tsx:868
-#: src/components/MissionSetup.tsx:1036
-#: src/components/Multiplayer.tsx:480
+#: src/components/MissionSetup.tsx:966
+#: src/components/MissionSetup.tsx:1133
+#: src/components/Multiplayer.tsx:503
 msgid "Novice"
 msgstr "Începător"
 
@@ -2382,7 +2430,7 @@ msgstr "Începător"
 msgid "Number"
 msgstr "Număr"
 
-#: src/components/SettingsDialog.tsx:834
+#: src/components/SettingsDialog.tsx:958
 msgid "Ocean detail"
 msgstr "Detaliu ocean"
 
@@ -2398,13 +2446,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Activat"
 
-#: src/components/MissionSetup.tsx:892
-#: src/components/MissionSetup.tsx:1044
+#: src/components/MissionSetup.tsx:990
+#: src/components/MissionSetup.tsx:1141
 msgid "On carrier"
 msgstr "Pe portavion"
 
-#: src/components/MissionSetup.tsx:891
-#: src/components/MissionSetup.tsx:1043
+#: src/components/MissionSetup.tsx:989
+#: src/components/MissionSetup.tsx:1140
 msgid "On runway"
 msgstr "Pe pistă"
 
@@ -2412,11 +2460,11 @@ msgstr "Pe pistă"
 msgid "Oops! Page Not Found!"
 msgstr "Hopa! Pagina nu a fost găsită!"
 
-#: src/components/Multiplayer.tsx:548
+#: src/components/Multiplayer.tsx:568
 msgid "Open"
 msgstr "Deschide"
 
-#: src/components/Multiplayer.tsx:351
+#: src/components/Multiplayer.tsx:370
 msgid "Open — anyone may join or leave"
 msgstr "Deschis — oricine poate intra sau ieși"
 
@@ -2463,11 +2511,11 @@ msgstr "Nume opțiune"
 msgid "Options"
 msgstr "Opțiuni"
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:565
 msgid "or"
 msgstr "sau"
 
-#: src/components/GameCanvas.tsx:513
+#: src/components/GameCanvas.tsx:565
 msgid "orbit"
 msgstr "orbitare"
 
@@ -2475,8 +2523,8 @@ msgstr "orbitare"
 msgid "Other"
 msgstr "Altele"
 
-#: src/components/SettingsDialog.tsx:143
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:147
+#: src/components/SettingsDialog.tsx:202
 msgid "Override G limit"
 msgstr "Depășire limită G"
 
@@ -2496,7 +2544,7 @@ msgstr "PADLOCK OPRIT"
 msgid "Parent"
 msgstr "Părinte"
 
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:201
 msgid "Parking brake"
 msgstr "Frână de parcare"
 
@@ -2516,15 +2564,19 @@ msgstr "Chei de acces"
 msgid "Pattern (regex)"
 msgstr "Model (regex)"
 
-#: src/components/MissionSetup.tsx:565
-#: src/components/Multiplayer.tsx:140
-#: src/components/Multiplayer.tsx:309
+#: src/components/GameCanvas.tsx:351
+msgid "Paused"
+msgstr "În pauză"
+
+#: src/components/MissionSetup.tsx:635
+#: src/components/Multiplayer.tsx:150
+#: src/components/Multiplayer.tsx:328
 msgid "pilot"
 msgstr "pilot"
 
-#: src/components/MissionSetup.tsx:869
-#: src/components/MissionSetup.tsx:1037
-#: src/components/Multiplayer.tsx:481
+#: src/components/MissionSetup.tsx:967
+#: src/components/MissionSetup.tsx:1134
+#: src/components/Multiplayer.tsx:504
 msgid "Pilot"
 msgstr "Pilot"
 
@@ -2532,11 +2584,11 @@ msgstr "Pilot"
 msgid "PILOT DOWN"
 msgstr "PILOT UCIS"
 
-#: src/components/SettingsDialog.tsx:924
+#: src/components/SettingsDialog.tsx:1048
 msgid "Pilot identity"
 msgstr "Identitatea pilotului"
 
-#: src/components/GameCanvas.tsx:348
+#: src/components/GameCanvas.tsx:394
 msgid "Pilot killed"
 msgstr "Pilot ucis"
 
@@ -2544,15 +2596,15 @@ msgstr "Pilot ucis"
 msgid "pitch"
 msgstr "tangaj"
 
-#: src/components/SettingsDialog.tsx:100
+#: src/components/SettingsDialog.tsx:104
 msgid "Pitch"
 msgstr "Tangaj"
 
-#: src/components/SettingsDialog.tsx:188
+#: src/components/SettingsDialog.tsx:192
 msgid "Pitch down"
 msgstr "Tangaj în jos"
 
-#: src/components/SettingsDialog.tsx:187
+#: src/components/SettingsDialog.tsx:191
 msgid "Pitch up"
 msgstr "Tangaj în sus"
 
@@ -2560,7 +2612,7 @@ msgstr "Tangaj în sus"
 msgid "PLATFORM"
 msgstr "PLATFORMĂ"
 
-#: src/components/MatchLog.tsx:206
+#: src/components/MatchLog.tsx:353
 msgid "Players"
 msgstr "Jucători"
 
@@ -2590,7 +2642,7 @@ msgstr "Postări"
 msgid "Posts and comments"
 msgstr "Postări și comentarii"
 
-#: src/components/SettingsDialog.tsx:681
+#: src/components/SettingsDialog.tsx:803
 msgid "Press a key…"
 msgstr "Apasă o tastă…"
 
@@ -2598,7 +2650,7 @@ msgstr "Apasă o tastă…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "APASĂ ENTER PENTRU LANSARE"
 
-#: src/components/SettingsDialog.tsx:538
+#: src/components/SettingsDialog.tsx:566
 msgid "Press…"
 msgstr "Apasă…"
 
@@ -2616,8 +2668,8 @@ msgstr "Confidențialitate"
 msgid "Processing…"
 msgstr "Se procesează…"
 
-#: src/components/SettingsDialog.tsx:282
-#: src/components/SettingsDialog.tsx:294
+#: src/components/SettingsDialog.tsx:287
+#: src/components/SettingsDialog.tsx:299
 msgid "Profile saved"
 msgstr "Profil salvat"
 
@@ -2625,7 +2677,8 @@ msgstr "Profil salvat"
 msgid "Project members"
 msgstr "Membrii proiectului"
 
-#: src/components/MissionSetup.tsx:733
+#: src/components/MissionSetup.tsx:815
+#: src/components/MissionSetup.tsx:833
 msgid "Public servers"
 msgstr "Servere publice"
 
@@ -2649,8 +2702,8 @@ msgstr "FOC MOTOR DR"
 msgid "R GEAR"
 msgstr "TREN DR"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Radar silent"
 msgstr "Radar silențios"
 
@@ -2670,7 +2723,7 @@ msgstr "Reînregistrați-vă cheile de acces pe acest server"
 msgid "REARMED"
 msgstr "REARMAT"
 
-#: src/components/MissionSetup.tsx:712
+#: src/components/MissionSetup.tsx:794
 msgid "Recent"
 msgstr "Recente"
 
@@ -2682,24 +2735,24 @@ msgstr "Recomandat"
 msgid "Reconnecting ({retries})..."
 msgstr "Se reconectează ({retries})..."
 
-#: src/components/SettingsDialog.tsx:953
+#: src/components/SettingsDialog.tsx:1077
 msgid "Record flights"
 msgstr "Înregistrează zborurile"
 
-#: src/components/MatchLog.tsx:275
-#: src/components/SettingsDialog.tsx:946
+#: src/components/MatchLog.tsx:442
+#: src/components/SettingsDialog.tsx:1070
 msgid "Recording"
 msgstr "Înregistrare"
 
-#: src/components/MatchLog.tsx:268
+#: src/components/MatchLog.tsx:435
 msgid "Recording saved"
 msgstr "Înregistrarea a fost salvată"
 
-#: src/components/Multiplayer.tsx:592
+#: src/components/Multiplayer.tsx:612
 msgid "Red"
 msgstr "Roșu"
 
-#: src/components/Multiplayer.tsx:473
+#: src/components/Multiplayer.tsx:496
 msgid "Red bots"
 msgstr "Boți roșii"
 
@@ -2712,11 +2765,11 @@ msgstr "Se redirecționează către autentificare."
 msgid "Reduce interest"
 msgstr "Reduce interesul"
 
-#: src/components/MissionSetup.tsx:363
+#: src/components/MissionSetup.tsx:432
 msgid "Reference"
 msgstr "Referință"
 
-#: src/components/Multiplayer.tsx:328
+#: src/components/Multiplayer.tsx:347
 msgid "Refresh"
 msgstr "Reîmprospătează"
 
@@ -2790,7 +2843,7 @@ msgstr "Redenumește coloana"
 msgid "Rename this board column"
 msgstr "Redenumește această coloană a tablei"
 
-#: src/components/MissionSetup.tsx:537
+#: src/components/MissionSetup.tsx:607
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Randare cu <0>three.js</0> (licență MIT)."
 
@@ -2812,52 +2865,52 @@ msgstr "Obligatoriu"
 msgid "Resend email"
 msgstr "Retrimite e-mailul"
 
-#: src/components/SettingsDialog.tsx:1061
+#: src/components/SettingsDialog.tsx:1153
 msgid "Reset"
 msgstr "Resetează"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Reset master caution"
 msgstr "Resetează avertizarea principală"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:207
 msgid "Reset trim"
 msgstr "Resetare trim"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:228
-#: src/components/SettingsDialog.tsx:725
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:232
+#: src/components/SettingsDialog.tsx:849
 msgid "Reset view"
 msgstr "Resetare vedere"
 
-#: src/components/SettingsDialog.tsx:808
+#: src/components/SettingsDialog.tsx:932
 msgid "Resolution"
 msgstr "Rezoluție"
 
-#: src/components/GameCanvas.tsx:493
+#: src/components/GameCanvas.tsx:545
 msgid "Restart"
 msgstr "Repornește"
 
-#: src/components/GameCanvas.tsx:428
+#: src/components/GameCanvas.tsx:480
 msgid "Restart mission"
 msgstr "Repornește misiunea"
 
-#: src/components/GameCanvas.tsx:476
+#: src/components/GameCanvas.tsx:528
 msgid "Restart mission?"
 msgstr "Repornești misiunea?"
 
-#: src/components/MatchLog.tsx:215
+#: src/components/MatchLog.tsx:362
 msgid "Result"
 msgstr "Rezultat"
 
-#: src/components/GameCanvas.tsx:390
+#: src/components/GameCanvas.tsx:436
 msgid "Resume"
 msgstr "Reia"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Retract flaps"
 msgstr "Retragere flapsuri"
 
@@ -2865,7 +2918,7 @@ msgstr "Retragere flapsuri"
 msgid "Retry"
 msgstr "Reîncearcă"
 
-#: src/components/SettingsDialog.tsx:457
+#: src/components/SettingsDialog.tsx:485
 msgid "Reversed"
 msgstr "Inversat"
 
@@ -2881,12 +2934,12 @@ msgstr "Revocă accesul"
 msgid "Revoke RSS access?"
 msgstr "Revocați accesul RSS?"
 
-#: src/components/MissionSetup.tsx:176
-#: src/components/MissionSetup.tsx:177
+#: src/components/MissionSetup.tsx:246
+#: src/components/MissionSetup.tsx:247
 msgid "Right wing"
 msgstr "Aripa dreaptă"
 
-#: src/components/MissionSetup.tsx:178
+#: src/components/MissionSetup.tsx:248
 msgid "Right wingtip"
 msgstr "Vârful aripii drepte"
 
@@ -2894,15 +2947,15 @@ msgstr "Vârful aripii drepte"
 msgid "roll"
 msgstr "ruliu"
 
-#: src/components/SettingsDialog.tsx:101
+#: src/components/SettingsDialog.tsx:105
 msgid "Roll"
 msgstr "Ruliu"
 
-#: src/components/SettingsDialog.tsx:189
+#: src/components/SettingsDialog.tsx:193
 msgid "Roll left"
 msgstr "Ruliu la stânga"
 
-#: src/components/SettingsDialog.tsx:190
+#: src/components/SettingsDialog.tsx:194
 msgid "Roll right"
 msgstr "Ruliu la dreapta"
 
@@ -2943,7 +2996,7 @@ msgstr "Sâmbătă"
 msgid "Save"
 msgstr "Salvează"
 
-#: src/components/MissionSetup.tsx:378
+#: src/components/MissionSetup.tsx:447
 msgid "Sea level"
 msgstr "Nivelul mării"
 
@@ -2953,6 +3006,11 @@ msgstr "Nivelul mării"
 #: ../../../lib/web/src/components/search.tsx:18
 msgid "Search"
 msgstr "Caută"
+
+#: src/components/SettingsDialog.tsx:669
+#: src/components/SettingsDialog.tsx:670
+msgid "Search controls"
+msgstr "Caută comenzi"
 
 #: ../../../lib/web/src/components/ui/command.tsx:35
 msgid "Search for a command to run..."
@@ -3047,8 +3105,8 @@ msgstr "Selectați o persoană..."
 msgid "Select previous card"
 msgstr "Selectează cardul anterior"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Select weapon"
 msgstr "Selectare armă"
 
@@ -3062,7 +3120,7 @@ msgstr "Selectează..."
 msgid "Selected: <0>{0}</0>"
 msgstr "Selectat: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:649
+#: src/components/MissionSetup.tsx:719
 msgid "Send"
 msgstr "Trimite"
 
@@ -3070,7 +3128,7 @@ msgstr "Trimite"
 msgid "Send again"
 msgstr "Trimite din nou"
 
-#: src/components/GameCanvas.tsx:404
+#: src/components/GameCanvas.tsx:450
 msgid "Send chat"
 msgstr "Trimite mesaj"
 
@@ -3087,11 +3145,12 @@ msgstr "Trimite mesajul"
 msgid "Serif"
 msgstr "Cu serife"
 
-#: src/components/MatchLog.tsx:200
+#: src/components/MatchLog.tsx:305
+#: src/components/MatchLog.tsx:347
 msgid "Server"
 msgstr "Server"
 
-#: src/components/MissionSetup.tsx:614
+#: src/components/MissionSetup.tsx:684
 msgid "Server chat"
 msgstr "Chatul serverului"
 
@@ -3118,7 +3177,7 @@ msgstr "SESIUNE ÎNCHEIATĂ"
 msgid "Session expired. Please log in again."
 msgstr "Sesiunea a expirat. Autentificați-vă din nou."
 
-#: src/components/SettingsDialog.tsx:693
+#: src/components/SettingsDialog.tsx:815
 msgid "Set"
 msgstr "Setează"
 
@@ -3129,14 +3188,14 @@ msgstr "Setează originea și destinația"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:119
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
-#: src/components/GameCanvas.tsx:418
-#: src/components/MissionSetup.tsx:1131
-#: src/components/SettingsDialog.tsx:1004
-#: src/components/SettingsDialog.tsx:1006
+#: src/components/GameCanvas.tsx:464
+#: src/components/MissionSetup.tsx:1212
+#: src/components/SettingsDialog.tsx:1136
+#: src/components/SettingsDialog.tsx:1163
 msgid "Settings"
 msgstr "Setări"
 
-#: src/components/SettingsDialog.tsx:870
+#: src/components/SettingsDialog.tsx:994
 msgid "Shadows"
 msgstr "Umbre"
 
@@ -3174,7 +3233,7 @@ msgstr "Se deconectează..."
 msgid "Single line of text only"
 msgstr "Doar o singură linie de text"
 
-#: src/components/MissionSetup.tsx:347
+#: src/components/MissionSetup.tsx:416
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Cea mai bună urcare cu un singur motor (Vyse, postcombustie)"
 
@@ -3187,7 +3246,7 @@ msgstr "Mic"
 msgid "Sort"
 msgstr "Sortează"
 
-#: src/components/SettingsDialog.tsx:1017
+#: src/components/SettingsDialog.tsx:1174
 msgid "Sound"
 msgstr "Sunet"
 
@@ -3195,11 +3254,11 @@ msgstr "Sunet"
 msgid "Sources"
 msgstr "Surse"
 
-#: src/components/Multiplayer.tsx:74
+#: src/components/Multiplayer.tsx:84
 msgid "Spaced"
 msgstr "Distanțat"
 
-#: src/components/Multiplayer.tsx:420
+#: src/components/Multiplayer.tsx:438
 msgid "Spaced spawns"
 msgstr "Intrări distanțate"
 
@@ -3215,13 +3274,13 @@ msgstr "FR.AER"
 msgid "speed brake"
 msgstr "frână aerodinamică"
 
-#: src/components/SettingsDialog.tsx:104
-#: src/components/SettingsDialog.tsx:141
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:108
+#: src/components/SettingsDialog.tsx:145
+#: src/components/SettingsDialog.tsx:199
 msgid "Speed brake"
 msgstr "Frână aerodinamică"
 
-#: src/components/MissionSetup.tsx:404
+#: src/components/MissionSetup.tsx:473
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Viteze în KCAS, ca un interval de la ușor (combustibil minim, fără încărcătură externă) la greu (masă brută maximă). Date obținute experimental în joc. Orice diferențe față de aeronava reală reflectă erori ale modelului de zbor al simulatorului."
 
@@ -3229,15 +3288,15 @@ msgstr "Viteze în KCAS, ca un interval de la ușor (combustibil minim, fără �
 msgid "SPLASH"
 msgstr "ȚINTĂ DOBORÂTĂ"
 
-#: src/components/MissionSetup.tsx:352
+#: src/components/MissionSetup.tsx:421
 msgid "Stall, clean (Vs1)"
 msgstr "Angajare, configurație curată (Vs1)"
 
-#: src/components/MissionSetup.tsx:353
+#: src/components/MissionSetup.tsx:422
 msgid "Stall, landing config (Vs0)"
 msgstr "Angajare, configurație de aterizare (Vs0)"
 
-#: src/components/Multiplayer.tsx:409
+#: src/components/Multiplayer.tsx:427
 msgid "Start"
 msgstr "Start"
 
@@ -3245,11 +3304,11 @@ msgstr "Start"
 msgid "Start the discussion by adding the first comment."
 msgstr "Începe discuția adăugând primul comentariu."
 
-#: src/components/MissionSetup.tsx:343
+#: src/components/MissionSetup.tsx:412
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Urcare cea mai abruptă (Vx, 100% tracțiune)"
 
-#: src/components/MissionSetup.tsx:344
+#: src/components/MissionSetup.tsx:413
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Urcare cea mai abruptă (Vx, postcombustie)"
 
@@ -3279,9 +3338,9 @@ msgstr "Abonează-te"
 msgid "Sunday"
 msgstr "Duminică"
 
-#: src/components/MissionSetup.tsx:871
-#: src/components/MissionSetup.tsx:1039
-#: src/components/Multiplayer.tsx:483
+#: src/components/MissionSetup.tsx:969
+#: src/components/MissionSetup.tsx:1136
+#: src/components/Multiplayer.tsx:506
 msgid "Superhuman"
 msgstr "Supraomenesc"
 
@@ -3316,11 +3375,11 @@ msgstr "Etichete"
 msgid "TALLY"
 msgstr "VĂD INAMICUL"
 
-#: src/components/MissionSetup.tsx:833
+#: src/components/MissionSetup.tsx:931
 msgid "Task"
 msgstr "Sarcină"
 
-#: src/components/GameCanvas.tsx:317
+#: src/components/GameCanvas.tsx:324
 msgid "Team"
 msgstr "Echipă"
 
@@ -3328,12 +3387,12 @@ msgstr "Echipă"
 msgid "TEAM"
 msgstr "ECHIPĂ"
 
-#: src/components/MatchLog.tsx:85
-#: src/components/Multiplayer.tsx:548
+#: src/components/MatchLog.tsx:147
+#: src/components/Multiplayer.tsx:568
 msgid "Teams"
 msgstr "Echipe"
 
-#: src/components/Multiplayer.tsx:353
+#: src/components/Multiplayer.tsx:372
 msgid "Teams — red versus blue"
 msgstr "Echipe — roșu contra albastru"
 
@@ -3359,11 +3418,11 @@ msgstr "Nu s-a putut trimite. Fișierele pot fi prea mari sau conexiunea a eșua
 msgid "That was too large to upload. Remove or shrink files and try again."
 msgstr "A fost prea mare pentru încărcare. Eliminați sau micșorați fișiere și încercați din nou."
 
-#: src/components/GameCanvas.tsx:448
+#: src/components/GameCanvas.tsx:500
 msgid "The match continues behind this menu."
 msgstr "Meciul continuă în spatele acestui meniu."
 
-#: src/components/GameCanvas.tsx:479
+#: src/components/GameCanvas.tsx:531
 msgid "The mission will restart. The current flight will not be saved."
 msgstr "Misiunea va reporni. Zborul curent nu va fi salvat."
 
@@ -3375,15 +3434,15 @@ msgstr "Conținutul solicitat nu a putut fi găsit."
 msgid "The server returned a web page instead of data."
 msgstr "Serverul a returnat o pagină web în loc de date."
 
-#: src/components/MissionSetup.tsx:1070
+#: src/components/MissionSetup.tsx:1181
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Acest browser nu acceptă WebGL 2, deci jocul nu poate rula — încercați alt browser."
 
-#: src/components/Multiplayer.tsx:267
+#: src/components/Multiplayer.tsx:286
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Acest lobby trimite conexiunea ta de joc către o altă gazdă ({redirectHost}). Continuă doar dacă ai încredere în acest server."
 
-#: src/components/MissionSetup.tsx:1074
+#: src/components/MissionSetup.tsx:1185
 msgid "This machine may be too slow for smooth flight."
 msgstr "Această mașină poate fi prea lentă pentru un zbor lin."
 
@@ -3391,17 +3450,17 @@ msgstr "Această mașină poate fi prea lentă pentru un zbor lin."
 msgid "throttle"
 msgstr "accelerație"
 
-#: src/components/SettingsDialog.tsx:103
+#: src/components/SettingsDialog.tsx:107
 msgid "Throttle"
 msgstr "Accelerație"
 
-#: src/components/SettingsDialog.tsx:147
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:198
 msgid "Throttle down"
 msgstr "Redu accelerația"
 
-#: src/components/SettingsDialog.tsx:146
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:197
 msgid "Throttle up"
 msgstr "Crește accelerația"
 
@@ -3409,19 +3468,19 @@ msgstr "Crește accelerația"
 msgid "Thursday"
 msgstr "Joi"
 
-#: src/components/MissionSetup.tsx:351
+#: src/components/MissionSetup.tsx:420
 msgid "Tightest sustained turn speed"
 msgstr "Viteza celui mai strâns viraj susținut"
 
-#: src/components/GameCanvas.tsx:514
+#: src/components/GameCanvas.tsx:566
 msgid "tilt"
 msgstr "înclinare"
 
-#: src/components/MatchLog.tsx:177
+#: src/components/MatchLog.tsx:268
 msgid "Time"
 msgstr "Timp"
 
-#: src/components/MissionSetup.tsx:926
+#: src/components/MissionSetup.tsx:1024
 msgid "Time of day"
 msgstr "Ora din zi"
 
@@ -3463,7 +3522,7 @@ msgstr "Prea multe solicitări"
 msgid "Top"
 msgstr "Sus"
 
-#: src/components/SettingsDialog.tsx:884
+#: src/components/SettingsDialog.tsx:1008
 msgid "Tracers"
 msgstr "Trasoare"
 
@@ -3475,31 +3534,31 @@ msgstr "În călătorie"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx:91
+#: src/components/SettingsDialog.tsx:95
 msgid "Trim"
 msgstr "Trim"
 
-#: src/components/SettingsDialog.tsx:106
+#: src/components/SettingsDialog.tsx:110
 msgid "Trim hat"
 msgstr "Pălăria trimului"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:204
 msgid "Trim nose down"
 msgstr "Trim: bot jos"
 
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:203
 msgid "Trim nose up"
 msgstr "Trim: bot sus"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:205
 msgid "Trim roll left"
 msgstr "Trim: ruliu stânga"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:206
 msgid "Trim roll right"
 msgstr "Trim: ruliu dreapta"
 
@@ -3537,7 +3596,7 @@ msgstr "Tastează pentru a căuta utilizatori"
 msgid "Type to search..."
 msgstr "Tastează pentru a căuta..."
 
-#: src/components/SettingsDialog.tsx:770
+#: src/components/SettingsDialog.tsx:894
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3562,13 +3621,13 @@ msgstr "Acces neautorizat"
 msgid "Unavailable"
 msgstr "Indisponibil"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Uncage seeker"
 msgstr "Eliberează căutătorul"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Undesignate target"
 msgstr "Anulează desemnarea țintei"
 
@@ -3585,27 +3644,27 @@ msgstr "Statele Unite"
 msgid "Unknown"
 msgstr "Necunoscut"
 
-#: src/components/Multiplayer.tsx:385
+#: src/components/Multiplayer.tsx:404
 msgid "Unlimited"
 msgstr "Nelimitat"
 
-#: src/components/MissionSetup.tsx:972
-#: src/components/Multiplayer.tsx:81
-#: src/components/Multiplayer.tsx:447
+#: src/components/MissionSetup.tsx:1070
+#: src/components/Multiplayer.tsx:91
+#: src/components/Multiplayer.tsx:465
 msgid "Unlimited ammunition"
 msgstr "Muniție nelimitată"
 
-#: src/components/MissionSetup.tsx:972
+#: src/components/MissionSetup.tsx:1070
 msgid "Unlimited ammunition (all players)"
 msgstr "Muniție nelimitată (toți jucătorii)"
 
-#: src/components/MissionSetup.tsx:979
-#: src/components/Multiplayer.tsx:82
-#: src/components/Multiplayer.tsx:457
+#: src/components/MissionSetup.tsx:1077
+#: src/components/Multiplayer.tsx:92
+#: src/components/Multiplayer.tsx:475
 msgid "Unlimited fuel"
 msgstr "Combustibil nelimitat"
 
-#: src/components/MissionSetup.tsx:979
+#: src/components/MissionSetup.tsx:1077
 msgid "Unlimited fuel (all players)"
 msgstr "Combustibil nelimitat (toți jucătorii)"
 
@@ -3656,11 +3715,11 @@ msgstr "Verifică"
 msgid "Verify email address"
 msgstr "Verifică adresa de email"
 
-#: src/components/MissionSetup.tsx:394
+#: src/components/MissionSetup.tsx:463
 msgid "Vertical"
 msgstr "Vertical"
 
-#: src/components/MatchLog.tsx:96
+#: src/components/MatchLog.tsx:158
 msgid "Victory"
 msgstr "Victorie"
 
@@ -3673,11 +3732,11 @@ msgstr "Miniatură video"
 msgid "Video viewer: {0}"
 msgstr "Vizualizator video: {0}"
 
-#: src/components/GameCanvas.tsx:508
+#: src/components/GameCanvas.tsx:560
 msgid "view"
 msgstr "vedere"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:98
 msgid "View"
 msgstr "Vizualizează"
 
@@ -3690,7 +3749,7 @@ msgstr "Vizualizează toate notificările"
 msgid "View controls"
 msgstr "Controale de vizualizare"
 
-#: src/components/SettingsDialog.tsx:724
+#: src/components/SettingsDialog.tsx:848
 msgid "Views"
 msgstr "Vizualizări"
 
@@ -3720,16 +3779,16 @@ msgstr "Am trimis un cod de verificare la <0>{0}</0>. Introduceți codul mai jos
 msgid "weapon"
 msgstr "armă"
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:111
 msgid "Weapon select hat"
 msgstr "Pălărie de selectare a armei"
 
-#: src/components/Multiplayer.tsx:380
-#: src/components/SettingsDialog.tsx:92
+#: src/components/Multiplayer.tsx:399
+#: src/components/SettingsDialog.tsx:96
 msgid "Weapons"
 msgstr "Armament"
 
-#: src/components/Multiplayer.tsx:358
+#: src/components/Multiplayer.tsx:377
 msgid "Weather"
 msgstr "Vreme"
 
@@ -3737,17 +3796,17 @@ msgstr "Vreme"
 msgid "Wednesday"
 msgstr "Miercuri"
 
-#: src/components/SettingsDialog.tsx:142
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:146
+#: src/components/SettingsDialog.tsx:200
 msgid "Wheel brakes"
 msgstr "Frâne de roată"
 
-#: src/components/SettingsDialog.tsx:557
+#: src/components/SettingsDialog.tsx:587
 msgid "Wind and cockpit airframe"
 msgstr "Vânt și celulă în carlingă"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:227
 msgid "Wing fold"
 msgstr "Plierea aripilor"
 
@@ -3755,16 +3814,16 @@ msgstr "Plierea aripilor"
 msgid "WINS"
 msgstr "CÂȘTIGĂ"
 
-#: src/components/Multiplayer.tsx:293
+#: src/components/Multiplayer.tsx:312
 msgid "World server"
 msgstr "Server de lume"
 
-#: src/components/MissionSetup.tsx:607
-#: src/components/Multiplayer.tsx:153
+#: src/components/MissionSetup.tsx:677
+#: src/components/Multiplayer.tsx:163
 msgid "World server not reachable"
 msgstr "Serverul de lume nu este accesibil"
 
-#: src/components/MissionSetup.tsx:855
+#: src/components/MissionSetup.tsx:953
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, foc liber la trecere"
 
@@ -3772,17 +3831,17 @@ msgstr "WVR, foc liber la trecere"
 msgid "yaw"
 msgstr "girație"
 
-#: src/components/SettingsDialog.tsx:102
+#: src/components/SettingsDialog.tsx:106
 msgid "Yaw"
 msgstr "Girație"
 
-#: src/components/SettingsDialog.tsx:144
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:148
+#: src/components/SettingsDialog.tsx:195
 msgid "Yaw left"
 msgstr "Girație la stânga"
 
-#: src/components/SettingsDialog.tsx:145
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:149
+#: src/components/SettingsDialog.tsx:196
 msgid "Yaw right"
 msgstr "Girație la dreapta"
 
@@ -3802,11 +3861,11 @@ msgstr "Contul dvs. a fost mutat aici de la {source}. Până când îl ștergeț
 msgid "Your attachments will be lost."
 msgstr "Atașamentele tale se vor pierde."
 
-#: src/components/MatchLog.tsx:146
+#: src/components/MatchLog.tsx:208
 msgid "Your flights appear here once you've flown one."
 msgstr "Zborurile tale apar aici după ce efectuezi unul."
 
-#: src/components/Multiplayer.tsx:543
+#: src/components/Multiplayer.tsx:563
 msgid "your offer"
 msgstr "oferta ta"
 
@@ -3818,14 +3877,14 @@ msgstr "Textul și atașamentele tale se vor pierde."
 msgid "Your text will be lost."
 msgstr "Textul tău va fi pierdut."
 
-#: src/components/SettingsDialog.tsx:108
+#: src/components/SettingsDialog.tsx:112
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:185
 msgid "Zoom in"
 msgstr "Mărește"
 
-#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:186
 msgid "Zoom out"
 msgstr "Micșorează"
