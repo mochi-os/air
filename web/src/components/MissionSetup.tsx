@@ -18,6 +18,7 @@ import {
   TriangleAlert,
   Users,
   X,
+  type LucideIcon,
 } from 'lucide-react'
 import { Input } from '@mochi/web/components/ui/input'
 import {
@@ -105,6 +106,48 @@ function Segmented<T extends string>({
         ))}
       </TabsList>
     </Tabs>
+  )
+}
+
+// The front page tiles. They are Cards rather than <button>s: a button's
+// content model has no room for the icon/title block, and wrapping one in
+// `display: contents` leaves no box for the focus ring to paint on. So the Card
+// carries the button role and answers Enter and Space itself, which is what a
+// real button would have given for free — without it the three dialogs behind
+// these tiles could not be opened from a keyboard at all. Flight log stays a
+// real link (middle-click, open in a new tab); its anchor has no box either, so
+// the ring is painted on the Card through the group.
+const TILE =
+  'hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group outline-none'
+
+function TileFace({ icon: Icon, title }: { icon: LucideIcon; title: ReactNode }) {
+  return (
+    <>
+      <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
+        <Icon className='size-4' />
+      </div>
+      <div className='flex-1 min-w-0'>
+        <div className='text-sm font-semibold truncate'>{title}</div>
+      </div>
+    </>
+  )
+}
+
+function Tile({ icon, title, onOpen }: { icon: LucideIcon; title: ReactNode; onOpen: () => void }) {
+  return (
+    <Card
+      role='button'
+      tabIndex={0}
+      onClick={onOpen}
+      onKeyDown={(e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return
+        e.preventDefault() // Space scrolls the page otherwise
+        onOpen()
+      }}
+      className={`${TILE} focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]`}
+    >
+      <TileFace icon={icon} title={title} />
+    </Card>
   )
 }
 
@@ -1110,54 +1153,12 @@ export function MissionSetup({
         </Card>
 
         <div className='grid grid-cols-2 gap-3'>
-          <Card
-            className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'
-            onClick={() => setDialog('mission')}
-          >
-            <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
-              <ClipboardList className='size-4' />
-            </div>
-            <div className='flex-1 min-w-0'>
-              <div className='text-sm font-semibold truncate'><Trans>Create mission</Trans></div>
-            </div>
-          </Card>
-
-          <Card
-            className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'
-            onClick={() => setDialog('server')}
-          >
-            <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
-              <Users className='size-4' />
-            </div>
-            <div className='flex-1 min-w-0'>
-              <div className='text-sm font-semibold truncate'><Trans>Join server</Trans></div>
-            </div>
-          </Card>
-
-          <Card
-            className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'
-            onClick={() => setDialog('settings')}
-          >
-            <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
-              <Settings className='size-4' />
-            </div>
-            <div className='flex-1 min-w-0'>
-              <div className='text-sm font-semibold truncate'><Trans>Settings</Trans></div>
-            </div>
-          </Card>
-
-          <Link
-            to='/log'
-            search={(prev) => prev}
-            className='contents'
-          >
-            <Card className='hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group'>
-              <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
-                <History className='size-4' />
-              </div>
-              <div className='flex-1 min-w-0'>
-                <div className='text-sm font-semibold truncate'><Trans>Flight log</Trans></div>
-              </div>
+          <Tile icon={ClipboardList} title={<Trans>Create mission</Trans>} onOpen={() => setDialog('mission')} />
+          <Tile icon={Users} title={<Trans>Join server</Trans>} onOpen={() => setDialog('server')} />
+          <Tile icon={Settings} title={<Trans>Settings</Trans>} onOpen={() => setDialog('settings')} />
+          <Link to='/log' search={(prev) => prev} className='contents group/tile'>
+            <Card className={`${TILE} group-focus-visible/tile:border-ring group-focus-visible/tile:ring-ring/50 group-focus-visible/tile:ring-[3px]`}>
+              <TileFace icon={History} title={<Trans>Flight log</Trans>} />
             </Card>
           </Link>
         </div>
