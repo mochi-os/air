@@ -168,6 +168,11 @@ export function MenuDialog({
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
+        // The client has banned dialog descriptions, so there is nothing for
+        // Radix to point aria-describedby at. Saying so explicitly is what
+        // stops it warning on every open; adding a sentence to satisfy it
+        // would be the wrong fix.
+        aria-describedby={undefined}
         onInteractOutside={guarded ? (e) => e.preventDefault() : undefined}
         className={`${
           wide ? 'sm:max-w-4xl' : 'sm:max-w-2xl'

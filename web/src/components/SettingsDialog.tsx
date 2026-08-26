@@ -70,6 +70,10 @@ function useGamepads(): PadState[] {
   const [pads, setPads] = useState<PadState[]>([])
   useEffect(() => {
     const timer = setInterval(() => {
+      // Nothing to read while the page is hidden, and the meters this drives
+      // are not on screen to read it: a Settings dialog left open behind a
+      // flying match polled eight times a second for nobody.
+      if (document.hidden) return
       const raw = navigator.getGamepads ? navigator.getGamepads() : []
       const list: PadState[] = []
       for (const p of raw) {
