@@ -68,6 +68,9 @@ function deviations(parameters: Record<string, unknown> | undefined): string[] {
   return out
 }
 
+// The most bots one match can fly.
+const BOTS = 99
+
 const DEVIATIONS: Record<string, React.ReactNode> = {
   guns: <Trans>Guns only</Trans>,
   fox2: 'Fox 2',
@@ -253,6 +256,15 @@ export function Multiplayer({
   }
 
   const redirectHost = redirect?.host ?? ''
+  // The bot ceiling is shared by the whole match, not held per side: the world
+  // server sums every side's counts and truncates the total at 99, so a teams
+  // match set up with 99 a side asked for 198 and had half of them dropped
+  // without a word.
+  const placed = (mode === 'teams' ? [bots, blueBots] : [bots]).reduce(
+    (all, set) => all + Object.values(set).reduce((sum, n) => sum + n, 0),
+    0
+  )
+  const limit = BOTS // named for the message below: the msgid reads {placed} of {limit}, not a shouting constant
   return (
     // A full-height flex column: the controls and the create form size to
     // their content, and the match list takes whatever is left and scrolls —
@@ -466,6 +478,11 @@ export function Multiplayer({
               {(mode === 'teams' ? (['red', 'blue'] as const) : (['all'] as const)).map((side) => {
                 const counts = side === 'blue' ? blueBots : bots
                 const update = side === 'blue' ? setBlueBots : setBots
+                // The cap used to be enforced by REFUSING the edit that broke
+                // it, which looked like a dead input box: the typed number
+                // vanished and nothing said why. Each box now carries the room
+                // actually left as its own ceiling, and the count under the
+                // grid says where that ceiling is.
                 return (
                   <div key={side} className='space-y-1'>
                     {mode === 'teams' && (
@@ -491,20 +508,12 @@ export function Multiplayer({
                           >
                             {label}
                           </Label>
-                          <Input
+                          <NumberField
                             id={'bots-' + side + '-' + level}
-                            type='number'
                             min={0}
-                            max={99}
+                            max={BOTS - (placed - counts[level])}
                             value={counts[level]}
-                            onChange={(e) => {
-                              const value = Math.max(0, Math.min(99, Number(e.target.value) || 0))
-                              update((b) => {
-                                const next = { ...b, [level]: value }
-                                const total = Object.values(next).reduce((sum, n) => sum + n, 0)
-                                return total <= 99 ? next : b // the match holds 99 bots at most
-                              })
-                            }}
+                            onChange={(value) => update((b) => ({ ...b, [level]: value }))}
                             className='h-8 w-full'
                           />
                         </div>
@@ -513,6 +522,11 @@ export function Multiplayer({
                   </div>
                 )
               })}
+              <div className='text-muted-foreground text-xs tabular-nums'>
+                <Trans>
+                  {placed} of {limit} bots
+                </Trans>
+              </div>
             </div>
           </div>
 
