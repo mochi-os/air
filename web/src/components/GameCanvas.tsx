@@ -463,7 +463,13 @@ export function GameCanvas({
               <SettingsIcon className='size-4' />
               <Trans>Settings</Trans>
             </Button>
-            {!join && (
+            {/* In flight only. Once the mission is over, Fly again IS the
+                restart, and the two ran the same onAgain() — except Restart
+                never cleared `over`, so the effect above reopened this menu
+                over the fresh mission. Its confirmation was wrong here too: it
+                warns the flight will not be saved, and a finished flight is
+                already in the log. */}
+            {!join && !over && (
               <Button
                 type='button'
                 variant='outline'
