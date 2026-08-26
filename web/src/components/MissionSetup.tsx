@@ -8,13 +8,24 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import {
   Check,
   ChevronRight,
+  CloudRain,
   Compass,
+  Crosshair,
   History,
   ClipboardList,
   Info,
   LogIn,
+  Moon,
+  Plane,
+  PlaneTakeoff,
   Play,
   Settings,
+  Ship,
+  Signal,
+  SignalHigh,
+  SignalLow,
+  SignalMedium,
+  Sun,
   TriangleAlert,
   Users,
   X,
@@ -76,12 +87,23 @@ import {
   type WorldChatLine,
 } from '../game/net'
 import { SliderRow, SwitchRow, MenuDialog } from './menu-parts'
+import { CLOUD_ICONS, START_ICONS, TOD_ICONS } from './menu-icons'
 import { SettingsDialog } from './SettingsDialog'
 
 
 const LoadoutPreview = lazy(() =>
   import('./LoadoutPreview').then((m) => ({ default: m.LoadoutPreview }))
 )
+
+// Both controls take an optional icon per option. The Select trigger and the
+// item row are already laid out as an icon-and-text flex pair upstream, so the
+// icon travels into the closed control along with the selection, and a list of
+// five near-identical words reads as a picture instead.
+interface Choice<T extends string> {
+  value: T
+  label: ReactNode
+  icon?: LucideIcon
+}
 
 function Segmented<T extends string>({
   value,
@@ -90,18 +112,19 @@ function Segmented<T extends string>({
 }: {
   value: T
   onChange: (value: T) => void
-  options: { value: T; label: ReactNode }[]
+  options: Choice<T>[]
 }) {
   return (
     <Tabs variant='segmented' value={value} onValueChange={(v) => onChange(v as T)} className='w-full'>
       <TabsList className='w-full flex'>
-        {options.map((o) => (
+        {options.map(({ value: v, label, icon: Icon }) => (
           <TabsTrigger
-            key={o.value}
-            value={o.value}
+            key={v}
+            value={v}
             className='flex-1 text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
           >
-            {o.label}
+            {Icon && <Icon className='size-3.5' />}
+            {label}
           </TabsTrigger>
         ))}
       </TabsList>
@@ -158,7 +181,7 @@ function Picker<T extends string>({
 }: {
   value: T
   onChange: (value: T) => void
-  options: { value: T; label: ReactNode }[]
+  options: Choice<T>[]
 }) {
   return (
     <Select value={value} onValueChange={(v) => onChange(v as T)}>
@@ -166,9 +189,10 @@ function Picker<T extends string>({
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {options.map((o) => (
-          <SelectItem key={o.value} value={o.value}>
-            {o.label}
+        {options.map(({ value: v, label, icon: Icon }) => (
+          <SelectItem key={v} value={v}>
+            {Icon && <Icon />}
+            {label}
           </SelectItem>
         ))}
       </SelectContent>
@@ -910,8 +934,8 @@ function MissionPanel({
                 value={config.task}
                 onChange={(v) => set('task', v)}
                 options={[
-                  { value: 'free', label: <Trans>Free flight</Trans> },
-                  { value: 'joust', label: <Trans>Joust against bot</Trans> },
+                  { value: 'free', label: <Trans>Free flight</Trans>, icon: Plane },
+                  { value: 'joust', label: <Trans>Joust against bot</Trans>, icon: Crosshair },
                 ]}
               />
             </div>
@@ -926,8 +950,8 @@ function MissionPanel({
                     value={config.duel === 'bvr' ? 'bvr' : 'merge'}
                     onChange={(v) => set('duel', v as 'merge' | 'bvr')}
                     options={[
-                      { value: 'merge', label: <Trans>WVR, fight's on at the pass</Trans> },
-                      { value: 'bvr', label: <Trans>BVR, fight's on from the start</Trans> },
+                      { value: 'merge', label: <Trans>WVR, fight's on at the pass</Trans>, icon: START_ICONS.merge },
+                      { value: 'bvr', label: <Trans>BVR, fight's on from the start</Trans>, icon: START_ICONS.bvr },
                     ]}
                   />
                 </div>
@@ -939,10 +963,10 @@ function MissionPanel({
                     value={String(config.bandit || 'pilot') as 'novice' | 'pilot' | 'ace' | 'superhuman'}
                     onChange={(v) => set('bandit', v)}
                     options={[
-                      { value: 'novice', label: <Trans>Novice</Trans> },
-                      { value: 'pilot', label: <Trans>Pilot</Trans> },
-                      { value: 'ace', label: <Trans>Ace</Trans> },
-                      { value: 'superhuman', label: <Trans>Superhuman</Trans> },
+                      { value: 'novice', label: <Trans>Novice</Trans>, icon: SignalLow },
+                      { value: 'pilot', label: <Trans>Pilot</Trans>, icon: SignalMedium },
+                      { value: 'ace', label: <Trans>Ace</Trans>, icon: SignalHigh },
+                      { value: 'superhuman', label: <Trans>Superhuman</Trans>, icon: Signal },
                     ]}
                   />
                 </div>
@@ -961,12 +985,12 @@ function MissionPanel({
                       onChange(seedStart(config, v as MissionConfig['start']))
                     }}
                     options={[
-                      { value: 'air', label: <Trans>In air</Trans> },
-                      { value: 'runway', label: <Trans>On runway</Trans> },
-                      { value: 'carrier', label: <Trans>On carrier</Trans> },
-                      { value: 'case1', label: <Trans>Case I (day)</Trans> },
-                      { value: 'case2', label: <Trans>Case II (weather)</Trans> },
-                      { value: 'case3', label: <Trans>Case III (night)</Trans> },
+                      { value: 'air', label: <Trans>In air</Trans>, icon: Plane },
+                      { value: 'runway', label: <Trans>On runway</Trans>, icon: PlaneTakeoff },
+                      { value: 'carrier', label: <Trans>On carrier</Trans>, icon: Ship },
+                      { value: 'case1', label: <Trans>Case I (day)</Trans>, icon: Sun },
+                      { value: 'case2', label: <Trans>Case II (weather)</Trans>, icon: CloudRain },
+                      { value: 'case3', label: <Trans>Case III (night)</Trans>, icon: Moon },
                     ]}
                   />
                 </div>
@@ -1003,8 +1027,8 @@ function MissionPanel({
                 value={config.tod}
                 onChange={(v) => set('tod', v)}
                 options={[
-                  { value: 'day', label: <Trans>Day</Trans> },
-                  { value: 'night', label: <Trans>Night</Trans> },
+                  { value: 'day', label: <Trans>Day</Trans>, icon: TOD_ICONS.day },
+                  { value: 'night', label: <Trans>Night</Trans>, icon: TOD_ICONS.night },
                 ]}
               />
             </div>
@@ -1016,11 +1040,11 @@ function MissionPanel({
                 value={config.clouds}
                 onChange={(v) => set('clouds', v)}
                 options={[
-                  { value: 'none', label: <Trans>None</Trans> },
-                  { value: 'cumulus', label: <Trans>Cumulus</Trans> },
-                  { value: 'high_stratus', label: <Trans>High stratus</Trans> },
-                  { value: 'mid_stratus', label: <Trans>Mid stratus</Trans> },
-                  { value: 'low_stratus', label: <Trans>Low stratus</Trans> },
+                  { value: 'none', label: <Trans>None</Trans>, icon: CLOUD_ICONS.none },
+                  { value: 'cumulus', label: <Trans>Cumulus</Trans>, icon: CLOUD_ICONS.cumulus },
+                  { value: 'high_stratus', label: <Trans>High stratus</Trans>, icon: CLOUD_ICONS.high_stratus },
+                  { value: 'mid_stratus', label: <Trans>Mid stratus</Trans>, icon: CLOUD_ICONS.mid_stratus },
+                  { value: 'low_stratus', label: <Trans>Low stratus</Trans>, icon: CLOUD_ICONS.low_stratus },
                 ]}
               />
             </div>
