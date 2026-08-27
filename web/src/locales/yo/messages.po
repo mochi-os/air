@@ -41,7 +41,7 @@ msgstr "{0, plural, other {Ó gba ọta ìbọn #}}"
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:718
+#: src/components/MissionSetup.tsx:746
 msgid "{0} created “{1}”"
 msgstr "{0} dá “{1}” sílẹ̀"
 
@@ -50,13 +50,13 @@ msgstr "{0} dá “{1}” sílẹ̀"
 msgid "{0} flying"
 msgstr "{0} ń fò"
 
-#. placeholder {0}: moment - CATAPULT
-#: src/components/MissionSetup.tsx:402
+#. placeholder {0}: formatNumber(moment - CATAPULT)
+#: src/components/MissionSetup.tsx:407
 msgid "{0} ft·lb over the catapult asymmetry limit"
 msgstr "{0} ft·lb ju ààlà àìdọ́gba kàtàpúlítì lọ"
 
-#. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:396
+#. placeholder {0}: formatNumber(gross - LAUNCH)
+#: src/components/MissionSetup.tsx:401
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb ju ìwúwo ìfilọ́lẹ̀ tó pọ̀ jùlọ lọ"
 
@@ -67,13 +67,13 @@ msgid "{0} of {1} flights"
 msgstr "{0} nínú {1} ọkọ̀ òfuurufú"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:772
+#: src/components/SettingsDialog.tsx:777
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "A ti gbà {0} tẹ́lẹ̀, ìdarí yẹn kò sì so mọ́ ohunkóhun mọ́."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:768
+#: src/components/SettingsDialog.tsx:773
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} wà lórí {1}, tí kò sì so mọ́ ohunkóhun mọ́."
 
@@ -153,7 +153,7 @@ msgstr "WAYA 1"
 msgid "12 hours"
 msgstr "Wákàtí 12"
 
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:455
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -169,7 +169,7 @@ msgstr "Wákàtí 24"
 msgid "3 WIRE"
 msgstr "WAYA 3"
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:458
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -193,19 +193,19 @@ msgstr "Ìpele ìwọlé"
 msgid "Account type"
 msgstr "Irú àkáǹtì"
 
-#: src/components/MissionSetup.tsx:991
-#: src/components/MissionSetup.tsx:1158
+#: src/components/MissionSetup.tsx:1019
+#: src/components/MissionSetup.tsx:1186
 #: src/components/Multiplayer.tsx:505
 msgid "Ace"
 msgstr "Akọni"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Acquire target"
 msgstr "Gbá àfojúsùn mú"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Acquisition mode"
 msgstr "Ipò ìmúni"
 
@@ -283,7 +283,7 @@ msgstr "Fi ìran kún"
 msgid "Adding..."
 msgstr "Ó ń fi kún..."
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:1009
 msgid "Afterburner"
 msgstr "Afterburner"
 
@@ -291,15 +291,15 @@ msgstr "Afterburner"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:97
+#: src/components/SettingsDialog.tsx:102
 msgid "Aircraft"
 msgstr "Ọkọ̀ òfuurufú"
 
-#: src/components/MissionSetup.tsx:526
+#: src/components/MissionSetup.tsx:531
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "Ọkọ̀ ojú omi tí ń gbé ọkọ̀ òfurufú <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> láti ọwọ́ <1>Muhamad Mirza Arrafi</1> (Sketchfab), tí a fún ní ìwé àṣẹ lábẹ́ <2>CC BY 4.0</2>. A ṣàtúnṣe: a tún ìwọ̀n rẹ̀ ṣe, a yí ìdojúkọ rẹ̀ padà, a rì í dé ìlà omi, a sì mú un rọrùn fún wẹ́ẹ̀bù."
 
-#: src/components/MissionSetup.tsx:502
+#: src/components/MissionSetup.tsx:507
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Àwòṣe ọkọ̀ òfurufú <0>“F/A-18C Hornet”</0> láti ọwọ́ <1>CreadorDeMu</1> (Sketchfab), tí a fún ní ìwé àṣẹ lábẹ́ <2>CC BY 4.0</2>. A ṣàtúnṣe: a yí ìdojúkọ rẹ̀ padà a sì tún ìwọ̀n rẹ̀ ṣe, a yọ dátà tẹ́kísítọ̀ tí a kò lò kúrò, a ya àwọn ẹrù ìta sí fáìlì ọ̀tọ̀, a sì fi ẹ̀dà dígí rọ́pò mẹ́ṣì ìbòjú kan."
 
@@ -349,12 +349,12 @@ msgstr "Ẹnikẹ́ni tó ti wọlé"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "Gbogbo ohun tí ó forúkọsílẹ̀ sí ìjẹun yìí yóò dáwọ́ gbígbà rẹ̀ dúró. O lè ṣe àdàkọ URL tuntun lẹ́yìn náà."
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:229
 msgid "Approach power (ATC)"
 msgstr "Agbára ìsúnmọ́ (ATC)"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:428
 msgid "Approach, on-speed (Vapp)"
 msgstr "Ìsúnmọ́, ní ìyára tó tọ́ (Vapp)"
 
@@ -375,8 +375,8 @@ msgstr "Ṣé o dájú pé o fẹ́ pa àlàyé yìí rẹ́? Èyí yóò tún p
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "Ṣé o dájú pé o fẹ́ jáde? Wàá nílò láti wọlé lẹ́ẹ̀kan sí i láti rí àkáǹtì rẹ."
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:228
 msgid "Arrestor hook"
 msgstr "Ìwọ̀ ìdádúró"
 
@@ -384,7 +384,7 @@ msgstr "Ìwọ̀ ìdádúró"
 msgid "Ascending"
 msgstr "Gòkè"
 
-#: src/components/MissionSetup.tsx:386
+#: src/components/MissionSetup.tsx:391
 msgid "asymmetry"
 msgstr "àìdọ́gba"
 
@@ -396,7 +396,7 @@ msgstr "So àwọn fáìlì àlàyé pọ̀"
 msgid "Attach reply files"
 msgstr "So àwọn fáìlì ìdáhùn pọ̀"
 
-#: src/components/SettingsDialog.tsx:633
+#: src/components/SettingsDialog.tsx:638
 msgid "Audio channels"
 msgstr "Àwọn ikanni ohùn"
 
@@ -421,12 +421,12 @@ msgstr "Àwòrán ìdánimọ̀"
 msgid "Avatar for {name}"
 msgstr "Àwòrán fún {name}"
 
-#: src/components/SettingsDialog.tsx:345
-#: src/components/SettingsDialog.tsx:473
+#: src/components/SettingsDialog.tsx:350
+#: src/components/SettingsDialog.tsx:478
 msgid "Axis {i}"
 msgstr "Axis {i}"
 
-#: src/components/SettingsDialog.tsx:422
+#: src/components/SettingsDialog.tsx:427
 msgid "Axis calibration and mapping"
 msgstr "Ìṣàtúnṣe àti ìpín axis"
 
@@ -444,7 +444,7 @@ msgstr "Padà"
 msgid "Back to home"
 msgstr "Pada si ile"
 
-#: src/components/MissionSetup.tsx:983
+#: src/components/MissionSetup.tsx:1011
 msgid "Bandit"
 msgstr "Ọ̀tá"
 
@@ -456,23 +456,23 @@ msgstr "Banner"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "LÁBẸ́ 250 — KẸ̀KẸ́ ÀTI ÌYẸ́"
 
-#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:419
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "Gígòkè tó dára jù (Vy, 100% ìtì)"
 
-#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:420
 msgid "Best climb (Vy, afterburner)"
 msgstr "Gígòkè tó dára jù (Vy, afterburner)"
 
-#: src/components/MissionSetup.tsx:417
+#: src/components/MissionSetup.tsx:422
 msgid "Best glide (engines out)"
 msgstr "Fífò-àfẹ́fẹ́ tó dára jù (ẹ́ńjìnnì kú)"
 
-#: src/components/MissionSetup.tsx:419
+#: src/components/MissionSetup.tsx:424
 msgid "Best sustained turn speed"
 msgstr "Ìyára ìyípo tó dúró tó dára jù"
 
-#: src/components/SettingsDialog.tsx:590
+#: src/components/SettingsDialog.tsx:595
 msgid "Betty and RWR alerts"
 msgstr "Àwọn ìkìlọ̀ Betty àti RWR"
 
@@ -543,12 +543,12 @@ msgstr "YÍPADÀ NÍGBÀ TÍ O BÁ ṢETÁN"
 msgid "Browser notifications"
 msgstr "Àwọn ìfitónilétí browser"
 
-#: src/components/SettingsDialog.tsx:345
-#: src/components/SettingsDialog.tsx:549
+#: src/components/SettingsDialog.tsx:350
+#: src/components/SettingsDialog.tsx:554
 msgid "Button {i}"
 msgstr "Bọtìnì {i}"
 
-#: src/components/SettingsDialog.tsx:514
+#: src/components/SettingsDialog.tsx:519
 msgid "Button mappings"
 msgstr "Ìpín àwọn bọ́tìnnì"
 
@@ -556,7 +556,7 @@ msgstr "Ìpín àwọn bọ́tìnnì"
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — ohun ìjà lómìnira láti ìbẹ̀rẹ̀"
 
-#: src/components/MissionSetup.tsx:977
+#: src/components/MissionSetup.tsx:1005
 msgid "BVR, fight's on from the start"
 msgstr "BVR, ohun ìjà lómìnira láti ìbẹ̀rẹ̀"
 
@@ -565,15 +565,15 @@ msgid "CALL THE BALL"
 msgstr "KÉDE BỌ́Ọ̀LÙ"
 
 #: src/components/Multiplayer.tsx:323
-#: src/components/SettingsDialog.tsx:1056
+#: src/components/SettingsDialog.tsx:1061
 msgid "Callsign"
 msgstr "Orúkọ ìpè"
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:859
 msgid "Camera distance"
 msgstr "Ìjìnnà kámérà"
 
-#: src/components/SettingsDialog.tsx:872
+#: src/components/SettingsDialog.tsx:877
 msgid "Camera unavailable"
 msgstr "Kamẹra kò sí"
 
@@ -594,7 +594,7 @@ msgstr "Kamẹra kò sí"
 #: src/components/GameCanvas.tsx:549
 #: src/components/Multiplayer.tsx:294
 #: src/components/Multiplayer.tsx:599
-#: src/components/SettingsDialog.tsx:818
+#: src/components/SettingsDialog.tsx:823
 msgid "Cancel"
 msgstr "Fagilé"
 
@@ -606,11 +606,11 @@ msgstr "Fagilé àlàyé"
 msgid "Cancel reply"
 msgstr "Fagilé ìdáhùn"
 
-#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:593
 msgid "Cannons and ordnance"
 msgstr "Àwọn àgbá ìbọn àti àwọn ọta"
 
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:231
 msgid "Canopy"
 msgstr "Canopy"
 
@@ -619,35 +619,35 @@ msgstr "Canopy"
 msgid "Caption"
 msgstr "Àlàyé"
 
-#: src/components/SettingsDialog.tsx:589
+#: src/components/SettingsDialog.tsx:594
 msgid "Carrier and ambient"
 msgstr "Ọkọ̀ ojú-omi àti àyíká"
 
-#: src/components/MissionSetup.tsx:1165
+#: src/components/MissionSetup.tsx:1193
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1014
+#: src/components/MissionSetup.tsx:1042
 msgid "Case I (day)"
 msgstr "Ìṣẹ̀lẹ̀ I (ọ̀sán)"
 
-#: src/components/MissionSetup.tsx:1166
+#: src/components/MissionSetup.tsx:1194
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1015
+#: src/components/MissionSetup.tsx:1043
 msgid "Case II (weather)"
 msgstr "Ìṣẹ̀lẹ̀ II (ojú ọjọ́)"
 
-#: src/components/MissionSetup.tsx:1167
+#: src/components/MissionSetup.tsx:1195
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1016
+#: src/components/MissionSetup.tsx:1044
 msgid "Case III (night)"
 msgstr "Ìṣẹ̀lẹ̀ III (òru)"
 
-#: src/components/MissionSetup.tsx:1024
+#: src/components/MissionSetup.tsx:1052
 msgid "Catapult"
 msgstr "Katapulti"
 
@@ -655,7 +655,7 @@ msgstr "Katapulti"
 msgid "Category for these notifications"
 msgstr "Ẹ̀ka fún àwọn ìfitónilétí wọ̀nyí"
 
-#: src/components/MissionSetup.tsx:244
+#: src/components/MissionSetup.tsx:249
 msgid "Centerline"
 msgstr "Ìlà àárín"
 
@@ -676,16 +676,16 @@ msgstr "Ìwòran ìlépa:"
 msgid "chat"
 msgstr "ìfọ̀rọ̀wérọ̀"
 
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:242
 msgid "Chat"
 msgstr "Ìjíròrò"
 
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:243
 msgid "Chat to everyone"
 msgstr "Ìfọ̀rọ̀wérọ̀ pẹ̀lú gbogbo ènìyàn"
 
 #: src/components/MatchLog.tsx:365
-#: src/components/MissionSetup.tsx:1080
+#: src/components/MissionSetup.tsx:1108
 #: src/components/Multiplayer.tsx:446
 msgid "Cheats"
 msgstr "Àwọn ẹ̀tàn"
@@ -716,7 +716,7 @@ msgstr "Yan èdè"
 #: src/components/MatchLog.tsx:323
 #: src/components/MatchLog.tsx:379
 #: src/components/Multiplayer.tsx:384
-#: src/components/SettingsDialog.tsx:683
+#: src/components/SettingsDialog.tsx:688
 msgid "Clear"
 msgstr "Pa rẹ́"
 
@@ -766,7 +766,7 @@ msgstr "Ti àwárí"
 msgid "closer"
 msgstr "súnmọ́ síi"
 
-#: src/components/MissionSetup.tsx:1060
+#: src/components/MissionSetup.tsx:1088
 msgid "Clouds"
 msgstr "Ìkùukùu"
 
@@ -816,7 +816,7 @@ msgstr "Awọn iṣe asọye"
 msgid "Comments"
 msgstr "Àwọn àlàyé"
 
-#: src/components/SettingsDialog.tsx:99
+#: src/components/SettingsDialog.tsx:104
 msgid "Communication"
 msgstr "Ìbánisọ̀rọ̀"
 
@@ -837,11 +837,11 @@ msgstr "Ṣètò ètò ìran"
 msgid "Confirm"
 msgstr "Fọwọ́sí"
 
-#: src/components/MissionSetup.tsx:884
+#: src/components/MissionSetup.tsx:912
 msgid "Connect"
 msgstr "So pọ̀"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:899
 msgid "Connect to private server"
 msgstr "Sopọ̀ mọ́ sáfà aládàáni"
 
@@ -894,7 +894,7 @@ msgstr "A ti ṣe àdàkọ sí clipboard"
 msgid "Copy"
 msgstr "Ṣe àdàkọ"
 
-#: src/components/MissionSetup.tsx:418
+#: src/components/MissionSetup.tsx:423
 msgid "Corner speed (best instant turn)"
 msgstr "Ìyára igun (ìyípo kíákíá tó dára jù)"
 
@@ -910,7 +910,7 @@ msgstr "Kò lè kó ìwé yìí. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i."
 msgid "Could not load your flights"
 msgstr "A kò lè gbé àwọn ìfò rẹ wọlé"
 
-#: src/components/SettingsDialog.tsx:288
+#: src/components/SettingsDialog.tsx:293
 msgid "Could not save the profile"
 msgstr "Kò lè fi profaili pamọ́"
 
@@ -919,7 +919,7 @@ msgstr "Kò lè fi profaili pamọ́"
 msgid "Could not save the recording"
 msgstr "A kò lè fi àkọsílẹ̀ náà pamọ́"
 
-#: src/components/MissionSetup.tsx:700
+#: src/components/MissionSetup.tsx:718
 msgid "Could not send the message"
 msgstr "A kò lè fi ìfiránṣẹ́ náà ránṣẹ́"
 
@@ -939,8 +939,8 @@ msgstr "Kò lè bẹ̀rẹ̀ ìjẹ́rìísí-padà. Jọ̀wọ́ gbìyànjú l�
 msgid "Couldn't verify with that account. Please try again."
 msgstr "A kò lè fọwọ́sí pẹ̀lú àkàùntì yẹn. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kansí."
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Countermeasures"
 msgstr "Àwọn ìdènà"
 
@@ -973,8 +973,8 @@ msgstr "Ṣẹ̀dá kí o sì fò"
 msgid "Create match"
 msgstr "Ṣẹ̀dá ìdíje"
 
-#: src/components/MissionSetup.tsx:1233
-#: src/components/MissionSetup.tsx:1254
+#: src/components/MissionSetup.tsx:1261
+#: src/components/MissionSetup.tsx:1282
 msgid "Create mission"
 msgstr "Ṣẹ̀dá iṣẹ́"
 
@@ -992,12 +992,12 @@ msgstr "Tí a dá"
 msgid "Creating..."
 msgstr "Ó ń dá..."
 
-#: src/components/MissionSetup.tsx:491
-#: src/components/MissionSetup.tsx:497
+#: src/components/MissionSetup.tsx:496
+#: src/components/MissionSetup.tsx:502
 msgid "Credits"
 msgstr "Ìdúpẹ́"
 
-#: src/components/MissionSetup.tsx:1067
+#: src/components/MissionSetup.tsx:1095
 #: src/components/Multiplayer.tsx:86
 #: src/components/Multiplayer.tsx:385
 msgid "Cumulus"
@@ -1015,8 +1015,8 @@ msgstr "Àṣà"
 msgid "CUT"
 msgstr "EWU"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Cycle view"
 msgstr "Yí ojú-ìwòye padà"
 
@@ -1033,7 +1033,7 @@ msgstr "Ìtakora dátà"
 msgid "Date"
 msgstr "Ọjọ́"
 
-#: src/components/MissionSetup.tsx:1053
+#: src/components/MissionSetup.tsx:1081
 #: src/components/Multiplayer.tsx:380
 msgid "Day"
 msgstr "Ọ̀sán"
@@ -1105,7 +1105,7 @@ msgstr "Pa ìran rẹ́"
 msgid "Delete your account on the old server"
 msgstr "Pa akonti rẹ rẹ lori olupin atijọ"
 
-#: src/components/MissionSetup.tsx:1003
+#: src/components/MissionSetup.tsx:1031
 msgid "Departure / Recovery"
 msgstr "Ìgbéra / Ìbalẹ̀"
 
@@ -1121,7 +1121,7 @@ msgstr "Àpèjúwe"
 msgid "Destroyed by fire"
 msgstr "Iná jó ọkọ̀ run"
 
-#: src/components/SettingsDialog.tsx:929
+#: src/components/SettingsDialog.tsx:934
 msgid "Detail"
 msgstr "Kúlẹ̀kúlẹ̀"
 
@@ -1129,8 +1129,8 @@ msgstr "Kúlẹ̀kúlẹ̀"
 msgid "Details Panel"
 msgstr "Pánẹ́ẹ̀lì Àwọn Ẹ̀kúnrẹ́rẹ́"
 
-#: src/components/SettingsDialog.tsx:502
-#: src/components/SettingsDialog.tsx:566
+#: src/components/SettingsDialog.tsx:507
+#: src/components/SettingsDialog.tsx:571
 msgid "Detect"
 msgstr "Ṣàwárí"
 
@@ -1165,7 +1165,7 @@ msgstr "Sọnu"
 msgid "Discard draft?"
 msgstr "Sọ àkọ̀tẹ́lẹ̀ nù?"
 
-#: src/components/SettingsDialog.tsx:388
+#: src/components/SettingsDialog.tsx:393
 msgid "disconnected"
 msgstr "asopọ̀ ti já"
 
@@ -1177,13 +1177,13 @@ msgstr "Ti ge asopọ̀"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
-#: src/components/MissionSetup.tsx:1211
-#: src/components/SettingsDialog.tsx:778
+#: src/components/MissionSetup.tsx:1239
+#: src/components/SettingsDialog.tsx:783
 msgid "Dismiss"
 msgstr "Mú kúrò"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:238
 msgid "Display repeater"
 msgstr "Ẹ̀rọ àtúnfihàn"
 
@@ -1191,13 +1191,13 @@ msgstr "Ẹ̀rọ àtúnfihàn"
 msgid "Displays the mobile sidebar."
 msgstr "Ó ń fi sidebar fóònù hàn."
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:995
 msgid "Distance LOD"
 msgstr "LOD ìjìnnà"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:1160
+#: src/components/SettingsDialog.tsx:1165
 msgid "Done"
 msgstr "Ti parí"
 
@@ -1231,7 +1231,7 @@ msgstr "Ẹ̀dà"
 msgid "Duration"
 msgstr "Àkókò"
 
-#: src/components/SettingsDialog.tsx:983
+#: src/components/SettingsDialog.tsx:988
 msgid "Dynamic resolution"
 msgstr "Resolution aláyípadà"
 
@@ -1282,15 +1282,15 @@ msgstr "Ṣàtúnṣe káàdì tó yàn"
 msgid "Edit view"
 msgstr "Ṣàtúnṣe wíwò"
 
-#: src/components/SettingsDialog.tsx:975
+#: src/components/SettingsDialog.tsx:980
 msgid "Effects"
 msgstr "Àwọn efẹ́kìtì"
 
-#: src/components/SettingsDialog.tsx:953
+#: src/components/SettingsDialog.tsx:958
 msgid "Effects detail"
 msgstr "Alaye ipa"
 
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:235
 msgid "Eject"
 msgstr "Fò jáde"
 
@@ -1310,8 +1310,8 @@ msgstr "Kóòdù ímẹ́ẹ̀lì"
 msgid "EMERG JETT"
 msgstr "JÍJU PÀJÁWÌRÌ"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Emergency jettison (hold)"
 msgstr "Jíju pàjáwìrì (dì mú)"
 
@@ -1319,8 +1319,8 @@ msgstr "Jíju pàjáwìrì (dì mú)"
 msgid "empty"
 msgstr "òfìfo"
 
-#: src/components/MissionSetup.tsx:263
-#: src/components/MissionSetup.tsx:274
+#: src/components/MissionSetup.tsx:268
+#: src/components/MissionSetup.tsx:279
 msgid "Empty pylon"
 msgstr "Pylon òfìfo"
 
@@ -1328,11 +1328,11 @@ msgstr "Pylon òfìfo"
 msgid "ENGAGED"
 msgstr "MO Ń KỌLU"
 
-#: src/components/MissionSetup.tsx:970
+#: src/components/MissionSetup.tsx:998
 msgid "Engagement"
 msgstr "Ìjà"
 
-#: src/components/SettingsDialog.tsx:586
+#: src/components/SettingsDialog.tsx:591
 msgid "Engine and afterburner"
 msgstr "Ẹ́ńjìnnì àti afterburner"
 
@@ -1367,20 +1367,20 @@ msgstr "Ṣílẹ̀kùn"
 msgid "Expand sidebar"
 msgstr "Fẹ̀ sidebar"
 
-#: src/components/MissionSetup.tsx:573
+#: src/components/MissionSetup.tsx:578
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "Àwòrán eré ìbúgbàù <0>“Explosion02HD”</0> láti ọwọ́ <1>Unity Technologies</1> (àwọn ìtòlẹ́sẹẹsẹ àwòrán VFX ti Unity Labs), tí a tẹ̀ jáde lábẹ́ <2>CC0</2>. A tún ṣe: a tún fún pọ̀ fún wẹ́ẹ̀bù."
 
-#: src/components/SettingsDialog.tsx:406
+#: src/components/SettingsDialog.tsx:411
 msgid "Export"
 msgstr "Kó jáde"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Extend flaps"
 msgstr "Fa àwọn flaps jáde"
 
-#: src/components/SettingsDialog.tsx:945
+#: src/components/SettingsDialog.tsx:950
 msgid "Exterior detail"
 msgstr "Kúlẹ̀kúlẹ̀ òde"
 
@@ -1392,7 +1392,7 @@ msgstr "URL òde"
 msgid "Extra large"
 msgstr "Tóbi gan"
 
-#: src/components/MissionSetup.tsx:438
+#: src/components/MissionSetup.tsx:443
 msgid "F/A-18C reference"
 msgstr "Ìtọ́kasí F/A-18C"
 
@@ -1484,12 +1484,12 @@ msgstr "Ó parí"
 msgid "fire"
 msgstr "yìnbọn"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Fire weapon"
 msgstr "Yìnbọn"
 
-#: src/components/SettingsDialog.tsx:846
+#: src/components/SettingsDialog.tsx:851
 msgid "Fixed flight keys"
 msgstr "Àwọn bọ́tìnnì ìfò tí kò ṣeé yípadà"
 
@@ -1521,7 +1521,7 @@ msgstr "Pẹ̀tẹ́lẹ̀"
 msgid "Flew into the sea"
 msgstr "Ó fò sínú òkun"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:99
 msgid "Flight"
 msgstr "Ọkọ̀ òfuurufú"
 
@@ -1529,11 +1529,11 @@ msgstr "Ọkọ̀ òfuurufú"
 msgid "FLIGHT CORE FAILED"
 msgstr "KÓRÒ ÒFURUFÚ KÙNÀ"
 
-#: src/components/SettingsDialog.tsx:1098
+#: src/components/SettingsDialog.tsx:1103
 msgid "Flight hints"
 msgstr "Àwọn ìtọ́sọ́nà ìfò"
 
-#: src/components/MissionSetup.tsx:1238
+#: src/components/MissionSetup.tsx:1266
 msgid "Flight log"
 msgstr "Àkọsílẹ̀ ìfò"
 
@@ -1545,8 +1545,8 @@ msgstr "Àwọn ìfò"
 msgid "Flown"
 msgstr "Ó fò"
 
-#: src/components/MissionSetup.tsx:1227
-#: src/components/MissionSetup.tsx:1267
+#: src/components/MissionSetup.tsx:1255
+#: src/components/MissionSetup.tsx:1295
 msgid "Fly"
 msgstr "Fò"
 
@@ -1554,12 +1554,12 @@ msgstr "Fò"
 msgid "Fly again"
 msgstr "Tún fò"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1023
 msgid "Framerate counter"
 msgstr "Òǹkà ìwọ̀n férémù"
 
 #: src/components/MatchLog.tsx:148
-#: src/components/MissionSetup.tsx:960
+#: src/components/MissionSetup.tsx:988
 msgid "Free flight"
 msgstr "Ìfò òmìnira"
 
@@ -1603,11 +1603,11 @@ msgstr "JÍJÒ EPO"
 msgid "FUEL LO"
 msgstr "EPO KÉRÉ"
 
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:230
 msgid "Fuel probe"
 msgstr "Ọpá epo"
 
-#: src/components/MissionSetup.tsx:261
+#: src/components/MissionSetup.tsx:266
 msgid "Fuel tank"
 msgstr "Tanki epo"
 
@@ -1615,12 +1615,12 @@ msgstr "Tanki epo"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:243
-#: src/components/MissionSetup.tsx:245
+#: src/components/MissionSetup.tsx:248
+#: src/components/MissionSetup.tsx:250
 msgid "Fuselage"
 msgstr "Ara ọkọ̀"
 
-#: src/components/SettingsDialog.tsx:872
+#: src/components/SettingsDialog.tsx:877
 msgid "Gain"
 msgstr "Ìmúgbòrò"
 
@@ -1632,7 +1632,7 @@ msgstr "Ẹsẹ̀"
 msgid "GEAR"
 msgstr "GÍYÀ"
 
-#: src/components/SettingsDialog.tsx:1169
+#: src/components/SettingsDialog.tsx:1174
 msgid "General"
 msgstr "Gbogbogbòò"
 
@@ -1641,15 +1641,15 @@ msgstr "Gbogbogbòò"
 msgid "Go back"
 msgstr "Padà"
 
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1178
 msgid "Graphics"
 msgstr "Àwòrán"
 
-#: src/components/SettingsDialog.tsx:905
+#: src/components/SettingsDialog.tsx:910
 msgid "Graphics preset"
 msgstr "Ìṣètò àwòrán tí a ṣe tẹ́lẹ̀"
 
-#: src/components/MissionSetup.tsx:372
+#: src/components/MissionSetup.tsx:377
 msgid "Gross weight"
 msgstr "Ìwúwo lápapọ̀"
 
@@ -1670,7 +1670,7 @@ msgstr "Ẹgbẹ́: {0}"
 msgid "GUN"
 msgstr "IBỌN"
 
-#: src/components/MissionSetup.tsx:280
+#: src/components/MissionSetup.tsx:285
 msgid "Gun only"
 msgstr "Ìbọn ńlá nìkan"
 
@@ -1679,29 +1679,29 @@ msgstr "Ìbọn ńlá nìkan"
 msgid "Guns only"
 msgstr "Ìbọn ńlá nìkan"
 
-#: src/components/MissionSetup.tsx:1206
+#: src/components/MissionSetup.tsx:1234
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "Ìmúyára àwòrán ohun èlò ti wà ní pípa — ṣàyẹ̀wò ètò aṣàwákiri tàbí àwọn awakọ̀ àwòrán."
 
-#: src/components/SettingsDialog.tsx:872
+#: src/components/SettingsDialog.tsx:877
 msgid "Head"
 msgstr "Orí"
 
-#: src/components/SettingsDialog.tsx:872
+#: src/components/SettingsDialog.tsx:877
 msgid "Head tracking"
 msgstr "Títọpa orí"
 
-#: src/components/SettingsDialog.tsx:896
+#: src/components/SettingsDialog.tsx:901
 msgid "High"
 msgstr "Gíga"
 
-#: src/components/MissionSetup.tsx:1068
+#: src/components/MissionSetup.tsx:1096
 #: src/components/Multiplayer.tsx:87
 #: src/components/Multiplayer.tsx:386
 msgid "High stratus"
 msgstr "Stratus gíga"
 
-#: src/components/SettingsDialog.tsx:1089
+#: src/components/SettingsDialog.tsx:1094
 msgid "Hints"
 msgstr "Àwọn ìtọ́sọ́nà"
 
@@ -1728,11 +1728,11 @@ msgstr "HÚÙKÌ"
 msgid "Hot"
 msgstr "Gbígbóná"
 
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:239
 msgid "HUD altitude source"
 msgstr "Orísun gíga fún HUD"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:240
 msgid "HUD declutter"
 msgstr "Mú HUD rọrùn"
 
@@ -1749,12 +1749,12 @@ msgstr "Ẹ̀rọ ìwo àwòrán: {0}"
 msgid "Imperial"
 msgstr "Imperial"
 
-#: src/components/SettingsDialog.tsx:410
+#: src/components/SettingsDialog.tsx:415
 msgid "Import"
 msgstr "Kó wọlé"
 
-#: src/components/MissionSetup.tsx:1011
-#: src/components/MissionSetup.tsx:1162
+#: src/components/MissionSetup.tsx:1039
+#: src/components/MissionSetup.tsx:1190
 msgid "In air"
 msgstr "Nínú afẹ́fẹ́"
 
@@ -1770,7 +1770,7 @@ msgstr "Àwòrán lẹ́tà àkọ́kọ́"
 msgid "Initials avatar for {name}"
 msgstr "Àwòrán lẹ́tà àkọ́kọ́ fún {name}"
 
-#: src/components/SettingsDialog.tsx:366
+#: src/components/SettingsDialog.tsx:371
 msgid "Input hardware"
 msgstr "Ohun èlò ìgbàwọlé"
 
@@ -1778,7 +1778,7 @@ msgstr "Ohun èlò ìgbàwọlé"
 msgid "Interests"
 msgstr "Àwọn ìfẹ́"
 
-#: src/components/MissionSetup.tsx:365
+#: src/components/MissionSetup.tsx:370
 msgid "Internal fuel"
 msgstr "Epo inú"
 
@@ -1786,7 +1786,7 @@ msgstr "Epo inú"
 msgid "Invalid date"
 msgstr "Ọjọ́ aláìdára"
 
-#: src/components/MissionSetup.tsx:1086
+#: src/components/MissionSetup.tsx:1114
 #: src/components/Multiplayer.tsx:90
 msgid "Invulnerable"
 msgstr "Aláìlèfarapa"
@@ -1795,7 +1795,7 @@ msgstr "Aláìlèfarapa"
 msgid "INVULNERABLE"
 msgstr "KÒ LÈ FARA PA"
 
-#: src/components/MissionSetup.tsx:1086
+#: src/components/MissionSetup.tsx:1114
 #: src/components/Multiplayer.tsx:455
 msgid "Invulnerable (human players only)"
 msgstr "Kò lè fara pa (àwọn òṣèré ènìyàn nìkan)"
@@ -1804,13 +1804,13 @@ msgstr "Kò lè fara pa (àwọn òṣèré ènìyàn nìkan)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "Ó dàbí pé ojú-ìwé tí o ń wá <0/>kò sí tàbí a ti yọ ọ́ kúrò."
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Jammer"
 msgstr "Adíwọ̀ ìgbóhùnsáfẹ́fẹ́"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Jettison tanks"
 msgstr "Ju àwọn tanki sílẹ̀"
 
@@ -1822,8 +1822,8 @@ msgstr "JÍJU: JIÀ ÌBALẸ̀"
 msgid "Join"
 msgstr "Darapọ̀"
 
-#: src/components/MissionSetup.tsx:811
-#: src/components/MissionSetup.tsx:1234
+#: src/components/MissionSetup.tsx:839
+#: src/components/MissionSetup.tsx:1262
 msgid "Join server"
 msgstr "Dara pọ̀ mọ́ olùpèsè"
 
@@ -1832,7 +1832,7 @@ msgid "JOINED"
 msgstr "TI DARAPỌ̀"
 
 #: src/components/MatchLog.tsx:146
-#: src/components/MissionSetup.tsx:1172
+#: src/components/MissionSetup.tsx:1200
 #: src/components/Multiplayer.tsx:568
 msgid "Joust"
 msgstr "Joust"
@@ -1841,11 +1841,11 @@ msgstr "Joust"
 msgid "Joust — 1v1, first kill wins"
 msgstr "Ìjà ojúkojú — 1v1, ẹni tó kọ́kọ́ pa ọ̀tá ló borí"
 
-#: src/components/MissionSetup.tsx:961
+#: src/components/MissionSetup.tsx:989
 msgid "Joust against bot"
 msgstr "Ìjà ojúkojú lòdì sí bot"
 
-#: src/components/SettingsDialog.tsx:1181
+#: src/components/SettingsDialog.tsx:1186
 msgid "Joystick"
 msgstr "Joystick"
 
@@ -1861,7 +1861,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "Àwọn ọ̀nà kúkurú kọ́kọ́rọ́"
 
-#: src/components/SettingsDialog.tsx:1185
+#: src/components/SettingsDialog.tsx:1190
 msgid "Keys"
 msgstr "Àwọn bọtìnì"
 
@@ -1890,8 +1890,8 @@ msgstr "INÁ ẸNJINNI ÒSÌ"
 msgid "L GEAR"
 msgstr "GÍYÀ ÒSÌ"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Landing gear"
 msgstr "Ẹsẹ̀ ìbalẹ̀"
 
@@ -1904,8 +1904,8 @@ msgstr "Tóbi"
 msgid "LATE"
 msgstr "PẸ́"
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Launch (catapult)"
 msgstr "Ta (kàtápù)"
 
@@ -1921,7 +1921,7 @@ msgstr "Àtòjọ"
 msgid "lb"
 msgstr "lb"
 
-#: src/components/MissionSetup.tsx:905
+#: src/components/MissionSetup.tsx:933
 msgid "Leave server"
 msgstr "Fi olùpèsè sílẹ̀"
 
@@ -1933,12 +1933,12 @@ msgstr "Ó kúrò"
 msgid "LEFT"
 msgstr "TI JÁDE"
 
-#: src/components/MissionSetup.tsx:241
-#: src/components/MissionSetup.tsx:242
+#: src/components/MissionSetup.tsx:246
+#: src/components/MissionSetup.tsx:247
 msgid "Left wing"
 msgstr "Ìyẹ́ apá òsì"
 
-#: src/components/MissionSetup.tsx:240
+#: src/components/MissionSetup.tsx:245
 msgid "Left wingtip"
 msgstr "Orí ìyẹ́ apá òsì"
 
@@ -1958,8 +1958,8 @@ msgstr "Ìmọ́lẹ̀"
 msgid "lights"
 msgstr "àwọn ìmọ́lẹ̀"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:233
 msgid "Lights"
 msgstr "Àwọn ìmọ́lẹ̀"
 
@@ -2021,39 +2021,39 @@ msgstr "Ti jáde ní àṣeyọrí"
 msgid "Logging out…"
 msgstr "Ń jáde…"
 
-#: src/components/SettingsDialog.tsx:109
+#: src/components/SettingsDialog.tsx:114
 msgid "Look"
 msgstr "Wo"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:858
 msgid "Look / orbit"
 msgstr "Wíwò / yíyípo"
 
-#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:189
 msgid "Look at target"
 msgstr "Wo àfojúsùn"
 
-#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:186
 msgid "Look down"
 msgstr "Wo ìsàlẹ̀"
 
-#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:187
 msgid "Look left"
 msgstr "Wo òsì"
 
-#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:188
 msgid "Look right"
 msgstr "Wo ọ̀tún"
 
-#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:185
 msgid "Look up"
 msgstr "Wo òkè"
 
-#: src/components/SettingsDialog.tsx:894
+#: src/components/SettingsDialog.tsx:899
 msgid "Low"
 msgstr "Kéré"
 
-#: src/components/MissionSetup.tsx:1070
+#: src/components/MissionSetup.tsx:1098
 #: src/components/Multiplayer.tsx:89
 #: src/components/Multiplayer.tsx:388
 msgid "Low stratus"
@@ -2075,7 +2075,7 @@ msgstr "Ìwé ìtọ́nisọ́nà"
 msgid "map"
 msgstr "máàpù"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:241
 msgid "Map"
 msgstr "Máàpù"
 
@@ -2084,16 +2084,16 @@ msgstr "Máàpù"
 msgid "Mark all as read"
 msgstr "Sàmì sí gbogbo gẹ́gẹ́ bí kíkà"
 
-#: src/components/SettingsDialog.tsx:605
+#: src/components/SettingsDialog.tsx:610
 msgid "Master audio output"
 msgstr "Àbájáde ohùn àkọ́kọ́"
 
-#: src/components/SettingsDialog.tsx:618
+#: src/components/SettingsDialog.tsx:623
 msgid "Master bus"
 msgstr "Bọ́ọ̀sì àkọ́kọ́"
 
-#: src/components/SettingsDialog.tsx:585
-#: src/components/SettingsDialog.tsx:613
+#: src/components/SettingsDialog.tsx:590
+#: src/components/SettingsDialog.tsx:618
 msgid "Master volume"
 msgstr "Ìwọ̀n ohùn àkọ́kọ́"
 
@@ -2101,7 +2101,7 @@ msgstr "Ìwọ̀n ohùn àkọ́kọ́"
 msgid "Match type"
 msgstr "Irú ìdíje"
 
-#: src/components/MissionSetup.tsx:900
+#: src/components/MissionSetup.tsx:928
 msgid "Matches"
 msgstr "Àwọn eré"
 
@@ -2114,7 +2114,7 @@ msgid "MCP server"
 msgstr "Sáà MCP"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:895
+#: src/components/SettingsDialog.tsx:900
 msgid "Medium"
 msgstr "Àárín"
 
@@ -2123,8 +2123,8 @@ msgid "menu"
 msgstr "àkójọ"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:244
 msgid "Menu"
 msgstr "Ìtòlẹ́sẹẹsẹ"
 
@@ -2140,7 +2140,7 @@ msgstr "Ìránṣẹ́"
 msgid "Message everyone"
 msgstr "Fi ìfìránṣẹ́ sí gbogbo ènìyàn"
 
-#: src/components/MissionSetup.tsx:735
+#: src/components/MissionSetup.tsx:763
 msgid "Message players on this server"
 msgstr "Fi ìfiránṣẹ́ ránṣẹ́ sí àwọn òṣèré lórí olùpín yìí"
 
@@ -2152,7 +2152,7 @@ msgstr "Fi ìfìránṣẹ́ sí ẹgbẹ́ rẹ"
 msgid "Metric"
 msgstr "Òṣùwọ̀n"
 
-#: src/components/MissionSetup.tsx:1069
+#: src/components/MissionSetup.tsx:1097
 #: src/components/Multiplayer.tsx:88
 #: src/components/Multiplayer.tsx:387
 msgid "Mid stratus"
@@ -2162,7 +2162,7 @@ msgstr "Stratus ààrin"
 msgid "Midair collision"
 msgstr "Ìkọlù ní òfuurufú"
 
-#: src/components/MissionSetup.tsx:596
+#: src/components/MissionSetup.tsx:601
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Àwòrán ilẹ̀ Midway Atoll — àwọn àwòrán ní dátà <0>Copernicus Sentinel-2</0> tí a ṣàtúnṣe (2026); ìhun pápá ọkọ̀ òfuurufú (ojú-ọ̀nà ìfòfò, ọ̀nà takisi, ibi ìdúró ọkọ̀) © àwọn olùkópa <1>OpenStreetMap</1>, tí a fún ní àṣẹ lábẹ́ <2>ODbL</2>; dátà etíkun àti òkìtì iyùn láti ọ̀dọ̀ <3>NOAA NCCOS</3> (ìní àwùjọ)."
 
@@ -2174,7 +2174,7 @@ msgstr "Gígùn tí ó kéré jùlọ"
 msgid "MISSILE"
 msgstr "MÍSÁÌLÌ"
 
-#: src/components/MissionSetup.tsx:550
+#: src/components/MissionSetup.tsx:555
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "Àwòkọ́ṣe mísáìlì <0>“AIM-120C AMRAAM”</0> láti ọwọ́ <1>Pippa</1> (Sketchfab), tí a fún ní ìwé àṣẹ lábẹ́ <2>CC BY 4.0</2>. Àtúnṣe: ìwọ̀n tuntun, ìdarí tuntun, àti ìgbékalẹ̀ sí àárín fún ìfibọ̀."
 
@@ -2204,7 +2204,7 @@ msgstr "Ọjọ́ Ajé"
 msgid "More options"
 msgstr "Awọn aṣayan diẹ sii"
 
-#: src/components/SettingsDialog.tsx:502
+#: src/components/SettingsDialog.tsx:507
 msgid "Move…"
 msgstr "Gbé…"
 
@@ -2248,7 +2248,7 @@ msgstr "Eré tuntun"
 msgid "Next image"
 msgstr "Àwòrán tó kàn"
 
-#: src/components/MissionSetup.tsx:1054
+#: src/components/MissionSetup.tsx:1082
 #: src/components/Multiplayer.tsx:85
 #: src/components/Multiplayer.tsx:381
 msgid "Night"
@@ -2270,7 +2270,7 @@ msgstr "Kò sí iṣẹ́ síbẹ̀"
 msgid "No comments yet"
 msgstr "Kò sí àlàyé síbẹ̀"
 
-#: src/components/SettingsDialog.tsx:698
+#: src/components/SettingsDialog.tsx:703
 msgid "No control matches “{query}”."
 msgstr "Kò sí ìdarí tí ó bá “{query}” mu."
 
@@ -2294,7 +2294,7 @@ msgstr "Kò sí ẹgbẹ́ tó wà"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "A kò lè dá oríṣi item kankan sílẹ̀ síbẹ̀. Dá àwọn item òbí tí a nílò sílẹ̀ ní àkọ́kọ́."
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:403
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "Kò sí joystick tí a rí — tẹ bọtìnì èyíkéyìí lórí rẹ̀ láti jí i."
 
@@ -2358,7 +2358,7 @@ msgstr "A kò rí olùlò kankan"
 msgid "No views"
 msgstr "Kò sí ìwò"
 
-#: src/components/MissionSetup.tsx:712
+#: src/components/MissionSetup.tsx:740
 #: src/components/Multiplayer.tsx:551
 msgid "No world server."
 msgstr "Kò sí olùpín ayé."
@@ -2380,11 +2380,11 @@ msgstr "KÒ SÍ GÍRÉÈDÌ"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:491
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:100
-#: src/components/MissionSetup.tsx:276
-#: src/components/MissionSetup.tsx:1066
-#: src/components/SettingsDialog.tsx:467
-#: src/components/SettingsDialog.tsx:543
-#: src/components/SettingsDialog.tsx:826
+#: src/components/MissionSetup.tsx:281
+#: src/components/MissionSetup.tsx:1094
+#: src/components/SettingsDialog.tsx:472
+#: src/components/SettingsDialog.tsx:548
+#: src/components/SettingsDialog.tsx:831
 msgid "None"
 msgstr "Kòsí"
 
@@ -2396,7 +2396,7 @@ msgstr "Déédéé"
 msgid "NOSE GEAR"
 msgstr "GÍYÀ IMÚ"
 
-#: src/components/SettingsDialog.tsx:301
+#: src/components/SettingsDialog.tsx:306
 msgid "Not a joystick profile"
 msgstr "Kì í ṣe profaili joystick"
 
@@ -2413,7 +2413,7 @@ msgstr "A kò ṣètò"
 msgid "Nothing found"
 msgstr "A kò rí ohunkóhun"
 
-#: src/components/MissionSetup.tsx:712
+#: src/components/MissionSetup.tsx:740
 msgid "Nothing yet — say hello."
 msgstr "Kò tíì sí nǹkan kan — kí wọ́n."
 
@@ -2422,8 +2422,8 @@ msgstr "Kò tíì sí nǹkan kan — kí wọ́n."
 msgid "Notifications: {0}"
 msgstr "Àwọn ìfitónilétí: {0}"
 
-#: src/components/MissionSetup.tsx:989
-#: src/components/MissionSetup.tsx:1156
+#: src/components/MissionSetup.tsx:1017
+#: src/components/MissionSetup.tsx:1184
 #: src/components/Multiplayer.tsx:503
 msgid "Novice"
 msgstr "Olùbẹ̀rẹ̀"
@@ -2434,7 +2434,7 @@ msgstr "Olùbẹ̀rẹ̀"
 msgid "Number"
 msgstr "Nọ́mbà"
 
-#: src/components/SettingsDialog.tsx:961
+#: src/components/SettingsDialog.tsx:966
 msgid "Ocean detail"
 msgstr "Kúlẹ̀kúlẹ̀ òkun"
 
@@ -2450,13 +2450,13 @@ msgstr "OK"
 msgid "On"
 msgstr "Ṣíṣí"
 
-#: src/components/MissionSetup.tsx:1013
-#: src/components/MissionSetup.tsx:1164
+#: src/components/MissionSetup.tsx:1041
+#: src/components/MissionSetup.tsx:1192
 msgid "On carrier"
 msgstr "Lórí ọkọ̀ ojú-omi"
 
-#: src/components/MissionSetup.tsx:1012
-#: src/components/MissionSetup.tsx:1163
+#: src/components/MissionSetup.tsx:1040
+#: src/components/MissionSetup.tsx:1191
 msgid "On runway"
 msgstr "Lórí ojú-pápá ìfò"
 
@@ -2527,8 +2527,8 @@ msgstr "yíká"
 msgid "Other"
 msgstr "Mìíràn"
 
-#: src/components/SettingsDialog.tsx:147
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:207
 msgid "Override G limit"
 msgstr "Ré kọjá ààlà G"
 
@@ -2548,7 +2548,7 @@ msgstr "OJU LOMINIRA"
 msgid "Parent"
 msgstr "Òbí"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:206
 msgid "Parking brake"
 msgstr "Bíréèkì ìdúró"
 
@@ -2572,14 +2572,14 @@ msgstr "Àpẹẹrẹ (regex)"
 msgid "Paused"
 msgstr "Ti dúró"
 
-#: src/components/MissionSetup.tsx:658
+#: src/components/MissionSetup.tsx:669
 #: src/components/Multiplayer.tsx:150
 #: src/components/Multiplayer.tsx:328
 msgid "pilot"
 msgstr "awakọ̀ òfuurufú"
 
-#: src/components/MissionSetup.tsx:990
-#: src/components/MissionSetup.tsx:1157
+#: src/components/MissionSetup.tsx:1018
+#: src/components/MissionSetup.tsx:1185
 #: src/components/Multiplayer.tsx:504
 msgid "Pilot"
 msgstr "Awakọ̀ òfuurufú"
@@ -2588,7 +2588,7 @@ msgstr "Awakọ̀ òfuurufú"
 msgid "PILOT DOWN"
 msgstr "AWAKỌ̀ TI KÚ"
 
-#: src/components/SettingsDialog.tsx:1051
+#: src/components/SettingsDialog.tsx:1056
 msgid "Pilot identity"
 msgstr "Ìdánimọ̀ awakọ̀ òfuurufú"
 
@@ -2600,15 +2600,15 @@ msgstr "Wọ́n pa awakọ̀ òfuurufú"
 msgid "pitch"
 msgstr "gòkè-sọ̀kalẹ̀"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:109
 msgid "Pitch"
 msgstr "Pitch"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:197
 msgid "Pitch down"
 msgstr "Pitch sísàlẹ̀"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:196
 msgid "Pitch up"
 msgstr "Pitch sókè"
 
@@ -2646,7 +2646,7 @@ msgstr "Àwọn ìfìránṣẹ́"
 msgid "Posts and comments"
 msgstr "Àwọn ìfìránṣẹ́ àti àlàyé"
 
-#: src/components/SettingsDialog.tsx:806
+#: src/components/SettingsDialog.tsx:811
 msgid "Press a key…"
 msgstr "Tẹ bọtìnì kan…"
 
@@ -2654,7 +2654,7 @@ msgstr "Tẹ bọtìnì kan…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "TẸ ENTER LÁTI FÒ"
 
-#: src/components/SettingsDialog.tsx:566
+#: src/components/SettingsDialog.tsx:571
 msgid "Press…"
 msgstr "Tẹ…"
 
@@ -2672,8 +2672,8 @@ msgstr "Aṣírí"
 msgid "Processing…"
 msgstr "Ń ṣiṣẹ́ lé e…"
 
-#: src/components/SettingsDialog.tsx:287
-#: src/components/SettingsDialog.tsx:299
+#: src/components/SettingsDialog.tsx:292
+#: src/components/SettingsDialog.tsx:304
 msgid "Profile saved"
 msgstr "A ti tọ́jú profile"
 
@@ -2681,8 +2681,8 @@ msgstr "A ti tọ́jú profile"
 msgid "Project members"
 msgstr "Àwọn ọmọ ẹgbẹ́ iṣẹ́"
 
-#: src/components/MissionSetup.tsx:838
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:866
+#: src/components/MissionSetup.tsx:884
 msgid "Public servers"
 msgstr "Awọn olupin gbangba"
 
@@ -2706,8 +2706,8 @@ msgstr "INÁ ẸNJINNI Ọ̀TÚN"
 msgid "R GEAR"
 msgstr "GÍYÀ Ọ̀TÚN"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Radar silent"
 msgstr "Ìdákẹ́ rẹ́dà"
 
@@ -2727,7 +2727,7 @@ msgstr "Tún àwọn bọ́tìnì ìwọlé rẹ forúkọsílẹ̀ lórí olùp
 msgid "REARMED"
 msgstr "TÚN DI ÌHÀMÓRA"
 
-#: src/components/MissionSetup.tsx:817
+#: src/components/MissionSetup.tsx:845
 msgid "Recent"
 msgstr "Àìpẹ́"
 
@@ -2739,12 +2739,12 @@ msgstr "Tí a dábàá"
 msgid "Reconnecting ({retries})..."
 msgstr "Ń tún sopọ̀ ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1085
 msgid "Record flights"
 msgstr "Ṣàkọsílẹ̀ àwọn ìfò"
 
 #: src/components/MatchLog.tsx:442
-#: src/components/SettingsDialog.tsx:1073
+#: src/components/SettingsDialog.tsx:1078
 msgid "Recording"
 msgstr "Àkọsílẹ̀"
 
@@ -2769,7 +2769,7 @@ msgstr "Ń redirect sí ìwọlé."
 msgid "Reduce interest"
 msgstr "Dín ìfẹ́ kù"
 
-#: src/components/MissionSetup.tsx:432
+#: src/components/MissionSetup.tsx:437
 msgid "Reference"
 msgstr "Ìtọ́kasí"
 
@@ -2847,7 +2847,7 @@ msgstr "Tún ọ̀wọ́n sọ orúkọ"
 msgid "Rename this board column"
 msgstr "Tún ọ̀wọ́n bóòdù yìí sọ orúkọ"
 
-#: src/components/MissionSetup.tsx:630
+#: src/components/MissionSetup.tsx:635
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "Ìfihàn àwòrán jẹ́ nípasẹ̀ <0>three.js</0> (ìwé àṣẹ MIT)."
 
@@ -2869,27 +2869,27 @@ msgstr "Pọn dandan"
 msgid "Resend email"
 msgstr "Tún ìmélì náà ránṣẹ́"
 
-#: src/components/SettingsDialog.tsx:1156
+#: src/components/SettingsDialog.tsx:1161
 msgid "Reset"
 msgstr "Pa padà"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Reset master caution"
 msgstr "Tún ìkìlọ̀ àkọ́kọ́ ṣe"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Reset trim"
 msgstr "Tún trim ṣe"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:232
-#: src/components/SettingsDialog.tsx:852
+#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:857
 msgid "Reset view"
 msgstr "Tún ìwòye ṣe"
 
-#: src/components/SettingsDialog.tsx:935
+#: src/components/SettingsDialog.tsx:940
 msgid "Resolution"
 msgstr "Ìpinnu"
 
@@ -2913,8 +2913,8 @@ msgstr "Àbájáde"
 msgid "Resume"
 msgstr "Tẹ̀síwájú"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Retract flaps"
 msgstr "Ká àwọn flaps wọlé"
 
@@ -2922,7 +2922,7 @@ msgstr "Ká àwọn flaps wọlé"
 msgid "Retry"
 msgstr "Gbìyànjú lẹ́ẹ̀kan si"
 
-#: src/components/SettingsDialog.tsx:485
+#: src/components/SettingsDialog.tsx:490
 msgid "Reversed"
 msgstr "Yíyípadà"
 
@@ -2938,12 +2938,12 @@ msgstr "Fagilé ìwọlé"
 msgid "Revoke RSS access?"
 msgstr "Fagilé àǹfààní RSS?"
 
-#: src/components/MissionSetup.tsx:246
-#: src/components/MissionSetup.tsx:247
+#: src/components/MissionSetup.tsx:251
+#: src/components/MissionSetup.tsx:252
 msgid "Right wing"
 msgstr "Ìyẹ́ apá ọ̀tún"
 
-#: src/components/MissionSetup.tsx:248
+#: src/components/MissionSetup.tsx:253
 msgid "Right wingtip"
 msgstr "Orí ìyẹ́ apá ọ̀tún"
 
@@ -2951,15 +2951,15 @@ msgstr "Orí ìyẹ́ apá ọ̀tún"
 msgid "roll"
 msgstr "yíyí"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:110
 msgid "Roll"
 msgstr "Roll"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:198
 msgid "Roll left"
 msgstr "Roll sí òsì"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:199
 msgid "Roll right"
 msgstr "Roll sí ọ̀tún"
 
@@ -3000,7 +3000,7 @@ msgstr "Ọjọ́ Àbámẹ́ta"
 msgid "Save"
 msgstr "Fi pamọ́"
 
-#: src/components/MissionSetup.tsx:447
+#: src/components/MissionSetup.tsx:452
 msgid "Sea level"
 msgstr "Ìpele òkun"
 
@@ -3011,8 +3011,8 @@ msgstr "Ìpele òkun"
 msgid "Search"
 msgstr "Wá"
 
-#: src/components/SettingsDialog.tsx:674
-#: src/components/SettingsDialog.tsx:675
+#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:680
 msgid "Search controls"
 msgstr "Wá àwọn ìdarí"
 
@@ -3109,8 +3109,8 @@ msgstr "Yan ènìyàn..."
 msgid "Select previous card"
 msgstr "Yan káàdì tó wà ṣáájú"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Select weapon"
 msgstr "Yan ohun ìjà"
 
@@ -3124,7 +3124,7 @@ msgstr "Yan..."
 msgid "Selected: <0>{0}</0>"
 msgstr "Yan: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:742
+#: src/components/MissionSetup.tsx:770
 msgid "Send"
 msgstr "Firánṣẹ́"
 
@@ -3154,7 +3154,7 @@ msgstr "Serif"
 msgid "Server"
 msgstr "Sáfà"
 
-#: src/components/MissionSetup.tsx:707
+#: src/components/MissionSetup.tsx:725
 msgid "Server chat"
 msgstr "Ìfọ̀rọ̀wérọ̀ olùpín"
 
@@ -3181,7 +3181,7 @@ msgstr "SÁÀ TI PARÍ"
 msgid "Session expired. Please log in again."
 msgstr "Sáà náà ti parí. Jọ̀wọ́ tún wọlé lẹ́ẹ̀kansí."
 
-#: src/components/SettingsDialog.tsx:818
+#: src/components/SettingsDialog.tsx:823
 msgid "Set"
 msgstr "Ṣètò"
 
@@ -3193,13 +3193,13 @@ msgstr "Ṣètò ibi tí o ti wá àti ibi tí o ń lọ"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:477
-#: src/components/MissionSetup.tsx:1235
-#: src/components/SettingsDialog.tsx:1139
-#: src/components/SettingsDialog.tsx:1166
+#: src/components/MissionSetup.tsx:1263
+#: src/components/SettingsDialog.tsx:1144
+#: src/components/SettingsDialog.tsx:1171
 msgid "Settings"
 msgstr "Àwọn ìṣètò"
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:1002
 msgid "Shadows"
 msgstr "Àwọn òjìji"
 
@@ -3237,7 +3237,7 @@ msgstr "Ń jáde..."
 msgid "Single line of text only"
 msgstr "Ila ọ̀rọ̀ kan ṣoṣo"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:421
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "Gígòkè tó dára jù pẹ̀lú ẹ́ńjìnnì kan (Vyse, afterburner)"
 
@@ -3250,7 +3250,7 @@ msgstr "Kékeré"
 msgid "Sort"
 msgstr "Ṣètò"
 
-#: src/components/SettingsDialog.tsx:1177
+#: src/components/SettingsDialog.tsx:1182
 msgid "Sound"
 msgstr "Ìró"
 
@@ -3278,13 +3278,13 @@ msgstr "BR.AF"
 msgid "speed brake"
 msgstr "breki àfẹ́fẹ́"
 
-#: src/components/SettingsDialog.tsx:108
-#: src/components/SettingsDialog.tsx:145
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:204
 msgid "Speed brake"
 msgstr "Breki àfẹ́fẹ́"
 
-#: src/components/MissionSetup.tsx:473
+#: src/components/MissionSetup.tsx:478
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "Àwọn ìyára wà ní KCAS, gẹ́gẹ́ bí ààlà láti fúyẹ́ (epo tó kéré jù, láìsí ẹrù) dé wíwúwo (ìwúwo lápapọ̀ tó ga jù). A ṣe àgbékalẹ̀ dátà náà nípasẹ̀ àdánwò nínú eré náà. Ìyàtọ̀ èyíkéyìí sí ọkọ̀ òfuurufú gidi ń fi àwọn àṣìṣe àwòṣe ìfòfò ti ẹ̀rọ àfarawé hàn."
 
@@ -3292,11 +3292,11 @@ msgstr "Àwọn ìyára wà ní KCAS, gẹ́gẹ́ bí ààlà láti fúyẹ́ (
 msgid "SPLASH"
 msgstr "ÀFOJÚSÙN TI PARUN"
 
-#: src/components/MissionSetup.tsx:421
+#: src/components/MissionSetup.tsx:426
 msgid "Stall, clean (Vs1)"
 msgstr "Ìṣubú afẹ́fẹ́, mímọ́ (Vs1)"
 
-#: src/components/MissionSetup.tsx:422
+#: src/components/MissionSetup.tsx:427
 msgid "Stall, landing config (Vs0)"
 msgstr "Ìṣubú afẹ́fẹ́, ìṣètò ìbalẹ̀ (Vs0)"
 
@@ -3308,11 +3308,11 @@ msgstr "Bẹ̀rẹ̀"
 msgid "Start the discussion by adding the first comment."
 msgstr "Bẹ̀rẹ̀ ìjíròrò nípa fífi àsọyé àkọ́kọ́ kún."
 
-#: src/components/MissionSetup.tsx:412
+#: src/components/MissionSetup.tsx:417
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "Gígòkè tó gẹ̀gẹ̀ jù (Vx, 100% ìtì)"
 
-#: src/components/MissionSetup.tsx:413
+#: src/components/MissionSetup.tsx:418
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "Gígòkè tó gẹ̀gẹ̀ jù (Vx, afterburner)"
 
@@ -3342,8 +3342,8 @@ msgstr "Forúkọsílẹ̀"
 msgid "Sunday"
 msgstr "Ọjọ́ Àìkú"
 
-#: src/components/MissionSetup.tsx:992
-#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1020
+#: src/components/MissionSetup.tsx:1187
 #: src/components/Multiplayer.tsx:506
 msgid "Superhuman"
 msgstr "Ju ènìyàn lọ"
@@ -3379,7 +3379,7 @@ msgstr "Àwọn tag"
 msgid "TALLY"
 msgstr "MO RÍ Ọ̀TÁ"
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:982
 msgid "Task"
 msgstr "Iṣẹ́"
 
@@ -3438,7 +3438,7 @@ msgstr "A kò rí àkóónú tí o béèrè fún."
 msgid "The server returned a web page instead of data."
 msgstr "Olupin naa da oju-ìwé wẹ́ẹ̀bù padà dípò data."
 
-#: src/components/MissionSetup.tsx:1204
+#: src/components/MissionSetup.tsx:1232
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "Aṣàwákiri yìí kò ṣe àtìlẹ́yìn fún WebGL 2, nítorí náà eré náà kò lè ṣiṣẹ́ — gbìyànjú aṣàwákiri mìíràn."
 
@@ -3446,7 +3446,7 @@ msgstr "Aṣàwákiri yìí kò ṣe àtìlẹ́yìn fún WebGL 2, nítorí ná�
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "Lobby yìí ń fi ìsopọ̀ eré rẹ ránṣẹ́ sí àgbàlejò tó yàtọ̀ ({redirectHost}). Máa bá a lọ kìkì tí o bá gbẹ́kẹ̀lé sáfà yìí."
 
-#: src/components/MissionSetup.tsx:1208
+#: src/components/MissionSetup.tsx:1236
 msgid "This machine may be too slow for smooth flight."
 msgstr "Ẹ̀rọ yìí lè lọ́ra jù fún fífò dídán."
 
@@ -3454,17 +3454,17 @@ msgstr "Ẹ̀rọ yìí lè lọ́ra jù fún fífò dídán."
 msgid "throttle"
 msgstr "agbára"
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:112
 msgid "Throttle"
 msgstr "Throttle"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:203
 msgid "Throttle down"
 msgstr "Dín throttle kù"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:202
 msgid "Throttle up"
 msgstr "Mú throttle pọ̀ sí i"
 
@@ -3472,7 +3472,7 @@ msgstr "Mú throttle pọ̀ sí i"
 msgid "Thursday"
 msgstr "Ọjọ́bọ̀"
 
-#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:425
 msgid "Tightest sustained turn speed"
 msgstr "Ìyára ìyípo tó dúró tó há jù"
 
@@ -3484,7 +3484,7 @@ msgstr "ìtẹ̀"
 msgid "Time"
 msgstr "Àkókò"
 
-#: src/components/MissionSetup.tsx:1047
+#: src/components/MissionSetup.tsx:1075
 msgid "Time of day"
 msgstr "Àkókò ọjọ́"
 
@@ -3526,7 +3526,7 @@ msgstr "Àwọn ìbéèrè ti pọ̀ jù"
 msgid "Top"
 msgstr "Òkè"
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1016
 msgid "Tracers"
 msgstr "Tracers"
 
@@ -3538,31 +3538,31 @@ msgstr "Ń rìn"
 msgid "trim"
 msgstr "trim"
 
-#: src/components/SettingsDialog.tsx:95
+#: src/components/SettingsDialog.tsx:100
 msgid "Trim"
 msgstr "Trim"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:115
 msgid "Trim hat"
 msgstr "Fìlà trim"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim nose down"
 msgstr "Trim: imú sísàlẹ̀"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim nose up"
 msgstr "Trim: imú sókè"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Trim roll left"
 msgstr "Trim: yíyí sí òsì"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Trim roll right"
 msgstr "Trim: yíyí sí ọ̀tún"
 
@@ -3600,7 +3600,7 @@ msgstr "Tẹ láti wá àwọn user"
 msgid "Type to search..."
 msgstr "Tẹ láti wá..."
 
-#: src/components/SettingsDialog.tsx:897
+#: src/components/SettingsDialog.tsx:902
 msgid "Ultra"
 msgstr "Ultra"
 
@@ -3625,13 +3625,13 @@ msgstr "Ààyè Aláìláyè"
 msgid "Unavailable"
 msgstr "Kò sí"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Uncage seeker"
 msgstr "Tú olùwá sílẹ̀"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Undesignate target"
 msgstr "Fagilé yíyan àfojúsùn"
 
@@ -3652,23 +3652,23 @@ msgstr "Aláìmọ̀"
 msgid "Unlimited"
 msgstr "Aláìlópin"
 
-#: src/components/MissionSetup.tsx:1093
+#: src/components/MissionSetup.tsx:1121
 #: src/components/Multiplayer.tsx:91
 #: src/components/Multiplayer.tsx:465
 msgid "Unlimited ammunition"
 msgstr "Ọta ìbọn àìlópin"
 
-#: src/components/MissionSetup.tsx:1093
+#: src/components/MissionSetup.tsx:1121
 msgid "Unlimited ammunition (all players)"
 msgstr "Ọta ìbọn àìlópin (gbogbo awọn oṣere)"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1128
 #: src/components/Multiplayer.tsx:92
 #: src/components/Multiplayer.tsx:475
 msgid "Unlimited fuel"
 msgstr "Epo àìlópin"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1128
 msgid "Unlimited fuel (all players)"
 msgstr "Epo àìlópin (gbogbo awọn oṣere)"
 
@@ -3719,7 +3719,7 @@ msgstr "Jẹ́rìí sí"
 msgid "Verify email address"
 msgstr "Jẹ́rìí sí àdírẹ́sì email"
 
-#: src/components/MissionSetup.tsx:463
+#: src/components/MissionSetup.tsx:468
 msgid "Vertical"
 msgstr "Òòró"
 
@@ -3740,7 +3740,7 @@ msgstr "Ẹ̀rọ ìwo fídíò: {0}"
 msgid "view"
 msgstr "ìwòran"
 
-#: src/components/SettingsDialog.tsx:98
+#: src/components/SettingsDialog.tsx:103
 msgid "View"
 msgstr "Wo"
 
@@ -3753,7 +3753,7 @@ msgstr "Wo gbogbo àwọn ìfitónilétí"
 msgid "View controls"
 msgstr "Àwọn ìṣàkóso ìwòye"
 
-#: src/components/SettingsDialog.tsx:851
+#: src/components/SettingsDialog.tsx:856
 msgid "Views"
 msgstr "Àwọn ìwòye"
 
@@ -3783,12 +3783,12 @@ msgstr "A rán kóòdù ìjẹ́rìísí sí <0>{0}</0>. Tẹ kóòdù náà sí
 msgid "weapon"
 msgstr "ohun ìjà"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:116
 msgid "Weapon select hat"
 msgstr "Fìlà yíyan ohun ìjà"
 
 #: src/components/Multiplayer.tsx:399
-#: src/components/SettingsDialog.tsx:96
+#: src/components/SettingsDialog.tsx:101
 msgid "Weapons"
 msgstr "Àwọn ohun ìjà"
 
@@ -3800,17 +3800,17 @@ msgstr "Ojú-ọjọ́"
 msgid "Wednesday"
 msgstr "Ọjọ́rú"
 
-#: src/components/SettingsDialog.tsx:146
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:205
 msgid "Wheel brakes"
 msgstr "Breki kẹkẹ"
 
-#: src/components/SettingsDialog.tsx:587
+#: src/components/SettingsDialog.tsx:592
 msgid "Wind and cockpit airframe"
 msgstr "Afẹ́fẹ́ àti ara ọkọ̀"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:232
 msgid "Wing fold"
 msgstr "Ìkápọ̀ ìyẹ́"
 
@@ -3822,12 +3822,12 @@ msgstr "BORÍ"
 msgid "World server"
 msgstr "Olùpín ayé"
 
-#: src/components/MissionSetup.tsx:700
+#: src/components/MissionSetup.tsx:718
 #: src/components/Multiplayer.tsx:163
 msgid "World server not reachable"
 msgstr "A kò lè dé ọ̀dọ̀ olùpín ayé"
 
-#: src/components/MissionSetup.tsx:976
+#: src/components/MissionSetup.tsx:1004
 msgid "WVR, fight's on at the pass"
 msgstr "WVR, ohun ìjà lómìnira níbi ìkọjá"
 
@@ -3835,17 +3835,17 @@ msgstr "WVR, ohun ìjà lómìnira níbi ìkọjá"
 msgid "yaw"
 msgstr "yíyà"
 
-#: src/components/SettingsDialog.tsx:106
+#: src/components/SettingsDialog.tsx:111
 msgid "Yaw"
 msgstr "Yaw"
 
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Yaw left"
 msgstr "Yaw sí òsì"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Yaw right"
 msgstr "Yaw sí ọ̀tún"
 
@@ -3881,14 +3881,14 @@ msgstr "Ọ̀rọ̀ rẹ àti àwọn fáìlì àsomọ́ yóò sọnù."
 msgid "Your text will be lost."
 msgstr "Ọ̀rọ̀ rẹ yóò sọnù."
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:117
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/components/SettingsDialog.tsx:185
+#: src/components/SettingsDialog.tsx:190
 msgid "Zoom in"
 msgstr "Sún mọ́ra"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:191
 msgid "Zoom out"
 msgstr "Sún jìnnà"
