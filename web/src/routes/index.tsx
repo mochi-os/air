@@ -118,16 +118,19 @@ function Index() {
         // the menu with it.
         <LazyBoundary
           onFailure={() => {
-            // The chunk IS the mission, so there is nothing to fly and nothing
-            // to show. Hand the player back to the menu instead of a blank
-            // screen. lazy() keeps a rejected payload for the life of the page,
-            // so pressing Fly again cannot recover it and only a reload can.
+            // Either way there is nothing to fly and nothing to show, so hand
+            // the player back to the menu rather than a blank screen. Only the
+            // chunk that never arrived is unrecoverable: lazy() keeps a
+            // rejected payload for the life of the page, so pressing Fly again
+            // cannot fetch it and a reload is the one way back. A canvas that
+            // threw after loading remounts on the next Fly, so that one is told
+            // what happened and nothing more.
             setStarted(false)
             leaveFlight()
             toast.error(
               engine === 'failed'
                 ? t`The game could not be loaded. Reload the page to try again.`
-                : t`The mission stopped. Reload the page to try again.`
+                : t`The mission stopped.`
             )
           }}
         >
