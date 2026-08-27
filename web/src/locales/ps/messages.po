@@ -41,7 +41,7 @@ msgstr "{0, plural, one {# ګولۍ ولګېده} other {# ګولۍ ولګېدې
 
 #. placeholder {0}: line.name
 #. placeholder {1}: line.label
-#: src/components/MissionSetup.tsx:718
+#: src/components/MissionSetup.tsx:746
 msgid "{0} created “{1}”"
 msgstr "{0} «{1}» جوړ کړ"
 
@@ -50,13 +50,13 @@ msgstr "{0} «{1}» جوړ کړ"
 msgid "{0} flying"
 msgstr "{0} په الوتنه کې"
 
-#. placeholder {0}: moment - CATAPULT
-#: src/components/MissionSetup.tsx:402
+#. placeholder {0}: formatNumber(moment - CATAPULT)
+#: src/components/MissionSetup.tsx:407
 msgid "{0} ft·lb over the catapult asymmetry limit"
 msgstr "{0} ft·lb د کاتاپولت د ناانډولتیا له حده پورته"
 
-#. placeholder {0}: gross - LAUNCH
-#: src/components/MissionSetup.tsx:396
+#. placeholder {0}: formatNumber(gross - LAUNCH)
+#: src/components/MissionSetup.tsx:401
 msgid "{0} lb over maximum launch weight"
 msgstr "{0} lb د اعظمي الوتنې وزن څخه ډېر"
 
@@ -67,13 +67,13 @@ msgid "{0} of {1} flights"
 msgstr "د {1} الوتنو څخه {0}"
 
 #. placeholder {0}: pretty(taken.chord)
-#: src/components/SettingsDialog.tsx:772
+#: src/components/SettingsDialog.tsx:777
 msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} دمخه نیول شوی و، او هغه کنټرول اوس نه دی تړل شوی."
 
 #. placeholder {0}: pretty(taken.chord)
 #. placeholder {1}: i18n._(lost.label)
-#: src/components/SettingsDialog.tsx:768
+#: src/components/SettingsDialog.tsx:773
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} په {1} و، چې اوس نه دی تړل شوی."
 
@@ -153,7 +153,7 @@ msgstr "تار 1"
 msgid "12 hours"
 msgstr "12 ساعته"
 
-#: src/components/MissionSetup.tsx:450
+#: src/components/MissionSetup.tsx:455
 msgid "15,000 AMSL"
 msgstr "15,000 AMSL"
 
@@ -169,7 +169,7 @@ msgstr "24 ساعته"
 msgid "3 WIRE"
 msgstr "تار 3"
 
-#: src/components/MissionSetup.tsx:453
+#: src/components/MissionSetup.tsx:458
 msgid "30,000 AMSL"
 msgstr "30,000 AMSL"
 
@@ -193,19 +193,19 @@ msgstr "د لاسرسي کچه"
 msgid "Account type"
 msgstr "د حساب ډول"
 
-#: src/components/MissionSetup.tsx:991
-#: src/components/MissionSetup.tsx:1158
+#: src/components/MissionSetup.tsx:1019
+#: src/components/MissionSetup.tsx:1186
 #: src/components/Multiplayer.tsx:505
 msgid "Ace"
 msgstr "اتل"
 
-#: src/components/SettingsDialog.tsx:159
-#: src/components/SettingsDialog.tsx:210
+#: src/components/SettingsDialog.tsx:164
+#: src/components/SettingsDialog.tsx:215
 msgid "Acquire target"
 msgstr "هدف نیول"
 
-#: src/components/SettingsDialog.tsx:164
-#: src/components/SettingsDialog.tsx:215
+#: src/components/SettingsDialog.tsx:169
+#: src/components/SettingsDialog.tsx:220
 msgid "Acquisition mode"
 msgstr "د نیولو حالت"
 
@@ -283,7 +283,7 @@ msgstr "لید اضافه کړئ"
 msgid "Adding..."
 msgstr "اضافه کول..."
 
-#: src/components/SettingsDialog.tsx:1004
+#: src/components/SettingsDialog.tsx:1009
 msgid "Afterburner"
 msgstr "افټربرنر"
 
@@ -291,15 +291,15 @@ msgstr "افټربرنر"
 msgid "AI"
 msgstr "AI"
 
-#: src/components/SettingsDialog.tsx:97
+#: src/components/SettingsDialog.tsx:102
 msgid "Aircraft"
 msgstr "الوتکه"
 
-#: src/components/MissionSetup.tsx:526
+#: src/components/MissionSetup.tsx:531
 msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
 msgstr "د الوتکو وړونکې بېړۍ <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> د <1>Muhamad Mirza Arrafi</1> (Sketchfab) لخوا، د <2>CC BY 4.0</2> تر جواز لاندې. بدلون: بیا اندازه شوه، لوری یې بدل شو، تر اوبو کچې ډوبه شوه، او د ویب لپاره ساده شوه."
 
-#: src/components/MissionSetup.tsx:502
+#: src/components/MissionSetup.tsx:507
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "د الوتکې ماډل <0>“F/A-18C Hornet”</0> د <1>CreadorDeMu</1> (Sketchfab) لخوا، د <2>CC BY 4.0</2> لاندې جواز لري. بدلون: لوری یې بدل شو او بیا اندازه شو، ناکارېدلي د تیکسچر معلومات لرې شول، بهرني ځوړند تجهیزات په جلا فایل کې بېل شول، د پوښ یو مېش په هېندارهیز ډول واړول شو."
 
@@ -349,12 +349,12 @@ msgstr "هر څوک چې ننوتی وي"
 msgid "Anything subscribed to this feed will stop receiving it. You can copy a new URL afterwards."
 msgstr "هر څه چې دې فیډ ته ګډون کړی، ترلاسه کول به ودروي. وروسته تاسو کولی شئ نوی URL کاپي کړئ."
 
-#: src/components/SettingsDialog.tsx:173
-#: src/components/SettingsDialog.tsx:224
+#: src/components/SettingsDialog.tsx:178
+#: src/components/SettingsDialog.tsx:229
 msgid "Approach power (ATC)"
 msgstr "د نږدې کېدنې ځواک (ATC)"
 
-#: src/components/MissionSetup.tsx:423
+#: src/components/MissionSetup.tsx:428
 msgid "Approach, on-speed (Vapp)"
 msgstr "نږدېدنه، په سمه چټکۍ (Vapp)"
 
@@ -375,8 +375,8 @@ msgstr "ایا تاسو ډاډه یاست چې غواړئ دا تبصره ړنګ
 msgid "Are you sure you want to log out? You will need to log in again to access your account."
 msgstr "ایا تاسو ډاډه یاست چې غواړئ وتل وکړئ؟ تاسو به اړتیا ولرئ بیا ننوځئ ترڅو خپل حساب ته لاسرسی ولرئ."
 
-#: src/components/SettingsDialog.tsx:172
-#: src/components/SettingsDialog.tsx:223
+#: src/components/SettingsDialog.tsx:177
+#: src/components/SettingsDialog.tsx:228
 msgid "Arrestor hook"
 msgstr "د درولو قلاب"
 
@@ -384,7 +384,7 @@ msgstr "د درولو قلاب"
 msgid "Ascending"
 msgstr "د کم څخه ډېر"
 
-#: src/components/MissionSetup.tsx:386
+#: src/components/MissionSetup.tsx:391
 msgid "asymmetry"
 msgstr "ناانډولتیا"
 
@@ -396,7 +396,7 @@ msgstr "د تبصرې فایلونه ضمیمه کړئ"
 msgid "Attach reply files"
 msgstr "د ځواب فایلونه ضمیمه کړئ"
 
-#: src/components/SettingsDialog.tsx:633
+#: src/components/SettingsDialog.tsx:638
 msgid "Audio channels"
 msgstr "د غږ چینلونه"
 
@@ -421,12 +421,12 @@ msgstr "اوتار"
 msgid "Avatar for {name}"
 msgstr "د {name} لپاره اوتار"
 
-#: src/components/SettingsDialog.tsx:345
-#: src/components/SettingsDialog.tsx:473
+#: src/components/SettingsDialog.tsx:350
+#: src/components/SettingsDialog.tsx:478
 msgid "Axis {i}"
 msgstr "محور {i}"
 
-#: src/components/SettingsDialog.tsx:422
+#: src/components/SettingsDialog.tsx:427
 msgid "Axis calibration and mapping"
 msgstr "د محورونو برابرول او ټاکنه"
 
@@ -444,7 +444,7 @@ msgstr "شاته"
 msgid "Back to home"
 msgstr "کور ته بېرته"
 
-#: src/components/MissionSetup.tsx:983
+#: src/components/MissionSetup.tsx:1011
 msgid "Bandit"
 msgstr "د دښمن الوتکه"
 
@@ -456,23 +456,23 @@ msgstr "بانر"
 msgid "BELOW 250 — GEAR AND FLAPS"
 msgstr "له 250 ښکته — ټایر او فلاپ"
 
-#: src/components/MissionSetup.tsx:414
+#: src/components/MissionSetup.tsx:419
 msgid "Best climb (Vy, 100% thrust)"
 msgstr "غوره پورته کېدنه (Vy, 100% زور)"
 
-#: src/components/MissionSetup.tsx:415
+#: src/components/MissionSetup.tsx:420
 msgid "Best climb (Vy, afterburner)"
 msgstr "غوره پورته کېدنه (Vy, افټربرنر)"
 
-#: src/components/MissionSetup.tsx:417
+#: src/components/MissionSetup.tsx:422
 msgid "Best glide (engines out)"
 msgstr "غوره ښویېدنه (انجنونه بند)"
 
-#: src/components/MissionSetup.tsx:419
+#: src/components/MissionSetup.tsx:424
 msgid "Best sustained turn speed"
 msgstr "د دوامداره ګرځ غوره چټکي"
 
-#: src/components/SettingsDialog.tsx:590
+#: src/components/SettingsDialog.tsx:595
 msgid "Betty and RWR alerts"
 msgstr "د Betty او RWR خبرتیاوې"
 
@@ -543,12 +543,12 @@ msgstr "چمتو شئ نو وګرځئ"
 msgid "Browser notifications"
 msgstr "د براوزر خبرتیاوې"
 
-#: src/components/SettingsDialog.tsx:345
-#: src/components/SettingsDialog.tsx:549
+#: src/components/SettingsDialog.tsx:350
+#: src/components/SettingsDialog.tsx:554
 msgid "Button {i}"
 msgstr "تڼۍ {i}"
 
-#: src/components/SettingsDialog.tsx:514
+#: src/components/SettingsDialog.tsx:519
 msgid "Button mappings"
 msgstr "د تڼیو ټاکنې"
 
@@ -556,7 +556,7 @@ msgstr "د تڼیو ټاکنې"
 msgid "BVR — weapons free from spawn"
 msgstr "BVR — وسلې له پیل څخه آزادې"
 
-#: src/components/MissionSetup.tsx:977
+#: src/components/MissionSetup.tsx:1005
 msgid "BVR, fight's on from the start"
 msgstr "BVR، وسلې له پیل څخه آزادې"
 
@@ -565,15 +565,15 @@ msgid "CALL THE BALL"
 msgstr "توپ اعلان کړه"
 
 #: src/components/Multiplayer.tsx:323
-#: src/components/SettingsDialog.tsx:1056
+#: src/components/SettingsDialog.tsx:1061
 msgid "Callsign"
 msgstr "کال ساین"
 
-#: src/components/SettingsDialog.tsx:854
+#: src/components/SettingsDialog.tsx:859
 msgid "Camera distance"
 msgstr "د کامرې واټن"
 
-#: src/components/SettingsDialog.tsx:872
+#: src/components/SettingsDialog.tsx:877
 msgid "Camera unavailable"
 msgstr "کامره شتون نلري"
 
@@ -594,7 +594,7 @@ msgstr "کامره شتون نلري"
 #: src/components/GameCanvas.tsx:549
 #: src/components/Multiplayer.tsx:294
 #: src/components/Multiplayer.tsx:599
-#: src/components/SettingsDialog.tsx:818
+#: src/components/SettingsDialog.tsx:823
 msgid "Cancel"
 msgstr "لغوه کول"
 
@@ -606,11 +606,11 @@ msgstr "تبصره لغوه کړه"
 msgid "Cancel reply"
 msgstr "ځواب لغوه کړه"
 
-#: src/components/SettingsDialog.tsx:588
+#: src/components/SettingsDialog.tsx:593
 msgid "Cannons and ordnance"
 msgstr "توپونه او مهمات"
 
-#: src/components/SettingsDialog.tsx:226
+#: src/components/SettingsDialog.tsx:231
 msgid "Canopy"
 msgstr "د کابین پوښ"
 
@@ -619,35 +619,35 @@ msgstr "د کابین پوښ"
 msgid "Caption"
 msgstr "تشریح"
 
-#: src/components/SettingsDialog.tsx:589
+#: src/components/SettingsDialog.tsx:594
 msgid "Carrier and ambient"
 msgstr "وړونکې بېړۍ او چاپېریال"
 
-#: src/components/MissionSetup.tsx:1165
+#: src/components/MissionSetup.tsx:1193
 msgid "Case I"
 msgstr "Case I"
 
-#: src/components/MissionSetup.tsx:1014
+#: src/components/MissionSetup.tsx:1042
 msgid "Case I (day)"
 msgstr "حالت I (ورځ)"
 
-#: src/components/MissionSetup.tsx:1166
+#: src/components/MissionSetup.tsx:1194
 msgid "Case II"
 msgstr "Case II"
 
-#: src/components/MissionSetup.tsx:1015
+#: src/components/MissionSetup.tsx:1043
 msgid "Case II (weather)"
 msgstr "حالت II (هوا)"
 
-#: src/components/MissionSetup.tsx:1167
+#: src/components/MissionSetup.tsx:1195
 msgid "Case III"
 msgstr "Case III"
 
-#: src/components/MissionSetup.tsx:1016
+#: src/components/MissionSetup.tsx:1044
 msgid "Case III (night)"
 msgstr "حالت III (شپه)"
 
-#: src/components/MissionSetup.tsx:1024
+#: src/components/MissionSetup.tsx:1052
 msgid "Catapult"
 msgstr "کټاپلټ"
 
@@ -655,7 +655,7 @@ msgstr "کټاپلټ"
 msgid "Category for these notifications"
 msgstr "د دې خبرتیاوو لپاره کټګورۍ"
 
-#: src/components/MissionSetup.tsx:244
+#: src/components/MissionSetup.tsx:249
 msgid "Centerline"
 msgstr "منځنۍ کرښه"
 
@@ -676,16 +676,16 @@ msgstr "د تعقیب لید:"
 msgid "chat"
 msgstr "چیټ"
 
-#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:242
 msgid "Chat"
 msgstr "چټ"
 
-#: src/components/SettingsDialog.tsx:238
+#: src/components/SettingsDialog.tsx:243
 msgid "Chat to everyone"
 msgstr "له ټولو سره چیټ"
 
 #: src/components/MatchLog.tsx:365
-#: src/components/MissionSetup.tsx:1080
+#: src/components/MissionSetup.tsx:1108
 #: src/components/Multiplayer.tsx:446
 msgid "Cheats"
 msgstr "چیټونه"
@@ -716,7 +716,7 @@ msgstr "ژبه وټاکئ"
 #: src/components/MatchLog.tsx:323
 #: src/components/MatchLog.tsx:379
 #: src/components/Multiplayer.tsx:384
-#: src/components/SettingsDialog.tsx:683
+#: src/components/SettingsDialog.tsx:688
 msgid "Clear"
 msgstr "پاک کړئ"
 
@@ -766,7 +766,7 @@ msgstr "لټون وتړئ"
 msgid "closer"
 msgstr "نږدې"
 
-#: src/components/MissionSetup.tsx:1060
+#: src/components/MissionSetup.tsx:1088
 msgid "Clouds"
 msgstr "ورېځې"
 
@@ -816,7 +816,7 @@ msgstr "د تبصرې کړنې"
 msgid "Comments"
 msgstr "تبصرې"
 
-#: src/components/SettingsDialog.tsx:99
+#: src/components/SettingsDialog.tsx:104
 msgid "Communication"
 msgstr "اړیکې"
 
@@ -837,11 +837,11 @@ msgstr "د لید ترتیبات تنظیم کړئ"
 msgid "Confirm"
 msgstr "تایید کړئ"
 
-#: src/components/MissionSetup.tsx:884
+#: src/components/MissionSetup.tsx:912
 msgid "Connect"
 msgstr "نښلول"
 
-#: src/components/MissionSetup.tsx:871
+#: src/components/MissionSetup.tsx:899
 msgid "Connect to private server"
 msgstr "له شخصي سرور سره ونښلئ"
 
@@ -894,7 +894,7 @@ msgstr "په کلیپ بورډ کاپي شو"
 msgid "Copy"
 msgstr "کاپي کړئ"
 
-#: src/components/MissionSetup.tsx:418
+#: src/components/MissionSetup.tsx:423
 msgid "Corner speed (best instant turn)"
 msgstr "د کونج چټکي (غوره سملاسي ګرځ)"
 
@@ -910,7 +910,7 @@ msgstr "دا سند نشي پورته کیدلی. مهرباني وکړئ ورو
 msgid "Could not load your flights"
 msgstr "ستاسو الوتنې لوډ نه شوې"
 
-#: src/components/SettingsDialog.tsx:288
+#: src/components/SettingsDialog.tsx:293
 msgid "Could not save the profile"
 msgstr "پروفایل نه شو خوندي کولی"
 
@@ -919,7 +919,7 @@ msgstr "پروفایل نه شو خوندي کولی"
 msgid "Could not save the recording"
 msgstr "ثبت خوندي نه شو"
 
-#: src/components/MissionSetup.tsx:700
+#: src/components/MissionSetup.tsx:718
 msgid "Could not send the message"
 msgstr "پیغام ونه لېږل شو"
 
@@ -939,8 +939,8 @@ msgstr "بیا تصدیق پیلیدلی نشو. مهرباني وکړئ بیا 
 msgid "Couldn't verify with that account. Please try again."
 msgstr "د دغه حساب سره تصدیق ونشو. مهرباني وکړئ بیا هڅه وکړئ."
 
-#: src/components/SettingsDialog.tsx:165
-#: src/components/SettingsDialog.tsx:216
+#: src/components/SettingsDialog.tsx:170
+#: src/components/SettingsDialog.tsx:221
 msgid "Countermeasures"
 msgstr "ضد اقدامات"
 
@@ -973,8 +973,8 @@ msgstr "جوړه کړئ او والوځئ"
 msgid "Create match"
 msgstr "سيالۍ جوړه کړئ"
 
-#: src/components/MissionSetup.tsx:1233
-#: src/components/MissionSetup.tsx:1254
+#: src/components/MissionSetup.tsx:1261
+#: src/components/MissionSetup.tsx:1282
 msgid "Create mission"
 msgstr "ماموریت جوړول"
 
@@ -992,12 +992,12 @@ msgstr "جوړ شو"
 msgid "Creating..."
 msgstr "جوړیږي..."
 
-#: src/components/MissionSetup.tsx:491
-#: src/components/MissionSetup.tsx:497
+#: src/components/MissionSetup.tsx:496
+#: src/components/MissionSetup.tsx:502
 msgid "Credits"
 msgstr "مننه"
 
-#: src/components/MissionSetup.tsx:1067
+#: src/components/MissionSetup.tsx:1095
 #: src/components/Multiplayer.tsx:86
 #: src/components/Multiplayer.tsx:385
 msgid "Cumulus"
@@ -1015,8 +1015,8 @@ msgstr "دودیز"
 msgid "CUT"
 msgstr "خطرناک"
 
-#: src/components/SettingsDialog.tsx:177
-#: src/components/SettingsDialog.tsx:231
+#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:236
 msgid "Cycle view"
 msgstr "لید بدل کړئ"
 
@@ -1033,7 +1033,7 @@ msgstr "د ډېټا ټکر"
 msgid "Date"
 msgstr "نېټه"
 
-#: src/components/MissionSetup.tsx:1053
+#: src/components/MissionSetup.tsx:1081
 #: src/components/Multiplayer.tsx:380
 msgid "Day"
 msgstr "ورځ"
@@ -1105,7 +1105,7 @@ msgstr "لید ړنګ کړئ"
 msgid "Delete your account on the old server"
 msgstr "د پخوانی سرور پر سر خپل حساب ړنګ کړئ"
 
-#: src/components/MissionSetup.tsx:1003
+#: src/components/MissionSetup.tsx:1031
 msgid "Departure / Recovery"
 msgstr "الوتل / کښېناستل"
 
@@ -1121,7 +1121,7 @@ msgstr "تفصیل"
 msgid "Destroyed by fire"
 msgstr "په اور کې ویجاړه شوه"
 
-#: src/components/SettingsDialog.tsx:929
+#: src/components/SettingsDialog.tsx:934
 msgid "Detail"
 msgstr "جزئیات"
 
@@ -1129,8 +1129,8 @@ msgstr "جزئیات"
 msgid "Details Panel"
 msgstr "د تفصیلاتو پینل"
 
-#: src/components/SettingsDialog.tsx:502
-#: src/components/SettingsDialog.tsx:566
+#: src/components/SettingsDialog.tsx:507
+#: src/components/SettingsDialog.tsx:571
 msgid "Detect"
 msgstr "ومومئ"
 
@@ -1165,7 +1165,7 @@ msgstr "ړنګول"
 msgid "Discard draft?"
 msgstr "مسوده ړنګه شي؟"
 
-#: src/components/SettingsDialog.tsx:388
+#: src/components/SettingsDialog.tsx:393
 msgid "disconnected"
 msgstr "بېل شوی"
 
@@ -1177,13 +1177,13 @@ msgstr "پرېکړل شوی"
 
 #: ../../../lib/web/src/components/restore-banner.tsx:88
 #: ../../../lib/web/src/components/restore-banner.tsx:94
-#: src/components/MissionSetup.tsx:1211
-#: src/components/SettingsDialog.tsx:778
+#: src/components/MissionSetup.tsx:1239
+#: src/components/SettingsDialog.tsx:783
 msgid "Dismiss"
 msgstr "وردکړه"
 
-#: src/components/SettingsDialog.tsx:179
-#: src/components/SettingsDialog.tsx:233
+#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:238
 msgid "Display repeater"
 msgstr "د ښودنې تکراروونکی"
 
@@ -1191,13 +1191,13 @@ msgstr "د ښودنې تکراروونکی"
 msgid "Displays the mobile sidebar."
 msgstr "موبایل څنګې پټۍ ښیي."
 
-#: src/components/SettingsDialog.tsx:990
+#: src/components/SettingsDialog.tsx:995
 msgid "Distance LOD"
 msgstr "د واټن LOD"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx:305
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:518
-#: src/components/SettingsDialog.tsx:1160
+#: src/components/SettingsDialog.tsx:1165
 msgid "Done"
 msgstr "ترسره شو"
 
@@ -1231,7 +1231,7 @@ msgstr "نقلونه"
 msgid "Duration"
 msgstr "موده"
 
-#: src/components/SettingsDialog.tsx:983
+#: src/components/SettingsDialog.tsx:988
 msgid "Dynamic resolution"
 msgstr "متحرک ریزولوشن"
 
@@ -1282,15 +1282,15 @@ msgstr "غوره شوې کارت سمول"
 msgid "Edit view"
 msgstr "د لید سمول"
 
-#: src/components/SettingsDialog.tsx:975
+#: src/components/SettingsDialog.tsx:980
 msgid "Effects"
 msgstr "اغېزې"
 
-#: src/components/SettingsDialog.tsx:953
+#: src/components/SettingsDialog.tsx:958
 msgid "Effects detail"
 msgstr "د اغېزو جزئیات"
 
-#: src/components/SettingsDialog.tsx:230
+#: src/components/SettingsDialog.tsx:235
 msgid "Eject"
 msgstr "ایجکټ"
 
@@ -1310,8 +1310,8 @@ msgstr "د بریښنالیک کوډ"
 msgid "EMERG JETT"
 msgstr "بیړنۍ غورځول"
 
-#: src/components/SettingsDialog.tsx:167
-#: src/components/SettingsDialog.tsx:218
+#: src/components/SettingsDialog.tsx:172
+#: src/components/SettingsDialog.tsx:223
 msgid "Emergency jettison (hold)"
 msgstr "بیړنۍ غورځول (ونیسه)"
 
@@ -1319,8 +1319,8 @@ msgstr "بیړنۍ غورځول (ونیسه)"
 msgid "empty"
 msgstr "تش"
 
-#: src/components/MissionSetup.tsx:263
-#: src/components/MissionSetup.tsx:274
+#: src/components/MissionSetup.tsx:268
+#: src/components/MissionSetup.tsx:279
 msgid "Empty pylon"
 msgstr "خالي پایلون"
 
@@ -1328,11 +1328,11 @@ msgstr "خالي پایلون"
 msgid "ENGAGED"
 msgstr "حمله کوم"
 
-#: src/components/MissionSetup.tsx:970
+#: src/components/MissionSetup.tsx:998
 msgid "Engagement"
 msgstr "نښته"
 
-#: src/components/SettingsDialog.tsx:586
+#: src/components/SettingsDialog.tsx:591
 msgid "Engine and afterburner"
 msgstr "انجن او افټربرنر"
 
@@ -1367,20 +1367,20 @@ msgstr "غځول"
 msgid "Expand sidebar"
 msgstr "څنګلوري لیست خلاص کړئ"
 
-#: src/components/MissionSetup.tsx:573
+#: src/components/MissionSetup.tsx:578
 msgid "Explosion animation <0>“Explosion02HD”</0> by <1>Unity Technologies</1> (Unity Labs VFX image sequences), released under <2>CC0</2>. Modified: recompressed for the web."
 msgstr "د چاودنې متحرک انځور <0>“Explosion02HD”</0> د <1>Unity Technologies</1> لخوا (د Unity Labs VFX انځور لړۍ)، د <2>CC0</2> لاندې خپور شوی. بدلون: د ویب لپاره بیا فشرده شوی."
 
-#: src/components/SettingsDialog.tsx:406
+#: src/components/SettingsDialog.tsx:411
 msgid "Export"
 msgstr "صادرول"
 
-#: src/components/SettingsDialog.tsx:169
-#: src/components/SettingsDialog.tsx:220
+#: src/components/SettingsDialog.tsx:174
+#: src/components/SettingsDialog.tsx:225
 msgid "Extend flaps"
 msgstr "فلپونه ایستل"
 
-#: src/components/SettingsDialog.tsx:945
+#: src/components/SettingsDialog.tsx:950
 msgid "Exterior detail"
 msgstr "د بهر جزئیات"
 
@@ -1392,7 +1392,7 @@ msgstr "بهرنی URL"
 msgid "Extra large"
 msgstr "ډېر لوی"
 
-#: src/components/MissionSetup.tsx:438
+#: src/components/MissionSetup.tsx:443
 msgid "F/A-18C reference"
 msgstr "د F/A-18C حواله"
 
@@ -1484,12 +1484,12 @@ msgstr "بشپړ شو"
 msgid "fire"
 msgstr "ډزې"
 
-#: src/components/SettingsDialog.tsx:157
-#: src/components/SettingsDialog.tsx:208
+#: src/components/SettingsDialog.tsx:162
+#: src/components/SettingsDialog.tsx:213
 msgid "Fire weapon"
 msgstr "د وسلې ډزې"
 
-#: src/components/SettingsDialog.tsx:846
+#: src/components/SettingsDialog.tsx:851
 msgid "Fixed flight keys"
 msgstr "د الوتنې ثابتې کیلۍ"
 
@@ -1521,7 +1521,7 @@ msgstr "هوار"
 msgid "Flew into the sea"
 msgstr "سمندر ته ولوېده"
 
-#: src/components/SettingsDialog.tsx:94
+#: src/components/SettingsDialog.tsx:99
 msgid "Flight"
 msgstr "الوتنه"
 
@@ -1529,11 +1529,11 @@ msgstr "الوتنه"
 msgid "FLIGHT CORE FAILED"
 msgstr "د الوتنې زړی ناکام شو"
 
-#: src/components/SettingsDialog.tsx:1098
+#: src/components/SettingsDialog.tsx:1103
 msgid "Flight hints"
 msgstr "د الوتنې لارښوونې"
 
-#: src/components/MissionSetup.tsx:1238
+#: src/components/MissionSetup.tsx:1266
 msgid "Flight log"
 msgstr "د الوتنو یادښت"
 
@@ -1545,8 +1545,8 @@ msgstr "الوتنې"
 msgid "Flown"
 msgstr "الوتلی"
 
-#: src/components/MissionSetup.tsx:1227
-#: src/components/MissionSetup.tsx:1267
+#: src/components/MissionSetup.tsx:1255
+#: src/components/MissionSetup.tsx:1295
 msgid "Fly"
 msgstr "الوتنه"
 
@@ -1554,12 +1554,12 @@ msgstr "الوتنه"
 msgid "Fly again"
 msgstr "بیا والوزه"
 
-#: src/components/SettingsDialog.tsx:1018
+#: src/components/SettingsDialog.tsx:1023
 msgid "Framerate counter"
 msgstr "د فریم کچې شمېرونکی"
 
 #: src/components/MatchLog.tsx:148
-#: src/components/MissionSetup.tsx:960
+#: src/components/MissionSetup.tsx:988
 msgid "Free flight"
 msgstr "آزاده الوتنه"
 
@@ -1603,11 +1603,11 @@ msgstr "د تیلو تویدنه"
 msgid "FUEL LO"
 msgstr "تېل لږ"
 
-#: src/components/SettingsDialog.tsx:225
+#: src/components/SettingsDialog.tsx:230
 msgid "Fuel probe"
 msgstr "د تیلو پروب"
 
-#: src/components/MissionSetup.tsx:261
+#: src/components/MissionSetup.tsx:266
 msgid "Fuel tank"
 msgstr "د تیلو ټانکۍ"
 
@@ -1615,12 +1615,12 @@ msgstr "د تیلو ټانکۍ"
 msgid "Furball"
 msgstr "Furball"
 
-#: src/components/MissionSetup.tsx:243
-#: src/components/MissionSetup.tsx:245
+#: src/components/MissionSetup.tsx:248
+#: src/components/MissionSetup.tsx:250
 msgid "Fuselage"
 msgstr "د الوتکې تنه"
 
-#: src/components/SettingsDialog.tsx:872
+#: src/components/SettingsDialog.tsx:877
 msgid "Gain"
 msgstr "غښتلتیا"
 
@@ -1632,7 +1632,7 @@ msgstr "ګیر"
 msgid "GEAR"
 msgstr "ګيار"
 
-#: src/components/SettingsDialog.tsx:1169
+#: src/components/SettingsDialog.tsx:1174
 msgid "General"
 msgstr "عمومي"
 
@@ -1641,15 +1641,15 @@ msgstr "عمومي"
 msgid "Go back"
 msgstr "بېرته"
 
-#: src/components/SettingsDialog.tsx:1173
+#: src/components/SettingsDialog.tsx:1178
 msgid "Graphics"
 msgstr "ګرافیک"
 
-#: src/components/SettingsDialog.tsx:905
+#: src/components/SettingsDialog.tsx:910
 msgid "Graphics preset"
 msgstr "د ګرافیک چمتو تنظیم"
 
-#: src/components/MissionSetup.tsx:372
+#: src/components/MissionSetup.tsx:377
 msgid "Gross weight"
 msgstr "ټول وزن"
 
@@ -1670,7 +1670,7 @@ msgstr "ډله: {0}"
 msgid "GUN"
 msgstr "توپ"
 
-#: src/components/MissionSetup.tsx:280
+#: src/components/MissionSetup.tsx:285
 msgid "Gun only"
 msgstr "یوازې توپونه"
 
@@ -1679,29 +1679,29 @@ msgstr "یوازې توپونه"
 msgid "Guns only"
 msgstr "یوازې توپونه"
 
-#: src/components/MissionSetup.tsx:1206
+#: src/components/MissionSetup.tsx:1234
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
 msgstr "د هارډویر ګرافیک ګړندیتوب بند دی — د براوزر تنظیمات یا ګرافیک ډرایورونه وګورئ."
 
-#: src/components/SettingsDialog.tsx:872
+#: src/components/SettingsDialog.tsx:877
 msgid "Head"
 msgstr "سر"
 
-#: src/components/SettingsDialog.tsx:872
+#: src/components/SettingsDialog.tsx:877
 msgid "Head tracking"
 msgstr "د سر تعقیب"
 
-#: src/components/SettingsDialog.tsx:896
+#: src/components/SettingsDialog.tsx:901
 msgid "High"
 msgstr "لوړ"
 
-#: src/components/MissionSetup.tsx:1068
+#: src/components/MissionSetup.tsx:1096
 #: src/components/Multiplayer.tsx:87
 #: src/components/Multiplayer.tsx:386
 msgid "High stratus"
 msgstr "لوړ سټراتوس"
 
-#: src/components/SettingsDialog.tsx:1089
+#: src/components/SettingsDialog.tsx:1094
 msgid "Hints"
 msgstr "لارښوونې"
 
@@ -1728,11 +1728,11 @@ msgstr "هک"
 msgid "Hot"
 msgstr "ګرم"
 
-#: src/components/SettingsDialog.tsx:234
+#: src/components/SettingsDialog.tsx:239
 msgid "HUD altitude source"
 msgstr "د HUD د لوړوالي سرچینه"
 
-#: src/components/SettingsDialog.tsx:235
+#: src/components/SettingsDialog.tsx:240
 msgid "HUD declutter"
 msgstr "د HUD ساده کول"
 
@@ -1749,12 +1749,12 @@ msgstr "د انځور کتونکی: {0}"
 msgid "Imperial"
 msgstr "امپریال"
 
-#: src/components/SettingsDialog.tsx:410
+#: src/components/SettingsDialog.tsx:415
 msgid "Import"
 msgstr "واردول"
 
-#: src/components/MissionSetup.tsx:1011
-#: src/components/MissionSetup.tsx:1162
+#: src/components/MissionSetup.tsx:1039
+#: src/components/MissionSetup.tsx:1190
 msgid "In air"
 msgstr "په هوا کې"
 
@@ -1770,7 +1770,7 @@ msgstr "د لومړنیو تورو اوتار"
 msgid "Initials avatar for {name}"
 msgstr "د {name} لپاره د لومړنیو تورو اوتار"
 
-#: src/components/SettingsDialog.tsx:366
+#: src/components/SettingsDialog.tsx:371
 msgid "Input hardware"
 msgstr "د ننوتلو وسایل"
 
@@ -1778,7 +1778,7 @@ msgstr "د ننوتلو وسایل"
 msgid "Interests"
 msgstr "علاقې"
 
-#: src/components/MissionSetup.tsx:365
+#: src/components/MissionSetup.tsx:370
 msgid "Internal fuel"
 msgstr "داخلي تېل"
 
@@ -1786,7 +1786,7 @@ msgstr "داخلي تېل"
 msgid "Invalid date"
 msgstr "ناسمه نېټه"
 
-#: src/components/MissionSetup.tsx:1086
+#: src/components/MissionSetup.tsx:1114
 #: src/components/Multiplayer.tsx:90
 msgid "Invulnerable"
 msgstr "نه زخمي کېدونکی"
@@ -1795,7 +1795,7 @@ msgstr "نه زخمي کېدونکی"
 msgid "INVULNERABLE"
 msgstr "نه زخمي کېدونکی"
 
-#: src/components/MissionSetup.tsx:1086
+#: src/components/MissionSetup.tsx:1114
 #: src/components/Multiplayer.tsx:455
 msgid "Invulnerable (human players only)"
 msgstr "نه زخمي کېدونکی (یوازې انساني لوبغاړي)"
@@ -1804,13 +1804,13 @@ msgstr "نه زخمي کېدونکی (یوازې انساني لوبغاړي)"
 msgid "It seems like the page you're looking for <0/>does not exist or might have been removed."
 msgstr "داسې ښکاري چې هغه مخ چې تاسو یې لټوئ <0/>شتون نلري یا لرې شوی دی."
 
-#: src/components/SettingsDialog.tsx:162
-#: src/components/SettingsDialog.tsx:213
+#: src/components/SettingsDialog.tsx:167
+#: src/components/SettingsDialog.tsx:218
 msgid "Jammer"
 msgstr "ګډوډوونکی"
 
-#: src/components/SettingsDialog.tsx:166
-#: src/components/SettingsDialog.tsx:217
+#: src/components/SettingsDialog.tsx:171
+#: src/components/SettingsDialog.tsx:222
 msgid "Jettison tanks"
 msgstr "ټانکونه وغورځوه"
 
@@ -1822,8 +1822,8 @@ msgstr "غورځول: د کښته کېدو څرخونه"
 msgid "Join"
 msgstr "یوځای شئ"
 
-#: src/components/MissionSetup.tsx:811
-#: src/components/MissionSetup.tsx:1234
+#: src/components/MissionSetup.tsx:839
+#: src/components/MissionSetup.tsx:1262
 msgid "Join server"
 msgstr "سرور سره یوځای شئ"
 
@@ -1832,7 +1832,7 @@ msgid "JOINED"
 msgstr "یوځای شو"
 
 #: src/components/MatchLog.tsx:146
-#: src/components/MissionSetup.tsx:1172
+#: src/components/MissionSetup.tsx:1200
 #: src/components/Multiplayer.tsx:568
 msgid "Joust"
 msgstr "مبارزه"
@@ -1841,11 +1841,11 @@ msgstr "مبارزه"
 msgid "Joust — 1v1, first kill wins"
 msgstr "مبارزه — 1v1، څوک چې لومړی وغورځوي، هغه ګټي"
 
-#: src/components/MissionSetup.tsx:961
+#: src/components/MissionSetup.tsx:989
 msgid "Joust against bot"
 msgstr "مبارزه د بوټ پر وړاندې"
 
-#: src/components/SettingsDialog.tsx:1181
+#: src/components/SettingsDialog.tsx:1186
 msgid "Joystick"
 msgstr "جوی سټیک"
 
@@ -1861,7 +1861,7 @@ msgstr "K/D"
 msgid "Keyboard shortcuts"
 msgstr "د کیبورډ شارټ کټونه"
 
-#: src/components/SettingsDialog.tsx:1185
+#: src/components/SettingsDialog.tsx:1190
 msgid "Keys"
 msgstr "کیلۍ"
 
@@ -1890,8 +1890,8 @@ msgstr "د کیڼ انجن اور"
 msgid "L GEAR"
 msgstr "کیڼ څرخ"
 
-#: src/components/SettingsDialog.tsx:171
-#: src/components/SettingsDialog.tsx:222
+#: src/components/SettingsDialog.tsx:176
+#: src/components/SettingsDialog.tsx:227
 msgid "Landing gear"
 msgstr "د کوزېدو ټایرونه"
 
@@ -1904,8 +1904,8 @@ msgstr "لوی"
 msgid "LATE"
 msgstr "ناوخته"
 
-#: src/components/SettingsDialog.tsx:175
-#: src/components/SettingsDialog.tsx:229
+#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:234
 msgid "Launch (catapult)"
 msgstr "توغول (منجنیق)"
 
@@ -1921,7 +1921,7 @@ msgstr "ترتیب"
 msgid "lb"
 msgstr "lb"
 
-#: src/components/MissionSetup.tsx:905
+#: src/components/MissionSetup.tsx:933
 msgid "Leave server"
 msgstr "سرور پریښودل"
 
@@ -1933,12 +1933,12 @@ msgstr "ووت"
 msgid "LEFT"
 msgstr "ووت"
 
-#: src/components/MissionSetup.tsx:241
-#: src/components/MissionSetup.tsx:242
+#: src/components/MissionSetup.tsx:246
+#: src/components/MissionSetup.tsx:247
 msgid "Left wing"
 msgstr "کیڼ وزر"
 
-#: src/components/MissionSetup.tsx:240
+#: src/components/MissionSetup.tsx:245
 msgid "Left wingtip"
 msgstr "د کیڼ وزر څوکه"
 
@@ -1958,8 +1958,8 @@ msgstr "روښانه"
 msgid "lights"
 msgstr "څراغونه"
 
-#: src/components/SettingsDialog.tsx:176
-#: src/components/SettingsDialog.tsx:228
+#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:233
 msgid "Lights"
 msgstr "څراغونه"
 
@@ -2021,39 +2021,39 @@ msgstr "په بریالیتوب سره لاګ آوټ شو"
 msgid "Logging out…"
 msgstr "لاګ آوټ کیږي…"
 
-#: src/components/SettingsDialog.tsx:109
+#: src/components/SettingsDialog.tsx:114
 msgid "Look"
 msgstr "وګورئ"
 
-#: src/components/SettingsDialog.tsx:853
+#: src/components/SettingsDialog.tsx:858
 msgid "Look / orbit"
 msgstr "کتل / مدار"
 
-#: src/components/SettingsDialog.tsx:184
+#: src/components/SettingsDialog.tsx:189
 msgid "Look at target"
 msgstr "هدف وګوره"
 
-#: src/components/SettingsDialog.tsx:181
+#: src/components/SettingsDialog.tsx:186
 msgid "Look down"
 msgstr "ښکته وګورئ"
 
-#: src/components/SettingsDialog.tsx:182
+#: src/components/SettingsDialog.tsx:187
 msgid "Look left"
 msgstr "کیڼ لور ته وګورئ"
 
-#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:188
 msgid "Look right"
 msgstr "ښي لور ته وګورئ"
 
-#: src/components/SettingsDialog.tsx:180
+#: src/components/SettingsDialog.tsx:185
 msgid "Look up"
 msgstr "پورته وګورئ"
 
-#: src/components/SettingsDialog.tsx:894
+#: src/components/SettingsDialog.tsx:899
 msgid "Low"
 msgstr "ټیټ"
 
-#: src/components/MissionSetup.tsx:1070
+#: src/components/MissionSetup.tsx:1098
 #: src/components/Multiplayer.tsx:89
 #: src/components/Multiplayer.tsx:388
 msgid "Low stratus"
@@ -2075,7 +2075,7 @@ msgstr "لاسي"
 msgid "map"
 msgstr "نقشه"
 
-#: src/components/SettingsDialog.tsx:236
+#: src/components/SettingsDialog.tsx:241
 msgid "Map"
 msgstr "نقشه"
 
@@ -2084,16 +2084,16 @@ msgstr "نقشه"
 msgid "Mark all as read"
 msgstr "ټول د لوستل شویو په توګه نښه کړئ"
 
-#: src/components/SettingsDialog.tsx:605
+#: src/components/SettingsDialog.tsx:610
 msgid "Master audio output"
 msgstr "د غږ اصلي خروجي"
 
-#: src/components/SettingsDialog.tsx:618
+#: src/components/SettingsDialog.tsx:623
 msgid "Master bus"
 msgstr "اصلي بس"
 
-#: src/components/SettingsDialog.tsx:585
-#: src/components/SettingsDialog.tsx:613
+#: src/components/SettingsDialog.tsx:590
+#: src/components/SettingsDialog.tsx:618
 msgid "Master volume"
 msgstr "د غږ اصلي کچه"
 
@@ -2101,7 +2101,7 @@ msgstr "د غږ اصلي کچه"
 msgid "Match type"
 msgstr "د سيالۍ ډول"
 
-#: src/components/MissionSetup.tsx:900
+#: src/components/MissionSetup.tsx:928
 msgid "Matches"
 msgstr "لوبې"
 
@@ -2114,7 +2114,7 @@ msgid "MCP server"
 msgstr "MCP سرور"
 
 #: ../../../lib/web/src/lib/preference-utils.ts:102
-#: src/components/SettingsDialog.tsx:895
+#: src/components/SettingsDialog.tsx:900
 msgid "Medium"
 msgstr "منځنی"
 
@@ -2123,8 +2123,8 @@ msgid "menu"
 msgstr "غورنۍ"
 
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:200
-#: src/components/SettingsDialog.tsx:187
-#: src/components/SettingsDialog.tsx:239
+#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:244
 msgid "Menu"
 msgstr "مینو"
 
@@ -2140,7 +2140,7 @@ msgstr "پیغام"
 msgid "Message everyone"
 msgstr "ټولو ته پیغام واستوئ"
 
-#: src/components/MissionSetup.tsx:735
+#: src/components/MissionSetup.tsx:763
 msgid "Message players on this server"
 msgstr "د دې سرور لوبغاړو ته پیغام ولیکئ"
 
@@ -2152,7 +2152,7 @@ msgstr "خپل ټیم ته پیغام واستوئ"
 msgid "Metric"
 msgstr "میټریک"
 
-#: src/components/MissionSetup.tsx:1069
+#: src/components/MissionSetup.tsx:1097
 #: src/components/Multiplayer.tsx:88
 #: src/components/Multiplayer.tsx:387
 msgid "Mid stratus"
@@ -2162,7 +2162,7 @@ msgstr "منځنی سټراتوس"
 msgid "Midair collision"
 msgstr "په هوا کې ټکر"
 
-#: src/components/MissionSetup.tsx:596
+#: src/components/MissionSetup.tsx:601
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "د Midway Atoll نقشه — انځورونه بدل شوي <0>Copernicus Sentinel-2</0> معلومات (۲۰۲۶) لري؛ د هوايي ډګر جیومیټري (د الوتنې کرښه، د ټکسي کرښې، اپرانونه) © د <1>OpenStreetMap</1> ونډه‌والان، تر <2>ODbL</2> لاندې جواز لري؛ د ساحل کرښې او مرجاني ډبرو معلومات له <3>NOAA NCCOS</3> څخه (عامه ملکیت)."
 
@@ -2174,7 +2174,7 @@ msgstr "لږ تر لږه اوږدوالی"
 msgid "MISSILE"
 msgstr "توغندی"
 
-#: src/components/MissionSetup.tsx:550
+#: src/components/MissionSetup.tsx:555
 msgid "Missile model <0>“AIM-120C AMRAAM”</0> by <1>Pippa</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, and centred for placement."
 msgstr "د توغندي ماډل <0>“AIM-120C AMRAAM”</0> د <1>Pippa</1> (Sketchfab) لخوا، د <2>CC BY 4.0</2> تر جواز لاندې. بدل شوی: بیا اندازه شوی، بیا لوري ته شوی او د ځای پر ځای کولو لپاره مرکز شوی."
 
@@ -2204,7 +2204,7 @@ msgstr "دوشنبه"
 msgid "More options"
 msgstr "نور انتخابونه"
 
-#: src/components/SettingsDialog.tsx:502
+#: src/components/SettingsDialog.tsx:507
 msgid "Move…"
 msgstr "وخوځوئ…"
 
@@ -2248,7 +2248,7 @@ msgstr "نوې لوبه"
 msgid "Next image"
 msgstr "بله انځور"
 
-#: src/components/MissionSetup.tsx:1054
+#: src/components/MissionSetup.tsx:1082
 #: src/components/Multiplayer.tsx:85
 #: src/components/Multiplayer.tsx:381
 msgid "Night"
@@ -2270,7 +2270,7 @@ msgstr "تر اوسه هیڅ فعالیت نشته"
 msgid "No comments yet"
 msgstr "تر اوسه هیڅ تبصرې نشته"
 
-#: src/components/SettingsDialog.tsx:698
+#: src/components/SettingsDialog.tsx:703
 msgid "No control matches “{query}”."
 msgstr "هیڅ کنټرول له «{query}» سره سمون نه لري."
 
@@ -2294,7 +2294,7 @@ msgstr "هیڅ ډلې شتون نلري"
 msgid "No item types can be created yet. Create the required parent items first."
 msgstr "تر اوسه د توکو ډولونه نشي جوړیدلی. لومړی اړین مور توکي جوړ کړئ."
 
-#: src/components/SettingsDialog.tsx:398
+#: src/components/SettingsDialog.tsx:403
 msgid "No joystick detected — press any button on it to wake it up."
 msgstr "جوی سټیک ونه موندل شو — د راویښولو لپاره یې هره تڼۍ کېکاږئ."
 
@@ -2358,7 +2358,7 @@ msgstr "هیڅ کاروونکي ونه موندل شول"
 msgid "No views"
 msgstr "هیڅ کتنې نشته"
 
-#: src/components/MissionSetup.tsx:712
+#: src/components/MissionSetup.tsx:740
 #: src/components/Multiplayer.tsx:551
 msgid "No world server."
 msgstr "د نړۍ سرور نشته."
@@ -2380,11 +2380,11 @@ msgstr "بې درجې"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx:491
 #: ../../../lib/web/src/components/person-picker.tsx:350
 #: ../../../lib/web/src/lib/preference-utils.ts:100
-#: src/components/MissionSetup.tsx:276
-#: src/components/MissionSetup.tsx:1066
-#: src/components/SettingsDialog.tsx:467
-#: src/components/SettingsDialog.tsx:543
-#: src/components/SettingsDialog.tsx:826
+#: src/components/MissionSetup.tsx:281
+#: src/components/MissionSetup.tsx:1094
+#: src/components/SettingsDialog.tsx:472
+#: src/components/SettingsDialog.tsx:548
+#: src/components/SettingsDialog.tsx:831
 msgid "None"
 msgstr "هیڅوک"
 
@@ -2396,7 +2396,7 @@ msgstr "عادي"
 msgid "NOSE GEAR"
 msgstr "مخکنی څرخ"
 
-#: src/components/SettingsDialog.tsx:301
+#: src/components/SettingsDialog.tsx:306
 msgid "Not a joystick profile"
 msgstr "دا د جوی‌سټیک پروفایل نه دی"
 
@@ -2413,7 +2413,7 @@ msgstr "نه دی ټاکل شوی"
 msgid "Nothing found"
 msgstr "هیڅ نه موندل شو"
 
-#: src/components/MissionSetup.tsx:712
+#: src/components/MissionSetup.tsx:740
 msgid "Nothing yet — say hello."
 msgstr "تر اوسه هیڅ نشته — سلام ووایاست."
 
@@ -2422,8 +2422,8 @@ msgstr "تر اوسه هیڅ نشته — سلام ووایاست."
 msgid "Notifications: {0}"
 msgstr "خبرتیاوې: {0}"
 
-#: src/components/MissionSetup.tsx:989
-#: src/components/MissionSetup.tsx:1156
+#: src/components/MissionSetup.tsx:1017
+#: src/components/MissionSetup.tsx:1184
 #: src/components/Multiplayer.tsx:503
 msgid "Novice"
 msgstr "نوی زده کوونکی"
@@ -2434,7 +2434,7 @@ msgstr "نوی زده کوونکی"
 msgid "Number"
 msgstr "شمیره"
 
-#: src/components/SettingsDialog.tsx:961
+#: src/components/SettingsDialog.tsx:966
 msgid "Ocean detail"
 msgstr "د سمندر جزئیات"
 
@@ -2450,13 +2450,13 @@ msgstr "OK"
 msgid "On"
 msgstr "فعال"
 
-#: src/components/MissionSetup.tsx:1013
-#: src/components/MissionSetup.tsx:1164
+#: src/components/MissionSetup.tsx:1041
+#: src/components/MissionSetup.tsx:1192
 msgid "On carrier"
 msgstr "په وړونکې کې"
 
-#: src/components/MissionSetup.tsx:1012
-#: src/components/MissionSetup.tsx:1163
+#: src/components/MissionSetup.tsx:1040
+#: src/components/MissionSetup.tsx:1191
 msgid "On runway"
 msgstr "د الوتنې پر پټۍ"
 
@@ -2527,8 +2527,8 @@ msgstr "مدار"
 msgid "Other"
 msgstr "نور"
 
-#: src/components/SettingsDialog.tsx:147
-#: src/components/SettingsDialog.tsx:202
+#: src/components/SettingsDialog.tsx:152
+#: src/components/SettingsDialog.tsx:207
 msgid "Override G limit"
 msgstr "د G حد تېرېدل"
 
@@ -2548,7 +2548,7 @@ msgstr "کتنه آزاده"
 msgid "Parent"
 msgstr "مور"
 
-#: src/components/SettingsDialog.tsx:201
+#: src/components/SettingsDialog.tsx:206
 msgid "Parking brake"
 msgstr "د پارکینګ برېک"
 
@@ -2572,14 +2572,14 @@ msgstr "نمونه (regex)"
 msgid "Paused"
 msgstr "ودرول شوی"
 
-#: src/components/MissionSetup.tsx:658
+#: src/components/MissionSetup.tsx:669
 #: src/components/Multiplayer.tsx:150
 #: src/components/Multiplayer.tsx:328
 msgid "pilot"
 msgstr "پیلوټ"
 
-#: src/components/MissionSetup.tsx:990
-#: src/components/MissionSetup.tsx:1157
+#: src/components/MissionSetup.tsx:1018
+#: src/components/MissionSetup.tsx:1185
 #: src/components/Multiplayer.tsx:504
 msgid "Pilot"
 msgstr "پیلوټ"
@@ -2588,7 +2588,7 @@ msgstr "پیلوټ"
 msgid "PILOT DOWN"
 msgstr "پیلوټ ووژل شو"
 
-#: src/components/SettingsDialog.tsx:1051
+#: src/components/SettingsDialog.tsx:1056
 msgid "Pilot identity"
 msgstr "د پیلوټ هویت"
 
@@ -2600,15 +2600,15 @@ msgstr "پیلوټ ووژل شو"
 msgid "pitch"
 msgstr "پورته-ښکته"
 
-#: src/components/SettingsDialog.tsx:104
+#: src/components/SettingsDialog.tsx:109
 msgid "Pitch"
 msgstr "پیچ"
 
-#: src/components/SettingsDialog.tsx:192
+#: src/components/SettingsDialog.tsx:197
 msgid "Pitch down"
 msgstr "پیچ ښکته"
 
-#: src/components/SettingsDialog.tsx:191
+#: src/components/SettingsDialog.tsx:196
 msgid "Pitch up"
 msgstr "پیچ پورته"
 
@@ -2646,7 +2646,7 @@ msgstr "لیکنې"
 msgid "Posts and comments"
 msgstr "لیکنې او تبصرې"
 
-#: src/components/SettingsDialog.tsx:806
+#: src/components/SettingsDialog.tsx:811
 msgid "Press a key…"
 msgstr "یوه کیلۍ کېکاږئ…"
 
@@ -2654,7 +2654,7 @@ msgstr "یوه کیلۍ کېکاږئ…"
 msgid "PRESS ENTER TO LAUNCH"
 msgstr "د الوتنې لپاره Enter کېکاږئ"
 
-#: src/components/SettingsDialog.tsx:566
+#: src/components/SettingsDialog.tsx:571
 msgid "Press…"
 msgstr "کېکاږئ…"
 
@@ -2672,8 +2672,8 @@ msgstr "محرمیت"
 msgid "Processing…"
 msgstr "پروسس کیږي…"
 
-#: src/components/SettingsDialog.tsx:287
-#: src/components/SettingsDialog.tsx:299
+#: src/components/SettingsDialog.tsx:292
+#: src/components/SettingsDialog.tsx:304
 msgid "Profile saved"
 msgstr "پروفایل خوندي شو"
 
@@ -2681,8 +2681,8 @@ msgstr "پروفایل خوندي شو"
 msgid "Project members"
 msgstr "د پروژې غړي"
 
-#: src/components/MissionSetup.tsx:838
-#: src/components/MissionSetup.tsx:856
+#: src/components/MissionSetup.tsx:866
+#: src/components/MissionSetup.tsx:884
 msgid "Public servers"
 msgstr "عامه سرورونه"
 
@@ -2706,8 +2706,8 @@ msgstr "د ښي انجن اور"
 msgid "R GEAR"
 msgstr "ښي څرخ"
 
-#: src/components/SettingsDialog.tsx:163
-#: src/components/SettingsDialog.tsx:214
+#: src/components/SettingsDialog.tsx:168
+#: src/components/SettingsDialog.tsx:219
 msgid "Radar silent"
 msgstr "د رادار چوپتیا"
 
@@ -2727,7 +2727,7 @@ msgstr "خپل د لاسرسي کيلۍ پدې سرور کې بیا ثبت کړ�
 msgid "REARMED"
 msgstr "بیا وسلوال شو"
 
-#: src/components/MissionSetup.tsx:817
+#: src/components/MissionSetup.tsx:845
 msgid "Recent"
 msgstr "وروستي"
 
@@ -2739,12 +2739,12 @@ msgstr "سپارښتل شوی"
 msgid "Reconnecting ({retries})..."
 msgstr "بیا نښلول ({retries})..."
 
-#: src/components/SettingsDialog.tsx:1080
+#: src/components/SettingsDialog.tsx:1085
 msgid "Record flights"
 msgstr "الوتنې ثبتول"
 
 #: src/components/MatchLog.tsx:442
-#: src/components/SettingsDialog.tsx:1073
+#: src/components/SettingsDialog.tsx:1078
 msgid "Recording"
 msgstr "ثبتول"
 
@@ -2769,7 +2769,7 @@ msgstr "ننوتلو ته بیرته لارښود کول."
 msgid "Reduce interest"
 msgstr "د سود کمول"
 
-#: src/components/MissionSetup.tsx:432
+#: src/components/MissionSetup.tsx:437
 msgid "Reference"
 msgstr "حواله"
 
@@ -2847,7 +2847,7 @@ msgstr "د کالم نوم بدل کړئ"
 msgid "Rename this board column"
 msgstr "د دې بورډ کالم بیا نومول"
 
-#: src/components/MissionSetup.tsx:630
+#: src/components/MissionSetup.tsx:635
 msgid "Rendering by <0>three.js</0> (MIT licence)."
 msgstr "رېنډرېنګ د <0>three.js</0> لخوا (د MIT جواز)."
 
@@ -2869,27 +2869,27 @@ msgstr "اړین دی"
 msgid "Resend email"
 msgstr "بریښنالیک بیا واستوئ"
 
-#: src/components/SettingsDialog.tsx:1156
+#: src/components/SettingsDialog.tsx:1161
 msgid "Reset"
 msgstr "بیا تنظیم"
 
-#: src/components/SettingsDialog.tsx:168
-#: src/components/SettingsDialog.tsx:219
+#: src/components/SettingsDialog.tsx:173
+#: src/components/SettingsDialog.tsx:224
 msgid "Reset master caution"
 msgstr "اصلي خبرتیا بیا تنظیم کړئ"
 
-#: src/components/SettingsDialog.tsx:156
-#: src/components/SettingsDialog.tsx:207
+#: src/components/SettingsDialog.tsx:161
+#: src/components/SettingsDialog.tsx:212
 msgid "Reset trim"
 msgstr "ټریم بیا تنظیمول"
 
-#: src/components/SettingsDialog.tsx:178
-#: src/components/SettingsDialog.tsx:232
-#: src/components/SettingsDialog.tsx:852
+#: src/components/SettingsDialog.tsx:183
+#: src/components/SettingsDialog.tsx:237
+#: src/components/SettingsDialog.tsx:857
 msgid "Reset view"
 msgstr "لید بیا تنظیمول"
 
-#: src/components/SettingsDialog.tsx:935
+#: src/components/SettingsDialog.tsx:940
 msgid "Resolution"
 msgstr "حل"
 
@@ -2913,8 +2913,8 @@ msgstr "پایله"
 msgid "Resume"
 msgstr "بیا پیلول"
 
-#: src/components/SettingsDialog.tsx:170
-#: src/components/SettingsDialog.tsx:221
+#: src/components/SettingsDialog.tsx:175
+#: src/components/SettingsDialog.tsx:226
 msgid "Retract flaps"
 msgstr "فلپونه راټولول"
 
@@ -2922,7 +2922,7 @@ msgstr "فلپونه راټولول"
 msgid "Retry"
 msgstr "بیا هڅه وکړئ"
 
-#: src/components/SettingsDialog.tsx:485
+#: src/components/SettingsDialog.tsx:490
 msgid "Reversed"
 msgstr "برعکس"
 
@@ -2938,12 +2938,12 @@ msgstr "لاسرسی لغوه کړئ"
 msgid "Revoke RSS access?"
 msgstr "د RSS لاسرسی لغوه شي؟"
 
-#: src/components/MissionSetup.tsx:246
-#: src/components/MissionSetup.tsx:247
+#: src/components/MissionSetup.tsx:251
+#: src/components/MissionSetup.tsx:252
 msgid "Right wing"
 msgstr "ښي وزر"
 
-#: src/components/MissionSetup.tsx:248
+#: src/components/MissionSetup.tsx:253
 msgid "Right wingtip"
 msgstr "د ښي وزر څوکه"
 
@@ -2951,15 +2951,15 @@ msgstr "د ښي وزر څوکه"
 msgid "roll"
 msgstr "غلت"
 
-#: src/components/SettingsDialog.tsx:105
+#: src/components/SettingsDialog.tsx:110
 msgid "Roll"
 msgstr "رول"
 
-#: src/components/SettingsDialog.tsx:193
+#: src/components/SettingsDialog.tsx:198
 msgid "Roll left"
 msgstr "رول کیڼ"
 
-#: src/components/SettingsDialog.tsx:194
+#: src/components/SettingsDialog.tsx:199
 msgid "Roll right"
 msgstr "رول ښي"
 
@@ -3000,7 +3000,7 @@ msgstr "شنبه"
 msgid "Save"
 msgstr "خوندي کول"
 
-#: src/components/MissionSetup.tsx:447
+#: src/components/MissionSetup.tsx:452
 msgid "Sea level"
 msgstr "د سمندر کچه"
 
@@ -3011,8 +3011,8 @@ msgstr "د سمندر کچه"
 msgid "Search"
 msgstr "لټون"
 
-#: src/components/SettingsDialog.tsx:674
-#: src/components/SettingsDialog.tsx:675
+#: src/components/SettingsDialog.tsx:679
+#: src/components/SettingsDialog.tsx:680
 msgid "Search controls"
 msgstr "کنټرولونه ولټوئ"
 
@@ -3109,8 +3109,8 @@ msgstr "یو کس وټاکئ..."
 msgid "Select previous card"
 msgstr "مخکینی کارت وټاکئ"
 
-#: src/components/SettingsDialog.tsx:158
-#: src/components/SettingsDialog.tsx:209
+#: src/components/SettingsDialog.tsx:163
+#: src/components/SettingsDialog.tsx:214
 msgid "Select weapon"
 msgstr "وسله وټاکئ"
 
@@ -3124,7 +3124,7 @@ msgstr "وټاکئ..."
 msgid "Selected: <0>{0}</0>"
 msgstr "ټاکل شوی: <0>{0}</0>"
 
-#: src/components/MissionSetup.tsx:742
+#: src/components/MissionSetup.tsx:770
 msgid "Send"
 msgstr "لېږل"
 
@@ -3154,7 +3154,7 @@ msgstr "سيريف"
 msgid "Server"
 msgstr "سرور"
 
-#: src/components/MissionSetup.tsx:707
+#: src/components/MissionSetup.tsx:725
 msgid "Server chat"
 msgstr "د سرور چیټ"
 
@@ -3181,7 +3181,7 @@ msgstr "سیشن پای ته ورسېد"
 msgid "Session expired. Please log in again."
 msgstr "سیشن پای ته ورسېد. مهرباني وکړئ بیا ننوځئ."
 
-#: src/components/SettingsDialog.tsx:818
+#: src/components/SettingsDialog.tsx:823
 msgid "Set"
 msgstr "وټاکئ"
 
@@ -3193,13 +3193,13 @@ msgstr "سرچینه او منزل وټاکئ"
 #: ../../../lib/web/src/components/layout/mochi-menu.tsx:125
 #: ../../../lib/web/src/components/options-menu.tsx:196
 #: src/components/GameCanvas.tsx:477
-#: src/components/MissionSetup.tsx:1235
-#: src/components/SettingsDialog.tsx:1139
-#: src/components/SettingsDialog.tsx:1166
+#: src/components/MissionSetup.tsx:1263
+#: src/components/SettingsDialog.tsx:1144
+#: src/components/SettingsDialog.tsx:1171
 msgid "Settings"
 msgstr "ترتیبات"
 
-#: src/components/SettingsDialog.tsx:997
+#: src/components/SettingsDialog.tsx:1002
 msgid "Shadows"
 msgstr "سیوري"
 
@@ -3237,7 +3237,7 @@ msgstr "د وتلو په حال کې..."
 msgid "Single line of text only"
 msgstr "یوازې د متن یوه کرښه"
 
-#: src/components/MissionSetup.tsx:416
+#: src/components/MissionSetup.tsx:421
 msgid "Single-engine best climb (Vyse, afterburner)"
 msgstr "د یو انجن غوره پورته کېدنه (Vyse, افټربرنر)"
 
@@ -3250,7 +3250,7 @@ msgstr "کوچنی"
 msgid "Sort"
 msgstr "ترتیب"
 
-#: src/components/SettingsDialog.tsx:1177
+#: src/components/SettingsDialog.tsx:1182
 msgid "Sound"
 msgstr "غږ"
 
@@ -3278,13 +3278,13 @@ msgstr "س.بر"
 msgid "speed brake"
 msgstr "سرعتي بریک"
 
-#: src/components/SettingsDialog.tsx:108
-#: src/components/SettingsDialog.tsx:145
-#: src/components/SettingsDialog.tsx:199
+#: src/components/SettingsDialog.tsx:113
+#: src/components/SettingsDialog.tsx:150
+#: src/components/SettingsDialog.tsx:204
 msgid "Speed brake"
 msgstr "سرعتي بریک"
 
-#: src/components/MissionSetup.tsx:473
+#: src/components/MissionSetup.tsx:478
 msgid "Speeds in KCAS, as a range from light (minimum fuel, no stores) to heavy (maximum gross). Data derived experimentally in-game. Any differences from the real aircraft reflect simulator flight model errors."
 msgstr "چټکۍ په KCAS کې، له سپکې (لږترلږه تیل، بې وسلو) څخه تر درنې (اعظمي ټول وزن) پورې د یوې لړۍ په توګه. معلومات په لوبه کې په تجربوي ډول ترلاسه شوي. له اصلي الوتکې سره هر ډول توپیر د سمیوليټر د الوتنې ماډل تېروتنې ښیي."
 
@@ -3292,11 +3292,11 @@ msgstr "چټکۍ په KCAS کې، له سپکې (لږترلږه تیل، بې و
 msgid "SPLASH"
 msgstr "هدف ونړول شو"
 
-#: src/components/MissionSetup.tsx:421
+#: src/components/MissionSetup.tsx:426
 msgid "Stall, clean (Vs1)"
 msgstr "سټال، پاکه بڼه (Vs1)"
 
-#: src/components/MissionSetup.tsx:422
+#: src/components/MissionSetup.tsx:427
 msgid "Stall, landing config (Vs0)"
 msgstr "سټال، د ښکته کېدو بڼه (Vs0)"
 
@@ -3308,11 +3308,11 @@ msgstr "پیل"
 msgid "Start the discussion by adding the first comment."
 msgstr "د لومړۍ تبصرې اضافه کولو سره بحث پیل کړئ."
 
-#: src/components/MissionSetup.tsx:412
+#: src/components/MissionSetup.tsx:417
 msgid "Steepest climb (Vx, 100% thrust)"
 msgstr "تر ټولو تیزه پورته کېدنه (Vx, 100% زور)"
 
-#: src/components/MissionSetup.tsx:413
+#: src/components/MissionSetup.tsx:418
 msgid "Steepest climb (Vx, afterburner)"
 msgstr "تر ټولو تیزه پورته کېدنه (Vx, افټربرنر)"
 
@@ -3342,8 +3342,8 @@ msgstr "ګډون وکړئ"
 msgid "Sunday"
 msgstr "یکشنبه"
 
-#: src/components/MissionSetup.tsx:992
-#: src/components/MissionSetup.tsx:1159
+#: src/components/MissionSetup.tsx:1020
+#: src/components/MissionSetup.tsx:1187
 #: src/components/Multiplayer.tsx:506
 msgid "Superhuman"
 msgstr "له انسانه لوړ"
@@ -3379,7 +3379,7 @@ msgstr "ټاګونه"
 msgid "TALLY"
 msgstr "دښمن ښکاري"
 
-#: src/components/MissionSetup.tsx:954
+#: src/components/MissionSetup.tsx:982
 msgid "Task"
 msgstr "دنده"
 
@@ -3438,7 +3438,7 @@ msgstr "غوښتل شوې منځپانګه ونه موندل شوه."
 msgid "The server returned a web page instead of data."
 msgstr "سرور د معلوماتو پر ځای یوه ویب پاڼه راستنه کړه."
 
-#: src/components/MissionSetup.tsx:1204
+#: src/components/MissionSetup.tsx:1232
 msgid "This browser does not support WebGL 2, so the game cannot run — try a different browser."
 msgstr "دا براوزر د WebGL 2 ملاتړ نه کوي، نو لوبه نشي چلېدلی — بل براوزر وازمویئ."
 
@@ -3446,7 +3446,7 @@ msgstr "دا براوزر د WebGL 2 ملاتړ نه کوي، نو لوبه نش
 msgid "This lobby is sending your game connection to a different host ({redirectHost}). Only continue if you trust this server."
 msgstr "دا لابي ستاسو د لوبې اړیکه بل کوربه ({redirectHost}) ته لیږي. یوازې هغه وخت دوام ورکړئ چې پر دې سرور باور لرئ."
 
-#: src/components/MissionSetup.tsx:1208
+#: src/components/MissionSetup.tsx:1236
 msgid "This machine may be too slow for smooth flight."
 msgstr "دا ماشین ښایي د اسانه الوتنې لپاره ډېر ورو وي."
 
@@ -3454,17 +3454,17 @@ msgstr "دا ماشین ښایي د اسانه الوتنې لپاره ډېر و
 msgid "throttle"
 msgstr "ګاز"
 
-#: src/components/SettingsDialog.tsx:107
+#: src/components/SettingsDialog.tsx:112
 msgid "Throttle"
 msgstr "تروتل"
 
-#: src/components/SettingsDialog.tsx:151
-#: src/components/SettingsDialog.tsx:198
+#: src/components/SettingsDialog.tsx:156
+#: src/components/SettingsDialog.tsx:203
 msgid "Throttle down"
 msgstr "تروتل کم کړئ"
 
-#: src/components/SettingsDialog.tsx:150
-#: src/components/SettingsDialog.tsx:197
+#: src/components/SettingsDialog.tsx:155
+#: src/components/SettingsDialog.tsx:202
 msgid "Throttle up"
 msgstr "تروتل زیات کړئ"
 
@@ -3472,7 +3472,7 @@ msgstr "تروتل زیات کړئ"
 msgid "Thursday"
 msgstr "پنجشنبه"
 
-#: src/components/MissionSetup.tsx:420
+#: src/components/MissionSetup.tsx:425
 msgid "Tightest sustained turn speed"
 msgstr "د دوامداره ګرځ تر ټولو تنګه چټکي"
 
@@ -3484,7 +3484,7 @@ msgstr "کږول"
 msgid "Time"
 msgstr "وخت"
 
-#: src/components/MissionSetup.tsx:1047
+#: src/components/MissionSetup.tsx:1075
 msgid "Time of day"
 msgstr "د ورځې وخت"
 
@@ -3526,7 +3526,7 @@ msgstr "ډېرې زیاتې غوښتنې"
 msgid "Top"
 msgstr "بره"
 
-#: src/components/SettingsDialog.tsx:1011
+#: src/components/SettingsDialog.tsx:1016
 msgid "Tracers"
 msgstr "تریسرونه"
 
@@ -3538,31 +3538,31 @@ msgstr "په سفر کې"
 msgid "trim"
 msgstr "ټریم"
 
-#: src/components/SettingsDialog.tsx:95
+#: src/components/SettingsDialog.tsx:100
 msgid "Trim"
 msgstr "ټریم"
 
-#: src/components/SettingsDialog.tsx:110
+#: src/components/SettingsDialog.tsx:115
 msgid "Trim hat"
 msgstr "د ټریم خولۍ"
 
-#: src/components/SettingsDialog.tsx:153
-#: src/components/SettingsDialog.tsx:204
+#: src/components/SettingsDialog.tsx:158
+#: src/components/SettingsDialog.tsx:209
 msgid "Trim nose down"
 msgstr "ټریم: پوزه ښکته"
 
-#: src/components/SettingsDialog.tsx:152
-#: src/components/SettingsDialog.tsx:203
+#: src/components/SettingsDialog.tsx:157
+#: src/components/SettingsDialog.tsx:208
 msgid "Trim nose up"
 msgstr "ټریم: پوزه پورته"
 
-#: src/components/SettingsDialog.tsx:154
-#: src/components/SettingsDialog.tsx:205
+#: src/components/SettingsDialog.tsx:159
+#: src/components/SettingsDialog.tsx:210
 msgid "Trim roll left"
 msgstr "ټریم: کیڼ لور ته کږېدل"
 
-#: src/components/SettingsDialog.tsx:155
-#: src/components/SettingsDialog.tsx:206
+#: src/components/SettingsDialog.tsx:160
+#: src/components/SettingsDialog.tsx:211
 msgid "Trim roll right"
 msgstr "ټریم: ښي لور ته کږېدل"
 
@@ -3600,7 +3600,7 @@ msgstr "د کاروونکو لټون لپاره ولیکئ"
 msgid "Type to search..."
 msgstr "د لټون لپاره ولیکئ..."
 
-#: src/components/SettingsDialog.tsx:897
+#: src/components/SettingsDialog.tsx:902
 msgid "Ultra"
 msgstr "الټرا"
 
@@ -3625,13 +3625,13 @@ msgstr "غیر مجاز لاسرسی"
 msgid "Unavailable"
 msgstr "نه شته"
 
-#: src/components/SettingsDialog.tsx:161
-#: src/components/SettingsDialog.tsx:212
+#: src/components/SettingsDialog.tsx:166
+#: src/components/SettingsDialog.tsx:217
 msgid "Uncage seeker"
 msgstr "لټونکی خوشې کړئ"
 
-#: src/components/SettingsDialog.tsx:160
-#: src/components/SettingsDialog.tsx:211
+#: src/components/SettingsDialog.tsx:165
+#: src/components/SettingsDialog.tsx:216
 msgid "Undesignate target"
 msgstr "د موخې ټاکنه لغوه کړئ"
 
@@ -3652,23 +3652,23 @@ msgstr "نامعلوم"
 msgid "Unlimited"
 msgstr "بې حده"
 
-#: src/components/MissionSetup.tsx:1093
+#: src/components/MissionSetup.tsx:1121
 #: src/components/Multiplayer.tsx:91
 #: src/components/Multiplayer.tsx:465
 msgid "Unlimited ammunition"
 msgstr "بې حده مهمات"
 
-#: src/components/MissionSetup.tsx:1093
+#: src/components/MissionSetup.tsx:1121
 msgid "Unlimited ammunition (all players)"
 msgstr "بې حده مهمات (ټول لوبغاړي)"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1128
 #: src/components/Multiplayer.tsx:92
 #: src/components/Multiplayer.tsx:475
 msgid "Unlimited fuel"
 msgstr "بې حده سون توکي"
 
-#: src/components/MissionSetup.tsx:1100
+#: src/components/MissionSetup.tsx:1128
 msgid "Unlimited fuel (all players)"
 msgstr "بې حده سون توکي (ټول لوبغاړي)"
 
@@ -3719,7 +3719,7 @@ msgstr "تصدیق"
 msgid "Verify email address"
 msgstr "د ایمیل پته تصدیق کړئ"
 
-#: src/components/MissionSetup.tsx:463
+#: src/components/MissionSetup.tsx:468
 msgid "Vertical"
 msgstr "عمودي"
 
@@ -3740,7 +3740,7 @@ msgstr "د ویډیو کتونکی: {0}"
 msgid "view"
 msgstr "لید"
 
-#: src/components/SettingsDialog.tsx:98
+#: src/components/SettingsDialog.tsx:103
 msgid "View"
 msgstr "ولید"
 
@@ -3753,7 +3753,7 @@ msgstr "ټولې خبرتیاوې وګورئ"
 msgid "View controls"
 msgstr "د کنټرول لیدل"
 
-#: src/components/SettingsDialog.tsx:851
+#: src/components/SettingsDialog.tsx:856
 msgid "Views"
 msgstr "لیدنې"
 
@@ -3783,12 +3783,12 @@ msgstr "موږ تصدیق کوډ <0>{0}</0> ته ولیږه. د خپل بریښ�
 msgid "weapon"
 msgstr "وسله"
 
-#: src/components/SettingsDialog.tsx:111
+#: src/components/SettingsDialog.tsx:116
 msgid "Weapon select hat"
 msgstr "د وسلې ټاکنې خولۍ"
 
 #: src/components/Multiplayer.tsx:399
-#: src/components/SettingsDialog.tsx:96
+#: src/components/SettingsDialog.tsx:101
 msgid "Weapons"
 msgstr "وسلې"
 
@@ -3800,17 +3800,17 @@ msgstr "هوا"
 msgid "Wednesday"
 msgstr "چهارشنبه"
 
-#: src/components/SettingsDialog.tsx:146
-#: src/components/SettingsDialog.tsx:200
+#: src/components/SettingsDialog.tsx:151
+#: src/components/SettingsDialog.tsx:205
 msgid "Wheel brakes"
 msgstr "د چرخ بریک"
 
-#: src/components/SettingsDialog.tsx:587
+#: src/components/SettingsDialog.tsx:592
 msgid "Wind and cockpit airframe"
 msgstr "باد او د الوتکې بدنه"
 
-#: src/components/SettingsDialog.tsx:174
-#: src/components/SettingsDialog.tsx:227
+#: src/components/SettingsDialog.tsx:179
+#: src/components/SettingsDialog.tsx:232
 msgid "Wing fold"
 msgstr "د وزر قات کول"
 
@@ -3822,12 +3822,12 @@ msgstr "ګټونکی"
 msgid "World server"
 msgstr "د نړۍ سرور"
 
-#: src/components/MissionSetup.tsx:700
+#: src/components/MissionSetup.tsx:718
 #: src/components/Multiplayer.tsx:163
 msgid "World server not reachable"
 msgstr "د نړۍ سرور ته لاسرسی نشته"
 
-#: src/components/MissionSetup.tsx:976
+#: src/components/MissionSetup.tsx:1004
 msgid "WVR, fight's on at the pass"
 msgstr "WVR، جګړه په تېرېدو پیلېږي"
 
@@ -3835,17 +3835,17 @@ msgstr "WVR، جګړه په تېرېدو پیلېږي"
 msgid "yaw"
 msgstr "انحراف"
 
-#: src/components/SettingsDialog.tsx:106
+#: src/components/SettingsDialog.tsx:111
 msgid "Yaw"
 msgstr "یاو"
 
-#: src/components/SettingsDialog.tsx:148
-#: src/components/SettingsDialog.tsx:195
+#: src/components/SettingsDialog.tsx:153
+#: src/components/SettingsDialog.tsx:200
 msgid "Yaw left"
 msgstr "یاو کیڼ"
 
-#: src/components/SettingsDialog.tsx:149
-#: src/components/SettingsDialog.tsx:196
+#: src/components/SettingsDialog.tsx:154
+#: src/components/SettingsDialog.tsx:201
 msgid "Yaw right"
 msgstr "یاو ښي"
 
@@ -3881,14 +3881,14 @@ msgstr "ستاسو متن او ضمیمې به له لاسه ولاړې شي."
 msgid "Your text will be lost."
 msgstr "ستاسو متن به له لاسه ووځي."
 
-#: src/components/SettingsDialog.tsx:112
+#: src/components/SettingsDialog.tsx:117
 msgid "Zoom"
 msgstr "زوم"
 
-#: src/components/SettingsDialog.tsx:185
+#: src/components/SettingsDialog.tsx:190
 msgid "Zoom in"
 msgstr "لویول"
 
-#: src/components/SettingsDialog.tsx:186
+#: src/components/SettingsDialog.tsx:191
 msgid "Zoom out"
 msgstr "کوچنی کول"
